@@ -55,12 +55,17 @@ const QMap<GTUtilsOptionPanelSequenceView::Tabs,QString> GTUtilsOptionPanelSeque
 
 #define GT_METHOD_NAME "enterPattern"
 
-void GTUtilsOptionPanelSequenceView::enterPattern( U2OpStatus &os, QString pattern ){
+void GTUtilsOptionPanelSequenceView::enterPattern( U2OpStatus &os, QString pattern, bool useCopyPaste ){
     QTextEdit *patternEdit = qobject_cast<QTextEdit*>(GTWidget::findWidget(os, "textPattern"));
     GTWidget::click(os, patternEdit);
 
     GTTextEdit::clear(os, patternEdit);
-    GTTextEdit::setText(os, patternEdit, pattern);
+    if(useCopyPaste){
+        GTClipboard::setText(os, pattern);
+        GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    }else{
+        GTTextEdit::setText(os, patternEdit, pattern);
+    }
 
     GTGlobals::sleep(3000);
 }

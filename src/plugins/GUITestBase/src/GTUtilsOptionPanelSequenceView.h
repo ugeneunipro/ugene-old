@@ -47,7 +47,7 @@ public:
     //Opens option panel tab. TODO: check if tab is already opened
     static void openTab(U2OpStatus &os, Tabs tab);
 
-    static void enterPattern(U2OpStatus &os, QString pattern);
+    static void enterPattern(U2OpStatus &os, QString pattern, bool useCopyPaste = false);
 
     static void enterPatternFromFile(U2OpStatus &os, QString filepath, QString filename);
     static bool checkResultsText(U2OpStatus &os, QString expectedText);

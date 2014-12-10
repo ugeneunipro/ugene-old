@@ -11401,6 +11401,15 @@ GUI_TEST_CLASS_DEFINITION(test_3732) {
     CHECK_SET_ERR(logTracer.checkMessage("MemoryLocker - Not enough memory error, 41 megabytes are required"), "An expected error message not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3736) {
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+    GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Regular expression");
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "A{5,6}", true);
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/3973"), "Results string not match");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3778) {
     //1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
