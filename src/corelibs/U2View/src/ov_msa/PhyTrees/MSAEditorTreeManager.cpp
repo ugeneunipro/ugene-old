@@ -357,6 +357,7 @@ void MSAEditorTreeManager::loadTreeFromFile(const QString& treeFileName) {
     const QList<GObject*>& objects = doc->findGObjectByType(GObjectTypes::PHYLOGENETIC_TREE);
     foreach(GObject* obj, objects) {
         PhyTreeObject* treeObject = qobject_cast<PhyTreeObject*>(obj);
+        msaObject->addObjectRelation(GObjectRelation(GObjectReference(treeObject), ObjectRole_PhylogeneticTree));
         if(NULL == treeObject) {
             continue;
         }
