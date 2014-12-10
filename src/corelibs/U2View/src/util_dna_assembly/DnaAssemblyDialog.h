@@ -66,7 +66,6 @@ public:
     const QList<ShortReadSet> getShortReadSets();
     const QString getAlgorithmName();
     const QString getResultFileName();
-    bool isPrebuiltIndex() const;
     bool isPaired() const;
     bool isSamOutput() const;
     QMap<QString,QVariant> getCustomSettings();
@@ -80,7 +79,6 @@ private slots:
     void sl_onRemoveShortReadsButtonClicked();
     void sl_onSetResultFileNameButtonClicked();
     void sl_onAlgorithmChanged(const QString &text);
-    void sl_onPrebuiltIndexBoxClicked();
     void sl_onSamBoxClicked();
     void sl_onLibraryTypeChanged();
 

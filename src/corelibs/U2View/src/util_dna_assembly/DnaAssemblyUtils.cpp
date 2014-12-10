@@ -114,7 +114,6 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
         s.resultFileName = dlg.getResultFileName();
         s.setCustomSettings( dlg.getCustomSettings() );
         s.shortReadSets = dlg.getShortReadSets();
-        s.prebuiltIndex = dlg.isPrebuiltIndex();
         s.pairedReads = dlg.isPaired();
         s.openView = true;
         Task* assemblyTask = new DnaAssemblyTaskWithConversions(s, true);

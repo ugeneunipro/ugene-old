@@ -354,6 +354,21 @@ void BowtieTask::prepare() {
         settings.refSeqUrl = GUrl(QFileInfo(temp).absoluteFilePath());
     }
 
+    QStringList indexSuffixes;
+    indexSuffixes << ".1.ebwt" << ".2.ebwt" << ".3.ebwt" << ".4.ebwt" << ".rev.1.ebwt" << ".rev.2.ebwt";
+
+    if(!justBuildIndex) {
+        setUpIndexBuilding(indexSuffixes);
+        if(!settings.prebuiltIndex) {
+            QStringList largeIndexSuffixes;
+            largeIndexSuffixes << ".1.ebwtl" << ".2.ebwtl" << ".3.ebwtl" << ".4.ebwtl" << ".rev.1.ebwtl" << ".rev.2.ebwtl";
+            setUpIndexBuilding(largeIndexSuffixes);
+            if(settings.prebuiltIndex) {
+                indexSuffixes = largeIndexSuffixes;
+            }
+        }
+    }
+
     if(!settings.prebuiltIndex) {
         QString indexFileName = settings.indexFileName;
         if(indexFileName.isEmpty()) {

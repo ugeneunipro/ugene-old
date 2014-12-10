@@ -80,14 +80,6 @@ void Bowtie2AlignTask::prepare() {
                 settings.indexFileName = settings.resultFileName.dirPath() + "/" + settings.resultFileName.baseFileName();
             }
         }
-
-        for(int i=0; i < 6; i++) {
-            QFileInfo file(settings.indexFileName + indexSuffixes[i]);
-            if(!file.exists()) {
-                stateInfo.setError(tr("Reference index file \"%1\" does not exist").arg(settings.indexFileName + indexSuffixes[i]));
-                return;
-            }
-        }
     }
 
     QStringList arguments;
@@ -234,6 +226,21 @@ Bowtie2Task::Bowtie2Task(const DnaAssemblyToRefTaskSettings &settings, bool just
 }
 
 void Bowtie2Task::prepare() {
+    QStringList indexSuffixes;
+    indexSuffixes << ".1.bt2" << ".2.bt2" << ".3.bt2" << ".4.bt2" << ".rev.1.bt2" << ".rev.2.bt2";
+
+    if(!justBuildIndex) {
+        setUpIndexBuilding(indexSuffixes);
+        if(!settings.prebuiltIndex) {
+            QStringList largeIndexSuffixes;
+            largeIndexSuffixes << ".1.bt2l" << ".2.bt2l" << ".3.bt2l" << ".4.bt2l" << ".rev.1.bt2l" << ".rev.2.bt2l";
+            setUpIndexBuilding(largeIndexSuffixes);
+            if(settings.prebuiltIndex) {
+                indexSuffixes = largeIndexSuffixes;
+            }
+        }
+    }
+
     if (GzipDecompressTask::checkZipped(settings.refSeqUrl)) {
         temp.open(); //opening creates new temporary file
         temp.close();

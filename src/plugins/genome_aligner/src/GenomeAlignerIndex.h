@@ -56,6 +56,8 @@ public:
     SAType getSeqLength() const {return seqLength;}
     IndexPart& getLoadedPart() { return indexPart; }
 
+    void setBaseFileName(const QString& baseName) {baseFileName = baseName;}
+
 private:
     quint32         seqLength;      //reference sequence's length
     int             seqPartSize;    //in Mb

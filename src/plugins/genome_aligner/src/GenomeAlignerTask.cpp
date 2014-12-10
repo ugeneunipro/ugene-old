@@ -68,8 +68,8 @@ const QString GenomeAlignerTask::OPTION_QUAL_THRESHOLD("quality_threshold");
 const QString GenomeAlignerTask::OPTION_READS_MEMORY_SIZE("reads_mem_size");
 const QString GenomeAlignerTask::OPTION_SEQ_PART_SIZE("seq_part_size");
 
-GenomeAlignerTask::GenomeAlignerTask( const DnaAssemblyToRefTaskSettings& settings, bool _justBuildIndex )
-: DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled, _justBuildIndex),
+GenomeAlignerTask::GenomeAlignerTask( const DnaAssemblyToRefTaskSettings& _settings, bool _justBuildIndex )
+: DnaAssemblyToReferenceTask(_settings, TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled, _justBuildIndex),
   loadDbiTask(NULL),
   createIndexTask(NULL),
   readTask(NULL),
@@ -107,6 +107,14 @@ GenomeAlignerTask::GenomeAlignerTask( const DnaAssemblyToRefTaskSettings& settin
     seqPartSize = settings.getCustomValue(OPTION_SEQ_PART_SIZE, 10).toInt();
     readMemSize = settings.getCustomValue(OPTION_READS_MEMORY_SIZE, 10).toInt();
     prebuiltIndex = settings.prebuiltIndex;
+
+    QStringList indexExtensions;
+    indexExtensions << ".idx" << ".0.sarr" << ".ref";
+
+    if(!justBuildIndex) {
+        setUpIndexBuilding(indexExtensions);
+        prebuiltIndex = settings.prebuiltIndex;
+    }
 
     if (settings.indexFileName.isEmpty()) {
         if (prebuiltIndex) {

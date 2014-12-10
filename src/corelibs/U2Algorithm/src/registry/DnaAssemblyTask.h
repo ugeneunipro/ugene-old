@@ -86,6 +86,9 @@ public:
     const DnaAssemblyToRefTaskSettings& getSettings() const{return settings;}
 
 protected:
+    void setUpIndexBuilding(const QStringList& indexExtensions);
+    bool isPrebuiltIndex(const QString& baseFileName, const QStringList& indexExtensions);
+
     DnaAssemblyToRefTaskSettings settings;
     bool justBuildIndex;
     bool haveResults;

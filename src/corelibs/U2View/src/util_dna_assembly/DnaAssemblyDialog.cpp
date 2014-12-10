@@ -107,15 +107,12 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
     header->setSectionResizeMode( 0, QHeaderView::Stretch );
 #endif
 
-    prebuiltIndexCheckBox->setChecked(prebuiltIndex);
     sl_onAlgorithmChanged(methodNamesBox->currentText());
-    sl_onPrebuiltIndexBoxClicked();
     connect(addShortreadsButton, SIGNAL(clicked()), SLOT(sl_onAddShortReadsButtonClicked()) );
     connect(removeShortReadsButton, SIGNAL(clicked()), SLOT(sl_onRemoveShortReadsButtonClicked()));
     connect(setResultFileNameButton, SIGNAL(clicked()), SLOT(sl_onSetResultFileNameButtonClicked()));
     connect(addRefButton, SIGNAL(clicked()), SLOT(sl_onAddRefButtonClicked()) );
     connect(methodNamesBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_onAlgorithmChanged(const QString &)));
-    connect(prebuiltIndexCheckBox, SIGNAL(clicked()), SLOT(sl_onPrebuiltIndexBoxClicked()));
     connect(samBox, SIGNAL(clicked()), SLOT(sl_onSamBoxClicked()));
     connect(libraryComboBox, SIGNAL(currentIndexChanged(int)), SLOT(sl_onLibraryTypeChanged()));
     
@@ -302,21 +299,6 @@ void DnaAssemblyDialog::sl_onAlgorithmChanged(const QString &text) {
     updateState();
 }
 
-void DnaAssemblyDialog::sl_onPrebuiltIndexBoxClicked() {
-    prebuiltIndex = prebuiltIndexCheckBox->isChecked();
-
-    if (customGUI != NULL) {
-        customGUI->prebuiltIndex(prebuiltIndex);
-        if (refSeqEdit->text().isEmpty()) {
-            return;
-        }
-        QString error;
-        if (!customGUI->buildIndexUrl(refSeqEdit->text(), prebuiltIndex, error)) {
-            QMessageBox::information(this, "DNA Assembly", error);
-        }
-    }
-}
-
 void DnaAssemblyDialog::sl_onSamBoxClicked() {
     samOutput = samBox->isChecked();
 
@@ -327,10 +309,6 @@ void DnaAssemblyDialog::sl_onSamBoxClicked() {
 
 const QString DnaAssemblyDialog::getResultFileName() {
     return resultFileNameEdit->text();
-}
-
-bool DnaAssemblyDialog::isPrebuiltIndex() const {
-    return prebuiltIndexCheckBox->isChecked();
 }
 
 bool DnaAssemblyDialog::isPaired() const {
@@ -469,7 +447,6 @@ DnaAssemblyToRefTaskSettings DnaAssemblyGUIUtils::getSettings(DnaAssemblyDialog 
     s.resultFileName = dialog->getResultFileName();
     s.setCustomSettings(dialog->getCustomSettings());
     s.shortReadSets = dialog->getShortReadSets();
-    s.prebuiltIndex = dialog->isPrebuiltIndex();
     s.pairedReads = dialog->isPaired();
 
     return s;

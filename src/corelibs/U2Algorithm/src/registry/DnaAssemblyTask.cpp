@@ -20,11 +20,37 @@
  */
 
 #include "DnaAssemblyTask.h"
+#include <QtCore/QFileInfo>
 
 namespace U2 {
 
 DnaAssemblyToReferenceTask::DnaAssemblyToReferenceTask( const DnaAssemblyToRefTaskSettings& s, TaskFlags _flags, bool _justBuildIndex )
  : Task("DnaAssemblyToRefTask", _flags), settings(s), justBuildIndex(_justBuildIndex) {
+}
+
+void DnaAssemblyToReferenceTask::setUpIndexBuilding(const QStringList& indexExtensions) {
+    settings.prebuiltIndex = isPrebuiltIndex(settings.refSeqUrl.getURLString(), indexExtensions);
+    if(!settings.prebuiltIndex) {
+        int extensionSeparatorPos = settings.refSeqUrl.getURLString().lastIndexOf('.');
+        if(extensionSeparatorPos > 0) {
+            QString baseIndexName = settings.refSeqUrl.getURLString().left(extensionSeparatorPos);
+            if(isPrebuiltIndex(baseIndexName, indexExtensions)) {
+                settings.prebuiltIndex = true;
+                settings.refSeqUrl = GUrl(baseIndexName);
+            }
+        }
+    }
+}
+
+bool DnaAssemblyToReferenceTask::isPrebuiltIndex(const QString& baseFileName, const QStringList& indexExtensions) {
+    foreach(const QString& curIndexExtension, indexExtensions) {
+        QString indexFilePath = baseFileName + curIndexExtension;
+        QFileInfo fileInfo(indexFilePath);
+        if(!fileInfo.exists()) {
+            return false;
+        }
+    }
+    return true;
 }
 
 QVariant DnaAssemblyToRefTaskSettings::getCustomValue( const QString& optionName, const QVariant& defaultVal ) const {

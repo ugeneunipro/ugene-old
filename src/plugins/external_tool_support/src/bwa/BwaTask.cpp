@@ -456,6 +456,13 @@ BwaTask::BwaTask(const DnaAssemblyToRefTaskSettings &settings, bool justBuildInd
 }
 
 void BwaTask::prepare() {
+    QStringList indexExtensions;
+    indexExtensions << ".amb" << ".ann" << ".bwt" << ".pac" << ".sa";
+
+    if(!justBuildIndex) {
+        setUpIndexBuilding(indexExtensions);
+    }
+
     QString indexFileName = settings.indexFileName;
     if(indexFileName.isEmpty()) {
         indexFileName = settings.refSeqUrl.getURLString();
