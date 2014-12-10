@@ -687,8 +687,12 @@ void Primer3SWTask::prepare()
                                settings.getSequenceSize() - settings.getIncludedRegion().startPos + 1);
             U2Region startRegion(1, settings.getIncludedRegion().endPos() - settings.getSequenceSize());
 
-            addPrimer3Subtasks(settings, startRegion, regionTasks);
-            addPrimer3Subtasks(settings, endRegion, regionTasks);
+            if (settings.checkIncludedRegion(startRegion)) {
+                addPrimer3Subtasks(settings, startRegion, regionTasks);
+            }
+            if (settings.checkIncludedRegion(endRegion)) {
+                addPrimer3Subtasks(settings, endRegion, regionTasks);
+            }
             return;
         } else {
             QByteArray seq = settings.getSequence();

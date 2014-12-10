@@ -556,18 +556,6 @@ bool Primer3Dialog::doDataExchange()
             return false;
         }
     }
-    {
-        QList< U2Region > list;
-        if(parseIntervalList(ui.edit_PRIMER_PRODUCT_SIZE_RANGE->text(), "-", &list, Start_End))
-        {
-            settings.setProductSizeRange(list);
-        }
-        else
-        {
-            showInvalidInputMessage(ui.edit_PRIMER_PRODUCT_SIZE_RANGE, tr("Product Size Ranges"));
-            return false;
-        }
-    }
     if(ui.checkbox_PICK_LEFT->isChecked())
     {
         settings.setLeftInput(ui.edit_PRIMER_LEFT_INPUT->text().toLatin1());
@@ -662,6 +650,25 @@ bool Primer3Dialog::doDataExchange()
         int index = ui.combobox_PRIMER_INTERNAL_OLIGO_MISHYB_LIBRARY->currentIndex();
         settings.setMishybLibrary(repeatLibraries[index].second);
     }
+    {
+        QList< U2Region > list;
+        if(parseIntervalList(ui.edit_PRIMER_PRODUCT_SIZE_RANGE->text(), "-", &list, Start_End))
+        {
+            settings.setProductSizeRange(list);
+            bool isRegionOk = false;
+            U2Region includedRegion = rs->getRegion(&isRegionOk);
+            if (!settings.checkIncludedRegion(includedRegion)) {
+                QMessageBox::critical(this, windowTitle(), tr("Included region is too small for current product size ranges"));
+                return false;
+            }
+            settings.setIncludedRegion( includedRegion.startPos + settings.getFirstBaseIndex(), includedRegion.length);
+        }
+        else
+        {
+            showInvalidInputMessage(ui.edit_PRIMER_PRODUCT_SIZE_RANGE, tr("Product Size Ranges"));
+            return false;
+        }
+    }
     return true;
 }
 
@@ -680,7 +687,6 @@ void Primer3Dialog::sl_pbPick_clicked()
         rs->showErrorMessage();
         return;
     }
-
     if(doDataExchange())
     {
         accept();

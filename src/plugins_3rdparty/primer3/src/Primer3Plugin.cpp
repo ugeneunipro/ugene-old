@@ -133,8 +133,6 @@ void Primer3ADVContext::sl_showDialog() {
             Primer3TaskSettings settings = dialog.getSettings();
             settings.setSequence(seqCtx->getSequenceObject()->getWholeSequenceData(),
                                  seqCtx->getSequenceObject()->isCircular());
-            U2Region region=dialog.getRegion();
-            settings.setIncludedRegion( region.startPos + settings.getFirstBaseIndex(), region.length);
             QString err = dialog.checkModel();
             if (!err.isEmpty()) {
                 QMessageBox::warning(QApplication::activeWindow(), dialog.windowTitle(), err);

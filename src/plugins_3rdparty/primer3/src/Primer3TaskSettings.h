@@ -85,6 +85,7 @@ public:
     int getSequenceSize() const;
     QList< U2Region > getTarget()const;
     QList< U2Region > getProductSizeRange()const;
+    int getMinProductSize() const;
     task getTask()const;
     QList< U2Region > getInternalOligoExcludedRegion()const;
     QByteArray getLeftInput()const;
@@ -145,6 +146,7 @@ public:
 
     bool isSequenceCircular() const { return isCircular; }
 
+    bool checkIncludedRegion(const U2Region &r) const;
 
 private:
     void initMaps();

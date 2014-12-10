@@ -26,6 +26,16 @@
 
 namespace U2 {
 
+bool Primer3TaskSettings::checkIncludedRegion(const U2Region &r) const {
+    int minProductSize = getMinProductSize();
+    if (minProductSize > r.length && getTask() != pick_hyb_probe_only
+            && getTask() != pick_left_only
+            && getTask() != pick_right_only) {
+        return false;
+    }
+    return true;
+}
+
 Primer3TaskSettings::Primer3TaskSettings()
 {
     pr_set_default_global_args(&primerArgs);
@@ -229,6 +239,17 @@ QList< U2Region > Primer3TaskSettings::getProductSizeRange()const
                                primerArgs.pr_max[i] - primerArgs.pr_min[i] + 1));
     }
     return result;
+}
+
+int Primer3TaskSettings::getMinProductSize() const {
+    int min = INT_MAX;
+    for(int i=0;i < primerArgs.num_intervals;i++)
+    {
+        if (min > primerArgs.pr_min[i]) {
+            min = primerArgs.pr_min[i];
+        }
+    }
+    return min;
 }
 
 task Primer3TaskSettings::getTask()const
