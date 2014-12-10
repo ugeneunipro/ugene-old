@@ -11401,6 +11401,24 @@ GUI_TEST_CLASS_DEFINITION(test_3732) {
     CHECK_SET_ERR(logTracer.checkMessage("MemoryLocker - Not enough memory error, 41 megabytes are required"), "An expected error message not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3815) {
+    GTLogTracer l;
+    //1. Open "_common_data/fasta/cant_translate.fa".
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "cant_translate.fa");
+
+    //2. Context menu of the document -> Export/Import -> Export sequences.
+    //Expected state: the "Export Selected Sequences" dialog appears.
+    //3. Check "Translate to amino alphabet" and press "Export".
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "test_3815.fa", GTGlobals::UseMouse, true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "cant_translate.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected state: task has finished with error, no output file has been produced.
+    CHECK_SET_ERR(l.checkMessage("No sequences have been produced"), "No error");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3816) {
     // Open some specific file with a tree and ensure that UGENE doesn't crash
     GTLogTracer l;

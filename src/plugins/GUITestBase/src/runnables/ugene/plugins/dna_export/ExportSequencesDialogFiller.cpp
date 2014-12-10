@@ -43,8 +43,8 @@ namespace U2 {
 QString ExportSelectedRegionFiller::defaultExportPath = "";
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportSelectedRegionFiller"
-ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method):
-Filler(_os, "U2__ExportSequencesDialog"), name(_name), useMethod(method) {
+ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method, bool translate):
+Filler(_os, "U2__ExportSequencesDialog"), name(_name), useMethod(method), translate(translate) {
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (__path.at(__path.count() - 1) != '/') {
         __path += '/';
@@ -63,6 +63,10 @@ void ExportSelectedRegionFiller::run()
     GT_CHECK(lineEdit != NULL, "File name line edit not found");
     defaultExportPath = GTLineEdit::copyText(os, lineEdit);
     GTLineEdit::setText(os, lineEdit, path + name);
+
+    QCheckBox *translateButton = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "translateButton"));
+    CHECK_SET_ERR(translateButton != NULL, "translateButton not found!");
+    GTCheckBox::setChecked(os, translateButton, translate);
 
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
     GT_CHECK(box != NULL, "buttonBox is NULL");

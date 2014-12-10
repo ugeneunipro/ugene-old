@@ -28,11 +28,12 @@ namespace U2 {
 
     class ExportSelectedRegionFiller : public Filler {
     public:
-        ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method);
+        ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method, bool translate = false);
         virtual void run();
         static QString defaultExportPath;
     private:
         QString path, name;
+        bool translate;
         GTGlobals::UseMethod useMethod;
     };
 
