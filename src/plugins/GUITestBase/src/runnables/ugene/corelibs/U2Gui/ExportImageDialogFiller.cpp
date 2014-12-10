@@ -79,7 +79,7 @@ void ExportImage::run() {
 
 #define GT_CLASS_NAME "GTUtilsDialog::CircularViewExportImage"
 #define GT_METHOD_NAME "run"
-void CircularViewExportImage::run() {
+void CircularViewExportImage::commonScenario() {
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");

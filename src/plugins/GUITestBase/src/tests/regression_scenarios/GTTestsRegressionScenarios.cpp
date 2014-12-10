@@ -11401,6 +11401,32 @@ GUI_TEST_CLASS_DEFINITION(test_3732) {
     CHECK_SET_ERR(logTracer.checkMessage("MemoryLocker - Not enough memory error, 41 megabytes are required"), "An expected error message not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3778) {
+    //1. Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    //2. Open Circular View.
+    GTWidget::click(os, GTWidget::findWidget(os, "globalToggleViewAction_widget"));
+
+    //3. Context menu -> Export -> Save circular view as image.
+    //Expected state: the "Export Image" dialog appears.
+    //4. Press "Export".
+    //Expected state: the message about file name appears, the dialog is not closed (the export task does not start).
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "dialog is NULL");
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new CircularViewExportImage(os, new Scenario()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< ADV_MENU_EXPORT << "Save circular view as image", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3815) {
     GTLogTracer l;
     //1. Open "_common_data/fasta/cant_translate.fa".

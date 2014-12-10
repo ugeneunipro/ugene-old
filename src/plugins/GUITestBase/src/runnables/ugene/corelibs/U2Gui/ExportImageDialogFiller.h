@@ -48,7 +48,8 @@ namespace U2 {
             spinValue(_spinValue),
             exportedSequenceName(exportedSequenceName)
             {}
-        virtual void run();
+        CircularViewExportImage(U2OpStatus &os, CustomScenario *scenario) : Filler(os, "ImageExportForm", scenario) {}
+        void commonScenario();
     protected:
         QString filePath, comboValue;
         int spinValue;
