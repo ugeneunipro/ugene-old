@@ -138,7 +138,6 @@ void CircularViewSplitter::saveState( QVariantMap& m ) {
 
 void CircularViewSplitter::addView(CircularView* view, RestrctionMapWidget* rmapWidget) {
     tbFitInView->setDisabled(true);
-    tbZoomOut->setDisabled(true);
     connect(tbZoomIn, SIGNAL(pressed()), view, SLOT(sl_zoomIn()));
     connect(tbZoomOut, SIGNAL(pressed()), view, SLOT(sl_zoomOut()));
     connect(tbFitInView, SIGNAL(pressed()), view, SLOT(sl_fitInView()));

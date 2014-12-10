@@ -323,7 +323,7 @@ void CircularView::keyReleaseEvent(QKeyEvent *e) {
 
 
 void CircularView::resizeEvent( QResizeEvent* e ) {
-    if (ra->fitsInView) {
+    if (ra->currentScale == 0) {
         sl_fitInView();
     }
     QWidget::resizeEvent(e);
@@ -333,25 +333,28 @@ void CircularView::resizeEvent( QResizeEvent* e ) {
 void CircularView::sl_fitInView() {
     int yLvl = ra->regionY.count() - 1;
     ra->outerEllipseSize = qMin(height(), width()) - ra->ellipseDelta*yLvl - VIEW_MARGIN;
+    ra->currentScale = 0;
     adaptSizes();
     updateZoomActions();
 }
 
-#define ZOOM_SCALE 1.5
+#define ZOOM_SCALE 1.2
 void CircularView::sl_zoomIn() {
     if (ra->outerEllipseSize / width() > 10) {
         return;
     }
     ra->outerEllipseSize *= ZOOM_SCALE;
+    ra->currentScale++;
     adaptSizes();
     updateZoomActions();
 }
 
 void CircularView::sl_zoomOut() {
-    if (ra->fitsInView) {
+    if (ra->outerEllipseSize / ZOOM_SCALE < MIN_OUTER_SIZE) {
         return;
     }
     ra->outerEllipseSize /= ZOOM_SCALE;
+    ra->currentScale--;
     adaptSizes();
     updateZoomActions();
 }
@@ -361,20 +364,16 @@ void CircularView::sl_onSequenceObjectRenamed(const QString&) {
 }
 
 void CircularView::updateZoomActions() {
-    if (ra->outerEllipseSize*ZOOM_SCALE / width() > 10) {
+    if (ra->outerEllipseSize * ZOOM_SCALE / width() > 10) {
         emit si_zoomInDisabled(true);
     } else {
         emit si_zoomInDisabled(false);
     }
+    emit si_fitInViewDisabled(ra->currentScale == 0);
 
-    int viewSize = qMin(height(), width()) - VIEW_MARGIN;
-    int size = ra->outerEllipseSize + (ra->regionY.count()-1)*ra->ellipseDelta;
-
-    if (size <= viewSize) {
-        emit si_fitInViewDisabled(true);
+    if (ra->outerEllipseSize / ZOOM_SCALE < MIN_OUTER_SIZE) {
         emit si_zoomOutDisabled(true);
     } else {
-        emit si_fitInViewDisabled(false);
         emit si_zoomOutDisabled(false);
     }
 }
@@ -474,7 +473,7 @@ CircularViewRenderArea::CircularViewRenderArea(CircularView* d)
       arrowLength(ARROW_LENGTH),
       arrowHeightDelta(ARROW_HEIGHT_DELTA),
       maxDisplayingLabels(MAX_DISPLAYING_LABELS),
-      fitsInView(true),
+      currentScale(0),
       circularView(d),
       rotationDegree(0),
       mouseAngle(0),
@@ -518,6 +517,7 @@ void CircularViewRenderArea::paintContent( QPainter& p, bool paintSelection, boo
     }
 
     p.fillRect(0, 0, width(), height(), Qt::white);
+
     p.save();
     p.translate(parentWidget()->width()/2, verticalOffset);
 
@@ -562,10 +562,16 @@ void CircularViewRenderArea::drawAll(QPaintDevice* pd) {
     int viewSize = qMin(circularView->height(), circularView->width());
     verticalOffset = parentWidget()->height()/2;
     if (outerEllipseSize + (regionY.count()-1)*ellipseDelta + VIEW_MARGIN > viewSize) {
-        verticalOffset += rulerEllipseSize/2;
-        fitsInView = false;
-    } else {
-        fitsInView = true;
+        verticalOffset += (outerEllipseSize + (regionY.count()-1)*ellipseDelta + VIEW_MARGIN  - viewSize)/2;
+        // distance from the ruler to the end of annotation layers
+        int topSpace = ((regionY.count()-1)*ellipseDelta + VIEW_MARGIN) / 2;
+        if (innerEllipseSize > pd->width()) { // the ruller cannot fit in view
+            // the distance from intersection point of ruler and side border to horizontal diameter
+            double x = (innerEllipseSize/2)*(innerEllipseSize/2) - (pd->width()/2)*(pd->width()/2);
+            x = sqrt(x);
+            int ledge = innerEllipseSize/2 + topSpace - pd->height();
+            verticalOffset += (x - ledge)/2;
+        }
     }
 
     if (completeRedraw) {
@@ -657,7 +663,7 @@ void CircularViewRenderArea::drawSequenceName(QPainter& p) {
     QRectF nameBound = fm.boundingRect(docName+' ');
     QRectF lenBound = fm.boundingRect(seqLen+' ');
 
-    if (!fitsInView) {
+    if (verticalOffset - parentWidget()->height() > 0) {
         int delta = verticalOffset - parentWidget()->height();
         namePt = QPointF(0, -delta-nameBound.height()-lenBound.height());
         lenPt = namePt + QPointF(0, lenBound.height());
@@ -833,7 +839,7 @@ void CircularViewRenderArea::drawRuler( QPainter& p ) {
 }
 
 void CircularViewRenderArea::drawRulerCoordinates(QPainter &p, int startPos, int seqLen) {
-    if (fitsInView) {
+    if (currentScale == 0) {
         drawRulerNotches(p, startPos, seqLen, seqLen);
     } else {
         const QPair<int,int>& loc = getVisibleRange();
@@ -1127,7 +1133,7 @@ void CircularViewRenderArea::evaluateLabelPositions() {
 
     int z0 = -areaHeight/2 + labelHeight;
     int z1 = areaHeight/2 - labelHeight;
-    if (!fitsInView) {
+    if (currentScale != 0) {
         int wH = parentWidget()->height();
         if (verticalOffset>wH) {
             z0 = -outerRadius;

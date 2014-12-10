@@ -208,8 +208,8 @@ private:
     int arrowLength;
     int arrowHeightDelta;
     int maxDisplayingLabels;
-    bool fitsInView;
     int verticalOffset;
+    int currentScale; // > 0 -- zoomed IN; < 0 -- zoomed OUT; == 0 -- fits in view
 
     CircularViewSettings*   settings;
     bool settingsWereChanged;
