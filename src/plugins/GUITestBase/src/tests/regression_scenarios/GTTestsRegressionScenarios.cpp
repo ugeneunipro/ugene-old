@@ -1185,6 +1185,54 @@ GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_da
 GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1597 ) {
+
+    // 1. Open a sequence in UGENE.
+    // 2. Input a pattern and search for it.
+    // 3. Select "Create new table" in the "Save annotations(s)" group. You may also modify the pattern. Search again.
+    // Expected result: the new table is created and found annotations are written to it.
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keySequence(os, "ACAATGTATGCCTCTTGGTTTCTTCTATC");
+
+    QLabel *obj = qobject_cast<QLabel*>(GTWidget::findWidget(os, "ArrowHeader_Save annotation(s) to"));
+    GTWidget::click(os, obj);
+
+    QRadioButton *newTable = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "newFileRB"));
+    GTWidget::click(os, newTable);
+        
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keySequence(os, "ACGTCGTCGTCGTCAATGTATGCCTCTTGGTTTCTTCTATC");
+
+
+}
+GUI_TEST_CLASS_DEFINITION( test_1603 ) {
+    // 1. Open "_data/samples/CLUSTALW/COI.aln"
+    // 2. Add a tree to the alignment by creating a new one
+    // 3. Close MSA View
+    // 4. Unload tree from project
+    // 5. Open "COI.aln" from the Project View
+    // Expected state: MSA Editor opens with the Tree View inside
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/1603.nwk", 0, 0, true));
+    QAbstractButton *tree = GTAction::button(os,"Build Tree");
+    GTWidget::click(os, tree);
+    GTGlobals::sleep();
+
+    GTUtilsMdi::closeWindow(os, "COI [m] COI");
+    QString docName = "1603.nwk";                      
+
+    GTUtilsDocument::unloadDocument(os, docName, false);
+    GTGlobals::sleep();
+    GTMouseDriver::moveTo( os, GTUtilsProjectTreeView::getItemCenter(os, "COI.aln"));
+    GTMouseDriver::doubleClick(os);
+    //TODO: check the expected state
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1606 ) {
 //    1.  File->Access remote database...
 //    2.  Fill    "Resource ID": 1ezg
