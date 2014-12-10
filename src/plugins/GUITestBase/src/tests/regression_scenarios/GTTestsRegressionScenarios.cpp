@@ -1369,6 +1369,16 @@ GUI_TEST_CLASS_DEFINITION( test_1628 ) {
     CHECK_SET_ERR(names.contains("йцукен123") && !names.contains("Montana_montana"), "Undo-redo worked incorrectly");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1629) {
+    //1. Open UGENE.
+    //2. Close currect project if it is opened.
+    //3. Click the menu item "File".
+    //Expected: "Open As" sub-item exists and is available to click.
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << ACTION_PROJECTSUPPORT__OPEN_AS, 
+        PopupChecker::IsEnabled, GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_FILE);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1644 ) {
 //    1) Run UGENE
 //    2) Choose File/Access remote database
@@ -1384,6 +1394,28 @@ GUI_TEST_CLASS_DEFINITION( test_1644 ) {
     GTGlobals::sleep(5000);
 
     GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1645) {
+    //1. Open "_common_data/fasta/base_ext_nucl_all_symb.fa".
+
+    //2. Select the "Join sequences into alignment and open in multiple alignment viewer" option and click "OK" in the appeared "Sequence reading options" dialog.
+    //Expected state: The file opens in the MSA Editor.
+
+    //3. Right click to the loaded document in the project view and select "Unload selected objects" from the context menu.
+    //Expected state: The message box appeares.
+
+    //4. Agree to close an opened view in the appeared message box.
+    //Expected state: the document unloads.
+    //GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "base_ext_nucl_all_symb.fa");
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
+    GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/base_ext_nucl_all_symb.fa"); 
+    GTGlobals::sleep();
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "base_ext_nucl_all_symb.fa"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__UNLOAD_SELECTED));
+    GTMouseDriver::click(os, Qt::RightButton);
+    CHECK_SET_ERR(!GTUtilsDocument::isDocumentLoaded(os, "base_ext_nucl_all_symb.fa"), "Document should't be loaded");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1653 ) {
