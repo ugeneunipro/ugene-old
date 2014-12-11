@@ -1379,6 +1379,29 @@ GUI_TEST_CLASS_DEFINITION(test_1629) {
     GTMenu::showMainMenu(os, MWMENU_FILE);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1640) {
+    //1. Open "_common_data/scenarios/msa/ma.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma.aln");
+
+    //2. Click the MSA Editor.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(4, 3), QPoint(4, 3));
+
+    //3. Press ctrl+left arrow to remove the selection.
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["left"], GTKeyboardDriver::key["ctrl"]);
+
+    //4. Press and hold a bit shift+right arrow.
+    //GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    for (int i=0; i<12; i++) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"], GTKeyboardDriver::key["shift"]);
+    }
+    //GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+
+    //Expected state: all sequences of each selected column are selected
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    QString chars = GTClipboard::text(os);
+    CHECK_SET_ERR(chars == "TCAGTCTATTAA", "Wrong selection");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1644 ) {
 //    1) Run UGENE
 //    2) Choose File/Access remote database
