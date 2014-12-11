@@ -148,6 +148,7 @@
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/AnnotationsTreeView.h>
+#include <U2View/AssemblyNavigationWidget.h>
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorNameList.h>
 
@@ -11565,6 +11566,21 @@ GUI_TEST_CLASS_DEFINITION(test_3778) {
     GTUtilsDialog::waitForDialog(os, new CircularViewExportImage(os, new Scenario()));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< ADV_MENU_EXPORT << "Save circular view as image", GTGlobals::UseMouse));
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3779) {
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandBoxDir + "regression_test_3779.ugenedb"));
+    GTFileDialog::openFile(os, testDir + "_common_data/ace/", "ace_test_4.ace");
+
+    bool assemblyOverviewFound = !AppContext::getMainWindow()->getQMainWindow()->findChildren<CoveredRegionsLabel *>().isEmpty();
+    CHECK_SET_ERR(assemblyOverviewFound, "Assembly overview not found");
+
+    GTUtilsAssemblyBrowser::zoomToMax(os);
+    GTUtilsAssemblyBrowser::zoomToMin(os);
+
+    assemblyOverviewFound = !AppContext::getMainWindow()->getQMainWindow()->findChildren<CoveredRegionsLabel *>().isEmpty();
+    CHECK_SET_ERR(assemblyOverviewFound, "Assembly overview not found");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3815) {

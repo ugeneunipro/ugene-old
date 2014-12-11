@@ -46,7 +46,7 @@ private:
     U2SavableWidget savableTab;
 };
 
-class CoveredRegionsLabel : public QLabel {
+class U2VIEW_EXPORT CoveredRegionsLabel : public QLabel {
     Q_OBJECT
 public:
     CoveredRegionsLabel(AssemblyBrowser *browser, QWidget *p = NULL);

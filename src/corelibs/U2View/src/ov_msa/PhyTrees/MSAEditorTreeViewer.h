@@ -97,7 +97,7 @@ private:
     bool                  slotsAreConnected;
 };
 
-class MSAEditorTreeViewerUI: public TreeViewerUI {
+class U2VIEW_EXPORT MSAEditorTreeViewerUI: public TreeViewerUI {
     Q_OBJECT
 
 public:

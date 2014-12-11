@@ -163,6 +163,22 @@ void GTUtilsAssemblyBrowser::zoomToMax(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "zoomToMin"
+void GTUtilsAssemblyBrowser::zoomToMin(U2OpStatus &os) {
+    Q_UNUSED(os);
+
+    QToolBar* toolbar = GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI);
+    GT_CHECK(NULL != toolbar, "Can't find the toolbar");
+
+    QWidget* zoomOutButton = GTToolbar::getWidgetForActionTooltip(os, toolbar, "Zoom out");
+    GT_CHECK(NULL != zoomOutButton, "Can't find the 'Zoom in' button");
+
+    while (zoomOutButton->isEnabled()) {
+        GTWidget::click(os, zoomOutButton);
+    }
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "goToPosition"
 void GTUtilsAssemblyBrowser::goToPosition(U2OpStatus &os, qint64 position) {
     Q_UNUSED(os);

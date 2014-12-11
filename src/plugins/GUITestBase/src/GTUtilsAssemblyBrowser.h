@@ -48,6 +48,7 @@ public:
     static qint64 getReadsCount(U2OpStatus &os, const QString& viewTitle);
 
     static void zoomToMax(U2OpStatus& os);
+    static void zoomToMin(U2OpStatus& os);
 
     static void goToPosition(U2OpStatus &os, qint64 position);
 
