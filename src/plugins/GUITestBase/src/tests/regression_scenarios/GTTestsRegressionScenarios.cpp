@@ -1378,6 +1378,28 @@ GUI_TEST_CLASS_DEFINITION(test_1629) {
     GTMenu::showMainMenu(os, MWMENU_FILE);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1631) {
+//    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+//    2. Open "Tree Settings" options panel tab.
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
+
+//    3. Click "Open tree" button.
+//    4. Select "data/samples/Newick/COI.nwk".
+//    Expected state: the tree is added to the MSA Editor.
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/Newick", "COI.nwk"));
+    GTWidget::click(os, GTWidget::findWidget(os, "OpenTreeButton"));
+    GTUtilsMsaEditor::getTreeView(os);
+
+//    5. Reopen the view.
+//    Expected state: the tree is still shown with the msa.
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTUtilsProjectTreeView::doubleClickItem(os, "COI");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsMsaEditor::getTreeView(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1640) {
     //1. Open "_common_data/scenarios/msa/ma.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma.aln");

@@ -54,6 +54,14 @@ MSAGraphOverview *GTUtilsMsaEditor::getGraphOverview(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getTreeView"
+MSAEditorTreeViewerUI *GTUtilsMsaEditor::getTreeView(U2OpStatus &os) {
+    QWidget *activeWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_OP(os, NULL);
+    return GTWidget::findExactWidget<MSAEditorTreeViewerUI *>(os, "treeView", activeWindow);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getNameListArea"
 MSAEditorNameList *GTUtilsMsaEditor::getNameListArea(U2OpStatus &os) {
     QWidget *activeWindow = GTUtilsMdi::activeWindow(os);

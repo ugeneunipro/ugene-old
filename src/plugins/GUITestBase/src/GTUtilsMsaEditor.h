@@ -29,6 +29,7 @@
 namespace U2 {
 
 class MSAEditorNameList;
+class MSAEditorTreeViewerUI;
 class MSAGraphOverview;
 class U2OpStatus;
 
@@ -37,6 +38,7 @@ class GTUtilsMsaEditor {
 public:
     static QColor getGraphOverviewPixelColor(U2OpStatus &os, const QPoint &point);
     static MSAGraphOverview *getGraphOverview(U2OpStatus &os);
+    static MSAEditorTreeViewerUI *getTreeView(U2OpStatus &os);
 
     static MSAEditorNameList *getNameListArea(U2OpStatus &os);
     static QRect getSequenceNameRect(U2OpStatus &os, const QString &sequenceName);

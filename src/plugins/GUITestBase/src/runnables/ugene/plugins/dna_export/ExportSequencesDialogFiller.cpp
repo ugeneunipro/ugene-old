@@ -44,7 +44,7 @@ QString ExportSelectedRegionFiller::defaultExportPath = "";
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportSelectedRegionFiller"
 ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method, bool translate):
-Filler(_os, "U2__ExportSequencesDialog"), name(_name), useMethod(method), translate(translate) {
+Filler(_os, "U2__ExportSequencesDialog"), name(_name), translate(translate), useMethod(method) {
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (__path.at(__path.count() - 1) != '/') {
         __path += '/';
