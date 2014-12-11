@@ -1206,9 +1206,8 @@ GUI_TEST_CLASS_DEFINITION( test_1597 ) {
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
     GTKeyboardDriver::keySequence(os, "ACGTCGTCGTCGTCAATGTATGCCTCTTGGTTTCTTCTATC");
-
-
 }
+
 GUI_TEST_CLASS_DEFINITION( test_1603 ) {
     // 1. Open "_data/samples/CLUSTALW/COI.aln"
     // 2. Add a tree to the alignment by creating a new one
@@ -2079,6 +2078,22 @@ GUI_TEST_CLASS_DEFINITION(test_1798){
     int progress = text.toInt(&isNumber);
     CHECK_SET_ERR(isNumber, QString("The progress must be a number: %1").arg(text));
     CHECK_SET_ERR(progress >= 0 && progress <= 100, QString("Incorrect progress: %1").arg(progress));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1807) {
+    //1. Open {data/samples/FASTA/human_T1.fa}
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    //Expected state: there isn't the "DAS Annotations" tab on the options panel.
+    QWidget *dasButton = GTWidget::findWidget(os, "OP_DAS", NULL, GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(NULL == dasButton, "DAS Annotations button is shown for a nucleic sequence");
+
+    //2. Open {data/samples/Swiss-Prot/P01375.txt} as Swiss-Prot file.
+    GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
+    GTFileDialog::openFile(os, dataDir + "samples/Swiss-Prot", "P01375.txt");
+
+    //Expected state: there is the "DAS Annotations' tab on the options panel.
+    dasButton = GTWidget::findWidget(os, "OP_DAS");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1808) {
