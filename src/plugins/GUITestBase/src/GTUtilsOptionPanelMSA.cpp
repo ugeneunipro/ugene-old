@@ -107,6 +107,15 @@ void GTUtilsOptionPanelMsa::removeReference(U2OpStatus &os){
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getReference"
+QString GTUtilsOptionPanelMsa::getReference(U2OpStatus &os) {
+    openTab(os, General);
+    QLineEdit *leReference = GTWidget::findExactWidget<QLineEdit *>(os, "sequenceLineEdit");
+    GT_CHECK_RESULT(NULL != leReference, "Reference sequence name lineedit is NULL", QString());
+    return leReference->text();
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getLength"
 int GTUtilsOptionPanelMsa::getLength(U2OpStatus &os){
     QLabel* alignmentLengthLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "alignmentLength"));

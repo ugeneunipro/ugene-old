@@ -45,6 +45,7 @@ public:
     static void addFirstSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
     static void addSecondSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
     static void removeReference(U2OpStatus &os);
+    static QString getReference(U2OpStatus &os);
     static int getLength(U2OpStatus &os);
     static int getHeight(U2OpStatus &os);
 

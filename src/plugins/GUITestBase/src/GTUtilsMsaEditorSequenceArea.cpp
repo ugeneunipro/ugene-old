@@ -55,8 +55,13 @@ MSAEditorSequenceArea * GTUtilsMSAEditorSequenceArea::getSequenceArea(U2OpStatus
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "callContextMenu"
-void GTUtilsMSAEditorSequenceArea::callContextMenu(U2OpStatus &os) {
-    GTWidget::click(os, getSequenceArea(os), Qt::RightButton);
+void GTUtilsMSAEditorSequenceArea::callContextMenu(U2OpStatus &os, const QPoint &innerCoords) {
+    if (innerCoords.isNull()) {
+        GTWidget::click(os, getSequenceArea(os), Qt::RightButton);
+    } else {
+        moveTo(os, innerCoords);
+        GTMouseDriver::click(os, Qt::RightButton);
+    }
 }
 #undef GT_METHOD_NAME
 

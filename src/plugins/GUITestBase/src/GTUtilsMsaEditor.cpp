@@ -28,6 +28,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsOptionPanelMsa.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTMSAEditorStatusWidget.h"
 #include "api/GTToolbar.h"
@@ -86,6 +87,12 @@ void GTUtilsMsaEditor::clickSequenceName(U2OpStatus &os, const QString &sequence
     const QRect sequenceNameRect = getSequenceNameRect(os, sequenceName);
     GTMouseDriver::moveTo(os, sequenceNameRect.center());
     GTMouseDriver::click(os);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getReferenceSequenceName"
+QString GTUtilsMsaEditor::getReferenceSequenceName(U2OpStatus &os) {
+    return GTUtilsOptionPanelMsa::getReference(os);
 }
 #undef GT_METHOD_NAME
 

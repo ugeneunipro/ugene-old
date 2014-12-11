@@ -42,6 +42,7 @@ public:
     static QRect getSequenceNameRect(U2OpStatus &os, const QString &sequenceName);
 
     static void clickSequenceName(U2OpStatus &os, const QString &sequenceName);
+    static QString getReferenceSequenceName(U2OpStatus &os);
 
     static void toggleCollapsingMode(U2OpStatus &os);
     static void toggleCollapsingGroup(U2OpStatus &os, const QString &groupName);

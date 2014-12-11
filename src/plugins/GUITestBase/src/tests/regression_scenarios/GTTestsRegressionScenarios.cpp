@@ -1295,7 +1295,7 @@ GUI_TEST_CLASS_DEFINITION(test_1609) {
         virtual void run(U2::U2OpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
-            GTWidget::click(os, GTWidget::findButtonByText(os, "Cancel"));
+            GTWidget::click(os, GTWidget::findButtonByText(os, "Cancel", dialog));
         }
     };
 
@@ -1399,6 +1399,54 @@ GUI_TEST_CLASS_DEFINITION(test_1640) {
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     QString chars = GTClipboard::text(os);
     CHECK_SET_ERR(chars == "TCAGTCTATTAA", "Wrong selection");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1643) {
+//    1. Open {data/samples/CLUSTALW/COI.aln}.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+//    2. Do not select any sequence, click the right mouse button at the name list area (or at the sequence area).
+//    Expected state: context menu appeared. It contains an item "Set this sequence as reference" and does not contain "unset the reference sequence".
+
+//    3. Select the "Set this sequence as reference" item in the context manu.
+//    Expected state: the clicked in the 2 step sequence was set as reference.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Set this sequence as reference"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(5, 5));
+    QString currentReference = GTUtilsMsaEditor::getReferenceSequenceName(os);
+    CHECK_SET_ERR("Metrioptera_japonica_EF540831" == currentReference, QString("An unexpected reference sequence is set: expect '%1', got '%2'").arg("Metrioptera_japonica_EF540831").arg(currentReference));
+
+//    4. Select any sequence. Call context menu on any another sequence (not on the reference).
+//    Expected sate: the content menu contains both set and unset reference items.
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "unset_reference"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 6));
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "set_seq_as_reference"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 6));
+
+//    5. Select the "Set this sequence as reference" item in the context manu.
+//    Expected state: the clicked in the 4 step sequence was set as reference (not the selected).
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Set this sequence as reference"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 6));
+    currentReference = GTUtilsMsaEditor::getReferenceSequenceName(os);
+    CHECK_SET_ERR("Gampsocleis_sedakovii_EF540828" == currentReference, QString("An unexpected reference sequence is set: expect '%1', got '%2'").arg("Gampsocleis_sedakovii_EF540828").arg(currentReference));
+
+//    6. Call context menu below all sequences, on the white space.
+//    Expected state: there is the "unset" item on the context menu, but no "set" item.
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "set_seq_as_reference", PopupChecker::NotExists));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 20));
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "unset_reference"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 20));
+
+//    7. Select the "unset" menu item.
+//    Expected state: There is no reference sequences, context menu does contains the "set" item, but does not contain the "unset" item.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Unset reference sequence"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 20));
+
+//    8. Call context menu below all sequences, on the white space.
+//    Expected state: there is neither "set" no "unset" items on the context menu.
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "set_seq_as_reference", PopupChecker::NotExists));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 20));
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "unset_reference", PopupChecker::NotExists));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 20));
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1644 ) {

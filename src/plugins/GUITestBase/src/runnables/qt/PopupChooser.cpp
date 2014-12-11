@@ -101,25 +101,25 @@ void PopupChecker::run() {
         }
 
         if(options.testFlag(Exists)){
-            GT_CHECK(act != NULL, "action" + actName + "not found");
+            GT_CHECK(act != NULL, "action '" + actName + "' not found");
             uiLog.trace("options.testFlag(Exists)");
         }else{
-            GT_CHECK(act == NULL, "action" + actName + "unexpectidly found");
+            GT_CHECK(act == NULL, "action '" + actName + "' unexpectidly found");
         }
         if(options.testFlag(IsEnabled)){
-            GT_CHECK(act->isEnabled(), "action" + act->objectName() + " is not enabled");
+            GT_CHECK(act->isEnabled(), "action '" + act->objectName() + "' is not enabled");
             uiLog.trace("options.testFlag(IsEnabled)");
         }
         if(options.testFlag(IsDisabled)){
-            GT_CHECK(!act->isEnabled(), "action" + act->objectName() + " is enabled");
+            GT_CHECK(!act->isEnabled(), "action '" + act->objectName() + "' is enabled");
             uiLog.trace("options.testFlag(IsDisabled");
         }
         if(options.testFlag(IsChecable)){
-            GT_CHECK(act->isCheckable(), "action" + act->objectName() + " is not checkable");
+            GT_CHECK(act->isCheckable(), "action '" + act->objectName() + "' is not checkable");
             uiLog.trace("options.testFlag(IsChecable)");
         }
         if(options.testFlag(IsChecked)){
-            GT_CHECK(act->isCheckable(), "action" + act->objectName() + "is not checked");
+            GT_CHECK(act->isCheckable(), "action '" + act->objectName() + "' is not checked");
             uiLog.trace("options.testFlag(IsChecked)");
         }
         for(int i = 0; i<escCount; i++){
