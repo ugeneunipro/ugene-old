@@ -247,6 +247,12 @@ int main(int argc, char **argv)
 
     GApplication app(argc, argv);
 
+#ifdef Q_OS_MAC
+    // A workaround to avoid using non-bundled plugins
+    QCoreApplication::removeLibraryPath(QLibraryInfo::location(QLibraryInfo::PluginsPath));
+    QCoreApplication::addLibraryPath("../../PlugIns");
+#endif
+
     AppContextImpl* appContext = AppContextImpl::getApplicationContext();
     appContext->setWorkingDirectoryPath(QCoreApplication::applicationDirPath());
 

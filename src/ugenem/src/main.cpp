@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QLibraryInfo>
+
 #include <qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -70,8 +72,16 @@ int main(int argc, char *argv[]){
     }
 #else
     QApplication a(argc, argv);
+
+#ifdef Q_OS_MAC
+    // A workaround to avoid using non-bundled plugins
+    QCoreApplication::removeLibraryPath(QLibraryInfo::location(QLibraryInfo::PluginsPath));
+    QCoreApplication::addLibraryPath("../../PlugIns");
+#endif
+
     SendReportDialog dlg(message);
     dlg.setWindowIcon(QIcon(":ugenem/images/crash_icon.png"));
+
     dlg.exec();
 #endif
     return 0;

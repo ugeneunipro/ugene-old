@@ -352,6 +352,12 @@ int main(int argc, char **argv)
     
     //QApplication app(argc, argv);
     GApplication app(argc, argv);
+
+#ifdef Q_OS_MAC
+    // A workaround to avoid using non-bundled plugins
+    QCoreApplication::removeLibraryPath(QLibraryInfo::location(QLibraryInfo::PluginsPath));
+    QCoreApplication::addLibraryPath("../../PlugIns");
+#endif
     
     QMainWindow window;
     SplashScreen *splashScreen = new SplashScreen(&window);
