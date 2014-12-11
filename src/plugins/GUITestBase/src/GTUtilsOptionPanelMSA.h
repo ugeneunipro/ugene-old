@@ -39,8 +39,11 @@ public:
 
     static const QMap<Tabs, QString> tabsNames;
     static const QMap<Tabs, QString> innerWidgetNames;
-    //Opens option panel tab. TODO: check if tab is already opened
+
+    static void toggleTab(U2OpStatus &os, Tabs tab);
     static void openTab(U2OpStatus &os, Tabs tab);
+    static bool isTabOpened(U2OpStatus &os, Tabs tab);
+
     static void addReference(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
     static void addFirstSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
     static void addSecondSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method = Button);

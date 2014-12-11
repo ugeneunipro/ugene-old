@@ -28,7 +28,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
-#include "GTUtilsOptionPanelMsa.h"
+#include "GTUtilsOptionPanelMSA.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTMSAEditorStatusWidget.h"
 #include "api/GTToolbar.h"

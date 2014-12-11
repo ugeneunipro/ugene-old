@@ -61,16 +61,28 @@ const QMap<GTUtilsOptionPanelMsa::Tabs, QString> GTUtilsOptionPanelMsa::innerWid
 
 #define GT_CLASS_NAME "GTUtilsOptionPanelMSA"
 
+#define GT_METHOD_NAME "toggleTab"
+void GTUtilsOptionPanelMsa::toggleTab(U2OpStatus &os, GTUtilsOptionPanelMsa::Tabs tab) {
+    GTWidget::click(os, GTWidget::findWidget(os, tabsNames[tab]));
+    GTGlobals::sleep(200);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "openTab"
 void GTUtilsOptionPanelMsa::openTab(U2OpStatus &os, Tabs tab) {
-    GTGlobals::FindOptions options;
-    options.failIfNull = false;
-    QWidget *innerWidget = GTWidget::findWidget(os, innerWidgetNames[tab], NULL, options);
-
-    if (NULL == innerWidget || !innerWidget->isVisible()) {
+    if (!isTabOpened(os, tab)) {
         GTWidget::click(os, GTWidget::findWidget(os, tabsNames[tab]));
         GTGlobals::sleep(200);
     }
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isTabOpened"
+bool GTUtilsOptionPanelMsa::isTabOpened(U2OpStatus &os, Tabs tab) {
+    GTGlobals::FindOptions options;
+    options.failIfNull = false;
+    QWidget *innerTabWidget = GTWidget::findWidget(os, innerWidgetNames[tab], NULL, options);
+    return NULL != innerTabWidget && innerTabWidget->isVisible();
 }
 #undef GT_METHOD_NAME
 

@@ -461,7 +461,7 @@ void GTUtilsProjectTreeView::dragAndDropSeveralElements(U2OpStatus &os, QModelIn
     sendDragAndDrop(os, mimeData, enterPos, dropPos);
 }
 
-void GTUtilsProjectTreeView::sendDragAndDrop(U2OpStatus &os, QMimeData *mimeData, QPoint enterPos, QPoint dropPos){
+void GTUtilsProjectTreeView::sendDragAndDrop(U2OpStatus &os, QMimeData * /*mimeData*/, QPoint enterPos, QPoint dropPos){
 //    QTreeView *treeView = getTreeView(os);
 //    QAbstractItemModel *model = treeView->model();
 //    QString s = model->metaObject()->className();

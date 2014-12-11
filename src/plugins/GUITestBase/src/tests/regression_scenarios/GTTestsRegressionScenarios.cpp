@@ -1630,6 +1630,29 @@ GUI_TEST_CLASS_DEFINITION(test_1672) {
     CHECK_SET_ERR(num1 == "100%", "unexpected sumilarity value an line 1: " + num1);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1673) {
+//    1. Open file COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+//    2. Select a options panel tab header
+//    Expected result: the tab has been opened
+    GTUtilsOptionPanelMsa::toggleTab(os, GTUtilsOptionPanelMsa::General);
+    bool isTabOpened = GTUtilsOptionPanelMsa::isTabOpened(os, GTUtilsOptionPanelMsa::General);
+    CHECK_SET_ERR(isTabOpened, "The 'General' tab is unexpectedly closed");
+
+//    3. Select the same tab header again
+//    Expected result: the tab has been closed
+    GTUtilsOptionPanelMsa::toggleTab(os, GTUtilsOptionPanelMsa::General);
+    isTabOpened = GTUtilsOptionPanelMsa::isTabOpened(os, GTUtilsOptionPanelMsa::General);
+    CHECK_SET_ERR(!isTabOpened, "The 'General' tab is unexpectedly opened");
+
+//    4. Select the same tab header again
+//    Expected result: the tab has been opened again
+    GTUtilsOptionPanelMsa::toggleTab(os, GTUtilsOptionPanelMsa::General);
+    isTabOpened = GTUtilsOptionPanelMsa::isTabOpened(os, GTUtilsOptionPanelMsa::General);
+    CHECK_SET_ERR(isTabOpened, "The 'General' tab is unexpectedly closed");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1680) {
 //    For Mac only
 
