@@ -90,9 +90,20 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
     layout2->addWidget(exportHighlightning);
     layout2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
+    threshold = new QSlider(Qt::Horizontal, this);
+    threshold->setMinimum(0);
+    threshold->setMaximum(100);
+    threshold->setValue(50);
+    threshold->setTickPosition(QSlider::TicksRight);
+    threshold->setObjectName("thresholdSlider");
+
+    thresholdLabel = new QLabel(tr("Threshold: %1%").arg(threshold->value()), this);
+
     layout->setSpacing(ITEMS_SPACING);
     layout->addSpacing(TITLE_SPACING);
     layout->addWidget(highlightingScheme);
+    layout->addWidget(thresholdLabel);
+    layout->addWidget(threshold);
     layout->addWidget(hint);
     layout->addWidget(useDots);
 #ifdef Q_OS_MAC
@@ -132,6 +143,7 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m)
     connect(m, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_updateHint()));
 
     connect(exportHighlightning, SIGNAL(clicked()), SLOT(sl_exportHighlightningClicked()));
+    connect(threshold, SIGNAL(valueChanged(int)), SLOT(sl_sliderValueChanged(int)));
 
     sl_updateHint();
 
@@ -172,6 +184,16 @@ void MSAHighlightingTab::sl_sync(){
 }
 
 void MSAHighlightingTab::sl_updateHint() {
+    MSAHighlightingScheme *s = seqArea->getCurrentHighlightingScheme();
+    SAFE_POINT(s->getFactory() != NULL, "Highlighting factory is NULL!", );
+    if(s->getFactory()->isNeedThreshold()){
+        thresholdLabel->show();
+        threshold->show();
+        s->setThreshold(threshold->value());
+    }else{
+        thresholdLabel->hide();
+        threshold->hide();
+    }
     if (MAlignmentRow::invalidRowId() == msa->getReferenceRowId()
         && !seqArea->getCurrentHighlightingScheme()->getFactory()->isRefFree())
     {
@@ -183,7 +205,6 @@ void MSAHighlightingTab::sl_updateHint() {
         return;
     }
     hint->setText("");
-    MSAHighlightingScheme *s = seqArea->getCurrentHighlightingScheme();
     if(s->getFactory()->isRefFree()){
         exportHighlightning->setDisabled(true);
     }else{
@@ -193,6 +214,13 @@ void MSAHighlightingTab::sl_updateHint() {
 
 void MSAHighlightingTab::sl_exportHighlightningClicked(){
     msa->exportHighlighted();
+}
+
+void MSAHighlightingTab::sl_sliderValueChanged( int val ){
+    thresholdLabel->setText(tr("Threshold: %1%").arg(threshold->value()));
+    MSAHighlightingScheme *s = seqArea->getCurrentHighlightingScheme();
+    s->setThreshold(threshold->value());
+    seqArea->sl_changeColorSchemeOutside(colorScheme->currentText());
 }
 
 }//ns

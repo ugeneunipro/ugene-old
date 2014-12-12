@@ -586,7 +586,6 @@ void MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, con
     //Highlighting scheme's settings
     QString schemeName = highlightingScheme->metaObject()->className();
     bool isGapsScheme = schemeName == "U2::MSAHighlightingSchemeGaps";
-    bool isEmptyScheme = schemeName == "U2::MSAHighlightingSchemeEmpty";
 
     U2Region baseYRange = U2Region(0, editor->getRowHeight());
     int columnWidth = editor->getColumnWidth();
@@ -601,19 +600,20 @@ void MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, con
             char c = msa.charAt(seq, pos);
 
             QColor color = colorScheme->getColor(seq, pos, c);
-
-            if (isGapsScheme){
+            bool drawColor = false;
+            if (isGapsScheme || highlightingScheme->getFactory()->isRefFree()){ //schemes which applied without reference
                 const char refChar = 'z';
-                bool drawColor = false;
-                highlightingScheme->process(refChar, c, drawColor);
-                color = QColor(192, 192, 192);
+                highlightingScheme->process(refChar, c, drawColor, pos, seq);
+                if(isGapsScheme){
+                    color = QColor(192, 192, 192);
+                }
                 if (color.isValid() && drawColor) {
                     p.fillRect(cr, color);
                 }
                 if (editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent) {
                     p.drawText(cr, Qt::AlignCenter, QString(c));
                 }
-            }else if(seq == refSeq || isEmptyScheme || refSeqName.isEmpty()){
+            }else if(seq == refSeq || refSeqName.isEmpty()){
                 if (color.isValid()) {
                     p.fillRect(cr, color);
                 }
@@ -622,8 +622,7 @@ void MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, con
                 }
             }else{
                 const char refChar = r->charAt(pos);
-                bool drawColor = false;
-                highlightingScheme->process(refChar, c, drawColor);
+                highlightingScheme->process(refChar, c, drawColor, pos, seq);
 
                 if(isGapsScheme){
                     color = QColor(192, 192, 192);
@@ -2680,7 +2679,7 @@ QString MSAEditorSequenceArea::exportHighligtning( int startPos, int endPos, int
             if (refChar == '-' && !keepGaps) continue;
             bool drawColor = false;
             highlightingScheme->setUseDots(useDotsAction->isChecked());
-            highlightingScheme->process(refChar, c, drawColor);
+            highlightingScheme->process(refChar, c, drawColor, pos, seq);
 
             if (drawColor) {
                 rowStr.append(c);

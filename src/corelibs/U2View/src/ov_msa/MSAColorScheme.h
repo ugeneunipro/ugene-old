@@ -271,20 +271,23 @@ private:
 class U2VIEW_EXPORT MSAHighlightingSchemeFactory : public QObject {
     Q_OBJECT
 public:
-    MSAHighlightingSchemeFactory(QObject* p, const QString& id, const QString& name, DNAAlphabetType atype, bool _refFree = false )
-        :QObject(p), id(id), name(name), aType(atype), refFree(_refFree){};
+    MSAHighlightingSchemeFactory(QObject* p, const QString& id, const QString& name, DNAAlphabetType atype, 
+        bool _refFree = false, bool _needThreshold = false )
+        :QObject(p), id(id), name(name), aType(atype), refFree(_refFree), needThreshold(_needThreshold){};
     virtual MSAHighlightingScheme* create(QObject* p, MAlignmentObject* obj) = 0;
 
     const QString& getId() const {return id;}
     const QString& getName() const {return name;}
     DNAAlphabetType getAlphabetType() const {return aType;}
     bool isRefFree(){return refFree;};
+    bool isNeedThreshold(){return needThreshold;};
 
 private:
     QString         id;
     QString         name;
     DNAAlphabetType aType;
     bool            refFree;
+    bool            needThreshold;
 };
 
 class U2VIEW_EXPORT MSAHighlightingSchemeNoColorsFactory : public MSAHighlightingSchemeFactory {
@@ -329,13 +332,22 @@ public:
     virtual MSAHighlightingScheme* create(QObject* p, MAlignmentObject* obj);
 };
 
+class U2VIEW_EXPORT MSAHighlightingSchemeConservationFactory : public MSAHighlightingSchemeFactory {
+public:
+    MSAHighlightingSchemeConservationFactory(QObject* p, const QString& id, const QString& name, DNAAlphabetType atype):
+      MSAHighlightingSchemeFactory(p, id, name, atype, true, true){};
+      virtual MSAHighlightingScheme* create(QObject* p, MAlignmentObject* obj);
+};
+
 class U2VIEW_EXPORT MSAHighlightingScheme: public QObject {
     Q_OBJECT
 public:
     MSAHighlightingScheme(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o);
-    virtual void process(const char refChar, char &seqChar, bool &color);
+    virtual void process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow);
     MSAHighlightingSchemeFactory* getFactory() const {return factory;}
     void setUseDots(bool b){useDots = b;};
+    bool getUseDots() const {return useDots;};
+    virtual void setThreshold(int thresholdNew){};
 
     static QString EMPTY_NUCL;
     static QString EMPTY_AMINO;
@@ -347,6 +359,8 @@ public:
     static QString TRANSVERSIONS_NUCL;
     static QString GAPS_NUCL;
     static QString GAPS_AMINO;
+    static QString CONSERVATION_NUCL;
+    static QString CONSERVATION_AMINO;
 
 protected:
     MSAHighlightingSchemeFactory*  factory;
@@ -367,7 +381,7 @@ class MSAHighlightingSchemeAgreements : public MSAHighlightingScheme{
 public:
     MSAHighlightingSchemeAgreements(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o):
         MSAHighlightingScheme(p, f, o){}
-    virtual void process(const char refChar, char &seqChar, bool &color);
+    virtual void process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow);
 };
 
 class MSAHighlightingSchemeDisagreements : public MSAHighlightingScheme{
@@ -375,7 +389,7 @@ class MSAHighlightingSchemeDisagreements : public MSAHighlightingScheme{
 public:
     MSAHighlightingSchemeDisagreements(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o)
         :MSAHighlightingScheme(p, f, o){}
-    virtual void process(const char refChar, char &seqChar, bool &color);
+    virtual void process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow);
 };
 
 class MSAHighlightingSchemeTransitions : public MSAHighlightingScheme{
@@ -383,7 +397,7 @@ class MSAHighlightingSchemeTransitions : public MSAHighlightingScheme{
 public:
     MSAHighlightingSchemeTransitions(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o)
         :MSAHighlightingScheme(p, f, o){}
-    virtual void process(const char refChar, char &seqChar, bool &color);
+    virtual void process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow);
 };
 
 class MSAHighlightingSchemeTransversions : public MSAHighlightingScheme{
@@ -391,7 +405,7 @@ class MSAHighlightingSchemeTransversions : public MSAHighlightingScheme{
 public:
     MSAHighlightingSchemeTransversions(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o)
         :MSAHighlightingScheme(p, f, o){}
-    virtual void process(const char refChar, char &seqChar, bool &color);
+    virtual void process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow);
 };
 
 class MSAHighlightingSchemeGaps : public MSAHighlightingScheme{
@@ -399,7 +413,23 @@ class MSAHighlightingSchemeGaps : public MSAHighlightingScheme{
 public:
     MSAHighlightingSchemeGaps(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o)
         :MSAHighlightingScheme(p, f, o){}
-    virtual void process(const char refChar, char &seqChar, bool &color);
+    virtual void process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow);
+};
+
+typedef QMap<char, int> CharCountMap;
+
+class MSAHighlightingSchemeConservation : public MSAHighlightingScheme{
+    Q_OBJECT
+public:
+    MSAHighlightingSchemeConservation(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o);
+    virtual void process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow);
+    virtual void setThreshold(int thresholdNew);
+private slots:
+    void sl_resetMap();
+private:
+    void calculateStatisticForColumn(int refCharColumn);
+    QMap<int, CharCountMap> msaCharCountMap;
+    int threshold;
 };
 
 }//namespace

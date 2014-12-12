@@ -30,6 +30,7 @@ class QCheckBox;
 class QComboBox;
 class QLabel;
 class QToolButton;
+class QSlider;
 
 namespace U2 {
 
@@ -46,6 +47,7 @@ private slots:
     void sl_sync();
     void sl_updateHint();
     void sl_exportHighlightningClicked();
+    void sl_sliderValueChanged(int val);
 
 private:
     QWidget* createColorGroup();
@@ -59,6 +61,8 @@ private:
     QLabel *hint;
     QCheckBox *useDots;
     QToolButton *exportHighlightning;
+    QLabel *thresholdLabel;
+    QSlider *threshold;
 
     U2SavableWidget savableTab;
 };

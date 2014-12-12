@@ -242,7 +242,7 @@ bool MSAHighlightingOverviewCalculationTask::isCellHighlighted(MAlignmentObject 
         bool drawColor;
         char c = msa->charAt(seq, pos);
 
-        highlightingScheme->process(refChar, c, drawColor);
+        highlightingScheme->process(refChar, c, drawColor, pos, seq);
         if (drawColor) {
             return true;
         }

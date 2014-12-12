@@ -875,6 +875,9 @@ MSAHighlightingSchemeRegistry::MSAHighlightingSchemeRegistry(){
     schemes.append(new MSAHighlightingSchemeGapsFactory (this, MSAHighlightingScheme::GAPS_NUCL, tr("Gaps"), DNAAlphabet_NUCL));
     schemes.append(new MSAHighlightingSchemeGapsFactory (this, MSAHighlightingScheme::GAPS_AMINO, tr("Gaps"), DNAAlphabet_AMINO));
 
+    schemes.append(new MSAHighlightingSchemeConservationFactory (this, MSAHighlightingScheme::CONSERVATION_NUCL, tr("Conservation level"), DNAAlphabet_NUCL));
+    schemes.append(new MSAHighlightingSchemeConservationFactory (this, MSAHighlightingScheme::CONSERVATION_AMINO, tr("Conservation level"), DNAAlphabet_AMINO));
+
     schemes.append(new MSAHighlightingSchemeTransitionsFactory(this, MSAHighlightingScheme::TRANSITIONS_NUCL, tr("Transitions"), DNAAlphabet_NUCL));
     schemes.append(new MSAHighlightingSchemeTransversionsFactory(this, MSAHighlightingScheme::TRANSVERSIONS_NUCL, tr("Transversions"), DNAAlphabet_NUCL));
 }
@@ -924,6 +927,10 @@ MSAHighlightingScheme* MSAHighlightingSchemeGapsFactory::create( QObject* p, MAl
     return new MSAHighlightingSchemeGaps(p, this, obj);
 }
 
+MSAHighlightingScheme* MSAHighlightingSchemeConservationFactory::create(QObject* p, MAlignmentObject* obj){
+    return new MSAHighlightingSchemeConservation(p, this, obj);
+}
+
 //Schemes
 
 MSAHighlightingScheme::MSAHighlightingScheme( QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o ):
@@ -931,7 +938,7 @@ MSAHighlightingScheme::MSAHighlightingScheme( QObject* p, MSAHighlightingSchemeF
 
 }
 
-void MSAHighlightingScheme::process( const char /*refChar*/, char &seqChar, bool &color ){
+void MSAHighlightingScheme::process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow ){
     if (useDots && !color){
         seqChar = '.';
     }
@@ -947,28 +954,30 @@ QString MSAHighlightingScheme::TRANSITIONS_NUCL = "HIGHLIGHT_SCHEME_TRANSITIONS_
 QString MSAHighlightingScheme::TRANSVERSIONS_NUCL = "HIGHLIGHT_SCHEME_TRANSVERSIONS_AMINO";
 QString MSAHighlightingScheme::GAPS_AMINO = "HIGHLIGHT_SCHEME_GAPS_AMINO";
 QString MSAHighlightingScheme::GAPS_NUCL = "HIGHLIGHT_SCHEME_GAPS_NUCL";
+QString MSAHighlightingScheme::CONSERVATION_AMINO = "CONSERVATION_SCHEME_GAPS_AMINO";
+QString MSAHighlightingScheme::CONSERVATION_NUCL = "CONSERVATION_SCHEME_GAPS_NUCL";
 
-void MSAHighlightingSchemeAgreements::process( const char refChar, char &seqChar, bool &color ){
+void MSAHighlightingSchemeAgreements::process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow ){
     if(refChar == seqChar){
         color = true;
     }else{
         color = false;
     }
-    MSAHighlightingScheme::process(refChar, seqChar, color);
+    MSAHighlightingScheme::process(refChar, seqChar, color, refCharColumn, refCharRow);
 }
 
 
-void MSAHighlightingSchemeDisagreements::process( const char refChar, char &seqChar, bool &color ){
+void MSAHighlightingSchemeDisagreements::process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow ){
     if(refChar == seqChar){
         color = false;
     }else{
         color = true;
     }
-    MSAHighlightingScheme::process(refChar, seqChar, color);
+    MSAHighlightingScheme::process(refChar, seqChar, color, refCharColumn, refCharRow);
 }
 
 
-void MSAHighlightingSchemeTransitions::process( const char refChar, char &seqChar, bool &color ){
+void MSAHighlightingSchemeTransitions::process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow ){
     switch (refChar){
         case 'N':
             color = true;
@@ -989,11 +998,11 @@ void MSAHighlightingSchemeTransitions::process( const char refChar, char &seqCha
             color = false;
             break;
     }
-    MSAHighlightingScheme::process(refChar, seqChar, color);
+    MSAHighlightingScheme::process(refChar, seqChar, color, refCharColumn, refCharRow);
 }
 
 
-void MSAHighlightingSchemeTransversions::process( const char refChar, char &seqChar, bool &color ){
+void MSAHighlightingSchemeTransversions::process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow ){
     switch (refChar){
         case 'N':
             color = true;
@@ -1014,16 +1023,56 @@ void MSAHighlightingSchemeTransversions::process( const char refChar, char &seqC
             color = false;
             break;
     }
-    MSAHighlightingScheme::process(refChar, seqChar, color);
+    MSAHighlightingScheme::process(refChar, seqChar, color, refCharColumn, refCharRow);
 }
 
-void MSAHighlightingSchemeGaps::process( const char refChar, char &seqChar, bool &color ){
+void MSAHighlightingSchemeGaps::process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow ){
     if(seqChar == '-'){
         color = true;
     }else{
         color = false;
     }
-    MSAHighlightingScheme::process(refChar, seqChar, color);
+    MSAHighlightingScheme::process(refChar, seqChar, color, refCharColumn, refCharRow);
+}
+
+MSAHighlightingSchemeConservation::MSAHighlightingSchemeConservation( QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o )
+:MSAHighlightingScheme(p, f, o){
+    connect(maObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), SLOT(sl_resetMap()));
+}
+
+void MSAHighlightingSchemeConservation::process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow){
+    if (!msaCharCountMap.contains(refCharColumn)){
+            calculateStatisticForColumn(refCharColumn);
+    }
+    if(msaCharCountMap[refCharColumn][seqChar] >= (int)((threshold * maObj->getNumRows())/100)){
+        color = true;
+    }else{
+        color = false;
+    }
+    MSAHighlightingScheme::process(refChar, seqChar, color, refCharColumn, refCharRow);
+}
+
+void MSAHighlightingSchemeConservation::sl_resetMap(){
+    msaCharCountMap.clear();
+}
+
+void MSAHighlightingSchemeConservation::setThreshold(int thresholdNew){
+    threshold = thresholdNew;
+}
+
+void MSAHighlightingSchemeConservation::calculateStatisticForColumn(int refCharColumn){
+    CHECK(!msaCharCountMap.contains(refCharColumn), );
+    CharCountMap columnStatistic;
+    MAlignment &m = maObj->getMAlignment();
+    for(int row = m.getNumRows() - 1; row >= 0; row--){
+        char seqChar = m.charAt(row, refCharColumn);
+        if(columnStatistic.contains(seqChar)){
+            columnStatistic[seqChar] += 1;
+        }else{
+            columnStatistic[seqChar] = 1;
+        }
+    }
+    msaCharCountMap[refCharColumn] = columnStatistic;
 }
 
 }//namespace
