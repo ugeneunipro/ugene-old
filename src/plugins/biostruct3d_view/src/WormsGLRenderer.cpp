@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/BioStruct3D.h>
+#include <U2Core/U2SafePoints.h>
 #include <QtOpenGL>
 
 #include "GraphicUtils.h"
@@ -45,17 +46,25 @@ bool WormsGLRenderer::isAvailableFor(const BioStruct3D &bioStruct) {
     const char* alphaCarbonTag = "CA";
     const char* phosophorTag = "P";
     const char* carbonylOxygenTag = "O";
+    bool alphaCarbonAndPhosophor = false;
+    bool needCarbonylOxygenCheck = false;
 
     foreach (const SharedMolecule &mol, bioStruct.moleculeMap) {
         foreach (const Molecule3DModel& model, mol->models.values()) {
             foreach (const SharedAtom atom, model.atoms) {
                 if (    (atom->name.trimmed() == alphaCarbonTag)
-                        || (atom->name.trimmed() == phosophorTag)
-                        || (atom->name.trimmed() == carbonylOxygenTag) ) {
+                        || (atom->name.trimmed() == phosophorTag)   ) {
                     available = true;
+                    alphaCarbonAndPhosophor = true;
+                }
+                if (atom->name.trimmed() == carbonylOxygenTag) {
+                    needCarbonylOxygenCheck = true;
                 }
             }
         }
+    }
+    if (needCarbonylOxygenCheck && alphaCarbonAndPhosophor && !available) {
+        available = true;
     }
 
     return available;
@@ -85,8 +94,13 @@ void WormsGLRenderer::create() {
                     bpModel.monomerMap[atom->residueIndex.toInt()].carbonylOxygen = atom;
                 }
             }
+            if (bpModel.monomerMap.isEmpty()) {
+                bioPolymer.bpModels.remove(modelId);
+            }
         }
-        bioPolymerMap.insert(i.key(), bioPolymer);
+        if (!bioPolymer.bpModels.isEmpty()) {
+            bioPolymerMap.insert(i.key(), bioPolymer);
+        }
     }
 
     createWorms();
@@ -227,6 +241,8 @@ void WormsGLRenderer::createWorms()
         const BioPolymer& bioPolymer = i.value();
         foreach (const BioPolymerModel& bpModel, bioPolymer.bpModels.values()) {
             const QMap<int,Monomer> monomers = bpModel.monomerMap;
+            SAFE_POINT(monomers.size() != 0, "Cannot create worms - no monomers!", );
+
             const bool atLeast2MonomersExist = ( 1 < monomers.size( ) );
             QMap<int,Monomer>::const_iterator iter(monomers.constBegin());
             // Calculate opening atom coords

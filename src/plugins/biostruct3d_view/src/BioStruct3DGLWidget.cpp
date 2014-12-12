@@ -1066,6 +1066,7 @@ void BioStruct3DGLWidget::addBiostruct(const BioStruct3DObject *obj, const QList
     ctx.renderer = QSharedPointer<BioStruct3DGLRenderer>(renderer);
 
     contexts.append(ctx);
+    setupRenderer(currentGLRendererName);
 
     setupFrame();
 }
