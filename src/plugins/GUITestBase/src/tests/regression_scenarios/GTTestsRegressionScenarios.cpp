@@ -1186,7 +1186,39 @@ GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU
 GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/regression/1527/", "test.aln"));
 GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 }
+GUI_TEST_CLASS_DEFINITION(test_1576) {
+    // 1. Open {_common_data/scenarios/regression/1576/test.uwl}.
+    // Expected state: the scema doesn't loaded, an error is in the log: 
+    // "Cannot bind convert-alignment-to-sequence:out-sequence to sequences-to-msa:in-sequence"
+    GTLogTracer l;
 
+    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/_regression/1576", "test.uwl");
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(l.hasError(), "no error in log");
+    QString error = l.getError();
+    QString expectedError = "Cannot bind convert-alignment-to-sequence:out-sequence to sequences-to-msa:in-sequence";
+
+    CHECK_SET_ERR(error.contains(expectedError), "actual error is " + error);
+
+}
+GUI_TEST_CLASS_DEFINITION(test_1576_1) {
+
+    // 1. Open {_common_data/scenarios/regression/1576/test2.uwl}.
+    // Expected state: the scema doesn't loaded, an error is in the log: 
+    // "Cannot bind sequences-to-msa:out-msa to convert-alignment-to-sequence:in-msa"
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/_regression/1576", "test2.uwl");
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(l.hasError(), "no error in log");
+    QString error = l.getError();
+    QString expectedError = "Cannot bind sequences-to-msa:out-msa to convert-alignment-to-sequence:in-msa";
+
+    CHECK_SET_ERR(error.contains(expectedError), "actual error is " + error);
+
+}
 GUI_TEST_CLASS_DEFINITION( test_1597 ) {
 
     // 1. Open a sequence in UGENE.
