@@ -37,6 +37,7 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTSequenceReadingModeDialog.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
+#include "api/GTSlider.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTabWidget.h"
 #include "api/GTTableView.h"
@@ -11540,6 +11541,24 @@ GUI_TEST_CLASS_DEFINITION(test_3736) {
     GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Regular expression");
     GTUtilsOptionPanelSequenceView::enterPattern(os, "A{5,6}", true);
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/3973"), "Results string not match");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3755){
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "HIV-1.aln");
+
+    QWidget* seqArea = GTWidget::findWidget(os, "msa_editor_sequence_area");
+    QColor before = GTWidget::getColor(os, seqArea, QPoint(2,1));    
+    //    Open the "Highlighting" options panel tab.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    //    Select different highlighting schemes.
+    QComboBox* highlightingScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
+    GTComboBox::setIndexWithText(os, highlightingScheme, "Conservation level");
+    QWidget *w = GTWidget::findWidget(os, "thresholdSlider");
+    QSlider* slider = qobject_cast<QSlider*>(w);
+    GTSlider::setValue(os, slider, 80);
+    QColor after = GTWidget::getColor(os, seqArea, QPoint(2,1));
+    //check color change
+    CHECK_SET_ERR(before != after, "colors not changed");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3778) {

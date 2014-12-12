@@ -185,9 +185,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1622);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1628, "UGENE-3811");
     REGISTER_TEST(GUITest_regression_scenarios::test_1629);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1631);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1640);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1643);
     REGISTER_TEST(GUITest_regression_scenarios::test_1644);
     REGISTER_TEST(GUITest_regression_scenarios::test_1645);
     REGISTER_TEST(GUITest_regression_scenarios::test_1653);
@@ -196,7 +193,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1661);
     REGISTER_TEST(GUITest_regression_scenarios::test_1664);
     REGISTER_TEST(GUITest_regression_scenarios::test_1672);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1673);
     REGISTER_TEST_MAC(GUITest_regression_scenarios::test_1680, "Mac only");
     REGISTER_TEST(GUITest_regression_scenarios::test_1687);
     REGISTER_TEST(GUITest_regression_scenarios::test_1688);
@@ -218,7 +214,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1797, "");
     REGISTER_TEST(GUITest_regression_scenarios::test_1798);
 
-    REGISTER_TEST(GUITest_regression_scenarios::test_1807);
     REGISTER_TEST(GUITest_regression_scenarios::test_1808);
     REGISTER_TEST(GUITest_regression_scenarios::test_1811_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1813);
@@ -567,8 +562,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3730);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3732, "big data");
     REGISTER_TEST(GUITest_regression_scenarios::test_3736);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3778);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3779);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3755);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3778);    
     REGISTER_TEST(GUITest_regression_scenarios::test_3815);
     REGISTER_TEST(GUITest_regression_scenarios::test_3816);
 
