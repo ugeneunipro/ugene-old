@@ -247,7 +247,7 @@ GUI_TEST_CLASS_DEFINITION(read_gui_test_0009) {
 
     createTestConnection(os);
 
-    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "ugene_gui_test", "pt0006_dir2"));
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "ugene_gui_test", "view_test_0003"));
 
     QWidget *addFromDbButton = GTWidget::findWidget(os, "addFromDbButton");
     GTWidget::click(os, addFromDbButton);
@@ -268,7 +268,7 @@ GUI_TEST_CLASS_DEFINITION(read_gui_test_0009) {
     CHECK_SET_ERR(NULL != datasetList, "Unable to find dataset list widget");
 
     CHECK_SET_ERR(4 == datasetList->count(), "Invalid dataset item count");
-    CHECK_SET_ERR("pt0006_dir2" == datasetList->item(0)->text(), "Invalid dataset item name");
+    CHECK_SET_ERR("view_test_0003" == datasetList->item(0)->text(), "Invalid dataset item name");
     CHECK_SET_ERR("Klebsislla.sort.bam.ugenedb" == datasetList->item(1)->text(), "Invalid dataset item name");
     CHECK_SET_ERR("et0004_assembly" == datasetList->item(2)->text(), "Invalid dataset item name");
     CHECK_SET_ERR("bam" == datasetList->item(3)->text(), "Invalid dataset item name");
@@ -331,7 +331,7 @@ GUI_TEST_CLASS_DEFINITION(read_gui_test_0011) {
     GTGlobals::sleep();
 
     QMap<QString, QStringList> doc2Items;
-    doc2Items["ugene_gui_test"] << "pt0004_dir2" << "pt0005_human_T1" << "pt0005_dir3";
+    doc2Items["ugene_gui_test"] << "pt0001_dir2" << "pt0005_human_T1" << "pt0006_dir2";
     GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, doc2Items, acceptableTypes,
         ProjectTreeItemSelectorDialogFiller::Separate));
 
@@ -345,8 +345,8 @@ GUI_TEST_CLASS_DEFINITION(read_gui_test_0011) {
     CHECK_SET_ERR("export_test_0009" == datasetList->item(1)->text(), "Invalid dataset item name");
     CHECK_SET_ERR("et0007_seq" == datasetList->item(2)->text(), "Invalid dataset item name");
     CHECK_SET_ERR("et0001_sequence" == datasetList->item(3)->text(), "Invalid dataset item name");
-    CHECK_SET_ERR("pt0004_dir2" == datasetList->item(4)->text(), "Invalid dataset item name");
-    CHECK_SET_ERR("pt0005_dir3" == datasetList->item(5)->text(), "Invalid dataset item name");
+    CHECK_SET_ERR("pt0001_dir2" == datasetList->item(4)->text(), "Invalid dataset item name");
+    CHECK_SET_ERR("pt0006_dir2" == datasetList->item(5)->text(), "Invalid dataset item name");
     CHECK_SET_ERR("pt0005_human_T1" == datasetList->item(6)->text(), "Invalid dataset item name");
 }
 
@@ -509,7 +509,7 @@ GUI_TEST_CLASS_DEFINITION(save_uwl_gui_test_0002) {
     createTestConnection(os);
 
     QMap<QString, QStringList> doc2Objects;
-    doc2Objects["ugene_gui_test"] << "et0002_features" << "pt0005_dir3";
+    doc2Objects["ugene_gui_test"] << "et0002_features" << "view_test_0001";
     GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, doc2Objects, QSet<GObjectType>(),
         ProjectTreeItemSelectorDialogFiller::Separate));
 
@@ -607,11 +607,9 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0003) {
 
     GTUtilsLog::check(os, l);
 
-    GTGlobals::sleep(10000);
+    GTGlobals::sleep(11000);
 
-    GTGlobals::FindOptions projectTreefindOptions;
-    projectTreefindOptions.depth = GTGlobals::FindOptions::INFINITE_DEPTH;
-    GTUtilsProjectTreeView::findIndex(os, "run_workflow_gui_test_0003", projectTreefindOptions);
+    GTUtilsProjectTreeView::findIndex(os, "run_workflow_gui_test_0003");
 }
 
 GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0004) {

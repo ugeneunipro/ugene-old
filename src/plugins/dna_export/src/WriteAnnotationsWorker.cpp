@@ -176,7 +176,7 @@ void WriteAnnotationsWorker::fetchIncomingAnnotations(const QVariantMap &incomin
     const QVariant annVar = incomingData[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
     QList<AnnotationTableObject *> annTables = StorageUtils::getAnnotationTableObjects(context->getDataStorage(), annVar);
 
-    if (LocalFs == storage && shouldAnnotationTablesBeMerged()) {
+    if (shouldAnnotationTablesBeMerged()) {
         AnnotationTableObject *mergedTable = mergeAnnotationTables(annTables, getAnnotationName());
         qDeleteAll(annTables);
         annTables.clear();
@@ -200,7 +200,8 @@ void WriteAnnotationsWorker::fetchIncomingAnnotations(const QVariantMap &incomin
 }
 
 bool WriteAnnotationsWorker::shouldAnnotationTablesBeMerged() const {
-    return actor->isAttributeVisible(actor->getParameter(ANNOTATIONS_NAME));
+    return actor->isAttributeVisible(actor->getParameter(ANNOTATIONS_NAME))
+        || actor->isAttributeVisible(actor->getParameter(ANN_OBJ_NAME));
 }
 
 AnnotationTableObject * WriteAnnotationsWorker::mergeAnnotationTables(const QList<AnnotationTableObject *> &annTables, const QString &mergedTableName) const {
