@@ -104,11 +104,7 @@ void GTFileDialogUtils::commonScenario()
     }
 
     if (dirWasChanged) {
-#if (QT_VERSION < 0x050000) //Qt 5
         clickButton(Open);
-#else
-        clickButton(Choose);
-#endif
         GTGlobals::sleep(300);
     }
 
