@@ -46,7 +46,7 @@ Primer3DialogFiller::Primer3DialogFiller(U2OpStatus &os, const Primer3Settings &
 {}
 
 #define GT_METHOD_NAME "run"
-void Primer3DialogFiller::run() {
+void Primer3DialogFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 

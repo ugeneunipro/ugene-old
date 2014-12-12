@@ -352,6 +352,20 @@ void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &
     GTGlobals::sleep();
 }
 
+#define GT_METHOD_NAME "openFile"
+void GTFileDialog::openFile(U2OpStatus &os, const QString &filePath, Button button, GTGlobals::UseMethod m){
+    int num = filePath.lastIndexOf('/');
+    if (num == -1){
+        num = filePath.lastIndexOf('\\');
+        GT_CHECK(num != -1, QString("String %1 does not look like file path").arg(filePath));
+    }
+    QString path = filePath.left(num);
+    QString name = filePath.right(filePath.length() - num - 1);
+
+    openFile(os, path, name, button, m);
+}
+#undef GT_METHOD_NAME
+
 void GTFileDialog::openFileList(U2OpStatus &os, const QString &path, const QStringList &fileNameList)
 {
     GTFileDialogUtils_list *ob = new GTFileDialogUtils_list(os, path, fileNameList);

@@ -2620,6 +2620,7 @@ GUI_TEST_CLASS_DEFINITION(test_0024){
     GTGlobals::sleep();
     QAbstractButton* reset_zoom = GTAction::button(os,"Reset Zoom");
     GTWidget::click(os,reset_zoom);
+    GTGlobals::sleep(500);
     CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getRightOffset(os)==initOffset, "MSA is not zoomed back");
 //Expected state: MSA is zoomed back
 

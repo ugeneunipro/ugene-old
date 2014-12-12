@@ -105,6 +105,7 @@
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h"
 #include "runnables/ugene/plugins/biostruct3d_view/StructuralAlignmentDialogFiller.h"
+#include "runnables/ugene/plugins/cap3/CAP3SupportDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h"
@@ -11573,6 +11574,28 @@ GUI_TEST_CLASS_DEFINITION(test_3736) {
     GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Regular expression");
     GTUtilsOptionPanelSequenceView::enterPattern(os, "A{5,6}", true);
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/3973"), "Results string not match");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3738) {
+//    Select {DNA Assembly -> Contig assembly with CAP3}
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandBoxDir + "test_3738.ugenedb"));
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
+    GTUtilsDialog::waitForDialog(os, new CAP3SupportDialogFiller(os, QStringList()<<testDir + "_common_data/scf/Sequence A.scf"
+                                                                 <<testDir + "_common_data/scf/Sequence B.scf",
+                                                                 sandBoxDir + "test_3738.ace"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "DNA assembly"
+     << "Contig assembly with CAP3"));
+    GTMenu::showMainMenu(os, "mwmenu_tools");
+
+//    menu item in the main menu.
+//    Set sequences "_common_data/scf/Sequence A.scf" and "_common_data/scf/Sequence B.scf" as input, set any valid output path and run the task.
+//    Expected state: user is asked to select the view.
+//    Select "Open in Assembly Browser with ACE importer format" and import the assembly anywhere.
+//    Expected state: the assembly is successfully imported.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsLog::check(os, l);
+//    Current state: the assembly is not imported, there is an error in the log: Task {CAP3 run and open result task}
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3755){

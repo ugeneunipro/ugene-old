@@ -19,36 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_RUNNABLES_PLUGINS_3RDPARTY_PRIMER3_DIALOG_FILLER_H_
-#define _U2_GT_RUNNABLES_PLUGINS_3RDPARTY_PRIMER3_DIALOG_FILLER_H_
+#ifndef _U2_CAP3_SUPPORT_DIALOG_FILLER_H_
+#define _U2_CAP3_SUPPORT_DIALOG_FILLER_H_
 
 #include "GTUtilsDialog.h"
 
 namespace U2 {
 
-class Primer3DialogFiller : public Filler {
+class CAP3SupportDialogFiller : public Filler
+{
 public:
-    class Primer3Settings {
-    public:
-        Primer3Settings()
-            : resultsCount(-1),
-              start(-1),
-              end(-1)
-        {}
-
-        int resultsCount;
-        QString primersGroupName;
-        QString primersName;
-        int start;
-        int end;
-    };
-
-    Primer3DialogFiller(U2OpStatus &os, const Primer3Settings &settings = Primer3Settings());
+    CAP3SupportDialogFiller(U2OpStatus &os, QStringList _input, const QString& _output):
+    Filler(os, "CAP3SupportDialog"), input(_input), output(_output){}
     void commonScenario();
 private:
-    Primer3Settings settings;
+    QStringList input;
+    QString output;
 };
-
-} // namespace
-
-#endif // _U2_GT_RUNNABLES_PLUGINS_3RDPARTY_PRIMER3_DIALOG_FILLER_H_
+}
+#endif // CAP3SUPPORTDIALOGFILLER_H

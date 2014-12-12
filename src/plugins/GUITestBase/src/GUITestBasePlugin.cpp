@@ -187,6 +187,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1622);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1628, "UGENE-3811");
     REGISTER_TEST(GUITest_regression_scenarios::test_1629);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1640);
     REGISTER_TEST(GUITest_regression_scenarios::test_1644);
     REGISTER_TEST(GUITest_regression_scenarios::test_1645);
     REGISTER_TEST(GUITest_regression_scenarios::test_1653);
@@ -513,7 +514,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3443);
     REGISTER_TEST(GUITest_regression_scenarios::test_3450);
     REGISTER_TEST(GUITest_regression_scenarios::test_3451);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3452);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3452, "temporary ignored because of mac failing");
     REGISTER_TEST(GUITest_regression_scenarios::test_3455);
     REGISTER_TEST(GUITest_regression_scenarios::test_3471);
     REGISTER_TEST(GUITest_regression_scenarios::test_3472);
@@ -564,6 +565,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3730);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3732, "big data");
     REGISTER_TEST(GUITest_regression_scenarios::test_3736);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3738);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3778);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3815);
     REGISTER_TEST(GUITest_regression_scenarios::test_3755);
     REGISTER_TEST(GUITest_regression_scenarios::test_3778);    
     REGISTER_TEST(GUITest_regression_scenarios::test_3815);

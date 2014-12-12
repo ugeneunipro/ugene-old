@@ -108,12 +108,12 @@ void AlignShortReadsFiller::setCommonParameters(QWidget* dialog) {
         GTComboBox::setIndexWithText(os, libraryComboBox, parameters->getLibrary());
         CHECK_OP(os, );
     }
-
-    QCheckBox* prebuiltIndexCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "prebuiltIndexCheckBox", dialog));
-    CHECK_OP(os, );
-    GT_CHECK(prebuiltIndexCheckBox, "prebuiltIndexCheckBox is NULL");
-    GTCheckBox::setChecked(os, prebuiltIndexCheckBox, parameters->prebuiltIndex);
-    CHECK_OP(os, );
+//TODO: THIS CHECKBOX WAS REMOVED. FIND OUT IF IT IS RIGHT BEFORE REMOVING THIS CODE
+//    QCheckBox* prebuiltIndexCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "prebuiltIndexCheckBox", dialog));
+//    CHECK_OP(os, );
+//    GT_CHECK(prebuiltIndexCheckBox, "prebuiltIndexCheckBox is NULL");
+//    GTCheckBox::setChecked(os, prebuiltIndexCheckBox, parameters->prebuiltIndex);
+//    CHECK_OP(os, );
 
     QCheckBox* samBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "samBox", dialog));
     CHECK_OP(os, );

@@ -1063,7 +1063,7 @@ void MSAHighlightingSchemeConservation::setThreshold(int thresholdNew){
 void MSAHighlightingSchemeConservation::calculateStatisticForColumn(int refCharColumn){
     CHECK(!msaCharCountMap.contains(refCharColumn), );
     CharCountMap columnStatistic;
-    MAlignment &m = maObj->getMAlignment();
+    const MAlignment &m = maObj->getMAlignment();
     for(int row = m.getNumRows() - 1; row >= 0; row--){
         char seqChar = m.charAt(row, refCharColumn);
         if(columnStatistic.contains(seqChar)){
