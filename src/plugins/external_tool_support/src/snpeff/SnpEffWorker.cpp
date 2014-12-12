@@ -284,7 +284,6 @@ void SnpEffFactory::init() {
     localDomain->registerEntry(new SnpEffFactory());
 }
 
-
 //////////////////////////////////////////////////////////////////////////
 //SnpEffWorker
 SnpEffWorker::SnpEffWorker(Actor *a)
@@ -301,21 +300,23 @@ void SnpEffWorker::init() {
 }
 
 Task * SnpEffWorker::tick() {
-    /*
+
     if (inputUrlPort->hasMessage()) {
         const QString url = takeUrl();
         CHECK(!url.isEmpty(), NULL);
 
         const QString outputDir = FileAndDirectoryUtils::createWorkingDir(url, getValue<int>(OUT_MODE_ID), getValue<QString>(CUSTOM_DIR_ID), context->workingDir());
 
+
         SnpEffSetting setting;
-        setting.outDir = outputDir;
-        setting.outName = getTargetName(url, outputDir);
         setting.inputUrl = url;
-        setting.blockSize = getValue<int>(BLOCK_SIZE);
-        setting.itemsPerSlot = getValue<int>(ITEMS_PER_SLOT);
-        setting.uncompressed = getValue<bool>(UNCOMPRESSED);
-        setting.genomePath = getValue<QString>(GENOME);
+        setting.outDir = outputDir;
+        setting.genome = getValue<QString>(GENOME);
+        setting.updownLength = getValue<QString>(UPDOWN_LENGTH);
+        setting.homohetero = getValue<QString>(HOMOHETERO_CHANGES);
+        setting.seqChange = getValue<QString>(SEQ_CHANGES);
+        setting.filterOut = getValue<QString>(FILTER_OUTPUT);
+        setting.chrPos = getValue<QString>(CHR_POS);
 
         Task *t = new SnpEffTask (setting);
         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
@@ -325,7 +326,7 @@ Task * SnpEffWorker::tick() {
     if (inputUrlPort->isEnded()) {
         setDone();
         outputUrlPort->setEnded();
-    }*/
+    }
     return NULL;
 }
 

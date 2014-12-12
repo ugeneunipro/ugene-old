@@ -18,32 +18,36 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-/*
-#ifndef _U2_BEDGRAPH_TO_BIGWIG_TASK_H_
-#define _U2_BEDGRAPH_TO_BIGWIG_TASK_H_
+
+#ifndef _U2_SNP_EFF_TASK_H_
+#define _U2_SNP_EFF_TASK_H_
 
 #include <U2Core/Task.h>
 #include <U2Core/ExternalToolRunTask.h>
 
 namespace U2 {
 
-class BedGraphToBigWigSetting{
-public:
-    BedGraphToBigWigSetting(): outDir(""), outName(""),inputUrl(""), genomePath(""),blockSize(256), itemsPerSlot(1024), uncompressed(false){}
 
-    QString outDir;
-    QString outName;
+class SnpEffSetting{
+public:
+    SnpEffSetting(): inputUrl(""), outDir(""), inFormat(""), outFormat(""),genome(""), updownLength(""),homohetero(""), seqChange(""), filterOut(""), chrPos(""){}
+
     QString inputUrl;
-    QString genomePath;
-    int     blockSize;
-    int     itemsPerSlot;
-    bool    uncompressed;
+    QString outDir;
+    QString inFormat;
+    QString outFormat;
+    QString genome;
+    QString updownLength;
+    QString homohetero;
+    QString seqChange;
+    QString filterOut;
+    QString chrPos;
 };
 
-class BedGraphToBigWigTask : public Task {
+class SnpEffTask : public Task {
     Q_OBJECT
 public:
-    BedGraphToBigWigTask(const BedGraphToBigWigSetting &settings);
+    SnpEffTask(const SnpEffSetting &settings);
 
     void prepare();
     void run();
@@ -54,14 +58,14 @@ protected:
     QStringList getParameters(U2OpStatus& os);
 
 protected:
-    BedGraphToBigWigSetting settings;
+    SnpEffSetting settings;
     QString resultUrl;
 };
 
 
-class BedGraphToBigWigParser : public ExternalToolLogParser {
+class SnpEffParser : public ExternalToolLogParser {
 public:
-    BedGraphToBigWigParser();
+    SnpEffParser();
 
     void parseOutput(const QString& partOfLog);
     void parseErrOutput(const QString& partOfLog);
@@ -72,5 +76,5 @@ private:
 
 }//namespace
 
-#endif // _U2_BEDGRAPH_TO_BIGWIG_TASK_H_
-*/
+#endif // _U2_SNP_EFF_H_
+

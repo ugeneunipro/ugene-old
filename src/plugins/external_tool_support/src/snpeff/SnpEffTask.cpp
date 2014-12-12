@@ -18,11 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-/*
+
 #include <QtCore/QDir>
 
-#include "BigWigSupport.h"
-#include "BedGraphToBigWigTask.h"
+#include "SnpEffSupport.h"
+#include "SnpEffTask.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/U2SafePoints.h>
@@ -33,38 +33,39 @@
 namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////
-//BedGraphToBigWigParser
-BedGraphToBigWigParser::BedGraphToBigWigParser()
+//SnpEffParser
+SnpEffParser::SnpEffParser()
     :ExternalToolLogParser() {
 
 }
 
-void BedGraphToBigWigParser::parseOutput( const QString& partOfLog ){
+void SnpEffParser::parseOutput( const QString& partOfLog ){
     ExternalToolLogParser::parseOutput(partOfLog);
 }
 
-void BedGraphToBigWigParser::parseErrOutput( const QString& partOfLog ){
+void SnpEffParser::parseErrOutput( const QString& partOfLog ){
     lastPartOfLog=partOfLog.split(QRegExp("(\n|\r)"));
     lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
     lastErrLine=lastPartOfLog.takeLast();
     foreach(QString buf, lastPartOfLog){
             if(buf.contains("ERROR", Qt::CaseInsensitive)){
-                    coreLog.error("bedGraphToBigWig: " + buf);
+                    coreLog.error("SnpEff: " + buf);
             }
     }
 }
 
 
 //////////////////////////////////////////////////////////////////////////
-//BedGraphToBigWigTask
-BedGraphToBigWigTask::BedGraphToBigWigTask(const BedGraphToBigWigSetting &settings)
-:Task(QString("bedGrapthToBigWig for %1").arg(settings.inputUrl), TaskFlags_FOSE_COSC)
+//SnpEffTask
+SnpEffTask::SnpEffTask(const SnpEffSetting &settings)
+:Task(QString("snpEff for %1").arg(settings.inputUrl), TaskFlags_FOSE_COSC)
 ,settings(settings)
 {
 
 }
 
-void BedGraphToBigWigTask::prepare(){
+void SnpEffTask::prepare(){
+    /*
     if (settings.inputUrl.isEmpty()){
         setError("No input URL");
         return ;
@@ -80,25 +81,25 @@ void BedGraphToBigWigTask::prepare(){
         setError("No path to genome lengths");
         return ;
     }
-
+*/
     const QStringList args = getParameters(stateInfo);
     CHECK_OP(stateInfo, );
 
-    ExternalToolLogParser* logParser = new BedGraphToBigWigParser();
-    ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_BIGWIG, args, logParser, settings.outDir);
+    ExternalToolLogParser* logParser = new SnpEffParser();
+    ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_SNPEFF, args, logParser, settings.outDir);
     addSubTask(etTask);
 }
 
-void BedGraphToBigWigTask::run(){
+void SnpEffTask::run(){
     CHECK_OP(stateInfo, );
 
-    resultUrl = settings.outDir + settings.outName;
+    resultUrl = settings.outDir;
 }
 
-QStringList BedGraphToBigWigTask::getParameters(U2OpStatus & os){
+QStringList SnpEffTask::getParameters(U2OpStatus & os){
     QStringList res;
 
-    res << GUrlUtils::getQuotedString(settings.inputUrl);
+    /*res << GUrlUtils::getQuotedString(settings.inputUrl);
     res << GUrlUtils::getQuotedString(settings.genomePath);
     res << GUrlUtils::getQuotedString(settings.outDir + settings.outName);
     res << QString("-blockSize=%1").arg(settings.blockSize);
@@ -106,9 +107,9 @@ QStringList BedGraphToBigWigTask::getParameters(U2OpStatus & os){
     if(settings.uncompressed){
         res << QString("-unc");
     }
-
+*/
     return res;
 }
 
 } //namespace U2
-*/
+
