@@ -1177,19 +1177,49 @@ GUI_TEST_CLASS_DEFINITION(test_1527) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1527_1) {
-//1. Open COI2.aln as an alignment
-GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
-GTGlobals::sleep();
+    //1. Open COI2.aln as an alignment
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep();
 
-//2. {MSA Editor context menu} -> Align -> Align sequences to profile with MUSCLE
-//3. Select empty "test.aln" in the profile browsing dialog.
-GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align sequences to profile with MUSCLE", GTGlobals::UseMouse));
-GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/regression/1527/", "test.aln"));
-GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    //2. {MSA Editor context menu} -> Align -> Align sequences to profile with MUSCLE
+    //3. Select empty "test.aln" in the profile browsing dialog.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align sequences to profile with MUSCLE", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/regression/1527/", "test.aln"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 }
+
+GUI_TEST_CLASS_DEFINITION( test_1568 ) {
+//    1. Open "COI.aln".
+//    2. Add existing tree or build tree and display it in MSAEditor.
+//    3. Close MSAEditor.
+//    4. Unload document with tree.
+//    5. Open "COI.aln" from the Project View.
+//    6. Open document with tree.
+//    Expected state: UGENE doesn't crash.
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_1568.nwk", 0, 0, true));
+    QAbstractButton *tree = GTAction::button(os,"Build Tree");
+    CHECK_SET_ERR(tree != NULL, "Build Tree action not found");
+    GTWidget::click(os, tree);
+    GTGlobals::sleep();
+
+    GTUtilsMdi::closeWindow(os, "COI [m] COI");
+    GTGlobals::sleep();
+
+    GTUtilsDocument::unloadDocument(os, "test_1568.nwk");
+    GTGlobals::sleep();
+    GTUtilsProjectTreeView::doubleClickItem(os, "COI.aln");
+    GTGlobals::sleep();
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1576) {
     // 1. Open {_common_data/scenarios/regression/1576/test.uwl}.
-    // Expected state: the scema doesn't loaded, an error is in the log: 
+    // Expected state: the scema doesn't loaded, an error is in the log:
     // "Cannot bind convert-alignment-to-sequence:out-sequence to sequences-to-msa:in-sequence"
     GTLogTracer l;
 
@@ -1206,7 +1236,7 @@ GUI_TEST_CLASS_DEFINITION(test_1576) {
 GUI_TEST_CLASS_DEFINITION(test_1576_1) {
 
     // 1. Open {_common_data/scenarios/regression/1576/test2.uwl}.
-    // Expected state: the scema doesn't loaded, an error is in the log: 
+    // Expected state: the scema doesn't loaded, an error is in the log:
     // "Cannot bind sequences-to-msa:out-msa to convert-alignment-to-sequence:in-msa"
     GTLogTracer l;
 
@@ -1220,6 +1250,7 @@ GUI_TEST_CLASS_DEFINITION(test_1576_1) {
     CHECK_SET_ERR(error.contains(expectedError), "actual error is " + error);
 
 }
+
 GUI_TEST_CLASS_DEFINITION( test_1597 ) {
 
     // 1. Open a sequence in UGENE.
@@ -1237,7 +1268,7 @@ GUI_TEST_CLASS_DEFINITION( test_1597 ) {
 
     QRadioButton *newTable = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "newFileRB"));
     GTWidget::click(os, newTable);
-        
+
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
     GTKeyboardDriver::keySequence(os, "ACGTCGTCGTCGTCAATGTATGCCTCTTGGTTTCTTCTATC");
@@ -1258,7 +1289,7 @@ GUI_TEST_CLASS_DEFINITION( test_1603 ) {
     GTGlobals::sleep();
 
     GTUtilsMdi::closeWindow(os, "COI [m] COI");
-    QString docName = "1603.nwk";                      
+    QString docName = "1603.nwk";
 
     GTUtilsDocument::unloadDocument(os, docName, false);
     GTGlobals::sleep();
@@ -1408,7 +1439,7 @@ GUI_TEST_CLASS_DEFINITION(test_1629) {
     //2. Close currect project if it is opened.
     //3. Click the menu item "File".
     //Expected: "Open As" sub-item exists and is available to click.
-    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << ACTION_PROJECTSUPPORT__OPEN_AS, 
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << ACTION_PROJECTSUPPORT__OPEN_AS,
         PopupChecker::IsEnabled, GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_FILE);
 }
@@ -1536,7 +1567,7 @@ GUI_TEST_CLASS_DEFINITION(test_1645) {
     //Expected state: the document unloads.
     //GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "base_ext_nucl_all_symb.fa");
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
-    GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/base_ext_nucl_all_symb.fa"); 
+    GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/base_ext_nucl_all_symb.fa");
     GTGlobals::sleep();
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "base_ext_nucl_all_symb.fa"));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
@@ -4971,6 +5002,31 @@ GUI_TEST_CLASS_DEFINITION( test_2351 ) {
                                                           GTToolbar::getToolbar(os, MWTOOLBAR_MAIN),
                                                           ACTION_PROJECTSUPPORT__NEW_PROJECT));
     }
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2343 ) {
+//    1. Open Workflow designer
+//    2. Add element "Align with ClustalW"
+//    3. Select the element
+//    Expected state: property widget for the element appeared
+//    4. Select "Gap distance" parameter in the property widget
+//    5. Press "Tab" key
+//    Expected state: focus setted to "End Gaps" value
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Align with ClustalW");
+    GTUtilsWorkflowDesigner::click(os, "Align with ClustalW");
+
+    GTUtilsWorkflowDesigner::clickParameter(os, "Gap distance");
+    GTMouseDriver::doubleClick(os);
+    QWidget* wgt = QApplication::focusWidget();
+    CHECK_SET_ERR( wgt != NULL, "No widnget in focus")
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR( QApplication::focusWidget() != NULL, "No widget in focus");
+    CHECK_SET_ERR( wgt != QApplication::focusWidget(), "Focus didn't changed");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2352 ) {
@@ -11602,7 +11658,7 @@ GUI_TEST_CLASS_DEFINITION(test_3755){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "HIV-1.aln");
 
     QWidget* seqArea = GTWidget::findWidget(os, "msa_editor_sequence_area");
-    QColor before = GTWidget::getColor(os, seqArea, QPoint(2,1));    
+    QColor before = GTWidget::getColor(os, seqArea, QPoint(2,1));
     //    Open the "Highlighting" options panel tab.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
     //    Select different highlighting schemes.
