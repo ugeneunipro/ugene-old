@@ -1000,7 +1000,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_3) {
     GTUtilsDocument::removeDocument(os, "scaffold_90.gff");
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "gtf"));
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "GTF"));
     GTFileDialog::openFile(os, sandBoxDir, "ann_export_test_0012_3.gtf");
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "NC_004718 features"), "Object not found");
     CHECK_SET_ERR(!GTUtilsProjectTreeView::checkItem(os, "scaffold_90 features"), "Object shound not be in the project");

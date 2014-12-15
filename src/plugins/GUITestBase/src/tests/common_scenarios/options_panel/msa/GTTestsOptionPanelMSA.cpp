@@ -1835,7 +1835,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0001){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
 //    2. Open export consensus option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
-    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "plain text"));
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "Plain text"));
 //    3. Select some existing file as output
     QString s = sandBoxDir + fileName;
     QFile f(s);

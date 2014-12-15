@@ -1240,6 +1240,56 @@ GUI_TEST_CLASS_DEFINITION( test_1568 ) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1574){
+//    1. Open "_common_data/scenarios/msa/ma.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma.aln");
+//    2. Turn on the collapsing mode with the "Switch on/off collapsing" button on the toolbar.
+//    Expected state: there are two collapsed groups.
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+//    3. Try to select some area in the Sequence area (selection start point must be in the white space under sequences).
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(2, 15), QPoint(2, 0));
+//    Expected state: A region from the alignment bottom to the selection end point is selected.
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(2, 0), QPoint(2, 13)));
+
+//    4. Try to click to the white space under sequences.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(2, 15));
+//    Expected state: Only one symbol is selected.
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(2, 13), QPoint(2, 13)));
+//    5. Try to select some area in the NameList area (selection must start from the next row under the last row).
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5, 14), QPoint(-5, 10));
+//    Expected state: A region from the alignmnet bottom to the selection end point is selected.
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(0, 10), QPoint(11, 13)));
+//    6. Try to select some area in the NameList area (selection must start from the bottom of widget.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5, 30), QPoint(-5, 10));
+//    Expected state: A region from the alignment bottom to the selection end point is selected.
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(0, 10), QPoint(11, 13)));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1575){
+//    1. Open "_common_data/scenarios/msa/ma.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma.aln");
+//    2. Click the "Enable collapsing" button on the toolbar.
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+//    3. Open any group and try to edit any sequence:
+    GTUtilsMSAEditorSequenceArea::clickCollapceTriangle(os, "Conocephalus_discolor");
+//    3.1 Insert gap by pressing SPACE.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0, 10));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+//    Expected state: gap was inserted in every sequence of this group.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 10), QPoint(0, 12));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "-\n-\n-", "Unexpected selection: " + clipboardText);
+//    3.2 Select some region of the grouped sequences in the Sequence area and drag this selection to the right.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(2, 11));
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(2, 11), QPoint(3, 11));
+//    Expected state: all sequences in the group are changed simultaneously.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(2, 10), QPoint(2, 12));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "-\n-\n-", "Unexpected selection 2: " + clipboardText);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1576) {
     // 1. Open {_common_data/scenarios/regression/1576/test.uwl}.
     // Expected state: the scema doesn't loaded, an error is in the log:
@@ -1474,8 +1524,9 @@ GUI_TEST_CLASS_DEFINITION(test_1609) {
     // 4) Press "Cancel" in appeared "Save as" dialog
     // Expected state : "Do you wish to save" dialog appeared
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
-    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, "sandBoxDir", "human_T1.fa", GTFileDialogUtils::Cancel, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, new CustomFileDialogUtils()));
     QFile::remove(sandBoxDir + "human_T1.fa");
+    GTGlobals::sleep(5000);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1622 )
@@ -2295,7 +2346,7 @@ GUI_TEST_CLASS_DEFINITION(test_1731){
     GTWidget::click(os, GTWidget::findWidget(os, "addSeq"));
     QCheckBox* showDistancesColumnCheck = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "showDistancesColumnCheck"));
     GTCheckBox::setChecked(os, showDistancesColumnCheck, true);
-    GTGlobals::sleep(200000);
+    GTUtilsTaskTreeView::waitTaskFinished(os, 200000);
     QString num1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 1);
     QString num3 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 3);
     CHECK_SET_ERR(num1 != "100%", "unexpected sumilarity value an line 1: " + num1);
@@ -7125,6 +7176,7 @@ GUI_TEST_CLASS_DEFINITION(test_2773) {
     // out: some/valid/path
     // 3. run sheme.
     // Expected state: UGENE doesn't crash, error message appears.
+    QFile::copy(testDir + "_common_data/cmdline/_proto/translateTest.usa", dataDir + "workflow_samples/users/translateTest.usa");
     GTLogTracer l;
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/cmdline/custom-script-worker-functions/translateTest/", "translateTest.uwl");
@@ -8771,6 +8823,7 @@ GUI_TEST_CLASS_DEFINITION(test_3156){
 //    1. Connect to a shared database
     QString conName = "ugene_gui_test";
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+    GTUtilsProjectTreeView::expandProjectView(os);
     GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, "/", "test_3156");
 //    2. Open file "data/samples/Genbank/murine.gb"
     GTFile::copy(os, dataDir + "samples/Genbank/murine.gb", sandBoxDir + "test_3156_murine.gb");

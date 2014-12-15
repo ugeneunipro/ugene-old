@@ -39,6 +39,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/MainWindow.h>
+#include <QSplitter>
 
 #include "runnables/qt/PopupChooser.h"
 
@@ -519,6 +520,11 @@ void GTUtilsProjectTreeView::sendDragAndDrop(U2OpStatus &os, QMimeData *mimeData
 
     QDropEvent* dropEvent = new QDropEvent(dropWidget->geometry().center(), dropActions, mimeData, Qt::LeftButton, 0);
     GTGlobals::sendEvent(dropWidget, dropEvent);
+}
+
+void GTUtilsProjectTreeView::expandProjectView(U2OpStatus &os){
+    QSplitter* splitter = GTWidget::findExactWidget<QSplitter*>(os, "splitter", GTWidget::findWidget(os, "project_view"));
+    splitter->setSizes(QList<int>()<<splitter->height()<<0);
 }
 
 #undef GT_CLASS_NAME

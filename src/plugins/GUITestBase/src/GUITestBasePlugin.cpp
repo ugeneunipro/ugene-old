@@ -178,6 +178,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1527_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1529);
     REGISTER_TEST(GUITest_regression_scenarios::test_1568);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1574);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1575);
     REGISTER_TEST(GUITest_regression_scenarios::test_1576);
     REGISTER_TEST(GUITest_regression_scenarios::test_1576_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1585);
@@ -195,18 +197,18 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1644);
     REGISTER_TEST(GUITest_regression_scenarios::test_1645);
     REGISTER_TEST(GUITest_regression_scenarios::test_1653);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1654);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1654, "UGENE-3847");
     REGISTER_TEST(GUITest_regression_scenarios::test_1660);
     REGISTER_TEST(GUITest_regression_scenarios::test_1661);
     REGISTER_TEST(GUITest_regression_scenarios::test_1664);
     REGISTER_TEST(GUITest_regression_scenarios::test_1672);
     REGISTER_TEST_MAC(GUITest_regression_scenarios::test_1680, "Mac only");
     REGISTER_TEST(GUITest_regression_scenarios::test_1687);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1688);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1688, "big data");
     REGISTER_TEST(GUITest_regression_scenarios::test_1693);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1700);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1701);
+    REGISTER_TEST_NOT_FOR_LINUX(GUITest_regression_scenarios::test_1701);//virtual display can not show 3d view
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_1703, "UGENE-3693");
     REGISTER_TEST(GUITest_regression_scenarios::test_1704);
     REGISTER_TEST(GUITest_regression_scenarios::test_1708);

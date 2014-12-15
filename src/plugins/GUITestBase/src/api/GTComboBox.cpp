@@ -92,7 +92,7 @@ void GTComboBox::setIndexWithText(U2OpStatus& os, QComboBox *comboBox, const QSt
     GT_CHECK(comboBox != NULL, "QComboBox* == NULL");
 
     int index = comboBox->findText(text, Qt::MatchContains);
-    GT_CHECK(index != -1, "Text was not found");
+    GT_CHECK(index != -1, "Text " + text + " was not found");
 
     setCurrentIndex(os, comboBox, index, checkVal, method);
     CHECK_OP(os, );

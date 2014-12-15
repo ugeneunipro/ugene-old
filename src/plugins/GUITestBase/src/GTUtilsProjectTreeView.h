@@ -96,6 +96,8 @@ public:
     static void dragAndDrop(U2OpStatus &os, QModelIndex from, QWidget* to);
     static void dragAndDropSeveralElements(U2OpStatus &os, QModelIndexList from, QModelIndex to);
 
+    static void expandProjectView(U2OpStatus &os);
+
     static const QString widgetName;
 
 private:
