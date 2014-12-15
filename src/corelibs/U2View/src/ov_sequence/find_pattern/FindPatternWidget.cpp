@@ -258,7 +258,6 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
 
         connect(findPatternEventFilter, SIGNAL(si_enterPressed()), SLOT(sl_onEnterPressed()));
         connect(findPatternEventFilter, SIGNAL(si_shiftEnterPressed()), SLOT(sl_onShiftEnterPressed()));
-        connect(usePatternNamesCheckBox, SIGNAL(stateChanged(int)), SLOT(sl_activateNewSearch()));
         connect(usePatternNamesCheckBox, SIGNAL(stateChanged(int)), SLOT(sl_usePatternNamesCbClicked()));
 
         sl_onSearchPatternChanged();
@@ -903,7 +902,6 @@ void FindPatternWidget::checkState()
         getAnnotationsPushButton->setDisabled(true);
         return;
     }
-
     if(usePatternNamesCheckBox->isChecked()){
         foreach(const QString &name, nameList){
             if (name.length() > GBFeatureUtils::MAX_KEY_LEN || !Annotation::isValidAnnotationName(name) || name.isEmpty()) {
@@ -1335,15 +1333,7 @@ void FindPatternWidget::sl_activateNewSearch(bool forcedSearch){
         connect(loadTask, SIGNAL(si_stateChanged()), SLOT(sl_loadPatternTaskStateChanged()));
         AppContext::getTaskScheduler()->registerTopLevelTask(loadTask);
     } else {
-        U2OpStatus2Log os;
-
-        QList<NamePattern> newPatterns = getPatternsFromTextPatternField(os);
-
-        nameList.clear();
-        foreach (const NamePattern &np, newPatterns) {
-            nameList.append(np.first);
-        }
-
+        QList<NamePattern> newPatterns = updateNamePatterns();
         if(isSearchPatternsDifferent(newPatterns) || forcedSearch){
             patternList.clear();
             for(int i = 0; i < newPatterns.size();i++){
@@ -1360,6 +1350,18 @@ void FindPatternWidget::sl_activateNewSearch(bool forcedSearch){
 
         annotModelPrepared = false;
     }
+}
+
+QList<NamePattern> FindPatternWidget::updateNamePatterns(){
+    U2OpStatus2Log os;
+
+    QList<NamePattern> newPatterns = getPatternsFromTextPatternField(os);
+
+    nameList.clear();
+    foreach (const NamePattern &np, newPatterns) {
+        nameList.append(np.first);
+    }
+    return newPatterns;
 }
 
 void FindPatternWidget::sl_getAnnotationsButtonClicked() {
@@ -1442,6 +1444,7 @@ void FindPatternWidget::sl_onShiftEnterPressed(){
 }
 
 void FindPatternWidget::sl_usePatternNamesCbClicked(){
+    updateNamePatterns();
     checkState();
 }
 

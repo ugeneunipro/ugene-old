@@ -136,6 +136,7 @@ private:
     void stopCurrentSearchTask();
     void correctSearchInCombo();
     void setUpTabOrder() const;
+    QList<NamePattern> updateNamePatterns();
 
     /**
      * Enables or disables the Search button depending on
