@@ -1211,6 +1211,22 @@ GUI_TEST_CLASS_DEFINITION(test_1529) {
     CHECK_SET_ERR(1 == objCount, QString("Unexpected child object count in the project. Expected %1, found %2").arg(1).arg(objCount));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1548) {
+    // 1. Open file "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+
+    // 2. Build tree for the alignment
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/1548.nwk", 0, 0, true));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os, tree);
+    GTGlobals::sleep(500);
+
+    //3. Ensure that the "Sort alignment by tree" button on the tree view toolbar is disabled.
+    QAction *sortAction = GTAction::findAction(os, "Sort Alignment");
+    CHECK_SET_ERR(NULL != sortAction, "'Sort alignment by tree' was not found");
+    CHECK_SET_ERR(!sortAction->isEnabled(), "'Sort alignment by tree' is unexpectedly enabled");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1568 ) {
 //    1. Open "COI.aln".
 //    2. Add existing tree or build tree and display it in MSAEditor.
@@ -1894,6 +1910,19 @@ GUI_TEST_CLASS_DEFINITION(test_1673) {
     GTUtilsOptionPanelMsa::toggleTab(os, GTUtilsOptionPanelMsa::General);
     isTabOpened = GTUtilsOptionPanelMsa::isTabOpened(os, GTUtilsOptionPanelMsa::General);
     CHECK_SET_ERR(isTabOpened, "The 'General' tab is unexpectedly closed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1673_3) {
+    //1. Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    //2. Press "Ctrl+F"
+    //Expected result: "Search in Sequence" tab has been opened, the pattern field is in focus
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+
+    QWidget* wgt = QApplication::focusWidget();
+    QTextEdit *edit = qobject_cast<QTextEdit*>(wgt);
+    CHECK_SET_ERR(edit != NULL, "Text edit is not in focus");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1680) {
