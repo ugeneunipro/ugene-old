@@ -1251,6 +1251,47 @@ GUI_TEST_CLASS_DEFINITION(test_1576_1) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1586) {
+/*  1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    2. Use context menu {align->align with MUSCLE}
+    3. press undo toolbar button
+    Expected state: alignment is similar to initial
+    Bug state: alignments are not similar
+*/
+
+    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/msa", "ma2_gapped.aln");
+    GTGlobals::sleep();
+    //Save the initial content
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 13, 10 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString initialContent = GTClipboard::text( os );
+
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os, MuscleDialogFiller::Default));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(5000);
+
+    QAbstractButton *undo = GTAction::button( os, "msa_action_undo" );
+    CHECK_SET_ERR(undo != NULL, "MSA undo action not found");
+    GTWidget::click( os, undo );
+
+    //Deselect alignment
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(15, 15));
+    GTMouseDriver::click( os );
+
+    //Check the undone state
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 13, 10 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString undoneContent = GTClipboard::text( os );
+    CHECK_SET_ERR( undoneContent == initialContent,
+        "Undo works wrong. Found text is: " + undoneContent );
+
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1597 ) {
 
     // 1. Open a sequence in UGENE.
