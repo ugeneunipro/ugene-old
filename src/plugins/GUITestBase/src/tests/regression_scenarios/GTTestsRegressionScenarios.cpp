@@ -1188,6 +1188,29 @@ GUI_TEST_CLASS_DEFINITION(test_1527_1) {
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1529) {
+    // 1. Open "data/samples/CLUSTALW/COI.aln".
+    QFile sourceFile(dataDir + "samples/CLUSTALW/COI.aln");
+    sourceFile.copy(sandBoxDir + "COI.aln");
+
+    GTFileDialog::openFile(os, sandBoxDir, "COI.aln");
+
+    // 2. Use context menu{ Export->Amino translation... }.
+    // Expected state : "Export Amino Translation" dialog has appeared.
+    // 3. Press the "Export" button.
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(10, 10));
+    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTGlobals::sleep();
+
+    // Expected state : A new file with MSA was created, added to the project.The MSA object name is "COI_transl.aln".
+    const QModelIndex docIndex = GTUtilsProjectTreeView::findIndecies(os, "COI_transl.aln").first();
+    const int objCount = docIndex.model()->rowCount(docIndex);
+    CHECK_SET_ERR(1 == objCount, QString("Unexpected child object count in the project. Expected %1, found %2").arg(1).arg(objCount));
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1568 ) {
 //    1. Open "COI.aln".
 //    2. Add existing tree or build tree and display it in MSAEditor.
@@ -1249,6 +1272,46 @@ GUI_TEST_CLASS_DEFINITION(test_1576_1) {
 
     CHECK_SET_ERR(error.contains(expectedError), "actual error is " + error);
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1585) {
+    // 1. Open "_common_data/scenarios/msa/ma.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma.aln");
+    // 2. Enable collapsing mode.
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+
+    // 3. Select a sequence area including collapsed rows, sequences above and below them.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(3, 9), QPoint(10, 12));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+
+    const QString selection1 = GTClipboard::text(os);
+
+    // 4. Shift selected region.
+    // Expected state : all sequences shifted simultaneously.If group is half - selected, the unselected sequences shifts too.
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(7, 10));
+    GTMouseDriver::press(os);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(10, 10));
+    GTMouseDriver::release(os);
+
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(6, 9), QPoint(13, 12), selection1);
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+
+    GTUtilsMSAEditorSequenceArea::clickCollapceTriangle(os, "Conocephalus_discolor");
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(6, 9), QPoint(11, 10));
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(9, 9));
+    GTMouseDriver::press(os);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(11, 9));
+    GTMouseDriver::release(os);
+
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(8, 9), QPoint(13, 10), "GTCTAT\nGCTTAT\nGCTTAT\nGCTTAT");
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(6, 11), QPoint(14, 12));
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(6, 11), QPoint(14, 12), "--GCTTATT\n--GCTTATT\n--GCTTATT");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1586) {

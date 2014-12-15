@@ -550,14 +550,14 @@ void GTUtilsMSAEditorSequenceArea::deleteColorScheme(U2OpStatus &os, const QStri
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "renameSequence"
+#define GT_METHOD_NAME "checkSelection"
 void GTUtilsMSAEditorSequenceArea::checkSelection(U2OpStatus &os, const QPoint &start, const QPoint &end, const QString &expected){
     GTWidget::click(os, GTUtilsMdi::activeWindow(os));
     selectArea(os, start, end);
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
     QString clipboardText = GTClipboard::text(os);
-    GT_CHECK(clipboardText == expected, QString("unexpected selection: %1").arg(clipboardText));
+    GT_CHECK(clipboardText == expected, QString("unexpected selection:\n%1").arg(clipboardText));
 }
 #undef GT_METHOD_NAME
 
