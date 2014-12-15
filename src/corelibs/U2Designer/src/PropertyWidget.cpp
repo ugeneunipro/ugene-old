@@ -181,53 +181,53 @@ ComboBoxEditableWidget::ComboBoxEditableWidget(const QVariantMap &items, QWidget
 : PropertyWidget(parent)
 , customIdx(-1)
 {
-	comboBox = new QComboBox(this);
-	comboBox->setEditable(true);
-	addMainWidget(comboBox);
+    comboBox = new QComboBox(this);
+    comboBox->setEditable(true);
+    addMainWidget(comboBox);
 
-	foreach (const QString &key, items.keys()) {
-		comboBox->addItem(key, items[key]);
-	}
+    foreach (const QString &key, items.keys()) {
+        comboBox->addItem(key, items[key]);
+    }
 
-	connect(comboBox, SIGNAL(editTextChanged ( const QString & )), this, SLOT(sl_edit(const QString& )));
+    connect(comboBox, SIGNAL(editTextChanged ( const QString & )), this, SLOT(sl_edit(const QString& )));
 
-	connect(comboBox, SIGNAL(activated(const QString &)),
-		this, SIGNAL(valueChanged(const QString &)));
-	connect(comboBox, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(sl_valueChanged(int)));
+    connect(comboBox, SIGNAL(activated(const QString &)),
+    this, SIGNAL(valueChanged(const QString &)));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)),
+        this, SLOT(sl_valueChanged(int)));
 }
 
 QVariant ComboBoxEditableWidget::value() {
-	return comboBox->itemData(comboBox->currentIndex());
+    return comboBox->itemData(comboBox->currentIndex());
 }
 
 void ComboBoxEditableWidget::setValue(const QVariant &value) {
-	int idx = comboBox->findData(value);
-	if (idx == -1){
-		if (customIdx == -1){
-			comboBox->addItem(value.toString(), value);
-			customIdx = comboBox->findData(value);
-		}else{
-			comboBox->setItemText(customIdx, value.toString());
-			comboBox->setItemData(customIdx, value);
-		}
-		comboBox->setCurrentIndex(customIdx);
-	}else{
-		idx = comboBox->findData(value);
-		comboBox->setCurrentIndex(idx);
-	}
-	sl_valueChanged(0);
+    int idx = comboBox->findData(value);
+    if (idx == -1){
+        if (customIdx == -1){
+            comboBox->addItem(value.toString(), value);
+            customIdx = comboBox->findData(value);
+        }else{
+            comboBox->setItemText(customIdx, value.toString());
+            comboBox->setItemData(customIdx, value);
+        }
+        comboBox->setCurrentIndex(customIdx);
+    }else{
+        idx = comboBox->findData(value);
+        comboBox->setCurrentIndex(idx);
+    }
+    sl_valueChanged(0);
 }
 
 void ComboBoxEditableWidget::sl_valueChanged(int) {
-	emit si_valueChanged(value());
+    emit si_valueChanged(value());
 }
 
 void ComboBoxEditableWidget::sl_edit(const QString& val){
-	if (!val.isEmpty()) {
-		setValue(val);
-		comboBox->setFocus();
-	}
+    if (!val.isEmpty()) {
+        setValue(val);
+        comboBox->setFocus();
+    }
 }
 
 
