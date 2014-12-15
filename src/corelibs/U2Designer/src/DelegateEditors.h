@@ -214,6 +214,36 @@ protected:
     QVariantMap items;
 };
 
+class U2DESIGNER_EXPORT ComboBoxEditableDelegate : public PropertyDelegate {
+	Q_OBJECT
+public:
+	ComboBoxEditableDelegate(const QVariantMap& items, bool _isPath = false, QObject *parent = 0) : PropertyDelegate(parent), items(items) {}
+	virtual ~ComboBoxEditableDelegate() {}
+
+	QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+		const QModelIndex &index) const;
+	virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
+
+	void setEditorData(QWidget *editor, const QModelIndex &index) const;
+	void setModelData(QWidget *editor, QAbstractItemModel *model,
+		const QModelIndex &index) const;
+	QVariant getDisplayValue(const QVariant&) const;
+
+	virtual PropertyDelegate *clone() {
+		return new ComboBoxEditableDelegate(items, parent());
+	}
+
+signals:
+	void si_valueChanged( const QString & newVal ) const;
+
+	private slots:
+		void sl_valueChanged(const QString &newVal);
+
+protected:
+	QVariantMap items;
+};
+
+
 class U2DESIGNER_EXPORT ComboBoxWithUrlsDelegate : public PropertyDelegate {
     Q_OBJECT
 public:

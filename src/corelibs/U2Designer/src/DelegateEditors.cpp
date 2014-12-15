@@ -291,6 +291,47 @@ QVariant ComboBoxWithUrlsDelegate::getDisplayValue(const QVariant& val) const {
  }
 
 /********************************
+* ComboBoxEditableDelegate
+********************************/
+
+PropertyWidget * ComboBoxEditableDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
+	return new ComboBoxEditableWidget(items, parent);
+}
+
+QWidget *ComboBoxEditableDelegate::createEditor(QWidget *parent,
+												const QStyleOptionViewItem &/* option */,
+												const QModelIndex &/* index */) const
+{
+	ComboBoxEditableWidget *editor = new ComboBoxEditableWidget(items, parent);
+	connect(editor, SIGNAL(valueChanged(const QString &)), SLOT(sl_valueChanged(const QString &)));
+	return editor;
+}
+
+void ComboBoxEditableDelegate::sl_valueChanged(const QString &newVal) {
+	emit si_valueChanged(newVal);
+	QWidget *editor = qobject_cast<QWidget *>(sender());
+	SAFE_POINT(NULL != editor, "Invalid editor", );
+	emit commitData(editor);
+}
+
+void ComboBoxEditableDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
+	QVariant val = index.model()->data(index, ConfigurationEditor::ItemValueRole);
+	ComboBoxEditableWidget *box = static_cast<ComboBoxEditableWidget*>(editor);
+	box->setValue(val);
+}
+
+void ComboBoxEditableDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const {
+	ComboBoxEditableWidget *box = static_cast<ComboBoxEditableWidget*>(editor);
+	model->setData(index, box->value(), ConfigurationEditor::ItemValueRole);
+}
+
+QVariant ComboBoxEditableDelegate::getDisplayValue(const QVariant& val) const {
+	QString display = items.key(val);
+	emit si_valueChanged( display );
+	return QVariant( display );
+}
+
+/********************************
 * ComboBoxWithDbUrlsDelegate
 ********************************/
 ComboBoxWithDbUrlsDelegate::ComboBoxWithDbUrlsDelegate(QObject *parent)

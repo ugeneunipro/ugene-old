@@ -154,11 +154,11 @@ void SnpEffFactory::init() {
         Descriptor outFormat(SnpEffWorker::OUTPUT_FORMAT, SnpEffWorker::tr("Output format"),
             SnpEffWorker::tr("Select the format of annotated output files."));
 
-        Descriptor chrPos(SnpEffWorker::CHR_POS, SnpEffWorker::tr("Chromosme positions"),
+        Descriptor chrPos(SnpEffWorker::CHR_POS, SnpEffWorker::tr("Chromosome positions"),
             SnpEffWorker::tr("Select indexing type."));
 
         Descriptor genome(SnpEffWorker::GENOME, SnpEffWorker::tr("Genome"),
-            SnpEffWorker::tr("Select the target genome. Note that, if SnpEff genome data will be downloaded if it is not found."));
+            SnpEffWorker::tr("Select the target genome. Genome data will be downloaded if it is not found."));
 
         Descriptor updownLength(SnpEffWorker::UPDOWN_LENGTH, SnpEffWorker::tr("Upstream/downstream length"),
             SnpEffWorker::tr("Upstream and downstream interval size. Eliminate any upstream and downstream effect by using 0 length"));
@@ -269,7 +269,7 @@ void SnpEffFactory::init() {
             genomeMap["WS241"] = "WS241";
 
             //TODO make editable combobox
-            delegates[SnpEffWorker::GENOME] = new ComboBoxDelegate(genomeMap);
+            delegates[SnpEffWorker::GENOME] = new ComboBoxEditableDelegate(genomeMap);
         }
 
     }

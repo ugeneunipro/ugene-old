@@ -128,6 +128,31 @@ private slots:
 };
 
 /************************************************************************/
+/* ComboBoxEditableWidget */
+/************************************************************************/
+class ComboBoxEditableWidget : public PropertyWidget {
+	Q_OBJECT
+public:
+	ComboBoxEditableWidget( const QVariantMap &items, QWidget *parent = NULL);
+	virtual QVariant value();
+	virtual void setValue(const QVariant &value);
+
+signals:
+	void valueChanged(const QString &value);
+
+	protected slots:
+		virtual void sl_edit(const QString& val);
+
+protected:
+	QComboBox *comboBox;
+	int customIdx;
+
+	private slots:
+		void sl_valueChanged(int index);
+};
+
+
+/************************************************************************/
 /* ComboBoxWithUrlWidget */
 /************************************************************************/
 class ComboBoxWithUrlWidget : public PropertyWidget {
