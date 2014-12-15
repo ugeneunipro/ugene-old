@@ -1075,4 +1075,9 @@ void MSAHighlightingSchemeConservation::calculateStatisticForColumn(int refCharC
     msaCharCountMap[refCharColumn] = columnStatistic;
 }
 
+void MSAHighlightingSchemeEmpty::process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow){
+    color = true;
+    MSAHighlightingScheme::process(refChar, seqChar, color, refCharColumn, refCharRow);
+}
+
 }//namespace

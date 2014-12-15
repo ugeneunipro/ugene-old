@@ -373,7 +373,7 @@ class MSAHighlightingSchemeEmpty : public MSAHighlightingScheme{
 public:
     MSAHighlightingSchemeEmpty(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o):
         MSAHighlightingScheme(p, f, o){}
-    virtual void process(const char /*refChar*/, char &/*seqChar*/, bool &/*color*/){}
+    virtual void process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow);
 };
 
 class MSAHighlightingSchemeAgreements : public MSAHighlightingScheme{
