@@ -69,11 +69,11 @@ void DASAnnotationWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
 
     {
-        Descriptor id(BasePorts::IN_SEQ_PORT_ID(), DASAnnotationWorker::tr("Input sequences"), 
+        Descriptor id(BasePorts::IN_SEQ_PORT_ID(), DASAnnotationWorker::tr("Input sequences"),
             DASAnnotationWorker::tr("Protein sequences for annotation. Nucleotide sequences are skipped."));
-        Descriptor od(BasePorts::OUT_ANNOTATIONS_PORT_ID(), DASAnnotationWorker::tr("DAS annotations"), 
+        Descriptor od(BasePorts::OUT_ANNOTATIONS_PORT_ID(), DASAnnotationWorker::tr("DAS annotations"),
             DASAnnotationWorker::tr("A set of annotations loaded from DAS sources using IDs of similar sequences."));
-        
+
         QMap<Descriptor, DataTypePtr> inM;
         inM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
         p << new PortDescriptor(id, DataTypePtr(new MapDataType("dasannotation.sequence", inM)), true /*input*/);
@@ -103,16 +103,16 @@ void DASAnnotationWorkerFactory::init() {
     a << new Attribute(hits, BaseTypes::STRING_TYPE(), false, QVariant("250"));
 
 
-    Descriptor desc(ACTOR_ID, DASAnnotationWorker::tr("Annotate with DAS"), 
-        DASAnnotationWorker::tr("Finds similar protein sequence using remote BLAST." 
+    Descriptor desc(ACTOR_ID, DASAnnotationWorker::tr("Annotate with DAS"),
+        DASAnnotationWorker::tr("Finds similar protein sequence using remote BLAST."
         "<p>Using IDs of sequences found loads annotation for DAS sources."
         "<p>Nucleotide sequences are skipped if any supplied to input."
         "</p>")
         );
-    QMap<QString, PropertyDelegate*> delegates;    
-    
+    QMap<QString, PropertyDelegate*> delegates;
+
     {
-        QVariantMap idsMap; idsMap["minimum"] = QVariant(1); idsMap["maximum"] = QVariant(INT_MAX); 
+        QVariantMap idsMap; idsMap["minimum"] = QVariant(1); idsMap["maximum"] = QVariant(INT_MAX);
         delegates[IDS_NUMBER] = new SpinBoxDelegate(idsMap);
     }
     {
@@ -141,7 +141,7 @@ void DASAnnotationWorkerFactory::init() {
     }
 
     {
-        QVariantMap valMap; valMap["minimum"] = QVariant(0); valMap["maximum"] = QVariant(100); 
+        QVariantMap valMap; valMap["minimum"] = QVariant(0); valMap["maximum"] = QVariant(100);
         valMap["suffix"] = QVariant("%");
         delegates[IDENTITY] = new SpinBoxDelegate(valMap);
     }
@@ -222,7 +222,7 @@ void DASAnnotationWorkerFactory::init() {
             delegates[MAX_RES] = new ComboBoxDelegate(varMap);
         }
     }
-    
+
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     proto->setPrompter(new DASAnnotationPrompter());
     proto->setEditor(new DelegateEditor(delegates));
@@ -244,7 +244,7 @@ QString DASAnnotationPrompter::composeRichDoc() {
 
     QString doc = tr("For each protein sequence %1, finds IDs of similar sequences using remote BLAST."
         "<br>Loads annotations for DAS sources using the first %2 ID(s).").arg(producerName).arg(firstIds);
-    
+
     return doc;
 }
 
@@ -275,7 +275,7 @@ Task* DASAnnotationWorker::tick() {
         blastSettings.insert(UniprotBlastSettings::FILTERING, actor->getParameter(FILTERING)->getAttributeValue<QString>(context));
         blastSettings.insert(UniprotBlastSettings::GAPPED, actor->getParameter(GAPPED)->getAttributeValue<QString>(context));
         blastSettings.insert(UniprotBlastSettings::HITS, actor->getParameter(MAX_RES)->getAttributeValue<QString>(context));
-        
+
         cfg.blastSettings = blastSettings;
         cfg.identityThreshold = actor->getParameter(IDENTITY)->getAttributeValue<int>(context);
         cfg.maxResults = actor->getParameter(IDS_NUMBER)->getAttributeValue<int>(context);
@@ -318,10 +318,10 @@ Task* DASAnnotationWorker::tick() {
             output->put(Message::getEmptyMapMessage());
             return NULL;
         }
-        
+
         const DNAAlphabet* alphabet = seqObj->getAlphabet();
         if (alphabet && alphabet->getType() == DNAAlphabet_AMINO) {
-            
+
             Task* t = new UniprotBlastAndLoadDASAnnotations(cfg);
             connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
             return t;

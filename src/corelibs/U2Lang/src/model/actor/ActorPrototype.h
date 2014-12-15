@@ -37,43 +37,43 @@ namespace Workflow {
 class Prompter;
 
 /**
- * Actor represents particular semantic template 
+ * Actor represents particular semantic template
  * and can be configured via set of template-specific parameters
  * ActorPrototype is such a template
  */
 class U2LANG_EXPORT ActorPrototype : public VisualDescriptor {
 public:
-    ActorPrototype(const Descriptor& desc, 
-        const QList<PortDescriptor*>& ports = QList<PortDescriptor*>(), 
+    ActorPrototype(const Descriptor& desc,
+        const QList<PortDescriptor*>& ports = QList<PortDescriptor*>(),
         const QList<Attribute*>& attrs = QList<Attribute*>());
     virtual ~ActorPrototype();
-    
+
     QList<PortDescriptor*> getPortDesciptors() const;
-    
+
     QList<Attribute*> getAttributes() const;
     Attribute * getAttribute( const QString & id ) const;
     void addAttribute( Attribute * a );
     int removeAttribute( Attribute * attr );
-    
+
     void setEditor(ConfigurationEditor* e);
     ConfigurationEditor * getEditor() const;
-    
+
     // validator has setter but no getter
     void setValidator(ConfigurationValidator* v);
-    
+
     // prompter has no getter
     void setPrompter(Prompter* p);
-    
+
     // port validators has no getters
     // all validators will be used as validator in corresponding port
     // see createInstance()
     void setPortValidator(const QString& id, ConfigurationValidator* v);
-    
+
     // for drag'n'drop purposes
     virtual bool isAcceptableDrop(const QMimeData*, QVariantMap* = NULL) const;
 
     virtual Actor* createInstance(const ActorId &actorId, AttributeScript *script = NULL, const QVariantMap& params = QVariantMap());
-    
+
     void setScriptFlag(bool flag = true);
     bool isScriptFlagSet() {return isScript;}
 
@@ -96,14 +96,14 @@ protected:
     // create port and sets p as owner of new port
     // caller should add created port to actor's ports see createInstance
     virtual Port* createPort(const PortDescriptor& d, Actor* p);
-    
+
 protected:
     // list of attributes
     // can be changed via addAttribute and removeAttribute
     QList<Attribute*> attrs;
     // list of port's
     // real Port's are created via createPort
-    QList<PortDescriptor*> ports; 
+    QList<PortDescriptor*> ports;
     // controller for actor's configuration editor
     ConfigurationEditor* ed;
     // makes any non-trivial validations

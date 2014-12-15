@@ -43,7 +43,7 @@ public:
     void prepare();
     Task::ReportResult report();
 
-private:    
+private:
     QString inputDocCtxName;
     QString resultCtxName;
     int mbSeed;

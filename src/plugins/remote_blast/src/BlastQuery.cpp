@@ -161,7 +161,7 @@ QDCDDActorPrototype::QDCDDActorPrototype() {
     attributes << new Attribute(maxResLen, BaseTypes::NUM_TYPE(), false, 5000);
     attributes << new Attribute(qual, BaseTypes::STRING_TYPE(), true);
 
-    QMap<QString, PropertyDelegate*> delegates; 
+    QMap<QString, PropertyDelegate*> delegates;
     {
         QVariantMap m;
         m["1e-100"] = 1e-100;
@@ -176,7 +176,7 @@ QDCDDActorPrototype::QDCDDActorPrototype() {
     {
         QVariantMap lenMap;
         lenMap["minimum"] = QVariant(0);
-        lenMap["maximum"] = QVariant(INT_MAX); 
+        lenMap["maximum"] = QVariant(INT_MAX);
         lenMap["suffix"] = L10N::suffixBp();
         delegates[MIN_RES_LEN] = new SpinBoxDelegate(lenMap);
         delegates[MAX_RES_LEN] = new SpinBoxDelegate(lenMap);

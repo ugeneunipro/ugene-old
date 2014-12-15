@@ -211,7 +211,7 @@ void GTest_Bowtie::prepare() {
         setError("Can't create tmp data dir!");
         return;
     }
-    
+
     config.shortReadSets.append(readsFileUrl);
     config.refSeqUrl = GUrl(env->getVar("COMMON_DATA_DIR")+"/"+indexName);
     config.prebuiltIndex = usePrebuildIndex;

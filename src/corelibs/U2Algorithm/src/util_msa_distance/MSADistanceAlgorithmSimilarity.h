@@ -38,7 +38,7 @@ class U2ALGORITHM_EXPORT MSADistanceAlgorithmFactorySimilarity: public MSADistan
     Q_OBJECT
 public:
     MSADistanceAlgorithmFactorySimilarity(QObject* p = NULL);
-            
+
     virtual MSADistanceAlgorithm* createAlgorithm(const MAlignment& ma, QObject* parent);
 
     virtual QString getDescription() const;

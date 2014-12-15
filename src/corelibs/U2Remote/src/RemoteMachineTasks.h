@@ -30,8 +30,8 @@ namespace U2 {
 
     class PingTask;
 
-    /* RemoteMachine functions are blocking, so this task can be useful, 
-    * because it waits for remote machine responses in separate thread 
+    /* RemoteMachine functions are blocking, so this task can be useful,
+    * because it waits for remote machine responses in separate thread
     */
     class U2REMOTE_EXPORT RetrieveRemoteMachineInfoTask : public Task {
         Q_OBJECT
@@ -85,7 +85,7 @@ namespace U2 {
 
     }; // RetrievePublicMachinesTask
 
-    /* Save remote machine settings to file 
+    /* Save remote machine settings to file
     */
     class SaveRemoteMachineSettings : public Task {
         Q_OBJECT

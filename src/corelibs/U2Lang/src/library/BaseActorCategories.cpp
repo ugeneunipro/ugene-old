@@ -39,7 +39,7 @@ const Descriptor BaseActorCategories::CATEGORY_CONVERTERS() {
     return Descriptor("bc", tr("Data Converters"), "");
 }
 
-const Descriptor BaseActorCategories::CATEGORY_BASIC() { 
+const Descriptor BaseActorCategories::CATEGORY_BASIC() {
     return Descriptor("c", tr("Basic Analysis"), "");
 }
 
@@ -47,12 +47,12 @@ const Descriptor BaseActorCategories::CATEGORY_STATISTIC() {
     return Descriptor("st", tr("Utils"), "");
 }
 
-const Descriptor BaseActorCategories::CATEGORY_ALIGNMENT() { 
+const Descriptor BaseActorCategories::CATEGORY_ALIGNMENT() {
     return Descriptor("d", tr("Multiple Sequence Alignment"), "");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_ASSEMBLY() {
-    return Descriptor("asm", tr("DNA Assembly"), ""); 
+    return Descriptor("asm", tr("DNA Assembly"), "");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_NGS_BASIC() {
@@ -72,7 +72,7 @@ const Descriptor BaseActorCategories::CATEGORY_CALL_VARIATIONS() {
 }
 
 const Descriptor BaseActorCategories::CATEGORY_TRANSCRIPTION() {
-    return Descriptor("tr", tr("Transcription Factor"), ""); 
+    return Descriptor("tr", tr("Transcription Factor"), "");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_SCRIPT() {

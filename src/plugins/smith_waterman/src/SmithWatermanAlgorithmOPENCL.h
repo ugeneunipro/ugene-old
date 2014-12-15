@@ -20,14 +20,14 @@
  */
 
 #ifdef SW2_BUILD_WITH_OPENCL
- 
+
 #ifndef _SMITHWATERMANALGORITHM_OPENCL_H
 #define _SMITHWATERMANALGORITHM_OPENCL_H
 
 #include <U2Core/AppContext.h>
 #include <U2Algorithm/OpenCLGpuRegistry.h>
 #include <U2Algorithm/OpenCLHelper.h>
- 
+
 #include "SmithWatermanAlgorithm.h"
 
 namespace U2 {
@@ -35,7 +35,7 @@ namespace U2 {
 class SmithWatermanAlgorithmOPENCL : public SmithWatermanAlgorithm {
 public:
     typedef int ScoreType;
- 
+
     SmithWatermanAlgorithmOPENCL();
     ~SmithWatermanAlgorithmOPENCL();
 
@@ -51,7 +51,7 @@ private:
     static int calcPartsNumber(int seqLibLength, int overlapLength);
     static int calcPartSeqSize(int seqLibLength, int overlapLength, int partsNumber);
     static int calcSizeRow(int partsNumber, int partSeqSize);
-    
+
     static int MAX_BLOCKS_NUMBER;
     static const int MAX_SHARED_VECTOR_LENGTH;
 

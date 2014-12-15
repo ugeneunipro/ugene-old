@@ -39,7 +39,7 @@ public:\
     SIMPLE_XML_TEST_CONSTRUCT(ClassName, TFlags) \
     void init(XMLTestFormat *tf, const QDomElement& el); \
 
-    
+
 #define SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(TestClass, TagName, TFlags) \
     SIMPLE_XML_TEST_BODY(TestClass, TFlags) \
     class TestClass##Factory : public XMLTestFactory { \
@@ -58,9 +58,9 @@ public:\
 
 #define SIMPLE_XML_TEST_BODY_WITH_FACTORY(TestClass, TagName) \
     SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(TestClass, TagName, TaskFlags_NR_FOSCOE) \
-    
-    
-    
+
+
+
 class XMLTestUtils {
 public:
     static QList<XMLTestFactory*> createTestFactories();

@@ -46,14 +46,14 @@
 
 #include <U2View/AnnotatedDNAView.h>
 
-#include "ImportAnnotationsFromCSVTask.h" 
+#include "ImportAnnotationsFromCSVTask.h"
 
 namespace U2 {
 
 QBitArray CSVParsingConfig::QUOTES = TextUtils::createBitMap("\'\"");
 
 ImportAnnotationsFromCSVTask::ImportAnnotationsFromCSVTask(ImportAnnotationsFromCSVTaskConfig& _config)
-: Task(tr("Import annotations from CSV"), TaskFlags_NR_FOSCOE), 
+: Task(tr("Import annotations from CSV"), TaskFlags_NR_FOSCOE),
 config(_config), readTask(NULL), writeTask(NULL), addTask(NULL)
 {
     assert(config.df != NULL);
@@ -199,12 +199,12 @@ void ReadCSVAsAnnotationsTask::run() {
     IOAdapterId ioId = IOAdapterUtils::url2io(url);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
     QScopedPointer<IOAdapter> io(iof->createIOAdapter());
-    
+
     if (!io->open(url, IOAdapterMode_Read)) {
         setError(L10N::errorOpeningFileRead(url));
         return;
     }
-    
+
     QByteArray block(BUFF_SIZE, '\0');
     int blockLen = 0;
     QString text;
@@ -219,7 +219,7 @@ void ReadCSVAsAnnotationsTask::run() {
     }
     int maxColumns = 0;
     QList<QStringList> parsedLines = parseLinesIntoTokens(text, config, maxColumns, stateInfo);
-    
+
     foreach(QStringList lineTokens, parsedLines) {
         AnnotationData a;
         bool ok = true;
@@ -237,7 +237,7 @@ void ReadCSVAsAnnotationsTask::run() {
             const ColumnConfig& columnConf = config.columns.at(column);
             const QString& token = lineTokens.at(column);
             switch(columnConf.role) {
-                case ColumnRole_Qualifier: 
+                case ColumnRole_Qualifier:
                     assert(!columnConf.qualifierName.isEmpty());
                     a.qualifiers.append(U2Qualifier(columnConf.qualifierName, token));
                     break;
@@ -280,7 +280,7 @@ void ReadCSVAsAnnotationsTask::run() {
                     assert(columnConf.role == ColumnRole_Ignore);
             }
         }
-        
+
         //add annotation
         if (ok) {
             //set up default name

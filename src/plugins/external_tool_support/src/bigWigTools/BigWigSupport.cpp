@@ -48,7 +48,7 @@ BigWigSupport::BigWigSupport(const QString& name, const QString& path) : Externa
 #endif
     validMessage="bedGraphToBigWig";
     description=tr("<i>bedGraphToBigWig</i>: converts bedGrapth to bigWig.");
-                   
+
     versionRegExp=QRegExp("bedGraphToBigWig v(\\d+)");
     validationArguments << "";
     toolKitName="bedGraphToBigWig";

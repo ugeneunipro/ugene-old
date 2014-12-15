@@ -60,7 +60,7 @@
 #include "QueryViewItems.h"
 
 namespace U2 {
-    
+
 /************************************************************************/
 /* Scene                                                                */
 /************************************************************************/
@@ -341,7 +341,7 @@ void QueryScene::setRowsNumber(int count) {
             }
         }
 
-        descTxtItem->moveBy(0.0, dY);        
+        descTxtItem->moveBy(0.0, dY);
         qreal bottom = descTxtItem->mapRectToScene(descTxtItem->boundingRect()).bottom();
         bottom = footnotesArea().bottom() + DESCRIPTION_TOP_PAD;
         descTxtItem->setY(bottom);
@@ -412,7 +412,7 @@ void QueryScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
         QRectF rightArea = sceneRect();
         rightArea.setLeft(mousePos.x());
         const QList<QGraphicsItem*>& annItemsToRight = getElements(rightArea);
-        
+
         qreal delta = sceneRect().width()*sceneRect().width() + sceneRect().height()*sceneRect().height();
         QDElement *src = NULL, *dst = NULL;
         foreach(QGraphicsItem* itLeft, annItemsToLeft) {
@@ -529,7 +529,7 @@ void QueryScene::addActor(QDActor* actor, const QPointF& pos) {
             addItem(fn);
             fn->updatePos();
         }
-    }    
+    }
     connect(actor->getParameters(), SIGNAL(si_modified()), ruler, SLOT(sl_updateText()));
     emit_schemeChanged();
     setModified(true);
@@ -541,7 +541,7 @@ bool QueryScene::ajustPosForNewItem(QDElement *targetItem, QPointF &posToAjust){
     itemRect.moveTo(posToAjust);
     foreach(QDElement *el, getElements()){
         if(el == targetItem) continue;
-        QRectF elRect = el->sceneBoundingRect(); 
+        QRectF elRect = el->sceneBoundingRect();
         if( itemRect.intersects(elRect) ){
             float yy = elRect.bottomLeft().y();
             posToAjust = QPointF(posToAjust.x(), yy);
@@ -569,7 +569,7 @@ void QueryScene::addDistanceConstraint(QDElement* src, QDElement* dst, QDDistanc
     setModified(true);
 }
 
-void QueryScene::removeActor(QDActor* actor) {    
+void QueryScene::removeActor(QDActor* actor) {
     foreach(QGraphicsItem* it, getElements()) {
         QDElement* uv = qgraphicsitem_cast<QDElement*>(it);
         assert(uv);
@@ -709,7 +709,7 @@ QueryViewController::QueryViewController() : MWMDIWindow(tr("Query Designer")), 
 
     createActions();
     sl_updateTitle();
-    
+
     sl_scrollUp();
 }
 
@@ -732,7 +732,7 @@ void QueryViewController::createActions() {
     newAction->setShortcuts(QKeySequence::New);
     newAction->setIcon(QIcon(":query_designer/images/filenew.png"));
     connect(newAction, SIGNAL(triggered()), SLOT(sl_newScene()));
-    
+
     loadAction = new QAction(tr("Load Schema..."), this);
     loadAction->setShortcut(QKeySequence("Ctrl+L"));
     loadAction->setIcon(QIcon(":query_designer/images/fileopen.png"));
@@ -744,7 +744,7 @@ void QueryViewController::createActions() {
     saveAction->setIcon(QIcon(":query_designer/images/filesave.png"));
     saveAction->setDisabled(true);
     connect(saveAction, SIGNAL(triggered()), SLOT(sl_saveScene()));
-    
+
     saveAsAction = new QAction(tr("Save Schema As..."), this);
     saveAsAction->setShortcut(QKeySequence::SaveAs);
     saveAsAction->setShortcutContext(Qt::WidgetShortcut);
@@ -1215,7 +1215,7 @@ QPixmap QDUtils::generateSnapShot(QDDocument* doc, const QRect& rect) {
 
 QPixmap QDUtils::generateSnapShot( QueryScene* scene, const QRect& rect) {
     //assert(!rect.isNull());
-    QRectF bounds; 
+    QRectF bounds;
     foreach(QGraphicsItem* item, scene->items()) {
         if (item->type()==QDElementType || item->type()==FootnoteItemType) {
             QRectF itemBound = item->boundingRect();
@@ -1230,7 +1230,7 @@ QPixmap QDUtils::generateSnapShot( QueryScene* scene, const QRect& rect) {
     }
 
     QPixmap pixmap(bounds.size().toSize());
-    if (pixmap.isNull()) { // failed to allocate 
+    if (pixmap.isNull()) { // failed to allocate
         uiLog.trace(QString("Failed to allocate pixmap for the QD scene, bounds: x:%1 y:%2 w:%3 h:%4")
             .arg(bounds.x()).arg(bounds.y()).arg(bounds.width()).arg(bounds.height()));
         QPixmap naPixmap = QPixmap(rect.size());

@@ -43,13 +43,13 @@ class WorkflowInvestigationWidgetsController : public QObject {
 public:
     explicit WorkflowInvestigationWidgetsController(QWidget *parent = NULL);
     ~WorkflowInvestigationWidgetsController();
-    
+
     void deleteBusInvestigations();
     void resetInvestigations();
     void setInvestigationWidgetsVisible(bool visible);
     void setCurrentInvestigation(const Workflow::Link *bus);
     bool eventFilter(QObject *watched, QEvent *event);
-    
+
 public slots:
     void sl_currentInvestigationUpdateResponse(const WorkflowInvestigationData &investigationInfo,
         const Workflow::Link *bus);

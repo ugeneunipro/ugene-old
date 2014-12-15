@@ -34,7 +34,7 @@ class U2PRIVATE_EXPORT SettingsImpl : public Settings {
 public:
     SettingsImpl(QSettings::Scope scope);
     ~SettingsImpl();
-    
+
     QStringList getAllKeys(const QString& path) const;
     void cleanSection(const QString& path);
 
@@ -47,7 +47,7 @@ public:
     virtual QString toVersionKey(const QString& key) const;
 
     virtual void sync();
-    
+
     virtual QString fileName() const;
 
 private:

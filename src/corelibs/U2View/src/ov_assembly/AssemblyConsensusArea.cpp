@@ -289,7 +289,7 @@ void AssemblyConsensusArea::updateActions(){
     }else{
         exportConsensusVariationsAction->setDisabled(false);
     }
-        
+
 }
 
 

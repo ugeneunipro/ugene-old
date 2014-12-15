@@ -271,7 +271,7 @@ private:
 class U2VIEW_EXPORT MSAHighlightingSchemeFactory : public QObject {
     Q_OBJECT
 public:
-    MSAHighlightingSchemeFactory(QObject* p, const QString& id, const QString& name, DNAAlphabetType atype, 
+    MSAHighlightingSchemeFactory(QObject* p, const QString& id, const QString& name, DNAAlphabetType atype,
         bool _refFree = false, bool _needThreshold = false )
         :QObject(p), id(id), name(name), aType(atype), refFree(_refFree), needThreshold(_needThreshold){};
     virtual MSAHighlightingScheme* create(QObject* p, MAlignmentObject* obj) = 0;

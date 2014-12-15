@@ -54,7 +54,7 @@ void CreateCircularBranchesTask::run() {
     }else{
         root1->setWidthW(WIDTH_RADIUS);
     }
-    
+
     GraphicsCircularBranchItem* r = getBranch(root1, NULL);
     r->setVisibleW(false);
     root = r;

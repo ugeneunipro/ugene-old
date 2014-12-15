@@ -47,7 +47,7 @@ public:
 
     virtual bool checkMemoryEstimation(QString& , const MAlignment& , const CreatePhyTreeSettings& ) {return true;}
 };
- 
+
 } //namespace
 
 #endif

@@ -100,7 +100,7 @@ void DotPlotFilesDialog::sl_openFirstFile() {
         bool multySeq = format.rawDataCheckResult.properties.value(RawDataCheckResult_MultipleSequences).toBool();
         if(multySeq){
             mergeFirstCheckBox->setChecked(true);
-            sl_mergeFirst();            
+            sl_mergeFirst();
         }
     }
 }
@@ -132,7 +132,7 @@ void DotPlotFilesDialog::sl_openSecondFile() {
         bool multySeq = format.rawDataCheckResult.properties.value(RawDataCheckResult_MultipleSequences).toBool();
         if(multySeq){
             mergeSecondCheckBox->setChecked(true);
-            sl_mergeSecond();            
+            sl_mergeSecond();
         }
     }
 }

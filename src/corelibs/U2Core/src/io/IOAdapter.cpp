@@ -34,7 +34,7 @@ const IOAdapterId BaseIOAdapters::STRING( "string" );
 const IOAdapterId BaseIOAdapters::DATABASE_CONNECTION("database_connection");
 
 
-qint64 IOAdapter::readUntil(char* buf, qint64 maxSize, 
+qint64 IOAdapter::readUntil(char* buf, qint64 maxSize,
                             const QBitArray& readTerminators,
                             TerminatorHandling th,  bool* terminatorFound)
 {

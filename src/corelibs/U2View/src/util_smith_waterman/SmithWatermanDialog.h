@@ -51,7 +51,7 @@ struct SWDialogConfig {
         ptrn = QByteArray();
         algVersion = QString("");
         scoringMatrix = QString("");
-        
+
         gm.scoreGapOpen = DEF_GAP_OPEN_SCORE;
         gm.scoreGapExtd = DEF_GAP_EXTD_SCORE;
 
@@ -83,10 +83,10 @@ struct SWDialogConfig {
 
     int minScoreInPercent;      // c {0, 1, ..., 100}
 
-    SmithWatermanSearchType searchType;                
+    SmithWatermanSearchType searchType;
     StrandOption strand;
     SmithWatermanRangeType  rangeType;
-    
+
     SmithWatermanSettings::SWResultView resultView;
 
     QString alignFilesNamesTmpl;
@@ -101,7 +101,7 @@ struct SWDialogConfig {
 
 class U2VIEW_EXPORT SmithWatermanDialogController {
 public:
-    static void run(QWidget* p, 
+    static void run(QWidget* p,
                         ADVSequenceObjectContext* ctx,
                         SWDialogConfig* dialogConfig);
 };

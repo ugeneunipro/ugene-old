@@ -46,7 +46,7 @@ namespace U2 {
 class SmithWatermanDialog: public QDialog, public Ui::SmithWatermanDialogBase {
     Q_OBJECT
 public:
-    SmithWatermanDialog(QWidget* p, 
+    SmithWatermanDialog(QWidget* p,
                         ADVSequenceObjectContext* ctx,
                         SWDialogConfig* dialogConfig);
     ~SmithWatermanDialog();

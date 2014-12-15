@@ -38,14 +38,14 @@ public:
 
     inline int getMaxSize() const;
     inline int size() const;
-    
+
     inline void set(int pos, T val);
     inline T get(int pos) const;
     inline T& get(int pos);
 
     inline void push_back_pop_front(T val);
     inline void push_front_pop_back(T val);
-    
+
 private:
     inline void push(T val);
     inline void push_front(T val);
@@ -76,7 +76,7 @@ buf(size), startRollPos(0), endRollPos(size-1), maxSize(size)
     for (int i = 0; i < buf.size(); ++i)    buf[i] = *(data + i);
 }
 
- 
+
 template<class T> inline int RollingArray<T>::getMaxSize() const {
     return maxSize;
 }
@@ -114,7 +114,7 @@ template<class T> void RollingArray<T>::push(T val) {
     buf[endRollPos] = val;
 }
 
- 
+
 template<class T> inline void RollingArray<T>::push_front(T val)
 {
     --startRollPos;
@@ -133,7 +133,7 @@ template<class T> T RollingArray<T>::pop() {
     return res;
 }
 
- 
+
 template<class T> inline T RollingArray<T>::pop_front()
 {
     T res = buf[startRollPos];
@@ -145,7 +145,7 @@ template<class T> inline T RollingArray<T>::pop_front()
     return res;
 }
 
- 
+
 template<class T> inline void RollingArray<T>::push_back_pop_front( T val )
 {
     if( size() == getMaxSize() ) {
@@ -154,7 +154,7 @@ template<class T> inline void RollingArray<T>::push_back_pop_front( T val )
     push( val );
 }
 
- 
+
 template<class T> inline void RollingArray<T>::push_front_pop_back(T val)
 {
     if( size() == getMaxSize() ) {

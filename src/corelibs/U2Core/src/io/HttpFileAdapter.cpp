@@ -48,7 +48,7 @@ IOAdapter* HttpFileAdapterFactory::createIOAdapter() {
 }
 
 GzippedHttpFileAdapterFactory::GzippedHttpFileAdapterFactory( QObject * obj /* = 0 */ )  :
-HttpFileAdapterFactory( obj ) {    
+HttpFileAdapterFactory( obj ) {
     name = tr("HTTP GZIP adaptor");
 }
 
@@ -56,14 +56,14 @@ IOAdapter * GzippedHttpFileAdapterFactory::createIOAdapter() {
     return new ZlibAdapter( new HttpFileAdapter(this) );
 }
 
-QNetworkProxy HttpFileAdapterFactory::getProxyByUrl( const QUrl & url ) const { 
+QNetworkProxy HttpFileAdapterFactory::getProxyByUrl( const QUrl & url ) const {
     NetworkConfiguration* nc = AppContext::getAppSettings()->getNetworkConfiguration();
-    return nc->getProxyByUrl(url); 
+    return nc->getProxyByUrl(url);
 }
 
 
 
-HttpFileAdapter::HttpFileAdapter(HttpFileAdapterFactory* factory, QObject* o) 
+HttpFileAdapter::HttpFileAdapter(HttpFileAdapterFactory* factory, QObject* o)
 : IOAdapter(factory, o), is_cached(false), begin_ptr(-1), end_ptr(0),
   badstate(false), is_downloaded(false), downloaded(0), total(0)
 {
@@ -90,7 +90,7 @@ bool HttpFileAdapter::open(const GUrl& url_, IOAdapterMode m) {
     gurl = url_;
     init();
 
-    HttpFileAdapterFactory * f = qobject_cast<HttpFileAdapterFactory*> ( getFactory() ); 
+    HttpFileAdapterFactory * f = qobject_cast<HttpFileAdapterFactory*> ( getFactory() );
     QNetworkProxy proxy = f->getProxyByUrl(url);
     return open( url, proxy );
 }
@@ -144,7 +144,7 @@ void HttpFileAdapter::close() {
     init();
 }
 
-qint64 HttpFileAdapter::readBlock(char* data, qint64 size) 
+qint64 HttpFileAdapter::readBlock(char* data, qint64 size)
 {
     SAFE_POINT(isOpen(), "Adapter is not opened!", 0);
     if( badstate ) {
@@ -222,7 +222,7 @@ void HttpFileAdapter::add_data()
     if( isEmpty() ) {
         begin_ptr = 0;
     }
-    int howmuch = CHUNKSIZE - end_ptr; 
+    int howmuch = CHUNKSIZE - end_ptr;
     int got = reply->read( chunk_list.last().data() + end_ptr, howmuch );
 
     if( got < 0 ) {
@@ -251,7 +251,7 @@ void HttpFileAdapter::add_data()
 
 qint64 HttpFileAdapter::stored() const
 {
-    return (singleChunk() ? firstChunkContains() : 
+    return (singleChunk() ? firstChunkContains() :
            firstChunkContains() + end_ptr + (chunk_list.size()-2) * CHUNKSIZE );
 }
 
@@ -259,7 +259,7 @@ void HttpFileAdapter::readFromChunk( char * data, int size )
 {
     assert( size <= firstChunkContains() );
     assert( !isEmpty() );
-    
+
     memcpy( data, chunk_list.first().data() + begin_ptr, size );
     if( begin_ptr + size == CHUNKSIZE) {
         popFront();

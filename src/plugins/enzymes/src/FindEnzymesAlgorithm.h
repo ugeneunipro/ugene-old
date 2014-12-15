@@ -52,10 +52,10 @@ public:
     void run(const DNASequence& sequence, const U2Region& range, const SEnzymeData& enzyme, FindEnzymesAlgListener* l, TaskStateInfo& ti, int resultPosShift=0) {
 
         SAFE_POINT(enzyme->alphabet != NULL, "No enzyme alphabet", );
-    
+
         // look for results in direct strand
         run(sequence, range, enzyme, enzyme->seq.constData(), U2Strand::Direct, l, ti, resultPosShift);
-        
+
         // if enzyme is not symmetric - look in complementary strand too
         DNATranslation* tt = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(enzyme->alphabet);
         if (tt == NULL) {
@@ -71,8 +71,8 @@ public:
     }
 
 
-    void run(const DNASequence& sequence, const U2Region& range, const SEnzymeData& enzyme, 
-        const char* pattern, U2Strand stand, FindEnzymesAlgListener* l, TaskStateInfo& ti, int resultPosShift=0) 
+    void run(const DNASequence& sequence, const U2Region& range, const SEnzymeData& enzyme,
+        const char* pattern, U2Strand stand, FindEnzymesAlgListener* l, TaskStateInfo& ti, int resultPosShift=0)
     {
         CompareFN fn(sequence.alphabet, enzyme->alphabet);
         const char* seq = sequence.constData();
@@ -98,8 +98,8 @@ public:
                         l->onResult(resultPosShift + s + startPos, enzyme, stand);
                     }
                 }
-                
-            } 
+
+            }
         }
     }
 

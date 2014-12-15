@@ -63,7 +63,7 @@ protected:
     bool eventFilter(QObject *obj, QEvent *ev);
 
 private slots:
-    
+
     //buttons:
     void sl_selectModelFile();
     void sl_onSaveAnnotations();
@@ -87,7 +87,7 @@ private slots:
     void sl_onTimer();
 
     void sl_onResultActivated(QTreeWidgetItem* i, int col);
-    
+
 private:
     void connectGUI();
     void updateState();
@@ -95,7 +95,7 @@ private:
     void updateModel(const PWMatrix& m);
     void loadFile(QString filename);
     void addToQueue();
-    
+
     bool checkPrevSettings();
     void savePrevSettings();
 
@@ -105,10 +105,10 @@ private:
 private:
     ADVSequenceObjectContext*                           ctx;
     U2Region                                            initialSelection;
-    
+
     PFMatrix                                            intermediate;
-    PWMatrix                                            model;    
-    
+    PWMatrix                                            model;
+
     QList< QPair<PWMatrix, WeightMatrixSearchCfg> >     queue;
 
     WeightMatrixSearchTask*                             task;

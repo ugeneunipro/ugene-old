@@ -31,7 +31,7 @@
 namespace U2 {
 
 class Attribute;
-    
+
 class SWAlgoEditor : public ComboBoxDelegate {
     Q_OBJECT
 public:

@@ -35,7 +35,7 @@ class TreeSettingsDialog : public QDialog, public Ui_TreeSettingsDialog{
     Q_OBJECT
 public:
     TreeSettingsDialog(QWidget *parent, const TreeSettings &treeSettings, bool isRectLayout);
-    
+
     virtual void accept();
     const TreeSettings& getSettings() const;
 

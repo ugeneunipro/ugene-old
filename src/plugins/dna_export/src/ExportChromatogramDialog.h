@@ -45,17 +45,17 @@ public:
 
     virtual void accept();
 
-public:    
+public:
     QString url;
     DocumentFormatId format;
     bool addToProjectFlag;
     bool reversed;
     bool complemented;
-    
+
 private slots:
     void sl_onBrowseClicked();
 
-private:    
+private:
     SaveDocumentGroupController* saveController;
 };
 

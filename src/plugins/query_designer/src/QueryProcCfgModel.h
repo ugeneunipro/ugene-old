@@ -74,7 +74,7 @@ public:
     }
 
     int columnCount(const QModelIndex&) const { return 2; }
-    
+
     int rowCount(const QModelIndex&) const { return attrs.size(); }
 
     Qt::ItemFlags flags (const QModelIndex& index) const {
@@ -112,11 +112,11 @@ public:
                 return QVariant();
 
             }
-        }     
+        }
         QVariant val = item->getAttributePureValue();
         PropertyDelegate* pd = editor ? editor->getDelegate(item->getId()) : NULL;
         switch (role) {
-        case Qt::DisplayRole: 
+        case Qt::DisplayRole:
         case Qt::ToolTipRole:
             {
                 if(pd) {

@@ -64,7 +64,7 @@ private:
     void saveSuites();
     void readBuiltInVars();
     void deallocateSuites();
-    
+
     void readEnvForKeys(QStringList keys);
     void saveEnv();
     void updateDefaultEnvValues(GTestSuite* ts);

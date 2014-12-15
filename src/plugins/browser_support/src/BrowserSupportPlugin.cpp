@@ -118,7 +118,7 @@ void BrowserSupportPlugin::sl_clipboardCheck() {
             QVariantMap hints;
             Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(urls, hints);
             if (openTask != NULL) {
-                AppContext::getTaskScheduler()->registerTopLevelTask(openTask);	
+                AppContext::getTaskScheduler()->registerTopLevelTask(openTask);
                 QApplication::clipboard()->setText("");
             }
         }

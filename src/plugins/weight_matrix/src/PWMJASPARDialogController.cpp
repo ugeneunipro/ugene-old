@@ -35,7 +35,7 @@
 
 namespace U2 {
 
-PWMJASPARDialogController::PWMJASPARDialogController(QWidget *w) 
+PWMJASPARDialogController::PWMJASPARDialogController(QWidget *w)
 : QDialog(w) {
     setupUi(this);
     new HelpButton(this, buttonBox, "4227729");
@@ -104,7 +104,7 @@ void PWMJASPARDialogController::sl_onSelectionChanged() {
     propertiesTable->setColumnCount(2);
     propertiesTable->verticalHeader()->setVisible(false);
     propertiesTable->horizontalHeader()->setVisible(false);
-    
+
     QMapIterator<QString, QString> iter(props);
     int pos = 0;
     while (iter.hasNext()) {
@@ -143,7 +143,7 @@ void PWMJASPARDialogController::sl_onDoubleClicked(QTreeWidgetItem* item, int co
 
 //////////////////////////////////////////////////////////////////////////
 // Tree item
-JasparTreeItem::JasparTreeItem(const JasparInfo& ed) 
+JasparTreeItem::JasparTreeItem(const JasparInfo& ed)
 : matrix(ed)
 {
     this->setText(0, matrix.getProperty(QString("name")));

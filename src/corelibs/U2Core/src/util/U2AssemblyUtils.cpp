@@ -85,7 +85,7 @@ QList<U2CigarToken> U2AssemblyUtils::parseCigar(const QByteArray& cigarString, Q
             int n = c - '0';
             count = count * 10 + n;
             continue;
-        } 
+        }
         U2CigarOp op = char2Cigar(c, err);
         if (!err.isEmpty()) {
             break;
@@ -117,11 +117,11 @@ qint64 U2AssemblyUtils::getCigarExtraLength(const QList<U2CigarToken>& cigar) {
         switch(t.op) {
             case U2CigarOp_I:
             case U2CigarOp_S:
-                res-=t.count; 
+                res-=t.count;
                 break;
-            case U2CigarOp_D: 
-            case U2CigarOp_N: 
-                res+=t.count; 
+            case U2CigarOp_D:
+            case U2CigarOp_N:
+                res+=t.count;
                 break;
             default:;
         }

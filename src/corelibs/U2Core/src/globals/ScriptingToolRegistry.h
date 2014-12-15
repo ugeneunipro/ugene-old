@@ -59,7 +59,7 @@ public:
 protected:
     QMap<QString, ScriptingTool*>    registry;
 
-}; 
+};
 
 } //namespace
 #endif // _U2_SCRIPTING_TOOL_REGISTRY_H

@@ -39,10 +39,10 @@ class VariantTrackObject;
 class U2VIEW_EXPORT AssemblyModel : public QObject {
     Q_OBJECT
 public:
-    //TODO refactor 
+    //TODO refactor
     AssemblyModel(const DbiConnection& dbiConnection);
     ~AssemblyModel();
-    
+
     bool isEmpty() const;
 
     QList<U2AssemblyRead> getReadsFromAssembly(const U2Region & r, qint64 minRow, qint64 maxRow, U2OpStatus & os);
@@ -54,17 +54,17 @@ public:
 
     // returns true if calling getCoverageStat will not cause recomputation and is safe from main thread
     bool hasCachedCoverageStat();
-    
+
     U2Region getGlobalRegion();
 
     qint64 getModelLength(U2OpStatus & os);
 
     QByteArray getReferenceMd5(U2OpStatus & os);
-    
+
     QByteArray getReferenceSpecies(U2OpStatus & os);
-    
+
     QString getReferenceUri(U2OpStatus & os);
-    
+
     qint64 getModelHeight(U2OpStatus & os);
 
     void setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm);
@@ -72,19 +72,19 @@ public:
 
     bool hasReference() const;
     bool referenceAssociated()const;
-    
+
     void setReference(U2SequenceObject* seqObj);
-    U2EntityRef getRefereneceEntityRef(); 
+    U2EntityRef getRefereneceEntityRef();
 
     QByteArray getReferenceRegion(const U2Region& region, U2OpStatus& os);
     QByteArray getReferenceRegionOrEmpty(const U2Region& region);
 
     const DbiConnection& getDbiConnection() const {return dbiHandle;}
-    
+
     void associateWithReference(const U2DataId &refId);
-    
+
     bool isLoadingReference()const { return loadingReference; }
-    
+
     qint64 getReadsNumber(U2OpStatus & os);
     bool hasReads(U2OpStatus & os);
 
@@ -94,7 +94,7 @@ public:
     void addTrackObject(VariantTrackObject *trackObj);
     bool checkPermissions(QFile::Permission permission, bool showDialog = true) const;
     void dissociateReference();
-    
+
 private:
     /**
         Unsets reference only for current session (e.g. when ref doc is closed),
@@ -105,7 +105,7 @@ private:
     Task * createLoadReferenceAndAddToProjectTask(const U2CrossDatabaseReference& ref);
     void onReferenceRemoved();
     void removeCrossDatabaseReference(const U2DataId& refId);
-    
+
 signals:
     void si_referenceChanged();
     void si_trackAdded(VariantTrackObject *trackObj);
@@ -113,7 +113,7 @@ signals:
 
 public slots:
     void sl_trackObjRemoved(GObject *o);
-    
+
 private slots:
     void sl_referenceLoaded();
     void sl_referenceLoadingFailed();
@@ -121,7 +121,7 @@ private slots:
     void sl_docRemoved(Document*);
     void sl_docAdded(Document *);
     void sl_referenceObjRemoved(GObject* o);
-    
+
 private:
     const static qint64 NO_VAL = -1;
     const static QByteArray COVERAGE_STAT_ATTRIBUTE_NAME;
@@ -129,7 +129,7 @@ private:
     qint64 cachedModelLength;
     qint64 cachedModelHeight;
 
-    
+
     U2Assembly assembly;
     U2AssemblyDbi * assemblyDbi;
     DbiConnection dbiHandle;
@@ -140,9 +140,9 @@ private:
 
     QByteArray referenceMd5;
     bool md5Retrieved;
-    
+
     qint64 cachedReadsNumber;
-    
+
     QByteArray referenceSpecies;
     bool speciesRetrieved;
 

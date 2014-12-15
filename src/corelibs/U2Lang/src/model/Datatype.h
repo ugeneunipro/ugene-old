@@ -50,59 +50,59 @@ public:
         // Map<Descriptor, DatatypePtr>
         Map
     }; // Kind
-    
+
     DataType(const QString& id, const QString& name, const QString& desc);
     DataType(const Descriptor& d);
     virtual ~DataType() {}
-    
+
     /*virtual bool equals(DataTypePtr t) const {return t == this;} */
-    
+
     // default kind() is Single
     virtual Kind kind() const;
     inline bool isSingle() const {return kind() == Single;}
     inline bool isMap() const {return kind() == Map;}
     inline bool isList() const {return kind() == List;}
-    
+
     // default: empty descriptor
     // in map type: corresponding descriptor
     // in list type: element type
     virtual DataTypePtr getDatatypeByDescriptor(const Descriptor& idd=Descriptor(QString())) const;
-    
+
     // used only in map type: returns list of all types from map
     // default: empty list
     virtual QList<Descriptor> getAllDescriptors() const;
-    
+
     // used only in map type
     // default: empty map
     virtual QMap<Descriptor, DataTypePtr> getDatatypesMap() const;
-    
+
     // finds Descriptor identified with 'id' in list of Descriptors from getAllDescriptors function
     Descriptor getDatatypeDescriptor(const QString& id) const;
 
     static const QString EMPTY_TYPESET_ID;
-    
+
 }; // DataType
 
 
 /**
- * represents complex type. 
+ * represents complex type.
  * in fact, map of pairs (Descriptor, Datatype)
  * Usage: for passing many objects of different types (see IntegralBusType)
  */
 class U2LANG_EXPORT MapDataType : public DataType {
 public:
     MapDataType(const Descriptor& d, const QMap<Descriptor, DataTypePtr>& m);
-    
+
     // reimplemented from Datatype
     virtual DataType::Kind kind() const;
     virtual DataTypePtr getDatatypeByDescriptor(const Descriptor& d) const;
     virtual QList<Descriptor> getAllDescriptors() const;
     virtual QMap<Descriptor, DataTypePtr> getDatatypesMap() const;
-    
+
 protected:
     // types map
     QMap<Descriptor, DataTypePtr> map;
-    
+
 }; // MapDataType
 
 /**
@@ -112,15 +112,15 @@ protected:
 class U2LANG_EXPORT ListDataType : public DataType {
 public:
     ListDataType(const Descriptor& d, DataTypePtr el);
-    
+
     // reimplemented from Datatype
     virtual DataType::Kind kind() const;
     virtual DataTypePtr getDatatypeByDescriptor(const Descriptor& idd=Descriptor(QString())) const;
-    
+
 protected:
-    // 
+    //
     DataTypePtr listElementDatatype;
-    
+
 }; // ListDataType
 
 /**
@@ -132,18 +132,18 @@ protected:
 class DataTypeRegistry {
 public:
     virtual ~DataTypeRegistry();
-    
+
     virtual DataTypePtr getById(const QString& id) const;
     virtual bool registerEntry(DataTypePtr t);
     virtual DataTypePtr unregisterEntry(const QString& id);
-    
+
     virtual QList<DataTypePtr> getAllEntries() const;
     virtual QList<QString> getAllIds() const;
-    
+
 protected:
     // standard map
     QMap<QString, DataTypePtr> registry;
-    
+
 }; // DataTypeRegistry
 
 /**
@@ -155,10 +155,10 @@ class DataTypeValueFactory {
 public:
     DataTypeValueFactory() {}
     virtual ~DataTypeValueFactory() {}
-    
+
     virtual QVariant getValueFromString( const QString & str, bool * ok = NULL ) const = 0;
     virtual QString getId() const = 0;
-    
+
 }; // DataTypeValueFactory
 
 /**

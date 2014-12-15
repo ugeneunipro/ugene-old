@@ -57,8 +57,8 @@ FindTandemsTaskSettings FindTandemsDialog::defaultSettings()
     return res;
 }
 
-FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc) 
-: QDialog(_sc->getAnnotatedDNAView()->getWidget()) 
+FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
+: QDialog(_sc->getAnnotatedDNAView()->getWidget())
 {
     sc = _sc;
     setupUi(this);
@@ -75,7 +75,7 @@ FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
     m.useUnloadedObjects = true;
     m.sequenceLen = sc->getSequenceObject()->getSequenceLength();
     ac = new CreateAnnotationWidgetController(m, this);
-    
+
     QWidget* caw = ac->getWidget();
     QVBoxLayout* l = new QVBoxLayout();
     l->setMargin(0);
@@ -222,7 +222,7 @@ void FindTandemsDialog::accept() {
 
     FindTandemsToAnnotationsTask* t = new FindTandemsToAnnotationsTask(settings, seq, cam.data.name, cam.groupName, cam.annotationObjectRef);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
-    
+
     QDialog::accept();
 }
 
@@ -235,14 +235,14 @@ quint64 FindTandemsDialog::areaSize() const {
     int maxDist = sc->getSequenceLength();
 
     quint64 dRange = qMax(0, maxDist - minDist);
-    
+
     quint64 res = range * dRange;
     return res;
 }
 
 int FindTandemsDialog::estimateResultsCount() const {
     int len = 1;
-    
+
     quint64 nVariations  = areaSize(); //max possible results
     double variationsPerLen = pow(double(4), double(len));
     quint64 res = quint64(nVariations / variationsPerLen);

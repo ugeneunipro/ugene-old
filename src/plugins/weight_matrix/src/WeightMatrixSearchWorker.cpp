@@ -64,9 +64,9 @@ void PWMatrixSearchWorker::registerProto() {
     {
         Descriptor md(MODEL_PORT, PWMatrixSearchWorker::tr("Weight matrix"), PWMatrixSearchWorker::tr("Profile data to search with."));
         Descriptor sd(BasePorts::IN_SEQ_PORT_ID(), PWMatrixSearchWorker::tr("Sequence"), PWMatrixSearchWorker::tr("Input nucleotide sequence to search in."));
-        Descriptor od(BasePorts::OUT_ANNOTATIONS_PORT_ID(), PWMatrixSearchWorker::tr("Weight matrix annotations"), 
+        Descriptor od(BasePorts::OUT_ANNOTATIONS_PORT_ID(), PWMatrixSearchWorker::tr("Weight matrix annotations"),
             PWMatrixSearchWorker::tr("Annotations marking found TFBS sites."));
-        
+
         QMap<Descriptor, DataTypePtr> modelM;
         modelM[PWMatrixWorkerFactory::WMATRIX_SLOT] = PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE();
         p << new PortDescriptor(md, DataTypePtr(new MapDataType("wmatrix.search.model", modelM)), true /*input*/, false, IntegralBusPort::BLIND_INPUT);
@@ -78,17 +78,17 @@ void PWMatrixSearchWorker::registerProto() {
         p << new PortDescriptor(od, DataTypePtr(new MapDataType("wmatrix.search.out", outM)), false /*input*/, true /*multi*/);
     }
     {
-        Descriptor nd(NAME_ATTR, PWMatrixSearchWorker::tr("Result annotation"), 
+        Descriptor nd(NAME_ATTR, PWMatrixSearchWorker::tr("Result annotation"),
             PWMatrixSearchWorker::tr("Annotation name for marking found regions."));
-        Descriptor scd(SCORE_ATTR, PWMatrixSearchWorker::tr("Min score"), 
+        Descriptor scd(SCORE_ATTR, PWMatrixSearchWorker::tr("Min score"),
             QApplication::translate("PWMSearchDialog", "min_err_tip", 0));
-        
+
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, "misc_feature");
         a << new Attribute(BaseAttributes::STRAND_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, BaseAttributes::STRAND_BOTH());
         a << new Attribute(scd, BaseTypes::NUM_TYPE(), false, 85);
     }
 
-    Descriptor desc(ACTOR_ID, tr("Search for TFBS with Weight Matrix"), 
+    Descriptor desc(ACTOR_ID, tr("Search for TFBS with Weight Matrix"),
         tr("Searches each input sequence for transcription factor binding sites significantly similar to specified weight matrices."
         " In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.")
         );

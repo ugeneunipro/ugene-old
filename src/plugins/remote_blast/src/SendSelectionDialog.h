@@ -33,7 +33,7 @@
 #include <QtWidgets/QMessageBox>
 #endif
 
-#include "RemoteBLASTTask.h" 
+#include "RemoteBLASTTask.h"
 #include "RemoteBLASTConsts.h"
 
 

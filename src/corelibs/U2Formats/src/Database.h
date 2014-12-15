@@ -47,7 +47,7 @@ protected:
 
 public:
     const DbiConnection& getDbi() const {return databaseDbi;}
-    
+
     static Database* loadDatabase(const QString& url, U2OpStatus& os);
 
     static DbiConnection createEmptyDbi(const QString& url, U2OpStatus& os);

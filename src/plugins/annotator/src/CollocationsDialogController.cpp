@@ -54,7 +54,7 @@ class U2SequenceObject;
 
 //TODO: support results separation on complement and direct strands
 
-CollocationsDialogController::CollocationsDialogController(QStringList _names, ADVSequenceObjectContext* _ctx) 
+CollocationsDialogController::CollocationsDialogController(QStringList _names, ADVSequenceObjectContext* _ctx)
 : allNames(_names), ctx(_ctx)
 {
     task = NULL;
@@ -63,7 +63,7 @@ CollocationsDialogController::CollocationsDialogController(QStringList _names, A
     new HelpButton(this, buttonBox, "4227609");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
-    
+
     QStringList list;
     list.append(tr("click_to_add_new_annotation"));
     QTreeWidgetItem* item = new QTreeWidgetItem(annotationsTree, list);
@@ -71,12 +71,12 @@ CollocationsDialogController::CollocationsDialogController(QStringList _names, A
     plusButton->setText("+");
     annotationsTree->addTopLevelItem(item);
     annotationsTree->setItemWidget(item, 1, plusButton);
-    
+
     int w = annotationsTree->minimumWidth();
     annotationsTree->setColumnWidth(1, 20);
     annotationsTree->setColumnWidth(0, w - 30);
     annotationsTree->setUniformRowHeights(true);
-    
+
     searchButton = buttonBox->button(QDialogButtonBox::Ok);
     cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
 
@@ -120,14 +120,14 @@ void CollocationsDialogController::updateStatus() {
 
 void CollocationsDialogController::sl_plusClicked() {
     if (task != NULL) {
-        return; 
+        return;
     }
     QMenu m;
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
     foreach(const QString& name, allNames) {
         if (usedNames.contains(name)) {
             continue;
-        }            
+        }
         QColor c = asr->getAnnotationSettings(name)->color;
         QAction* a = m.addAction(GUIUtils::createSquareIcon(c, 10), name, this, SLOT(sl_addName()));
         assert(a->parent() == &m); Q_UNUSED(a);
@@ -147,7 +147,7 @@ void CollocationsDialogController::sl_addName() {
     bool remove = false;
     //UGENE-2318 inserting and removed unused item because of QT bug
     if(annotationsTree->topLevelItemCount() == 1) remove = true;
-    
+
     usedNames.insert(name);
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
     QColor c = asr->getAnnotationSettings(name)->color;
@@ -178,12 +178,12 @@ void CollocationsDialogController::sl_addName() {
 
 void CollocationsDialogController::sl_minusClicked() {
     if (task != NULL) {
-        return; 
+        return;
     }
 
     QObject* o = sender();
     QString name = o->objectName();
-    
+
     assert(usedNames.contains(name));
     usedNames.remove(name);
     for (int i=0, n = annotationsTree->topLevelItemCount(); i<n; i++) {
@@ -285,7 +285,7 @@ void CollocationsDialogController::importResults() {
     }
 
     QVector<U2Region> newResults = task->popResults();
-    
+
     foreach(const U2Region& r, newResults) {
         CDCResultItem* item = new CDCResultItem(r);
         bool inserted = false;
@@ -322,7 +322,7 @@ CDCResultItem::CDCResultItem(const U2Region& _r) : r(_r) {
 //////////////////////////////////////////////////////////////////////////
 // task
 CollocationSearchTask::CollocationSearchTask(const QList<AnnotationTableObject*> &table, const QSet<QString>& names,
-                                             const CollocationsAlgorithmSettings& cfg) 
+                                             const CollocationsAlgorithmSettings& cfg)
 : Task(tr("collocation_search_task"), TaskFlag_None), cfg(cfg), lock(QMutex::Recursive), keepSourceAnns(false)
 {
     GCOUNTER(cvar, tvar, "CollocationSearchTask");
@@ -352,7 +352,7 @@ CollocationSearchTask::CollocationSearchTask(const QList<AnnotationTableObject*>
 }
 
 CollocationSearchTask::CollocationSearchTask(const QList<AnnotationData> &table, const QSet<QString>& names,
-                      const CollocationsAlgorithmSettings& cfg, bool _keepSourceAnns) 
+                      const CollocationsAlgorithmSettings& cfg, bool _keepSourceAnns)
 : Task(tr("collocation_search_task"), TaskFlag_None), cfg(cfg), lock(QMutex::Recursive), keepSourceAnns(_keepSourceAnns)
 {
     assert(cfg.distance >= 0);

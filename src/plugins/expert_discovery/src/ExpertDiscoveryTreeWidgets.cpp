@@ -10,7 +10,7 @@ using std::strstream;
 using std::ws;
 
 namespace U2 {
- 
+
 
 ////////////////////////////////////////////////////////////
 EDPIPropertyType::EDPIPropertyType(){
@@ -20,14 +20,14 @@ EDPIPropertyType::~EDPIPropertyType(){
 
 }
 //////////////////////////////////////////////////////////////////
-EDPIProperty::EDPIProperty(const EDPIProperty& rProperty) 
+EDPIProperty::EDPIProperty(const EDPIProperty& rProperty)
     : m_pType(NULL)
     , m_pCallback(NULL)
 {
     *this = rProperty;
 }
 
-EDPIProperty::EDPIProperty(QString strName /* ="" */) 
+EDPIProperty::EDPIProperty(QString strName /* ="" */)
     : m_pType(NULL)
     , m_pCallback(NULL)
 {
@@ -44,7 +44,7 @@ const EDPIProperty& EDPIProperty::operator =(const EDPIProperty& rProperty) {
     setName( rProperty.getName() );
     if (rProperty.m_pCallback)
         m_pCallback = rProperty.m_pCallback->clone();
-    else 
+    else
         m_pCallback = NULL;
     return *this;
 }
@@ -60,7 +60,7 @@ void EDPIProperty::setName(QString strName) {
 QString	EDPIProperty::getValue() const {
     if (m_pCallback)
         return m_pCallback->call();
-    else 
+    else
     {
         QString strUndefined = "Undefined";
         return strUndefined;
@@ -146,12 +146,12 @@ EDPIPropertyTypeStaticString::~EDPIPropertyTypeStaticString()
 {
 }
 
-bool EDPIPropertyTypeStaticString::isNumber() const 
+bool EDPIPropertyTypeStaticString::isNumber() const
 {
     return false;
 }
 
-bool EDPIPropertyTypeStaticString::hasEdit() const 
+bool EDPIPropertyTypeStaticString::hasEdit() const
 {
     return false;
 }
@@ -266,7 +266,7 @@ bool EDPIPropertyTypeUnsignedIntWithUnl::isNumber() const
 bool EDPIPropertyTypeUnsignedIntWithUnl::isValidValue(QString strValue) const
 {
     int nId = getValueId(strValue);
-    if (nId >= 0) 
+    if (nId >= 0)
         return true;
 
     int nValue = 0;
@@ -281,20 +281,20 @@ bool EDPIPropertyTypeUnsignedIntWithUnl::isValidValue(QString strValue) const
 
 //////////////////////////////////////////////////////////////////////////////
 
-EDPIPropertyTypeList::EDPIPropertyTypeList() 
+EDPIPropertyTypeList::EDPIPropertyTypeList()
 {
 }
 
-EDPIPropertyTypeList::~EDPIPropertyTypeList() 
+EDPIPropertyTypeList::~EDPIPropertyTypeList()
 {
 }
 
-bool EDPIPropertyTypeList::isNumber() const 
+bool EDPIPropertyTypeList::isNumber() const
 {
     return false;
 }
 
-bool EDPIPropertyTypeList::hasEdit() const 
+bool EDPIPropertyTypeList::hasEdit() const
 {
     return false;
 }
@@ -304,7 +304,7 @@ bool EDPIPropertyTypeList::hasPredefinedValues() const
     return true;
 }
 
-int EDPIPropertyTypeList::getValueNumber() const 
+int EDPIPropertyTypeList::getValueNumber() const
 {
     return m_arValues.size();
 }
@@ -320,7 +320,7 @@ bool EDPIPropertyTypeList::isValidValue(QString strValue) const
 }
 
 
-void EDPIPropertyTypeList::addValue(QString strValue) 
+void EDPIPropertyTypeList::addValue(QString strValue)
 {
     m_arValues.append(strValue);
 }
@@ -404,7 +404,7 @@ EItemType EDProjectItem::getType() const{
 const EDProjectItem* EDProjectItem::findItemConnectedTo(void *pData) const{
     if (isConnectedTo(pData))
         return this;
- 
+
     for (int i = 0; i < childCount(); i++){
         EDProjectItem* item = dynamic_cast<EDProjectItem*>(child(i));
         if(item){
@@ -430,7 +430,7 @@ bool EDProjectItem::operator<(const QTreeWidgetItem &other) const{
     EItemType type2 = pItem2->getType();
 
     if(sortOrd == ED_ORDER_DECREASING){
-       
+
         if (type1 == PIT_CS && type2 == PIT_CS){
             const EDProjectItem* pItem3;
             pItem3 = pItem1;
@@ -452,16 +452,16 @@ bool EDProjectItem::operator<(const QTreeWidgetItem &other) const{
 
         }
     }else if ( (type1 == PIT_CS_FOLDER || type1 == PIT_CS || type1 == PIT_MRK_ITEM) &&
-        (type2 == PIT_CS_FOLDER || type2 == PIT_CS || type2 == PIT_MRK_ITEM)) 
+        (type2 == PIT_CS_FOLDER || type2 == PIT_CS || type2 == PIT_MRK_ITEM))
     {
         if ((int)type1 < (int)type2)
             return false;
-        else 
+        else
             if ((int)type1 > (int)type2)
                 return true;
-            else 
+            else
                 return pItem1->getName() < pItem2->getName();
-    }else{ 
+    }else{
         const EDProjectItem *pParent = dynamic_cast<const EDProjectItem*>(dynamic_cast<const QTreeWidgetItem*>(pItem1)->parent());
         if (pParent != NULL && pParent->getType() == PIT_CSN_DISTANCE) {
             return (pParent->child(0) == pItem1) ? true : false;
@@ -473,13 +473,13 @@ bool EDProjectItem::operator<(const QTreeWidgetItem &other) const{
 }
 /////////////////////////////////////////////////////////////////////////////////////
 
-EDPISequenceRoot::EDPISequenceRoot(ExpertDiscoveryData& edD) 
+EDPISequenceRoot::EDPISequenceRoot(ExpertDiscoveryData& edD)
 :edData(edD)
 {
     update(true);
 }
 
-EDPISequenceRoot::~EDPISequenceRoot() 
+EDPISequenceRoot::~EDPISequenceRoot()
 {
 }
 
@@ -495,9 +495,9 @@ void EDPISequenceRoot::update(bool bUpdateChildren)
 
     if (bUpdateChildren) {
         takeChildren();
-        
+
         addChild(new EDPIPosSequenceBase(edData.getPosSeqBase(), edData));
-        addChild(new EDPINegSequenceBase(edData.getNegSeqBase(), edData));	
+        addChild(new EDPINegSequenceBase(edData.getNegSeqBase(), edData));
         //if (pDoc->GetControlSeqBase().getSize() != 0)
             addChild(new EDPIControlSequenceBase(edData.getConSeqBase(), edData));
     }
@@ -522,7 +522,7 @@ EDPISequenceBase::EDPISequenceBase(QString strName, const SequenceBase& rSeqBase
     update(true);
 }
 
-void EDPISequenceBase::update(bool bUpdateChildren) 
+void EDPISequenceBase::update(bool bUpdateChildren)
 {
     clearGroups();
     takeChildren();
@@ -531,7 +531,7 @@ void EDPISequenceBase::update(bool bUpdateChildren)
 
     QString strSize = "Size";
     QString strGenInfo = "General information";
-    
+
 
     EDPIProperty PropSize(strSize);
     PropSize.setCallback(new Callback<const DDisc::SequenceBase, int>(&m_rSeqBase, &DDisc::SequenceBase::getSize));
@@ -546,11 +546,11 @@ void EDPISequenceBase::update(bool bUpdateChildren)
     }
 }
 
-EDPISequenceBase::~EDPISequenceBase() 
+EDPISequenceBase::~EDPISequenceBase()
 {
 }
 
-const SequenceBase& EDPISequenceBase::getSequenceBase() const 
+const SequenceBase& EDPISequenceBase::getSequenceBase() const
 {
     return m_rSeqBase;
 }
@@ -562,18 +562,18 @@ bool EDPISequenceBase::isConnectedTo(void *pData) const
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-EDPIPosSequenceBase::EDPIPosSequenceBase(const SequenceBase& rBase, ExpertDiscoveryData& edD) 
-: EDPISequenceBase("", rBase, edD) 
+EDPIPosSequenceBase::EDPIPosSequenceBase(const SequenceBase& rBase, ExpertDiscoveryData& edD)
+: EDPISequenceBase("", rBase, edD)
 {
     QString strPosName = "Positive";
     setName(strPosName);
 }
 
-EDPIPosSequenceBase::~EDPIPosSequenceBase() 
+EDPIPosSequenceBase::~EDPIPosSequenceBase()
 {
 }
 
-void EDPIPosSequenceBase::update(bool bUpdateChildren) 
+void EDPIPosSequenceBase::update(bool bUpdateChildren)
 {
     EDPISequenceBase::update(bUpdateChildren);
 }
@@ -586,18 +586,18 @@ EItemType EDPIPosSequenceBase::getType() const
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-EDPINegSequenceBase::EDPINegSequenceBase(const SequenceBase& rBase, ExpertDiscoveryData& edD) 
-: EDPISequenceBase("", rBase, edD) 
+EDPINegSequenceBase::EDPINegSequenceBase(const SequenceBase& rBase, ExpertDiscoveryData& edD)
+: EDPISequenceBase("", rBase, edD)
 {
     QString strNegName = "Negative";
     setName(strNegName);
 }
 
-EDPINegSequenceBase::~EDPINegSequenceBase() 
+EDPINegSequenceBase::~EDPINegSequenceBase()
 {
 }
 
-void EDPINegSequenceBase::update(bool bUpdateChildren) 
+void EDPINegSequenceBase::update(bool bUpdateChildren)
 {
     EDPISequenceBase::update(bUpdateChildren);
 }
@@ -609,19 +609,19 @@ EItemType EDPINegSequenceBase::getType() const
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-EDPIControlSequenceBase::EDPIControlSequenceBase(const SequenceBase& rBase, ExpertDiscoveryData& edD) 
-: EDPISequenceBase("", rBase, edD) 
+EDPIControlSequenceBase::EDPIControlSequenceBase(const SequenceBase& rBase, ExpertDiscoveryData& edD)
+: EDPISequenceBase("", rBase, edD)
 {
     QString strControlName = "Control";
     setName(strControlName);
     update(true);
 }
 
-EDPIControlSequenceBase::~EDPIControlSequenceBase() 
+EDPIControlSequenceBase::~EDPIControlSequenceBase()
 {
 }
 
-void EDPIControlSequenceBase::update(bool bUpdateChildren) 
+void EDPIControlSequenceBase::update(bool bUpdateChildren)
 {
     clearGroups();
 
@@ -673,7 +673,7 @@ void EDPISequence::update(bool bUpdateChildren)
     QString strScore = "Score";
     QString strBound = "Bound";
     QString strRecResult = "Result";
-    
+
 
     EDPIProperty PropName(strName);
     EDPIProperty PropSize(strLength);
@@ -765,15 +765,15 @@ void EDPICSDirectory::update(bool bupdateChildren){
             EDPICSFolder* nFol = new EDPICSFolder(pFolder->getSubfolder(nSubfolder));
             addChild(dynamic_cast<EDProjectItem*>(nFol));
         }
-                        
+
 
         int nSignalNum = pFolder->getSignalNumber();
         for (int nSignal=0; nSignal<nSignalNum; nSignal++){
             EDPICS* nSig = new EDPICS( pFolder->getSignal(nSignal) );
             addChild(dynamic_cast<EDProjectItem*>(nSig));
         }
-            
-    }      
+
+    }
 }
 
 bool EDPICSDirectory::isConnectedTo(void *pData) const{
@@ -823,7 +823,7 @@ EDPICSRoot::EDPICSRoot(CSFolder& rootF)
 void EDPICSRoot::update(bool bUpdateChildren)
 {
     QString strCSRoot = "Complex signals";
-    
+
     setName(strCSRoot);
     EDPICSDirectory::update(bUpdateChildren);
 }
@@ -867,7 +867,7 @@ void EDPICSNode::update(bool bupdateChildren){
         setName("Undefined");
     }
     else  {
-        setName(QString::fromStdString(pOp->getDescription()));	
+        setName(QString::fromStdString(pOp->getDescription()));
         if (bupdateChildren) {
             takeChildren();
             int nArgNum = pOp->getArgumentNumber();
@@ -892,8 +892,8 @@ EDPICSNode* EDPICSNode::createCSN( Operation *pOp )
     case OP_DISTANCE	:	return new EDPICSNDistance(dynamic_cast<OpDistance*>(pOp));
     case OP_REITERATION	:	return new EDPICSNRepetition(dynamic_cast<OpReiteration*>(pOp));
     case OP_INTERVAL	:	return new EDPICSNInterval(dynamic_cast<OpInterval*>(pOp));
-    case OP_TS			:	
-        {	
+    case OP_TS			:
+        {
             TS* pTS = dynamic_cast<TS*>(pOp);
             if (!pTS->isFromMarking())
                 return new EDPICSNTSWord(pTS);
@@ -911,7 +911,7 @@ bool EDPICSNode::isConnectedTo(void *pData) const{
 const EDProcessedSignal* EDPICSNode::getProcessedSignal(ExpertDiscoveryData& edData){
     if (m_pPS == NULL) {
         m_pPS = EDProcessedSignal::processSignal(pOp, &edData.getPosSeqBase(), &edData.getNegSeqBase());
-        if (m_pPS != NULL) {	
+        if (m_pPS != NULL) {
             QString strGenInfo = "General information";
 
             EDPIPropertyGroup GenInfo(strGenInfo);
@@ -984,7 +984,7 @@ EDPICS::EDPICS(const Signal *pSignal)
     update(true);
 }
 EDPICS::~EDPICS(){
-  pOp = NULL;  
+  pOp = NULL;
 }
 EItemType EDPICS::getType() const{
     return PIT_CS;
@@ -1004,7 +1004,7 @@ void EDPICS::update(bool bupdateChildren){
     QString strPriorFisher = "Fisher criteria";
     QString strPriorPosCoverage = "Pos. Coverage";
     QString strPriorNegCoverage = "Neg. Coverage";
-   
+
 
     EDPIProperty PropName(strName);
     PropName.setCallback(new Callback<const DDisc::Signal, const std::string>(m_pSignal, &DDisc::Signal::getName));
@@ -1026,19 +1026,19 @@ void EDPICS::update(bool bupdateChildren){
 //         EDPIProperty PropPriorProb(strPriorProb);
 //         PropPriorProb.setCallback(new Callback<EDPICS, QString>(this, &EDPICS::getPriorProbability));
 //         PropPriorProb.setType(EDPIPropertyTypeStaticString::getInstance());
-// 
+//
 //         EDPIProperty PropPriorPosCoverage(strPriorPosCoverage);
 //         PropPriorPosCoverage.setCallback(new Callback<EDPICS, QString>(this, &EDPICS::getPriorPosCoverage));
 //         PropPriorPosCoverage.setType(EDPIPropertyTypeStaticString::getInstance());
-// 
+//
 //         EDPIProperty PropPriorNegCoverage(strPriorNegCoverage);
 //         PropPriorNegCoverage.setCallback(new Callback<EDPICS, QString>(this, &EDPICS::getPriorNegCoverage));
 //         PropPriorNegCoverage.setType(EDPIPropertyTypeStaticString::getInstance());
-// 
+//
 //         EDPIProperty PropPriorFisher(strPriorFisher);
 //         PropPriorFisher.setCallback(new Callback<EDPICS, QString>(this, &EDPICS::getPriorFisher));
 //         PropPriorFisher.setType(EDPIPropertyTypeStaticString::getInstance());
-// 
+//
 //         EDPIPropertyGroup PriorParams(strPriorParams);
 //         PriorParams.addProperty(PropPriorProb);
 //         PriorParams.addProperty(PropPriorFisher);
@@ -1071,33 +1071,33 @@ QString EDPICS::getPriorProbability() const{
     QString str = "%1";
     if (m_pSignal->getPriorProbability() != UNDEFINED_VALUE)
         str = str.arg(m_pSignal->getPriorProbability());
-    else 
-        str = "Undefined"; 
-    return str;    
+    else
+        str = "Undefined";
+    return str;
 }
 QString EDPICS::getPriorFisher() const{
     QString str = "%1";
     if (m_pSignal->getPriorFisher() != UNDEFINED_VALUE)
         str = str.arg(m_pSignal->getPriorFisher());
-    else 
-        str = "Undefined"; 
-    return str;    
+    else
+        str = "Undefined";
+    return str;
 }
 QString EDPICS::getPriorPosCoverage() const{
     QString str = "%1";
     if (m_pSignal->getPriorPosCoverage() != UNDEFINED_VALUE)
         str = str.arg(m_pSignal->getPriorPosCoverage());
-    else 
-        str = "Undefined"; 
-    return str;    
+    else
+        str = "Undefined";
+    return str;
 }
 QString EDPICS::getPriorNegCoverage() const{
     QString str = "%1";
     if (m_pSignal->getPriorNegCoverage() != UNDEFINED_VALUE)
         str = str.arg(m_pSignal->getPriorNegCoverage());
-    else 
-        str = "Undefined"; 
-    return str;    
+    else
+        str = "Undefined";
+    return str;
 }
 ////////////////////////////////////////////////////////////
 
@@ -1139,7 +1139,7 @@ EDPICSNDistance::EDPICSNDistance(OpDistance *pOp)
 : EDPICSNode(pOp)
 {
     update(true);
-}	
+}
 
 void EDPICSNDistance::update(bool bupdateChildren) {
     clearGroups();
@@ -1182,7 +1182,7 @@ void EDPICSNDistance::update(bool bupdateChildren) {
     Editor.addProperty(PropFrom);
     Editor.addProperty(PropTo);
     Editor.addProperty(PropOrder);
-   addGroup(Editor);	
+   addGroup(Editor);
 
     emit si_getMetaInfoBase();
 
@@ -1218,7 +1218,7 @@ QString EDPICSNDistance::getPropTo() const
     const OpDistance* pOp = dynamic_cast<const OpDistance*>(getOperation());
     assert(pOp != NULL);
     int nTo = pOp->getDistance().getTo();
-    if (nTo == PINF) 
+    if (nTo == PINF)
         return EDPIPropertyTypeUnsignedIntWithUnl::getInstance()->getValue(0);
     else
         return QString("%1").arg(nTo);
@@ -1287,7 +1287,7 @@ void EDPICSNRepetition::update(bool bupdateChildren)
     Editor.addProperty(PropDistType);
     Editor.addProperty(PropFrom);
     Editor.addProperty(PropTo);
-   addGroup(Editor);	
+   addGroup(Editor);
 
    emit si_getMetaInfoBase();
 
@@ -1323,7 +1323,7 @@ QString EDPICSNRepetition::getPropTo() const
     const OpReiteration* pOp = dynamic_cast<const OpReiteration*>(getOperation());
     assert(pOp != NULL);
     int nTo = pOp->getDistance().getTo();
-    if (nTo == PINF) 
+    if (nTo == PINF)
         return EDPIPropertyTypeUnsignedIntWithUnl::getInstance()->getValue(0);
     else
         return QString("%1").arg(nTo);
@@ -1380,7 +1380,7 @@ void EDPICSNInterval::update(bool bupdateChildren)
     Editor.addProperty(PropType);
     Editor.addProperty(PropFrom);
     Editor.addProperty(PropTo);
-   addGroup(Editor);	
+   addGroup(Editor);
 
    emit si_getMetaInfoBase();
 
@@ -1409,7 +1409,7 @@ QString EDPICSNInterval::getPropTo() const
     const OpInterval* pOp = dynamic_cast<const OpInterval*>(getOperation());
     assert(pOp != NULL);
     int nTo = pOp->getInt().getTo();
-    if (nTo == PINF) 
+    if (nTo == PINF)
         return EDPIPropertyTypeUnsignedIntWithUnl::getInstance()->getValue(0);
     else
         return QString("%1").arg(nTo);
@@ -1424,7 +1424,7 @@ EDPICSNTSWord::EDPICSNTSWord(TS *pTS)
     update(true);
 }
 
-void EDPICSNTSWord::update(bool bupdateChildren) 
+void EDPICSNTSWord::update(bool bupdateChildren)
 {
     clearGroups();
 
@@ -1444,7 +1444,7 @@ void EDPICSNTSWord::update(bool bupdateChildren)
     EDPIPropertyGroup Editor(strEditor);
     Editor.addProperty(PropType);
     Editor.addProperty(PropWord);
-   addGroup(Editor);	
+   addGroup(Editor);
 
     EDPICSNode::update(bupdateChildren);
 }
@@ -1473,7 +1473,7 @@ EDPICSNTSMrkItem::EDPICSNTSMrkItem(TS *pTS)
     update(true);
 }
 
-void EDPICSNTSMrkItem::update(bool bupdateChildren) 
+void EDPICSNTSMrkItem::update(bool bupdateChildren)
 {
     clearGroups();
 
@@ -1520,7 +1520,7 @@ void EDPICSNTSMrkItem::update(bool bupdateChildren)
         Editor.addProperty(PropType);
         Editor.addProperty(PropFamily);
         Editor.addProperty(PropSignal);
-        addGroup(Editor);	
+        addGroup(Editor);
     }
 
     EDPICSNode::update(bupdateChildren);

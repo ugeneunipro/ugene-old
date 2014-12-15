@@ -99,7 +99,7 @@ void DNAFlexDialog::accept()
     if (!err.isEmpty()) {
         QMessageBox::warning(this, tr("Error"), err);
         return;
-    } 
+    }
     bool objectPrepared = annotController->prepareAnnotationObject();
     if (!objectPrepared){
         QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));

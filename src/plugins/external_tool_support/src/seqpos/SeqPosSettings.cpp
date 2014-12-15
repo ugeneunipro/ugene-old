@@ -70,7 +70,7 @@ QStringList SeqPosSettings::getArguments( const QString& treatFilePath){
     result << "-w " + QByteArray::number(regWidth);
 
     result << "--verbose";
-    
+
 
     return result;
 }

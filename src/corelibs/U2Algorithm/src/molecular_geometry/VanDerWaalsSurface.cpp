@@ -38,9 +38,9 @@ void VanDerWaalsSurface::calculate(const QList<SharedAtom> &atoms, int& progress
     // Van Der Vaals surface calculation
     // based on atom radius (look for neighbours, exclude unneeded atoms)
     int overall = atoms.size();
-    
+
     int counter = 0;
-    
+
     int detaillevel = 2;
 
     if (atoms.size() > 10000) {
@@ -66,7 +66,7 @@ void VanDerWaalsSurface::calculate(const QList<SharedAtom> &atoms, int& progress
             }
         }
         counter++;
-        progress = counter * 100 / overall;  
+        progress = counter * 100 / overall;
     }
 
 }

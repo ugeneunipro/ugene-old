@@ -148,7 +148,7 @@ Task* QDORFActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
     if (!settings.proteinTT) {
         return new FailTask(tr("Bad sequence"));
     }
-    
+
     t = new Task(tr("ORF find"), TaskFlag_NoRun);
     assert(orfTasks.isEmpty());
     foreach(const U2Region& r, searchLocation) {
@@ -194,7 +194,7 @@ int QDORFActor::getMaxResultLen() const {
 QDORFActorPrototype::QDORFActorPrototype() {
      descriptor.setId("orf");
      descriptor.setDisplayName(QDORFActor::tr("ORF"));
-     descriptor.setDocumentation(QDORFActor::tr("Finds Open Reading Frames (ORFs) in supplied nucleotide sequence, stores found regions as annotations." 
+     descriptor.setDocumentation(QDORFActor::tr("Finds Open Reading Frames (ORFs) in supplied nucleotide sequence, stores found regions as annotations."
          "<p>Protein sequences are skipped if any."
          "<p><dfn>ORFs are DNA sequence regions that could potentially encode a protein,"
          " and usually give a good indication of the presence of a gene in the surrounding sequence.</dfn></p>"
@@ -226,14 +226,14 @@ QDORFActorPrototype::QDORFActorPrototype() {
 
      QVariantMap lenMap;
      lenMap["minimum"] = QVariant(0);
-     lenMap["maximum"] = QVariant(INT_MAX); 
+     lenMap["maximum"] = QVariant(INT_MAX);
      lenMap["suffix"] = L10N::suffixBp();
      delegates[LEN_ATTR] = new SpinBoxDelegate(lenMap);
      delegates[MAX_LENGTH_ATTR] = new SpinBoxDelegate(lenMap);
 
      QVariantMap idMap;
      QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->
-         lookupTranslation(AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()), 
+         lookupTranslation(AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()),
          DNATranslationType_NUCL_2_AMINO);
      foreach(DNATranslation* tt, TTs) {
          idMap[tt->getTranslationName()] = tt->getTranslationId();

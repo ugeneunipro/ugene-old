@@ -49,15 +49,15 @@ public:
     static const QByteArray SPACE_LINE;
 
     static const QBitArray QUALIFIER_NAME_CHARS;
-    
+
     inline static const char* getLineOfSpaces(int nspaces);
 
     inline static bool fits(const QBitArray& map, const char* str, int len);
 
     inline static bool contains(const QBitArray& map, const char* str, int len);
-    
+
     static QBitArray createBitMap(char c1);
-    
+
     static QBitArray createBitMap(const QByteArray& chars, bool val = true);
 
     static QByteArray createMap(const QBitArray& bits, char defaultChar);
@@ -202,7 +202,7 @@ inline void TextUtils::reverse(const char* srcSeq, char* dstSeq, int len) {
     if (srcSeq == dstSeq) {
         reverse(dstSeq, len);
         return;
-    } 
+    }
     assert(qAbs(srcSeq-dstSeq) > len);
 
     for (int i = 0, j = len-1; i < len; i++, j--) {

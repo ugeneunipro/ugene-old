@@ -52,7 +52,7 @@ private:
 class MSAMemento{
 public:
     ~MSAMemento(){}
-private:     
+private:
     friend class MAlignmentObject;
     MSAMemento();
     MAlignment getState() const;

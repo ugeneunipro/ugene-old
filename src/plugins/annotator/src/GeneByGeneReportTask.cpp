@@ -27,7 +27,7 @@
 
 #include <QtCore/QFile>
 #include <QtCore/QSet>
- 
+
 namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 //GeneByGeneReportSettings
@@ -66,7 +66,7 @@ GeneByGeneCompareResult GeneByGeneComparator::compareGeneAnnotation( const DNASe
             U2Location location = adata.location;
             if(location->isSingleRegion()){
                 int reglen = location->regions.first().length;
-                float lenRatio  = reglen * 100 /static_cast<float>(seq.length()); 
+                float lenRatio  = reglen * 100 /static_cast<float>(seq.length());
                 maxIdentity = qMax(maxIdentity, lenRatio);
                 if(lenRatio >= identity){ //check length ratio
                     QString ident = adata.findFirstQualifierValue(BLAST_IDENT);
@@ -158,7 +158,7 @@ void GeneByGeneReportIO::prepareOutputFile( U2OpStatus& os ){
             if(os.hasError()){
                 return;
             }
-        } 
+        }
         //over write otherwise
     }
 
@@ -311,7 +311,7 @@ void GeneByGeneReportTask::run(){
     }
 
     stateInfo.progress = 0;
-    float progressCounter = 0; 
+    float progressCounter = 0;
 
     const QList<QString>& keys = geneData.keys();
     float progressStep  = keys.size() / static_cast<float>(100);

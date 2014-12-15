@@ -103,7 +103,7 @@ public:
     static inline bool isInAcceptorSpliceSite (const U2Region& exon, qint64 varPos, int spliceSiteLen){
         bool res = false;
         res = U2Region(exon.startPos - spliceSiteLen, 2*spliceSiteLen).contains(varPos);
-        return res;  
+        return res;
     }
 
     /**Try to find intron region.

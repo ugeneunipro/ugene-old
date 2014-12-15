@@ -82,7 +82,7 @@ U2::FormatCheckResult PFMatrixFormat::checkRawData( const QByteArray& rawData, c
             }
         }
     }
-    
+
     return FormatDetection_Matched;
 }
 
@@ -135,7 +135,7 @@ Task* PFMatrixViewFactory::createViewTask( const MultiGSelection& multiSelection
         Task* t = new OpenPFMatrixViewTask(d);
         if (result == NULL) {
             return t;
-        } 
+        }
         result->addSubTask(t);
     }
     return result;
@@ -270,7 +270,7 @@ Task* PWMatrixViewFactory::createViewTask( const MultiGSelection& multiSelection
         Task* t = new OpenPWMatrixViewTask(d);
         if (result == NULL) {
             return t;
-        } 
+        }
         result->addSubTask(t);
     }
     return result;

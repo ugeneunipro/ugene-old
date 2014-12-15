@@ -98,7 +98,7 @@ protected:
     QString resultName,transId;
     GUrl indexUrl;
     bool done;
-}; 
+};
 
 class GenomeAlignerIndexReaderWorkerFactory : public DomainFactory {
 public:

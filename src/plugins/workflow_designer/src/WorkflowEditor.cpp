@@ -53,7 +53,7 @@
 
 namespace U2 {
 
-WorkflowEditor::WorkflowEditor(WorkflowView *p) 
+WorkflowEditor::WorkflowEditor(WorkflowView *p)
 : QWidget(p), owner(p), custom(NULL),
 customWidget(NULL), subject(NULL), actor(NULL)
 {
@@ -85,9 +85,9 @@ customWidget(NULL), subject(NULL), actor(NULL)
     proxyModel = new ActorCfgFilterProxyModel(this);
     proxyModel->setSourceModel(actorModel);
     table->setModel(proxyModel);
-    
+
     table->horizontalHeader()->setStretchLastSection(true);
-    
+
 #if (QT_VERSION < 0x050000) //Qt 5
     table->horizontalHeader()->setClickable(false);
     table->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
@@ -302,12 +302,12 @@ void WorkflowEditor::editActor(Actor* a) {
                 inputLayout->addWidget(w);
                 bool visible = ed && !ed->isEmpty();
                 if (visible) {
-                    inputHeight += ed->getOptimalHeight(); 
+                    inputHeight += ed->getOptimalHeight();
                     w->setVisible(inputPortBox->isChecked());
                     inputPortBox->setEnabled(true);
                     inputPortBox->setVisible(true);
                 }
-                
+
                 connect(ed, SIGNAL(si_showDoc(const QString&)), SLOT(sl_showDoc(const QString&)));
                 inputPortWidget << w;
             }
@@ -338,7 +338,7 @@ void WorkflowEditor::editActor(Actor* a) {
                     outputPortBox->setEnabled(true);
                     outputPortBox->setVisible(true);
                 }
-                
+
                 connect(ed, SIGNAL(si_showDoc(const QString&)), SLOT(sl_showDoc(const QString&)));
                 outputPortWidget << w;
             }
@@ -486,7 +486,7 @@ void WorkflowEditor::edit(Configuration* cfg) {
         connect(paramBox, SIGNAL(toggled(bool)), customWidget, SLOT(setVisible(bool)));
         connect(paramBox, SIGNAL(toggled(bool)), SLOT(sl_resizeSplitter(bool)));
     }
-    
+
     //int h = 0;
     if (subject && !customWidget) {
         assert(actor);
@@ -495,7 +495,7 @@ void WorkflowEditor::edit(Configuration* cfg) {
         tableSplitter->setVisible(paramBox->isChecked());
         /*if(paramBox->isChecked()) {
             h = table->sizeHint().height();
-            
+
         }*/
         connect(paramBox, SIGNAL(toggled(bool)), tableSplitter, SLOT(setVisible(bool)));
         connect(paramBox, SIGNAL(toggled(bool)), SLOT(sl_resizeSplitter(bool)));
@@ -545,7 +545,7 @@ bool WorkflowEditor::eventFilter(QObject* object, QEvent* event) {
 
 void WorkflowEditor::sl_linkActivated(const QString& url) {
     const QString& id = WorkflowUtils::getParamIdFromHref(url);
-    
+
     QModelIndex modelIndex = proxyModel->mapFromSource(actorModel->modelIndexById(id));
     QModelIndex prev = table->selectionModel()->currentIndex();
     if (modelIndex==prev) {

@@ -58,7 +58,7 @@ DWORD AddAceToObjectsSecurityDescriptor (
         goto Cleanup;
     }
 
-    // Initialize an EXPLICIT_ACCESS structure for the new ACE. 
+    // Initialize an EXPLICIT_ACCESS structure for the new ACE.
 
     ZeroMemory( &ea, sizeof( EXPLICIT_ACCESS ) );
     ea.grfAccessPermissions = dwAccessRights;

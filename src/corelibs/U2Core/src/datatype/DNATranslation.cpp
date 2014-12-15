@@ -133,15 +133,15 @@ QList<DNATranslation*> DNATranslationRegistry::lookupTranslation(const DNAAlphab
 }
 
 DNATranslation* DNATranslationRegistry::getStandardGeneticCodeTranslation(const DNAAlphabet* srcAlphabet){
-    if (srcAlphabet->isNucleic()) {        
+    if (srcAlphabet->isNucleic()) {
         return lookupTranslation(srcAlphabet, DNATranslationID(1));
     }
     FAIL("Standart genetic code is used only with source nucleic alphabet", NULL);
 }
 
-DNATranslation* DNATranslationRegistry::lookupTranslation(const DNAAlphabet* srcAlphabet, 
+DNATranslation* DNATranslationRegistry::lookupTranslation(const DNAAlphabet* srcAlphabet,
                                                           DNATranslationType type,
-                                                          const QString& id) 
+                                                          const QString& id)
 {
     foreach(DNATranslation* t, translations) {
         if (t->getTranslationId() == id && t->getSrcAlphabet() == srcAlphabet && t->getDNATranslationType() == type) {
@@ -172,11 +172,11 @@ DNATranslation* DNATranslationRegistry::lookupTranslation(const QString& id) {
 DNATranslation* DNATranslationRegistry::lookupComplementTranslation(const DNAAlphabet* srcAlphabet) {
     assert(srcAlphabet->isNucleic());
     if (srcAlphabet->getId() == BaseDNAAlphabetIds ::NUCL_DNA_DEFAULT()) {
-        return lookupTranslation(BaseDNATranslationIds::NUCL_DNA_DEFAULT_COMPLEMENT);    
+        return lookupTranslation(BaseDNATranslationIds::NUCL_DNA_DEFAULT_COMPLEMENT);
     } else if (srcAlphabet->getId() == BaseDNAAlphabetIds ::NUCL_DNA_EXTENDED()) {
         return lookupTranslation(BaseDNATranslationIds::NUCL_DNA_EXTENDED_COMPLEMENT);
     } else if (srcAlphabet->getId() == BaseDNAAlphabetIds ::NUCL_RNA_DEFAULT()) {
-        return lookupTranslation(BaseDNATranslationIds::NUCL_RNA_DEFAULT_COMPLEMENT);    
+        return lookupTranslation(BaseDNATranslationIds::NUCL_RNA_DEFAULT_COMPLEMENT);
     } else if (srcAlphabet->getId() == BaseDNAAlphabetIds ::NUCL_RNA_EXTENDED()) {
         return lookupTranslation(BaseDNATranslationIds::NUCL_RNA_EXTENDED_COMPLEMENT);
     } else {

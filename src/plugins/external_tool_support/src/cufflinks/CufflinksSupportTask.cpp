@@ -170,7 +170,7 @@ ExternalToolRunTask * CufflinksSupportTask::runCufflinks() {
     logParser = new ExternalToolLogParser();
 
     // Create the Cufflinks task
-    
+
     ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_CUFFLINKS,
         arguments,
         logParser,

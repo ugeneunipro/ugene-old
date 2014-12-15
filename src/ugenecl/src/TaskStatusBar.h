@@ -31,11 +31,11 @@ class TaskStatusBarCon : public QObject {
     Q_OBJECT
 public:
     static const QString NO_TASK_STATUS_BAR_CMD_OPTION;
-    
+
 private:
     static bool helpRegistered;
     static void setTSBCmdlineHelp();
-    
+
 public:
     TaskStatusBarCon();
     ~TaskStatusBarCon();

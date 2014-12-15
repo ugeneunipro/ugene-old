@@ -193,11 +193,11 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
             return res;
         }
         ioLog.details(tr("Loading output file '%1'").arg(outputUrl));
-        
+
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
         QVariantMap hints;
         loadTmpDocumentTask = new LoadDocumentTask(BaseDocumentFormats::MSF, outputUrl, iof, hints);
-                        
+
         loadTmpDocumentTask->setSubtaskProgressWeight(5);
         res.append(loadTmpDocumentTask);
     } else if (subTask == loadTmpDocumentTask) {

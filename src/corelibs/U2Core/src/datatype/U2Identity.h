@@ -27,11 +27,11 @@
 
 namespace U2 {
 
-template <class T> class AbstractId { 
-protected: 
+template <class T> class AbstractId {
+protected:
     AbstractId(const T& _id) : id(_id) {}
 
-public: 
+public:
     virtual bool isValid() const  = 0;
 
     bool operator==(const AbstractId<T>& oid) const {

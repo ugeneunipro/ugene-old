@@ -41,7 +41,7 @@ enum MatrixBuildType {
 class PMBuildSettings {
 public:
     PMBuildSettings(): type(PM_MONONUCLEOTIDE), target(FREQUENCY_MATRIX) {
-        
+
     }
     QString                     algo;
     MatrixBuildType             type;

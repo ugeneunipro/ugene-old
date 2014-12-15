@@ -50,19 +50,19 @@ namespace U2 {
 CreateFragmentDialog::CreateFragmentDialog( ADVSequenceObjectContext* ctx,  QWidget* p )
 : QDialog(p)
 {
-    
+
     setupUi(this);
     new HelpButton(this, buttonBox, "4227649");
 
     tabWidget->setCurrentIndex(0);
-        
+
     seqObj = ctx->getSequenceObject();
 
     rs=new RegionSelector(this, ctx->getSequenceLength(), false, ctx->getSequenceSelection());
     rangeSelectorLayout->addWidget(rs);
 
     relatedAnnotations = ctx->getAnnotationObjects(true).toList();
-    
+
     setupAnnotationsWidget();
 
 
@@ -76,9 +76,9 @@ CreateFragmentDialog::CreateFragmentDialog( U2SequenceObject* obj, const U2Regio
     seqObj = obj;
 
     QList<GObject*> aObjects = GObjectUtils::findAllObjects(UOF_LoadedOnly,GObjectTypes::ANNOTATION_TABLE);
-    QList<GObject*> related = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj, GObjectTypes::ANNOTATION_TABLE, 
+    QList<GObject*> related = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj, GObjectTypes::ANNOTATION_TABLE,
         ObjectRole_Sequence, aObjects, UOF_LoadedOnly);
-    
+
     foreach (GObject* obj, related) {
         AnnotationTableObject *aObj = qobject_cast<AnnotationTableObject *>(obj);
         assert(aObj != NULL);
@@ -104,7 +104,7 @@ void CreateFragmentDialog::accept()
             return;
         }
 
-    } 
+    }
 
     if (rightEndBox->isChecked()) {
         rightOverhang = rCustomOverhangEdit->text();
@@ -113,7 +113,7 @@ void CreateFragmentDialog::accept()
             QMessageBox::warning(this, windowTitle(),tr("3'overhang contains unsupported symbols!"));
             return;
         }
-    }    
+    }
     bool isRegionOk=false;
     U2Region reg=rs->getRegion(&isRegionOk);
     if(!isRegionOk){
@@ -128,7 +128,7 @@ void CreateFragmentDialog::accept()
     if (!err.isEmpty()) {
         QMessageBox::warning(this, tr("Error"), err);
         return;
-    } 
+    }
     bool objectPrepared = ac->prepareAnnotationObject();
     if (!objectPrepared){
         QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
@@ -148,7 +148,7 @@ void CreateFragmentDialog::accept()
     ad.qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_OVERHANG, rightOverhang) );
     QString leftOverhangStrand = OVERHANG_STRAND_DIRECT;
     if (lComplButton->isChecked() && !leftOverhang.isEmpty()) {
-        leftOverhangStrand = OVERHANG_STRAND_COMPL; 
+        leftOverhangStrand = OVERHANG_STRAND_COMPL;
     }
     ad.qualifiers.append(U2Qualifier(QUALIFIER_LEFT_STRAND, leftOverhangStrand) );
     QString rightOverhangStrand = OVERHANG_STRAND_DIRECT;

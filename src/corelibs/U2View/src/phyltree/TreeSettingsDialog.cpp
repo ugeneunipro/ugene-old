@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-TreeSettingsDialog::TreeSettingsDialog(QWidget *parent, const TreeSettings &treeSettings, bool isRectLayout) : 
+TreeSettingsDialog::TreeSettingsDialog(QWidget *parent, const TreeSettings &treeSettings, bool isRectLayout) :
     QDialog(parent),
     settings(treeSettings),
     changedSettings(treeSettings)

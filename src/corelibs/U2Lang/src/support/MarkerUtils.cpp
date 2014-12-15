@@ -89,7 +89,7 @@ bool MarkerUtils::stringToIntValue(const QString &string, QVariantList &value) {
 
         value.append(QVariant(INTERVAL_OPERATION));
         value.append(QVariant(number1.toInt(&ok)));
-        
+
         bool ok2 = false;
         value.append(QVariant(number2.toInt(&ok2)));
         return (ok && ok2);

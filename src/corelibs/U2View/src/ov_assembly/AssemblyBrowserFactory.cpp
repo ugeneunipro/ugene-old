@@ -18,7 +18,7 @@ namespace U2 {
 const GObjectViewFactoryId AssemblyBrowserFactory::ID = "assembly-browser-factory";
 
 AssemblyBrowserFactory::AssemblyBrowserFactory(QObject * parent /* = 0 */) :
-GObjectViewFactory(ID, tr("Assembly Browser"), parent) 
+GObjectViewFactory(ID, tr("Assembly Browser"), parent)
 {
 }
 
@@ -39,7 +39,7 @@ void addAsmObjs(QList<GObject*> & asmObjs, const QList<GObject*> & docObjs) {
 
 Task * AssemblyBrowserFactory::createViewTask(const MultiGSelection & multiSelection, bool single /* = false */) {
     QList<GObject*> asmObjects = SelectionUtils::findObjects(GObjectTypes::ASSEMBLY, &multiSelection, UOF_LoadedAndUnloaded);
-    QSet<Document*> docsWithAsm = SelectionUtils::findDocumentsWithObjects(GObjectTypes::ASSEMBLY, 
+    QSet<Document*> docsWithAsm = SelectionUtils::findDocumentsWithObjects(GObjectTypes::ASSEMBLY,
         &multiSelection, UOF_LoadedAndUnloaded, false);
     QList<OpenAssemblyBrowserTask*> resTasks;
 

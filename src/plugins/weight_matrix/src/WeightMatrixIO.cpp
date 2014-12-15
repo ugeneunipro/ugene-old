@@ -106,14 +106,14 @@ PFMatrix WeightMatrixIO::readPFMatrix(IOAdapterFactory* iof, const QString& url,
         line = reader.readLine();
         if (line.isEmpty()) {
             continue;
-        } 
+        }
 
         QStringList curr = line.split(" ", QString::SkipEmptyParts);
 
         if (len == -1) {
             len = curr.length();
         }
-        
+
         if (len != curr.length()) {
             si.setError(tr("Error parsing settings line %1").arg(line) );
             break;
@@ -135,7 +135,7 @@ PFMatrix WeightMatrixIO::readPFMatrix(IOAdapterFactory* iof, const QString& url,
 
         msize++;
     }
-    
+
     if (si.hasError()) {
         return matrix;
     }
@@ -144,7 +144,7 @@ PFMatrix WeightMatrixIO::readPFMatrix(IOAdapterFactory* iof, const QString& url,
         si.setError(tr("Incorrect size of weight matrix: %1").arg(msize));
         return matrix;
     }
-    
+
     matrix = PFMatrix(res, (msize == 4) ? PFM_MONONUCLEOTIDE : PFM_DINUCLEOTIDE);
 
     QStringList splitUrl = url.split("/");
@@ -203,7 +203,7 @@ PWMatrix WeightMatrixIO::readPWMatrix(IOAdapterFactory* iof, const QString& url,
 
     QTextStream reader(text);
     QString line;
-    
+
     while (!reader.atEnd() && !si.hasError()) {
         line = reader.readLine();
         if (line.isEmpty()) {
@@ -220,7 +220,7 @@ PWMatrix WeightMatrixIO::readPWMatrix(IOAdapterFactory* iof, const QString& url,
         if (len == -1) {
             len = curr.length() - 1;
         }
-        
+
         if (len != curr.length() - 1) {
             si.setError(tr("Error parsing settings line %1").arg(line) );
             break;
@@ -238,7 +238,7 @@ PWMatrix WeightMatrixIO::readPWMatrix(IOAdapterFactory* iof, const QString& url,
         }
         msize++;
     }
-    
+
     if (si.hasError()) {
         return matrix;
     }
@@ -247,12 +247,12 @@ PWMatrix WeightMatrixIO::readPWMatrix(IOAdapterFactory* iof, const QString& url,
         si.setError(tr("Incorrect size of weight matrix: %1").arg(msize));
         return matrix;
     }
-    
+
     matrix = PWMatrix(res, (msize == 4) ? PWM_MONONUCLEOTIDE : PWM_DINUCLEOTIDE);
     return matrix;
 }
 
-void WeightMatrixIO::writePFMatrix(IOAdapterFactory* iof, const QString& url, TaskStateInfo& si, const PFMatrix& model) 
+void WeightMatrixIO::writePFMatrix(IOAdapterFactory* iof, const QString& url, TaskStateInfo& si, const PFMatrix& model)
 {
     assert (model.getLength() >= 0);
     QByteArray res;
@@ -277,7 +277,7 @@ void WeightMatrixIO::writePFMatrix(IOAdapterFactory* iof, const QString& url, Ta
     io->close();
 }
 
-void WeightMatrixIO::writePWMatrix(IOAdapterFactory* iof, const QString& url, TaskStateInfo& si, const PWMatrix& model) 
+void WeightMatrixIO::writePWMatrix(IOAdapterFactory* iof, const QString& url, TaskStateInfo& si, const PWMatrix& model)
 {
     assert (model.getLength() >= 0);
     QByteArray res;

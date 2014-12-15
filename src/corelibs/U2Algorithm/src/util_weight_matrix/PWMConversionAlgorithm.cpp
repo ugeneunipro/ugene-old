@@ -24,7 +24,7 @@
 namespace U2 {
 
 PWMConversionAlgorithmFactory::PWMConversionAlgorithmFactory(const QString& algoId, QObject* p):
-QObject(p), algorithmId(algoId) 
+QObject(p), algorithmId(algoId)
 {
 }
 

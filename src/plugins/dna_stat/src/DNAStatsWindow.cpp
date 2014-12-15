@@ -41,7 +41,7 @@
 namespace U2 {
 
 DNAStatsWindow::DNAStatsWindow(ADVSequenceObjectContext* context)
-: MWMDIWindow(tr("Statistics for %1").arg(context->getSequenceObject()->getGObjectName())), 
+: MWMDIWindow(tr("Statistics for %1").arg(context->getSequenceObject()->getGObjectName())),
               ctx(context), updateTask(NULL)
 {
     QVBoxLayout* l = new QVBoxLayout(this);

@@ -109,12 +109,12 @@ public:
 
     QStringList getOrderedSeqNames();
 
-    U2Region getTreeSize(); 
+    U2Region getTreeSize();
 
     virtual void setTreeLayout(TreeLayout newLayout);
 
     bool canSynchronizeWithMSA(MSAEditor* msa);
-    
+
     void setSynchronizeMode(SynchronizationMode syncMode);
 protected:
     virtual void mousePressEvent(QMouseEvent *e);

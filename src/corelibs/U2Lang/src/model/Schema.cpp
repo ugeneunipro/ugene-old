@@ -238,7 +238,7 @@ bool Schema::recursiveExpand(QList<QString> &schemaIds) {
             if (this->hasPortAliases()) {
                 replacePortAliases(subPortAlias);
             }
-        }   
+        }
 
         graph.getBindings().unite(schema->graph.getBindings());
 
@@ -641,8 +641,8 @@ QMap<QString, qreal> ActorVisualData::getAngleMap() const {
 /**************************
  * Metadata
  **************************/
-Metadata::Metadata() { 
-    reset(); 
+Metadata::Metadata() {
+    reset();
 }
 
 void Metadata::reset() {

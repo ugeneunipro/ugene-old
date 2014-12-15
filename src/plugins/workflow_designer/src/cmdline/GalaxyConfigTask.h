@@ -111,7 +111,7 @@ private:
     void writeDrillDownAttribute( const PropertyDelegate &pd );
     void writeMinAndMaxAttributes( const PropertyDelegate &pd );
     bool tryToWriteComplexType( PropertyDelegate *pd, const QString &attributeName );
-    bool writeTypeForOptionElement( const QStringList &elementParameters, const ActorPrototype &element );  
+    bool writeTypeForOptionElement( const QStringList &elementParameters, const ActorPrototype &element );
     bool writeOptionElements();
     bool writeInputsUnit();
 

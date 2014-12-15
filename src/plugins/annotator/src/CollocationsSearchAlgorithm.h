@@ -51,7 +51,7 @@ public:
     static void find(const QList<CollocationsAlgorithmItem>& items, TaskStateInfo& si,
         CollocationsAlgorithmListener* l, const CollocationsAlgorithmSettings& cfg);
 private:
-    static void findN(const QList<CollocationsAlgorithmItem>& items, TaskStateInfo& si, 
+    static void findN(const QList<CollocationsAlgorithmItem>& items, TaskStateInfo& si,
                     CollocationsAlgorithmListener* l, const U2Region& searchRegion, qint64 distance);
     static void findP(const QList<CollocationsAlgorithmItem>& items, TaskStateInfo& si,
                     CollocationsAlgorithmListener* l, const U2Region& searchRegion, qint64 distance);

@@ -77,7 +77,7 @@ const QString WorkflowDesignerPlugin::RUN_WORKFLOW              = "task";
 const QString WorkflowDesignerPlugin::REMOTE_MACHINE            = "task-remote-machine";
 const QString WorkflowDesignerPlugin::PRINT                     = "print";
 
-WorkflowDesignerPlugin::WorkflowDesignerPlugin() 
+WorkflowDesignerPlugin::WorkflowDesignerPlugin()
 : Plugin(tr("Workflow Designer"), tr("Workflow Designer allows to create complex computational workflows.")){
     if (AppContext::getMainWindow()) {
         services << new WorkflowDesignerService();
@@ -87,22 +87,22 @@ WorkflowDesignerPlugin::WorkflowDesignerPlugin()
     IncludedProtoFactory::init(new IncludedProtoFactoryImpl());
 
     AppContext::getDocumentFormatRegistry()->registerFormat(new WorkflowDocFormat(this));
-    
+
     // xml workflow tests removed. commented for future uses
-    
+
     //GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();
     //XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat*>(tfr->findFormat("XML"));
     //assert(xmlTestFormat!=NULL);
-    
+
     //GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
     //l->qlist = WorkflowTests::createTestFactories();
-    
-    //foreach(XMLTestFactory* f, l->qlist) { 
+
+    //foreach(XMLTestFactory* f, l->qlist) {
     //    bool res = xmlTestFormat->registerTestFactory(f);
     //    assert(res);
     //    Q_UNUSED(res);
     //}
-    
+
     registerCMDLineHelp();
     processCMDLineOptions();
     WorkflowEnv::getActorValidatorRegistry()->addValidator(DatasetsCountValidator::ID, new DatasetsCountValidator());
@@ -114,7 +114,7 @@ WorkflowDesignerPlugin::WorkflowDesignerPlugin()
 void WorkflowDesignerPlugin::processCMDLineOptions() {
     CMDLineRegistry * cmdlineReg = AppContext::getCMDLineRegistry();
     assert(cmdlineReg != NULL);
- 
+
     bool consoleMode = !AppContext::isGUIMode(); // only in console mode we run workflows by default. Otherwise we show them
     if (cmdlineReg->hasParameter( RUN_WORKFLOW ) || (consoleMode && !CMDLineRegistryUtils::getPureValues().isEmpty()) ) {
         Task * t = NULL;
@@ -136,7 +136,7 @@ void WorkflowDesignerPlugin::processCMDLineOptions() {
             connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(t), SLOT(registerTask()));
         }
     }
-}   
+}
 
 void WorkflowDesignerPlugin::sl_saveSchemaImageTaskFinished() {
     ProduceSchemaImageLinkTask * saveImgTask = qobject_cast<ProduceSchemaImageLinkTask*>(sender());
@@ -144,7 +144,7 @@ void WorkflowDesignerPlugin::sl_saveSchemaImageTaskFinished() {
     if(saveImgTask->getState() != Task::State_Finished) {
         return;
     }
-    
+
     QString imgUrl = saveImgTask->getImageLink();
     fprintf(stdout, "%s", imgUrl.toLocal8Bit().constData());
 }
@@ -190,7 +190,7 @@ void WorkflowDesignerPlugin::registerCMDLineHelp() {
     cmdLineRegistry->registerCMDLineHelpProvider( galaxyConfigSection );
 
     //CMDLineHelpProvider * remoteMachineSectionArguments = new CMDLineHelpProvider( REMOTE_MACHINE, "<path-to-machine-file>");
-    //CMDLineHelpProvider * remoteMachineSection = new CMDLineHelpProvider( REMOTE_MACHINE, tr("run provided tasks on given remote machine") );        
+    //CMDLineHelpProvider * remoteMachineSection = new CMDLineHelpProvider( REMOTE_MACHINE, tr("run provided tasks on given remote machine") );
     //TODO: bug UGENE-23
     //cmdLineRegistry->registerCMDLineHelpProvider( remoteMachineSectionArguments );
     //cmdLineRegistry->registerCMDLineHelpProvider( remoteMachineSection );
@@ -204,7 +204,7 @@ void WorkflowDesignerPlugin::sl_initWorkers() {
 
 class CloseDesignerTask : public Task {
 public:
-    CloseDesignerTask(WorkflowDesignerService* s) : 
+    CloseDesignerTask(WorkflowDesignerService* s) :
       Task(U2::WorkflowDesignerPlugin::tr("Close Designer"), TaskFlag_NoRun),
           service(s) {}
     virtual void prepare();
@@ -222,7 +222,7 @@ Task* WorkflowDesignerService::createServiceDisablingTask(){
     return new CloseDesignerTask(this);
 }
 
-WorkflowDesignerService::WorkflowDesignerService() 
+WorkflowDesignerService::WorkflowDesignerService()
 : Service(Service_WorkflowDesigner, tr("Workflow Designer"), ""),
 designerAction(NULL), managerAction(NULL), newWorkflowAction(NULL)
 {
@@ -241,7 +241,7 @@ void WorkflowDesignerService::serviceStateChangedCallback(ServiceState , bool en
         SAFE_POINT(NULL == newWorkflowAction, "Illegal WD service state", );
 
         if(!AppContext::getPluginSupport()->isAllPluginsLoaded()) {
-            connect( AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), SLOT(sl_startWorkflowPlugin())); 
+            connect( AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), SLOT(sl_startWorkflowPlugin()));
         } else {
             sl_startWorkflowPlugin();
         }

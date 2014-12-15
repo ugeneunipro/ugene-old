@@ -79,7 +79,7 @@ GenomeAlignerSettingsWidget::GenomeAlignerSettingsWidget(QWidget* parent) : DnaA
 
 QMap<QString,QVariant> GenomeAlignerSettingsWidget::getDnaAssemblyCustomSettings() {
     QMap<QString,QVariant> settings;
-    
+
     settings.insert(GenomeAlignerTask::OPTION_ALIGN_REVERSED, reverseBox->isChecked());
     settings.insert(GenomeAlignerTask::OPTION_OPENCL, gpuBox->isChecked());
     settings.insert(GenomeAlignerTask::OPTION_BEST, firstMatchBox->isChecked());
@@ -192,7 +192,7 @@ void GenomeAlignerSettingsWidget::sl_onPartSliderChanged(int value) {
     partSizeLabel->setText(QByteArray::number(value) + " Mb");
     indexSizeLabel->setText(QByteArray::number(value*13) + " Mb");
 
-    if (systemSize - 13*value >= MIN_READ_SIZE) { 
+    if (systemSize - 13*value >= MIN_READ_SIZE) {
         readSlider->setMaximum(systemSize - 13*value);
     } else {
         readSlider->setMaximum(MIN_READ_SIZE);

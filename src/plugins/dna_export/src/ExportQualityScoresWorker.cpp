@@ -151,7 +151,7 @@ Task* ExportPhredQualityWorker::tick() {
         currentTask = new ExportPhredQualityScoresTask(seqObj, cfg);
         return currentTask;
     }
-    
+
     setDone();
     return NULL;
 }

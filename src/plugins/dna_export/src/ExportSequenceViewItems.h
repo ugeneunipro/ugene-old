@@ -86,7 +86,7 @@ private:
     void selectionToAlignment(const QString& title, bool annotations, bool translate);
 
     AnnotatedDNAView*   view;
-    
+
     QAction*  sequence2SequenceAction;
     QAction*  annotations2SequenceAction;
     QAction*  annotations2CSVAction;

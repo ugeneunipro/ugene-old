@@ -40,7 +40,7 @@ class U2DbiPool;
 #define WORKFLOW_SESSION_TMP_DBI_ALIAS "workflow_session"
 
 
-/** 
+/**
     Keep all DBI types registered in the system
 */
 class U2CORE_EXPORT U2DbiRegistry : public QObject {
@@ -110,9 +110,9 @@ private:
     bool                                    sessionDbiInitDone;
 };
 
-/** 
+/**
     Class to access to DBI connections
-    Roles: 
+    Roles:
         creates new DBIs on user request
         track connection live range (using ref counters)
         closes unused DBIs

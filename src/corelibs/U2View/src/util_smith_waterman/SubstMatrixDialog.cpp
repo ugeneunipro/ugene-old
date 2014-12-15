@@ -36,8 +36,8 @@
 
 namespace U2 {
 
-SubstMatrixDialog::SubstMatrixDialog(const SMatrix& _m, QWidget* p) 
-: QDialog(p), hlBorderColumn(-1), hlBorderRow(-1), hlInnerColumn(-1), hlInnerRow(-1), m(_m) 
+SubstMatrixDialog::SubstMatrixDialog(const SMatrix& _m, QWidget* p)
+: QDialog(p), hlBorderColumn(-1), hlBorderRow(-1), hlInnerColumn(-1), hlInnerRow(-1), m(_m)
 {
     assert(!m.isEmpty());
     setupUi(this);
@@ -46,7 +46,7 @@ SubstMatrixDialog::SubstMatrixDialog(const SMatrix& _m, QWidget* p)
 
     setWindowTitle(tr("Scoring Matrix: %1").arg(m.getName()));
     setModal(true);
-    
+
     QString info;
     info+="<b>" + tr("min score:")+"</b> " + QString::number(m.getMinScore()) + ", ";
     info+="<b>" + tr("max score:")+"</b> " + QString::number(m.getMaxScore()) + "<br>";
@@ -77,12 +77,12 @@ void SubstMatrixDialog::connectGUI() {
 void SubstMatrixDialog::prepareTable() {
     tableMatrix->horizontalHeader()->setHidden(true);
     tableMatrix->verticalHeader()->setHidden(true);
-    
+
     QByteArray alphaChars = m.getAlphabet()->getAlphabetChars();
     int n = alphaChars.size();
     tableMatrix->setRowCount(n + 1);
     tableMatrix->setColumnCount(n + 1);
-    
+
     QTableWidgetItem* ptwi = new QTableWidgetItem("");
     Qt::ItemFlags flags = ptwi->flags();
     flags &= (~Qt::ItemIsEditable);
@@ -143,7 +143,7 @@ void SubstMatrixDialog::sl_mouseOnCell(int row, int column) {
         hlInnerColumn = column;
         hlInnerRow = row;
     }
-    
+
     //update row header
     if (row != hlBorderRow && row != 0) {
         QTableWidgetItem* pw = tableMatrix->item(row, 0);

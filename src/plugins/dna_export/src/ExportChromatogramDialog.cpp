@@ -48,7 +48,7 @@
 namespace U2 {
 
 ExportChromatogramDialog::ExportChromatogramDialog(QWidget* p, const GUrl& fileUrl): QDialog(p) {
-    setupUi(this);    
+    setupUi(this);
     new HelpButton(this, buttonBox, "4227406");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
@@ -66,7 +66,7 @@ void ExportChromatogramDialog::sl_onBrowseClicked() {
     QString filter;
 
     lod.url = U2FileDialog::getSaveFileName(this, tr("Select a file"), lod.dir, "*.scf");
-    if (lod.url.isEmpty()) {    
+    if (lod.url.isEmpty()) {
         return;
     }
     fileNameEdit->setText( lod.url );
@@ -79,7 +79,7 @@ void ExportChromatogramDialog::accept() {
         QMessageBox::critical(this, L10N::errorTitle(), tr("File name is empty!"));
         return;
     }
-    
+
     url = fileNameEdit->text();
     addToProjectFlag = addToProjectBox->isChecked();
     reversed = reverseBox->isChecked();

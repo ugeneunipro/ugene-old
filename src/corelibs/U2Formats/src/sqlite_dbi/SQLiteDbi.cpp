@@ -238,7 +238,7 @@ bool SQLiteDbi::isInitialized(U2OpStatus &os) {
 void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     // meta table, stores general db info
     SQLiteQuery("CREATE TABLE Meta(name TEXT NOT NULL, value TEXT NOT NULL)", db, os).execute();
-    
+
     objectDbi->initSqlSchema(os);
     objectRelationsDbi->initSqlSchema(os);
     sequenceDbi->initSqlSchema(os);
@@ -345,7 +345,7 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
             os.setError(U2DbiL10n::tr("Error opening SQLite database: %1!").arg(err));
             break;
         }
- 
+
         SQLiteQuery("PRAGMA synchronous = OFF", db, os).execute();
         QString lockingMode = props.value(U2DbiOptions::U2_DBI_LOCKING_MODE, "exclusive");
         if (lockingMode == "normal") {
@@ -382,7 +382,7 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
             ioLog.trace(QString("SQLite: initialized: %1\n").arg(url));
         }
     } while (0);
-    
+
     if (os.hasError()) {
         sqlite3_close(db->handle);
         db->handle = NULL;
@@ -418,10 +418,10 @@ QVariantMap SQLiteDbi::shutdown(U2OpStatus& os) {
     variantDbi->shutdown(os);
     featureDbi->shutdown(os);
     modDbi->shutdown(os);
-    
+
     setState(U2DbiState_Stopping);
     int rc = sqlite3_close(db->handle);
-    
+
     if (rc != SQLITE_OK) {
         ioLog.error(U2DbiL10n::tr("Failed to close database: %1, err: %2").arg(url).arg(getLastErrorMessage(rc)));
     }
@@ -435,7 +435,7 @@ QVariantMap SQLiteDbi::shutdown(U2OpStatus& os) {
     setState(U2DbiState_Void);
     return QVariantMap();
 }
-    
+
 bool SQLiteDbi::flush(U2OpStatus& ) {
     //todo:
     return true;

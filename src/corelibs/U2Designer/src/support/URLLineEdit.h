@@ -64,7 +64,7 @@ private slots:
 
 signals:
     void si_finished();
-    
+
 public:
     SchemaConfig *schemaConfig;
     QString type;

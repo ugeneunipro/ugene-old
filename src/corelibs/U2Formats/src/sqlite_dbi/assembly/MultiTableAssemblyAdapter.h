@@ -34,7 +34,7 @@ namespace U2 {
 class MTASingleTableAdapter {
 public:
     /** Wrapper over 1 table in database. If singleTableAdapter == NULL the table was not created yet */
-    MTASingleTableAdapter(SingleTableAssemblyAdapter* a, int _rowPos, int _elenPos, const QByteArray& extra) 
+    MTASingleTableAdapter(SingleTableAssemblyAdapter* a, int _rowPos, int _elenPos, const QByteArray& extra)
         : singleTableAdapter(a), rowPos(_rowPos), elenPos(_elenPos), idExtra(extra) {}
 
     SingleTableAssemblyAdapter* singleTableAdapter;
@@ -70,14 +70,14 @@ public:
     int getElenRangePosByLength(qint64 readLength) const;
     int getElenRangePosById(const U2DataId& id) const;
     int getNumberOfElenRanges() const {return elenRanges.size();}
-    
+
     int getRowRangePosByRow(quint64 row) const;
     int getRowRangePosById(const U2DataId& id) const;
     int getRowsPerRange() const {return rowsPerRange;}
 
     const QVector<MTASingleTableAdapter*>& getAdapters() const {return adapters;}
     const QVector<QByteArray>& getIdExtrasPerRange() const {return idExtras;}
-    
+
     DbRef* getDbRef() const {return dbi->getDbRef();}
 
     MTASingleTableAdapter* getAdapterByRowAndElenRange(int rowRange, int elenRange, bool createIfNotExits, U2OpStatus& os);
@@ -88,10 +88,10 @@ protected:
     static QByteArray getIdExtra(int rowRange, int elenRange);
 
     void addTableAdapter(int minLen, int maxLen, const U2DataId& assemblyId, const AssemblyCompressor* compressor, bool last, U2OpStatus& os);
-    
+
     /** Checks if table info must be re-read from DB and calls re-read if needed */
     void syncTables(U2OpStatus& os);
-    
+
     /** For a new and empty assembly analyzes reads data and calculate ranges */
     void initTables(const QList<U2AssemblyRead>& reads, U2OpStatus& os);
 
@@ -108,7 +108,7 @@ protected:
     void initAdaptersGrid(int nRows, int nRanges);
 
     SQLiteDbi*                                  dbi;
-    
+
     /** All non-NUL adapters */
     QVector<MTASingleTableAdapter*>             adapters;
 
@@ -117,16 +117,16 @@ protected:
 
     /** id extras for every table, same hierarchy with tableAdapters */
     QVector<QByteArray>                         idExtras;
-    
+
     /** assembly object version adapters are used for */
     qint32                                      version;
-    
+
     /** effective length ranges */
     QVector<U2Region>                           elenRanges;
 
     /** prow range per table */
     qint32                                      rowsPerRange;
-    
+
     //TODO: add read-locks into all methods
     QReadWriteLock                              tablesSyncLock;
 };
@@ -134,9 +134,9 @@ protected:
 class SQLiteReadTableMigrationData {
 public:
     SQLiteReadTableMigrationData() : readId (-1), oldTable(NULL), newProw(-1){}
-    SQLiteReadTableMigrationData(qint64 oldId, MTASingleTableAdapter* oldT, int newP) 
+    SQLiteReadTableMigrationData(qint64 oldId, MTASingleTableAdapter* oldT, int newP)
         : readId(oldId), oldTable(oldT), newProw(newP) {}
-    
+
     qint64                  readId;
     MTASingleTableAdapter*  oldTable;
     int                     newProw;
@@ -144,9 +144,9 @@ public:
 
 class MultiTablePackAlgorithmAdapter : public PackAlgorithmAdapter {
 public:
-    MultiTablePackAlgorithmAdapter(MultiTableAssemblyAdapter* a); 
+    MultiTablePackAlgorithmAdapter(MultiTableAssemblyAdapter* a);
     ~MultiTablePackAlgorithmAdapter();
-    
+
     virtual U2DbiIterator<PackAlgorithmData>* selectAllReads(U2OpStatus& os);
     virtual void assignProw(const U2DataId& readId, qint64 prow, U2OpStatus& os);
 

@@ -55,27 +55,27 @@ namespace U2 {
 ADVClipboard::ADVClipboard(AnnotatedDNAView* c) : QObject(c) {
     ctx = c;
     //TODO: listen seqadded/seqremoved!!
-    
-    connect(ctx, SIGNAL(si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*)), 
+
+    connect(ctx, SIGNAL(si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*)),
                  SLOT(sl_onFocusedSequenceWidgetChanged(ADVSequenceWidget*, ADVSequenceWidget*)));
 
     foreach(ADVSequenceObjectContext* sCtx, ctx->getSequenceContexts()) {
         connectSequence(sCtx);
     }
-    
+
 
     copySequenceAction = new QAction(QIcon(":/core/images/copy_sequence.png"), tr("Copy sequence"), this);
     copySequenceAction->setObjectName("Copy sequence");
     copySequenceAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_C));
-    
+
     copyTranslationAction = new QAction(QIcon(":/core/images/copy_translation.png"), tr("Copy translation"), this);
     copyTranslationAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_T));
     copyTranslationAction->setObjectName(ADV_COPY_TRANSLATION_ACTION);
-    
+
     copyComplementSequenceAction = new QAction(QIcon(":/core/images/copy_complement_sequence.png"), tr("Copy reverse complement sequence"), this);
     copyComplementSequenceAction->setObjectName("Copy reverse complement sequence");
     copyComplementSequenceAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_C));
-    
+
     copyComplementTranslationAction = new QAction(QIcon(":/core/images/copy_complement_translation.png"), tr("Copy reverse complement translation"), this);
     copyComplementTranslationAction->setObjectName("Copy reverse complement translation");
     copyComplementTranslationAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_T));
@@ -96,8 +96,8 @@ ADVClipboard::ADVClipboard(AnnotatedDNAView* c) : QObject(c) {
 }
 
 void ADVClipboard::connectSequence(ADVSequenceObjectContext* sCtx) {
-    connect(sCtx->getSequenceSelection(), 
-      SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)), 
+    connect(sCtx->getSequenceSelection(),
+      SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)),
       SLOT(sl_onDNASelectionChanged(LRegionsSelection*, const QVector<U2Region>& , const QVector<U2Region>&)));
 
     connect( sCtx->getAnnotatedDNAView( )->getAnnotationsSelection( ),
@@ -154,7 +154,7 @@ void ADVClipboard::sl_copyComplementTranslation() {
 void ADVClipboard::sl_copyAnnotationSequence() {
     QByteArray res;
     const QList<AnnotationSelectionData>& as = ctx->getAnnotationsSelection()->getSelection();
-    
+
     //BUG528: add alphabet symbol role: insertion mark
     char gapSym = '-';
     for (int i=0, n = as.size(); i < n; i++) {
@@ -214,12 +214,12 @@ void ADVClipboard::updateActions() {
     bool hasComplement = hasSequence && seqCtx->getComplementTT()!=NULL;
     bool hasTranslation = hasSequence && seqCtx->getAminoTT()!=NULL;
     bool selectionIsNotEmpty = hasSequence && !sel->getSelectedRegions().isEmpty();
-    
+
     copySequenceAction->setEnabled(selectionIsNotEmpty);
     copyTranslationAction->setEnabled(selectionIsNotEmpty && hasTranslation);
     copyComplementSequenceAction->setEnabled(selectionIsNotEmpty && hasComplement);
     copyComplementTranslationAction->setEnabled(selectionIsNotEmpty && hasComplement && hasTranslation);
-    
+
     bool hasAnnotationSelection = !ctx->getAnnotationsSelection()->isEmpty();
     bool hasSequenceForAnnotations = false;
     bool hasTranslationForAnnotations = false;
@@ -245,7 +245,7 @@ void ADVClipboard::updateActions() {
 void ADVClipboard::addCopyMenu(QMenu* m) {
     QMenu* copyMenu = new QMenu(tr("Copy"), m);
     copyMenu->menuAction()->setObjectName(ADV_MENU_COPY);
-    
+
     copyMenu->addAction(copySequenceAction);
     copyMenu->addAction(copyComplementSequenceAction);
     copyMenu->addAction(copyTranslationAction);

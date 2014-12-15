@@ -163,7 +163,7 @@ private:
 
     DNASequence*                   seq;
     QMap<QString, QList<AnnotationData> > annotationData;
-}; 
+};
 
 class U2CORE_EXPORT ConvertIdAndLoadDasFeaturesTask : public Task {
 public:

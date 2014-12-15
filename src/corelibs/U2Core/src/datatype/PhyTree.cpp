@@ -180,7 +180,7 @@ void PhyNode::setParentNode(PhyNode* newParent, double distance) {
             return;
         }
     }
-    
+
     PhyBranch* b = new PhyBranch();
     b->distance = distance;
     b->node1 = newParent;
@@ -350,7 +350,7 @@ void PhyTreeUtils::rerootPhyTree(PhyTree& phyTree, PhyNode* node) {
     PhyNode* oldParent = centralNode->getParentNode();
     if(NULL != oldParent) {
         distance = centralNode->getDistanceToRoot() - newRoot->getDistanceToRoot();
-        centralNode->setParentNode(newRoot, distance); 
+        centralNode->setParentNode(newRoot, distance);
     }
 
     PhyNode* s = NULL;
@@ -366,7 +366,7 @@ void PhyTreeUtils::rerootPhyTree(PhyTree& phyTree, PhyNode* node) {
         oldParent = s;
     }
 
-    if(centralNode->getChildrenNodes().size() == 1) { 
+    if(centralNode->getChildrenNodes().size() == 1) {
         /* remove old root */
         oldParent = centralNode->getChildrenNodes().at(0);
         distance = oldParent->getDistanceToRoot() - newParentNode->getDistanceToRoot();

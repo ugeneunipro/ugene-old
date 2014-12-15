@@ -28,7 +28,7 @@
 namespace U2 {
 
 class ADVSequenceObjectContext;
-class SecStructPredictTask;  
+class SecStructPredictTask;
 class SecStructPredictAlgRegistry;
 class Task;
 

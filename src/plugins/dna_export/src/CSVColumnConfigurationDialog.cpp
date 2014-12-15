@@ -33,7 +33,7 @@
 
 namespace U2 {
 
-CSVColumnConfigurationDialog::CSVColumnConfigurationDialog(QWidget* w, const ColumnConfig& _config) 
+CSVColumnConfigurationDialog::CSVColumnConfigurationDialog(QWidget* w, const ColumnConfig& _config)
 : QDialog(w), config(_config)
 {
     setupUi(this);
@@ -43,13 +43,13 @@ CSVColumnConfigurationDialog::CSVColumnConfigurationDialog(QWidget* w, const Col
     connect(startRB, SIGNAL(toggled(bool)), SLOT(sl_startToggle(bool)));
 
     switch(config.role) {
-        case ColumnRole_Ignore: 
-            ignoreRB->setChecked(true); 
+        case ColumnRole_Ignore:
+            ignoreRB->setChecked(true);
             break;
-        case ColumnRole_Name: 
+        case ColumnRole_Name:
             nameRB->setChecked(true);
             break;
-        case ColumnRole_Qualifier: 
+        case ColumnRole_Qualifier:
             qualifierRB->setChecked(true);
             qualifierNameEdit->setText(config.qualifierName);
             break;

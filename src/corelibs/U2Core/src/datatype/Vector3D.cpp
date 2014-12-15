@@ -23,7 +23,7 @@
 
 #include <U2Core/Matrix44.h>
 
-namespace U2 { 
+namespace U2 {
 
 Vector3D::Vector3D(double xi, double yi, double zi)
 {

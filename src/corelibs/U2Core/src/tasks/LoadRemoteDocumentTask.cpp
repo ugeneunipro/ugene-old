@@ -129,7 +129,7 @@ QString BaseLoadRemoteDocumentTask::getDefaultDownloadDirectory(){
 }
 
 bool BaseLoadRemoteDocumentTask::initLoadDocumentTask(){
-    // Check if the document has been loaded 
+    // Check if the document has been loaded
     Project* proj = AppContext::getProject();
     if (proj != NULL) {
         resultDocument = proj->findDocumentByURL(fullPath);
@@ -159,7 +159,7 @@ bool BaseLoadRemoteDocumentTask::isCached(){
         if( fullPath == cachedUrl ) {
             if (initLoadDocumentTask() ) {
                 addSubTask(loadDocumentTask);
-            } 
+            }
             return true;
         } // else: user wants to save doc to new file -> download it from db
     }
@@ -233,12 +233,12 @@ GUrl LoadRemoteDocumentTask::getSourceUrl(){
         return fileUrl;
     }else{
         RemoteDBRegistry::getRemoteDBRegistry().convertAlias(dbName);
-        return GUrl(RemoteDBRegistry::getRemoteDBRegistry().getURL(accNumber, dbName));    
+        return GUrl(RemoteDBRegistry::getRemoteDBRegistry().getURL(accNumber, dbName));
     }
 }
 
 QString LoadRemoteDocumentTask::getFileName(){
-    
+
     if( sourceUrl.isHyperLink() ) {
         return sourceUrl.fileName();
     } else {
@@ -516,7 +516,7 @@ bool ESearchResultHandler::startElement( const QString &namespaceURI, const QStr
     }
     if ("eSearchResult" == qName) {
         metESearchResult = true;
-    } 
+    }
     curText.clear();
     return true;
 }
@@ -561,7 +561,7 @@ bool ESummaryResultHandler::startElement( const QString &namespaceURI, const QSt
     }
     if ("eSummaryResult" == qName) {
         metESummaryResult = true;
-    } 
+    }
     curAttributes = attributes;
     curText.clear();
     return true;
@@ -603,9 +603,9 @@ bool ESummaryResultHandler::characters( const QString &str )
 
 bool ESummaryResultHandler::fatalError( const QXmlParseException &exception )
 {
-    
+
     errorStr = QString("ESummary result parsing failed: %1").arg(exception.message());
-    
+
     return false;
 
 }
@@ -662,8 +662,8 @@ QString RemoteDBRegistry::getURL( const QString& accId, const QString& dbName ) 
     QString result("");
     if (httpDBs.contains(dbName)) {
         result = QString(httpDBs.value(dbName)).arg(accId);
-    }    
-    return result; 
+    }
+    return result;
 }
 
 QString RemoteDBRegistry::getDbEntrezName( const QString& dbName ){

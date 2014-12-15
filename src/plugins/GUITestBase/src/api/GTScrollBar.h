@@ -50,7 +50,7 @@ public:
     static void moveSliderWithMouseUp(U2OpStatus &os, QScrollBar *scrollbar, int nPix);
     static void moveSliderWithMouseDown(U2OpStatus &os, QScrollBar *scrollbar, int nPix);
 
-    static void moveSliderWithMouseWheelUp(U2OpStatus &os, QScrollBar *scrollbar, int nScrolls); //first moves the cursor to the slider and clicks it, then starts scrolling 
+    static void moveSliderWithMouseWheelUp(U2OpStatus &os, QScrollBar *scrollbar, int nScrolls); //first moves the cursor to the slider and clicks it, then starts scrolling
     static void moveSliderWithMouseWheelDown(U2OpStatus &os, QScrollBar *scrollbar, int nScrolls); //first moves the cursor to the slider and clicks it, then starts scrolling
 
     static QPoint getSliderPosition(U2OpStatus &os, QScrollBar *scrollbar);

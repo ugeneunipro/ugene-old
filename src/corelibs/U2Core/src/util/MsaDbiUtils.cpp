@@ -114,10 +114,10 @@ bool validateAndPreparePosInMsa(const MAlignment& al, qint64& posInMsa) {
 /////////////////////////////////////////////////////////////////
 // Helper-methods for additional calculations
 
-void MsaDbiUtils::calculateGapModelAfterInsert(QList<U2MsaGap>& gapModel, qint64 pos, qint64 count) {    
+void MsaDbiUtils::calculateGapModelAfterInsert(QList<U2MsaGap>& gapModel, qint64 pos, qint64 count) {
     SAFE_POINT(pos >= 0, QString("Invalid position '%1'!").arg(pos), );
     SAFE_POINT(count > 0, QString("Invalid characters count '%1'!").arg(count), );
-    
+
     // There are no gaps yet
     if (gapModel.isEmpty()) {
         U2MsaGap gap(pos, count);
@@ -258,7 +258,7 @@ QList<U2MsaRow> MsaDbiUtils::cutOffTrailingGaps(QList<U2MsaRow>& rows, const qin
 void MsaDbiUtils::calculateGapModelAfterRemove(QList<U2MsaGap>& gapModel, qint64 pos, qint64 count) {
     QList<U2MsaGap> newGapModel;
     qint64 endRegionPos = pos + count; // non-inclusive
-    foreach (U2MsaGap gap, gapModel) 
+    foreach (U2MsaGap gap, gapModel)
     {
         qint64 gapEnd = gap.offset + gap.gap;
         if (gapEnd < pos) {

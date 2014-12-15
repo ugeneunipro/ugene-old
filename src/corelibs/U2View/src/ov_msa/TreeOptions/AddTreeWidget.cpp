@@ -72,10 +72,10 @@ QWidget* AddTreeWidget::createSettingsWidget() {
     QVBoxLayout* groupLayout = initLayout(group);
     algorithmBox = new QComboBox(group);
     groupLayout->addItem(algorithmBox);
-    
+
     const GUrl& msaURL = mobj->getDocument()->getURL();
     GUrl url = GUrlUtils::rollFileName(msaURL.dirPath() + "/" + msaURL.baseFileName() + ".nwk", DocumentUtils::getNewDocFileNameExcludesHint());
-    
+
     fileNameEdit = new QLineEdit(group);
     groupLayout->addItem(fileNameEdit);
 
@@ -85,7 +85,7 @@ QWidget* AddTreeWidget::createSettingsWidget() {
 
     connect(browseButton, SIGNAL(clicked()), SLOT(sl_browseClicked()));
     connect(algorithmBox, SIGNAL(currentIndexChanged ( int )), SLOT(sl_comboIndexChaged(int)));
-    
+
     int itemIndex = algorithmBox->count()-1;
     assert(itemIndex >= 0);
 
@@ -138,14 +138,14 @@ void CreatePhyTreeDialogController::clearContrWidgets(){
         setMinimumHeight(minimumHeight() - w->minimumHeight());
         w->hide();
         delete w;
-    }    
+    }
     childWidgets.clear();
     adjustSize();
 }
 
 void CreatePhyTreeDialogController::sl_browseClicked()
 {
-    GUrl oldUrl = ui->fileNameEdit->text(); 
+    GUrl oldUrl = ui->fileNameEdit->text();
     QString path;
     LastUsedDirHelper lod;
     if (oldUrl.isEmpty()) {
@@ -167,6 +167,6 @@ void CreatePhyTreeDialogController::sl_comboIndexChaged(int ){
     PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
     PhyTreeGenerator* generator = registry->getGenerator(ui->algorithmBox->currentText());
     generator->setupCreatePhyTreeUI(this, msa);
-    ui->verticalLayout->activate(); 
+    ui->verticalLayout->activate();
 }
 }

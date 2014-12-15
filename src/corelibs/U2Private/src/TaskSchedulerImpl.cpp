@@ -36,7 +36,7 @@
 
 /* TRANSLATOR U2::TaskSchedulerImpl */
 
-#ifdef Q_CC_MSVC_NET 
+#ifdef Q_CC_MSVC_NET
 #include <Windows.h>
 const DWORD MS_VC_EXCEPTION=0x406D1388;
 
@@ -184,7 +184,7 @@ bool TaskSchedulerImpl::processFinishedTasks() {
                 continue;
             }
         }
-        
+
         if((NULL != pti) && pti->task->hasFlags(TaskFlag_RunMessageLoopOnly)
             && (NULL != pti->thread) && pti->thread->isPaused)
         {
@@ -510,8 +510,8 @@ void TaskSchedulerImpl::registerTopLevelTask(Task* task) {
 #endif
 
     SAFE_POINT(task->getState() == Task::State_New, QString("Trying to register task in not NEW state. State: %1").arg(task->getState()),);
-    SAFE_POINT(!topLevelTasks.contains(task), QString("Task is already registered: %1").arg(task->getTaskName()),);    
-    
+    SAFE_POINT(!topLevelTasks.contains(task), QString("Task is already registered: %1").arg(task->getTaskName()),);
+
     taskLog.details(tr("Registering new task: %1").arg(task->getTaskName()));
     topLevelTasks.append(task);
     emit si_topLevelTaskRegistered(task);
@@ -989,7 +989,7 @@ TaskThread::TaskThread(TaskInfo* _ti)
 static QMutex lock;
 
 void TaskThread::run() {
-#ifdef Q_CC_MSVC_NET 
+#ifdef Q_CC_MSVC_NET
     DWORD threadId = GetCurrentThreadId();
     QByteArray threadName = ti->task->getTaskName().toLocal8Bit();
     SetThreadName(threadId, threadName.data());

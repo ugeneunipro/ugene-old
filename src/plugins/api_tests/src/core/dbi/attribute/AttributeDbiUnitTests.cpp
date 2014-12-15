@@ -226,7 +226,7 @@ void AttributeDbiUnitTests_getAvailableAttributeNames::Test() {
 void AttributeDbiUnitTests_getObjectAttributes::Test() {
     const U2DataId& childId = U2DbiUtils::toU2DataId(2, U2Type::Assembly);
     APITestData testData;
-    
+
     // getObjectAttributes
     ObjectAttributesTestData oat;
     {

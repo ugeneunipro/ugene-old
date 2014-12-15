@@ -82,12 +82,12 @@ void EntropyGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, 
 
     const QByteArray& seq = getSequenceData(o);
     const DNAAlphabet* al = o->getAlphabet();
-    
+
     // prepare index -> TODO: make it once and cache!
     IndexedMapping3To1<int> index(al->getAlphabetChars(), 0);
     int* mapData = index.mapData();
     int indexSize = index.getMapSize();
-    
+
     // algorithm
     float log10_2 = log10(2.0);
     const char* seqStr = seq.constData();

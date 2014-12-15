@@ -72,7 +72,7 @@ protected:
     IntegralBus    *input, *output;
     PMBuildSettings         cfg;
     DataTypePtr             mtype;
-}; 
+};
 
 class PFMatrixBuildWorker : public BaseWorker {
     Q_OBJECT
@@ -126,7 +126,7 @@ public:
     static const QString ACTOR_ID;
     static void registerProto();
 
-    PWMatrixSearchWorker(Actor* a) : BaseWorker(a, false), 
+    PWMatrixSearchWorker(Actor* a) : BaseWorker(a, false),
         modelPort(NULL), dataPort(NULL), output(NULL), strand(0) {}
     virtual void init();
     virtual bool isReady();

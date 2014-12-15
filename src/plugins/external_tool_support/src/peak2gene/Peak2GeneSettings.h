@@ -32,7 +32,7 @@ namespace U2 {
 
 class Peak2GeneSettings {
 public:
-    
+
     static const QString OUT_TYPE_UPSTREAM;
     static const QString OUT_TYPE_DOWNSTREAM;
     static const QString OUT_TYPE_ALL;

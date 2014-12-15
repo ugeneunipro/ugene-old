@@ -181,7 +181,7 @@ QVariantMap BusMap::composeMessageMap(const Message &m, const QVariantMap &conte
 static QMap<QString, QStringList> getListMappings(const QStrStrMap& busMap, const SlotPathMap &pathMap, const Port* p) {
     QStrStrMap bm = busMap;
     WorkflowUtils::applyPathsToBusMap(bm, pathMap);
-    assert(p->isInput());    
+    assert(p->isInput());
     DataTypePtr dt = p->getType();
     QMap<QString, QStringList> res;
     if (dt->isList()) {
@@ -210,7 +210,7 @@ IntegralBus::IntegralBus(Port* p)
             assert(false);
             return;
         }
-        
+
         QStrStrMap map = a->getAttributeValueWithoutScript<QStrStrMap>();
         if (map.isEmpty()) {
             ActorPrototype *proto = p->owner()->getProto();
@@ -254,7 +254,7 @@ IntegralBus::IntegralBus(Port* p)
 }
 
 bool IntegralBus::addCommunication(const QString& id, CommunicationChannel* ch) {
-    outerChannels.insertMulti(id, ch); 
+    outerChannels.insertMulti(id, ch);
     return true;
 }
 
@@ -290,7 +290,7 @@ Message IntegralBus::get() {
     if (complement) {
         complement->setContext(messageContext);
     }
-    
+
     takenMsgs++;
     return Message(busType, data);
 }
@@ -316,7 +316,7 @@ QQueue<Message> IntegralBus::getMessages(int startIndex, int endIndex) const {
         }
         result.enqueue(Message(busType, resultingMessageMap));
     }
-    
+
     return result;
 }
 

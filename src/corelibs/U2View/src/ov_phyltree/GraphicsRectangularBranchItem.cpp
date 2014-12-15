@@ -206,7 +206,7 @@ void GraphicsRectangularBranchItem::setHeightCoef(int coef){
     if(coef == cur_height_coef){
         return ;
     }
-    
+
     qreal h = (height / (qreal)cur_height_coef) * coef;
     cur_height_coef = coef;
     setHeight(h);
@@ -216,7 +216,7 @@ void GraphicsRectangularBranchItem::swapSiblings() {
     if (!phyBranch) {
         return ;
     }
-    
+
     PhyNode* nodeTo = phyBranch->node2;
     int branchCount = nodeTo->branchCount();
     if (branchCount > 2) {
@@ -239,7 +239,7 @@ void GraphicsRectangularBranchItem::redrawBranches(int& current, qreal& minDista
     if (node == NULL) {
         return ;
     }
-    
+
     branches = node->branchCount();
     if(branches > 1){
         QList<GraphicsRectangularBranchItem*> items;
@@ -312,7 +312,7 @@ void GraphicsRectangularBranchItem::redrawBranches(int& current, qreal& minDista
 }
 
 GraphicsRectangularBranchItem* GraphicsRectangularBranchItem::getChildItemByPhyBranch(const PhyBranch* branch){
-    
+
     foreach (QGraphicsItem* ci, this->childItems()) {
         GraphicsRectangularBranchItem* gbi = dynamic_cast<GraphicsRectangularBranchItem*>(ci);
         if (gbi != NULL) {

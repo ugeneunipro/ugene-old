@@ -187,7 +187,7 @@ void Peak2GeneWorkerFactory::init() {
     }
 
     QList<PortDescriptor*> portDescs;
-    
+
     //in port
     QMap<Descriptor, DataTypePtr> inTypeMap;
     Descriptor treatDesc(TREAT_SLOT_ID,
@@ -289,7 +289,7 @@ void Peak2GeneWorkerFactory::init() {
          contentMap[Peak2GeneSettings::OUT_TYPE_DOWNSTREAM] = Peak2GeneSettings::OUT_TYPE_DOWNSTREAM;
          contentMap[Peak2GeneSettings::OUT_TYPE_UPSTREAM] = Peak2GeneSettings::OUT_TYPE_UPSTREAM;
          delegates[OUTPOS] = new ComboBoxDelegate(contentMap);
-         
+
      }
 
     Descriptor protoDesc(Peak2GeneWorkerFactory::ACTOR_ID,
@@ -309,13 +309,13 @@ Worker *Peak2GeneWorkerFactory::createWorker(Actor *a) {
 }
 
 QString Peak2GenePrompter::composeRichDoc() {
-    QString res = ""; 
+    QString res = "";
 
     Actor* treatProducer = qobject_cast<IntegralBusPort*>(target->getPort(IN_PORT_DESCR))->getProducer(TREAT_SLOT_ID);
 
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString treatUrl = treatProducer ? treatProducer->getLabel() : unsetStr;
-    
+
     QString dbUrl = getHyperlink(GENOME, getURL(GENOME));
 
     res.append(tr("Uses annotations from <u>%1</u> as peak regions ").arg(treatUrl));

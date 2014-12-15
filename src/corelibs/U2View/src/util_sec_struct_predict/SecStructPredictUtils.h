@@ -34,7 +34,7 @@ class SecStructPredictViewAction: public ADVGlobalAction {
 public:
     SecStructPredictViewAction(AnnotatedDNAView* v);
     ~SecStructPredictViewAction();
-    static ADVGlobalAction* createAction(AnnotatedDNAView* view);    
+    static ADVGlobalAction* createAction(AnnotatedDNAView* view);
 protected slots:
     void sl_execute();
 };

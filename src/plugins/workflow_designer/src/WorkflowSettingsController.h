@@ -75,7 +75,7 @@ public:
 
     virtual AppSettingsGUIPageState* getState(QString& err) const;
 
-    virtual bool eventFilter( QObject * watched, QEvent * event ); 
+    virtual bool eventFilter( QObject * watched, QEvent * event );
 
 private slots:
     void sl_getDirectory();

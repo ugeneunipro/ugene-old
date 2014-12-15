@@ -27,7 +27,7 @@
 
 #include "ExtractAnnotatedRegionTask.h"
 
-namespace U2{ 
+namespace U2{
 
 ExtractAnnotatedRegionTask::ExtractAnnotatedRegionTask( const DNASequence & sequence_, const AnnotationData &sd_, const ExtractAnnotatedRegionTaskSettings & cfg_ ) :
 Task( tr("Extract annotated regions"), TaskFlag_None ), inputSeq(sequence_), inputAnn(sd_), cfg(cfg_), complT(NULL), aminoT(NULL)
@@ -47,7 +47,7 @@ void ExtractAnnotatedRegionTask::prepareTranslations() {
     if (cfg.complement && inputAnn.getStrand().isCompementary()) {
         DNATranslation* compTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation( inputSeq.alphabet);
         if (compTT != NULL) {
-            complT = compTT; 
+            complT = compTT;
         }
     }
 

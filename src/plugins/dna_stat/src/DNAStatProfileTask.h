@@ -44,7 +44,7 @@ public:
 private:
     ADVSequenceObjectContext* ctx;
     qint64 seqLen;
-    
+
     QString charResult;
     QString dinucResult;
     QString statResult;

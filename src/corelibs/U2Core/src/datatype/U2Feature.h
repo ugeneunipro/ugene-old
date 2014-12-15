@@ -65,12 +65,12 @@ public:
 
     /**  Strand of the location. */
     U2Strand    strand;
-    
+
     /** Sequence region */
     U2Region   region;
 
     bool operator==(const U2FeatureLocation& l) const;
-    
+
     bool operator!=(const U2FeatureLocation& l) const {return !(*this == l);}
 };
 
@@ -81,7 +81,7 @@ inline bool U2FeatureLocation::operator==(const U2FeatureLocation& l) const {
 
 /**
  * The flags specify whether the group operation has to be applied to the parent feature
- * besides its child features. 
+ * besides its child features.
  */
 enum SubfeatureSelectionMode {
     SelectParentFeature,

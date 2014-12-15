@@ -50,7 +50,7 @@ private:
 class U2CORE_EXPORT CMDLineUtils {
 public:
     static void init();
-    
+
 }; // CMDLineUtils
 
 } // U2

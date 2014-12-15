@@ -121,7 +121,7 @@ static Annotation* findAnnotation( const QList< Annotation* >& annList, Annotati
 //you should put annotations here after creation
 struct AnnotationBank {
     QList<Annotation*> ann_list;
-    
+
     void addAnnotation( Annotation* ann ) {
         if( NULL == ann ) {
             return;
@@ -217,7 +217,7 @@ static bool isUniFile( const AnnotationBank& ann_bank ) {
 
 static QString getAnnotationName( Annotation* ann ) {
     assert( NULL != ann );
-    
+
     AnnotationType t = ann->type;
     switch( t ) {
     case UNI_ANNOTATION:
@@ -356,7 +356,7 @@ static void skipMany( IOAdapter* io, AnnotationBank& ann_bank ) {
 
 static bool eofMsa( IOAdapter* io ) {
     assert( NULL != io );
-    
+
     QByteArray buf( SMALL_BUF_SZ, TERM_SYM );
     int ret = io->readUntil( buf.data(), SMALL_BUF_SZ, TextUtils::LINE_BREAKS, IOAdapter::Term_Include );
     checkValThrowException( false, -1, ret, StockholmFormat::ReadError(io->getURL()) );
@@ -521,7 +521,7 @@ static bool loadOneMsa( IOAdapter* io, U2OpStatus& tsi, MAlignment& msa, Annotat
     }// while( 1 )
     readEofMsa( io );
     skipBlankLines( io );
-    
+
     if ( msa.getNumRows() == 0 ) {
         throw StockholmFormat::BadFileData( StockholmFormat::tr( "invalid file: empty sequence alignment" ) );
     }
@@ -532,7 +532,7 @@ static bool loadOneMsa( IOAdapter* io, U2OpStatus& tsi, MAlignment& msa, Annotat
     return true;
 }
 
-static void setMsaInfoCutoffs( QVariantMap& info, const QString& string, MAlignmentInfo::Cutoffs cof1, 
+static void setMsaInfoCutoffs( QVariantMap& info, const QString& string, MAlignmentInfo::Cutoffs cof1,
                                MAlignmentInfo::Cutoffs cof2 ) {
     QByteArray str = string.toLatin1();
     QTextStream txtStream( str );
@@ -545,7 +545,7 @@ static void setMsaInfoCutoffs( QVariantMap& info, const QString& string, MAlignm
 
 static void setMsaInfo( const QHash< QString, QString>& annMap, MAlignment& ma ) {
     QVariantMap info = ma.getInfo();
-    
+
     if (annMap.contains( StockholmFormat::FILE_ANNOTATION_AC ) ) {
         MAlignmentInfo::setAccession( info, annMap[StockholmFormat::FILE_ANNOTATION_AC] );
     }
@@ -582,7 +582,7 @@ static void load( IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& l, con
         QString name;
         bool notCanceled = true;
         QHash< QString, QString > annMap;
-        
+
         notCanceled = loadOneMsa( io, tsi, msa, ann_bank );
         if( !notCanceled ) {
             break;
@@ -594,7 +594,7 @@ static void load( IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& l, con
             filename + "_" + QString::number( l.size() ): name;
         names_list.append( name );
         msa.setName( name );
-        
+
         annMap = getAnnotationMap( ann_bank );
         setMsaInfo( annMap, msa );
 
@@ -644,7 +644,7 @@ static void save( IOAdapter* io, const MAlignment& msa, const QString& name, U2O
     QByteArray idAnn = StockholmFormat::FILE_ANNOTATION_ID + " " + name.toLatin1() + "\n\n";
     ret = io->writeBlock( idAnn );
     checkValThrowException<int>( true, idAnn.size(), ret, StockholmFormat::WriteError(io->getURL()) );
-    
+
     //write sequences
     int name_max_len = getMaxNameLen( msa );
     int seq_len = msa.getLength();

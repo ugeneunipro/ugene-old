@@ -20,8 +20,8 @@
  */
 
 /**
-    A framework to check, trace and recover from error situation in release mode. 
-    The logic is similar to usual assertions in debug mode but in 
+    A framework to check, trace and recover from error situation in release mode.
+    The logic is similar to usual assertions in debug mode but in
     release mode the check is performed and if not passed - the error message
     is dumped to log. This log can be analyzed and sent as a part of crash handler report
 
@@ -34,7 +34,7 @@
 #include <assert.h>
 
 
-/** 
+/**
     Recover utility. Must be used when code tries to recover from invalid internal state
     by returning from the method some default value.
     Traces the message to log. Asserts in debug mode.
@@ -50,7 +50,7 @@
     } \
 
 
-/** 
+/**
     Recover utility. Must be used when code tries to recover from invalid internal state
     by returning from the method some default value.
     Dumps the message to the error-level log. Asserts in debug mode.
@@ -67,7 +67,7 @@
     } \
 
 
-/** 
+/**
     Recover utility. Must be used when code tries to recover from invalid internal state
     by returning from the method some default value.
     Asserts in debug mode. Performs extra recovery op in release
@@ -82,7 +82,7 @@
         return result; \
     } \
 
-/** 
+/**
     FAIL utility. Same as SAFE_POINT but uses unconditional fail.
     Can be used in code that must be unreachable
 */
@@ -91,7 +91,7 @@
     assert(0); \
     return result; \
 
-/** 
+/**
     Checks condition is false and returns the result if it is
 
     Code style hint: use CHECK macro only to make error processing more compact but not all if {return;} patterns !
@@ -99,10 +99,10 @@
 #define CHECK(condition, result) \
     if (!(condition)) { \
         return result; \
-    } 
+    }
 
-/** 
-    Checks condition is false and performs a sequence of operations if it is. 
+/**
+    Checks condition is false and performs a sequence of operations if it is.
 
     Code style hint: use CHECK macro only to make error processing more compact but not all if {operation1; operation2;} patterns !
 */
@@ -110,32 +110,32 @@
     if (!(condition)) { \
         extraOp1; \
         extraOp2; \
-    } 
+    }
 
-/** 
-    Checks condition is false and performs an operation if it is. 
+/**
+    Checks condition is false and performs an operation if it is.
 
     Code style hint: use CHECK macro only to make error processing more compact but not all if {operation;} patterns !
 */
 #define CHECK_OPERATION(condition, extraOp) CHECK_OPERATIONS(condition, extraOp, )
 
-/** 
-    Checks condition is false and breaks if it is. 
+/**
+    Checks condition is false and breaks if it is.
 
     Code style hint: use CHECK macro only to make error processing more compact but not all if {break;} patterns !
 */
 #define CHECK_BREAK(condition) CHECK_OPERATION(condition, break)
 
-/** 
-    Checks condition is false and breaks if it is. 
+/**
+    Checks condition is false and breaks if it is.
     Before breaking the 'extraOp' operation is performed (for example logging)
 
     Code style hint: use CHECK macro only to make error processing more compact but not all if {operation; break;} patterns !
 */
 #define CHECK_EXT_BREAK(condition, extraOp) CHECK_OPERATIONS(condition, extraOp, break)
 
-/** 
-    Checks condition is false and returns the result if it is. 
+/**
+    Checks condition is false and returns the result if it is.
     Before the result is returned the 'extraOp' operation is performed (for example logging)
 
     Code style hint: use CHECK macro only to make error processing more compact but not all if {return;} patterns !
@@ -144,21 +144,21 @@
     if (!(condition)) { \
         extraOp; \
         return result; \
-    } 
+    }
 
 
-/** 
+/**
     Checks that operation is neither not failed nor canceled and returns the result if it does
 */
 #define CHECK_OP(os, result)  CHECK(!os.isCoR(), result)
 
-/** 
+/**
     Checks that operation is neither not failed nor canceled and breaks if it does
 */
 #define CHECK_OP_BREAK(os)  CHECK_BREAK(!os.isCoR())
 
-/** 
-    Checks that operation is neither failed nor canceled and returns the result if it does. 
+/**
+    Checks that operation is neither failed nor canceled and returns the result if it does.
     Before the result is returned the 'extraOp' operation is performed (for example logging)
 */
 #define CHECK_OP_EXT(os, extraOp, result)  CHECK_EXT(!(os.isCoR()), extraOp, result)

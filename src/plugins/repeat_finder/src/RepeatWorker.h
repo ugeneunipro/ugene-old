@@ -45,11 +45,11 @@ class RepeatWorker : public BaseWorker {
     Q_OBJECT
 public:
     RepeatWorker(Actor* a);
-    
+
     virtual void init();
     virtual Task* tick();
     virtual void cleanup();
-    
+
 private slots:
     void sl_taskFinished();
 
@@ -57,8 +57,8 @@ protected:
     IntegralBus *input, *output;
     QString resultName,transId;
     FindRepeatsTaskSettings cfg;
-    
-}; 
+
+};
 
 class RepeatWorkerFactory : public DomainFactory {
 public:

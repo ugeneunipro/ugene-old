@@ -33,8 +33,8 @@ UnloadedObject::UnloadedObject(const QString& objectName, const GObjectType& lot
     entityRef = _entityRef;
 }
 
-UnloadedObject::UnloadedObject(const UnloadedObjectInfo& info) 
-    : GObject(GObjectTypes::UNLOADED, info.name, info.hints) 
+UnloadedObject::UnloadedObject(const UnloadedObjectInfo& info)
+    : GObject(GObjectTypes::UNLOADED, info.name, info.hints)
 {
     setLoadedObjectType(info.type);
     entityRef = info.entityRef;

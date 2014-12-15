@@ -59,7 +59,7 @@ private slots:
 };
 
 /**
- * Simple manager for background tasks. 
+ * Simple manager for background tasks.
  * Allows running only one background task at a time, canceling previous task
  * when the new one is queued with run(). Emits si_finished() (defined in the base)
  * when the queued task is finished. Cancels current task in destructor.

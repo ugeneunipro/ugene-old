@@ -66,7 +66,7 @@ static int readLength(const uchar* bits, int& nBits) {
 }
 
 QByteArray U2BitCompression::compress(const char* text, int len, int alphabetSize, const int* alphabetCharNums, U2OpStatus& os) {
-    // algorithm: 
+    // algorithm:
     // 1. compute chars freq -> derive number of bits per char
     // 2. assign bit masks per char. Do not assign any bit masks for non used alphabet chars
     // 3. compress chars
@@ -76,10 +76,10 @@ QByteArray U2BitCompression::compress(const char* text, int len, int alphabetSiz
     //  [len] - length of the result sequence
     //  [used alpha bits] bit is set if alpha char is used in the text.
     //  [compressed text] the data in compressed form
-    
+
     assert(alphabetSize <= 32); //avoid this check in runtime -> use this method correctly
-    
-    // find all used chars in text 
+
+    // find all used chars in text
     QVector<bool> visitVector(alphabetSize, false);
     bool* visited = visitVector.data();
     for (int i = 0; i < len; i++) {
@@ -93,7 +93,7 @@ QByteArray U2BitCompression::compress(const char* text, int len, int alphabetSiz
             visited[n] = true;
         }
     }
-    
+
     // assign sequential bit-mask for all used chars
     QVector<uchar> maskVector(alphabetSize, 0);
     uchar* mask = maskVector.data();
@@ -124,7 +124,7 @@ QByteArray U2BitCompression::compress(const char* text, int len, int alphabetSiz
         uchar c = text[i];
         int n = alphabetCharNums[c];
         uchar m = mask[n];
-        U2Bits::setBits(bits, pos, &m, bitsPerChar);        
+        U2Bits::setBits(bits, pos, &m, bitsPerChar);
     }
     return bitSet;
 }
@@ -134,15 +134,15 @@ QByteArray U2BitCompression::uncompress(const char* data, const QByteArray& alph
     // 1. Derive all chars from header
     // 2. Assign bit masks per chars that have signed bit in header
     // 3. Unpack value
-    
+
     int alphabetSize = alphabetChars.size();
     const char* aChars = alphabetChars.data();
     const uchar* bits = (const uchar*)data;
 
     int alphaMaskOffset = 0;
     int len = readLength(bits, alphaMaskOffset);
-    
-    
+
+
     // restore bit masks
     QVector<bool> visitVector(alphabetSize, false);
     bool* visited = visitVector.data();
@@ -154,7 +154,7 @@ QByteArray U2BitCompression::uncompress(const char* data, const QByteArray& alph
         }
     }
     int bitsPerChar = U2Bits::getNumberOfBitsPerChar(nChars);
-    
+
     QVector<char> mask2Char(nChars, 0);
     uchar m = 0;
     for (int i = 0; i < alphabetSize; i++) {
@@ -189,7 +189,7 @@ QVector<int> U2BitCompression::prepareCharNumsMask(const QByteArray& alphabetCha
 }
 
 #define K_FACTOR 1.5
-/** Compression is eligible if compressed text < original text length with a compression factor of K */ 
+/** Compression is eligible if compressed text < original text length with a compression factor of K */
 //static bool isCompressionNeeded(int textLen, int alphabetSize) {
 //    int nBits = alphabetSize + U2Bits::getNumberOfBitsPerChar(alphabetSize) * textLen;
 //    int compressedBytes = U2Bits::getNumberOfBytes(nBits);

@@ -292,7 +292,7 @@ void GTest_Bwa::prepare() {
         setError("Failed to create result data dir!");
         return;
     }
-    
+
     config.shortReadSets.append(readsFileUrl);
     config.refSeqUrl = GUrl(env->getVar("COMMON_DATA_DIR") + "/" + indexName);
     config.prebuiltIndex = usePrebuildIndex;
@@ -365,7 +365,7 @@ void GTest_Bwa::cleanup() {
             }
         }
     }
-    
+
     //delete tmp result
     if (QFileInfo(resultDirPath).exists()) {
         ioLog.trace(QString("Deleting tmp result dir %1").arg(resultDirPath));

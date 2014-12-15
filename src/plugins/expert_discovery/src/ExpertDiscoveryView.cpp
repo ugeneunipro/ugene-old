@@ -221,12 +221,12 @@ void ExpertDiscoveryView::sl_newDoc(){
     signalsWidget->updateTree(ED_UPDATE_ALL);
     d.setModifed(false);
 
-    sl_showExpertDiscoveryPosNegDialog(); 
+    sl_showExpertDiscoveryPosNegDialog();
 }
 
 void ExpertDiscoveryView::sl_openDoc(){
 
-    LastUsedDirHelper lod("ExpertDiscovery");           
+    LastUsedDirHelper lod("ExpertDiscovery");
     lod.url = U2FileDialog::getOpenFileName(NULL, tr("Load ExpertDiscovery document"), lod.dir, tr("ExpertDiscovery files (*.exd)"));
 
     if (lod.url.length() <= 0) {
@@ -270,7 +270,7 @@ bool ExpertDiscoveryView::askForSave(){
     QMessageBox mb(QMessageBox::Question, tr("Save ExpertDiscovery document"), tr("Do you want to save current ExpertDiscovery document?"), QMessageBox::Yes|QMessageBox::No);
     if(mb.exec()==QMessageBox::Yes)
         return true;
-    else 
+    else
         return false;
 }
 
@@ -437,7 +437,7 @@ void ExpertDiscoveryView::initADVView(AnnotatedDNAView* adv){
         QString seqName = seqObj->getSequenceName();
         SequenceType sType = d.getSequenceTypeByName(seqName);
         int seqNumber = d.getSequenceIndex(seqName, sType);
-         
+
         if(seqNumber!=-1){
             GSequenceGraphFactory* graphFactory = new ExpertDiscoveryScoreGraphFactory(seqWidget, d, seqNumber, sType);
             GraphAction* graphAction = new GraphAction(graphFactory);
@@ -454,7 +454,7 @@ void ExpertDiscoveryView::initADVView(AnnotatedDNAView* adv){
         }
     }
 
-    foreach(ADVSequenceObjectContext* sctx, currentAdv->getSequenceContexts()){    
+    foreach(ADVSequenceObjectContext* sctx, currentAdv->getSequenceContexts()){
         AutoAnnotationsADVAction* aaAction = AutoAnnotationUtils::findAutoAnnotationADVAction( sctx );
         assert(aaAction);
         AutoAnnotationObject* aaobj = aaAction->getAAObj();
@@ -645,7 +645,7 @@ void ExpertDiscoveryView::sl_newSignalReady(DDisc::Signal* signal, CSFolder* fol
     pFolder->addSignal(ps);
     EDProjectItem* pParent = signalsWidget->findEDItem(pFolder);
     EDPICS* pItem = new EDPICS(ps);
-    signalsWidget->addSubitem(pItem, pParent);  
+    signalsWidget->addSubitem(pItem, pParent);
     signalsWidget->updateSorting();
 }
 void ExpertDiscoveryView::sl_newFolder(const QString& folderName){
@@ -662,7 +662,7 @@ void ExpertDiscoveryView::sl_newFolder(const QString& folderName){
     }
     EDPICSFolder* newFol = new EDPICSFolder(pNewFolder);
     EDProjectItem* pParent = signalsWidget->findEDItem(pFolder);
-    signalsWidget->addSubitem(newFol, pParent);  
+    signalsWidget->addSubitem(newFol, pParent);
     signalsWidget->updateSorting();
 }
 
@@ -730,7 +730,7 @@ void ExpertDiscoveryView::sl_treeItemSelChanged(QTreeWidgetItem* tItem){
 
 
            //            EDPICSNode* pPICSN = dynamic_cast<EDPICSNode*>(pItem);
-           // 
+           //
            //            if (curPS == pPICSN->getProcessedSignal(d)) { //to separate process
            //                updatePS = false;
            //            }
@@ -740,14 +740,14 @@ void ExpertDiscoveryView::sl_treeItemSelChanged(QTreeWidgetItem* tItem){
            //                updatePS = true;
            //                mutex.unlock();
            //            }
-           // 
+           //
            //            if (curPS == NULL) {
            //                updateAnnotations();
            //                updatePS = false;
            //                propWidget->sl_treeSelChanged(pItem);
            //                return;
            //            }
-           // 
+           //
            //            if(updatePS){
            //                 updateAnnotations();
            //                 updatePS = false;
@@ -761,7 +761,7 @@ void ExpertDiscoveryView::sl_treeItemSelChanged(QTreeWidgetItem* tItem){
            //mutex.unlock();
     }
 
-    // 
+    //
 }
 
 void ExpertDiscoveryView::sl_updateTaskFinished(){
@@ -780,7 +780,7 @@ void ExpertDiscoveryView::updateAnnotations(){
     edAutoAnnotationsUpdater->setEDProcSignals(curPS);
     //AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(edAutoAnnotationsUpdater);
 
-    foreach(ADVSequenceObjectContext* sctx, currentAdv->getSequenceContexts()){    
+    foreach(ADVSequenceObjectContext* sctx, currentAdv->getSequenceContexts()){
         AutoAnnotationUtils::triggerAutoAnnotationsUpdate(sctx, "ExpertDiscover Signals");
     }
 
@@ -842,7 +842,7 @@ U2SequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* 
             }
         }
     }
-    if(!seqFound){ 
+    if(!seqFound){
         SequenceType sType = d.getSequenceTypeByName(sItem->getSequenceName());
         Document* curDoc = NULL;
         switch(sType){
@@ -877,7 +877,7 @@ U2SequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* 
         U2EntityRef seqRef = U2SequenceUtils::import(curDoc->getDbiRef(), dnaseq, stateInfo);
         if (stateInfo.isCoR()) {
             return NULL;
-        } 
+        }
         if(!curDoc){
             return NULL;
         }
@@ -885,7 +885,7 @@ U2SequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* 
         curDoc->addObject(danseqob);
         edObjects.append(danseqob);
         return danseqob;
-    }   
+    }
     return NULL;
 }
 
@@ -914,7 +914,7 @@ Document* ExpertDiscoveryView::createUDocument(SequenceType sType){
 }
 
 void ExpertDiscoveryView::sl_sequenceItemSelChanged(ADVSequenceWidget* seqWidget){
-    createEDSequence();    
+    createEDSequence();
 }
 
 void ExpertDiscoveryView::sl_treeWidgetMarkup(bool isLetters){
@@ -981,7 +981,7 @@ void ExpertDiscoveryView::sl_addToShown(){
             return;
         }
     }
-    //currentAdv->addObject(dnaSeqObj); 
+    //currentAdv->addObject(dnaSeqObj);
 
     //auto annotations bug
 
@@ -1033,7 +1033,7 @@ void ExpertDiscoveryView::sl_showFirstSequences(){
 
     AnnotatedDNAView* danadv = new AnnotatedDNAView("Base",listdna);
     initADVView(danadv);
-    
+
 }
 void ExpertDiscoveryView::sl_clearDisplayed(){
     clearSequencesView();
@@ -1047,7 +1047,7 @@ void ExpertDiscoveryView::sl_clearDisplayed(){
 void ExpertDiscoveryView::clearSequencesView()
 {
     if(currentAdv){
-        foreach(ADVSequenceObjectContext* sctx, currentAdv->getSequenceContexts()){    
+        foreach(ADVSequenceObjectContext* sctx, currentAdv->getSequenceContexts()){
             AutoAnnotationsADVAction* aaAction = AutoAnnotationUtils::findAutoAnnotationADVAction( sctx );
             assert(aaAction);
             AutoAnnotationObject* aaobj = aaAction->getAAObj();
@@ -1068,7 +1068,7 @@ void ExpertDiscoveryView::clearSequencesView()
 
 ExpertDiscoveryViewWindow::ExpertDiscoveryViewWindow(GObjectView* view, const QString& viewName, bool persistent)
 :GObjectViewWindow(view, viewName, persistent){
-    
+
 }
 void ExpertDiscoveryViewWindow::setupMDIToolbar(QToolBar* tb){
     ExpertDiscoveryView* curEdView = dynamic_cast<ExpertDiscoveryView*>(view);
@@ -1085,10 +1085,10 @@ void ExpertDiscoveryViewWindow::setupMDIToolbar(QToolBar* tb){
     tb->addAction(curEdView->getExtractSignalsAction());
     tb->addSeparator();
     tb->addAction(curEdView->getSetUpRecBoundAction());
-    //tb->addAction(curEdView->getOptimizeRecBoundAction()); 
+    //tb->addAction(curEdView->getOptimizeRecBoundAction());
     tb->addSeparator();
     tb->addAction(curEdView->getGenerateFullReportAction());
-    
+
 }
 
 bool ExpertDiscoveryViewWindow::onCloseEvent(){
@@ -1104,7 +1104,7 @@ bool ExpertDiscoveryViewWindow::onCloseEvent(){
         curEdView->getSaveDocAction()->trigger();
         return false;
     }
-    
+
     return true;
 }
 }//namespace

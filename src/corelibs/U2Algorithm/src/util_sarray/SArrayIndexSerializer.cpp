@@ -134,7 +134,7 @@ inline int getNextInt(QByteArray &data, bool &eol, bool &intErr) {
     return result.toInt();
 }
 
-void SArrayIndexSerializer::readArray(QFile &file, char *buff, int *len, int *pos, int *bytes, 
+void SArrayIndexSerializer::readArray(QFile &file, char *buff, int *len, int *pos, int *bytes,
     int *lineIdx, quint32 *array, int arrLen, TaskStateInfo& ti) {
         quint32 number = 0;
         int numberLength = 0;

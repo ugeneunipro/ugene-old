@@ -41,9 +41,9 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportToSequenceFormatFiller"
 
-ExportToSequenceFormatFiller::ExportToSequenceFormatFiller(U2OpStatus &_os, const QString &_path, const QString &_name, documentFormat _format, 
+ExportToSequenceFormatFiller::ExportToSequenceFormatFiller(U2OpStatus &_os, const QString &_path, const QString &_name, documentFormat _format,
                                                            bool saveFile, bool keepCharacters, GTGlobals::UseMethod method):
-Filler(_os, "U2__ExportMSA2SequencesDialog"), name(_name), format(_format), saveFile(saveFile), keepCharacters(keepCharacters), 
+Filler(_os, "U2__ExportMSA2SequencesDialog"), name(_name), format(_format), saveFile(saveFile), keepCharacters(keepCharacters),
 useMethod(method) {
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (__path.at(__path.count() - 1) != '/') {
@@ -56,7 +56,7 @@ useMethod(method) {
     comboBoxItems[GFF] = "GFF";
     comboBoxItems[Genbank] = "Genbank";
     comboBoxItems[Swiss_Prot] = "Swiss_Prot";
-    
+
 }
 
 #define GT_METHOD_NAME "run"
@@ -105,5 +105,5 @@ void ExportToSequenceFormatFiller::run()
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
-    
+
 }

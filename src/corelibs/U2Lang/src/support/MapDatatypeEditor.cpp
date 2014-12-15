@@ -68,8 +68,8 @@ using namespace Workflow;
 static const int KEY_COLUMN     = 0;
 static const int VALUE_COLUMN   = 1;
 
-MapDatatypeEditor::MapDatatypeEditor(Configuration* cfg, const QString& prop, 
-    DataTypePtr from, DataTypePtr to) : cfg(cfg), propertyName(prop), from(from), to(to), table(NULL) 
+MapDatatypeEditor::MapDatatypeEditor(Configuration* cfg, const QString& prop,
+    DataTypePtr from, DataTypePtr to) : cfg(cfg), propertyName(prop), from(from), to(to), table(NULL)
 {}
 
 QWidget* MapDatatypeEditor::getWidget() {
@@ -81,7 +81,7 @@ QWidget* MapDatatypeEditor::createGUI(DataTypePtr from, DataTypePtr to) {
         assert(false);
         return NULL;
     }
-    
+
     bool infoMode = (to == from);
     if (infoMode) {
         table = new QTableWidget(0,1);
@@ -91,7 +91,7 @@ QWidget* MapDatatypeEditor::createGUI(DataTypePtr from, DataTypePtr to) {
         //table->setHorizontalHeaderLabels((QStringList() << tr("Accepted inputs") << tr("Data from bus") ));
         table->setItemDelegateForColumn(VALUE_COLUMN, new DescriptorListEditorDelegate(this));
     }
-    
+
 #if (QT_VERSION < 0x050000) //Qt 5
     table->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 #else
@@ -114,33 +114,33 @@ QWidget* MapDatatypeEditor::createGUI(DataTypePtr from, DataTypePtr to) {
     table->setShowGrid(false);
     //table->setWordWrap(false);
     table->setCornerButtonEnabled(false);
-    
+
     int height = QFontMetrics(QFont()).height() + 6;
     const QList<Descriptor>& keys = to->getAllDescriptors();
     QMap<QString, QString> bindingsMap = getBindingsMap();
     table->setRowCount(keys.size());
-    
+
     int keysSz = keys.size();
     for(int i = 0; i < keysSz; i++) {
         Descriptor key = keys.at(i);
-        
+
         // set key item
         QTableWidgetItem* keyItem = new QTableWidgetItem(key.getDisplayName());
         keyItem->setToolTip(to->getDatatypeByDescriptor(key)->getDisplayName());
         keyItem->setData(Qt::UserRole, qVariantFromValue<Descriptor>(key));
         keyItem->setFlags(Qt::ItemIsSelectable);
         table->setItem(i, KEY_COLUMN, keyItem);
-        
+
         table->setRowHeight(i, height);
         if (infoMode) {
             continue;
         }
-        
+
         // set value item
         DataTypePtr elementDatatype = to->getDatatypeByDescriptor(key);
         QList<Descriptor> candidates = WorkflowUtils::findMatchingCandidates(from, to, key);
         Descriptor current = WorkflowUtils::getCurrentMatchingDescriptor(candidates, to, key, bindingsMap);
-        
+
         QTableWidgetItem* valueItem = new QTableWidgetItem(current.getDisplayName());
         valueItem->setData(Qt::UserRole, qVariantFromValue<Descriptor>(current));
         valueItem->setData(Qt::UserRole+1, qVariantFromValue<QList<Descriptor> >(candidates));
@@ -153,14 +153,14 @@ QWidget* MapDatatypeEditor::createGUI(DataTypePtr from, DataTypePtr to) {
         valueItem->setData(Qt::UserRole+4, qVariantFromValue<Descriptor>(key));
         table->setItem(i, VALUE_COLUMN, valueItem);
     }
-    
+
     QWidget* widget = new QWidget();
     QSizePolicy sizePolicy1(QSizePolicy::Ignored, QSizePolicy::Preferred);
     sizePolicy1.setHorizontalStretch(0);
     sizePolicy1.setVerticalStretch(0);
     sizePolicy1.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
     widget->setSizePolicy(sizePolicy1);
-    
+
     QVBoxLayout* verticalLayout = new QVBoxLayout(widget);
     verticalLayout->setSpacing(0);
     verticalLayout->setMargin(0);
@@ -168,7 +168,7 @@ QWidget* MapDatatypeEditor::createGUI(DataTypePtr from, DataTypePtr to) {
     //verticalLayout->addWidget(doc = new QTextEdit(widget));
     //doc->setEnabled(false);
     connect(table, SIGNAL(itemSelectionChanged()), SLOT(sl_showDoc()));
-    
+
     return widget;
 }
 
@@ -204,7 +204,7 @@ void MapDatatypeEditor::sl_showDoc() {
             Descriptor s = table->item(row, VALUE_COLUMN)->data(Qt::UserRole).value<Descriptor>();
             //doc->setText(formatDoc(d, s));
             text = formatDoc(d, s);
-        }        
+        }
     } else {
         //doc->setText("");
     }
@@ -243,7 +243,7 @@ QWidget* BusPortEditor::createGUI(DataTypePtr from, DataTypePtr to) {
             table->setHorizontalHeaderLabels((QStringList() << U2::MapDatatypeEditor::tr("Provided outputs")));
         }*/
     } else if (table) {
-        connect(table->model(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), 
+        connect(table->model(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
                      this, SLOT(handleDataChanged(const QModelIndex&, const QModelIndex&)));
     }
     connect(port, SIGNAL(si_enabledChanged(bool)), w, SLOT(setVisible(bool)));

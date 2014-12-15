@@ -69,7 +69,7 @@ namespace U2 {
 
 #define NO_REASON QString("no")
 
-#define ICON_FAILD_DIR QIcon(":/plugins/test_runner/images/folder_faild.png")           
+#define ICON_FAILD_DIR QIcon(":/plugins/test_runner/images/folder_faild.png")
 #define ICON_SUCCES_DIR QIcon(":/plugins/test_runner/images/folder_ok.png")
 #define ICON_NOTRUN_DIR QIcon(":/plugins/test_runner/images/folder.png")
 #define ICON_FAILD_TEST QIcon(":/plugins/test_runner/images/test_faild.png")
@@ -131,7 +131,7 @@ TestViewController::TestViewController(TestRunnerService* s, bool _cmd) : MWMDIW
     QKeySequence selectAllKS(Qt::CTRL+Qt::Key_A);
     selectAllAction->setShortcut(selectAllKS);
     connect(selectAllAction, SIGNAL(triggered()), SLOT(sl_selectAllSuiteAction()));
-        
+
     setTestsEnabledAction = new QAction(tr("Set Tests Enabled"), this);
     setTestsEnabledAction->setObjectName("action_set_tests_enabled");
     QKeySequence setTestsEnabledKS(Qt::CTRL+Qt::Key_E);
@@ -143,7 +143,7 @@ TestViewController::TestViewController(TestRunnerService* s, bool _cmd) : MWMDIW
     QKeySequence setTestsDisabledKS(Qt::CTRL+Qt::Key_D);
     setTestsDisabledAction->setShortcut(setTestsDisabledKS);
     connect(setTestsDisabledAction, SIGNAL(triggered()), SLOT(sl_setTestsDisabledAction()));
-        
+
     setTestsChangeExcludedAction = new QAction(tr("Change Tests Excluded State"), this);
     setTestsChangeExcludedAction->setObjectName("action_change_tests_excluded_state");
     connect(setTestsChangeExcludedAction, SIGNAL(triggered()), SLOT(sl_setTestsChangeExcludedAction()));
@@ -257,9 +257,9 @@ TVTSItem* TestViewController::getFolder(TVItem* element,const QString* firstDirN
     }
     return NULL;
 }
-    
+
 void TestViewController::killAllChildForms(){
-    
+
     if(reporterForm!=NULL){
         AppContext::getMainWindow()->getMDIManager()->closeMDIWindow((MWMDIWindow*) reporterForm);
         //reporterForm = NULL;
@@ -286,7 +286,7 @@ void TestViewController::addTestSuite(GTestSuite* ts) {
             TVTSItem* curDir=getFolder(tsi,&firstDirName);
             QString otherPath=t->getShortName().section('/', 1 );//find other path
             if(curDir){//find if dir already exist
-                addFolderTests(curDir,t,&otherPath,true);  
+                addFolderTests(curDir,t,&otherPath,true);
             } else {
                 TVTSItem* newDir=new TVTSItem(firstDirName);
                 tsi->addChild(newDir);
@@ -303,7 +303,7 @@ void TestViewController::addTestSuite(GTestSuite* ts) {
             TVTSItem* curDir=getFolder(tsi,&firstDirName);
             QString otherPath=t->getShortName().section('/', 1 );//find other path
             if(curDir){//find if dir already exist
-                addFolderTests(curDir,t,&otherPath,false);  
+                addFolderTests(curDir,t,&otherPath,false);
             } else {
                 TVTSItem* newDir=new TVTSItem(firstDirName);
                 tsi->addChild(newDir);
@@ -317,7 +317,7 @@ void TestViewController::addTestSuite(GTestSuite* ts) {
 }
 
 void TestViewController::addFolderTests(TVTSItem* tsi, GTestRef* testRef,const QString* curPath,bool haveExcludedTests) {
-    
+
     QString firstDirName=curPath->section('/', 0 , 0 );
     if(*curPath==firstDirName){
         addTest(tsi, testRef,testRef->getSuite()->getExcludedTests().value(testRef));
@@ -325,7 +325,7 @@ void TestViewController::addFolderTests(TVTSItem* tsi, GTestRef* testRef,const Q
         TVTSItem* curDir=getFolder(tsi,&firstDirName);
         QString otherPath=curPath->section('/', 1 );//find other path
         if(curDir){//find if dir already exist
-            addFolderTests(curDir,testRef,&otherPath,haveExcludedTests);  
+            addFolderTests(curDir,testRef,&otherPath,haveExcludedTests);
         } else {
             TVTSItem* newDir=new TVTSItem(firstDirName);
             newDir->excludedTests=haveExcludedTests;
@@ -366,7 +366,7 @@ void TestViewController::sl_suiteRemoved(GTestSuite* ts) {
 void TestViewController::sl_treeCustomContextMenuRequested(const QPoint & pos) {
     Q_UNUSED(pos);
 
-    QMenu menu(tree);    
+    QMenu menu(tree);
     menu.addAction(addTestSuiteAction);
     menu.addAction(removeTestSuiteAction);
     menu.addAction(refreshAction);
@@ -469,7 +469,7 @@ void TestViewController::sl_addTestSuiteAction() {
         QFileInfo fi(file);
         dir = fi.absoluteDir().absolutePath();
         if(saveLastDir){
-            saveLastDir=false; 
+            saveLastDir=false;
             AppContext::getSettings()->setValue(SETTINGS_ROOT + "lastDir", dir);
         }
         QString url = fi.absoluteFilePath();
@@ -571,8 +571,8 @@ void TestViewController::sl_saveSelectedSuitesAction(){
         testsToEx.unite(getSubRefToExclude(item,runAll));
         TVTSItem* tlItem=static_cast<TVTSItem*>(item);
         if(testsToEx.isEmpty()&&testsToRun.isEmpty()){
-        //in current suite no selected elements 
-        }else{           
+        //in current suite no selected elements
+        }else{
             if(!testsToEx.isEmpty() && tlItem->ts->getExcludedTests().isEmpty()){
                 mustBeSaved=true;
             }
@@ -609,13 +609,13 @@ void TestViewController::sl_saveSelectedSuitesAction(){
         if((testsToEx.size() != tlItem->ts->getExcludedTests().size())&& !testsToEx.isEmpty()){
             mustBeSaved=true;
         }
-        if(mustBeSaved){//than save 
+        if(mustBeSaved){//than save
             QString err;
-            saveTestSuite(tlItem->ts->getURL(),testsToEx,err); 
+            saveTestSuite(tlItem->ts->getURL(),testsToEx,err);
             if (!err.isEmpty()) {
                 return;//todo throw error
             }
-            //reload saved suite            
+            //reload saved suite
             QString urlToLoad=tlItem->ts->getURL();
             service->removeTestSuite(tlItem->ts);
             GTestSuite* ts = GTestSuite::readTestSuite(urlToLoad, err);
@@ -641,7 +641,7 @@ void TestViewController::saveTestSuite(const QString& url, QMap<GTestRef*, QStri
         err = ("not_an_xml_suite_file");
         return;
     }
-    
+
     if (suiteDoc.doctype().name()!="UGENE_TEST_FRAMEWORK_SUITE") {
         err = ("not_a_test_suite_file");
         return;
@@ -683,7 +683,7 @@ void TestViewController::saveTestSuite(const QString& url, QMap<GTestRef*, QStri
     if (!err.isEmpty()) {
         return;
     }
-    //time to save 
+    //time to save
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Write)) {
@@ -700,15 +700,15 @@ QStringList TestViewController::findAllTestFilesInDir(const QString& dirPath, co
         return res;
     }
     QDir dir(dirPath);
-    
+
     //add files first
     QStringList files = ext.isEmpty() ? dir.entryList(QDir::Files) : dir.entryList(ext.split(":"), QDir::Files);
     foreach(const QString& file, files) {
         QFileInfo fi(dir.absolutePath() + "/" + file);
         res.append(fi.absoluteFilePath());
     }
-    
-    
+
+
     //process subdirs if needed
     if (recursive) {
         QStringList subDirs = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
@@ -827,7 +827,7 @@ void TestViewController::sl_runSelectedSuitesAction() {
     }
 }
 
-QList<GTestState*> TestViewController::getSubTestToRun(TVItem* sItem,bool runAll)const{   
+QList<GTestState*> TestViewController::getSubTestToRun(TVItem* sItem,bool runAll)const{
     QList<GTestState*> testsToRun;
     for(int j = 0, m = sItem->childCount(); j<m; j++) {
         TVItem* item = static_cast<TVItem*>(sItem->child(j));
@@ -878,7 +878,7 @@ QMap<GTestRef*, QString> TestViewController::getSubRefToExclude(TVItem* sItem,bo
 return testsToEx;
 }
 
-void TestViewController::sl_stopSuitesActions() { 
+void TestViewController::sl_stopSuitesActions() {
 
     task->cancel();
 }
@@ -968,7 +968,7 @@ void TestViewController::sl_setEnvAction() {
         le->setObjectName(name+"_EditBox");
         QLabel* la = new QLabel(name + ":");
         la->setObjectName(name+"_Label");
-        la->setBuddy(le); 
+        la->setBuddy(le);
         valsByName[name] = le;
         fl->addRow(la , le);
     }
@@ -1002,7 +1002,7 @@ void TestViewController::sl_report(){
         assert(reporterForm == NULL);
     }
     reporterForm= new TestViewReporter(this,tree,time);
-    AppContext::getMainWindow()->getMDIManager()->addMDIWindow(reporterForm); 
+    AppContext::getMainWindow()->getMDIManager()->addMDIWindow(reporterForm);
     AppContext::getMainWindow()->getMDIManager()->activateWindow(reporterForm);
 }
 
@@ -1067,7 +1067,7 @@ void TVTSItem::updateVisual() {
         setToolTip(0, ts->getURL());
     }
     setText(0, text0);
-    
+
     int notrun = 0;
     int passed = 0;
     int failed = 0;
@@ -1087,7 +1087,7 @@ void TVTSItem::updateVisual() {
     }
     text1+=" ]";
 
-    setText(1, text1);  
+    setText(1, text1);
     //add icon
     if(failed){
         this->setIcon (0, ICON_FAILD_DIR);
@@ -1097,7 +1097,7 @@ void TVTSItem::updateVisual() {
         } else if (passed){
             this->setIcon (0, ICON_SUCCES_DIR);
         } else {
-            this->setIcon (0, ICON_NOTRUN_DIR);   
+            this->setIcon (0, ICON_NOTRUN_DIR);
         }
     }
     if(this->parent() != NULL){
@@ -1114,7 +1114,7 @@ QString TVTSItem::getRichDesc() const {
     }
 }
 
-void TVTSItem::getTestsState(int * rPassed,int * rFailed,int * rNone,int *excluded){    
+void TVTSItem::getTestsState(int * rPassed,int * rFailed,int * rNone,int *excluded){
     int total = 0;
     int passed = 0;
     int failed = 0;
@@ -1131,18 +1131,18 @@ void TVTSItem::getTestsState(int * rPassed,int * rFailed,int * rNone,int *exclud
                 failed++;
             } else if (testState->isPassed()) {
                 passed++;
-            } 
+            }
         } else {
             assert(item->isSuite());
             TVTSItem* tItem  = static_cast<TVTSItem*>(item);
-            tItem->getTestsState(rPassed,rFailed,rNone,excluded);      
+            tItem->getTestsState(rPassed,rFailed,rNone,excluded);
         }
-    } 
+    }
     *rPassed=*rPassed+passed;
     *rFailed=*rFailed+failed;
     *excluded=*excluded+exclud;
     *rNone=(((*rNone+total)-passed)-failed)-exclud;
-    
+
     return ;
 }
 
@@ -1152,8 +1152,8 @@ QString TVTSItem::getURL() const{
     } else {
         return ((static_cast<TVTSItem*>(parent()))->getURL()+name+"/");
     }
-        
-} 
+
+}
 //---------------------------------------------------------------------------
 TVTestItem::TVTestItem(GTestState* _t): TVItem(TVItem_Test), testState(_t) {
     updateVisual();
@@ -1183,7 +1183,7 @@ void TVTestItem::updateVisual() {
         this->setIcon (0, ICON_NOTRUN_TEST );
     }else{
         setText(1, getStateName(testState));
-    
+
         //add icon
         this->setForeground(1,Qt::black);
         this->setIcon (0, ICON_NOTRUN_TEST );
@@ -1192,7 +1192,7 @@ void TVTestItem::updateVisual() {
             this->setIcon (0, ICON_FAILD_TEST );
             //log.info(QString("##teamcity[testFailed name='%1 : %2' message='%3' details='%3']").arg(testState->getTestRef()->getSuite()->getName(),testState->getTestRef()->getShortName(),QString(testState->getErrorMessage()).replace("'","|'")));
             //log.info(QString("##teamcity[testFinished name='%1 : %2']").arg(testState->getTestRef()->getSuite()->getName(),testState->getTestRef()->getShortName()));
-    
+
         }
         if(testState->isPassed()){
             this->setForeground(1,Qt::darkGreen);

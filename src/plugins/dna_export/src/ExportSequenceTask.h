@@ -76,7 +76,7 @@ public:
     ExportSequenceTaskSettings();
 
     QList<ExportSequenceItem> items;            // sequences to export
-    
+
     QString             fileName;               // result file name
     bool                merge;                  // if true -> multiple sequences are merged
     int                 mergeGap;               // the gap between sequences if merged
@@ -98,7 +98,7 @@ class ExportSequenceTask : public DocumentProviderTask {
     Q_OBJECT
 public:
     ExportSequenceTask(const ExportSequenceTaskSettings &s);
-    
+
     void run();
 
 private:

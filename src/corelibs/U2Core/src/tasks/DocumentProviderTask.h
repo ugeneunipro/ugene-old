@@ -28,8 +28,8 @@ namespace U2 {
 
 class Document;
 
-/** 
-    Base interface for different document loading tasks 
+/**
+    Base interface for different document loading tasks
 */
 class U2CORE_EXPORT DocumentProviderTask : public Task {
     Q_OBJECT
@@ -37,7 +37,7 @@ public:
     DocumentProviderTask(const QString& name, TaskFlags flags);
     virtual ~DocumentProviderTask() {cleanup();}
 
-    virtual Document* getDocument(bool mainThread = true); 
+    virtual Document* getDocument(bool mainThread = true);
     virtual Document* takeDocument(bool mainThread = true);
 
     virtual void cleanup();
@@ -46,10 +46,10 @@ public:
 protected:
     Document*   resultDocument;
     bool        docOwner;
-    
+
     /** provider's document description */
     QString     documentDescription;
-    
+
 };
 
 

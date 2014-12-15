@@ -53,7 +53,7 @@ static const QString OPER_ATTR_ID("group-op");
 GroupWorker::GroupWorker(Actor *p)
 : BaseWorker(p, false), inChannel(NULL), outChannel(NULL), produceOneGroup(false)
 {
-    
+
 }
 
 void GroupWorker::init() {

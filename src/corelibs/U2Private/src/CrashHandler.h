@@ -41,7 +41,7 @@
 
 #include <windows.h>
     //LONG NTAPI CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo );
-#else 
+#else
 #include <stdlib.h>
 
 #include <stdio.h>

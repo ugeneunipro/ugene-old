@@ -86,14 +86,14 @@ QString RemoteDBFetcherPrompter::composeRichDoc()
     }
     sourceLinkStr = sourceValues.isEmpty() ? unsetStr : QString("<u>%1</u>").arg(sourceValues.join(", "));
 
-    
+
     QString dbid = getParameter(DBID_ID).value<QString>();
     dbid = RemoteDBFetcherFactory::cuteDbNames.key(dbid, dbid);
-    
+
     QString saveDir = getParameter(PATH_ID).value<QString>();
     saveDir = getHyperlink(PATH_ID, saveDir);
     QString saveDirStr = RemoteDBFetcherWorker::tr("Save result to <u>%1</u> directory.").arg(saveDir);
-    
+
     return RemoteDBFetcherWorker::tr("Reads %1 %2 from <u>%3</u> remote database. %4").
         arg(sourceDescString).
         arg(getHyperlink(sourceId, sourceLinkStr)).
@@ -110,7 +110,7 @@ RemoteDBFetcherWorker::RemoteDBFetcherWorker(Actor *a) : BaseWorker(a), output(N
 void RemoteDBFetcherWorker::init()
 {
     output = ports.value(BasePorts::OUT_SEQ_PORT_ID());
-    
+
     assert(dbid.isEmpty());
     dbid = actor->getParameter(DBID_ID)->getAttributeValue<QString>(context);
     if(RemoteDBFetcherFactory::cuteDbNames.values().contains(dbid.toLower())) {
@@ -124,7 +124,7 @@ void RemoteDBFetcherWorker::init()
     } else {
         idsFilePaths = actor->getParameter(SOURCE_FILE_ID)->getAttributeValue<QString>(context).split(";", QString::SkipEmptyParts);
     }
-    
+
     fullPathDir = actor->getParameter(PATH_ID)->getAttributeValue<QString>(context);
     if (fullPathDir == DEFAULT_PATH) {
         fullPathDir = LoadRemoteDocumentTask::getDefaultDownloadDirectory();
@@ -144,7 +144,7 @@ Task* RemoteDBFetcherWorker::tick() {
             return new FailTask(tr("Cannot create directory '%1'").arg(fullPathDir));
         }
     }
-    
+
     // fetch and load next file
     const QString seqId = nextId();
 
@@ -305,7 +305,7 @@ void RemoteDBFetcherFactory::init()
         Descriptor outd(BasePorts::OUT_SEQ_PORT_ID(), RemoteDBFetcherWorker::tr("Sequence"), RemoteDBFetcherWorker::tr("Sequence"));
         pds << new PortDescriptor(outd, outType, /*input*/ false, /*output*/ true);
     }
-    
+
     RemoteDBRegistry &registry = RemoteDBRegistry::getRemoteDBRegistry();
     QStringList dataBases = registry.getDBs();
     QString defaultDB = dataBases.first();
@@ -336,12 +336,12 @@ void RemoteDBFetcherFactory::init()
         idsListAttr->addRelation(new VisibilityRelation(SOURCE_CHOOSER_ID, idsListString));
         attrs << idsListAttr;
 
-        Descriptor fullpathd(PATH_ID, 
-                         RemoteDBFetcherWorker::tr("Save file to directory"), 
+        Descriptor fullpathd(PATH_ID,
+                         RemoteDBFetcherWorker::tr("Save file to directory"),
                          RemoteDBFetcherWorker::tr("The directory to store sequence files loaded from a database."));
         attrs << new Attribute(fullpathd, BaseTypes::STRING_TYPE(), true, DEFAULT_PATH);
     }
-    
+
     ActorPrototype *proto = new IntegralBusActorPrototype(desc, pds, attrs);
 
     QMap<QString, PropertyDelegate*> delegates;
@@ -369,7 +369,7 @@ void RemoteDBFetcherFactory::init()
     if(AppContext::isGUIMode()) {
         proto->setIcon(GUIUtils::createRoundIcon(ICOLOR, 22));
     }
-    
+
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_DATASRC(), proto);
 
     DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);

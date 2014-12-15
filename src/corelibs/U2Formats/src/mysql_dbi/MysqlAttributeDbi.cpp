@@ -49,7 +49,7 @@ void MysqlAttributeDbi::initSqlSchema( U2OpStatus &os ) {
 
     //TODO: check if index is efficient for getting attribute for specific object
     U2SqlQuery("CREATE INDEX Attribute_object on Attribute(object)" , db, os).execute();
-    
+
     U2SqlQuery("CREATE TABLE IntegerAttribute (attribute BIGINT, value BIGINT NOT NULL, "
         " FOREIGN KEY(attribute) REFERENCES Attribute(id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8" , db, os).execute();
     U2SqlQuery("CREATE INDEX IntegerAttribute_attribute on IntegerAttribute(attribute)", db, os).execute();
@@ -173,8 +173,8 @@ QList<U2DataId> MysqlAttributeDbi::sort(const U2DbiSortConfig& , qint64 , qint64
     return QList<U2DataId>();
 }
 
-/** 
-Removes attribute from database 
+/**
+Removes attribute from database
 Requires U2DbiFeature_WriteAttribute feature support
 */
 void MysqlAttributeDbi::removeAttributes(const QList<U2DataId>& attributeIds, U2OpStatus& os) {
@@ -234,7 +234,7 @@ void MysqlAttributeDbi::removeObjectAttributes(const U2DataId& objectId, U2OpSta
 }
 
 /**
- * Creates int64 attribute in database. ObjectId must be already set in attribute and present in the same database 
+ * Creates int64 attribute in database. ObjectId must be already set in attribute and present in the same database
  * Requires U2DbiFeature_WriteAttribute feature support
  */
 void MysqlAttributeDbi::createIntegerAttribute(U2IntegerAttribute& a, U2OpStatus& os) {
@@ -252,10 +252,10 @@ void MysqlAttributeDbi::createIntegerAttribute(U2IntegerAttribute& a, U2OpStatus
     q.execute();
 }
 
-/** 
-Creates real64 attribute in database. ObjectId must be already set in attribute and present in the same database 
+/**
+Creates real64 attribute in database. ObjectId must be already set in attribute and present in the same database
 Requires U2DbiFeature_WriteAttribute feature support
-*/    
+*/
 void MysqlAttributeDbi::createRealAttribute(U2RealAttribute& a, U2OpStatus& os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
@@ -271,10 +271,10 @@ void MysqlAttributeDbi::createRealAttribute(U2RealAttribute& a, U2OpStatus& os) 
     q.execute();
 }
 
-/** 
-Creates String attribute in database. ObjectId must be already set in attribute and present in the same database 
+/**
+Creates String attribute in database. ObjectId must be already set in attribute and present in the same database
 Requires U2DbiFeature_WriteAttribute feature support
-*/    
+*/
 void MysqlAttributeDbi::createStringAttribute(U2StringAttribute& a, U2OpStatus& os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
@@ -290,10 +290,10 @@ void MysqlAttributeDbi::createStringAttribute(U2StringAttribute& a, U2OpStatus& 
     q.execute();
 }
 
-/** 
-Creates Byte attribute in database. ObjectId must be already set in attribute and present in the same database 
+/**
+Creates Byte attribute in database. ObjectId must be already set in attribute and present in the same database
 Requires U2DbiFeature_WriteAttribute feature support
-*/    
+*/
 void MysqlAttributeDbi::createByteArrayAttribute(U2ByteArrayAttribute& a, U2OpStatus& os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);

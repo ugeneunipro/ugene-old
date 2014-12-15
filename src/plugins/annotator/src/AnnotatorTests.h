@@ -56,7 +56,7 @@ class GTest_CustomAutoAnnotation : public GTest {
     Q_OBJECT
 public:
     SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CustomAutoAnnotation, "custom-auto-annotation-search");
-    
+
     void prepare();
     Task::ReportResult report();
 private:

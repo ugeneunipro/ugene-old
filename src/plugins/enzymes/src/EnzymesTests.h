@@ -46,7 +46,7 @@ class GTest_FindEnzymes : public GTest {
     QList<Task*> onSubTaskFinished(Task* subTask);
     ReportResult report();
     void cleanup();
-    
+
 private:
     int minHits;
     int maxHits;
@@ -69,7 +69,7 @@ class GTest_DigestIntoFragments : public GTest {
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task* subTask);
-     
+
 private:
     QString                 seqObjCtx;
     QString                 aObjCtx;

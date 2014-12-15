@@ -26,7 +26,7 @@
 namespace U2 {
 
 
-ScriptTask::ScriptTask(const QString& taskName, const QString& _scriptText, const ScriptTaskSettings& _settings) 
+ScriptTask::ScriptTask(const QString& taskName, const QString& _scriptText, const ScriptTaskSettings& _settings)
 : Task(taskName, _settings.mainThreadScript ? TaskFlag_NoRun : TaskFlag_None), scriptText(_scriptText), conf(_settings)
 {
     setVerboseLogMode(true);
@@ -57,7 +57,7 @@ QScriptValue ScriptTask::runScript(QScriptEngine* engine, const QMap<QString, QS
         QScriptValue varVal = inputParametersMap.value(varName);
         thiz.setProperty(varName, varVal);
     }
-    
+
     // check script syntax
     QScriptSyntaxCheckResult syntaxResult = engine->checkSyntax(scriptText);
     if (syntaxResult.state() != QScriptSyntaxCheckResult::Valid) {
@@ -67,7 +67,7 @@ QScriptValue ScriptTask::runScript(QScriptEngine* engine, const QMap<QString, QS
 
     // run the script
     result = engine->evaluate(scriptText);
-    
+
     if (engine->hasUncaughtException()) {
         stateInfo.setError(tr("Exception during script execution! Line: %1, error: %2")
                         .arg(engine->uncaughtExceptionLineNumber()).arg(engine->uncaughtExceptionBacktrace().join("\n")));

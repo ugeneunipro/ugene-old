@@ -41,7 +41,7 @@ class GTest_CreateSubalignimentTask : public GTest {
 public:
     SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(GTest_CreateSubalignimentTask, "plugin_create-subalignment-task", TaskFlags_NR_FOSCOE);
     void prepare();
-    Task::ReportResult report();   
+    Task::ReportResult report();
 
 private:
     MAlignmentObject *maobj;
@@ -59,7 +59,7 @@ class GTest_RemoveAlignmentRegion : public GTest {
 public:
     SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(GTest_RemoveAlignmentRegion, "test-remove-alignment-region", TaskFlags_NR_FOSCOE);
     void prepare();
-    Task::ReportResult report();   
+    Task::ReportResult report();
 
 private:
     MAlignmentObject *maobj;
@@ -75,7 +75,7 @@ class GTest_AddSequenceToAlignment : public GTest {
 public:
     SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(GTest_AddSequenceToAlignment, "test-add-seq-to-alignment", TaskFlags_NR_FOSCOE);
     void prepare();
-    Task::ReportResult report();   
+    Task::ReportResult report();
 
 private:
     MAlignmentObject *maobj;

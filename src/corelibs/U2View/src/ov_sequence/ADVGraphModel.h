@@ -85,19 +85,19 @@ typedef QMap<QString,QColor> ColorMap;
 class U2VIEW_EXPORT GSequenceGraphDrawer : public QObject{
     Q_OBJECT
 public:
-    GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd, 
+    GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd,
         ColorMap colorMap = ColorMap());
     virtual ~GSequenceGraphDrawer();
 
     virtual void draw(QPainter& p, QList<GSequenceGraphData*> graphs, const QRect& rect);
 
     virtual void showSettingsDialog();
-    
+
     float getGlobalMin(){return globalMin;};
     float getGlobalMax(){return globalMax;};
 
     void selectExtremumPoints(GSequenceGraphData *graph, const QRect& graphRect, int windowSize, const U2Region &visibleRange);
-    
+
     const GSequenceGraphWindowData& getWindowData() {return wdata;}
     const GSequenceGraphMinMaxCutOffData& getCutOffData() {return commdata;}
     const ColorMap& getColors() {return lineColors;}
@@ -112,10 +112,10 @@ protected:
     void drawGraph(QPainter& p, GSequenceGraphData* graph, const QRect& rect);
 
     void calculatePoints(GSequenceGraphData* d, PairVector& points, float& min, float& max, int numPoints);
-    
+
     // calculates points (> visual area size) and fits the result into visual size
     void calculateWithFit(GSequenceGraphData* d, PairVector& points, int alignedStart, int alignedEnd);
-    
+
     // calculates points (< visual area size) and expands points to fill all visual area size
     void calculateWithExpand(GSequenceGraphData* d, PairVector& points, int alignedStart, int alignedEnd);
 

@@ -46,10 +46,10 @@ namespace U2 {
 /*******************************************
 * WorkflowRunFromCMDLineBase
 *******************************************/
-WorkflowRunFromCMDLineBase::WorkflowRunFromCMDLineBase() 
+WorkflowRunFromCMDLineBase::WorkflowRunFromCMDLineBase()
 : Task( tr( "Workflow run from cmdline" ), TaskFlag_NoRun ), schema(NULL), optionsStartAt(-1), loadTask(NULL) {
     GCOUNTER(cvar,tvar,"workflow_run_from_cmdline");
-    
+
     CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
 
     // try to process schema without 'task' option (it can only be the first one)
@@ -158,14 +158,14 @@ QList<Task*> WorkflowRunFromCMDLineBase::onSubTaskFinished( Task* subTask ) {
         Schema * schema = loadTask->getSchema();
         assert( schema != NULL );
         remapping = loadTask->getRemapping();
-        
+
         setSchemaCMDLineOptions( schema, optionsStartAt );
         if( schema->getDomain().isEmpty() ) {
             QList<QString> domainsId = WorkflowEnv::getDomainRegistry()->getAllIds();
             assert(!domainsId.isEmpty());
             if(!domainsId.isEmpty()) { schema->setDomain(domainsId.first()); }
         }
-        
+
         QStringList l;
         bool good = WorkflowUtils::validate(*schema, l);
         if(!good) {
@@ -173,7 +173,7 @@ QList<Task*> WorkflowRunFromCMDLineBase::onSubTaskFinished( Task* subTask ) {
             setError("\n\n" + l.join("\n\n") + schemaHelpStr);
             return res;
         }
-        
+
         res << getWorkflowRunTask();
     }
     return res;
@@ -206,7 +206,7 @@ void WorkflowRemoteRunFromCMDLineTask::prepare()
         stateInfo.setError(tr("%1 parameter expected, but not set").arg(WorkflowDesignerPlugin::REMOTE_MACHINE));
         return;
     }
-    
+
     settings = SerializeUtils::deserializeRemoteMachineSettingsFromFile(filePath);
     if( settings == NULL ) {
         stateInfo.setError(tr("Cannot read remote machine settings from %2").arg(filePath));

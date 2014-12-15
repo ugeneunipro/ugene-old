@@ -90,7 +90,7 @@ QString QDSWActor::getText() const {
 
     int percentOfScore = params.value(SCORE_ATTR)->getAttributeValueWithoutScript<int>();
     QString percentOfScoreStr = QString("<a href=%1>%2%</a>").arg(SCORE_ATTR).arg(percentOfScore);
-    QString match = percentOfScore < 100 ? 
+    QString match = percentOfScore < 100 ?
         QDSWActor::tr("matches with <u>at least %1 score</u>").arg(percentOfScoreStr) : QDSWActor::tr("exact matches");
 
     QString strandName;
@@ -261,7 +261,7 @@ SWQDActorFactory::SWQDActorFactory() {
     attributes << new Attribute(god, BaseTypes::NUM_TYPE(), false, -10.);
     attributes << new Attribute(ged, BaseTypes::NUM_TYPE(), false, -1.);
 
-    QMap<QString, PropertyDelegate*> delegates;    
+    QMap<QString, PropertyDelegate*> delegates;
     {
         QVariantMap m; m["minimum"] = 1; m["maximum"] = 100; m["suffix"] = "%";
         delegates[SCORE_ATTR] = new SpinBoxDelegate(m);
@@ -276,15 +276,15 @@ SWQDActorFactory::SWQDActorFactory() {
         QVariantMap m;
         foreach(const QString& n, filterLst) {
             m.insert(n,n);
-        } 
+        }
         delegates[FILTER_ATTR] = new ComboBoxDelegate(m);
     }
     {
         QVariantMap m; m.insert(QDSWActor::tr("Auto"), QString("---"));
-        QStringList lst = AppContext::getSubstMatrixRegistry()->getMatrixNames();	
+        QStringList lst = AppContext::getSubstMatrixRegistry()->getMatrixNames();
         foreach(const QString& n, lst) {
             m.insert(n,n);
-        } 
+        }
         delegates[MATRIX_ATTR] = new ComboBoxDelegate(m);
     }
 

@@ -29,42 +29,42 @@
 
 namespace U2 {
 
-/** 
+/**
  * CIGAR string operation.
  * CIGAR string represents complex ins/del model for short-reads.
  *
  * Meanings of the operations are the following:
  *
- * - M - 'alignment match' 
+ * - M - 'alignment match'
  *   Either match or mismatch to reference.
  *
  * - I - 'insertion'
- *   Insertion to the reference. Residues marked as 'I' must be skipped when 
- *   counting 'real' read length and must be skipped when read is aligned to 
- *   reference. 
+ *   Insertion to the reference. Residues marked as 'I' must be skipped when
+ *   counting 'real' read length and must be skipped when read is aligned to
+ *   reference.
  *
  * - D - 'deletion'
  *   Deletion from the reference. Gaps must be inserted to the read when read
- *   is aligned to reference. Deleted regions must be added to the 'real' 
+ *   is aligned to reference. Deleted regions must be added to the 'real'
  *   read length.
  *
  * - N - 'skip'
  *   Skipped region from the reference. Skips behave exactly as deletions,
- *   however have different biological meaning: they make sense _only_ in 
+ *   however have different biological meaning: they make sense _only_ in
  *   mRNA-to-genome alignment where represent an intron.
  *
  * - S - 'soft clipping'
  *   Regions which do not match to the reference, behave exactly as insertions.
- *   Must be located at the start or the end of the read (see 
+ *   Must be located at the start or the end of the read (see
  *   SAM spec and CigarValidator)
  *
  * - H - 'hard clipping'
- *   Regions which do not match to the reference, skipped by hardware (not 
- *   present in read sequence). Hard clipping does not affects read length or 
+ *   Regions which do not match to the reference, skipped by hardware (not
+ *   present in read sequence). Hard clipping does not affects read length or
  *   visualization
  *
  * - P - 'padding' (TODO)
- *   Silent Deletion from padded reference. Someday we should find out how to 
+ *   Silent Deletion from padded reference. Someday we should find out how to
  *   handle this. Padding does not affect read length.
  *
  * - = - 'sequence match'
@@ -88,7 +88,7 @@ enum U2CigarOp {
     U2CigarOp_X = 9   // sequence mismatch
 };
 
-/** 
+/**
     CIGAR token: operation + count
 */
 class U2CORE_EXPORT U2CigarToken  {
@@ -100,11 +100,11 @@ public:
     int       count;
 };
 
-/** 
+/**
     assembly read flags
 */
 enum ReadFlag {
-    None = 0, 
+    None = 0,
     Fragmented = 1 << 0,
     FragmentsAligned = 1 << 1,
     Unmapped = 1 << 2,
@@ -119,7 +119,7 @@ enum ReadFlag {
     DnaExtAlphabet = 1 << 16
 };
 
-/** 
+/**
     Utility class to work with flags
  */
 class ReadFlagsUtils {
@@ -157,7 +157,7 @@ public:
     char subType;
 };
 
-/** 
+/**
     Row of assembly: sequence, leftmost position and CIGAR
 */
 class U2CORE_EXPORT U2AssemblyReadData : public U2Entity, public QSharedData {
@@ -168,8 +168,8 @@ public:
 
     /** Name of the read, ASCII string */
     QByteArray          name;
-    
-    /**  
+
+    /**
         Zero-based left-most position of the read
     */
     qint64              leftmostPos;
@@ -182,12 +182,12 @@ public:
     */
     qint64              packedViewRow;
 
-    /** 
-        CIGAR info for the read  
+    /**
+        CIGAR info for the read
     */
     QList<U2CigarToken> cigar;
-    
-    /** 
+
+    /**
         Sequence of the read.
         The array is not empty only if sequence is embedded into the read
     */
@@ -195,10 +195,10 @@ public:
 
     /** Quality string */
     QByteArray          quality;
-    
+
     /** Mapping quality */
     quint8              mappingQuality;
-    
+
     /** Read flags */
     qint64              flags;
 
@@ -214,7 +214,7 @@ public:
 
 typedef QSharedDataPointer<U2AssemblyReadData> U2AssemblyRead;
 
-/**                                           
+/**
     Assembly representation
 */
 class U2CORE_EXPORT U2Assembly : public U2Object {
@@ -242,7 +242,7 @@ public:
 class U2AssemblyCoverageStat {
 public:
     U2AssemblyCoverageStat() {}
-    
+
     QVector< U2Range<int> > coverage;
 };
 

@@ -133,7 +133,7 @@ Task* QDViewFactory::createViewTask( const MultiGSelection& multiSelection, bool
         Task* t = new OpenQDViewTask(d);
         if (result == NULL) {
             return t;
-        } 
+        }
         result->addSubTask(t);
     }
     return result;

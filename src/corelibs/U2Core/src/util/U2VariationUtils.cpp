@@ -87,7 +87,7 @@ U2Feature U2VariationUtils::variantToFeature( const U2Variant& var ){
     return res;
 }
 
-QList<U2Variant> U2VariationUtils::getSNPFromSequences( const QByteArray& refSeq, const QByteArray& varSeq, CallVariationsMode mode, bool ignoreGaps, 
+QList<U2Variant> U2VariationUtils::getSNPFromSequences( const QByteArray& refSeq, const QByteArray& varSeq, CallVariationsMode mode, bool ignoreGaps,
                                                        const QString& namePrefix, int nameStartIdx){
     QList<U2Variant> res;
     qint64 len = qMin(refSeq.size(), varSeq.size());
@@ -99,7 +99,7 @@ QList<U2Variant> U2VariationUtils::getSNPFromSequences( const QByteArray& refSeq
         bool addVariation = false;
 
         if( ! ( ignoreGaps && (refChar == '-' || obsChar == '-') ) ){
-        
+
             switch(mode){
                 case Mode_Variations:
                     addVariation = (refChar != obsChar);

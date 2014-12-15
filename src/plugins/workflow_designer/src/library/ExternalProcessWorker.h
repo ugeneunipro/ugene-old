@@ -23,7 +23,7 @@
 #define ExtrenalProcessWorker_h__
 
 
-#include <U2Core/Task.h> 
+#include <U2Core/Task.h>
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Lang/ExternalToolCfg.h>

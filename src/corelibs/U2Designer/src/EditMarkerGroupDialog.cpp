@@ -356,7 +356,7 @@ bool MarkerListCfgModel::removeRows(int row, int count, const QModelIndex &paren
     if (1 != count) {
         return true;
     }
-    
+
     QMap<QString, QString>::iterator i = marker->getValues().begin();
     i += row;
     if (MarkerUtils::REST_OPERATION == marker->getValues().key(*i)) {

@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -57,7 +57,7 @@ BlastDbCmdSupport::BlastDbCmdSupport(const QString& path) : ExternalTool(ET_BLAS
         grayIcon = QIcon(":external_tool_support/images/ncbi_gray.png");
         warnIcon = QIcon(":external_tool_support/images/ncbi_warn.png");
     }
-   
+
 #ifdef Q_OS_WIN
     executableFileName="blastdbcmd.exe";
 #else
@@ -72,7 +72,7 @@ BlastDbCmdSupport::BlastDbCmdSupport(const QString& path) : ExternalTool(ET_BLAS
 
     versionRegExp=QRegExp("Application to create BLAST databases, version (\\d+\\.\\d+\\.\\d+\\+?)");
     toolKitName="BLAST+";
-   
+
 }
 
 void BlastDbCmdSupport::sl_runWithExtFileSpecify(){
@@ -110,7 +110,7 @@ void BlastDbCmdSupport::sl_runWithExtFileSpecify(){
     if(blastDBCmdDialog.exec() != QDialog::Accepted){
         return;
     }
-    
+
     BlastDBCmdSupportTask* blastDBCmdSupportTask =new BlastDBCmdSupportTask(settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(blastDBCmdSupportTask);
 }

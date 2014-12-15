@@ -29,7 +29,7 @@
 
 #ifdef Q_OS_WIN
 #include <windows.h>
-#else 
+#else
 #include <sys/time.h>
 //#include <time.h>
 #endif
@@ -42,10 +42,10 @@ class U2CORE_EXPORT GTimer : public QObject {
 public:
     //Returns microseconds since the Unix Epoch (Jan. 1, 1970), UTC
     inline static qint64 currentTimeMicros();
-    
+
     //suitable for values returned by GTimer::currentTimeMicros() call
     static QDateTime createDateTime(qint64 micros, Qt::TimeSpec spec = Qt::LocalTime);
-    
+
     static int secsBetween(qint64 startTime, qint64 endTime) {return (int)((endTime-startTime)/(1000*1000));}
     static int millisBetween(qint64 startTime, qint64 endTime) {return (int)((endTime-startTime)/(1000));}
 };
@@ -61,7 +61,7 @@ public:
     inline void stop();
 
     inline static qint64 getCounter();
-    
+
     static bool     enabled;
 
     static double getCounterScale() {return frequency;}
@@ -92,7 +92,7 @@ qint64 GTimer::currentTimeMicros() {
     // Convert FILETIME to Unix Epoch time
     res = (qint64)((quint64(time.dwHighDateTime)<<32) | time.dwLowDateTime) / 10;
     res-= WIN_UNIX_EPOCH_DELTA_MSEC;
-#else 
+#else
     struct timeval tv;
     gettimeofday(&tv, NULL);
     res = qint64(tv.tv_sec)*1000*1000 + tv.tv_usec;
@@ -101,7 +101,7 @@ qint64 GTimer::currentTimeMicros() {
 }
 
 TimeCounter::TimeCounter(GCounter* c, bool _start) : totalCounter(c), startTime(0) {
-    assert(totalCounter!=NULL); 
+    assert(totalCounter!=NULL);
     started = false;
     if (_start) {
         start();

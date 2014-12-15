@@ -30,7 +30,7 @@ namespace U2 {
 class U2AttributeDbi;
 class U2OpStatus;
 
-/**                                           
+/**
     U2Attribute utility functions
 
     All functions return empty attribute if it is not found or error occured.

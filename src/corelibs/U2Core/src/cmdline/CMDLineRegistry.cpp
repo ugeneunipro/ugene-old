@@ -61,8 +61,8 @@ static bool tryParseSingleDashParameter(const QString& argument, const QString& 
     }
     paramName = argument.mid(1);
     if (!isDoubleDashParameter(nextArgument) && !isSingleDashParameter(nextArgument)) {
-        paramValue = nextArgument;    
-    }    
+        paramValue = nextArgument;
+    }
     return true;
 }
 
@@ -139,7 +139,7 @@ static bool providerNameComparator(const CMDLineHelpProvider* p1, const CMDLineH
 
 void CMDLineRegistry::registerCMDLineHelpProvider(CMDLineHelpProvider* provider) {
     helpProviders.append(provider);
-    qStableSort(helpProviders.begin(), helpProviders.end(), providerNameComparator); 
+    qStableSort(helpProviders.begin(), helpProviders.end(), providerNameComparator);
 }
 
 void CMDLineRegistry::unregisterCMDLineHelpProvider(CMDLineHelpProvider* provider) {

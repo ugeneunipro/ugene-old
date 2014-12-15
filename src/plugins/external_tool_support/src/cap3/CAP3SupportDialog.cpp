@@ -39,7 +39,7 @@ namespace U2 {
 ////////////////////////////////////////
 //CAP3SupportDialog
 
-CAP3SupportDialog::CAP3SupportDialog(CAP3SupportTaskSettings& s, QWidget* parent) 
+CAP3SupportDialog::CAP3SupportDialog(CAP3SupportTaskSettings& s, QWidget* parent)
 : QDialog(parent), settings(s)
 {
     setupUi(this);
@@ -89,7 +89,7 @@ void CAP3SupportDialog::accept()
             tr("List of input files is empty!") );
         return;
     }
-    
+
     int itemCount = seqList->count();
     for (int i = 0; i < itemCount; ++i) {
         settings.inputFiles.append( seqList->item(i)->text() );
@@ -113,7 +113,7 @@ void CAP3SupportDialog::accept()
             return;
         }
     }
-    
+
     settings.outputFilePath = outputPath;
     settings.bandExpansionSize = bandExpansionBox->value();
     settings.baseQualityClipCutoff = baseQualityClipCutoffBox->value();
@@ -142,7 +142,7 @@ void CAP3SupportDialog::sl_onAddButtonClicked()
     }
     lod.url = fileNames.at(fileNames.count() - 1);
     foreach(const QString& f, fileNames) {
-        seqList->addItem(f);    
+        seqList->addItem(f);
     }
 
 
@@ -165,7 +165,7 @@ void CAP3SupportDialog::sl_onRemoveAllButtonClicked()
 
 void CAP3SupportDialog::sl_onSpecifyOutputPathButtonClicked()
 {
-    
+
     LastUsedDirHelper lod;
     lod.url = U2FileDialog::getSaveFileName(this, tr("Set Result Contig File Name"), lod.dir, tr("ACE format (*.ace)"));
     if (!lod.url.isEmpty()) {
@@ -175,7 +175,7 @@ void CAP3SupportDialog::sl_onSpecifyOutputPathButtonClicked()
         }
         outputPathLineEdit->setText(result.getURLString());
     }
-    
+
 }
 
 

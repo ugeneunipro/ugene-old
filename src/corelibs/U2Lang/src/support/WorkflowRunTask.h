@@ -82,7 +82,7 @@ class U2LANG_EXPORT WorkflowRunTask : public WorkflowAbstractRunner {
 public:
     WorkflowRunTask(const Schema&, const ActorMap& rmap = ActorMap(),
         WorkflowDebugStatus *debugInfo = new WorkflowDebugStatus());
-    virtual ReportResult report(); 
+    virtual ReportResult report();
     virtual QList<WorkerState> getState(Actor*);
     virtual int getMsgNum(const Link*);
     virtual int getMsgPassed(const Link*);
@@ -92,11 +92,11 @@ signals:
 
 private slots:
     void sl_outputProgressAndState();
-    
+
 private:
     QMap<ActorId, ActorId> rmap;
     QList<Link*> flows;
-    
+
 }; // WorkflowRunTask
 
 class WorkflowIterationRunTask : public WorkflowAbstractIterationRunner {
@@ -138,14 +138,14 @@ private:
     Scheduler* scheduler;
     QMap<ActorId, ActorId> rmap;
     QMap<QString, CommunicationChannel*> lmap;
-    
+
     WorkflowDebugStatus *debugInfo;
     bool isNextTickRestoring;
 };
 
 class RunCmdlineWorkflowTaskConfig {
 public:
-    RunCmdlineWorkflowTaskConfig(const QString& _schemaPath = QString(), const QStringList& _args = QStringList()) 
+    RunCmdlineWorkflowTaskConfig(const QString& _schemaPath = QString(), const QStringList& _args = QStringList())
         : schemaPath(_schemaPath), args(_args), logLevel2Commute(LogLevel_TRACE) {}
 
     QString         schemaPath;
@@ -157,7 +157,7 @@ class RunCmdlineWorkflowTask : public Task {
     Q_OBJECT
 public:
     RunCmdlineWorkflowTask(const RunCmdlineWorkflowTaskConfig& conf);
-    
+
     void prepare();
     virtual ReportResult report();
     WorkerState getState(const ActorId & id);
@@ -172,7 +172,7 @@ signals:
 private slots:
     void sl_onError(QProcess::ProcessError);
     void sl_onReadStandardOutput();
-    
+
 private:
     RunCmdlineWorkflowTaskConfig   conf;
     QProcess*                               proc;

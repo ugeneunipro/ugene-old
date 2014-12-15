@@ -41,7 +41,7 @@ public:
     virtual const QString& getFormatName() const {return fn;}
 
     virtual DNASequence *loadSequence( IOAdapter* io, U2OpStatus& os);
-    
+
     virtual void storeDocument( Document* d, IOAdapter* io, U2OpStatus& os );
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;

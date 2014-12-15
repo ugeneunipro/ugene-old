@@ -27,7 +27,7 @@
 #include <QObject>
 
 namespace U2 {
-    
+
 class GTestScriptWrapper {
 public:
     GTestScriptWrapper();

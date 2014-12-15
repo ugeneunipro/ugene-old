@@ -64,7 +64,7 @@ OpenTreeViewerTask::OpenTreeViewerTask(UnloadedObject* _obj, QObject* _parent)
     documentsToLoad.append(_obj->getDocument());
 }
 
-OpenTreeViewerTask::OpenTreeViewerTask(Document* doc, QObject* _parent) 
+OpenTreeViewerTask::OpenTreeViewerTask(Document* doc, QObject* _parent)
 : ObjectViewTask(TreeViewerFactory::ID), phyObject(NULL), parent(_parent), createMDIWindow(false) {
     assert(!doc->isLoaded());
     documentsToLoad.append(doc);
@@ -122,7 +122,7 @@ void OpenTreeViewerTask::updateTitle(TreeViewer* tv) {
 //////////////////////////////////////////////////////////////////////////
 // open view from state
 
-OpenSavedTreeViewerTask::OpenSavedTreeViewerTask(const QString& viewName, const QVariantMap& stateData) 
+OpenSavedTreeViewerTask::OpenSavedTreeViewerTask(const QString& viewName, const QVariantMap& stateData)
 : ObjectViewTask(TreeViewerFactory::ID, viewName, stateData)
 {
     TreeViewerState state(stateData);
@@ -188,7 +188,7 @@ void OpenSavedTreeViewerTask::updateRanges(const QVariantMap& stateData, TreeVie
 
 //////////////////////////////////////////////////////////////////////////
 // update
-UpdateTreeViewerTask::UpdateTreeViewerTask(GObjectView* v, const QString& stateName, const QVariantMap& stateData) 
+UpdateTreeViewerTask::UpdateTreeViewerTask(GObjectView* v, const QString& stateName, const QVariantMap& stateData)
 : ObjectViewTask(v, stateName, stateData)
 {
 }
@@ -220,7 +220,7 @@ void CreateMSAEditorTreeViewerTask::prepare() {
 Task::ReportResult CreateMSAEditorTreeViewerTask::report() {
     GraphicsRectangularBranchItem* root = dynamic_cast<GraphicsRectangularBranchItem*>(subTask->getResult());
     view = new MSAEditorTreeViewer(viewName, phyObj, root, subTask->getScale());
-    
+
     if (!stateData.isEmpty()) {
         OpenSavedTreeViewerTask::updateRanges(stateData, view);
     }

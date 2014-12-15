@@ -43,9 +43,9 @@ class ExportReadsDialog : public QDialog, Ui_ExportReadsDialog {
     Q_OBJECT
 public:
     ExportReadsDialog(QWidget * p, const QList<DocumentFormatId> & formats);
-    
+
     virtual void accept();
-    
+
     ExportReadsDialogModel getModel() const;
 
 private slots:

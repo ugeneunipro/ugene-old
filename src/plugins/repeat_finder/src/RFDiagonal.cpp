@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-RFDiagonalAlgorithmWK::RFDiagonalAlgorithmWK(RFResultsListener* rl, const char* seqX, int sizeX, const char* seqY, int sizeY, 
+RFDiagonalAlgorithmWK::RFDiagonalAlgorithmWK(RFResultsListener* rl, const char* seqX, int sizeX, const char* seqY, int sizeY,
                                             DNAAlphabetType seqType,  int w, int k)
 : RFAlgorithmBase(rl, seqX, sizeX, seqY, sizeY, seqType, w, k)
 {
@@ -52,12 +52,12 @@ void RFDiagonalAlgorithmWK::prepare(){
 /// RFDiagonalWKSubtask methods
 
 RFDiagonalWKSubtask::RFDiagonalWKSubtask(RFDiagonalAlgorithmWK* owner, int tn, int totalThreads)
-: Task(tr("Find repeats subtask (diagonal)"), TaskFlag_None),  
+: Task(tr("Find repeats subtask (diagonal)"), TaskFlag_None),
 owner(owner), threadNum(tn), nThreads(totalThreads), dataX(owner->seqX), dataY(owner->seqY)
 {
     assert(totalThreads >= 1);
 
-    //progress is approximated by area processed 
+    //progress is approximated by area processed
     if ((owner->END_DIAG <= 0 && owner->START_DIAG <= 0) || (owner->END_DIAG >= 0 && owner->START_DIAG >= 0)) {
         int diagRange = owner->START_DIAG - owner->END_DIAG + 1;
         int medDiag = (owner->START_DIAG + owner->END_DIAG) / 2;
@@ -71,7 +71,7 @@ owner(owner), threadNum(tn), nThreads(totalThreads), dataX(owner->seqX), dataY(o
     }
     assert(areaS > 0);
     currentS = 0;
-    tpm = Task::Progress_Manual; 
+    tpm = Task::Progress_Manual;
 }
 
 int RFDiagonalWKSubtask::getDiagLen(int d) const {
@@ -82,7 +82,7 @@ void RFDiagonalWKSubtask::run(){
     int start_diag = owner->START_DIAG;
     int end_diag = owner->END_DIAG;
     int d = start_diag - threadNum;
-    
+
     while (d >= end_diag && !isCanceled()) {
         int x = d > 0 ? d : 0;
         int y = d > 0 ? 0 : -d;
@@ -116,7 +116,7 @@ void RFDiagonalWKSubtask::processDiagonal(int x, int y){
             continue;
         }
         assert(xseq < dataX || yseq < dataY || !PCHAR_MATCHES(xseq, yseq));
-        xseq++; 
+        xseq++;
         yseq++;
         int len = processMatch(xseq, yseq, xseqMax, yseqMax, c);
         assert(len >= W);

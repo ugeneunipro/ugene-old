@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
- 
-#include "GTUtilsTaskTreeView.h" 
+
+#include "GTUtilsTaskTreeView.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"

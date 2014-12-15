@@ -132,7 +132,7 @@ SMatrix SubstMatrixRegistry::readMatrixFromFile(const QString& fileName, QString
 
 SMatrix SubstMatrixRegistry::parseMatrix(const QString& name, const QByteArray& text, QString& error) {
     QList<QByteArray> lines = text.split('\n');
-    
+
     QByteArray alphaRow;
     QList<SScore> charScores;
     QString description;

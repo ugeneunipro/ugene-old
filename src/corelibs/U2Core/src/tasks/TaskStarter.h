@@ -47,4 +47,4 @@ private:
 
 } //namespace
 
-#endif 
+#endif

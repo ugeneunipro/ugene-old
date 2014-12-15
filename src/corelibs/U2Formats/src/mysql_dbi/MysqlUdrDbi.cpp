@@ -323,7 +323,7 @@ QString MysqlUdrDbi::selectDef(const UdrSchema *schema, U2OpStatus &os) {
 }
 
 QString MysqlUdrDbi::tableStartDef(const UdrSchemaId &schemaId) {
-    return "CREATE TABLE " + tableName(schemaId) + " (" + 
+    return "CREATE TABLE " + tableName(schemaId) + " (" +
         UdrSchema::RECORD_ID_FIELD_NAME + " BIGINT PRIMARY KEY AUTO_INCREMENT";
 }
 

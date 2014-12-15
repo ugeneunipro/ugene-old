@@ -31,7 +31,7 @@ namespace U2 {
 class AsnNode;
 
 enum ResidueType {
-    DEOXYRIBONUCLEOTIDE, RIBONUCLEOTIDE, AMINO_ACID, OTHER = 255  
+    DEOXYRIBONUCLEOTIDE, RIBONUCLEOTIDE, AMINO_ACID, OTHER = 255
 };
 
 struct StdBond {

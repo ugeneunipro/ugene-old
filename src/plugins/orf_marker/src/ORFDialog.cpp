@@ -271,7 +271,7 @@ void ORFDialog::runTask() {
         return;
     }
 
-    
+
     task = new ORFFindTask(s, ctx->getSequenceObject()->getEntityRef());
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     updateState();

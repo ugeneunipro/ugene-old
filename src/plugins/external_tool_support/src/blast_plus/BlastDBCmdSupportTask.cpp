@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -51,15 +51,15 @@ BlastDBCmdSupportTask::BlastDBCmdSupportTask(const BlastDBCmdSupportTaskSettings
 }
 
 void BlastDBCmdSupportTask::prepare(){
-    
+
     QStringList arguments;
-    
+
     arguments << "-db" << settings.databasePath;
     arguments << "-dbtype" << (settings.isNuclDatabase ? "nucl" : "prot");
     arguments << "-entry" << settings.query;
     arguments << "-logfile" << settings.outputPath+".BlastDBCmd.log";
     arguments << "-out" << settings.outputPath;
-    
+
     logParser=new ExternalToolLogParser();
     blastDBCmdTask=new ExternalToolRunTask(toolName, arguments, logParser);
     blastDBCmdTask->setSubtaskProgressWeight(95);
@@ -80,7 +80,7 @@ QList<Task*> BlastDBCmdSupportTask::onSubTaskFinished( Task* subTask )
             res.append( new AddDocumentAndOpenViewTask(loadTask) );
         }
     }
-    
+
     return res;
 }
 

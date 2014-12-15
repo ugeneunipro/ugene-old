@@ -60,14 +60,14 @@ Task::ReportResult ShiftSequenceStartTask::report(){
     }
 
     CHECK(abs(seqStart) < seqObj->getSequenceLength(), ReportResult_Finished);
-    
+
     Document* curDoc = seqObj->getDocument();
     CHECK_EXT(!curDoc->isStateLocked(), setError(tr("Document is locked")), ReportResult_Finished);
 
     DNASequence dna = seqObj->getWholeSequence();
     dna.seq = dna.seq.mid(seqStart) + dna.seq.mid(0, seqStart);
     seqObj->setWholeSequence(dna);
-    
+
 
     Project *p = AppContext::getProject();
     if (p != NULL){
@@ -77,7 +77,7 @@ Task::ReportResult ShiftSequenceStartTask::report(){
         docs = p->getDocuments();
     }
 
-    
+
     if (!docs.contains(curDoc)){
         docs.append(curDoc);
     }
@@ -98,7 +98,7 @@ void ShiftSequenceStartTask::fixAnnotations( int shiftSize ) {
                     const U2Location& location = an.getLocation();
                     U2Location newLocation = shiftLocation(location, shiftSize, seqObj->getSequenceLength() );
                     an.setLocation(newLocation);
-                    
+
                 }
             }
         }
@@ -110,7 +110,7 @@ U2Location ShiftSequenceStartTask::shiftLocation(const U2Location& location, int
 
     U2Location newLocation(location);
     newLocation->regions.clear();
-        
+
     int joinIdx = -1;
 
     int numRegions = location->regions.size();

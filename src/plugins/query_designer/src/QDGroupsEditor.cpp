@@ -174,7 +174,7 @@ void QDGroupsEditor::sl_setReqNum() {
     assert(currentItem());
     assert(!currentItem()->parent());
     QString group = currentItem()->text(0);
-    
+
     bool ok;
     int num = QInputDialog::getInt(this,
         tr("Set required number for '%1'").arg(group),

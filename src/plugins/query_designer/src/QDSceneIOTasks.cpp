@@ -224,7 +224,7 @@ bool QDSceneSerializer::doc2scheme(const QList<QDDocument*>& docs, QMap<QDElemen
 
     QDActor* actor = NULL;
     //map QDElementStatement to QDActor created from it
-    
+
     foreach(QDElementStatement* grpStmt, groups) {
         //if grpStmt references to stmt defined in other query
         //find it and instantiate with that query attributes
@@ -396,7 +396,7 @@ QDActor* QDSchemeSerializer::loadActor(QDElementStatement* actorElement, QString
     QString actorName = actorElement->getId();
     actor->getParameters()->setLabel(actorName);
     actor->loadConfiguration(actorElement->getAttributes());
-    
+
     QString dirAttrVal = actorElement->getAttribute(STRAND_ATTR);
     if (!dirAttrVal.isEmpty()) {
         if (!STRAND_MAP.values().contains(dirAttrVal)) {

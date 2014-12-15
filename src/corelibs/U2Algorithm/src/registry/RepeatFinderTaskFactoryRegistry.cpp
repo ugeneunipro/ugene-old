@@ -40,7 +40,7 @@ RepeatFinderTaskFactoryRegistry::~RepeatFinderTaskFactoryRegistry()
 }
 
 bool RepeatFinderTaskFactoryRegistry::registerFactory(
-                                                RepeatFinderTaskFactory* factory, 
+                                                RepeatFinderTaskFactory* factory,
                                                 const QString& factoryId)
 {
     QMutexLocker locker(&mutex);

@@ -94,14 +94,14 @@ void KarlinGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, c
 
     const DNAAlphabet* al = o->getAlphabet();
     assert(al->isNucleic());
-    
+
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
     DNATranslation* complT = tr->lookupComplementTranslation(al);
     assert(complT != NULL);
 
     DNATranslation* complTrans = complT;
     mapTrans = complTrans->getOne2OneMapper();
-    
+
     const QByteArray& seq = getSequenceData(o);
     int seqLen = seq.size();
     const char* seqc = seq.constData();
@@ -134,7 +134,7 @@ float KarlinGraphAlgorithm::getValue (int start, int end, const QByteArray& s) {
     return res;
 }
 
-void KarlinGraphAlgorithm::calculateRelativeAbundance (const char* seq, int length, float* results) { 
+void KarlinGraphAlgorithm::calculateRelativeAbundance (const char* seq, int length, float* results) {
     QByteArray tmp;
     tmp.resize(length);
 
@@ -171,7 +171,7 @@ void KarlinGraphAlgorithm::calculateRelativeAbundance (const char* seq, int leng
         if (this_r_base_index >= 0 && next_r_base_index >= 0) {
             ++base_counts[this_r_base_index];
             ++dinucleotide_base_counts[IDX(this_r_base_index, next_r_base_index)];
-        } 
+        }
     }
 
     if (next_f_base_index >= 0) {

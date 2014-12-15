@@ -23,14 +23,14 @@
 
 namespace U2 {
 
-void CollocationsAlgorithm::find(const QList<CollocationsAlgorithmItem>& items, TaskStateInfo& si, 
+void CollocationsAlgorithm::find(const QList<CollocationsAlgorithmItem>& items, TaskStateInfo& si,
         CollocationsAlgorithmListener* l, const CollocationsAlgorithmSettings& cfg)
 {
     cfg.st == NormalSearch ? findN(items, si, l, cfg.searchRegion, cfg.distance) : findP(items, si, l, cfg.searchRegion, cfg.distance);
 }
 
-void CollocationsAlgorithm::findN(const QList<CollocationsAlgorithmItem>& items, TaskStateInfo& si, 
-                                 CollocationsAlgorithmListener* l, const U2Region& searchRegion, qint64 distance) 
+void CollocationsAlgorithm::findN(const QList<CollocationsAlgorithmItem>& items, TaskStateInfo& si,
+                                 CollocationsAlgorithmListener* l, const U2Region& searchRegion, qint64 distance)
 {
     //todo: progress
 
@@ -76,7 +76,7 @@ void CollocationsAlgorithm::findN(const QList<CollocationsAlgorithmItem>& items,
                 l->onResult(res);
                 prevResult = res;
             }
-        } 
+        }
         assert(nextI > i);
         i = nextI;
         si.progress = int(100*float(i - searchRegion.startPos)/searchRegion.length);
@@ -109,8 +109,8 @@ void averagingRes(U2Region& res, const U2Region& min, const U2Region& max, int d
 }
 
 
-void CollocationsAlgorithm::findP(const QList<CollocationsAlgorithmItem>& items, TaskStateInfo& si, 
-                                 CollocationsAlgorithmListener* l, const U2Region& searchRegion, qint64 distance) 
+void CollocationsAlgorithm::findP(const QList<CollocationsAlgorithmItem>& items, TaskStateInfo& si,
+                                 CollocationsAlgorithmListener* l, const U2Region& searchRegion, qint64 distance)
 {
     //printf("partial_search!\n");
 
@@ -156,7 +156,7 @@ void CollocationsAlgorithm::findP(const QList<CollocationsAlgorithmItem>& items,
         }
         //error mb use list of prev included anno?
         //
-        if (onResult && 
+        if (onResult &&
             prevMax != max
             //!prevResult.contains(res)
             ) {
@@ -193,7 +193,7 @@ void CollocationsAlgorithm::findP(const QList<CollocationsAlgorithmItem>& items,
 
             assert(res.length > 0);
             l->onResult(res);
-        } 
+        }
         assert(nextI > i);
         i = nextI;
         si.progress = int(100*float(i - searchRegion.startPos)/searchRegion.length);

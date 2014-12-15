@@ -65,10 +65,10 @@ public:
 
     static QColor getBGColor();
     static void setBGColor(const QColor &color);
-    
+
     static int getRunMode();
     static void setRunMode(int md);
-    
+
     static bool getScriptingMode();
     static void setScriptingMode(bool md);
 

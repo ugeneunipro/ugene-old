@@ -37,22 +37,22 @@ static double getFrequency() {
     LARGE_INTEGER freq;
     QueryPerformanceFrequency(&freq);
     frequency = (double)freq.QuadPart;
-#else 
+#else
     frequency = 1000*1000; //microseconds
-#endif    
+#endif
     return frequency;
 
 }
 
 static qint64 getCorrection() {
     GCounter totalCounter("timer correction", "ticks", 1);
-    
+
     TimeCounter tc(&totalCounter, false);
     tc.start(); tc.stop();
     tc.start(); tc.stop();
     tc.start(); tc.stop();
     tc.start(); tc.stop();
-    
+
     qint64 correction = totalCounter.totalCount / 4;
     return correction;
 }

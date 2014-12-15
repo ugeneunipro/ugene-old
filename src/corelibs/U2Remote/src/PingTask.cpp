@@ -36,7 +36,7 @@ namespace U2 {
 ***********************************/
 
 PingTask::PingTask(RemoteMachine* m)
- : Task( tr( "PingTask" ), TaskFlag_None), machine(m) 
+ : Task( tr( "PingTask" ), TaskFlag_None), machine(m)
 {
     assert(machine!=NULL);
     GCOUNTER( cvar, tvar, "PingTask" );

@@ -50,7 +50,7 @@ class RulerInfo {
 public:
     RulerInfo(): offset(0){}
     RulerInfo(const QString& _name, int _offset, const QColor& _color) : name(_name), offset(_offset), color(_color) {}
-    
+
     QString name;
     int     offset;
     QColor  color;
@@ -98,7 +98,7 @@ public:
     virtual void setNumBasesVisible(qint64 n);
 
     void setSyncOffset(int o);
- 
+
     int getSyncOffset() const {return syncOffset;}
 
     QList<RulerInfo> getCustomRulers() const;
@@ -110,7 +110,7 @@ public:
     void removeAllCustomRulers();
 
     QAction* getToggleMainRulerAction() const {return toggleMainRulerAction;}
-    
+
     QAction* getToggleCustomRulersAction() const {return toggleCustomRulersAction;}
 
     void hideEvent(QHideEvent *ev);
@@ -135,7 +135,7 @@ private slots:
     void sl_zoomOutAction();
     void sl_zoomToSelection();
     void sl_zoomToSequence();
-    
+
     void sl_onRowBarMoved(int);
 
     void sl_onRangeChangeRequest(qint64 start, qint64 end);
@@ -229,18 +229,18 @@ private:
     int getSelectionLine() const {return numLines - 1;}
 
     int getRulerLine() const {
-        assert(showMainRuler); 
+        assert(showMainRuler);
         return numLines - 2;
     }
 
     int getCustomRulerLine(int n) const {
-       assert(showCustomRulers); 
+       assert(showCustomRulers);
        assert(n >= 0 && n < customRulers.count());
         return numLines - (showMainRuler ? 3 : 2) - n;
     }
 
     int getFirstRowLine()const {return numLines - 2 - (showMainRuler ? 1 : 0) - (showCustomRulers ? customRulers.count() : 0 );}
-    
+
     bool isSequenceCharsVisible() const;
 
     PanView* getPanView() const {return static_cast<PanView*>(view);}
@@ -252,7 +252,7 @@ private:
     void drawRuler(GraphUtils::RulerConfig c,  QPainter& p, const U2Region &visibleRange, int firstCharCenter, int firstLastWidth);
     void drawCustomRulers(GraphUtils::RulerConfig c,  QPainter& p, const U2Region &visibleRange, int firstCharCenter);
     void drawSequenceSelection(QPainter& p);
-    
+
     PanView*            panView;
     int                 numLines;       // number of visible lines
     int                 rowLinesOffset; // row number on the first row line

@@ -69,7 +69,7 @@ private:
 
 class U2VIEW_EXPORT WindowStepSelectorDialog : public QDialog {
     Q_OBJECT
-public: 
+public:
     WindowStepSelectorDialog(QWidget* p, const U2Region& winRange, int win, int step, double min, double max, bool e);
     WindowStepSelectorWidget* getWindowStepSelector() const {return wss;}
     MinMaxSelectorWidget* getMinMaxSelector() const {return mms;}

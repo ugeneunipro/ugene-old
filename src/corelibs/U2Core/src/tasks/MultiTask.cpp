@@ -33,7 +33,7 @@ Task(name, f), tasks(taskz)
 {
     setMaxParallelSubtasks(1);
     if( taskz.empty() ) {
-        assert( false ); 
+        assert( false );
         return;
     }
 
@@ -88,7 +88,7 @@ void SequentialMultiTask::prepare(){
     if (tasks.size() > 0){
         addSubTask(tasks.first());
     }
-    
+
 }
 
 QList<Task*> SequentialMultiTask::onSubTaskFinished( Task* subTask ){

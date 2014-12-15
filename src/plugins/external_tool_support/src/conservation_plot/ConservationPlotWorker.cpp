@@ -178,7 +178,7 @@ void ConservationPlotWorkerFactory::init() {
     }
 
     QList<PortDescriptor*> portDescs;
-    
+
     //in port
     QMap<Descriptor, DataTypePtr> inTypeMap;
     Descriptor treatDesc(ANNOT_SLOT_ID,
@@ -278,16 +278,16 @@ Worker *ConservationPlotWorkerFactory::createWorker(Actor *a) {
 }
 
 QString ConservationPlotPrompter::composeRichDoc() {
-    QString res = ""; 
+    QString res = "";
 
      Actor* annProducer = qobject_cast<IntegralBusPort*>(target->getPort(IN_PORT_DESCR))->getProducer(ANNOT_SLOT_ID);
- 
+
      QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
      QString annUrl = annProducer ? annProducer->getLabel() : unsetStr;
-     
+
      QString file = getHyperlink(OUTPUT_FILE, getURL(OUTPUT_FILE));
      QString assembly = getHyperlink(ASSEMBLY_VER, getURL(ASSEMBLY_VER));
- 
+
      res.append(tr("Uses annotations from <u>%1</u> as peak regions for conservation plot.").arg(annUrl));
      res.append(tr(" Conservations scores from <u>%1</u>.").arg(assembly));
      res.append(tr(" Outputs the result to <u>%1</u>").arg(file));

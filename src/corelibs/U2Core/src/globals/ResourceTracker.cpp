@@ -39,7 +39,7 @@ void ResourceTracker::registerResourceUser(const QString& resourceName, Task* t)
     coreLog.details(tr("resource '%1' is used by '%2'").arg(resourceName).arg(t->getTaskName()));
     emit si_resourceUserRegistered(resourceName, t);
 }
-    
+
 
 
 void ResourceTracker::unregisterResourceUser(const QString& resourceName, Task* t) {

@@ -55,23 +55,23 @@ static LogFilter prepareLogFilter() {
 }
 
 
-RemoteMachineMonitorDialogImpl::RemoteMachineMonitorDialogImpl( QWidget * p, RemoteMachineMonitor* monitor, 
+RemoteMachineMonitorDialogImpl::RemoteMachineMonitorDialogImpl( QWidget * p, RemoteMachineMonitor* monitor,
                                                                bool runTaskMode )
-: QDialog( p ), PING_YES( ":core/images/remote_machine_ping_yes.png" ), PING_NO( ":core/images/remote_machine_ping_no.png" ), 
+: QDialog( p ), PING_YES( ":core/images/remote_machine_ping_yes.png" ), PING_NO( ":core/images/remote_machine_ping_no.png" ),
 PING_WAIT_FOR_RESPONSE( ":core/images/remote_machine_ping_waiting_response.png" ), PING_QUESTION(":core/images/question.png"),
 rmm(monitor), getPublicMachinesTask( NULL ) {
     setupUi( this );
-    
+
     // add log-view widget
     QVBoxLayout* logLayout = new QVBoxLayout();
     logViewHolder->setLayout(logLayout);
     LogViewWidget* logView = new LogViewWidget(prepareLogFilter());
     logView->setSearchBoxMode(LogViewSearchBox_Hidden);
     logLayout->addWidget(logView);
-    
-    
+
+
     currentlySelectedItemIndex = -1;
-    
+
     assert(rmm != NULL);
 
     QList< RemoteMachineSettingsPtr > monitorItems = rmm->getRemoteMachineMonitorItems();
@@ -81,7 +81,7 @@ rmm(monitor), getPublicMachinesTask( NULL ) {
         addMachineSettings( item, false );
     }
     rsLog.details(tr("Found %1 remote machine records").arg(sz));
-    
+
     connect( okPushButton, SIGNAL( clicked() ), SLOT( sl_okPushButtonClicked() ) );
     connect( cancelPushButton, SIGNAL( clicked() ), SLOT( sl_cancelPushButtonClicked() ) );
     connect( addPushButton, SIGNAL( clicked() ), SLOT( sl_addPushButtonClicked() ) );
@@ -91,9 +91,9 @@ rmm(monitor), getPublicMachinesTask( NULL ) {
     connect( machinesTreeWidget, SIGNAL( itemSelectionChanged() ), SLOT( sl_selectionChanged() ) );
     connect( pingPushButton, SIGNAL( clicked() ), SLOT( sl_pingPushButtonClicked() ) );
     connect( getPublicMachinesButton, SIGNAL( clicked() ), SLOT( sl_getPublicMachinesButtonClicked() ) );
-    
+
     okPushButton->setDefault( true );
-    
+
     QHeaderView * header = machinesTreeWidget->header();
     header->setStretchLastSection( false );
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -103,11 +103,11 @@ rmm(monitor), getPublicMachinesTask( NULL ) {
     header->setSectionsClickable( false );
     header->setSectionResizeMode( 1, QHeaderView::Stretch );
 #endif
-    
+
     if( runTaskMode ) {
         okPushButton->setText( OK_BUTTON_RUN );
     }
-    
+
     initMachineActionsMenu();
     updateState();
 }
@@ -115,15 +115,15 @@ rmm(monitor), getPublicMachinesTask( NULL ) {
 void RemoteMachineMonitorDialogImpl::initMachineActionsMenu() {
     machinesTreeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(machinesTreeWidget, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_machinesTreeMenuRequested(const QPoint&)));
-    
+
     machineActionsMenu = new QMenu(this);
-    
+
     QAction * removeMachineAction = machineActionsMenu->addAction(removePushButton->text());
     connect(removeMachineAction, SIGNAL(triggered()), SLOT(sl_removePushButtonClicked()));
 
     QAction * modifyMachineAction = machineActionsMenu->addAction(modifyPushButton->text());
     connect(modifyMachineAction, SIGNAL(triggered()), SLOT(sl_modifyPushButtonClicked()));
-    
+
     QAction * pingMachineAction = machineActionsMenu->addAction(pingPushButton->text());
     connect(pingMachineAction, SIGNAL(triggered()), SLOT(sl_pingPushButtonClicked()));
 
@@ -137,9 +137,9 @@ bool RemoteMachineMonitorDialogImpl::addMachineSettings( const RemoteMachineSett
         rsLog.error(tr( "Can't add %1 machine. The machine is already registered" ).arg( settings->getName() ) );
         return false;
     }
-    
+
     RemoteMachineItemInfo item( settings);
-    
+
     machinesItemsByOrder << item;
     QTreeWidgetItem * widgetItem = addItemToTheView( item );
     assert( NULL != widgetItem );
@@ -152,7 +152,7 @@ bool RemoteMachineMonitorDialogImpl::addMachineSettings( const RemoteMachineSett
         widgetItem->setIcon(3, PING_QUESTION);
 
     }
-    
+
     return true;
 }
 
@@ -164,10 +164,10 @@ QTreeWidgetItem * RemoteMachineMonitorDialogImpl::addItemToTheView( RemoteMachin
     widgetItem->setText(0, itemInfo.settings->getName());
     widgetItem->setText(1, itemInfo.settings->getProtocolId());
     widgetItem->setTextAlignment(2, Qt::AlignCenter);
-    
+
     machinesTreeWidget->addTopLevelItem( widgetItem );
     resizeTreeWidget();
-    
+
     return widgetItem;
 }
 
@@ -189,7 +189,7 @@ QList< RemoteMachineItemInfo > RemoteMachineMonitorDialogImpl::getModel() const 
 
 void RemoteMachineMonitorDialogImpl::sl_okPushButtonClicked() {
     if (okPushButton->text() == OK_BUTTON_RUN) {
-        RemoteMachineSettingsPtr s = getSelectedMachine(); 
+        RemoteMachineSettingsPtr s = getSelectedMachine();
         checkCredentials(s);
     }
 
@@ -202,45 +202,45 @@ void RemoteMachineMonitorDialogImpl::sl_cancelPushButtonClicked() {
 
 
 void RemoteMachineMonitorDialogImpl::sl_addPushButtonClicked() {
-    
+
     QList< ProtocolInfo* > protoInfos = AppContext::getProtocolInfoRegistry()->getProtocolInfos();
     if (protoInfos.size() < 1) {
         QMessageBox::information(this, tr("Add remote macnine"), tr("No protocols for distributed computing are found.\nPlease check your plugin list."));
         return;
     }
-    
+
     RemoteMachineSettingsDialog settingsDlg(this);
-    
+
     int rc = settingsDlg.exec();
     if( QDialog::Rejected == rc ) {
         return;
     }
     assert( QDialog::Accepted == rc );
-    
+
     RemoteMachineSettingsPtr newMachine = settingsDlg.getMachineSettings();
     if( NULL == newMachine ) {
         return;
     }
     addMachineSettings( newMachine, true );
-    
+
 }
 
 void RemoteMachineMonitorDialogImpl::sl_modifyPushButtonClicked() {
     assert( 1 == topLevelItemsSelectedNum() );
     int row = getSelectedTopLevelRow();
     assert( 0 <= row && row < machinesItemsByOrder.size() );
-        
+
     RemoteMachineSettingsDialog settingsDlg( this, machinesItemsByOrder.at( row ).settings );
     int rc = settingsDlg.exec();
     if( QDialog::Rejected == rc ) {
         return;
     }
-    
+
     RemoteMachineSettingsPtr newMachine = settingsDlg.getMachineSettings();
     if( NULL == newMachine ) {
         return;
     }
-    
+
     removeDialogItemAt( row );
     addMachineSettings( newMachine, true );
 }
@@ -254,7 +254,7 @@ void RemoteMachineMonitorDialogImpl::sl_removePushButtonClicked() {
         QMessageBox::critical( this, tr( "Error!" ), msg );
         return;
     }
-    
+
 }
 
 bool RemoteMachineMonitorDialogImpl::removeDialogItemAt( int row ) {
@@ -263,7 +263,7 @@ bool RemoteMachineMonitorDialogImpl::removeDialogItemAt( int row ) {
     QScopedPointer<QTreeWidgetItem> treeItemToRemove ( machinesTreeWidget->takeTopLevelItem( row ) );
     rmm->removeMachineConfiguration(itemToRemove.settings);
     machinesItemsByOrder.removeAt( row );
-    
+
     return true;
 }
 
@@ -282,7 +282,7 @@ int RemoteMachineMonitorDialogImpl::topLevelItemsSelectedNum() const {
 }
 
 int RemoteMachineMonitorDialogImpl::getSelectedTopLevelRow() const {
-    assert( 1 == topLevelItemsSelectedNum() ); 
+    assert( 1 == topLevelItemsSelectedNum() );
     QList< QTreeWidgetItem* > selection = machinesTreeWidget->selectedItems();
     assert( !selection.isEmpty() );
     return machinesTreeWidget->indexOfTopLevelItem( selection.first() );
@@ -300,20 +300,20 @@ void RemoteMachineMonitorDialogImpl::sl_retrieveInfoTaskStateChanged() {
     if( Task::State_Finished != retrieveInfoTask->getState() ) {
         return;
     }
-    
+
     RemoteMachineSettingsPtr machineSettings = retrieveInfoTask->getMachineSettings();
     assert( NULL != machineSettings );
     QTreeWidgetItem * treeItem = pingingItems.value( machineSettings );
-    
+
     pingingItems.remove( machineSettings );
-    
+
     int row = machinesTreeWidget->indexOfTopLevelItem( treeItem );
     if( -1 == row ) {
         return; /* item was deleted from the table */
     }
-    
+
     RemoteMachineItemInfo & itemInfo = machinesItemsByOrder[row];
-    
+
     bool pingOk = retrieveInfoTask->isPingOk();
     bool authOk = !retrieveInfoTask->hasError();
 
@@ -325,13 +325,13 @@ void RemoteMachineMonitorDialogImpl::sl_retrieveInfoTaskStateChanged() {
         rsLog.error( tr( "Test connection for machine %1 finished with error: '%2'" ).
             arg( itemInfo.settings->getName() ).arg( retrieveInfoTask->getError() ) );
     }
-    
+
     itemInfo.hostname = retrieveInfoTask->getHostName();
     treeItem->setText(1, itemInfo.hostname );
     resizeTreeWidget();
 
     enableItem(treeItem, authOk);
-    
+
     updateState();
 
 }
@@ -346,16 +346,16 @@ void RemoteMachineMonitorDialogImpl::sl_pingPushButtonClicked() {
 
 void RemoteMachineMonitorDialogImpl::pingMachine( const RemoteMachineSettingsPtr& settings, QTreeWidgetItem * item ) {
     assert( NULL != settings && NULL != item );
-    
+
     if (!checkCredentials(settings)) {
         return;
     }
-    
+
     if( pingingItems.values().contains( item ) ) {
         rsLog.info(tr("Ping task is already active for machine: %1" ).arg(item->text(0)));
         return;
     }
-    
+
     pingingItems.insert( settings, item );
     item->setIcon(2, PING_WAIT_FOR_RESPONSE);
     item->setIcon(3, PING_WAIT_FOR_RESPONSE);
@@ -376,7 +376,7 @@ void RemoteMachineMonitorDialogImpl::sl_getPublicMachinesButtonClicked() {
         rsLog.details(tr("Public machines request is already sent" ) );
         return;
     }
-    
+
     getPublicMachinesTask = new RetrievePublicMachinesTask();
     connect( getPublicMachinesTask, SIGNAL( si_stateChanged() ), SLOT( sl_getPublicMachinesTaskStateChanged() ) );
     AppContext::getTaskScheduler()->registerTopLevelTask( getPublicMachinesTask );
@@ -388,7 +388,7 @@ void RemoteMachineMonitorDialogImpl::sl_getPublicMachinesTaskStateChanged() {
     if( Task::State_Finished != getPublicMachinesTask->getState() ) {
         return;
     }
-        
+
     QList< RemoteMachineSettingsPtr > newMachines = getPublicMachinesTask->takePublicMachines();
 
     if( getPublicMachinesTask->hasError()) {
@@ -403,7 +403,7 @@ void RemoteMachineMonitorDialogImpl::sl_getPublicMachinesTaskStateChanged() {
     getPublicMachinesTask = NULL;
     getPublicMachinesButton->setEnabled(true);
 
-    
+
 }
 
 void RemoteMachineMonitorDialogImpl::sl_machinesTreeMenuRequested(const QPoint& p) {
@@ -425,13 +425,13 @@ void RemoteMachineMonitorDialogImpl::sl_saveMachine() {
 
 void RemoteMachineMonitorDialogImpl::updateState()
 {
-   
+
     if (okPushButton->text() == OK_BUTTON_RUN) {
         okPushButton->setEnabled(topLevelItemsSelectedNum() > 0);
     }
-    
+
     bool itemSelected = machinesTreeWidget->selectedItems().size() > 0;
-    
+
     bool pinging = false;
     foreach(QTreeWidgetItem* item, pingingItems.values()) {
         if (item->isSelected()) {
@@ -439,14 +439,14 @@ void RemoteMachineMonitorDialogImpl::updateState()
             break;
         }
     }
-    
+
     bool available = !pinging && itemSelected;
 
     pingPushButton->setEnabled(available);
     removePushButton->setEnabled(available );
     modifyPushButton->setEnabled(available );
     showTasksButton->setEnabled(available);
-    
+
     foreach (QAction* action, machineActionsMenu->actions()) {
         action->setEnabled(available);
     }
@@ -474,7 +474,7 @@ void RemoteMachineMonitorDialogImpl::sl_showUserTasksButtonClicked() {
         return;
     }
     if (settings->usesGuestAccount()) {
-        QMessageBox::warning(this, tr("User Tasks"), 
+        QMessageBox::warning(this, tr("User Tasks"),
             tr("<html><br>Unable to show user task statistics for guest account. \
                <br>Please register on <a href=http://ugene-service.com >ugene-service.com</a></html>"));
         return;
@@ -491,7 +491,7 @@ bool RemoteMachineMonitorDialogImpl::checkCredentials( const RemoteMachineSettin
         int rc = dlg.exec();
         if ( QDialog::Rejected == rc ) {
             return false;
-        }  
+        }
         settings->setupCredentials(dlg.getLogin(), dlg.getPassword(), dlg.isRemembered());
     }
     return true;

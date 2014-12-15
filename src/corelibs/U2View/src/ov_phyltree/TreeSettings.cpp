@@ -36,7 +36,7 @@ TreeSettings::TreeSettings() :
 }
 
 bool TreeSettings::operator ==(const TreeSettings &other) const {
-    return width_coef == other.width_coef && 
+    return width_coef == other.width_coef &&
         height_coef == other.height_coef;
 }
 
@@ -51,7 +51,7 @@ TextSettings::TextSettings() :
 }
 
 bool TextSettings::operator ==(const TextSettings &other) const {
-    return textColor == other.textColor && 
+    return textColor == other.textColor &&
         textFont == other.textFont;
 }
 
@@ -66,7 +66,7 @@ BranchSettings::BranchSettings() :
 }
 
 bool BranchSettings::operator ==(const BranchSettings &other) const {
-    return branchColor == other.branchColor && 
+    return branchColor == other.branchColor &&
         branchThickness == other.branchThickness;
 }
 
@@ -75,19 +75,19 @@ QColor ButtonSettings::defaultColor = QColor(0, 0, 0);
 int ButtonSettings::defaultRadius = 2;
 
 ButtonSettings::ButtonSettings() :
-    col(defaultColor), 
+    col(defaultColor),
     radius(defaultRadius)
 {
 }
 
 bool ButtonSettings::operator ==(const ButtonSettings &other) const {
-    return col == other.col && 
+    return col == other.col &&
         radius == other.radius;
 }
 
 //TreeLabelsSettings
 bool TreeLabelsSettings::operator ==(const TreeLabelsSettings &other) const {
-    return showNames == other.showNames && 
+    return showNames == other.showNames &&
         showDistances == other.showDistances &&
         alignLabels == other.alignLabels;
 }

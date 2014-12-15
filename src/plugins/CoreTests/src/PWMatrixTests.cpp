@@ -49,7 +49,7 @@ namespace U2 {
 //---------------------------------------------------------------------
 void GTest_PFMtoPWMConvertTest::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
-    
+
     objContextName = el.attribute(OBJ_ATTR);
     if (objContextName.isEmpty()) {
         failMissingValue(OBJ_ATTR);
@@ -81,7 +81,7 @@ void GTest_PFMCreateTest::init(XMLTestFormat *tf, const QDomElement& el) {
     if (buf.isEmpty()) {
         failMissingValue(OBJ_SIZE);
         return;
-    } 
+    }
     bool ok = false;
     size = buf.toInt(&ok);
     if (!ok) {
@@ -93,7 +93,7 @@ void GTest_PFMCreateTest::init(XMLTestFormat *tf, const QDomElement& el) {
     if (buf.isEmpty()) {
         failMissingValue(OBJ_LENGTH);
         return;
-    } 
+    }
     ok = false;
     length = buf.toInt(&ok);
     if (!ok) {
@@ -105,7 +105,7 @@ void GTest_PFMCreateTest::init(XMLTestFormat *tf, const QDomElement& el) {
     if (buf.isEmpty()) {
         failMissingValue(PFM_TYPE);
         return;
-    } 
+    }
     int table_size;
     if (buf == "mononucleotide") {
         type = PFM_MONONUCLEOTIDE;
@@ -150,13 +150,13 @@ Task::ReportResult GTest_PFMCreateTest::report() {
         Document* doc = getContext<Document>(this, objContextName);
         if (doc == NULL) {
             stateInfo.setError(GTest::tr("context not found %1").arg(objContextName));
-            return ReportResult_Finished;  
+            return ReportResult_Finished;
         }
 
         QList<GObject*> list = doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
         if (list.size() == 0) {
             stateInfo.setError(GTest::tr("container of object with type \"%1\" is empty").arg(GObjectTypes::MULTIPLE_ALIGNMENT));
-            return ReportResult_Finished;  
+            return ReportResult_Finished;
         }
         MAlignmentObject * myAlign = (MAlignmentObject*)list.first();
         MAlignment al = myAlign->getMAlignment();
@@ -173,24 +173,24 @@ Task::ReportResult GTest_PFMCreateTest::report() {
         Document* doc = getContext<Document>(this, objContextName);
         if (doc == NULL) {
             stateInfo.setError(GTest::tr("context not found %1").arg(objContextName));
-            return ReportResult_Finished;  
+            return ReportResult_Finished;
         }
 
         QList<GObject*> list = doc->findGObjectByType(GObjectTypes::SEQUENCE);
         if (list.size() == 0 || list.size() < size) {
             stateInfo.setError(GTest::tr("container of object with type \"%1\" is empty or less than %2").arg(GObjectTypes::MULTIPLE_ALIGNMENT).arg(size));
-            return ReportResult_Finished;  
+            return ReportResult_Finished;
         }
         QList<DNASequence*> data;
         for (int i = 0; i < size; i++) {
             U2SequenceObject* seq = (U2SequenceObject*)list[i];
             if (seq->getSequenceLength() != length) {
                 stateInfo.setError(QString("wrong length of %1 sequence: %2").arg(i + 1).arg(seq->getSequenceLength()));
-                return ReportResult_Finished;  
+                return ReportResult_Finished;
             }
             if (seq->getAlphabet()->getType() != DNAAlphabet_NUCL) {
                 stateInfo.setError(QString("Wrong sequence alphabet"));
-                return ReportResult_Finished;  
+                return ReportResult_Finished;
             }
             DNASequence* s = new DNASequence(QString("%1 sequence").arg(i + 1), seq->getWholeSequenceData(), seq->getAlphabet());
             data.push_back(s);
@@ -206,7 +206,7 @@ Task::ReportResult GTest_PFMCreateTest::report() {
         }
     } else {
         stateInfo.setError(QString("wrong value: %1").arg(OBJ_TYPE));
-        return ReportResult_Finished;  
+        return ReportResult_Finished;
     }
 
     return ReportResult_Finished;
@@ -231,7 +231,7 @@ void GTest_PWMCreateTest::init(XMLTestFormat *tf, const QDomElement& el) {
     if (buf.isEmpty()) {
         failMissingValue(OBJ_SIZE);
         return;
-    } 
+    }
     bool ok = false;
     size = buf.toInt(&ok);
     if (!ok) {
@@ -243,7 +243,7 @@ void GTest_PWMCreateTest::init(XMLTestFormat *tf, const QDomElement& el) {
     if (buf.isEmpty()) {
         failMissingValue(OBJ_LENGTH);
         return;
-    } 
+    }
     ok = false;
     length = buf.toInt(&ok);
     if (!ok) {
@@ -255,7 +255,7 @@ void GTest_PWMCreateTest::init(XMLTestFormat *tf, const QDomElement& el) {
     if (buf.isEmpty()) {
         failMissingValue(PWM_TYPE);
         return;
-    } 
+    }
     int table_size;
     if (buf == "mononucleotide") {
         type = PWM_MONONUCLEOTIDE;
@@ -306,12 +306,12 @@ Task::ReportResult GTest_PWMCreateTest::report() {
     PWMConversionAlgorithmFactory* fact = AppContext::getPWMConversionAlgorithmRegistry()->getAlgorithmFactory(algo);
     if (fact == NULL) {
         stateInfo.setError(GTest::tr("algorithm not found %1").arg(algo));
-        return ReportResult_Finished;  
+        return ReportResult_Finished;
     }
     PWMConversionAlgorithm* algorithm = fact->createAlgorithm();
     if (algorithm == NULL) {
         stateInfo.setError(GTest::tr("unable to create algorithm %1").arg(algo));
-        return ReportResult_Finished;  
+        return ReportResult_Finished;
     }
     PWMatrix pwm;
     PFMatrixType pftype = (type == PWM_MONONUCLEOTIDE) ? PFM_MONONUCLEOTIDE : PFM_DINUCLEOTIDE;
@@ -319,52 +319,52 @@ Task::ReportResult GTest_PWMCreateTest::report() {
         Document* doc = getContext<Document>(this, objContextName);
         if (doc == NULL) {
             stateInfo.setError(GTest::tr("context not found %1").arg(objContextName));
-            return ReportResult_Finished;  
+            return ReportResult_Finished;
         }
 
         QList<GObject*> list = doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
         if (list.size() == 0) {
             stateInfo.setError(GTest::tr("container of object with type \"%1\" is empty").arg(GObjectTypes::MULTIPLE_ALIGNMENT));
-            return ReportResult_Finished;  
+            return ReportResult_Finished;
         }
         MAlignmentObject * myAlign = (MAlignmentObject*)list.first();
         MAlignment al = myAlign->getMAlignment();
 
         PFMatrix pfm(al, pftype);
         pwm = algorithm->convert(pfm);
-        
+
     } else if (objType == "sequences") {
         Document* doc = getContext<Document>(this, objContextName);
         if (doc == NULL) {
             stateInfo.setError(GTest::tr("context not found %1").arg(objContextName));
-            return ReportResult_Finished;  
+            return ReportResult_Finished;
         }
 
         QList<GObject*> list = doc->findGObjectByType(GObjectTypes::SEQUENCE);
         if (list.size() == 0 || list.size() < size) {
             stateInfo.setError(GTest::tr("container of object with type \"%1\" is empty or less than %2").arg(GObjectTypes::MULTIPLE_ALIGNMENT).arg(size));
-            return ReportResult_Finished;  
+            return ReportResult_Finished;
         }
         QList<DNASequence*> data;
         for (int i = 0; i < size; i++) {
             U2SequenceObject* seq = (U2SequenceObject*)list[i];
             if (seq->getSequenceLength() != length) {
                 stateInfo.setError(GTest::tr("wrong length of %1 sequence: %2").arg(i).arg(seq->getSequenceLength()));
-                return ReportResult_Finished;  
+                return ReportResult_Finished;
             }
             if (seq->getAlphabet()->getType() != DNAAlphabet_NUCL) {
                 stateInfo.setError(GTest::tr("Wrong %1 sequence alphabet").arg(i));
-                return ReportResult_Finished;  
+                return ReportResult_Finished;
             }
             DNASequence* s = new DNASequence(QString("%1 sequence").arg(i), seq->getWholeSequenceData(), seq->getAlphabet());
             data.push_back(s);
         }
 
         PFMatrix pfm(data, pftype);
-        pwm = algorithm->convert(pfm);                
+        pwm = algorithm->convert(pfm);
     } else {
         stateInfo.setError(GTest::tr("wrong value: %1").arg(OBJ_TYPE));
-        return ReportResult_Finished;  
+        return ReportResult_Finished;
     }
 
     for (int i = 0, n = (type == PWM_MONONUCLEOTIDE) ? 4 : 16; i < n; i++) {

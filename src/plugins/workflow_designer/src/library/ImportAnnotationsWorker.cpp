@@ -67,7 +67,7 @@ Task * ImportAnnotationsWorker::tick() {
         Message inputMessage = getMessageAndSetupScriptValues(inPort);
         QList<QString> urls = WorkflowUtils::expandToUrls(
             actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
-        
+
         QList<Task*> loadTasks;
         foreach(const QString & url, urls) {
             LoadDocumentTask * loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(url);
@@ -151,14 +151,14 @@ void ImportAnnotationsWorkerFactory::init() {
         QMap<Descriptor, DataTypePtr> inM;
         inM[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_LIST_TYPE();
         DataTypePtr inSet(new MapDataType(IMPORT_ANNOTATIONS_IN_TYPE_ID, inM));
-        Descriptor inPortDesc(BasePorts::IN_ANNOTATIONS_PORT_ID(), ImportAnnotationsWorker::tr("Input annotations"), 
+        Descriptor inPortDesc(BasePorts::IN_ANNOTATIONS_PORT_ID(), ImportAnnotationsWorker::tr("Input annotations"),
             ImportAnnotationsWorker::tr("Input annotation table. Read annotations will be added to it"));
         portDescs << new PortDescriptor(inPortDesc, inSet, true);
-        
+
         QMap<Descriptor, DataTypePtr> outM;
         outM[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
         DataTypePtr outSet(new MapDataType(IMPORT_ANNOTATIONS_OUT_TYPE_ID, outM));
-        Descriptor outPortDesc(BasePorts::OUT_ANNOTATIONS_PORT_ID(), ImportAnnotationsWorker::tr("Output annotations"), 
+        Descriptor outPortDesc(BasePorts::OUT_ANNOTATIONS_PORT_ID(), ImportAnnotationsWorker::tr("Output annotations"),
             ImportAnnotationsWorker::tr("Output annotation table"));
         portDescs << new PortDescriptor(outPortDesc, outSet, false);
     }
@@ -168,8 +168,8 @@ void ImportAnnotationsWorkerFactory::init() {
         attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
     }
 
-    Descriptor protoDesc(ImportAnnotationsWorkerFactory::ACTOR_ID, 
-        ImportAnnotationsWorker::tr("Merge Annotations"), 
+    Descriptor protoDesc(ImportAnnotationsWorkerFactory::ACTOR_ID,
+        ImportAnnotationsWorker::tr("Merge Annotations"),
         ImportAnnotationsWorker::tr("Read input annotation table and merge it with supplied annotation tables."));
     ActorPrototype * proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
 

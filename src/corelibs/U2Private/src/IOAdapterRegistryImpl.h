@@ -29,7 +29,7 @@ namespace U2 {
 class U2PRIVATE_EXPORT IOAdapterRegistryImpl  : public IOAdapterRegistry {
 public:
     IOAdapterRegistryImpl(QObject* p = NULL) : IOAdapterRegistry(p) {init();}
-    
+
     virtual bool registerIOAdapter(IOAdapterFactory* io) ;
 
     virtual bool unregisterIOAdapter(IOAdapterFactory* io);
@@ -37,7 +37,7 @@ public:
     virtual const QList<IOAdapterFactory*>& getRegisteredIOAdapters() const {return adapters;}
 
     virtual IOAdapterFactory* getIOAdapterFactoryById(IOAdapterId id) const;
-    
+
 private:
     void init();
 

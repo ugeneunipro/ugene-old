@@ -45,13 +45,13 @@ class U2VIEW_EXPORT SearchQualifierDialog: public QDialog {
 public:
     SearchQualifierDialog(QWidget* p, AnnotationsTreeView * _treeView);
     ~SearchQualifierDialog();
-    
+
     virtual void accept();
-    
+
 protected:
     bool eventFilter(QObject *obj, QEvent *e);
     void clearPrevResults();
-    
+
 protected slots:
     void sl_searchTaskStateChanged();
     void sl_searchAll();
@@ -62,7 +62,7 @@ private:
     AVItem* groupToSearchIn;
     AVItem * parentAnnotationofPrevResult;
     int indexOfPrevResult;
-    
+
 };
 
 }//namespace

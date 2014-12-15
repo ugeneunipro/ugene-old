@@ -38,14 +38,14 @@
 namespace U2 {
 
 #define NO_LENGTH_CONSTRAINT -1
-U2SequenceObjectConstraints::U2SequenceObjectConstraints(QObject* p) 
+U2SequenceObjectConstraints::U2SequenceObjectConstraints(QObject* p)
 : GObjectConstraints(GObjectTypes::SEQUENCE, p), sequenceSize(NO_LENGTH_CONSTRAINT)
 {
 }
 
 //////////////////////////////////////////////////////////////////////////
 // U2SequenceObject
-U2SequenceObject::U2SequenceObject(const QString& name, const U2EntityRef& seqRef, const QVariantMap& hintsMap) 
+U2SequenceObject::U2SequenceObject(const QString& name, const U2EntityRef& seqRef, const QVariantMap& hintsMap)
     : GObject(GObjectTypes::SEQUENCE, name, hintsMap), cachedAlphabet(NULL), cachedLength(-1), cachedCircular(TriState_Unknown)
 {
     entityRef = seqRef;
@@ -199,9 +199,9 @@ bool U2SequenceObject::isValidDbiObject(U2OpStatus &os) {
 
 void U2SequenceObject::replaceRegion(const U2Region& region, const DNASequence& seq, U2OpStatus& os) {
     // seq.alphabet == NULL - for tests.
-    CHECK_EXT(seq.alphabet == getAlphabet() || seq.seq.isEmpty() || seq.alphabet == NULL, 
+    CHECK_EXT(seq.alphabet == getAlphabet() || seq.seq.isEmpty() || seq.alphabet == NULL,
         os.setError(tr("Modified sequence & region have different alphabet")), );
-    
+
     DbiConnection con(entityRef.dbiRef, os);
     CHECK_OP(os, );
     QVariantMap hints;
@@ -348,10 +348,10 @@ QVariantMap U2SequenceObject::getSequenceInfo() const {
         resultingInfo.insert(Translation_Table_Id_Attribute, attr.value);
         CHECK_OP(os, QVariantMap());
     }
-    
+
     QString name = this->getSequenceName();
     if (!name.isEmpty()) {
-        resultingInfo.insert(DNAInfo::ID,name);  
+        resultingInfo.insert(DNAInfo::ID,name);
     }
     return resultingInfo;
 }

@@ -59,7 +59,7 @@ protected:
     bool eventFilter(QObject *obj, QEvent *ev);
 
 private slots:
-    
+
     //buttons:
 //    void sl_selectModelFile();
     void sl_onSaveAnnotations();
@@ -72,13 +72,13 @@ private slots:
     void sl_onTimer();
 
     void sl_onResultActivated(QTreeWidgetItem* i, int col);
-    
+
 private:
     void connectGUI();
     void updateState();
     void updateStatus();
     //void updateModel(const SiteconModel& m);
-    
+
     bool checkPrevSettings();
     void savePrevSettings();
 
@@ -89,7 +89,7 @@ private:
 private:
     ADVSequenceObjectContext*   ctx;
     U2Region                     initialSelection;
-    
+
     ExpertDiscoveryData&       edData;
 
     ExpertDiscoverySearchTask* task;

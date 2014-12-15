@@ -36,8 +36,8 @@ GeodesicSphere::GeodesicSphere( const Vector3D& center, float radius, int detail
 
     QVector<Vector3D> normals;
     vertices.resize(elementarySphere->count());
-    qCopy(elementarySphere->begin(), elementarySphere->end(), vertices.begin());    
-    
+    qCopy(elementarySphere->begin(), elementarySphere->end(), vertices.begin());
+
     int size = vertices.count();
     for (int i = 0; i < size; ++i) {
         Vector3D& vertex = vertices[i];
@@ -52,11 +52,11 @@ GeodesicSphere::GeodesicSphere( const Vector3D& center, float radius, int detail
         face.v[0] = vertices.at(i);
         face.v[1] = vertices.at(i+1);
         face.v[2] = vertices.at(i+2);
-        
+
         face.n[0] = normals.at(i);
         face.n[1] = normals.at(i+1);
         face.n[2] = normals.at(i+2);
-        
+
         faces.append(face);
     }
 
@@ -82,7 +82,7 @@ void GeodesicSphere::interpolate( const Vector3D& v1, const Vector3D& v2, const 
     interpolate(nv3, nv2, v3,v,  detailLevel - 1);
     return;
 
-    
+
 }
 
 QVector<Vector3D>* GeodesicSphere::createGeodesicSphere( int detailLevel )
@@ -128,8 +128,8 @@ QVector<Vector3D>* GeodesicSphere::createGeodesicSphere( int detailLevel )
     for (int i = 0; i < 24; i += 3) {
         interpolate(base.at(i), base.at(i+1), base.at(i+2),v, detailLevel);
     }
-    
-    return v;    
+
+    return v;
 }
 
 

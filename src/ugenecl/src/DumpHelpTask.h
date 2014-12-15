@@ -32,9 +32,9 @@ public:
     static void dumpHelp();
     // for debug uses only
     static void dumpParameters();
-    
+
     static const QString VERSION_INFO;
-    
+
 public:
     DumpHelpTask();
     virtual void prepare();

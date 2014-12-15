@@ -33,9 +33,9 @@ class ForeverTask : public Task {
 public:
     ForeverTask();
     ~ForeverTask();
-    
+
     virtual void run();
-    
+
 }; // ForeverTask
 
 } // U2

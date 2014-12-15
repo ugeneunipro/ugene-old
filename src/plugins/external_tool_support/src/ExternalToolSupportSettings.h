@@ -32,7 +32,7 @@
 
 namespace U2 {
 
-class U2OpStatus;    
+class U2OpStatus;
 
 class Watcher : public QObject {
     Q_OBJECT
@@ -75,14 +75,14 @@ public:
 
 private:
     void fetchNext();
-    
+
 private:
     int deepLevel;
-    
+
     QQueue< QPair<QString, int> > data;
 
     QString curPath;
-    
+
 };
 
 

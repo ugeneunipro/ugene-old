@@ -180,7 +180,7 @@ private:
 
     void validateCheckBoxSize(QCheckBox* checkBox, int requiredWidth);
     void updateAnnotationsWidget();
-   
+
     AnnotatedDNAView* annotatedDnaView;
     CreateAnnotationWidgetController* annotController;
     bool annotModelPrepared;

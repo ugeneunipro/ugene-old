@@ -66,7 +66,7 @@ namespace U2 {
 
 const QByteArray AssemblyModel::COVERAGE_STAT_ATTRIBUTE_NAME(U2BaseAttributeName::coverage_statistics.toLatin1());
 
-AssemblyModel::AssemblyModel(const DbiConnection& dbiCon_) : 
+AssemblyModel::AssemblyModel(const DbiConnection& dbiCon_) :
 cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), assemblyDbi(0), dbiHandle(dbiCon_),
 loadingReference(false), refObj(NULL), md5Retrieved(false), cachedReadsNumber(NO_VAL), speciesRetrieved(false),
 uriRetrieved(false)
@@ -272,7 +272,7 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
     assert(assemblyDbi == NULL);
     assemblyDbi = dbi;
     assembly = assm;
-    
+
     // check if have reference
     if(!assembly.referenceId.isEmpty()) {
         switch (U2DbiUtils::toType(assembly.referenceId)) {
@@ -438,7 +438,7 @@ void AssemblyModel::sl_docAdded(Document * d) {
         U2OpStatusImpl status;
         U2CrossDatabaseReference ref = dbiHandle.dbi->getCrossDatabaseReferenceDbi()->getCrossReference(assembly.referenceId, status);
         SAFE_POINT_OP(status,);
-        
+
         if (ref.dataRef.dbiRef.dbiId == d->getURLString()) {
             connect(d, SIGNAL(si_loadedStateChanged()), SLOT(sl_referenceDocLoadedStateChanged()));
         }
@@ -449,7 +449,7 @@ void AssemblyModel::sl_docAdded(Document * d) {
 void AssemblyModel::sl_referenceDocLoadedStateChanged() {
     Document * doc = qobject_cast<Document*>(sender());
     SAFE_POINT(doc, "Reference document is NULL!", );
-    
+
     if(doc->isLoaded()) {
         if (!loadingReference) {
             sl_referenceLoaded();

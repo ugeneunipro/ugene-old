@@ -51,14 +51,14 @@ public:
     AssemblyBrowser(QString viewName, AssemblyObject * o);
     // some pre-opening checks
     bool checkValid(U2OpStatus &os);
-    
+
     // from GObjectView
     virtual void buildStaticToolbar(QToolBar* tb);
     virtual void buildStaticMenu(QMenu* m);
     virtual QVariantMap saveState();
     virtual Task* updateViewTask(const QString& stateName, const QVariantMap& stateData);
     virtual OptionsPanel* getOptionsPanel();
-    
+
     void setGlobalCoverageInfo(CoverageInfo info);
     QList<CoveredRegion> getCoveredRegions() const;
     inline bool areCoveredRegionsReady() const {return coverageReady;}
@@ -81,7 +81,7 @@ public:
     qint64 calcAsmPosX(qint64 pixPosX) const;
     qint64 calcAsmPosY(qint64 pixPosY) const;
     qint64 calcPainterOffset(qint64 xAsmCoord) const;
-    
+
     // cells utility functions
     int getCellWidth() const;
     qint64 basesCanBeVisible() const;
@@ -100,8 +100,8 @@ public:
 
     U2Region getVisibleBasesRegion() const { return U2Region(xOffsetInAssembly, basesVisible()); }
     U2Region getVisibleRowsRegion() const { return U2Region(yOffsetInAssembly, rowsVisible()); }
-    
-    void setXOffsetInAssembly(qint64 x); 
+
+    void setXOffsetInAssembly(qint64 x);
     void setYOffsetInAssembly(qint64 y);
     void setOffsetsInAssembly(qint64 x, qint64 y);
     qint64 normalizeXoffset(qint64 x)const;
@@ -116,7 +116,7 @@ public:
     inline QFont getFont() const {return font;}
     void setFocusToPosSelector();
     inline AssemblyBrowserUi* getMainWidget() { return ui; }
-    
+
     AssemblyObject* getAssemblyObject() const {return gobject;}
 
     AssemblyCellRendererFactoryRegistry * getCellRendererRegistry() { return cellRendererRegistry; }
@@ -144,7 +144,7 @@ protected:
     virtual QWidget * createWidget();
     virtual bool eventFilter(QObject*, QEvent*);
     virtual void onObjectRenamed(GObject* obj, const QString& oldName);
-    
+
 private slots:
     void sl_assemblyLoaded();
     void sl_onPosChangeRequest(int);
@@ -157,7 +157,7 @@ private slots:
     void sl_exportToSam();
     void sl_exportCoverage();
     void sl_unassociateReference();
-    
+
 private:
     void initFont();
     void setupActions();
@@ -192,7 +192,7 @@ private:
     CoverageInfo localCoverageCache;
 
     AssemblyCellRendererFactoryRegistry * cellRendererRegistry;
-    
+
     QAction * zoomInAction;
     QAction * zoomOutAction;
     QAction * posSelectorAction;
@@ -204,14 +204,14 @@ private:
     QAction * saveScreenShotAction;
     QAction * showInfoAction;
     QAction * exportToSamAction;
-    
+
     const static int MAX_CELL_WIDTH = 300;
     const static double INITIAL_ZOOM_FACTOR;
     const static double ZOOM_MULT;
 
     const static int LETTER_VISIBLE_WIDTH = 7;
     const static int CELL_VISIBLE_WIDTH = 1;
-}; 
+};
 
 
 class AssemblyOverview;
@@ -240,7 +240,7 @@ public:
     inline bool isCorrectView() const {return !nothingToVisualize;}
 
     QColor getCoverageColor(double grayCoeff);
-    
+
 private:
     AssemblyBrowser * browser;
     ZoomableAssemblyOverview * zoomableOverview;
@@ -256,4 +256,4 @@ private:
 
 } //ns
 
-#endif 
+#endif

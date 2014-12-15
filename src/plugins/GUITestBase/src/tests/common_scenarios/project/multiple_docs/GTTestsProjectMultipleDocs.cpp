@@ -41,13 +41,13 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj2.uprj");
 
-// Expected state: 
+// Expected state:
 // 	1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
 // 2. Use menu {File->Save Project As}
 // Expected state: "Save project as" dialog has appeared
-// 
+//
 // 3. Fill the next field in dialog:
 // 	{Project name:} proj2
 // 	{Project Folder:} _common_data/scenarios/sandbox
@@ -60,7 +60,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 // 5. Use menu {File->Open}. Open file samples/PDB/1CF7.PDB
     GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
 
-// Expected state: 
+// Expected state:
 // 	1) Project view with documents "1CF7.PDB", "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
     GTUtilsDocument::checkDocument(os, "1.gb");

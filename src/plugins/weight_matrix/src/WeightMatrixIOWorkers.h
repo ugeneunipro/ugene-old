@@ -34,10 +34,10 @@ Q_DECLARE_METATYPE(U2::PFMatrix)
 
 namespace U2 {
 namespace LocalWorkflow {
-    
+
 class PWMatrixIOProto : public IntegralBusActorPrototype {
 public:
-    PWMatrixIOProto(const Descriptor& desc, const QList<PortDescriptor*>& ports, 
+    PWMatrixIOProto(const Descriptor& desc, const QList<PortDescriptor*>& ports,
         const QList<Attribute*>& attrs = QList<Attribute*>());
     virtual bool isAcceptableDrop(const QMimeData*, QVariantMap*) const = 0;
     bool isAcceptableDrop(const QMimeData*, QVariantMap*, const QString & urlAttrId ) const;
@@ -45,14 +45,14 @@ public:
 
 class ReadPWMatrixProto : public PWMatrixIOProto {
 public:
-    ReadPWMatrixProto(const Descriptor& desc, const QList<PortDescriptor*>& ports, 
+    ReadPWMatrixProto(const Descriptor& desc, const QList<PortDescriptor*>& ports,
         const QList<Attribute*>& attrs = QList<Attribute*>());
     virtual bool isAcceptableDrop(const QMimeData*, QVariantMap*) const;
 };
 
 class WritePWMatrixProto : public PWMatrixIOProto {
 public:
-    WritePWMatrixProto(const Descriptor& desc, const QList<PortDescriptor*>& ports, 
+    WritePWMatrixProto(const Descriptor& desc, const QList<PortDescriptor*>& ports,
         const QList<Attribute*>& attrs = QList<Attribute*>());
     virtual bool isAcceptableDrop(const QMimeData*, QVariantMap*) const;
 };
@@ -90,7 +90,7 @@ protected:
     QStringList urls;
     QList<Task*> tasks;
     DataTypePtr mtype;
-}; 
+};
 
 class PWMatrixWriter : public BaseWorker {
     Q_OBJECT
@@ -107,7 +107,7 @@ protected:
     QMap<QString,int> counter;
     bool done;
     uint fileMode;
-}; 
+};
 
 //////////////////////////////////////////////////////////////////////////
 // PFMatrix
@@ -115,7 +115,7 @@ protected:
 
 class PFMatrixIOProto : public IntegralBusActorPrototype {
 public:
-    PFMatrixIOProto(const Descriptor& desc, const QList<PortDescriptor*>& ports, 
+    PFMatrixIOProto(const Descriptor& desc, const QList<PortDescriptor*>& ports,
         const QList<Attribute*>& attrs = QList<Attribute*>());
     virtual bool isAcceptableDrop(const QMimeData*, QVariantMap*) const = 0;
     bool isAcceptableDrop(const QMimeData*, QVariantMap*, const QString & urlAttrId ) const;
@@ -123,14 +123,14 @@ public:
 
 class ReadPFMatrixProto : public PFMatrixIOProto {
 public:
-    ReadPFMatrixProto(const Descriptor& desc, const QList<PortDescriptor*>& ports, 
+    ReadPFMatrixProto(const Descriptor& desc, const QList<PortDescriptor*>& ports,
         const QList<Attribute*>& attrs = QList<Attribute*>());
     virtual bool isAcceptableDrop(const QMimeData*, QVariantMap*) const;
 };
 
 class WritePFMatrixProto : public PFMatrixIOProto {
 public:
-    WritePFMatrixProto(const Descriptor& desc, const QList<PortDescriptor*>& ports, 
+    WritePFMatrixProto(const Descriptor& desc, const QList<PortDescriptor*>& ports,
         const QList<Attribute*>& attrs = QList<Attribute*>());
     virtual bool isAcceptableDrop(const QMimeData*, QVariantMap*) const;
 };
@@ -168,7 +168,7 @@ protected:
     QStringList urls;
     QList<Task*> tasks;
     DataTypePtr mtype;
-}; 
+};
 
 class PFMatrixWriter : public BaseWorker {
     Q_OBJECT
@@ -185,7 +185,7 @@ protected:
     QMap<QString,int> counter;
     bool done;
     uint fileMode;
-}; 
+};
 
 } // Workflow namespace
 } // U2 namespace

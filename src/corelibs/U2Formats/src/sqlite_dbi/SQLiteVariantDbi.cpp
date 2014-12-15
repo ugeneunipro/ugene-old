@@ -70,7 +70,7 @@ U2VariantTrack SQLiteVariantDbi::getVariantTrack(const U2DataId& variantTrackId,
         res.trackType = (VariantTrackType)q.getInt32(2);
         res.fileHeader = q.getString(3);
         q.ensureDone();
-    } 
+    }
     return res;
 }
 U2VariantTrack SQLiteVariantDbi::getVariantTrackofVariant( const U2DataId& variantId, U2OpStatus& os ){
@@ -147,7 +147,7 @@ void SQLiteVariantDbi::createVariantTrack(U2VariantTrack& track, VariantTrackTyp
     q1.execute();
     SAFE_POINT_OP(os,);
 }
-    
+
 void SQLiteVariantDbi::updateVariantTrack(U2VariantTrack& track, U2OpStatus& os) {
     SQLiteQuery q("UPDATE VariantTrack SET sequence = ?1, sequenceName = ?2, trackType = ?3, fileHeader = ?4 WHERE object = ?5", db, os);
     q.bindDataId(1, track.sequence);
@@ -186,7 +186,7 @@ U2DbiIterator<U2Variant>* SQLiteVariantDbi::getVariants(const U2DataId& trackId,
         QSharedPointer<SQLiteQuery> q (new SQLiteQuery(queryString, db, os));
         q->bindDataId(1, trackId);
         return new SqlRSIterator<U2Variant>(q, new SqliteVariantLoader(), NULL, U2Variant(), os);
-    } 
+    }
 
     QSharedPointer<SQLiteQuery> q (new SQLiteQuery("SELECT id, startPos, endPos, refData, obsData, publicId, additionalInfo FROM Variant \
                                                                                             WHERE track = ?1 AND startPos >= ?2 AND startPos <?3", db, os));
@@ -226,7 +226,7 @@ private:
 U2DbiIterator<U2VariantTrack>* SQLiteVariantDbi::getVariantTracks(VariantTrackType trackType, U2OpStatus& os )
 {
     QSharedPointer<SQLiteQuery> q (new SQLiteQuery("SELECT object, sequence, sequenceName, trackType, fileHeader FROM VariantTrack", db, os));
-    return new SqlRSIterator<U2VariantTrack>(q, new SimpleVariantTrackLoader(), new SimpleVariantTrackFilter(trackType), U2VariantTrack(), os);    
+    return new SqlRSIterator<U2VariantTrack>(q, new SimpleVariantTrackLoader(), new SimpleVariantTrackFilter(trackType), U2VariantTrack(), os);
 }
 
 U2DbiIterator<U2VariantTrack>* SQLiteVariantDbi::getVariantTracks(const U2DataId& seqId, U2OpStatus& os){
@@ -234,19 +234,19 @@ U2DbiIterator<U2VariantTrack>* SQLiteVariantDbi::getVariantTracks(const U2DataId
 
     q->bindDataId(1, seqId);
 
-    return new SqlRSIterator<U2VariantTrack>(q, new SimpleVariantTrackLoader(), NULL, U2VariantTrack(), os);    
+    return new SqlRSIterator<U2VariantTrack>(q, new SimpleVariantTrackLoader(), NULL, U2VariantTrack(), os);
 }
 
 U2DbiIterator<U2VariantTrack>* SQLiteVariantDbi::getVariantTracks( const U2DataId& seqId, VariantTrackType trackType, U2OpStatus& os ){
     if(trackType == TrackType_All){
         return getVariantTracks(seqId, os);
     }
-    
+
     QSharedPointer<SQLiteQuery> q (new SQLiteQuery("SELECT object, sequence, sequenceName FROM VariantTrack WHERE sequence = ?1 ", db, os));
 
     q->bindDataId(1, seqId);
 
-    return new SqlRSIterator<U2VariantTrack>(q, new SimpleVariantTrackLoader(), new SimpleVariantTrackFilter(trackType), U2VariantTrack(), os);    
+    return new SqlRSIterator<U2VariantTrack>(q, new SimpleVariantTrackLoader(), new SimpleVariantTrackFilter(trackType), U2VariantTrack(), os);
 }
 
 
@@ -268,7 +268,7 @@ int SQLiteVariantDbi::getVariantCount( const U2DataId& trackId, U2OpStatus& os )
         return -1;
     }
 
-    return q.getInt32(0); 
+    return q.getInt32(0);
 }
 
 void SQLiteVariantDbi::removeTrack(const U2DataId& trackId, U2OpStatus& os){

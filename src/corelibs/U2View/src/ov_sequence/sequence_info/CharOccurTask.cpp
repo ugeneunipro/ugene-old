@@ -95,7 +95,7 @@ void CharOccurTask::run()
             iterRegion = U2Region(region.startPos + iterNum * REGION_TO_ANALAYZE, REGION_TO_ANALAYZE);
             wholeRegionLength -= REGION_TO_ANALAYZE;
         }
-        
+
         // Get the selected region and verify that the data has been correctly read
         QByteArray sequence = sequenceDbi->getSequenceData(seqRef.entityId, iterRegion, os);
         if (os.hasError() || sequence.isEmpty()) {

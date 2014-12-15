@@ -35,7 +35,7 @@ public:
     static IOAdapterId url2io(const GUrl& url);
 
     static QByteArray readFileHeader(const GUrl& url, int size = 65536);
-    
+
     // io - opened IO adapter. before and after the call pos in file the same
     static QByteArray readFileHeader( IOAdapter* io, int size = 65536 );
 

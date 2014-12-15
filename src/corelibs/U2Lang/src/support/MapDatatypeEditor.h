@@ -33,7 +33,7 @@ namespace U2 {
 /**
  * base class for controllers of map datatype attribute editors of configuration
  * this is base class for port data editors
- * 
+ *
  * from - type came from integral bus
  * to type of port
  * prop - busmap property name
@@ -61,7 +61,7 @@ protected:
     DataTypePtr from, to;
     QTableWidget* table;
     QTextEdit* doc;
-    
+
 }; // MapDatatypeEditor
 
 
@@ -84,7 +84,7 @@ protected:
     Workflow::IntegralBusPort* port;
 private slots:
     void handleDataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight);
-    
+
 }; // BusPortEditor
 
 
@@ -98,10 +98,10 @@ public:
     virtual QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     virtual void setEditorData(QWidget *editor, const QModelIndex &index) const;
     virtual void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
-    
+
     //void updateEditorGeometry(QWidget *editor,
     //  const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    
+
 }; // DescriptorListEditorDelegate
 
 class ItemDelegateForHeaders : public QItemDelegate {

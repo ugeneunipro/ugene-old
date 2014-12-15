@@ -45,12 +45,12 @@ namespace GUITest_common_scenarios_annotations_edit {
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 // Rename annotation
-// 
+//
 // Steps:
-// 
+//
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 //     2) UGENE window titled with text "proj2 UGENE"
@@ -81,12 +81,12 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 GUI_TEST_CLASS_DEFINITION(test_0001_1) {
 // Rename annotation
-// 
+//
 // Steps:
-// 
+//
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
@@ -128,12 +128,12 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0001_2) {
 // Rename annotation
-// 
+//
 // Steps:
-// 
+//
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
@@ -175,12 +175,12 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 // Rename annotation
-// 
+//
 // Steps:
-// 
+//
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
@@ -204,12 +204,12 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 // Rename annotation
-// 
+//
 // Steps:
-// 
+//
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
@@ -246,12 +246,12 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 // Rename annotation
-// 
+//
 // Steps:
-// 
+//
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
@@ -288,12 +288,12 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
 // Rename annotation
-// 
+//
 // Steps:
-// 
+//
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
@@ -320,12 +320,12 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
 GUI_TEST_CLASS_DEFINITION(test_0003_1) {
 // Rename annotation
-// 
+//
 // Steps:
-// 
+//
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
@@ -364,12 +364,12 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0003_2) {
 // Rename annotation
-// 
+//
 // Steps:
-// 
+//
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
@@ -411,7 +411,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 // Steps:
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
@@ -443,7 +443,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
 // Steps:
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
@@ -475,7 +475,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
 // Steps:
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 

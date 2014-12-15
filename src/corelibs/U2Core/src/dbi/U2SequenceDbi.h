@@ -36,13 +36,13 @@ protected:
     U2SequenceDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi){}
 
 public:
-    /** 
+    /**
         Reads sequence object from database by its id.
         If there is no sequence object with the specified id returns a default constructed value.
     */
     virtual U2Sequence getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os) = 0;
-    
-    /**  
+
+    /**
         Reads specified sequence data region from database.
         The region must be valid region within sequence bounds.
         If there is no sequence with the specified id returns an empty QByteArray.
@@ -61,14 +61,14 @@ public:
     virtual void createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os,
         U2DbiObjectRank rank = U2DbiObjectRank_TopLevel) = 0;
 
-    /** 
+    /**
         Updates sequence object fields.
 
         Requires: U2DbiFeature_WriteSequence feature support.
     */
     virtual void updateSequenceObject(U2Sequence& sequence, U2OpStatus& os) = 0;
 
-    /** 
+    /**
         Updates sequence region:
         replaces 'regionToReplace' sequence region with 'dataToInsert'.
 
@@ -77,7 +77,7 @@ public:
 
         NOTE: The passed region 'startPos' has to be between 0 and sequence length inclusive.
         If the sequence is empty 'regionToReplace.startPos' has to be 0.
-        
+
         HINT: use U2_REGION_MAX to replace or clear whole the sequence
 
         Requires: U2DbiFeature_WriteSequence feature support

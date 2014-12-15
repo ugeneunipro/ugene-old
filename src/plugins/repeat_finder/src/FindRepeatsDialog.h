@@ -40,7 +40,7 @@ public:
     FindRepeatsDialog(ADVSequenceObjectContext* seq);
 
     static FindRepeatsTaskSettings defaultSettings();
-    
+
     virtual void accept();
 
 protected slots:

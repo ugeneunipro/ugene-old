@@ -49,13 +49,13 @@ ExternalToolRunTask* TBlastXPlusSupportTask::createBlastPlusTask(){
     }else{
         arguments <<"-word_size"<< QString::number(settings.wordSize);
     }
-    
+
     if (settings.directStrand == TriState_Yes) {
         arguments << "-strand" << "plus";
     } else if (settings.directStrand == TriState_No) {
         arguments << "-strand" << "minus";
     }
-    
+
     if(settings.isNucleotideSeq && (!settings.isDefautScores)){
         assert(NULL);
         coreLog.error(tr("Unexpected settings combination"));
@@ -96,7 +96,7 @@ ExternalToolRunTask* TBlastXPlusSupportTask::createBlastPlusTask(){
     algoLog.trace("Blastall arguments: "+arguments.join(" "));
     logParser=new ExternalToolLogParser();
     QString workingDirectory=QFileInfo(url).absolutePath();
-    
+
     ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_TBLASTX, arguments, logParser, workingDirectory);
     setListenerForTask(runTask);
     return runTask;

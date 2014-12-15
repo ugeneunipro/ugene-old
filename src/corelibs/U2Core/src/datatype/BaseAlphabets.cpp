@@ -77,7 +77,7 @@ void DNAAlphabetRegistryImpl::initBaseAlphabets() {
     {
         QBitArray map(256, false);
         fill(map, "ACGUN-", Qt::CaseInsensitive);
-        const DNAAlphabet* a = new DNAAlphabet(BaseDNAAlphabetIds::NUCL_RNA_DEFAULT(), tr("Standard RNA"), 
+        const DNAAlphabet* a = new DNAAlphabet(BaseDNAAlphabetIds::NUCL_RNA_DEFAULT(), tr("Standard RNA"),
             DNAAlphabet_NUCL, map, Qt::CaseInsensitive, 'N');
         registerAlphabet(a);
     }
@@ -96,7 +96,7 @@ void DNAAlphabetRegistryImpl::initBaseAlphabets() {
     {
         QBitArray map(256, false);
         fill(map, "ACGUMRWSYKVHDBNX-", Qt::CaseInsensitive); //X == N
-        const DNAAlphabet* a = new DNAAlphabet(BaseDNAAlphabetIds::NUCL_RNA_EXTENDED(), tr("Extended RNA"), 
+        const DNAAlphabet* a = new DNAAlphabet(BaseDNAAlphabetIds::NUCL_RNA_EXTENDED(), tr("Extended RNA"),
             DNAAlphabet_NUCL, map, Qt::CaseInsensitive, 'N');
         registerAlphabet(a);
     }
@@ -104,14 +104,14 @@ void DNAAlphabetRegistryImpl::initBaseAlphabets() {
     //default amino
     {
         QBitArray map(256, false);
-        // 
+        //
         // http://www.jbc.org/cgi/reprint/243/13/3557.pdf IUPAC-IUB Commission on Biochemical Nomenclature
         fillBitArray(map, "ABCDEFGHIKLMNPQRSTVWXYZ*X-", Qt::CaseInsensitive);
         // http://en.wikipedia.org/wiki/Genetic_code#Variations_to_the_standard_genetic_code
         //O = pyrrolysine, U = selenocysteine
         fillBitArray(map, "OU", Qt::CaseInsensitive);
 
-        const DNAAlphabet* a = new DNAAlphabet(BaseDNAAlphabetIds::AMINO_DEFAULT(), tr("Standard amino"), 
+        const DNAAlphabet* a = new DNAAlphabet(BaseDNAAlphabetIds::AMINO_DEFAULT(), tr("Standard amino"),
             DNAAlphabet_AMINO, map, Qt::CaseInsensitive, 'X');
         registerAlphabet(a);
     }

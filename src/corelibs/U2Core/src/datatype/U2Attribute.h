@@ -39,7 +39,7 @@ namespace U2 {
 class U2CORE_EXPORT U2Attribute : public U2Entity {
 public:
     U2Attribute(const U2DataId& o = U2DataId(), const QString& n = QString()) : objectId(o), version(0), name(n) {}
-    
+
     /** parent object id */
     U2DataId    objectId;
 
@@ -48,7 +48,7 @@ public:
 
     /** parent object version this attribute is related to. If <=0 -> any is OK. */
     qint64      version;
-    
+
     /* Name of the attribute */
     QString     name;
 };
@@ -70,7 +70,7 @@ public:
 /** String attribute */
 class U2CORE_EXPORT U2StringAttribute : public U2Attribute {
 public:
-    U2StringAttribute(const U2DataId& o = U2DataId(), const QString& n = QString(), const QString& val = QString()) 
+    U2StringAttribute(const U2DataId& o = U2DataId(), const QString& n = QString(), const QString& val = QString())
         : U2Attribute(o, n), value(val) {}
 
     QString value;
@@ -79,7 +79,7 @@ public:
 /** Byte array attribute */
 class U2CORE_EXPORT U2ByteArrayAttribute: public U2Attribute {
 public:
-    U2ByteArrayAttribute(const U2DataId& o = U2DataId(), const QString& n = QString(), const QByteArray& val = QByteArray()) 
+    U2ByteArrayAttribute(const U2DataId& o = U2DataId(), const QString& n = QString(), const QByteArray& val = QByteArray())
         : U2Attribute(o, n), value(val) {}
 
     QByteArray value;

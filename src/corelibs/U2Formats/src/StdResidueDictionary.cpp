@@ -39,13 +39,13 @@ QMutex StdResidueDictionary::standardDictionaryLock;
 QScopedPointer<StdResidueDictionary> StdResidueDictionary::standardDictionary(NULL);
 
 bool StdResidueDictionary::load( const QString& fileName ) {
-    
+
     IOAdapterFactory*   iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-    
+
     if (!iof) {
         return false;
-    } 
-    
+    }
+
     QScopedPointer<IOAdapter> io(iof->createIOAdapter());
 
     bool ok = io->open(fileName, IOAdapterMode_Read);
@@ -55,11 +55,11 @@ bool StdResidueDictionary::load( const QString& fileName ) {
 
     U2OpStatus2Log ti;
     ASNFormat::AsnParser asnParser(io.data(),ti);
-    AsnNode* rootElem = asnParser.loadAsnTree(); 
+    AsnNode* rootElem = asnParser.loadAsnTree();
     if (ti.hasError()) {
        return false;
     }
-    
+
     buildDictionaryFromAsnTree(rootElem);
 
     return true;
@@ -73,11 +73,11 @@ StdResidueDictionary* StdResidueDictionary::createStandardDictionary()
     if (!stdDictionary->load(STD_DICT_FILE_NAME)) {
         return NULL;
     }
-    
+
     if (!stdDictionary->validate()) {
         return NULL;
     }
-    
+
     return stdDictionary;
 }
 
@@ -92,7 +92,7 @@ void buildStdAtomFromNode(AsnNode* atomNode, StdAtom& atom)
             ionizable-proton	ENUMERATED {
                                 true(1),
                                 false(2),
-                                unknown(255) } OPTIONAL 
+                                unknown(255) } OPTIONAL
           }
     */
 
@@ -104,7 +104,7 @@ void buildStdAtomFromNode(AsnNode* atomNode, StdAtom& atom)
 }
 
 
-void buildStdResidueFromNode(AsnNode* residueNode, StdResidue& residue) 
+void buildStdResidueFromNode(AsnNode* residueNode, StdResidue& residue)
 {
     /*
         Residue-graph ::= SEQUENCE {
@@ -117,7 +117,7 @@ void buildStdResidueFromNode(AsnNode* residueNode, StdResidue& residue)
             iupac-code		SEQUENCE OF VisibleString OPTIONAL,
             atoms			SEQUENCE OF Atom,
             bonds			SEQUENCE OF Intra-residue-bond,
-            chiral-centers	SEQUENCE OF Chiral-center OPTIONAL 
+            chiral-centers	SEQUENCE OF Chiral-center OPTIONAL
         }
     */
 
@@ -130,11 +130,11 @@ void buildStdResidueFromNode(AsnNode* residueNode, StdResidue& residue)
     // Load residue type
     QByteArray residueTypeName = residueNode->getChildById(2)->value;
     residue.type = StdResidueDictionary::getResidueTypeByName(residueTypeName);
-    
+
     // Load residue code
     AsnNode* codeNode = residueNode->getChildById(3);
     residue.code = codeNode->getChildById(0)->value.at(0);
-    
+
     // Load residue atoms
     AsnNode* atomsNode = residueNode->getChildById(4);
     foreach (AsnNode* node, atomsNode->children) {
@@ -165,17 +165,17 @@ void StdResidueDictionary::buildDictionaryFromAsnTree( AsnNode* rootElem )
         Biostruc-residue-graph-set ::= SEQUENCE {
             id			    SEQUENCE OF Biostruc-id OPTIONAL,
             descr			SEQUENCE OF Biomol-descr OPTIONAL,
-            residue-graphs	SEQUENCE OF Residue-graph 
-            } 
-    
+            residue-graphs	SEQUENCE OF Residue-graph
+            }
+
         Residue-graph ::= SEQUENCE {
             id			Residue-graph-id,
             ...
         }
     */
-    
+
     AsnNode* resGraphsNode = rootElem->findChildByName("residue-graphs");
-    
+
     // Load residues
     foreach (AsnNode* child, resGraphsNode->children) {
         bool ok = false;
@@ -207,9 +207,9 @@ U2::ResidueType StdResidueDictionary::getResidueTypeByName( const QByteArray& na
 bool StdResidueDictionary::validate() const
 {
     // TODO: replace with normal tests
-    
+
     // simple validation tests
-#ifdef DEBUG 
+#ifdef DEBUG
     Q_ASSERT(residues.count() == 84);
 
     const StdResidue& asp = residues.value(10);
@@ -236,7 +236,7 @@ const StdResidueDictionary* StdResidueDictionary::getStandardDictionary()
     if (standardDictionary.isNull()) {
         standardDictionary.reset( createStandardDictionary() );
     }
-    
+
     return standardDictionary.data();
 }
 
@@ -256,7 +256,7 @@ StdResidueDictionary* StdResidueDictionary::createFromAsnTree( AsnNode* rootElem
     if (resGraphsNode == NULL) {
         return NULL;
     }
-    
+
     StdResidueDictionary* localDictionary = new StdResidueDictionary();
     // Load residues
     foreach (AsnNode* child, resGraphsNode->children) {
@@ -269,7 +269,7 @@ StdResidueDictionary* StdResidueDictionary::createFromAsnTree( AsnNode* rootElem
     }
 
     return localDictionary;
-    
+
 }
 } //namespace
 

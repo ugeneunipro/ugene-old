@@ -280,7 +280,7 @@ void MultiplexerWorkerFactory::init() {
         delegateMap[RULE_ID] = new ComboBoxDelegate(rules);
         delegateMap[EMPTY_ACTION_ID] = new ComboBoxDelegate(actions);
     }
-   
+
     Descriptor protoDesc(MultiplexerWorkerFactory::ACTOR_ID,
         MultiplexerWorker::tr("Multiplexer"),
         MultiplexerWorker::tr("Construct an output data flow using two input data flows and a multiplexing rule."));
@@ -290,7 +290,7 @@ void MultiplexerWorkerFactory::init() {
     proto->setEditor(new DelegateEditor(delegateMap));
     proto->setPrompter(new MultiplexerPrompter());
     proto->setAllowsEmptyPorts(true);
-    
+
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_DATAFLOW(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new MultiplexerWorkerFactory());
 }

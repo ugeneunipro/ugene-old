@@ -154,7 +154,7 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
 {
     if (isalpha(key)) {
         key = toupper(key);
-    } 
+    }
 
     switch (key) {
         case '_':

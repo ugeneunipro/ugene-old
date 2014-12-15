@@ -36,9 +36,9 @@
 
 namespace U2 {
 
-DbiDocumentFormat::DbiDocumentFormat(const U2DbiFactoryId& _id, const DocumentFormatId& _formatId, 
-                                     const QString& _formatName, const QStringList& exts, DocumentFormatFlags flags, QObject* p) 
-: DocumentFormat(p, flags, exts) 
+DbiDocumentFormat::DbiDocumentFormat(const U2DbiFactoryId& _id, const DocumentFormatId& _formatId,
+                                     const QString& _formatName, const QStringList& exts, DocumentFormatFlags flags, QObject* p)
+: DocumentFormat(p, flags, exts)
 {
     id = _id;
     formatId = _formatId;
@@ -48,7 +48,7 @@ DbiDocumentFormat::DbiDocumentFormat(const U2DbiFactoryId& _id, const DocumentFo
     formatFlags|=DocumentFormatFlag_NoPack;
     formatFlags|=DocumentFormatFlag_NoFullMemoryLoad;
     formatFlags|=DocumentFormatFlag_DirectWriteOperations;
-}    
+}
 
 
 
@@ -72,11 +72,11 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dstDbiR
     U2DbiRef srcDbiRef(id, url);
     DbiConnection handle(srcDbiRef, true, os);
     CHECK_OP(os, NULL);
-    
+
     U2ObjectDbi* odbi = handle.dbi->getObjectDbi();
     QList<U2DataId> objectIds = odbi->getObjects(U2ObjectDbi::ROOT_FOLDER, 0, U2DbiOptions::U2_DBI_NO_LIMIT, os);
     CHECK_OP(os, NULL);
-    
+
     QList<GObject*> objects;
     U2EntityRef ref;
     ref.dbiRef = srcDbiRef;
@@ -91,7 +91,7 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dstDbiR
     } else {
         renameObjectsIfNamesEqual(objects);
     }
-    
+
     QString lockReason = handle.dbi->isReadOnly() ? "The database is read-only" : "";
     Document* d = new Document(this, io->getFactory(), io->getURL(), dstDbiRef, objects, fs, lockReason);
     d->setDocumentOwnsDbiResources(false);

@@ -111,7 +111,7 @@ U2ErrorType SchemeWrapper::setElementAttribute( const QString &elementName,
     QString elementType;
     U2ErrorType result = getElementType( elementName, elementType );
     CHECK( U2_OK == result, result );
-    
+
     int elementDescStartPosition = SUBSTRING_NOT_FOUND;
     int elementDescEndPosition = SUBSTRING_NOT_FOUND;
     result = getEnclosingElementBoundaries( elementName, &elementDescStartPosition,
@@ -323,7 +323,7 @@ U2ErrorType SchemeWrapper::createSas( const QString &elementType, const QString 
     U2ErrorType result = WorkflowElementFacade::doesElementSuitForSas( elementType, &suits );
     CHECK( U2_OK == result, result );
     CHECK( suits, U2_ELEMENT_NOT_SUIT_SAS );
-    
+
     SchemeWrapper *newSas = NULL;
     try {
         newSas = new SchemeWrapper( QString( ), &result );
@@ -699,7 +699,7 @@ U2ErrorType SchemeWrapper::getElementType( const QString &elementName, QString &
     elementTypeAttrEndPos = schemeContent.lastIndexOf( letterOrQuotePattern,
         elementTypeAttrEndPos );
     CHECK( SUBSTRING_NOT_FOUND != elementTypeAttrEndPos, U2_INVALID_SCHEME );
-    
+
     if ( Constants::QUOTE[0] == schemeContent[elementTypeAttrStartPos] ) {
         ++elementTypeAttrStartPos;
     }

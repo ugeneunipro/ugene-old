@@ -64,7 +64,7 @@ private:
 /**
  * represents communication channel for support passing data between actors
  * connected in transitive closure of schema graph
- * 
+ *
  * is a container of communications with other actors
  */
 class U2LANG_EXPORT IntegralBus : public QObject, public CommunicationSubject, public CommunicationChannel {
@@ -72,13 +72,13 @@ class U2LANG_EXPORT IntegralBus : public QObject, public CommunicationSubject, p
 public:
     IntegralBus(Port* peer);
     ~IntegralBus();
-    
+
     // reimplemented from CommunicationSubject
     virtual bool addCommunication(const QString& id, CommunicationChannel* ch);
     virtual CommunicationChannel* getCommunication(const QString& id);
 
     void putWithoutContext(const Message& m);
-    
+
     // reimplemented from CommunicationChannel
     virtual Message get();
     virtual Message look() const;
@@ -97,9 +97,9 @@ public:
 
     virtual QVariantMap getContext() const {return context;}
     virtual void setContext(const QVariantMap& m);
-    
+
     virtual void addComplement(IntegralBus* b) {assert(!complement);complement = b;}
-    
+
     QString getPortId() const {return portId;}
     DataTypePtr getBusType() const {return busType;}
 
@@ -117,9 +117,9 @@ protected:
     QMap<QString, CommunicationChannel*> outerChannels;
     // busmap of port integral bus is binded to
     BusMap *busMap;
-    // 
+    //
     QVariantMap context;
-    // 
+    //
     IntegralBus* complement;
     // integral bus is binded to port with this id
     QString portId;
@@ -132,7 +132,7 @@ protected:
     WorkflowContext *workflowContext;
 
     QMutex *contextMutex;
-    
+
 }; // IntegralBus
 
 }//Workflow namespace

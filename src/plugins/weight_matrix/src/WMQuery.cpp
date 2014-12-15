@@ -51,7 +51,7 @@ namespace U2 {
 WMQDTask::WMQDTask(const QString& url, const WeightMatrixSearchCfg& cfg,
                    const DNASequence&  sqnc, const QString& resName, const QVector<U2Region>& location)
 : Task(tr("Weight matrix query"), TaskFlag_NoRun), settings(cfg), dnaSeq(sqnc),
-resultName(resName), location(location) 
+resultName(resName), location(location)
 {
     readTask = new PWMatrixReadTask(url);
     addSubTask(readTask);
@@ -122,7 +122,7 @@ QString QDWMActor::getText() const {
     profileUrl = QString("<a href=%1>%2</a>").arg(PROFILE_URL_ATTR).arg(profileUrl);
     int score = params.value(SCORE_ATTR)->getAttributeValueWithoutScript<int>();
     QString scoreStr = QString("<a href=%1>%2%</a>").arg(SCORE_ATTR).arg(score);
-    
+
     QString doc = tr("Searches TFBS with all profiles from <u>%1</u> "
         "<br> Recognizes sites with <u>similarity %2</u>, processes <u>%3</u>.")
         .arg(profileUrl)
@@ -141,7 +141,7 @@ Task* QDWMActor::getAlgorithmTask(const QVector<U2Region>& location) {
     config.minPSUM = params.value(SCORE_ATTR)->getAttributeValueWithoutScript<int>();
     const QString& modelUrl = params.value(PROFILE_URL_ATTR)->getAttributeValueWithoutScript<QString>();
 
-    if (dnaSeq.alphabet->getType() == DNAAlphabet_NUCL) {        
+    if (dnaSeq.alphabet->getType() == DNAAlphabet_NUCL) {
         config.complOnly = strand == QDStrand_ComplementOnly;
         if (strand == QDStrand_Both || strand == QDStrand_ComplementOnly) {
             DNATranslation* compTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(dnaSeq.alphabet);

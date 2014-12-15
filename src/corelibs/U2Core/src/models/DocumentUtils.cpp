@@ -49,7 +49,7 @@ QSet<QString> DocumentUtils::getNewDocFileNameExcludesHint() {
         excludeFileNames = DocumentUtils::getURLs(p->getDocuments());
     }
     return excludeFileNames;
-    
+
 }
 
 
@@ -67,7 +67,7 @@ static void placeOrderedByScore(const FormatDetectionResult& info, QList<FormatD
             return;
         } else if (bestScore < info.score()) {
             result.clear();
-        } 
+        }
         result.append(info);
         return;
     }
@@ -86,8 +86,8 @@ static void placeOrderedByScore(const FormatDetectionResult& info, QList<FormatD
 // returns formats with FormatDetectionResult != Not matched sorted by FormatDetectionResult
 // FormatDetectionResult is adjusted by +FORMAT_DETECTION_EXT_BONUS if extension is matched
 
-QList<FormatDetectionResult> DocumentUtils::detectFormat( const QByteArray& rawData, const QString& ext, 
-                                                     const GUrl& url, const FormatDetectionConfig& conf) 
+QList<FormatDetectionResult> DocumentUtils::detectFormat( const QByteArray& rawData, const QString& ext,
+                                                     const GUrl& url, const FormatDetectionConfig& conf)
 {
     DocumentFormatRegistry* fr = AppContext::getDocumentFormatRegistry();
     QList< DocumentFormatId > allFormats = fr->getRegisteredFormats();

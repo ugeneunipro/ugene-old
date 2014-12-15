@@ -35,8 +35,8 @@ AppContextImpl::~AppContextImpl() {
     delete appFileStorage;
 }
 
-AppContextImpl* AppContextImpl::getApplicationContext() { 
-    return &appContext; 
+AppContextImpl* AppContextImpl::getApplicationContext() {
+    return &appContext;
 }
 
 

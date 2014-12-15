@@ -48,7 +48,7 @@ AppSettingsGUIPageState * OpenCLSupportSettingsPageController::getSavedState() {
         s->enabledGpus[i] = registeredGpus.at(i)->isEnabled();
     }
 
-    return s;    
+    return s;
 }
 
 void OpenCLSupportSettingsPageController::saveState( AppSettingsGUIPageState * _s ) {
@@ -81,7 +81,7 @@ OpenCLSupportSettingsPageState::OpenCLSupportSettingsPageState( int num_gpus ) {
     enabledGpus.resize( num_gpus );
 }
 
-const static char * gpusDiscoveredText = 
+const static char * gpusDiscoveredText =
     "The following OpenCL-enabled GPUs are detected.<br>\
     Check the GPUs to use for accelerating algorithms computations.";
 
@@ -114,7 +114,7 @@ onlyMsg(_msg){
             vLayout->setAlignment( Qt::AlignLeft | Qt::AlignTop );
             QHBoxLayout * hLayout = new QHBoxLayout(this);
 
-            QString gpuText = m->getName() + " " + QString::number(m->getGlobalMemorySizeBytes() / (1024*1024)) + " Mb"; 
+            QString gpuText = m->getName() + " " + QString::number(m->getGlobalMemorySizeBytes() / (1024*1024)) + " Mb";
             QCheckBox * check = new QCheckBox( gpuText, this );
 
             check->setChecked(true);
@@ -125,7 +125,7 @@ onlyMsg(_msg){
         }
         setLayout(vLayout);
     }
-    
+
 }
 
 void OpenCLSupportSettingsPageWidget::setState( AppSettingsGUIPageState * _state ) {

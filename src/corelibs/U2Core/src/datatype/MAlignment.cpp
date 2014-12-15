@@ -59,7 +59,7 @@ MAlignmentRow MAlignmentRow::createRow(const QString& name, const QByteArray& by
     row.rowId = invalidRowId();
 
     return MAlignmentRow(row, newSequence, newGapsModel);
-} 
+}
 
 MAlignmentRow MAlignmentRow::createRow(const U2MsaRow& rowInDb, const DNASequence& sequence, const QList<U2MsaGap>& gaps, U2OpStatus& os) {
     QString errorDescr = "Failed to create a multiple alignment row!";
@@ -412,7 +412,7 @@ void MAlignmentRow::removeChars(int pos, int count, U2OpStatus& os) {
 
     // Remove gaps from the gaps model
     removeGapsFromGapModel(pos, count);
-   
+
     mergeConsecutiveGaps();
 }
 
@@ -505,7 +505,7 @@ void MAlignmentRow::getStartAndEndSequencePositions(int pos, int count, int& sta
 void MAlignmentRow::removeGapsFromGapModel(int pos, int count) {
     QList<U2MsaGap> newGapModel;
     int endRegionPos = pos + count; // non-inclusive
-    foreach (U2MsaGap gap, gaps) 
+    foreach (U2MsaGap gap, gaps)
     {
         qint64 gapEnd = gap.offset + gap.gap;
         if (gapEnd < pos) {
@@ -664,7 +664,7 @@ public:
     const MAlignment* ma;
 };
 
-MAlignment::MAlignment(const QString& _name, const DNAAlphabet* al, const QList<MAlignmentRow>& r) 
+MAlignment::MAlignment(const QString& _name, const DNAAlphabet* al, const QList<MAlignmentRow>& r)
 : alphabet(al), rows(r)
 {
     MAStateCheck check(this);
@@ -734,9 +734,9 @@ bool MAlignment::trim( bool removeLeadingGaps ) {
             (row.getSequence().length() > 0) &&
             (MAlignment_GapChar == row.charAt(rowLength - 1)))
         {
-            lastGapLength = row.getGapModel().last().gap; 
+            lastGapLength = row.getGapModel().last().gap;
         }
-        
+
         int lengthWithoutLastGap = rowLength - lastGapLength;
         if (newLength == 0) {
             newLength = lengthWithoutLastGap;
@@ -832,7 +832,7 @@ MAlignment& MAlignment::operator+=(const MAlignment& ma) {
 
     int nSeq = getNumRows();
     SAFE_POINT(ma.getNumRows() == nSeq, "Different number of rows in MAlignment::operator+= !", *this);
-    
+
     U2OpStatus2Log os;
     for (int i=0; i < nSeq; i++) {
         MAlignmentRow& myRow = rows[i];
@@ -898,7 +898,7 @@ void MAlignment::addRow(const MAlignmentRow& row, int rowIndex, U2OpStatus& /* o
 void MAlignment::addRow(const QString& name, const QByteArray& bytes, U2OpStatus& os) {
     MAlignmentRow newRow = MAlignmentRow::createRow(name, bytes, os);
     CHECK_OP(os, );
-    
+
     addRow(newRow, -1, os);
 }
 
@@ -1138,7 +1138,7 @@ void MAlignment::moveRowsBlock(int startRow, int numRows, int delta)
 {
     MAStateCheck check(this);
 
-    // Assumption: numRows is rather big, delta is small (1~2) 
+    // Assumption: numRows is rather big, delta is small (1~2)
     // It's more optimal to move abs(delta) of rows then the block itself
 
     int i = 0;
@@ -1150,7 +1150,7 @@ void MAlignment::moveRowsBlock(int startRow, int numRows, int delta)
         "startRow: '%1', numRows: '%2', delta: '%3'").arg(startRow).arg(numRows).arg(delta),);
 
     QList<MAlignmentRow> toMove;
-    int fromRow = delta > 0 ? startRow + numRows  : startRow + delta; 
+    int fromRow = delta > 0 ? startRow + numRows  : startRow + delta;
 
     while (i <  k) {
         MAlignmentRow row = rows.takeAt(fromRow);

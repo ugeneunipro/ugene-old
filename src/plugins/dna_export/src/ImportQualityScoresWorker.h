@@ -45,18 +45,18 @@ class ImportPhredQualityWorker : public BaseWorker {
     Q_OBJECT
 public:
     ImportPhredQualityWorker(Actor* a);
-    
+
     virtual void init();
     virtual Task* tick();
     virtual void cleanup();
-    
+
 protected:
     CommunicationChannel *input, *output;
     ReadQualityScoresTask* readTask;
     QString             fileName;
     DNAQualityType      type;
     DNAQualityFormat    format;
-}; 
+};
 
 class ImportPhredQualityWorkerFactory : public DomainFactory {
 public:

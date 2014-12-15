@@ -169,7 +169,7 @@ void DumpHelpTask::prepare() {
         addSubTask(new LoadWorkflowTask( schema, meta, pathToSchema ));
         return;
     }
-    
+
     // Dumping help of the selected section in the registered help pages
     //
     printStringToConsole("%s", "\n" );

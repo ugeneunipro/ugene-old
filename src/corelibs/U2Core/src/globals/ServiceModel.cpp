@@ -51,7 +51,7 @@ Service::Service(ServiceType t, const QString& _name, const QString& _desc, cons
     }
 }
 
-void ServiceRegistry::_setServiceState(Service* s, ServiceState state)  
+void ServiceRegistry::_setServiceState(Service* s, ServiceState state)
 {
     assert(s->state!=state);
 

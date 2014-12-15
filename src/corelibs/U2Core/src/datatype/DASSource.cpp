@@ -84,7 +84,7 @@ QList<DASSource> DASSourceRegistry::getFeatureSources() const{
 
 QList<DASSource> DASSourceRegistry::getFeatureSourcesByType( DASReferenceType rType ) const{
     QList<DASSource> res;
-    
+
     foreach(const DASSource& s, featureSources){
         if (s.getReferenceType() == rType){
             res.append(s);
@@ -109,18 +109,18 @@ void DASSourceRegistry::initDefaultSources(){
 
     //uniprot
     //sources from DASTY (http://www.ebi.ac.uk/dasty/)
-    DASSource uniprotRef(DAS_UNIPROT, 
-                         tr("UniProt (DAS)"), 
-                         tr("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/"), 
+    DASSource uniprotRef(DAS_UNIPROT,
+                         tr("UniProt (DAS)"),
+                         tr("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/"),
                          DASProteinSequence,
                          tr("Use Swiss-Prot, TrEMBL, UniProt, IPI or UniParc accession number. For example: %1").arg(makeIDLink("P05067")),
                          tr("UniProt database of protein sequences and features."));
 
     referenceSources.append(uniprotRef);
 
-    DASSource uniprotFeature1(QString(DAS_UNIPROT)+"f1", 
-        tr("UniProt"), 
-        tr("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/"), 
+    DASSource uniprotFeature1(QString(DAS_UNIPROT)+"f1",
+        tr("UniProt"),
+        tr("http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/"),
         DASProteinSequence,
         tr("DAS 1 reference server for sequence and features from UniProt.\n"
         "UniProt (Universal Protein Resource) is the worlds most comprehensive catalog of information on proteins.\n"
@@ -130,9 +130,9 @@ void DASSourceRegistry::initDefaultSources(){
 
     featureSources.append(uniprotFeature1);
 
-    DASSource uniprotFeature2(QString(DAS_UNIPROT)+"f2", 
-        tr("Pride DAS 1.6"), 
-        tr("http://www.ebi.ac.uk/pride-das/das/PrideDataSource/"), 
+    DASSource uniprotFeature2(QString(DAS_UNIPROT)+"f2",
+        tr("Pride DAS 1.6"),
+        tr("http://www.ebi.ac.uk/pride-das/das/PrideDataSource/"),
         DASProteinSequence,
         tr("The PRIDE database is a centralized, public data repository for proteomics data. \n"
         "It has been developed to provide the proteomics community with a public repository \n"
@@ -143,27 +143,27 @@ void DASSourceRegistry::initDefaultSources(){
 
     featureSources.append(uniprotFeature2);
 
-    DASSource uniprotFeature3(QString(DAS_UNIPROT)+"f3", 
-        tr("cbs_sort"), 
-        tr("http://das.cbs.dtu.dk:9000/das/cbs_sort/"), 
+    DASSource uniprotFeature3(QString(DAS_UNIPROT)+"f3",
+        tr("cbs_sort"),
+        tr("http://das.cbs.dtu.dk:9000/das/cbs_sort/"),
         DASProteinSequence,
         tr("The combined result of the signalp, secretomep, targetp, netnes & lipop server for the given id.")
         );
 
     featureSources.append(uniprotFeature3);
 
-    DASSource uniprotFeature4(QString(DAS_UNIPROT)+"f4", 
-        tr("signalp"), 
-        tr("http://das.cbs.dtu.dk:9000/das/signalp/"), 
+    DASSource uniprotFeature4(QString(DAS_UNIPROT)+"f4",
+        tr("signalp"),
+        tr("http://das.cbs.dtu.dk:9000/das/signalp/"),
         DASProteinSequence,
         tr("SignalP (http://www.cbs.dtu.dk/services/SignalP) predictions for UniProt.")
         );
 
     featureSources.append(uniprotFeature4);
 
-    DASSource uniprotFeature5(QString(DAS_UNIPROT)+"f5", 
-        tr("InterPro-Matches-Overview"), 
-        tr("http://www.ebi.ac.uk/das-srv/interpro/das/InterPro-matches-overview/"), 
+    DASSource uniprotFeature5(QString(DAS_UNIPROT)+"f5",
+        tr("InterPro-Matches-Overview"),
+        tr("http://www.ebi.ac.uk/das-srv/interpro/das/InterPro-matches-overview/"),
         DASProteinSequence,
         tr("Shows the maximum extent of the matches from all signatures that are \n"
         "integrated into a single InterPro entry against UniProtKB protein sequences \n"

@@ -527,14 +527,14 @@ QByteArray PDBFormat::PDBParser::getNextSpecLine()
 
 void PDBFormat::PDBParser::parseSplitSection( U2OpStatus& /*ti*/ )
 {
-   /* COLUMNS DATA TYPE FIELD DEFINITION 
-    1 - 6 Record name "SPLIT " 
-    9 - 10 Continuation continuation Allows concatenation of multiple records. 
-    12 - 15 IDcode idCode ID code of related entry. 
+   /* COLUMNS DATA TYPE FIELD DEFINITION
+    1 - 6 Record name "SPLIT "
+    9 - 10 Continuation continuation Allows concatenation of multiple records.
+    12 - 15 IDcode idCode ID code of related entry.
     .. every 2 spaces IDcode*/
     QStringList ids = currentPDBLine.mid(11).split(QRegExp("\\s+"), QString::SkipEmptyParts);
     ioLog.trace(QString("The list of SPLIT ids is %1").arg(ids.join(",")));
-    
+
 
 }
 

@@ -60,7 +60,7 @@ private slots:
     void sl_findNext();
     void sl_findPrev();
     void sl_findFocus();
-    
+
 private:
     void updateCoords();
     void updateLock();

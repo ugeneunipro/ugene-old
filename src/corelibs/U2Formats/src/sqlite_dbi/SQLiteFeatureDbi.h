@@ -63,7 +63,7 @@ public:
      */
     U2Feature                       getFeature( const U2DataId &featureId, U2OpStatus &os );
     /**
-     * Counts features that matched the query 
+     * Counts features that matched the query
      */
     qint64                          countFeatures( const FeatureQuery &fq, U2OpStatus &os );
     /**

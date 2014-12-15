@@ -33,18 +33,18 @@
 
 namespace U2 {
 
-MSAEditorUndoFramework::MSAEditorUndoFramework(QObject* p, MAlignmentObject* ma) 
+MSAEditorUndoFramework::MSAEditorUndoFramework(QObject* p, MAlignmentObject* ma)
 : QUndoStack(p), maObj(ma), lastSavedObjectVersion(0), maxMemUse(20*1024*1024), stateComplete(true)
 {
     if (maObj!=NULL) {
-        connect(maObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), 
+        connect(maObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
                        SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
         connect(maObj, SIGNAL(si_completeStateChanged(bool)), SLOT(sl_completeStateChanged(bool)));
         connect(maObj, SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
     }
-    
+
     setUndoLimit(100);
-    
+
     uAction = createUndoAction(this);
     uAction->setObjectName("Undo");
     uAction->setIcon(QIcon(":core/images/undo.png"));
@@ -64,7 +64,7 @@ MSAEditorUndoFramework::MSAEditorUndoFramework(QObject* p, MAlignmentObject* ma)
 void MSAEditorUndoFramework::sl_lockedStateChanged() {
     bool active = maObj ? !maObj->isStateLocked() : false;
     setActive(active);
-    
+
     int activeIdx = index();
     int cnt = count();
     uAction->setEnabled(active && activeIdx > 0);
@@ -114,7 +114,7 @@ void MSAEditorUndoFramework::sl_alignmentChanged(const MAlignment& maBefore, con
         int dMem = 0;
         int cnt  = count();
         for (; itemsToRemove < cnt; itemsToRemove++) {
-            dMem+=(static_cast<const MSAEditorUndoCommand*>(command(itemsToRemove)))->getMemUsage();    
+            dMem+=(static_cast<const MSAEditorUndoCommand*>(command(itemsToRemove)))->getMemUsage();
             if (newMemUse - dMem <= maxMemUse) {
                 break;
             }

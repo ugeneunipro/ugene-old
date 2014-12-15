@@ -49,7 +49,7 @@ PackAlgorithmContext::PackAlgorithmContext() {
 #define PACK_TRACE_CHECKPOINT 100000
 
 void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2AssemblyPackStat& stat, U2OpStatus& os) {
-    //Algorithm idea: 
+    //Algorithm idea:
     //  select * reads ordered by start position
     //  keep tack (tail) of used rows to assign packed row for reads (N elements)
     //  if all elements are used -> assign -1 to read and postprocess it later
@@ -75,7 +75,7 @@ void AssemblyPackAlgorithm::pack(PackAlgorithmAdapter& adapter, U2AssemblyPackSt
         }
     }
     assert(stat.readsCount == nPacked);
-    
+
     t1.stop();
     perfLog.trace(QString("Assembly: algorithm pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 }

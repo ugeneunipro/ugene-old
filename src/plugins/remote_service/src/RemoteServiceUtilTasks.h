@@ -35,7 +35,7 @@ struct RemoteTaskInfo {
     QString result;
 };
 
- 
+
 class GetUserTasksInfoTask: public Task {
     Q_OBJECT
 public:
@@ -58,7 +58,7 @@ private:
     QStringList resultUrls;
     qint64 taskId;
 };
-  
+
 
 class DeleteRemoteDataTask : public Task {
 public:

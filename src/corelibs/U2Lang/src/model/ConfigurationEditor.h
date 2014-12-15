@@ -53,21 +53,21 @@ public:
         ItemListValueRole
     }; // ItemValueRole
 
-public:    
+public:
     ConfigurationEditor() {}
     ConfigurationEditor(const ConfigurationEditor&) : QObject() {}
     virtual ~ConfigurationEditor() {}
 
     // editing widget
     virtual QWidget* getWidget() { return NULL; }
-    
+
     // this controller is a container of delegates
     virtual PropertyDelegate* getDelegate(const QString&) { return NULL; }
     virtual PropertyDelegate* removeDelegate( const QString&) { return NULL; }
     virtual void updateDelegates() {}
     virtual void updateDelegate( const QString&) {}
     virtual void addDelegate( PropertyDelegate * , const QString & ) {}
-    
+
     // commit data to model
     virtual void commit() {}
 

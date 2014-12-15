@@ -25,7 +25,7 @@
 
 namespace U2 {
 
-PWMConversionAlgorithmFactoryBVH::PWMConversionAlgorithmFactoryBVH(QObject* p) 
+PWMConversionAlgorithmFactoryBVH::PWMConversionAlgorithmFactoryBVH(QObject* p)
 : PWMConversionAlgorithmFactory(BuiltInPWMConversionAlgorithms::BVH_ALGO, p)
 {
 }
@@ -54,7 +54,7 @@ PWMatrix PWMConversionAlgorithmBVH::convert(const PFMatrix& matrix) {
             }
         }
     }
-    
+
     QVarLengthArray<float> res(size*length);
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < length; j++) {

@@ -83,7 +83,7 @@ namespace U2 {
         return action;
     }
 #undef GT_METHOD_NAME
-    
+
 
 #undef GT_CLASS_NAME
 

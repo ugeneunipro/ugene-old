@@ -44,17 +44,17 @@
 
 namespace U2 {
 
-ModifySequenceContentTask::ModifySequenceContentTask(const DocumentFormatId& _dfId, 
-                                                     U2SequenceObject *_seqObj, 
-                                                     const U2Region& _regionTodelete, 
+ModifySequenceContentTask::ModifySequenceContentTask(const DocumentFormatId& _dfId,
+                                                     U2SequenceObject *_seqObj,
+                                                     const U2Region& _regionTodelete,
                                                      const DNASequence& seq2Insert,
-                                                     U1AnnotationUtils::AnnotationStrategyForResize _str, 
-                                                     const GUrl& _url, 
+                                                     U1AnnotationUtils::AnnotationStrategyForResize _str,
+                                                     const GUrl& _url,
                                                      bool _mergeAnnotations )
 
 :Task(tr("Modify sequence task"), TaskFlag_NoRun), resultFormatId(_dfId), mergeAnnotations(_mergeAnnotations),
-curDoc(_seqObj->getDocument()), newDoc(NULL), url(_url), strat(_str), seqObj(_seqObj), 
-regionToReplace(_regionTodelete), sequence2Insert(seq2Insert) 
+curDoc(_seqObj->getDocument()), newDoc(NULL), url(_url), strat(_str), seqObj(_seqObj),
+regionToReplace(_regionTodelete), sequence2Insert(seq2Insert)
 {
     GCOUNTER( cvar, tvar, "Modify sequence task" );
     inplaceMod = url == curDoc->getURL() || url.isEmpty();
@@ -63,7 +63,7 @@ regionToReplace(_regionTodelete), sequence2Insert(seq2Insert)
 Task::ReportResult ModifySequenceContentTask::report(){
     CHECK(!(regionToReplace.isEmpty() && sequence2Insert.seq.isEmpty()), ReportResult_Finished);
     CHECK_EXT(!curDoc->isStateLocked(), setError(tr("Document is locked")), ReportResult_Finished);
-        
+
     U2Region seqRegion(0, seqObj->getSequenceLength());
     if (!seqRegion.contains(regionToReplace)){
         algoLog.error(tr("Region to delete is larger than the whole sequence"));
@@ -77,11 +77,11 @@ Task::ReportResult ModifySequenceContentTask::report(){
         }
         docs = p->getDocuments();
     }
-    
+
     if (!docs.contains(curDoc)){
         docs.append(curDoc);
     }
-    
+
     if (!inplaceMod){
         cloneSequenceAndAnnotations();
     }
@@ -89,7 +89,7 @@ Task::ReportResult ModifySequenceContentTask::report(){
     CHECK_OP(stateInfo, ReportResult_Finished);
 
     fixAnnotations();
-    
+
     if (!inplaceMod) {
         QList<Task*> tasks;
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
@@ -99,7 +99,7 @@ Task::ReportResult ModifySequenceContentTask::report(){
             tasks.append(new AddDocumentTask(newDoc));
         }
         AppContext::getTaskScheduler()->registerTopLevelTask(new MultiTask("Save document and add it to project (optional)", tasks));
-    } 
+    }
     return ReportResult_Finished;
 }
 

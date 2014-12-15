@@ -67,9 +67,9 @@ protected:
 
 /**
  Multi task converts alignment object to amino representation if possible.
- This allows to: 
- 1) speed up alignment 
- 2) avoid errors of inserting gaps within codon boundaries  
+ This allows to:
+ 1) speed up alignment
+ 2) avoid errors of inserting gaps within codon boundaries
 */
 
 class U2ALGORITHM_EXPORT AlignInAminoFormTask : public Task {

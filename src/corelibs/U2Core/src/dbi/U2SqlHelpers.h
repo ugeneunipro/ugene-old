@@ -54,9 +54,9 @@ public:
 
 class U2CORE_EXPORT SQLiteUtils {
 public:
-    
-    /** 
-        Removes from the table all records with 'field' == id 
+
+    /**
+        Removes from the table all records with 'field' == id
         Checks 'expectedRowCount' the same way as 'update' method
     */
     static qint64 remove(const QString& table, const QString& field, const U2DataId& id, qint64 expectedRows, DbRef* db, U2OpStatus& os);
@@ -80,13 +80,13 @@ public:
 };
 
 
-/** 
+/**
     SQLite query wrapper. Uses prepared statement internally
     An optimized and simplified interface for U2DBI needs.
 */
 class U2CORE_EXPORT SQLiteQuery  {
 public:
-    /** 
+    /**
         Constructs prepared statement for SQLiteDB
         If failed the error message is written to 'os'
         It's desirable to release this object as soon as possible because it locks
@@ -104,19 +104,19 @@ public:
     /** Clears all bindings and resets statement */
     bool reset(bool clearBindings = true);
 
-    /** 
-        Executes next step of the statement 
+    /**
+        Executes next step of the statement
         Returns true there are more results to fetch and no error occurs
     */
     bool step();
 
-    /** 
+    /**
         Ensures that there are no more results in result set
         Sets error message if more results are available
     */
     void ensureDone();
 
-    
+
     //////////////////////////////////////////////////////////////////////////
     // param binding methods
 
@@ -148,12 +148,12 @@ public:
     void bindBlob(int idx, const QByteArray& blob, bool transient = true);
     void bindZeroBlob(int idx, int reservedSize);
 
-    
+
     //////////////////////////////////////////////////////////////////////////
     // result retrieval methods
 
     U2DataId getDataId(int column, U2DataType type, const QByteArray& dbExtra = QByteArray()) const;
-    
+
     U2DataId getDataIdExt(int column) const;
 
     U2DataType getDataType(int column) const;
@@ -184,7 +184,7 @@ public:
     /** Executes query */
     void execute();
 
-    /** Executes update and returns number of rows affected. 
+    /** Executes update and returns number of rows affected.
         Fails if result count != expectedRowCount
         'expectedRowCount' == -1 disables row-count check
     */
@@ -207,19 +207,19 @@ public:
     QStringList selectStrings();
 
 
-        
+
     //////////////////////////////////////////////////////////////////////////
     // Query info methods
     const QString& getQueryText() const {return sql;}
 
     void setError(const QString& err);
-    
+
     bool hasError() const {return (os!=NULL) ? os->hasError() : true;}
 
     void setOpStatus(U2OpStatus& _os) {os = &_os;}
 
     U2OpStatus& getOpStatus() {return  *os;}
-    
+
     DbRef*          getDb() const {return db;}
 
 private:
@@ -283,7 +283,7 @@ public:
     {
         fetchNext();
     }
-    
+
     virtual ~SqlRSIterator() {
         delete filter;
         delete loader;

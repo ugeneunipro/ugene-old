@@ -51,7 +51,7 @@ NetworkConfiguration::NetworkConfiguration() {
 
     QString httpProxyHost = s->getValue( SETTINGS_HTTP_PROXY_HOST ).toString();
     int httpProxyPort = s->getValue( SETTINGS_HTTP_PROXY_PORT ).toInt();
-    
+
     if( !httpProxyHost.isEmpty() && httpProxyPort ) {
         QNetworkProxy httpProxy( QNetworkProxy::HttpProxy, httpProxyHost, httpProxyPort );
 
@@ -81,14 +81,14 @@ NetworkConfiguration::~NetworkConfiguration() {
     s->setValue( SETTINGS_REMOTE_REQUEST_TIMEOUT, rrConfig.remoteRequestTimeout );
 
     QNetworkProxy httpP = getProxy( QNetworkProxy::HttpProxy );
-    
+
     if( !httpP.hostName().isEmpty() ) {
         s->setValue( SETTINGS_HTTP_PROXY_HOST, httpP.hostName() );
         s->setValue( SETTINGS_HTTP_PROXY_PORT, httpP.port() );
         s->setValue( SETTINGS_HTTP_PROXY_USER, httpP.user());
         s->setValue( SETTINGS_HTTP_PROXY_PASSWORD, httpP.password().toLatin1().toBase64());
         s->setValue( SETTINGS_HTTP_PROXY_ENABLED, isProxyUsed(QNetworkProxy::HttpProxy) );
-        
+
     }
 }
 
@@ -106,7 +106,7 @@ QNetworkProxy NetworkConfiguration::getProxyByUrl( const QUrl & url ) const
     if( pc.proxyz.contains( prtype ) ) {
         assert( pc.proxyz_usage.contains(prtype) );
         if( pc.proxyz_usage[prtype] ) {
-            return ( pc.excepted_addr_enabled && pc.excepted_addr.contains( url.toString() ) ? 
+            return ( pc.excepted_addr_enabled && pc.excepted_addr.contains( url.toString() ) ?
                 QNetworkProxy() : pc.proxyz[prtype] );
         }
     }
@@ -138,7 +138,7 @@ void NetworkConfiguration::setProxyUsed( Proxy_t prtype, bool flag ) {
 Proxy_t NetworkConfiguration::url2type( const QUrl & url ) {
     if( "http" == url.scheme() || "https" == url.scheme() ) {
         return QNetworkProxy::HttpProxy;
-    } 
+    }
     if( "ftp" == url.scheme() ) {
         return QNetworkProxy::FtpCachingProxy;
     }
@@ -184,10 +184,10 @@ QString NetworkConfiguration::getSslProtocolName() const
 
 void NetworkConfiguration::setSslProtocol( const QString& name )
 {
-    sslConfig.currentProtocol = name;    
+    sslConfig.currentProtocol = name;
 }
 
-void NetworkConfiguration::setRequestTimeout( const int timeout ) 
+void NetworkConfiguration::setRequestTimeout( const int timeout )
 {
     rrConfig.remoteRequestTimeout = timeout;
 }

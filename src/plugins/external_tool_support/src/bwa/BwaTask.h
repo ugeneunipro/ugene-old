@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -54,7 +54,7 @@ class BwaAlignTask : public Task {
 public:
     BwaAlignTask(const QString &indexPath, const QList<ShortReadSet>& shortReadSets, const QString &resultPath, const DnaAssemblyToRefTaskSettings &settings);
     void prepare();
-    
+
     class LogParser : public ExternalToolLogParser {
     public:
         LogParser();
@@ -65,7 +65,7 @@ public:
 protected slots:
     QList<Task *> onSubTaskFinished(Task *subTask);
 private:
-    
+
     QList<Task*> alignTasks;
     LogParser logParser;
     QString indexPath;

@@ -80,7 +80,7 @@ ORFMarkerPlugin::ORFMarkerPlugin() :
     GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
     l->qlist = ORFMarkerTests::createTestFactories();
 
-    foreach(XMLTestFactory* f, l->qlist) { 
+    foreach(XMLTestFactory* f, l->qlist) {
         bool res = xmlTestFormat->registerTestFactory(f);
         Q_UNUSED(res);
         assert(res);
@@ -91,7 +91,7 @@ ORFMarkerPlugin::~ORFMarkerPlugin() {
     //printf("ORF deallocated!\n");
 }
 
-ORFViewContext::ORFViewContext(QObject* p) : 
+ORFViewContext::ORFViewContext(QObject* p) :
 GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID) {}
 
 void ORFViewContext::initViewContext(GObjectView* v) {

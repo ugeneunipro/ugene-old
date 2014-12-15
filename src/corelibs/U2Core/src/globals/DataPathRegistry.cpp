@@ -62,7 +62,7 @@ void U2DataPath::init(bool recurcive){
 
     if (fi.isDir()){
         fillDataItems(fi.absoluteFilePath(), recurcive);
-        
+
     }else if (fi.isFile()){
         if (!folders){
             QString fileName = chopExtention(fi.fileName());

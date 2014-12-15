@@ -230,7 +230,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     GTMouseDriver::click(os);
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/clustal/", "align.aln");
     GTGlobals::sleep(2000);
-    
+
     QFile dir(testDir + "_common_data/scenarios/sandbox/permDir");
     CHECK_SET_ERR(dir.exists(), "Sandbox not found");
     QFile::Permissions p = dir.permissions();

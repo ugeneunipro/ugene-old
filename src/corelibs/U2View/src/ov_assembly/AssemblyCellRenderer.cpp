@@ -204,7 +204,7 @@ public:
 private:
     void update();
 
-private:    
+private:
     // images cache
     QHash<char, QPixmap> directImages, complementImages;
     QPixmap unknownChar;

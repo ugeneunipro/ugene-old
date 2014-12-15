@@ -84,7 +84,7 @@ public:
     static void             updateRelationsURL(GObject* o, const QString& fromURL, const QString& toURL);
 
     static void             updateRelationsURL(GObject* o, const GUrl& fromURL, const GUrl& toURL);
-    
+
     static void             replaceAnnotationQualfier( AnnotationData &a, const QString &name,
                                 const QString &newVal, bool create = false );
 

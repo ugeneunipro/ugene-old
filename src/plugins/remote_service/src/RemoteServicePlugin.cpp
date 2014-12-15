@@ -48,7 +48,7 @@ const QString RemoteServiceCommon::WEB_TRANSPORT_PROTOCOL_ID = "Web transport pr
 static void cleanupRemoteMachineMonitor() {
     RemoteMachineMonitor* rmm = AppContext::getRemoteMachineMonitor();
     QList<RemoteMachineSettingsPtr> items = rmm->getRemoteMachineMonitorItems();
-    
+
     foreach (const RemoteMachineSettingsPtr& item, items) {
         rmm->removeMachineConfiguration(item);
     }
@@ -81,7 +81,7 @@ RemoteServicePlugin::~RemoteServicePlugin()
 
 void RemoteServicePlugin::registerCMDLineHelp()
 {
-    
+
 }
 
 void RemoteServicePlugin::processCMDLineOptions()

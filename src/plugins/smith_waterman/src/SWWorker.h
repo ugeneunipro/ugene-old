@@ -54,7 +54,7 @@ class SWWorker : public BaseWorker {
     Q_OBJECT
 public:
     SWWorker(Actor* a);
-    
+
     virtual void init();
     virtual bool isReady();
     virtual Task* tick();
@@ -69,7 +69,7 @@ private:
     QList<QByteArray> patternList;
     QMap<Task*, QByteArray> patterns;
     QMap<QString, QString> patternNames;
-}; 
+};
 
 class SWWorkerFactory : public DomainFactory {
 public:

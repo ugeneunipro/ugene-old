@@ -30,7 +30,7 @@
 #endif
 
 namespace U2 {
-    
+
 
 class AnnotatedDNAView;
 class GObject;

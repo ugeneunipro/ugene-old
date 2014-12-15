@@ -38,7 +38,7 @@ namespace U2 {
 #define SORTED_READS            QString(" ORDER BY i.gstart ASC ")
 
 
-RTreeAssemblyAdapter::RTreeAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& assemblyId, 
+RTreeAssemblyAdapter::RTreeAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& assemblyId,
                                             const AssemblyCompressor* compressor,
                                             DbRef* db, U2OpStatus& )
 : SQLiteAssemblyAdapter(assemblyId, compressor, db)
@@ -55,7 +55,7 @@ void RTreeAssemblyAdapter::createReadsTables(U2OpStatus& os) {
     // data - compressed name/sequence/cigar/mapping
     static QString q1 = "CREATE TABLE %1 (id INTEGER PRIMARY KEY AUTOINCREMENT, name INTEGER NOT NULL, "
         "flags INTEGER NOT NULL, mq INTEGER NOT NULL, data BLOB NOT NULL)";
-    
+
     // gstart, gend - start and end read position
     // prow1, prow2 - packed view row. prow1 always the same as prow2
     static QString q2 = "CREATE VIRTUAL TABLE %1 USING rtree_i32(id, gstart, gend, prow1, prow2)";
@@ -110,7 +110,7 @@ U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReads(const U2Region& r,
 }
 
 U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
-    QString qStr = QString("SELECT " + ALL_READ_FIELDS + FROM_2TABLES + " WHERE " + SAME_IDX + " AND "+ RANGE_CONDITION_CHECK + 
+    QString qStr = QString("SELECT " + ALL_READ_FIELDS + FROM_2TABLES + " WHERE " + SAME_IDX + " AND "+ RANGE_CONDITION_CHECK +
                         " AND (i.prow1 >= ?3 AND i.prow2 < ?4)").arg(readsTable).arg(indexTable);
     QSharedPointer<SQLiteQuery> q(new SQLiteQuery(qStr, db, os));
     q->bindInt64(1, r.endPos());
@@ -125,7 +125,7 @@ U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReadsByName(const QByteA
     QSharedPointer<SQLiteQuery>q ( new SQLiteQuery(qStr, db, os) );
     int hash = qHash(name);
     q->bindInt64(1, hash);
-    return new SqlRSIterator<U2AssemblyRead>(q, new SimpleAssemblyReadLoader(), 
+    return new SqlRSIterator<U2AssemblyRead>(q, new SimpleAssemblyReadLoader(),
         new SQLiteAssemblyNameFilter(name), U2AssemblyRead(), os);
 }
 
@@ -144,11 +144,11 @@ void RTreeAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2Assembl
         bool dnaExt = false; //TODO
         qint64 flags = read->flags;
         flags = flags | (dnaExt ? DnaExtAlphabet : 0);
-        
+
         int readLen = read->readSequence.length();
         int effectiveReadLength = readLen + U2AssemblyUtils::getCigarExtraLength(read->cigar);
         read->effectiveLen = effectiveReadLength;
-        
+
         int hash = qHash(read->name);
         insertRQ.reset();
         insertRQ.bindInt64(1, hash);
@@ -238,7 +238,7 @@ RTreePackAlgorithmAdapter::~RTreePackAlgorithmAdapter() {
 void RTreePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 prow, U2OpStatus& os) {
     if (updateQuery == NULL) {
         updateQuery = new SQLiteQuery("UPDATE " + indexTable + " SET prow1 = ?1, prow2=?1 WHERE id = ?2", db, os);
-    } 
+    }
     updateQuery->setOpStatus(os);
     updateQuery->reset();
     updateQuery->bindInt64(1, prow);

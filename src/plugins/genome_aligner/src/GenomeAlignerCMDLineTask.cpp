@@ -60,14 +60,14 @@ namespace U2 {
     samOutput = false;
 
     // parse options
-       
+
     QList<StringPair> options = AppContext::getCMDLineRegistry()->getParameters();
-    
+
     foreach (const StringPair& opt, options ) {
         if (opt.first == OPTION_INDEX_PATH  ) {
             indexPath = opt.second;
         }else if (opt.first == OPTION_BUILD_INDEX ) {
-            onlyBuildIndex = true;    
+            onlyBuildIndex = true;
         } else if (opt.first == OPTION_REFERENCE) {
             refPath = opt.second;
         } else if (opt.first == OPTION_RESULT) {
@@ -112,7 +112,7 @@ namespace U2 {
             samOutput = true;
         }
     }
-        
+
     coreLog.info( tr( "Finished parsing genome aligner options." ) );
 
 }
@@ -128,7 +128,7 @@ void GenomeAlignerCMDLineTask::prepare()
         setError(tr("Path to reference sequence is not set."));
         return;
     }
-        
+
     if (!onlyBuildIndex) {
         if ( shortReadUrls.isEmpty() ) {
             setError(tr("Short reads list is empty."));
@@ -140,11 +140,11 @@ void GenomeAlignerCMDLineTask::prepare()
             }
         }
     }
-     
+
     if (resultPath.isEmpty()) {
         resultPath =  QDir::current().path() + "/output.sam";
     }
-    
+
     settings.resultFileName = resultPath;
     foreach (const GUrl& url, shortReadUrls ) {
         settings.shortReadSets.append(url);

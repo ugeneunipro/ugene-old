@@ -30,7 +30,7 @@ const char SmithWatermanAlgorithm::UP = 'u';
 const char SmithWatermanAlgorithm::LEFT = 'l';
 const char SmithWatermanAlgorithm::DIAG = 'd';
 
-SmithWatermanAlgorithm::SmithWatermanAlgorithm() {    
+SmithWatermanAlgorithm::SmithWatermanAlgorithm() {
     gapOpen = 0;
     gapExtension = 0;
     minScore = 0;
@@ -46,7 +46,7 @@ quint64 SmithWatermanAlgorithm::estimateNeededRamAmount(const qint32 gapOpen,
 
     const quint64 queryLength = patternSeq.length();
     const quint64 searchLength = searchSeq.length();
- 
+
     quint64 memToAllocInBytes = 0;
     if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
         const qint32 maxGapPenalty = (gapOpen > gapExtension) ? gapOpen : gapExtension;
@@ -80,7 +80,7 @@ bool SmithWatermanAlgorithm::calculateMatrixLength() {
         }
         maxScore += max;
     }
-    
+
     if (minScore > maxScore) return 0;
     int gap = gapOpen > gapExtension ? gapOpen : gapExtension;
     matrixLength = patternSeq.length() + (maxScore - minScore)/gap * (-1) + 1;
@@ -88,7 +88,7 @@ bool SmithWatermanAlgorithm::calculateMatrixLength() {
     return 1;
 }
 
-void SmithWatermanAlgorithm::setValues(const SMatrix& _substitutionMatrix, 
+void SmithWatermanAlgorithm::setValues(const SMatrix& _substitutionMatrix,
         const QByteArray & _patternSeq, const QByteArray & _searchSeq,
         int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView)
 {
@@ -101,7 +101,7 @@ void SmithWatermanAlgorithm::setValues(const SMatrix& _substitutionMatrix,
     resultView = _resultView;
 }
 
-void SmithWatermanAlgorithm::launch(const SMatrix& _substitutionMatrix, 
+void SmithWatermanAlgorithm::launch(const SMatrix& _substitutionMatrix,
         const QByteArray & _patternSeq, const QByteArray & _searchSeq,
         int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView)
 {
@@ -136,20 +136,20 @@ QList<PairAlignSequences> SmithWatermanAlgorithm::getResults() {
 
 void SmithWatermanAlgorithm::sortByScore( QList<PairAlignSequences> & res) {
     QList<PairAlignSequences> buf;
-    QVector<int> pos;    
+    QVector<int> pos;
     QVector<KeyOfPairAlignSeq> sortedScores;
 
-    for (int i = 0; i < res.size(); i++) 
+    for (int i = 0; i < res.size(); i++)
         for (int j = i + 1; j < res.size(); j++) {
 
             if (res.at(i).score < res.at(j).score) {
                 KeyOfPairAlignSeq::exchange(res[i],res[j]);
             }
-            else if (res.at(i).score == res.at(j).score 
+            else if (res.at(i).score == res.at(j).score
                 && res.at(i).refSubseqInterval.startPos > res.at(j).refSubseqInterval.startPos) {
                     KeyOfPairAlignSeq::exchange(res[i], res[j]);
             }
-            else if (res.at(i).score == res.at(j).score 
+            else if (res.at(i).score == res.at(j).score
                 && res.at(i).refSubseqInterval.startPos == res.at(j).refSubseqInterval.startPos
                 && res.at(i).refSubseqInterval.length > res.at(j).refSubseqInterval.length) {
                     KeyOfPairAlignSeq::exchange(res[i], res[j]);
@@ -179,7 +179,7 @@ void SmithWatermanAlgorithm::calculateMatrixForMultipleAlignmentResult() {
         score = score1 + ch * pat_n;
         j = 0;
         do {
-            score[j] = substitutionMatrix.getScore(ch, pat[j]); 
+            score[j] = substitutionMatrix.getScore(ch, pat[j]);
         } while(++j < static_cast<int>(pat_n));
     }
 
@@ -293,7 +293,7 @@ void SmithWatermanAlgorithm::calculateMatrixForAnnotationsResult() {
 
         QByteArray alphaChars = substitutionMatrix.getAlphabet()->getAlphabetChars();
     char *alphaCharsData = alphaChars.data(); n = alphaChars.size();
-    for(i = 0; i < n; i++) {    
+    for(i = 0; i < n; i++) {
         unsigned char ch = alphaCharsData[i];
         score = score1 + ch * pat_n;
         j = 0;
@@ -336,7 +336,7 @@ void SmithWatermanAlgorithm::calculateMatrixForAnnotationsResult() {
     // #define SW_FILT
 
         if(max1 >= minScore) {
-        #ifdef SW_FILT 
+        #ifdef SW_FILT
             if(p.refSubseqInterval.startPos != pos) {
                 if(p.score) {
                 pairAlignmentStrings.append(p);

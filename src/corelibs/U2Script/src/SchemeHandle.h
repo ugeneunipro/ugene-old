@@ -270,7 +270,7 @@ U2SCRIPT_EXPORT U2ErrorType     addFlowToScheme(             SchemeHandle       
  * These elements and their interaction occur in the computational scheme described
  * by the `scheme` object
  *
- * The `dstPortAndSlotNames` string 
+ * The `dstPortAndSlotNames` string
  *
  * Possible returning error codes:
  * U2_OK -                      success
@@ -328,7 +328,7 @@ U2SCRIPT_EXPORT void            releaseScheme(               SchemeHandle       
 
 /*
  * This function synchronously runs scheme described by the `scheme` object with Workflow Designer
- * 
+ *
  * The `scheme` object should be completely initialized before the invocation.
  *
  * After the invocation `*outputFilesCount` contains a count of files produced by calculating
@@ -353,7 +353,7 @@ U2SCRIPT_EXPORT U2ErrorType         launchScheme(            SchemeHandle       
 
 /*
  * This function creates new Single Algorithm Scheme then runs it with Workflow Designer
- * 
+ *
  * The `algorithmType` has to contain some Workflow Designer element type name
  * which is considered to suit for SAS
  *

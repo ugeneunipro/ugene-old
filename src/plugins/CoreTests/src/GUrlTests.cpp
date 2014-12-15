@@ -69,7 +69,7 @@ Task::ReportResult GTest_ConvertPath::report() {
 /************************************************************************/
 /* GTest_CreateTmpDir */
 /************************************************************************/
-#define TEMP_DATA_DIR_ENV_ID "TEMP_DATA_DIR" 
+#define TEMP_DATA_DIR_ENV_ID "TEMP_DATA_DIR"
 #define URL_ATTR "url"
 #define DATA_ATTR "data"
 #define EXISTS_ATTR "exists"

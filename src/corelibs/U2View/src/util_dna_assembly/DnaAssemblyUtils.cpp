@@ -96,7 +96,7 @@ DnaAssemblySupport::DnaAssemblySupport()
     refAlignSub->addAction( buildIndexAction );
 }
 
-void DnaAssemblySupport::sl_showDnaAssemblyDialog() 
+void DnaAssemblySupport::sl_showDnaAssemblyDialog()
 {
     DnaAssemblyAlgRegistry* registry = AppContext::getDnaAssemblyAlgRegistry();
     if (registry->getRegisteredAlgorithmIds().isEmpty()) {
@@ -104,7 +104,7 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
             tr("There are no algorithms for DNA assembly available.\nPlease, check your plugin list.") );
         return;
     }
-        
+
     DnaAssemblyDialog dlg(QApplication::activeWindow());
     if (dlg.exec()) {
         DnaAssemblyToRefTaskSettings s;
@@ -119,7 +119,7 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
         Task* assemblyTask = new DnaAssemblyTaskWithConversions(s, true);
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
     }
- 
+
 }
 
 void DnaAssemblySupport::sl_showGenomeAssemblyDialog() {

@@ -28,12 +28,12 @@ namespace U2 {
 //one of 256 positions contains offset info
 #define CACHE_FREQ 256
 
-MSAEditorBaseOffsetCache::MSAEditorBaseOffsetCache(QObject* p, MAlignmentObject* obj) 
+MSAEditorBaseOffsetCache::MSAEditorBaseOffsetCache(QObject* p, MAlignmentObject* obj)
 : QObject(p), aliObj(obj)
 {
-    connect(aliObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), 
+    connect(aliObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
         SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
-    
+
     objVersion = 1;
     globVersion = 0;
 }

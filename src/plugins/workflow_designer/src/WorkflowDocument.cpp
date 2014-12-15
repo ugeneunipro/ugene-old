@@ -78,7 +78,7 @@ GObject* WorkflowGObject::clone(const U2DbiRef&, U2OpStatus&, const QVariantMap 
 //////////////////////////////////////////////////////////////////////////
 /// Workflow document format
 
-WorkflowDocFormat::WorkflowDocFormat(QObject* p) 
+WorkflowDocFormat::WorkflowDocFormat(QObject* p)
 : DocumentFormat(p, DocumentFormatFlags_W1, QStringList(WorkflowUtils::WD_FILE_EXTENSIONS) << WorkflowUtils::WD_XML_FORMAT_EXTENSION),
   formatName(tr("Workflow")) {
     supportedObjectTypes += WorkflowGObject::TYPE;
@@ -103,14 +103,14 @@ Document* WorkflowDocFormat::loadDocument(IOAdapter* io, const U2DbiRef& targetD
         rawData.append(block.data(), blockLen);
         os.setProgress(io->getProgress());
     }
-    
+
     if (checkRawData(rawData).score != FormatDetection_Matched) {
         os.setError(tr("Invalid header. %1 expected").arg(Constants::HEADER_LINE));
         rawData.clear();
         return NULL;
     }
     //todo: check file-readonly status?
-    
+
     QList<GObject*> objects;
     QString data = QString::fromUtf8(rawData.data(), rawData.size());
     objects.append(new WorkflowGObject(tr("Workflow"), data));
@@ -163,13 +163,13 @@ Task* WorkflowViewFactory::createViewTask(const MultiGSelection& multiSelection,
         Task* t = new OpenWorkflowViewTask(d);
         if (result == NULL) {
             return t;
-        } 
+        }
         result->addSubTask(t);
     }
     return result;
 }
 
-OpenWorkflowViewTask::OpenWorkflowViewTask(Document* doc) 
+OpenWorkflowViewTask::OpenWorkflowViewTask(Document* doc)
 : ObjectViewTask(WorkflowViewFactory::ID)
 {
     if (!doc->isLoaded()) {

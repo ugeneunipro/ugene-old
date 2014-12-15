@@ -38,7 +38,7 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // GTest
 
-GTest::GTest(const QString& taskName, GTest* cp, const GTestEnvironment* _env, 
+GTest::GTest(const QString& taskName, GTest* cp, const GTestEnvironment* _env,
              TaskFlags flags, const QList<GTest*>& subtasks)
 : Task(taskName, flags), contextProvider(cp), env(_env)
 {
@@ -89,15 +89,15 @@ static QStringList findAllFiles(const QString& dirPath, const QString& ext, bool
         return res;
     }
     QDir dir(dirPath);
-    
+
     //add files first
     QStringList files = ext.isEmpty() ? dir.entryList(QDir::Files) : dir.entryList(ext.split(":"), QDir::Files);
     foreach(const QString& file, files) {
         QFileInfo fi(dir.absolutePath() + "/" + file);
         res.append(fi.absoluteFilePath());
     }
-    
-    
+
+
     //process subdirs if needed
     if (recursive) {
         QStringList subDirs = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
@@ -143,7 +143,7 @@ GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
         err = ("not_an_xml_suite_file");
         return NULL;
     }
-    
+
     if (suiteDoc.doctype().name()!="UGENE_TEST_FRAMEWORK_SUITE") {
         err = ("not_a_test_suite_file");
         return NULL;
@@ -154,8 +154,8 @@ GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
         err = ("suite_elem_not_found");
         return NULL;
     }
-    
-    //Name 
+
+    //Name
     QString suiteName = suiteEl.attribute("name");
     if (suiteName.isEmpty()) {
         err = ("suite_name_is_empty");
@@ -215,13 +215,13 @@ GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
             err = QString("test_dir_not_exists %1").arg(fullTestDirPath);
             break;
         }
-        
+
         QList<QRegExp> xlist;
         err = addExcludeTests(fullTestDirPath, testDirEl.attribute("exclude"), xlist);
         if(!err.isEmpty()) {
             break;
         }
-        
+
         if(sizeof(void*) == 8) { // means that it is 64 bit system
             err = addExcludeTests(fullTestDirPath, testDirEl.attribute("exclude_64"), xlist);
             if(!err.isEmpty()) {
@@ -235,7 +235,7 @@ GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
                 break;
             }
         }
-        
+
         testFormatName = testDirEl.attribute("test-format");
         bool recursive = testDirEl.attribute("recursive") != "false";
         QString testExt = testDirEl.attribute("test-ext");
@@ -290,7 +290,7 @@ GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
         }
         return NULL;
     }
-    
+
     GTestSuite* suite = new GTestSuite();
     suite->url = suiteUrl.absoluteFilePath();
     suite->name = suiteName;
@@ -307,7 +307,7 @@ GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
     foreach( GTestRef * r, excluded.keys() ) {
         r->setSuite( suite );
     }
-    
+
     return suite;
 }
 
@@ -358,7 +358,7 @@ void GTestState::clearState() {
         assert(errMessage.isEmpty());
         return;
     }
-    errMessage.clear(); 
+    errMessage.clear();
     state = TriState_Unknown;
     emit si_stateChanged(this);
 }
@@ -370,8 +370,8 @@ void GTestState::setFailed(const QString& err) {
     }
     assert(!err.isEmpty());
     assert(errMessage.isEmpty());
-    
-    errMessage = err; 
+
+    errMessage = err;
     state = TriState_No;
     emit si_stateChanged(this);
 }
@@ -381,7 +381,7 @@ void GTestState::setPassed() {
         assert(errMessage.isEmpty());
         return;
     }
-    errMessage.clear(); 
+    errMessage.clear();
     state = TriState_Yes;
     emit si_stateChanged(this);
 }

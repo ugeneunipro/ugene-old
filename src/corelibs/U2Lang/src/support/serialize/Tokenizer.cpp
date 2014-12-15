@@ -61,7 +61,7 @@ void Tokenizer::appendToken(const QString & t, bool skipEmpty) {
     tokens.append(t);
 }
 
-void Tokenizer::addToken(const QString & t) { 
+void Tokenizer::addToken(const QString & t) {
     QString tok = t.trimmed().replace("'", "\"");
     if(tok.isEmpty() || tok == Constants::SEMICOLON) {
         return;
@@ -156,7 +156,7 @@ void Tokenizer::tokenizeSchema(const QString & d) {
             continue;
         }
         if (ELEMENT_DEPTH == depth) {
-            isElemDef = !line.startsWith(Constants::META_START) && !line.startsWith(Constants::DOT_ITERATION_START) && !line.contains(Constants::DATAFLOW_SIGN) 
+            isElemDef = !line.startsWith(Constants::META_START) && !line.startsWith(Constants::DOT_ITERATION_START) && !line.contains(Constants::DATAFLOW_SIGN)
                 && !line.startsWith(Constants::INPUT_START) && !line.startsWith(Constants::OUTPUT_START) && !line.startsWith(Constants::ATTRIBUTES_START);
             elemDefHeader = true;
         } else {

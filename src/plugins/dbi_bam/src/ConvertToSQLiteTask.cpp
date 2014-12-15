@@ -807,7 +807,7 @@ void ConvertToSQLiteTask::run() {
         }
 
         time_t totalTime = time(0) - startTime;
-        
+
         taskLog.info(QString("Converting assembly from %1 to %2 succesfully finished: imported %3 reads, total time %4 s, pack time %5 s")
                      .arg(sourceUrl.fileName())
                      .arg(getDestinationUrl().fileName())

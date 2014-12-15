@@ -42,20 +42,20 @@ public:
     SchemaAliasesCfgDlgModel getModel() const;
     // aliases for schema should be different
     bool validateModel() const;
-    
+
 private:
     void initializeModel( const Schema & schema );
     void clearAliasTable();
-    
+
 private slots:
     void sl_procSelected( int row );
     void sl_onDataChange( int row, int col );
-    
+
 private:
     SchemaAliasesCfgDlgModel    model;
     QMap<int, ActorId>          procListMap; // pairs (row, actorId)
     int                         procNameMaxSz;
-    
+
 }; // SchemaAliasesConfigurationDialogImpl
 
 } // Workflow

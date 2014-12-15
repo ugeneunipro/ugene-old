@@ -39,7 +39,7 @@ Database* Database::loadDatabase(const QString& url, U2OpStatus& os) {
     U2DbiRef dbiRef (SQLiteDbiFactory::ID, url);
     DbiConnection dbHandle (dbiRef, os);
     SAFE_POINT_OP(os, NULL);
-  
+
     // ensure that DBI is a valid Session DBI
     QString val = dbHandle.dbi->getProperty(S3_DATABASE_KEY, "", os);
     SAFE_POINT_OP(os, NULL);
@@ -48,7 +48,7 @@ Database* Database::loadDatabase(const QString& url, U2OpStatus& os) {
         os.setError(tr("Not a valid S3-database file: %1").arg(url));
         return NULL;
     }
-    
+
     return new Database(dbHandle);
 }
 
@@ -65,7 +65,7 @@ DbiConnection Database::createEmptyDbi(const QString& url, U2OpStatus& os) {
 
     databaseDbi.dbi->setProperty(S3_DATABASE_KEY, U2DbiOptions::U2_DBI_VALUE_ON, os);
     SAFE_POINT_OP(os, DbiConnection());
-    
+
     return databaseDbi;
 }
 

@@ -135,7 +135,7 @@ void DNASequenceGeneratorDialog::sl_generate() {
         QMessageBox::critical(this, tr("DNA Sequence Generator"), tr("Windows size bigger than sequence length"));
         return;
     }
-        
+
     if (!cfg.useRef) {
         cfg.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     }
@@ -177,7 +177,7 @@ BaseContentDialog::BaseContentDialog(QMap<char, qreal>& percentMap_, QWidget* p)
     gcSkew = (float(iGCSkew))/100.0;
     percentGCSpin->setValue(gcSkew);
     gcSkewPrev = gcSkew;
-    
+
     saveButton = buttonBox->button(QDialogButtonBox::Ok);
 
     connect(saveButton, SIGNAL(clicked()), SLOT(sl_save()));
@@ -244,7 +244,7 @@ void BaseContentDialog::sl_save() {
             percentCi = (float)percentCi / sum * 100;
             percentTi = (float)percentTi / sum * 100;
             int CG = percentGi + percentCi;
-            
+
             percentCi = (1 - gcSkew)* CG / 2;
             percentGi = percentCi + gcSkew * CG;
             if(percentCi < 0 || percentCi > 100 || percentGi < 0 || percentGi > 100) {
@@ -261,7 +261,7 @@ void BaseContentDialog::sl_save() {
             percentASpin->setValue(percentAi);
             percentCSpin->setValue(percentCi);
             percentGSpin->setValue(percentGi);
-            percentTSpin->setValue(percentTi);  
+            percentTSpin->setValue(percentTi);
         } else {
             percentA = percentASpin->value();
             percentC = percentCSpin->value();

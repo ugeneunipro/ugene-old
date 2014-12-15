@@ -32,7 +32,7 @@ public:
     virtual ~Serializable();
     virtual QVariant serialize()const = 0;
     virtual bool deserialize( const QVariant & data ) = 0;
-    
+
 }; // Serializable
 
 /*
@@ -43,7 +43,7 @@ public:
     virtual ~HumanSerializable();
     virtual QString serialize() const = 0;
     virtual bool deserialize( const QString & data ) = 0;
-    
+
 }; // HumanSerializable
 
 } // U2

@@ -51,38 +51,38 @@ const QString QUALITY_FORMAT_ATTR("quality-format");
 
 void ImportPhredQualityWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
-    Descriptor ind(BasePorts::IN_SEQ_PORT_ID(), ImportPhredQualityWorker::tr("DNA sequences"), 
+    Descriptor ind(BasePorts::IN_SEQ_PORT_ID(), ImportPhredQualityWorker::tr("DNA sequences"),
         ImportPhredQualityWorker::tr("The PHRED scores will be imported to these sequences"));
-    Descriptor oud(BasePorts::OUT_SEQ_PORT_ID(), ImportPhredQualityWorker::tr("DNA sequences with imported qualities"),         
+    Descriptor oud(BasePorts::OUT_SEQ_PORT_ID(), ImportPhredQualityWorker::tr("DNA sequences with imported qualities"),
         ImportPhredQualityWorker::tr("These sequences have quality scores."));
-    
+
     QMap<Descriptor, DataTypePtr> inM;
     inM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
     p << new PortDescriptor(ind, DataTypePtr(new MapDataType("import.qual.in", inM)), true /*input*/);
     QMap<Descriptor, DataTypePtr> outM;
     outM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
     p << new PortDescriptor(oud, DataTypePtr(new MapDataType("import.qual.out", outM)), false /*input*/, true /*multi*/);
-    
-    Descriptor qualUrl(BaseAttributes::URL_IN_ATTRIBUTE().getId(), ImportPhredQualityWorker::tr("PHRED input"), 
+
+    Descriptor qualUrl(BaseAttributes::URL_IN_ATTRIBUTE().getId(), ImportPhredQualityWorker::tr("PHRED input"),
          ImportPhredQualityWorker::tr("Path to file with PHRED quality scores."));
-    Descriptor qualType(QUALITY_TYPE_ATTR, ImportPhredQualityWorker::tr("Quality type"), 
+    Descriptor qualType(QUALITY_TYPE_ATTR, ImportPhredQualityWorker::tr("Quality type"),
         ImportPhredQualityWorker::tr("Choose method to encode quality scores."));
-    Descriptor qualFormat(QUALITY_FORMAT_ATTR, ImportPhredQualityWorker::tr("File format"), 
+    Descriptor qualFormat(QUALITY_FORMAT_ATTR, ImportPhredQualityWorker::tr("File format"),
         ImportPhredQualityWorker::tr("Quality values can be in specialized FASTA-like PHRED qual format or encoded similar as in FASTQ files."));
 
     a << new Attribute(qualUrl, BaseTypes::STRING_TYPE(), true /*required*/, QString());
     a << new Attribute(qualType, BaseTypes::STRING_TYPE(), false/*required*/, DNAQuality::getDNAQualityNameByType(DNAQualityType_Sanger) );
     a << new Attribute(qualFormat, BaseTypes::STRING_TYPE(), false, DNAQuality::QUAL_FORMAT);
 
-    Descriptor desc(ACTOR_ID, ImportPhredQualityWorker::tr("Import PHRED Qualities"), 
+    Descriptor desc(ACTOR_ID, ImportPhredQualityWorker::tr("Import PHRED Qualities"),
         ImportPhredQualityWorker::tr("Add corresponding PHRED quality scores to the sequences.\nYou can use this worker to convert .fasta and .qual pair to fastq format."));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
 
-    QMap<QString, PropertyDelegate*> delegates;    
+    QMap<QString, PropertyDelegate*> delegates;
 
     delegates[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true, false, false);
-    
-    
+
+
     {
         QVariantMap m;
         QStringList qualFormats = DNAQuality::getDNAQualityTypeNames();
@@ -111,7 +111,7 @@ void ImportPhredQualityWorkerFactory::init() {
  * ImportPhredQualityPrompter
  *************************************/
 QString ImportPhredQualityPrompter::composeRichDoc() {
-    
+
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_SEQ_PORT_ID()));
     Actor* producer = input->getProducer(BasePorts::IN_SEQ_PORT_ID());
     QString producerName = producer ? tr(" from <u>%1</u>").arg(producer->getLabel()) : "";
@@ -143,7 +143,7 @@ void ImportPhredQualityWorker::init() {
 }
 
 Task* ImportPhredQualityWorker::tick() {
-    
+
     if (input->hasMessage()) {
 
         if (readTask == NULL) {
@@ -160,10 +160,10 @@ Task* ImportPhredQualityWorker::tick() {
             return NULL;
         }
         const QMap<QString,DNAQuality>& qualities = readTask->getResult();
-        
+
         // It's OK to copy whole sequence because we do not to expect reads to be bigger than 1000 bp
         DNASequence seq = seqObj->getWholeSequence();
-        
+
         const QString& seqName = seq.getName();
         if (qualities.contains(seqName)) {
             const DNAQuality& qual = qualities.value(seqName);

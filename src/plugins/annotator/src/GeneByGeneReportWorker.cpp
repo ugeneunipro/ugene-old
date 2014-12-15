@@ -224,7 +224,7 @@ Worker *GeneByGeneReportWorkerFactory::createWorker(Actor *a) {
 }
 
 QString GeneByGeneReportPrompter::composeRichDoc() {
-    QString res = ""; 
+    QString res = "";
 
     Actor* seqProducer = qobject_cast<IntegralBusPort*>(target->getPort(IN_PORT_DESCR))->getProducer(SEQ_SLOT_ID);
 

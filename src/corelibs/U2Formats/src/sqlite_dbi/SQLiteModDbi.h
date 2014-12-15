@@ -37,7 +37,7 @@ public:
      * WARNING!: If a user step has been already created, the master object must be the same!
      */
     U2UseCommonMultiModStep(SQLiteDbi *_sqliteDbi, const U2DataId &_masterObjId, U2OpStatus &os);
-    ~U2UseCommonMultiModStep(); 
+    ~U2UseCommonMultiModStep();
 private:
     SQLiteDbi *sqliteDbi;
     bool valid;
@@ -105,7 +105,7 @@ public:
 
     /**
      * Starts a common multiple modifications step.
-     * If there is a common user modifications step, verifies that the passed object ID is the same. 
+     * If there is a common user modifications step, verifies that the passed object ID is the same.
      * Creates a common user modifications step, if it doesn't exist.
      * Do not use this method, create a "U2UseCommonMultiModStep" instance instead!
      */

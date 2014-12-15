@@ -79,7 +79,7 @@ class U2CORE_EXPORT LogCacheExt : public LogCache {
     Q_OBJECT
 public:
     LogCacheExt();
-    
+
     void setConsoleOutputEnabled(bool enabled) {consoleEnabled = enabled;}
     bool isConsoleOutputEnabled() const {return consoleEnabled;}
 

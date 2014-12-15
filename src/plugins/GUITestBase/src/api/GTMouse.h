@@ -35,10 +35,10 @@ namespace U2 {
 class GTMouse {
 public:
 
-    static void moveCursorToWidget(U2OpStatus &os, QWidget *widget);    
+    static void moveCursorToWidget(U2OpStatus &os, QWidget *widget);
     static void moveCursorOutOfWidget(U2OpStatus &os, QWidget *widget);
 
 };
 
-}                       
+}
 #endif // U2_GUI_GTMOUSE_H

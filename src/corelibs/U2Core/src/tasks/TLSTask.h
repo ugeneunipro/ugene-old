@@ -74,7 +74,7 @@ protected:
 
   // Creates instance of TLSContext. By default invokes in prepare()
   virtual TLSContext* createContextInstance()=0;
-  
+
   TLSContext* taskContext;
   bool deleteContext;
 };

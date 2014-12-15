@@ -102,7 +102,7 @@ void ClustalWSupport::sl_runWithExtFileSpecify(){
     U2OpStatus2Log os(LogLevel_DETAILS);
     ExternalToolSupportSettings::checkTemporaryDir(os);
     CHECK_OP(os, );
-    
+
     //Call select input file and setup settings dialog
     ClustalWSupportTaskSettings settings;
     ClustalWWithExtFileSpecifySupportRunDialog clustalWRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
@@ -178,7 +178,7 @@ void ClustalWSupportContext::sl_align_with_ClustalW() {
     U2OpStatus2Log os(LogLevel_DETAILS);
     ExternalToolSupportSettings::checkTemporaryDir(os);
     CHECK_OP(os, );
-    
+
     //Call run ClustalW align dialog
     AlignMsaAction* action = qobject_cast<AlignMsaAction *>(sender());
     assert(action!=NULL);

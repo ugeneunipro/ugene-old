@@ -47,7 +47,7 @@ void SArrayBasedFindTask::runSearch()
     if (config->useBitMask) {
         const quint32* bm = config->bitMask;
         int charBitsNum = config->bitMaskCharBitsNum;
-        quint32 bitValue = 0; 
+        quint32 bitValue = 0;
         int wCharsInMask = index->getCharsInMask();
         const char* posS = querySeq;
         char unknownChar = config->unknownChar;
@@ -71,7 +71,7 @@ void SArrayBasedFindTask::runSearch()
             results.append(pos + 1);
         }
     }
-   
+
 }
 
 void SArrayBasedFindTask::runSearchWithMismatches()
@@ -88,13 +88,13 @@ void SArrayBasedFindTask::runSearchWithMismatches()
     int W = config->query.size();
     int q = W / (CMAX + 1);
     int prefixSize = index->getPrefixSize();
-    
+
     assert(prefixSize <=  q);
     if (prefixSize > q) {
         setError( QString("Too large SArrayIndex window (%1) for %2-mismatch search").arg(prefixSize).arg(CMAX) );
         return;
     }
-    
+
     for (int i = 0; i < W - prefixSize + 1; ++i) {
         const char* seq = querySeq + i;
         SArrayIndex::SAISearchContext context;
@@ -102,7 +102,7 @@ void SArrayBasedFindTask::runSearchWithMismatches()
         if (config->useBitMask) {
             const quint32* bm = config->bitMask;
             int charBitsNum = config->bitMaskCharBitsNum;
-            quint32 bitValue = 0; 
+            quint32 bitValue = 0;
             int wCharsInMask = index->getCharsInMask();
             const char* posS = querySeq;
             char unknownChar = config->unknownChar;
@@ -127,7 +127,7 @@ void SArrayBasedFindTask::runSearchWithMismatches()
         const char* endA = arraySeq + index->getSequenceLength();
         while( ( pos = index->nextArrSeqPos(&context) ) != -1 ) {
             int c = 0;
-            // forward collect 
+            // forward collect
             const char* posS = seq + prefixSize;
             const char* posA = arraySeq + pos + prefixSize;
             for ( ; (posS < endS) && (c <= CMAX); posS++, posA++) {
@@ -136,20 +136,20 @@ void SArrayBasedFindTask::runSearchWithMismatches()
                     c = CMAX + 1;
                     break;
                 }
-                c += PCHAR_MATCH(posS, posA) ? 0 : 1; 
+                c += PCHAR_MATCH(posS, posA) ? 0 : 1;
             }
-            
+
             // backward collect
             posS = seq - 1;
             posA = arraySeq + pos - 1;
-            
+
             for ( ; (posS >= querySeq) && (c <= CMAX); posS--, posA--) {
                 if (posA < arraySeq) {
                     // out of arrraySeq boundaries - > do not need to continue
                     c = CMAX + 1;
                     break;
                 }
-                c += PCHAR_MATCH(posS, posA) ? 0 : 1; 
+                c += PCHAR_MATCH(posS, posA) ? 0 : 1;
             }
             int result = pos - i + 1;
             if ( (c <= CMAX) && (!results.contains(result))) {
@@ -164,7 +164,7 @@ void SArrayBasedFindTask::runSearchWithMismatches()
 
 void SArrayBasedFindTask::cleanup()
 {
-    delete config; 
+    delete config;
     config = NULL;
 }
 

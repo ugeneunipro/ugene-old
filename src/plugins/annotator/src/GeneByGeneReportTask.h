@@ -27,7 +27,7 @@
 #include <U2Core/DNASequence.h>
 #include <U2Core/AnnotationData.h>
 #include <U2Core/IOAdapter.h>
- 
+
 namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ public:
     static const QString MERGE_EXISTING;
     static const QString OVERWRITE_EXISTING;
     static const QString RENAME_EXISTING;
-    
+
 private:
     void initDefaults();
 };
@@ -82,7 +82,7 @@ class GeneByGeneReportIO{
 public:
     GeneByGeneReportIO(const QString& _outFile, const QString& _existingMode);
     ~GeneByGeneReportIO();
-    
+
     void prepareOutputFile(U2OpStatus& os);
     void writeTableItem(const QString& geneName, const QString& identicalString, U2OpStatus& os);
 
@@ -115,7 +115,7 @@ public:
 private:
     GeneByGeneReportSettings settings;
     QMap<QString, QPair<DNASequence, QList<AnnotationData> > > geneData;
-    
+
 };
 
 

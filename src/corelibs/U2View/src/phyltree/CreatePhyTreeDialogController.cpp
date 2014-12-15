@@ -86,9 +86,9 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
     connect(ui->storeSettings, SIGNAL(clicked()), SLOT(sl_onStoreSettings()));
     connect(ui->restoreSettings, SIGNAL(clicked()), SLOT(sl_onRestoreDefault()));
     connect(ui->displayWithAlignmentEditor, SIGNAL(toggled(bool)), SLOT(sl_onDispayWithMSAClicked(bool)));
-    
+
     ui->fileNameEdit->setText(url);
-    
+
     int itemIndex = nameList.indexOf("PHYLIP Neighbor Joining");
     if(itemIndex < 0) {
         itemIndex = ui->algorithmBox->count()-1;
@@ -96,7 +96,7 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
     assert(itemIndex >= 0);
     //QString algName = AppContext::getSettings()->getValue(CreatePhyTreeWidget::settingsPath + "/algorithm", ui->algorithmBox->itemText(itemIndex)).toString();
     QString algName = ui->algorithmBox->itemText(itemIndex);
-    
+
     for(int i = 0; i<ui->algorithmBox->count(); i++){
         if(ui->algorithmBox->itemText(i) == algName){
             if(i==0){ //cause the signal currentIndexChanged isn't sent in this case
@@ -114,7 +114,7 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
 }
 
 void CreatePhyTreeDialogController::sl_okClicked(){
-    
+
     settings.algorithmId = ui->algorithmBox->currentText();
 
     //Check license
@@ -151,7 +151,7 @@ void CreatePhyTreeDialogController::sl_okClicked(){
     }
 
     settings.displayWithAlignmentEditor = ui->displayWithAlignmentEditor->isChecked();
-    
+
     foreach (CreatePhyTreeWidget* widget, childWidgets) {
         widget->fillSettings(settings);
     }
@@ -190,7 +190,7 @@ void CreatePhyTreeDialogController::insertContrWidget( int pos, CreatePhyTreeWid
 {
     ui->verticalLayout->insertWidget(pos, widget);
     childWidgets.append(widget);
-    
+
     // adjust sizes
     setMinimumHeight(widget->minimumHeight() + minimumHeight());
     if (minimumWidth() < widget->minimumWidth()) {
@@ -205,14 +205,14 @@ void CreatePhyTreeDialogController::clearContrWidgets(){
         setMinimumHeight(minimumHeight() - w->minimumHeight());
         w->hide();
         delete w;
-    }    
+    }
     childWidgets.clear();
     adjustSize();
 }
 
 void CreatePhyTreeDialogController::sl_browseClicked()
 {
-    GUrl oldUrl = ui->fileNameEdit->text(); 
+    GUrl oldUrl = ui->fileNameEdit->text();
     QString path;
     LastUsedDirHelper lod;
     if (oldUrl.isEmpty()) {
@@ -221,7 +221,7 @@ void CreatePhyTreeDialogController::sl_browseClicked()
         path = oldUrl.getURLString();
     }
     GUrl newUrl = U2FileDialog::getSaveFileName(this, "Choose file name", path,"Newick format (*.nwk)");
-    
+
     if (newUrl.isEmpty()) {
         return;
     }
@@ -234,7 +234,7 @@ void CreatePhyTreeDialogController::sl_comboIndexChaged(int ){
     PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
     PhyTreeGenerator* generator = registry->getGenerator(ui->algorithmBox->currentText());
     generator->setupCreatePhyTreeUI(this, msa);
-    ui->verticalLayout->activate(); 
+    ui->verticalLayout->activate();
 }
 
 void CreatePhyTreeDialogController::sl_onDispayWithMSAClicked(bool checked) {

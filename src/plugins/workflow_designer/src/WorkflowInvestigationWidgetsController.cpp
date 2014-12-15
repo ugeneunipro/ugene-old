@@ -71,7 +71,7 @@ WorkflowInvestigationWidgetsController::WorkflowInvestigationWidgetsController(Q
         QIcon(":workflow_designer/images/document_convert.png"),
         tr(CONVERT_TO_DOC_ACTION_NAME), this);
     connect(exportInvestigationAction, SIGNAL(triggered()), SLOT(sl_exportInvestigation()));
-    
+
     copyToClipboardAction = new QAction(QIcon(":workflow_designer/images/clipboard.png"),
         tr(COPY_TO_CLIPBOARD_ACTION_NAME), this);
     connect(copyToClipboardAction, SIGNAL(triggered()), SLOT(sl_copyToClipboard()));
@@ -81,7 +81,7 @@ WorkflowInvestigationWidgetsController::WorkflowInvestigationWidgetsController(Q
 
     hideAllColumnsButThisAction = new QAction(tr(HIDE_ALL_COLUMNS_BUT_SELECTED_ACTION_NAME), this);
     connect(hideAllColumnsButThisAction, SIGNAL(triggered()), SLOT(sl_hideAllColumnsButSelected()));
-    
+
     showAllColumnsAction = new QAction(tr(SHOW_ALL_COLUMNS_ACTION_NAME), this);
     connect(showAllColumnsAction, SIGNAL(triggered()), SLOT(sl_showAllColumns()));
 }

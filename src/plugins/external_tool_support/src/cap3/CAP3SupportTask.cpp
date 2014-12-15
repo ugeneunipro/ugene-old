@@ -63,7 +63,7 @@ CAP3SupportTask::CAP3SupportTask(const CAP3SupportTaskSettings& _settings) :
 void CAP3SupportTask::prepare(){
     tmpDirUrl = ExternalToolSupportUtils::createTmpDir(CAP3_TMP_DIR, stateInfo);
     CHECK_OP(stateInfo, );
-    
+
     prepareDataForCAP3Task = new PrepareInputForCAP3Task(settings.inputFiles, tmpDirUrl);
     addSubTask(prepareDataForCAP3Task);
 }
@@ -86,7 +86,7 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
         if (prepareDataForCAP3Task->onlyCopyInputFiles()) {
             tmpOutputUrl = inputUrl.getURLString()+ CAP3_EXT;
         } else {
-            tmpOutputUrl = inputUrl.dirPath() + "/" + inputUrl.baseFileName() + CAP3_EXT; 
+            tmpOutputUrl = inputUrl.dirPath() + "/" + inputUrl.baseFileName() + CAP3_EXT;
         }
 
         QStringList arguments = settings.getArgumentsList();
@@ -108,11 +108,11 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
             }
             return res;
         }
-        
+
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
         copyResultTask = new CopyDataTask(iof, tmpOutputUrl, iof, settings.outputFilePath);
         res.append(copyResultTask);
-        
+
     }
     else if (subTask == copyResultTask) {
         if( !QFile::exists(settings.outputFilePath)) {
@@ -195,17 +195,17 @@ PrepareInputForCAP3Task::PrepareInputForCAP3Task( const QStringList& inputFiles,
 void PrepareInputForCAP3Task::prepare() {
     if (inputUrls.size() == 1) {
         const QString& inputFileUrl = inputUrls.first();
-        
+
         QList<FormatDetectionResult> results = DocumentUtils::detectFormat(inputFileUrl);
-        
+
         if (!results.isEmpty()) {
             DocumentFormat* format = results.first().format;
             if (format->getFormatId() == BaseDocumentFormats::FASTA) {
                 onlyCopyFiles = true;
             }
         }
-    } 
-    
+    }
+
     if (onlyCopyFiles) {
         // Short path: copy single FASTA file along with quality and constraints to target dir
         QString inputFileUrl = inputUrls.first();
@@ -221,7 +221,7 @@ void PrepareInputForCAP3Task::prepare() {
             filesToCopy.append(qualFileUrl);
         }
         foreach (const QString& fileName, filesToCopy) {
-            IOAdapterFactory* iof = 
+            IOAdapterFactory* iof =
                 AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
             CopyDataTask* copyTask = new CopyDataTask(iof, fileName, iof, outputDir + "/" + GUrl(fileName).fileName());
             addSubTask(copyTask);
@@ -234,12 +234,12 @@ void PrepareInputForCAP3Task::prepare() {
         foreach( const QString& url, inputUrls) {
             inputGUrls.append(url);
         }
-        
+
         if (!seqReader.init(inputGUrls)) {
             setError(seqReader.getErrorMessage());
             return;
         }
-        
+
         QString outPath = outputDir + "/" + QString("%1_misc").arg(inputGUrls.first().baseFileName());
         qualityFilePath = outPath + ".qual";
 
@@ -274,7 +274,7 @@ void PrepareInputForCAP3Task::run()
             setError(tr("Failed to write sequence %1").arg(seq->getName()));
             return;
         }
-        
+
         if (!seq->quality.isEmpty()) {
             DNAQualityIOUtils::writeDNAQuality(seqName, seq->quality, qualityFilePath, true /*append*/, true /*decode*/, stateInfo );
             if (stateInfo.hasError()) {

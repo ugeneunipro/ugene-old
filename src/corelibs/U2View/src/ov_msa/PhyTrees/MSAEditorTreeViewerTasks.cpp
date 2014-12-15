@@ -60,7 +60,7 @@ OpenTreeViewerTask::OpenTreeViewerTask(UnloadedObject* _obj, const QObject* _par
     documentsToLoad.append(_obj->getDocument());
 }
 
-OpenTreeViewerTask::OpenTreeViewerTask(Document* doc, const QObject* _parent, bool _createMDIWindow) 
+OpenTreeViewerTask::OpenTreeViewerTask(Document* doc, const QObject* _parent, bool _createMDIWindow)
 : ObjectViewTask(TreeViewerFactory::ID), phyObject(NULL), parent(_parent), createMDIWindow(_createMDIWindow)
 {
     assert(!doc->isLoaded());
@@ -96,7 +96,7 @@ void OpenTreeViewerTask::open() {
     uiLog.details(tr("Opening tree viewer for object %1").arg(phyObject->getGObjectName()));
 
     Task* createTask;
-    
+
     if(createMDIWindow) {
         createTask = new CreateMDITreeViewerTask(viewName, phyObject, stateData);
     }
@@ -123,7 +123,7 @@ void OpenTreeViewerTask::updateTitle(TreeViewer* tv) {
 //////////////////////////////////////////////////////////////////////////
 // open view from state
 
-OpenSavedTreeViewerTask::OpenSavedTreeViewerTask(const QString& viewName, const QVariantMap& stateData) 
+OpenSavedTreeViewerTask::OpenSavedTreeViewerTask(const QString& viewName, const QVariantMap& stateData)
 : ObjectViewTask(TreeViewerFactory::ID, viewName, stateData)
 {
     TreeViewerState state(stateData);
@@ -181,7 +181,7 @@ void OpenSavedTreeViewerTask::updateRanges(const QVariantMap& stateData, TreeVie
 
 //////////////////////////////////////////////////////////////////////////
 // update
-UpdateTreeViewerTask::UpdateTreeViewerTask(GObjectView* v, const QString& stateName, const QVariantMap& stateData) 
+UpdateTreeViewerTask::UpdateTreeViewerTask(GObjectView* v, const QString& stateName, const QVariantMap& stateData)
 : ObjectViewTask(v, stateName, stateData)
 {
 }
@@ -213,7 +213,7 @@ void CreateTreeViewerTask::prepare() {
 Task::ReportResult CreateTreeViewerTask::report() {
     GraphicsRectangularBranchItem* root = dynamic_cast<GraphicsRectangularBranchItem*>(subTask->getResult());
     view = new TreeViewer(viewName, phyObj, root, subTask->getScale());
-    
+
     if (!stateData.isEmpty()) {
         OpenSavedTreeViewerTask::updateRanges(stateData, view);
     }

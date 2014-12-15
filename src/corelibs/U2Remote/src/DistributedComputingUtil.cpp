@@ -56,12 +56,12 @@ namespace U2 {
 DistributedComputingUtil::DistributedComputingUtil() {
     AppContextImpl * appContext = AppContextImpl::getApplicationContext();
     assert( NULL != appContext );
-    
+
     pir = new ProtocolInfoRegistry();
     appContext->setProtocolInfoRegistry( pir );
     rmm = new RemoteMachineMonitor();
     appContext->setRemoteMachineMonitor( rmm );
-    
+
     if( NULL != AppContext::getMainWindow() ) { /* if not congene */
         QAction * showRemoteMachinesMonitor = new QAction( QIcon( ":core/images/remote_machine_monitor.png" ),
                                                            tr( "Remote machines monitor..." ), this );
@@ -94,7 +94,7 @@ QStringList DistributedComputingUtil::filterRemoteMachineServices( const QString
 *******************************************/
 
 UpdateActiveTasks::UpdateActiveTasks(const RemoteMachineSettingsPtr& s) :
- Task("UpdateActiveTasks", TaskFlags_FOSCOE), settings(s), machine(NULL) 
+ Task("UpdateActiveTasks", TaskFlags_FOSCOE), settings(s), machine(NULL)
  {
      rsLog.details(tr("Updating active tasks..."));
      ProtocolInfo* pi = AppContext::getProtocolInfoRegistry()->getProtocolInfo( settings->getProtocolId() );
@@ -113,7 +113,7 @@ void UpdateActiveTasks::run() {
     if (hasError() || isCanceled()) {
         return;
     }
-    
+
     QList<qint64> taskIds;
     taskIds = machine->getActiveTasks(stateInfo);
     if (hasError()) {
@@ -136,7 +136,7 @@ void UpdateActiveTasks::addTaskToScheduler( qint64 taskid ) {
         RemoteWorkflowRunTask* workflowTask = qobject_cast<RemoteWorkflowRunTask*> (task);
         if (workflowTask == NULL) {
             continue;
-        } 
+        }
         activeIds.append(workflowTask->getRemoteTaskId());
     }
 

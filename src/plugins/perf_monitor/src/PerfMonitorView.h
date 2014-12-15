@@ -47,7 +47,7 @@ protected:
 
 private:
     void updateCounters();
-    PerfTreeItem* findCounterItem(const GCounter* c) const; 
+    PerfTreeItem* findCounterItem(const GCounter* c) const;
     QTreeWidget* tree;
 };
 

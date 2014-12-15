@@ -79,7 +79,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
         if (os.isCoR()) {
             break;
         }
-        
+
         for (int i=0; i<len && ok; i++) {
             char c = buff[i];
             if (ALPHAS[(uchar)c]) {
@@ -130,7 +130,7 @@ FormatCheckResult RawDNASequenceFormat::checkRawData(const QByteArray& rawData, 
     }
     bool hasBinaryData = TextUtils::contains(TextUtils::BINARY, data, size);
     //returning 'very low chance' here just because it's impossible to have 100% detection for this format
-    return hasBinaryData ? FormatDetection_NotMatched : FormatDetection_VeryLowSimilarity; 
+    return hasBinaryData ? FormatDetection_NotMatched : FormatDetection_VeryLowSimilarity;
 }
 
 void RawDNASequenceFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {

@@ -56,10 +56,10 @@ public:
 
     SslConfig() { protocols << SSLV2 << SSLV3 << TLSV1; }
     QList<QString> protocols;
-    QString currentProtocol;    
+    QString currentProtocol;
 };
 
-class U2CORE_EXPORT RemoteRequestConfig 
+class U2CORE_EXPORT RemoteRequestConfig
 {
 public:
     static const int DEFAULT_REMOTE_REQUEST_TIMEOUT_SECONDS;
@@ -98,7 +98,7 @@ public:
 private:
     static Proxy_t url2type( const QUrl & url );
     ProxyConfig pc;
-    SslConfig sslConfig;    
+    SslConfig sslConfig;
     RemoteRequestConfig rrConfig;
 };
 

@@ -29,8 +29,8 @@ enum AnnotationModificationType {
     AnnotationModification_QualifierAdded,
     AnnotationModification_QualifierRemoved,
     AnnotationModification_LocationChanged,
-    AnnotationModification_AddedToGroup, // Emitted when annotation is added to a group. 
-                                         // Note that first time annotation added to the object it automatically 
+    AnnotationModification_AddedToGroup, // Emitted when annotation is added to a group.
+                                         // Note that first time annotation added to the object it automatically
                                          // has a group assigned and this signal is not emitted
     AnnotationModification_RemovedFromGroup
 };

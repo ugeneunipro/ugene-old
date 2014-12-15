@@ -153,7 +153,7 @@ bool QDConstraintController::match(const U2Region& srcReg,
         }
         return false;
     case S2S:
-        {                    
+        {
             int srcStarts = srcReg.startPos;
             int dstStarts = dstReg.startPos;
             int distance = dstStarts - srcStarts;
@@ -163,7 +163,7 @@ bool QDConstraintController::match(const U2Region& srcReg,
         }
         return false;
     case E2E:
-        {                    
+        {
             int srcEnds = srcReg.endPos();
             int dstEnds = dstReg.endPos();
             int distance = dstEnds - srcEnds;

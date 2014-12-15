@@ -77,7 +77,7 @@ void Dbi::init(const QHash<QString, QString> &properties, const QVariantMap & /*
         }
 
         dbRef.useTransaction = true;
-        if(!exists) { 
+        if(!exists) {
             buildIndex(os);
         }
         assembliesCount = reader->getHeader().getReferences().size();

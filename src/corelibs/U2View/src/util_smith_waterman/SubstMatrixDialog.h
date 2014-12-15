@@ -52,7 +52,7 @@ private:
 
     int hlBorderColumn;
     int hlBorderRow;
-    
+
     int hlInnerColumn;
     int hlInnerRow;
 

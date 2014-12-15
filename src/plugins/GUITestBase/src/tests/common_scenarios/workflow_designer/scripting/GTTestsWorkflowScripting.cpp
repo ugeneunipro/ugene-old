@@ -96,7 +96,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 // 	WD Scripts check syntax doesn't work (0001728)
-// 
+//
 // 	1. Open WD. Do toolbar menu "Scripting mode->Show scripting options". Place write FASTA worker on field.
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
@@ -108,7 +108,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 //  2. Select this worker, select menu item "user script" from "output file" parameter.
 //  Expected state: Script editor dialog appears.
-// 
+//
 //  3. Paste "#$%not a script asdasd321 123" at the script text area. Click "Check syntax" button
 //  Expected state: messagebox "Script syntax check failed!" appears.
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os,"Write FASTA"));

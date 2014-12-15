@@ -62,9 +62,9 @@ public:
         const ExpertDiscoveryResultItem* o = (const ExpertDiscoveryResultItem*)&other;
         int n = treeWidget()->sortColumn();
         switch (n) {
-            case 0 : 
+            case 0 :
                 return res.region.startPos < o->res.region.startPos;
-            case 1: 
+            case 1:
                 return res.strand != o->res.strand ? res.strand.isCompementary():  (res.region.startPos < o->res.region.startPos);
             case 2:
                 return res.score < o->res.score;
@@ -79,7 +79,7 @@ ExpertDiscoverySearchDialogController::ExpertDiscoverySearchDialogController(ADV
 
     ctx = _ctx;
     task = NULL;
-    
+
     initialSelection = ctx->getSequenceSelection()->isEmpty() ? U2Region() : ctx->getSequenceSelection()->getSelectedRegions().first();
     int seqLen = ctx->getSequenceLength();
     rs=new RegionSelector(this, seqLen, true, ctx->getSequenceSelection());
@@ -89,7 +89,7 @@ ExpertDiscoverySearchDialogController::ExpertDiscoverySearchDialogController(ADV
 
     connectGUI();
     updateState();
-    
+
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), SLOT(sl_onTimer()));
 
@@ -108,7 +108,7 @@ void ExpertDiscoverySearchDialogController::connectGUI() {
     connect(pbClear, SIGNAL(clicked()), SLOT(sl_onClearList()));
     connect(pbSearch, SIGNAL(clicked()), SLOT(sl_onSearch()));
     connect(pbClose, SIGNAL(clicked()), SLOT(sl_onClose()));
-    
+
     //results list
     connect(resultsTree, SIGNAL(itemActivated(QTreeWidgetItem*, int)), SLOT(sl_onResultActivated(QTreeWidgetItem*, int)));
 
@@ -122,17 +122,17 @@ void ExpertDiscoverySearchDialogController::updateState() {
     bool hasCompl = ctx->getComplementTT()!=NULL;
 
     bool hasResults = resultsTree->topLevelItemCount() > 0;
-    
+
     pbSearch->setEnabled(!hasActiveTask);
-    
+
     pbSaveAnnotations->setEnabled(!hasActiveTask && hasResults);
     pbClear->setEnabled(!hasActiveTask && hasResults);
-    pbClose->setText(hasActiveTask ? tr("Cancel") : tr("Close"));  
+    pbClose->setText(hasActiveTask ? tr("Cancel") : tr("Close"));
 
     rbBoth->setEnabled(!hasActiveTask && hasCompl);
     rbDirect->setEnabled(!hasActiveTask);
     rbComplement->setEnabled(!hasActiveTask && hasCompl);
-    
+
     updateStatus();
 }
 
@@ -162,7 +162,7 @@ void ExpertDiscoverySearchDialogController::sl_onSaveAnnotations() {
     if (resultsTree->topLevelItemCount() == 0) {
         return;
     }
-    
+
     CreateAnnotationModel m;
     m.sequenceObjectRef = ctx->getSequenceObject();
     m.hideLocation = true;
@@ -207,7 +207,7 @@ void ExpertDiscoverySearchDialogController::sl_onClose() {
 
 void ExpertDiscoverySearchDialogController::runTask() {
     assert(task == NULL);
-  
+
     bool isRegionOk=false;
     U2Region reg=rs->getRegion(&isRegionOk);
     if(!isRegionOk){
@@ -216,12 +216,12 @@ void ExpertDiscoverySearchDialogController::runTask() {
     }
 
     QByteArray seq = ctx->getSequenceData(reg);
-    
+
     ExpertDiscoverySearchCfg cfg;
     cfg.complTT = rbBoth->isChecked() || rbComplement->isChecked() ? ctx->getComplementTT() : NULL;
     cfg.complOnly = rbComplement->isChecked();
     cfg.minSCORE = scoreSpinBox->value();
-    
+
     //TODO: ask if to clear
     sl_onClearList();
 
@@ -249,14 +249,14 @@ void ExpertDiscoverySearchDialogController::sl_onTimer() {
 
 void ExpertDiscoverySearchDialogController::importResults() {
     resultsTree->setSortingEnabled(false);
-    
+
     QList<ExpertDiscoverySearchResult> newResults = task->takeResults();
     foreach(const ExpertDiscoverySearchResult& r, newResults) {
         ExpertDiscoveryResultItem* item  = new ExpertDiscoveryResultItem(r);
         resultsTree->addTopLevelItem(item);
     }
     updateStatus();
-    
+
     resultsTree->setSortingEnabled(true);
 }
 
@@ -272,7 +272,7 @@ void ExpertDiscoverySearchDialogController::sl_onResultActivated(QTreeWidgetItem
 //////////////////////////////////////////////////////////////////////////
 /// tree
 
-ExpertDiscoveryResultItem::ExpertDiscoveryResultItem(const ExpertDiscoverySearchResult& r) : res(r) 
+ExpertDiscoveryResultItem::ExpertDiscoveryResultItem(const ExpertDiscoverySearchResult& r) : res(r)
 {
     QString range = QString("%1..%2").arg(r.region.startPos + 1).arg(r.region.endPos());
     setTextAlignment(0, Qt::AlignRight);

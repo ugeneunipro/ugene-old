@@ -29,9 +29,9 @@ namespace U2 {
 //TODO: remove hard-coded '-' gap symbol. Allow custom gap symbols ?
 
 /**
- * Iterator for Next-Gen Sequencing short reads based on CIGAR model 
+ * Iterator for Next-Gen Sequencing short reads based on CIGAR model
  * (see enum U2CigarOp for details about CIGAR operations). Provides transparent
- * iterations through read sequence, skipping clipping/padding/insertions and 
+ * iterations through read sequence, skipping clipping/padding/insertions and
  * returning special symbols when going through deletions or skipped regions.
  *
  * Handling of CIGAR operations:
@@ -73,7 +73,7 @@ private:
     bool isDeletion() const;
     bool isPaddingOrHardClip() const;
 
-    int offsetInRead; 
+    int offsetInRead;
     const QByteArray & read;
 
     int offsetInToken;
@@ -84,4 +84,4 @@ private:
 extern void shortReadIteratorSmokeTest();
 
 } //ns
-#endif 
+#endif

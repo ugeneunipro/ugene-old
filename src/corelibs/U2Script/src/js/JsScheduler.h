@@ -38,7 +38,7 @@ public:
                         ~JsScheduler( );
 
     virtual Task *      tick( );
-    
+
 private:
     Local<Function>     schedulerCallback;
 };

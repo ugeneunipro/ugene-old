@@ -207,7 +207,7 @@ void ExpertDiscoveryData::setRecBound(){
         return;
     vector<double> vPosScore = posBase.getScores();
     vector<double> vNegScore = negBase.getScores();
-   
+
     ExpertDiscoverySetupRecBoundDialog dlg(recognizationBound, vPosScore, vNegScore);
     if(dlg.exec()){
         recognizationBound = dlg.getRecognizationBound();
@@ -217,7 +217,7 @@ void ExpertDiscoveryData::setRecBound(){
     setModifed();
 }
 bool ExpertDiscoveryData::updateScores(){
- 
+
     QProgressDialog pd(tr("Setting up recognition bound. Please wait"), tr("Cancel"), 0, 100);
     pd.setWindowModality(Qt::WindowModal);
     pd.show();
@@ -248,7 +248,7 @@ bool ExpertDiscoveryData::updateScores(){
         }
         pd.setValue((100*(i+posBase.getSize()))/sizeTotal);
     }
-    
+
     pd.setLabelText(tr("Updating control sequences"));
     for (int i=0; i<conBase.getSize(); i++)
     {
@@ -262,7 +262,7 @@ bool ExpertDiscoveryData::updateScores(){
         pd.setValue((100*(i+posBase.getSize() + negBase.getSize()))/sizeTotal);
     }
 
-    return true;   
+    return true;
 }
 
 bool ExpertDiscoveryData::isLettersMarkedUp(void) const
@@ -301,7 +301,7 @@ void ExpertDiscoveryData::setBase(const QList<GObject*> &objects, SequenceBase& 
                     seq.setHasScore(false);
                     base.addSequence(seq);
                     QString name=QString::fromStdString(seq.getName());
-                    recDataStorage.addSequence(name);   
+                    recDataStorage.addSequence(name);
                 }
             }
         }
@@ -424,7 +424,7 @@ bool ExpertDiscoveryData::loadMarkup(const QString& firstF, const QString& secon
     posAnn.clear();
     negAnn.clear();
     desc.clear();
- 
+
     QString strPosName = firstF;
     try {
         if (strPosName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
@@ -432,7 +432,7 @@ bool ExpertDiscoveryData::loadMarkup(const QString& firstF, const QString& secon
                 throw std::exception();
         }
         else {
-            ifstream fPosAnn(strPosName.toStdString().c_str());  
+            ifstream fPosAnn(strPosName.toStdString().c_str());
             posAnn.load(fPosAnn);
         }
      }
@@ -541,7 +541,7 @@ bool ExpertDiscoveryData::loadAnnotation(MarkingBase& base, const SequenceBase& 
                                 sequenceId = sequenceId.right(sequenceId.length() - cutPos - 1);
                             }
                             sequenceId = sequenceId.trimmed();
-                            
+
                             //sequence
 
                             int objN = seqBase.getObjNo(sequenceId.toStdString().c_str());
@@ -569,7 +569,7 @@ bool ExpertDiscoveryData::loadAnnotation(MarkingBase& base, const SequenceBase& 
                                 }
                                 base.setMarking(objN, mrk);
                             }
-                            
+
                         }
                         pSequenceNode = pSequenceNode.nextSibling();
                     }
@@ -579,8 +579,8 @@ bool ExpertDiscoveryData::loadAnnotation(MarkingBase& base, const SequenceBase& 
         }
         pFamilyNode = pFamilyNode.nextSibling();
     }
-    return true;  
-       
+    return true;
+
 }
 
 bool ExpertDiscoveryData::generateDescription(bool clearDescr){
@@ -588,7 +588,7 @@ bool ExpertDiscoveryData::generateDescription(bool clearDescr){
         desc.clear();
     }
     SequenceBase* seqBase = &posBase;
-    MarkingBase* base = &posAnn; 
+    MarkingBase* base = &posAnn;
     for (int k=0; k<2; k++) {
         for (int i=0; i<seqBase->getSize(); i++) {
             try {
@@ -824,7 +824,7 @@ bool ExpertDiscoveryData::generateRecognizationReport(const SequenceBase& rBase,
 
 bool ExpertDiscoveryData::generateRecognizationReportPositive(QString strName, bool bSuppressNulls, QString& resultText){
     const SequenceBase& rBase = posBase;
-   
+
     int nRecognized = 0;
     int nNulls = 0;
     for (int i=0; i<rBase.getSize(); i++)
@@ -958,10 +958,10 @@ int ExpertDiscoveryData::getMaxPosSequenceLen(){
 }
 
 float ExpertDiscoveryData::calculateSequenceScore(const char* seq, int seqLen, ExpertDiscoveryData& edData, DNATranslation* complTT){
-    
+
     Sequence edSequence;
     if(complTT != NULL){
-        QByteArray revComplDna(seqLen, 0);    
+        QByteArray revComplDna(seqLen, 0);
         complTT->translate(seq, seqLen, revComplDna.data(), seqLen);
         TextUtils::reverse(revComplDna.data(), revComplDna.size());
         edSequence.setSequence(revComplDna.data());
@@ -983,7 +983,7 @@ float ExpertDiscoveryData::calculateSequenceScore(const char* seq, int seqLen, E
         }
         edSequence.setSequenceMarking(mrk);
     }
-    
+
     const SignalList& rSelList = edData.getSelectedSignalsContainer().GetSelectedSignals();
     int listSize = rSelList.size();
     if (listSize == 0){
@@ -993,7 +993,7 @@ float ExpertDiscoveryData::calculateSequenceScore(const char* seq, int seqLen, E
     RecognizationData data;
     data.resize(seqLen);
     fill(data.begin(), data.end(), 0);
- 
+
     SignalList::const_iterator iter = rSelList.begin();
     int it = 0;
     while (iter != rSelList.end()) {
@@ -1021,7 +1021,7 @@ float ExpertDiscoveryData::calculateSequenceScore(const char* seq, int seqLen, E
         iter++;
         it++;
     }
-    
+
     float score = 0;
     for (int i = 0; i < seqLen; i++){
         score+=data[i];

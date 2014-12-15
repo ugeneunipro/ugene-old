@@ -49,12 +49,12 @@
 
 namespace U2 {
 
-/* TRANSLATOR U2::ClustalWAlnFormat */    
-/* TRANSLATOR U2::IOAdapter */    
+/* TRANSLATOR U2::ClustalWAlnFormat */
+/* TRANSLATOR U2::IOAdapter */
 
 const QByteArray ClustalWAlnFormat::CLUSTAL_HEADER = "CLUSTAL";
 
-ClustalWAlnFormat::ClustalWAlnFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags(DocumentFormatFlag_SupportWriting) | DocumentFormatFlag_OnlyOneObject, QStringList("aln")) 
+ClustalWAlnFormat::ClustalWAlnFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags(DocumentFormatFlag_SupportWriting) | DocumentFormatFlag_OnlyOneObject, QStringList("aln"))
 {
     formatName = tr("CLUSTALW");
     formatDescription = tr("Clustalw is a format for storing multiple sequence alignments");
@@ -68,7 +68,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObjec
 
     const QBitArray& LINE_BREAKS = TextUtils::LINE_BREAKS;
     const QBitArray& WHITES = TextUtils::WHITES;
-    
+
     QString objName = io->getURL().baseFileName();
     MAlignment al(objName);
     bool lineOk = false;
@@ -103,7 +103,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObjec
             os.setError( ClustalWAlnFormat::tr("Error parsing file"));
             break;
         }
-        
+
         QByteArray line = QByteArray::fromRawData( buff, len );
         if (valStartPos == 0) {
             int spaceIdx = line.indexOf(' ');
@@ -131,9 +131,9 @@ void ClustalWAlnFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObjec
 
         QByteArray name = line.left(valStartPos).trimmed();
         QByteArray value = line.mid(valStartPos, valEndPos - valStartPos);
-                
+
         int seqsInModel = al.getNumRows();
-        bool lastBlockLine = (!firstBlock && sequenceIdx == seqsInModel) 
+        bool lastBlockLine = (!firstBlock && sequenceIdx == seqsInModel)
             || numNs >=2
             || name.isEmpty()
             || value.contains(' ') || value.contains(':') || value.contains('.');
@@ -147,7 +147,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObjec
             }
         } else {
             int rowIdx = -1;
-            if (sequenceIdx < seqsInModel) { 
+            if (sequenceIdx < seqsInModel) {
                 rowIdx = sequenceIdx;
             } else if (sequenceIdx == seqsInModel) {
                 assert(lastBlockLine);
@@ -155,7 +155,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObjec
             } else {
                 os.setError( ClustalWAlnFormat::tr("Incorrect number of sequences in block"));
                 break;
-            } 
+            }
             if (rowIdx != -1) {
                 const MAlignmentRow& row = al.getRow(rowIdx);
                 if (row.getName() != name) {
@@ -187,7 +187,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObjec
     const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
     U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, folder, al, os);
     CHECK_OP(os, );
-    
+
     MAlignmentObject* obj = new MAlignmentObject(al.getName(), msaRef);
     objects.append(obj);
 }
@@ -195,7 +195,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObjec
 Document* ClustalWAlnFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
     QList<GObject*> objects;
     load(io, dbiRef, objects, fs, os);
-    CHECK_OP_EXT(os, qDeleteAll(objects), NULL);    
+    CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     assert(objects.size() == 1);
     return new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
 }
@@ -213,7 +213,7 @@ void ClustalWAlnFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList
     SAFE_POINT(NULL != obj, "Clustal entry storing: NULL alignment object", );
 
     const MAlignment& ma = obj->getMAlignment();
-    
+
     //write header
     QByteArray header("CLUSTAL W 2.0 multiple sequence alignment\n\n");
     int len = io->writeBlock(header);
@@ -235,7 +235,7 @@ void ClustalWAlnFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList
     MSAConsensusAlgorithmFactory* algoFactory = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(BuiltInConsensusAlgorithms::CLUSTAL_ALGO);
     QScopedPointer<MSAConsensusAlgorithm> algo(algoFactory->createAlgorithm(ma));
     MSAConsensusUtils::updateConsensus(ma, consensus, algo.data());
-    
+
     int maxNumLength  = 1 + (aliLen < 10 ? 1 : (int)log10((double)aliLen));
 
     int seqStart = maxNameLength + 2; //+1 for space separator

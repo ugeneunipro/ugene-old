@@ -51,13 +51,13 @@ public:
 
     void prepare();
     void run();
-    U2Region parseRegion(const QString& n, const QDomElement& el); 
+    U2Region parseRegion(const QString& n, const QDomElement& el);
 
     QString     seq, seq2;
     RFAlgorithm alg;
-    
+
     U2Region     region;
-    
+
     int         w, c, minD, maxD;
     bool        inverted;
     bool        reflect;
@@ -77,10 +77,10 @@ public:
 
     void prepare();
     void run();
-    U2Region parseRegion(const QString& n, const QDomElement& el); 
+    U2Region parseRegion(const QString& n, const QDomElement& el);
 
     U2Region         region;
-    
+
     char*           string;
     int             minD, maxD;
     int             minSize, maxSize, repeatCount;
@@ -131,7 +131,7 @@ public:
     void prepare();
     void run();
     void cleanup();
-        
+
     QString                 seqObjName;
     QString                 query;
     bool                    useBitMask;

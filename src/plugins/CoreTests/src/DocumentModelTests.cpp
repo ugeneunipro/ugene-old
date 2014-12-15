@@ -93,7 +93,7 @@ void GTest_LoadDocument::init(XMLTestFormat*, const QDomElement& el) {
     QString dir = el.attribute("dir");
     if(dir == "temp"){
         tempFile = true;
-        url = getTempDir(env) + "/" + el.attribute("url");   
+        url = getTempDir(env) + "/" + el.attribute("url");
     } else{
         tempFile = false;
         QString commonDataDir = env->getVar("COMMON_DATA_DIR");
@@ -187,14 +187,14 @@ void GTest_SaveDocument::init(XMLTestFormat* tf, const QDomElement& el) {
     }
 
     url = dir + "/" + el.attribute("url");
-    
+
     IOAdapterId io = el.attribute("io");
     iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(io);
 
     if (iof == NULL) {
         stateInfo.setError(QString("io_adapter_not_found_%1").arg(io));
         return ;
-    } 
+    }
 
 }
 
@@ -461,16 +461,16 @@ void GTest_DocumentFormat::init(XMLTestFormat *tf, const QDomElement& el) {
     if (docFormat.isEmpty()) {
         failMissingValue(VALUE_ATTR);
         return;
-    } 
-} 
+    }
+}
 
 Task::ReportResult GTest_DocumentFormat::report() {
-    
+
     QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(GUrl(docUrl));
     if(formats.isEmpty()) {
         stateInfo.setError(QString("Can't detect format for file %1").arg(docUrl));
         return ReportResult_Finished;
-    } 
+    }
 
     QString format = formats.first().format->getFormatId();
     if (format != docFormat) {
@@ -495,7 +495,7 @@ void GTest_DocumentNumObjects::init(XMLTestFormat *tf, const QDomElement& el) {
     if (v.isEmpty()) {
         failMissingValue(VALUE_ATTR);
         return;
-    } 
+    }
     bool ok = false;
     numObjs = v.toInt(&ok);
     if (!ok) {
@@ -788,18 +788,18 @@ Task::ReportResult GTest_CompareFiles::report() {
         setError(QString("Cannot open file '%1'!").arg(doc1Path));
         return ReportResult_Finished;
     }
-    
+
     QFile f2(doc2Path);
     if(!f2.open(QIODevice::ReadOnly)) {
         setError(QString("Cannot open file '%1'!").arg(doc2Path));
         return ReportResult_Finished;
     }
-    
+
     int lineNum = 0;
     while(1) {
         QByteArray bytes1 = f1.readLine(READ_LINE_MAX_SZ);
         QByteArray bytes2 = f2.readLine(READ_LINE_MAX_SZ);
-        
+
         if(bytes1.isEmpty() || bytes2.isEmpty()) {
             if( bytes1 != bytes2 ) {
                 setError(QString("The files %1 and %2 are of different sizes!").arg(f1.fileName()).arg(f2.fileName()));
@@ -807,7 +807,7 @@ Task::ReportResult GTest_CompareFiles::report() {
             }
             break;
         }
-        
+
         if(byLines) {
             bytes1 = bytes1.trimmed();
             bytes2 = bytes2.trimmed();
@@ -844,12 +844,12 @@ Task::ReportResult GTest_CompareFiles::report() {
 
             }
         }
-        
+
         if(bytes1.endsWith("\n") || byLines) {
             lineNum++;
         }
     }
-    
+
     return ReportResult_Finished;
 }
 

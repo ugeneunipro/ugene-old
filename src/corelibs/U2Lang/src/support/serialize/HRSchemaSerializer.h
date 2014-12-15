@@ -51,11 +51,11 @@ class U2LANG_EXPORT HRSchemaSerializer : public QObject {
     Q_OBJECT
 public:
     typedef QMap<ActorId, QString> NamesMap;
-    
+
     static void parseHeader(Tokenizer & tokenizer, Metadata * meta);
     static void parseIncludes(Tokenizer &tokenizer, QList<QString> includedUrls);
     static void parseBodyHeader(Tokenizer & tokenizer, Metadata * meta, bool needName = true);
-    static Actor* parseElementsDefinition(Tokenizer & tokenizer, const QString & actorName, QMap<QString, Actor*> & actorMap, 
+    static Actor* parseElementsDefinition(Tokenizer & tokenizer, const QString & actorName, QMap<QString, Actor*> & actorMap,
                                             QMap<ActorId, ActorId>* idMap = NULL);
     static ValidatorDesc parseValidator(const QString &desc, U2OpStatus &os);
     static void parseGrouperOutSlots(Actor *proc, const QStringList &outSlots, const QString &attrId);
@@ -80,7 +80,7 @@ public:
     static void addEmptyValsToBindings(const QList<Actor*> & procs);
     // idMap not null in copy mode
     static QString string2Schema(const QString & data, Schema * schema, Metadata * meta = NULL, QMap<ActorId, ActorId>* idMap = NULL, QList<QString> includedUrls = QList<QString>());
-    
+
     static void addPart( QString & to, const QString & w);
     static QString header2String(const Metadata * meta);
     static QString makeBlock(const QString & title, const QString & name, const QString & blockItself, int tabsNum = 1, bool nl = false, bool sc = false);
@@ -104,7 +104,7 @@ public:
     static ExternalProcessConfig *parseActorBody(Tokenizer & tokenizer);
     static void parsePorts(Tokenizer & tokenizer, QList<DataConfig>& ports);
     static void parseAttributes(Tokenizer & tokenizer, QList<AttributeConfig>& attrs);
-    
+
     static QMap<ActorId, ActorId> deepCopy(const Schema& from, Schema* to, U2OpStatus &os);
 
     static bool isHeaderLine(const QString &line);

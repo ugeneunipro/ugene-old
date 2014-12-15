@@ -55,10 +55,10 @@ class U2CORE_EXPORT Service : public QObject {
     friend class ServiceLock;
     Q_OBJECT
 public:
-    Service(ServiceType t, const QString& _name, const QString& _desc, 
+    Service(ServiceType t, const QString& _name, const QString& _desc,
         const QList<ServiceType>& parentServices = QList<ServiceType>(),
         ServiceFlags flags = ServiceFlag_None);
-    
+
     const QList<ServiceType>& getParentServiceTypes() const {return parentServices;}
 
     ServiceType getType() const {return type;}
@@ -112,7 +112,7 @@ public:
     virtual Task* registerServiceTask(Service* s, bool lockServiceResource = true) = 0;
 
     /// unregisters the service in a registry.
-    /// if the service is enabled -> initiates service disabling task first 
+    /// if the service is enabled -> initiates service disabling task first
     virtual Task* unregisterServiceTask(Service* s, bool lockServiceResource = true) = 0;
 
     virtual Task* enableServiceTask(Service* s, bool lockServiceResource = true) = 0;

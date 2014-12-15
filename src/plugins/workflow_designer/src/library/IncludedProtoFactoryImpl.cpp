@@ -105,7 +105,7 @@ ActorPrototype *IncludedProtoFactoryImpl::_getScriptProto(QList<DataTypePtr > in
 
 ActorPrototype *IncludedProtoFactoryImpl::_getExternalToolProto(ExternalProcessConfig *cfg) {
     DataTypeRegistry *dtr = WorkflowEnv::getDataTypeRegistry();
-    QList<PortDescriptor*> portDescs; 
+    QList<PortDescriptor*> portDescs;
     foreach(const DataConfig& dcfg, cfg->inputs) {
         QMap<Descriptor, DataTypePtr> map;
         if(dcfg.type == SEQ_WITH_ANNS) {

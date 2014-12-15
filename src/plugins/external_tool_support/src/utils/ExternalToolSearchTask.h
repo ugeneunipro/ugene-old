@@ -44,7 +44,7 @@ public:
     virtual void run();
     QString getToolName() const { return toolName; }
     QStringList getPaths() const { return toolPaths; }
-    
+
 private:
     QString getExeName(ExternalTool *tool);
 

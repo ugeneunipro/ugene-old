@@ -170,7 +170,7 @@ public:
 
     static OpenCLGpuRegistry * getOpenCLGpuRegistry() { return getInstance()->_getOpenCLGpuRegistry(); }
 
-    static RecentlyDownloadedCache* getRecentlyDownloadedCache() { return getInstance()->_getRecentlyDownloadedCache(); }   
+    static RecentlyDownloadedCache* getRecentlyDownloadedCache() { return getInstance()->_getRecentlyDownloadedCache(); }
 
     static ProtocolInfoRegistry * getProtocolInfoRegistry() { return getInstance()->_getProtocolInfoRegistry(); }
 
@@ -183,7 +183,7 @@ public:
     static MSAConsensusAlgorithmRegistry* getMSAConsensusAlgorithmRegistry() {return getInstance()->_getMSAConsensusAlgorithmRegistry(); }
 
     static MSADistanceAlgorithmRegistry* getMSADistanceAlgorithmRegistry() {return getInstance()->_getMSADistanceAlgorithmRegistry(); }
-    
+
     static AssemblyConsensusAlgorithmRegistry* getAssemblyConsensusAlgorithmRegistry() {return getInstance()->_getAssemblyConsensusAlgorithmRegistry(); }
 
     static PWMConversionAlgorithmRegistry* getPWMConversionAlgorithmRegistry() {return getInstance()->_getPWMConversionAlgorithmRegistry(); }
@@ -193,9 +193,9 @@ public:
     static DnaAssemblyAlgRegistry* getDnaAssemblyAlgRegistry() { return getInstance()->_getDnaAssemblyAlgRegistry(); }
 
     static GenomeAssemblyAlgRegistry* getGenomeAssemblyAlgRegistry() { return getInstance()->_getGenomeAssemblyAlgRegistry(); }
-    
+
     static RepeatFinderTaskFactoryRegistry* getRepeatFinderTaskFactoryRegistry() {return getInstance()->_getRepeatFinderTaskFactoryRegistry();}
-    
+
     static AutoAnnotationsSupport* getAutoAnnotationsSupport() { return getInstance()->_getAutoAnnotationsSupport(); }
 
     static CDSearchFactoryRegistry* getCDSFactoryRegistry() { return getInstance()->_getCDSFactoryRegistry(); }
@@ -228,7 +228,7 @@ public:
     static UdrSchemaRegistry *getUdrSchemaRegistry() { return getInstance()->_getUdrSchemaRegistry(); }
 
     static U2DataPathRegistry* getDataPathRegistry() {return getInstance()->_getDataPathRegistry();}
-    
+
     static bool isGUIMode() {return getInstance()->_isGUIMode(); }
 
     static WorkflowScriptRegistry* getWorkflowScriptRegistry() { return getInstance()->_getWorkflowScriptRegistry(); }
@@ -320,7 +320,7 @@ protected:
     virtual AppFileStorage *_getAppFileStorage() const = 0;
     virtual PairwiseAlignmentRegistry* _getPairwiseAlignmentRegistry() const = 0;
     virtual U2DataPathRegistry* _getDataPathRegistry() const = 0;
-    virtual DASSourceRegistry* _getDASSourceRegistry() const = 0; 
+    virtual DASSourceRegistry* _getDASSourceRegistry() const = 0;
     virtual ScriptingToolRegistry* _getScriptingToolRegistry() const = 0;
     virtual CredentialsAsker* _getCredentialsAsker() const = 0;
     virtual PasswordStorage* _getPasswordStorage() const = 0;

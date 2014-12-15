@@ -76,7 +76,7 @@ public:
 
 };
 
-int main(int argc, char **argv) 
+int main(int argc, char **argv)
 {
     CrashHandler::setupHandler();
     CrashHandler::preallocateReservedSpace();
@@ -108,17 +108,17 @@ int main(int argc, char **argv)
     QCoreApplication::addLibraryPath(devPluginsPath); //dev version
 
     // parse all cmdline arguments
-    CMDLineRegistry* cmdLineRegistry = new CMDLineRegistry(app.arguments()); 
+    CMDLineRegistry* cmdLineRegistry = new CMDLineRegistry(app.arguments());
     appContext->setCMDLineRegistry(cmdLineRegistry);
-    
+
     //1 create settings
     SettingsImpl* globalSettings = new SettingsImpl(QSettings::SystemScope);
     appContext->setGlobalSettings(globalSettings);
 
     SettingsImpl * settings = new SettingsImpl( QSettings::UserScope );
     appContext->setSettings( settings );
-    
-    
+
+
     AppSettings* appSettings = new AppSettingsImpl();
     appContext->setAppSettings(appSettings);
 
@@ -143,7 +143,7 @@ int main(int argc, char **argv)
 
     registerCoreServices();
 
-    //3 run QT 
+    //3 run QT
     t1.stop();
     ConsoleShutdownTask watchQuit(&app);
     int rc = app.exec();

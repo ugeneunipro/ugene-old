@@ -93,7 +93,7 @@ bool GrouperActionUtils::equalData(const QString &groupOp, const QVariant &data1
         if (GroupOperations::BY_ID() == groupOp) {
             return seqId1 == seqId2;
         }
-        
+
         U2OpStatusImpl os;
         QScopedPointer<U2SequenceObject> seqObj1(StorageUtils::getSequenceObject(context->getDataStorage(), seqId1));
         QScopedPointer<U2SequenceObject> seqObj2(StorageUtils::getSequenceObject(context->getDataStorage(), seqId2));

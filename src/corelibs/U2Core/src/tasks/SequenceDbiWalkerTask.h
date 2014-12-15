@@ -45,7 +45,7 @@ public:
     virtual ~SequenceDbiWalkerCallback(){}
 
     virtual void onRegion(SequenceDbiWalkerSubtask* t, TaskStateInfo& ti) = 0;
-    
+
     /* implement this to give SequenceDbiWalkerSubtask required resources
      * here are resources for ONE(!) SequenceDbiWalkerSubtask execution e.g. for one execution of onRegion function
      */
@@ -55,9 +55,9 @@ public:
 class U2CORE_EXPORT SequenceDbiWalkerTask : public Task {
     Q_OBJECT
 public:
-    SequenceDbiWalkerTask(const SequenceDbiWalkerConfig& config, SequenceDbiWalkerCallback* callback, 
+    SequenceDbiWalkerTask(const SequenceDbiWalkerConfig& config, SequenceDbiWalkerCallback* callback,
         const QString& name, TaskFlags tf = TaskFlags_NR_FOSCOE);
-    
+
     SequenceDbiWalkerCallback*     getCallback() const {return callback;}
     const SequenceDbiWalkerConfig& getConfig() const {return config;}
 
@@ -77,27 +77,27 @@ private:
 class U2CORE_EXPORT SequenceDbiWalkerSubtask : public Task {
     Q_OBJECT
 public:
-    SequenceDbiWalkerSubtask(SequenceDbiWalkerTask* t, const U2Region& globalReg, bool lo, bool ro, 
+    SequenceDbiWalkerSubtask(SequenceDbiWalkerTask* t, const U2Region& globalReg, bool lo, bool ro,
                         const U2EntityRef& seqRef, int localLen, bool doCompl, bool doAmino);
 
     void run();
-    
+
     const char* getRegionSequence();
-    
+
     int  getRegionSequenceLen();
-    
+
     bool isDNAComplemented() const {return doCompl;}
-    
+
     bool isAminoTranslated() const {return doAmino;}
-    
+
     U2Region getGlobalRegion() const {return globalRegion;}
-    
+
     const SequenceDbiWalkerConfig& getGlobalConfig() const {return t->getConfig();}
 
     bool intersectsWithOverlaps(const U2Region& globalReg) const;
     bool hasLeftOverlap() const {return leftOverlap;}
     bool hasRightOverlap() const {return rightOverlap;}
-    
+
 private:
     bool needLocalRegionProcessing() const {return (doAmino || doCompl) && processedSeqImage.isEmpty();}
     void prepareLocalRegion();
@@ -113,7 +113,7 @@ private:
     bool                    doAmino;
     bool                    leftOverlap;
     bool                    rightOverlap;
-    
+
     QByteArray              processedSeqImage;
 
 };

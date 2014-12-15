@@ -202,7 +202,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0003) {
 
 GUI_TEST_CLASS_DEFINITION(post_test_0004) {     //if this post test detect any problems, use test_0004 and post_test_0002 for backup and restore corrupted files
     Q_UNUSED(os);
-#ifdef Q_OS_WIN 
+#ifdef Q_OS_WIN
     QProcess *svnProcess = new QProcess();
 
     QStringList dirs;

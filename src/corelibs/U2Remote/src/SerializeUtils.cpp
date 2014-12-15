@@ -105,7 +105,7 @@ RemoteMachineSettingsPtr SerializeUtils::deserializeRemoteMachineSettings( const
     //if( NULL == protoInfo ) {
     //    return RemoteMachineSettingsPtr();
     //}
-    //    
+    //
     //RemoteMachineSettingsPtr machineSettings = protoInfo->getRemoteMachineFactory()->createSettings( data );
     //if( NULL != retProtoId ) {
     //    *retProtoId = protoId;
@@ -120,7 +120,7 @@ bool SerializeUtils::deserializeRemoteMachineSettings( const QString & data, Rem
         return false;
     }
     *machine = NULL;
-    
+
     RemoteMachineSettings * settings = NULL;
     QString protoId;
     if( !deserializeRemoteMachineSettings( data, &settings, &protoId ) ) {
@@ -130,7 +130,7 @@ bool SerializeUtils::deserializeRemoteMachineSettings( const QString & data, Rem
     assert( NULL != settings );
     *machine = AppContext::getProtocolInfoRegistry()->getProtocolInfo( protoId )->getRemoteMachineFactory()->createInstance( settings );
     delete settings;
-    
+
     return NULL == *machine ? false : true;
 }
 */

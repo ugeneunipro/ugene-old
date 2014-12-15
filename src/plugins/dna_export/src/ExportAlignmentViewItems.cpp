@@ -54,7 +54,7 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // ExportAlignmentViewItemsController
 
-ExportAlignmentViewItemsController::ExportAlignmentViewItemsController(QObject* p) 
+ExportAlignmentViewItemsController::ExportAlignmentViewItemsController(QObject* p)
     : GObjectViewWindowContext(p, MSAEditorFactory::ID)
 {
 }
@@ -86,7 +86,7 @@ MSAExportContext::MSAExportContext(MSAEditor* e) : editor(e) {
     translateMSAAction->setObjectName("amino_translation_of_alignment_rows");
     translateMSAAction->setEnabled(!e->isAlignmentEmpty());
     connect(e->getMSAObject(), SIGNAL(si_alignmentBecomesEmpty(bool)), translateMSAAction, SLOT(setDisabled(bool)));
-    connect(translateMSAAction, SIGNAL(triggered()), SLOT(sl_exportNucleicMsaToAmino()));        
+    connect(translateMSAAction, SIGNAL(triggered()), SLOT(sl_exportNucleicMsaToAmino()));
 }
 
 void MSAExportContext::updateActions() {
@@ -103,7 +103,7 @@ void MSAExportContext::buildMenu(QMenu* m) {
     }
 }
 
-void MSAExportContext::sl_exportNucleicMsaToAmino() {    
+void MSAExportContext::sl_exportNucleicMsaToAmino() {
     const MAlignment& ma = editor->getMSAObject()->getMAlignment();
     assert(ma.getAlphabet()->isNucleic());
 

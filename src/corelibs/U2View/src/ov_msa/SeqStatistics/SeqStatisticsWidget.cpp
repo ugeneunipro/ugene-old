@@ -52,7 +52,7 @@ SeqStatisticsWidget::SeqStatisticsWidget(MSAEditor* m)
     SAFE_POINT(NULL != m, QString("Invalid parameter were passed into constructor SeqStatisticsWidget"), );
 
     copySettings();
-   
+
     QVBoxLayout* mainLayout = initLayout(this);
     mainLayout->setSpacing(0);
 

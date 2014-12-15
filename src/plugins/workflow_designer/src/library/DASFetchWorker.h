@@ -62,14 +62,14 @@ protected:
     QString fullPathDir;
     QStringList featureids;
     QStringList seqids;
-    
+
 };
 
 class DASFetcherFactory : public DomainFactory
 {
 public:
     static const QString ACTOR_ID;
-    
+
 public:
     DASFetcherFactory() : DomainFactory(ACTOR_ID) {}
 

@@ -44,13 +44,13 @@ public:
 
     void setExtraBedFile(const QString &value);
     void setExperimentName(const QString &value);
-    
+
     void setSizes(int value);
     void setSizes(int val1, int val2, int val3);
-    
+
     void setBisizes(int value);
     void setBisizes(int val1, int val2);
-    
+
     void setBg(bool value);
     void setSpan(int value);
     void setProfilingRes(int value);

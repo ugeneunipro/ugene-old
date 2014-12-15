@@ -82,7 +82,7 @@ private:
     QueryScene* scene;
     QListWidgetItem* current;
 };
-    
+
 class QDSamplesWidget : public QListWidget {
     Q_OBJECT
 public:

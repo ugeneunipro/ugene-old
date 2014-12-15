@@ -103,4 +103,4 @@ void GraphLabelsSelectDialog::sl_onOkClicked() {
     return;
 }
 
-} // namespace 
+} // namespace

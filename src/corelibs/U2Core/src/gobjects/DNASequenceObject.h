@@ -36,7 +36,7 @@ class U2CORE_EXPORT U2SequenceObject : public GObject {
     Q_OBJECT
 public:
     U2SequenceObject(const QString& name, const U2EntityRef& seqRef, const QVariantMap& hintsMap = QVariantMap());
-    
+
     U2EntityRef getSequenceRef() const {return getEntityRef();}
 
     qint64 getSequenceLength() const;
@@ -45,23 +45,23 @@ public:
 
     DNASequence getSequence(const U2Region &region) const;
     DNASequence getWholeSequence() const;
-    
+
     QByteArray getWholeSequenceData() const;
-    
+
     /** Obsolete, use the next method instead */
-    QByteArray getSequenceData(const U2Region& r) const; 
+    QByteArray getSequenceData(const U2Region& r) const;
 
     QByteArray getSequenceData(const U2Region& r, U2OpStatus& os) const;
 
     /** Checks whether getting object from dbi can be performed correctly, error returned through U2OpStatus */
     bool isValidDbiObject(U2OpStatus &os);
-    
+
     void setWholeSequence(const DNASequence& seq);
 
     virtual void setGObjectName(const QString& newName);
 
     bool isCircular() const;
-    
+
     void setCircular(bool v);
 
     const DNAAlphabet* getAlphabet() const;

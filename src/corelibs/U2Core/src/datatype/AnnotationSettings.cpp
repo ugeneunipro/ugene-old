@@ -83,7 +83,7 @@ AnnotationSettings* AnnotationSettingsRegistry::getAnnotationSettings(const QStr
     if (s != NULL) {
         return s;
     }
-    
+
     //search in transient cache:
     s = transientMap.value(name);
     if (s!=NULL){
@@ -146,13 +146,13 @@ AnnotationSettings::AnnotationSettings() {
     showNameQuals = false;
 }
 
-AnnotationSettings::AnnotationSettings(const QString& _name, bool _amino, const QColor& _color, bool _visible) 
+AnnotationSettings::AnnotationSettings(const QString& _name, bool _amino, const QColor& _color, bool _visible)
 : name(_name), color(_color), amino(_amino), visible(_visible)
 {
 }
 
 bool AnnotationSettings::equals(const AnnotationSettings* as) const {
-    return name == as->name 
+    return name == as->name
         && amino == as->amino
         && color == as->color
         && visible == as->visible

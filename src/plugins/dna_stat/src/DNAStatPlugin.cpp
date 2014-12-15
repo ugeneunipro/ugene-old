@@ -55,7 +55,7 @@ DNAStatPlugin::DNAStatPlugin() : Plugin(tr("DNA Statistics"), tr("Provides stati
 {
     statViewCtx = new DNAStatMSAEditorContext(this);
     statViewCtx->init();
-    
+
     distanceViewCtx = new DistanceMatrixMSAEditorContext(this);
     distanceViewCtx->init();
 
@@ -66,7 +66,7 @@ DNAStatPlugin::DNAStatPlugin() : Plugin(tr("DNA Statistics"), tr("Provides stati
 
 //////////////////////////////////////////////////////////////////////////
 
-DNAStatMSAEditorContext::DNAStatMSAEditorContext(QObject* p) : 
+DNAStatMSAEditorContext::DNAStatMSAEditorContext(QObject* p) :
 GObjectViewWindowContext(p, MSAEditorFactory::ID) {}
 
 void DNAStatMSAEditorContext::initViewContext(GObjectView* v) {
@@ -91,7 +91,7 @@ void DNAStatMSAEditorContext::buildMenu(GObjectView* v, QMenu* m) {
     SAFE_POINT(statMenu != NULL, "statMenu", );
     foreach(GObjectViewAction* a, actions) {
         statMenu->addAction(a);
-    }    
+    }
 }
 
 void DNAStatMSAEditorContext::sl_showMSAProfileDialog() {
@@ -103,7 +103,7 @@ void DNAStatMSAEditorContext::sl_showMSAProfileDialog() {
 
 //////////////////////////////////////////////////////////////////////////
 
-DistanceMatrixMSAEditorContext::DistanceMatrixMSAEditorContext(QObject* p) : 
+DistanceMatrixMSAEditorContext::DistanceMatrixMSAEditorContext(QObject* p) :
 GObjectViewWindowContext(p, MSAEditorFactory::ID) {}
 
 void DistanceMatrixMSAEditorContext::initViewContext(GObjectView* v) {
@@ -127,7 +127,7 @@ void DistanceMatrixMSAEditorContext::buildMenu(GObjectView* v, QMenu* m) {
     SAFE_POINT(statMenu != NULL, "statMenu", );
     foreach(GObjectViewAction* a, actions) {
         statMenu->addAction(a);
-    }    
+    }
 }
 
 void DistanceMatrixMSAEditorContext::sl_showDistanceMatrixDialog() {
@@ -140,7 +140,7 @@ void DistanceMatrixMSAEditorContext::sl_showDistanceMatrixDialog() {
 
 //////////////////////////////////////////////////////////////////////////
 
-DNAViewStatsContext::DNAViewStatsContext( QObject* p ) 
+DNAViewStatsContext::DNAViewStatsContext( QObject* p )
 : GObjectViewWindowContext(p, AnnotatedDNAViewFactory::ID)
 { }
 

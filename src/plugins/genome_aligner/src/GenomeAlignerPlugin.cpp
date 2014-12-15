@@ -76,7 +76,7 @@ GenomeAlignerPlugin::GenomeAlignerPlugin() : Plugin( tr("UGENE Genome Aligner"),
 
     // Register GenomeAligner algorithm
     DnaAssemblyAlgRegistry* registry = AppContext::getDnaAssemblyAlgRegistry();
-    
+
     bool guiMode = AppContext::getMainWindow();
     DnaAssemblyGUIExtensionsFactory* guiFactory = guiMode ? new GenomeAlignerGuiExtFactory(): NULL;
     QStringList referenceFormats(BaseDocumentFormats::FASTA);

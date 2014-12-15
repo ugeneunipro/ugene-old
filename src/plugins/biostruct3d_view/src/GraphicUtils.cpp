@@ -29,7 +29,7 @@
 #include <BioStruct3DColorScheme.h>
 
 
-namespace U2 { 
+namespace U2 {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +108,7 @@ void glDrawCylinder(GLUquadric* pObj, const Vector3D& p1, const Vector3D& p2, do
 }
 
 /* class Helix3D : public Object3D */
-Helix3D::Helix3D(const Color4f& cl, const Vector3D& c, const Vector3D& n, float r ) 
+Helix3D::Helix3D(const Color4f& cl, const Vector3D& c, const Vector3D& n, float r )
     : Object3D(cl), cterm(c), nterm(n), radius(r)
 {
     pObj = gluNewQuadric();
@@ -155,10 +155,10 @@ Helix3D::~Helix3D()
 }
 
 /* class Strand3D : public Object3D */
-Strand3D::Strand3D( const Color4f& cl, const Vector3D& c, const Vector3D& n, const Vector3D& up ) 
-    : Object3D(cl), cterm(c), nterm(n), upVector(up) 
+Strand3D::Strand3D( const Color4f& cl, const Vector3D& c, const Vector3D& n, const Vector3D& up )
+    : Object3D(cl), cterm(c), nterm(n), upVector(up)
 {
-    
+
     Vector3D vec(nterm - cterm);
     length = vec.length();
     rotAngle = Rad2Deg* acos( vec.z / length );
@@ -173,14 +173,14 @@ void Strand3D::draw(float renderDetailLevel)
 
     float width = 1.5f;
     float height = 0.4f;
-    
+
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color.getConstData());
-    
+
     glPushMatrix();
     glTranslatef(cterm.x, cterm.y, cterm.z);
     glRotatef(rotAngle, rotAxis.x, rotAxis.y, rotAxis.z);
     glCreateArrowPrimitive(width, height, length);
-    glPopMatrix();  
+    glPopMatrix();
 
 }
 
@@ -403,7 +403,7 @@ void glDrawHalfWorm(const Vector3D& p0, const Vector3D& p1,
     }
 
     delete[] fblock;
-} 
+}
 
 void glDrawHalfBond( GLUquadric *pObj, const Vector3D& p1, const Vector3D&p2, double thickness, float renderDetailLevel)
 {
@@ -440,7 +440,7 @@ static void least_squares(int n, const float *x, float *a, float *b) {
     }
     *a /= sum_t2;
     *b = (sum/float(n) - d*(*a));
-} 
+}
 
 
 
@@ -455,14 +455,14 @@ QPair<Vector3D,Vector3D> calcBestAxisThroughPoints( const QVector<Vector3D>& poi
         buf[n + i] = points[i].y;
         buf[2*n + i] = points[i].z;
     }
-    
+
     least_squares(n, buf.data(), a, b);
     least_squares(n, buf.data() + n, a + 1, b + 1);
     least_squares(n, buf.data() + 2*n, a + 2, b + 2);
-    
+
     Vector3D pointA(b[0], b[1], b[2]);
     Vector3D pointB(a[0]*(n-1) + b[0], a[1]*(n-1) + b[1], a[2]*(n-1) + b[2]);
-    
+
     return QPair<Vector3D,Vector3D>(pointA, pointB);
 }
 
@@ -521,31 +521,31 @@ void glCreateArrowPrimitive( float width, float height, float length )
     // Draw arrow body as brick
 
     glNormal3fv(n02);
-    glVertex3fv(b05); 
+    glVertex3fv(b05);
     glVertex3fv(b06); //glNormal3fv(n02);
     glVertex3fv(b02); //glNormal3fv(n02);
     glVertex3fv(b01); //glNormal3fv(n02);
 
     glNormal3fv(n01);
-    glVertex3fv(b04); 
+    glVertex3fv(b04);
     glVertex3fv(b05); //glNormal3fv(n01);
     glVertex3fv(b01); //glNormal3fv(n01);
     glVertex3fv(b00); //glNormal3fv(n01);
 
     glNormal3fv(n03);
-    glVertex3fv(b07); 
+    glVertex3fv(b07);
     glVertex3fv(b04); //glNormal3fv(n03);
     glVertex3fv(b00); //glNormal3fv(n03);
     glVertex3fv(b03); //glNormal3fv(n03);
 
     glNormal3fv(n00);
-    glVertex3fv(b06); 
+    glVertex3fv(b06);
     glVertex3fv(b07); //glNormal3fv(n00);
     glVertex3fv(b03); //glNormal3fv(n00);
     glVertex3fv(b02); //glNormal3fv(n00);
 
     glNormal3fv(n05);
-    glVertex3fv(b00); 
+    glVertex3fv(b00);
     glVertex3fv(b01); //glNormal3fv(n05);
     glVertex3fv(b02); //glNormal3fv(n05);
     glVertex3fv(b03); //glNormal3fv(n05);
@@ -553,22 +553,22 @@ void glCreateArrowPrimitive( float width, float height, float length )
     // Draw arrow head
 
     glNormal3fv(n05);
-    glVertex3fv(b09); 
-    glVertex3fv(b08); 
-    glVertex3fv(b10); 
-    glVertex3fv(b11); 
+    glVertex3fv(b09);
+    glVertex3fv(b08);
+    glVertex3fv(b10);
+    glVertex3fv(b11);
 
     glNormal3fv(n06);
-    glVertex3fv(b08); 
-    glVertex3fv(b09); 
-    glVertex3fv(b13); 
-    glVertex3fv(b12); 
+    glVertex3fv(b08);
+    glVertex3fv(b09);
+    glVertex3fv(b13);
+    glVertex3fv(b12);
 
     glNormal3fv(n07);
-    glVertex3fv(b12); 
-    glVertex3fv(b13); 
-    glVertex3fv(b11); 
-    glVertex3fv(b10); 
+    glVertex3fv(b12);
+    glVertex3fv(b13);
+    glVertex3fv(b11);
+    glVertex3fv(b10);
 
     glEnd();
 
@@ -577,12 +577,12 @@ void glCreateArrowPrimitive( float width, float height, float length )
     // Continue arrow head
 
     glNormal3fv(n02);
-    glVertex3fv(b08); 
+    glVertex3fv(b08);
     glVertex3fv(b12); //glNormal3fv(n02);
     glVertex3fv(b10); //glNormal3fv(n02);
 
     glNormal3fv(n03);
-    glVertex3fv(b13); 
+    glVertex3fv(b13);
     glVertex3fv(b09); //glNormal3fv(n03);
     glVertex3fv(b11); //glNormal3fv(n03);
 
@@ -591,11 +591,11 @@ void glCreateArrowPrimitive( float width, float height, float length )
 }
 
 void accFrustum(GLdouble left, GLdouble right, GLdouble bottom,
-                GLdouble top, GLdouble _near, GLdouble _far, GLdouble pixdx, 
-                GLdouble pixdy, GLdouble eyedx, GLdouble eyedy, 
+                GLdouble top, GLdouble _near, GLdouble _far, GLdouble pixdx,
+                GLdouble pixdy, GLdouble eyedx, GLdouble eyedy,
                 GLdouble focus)
 {
-    GLdouble xwsize, ywsize; 
+    GLdouble xwsize, ywsize;
     GLdouble dx, dy;
     GLint viewport[4];
 
@@ -614,8 +614,8 @@ void accFrustum(GLdouble left, GLdouble right, GLdouble bottom,
     glTranslatef (-eyedx, -eyedy, 0.0);
 }
 
-void accPerspective(GLdouble fovy, GLdouble aspect, 
-                    GLdouble _near, GLdouble _far, GLdouble pixdx, GLdouble pixdy, 
+void accPerspective(GLdouble fovy, GLdouble aspect,
+                    GLdouble _near, GLdouble _far, GLdouble pixdx, GLdouble pixdy,
                     GLdouble eyedx, GLdouble eyedy, GLdouble focus)
 {
     GLdouble fov2,left,right,bottom,top;

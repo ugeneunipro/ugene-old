@@ -46,12 +46,12 @@ WindowStepSelectorWidget::WindowStepSelectorWidget(QWidget* p, const U2Region& w
     windowEdit->setRange(winRange.startPos, winRange.endPos());
     windowEdit->setValue(win);
     windowEdit->setAlignment(Qt::AlignRight);
-    
+
     stepsPerWindowEdit = new QSpinBox(this);
     stepsPerWindowEdit->setRange(1, winRange.endPos());
     stepsPerWindowEdit->setValue(win/step);
     stepsPerWindowEdit->setAlignment(Qt::AlignRight);
-    
+
     QFormLayout* l = new QFormLayout(this);
     l->addRow(tr("Window:"), windowEdit);
     l->addRow(tr("Steps per window:"), stepsPerWindowEdit);
@@ -171,7 +171,7 @@ WindowStepSelectorDialog::WindowStepSelectorDialog(QWidget* p, const U2Region& w
 
     connect(cancelButton, SIGNAL(clicked(bool)), SLOT(sl_onCancelClicked(bool)));
     connect(okButton, SIGNAL(clicked(bool)), SLOT(sl_onOkClicked(bool)));
-    
+
     okButton->setDefault(true);
 }
 

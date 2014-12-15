@@ -37,13 +37,13 @@ void Project::setupToEngine(QScriptEngine *engine)
     qScriptRegisterSequenceMetaType<QList<Document*> >(engine);
 };
 QScriptValue Project::toScriptValue(QScriptEngine *engine, Project* const &in)
-{ 
-    return engine->newQObject(in); 
+{
+    return engine->newQObject(in);
 }
 
-void Project::fromScriptValue(const QScriptValue &object, Project* &out) 
+void Project::fromScriptValue(const QScriptValue &object, Project* &out)
 {
-    out = qobject_cast<Project*>(object.toQObject()); 
+    out = qobject_cast<Project*>(object.toQObject());
 }
 
 }//namespace

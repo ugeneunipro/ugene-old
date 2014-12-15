@@ -43,7 +43,7 @@ class BAMDbiPlugin : public Plugin {
     Q_OBJECT
 public:
     BAMDbiPlugin();
-    
+
 };
 
 class BAMImporter : public DocumentImporter {

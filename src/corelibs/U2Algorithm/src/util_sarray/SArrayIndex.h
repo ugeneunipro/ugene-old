@@ -39,8 +39,8 @@ class U2ALGORITHM_EXPORT CreateSArrayIndexTask : public Task {
 public:
     CreateSArrayIndexTask(const U2SequenceObject* obj, int windowSize, bool useBitMask = false,
                         bool prebuiltIdx = false, const QString &fileName = "", const QString &refFileName = "");
-    CreateSArrayIndexTask(const char* seq, quint32 size,  quint32 w, char unknownChar=0, 
-                        const quint32* bitTable = NULL, quint32 bitCharLen = 0, 
+    CreateSArrayIndexTask(const char* seq, quint32 size,  quint32 w, char unknownChar=0,
+                        const quint32* bitTable = NULL, quint32 bitCharLen = 0,
                         quint32 skipGap = 0, quint32 _gapOffset=0);
     ~CreateSArrayIndexTask();
 
@@ -52,7 +52,7 @@ public:
     inline quint32 getPrefixSize()const{ return w;}
     char getUnknownChar() const {return unknownChar; }
     const quint32* getBitTable() const {return bitTable; }
-    
+
 private:
     QByteArray      seqArray;
     const char*     seq;
@@ -85,7 +85,7 @@ public:
 
     //qlt - quick lookup table, size = 0 disable it's usage
     SArrayIndex(const char *serStart, const quint32* bitTable, int bitCharLen);
-    SArrayIndex(const char* seq, quint32 size,  quint32 w, TaskStateInfo& ti, 
+    SArrayIndex(const char* seq, quint32 size,  quint32 w, TaskStateInfo& ti,
         char unknownChar=0, const quint32* bitTable = NULL, int bitCharLen = 0, int skipGap = 0, int gapOffset=0);
 
     virtual ~SArrayIndex();
@@ -98,7 +98,7 @@ public:
     /** compares subsequence with offsets x1 and x2, returns -1;0;1 */
     inline int compare(quint32 x1, quint32 x2) const ;
     int compare(const char* seq1,  const char* seq2) const;
-    
+
     /** x1 and x2 is bitMask*/
     int compareBit(const quint32* x1, const quint32* x2) const;
     /** x1 and x2 is sArray*/
@@ -110,13 +110,13 @@ public:
     inline const char* val2seq(quint32 offs) const;         // value of sarray element -> seq
     inline const char* sarr2seq(const quint32* sarr) const; // pointer to sarray element -> seq
     inline const char* idx2seq(quint32 idx) const;  // index in sarray element -> seq
-    
+
     int         getCharsInMask() const {return wCharsInMask;}
     quint32     getBitFilter() const {return bitFilter;}
 
     const quint32* getMaskedSequence() const {return bitMask;}
     const quint32* getSArray() const {return sArray;}
-    
+
     quint32 getSArraySize() const {return arrLen;}
     int getPrefixSize() const { return w; }
     int getSequenceLength() const { return seqLen; }

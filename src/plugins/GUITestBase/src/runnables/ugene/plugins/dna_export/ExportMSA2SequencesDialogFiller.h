@@ -29,7 +29,7 @@ namespace U2 {
     class ExportToSequenceFormatFiller : public Filler {
     public:
         enum documentFormat {EMBL, FASTA, FASTQ, GFF, Genbank, Swiss_Prot};
-        ExportToSequenceFormatFiller(U2OpStatus &_os, const QString &_path, const QString &_name, documentFormat _format, 
+        ExportToSequenceFormatFiller(U2OpStatus &_os, const QString &_path, const QString &_name, documentFormat _format,
                                      bool saveFile, bool keepCharacters, GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
     private:

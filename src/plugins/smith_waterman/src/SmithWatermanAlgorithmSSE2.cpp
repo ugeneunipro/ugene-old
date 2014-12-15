@@ -59,7 +59,7 @@ inline __m128i xmm_load8(__m64* m) { return _mm_movpi64_epi64(*m); }
 using namespace std;
 
 namespace U2 {
-    
+
 quint64 SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(const QByteArray
     & _patternSeq, const QByteArray & _searchSeq, const qint32 gapOpen,
     const qint32 gapExtension, const quint32 minScore, const quint32 maxScore,
@@ -71,13 +71,13 @@ quint64 SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(const QByteArray
     const quint64 searchLength = _searchSeq.length();
 
     const quint32 iter = (queryLength + 7) >> 3;
-    
+
     quint64 memNeeded = 0;
     if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
         qint32 maxGapPenalty = (gapOpen > gapExtension) ? gapOpen : gapExtension;
         assert(0 > maxGapPenalty);
 
-        quint64 matrixLength = queryLength - (maxScore - minScore) / maxGapPenalty + 1;    
+        quint64 matrixLength = queryLength - (maxScore - minScore) / maxGapPenalty + 1;
         if (searchLength + 1 < matrixLength) {
             matrixLength = searchLength + 1;
         }
@@ -88,7 +88,7 @@ quint64 SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(const QByteArray
     } else {
         assert(false);
     }
-    
+
     return memNeeded / b_to_mb_factor;
 }
 
@@ -124,7 +124,7 @@ void SmithWatermanAlgorithmSSE2::launch(const SMatrix& _substitutionMatrix, cons
                     assert(false);
                 }
             }
-        }            
+        }
     }
 }
 
@@ -279,7 +279,7 @@ void SmithWatermanAlgorithmSSE2::calculateMatrixForMultipleAlignmentResultWithSh
                 n = k;
             }
         } while(++k < 8);
-     
+
         if(max1 >= minScore) {
             QByteArray pairAlign;
             int xpos = 1 + n * iter + iter - ((unsigned short*)(&xPos))[n]; j = i;
@@ -525,7 +525,7 @@ void SmithWatermanAlgorithmSSE2::calculateMatrixForMultipleAlignmentResultWithIn
             map[k] = i++;
         }
     }
-    
+
     QByteArray alphaChars = substitutionMatrix.getAlphabet()->getAlphabetChars();
     char *alphaCharsData = alphaChars.data(); n = alphaChars.size();
     for(i = 0; i < n; i++) {
@@ -688,7 +688,7 @@ void SmithWatermanAlgorithmSSE2::calculateMatrixForMultipleAlignmentResultWithIn
         j = ((int*)(&xMax))[k];
         if(j >= max1) { max1 = j; n = k; }
         } while(++k < 4);
-     
+
         if(max1 >= minScore) {
         QByteArray pairAlign;
         int xpos = 1 + n * iter + iter - ((int*)(&xPos))[n]; j = i;
@@ -949,7 +949,7 @@ int SmithWatermanAlgorithmSSE2::calculateMatrixSSE2(unsigned queryLength, unsign
     int ALPHA_SIZE = substitutionMatrix.getAlphabet()->getNumAlphabetChars();
 
     __m128i* pvQueryProf = (__m128i*)_mm_malloc
-        ('Z'*ALPHA_SIZE*iter*sizeof(__m128i), 16);    
+        ('Z'*ALPHA_SIZE*iter*sizeof(__m128i), 16);
 
     int weight = 0;
     unsigned short * queryProfile = (unsigned short *) pvQueryProf;
@@ -959,7 +959,7 @@ int SmithWatermanAlgorithmSSE2::calculateMatrixSSE2(unsigned queryLength, unsign
 
     QByteArray alphaChars = substitutionMatrix.getAlphabet()->getAlphabetChars();
     for (int i = 0; i < ALPHA_SIZE; i++) {
-        curChar = alphaChars.at(i);        
+        curChar = alphaChars.at(i);
         int h = 0;
         for (int j = 0; j < segSize; j++) {
             unsigned int k = j;
@@ -977,15 +977,15 @@ int SmithWatermanAlgorithmSSE2::calculateMatrixSSE2(unsigned queryLength, unsign
     }
 
 
-    __m128i *pvHLoad = (__m128i*)_mm_malloc(iter*sizeof(__m128i), 16);    
-    __m128i *pvHStore = (__m128i*)_mm_malloc(iter*sizeof(__m128i), 16);    
+    __m128i *pvHLoad = (__m128i*)_mm_malloc(iter*sizeof(__m128i), 16);
+    __m128i *pvHStore = (__m128i*)_mm_malloc(iter*sizeof(__m128i), 16);
     __m128i *pvE = (__m128i*)_mm_malloc(iter*sizeof(__m128i), 16);
 
 
     unsigned i = 0, j = 0;
     int     score = 0;
 
-    int cmp = 0;    
+    int cmp = 0;
 
     unsigned short gapOpenFarrar = gapOpenOrig - gapExtend;
 
@@ -1018,7 +1018,7 @@ int SmithWatermanAlgorithmSSE2::calculateMatrixSSE2(unsigned queryLength, unsign
     /*  math, we will bias the maxscore to -32768 so we have the */
     /*  full range of the short. */
     vMaxScore = _mm_cmpeq_epi16 (vMaxScore, vMaxScore);
-    vMaxScore = _mm_slli_epi16 (vMaxScore, 15);    
+    vMaxScore = _mm_slli_epi16 (vMaxScore, 15);
 
     vMinimums = _mm_shuffle_epi32 (vMaxScore, 0);
     Q_UNUSED(vMinimums);
@@ -1033,9 +1033,9 @@ int SmithWatermanAlgorithmSSE2::calculateMatrixSSE2(unsigned queryLength, unsign
     }
 
     PairAlignSequences p;
-    U2Region sReg;    
+    U2Region sReg;
 
-    for (i = 0; i < dbLength; ++i) {    
+    for (i = 0; i < dbLength; ++i) {
 
 
         /* fetch first data asap. */
@@ -1056,7 +1056,7 @@ int SmithWatermanAlgorithmSSE2::calculateMatrixSSE2(unsigned queryLength, unsign
 
         for (j = 0; j < iter; ++j) {
 
-            /* load values of vF and vH from previous row (one unit up) */            
+            /* load values of vF and vH from previous row (one unit up) */
             vE = _mm_load_si128 (pvE + j);
 
             /* add score to vH */
@@ -1075,7 +1075,7 @@ int SmithWatermanAlgorithmSSE2::calculateMatrixSSE2(unsigned queryLength, unsign
             /* update vE value */
             vH = _mm_subs_epi16 (vH, vGapOpen);
             vE = _mm_subs_epi16 (vE, vGapExtend);
-            vE = _mm_max_epi16 (vE, vH);            
+            vE = _mm_max_epi16 (vE, vH);
 
             /* update vF value */
             vF = _mm_subs_epi16 (vF, vGapExtend);
@@ -1085,13 +1085,13 @@ int SmithWatermanAlgorithmSSE2::calculateMatrixSSE2(unsigned queryLength, unsign
             _mm_store_si128 (pvE + j, vE);
 
             /* load the next h value */
-            vH = _mm_load_si128 (pvHLoad + j);                
+            vH = _mm_load_si128 (pvHLoad + j);
 
-        }        
+        }
 
         /* reset pointers to the start of the saved data */
         j = 0;
-        vH = _mm_load_si128 (pvHStore + j);        
+        vH = _mm_load_si128 (pvHStore + j);
 
         /*  the computed vF value is for the given column.  since */
         /*  we are at the end, we need to shift the vF value over */
@@ -1105,9 +1105,9 @@ int SmithWatermanAlgorithmSSE2::calculateMatrixSSE2(unsigned queryLength, unsign
 
         cmp  = _mm_movemask_epi8 (vTemp);
 
-        while (cmp != 0x0000) 
+        while (cmp != 0x0000)
             //for (unsigned cnt=0; cnt<iter; ++cnt)
-        {    
+        {
             vE = _mm_load_si128 (pvE + j);
 
             vH = _mm_max_epi16 (vH, vF);
@@ -1117,11 +1117,11 @@ int SmithWatermanAlgorithmSSE2::calculateMatrixSSE2(unsigned queryLength, unsign
 
             /*  update vE incase the new vH value would change it */
             vH = _mm_subs_epi16 (vH, vGapOpen);
-            vE = _mm_max_epi16 (vE, vH);            
+            vE = _mm_max_epi16 (vE, vH);
 
 
             /* update vF value */
-            vF = _mm_subs_epi16 (vF, vGapExtend);        
+            vF = _mm_subs_epi16 (vF, vGapExtend);
 
 
             j++;
@@ -1129,9 +1129,9 @@ int SmithWatermanAlgorithmSSE2::calculateMatrixSSE2(unsigned queryLength, unsign
                 j = 0;
                 vF = _mm_slli_si128 (vF, 2);
                 vF = _mm_or_si128 (vF, vMin);
-            }            
+            }
 
-            vH = _mm_load_si128 (pvHStore + j);                        
+            vH = _mm_load_si128 (pvHStore + j);
 
             vTemp = _mm_subs_epi16 (vH, vGapOpen);
             vTemp = _mm_cmpgt_epi16 (vF, vTemp);

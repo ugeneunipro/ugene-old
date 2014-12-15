@@ -39,7 +39,7 @@ public:
     virtual ~DNAAlphabetComparator(){}
 
     virtual bool equals(char c1, char c2) const = 0;
-    
+
     const DNAAlphabet *al1;
     const DNAAlphabet *al2;
 };
@@ -58,7 +58,7 @@ public:
 class ExactDNAAlphabetComparatorStrict : public DNAAlphabetComparator {
 public:
     ExactDNAAlphabetComparatorStrict(const DNAAlphabet* _al1, const DNAAlphabet* _al2) : DNAAlphabetComparator(_al1, _al2){assert(al1==al2);}
-    
+
     virtual bool equals(char c1, char c2) const {return c1 == c2;}
 };
 
@@ -87,7 +87,7 @@ class U2CORE_EXPORT ExtendedDNAlphabetComparator : public DNAAlphabetComparator 
 public:
     ExtendedDNAlphabetComparator(const DNAAlphabet* _al1, const DNAAlphabet* _al2);
     virtual bool equals(char c1, char c2) const;
-        
+
 private:
     inline void buildIndex();
     inline int  getMatchMask(char c) const;
@@ -120,18 +120,18 @@ public:
 
     static const DNAAlphabet* getById(const QString& id);
 
-    
-    
+
+
     static const DNAAlphabet* findBestAlphabet(const char* seq, qint64 len);
 
     static const DNAAlphabet* findBestAlphabet(const QByteArray& arr) {return findBestAlphabet(arr.constData(), arr.length());}
 
     static const DNAAlphabet* findBestAlphabet(const char* seq, qint64 len, const QVector<U2Region>& regionsToProcess);
-    
+
     static const DNAAlphabet* findBestAlphabet(const QByteArray& arr, const QVector<U2Region>& regionsToProcess) {return findBestAlphabet(arr.constData(), arr.length(), regionsToProcess);}
 
     static QList<const DNAAlphabet*> findAllAlphabets(const char* seq, qint64 len);
-    
+
     static QList<const DNAAlphabet*> findAllAlphabets(const QByteArray& arr) {return findAllAlphabets(arr.constData(), arr.length());}
 
     static QList<const DNAAlphabet*> findAllAlphabets(const char* seq, qint64 len, const QVector<U2Region>& regionsToProcess);
@@ -140,7 +140,7 @@ public:
 
     static const DNAAlphabet* deriveCommonAlphabet(const DNAAlphabet* al1, const DNAAlphabet* al2);
 
-        
+
 };
 
 }//namespace

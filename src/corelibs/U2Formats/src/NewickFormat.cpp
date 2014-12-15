@@ -35,7 +35,7 @@ namespace U2 {
 /* TRANSLATOR U2::IOAdapter */
 /* TRANSLATOR U2::NewickFormat */
 
-NewickFormat::NewickFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags_W1) 
+NewickFormat::NewickFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags_W1)
 {
     fileExtensions << "nwk" << "newick" << "nh" << "ph";
     formatName = tr("Newick Standard");

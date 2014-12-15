@@ -47,7 +47,7 @@ private:
     QList<ShortReadSet> shortReadSets;
     bool openView;
     bool justBuildIndex;
-}; 
+};
 
 } // namespace
 #endif

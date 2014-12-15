@@ -52,11 +52,11 @@ public:
     void createLabelsOnPositions(const QList<QVariant>& positions);
 
     void addGraphData(GSequenceGraphData* g);
-    
+
     void setGraphDrawer(GSequenceGraphDrawer* gd);
 
     const QList<GSequenceGraphData*>& getGraphs() const {return graphs;}
-    
+
     GSequenceGraphDrawer* getGSequenceGraphDrawer() const {return graphDrawer;}
 
     void buildPopupMenu(QMenu& m);
@@ -104,7 +104,7 @@ public:
     GSequenceGraphViewRA(GSequenceGraphView* g);
     ~GSequenceGraphViewRA();
     virtual GSequenceGraphView* getGraphView() const {return static_cast<GSequenceGraphView*>(view);}
-    
+
     double getCurrentScale() const;
 
     const QRect& getGraphRect() const { return graphRect;}

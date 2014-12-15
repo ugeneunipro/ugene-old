@@ -36,9 +36,9 @@ class U2ALGORITHM_EXPORT PWMConversionAlgorithmFactoryMCH : public PWMConversion
     Q_OBJECT
 public:
     PWMConversionAlgorithmFactoryMCH(QObject* p = NULL);
-    
+
     virtual PWMConversionAlgorithm* createAlgorithm(QObject* parent);
-    
+
     virtual QString getDescription() const;
 
     virtual QString getName() const;

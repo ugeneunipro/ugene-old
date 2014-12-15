@@ -25,7 +25,7 @@
 #include <U2Core/U2Sequence.h>
 
 namespace U2 {
-/** 
+/**
     Gap model for Msa: for every sequence it keeps gaps map
 */
 class U2CORE_EXPORT U2MsaGap  {
@@ -36,16 +36,16 @@ public:
     bool isValid() { return ((offset >= 0) && (gap > 0)); }
 
     bool operator==(const U2MsaGap& g) const { return ((offset == g.offset) && (gap == g.gap)); }
-    
+
     /** Offset of the gap in sequence*/
     qint64 offset;
-    
+
     /** number of gaps */
     qint64 gap;
 };
 
-/** 
-    Row of multiple alignment: gaps map and sequence id 
+/**
+    Row of multiple alignment: gaps map and sequence id
 */
 class U2CORE_EXPORT U2MsaRow {
 public:
@@ -68,14 +68,14 @@ public:
     qint64          length;
 };
 
-/**                                           
+/**
     Multiple sequence alignment representation
 */
 class U2CORE_EXPORT U2Msa : public U2Object {
 public:
     U2Msa(){}
     U2Msa(U2DataId id, QString dbId, qint64 version) : U2Object(id, dbId, version) {}
-    
+
     /** Alignment alphabet. All sequence in alignment must have alphabet that fits into alignment alphabet */
     U2AlphabetId    alphabet;
 

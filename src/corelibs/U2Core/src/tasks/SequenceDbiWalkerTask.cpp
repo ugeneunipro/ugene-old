@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-SequenceDbiWalkerTask::SequenceDbiWalkerTask(const SequenceDbiWalkerConfig& c, SequenceDbiWalkerCallback* cb, const QString& name, TaskFlags tf) 
+SequenceDbiWalkerTask::SequenceDbiWalkerTask(const SequenceDbiWalkerConfig& c, SequenceDbiWalkerCallback* cb, const QString& name, TaskFlags tf)
 : Task(name, tf), config(c), callback(cb)
 {
     assert(config.chunkSize > static_cast<uint>(config.overlapSize)); // if chunk == overlap -> infinite loop occurs
@@ -102,12 +102,12 @@ QList<SequenceDbiWalkerSubtask*> SequenceDbiWalkerTask::createSubs(const QVector
     return res;
 }
 
-QVector<U2Region> SequenceDbiWalkerTask::splitRange(const U2Region& range, int chunkSize, int overlapSize, 
-                                              int lastChunkExtraLen, bool reverseMode) 
+QVector<U2Region> SequenceDbiWalkerTask::splitRange(const U2Region& range, int chunkSize, int overlapSize,
+                                              int lastChunkExtraLen, bool reverseMode)
 {
     assert(chunkSize > overlapSize);
     int stepSize = chunkSize - overlapSize;
-    
+
     QVector<U2Region> res;
     for (int pos = range.startPos, end = range.endPos(), lastPos = range.startPos; lastPos < end; pos+=stepSize) {
         int chunkLen = qMin(pos + chunkSize, end) - pos;
@@ -132,13 +132,13 @@ QVector<U2Region> SequenceDbiWalkerTask::splitRange(const U2Region& range, int c
 //////////////////////////////////////////////////////////////////////////
 // subtask
 SequenceDbiWalkerSubtask::SequenceDbiWalkerSubtask(SequenceDbiWalkerTask* _t, const U2Region& glob, bool lo, bool ro, const U2EntityRef& seqRef, int _len, bool _doCompl, bool _doAmino)
-: Task(tr("Sequence walker subtask"), TaskFlag_None), 
+: Task(tr("Sequence walker subtask"), TaskFlag_None),
 t(_t), globalRegion(glob), seqRef(seqRef), localSeq(NULL), originalLocalSeq(NULL),
 localLen(_len), originalLocalLen(_len), doCompl(_doCompl), doAmino(_doAmino),
 leftOverlap(lo), rightOverlap(ro)
 {
     tpm = Task::Progress_Manual;
-    
+
     // get resources
     QList< TaskResourceUsage > resources = t->getCallback()->getResources( this );
     foreach( const TaskResourceUsage & resource, resources ) {
@@ -195,7 +195,7 @@ bool SequenceDbiWalkerSubtask::intersectsWithOverlaps(const U2Region& reg) const
     bool intersects = false;
     if (leftOverlap) {
         intersects = reg.intersects(U2Region(globalRegion.startPos, overlap));
-    } 
+    }
     if (!intersects && rightOverlap) {
         intersects = reg.intersects(U2Region(globalRegion.endPos() - overlap, overlap));
     }

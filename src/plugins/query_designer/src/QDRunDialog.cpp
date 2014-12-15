@@ -96,7 +96,7 @@ void QDRunDialog::sl_selectFile() {
         assert(tb==tbOutFile);
         edit = outFileEdit;
     }
-    
+
     QString title;
     QString fileFilter;
     if (edit==inFileEdit) {
@@ -106,7 +106,7 @@ void QDRunDialog::sl_selectFile() {
         title = tr("Select output file");
         fileFilter = DialogUtils::prepareDocumentsFileFilter(BaseDocumentFormats::PLAIN_GENBANK, true, QStringList());
     }
-    
+
     LastUsedDirHelper dir;
     if (!edit->text().isEmpty()) {
         QFileInfo fi(edit->text());
@@ -119,7 +119,7 @@ void QDRunDialog::sl_selectFile() {
     } else {
         dir.url = U2FileDialog::getSaveFileName(this, title, dir, fileFilter);
     }
-    
+
     if (!dir.url.isEmpty()) {
         edit->setText(dir.url);
         QueryViewController* view = qobject_cast<QueryViewController*>(parentWidget());
@@ -135,7 +135,7 @@ void QDRunDialog::sl_selectFile() {
 void QDRunDialog::sl_run() {
     const QString& inUri = inFileEdit->text();
     const QString& outUri = outFileEdit->text();
-    
+
     if (inUri.isEmpty()) {
         QMessageBox::critical(this, L10N::errorTitle(), tr("The sequence is not specified!"));
         return;
@@ -157,7 +157,7 @@ void QDRunDialog::sl_run() {
 QDRunDialogTask::QDRunDialogTask(QDScheme* _scheme, const QString& _inUri, const QString& outUri, bool addToProject)
 : Task(tr("Query Designer"), TaskFlags_NR_FOSCOE), scheme(_scheme), inUri(_inUri), output(outUri),
 addToProject(addToProject), openProjTask(NULL), loadTask(NULL), scheduler(NULL),
-docWithSequence(NULL), annObj(NULL) 
+docWithSequence(NULL), annObj(NULL)
 {
     tpm = Progress_Manual;
     stateInfo.progress = 0;
@@ -409,7 +409,7 @@ void QDDialog::sl_okBtnClicked() {
         return;
     }
     const CreateAnnotationModel& m = cawc->getModel();
-    
+
     U2SequenceObject *seqObj = ctx->getSequenceObject();
     SAFE_POINT(NULL != seqObj, "NULL sequence object", );
     DNASequence sequence = seqObj->getWholeSequence();

@@ -36,7 +36,7 @@
 namespace U2 {
 
 MSAEditorStatusWidget::MSAEditorStatusWidget(MAlignmentObject* mobj, MSAEditorSequenceArea* sa)
-: aliObj(mobj), seqArea(sa), 
+: aliObj(mobj), seqArea(sa),
 lockedIcon(":core/images/lock.png"), unlockedIcon(":core/images/lock_open.png")
 {
     setObjectName("msa_editor_status_bar");
@@ -44,7 +44,7 @@ lockedIcon(":core/images/lock.png"), unlockedIcon(":core/images/lock_open.png")
 
     QLabel* findLabel = new QLabel();
     findLabel->setText(tr("Find:"));
-    
+
     prevButton = new QPushButton();
     prevButton->setObjectName("Find backward");
     prevButton->setToolTip(tr("Find backward <b>(SHIFT + Enter)</b>"));
@@ -55,7 +55,7 @@ lockedIcon(":core/images/lock.png"), unlockedIcon(":core/images/lock_open.png")
     nextButton->setToolTip(tr("Find forward <b>(Enter)</b>"));
     nextButton->setIcon(QIcon(":core/images/msa_find_next.png"));
     nextButton->setFlat(true);
-    
+
     searchEdit = new QLineEdit();
     searchEdit->setObjectName("searchEdit");
     //searchEdit->setMinimumWidth(200);
@@ -74,7 +74,7 @@ lockedIcon(":core/images/lock.png"), unlockedIcon(":core/images/lock_open.png")
     posLabel->setAlignment(Qt::AlignCenter);
 
     lockLabel = new QLabel();
-    
+
     QHBoxLayout* l = new QHBoxLayout();
     l->setMargin(2);
     l->addStretch(1);
@@ -89,12 +89,12 @@ lockedIcon(":core/images/lock.png"), unlockedIcon(":core/images/lock_open.png")
     l->addWidget(lockLabel);
     setLayout(l);
 
-    connect(seqArea, SIGNAL(si_selectionChanged(const MSAEditorSelection& , const MSAEditorSelection& )), 
+    connect(seqArea, SIGNAL(si_selectionChanged(const MSAEditorSelection& , const MSAEditorSelection& )),
         SLOT(sl_selectionChanged(const MSAEditorSelection& , const MSAEditorSelection&)));
-    connect(mobj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), 
+    connect(mobj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
         SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
     connect(mobj, SIGNAL(si_lockedStateChanged()), SLOT(sl_lockStateChanged()));
-    
+
     connect(prevButton, SIGNAL(clicked()), SLOT(sl_findPrev()));
     connect(nextButton, SIGNAL(clicked()), SLOT(sl_findNext()));
 
@@ -126,7 +126,7 @@ void MSAEditorStatusWidget::updateCoords() {
     linesLabel->setText(ltext);
     linesLabel->setToolTip(tr("Line %1 of %2").arg(pos.y() + 1).arg(nSeq));
     linesLabel->setMinimumWidth(10 + fm.width(lpattern.arg(nSeq).arg(nSeq)));
-    
+
     QString cpattern = QString(tr("Col %1 / %2"));
     qint64 shownCol = seqArea->isAlignmentEmpty() ? pos.x() : pos.x() + 1;
     QString ctext = cpattern.arg(shownCol).arg(aliLen);
@@ -183,7 +183,7 @@ void MSAEditorStatusWidget::sl_findNext( ) {
         SAFE_POINT( 0 <= rowsAtPosition.startPos, "Invalid row number!", );
         const MAlignmentRow &row = ma.getRow( rowsAtPosition.startPos );
         // if s == pos.y -> search from the current base, otherwise search from the seq start
-        int p = ( s == selectionTopLeft.y( ) ) ? selectionTopLeft.x( ) : 0; 
+        int p = ( s == selectionTopLeft.y( ) ) ? selectionTopLeft.x( ) : 0;
         for ( ; p < ( aliLen - pat.length( ) + 1 ); p++ ) {
             char c = row.charAt( p );
             if ( MAlignment_GapChar != c && MSAUtils::equalsIgnoreGaps( row, p, pat ) ) {

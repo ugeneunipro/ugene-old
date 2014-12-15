@@ -37,7 +37,7 @@ void GTPlainTextEdit::setPlainText(U2OpStatus& os, QPlainTextEdit* plainTextEdit
     if(plainTextEdit->toPlainText() == text){
         return;
     }
-    
+
     GTWidget::setFocus(os, plainTextEdit);
 
     qDebug() << "Test in setPlainTest() = " << text;

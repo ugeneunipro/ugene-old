@@ -42,18 +42,18 @@ public:
     static const QPoint OFFSET_FROM_CURSOR;
     static const int LETTER_MAX_COUNT = 60;
     static QString getReadDataAsString(const U2AssemblyRead & r);
-    
+
 public:
     AssemblyReadsAreaHint(QWidget * p);
     void setData(U2AssemblyRead r, QList<U2AssemblyRead> mates);
-    
+
 protected:
     virtual bool eventFilter(QObject *, QEvent *);
     virtual void leaveEvent(QEvent * e);
     virtual void mouseMoveEvent(QMouseEvent * e);
 
     QLabel * label;
-    
+
 }; // AssemblyReadsAreaHint
 
 } // U2

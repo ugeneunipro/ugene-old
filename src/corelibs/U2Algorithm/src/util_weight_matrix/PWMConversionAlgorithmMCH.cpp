@@ -24,7 +24,7 @@
 
 namespace U2 {
 
-PWMConversionAlgorithmFactoryMCH::PWMConversionAlgorithmFactoryMCH(QObject* p) 
+PWMConversionAlgorithmFactoryMCH::PWMConversionAlgorithmFactoryMCH(QObject* p)
 : PWMConversionAlgorithmFactory(BuiltInPWMConversionAlgorithms::MCH_ALGO, p)
 {
 }
@@ -42,7 +42,7 @@ QString PWMConversionAlgorithmFactoryMCH::getDescription() const {
 }
 
 PWMatrix PWMConversionAlgorithmMCH::convert(const PFMatrix& matrix) {
-    int size = (matrix.getType() == PFM_MONONUCLEOTIDE) ? 4 : 16;  
+    int size = (matrix.getType() == PFM_MONONUCLEOTIDE) ? 4 : 16;
     int all_hits = 0;
     if (matrix.getLength() <= 0) {
         return PWMatrix();

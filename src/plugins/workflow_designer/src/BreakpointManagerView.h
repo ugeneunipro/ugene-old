@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -91,7 +91,7 @@ private slots:
     void sl_conditionSwitched(bool enabled);
     void sl_conditionParameterChanged(HitCondition newParameter);
     void sl_pauseStateChanged(bool paused);
-    
+
 private:
     void createActions();
     QToolBar *initToolBar();

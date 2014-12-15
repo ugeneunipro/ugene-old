@@ -230,7 +230,7 @@ void Overview::mouseReleaseEvent(QMouseEvent* me) {
 }
 
 void Overview::mouseMoveEvent(QMouseEvent *me) {
-    
+
     QPoint renderAreaPos = toRenderAreaPoint(me->pos());
     OverviewRenderArea* ra = static_cast<OverviewRenderArea*>(renderArea);
     QRectF panSlider(ra->getPanSlider());
@@ -265,7 +265,7 @@ void Overview::mouseMoveEvent(QMouseEvent *me) {
             qint64 seqLen = ctx->getSequenceLength();
             if(panSliderMovedRight) {
                 OverviewRenderArea* ra = static_cast<OverviewRenderArea*>(renderArea);
-                
+
                 QRectF panSlider(ra->getPanSlider());
                 qreal length = me->pos().x() - panSlider.right();
                 qint64 panVisLen = renderArea->coordToPos(qAbs(length));
@@ -319,7 +319,7 @@ void Overview::mouseDoubleClickEvent(QMouseEvent* me) {
         qint64 panPos = ra->coordToPos(renderAreaPos.x() - panSlider.width()/2);
         panPos = qBound(qint64(0), qint64(panPos), seqLen - panVisLen);
         panView->setVisibleRange(U2Region(panPos, panVisLen));
-        
+
         //don't process detSlider when details view is collapsed
         ADVSingleSequenceWidget* parent = qobject_cast<ADVSingleSequenceWidget*>(parentWidget());
         assert(parent);
@@ -496,7 +496,7 @@ void OverviewRenderArea::drawAll(QPaintDevice *pd) {
 
     pen.setColor(Qt::darkGray);
     p.setPen(pen);
-    
+
     //don't show arrow when det view collapsed
     Overview* overview = qobject_cast<Overview*>(view);
     ADVSingleSequenceWidget* ssw = qobject_cast<ADVSingleSequenceWidget*>(overview->parentWidget());
@@ -508,7 +508,7 @@ void OverviewRenderArea::drawAll(QPaintDevice *pd) {
     if (!ssw->isDetViewCollapsed()) {
         drawArrow(p, detSlider, QColor(255, 187, 0));
     }
-    
+
     drawRuler(p);
     drawSelection(p);
 }
@@ -610,7 +610,7 @@ QColor OverviewRenderArea::getUnitColor(int count) {
     switch(count) {
         case 0: return QColor(0xFF, 0xFF, 0xFF);
         case 1: return QColor(0xCC, 0xCC, 0xCC);
-        case 2: 
+        case 2:
         case 3:  return QColor(0x66, 0x66, 0x66);
         default: return QColor(0x00, 0x00, 0x00);
     }

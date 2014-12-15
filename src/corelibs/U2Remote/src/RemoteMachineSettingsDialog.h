@@ -40,19 +40,19 @@ class RemoteMachineSettingsDialog : public QDialog, public Ui::RemoteMachineSett
 public:
     RemoteMachineSettingsDialog(QWidget* parent, const RemoteMachineSettingsPtr& settings = RemoteMachineSettingsPtr());
     ~RemoteMachineSettingsDialog();
-    
+
     RemoteMachineSettingsPtr getMachineSettings() const;
 
 private slots:
     void sl_okPushButtonClicked();
-    
+
 private:
     void showErrorLabel(const QString& error);
     void createMachineSettings();
     RemoteMachineSettingsPtr        machineSettings;
     QString                         protoId;
     ProtocolUI*                     currentUi;
-    
+
 }; // RemoteMachineSettingsDialog
 
 } // U2

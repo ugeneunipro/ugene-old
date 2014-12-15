@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -271,7 +271,7 @@ QMap<QString,QVariant> BwaSwSettingsWidget::getDnaAssemblyCustomSettings() {
     QMap<QString, QVariant> settings;
 
     settings.insert(BwaTask::OPTION_SW_ALIGNMENT,true);
-    
+
     settings.insert(BwaTask::OPTION_THREADS, numThreadsSpinbox->value());
     settings.insert(BwaTask::OPTION_MATCH_SCORE, matchScoreSpinbox->value());
     settings.insert(BwaTask::OPTION_MISMATCH_PENALTY, mismatchScoreSpinbox->value());
@@ -286,7 +286,7 @@ QMap<QString,QVariant> BwaSwSettingsWidget::getDnaAssemblyCustomSettings() {
     if (hardClippingCheckBox->isChecked()) {
         settings.insert(BwaTask::OPTION_PREFER_HARD_CLIPPING, true);
     }
-   
+
     return settings;
 }
 
@@ -346,7 +346,7 @@ QMap<QString,QVariant> BwaMemSettingsWidget::getDnaAssemblyCustomSettings() {
     if (skipPairingCheckBox->isChecked()) {
         settings.insert(BwaTask::OPTION_SKIP_PAIRING, true);
     }
-    
+
     settings.insert(BwaTask::OPTION_MATCH_SCORE, matchScoreSpinbox->value());
     settings.insert(BwaTask::OPTION_MISMATCH_PENALTY, mismatchScoreSpinbox->value());
     settings.insert(BwaTask::OPTION_GAP_OPEN_PENALTY, gapOpenSpinbox->value());

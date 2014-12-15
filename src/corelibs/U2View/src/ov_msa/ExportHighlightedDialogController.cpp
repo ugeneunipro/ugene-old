@@ -49,7 +49,7 @@ ExportHighligtningDialogController::ExportHighligtningDialogController(MSAEditor
     CHECK(AppContext::getAppSettings(), );
     CHECK(AppContext::getAppSettings()->getUserAppsSettings(), );
     CHECK(msaui->getEditor(), );
-    CHECK(msaui->getEditor()->getMSAObject(), );    
+    CHECK(msaui->getEditor()->getMSAObject(), );
     fileNameEdit->setText(QDir::toNativeSeparators(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/" + msaui->getEditor()->getMSAObject()->getGObjectName() + "_highlighting.txt"));
 
     connect(fileButton, SIGNAL(clicked()), SLOT(sl_fileButtonClicked()));
@@ -70,7 +70,7 @@ ExportHighligtningDialogController::ExportHighligtningDialogController(MSAEditor
 
     startPosBox->setMaximum(endPos);
     endPosBox->setMaximum(alignLength);
-    
+
     startPosBox->setMinimum(1);
     endPosBox->setMinimum(2);
 
@@ -95,7 +95,7 @@ void ExportHighligtningDialogController::accept(){
     dots = dotsBox->isChecked();
     transpose = transposeBox->isChecked();
     url = GUrl(fileNameEdit->text());
-    
+
     QDialog::accept();
 }
 

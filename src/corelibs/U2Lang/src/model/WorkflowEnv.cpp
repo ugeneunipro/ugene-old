@@ -31,7 +31,7 @@ bool WorkflowEnv::init(WorkflowEnv* env) {
         assert(0);// Duplicate initialization;
         return false;
     }
-    
+
     env->data = env->initDataRegistry();
     env->proto = env->initProtoRegistry();
     env->domain = env->initDomainRegistry();

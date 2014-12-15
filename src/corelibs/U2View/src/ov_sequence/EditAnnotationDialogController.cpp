@@ -47,7 +47,7 @@ EditAnnotationDialogController::EditAnnotationDialogController( const Annotation
     nameEdit->setText(a.name);
     locationEdit->setText(Genbank::LocationParser::buildLocationString(&a));
     location = a.location;
-    
+
     QMenu* menu = EditAnnotationDialogController::createAnnotationNamesMenu(this, this);
     showNameGroupsButton->setMenu(menu);
     showNameGroupsButton->setPopupMode(QToolButton::InstantPopup);

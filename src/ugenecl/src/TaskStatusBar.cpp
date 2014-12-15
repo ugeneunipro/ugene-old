@@ -54,13 +54,13 @@ TaskStatusBarCon::TaskStatusBarCon() {
     //printf("X=%d, Y=%d\n",conSize.X,conSize.Y);
     emptyLine=QString((int)80-1, QChar(' '));//80 spaces
 #endif
-    
+
     if( !helpRegistered ) {
         setTSBCmdlineHelp();
     }
-    
+
     setTSBSettings();
-    
+
     Settings * settings = AppContext::getSettings();
     if( settings->getValue( TSB_SETTINGS_ROOT + "showTaskStatusBar", false ).toBool() ){
         connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_taskStateChanged(Task*)));
@@ -71,10 +71,10 @@ TaskStatusBarCon::TaskStatusBarCon() {
 void TaskStatusBarCon::setTSBCmdlineHelp() {
     assert( !helpRegistered );
     helpRegistered = true;
-    
+
     CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
     assert( NULL != cmdLineRegistry );
-    
+
     CMDLineHelpProvider * noTSBSection = new CMDLineHelpProvider(
         NO_TASK_STATUS_BAR_CMD_OPTION,
         tr( "Specifies not to show the task progress." ),
@@ -192,7 +192,7 @@ void TaskStatusBarCon::sl_taskStateChanged(Task* t) {
     AppContext::getTaskScheduler()->disconnect(this);
 }
 
-void TaskStatusBarCon::setTaskToTrack(Task* t) { 
+void TaskStatusBarCon::setTaskToTrack(Task* t) {
     assert(taskToTrack == NULL);
     taskToTrack = t;
     connect(taskToTrack, SIGNAL(si_stateChanged()), SLOT(sl_taskStateChanged()));

@@ -38,8 +38,8 @@ public:
     static const qreal MAXIMUM_WIDTH;
     static const qreal EPSILON;
     static const int DEFAULT_HEIGHT;
-    
-    
+
+
     GraphicsRectangularBranchItem(const QString& name, GraphicsRectangularBranchItem* pitem);
     GraphicsRectangularBranchItem();
     GraphicsRectangularBranchItem(qreal d, PhyBranch *branch);

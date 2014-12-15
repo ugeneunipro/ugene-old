@@ -80,7 +80,7 @@ public:
         U2OpStatus &os );
 
     /**
-     * Removes attributes from database 
+     * Removes attributes from database
      * Requires U2DbiFeature_WriteAttribute feature support
      */
     virtual void removeAttributes( const QList<U2DataId> &attributeIds, U2OpStatus &os );

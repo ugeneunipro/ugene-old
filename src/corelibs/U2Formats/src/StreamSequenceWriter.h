@@ -32,12 +32,12 @@
 namespace U2 {
 
 
-/** 
+/**
 *
 * Class provides stream writing for large alignment files.
 * It supports only SAM format.
-* 
-*/ 
+*
+*/
 
 class U2FORMATS_EXPORT StreamShortReadsWriter {
     IOAdapter*  io;
@@ -56,16 +56,16 @@ public:
     void close();
 };
 
-/** 
+/**
 *
 * Class provides stream writing for DNA short reads.
 * It currently supports FASTA formats and allows to write quality in separate file.
-* 
-*/ 
+*
+*/
 
 class FastaFormat;
 
-class U2FORMATS_EXPORT StreamShortReadWriter 
+class U2FORMATS_EXPORT StreamShortReadWriter
 {
     FastaFormat* fastaFormat;
     IOAdapter* io;
@@ -78,7 +78,7 @@ public:
     bool writeNextSequence(const U2SequenceObject *seq);
     const GUrl& getOutputPath() { return ouputPath; }
     void close();
-}; 
+};
 
 
 } //namespace

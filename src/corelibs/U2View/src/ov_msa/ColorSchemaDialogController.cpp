@@ -12,7 +12,7 @@ namespace U2{
 
 ColorSchemaDialogController::ColorSchemaDialogController(QMap<char, QColor>& colors):QDialog(), newColors(colors), storedColors(colors){}
 
-int ColorSchemaDialogController::adjustAlphabetColors(){    
+int ColorSchemaDialogController::adjustAlphabetColors(){
     setupUi(this);
     new HelpButton(this, buttonBox, "7667798");
     alphabetColorsView = new QPixmap(alphabetColorsFrame->size());
@@ -30,18 +30,18 @@ ColorSchemaDialogController::~ColorSchemaDialogController(){
 
 void ColorSchemaDialogController::paintEvent(QPaintEvent*){
     QPainter dialogPainter(this);
-    const int columns = 6;    
+    const int columns = 6;
 
     const int rect_width = static_cast<double> (alphabetColorsFrame->size().width()) / columns ;
     if(rect_width == 0){return;}
     int rect_width_rest = alphabetColorsFrame->size().width() % columns;
 
     const int rows = (newColors.size() / columns) + ((newColors.size() % columns) ?  1 : 0);
-    const int rect_height = static_cast<double> (alphabetColorsFrame->size().height() ) / rows;    
+    const int rect_height = static_cast<double> (alphabetColorsFrame->size().height() ) / rows;
     if(rect_height == 0){return;}
     int rect_height_rest = alphabetColorsFrame->size().height() % rows;
-    
-    delete alphabetColorsView; 
+
+    delete alphabetColorsView;
     alphabetColorsView = new QPixmap(alphabetColorsFrame->size());
 
     QPainter painter(alphabetColorsView);
@@ -124,11 +124,11 @@ void ColorSchemaDialogController::mouseReleaseEvent(QMouseEvent * event){
 #endif
             int res = d.exec();
             if(res == QDialog::Accepted){
-                newColors[it.key()] = d.selectedColor();                
+                newColors[it.key()] = d.selectedColor();
             }
             break;
         }
-    }    
+    }
 
     update();
 }

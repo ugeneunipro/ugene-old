@@ -53,7 +53,7 @@ U2SCRIPT_EXPORT U2ErrorType         initContext(    const wchar_t *        worki
 
 /*
  * This function deallocates all resources acquired by UGENE environment.
- * 
+ *
  * This function has be called after all custom interaction with U2Script interface is finished.
  *
  * Possible returning error codes:

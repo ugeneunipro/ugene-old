@@ -86,14 +86,14 @@ bool AssemblySequenceArea::areCellsVisible() const {
 
 void AssemblySequenceArea::drawSequence(QPainter & p) {
     GTIMER(c1, t1, "AssemblySequenceArea::drawSequence");
-    
+
     if(areCellsVisible()) {
         p.fillRect(rect(), Qt::transparent);
 
         U2OpStatusImpl status;
         QByteArray visibleSequence = getSequenceRegion(status);
         CHECK_OP(status,);
-        
+
         int letterWidth = browser->getCellWidth();
         int letterHeight = FIXED_HEIGHT;
 
@@ -105,7 +105,7 @@ void AssemblySequenceArea::drawSequence(QPainter & p) {
         if(text) {
             int pointSize = qMin(letterWidth, letterHeight) / 2;
             if(pointSize) {
-                f.setPointSize(pointSize); 
+                f.setPointSize(pointSize);
             } else {
                 text = false;
             }

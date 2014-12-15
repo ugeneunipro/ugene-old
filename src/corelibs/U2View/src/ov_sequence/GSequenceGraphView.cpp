@@ -49,14 +49,14 @@
 
 
 namespace U2 {
-/* TRANSLATOR U2::GSequenceGraphView */    
+/* TRANSLATOR U2::GSequenceGraphView */
 
-GSequenceGraphView::GSequenceGraphView(QWidget* p, ADVSequenceObjectContext* ctx, GSequenceLineView* _baseView, const QString& _vName) 
+GSequenceGraphView::GSequenceGraphView(QWidget* p, ADVSequenceObjectContext* ctx, GSequenceLineView* _baseView, const QString& _vName)
 : GSequenceLineView(p, ctx), baseView(_baseView), vName(_vName), graphDrawer(NULL)
-{ 
+{
     assert(baseView);
 
-    
+
     visualPropertiesAction = new QAction(tr("Graph settings..."), this);
     visualPropertiesAction->setObjectName("visual_properties_action");
 
@@ -66,12 +66,12 @@ GSequenceGraphView::GSequenceGraphView(QWidget* p, ADVSequenceObjectContext* ctx
     saveGraphCutoffsAction->setObjectName("save_cutoffs_as_annotation");
 
     connect(saveGraphCutoffsAction, SIGNAL(triggered(bool)), SLOT(sl_onSaveGraphCutoffs(bool)));
-    
+
     deleteAllLabelsAction = new QAction(tr("Delete all labels..."), this);
     deleteAllLabelsAction->setObjectName("delete_all_labels");
-    
+
     connect(deleteAllLabelsAction, SIGNAL(triggered()), SLOT(sl_onDeleteAllLabels()));
-    
+
     selectAllExtremumPoints = new QAction(tr("Select all extremum points..."), this);
     selectAllExtremumPoints->setObjectName("select_all_extremum_points");
 
@@ -227,7 +227,7 @@ void GSequenceGraphView::buildPopupMenu(QMenu& menu)
     }
 
     // Verify that the menu is not empty (to get the top element - see below)
-    SAFE_POINT(!menu.actions().isEmpty(), 
+    SAFE_POINT(!menu.actions().isEmpty(),
         "Internal error: menu is not empty during insertion of the Graph menu!",);
 
     // Creating the Graphs menu

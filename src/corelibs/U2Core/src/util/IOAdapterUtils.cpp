@@ -96,7 +96,7 @@ IOAdapter* IOAdapterUtils::open(const GUrl& url, U2OpStatus& os, IOAdapterMode m
     }
     IOAdapter* io = iof->createIOAdapter();
     SAFE_POINT(io != NULL, "IO adapter is NULL!", NULL);
-    
+
     bool ok = io->open(url, mode);
     if (!ok) {
         os.setError(L10N::tr("Failed to detect IO adapter for %1").arg(url.getURLString()));

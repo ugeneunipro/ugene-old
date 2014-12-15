@@ -63,10 +63,10 @@ void GetSequenceByIdDialog::accept() {
     if(dir.isEmpty()) {
         return;
     }
-    
+
     QDir downloadDir(dir);
     if (!downloadDir.exists()) {
-        if (QMessageBox::Yes == QMessageBox::question(this, 
+        if (QMessageBox::Yes == QMessageBox::question(this,
             windowTitle(), tr("Directory doesn't exist. Do you want to create it?"),
             QMessageBox::Yes, QMessageBox::No))
         {
@@ -75,7 +75,7 @@ void GetSequenceByIdDialog::accept() {
             return;
         }
     }
-    
+
     addToProject = addBox->isChecked();
     QDialog::accept();
 }

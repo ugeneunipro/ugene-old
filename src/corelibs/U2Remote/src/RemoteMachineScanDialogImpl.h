@@ -41,13 +41,13 @@ class RemoteMachineScanDialogImpl : public QDialog, public Ui::RemoteMachineScan
     Q_OBJECT
 public:
     static const int SCAN_UPDATE_TIME = 500; /* 0.5 seconds */
-    
+
 public:
     RemoteMachineScanDialogImpl();
     ~RemoteMachineScanDialogImpl();
-    
+
     RemoteMachineScanDialogModel getModel() const;
-    
+
 private:
     void addMachines( const QList< RemoteMachineSettings* > newMachines );
     void addMachine( RemoteMachineSettings * machine );
@@ -55,18 +55,18 @@ private:
     void cleanup();
     bool hasSameMachineInTheList( RemoteMachineSettings* ) const;
     void resizeTable();
-    
+
 private slots:
     void sl_cancelPushButtonClicked();
     void sl_okPushButtonClicked();
     void sl_startScan( const QString & protoId );
     void sl_updatePushButtonClicked();
-    
+
 private:
     RemoteMachineScanDialogModel        model; /* machines by order as in the table */
     QList< RemoteMachineScanner * >     runningScanners;
     QTimer                              updateTimer;
-    
+
 }; // RemoteMachineScanDialogImpl
 
 } // U2

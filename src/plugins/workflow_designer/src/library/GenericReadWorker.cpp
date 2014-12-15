@@ -267,7 +267,7 @@ void GenericSeqReader::init() {
         QString mergeToken = DocumentReadingMode_SequenceMergeGapSize;
         cfg[mergeToken] = actor->getParameter(GenericSeqActorProto::GAP_ATTR)->getAttributeValue<int>(context);
         cfg[GenericSeqActorProto::LIMIT_ATTR] = 0; // no limit in merge mode
-    } else {        
+    } else {
         cfg[GenericSeqActorProto::LIMIT_ATTR] = actor->getParameter(GenericSeqActorProto::LIMIT_ATTR)->getAttributeValue<int>(context);
     }
     selector.accExpr = actor->getParameter(GenericSeqActorProto::ACC_ATTR)->getAttributeValue<QString>(context);

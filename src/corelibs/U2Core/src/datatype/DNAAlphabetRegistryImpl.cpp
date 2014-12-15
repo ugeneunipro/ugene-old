@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-/* TRANSLATOR U2::DNAAlphabetRegistryImpl */    
+/* TRANSLATOR U2::DNAAlphabetRegistryImpl */
 
 DNAAlphabetRegistryImpl::DNAAlphabetRegistryImpl(DNATranslationRegistry* _tr) {
     treg = _tr;
@@ -55,7 +55,7 @@ bool DNAAlphabetRegistryImpl::registerAlphabet(const DNAAlphabet* a) {
     }
     alphabets.push_back(a);
     //WARN: original order for equal alphabets must not be changed (DNA must be before RNA)
-    qStableSort(alphabets.begin(), alphabets.end(), alphabetComplexityComparator); 
+    qStableSort(alphabets.begin(), alphabets.end(), alphabetComplexityComparator);
     return true;
 }
 

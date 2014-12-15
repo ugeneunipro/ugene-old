@@ -467,7 +467,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
         ExternalToolSupportAction* blastallAction= new ExternalToolSupportAction(tr("BLAST Search..."), this, QStringList(ET_BLASTALL));
         blastallAction->setObjectName("BLAST Search");
         connect(blastallAction, SIGNAL(triggered()), blastallTool, SLOT(sl_runWithExtFileSpecify()));
-        
+
 
         BlastPlusSupportContext* blastPlusViewCtx = new BlastPlusSupportContext(this);
         blastPlusViewCtx->setParent(this);//may be problems???
@@ -477,7 +477,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
         ExternalToolSupportAction* blastPlusAction= new ExternalToolSupportAction(tr("BLAST+ Search..."), this, toolList);
         blastPlusAction->setObjectName("BLAST+ Search");
         connect(blastPlusAction, SIGNAL(triggered()), blastNPlusTool, SLOT(sl_runWithExtFileSpecify()));
-        
+
         ExternalToolSupportAction* blastPlusCmdAction= new ExternalToolSupportAction(tr("BLAST+ query DB"), this, QStringList(ET_BLASTDBCMD));
         blastPlusCmdAction->setObjectName("BLAST+ query DB");
         connect(blastPlusCmdAction, SIGNAL(triggered()), blastDbCmdSupport, SLOT(sl_runWithExtFileSpecify()));
@@ -494,7 +494,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
         blastSubmenu->addAction(makeBLASTDBAction);
         blastSubmenu->addAction(blastPlusAction);
         blastSubmenu->addAction(blastPlusCmdAction);
-        
+
         ExternalToolSupportAction* cap3Action = new ExternalToolSupportAction(QString("Contig assembly with %1").arg(cap3Tool->getName()), this, QStringList(cap3Tool->getName()));
         cap3Action->setObjectName(QString("Contig assembly with %1").arg(cap3Tool->getName()));
         connect(cap3Action, SIGNAL(triggered()), cap3Tool, SLOT(sl_runWithExtFileSpecify()));
@@ -573,7 +573,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
         GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
         l->qlist = MrBayesToolTests::createTestFactories();
 
-        foreach(XMLTestFactory* f, l->qlist) { 
+        foreach(XMLTestFactory* f, l->qlist) {
             bool res = xmlTestFormat->registerTestFactory(f);
             Q_UNUSED(res);
             assert(res);
@@ -588,7 +588,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
         GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
         l->qlist = PhyMLToolTests::createTestFactories();
 
-        foreach(XMLTestFactory* f, l->qlist) { 
+        foreach(XMLTestFactory* f, l->qlist) {
             bool res = xmlTestFormat->registerTestFactory(f);
             Q_UNUSED(res);
             assert(res);

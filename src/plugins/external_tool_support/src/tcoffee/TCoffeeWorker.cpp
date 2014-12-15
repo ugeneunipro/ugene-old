@@ -58,14 +58,14 @@ void TCoffeeWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
     Descriptor ind(BasePorts::IN_MSA_PORT_ID(), TCoffeeWorker::tr("Input MSA"), TCoffeeWorker::tr("Multiple sequence alignment to be processed."));
     Descriptor oud(BasePorts::OUT_MSA_PORT_ID(), TCoffeeWorker::tr("Multiple sequence alignment"), TCoffeeWorker::tr("Result of alignment."));
-    
+
     QMap<Descriptor, DataTypePtr> inM;
     inM[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
     p << new PortDescriptor(ind, DataTypePtr(new MapDataType("tcoffee.in.msa", inM)), true /*input*/);
     QMap<Descriptor, DataTypePtr> outM;
     outM[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
     p << new PortDescriptor(oud, DataTypePtr(new MapDataType("tcoffee.out.msa", outM)), false /*input*/, true /*multi*/);
-    
+
     Descriptor gop(GAP_OPEN_PENALTY, TCoffeeWorker::tr("Gap Open Penalty"),
                    TCoffeeWorker::tr("Gap Open Penalty. Must be negative, best matches get a score of 1000."));
     Descriptor gep(GAP_EXT_PENALTY, TCoffeeWorker::tr("Gap Extension Penalty"),
@@ -165,7 +165,7 @@ Task* TCoffeeWorker::tick() {
         QScopedPointer<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
         SAFE_POINT(!msaObj.isNull(), "NULL MSA Object!", NULL);
         MAlignment msa = msaObj->getMAlignment();
-        
+
         if (msa.isEmpty()) {
             algoLog.error(tr("An empty MSA '%1' has been supplied to T-Coffee.").arg(msa.getName()));
             return NULL;

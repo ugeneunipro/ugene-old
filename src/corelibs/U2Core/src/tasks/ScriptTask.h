@@ -35,11 +35,11 @@ public:
     ScriptTaskSettings() : mainThreadScript(false) {}
 
     // Tells if to run script in main thread. Otherwise the task is executed during reporting stage
-    bool mainThreadScript; 
+    bool mainThreadScript;
 
     // Map of input script parameters
     QMap<QString, QScriptValue> inputParametersMap;
-};    
+};
 
 // Basic implementation of script task
 class U2CORE_EXPORT ScriptTask : public Task {

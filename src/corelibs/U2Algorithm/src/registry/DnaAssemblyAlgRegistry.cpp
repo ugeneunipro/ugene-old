@@ -70,7 +70,7 @@ bool DnaAssemblyAlgRegistry::registerAlgorithm(DnaAssemblyAlgorithmEnv* algo) {
 
 DnaAssemblyAlgorithmEnv* DnaAssemblyAlgRegistry::unregisterAlgorithm(const QString& id) {
     QMutexLocker locker(&mutex);
-    
+
     if (!algorithms.contains(id)) {
         return NULL;
     }

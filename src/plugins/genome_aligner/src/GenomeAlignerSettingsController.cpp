@@ -51,7 +51,7 @@ void GenomeAlignerSettingsUtils::setIndexDir(const QString &indexDir) {
 /* Genome Aligner Settings Controller                                   */
 /************************************************************************/
 
-GenomeAlignerSettingsPageController::GenomeAlignerSettingsPageController(QObject* p) 
+GenomeAlignerSettingsPageController::GenomeAlignerSettingsPageController(QObject* p)
 : AppSettingsGUIPageController(tr("Genome Aligner"), GenomeAlignerSettingsPageId, p) {}
 
 

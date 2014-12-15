@@ -41,7 +41,7 @@ class WorkflowDocFormat : public DocumentFormat {
     Q_OBJECT
 public:
     WorkflowDocFormat(QObject* p);
-    
+
     static const DocumentFormatId FORMAT_ID;
     virtual DocumentFormatId getFormatId() const {return FORMAT_ID;}
 
@@ -65,7 +65,7 @@ class WorkflowGObject : public GObject {
     Q_OBJECT
 public:
     static const GObjectType TYPE;
-    WorkflowGObject(const QString& objectName, const QString& s, const QVariantMap& map = QVariantMap()) 
+    WorkflowGObject(const QString& objectName, const QString& s, const QVariantMap& map = QVariantMap())
         : GObject(TYPE, objectName), serializedScene(s), view(NULL) { Q_UNUSED(map); }
 
     QString getSceneRawData() const {return serializedScene;}

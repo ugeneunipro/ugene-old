@@ -56,8 +56,8 @@ public:
     void parseOutput(const QString& partOfLog);
     void parseErrOutput(const QString& partOfLog);
 private:
-    QString lastLine; 
-    QString lastErrLine; 
+    QString lastLine;
+    QString lastErrLine;
     int nchains;
     bool isMCMCRunning;
     int curProgress;

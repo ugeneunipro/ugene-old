@@ -42,7 +42,7 @@ public:
     DASSource(const QString& _id, const QString& _name, const QString& _url, DASReferenceType _refType, const QString& _hint = QString(), const QString& _description = QString())
         :id(_id), name(_name), url(_url), referenceType(_refType), hint(_hint), description(_description){};
 
-    const QString& getId () const { return id;} 
+    const QString& getId () const { return id;}
     const QString& getName () const { return name;}
     const QString& getUrl () const { return url;}
     const QString& getDescription () const { return description;}
@@ -70,7 +70,7 @@ enum DASObjectType{
 class U2CORE_EXPORT DASSourceRegistry : public QObject {
     Q_OBJECT
 public:
-    
+
     static QString getRequestURLString(const DASSource& source, const QString& accId, DASObjectType& requestType);
 
     DASSourceRegistry();
@@ -80,7 +80,7 @@ public:
     virtual DASSource findById(const QString& id) const;
 
     virtual DASSource findByName(const QString& name) const;
-    
+
     virtual QList<DASSource> getReferenceSources() const;
 
     virtual QList<DASSource> getFeatureSources() const;
@@ -93,7 +93,7 @@ private:
 private:
     QList<DASSource> referenceSources;
     QList<DASSource> featureSources;
-    
+
 };
 
 }//namespace

@@ -62,7 +62,7 @@ private slots:
     void sl_showOffsets(bool);
 private:
     void updateOffsets();
-    
+
     MSAEditorSequenceArea*      seqArea;
     MSAEditor*                  editor;
     MSAEditorOffsetsViewWidget* lw;
@@ -75,7 +75,7 @@ class MSAEditorOffsetsViewWidget : public QWidget {
 public:
     MSAEditorOffsetsViewWidget(MSAEditor* editor, MSAEditorSequenceArea* seqArea, MSAEditorBaseOffsetCache* cache, bool showStartPos);
     ~MSAEditorOffsetsViewWidget();
-    
+
 protected:
     void paintEvent(QPaintEvent* e);
     void updateView();

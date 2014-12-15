@@ -28,11 +28,11 @@ static QList<QColor> prepareColors() {
     QString mustHave = "FF";
     QStringList optional;
     optional<<"FF"<<"CC"<<"99"<<"66"<<"33"<<"00";
-    for(int i = 0; i < 3; i++) { 
+    for(int i = 0; i < 3; i++) {
         for(int j=0; j < optional.size(); j++) {
             for(int k=1; k < optional.size(); k++) { //todo: avoid duplicates
-                QString colorName = 
-                    i == 0 ? mustHave + optional[j] + optional[k] : 
+                QString colorName =
+                    i == 0 ? mustHave + optional[j] + optional[k] :
                     i == 1 ? optional[j] + mustHave + optional[k] :
                     optional[j] + optional[k] + mustHave;
                 QColor c("#"+colorName);

@@ -57,7 +57,7 @@ Message Message::getEmptyMapMessage() {
     static const QVariantMap emptyData;
     static const QMap<Descriptor, DataTypePtr> emptyTypeMap;
     static DataTypePtr emptyType(new MapDataType(Descriptor(), emptyTypeMap));
-    
+
     return Message(emptyType, emptyData);
 }
 

@@ -39,7 +39,7 @@ using namespace Workflow;
 
 /**
  * currently, all wd workers inherits this class
- * 
+ *
  * base class for workers in integral bus model
  */
 class U2LANG_EXPORT BaseWorker : public QObject, public Worker, public CommunicationSubject {
@@ -49,7 +49,7 @@ public:
 
     BaseWorker(Actor* a, bool autoTransitBus = true);
     virtual ~BaseWorker();
-    
+
     virtual ActorId getActorId() const;
 
     virtual void setDone();
@@ -57,12 +57,12 @@ public:
     // reimplemented from Worker
     virtual bool isDone();
     virtual bool isReady();
-    
+
     // reimplemented from CommunicationSubject
     virtual bool addCommunication(const QString& name, CommunicationChannel* _ch);
     virtual CommunicationChannel* getCommunication(const QString& name);
     virtual QStringList getOutputFiles();
-    
+
     // if you want your worker support scripts -> you should call this function to get Messages from channels
     // call this when channel has message
     // after calling: set all needed values for running your worker
@@ -84,27 +84,27 @@ public:
 
     QList<ExternalToolListener*> createLogListeners(int listenersNumber = 1);
 private:
-    // bind values from input ports to script vars. 
+    // bind values from input ports to script vars.
     // This function is called before 'get' data from channel -> to set up parameters for scripting
     void bindScriptValues();
     void setScriptVariableFromBus(AttributeScript *script, IntegralBus *bus);
     bool processDone;
-    
+
     // this field contains all messages that Worker processes during one tick.
     // New messages are added here in getMessageAndSetupScriptValues(CommunicationChannel *) method.
     // Also during the pause state it contains backup messages
     // (which were existed at the moment before the pause) from the same ports
     QMap<CommunicationChannel *, QQueue<Message> > messagesProcessedOnLastTick;
-    
+
     // puts all messages from messagesProcessedOnLastTick to appropriate channel
     // which is actually key for the queue of messages
     void addMessagesFromBackupToAppropriratePort(CommunicationChannel *channel);
-    
+
 protected:
     Actor* actor;
     // integral buses of actor's ports
     QMap<QString, IntegralBus*> ports;
-    
+
     // default implementation always return false
     // TODO: check all workers' task and override this method
     // in order to cancel tasks on debug events (e.g. pause, breakpoint, etc)
@@ -125,7 +125,7 @@ class U2LANG_EXPORT SimpleQueue : public CommunicationChannel {
 public:
     SimpleQueue();
     virtual ~SimpleQueue(){}
-    
+
     // reimplemented from CommunicationChannel
     virtual Message get();
     virtual Message look() const;
@@ -146,14 +146,14 @@ protected:
     QQueue<Message> que;
     // 'end' flag
     bool ended;
-    // 
+    //
     int takenMsgs;
-    
+
 }; // SimpleQueue
 
 /**
  * runtime domain for SimplestSequentialScheduler and SimpleQueue
- * 
+ *
  * currently, container for all DomainFactories of computational tasks
  */
 class U2LANG_EXPORT LocalDomainFactory : public DomainFactory {
@@ -163,12 +163,12 @@ public:
 public:
     LocalDomainFactory();
     virtual ~LocalDomainFactory(){}
-    
+
     virtual Worker* createWorker(Actor*);
     virtual CommunicationChannel* createConnection(Link*);
     virtual Scheduler* createScheduler(Schema*);
     virtual void destroy(Scheduler*, Schema*);
-    
+
 }; // LocalDomainFactory
 
 /************************************************************************/

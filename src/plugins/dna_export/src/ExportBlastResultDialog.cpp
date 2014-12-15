@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -42,17 +42,17 @@
 namespace U2 {
 
 ExportBlastResultDialog::ExportBlastResultDialog(QWidget* p, const QString& defaultUrl): QDialog(p) {
-    setupUi(this);    
+    setupUi(this);
     new HelpButton(this, buttonBox, "7667916");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     addToProjectFlag = true;
-    
+
     nameIdBox->addItem("accession");
     nameIdBox->addItem("def");
     nameIdBox->addItem("id");
- 
+
     nameIdBox->setCurrentIndex(0);
 
 
@@ -76,7 +76,7 @@ void ExportBlastResultDialog::accept() {
         QMessageBox::critical(this, L10N::errorTitle(), tr("File name is empty!"));
         return;
     }
-    
+
     url = saveContoller->getSaveFileName();
     format = saveContoller->getFormatIdToSave();
     addToProjectFlag = addToProjectBox->isChecked();

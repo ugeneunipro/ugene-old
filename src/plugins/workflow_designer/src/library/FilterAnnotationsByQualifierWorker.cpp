@@ -97,7 +97,7 @@ void FilterAnnotationsByQualifierWorker::cleanup() {
 
 
 void FilterAnnotationsByQualifierWorkerFactory::init() {
-    QList<PortDescriptor*> portDescs; 
+    QList<PortDescriptor*> portDescs;
     QList<Attribute*> attribs;
 
     //accept sequence and annotated regions as input
@@ -105,9 +105,9 @@ void FilterAnnotationsByQualifierWorkerFactory::init() {
     inputMap[ BaseSlots::ANNOTATION_TABLE_SLOT() ] = BaseTypes::ANNOTATION_TABLE_TYPE();
 
     { //Create input port descriptors
-        Descriptor inDesc( BasePorts::IN_ANNOTATIONS_PORT_ID(), FilterAnnotationsByQualifierWorker::tr("Input annotations"), 
+        Descriptor inDesc( BasePorts::IN_ANNOTATIONS_PORT_ID(), FilterAnnotationsByQualifierWorker::tr("Input annotations"),
             FilterAnnotationsByQualifierWorker::tr("Annotations to be filtered by name.") );
-        Descriptor outDesc( BasePorts::OUT_ANNOTATIONS_PORT_ID(), FilterAnnotationsByQualifierWorker::tr("Result annotations"), 
+        Descriptor outDesc( BasePorts::OUT_ANNOTATIONS_PORT_ID(), FilterAnnotationsByQualifierWorker::tr("Result annotations"),
             FilterAnnotationsByQualifierWorker::tr("Resulted annotations, filtered by name.") );
 
         portDescs << new PortDescriptor( inDesc, DataTypePtr(new MapDataType("filter.anns", inputMap)), /*input*/ true );
@@ -116,10 +116,10 @@ void FilterAnnotationsByQualifierWorkerFactory::init() {
 
     { //Create attributes descriptors
         Descriptor qualifierNameDesc( QUALIFER_NAME_ATTR,
-            FilterAnnotationsByQualifierWorker::tr("Qualifier name"), 
+            FilterAnnotationsByQualifierWorker::tr("Qualifier name"),
             FilterAnnotationsByQualifierWorker::tr("Name of the qualifier to use for filtering.") );
         Descriptor qualifierValDesc( QUALIFER_VALUE_ATTR,
-            FilterAnnotationsByQualifierWorker::tr("Qualifier value"), 
+            FilterAnnotationsByQualifierWorker::tr("Qualifier value"),
             FilterAnnotationsByQualifierWorker::tr("Text value of the qualifier to apply as filtering criteria") );
         Descriptor whichFilterDesc( WHICH_FILTER_ATTR,
             FilterAnnotationsByQualifierWorker::tr("Accept or filter"),
@@ -131,12 +131,12 @@ void FilterAnnotationsByQualifierWorkerFactory::init() {
     }
 
     Descriptor desc( FilterAnnotationsByQualifierWorkerFactory::ACTOR_ID,
-        FilterAnnotationsByQualifierWorker::tr("Filter Annotations by Qualifier"), 
+        FilterAnnotationsByQualifierWorker::tr("Filter Annotations by Qualifier"),
         FilterAnnotationsByQualifierWorker::tr("Filters annotations by Qualifier.") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
 
     proto->setPrompter( new FilterAnnotationsByQualifierPrompter() );
-    
+
     WorkflowEnv::getProtoRegistry()->registerProto( BaseActorCategories::CATEGORY_BASIC(), proto );
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById( LocalDomainFactory::ID );
     localDomain->registerEntry( new FilterAnnotationsByQualifierWorkerFactory() );
@@ -147,12 +147,12 @@ void FilterAnnotationsByQualifierTask::run() {
     //TODO: add reg exp option and tests!
 
     QMutableListIterator<AnnotationData> i(anns);
-    
+
     while (i.hasNext()) {
         AnnotationData ad = i.next();
         QVector<U2Qualifier> quals;
         ad.findQualifiers(qualName, quals);
-        
+
         bool matchFound = false;
         foreach (const U2Qualifier& qual, quals) {
             if (qual.value == qualFilterVal) {

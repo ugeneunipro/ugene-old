@@ -35,35 +35,35 @@ public:
 
 protected:
     QString composeRichDoc();
-    
+
 }; // Text2SequencePrompter
 
 class Alignment2SequenceWorker : public BaseWorker {
     Q_OBJECT
 public:
     static QMap<QString, QString> cuteAlIdNames;
-    
+
 public:
     Alignment2SequenceWorker(Actor * p) : BaseWorker(p), input(NULL), output(NULL) {}
 
     virtual void init();
     virtual Task * tick();
     virtual void cleanup();
-    
+
 private:
     IntegralBus * input;
     IntegralBus * output;
-    
+
 }; // Text2SequenceWorker
 
 class Alignment2SequenceWorkerFactory : public DomainFactory {
 public:
     static const QString ACTOR_ID;
-    
+
     Alignment2SequenceWorkerFactory() : DomainFactory(ACTOR_ID) {}
     static void init();
     virtual Worker * createWorker(Actor* a);
-    
+
 }; // Text2SequenceWorkerFactory
 
 } // LocalWorkflow

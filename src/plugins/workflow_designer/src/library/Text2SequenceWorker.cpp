@@ -101,7 +101,7 @@ Task * Text2SequenceWorker::tick() {
             replaceChar = replaceStr.at(0);
         }
         QByteArray txt = inputMessage.getData().toMap().value(BaseSlots::TEXT_SLOT().getId()).value<QString>().toUtf8();
-        
+
         const DNAAlphabet * alphabet = (alId == ALPHABET_ATTR_ID_DEF_VAL) ? U2AlphabetUtils::findBestAlphabet(txt) : U2AlphabetUtils::getById(alId);
         if (alphabet == NULL) {
             QString msg;
@@ -112,7 +112,7 @@ Task * Text2SequenceWorker::tick() {
             }
             return new FailTask(msg);
         }
-        
+
         QByteArray normSequence = SeqPasterWidgetController::getNormSequence(alphabet, txt, !skipUnknown, replaceChar);
         DNASequence result(seqName, normSequence, alphabet);
         QVariantMap msgData;
@@ -144,14 +144,14 @@ void Text2SequenceWorkerFactory::init() {
         QMap<Descriptor, DataTypePtr> inM;
         inM[BaseSlots::TEXT_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr inSet(new MapDataType(TEXT_2_SEQUENCE_IN_TYPE_ID, inM));
-        Descriptor inPortDesc(BasePorts::IN_TEXT_PORT_ID(), Text2SequenceWorker::tr("Input text"), 
+        Descriptor inPortDesc(BasePorts::IN_TEXT_PORT_ID(), Text2SequenceWorker::tr("Input text"),
             Text2SequenceWorker::tr("A text which will be converted to sequence"));
         portDescs << new PortDescriptor(inPortDesc, inSet, true);
-        
+
         QMap<Descriptor, DataTypePtr> outM;
         outM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
         DataTypePtr outSet(new MapDataType(TEXT_2_SEQUENCE_OUT_TYPE_ID, outM));
-        Descriptor outPortDesc(BasePorts::OUT_SEQ_PORT_ID(), Text2SequenceWorker::tr("Output sequence"), 
+        Descriptor outPortDesc(BasePorts::OUT_SEQ_PORT_ID(), Text2SequenceWorker::tr("Output sequence"),
             Text2SequenceWorker::tr("Converted sequence"));
         portDescs << new PortDescriptor(outPortDesc, outSet, false);
     }
@@ -159,24 +159,24 @@ void Text2SequenceWorkerFactory::init() {
     QList<Attribute*> attrs;
     {
         Descriptor seqNameDesc(SEQ_NAME_ATTR_ID, Text2SequenceWorker::tr("Sequence name"), Text2SequenceWorker::tr("Result sequence name."));
-        Descriptor alphabetDesc(ALPHABET_ATTR_ID, Text2SequenceWorker::tr("Sequence alphabet"), 
+        Descriptor alphabetDesc(ALPHABET_ATTR_ID, Text2SequenceWorker::tr("Sequence alphabet"),
             Text2SequenceWorker::tr("Select one of the listed alphabets or choose auto to auto-detect."));
-        Descriptor skipSymbolsDesc(SKIP_SYM_ATTR_ID, Text2SequenceWorker::tr("Skip unknown symbols"), 
+        Descriptor skipSymbolsDesc(SKIP_SYM_ATTR_ID, Text2SequenceWorker::tr("Skip unknown symbols"),
             Text2SequenceWorker::tr("Do not include symbols that are not contained in alphabet."));
         Descriptor replaceSymbolsDesc(REPLACE_SYM_ATTR_ID, Text2SequenceWorker::tr("Replace unknown symbols with"),
             Text2SequenceWorker::tr("Replace unknown symbols with given character."));
-        
+
         attrs << new Attribute(seqNameDesc, BaseTypes::STRING_TYPE(), /* required */ true, QVariant(SEQ_NAME_ATTR_DEF_VAL));
         attrs << new Attribute(alphabetDesc, BaseTypes::STRING_TYPE(), false, QVariant(ALPHABET_ATTR_ID_DEF_VAL));
         attrs << new Attribute(skipSymbolsDesc, BaseTypes::BOOL_TYPE(), false, QVariant(true));
         attrs << new Attribute(replaceSymbolsDesc, BaseTypes::STRING_TYPE(), false);
     }
-    
-    Descriptor protoDesc(Text2SequenceWorkerFactory::ACTOR_ID, 
-        Text2SequenceWorker::tr("Convert Text to Sequence"), 
+
+    Descriptor protoDesc(Text2SequenceWorkerFactory::ACTOR_ID,
+        Text2SequenceWorker::tr("Convert Text to Sequence"),
         Text2SequenceWorker::tr("Converts input text to sequence."));
     ActorPrototype * proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
-    
+
     // proto delegates
     QMap<QString, PropertyDelegate*> delegates;
     {
@@ -187,12 +187,12 @@ void Text2SequenceWorkerFactory::init() {
         }
         alMap[ALPHABET_ATTR_ID_DEF_VAL] = ALPHABET_ATTR_ID_DEF_VAL;
         delegates[ALPHABET_ATTR_ID] = new ComboBoxDelegate(alMap);
-        
+
         delegates[REPLACE_SYM_ATTR_ID] = new CharacterDelegate();
     }
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new Text2SequencePrompter());
-    
+
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CONVERTERS(), proto);
     WorkflowEnv::getDomainRegistry()->getById( LocalDomainFactory::ID )->registerEntry( new Text2SequenceWorkerFactory() );
 }
@@ -209,10 +209,10 @@ QString Text2SequencePrompter::composeRichDoc() {
     IntegralBusPort * input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_TEXT_PORT_ID()));
     Actor * txtProducer = input->getProducer(BaseSlots::TEXT_SLOT().getId());
     QString txtProducetStr = tr(" from <u>%1</u>").arg(txtProducer ? txtProducer->getLabel() : unsetStr);
-    
+
     QString seqName = getRequiredParam(SEQ_NAME_ATTR_ID);
     QString seqNameStr = tr("sequence with name <u>%1</u>").arg(getHyperlink(SEQ_NAME_ATTR_ID, seqName));
-    
+
     QString alId = getParameter(ALPHABET_ATTR_ID).value<QString>();
     QString seqAlStr;
     if(alId == ALPHABET_ATTR_ID_DEF_VAL) {
@@ -223,7 +223,7 @@ QString Text2SequencePrompter::composeRichDoc() {
         QString alphStr = getHyperlink(ALPHABET_ATTR_ID, alphabet ? alphabet->getName() : unsetStr);
         seqAlStr = tr("Set sequence alphabet to %1").arg(alphStr);
     }
-    
+
     bool skipUnknown = getParameter(SKIP_SYM_ATTR_ID).value<bool>();
     QString replaceStr = getRequiredParam(REPLACE_SYM_ATTR_ID);
     QString unknownSymbolsStr;
@@ -234,7 +234,7 @@ QString Text2SequencePrompter::composeRichDoc() {
             .arg(getHyperlink(SKIP_SYM_ATTR_ID, tr("replaced with symbol")))
             .arg(getHyperlink(REPLACE_SYM_ATTR_ID, replaceStr));
     }
-    
+
     QString doc = tr("Convert input text%1 to %2. %3. Unknown symbols are %4.")
         .arg(txtProducetStr)
         .arg(seqNameStr)

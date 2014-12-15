@@ -90,7 +90,7 @@ void FindGcRegionsTask::find(const char* seq,
 
 void FindGcRegionsTask::run() {
     if (settings_.strand == QDStrand_DirectOnly || settings_.strand == QDStrand_Both) {
-        find(sequence_.seq.constData(), sequence_.seq.length(), 
+        find(sequence_.seq.constData(), sequence_.seq.length(),
             settings_.gcRangeInPercents, settings_.minLen, directResults);
     }
 
@@ -199,7 +199,7 @@ Task* QDFindGcRegionsActor::getAlgorithmTask( const QVector<U2Region>& location 
         t->addSubTask(sub);
         connect(new TaskSignalMapper(sub), SIGNAL(si_taskFinished(Task*)), SLOT(sl_onTaskFinished(Task*)));
     }
-    
+
     return t;
 }
 

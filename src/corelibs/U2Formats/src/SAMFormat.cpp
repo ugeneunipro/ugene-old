@@ -46,8 +46,8 @@ namespace U2 {
 
 const QByteArray SAMFormat::VERSION = "1.0";
 const QByteArray SAMFormat::SAM_SECTION_START = "@";
-const QByteArray SAMFormat::SECTION_HEADER = "@HD"; 
-const QByteArray SAMFormat::SECTION_SEQUENCE = "@SQ"; 
+const QByteArray SAMFormat::SECTION_HEADER = "@HD";
+const QByteArray SAMFormat::SECTION_SEQUENCE = "@SQ";
 const QByteArray SAMFormat::SECTION_READ_GROUP = "@RG";
 const QByteArray SAMFormat::SECTION_PROGRAM = "@PG";
 const QByteArray SAMFormat::SECTION_COMMENT = "@CO";
@@ -55,7 +55,7 @@ const QByteArray SAMFormat::SECTION_COMMENT = "@CO";
 const QByteArray SAMFormat::TAG_VERSION = "VN";
 const QByteArray SAMFormat::TAG_SORT_ORDER = "SO";
 const QByteArray SAMFormat::TAG_GROUP_ORDER = "GO";
- 
+
 const QByteArray SAMFormat::TAG_SEQUENCE_NAME = "SN";
 const QByteArray SAMFormat::TAG_SEQUENCE_LENGTH = "LN";
 const QByteArray SAMFormat::TAG_GENOME_ASSEMBLY_ID = "AS";
@@ -172,7 +172,7 @@ Document* SAMFormat::loadDocument(IOAdapter* /* io */, const U2DbiRef& /* dbiRef
     FAIL("Not implemented", NULL);
 
     //CHECK_EXT(io != NULL   && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
-    //    
+    //
     //QList<GObject*> objects;
     //QVariantMap fs = _fs;
 
@@ -399,7 +399,7 @@ void SAMFormat::storeEntry(IOAdapter * /* io */, const QMap< GObjectType, QList<
     //            qual.reserve(seq.length());
     //            qual.fill('I', seq.length());
     //        }
-    //        
+    //
     //        block = qname + tab + flag + tab+ rname + tab + pos + tab + mapq + tab + cigar + tab + mrnm
     //            + tab + mpos + tab + isize + tab + seq + tab + qual + "\n";
     //        if (io->writeBlock( block ) != block.length()) {
@@ -453,14 +453,14 @@ bool SAMFormat::storeAlignedRead(int offset, const DNASequence& read, IOAdapter*
         + TAB + mpos + TAB + isize + TAB + "%5" + TAB + "%6" + "\n";
     static const QString rowDataCigar = "%1" + TAB + flag + TAB + "%2" + TAB + "%3" + TAB + mapq + TAB + "%4" + TAB + mrnm
         + TAB + mpos + TAB + isize + TAB + "%5" + TAB + "%6" + "\n";
-    
+
     if( NULL == io || !io->isOpen() ) {
         return false;
     }
-    
+
     if (first) {
         QByteArray block;
-        block.append(SECTION_HEADER).append(TAB).append("VN:").append(VERSION).append("\n");   
+        block.append(SECTION_HEADER).append(TAB).append("VN:").append(VERSION).append("\n");
         block.append(SECTION_SEQUENCE).append(TAB).append(TAG_SEQUENCE_NAME).append(":");
         block.append(refName).append(TAB);
         block.append(TAG_SEQUENCE_LENGTH).append(":").append(QByteArray::number(refLength)).append("\n");
@@ -469,7 +469,7 @@ bool SAMFormat::storeAlignedRead(int offset, const DNASequence& read, IOAdapter*
         }
         block.clear();
     }
-    
+
     QByteArray qname = QString(read.getName()).replace(QRegExp("\\s|\\t"), "_").toLatin1();
     if (qname.isEmpty()) {
         qname = "contig";

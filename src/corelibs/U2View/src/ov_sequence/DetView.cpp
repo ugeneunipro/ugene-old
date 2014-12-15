@@ -55,7 +55,7 @@
 
 namespace U2 {
 
-DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx) 
+DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
 : GSequenceLineViewAnnotated(p, ctx)
 {
     showComplementAction = new QAction(tr("Show complement strand"), this);
@@ -73,8 +73,8 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
 
     bool hasComplement = ctx->getComplementTT()!=NULL;
     showComplementAction->setChecked(hasComplement);
-    
-    bool hasAmino = ctx->getAminoTT()!=NULL; 
+
+    bool hasAmino = ctx->getAminoTT()!=NULL;
     showTranslationAction->setChecked(hasAmino);
 
     assert(ctx->getSequenceObject()!=NULL);
@@ -96,11 +96,11 @@ void DetView::updateSize() {
     setFixedHeight(layout()->minimumSize().height());
 }
 
-void DetView::resizeEvent(QResizeEvent *e) { 
+void DetView::resizeEvent(QResizeEvent *e) {
     int w = width();
     int charWidth = renderArea->getCharWidth();
     int visibleSymbolsCount = w / charWidth;
-    
+
     if (visibleSymbolsCount > seqLen) {
         visibleRange.startPos = 0;
         visibleRange.length = seqLen;
@@ -122,7 +122,7 @@ void DetView::updateActions() {
     bool hasComplement = ctx->getComplementTT()!=NULL;
     showComplementAction->setEnabled(hasComplement );
 
-    bool hasAmino = ctx->getAminoTT()!=NULL; 
+    bool hasAmino = ctx->getAminoTT()!=NULL;
     showTranslationAction->setEnabled(hasAmino );
 }
 
@@ -154,7 +154,7 @@ void DetView::setShowComplement(bool t) {
     showComplementAction->disconnect(this);
     showComplementAction->setChecked(t);
     connect(showComplementAction, SIGNAL(triggered(bool)), SLOT(sl_showComplementToggle(bool)));
-    
+
     updateSize();
 }
 
@@ -276,9 +276,9 @@ void DetViewRenderArea::updateLines() {
         rulerLine = 4;
         complementLine = 5;
         firstComplTransLine = 6;
-        numLines = 9; 
+        numLines = 9;
         QVector<bool> v = detView->getSequenceContext()->getTranslationRowsVisibleStatus();
-            
+
         for(int i = 0; i<6; i++ ){
             if(!v[i]){
                 if(i<3){
@@ -362,12 +362,12 @@ void DetViewRenderArea::drawAll(QPaintDevice* pd) {
     GSLV_UpdateFlags uf = view->getUpdateFlags();
     bool completeRedraw = uf.testFlag(GSLV_UF_NeedCompleteRedraw)  || uf.testFlag(GSLV_UF_ViewResized)  ||
                           uf.testFlag(GSLV_UF_VisibleRangeChanged) || uf.testFlag(GSLV_UF_AnnotationsChanged);
-    
+
     bool hasSelectedAnnotationInRange = isAnnotationSelectionInVisibleRange();
 
     if (completeRedraw) {
         cutsiteDataList.clear();
-        QPainter pCached(cachedView); 
+        QPainter pCached(cachedView);
         pCached.fillRect(0, 0, pd->width(), pd->height(), Qt::white);
         pCached.setPen(Qt::black);
         drawAnnotations(pCached);
@@ -380,7 +380,7 @@ void DetViewRenderArea::drawAll(QPaintDevice* pd) {
         drawRuler(pCached);
 
         pCached.end();
-    } 
+    }
 
     QPainter p(pd);
     p.drawPixmap(0, 0, *cachedView);
@@ -392,7 +392,7 @@ void DetViewRenderArea::drawAll(QPaintDevice* pd) {
         drawComplement(p);
         drawTranslations(p);
     }
- 
+
     drawSequenceSelection(p);
 
     if (view->hasFocus()) {
@@ -574,7 +574,7 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
                     int x =  xpos * charWidth + xCharOffset;
 
                     QColor charColor;
-                    bool inAnnotation = deriveTranslationCharColor(maxUsedPos - (seq - revComplDna.constData()), 
+                    bool inAnnotation = deriveTranslationCharColor(maxUsedPos - (seq - revComplDna.constData()),
                         U2Strand::Complementary, annotationsInRange, charColor);
 
                     if (aminoTable->isStartCodon(seq)) {
@@ -753,7 +753,7 @@ float DetViewRenderArea::posToCoordF(qint64 x, bool useVirtualSpace) const {
 double DetViewRenderArea::getCurrentScale() const {
     assert(0); //TODO: must never be called. Not tested if called
     return (double)charWidth;
-} 
+}
 
 void DetViewRenderArea::updateSize()  {
     updateLines();

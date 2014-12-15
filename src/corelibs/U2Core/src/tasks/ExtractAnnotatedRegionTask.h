@@ -36,7 +36,7 @@ struct U2CORE_EXPORT ExtractAnnotatedRegionTaskSettings {
     int     gapLength;
     bool    translate;
     bool    complement;
-    int     extLeft; 
+    int     extLeft;
     int     extRight;
     bool    splitJoined;
 };
@@ -52,7 +52,7 @@ public:
 private:
     void prepareTranslations();
     void extractLocations(QList<QByteArray>& resParts, QVector<U2Region>& resLocation, const QVector<U2Region>& origLocation);
-    
+
     DNASequence inputSeq;
     const AnnotationData inputAnn;
     ExtractAnnotatedRegionTaskSettings cfg;
@@ -66,4 +66,4 @@ private:
 
 }// ns
 
-#endif 
+#endif

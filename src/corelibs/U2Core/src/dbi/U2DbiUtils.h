@@ -29,18 +29,18 @@ namespace U2 {
 
 class U2OpStatus;
 
-/** 
-    Helper class that allocates connection in constructor and automatically releases it in the destructor 
+/**
+    Helper class that allocates connection in constructor and automatically releases it in the destructor
     It uses app-global connection pool.
 
-    Note: DbiConnection caches U2OpStatus and reuses it in destructor on DBI release. Ensure that 
+    Note: DbiConnection caches U2OpStatus and reuses it in destructor on DBI release. Ensure that
     U2OpStatus live range contains DbiHandle live range
 */
 class U2CORE_EXPORT DbiConnection {
 public:
     /** Opens connection to existing DBI */
     DbiConnection(const U2DbiRef& ref,  U2OpStatus& os);
-    
+
     /** Opens connection to existing DBI or create news DBI*/
     DbiConnection(const U2DbiRef& ref,  bool create, U2OpStatus& os, const QHash<QString, QString> &properties = (QHash<QString, QString>()));
 
@@ -56,13 +56,13 @@ public:
 
     /** Opens connection to existing DBI or create news DBI*/
     void open(const U2DbiRef& ref,  bool create, U2OpStatus& os, const QHash<QString, QString> &properties = (QHash<QString, QString>()));
-    
+
     void close(U2OpStatus& os);
 
     bool isOpen() const;
 
     DbiConnection& operator=(DbiConnection const& dbiConnection);
-    
+
     U2Dbi*          dbi;
 
 private: //TODO
@@ -71,7 +71,7 @@ private: //TODO
 };
 
 
-/** 
+/**
     Helper class to track DBI instance live range
 */
 class U2CORE_EXPORT TmpDbiHandle {
@@ -105,7 +105,7 @@ class U2CORE_EXPORT TmpDbiObjects {
 public:
     TmpDbiObjects(const U2DbiRef& _dbiRef, U2OpStatus& _os) : dbiRef(_dbiRef), os(_os){}
     ~TmpDbiObjects();
-    
+
     U2DbiRef            dbiRef;
     QList<U2DataId>     objects;
     U2OpStatus&         os;
@@ -152,8 +152,8 @@ private:
 class U2CORE_EXPORT U2DbiUtils : public QObject{
     Q_OBJECT
 public:
-    /** 
-        Logs that operation called is not supported by DBI 
+    /**
+        Logs that operation called is not supported by DBI
         If U2OpStatus has no error set, sets the error message
     */
     static void logNotSupported(U2DbiFeature f, U2Dbi* dbi, U2OpStatus& os);

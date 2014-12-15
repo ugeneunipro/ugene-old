@@ -92,7 +92,7 @@ class ExportMSAConsensusTask : public DocumentProviderTask {
     Q_OBJECT
 public:
     ExportMSAConsensusTask(const ExportMSAConsensusTaskSettings& s);
-    
+
     void prepare();
 protected:
     QList<Task*> onSubTaskFinished(Task* subTask);

@@ -90,7 +90,7 @@ namespace U2 {
                 }
                 expectedFile.close(), actualFile.close();
             }
-            return ReportResult_Finished;		
+            return ReportResult_Finished;
         }
         return ReportResult_Finished;
     }

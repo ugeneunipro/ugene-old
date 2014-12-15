@@ -82,7 +82,7 @@ Task::ReportResult AddDocumentTask::report() {
         }
         return ReportResult_Finished;
     }
-    
+
     if( p->isStateLocked() ) {
         return ReportResult_CallMeAgain;
     } else if (document != NULL) {

@@ -82,12 +82,12 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     for(int i = 2; i > 0; i--) {
         const QString expectedFileName = "P1_S_" + QString::number(i) + "_test]" + alignmentFileExtension;
         GTUtilsDocument::checkDocument(os, expectedFileName);
-        
+
         GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, expectedFileName.left(expectedFileName.length()
             - alignmentFileExtension.length())));
         GTMouseDriver::doubleClick(os);
         GTGlobals::sleep();
-        
+
         const QStringList sequencesNameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
         CHECK_SET_ERR(2 == sequencesNameList.length(), seqNumberMismatchErrorMessage + expectedFileName);
         switch(i) {
@@ -141,7 +141,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "S"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep(1000);
-    
+
 // 5. Check names and count of annotations
     QTreeWidget *treeWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
     CHECK_SET_ERR(treeWidget != NULL, "Tree widget is NULL");

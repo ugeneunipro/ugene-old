@@ -65,7 +65,7 @@ QList<Task *> SpideyAlignmentTask::onSubTaskFinished( Task *subTask ) {
     if ( hasError( ) || isCanceled( ) ) {
         return res;
     }
-    
+
     if ( subTask == prepareDataForSpideyTask ) {
         SAFE_POINT( !prepareDataForSpideyTask->getResultPath( ).isEmpty( ), "Invalid result path!",
             res );

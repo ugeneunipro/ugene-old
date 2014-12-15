@@ -52,7 +52,7 @@ U2DbiIterator<U2Variant>* VariantTrackObject::getVariants( const U2Region& reg, 
 
     U2VariantDbi* vdbi = con.dbi->getVariantDbi();
     SAFE_POINT(vdbi != NULL, "Varian DBI is NULL", NULL);
-    
+
     return vdbi->getVariants(entityRef.entityId, reg, os);
 }
 

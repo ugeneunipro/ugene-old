@@ -93,7 +93,7 @@ public:
 * rendering of the 3d objects.
 *
 * Also it includes actions for visualization control.
-*/ 
+*/
 class BioStruct3DGLWidget : public QGLWidget
 {
     Q_OBJECT
@@ -106,7 +106,7 @@ public:
     * @param view DnaView context for connecting structure 3D representation and sequence view
     * @param manager GlFrameManager is required for OpenGL frame manipulation
     * @param parent Parent widget
-    */ 
+    */
     BioStruct3DGLWidget(BioStruct3DObject* bsObj, const AnnotatedDNAView* view, GLFrameManager* manager, QWidget *parent);
 
     //! Destructor.
@@ -167,7 +167,7 @@ public:
 
 protected:
     /*!
-    * QGlWidget virtual function, initializes OpenGL params. See, Qt docs "QGLWidget" for details. 
+    * QGlWidget virtual function, initializes OpenGL params. See, Qt docs "QGLWidget" for details.
     */
     void initializeGL();
     /*!
@@ -177,7 +177,7 @@ protected:
     */
     void resizeGL(int width, int height);
     /*!
-    * QGlWidget virtual function, draw GL scene.  
+    * QGlWidget virtual function, draw GL scene.
     */
     void paintGL();
     /*!
@@ -196,7 +196,7 @@ protected:
     * QWidget virtual function, executes context menu.
     */
     void contextMenuEvent(QContextMenuEvent *_event);
-    
+
 private:
     //! Sets unselected regions shading level
     void setUnselectedShadingLevel(int shading);

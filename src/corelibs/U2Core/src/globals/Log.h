@@ -56,19 +56,19 @@ public:
     virtual ~Logger();
 
     static void log(LogLevel level, const QString& message, const QString& category);
-    
+
     static void log(LogLevel level, const QString& message, const QStringList& categoryies);
 
     virtual void message(LogLevel level, const QString& msg);
-    
+
     void message(LogLevel level, const QString& msg, const QString& extraCategory);
 
     void message(LogLevel level, const QString& msg, const QStringList& extraCategories);
-    
+
     void trace(const QString& msg)  { message(LogLevel_TRACE, msg);}
-    
+
     void details(const QString& msg)  { message(LogLevel_DETAILS, msg);}
-    
+
     void info(const QString& msg)  { message(LogLevel_INFO, msg);}
 
     void error(const QString& msg)  { message(LogLevel_ERROR, msg);}

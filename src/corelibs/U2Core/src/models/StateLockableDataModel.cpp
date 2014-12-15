@@ -75,7 +75,7 @@ void StateLockableItem::unlockState(StateLock* lock) {
     checkThread(this);
 
     locks.removeOne(lock);
-    
+
     if (locks.isEmpty()) {
         emit si_lockedStateChanged();
     }
@@ -126,8 +126,8 @@ void StateLockableTreeItem::lockState(StateLock* lock) {
 
     bool wasUnlocked = !isStateLocked();
 
-    locks.append(lock); 
-    
+    locks.append(lock);
+
     //notify all children on parent lock state change
     if (wasUnlocked) {
         foreach(StateLockableTreeItem* c, childItems) {
@@ -173,12 +173,12 @@ void StateLockableTreeItem::onParentStateLocked() {
 void StateLockableTreeItem::onParentStateUnlocked() {
     //parent has become unlocked -> check if my state is changed
     if (!locks.isEmpty()) {
-        return; //nothing changed - was still locked 
+        return; //nothing changed - was still locked
     }
 
     //notify children
     assert(!isStateLocked());
-    
+
     emit si_lockedStateChanged();
 
     foreach(StateLockableTreeItem* c, childItems) {
@@ -189,17 +189,17 @@ void StateLockableTreeItem::onParentStateUnlocked() {
 void StateLockableTreeItem::setParentStateLockItem(StateLockableTreeItem* newParent) {
     StateLockableTreeItem* parentStateLockItem = qobject_cast<StateLockableTreeItem*>(parent());
     SAFE_POINT(parentStateLockItem == NULL || newParent == NULL, "Parent item is already assigned", );
-    SAFE_POINT(newParent == NULL || newParent->isModificationAllowed(StateLockModType_AddChild), 
+    SAFE_POINT(newParent == NULL || newParent->isModificationAllowed(StateLockModType_AddChild),
         "Add-child modification is not allowed for new parent item!",);
-    SAFE_POINT(parentStateLockItem == NULL || parentStateLockItem->isModificationAllowed(StateLockModType_AddChild), 
+    SAFE_POINT(parentStateLockItem == NULL || parentStateLockItem->isModificationAllowed(StateLockModType_AddChild),
         "Add-child modification is not allowed for old parent item!",);
-    SAFE_POINT((NULL == newParent) || (newParent->thread() == thread()), 
+    SAFE_POINT((NULL == newParent) || (newParent->thread() == thread()),
         "Parent item has a different thread",);
 
     StateLockableTreeItem* oldParent = parentStateLockItem;
     parentStateLockItem = newParent;
     setParent(newParent);
-    
+
     bool treeMod = isTreeItemModified();
     if (newParent!=NULL) {
         setMainThreadModificationOnly(newParent->isMainThreadModificationOnly());
@@ -233,7 +233,7 @@ void StateLockableTreeItem::setModified(bool newModifiedState, const QString& mo
 
     StateLockableTreeItem* parentStateLockItem = qobject_cast<StateLockableTreeItem*>(parent());
     bool parentUpdate = (NULL != parentStateLockItem && numModifiedChildren == 0);
-    
+
     if (itemIsModified && parentUpdate) { // let parent become modified first
         parentStateLockItem->increaseNumModifiedChilds(1);
     }
@@ -296,7 +296,7 @@ QList<StateLock*> StateLockableTreeItem::findLocks(StateLockableTreeItemBranchFl
             }
         }
     }
-    
+
     StateLockableTreeItem* parentStateLockItem = qobject_cast<StateLockableTreeItem*>(parent());
     if (tf.testFlag(StateLockableTreeItemBranch_Parents) && parentStateLockItem!=NULL) {
         StateLockableTreeItemBranchFlags tflags(StateLockableTreeItemBranch_Parents | StateLockableTreeItemBranch_Item);

@@ -81,7 +81,7 @@ QString OutputFilesWidget::createActionsSubMenu(const Monitor::FileInfo& info, b
         .arg(relative(info.url))
         .arg(tr("Open by operating system"));
     return QString(
-        "<ul class=\"dropdown-menu %1\">" 
+        "<ul class=\"dropdown-menu %1\">"
             "<li><a href=\"#\" onclick=\"agent.openByOS('%2')\">%3</a></li>"
             "%4"
         "</ul>"

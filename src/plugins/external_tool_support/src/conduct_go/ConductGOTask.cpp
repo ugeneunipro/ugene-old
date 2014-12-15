@@ -100,7 +100,7 @@ void ConductGOTask::prepare() {
 
     treatTask = new SaveDocumentTask(treatDoc);
     addSubTask(treatTask);
-    
+
 }
 
 Document* ConductGOTask::createDoc(const QList<Workflow::SharedDbiDataHandler>& annData, const QString& name) {
@@ -130,7 +130,7 @@ QList<Task*> ConductGOTask::onSubTaskFinished(Task* subTask) {
 
     if (treatTask == subTask) {
             QStringList args = settings.getArguments(treatDoc->getURLString());
-            
+
             logParser = new ConductGOLogParser();
 
             ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);

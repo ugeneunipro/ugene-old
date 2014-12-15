@@ -61,14 +61,14 @@ void ClustalOWorkerFactory::init() {
     Descriptor ind(BasePorts::IN_MSA_PORT_ID(), ClustalOWorker::tr("Input MSA"), ClustalOWorker::tr("Input MSA to process."));
     Descriptor oud(BasePorts::OUT_MSA_PORT_ID(), ClustalOWorker::tr("ClustalO result MSA"),
         ClustalOWorker::tr("The result of the ClustalO alignment."));
-    
+
     QMap<Descriptor, DataTypePtr> inM;
     inM[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
     p << new PortDescriptor(ind, DataTypePtr(new MapDataType("clustal.in.msa", inM)), true /*input*/);
     QMap<Descriptor, DataTypePtr> outM;
     outM[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
     p << new PortDescriptor(oud, DataTypePtr(new MapDataType("clustal.out.msa", outM)), false /*input*/, true /*multi*/);
-    
+
     Descriptor ni(NUM_ITERATIONS, ClustalOWorker::tr("Number of iterations"),
                     ClustalOWorker::tr("Number of (combined guide-tree/HMM) iterations."));
     Descriptor ngti(MAX_GT_ITERATIONS, ClustalOWorker::tr("Number of guidetree iterations"),
@@ -136,7 +136,7 @@ ClustalOPrompter::ClustalOPrompter(Actor* p) : PrompterBase<ClustalOPrompter>(p)
 QString ClustalOPrompter::composeRichDoc() {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_MSA_PORT_ID()));
     Actor* producer = input->getProducer(BasePorts::IN_MSA_PORT_ID());
-    QString producerName = producer ? tr(" from %1").arg(producer->getLabel()) : "";    
+    QString producerName = producer ? tr(" from %1").arg(producer->getLabel()) : "";
     QString doc = tr("Aligns each MSA supplied <u>%1</u> with \"<u>ClustalO</u>\".")
         .arg(producerName);
 
@@ -179,7 +179,7 @@ Task* ClustalOWorker::tick() {
         QScopedPointer<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
         SAFE_POINT(!msaObj.isNull(), "NULL MSA Object!", NULL);
         MAlignment msa = msaObj->getMAlignment();
-        
+
         if (msa.isEmpty()) {
             algoLog.error(tr("An empty MSA '%1' has been supplied to ClustalO.").arg(msa.getName()));
             return NULL;

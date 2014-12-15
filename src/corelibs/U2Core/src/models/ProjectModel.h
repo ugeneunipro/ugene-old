@@ -63,15 +63,15 @@ class U2OpStatus;
 /// Service responsible for project loading / unloading
 class U2CORE_EXPORT ProjectLoader  : public QObject {
 public:
-    /** 
-        Opens files and adds them to the current project. If project does not exists - creates anonymous one 
-        If the file is project file - loads it. 
+    /**
+        Opens files and adds them to the current project. If project does not exists - creates anonymous one
+        If the file is project file - loads it.
     */
     virtual Task* openWithProjectTask(const QList<GUrl>& urls, const QVariantMap& hints = QVariantMap()) = 0;
-    
+
     /** Creates new project. If URL is empty the project created is anonymous */
     virtual Task* createNewProjectTask(const GUrl& url = GUrl()) = 0;
-    
+
     /** Loads project from the specified location */
     virtual Task* createProjectLoadingTask(const GUrl& url, const QVariantMap& hints = QVariantMap()) = 0;
 
@@ -128,7 +128,7 @@ public:
     virtual void makeClean() = 0;
 
     virtual quint64 getObjectIdCounter() const = 0;
-    
+
     virtual void setObjectIdCounter(quint64 c) = 0;
 
     static void setupToEngine(QScriptEngine *engine);

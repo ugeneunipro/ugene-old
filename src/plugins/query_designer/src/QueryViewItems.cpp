@@ -53,7 +53,7 @@
 #define ARR_W 15
 
 namespace U2 {
-    
+
 /************************************************************************/
 /* Annotation Item                                                      */
 /************************************************************************/
@@ -337,7 +337,7 @@ void QDElement::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
             dragPoint = event->pos();
             dragging = true;
         }
-        
+
         QPointF newPos = scenePos();
         const QPointF& mousePos = event->pos();
         const QPointF& p = mousePos - dragPoint;
@@ -606,7 +606,7 @@ bool QDElement::sceneEvent(QEvent *event) {
                     }
 
                     bound.setRect(newBound.x(),newBound.y(),newBound.width(),newBound.height());
-                    
+
                     if (itemResizeFlags & (ResizeTop|ResizeLeft)) {
                         if (newPos!=scenePos()) {
                             setPos(newPos);
@@ -635,7 +635,7 @@ bool QDElement::sceneEvent(QEvent *event) {
 QVariant QDElement::itemChange( GraphicsItemChange change, const QVariant & value ) {
     switch(change) {
         case ItemPositionChange:
-            {   
+            {
                 //value is the new position
                 QPointF newPos = value.toPointF();
                 QueryScene* qs = qobject_cast<QueryScene*>(scene());
@@ -660,7 +660,7 @@ QVariant QDElement::itemChange( GraphicsItemChange change, const QVariant & valu
                     newPos.setX(qBound(rect.left(), newPos.x(), rect.left() + QueryScene::MAX_SCENE_SIZE.width()));
                     newPos.setY(qMax(newPos.y(), rect.top()));
                 }
-                
+
                 //prevent collision
                 QRectF itemRect = boundingRect();
                 const QPointF& topLeft = mapToScene(itemRect.topLeft());
@@ -708,7 +708,7 @@ QVariant QDElement::itemChange( GraphicsItemChange change, const QVariant & valu
                     return QGraphicsItem::itemChange(change, value);
                 }
                 qs->sl_adaptRowsNumber();
-                
+
                 QRectF rect = qs->sceneRect();
                 qreal rightEdge = mapRectToScene(boundingRect()).right();
                 qreal min = rect.left() + QueryScene::DEFAULT_SCENE_SIZE.width();
@@ -718,7 +718,7 @@ QVariant QDElement::itemChange( GraphicsItemChange change, const QVariant & valu
                     rect.setRight(rightEdge);
                     qs->setSceneRect(rect);
                 }
-                
+
                 updateFootnotes();
                 qs->setModified(true);
             }
@@ -943,7 +943,7 @@ QRectF Footnote::boundingRect() const {
 void Footnote::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);
-    painter->fillRect(boundingRect(),Qt::white);    
+    painter->fillRect(boundingRect(),Qt::white);
     qreal arrW = getDstPoint().x() - getSrcPoint().x();
     QPen pen(Qt::black);
     if(isSelected()) {

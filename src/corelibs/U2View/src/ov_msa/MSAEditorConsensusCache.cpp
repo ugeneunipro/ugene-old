@@ -27,11 +27,11 @@
 
 namespace U2 {
 
-MSAEditorConsensusCache::MSAEditorConsensusCache(QObject* p, MAlignmentObject* o, MSAConsensusAlgorithmFactory* factory) 
+MSAEditorConsensusCache::MSAEditorConsensusCache(QObject* p, MAlignmentObject* o, MSAConsensusAlgorithmFactory* factory)
 : QObject(p), curCacheSize(0), aliObj(o), algorithm(NULL)
 {
     setConsensusAlgorithm(factory);
-    
+
     connect(aliObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
         SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
 

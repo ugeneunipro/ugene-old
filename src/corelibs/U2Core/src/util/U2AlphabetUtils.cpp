@@ -32,7 +32,7 @@ namespace U2 {
 
 ExtendedDNAlphabetComparator::ExtendedDNAlphabetComparator(const DNAAlphabet* _al1, const DNAAlphabet* _al2) : DNAAlphabetComparator(_al1, _al2) {
     assert(al1->isNucleic() && al2->isNucleic());
-    assert(al1->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() 
+    assert(al1->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED()
         || al2->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED()
         || al1->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT()
         || al2->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT()

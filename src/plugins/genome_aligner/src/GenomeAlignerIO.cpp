@@ -107,7 +107,7 @@ int GenomeAlignerCommunicationChanelReader::getProgress() {
 
 SearchQuery *GenomeAlignerCommunicationChanelReader::read() {
     DNASequence seq = reads->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
-    
+
     return new SearchQuery(&seq);
 }
 
@@ -121,8 +121,8 @@ GenomeAlignerMAlignmentWriter::GenomeAlignerMAlignmentWriter() {
     writtenReadsCount = 0;
 }
 
-void GenomeAlignerMAlignmentWriter::close() { 
-    //TODO: add some heuristic alphabet selection. 
+void GenomeAlignerMAlignmentWriter::close() {
+    //TODO: add some heuristic alphabet selection.
     result.setAlphabet(AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()));
 }
 

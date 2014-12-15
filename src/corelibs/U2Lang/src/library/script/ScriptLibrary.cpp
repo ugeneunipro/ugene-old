@@ -274,13 +274,13 @@ QScriptValue WorkflowScriptLibrary::translate(QScriptContext *ctx, QScriptEngine
     }
     bool aminoSeq = seq.alphabet->isAmino();
     if( aminoSeq ) {
-        return ctx->throwError(QObject::tr("Alphabet must be nucleotide"));        
+        return ctx->throwError(QObject::tr("Alphabet must be nucleotide"));
     }
     int offset = 0;
     if(ctx->argumentCount() == 2) {
         bool ok;
         QVariant var = ctx->argument(1).toInt32();
-        offset = var.toInt(&ok); //no need to check OK because, if var not integer its changed to default value 
+        offset = var.toInt(&ok); //no need to check OK because, if var not integer its changed to default value
         if(offset < 0 || offset > 2) {
             return ctx->throwError(QObject::tr("Offset must be from interval [0,2]"));
         }
@@ -293,7 +293,7 @@ QScriptValue WorkflowScriptLibrary::translate(QScriptContext *ctx, QScriptEngine
     }
     DNATranslation *aminoT;
     aminoT = AppContext::getDNATranslationRegistry()->getStandardGeneticCodeTranslation(seq.alphabet);
-   
+
     aminoT->translate(seq.seq.data() + offset, seq.length() - offset, seq.seq.data(), seq.length());
     seq.seq.resize(seq.length()/3);
 
@@ -317,7 +317,7 @@ QScriptValue WorkflowScriptLibrary::charAt(QScriptContext *ctx, QScriptEngine *e
     if(!ok) {
         return ctx->throwError(QObject::tr("Second argument must be a number"));
     }
-    
+
     if(position >= seq.length() || position < 0) {
         return ctx->throwError(QObject::tr("Position is out of range"));
     }
@@ -527,7 +527,7 @@ QScriptValue WorkflowScriptLibrary::getSequenceFromAlignment(QScriptContext *ctx
         if(!ok) {
             return ctx->throwError(QObject::tr("Fourth argument must be a number"));
         }
-        
+
         if(beg <= 0 || beg > arr.length()) {
             return ctx->throwError(QObject::tr("Offset is out of range"));
         }
@@ -660,7 +660,7 @@ QScriptValue WorkflowScriptLibrary::removeFromAlignment(QScriptContext *ctx, QSc
     if(!ok) {
         return ctx->throwError(QObject::tr("Second argument must be a number"));
     }
-    
+
     if(row < 0 || row >= aln.getLength()) {
         return ctx->throwError(QObject::tr("Row is out of range"));
     }
@@ -744,7 +744,7 @@ QScriptValue WorkflowScriptLibrary::getAnnotationRegion(QScriptContext *ctx, QSc
             const QByteArray & sequence = seq.seq;
             QVector<U2Region> location = ann.getRegions();
             QByteArray & res = resultedSeq.seq;
-            QVector<U2Region> extendedRegions; 
+            QVector<U2Region> extendedRegions;
 
             //extend regions
             U2Region sequenceRange(0, sequence.size());
@@ -858,7 +858,7 @@ QScriptValue WorkflowScriptLibrary::getLocation(QScriptContext *ctx, QScriptEngi
     if(!ok) {
         return ctx->throwError(QObject::tr("Second argument must be a number"));
     }
-    
+
     if(num < 0 || num > anns.size()) {
         return ctx->throwError(QObject::tr("Index is out of range"));
     }
@@ -882,7 +882,7 @@ QScriptValue WorkflowScriptLibrary::hasAnnotationName(QScriptContext *ctx, QScri
     if(annName.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty annotation name"));
     }
-    
+
     bool hasAnnotation = false;
     foreach ( const AnnotationData &ann, anns ) {
         if ( ann.name == annName ){
@@ -958,7 +958,7 @@ QScriptValue WorkflowScriptLibrary::readFile(QScriptContext *ctx, QScriptEngine 
     if(filePath.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid file path"));
     }
-    
+
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly |  QIODevice::Text)){
         return ctx->throwError(QObject::tr("Cannot open the file by given path"));

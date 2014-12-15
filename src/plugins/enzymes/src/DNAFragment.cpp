@@ -37,7 +37,7 @@ namespace U2 {
 
 DNAFragment::DNAFragment( const AnnotationData &fragment, U2SequenceObject* sObj, const QList<AnnotationTableObject *> relatedAnns )
     : annotatedFragment(fragment), dnaObj(sObj), relatedAnnotations(relatedAnns), reverseCompl(false)
-{   
+{
     SAFE_POINT(sObj != NULL, "Invalid sequence object detected!", );
     updateTerms();
 }
@@ -77,7 +77,7 @@ QList<DNAFragment> DNAFragment::findAvailableFragments()
 {
     QList<GObject*> aObjects = GObjectUtils::findAllObjects(UOF_LoadedOnly,GObjectTypes::ANNOTATION_TABLE);
     QList<GObject*> sObjects = GObjectUtils::findAllObjects(UOF_LoadedOnly,GObjectTypes::SEQUENCE);
-    
+
     return findAvailableFragments(aObjects,sObjects);
 }
 
@@ -102,7 +102,7 @@ QList<DNAFragment> DNAFragment::findAvailableFragments( const QList<GObject*>& a
                 if (dnaObj == NULL) {
                     continue;
                 }
-                // Find related annotation tables 
+                // Find related annotation tables
                 QList<GObject*> relatedAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dnaObj,
                     GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence, aObjects, UOF_LoadedOnly);
                 // Add fragment
@@ -151,7 +151,7 @@ QByteArray DNAFragment::getSequence() const
     foreach (const U2Region& region, location->regions) {
         seq += dnaObj->getSequenceData(region);
     }
-    
+
     assert(!seq.isEmpty());
 
     if (reverseCompl) {
@@ -220,7 +220,7 @@ void DNAFragment::setRightOverhangStrand( bool direct )
 
 
 void DNAFragment::setOverhang( const QByteArray& qName, const QByteArray& overhang )
-{   
+{
     GObjectUtils::replaceAnnotationQualfier(annotatedFragment, qName, overhang);
     updateTerms();
 }
@@ -232,10 +232,10 @@ void DNAFragment::setLeftOverhang( const QByteArray& overhang )
      if (reverseCompl) {
          toRevCompl(buf);
          qName = QUALIFIER_RIGHT_OVERHANG;
-     } 
-     
+     }
+
      setOverhang(qName, buf);
-        
+
 }
 
 void DNAFragment::setRightOverhang( const QByteArray& overhang )
@@ -245,7 +245,7 @@ void DNAFragment::setRightOverhang( const QByteArray& overhang )
     if (reverseCompl) {
         toRevCompl(buf);
         qName = QUALIFIER_LEFT_OVERHANG;
-    } 
+    }
 
     setOverhang(qName, buf);
 }
@@ -264,7 +264,7 @@ int DNAFragment::getLength() const
 
 QByteArray DNAFragment::getSourceSequence() const {
     assert(!isEmpty());
-    return dnaObj->getWholeSequenceData(); 
+    return dnaObj->getWholeSequenceData();
 }
 
 void DNAFragment::updateTerms() {
@@ -273,7 +273,7 @@ void DNAFragment::updateTerms() {
     }
     updateLeftTerm();
     updateRightTerm();
-    
+
     QString buf = annotatedFragment.findFirstQualifierValue(QUALIFIER_INVERTED);
     reverseCompl = buf == "yes" ? true : false;
 
@@ -292,7 +292,7 @@ void DNAFragment::updateLeftTerm()
     leftTerm.enzymeId = annotatedFragment.findFirstQualifierValue(QUALIFIER_LEFT_TERM).toLatin1();
     leftTerm.overhang = annotatedFragment.findFirstQualifierValue(QUALIFIER_LEFT_OVERHANG).toLatin1();
     leftTerm.type = annotatedFragment.findFirstQualifierValue(QUALIFIER_LEFT_TYPE).toLatin1();
-    leftTerm.isDirect = 
+    leftTerm.isDirect =
         annotatedFragment.findFirstQualifierValue(QUALIFIER_LEFT_STRAND) == OVERHANG_STRAND_DIRECT;
 }
 
@@ -302,7 +302,7 @@ void DNAFragment::updateRightTerm()
     rightTerm.enzymeId = annotatedFragment.findFirstQualifierValue(QUALIFIER_RIGHT_TERM).toLatin1();
     rightTerm.overhang = annotatedFragment.findFirstQualifierValue(QUALIFIER_RIGHT_OVERHANG).toLatin1();
     rightTerm.type = annotatedFragment.findFirstQualifierValue(QUALIFIER_RIGHT_TYPE).toLatin1();
-    rightTerm.isDirect = 
+    rightTerm.isDirect =
         annotatedFragment.findFirstQualifierValue(QUALIFIER_RIGHT_STRAND) == OVERHANG_STRAND_DIRECT;
 }
 

@@ -53,7 +53,7 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // AddDocumentAndOpenViewTask
 
-AddExportedDocumentAndOpenViewTask::AddExportedDocumentAndOpenViewTask(DocumentProviderTask* t) 
+AddExportedDocumentAndOpenViewTask::AddExportedDocumentAndOpenViewTask(DocumentProviderTask* t)
 : Task("Export sequence to document", TaskFlags_NR_FOSCOE)
 {
     exportTask = t;
@@ -116,8 +116,8 @@ void ExportAlignmentTask::run() {
 //////////////////////////////////////////////////////////////////////////
 // export alignment  2 sequence format
 
-ExportMSA2SequencesTask::ExportMSA2SequencesTask(const MAlignment& _ma, const QString& _url, bool _trimAli, DocumentFormatId _format) 
-: DocumentProviderTask(tr("Export alignment to sequence: %1").arg(_url), TaskFlag_None), 
+ExportMSA2SequencesTask::ExportMSA2SequencesTask(const MAlignment& _ma, const QString& _url, bool _trimAli, DocumentFormatId _format)
+: DocumentProviderTask(tr("Export alignment to sequence: %1").arg(_url), TaskFlag_None),
 ma(_ma), url(_url), trimAli(_trimAli), format(_format)
 {
     GCOUNTER( cvar, tvar, "ExportMSA2SequencesTask");
@@ -150,8 +150,8 @@ void ExportMSA2SequencesTask::run() {
 // export nucleic alignment 2 amino alignment
 
 ExportMSA2MSATask::ExportMSA2MSATask(const MAlignment& _ma, int _offset, int _len, const QString& _url,
-    const QList<DNATranslation*>& _aminoTranslations, DocumentFormatId _format) 
-: DocumentProviderTask(tr("Export alignment to alignment: %1").arg(_url), TaskFlag_None), 
+    const QList<DNATranslation*>& _aminoTranslations, DocumentFormatId _format)
+: DocumentProviderTask(tr("Export alignment to alignment: %1").arg(_url), TaskFlag_None),
 ma(_ma), offset(_offset), len(_len), url(_url), format(_format), aminoTranslations(_aminoTranslations)
 {
     GCOUNTER( cvar, tvar, "ExportMSA2MSATask" );
@@ -207,7 +207,7 @@ void ExportMSA2MSATask::run() {
 // export chromatogram to SCF
 
 ExportDNAChromatogramTask::ExportDNAChromatogramTask( DNAChromatogramObject* _obj, const ExportChromatogramTaskSettings& _settings)
- : DocumentProviderTask(tr("Export chromatogram to SCF"), TaskFlags_NR_FOSCOE), 
+ : DocumentProviderTask(tr("Export chromatogram to SCF"), TaskFlags_NR_FOSCOE),
    cObj(_obj), settings(_settings), loadTask(NULL)
 {
     GCOUNTER( cvar, tvar, "ExportDNAChromatogramTask" );
@@ -235,7 +235,7 @@ void ExportDNAChromatogramTask::prepare() {
 
     DNAChromatogram cd = cObj->getChromatogram();
     QByteArray seq = sObj->getWholeSequenceData();
-    
+
     if (settings.reverse) {
         TextUtils::reverse(seq.data(), seq.length());
         reverseVector(cd.A);
@@ -246,7 +246,7 @@ void ExportDNAChromatogramTask::prepare() {
         if (cObj->getDocument()->getDocumentFormatId() == BaseDocumentFormats::ABIF) {
             int baseNum = cd.baseCalls.count();
             int seqLen = cd.seqLength;
-            // this is required for base <-> peak correspondence 
+            // this is required for base <-> peak correspondence
             if (baseNum > seqLen) {
                 cd.baseCalls.remove(baseNum - 1);
                 cd.prob_A.remove(baseNum - 1);
@@ -261,7 +261,7 @@ void ExportDNAChromatogramTask::prepare() {
 
         for (int i = 0; i < cd.seqLength; ++i) {
             cd.baseCalls[i] = cd.traceLength - cd.baseCalls[i] + offset;
-        } 
+        }
         reverseVector(cd.baseCalls);
         reverseVector(cd.prob_A);
         reverseVector(cd.prob_C);
@@ -276,12 +276,12 @@ void ExportDNAChromatogramTask::prepare() {
         qSwap(cd.C, cd.G);
         qSwap(cd.prob_A, cd.prob_T);
         qSwap(cd.prob_C, cd.prob_G);
-    
+
     }
-    
+
     SCFFormat::exportDocumentToSCF(settings.url, cd, seq, stateInfo);
     CHECK_OP(stateInfo, );
-    
+
     if (settings.loadDocument) {
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
         loadTask = new LoadDocumentTask(BaseDocumentFormats::SCF, settings.url, iof );

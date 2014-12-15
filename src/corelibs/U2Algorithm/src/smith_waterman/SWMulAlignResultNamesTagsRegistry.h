@@ -79,7 +79,7 @@ public:
 
     // this method is supposed to be invoked before each string with counter tags parsing
     //if there's need to begin counting from 1
-    inline void resetCounters(); 
+    inline void resetCounters();
 
 private:
     bool registerTag(SWMulAlignResultNamesTag * tag);

@@ -91,7 +91,7 @@ quint64 SmithWatermanAlgorithmOPENCL::estimateNeededRamAmount(const SMatrix& sm,
     const quint64 partsNumber = calcPartsNumber(searchLen, overlapLength);
     const quint64 partSeqSize = calcPartSeqSize(searchLen, overlapLength, partsNumber);
     const quint64 sizeRow = calcSizeRow(partsNumber, partSeqSize);
-    
+
     quint64 directionMatrixSize = 0;
     quint64 backtraceBeginsSize = 0;
     if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
@@ -170,7 +170,7 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & 
         for (int j = 0; j < queryLength; j++) {
             char ch = alphChars[i];
             queryProfile[ch * queryLength + j] = sm.getScore(ch, _patternSeq.at(j));
-        }        
+        }
     }
 
     cl_int err = CL_SUCCESS;
@@ -217,7 +217,7 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & 
         g_directionsMatrix = new int[searchLen * queryLength];
         g_backtraceBegins = new int[2 * sizeRow];
     }
-    
+
     gauto_array<ScoreType> g_HdataTmpPtr(g_HdataTmp);
     gauto_array<ScoreType> g_directionsRecPtr(g_directionsRec);
     gauto_array<int> g_directionsMatrixPtr(g_directionsMatrix);
@@ -230,7 +230,7 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & 
 
     memset(static_cast<void *>(g_HdataTmp), 0, sizeRow * sizeof(ScoreType));
     memset(static_cast<void *>(g_directionsRec), 0, sizeRow * sizeof(ScoreType));
-        
+
     queryProfBuf = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
         sizeof(cl_int) * profLen, queryProfile, &err);
     if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(cl_int) * profLen / B_TO_MB_FACTOR)))) return;
@@ -423,18 +423,18 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & 
     //run kernel
     const size_t szGlobalWorkSize = partsNumber * partQuerySize;
     const size_t szLocalWorkSize = partQuerySize;
-    
+
 
     for (int i = 0; i < queryDevider; i++) {
         err = openCLHelper.clEnqueueNDRangeKernel_p(
-            clCommandQueue, 
-            clKernel, 
-            1, 
-            NULL, 
-            &szGlobalWorkSize, 
-            &szLocalWorkSize, 
-            0, 
-            NULL, 
+            clCommandQueue,
+            clKernel,
+            1,
+            NULL,
+            &szGlobalWorkSize,
+            &szLocalWorkSize,
+            0,
+            NULL,
             &clEvent);
         if (hasOPENCLError(err, "CommandQueue::enqueueNDRangeKernel() failed")) return;
 
@@ -531,7 +531,7 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & 
     if (hasOPENCLError(err, "clFinish failed")) return;
 
     //using namespace std;
-    //cout <<"after: " <<endl;	
+    //cout <<"after: " <<endl;
     //for (int i = 0; i < sizeRow; i++) {
     //    cout <<g_HdataTmp[i] <<" ";
     //}
@@ -573,7 +573,7 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, const QByteArray & 
 
             if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
                 qint32 pairAlignOffset = 0;
-                
+
                 qint32 row = g_backtraceBegins[2 * j];
                 qint32 column = g_backtraceBegins[2 * j + 1];
                 while(STOP != g_directionsMatrix[searchLen * row + column]) {

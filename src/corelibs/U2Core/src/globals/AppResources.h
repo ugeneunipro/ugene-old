@@ -43,8 +43,8 @@ namespace U2 {
 /** OPENCL GPU resource - ensures that device is busy or not*/
 #define RESOURCE_OPENCL_GPU 4
 
-/** 
-    Project resource. There is 1 project active in the system and if the resource is locked  
+/**
+    Project resource. There is 1 project active in the system and if the resource is locked
     no project load/unload operation is possible
 */
 #define RESOURCE_PROJECT    5
@@ -61,7 +61,7 @@ public:
         SystemMemory
     };
 
-    AppResource(int id, int _maxUse, const QString& _name, const QString& _suffix = QString()) 
+    AppResource(int id, int _maxUse, const QString& _name, const QString& _suffix = QString())
         : name(_name), suffix(_suffix), resourceId(id), _maxUse(_maxUse), systemUse(0) {}
 
     virtual ~AppResource(){}
@@ -102,7 +102,7 @@ private:
 
 class U2CORE_EXPORT AppResourceReadWriteLock : public AppResource {
 public:
-    AppResourceReadWriteLock(int id, const QString& _name, const QString& _suffix = QString()) 
+    AppResourceReadWriteLock(int id, const QString& _name, const QString& _suffix = QString())
         : AppResource(id, Write, _name, _suffix), resource(NULL) {
         resource = new QReadWriteLock;
     }
@@ -172,7 +172,7 @@ private:
 
 class U2CORE_EXPORT AppResourceSemaphore : public AppResource {
 public:
-    AppResourceSemaphore(int id, int _maxUse, const QString& _name, const QString& _suffix = QString()) 
+    AppResourceSemaphore(int id, int _maxUse, const QString& _name, const QString& _suffix = QString())
         : AppResource(id, _maxUse, _name, _suffix), resource(NULL) {
             resource = new QSemaphore(_maxUse);
     }
@@ -260,23 +260,23 @@ class U2CORE_EXPORT AppResourcePool : public QObject {
 public:
     AppResourcePool();
     virtual ~AppResourcePool();
-    
+
     int getIdealThreadCount() const {return idealThreadCount;}
     void setIdealThreadCount(int n);
-    
+
     int getMaxThreadCount() const {return threadResource->maxUse();}
     void setMaxThreadCount(int n);
-    
+
     int getMaxMemorySizeInMB() const {return memResource->maxUse();}
     void setMaxMemorySizeInMB(int m);
-    
+
     static size_t getCurrentAppMemory();
-    
+
     static bool isSSE2Enabled();
-    
+
     void registerResource(AppResource* r);
-    AppResource* getResource(int id) const; 
-    
+    AppResource* getResource(int id) const;
+
     static AppResourcePool* instance();
 
     static int getTotalPhysicalMemory();

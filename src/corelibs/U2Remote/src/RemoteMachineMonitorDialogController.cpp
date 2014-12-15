@@ -45,8 +45,8 @@ RemoteMachineSettingsPtr RemoteMachineMonitorDialogController::selectRemoteMachi
 
     RemoteMachineSettingsPtr rms = dlg.getSelectedMachine();
     if (runTaskMode && !rms) {
-        QMessageBox::critical(QApplication::activeWindow(), 
-            RemoteMachineMonitorDialogImpl::tr("Selecting machines error!"), 
+        QMessageBox::critical(QApplication::activeWindow(),
+            RemoteMachineMonitorDialogImpl::tr("Selecting machines error!"),
             RemoteMachineMonitorDialogImpl::tr("You didn't select a machine to run remote task!"));
     }
     return rms;

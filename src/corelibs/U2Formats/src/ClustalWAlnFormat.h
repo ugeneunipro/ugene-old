@@ -33,7 +33,7 @@ class U2FORMATS_EXPORT ClustalWAlnFormat : public DocumentFormat {
     Q_OBJECT
 public:
     static const QByteArray CLUSTAL_HEADER;
-    
+
     ClustalWAlnFormat(QObject* p);
 
     virtual DocumentFormatId getFormatId() const {return BaseDocumentFormats::CLUSTAL_ALN;}

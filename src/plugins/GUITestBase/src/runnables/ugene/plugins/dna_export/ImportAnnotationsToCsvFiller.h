@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -51,10 +51,10 @@ namespace U2 {
             EndParameter(bool _endPos) : endPos(_endPos){}
             bool endPos;
         };
-        
+
         struct LengthParameter : public RoleParameter {
         };
-        
+
         struct StrandMarkParameter : public RoleParameter {
             StrandMarkParameter(bool _markValue, QString _markValueName) : markValue(_markValue), markValueName(_markValueName){}
             bool markValue;
@@ -72,7 +72,7 @@ namespace U2 {
             QString name;
         };
         ImportAnnotationsToCsvFiller(U2OpStatus &_os, const QString &_fileToRead, const QString &_resultFile,
-                                        ImportAnnotationsToCsvFiller::fileFormat _format, bool _addResultFileToProject, 
+                                        ImportAnnotationsToCsvFiller::fileFormat _format, bool _addResultFileToProject,
                                         bool _columnSeparator, const QString &_separator,
                                         bool _script, int _numberOfLines,
                                         const QString &_skipAllLinesStartsWith, bool _interpretMultipleAsSingle,

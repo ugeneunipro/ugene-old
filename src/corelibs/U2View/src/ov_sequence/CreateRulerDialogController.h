@@ -40,7 +40,7 @@ class U2VIEW_EXPORT CreateRulerDialogController : public QDialog, public Ui_Crea
     Q_OBJECT
 public:
     CreateRulerDialogController(const QSet<QString>& namesToFilter, const U2Region& range, int offset = -1, QWidget* p=NULL);
-    
+
     virtual void accept ();
 
 private slots:

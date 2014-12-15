@@ -69,15 +69,15 @@ public:
     QString getName() const {return name;}
     OpenCLGpuId getId() const {return id;}
     OpenCLGpuContext getContext() const {return context;}
-    quint64 getGlobalMemorySizeBytes() const {return globalMemorySizeBytes;}    
-    quint64 getMaxAllocateMemorySizeBytes() const {return maxAllocateMemorySizeBytes;}    
+    quint64 getGlobalMemorySizeBytes() const {return globalMemorySizeBytes;}
+    quint64 getMaxAllocateMemorySizeBytes() const {return maxAllocateMemorySizeBytes;}
     quint64 getLocalMemorySizeBytes() const {return localMemorySizeBytes;}
     quint32 getMaxComputeUnits() const {return maxComputeUnits;}
     size_t getMaxWorkGroupSize() const {return maxWorkGroupSize;}
     quint32 getMaxClockFrequency() const {return maxClockFrequency;}
     quint64 getPlatformId() const {return platformId;}
 
-    bool isEnabled() const {return  enabled;} 
+    bool isEnabled() const {return  enabled;}
     void setEnabled(bool b) {enabled = b;}
 
     bool isAcquired() const {return acquired;}

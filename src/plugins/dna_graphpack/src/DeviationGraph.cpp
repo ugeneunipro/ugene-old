@@ -77,7 +77,7 @@ void DeviationGraphAlgorithm::windowStrategyWithoutMemorize(QVector<float>& res,
 {
     assert(startPos>=0);
     const char* seq = seqArr.constData();
-    
+
     for (int i = 0; i < nSteps; i++)    {
         int start = startPos + i * d->step;
         int end = start + d->window;

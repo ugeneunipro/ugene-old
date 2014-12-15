@@ -69,7 +69,7 @@ AssemblyNavigationWidget::AssemblyNavigationWidget(AssemblyBrowser *_browser, QW
 
 void AssemblyNavigationWidget::sl_updateZoomingState(){
     if (browser && posSelector){
-        posSelector->setEnabled(browser->canPerformZoomOut());        
+        posSelector->setEnabled(browser->canPerformZoomOut());
     }
 }
 

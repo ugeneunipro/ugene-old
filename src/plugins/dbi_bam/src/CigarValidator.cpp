@@ -25,8 +25,8 @@ void CigarValidator::validate(int * totalLength) {
                 if (0 != i && (cigar.size() - 1) != i) {
                     throw InvalidFormatException(BAMDbiPlugin::tr("Hard clip in the middle of cigar"));
                 }
-                
-            } 
+
+            }
             //2. Check sentence "S may only have H operations between them and the ends of the CIGAR string"
             else if(CIGAR_S == op && (0 != i && cigar.size()-1 != i)) {
                 if (1 == i) {
@@ -44,12 +44,12 @@ void CigarValidator::validate(int * totalLength) {
                 }
 
             }
-        } 
+        }
 /*
  * Formally speaking this checks must be disabled since SAM-1.3-r882 spec does not contain such assertions.
  * However we keep them in source code in order to enable someday, for example to handle failed checks as warnings
  */
-#if 0 
+#if 0
         else if (isRealOperation(op)) {
             //1. Remember that CIGAR has at least one real operation
             hasRealOperation = true;
@@ -86,7 +86,7 @@ void CigarValidator::validate(int * totalLength) {
             break;
         default:
             break;
-        } 
+        }
     } //foreach CIGAR operation
 #if 0
     if (!hasRealOperation) {
@@ -113,7 +113,7 @@ bool CigarValidator::isRealOperation(Alignment::CigarOperation::Operation op) {
         return true;
     default:
         return false;
-    } 
+    }
 }
 
 bool CigarValidator::isInDelOperation(Alignment::CigarOperation::Operation op) {

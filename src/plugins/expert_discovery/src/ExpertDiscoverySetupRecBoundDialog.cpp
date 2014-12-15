@@ -9,8 +9,8 @@
 
 namespace U2 {
 
-ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dRecognizationBound, 
-        const std::vector<double>& vPosScore, 
+ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dRecognizationBound,
+        const std::vector<double>& vPosScore,
         const std::vector<double>& vNegScore)
 : QDialog()
 , recognizationBound(dRecognizationBound)
@@ -22,7 +22,7 @@ ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dR
 
     setupUi(this);
     new HelpButton(this, buttonBox, "8093719");
-    
+
     boundLabel->setStyleSheet(QString("color : %1;").arg(ExpertDiscoveryRecognitionErrorGraphWidget::BOUNDCOLOR.name()));
     er1Lable->setStyleSheet(QString("color : %1;").arg(ExpertDiscoveryRecognitionErrorGraphWidget::ER1COLOR.name()));
     er2Label->setStyleSheet(QString("color : %1;").arg(ExpertDiscoveryRecognitionErrorGraphWidget::ER2COLOR.name()));
@@ -32,7 +32,7 @@ ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dR
     negRecLineEdit->setText(QString("%1").arg(probNegRec));
 
     warningLabel->setVisible(false);
-    
+
     CalculateErrorTaskInfo settings;
     settings.scoreReg = U2Region(0, 50);
     settings.scoreStep = 0.1;
@@ -45,7 +45,7 @@ ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dR
     settings.negScore.resize(negScore.size());
     for(int i = 0; i < negScore.size(); i++){
         settings.negScore[i] = negScore[i];
-    } 
+    }
     graphWidget = new ExpertDiscoveryRecognitionErrorGraphWidget(this, posScore, negScore, settings);
     graphLayout->addWidget(graphWidget);
     graphWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -108,7 +108,7 @@ void ExpertDiscoverySetupRecBoundDialog::updateProbs(){
     probNegRec = 0;
     for (int i=0; i<(int)negScore.size(); i++)
         if (negScore[i] >= recognizationBound) probNegRec++;
-    probNegRec /= negScore.size();    
+    probNegRec /= negScore.size();
 }
 
 void ExpertDiscoverySetupRecBoundDialog::sl_intervalChanged(int val){
@@ -129,7 +129,7 @@ void ExpertDiscoverySetupRecBoundDialog::sl_recalculateValues(){
     int leftValue = minBoundSpin->value();
     int rightValue = maxBoundSpin->value();
     if(leftValue >= rightValue){
-         QMessageBox mb(QMessageBox::Critical, tr("Wrong bound interval"), 
+         QMessageBox mb(QMessageBox::Critical, tr("Wrong bound interval"),
              tr("Minimal bound must not be grater then maximal bound"));
          mb.exec();
          return;
@@ -137,7 +137,7 @@ void ExpertDiscoverySetupRecBoundDialog::sl_recalculateValues(){
     double stepVale = stepSpin->value();
 
     if(stepVale == 0){
-        QMessageBox mb(QMessageBox::Critical, tr("Wrong step value"), 
+        QMessageBox mb(QMessageBox::Critical, tr("Wrong step value"),
             tr("Bound step must be non zero"));
         mb.exec();
         return;
@@ -156,7 +156,7 @@ void ExpertDiscoverySetupRecBoundDialog::sl_recalculateValues(){
     settings.negScore.resize(negScore.size());
     for(int i = 0; i < negScore.size(); i++){
         settings.negScore[i] = negScore[i];
-    } 
+    }
 
     graphWidget->sl_calculateErrors(settings);
 }

@@ -59,7 +59,7 @@ WeightMatrixPlugin::WeightMatrixPlugin() : Plugin(tr("Weight matrix"), tr("Searc
         QAction* buildAction = new QAction(tr("Build Weight Matrix"), this);
         buildAction->setObjectName("Build Weight Matrix");
         connect(buildAction, SIGNAL(triggered()), SLOT(sl_build()));
-       
+
         QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         QMenu* toolsSubmenu = tools->addMenu(QIcon(":/weight_matrix/images/weight_matrix.png"), tr("Weight matrix"));
         toolsSubmenu->menuAction()->setObjectName("Weight matrix");
@@ -115,7 +115,7 @@ void WeightMatrixADVContext::initViewContext(GObjectView* view) {
 void WeightMatrixADVContext::sl_search() {
     GObjectViewAction* action = qobject_cast<GObjectViewAction*>(sender());
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(action->getObjectView());
-    
+
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
     assert(seqCtx->getAlphabet()->isNucleic());
     PWMSearchDialogController d(seqCtx, av->getWidget());

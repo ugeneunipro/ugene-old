@@ -163,7 +163,7 @@ void DasOptionsPanelWidget::sl_loadAnnotations() {
             accessionNumbers.append(idList->item(row, 0)->text());
         }
     }
-    
+
     annotationData.clear();
     QList<DASSource> featureSources = getFeatureSources();
 
@@ -185,7 +185,7 @@ void DasOptionsPanelWidget::sl_blastSearchFinish() {
     }
 
     checkState();
-    
+
     if (getIdsTask == NULL || getIdsTask->isCanceled() || getIdsTask->hasError()){
         getIdsTask = NULL;
         return;
@@ -197,15 +197,15 @@ void DasOptionsPanelWidget::sl_blastSearchFinish() {
             getIdsTask = NULL;
             return;
         }
-        
+
         clearTableContent();
-        
+
         QList<UniprotResult> results = blastTask->getResults();
         for (int i = 0; i < results.count(); ++i) {
             if (results[i].accession.isEmpty()) {
                 continue;
             }
-            
+
             if (results[i].identity >= getMinIdentity()) {
                 int rowNumber = idList->rowCount();
                 idList->insertRow(rowNumber);
@@ -403,7 +403,7 @@ void DasOptionsPanelWidget::connectSignals() {
      connect(regionSelector ,
             SIGNAL(si_regionChanged(const U2Region&)),
             SLOT(sl_onRegionChanged(const U2Region& )));
-     connect(idList, 
+     connect(idList,
             SIGNAL( doubleClicked ( const QModelIndex &  ) ),
             SLOT( sl_idDoubleClicked (const QModelIndex & ) ));
 }
@@ -445,7 +445,7 @@ void DasOptionsPanelWidget::checkState() {
         searchIdsButton->setEnabled(false);
         fetchIdsAction->setEnabled(false);
     }
-    
+
 }
 
 QList<DASSource> DasOptionsPanelWidget::getFeatureSources() {
@@ -574,12 +574,12 @@ void DasOptionsPanelWidget::updateShowOptions() {
 }
 
 void DasOptionsPanelWidget::clearTableContent(){
-    
+
     idList->clearContents();
     while(idList->rowCount() > 0){
         idList->removeRow(0);
     }
-    
+
 }
 
 DasOptionsPanelWidget::~DasOptionsPanelWidget(){

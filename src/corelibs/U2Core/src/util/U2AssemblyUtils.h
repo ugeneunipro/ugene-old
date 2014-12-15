@@ -27,15 +27,15 @@
 
 namespace U2 {
 
-/** 
+/**
     Predefined integer attribute for coverage
-    First 4 bytes - lower coverage bound 
-    Last 4 bytes - upper coverage bound 
+    First 4 bytes - lower coverage bound
+    Last 4 bytes - upper coverage bound
 */
 #define U2_ASSEMBLY_COVERAGE_ATTRIBUTE_LOWER "assembly-coverage-1m"
 
 
-/**                                           
+/**
     U2Assembly and related structures utility functions
 */
 class U2CORE_EXPORT U2AssemblyUtils : public QObject {
@@ -44,19 +44,19 @@ private:
     U2AssemblyUtils(){}
 public:
 
-    /** 
-        Returns CIGAR operation for the given char, case insensitive 
+    /**
+        Returns CIGAR operation for the given char, case insensitive
         If failed, error text is stored in 'err'
     */
     static U2CigarOp char2Cigar(char c, QString& err);
 
-    /** 
+    /**
         Returns char representation of the given CIGAR op
     */
     static char cigar2Char(U2CigarOp op);
 
-    /** 
-        Parses CIGAR string (SAM/BAM format specs) 
+    /**
+        Parses CIGAR string (SAM/BAM format specs)
         Returns the result as a set of U2CigarTokens.
         If parsing is failed, the fail reason is stored in 'err' parameter
     */
@@ -68,7 +68,7 @@ public:
     static QByteArray cigar2String(const QList<U2CigarToken>& cigar);
 
 
-    /** 
+    /**
         Returns extra read length produced by CIGAR. Can be negative.
     */
     static qint64 getCigarExtraLength(const QList<U2CigarToken>& cigar);
@@ -76,7 +76,7 @@ public:
     /** Returns read effective length: sequence length + CIGAR */
     static qint64 getEffectiveReadLength(const U2AssemblyRead& read);
 
-    /** 
+    /**
         Returns all characters that may appear in CIGAR string
     */
     static QByteArray getCigarAlphabetChars();

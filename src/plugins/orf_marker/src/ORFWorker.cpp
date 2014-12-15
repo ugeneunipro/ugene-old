@@ -71,11 +71,11 @@ void ORFWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
 
     {
-        Descriptor id(BasePorts::IN_SEQ_PORT_ID(), ORFWorker::tr("Input sequences"), 
+        Descriptor id(BasePorts::IN_SEQ_PORT_ID(), ORFWorker::tr("Input sequences"),
             ORFWorker::tr("A nucleotide sequence to search ORFs in. Protein sequences are skipped."));
-        Descriptor od(BasePorts::OUT_ANNOTATIONS_PORT_ID(), ORFWorker::tr("ORF annotations"), 
+        Descriptor od(BasePorts::OUT_ANNOTATIONS_PORT_ID(), ORFWorker::tr("ORF annotations"),
             ORFWorker::tr("A set of annotations marking ORFs found in the sequence."));
-        
+
         QMap<Descriptor, DataTypePtr> inM;
         inM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
         p << new PortDescriptor(id, DataTypePtr(new MapDataType("orf.sequence", inM)), true /*input*/);
@@ -95,7 +95,7 @@ void ORFWorkerFactory::init() {
         Descriptor isc(ISC_ATTR, ORFWorker::tr("Include stop codon"), ORFWorker::tr("The result annotation will includes stop codon if this option is set."));
         Descriptor mr(RES_ATTR,ORFWorker::tr("Max result"),ORFWorker::tr("Find results not achieved by specified count."));
         Descriptor lr(LIMIT_ATTR,ORFWorker::tr("Limit results"),ORFWorker::tr("The amount of results will be limited id that option is setted."));
-        
+
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, QVariant("ORF"));
         a << new Attribute(ttd, BaseTypes::STRING_TYPE(), false, QVariant(DNATranslationID(1)));
         a << new Attribute(ld, BaseTypes::NUM_TYPE(), false, QVariant(100));
@@ -108,8 +108,8 @@ void ORFWorkerFactory::init() {
         a << new Attribute(lr,BaseTypes::BOOL_TYPE(),false,QVariant(true));
     }
 
-    Descriptor desc(ACTOR_ID, ORFWorker::tr("ORF Marker"), 
-        ORFWorker::tr("Finds Open Reading Frames (ORFs) in each supplied nucleotide sequence, stores found regions as annotations." 
+    Descriptor desc(ACTOR_ID, ORFWorker::tr("ORF Marker"),
+        ORFWorker::tr("Finds Open Reading Frames (ORFs) in each supplied nucleotide sequence, stores found regions as annotations."
         "<p>Protein sequences are skipped if any supplied to input."
         "<p><dfn>ORFs are DNA sequence regions that could potentially encode a protein,"
         " and usually give a good indication of the presence of a gene in the surrounding sequence.</dfn></p>"
@@ -117,22 +117,22 @@ void ORFWorkerFactory::init() {
         " defined by the selected genetic code.</p>")
         );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
-    QMap<QString, PropertyDelegate*> delegates;    
-    
-    QVariantMap lenMap; lenMap["minimum"] = QVariant(0); lenMap["maximum"] = QVariant(INT_MAX); 
+    QMap<QString, PropertyDelegate*> delegates;
+
+    QVariantMap lenMap; lenMap["minimum"] = QVariant(0); lenMap["maximum"] = QVariant(INT_MAX);
     lenMap["suffix"] = L10N::suffixBp();
     delegates[LEN_ATTR] = new SpinBoxDelegate(lenMap);
     delegates[BaseAttributes::STRAND_ATTRIBUTE().getId()] = new ComboBoxDelegate(BaseAttributes::STRAND_ATTRIBUTE_VALUES_MAP());
 
     QVariantMap idMap;
     QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->
-        lookupTranslation(AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()), 
+        lookupTranslation(AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()),
         DNATranslationType_NUCL_2_AMINO);
     foreach(DNATranslation* tt, TTs) {
         idMap[tt->getTranslationName()] = tt->getTranslationId();
     }
     delegates[ID_ATTR] = new ComboBoxDelegate(idMap);
-    
+
     proto->setPrompter(new ORFPrompter());
     proto->setEditor(new DelegateEditor(delegates));
     proto->setIconPath(":orf_marker/images/orf_marker.png");
@@ -216,7 +216,7 @@ QString ORFPrompter::composeRichDoc() {
         .arg(getHyperlink(LEN_ATTR, cfg.minLen)) //100
         .arg(extra) //  take into account alternative start codons.
         .arg(resultName);
-    
+
     return doc;
 }
 
@@ -261,7 +261,7 @@ Task* ORFWorker::tick() {
         if (seqObj.isNull()) {
             return NULL;
         }
-        
+
         const DNAAlphabet* alphabet = seqObj->getAlphabet();
         if (alphabet && alphabet->getType() == DNAAlphabet_NUCL) {
             ORFAlgorithmSettings config(cfg);

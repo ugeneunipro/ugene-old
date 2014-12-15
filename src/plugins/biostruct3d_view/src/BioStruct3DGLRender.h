@@ -25,7 +25,7 @@
 #include <QtCore/QString>
 #include <QtCore/QMap>
 
-namespace U2 { 
+namespace U2 {
 
 class BioStruct3D;
 class BioStruct3DGLRenderer;

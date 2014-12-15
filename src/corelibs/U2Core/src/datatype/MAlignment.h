@@ -150,7 +150,7 @@ public:
     /**
      * Exactly compares the rows. Sequences and gap models must match.
      * However, the rows are considered equal if they differ by trailing gaps only.
-     */ 
+     */
     bool isRowContentEqual(const MAlignmentRow& row) const;
 
     /** Compares 2 rows. Rows are equal if their contents and names are equal. */
@@ -306,10 +306,10 @@ public:
      * Creates a new alignment.
      * The name must be provided if this is not default alignment.
      */
-    MAlignment(const QString& name = QString(), 
+    MAlignment(const QString& name = QString(),
                const DNAAlphabet* alphabet = NULL,
                const QList<MAlignmentRow>& rows = QList<MAlignmentRow>());
-        
+
     /**
      * Clears the alignment. Makes alignment length == 0.
      * Doesn't change alphabet or name
@@ -500,13 +500,13 @@ public:
      * Increases the alignment length.
      */
     MAlignment& operator+=(const MAlignment& ma);
-    
+
     /**
      * Compares two alignments: lengths, alphabets, rows and infos (that include names).
      */
     bool operator==(const MAlignment& ma) const;
     bool operator!=(const MAlignment& ma) const;
-    
+
 
     /** Estimates memory size consumed by alignment structure in bytes */
     int estimateMemorySize() const;

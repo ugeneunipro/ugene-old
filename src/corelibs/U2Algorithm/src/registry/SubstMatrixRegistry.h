@@ -43,13 +43,13 @@ public:
     QStringList getMatrixNames() const;
 
     QList<SMatrix> selectMatricesByAlphabet(const DNAAlphabet* al) const;
-    
+
     QStringList selectMatrixNamesByAlphabet(const DNAAlphabet* al) const;
 
     void registerMatrix(const SMatrix& m);
 
     static SMatrix readMatrixFromFile(const QString& fileName, QString& error);
-    
+
 private:
     void readMatrices();
     static SMatrix parseMatrix(const QString& name, const QByteArray& text, QString& error);

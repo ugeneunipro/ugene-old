@@ -34,7 +34,7 @@ namespace U2 {
 class U2CORE_EXPORT U2OpStatus {
 public:
     virtual ~U2OpStatus(){}
-    
+
     virtual void setError(const QString & err) = 0;
     virtual QString getError() const  = 0;
     virtual bool hasError() const = 0;

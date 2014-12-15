@@ -252,7 +252,7 @@ void SamplePane::paint(QPainter* painter)
 
 const int LoadSamplesTask::maxDepth = 1;
 
-LoadSamplesTask::LoadSamplesTask( const QStringList& lst) 
+LoadSamplesTask::LoadSamplesTask( const QStringList& lst)
 : Task(tr("Load workflow samples"), TaskFlag_None), dirs(lst) {}
 
 void LoadSamplesTask::run() {
@@ -272,14 +272,14 @@ void LoadSamplesTask::scanDir( const QString& s, int depth) {
     foreach(const QString & ext, WorkflowUtils::WD_FILE_EXTENSIONS) {
         names << "*." + ext;
     }
-    
+
     foreach(const QFileInfo& fi, dir.entryInfoList(names, QDir::Files|QDir::NoSymLinks)) {
         QFile f(fi.absoluteFilePath());
         if(!f.open(QIODevice::ReadOnly)) {
             ioLog.error(tr("Failed to load sample: %1").arg(L10N::errorOpeningFileRead(fi.absoluteFilePath())));
             continue;
         }
-        
+
         QTextStream in(&f);
         in.setCodec("UTF-8");
         Sample sample;
@@ -292,7 +292,7 @@ void LoadSamplesTask::scanDir( const QString& s, int depth) {
             continue;
         }
         sample.d = Descriptor(fi.absoluteFilePath(), meta.name.isEmpty()? fi.baseName() : meta.name, meta.comment);
-        
+
         QString icoName = dir.absoluteFilePath(fi.baseName() + ".png");
         if (QFile::exists(icoName)) {
             sample.ico.addFile(icoName);

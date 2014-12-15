@@ -37,10 +37,10 @@
 
 namespace U2 {
 
-#define COMMON_DATA_DIR_ENV_ID "COMMON_DATA_DIR" 
+#define COMMON_DATA_DIR_ENV_ID "COMMON_DATA_DIR"
 #define LOCAL_DATA_DIR_ENV_ID "LOCAL_DATA_DIR"
 #define WORKFLOW_SAMPLES_ENV_ID "WORKFLOW_SAMPLES_DIR"
-#define TEMP_DATA_DIR_ENV_ID   "TEMP_DATA_DIR" 
+#define TEMP_DATA_DIR_ENV_ID   "TEMP_DATA_DIR"
 #define CONFIG_FILE_ENV_ID "CONFIG_FILE"
 #define CONFIG_PROTOTYPE "PROTOTYPE"
 #define WORKINK_DIR_ATTR "working-dir"
@@ -199,7 +199,7 @@ Task::ReportResult GTest_RunCMDLine::report() {
     QString output(proc->readAllStandardOutput());
     //QByteArray outputErr = proc->readAllStandardError();
     cmdLog.trace(output);
-    
+
     if(!expectedMessage.isEmpty()){
         cmdLog.error(output);
         if(!output.contains(expectedMessage, Qt::CaseSensitive)){

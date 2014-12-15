@@ -48,7 +48,7 @@ PortAliasesConfigurationDialog::PortAliasesConfigurationDialog( const Schema & s
     connect(okPushButton, SIGNAL(clicked()), SLOT(accept()));
     connect(portAliasEdit, SIGNAL(textChanged (const QString &)), SLOT(sl_portAliasChanged(const QString &)));
     connect(portDescriptionEdit, SIGNAL(textChanged (const QString &)), SLOT(sl_portDescriptionChanged(const QString &)));
-    
+
     okPushButton->setDefault(true);
     portAliasesTableWidget->verticalHeader()->hide();
 
@@ -58,7 +58,7 @@ PortAliasesConfigurationDialog::PortAliasesConfigurationDialog( const Schema & s
     portAliasesTableWidget->horizontalHeader()->setSectionsClickable(false);
 #endif
     portAliasesTableWidget->horizontalHeader()->setStretchLastSection( true );
-    
+
     foreach (Actor *actor, schema.getProcesses()) {
         assert(NULL != actor);
         foreach (Port *port, actor->getPorts()) {
@@ -84,7 +84,7 @@ PortAliasesConfigurationDialog::PortAliasesConfigurationDialog( const Schema & s
 
     connect(portListWidget, SIGNAL(currentRowChanged(int)), SLOT(sl_portSelected(int)));
     connect(portAliasesTableWidget, SIGNAL(cellChanged(int, int)), SLOT(sl_onDataChange(int, int)));
-    
+
     initializeModel(schema);
 
 }

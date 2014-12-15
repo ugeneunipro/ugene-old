@@ -43,7 +43,7 @@ class WorkflowTasksRegistry;
  * base class for workflow environment
  * has one instance
  * same as AppContext only for workflow
- * 
+ *
  * see WorkflowEnvImpl for realization
  */
 class U2LANG_EXPORT WorkflowEnv {
@@ -86,7 +86,7 @@ protected:
     SchemaActorsRegistry *schemaActorsReg;
     WorkflowTasksRegistry *workflowTasksRegistry;
     ActorValidatorRegistry *actorValidatorRegistry;
-    
+
 }; // WorkflowEnv
 
 } //namespace Workflow

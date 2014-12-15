@@ -94,7 +94,7 @@ QWidget * AssemblySettingsWidget::createReadsSettings() {
         readsHighlightCombo->addItem(a->text());
         connect(a, SIGNAL(triggered()), SLOT(sl_cellRendererChanged()));
         if(a->isChecked()) {
-            readsHighlightCombo->setCurrentIndex(readsHighlightCombo->count() - 1);    
+            readsHighlightCombo->setCurrentIndex(readsHighlightCombo->count() - 1);
             AssemblyCellRendererFactory* factory = ui->getWindow()->getCellRendererRegistry()->getFactoryById(AssemblyCellRendererFactory::DIFF_NUCLEOTIDES);
             if (a->text() == factory->getName()){
                 hint->setText(tr("You should add refrence  first for correct dispalying of this highlighting"));
@@ -106,7 +106,7 @@ QWidget * AssemblySettingsWidget::createReadsSettings() {
     connect(readsHighlightCombo, SIGNAL(currentIndexChanged(int)), SLOT(sl_changeCellRenderer(int)));
     layout->addWidget(readsHighlightCombo);
     layout->addWidget(hint);
-    
+
     layout->addSpacing(ITEMS_SPACING);
 
     QLabel * aboutScrolling = new QLabel(tr("Scrolling can be optimized by drawing only reads' positions without content while scrolling:"), group);

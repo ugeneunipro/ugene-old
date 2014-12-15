@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-const QString ConductGOSettings::UNIVERSE_HGU133A = QString("hgu133a.db");   
+const QString ConductGOSettings::UNIVERSE_HGU133A = QString("hgu133a.db");
 const QString ConductGOSettings::UNIVERSE_HGU133B = QString("hgu133b.db");
 const QString ConductGOSettings::UNIVERSE_HGU133PLUS2 = QString("hgu133plus2.db");
 const QString ConductGOSettings::UNIVERSE_HGU95AV2 = QString("hgu95av2.db");

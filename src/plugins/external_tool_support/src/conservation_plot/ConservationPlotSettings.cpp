@@ -57,7 +57,7 @@ QStringList ConservationPlotSettings::getArguments(const QList<QString>& bedFile
         result << "-w " + QByteArray::number(windowSize);
     }
 
-    result << "--title=" + GUrlUtils::getQuotedString(title);    
+    result << "--title=" + GUrlUtils::getQuotedString(title);
 
     //labels
     result << "--bed-label=" + GUrlUtils::getQuotedString(label);

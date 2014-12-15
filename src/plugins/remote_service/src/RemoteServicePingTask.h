@@ -39,7 +39,7 @@ private:
     QScopedPointer<RemoteServiceMachine> machine;
     QScopedPointer<RemoteServiceMachineFactory> machineFactory;
 };
-  
+
 
 } // namespace U2
 

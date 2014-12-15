@@ -33,7 +33,7 @@ class U2VIEW_EXPORT MSAEditorFactory : public GObjectViewFactory {
     Q_OBJECT
 public:
     MSAEditorFactory();
-    
+
     virtual bool canCreateView(const MultiGSelection& multiSelection);
 
     virtual Task* createViewTask(const MultiGSelection& multiSelection, bool single = false);

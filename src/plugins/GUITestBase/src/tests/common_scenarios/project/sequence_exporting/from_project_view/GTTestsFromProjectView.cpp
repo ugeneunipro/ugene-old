@@ -58,7 +58,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj4.uprj");
 
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
     GTUtilsDocument::checkDocument(os, "1.gb", GTUtilsDocument::DocumentUnloaded);
     GTUtilsDocument::checkDocument(os, "2.gb", GTUtilsDocument::DocumentUnloaded);
@@ -80,7 +80,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 //     {Export to file:} _common_data/scenarios/sandbox/exp.fasta
 //     {File format to use:} FASTA
 //     {Add created document to project} set checked
-//     
+//
 // 5. Click Export button.
     Runnable *filler = new ExportSequenceOfSelectedAnnotationsFiller(os,
         testDir+"_common_data/scenarios/sandbox/exp.fasta",
@@ -106,7 +106,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj4.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
     GTUtilsDocument::checkDocument(os, "1.gb", GTUtilsDocument::DocumentUnloaded);
     GTUtilsDocument::checkDocument(os, "2.gb", GTUtilsDocument::DocumentUnloaded);
@@ -213,7 +213,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     //    Expected state: Export aligniment dialog open
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
-    GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa", 
+    GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa",
                                 ExportToSequenceFormatFiller::FASTA, true, false));
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI.aln"));
@@ -250,7 +250,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     //    Expected state: Export aligniment dialog open
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
-    GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa", 
+    GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa",
         ExportToSequenceFormatFiller::FASTA, true, true));
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI.aln"));
@@ -288,7 +288,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     //    Expected state: Export aligniment dialog open
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
-    GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa", 
+    GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa",
         ExportToSequenceFormatFiller::FASTA, true, false));
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI"));
@@ -323,7 +323,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
     GTGlobals::sleep(1000);
 
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
     GTUtilsProjectTreeView::findIndex(os, doc1);//checks inside
     GTUtilsProjectTreeView::findIndex(os, doc2);
@@ -380,7 +380,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
     GTGlobals::sleep(1000);
 
-    // Expected state: 
+    // Expected state:
     //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
     GTUtilsProjectTreeView::findIndex(os, doc1);//checks inside
     GTUtilsProjectTreeView::findIndex(os, doc2);
@@ -427,7 +427,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
         os.setError("multiple alignment view with NC_001363 sequence has been not opened");
         }
     }
-    
+
 GUI_TEST_CLASS_DEFINITION(test_0007_1) {
 
     const QString doc1("1.gb"), doc2("2.gb");
@@ -437,7 +437,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
     GTGlobals::sleep(1000);
 
-    // Expected state: 
+    // Expected state:
     //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
     GTUtilsProjectTreeView::findIndex(os, doc1);//checks inside
     GTUtilsProjectTreeView::findIndex(os, doc2);
@@ -494,7 +494,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
     GTGlobals::sleep(1000);
 
-    // Expected state: 
+    // Expected state:
     //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
     GTUtilsProjectTreeView::findIndex(os, doc1);//checks inside
     GTUtilsProjectTreeView::findIndex(os, doc2);
@@ -547,8 +547,8 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CHROMATOGRAM));
     GTGlobals::sleep(1000);
-    
-    Runnable *filler = new ExportChromatogramFiller(os, "C:/", 
+
+    Runnable *filler = new ExportChromatogramFiller(os, "C:/",
         "pagefile.sys", ExportChromatogramFiller::SCF, false, true, true);
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -564,7 +564,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CHROMATOGRAM));
     GTGlobals::sleep(1000);
 
-    Runnable *filler = new ExportChromatogramFiller(os, "C:/", 
+    Runnable *filler = new ExportChromatogramFiller(os, "C:/",
         "pagefile.sys", ExportChromatogramFiller::SCF, true, true, true);
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -579,7 +579,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_2) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CHROMATOGRAM));
     GTGlobals::sleep(1000);
 
-    Runnable *filler = new ExportChromatogramFiller(os, "D:/", 
+    Runnable *filler = new ExportChromatogramFiller(os, "D:/",
         "pagefile.sys", ExportChromatogramFiller::SCF, false, true, false);
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);

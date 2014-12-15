@@ -104,7 +104,7 @@ sequence that code for proteins and RNA molecules and information on
 experimentally determined sites of biological significance. Optional
 keyword/one or more records. */
 
-static const QString CHAIN_ID; /* - Molecular chain index from 
+static const QString CHAIN_ID; /* - Molecular chain index from
 corresponding macromolecular structure (PDB or MMDB) */
 
 static const QString CONTIG; /*- This linetype provides information about how individual sequence

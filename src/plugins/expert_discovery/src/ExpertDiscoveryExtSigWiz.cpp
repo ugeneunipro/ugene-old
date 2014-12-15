@@ -45,7 +45,7 @@ ExpertDiscoveryExtSigWiz::ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f,
     samplesBoundEdit->setValidator(d0_maxValid);
     levelBoundEdit->setValidator(d0_1Valid);
 
-//2 page 
+//2 page
     initSet();
 
     predicatesTree->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -73,7 +73,7 @@ ExpertDiscoveryExtSigWiz::ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f,
     connect(createSubfolderButton, SIGNAL(clicked()), SLOT(sl_createSubfolder()));
 
     connect(this, SIGNAL(currentIdChanged ( int )), this, SLOT( sl_idChanged(int )));
-    
+
     hideParameters();
 }
 
@@ -198,7 +198,7 @@ void ExpertDiscoveryExtSigWiz::sl_createSubfolder(){
         folderNameEdit->setFocus();
         return;
     }
-    
+
     QTreeWidgetItem* csItem = treeFoldersWidget->topLevelItem(0);
     assert(csItem!=NULL);
 
@@ -288,7 +288,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
             predicates.push_back((Operation*)pOp);
         }
     }
-    
+
     if(predicates.empty()){
         QMessageBox mb(QMessageBox::Critical, tr("No predicates"), tr("Create a predicate to perform signal generation"));
         mb.exec();
@@ -307,7 +307,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
 
         //page 3
         if(!treeFoldersWidget->selectedItems().isEmpty()){
-            QTreeWidgetItem* item = treeFoldersWidget->selectedItems().first();    
+            QTreeWidgetItem* item = treeFoldersWidget->selectedItems().first();
             QVariant variant = item->data(0, Qt::UserRole);
             void* pointer = variant.value<void*>();
             CSFolder* f = (CSFolder*) pointer;
@@ -316,7 +316,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
 
         QWizard::accept();
     }
-    
+
 
 }
 
@@ -331,7 +331,7 @@ void ExpertDiscoveryExtSigWiz::hideParameters(){
     label_6->hide();
     levelBoundEdit->hide();
     advancedButton->hide();
-   
+
 }
 
 bool ExpertDiscoveryExtSigWiz::checkD(const QLineEdit* lineE) const{
@@ -358,7 +358,7 @@ void ExpertDiscoveryExtSigWiz::updateTree(const CSFolder* pFolder, QTreeWidgetIt
         pFolder = folder;
         strName = tr("Complex signals");
         nTreeItem = new QTreeWidgetItem(treeFoldersWidget);
- 
+
     }else{
         strName = pFolder->getName();
         nTreeItem = new QTreeWidgetItem(treeItem);

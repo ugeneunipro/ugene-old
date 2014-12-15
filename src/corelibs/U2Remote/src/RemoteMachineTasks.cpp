@@ -42,7 +42,7 @@ namespace U2 {
 * RetrieveRemoteMachineInfoTask
 *******************************************/
 
-RetrieveRemoteMachineInfoTask::RetrieveRemoteMachineInfoTask( RemoteMachineSettingsPtr s ) 
+RetrieveRemoteMachineInfoTask::RetrieveRemoteMachineInfoTask( RemoteMachineSettingsPtr s )
 : Task( tr( "Retrieve remote machine info task" ), TaskFlags_FOSCOE ), pingTask(NULL), pingOK(false), machine( NULL ), settings(s)
 {
     setVerboseLogMode(true);
@@ -75,8 +75,8 @@ void RetrieveRemoteMachineInfoTask::run() {
         return;
     }
     assert( NULL != machine );
-    if( isCanceled() ) { 
-        return; 
+    if( isCanceled() ) {
+        return;
     }
     hostname = machine->getServerName(stateInfo);
 }

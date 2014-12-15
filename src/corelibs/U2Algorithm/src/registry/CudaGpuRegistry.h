@@ -75,7 +75,7 @@ public:
 
 private:
     void saveGpusSettings() const;
-    QHash< CudaGpuId, CudaGpuModel * > gpus;  
+    QHash< CudaGpuId, CudaGpuModel * > gpus;
 };
 
 } //namespace

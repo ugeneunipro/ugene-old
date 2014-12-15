@@ -133,7 +133,7 @@ PFMatrix::PFMatrix(const QVarLengthArray<int>& _data, const PFMatrixType _type):
         assert (_data.size() % 16 == 0);
     }
     data = _data;
-    length = (_type == PFM_MONONUCLEOTIDE) ? (_data.size() / 4) : (_data.size() / 16);    
+    length = (_type == PFM_MONONUCLEOTIDE) ? (_data.size() / 4) : (_data.size() / 16);
 }
 
 PFMatrix PFMatrix::convertDi2Mono(const PFMatrix& source) {
@@ -142,7 +142,7 @@ PFMatrix PFMatrix::convertDi2Mono(const PFMatrix& source) {
     int len = source.getLength();
     QVarLengthArray<int> matrix(size*(len+1));
     memset(matrix.data(), 0, size*(len+1)*sizeof(int));
-    
+
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < len; j++) {
             for (int k = 0; k < 4; k++) {

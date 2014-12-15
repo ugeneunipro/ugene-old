@@ -51,7 +51,7 @@ class AssemblyReadsArea;
 
 class AssemblyReadsArea: public QWidget {
     Q_OBJECT
-    
+
     // (hotkey, description) pairs
     struct HotkeyDescription {
         QString key;
@@ -60,7 +60,7 @@ class AssemblyReadsArea: public QWidget {
     };
     static const QList<HotkeyDescription> HOTKEY_DESCRIPTIONS;
     static QList<HotkeyDescription> initHotkeyDescriptions();
-    
+
 public:
     AssemblyReadsArea(AssemblyBrowserUi * ui, QScrollBar * hBar, QScrollBar * vBar);
 
@@ -88,7 +88,7 @@ protected:
     void keyPressEvent(QKeyEvent * e);
     void mouseDoubleClickEvent(QMouseEvent * e);
     bool eventFilter(QObject *obj, QEvent *ev);
-    
+
 private:
     void initRedraw();
     void connectSlots();
@@ -119,24 +119,24 @@ private:
 
     /** Put welcome screen info on coveredRegionsLabel */
     void showWelcomeScreen();
-    
+
     int calcFontPointSize() const;
-    
+
     void updateMenuActions();
     void exportReads(const QList<U2AssemblyRead> & reads);
 
     void createMenu();
     QMenu* createShadowingMenu();
     void shadowingMenuSetBind(bool enabled);
-        
+
 signals:
     void si_heightChanged();
     void si_mouseMovedToPos(const QPoint &);
-    
+
 public slots:
-    void sl_hideHint();  
+    void sl_hideHint();
     void sl_redraw();
-    
+
 private slots:
     void sl_onHScrollMoved(int pos);
     void sl_onVScrollMoved(int pos);
@@ -152,7 +152,7 @@ private slots:
     void sl_onOptimizeRendering(bool enabled);
     void sl_onScrollPressed() { setScrolling(true); }
     void sl_onScrollReleased() { setScrolling(false); }
-    
+
 private:
     AssemblyBrowserUi * ui;
     AssemblyBrowser * browser;
@@ -162,7 +162,7 @@ private:
     QPixmap cachedView;
 
     QScopedPointer<AssemblyCellRenderer> cellRenderer;
-    
+
     CoveredRegionsLabel coveredRegionsLabel;
     QScrollBar * hBar;
     QScrollBar * vBar;
@@ -171,7 +171,7 @@ private:
     static const int DEFAULT_MOUSE_DELTA;
     int wheelEventAccumulatedDelta;
     int wheelEventPrevDelta;
-    
+
     // caches reads that are visible on a screen
     class ReadsCache {
     public:
@@ -195,14 +195,14 @@ private:
     };
     ReadsCache cachedReads;
     QPoint curPos;
-    
+
     struct HintData {
         HintData(QWidget * p) : updateHint(false), hint(p) {}
         bool updateHint;
         AssemblyReadsAreaHint hint;
         U2DataId curReadId;
     } hintData;
-    
+
     // needed to move by-letter when scribbling
     class ReadsMover {
     public:
@@ -247,7 +247,7 @@ private:
 
     bool scrolling;
     bool optimizeRenderOnScroll;
-    
+
     QMenu * readMenu;
     QAction * copyDataAction;
     QAction * exportReadAction;
@@ -265,4 +265,4 @@ private:
 
 } //ns
 
-#endif 
+#endif

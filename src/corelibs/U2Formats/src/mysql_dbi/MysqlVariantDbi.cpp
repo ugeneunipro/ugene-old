@@ -296,7 +296,7 @@ int MysqlVariantDbi::getVariantCount( const U2DataId& trackId, U2OpStatus& os ) 
         return -1;
     }
 
-    return q.getInt32(0); 
+    return q.getInt32(0);
 }
 
 void MysqlVariantDbi::removeTrack(const U2DataId& trackId, U2OpStatus& os) {

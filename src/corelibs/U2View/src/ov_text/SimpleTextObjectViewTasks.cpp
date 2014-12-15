@@ -51,7 +51,7 @@ OpenSimpleTextObjectViewTask::OpenSimpleTextObjectViewTask(const QList<GObject *
     }
 }
 
-OpenSavedTextObjectViewTask::OpenSavedTextObjectViewTask(const QString& vname, const QVariantMap& stateData) 
+OpenSavedTextObjectViewTask::OpenSavedTextObjectViewTask(const QString& vname, const QVariantMap& stateData)
 : ObjectViewTask(SimpleTextObjectViewFactory::ID, vname, stateData), doc(NULL)
 {
     QString documentUrl = SimpleTextObjectView::getDocumentUrl(stateData);
@@ -118,7 +118,7 @@ void OpenSimpleTextObjectViewTask::open() {
 //////////////////////////////////////////////////////////////////////////
 // update view task
 
-UpdateSimpleTextObjectViewTask::UpdateSimpleTextObjectViewTask(GObjectView* v, const QString& stateName, const QVariantMap& stateData) 
+UpdateSimpleTextObjectViewTask::UpdateSimpleTextObjectViewTask(GObjectView* v, const QString& stateName, const QVariantMap& stateData)
 : ObjectViewTask(v, stateName, stateData)
 {
 }
@@ -132,7 +132,7 @@ void UpdateSimpleTextObjectViewTask::update() {
         return;
     }
     tv->updateView(stateData);
-    
+
 }
 
 

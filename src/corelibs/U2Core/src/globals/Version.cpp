@@ -98,7 +98,7 @@ Version Version::parseVersion(const QString& text) {
             v.patch = val;
         }
     }
-    
+
 #ifdef _DEBUG
     v.debug = true;
 #else
@@ -126,7 +126,7 @@ Version Version::minVersionForMySQL() {
 
 
 bool Version::operator  >  (const Version& v) const {
-    return v < *this;   
+    return v < *this;
 }
 
 bool Version::operator  >= (const Version& v) const {

@@ -30,7 +30,7 @@
 
 typedef QPair<U2::ActorId,QString> IterationCfgKey;
 typedef QMap<IterationCfgKey, QVariant> IterationCfg;
-typedef QMap<U2::ActorId, QVariantMap> CfgMap; 
+typedef QMap<U2::ActorId, QVariantMap> CfgMap;
 
 Q_DECLARE_METATYPE(IterationCfg)
 Q_DECLARE_METATYPE(CfgMap)
@@ -88,7 +88,7 @@ public:
 
     Actor* actorById(ActorId) const;
     QList<Actor*> actorsByOwnerId(ActorId) const;
-    
+
     QString getDomain() const;
     void setDomain(const QString & d);
 
@@ -154,7 +154,7 @@ private:
 
     bool recursiveExpand(QList<QString> &schemaIds);
     void update(const QMap<ActorId, ActorId> &actorsMapping);
-    
+
 }; // Schema
 
 class U2LANG_EXPORT ActorVisualData {
@@ -197,7 +197,7 @@ private:
 /**
  * Schema's metadata
  * saves with schema to file and loads with it
- * 
+ *
  * Schema don't aggregate metadata (see WorkflowViewController for usage)
  */
 class U2LANG_EXPORT Metadata {

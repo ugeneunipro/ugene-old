@@ -19,22 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _BASE64_FILE_H_ 
+#ifndef _BASE64_FILE_H_
 #define _BASE64_FILE_H_
 
 #include <QtCore/QFile>
 
-extern "C" 
+extern "C"
 {
 #include "base64/cencode.h"
-} 
+}
 
 namespace U2 {
 
-class Base64File : public QIODevice 
+class Base64File : public QIODevice
 {
 public:
-    Base64File(const QString& url); 
+    Base64File(const QString& url);
     virtual bool isSequential() const { return true; }
     virtual bool open(OpenMode mode);
     virtual qint64 size() const;
@@ -48,7 +48,7 @@ private:
     qint64              bufLen;
     qint64              bufOffset;
     QFile               file;
-    base64_encodestate  encodeState; 
+    base64_encodestate  encodeState;
 };
 
 

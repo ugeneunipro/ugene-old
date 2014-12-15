@@ -289,7 +289,7 @@ QSharedPointer<SQLiteQuery> SQLiteFeatureDbi::createFeatureQuery( const QString 
     bool useRegion = ( 0 < fq.intersectRegion.length );
     bool oneClosestFeature = ( ComparisonOp_Invalid != fq.closestFeature );
     if ( useRegion ) {
-        if ( !oneClosestFeature ) { //check if intersects 
+        if ( !oneClosestFeature ) { //check if intersects
             if ( 1 != fq.intersectRegion.length ) {
                 add( wherePart, QString( "fr.id = f.id AND fr.start < ?%2 AND fr.end > ?%1" )
                     .arg( n + 1 ).arg( n + 2 ), "", n );

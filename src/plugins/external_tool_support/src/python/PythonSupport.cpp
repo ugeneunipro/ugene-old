@@ -56,7 +56,7 @@ PythonSupport::PythonSupport(const QString& name, const QString& path) : Externa
 #endif
     validMessage = "Python ";
     validationArguments << "--version";
-    
+
     description += tr("Python scripts interpreter");
     versionRegExp = QRegExp("(\\d+.\\d+.\\d+)");
     toolKitName = "python";

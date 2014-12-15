@@ -85,7 +85,7 @@ public:
     virtual qint64 writeBlock(const char* data, qint64 size);
 
     virtual bool skip(qint64 nBytes);
-    
+
     virtual qint64 left() const;
 
     virtual int getProgress() const;
@@ -96,7 +96,7 @@ public:
 
 private:
     void        init();
-    qint64      stored() const; 
+    qint64      stored() const;
     inline bool singleChunk() const { return chunk_list.size() == 1; }
     inline int  firstChunkContains() const {return (singleChunk() ? (isEmpty() ? 0 : end_ptr - begin_ptr) :
                                            CHUNKSIZE - begin_ptr);}
@@ -109,11 +109,11 @@ private:
     qint64 waitData( qint64 until );
 
     static const int CHUNKSIZE = 32 * 1024;
-    QLinkedList<QByteArray> chunk_list; 
+    QLinkedList<QByteArray> chunk_list;
     QByteArray cache;
     bool is_cached;
     int begin_ptr; //pointer to the first byte of data in first chunk
-    int end_ptr; //pointer to the first free byte in last chunk 
+    int end_ptr; //pointer to the first free byte in last chunk
 
     QNetworkAccessManager * netManager;
     QNetworkReply * reply;

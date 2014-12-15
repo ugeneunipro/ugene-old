@@ -89,7 +89,7 @@ public:
 
     //get specified UniPROBE property
     QString getProperty (const QString& propertyName) const;
-    
+
     //get all UniPROBE properties
     QMap<QString, QString> getProperties() const;
 
@@ -114,7 +114,7 @@ private:
     PWMatrixType type;
     float minSum, maxSum;
     UniprobeInfo info;
-    
+
 };
 
 }//namespace

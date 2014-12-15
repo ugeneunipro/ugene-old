@@ -322,7 +322,7 @@ void SamReader::readHeader() {
                 break;
             }
 
-            QByteArray line = QByteArray::fromRawData(buff, len);            
+            QByteArray line = QByteArray::fromRawData(buff, len);
             if(line.isEmpty()) {
                 continue;
             }
@@ -359,7 +359,7 @@ void SamReader::readHeader() {
                     if(!QRegExp("[A-Za-z][A-Za-z]").exactMatch(fieldTag) && "M5" != fieldTag) { //workaround for bug in the spec
                         throw InvalidFormatException(BAMDbiPlugin::tr("Invalid header field tag: %1").arg(QString(fieldTag)));
                     }
-                    // CL and PN tags of can contain any string 
+                    // CL and PN tags of can contain any string
                     if(fieldTag!="CL" && fieldTag!="PN" && !QRegExp("[ -~]+").exactMatch(fieldValue)) {
                         throw InvalidFormatException(BAMDbiPlugin::tr("Invalid %1-%2 value: %3").arg(QString(recordTag)).arg(QString(fieldTag)).arg(QString(fieldValue)));
                     }
@@ -429,7 +429,7 @@ void SamReader::readHeader() {
                 if(fields.contains("M5")) {
                     QByteArray value = fields["M5"];
                     //[a-f] is a workaround (not matching to SAM-1.3 spec) to open 1000 Genomes project BAMs
-                    if(!QRegExp("[0-9A-Fa-f]+").exactMatch(value)) { 
+                    if(!QRegExp("[0-9A-Fa-f]+").exactMatch(value)) {
                         throw InvalidFormatException(BAMDbiPlugin::tr("Invalid SQ-M5 value: %1").arg(QString(value)));
                     }
                     reference->setMd5(fields["M5"]);

@@ -30,7 +30,7 @@ namespace U2 {
 class U2SequenceObject;
 
 class U2CORE_EXPORT DNASequenceSelection : public LRegionsSelection {
-    
+
     Q_OBJECT
 
 public:

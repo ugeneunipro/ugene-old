@@ -46,7 +46,7 @@ public:
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
     bool storeHeader(IOAdapter* io, const QVector<QByteArray> &names, const QVector<int> &lengths, bool coordinateSorted);
-    
+
     bool storeAlignedRead(int offset, const DNASequence& read, IOAdapter* io, const QByteArray& refName, int refLength, bool first, bool useCigar = false, const QByteArray &cigar = "");
 
     /** Temporary method to avoid conflict of SAM and importer */
@@ -74,7 +74,7 @@ private:
     static const QByteArray VERSION;
 
     static const QByteArray SAM_SECTION_START;
- 
+
     static const QByteArray SECTION_HEADER; //Header
     static const QByteArray SECTION_SEQUENCE; //Sequence dictionary
     static const QByteArray SECTION_READ_GROUP; //read group

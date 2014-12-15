@@ -70,11 +70,11 @@ void QDWorkerFactory::init() {
 
     {
         Descriptor id(BasePorts::IN_SEQ_PORT_ID(),
-            QDWorker::tr("Input sequences"), 
+            QDWorker::tr("Input sequences"),
             QDWorker::tr("A nucleotide sequence to analyze."));
 
         Descriptor od(BasePorts::OUT_ANNOTATIONS_PORT_ID(),
-            QDWorker::tr("Result annotations"), 
+            QDWorker::tr("Result annotations"),
             QDWorker::tr("A set of annotations marking found results."));
 
         QMap<Descriptor, DataTypePtr> inM;
@@ -97,7 +97,7 @@ void QDWorkerFactory::init() {
         a << new Attribute(sad, BaseTypes::BOOL_TYPE(), false, false);
     }
 
-    Descriptor desc(ACTOR_ID, QDWorker::tr("Annotate with UQL"), 
+    Descriptor desc(ACTOR_ID, QDWorker::tr("Annotate with UQL"),
         QDWorker::tr("Analyzes a nucleotide sequence using different algorithms"
                      "(Repeat finder, ORF finder, etc.) imposing constraints"
                      " on the positional relationship of the results."));
@@ -168,7 +168,7 @@ Task* QDWorker::tick() {
             }
         }
     }
-    
+
     QFile f(schemaUri);
     if (!f.open(QIODevice::ReadOnly)) {
         return new FailTask(L10N::errorOpeningFileRead(schemaUri));
@@ -183,7 +183,7 @@ Task* QDWorker::tick() {
     }
 
     scheme = new QDScheme;
-    
+
     QList<QDDocument*> docs;
     docs << &doc;
     bool ok = QDSceneSerializer::doc2scheme(docs, scheme);

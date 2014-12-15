@@ -309,7 +309,7 @@ static inline void parseAFTag(U2::IOAdapter *io, U2OpStatus &ti, char* buff, int
 
         count1--;
         ti.setProgress(io->getProgress());
-    } 
+    }
 }
 
 static inline void parseRDandQATag(U2::IOAdapter *io, U2OpStatus &ti, char* buff, QSet<QString> &names, QString& name, QByteArray& sequence){
@@ -486,7 +486,7 @@ void ACEFormat::load(IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*> &obj
         while (!os.isCoR() && count>0) {
             parseRDandQATag(io, os, buff, names, name, sequence);
             CHECK_OP(os, );
-            
+
             bool isComplement = complMap.take(name);
             int pos = posMap.value(name) - 1;
             if (smallestOffset < 0) {
@@ -533,7 +533,7 @@ Document* ACEFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     load(io, dbiRef, objs, fs, os);
 
     CHECK_OP_EXT(os, qDeleteAll(objs), NULL);
-    
+
     if(objs.isEmpty()){
         os.setError(ACEFormat::tr("File doesn't contain any msa objects"));
         return NULL;

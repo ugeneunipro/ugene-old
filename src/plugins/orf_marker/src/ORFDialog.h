@@ -64,7 +64,7 @@ protected:
     bool eventFilter(QObject *obj, QEvent *ev);
 
 private slots:
-    
+
     //buttons:
     void sl_onClearList();
     void sl_onFindAll();
@@ -83,7 +83,7 @@ private:
     void tunePercentBox();
     void initSettings();
     void getSettings(ORFAlgorithmSettings& s);
-    
+
     void runTask();
 
     void importResults();

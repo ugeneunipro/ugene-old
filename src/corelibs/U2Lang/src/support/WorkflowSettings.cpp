@@ -99,7 +99,7 @@ QString WorkflowSettings::defaultStyle()
     return AppContext::getSettings()->getValue(STYLE, "ext").toString();
 }
 
-void WorkflowSettings::setDefaultStyle(const QString& s){   
+void WorkflowSettings::setDefaultStyle(const QString& s){
     if(s != defaultStyle()){
         AppContext::getSettings()->setValue(STYLE, s);
         emit watcher->changed();
@@ -112,7 +112,7 @@ QFont WorkflowSettings::defaultFont()
 }
 
 void WorkflowSettings::setDefaultFont(const QFont& f)
-{   
+{
     if (defaultFont() != f) {
         AppContext::getSettings()->setValue(FONT, qVariantFromValue(f));
         emit watcher->changed();

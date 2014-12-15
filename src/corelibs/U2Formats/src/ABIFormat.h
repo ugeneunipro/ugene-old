@@ -48,7 +48,7 @@ protected:
 
     virtual DNASequence* loadSequence(IOAdapter *io, U2OpStatus &ti);
 
-    
+
 private:
     Document* parseABI(const U2DbiRef& dbiRef, SeekableBuf*, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os);
     bool loadABIObjects(SeekableBuf* fp, DNASequence& seq, DNAChromatogram& cd);

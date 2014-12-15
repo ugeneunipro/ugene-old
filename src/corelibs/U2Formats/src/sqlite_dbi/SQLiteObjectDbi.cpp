@@ -57,7 +57,7 @@ void SQLiteObjectDbi::initSqlSchema(U2OpStatus& os) {
     SQLiteQuery("CREATE INDEX Parent_child on Parent(child)" , db, os).execute();
     CHECK_OP(os, );
 
-    // folders 
+    // folders
     SQLiteQuery("CREATE TABLE Folder (id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT UNIQUE NOT NULL, "
                                     "vlocal INTEGER NOT NULL DEFAULT 1, vglobal INTEGER NOT NULL DEFAULT 1 )", db, os).execute();
     CHECK_OP(os, );
@@ -107,7 +107,7 @@ QList<U2DataId> SQLiteObjectDbi::getParents(const U2DataId& entityId, U2OpStatus
 U2DbiIterator<U2DataId>* SQLiteObjectDbi::getObjectsByVisualName(const QString& visualName, U2DataType type, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     bool checkType = (type != U2Type::Unknown);
-    QString query = "SELECT id, type FROM Object WHERE " + TOP_LEVEL_FILTER 
+    QString query = "SELECT id, type FROM Object WHERE " + TOP_LEVEL_FILTER
             + " AND name = ?1 " + (checkType ? "AND type = ?2" : "" + QString(" ORDER BY id"));
     QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(query, db, os);
     q->bindString(1, visualName);
@@ -417,7 +417,7 @@ void SQLiteObjectDbi::createFolder(const QString& path, U2OpStatus& os) {
     SQLiteQuery q("INSERT INTO Folder(path) VALUES(?1)", db, os);
     q.bindString(1, canonicalPath);
     q.execute();
-    
+
     if (!os.hasError()) {
         onFolderUpdated(path);
     }
@@ -488,7 +488,7 @@ void SQLiteObjectDbi::addObjectsToFolder(const QList<U2DataId>& objectIds, const
         insertQ.bindInt64(1, folderId);
         insertQ.bindDataId(2, objectId);
         insertQ.execute();
-        
+
         toplevelQ.reset();
         toplevelQ.bindDataId(1, objectId);
         toplevelQ.execute();
@@ -807,7 +807,7 @@ void SQLiteObjectDbi::removeParent(const U2DataId& parentId, const U2DataId& chi
 
 void SQLiteObjectDbi::setParent(const U2DataId& parentId, const U2DataId& childId, U2OpStatus& os) {
     SQLiteQuery insertQ("INSERT OR IGNORE INTO Parent (parent, child) VALUES (?1, ?2)", db, os);
-    insertQ.bindDataId(1, parentId); 
+    insertQ.bindDataId(1, parentId);
     insertQ.bindDataId(2, childId);
     insertQ.execute();
 }
@@ -846,7 +846,7 @@ U2TrackModType SQLiteObjectDbi::getTrackModType(const U2DataId& objectId, U2OpSt
     SQLiteQuery q("SELECT trackMod FROM Object WHERE id = ?1", db, os);
     CHECK_OP(os, NoTrack);
 
-    q.bindDataId(1, objectId); 
+    q.bindDataId(1, objectId);
     if (q.step()) {
         int res = q.getInt32(0);
         SAFE_POINT(res >= 0 && res < TRACK_MOD_TYPE_NR_ITEMS, "Incorrect trackMod value!", NoTrack);
@@ -1031,7 +1031,7 @@ U2CrossDatabaseReference SQLiteCrossDatabaseReferenceDbi::getCrossReference(cons
         res.visualName = q.getString(4);
         res.version = q.getInt64(5);
         q.ensureDone();
-    } 
+    }
     return res;
 }
 
@@ -1042,7 +1042,7 @@ void SQLiteCrossDatabaseReferenceDbi::updateCrossReference(const U2CrossDatabase
     q.bindBlob(3, reference.dataRef.entityId);
     q.bindInt64(4, reference.dataRef.version);
     q.bindDataId(5, reference.id);
-    q.execute();    
+    q.execute();
 }
 
 

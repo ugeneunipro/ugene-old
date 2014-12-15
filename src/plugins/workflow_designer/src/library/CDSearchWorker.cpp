@@ -51,7 +51,7 @@ static const QString LOCAL_ATTR("local-search");
 static const QString DB_PATH_ATTR("db-path");
 
 void CDSearchWorkerFactory::init() {
-    QList<PortDescriptor*> p; 
+    QList<PortDescriptor*> p;
     Descriptor ind(BasePorts::IN_SEQ_PORT_ID(), CDSearchWorker::tr("Input sequence"), CDSearchWorker::tr("The sequence to search the annotations for"));
     Descriptor outd(BasePorts::OUT_ANNOTATIONS_PORT_ID(), CDSearchWorker::tr("Annotations"), CDSearchWorker::tr("Found annotations"));
 
@@ -90,7 +90,7 @@ void CDSearchWorkerFactory::init() {
     Descriptor desc( ACTOR_ID, CDSearchWorker::tr("CD-Search"),
         CDSearchWorker::tr("Finds conserved domains in protein sequences. In case conserved domains database is downloaded the search can be executed on local machine. The search also can be submitted to the NCBI for remote execution.") );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
-    QMap<QString, PropertyDelegate*> delegates; 
+    QMap<QString, PropertyDelegate*> delegates;
 
     {
         QVariantMap m;

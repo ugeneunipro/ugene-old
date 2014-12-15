@@ -114,7 +114,7 @@ void SeqPosWorker::sl_taskFinished() {
     if (!t->isFinished() || t->hasError() || t->isCanceled()) {
         return;
     }
-    
+
     const QStringList& resFileNames = t->getOutputFiles();
     foreach(const QString& fn, resFileNames){
         context->getMonitor()->addOutputFile(fn, getActor()->getId());
@@ -226,7 +226,7 @@ void SeqPosWorkerFactory::init() {
     }
 
     QList<PortDescriptor*> portDescs;
-    
+
     //in port
     QMap<Descriptor, DataTypePtr> inTypeMap;
     Descriptor treatDesc(ANNOT_SLOT_ID,
@@ -283,7 +283,7 @@ void SeqPosWorkerFactory::init() {
         attrs << new Attribute(outName, BaseTypes::STRING_TYPE(), true, QVariant("Default"));
         attrs << new Attribute(findDeNovo, BaseTypes::BOOL_TYPE(), false, QVariant(false));
         attrs << new Attribute(motifDB, BaseTypes::STRING_TYPE(), false, QVariant(SeqPosSettings::MOTIF_DB_CISTROME));
-        
+
         attrs << new Attribute(regW, BaseTypes::NUM_TYPE(), false, QVariant(600));
         attrs << new Attribute(pVal, BaseTypes::NUM_TYPE(), false, QVariant(0.001));
     }
@@ -343,18 +343,18 @@ Worker *SeqPosWorkerFactory::createWorker(Actor *a) {
 }
 
 QString SeqPosPrompter::composeRichDoc() {
-    QString res = ""; 
+    QString res = "";
 
      Actor* annProducer = qobject_cast<IntegralBusPort*>(target->getPort(IN_PORT_DESCR))->getProducer(ANNOT_SLOT_ID);
- 
+
      QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
      QString annUrl = annProducer ? annProducer->getLabel() : unsetStr;
-     
+
      QString dir = getHyperlink(OUTPUT_DIR, getURL(OUTPUT_DIR));
      bool deNovo = getParameter(FIND_DE_NOVO).toBool();
      QString motifDb = getParameter(MOTIF_DB).toString();
      QString genome = getParameter(GENOME_ASSEMBLY).toString();
- 
+
      res.append(tr("Uses regions from <u>%1</u> to find motifs enriched in them.").arg(annUrl));
      res.append(tr(" Genome assembly: <u>%1</u>.").arg(genome.isEmpty()? unsetStr : genome));
      if (deNovo){
@@ -363,7 +363,7 @@ QString SeqPosPrompter::composeRichDoc() {
      if(!motifDb.isEmpty()){
          res.append(tr(" Uses <u>%1</u> known motifs.").arg(motifDb));
      }
-    
+
      res.append(tr(" Outputs all result files to <u>%1</u> directory").arg(dir.isEmpty() ? unsetStr : dir));
      res.append(".");
 

@@ -62,7 +62,7 @@ namespace GUITest_common_scenarios_project{
 GUI_TEST_CLASS_DEFINITION(test_0004) {
 // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj1.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj1.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1CF7.PDB" is opened
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 //     2) UGENE window titled with text "proj1 UGENE"
@@ -70,7 +70,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
 // 2. Use menu {File->Export Project}
 // Expected state: "Export Project" dialog has appeared
-// 
+//
 // 3. Fill the next field in dialog:
 //     {Destination Directory} _common_data/scenarios/sandbox
 // 4. Click OK button
@@ -89,8 +89,8 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj1.uprj");
     GTGlobals::sleep();
 
-// Expected state: 
-//     1) project view with document "1CF7.PDB" has been opened, 
+// Expected state:
+//     1) project view with document "1CF7.PDB" has been opened,
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 //     2) UGENE window titled with text "proj1 UGENE"
     GTUtilsApp::checkUGENETitle(os, "proj1 UGENE - [Start Page]");
@@ -105,8 +105,8 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTMouseDriver::click(os);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
 
-// Expected state: 
-//     1) Document is loaded, 
+// Expected state:
+//     1) Document is loaded,
     GTUtilsDocument::checkDocument(os, "1CF7.PDB", AnnotatedDNAViewFactory::ID);
 //     2) 4 sequences and 3D Viewer with molecule is appeared
 }
@@ -182,7 +182,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export document", GTGlobals::UseMouse));
 
-    Runnable *filler = new ExportDocumentDialogFiller(os, testDir + "_common_data/scenarios/sandbox/", "1.gb", 
+    Runnable *filler = new ExportDocumentDialogFiller(os, testDir + "_common_data/scenarios/sandbox/", "1.gb",
                                                    ExportDocumentDialogFiller::Genbank, true, true, GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, filler);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
@@ -232,7 +232,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj2.uprj"); // TODO: ask Shutov what to do
 
     /*
-    this test just checking appearing of dialog not its behavior    
+    this test just checking appearing of dialog not its behavior
     */
 }
 
@@ -348,15 +348,15 @@ GUI_TEST_CLASS_DEFINITION(test_0021) {
     font = GTUtilsProjectTreeView::getFont(os, item);
     CHECK_SET_ERR(!font.bold(), "se1 item font is not a bold");
 
-    GTUtilsSequenceView::openSequenceView(os, "se1");	
+    GTUtilsSequenceView::openSequenceView(os, "se1");
     item = GTUtilsProjectTreeView::findIndex(os, "se1");
     font = GTUtilsProjectTreeView::getFont(os, item);
     CHECK_SET_ERR(font.bold(), "se1 item font is not a bold");
 
-    GTUtilsSequenceView::openSequenceView(os, "se2");	
+    GTUtilsSequenceView::openSequenceView(os, "se2");
     item = GTUtilsProjectTreeView::findIndex(os, "se2");
     font = GTUtilsProjectTreeView::getFont(os, item);
-    CHECK_SET_ERR(font.bold(), "se2 item font is not a bold");	 
+    CHECK_SET_ERR(font.bold(), "se2 item font is not a bold");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0023) {

@@ -33,7 +33,7 @@ namespace U2 {
 */
 class U2MsaDbi : public U2ChildDbi {
 protected:
-    U2MsaDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi) {} 
+    U2MsaDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi) {}
 
 public:
     /** Reads Msa objects by id */
@@ -51,7 +51,7 @@ public:
     /** Returns the list of rows IDs in the database for the specified MSA (in increasing order) */
     virtual QList<qint64> getRowsOrder(const U2DataId& msaId, U2OpStatus& os) = 0;
 
-    /** 
+    /**
      * Creates a new empty MSA object
      * Requires: U2DbiFeature_WriteMsa feature support
      */
@@ -69,8 +69,8 @@ public:
      */
     virtual void updateMsaAlphabet(const U2DataId& msaId, const U2AlphabetId& alphabet, U2OpStatus& os) = 0;
 
-    /**  
-     * Adds rows to the MSA 
+    /**
+     * Adds rows to the MSA
      * Requires: U2DbiFeature_WriteMsa feature support
      */
     virtual void addRows(const U2DataId& msaId, QList<U2MsaRow>& rows, U2OpStatus& os) = 0;

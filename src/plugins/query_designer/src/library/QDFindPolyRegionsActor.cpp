@@ -202,7 +202,7 @@ Task* QDFindPolyActor::getAlgorithmTask( const QVector<U2Region>& location ) {
         t->addSubTask(sub);
         connect(new TaskSignalMapper(sub), SIGNAL(si_taskFinished(Task*)), SLOT(sl_onTaskFinished(Task*)));
     }
-    
+
     return t;
 }
 

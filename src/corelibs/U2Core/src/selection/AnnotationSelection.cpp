@@ -164,16 +164,16 @@ void AnnotationSelection::removeFromSelection( const Annotation &a, int location
         foreach(const AnnotationSelectionData& asd, selection) {
             if (asd.annotation != a) {
                 newSelection.append(asd);
-            } 
+            }
         }
         selection = newSelection;
     } else if (inSelPartial) { //remove 1 region from set of regions
         for (int i = 0, n = selection.size(); i<n; i++) {
             const AnnotationSelectionData& asd = selection[i];
             if (asd.annotation == a && asd.locationIdx == locationIdx) {
-                selection.removeAt(i);    
+                selection.removeAt(i);
                 break;
-            } 
+            }
         }
         leftInSelection = nRegionsSelected - 1 > 0;
     } else { // selection contains whole annotation, only 1 region is removed -> split
@@ -184,7 +184,7 @@ void AnnotationSelection::removeFromSelection( const Annotation &a, int location
                 assert(asd.locationIdx == -1);
                 selection.removeAt(i);
                 break;
-            } 
+            }
         }
         for (int i = 0, n = nRegionsTotal; i<n; i++) {
             if (i != locationIdx) {

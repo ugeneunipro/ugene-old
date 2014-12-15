@@ -28,7 +28,7 @@
 
 namespace U2 {
 
-PhyTreeGeneratorTask::PhyTreeGeneratorTask(const MAlignment& ma, const CreatePhyTreeSettings& _settings) 
+PhyTreeGeneratorTask::PhyTreeGeneratorTask(const MAlignment& ma, const CreatePhyTreeSettings& _settings)
 : Task(PhyTreeGeneratorTask::tr("Calculating Phylogenetic Tree"), TaskFlag_FailOnSubtaskError), inputMA(ma), settings(_settings)
 {
     tpm = Task::Progress_Manual;
@@ -38,7 +38,7 @@ void PhyTreeGeneratorTask::run() {
 }
 
 Task::ReportResult PhyTreeGeneratorTask::report() {
-    return ReportResult_Finished; 
+    return ReportResult_Finished;
 }
 
 PhyTreeGeneratorLauncherTask::PhyTreeGeneratorLauncherTask(const MAlignment& ma, const CreatePhyTreeSettings& _settings)
@@ -63,7 +63,7 @@ void PhyTreeGeneratorLauncherTask::prepare(){
         task = dynamic_cast<PhyTreeGeneratorTask*>(generator->createCalculatePhyTreeTask(inputMA,settings));
         addSubTask(task);
     }
-    
+
 }
 Task::ReportResult PhyTreeGeneratorLauncherTask::report(){
     if(task){

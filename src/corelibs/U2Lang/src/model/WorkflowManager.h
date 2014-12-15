@@ -46,20 +46,20 @@ namespace Workflow {
 /**
  * Worker represents actor at runtime
  * takes input data from and puts output data to CommunicationChannels
- * 
+ *
  * base class
  */
 class U2LANG_EXPORT Worker {
 public:
     Worker() : context(NULL) {}
     virtual ~Worker() {}
-    
+
     // initialize input and output ports
     virtual void init() = 0;
     // if data in the ports is ready
     virtual bool isReady() = 0;
     // get data from actor and return task
-    // if you want your worker support scripting: 
+    // if you want your worker support scripting:
     // use BaseWorker::getMessageAndSetupScriptValues to take data from port
     virtual Task* tick() = 0;
     // nothing to do
@@ -78,9 +78,9 @@ protected:
 * runtime state of worker
 */
 enum WorkerState {
-    WorkerWaiting, 
-    WorkerReady, 
-    WorkerRunning, 
+    WorkerWaiting,
+    WorkerReady,
+    WorkerRunning,
     WorkerDone,
     WorkerPaused
 }; // WorkerState
@@ -123,10 +123,10 @@ public:
     DomainFactory(const Descriptor& d) : Descriptor(d) {}
     DomainFactory(const QString& id) : Descriptor(id) {}
     virtual ~DomainFactory(){}
-    
+
     // computational tasks domain
     virtual Worker* createWorker(Actor*) = 0;
-    
+
     // execution domain
     virtual CommunicationChannel* createConnection(Link*) {return NULL;}
     virtual Scheduler* createScheduler(Schema*) {return NULL;}
@@ -138,7 +138,7 @@ public:
         }
         map.insert(attrValue, parametersMap);
     }
-    
+
 }; // DomainFactory
 
 /**

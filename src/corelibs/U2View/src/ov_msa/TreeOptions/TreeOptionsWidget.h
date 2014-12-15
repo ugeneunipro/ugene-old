@@ -37,9 +37,9 @@ class TreeViewer;
 class TreeViewerUI;
 
 struct TreeOpWidgetViewSettings {
-    TreeOpWidgetViewSettings() 
+    TreeOpWidgetViewSettings()
         : openGeneralGroup(true), openLabelsGroup(true), openBranchesGroup(true), showFontSettings(false), showPenSettings(false){}
-    
+
     bool openGeneralGroup;
     bool openLabelsGroup;
     bool openBranchesGroup;

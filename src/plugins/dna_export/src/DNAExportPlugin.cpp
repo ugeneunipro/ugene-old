@@ -62,11 +62,11 @@ DNAExportPlugin::DNAExportPlugin() : Plugin(tr("DNA export"), tr("Export and imp
     GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
     l->qlist = DNAExportPluginTests::createTestFactories();
 
-    foreach(XMLTestFactory* f, l->qlist) { 
+    foreach(XMLTestFactory* f, l->qlist) {
         bool res = xmlTestFormat->registerTestFactory(f);
         assert(res); Q_UNUSED(res);
     }
-    
+
     LocalWorkflow::ImportPhredQualityWorkerFactory::init();
     LocalWorkflow::ExportPhredQualityWorkerFactory::init();
     LocalWorkflow::WriteAnnotationsWorkerFactory::init();
@@ -82,8 +82,8 @@ void DNAExportPlugin::sl_generateSequence() {
 
 //////////////////////////////////////////////////////////////////////////
 // Service
-DNAExportService::DNAExportService() 
-: Service(Service_DNAExport, tr("DNA export service"), tr("Export and import support for DNA & protein sequences"), 
+DNAExportService::DNAExportService()
+: Service(Service_DNAExport, tr("DNA export service"), tr("Export and import support for DNA & protein sequences"),
           QList<ServiceType>() << Service_ProjectView)
 {
     projectViewController = NULL;

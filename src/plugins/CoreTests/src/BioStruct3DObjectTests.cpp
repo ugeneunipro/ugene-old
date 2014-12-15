@@ -29,7 +29,7 @@
 
 #include "BioStruct3DObjectTests.h"
 
-namespace U2 { 
+namespace U2 {
 
 #define VALUE_ATTR      "value"
 #define OBJ_ATTR        "obj"
@@ -78,7 +78,7 @@ Task::ReportResult GTest_BioStruct3DNumberOfAtoms::report()
         stateInfo.setError(QString("can't cast to biostruct3d object from: %1").arg(obj->getGObjectName()));
         return ReportResult_Finished;
     }
-    
+
     int tmpNumAtoms = biostructObj->getBioStruct3D().getNumberOfAtoms();
 
     if(tmpNumAtoms != numAtoms){
@@ -212,7 +212,7 @@ void GTest_BioStruct3DAtomCoordinates::init(XMLTestFormat *tf, const QDomElement
 Task::ReportResult GTest_BioStruct3DAtomCoordinates::report()
 {
 
-    
+
     GObject *obj = getContext<GObject>(this, objContextName);
     if(obj==NULL){
         stateInfo.setError(QString("wrong value: %1").arg(OBJ_ATTR));
@@ -226,12 +226,12 @@ Task::ReportResult GTest_BioStruct3DAtomCoordinates::report()
     }
 
     if (modelId == -1) {
-        modelId = biostructObj->getBioStruct3D().modelMap.keys().first(); 
+        modelId = biostructObj->getBioStruct3D().modelMap.keys().first();
     }
 
 
     const SharedAtom atom = biostructObj->getBioStruct3D().getAtomById(atomId, modelId);
-    
+
     if (atom == NULL) {
         stateInfo.setError(QString("atom with index = %1 not found").arg(atomId));
         return ReportResult_Finished;
@@ -239,7 +239,7 @@ Task::ReportResult GTest_BioStruct3DAtomCoordinates::report()
 
     Vector3D coords(x,y,z);
     Vector3D tmpCoords = atom->coord3d;
-    Vector3D diff = coords - tmpCoords; 
+    Vector3D diff = coords - tmpCoords;
     static const float EPSILON = 0.01f;
     if ((qAbs(diff.x) > EPSILON) || (qAbs(diff.y) > EPSILON) || (qAbs(diff.y) > EPSILON)) {
         stateInfo.setError(QString("atom coords not match: (%1,%2,%3)").arg(tmpCoords.x).arg(tmpCoords.y).arg(tmpCoords.z) +
@@ -250,7 +250,7 @@ Task::ReportResult GTest_BioStruct3DAtomCoordinates::report()
 }
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-void GTest_BioStruct3DAtomChainIndex::init(XMLTestFormat *tf, const QDomElement& el) 
+void GTest_BioStruct3DAtomChainIndex::init(XMLTestFormat *tf, const QDomElement& el)
 {
     Q_UNUSED(tf);
     modelId = -1;
@@ -266,13 +266,13 @@ void GTest_BioStruct3DAtomChainIndex::init(XMLTestFormat *tf, const QDomElement&
     if (v.isEmpty()) {
         failMissingValue(ATOM_ID_ATTR);
         return;
-    } 
+    }
     bool ok = false;
     atomId = v.toInt(&ok);
     if (!ok) {
         stateInfo.setError(QString("invalid value type %1, int required").arg(ATOM_ID_ATTR));
     }
-    
+
     // model id (if given)
     v = el.attribute(MODEL_ID_ATTR);
     if (!v.isEmpty()) {
@@ -289,7 +289,7 @@ void GTest_BioStruct3DAtomChainIndex::init(XMLTestFormat *tf, const QDomElement&
     if (v.isEmpty()) {
         failMissingValue(VALUE_ATTR);
         return;
-    } 
+    }
     ok = false;
     chainId = v.toInt(&ok);
     if (!ok) {
@@ -303,7 +303,7 @@ Task::ReportResult GTest_BioStruct3DAtomChainIndex::report()
     GObject *obj = getContext<GObject>(this, objContextName);
     if(obj==NULL){
         stateInfo.setError(QString("wrong value: %1").arg(OBJ_ATTR));
-        return ReportResult_Finished;  
+        return ReportResult_Finished;
     }
 
     BioStruct3DObject * biostructObj = qobject_cast<BioStruct3DObject*>(obj);
@@ -311,9 +311,9 @@ Task::ReportResult GTest_BioStruct3DAtomChainIndex::report()
         stateInfo.setError(QString("can't cast to biostruct3d object from: %1").arg(obj->getGObjectName()));
         return ReportResult_Finished;
     }
-    
+
     if (modelId == -1) {
-        modelId = biostructObj->getBioStruct3D().modelMap.keys().first(); 
+        modelId = biostructObj->getBioStruct3D().modelMap.keys().first();
     }
 
     const SharedAtom atom = biostructObj->getBioStruct3D().getAtomById(atomId, modelId);
@@ -356,7 +356,7 @@ void GTest_BioStruct3DAtomResidueName::init(XMLTestFormat *tf, const QDomElement
     if (!ok) {
         stateInfo.setError(QString("invalid value type %1, int required").arg(ATOM_ID_ATTR));
     }
-    
+
     // model id (if given)
     v = el.attribute(MODEL_ID_ATTR);
     if (!v.isEmpty()) {
@@ -396,7 +396,7 @@ Task::ReportResult GTest_BioStruct3DAtomResidueName::report()
     const BioStruct3D& bioStruct = biostructObj->getBioStruct3D();
 
     if (modelId == -1) {
-        modelId = bioStruct.modelMap.keys().first(); 
+        modelId = bioStruct.modelMap.keys().first();
     }
 
     const SharedAtom atom = bioStruct.getAtomById(atomId, modelId);
@@ -425,9 +425,9 @@ Task::ReportResult GTest_BioStruct3DAtomResidueName::report()
 void GTest_PDBFormatStressTest::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
     Q_UNUSED(el);
-    
+
     QString dirName = getEnv()->getVar(PDB_DIR_NAME_ENV);
-    
+
     QDir dir(dirName);
     if (!dir.exists()) {
         stateInfo.setError(QString("Cannot_find_the_directory %1").arg(dirName));
@@ -435,17 +435,17 @@ void GTest_PDBFormatStressTest::init(XMLTestFormat *tf, const QDomElement& el) {
     }
 
     dir.setFilter(QDir::Files);
-    QFileInfoList fileList  = dir.entryInfoList(); 
+    QFileInfoList fileList  = dir.entryInfoList();
 
     if (fileList.empty()) {
         stateInfo.setError(QString("Directory %1 is_empty").arg(dirName));
         return;
     }
-    
+
     IOAdapterId         ioId(BaseIOAdapters::LOCAL_FILE);
     IOAdapterFactory*   iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
     DocumentFormatId    format = BaseDocumentFormats::PLAIN_PDB;
-    
+
     for (int i = 0; i < fileList.size(); ++i) {
         QFileInfo fileInfo = fileList.at(i);
         LoadDocumentTask* task = new LoadDocumentTask(format, fileInfo.absoluteFilePath(), iof);
@@ -464,7 +464,7 @@ Task::ReportResult GTest_PDBFormatStressTest::report()
             stateInfo.setError(stateInfo.getError()+fileNames.value(task) + "(" + task->getError() + ");   ");
         }
     }
-    
+
     return ReportResult_Finished;
 
 }
@@ -485,11 +485,11 @@ void GTest_ASNFormatStressTest::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(el);
 
     QString dirName = getEnv()->getVar(ASN_DIR_NAME_ENV);
-    
+
     if (dirName.isEmpty()) {
         failMissingValue(ASN_DIR_NAME_ENV);
         return;
-    } 
+    }
 
 
     QDir dir(dirName);
@@ -499,7 +499,7 @@ void GTest_ASNFormatStressTest::init(XMLTestFormat *tf, const QDomElement& el) {
     }
 
     dir.setFilter(QDir::Files);
-    QFileInfoList fileList  = dir.entryInfoList(); 
+    QFileInfoList fileList  = dir.entryInfoList();
 
     if (fileList.empty()) {
         stateInfo.setError(QString("Directory %1 is_empty").arg(dirName));
@@ -551,7 +551,7 @@ QList<XMLTestFactory*> BioStruct3DObjectTests::createTestFactories()
     res.append(GTest_BioStruct3DAtomChainIndex::createFactory());
     res.append(GTest_PDBFormatStressTest::createFactory());
     res.append(GTest_ASNFormatStressTest::createFactory());
-    
+
     return res;
 
 }

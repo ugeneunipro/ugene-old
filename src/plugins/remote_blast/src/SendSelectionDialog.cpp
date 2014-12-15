@@ -210,7 +210,7 @@ AnnotationTableObject * SendSelectionDialog::getAnnotationObject() const {
         }
         return ca_c->getModel().getAnnotationObject();
     }
-    
+
 }
 
 QString SendSelectionDialog::getUrl() const{
@@ -283,17 +283,17 @@ void SendSelectionDialog::sl_scriptSelected( int index ) {
             costsComboBox->clear();
             costsComboBox->addItems(ParametersLists::blastp_gapCost);
             costsComboBox->setCurrentIndex(4);
-            
+
             dbComboBox->clear();
             dbComboBox->addItems(ParametersLists::blastp_dataBase);
-            
+
             matrixComboBox->show();
             matrixComboBox->setCurrentIndex(3);
             lblMatrix->show();
-            
+
             scoresComboBox->hide();
             lblScores->hide();
-            
+
             serviceComboBox->show();
             lblService->show();
         }
@@ -328,7 +328,7 @@ void SendSelectionDialog::sl_OK() {
         if(megablastCheckBox->isChecked()) {
             addParametr(requestParameters,ReqParams::megablast,"true");
         }
-        
+
         addParametr(requestParameters,ReqParams::database,dbComboBox->currentText().split(" ").last());
 
         QString filter="";
@@ -348,7 +348,7 @@ void SendSelectionDialog::sl_OK() {
         addParametr(requestParameters,ReqParams::gapCost,costsComboBox->currentText());
         addParametr(requestParameters,ReqParams::matchScore,scoresComboBox->currentText().split(" ").first());
         addParametr(requestParameters,ReqParams::mismatchScore,scoresComboBox->currentText().split(" ").last());
-        
+
         if(shortSequenceCheckBox->isChecked()) {
             QString wordSize = wordSizeComboBox->currentText().toInt()>7 ? "7" : wordSizeComboBox->currentText();
             addParametr(requestParameters,ReqParams::wordSize, wordSize);
@@ -356,7 +356,7 @@ void SendSelectionDialog::sl_OK() {
         else {
             addParametr(requestParameters,ReqParams::wordSize,wordSizeComboBox->currentText());
         }
-        
+
         if(lowerCaseCheckBox->isChecked()) {
             addParametr(requestParameters,ReqParams::lowCaseMask,"yes");
         }

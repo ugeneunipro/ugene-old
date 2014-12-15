@@ -42,7 +42,7 @@
 
 
 namespace U2 {
-    
+
 /************************************************************************/
 /* QDEnzymesActor                                                       */
 /************************************************************************/
@@ -51,7 +51,7 @@ static const QString ENZYMES_ATTR = "enzymes";
 static const QString CIRC_ATTR = "circular";
 static const QString MIN_ATTR = "min";
 static const QString MAX_ATTR = "max";
-    
+
 QDEnzymesActor::QDEnzymesActor(QDActorPrototype const* proto) : QDActor(proto) {
     selectorFactory = NULL;
     cfg->setAnnotationKey("<rsite>");
@@ -66,7 +66,7 @@ Task* QDEnzymesActor::getAlgorithmTask(const QVector<U2Region>& location) {
     Task* t = NULL;
 
     bool circular = cfg->getParameter(CIRC_ATTR)->getAttributePureValue().toBool();
-    
+
     assert(!location.isEmpty());
     t = new Task(tr("Enzymes query"), TaskFlag_NoRun);
 

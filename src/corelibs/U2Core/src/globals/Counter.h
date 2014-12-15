@@ -44,9 +44,9 @@ public:
     bool    destroyMe; //true if counter should be deleted by counter list
 
     double scaledTotal() const {return totalCount / counterScale;}
-    
+
 protected:
-    
+
     static QList<GCounter*>& getCounters();
 };
 

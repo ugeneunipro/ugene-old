@@ -44,7 +44,7 @@ public:
      * it removes empty aliases from model
      */
     PortAliasesCfgDlgModel getModel() const;
-    
+
 private:
     void initializeModel(const Schema &schema);
     void clearAliasTable();
@@ -54,7 +54,7 @@ private slots:
     void sl_onDataChange(int row, int col);
     void sl_portAliasChanged(const QString &newStr);
     void sl_portDescriptionChanged(const QString &newStr);
-    
+
 private:
     PortAliasesCfgDlgModel      model;
     QMap<int, Port*>            portListMap; // pairs (row, port)
@@ -62,7 +62,7 @@ private:
     int                         currentRow;
 
     void accept();
-    
+
 }; // PortAliasesConfigurationDialog
 
 } // Workflow

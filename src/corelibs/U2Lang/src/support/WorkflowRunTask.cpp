@@ -262,7 +262,7 @@ void WorkflowIterationRunTask::prepare() {
     if( hasError() || isCanceled() ) {
         return;
     }
-    
+
     bool res = schema->expand();
     if (!res) {
         stateInfo.setError(tr("Failed to preprocess the workflow. Some of included files are broken"));
@@ -351,7 +351,7 @@ DocumentFormat *getDocumentFormatByProtoId(QString protoId) {
     DocumentFormatId formatId;
     if (CoreLibConstants::WRITE_TEXT_PROTO_ID == protoId) {
         formatId = BaseDocumentFormats::PLAIN_TEXT;
-    } 
+    }
     else if (CoreLibConstants::WRITE_FASTA_PROTO_ID == protoId) {
         formatId = BaseDocumentFormats::FASTA;
     }
@@ -559,7 +559,7 @@ void RunCmdlineWorkflowTask::prepare() {
     args << QString("--%1").arg(OUTPUT_ERROR_OPTION);
     args << QString("--ini-file=\"%1\"").arg(AppContext::getSettings()->fileName());
     args << conf.args;
-    
+
     if (!containsPrefix(args, "--log-level")) {
         QString logLevel = getLogLevelName(conf.logLevel2Commute).toLower();
         args << ("--log-level-" + logLevel);
@@ -641,7 +641,7 @@ void RunCmdlineWorkflowTask::writeLog(QStringList &lines) {
         if (-1 == closePos) {
             continue;
         }
-        
+
 
         for (int i = conf.logLevel2Commute; i < LogLevel_NumLevels; i++) {
             QString logLevelName = getLogLevelName((LogLevel)i);

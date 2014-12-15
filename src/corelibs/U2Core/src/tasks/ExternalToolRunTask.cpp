@@ -280,7 +280,7 @@ void ExternalToolLogParser::parseOutput(const QString& partOfLog){
     lastPartOfLog.first()=lastLine+lastPartOfLog.first();
     lastLine=lastPartOfLog.takeLast();
     foreach(QString buf, lastPartOfLog){
-        
+
 if(buf.contains("error",Qt::CaseInsensitive)){
             setLastError(buf);
         }else{
@@ -338,7 +338,7 @@ QString ExternalToolSupportUtils::createTmpDir(const QString &prePath, const QSt
         if (!tmpDir.exists()) {
             if (!QDir().mkpath(tmpDirPath)) {
                 os.setError(tr("Can not create directory for temporary files: %1").arg(tmpDirPath));
-            } 
+            }
             return tmpDir.absolutePath();
         }
         i++;
@@ -442,7 +442,7 @@ ProcessRun ExternalToolSupportUtils::prepareProcess(const QString &toolName, con
 QString ExternalToolSupportUtils::prepareArgumentsForCmdLine(const QStringList &arguments) {
     QString argumentsLine;
     foreach(QString argumentStr, arguments) {
-        //Find start of the parameter value 
+        //Find start of the parameter value
         int startIndex = argumentStr.indexOf('=') + 1;
         //Add quotes if parameter contains whitespace characters
         QString valueStr = argumentStr.mid(startIndex);

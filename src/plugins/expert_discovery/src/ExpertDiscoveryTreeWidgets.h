@@ -68,7 +68,7 @@ public:
     {
         return toString((m_object->*m_callback)());
     }
-    virtual ICallback* clone() 
+    virtual ICallback* clone()
     {
         return new Callback<T, Result>(m_object, m_callback);
     }
@@ -103,7 +103,7 @@ enum EItemType {
     PIT_WORK_PAUSED
 };
 
-class EDPIPropertyType : public QObject 
+class EDPIPropertyType : public QObject
 {
     Q_OBJECT
 public:
@@ -118,7 +118,7 @@ public:
     virtual bool	isValidValue(QString strValue) const = 0;
 };
 
-class EDPIProperty : public QObject 
+class EDPIProperty : public QObject
 {
     Q_OBJECT
 public:
@@ -173,7 +173,7 @@ private: static class_name s_##class_name##Instance;
 #define IMPLEMENT_GETINSTANCE(class_name) \
     class_name class_name::s_##class_name##Instance;
 
-class EDPIPropertyTypeStaticString : public EDPIPropertyType 
+class EDPIPropertyTypeStaticString : public EDPIPropertyType
 {
     DEFINE_GETINSTANCE(EDPIPropertyTypeStaticString)
 public:
@@ -198,7 +198,7 @@ public:
 };
 
 
-class EDPIPropertyTypeUnsignedInt : public EDPIPropertyType 
+class EDPIPropertyTypeUnsignedInt : public EDPIPropertyType
 {
     DEFINE_GETINSTANCE(EDPIPropertyTypeUnsignedInt)
 public:
@@ -212,7 +212,7 @@ public:
     virtual bool	isValidValue(QString strValue) const;
 };
 
-class EDPIPropertyTypeList : public EDPIPropertyType 
+class EDPIPropertyTypeList : public EDPIPropertyType
 {
 public:
     EDPIPropertyTypeList();
@@ -238,7 +238,7 @@ public:
     EDPIPropertyTypeDynamicList() {};
     EDPIPropertyTypeDynamicList(const EDPIPropertyTypeDynamicList& rList) : EDPIPropertyTypeList(rList) {};
     virtual ~EDPIPropertyTypeDynamicList() {};
-    void	addValue(QString strValue) {EDPIPropertyTypeList::addValue(strValue);}; 
+    void	addValue(QString strValue) {EDPIPropertyTypeList::addValue(strValue);};
 
     inline static EDPIPropertyTypeDynamicList* getInstance() { return new EDPIPropertyTypeDynamicList(); }
     virtual void Release() { delete this;}
@@ -320,8 +320,8 @@ class EDProjectItem : public QObject, public QTreeWidgetItem
 Q_OBJECT
 public:
     //CProjectItem(QTreeWidget * parent);
-  
-    
+
+
     EDProjectItem();
     virtual ~EDProjectItem();
 
@@ -333,7 +333,7 @@ public:
     const EDPIPropertyGroup&	getGroup(int nGroup) const;
     int						addGroup(const EDPIPropertyGroup& rGroup);
 
-    
+
     virtual EItemType	getType() const;
     virtual	void		update(bool bUpdateChildren) = 0;
     virtual bool		isConnectedTo(void *pData) const = 0;
@@ -596,7 +596,7 @@ public:
 };
 
 
-class EDPIMrkRoot : public EDProjectItem 
+class EDPIMrkRoot : public EDProjectItem
 {
 public:
     EDPIMrkRoot();
@@ -608,7 +608,7 @@ public:
     //virtual CExtPopupMenuWnd*	CreatePopupMenu(HWND hWndCmdRecieve) const;
 };
 
-class EDPIMrkFamily : public EDProjectItem 
+class EDPIMrkFamily : public EDProjectItem
 {
 public:
     EDPIMrkFamily(const DDisc::Family& rFamily);
@@ -621,7 +621,7 @@ private:
     const DDisc::Family& m_rFamily;
 };
 
-class EDPIMrkItem : public EDPICSNode 
+class EDPIMrkItem : public EDPICSNode
 {
 public:
     EDPIMrkItem(QString strFamilyName, const MetaInfo& rMetaInfo);

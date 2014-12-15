@@ -51,7 +51,7 @@ class U2CORE_EXPORT Plugin : public QObject {
     Q_OBJECT
 public:
     Plugin(const QString & _name, const QString& _desc, const bool _isFree = true, PluginState _state = PluginState_Loaded);
-    
+
     //plugin is deallocated by plugin_support service when it's removed or on application shutting down
     virtual ~Plugin(){}
 
@@ -69,7 +69,7 @@ public:
     void acceptLicense();
 
     // returns list of services provided by the plugin
-    // after plugin is loaded all services from this list are automatically registered 
+    // after plugin is loaded all services from this list are automatically registered
     const QList<Service*>& getServices() const {return services;}
 
 protected:

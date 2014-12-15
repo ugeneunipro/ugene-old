@@ -35,23 +35,23 @@ class ImportQualityScoresConfig {
 public:
     ImportQualityScoresConfig() : type(DNAQualityType_Sanger), format(DNAQuality::QUAL_FORMAT), createNewDocument(false) {}
     QString             fileName;
-    DNAQualityType      type; 
+    DNAQualityType      type;
     DNAQualityFormat    format;
     bool                createNewDocument;
     QString             dstFileName;
-    
+
 };
 
- 
+
 class ReadQualityScoresTask : public Task {
     Q_OBJECT
 public:
     ReadQualityScoresTask(const QString& fileName, DNAQualityType t, const DNAQualityFormat& f);
 
     void run();
-    
+
     const QMap<QString,DNAQuality>& getResult() const { return result; }
-    
+
 private:
     void recordQuality( int headerCounter );
     bool checkRawData();
@@ -82,4 +82,4 @@ private:
 
 } // namespace U2
 
-#endif 
+#endif

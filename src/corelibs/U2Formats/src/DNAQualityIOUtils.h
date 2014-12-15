@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -30,11 +30,11 @@ namespace U2 {
 class U2FORMATS_EXPORT DNAQualityIOUtils : public QObject {
     Q_OBJECT
 public:
-    
-    static void writeDNAQuality(const U2SequenceObject* seqObj, const QString& fileName, 
+
+    static void writeDNAQuality(const U2SequenceObject* seqObj, const QString& fileName,
         bool appendData, bool decode, U2OpStatus& op);
-    
-    static void writeDNAQuality(const QString& seqName, const DNAQuality& quality, 
+
+    static void writeDNAQuality(const QString& seqName, const DNAQuality& quality,
         const QString& filePath, bool appendData, bool decode, U2OpStatus& op);
 
 };

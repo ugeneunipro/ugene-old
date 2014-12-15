@@ -35,7 +35,7 @@ class MrBayesWidget : public CreatePhyTreeWidget, Ui_MrBayesDialog{
 
 public:
     MrBayesWidget(QWidget* parent, const MAlignment& ma);
-    virtual void fillSettings(CreatePhyTreeSettings& settings); 
+    virtual void fillSettings(CreatePhyTreeSettings& settings);
     virtual void storeSettings();
     virtual void restoreDefault();
     int getRandomSeed();

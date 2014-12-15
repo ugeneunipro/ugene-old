@@ -32,7 +32,7 @@
 
 namespace U2 {
 
-/* TRANSLATOR U2::IOAdapter */    
+/* TRANSLATOR U2::IOAdapter */
 
 PlainTextFormat::PlainTextFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags_W1, QStringList("txt")) {
     formatName = tr("Plain text");
@@ -75,9 +75,9 @@ Document* PlainTextFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, c
         }
         os.setProgress(io->getProgress());
     }
-    
+
     CHECK_OP(os, NULL);
-    
+
     //todo: check file-readonly status?
 
     QVariantMap hints;

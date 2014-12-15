@@ -83,17 +83,17 @@ public:
     virtual void setCenterPos(qint64 pos);
 
     qint64 getSequenceLength() const {return seqLen;}
-    
+
     virtual void addUpdateFlags(GSLV_UpdateFlags newFlags) {lastUpdateFlags|=newFlags;}
-       
+
     virtual void clearUpdateFlags() {lastUpdateFlags = 0;}
 
     GSLV_UpdateFlags getUpdateFlags() const {return lastUpdateFlags;}
 
-    virtual void setFrameView(GSequenceLineView* frameView); 
+    virtual void setFrameView(GSequenceLineView* frameView);
 
     virtual GSequenceLineView* getFrameView() const {return frameView;}
-    
+
     virtual void setCoherentRangeView(GSequenceLineView* rangeView);
 
     virtual GSequenceLineView* getConherentRangeView() const {return coherentRangeView;}
@@ -108,7 +108,7 @@ public:
     virtual QAction* getZoomToSelectionAction() const {return coherentRangeView == NULL ? NULL : coherentRangeView->getZoomToSelectionAction();}
 
     virtual QAction* getZoomToSequenceAction() const {return coherentRangeView == NULL ? NULL : coherentRangeView->getZoomToSequenceAction();}
-    
+
     virtual U2SequenceObject* getSequenceObject() const;
 
     virtual void buildPopupMenu(QMenu& m){ Q_UNUSED(m); }
@@ -131,7 +131,7 @@ protected:
     void focusInEvent(QFocusEvent* fe);
     void focusOutEvent(QFocusEvent* fe);
     void keyPressEvent(QKeyEvent *e);
-    
+
     virtual void onVisibleRangeChanged(bool signal = true);
 
 public slots:
@@ -143,7 +143,7 @@ protected slots:
     virtual void sl_sequenceChanged();
     void sl_onFrameRangeChanged();
     void sl_onCoherentRangeViewRangeChanged();
-    void completeUpdate(); 
+    void completeUpdate();
 
 protected:
     QPoint toRenderAreaPoint(const QPoint& p);
@@ -189,7 +189,7 @@ public:
 
 protected:
     virtual void paintEvent(QPaintEvent *e);
-    
+
     virtual void drawAll(QPaintDevice* pd) = 0;
     void drawFrame(QPainter& p);
     virtual void drawFocus(QPainter& p);
@@ -204,7 +204,7 @@ protected:
     QFont   sequenceFont;
     QFont   smallSequenceFont;
     QFont   rulerFont;
-    
+
     int     charWidth;
     int     smallCharWidth;
 

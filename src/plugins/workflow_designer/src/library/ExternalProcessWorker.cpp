@@ -415,7 +415,7 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
     }
 
     DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(OUTPUT_PORT_TYPE + cfg->name);
-    
+
     if (seqsForMergingBySlotId.isEmpty()) {
         output->put(Message(dataType, v));
     } else if (1 == seqsForMergingBySlotId.size()) {
@@ -603,7 +603,7 @@ QString ExternalProcessWorkerPrompter::composeRichDoc() {
     ExternalProcessConfig *cfg = WorkflowEnv::getExternalCfgRegistry()->getConfigByName(target->getProto()->getId());
     assert(cfg);
     QString doc = cfg->templateDescription;
-    
+
     foreach(const DataConfig& dataCfg, cfg->inputs) {
         QRegExp param("\\$" + dataCfg.attrName + /*"[,:;\s\.\-]"*/"\\W|$");
         if(doc.contains(param)) {

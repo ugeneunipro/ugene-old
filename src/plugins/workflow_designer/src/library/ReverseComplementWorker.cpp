@@ -30,11 +30,11 @@ enum OpType {
 };
 
 void RCWorkerFactory::init() {
-    QList<PortDescriptor*> p; 
+    QList<PortDescriptor*> p;
     QList<Attribute*> attrs;
-    Descriptor ind(BasePorts::IN_SEQ_PORT_ID(), RCWorker::tr("Input sequence"), 
+    Descriptor ind(BasePorts::IN_SEQ_PORT_ID(), RCWorker::tr("Input sequence"),
         RCWorker::tr("The sequence to be complemented"));
-    Descriptor outd(BasePorts::OUT_SEQ_PORT_ID(), RCWorker::tr("Output sequence"), 
+    Descriptor outd(BasePorts::OUT_SEQ_PORT_ID(), RCWorker::tr("Output sequence"),
         RCWorker::tr("Reverse-complement sequence"));
 
     QMap<Descriptor, DataTypePtr> inM;
@@ -48,12 +48,12 @@ void RCWorkerFactory::init() {
         RCWorker::tr("Select what to do with sequence."));
     attrs << new Attribute(opType, BaseTypes::STRING_TYPE(),true,"reverse-complement");
 
-    Descriptor desc(ACTOR_ID, RCWorker::tr("Reverse Complement"), 
+    Descriptor desc(ACTOR_ID, RCWorker::tr("Reverse Complement"),
         RCWorker::tr("Converts input sequence into its reverse, complement or reverse-complement counterpart")
         );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, attrs);
 
-    QMap<QString, PropertyDelegate*> delegates; 
+    QMap<QString, PropertyDelegate*> delegates;
     QVariantMap m;
     m["Reverse Complement"] = "reverse-complement";
     m["Reverse"] = "nocompl";
@@ -105,7 +105,7 @@ Task* RCWorker::tick() {
         }
 
         QString type = actor->getParameter(OP_TYPE)->getAttributeValue<QString>(context);
-        
+
         DNATranslation *complTT;
         if(!seq.alphabet->isNucleic()) {
             coreLog.info(tr("Can't complement amino sequence"));

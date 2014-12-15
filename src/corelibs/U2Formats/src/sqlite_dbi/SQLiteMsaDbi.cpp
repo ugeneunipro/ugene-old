@@ -58,7 +58,7 @@ void SQLiteMsaDbi::initSqlSchema(U2OpStatus& os) {
     SQLiteQuery("CREATE INDEX MsaRow_msa_rowId ON MsaRow(msa, rowId)", db, os).execute();
     SQLiteQuery("CREATE INDEX MsaRow_length ON MsaRow(length)", db, os).execute();
 
-     // Gap info for a MSA row: 
+     // Gap info for a MSA row:
      //   msa       - msa object id
      //   rowId     - id of the row in the msa
      //   gapStart  - start of the gap, the coordinate is relative to the gstart coordinate of the row
@@ -460,7 +460,7 @@ void SQLiteMsaDbi::removeRows(const U2DataId& msaId, const QList<qint64>& rowIds
     SAFE_POINT_OP(os, );
 }
 
-void SQLiteMsaDbi::removeMsaRowAndGaps(const U2DataId& msaId, qint64 rowId, bool removeSequence, U2OpStatus& os) {    
+void SQLiteMsaDbi::removeMsaRowAndGaps(const U2DataId& msaId, qint64 rowId, bool removeSequence, U2OpStatus& os) {
     U2DataId sequenceId = getSequenceIdByRowId(msaId, rowId, os);
     CHECK_OP(os, );
 

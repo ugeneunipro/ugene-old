@@ -44,7 +44,7 @@ public:
 private:
     GenomeAssemblyTaskSettings settings;
     GenomeAssemblyTask* assemblyTask;
-}; 
+};
 
 } // namespace
 #endif

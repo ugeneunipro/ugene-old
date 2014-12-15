@@ -158,7 +158,7 @@ void GTest_PhyML::prepare() {
     }
     assert( obj != NULL);
 
-    
+
     settings.algorithmId = PhyMLSupport::PhyMlRegistryId;
 
     task = new PhyTreeGeneratorLauncherTask(input->getMAlignment(), settings);
@@ -174,7 +174,7 @@ Task::ReportResult GTest_PhyML::report() {
     }
     if (!task->hasError()) {
         const PhyTree computedTree = task->getResult();
-        const PhyTree& treeFromDoc = treeObjFromDoc->getTree(); 
+        const PhyTree& treeFromDoc = treeObjFromDoc->getTree();
         bool same = PhyTreeObject::treesAreAlike(computedTree, treeFromDoc);
         if(!same){
             if(negative.isEmpty()) {

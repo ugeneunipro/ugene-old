@@ -138,7 +138,7 @@ void DistanceMatrixMSAProfileDialog::accept() {
 
 //////////////////////////////////////////////////////////////////////////
 // task
-DistanceMatrixMSAProfileTask::DistanceMatrixMSAProfileTask(const DistanceMatrixMSAProfileTaskSettings& _s) 
+DistanceMatrixMSAProfileTask::DistanceMatrixMSAProfileTask(const DistanceMatrixMSAProfileTaskSettings& _s)
 : Task(tr("Generate distance matrix"), TaskFlags_NR_FOSE_COSC), s(_s)
 {
     setVerboseLogMode(true);
@@ -158,7 +158,7 @@ void DistanceMatrixMSAProfileTask::prepare() {
     addSubTask(algo);
 }
 
-QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){ 
+QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
     MSADistanceAlgorithm* algo = qobject_cast<MSADistanceAlgorithm*>(subTask);
     QList<Task*> res;
     if (algo != NULL) {
@@ -190,7 +190,7 @@ QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
             resultText+="<br><br>\n";
 
             bool isSimilarity = algo->isSimilarityMeasure();
-            
+
             createDistanceTable(algo, s.ma.getRows());
 
             resultText+="<br><br>\n";
@@ -251,7 +251,7 @@ QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
                 TextUtils::wrapForCSV(name);
                 resultText+=name;
                 for (int j=0; j < s.ma.getNumRows(); j++) {
-                    int val = qRound(algo->getSimilarity(i, j) * (s.usePercents ? (100.0 / s.ma.getLength()) : 1.0));                    
+                    int val = qRound(algo->getSimilarity(i, j) * (s.usePercents ? (100.0 / s.ma.getLength()) : 1.0));
                     resultText+= "," + QString::number(val) + (s.usePercents ? "%" : "");
                 }
                 resultText+="\n";
@@ -318,7 +318,7 @@ void DistanceMatrixMSAProfileTask::createDistanceTable(MSADistanceAlgorithm* alg
                 } else if ((hotness  > 10 && isSimilarity) || (hotness < 90 && !isSimilarity)) {
                     colorStr = " bgcolor=" + colors[4];
                 }
-            }         
+            }
             resultText+="<td"+colorStr+">" + QString::number(val) + (s.usePercents ? "%" : "") + "</td>";
         }
         resultText+="</tr>\n";

@@ -66,7 +66,7 @@ private:
 
 typedef QList<AsnNode*> AsnNodeList;
 
-class U2FORMATS_EXPORT  ASNFormat : public DocumentFormat 
+class U2FORMATS_EXPORT  ASNFormat : public DocumentFormat
 {
     Q_OBJECT
 public:
@@ -80,7 +80,7 @@ protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
 public:
-    class U2FORMATS_EXPORT AsnParser 
+    class U2FORMATS_EXPORT AsnParser
     {
         static const char* filetypeTag;
 
@@ -92,7 +92,7 @@ public:
         };
 
         // Data
-        IOAdapter *io;        
+        IOAdapter *io;
         U2OpStatus& ts;
         QByteArray buffer;
         char prev;
@@ -122,8 +122,8 @@ public:
 
 
     public:
-        AsnParser(IOAdapter* _io, U2OpStatus& _ts) : 
-          io(_io), ts(_ts), prev(' '), curElementKind(ASN_NO_KIND), 
+        AsnParser(IOAdapter* _io, U2OpStatus& _ts) :
+          io(_io), ts(_ts), prev(' '), curElementKind(ASN_NO_KIND),
           validFile(false), haveErrors(false), insideRoot(false), fileAtEnd(false) {}
         ~AsnParser() {}
         AsnNode* loadAsnTree();
@@ -143,7 +143,7 @@ private:
         AsnBaseException( const QString& what ) : msg( what ){}
     };
 
-    struct AsnReadError : AsnBaseException 
+    struct AsnReadError : AsnBaseException
     {
         AsnReadError() : AsnBaseException(ASNFormat::tr("read error occurred")) { }
     };

@@ -52,7 +52,7 @@ public:
 
 class U2CORE_EXPORT LoadDocumentTaskConfig {
 public:
-    LoadDocumentTaskConfig(bool _createDoc = false, const GObjectReference& _ref = GObjectReference(), 
+    LoadDocumentTaskConfig(bool _createDoc = false, const GObjectReference& _ref = GObjectReference(),
         LDTObjectFactory* _f = NULL)
         : createDoc(_createDoc), checkObjRef(_ref), objFactory(_f){}
 
@@ -65,22 +65,22 @@ class U2CORE_EXPORT LoadUnloadedDocumentTask : public DocumentProviderTask {
     Q_OBJECT
 public:
     LoadUnloadedDocumentTask(Document* d, const LoadDocumentTaskConfig& config = LoadDocumentTaskConfig());
-    
+
     virtual void prepare();
     virtual ReportResult report();
-    virtual Document* getDocument(bool mainThread = true); 
+    virtual Document* getDocument(bool mainThread = true);
 
 
     static QString getResourceName(Document* d);
-   
+
     const LoadDocumentTaskConfig& getConfig() const {return config;}
-    
+
     static LoadUnloadedDocumentTask* findActiveLoadingTask(Document* d);
     static bool addLoadingSubtask(Task* t, const LoadDocumentTaskConfig& config);
 
 private:
     void clearResourceUse();
-    
+
     LoadDocumentTask*       loadTask;
     QPointer<Document>      unloadedDoc;
     QString                 resName;
@@ -92,21 +92,21 @@ class U2CORE_EXPORT LoadDocumentTask : public DocumentProviderTask {
 public:
     static LoadDocumentTask * getDefaultLoadDocTask( const GUrl & url );
     static DocumentProviderTask * getCommonLoadDocTask( const GUrl & url );
-    
+
 public:
     LoadDocumentTask(DocumentFormatId format, const GUrl& url,
-                IOAdapterFactory* iof, const QVariantMap& hints = QVariantMap(), 
+                IOAdapterFactory* iof, const QVariantMap& hints = QVariantMap(),
                 const LoadDocumentTaskConfig& config = LoadDocumentTaskConfig());
 
     LoadDocumentTask(DocumentFormat* format, const GUrl& url,
-        IOAdapterFactory* iof, const QVariantMap& hints = QVariantMap(), 
+        IOAdapterFactory* iof, const QVariantMap& hints = QVariantMap(),
         const LoadDocumentTaskConfig& config = LoadDocumentTaskConfig());
 
 
     virtual void run();
     virtual void prepare();
     virtual ReportResult report();
-    
+
     const GUrl& getURL() const {return url;}
     QString getURLString() const;
 
@@ -116,7 +116,7 @@ private:
     int calculateMemory() const;
 
     static void renameObjects(Document* doc, const QStringList& names);
-    
+
 
     DocumentFormat*         format;
     const GUrl              url;

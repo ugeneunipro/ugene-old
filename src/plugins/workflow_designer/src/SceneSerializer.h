@@ -35,9 +35,9 @@ class WorkflowBusItem;
 class SceneSerializer {
 public:
     static void saveItems(const QList<QGraphicsItem*>& items, QDomElement& proj);
-    
+
     static void scene2xml(const WorkflowScene* scene, QDomDocument& xml);
-    static QString xml2scene(const QDomElement& projectElement, WorkflowScene* scene, QMap<ActorId, ActorId>& remapping, 
+    static QString xml2scene(const QDomElement& projectElement, WorkflowScene* scene, QMap<ActorId, ActorId>& remapping,
         bool ignoreErrors = false, bool select = false);
 };
 

@@ -53,7 +53,7 @@ const QString CMDLineCoreOptions::SESSION_DB    = "session-db";
 void CMDLineCoreOptions::initHelp() {
     CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
     assert( NULL != cmdLineRegistry );
-    
+
     CMDLineHelpProvider * helpSection = new CMDLineHelpProvider(
         HELP,
         tr( "Shows help information." ),

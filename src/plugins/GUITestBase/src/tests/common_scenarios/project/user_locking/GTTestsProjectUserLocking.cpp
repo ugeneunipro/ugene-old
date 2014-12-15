@@ -110,7 +110,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTGlobals::sleep(1000);
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0002) 
+GUI_TEST_CLASS_DEFINITION(test_0002)
 {
 #define GT_CLASS_NAME "GUITest_common_scenarios_project_user_locking_test_0002::CreateAnnnotationDialogComboBoxChecker"
 #define GT_METHOD_NAME "run"

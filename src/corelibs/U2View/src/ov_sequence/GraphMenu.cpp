@@ -41,7 +41,7 @@ GraphAction::GraphAction(GSequenceGraphFactory* _factory)
     : QAction(_factory->getGraphName(), NULL),
       factory(_factory),
       view(NULL),
-      isBookmarkUpdate(false) 
+      isBookmarkUpdate(false)
 {
     setObjectName(_factory->getGraphName());
     connect(this, SIGNAL(triggered()), SLOT(sl_handleGraphAction()));

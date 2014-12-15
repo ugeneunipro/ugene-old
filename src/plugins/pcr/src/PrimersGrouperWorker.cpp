@@ -118,7 +118,7 @@ void PrimersGrouperWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
     {
         Descriptor id(BasePorts::IN_SEQ_PORT_ID(),
-            PrimersGrouperWorker::tr("Primer pairs"), 
+            PrimersGrouperWorker::tr("Primer pairs"),
             PrimersGrouperWorker::tr("Pairs of primers, which must be grouped."));
 
         QMap<Descriptor, DataTypePtr> inM;
@@ -128,8 +128,8 @@ void PrimersGrouperWorkerFactory::init() {
 
     }
 
-    Descriptor desc( PrimersGrouperWorkerFactory::ACTOR_ID, 
-        PrimersGrouperWorker::tr("Group Primer Pairs"), 
+    Descriptor desc( PrimersGrouperWorkerFactory::ACTOR_ID,
+        PrimersGrouperWorker::tr("Group Primer Pairs"),
         PrimersGrouperWorker::tr("Select groups of primer pairs, which can be simultaneously used in one reaction tube."
         "<p>The primers must be supplied in the following order: pair1_direct_primer, pair1_reverse_primer, "
         "pair2_direct_primer, pair2_reverse_primer, etc.") );
@@ -241,7 +241,7 @@ void PrimerGrouperTask::generateReport(const QList<QList<int> >& correctPrimersG
     report += "<body>\n";
 
     report += "<table bordercolor=\"gray\" border=\"1\">";
-    
+
     report += "<tr>";
     report += createColumn(LocalWorkflow::PrimersGrouperWorker::tr("Group name"));
     report += createColumn(LocalWorkflow::PrimersGrouperWorker::tr("Forward primer name"));

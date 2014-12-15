@@ -20,7 +20,7 @@ class ColorSchemaDialogController : public QDialog, public Ui_ColorSchemaDialog{
 public:
     ColorSchemaDialogController(QMap<char, QColor>& colors);
     ~ColorSchemaDialogController();
-    int adjustAlphabetColors(); 
+    int adjustAlphabetColors();
 protected:
     void mouseReleaseEvent(QMouseEvent *);
     void paintEvent(QPaintEvent*);

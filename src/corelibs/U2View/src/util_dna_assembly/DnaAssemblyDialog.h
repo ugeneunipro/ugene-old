@@ -51,7 +51,7 @@ public:
     ShortReadSet::LibraryType getType() const;
     ShortReadSet::MateOrder getOrder() const;
     void setLibraryType(const QString& libraryType);
-    
+
 
     static void addItemToTable(ShortReadsTableItem* item, QTreeWidget* treeWidget);
 };

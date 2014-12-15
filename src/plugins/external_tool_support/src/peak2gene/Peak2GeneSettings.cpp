@@ -49,7 +49,7 @@ void Peak2GeneSettings::initDefault(){
 QStringList Peak2GeneSettings::getArguments( const QString& treatFilePath){
     QString entrezPath = "";
     //init data path
-    
+
     U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
     if (dpr){
         U2DataPath* dp = dpr->getDataPathByName(ENTREZ_TRANSLATION_DATA_NAME);
@@ -69,7 +69,7 @@ QStringList Peak2GeneSettings::getArguments( const QString& treatFilePath){
     result << "--op=" + outpos;
 
     if (symbol){
-        result << "--symbol";    
+        result << "--symbol";
     }
 
     result << "--distance=" + QByteArray::number(distance);

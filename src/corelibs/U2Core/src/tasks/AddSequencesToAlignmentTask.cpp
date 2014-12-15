@@ -46,7 +46,7 @@ AddSequencesToAlignmentTask::AddSequencesToAlignmentTask( MAlignmentObject* obj,
 
 void AddSequencesToAlignmentTask::prepare()
 {
- 
+
     if (maObj.isNull()) {
         stateInfo.setError(tr("Object is empty."));
         return;
@@ -56,12 +56,12 @@ void AddSequencesToAlignmentTask::prepare()
         stateInfo.setError(tr("Object is locked for modifications."));
         return;
     }
-    
+
     stateLock = new StateLock("Adding_files_to_alignment", StateLockFlag_LiveLock);
     maObj->lockState(stateLock);
 
     foreach( const QString& fileWithSequencesUrl, urls) {
-        QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(fileWithSequencesUrl);    
+        QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(fileWithSequencesUrl);
         if (!detectedFormats.isEmpty()) {
             IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
             DocumentFormat* format = detectedFormats.first().format;

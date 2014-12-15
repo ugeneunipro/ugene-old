@@ -113,7 +113,7 @@ void SQLiteSequenceDbi::createSequenceObject(U2Sequence& sequence, const QString
     SQLiteTransaction t(db, os);
     dbi->getSQLiteObjectDbi()->createObject(sequence, folder, rank, os);
     CHECK_OP(os, );
-    
+
     static const QString queryString("INSERT INTO Sequence(object, length, alphabet, circular) VALUES(?1, ?2, ?3, ?4)");
     QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
     CHECK_OP(os, );

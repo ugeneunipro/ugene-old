@@ -79,7 +79,7 @@ public:
     virtual U2AssemblyDbi* getAssemblyDbi() {return NULL;}
 
     virtual U2AttributeDbi* getAttributeDbi()  {return NULL;}
-    
+
     virtual U2ObjectDbi* getObjectDbi()  {return NULL;}
 
     virtual U2ObjectRelationsDbi* getObjectRelationsDbi() {return NULL;}
@@ -255,7 +255,7 @@ public:
     virtual void removeObjectAttributes(const U2DataId&, U2OpStatus& os)  {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
     }
-        
+
     virtual void createIntegerAttribute(U2IntegerAttribute&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
     }

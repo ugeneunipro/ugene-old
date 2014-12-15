@@ -40,10 +40,10 @@ AlignmentLogoRenderArea::AlignmentLogoRenderArea(const AlignmentLogoSettings& _s
     layout->addWidget(this);
     p->setLayout(layout);
 
-    
+
 
     bases<<'A'<<'G'<<'C'<<'T'<<'U';
-    
+
 /*aminoacids<<'A'<<'C'<<'D'<<'E'<<'F'<<'G'<<'H'
         <<'I'<<'K'<<'L'<<'M'<<'N'<<'P'<<'Q'<<'R'
         <<'S'<<'T'<<'V'<<'W'<<'Y';*/
@@ -114,12 +114,12 @@ void AlignmentLogoRenderArea::paintEvent(QPaintEvent* e) {
         int yLevel = height();
         foreach(char ch, charsAt) {
             QPointF baseline(pos * (bitWidth + SPACER), yLevel);
-            int charHeight = heights[(int)uchar(ch)][pos] * bitHeight;            
-            QColor charColor = settings.colorScheme[(int)uchar(ch)];            
+            int charHeight = heights[(int)uchar(ch)][pos] * bitHeight;
+            QColor charColor = settings.colorScheme[(int)uchar(ch)];
             AlignmentLogoItem* logoItem = new AlignmentLogoItem(ch, baseline, bitWidth, charHeight, charFont, charColor);
             logoItem->paint(&p, NULL, this);
             yLevel -= charHeight + SPACER;
-        }        
+        }
     }
 
     QWidget::paintEvent(e);
@@ -232,7 +232,7 @@ void AlignmentLogoItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 
     qreal sx = qMax(charWidth / bound.width(), eps);
     qreal sy = qMax(charHeight / bound.height(), eps);
-        
+
     painter->scale(sx, sy);
 
     //map baseline position to scaled coordinates

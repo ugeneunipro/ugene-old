@@ -42,19 +42,19 @@ public:
     static const QString LOCAL_DATA_DIR_PREFIX;
     static const QString CONFIG_FILE_PATH;
     static const QString WORKFLOW_SAMPLES_DIR_PREFIX;
-    
+
 public:
     SIMPLE_XML_TEST_BODY_WITH_FACTORY( GTest_RunCMDLine, "run-cmdline" );
     virtual void prepare();
     virtual ReportResult report();
     virtual void cleanup();
-    
+
 private:
     void setUgeneclPath();
     void setArgs( const QDomElement & owner );
     QString getVal( const QString & val );
     QString splitVal(const QString & val, QString prefValue, const QString & prefix, bool isTmp);
-    
+
 private:
     QString expectedMessage;
     QString unexpectedMessage;
@@ -62,7 +62,7 @@ private:
     QProcess *  proc;
     QString     ugeneclPath;
     QStringList tmpFiles;
-    
+
 }; // GTest_RunCMDLine
 
 class CMDLineTests {

@@ -59,7 +59,7 @@ void ExpertDiscoveryScoreGraphAlgorithm::calculate(
 {
     assert(windowData !=NULL);
 
-    
+
     //QByteArray sequence = sequenceObject->getWholeSequenceData();
 
     int windowSize = windowData->window;
@@ -199,7 +199,7 @@ void ExpertDiscoveryRecognitionErrorGraphWidget::drawAll(){
     if(redraw){
         pixmap.fill(Qt::transparent);
         QPainter p(&pixmap);
-        
+
         if(errorsTask.isFinished()){
             QPixmap graphPixmap = QPixmap(w, h);
             graphPixmap.fill(Qt::white);
@@ -233,7 +233,7 @@ void ExpertDiscoveryRecognitionErrorGraphWidget::drawGraph(QPainter& p){
 
         double pixelStep = double(w)/stepsNum;
         double ratioY = double(errorsInfo.maxErrorVal)/(h);
-        
+
         int hPixels = 0;
         if(stepsNum!=0){
             hPixels = qint64(double(errorsInfo.errorFirstType[0])/ratioY +0.5);

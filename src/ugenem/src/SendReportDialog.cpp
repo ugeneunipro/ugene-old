@@ -102,7 +102,7 @@ void ReportSender::parse(const QString &htmlReport) {
         report += "Task tree:\n";
         report += list.takeFirst() + "\n";
 
-#if defined (Q_OS_WIN) 
+#if defined (Q_OS_WIN)
         report += list.takeLast();
 #endif
     } else {
@@ -163,12 +163,12 @@ void ReportSender::sl_replyFinished(QNetworkReply *) {
     loop.exit();
 }
 
-SendReportDialog::SendReportDialog(const QString &report, QDialog *d): 
+SendReportDialog::SendReportDialog(const QString &report, QDialog *d):
 QDialog(d) {
     setupUi(this);
     sender.parse(report);
     errorEdit->setText(sender.getReport());
-    connect(additionalInfoTextEdit,SIGNAL(textChanged()), 
+    connect(additionalInfoTextEdit,SIGNAL(textChanged()),
 SLOT(sl_onMaximumMessageSizeReached()));
     connect(sendButton, SIGNAL(clicked()), SLOT(sl_onOkClicked()));
     connect(cancelButton, SIGNAL(clicked()), SLOT(sl_onCancelClicked()));

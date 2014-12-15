@@ -32,7 +32,7 @@ namespace U2 {
 
 class SeqPosSettings {
 public:
-    
+
     static const QString MOTIF_DB_CISTROME;
     static const QString MOTIF_DB_PDM;
     static const QString MOTIF_DB_Y1H;
@@ -49,7 +49,7 @@ public:
     QString     outName;
     qint64      regWidth;
     float       pVal;
-    
+
 public:
      QStringList getArguments(const QString& annFilePath);
 

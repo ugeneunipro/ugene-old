@@ -29,10 +29,10 @@
 
 namespace U2 {
 
-BranchSettingsDialog::BranchSettingsDialog(QWidget *parent, const BranchSettings &branchSettings) : 
-    QDialog(parent), 
+BranchSettingsDialog::BranchSettingsDialog(QWidget *parent, const BranchSettings &branchSettings) :
+    QDialog(parent),
     settings(branchSettings),
-    changedSettings(branchSettings) 
+    changedSettings(branchSettings)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "4227571");

@@ -42,7 +42,7 @@ extern "C" Q_DECL_EXPORT Plugin * U2_PLUGIN_INIT_FUNC() {
 }
 
 ExpertDiscoveryPlugin::ExpertDiscoveryPlugin() : Plugin( tr("Expert Discovery"), tr("Expert Discovery plugin") ),viewCtx(NULL), delay(false) {
-   
+
     connect( AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), SLOT(sl_initExpertDiscoveryViewCtx()));
 
     windowId = 0;
@@ -70,20 +70,20 @@ void ExpertDiscoveryPlugin::sl_initExpertDiscoveryViewCtx() {
 
 void ExpertDiscoveryPlugin::sl_expertDiscoveryView(){
 
- 
+
     //create project here
     if (!AppContext::getProject()) {
         Task *tasks = new Task("Creating empty project", TaskFlag_NoRun);
         Task* t = AppContext::getProjectLoader()->createNewProjectTask();
         connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_expertDiscoveryViewDelay() ) );
-        tasks->addSubTask(t);        
+        tasks->addSubTask(t);
         AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
         delay = true;
     }else{
         delay = false;
         sl_expertDiscoveryViewDelay();
     }
- 
+
 }
 
 void ExpertDiscoveryPlugin::sl_expertDiscoveryViewDelay(){
@@ -108,7 +108,7 @@ void ExpertDiscoveryPlugin::sl_expertDiscoveryViewDelay(){
     }else{
         AppContext::getMainWindow()->getMDIManager()->activateWindow(mdiWindow);
     }
-    
+
 }
 
 const GObjectViewFactoryId ExpertDiscoveryViewFactory::ID("ED");
@@ -120,7 +120,7 @@ ExpertDiscoveryViewFactory::ExpertDiscoveryViewFactory(GObjectViewFactoryId id, 
 
 bool ExpertDiscoveryViewFactory::canCreateView(const MultiGSelection& multiSelection) {
     //return true if
-    
+
     //0. All the documents in the selection are from ExperDiscoveryData
     //1. selection has loaded of unloaded DNA sequence object
     //2. selection has any object with SEQUENCE relation to DNA sequence object that is in the project
@@ -138,7 +138,7 @@ bool ExpertDiscoveryViewFactory::canCreateView(const MultiGSelection& multiSelec
     }
 
     //2.
-    QList<GObject*> objectsWithSeqRelation = GObjectUtils::selectObjectsWithRelation(selectedObjects, GObjectTypes::SEQUENCE, 
+    QList<GObject*> objectsWithSeqRelation = GObjectUtils::selectObjectsWithRelation(selectedObjects, GObjectTypes::SEQUENCE,
         ObjectRole_Sequence, UOF_LoadedAndUnloaded, true);
     if (!objectsWithSeqRelation.isEmpty()) {
         return true;
@@ -152,8 +152,8 @@ bool ExpertDiscoveryViewFactory::canCreateView(const MultiGSelection& multiSelec
     foreach(Document* doc, ds->getSelectedDocuments()) {
         if (!doc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).isEmpty()) {
             return true;
-        }    
-        objectsWithSeqRelation = GObjectUtils::selectObjectsWithRelation(doc->getObjects(), 
+        }
+        objectsWithSeqRelation = GObjectUtils::selectObjectsWithRelation(doc->getObjects(),
             GObjectTypes::SEQUENCE, ObjectRole_Sequence, UOF_LoadedAndUnloaded, true);
 
         if (!objectsWithSeqRelation.isEmpty()) {
@@ -170,7 +170,7 @@ Task* ExpertDiscoveryViewFactory::createViewTask(const MultiGSelection& multiSel
     QList<GObject*> objectsToOpen = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &multiSelection, UOF_LoadedAndUnloaded);
 
     QList<GObject*> selectedObjects = SelectionUtils::findObjects("", &multiSelection, UOF_LoadedAndUnloaded);
-    QList<GObject*> objectsWithSequenceRelation = GObjectUtils::selectObjectsWithRelation(selectedObjects, 
+    QList<GObject*> objectsWithSequenceRelation = GObjectUtils::selectObjectsWithRelation(selectedObjects,
         GObjectTypes::SEQUENCE, ObjectRole_Sequence, UOF_LoadedAndUnloaded, true);
 
     objectsToOpen.append(objectsWithSequenceRelation);
@@ -179,7 +179,7 @@ Task* ExpertDiscoveryViewFactory::createViewTask(const MultiGSelection& multiSel
     if (ds != NULL) {
         foreach(Document* doc, ds->getSelectedDocuments()) {
             objectsToOpen.append(doc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded));
-            objectsToOpen.append(GObjectUtils::selectObjectsWithRelation(doc->getObjects(), GObjectTypes::SEQUENCE, 
+            objectsToOpen.append(GObjectUtils::selectObjectsWithRelation(doc->getObjects(), GObjectTypes::SEQUENCE,
                 ObjectRole_Sequence, UOF_LoadedAndUnloaded, true));
         }
     }
@@ -240,12 +240,12 @@ bool ExpertDiscoveryViewFactory::checkSelection(const MultiGSelection& multiSele
 //         //check that document is in selection
 //         QList<Document*> selectedDocs = SelectionUtils::getSelectedDocs(multiSelection);
 //         bool docIsSelected = selectedDocs.contains(doc);
-// 
+//
 //         //check that object is in selection
 //         QList<GObject*> selectedObjects = SelectionUtils::getSelectedObjects(multiSelection);
 //         GObject* obj = doc->findGObjectByName(ref.objName);
 //         bool objIsSelected = obj!=NULL && selectedObjects.contains(obj);
-// 
+//
 //         //check that object associated with sequence object is in selection
 //         bool refIsSelected = false;
 //         foreach (const GObject* selObject, selectedObjects) {
@@ -259,7 +259,7 @@ bool ExpertDiscoveryViewFactory::checkSelection(const MultiGSelection& multiSele
 //             return false;
 //         }
 //     }
-// 
+//
 //     return true;
 // }
 

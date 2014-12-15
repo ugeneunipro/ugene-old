@@ -54,7 +54,7 @@ class U2PRIVATE_EXPORT PluginSupportImpl : public PluginSupport {
     Q_OBJECT
 
     friend class AddPluginTask;
-    
+
 public:
     PluginSupportImpl(bool testingMode = false);
     ~PluginSupportImpl();
@@ -79,14 +79,14 @@ public:
     virtual bool isAllPluginsLoaded() const;
 
     bool allLoaded;
-    
+
 private slots:
     void sl_registerServices();
 
 protected:
-    void registerPlugin(PluginRef* ref); 
+    void registerPlugin(PluginRef* ref);
     QString getPluginFileURL(Plugin* p) const;
-    
+
     void updateSavedState(PluginRef* ref);
     static QSet<QString> getPluginPaths();
 
@@ -103,7 +103,7 @@ class AddPluginTask : public Task {
 public:
     AddPluginTask(PluginSupportImpl* ps, const PluginDesc& desc);
     ReportResult report();
-    
+
 
 private:
     PluginSupportImpl*  ps;
@@ -148,4 +148,4 @@ private:
 
 }//namespace
 
-#endif 
+#endif

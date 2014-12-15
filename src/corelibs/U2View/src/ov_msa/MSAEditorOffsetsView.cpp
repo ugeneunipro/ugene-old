@@ -55,12 +55,12 @@ MSAEditorOffsetsViewController::MSAEditorOffsetsViewController(QObject* p, MSAEd
 
     connect(seqArea, SIGNAL(si_startChanged(const QPoint&,const QPoint&)), SLOT(sl_startChanged(const QPoint&,const QPoint&)));
     connect(editor, SIGNAL(si_fontChanged(const QFont&)), SLOT(sl_fontChanged()));
-    
-    connect(mobj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), 
+
+    connect(mobj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
         SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
-    
+
     sa->installEventFilter(this);
-    
+
     Settings* s = AppContext::getSettings();
     bool showOffsets = s->getValue(SETTINGS_ROOT + SETTINGS_SHOW_OFFSETS, true).toBool();
 
@@ -78,7 +78,7 @@ bool MSAEditorOffsetsViewController::eventFilter(QObject* o, QEvent* e) {
     if (o == seqArea) {
         if (e->type() == QEvent::Resize || e->type() == QEvent::Show) {
             updateOffsets();
-        } 
+        }
     }
     return false;
 }
@@ -92,7 +92,7 @@ void MSAEditorOffsetsViewController::sl_showOffsets(bool show) {
 void MSAEditorOffsetsViewController::updateOffsets() {
     bool enableOffsets = editor->getAlignmentLen() < MIN_LENGTH_TO_SHOW_OFFSETS;
     viewAction->setEnabled(enableOffsets);
-   
+
     if (lw->parentWidget()!=NULL) {
         bool vis = viewAction->isChecked() & enableOffsets;
         lw->setVisible(vis);
@@ -103,7 +103,7 @@ void MSAEditorOffsetsViewController::updateOffsets() {
     rw->updateView();
 }
 
-MSAEditorOffsetsViewWidget::MSAEditorOffsetsViewWidget(MSAEditor *ed, MSAEditorSequenceArea* sa, MSAEditorBaseOffsetCache* c, bool sp) 
+MSAEditorOffsetsViewWidget::MSAEditorOffsetsViewWidget(MSAEditor *ed, MSAEditorSequenceArea* sa, MSAEditorBaseOffsetCache* c, bool sp)
 :seqArea(sa), editor(ed), cache(c), showStartPos(sp), completeRedraw(true)
 {
     cachedView = new QPixmap();
@@ -118,7 +118,7 @@ void MSAEditorOffsetsViewWidget::updateView() {
     int aliLen = cache->getMSAObject()->getLength();
     QFont f = getOffsetsFont();
     QFontMetrics fm(f,this);
-    int aliLenStrLen = int(log10((double)aliLen)) + 1; 
+    int aliLenStrLen = int(log10((double)aliLen)) + 1;
     int w = OFFS_WIDGET_BORDER + fm.width('X') * aliLenStrLen + OFFS_WIDGET_BORDER;
     w += (showStartPos ? fm.width('[') : fm.width(']'));
     setFixedWidth(w);
@@ -155,12 +155,12 @@ void MSAEditorOffsetsViewWidget::drawAll(QPainter& p) {
     QColor dg(0x4A, 0x4A, 0x4A);
     gradient.setColorAt(0.00, lg);
     gradient.setColorAt(0.25, Qt::white);
-    gradient.setColorAt(0.75, Qt::white); 
-    gradient.setColorAt(1.00, lg); 
+    gradient.setColorAt(0.75, Qt::white);
+    gradient.setColorAt(1.00, lg);
     p.fillRect(rect(), QBrush(gradient));
 
     int w = width();
-    
+
     QFont f = getOffsetsFont();
     QFontMetrics fm(f,this);
     p.setFont(f);

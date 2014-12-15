@@ -30,12 +30,12 @@
 
 #include <cassert>
 
-namespace U2 
+namespace U2
 {
 
 class IOAdapter;
 
-class U2FORMATS_EXPORT NEXUSFormat : public DocumentFormat 
+class U2FORMATS_EXPORT NEXUSFormat : public DocumentFormat
 {
     Q_OBJECT
 

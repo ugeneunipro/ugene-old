@@ -39,7 +39,7 @@ class U2REMOTE_EXPORT ProtocolInfo {
 public:
     ProtocolInfo( const QString &id, ProtocolUI *protocolUI,
         RemoteMachineFactory *remoteMachineFactory);
-    
+
     ProtocolUI *getProtocolUI() const;
     RemoteMachineFactory *getRemoteMachineFactory() const;
     // TODO: do we need version?
@@ -52,7 +52,7 @@ private:
     ProtocolUI *protocolUI;
     RemoteMachineFactory *remoteMachineFactory;
     RemoteMachineScanner *scanner;
-    
+
     QString id;
 
 }; // ProtocolInfo

@@ -31,7 +31,7 @@ void EDPMSeqBase::save(QDataStream& ar, SequenceBase& rSeqBase)
 {
     int nSize = rSeqBase.getSize();
     ar << nSize;
-    for (int i=0; i<nSize; i++) 
+    for (int i=0; i<nSize; i++)
         EDPMSequence::save(ar, rSeqBase.getSequence(i));
 }
 
@@ -68,7 +68,7 @@ void EDPMMrkSignal::load(QDataStream& ar, Marking::IntervalSet& rMrk){
         int nTo = 0;
         ar >> nTo;
         rMrk.insert(DDisc::Interval(nFrom, nTo));
-    }	
+    }
 }
 
 
@@ -99,7 +99,7 @@ void EDPMMrkFamily::load(QDataStream& ar, Marking::FamilyMarking& rMrk){
 void EDPMMrk::save(QDataStream& ar, Marking& rMrk)
 {
     Marking::MarkingData& rData = rMrk.marking;
-   
+
     ar << (int)(rData.size());
     Marking::MarkingData::iterator i = rData.begin();
     while (i!=rData.end()) {
@@ -142,7 +142,7 @@ void EDPMMrkBase::load(QDataStream& ar, MarkingBase& rMrkBase, int nSeqCount){
     ar >> nSize;
     for (int i=0; i<nSize; i++) {
         Marking mrk;
-        EDPMMrk::load(ar, mrk);		
+        EDPMMrk::load(ar, mrk);
         rMrkBase.setMarking(i, mrk);
     }
 }
@@ -152,7 +152,7 @@ void EDPMDescInfo::save(QDataStream& ar, MetaInfo& rInfo)
     ar << rInfo.getNo();
     ar << QString::fromStdString(rInfo.getName());
     ar << QString::fromStdString(rInfo.getMethodName());
- 
+
 }
 
 void EDPMDescInfo::load(QDataStream& ar, MetaInfo& rInfo){
@@ -169,7 +169,7 @@ void EDPMDescInfo::load(QDataStream& ar, MetaInfo& rInfo){
 
 void EDPMDescFamily::save(QDataStream& ar, Family& rFamily)
 {
-    
+
     ar << QString::fromStdString(rFamily.getName());
     int nSize = rFamily.getSignalNumber();
     ar << nSize;
@@ -223,7 +223,7 @@ void EDPMCS::save(QDataStream& ar, Signal* pSignal)
     }
     Operation *pOp = pSignal->getSignal();
     EDPMOperation::save(ar, pOp);
-  
+
 }
 
 void EDPMCS::load(QDataStream& ar, Signal* pSignal){
@@ -264,7 +264,7 @@ void EDPMCS::load(QDataStream& ar, Signal* pSignal){
 void EDPMCSFolder::save(QDataStream& ar, CSFolder* pFolder)
 {
     ar << pFolder->getName();
-    
+
     int nFolderNumber = pFolder->getFolderNumber();
     ar << nFolderNumber;
     for (int i=0; i<nFolderNumber; i++)
@@ -273,7 +273,7 @@ void EDPMCSFolder::save(QDataStream& ar, CSFolder* pFolder)
     ar << nSignalNumber;
     for (int i=0; i<nSignalNumber; i++)
         EDPMCS::save(ar, pFolder->getSignal(i));
- 
+
 }
 
 void EDPMCSFolder::load(QDataStream& ar, CSFolder* pFolder){

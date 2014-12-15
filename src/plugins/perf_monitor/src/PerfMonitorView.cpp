@@ -55,7 +55,7 @@ PerfMonitorView::PerfMonitorView() : MWMDIWindow(tr("Application counters")){
     tree->setColumnCount(3);
     tree->setSortingEnabled(true);
     tree->setColumnCount(0);
-    
+
     tree->headerItem()->setText(0, tr("Name"));
     tree->headerItem()->setText(1, tr("Value"));
     tree->headerItem()->setText(2, tr("Scale"));

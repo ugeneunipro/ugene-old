@@ -40,9 +40,9 @@ Logger log("Save workflow image task");
 /********************************
  * ProduceSchemaImageLinkTask
  ********************************/
-ProduceSchemaImageLinkTask::ProduceSchemaImageLinkTask(const QString & schemaName) 
+ProduceSchemaImageLinkTask::ProduceSchemaImageLinkTask(const QString & schemaName)
 : Task(tr("Save workflow image"), TaskFlags_NR_FOSCOE), schema(NULL) {
-    
+
     schemaPath = WorkflowUtils::findPathToSchemaFile( schemaName );
     if( schemaPath.isEmpty() ) {
         setError( tr( "Cannot find workflow: %1" ).arg( schemaName ) );
@@ -58,7 +58,7 @@ void ProduceSchemaImageLinkTask::prepare() {
     if(hasError() || isCanceled()) {
         return;
     }
-    
+
     schema = new Schema();
     schema->setDeepCopyFlag(true);
     addSubTask(new LoadWorkflowTask( schema, &meta, schemaPath ));
@@ -67,15 +67,15 @@ void ProduceSchemaImageLinkTask::prepare() {
 QList<Task*> ProduceSchemaImageLinkTask::onSubTaskFinished(Task* subTask) {
     LoadWorkflowTask * loadTask = qobject_cast<LoadWorkflowTask*>(subTask);
     assert(loadTask != NULL);
-    
+
     QList<Task*> res;
     if( loadTask->hasError() || loadTask->isCanceled() ) {
         return res;
     }
-    
+
     GoogleChartImage googleImg(schema, meta);
     imageLink = googleImg.getImageUrl();
-    
+
     return res;
 }
 
@@ -134,7 +134,7 @@ static QString getSchemaGraphInExtendedDotNotation(Schema * schema, const Metada
     graph += QString("bgcolor=white;");
     graph += QString("edge [arrowsize=1, color=black];");
     graph += QString("node [shape=box,style=\"filled, rounded\",fillcolor=lightblue];");
-    
+
     // Nodes definition
     foreach(Actor * actor, schema->getProcesses()) {
         graph += QString("%1 [label=\"%2\"];").arg(QString("node_%1").arg(actor->getId())).arg(actor->getLabel());
@@ -145,7 +145,7 @@ static QString getSchemaGraphInExtendedDotNotation(Schema * schema, const Metada
         Actor * destination = link->destination()->owner();
         graph += QString("node_%1->node_%2;").arg(source->getId()).arg(destination->getId());
     }
-    
+
     graph = graph.mid(0, graph.size() - 1);
     return graph + "}";
 }
@@ -175,7 +175,7 @@ QPixmap SaveSchemaImageUtils::generateSchemaSnapshot(const QString & data) {
     }
     SceneCreator sc(&schema, meta);
     WorkflowScene* scene = sc.createScene(NULL);
-    
+
     QRectF bounds = scene->itemsBoundingRect();
     QPixmap pixmap(bounds.size().toSize());
     pixmap.fill();
@@ -193,7 +193,7 @@ QString SaveSchemaImageUtils::saveSchemaImageToFile(const QString & schemaPath, 
     if(!file.open(QIODevice::ReadOnly)) {
         return L10N::errorOpeningFileRead(schemaPath);
     }
-    
+
     QByteArray rawData = file.readAll();
     QPixmap image = generateSchemaSnapshot(rawData);
     image.save(imagePath, "png");

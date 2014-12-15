@@ -57,7 +57,7 @@ DNAGraphPackPlugin::DNAGraphPackPlugin()
 }
 
 
-DNAGraphPackViewContext::DNAGraphPackViewContext(QObject* p) : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID) 
+DNAGraphPackViewContext::DNAGraphPackViewContext(QObject* p) : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID)
 {
     graphFactories.append(new BaseContentGraphFactory(BaseContentGraphFactory::GC, this));
     graphFactories.append(new BaseContentGraphFactory(BaseContentGraphFactory::AG, this));
@@ -92,7 +92,7 @@ void DNAGraphPackViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* _sequenc
         return;
     }
 
-    foreach (GSequenceGraphFactory* factory, graphFactories) { 
+    foreach (GSequenceGraphFactory* factory, graphFactories) {
         GraphAction *action = new GraphAction(factory);
         if (!factory->isEnabled(sequenceWidget->getSequenceObject())) {
             action->setDisabled(true);

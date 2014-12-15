@@ -44,11 +44,11 @@ class CAP3Worker : public BaseWorker {
     Q_OBJECT
 public:
     CAP3Worker(Actor* a);
-    
+
     virtual void init();
     virtual Task* tick();
     virtual void cleanup();
-    
+
 private slots:
     void sl_taskFinished();
 

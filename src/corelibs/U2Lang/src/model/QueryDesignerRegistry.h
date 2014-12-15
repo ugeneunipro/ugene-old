@@ -28,7 +28,7 @@
 
 
 namespace U2 {
-    
+
 class U2LANG_EXPORT QDActorPrototypeRegistry : public QObject, public IdRegistry<QDActorPrototype> {
     Q_OBJECT
 public:

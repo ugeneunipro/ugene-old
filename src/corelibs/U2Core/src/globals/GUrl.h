@@ -19,18 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GURL_H_ 
+#ifndef _U2_GURL_H_
 #define _U2_GURL_H_
 
 #include <U2Core/global.h>
 
 namespace U2 {
 
-/** GUrl is designed to provide an easy to use and error prone implementation or URL for 
+/** GUrl is designed to provide an easy to use and error prone implementation or URL for
 DocumentModel in UGENE.
-The core of GUrl is string based representation of an URL: urlString.  
+The core of GUrl is string based representation of an URL: urlString.
 GUrl class enforces urlString to be always in correct canonical form.
-All oter fields are supplementary. 
+All oter fields are supplementary.
 
 Note: that 2 GUrls are considered equals if the urlStrings are equal.
 

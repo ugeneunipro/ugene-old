@@ -37,7 +37,7 @@ GUI_TEST_CLASS_DEFINITION(general_avail_1) {
         testDir + "_common_data/alphabets", "standard_dna_1000.fa", "seq1");
     CHECK_SET_ERR(!GTUtilsCv::cvBtn::isChecked(os, seqWidget), "Unexpected state of CV button!");
     CHECK_SET_ERR(!GTUtilsCv::isCvPresent(os, seqWidget), "Unexpected state of CV widget!");
-    
+
     // @@step2: Click the CV button
     // @expected: CV button is toggled
     // @expected: CV is opened
@@ -158,7 +158,7 @@ GUI_TEST_CLASS_DEFINITION(general_avail_8) {
     QStringList expectedNames;
     QList<ADVSingleSequenceWidget*> seqWidgets;
     expectedNames << "seq1" << "seq3" << "seq5";
-    
+
     seqWidgets = GTUtilsProject::openFileExpectSequences(os,
         testDir + "_common_data/alphabets",
         "standard_dna_rna_amino_1000.fa",

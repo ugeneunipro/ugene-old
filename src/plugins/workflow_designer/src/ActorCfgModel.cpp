@@ -83,7 +83,7 @@ void ActorCfgModel::setupAttributesScripts() {
     foreach( Attribute * attribute, attrs ) {
         assert(attribute != NULL);
         attribute->getAttributeScript().clearScriptVars();
-        
+
         DataTypePtr attributeType = attribute->getAttributeType();
         // FIXME: add support for all types in scripting
         if(attributeType != BaseTypes::STRING_TYPE() && attributeType != BaseTypes::NUM_TYPE()) {
@@ -109,7 +109,7 @@ void ActorCfgModel::setupAttributesScripts() {
                         QString id = typeDescr.getId().replace(QRegExp("[^a-zA-Z0-9_]"), "_");
                         if(id.at(0).isDigit()) {
                             id.prepend("_");
-                        }                        
+                        }
                         Descriptor d(id, typeDescr.getDisplayName(), typeDescr.getDocumentation());
                         attribute->getAttributeScript().setScriptVar(d, QVariant());
                     }
@@ -141,7 +141,7 @@ void ActorCfgModel::update() {
     endResetModel();
 }
 
-int ActorCfgModel::columnCount(const QModelIndex &) const { 
+int ActorCfgModel::columnCount(const QModelIndex &) const {
     if(scriptMode) {
         return 3; // key, value and script
     } else {
@@ -204,9 +204,9 @@ Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
 QVariant ActorCfgModel::headerData( int section, Qt::Orientation orientation, int role ) const {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch(section) {
-        case KEY_COLUMN: 
+        case KEY_COLUMN:
             return WorkflowEditor::tr("Name");
-        case VALUE_COLUMN: 
+        case VALUE_COLUMN:
             return WorkflowEditor::tr("Value");
         case SCRIPT_COLUMN:
             return WorkflowEditor::tr("Script");
@@ -248,19 +248,19 @@ QVariant ActorCfgModel::data(const QModelIndex & index, int role ) const {
     if (role == DescriptorRole) { // descriptor that will be shown in under editor. 'propDoc' in WorkflowEditor
         return qVariantFromValue<Descriptor>(*currentAttribute);
     }
-    
+
     int col = index.column();
     switch(col) {
     case KEY_COLUMN:
         {
             switch (role) {
-            case Qt::DisplayRole: 
+            case Qt::DisplayRole:
                 return currentAttribute->getDisplayName();
             case Qt::ToolTipRole:
                 return currentAttribute->getDocumentation();
             case Qt::FontRole:
                 if (currentAttribute->isRequiredAttribute()) {
-                    QFont fnt; 
+                    QFont fnt;
                     fnt.setBold(true);
                     return QVariant(fnt);
                 }
@@ -273,13 +273,13 @@ QVariant ActorCfgModel::data(const QModelIndex & index, int role ) const {
             if (role == ConfigurationEditor::ItemListValueRole) {
                 return listValues.value(currentAttribute->getId());
             }
-            
+
             QVariant attributeValue;
             bool isDefaultVal = setAttributeValue(currentAttribute, attributeValue);
             ConfigurationEditor* confEditor = subject->getEditor();
             PropertyDelegate* propertyDelegate = confEditor ? confEditor->getDelegate(currentAttribute->getId()) : NULL;
             switch(role) {
-            case Qt::DisplayRole: 
+            case Qt::DisplayRole:
             case Qt::ToolTipRole:
                 {
                     if(propertyDelegate) {
@@ -310,13 +310,13 @@ QVariant ActorCfgModel::data(const QModelIndex & index, int role ) const {
                     return QVariant();
                 }
             }
-            
+
             // for STRING type
             switch(role) {
             case Qt::DisplayRole:
             case Qt::ToolTipRole:
-                return scriptDelegate ? 
-                    scriptDelegate->getDisplayValue(qVariantFromValue<AttributeScript>(currentAttribute->getAttributeScript())) 
+                return scriptDelegate ?
+                    scriptDelegate->getDisplayValue(qVariantFromValue<AttributeScript>(currentAttribute->getAttributeScript()))
                     : QVariant();
             case Qt::ForegroundRole:
                 return currentAttribute->getAttributeScript().isEmpty() ? QVariant(QColor(Qt::gray)) : QVariant();
@@ -389,14 +389,14 @@ bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, 
     int col = index.column();
     Attribute* editingAttribute = getAttributeByRow(index.row());
     SAFE_POINT(editingAttribute != NULL, "Invalid attribute detected", false);
-    
+
     switch(col) {
     case VALUE_COLUMN:
         {
             switch(role) {
-            case ConfigurationEditor::ItemListValueRole: 
+            case ConfigurationEditor::ItemListValueRole:
                 {
-                    listValues.insert(editingAttribute->getId(), value); 
+                    listValues.insert(editingAttribute->getId(), value);
                     return true;
                 }
             case Qt::EditRole:
@@ -451,7 +451,7 @@ bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, 
     default:
         assert(false);
     }
-    
+
     // unreachable code
     return false;
 }

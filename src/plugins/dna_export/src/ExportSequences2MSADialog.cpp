@@ -42,7 +42,7 @@
 namespace U2 {
 
 ExportSequences2MSADialog::ExportSequences2MSADialog(QWidget* p, const QString& defaultUrl): QDialog(p) {
-    setupUi(this);    
+    setupUi(this);
     new HelpButton(this, buttonBox, "4227244");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
@@ -70,7 +70,7 @@ void ExportSequences2MSADialog::accept() {
         QMessageBox::critical(this, L10N::errorTitle(), tr("File name is empty!"));
         return;
     }
-    
+
     url = saveContoller->getSaveFileName();
     format = saveContoller->getFormatIdToSave();
     addToProjectFlag = addToProjectBox->isChecked();

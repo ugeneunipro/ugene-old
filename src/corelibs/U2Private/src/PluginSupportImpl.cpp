@@ -54,7 +54,7 @@ static QStringList findAllPluginsInDefaultPluginsDir();
 
 
 PluginRef::PluginRef(Plugin* _plugin, QLibrary* _library, const PluginDesc& desc)
-: plugin(_plugin), library(_library), pluginDesc(desc), removeFlag(false) 
+: plugin(_plugin), library(_library), pluginDesc(desc), removeFlag(false)
 {
 }
 
@@ -99,7 +99,7 @@ PluginSupportImpl::PluginSupportImpl(bool testingMode): allLoaded(false) {
 PluginSupportImpl::~PluginSupportImpl() {
     foreach(PluginRef* ref, plugRefs) {
         delete ref;
-    } 
+    }
 }
 
 bool PluginSupportImpl::isAllPluginsLoaded() const {
@@ -173,7 +173,7 @@ void LoadAllPluginsTask::addToOrderingQueue(const QString& url) {
         return;
     }
 
-    if (!descFile.isFile()) { 
+    if (!descFile.isFile()) {
         coreLog.trace(  tr("Invalid file format: %1").arg(url) );
         return;
     }
@@ -245,7 +245,7 @@ void LoadAllPluginsTask::addToOrderingQueue(const QString& url) {
         coreLog.trace(QString("Plugin platform is not Mac: %1").arg(desc.id));
         return;
     }
-#else 
+#else
     if (desc.platform.name != PlatformName_UnixNotMac) {
         coreLog.trace(QString("Plugin platform is not Unix/Linux: %1").arg(desc.id));
         return;
@@ -289,7 +289,7 @@ static QStringList findAllPluginsInDefaultPluginsDir() {
 
 PluginRef::~PluginRef() {
     assert(plugin!=NULL);
-    delete plugin; 
+    delete plugin;
     plugin = NULL;
 }
 
@@ -319,8 +319,8 @@ QString PluginSupportImpl::getPluginFileURL(Plugin* p) const {
                 return "";
             }
             return ref->library->fileName();
-            
-        } 
+
+        }
     }
     return QString::null;
 }
@@ -463,7 +463,7 @@ QSet<QString> PluginSupportImpl::getPluginPaths(){
 /// Tasks
 
 //todo: improve task naming
-AddPluginTask::AddPluginTask(PluginSupportImpl* _ps, const PluginDesc& _desc) 
+AddPluginTask::AddPluginTask(PluginSupportImpl* _ps, const PluginDesc& _desc)
 : Task(tr("Add plugin task: %1").arg(_desc.id), TaskFlag_NoRun), ps(_ps), desc(_desc)
 {
 }
@@ -474,7 +474,7 @@ Task::ReportResult AddPluginTask::report() {
         stateInfo.setError(  tr("Plugin is already loaded: %1").arg(desc.id) );
         return ReportResult_Finished;
     }
-    
+
     //check that plugin we depends on is already loaded
     foreach (const DependsInfo& di, desc.dependsList) {
         PluginRef* ref = ps->findRefById(desc.id);
@@ -533,8 +533,8 @@ Task::ReportResult AddPluginTask::report() {
     return ReportResult_Finished;
 }
 
-VerifyPluginTask::VerifyPluginTask(PluginSupportImpl* ps, const PluginDesc& desc) 
-: Task(tr("Verify plugin task: %1").arg(desc.id), TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled), ps(ps), desc(desc), timeOut(100000), proc(NULL), pluginIsCorrect(false) 
+VerifyPluginTask::VerifyPluginTask(PluginSupportImpl* ps, const PluginDesc& desc)
+: Task(tr("Verify plugin task: %1").arg(desc.id), TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled), ps(ps), desc(desc), timeOut(100000), proc(NULL), pluginIsCorrect(false)
 {
 }
 void VerifyPluginTask::run() {
@@ -555,7 +555,7 @@ void VerifyPluginTask::run() {
     }
     proc = new QProcess();
     proc->start(openclCheckerPath, QStringList());
-    
+
     int elapsedTime = 0;
     while(!proc->waitForFinished(1000) && elapsedTime < timeOut) {
         if(isCanceled()) {

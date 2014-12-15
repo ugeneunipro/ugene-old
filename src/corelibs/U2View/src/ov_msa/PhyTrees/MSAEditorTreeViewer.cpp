@@ -93,7 +93,7 @@ void MSAEditorTreeViewer::setSynchronizationMode(SynchronizationMode newSyncMode
     }
     if(FullSynchronization == syncMode) {
         if(false == slotsAreConnected) {
-            connect(treeViewerUI, SIGNAL(si_collapseModelChangedInTree(const QList<QStringList>&)), 
+            connect(treeViewerUI, SIGNAL(si_collapseModelChangedInTree(const QList<QStringList>&)),
                 msaUI->getSequenceArea(), SLOT(sl_setCollapsingRegions(const QList<QStringList>&)));
             connect(treeViewerUI, SIGNAL(si_seqOrderChanged(const QStringList&)), msa, SLOT(sl_onSeqOrderChanged(const QStringList&)));
             connect(treeViewerUI, SIGNAL(si_groupColorsChanged(const GroupColorSchema&)), msaUI->getEditorNameList(), SLOT(sl_onGroupColorsChanged(const GroupColorSchema&)));
@@ -142,8 +142,8 @@ void MSAEditorTreeViewer::sl_alignmentChanged(const MAlignment& /*aln*/, const M
     }
 }
 
-MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer) 
-    : TreeViewerUI(treeViewer), subgroupSelectorPos(0.0), groupColors(1, 0.86), isSinchronized(true), curLayoutIsRectangular(true), 
+MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer)
+    : TreeViewerUI(treeViewer), subgroupSelectorPos(0.0), groupColors(1, 0.86), isSinchronized(true), curLayoutIsRectangular(true),
  curMSATreeViewer(treeViewer), syncMode(WithoutSynchronization), hasMinSize(false), hasMaxSize(false){
     connect(scene(), SIGNAL(sceneRectChanged(const QRectF&)), SLOT(sl_onSceneRectChanged(const QRectF&)));
 
@@ -617,7 +617,7 @@ void MSAEditorTreeViewerUI::sl_onVisibleRangeChanged(QStringList visibleSeqs, in
         }
     }
     CHECK(rect.height() > 0, );
-    QRectF sceneRect = transform().mapRect(rect); 
+    QRectF sceneRect = transform().mapRect(rect);
 
     qreal zoom = qreal(height) / sceneRect.height();
     centerOn(rect.center());

@@ -39,18 +39,18 @@ class RFSArrayWAlgorithm : public RFAlgorithmBase {
     Q_OBJECT
     friend class RFSArrayWSubtask;
 public:
-    RFSArrayWAlgorithm(RFResultsListener* rl, const char* seqX, int sizeX, 
+    RFSArrayWAlgorithm(RFResultsListener* rl, const char* seqX, int sizeX,
                     const char* seqY, int sizeY, const DNAAlphabet *al, int w);
-    
+
     void prepare();
-    
+
     QList<Task*> onSubTaskFinished(Task* subTask);
-    
+
     void run();
-    
+
     /** 8x/GAP mem usage (GAP~=W/2)*/
     void calculate(RFSArrayWSubtask* t);
-    
+
 private:
     void run(RFSArrayWSubtask* t);
     void addResult(int a, int s, int l, int c, RFSArrayWSubtask* t);
@@ -66,7 +66,7 @@ private:
     int             arrayPercent;
 
     QMutex          boundaryMutex;
-    
+
     quint32         bitMaskCharBitsNum;
     const quint32*  bitMask;
     BitsTable       bt;
@@ -85,7 +85,7 @@ class RFSArrayWSubtask : public Task, public SArrayIndex::SAISearchContext {
     friend class RFSArrayWAlgorithm;
 public:
     RFSArrayWSubtask(RFSArrayWAlgorithm* owner, int sStart, int sEnd, int _tid);
-    
+
     void run();
 
     RFSArrayWAlgorithm* owner;
@@ -97,7 +97,7 @@ public:
 class CheckEdge {
 public:
 
-    CheckEdge(const char* _posS = NULL, const char* _lastS = NULL, qint32 _diag = 0) 
+    CheckEdge(const char* _posS = NULL, const char* _lastS = NULL, qint32 _diag = 0)
         : posS(_posS), lastS(_lastS), diag(_diag){ next = this; prev = this;}
 
     void fromChain() {

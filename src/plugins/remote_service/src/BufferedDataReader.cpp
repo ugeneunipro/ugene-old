@@ -43,13 +43,13 @@ static QList<QByteArray> splitBuffers(const QByteArray& request, const QByteArra
         result.append(buf);
         start = pos + len;
     }
-    
+
     return result;
 
 }
 
 
-BufferedDataReader::BufferedDataReader( const QStringList& inputUrls, const QByteArray& requestTemplate, const QByteArray& splitMarker ) 
+BufferedDataReader::BufferedDataReader( const QStringList& inputUrls, const QByteArray& requestTemplate, const QByteArray& splitMarker )
     : curIdx(0), hasErrors(false)
 {
     buffersData = splitBuffers(requestTemplate, splitMarker);
@@ -73,20 +73,20 @@ bool BufferedDataReader::open( OpenMode mode )
         setError("Only ReadOnly open mode is supported for device.");
         return false;
     }
-  
+
 
     if (buffersData.count() != inputFiles.count() + 1) {
         setError("Incorrect buffer splitting.");
         return false;
     }
-    
+
     foreach (Base64File* file, inputFiles) {
         if (!file->open(QIODevice::ReadOnly)) {
             setError(QString("Failed to open file  %").arg(file->fileName()));
             return false;
         }
     }
-    
+
     foreach (QBuffer* buf, inputBufs) {
         if (!buf->open(QIODevice::ReadOnly)) {
             setError(QString("Failed to open buffer of RunRemoteTaskRequest data."));
@@ -94,8 +94,8 @@ bool BufferedDataReader::open( OpenMode mode )
         }
     }
 
-    
-    int numBufs = inputBufs.count(); 
+
+    int numBufs = inputBufs.count();
     for (int i = 0; i < numBufs; ++i) {
         inputDevs.append(inputBufs[i]);
         if (i + 1 < numBufs ) {
@@ -112,7 +112,7 @@ bool BufferedDataReader::open( OpenMode mode )
     Each time this function is called, buffer of size=maxlen is prepared.
     The buffer can include data from fragments of request template or from actual
     file data.
-    
+
     After the buffer is prepared it's contents is copied into data.
 
 */
@@ -123,11 +123,11 @@ qint64 BufferedDataReader::readData( char *data, qint64 maxlen )
 
     QByteArray preparedBuf;
     preparedBuf.reserve(maxlen);
-    
+
     qint64 len = 0;
     char* preparedData = preparedBuf.data();
     const int MAX_INDEX = inputDevs.count() - 1;
-    
+
     if (hasErrors || curIdx > MAX_INDEX) {
         return -1;
     }
@@ -144,17 +144,17 @@ qint64 BufferedDataReader::readData( char *data, qint64 maxlen )
         }
         len += bytesRead;
         preparedData += bytesRead;
-        
+
         if (dev->bytesAvailable() == 0 && curIdx == MAX_INDEX ) {
             curIdx++;
             break;
         }
         if (len == maxlen ) {
             break;
-        } 
+        }
         curIdx++;
     }
-    
+
     memcpy(data, preparedBuf.constData(), len);
 
     return len;
@@ -183,9 +183,9 @@ qint64 BufferedDataReader::size() const
     }
 
     foreach(Base64File* file, inputFiles) {
-        dataLen += file->size();        
+        dataLen += file->size();
     }
-    
+
     return dataLen + 100;
 }
 

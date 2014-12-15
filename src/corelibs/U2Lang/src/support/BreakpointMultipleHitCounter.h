@@ -35,7 +35,7 @@ public:
     virtual bool hit();
     virtual quint32 getHitCountParameter() const;
     virtual void setHitCountParameter(quint32 newParameter);
-    
+
 protected:
     quint32 multiple;
 };

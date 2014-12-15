@@ -37,7 +37,7 @@ namespace U2 {
 template<class T> inline T sqr(const T& x) { return x*x; }
 
 class U2ALGORITHM_EXPORT AtomConstants {
-    static const int NUM_ELEMENTS = 120; 
+    static const int NUM_ELEMENTS = 120;
     static double atomRadiusTable[NUM_ELEMENTS];
 public:
     inline static double getAtomCovalentRadius(int atomicNumber);
@@ -72,7 +72,7 @@ class U2ALGORITHM_EXPORT MolecularSurfaceCalcTask : public Task
     MolecularSurface* molSurface;
     QString typeName;
     const QList<SharedAtom> atoms;
-public: 
+public:
     MolecularSurfaceCalcTask(const QString& surfaceTypeName, const QList<SharedAtom>& atoms);
     MolecularSurface * getCalculatedSurface();
     virtual void run();

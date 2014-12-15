@@ -52,7 +52,7 @@ class BioStruct3DViewContext: public GObjectViewWindowContext {
     QMap<GObjectView*, BioStruct3DSplitter*> splitterMap;
 public:
     BioStruct3DViewContext(QObject* p);
-    
+
     virtual bool canHandle(GObjectView* v, GObject* o);
 
     virtual void onObjectAdded(GObjectView* v, GObject* obj);

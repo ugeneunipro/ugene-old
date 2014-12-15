@@ -69,7 +69,7 @@ public:
     bool isExtended() const {return id.contains("EXTENDED");}
 
     bool isRaw() const {return type == DNAAlphabet_RAW;}
-    
+
     bool isNucleic() const {return type == DNAAlphabet_NUCL;}
 
     bool isAmino() const {return type == DNAAlphabet_AMINO;}
@@ -77,14 +77,14 @@ public:
     bool isDNA() const {return id.contains("DNA");}
 
     bool isRNA() const {return id.contains("RNA");}
-    
+
     // returns sorted array of all chars used in alphabet
     // forceBothCases == true : even case-insensitive alphabet will return both cases
     // forceBothCases == false: case-sensitivity in result depends on alphabets case-sensitivity
     QByteArray getAlphabetChars(bool forceBothCases = false) const;
 
     int getNumAlphabetChars() const {return numChars;}
-    
+
 private:
     QString             id;
     QString             name;

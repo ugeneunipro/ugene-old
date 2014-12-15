@@ -117,7 +117,7 @@ LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
         rollbackStack();//TODO:need hack for x86_64
   #endif
 #endif
-        QString anotherError = QString::number(EXCEPTION_STACK_OVERFLOW, 16) + "|Stack overflow"; //previous error was dropped in the stack unwinding 
+        QString anotherError = QString::number(EXCEPTION_STACK_OVERFLOW, 16) + "|Stack overflow"; //previous error was dropped in the stack unwinding
         st.ShowCallstack(GetCurrentThread(), pExceptionInfo->ContextRecord);
         runMonitorProcess(anotherError);
         return EXCEPTION_EXECUTE_HANDLER;
@@ -471,7 +471,7 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType)
     if (taskList.isEmpty()) {
         reportText += "None";
     }
-    
+
 #if defined (Q_OS_WIN)
     reportText += "|" + st.getBuffer();
 #else

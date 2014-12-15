@@ -87,7 +87,7 @@ QList<Task*> QDScheduler::onSubTaskFinished(Task* subTask) {
     if (linker->isCancelled() || subTask == createAnnsTask) {
         return subs;
     }
-    
+
     if (subTask == loadTask) {
         settings.annotationsObj = qobject_cast<AnnotationTableObject *>(loadTask->getDocument()->findGObjectByName(settings.annotationsObjRef.objName));
         return subs;
@@ -258,7 +258,7 @@ void QDResultLinker::updateCandidates(QDStep* step, int& progress) {
 }
 
 template<class T>
-QList<T> addNextSelection(const QList<T>& prev, const QList<T>& source, QList< QList<T> >& result) {    
+QList<T> addNextSelection(const QList<T>& prev, const QList<T>& source, QList< QList<T> >& result) {
     int idx = prev.size()-1;
     while (idx>=0) {
         const T& item = prev.at(idx);
@@ -393,7 +393,7 @@ QDStrandOption QDResultLinker::findResultStrand(QDResultGroup* actorRes) {
 void QDResultLinker::updateCandidates(int& progress) {
     QList<QDResultGroup*> newCandidates;
     int i = 0;
-    
+
     foreach(QDResultGroup* candidate, candidates) {
         foreach(QDResultGroup* actorRes, currentResults) {
             if (sched->isCanceled()) {
@@ -431,7 +431,7 @@ void QDResultLinker::updateCandidates(int& progress) {
                     }
                 }
             }
-            
+
             if (matches) {
                 QDResultGroup* newCandidate = new QDResultGroup(*candidate);
                 newCandidate->add(actorRes->getResultsList());
@@ -533,7 +533,7 @@ void QDResultLinker::createAnnotations(const QString& groupPrefix) {
             .arg(QString::number(++counter));
 
         QList<AnnotationData> groupAnns;
-        
+
         foreach(const QDResultUnit& res, candidate->getResultsList()) {
             AnnotationData a = result2annotation.value( res, AnnotationData( ) );
             if ( a == AnnotationData( ) ) {
@@ -651,7 +651,7 @@ void QDStep::initTotalMap() {
                     for (int i=1, n=allowedPaths.size(); i<n; i++) {
                         QDPath* curPath = allowedPaths.at(i);
                         QDDistanceConstraint* curDc = curPath->toConstraint();
-                        
+
                         if (curDc->getSource()!=overallConstraint->getSource()) {
                             curDc->invert();
                         }
@@ -671,7 +671,7 @@ void QDStep::initTotalMap() {
     }
 }
 
-QList<QDConstraint*> QDStep::getConstraints(QDSchemeUnit* subj, QDSchemeUnit* linked) const {    
+QList<QDConstraint*> QDStep::getConstraints(QDSchemeUnit* subj, QDSchemeUnit* linked) const {
     const QPair<QDSchemeUnit*, QDSchemeUnit*>& pair = qMakePair(subj, linked);
     assert(constraintsMap.contains(pair));
     return constraintsMap.value(pair);
@@ -705,7 +705,7 @@ bool QDStep::hasPrev() const {
 
 //QDTask
 //////////////////////////////////////////////////////////////////////////
-QDTask::QDTask(QDStep* _step, QDResultLinker* _linker) 
+QDTask::QDTask(QDStep* _step, QDResultLinker* _linker)
 : Task(tr("Query task: %1").arg(_step->getActor()->getParameters()->getLabel()), TaskFlag_NoRun), step(_step), linker(_linker), runTask(NULL) {
     tpm = Progress_Manual;
     stateInfo.progress = 0;

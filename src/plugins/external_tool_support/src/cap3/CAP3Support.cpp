@@ -72,7 +72,7 @@ CAP3Support::CAP3Support(const QString& name, const QString& path) : ExternalToo
                    <br>Binaries can be downloaded from http://seq.cs.iastate.edu/cap3.html");
     description+=tr("<br><br> Huang, X. and Madan, A.  (1999)");
     description+=tr("<br>CAP3: A DNA Sequence Assembly Program,");
-    description+=tr("<br>Genome Research, 9: 868-877."); 
+    description+=tr("<br>Genome Research, 9: 868-877.");
     versionRegExp=QRegExp("VersionDate: (\\d+\\/\\d+\\/\\d+)");
     toolKitName="CAP3";
 }
@@ -109,16 +109,16 @@ void CAP3Support::sl_runWithExtFileSpecify(){
     //Call select input file and setup settings dialog
     CAP3SupportTaskSettings settings;
     CAP3SupportDialog cap3Dialog(settings, QApplication::activeWindow());
-    
+
     if(cap3Dialog.exec() != QDialog::Accepted){
         return;
     }
-    
+
     assert(!settings.inputFiles.isEmpty());
 
     RunCap3AndOpenResultTask* task = new RunCap3AndOpenResultTask(settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
-    
+
 }
 
 

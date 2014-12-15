@@ -57,17 +57,17 @@ const QString TMP_DIR_PATH("temp-dir");
 
 void MAFFTWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
-    Descriptor ind(BasePorts::IN_MSA_PORT_ID(), MAFFTWorker::tr("Input MSA"), 
+    Descriptor ind(BasePorts::IN_MSA_PORT_ID(), MAFFTWorker::tr("Input MSA"),
         MAFFTWorker::tr("Multiple sequence alignment to be processed."));
     Descriptor oud(BasePorts::OUT_MSA_PORT_ID(), MAFFTWorker::tr("Multiple sequence alignment"), MAFFTWorker::tr("Result of alignment."));
-    
+
     QMap<Descriptor, DataTypePtr> inM;
     inM[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
     p << new PortDescriptor(ind, DataTypePtr(new MapDataType("mafft.in.msa", inM)), true /*input*/);
     QMap<Descriptor, DataTypePtr> outM;
     outM[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
     p << new PortDescriptor(oud, DataTypePtr(new MapDataType("mafft.out.msa", outM)), false /*input*/, true /*multi*/);
-    
+
     Descriptor gop(GAP_OPEN_PENALTY, MAFFTWorker::tr("Gap Open Penalty"),
                    MAFFTWorker::tr("Gap Open Penalty."));
     Descriptor gep(GAP_EXT_PENALTY, MAFFTWorker::tr("Offset"),
@@ -162,7 +162,7 @@ Task* MAFFTWorker::tick() {
         if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
             AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
         }
-        
+
         QVariantMap qm = inputMessage.getData().toMap();
         SharedDbiDataHandler msaId = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<SharedDbiDataHandler>();
         QScopedPointer<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));

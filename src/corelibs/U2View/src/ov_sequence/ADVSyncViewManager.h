@@ -42,7 +42,7 @@ namespace U2 {
 class AnnotatedDNAView;
 class ADVSequenceWidget;
 class ADVSingleSequenceWidget;
-class LRegionsSelection;  
+class LRegionsSelection;
 
 //Support for synchronous operation for ADVSingleSequenceViews: sync& lock scale, toggle visibility
 class ADVSyncViewManager : public QObject {
@@ -67,7 +67,7 @@ private slots:
     void sl_toggleAutoAnnotationHighlighting();
     void sl_updateAutoAnnotationsMenu();
     void sl_updateVisualMode();
-    
+
 
 private:
     enum SyncMode {
@@ -87,7 +87,7 @@ private:
     void unlock();
     void updateEnabledState();
     void toggleCheckedAction(SyncMode mode);
-    
+
 
     QList<ADVSingleSequenceWidget*> getViewsFromADV() const;
 
@@ -112,13 +112,13 @@ private:
     bool                                selectionRecursion;
     bool                                recursion;
     QList<ADVSingleSequenceWidget*>     views;
-    
-    // auto annotation highlighting 
+
+    // auto annotation highlighting
     QMap<QString, QAction*>             aaActionMap;
     QAction*                            toggleAutoAnnotationsAction;
     QMenu*                              toggleAutoAnnotationsMenu;
     QToolButton*                        toggleAutoAnnotationsButton;
-    
+
     // visual mode vars
     QAction*                            toggleViewButtonAction;
     QToolButton*                        toggleViewButton;

@@ -31,7 +31,7 @@
 namespace U2 {
 
 struct U2PRIVATE_EXPORT LoggerSettings {
-    LoggerSettings() { 
+    LoggerSettings() {
         qFill(activeLevelFlag, activeLevelFlag + LogLevel_NumLevels, 0);
     }
 
@@ -41,7 +41,7 @@ struct U2PRIVATE_EXPORT LoggerSettings {
 
     QString categoryName;
     bool    activeLevelFlag[LogLevel_NumLevels];
-    
+
 };
 
 class U2PRIVATE_EXPORT LogCategories : QObject {
@@ -58,7 +58,7 @@ protected:
 class U2PRIVATE_EXPORT LogSettings {
 public:
     LogSettings();
-    
+
     void removeCategory(const QString& name);
 
     void addCategory(const LoggerSettings& newcs);
@@ -68,12 +68,12 @@ public:
     const QHash<QString, LoggerSettings> getLoggerSettings() const {return categories;}
 
     bool operator==(const LogSettings& other) const;
-        
+
     void save();
-    
-    void reinitAll();   
+
+    void reinitAll();
     void reinitCategories();
-    
+
     QString levelColors[LogLevel_NumLevels];
     bool    activeLevelGlobalFlag[LogLevel_NumLevels];
     QString logPattern;
@@ -93,7 +93,7 @@ class U2PRIVATE_EXPORT LogSettingsHolder {
 public:
     const LogSettings& getSettings() const {return settings;}
 
-    virtual void setSettings(const LogSettings& s); 
+    virtual void setSettings(const LogSettings& s);
 
 protected:
     mutable LogSettings settings;

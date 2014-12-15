@@ -36,13 +36,13 @@ class U2CORE_EXPORT DNASequence {
 public:
     DNASequence(const QString& name, const QByteArray& s = QByteArray(), const DNAAlphabet* a = NULL);
     DNASequence(const QByteArray& s = QByteArray(), const DNAAlphabet* a = NULL) : seq(s), alphabet(a), circular(false), quality(NULL) {}
- 
+
     QVariantMap     info;
     QByteArray      seq;
     const DNAAlphabet*    alphabet;
     bool            circular;
     DNAQuality      quality;
-    
+
     QString getName() const { return DNAInfo::getName(info);}
     void setName(const QString& name);
     bool isNull() const {return !alphabet && seq.length() == 0;}

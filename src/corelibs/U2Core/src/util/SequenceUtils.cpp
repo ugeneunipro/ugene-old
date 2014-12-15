@@ -85,7 +85,7 @@ QList<QByteArray> U1SequenceUtils::extractRegions(const QByteArray& seq, const Q
     if (circular && res.size() > 1) {
         const U2Region& firstL = origLocation.first();
         const U2Region& lastL = origLocation.last();
-        if (firstL.startPos == 0 && lastL.endPos() == seq.size()) { 
+        if (firstL.startPos == 0 && lastL.endPos() == seq.size()) {
             QByteArray lastS = res.last();
             QByteArray firstS = res.first();
             res.removeLast();
@@ -94,7 +94,7 @@ QList<QByteArray> U1SequenceUtils::extractRegions(const QByteArray& seq, const Q
     }
     if (aminoTT != NULL) {
         res = translateRegions(res, aminoTT, join);
-    } 
+    }
 
     if (join && res.size() > 1) {
         QByteArray joined = joinRegions(res);
@@ -205,7 +205,7 @@ static void importGroupSequences2newObject(const QList<U2SequenceObject *> &seqO
         currentSeqLen+=seqObj->getSequenceLength();
         seqImport.addSequenceBlock(seqObj->getSequenceRef(), U2_REGION_MAX, os);
         CHECK_OP(os, );
-       
+
         // now convert all annotations;
         shiftAnnotations(newAnnObj, annotationsBySequenceObjectName.value(seqObj), contigReg);
     }
@@ -331,7 +331,7 @@ QList<GObject *> U1SequenceUtils::mergeSequences(const QList<Document *> docs, c
 QList<GObject*> U1SequenceUtils::mergeSequences(Document* doc, const U2DbiRef& ref, QVariantMap& hints, U2OpStatus& os){
     QList<Document* > docs; docs << doc;
     return mergeSequences(docs, ref, doc->getURLString(), hints, os);
-} 
+}
 
 QByteArray U1SequenceUtils::joinRegions(const QList<QByteArray>& parts, int gapSize) {
     CHECK(!parts.isEmpty(), QByteArray());

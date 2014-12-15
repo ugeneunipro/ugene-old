@@ -125,10 +125,10 @@ void DocumentFormatRegistryImpl::init() {
     SAFE_POINT_OP(os, );
 
     PlainTextFormat* text = new PlainTextFormat(this);
-    registerFormat(text);   
+    registerFormat(text);
 
     FastaFormat* fasta = new FastaFormat(this);
-    registerFormat(fasta);  
+    registerFormat(fasta);
 
     GenbankPlainTextFormat* gb = new GenbankPlainTextFormat(this);
     registerFormat(gb);
@@ -156,7 +156,7 @@ void DocumentFormatRegistryImpl::init() {
 
     NewickFormat* nwf = new NewickFormat(this);
     registerFormat(nwf);
-    
+
     PDBFormat* pdb = new PDBFormat(this);
     registerFormat(pdb);
 

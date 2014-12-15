@@ -78,7 +78,7 @@ void GTWidget::setFocus(U2OpStatus &os, QWidget *w) {
     if(!qobject_cast<QComboBox*>(w)){
         GT_CHECK(w->hasFocus(), "Can't set focus on widget " + w->objectName());
     }
-    
+
 }
 #undef GT_METHOD_NAME
 
@@ -88,7 +88,7 @@ QWidget* GTWidget::findWidget(U2OpStatus &os, const QString &widgetName, QWidget
 
     if (parentWidget == NULL) {
         parentWidget = AppContext::getMainWindow()->getQMainWindow();
-    } 
+    }
     QWidget* widget = parentWidget->findChild<QWidget*>(widgetName);
 
     if (options.failIfNull) {

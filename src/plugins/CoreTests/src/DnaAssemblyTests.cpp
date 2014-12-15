@@ -52,7 +52,7 @@ namespace U2 {
 #define IS_BAM_ATTR "isbam"
 
 void GTest_DnaAssemblyToReferenceTask::init(XMLTestFormat*, const QDomElement& el)  {
-    
+
     refSeqUrl = el.attribute(REF_SEQ_ATTR);
     if (refSeqUrl.isEmpty()) {
         failMissingValue(REF_SEQ_ATTR);
@@ -156,7 +156,7 @@ Task::ReportResult GTest_DnaAssemblyToReferenceTask::report() {
     if (hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
-    
+
     return ReportResult_Finished;
 }
 
@@ -212,7 +212,7 @@ QList<XMLTestFactory*> DnaAssemblyTests::createTestFactories()
     QList<XMLTestFactory*> res;
     res.append(GTest_DnaAssemblyToReferenceTask::createFactory());
     res.append(GTest_AssemblycompareTwoSAMbyLength::createFactory());
-    
+
     return res;
 }
 

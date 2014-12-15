@@ -60,7 +60,7 @@ public:
     */
     virtual void getObject(U2Object& object, const U2DataId& id, U2OpStatus& os) = 0;
 
-    /** Lists database top-level objects, starts with 'offset' and limits by 'count'. 
+    /** Lists database top-level objects, starts with 'offset' and limits by 'count'.
     The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
     virtual QList<U2DataId> getObjects(qint64 offset, qint64 count, U2OpStatus& os) = 0;
 
@@ -68,7 +68,7 @@ public:
     The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
     virtual QHash<U2DataId, QString> getObjectNames(qint64 offset, qint64 count, U2OpStatus& os) = 0;
 
-    /** Lists database top-level objects of the specified type, starts with 'offset' and limits by 'count'. 
+    /** Lists database top-level objects of the specified type, starts with 'offset' and limits by 'count'.
     The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
     virtual QList<U2DataId> getObjects(U2DataType type, qint64 offset, qint64 count, U2OpStatus& os) = 0;
 
@@ -83,22 +83,22 @@ public:
     virtual U2DbiIterator<U2DataId>* getObjectsByVisualName(const QString& visualName, U2DataType type, U2OpStatus& os) = 0;
 
 
-    /**  Returns list of folders stored in database. 
+    /**  Returns list of folders stored in database.
         Folders are represented as paths, separated by '/' character.
-        At least one root folder is required. 
+        At least one root folder is required.
     */
     virtual QStringList getFolders(U2OpStatus& os) = 0;
 
     /** Returns the map: object -> folder path. */
     virtual QHash<U2Object, QString> getObjectFolders(U2OpStatus& os) = 0;
 
-    /** Returns version of the folder. 
+    /** Returns version of the folder.
         The folder version increases if new object(s)/subfolder(s) are added into this folder
         Note that if object(s)/folder(s) are added into one of the subfolders the folder version is not changed
     */
     virtual qint64 getFolderLocalVersion(const QString& folder, U2OpStatus& os) = 0;
 
-    /** Returns version of the folder that changes every time object(s)/folder(s) added 
+    /** Returns version of the folder that changes every time object(s)/folder(s) added
         to the specified folder or any of its child folders
     */
     virtual qint64 getFolderGlobalVersion(const QString& folder, U2OpStatus& os) = 0;
@@ -106,7 +106,7 @@ public:
     /** Returns number of top-level U2Objects in folder */
     virtual qint64 countObjects(const QString& folder, U2OpStatus& os) = 0;
 
-    /** Lists database top-level objects of the specified type, starts with 'offset' and limits by 'count'. 
+    /** Lists database top-level objects of the specified type, starts with 'offset' and limits by 'count'.
     The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'U2DbiOptions::U2_DBI_NO_LIMIT'. */
     virtual QList<U2DataId> getObjects(const QString& folder, qint64 offset, qint64 count, U2OpStatus& os) = 0;
 
@@ -122,7 +122,7 @@ public:
     /** Gets the trackMod value for the object */
     virtual U2TrackModType getTrackModType(const U2DataId& objectId, U2OpStatus& os) = 0;
 
-    /** 
+    /**
         Removes object from the database.
         If @force is true, the object will be removed if it is possible,
         else dbi implementation can refuse to remove it.
@@ -130,8 +130,8 @@ public:
     */
     virtual bool removeObject(const U2DataId& dataId, bool force, U2OpStatus& os) = 0;
     virtual bool removeObject(const U2DataId& dataId, U2OpStatus& os) { return removeObject(dataId, false, os); }
-    
-    /** 
+
+    /**
         Removes collection of objects from the database.
         If @force is true, the object will be removed if it is possible,
         else dbi implementation can refuse to remove it.
@@ -148,8 +148,8 @@ public:
     */
     virtual void createFolder(const QString& path, U2OpStatus& os) = 0;
 
-    /** 
-        Removes folder. The folder must be existing path. Runs GC check for all objects in the folder 
+    /**
+        Removes folder. The folder must be existing path. Runs GC check for all objects in the folder
         Requires: U2DbiFeature_ChangeFolders feature support
     */
     virtual bool removeFolder(const QString& folder, U2OpStatus& os) = 0;
@@ -173,7 +173,7 @@ public:
     /** Moves objects between folders.
         'fromFolder' must be existing path containing all specified objects.
         'toFolder' must be existing path or empty string.
-        If 'toFolder' is empty, removes the objects from 'fromFolder' and 
+        If 'toFolder' is empty, removes the objects from 'fromFolder' and
         deletes non-top-level objects without parents, if any appear in the specified list.
         Otherwise, moves the specified objects between the specified folders, omitting duplicates.
 

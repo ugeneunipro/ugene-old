@@ -46,7 +46,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2-1.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj2-1.uprj");
 
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
@@ -70,7 +70,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) { //CHANGES another annotation created
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2-1.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj2-1.uprj");
 
-    // Expected state: 
+    // Expected state:
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
@@ -95,13 +95,13 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj2.uprj");
 
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
 // 2. Use menu {File->Export Project}
 // Expected state: "Export project" dialog has appeared
-// 
+//
 // 3. Fill the next field in dialog and click Save button:
 //     {Project Folder:} _common_data/scenarios/sandbox
     GTUtilsDialog::waitForDialog(os, new ExportProjectDialogFiller(os, testDir + "_common_data/scenarios/sandbox"));
@@ -115,7 +115,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 5. Open exported project
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj2.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 

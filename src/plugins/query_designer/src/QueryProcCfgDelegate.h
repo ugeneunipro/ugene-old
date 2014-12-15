@@ -36,7 +36,7 @@ Q_DECLARE_METATYPE(U2::PropertyDelegate*)
 
 namespace U2 {
 
-   
+
 enum {
     DelegateRole = Qt::UserRole + 100,
     DescriptorRole
@@ -45,7 +45,7 @@ enum {
 class QueryProcCfgDelegate : public QItemDelegate {
 public:
     QueryProcCfgDelegate(QueryEditor* parent) : QItemDelegate(parent) {}
-    
+
     QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const {
         QItemDelegate* d = index.model()->data(index, DelegateRole).value<PropertyDelegate*>();
         if (d) {

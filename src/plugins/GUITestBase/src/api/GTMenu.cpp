@@ -132,7 +132,7 @@ QAction* GTMenu::getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &i
             QString text = act->text();
             uiLog.trace("GT_DEBUG_MESSAGE: Action text: <" + text + ">");
             if (text.contains(itemName, Qt::CaseInsensitive)) { //TODO: if (text == itemName) {
-            
+
                 uiLog.trace("GT_DEBUG_MESSAGE: Found action");
                 action = act;
                 break;

@@ -111,7 +111,7 @@ private:
     QAction* fetchAnnotationsAction;
     QAction* openInNewViewAction;
 
-    Task* getIdsTask; 
+    Task* getIdsTask;
 
     QMap<QString, QList<AnnotationData> > annotationData;
 

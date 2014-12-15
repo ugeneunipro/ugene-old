@@ -64,10 +64,10 @@ public:
     QAction* getLoadControlMarkupAction(){return loadControlMarkupAction;}
     QAction* getGenerateFullReportAction(){return generateFullReportAction;}
     Task*    getExtractTask(){return extrTask;}
-    
+
     QAction* getLoadMarkupAction(){return loadMarkupAction;}
     QList<GObject*> getEDObjects() {return edObjects;}
-    
+
     EDProjectTree* getProjectTree() {return signalsWidget;}
     EDPropertiesTable* getPropertiesWidget() {return  propWidget;}
     AnnotatedDNAView* getCurrentAdv() {return currentAdv;}
@@ -123,7 +123,7 @@ private slots:
 
     void sl_sequenceItemSelChanged(ADVSequenceWidget*);
     void sl_newViewTask(Task* t);
-    void sl_testView(); 
+    void sl_testView();
 
     //void sl_propChanged(QTreeWidgetItem* item);
 
@@ -149,7 +149,7 @@ private:
 
     QSplitter*          splitter;
 
-    EDProjectTree*      signalsWidget;         
+    EDProjectTree*      signalsWidget;
     EDPropertiesTable*  propWidget;
     AnnotatedDNAView*   currentAdv;
 
@@ -165,7 +165,7 @@ private:
     QAction*            loadMarkupAction;
     QAction*            loadControlMarkupAction;
     QAction*            generateFullReportAction;
-    
+
     QList<GObject*>     edObjects;
     EDPISequence*       curEDsequence;
 

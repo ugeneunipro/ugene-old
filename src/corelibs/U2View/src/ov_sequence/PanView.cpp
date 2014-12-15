@@ -108,7 +108,7 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
     renderArea = new PanViewRenderArea(this);
 
     visibleRange.length = seqLen;
-    minNuclsPerScreen = qMin(seqLen, qint64(0)); 
+    minNuclsPerScreen = qMin(seqLen, qint64(0));
 
     zoomUsing = 0;
 
@@ -130,7 +130,7 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
 
     panViewAction = new QAction(QIcon(":/core/images/zoom_rows.png"), tr("Manage Rows in Zoom View"), this);
     panViewAction->setObjectName("ManageRowsAction");
-    
+
     QMenu *menu = new QMenu();
     showAllAnnotations = new QAction(tr("Show All Rows"), menu);
     showAllAnnotations->setCheckable(true);
@@ -140,14 +140,14 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
     connect(increasePanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_increaseLines()));
 
     decreasePanViewHeight = new QAction(tr("-1 Row"), menu);
-    connect(decreasePanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_decreaseLines()));    
+    connect(decreasePanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_decreaseLines()));
 
     increase5PanViewHeight = new QAction(tr("+5 Rows"), menu);
     connect(increase5PanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_increase5Lines()));
 
     decrease5PanViewHeight = new QAction(tr("-5 Rows"), menu);
     connect(decrease5PanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_decrease5Lines()));
-    
+
     resetAnnotations = new QAction(tr("Reset Rows Number"), menu);
     connect(resetAnnotations, SIGNAL(triggered()), renderArea, SLOT(sl_resetToDefault()));
 
@@ -157,7 +157,7 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
     menu->addAction(decreasePanViewHeight);
     menu->addAction(decrease5PanViewHeight);
     menu->addAction(resetAnnotations);
-    
+
     panViewAction->setMenu(menu);
 
     toggleMainRulerAction = new QAction(tr("Show Main Ruler"), this);
@@ -276,14 +276,14 @@ void PanView::updateRowBar() {
     ra->setRowLinesOffset(rowsOffset);
     rowBar->setSliderPosition(-rowsOffset);
     rowBar->setEnabled(maxSteps > 0);
-    
+
     connect(rowBar, SIGNAL(valueChanged(int)), SLOT(sl_onRowBarMoved(int)));
 }
 
 void PanView::sl_onRowBarMoved(int v) {
     PanViewRenderArea* ra = getRenderArea();
     ra->setRowLinesOffset(-v); // '-' because of inverted appearance
-    addUpdateFlags(GSLV_UF_NeedCompleteRedraw);    
+    addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
     update();
 }
 
@@ -626,7 +626,7 @@ PanViewRenderArea::PanViewRenderArea(PanView* d) : GSequenceLineViewAnnotatedRen
 void PanViewRenderArea::drawAll(QPaintDevice* pd) {
     GTIMER(c2,t2,"PanViewRenderArea::drawAll");
     GSLV_UpdateFlags uf = view->getUpdateFlags();
-    bool completeRedraw = uf.testFlag(GSLV_UF_NeedCompleteRedraw) || uf.testFlag(GSLV_UF_ViewResized) || 
+    bool completeRedraw = uf.testFlag(GSLV_UF_NeedCompleteRedraw) || uf.testFlag(GSLV_UF_ViewResized) ||
                           uf.testFlag(GSLV_UF_VisibleRangeChanged) || uf.testFlag(GSLV_UF_AnnotationsChanged);
 
     QPainter p(pd);
@@ -667,9 +667,9 @@ void PanViewRenderArea::drawAll(QPaintDevice* pd) {
     ADVSingleSequenceWidget* ssw = qobject_cast<ADVSingleSequenceWidget*>(panview->parentWidget());
     assert(ssw);
     if(!ssw->isOverviewCollapsed()) {
-        drawFrame(p); 
+        drawFrame(p);
     }
-    
+
     drawSequence(p);
     drawAnnotationsSelection(p);
     drawSequenceSelection(p);
@@ -732,7 +732,7 @@ void PanViewRenderArea::drawCustomRulers(GraphUtils::RulerConfig c,  QPainter& p
             rulerWidth--; // make the end of the ruler visible
         }
         int offsetToFirstNotch = c.predefinedChunk - visibleRange.startPos%c.predefinedChunk;
-        qint64 mainRuler = visibleRange.startPos + offsetToFirstNotch; 
+        qint64 mainRuler = visibleRange.startPos + offsetToFirstNotch;
         qint64 newStartPos = visibleRange.startPos - ri.offset + offsetToFirstNotch;
         qint64 lim = startPos + ri.offset;
         for(; mainRuler < lim; mainRuler += c.predefinedChunk, newStartPos += c.predefinedChunk) ;
@@ -846,16 +846,16 @@ void PanViewRenderArea::drawSequenceSelection(QPainter& p) {
 
     int lineY = getLineY(getSelectionLine());
     int ly = lineY + lineHeight/2; //ruler line
-    
+
     bool drawRect = showSequenceMode;
     bool drawGraphics = true;
     if (showSequenceMode) {
-        ly = lineY - lineHeight + RULER_NOTCH_SIZE; 
+        ly = lineY - lineHeight + RULER_NOTCH_SIZE;
         drawGraphics = ly > 0;
     }
     int halfNum = rfm.boundingRect('1').height() / 2;
     int rty = ly + halfNum;
-    
+
     const DNAAlphabet* alphabet = panView->getSequenceContext()->getSequenceObject()->getAlphabet();
     QString unitType;
     if (alphabet->isAmino()) {
@@ -884,7 +884,7 @@ void PanViewRenderArea::drawSequenceSelection(QPainter& p) {
             p.setPen(Qt::black);
             p.drawRect(x1, lineY+1, x2 - x1, lineHeight-2);
         }
-        
+
         if (drawGraphics) {
             //draw line
             p.setPen(pen2);
@@ -923,7 +923,7 @@ void PanViewRenderArea::drawSequenceSelection(QPainter& p) {
                     }
                 }
             }
-            
+
             //check if regions overlap
             int interWidth = t2Rect.left() - t1Rect.right();
             if (interWidth < dArrow) {

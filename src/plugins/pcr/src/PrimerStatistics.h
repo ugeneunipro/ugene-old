@@ -82,7 +82,7 @@ public:
     PrimersPairStatistics(const QByteArray &forward, const QByteArray &reverse);
 
     QString getFirstError() const;
-    
+
     QString generateReport() const;
 
     static const QString TmString;

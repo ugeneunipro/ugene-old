@@ -57,8 +57,8 @@ public:
     QList<SEnzymeData> getSelectedEnzymes();
     int getNumSelected();
     int getTotalNumber() { return totalEnzymes; }
-       
-    
+
+
 signals:
     void si_selectionModified(int,int);
 private slots:
@@ -78,7 +78,7 @@ private:
     void saveFile(const QString& url);
     void setEnzymesList(const QList<SEnzymeData>& enzymes);
     void updateStatus();
-   
+
 
     EnzymeGroupTreeItem* findGroupItem(const QString& s, bool create);
 

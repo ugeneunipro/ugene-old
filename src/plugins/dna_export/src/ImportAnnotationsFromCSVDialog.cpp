@@ -61,7 +61,7 @@ namespace U2 {
 #define SKIP_LINES_COUNT    QString("skip_lines_count")
 #define SKIP_LINES_PREFIX   QString("skip_lines_prefix")
 
-ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w) 
+ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w)
 : QDialog (w)
 {
     setupUi(this);
@@ -79,7 +79,7 @@ ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w)
     connect(previewTable->horizontalHeader(), SIGNAL(sectionClicked(int)), SLOT(sl_tableHeaderClicked(int)));
     connect(columnSeparatorRadioButton, SIGNAL(toggled(bool)), SLOT(sl_separatorRadioToggled(bool)));
     connect(scriptRadioButton, SIGNAL(toggled(bool)), SLOT(sl_scriptRadioToggled(bool)));
-    
+
     SaveDocumentGroupControllerConfig conf;
     conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
     conf.dfc.supportedObjectTypes += GObjectTypes::ANNOTATION_TABLE;
@@ -90,7 +90,7 @@ ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w)
     conf.formatCombo = saveFormatCombo;
 
     saveGroupController = new SaveDocumentGroupController(conf, this);
-    
+
     sl_separatorChanged(separatorEdit->text());
     sl_prefixToSkipChanged(prefixToSkipEdit->text());
 
@@ -100,7 +100,7 @@ ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w)
     if (!lastName.isEmpty()) {
         defaultNameEdit->setText(lastName);
     }
-    
+
     QString separator = AppContext::getSettings()->getValue(SETTINGS_ROOT + T_SEPARATOR).toString();
     if (!separator.isEmpty()) {
         separatorEdit->setText(separator);
@@ -116,7 +116,7 @@ ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w)
 
     scriptHeader = tr("//The script parses input line\n // and returns an array of parsed elements as the result\nvar %1; //input line\nvar %2; //parsed line number")
         .arg(ReadCSVAsAnnotationsTask::LINE_VAR).arg(ReadCSVAsAnnotationsTask::LINE_NUM_VAR);
-    
+
     columnSeparatorRadioButton->setChecked(true);
     sl_scriptRadioToggled(false);
 
@@ -141,7 +141,7 @@ void ImportAnnotationsFromCSVDialog::accept() {
     if (outFile.isEmpty()) {
         return;
     }
-    
+
     //check that position is OK
     int endPos = 0;
     int startPos = 0;
@@ -331,7 +331,7 @@ void ImportAnnotationsFromCSVDialog::sl_readFileClicked() {
         return;
     }
     readFileName->setText(lod.url);
-    
+
     // guess separator & show preview
     guessSeparator(true);
 }
@@ -408,7 +408,7 @@ void ImportAnnotationsFromCSVDialog::preview(bool silent) {
 
     previewTable->clear();
     rawPreview->clear();
-    
+
     rawPreview->setPlainText(text);
 
     if (!checkSeparators(true)) {
@@ -419,7 +419,7 @@ void ImportAnnotationsFromCSVDialog::preview(bool silent) {
     if (parseOptions.splitToken.isEmpty() && parseOptions.parsingScript.isEmpty()) {
         return;
     }
-    
+
 
     int columnCount = 0;
     TaskStateInfo ti;
@@ -430,10 +430,10 @@ void ImportAnnotationsFromCSVDialog::preview(bool silent) {
     }
     prepareColumnsConfig(columnCount);
     columnCount = qMax(columnCount, columnsConfig.size());
-    
+
     previewTable->setRowCount(lines.size());
     previewTable->setColumnCount(columnCount);
-    
+
     for (int column = 0; column < columnCount; column++) {
         QTableWidgetItem* headerItem = createHeaderItem(column);
         previewTable->setHorizontalHeaderItem(column, headerItem);

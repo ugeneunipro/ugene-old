@@ -23,7 +23,7 @@ protected:
 
 private:
 
-    
+
 
     QList<ExpertDiscoveryView*> viewList;
 };

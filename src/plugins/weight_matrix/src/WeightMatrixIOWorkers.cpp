@@ -76,7 +76,7 @@ const Descriptor PWMatrixWorkerFactory::WMATRIX_SLOT("wmatrix", QObject::tr("Wei
 
 const Descriptor PWMatrixWorkerFactory::WEIGHT_MATRIX_CATEGORY() {return Descriptor("hweightmatrix", WeightMatrixIO::tr("Weight matrix"), "");}
 
-PWMatrixIOProto::PWMatrixIOProto(const Descriptor& _desc, const QList<PortDescriptor*>& _ports, const QList<Attribute*>& _attrs ) 
+PWMatrixIOProto::PWMatrixIOProto(const Descriptor& _desc, const QList<PortDescriptor*>& _ports, const QList<Attribute*>& _attrs )
     : IntegralBusActorPrototype(_desc, _ports, _attrs) {
 }
 
@@ -98,7 +98,7 @@ bool PWMatrixIOProto::isAcceptableDrop(const QMimeData * md, QVariantMap * param
     return false;
 }
 
-ReadPWMatrixProto::ReadPWMatrixProto(const Descriptor& _desc, const QList<PortDescriptor*>& _ports, const QList<Attribute*>& _attrs ) 
+ReadPWMatrixProto::ReadPWMatrixProto(const Descriptor& _desc, const QList<PortDescriptor*>& _ports, const QList<Attribute*>& _attrs )
     : PWMatrixIOProto( _desc, _ports, _attrs ) {
 
         attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
@@ -112,7 +112,7 @@ bool ReadPWMatrixProto::isAcceptableDrop(const QMimeData * md, QVariantMap * par
     return PWMatrixIOProto::isAcceptableDrop( md, params, BaseAttributes::URL_IN_ATTRIBUTE().getId() );
 }
 
-WritePWMatrixProto::WritePWMatrixProto(const Descriptor& _desc, const QList<PortDescriptor*>& _ports, const QList<Attribute*>& _attrs ) 
+WritePWMatrixProto::WritePWMatrixProto(const Descriptor& _desc, const QList<PortDescriptor*>& _ports, const QList<Attribute*>& _attrs )
     : PWMatrixIOProto( _desc, _ports, _attrs ) {
         attrs << new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true );
         attrs << new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
@@ -131,11 +131,11 @@ bool WritePWMatrixProto::isAcceptableDrop(const QMimeData * md, QVariantMap * pa
     return PWMatrixIOProto::isAcceptableDrop( md, params, BaseAttributes::URL_OUT_ATTRIBUTE().getId() );
 }
 
-void PWMatrixWorkerFactory::init() 
+void PWMatrixWorkerFactory::init()
 {
     ActorPrototypeRegistry* r = WorkflowEnv::getProtoRegistry();
     assert(r);
-    {        
+    {
         QMap<Descriptor, DataTypePtr> m;
         Descriptor sd(BaseSlots::URL_SLOT().getId(), WeightMatrixIO::tr("Location"), WeightMatrixIO::tr("Location hint for the target file."));
         m[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
@@ -153,11 +153,11 @@ void PWMatrixWorkerFactory::init()
     {
         QList<PortDescriptor*> p; QList<Attribute*> a;
         Descriptor pd(WMATRIX_OUT_PORT_ID, WeightMatrixIO::tr("Weight matrix"), WeightMatrixIO::tr("Loaded weight matrices data."));
-        
+
         QMap<Descriptor, DataTypePtr> outM;
         outM[WMATRIX_SLOT] = WEIGHT_MATRIX_MODEL_TYPE();
         p << new PortDescriptor(pd, DataTypePtr(new MapDataType("wmatrix.read.out", outM)), false /*input*/, true /*multi*/);
-        
+
         Descriptor desc(PWMatrixReader::ACTOR_ID, WeightMatrixIO::tr("Read Weight Matrix"), WeightMatrixIO::tr("Reads weight matrices from file(s). The files can be local or Internet URLs."));
         IntegralBusActorPrototype* proto = new ReadPWMatrixProto(desc, p, a);
         proto->setPrompter(new PWMatrixReadPrompter());
@@ -178,7 +178,7 @@ Worker* PWMatrixWorkerFactory::createWorker(Actor* a) {
     BaseWorker* w = NULL;
     if (PWMatrixReader::ACTOR_ID == a->getProto()->getId()) {
         w = new PWMatrixReader(a);
-    } 
+    }
     else if (PWMatrixWriter::ACTOR_ID == a->getProto()->getId()) {
         w = new PWMatrixWriter(a);
     }
@@ -189,7 +189,7 @@ Worker* PWMatrixWorkerFactory::createWorker(Actor* a) {
         w = new PWMatrixSearchWorker(a);
     }
 
-    return w;    
+    return w;
 }
 
 QString PWMatrixReadPrompter::composeRichDoc() {
@@ -250,7 +250,7 @@ Task* PWMatrixWriter::tick() {
         url = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
         fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
         QVariantMap data = inputMessage.getData().toMap();
-        
+
         PWMatrix model = data.value(PWMatrixWorkerFactory::WMATRIX_SLOT.getId()).value<PWMatrix>();
         QString anUrl = url;
         if (anUrl.isEmpty()) {
@@ -300,7 +300,7 @@ const Descriptor PFMatrixWorkerFactory::FMATRIX_SLOT("fmatrix", QObject::tr("Fre
 
 const Descriptor PFMatrixWorkerFactory::FREQUENCY_MATRIX_CATEGORY() {return Descriptor("hweightmatrix", WeightMatrixIO::tr("Weight matrix"), "");}
 
-PFMatrixIOProto::PFMatrixIOProto(const Descriptor& _desc, const QList<PortDescriptor*>& _ports, const QList<Attribute*>& _attrs ) 
+PFMatrixIOProto::PFMatrixIOProto(const Descriptor& _desc, const QList<PortDescriptor*>& _ports, const QList<Attribute*>& _attrs )
 : IntegralBusActorPrototype(_desc, _ports, _attrs) {
 }
 
@@ -322,7 +322,7 @@ bool PFMatrixIOProto::isAcceptableDrop(const QMimeData * md, QVariantMap * param
     return false;
 }
 
-ReadPFMatrixProto::ReadPFMatrixProto(const Descriptor& _desc, const QList<PortDescriptor*>& _ports, const QList<Attribute*>& _attrs ) 
+ReadPFMatrixProto::ReadPFMatrixProto(const Descriptor& _desc, const QList<PortDescriptor*>& _ports, const QList<Attribute*>& _attrs )
 : PFMatrixIOProto( _desc, _ports, _attrs ) {
 
     attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
@@ -336,7 +336,7 @@ bool ReadPFMatrixProto::isAcceptableDrop(const QMimeData * md, QVariantMap * par
     return PFMatrixIOProto::isAcceptableDrop( md, params, BaseAttributes::URL_IN_ATTRIBUTE().getId());
 }
 
-WritePFMatrixProto::WritePFMatrixProto(const Descriptor& _desc, const QList<PortDescriptor*>& _ports, const QList<Attribute*>& _attrs ) 
+WritePFMatrixProto::WritePFMatrixProto(const Descriptor& _desc, const QList<PortDescriptor*>& _ports, const QList<Attribute*>& _attrs )
 : PFMatrixIOProto( _desc, _ports, _attrs ) {
     attrs << new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true );
     attrs << new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
@@ -355,11 +355,11 @@ bool WritePFMatrixProto::isAcceptableDrop(const QMimeData * md, QVariantMap * pa
     return PFMatrixIOProto::isAcceptableDrop( md, params, BaseAttributes::URL_OUT_ATTRIBUTE().getId() );
 }
 
-void PFMatrixWorkerFactory::init() 
+void PFMatrixWorkerFactory::init()
 {
     ActorPrototypeRegistry* r = WorkflowEnv::getProtoRegistry();
     assert(r);
-    {        
+    {
         QMap<Descriptor, DataTypePtr> m;
         Descriptor sd(BaseSlots::URL_SLOT().getId(), WeightMatrixIO::tr("Location"), WeightMatrixIO::tr("Location hint for the target file."));
         m[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
@@ -377,11 +377,11 @@ void PFMatrixWorkerFactory::init()
     {
         QList<PortDescriptor*> p; QList<Attribute*> a;
         Descriptor pd(FMATRIX_OUT_PORT_ID, WeightMatrixIO::tr("Frequency matrix"), WeightMatrixIO::tr("Loaded weight matrices data."));
-        
+
         QMap<Descriptor, DataTypePtr> outM;
         outM[PFMatrixWorkerFactory::FMATRIX_SLOT] = PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE();
         p << new PortDescriptor(pd, DataTypePtr(new MapDataType("fmatrix.read.out", outM)), false /*input*/, true /*multi*/);
-        
+
         Descriptor desc(PFMatrixReader::ACTOR_ID, WeightMatrixIO::tr("Read Frequency Matrix"), WeightMatrixIO::tr("Reads frequency matrices from file(s). The files can be local or Internet URLs."));
         IntegralBusActorPrototype* proto = new ReadPFMatrixProto(desc, p, a);
         proto->setPrompter(new PFMatrixReadPrompter());
@@ -402,18 +402,18 @@ Worker* PFMatrixWorkerFactory::createWorker(Actor* a) {
     BaseWorker* w = NULL;
     if (PFMatrixReader::ACTOR_ID == a->getProto()->getId()) {
         w = new PFMatrixReader(a);
-    } 
+    }
     else if (PFMatrixWriter::ACTOR_ID == a->getProto()->getId()) {
         w = new PFMatrixWriter(a);
     }
     else if (PFMatrixBuildWorker::ACTOR_ID == a->getProto()->getId()) {
         w = new PFMatrixBuildWorker(a);
-    } 
+    }
     else if (PFMatrixConvertWorker::ACTOR_ID == a->getProto()->getId()) {
         w = new PFMatrixConvertWorker(a);
     }
 
-    return w;    
+    return w;
 }
 
 QString PFMatrixReadPrompter::composeRichDoc() {
@@ -475,7 +475,7 @@ Task* PFMatrixWriter::tick() {
         fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
         QVariantMap data = inputMessage.getData().toMap();
         PFMatrix model = data.value(PFMatrixWorkerFactory::FMATRIX_SLOT.getId()).value<PFMatrix>();
-        
+
         QString anUrl = url;
         if (anUrl.isEmpty()) {
             anUrl = data.value(BaseSlots::URL_SLOT().getId()).toString();

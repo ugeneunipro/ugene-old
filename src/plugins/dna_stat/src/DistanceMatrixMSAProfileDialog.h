@@ -45,7 +45,7 @@ public:
     virtual void accept();
 
 private slots:
-    
+
     void sl_selectFile();
     void sl_formatChanged(bool);
 
@@ -61,8 +61,8 @@ enum DistanceMatrixMSAProfileOutputFormat {
 
 class DistanceMatrixMSAProfileTaskSettings {
 public:
-    DistanceMatrixMSAProfileTaskSettings(){ 
-        outFormat = DistanceMatrixMSAProfileOutputFormat_Show; 
+    DistanceMatrixMSAProfileTaskSettings(){
+        outFormat = DistanceMatrixMSAProfileOutputFormat_Show;
         usePercents = false;
     }
 
@@ -73,7 +73,7 @@ public:
     bool                            usePercents; //report percents but not counts
     bool                            excludeGaps; //exclude gaps when calculate distance
     bool                            showGroupStatistic;
-    DistanceMatrixMSAProfileOutputFormat   outFormat;   
+    DistanceMatrixMSAProfileOutputFormat   outFormat;
     QString                         outURL;
     MSAEditor*                      ctx;
 };
@@ -88,14 +88,14 @@ public:
     void createDistanceTable(MSADistanceAlgorithm* algo, const QList<MAlignmentRow> &rows);
 
     QList<Task*> createStatisticsDocument(Task* subTask);
-    
+
     QList<Task*> onSubTaskFinished(Task* subTask);
-    //void run();    
+    //void run();
     ReportResult report();
 
 private:
-    
-    DistanceMatrixMSAProfileTaskSettings   s;        
+
+    DistanceMatrixMSAProfileTaskSettings   s;
     QString                         resultText;
 };
 

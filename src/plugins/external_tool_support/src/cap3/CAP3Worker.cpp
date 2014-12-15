@@ -423,7 +423,7 @@ Task * CAP3Worker::runCap3() {
     // Modify output file name, if required
     QString fileName = getValue<QString>(OUTPUT_FILE);
     const QString ext = ".ace";
-    
+
     if (datasetNumber > 0) {
         bool appendExtToResult = false;
         if (fileName.endsWith(ext)) {
@@ -435,7 +435,7 @@ Task * CAP3Worker::runCap3() {
         if (appendExtToResult) {
             fileName += ext;
         }
-        
+
         settings.outputFilePath = fileName;
     }
 

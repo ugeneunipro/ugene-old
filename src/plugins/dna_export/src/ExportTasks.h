@@ -80,7 +80,7 @@ private:
 class ExportMSA2MSATask : public DocumentProviderTask {
     Q_OBJECT
 public:
-    ExportMSA2MSATask(const MAlignment& ma, int offset, int len, const QString& url, 
+    ExportMSA2MSATask(const MAlignment& ma, int offset, int len, const QString& url,
         const QList<DNATranslation*>& aminoTranslations, DocumentFormatId format);
 
     void run();

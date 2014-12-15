@@ -40,7 +40,7 @@ public:
 
     virtual void launch(const SMatrix& m, const QByteArray  & _patternSeq, const QByteArray & _searchSeq,
         int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView);
-    
+
     QList<PairAlignSequences> getResults();
     static void sortByScore(QList<PairAlignSequences> & pairAlignmentStrings);
     static quint64 estimateNeededRamAmount(const qint32 gapOpen, const qint32 gapExtension,
@@ -55,7 +55,7 @@ public:
 protected:
     bool calculateMatrixLength();
     bool isValidParams();
-    void setValues(const SMatrix& _substitutionMatrix, 
+    void setValues(const SMatrix& _substitutionMatrix,
         const QByteArray & _patternSeq, const QByteArray & _searchSeq,
         int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView);
 
@@ -97,12 +97,12 @@ protected:
 
         void setValues(int _score, U2Region const & _intervalSeq1) {
             score = _score;
-            intervalSeq1 = _intervalSeq1;            
+            intervalSeq1 = _intervalSeq1;
         }
 
         int score;
         U2Region intervalSeq1;
-        
+
     };
 
 
@@ -110,7 +110,7 @@ private:
 
     QVector<QVector<int> > matrix;
     QVector<int> EMatrix;
-    QVector<int> FMatrix;    
+    QVector<int> FMatrix;
 
     void calculateMatrixForMultipleAlignmentResult();
     void calculateMatrixForAnnotationsResult();

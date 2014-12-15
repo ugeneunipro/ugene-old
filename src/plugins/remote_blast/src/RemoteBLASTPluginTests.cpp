@@ -30,14 +30,14 @@ namespace U2 {
 
 void GTest_RemoteBLAST::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
-    
+
     ao = NULL;
     task = NULL;
     sequence = el.attribute(SEQUENCE_ATTR);
     if (sequence.isEmpty()) {
         failMissingValue(SEQUENCE_ATTR);
         return;
-    } 
+    }
 
     algoritm = el.attribute(ALG_ATTR);
     if(algoritm.isEmpty()) {
@@ -126,7 +126,7 @@ void GTest_RemoteBLAST::init(XMLTestFormat *tf, const QDomElement& el) {
         addParametr(request,ReqParams::gapCost,gapCost);
 
         QString entrezQuery = el.attribute(ENTREZ_QUERY_ATTR);
-        if(false == entrezQuery.isEmpty()) 
+        if(false == entrezQuery.isEmpty())
             addParametr(request,ReqParams::entrezQuery,entrezQuery);
 
         QString alph = el.attribute(ALPH_ATTR);

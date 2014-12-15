@@ -36,7 +36,7 @@ namespace U2{
 
 class GSequenceGraphData;
 
-class GraphLabelsSelectDialog : public QDialog 
+class GraphLabelsSelectDialog : public QDialog
 {
     Q_OBJECT
 public:

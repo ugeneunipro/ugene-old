@@ -41,9 +41,9 @@ namespace U2 {
 class U2TEST_EXPORT GTestEnvironment {
 public:
     void setVar(const QString& varName, const QString& val) {vars[varName] = val;}
-    
+
     QString getVar(const QString& varName) const {return vars.value(varName);}
-    
+
     QMap<QString, QString> getVars() const {return vars;}
 
     bool containsEmptyVars() const {return vars.values().contains(QString(""));}
@@ -56,17 +56,17 @@ private:
 class U2TEST_EXPORT GTest : public Task {
     Q_OBJECT
 public:
-    GTest(const QString& taskName, GTest* cp, const GTestEnvironment* env, 
+    GTest(const QString& taskName, GTest* cp, const GTestEnvironment* env,
         TaskFlags flags, const QList<GTest*>& subtasks = QList<GTest*>());
 
     QObject* getContext(const QString& name) const;
-    
+
     void addContext(const QString& name, QObject* v);
 
     void removeContext(const QString& name);
 
     template <class T>
-    static T* getContext(const GTest* test, const QString& name) { 
+    static T* getContext(const GTest* test, const QString& name) {
         QObject* o = test->getContext(name);
         T* res = qobject_cast<T*>(o);
         return res;
@@ -78,7 +78,7 @@ protected:
     GTest* getContextProvider() const {return contextProvider;}
 
     void failMissingValue(const QString&);
-    
+
     GTest* contextProvider;
     const GTestEnvironment* env;
     QMap<QString, QObject*> subtestsContext;
@@ -100,7 +100,7 @@ protected:
 class GTestSuite;
 class U2TEST_EXPORT GTestRef {
 public:
-    GTestRef(const QString& _url, const QString& sName, const GTestFormatId f) 
+    GTestRef(const QString& _url, const QString& sName, const GTestFormatId f)
         : url(_url), shortName(sName), formatId(f){}
 
     const QString& getURL() const {return url;}
@@ -126,7 +126,7 @@ class U2TEST_EXPORT GTestState : public QObject {
     Q_OBJECT
 public:
     GTestState(GTestRef* ref) : testRef(ref), state(TriState_Unknown) {}
-    
+
     GTestRef* getTestRef() const {return testRef;}
 
     bool isPassed() const {return state == TriState_Yes;}
@@ -176,10 +176,10 @@ protected:
     GTestSuite()
         : url(), name(), tests(), excluded(), testTimeout(0), env()
     {}
-    
+
     QString url;
     QString name;
-    
+
     QList<GTestRef*> tests;
     QMap<GTestRef*, QString> excluded;
 

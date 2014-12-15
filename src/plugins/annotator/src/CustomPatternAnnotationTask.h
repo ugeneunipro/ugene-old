@@ -33,7 +33,7 @@
 #include <U2Core/Task.h>
 
 namespace U2 {
-   
+
 class AnnotationTableObject;
 
 #define PLASMID_FEATURES_GROUP_NAME "plasmid_features"
@@ -75,12 +75,12 @@ class CustomPatternAnnotationTask :  public Task
 {
     Q_OBJECT
 public:
-    CustomPatternAnnotationTask(AnnotationTableObject* aobj, const U2EntityRef& entityRef, const SharedFeatureStore& store, 
+    CustomPatternAnnotationTask(AnnotationTableObject* aobj, const U2EntityRef& entityRef, const SharedFeatureStore& store,
         const QStringList& filteredFeatures = QStringList() );
-    
+
     void prepare();
     QList<Task*> onSubTaskFinished(Task* subTask);
-    
+
     struct PatternInfo {
         QString name;
         bool forwardStrand;

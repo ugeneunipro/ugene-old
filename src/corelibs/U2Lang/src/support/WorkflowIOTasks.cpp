@@ -65,7 +65,7 @@ Task::ReportResult LoadWorkflowTask::report() {
     if(stateInfo.hasError()) {
         return ReportResult_Finished;
     }
-    
+
     QString err;
     if(format == HR) {
         err = HRSchemaSerializer::string2Schema(rawData, schema, meta, &remap);
@@ -77,7 +77,7 @@ Task::ReportResult LoadWorkflowTask::report() {
         // check in constructor
         assert(false);
     }
-    
+
     if(!err.isEmpty()) {
         setError(err);
         schema->reset();
@@ -115,7 +115,7 @@ void SaveWorkflowTask::run() {
     if(hasError() || isCanceled()) {
         return;
     }
-    
+
     QFile file(url);
     if(!file.open(QIODevice::WriteOnly)) {
         setError(L10N::errorOpeningFileWrite(url));

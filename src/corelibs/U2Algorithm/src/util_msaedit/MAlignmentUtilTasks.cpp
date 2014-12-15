@@ -48,7 +48,7 @@ TranslateMSA2AminoTask::TranslateMSA2AminoTask( MAlignmentObject* obj )
     SAFE_POINT_EXT(NULL != maObj, setError(tr("Invalid MSA object detected")),);
     SAFE_POINT_EXT(maObj->getAlphabet()->isNucleic(), setError(tr("Multiple alignment already has amino-acid alphabet")),);
 
-    QList<DNATranslation*> translations = 
+    QList<DNATranslation*> translations =
         AppContext::getDNATranslationRegistry()->lookupTranslation(maObj->getAlphabet(), DNATranslationType_NUCL_2_AMINO);
     CHECK_EXT(translations.isEmpty(), setError(tr("Unable to find suitable translation for %1").arg(maObj->getGObjectName())), );
 

@@ -135,4 +135,4 @@ void GraphSettingsDialog::sl_onOkClicked()
     QMessageBox::critical(this, windowTitle(), err.append(' ').append(mmerr));
 }
 
-} // namespace 
+} // namespace

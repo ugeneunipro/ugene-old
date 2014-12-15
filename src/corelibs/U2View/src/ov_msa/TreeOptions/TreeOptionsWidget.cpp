@@ -92,7 +92,7 @@ TreeOptionsWidget::TreeOptionsWidget(TreeViewer* tree, const TreeOpWidgetViewSet
     U2WidgetStateStorage::restoreWidgetState(savableTab);
 }
 
-TreeOptionsWidget::~TreeOptionsWidget() 
+TreeOptionsWidget::~TreeOptionsWidget()
 {
     emit saveViewSettings(getViewSettings());
     delete contentWidget;
@@ -117,7 +117,7 @@ void TreeOptionsWidget::createGroups() {
     mainLayout->addWidget(labelsOpGroup);
     branchesOpGroup = new ShowHideSubgroupWidget("TREE_BRANCHES_OP", tr("Branches"), branchesGroup, viewSettings.openBranchesGroup);
     mainLayout->addWidget(branchesOpGroup);
-    
+
     updateAllWidgets();
     connectSlots();
 }
@@ -146,7 +146,7 @@ void TreeOptionsWidget::connectSlots()
     // General settings widgets
     connect(treeViewCombo, SIGNAL(currentIndexChanged(int)), SLOT(sl_onGeneralSettingsChanged()));
     connect(layoutCombo,   SIGNAL(currentIndexChanged(int)), SLOT(sl_onLayoutChanged(int)));
-    
+
     connect(getTreeViewer(), SIGNAL(si_settingsChanged(TreeSettingsType)), SLOT(sl_onSettingsChanged(TreeSettingsType)));
 
     //Labels settings widgets
@@ -265,7 +265,7 @@ void TreeOptionsWidget::sl_onGeneralSettingsChanged()
 {
     treeSettings.height_coef = heightSlider->value();
     treeSettings.width_coef = widthSlider->value();
-    
+
     if (treeViewCombo->currentText() == TreeSettingsDialog::treeDefaultText())
     {
         treeSettings.type = TreeSettings::DEFAULT;
@@ -418,7 +418,7 @@ void TreeOptionsWidget::updateShowPenOpLabel(QString newText) {
 
 
 AddTreeWidget::AddTreeWidget(MSAEditor* msa)
-    : editor(msa), openTreeButton(NULL), buildTreeButton(NULL), addTreeHint(NULL) 
+    : editor(msa), openTreeButton(NULL), buildTreeButton(NULL), addTreeHint(NULL)
 {
     setObjectName( "AddTreeWidget" );
     QVBoxLayout* mainLayout = initLayout(this);

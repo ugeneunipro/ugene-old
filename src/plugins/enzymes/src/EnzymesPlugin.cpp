@@ -63,18 +63,18 @@ extern "C" Q_DECL_EXPORT Plugin * U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
-EnzymesPlugin::EnzymesPlugin() : Plugin( tr("Restriction analysis"), 
+EnzymesPlugin::EnzymesPlugin() : Plugin( tr("Restriction analysis"),
                                         tr("Finds and annotates restriction sites on a DNA sequence.") ),
                                         ctxADV(NULL)
 {
     if (AppContext::getMainWindow()) {
-        createToolsMenu();     
-        
+        createToolsMenu();
+
         QList<QAction*> actions;
         actions.append(openDigestSequenceDialog);
         actions.append(openConstructMoleculeDialog);
         actions.append(openCreateFragmentDialog);
-        
+
         ctxADV = new EnzymesADVContext(this,actions);
         ctxADV->init();
 
@@ -95,7 +95,7 @@ EnzymesPlugin::EnzymesPlugin() : Plugin( tr("Restriction analysis"),
     GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
     l->qlist = EnzymeTests::createTestFactories();
 
-    foreach(XMLTestFactory* f, l->qlist) { 
+    foreach(XMLTestFactory* f, l->qlist) {
         bool res = xmlTestFormat->registerTestFactory(f);
         assert(res);
         Q_UNUSED(res);
@@ -110,15 +110,15 @@ void EnzymesPlugin::createToolsMenu()
     openConstructMoleculeDialog->setObjectName("Construct Molecule");
     openCreateFragmentDialog = new QAction(tr("Create Fragment..."), this);
     openCreateFragmentDialog->setObjectName("Create Fragment");
-    
+
     QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-    
+
     QMenu* cloningMenu = tools->addMenu(QIcon(":core/images/dna_helix.png"), tr("Cloning"));
     cloningMenu->menuAction()->setObjectName("Cloning");
-    
+
     cloningMenu->addAction(openDigestSequenceDialog);
-    connect(openDigestSequenceDialog, SIGNAL(triggered()), SLOT(sl_onOpenDigestSequenceDialog()));   
-    
+    connect(openDigestSequenceDialog, SIGNAL(triggered()), SLOT(sl_onOpenDigestSequenceDialog()));
+
     cloningMenu->addAction(openConstructMoleculeDialog);
     connect(openConstructMoleculeDialog, SIGNAL(triggered()), SLOT(sl_onOpenConstructMoleculeDialog()));
 
@@ -129,7 +129,7 @@ void EnzymesPlugin::createToolsMenu()
 void EnzymesPlugin::sl_onOpenDigestSequenceDialog()
 {
     GObjectViewWindow* w = GObjectViewUtils::getActiveObjectViewWindow();
-    
+
     if (w == NULL) {
         QMessageBox::information(QApplication::activeWindow(), openDigestSequenceDialog->text(),
             tr("There is no active sequence object.\nTo start partition open sequence document.") );
@@ -153,8 +153,8 @@ void EnzymesPlugin::sl_onOpenDigestSequenceDialog()
 
     DigestSequenceDialog dlg(view->getSequenceInFocus(), QApplication::activeWindow());
     dlg.exec();
-        
-    
+
+
 }
 
 
@@ -223,7 +223,7 @@ void EnzymesADVContext::initViewContext(GObjectView* view) {
     a->setObjectName("Find restriction sites");
     a->addAlphabetFilter(DNAAlphabet_NUCL);
     connect(a, SIGNAL(triggered()), SLOT(sl_search()));
-    
+
     createPCRProductAction = new GObjectViewAction(av, av, "Create PCR product...");
     connect(createPCRProductAction, SIGNAL(triggered()), SLOT(sl_createPCRProduct()));
 
@@ -255,17 +255,17 @@ void EnzymesADVContext::buildMenu( GObjectView* v, QMenu* m ) {
     if (!av->getSequenceInFocus()->getAlphabet()->isNucleic()) {
         return;
     }
-        
+
     QMenu* cloningMenu = new QMenu(tr("Cloning"), m);
     cloningMenu->menuAction()->setObjectName("Cloning");
     cloningMenu->addActions(cloningActions);
-    
+
     QAction* exportMenuAction = GUIUtils::findAction(m->actions(), ADV_MENU_EXPORT);
     m->insertMenu(exportMenuAction, cloningMenu);
 
     if(!av->getAnnotationsSelection()->getSelection().isEmpty()) {
         QString annName = av->getAnnotationsSelection()->getSelection().first().annotation.getName();
-        
+
         if (annName == PRIMER_ANNOTATION_NAME) {
             cloningMenu->addAction( createPCRProductAction );
         }

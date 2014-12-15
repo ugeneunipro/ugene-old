@@ -75,7 +75,7 @@ MrBayesWidget::MrBayesWidget(QWidget* parent, const MAlignment& ma): CreatePhyTr
 
     connect(rateVariationCombo, SIGNAL(currentIndexChanged(const QString&)), SLOT(sl_onRateChanged(const QString&)));
     rateVariationCombo->addItems(MrBayesVariationTypes::getVariationTypes());
-    
+
     seedSpin->setValue(getRandomSeed());
 
     gammaCategoriesSpin->setValue(AppContext::getSettings()->getValue(CreatePhyTreeWidget::settingsPath + MR_BAYES_GAMMA, 4).toInt());
@@ -104,7 +104,7 @@ void MrBayesWidget::sl_onRateChanged(const QString& modelName){
 void MrBayesWidget::fillSettings(CreatePhyTreeSettings& settings){
     settings.mb_ngen = ngenSpin->value();
     settings.mrBayesSettingsScript = generateMrBayesSettingsScript();
-} 
+}
 void MrBayesWidget::storeSettings(){
     AppContext::getSettings()->setValue(CreatePhyTreeWidget::settingsPath + MR_BAYES_MODEL_TYPE, modelTypeCombo->currentText());
     AppContext::getSettings()->setValue(CreatePhyTreeWidget::settingsPath + MR_BAYES_RATE_VATIATION, rateVariationCombo->currentText());
@@ -144,7 +144,7 @@ void MrBayesWidget::setComboText(QComboBox* combo, const QString& text){
             combo->setCurrentIndex(i);
             break;
         }
-    }  
+    }
 }
 
 #define SEED_MIN 5
@@ -153,7 +153,7 @@ void MrBayesWidget::setComboText(QComboBox* combo, const QString& text){
 int MrBayesWidget::getRandomSeed(){
     int seed = 0;
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-    seed = qAbs(qrand()); 
+    seed = qAbs(qrand());
 
     while(!((seed >= SEED_MIN) && (seed <=SEED_MAX))){
         seed++;
@@ -198,7 +198,7 @@ bool MrBayesWidget::checkSettings(QString& , const CreatePhyTreeSettings& ){
     U2OpStatus2Log os(LogLevel_DETAILS);
     ExternalToolSupportSettings::checkTemporaryDir(os);
     CHECK_OP(os, false);
-    
+
     return true;
 }
 
@@ -246,7 +246,7 @@ QString MrBayesWidget::generateMrBayesSettingsScript(){
     temp = tempSpin->value();
     burnin = burninSpin->value();
 
-    script = script.append("mcmc ngen=%1 samplefreq=%2 printfreq=%3 nchains=%4 temp=%5 savebrlens=yes " 
+    script = script.append("mcmc ngen=%1 samplefreq=%2 printfreq=%3 nchains=%4 temp=%5 savebrlens=yes "
         "starttree=random;\n").arg(ngen).arg(sfreq).arg(printfreq).arg(nchains).arg(temp).arg(seed);
 
     if(sfreq < burnin) burnin = 0;

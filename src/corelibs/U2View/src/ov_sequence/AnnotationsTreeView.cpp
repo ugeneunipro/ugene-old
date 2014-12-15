@@ -98,7 +98,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
 
     tree->setSortingEnabled(true);
     tree->sortItems(0, Qt::AscendingOrder);
-    
+
     tree->setColumnCount(2);
     headerLabels << tr("Name") << tr("Value");
 
@@ -118,7 +118,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
     layout->setMargin(0);
     layout->addWidget(tree);
     setLayout(layout);
-    
+
     restoreWidgetState();
 
     connect(ctx, SIGNAL(si_buildPopupMenu(GObjectView*, QMenu*)), SLOT(sl_onBuildPopupMenu(GObjectView*, QMenu*)));
@@ -143,7 +143,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
 
     addColumnIcon = QIcon(":core/images/add_column.png");
     removeColumnIcon = QIcon(":core/images/remove_column.png");
-    
+
     addAnnotationObjectAction = new QAction(tr("Objects with annotations..."), this);
     connect(addAnnotationObjectAction, SIGNAL(triggered()), SLOT(sl_onAddAnnotationObjectToView()));
 
@@ -224,7 +224,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
     tree->setAcceptDrops(true);
 }
 
-void AnnotationsTreeView::restoreWidgetState() { 
+void AnnotationsTreeView::restoreWidgetState() {
     QStringList geom = AppContext::getSettings()->getValue(SETTINGS_ROOT + COLUMN_SIZES, QStringList()).toStringList();
     if (geom.isEmpty()) {
         tree->setColumnWidth(0, 300);
@@ -308,7 +308,7 @@ AVAnnotationItem * AnnotationsTreeView::findAnnotationItem( const AnnotationGrou
     return findAnnotationItem( groupItem, a );
 }
 
-/** This method is optimized to use annotation groups. 
+/** This method is optimized to use annotation groups.
 So can only be used for annotations that belongs to some object */
 QList<AVAnnotationItem *> AnnotationsTreeView::findAnnotationItems( const Annotation &a ) const {
     QList<AVAnnotationItem *> res;
@@ -399,11 +399,11 @@ void AnnotationsTreeView::sl_onAnnotationSelectionChanged( AnnotationSelection *
         }
         toVisible = item;
     }
-    
+
     if( !selectedItems.isEmpty( ) ) {
         tree->setCurrentItem( selectedItems.last( ), 0, QItemSelectionModel::NoUpdate );
     }
-    
+
     connect( tree, SIGNAL( itemSelectionChanged( ) ), SLOT( sl_onItemSelectionChanged( ) ) );
 
     //make item visible if special conditions are met
@@ -413,9 +413,9 @@ void AnnotationsTreeView::sl_onAnnotationSelectionChanged( AnnotationSelection *
     updateState( );
 }
 
-void AnnotationsTreeView::sl_onAnnotationGroupSelectionChanged( AnnotationGroupSelection* s, 
-                                                               const QList<AnnotationGroup>& added, 
-                                                               const QList<AnnotationGroup>& removed) 
+void AnnotationsTreeView::sl_onAnnotationGroupSelectionChanged( AnnotationGroupSelection* s,
+                                                               const QList<AnnotationGroup>& added,
+                                                               const QList<AnnotationGroup>& removed)
 {
     Q_UNUSED(s);
 
@@ -441,9 +441,9 @@ void AnnotationsTreeView::sl_onAnnotationGroupSelectionChanged( AnnotationGroupS
 
 void AnnotationsTreeView::sl_onAnnotationObjectAdded( AnnotationTableObject *obj ) {
     TreeSorter ts( this );
-    
+
     SAFE_POINT( findGroupItem( obj->getRootGroup( ) ) == NULL, "Invalid annotation group!", );
-    
+
     AVGroupItem *groupItem = buildGroupTree( NULL, obj->getRootGroup( ) );
     SAFE_POINT( NULL != groupItem, "creating AVGroupItem failed", );
     tree->addTopLevelItem( groupItem );
@@ -551,7 +551,7 @@ void AnnotationsTreeView::sl_onAnnotationsAdded( const QList<Annotation> &as ) {
 
 void AnnotationsTreeView::sl_onAnnotationsRemoved( const QList<Annotation> &as ) {
     TreeSorter ts( this );
-    
+
     tree->disconnect( this, SIGNAL( sl_onItemSelectionChanged( ) ) );
 
     AnnotationTableObject *aObj = qobject_cast<AnnotationTableObject *>( sender( ) );
@@ -654,7 +654,7 @@ void AnnotationsTreeView::sl_onGroupRemoved( const AnnotationGroup &parent,
     }
 
     tree->disconnect( this, SIGNAL( sl_onItemSelectionChanged( ) ) );
-    
+
     for ( int i = 0, n = pg->childCount( ); i < n; i++ ) {
         AVItem *item = static_cast<AVItem *>( pg->child( i ) );
         if ( AVItemType_Group == item->type
@@ -721,7 +721,7 @@ void AnnotationsTreeView::populateAnnotationQualifiers( AVAnnotationItem *ai ) {
 class SettingsUpdater : public TreeWidgetVisitor {
 public:
     SettingsUpdater(const QStringList& cs) : changedSettings(cs) {}
-    
+
     bool isChildVisitRequired(QTreeWidgetItem* ti) {
         AVItem* item = static_cast<AVItem*>(ti);
         assert(item->type != AVItemType_Qualifier);
@@ -786,13 +786,13 @@ void AnnotationsTreeView::updateColumnContextActions(AVItem* item, int col) {
 void AnnotationsTreeView::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
     // Add actions that not depends on the point popup is called
     adjustMenu(m);
-    
+
     QPoint globalPos = QCursor::pos();
     QPoint treePos = tree->mapFromGlobal(globalPos);
     if (!tree->rect().contains(treePos)) {
         return;
     }
-    
+
     // Check is popup is called for column header
     QHeaderView* header = tree->header();
     QPoint headerPoint = header->mapFromGlobal(globalPos);
@@ -821,7 +821,7 @@ void AnnotationsTreeView::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
             tree->setItemSelected(item, true);
         }
     }
-    
+
     //Update column sensitive actions that appears only in context menu
     selItems = tree->selectedItems();
     lastClickedColumn = tree->columnAt(viewportPos.x());
@@ -903,7 +903,7 @@ void AnnotationsTreeView::sl_onAddAnnotationObjectToView() {
     foreach(GObject* obj, objs) {
         assert(obj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE);
         ctx->tryAddObject(obj);
-    } 
+    }
 }
 
 
@@ -1017,7 +1017,7 @@ void AnnotationsTreeView::sl_removeAnnsAndQs() {
         const U2Qualifier& q = qualsToRemove.at(i);
         a.removeQualifier(q);
     }
-    
+
     //remove selected annotations now
     QList<AVAnnotationItem*> annotationItemsToRemove = selectAnnotationItems(tree->selectedItems(), TriState_No);
     QMultiMap<AnnotationGroup, Annotation> annotationsByGroup;
@@ -1048,9 +1048,9 @@ void AnnotationsTreeView::sl_removeAnnsAndQs() {
 
 void AnnotationsTreeView::updateState() {
     QList<QTreeWidgetItem*> items = tree->selectedItems();
-    
+
     QList<AVGroupItem*> topLevelGroups = selectGroupItems(items, TriState_Unknown, TriState_Yes);
-   
+
     bool hasAutoAnnotationObjects = false;
     foreach (AVGroupItem* item, topLevelGroups) {
         AnnotationTableObject* aObj = item->getAnnotationTableObject();
@@ -1059,7 +1059,7 @@ void AnnotationsTreeView::updateState() {
             break;
         }
     }
-    
+
     removeObjectsFromViewAction->setEnabled(!topLevelGroups.isEmpty() && !hasAutoAnnotationObjects);
 
     QList<AVGroupItem*> nonRootModGroups = selectGroupItems(items, TriState_No, TriState_No);
@@ -1072,12 +1072,12 @@ void AnnotationsTreeView::updateState() {
 
     copyQualifierAction->setEnabled(hasOnly1QualifierSelected);
     copyQualifierAction->setText(hasOnly1QualifierSelected ? tr("Copy qualifier '%1' value").arg(qName) : tr("Copy qualifier text"));
-    
+
     bool hasOnly1QualifierSelectedWithURL = hasOnly1QualifierSelected && (static_cast<AVItem*>(items.first()))->isColumnLinked(1);
     copyQualifierURLAction->setEnabled(hasOnly1QualifierSelectedWithURL);
     copyQualifierURLAction->setText(hasOnly1QualifierSelectedWithURL ? tr("Copy qualifier '%1' URL").arg(qName) : tr("Copy qualifier URL"));
 
-    
+
     toggleQualifierColumnAction->setEnabled(hasOnly1QualifierSelected);
     bool hasColumn = qColumns.contains(qName);
     toggleQualifierColumnAction->setText(!hasOnly1QualifierSelected ? tr("Toggle column")
@@ -1091,7 +1091,7 @@ void AnnotationsTreeView::updateState() {
     renameAction->setEnabled(editableItemSelected);
     editAction->setEnabled(hasOnly1QualifierSelected && editableItemSelected);
     viewAction->setEnabled(hasOnly1QualifierSelected);
-    
+
     bool hasEditableAnnotationContext = editableItemSelected && (ci->type == AVItemType_Annotation || ci->type == AVItemType_Qualifier);
     addQualifierAction->setEnabled(hasEditableAnnotationContext);
 }
@@ -1208,12 +1208,12 @@ bool AnnotationsTreeView::eventFilter(QObject* o, QEvent* e) {
                     uiLog.trace("Drag event in Annotations view : source is read-only, can't move");
                     return true;
                 }
-                
+
                 for (AVItem *itemi = dynamic_cast<AVItem*>(item); itemi != NULL; itemi = dynamic_cast<AVItem*>(itemi->parent())) {
                     if (itemi->type == AVItemType_Group) {
                         for (int i = 0, s = dndSelItems.size(); i < s; ++i) {
                             AVItem* dndItem = dndSelItems[i];
-                            if (dndItem == itemi) { // do not allow drop group into itself 
+                            if (dndItem == itemi) { // do not allow drop group into itself
                                 de->ignore();
                                 uiLog.trace("Drag event in Annotations view : can't move group into itself!");
                                 return true;
@@ -1284,7 +1284,7 @@ bool AnnotationsTreeView::initiateDragAndDrop(QMouseEvent* ) {
     uiLog.trace("Starting drag & drop in annotations view");
 
     resetDragAndDropData();
-    
+
     // Now filter selection: keep only parent items in the items list, remove qualifiers, check if 'move' is allowed
     QList<QTreeWidgetItem*> initialSelItems = tree->selectedItems(); // whole selection will be moved
     dndCopyOnly = false; // allow 'move' by default first
@@ -1296,13 +1296,13 @@ bool AnnotationsTreeView::initiateDragAndDrop(QMouseEvent* ) {
         if (AutoAnnotationsSupport::isAutoAnnotation(ao)) {
             //  only allow to drag top-level auto annotations groups
             if (!(itemi->type == AVItemType_Group && itemi->parent() != NULL)) {
-                continue;    
+                continue;
             }
         }
         if (!dndCopyOnly && isReadOnly(itemi)) {
             dndCopyOnly = true;
         }
-        if (itemi->type == AVItemType_Annotation) { 
+        if (itemi->type == AVItemType_Annotation) {
             // if annotation group is in the selection -> remove annotation from the list, it will be moved/copied automatically with group
             bool addItem = true;
             for (QTreeWidgetItem *cur = itemi->parent(); cur != NULL; cur = cur->parent()) {
@@ -1315,7 +1315,7 @@ bool AnnotationsTreeView::initiateDragAndDrop(QMouseEvent* ) {
                 dndSelItems.append(itemi);
             }
         } else if (itemi->type == AVItemType_Qualifier) { // remove qualifiers from selection
-            itemi->setSelected(false); 
+            itemi->setSelected(false);
         } else {
             SAFE_POINT(itemi->type == AVItemType_Group, "An unexpected tree item type", false);
             if (itemi->parent() == NULL) { // object level group -> add all subgroups
@@ -1339,7 +1339,7 @@ bool AnnotationsTreeView::initiateDragAndDrop(QMouseEvent* ) {
     //QStringList annotationsAndGroupsRefs;
     QByteArray serializedReferences;
     serializedReferences.append(serializedReferences);
-    
+
     // initiate dragging
     QMimeData* mimeData = new QMimeData();
     mimeData->setData(annotationMimeType, serializedReferences);
@@ -1382,7 +1382,7 @@ void AnnotationsTreeView::finishDragAndDrop(Qt::DropAction dndAction) {
     const QString destGroupPath = dropDestination->group.getGroupPath();
 
     QList<AnnotationGroup> affectedGroups;
-    QList<AnnotationDnDInfo> affectedAnnotations; 
+    QList<AnnotationDnDInfo> affectedAnnotations;
     QList<Task*> moveAutoAnnotationTasks;
     QStringList manualCreationGroups;
 
@@ -1539,7 +1539,7 @@ void AnnotationsTreeView::sl_itemExpanded(QTreeWidgetItem* qi) {
     } else {
         assert(ai->childIndicatorPolicy() == QTreeWidgetItem::DontShowIndicatorWhenChildless);
     }
-   
+
 }
 
 void AnnotationsTreeView::sl_onCopyQualifierValue() {
@@ -1623,7 +1623,7 @@ void AnnotationsTreeView::addQualifierColumn(const QString& q) {
     tree->setHeaderLabels(headerLabels + qColumns);
     tree->setColumnWidth(nColumns-2, nColumns - 2 == 1 ? 200 : 100);
     updateAllAnnotations(ATVAnnUpdateFlag_QualColumns);
-    
+
     updateState();
 }
 
@@ -1639,7 +1639,7 @@ void AnnotationsTreeView::removeQualifierColumn(const QString& q) {
     tree->setColumnCount(headerLabels.size() + qColumns.size());
     tree->setHeaderLabels(headerLabels + qColumns);
     updateAllAnnotations(ATVAnnUpdateFlag_QualColumns);
-    
+
     updateState();
 }
 
@@ -1647,7 +1647,7 @@ void AnnotationsTreeView::removeQualifierColumn(const QString& q) {
 
 void AnnotationsTreeView::saveState(QVariantMap& map) const {
     map.insert(COLUMN_NAMES, QVariant(qColumns));
-    
+
     QStringList columns = map.value(COLUMN_NAMES).toStringList();
     assert(columns == qColumns);
 }
@@ -1655,7 +1655,7 @@ void AnnotationsTreeView::saveState(QVariantMap& map) const {
 void AnnotationsTreeView::updateState(const QVariantMap& map) {
     QStringList columns = map.value(COLUMN_NAMES).toStringList();
     //QByteArray geom = map.value(COLUMNS_GEOM).toByteArray();
-    
+
     if (columns != qColumns && !columns.isEmpty()) {
         TreeSorter ts(this);
         foreach(QString q, qColumns) {
@@ -1712,7 +1712,7 @@ void AnnotationsTreeView::editItem(AVItem* item) {
             AVQualifierItem* qi = ai->findQualifierItem(q.name, q.value);
             tree->setCurrentItem(qi);
             tree->scrollToItem(qi);
-        }  
+        }
     }
 }
 
@@ -1924,7 +1924,7 @@ bool AVItem::processLinks(const QString& qName, const QString& qValue, int col) 
         if (linked) {
             setData(col, Qt::UserRole, true);
         }
-    } 
+    }
 
     if (linked) {
         QFont f = font(col);
@@ -1963,7 +1963,7 @@ QString AVItem::getFileUrl(int col) const {
 }
 
 AVGroupItem::AVGroupItem(AnnotationsTreeView* _atv, AVGroupItem* parent, const AnnotationGroup &g)
-    : AVItem(parent, AVItemType_Group), group(g), atv(_atv) 
+    : AVItem(parent, AVItemType_Group), group(g), atv(_atv)
 {
     updateVisual();
 }
@@ -1988,7 +1988,7 @@ void AVGroupItem::updateVisual( int removedAnnotationCount ) {
             const QString docShortName = aobj->getDocument( )->getName( );
             SAFE_POINT( !docShortName.isEmpty( ), "Invalid document name detected!", );
             text = group.getGObject( )->getGObjectName( ) + " [" + docShortName + "]";
-            if ( aobj->isTreeItemModified( ) ) { 
+            if ( aobj->isTreeItemModified( ) ) {
                 text += " *";
             }
         }
@@ -2082,7 +2082,7 @@ void AVAnnotationItem::updateVisual( ATVAnnUpdateFlags f ) {
     const AnnotationData aData = annotation.getData( );
     AnnotationSettingsRegistry *registry = AppContext::getAnnotationsSettingsRegistry( );
     const AnnotationSettings* as = registry->getAnnotationSettings( aData );
-    
+
     if ( f.testFlag(ATVAnnUpdateFlag_BaseColumns ) ) {
         QMap<QString, QIcon> &cache = getIconsCache( );
         QIcon icon = cache.value( aData.name );
@@ -2172,7 +2172,7 @@ bool AVAnnotationItem::operator<(const QTreeWidgetItem & other) const {
 bool AVAnnotationItem::isColumnNumeric(int col) const {
     if (col == 0) {
         return false;
-    } 
+    }
     if (col == 1) {
         return true;
     }
@@ -2220,7 +2220,7 @@ AVQualifierItem* AVAnnotationItem::findQualifierItem(const QString& name, const 
     return NULL;
 }
 
-AVQualifierItem::AVQualifierItem(AVAnnotationItem* parent, const U2Qualifier& q) 
+AVQualifierItem::AVQualifierItem(AVAnnotationItem* parent, const U2Qualifier& q)
 : AVItem(parent, AVItemType_Qualifier), qName(q.name), qValue(q.value)
 {
     setText(0, qName);
@@ -2278,7 +2278,7 @@ void FindQualifierTask::run(){
                 break;
             }
         }
-    } 
+    }
     foundResult = !foundQuals.isEmpty();
     stateInfo.setProgress(100);
 }
@@ -2331,7 +2331,7 @@ void FindQualifierTask::findInGroup(AVItem* group, bool& found){
                 break;
             }
         }
-    } 
+    }
 }
 
 int FindQualifierTask::getStartIndexGroup( AVItem* group ){
@@ -2359,7 +2359,7 @@ int FindQualifierTask::getStartIndexGroup( AVItem* group ){
 
 int FindQualifierTask::getStartIndexAnnotation( AVItem* annotation ){
     int result = 0;
-    
+
     if(resultAnnotation){
         if (resultAnnotation == annotation){
             result = indexOfResult + 1; //start from the next qualifier in the annotation

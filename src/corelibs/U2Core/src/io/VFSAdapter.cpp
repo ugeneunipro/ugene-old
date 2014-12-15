@@ -60,7 +60,7 @@ bool VFSAdapter::open(const GUrl& _url, IOAdapterMode m) {
     if( NULL == vfs ) {
         return false; // no such vfs registered
     }
-    
+
     if( !vfs->fileExists( urlArgs[1] ) ) {
         if( IOAdapterMode_Read == m ) {
             return false;
@@ -68,7 +68,7 @@ bool VFSAdapter::open(const GUrl& _url, IOAdapterMode m) {
             vfs->createFile( urlArgs[1], QByteArray() );
         }
     }
-    
+
     buffer = new QBuffer( &vfs->getFileByName( urlArgs[1] ) );
     QIODevice::OpenMode iomode = m == IOAdapterMode_Read ? QIODevice::ReadOnly : QIODevice::WriteOnly | QIODevice::Truncate;
     if (!buffer->open(iomode)) {

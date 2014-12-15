@@ -203,7 +203,7 @@ U2ErrorType WorkflowElementFacade::getWriteElementTypeForSlot( const QString &sl
     CHECK( U2_OK != result, result );
     U2::Workflow::ActorPrototypeRegistry *prototypeRegistry
         = U2::Workflow::WorkflowEnv::getProtoRegistry( );
-    QMap<Descriptor, QList<ActorPrototype*> > allElements 
+    QMap<Descriptor, QList<ActorPrototype*> > allElements
         = prototypeRegistry->getProtos();
     QMapIterator < Descriptor, QList<ActorPrototype*> > iterr(allElements);
     while ( iterr.hasNext() ) {
@@ -220,21 +220,21 @@ U2ErrorType WorkflowElementFacade::getWriteElementTypeForSlot( const QString &sl
                         writerType = (*currElement)->getId();
                         return U2_OK;
                     }
-                }    
+                }
             }
             currElement++;
         }
-        
+
     }
     return U2_ELEMENT_NOT_FOUND;
 }
 
-U2ErrorType getConvenientPortIdForSlot(const QString &elementId, const QString &slotId, 
-    QString &portId, bool isInput ) 
+U2ErrorType getConvenientPortIdForSlot(const QString &elementId, const QString &slotId,
+    QString &portId, bool isInput )
 {
     U2::Workflow::ActorPrototypeRegistry *prototypeRegistry
         = U2::Workflow::WorkflowEnv::getProtoRegistry( );
-    QMap<Descriptor, QList<ActorPrototype*> > allElements 
+    QMap<Descriptor, QList<ActorPrototype*> > allElements
         = prototypeRegistry->getProtos();
     QMapIterator <Descriptor, QList<ActorPrototype*> > iterr(allElements);
     while ( iterr.hasNext() ) {
@@ -262,14 +262,14 @@ U2ErrorType getConvenientPortIdForSlot(const QString &elementId, const QString &
     return U2_ELEMENT_NOT_FOUND;
 }
 
-U2ErrorType WorkflowElementFacade::getInputPortIdForSlot( const QString &elementId, const QString &slotId, 
-    QString &portId ) 
+U2ErrorType WorkflowElementFacade::getInputPortIdForSlot( const QString &elementId, const QString &slotId,
+    QString &portId )
 {
     bool isInput = true;
     return getConvenientPortIdForSlot(elementId, slotId, portId, isInput);
 }
 
-U2ErrorType WorkflowElementFacade::getOutputPortIdForSlot( const QString &elementId, const QString &slotId, 
+U2ErrorType WorkflowElementFacade::getOutputPortIdForSlot( const QString &elementId, const QString &slotId,
     QString &portId )
 {
     bool isInput = false;

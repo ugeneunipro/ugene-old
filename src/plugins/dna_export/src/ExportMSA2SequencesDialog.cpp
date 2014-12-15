@@ -42,14 +42,14 @@
 namespace U2 {
 
 ExportMSA2SequencesDialog::ExportMSA2SequencesDialog(QWidget* p): QDialog(p) {
-    setupUi(this);    
+    setupUi(this);
     new HelpButton(this, buttonBox, "4227246");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     trimGapsFlag = false;
     addToProjectFlag = true;
-    
+
     SaveDocumentGroupControllerConfig conf;
     conf.dfc.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
     conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
@@ -68,7 +68,7 @@ void ExportMSA2SequencesDialog::accept() {
         QMessageBox::critical(this, L10N::errorTitle(), tr("File name is empty!"));
         return;
     }
-    
+
     url = saveContoller->getSaveFileName();
     format = saveContoller->getFormatIdToSave();
     trimGapsFlag = trimGapsRB->isChecked();

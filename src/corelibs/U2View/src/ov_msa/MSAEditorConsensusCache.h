@@ -42,7 +42,7 @@ public:
     ~MSAEditorConsensusCache();
 
     char getConsensusChar(int pos);
-    
+
     int getConsensusCharPercent(int pos);
 
     int getConsensusLength() const { return cache.size(); }

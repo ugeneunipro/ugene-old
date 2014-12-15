@@ -41,7 +41,7 @@ public:
     static const QString RUN_WORKFLOW;
     static const QString REMOTE_MACHINE;
     static const QString PRINT;
-    
+
 public:
     WorkflowDesignerPlugin ();
     //~WorkflowDesignerPlugin ();
@@ -49,11 +49,11 @@ private:
     void registerCMDLineHelp();
     void registerWorkflowTasks();
     void processCMDLineOptions();
-    
+
 private slots:
     void sl_saveSchemaImageTaskFinished();
     void sl_initWorkers();
-    
+
 };
 
 class WorkflowDesignerService : public Service {

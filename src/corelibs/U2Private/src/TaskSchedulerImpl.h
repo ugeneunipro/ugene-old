@@ -58,7 +58,7 @@ public:
     QMutex subtasksLocker;
     QList<Task *> unconsideredNewSubtasks;
     volatile bool newSubtasksObtained;
-    
+
     QWaitCondition pauser;
     volatile bool isPaused;
     QMutex pauseLocker;
@@ -77,15 +77,15 @@ private:
 
 class TaskInfo {
 public:
-    TaskInfo(Task* t, TaskInfo* p) 
+    TaskInfo(Task* t, TaskInfo* p)
         : task(t), parentTaskInfo(p), wasPrepared(false), subtasksWereCanceled(false), selfRunFinished(false),
         hasLockedPrepareResources(false), hasLockedRunResources(false),
         prevProgress(0), numPreparedSubtasks(0), numRunningSubtasks(0), numFinishedSubtasks(0),  thread(NULL) {}
-    
+
     virtual ~TaskInfo();
 
     //true if task state >= RUN && thread is finished or not used at all
-    
+
     Task*           task;
     TaskInfo*       parentTaskInfo;
     QList<Task*>    newSubtasks;
@@ -95,7 +95,7 @@ public:
     bool            selfRunFinished;        // indicates that the 'run' method of this task was finished
     bool            hasLockedPrepareResources;  //true if there were resource locks for 'prepare' stage
     bool            hasLockedRunResources;      //true if there were resource locks for 'run' stage
-    
+
 
     int             prevProgress;   //used for TaskProgress_Manual
     QString         prevDesc;
@@ -130,11 +130,11 @@ public:
     Task * getTopLevelTaskById( qint64 id ) const;
 
     QDateTime estimatedFinishTime(Task*) const;
-    
+
     virtual void cancelTask(Task* t);
-    
+
     virtual void cancelAllTasks();
-    
+
     virtual QString getStateName(Task* t) const;
 
     void addThreadId(qint64 taskId, Qt::HANDLE id) {/*threadIds.insert(taskId, id);*/threadIds[taskId] = id;}
@@ -163,7 +163,7 @@ private:
     void promoteTask(TaskInfo* ti, Task::State newState);
     void deleteTask(Task* t);
     void finishSubtasks(TaskInfo *pti);
-    
+
     QString tryLockResources(Task* task, bool prepareStage, bool& hasLockedResourcesAfterCall); //returns error message
     void releaseResources(TaskInfo* ti, bool prepareStage);
 
@@ -180,7 +180,7 @@ private:
     QList<Task*>            newTasks;
     QStringList             stateNames;
     QMap<quint64, Qt::HANDLE>    threadIds;
-    
+
     AppResourcePool*        resourcePool;
     AppResource*            threadsResource;
     bool                    stateChangesObserved;

@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-//TODO: rename n,m to rows, columns    
+//TODO: rename n,m to rows, columns
 
 class U2ALGORITHM_EXPORT RollingMatrix {
 
@@ -76,14 +76,14 @@ public:
 
 private:
 
-    int getIdx(int x, int y) const { 
+    int getIdx(int x, int y) const {
         assert(x>=0 && y>=0 && x<n && y<m);
         return  x*m+y;
     }
 
 
-    int transposeX(int x) const { 
-        assert(x >= 0 && x < n); 
+    int transposeX(int x) const {
+        assert(x >= 0 && x < n);
         return (column0 + x) % n ;
     }
 

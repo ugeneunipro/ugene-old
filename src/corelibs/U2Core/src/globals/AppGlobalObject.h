@@ -30,8 +30,8 @@ namespace U2 {
 // Represents some Application global resource identified by ID.
 // Only 1 resource of the given ID can exists per time
 
-// Note: This entity class is separated into a separate class to 
-// make it QObject and add more features to it in the future,  
+// Note: This entity class is separated into a separate class to
+// make it QObject and add more features to it in the future,
 // for example like deallocation features.
 
 class U2CORE_EXPORT AppGlobalObject : public QObject, public Identifiable<QString> {

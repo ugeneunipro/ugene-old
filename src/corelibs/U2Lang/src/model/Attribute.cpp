@@ -110,7 +110,7 @@ bool Attribute::fromVariant(const QVariant& variant) {
         scriptText = scriptTextVal.toString();
     }
     scriptData.setScriptText(scriptText);
-    
+
     QVariant descs = args.at(2);
     if( descs.canConvert(QVariant::List) ) {
         QVariantList descList = descs.toList();

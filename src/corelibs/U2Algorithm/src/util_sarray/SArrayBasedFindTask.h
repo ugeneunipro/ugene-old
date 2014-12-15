@@ -46,7 +46,7 @@ struct U2ALGORITHM_EXPORT SArrayBasedSearchSettings {
     int ptMismatches;
     int nMismatches;
     bool absMismatches;
-}; 
+};
 
 class U2ALGORITHM_EXPORT SArrayBasedFindTask : public Task {
     Q_OBJECT

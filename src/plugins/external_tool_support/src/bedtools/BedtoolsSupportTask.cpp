@@ -29,7 +29,7 @@
 #include <U2Core/ExternalToolRunTask.h>
 
 #include <QtCore/QFileInfo>
- 
+
 namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ void BamBedConversionTask::prepare(){
     args << GUrlUtils::getQuotedString(sourceURL.getURLString());
     //args << ">";
     //args << GUrlUtils::getQuotedString(targetUrl);
-    
+
     ExternalToolLogParser* logParser = new ExternalToolLogParser();
     ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_BEDTOOLS, args, logParser, workingDir);
     etTask->setStandartOutputFile(targetUrl);
@@ -68,7 +68,7 @@ void BamBedConversionTask::prepare(){
 }
 
 void BamBedConversionTask::run(){
-    
+
 }
 
 } //namespace U2

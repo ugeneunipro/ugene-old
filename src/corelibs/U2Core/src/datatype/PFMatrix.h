@@ -94,7 +94,7 @@ public:
 
     //get specified Jaspar property
     QString getProperty (const QString& propertyName) const;
-    
+
     //get all Jaspar properties
     QMap<QString, QString> getProperties() const;
 

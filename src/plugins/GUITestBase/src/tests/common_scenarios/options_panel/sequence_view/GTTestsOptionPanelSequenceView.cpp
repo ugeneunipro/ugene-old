@@ -73,7 +73,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 
     GTUtilsOptionPanelSequenceView::clickNext(os);
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 2/2"), "Results string not match");
-    
+
     GTUtilsOptionPanelSequenceView::clickNext(os);
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/2"), "Results string not match");
 
@@ -87,7 +87,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
     GTUtilsOptionPanelSequenceView::enterPattern(os, "zz");
-    
+
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 0/0"), "Results string is not match");
     CHECK_SET_ERR(!GTUtilsOptionPanelSequenceView::isPrevNextEnabled(os), "Next and prev buttons are enabled");
 }
@@ -97,7 +97,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
 
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
-    
+
     GTUtilsOptionPanelSequenceView::toggleInputFromFilePattern(os);
     GTUtilsOptionPanelSequenceView::enterPatternFromFile(os, testDir + "_common_data/FindAlgorithm/", "find_pattern_op_1.fa");
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/40"), "Results string not match");
@@ -127,7 +127,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
 
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
-    
+
     GTUtilsOptionPanelSequenceView::enterPattern(os, "AAAAAAAAAAAAAAAAAAAA");
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/40"), "Results string not match");
 
@@ -193,7 +193,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
 
     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
     GTUtilsOptionPanelSequenceView::setSearchInLocation(os, "Custom Region");
-    
+
     QLineEdit *regLE = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "editEnd", NULL, GTGlobals::FindOptions(false)));
     CHECK_SET_ERR(regLE != NULL, "LineEdit is NULL");
     GTLineEdit::setText(os, regLE, "40000");

@@ -140,7 +140,7 @@ U2Object *DbiDataStorage::getObject(const SharedDbiDataHandler &handler, const U
 
 SharedDbiDataHandler DbiDataStorage::putSequence(const DNASequence &dnaSeq) {
     assert(NULL != dbiHandle);
-    
+
     U2OpStatusImpl os;
     U2EntityRef ent = U2SequenceUtils::import(dbiHandle->getDbiRef(), dnaSeq, os);
     CHECK_OP(os, SharedDbiDataHandler());
@@ -149,7 +149,7 @@ SharedDbiDataHandler DbiDataStorage::putSequence(const DNASequence &dnaSeq) {
     CHECK_OP(os, SharedDbiDataHandler());
 
     SharedDbiDataHandler handler(new DbiDataHandler(ent, connection->dbi->getObjectDbi(), true));
-    
+
     return handler;
 }
 

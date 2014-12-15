@@ -61,14 +61,14 @@ U2SequenceObject * DocumentFormatUtils::addSequenceObject(const U2DbiRef& dbiRef
                                                           U2OpStatus& os)
 {
     U2SequenceImporter importer;
-    
+
     const QString folder = hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
     importer.startSequence(dbiRef, folder, name, circular, os);
     CHECK_OP(os, NULL);
-    
+
     importer.addBlock(seq.constData(), seq.length(), os);
     CHECK_OP(os, NULL);
-    
+
     U2Sequence sequence = importer.finalizeSequenceAndValidate(os);
     TmpDbiObjects dbiObjects(dbiRef, os);
     dbiObjects.objects << sequence.id;
@@ -111,7 +111,7 @@ class ExtComparator {
 public:
     ExtComparator(const QString& _ext) : ext(_ext) {}
 
-    bool operator()(const DocumentFormat* f1, const DocumentFormat* f2) const { 
+    bool operator()(const DocumentFormat* f1, const DocumentFormat* f2) const {
         int v1 = f1->getSupportedDocumentFileExtensions().contains(ext) ? 1 : 0;
         int v2 = f2->getSupportedDocumentFileExtensions().contains(ext) ? 1 : 0;
         return  v2 < v1; // reverse sort -> make higher vals on the top
@@ -242,7 +242,7 @@ U2SequenceObject* DocumentFormatUtils::addSequenceObjectDeprecated(const U2DbiRe
     TmpDbiObjects dbiObjects(dbiRef, os);
     dbiObjects.objects << u2seq.id;
     CHECK_OP(os, NULL);
-    
+
     U2SequenceObject* so = new U2SequenceObject(seqObjName, U2EntityRef(dbiRef, u2seq.id));
     so->setSequenceInfo(sequence.info);
     so->setCircular(sequence.circular);
@@ -252,7 +252,7 @@ U2SequenceObject* DocumentFormatUtils::addSequenceObjectDeprecated(const U2DbiRe
 }
 
 
-U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U2DbiRef& dbiRef, 
+U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U2DbiRef& dbiRef,
                                                                          const QString& folder,
                                                                          QList<GObject*>& objects,
                                                                          const GUrl& docUrl,
@@ -288,7 +288,7 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
     U2SequenceObject* so = addSequenceObjectDeprecated(dbiRef, folder, "Sequence", objects, seq, os);
     CHECK_OP(os, NULL);
     SAFE_POINT(so != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
-    
+
     QVariantMap hints;
     hints.insert(DocumentFormat::DBI_FOLDER_HINT, folder);
     AnnotationTableObject *ao = new AnnotationTableObject( "Annotations", dbiRef, hints );

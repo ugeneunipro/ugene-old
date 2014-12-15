@@ -88,7 +88,7 @@ public:
         }
         startPos = 0;
         len = ma.getLength();
-        
+
         /*colorScheme.insert('S', Qt::green);
         colorScheme.insert('G', Qt::green);
         colorScheme.insert('H', Qt::green);

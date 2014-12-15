@@ -43,9 +43,9 @@ public:
     static const QString WRITE_MSA_PROTO_ID;
     static const QString WRITE_SEQ_PROTO_ID;
     static const QString GROUPER_ID;
-    
+
     static const QString TEXT_TYPESET_ID;
-    
+
     static const QString WORKFLOW_ON_CLOUD_TASK_ID;
     static const QString WORKFLOW_SCHEMA_ATTR;
     static const QString DATA_IN_ATTR;
@@ -53,7 +53,7 @@ public:
     static const QString GROUPER_SLOT_ATTR;
     static const QString GROUPER_OUT_SLOTS_ATTR;
     static const QString GROUPER_OPER_ATTR;
-    
+
 }; // CoreLibConstants
 
 } // Workflow

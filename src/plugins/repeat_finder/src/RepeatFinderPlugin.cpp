@@ -70,7 +70,7 @@ RepeatFinderPlugin::RepeatFinderPlugin() : Plugin(tr("Repeats Finder"), tr("Sear
     QDActorPrototypeRegistry* pr = AppContext::getQDActorProtoRegistry();
     pr->registerProto(new QDRepeatActorPrototype());
     pr->registerProto(new QDTandemActorPrototype());
-    
+
     //tests
     GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();
     XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat*>(tfr->findFormat("XML"));
@@ -79,7 +79,7 @@ RepeatFinderPlugin::RepeatFinderPlugin() : Plugin(tr("Repeats Finder"), tr("Sear
     GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
     l->qlist = RepeatFinderTests::createTestFactories();
 
-    foreach(XMLTestFactory* f, l->qlist) { 
+    foreach(XMLTestFactory* f, l->qlist) {
         bool res = xmlTestFormat->registerTestFactory(f);
         assert(res); Q_UNUSED(res);
     }
@@ -89,8 +89,8 @@ RepeatFinderPlugin::RepeatFinderPlugin() : Plugin(tr("Repeats Finder"), tr("Sear
     rfTfr->registerFactory(new RFTaskFactory(), "");
 }
 
-RepeatViewContext::RepeatViewContext(QObject* p) : 
-GObjectViewWindowContext(p, AnnotatedDNAViewFactory::ID) 
+RepeatViewContext::RepeatViewContext(QObject* p) :
+GObjectViewWindowContext(p, AnnotatedDNAViewFactory::ID)
 {
 }
 

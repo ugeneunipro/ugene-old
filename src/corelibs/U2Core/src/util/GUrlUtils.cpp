@@ -47,11 +47,11 @@ QString GUrlUtils::getUncompressedExtension(const GUrl& url) {
 
 GUrl GUrlUtils::ensureFileExt(const GUrl& url, const QStringList& typeExt) {
     SAFE_POINT(!typeExt.isEmpty(), "Type extension is empty!", GUrl());
-    
+
     if( url.isVFSFile() ) {
         return url;
     }
-    
+
     if (typeExt.isEmpty()) {
         return url;
     }
@@ -192,7 +192,7 @@ QStringList GUrlUtils::getRolledFilesList(const QString& originalUrl, const QStr
 QString GUrlUtils::rollFileName(const QString& originalUrl, const QString& rolledSuffix, const QSet<QString>& excludeList) {
     QString pre, post; //pre and post url parts. A number will be placed between
     getPreNPost(originalUrl, pre, post);
-    
+
     QString resultUrl = originalUrl;
     int i = 0;
     while (QFile::exists(resultUrl) || excludeList.contains(resultUrl)) {
@@ -205,7 +205,7 @@ QUrl GUrlUtils::gUrl2qUrl( const GUrl& gurl) {
     if( gurl.isVFSFile() ) {
         return QUrl();
     }
-    
+
     QString str = gurl.getURLString();
     if (str.startsWith("http://") || str.startsWith("https://") || str.startsWith("file://")) {
         return str;
@@ -240,7 +240,7 @@ QString GUrlUtils::prepareFileName(const QString& url, int count, const QStringL
     return prepareFileName(url, QString("%1").arg(count, 3, 10, QChar('0')), typeExt);
 }
 
-QString GUrlUtils::prepareFileName(const QString& url, const QString& baseSuffix, const QStringList& typeExt) {    
+QString GUrlUtils::prepareFileName(const QString& url, const QString& baseSuffix, const QStringList& typeExt) {
     QFileInfo fi(url);
     QStringList suffixList = fi.completeSuffix().split(".");
     QString ext;
@@ -269,7 +269,7 @@ QString GUrlUtils::prepareFileName(const QString& url, const QString& baseSuffix
     return result;
 }
 
-// checks that file path is valid: creates required directory if needed. 
+// checks that file path is valid: creates required directory if needed.
 // Returns canonical path to file. Does not create nor remove file, affects just directory
 // Sample usage: processing URLs in "save file" inputs
 QString GUrlUtils::prepareFileLocation(const QString& filePath, U2OpStatus& os) {
@@ -277,12 +277,12 @@ QString GUrlUtils::prepareFileLocation(const QString& filePath, U2OpStatus& os) 
     QString dirPath = fi.absoluteDir().absolutePath();
     QString canonicalDirPath = prepareDirLocation(dirPath, os);
     CHECK_OP(os, QString());
-    // examples with "/" at the end: 
+    // examples with "/" at the end:
     QString result = canonicalDirPath + (canonicalDirPath.endsWith("/") ? "" : "/") + fi.fileName();
     return result;
 }
 
-// checks that dir path is valid. Creates the directory if needed. 
+// checks that dir path is valid. Creates the directory if needed.
 // Returns absolute (without "." or ".." but with symlinks) directory path.
 // Does not affect directory if already exists.
 // Sample usage: processing URLs in "save dir" inputs
@@ -294,7 +294,7 @@ QString GUrlUtils::prepareDirLocation(const QString& dirPath, U2OpStatus& os) {
         if (!targetDir.mkpath(absPath)) {
             os.setError(tr("Directory can't be created: %1").arg(absPath));
             return QString();
-        } 
+        }
         targetDir = QDir(absPath); //It looks like QT caches results for QDir? Create new QDir instance in this case!
         if (!targetDir.isReadable()) {
             os.setError(tr("Directory can't be read: %1").arg(absPath));
@@ -347,7 +347,7 @@ void GUrlUtils::removeFile( const QString& filePath, U2OpStatus& os ){
     if(info.exists()){
         QFile::remove(info.absoluteFilePath());
     }
-    
+
 }
 
 bool GUrlUtils::canWriteFile(const QString &path) {

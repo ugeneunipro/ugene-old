@@ -44,7 +44,7 @@ public:
     QList<ColumnConfig> columns;
     QString             parsingScript;
     bool                removeQuotes;
-    
+
     static QBitArray    QUOTES;
 };
 
@@ -95,7 +95,7 @@ public:
     QMap<QString, QList<AnnotationData> > getResult() const {return result;}
 
     static QList<QStringList> parseLinesIntoTokens(const QString& text, const CSVParsingConfig& config, int& maxColumns, TaskStateInfo& ti);
-    
+
     static QStringList parseLineIntoTokens(const QString& line, const CSVParsingConfig& config, TaskStateInfo& ti, int lineNum = 1);
 
     static QString guessSeparatorString(const QString& text, const CSVParsingConfig& config);
@@ -114,4 +114,4 @@ private:
 
 } // namespace U2
 
-#endif 
+#endif

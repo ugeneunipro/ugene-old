@@ -136,7 +136,7 @@ void MarkSequenceWorkerFactory::init() {
     Descriptor outPd(MarkerPorts::OUT_MARKER_SEQ_PORT(), MarkSequenceWorker::tr("Marked sequence"), MarkSequenceWorker::tr("Marked sequence"));
     portDescs << new PortDescriptor(outPd, outTypeSet, false, true);
 
-   
+
     Descriptor protoDesc(MarkSequenceWorkerFactory::ACTOR_ID,
         MarkSequenceWorker::tr("Sequence Marker"),
         MarkSequenceWorker::tr("Adds one or several marks to the input sequence depending on the sequence properties. "
@@ -149,7 +149,7 @@ void MarkSequenceWorkerFactory::init() {
     proto->setEditor(new MarkerEditor());
     proto->setPrompter(new MarkSequencePrompter());
     proto->setPortValidator(inPd.getId(), new ScreenedSlotValidator(BaseSlots::URL_SLOT().getId()));
-    
+
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_DATAFLOW(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new MarkSequenceWorkerFactory());
 }

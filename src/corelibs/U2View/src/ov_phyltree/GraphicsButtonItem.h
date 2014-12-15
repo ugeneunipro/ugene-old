@@ -41,7 +41,7 @@ protected:
 
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-    
+
 public:
     GraphicsButtonItem();
 

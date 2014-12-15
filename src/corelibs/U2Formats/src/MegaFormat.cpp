@@ -72,7 +72,7 @@ void MegaFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
             os.setError("No data to write;");
             return;
     }
-    
+
     QList<GObject*> als; als << obj;
     QMap< GObjectType, QList<GObject*> > objectsMap;
     objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT] = als;
@@ -112,7 +112,7 @@ static bool checkModel(const MAlignment& al, U2OpStatus& ti) {
     if (size == 0) {
         ti.setError( MegaFormat::tr("Model is of zero size"));
         return false;
-    } 
+    }
     return true;
 }
 
@@ -286,7 +286,7 @@ void MegaFormat::load(U2::IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*>
             }
         }
         CHECK_OP(os, );
-        
+
         //read the sequence
         eof=readSequence(io, line, os, value, &lastIteration);
         CHECK_OP(os, );
@@ -330,10 +330,10 @@ void MegaFormat::load(U2::IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*>
 
     checkModel(al, os);
     CHECK_OP(os, );
-    
+
     U2AlphabetUtils::assignAlphabet(al);
     CHECK_EXT(al.getAlphabet() != NULL, os.setError( tr("Alphabet is unknown")), );
-    
+
     workUpIndels(al); //replace '.' by symbols from the first sequence
 
     const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
@@ -382,13 +382,13 @@ void MegaFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObjec
             QByteArray line;
             line.append(MEGA_SEPARATOR).append(item.getName());
             TextUtils::replace(line.data(), line.length(), TextUtils::WHITES, '_');
-            
+
             for (int i=0; i<maxNameLength-item.getName().length()+1; i++) {
                 line.append(' ');
             }
-            
+
             line.append(*si).append('\n');
-            
+
             len = io->writeBlock(line);
             if (len != line.length()) {
                 ti.setError(L10N::errorTitle());
@@ -396,7 +396,7 @@ void MegaFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObjec
             }
         }
         writtenLength+=BLOCK_LENGTH;
-        
+
         io->writeBlock("\n\n");
     }
 }
@@ -493,7 +493,7 @@ void MegaFormat::readTitle(U2::IOAdapter *io, QByteArray &line, U2::U2OpStatus &
     ti.setProgress(io->getProgress());
 }
 
-bool MegaFormat::readSequence(U2::IOAdapter *io, QByteArray &line, U2::U2OpStatus &ti, 
+bool MegaFormat::readSequence(U2::IOAdapter *io, QByteArray &line, U2::U2OpStatus &ti,
                               QByteArray &value, bool *lastIteration) {
     bool hasPartOfSequence=false;
     bool eof=false;

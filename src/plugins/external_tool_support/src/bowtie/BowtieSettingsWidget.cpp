@@ -100,10 +100,10 @@ void BowtieSettingsWidget::buildIndexUrl(const GUrl &) {
 }
 
 bool BowtieSettingsWidget::isParametersOk(QString& /*error*/) {
-    
+
     ExternalTool* bowtie = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE);
     ExternalTool* bowtieBuild = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE_BUILD);
-    bool bowtieToolsExist = bowtie && bowtieBuild; 
+    bool bowtieToolsExist = bowtie && bowtieBuild;
 
     if( !bowtieToolsExist || bowtie->getPath().isEmpty() || bowtieBuild->getPath().isEmpty() ) {
         QMessageBox msgBox;
@@ -116,12 +116,12 @@ bool BowtieSettingsWidget::isParametersOk(QString& /*error*/) {
         if (ret == QMessageBox::Yes) {
             AppContext::getAppSettingsGUI()->showSettingsDialog(APP_SETTINGS_EXTERNAL_TOOLS);
         }
-        
+
         return false;
     }
 
-    
-    
+
+
     return true;
 }
 

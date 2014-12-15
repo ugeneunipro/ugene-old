@@ -249,7 +249,7 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
                     stateInfo.setError("Unexpected number of rows in the result multiple alignment!");
                     return res;
                 }
-                
+
                 QMap<qint64, QList<U2MsaGap> > rowsGapModel;
                 for (int i = 0, n = resultMA.getNumRows(); i < n; ++i) {
                     qint64 rowId = resultMA.getRow(i).getRowDBInfo().rowId;

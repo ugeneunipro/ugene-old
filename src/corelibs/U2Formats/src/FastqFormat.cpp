@@ -46,8 +46,8 @@ namespace U2 {
 
 static const int PROGRESS_UPDATE_STEP = 1000;
 
-FastqFormat::FastqFormat(QObject* p) 
-: DocumentFormat(p, DocumentFormatFlags_SW, QStringList("fastq")), fn(tr("FASTQ")) 
+FastqFormat::FastqFormat(QObject* p)
+: DocumentFormat(p, DocumentFormatFlags_SW, QStringList("fastq")), fn(tr("FASTQ"))
 {
     supportedObjectTypes+=GObjectTypes::SEQUENCE;
     formatDescription  = tr("FASTQ format is a text-based format for storing both a biological sequence (usually nucleotide sequence) and its corresponding quality scores. \
@@ -369,7 +369,7 @@ void FastqFormat::storeDocument( Document* d, IOAdapter* io, U2OpStatus& os) {
         if( seqObj == NULL ) {
             continue;
         }
-        QList<GObject*> seqs; 
+        QList<GObject*> seqs;
         seqs << seqObj;
         QMap< GObjectType, QList<GObject*> > objectsMap;
         objectsMap[GObjectTypes::SEQUENCE] = seqs;
@@ -463,7 +463,7 @@ DNASequence *FastqFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {
     CHECK_EXT(!io->isEof(), , NULL);
     CHECK_OP(os, NULL);
 
-    sequence.clear();  
+    sequence.clear();
     readSequence(os, io, sequence);
     CHECK_OP(os, NULL);
 

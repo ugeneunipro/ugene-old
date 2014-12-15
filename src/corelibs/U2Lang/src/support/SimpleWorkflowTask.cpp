@@ -60,7 +60,7 @@ static QString findWorkflowPath(const QString & schemaName) {
 SimpleInOutWorkflowTask::SimpleInOutWorkflowTask(const SimpleInOutWorkflowTaskConfig& _conf)
 : DocumentProviderTask(tr("Run workflow: %1").arg(_conf.schemaName), TaskFlags_NR_FOSCOE), conf(_conf)
 {
-    inDoc = new Document(BaseDocumentFormats::get(BaseDocumentFormats::FASTA), IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), 
+    inDoc = new Document(BaseDocumentFormats::get(BaseDocumentFormats::FASTA), IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE),
                         GUrl("unused"), U2DbiRef(), conf.objects, conf.inDocHints);
     inDoc->setParent(this);
 }
@@ -80,13 +80,13 @@ void SimpleInOutWorkflowTask::prepareTmpFile(QTemporaryFile& tmpFile, const QStr
 void SimpleInOutWorkflowTask::prepare() {
     prepareTmpFile(inputTmpFile, QString("%1/XXXXXX.%2").arg(QDir::tempPath()).arg(conf.inFormat));
     CHECK_OP(stateInfo, );
-        
+
     prepareTmpFile(resultTmpFile, QString("%1/XXXXXX.%2").arg(QDir::tempPath()).arg(conf.outFormat));
     CHECK_OP(stateInfo, );
 
     schemaPath = findWorkflowPath(conf.schemaName);
     CHECK_EXT(!schemaPath.isEmpty(), setError(tr("Internal error: cannot find workflow %1").arg(conf.schemaName)), );
-    
+
     saveInputTask = new SaveDocumentTask(inDoc, IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), inputTmpFile.fileName());
     addSubTask(saveInputTask);
 }
@@ -94,7 +94,7 @@ void SimpleInOutWorkflowTask::prepare() {
 QList<Task*> SimpleInOutWorkflowTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     CHECK_OP(stateInfo, res);
-    
+
     if (subTask == saveInputTask) {
         // run workflow
         conf.extraArgs << "--in=" + inputTmpFile.fileName();
@@ -105,7 +105,7 @@ QList<Task*> SimpleInOutWorkflowTask::onSubTaskFinished(Task* subTask) {
         monitorConf.logLevel2Commute = LogLevel_TRACE;
 #else
         monitorConf.logLevel2Commute = LogLevel_DETAILS;
-#endif 
+#endif
         runWorkflowTask = new RunCmdlineWorkflowTask(monitorConf);
         res << runWorkflowTask;
     } else if (subTask == runWorkflowTask) {
@@ -123,7 +123,7 @@ QList<Task*> SimpleInOutWorkflowTask::onSubTaskFinished(Task* subTask) {
 
 //////////////////////////////////////////////////////////////////////////
 // RunSimpleMSAWorkflow4GObject
-SimpleMSAWorkflow4GObjectTask::SimpleMSAWorkflow4GObjectTask(const QString& taskName, MAlignmentObject* _maObj, const SimpleMSAWorkflowTaskConfig& _conf) 
+SimpleMSAWorkflow4GObjectTask::SimpleMSAWorkflow4GObjectTask(const QString& taskName, MAlignmentObject* _maObj, const SimpleMSAWorkflowTaskConfig& _conf)
 : Task(taskName, TaskFlags_NR_FOSCOE),
   obj(_maObj),
   lock(NULL),

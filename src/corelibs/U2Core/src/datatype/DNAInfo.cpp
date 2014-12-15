@@ -23,45 +23,45 @@
 
 namespace U2 {
 
-const QString DNAInfo::LOCUS = "LOCUS";  
+const QString DNAInfo::LOCUS = "LOCUS";
 
-const QString DNAInfo::DEFINITION = "DEFINITION";  
+const QString DNAInfo::DEFINITION = "DEFINITION";
 
-const QString DNAInfo::ACCESSION = "ACCESSION";  
+const QString DNAInfo::ACCESSION = "ACCESSION";
 
-const QString DNAInfo::VERSION = "VERSION";  
+const QString DNAInfo::VERSION = "VERSION";
 
-const QString DNAInfo::PROJECT = "PROJECT";  
+const QString DNAInfo::PROJECT = "PROJECT";
 
-const QString DNAInfo::SEGMENT = "SEGMENT";  
+const QString DNAInfo::SEGMENT = "SEGMENT";
 
-const QString DNAInfo::SOURCE = "SOURCE";  
+const QString DNAInfo::SOURCE = "SOURCE";
 
-const QString DNAInfo::KEYWORDS = "KEYWORDS";  
+const QString DNAInfo::KEYWORDS = "KEYWORDS";
 
-const QString DNAInfo::REFERENCE = "REFERENCE";  
+const QString DNAInfo::REFERENCE = "REFERENCE";
 
-const QString DNAInfo::AUTHORS = "AUTHORS";  
+const QString DNAInfo::AUTHORS = "AUTHORS";
 
-const QString DNAInfo::CONSRTM = "CONSRTM";  
+const QString DNAInfo::CONSRTM = "CONSRTM";
 
-const QString DNAInfo::TITLE = "TITLE";  
+const QString DNAInfo::TITLE = "TITLE";
 
-const QString DNAInfo::JOURNAL = "JOURNAL";  
+const QString DNAInfo::JOURNAL = "JOURNAL";
 
-const QString DNAInfo::MEDLINE = "MEDLINE";  
+const QString DNAInfo::MEDLINE = "MEDLINE";
 
-const QString DNAInfo::PUBMED = "PUBMED";  
+const QString DNAInfo::PUBMED = "PUBMED";
 
-const QString DNAInfo::REMARK = "REMARK";  
+const QString DNAInfo::REMARK = "REMARK";
 
-const QString DNAInfo::COMMENT = "COMMENT";  
+const QString DNAInfo::COMMENT = "COMMENT";
 
-const QString DNAInfo::FEATURES = "FEATURES";  
+const QString DNAInfo::FEATURES = "FEATURES";
 
-const QString DNAInfo::CONTIG = "CONTIG";  
+const QString DNAInfo::CONTIG = "CONTIG";
 
-const QString DNAInfo::ORIGIN = "ORIGIN";  
+const QString DNAInfo::ORIGIN = "ORIGIN";
 
 const QString DNAInfo::CHAIN_ID = "CHAIN_ID";
 

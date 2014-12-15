@@ -104,9 +104,9 @@ RestrctionMapWidget::RestrctionMapWidget( ADVSequenceObjectContext* context, QWi
     treeWidget->setColumnCount(1);
     treeWidget->setHeaderLabel(tr("Restriction Sites Map"));
     connect(treeWidget,SIGNAL(itemSelectionChanged()), SLOT(sl_itemSelectionChanged()));
-    
+
     layout->addWidget(treeWidget);
-    
+
     registerAnnotationObjects();
     updateTreeWidget();
     initTreeWidget();
@@ -152,7 +152,7 @@ void RestrctionMapWidget::sl_onAnnotationsAdded( const QList<Annotation> &anns )
         EnzymeFolderItem* folderItem = findEnzymeFolderByName(aName);
         if (folderItem) {
                folderItem->addEnzymeItem(a);
-        }        
+        }
     }
 
     //TODO: enable "intelligent" sorting by reimplementing custom AbstractModel
@@ -172,7 +172,7 @@ void RestrctionMapWidget::sl_onAnnotationsRemoved( const QList<Annotation> &anns
 EnzymeFolderItem* RestrctionMapWidget::findEnzymeFolderByName( const QString& enzymeName )
 {
     int count = treeWidget->topLevelItemCount();
-    
+
     for (int i = 0; i < count; i++) {
         assert(treeWidget->topLevelItem(i)->type() == ENZYME_FOLDER_ITEM_TYPE);
         EnzymeFolderItem* item = static_cast<EnzymeFolderItem*> ( treeWidget->topLevelItem(i) );

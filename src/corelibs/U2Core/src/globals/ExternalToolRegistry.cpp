@@ -57,7 +57,7 @@ void ExternalTool::setVersion(const QString& _version) {
 
 ExternalToolValidation ExternalTool::getToolValidation() {
     ExternalToolValidation result(toolRunnerProgramm, executableFileName, validationArguments, validMessage, errorDescriptions);
-    return result; 
+    return result;
 }
 
 bool ExternalTool::isMuted() const {
@@ -123,7 +123,7 @@ void ExternalToolRegistry::unregisterEntry(const QString &id){
 
         delete et;
     }
-    
+
 }
 
 QList<ExternalTool*> ExternalToolRegistry::getAllEntries() const

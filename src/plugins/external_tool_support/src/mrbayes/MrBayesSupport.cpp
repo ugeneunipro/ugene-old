@@ -64,7 +64,7 @@ MrBayesSupport::MrBayesSupport(const QString& name, const QString& path) : Exter
     versionRegExp = QRegExp("MrBayes v(\\d+\\.\\d+\\.\\d+)");
     toolKitName = "MrBayes";
 
-    //register the method  
+    //register the method
     PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
     registry->registerPhyTreeGenerator(new MrBayesAdapter(), ET_MRBAYES);
 }

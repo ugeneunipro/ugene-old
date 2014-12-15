@@ -58,13 +58,13 @@ SecStructDialog::SecStructDialog( ADVSequenceObjectContext* _ctx, QWidget *p ) :
 
     sspr = AppContext::getSecStructPredictAlgRegistry();
     algorithmComboBox->addItems(sspr->getAlgNameList());
-    
+
     saveAnnotationButton = buttonBox->button(QDialogButtonBox::Save);
     cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     startButton = buttonBox->button(QDialogButtonBox::Ok);
 
     saveAnnotationButton->setDisabled(true);
-    
+
     U2Region initialSelection = ctx->getSequenceSelection()->isEmpty() ? U2Region() : ctx->getSequenceSelection()->getSelectedRegions().first();
 
     int seqLen = ctx->getSequenceLength();
@@ -84,7 +84,7 @@ SecStructDialog::SecStructDialog( ADVSequenceObjectContext* _ctx, QWidget *p ) :
     headerNames.append(tr("Structure Type"));
     resultsTable->setHorizontalHeaderLabels(headerNames);
     resultsTable->horizontalHeader()->setStretchLastSection(true);
-    
+
     connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_onTaskFinished(Task*)));
     connectGUI();
 
@@ -97,7 +97,7 @@ void SecStructDialog::connectGUI()
     connect(startButton, SIGNAL(clicked()), this, SLOT(sl_onStartPredictionClicked()));
     connect(saveAnnotationButton, SIGNAL(clicked()), this, SLOT(sl_onSaveAnnotations()));
 
-    
+
 }
 
 void SecStructDialog::sl_spinRangeStartChanged( int val )
@@ -105,7 +105,7 @@ void SecStructDialog::sl_spinRangeStartChanged( int val )
     if (val > rangeEndSpinBox->value()) {
         rangeEndSpinBox->setValue(val);
     }
-    
+
 }
 
 void SecStructDialog::sl_spinRangeEndChanged( int val )
@@ -154,16 +154,16 @@ void SecStructDialog::sl_onStartPredictionClicked() {
     //prepare target sequence
     rangeStart = rangeStartSpinBox->value();
     rangeEnd = rangeEndSpinBox->value();
-    
+
     SAFE_POINT(rangeStart <= rangeEnd, "Illegal region!", );
     SAFE_POINT(rangeStart >= 0 && rangeEnd <= ctx->getSequenceLength(), "Illegal region!", );
-    
+
     U2Region r(rangeStart, rangeEnd - rangeStart);
     QByteArray seqPart = ctx->getSequenceData(r);
     task = factory->createTaskInstance(seqPart);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     results.clear();
-    
+
     updateState();
 }
 

@@ -29,7 +29,7 @@ namespace U2 {
 class U2OpStatus;
 
 class GTUtilsOptionsPanel {
-    
+
 public:
     static void runFindPatternWithHotKey(const QString& pattern, U2OpStatus& os);
 };

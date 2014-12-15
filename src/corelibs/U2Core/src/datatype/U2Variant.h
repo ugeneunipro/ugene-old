@@ -30,8 +30,8 @@ namespace U2 {
 #define VARIATION_REGION(var)  \
     U2Region((var).startPos, (var).endPos == 0 ? 1 : (var).endPos - (var).startPos)
 
-/** 
-    Representation for set of genomic variations. 
+/**
+    Representation for set of genomic variations.
 */
 
 enum VariantTrackType{
@@ -50,7 +50,7 @@ public:
     U2VariantTrack():
     trackType(TrackType_All){}
     U2VariantTrack(const U2DataId& id, const QString& dbId, VariantTrackType _trackType, qint64 version) : U2Object(id, dbId, version), trackType(_trackType){}
-    
+
     /** Sequence id */
     U2DataId      sequence;
 
@@ -76,7 +76,7 @@ public:
     qint64      endPos;
     QByteArray  refData;
     QByteArray  obsData;
-    QString     publicId; 
+    QString     publicId;
     QString     additionalInfo;
 
 };

@@ -57,11 +57,11 @@ class PhyMLModelTypes{
 public:
     static const QStringList& getAminoAcidModelTypes() {return aminoSubstitutionModels;}
     static const QStringList& getDnaModelTypes() {return dnaSubstitutionModels;}
-    static SubstModelTrRatioType getTtRatioType(const QString& modelName); 
+    static SubstModelTrRatioType getTtRatioType(const QString& modelName);
 private:
     static const QStringList dnaSubstitutionModels;//all dna models
-    static const QStringList dnaModelsWithFixedTtRatio;//only fixed Transition / transversion ratio 
-    static const QStringList dnaModelsWithEstimatedTtRatio;//only estimated Transition / transversion ratio 
+    static const QStringList dnaModelsWithFixedTtRatio;//only fixed Transition / transversion ratio
+    static const QStringList dnaModelsWithEstimatedTtRatio;//only estimated Transition / transversion ratio
     static const QStringList aminoSubstitutionModels;
 };
 

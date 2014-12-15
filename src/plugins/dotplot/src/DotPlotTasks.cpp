@@ -293,7 +293,7 @@ Document *DotPlotLoadDocumentsTask::loadFile(QString inFile, int gapSize) {
     return doc;
 }
 
-DotPlotLoadDocumentsTask::~DotPlotLoadDocumentsTask() { 
+DotPlotLoadDocumentsTask::~DotPlotLoadDocumentsTask() {
     // error while loading documents
     if (hasError()) {
         Project *project = AppContext::getProject();
@@ -313,7 +313,7 @@ DotPlotLoadDocumentsTask::~DotPlotLoadDocumentsTask() {
    }
 }
 
-DotPlotFilterTask::DotPlotFilterTask(ADVSequenceObjectContext* _sequenceX, ADVSequenceObjectContext* _sequenceY, 
+DotPlotFilterTask::DotPlotFilterTask(ADVSequenceObjectContext* _sequenceX, ADVSequenceObjectContext* _sequenceY,
                                      const QMultiMap<FilterIntersectionParameter, QString>& _annotationNames, QList<DotPlotResults>* _initialResults, QList<DotPlotResults>* _filteredResults
                                      ,FilterType _type)
 :Task(tr("Applying filter to dotplot"), TaskFlag_None)
@@ -335,7 +335,7 @@ void DotPlotFilterTask::run(){
     copyInitialResults();
     progressStep = 100/(float)size;
     switch(fType){
-        case All: 
+        case All:
             break;
         case Features:
             progressStep /= 2;
@@ -355,7 +355,7 @@ Task::ReportResult DotPlotFilterTask::report(){
     SAFE_POINT(initialResults, "There are no initial results", ReportResult_Finished);
 
     switch(fType){
-        case All: 
+        case All:
             {
                copyInitialResults();
             }
@@ -367,7 +367,7 @@ Task::ReportResult DotPlotFilterTask::report(){
                 }
             }
             break;
-    }  
+    }
 
     return ReportResult_Finished;
 }
@@ -408,7 +408,7 @@ void DotPlotFilterTask::filterForCurrentSuperRegions(FilterIntersectionParameter
     QList<DotPlotResults>::iterator it;
 
     for (it = filteredResults->begin(); it != filteredResults->end() && !isCanceled(); ){
-        progressFloatValue += progressStep; 
+        progressFloatValue += progressStep;
         stateInfo.progress = (int)progressFloatValue;
         bool noIntersect = true;
         for(vectorI = 0; vectorI < vectSize; vectorI++){

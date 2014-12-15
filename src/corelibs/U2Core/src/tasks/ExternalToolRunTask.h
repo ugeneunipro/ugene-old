@@ -81,7 +81,7 @@ private:
 
 class U2CORE_EXPORT ExternalToolSupportTask: public Task{
 public:
-    ExternalToolSupportTask(const QString& _name, TaskFlags f) 
+    ExternalToolSupportTask(const QString& _name, TaskFlags f)
         : Task(_name, f), listenersCounter(0){}
     virtual ~ExternalToolSupportTask(){}
 
@@ -158,7 +158,7 @@ private:
     QString     lastLine;
     /* Last line printed to stderr */
     QString     lastErrLine;
-    
+
 protected:
     QStringList lastPartOfLog;
 };

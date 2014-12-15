@@ -24,7 +24,7 @@
 #include "GraphicsRectangularBranchItem.h"
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/PhyTreeObject.h>
-#include <QtGui/QPainter> 
+#include <QtGui/QPainter>
 #include <QtGui/QPen>
 #include <QtCore/QList>
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -45,7 +45,7 @@ const QBrush GraphicsButtonItem::highlightingBrush = QBrush(QColor(170, 170, 230
 const QBrush GraphicsButtonItem::ordinaryBrush = QBrush(Qt::gray);
 
 
-GraphicsButtonItem::GraphicsButtonItem() 
+GraphicsButtonItem::GraphicsButtonItem()
     : QGraphicsEllipseItem(QRectF(-radiusMin, -radiusMin, 2 * radiusMin, 2 * radiusMin)), isSelected(false) {
     setPen(QColor(0, 0, 0));
     setBrush(ordinaryBrush);
@@ -142,7 +142,7 @@ void GraphicsButtonItem::swapSiblings() {
         if(!branchItem->getCorrespondingItem()){
             return;
         }
-        
+
         rectBranchItem = dynamic_cast<GraphicsRectangularBranchItem*>(branchItem->getCorrespondingItem());
         if(!rectBranchItem){
             return;
@@ -175,7 +175,7 @@ bool GraphicsButtonItem::isCollapsed(){
         return p->isCollapsed();
     }
     return false;
-    
+
 }
 
 void GraphicsButtonItem::rerootTree(PhyTreeObject* treeObject) {

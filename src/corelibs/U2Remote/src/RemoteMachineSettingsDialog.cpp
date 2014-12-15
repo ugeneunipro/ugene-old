@@ -36,14 +36,14 @@ namespace U2 {
 
 RemoteMachineSettingsDialog::RemoteMachineSettingsDialog(QWidget* parent, const RemoteMachineSettingsPtr& settings ) : QDialog(parent), machineSettings( settings ), currentUi( NULL ) {
     setupUi( this );
-    
+
     ProtocolInfoRegistry * pir = AppContext::getProtocolInfoRegistry();
     assert( NULL != pir );
-    
+
     QList< ProtocolInfo* > protoInfos = pir->getProtocolInfos();
     assert(protoInfos.size() > 0);
-       
-    ProtocolInfo* pi = protoInfos.first();    
+
+    ProtocolInfo* pi = protoInfos.first();
     currentUi = pi->getProtocolUI();
     QVBoxLayout * topLayout = qobject_cast< QVBoxLayout* >( layout() );
     topLayout->insertWidget( 0, currentUi );
@@ -51,15 +51,15 @@ RemoteMachineSettingsDialog::RemoteMachineSettingsDialog(QWidget* parent, const 
 
     if (machineSettings != NULL) {
         currentUi->initializeWidget(machineSettings);
-    } 
-    
+    }
+
     connect( cancelPushButton, SIGNAL( clicked() ), SLOT( reject() ) );
     connect( okPushButton, SIGNAL( clicked() ), SLOT( sl_okPushButtonClicked() ) );
-    
+
 }
 
 RemoteMachineSettingsDialog::~RemoteMachineSettingsDialog() {
-    
+
     if( NULL != currentUi ) {
         QVBoxLayout * topLayout = qobject_cast< QVBoxLayout* >( layout() );
         assert( NULL != topLayout );
@@ -73,15 +73,15 @@ RemoteMachineSettingsPtr  RemoteMachineSettingsDialog::getMachineSettings() cons
 }
 
 void RemoteMachineSettingsDialog::sl_okPushButtonClicked() {
-    
+
     QString error = currentUi->validate();
     if( !error.isEmpty() ) {
         QMessageBox::critical( this, tr( "Error!" ), error );
         return;
     }
-    
+
     createMachineSettings();
-    
+
     QDialog::accept();
 }
 
@@ -104,7 +104,7 @@ void RemoteMachineSettingsDialog::createMachineSettings()
     machineSettings = currentUi->createMachine();
     if( NULL == machineSettings ) {
         QMessageBox::critical( this, tr( "Error!" ), tr( "Sorry! Cannot create remote machine" ) );
-    }  
+    }
 
 }
 

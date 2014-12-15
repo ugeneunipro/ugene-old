@@ -87,7 +87,7 @@ void SmithWatermanDialogFiller::run() {
     }
 
     QTabWidget *tabWidget = qobject_cast<QTabWidget*>(GTWidget::findWidget(os, "tabWidget", dialog));
-    
+
     GTTabWidget::setCurrentIndex(os, tabWidget, 1);
     QComboBox * resultViewVariants = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "resultViewVariants", dialog));
     int resultViewIndex = 0;
@@ -99,7 +99,7 @@ void SmithWatermanDialogFiller::run() {
         assert(0);
     }
     resultViewVariants->setCurrentIndex(resultViewIndex);
-        
+
     if(!resultFilesPath.isEmpty()) {
         QLineEdit * resultFilePathContainer = NULL;
         if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
@@ -139,7 +139,7 @@ void SmithWatermanDialogFiller::run() {
 
     QTextEdit* textEdit = qobject_cast<QTextEdit*>(GTWidget::findWidget(os, "teditPattern", dialog));
     GTTextEdit::setText(os, textEdit, pattern);
-    
+
     if(autoSetupAlgorithmParams) {
         QComboBox * comboRealization = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "comboRealization", dialog));
         QString realizationName;
@@ -156,7 +156,7 @@ void SmithWatermanDialogFiller::run() {
 
         const int swRealizationIndex = comboRealization->findText(realizationName);
         comboRealization->setCurrentIndex(swRealizationIndex);
-        
+
         QComboBox * comboResultFilter = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "comboResultFilter", dialog));
         comboResultFilter->setCurrentIndex(RESULT_INTERSECTION_FILTER_INDEX);
 

@@ -80,7 +80,7 @@ bool HighFlexSettings::restoreRememberedSettings()
 
     // Window size
     QVariant windowSizeVariant = AppContext::getSettings()->getValue(
-        SETTINGS_PATH + "/" + SETTING_WINDOW_SIZE, 
+        SETTINGS_PATH + "/" + SETTING_WINDOW_SIZE,
         DEFAULT_WINDOW_SIZE); // The second parameter has no actual meaning in this case
 
     windowSize = windowSizeVariant.toInt(&convertionSuccessful);
@@ -92,7 +92,7 @@ bool HighFlexSettings::restoreRememberedSettings()
 
     // Window step
     QVariant windowStepVariant = AppContext::getSettings()->getValue(
-        SETTINGS_PATH + "/" + SETTING_WINDOW_STEP, 
+        SETTINGS_PATH + "/" + SETTING_WINDOW_STEP,
         DEFAULT_WINDOW_STEP);
 
     windowStep = windowStepVariant.toInt(&convertionSuccessful);

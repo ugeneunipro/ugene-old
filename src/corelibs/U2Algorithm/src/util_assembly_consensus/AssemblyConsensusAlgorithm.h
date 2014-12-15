@@ -35,12 +35,12 @@ class U2ALGORITHM_EXPORT AssemblyConsensusAlgorithmFactory : public QObject {
     Q_OBJECT
 public:
     AssemblyConsensusAlgorithmFactory(const QString& algoId) : algorithmId(algoId) {}
-    
+
     virtual QString getId() const { return algorithmId; }
-    
+
     virtual QString getDescription() const = 0;
     virtual QString getName() const = 0;
-    
+
     virtual AssemblyConsensusAlgorithm* createAlgorithm() = 0;
 private:
     QString algorithmId;
@@ -49,13 +49,13 @@ private:
 class U2ALGORITHM_EXPORT AssemblyConsensusAlgorithm {
 public:
     AssemblyConsensusAlgorithm(AssemblyConsensusAlgorithmFactory* factory_) : factory(factory_) {}
-    
+
     AssemblyConsensusAlgorithmFactory* getFactory() { return factory; }
 
     QString getDescription() const {return factory->getDescription();}
     QString getName() const {return factory->getName();}
     QString getId() const {return factory->getId();}
-    
+
     virtual QByteArray getConsensusRegion(const U2Region &region, U2DbiIterator<U2AssemblyRead>* reads, QByteArray referenceFragment, U2OpStatus &os) = 0;
 
     /** The character that will be placed in consensus array if it is undefined (no bases covered current position) */

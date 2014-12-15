@@ -53,7 +53,7 @@ public:
 
     int     maxProw;
     qint64  nReads;
-    
+
     // used to assign prow for reads when TAIL_SIZE is not enough
     qint64          peakEnd;
     qint64          peakRow;

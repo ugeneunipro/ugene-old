@@ -52,7 +52,7 @@ private slots:
 private:
     IntegralBus *input, *output;
     QList<AnnotationData> inputAnns;
-}; 
+};
 
 class FilterAnnotationsWorkerFactory : public DomainFactory {
 public:
@@ -71,7 +71,7 @@ public:
 
 private:
     QStringList readAnnotationNames();
-    
+
 private:
     QList<AnnotationData>& annotations_;
     QString names_;

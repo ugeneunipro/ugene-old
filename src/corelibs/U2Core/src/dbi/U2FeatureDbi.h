@@ -89,7 +89,7 @@ public:
 
     QString         featureName;
     OrderOp         featureNameOrderOp;
-    
+
     QString         keyName;
     OrderOp         keyNameOrderOp;
 
@@ -99,7 +99,7 @@ public:
 
     /**
      * Indicates the region to intersect
-     * Special values: 
+     * Special values:
      * startPos = -1 and len = 0 :   filter is disabled
      */
     U2Region        intersectRegion;

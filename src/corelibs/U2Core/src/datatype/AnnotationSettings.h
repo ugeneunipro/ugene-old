@@ -59,7 +59,7 @@ public:
     QStringList getAllSettings() const;
     AnnotationSettings * getAnnotationSettings( const QString &name );
     AnnotationSettings * getAnnotationSettings( const AnnotationData &a );
-    
+
     // persistent==true -> save settings to file, ==false -> this session only
     void changeSettings(const QList<AnnotationSettings*>& settings, bool saveAsPersistent);
 

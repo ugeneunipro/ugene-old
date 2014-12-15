@@ -69,7 +69,7 @@ private:
     QMenu * consensusAlgorithmMenu;
     QList<QAction*> algorithmActions;
     QAction * diffAction;
-    QAction * exportConsensusVariationsAction; 
+    QAction * exportConsensusVariationsAction;
     QSharedPointer<AssemblyConsensusAlgorithm> consensusAlgorithm;
 
     ConsensusInfo cache;

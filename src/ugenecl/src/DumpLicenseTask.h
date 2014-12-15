@@ -36,7 +36,7 @@ public:
 public:
     DumpLicenseTask();
     virtual void run();
-    
+
 }; // DumpLicenseTask
 
 }

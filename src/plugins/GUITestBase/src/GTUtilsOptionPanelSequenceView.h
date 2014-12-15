@@ -61,7 +61,7 @@ public:
     static void setSetMaxResults(U2OpStatus &os, int maxResults);
     static void setAlgorithm(U2OpStatus &os, QString algorithm);
     static void setMatchPercentage(U2OpStatus &os, int percentage);
-    
+
     static int getMatchPercentage(U2OpStatus &os);
     static QString getRegionType(U2OpStatus &os);
     static QPair<int, int> getRegion(U2OpStatus &os);
@@ -69,7 +69,7 @@ public:
     static void enterFilepathForSavingAnnotations(U2OpStatus &os, QString filepath);
 
     static void toggleInputFromFilePattern(U2OpStatus &os);
-    
+
     static void toggleSaveAnnotationsTo(U2OpStatus &os);
 
     static void clickNext(U2OpStatus &os);
@@ -89,7 +89,7 @@ public:
     static void openOtherSettingsShowHideWidget(U2OpStatus &os, bool open = true);
     static void openSaveAnnotationToShowHideWidget(U2OpStatus &os, bool open = true);
     static void openAnnotationParametersShowHideWidget(U2OpStatus &os, bool open = true);
-    
+
 private:
     static QMap<Tabs,QString> initNames();
 };

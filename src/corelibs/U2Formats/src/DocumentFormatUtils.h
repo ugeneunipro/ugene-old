@@ -54,7 +54,7 @@ public:
     static QList<DNASequence> toSequences(const GObject* obj);
 
     static int getMergeGap(const QVariantMap& hints);
-    
+
     static int getMergedSize(const QVariantMap& hints, int defaultVal);
 
     static void updateFormatHints(QList<GObject*>& objects, QVariantMap& fs);

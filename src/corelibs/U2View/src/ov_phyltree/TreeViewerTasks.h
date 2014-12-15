@@ -50,7 +50,7 @@ public:
     OpenTreeViewerTask(UnloadedObject* obj, QObject* _parent = NULL);
     OpenTreeViewerTask(Document* doc, QObject* _parent = NULL);
     virtual ~OpenTreeViewerTask();
-    
+
     virtual void open();
 
     virtual void createTreeViewer();

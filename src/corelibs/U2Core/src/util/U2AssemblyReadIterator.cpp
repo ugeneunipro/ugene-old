@@ -27,7 +27,7 @@
 namespace U2 {
 
 U2AssemblyReadIterator::U2AssemblyReadIterator(const QByteArray & read_, QList<U2CigarToken> cigar_, int startPos /* = 0*/) :
-offsetInRead(0), read(read_), offsetInToken(0), offsetInCigar(0), cigar(cigar_)  
+offsetInRead(0), read(read_), offsetInToken(0), offsetInCigar(0), cigar(cigar_)
 {
     for(int i = 0; i < startPos && hasNext();) {
         skip();
@@ -40,7 +40,7 @@ offsetInRead(0), read(read_), offsetInToken(0), offsetInCigar(0), cigar(cigar_)
             offsetInToken += t.count;
             if(!hasNext()) break;
             advanceToNextToken();
-        } else { 
+        } else {
             //landing in the current token
             offsetInToken = startPos - i;
             if(isMatch()) {
@@ -160,9 +160,9 @@ void t01() {
     QByteArray read("SIIISSAIIIAAASSIS");
     QList<U2CigarToken> cigar;
     //1H 1S 2I 1I 2S 1M 3I 1D 1M 2D 100H 200P 2M 2S 1I 1S 5H
-    cigar 
-        << U2CigarToken(U2CigarOp_H, 1) 
-        << U2CigarToken(U2CigarOp_S, 1) 
+    cigar
+        << U2CigarToken(U2CigarOp_H, 1)
+        << U2CigarToken(U2CigarOp_S, 1)
         << U2CigarToken(U2CigarOp_I, 2)
         << U2CigarToken(U2CigarOp_I, 1)
         << U2CigarToken(U2CigarOp_S, 2)
@@ -188,9 +188,9 @@ void t02() {
     QByteArray read("SIIIA");
     QList<U2CigarToken> cigar;
     //1S 3I 1M
-    cigar 
-        << U2CigarToken(U2CigarOp_S, 1) 
-        << U2CigarToken(U2CigarOp_I, 3) 
+    cigar
+        << U2CigarToken(U2CigarOp_S, 1)
+        << U2CigarToken(U2CigarOp_I, 3)
         << U2CigarToken(U2CigarOp_EQ, 1);
     QByteArray expectedRead("A");
     U2AssemblyReadIterator it(read, cigar);
@@ -201,12 +201,12 @@ void t03() {
     QByteArray read("ACTS");
     QList<U2CigarToken> cigar;
     //2H 1P 1M 1= 1X 1S 5H
-    cigar 
-        << U2CigarToken(U2CigarOp_H, 2) 
-        << U2CigarToken(U2CigarOp_P, 1) 
+    cigar
+        << U2CigarToken(U2CigarOp_H, 2)
+        << U2CigarToken(U2CigarOp_P, 1)
         << U2CigarToken(U2CigarOp_M, 1)
-        << U2CigarToken(U2CigarOp_EQ, 1) 
-        << U2CigarToken(U2CigarOp_X, 1) 
+        << U2CigarToken(U2CigarOp_EQ, 1)
+        << U2CigarToken(U2CigarOp_X, 1)
         << U2CigarToken(U2CigarOp_S, 1)
         << U2CigarToken(U2CigarOp_H, 5);
 

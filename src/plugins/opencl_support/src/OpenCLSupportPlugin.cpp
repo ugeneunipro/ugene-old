@@ -42,7 +42,7 @@ namespace U2 {
 
 const static char * RESOURCE_OPENCL_GPU_NAME = "OpenCLGpu";
 
-OpenCLSupportPlugin::OpenCLSupportPlugin() : Plugin(tr("OpenCL Support"), 
+OpenCLSupportPlugin::OpenCLSupportPlugin() : Plugin(tr("OpenCL Support"),
                                                     tr("Plugin provides support for OpenCL-enabled GPUs.") ) {
     QString err_str;
     OpenCLSupportError err = obtainGpusInfo( err_str );
@@ -133,7 +133,7 @@ OpenCLSupportPlugin::OpenCLSupportError OpenCLSupportPlugin::obtainGpusInfo( QSt
             int maximumParamLength = 200;
             gauto_array<char> paramValue (new char[maximumParamLength]);
             size_t actualParamSize;
-            int actualParamLength = 0;            
+            int actualParamLength = 0;
 
             //******************************
             errCode = openCLHelper.clGetDeviceInfo_p(deviceId, CL_DEVICE_VENDOR, sizeof(char)*maximumParamLength, paramValue.get(), &actualParamSize);
@@ -145,7 +145,7 @@ OpenCLSupportPlugin::OpenCLSupportError OpenCLSupportPlugin::obtainGpusInfo( QSt
             gauto_array<char> vendorNameValue(new char[actualParamLength + 1]);
             strncpy(vendorNameValue.get(), paramValue.get(), actualParamLength);
 
-            QString vendorName = vendorNameValue.get();            
+            QString vendorName = vendorNameValue.get();
             //******************************
             errCode = openCLHelper.clGetDeviceInfo_p(deviceId, CL_DEVICE_NAME , sizeof(char)*maximumParamLength, paramValue.get(), &actualParamSize);
             if (hasOPENCLError(errCode, errStr)) {
@@ -156,7 +156,7 @@ OpenCLSupportPlugin::OpenCLSupportError OpenCLSupportPlugin::obtainGpusInfo( QSt
             gauto_array<char> deviceNameValue(new char[actualParamLength + 1]);
             strncpy(deviceNameValue.get(), paramValue.get(), actualParamLength);
 
-            QString deviceName = deviceNameValue.get();                        
+            QString deviceName = deviceNameValue.get();
             //******************************
             cl_ulong globalMemSize = 0;
 
@@ -190,26 +190,26 @@ OpenCLSupportPlugin::OpenCLSupportError OpenCLSupportPlugin::obtainGpusInfo( QSt
             cl_uint maxComputeUnits = 10;
 
             errCode = openCLHelper.clGetDeviceInfo_p(deviceId, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &maxComputeUnits, &actualParamSize);
-            if (hasOPENCLError(errCode, errStr)) {                
+            if (hasOPENCLError(errCode, errStr)) {
                 return Error_OpenCLError;
             }
             //******************************
             cl_uint maxWorkItemDimensions = 0;
 
             errCode = openCLHelper.clGetDeviceInfo_p(deviceId, CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, sizeof(cl_uint), &maxWorkItemDimensions, &actualParamSize);
-            if (hasOPENCLError(errCode, errStr)) {                
+            if (hasOPENCLError(errCode, errStr)) {
                 return Error_OpenCLError;
             }
             //******************************
             size_t maxWorkGroupSize = 0;
 
             errCode = openCLHelper.clGetDeviceInfo_p(deviceId, CL_DEVICE_MAX_WORK_GROUP_SIZE , sizeof(size_t), &maxWorkGroupSize, &actualParamSize);
-            if (hasOPENCLError(errCode, errStr)) {                
+            if (hasOPENCLError(errCode, errStr)) {
                 return Error_OpenCLError;
             }
 
             cl_context deviceContext = openCLHelper.clCreateContext_p(0, 1, &deviceId, NULL, NULL, &errCode);
-            if (hasOPENCLError(errCode, errStr)) {                
+            if (hasOPENCLError(errCode, errStr)) {
                 return Error_OpenCLError;
             }
 
@@ -259,7 +259,7 @@ void OpenCLSupportPlugin::registerAvailableGpus() {
 void OpenCLSupportPlugin::loadGpusSettings() {
     Settings * s = AppContext::getSettings();
     foreach( OpenCLGpuModel * m, gpus ) {
-        QString key = OPENCL_GPU_REGISTRY_SETTINGS_GPU_SPECIFIC + 
+        QString key = OPENCL_GPU_REGISTRY_SETTINGS_GPU_SPECIFIC +
             QString::number(m->getId()) + OPENCL_GPU_SETTINGS_ENABLED;
         QVariant enabled_v = s->getValue( key );
         if( !enabled_v.isNull() ) {

@@ -39,7 +39,7 @@ public:
     MSAEditorBaseOffsetCache(QObject* p, MAlignmentObject* aliObj);
 
     int getBaseCounts(int seqNum, int aliPos, bool inclAliPos);
-    
+
     MAlignmentObject* getMSAObject() const {return aliObj;}
 private slots:
     void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&);
@@ -56,7 +56,7 @@ private:
         QVector<int> rowOffsets;
     };
 
-    
+
     MAlignmentObject*       aliObj;
     QVector<RowCache>       cache;
     int                     objVersion;

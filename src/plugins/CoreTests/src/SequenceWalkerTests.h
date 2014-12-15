@@ -39,7 +39,7 @@ public:
 
     void onRegion(SequenceWalkerSubtask* t,TaskStateInfo& ti) {Q_UNUSED(t); Q_UNUSED(ti);}
 
-private:    
+private:
     int chunkSize;
     int overlap;
     int extraLen;

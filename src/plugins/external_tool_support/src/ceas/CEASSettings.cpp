@@ -153,7 +153,7 @@ QStringList CEASSettings::getArgumentList() const {
     if (!gdbFile.isEmpty()){
         result << "--gt=" + getCorrectArgValue(gdbFile);
     }
-    
+
     if (!extraBedFile.isEmpty()) {
         result << "--ebed=" + getCorrectArgValue(extraBedFile);
     }

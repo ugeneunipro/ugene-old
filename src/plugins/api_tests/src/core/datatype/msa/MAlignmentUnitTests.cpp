@@ -81,7 +81,7 @@ bool MAlignmentTestUtils::testAlignmentNotChanged(const MAlignment& almnt) {
     if ("AG-CT-TAA" != MAlignmentTestUtils::getRowData(almnt, 1)) {
         return false;
     }
-    
+
     return true;
 }
 
@@ -571,7 +571,7 @@ IMPLEMENT_TEST(MAlignmentUnitTests, removeChars_validParamsAndTrimmed) {
     CHECK_EQUAL("-CT-TAA", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
 }
 
-IMPLEMENT_TEST(MAlignmentUnitTests, removeChars_negativeRowIndex) {    
+IMPLEMENT_TEST(MAlignmentUnitTests, removeChars_negativeRowIndex) {
     MAlignment almnt = MAlignmentTestUtils::initTestAlignment();
     U2OpStatusImpl os;
     almnt.removeChars(-1, 0, 2, os);

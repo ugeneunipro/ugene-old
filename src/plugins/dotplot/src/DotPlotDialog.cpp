@@ -45,8 +45,8 @@
 
 namespace U2 {
 
-DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int minLen, int identity, 
-                             ADVSequenceObjectContext *sequenceX, ADVSequenceObjectContext *sequenceY, 
+DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int minLen, int identity,
+                             ADVSequenceObjectContext *sequenceX, ADVSequenceObjectContext *sequenceY,
                              bool dir, bool inv, const QColor &dColor, const QColor &iColor, bool hideLoadSequences)
 : QDialog(parent), xSeq(sequenceX), ySeq(sequenceY), adv(currentADV), directColor(dColor), invertedColor(iColor)
 ,openSequenceTask(NULL), curURL("")
@@ -56,7 +56,7 @@ DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int 
     startButton = buttonBox->button(QDialogButtonBox::Ok);
 
     SAFE_POINT(adv != NULL, "DotPlotDialog called without view context!", );
-    
+
     directCheckBox->setChecked(dir);
     invertedCheckBox->setChecked(inv);
 
@@ -74,7 +74,7 @@ DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int 
     foreach (GObject* obj, allSequences) {
         U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
         QString name = seqObj->getGObjectName();
-        
+
         xAxisCombo->addItem(name);
         yAxisCombo->addItem(name);
 
@@ -96,7 +96,7 @@ DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int 
     } else if (sequences.size() > 1) {    // choose the second sequence for Y axis by default
         yAxisCombo->setCurrentIndex(1);
     }
-   
+
     minLenBox->setValue(minLen);
     identityBox->setValue(identity);
 
@@ -125,7 +125,7 @@ void DotPlotDialog::accept() {
     int yIdx = yAxisCombo->currentIndex();
     SAFE_POINT(xIdx >= 0 && xIdx < sequences.length(), QString("DotPlotDialog: index is out of range: %1").arg(xIdx),);
     SAFE_POINT(yIdx >= 0 && yIdx < sequences.length(), QString("DotPlotDialog: index is out of range: %1").arg(yIdx),);
-        
+
     U2SequenceObject* objX = sequences[xIdx];
     U2SequenceObject* objY = sequences[yIdx];
 
@@ -153,7 +153,7 @@ void DotPlotDialog::sl_minLenHeuristics() {
 
     int xIdx = xAxisCombo->currentIndex();
     int yIdx = yAxisCombo->currentIndex();
-    
+
     U2SequenceObject *objX = sequences.at(xIdx);
     U2SequenceObject *objY = sequences.at(yIdx);
 
@@ -296,7 +296,7 @@ void DotPlotDialog::sl_loadTaskStateChanged(Task* t){
             }
             return;
     }
-    
+
 
     if (loadTask->getStateInfo().hasError()) {
         QMessageBox::critical(this, tr("Error"), tr("Error opening files"));
@@ -330,11 +330,11 @@ bool DotPlotDialog::isObjectInADV(GObject* obj){
 }
 
 GObject* DotPlotDialog::getGObjectByName(const QString& gObjectName){
-    QList<GObject*> allSequences  = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::SEQUENCE);  
+    QList<GObject*> allSequences  = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::SEQUENCE);
     GObject* obj = NULL;
     foreach (GObject* s, allSequences) {
         if (gObjectName == s->getGObjectName()) {
-            obj = s; 
+            obj = s;
         }
     }
     return obj;

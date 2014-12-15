@@ -253,7 +253,7 @@ void BaseShortReadsAlignerWorkerFactory::addCommonAttributes(QList<Attribute*>& 
     {
         delegates[OUTPUT_DIR] = new URLDelegate("", "", false, true);
         delegates[REFERENCE_GENOME] = new URLDelegate("", "", false, false, false);
- 
+
         QVariantMap libMap;
         libMap["Single-end"] = "Single-end";
         libMap["Paired-end"] = "Paired-end";
@@ -312,7 +312,7 @@ QList<PortDescriptor*> BaseShortReadsAlignerWorkerFactory::getPortDescriptors() 
 }
 
 QString ShortReadsAlignerPrompter::composeRichDoc() {
-    QString res = ""; 
+    QString res = "";
 
     Actor* readsProducer = qobject_cast<IntegralBusPort*>(target->getPort(IN_PORT_DESCR))->getProducer(READS_URL_SLOT_ID);
     Port* pairedPort = target->getPort(IN_PORT_DESCR_PAIRED);

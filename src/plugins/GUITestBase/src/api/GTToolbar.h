@@ -33,7 +33,7 @@ namespace U2 {
 
 class GTToolbar {
 public:
-   
+
     static QToolBar* getToolbar(U2OpStatus &os, const QString &toolbarSysName);
 
     static QWidget* getWidgetForAction(U2OpStatus &os, const QToolBar *toolbar, QAction *action);

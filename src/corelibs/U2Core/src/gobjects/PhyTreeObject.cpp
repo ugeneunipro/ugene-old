@@ -142,7 +142,7 @@ void PhyTreeObject::rerootPhyTree(PhyNode* node) {
 
 bool PhyTreeObject::treesAreAlike( const PhyTree& tree1, const PhyTree& tree2 )
 {
-    
+
     QList<const PhyNode*> track1 =  tree1->collectNodes();
     QList<const PhyNode*> track2 =  tree2->collectNodes();
     if (track1.count() != track2.count()) {
@@ -152,7 +152,7 @@ bool PhyTreeObject::treesAreAlike( const PhyTree& tree1, const PhyTree& tree2 )
     foreach (const PhyNode* n1, track1) {
         if (n1->getName().isEmpty()) {
             continue;
-        } 
+        }
         foreach (const PhyNode* n2, track2) {
             if (n2->getName() != n1->getName()) {
                 continue;

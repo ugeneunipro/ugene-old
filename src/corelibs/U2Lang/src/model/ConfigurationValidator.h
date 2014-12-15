@@ -38,7 +38,7 @@ class U2LANG_EXPORT ConfigurationValidator {
 public:
     virtual ~ConfigurationValidator() { }
     virtual bool validate(const Configuration*, ProblemList& problemList) const = 0;
-    
+
 }; // ConfigurationValidator
 
 } // U2

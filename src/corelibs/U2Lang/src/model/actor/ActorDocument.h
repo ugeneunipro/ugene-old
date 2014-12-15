@@ -46,7 +46,7 @@ public:
 protected:
     // document's target
     Actor* target;
-    
+
 }; // ActorDocument
 
 

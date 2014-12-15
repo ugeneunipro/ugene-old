@@ -34,7 +34,7 @@ class WorkflowContext;
 }
 
 // the string is supposed to be used as separator
-// between different pieces of information obtained from 
+// between different pieces of information obtained from
 // translated message
 const QString INFO_TAGS_SEPARATOR = ";";
 const QString INFO_FEATURES_SEPARATOR = ",";

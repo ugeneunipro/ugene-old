@@ -83,7 +83,7 @@ void TextReader::init() {
 }
 
 void TextReader::sendMessage(const QByteArray &data) {
-    QVariantMap m; 
+    QVariantMap m;
     m[BaseSlots::TEXT_SLOT().getId()] = QString(data);
     m[BaseSlots::URL_SLOT().getId()] = url;
     m[BaseSlots::DATASET_SLOT().getId()] = urls->getLastDatasetName();
@@ -185,7 +185,7 @@ void TextReader::doc2data(Document* doc) {
     foreach(GObject* go, GObjectUtils::select(doc->getObjects(), GObjectTypes::TEXT, UOF_LoadedOnly)) {
         TextObject* txtObject = qobject_cast<TextObject*>(go);
         assert(txtObject);
-        QVariantMap m; 
+        QVariantMap m;
         m[BaseSlots::TEXT_SLOT().getId()] = txtObject->getText();
         m[BaseSlots::URL_SLOT().getId()] = doc->getURLString();
         cache << Message(mtype, m);
@@ -890,17 +890,17 @@ bool MSAWriter::isStreamingSupport() const {
 *************************************/
 Worker* DataWorkerFactory::createWorker(Actor* a) {
     // TODO: wtf is this??
-    //  each actor must have own factory 
+    //  each actor must have own factory
 
     BaseWorker* w = NULL;
     QString protoId = a->getProto()->getId();
     if (CoreLibConstants::READ_TEXT_PROTO_ID == protoId ) {
         TextReader* t = new TextReader(a);
         w = t;
-    } 
+    }
     else if (CoreLibConstants::WRITE_TEXT_PROTO_ID == protoId) {
         w = new TextWriter(a);
-    } 
+    }
     else if (CoreLibConstants::WRITE_FASTA_PROTO_ID == protoId) {
         w = new FastaWriter(a);
     }
@@ -918,13 +918,13 @@ Worker* DataWorkerFactory::createWorker(Actor* a) {
     }
     else if (CoreLibConstants::GENERIC_READ_SEQ_PROTO_ID == protoId) {
         w = new GenericSeqReader(a);
-    } 
+    }
     else if(CoreLibConstants::WRITE_MSA_PROTO_ID == protoId ) {
         w = new MSAWriter(a);
     }
     else if(CoreLibConstants::WRITE_SEQ_PROTO_ID == protoId ) {
         w = new SeqWriter(a);
-    } 
+    }
     else if (CoreLibConstants::WRITE_FASTQ_PROTO_ID == protoId ) {
         w = new FastQWriter(a);
     } else {

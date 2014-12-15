@@ -55,10 +55,10 @@ public:
 protected slots:
     void sl_showChromatogram();
     void sl_sequenceWidgetAdded(ADVSequenceWidget*);
-    
+
 protected:
     virtual void initViewContext(GObjectView* view);
-};    
+};
 
 class ChromaViewAction : public ADVSequenceWidgetAction {
     Q_OBJECT

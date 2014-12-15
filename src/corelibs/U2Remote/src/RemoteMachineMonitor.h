@@ -39,7 +39,7 @@ namespace U2 {
 class U2REMOTE_EXPORT RemoteMachineMonitor {
 public:
     static const QString REMOTE_MACHINE_MONITOR_SETTINGS_TAG;
-    
+
 public:
     RemoteMachineMonitor();
     ~RemoteMachineMonitor();
@@ -48,23 +48,23 @@ public:
     void removeMachineConfiguration( const RemoteMachineSettingsPtr& machineSettings);
     RemoteMachineSettingsPtr findMachineSettings(const QString& serializedSettings) const;
     /* Function not const because we can call initialize() here */
-    QList<RemoteMachineSettingsPtr> getRemoteMachineMonitorItems(); 
+    QList<RemoteMachineSettingsPtr> getRemoteMachineMonitorItems();
     void saveSettings();
-    
+
 private:
     RemoteMachineMonitor( const RemoteMachineMonitor & );
     RemoteMachineMonitor & operator=( const RemoteMachineMonitor & );
-    
+
     QVariant serializeMachines() const;
     bool deserializeMachines( const QVariant & data );
-    
+
     void ensureInitialized();
     void initialize();
-    
+
 private:
     QList<RemoteMachineSettingsPtr> items;
     bool initialized;
-    
+
 }; // RemoteMachineMonitor
 
 } // U2

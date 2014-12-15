@@ -309,7 +309,7 @@ public:
     void run();
 private:
     CalculateErrorTaskInfo settings;
-};   
+};
 
 //search
 class ExpertDiscoverySearchResult {

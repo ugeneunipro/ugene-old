@@ -42,7 +42,7 @@ void ExpertDiscoveryViewCtx::addView(ExpertDiscoveryView* v){
 }
 
 // void ExpertDiscoveryViewCtx::sl_windowAdded(MWMDIWindow* wind){
-// 
+//
 //     int a = 1;
 //     if(wind->getWindowName()!="Expert Discovery"){
 //         foreach(ExpertDiscoveryView* v, viewList){

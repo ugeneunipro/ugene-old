@@ -43,7 +43,7 @@ RemoteMachineScanDialogImpl::RemoteMachineScanDialogImpl() {
     setupUi( this );
     ProtocolInfoRegistry * pir = AppContext::getProtocolInfoRegistry();
     assert( NULL != pir );
-    
+
     QList< ProtocolInfo * > protocolInfos = pir->getProtocolInfos();
     foreach( ProtocolInfo * pi, protocolInfos ) {
         Q_UNUSED(pi);
@@ -52,10 +52,10 @@ RemoteMachineScanDialogImpl::RemoteMachineScanDialogImpl() {
 //             protocolComboBox->addItem( pi->getId() );
 //         }
      }
-    
+
     connect( cancelPushButton, SIGNAL( clicked() ), SLOT( sl_cancelPushButtonClicked() ) );
     connect( okPushButton, SIGNAL( clicked() ), SLOT( sl_okPushButtonClicked() ) );
-    
+
     if( 0 == protocolComboBox->count() ) {
         okPushButton->setEnabled( false );
         QLabel * errorLable = new QLabel( tr( "No protocols that supports scanning found!" ), this );
@@ -64,11 +64,11 @@ RemoteMachineScanDialogImpl::RemoteMachineScanDialogImpl() {
         topLayout->insertWidget( 1, errorLable );
         return;
     }
-    
+
     connect( protocolComboBox, SIGNAL( activated( const QString & ) ), SLOT( sl_startScan( const QString & ) ) );
     connect( &updateTimer, SIGNAL( timeout() ), SLOT( sl_updatePushButtonClicked() ) );
     updateTimer.start( SCAN_UPDATE_TIME );
-    
+
     machinesTableWidget->horizontalHeader()->setHighlightSections( false );
 #if (QT_VERSION < 0x050000) //Qt 5
     machinesTableWidget->horizontalHeader()->setClickable( false );
@@ -80,7 +80,7 @@ RemoteMachineScanDialogImpl::RemoteMachineScanDialogImpl() {
     machinesTableWidget->setSelectionMode( QAbstractItemView::NoSelection );
     machinesTableWidget->setEditTriggers( QAbstractItemView::NoEditTriggers );
     resizeTable();
-    
+
     sl_startScan( protocolComboBox->currentText() );
 }
 
@@ -107,13 +107,13 @@ void RemoteMachineScanDialogImpl::sl_okPushButtonClicked() {
             delIndexes << i;
         }
     }
-    
+
     qSort( delIndexes.begin(), delIndexes.end(), qGreater<int>() );
     sz = delIndexes.size();
     for( int i = 0; i < sz; ++i ) {
         delete model.takeAt( delIndexes.at( i ) );
     }
-    
+
     accept();
 }
 
@@ -147,7 +147,7 @@ void RemoteMachineScanDialogImpl::addNextMachineToTable( RemoteMachineSettings *
     assert( NULL != settings );
     int sz = machinesTableWidget->rowCount();
     machinesTableWidget->insertRow( sz );
-    
+
     QCheckBox * checkBox = new QCheckBox();
     checkBox->setCheckState( Qt::Checked );
     machinesTableWidget->setCellWidget( sz, 0, checkBox );
@@ -186,7 +186,7 @@ void RemoteMachineScanDialogImpl::resizeTable() {
 #else
     machinesTableWidget->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
 #endif
-    machinesTableWidget->horizontalHeader()->resizeSections( QHeaderView::ResizeToContents );    
+    machinesTableWidget->horizontalHeader()->resizeSections( QHeaderView::ResizeToContents );
 }
 
 } // U2

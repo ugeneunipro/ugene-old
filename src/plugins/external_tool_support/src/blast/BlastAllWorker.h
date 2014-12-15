@@ -43,11 +43,11 @@ class BlastAllWorker : public BaseWorker {
     Q_OBJECT
 public:
     BlastAllWorker(Actor* a);
-    
+
     virtual void init();
     virtual Task* tick();
     virtual void cleanup();
-    
+
 private slots:
     void sl_taskFinished();
 
@@ -55,8 +55,8 @@ protected:
     IntegralBus *input, *output;
     QString resultName,transId;
     BlastTaskSettings cfg;
-    
-}; 
+
+};
 
 class BlastAllWorkerFactory : public DomainFactory {
 public:

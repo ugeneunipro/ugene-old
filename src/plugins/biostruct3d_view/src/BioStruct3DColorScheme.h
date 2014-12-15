@@ -31,7 +31,7 @@
 
 #include "GraphicUtils.h"
 
-namespace U2 { 
+namespace U2 {
 
 class BioStruct3DObject;
 class BioStruct3DColorScheme;
@@ -73,7 +73,7 @@ private:
 class BioStruct3DColorSchemeFactory {
 public:
     virtual BioStruct3DColorScheme* createInstance(const BioStruct3DObject *biostruct) const = 0;
-    //! Method creates factories 
+    //! Method creates factories
 };
 
 #define COLOR_SCHEME_FACTORY(c) \

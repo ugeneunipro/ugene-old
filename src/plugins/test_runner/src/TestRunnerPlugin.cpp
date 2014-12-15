@@ -144,7 +144,7 @@ void TestRunnerPlugin::sl_startTestRunner() {
 
 //////////////////////////////////////////////////////////////////////////
 // service
-TestRunnerService::TestRunnerService() 
+TestRunnerService::TestRunnerService()
 : Service(Service_TestRunner, tr("Test runner"), tr("Service to support UGENE embedded testing")), env(NULL)
 {
     windowAction = NULL;
@@ -189,7 +189,7 @@ void TestRunnerService::serviceStateChangedCallback(ServiceState oldState, bool 
         assert(windowAction!=NULL);
         delete windowAction;
         windowAction = NULL;
-        
+
         saveSuites();
         saveEnv();
         deallocateSuites();
@@ -230,7 +230,7 @@ void TestRunnerService::addTestSuite(GTestSuite *ts) {
     assert(!findTestSuiteByURL(ts->getURL()));
     assert(!suites.contains(ts));
     suites.append(ts);
-    
+
     GTestEnvironment * tsEnv = ts->getEnv();
     const QStringList & tsEnvKeys = tsEnv->getVars().keys();
     QStringList tsEnvResultedKeys;
@@ -241,7 +241,7 @@ void TestRunnerService::addTestSuite(GTestSuite *ts) {
         }
     }
     readEnvForKeys(tsEnvResultedKeys);
-    
+
     emit si_testSuiteAdded(ts);
 }
 

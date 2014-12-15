@@ -37,7 +37,7 @@
 namespace U2{
 
 CreateSubalignmentTask::CreateSubalignmentTask(MAlignmentObject* maObj, const CreateSubalignmentSettings& settings )
-:DocumentProviderTask(tr("Create sub-alignment: %1").arg(maObj->getDocument()->getName()), TaskFlags_NR_FOSCOE), 
+:DocumentProviderTask(tr("Create sub-alignment: %1").arg(maObj->getDocument()->getName()), TaskFlags_NR_FOSCOE),
 origMAObj(maObj), cfg(settings)
 {
     origDoc = maObj->getDocument();
@@ -67,7 +67,7 @@ void CreateSubalignmentTask::prepare() {
 
         resultDocument->addObject(resultMAObj);
         GObjectUtils::updateRelationsURL(resultMAObj, origDoc->getURL(), cfg.url);
-        QList<GObjectRelation> phyTreeRelations = resultMAObj->findRelatedObjectsByRole(ObjectRole_PhylogeneticTree); 
+        QList<GObjectRelation> phyTreeRelations = resultMAObj->findRelatedObjectsByRole(ObjectRole_PhylogeneticTree);
         foreach(GObjectRelation phyTreeRel, phyTreeRelations) {
             resultMAObj->removeObjectRelation(phyTreeRel);
         }
@@ -84,7 +84,7 @@ void CreateSubalignmentTask::prepare() {
         rowNames.insert(name);
     }
     resultMAObj->crop(cfg.window, rowNames);
-    
+
     if (cfg.saveImmediately) {
         addSubTask(new SaveDocumentTask(resultDocument, iof));
     }

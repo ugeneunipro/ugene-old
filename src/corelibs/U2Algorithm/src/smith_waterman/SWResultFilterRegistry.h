@@ -35,20 +35,20 @@ class U2ALGORITHM_EXPORT SWResultFilterRegistry: public QObject {
 public:
     SWResultFilterRegistry(QObject* pOwn = 0);
     ~SWResultFilterRegistry();
-    
+
     QStringList getFiltersIds() const;
-    
+
     SmithWatermanResultFilter* getFilter(const QString& id);
-    
+
     bool isRegistered(const QString& id) const;
-    
+
     bool registerFilter( SmithWatermanResultFilter* filter );
 
     const QString& getDefaultFilterId() {return defaultFilterId;}
 
 private:
     QMutex mutex;
-    QHash<QString, SmithWatermanResultFilter*> filters;   
+    QHash<QString, SmithWatermanResultFilter*> filters;
     QString defaultFilterId;
 };
 

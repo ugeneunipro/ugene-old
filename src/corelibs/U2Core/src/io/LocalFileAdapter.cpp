@@ -33,7 +33,7 @@ IOAdapter* LocalFileAdapterFactory::createIOAdapter() {
     return new LocalFileAdapter(this);
 }
 
-GzippedLocalFileAdapterFactory::GzippedLocalFileAdapterFactory(QObject* o) 
+GzippedLocalFileAdapterFactory::GzippedLocalFileAdapterFactory(QObject* o)
 : LocalFileAdapterFactory(o) {
     name = tr("GZIP file");
 }

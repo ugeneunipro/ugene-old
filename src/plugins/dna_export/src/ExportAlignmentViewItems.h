@@ -54,13 +54,13 @@ public:
     void buildMenu(QMenu* m);
 
 protected slots:
-    void sl_exportNucleicMsaToAmino();   
+    void sl_exportNucleicMsaToAmino();
 
     void updateActions();
 
 private:
     MSAEditor*      editor;
-    QAction*        translateMSAAction;    
+    QAction*        translateMSAAction;
 
 };
 

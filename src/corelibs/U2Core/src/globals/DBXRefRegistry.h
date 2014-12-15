@@ -35,8 +35,8 @@ namespace U2 {
 class U2CORE_EXPORT DBXRefInfo {
 public:
     DBXRefInfo(){};
-    DBXRefInfo(const QString& _name, const QString& _url, 
-               const QString& _fileUrl, const QString& _comment) 
+    DBXRefInfo(const QString& _name, const QString& _url,
+               const QString& _fileUrl, const QString& _comment)
                : name(_name), url(_url), fileUrl(_fileUrl), comment(_comment){}
 
     QString name;
@@ -45,7 +45,7 @@ public:
     QString comment;
 
     static void setupToEngine(QScriptEngine *engine);
-private:    
+private:
     static QScriptValue toScriptValue(QScriptEngine *engine, DBXRefInfo const &in);
     static void fromScriptValue(const QScriptValue &object, DBXRefInfo &out);
 };

@@ -47,7 +47,7 @@ namespace U2 {
 namespace LocalWorkflow {
 
 /**************************
-* GenerateDNAWorkerFactory 
+* GenerateDNAWorkerFactory
  **************************/
 
 static const QString LENGHT_ATTR("length");
@@ -97,7 +97,7 @@ void GenerateDNAWorkerFactory::init() {
         Descriptor alg(ALGORITHM, GenerateDNAWorker::tr("Algorithm"),GenerateDNAWorker::tr("Algorithm for generating."));
         Descriptor wnd(WINDOW_SIZE, GenerateDNAWorker::tr("Window size"), GenerateDNAWorker::tr("Size of window where set content."));
         Descriptor gcSkew(GC_SKEW, GenerateDNAWorker::tr("GC Skew"), GenerateDNAWorker::tr("GC Skew."));
-        Descriptor seed(SEED, GenerateDNAWorker::tr("Seed"), GenerateDNAWorker::tr("Value to initialize the random generator. " 
+        Descriptor seed(SEED, GenerateDNAWorker::tr("Seed"), GenerateDNAWorker::tr("Value to initialize the random generator. "
             "By default (seed = -1) the generator is initialized with the system time."));
 
         a << new Attribute(ld, BaseTypes::NUM_TYPE(), false, 1000);
@@ -187,7 +187,7 @@ void GenerateDNAWorkerFactory::init() {
 }
 
 /**************************
-* GenerateDNAPrompter 
+* GenerateDNAPrompter
  **************************/
 
 QString GenerateDNAPrompter::composeRichDoc() {
@@ -195,7 +195,7 @@ QString GenerateDNAPrompter::composeRichDoc() {
 }
 
 /**************************
-* GenerateDNAWorker 
+* GenerateDNAWorker
  **************************/
 
 void GenerateDNAWorker::init() {
@@ -270,7 +270,7 @@ Task* GenerateDNAWorker::tick() {
 
         cfg.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     }
-    
+
     cfg.length = actor->getParameter(LENGHT_ATTR)->getAttributeValue<int>(context);
     cfg.window = actor->getParameter(WINDOW_SIZE)->getAttributeValue<int>(context);
 

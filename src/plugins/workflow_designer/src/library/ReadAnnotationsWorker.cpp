@@ -141,7 +141,7 @@ ReadAnnotationsProto::ReadAnnotationsProto()
 
     Descriptor md(ReadAnnotationsProto::MODE_ATTR, ReadAnnotationsWorker::tr("Mode"),
         ReadAnnotationsWorker::tr("If the file contains more than one annotation table, <i>Split</i> mode sends them \"as is\" to the output, "
-        "while <i>Merge</i> appends all the annotation tables and outputs the sole merged annotation table." 
+        "while <i>Merge</i> appends all the annotation tables and outputs the sole merged annotation table."
         "In <i>Merge files</i> is the same as <i>Merge</i> but it operates with all annotation tables from all files of one dataset."));
 
 

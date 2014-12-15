@@ -94,18 +94,18 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 // Removing part from sequence
-// 
+//
 // Steps:
-// 
+//
 // 1. Use menu {File->Open}. Open file samples/FASTA/human_T1.fa
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
 
-// 2. Click Ctrl+A. 
+// 2. Click Ctrl+A.
 // Expected state: Select range dialog appears
-// 
+//
 // 3. Fill the next field in dialog:
 //     {Range:} 1..50
-//     
+//
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 50));
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
     GTKeyboardUtils::selectAll(os);
@@ -113,7 +113,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 4. Click OK. Right click on sequence area. Use context menu {Edit sequence->Remove selected sequence}.
 // Expected state: Remove subsequence dialog appears
-// 
+//
 // 5. Fill the next field in dialog:
 //     {Save resulted document to a new file} set checked
 //     {Document format} Genbank
@@ -129,8 +129,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsDialog::waitForDialog(os, removeDialog);
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
 
-// Expected state: 
-//     document with edited sequence must appear in project view, 
+// Expected state:
+//     document with edited sequence must appear in project view,
 //     sequence length in new document must be 199900
 //     sequence must starts with "AGAGAGA"
     GTUtilsSequenceView::openSequenceView(os, "result.gb");
@@ -159,7 +159,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTUtilsDocument::checkDocument(os, "result.fa");
     GTGlobals::sleep();
 
-    GTUtilsSequenceView::openSequenceView(os, "result.fa");	
+    GTUtilsSequenceView::openSequenceView(os, "result.fa");
 
     int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
     CHECK_SET_ERR(sequenceLength == 199956, "Sequence length is " + QString::number(sequenceLength) + ", expected 199956");
@@ -187,7 +187,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTUtilsDocument::checkDocument(os, "result.gb");
     GTGlobals::sleep();
 
-    GTUtilsSequenceView::openSequenceView(os, "result.gb");	
+    GTUtilsSequenceView::openSequenceView(os, "result.gb");
 
     int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
     CHECK_SET_ERR(sequenceLength == 199956, "Sequence length is " + QString::number(sequenceLength) + ", expected 199956");
@@ -214,7 +214,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTGlobals::sleep(1000);
     GTUtilsDocument::checkDocument(os, "result.fa");
     GTGlobals::sleep(1000);
-    GTUtilsSequenceView::openSequenceView(os, "result.fa");	
+    GTUtilsSequenceView::openSequenceView(os, "result.fa");
 
     int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
     CHECK_SET_ERR(sequenceLength == 199900, "Sequence length is " + QString::number(sequenceLength) + ", expected 199900");
@@ -296,7 +296,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 GUI_TEST_CLASS_DEFINITION(test_0009) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/AMINO.fa");
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 10, 13));
-    
+
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
     GTGlobals::sleep();
     GTKeyboardUtils::selectAll(os);
@@ -304,10 +304,10 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
-    
+
     QString sequence = GTClipboard::text(os);
     CHECK_SET_ERR("ACCC" == sequence, "Incorrect sequence is copied");
-    
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0010) {

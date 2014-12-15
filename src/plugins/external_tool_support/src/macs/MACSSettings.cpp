@@ -67,7 +67,7 @@ QStringList MACSSettings::getArguments( const QString& treatFilePath, const QStr
     result << "--treatment=" + GUrlUtils::getQuotedString(treatFilePath);
 
     if (!conFilePath.isEmpty()){
-        result << "--control=" + GUrlUtils::getQuotedString(conFilePath);    
+        result << "--control=" + GUrlUtils::getQuotedString(conFilePath);
     }
 
     result << "--name=" + fileNames;
@@ -75,7 +75,7 @@ QStringList MACSSettings::getArguments( const QString& treatFilePath, const QStr
     result << "--gsize=" + QByteArray::number(static_cast<double>(genomeSizeInMbp) * 1000*1000);
 
     if (tagSize > 0){
-        result << "--tsize=" + QByteArray::number(tagSize);    
+        result << "--tsize=" + QByteArray::number(tagSize);
     }
 
     result << "--bw=" + QByteArray::number(bandWidth);
@@ -83,7 +83,7 @@ QStringList MACSSettings::getArguments( const QString& treatFilePath, const QStr
     if (pValue >= 0 && pValue <= 1){
         result << "--pvalue=" + QByteArray::number(pValue);
     }
-    
+
     result << "--mfold=" + QString("%1,%2").arg(modelFold.startPos + 1).arg(modelFold.endPos());
 
     if(!useLambda){

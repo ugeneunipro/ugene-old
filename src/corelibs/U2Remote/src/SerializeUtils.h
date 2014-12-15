@@ -39,16 +39,16 @@ namespace U2 {
 class U2REMOTE_EXPORT SerializeUtils {
 private:
     static const int SERIALIZED_DNASEQUENCE_LIST_SZ = 3;
-    
+
     static const int SERIALIZED_MALIGNMENT_LIST_SZ = 4;
-    
+
     static const QString REMOTE_MACHINE_VERSION_1_0;
-    
+
 public:
     template<typename T> static QVariant serializeValue( const T & t ) {
         return qVariantFromValue( t );
     }
-    
+
     template<typename T> static bool deserializeValue( const QVariant & data, T * val ) {
         FAIL("Obsolete! Not implemented!", false);
 
@@ -61,7 +61,7 @@ public:
         //*val = data.value<T>();
         //return true;
     }
-    
+
     template<typename T> static QVariant serializeArray( T * arr, int sz ) {
         FAIL("Obsolete! Not implemented!", false);
 
@@ -75,7 +75,7 @@ public:
         //}
         //return res;
     }
-    
+
     /* the arr array must be allocated by caller */
     template<typename T> static bool deserializeArray( const QVariant & data, T * arr, int sz ) {
         FAIL("Obsolete! Not implemented!", false);
@@ -101,14 +101,14 @@ public:
         //}
         //return true;
     }
-    
-    /* serialization of RemoteMachineSettings: human-readable QString instead of binary QVariant 
+
+    /* serialization of RemoteMachineSettings: human-readable QString instead of binary QVariant
        4 deserialization functions need for tests */
     static QString serializeRemoteMachineSettings( const RemoteMachineSettingsPtr& machine );
     static RemoteMachineSettingsPtr deserializeRemoteMachineSettings( const QString & data, QString * protoId = NULL );
     //static bool deserializeRemoteMachineSettings( const QString & data, RemoteMachine ** machine );
     static RemoteMachineSettingsPtr deserializeRemoteMachineSettingsFromFile( const QString & machinePath);
-    
+
 }; // SerializeUtils
 
 // serializeValue/deserializeValue template realizations: TODO: is it good to make them inline?

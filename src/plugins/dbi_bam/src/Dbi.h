@@ -40,7 +40,7 @@ public:
     virtual void init(const QHash<QString, QString> &properties, const QVariantMap &persistentData, U2OpStatus &os);
 
     virtual QVariantMap shutdown(U2OpStatus &os);
-    
+
     virtual QHash<QString, QString> getDbiMetaInfo(U2OpStatus &);
 
     virtual U2DataType getEntityTypeById(const U2DataId& id) const;
@@ -78,7 +78,7 @@ public:
     virtual FormatCheckResult isValidDbi(const QHash<QString, QString> &properties, const QByteArray &rawData, U2OpStatus &os) const;
 
     virtual GUrl id2Url(const U2DbiId& id) const {return GUrl(id, GUrl_File);}
-    
+
     virtual bool isDbiExists(const U2DbiId& id) const;
 
 public:
@@ -137,7 +137,7 @@ public:
     virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os, bool sortedHint = false);
 
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os);
-    
+
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const U2DataId& assemblyId, const QByteArray& name, U2OpStatus& os);
 
     virtual qint64 getMaxPackedRow(const U2DataId& assemblyId, const U2Region &r, U2OpStatus &os);

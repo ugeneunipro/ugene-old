@@ -37,7 +37,7 @@ public:
     virtual void launch(const SMatrix& substitutionMatrix, const QByteArray & _patternSeq,
         const QByteArray & _searchSeq, int _gapOpen, int _gapExtension, int _minScore,
         SmithWatermanSettings::SWResultView resultView);
-    
+
     static quint64 estimateNeededRamAmount(const QByteArray & _patternSeq,
         const QByteArray & _searchSeq, const qint32 gapOpen, const qint32 gapExtension,
         const quint32 minScore, const quint32 maxScore,

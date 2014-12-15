@@ -64,7 +64,7 @@ protected:
 
 class DNAViewStatsContext : public GObjectViewWindowContext {
     Q_OBJECT
-public: 
+public:
     DNAViewStatsContext(QObject* p);
 protected slots:
     void sl_showDnaStats();

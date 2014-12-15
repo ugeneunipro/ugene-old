@@ -97,7 +97,7 @@ void SequencesToMSAWorker::sl_onTaskFinished(Task* t) {
 
         SAFE_POINT(NULL != outPort, "NULL outPort!",);
         SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(ma);
-    
+
         outPort->put( Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), qVariantFromValue<SharedDbiDataHandler>(msaId)) );
     }
 
@@ -114,11 +114,11 @@ void SequencesToMSAWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
     {
         Descriptor id(BasePorts::IN_SEQ_PORT_ID(),
-            SequencesToMSAWorker::tr("Input sequences"), 
+            SequencesToMSAWorker::tr("Input sequences"),
             SequencesToMSAWorker::tr("Sequences to be joined into alignment."));
 
         Descriptor od(BasePorts::OUT_MSA_PORT_ID(),
-            SequencesToMSAWorker::tr("Result alignment"), 
+            SequencesToMSAWorker::tr("Result alignment"),
             SequencesToMSAWorker::tr("Alignment created from the given sequences."));
 
         QMap<Descriptor, DataTypePtr> inM;
@@ -131,8 +131,8 @@ void SequencesToMSAWorkerFactory::init() {
         p << new PortDescriptor(od, DataTypePtr(new MapDataType("seq2msa.msa", outM)), false /*input*/, true /*multi*/);
     }
 
-    Descriptor desc( SequencesToMSAWorkerFactory::ACTOR_ID, 
-        SequencesToMSAWorker::tr("Join Sequences into Alignment"), 
+    Descriptor desc( SequencesToMSAWorkerFactory::ACTOR_ID,
+        SequencesToMSAWorker::tr("Join Sequences into Alignment"),
         SequencesToMSAWorker::tr("Creates multiple sequence alignment from sequences.") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, p, QList<Attribute*>() );
 

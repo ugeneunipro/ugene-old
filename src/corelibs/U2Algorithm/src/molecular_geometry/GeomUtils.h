@@ -25,7 +25,7 @@
 #include <QtCore/QVector>
 #include <U2Core/Vector3D.h>
 
-namespace U2 { 
+namespace U2 {
 
 const float PI = 3.14159265f;
 const float Rad2Deg = 57.2957795f;

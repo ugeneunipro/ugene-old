@@ -551,7 +551,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_user3Multi) {
     }
 
     // Verify version in the userModStep
-    SQLiteQuery qVersion("SELECT version FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    SQLiteQuery qVersion("SELECT version FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os);
     qVersion.bindDataId(1, msaId);
     if (qVersion.step()) {
         qint64 userStepVersion = qVersion.getInt64(0);
@@ -640,7 +640,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionAfterUndo) {
     SQLiteObjectDbiTestData::addTestRow(msaId, os);
 
     // Check there is no obsolete steps
-    SQLiteQuery qUser("SELECT COUNT(*) FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    SQLiteQuery qUser("SELECT COUNT(*) FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os);
     qUser.bindDataId(1, msaId);
     if (qUser.step()) {
         CHECK_EQUAL(1, qUser.getInt64(0), "number of user steps");
@@ -650,7 +650,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionAfterUndo) {
     }
     CHECK_NO_ERROR(os);
 
-    SQLiteQuery qSingle("SELECT COUNT(*) FROM SingleModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    SQLiteQuery qSingle("SELECT COUNT(*) FROM SingleModStep WHERE object = ?1", sqliteDbi->getDbRef(), os);
     qSingle.bindDataId(1, msaId);
     if (qSingle.step()) {
         CHECK_EQUAL(1, qSingle.getInt64(0), "number of single steps");
@@ -729,7 +729,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo1) {
     }
 
     // Check there is no obsolete steps
-    SQLiteQuery qUser("SELECT COUNT(*) FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    SQLiteQuery qUser("SELECT COUNT(*) FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os);
     qUser.bindDataId(1, msaId);
     if (qUser.step()) {
         CHECK_EQUAL(1, qUser.getInt64(0), "number of user steps");
@@ -739,7 +739,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo1) {
     }
     CHECK_NO_ERROR(os);
 
-    SQLiteQuery qSingle("SELECT COUNT(*) FROM SingleModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    SQLiteQuery qSingle("SELECT COUNT(*) FROM SingleModStep WHERE object = ?1", sqliteDbi->getDbRef(), os);
     qSingle.bindDataId(1, msaId);
     if (qSingle.step()) {
         CHECK_EQUAL(1, qSingle.getInt64(0), "number of single steps");
@@ -789,7 +789,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo2) {
     SQLiteObjectDbiTestData::addTestRow(msaId, os);
 
     // Check there is no obsolete steps
-    SQLiteQuery qUser("SELECT COUNT(*) FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    SQLiteQuery qUser("SELECT COUNT(*) FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os);
     qUser.bindDataId(1, msaId);
     if (qUser.step()) {
         CHECK_EQUAL(1, qUser.getInt64(0), "number of user steps");
@@ -799,7 +799,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo2) {
     }
     CHECK_NO_ERROR(os);
 
-    SQLiteQuery qSingle("SELECT COUNT(*) FROM SingleModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    SQLiteQuery qSingle("SELECT COUNT(*) FROM SingleModStep WHERE object = ?1", sqliteDbi->getDbRef(), os);
     qSingle.bindDataId(1, msaId);
     if (qSingle.step()) {
         CHECK_EQUAL(1, qSingle.getInt64(0), "number of single steps");
@@ -856,7 +856,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo3) {
     }
 
     // Check there is no obsolete steps
-    SQLiteQuery qUser("SELECT COUNT(*) FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    SQLiteQuery qUser("SELECT COUNT(*) FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os);
     qUser.bindDataId(1, msaId);
     if (qUser.step()) {
         CHECK_EQUAL(1, qUser.getInt64(0), "number of user steps");
@@ -866,7 +866,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo3) {
     }
     CHECK_NO_ERROR(os);
 
-    SQLiteQuery qSingle("SELECT COUNT(*) FROM SingleModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    SQLiteQuery qSingle("SELECT COUNT(*) FROM SingleModStep WHERE object = ?1", sqliteDbi->getDbRef(), os);
     qSingle.bindDataId(1, msaId);
     if (qSingle.step()) {
         CHECK_EQUAL(1, qSingle.getInt64(0), "number of single steps");
@@ -923,7 +923,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo4) {
     SQLiteObjectDbiTestData::addTestRow(msaId, os);
 
     // Check there is no obsolete steps
-    SQLiteQuery qUser("SELECT COUNT(*) FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    SQLiteQuery qUser("SELECT COUNT(*) FROM UserModStep WHERE object = ?1", sqliteDbi->getDbRef(), os);
     qUser.bindDataId(1, msaId);
     if (qUser.step()) {
         CHECK_EQUAL(1, qUser.getInt64(0), "number of user steps");
@@ -933,7 +933,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_actionUndoActionUndo4) {
     }
     CHECK_NO_ERROR(os);
 
-    SQLiteQuery qSingle("SELECT COUNT(*) FROM SingleModStep WHERE object = ?1", sqliteDbi->getDbRef(), os); 
+    SQLiteQuery qSingle("SELECT COUNT(*) FROM SingleModStep WHERE object = ?1", sqliteDbi->getDbRef(), os);
     qSingle.bindDataId(1, msaId);
     if (qSingle.step()) {
         CHECK_EQUAL(1, qSingle.getInt64(0), "number of single steps");
@@ -1092,7 +1092,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_user3Single6) {
     qint64 msaVersionAfterRedo1 = objDbi->getObjectVersion(msaId, os);
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(msaVersionAfterUser1, msaVersionAfterRedo1, "msa version after redo 1");
-    
+
     // Verify canUndo/canRedo
     undoState = objDbi->canUndo(msaId, os); CHECK_NO_ERROR(os);
     redoState = objDbi->canRedo(msaId, os); CHECK_NO_ERROR(os);

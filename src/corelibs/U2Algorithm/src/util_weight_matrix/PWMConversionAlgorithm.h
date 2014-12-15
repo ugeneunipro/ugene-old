@@ -35,9 +35,9 @@ class U2ALGORITHM_EXPORT PWMConversionAlgorithmFactory : public QObject {
     Q_OBJECT
 public:
     PWMConversionAlgorithmFactory(const QString& algoId, QObject* p = NULL);
-    
+
     virtual PWMConversionAlgorithm* createAlgorithm(QObject* parent = NULL) = 0;
-    
+
     QString getId() const {return algorithmId;}
 
     virtual QString getDescription() const = 0;

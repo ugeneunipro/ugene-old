@@ -16,7 +16,7 @@ EDPropertiesTable::EDPropertiesTable(QWidget* parent)
 ,isSeq(false)
 ,seqOffset(0)
 {
-    setColumnCount(2);   
+    setColumnCount(2);
 
     verticalHeader()->hide();
     horizontalHeader()->hide();
@@ -27,7 +27,7 @@ EDPropertiesTable::EDPropertiesTable(QWidget* parent)
 
 void EDPropertiesTable::representPIProperties(EDProjectItem* pItem){
     curPItem = pItem;
-   
+
     cleanup();
 
     if(pItem == NULL){
@@ -52,7 +52,7 @@ void EDPropertiesTable::representPIProperties(EDProjectItem* pItem){
             }
             else{
                  const EDPIPropertyTypeList* pType = dynamic_cast<const EDPIPropertyTypeList*>(rProp.getType());
-                 pPropertyItemList = new EDPropertyItemList(rProp.getValue(), nGroup, nProp, pType, pType->hasEdit());  
+                 pPropertyItemList = new EDPropertyItemList(rProp.getValue(), nGroup, nProp, pType, pType->hasEdit());
                  connect (pPropertyItemList, SIGNAL(currentIndexChanged ( const QString& )), this, SLOT(sl_comboEditTextChangerd(const QString& )));
             }
 
@@ -95,7 +95,7 @@ void EDPropertiesTable::addNewGroup(const QString& name){
 
 void EDPropertiesTable::addNewField(const QString& name){
     int rowPos = isSeq ? rowCount() : seqOffset;
-    insertRow(rowPos);   
+    insertRow(rowPos);
 
     QTableWidgetItem* item = new QTableWidgetItem();
     item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable);
@@ -194,7 +194,7 @@ void EDPropertiesTable::cleanup(){
         }
         seqOffset = 0;
     }
-    
+
 }
 
 void EDPropertiesTable::clearAll(){
@@ -214,7 +214,7 @@ void  EDPropertiesTable::sl_cellChanged(QTableWidgetItem* tItem){
     if(!edPropItem){
         return;
     }
-    
+
     int nGroup = edPropItem->getGroup();
     int nProp  = edPropItem->getProp();
     const EDPIPropertyGroup& rGroup = curPItem->getGroup(nGroup);
@@ -225,11 +225,11 @@ void  EDPropertiesTable::sl_cellChanged(QTableWidgetItem* tItem){
         edPropItem->setData(strNewValue);
         emit si_propChanged(curPItem, &rProp, strNewValue);
     }
-    
+
 }
 
 void EDPropertiesTable::sl_cellDataChanged(int row, int column){
-    
+
     QWidget* w =  cellWidget(row, column);
     if(w == NULL){
         return;
@@ -267,7 +267,7 @@ void EDPropertiesTable::sl_comboEditTextChangerd(const QString& t){
     if(strNewValue!=edPropItem->getData()){
         edPropItem->setData(strNewValue);
         emit si_propChanged(curPItem, &rProp, strNewValue);
-    } 
+    }
 }
 
 

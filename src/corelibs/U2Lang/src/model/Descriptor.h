@@ -32,7 +32,7 @@
 namespace U2 {
 
 /**
- * Class Descriptor represents an uniquely identifiable entity, 
+ * Class Descriptor represents an uniquely identifiable entity,
  * which can be exposed to user in some way. So it also has a name and a description.
  */
 class U2LANG_EXPORT Descriptor {
@@ -42,7 +42,7 @@ public:
     Descriptor(const char* _id);
     Descriptor();
     virtual ~Descriptor() {}
-    
+
     // standard getters/setters
     QString getId() const;
     QString getDisplayName() const;
@@ -50,16 +50,16 @@ public:
     void setId(const QString& i);
     void setDisplayName(const QString& n);
     void setDocumentation(const QString& d);
-    
+
     // descriptors with equal id's are equal
     inline bool operator==(const Descriptor& d) const { return id == d.id; }
     inline bool operator!=(const Descriptor& d) const { return id != d.id; }
     inline bool operator==(const QString& s) const { return id == s; }
     inline bool operator!=(const QString& s) const { return id != s; }
-    
+
     // necessary for using with QMap e.g. QMap<Descriptor, Attribute>
     inline bool operator<(const Descriptor& d) const { return id < d.id; }
-    
+
 protected:
     // entity identifier
     QString id;
@@ -67,7 +67,7 @@ protected:
     QString name;
     // description of entity
     QString desc;
-    
+
 }; // Descriptor
 
 /**
@@ -77,7 +77,7 @@ class U2LANG_EXPORT VisualDescriptor : public Descriptor {
 public:
     VisualDescriptor(const Descriptor& d, const QString & _iconPath = QString());
 
-    //getIcon will create icon from its path (if path exists) on the first call. 
+    //getIcon will create icon from its path (if path exists) on the first call.
     //This is compatibility issue for congene.
     QIcon getIcon();
     void setIcon(QIcon icon_);

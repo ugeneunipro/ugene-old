@@ -294,7 +294,7 @@ void WriteAnnotationsWorkerFactory::init() {
         inM[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
         inM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
         DataTypePtr inSet(new MapDataType(WRITE_ANNOTATIONS_IN_TYPE_ID, inM));
-        Descriptor inPortDesc(BasePorts::IN_ANNOTATIONS_PORT_ID(), WriteAnnotationsWorker::tr("Input annotations"), 
+        Descriptor inPortDesc(BasePorts::IN_ANNOTATIONS_PORT_ID(), WriteAnnotationsWorker::tr("Input annotations"),
             WriteAnnotationsWorker::tr("Input annotations which will be written to output file"));
         portDescs << new PortDescriptor(inPortDesc, inSet, true);
     }
@@ -342,7 +342,7 @@ void WriteAnnotationsWorkerFactory::init() {
         csvSeparatorAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
         attrs << csvSeparatorAttr;
 
-        Descriptor writeNamesDesc(WRITE_NAMES, WriteAnnotationsWorker::tr("Write sequence names"), 
+        Descriptor writeNamesDesc(WRITE_NAMES, WriteAnnotationsWorker::tr("Write sequence names"),
             WriteAnnotationsWorker::tr("Add names of sequences into CSV file."));
         Attribute *seqNamesAttr = new Attribute(writeNamesDesc, BaseTypes::BOOL_TYPE(), false, false);
         seqNamesAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
@@ -358,8 +358,8 @@ void WriteAnnotationsWorkerFactory::init() {
             << BaseDocumentFormats::PLAIN_SWISS_PROT));
     }
 
-    Descriptor protoDesc(WriteAnnotationsWorkerFactory::ACTOR_ID, 
-        WriteAnnotationsWorker::tr("Write Annotations"), 
+    Descriptor protoDesc(WriteAnnotationsWorkerFactory::ACTOR_ID,
+        WriteAnnotationsWorker::tr("Write Annotations"),
         WriteAnnotationsWorker::tr("Writes all supplied annotations to file(s) in selected format."));
     ActorPrototype * proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
 
@@ -381,7 +381,7 @@ void WriteAnnotationsWorkerFactory::init() {
     }
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new WriteAnnotationsPrompter());
-    proto->setValidator(new ScreenedParamValidator(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), 
+    proto->setValidator(new ScreenedParamValidator(BaseAttributes::URL_OUT_ATTRIBUTE().getId(),
         BasePorts::IN_ANNOTATIONS_PORT_ID(), BaseSlots::URL_SLOT().getId()));
     proto->setPortValidator(BasePorts::IN_ANNOTATIONS_PORT_ID(),
                             new ScreenedSlotValidator(QStringList() << BaseSlots::URL_SLOT().getId() << BaseSlots::DNA_SEQUENCE_SLOT().getId()));
@@ -401,7 +401,7 @@ QString WriteAnnotationsPrompter::composeRichDoc() {
     IntegralBusPort * input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_ANNOTATIONS_PORT_ID()));
     QString annName = getProducers(BasePorts::IN_ANNOTATIONS_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
     annName = annName.isEmpty() ? unsetStr : annName;
-    
+
     Attribute *dataStorageAttr = target->getParameter(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId());
     SAFE_POINT(NULL != dataStorageAttr, "Invalid attribute", QString());
     const QVariant dataStorage = dataStorageAttr->getAttributePureValue();

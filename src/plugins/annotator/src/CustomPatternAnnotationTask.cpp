@@ -46,9 +46,9 @@ const QString PlasmidFeatureTypes::PROMOTER("Promoter");
 const QString PlasmidFeatureTypes::REGULATORY("Regulatory");
 const QString PlasmidFeatureTypes::TERMINATOR("Terminator");
 
-CustomPatternAnnotationTask::CustomPatternAnnotationTask(AnnotationTableObject* aObj, const U2::U2EntityRef &entityRef, 
+CustomPatternAnnotationTask::CustomPatternAnnotationTask(AnnotationTableObject* aObj, const U2::U2EntityRef &entityRef,
                                                          const SharedFeatureStore &store, const QStringList& filteredFeatureTypes)
-    : Task(tr("Custom pattern annotation"), TaskFlags_NR_FOSCOE), dnaObj("ref", entityRef), aTableObj(aObj), 
+    : Task(tr("Custom pattern annotation"), TaskFlags_NR_FOSCOE), dnaObj("ref", entityRef), aTableObj(aObj),
     featureStore(store), filteredFeatures(filteredFeatureTypes)
 {
     GCOUNTER( cvar, tvar, "CustomPatternAnnotationTask" );
@@ -57,7 +57,7 @@ CustomPatternAnnotationTask::CustomPatternAnnotationTask(AnnotationTableObject* 
 void CustomPatternAnnotationTask::prepare()
 {
     sequence = dnaObj.getWholeSequenceData();
-    
+
     if (dnaObj.isCircular()) {
         sequence += sequence;
     }
@@ -73,13 +73,13 @@ void CustomPatternAnnotationTask::prepare()
         return;
     }
 
-    index = QSharedPointer<SArrayIndex>( new SArrayIndex(sequence.constData(), sequence.length(), 
+    index = QSharedPointer<SArrayIndex>( new SArrayIndex(sequence.constData(), sequence.length(),
         featureStore->getMinFeatureSize(), stateInfo, unknownChar) );
-    
+
     if (hasError()) {
         return;
     }
-    
+
     DNATranslation* complTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation( dnaObj.getAlphabet() );
     assert(complTT);
 
@@ -88,11 +88,11 @@ void CustomPatternAnnotationTask::prepare()
         if (filteredFeatures.contains(pattern.type)) {
             continue;
         }
-        
+
         if (pattern.sequence.length() > sequence.length()) {
             continue;
         }
-        
+
         SArrayBasedSearchSettings settings;
         settings.unknownChar = unknownChar;
         settings.query = pattern.sequence;
@@ -100,7 +100,7 @@ void CustomPatternAnnotationTask::prepare()
         SArrayBasedFindTask* task = new SArrayBasedFindTask(index.data(), settings);
         taskFeatureNames.insert(task, PatternInfo(pattern.name, true) );
         addSubTask(task);
-        
+
         complTT->translate( settings.query.data( ), settings.query.size() );
         TextUtils::reverse( settings.query.data( ), settings.query.size( ) );
 
@@ -113,7 +113,7 @@ void CustomPatternAnnotationTask::prepare()
 
 QList<Task*> CustomPatternAnnotationTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> subTasks;
-    
+
     if (!taskFeatureNames.contains(subTask)) {
         return subTasks;
     }
@@ -121,15 +121,15 @@ QList<Task*> CustomPatternAnnotationTask::onSubTaskFinished(Task* subTask) {
     SArrayBasedFindTask* task = static_cast<SArrayBasedFindTask*> (subTask);
     const QList<int>& results = task->getResults();
     PatternInfo info = taskFeatureNames.take(task);
-    
+
     qint64 seqLen = dnaObj.getSequenceLength();
 
     foreach (int pos, results) {
-    
-        
+
+
         if (pos > dnaObj.getSequenceLength() ) {
             continue;
-        } 
+        }
 
         int endPos = pos + task->getQuery().length() - 1;
 
@@ -139,7 +139,7 @@ QList<Task*> CustomPatternAnnotationTask::onSubTaskFinished(Task* subTask) {
         data.setStrand(strand);
 
         if (dnaObj.isCircular() && endPos > seqLen) {
-            
+
             int outerLen = endPos - seqLen;
             int innerLen = task->getQuery().length() - outerLen;
             U2Region region1(pos - 1, innerLen);
@@ -173,13 +173,13 @@ void FeatureStore::load()
     if (!inputFile.open(QIODevice::ReadOnly | QIODevice::Text) ) {
         return;
     }
-    
+
     int minPatternSize = INT_MAX;
 
     while (!inputFile.atEnd()) {
         QByteArray line = inputFile.readLine().trimmed();
         QList<QByteArray> lineItems = line.split('\t');
-        
+
         if (line.startsWith("#")) {
             continue;
         }
@@ -218,9 +218,9 @@ CustomPatternAutoAnnotationUpdater::CustomPatternAutoAnnotationUpdater(const Sha
 
 Task* CustomPatternAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const AutoAnnotationObject* aa )
 {
-    
+
     QStringList filteredFeatureTypes = AppContext::getSettings()->getValue(FILTERED_FEATURE_LIST, QStringList()).toStringList();
-    
+
     AnnotationTableObject *aObj = aa->getAnnotationObject();
     const U2EntityRef& dnaRef = aa->getSeqObject()->getEntityRef();
     Task* task = new CustomPatternAnnotationTask(aObj, dnaRef, featureStore, filteredFeatureTypes );

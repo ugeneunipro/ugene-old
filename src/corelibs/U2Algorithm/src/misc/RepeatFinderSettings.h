@@ -35,7 +35,7 @@ enum RFAlgorithm {
     RFAlgorithm_Suffix
 };
 
-enum RepeatsFilterAlgorithm 
+enum RepeatsFilterAlgorithm
 {
     DisjointRepeats,
     NoFiltering,
@@ -44,20 +44,20 @@ enum RepeatsFilterAlgorithm
 
 
 
-class RFResult 
+class RFResult
 {
 public:
     RFResult() : x(0), y(0), l(0), c(0){}
-    
-    RFResult(int _x, int _y, int _len, int _c = 0) 
+
+    RFResult(int _x, int _y, int _len, int _c = 0)
         : x(_x), y(_y), l(_len)
     {   //if not specified, repeats have no mismatches
         if(_c==0) c=l; else c = _c;
-    } 
+    }
 
-    RFResult(int _x, int _y, int _len, int _c, QString _fragment) 
+    RFResult(int _x, int _y, int _len, int _c, QString _fragment)
         : fragment(_fragment), x(_x), y(_y), l(_len), c(_c)
-    {   
+    {
         if(_c==0) c=l; else c = _c;
     }
 

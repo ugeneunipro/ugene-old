@@ -41,7 +41,7 @@
 
 namespace U2 {
 
-/* TRANSLATOR U2::SimpleTextObjectViewFactory */    
+/* TRANSLATOR U2::SimpleTextObjectViewFactory */
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,7 @@ Task* SimpleTextObjectViewFactory::createViewTask(const QString& viewName, const
 /// Simple Text View
 
 
-SimpleTextObjectView::SimpleTextObjectView(const QString& name, TextObject* to, const QVariantMap& _state)  
+SimpleTextObjectView::SimpleTextObjectView(const QString& name, TextObject* to, const QVariantMap& _state)
 : GObjectView(SimpleTextObjectViewFactory::ID, name), textObject(to), openState(_state), selection(to)
 {
     GCOUNTER( cvar, tvar, "SimpleTextView" );

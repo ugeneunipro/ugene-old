@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -54,7 +54,7 @@ MSAExportConsensusTab::MSAExportConsensusTab(MSAEditor* msa_)
     setupUi(this);
 
     hintLabel->setStyleSheet("color: green; font: bold;");
-    
+
     DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
     pathLe->setText(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + QDir::separator()
         + msa->getMSAObject()->getGObjectName() + "_consensus.txt");
@@ -63,7 +63,7 @@ MSAExportConsensusTab::MSAExportConsensusTab(MSAEditor* msa_)
 
     MSAEditorConsensusArea *consensusArea = msa->getUI()->getConsensusArea();
     showHint(true);
-    
+
     sl_consensusChanged(consensusArea->getConsensusAlgorithm()->getId());
 
     connect(browseBtn, SIGNAL(clicked()), SLOT(sl_browseClicked()));
@@ -131,7 +131,7 @@ void MSAExportConsensusTab::sl_consensusChanged(const QString& algoId) {
             showHint(false);
         }else{
             SAFE_POINT(formatCb->count() == 3, "Count of supported 'text' formats is not equal three", );
-        }        
+        }
     }else{
         if(formatCb->count() == 3 ){ //all possible formats
             formatCb->setCurrentIndex(formatCb->findText(BaseDocumentFormats::PLAIN_TEXT));
@@ -151,7 +151,7 @@ void MSAExportConsensusTab::checkEmptyFilepath() const {
         DocumentFormat *df = dfr->getFormatById(id);
         SAFE_POINT(df, "Cant get document format by id", );
         QString fileExt = df->getSupportedDocumentFileExtensions().first();
-        
+
         pathLe->setText(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + QDir::separator()
             + msa->getMSAObject()->getGObjectName() + "_consensus." + fileExt);
     }

@@ -67,13 +67,13 @@ public:
 
     TSConstants::TSAlgo    algo;
     int         nThreads;
-    
+
 };
 
 class FindTandemsToAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq, 
+    FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq,
         const QString& annName, const QString& groupName, const GObjectReference& annObjRef);
     FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq);
 

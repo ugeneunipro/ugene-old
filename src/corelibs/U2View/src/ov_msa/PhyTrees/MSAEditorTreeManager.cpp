@@ -83,7 +83,7 @@ void MSAEditorTreeManager::sl_onDocumentRemovedFromProject(Document *doc) {
         msaObject = NULL;
         return;
     }
-    QList<GObjectRelation> relatedTrees = msaObject->findRelatedObjectsByRole(ObjectRole_PhylogeneticTree); 
+    QList<GObjectRelation> relatedTrees = msaObject->findRelatedObjectsByRole(ObjectRole_PhylogeneticTree);
     CHECK(!relatedTrees.isEmpty(), );
 
     foreach (const GObjectRelation &r, relatedTrees) {
@@ -116,7 +116,7 @@ void MSAEditorTreeManager::buildTreeWithDialog() {
         QMessageBox::information(editor->getUI(), tr("Calculate phy tree"),
             tr("No algorithms for building phylogenetic tree are available.") );
         return;
-    }        
+    }
     CreatePhyTreeDialogController dlg(editor->getUI(), msaObject, settings);
 
     int rc = dlg.exec();
@@ -296,7 +296,7 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
 
             treeView->setMSAEditor(editor);
             treeView->setSynchronizationMode(settings.syncAlignmentWithTree ? FullSynchronization : OnlySeqsSelection);
-            
+
             connect(treeView, SIGNAL(si_refreshTree(MSAEditorTreeViewer*)), SLOT(sl_refreshTree(MSAEditorTreeViewer*)));
         }
         else {

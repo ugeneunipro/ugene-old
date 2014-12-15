@@ -30,7 +30,7 @@
 
 namespace U2 {
 
-RemoveMultipleDocumentsTask::RemoveMultipleDocumentsTask(Project* _p, const QList<Document*>& _docs, bool _saveModifiedDocs, bool _useGUI) 
+RemoveMultipleDocumentsTask::RemoveMultipleDocumentsTask(Project* _p, const QList<Document*>& _docs, bool _saveModifiedDocs, bool _useGUI)
 : Task(tr("Remove document"), TaskFlag_NoRun), p(_p), saveModifiedDocs(_saveModifiedDocs), useGUI(_useGUI)
 {
     assert(!_docs.empty());
@@ -60,7 +60,7 @@ void RemoveMultipleDocumentsTask::prepare() {
             addSubTask(new SaveMultipleDocuments(modifiedDocs, useGUI));
         }
     }
-   
+
 
 }
 
@@ -71,7 +71,7 @@ Task::ReportResult RemoveMultipleDocumentsTask::report() {
         p->unlockState(lock);
         delete lock;
         lock = NULL;
-            
+
         Task* t = getSubtaskWithErrors();
         if (t!=NULL) {
             stateInfo.setError(t->getError());
@@ -86,10 +86,10 @@ Task::ReportResult RemoveMultipleDocumentsTask::report() {
     if (p->isStateLocked()) {
         return Task::ReportResult_CallMeAgain;
     }
-    
+
     foreach(Document* doc, docPtrs) {
         if ( doc != NULL ) {
-            // check for "stay-alive" locked objects 
+            // check for "stay-alive" locked objects
             if ( doc->hasLocks(StateLockableTreeFlags_ItemAndChildren, StateLockFlag_LiveLock) ) {
                 setError( tr("Cannot remove document %1, since it is locked by some task.").arg(doc->getName()) );
                 continue;
@@ -98,8 +98,8 @@ Task::ReportResult RemoveMultipleDocumentsTask::report() {
             }
         }
     }
-    
-    
+
+
     return Task::ReportResult_Finished;
 }
 

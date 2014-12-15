@@ -53,7 +53,7 @@ private:
 protected:
     IntegralBus *inChannel;
     IntegralBus *output;
-}; 
+};
 
 class GenomeAlignerWorkerFactory : public DomainFactory {
 public:

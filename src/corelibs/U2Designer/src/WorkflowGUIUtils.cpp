@@ -115,7 +115,7 @@ void DesignerGUIUtils::paintSamplesDocument(QPainter* painter, QTextDocument* do
 
 void DesignerGUIUtils::setupSamplesDocument(const Descriptor& d, const QIcon& ico, QTextDocument* doc) {
     bool hasIcon = (ico.availableSizes().size() > 0);
-    QString text = 
+    QString text =
         "<html>"
         "<table align='center' border='0' cellpadding='3' cellspacing='3'>"
         "<tr><td colspan='2'><h1 align='center'>%1</h1></td></tr>"
@@ -127,7 +127,7 @@ void DesignerGUIUtils::setupSamplesDocument(const Descriptor& d, const QIcon& ic
         "</table>"
         "</html>";
     QString img("img://img");
-    
+
     doc->addResource(QTextDocument::ImageResource, QUrl(img), ico.pixmap(200));
 #if (QT_VERSION < 0x050000) //Qt 5
     QString body = Qt::escape(d.getDocumentation()).replace("\n", "<br>");

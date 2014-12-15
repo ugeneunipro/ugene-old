@@ -49,7 +49,7 @@ public slots:
     void sl_alignmentChanged(const MAlignment& aliBefore, const MAlignmentModInfo& modInfo);
     void sl_lockedStateChanged();
     void sl_completeStateChanged(bool complete);
-    
+
 private:
     MAlignmentObject*   maObj;
     int                 lastSavedObjectVersion;
@@ -74,9 +74,9 @@ protected:
 class MSAEditorUndoWholeAliCommand : public MSAEditorUndoCommand {
 public:
     MSAEditorUndoWholeAliCommand(const MAlignment& _maBefore, const MAlignment& _maAfter) : maBefore(_maBefore), maAfter(_maAfter){}
-    
+
     virtual int getMemUsage() const {return maBefore.estimateMemorySize();}
-    
+
     virtual void redo();
     virtual void undo();
 

@@ -47,7 +47,7 @@ public:
 
     QString getUserDesc() const {return userDesc;}
     void setUserDesc(const QString& d) {userDesc = d;}
-    
+
     StateLockFlags getFlags() const {return flags;}
 
 private:
@@ -72,7 +72,7 @@ public:
     virtual void unlockState(StateLock* lock);
 
     virtual void setModified(bool modified, const QString& modType = QString());
-    
+
     virtual bool isModificationAllowed(const QString& modType) {Q_UNUSED(modType); return !isStateLocked();}
 
     virtual bool isItemModified() const {return itemIsModified;}

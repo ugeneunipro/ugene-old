@@ -32,11 +32,11 @@
 namespace U2 {
 
 
-CreateSArrayIndexTask::CreateSArrayIndexTask(const char* _seq, quint32 _size, quint32 _w, char _unknownChar, 
-                                            const quint32* _bitTable, quint32 _bitCharLen, 
-                                            quint32 _skipGap, quint32 _gapOffset) 
-:Task("Create SArray index", TaskFlag_None), 
-index(NULL), seq(_seq), size(_size), w(_w), 
+CreateSArrayIndexTask::CreateSArrayIndexTask(const char* _seq, quint32 _size, quint32 _w, char _unknownChar,
+                                            const quint32* _bitTable, quint32 _bitCharLen,
+                                            quint32 _skipGap, quint32 _gapOffset)
+:Task("Create SArray index", TaskFlag_None),
+index(NULL), seq(_seq), size(_size), w(_w),
 unknownChar(_unknownChar), bitTable(_bitTable), bitCharLen(_bitCharLen),
 skipGap(_skipGap), gapOffset(_gapOffset), indexFileName(""), refFileName("")
 {
@@ -44,14 +44,14 @@ skipGap(_skipGap), gapOffset(_gapOffset), indexFileName(""), refFileName("")
 }
 
 CreateSArrayIndexTask::CreateSArrayIndexTask( const U2SequenceObject* obj, int windowSize, bool useBitMask, bool _prebuiltIdx, const QString &idxFN,const QString &refFN )
-:Task("Create SArray index", TaskFlag_None), 
-index(NULL), seqArray(obj->getWholeSequenceData()), w(windowSize), 
+:Task("Create SArray index", TaskFlag_None),
+index(NULL), seqArray(obj->getWholeSequenceData()), w(windowSize),
 unknownChar('\0'), skipGap(0), gapOffset(0), prebuiltIdx(_prebuiltIdx), indexFileName(idxFN), refFileName(refFN)
 {
     size = seqArray.length();
     seq = seqArray.constData();
     DNAAlphabetType seqType = obj->getAlphabet()->getType();
-    unknownChar = seqType == DNAAlphabet_AMINO ? 'X' : seqType==DNAAlphabet_NUCL ? 'N' : '\0';   
+    unknownChar = seqType == DNAAlphabet_AMINO ? 'X' : seqType==DNAAlphabet_NUCL ? 'N' : '\0';
     if (useBitMask) {
         bitTable = bt.getBitMaskCharBits(seqType);
         bitCharLen = bt.getBitMaskCharBitsNum(seqType);
@@ -98,7 +98,7 @@ l1Step(0), L1_SIZE(0), l1bitMask(NULL)
 }
 
 
-SArrayIndex::SArrayIndex(const char* seq, quint32 seqSize,  quint32 _len, TaskStateInfo& ti, 
+SArrayIndex::SArrayIndex(const char* seq, quint32 seqSize,  quint32 _len, TaskStateInfo& ti,
                          char unknownChar, const quint32* _bitTable,  int _bitCharLen, int _gap, int _gapOffset)
                          : w(_len), w4(_len/4), wRest(_len%4), skipGap(_gap), gapOffset(_gapOffset),
                          bitTable(_bitTable), bitCharLen(_bitCharLen),
@@ -154,7 +154,7 @@ SArrayIndex::SArrayIndex(const char* seq, quint32 seqSize,  quint32 _len, TaskSt
                         *arunner = seq2val(cpos);
                         arunner++;
                         gapLeft = skipGap;
-                    } 
+                    }
                     continue;
                 }
                 lastErrDist = 0;
@@ -173,12 +173,12 @@ SArrayIndex::SArrayIndex(const char* seq, quint32 seqSize,  quint32 _len, TaskSt
         quint32 bitValue = 0;
         quint32* arunner = sArray;
         quint32* mrunner = bitMask;
-        
+
         // Used for optimization - do not recompute whole bit mask if only 1 symbol changes
         // Note 1: at this moment arrays is not sorted and points to sequential regions
         // Note 2: expectedNext is not matched if some region was excluded from sarray
-        quint32 expectedNext = 0; 
-        
+        quint32 expectedNext = 0;
+
         quint32 wCharsInMask1 = wCharsInMask - 1;
         for (quint32* end = mrunner + arrLen; mrunner < end; arunner++, mrunner++) {
             const char* seq = sarr2seq(arunner);
@@ -191,8 +191,8 @@ SArrayIndex::SArrayIndex(const char* seq, quint32 seqSize,  quint32 _len, TaskSt
 #endif
             } else {
                 //recompute the mask if we have some symbols skipped
-                bitValue = getBitValue(seq); 
-            } 
+                bitValue = getBitValue(seq);
+            }
             expectedNext = seq2val(seq + 1);
             *mrunner = bitValue;
         }
@@ -201,7 +201,7 @@ SArrayIndex::SArrayIndex(const char* seq, quint32 seqSize,  quint32 _len, TaskSt
     if (ti.cancelFlag) {
         return;
     }
-   
+
     //now sort sArray. Use bit-mask if available
     if (bitMask!=NULL)  {
         sortBit(bitMask, 0, arrLen);
@@ -498,7 +498,7 @@ bool SArrayIndex::find(SArrayIndex::SAISearchContext* t, const char* seq)  {
         } else { // match!
             t->currSample = seq;
             int i = mid;
-            // Find first match position 
+            // Find first match position
             while(--i >= 0) {
                  int res = compare(sarr2seq(a+i), seq);
                  if (res != 0) {
@@ -572,7 +572,7 @@ bool SArrayIndex::findBit(SArrayIndex::SAISearchContext* t, quint32 bitValue, co
                             break;
                         }
                     }
-                } 
+                }
                 if (!found) {
                     return false;
                 }
@@ -592,12 +592,12 @@ int SArrayIndex::nextArrSeqPos(SArrayIndex::SAISearchContext* t) {
     }
     int seqPos = sarr2seq(sArray + t->currPos) - seqStart;
     t->currPos++;
-    if (t->currPos == arrLen 
+    if (t->currPos == arrLen
         || (bitMask!=NULL && compareBit(bitMask + t->currPos-1, bitMask + t->currPos))
         || (bitMask==NULL && compare(sarr2seq(sArray + t->currPos), t->currSample)))
     {
         t->currPos=-1;
-    } 
+    }
     return seqPos;
 }
 

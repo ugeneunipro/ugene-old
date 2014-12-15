@@ -70,7 +70,7 @@ void ExpertDiscoveryPosNegMrkDialog::accept(){
     secondFileName = secondFileEdit->text();
     thirdFileName = thirdFileEdit->text();
 
- 
+
     if (!firstFileName.isEmpty() && !secondFileName.isEmpty()) {
         if(!generateDescr && thirdFileName.isEmpty()){
             QMessageBox mb(QMessageBox::Critical, tr("Select files"), tr("Select description file"));

@@ -68,7 +68,7 @@ class PhyMlWidget : public CreatePhyTreeWidget, Ui_PhyMLDialog{
 public:
     PhyMlWidget(QWidget* parent, const MAlignment& ma);
 
-    void fillSettings(CreatePhyTreeSettings& settings); 
+    void fillSettings(CreatePhyTreeSettings& settings);
     void storeSettings();
     void restoreDefault();
     bool checkSettings(QString& msg, const CreatePhyTreeSettings& settings);
@@ -81,7 +81,7 @@ private:
 
     bool isAminoAcid; //is the msa has the amino acid alphabet
 
-    WidgetControllersContainer widgetControllers; 
+    WidgetControllersContainer widgetControllers;
 private slots:
     void sl_checkUserTreeType(int newIndex);
     void sl_checkTreeImprovement(int newIndex);

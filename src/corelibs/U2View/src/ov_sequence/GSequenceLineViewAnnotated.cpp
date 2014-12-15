@@ -523,7 +523,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotation( QPainter &p, DrawAnno
                             }
                         }
 
-                        U2Region y = aData.getStrand().isDirect() ? getMirroredYRange(U2Strand(U2Strand::Complementary)) 
+                        U2Region y = aData.getStrand().isDirect() ? getMirroredYRange(U2Strand(U2Strand::Complementary))
                             : getMirroredYRange(U2Strand(U2Strand::Direct));
                         QRect mirroredAnnotationRect = annotationRect;
                         mirroredAnnotationRect.setY(y.startPos);
@@ -534,7 +534,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotation( QPainter &p, DrawAnno
                             toInsert.direct = true;
                             toInsert.pos = aData.getStrand( ).isDirect( ) ? r.startPos + cutD
                                 : r.startPos + cutC;
-                            aData.getStrand().isDirect() ? toInsert.r = annotationRect : toInsert.r = mirroredAnnotationRect;   
+                            aData.getStrand().isDirect() ? toInsert.r = annotationRect : toInsert.r = mirroredAnnotationRect;
                             cutsiteDataList.append(toInsert);
                         }
                         if ( hasC ) {

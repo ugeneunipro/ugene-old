@@ -35,7 +35,7 @@ class DocumentProviderTask;
 class AddDocumentTaskConfig {
 public:
     AddDocumentTaskConfig() : createProjectIfNeeded(true), unloadExistingDocument(false) {}
-    
+
     bool createProjectIfNeeded;
     bool unloadExistingDocument;
 };

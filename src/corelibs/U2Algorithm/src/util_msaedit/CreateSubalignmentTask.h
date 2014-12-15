@@ -35,9 +35,9 @@ namespace U2{
 
 class U2ALGORITHM_EXPORT CreateSubalignmentSettings {
 public:
-    CreateSubalignmentSettings(const U2Region& w, const QStringList& sNames, const GUrl& path, bool save, bool add, DocumentFormatId formatId) 
+    CreateSubalignmentSettings(const U2Region& w, const QStringList& sNames, const GUrl& path, bool save, bool add, DocumentFormatId formatId)
         : window(w), seqNames(sNames), url(path), saveImmediately(save), addToProject(add), formatIdToSave(formatId) {}
-    
+
     U2Region         window;
     QStringList      seqNames;
     GUrl             url;
@@ -45,11 +45,11 @@ public:
     bool             addToProject;
     DocumentFormatId formatIdToSave;
 };
-   
-    
+
+
 class U2ALGORITHM_EXPORT CreateSubalignmentTask : public DocumentProviderTask {
     Q_OBJECT
-public:    
+public:
     CreateSubalignmentTask(MAlignmentObject* _maObj, const CreateSubalignmentSettings& settings );
 
     virtual void prepare();
@@ -59,7 +59,7 @@ private:
     Document*                   origDoc;
     MAlignmentObject*           origMAObj;
     MAlignmentObject*           resultMAObj;
-    
+
     CreateSubalignmentSettings  cfg;
     bool                        createCopy;
 };

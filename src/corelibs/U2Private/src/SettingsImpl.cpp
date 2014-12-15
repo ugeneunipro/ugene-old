@@ -147,10 +147,10 @@ void SettingsImpl::setValue(const QString& pathName, const QVariant& value, bool
 
     QString path = pathName;
     QString key = preparePath(path);
-    
+
     if (versionedValue){
         //TODO: delete versioned keys?
-        
+
         //create versioned key
         key = toVersionKey(key);
     }
@@ -160,7 +160,7 @@ void SettingsImpl::setValue(const QString& pathName, const QVariant& value, bool
 
 QString SettingsImpl::toVersionKey(const QString& key) const {
     static QString VERSION_KEY_SUFFIX = "/" + Version::appVersion().text;
-    
+
     if (key.endsWith("/")) {
         return key + VERSION_KEY_SUFFIX + "/";
     }

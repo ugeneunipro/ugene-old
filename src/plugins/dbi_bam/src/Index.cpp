@@ -39,7 +39,7 @@ VirtualOffset Index::ReferenceIndex::Chunk::getEnd()const {
     return end;
 }
 
-// Index::ReferenceIndex::Bin 
+// Index::ReferenceIndex::Bin
 
 Index::ReferenceIndex::Bin::Bin(unsigned int _bin, QList<Chunk> _chunks) : bin(_bin), chunks(_chunks) {}
 

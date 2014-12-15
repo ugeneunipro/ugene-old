@@ -53,7 +53,7 @@ PWMatrix::PWMatrix(const QVarLengthArray<float>& matrix, const PWMatrixType& _ty
 {
     length = (type == PWM_MONONUCLEOTIDE) ? (matrix.size() / 4) : (matrix.size() / 16);
     minSum = 0, maxSum = 0;
-    
+
     for (int i = 0; i < length; i++) {
         float min = 1e6;
         float max = -1e6;

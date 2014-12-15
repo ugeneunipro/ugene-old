@@ -48,7 +48,7 @@ const QString GC2CONTENT("gc2-content");
 const QString GC3CONTENT("gc3-content");
 
 void DNAStatWorkerFactory::init() {
-    QList<PortDescriptor*> portDescs; 
+    QList<PortDescriptor*> portDescs;
     QList<Attribute*> attribs;
 
     //accept sequence and annotated regions as input
@@ -58,26 +58,26 @@ void DNAStatWorkerFactory::init() {
     outputMap[ BaseSlots::ANNOTATION_TABLE_SLOT() ] = BaseTypes::ANNOTATION_TABLE_TYPE();
 
     { //Create input port descriptors
-        Descriptor inDesc( BasePorts::IN_SEQ_PORT_ID(), DNAStatWorker::tr("Input sequence"), 
+        Descriptor inDesc( BasePorts::IN_SEQ_PORT_ID(), DNAStatWorker::tr("Input sequence"),
             DNAStatWorker::tr("Sequence for which GC-content and GC3-content will be evaluated.") );
-        Descriptor outDesc( BasePorts::OUT_ANNOTATIONS_PORT_ID(), DNAStatWorker::tr("Result annotation"), 
+        Descriptor outDesc( BasePorts::OUT_ANNOTATIONS_PORT_ID(), DNAStatWorker::tr("Result annotation"),
             DNAStatWorker::tr("Resulted annotations, with GC-content and GC3-content.") );
 
         portDescs << new PortDescriptor( inDesc, DataTypePtr(new MapDataType("filter.anns", inputMap)), /*input*/ true );
         portDescs << new PortDescriptor( outDesc, DataTypePtr(new MapDataType("filter.anns", outputMap)), /*input*/false, /*multi*/true );
     }
 
-    attribs << new Attribute(Descriptor(GCCONTENT, DNAStatWorker::tr("GC-content"), DNAStatWorker::tr("Evaluate GC-content.")), 
+    attribs << new Attribute(Descriptor(GCCONTENT, DNAStatWorker::tr("GC-content"), DNAStatWorker::tr("Evaluate GC-content.")),
         BaseTypes::BOOL_TYPE(),false, true);
-    attribs << new Attribute(Descriptor(GC1CONTENT, DNAStatWorker::tr("GC1-content"), DNAStatWorker::tr("Evaluate GC1-content.")), 
+    attribs << new Attribute(Descriptor(GC1CONTENT, DNAStatWorker::tr("GC1-content"), DNAStatWorker::tr("Evaluate GC1-content.")),
         BaseTypes::BOOL_TYPE(),false, true);
-    attribs << new Attribute(Descriptor(GC2CONTENT, DNAStatWorker::tr("GC2-content"), DNAStatWorker::tr("Evaluate GC2-content.")), 
+    attribs << new Attribute(Descriptor(GC2CONTENT, DNAStatWorker::tr("GC2-content"), DNAStatWorker::tr("Evaluate GC2-content.")),
         BaseTypes::BOOL_TYPE(),false, true);
-    attribs << new Attribute(Descriptor(GC3CONTENT, DNAStatWorker::tr("GC3-content"), DNAStatWorker::tr("Evaluate GC3-content.")), 
+    attribs << new Attribute(Descriptor(GC3CONTENT, DNAStatWorker::tr("GC3-content"), DNAStatWorker::tr("Evaluate GC3-content.")),
         BaseTypes::BOOL_TYPE(),false, true);
 
     Descriptor desc( ACTOR_ID,
-        DNAStatWorker::tr("DNA Statistics"), 
+        DNAStatWorker::tr("DNA Statistics"),
         DNAStatWorker::tr("Evaluates statistics for DNA sequences.") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
     proto->setPrompter( new DNAStatWorkerPrompter() );

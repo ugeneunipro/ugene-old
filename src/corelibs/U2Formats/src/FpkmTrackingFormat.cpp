@@ -322,7 +322,7 @@ bool parseLocus(QString locus, QString& seqName, U2Region& region)
     if (-1 == lastColonCharIndex) {
         return false;
     }
-   
+
     seqName = locus.left(lastColonCharIndex);
 
     QString coordinatesStr = locus.mid(lastColonCharIndex + 1); // index is the next after ':'
@@ -367,7 +367,7 @@ FpkmTrackingLineData FpkmTrackingFormat::parseAndValidateLine(QString line, QStr
 
     // Coordinates
     parsedData.locus = fields[FPKM_LOCUS_INDEX];
-    
+
     if (!parseLocus(fields[FPKM_LOCUS_INDEX], parsedData.seqName, parsedData.region)) {
         status.setFlagIncorrectCoordinates();
         return parsedData;
@@ -443,13 +443,13 @@ FormatCheckResult FpkmTrackingFormat::checkRawData(const QByteArray& rawData, co
         int numToIterate;
         int HUGE_DATA = 65536;
         if (size < HUGE_DATA) {
-            numToIterate = fileLines.size(); 
+            numToIterate = fileLines.size();
         }
         else {
             // Skip the last line as it can be incomplete
             numToIterate = fileLines.size() - 1;
         }
-        
+
         for (int i = 1; i < numToIterate; ++i) {
             if (!fileLines[i].isEmpty()) {
                 parseAndValidateLine(fileLines[i], columnsNames, validationStatus);
@@ -473,7 +473,7 @@ QStringList FpkmTrackingFormat::writeHeader(QList<GObject*> annotTables, Documen
         << LOCUS_COLUMN
         << LENGTH_COLUMN
         << COVERAGE_COLUMN;
-    
+
     foreach (GObject* annotTable, annotTables) {
         AnnotationTableObject *annTable = dynamic_cast<AnnotationTableObject *>( annotTable );
         QList<Annotation> annotationsList = annTable->getAnnotations( );
@@ -498,7 +498,7 @@ QStringList FpkmTrackingFormat::writeHeader(QList<GObject*> annotTables, Documen
                             QString fpkmHiForQualName = qualName;
                             fpkmHiForQualName.replace("FPKM_conf_lo", "FPKM_conf_hi");
                             fpkmHiForQualName.replace("FPKM_lo", "FPKM_hi");
-                            
+
                             int hiColumnIndex = columns.indexOf(fpkmHiForQualName);
                             if (-1 != hiColumnIndex) {
                                 // So, insert the "samplename_FPKM_low" before

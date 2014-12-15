@@ -35,14 +35,14 @@ public:
 
 protected:
     QString composeRichDoc();
-    
+
 }; // Text2SequencePrompter
 
 class Text2SequenceWorker : public BaseWorker {
     Q_OBJECT
 public:
     static QMap<QString, QString> cuteAlIdNames;
-    
+
 public:
     Text2SequenceWorker(Actor * p) : BaseWorker(p), txtPort(NULL), outSeqPort(NULL), tickedNum(0) {}
 
@@ -52,22 +52,22 @@ public:
 
 private:
     static QMap<QString, QString> initCuteAlNames();
-    
+
 private:
     IntegralBus * txtPort;
     IntegralBus * outSeqPort;
     int tickedNum;
-    
+
 }; // Text2SequenceWorker
 
 class Text2SequenceWorkerFactory : public DomainFactory {
 public:
     static const QString ACTOR_ID;
-    
+
     Text2SequenceWorkerFactory() : DomainFactory(ACTOR_ID) {}
     static void init();
     virtual Worker * createWorker(Actor* a);
-    
+
 }; // Text2SequenceWorkerFactory
 
 } // LocalWorkflow

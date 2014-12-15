@@ -72,7 +72,7 @@ public:
     const DNAAlphabet* getDstAlphabet() const {return dstAlphabet;}
 
     virtual bool isOne2One() const {return false;}
-    
+
     virtual bool isThree2One() const {return false;}
 
     virtual bool isOne2Three() const {return false;}

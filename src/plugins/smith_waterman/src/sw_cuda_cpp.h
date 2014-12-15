@@ -36,7 +36,7 @@ struct resType
 };
 
 class sw_cuda_cpp {
-public:    
+public:
     typedef int ScoreType;
 
     QList<resType> launch(const char * seqLib, int seqLibLength, ScoreType* queryProfile, ScoreType qProfLen,

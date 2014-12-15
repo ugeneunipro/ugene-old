@@ -24,7 +24,7 @@
 
 #include "BioStruct3DGLRender.h"
 
-namespace U2 { 
+namespace U2 {
 
 class VanDerWaalsGLRenderer : public BioStruct3DGLRenderer {
 protected:

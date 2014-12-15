@@ -74,9 +74,9 @@ private:
     QString     errorMsg;
 
     QList<ExternalToolValidation> validations; //original tool validation is the last one
-    
+
     QRegExp     checkVersionRegExp;
-        
+
     QString     lastErrLine;
     QString     lastOutLine;
 

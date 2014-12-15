@@ -57,13 +57,13 @@ public:
     virtual void calculateCoverage(const U2Region& region, U2AssemblyCoverageStat& c, U2OpStatus& os);
 
     const QString& getReadsTableName() const {return readsTable;}
-    
+
     void enableRangeTableMode(int minLength, int maxLength);
 
     static QString getReadsTableName(const U2DataId& assemblyId, char prefix, const QString& suffix);
 
     void dropReadsIndexes(U2OpStatus& os);
-    
+
     qint64 getMinReadLength() const {return minReadLength;}
     qint64 getMaxReadLength() const {return maxReadLength;}
 

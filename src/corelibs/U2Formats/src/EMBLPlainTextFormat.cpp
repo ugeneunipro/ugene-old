@@ -36,11 +36,11 @@
 
 namespace U2 {
 
-/* TRANSLATOR U2::EMBLPlainTextFormat */    
-/* TRANSLATOR U2::EMBLGenbankAbstractDocument */ 
+/* TRANSLATOR U2::EMBLPlainTextFormat */
+/* TRANSLATOR U2::EMBLGenbankAbstractDocument */
 
-EMBLPlainTextFormat::EMBLPlainTextFormat(QObject* p) 
-: EMBLGenbankAbstractDocument(BaseDocumentFormats::PLAIN_EMBL, tr("EMBL"), 80, DocumentFormatFlag_SupportStreaming, p) 
+EMBLPlainTextFormat::EMBLPlainTextFormat(QObject* p)
+: EMBLGenbankAbstractDocument(BaseDocumentFormats::PLAIN_EMBL, tr("EMBL"), 80, DocumentFormatFlag_SupportStreaming, p)
 {
     fileExtensions << "em" << "emb" << "embl";
     formatDescription = tr("EMBL Flat File Format is a rich format for storing sequences and associated annotations");
@@ -124,7 +124,7 @@ bool EMBLPlainTextFormat::readIdLine(ParserState* s) {
         s->entry->circular = idLineStr.contains(LOCUS_TAG_CIRCULAR, Qt::CaseInsensitive);
     }
     s->entry->tags.insert(DNAInfo::LOCUS, qVariantFromValue<DNALocusInfo>(loi));
-    
+
     return true;
 }
 

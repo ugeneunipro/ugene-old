@@ -39,20 +39,20 @@ class ExportSequences2MSADialog : public QDialog, Ui_ExportSequences2MSADialog {
     Q_OBJECT
 public:
     ExportSequences2MSADialog(QWidget* p, const QString& defaultUrl = QString() );
-    
+
     void setOkButtonText(const QString& text) const;
     void setFileLabelText(const QString& text) const;
 
     virtual void accept();
 
 
-public:    
+public:
     QString url;
     DocumentFormatId format;
     bool    addToProjectFlag;
     bool    useGenbankHeader;
 
-private:    
+private:
     SaveDocumentGroupController* saveContoller;
     QPushButton* okButton;
 

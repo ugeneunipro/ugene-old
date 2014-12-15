@@ -57,7 +57,7 @@ ADVCreateAnnotationsTask::ADVCreateAnnotationsTask( AnnotatedDNAView *_ctx, cons
 Task::ReportResult ADVCreateAnnotationsTask::report( ) {
     if ( !hasError( ) && !ctx.isNull( ) ) {
         AnnotationTableObject *ao = t->getGObject( );
-        if ( !ctx->getAnnotationObjects( ).contains( ao ) ) { 
+        if ( !ctx->getAnnotationObjects( ).contains( ao ) ) {
             //for documents loaded during annotation creation object is added here
             QString err = ctx->addObject( ao );
             if ( !err.isEmpty( ) ) {
@@ -94,7 +94,7 @@ void ADVAnnotationCreation::sl_createAnnotation( ) {
     if ( !seqCtx->getSequenceSelection( )->isEmpty( ) ) {
         m.data.location->regions << seqCtx->getSequenceSelection( )->getSelectedRegions( );
     }
-    
+
     //setup default object and group if possible from AnnotationsTreeView
     AnnotationsTreeView *tv = ctx->getAnnotationsView( );
     AVItem *ai = tv->currentItem( );

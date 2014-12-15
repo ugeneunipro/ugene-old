@@ -55,7 +55,7 @@ static const QColor labelBackgroundColor(255, 255, 255, 180);
 
 const double ZoomableAssemblyOverview::ZOOM_MULT = 2.;
 
-ZoomableAssemblyOverview::ZoomableAssemblyOverview(AssemblyBrowserUi * ui_, bool zoomable_): QWidget(ui_), ui(ui_), browser(ui->getWindow()), 
+ZoomableAssemblyOverview::ZoomableAssemblyOverview(AssemblyBrowserUi * ui_, bool zoomable_): QWidget(ui_), ui(ui_), browser(ui->getWindow()),
     model(ui_->getModel()), zoomable(zoomable_), zoomFactor(1.), redrawSelection(true), redrawBackground(true), previousCoverageLength(0), selectionScribbling(false), visibleRangeScribbling(false),
 scaleType(AssemblyBrowserSettings::getOverviewScaleType()) {
     setObjectName("Zoomable assembly overview");
@@ -125,7 +125,7 @@ void ZoomableAssemblyOverview::drawAll() {
             QPainter p(&cachedBackground);
             p.fillRect(cachedBackground.rect(), Qt::gray);
             p.drawText(cachedBackground.rect(), Qt::AlignCenter, tr("Background is rendering..."));
-        } 
+        }
         //coverage is ready -> redraw background if needed
         else if(redrawBackground) {
             cachedBackground = QPixmap(size());
@@ -183,11 +183,11 @@ void ZoomableAssemblyOverview::drawBackground(QPainter & p) {
     double readsPerYPixel = .0;
     switch(scaleType) {
     case AssemblyBrowserSettings::Scale_Linear:
-        readsPerYPixel = double(ci.maxCoverage) / widgetHeight; 
+        readsPerYPixel = double(ci.maxCoverage) / widgetHeight;
         break;
     case AssemblyBrowserSettings::Scale_Logarithmic:
         logMax = log((double)ci.maxCoverage);
-        readsPerYPixel = double(logMax) / widgetHeight; 
+        readsPerYPixel = double(logMax) / widgetHeight;
         break;
     default:
         assert(false);
@@ -250,7 +250,7 @@ void ZoomableAssemblyOverview::drawSelection(QPainter & p) {
     }
     if(isRectVerySmall(selectionToDraw)) {
         //draw red cross
-        QPoint c = selectionToDraw.center();  
+        QPoint c = selectionToDraw.center();
         QPen oldPen = p.pen();
         p.setPen(Qt::red);
         p.drawLine(c - CROSS_LEFT_CORNER, c + CROSS_LEFT_CORNER);
@@ -300,7 +300,7 @@ void ZoomableAssemblyOverview::drawCoordLabels(QPainter & p) {
     p.setPen(labelForegroundColor);
 
     //draw Visible Region
-    QString visibleRegionText = tr("%1 to %2 (%3 bp)").arg(visibleStartText).arg(visibleEndText).arg(visibleDiffText); 
+    QString visibleRegionText = tr("%1 to %2 (%3 bp)").arg(visibleStartText).arg(visibleEndText).arg(visibleDiffText);
     QRect grtRect = QRect(0, 0, fontMetrics.width(visibleRegionText), fontMetrics.height());
     grtRect.translate(xoffset, rect().height() - yoffset - grtRect.height());
     if(rect().contains(grtRect)) {
@@ -354,18 +354,18 @@ QRect ZoomableAssemblyOverview::calcCurrentSelection() const {
     int y_pix_start = double(h) / model->getModelHeight(status) * browser->getYOffsetInAssembly() + 0.5;
     int pix_width = (double(w) / visibleRange.length * browser->basesVisible()) + 0.5;
     int pix_height = double(h) / model->getModelHeight(status) * browser->rowsVisible() + 0.5;
-    
+
     return QRect(x_pix_start, y_pix_start, pix_width, pix_height);
 }
 
-//prevents selection from crossing widget borders. 
+//prevents selection from crossing widget borders.
 //Tries to move selection center to pos.
 void ZoomableAssemblyOverview::moveSelectionToPos( QPoint pos, bool moveModel )
 {
     const QRect & thisRect = rect();
     QRect newSelection(cachedSelection);
     newSelection.moveCenter(pos);
-    
+
     int dy = 0;
     int dx = 0;
 
@@ -399,7 +399,7 @@ void ZoomableAssemblyOverview::moveSelectionToPos( QPoint pos, bool moveModel )
     } else {
         newYoffset = calcYAssemblyCoord(newSelection.y());
     }
-    
+
     if(moveModel) {
         browser->setOffsetsInAssembly(browser->normalizeXoffset(newXoffset), browser->normalizeYoffset(newYoffset));
     }
@@ -483,7 +483,7 @@ void ZoomableAssemblyOverview::mousePressEvent(QMouseEvent * me) {
         visibleRangeScribbling = true;
         visibleRangeLastPos = me->pos();
         setCursor(Qt::ClosedHandCursor);
-    } 
+    }
 
     if (me->button() == Qt::LeftButton) {
         //zoom in
@@ -497,7 +497,7 @@ void ZoomableAssemblyOverview::mousePressEvent(QMouseEvent * me) {
         else if(me->modifiers() & Qt::ShiftModifier) {
             zoomToRegionSelector.scribbling = true;
             zoomToRegionSelector.startPos = me->pos();
-        } 
+        }
         //selection scribbling
         else {
             selectionScribbling = true;
@@ -509,7 +509,7 @@ void ZoomableAssemblyOverview::mousePressEvent(QMouseEvent * me) {
             }
         }
     }
-    
+
     QWidget::mousePressEvent(me);
 }
 
@@ -528,11 +528,11 @@ void ZoomableAssemblyOverview::mouseMoveEvent(QMouseEvent * me) {
         checkedMoveVisibleRange(asmDiff);
         visibleRangeLastPos = me->pos();
     }
-    
+
     if(zoomToRegionSelector.scribbling) {
         sl_redraw();
     }
-    
+
     QWidget::mouseMoveEvent(me);
 }
 
@@ -629,7 +629,7 @@ void ZoomableAssemblyOverview::sl_zoomIn(const QPoint & pos) {
     //2. count new start position of the visible region
     qint64 newStart = 0;
     if(!pos.isNull()) {
-        //Black magic. Zooms overview so that region under mouse pointer remains 
+        //Black magic. Zooms overview so that region under mouse pointer remains
         //under pointer after zoom
         newStart = calcXAssemblyCoord(pos.x()) - double(newLen)/width()*pos.x();
     } else {
@@ -680,7 +680,7 @@ void ZoomableAssemblyOverview::sl_zoomOut(const QPoint & pos) {
     // 2. count new start of the visible region
     qint64 newStart = 0;
     if(!pos.isNull()) {
-        //Black magic. Zooms overview so that region under mouse pointer remains 
+        //Black magic. Zooms overview so that region under mouse pointer remains
         //under pointer after zoom
         newStart = calcXAssemblyCoord(pos.x()) - double(newLen)/width()*pos.x();
     } else {

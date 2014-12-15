@@ -36,7 +36,7 @@ class PFMatrixFormat : public DocumentFormat {
     Q_OBJECT
 public:
     PFMatrixFormat(QObject* p);
-    
+
     static const DocumentFormatId FORMAT_ID;
 
     virtual DocumentFormatId getFormatId() const {return FORMAT_ID;}

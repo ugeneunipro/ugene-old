@@ -43,7 +43,7 @@ public:
     static const QByteArray COLUMN_ANNOTATION_SS_CONS;
     static const QByteArray COLUMN_ANNOTATION_RF;
     static const QByteArray UNI_ANNOTATION_MARK;
-    
+
 private:
     QString format_name;
 

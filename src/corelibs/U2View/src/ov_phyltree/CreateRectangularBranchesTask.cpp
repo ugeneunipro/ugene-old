@@ -111,7 +111,7 @@ GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(const Ph
         }else{
             item = new GraphicsRectangularBranchItem(0, y, node->getName(), node->getBranchesDistance(0), node->getBranch(0));
         }
-        
+
         return item;
     }
 }

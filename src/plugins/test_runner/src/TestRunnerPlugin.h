@@ -45,7 +45,7 @@ class GTestEnvironment;
 class TestRunnerPlugin : public Plugin {
     Q_OBJECT
 public:
-    TestRunnerPlugin();   
+    TestRunnerPlugin();
 private slots:
     void sl_startTestRunner();
 };
@@ -83,12 +83,12 @@ private:
     void saveSuites();
     void readBuiltInVars();
     void deallocateSuites();
-    
+
     void readEnvForKeys(QStringList keys);
     void saveEnv();
     void updateDefaultEnvValues(GTestSuite* ts);
 
-    
+
     TestViewController*         view;
     QAction*                    windowAction;
     QList<GTestSuite*>          suites;

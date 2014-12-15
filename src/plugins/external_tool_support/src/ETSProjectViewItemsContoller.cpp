@@ -125,7 +125,7 @@ void ETSProjectViewItemsContoller::sl_runFormatDBOnSelection(){
     U2OpStatus2Log os(LogLevel_DETAILS);
     ExternalToolSupportSettings::checkTemporaryDir(os);
     CHECK_OP(os, );
-    
+
     ProjectView* pv = AppContext::getProjectView();
     assert(pv!=NULL);
 

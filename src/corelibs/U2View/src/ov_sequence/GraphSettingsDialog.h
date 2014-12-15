@@ -34,7 +34,7 @@ class GSequenceGraphDrawer;
 class MinMaxSelectorWidget;
 class WindowStepSelectorWidget;
 
-class GraphSettingsDialog : public QDialog 
+class GraphSettingsDialog : public QDialog
 {
     Q_OBJECT
 public:

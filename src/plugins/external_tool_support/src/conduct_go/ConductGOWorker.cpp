@@ -134,7 +134,7 @@ ConductGOSettings ConductGOWorker::createConductGOSettings(){
 
 void ConductGOWorkerFactory::init() {
     QList<PortDescriptor*> portDescs;
-    
+
     //in port
     QMap<Descriptor, DataTypePtr> inTypeMap;
     Descriptor treatDesc(ANNOT_SLOT_ID,
@@ -171,11 +171,11 @@ void ConductGOWorkerFactory::init() {
     {
           delegates[OUTPUT_DIR] = new URLDelegate("", "", false, true);
 
-          
+
           {
               QVariantMap vm;
 
-              vm[ConductGOSettings::UNIVERSE_HGU133A] = ConductGOSettings::UNIVERSE_HGU133A;   
+              vm[ConductGOSettings::UNIVERSE_HGU133A] = ConductGOSettings::UNIVERSE_HGU133A;
               vm[ConductGOSettings::UNIVERSE_HGU133B] = ConductGOSettings::UNIVERSE_HGU133B;
               vm[ConductGOSettings::UNIVERSE_HGU133PLUS2] = ConductGOSettings::UNIVERSE_HGU133PLUS2;
               vm[ConductGOSettings::UNIVERSE_HGU95AV2] = ConductGOSettings::UNIVERSE_HGU95AV2;
@@ -190,7 +190,7 @@ void ConductGOWorkerFactory::init() {
               delegates[GENE_UNIVERSE] = new ComboBoxDelegate(vm);
           }
 
-          
+
     }
 
     Descriptor protoDesc(ConductGOWorkerFactory::ACTOR_ID,
@@ -210,17 +210,17 @@ Worker *ConductGOWorkerFactory::createWorker(Actor *a) {
 }
 
 QString ConductGOPrompter::composeRichDoc() {
-    QString res = ""; 
+    QString res = "";
 
     Actor* annProducer = qobject_cast<IntegralBusPort*>(target->getPort(IN_PORT_DESCR))->getProducer(ANNOT_SLOT_ID);
 
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString annUrl = annProducer ? annProducer->getLabel() : unsetStr;
-     
+
     QString dir = getHyperlink(OUTPUT_DIR, getURL(OUTPUT_DIR));
- 
+
     res.append(tr("Uses annotations from <u>%1</u> as gene list to conduct GO.").arg(annUrl));
-   
+
     res.append(tr(" Outputs all result files to <u>%1</u> directory").arg(dir));
     res.append(".");
 

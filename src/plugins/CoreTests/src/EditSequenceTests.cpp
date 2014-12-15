@@ -74,7 +74,7 @@ void GTest_AddPartToSequenceTask::init(XMLTestFormat *tf, const QDomElement& el)
     }else{
         expectedRegions.clear();
     }
-    
+
     buf = el.attribute(EXPECTED_ANNOTATION_STRATEGY_ATTR);
     if(buf.toLower() == "remove"){
         strat = U1AnnotationUtils::AnnotationStrategyForResize_Remove;
@@ -162,12 +162,12 @@ Task::ReportResult GTest_AddPartToSequenceTask::report(){
             }
         }
     }
-    
+
     return ReportResult_Finished;
 }
 
 
-GTest_AddPartToSequenceTask::~GTest_AddPartToSequenceTask() {      
+GTest_AddPartToSequenceTask::~GTest_AddPartToSequenceTask() {
 
 }
 

@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -110,7 +110,7 @@ BreakpointManagerView::BreakpointManagerView(WorkflowDebugStatus *initDebugInfo,
 
     initBreakpointsList();
     Q_ASSERT(NULL != breakpointsList);
-    
+
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QVBoxLayout *contentLayout = new QVBoxLayout(this);
     contentLayout->setSpacing(0);
@@ -360,7 +360,7 @@ void BreakpointManagerView::sl_breakpointStateChanged(int state) {
     QWidget *stateAssigner = qobject_cast<QWidget *>(activator);
     Q_ASSERT(NULL != stateAssigner);
     QTreeWidgetItem *breakpointItem = breakpointStateControls[stateAssigner];
-    
+
     bool isBreakpointBeingEnabled = (Qt::Checked == state);
     debugInfo->setBreakpointEnabled(actorConnections[breakpointItem], isBreakpointBeingEnabled);
 }

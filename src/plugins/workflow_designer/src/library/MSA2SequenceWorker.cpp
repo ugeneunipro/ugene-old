@@ -99,27 +99,27 @@ void Alignment2SequenceWorkerFactory::init() {
         QMap<Descriptor, DataTypePtr> inM;
         inM[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
         DataTypePtr inSet(new MapDataType(ALN_2_SEQUENCE_IN_TYPE_ID, inM));
-        Descriptor inPortDesc(BasePorts::IN_MSA_PORT_ID(), Alignment2SequenceWorker::tr("Input alignment"), 
+        Descriptor inPortDesc(BasePorts::IN_MSA_PORT_ID(), Alignment2SequenceWorker::tr("Input alignment"),
             Alignment2SequenceWorker::tr("A alignment which will be split into sequences"));
         portDescs << new PortDescriptor(inPortDesc, inSet, true);
-        
+
         QMap<Descriptor, DataTypePtr> outM;
         outM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
         DataTypePtr outSet(new MapDataType(ALN_2_SEQUENCE_OUT_TYPE_ID, outM));
-        Descriptor outPortDesc(BasePorts::OUT_SEQ_PORT_ID(), Alignment2SequenceWorker::tr("Output sequences"), 
+        Descriptor outPortDesc(BasePorts::OUT_SEQ_PORT_ID(), Alignment2SequenceWorker::tr("Output sequences"),
             Alignment2SequenceWorker::tr("Converted sequences"));
         portDescs << new PortDescriptor(outPortDesc, outSet, false);
     }
 
     QList<Attribute*> attrs;
-   
-    Descriptor protoDesc(Alignment2SequenceWorkerFactory::ACTOR_ID, 
-        Alignment2SequenceWorker::tr("Split Alignment into Sequences"), 
+
+    Descriptor protoDesc(Alignment2SequenceWorkerFactory::ACTOR_ID,
+        Alignment2SequenceWorker::tr("Split Alignment into Sequences"),
         Alignment2SequenceWorker::tr("Splits input alignment into sequences"));
     ActorPrototype * proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
-    
+
     proto->setPrompter(new Alignment2SequencePrompter());
-    
+
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ALIGNMENT(), proto);
     WorkflowEnv::getDomainRegistry()->getById( LocalDomainFactory::ID )->registerEntry( new Alignment2SequenceWorkerFactory() );
 }
@@ -135,7 +135,7 @@ QString Alignment2SequencePrompter::composeRichDoc() {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_MSA_PORT_ID()));
     Actor* producer = input->getProducer(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId());
-    QString source = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr); 
+    QString source = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
     return tr("Split alignment%1 into sequences.").arg(source);
 }
 

@@ -33,7 +33,7 @@ public:
     XMLTestFactory(const QString& _tagName) : tagName(_tagName){}
     virtual ~XMLTestFactory();
 
-    virtual GTest* createTest(XMLTestFormat* tf, const QString& testName, GTest* cp, const GTestEnvironment* env, 
+    virtual GTest* createTest(XMLTestFormat* tf, const QString& testName, GTest* cp, const GTestEnvironment* env,
                               const QList<GTest*>& subtasks, const QDomElement& el) = 0;
 
     const QString& getTagName() const {return tagName;}
@@ -47,9 +47,9 @@ class U2TEST_EXPORT XMLTestFormat : public GTestFormat {
 public:
     XMLTestFormat();
     virtual ~XMLTestFormat();
-    
+
     virtual GTest* createTest(const QString& name, GTest* cp, const GTestEnvironment* env, const QByteArray& testData, QString& err);
-    
+
     virtual GTest* createTest(const QString& name, GTest* cp, const GTestEnvironment* env, const QDomElement& el, QString& err);
 
     virtual bool registerTestFactory(XMLTestFactory* tf);

@@ -32,7 +32,7 @@
 
 namespace U2 {
 
-class PWMatrixReadTask;    
+class PWMatrixReadTask;
 class WMQDTask : public Task {
     Q_OBJECT
 public:
@@ -48,7 +48,7 @@ private:
     QList<WeightMatrixSearchResult> res;
     QVector<U2Region> location;
 };
-    
+
 class QDWMActor : public QDActor {
     Q_OBJECT
 public:

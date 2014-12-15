@@ -77,13 +77,13 @@ void GTest_SmithWatermnan::init(XMLTestFormat *, const QDomElement& el) {
     if (searchSeqDocName.isEmpty()) {
         failMissingValue(FILE_FASTA_CONTAIN_SEQUENCE_ATTR);
         return;
-    } 
+    }
 
     patternSeqDocName = el.attribute(FILE_FASTA_CONTAIN_PATTERN_ATTR);
     if (patternSeqDocName.isEmpty()) {
         failMissingValue(FILE_FASTA_CONTAIN_PATTERN_ATTR);
         return;
-    } 
+    }
 
     pathToSubst = el.attribute(FILE_SUBSTITUTION_MATRIX_ATTR);
     if (pathToSubst.isEmpty()) {
@@ -139,7 +139,7 @@ void GTest_SmithWatermnan::init(XMLTestFormat *, const QDomElement& el) {
         failMissingValue(ENV_IMPL_ATTR);
         return;
     }
-    
+
     machinePath = env->getVar( REMOTE_MACHINE );
     if( !machinePath.isEmpty() ) {
         machinePath = env->getVar( "COMMON_DATA_DIR" ) + "/" + machinePath;
@@ -175,7 +175,7 @@ void GTest_SmithWatermnan::prepare() {
     QString fullPathToSubst = pathToCommonData + "/" + pathToSubst;
 
     QString error;
-    SMatrix mtx = SubstMatrixRegistry::readMatrixFromFile(fullPathToSubst, error); 
+    SMatrix mtx = SubstMatrixRegistry::readMatrixFromFile(fullPathToSubst, error);
     if (mtx.isEmpty()) {
         stateInfo.setError(QString("value not set %1").arg(FILE_SUBSTITUTION_MATRIX_ATTR));
         return;
@@ -195,7 +195,7 @@ void GTest_SmithWatermnan::prepare() {
     s.resultCallback = NULL;
     s.resultListener = NULL;
     s.resultFilter = 0;
-    
+
     if( !machinePath.isEmpty() ) { /* run smith-waterman on remote machine */
     //TODO: BUG-001870
         assert(0);
@@ -217,11 +217,11 @@ void GTest_SmithWatermnan::prepare() {
         }
     }
     addSubTask(swAlgorithmTask);
-    
+
 }
 
 bool GTest_SmithWatermnan::parseExpected_res() {
-    
+
     SWresult swRes;
     QStringList expectedList = expected_res.split(tr("**"));
 
@@ -247,7 +247,7 @@ bool GTest_SmithWatermnan::parseExpected_res() {
         }
         swRes.sInterval.startPos = start;
         swRes.sInterval.length = finish - start;
-        
+
         start = resValues.at(0).toInt(&startOk);
         if (startOk != true) {
             stateInfo.setError(  QString("wrong scorein expected result %1").arg(resValues.at(0)) );
@@ -264,21 +264,21 @@ bool GTest_SmithWatermnan::toInt(QString & str, int & num) {
     bool ok = false;
     if (!str.isEmpty()) {
         num = str.toInt(&ok);
-    } 
+    }
     return ok;
 }
 
 
 Task::ReportResult GTest_SmithWatermnan::report() {
-    
+
     propagateSubtaskError();
     if( hasError() ) {
         return ReportResult_Finished;
     }
-    
+
     QList<SmithWatermanResult> resultList;
     if( !machinePath.isEmpty() ) { /* remote task used */
-        //TODO: BUG-0001870       
+        //TODO: BUG-0001870
 //         RemoteTask * remoteSW = qobject_cast<RemoteTask*>( swAlgorithmTask );
 //         assert( NULL != remoteSW );
 //         SmithWatermanLocalTaskResult * result = dynamic_cast<SmithWatermanLocalTaskResult*>( remoteSW->getResult() );
@@ -289,12 +289,12 @@ Task::ReportResult GTest_SmithWatermnan::report() {
     }
     sortByScore(resultList);
 
-    
+
     if (expectedRes.size() != resultList.size()) {
         stateInfo.setError(QString("Not expected result: count result not coincide"));
         return ReportResult_Finished;
     }
-    
+
     for (int i = 0; i < resultList.size(); i++) {
         if (expectedRes.at(i).score != resultList.at(i).score ||
             expectedRes.at(i).sInterval != resultList.at(i).refSubseq) {
@@ -302,8 +302,8 @@ Task::ReportResult GTest_SmithWatermnan::report() {
                 return ReportResult_Finished;
         }
     }
-    
-    
+
+
     return ReportResult_Finished;
 }
 
@@ -316,19 +316,19 @@ void GTest_SmithWatermnanPerf::init(XMLTestFormat *tf, const QDomElement& el) {
     if (searchSeqDocName.isEmpty()) {
         failMissingValue(FILE_FASTA_CONTAIN_SEQUENCE_ATTR);
         return;
-    } 
+    }
 
     patternSeqDocName = el.attribute(FILE_FASTA_CONTAIN_PATTERN_ATTR);
     if (patternSeqDocName.isEmpty()) {
         failMissingValue(FILE_FASTA_CONTAIN_PATTERN_ATTR);
         return;
-    } 
+    }
 
     impl = el.attribute(IMPL_ATTR);
     if (patternSeqDocName.isEmpty()) {
         failMissingValue(IMPL_ATTR);
         return;
-    } 
+    }
 
     pathToSubst = "smith_waterman2/blosum62.txt";
     gapOpen = -1;
@@ -366,7 +366,7 @@ void GTest_SmithWatermnanPerf::prepare() {
     QString fullPathToSubst = pathToCommonData + "/" + pathToSubst;
 
     QString error;
-    SMatrix mtx = SubstMatrixRegistry::readMatrixFromFile(fullPathToSubst, error); 
+    SMatrix mtx = SubstMatrixRegistry::readMatrixFromFile(fullPathToSubst, error);
     if (mtx.isEmpty()) {
         stateInfo.setError(QString("value not set %1").arg(FILE_SUBSTITUTION_MATRIX_ATTR));
         return;

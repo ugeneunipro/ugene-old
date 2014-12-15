@@ -13,8 +13,8 @@ namespace U2 {
 class ExpertDiscoverySetupRecBoundDialog : public QDialog, public Ui_EDSetupRecBoundDlg{
     Q_OBJECT
 public:
-    ExpertDiscoverySetupRecBoundDialog(double dRecognizationBound, 
-        const std::vector<double>& vPosScore, 
+    ExpertDiscoverySetupRecBoundDialog(double dRecognizationBound,
+        const std::vector<double>& vPosScore,
         const std::vector<double>& vNegScore);
 
     virtual void accept();

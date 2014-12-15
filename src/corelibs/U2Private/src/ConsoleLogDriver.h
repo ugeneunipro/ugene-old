@@ -42,13 +42,13 @@ public:
     static const QString COLOR_OUTPUT_CMD_OPTION;
     //static const QString LOG_FORMAT;
     //static const QString LOG_LEVEL;
-    
+
     static void setLogCmdlineHelp();
     void setLogSettings();
 
 private:
     static bool helpRegistered;
-    
+
 public:
     ConsoleLogDriver();
     virtual ~ConsoleLogDriver();
@@ -59,7 +59,7 @@ private:
     void setCmdLineSettings();
     QString getEffectiveCategory(const LogMessage& msg) const;
     QString getLevelName(int i) const;
-    
+
 private slots:
     QString prepareText(const LogMessage& msg) const;
 private:

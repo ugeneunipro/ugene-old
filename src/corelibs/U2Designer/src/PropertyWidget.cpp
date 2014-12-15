@@ -310,7 +310,7 @@ void ComboBoxWithUrlWidget::sl_browse(){
             setValue(name);
         }
     }
-    
+
     comboBox->setFocus();
 }
 
@@ -381,7 +381,7 @@ ComboBoxWithChecksWidget::ComboBoxWithChecksWidget(const QVariantMap& _items, QW
         this, SIGNAL(valueChanged(const QString &)));
     connect(comboBox, SIGNAL(currentIndexChanged(int)),
         this, SLOT(sl_valueChanged(int)));
-   
+
 }
 
 QVariant ComboBoxWithChecksWidget::value() {
@@ -406,7 +406,7 @@ void ComboBoxWithChecksWidget::setValue(const QVariant &value) {
         delete cm;
         cm = new QStandardItemModel(items.size(), 1, comboBox);
     }
-      
+
     const QList<QString>& keys = items.keys();
     int i = 0;
 

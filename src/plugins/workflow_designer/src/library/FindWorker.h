@@ -43,11 +43,11 @@ class FindWorker : public BaseWorker {
     Q_OBJECT
 public:
     FindWorker(Actor* a);
-    
+
     virtual void init();
     virtual Task* tick();
     virtual void cleanup();
-    
+
 private slots:
     void sl_taskFinished(Task*);
 
@@ -59,7 +59,7 @@ protected:
     QList<QPair<QString, QString> > namesPatterns;
     bool patternFileLoaded;
     bool useNames;
-}; 
+};
 
 class FindWorkerFactory : public DomainFactory {
 public:

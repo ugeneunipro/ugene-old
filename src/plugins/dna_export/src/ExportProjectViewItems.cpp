@@ -166,8 +166,8 @@ void ExportProjectViewItemsContoller::addExportImportMenu(QMenu& m) {
                 sub->addAction(exportNucleicAlignmentToAminoAction);
             }
         }
-    } 
-    
+    }
+
     set = SelectionUtils::findObjects(GObjectTypes::ANNOTATION_TABLE, &ms, UOF_LoadedOnly);
     if (set.size() == 1) {
         if (sub == NULL) {
@@ -225,7 +225,7 @@ bool hasComplementForAll(const QList<GObject*>& set) {
         U2SequenceObject* so = qobject_cast<U2SequenceObject*>(o);
         if (o == NULL || GObjectUtils::findComplementTT(so->getAlphabet()) == NULL) {
             return false;
-        } 
+        }
     }
     return true;
 }
@@ -235,7 +235,7 @@ bool hasAminoForAll(const QList<GObject*>& set) {
         U2SequenceObject* so = qobject_cast<U2SequenceObject*>(o);
         if (o == NULL || GObjectUtils::findAminoTT(so, false, NULL) == NULL) {
             return false;
-        } 
+        }
     }
     return true;
 }
@@ -245,7 +245,7 @@ bool hasNucleicForAll(const QList<GObject*>& set) {
         U2SequenceObject* so = qobject_cast<U2SequenceObject*>(o);
         if (o == NULL || GObjectUtils::findBackTranslationTT(so) == NULL) {
             return false;
-        } 
+        }
     }
     return true;
 }
@@ -409,7 +409,7 @@ void ExportProjectViewItemsContoller::sl_exportNucleicAlignmentToAmino() {
     if (set.size()!=1) {
         QMessageBox::critical(NULL, L10N::errorTitle(), tr("Select one alignment object to export"));
         return;
-    }    
+    }
 
     GObject* obj = set.first();
     MAlignment ma = qobject_cast<MAlignmentObject*>(obj)->getMAlignment();
@@ -457,13 +457,13 @@ void ExportProjectViewItemsContoller::sl_exportChromatogramToSCF() {
     GObject* obj = set.first();
     DNAChromatogramObject* chromaObj = qobject_cast<DNAChromatogramObject*>(obj);
     assert(chromaObj != NULL);
-    
+
     ExportChromatogramDialog d(QApplication::activeWindow(), chromaObj->getDocument()->getURL());
     int rc = d.exec();
     if (rc == QDialog::Rejected) {
         return;
     }
-       
+
     ExportChromatogramTaskSettings settings;
     settings.url = d.url;
     settings.complement = d.complemented;
@@ -478,17 +478,17 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations() {
     // find annotations: whole annotation file
     ProjectView* pv = AppContext::getProjectView();
     assert(pv!=NULL);
-    
-    MultiGSelection ms; 
+
+    MultiGSelection ms;
     ms.addSelection(pv->getGObjectSelection());
     ms.addSelection(pv->getDocumentSelection());
-    
+
     QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::ANNOTATION_TABLE, &ms, UOF_LoadedOnly);
     if (set.size() != 1 ) {
         QMessageBox::warning(QApplication::activeWindow(), exportAnnotations2CSV->text(), tr("Select one annotation object to export"));
         return;
     }
-    
+
     GObject* obj = set.first();
     AnnotationTableObject *aObj = qobject_cast<AnnotationTableObject *>(obj);
     SAFE_POINT(NULL != aObj, "Invalid annotation table detected!", );
@@ -511,13 +511,13 @@ void ExportProjectViewItemsContoller::sl_exportSequenceQuality() {
         QMessageBox::critical(NULL, L10N::errorTitle(), tr("No sequence objects selected!"));
         return;
     }
-    
+
     LastUsedDirHelper lod;
     lod.url = U2FileDialog::getSaveFileName(QApplication::activeWindow(), tr("Set output quality file"), lod.dir,".qual");
     if (lod.url.isEmpty()) {
         return;
     }
-    
+
     QList<Task*> exportTasks;
     foreach (GObject* gObj, sequenceObjects) {
         if (gObj->getDocument()->getDocumentFormatId() != BaseDocumentFormats::FASTQ) {
@@ -529,7 +529,7 @@ void ExportProjectViewItemsContoller::sl_exportSequenceQuality() {
         Task* exportTask = new ExportPhredQualityScoresTask(seqObj, cfg);
         exportTasks.append(exportTask);
     }
-    
+
     Task* t = new MultiTask("ExportQualityScoresFromProjectView", exportTasks);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }

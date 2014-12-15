@@ -1837,7 +1837,7 @@ IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_startMulti) {
         CHECK_TRUE(multiStepStarted, "Multi step must be started!");
         CHECK_TRUE(userStepStarted, "User step must be ended!");
     }
-    
+
     QList<U2SingleModStep> actualSingleSteps;
     QList<U2MultiModStep4Test> actualMultiSteps;
     QList<U2UserModStep4Test> actualUserSteps;

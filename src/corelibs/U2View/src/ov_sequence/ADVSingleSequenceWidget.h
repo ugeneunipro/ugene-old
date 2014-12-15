@@ -81,16 +81,16 @@ public:
     DetView* getDetView() const {return detView;}
 
     virtual void centerPosition(int pos, QWidget* skipView = NULL);
-    
+
     ADVSequenceObjectContext*   getActiveSequenceContext() const {return (seqContexts.isEmpty()) ? NULL : seqContexts.first();}
     ADVSequenceObjectContext*   getSequenceContext() const {return getActiveSequenceContext();}
-    
+
     DNATranslation* getComplementTT() const;
 
     DNATranslation* getAminoTT() const;
 
     DNASequenceSelection*   getSequenceSelection() const;
-    
+
     int getSequenceLength() const;
 
     virtual void addSequenceView(GSequenceLineView* v, QWidget* after = NULL);
@@ -132,7 +132,7 @@ public:
     virtual int getNumBasesVisible() const;
 
     virtual void setNumBasesVisible(qint64 n);
-    
+
     QAction* getSelectRangeAction() const {return selectRangeAction1;}
 
     virtual void onSequenceObjectRenamed(const QString& oldName);
@@ -154,7 +154,7 @@ protected slots:
     void sl_onLocalCenteringRequest(qint64 pos);
     void sl_createCustomRuler();
     void sl_removeCustomRuler();
-    
+
     void sl_onAnnotationSelectionChanged( AnnotationSelection *thiz,
         const QList<Annotation> &added, const QList<Annotation> &removed );
 
@@ -186,14 +186,14 @@ private:
     virtual GSequenceLineView* findSequenceViewByPos(const QPoint& globalPos) const;
 
     virtual void addZoomMenu(const QPoint& globalPos, QMenu* m);
-    
+
     DetView*                        detView;
     PanView*                        panView;
     Overview*                       overview;
     QList<GSequenceLineView*>       lineViews;
     QVBoxLayout*                    linesLayout;
     ADVSingleSequenceHeaderWidget   *headerWidget;
-    
+
     QAction*        toggleViewAction;
     QAction*        togglePanViewAction;
     QAction*        toggleDetViewAction;
@@ -207,7 +207,7 @@ private:
     QAction*        shotScreenAction;
     QAction*        closeViewAction;
     QAction*        widgetStateMenuAction;
-    
+
     QList<QMenu*>   tbMenues;
     QToolButton*    ttButton;
     QToolButton*    widgetStateMenuButton;
@@ -223,7 +223,7 @@ class U2VIEW_EXPORT ADVSingleSequenceHeaderWidget : public QWidget {
     Q_OBJECT
 public:
     ADVSingleSequenceHeaderWidget(ADVSingleSequenceWidget* p);
-    
+
     QToolBar* getToolBar() const { return toolBar;}
     void setTitle(const QString & title) {nameLabel->setText(title);}
     void updateTitle();
@@ -231,7 +231,7 @@ public:
 protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *e);
     virtual void paintEvent(QPaintEvent *e);
-    
+
     virtual bool eventFilter (QObject *o, QEvent *e);
 
 protected slots:

@@ -212,7 +212,7 @@ void OpenAnnotatedDNAViewTask::open() {
             U2OpStatusImpl status;
             seqObj->isValidDbiObject(status);
             CHECK_OP_EXT(status, stateInfo.setError(tr("Error reading sequence object from dbi! URL: '%1'', name: '%2', error: %3").arg(r.docUrl).arg(r.objName).arg(status.getError())), );
-            
+
             seqObjects.append(seqObj);
             if (seqObjects.size() > SEQ_OBJS_PER_VIEW) {
                 uiLog.details(tr("Maximum number of objects per view reached: %1").arg(SEQ_OBJS_PER_VIEW));
@@ -265,7 +265,7 @@ static QSet<Document*> selectDocuments(Project* p, const QList<GObjectReference>
     return res;
 }
 
-OpenSavedAnnotatedDNAViewTask::OpenSavedAnnotatedDNAViewTask(const QString& viewName, const QVariantMap& stateData) 
+OpenSavedAnnotatedDNAViewTask::OpenSavedAnnotatedDNAViewTask(const QString& viewName, const QVariantMap& stateData)
 : ObjectViewTask(AnnotatedDNAViewFactory::ID, viewName, stateData)
 {
     AnnotatedDNAViewState state(stateData);
@@ -285,12 +285,12 @@ OpenSavedAnnotatedDNAViewTask::OpenSavedAnnotatedDNAViewTask(const QString& view
                 return;
             }
         }
-        
+
         if (!doc->isLoaded()) {
             documentsToLoad.append(doc);
         }
     }
-    
+
     QSet<Document*> adocs = selectDocuments(AppContext::getProject(), state.getAnnotationObjects(), stateInfo);
     foreach(Document* adoc, adocs) {
         if (!adoc->isLoaded()) {
@@ -336,7 +336,7 @@ void OpenSavedAnnotatedDNAViewTask::open() {
 
 //////////////////////////////////////////////////////////////////////////
 // update
-UpdateAnnotatedDNAViewTask::UpdateAnnotatedDNAViewTask(AnnotatedDNAView* v, const QString& stateName, const QVariantMap& stateData) 
+UpdateAnnotatedDNAViewTask::UpdateAnnotatedDNAViewTask(AnnotatedDNAView* v, const QString& stateName, const QVariantMap& stateData)
 : ObjectViewTask(v, stateName, stateData)
 {
 }
@@ -348,7 +348,7 @@ void UpdateAnnotatedDNAViewTask::update() {
 
     AnnotatedDNAView* aview = qobject_cast<AnnotatedDNAView*>(view.data());
     assert(aview!=NULL);
-    
+
     AnnotatedDNAViewState state(stateData);
     aview->updateState(state);
 }

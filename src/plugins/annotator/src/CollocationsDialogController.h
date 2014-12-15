@@ -108,7 +108,7 @@ private:
     CollocationsAlgorithmItem& getItem(const QString& name);
     bool isSuitableRegion(const U2Region &r, const QVector<U2Region> &resultRegions) const;
     U2Region cutResult(const U2Region &res) const;
-    
+
     QMap<QString, CollocationsAlgorithmItem> items;
     CollocationsAlgorithmSettings cfg;
     QVector<U2Region>  results;

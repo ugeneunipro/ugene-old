@@ -48,7 +48,7 @@ public:
     static const Descriptor CATEGORY_INCLUDES();
     static const Descriptor CATEGORY_SNP_ANNOTATION();
     static const Descriptor CATEGORY_CHIP_SEQ();
-    
+
 }; // BaseActorCategories
 
 }//Workflow namespace

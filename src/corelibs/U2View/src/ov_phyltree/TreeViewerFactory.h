@@ -32,7 +32,7 @@ class U2VIEW_EXPORT TreeViewerFactory : public GObjectViewFactory {
     Q_OBJECT
 public:
     TreeViewerFactory();
-    
+
     virtual bool canCreateView(const MultiGSelection& multiSelection);
 
     virtual Task* createViewTask(const MultiGSelection& multiSelection, bool single = false);

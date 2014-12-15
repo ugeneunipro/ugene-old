@@ -33,19 +33,19 @@ class U2Dbi;
     Note: unsigned used to reveal all possible math ops with it.
 
     U2DataType - data types supported by U2Dbi
-    U2DataId - object ids associated with Data by U2Dbi. 
+    U2DataId - object ids associated with Data by U2Dbi.
     Note that U2DataId == empty check must be suppoted by DBI to check empty fields.
 */
 typedef quint16 U2DataType;
 typedef QByteArray U2DataId;
 
-/** 
+/**
     ID of the DBI Factory. Defines type of the DBI driver.
     Examples: 'sqlite', 'mysql', 'fasta'....
 */
 typedef QString U2DbiFactoryId;
 
-/** 
+/**
     ID of the DBI. Points to DBI instance inside of the given DBI factory
     Usually is an URL or the DBI file/resource
 */
@@ -53,8 +53,8 @@ typedef QString U2DbiFactoryId;
 typedef QString U2DbiId;
 
 
-/** 
-    Built in types 
+/**
+    Built in types
     Note: Maximum value used for type must be <=4096
 */
 
@@ -134,7 +134,7 @@ private:
 QDataStream & operator <<(QDataStream &out, const U2DbiRef &dbiRef);
 QDataStream & operator >>(QDataStream &in, U2DbiRef &dbiRef);
 
-/** 
+/**
     Cross database data reference
 */
 class U2CORE_EXPORT U2EntityRef {
@@ -157,7 +157,7 @@ public:
     qint64          version;
 };
 
-/** 
+/**
     Base class for all data types that can be referenced by some ID
 */
 class U2CORE_EXPORT U2Entity {
@@ -179,14 +179,14 @@ public:
 };
 
 
-/** 
+/**
     Base marker class for all First-class-objects stored in the database
 */
 class U2CORE_EXPORT U2Object : public U2Entity {
 public:
     U2Object() : version(0), trackModType(NoTrack) {}
     U2Object(U2DataId id, const U2DbiId& _dbId, qint64 v) : U2Entity(id), dbiId(_dbId), version(v), trackModType(NoTrack) {}
-    
+
     /** Source of the object: database id */
     U2DbiId         dbiId;
 
@@ -207,7 +207,7 @@ inline uint qHash(const U2Object &obj) {
     return qHash(QPair<U2DataId, U2DbiId>(obj.id, obj.dbiId));
 }
 
-/** 
+/**
     If database keeps annotations/attributes for data entity stored in another database
     U2CrossDatabaseReference used as a parent object for all local data
 */

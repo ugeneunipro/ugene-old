@@ -87,7 +87,7 @@ bool RemoteMachineMonitor::deserializeMachines( const QVariant & data ) {
         return false;
     }
     QVariantList args = data.toList();
-    
+
     foreach( QVariant arg, args ) {
         if( !arg.canConvert( QVariant::List ) ) {
             return false;
@@ -123,7 +123,7 @@ void RemoteMachineMonitor::removeMachineConfiguration( const RemoteMachineSettin
     if( NULL == machineSettings ) {
         return;
     }
-    
+
     items.removeOne(machineSettings);
 }
 

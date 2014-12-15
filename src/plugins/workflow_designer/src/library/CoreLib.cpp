@@ -127,7 +127,7 @@ void CoreLib::init() {
     Descriptor writeUrlD(BaseSlots::URL_SLOT().getId(), tr("Location"), tr("Location for writing data"));
     DataTypeRegistry* dr = WorkflowEnv::getDataTypeRegistry();
     assert(dr);
-    
+
     DataTypePtr writeMAType;
     {
         QMap<Descriptor, DataTypePtr> m;
@@ -159,7 +159,7 @@ void CoreLib::init() {
         proto->setPrompter(new WriteFastaPrompter("FASTA"));
         r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
     }
-   
+
     // READ PLAIN TEXT actor proto
     {
         QMap<Descriptor, DataTypePtr> m;
@@ -168,20 +168,20 @@ void CoreLib::init() {
         m[BaseSlots::DATASET_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr dtl(new MapDataType(Descriptor(CoreLibConstants::TEXT_TYPESET_ID), m));
         dr->registerEntry(dtl);
-        
+
         QList<PortDescriptor*> p; QList<Attribute*> a;
         a << new Attribute(BaseAttributes::READ_BY_LINES_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, false);
-        
+
         Descriptor acd(CoreLibConstants::READ_TEXT_PROTO_ID, tr("Read Plain Text"), tr("Reads text from local or remote files."));
         p << new PortDescriptor(Descriptor(BasePorts::OUT_TEXT_PORT_ID(), tr("Plain text"), ""), dtl, false, true);
         ReadDocActorProto* proto = new ReadDocActorProto(BaseDocumentFormats::PLAIN_TEXT, acd, p, a);
         proto->setCompatibleDbObjectTypes(QSet<GObjectType>() << GObjectTypes::TEXT);
         proto->setPrompter(new ReadDocPrompter(tr("Reads text from <u>%1</u>.")));
-        
+
         if(AppContext::isGUIMode()) {
             proto->setIcon( GUIUtils::createRoundIcon(QColor(85,85,255), 22));
         }
-        
+
         r->registerProto(BaseActorCategories::CATEGORY_DATASRC(), proto);
     }
     // WRITE PLAIN TEXT actor proto
@@ -231,7 +231,7 @@ void CoreLib::init() {
             r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
         }
     }
-    
+
     // GENERIC WRITE SEQ actor proto
     {
         DocumentFormatConstraints constr;
@@ -239,7 +239,7 @@ void CoreLib::init() {
         constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
         constr.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
         QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats( constr );
-        
+
         if( !supportedFormats.isEmpty() ) {
             DocumentFormatId format = supportedFormats.contains( BaseDocumentFormats::FASTA ) ? BaseDocumentFormats::FASTA : supportedFormats.first();
             QMap<Descriptor, DataTypePtr> typeMap;
@@ -247,7 +247,7 @@ void CoreLib::init() {
             typeMap[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
             typeMap[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_LIST_TYPE();
             DataTypePtr typeSet( new MapDataType(Descriptor(SEQ_TYPESET_ID), typeMap));
-            
+
             QList<PortDescriptor*> p; QList<Attribute*> a;
             Descriptor acd(CoreLibConstants::WRITE_SEQ_PROTO_ID, tr("Write Sequence"), tr("Writes all supplied sequences to file(s) in selected format."));
             Descriptor pd(BasePorts::IN_SEQ_PORT_ID(), tr("Sequence"), tr("Sequence"));
@@ -273,9 +273,9 @@ void CoreLib::init() {
             }
 
             ComboBoxDelegate *comboDelegate = new ComboBoxDelegate(m);
-            
-            QVariantMap lenMap; lenMap["minimum"] = QVariant(1); 
-            lenMap["maximum"] = QVariant(100); 
+
+            QVariantMap lenMap; lenMap["minimum"] = QVariant(1);
+            lenMap["maximum"] = QVariant(100);
             SpinBoxDelegate* spinDelegate  = new SpinBoxDelegate(lenMap);
 
             proto->getEditor()->addDelegate(comboDelegate, BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
@@ -339,14 +339,14 @@ void CoreLib::initUsersWorkers() {
     }
     dir.setNameFilters(QStringList() << "*.usa"); //think about file extension // Answer: Ok :)
     QFileInfoList fileList = dir.entryInfoList();
-    
+
     foreach(const QFileInfo& fileInfo, fileList) {
         QString url = fileInfo.filePath();
         QFile file(url);
         file.open(QIODevice::ReadOnly);
         QByteArray content = file.readAll();
         file.close();
-        
+
         QString error;
         ActorPrototype *proto = ScriptWorkerSerializer::string2actor(content, QString(), error, url);
         if (NULL == proto) {

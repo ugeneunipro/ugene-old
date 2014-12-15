@@ -51,7 +51,7 @@ public:
     //a style selected by user
     QString getVisualStyle() const;
     void setVisualStyle(const QString& newStyle);
-    
+
     // specify dir for downloaded files
     QString getDownloadDirPath() const;
     void setDownloadDirPath(const QString& newPath) const;

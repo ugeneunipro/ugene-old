@@ -78,10 +78,10 @@ public:
     static const QMap<QString, QString> cuteDbNames;
     static const QString idsListString;
     static const QString localFileString;
-    
+
 private:
     static QMap<QString, QString> initCuteDbNames();
-    
+
 public:
     RemoteDBFetcherFactory() : DomainFactory(ACTOR_ID) {}
 

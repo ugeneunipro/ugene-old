@@ -51,7 +51,7 @@ class LoadDocumentTask;
 class LoadDataFromEntrezTask;
 
 class U2CORE_EXPORT RemoteDBRegistry {
-    RemoteDBRegistry(); 
+    RemoteDBRegistry();
     QMap<QString,QString> queryDBs;
     QMap<QString,QString> httpDBs;
     QMap<QString,QString> hints;
@@ -111,7 +111,7 @@ public:
     BaseLoadRemoteDocumentTask(const QString& downloadPath = QString(), const QVariantMap &hints = QVariantMap(), TaskFlags flags = TaskFlags(TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText));
     virtual void prepare();
     QString getLocalUrl(){ return fullPath; }
-    
+
     virtual ReportResult report();
 
     static bool prepareDownloadDirectory(QString &path);
@@ -122,11 +122,11 @@ protected:
     virtual GUrl getSourceUrl() = 0;
     virtual QString getFileName() = 0;
 
-    
+
 protected:
     bool isCached();
-    bool initLoadDocumentTask(); 
-    void createLoadedDocument(); 
+    bool initLoadDocumentTask();
+    void createLoadedDocument();
 
 protected:
     GUrl        sourceUrl;

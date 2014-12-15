@@ -189,7 +189,7 @@ void QueryEditor::edit(QDActor* a) {
         } else {
             directionCombo->setDisabled(true);
         }
-        
+
         setDescriptor(&a->getProto()->getDescriptor(),
             tr("To configure the algorithm element parameters go to the \"Parameters\" area below."));
         cfgModel->setConfiguration(a->getParameters());

@@ -86,7 +86,7 @@ ExportSequencesDialog::ExportSequencesDialog( bool m, bool allowComplement, bool
         directStrandButton->setEnabled(false);
         complementStrandButton->setEnabled(false);
         bothStrandsButton->setEnabled(false);
-        
+
         directStrandButton->setHidden(true);
         complementStrandButton->setHidden(true);
         bothStrandsButton->setHidden(true);
@@ -132,7 +132,7 @@ ExportSequencesDialog::ExportSequencesDialog( bool m, bool allowComplement, bool
         tree->setHeaderHidden(true);
         organismCombo->setModel(tree->model());
         organismCombo->setView (tree);
-        
+
         if (!nucleicTs.empty()) {
             tree->setSortingEnabled(false);
             foreach(DNATranslation* t, nucleicTs) {
@@ -178,7 +178,7 @@ ExportSequencesDialog::ExportSequencesDialog( bool m, bool allowComplement, bool
     connect(translateButton, SIGNAL(clicked()), SLOT(sl_translationTableEnabler()));
     connect(translationTableButton, SIGNAL(clicked()), SLOT(sl_translationTableEnabler()));
     connect(formatCombo, SIGNAL(currentIndexChanged(int)), SLOT(sl_formatChanged(int)));
-    
+
     int height = layout()->minimumSize().height();
     setMaximumHeight(height);
 
@@ -204,10 +204,10 @@ void ExportSequencesDialog::updateModel() {
     translate = translateButton->isChecked();
     translateAllFrames = allTFramesButton->isVisible() && allTFramesButton->isChecked();
     addToProject = addToProjectBox->isChecked();
-    
+
     merge = mergeButton->isChecked();
     mergeGap = merge ? mergeSpinBox->value() : 0;
-    
+
     file = fileNameEdit->text();
     QFileInfo fi(file);
     if( fi.isRelative() ) {
@@ -215,7 +215,7 @@ void ExportSequencesDialog::updateModel() {
         file = QFileInfo(saveGroupContoller->getDefaultFileName()).absoluteDir().absolutePath() + "/" + file;
     }
     sequenceName = ( customSeqNameBox->isChecked( ) ) ? sequenceNameEdit->text( ) : QString( );
-    
+
     formatId = saveGroupContoller->getFormatIdToSave();
     useSpecificTable = translationTableButton->isChecked();
     if (translate) {

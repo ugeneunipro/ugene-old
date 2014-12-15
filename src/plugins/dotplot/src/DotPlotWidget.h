@@ -154,8 +154,8 @@ private:
 
     DotPlotResultsListener*         dpDirectResultListener;
     DotPlotRevComplResultsListener* dpRevComplResultsListener;
-    QList<DotPlotResults>*          dpFilteredResults;       
-    QList<DotPlotResults>*          dpFilteredResultsRevCompl;    
+    QList<DotPlotResults>*          dpFilteredResults;
+    QList<DotPlotResults>*          dpFilteredResultsRevCompl;
 
     QAction *showSettingsDialogAction;
     QAction *saveImageAction;

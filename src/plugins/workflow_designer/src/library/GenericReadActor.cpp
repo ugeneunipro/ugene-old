@@ -97,17 +97,17 @@ GenericSeqActorProto::GenericSeqActorProto() : GenericReadDocProto(CoreLibConsta
     bool treg = WorkflowEnv::getDataTypeRegistry()->registerEntry(seqTypeset);
     Q_UNUSED(treg);assert(treg);
 
-    ports << new PortDescriptor(Descriptor(BasePorts::OUT_SEQ_PORT_ID(), U2::Workflow::CoreLib::tr("Sequence"), 
-                                            U2::Workflow::CoreLib::tr("A sequence of any type (nucleotide, protein).")), 
+    ports << new PortDescriptor(Descriptor(BasePorts::OUT_SEQ_PORT_ID(), U2::Workflow::CoreLib::tr("Sequence"),
+                                            U2::Workflow::CoreLib::tr("A sequence of any type (nucleotide, protein).")),
                                 seqTypeset, false, true);
     {
         Descriptor md(GenericSeqActorProto::MODE_ATTR, SeqReadPrompter::tr("Mode"),
-            SeqReadPrompter::tr("If the file contains more than one sequence, <i>Split</i> mode sends them \"as is\" to the output, " 
+            SeqReadPrompter::tr("If the file contains more than one sequence, <i>Split</i> mode sends them \"as is\" to the output, "
             "while <i>Merge</i> appends all the sequences and outputs the sole merged sequence."));
-        Descriptor gd(GenericSeqActorProto::GAP_ATTR, SeqReadPrompter::tr("Merging gap"), 
+        Descriptor gd(GenericSeqActorProto::GAP_ATTR, SeqReadPrompter::tr("Merging gap"),
             SeqReadPrompter::tr("In <i>Merge</i> mode, the specified number of gaps are inserted between the original sequences. "
             "This is helpful, for example, to avoid finding false positives at the merge boundaries."));
-        Descriptor acd(GenericSeqActorProto::ACC_ATTR, SeqReadPrompter::tr("Accession filter"), 
+        Descriptor acd(GenericSeqActorProto::ACC_ATTR, SeqReadPrompter::tr("Accession filter"),
             SeqReadPrompter::tr("Reports only sequences containing the specified regular expression."
                                 "<p><i>Leave it empty to switch off this filter. Use <b>*</b> and <b>?</b> to mask some symbols.</i></p>"));
         Descriptor ld(LIMIT_ATTR, SeqReadPrompter::tr("Sequence count limit"),
@@ -141,7 +141,7 @@ GenericSeqActorProto::GenericSeqActorProto() : GenericReadDocProto(CoreLibConsta
     QString annsSlotId = BasePorts::OUT_SEQ_PORT_ID() + "." + BaseSlots::ANNOTATION_TABLE_SLOT().getId();
 }
 
-GenericMAActorProto::GenericMAActorProto() : GenericReadDocProto(CoreLibConstants::GENERIC_READ_MA_PROTO_ID) 
+GenericMAActorProto::GenericMAActorProto() : GenericReadDocProto(CoreLibConstants::GENERIC_READ_MA_PROTO_ID)
 {
     setCompatibleDbObjectTypes(QSet<GObjectType>() << GObjectTypes::MULTIPLE_ALIGNMENT);
 
@@ -157,11 +157,11 @@ GenericMAActorProto::GenericMAActorProto() : GenericReadDocProto(CoreLibConstant
     bool treg = WorkflowEnv::getDataTypeRegistry()->registerEntry(blockTypeset);
     Q_UNUSED(treg);assert(treg);
 
-    ports << new PortDescriptor(Descriptor(BasePorts::OUT_MSA_PORT_ID(), U2::Workflow::CoreLib::tr("Multiple sequence alignment"), ""), 
+    ports << new PortDescriptor(Descriptor(BasePorts::OUT_MSA_PORT_ID(), U2::Workflow::CoreLib::tr("Multiple sequence alignment"), ""),
                                 blockTypeset, false, true);
 
     setPrompter(new ReadDocPrompter(U2::Workflow::CoreLib::tr("Reads MSA(s) from <u>%1</u>.")));
-    
+
     if( AppContext::isGUIMode() ) {
         setIcon( GUIUtils::createRoundIcon(ICOLOR, 22) );
     }

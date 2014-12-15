@@ -161,7 +161,7 @@ class GTest_DocumentObjectNames : public GTest {
     SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DocumentObjectNames, "check-document-object-names");
 
     ReportResult report();
-    
+
     QString docContextName;
     QStringList names;
 };
@@ -171,7 +171,7 @@ class GTest_DocumentObjectTypes : public GTest {
     SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_DocumentObjectTypes, "check-document-object-types");
 
     ReportResult report();
-    
+
     QString docContextName;
     QList<GObjectType> types;
 };
@@ -196,15 +196,15 @@ private:
     QString     objName;
     GObjectType type;
     GObject*    result;
-    
+
 };
 
 class GTest_CompareFiles : public GTest {
     Q_OBJECT
     SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CompareFiles, "compare-docs");
-    
+
     ReportResult report();
-    
+
 private:
     void replacePrefix(QString &path);
     void compareMixed();
@@ -215,7 +215,7 @@ private:
     QStringList commentsStartWith;
     bool line_num_only;
     bool mixed_lines;
-    
+
 };
 
 class GTest_Compare_VCF_Files : public GTest {

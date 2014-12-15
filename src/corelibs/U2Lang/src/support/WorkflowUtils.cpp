@@ -140,7 +140,7 @@ QStringList WorkflowUtils::expandToUrls(const QString& s) {
     QStringList urls = s.split(";");
     QStringList result;
     QRegExp wcard("[*?\\[\\]]");
-    foreach(QString url, urls) 
+    foreach(QString url, urls)
     {
         int idx = url.indexOf(wcard);
         if (idx >= 0) {
@@ -155,7 +155,7 @@ QStringList WorkflowUtils::expandToUrls(const QString& s) {
                 result << fi.absoluteFilePath();
             }
         } else {
-            //if (QFile::exists(url)) 
+            //if (QFile::exists(url))
             {
                 result << url;
             }
@@ -398,7 +398,7 @@ QList<Descriptor> WorkflowUtils::findMatchingCandidates(DataTypePtr from, DataTy
     return findMatchingCandidates(from, to->getDatatypeByDescriptor(key));
 }
 
-Descriptor WorkflowUtils::getCurrentMatchingDescriptor(const QList<Descriptor> & candidates, DataTypePtr to, 
+Descriptor WorkflowUtils::getCurrentMatchingDescriptor(const QList<Descriptor> & candidates, DataTypePtr to,
                                                        const Descriptor & key, const QStrStrMap & bindings) {
     DataTypePtr elementDatatype = to->getDatatypeByDescriptor(key);
     if (elementDatatype->isList()) {
@@ -430,7 +430,7 @@ DataTypePtr WorkflowUtils::getToDatatypeForBusport(IntegralBusPort * p) {
 
 DataTypePtr WorkflowUtils::getFromDatatypeForBusport(IntegralBusPort * p, DataTypePtr to) {
     assert(p != NULL);
-    
+
     DataTypePtr from;
     if (p->isOutput() || p->getWidth() == 0) {
         //nothing to edit, go info mode
@@ -460,11 +460,11 @@ QString WorkflowUtils::findPathToSchemaFile(const QString & name) {
             return filenameWithDataPrefixAndExt;
         }
     }
-    
+
     // if no such file found -> search name in settings. user saved schemas
     Settings * settings = AppContext::getSettings();
     assert( settings != NULL );
-    
+
     // FIXME: same as WorkflowSceneIOTasks::SCHEMA_PATHS_SETTINGS_TAG
     QVariantMap pathsMap = settings->getValue( "workflow_settings/schema_paths" ).toMap();
     QString path = pathsMap.value( name ).toString();
@@ -570,7 +570,7 @@ Actor * WorkflowUtils::findActorByParamAlias(const QList<Actor*> & procs, const 
             coreLog.error(WorkflowUtils::tr("%1 actors in workflow have '%2' alias").arg(actors.size()).arg(alias));
         }
     }
-    
+
     Actor * ret = actors.first();
     attrName = ret->getParamAliases().key( alias );
     return ret;
@@ -1391,14 +1391,14 @@ QString PrompterBaseImpl::getScreenedURL(IntegralBusPort* input, const QString& 
     if( !empty ) {
         return attrUrl;
     }
-    
+
     Actor * origin = input->getProducer( slot );
     QString slotUrl;
     if( origin != NULL ) {
         slotUrl = tr("file(s) alongside of input sources of <u>%1</u>").arg(origin->getLabel());
         return slotUrl;
     }
-    
+
     assert( !attrUrl.isEmpty() );
     return attrUrl;
 }

@@ -138,7 +138,7 @@ void GTest_MrBayes::prepare() {
 Task::ReportResult GTest_MrBayes::report() {
     if (!task->hasError()) {
         const PhyTree computedTree = task->getResult();
-        const PhyTree& treeFromDoc = treeObjFromDoc->getTree(); 
+        const PhyTree& treeFromDoc = treeObjFromDoc->getTree();
         bool same = PhyTreeObject::treesAreAlike(computedTree, treeFromDoc);
         if(!same){
             stateInfo.setError("Trees are not equal");

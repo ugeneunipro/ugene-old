@@ -81,7 +81,7 @@ QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue
         if ((dotPos >= 0) && (QChar('.') == urlStr[dotPos])) {
             withGz = true;
             urlStr = urlStr.left(dotPos);
-            lastSuffix = GUrl(urlStr).lastFileSuffix(); 
+            lastSuffix = GUrl(urlStr).lastFileSuffix();
         }
     }
 
@@ -110,7 +110,7 @@ QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue
             }
         }
     }
-    
+
     if (foundExt) {
         int dotPos = urlStr.length() - lastSuffix.length() - 1;
         if ((dotPos >= 0) && (QChar('.') == urlStr[dotPos])) { //yes, lastSuffix is a correct extension with .

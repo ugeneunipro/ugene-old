@@ -77,7 +77,7 @@ public:
 
 protected:
     IntegralBus *input, *output;
-}; 
+};
 
 class AminoTranslationWorkerFactory : public DomainFactory {
 public:

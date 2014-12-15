@@ -128,7 +128,7 @@ private slots:
     void handleTreeItem(QTreeWidgetItem * item);
     void activateItem(QTreeWidgetItem * item);
     void sl_refreshSampesItems();
-    
+
 signals:
     void setupGlass(GlassPane*);
     void sampleSelected(const QString&);

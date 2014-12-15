@@ -39,15 +39,15 @@
 
 namespace U2 {
 
-RemoteTasksDialog::RemoteTasksDialog(const RemoteServiceSettingsPtr& settings,QWidget* parent ) 
-: QDialog(parent), getInfoTask(NULL), fetchResultTask(NULL), deleteRemoteDataTask(NULL), machine(NULL) 
+RemoteTasksDialog::RemoteTasksDialog(const RemoteServiceSettingsPtr& settings,QWidget* parent )
+: QDialog(parent), getInfoTask(NULL), fetchResultTask(NULL), deleteRemoteDataTask(NULL), machine(NULL)
 {
     setupUi(this);
-    
-    
+
+
     machine.reset(new RemoteServiceMachine(settings));
     urlLabel->setText(settings->getName());
-    
+
     connect(this, SIGNAL(finished(int)), SLOT(sl_onDialogClosed()));
     connect(tasksTreeWidget, SIGNAL(itemSelectionChanged()),SLOT(sl_onSelectionChanged()) );
     connect(refreshPushButton, SIGNAL(clicked()), SLOT(sl_onRefreshButtonClicked()));
@@ -55,7 +55,7 @@ RemoteTasksDialog::RemoteTasksDialog(const RemoteServiceSettingsPtr& settings,QW
     connect(removePushButton, SIGNAL(clicked()), SLOT(sl_onRemoveButtonClicked()));
 
     refresh();
-    
+
     updateState();
     new HelpButton(this, buttonBox, "4227131");
 
@@ -84,9 +84,9 @@ void RemoteTasksDialog::sl_onRefreshFinished() {
     if (getInfoTask->getState() != Task::State_Finished) {
         return;
     }
-    
+
     QList<RemoteTaskInfo> infoItems = getInfoTask->getUserTasksInfo();
-    
+
     foreach(const RemoteTaskInfo& info, infoItems) {
         addItemToView(info);
     }
@@ -116,7 +116,7 @@ void RemoteTasksDialog::sl_onRefreshButtonClicked() {
 #define STATE_FINISHED "FINISHED"
 
 void RemoteTasksDialog::sl_onFetchButtonClicked() {
-   
+
     QTreeWidgetItem* current = tasksTreeWidget->currentItem();
 
     QString state = current->text(2);
@@ -125,13 +125,13 @@ void RemoteTasksDialog::sl_onFetchButtonClicked() {
         return;
     }
 
-    
+
     QString result = current->text(3);
     if (result.isEmpty()) {
         QMessageBox::warning(this, tr("Fetch data error"), tr("No result available for task."));
         return;
     }
-        
+
 
     bool ok = false;
     qint64 taskId = current->text(0).toLongLong(&ok);
@@ -142,7 +142,7 @@ void RemoteTasksDialog::sl_onFetchButtonClicked() {
 
     LastUsedDirHelper h;
     QString folder = U2FileDialog::getExistingDirectory(this, tr("Select directory to save results: "), h.dir);
-    
+
     if (folder.isEmpty()) {
         return;
     }
@@ -163,7 +163,7 @@ void RemoteTasksDialog::sl_onFetchFinished() {
     if (fetchResultTask->getState() != Task::State_Finished) {
         return;
     }
-    
+
     if (!fetchResultTask->hasError()) {
         QMessageBox::information(this, tr("Fetch data"), tr("Download finished successfully."));
     } else {
@@ -187,7 +187,7 @@ void RemoteTasksDialog::sl_onRemoveButtonClicked() {
         QMessageBox::critical(this, "Error!", "Failed to parse task id.");
         return;
     }
-       
+
     deleteRemoteDataTask = new DeleteRemoteDataTask(machine.data(), taskId);
     deleteRemoteDataTask->setErrorNotificationSuppression(true);
     connect(deleteRemoteDataTask, SIGNAL(si_stateChanged()), SLOT(sl_onRemoveTaskFinished()));
@@ -205,7 +205,7 @@ void RemoteTasksDialog::sl_onRemoveTaskFinished() {
 
     deleteRemoteDataTask = NULL;
     refresh();
-    updateState();   
+    updateState();
 }
 
 void RemoteTasksDialog::sl_onDialogClosed() {
@@ -214,14 +214,14 @@ void RemoteTasksDialog::sl_onDialogClosed() {
     if (fetchResultTask != NULL) {
       fetchResultTask->disconnect(this);
     }
-    
+
     if (getInfoTask != NULL) {
         getInfoTask->disconnect(this);
     }
-    if (deleteRemoteDataTask != NULL) {    
+    if (deleteRemoteDataTask != NULL) {
         deleteRemoteDataTask->disconnect(this);
     }
-    
+
 
 
 

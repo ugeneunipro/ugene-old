@@ -42,11 +42,11 @@ class MAFFTWorker : public BaseWorker {
     Q_OBJECT
 public:
     MAFFTWorker(Actor* a);
-    
+
     virtual void init();
     virtual Task* tick();
     virtual void cleanup();
-    
+
 private slots:
     void sl_taskFinished();
 
@@ -57,7 +57,7 @@ private:
 
 private:
     void send(const MAlignment &msa);
-}; 
+};
 
 class MAFFTWorkerFactory : public DomainFactory {
 public:

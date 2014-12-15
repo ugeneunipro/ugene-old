@@ -39,7 +39,7 @@ public:
     Workflow::Metadata meta;
 
 private slots:
-   
+
     void sl_onBrowse();
     void sl_onSave();
     void sl_onURLChanged(const QString & text);

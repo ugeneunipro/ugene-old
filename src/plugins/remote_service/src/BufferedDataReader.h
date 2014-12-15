@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _BUFFERED_DATA_READER_H_ 
+#ifndef _BUFFERED_DATA_READER_H_
 #define _BUFFERED_DATA_READER_H_
 
 #include <QtCore/QList>
@@ -31,10 +31,10 @@
 
 namespace U2 {
 
-class BufferedDataReader : public QIODevice 
+class BufferedDataReader : public QIODevice
 {
 public:
-    BufferedDataReader(const QStringList& inputUrls, const QByteArray& requestTemplate, const QByteArray& splitMarker); 
+    BufferedDataReader(const QStringList& inputUrls, const QByteArray& requestTemplate, const QByteArray& splitMarker);
     ~BufferedDataReader();
     virtual bool isSequential() const { return true; }
     virtual bool open(OpenMode mode);
@@ -51,7 +51,7 @@ private:
     QList<QByteArray>   buffersData;
     int                 curIdx;
     bool                hasErrors;
-    
+
 };
 
 } //namespace

@@ -37,20 +37,20 @@ public:
     // io - opened io adapter
     SaveDocumentStreamingTask( Document* doc, IOAdapter* io );
     ~SaveDocumentStreamingTask();
-    
+
     virtual void prepare();
-    
+
     virtual void run();
-    
+
     ReportResult report();
-    
+
     Document* getDocument() const;
-    
+
 private:
     StateLock*  lock;
     Document*   doc;
     IOAdapter*  io;
-    
+
 }; // SaveDocumentStreamingTask
 
 } // U2

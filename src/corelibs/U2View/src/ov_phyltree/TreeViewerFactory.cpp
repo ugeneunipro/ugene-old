@@ -55,7 +55,7 @@ bool TreeViewerFactory::canCreateView(const MultiGSelection& multiSelection) {
 
 Task* TreeViewerFactory::createViewTask(const MultiGSelection& multiSelection, bool single) {
     QList<GObject*> phyObjects = SelectionUtils::findObjects(GObjectTypes::PHYLOGENETIC_TREE, &multiSelection, UOF_LoadedAndUnloaded);
-    QSet<Document*> docsWithPhy = SelectionUtils::findDocumentsWithObjects(GObjectTypes::PHYLOGENETIC_TREE, 
+    QSet<Document*> docsWithPhy = SelectionUtils::findDocumentsWithObjects(GObjectTypes::PHYLOGENETIC_TREE,
                                                             &multiSelection, UOF_LoadedAndUnloaded, false);
     QList<OpenTreeViewerTask*> resTasks;
 

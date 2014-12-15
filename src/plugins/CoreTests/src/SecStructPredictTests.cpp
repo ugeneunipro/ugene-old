@@ -63,7 +63,7 @@ void GTest_SecStructPredictAlgorithm::init(XMLTestFormat *tf, const QDomElement&
 
 
 void GTest_SecStructPredictAlgorithm::prepare() {
-    
+
     SecStructPredictAlgRegistry* sspr = AppContext::getSecStructPredictAlgRegistry();
     if (!sspr->hadRegistered(algName)) {
         stateInfo.setError(  QString(tr("Algorithm named %1 not found")).arg(algName) );
@@ -98,7 +98,7 @@ void GTest_SecStructPredictTask::init(XMLTestFormat *tf, const QDomElement& el) 
         failMissingValue(SEQ_NAME_ATTR);
         return;
     }
-    
+
     algName = el.attribute(ALG_NAME_ATTR);
     if (algName.isEmpty()) {
         failMissingValue(ALG_NAME_ATTR);
@@ -145,7 +145,7 @@ Task::ReportResult GTest_SecStructPredictTask::report()
         addContext(resultsTableContextName, aObj);
         contextAdded = true;
     }
-    
+
     return ReportResult_Finished;
 }
 

@@ -161,7 +161,7 @@ private:
 
 class CfgListModel: public QAbstractListModel {
 public:
-    CfgListModel(QObject *obj = NULL): QAbstractListModel(obj) {   
+    CfgListModel(QObject *obj = NULL): QAbstractListModel(obj) {
         items.append(new CfgListItem(DelegateForPort));
     }
 
@@ -186,7 +186,7 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex &) const{
         return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-    }    
+    }
 
     CfgListItem* getItem(const QModelIndex &index) const {
         //CfgListItem *item  = static_cast<CfgListItem*>(index.internalPointer());
@@ -273,7 +273,7 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex &) const{
         return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-    }   
+    }
 
     CfgListItem* getItem(const QModelIndex &index) const {
         //CfgListItem *item  = static_cast<CfgListItem*>(index.internalPointer());
@@ -376,7 +376,7 @@ CreateScriptElementDialog::CreateScriptElementDialog(QWidget *p, ActorPrototype*
 
     attributeTable->setModel(new CfgTableModel());
     attributeTable->setItemDelegate(new ProxyDelegate());
-    
+
     errorBox->hide();
 
     connect(addInputButton, SIGNAL(clicked()), SLOT(sl_addInputClicked()));
@@ -434,7 +434,7 @@ void CreateScriptElementDialog::fillFields(ActorPrototype *proto) {
                 inputList->model()->setData(mi,getDatatypeOfSlotDesc(d)->getId());
                 inputInd++;
             }
-            
+
         } else {
             outputList->model()->insertRows(0,desc->getType()->getAllDescriptors().size() - 1, QModelIndex());
             foreach(const Descriptor &d, desc->getType()->getAllDescriptors()) {
@@ -552,7 +552,7 @@ void CreateScriptElementDialog::sl_okClicked() {
         }
 
         DataTypePtr ptr = dtr->getById(item->getDataType());
-        Descriptor desc(itemName, itemName, ptr->getDisplayName());      
+        Descriptor desc(itemName, itemName, ptr->getDisplayName());
         if(ptr == BaseTypes::BOOL_TYPE()) {
             attrs << new Attribute(desc, ptr, false, QVariant(false));
         }
@@ -592,7 +592,7 @@ void CreateScriptElementDialog::sl_okClicked() {
         errorBox->show();
         return;
     }
-    
+
     accept();
 }
 
@@ -663,7 +663,7 @@ QDomDocument CreateScriptElementDialog::saveXml() {
         slot.setAttribute(SLOT_ID, str);
         outputPort.appendChild(slot);
     }
-    
+
     CfgTableModel * attrTableModel = static_cast<CfgTableModel*>(attributeTable->model());
     QList<CfgListItem*> attributes = attrTableModel->getItems();
     QDomElement attribute = xml.createElement(ATTRIBUTE_ELEMENT);

@@ -1134,7 +1134,7 @@ void FindPatternWidget::initFindPatternTask(const QList<NamePattern> &patterns) 
     SAFE_POINT(searchTask == NULL, "Search task is not NULL", );
     nextPushButton->setDisabled(true);
     prevPushButton->setDisabled(true);
-    
+
     searchTask = new FindPatternListTask(settings,
         patterns,
         removeOverlaps,

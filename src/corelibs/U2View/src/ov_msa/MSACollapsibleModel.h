@@ -36,7 +36,7 @@ public:
     void reset(const QVector<U2Region>& itemRegions);
 
     void reset();
-    
+
     void toggle(int pos);
 
     void collapseAll(bool collapse);
@@ -65,7 +65,7 @@ public:
     int getItemPos(int index) const { return positions.at(index); }
 
     MSACollapsableItem getItem(int index) const { return items.at(index); }
-    
+
     int displayedRowsCount();
 
     /** If there is a collapsible item at 'pos' position, it is removed. */

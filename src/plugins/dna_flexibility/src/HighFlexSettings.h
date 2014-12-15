@@ -39,7 +39,7 @@ public:
 
     void restoreDefaults();
     void rememberSettings();
-    
+
 private:
     static const int DEFAULT_WINDOW_SIZE = 100;
     static const int DEFAULT_WINDOW_STEP = 1;

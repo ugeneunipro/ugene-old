@@ -50,7 +50,7 @@ void SQLiteAttributeDbi::initSqlSchema(U2OpStatus& os) {
     //TODO: check if index is efficient for getting attribute for specific object
     SQLiteQuery("CREATE INDEX Attribute_name on Attribute(name)" , db, os).execute();
     SQLiteQuery("CREATE INDEX Attribute_object on Attribute(object)" , db, os).execute();
-    
+
     SQLiteQuery("CREATE TABLE IntegerAttribute (attribute INTEGER, value INTEGER NOT NULL, "
         "FOREIGN KEY(attribute) REFERENCES Attribute(id) ON DELETE CASCADE)" , db, os).execute();
     SQLiteQuery("CREATE INDEX IntegerAttribute_attribute on IntegerAttribute(attribute)" , db, os).execute();
@@ -188,8 +188,8 @@ static void removeAttribute(SQLiteQuery *q, const U2DataId& id) {
     q->bindDataId(1, id);
     q->execute();
 }
-/** 
-Removes attribute from database 
+/**
+Removes attribute from database
 Requires U2DbiFeature_WriteAttribute feature support
 */
 void SQLiteAttributeDbi::removeAttributes(const QList<U2DataId>& attributeIds, U2OpStatus& os) {
@@ -245,7 +245,7 @@ qint64 SQLiteAttributeDbi::createAttribute(U2Attribute& attr, U2DataType type, S
         " VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)");
     QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
     CHECK_OP(os, -1);
-    
+
     q->bindType(1, type);
     q->bindDataId(2, attr.objectId);
     q->bindDataId(3, attr.childId);
@@ -255,15 +255,15 @@ qint64 SQLiteAttributeDbi::createAttribute(U2Attribute& attr, U2DataType type, S
     q->bindBlob(7, U2DbiUtils::toDbExtra(attr.childId));
     q->bindInt64(8, attr.version);
     q->bindString(9, attr.name);
-    
+
     return q->insert();
 }
 
 
-/** 
-Creates int64 attribute in database. ObjectId must be already set in attribute and present in the same database 
+/**
+Creates int64 attribute in database. ObjectId must be already set in attribute and present in the same database
 Requires U2DbiFeature_WriteAttribute feature support
-*/    
+*/
 void SQLiteAttributeDbi::createIntegerAttribute(U2IntegerAttribute& a, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     qint64 id = createAttribute(a, U2Type::AttributeInteger, t, os);
@@ -280,10 +280,10 @@ void SQLiteAttributeDbi::createIntegerAttribute(U2IntegerAttribute& a, U2OpStatu
     q->execute();
 }
 
-/** 
-Creates real64 attribute in database. ObjectId must be already set in attribute and present in the same database 
+/**
+Creates real64 attribute in database. ObjectId must be already set in attribute and present in the same database
 Requires U2DbiFeature_WriteAttribute feature support
-*/    
+*/
 void SQLiteAttributeDbi::createRealAttribute(U2RealAttribute& a, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     qint64 id = createAttribute(a, U2Type::AttributeReal, t, os);
@@ -300,10 +300,10 @@ void SQLiteAttributeDbi::createRealAttribute(U2RealAttribute& a, U2OpStatus& os)
     q->execute();
 }
 
-/** 
-Creates String attribute in database. ObjectId must be already set in attribute and present in the same database 
+/**
+Creates String attribute in database. ObjectId must be already set in attribute and present in the same database
 Requires U2DbiFeature_WriteAttribute feature support
-*/    
+*/
 void SQLiteAttributeDbi::createStringAttribute(U2StringAttribute& a, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     qint64 id = createAttribute(a, U2Type::AttributeString, t, os);
@@ -320,10 +320,10 @@ void SQLiteAttributeDbi::createStringAttribute(U2StringAttribute& a, U2OpStatus&
     q->execute();
 }
 
-/** 
-Creates Byte attribute in database. ObjectId must be already set in attribute and present in the same database 
+/**
+Creates Byte attribute in database. ObjectId must be already set in attribute and present in the same database
 Requires U2DbiFeature_WriteAttribute feature support
-*/    
+*/
 void SQLiteAttributeDbi::createByteArrayAttribute(U2ByteArrayAttribute& a, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     qint64 id = createAttribute(a, U2Type::AttributeByteArray, t, os);

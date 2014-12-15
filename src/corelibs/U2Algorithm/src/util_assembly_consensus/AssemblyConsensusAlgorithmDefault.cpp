@@ -80,7 +80,7 @@ QByteArray AssemblyConsensusAlgorithmDefault::getConsensusRegion(const U2Region 
             break;
         }
     }
-    
+
     return s.getConsensusFragment();
 }
 

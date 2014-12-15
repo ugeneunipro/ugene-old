@@ -49,8 +49,8 @@ int DNATranslation1to1Impl::translate(char* src_and_dst, int len) const {
 //////////////////////////////////////////////////////////////////////////
 /// 3->1
 
-DNATranslation3to1Impl::DNATranslation3to1Impl(const QString& _id, const QString& _name, 
-                                               const DNAAlphabet* src, const DNAAlphabet* dst, 
+DNATranslation3to1Impl::DNATranslation3to1Impl(const QString& _id, const QString& _name,
+                                               const DNAAlphabet* src, const DNAAlphabet* dst,
                                                const QList<Mapping3To1<char> >& rm, char dc,
                                                const QMap<DNATranslationRole,QList<Triplet> >& _roles)
 :  DNATranslation(_id, _name, src, dst), index(rm, dc), roles(_roles)
@@ -61,7 +61,7 @@ DNATranslation3to1Impl::DNATranslation3to1Impl(const QString& _id, const QString
     {
         cod_lens[j] = 0;
     }
-    
+
     QMapIterator<DNATranslationRole,QList<Triplet> > i(roles);
     while (i.hasNext()) {
         i.next();
@@ -71,7 +71,7 @@ DNATranslation3to1Impl::DNATranslation3to1Impl(const QString& _id, const QString
         codons[r] = new char[l.size()*3];
         for (int j = 0; j<l.size(); j++)
         {
-            char* codon = codons[r] + j*3; 
+            char* codon = codons[r] + j*3;
             *codon++ = l.at(j).c[0];
             *codon++ = l.at(j).c[1];
             *codon++ = l.at(j).c[2];
@@ -146,7 +146,7 @@ void Index3To1::init(const QList<Triplet>& ts) {
     assert(bitsPerChar<=6);//TODO: optimize large tables!!
 #endif
     bitsPerCharX2 = bitsPerChar * 2; //cache this value -> used for optimization
-    
+
     // assign bit mask for every char
     char mask = 1;
     for (int i = 0; i < 256; i++) {
@@ -172,7 +172,7 @@ void Index3To1::init(const QByteArray& alphabetChars) {
         for (int i2=0; i2 < nChars; i2++) {
             char c2 = alphabetChars[i1];
             for (int i3=0; i3 < nChars; i3++) {
-                char c3 = alphabetChars[i1];                
+                char c3 = alphabetChars[i1];
                 Triplet m(c1, c2, c3);
                 ts.append(m);
             }
@@ -183,7 +183,7 @@ void Index3To1::init(const QByteArray& alphabetChars) {
 
 //////////////////////////////////////////////////////////////////////////
 /// 1->3
-DNATranslation1to3Impl::DNATranslation1to3Impl(const QString& _id, const QString& _name, 
+DNATranslation1to3Impl::DNATranslation1to3Impl(const QString& _id, const QString& _name,
                                                const DNAAlphabet* src, const DNAAlphabet* dst,
                                                const BackTranslationRules& rules)
 :  DNATranslation(_id, _name, src, dst), index(rules)
@@ -198,7 +198,7 @@ qint64 DNATranslation1to3Impl::translate (const char* src, qint64 src_len, char*
     bool caseSensitive = srcAlphabet->isCaseSensitive();
     qint64 resLen = qMin(src_len * 3, dst_capacity);
     switch (mode) {
-        case USE_MOST_PROBABLE_CODONS : 
+        case USE_MOST_PROBABLE_CODONS :
         {
             if (caseSensitive) {
                 for(int dstIdx=0, srcIdx=0; dstIdx < resLen; srcIdx++) {
@@ -220,7 +220,7 @@ qint64 DNATranslation1to3Impl::translate (const char* src, qint64 src_len, char*
             }
             break;
         }
-        case USE_FREQUENCE_DISTRIBUTION : 
+        case USE_FREQUENCE_DISTRIBUTION :
         {
             if (caseSensitive) {
                 for(int dstIdx=0, srcIdx=0; dstIdx < resLen; srcIdx++) {
@@ -266,4 +266,4 @@ int DNATranslation1to3Impl::translate(char* src_and_dst, int len) const {
 }
 
 }//namespace
- 
+

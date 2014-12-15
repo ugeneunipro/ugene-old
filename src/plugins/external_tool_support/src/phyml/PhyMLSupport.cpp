@@ -121,18 +121,18 @@ SubstModelTrRatioType PhyMLModelTypes::getTtRatioType(const QString& modelName) 
 ////////////////////////////////////////
 //PhyMLRatioTestsTypes
 
-const QStringList PhyMLRatioTestsTypes::ratioTestsTypes(QStringList() 
+const QStringList PhyMLRatioTestsTypes::ratioTestsTypes(QStringList()
     << "aLRT"
     << "Chi2-based"
     << "SH-like");
 
 ////////////////////////////////////////
 //TreeSearchingParams
-const QStringList TreeSearchingParams::inputTreeTypes(QStringList() 
+const QStringList TreeSearchingParams::inputTreeTypes(QStringList()
     << "Make initial tree automatically (BioNJ)"
     << "Use tree from file");
 
-const QStringList TreeSearchingParams::treeImprovementTypes(QStringList() 
+const QStringList TreeSearchingParams::treeImprovementTypes(QStringList()
     << "NNI(fast)"
     << "SRT(a bit slower than NNI)"
     << "SRT & NNI(best of NNI and SPR search)");

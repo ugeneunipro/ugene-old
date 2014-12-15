@@ -216,7 +216,7 @@ void AssemblyVariantRow::updateHint() {
 
     // 3. move hint if needed
     QRect readsAreaRect(mapToGlobal(rect().topLeft()), mapToGlobal(rect().bottomRight()));
-    QRect hintRect = hint.rect(); 
+    QRect hintRect = hint.rect();
     hintRect.moveTo(QCursor::pos() + AssemblyReadsAreaHint::OFFSET_FROM_CURSOR);
     QPoint offset(0, 0);
     if(hintRect.right() > readsAreaRect.right()) {
@@ -244,14 +244,14 @@ void AssemblyVariantRow::prepareRenderers(int cellWidth, int cellHeight) {
     if(text) {
         int pointSize = qMin(cellWidth, cellHeight) / 2;
         if(pointSize) {
-            f.setPointSize(pointSize); 
+            f.setPointSize(pointSize);
         } else {
             text = false;
         }
 
         int snpPointSize = qMin(cellWidth, halfHeight) / 2;
         if (snpPointSize) {
-            snpF.setPointSize(snpPointSize); 
+            snpF.setPointSize(snpPointSize);
         } else {
             snpText = false;
         }
@@ -305,10 +305,10 @@ void AssemblyVariantRowManager::sl_trackAdded(VariantTrackObject *newTrackObj) {
     QLayout *layout = annsArea->layout();
     QVBoxLayout *vertLayout = qobject_cast<QVBoxLayout*>(layout);
     SAFE_POINT(NULL != vertLayout, "Internal error: layout problems", );
-    
+
     AssemblyVariantRow *row = new AssemblyVariantRow(annsArea, newTrackObj, browser);
     vertLayout->addWidget(row);
-    
+
     connect(browser, SIGNAL(si_zoomOperationPerformed()), row, SLOT(sl_zoomPerformed()));
     connect(browser, SIGNAL(si_offsetsChanged()), row, SLOT(sl_offsetsChanged()));
     connect(row, SIGNAL(si_mouseMovedToPos(const QPoint &)), annsArea, SIGNAL(si_mouseMovedToPos(const QPoint &)));

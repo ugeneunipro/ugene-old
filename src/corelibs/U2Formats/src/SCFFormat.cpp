@@ -62,11 +62,11 @@ FormatCheckResult SCFFormat::checkRawData(const QByteArray& rawData, const GUrl&
 }
 
 Document* SCFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
-    
+
     Document* doc = parseSCF(dbiRef, io, fs, os);
     CHECK_OP(os, NULL);
     CHECK_EXT(doc != NULL, os.setError(tr("Failed to parse SCF file: %1").arg(io->getURL().getURLString())), NULL);
-    
+
     return doc;
 }
 
@@ -92,7 +92,7 @@ template <class T> void dumpVector(const QVector<T>& v) {
 * MRC disclaims all warranties with regard to this software.
 */
 
-/* 
+/*
 Title:       read_scf.c
 
 Purpose:     read IO of Standard Chromatogram Format sequences
@@ -243,7 +243,7 @@ int read_scf_sample2(SeekableBuf *fp, Samples2 *s)
     return 0;
 }
 
-int read_scf_samples1(SeekableBuf *fp, Samples1 *s, size_t num_samples) 
+int read_scf_samples1(SeekableBuf *fp, Samples1 *s, size_t num_samples)
 {
     for (size_t i = 0; i < num_samples; i++) {
         if (-1 == read_scf_sample1(fp, &(s[i])))
@@ -254,7 +254,7 @@ int read_scf_samples1(SeekableBuf *fp, Samples1 *s, size_t num_samples)
 }
 
 
-int read_scf_samples2(SeekableBuf *fp, Samples2 *s, size_t num_samples) 
+int read_scf_samples2(SeekableBuf *fp, Samples2 *s, size_t num_samples)
 {
     for (size_t i = 0; i < num_samples; i++) {
         if (-1 == read_scf_sample2(fp, &(s[i])))
@@ -264,7 +264,7 @@ int read_scf_samples2(SeekableBuf *fp, Samples2 *s, size_t num_samples)
     return 0;
 }
 
-void scf_delta_samples1 (char* samples, int num_samples) 
+void scf_delta_samples1 (char* samples, int num_samples)
 {
     /* do the reverse to:
     change a series of sample points to a series of delta delta values:
@@ -297,7 +297,7 @@ void scf_delta_samples1 (char* samples, int num_samples)
 }
 
 /* define samples to delta_delta values */
-#define DELTA_IT 1 
+#define DELTA_IT 1
 
 void scf_delta_samples2 ( ushort samples[], int num_samples, int job) {
 
@@ -365,7 +365,7 @@ void scf_delta_samples2 ( ushort samples[], int num_samples, int job) {
 
 
 
-int read_scf_samples32(SeekableBuf *fp, Samples2 *s, size_t num_samples) 
+int read_scf_samples32(SeekableBuf *fp, Samples2 *s, size_t num_samples)
 {
     size_t i;
     QVarLengthArray<ushort> arr(num_samples);
@@ -407,7 +407,7 @@ int read_scf_samples32(SeekableBuf *fp, Samples2 *s, size_t num_samples)
     return 0;
 }
 
-int read_scf_samples31(SeekableBuf *fp, Samples1 *s, size_t num_samples) 
+int read_scf_samples31(SeekableBuf *fp, Samples1 *s, size_t num_samples)
 {
     size_t i;
     QVarLengthArray<char> arr(num_samples);
@@ -513,7 +513,7 @@ static uchar getMaxProb(uchar probA, uchar probC, uchar probG, uchar probT ) {
     }
 }
 
-Document* SCFFormat::parseSCF(const U2DbiRef& dbiRef, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os) {    
+Document* SCFFormat::parseSCF(const U2DbiRef& dbiRef, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os) {
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, NULL);
     Q_UNUSED(opBlock);
@@ -557,7 +557,7 @@ Document* SCFFormat::parseSCF(const U2DbiRef& dbiRef, IOAdapter* io, const QVari
 * MRC disclaims all warranties with regard to this software.
 */
 
-/* 
+/*
 Title:       write_scf.c
 
 Purpose:     Output of Standard Chromatogram Format sequences
@@ -579,9 +579,9 @@ Version raised to 3.00
 *     Comments
 *     Private
 
-Two main types of change: 
+Two main types of change:
 1: write data in lane order instead of all lanes together
-eg write Sample values for A, then Sample values for C, etc. 
+eg write Sample values for A, then Sample values for C, etc.
 
 2: where appropriate write delta delta values instead of complete ones.
 ie write the differences in the differences between successive values
@@ -600,7 +600,7 @@ const static int scf_version = 3;
 // #include "io_lib/scf.h"      /* IMPORT: scf structures */
 // #include "io_lib/mach-io.h"  /* IMPORT: be_write_int_1, be_write_int_2, be_write_int_4 */
 // #include "io_lib/xalloc.h"
-// 
+//
 // #include "io_lib/stdio_hack.h"
 
 /* ---- Exports ---- */
@@ -634,64 +634,64 @@ int write_scf_header(FILE *fp, Header *h)
 // int write_scf_sample1(FILE *fp, Samples1 *s)
 // {
 //     uchar buf[4];
-// 
+//
 //     buf[0] = s->sample_A;
 //     buf[1] = s->sample_C;
 //     buf[2] = s->sample_G;
 //     buf[3] = s->sample_T;
 //     if (4 != fwrite(buf, 1, 4, fp)) return -1;
-// 
+//
 //     return 0;
 // }
-// 
-// 
+//
+//
 // int write_scf_sample2(FILE *fp, Samples2 *s)
 // {
 //     ushort buf[4];
-// 
+//
 //     buf[0] = be_int2(reinterpret_cast<uchar*> (&s->sample_A) );
 //     buf[1] = be_int2(reinterpret_cast<uchar*> (&s->sample_C) );
 //     buf[2] = be_int2(reinterpret_cast<uchar*> (&s->sample_G) );
 //     buf[3] = be_int2(reinterpret_cast<uchar*> (&s->sample_T) );
 //     if (4 != fwrite(buf, 2, 4, fp)) return -1;
-// 
+//
 //     return 0;
 // }
-// 
-// 
+//
+//
 // int write_scf_samples1(FILE *fp, Samples1 *s, size_t num_samples) {
 //     size_t i;
-// 
+//
 //     for (i = 0; i < num_samples; i++) {
 //         if (-1 == write_scf_sample1(fp, &(s[i])))
 //             return -1;
 //     }
-// 
+//
 //     return 0;
 // }
 
 
 // int write_scf_samples2(FILE *fp, Samples2 *s, size_t num_samples) {
 //     size_t i;
-// 
+//
 //     for (i = 0; i < num_samples; i++) {
 //         if (-1 == write_scf_sample2(fp, &(s[i])))
 //             return -1;
 //     }
-// 
+//
 //     return 0;
 // }
 
 
  int write_scf_samples31(FILE *fp, Samples1 *s, size_t num_samples) {
      size_t i;
-     
+
      if (!num_samples)
          return 0;
- 
+
      QVarLengthArray<uchar> ar(num_samples);
      uchar *samples_out=ar.data();
-    
+
      for (i = 0; i < num_samples; i++) {
          samples_out[i] = (&s[i])->sample_A;
      }
@@ -699,7 +699,7 @@ int write_scf_header(FILE *fp, Header *h)
      if (num_samples != fwrite(samples_out, 1, num_samples, fp)) {
          return -1;
      }
- 
+
      for (i = 0; i < num_samples; i++) {
          samples_out[i] = (&s[i])->sample_C;
      }
@@ -707,7 +707,7 @@ int write_scf_header(FILE *fp, Header *h)
      if (num_samples != fwrite(samples_out, 1, num_samples, fp)) {
          return -1;
      }
- 
+
      for (i = 0; i < num_samples; i++) {
          samples_out[i] = (&s[i])->sample_G;
      }
@@ -715,7 +715,7 @@ int write_scf_header(FILE *fp, Header *h)
      if (num_samples != fwrite(samples_out, 1, num_samples, fp)) {
          return -1;
      }
- 
+
      for (i = 0; i < num_samples; i++) {
          samples_out[i] = (&s[i])->sample_T;
      }
@@ -723,17 +723,17 @@ int write_scf_header(FILE *fp, Header *h)
      if (num_samples != fwrite(samples_out, 1, num_samples, fp)) {
          return -1;
      }
- 
+
      return 0;
  }
- 
+
 int write_scf_samples32(FILE *fp, Samples2 *s, size_t num_samples) {
     size_t i;
-    
+
     if (!num_samples)
         return 0;
 
-    
+
     QVarLengthArray<ushort> ar(num_samples);
     ushort *samples_out = ar.data();
 
@@ -826,7 +826,7 @@ int write_scf_bases3(FILE *fp, Bases *b, size_t num_bases)
     size_t i;
     QVarLengthArray<uint> ar4(4 * num_bases);
     QVarLengthArray<uchar> ar1(8 * num_bases);
-    
+
     uint *buf4 = ar4.data();
     uchar *buf1 = ar1.data();
 
@@ -885,7 +885,7 @@ typedef struct {
 // int set_scf_version(int version) {
 //     if (version != 2 && version != 3)
 //         return -1;
-// 
+//
 //     scf_version = version;
 //     return 0;
 // }
@@ -895,7 +895,7 @@ typedef struct {
 inline QString scf_version_float2str(float f) {
     QString result = QString().sprintf("%1.2f", f);
     return result;
-} 
+}
 
 
 /*
@@ -904,7 +904,7 @@ inline QString scf_version_float2str(float f) {
  int fwrite_scf(Scf *scf, FILE *fp) {
      uint size;
      int err;
- 
+
      /*
      * Init header offsets.
      *
@@ -922,23 +922,23 @@ inline QString scf_version_float2str(float f) {
          size);
      size = scf->header.bases * sizeof(Bases);
      scf->header.comments_offset = (uint)(scf->header.bases_offset + size);
- 
+
      size = scf->header.comments_size;
      scf->header.private_offset = (uint)(scf->header.comments_offset + size);
- 
+
      /* Init a few other things, such as the magic number */
      scf->header.magic_number = SCF_MAGIC;
- 
+
      if (scf_version == 3) {
          memcpy(scf->header.version, scf_version_float2str(SCF_VERSION).toLatin1().constData(), 4);
      } else {
          memcpy(scf->header.version, scf_version_float2str(SCF_VERSION_OLD).toLatin1().constData(), 4);
      }
- 
+
      /* Write header */
      if (write_scf_header(fp, &scf->header) == -1)
          return -1;
- 
+
      if (scf_version == 3) {
          /* Write Samples */
          if (scf->header.sample_size == 1)
@@ -949,25 +949,25 @@ inline QString scf_version_float2str(float f) {
              scf->header.samples);
          if (-1 == err)
              return -1;
- 
+
          /* Write Bases */
          if (-1 == write_scf_bases3(fp, scf->bases, scf->header.bases))
              return -1;
- 
+
      }
- 
+
      /* Write Comments */
      if (-1 == write_scf_comment(fp, scf->comments,
          scf->header.comments_size))
          return -1;
- 
+
      /* Write private data */
      if (scf->header.private_size) {
          if (scf->header.private_size  != fwrite(scf->private_data, 1,
              scf->header.private_size, fp))
              return -1;
      }
- 
+
      return 0;
  }
 
@@ -977,7 +977,7 @@ inline QString scf_version_float2str(float f) {
     Scf scf;
     scf.comments = NULL;
     scf.private_data = NULL;
-    
+
     scf.header.bases = c.seqLength;
     scf.header.samples = c.traceLength;
 
@@ -989,9 +989,9 @@ inline QString scf_version_float2str(float f) {
     scf.header.private_size = 0;
     // Fixed precision for saving
     scf.header.sample_size = 2;
-    
+
     assert(c.seqLength == seq.length());
-   
+
     QVector<Bases> bases(c.seqLength);
     for (int i = 0; i < c.seqLength; ++i) {
         bases[i].base = seq.at(i);
@@ -1012,7 +1012,7 @@ inline QString scf_version_float2str(float f) {
         samples[i].sample_T = c.T[i];
     }
     scf.samples.samples2 = samples.data();
-    
+
     fwrite_scf(&scf, fp);
 
 
@@ -1020,7 +1020,7 @@ inline QString scf_version_float2str(float f) {
 
 
 void SCFFormat::exportDocumentToSCF( const QString& fileName, const DNAChromatogram& cd, const QByteArray& seq, U2OpStatus& ts ) {
-    
+
     {
         QFile file(fileName);
         if (!file.open(QIODevice::WriteOnly)) {
@@ -1048,7 +1048,7 @@ void SCFFormat::exportDocumentToSCF( const QString& fileName, const DNAChromatog
 
     saveChromatogramToSCF(cd, seq, fp);
 
-    fclose(fp);  
+    fclose(fp);
 }
 
 bool SCFFormat::loadSCFObjects( IOAdapter* io, DNASequence& dna, DNAChromatogram& cd, U2OpStatus& os )
@@ -1060,7 +1060,7 @@ bool SCFFormat::loadSCFObjects( IOAdapter* io, DNASequence& dna, DNAChromatogram
     while ((len=io->readBlock(block.data(),BUFF_SIZE)) > 0) {
         readBuff.append(QByteArray(block.data(), len));
         if (readBuff.size()>CHECK_MB) {
-            os.setError(L10N::errorFileTooLarge(url)); 
+            os.setError(L10N::errorFileTooLarge(url));
             break;
         }
     }
@@ -1075,7 +1075,7 @@ bool SCFFormat::loadSCFObjects( IOAdapter* io, DNASequence& dna, DNAChromatogram
     Header h;
     float scf_version;
     int sections = READ_ALL;
-    
+
     SeekableBuf* fp = &sf;
 
     /* Read header */
@@ -1127,7 +1127,7 @@ bool SCFFormat::loadSCFObjects( IOAdapter* io, DNASequence& dna, DNAChromatogram
         else {
             QVector<Samples2> samples(h.samples);
             if (2.9 > scf_version ) {
-                err= read_scf_samples2(fp, samples.data(), h.samples);  
+                err= read_scf_samples2(fp, samples.data(), h.samples);
             } else {
                 err= read_scf_samples32(fp, samples.data(), h.samples);
             }
@@ -1208,7 +1208,7 @@ bool SCFFormat::loadSCFObjects( IOAdapter* io, DNASequence& dna, DNAChromatogram
     if (sampleName.isEmpty()) {
         sampleName = url.baseFileName();
     }
-    
+
     dna.setName(sampleName);
     dna.seq = sequence;
     dna.info.insert(DNAInfo::COMMENT, vals);

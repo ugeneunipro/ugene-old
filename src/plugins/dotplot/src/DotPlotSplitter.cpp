@@ -64,8 +64,8 @@ DotPlotSplitter::DotPlotSplitter(AnnotatedDNAView* a)
     zoomOutButton = createToolButton(":core/images/zoom_out.png", tr("Zoom out (<b> - </b>)"), SLOT(sl_toggleZoomOut()), false);
     resetZoomingButton = createToolButton(":core/images/zoom_whole.png", tr("Reset zooming (<b>0</b>)"), SLOT(sl_toggleZoomReset()), false);
     selButton = createToolButton(":dotplot/images/cursor.png", tr("Select tool (<b>S</b>)"), SLOT(sl_toggleSel()));
-    handButton = createToolButton(":dotplot/images/hand_icon.png", tr("Hand tool (<b>H</b>)"), SLOT(sl_toggleHand())); 
-    
+    handButton = createToolButton(":dotplot/images/hand_icon.png", tr("Hand tool (<b>H</b>)"), SLOT(sl_toggleHand()));
+
 
     syncLockButton->setAutoRaise(true);
     syncLockButton->setAutoFillBackground(true);
@@ -102,7 +102,7 @@ DotPlotSplitter::DotPlotSplitter(AnnotatedDNAView* a)
     buttonToolBar->addWidget(resetZoomingButton);
     buttonToolBar->addWidget(selButton);
     buttonToolBar->addWidget(handButton);
-    
+
 
     splitter = new QSplitter(Qt::Horizontal);
     if (!splitter) {
@@ -352,10 +352,10 @@ void DotPlotSplitter::sl_dotPlotChanged(ADVSequenceObjectContext* sequenceX, ADV
             w->setShiftZoom(sequenceX, sequenceY, shiftX, shiftY, zoom);
         }
         update();
-        
+
     }
-    updateButtonState();    
-    
+    updateButtonState();
+
 }
 
 void DotPlotSplitter::sl_dotPlotSelecting() {
@@ -379,7 +379,7 @@ void DotPlotSplitter::updateButtonState(){
             noFocus = false;
             break;
         }
-    }   
+    }
     if (noFocus && !dotPlotList.isEmpty()){
         DotPlotWidget *dpWidget = dotPlotList.first();
         zoomInButton->setEnabled(dpWidget->canZoomIn());

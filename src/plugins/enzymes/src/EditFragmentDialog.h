@@ -48,7 +48,7 @@ private slots:
    void sl_onLeftResetClicked();
    void sl_onRightResetClicked();
    void sl_customOverhangSet(const QString& text);
-   
+
 
 };
 

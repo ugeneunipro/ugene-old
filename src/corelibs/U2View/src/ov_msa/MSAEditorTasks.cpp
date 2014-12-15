@@ -60,20 +60,20 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 /// open new view
 
-OpenMSAEditorTask::OpenMSAEditorTask(MAlignmentObject* _obj) 
+OpenMSAEditorTask::OpenMSAEditorTask(MAlignmentObject* _obj)
 : ObjectViewTask(MSAEditorFactory::ID), msaObject(_obj)
 {
     assert(!msaObject.isNull());
 }
 
-OpenMSAEditorTask::OpenMSAEditorTask(UnloadedObject* _obj) 
+OpenMSAEditorTask::OpenMSAEditorTask(UnloadedObject* _obj)
 : ObjectViewTask(MSAEditorFactory::ID), unloadedReference(_obj)
 {
     assert(_obj->getLoadedObjectType() == GObjectTypes::MULTIPLE_ALIGNMENT);
     documentsToLoad.append(_obj->getDocument());
 }
 
-OpenMSAEditorTask::OpenMSAEditorTask(Document* doc) 
+OpenMSAEditorTask::OpenMSAEditorTask(Document* doc)
 : ObjectViewTask(MSAEditorFactory::ID), msaObject(NULL)
 {
     assert(!doc->isLoaded());
@@ -129,7 +129,7 @@ void OpenMSAEditorTask::updateTitle(MSAEditor* msaEd) {
 //////////////////////////////////////////////////////////////////////////
 // open view from state
 
-OpenSavedMSAEditorTask::OpenSavedMSAEditorTask(const QString& viewName, const QVariantMap& stateData) 
+OpenSavedMSAEditorTask::OpenSavedMSAEditorTask(const QString& viewName, const QVariantMap& stateData)
 : ObjectViewTask(MSAEditorFactory::ID, viewName, stateData)
 {
     MSAEditorState state(stateData);
@@ -147,7 +147,7 @@ OpenSavedMSAEditorTask::OpenSavedMSAEditorTask(const QString& viewName, const QV
 
 void OpenSavedMSAEditorTask::open() {
     CHECK_OP(stateInfo, );
-    
+
     MSAEditorState state(stateData);
     GObjectReference ref = state.getMSAObjectRef();
     Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);
@@ -197,7 +197,7 @@ void OpenSavedMSAEditorTask::updateRanges(const QVariantMap& stateData, MSAEdito
 
 //////////////////////////////////////////////////////////////////////////
 // update
-UpdateMSAEditorTask::UpdateMSAEditorTask(GObjectView* v, const QString& stateName, const QVariantMap& stateData) 
+UpdateMSAEditorTask::UpdateMSAEditorTask(GObjectView* v, const QString& stateName, const QVariantMap& stateData)
 : ObjectViewTask(v, stateName, stateData)
 {
 }
@@ -271,7 +271,7 @@ Document *ExportMSAConsensusTask::createDocument(){
 }
 
 ExtractConsensusTask::ExtractConsensusTask( bool keepGaps_, MSAEditor* msa_ )
-: Task(tr("Export consensus to MSA"), TaskFlags(TaskFlag_None)), 
+: Task(tr("Export consensus to MSA"), TaskFlags(TaskFlag_None)),
 keepGaps(keepGaps_), msa(msa_){
     setVerboseLogMode(true);
     SAFE_POINT_EXT(msa != NULL, setError("Given msa pointer is NULL"), );
@@ -281,11 +281,11 @@ void ExtractConsensusTask::run() {
     CHECK(msa->getUI(), );
     CHECK(msa->getUI()->getConsensusArea(), );
     CHECK(msa->getUI()->getConsensusArea()->getConsensusCache(),);
-    
+
     QSharedPointer <MSAEditorConsensusCache> cache(msa->getUI()->getConsensusArea()->getConsensusCache());
     if(!cache->getConsensusAlgorithm()->getFactory()->isSequenceLikeResult()){
         keepGaps = true;
-    }    
+    }
     foreach(QChar c, cache->getConsensusLine(true)){
         if(c == '-' && !keepGaps){
             continue;
@@ -299,7 +299,7 @@ const QByteArray& ExtractConsensusTask::getExtractedConsensus() const {
 }
 
 
-ExportMSAConsensusTaskSettings::ExportMSAConsensusTaskSettings(): keepGaps(true), msa(NULL), 
+ExportMSAConsensusTaskSettings::ExportMSAConsensusTaskSettings(): keepGaps(true), msa(NULL),
 format(BaseDocumentFormats::PLAIN_TEXT)
 {}
 

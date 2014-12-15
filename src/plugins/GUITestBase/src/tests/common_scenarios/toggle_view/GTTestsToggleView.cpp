@@ -222,8 +222,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     QWidget *DetailsViewSe2 = GTWidget::findWidget(os, "det_view_se2", NULL, false);
     QWidget *zoomViewSe2 = GTWidget::findWidget(os, "pan_view_se2", NULL, false);
     QWidget *toolBarSe2 = GTWidget::findWidget(os, "tool_bar_se2", NULL, false);
-    CHECK_SET_ERR(overViewSe2->isVisible() == false && 
-        DetailsViewSe2->isVisible() == false && 
+    CHECK_SET_ERR(overViewSe2->isVisible() == false &&
+        DetailsViewSe2->isVisible() == false &&
         zoomViewSe2->isVisible() == false
         , "there are widgets not hidden widgets of ADV_single_sequence_widget");
     CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
@@ -242,8 +242,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     DetailsViewSe2 = GTWidget::findWidget(os, "det_view_se2", NULL, false);
     zoomViewSe2 = GTWidget::findWidget(os, "pan_view_se2", NULL, false);
     toolBarSe2 = GTWidget::findWidget(os, "tool_bar_se2", NULL, false);
-    CHECK_SET_ERR(overViewSe2->isVisible() == true && 
-        DetailsViewSe2->isVisible() == true && 
+    CHECK_SET_ERR(overViewSe2->isVisible() == true &&
+        DetailsViewSe2->isVisible() == true &&
         zoomViewSe2->isVisible() == true
         , "there are widgets hidden widgets of ADV_single_sequence_widget");
     CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
@@ -269,8 +269,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     QWidget *DetailsViewSe2 = GTWidget::findWidget(os, "det_view_se2", NULL, false);
     QWidget *zoomViewSe2 = GTWidget::findWidget(os, "pan_view_se2", NULL, false);
     QWidget *toolBarSe2 = GTWidget::findWidget(os, "tool_bar_se2", NULL, false);
-    CHECK_SET_ERR(overViewSe2->isVisible() == false && 
-        DetailsViewSe2->isVisible() == false && 
+    CHECK_SET_ERR(overViewSe2->isVisible() == false &&
+        DetailsViewSe2->isVisible() == false &&
         zoomViewSe2->isVisible() == false
         , "there are widgets not hidden widgets of ADV_single_sequence_widget");
     CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
@@ -297,8 +297,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     DetailsViewSe2 = GTWidget::findWidget(os, "det_view_se2", NULL, false);
     zoomViewSe2 = GTWidget::findWidget(os, "pan_view_se2", NULL, false);
     toolBarSe2 = GTWidget::findWidget(os, "tool_bar_se2", NULL, false);
-    CHECK_SET_ERR(overViewSe2->isVisible() == true && 
-        DetailsViewSe2->isVisible() == true && 
+    CHECK_SET_ERR(overViewSe2->isVisible() == true &&
+        DetailsViewSe2->isVisible() == true &&
         zoomViewSe2->isVisible() == true
         , "there are widgets hidden widgets of ADV_single_sequence_widget");
     CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
@@ -332,8 +332,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     QWidget *DetailsViewSe2 = GTWidget::findWidget(os, "det_view_se2", NULL, false);
     QWidget *zoomViewSe2 = GTWidget::findWidget(os, "pan_view_se2", NULL, false);
     QWidget *toolBarSe2 = GTWidget::findWidget(os, "tool_bar_se2", NULL, false);
-    CHECK_SET_ERR(overViewSe2->isVisible() == false && 
-        DetailsViewSe2->isVisible() == false && 
+    CHECK_SET_ERR(overViewSe2->isVisible() == false &&
+        DetailsViewSe2->isVisible() == false &&
         zoomViewSe2->isVisible() == false
         , "there are widgets not hidden widgets of ADV_single_sequence_widget");
     CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
@@ -352,8 +352,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     DetailsViewSe2 = GTWidget::findWidget(os, "det_view_se2", NULL, false);
     zoomViewSe2 = GTWidget::findWidget(os, "pan_view_se2", NULL, false);
     toolBarSe2 = GTWidget::findWidget(os, "tool_bar_se2", NULL, false);
-    CHECK_SET_ERR(overViewSe2->isVisible() == true && 
-        DetailsViewSe2->isVisible() == true && 
+    CHECK_SET_ERR(overViewSe2->isVisible() == true &&
+        DetailsViewSe2->isVisible() == true &&
         zoomViewSe2->isVisible() == true
         , "there are widgets hidden widgets of ADV_single_sequence_widget");
     CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
@@ -383,8 +383,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_3) {
     QWidget *DetailsViewSe2 = GTWidget::findWidget(os, "det_view_se2", NULL, false);
     QWidget *zoomViewSe2 = GTWidget::findWidget(os, "pan_view_se2", NULL, false);
     QWidget *toolBarSe2 = GTWidget::findWidget(os, "tool_bar_se2", NULL, false);
-    CHECK_SET_ERR(overViewSe2->isVisible() == false && 
-        DetailsViewSe2->isVisible() == false && 
+    CHECK_SET_ERR(overViewSe2->isVisible() == false &&
+        DetailsViewSe2->isVisible() == false &&
         zoomViewSe2->isVisible() == false
         , "there are widgets not hidden widgets of ADV_single_sequence_widget");
     CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
@@ -403,8 +403,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_3) {
     DetailsViewSe2 = GTWidget::findWidget(os, "det_view_se2", NULL, false);
     zoomViewSe2 = GTWidget::findWidget(os, "pan_view_se2", NULL, false);
     toolBarSe2 = GTWidget::findWidget(os, "tool_bar_se2", NULL, false);
-    CHECK_SET_ERR(overViewSe2->isVisible() == true && 
-        DetailsViewSe2->isVisible() == true && 
+    CHECK_SET_ERR(overViewSe2->isVisible() == true &&
+        DetailsViewSe2->isVisible() == true &&
         zoomViewSe2->isVisible() == true
         , "there are widgets hidden widgets of ADV_single_sequence_widget");
     CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
@@ -431,8 +431,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_4) {
     QWidget *DetailsViewSe2 = GTWidget::findWidget(os, "det_view_se2", NULL, false);
     QWidget *zoomViewSe2 = GTWidget::findWidget(os, "pan_view_se2", NULL, false);
     QWidget *toolBarSe2 = GTWidget::findWidget(os, "tool_bar_se2", NULL, false);
-    CHECK_SET_ERR(overViewSe2->isVisible() == false && 
-        DetailsViewSe2->isVisible() == false && 
+    CHECK_SET_ERR(overViewSe2->isVisible() == false &&
+        DetailsViewSe2->isVisible() == false &&
         zoomViewSe2->isVisible() == false
         , "there are widgets not hidden widgets of ADV_single_sequence_widget");
     CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
@@ -451,8 +451,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_4) {
     DetailsViewSe2 = GTWidget::findWidget(os, "det_view_se2", NULL, false);
     zoomViewSe2 = GTWidget::findWidget(os, "pan_view_se2", NULL, false);
     toolBarSe2 = GTWidget::findWidget(os, "tool_bar_se2", NULL, false);
-    CHECK_SET_ERR(overViewSe2->isVisible() == true && 
-        DetailsViewSe2->isVisible() == true && 
+    CHECK_SET_ERR(overViewSe2->isVisible() == true &&
+        DetailsViewSe2->isVisible() == true &&
         zoomViewSe2->isVisible() == true
         , "there are widgets hidden widgets of ADV_single_sequence_widget");
     CHECK_SET_ERR(toolBarSe2->isVisible() == true, "toolbar is hidden");
@@ -529,7 +529,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "toggleDetailsView"));
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep();
-    
+
     //checking hiding all detviews
     DetailsViewSe2 = GTWidget::findWidget(os, "det_view_se2", NULL, false);
     QWidget *DetailsViewSe1 = GTWidget::findWidget(os, "det_view_se1", NULL, false);
@@ -761,7 +761,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
 // Expected state: panoramical view for both sequences has been appeared
     GTGlobals::sleep();
-    CHECK_SET_ERR(overViewSe1->isVisible() == true && overViewSe2->isVisible() == true, 
+    CHECK_SET_ERR(overViewSe1->isVisible() == true && overViewSe2->isVisible() == true,
         "panoramical view for both sequences has not been shown");
 }
 
@@ -785,9 +785,9 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
 // Expected state: views for both sequences has been closed, but toolbars still present.
     GTGlobals::sleep();
-    CHECK_SET_ERR(detailsViewSe1->isVisible() == false && detailsViewSe2->isVisible() == false, 
+    CHECK_SET_ERR(detailsViewSe1->isVisible() == false && detailsViewSe2->isVisible() == false,
         "panoramical view for both sequences has not been shown");
-    CHECK_SET_ERR(toolBarSe1->isVisible() == true && toolBarSe2->isVisible() == true, 
+    CHECK_SET_ERR(toolBarSe1->isVisible() == true && toolBarSe2->isVisible() == true,
         "panoramical view for both sequences has not been shown");
 
 // 3. Click on toolbar button Toggle views. Click menu item Show all details.
@@ -797,7 +797,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
 // Expected state: view for both sequences has been appeared
     GTGlobals::sleep();
-    CHECK_SET_ERR(detailsViewSe1->isVisible() == true && detailsViewSe2->isVisible() == true, 
+    CHECK_SET_ERR(detailsViewSe1->isVisible() == true && detailsViewSe2->isVisible() == true,
         "panoramical view for both sequences has not been shown");
 }
 
@@ -832,7 +832,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
         "details views for both sequences has not been closed");
     CHECK_SET_ERR(zoomViewSe1->isHidden() == true && zoomViewSe2->isHidden() == true,
         "zoom views for both sequences has not been closed");
-    CHECK_SET_ERR(toolBarSe1->isHidden() == false && toolBarSe2->isHidden() == false, 
+    CHECK_SET_ERR(toolBarSe1->isHidden() == false && toolBarSe2->isHidden() == false,
         "toolbars view for both sequences has not been shown");
 
 // 3. Click on toolbar button Toggle views. Click menu item Show all sequences.
@@ -842,11 +842,11 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 
 // Expected state: all views for both sequences has been appeared
     GTGlobals::sleep();
-    CHECK_SET_ERR(overViewSe1->isHidden() == false && overViewSe2->isHidden() == false, 
+    CHECK_SET_ERR(overViewSe1->isHidden() == false && overViewSe2->isHidden() == false,
         "panoramical view for both sequences has not been shown");
-    CHECK_SET_ERR(DetailsViewSe1->isHidden() == false && DetailsViewSe2->isHidden() == false, 
+    CHECK_SET_ERR(DetailsViewSe1->isHidden() == false && DetailsViewSe2->isHidden() == false,
         "details view for both sequences has not been shown");
-    CHECK_SET_ERR(zoomViewSe1->isHidden() == false && zoomViewSe2->isHidden() == false, 
+    CHECK_SET_ERR(zoomViewSe1->isHidden() == false && zoomViewSe2->isHidden() == false,
         "zoom view for both sequences has not been shown");
 }
 
@@ -1101,7 +1101,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2)
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep();
 
-    // Expected state: Zoom area (grey rectangle) has disappered from overview for both. 
+    // Expected state: Zoom area (grey rectangle) has disappered from overview for both.
     GTGlobals::sleep();
     CHECK_SET_ERR(zoomViewSe1 != NULL, "Zoom View widget not found");
     CHECK_SET_ERR(zoomViewSe1->isHidden(), "panoramical view for se1 sequence has been not closed");

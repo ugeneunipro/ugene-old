@@ -8,7 +8,7 @@ namespace U2 {
 #define BUFF_SIZE 8196
 #define CHECK_MB 1024*1024
 
-class SeekableBuf 
+class SeekableBuf
 {
 public:
     const char*    head;
@@ -40,13 +40,13 @@ inline uint be_int4(const uchar* buf) {
     uchar c2 = *(buf++);
     uchar c3 = *(buf++);
     uchar c4 = *(buf++);
-    return (c1<<24) + (c2<<16) + (c3<<8) + c4;    
+    return (c1<<24) + (c2<<16) + (c3<<8) + c4;
 }
 
 inline ushort be_int2(const uchar* buf) {
     uchar c1 = *(buf++);
     uchar c2 = *(buf++);
-    return (c1<<8) + c2;    
+    return (c1<<8) + c2;
 }
 
 
@@ -135,7 +135,7 @@ inline float int_to_float(int in)
 */
 {
     /*
-    Assume `in' is stored as a float according to the 
+    Assume `in' is stored as a float according to the
     ANSI IEEE 754-1985 standard. See the tables below:
 
     s = sign ( 1 bit)
@@ -151,7 +151,7 @@ inline float int_to_float(int in)
     The "one" bit is "hidden"
 
     If IEEE floating point format is supported on your machine...
-    ensure there is a #define IEEE somewhere. 
+    ensure there is a #define IEEE somewhere.
     */
 
 #ifdef IEEE

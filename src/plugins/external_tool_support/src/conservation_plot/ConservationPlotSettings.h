@@ -32,7 +32,7 @@ namespace U2 {
 
 class ConservationPlotSettings {
 public:
-    
+
     ConservationPlotSettings();
 
     QString     outFile;

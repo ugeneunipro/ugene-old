@@ -73,7 +73,7 @@ namespace U2 {
 
 const QString WorkflowPalette::MIME_TYPE("application/x-ugene-workflow-id");
 
-WorkflowPalette::WorkflowPalette(ActorPrototypeRegistry* reg, QWidget *parent) 
+WorkflowPalette::WorkflowPalette(ActorPrototypeRegistry* reg, QWidget *parent)
 : QWidget(parent)
 {
     setupUi(this);
@@ -161,7 +161,7 @@ void PaletteDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 
         // draw text
         QRect textrect = QRect(r.left() + i*2, r.top(), r.width() - ((5*i)/2), r.height());
-        QString text = elidedText(option.fontMetrics, textrect.width(), Qt::ElideMiddle, 
+        QString text = elidedText(option.fontMetrics, textrect.width(), Qt::ElideMiddle,
             model->data(index, Qt::DisplayRole).toString());
         m_view->style()->drawItemText(painter, textrect, Qt::AlignCenter,
             option.palette, m_view->isEnabled(), text);
@@ -220,7 +220,7 @@ QSize PaletteDelegate::sizeHint(const QStyleOptionViewItem &opt, const QModelInd
 /************************************************************************/
 /* WorkflowPaletteElements */
 /************************************************************************/
-WorkflowPaletteElements::WorkflowPaletteElements(ActorPrototypeRegistry* reg, QWidget *parent) 
+WorkflowPaletteElements::WorkflowPaletteElements(ActorPrototypeRegistry* reg, QWidget *parent)
 : QTreeWidget(parent), overItem(NULL), currentAction(NULL), protoRegistry(reg)
 {
     setFocusPolicy(Qt::NoFocus);
@@ -484,7 +484,7 @@ void WorkflowPaletteElements::sl_selectProcess(bool checked) {
         currentAction = qobject_cast<QAction*>(sender());
         assert(currentAction);
     }
-    emit processSelected(currentAction ? 
+    emit processSelected(currentAction ?
         (currentAction->data().value<Workflow::ActorPrototype*>()) : NULL );
 }
 
@@ -587,7 +587,7 @@ void WorkflowPaletteElements::contextMenuEvent(QContextMenuEvent *e)
     QMenu menu;
     menu.addAction(tr("Expand all"), this, SLOT(expandAll()));
     menu.addAction(tr("Collapse all"), this, SLOT(collapseAll()));
-    if(itemAt(e->pos()) && itemAt(e->pos())->parent() && (itemAt(e->pos())->parent()->text(0) == BaseActorCategories::CATEGORY_SCRIPT().getDisplayName() 
+    if(itemAt(e->pos()) && itemAt(e->pos())->parent() && (itemAt(e->pos())->parent()->text(0) == BaseActorCategories::CATEGORY_SCRIPT().getDisplayName()
         || itemAt(e->pos())->parent()->text(0) == BaseActorCategories::CATEGORY_EXTERNAL().getDisplayName())) {
             menu.addAction(tr("Edit"), this, SLOT(editElement()));
             menu.addAction(tr("Remove"), this, SLOT(removeElement()));
@@ -668,7 +668,7 @@ QVariant WorkflowPaletteElements::changeState(const QVariant& savedState){
     QVariantMap m = savedState.toMap();
 
     for (int i = 0, count = topLevelItemCount(); i < count; ++i) {
-        QTreeWidgetItem* it = topLevelItem(i);         
+        QTreeWidgetItem* it = topLevelItem(i);
         bool expanded = m.value(it->data(0, Qt::UserRole).toString()).toBool();
 
         QRegExp nonWhitespase("\\s");
@@ -679,9 +679,9 @@ QVariant WorkflowPaletteElements::changeState(const QVariant& savedState){
 
         if(hasCharsNewFilter && !hasCharsOldFilter){expanded = true;}
         else if(!hasCharsNewFilter && hasCharsOldFilter){expanded = false;}
-        
+
         m.insert(it->data(0, Qt::UserRole).toString(), expanded);
-    }   
+    }
     return m;
 }
 

@@ -129,7 +129,7 @@ QList<Task*> MACSTask::onSubTaskFinished(Task* subTask) {
         result.append(summitsTask);
     }else if(subTask == peaksTask){
         peaksDoc = peaksTask->takeDocument();
-        
+
     }else if(subTask == summitsTask){
         summitsDoc = summitsTask->takeDocument();
     }
@@ -177,7 +177,7 @@ QList<AnnotationTableObject *> MACSTask::getPeakSummits() const {
 
 QString MACSTask::getWiggleUrl(){
     QString res = "";
-    
+
     if (settings.wiggleOut){
         res = getSettings().outDir + QDir::separator()
             + getSettings().fileNames +"_MACS_wiggle" + QDir::separator()

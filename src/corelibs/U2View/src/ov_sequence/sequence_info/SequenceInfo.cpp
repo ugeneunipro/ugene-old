@@ -334,7 +334,7 @@ void SequenceInfo::launchCalculations(QString subgroupId)
             charOccurTaskRunner.run(new CharOccurTask(alphabet, seqRef, currentRegion));
         }
     }
-    
+
     if (subgroupId.isEmpty() || subgroupId == DINUCL_OCCUR_GROUP_ID)
     {
         if ((!dinuclWidget->isHidden()) && (dinuclWidget->isSubgroupOpened()))

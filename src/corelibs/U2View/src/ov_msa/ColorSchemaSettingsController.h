@@ -63,7 +63,7 @@ private:
     static const QString helpPageId;
 };
 
-    
+
 
 class ColorSchemaSettingsPageState : public AppSettingsGUIPageState {
     Q_OBJECT
@@ -91,7 +91,7 @@ private slots:
 private:
     QList<CustomColorSchema> customSchemas;
 };
-    
+
 class CreateColorSchemaDialog: public QDialog, public Ui_CreateMSAScheme{
     Q_OBJECT
 public:

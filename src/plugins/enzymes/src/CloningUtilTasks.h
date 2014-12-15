@@ -52,7 +52,7 @@ struct DigestSequenceTaskConfig {
 struct GenomicPosition {
     GenomicPosition() : coord(-1), directStrand(true) {}
     GenomicPosition(int crd, bool strnd ) : coord(crd), directStrand(strnd) {}
-    friend bool operator<(const GenomicPosition& left, const GenomicPosition& right); 
+    friend bool operator<(const GenomicPosition& left, const GenomicPosition& right);
 
     int coord;
     bool directStrand;
@@ -61,7 +61,7 @@ struct GenomicPosition {
 class DigestSequenceTask : public Task {
     Q_OBJECT
 public:
-    DigestSequenceTask(U2SequenceObject* dnaObj, AnnotationTableObject *destTable, 
+    DigestSequenceTask(U2SequenceObject* dnaObj, AnnotationTableObject *destTable,
         AnnotationTableObject *sourceTable, const DigestSequenceTaskConfig& cfg);
     virtual void prepare();
     virtual void run();
@@ -69,8 +69,8 @@ public:
     virtual ReportResult report();
 
 private:
-   
-    void findCutSites(); 
+
+    void findCutSites();
     void saveResults();
     AnnotationData createFragment( int pos1, const DNAFragmentTerm& leftTerm,
                                     int pos2, const DNAFragmentTerm& rightTerm );
@@ -105,7 +105,7 @@ class LigateFragmentsTask : public Task {
 public:
     LigateFragmentsTask(const QList<DNAFragment>& fragments, const LigateFragmentsTaskConfig& cfg );
     Document* getResultDocument() {return resultDoc; }
-    void prepare(); 
+    void prepare();
 
 private:
     static QList<AnnotationData> cloneAnnotationsInRegion(const U2Region& region, AnnotationTableObject* source, int globalOffset);

@@ -73,7 +73,7 @@ const QString TestViewReporter::prepareHTMLText(QTreeWidget* tree,int runTime){
         int tnone = 0;
         int texcluded = 0;
         for (int i=0, n = tree->topLevelItemCount(); i<n; i++) {
-            TVItem* item = static_cast<TVItem*>(tree->topLevelItem(i));     
+            TVItem* item = static_cast<TVItem*>(tree->topLevelItem(i));
             assert(item->isSuite());
             TVTSItem* tItem  = static_cast<TVTSItem*>(item);
 
@@ -120,7 +120,7 @@ const QString TestViewReporter::prepareHTMLText(QTreeWidget* tree,int runTime){
             return rezult;
         }
         rezult+=getHTMLHead();
-        rezult+=getHTMLFirstPart("_","_");//any information        
+        rezult+=getHTMLFirstPart("_","_");//any information
 
         rezult+=getHTMLRuntime(runTime);
 
@@ -204,7 +204,7 @@ const QString TestViewReporter::getHTMLStaticInfo(QString* data){
     rezult+="<th>";
     rezult+=data;
     rezult+="</th>\n";
-    return rezult;  
+    return rezult;
 }
 const QString TestViewReporter::getHTMLStaticInfo(char* info){
     QString rezult;
@@ -223,11 +223,11 @@ const QString TestViewReporter::getHTMLStatusBar(int data, bool norun){
     rezult+=QString::number(data);
     if(norun){
         rezult+=("%\" class=\"goodbar\">\n<tr>\n<td height=\"12\" class=\"norun\"></td>\n</tr>\n</table>\n</td>\n</tr>\n</table>\n</th>\n");
-    }    
+    }
     else{
     rezult+=("%\" class=\"goodbar\">\n<tr>\n<td height=\"12\" class=\"bar\"></td>\n</tr>\n</table>\n</td>\n</tr>\n</table>\n</th>\n");
     }
-    //rezult+="<th><table cellpadding=\"0\" cellspacing=\"0\" width=\"100\" class=\"bar\"><tr><td><table align=\"left\" cellpadding=\"0\" cellspacing=\"0\" width=\"55%\" class=\"goodbar\"><tr><td height=\"12\" ></td></tr></table></td></tr></table></th>"; 
+    //rezult+="<th><table cellpadding=\"0\" cellspacing=\"0\" width=\"100\" class=\"bar\"><tr><td><table align=\"left\" cellpadding=\"0\" cellspacing=\"0\" width=\"55%\" class=\"goodbar\"><tr><td height=\"12\" ></td></tr></table></td></tr></table></th>";
     return rezult;
 }
 
@@ -251,7 +251,7 @@ const QString TestViewReporter::getHTMLErrorTables(QTreeWidget* tree){
     int testIndex=1;
     int testIndex2=1;
     for (int i=0, n = tree->topLevelItemCount(); i<n; i++) {
-        TVItem* item = static_cast<TVItem*>(tree->topLevelItem(i));     
+        TVItem* item = static_cast<TVItem*>(tree->topLevelItem(i));
         assert(item->isSuite());
         TVTSItem* tItem  = static_cast<TVTSItem*>(item);
         QList<TVTestItem*> failedTests = getFailedTests(tItem);
@@ -266,7 +266,7 @@ const QString TestViewReporter::getHTMLErrorTables(QTreeWidget* tree){
         rezult+="</table>";
         rezult+="<tr><td><br><br><br><br><br><hr></td></tr>";
         for (int i=0, n = tree->topLevelItemCount(); i<n; i++) {
-            TVItem* item = static_cast<TVItem*>(tree->topLevelItem(i));     
+            TVItem* item = static_cast<TVItem*>(tree->topLevelItem(i));
             assert(item->isSuite());
             TVTSItem* tItem  = static_cast<TVTSItem*>(item);
             QList<TVTestItem*> failedTests = getFailedTests(tItem);
@@ -285,7 +285,7 @@ const QString TestViewReporter::getHTMLErrorTables(QTreeWidget* tree){
 }
 
 const QString TestViewReporter::getHTMLSuiteName(TVTSItem* Suite){
-    QString rezult;   
+    QString rezult;
     rezult+=("<tr class=\"suiteName\">\n<td colspan=\"2\">");
     rezult+=("Failed test in Suite: ");
     rezult+=Suite->ts->getName();
@@ -294,7 +294,7 @@ const QString TestViewReporter::getHTMLSuiteName(TVTSItem* Suite){
 }
 
 const QString TestViewReporter::getHTMLErrorList(QList<TVTestItem*> failedTests,int* index){
-    QString rezult; 
+    QString rezult;
     rezult+=("<td>\n<table width=\"100%\" cellpadding=\"2\" cellspacing=\"1\" class=\"info\">\n");
     foreach(TVTestItem* curItem,failedTests){
         rezult+=("<tr>\n<th width=\"50%\" align=\"left\">");
@@ -378,7 +378,7 @@ bool TestViewReporter::setColorInTestText(QString* inputData){
     rx.setMinimal(true);
     inputData->replace(rx,commentColor);//2- find all comments
 
-    rx.setPattern("(&lt;!.*&gt;)"); 
+    rx.setPattern("(&lt;!.*&gt;)");
     inputData->replace(rx,mainCommentColor);//2- find all main comments
 
     rx.setPattern("(&lt;.*\\s)");
@@ -420,11 +420,11 @@ bool TestViewReporter::setColorInTestText(QString* inputData){
     return true;
 }
 //-------------------------------------------------------------------------
-QList<TVTestItem*> TestViewReporter::getFailedTests(TVTSItem* Root){    
+QList<TVTestItem*> TestViewReporter::getFailedTests(TVTSItem* Root){
     QList<TVTestItem*> rezult;
     for(int i = 0; i < Root->childCount(); i++) {
         TVItem* item = static_cast<TVItem*>(Root->child(i));
-        if(item->isTest()){ 
+        if(item->isTest()){
             TVTestItem* tItem  = static_cast<TVTestItem*>(item);
             if(tItem->testState->isFailed())rezult.append(tItem);
         }
@@ -432,9 +432,9 @@ QList<TVTestItem*> TestViewReporter::getFailedTests(TVTSItem* Root){
         else{
             assert(item->isSuite());
             TVTSItem* tItem  = static_cast<TVTSItem*>(item);
-            rezult+=getFailedTests(tItem);      
+            rezult+=getFailedTests(tItem);
         }
-    } 
+    }
     return rezult;
 }
 bool TestViewReporter::saveAs(const QString url,const QString data){

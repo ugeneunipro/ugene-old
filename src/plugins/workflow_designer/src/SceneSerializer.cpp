@@ -70,7 +70,7 @@ static void saveFlow(const WorkflowBusItem* dit, QDomElement& proj) {
 
 void SceneSerializer::scene2xml(const WorkflowScene* scene, QDomDocument& xmlDoc){
     QDomElement projectElement = xmlDoc.createElement(WORKFLOW_EL);
-    // TODO save scale and view rect??  
+    // TODO save scale and view rect??
     xmlDoc.appendChild(projectElement);
     saveItems(scene->items(), projectElement);
 }
@@ -103,9 +103,9 @@ QString SceneSerializer::xml2scene(const QDomElement& projectElement, WorkflowSc
     QMap<ActorId, WorkflowProcessItem*> procMap;
     QMap<ActorId, Actor*> actorMap;
     initProcMap(procMap, scene);
-    
+
     ActorPrototypeRegistry* registry = WorkflowEnv::getProtoRegistry();
-    
+
     QDomNodeList procNodes = projectElement.elementsByTagName(PROCESS_EL);
     for(int i=0; i<procNodes.size(); i++) {
         QDomNode n = procNodes.item(i);
@@ -114,18 +114,18 @@ QString SceneSerializer::xml2scene(const QDomElement& projectElement, WorkflowSc
             continue;
         }
         QDomElement procElement = n.toElement();
-        
+
         const ActorId id = str2aid(procElement.attribute(ID_ATTR));
         if (!ignoreErrors && procMap.contains(id)) {
             return WorkflowView::tr("Invalid content: duplicate process %1").arg(id);
         }
-        
+
         const QString name = SchemaSerializer::getElemType(procElement.attribute(TYPE_ATTR));
         ActorPrototype* proto = registry->getProto(name);
         if (!proto) {
             return WorkflowView::tr("Invalid content: unknown process type %1").arg(name);
         }
-        
+
         Actor* proc = proto->createInstance(id, NULL);
         actorMap[id] = proc;
         proc->setLabel(procElement.attribute(NAME_ATTR));

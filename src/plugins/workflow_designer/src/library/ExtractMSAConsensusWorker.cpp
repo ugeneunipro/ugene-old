@@ -264,14 +264,14 @@ void ExtractMSAConsensusSequenceWorkerFactory::init() {
 
     QList<PortDescriptor*> ports;
     {
-        Descriptor inD(BasePorts::IN_MSA_PORT_ID(), 
+        Descriptor inD(BasePorts::IN_MSA_PORT_ID(),
             ExtractMSAConsensusStringWorker::tr("Input alignment"),
             ExtractMSAConsensusStringWorker::tr("A alignment which consensus should be extracted"));
         QMap<Descriptor, DataTypePtr> inData;
         inData[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
         ports << new PortDescriptor(inD, DataTypePtr(new MapDataType(BasePorts::IN_MSA_PORT_ID(), inData)), true);
 
-        Descriptor outD(BasePorts::OUT_SEQ_PORT_ID(), 
+        Descriptor outD(BasePorts::OUT_SEQ_PORT_ID(),
             ExtractMSAConsensusSequenceWorker::tr("Consensus sequence"),
             ExtractMSAConsensusSequenceWorker::tr("Provides resulting consensus as a sequence"));
 
@@ -298,9 +298,9 @@ void ExtractMSAConsensusSequenceWorkerFactory::init() {
         attrs << algo << thr << new Attribute(gapsDesc, BaseTypes::BOOL_TYPE(), true, true);
 
         QVariantMap algos;
-        QVariantMap m; 
+        QVariantMap m;
         QVariantList visibleRelationList;
-        m["minimum"] = 0; 
+        m["minimum"] = 0;
         m["maximum"] = 100;
         SpinBoxDelegate *thrDelegate = new SpinBoxDelegate(m);
         foreach (const QString &algoId, reg->getAlgorithmIds()) {
@@ -349,7 +349,7 @@ void ExtractMSAConsensusStringWorkerFactory::init() {
 
     QList<PortDescriptor*> ports;
     {
-        Descriptor inD(BasePorts::IN_MSA_PORT_ID(), 
+        Descriptor inD(BasePorts::IN_MSA_PORT_ID(),
             ExtractMSAConsensusStringWorker::tr("Input alignment"),
             ExtractMSAConsensusStringWorker::tr("A alignment which consensus should be extracted"));
 
@@ -357,7 +357,7 @@ void ExtractMSAConsensusStringWorkerFactory::init() {
         inData[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
         ports << new PortDescriptor(inD, DataTypePtr(new MapDataType(BasePorts::IN_MSA_PORT_ID(), inData)), true);
 
-        Descriptor outD(BasePorts::OUT_TEXT_PORT_ID(), 
+        Descriptor outD(BasePorts::OUT_TEXT_PORT_ID(),
             ExtractMSAConsensusStringWorker::tr("Consensus"),
             ExtractMSAConsensusStringWorker::tr("Provides resulting consensus as a text"));
 
@@ -381,8 +381,8 @@ void ExtractMSAConsensusStringWorkerFactory::init() {
 
         QVariantList visibleRelationList;
         QVariantMap algos;
-        QVariantMap m; 
-        m["minimum"] = 0; 
+        QVariantMap m;
+        m["minimum"] = 0;
         m["maximum"] = 100;
         SpinBoxDelegate *thrDelegate = new SpinBoxDelegate(m);
         foreach (const QString &algoId, reg->getAlgorithmIds()) {

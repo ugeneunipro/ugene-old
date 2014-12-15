@@ -40,11 +40,11 @@ class ConvertToSQLiteTask : public Task {
 public:
     ConvertToSQLiteTask(const GUrl &sourceUrl, const U2DbiRef &dstDbiRef, BAMInfo& bamInfo, bool sam);
     virtual void run();
-    
+
     GUrl getDestinationUrl() const;
     QList<U2Assembly> getAssemblies() const;
-    
-private:    
+
+private:
     const GUrl sourceUrl;
     const U2DbiRef dstDbiRef;
     BAMInfo bamInfo;

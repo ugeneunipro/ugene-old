@@ -34,7 +34,7 @@
 
 namespace U2 {
 
-AssemblyObject::AssemblyObject(const QString& objectName, const U2EntityRef& ref, const QVariantMap& hints) 
+AssemblyObject::AssemblyObject(const QString& objectName, const U2EntityRef& ref, const QVariantMap& hints)
     : GObject(GObjectTypes::ASSEMBLY, objectName, hints)
 {
     this->entityRef = ref;

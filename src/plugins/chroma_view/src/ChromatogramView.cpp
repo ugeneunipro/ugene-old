@@ -59,7 +59,7 @@ namespace U2 {
 
 static const char GAP_CHAR = '-';
 
-ChromatogramView::ChromatogramView(QWidget* p, ADVSequenceObjectContext* v, GSequenceLineView* cv, const DNAChromatogram& chroma) 
+ChromatogramView::ChromatogramView(QWidget* p, ADVSequenceObjectContext* v, GSequenceLineView* cv, const DNAChromatogram& chroma)
 : GSequenceLineView(p, v), editDNASeq(NULL)
 {
     const QString objectName = "chromatogram_view_" + (NULL == v ? "" : v->getSequenceGObject()->getGObjectName());
@@ -93,7 +93,7 @@ ChromatogramView::ChromatogramView(QWidget* p, ADVSequenceObjectContext* v, GSeq
     scaleBar->setValue(ra->height()-ra->getHeightAreaBC()+ra->addUpIfQVL);
 
     setCoherentRangeView(cv);
-    
+
     mP = new QMenu(this);
 
     mP->addAction(QString("A"));
@@ -102,7 +102,7 @@ ChromatogramView::ChromatogramView(QWidget* p, ADVSequenceObjectContext* v, GSeq
     mP->addAction(QString("T"));
     mP->addAction(QString("N"));
     mP->addAction(QString(GAP_CHAR));
-    connect(mP, SIGNAL(triggered(QAction*)),SLOT(sl_onPopupMenuCkicked(QAction*))); 
+    connect(mP, SIGNAL(triggered(QAction*)),SLOT(sl_onPopupMenuCkicked(QAction*)));
 
 
     addNewSeqAction = new QAction(tr("add_new_seq"), this);
@@ -152,7 +152,7 @@ void ChromatogramView::buildPopupMenu(QMenu& m) {
     }
     //todo: move to submenus?
     QAction* before = GUIUtils::findActionAfter(m.actions(), ADV_MENU_ZOOM);
-    
+
     m.insertAction(before, showQVAction);
     m.insertMenu(before, traceActionMenu);
     m.insertSeparator(before);
@@ -224,18 +224,18 @@ void ChromatogramView::sl_onPopupMenuCkicked(QAction* a) {
             bool ok = gapIndexes.removeOne(selIndex);
             assert(ok);
             Q_UNUSED(ok);
-            QByteArray insData(&newBase, 1); 
+            QByteArray insData(&newBase, 1);
             editDNASeq->replaceRegion(U2Region(editSeqIdx, 0), DNASequence(insData), os);//insert
         } else {
             if (newBase!=GAP_CHAR) {
-                QByteArray insData(&newBase, 1); 
+                QByteArray insData(&newBase, 1);
                 editDNASeq->replaceRegion(U2Region(editSeqIdx, 1), DNASequence(insData), os); //replace
             } else {
                 editDNASeq->replaceRegion(U2Region(editSeqIdx, 1), DNASequence(), os); //remove
                 gapIndexes.append(selIndex);
             }
         }
-        
+
         currentBaseCalls[selIndex] = newBase;
 
         indexOfChangedChars.insert(selIndex);
@@ -250,12 +250,12 @@ void ChromatogramView::sl_onPopupMenuCkicked(QAction* a) {
 
 void ChromatogramView::sl_addNewSequenceObject() {
     sl_clearEditableSequence();
-    
+
     assert(editDNASeq == NULL);
 
     AddNewDocumentDialogModel m;
     DocumentFormatConstraints c;
-    
+
     GUrl seqUrl = ctx->getSequenceGObject()->getDocument()->getURL();
     m.url = GUrlUtils::rollFileName(seqUrl.dirPath() + "/" + seqUrl.baseFileName() + "_sequence.fa", DocumentUtils::getNewDocFileNameExcludesHint());
     c.addFlagToSupport(DocumentFormatFlag_SupportWriting);
@@ -308,7 +308,7 @@ void ChromatogramView::sl_onAddExistingSequenceObject() {
             assert(err.isEmpty());
             indexOfChangedChars.clear();
         } else if (go->getGObjectType() == GObjectTypes::UNLOADED) {
-            LoadUnloadedDocumentTask* t = new LoadUnloadedDocumentTask(go->getDocument(), 
+            LoadUnloadedDocumentTask* t = new LoadUnloadedDocumentTask(go->getDocument(),
                 LoadDocumentTaskConfig(false, GObjectReference(go)));
             connect(new TaskSignalMapper(t), SIGNAL(si_taskSucceeded(Task*)), SLOT(sl_onSequenceObjectLoaded(Task*)));
             AppContext::getTaskScheduler()->registerTopLevelTask(t);
@@ -318,7 +318,7 @@ void ChromatogramView::sl_onAddExistingSequenceObject() {
 
 void ChromatogramView::sl_onSequenceObjectLoaded(Task* t) {
     LoadUnloadedDocumentTask* lut = qobject_cast<LoadUnloadedDocumentTask*>(t);
-    GObject* go = GObjectUtils::selectObjectByReference(lut->getConfig().checkObjRef, 
+    GObject* go = GObjectUtils::selectObjectByReference(lut->getConfig().checkObjRef,
         lut->getDocument()->getObjects(), UOF_LoadedOnly);
     assert(go);
     if (go) {
@@ -359,7 +359,7 @@ void ChromatogramView::sl_removeChanges()   {
 bool ChromatogramView::checkObject(GObject* obj) {
     //TODO: check state lock on modifications too!!!
     if (obj->getGObjectType()!=GObjectTypes::SEQUENCE || obj->isStateLocked()) {
-        return false;   
+        return false;
     }
     U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
     bool ok = (dnaObj->getAlphabet() == ctx->getSequenceObject()->getAlphabet()
@@ -401,19 +401,19 @@ void ChromatogramView::sl_showHideTrace()
     }
 
     if (traceAction->text() == "A") {
-        settings.drawTraceA = traceAction->isChecked();        
+        settings.drawTraceA = traceAction->isChecked();
     } else if (traceAction->text() == "C") {
-        settings.drawTraceC = traceAction->isChecked();        
+        settings.drawTraceC = traceAction->isChecked();
     } else if(traceAction->text() == "G") {
-        settings.drawTraceG = traceAction->isChecked();        
+        settings.drawTraceG = traceAction->isChecked();
     } else if(traceAction->text() == "T") {
-        settings.drawTraceT = traceAction->isChecked();        
+        settings.drawTraceT = traceAction->isChecked();
     } else {
         assert(0);
     }
 
     completeUpdate();
-    
+
 
 }
 
@@ -488,7 +488,7 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
     QByteArray seq = seqCtx->getSequenceObject()->getWholeSequenceData();
 
     GSLV_UpdateFlags uf = view->getUpdateFlags();
-    bool completeRedraw = uf.testFlag(GSLV_UF_NeedCompleteRedraw) || uf.testFlag(GSLV_UF_ViewResized) || 
+    bool completeRedraw = uf.testFlag(GSLV_UF_NeedCompleteRedraw) || uf.testFlag(GSLV_UF_ViewResized) ||
         uf.testFlag(GSLV_UF_VisibleRangeChanged);
 
 
@@ -500,10 +500,10 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
         p.fillRect(0, 0, pd->width(), heightPD, Qt::white);
         if (pd->width()/charWidth>visible.length/dividerBoolShowBaseCallsChars) {
             //draw basecalls
-            drawOriginalBaseCalls(0, heightAreaBC-charHeight-addUpIfQVL, width(), charHeight, p, visible, seq); 
+            drawOriginalBaseCalls(0, heightAreaBC-charHeight-addUpIfQVL, width(), charHeight, p, visible, seq);
 
             if (chroma.hasQV && chromaView->showQV()) {
-                drawQualityValues(0, charHeight, width(), heightAreaBC - 2*charHeight, p, visible, seq);     
+                drawQualityValues(0, charHeight, width(), heightAreaBC - 2*charHeight, p, visible, seq);
             }
             //drawOriginalBaseCalls(0, 0, width(), charHeight, p, visible, qobject_cast<ChromatogramView*>(view)->fastaSeq, false);
         } else {
@@ -519,10 +519,10 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
             }
         }
         if (pd->width()/charWidth>visible.length/dividerTraceOrBaseCallsLines) {
-            drawChromatogramTrace(0, heightAreaBC - addUpIfQVL, pd->width(), height() - heightAreaBC + addUpIfQVL, 
+            drawChromatogramTrace(0, heightAreaBC - addUpIfQVL, pd->width(), height() - heightAreaBC + addUpIfQVL,
                 p, visible, chromaView->getSettings());
         } else {
-            drawChromatogramBaseCallsLines(0, heightAreaBC, pd->width(), height() - heightAreaBC, 
+            drawChromatogramBaseCallsLines(0, heightAreaBC, pd->width(), height() - heightAreaBC,
                 p, visible, seq, chromaView->getSettings());
         }
     }
@@ -562,7 +562,7 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
             if (i2!=chroma.seqLength-1) {
                 p.drawLine((k*chroma.baseCalls[i2]+b+k*chroma.baseCalls[i2+1]+b)/2,0,
                     (k*chroma.baseCalls[i2]+b+k*chroma.baseCalls[i2+1]+b)/2,pd->height());
-            } else { 
+            } else {
                 p.drawLine(k*chroma.baseCalls[i2]+b+charWidth/2,0, k*chroma.baseCalls[i2]+b+charWidth/2,pd->height());
             }
         }
@@ -576,14 +576,14 @@ void ChromatogramViewRenderArea::setAreaHeight(int newH) {
 
 qint64 ChromatogramViewRenderArea::coordToPos(int c) const {
     const U2Region& visibleRange = view->getVisibleRange();
-    if (visibleRange.startPos+visibleRange.length==chroma.seqLength 
+    if (visibleRange.startPos+visibleRange.length==chroma.seqLength
         && c>k*chroma.baseCalls[chroma.seqLength-1]+b)
     {
         return chroma.seqLength;
     }
     int m = 0;
     while ((m+visibleRange.startPos<chroma.seqLength-1)
-        && ((k*chroma.baseCalls[visibleRange.startPos+m]+b+k*chroma.baseCalls[visibleRange.startPos+m+1]+b)/2<c)) 
+        && ((k*chroma.baseCalls[visibleRange.startPos+m]+b+k*chroma.baseCalls[visibleRange.startPos+m+1]+b)/2<c))
     {
         m+=1;
     }
@@ -611,7 +611,7 @@ QRectF ChromatogramViewRenderArea::posToRect(int i) const {
 
 //draw functions
 
-void ChromatogramViewRenderArea::drawChromatogramTrace(qreal x, qreal y, qreal w, qreal h, QPainter& p, 
+void ChromatogramViewRenderArea::drawChromatogramTrace(qreal x, qreal y, qreal w, qreal h, QPainter& p,
                                                        const U2Region& visible, const ChromatogramViewSettings& settings)
 {
     if (chromaMax == 0) {
@@ -750,15 +750,15 @@ void ChromatogramViewRenderArea::drawQualityValues(qreal x, qreal y, qreal w, qr
      QLinearGradient gradient(10, 0, 10, -h);
      gradient.setColorAt(0, Qt::green);
      gradient.setColorAt(0.33, Qt::yellow);
-     gradient.setColorAt(0.66, Qt::red); 
-     QBrush brush(gradient);     
- 
+     gradient.setColorAt(0.66, Qt::red);
+     QBrush brush(gradient);
+
      p.setBrush(brush);
      p.setPen(Qt::black);
      p.setRenderHint(QPainter::Antialiasing, true);
- 
- 
- 
+
+
+
      int a1 = chroma.baseCalls[visible.startPos];
      int a2 = chroma.baseCalls[visible.endPos()-1];
      qreal leftMargin, rightMargin;
@@ -767,34 +767,34 @@ void ChromatogramViewRenderArea::drawQualityValues(qreal x, qreal y, qreal w, qr
      int k2 = a2 - a1;
      qreal kLinearTransformQV = qreal (k1) / k2;
      qreal bLinearTransformQV = leftMargin - kLinearTransformQV*a1;
- 
+
      for (int i=visible.startPos;i<visible.endPos();i++) {
          int xP = kLinearTransformQV*chroma.baseCalls[i] + bLinearTransformQV - charWidth/2 + linePen.width();
          switch (ba[i])  {
              case 'A':
                  rectangle.setCoords(xP, 0, xP+charWidth, -h/100*chroma.prob_A[i]);
                  break;
-             case 'C': 
+             case 'C':
                  rectangle.setCoords(xP, 0, xP+charWidth, -h/100*chroma.prob_C[i]);
                  break;
-             case 'G': 
+             case 'G':
                  rectangle.setCoords(xP, 0, xP+charWidth, -h/100*chroma.prob_G[i]);
                  break;
-             case 'T': 
+             case 'T':
                  rectangle.setCoords(xP, 0, xP+charWidth, -h/100*chroma.prob_T[i]);
                  break;
-         } 
+         }
          if (qAbs( rectangle.height() ) > h/100) {
             p.drawRoundedRect(rectangle, 1.0, 1.0);
          }
 
      }
- 
+
      p.resetTransform();
 }
 
 
-void ChromatogramViewRenderArea::drawChromatogramBaseCallsLines(qreal x, qreal y, qreal w, qreal h, QPainter& p, 
+void ChromatogramViewRenderArea::drawChromatogramBaseCallsLines(qreal x, qreal y, qreal w, qreal h, QPainter& p,
                                                                 const U2Region& visible, const QByteArray& ba, const ChromatogramViewSettings& settings)
 {
     static const QColor colorForIds[4] = {
@@ -829,7 +829,7 @@ void ChromatogramViewRenderArea::drawChromatogramBaseCallsLines(qreal x, qreal y
         double x = kLinearTransformTrace*temp+bLinearTransformTrace;
         bool drawBase = true;
         switch (ba[j])  {
-            case 'A': 
+            case 'A':
                 yRes = -qMin<double>(chroma.A[temp]*areaHeight/chromaMax, h);
                 p.setPen(colorForIds[0]);
                 drawBase = settings.drawTraceA;
@@ -851,7 +851,7 @@ void ChromatogramViewRenderArea::drawChromatogramBaseCallsLines(qreal x, qreal y
                 break;
             case 'N':
                 continue;
-        };   
+        };
         if (drawBase) {
             p.drawLine(x, 0, x, yRes);
         }

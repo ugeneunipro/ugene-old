@@ -159,7 +159,7 @@ void GenomeAlignerTask::prepare() {
     }
 
     setupCreateIndexTask();
-    
+
     if (unzipTask != NULL) {
         addSubTask(unzipTask);
     } else {

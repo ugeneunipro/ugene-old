@@ -143,7 +143,7 @@ U2SingleModStep SQLiteModDbi::getModStep(const U2DataId &objectId, qint64 trackV
 }
 
 qint64 SQLiteModDbi::getNearestUserModStepVersion(const U2DataId &masterObjId, qint64 version, U2OpStatus &os) {
-    SQLiteQuery qVersion("SELECT MAX(version) FROM UserModStep WHERE object = ?1 AND version <= ?2", db, os);    
+    SQLiteQuery qVersion("SELECT MAX(version) FROM UserModStep WHERE object = ?1 AND version <= ?2", db, os);
     qVersion.bindDataId(1, masterObjId);
     qVersion.bindInt64(2, version);
 
@@ -212,7 +212,7 @@ void SQLiteModDbi::createModStep(const U2DataId &masterObjId, U2SingleModStep &s
         SAFE_POINT(isMultiStepStarted(masterObjId), "A multiple modifications step must have been started!", );
         closeMultiStep = true;
     }
-    
+
     SQLiteQuery qSingle("INSERT INTO SingleModStep(object, otype, oextra, version, modType, details, multiStepId) VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7) ", db, os);
     SAFE_POINT_OP(os, );
 
@@ -536,7 +536,7 @@ bool SQLiteModDbi::canUndo(const U2DataId &objectId, U2OpStatus &os) {
     if (q.step()) {
         return true;
     }
-    
+
     return false;
 }
 

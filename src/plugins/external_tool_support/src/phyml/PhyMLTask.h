@@ -60,8 +60,8 @@ public:
     void parseErrOutput(const QString& partOfLog);
 private:
     PhyMLSupportTask* parentTask;
-    QString lastLine; 
-    QString lastErrLine; 
+    QString lastLine;
+    QString lastErrLine;
     bool isMCMCRunning;
     int curProgress;
     int processedBranches;

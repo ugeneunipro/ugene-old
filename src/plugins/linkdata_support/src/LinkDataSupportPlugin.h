@@ -30,7 +30,7 @@ class LinkDataSupportPlugin : public Plugin {
     Q_OBJECT
 public:
     LinkDataSupportPlugin ();
-    //~LinkDataSupportPlugin ();      
+    //~LinkDataSupportPlugin ();
 };
 
 class LinkDataScriptFactory : public WorkflowScriptFactory {

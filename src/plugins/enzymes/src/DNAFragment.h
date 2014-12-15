@@ -36,10 +36,10 @@ class Annotation;
 class GObject;
 
 struct DNAFragmentTerm {
-    DNAFragmentTerm(const QString& eId, const QByteArray& seq, bool directStrand) 
+    DNAFragmentTerm(const QString& eId, const QByteArray& seq, bool directStrand)
         : enzymeId(eId.toLatin1()), overhang(seq), isDirect(directStrand) {}
     DNAFragmentTerm() : isDirect(true) {}
-    QByteArray enzymeId; 
+    QByteArray enzymeId;
     QByteArray overhang;
     QByteArray type;
     bool isDirect; // overhang strand
@@ -73,7 +73,7 @@ public:
     QString getName() const;
     QString getSequenceName() const;
     QString getSequenceDocName() const;
-    QVector<U2Region> getFragmentRegions() const; 
+    QVector<U2Region> getFragmentRegions() const;
     QByteArray getSequence() const;
     int getLength() const;
     bool isInverted() const { return reverseCompl; }

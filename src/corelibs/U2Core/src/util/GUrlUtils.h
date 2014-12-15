@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GURL_UTILS_H_ 
+#ifndef _U2_GURL_UTILS_H_
 #define _U2_GURL_UTILS_H_
 
 #include <U2Core/global.h>
@@ -85,13 +85,13 @@ public:
     // adds count to the url. Ensures that URL ends with one of the exts from typeExt
     static QString prepareFileName(const QString& url, int count, const QStringList& typeExt);
 
-    // checks that file path is valid: creates required directory if needed. 
+    // checks that file path is valid: creates required directory if needed.
     // Returns canonical path to file. Does not create nor remove file, affects just directory
     // Returns empty string and error message if some error occurs
     // Sample usage: processing URLs in "save file" inputs
     static QString prepareFileLocation(const QString& filePath, U2OpStatus& os);
 
-    // checks that dir path is valid. Creates the directory if needed. 
+    // checks that dir path is valid. Creates the directory if needed.
     // Returns canonical directory path. Does not affect directory if already exists.
     // Returns empty string and error message if some error occurs
     // Sample usage: processing URLs in "save dir" inputs

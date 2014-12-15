@@ -58,7 +58,7 @@ Task::ReportResult ReverseSequenceTask::report( ) {
         U2Region::reverse( regions );
         selection->setSelectedRegions( regions );
     }
-    
+
     // fix annotation locations
     foreach ( AnnotationTableObject *aObj, aObjs ) {
         foreach ( Annotation a, aObj->getAnnotations( ) ) {

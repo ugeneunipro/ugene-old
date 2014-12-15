@@ -53,7 +53,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
-QueryDesignerPlugin::QueryDesignerPlugin() 
+QueryDesignerPlugin::QueryDesignerPlugin()
     : Plugin(tr("Query Designer"),
              tr("Analyzes a nucleotide sequence using different algorithms (Repeat finder,"
                 " ORF finder, etc.) imposing constraints on the positional relationship"
@@ -82,7 +82,7 @@ QueryDesignerPlugin::QueryDesignerPlugin()
     GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
     l->qlist = QDTests::createTestFactories();
 
-    foreach(XMLTestFactory* f, l->qlist) { 
+    foreach(XMLTestFactory* f, l->qlist) {
         bool res = xmlTestFormat->registerTestFactory(f);
         assert(res); Q_UNUSED(res);
     }
@@ -118,7 +118,7 @@ void QueryDesignerViewContext::sl_showDialog() {
 
 class CloseDesignerTask : public Task {
 public:
-    CloseDesignerTask(QueryDesignerService* s) : 
+    CloseDesignerTask(QueryDesignerService* s) :
       Task(U2::QueryDesignerPlugin::tr("Close Designer"), TaskFlag_NoRun),
           service(s) {}
       virtual void prepare();
@@ -178,7 +178,7 @@ void QueryDesignerService::serviceStateChangedCallback(ServiceState , bool enabl
     }
     if (isEnabled()) {
         if(!AppContext::getPluginSupport()->isAllPluginsLoaded()) {
-            connect(AppContext::getPluginSupport(),SIGNAL(si_allStartUpPluginsLoaded()),SLOT(sl_startQDPlugin())); 
+            connect(AppContext::getPluginSupport(),SIGNAL(si_allStartUpPluginsLoaded()),SLOT(sl_startQDPlugin()));
         } else {
             sl_startQDPlugin();
         }

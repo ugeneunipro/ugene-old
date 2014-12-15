@@ -51,7 +51,7 @@ ConstructMoleculeDialog::ConstructMoleculeDialog(const QList<DNAFragment>& fragm
     new HelpButton(this, buttonBox, "4227651");
 
     tabWidget->setCurrentIndex(0);
-    
+
     foreach (const DNAFragment& frag, fragments) {
         QString fragItem = QString("%1 (%2) %3 [%4 bp]").arg(frag.getSequenceName())
             .arg(frag.getSequenceDocName())
@@ -59,13 +59,13 @@ ConstructMoleculeDialog::ConstructMoleculeDialog(const QList<DNAFragment>& fragm
         fragmentListWidget->addItem(fragItem);
     }
 
-    
+
     LastUsedDirHelper lod;
     GUrl url = GUrlUtils::rollFileName(lod.dir + "/new_mol.gb", DocumentUtils::getNewDocFileNameExcludesHint());
     filePathEdit->setText(url.getURLString());
     fragmentListWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
     molConstructWidget->setColumnWidth(1, molConstructWidget->width()*0.5);
-   
+
     connect(browseButton, SIGNAL(clicked()), SLOT(sl_onBrowseButtonClicked()));
     connect(fragmentListWidget, SIGNAL( itemDoubleClicked ( QListWidgetItem* ) ),  SLOT(sl_onTakeButtonClicked()));
     connect(takeButton, SIGNAL(clicked()), SLOT(sl_onTakeButtonClicked()));
@@ -79,7 +79,7 @@ ConstructMoleculeDialog::ConstructMoleculeDialog(const QList<DNAFragment>& fragm
     connect(makeBluntBox, SIGNAL(clicked()), SLOT(sl_forceBluntBoxClicked()) );
     connect(editFragmentButton, SIGNAL(clicked()), SLOT(sl_onEditFragmentButtonClicked()));
     connect(molConstructWidget, SIGNAL(	itemClicked ( QTreeWidgetItem *, int)), SLOT(sl_onItemClicked(QTreeWidgetItem *, int)) );
-    
+
     molConstructWidget->installEventFilter(this);
 }
 
@@ -87,15 +87,15 @@ void ConstructMoleculeDialog::accept()
 {
     if (selected.isEmpty()) {
         QMessageBox::information(this, windowTitle(), tr("No fragments are selected!\n Please construct molecule from available fragments."));
-        return;        
+        return;
     }
-    
+
     QList<DNAFragment> toLigate;
-    foreach(int idx, selected) 
+    foreach(int idx, selected)
     {
         toLigate.append(fragments[idx]);
     }
-        
+
     LigateFragmentsTaskConfig cfg;
     cfg.checkOverhangs = !makeBluntBox->isChecked();
     cfg.makeCircular = makeCircularBox->isChecked();
@@ -103,8 +103,8 @@ void ConstructMoleculeDialog::accept()
     cfg.openView = openViewBox->isChecked();
     cfg.saveDoc = saveImmediatlyBox->isChecked();
     cfg.annotateFragments = annotateFragmentsBox->isChecked();
-    
-    Task* task = new LigateFragmentsTask(toLigate, cfg); 
+
+    Task* task = new LigateFragmentsTask(toLigate, cfg);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 
     QDialog::accept();
@@ -140,11 +140,11 @@ void ConstructMoleculeDialog::sl_onTakeAllButtonClicked()
 {
     selected.clear();
     int count = fragmentListWidget->count();
-    
+
     for (int i = 0; i < count; ++i) {
         selected.append(i);
     }
-    update();   
+    update();
 }
 
 void ConstructMoleculeDialog::sl_onClearButtonClicked()
@@ -167,7 +167,7 @@ void ConstructMoleculeDialog::sl_onUpButtonClicked()
 
     update();
 
-    molConstructWidget->setCurrentItem(molConstructWidget->topLevelItem(newIndex), true);  
+    molConstructWidget->setCurrentItem(molConstructWidget->topLevelItem(newIndex), true);
 
 }
 
@@ -182,11 +182,11 @@ void ConstructMoleculeDialog::sl_onDownButtonClicked()
     int newIndex = index + 1 == selected.count() ? 0 : index + 1;
 
     qSwap(selected[index], selected[newIndex]);
-    
+
     update();
 
     molConstructWidget->setCurrentItem(molConstructWidget->topLevelItem(newIndex), true);
-    
+
 }
 
 void ConstructMoleculeDialog::sl_onRemoveButtonClicked()
@@ -235,29 +235,29 @@ void ConstructMoleculeDialog::update()
             newItem->setCheckState(3, fragment.isInverted() ? Qt::Checked : Qt::Unchecked);
             newItem->setText(3, fragment.isInverted() ? tr("yes") : tr("no"));
             newItem->setToolTip(3, tr("Make fragment reverse complement"));
-            
+
             molConstructWidget->addTopLevelItem(newItem);
         }
     }
 
     bool checkTermsConsistency = !makeBluntBox->isChecked();
 
-    if (checkTermsConsistency) { 
+    if (checkTermsConsistency) {
         QTreeWidgetItem* prevItem = NULL;
         int count = molConstructWidget->topLevelItemCount();
         for(int i = 0; i < count; ++i) {
             QTreeWidgetItem* item = molConstructWidget->topLevelItem(i);
             if (prevItem != NULL) {
-                
+
                 QStringList prevItems = prevItem->text(2).split(" ");
                 QString prevOverhang = prevItems.at(0);
                 QString prevStrand = prevItems.count() > 1 ? prevItems.at(1) : QString();
                 QStringList items = item->text(0).split(" ");
                 QString overhang = items.at(0);
                 QString strand =  items.count() > 1 ? items.at(1) : QString();
-                
+
                 QColor color = ( prevOverhang == overhang && strand != prevStrand ) ? Qt::green : Qt::red;
-                
+
                 prevItem->setTextColor(2, color);
                 item->setTextColor(0, color);
             }
@@ -302,7 +302,7 @@ void ConstructMoleculeDialog::sl_onEditFragmentButtonClicked()
     if (item == NULL) {
         return;
     }
-    
+
     int idx = molConstructWidget->indexOfTopLevelItem(item);
     DNAFragment& fragment = fragments[ selected[idx] ];
 
@@ -322,7 +322,7 @@ bool ConstructMoleculeDialog::eventFilter( QObject* obj , QEvent* event )
     if (obj == molConstructWidget && event->type() == QEvent::FocusOut) {
         molConstructWidget->clearSelection();
     }
-    
+
     return QDialog::eventFilter(obj, event);
 
 }
@@ -357,7 +357,7 @@ void ConstructMoleculeDialog::sl_onAddFromProjectButtonClicked()
                 continue;
             }
             U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
-            
+
             if (seqObj) {
                 CreateFragmentDialog dlg(seqObj, U2Region(0, seqObj->getSequenceLength()), this);
                 if (dlg.exec() == QDialog::Accepted) {
@@ -371,7 +371,7 @@ void ConstructMoleculeDialog::sl_onAddFromProjectButtonClicked()
                 }
             }
         }
-    }    
+    }
 }
 
 

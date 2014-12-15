@@ -66,7 +66,7 @@ QList<GObject*> SelectionUtils::findObjectsKeepOrder(GObjectType t, const MultiG
         QList<GObject*> tmp = findObjectsKeepOrder(t, s, f);
         res+=tmp;
     }
-    
+
     //now remove duplicates from list
     removeDuplicatesPointersFromList<GObject>(res);
 

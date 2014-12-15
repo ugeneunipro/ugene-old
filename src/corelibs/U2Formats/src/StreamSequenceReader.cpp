@@ -65,7 +65,7 @@ bool StreamSequenceReader::hasNext() {
                 break;
             }
         }
-    
+
     }
 
     if (currentSeq.isNull()) {
@@ -77,7 +77,7 @@ bool StreamSequenceReader::hasNext() {
 
 bool StreamSequenceReader::init( const QList<GUrl>& urls ) {
     foreach (const GUrl& url, urls) {
-        QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(url);    
+        QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(url);
         if (detectedFormats.isEmpty()) {
             taskInfo.setError(QString("File %1 unsupported format.").arg(url.getURLString()));
             break;
@@ -95,7 +95,7 @@ bool StreamSequenceReader::init( const QList<GUrl>& urls ) {
         ctx.io = io;
         readers.append(ctx);
     }
-    
+
     if (readers.isEmpty()) {
         taskInfo.setError("Unsupported file format or short reads list is empty");
         return false;

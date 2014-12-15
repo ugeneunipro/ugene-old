@@ -32,7 +32,7 @@ namespace U2 {
 
 class DocumentImporter;
 
-/** 
+/**
     Result of the format detection.
     contains score and ( format or importer ) instance pointer
 */
@@ -56,10 +56,10 @@ public:
 class U2CORE_EXPORT FormatDetectionConfig {
 public:
     FormatDetectionConfig() : bestMatchesOnly(true), useImporters(false), useExtensionBonus(true), excludeHiddenFormats(true) {}
-    
+
     /** if true format detection algorithm returns list of best matches only */
     bool bestMatchesOnly;
-    
+
     /** if false format detection algorithm do not test format importers and returns only real formats */
     bool useImporters;
 
@@ -75,26 +75,26 @@ class U2CORE_EXPORT DocumentUtils: public QObject    {
 public:
     /* returns set with document urls */
     static QSet<QString> getURLs(const QList<Document*>& docs);
-        
+
     /*  The set of urls that should not be used for new documents
-        returns list of loaded urls. Gets them from the active project 
+        returns list of loaded urls. Gets them from the active project
     */
     static QSet<QString> getNewDocFileNameExcludesHint();
 
     /* Detects document format. The best match goes first in the returned list */
     static QList<FormatDetectionResult> detectFormat(const GUrl& url, const FormatDetectionConfig& conf = FormatDetectionConfig());
 
-    /* 
-        Detects document format. The best match goes first in the returned list 
+    /*
+        Detects document format. The best match goes first in the returned list
         IOAdapter must be opened
     */
     static QList<FormatDetectionResult> detectFormat(IOAdapter* io, const FormatDetectionConfig& conf = FormatDetectionConfig());
 
-    /* 
-        Detects document format. The best match goes first in the returned list 
+    /*
+        Detects document format. The best match goes first in the returned list
         ext & url can be used here to add extension bonus to the final score
     */
-    static QList<FormatDetectionResult> detectFormat(const QByteArray& rawData, const QString& ext = QString(), 
+    static QList<FormatDetectionResult> detectFormat(const QByteArray& rawData, const QString& ext = QString(),
                                             const GUrl& url = GUrl(), const FormatDetectionConfig& conf = FormatDetectionConfig());
 
     /*

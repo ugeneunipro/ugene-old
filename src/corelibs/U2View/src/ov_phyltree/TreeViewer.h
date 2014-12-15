@@ -65,7 +65,7 @@ public:
     //from GObjectView
     virtual void buildStaticToolbar(QToolBar* tb);
     virtual void buildStaticMenu(QMenu* m);
-    
+
     void buildMSAEditorStaticToolbar(QToolBar* tb);
 
     void createActions();
@@ -286,7 +286,7 @@ private:
     void changeNamesDisplay(bool showNames);
     void changeDistancesDisplay(bool showDistances);
     void changeAlignmentSettings(bool alignLabels);
-    
+
     PhyTreeObject*      phyObject;
     GraphicsBranchItem* root;
     qreal               maxNameWidth;

@@ -149,13 +149,13 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
         break;
-    
+
     case '$':
         key = '4';
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
         break;
-    
+
     case '#':
         key = '3';
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);

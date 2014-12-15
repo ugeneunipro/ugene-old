@@ -97,7 +97,7 @@ void ChromaViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
     if (sw == NULL || sw->getSequenceObject() == NULL || findChromaObj(sw) == NULL) {
         return;
     }
-    
+
     ChromaViewAction* action = new ChromaViewAction();
     action->setIcon(QIcon(":chroma_view/images/cv.png"));
     action->setCheckable(true);
@@ -105,12 +105,12 @@ void ChromaViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
     action->addToMenu = true;
     action->addToBar = true;
     connect(action, SIGNAL(triggered()), SLOT(sl_showChromatogram()));
-    
+
     sw->addADVSequenceWidgetAction(action);
 
     // if chromatogram is enabled detailed sequence view is hidden
     sw->setDetViewCollapsed(true);
-    
+
     action->trigger();
 }
 
@@ -132,10 +132,10 @@ void ChromaViewContext::sl_showChromatogram() {
         }
         delete a->view;
         a->view = NULL;
-    } 
+    }
 }
 
-ChromaViewAction::ChromaViewAction() : ADVSequenceWidgetAction(CHROMA_ACTION_NAME, tr("show_chromatogram")), view(NULL) 
+ChromaViewAction::ChromaViewAction() : ADVSequenceWidgetAction(CHROMA_ACTION_NAME, tr("show_chromatogram")), view(NULL)
 {
 }
 

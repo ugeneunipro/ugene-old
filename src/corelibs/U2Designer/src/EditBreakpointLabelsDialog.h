@@ -66,7 +66,7 @@ private slots:
 private:
     void initExistingLabelsList(const QStringList &existingLabels);
     void addNewLabelToList(const QString &newLabel, bool appliedToCallingBreakpoint);
-    
+
     QMap<QWidget *, QString> applienceControlsForLabels;
 
     QStringList callingBreakpointLabels;

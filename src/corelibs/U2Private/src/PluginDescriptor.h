@@ -86,7 +86,7 @@ public:
 
 class U2PRIVATE_EXPORT PluginDescriptorHelper: public QObject {
     Q_OBJECT
-private: 
+private:
     PluginDescriptorHelper() {};
 public:
     static PluginDesc readPluginDescriptor(const QString& url, QString& error);

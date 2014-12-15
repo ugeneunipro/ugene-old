@@ -39,12 +39,12 @@ public:
 
 public slots:
     void accept();
-    
+
 private slots:
     void sl_browseFiles();
     void sl_compressToggled(bool isChecked);
     void sl_formatChanged(const QString &format);
-    
+
 private:
     void initLayout();
     void init(QString assemblyName);

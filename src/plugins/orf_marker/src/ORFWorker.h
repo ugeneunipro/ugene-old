@@ -45,11 +45,11 @@ class ORFWorker : public BaseWorker {
     Q_OBJECT
 public:
     ORFWorker(Actor* a);
-    
+
     virtual void init();
     virtual Task* tick();
     virtual void cleanup();
-    
+
 private slots:
     void sl_taskFinished();
 
@@ -57,8 +57,8 @@ protected:
     CommunicationChannel *input, *output;
     QString resultName,transId;
     ORFAlgorithmSettings cfg;
-    
-}; 
+
+};
 
 class ORFWorkerFactory : public DomainFactory {
 public:

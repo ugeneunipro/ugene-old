@@ -26,8 +26,8 @@ EDProjectItem* EDProjectTree::findEDItem(void* pData){
     return const_cast<EDProjectItem*>(root.findItemConnectedTo(pData));
 }
 
-CSFolder* EDProjectTree::findFolder(EDPICSDirectory *pFolder) const 
-{ 
+CSFolder* EDProjectTree::findFolder(EDPICSDirectory *pFolder) const
+{
     return const_cast<CSFolder*>(pFolder->getFolder());
 }
 
@@ -38,7 +38,7 @@ Signal*EDProjectTree::findSignal(const Signal* pSignal) const
 
 void EDProjectTree::addSubitem(EDProjectItem* subItem, EDProjectItem* parent){
 
-    parent->addChild(subItem);  
+    parent->addChild(subItem);
     updateTree(ED_ITEM_ADDED, subItem);
 }
 
@@ -51,7 +51,7 @@ void EDProjectTree::updateTree(int flag, EDProjectItem* item){
     case ED_ITEM_DELETED            :    /*deleteItem(pItem);*/  break;
     case ED_CURRENT_ITEM_CHANGED    :    setCurrentItem(item); emit si_changeProp(item); break;
     case ED_UPDATE_CHILDREN            :    updateChildren(item); break;
-    case ED_MRK_UPDATE              :   updateMarkup(); break; 
+    case ED_MRK_UPDATE              :   updateMarkup(); break;
     };
 }
 
@@ -93,12 +93,12 @@ void EDProjectTree::remake(){
 }
 
 void EDProjectTree::clearTree(){
-   root.takeChildren(); 
+   root.takeChildren();
    mrkRoot.takeChildren();
 }
 
 void EDProjectTree::internalRemake(EDProjectItem* subItem, EDProjectItem* parent){
-   
+
     subItem->setText(0, subItem->getName());
     subItem->setIcon(0, getItemIcon(subItem));
     subItem->setSortOrd(sortOrd);
@@ -110,7 +110,7 @@ void EDProjectTree::internalRemake(EDProjectItem* subItem, EDProjectItem* parent
             connect(item, SIGNAL(si_getMetaInfoBase()), SLOT(sl_setMetainfoBase()));
             internalRemake(item, subItem);
         }
-        
+
     }
     subItem->sortChildren(0, Qt::AscendingOrder);
     updateItemState(subItem);
@@ -120,7 +120,7 @@ void EDProjectTree::internalRemake(EDProjectItem* subItem, EDProjectItem* parent
 void EDProjectTree::updateItem(EDProjectItem* pItem){
     pItem->setText(0, pItem->getName());
     pItem->setIcon(0, getItemIcon(pItem));
- 
+
     QFont curFont = pItem->font(0);
     if (edData.isSignalSelected(pItem))
         curFont.setBold(true);
@@ -136,10 +136,10 @@ void EDProjectTree::updateItem(EDProjectItem* pItem){
             curFont.setBold(false);
         }
     }
-    
+
     pItem->setFont(0, curFont);
 
-    
+
 }
 void EDProjectTree::updateItemState(EDProjectItem *pItem){
     QFont curFont = pItem->font(0);
@@ -153,7 +153,7 @@ void EDProjectTree::updateItemState(EDProjectItem *pItem){
 
 
 void EDProjectTree::updateChildren(EDProjectItem* pItem){
-   
+
     for (int i=0; i<pItem->childCount(); i++){
         EDProjectItem* ch = dynamic_cast<EDProjectItem*>(pItem->child(i));
         internalRemake(ch, pItem);
@@ -169,7 +169,7 @@ void EDProjectTree::updateMarkup(){
         if(item){
             internalRemake(item, &mrkRoot);
         }
-    }    
+    }
 }
 
 void EDProjectTree::updateSequenceBase(EItemType type){
@@ -181,7 +181,7 @@ void EDProjectTree::updateSequenceBase(EItemType type){
                     item->update(true);
                     internalRemake(item, &seqRoot);
             }
-        }  
+        }
     }else{
         for (int i = 0; i < seqRoot.childCount(); i++){
             EDProjectItem* item = dynamic_cast<EDProjectItem*>(seqRoot.child(i));
@@ -191,13 +191,13 @@ void EDProjectTree::updateSequenceBase(EItemType type){
                     internalRemake(item, &seqRoot);
                 }
             }
-        }  
+        }
     }
 }
 
 void EDProjectTree::sl_propChanged(EDProjectItem* item, const EDPIProperty* prop, QString newVal){
     switch (item->getType()) {
-        case PIT_CS_FOLDER: 
+        case PIT_CS_FOLDER:
             if (prop->getName().compare("Name", Qt::CaseInsensitive) == 0) {
                 EDPICSDirectory* pPI = dynamic_cast<EDPICSDirectory*>(item);
                 CSFolder* pFolder = findFolder(pPI);
@@ -224,9 +224,9 @@ void EDProjectTree::sl_propChanged(EDProjectItem* item, const EDPIProperty* prop
 
             QString strName = "Name";
             QString strDescription = "Description";
-            
+
             QString strPropName = prop->getName();
-            if (strPropName.compare(strName, Qt::CaseInsensitive)==0) 
+            if (strPropName.compare(strName, Qt::CaseInsensitive)==0)
             {
                 CSFolder* pFolder = findFolder(pParent);
                 int nIndex = pFolder->getSignalIndexByName(newVal);
@@ -234,13 +234,13 @@ void EDProjectTree::sl_propChanged(EDProjectItem* item, const EDPIProperty* prop
                     QMessageBox mb(QMessageBox::Question, tr("Signal rename"), tr("Signal with the same name already exist. Replace?"), QMessageBox::Ok|QMessageBox::Cancel);
                     if(mb.exec()==QMessageBox::Ok)
                         pFolder->deleteSignal(nIndex);
-                    else 
+                    else
                         return;
                 }
                 pSignal->setName(newVal.toStdString());
-            } 
-            else 
-                if (strPropName.compare(strDescription, Qt::CaseInsensitive) == 0) 
+            }
+            else
+                if (strPropName.compare(strDescription, Qt::CaseInsensitive) == 0)
                 {
                     pSignal->setDescription(newVal.toStdString());
                 }
@@ -260,7 +260,7 @@ void EDProjectTree::sl_propChanged(EDProjectItem* item, const EDPIProperty* prop
         case PIT_CSN_MRK_ITEM:
             onCSNPropertyChanged(item, prop, newVal);
         return;
-    }    
+    }
 }
 
 void EDProjectTree::mousePressEvent(QMouseEvent *e){
@@ -282,7 +282,7 @@ void EDProjectTree::mouseDoubleClickEvent(QMouseEvent *e){
 
     QTreeWidgetItem* curItem = itemAt(e->pos());
     setCurrentItem(curItem, 0);
-    
+
     sl_addToShown();
 
     QTreeWidget::mouseDoubleClickEvent(e);
@@ -317,7 +317,7 @@ QMenu* EDProjectTree::chosePopupMen(EDProjectItem* pItem){
     }else if(pItem->getType() == PIT_MRK_ROOT){
         markupLettersAction->setEnabled(!edData.isLettersMarkedUp() && (edData.getNegSeqBase().getSize() > 0) && (edData.getPosSeqBase().getSize() > 0) );
         loadMarkupAction->setEnabled(edData.getPosSeqBase().getSize() > 0 && edData.getNegSeqBase().getSize() > 0);
-        return popupMenuMrkRoot;  
+        return popupMenuMrkRoot;
     }else if(pItem->getType() == PIT_SEQUENCE || pItem->getType() == PIT_CONTROLSEQUENCE){
         return popupMenuSequence;
     }else if(pItem->getType() == PIT_POSSEQUENCEBASE || pItem->getType() == PIT_NEGSEQUENCEBASE || pItem->getType() == PIT_CONTROLSEQUENCEBASE){
@@ -325,14 +325,14 @@ QMenu* EDProjectTree::chosePopupMen(EDProjectItem* pItem){
         if (!pItem)
         {
             return NULL;
-        } 
+        }
         generateReportAction->setEnabled(pBaseItem->getSequenceBase().getSize() != 0);
         exportToSequencesAction->setEnabled(pBaseItem->getSequenceBase().getSize() != 0);
         showFirstSequencesAction->setEnabled(pBaseItem->getSequenceBase().getSize() != 0);
         return popupMenuSequenceBase;
     }
     return NULL;
-      
+
 }
 
 QIcon EDProjectTree::getItemIcon(EDProjectItem* pItem){
@@ -456,8 +456,8 @@ void EDProjectTree::createPopupsAndActions(){
     sortFieldGroup->addAction(sortFieldNameAction);
     sortFieldGroup->addAction(sortFieldProbAction);
 
-    
- 
+
+
     popupMenuCS = new QMenu(this);
     popupMenuCS->addAction(selDeselSigAction);
     popupMenuCS->addAction(deletePIAction);
@@ -465,7 +465,7 @@ void EDProjectTree::createPopupsAndActions(){
     popupMenuCS->addAction(addSignalToMarkupAction);
     //popupMenuCS->addAction(setCurPriorAction);
     //popupMenuCS->addAction(clearCurPriorAction);
-    
+
 
     popupMenuDir = new QMenu(this);
     popupMenuDir->addAction(newFolderAction);
@@ -496,7 +496,7 @@ void EDProjectTree::createPopupsAndActions(){
     sortMenu->addMenu(fieldMenu);
 
     popupMenuDirRoot->addMenu(sortMenu);
- 
+
     popupMenuMrkRoot = new QMenu(this);
     popupMenuMrkRoot->addAction(markupLettersAction);
     popupMenuMrkRoot->addAction(loadMarkupAction);
@@ -515,14 +515,14 @@ void EDProjectTree::createPopupsAndActions(){
 void EDProjectTree::onCSNPropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue){
     EDPICSNode* pCSN = dynamic_cast<EDPICSNode*>(pItem);
     Operation* pOp = pCSN->getOperation();
-    
-    
+
+
     EDProjectItem *pParent = dynamic_cast<EDProjectItem*>(dynamic_cast<QTreeWidgetItem*>(pItem)->parent());
     QString strType = "Type";
 
 
     if (pProperty->getName().compare(strType, Qt::CaseInsensitive) == 0) {
-        
+
         Operation* pNewOp = createCSN(EDPIPropertyTypeListCSNodeTypes::getInstance()->getValueId(strNewValue));
         assert(pNewOp != NULL);
 
@@ -575,7 +575,7 @@ void EDProjectTree::onCSNPropertyChanged(EDProjectItem* pItem, const EDPIPropert
 
     while (pParent->getType() != PIT_CS) {
         pParent->update(false);
-        
+
         //pParent = findEDItem(dynamic_cast<EDProjectItem*>(dynamic_cast<QTreeWidgetItem*>(pParent)->parent()));
         pParent = dynamic_cast<EDProjectItem*>(dynamic_cast<QTreeWidgetItem*>(pParent)->parent());
         connect(pParent, SIGNAL(si_getMetaInfoBase()), SLOT(sl_setMetainfoBase()));
@@ -616,26 +616,26 @@ void EDProjectTree::onDistancePropertyChanged(EDProjectItem* pItem, const EDPIPr
                     mb.exec();
                 }
             }
-            else 
+            else
                 nValue = PINF;
             if (!bError) {
                 if (nValue >= iDist.getFrom()) {
                     iDist.setTo(nValue);
                     pOp->setDistance(iDist);
                 }
-                else{ 
+                else{
                     QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("The value must be grater than the lower bound"));
                     mb.exec();
                 }
             }
-        } else 
+        } else
             if (pProperty->getName().compare(strOrder, Qt::CaseInsensitive) == 0) {
                 int nId = EDPIPropertyTypeBool::getInstance()->getValueId(strNewValue);
                 if (nId == EDPIPropertyTypeBool::False)
                     pOp->setOrderImportant(false);
-                else 
+                else
                     pOp->setOrderImportant(true);
-            } else 
+            } else
                 if (pProperty->getName().compare(strDistanceType, Qt::CaseInsensitive) == 0) {
                     int nId = EDPIPropertyTypeDistType::getInstance()->getValueId(strNewValue);
                     pOp->setDistanceType((EDistType)nId);
@@ -680,7 +680,7 @@ void EDProjectTree::onRepetitionPropertyChanged(EDProjectItem* pItem, const EDPI
                     mb.exec();
                 }
             }
-            else 
+            else
                 nValue = PINF;
             if (!bError) {
                 if (nValue >= iDist.getFrom()) {
@@ -692,7 +692,7 @@ void EDProjectTree::onRepetitionPropertyChanged(EDProjectItem* pItem, const EDPI
                     mb.exec();
                 }
             }
-        } else 
+        } else
             if (pProperty->getName().compare(strCountFrom, Qt::CaseInsensitive) == 0) {
                 DDisc::Interval iCount = pOp->getCount();
                 int nValue =0;
@@ -723,7 +723,7 @@ void EDProjectTree::onRepetitionPropertyChanged(EDProjectItem* pItem, const EDPI
                             mb.exec();
                         }
                     }
-                } else 
+                } else
                     if (pProperty->getName().compare(strDistanceType, Qt::CaseInsensitive) == 0) {
                         int nId = EDPIPropertyTypeDistType::getInstance()->getValueId(strNewValue);
                         pOp->setDistanceType((EDistType)nId);
@@ -764,7 +764,7 @@ void EDProjectTree::onIntervalPropertyChanged(EDProjectItem* pItem, const EDPIPr
                     mb.exec();
                 }
             }
-            else 
+            else
                 nValue = PINF;
             if (!bError) {
                 if (nValue >= iInt.getFrom()) {
@@ -817,7 +817,7 @@ void EDProjectTree::onMrkItemPropertyChanged(EDProjectItem* pItem, const EDPIPro
     if (pProperty->getName().compare(strFamily, Qt::CaseInsensitive) == 0) {
         pTS->setFamily(strNewValue.toStdString().c_str());
     }
-    else 
+    else
         if (pProperty->getName().compare(strSignal, Qt::CaseInsensitive) == 0) {
             pTS->setName(strNewValue.toStdString().c_str());
         }
@@ -911,7 +911,7 @@ void EDProjectTree::deleteFolder(EDPICSFolder* pPI){
     edData.clearScores();
 }
 void EDProjectTree::deleteSignal(EDPICS* pPI){
-    
+
     if(edData.isSignalSelected(pPI)){
         edData.clearScores();
     }
@@ -930,21 +930,21 @@ void EDProjectTree::deleteSignal(EDPICS* pPI){
 
 void EDProjectTree::updateSorting(){
 
-    
+
 //     for (int i = 0; i < seqRoot.childCount(); i++){
 //         EDProjectItem* item = dynamic_cast<EDProjectItem*>(seqRoot.child(i));
 //         if(item){
-//            item->setSortField(sortField); 
+//            item->setSortField(sortField);
 //            item->setSortOrd(sortOrd);
 //            updateSortingRecurs(item);
 //         }
 //     }
-// 
+//
 //     for (int i = 0; i < mrkRoot.childCount(); i++){
 //         EDProjectItem* item = dynamic_cast<EDProjectItem*>(mrkRoot.child(i));
 //         if(item){
-//             item->setSortField(sortField); 
-//             item->setSortOrd(sortOrd); 
+//             item->setSortField(sortField);
+//             item->setSortOrd(sortOrd);
 //             updateSortingRecurs(item);
 //         }
 //     }
@@ -952,7 +952,7 @@ void EDProjectTree::updateSorting(){
     for (int i = 0; i < root.childCount(); i++){
         EDProjectItem* item = dynamic_cast<EDProjectItem*>(root.child(i));
         if(item){
-            item->setSortField(sortField); 
+            item->setSortField(sortField);
             item->setSortOrd(sortOrd);
             updateSortingRecurs(item);
         }
@@ -960,15 +960,15 @@ void EDProjectTree::updateSorting(){
 //     seqRoot.sortChildren(0, Qt::AscendingOrder);
 //     mrkRoot.sortChildren(0, Qt::AscendingOrder);
     root.sortChildren(0, Qt::AscendingOrder);
-   
+
 }
 
 void EDProjectTree::updateSortingRecurs(EDProjectItem* pItem){
-    
+
     for (int i = 0; i < pItem->childCount(); i++){
         EDProjectItem* item = dynamic_cast<EDProjectItem*>(pItem->child(i));
         if(item){
-            item->setSortField(sortField); 
+            item->setSortField(sortField);
             item->setSortOrd(sortOrd);
             updateSortingRecurs(item);
         }
@@ -1103,7 +1103,7 @@ void EDProjectTree::sl_setMetainfoBase(){
     }
 
     item->setMetainfoBase(&edData.getDescriptionBase());
-    
+
 }
 
 void EDProjectTree::sl_generateReport(){
@@ -1131,17 +1131,17 @@ void EDProjectTree::sl_exportSequences(){
 //     saveRepDialog.setNameFilter(tr("Fasta Files (*.fa *.fasta)"));
 //     saveRepDialog.setViewMode(QFileDialog::Detail);
 //     saveRepDialog.setAcceptMode(QFileDialog::AcceptSave);
-// 
+//
 //     if(saveRepDialog.exec()){
 //         QStringList fileNames = saveRepDialog.selectedFiles();
 //         if(fileNames.isEmpty()) return;
-// 
+//
 //         QString fileName = fileNames.first();
-// 
+//
 //         GUrl URL(strNegName);
 //         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
 //         DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
-// 
+//
 //         negDoc = f->createNewUnloadedDocument(iof, URL, stateInfo);
 //         CHECK_OP(stateInfo,);
 //         addSubTask(new LoadUnloadedDocumentTask(negDoc));

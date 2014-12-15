@@ -101,7 +101,7 @@ QDataStream &operator<<(QDataStream &out, const GObjectReference &myObj);
 QDataStream &operator>>(QDataStream &in, GObjectReference &myObj);
 QDataStream &operator<<(QDataStream &out, const GObjectRelation &myObj);
 QDataStream &operator>>(QDataStream &in, GObjectRelation &myObj);
-    
+
 
 }//namespace
 

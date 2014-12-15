@@ -40,7 +40,7 @@ public:
 
     inline QList<bool>& getSelected() { return selected; }
     inline bool hasIndex() { return _hasIndex; }
-    inline bool isReferenceSelected(int id) { if(id == -1) return unmappedSelected; else return selected.at(id); } 
+    inline bool isReferenceSelected(int id) { if(id == -1) return unmappedSelected; else return selected.at(id); }
     inline Index& getIndex() { return index; }
     inline const Header& getHeader() { return header; }
     inline bool isUnmappedSelected() { return unmappedSelected; }
@@ -63,7 +63,7 @@ public:
     inline BAMInfo& getInfo() { return bamInfo; }
     const GUrl& getSourceUrl() const;
     bool isSam() const { return sam; }
-private:    
+private:
     const GUrl sourceUrl;
     BAMInfo bamInfo;
     bool sam;

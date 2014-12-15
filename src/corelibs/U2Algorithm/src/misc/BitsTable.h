@@ -36,7 +36,7 @@ public:
 
     quint32 RAW_BITS[256];
     const static quint32 RAW_BITS_SIZE;
-    
+
     BitsTable();
     virtual ~BitsTable(){}
 

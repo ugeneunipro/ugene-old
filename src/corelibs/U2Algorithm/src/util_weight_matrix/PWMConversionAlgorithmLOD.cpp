@@ -25,7 +25,7 @@
 
 namespace U2 {
 
-PWMConversionAlgorithmFactoryLOD::PWMConversionAlgorithmFactoryLOD(QObject* p) 
+PWMConversionAlgorithmFactoryLOD::PWMConversionAlgorithmFactoryLOD(QObject* p)
 : PWMConversionAlgorithmFactory(BuiltInPWMConversionAlgorithms::LOD_ALGO, p)
 {
 }

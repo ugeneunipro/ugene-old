@@ -190,7 +190,7 @@ GObject *WorkflowDebugMessageParserImpl::fetchObjectFromMessage( const QString &
     SAFE_POINT( messageData.canConvert<SharedDbiDataHandler>( ),
         "Supplied message doesn't contain DB reference", NULL );
     SharedDbiDataHandler objectId = messageData.value<SharedDbiDataHandler>( );
-    
+
     if ( BaseSlots::DNA_SEQUENCE_SLOT( ).getId( ) == messageType ) {
         result = StorageUtils::getSequenceObject( context->getDataStorage( ), objectId );
     } else if ( BaseSlots::MULTIPLE_ALIGNMENT_SLOT( ).getId( ) == messageType ) {

@@ -38,7 +38,7 @@
 
 namespace U2 {
 
-WorkflowSettingsPageController::WorkflowSettingsPageController(QObject* p) 
+WorkflowSettingsPageController::WorkflowSettingsPageController(QObject* p)
 : AppSettingsGUIPageController(tr("Workflow Designer"), WorkflowSettingsPageId, p) {}
 
 
@@ -133,7 +133,7 @@ void WorkflowSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     lockBox->setChecked(state->lockRun);
     debuggerBox->setChecked(state->enableDebugger);
     int idx = styleCombo->findData(state->style);
-    if (idx < 0) idx = 1; 
+    if (idx < 0) idx = 1;
     styleCombo->setCurrentIndex(idx);
     fontCombo->setCurrentFont(state->font);
     dirEdit->setText(state->path);

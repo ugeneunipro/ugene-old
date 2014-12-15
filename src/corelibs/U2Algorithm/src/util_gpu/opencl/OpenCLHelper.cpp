@@ -246,7 +246,7 @@ namespace U2 {
             status = Error_BadDriverLib;
             return;
         }
-        
+
         status = Error_NoError;
     }
 

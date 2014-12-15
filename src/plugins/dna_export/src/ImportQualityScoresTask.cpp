@@ -43,27 +43,27 @@ ReadQualityScoresTask::ReadQualityScoresTask( const QString& file, DNAQualityTyp
 #define READ_BUF_SIZE 4096
 
 void ReadQualityScoresTask::run() {
-    
+
     if (!checkRawData()) {
         return;
     }
-    
+
     IOAdapterFactory* f = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     QScopedPointer<IOAdapter> io( f->createIOAdapter() );
-    
+
     if (!io->open(fileName, IOAdapterMode_Read) ) {
         stateInfo.setError("Can not open quality file");
         return;
     }
-    
+
     int headerCounter = -1;
     QByteArray readBuf(READ_BUF_SIZE+1, 0);
     char* buf = readBuf.data();
     int lineCount = 0;
-    
+
     while (!stateInfo.cancelFlag) {
-        
-        int len = io->readUntil(buf, READ_BUF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include); 
+
+        int len = io->readUntil(buf, READ_BUF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include);
         ++lineCount;
         stateInfo.progress = io->getProgress();
 
@@ -79,7 +79,7 @@ void ReadQualityScoresTask::run() {
             values.clear();
             ++headerCounter;
             continue;
-        } 
+        }
 
         QByteArray valsBuf = readBuf.mid(0, len).trimmed();
         if (format == DNAQuality::QUAL_FORMAT) {
@@ -93,7 +93,7 @@ void ReadQualityScoresTask::run() {
                         return;
                     }
                 }
-            } 
+            }
         } else {
             encodedQuality = valsBuf;
         }
@@ -112,7 +112,7 @@ void ReadQualityScoresTask::recordQuality( int headerCounter )
             foreach (int v, values) {
                 char code = DNAQuality::encode(v, type);
                 qualCodes.append(code);
-            } 
+            }
         } else {
             qualCodes = encodedQuality;
         }
@@ -137,7 +137,7 @@ bool ReadQualityScoresTask::checkRawData()
     }
     int len =  io->readBlock(buf.data(), RAW_BUF_SIZE);
     if (len == 0 || len == -1) {
-        setError(tr("Failed to read data from quality file %1, probably it is empty. %2").arg(fileName).arg(io->errorString()));         
+        setError(tr("Failed to read data from quality file %1, probably it is empty. %2").arg(fileName).arg(io->errorString()));
         return false;
     }
     if (buf[0] != '>') {
@@ -147,7 +147,7 @@ bool ReadQualityScoresTask::checkRawData()
 
     io->close();
     return true;
-    
+
 }
 
 
@@ -157,7 +157,7 @@ bool ReadQualityScoresTask::checkRawData()
 ImportPhredQualityScoresTask::ImportPhredQualityScoresTask(const QList<U2SequenceObject*>& sequences, ImportQualityScoresConfig& cfg )
 : Task("ImportPhredQualityScores", TaskFlags_NR_FOSCOE), readQualitiesTask(NULL), config(cfg), seqList(sequences)
 {
-    
+
 }
 
 void ImportPhredQualityScoresTask::prepare() {

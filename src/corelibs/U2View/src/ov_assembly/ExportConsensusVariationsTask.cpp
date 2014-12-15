@@ -50,14 +50,14 @@ ExportConsensusVariationsTask::ExportConsensusVariationsTask(const ExportConsens
 
 void ExportConsensusVariationsTask::prepare() {
      SAFE_POINT_EXT(!settings.fileName.isEmpty(), setError(tr("File name cannot be empty")),);
- 
+
      DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(settings.formatId);
      SAFE_POINT_EXT(df != NULL, setError(tr("Internal: couldn't find document format with id '%1'").arg(settings.formatId)),);
- 
+
      IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(settings.fileName));
      resultDocument = df->createNewLoadedDocument(iof, settings.fileName, stateInfo);
      CHECK_OP(stateInfo, );
- 
+
      // If the input region length is more than REGION_TO_ANALAYZE,
      // divide the analysis into iterations
      int iterNum = 0;
@@ -65,7 +65,7 @@ void ExportConsensusVariationsTask::prepare() {
      do
      {
          U2Region iterRegion;
- 
+
          if (wholeRegionLength <= REGION_TO_ANALAYZE) {
              iterRegion = U2Region(settings.region.startPos + iterNum * REGION_TO_ANALAYZE, wholeRegionLength);
              wholeRegionLength = 0;
@@ -73,19 +73,19 @@ void ExportConsensusVariationsTask::prepare() {
              iterRegion = U2Region(settings.region.startPos + iterNum * REGION_TO_ANALAYZE, REGION_TO_ANALAYZE);
              wholeRegionLength -= REGION_TO_ANALAYZE;
          }
- 
+
          consensusRegions.enqueue(iterRegion);
- 
+
          iterNum++;
      } while (wholeRegionLength != 0);
- 
+
      consensusTask = new AssemblyConsensusWorker(this);
      consensusTask->setSubtaskProgressWeight(100);
      addSubTask(consensusTask);
 
      U2VariantTrack track = U2VariationUtils::createVariantTrack(resultDocument->getDbiRef(), settings.seqObjName, stateInfo);
      CHECK_OP(stateInfo, );
-    
+
      U2EntityRef trackRef(resultDocument->getDbiRef(), track.id);
      varTrackObject = new VariantTrackObject(settings.seqObjName, trackRef);
 

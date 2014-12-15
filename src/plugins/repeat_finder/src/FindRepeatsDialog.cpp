@@ -71,8 +71,8 @@ FindRepeatsTaskSettings FindRepeatsDialog::defaultSettings()
     return res;
 }
 
-FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc) 
-: QDialog(_sc->getAnnotatedDNAView()->getWidget()) 
+FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
+: QDialog(_sc->getAnnotatedDNAView()->getWidget())
 {
     sc = _sc;
     setupUi(this);
@@ -82,7 +82,7 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     tabWidget->setCurrentIndex(0);
-    
+
     CreateAnnotationModel m;
     m.hideLocation = true;
     m.data.name = GBFeatureUtils::getKeyInfo(GBFeatureKey_repeat_unit).text;
@@ -90,7 +90,7 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     m.useUnloadedObjects = true;
     m.sequenceLen = sc->getSequenceObject()->getSequenceLength();
     ac = new CreateAnnotationWidgetController(m, this);
-    
+
     QWidget* caw = ac->getWidget();
     QVBoxLayout* l = new QVBoxLayout();
     l->setMargin(0);
@@ -144,7 +144,7 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     connect(maxDistBox, SIGNAL(valueChanged(int)), SLOT(sl_maxDistChanged(int)));
     connect(minDistCheck, SIGNAL(toggled(bool)), SLOT(sl_minMaxToggle(bool)));
     connect(maxDistCheck, SIGNAL(toggled(bool)), SLOT(sl_minMaxToggle(bool)));
-    
+
     updateStatus();
 
     setWindowIcon(QIcon(":/ugene/images/ugene_16.png"));
@@ -245,13 +245,13 @@ void FindRepeatsDialog::accept() {
         return;
     }
     QVector<U2Region> fitRegions, aroundRegions, filterRegions;
-    if (!getRegions(annotationFitCheck, annotationFitEdit, fitRegions) 
-        || !getRegions(annotationAroundKeepCheck, annotationAroundKeepEdit, aroundRegions) 
-        || !getRegions(annotationAroundFilterCheck, annotationAroundFilterEdit, filterRegions)) 
+    if (!getRegions(annotationFitCheck, annotationFitEdit, fitRegions)
+        || !getRegions(annotationAroundKeepCheck, annotationAroundKeepEdit, aroundRegions)
+        || !getRegions(annotationAroundFilterCheck, annotationAroundFilterEdit, filterRegions))
     {
         return;
     }
-    
+
     RFAlgorithm algo = algoCheck->isChecked() ? RFAlgorithm(algoCombo->itemData(algoCombo->currentIndex()).toInt()) : RFAlgorithm_Auto;
 
     RepeatsFilterAlgorithm locFilter = RepeatsFilterAlgorithm(filterAlgorithms->itemData(filterAlgorithms->currentIndex()).toInt());
@@ -283,7 +283,7 @@ void FindRepeatsDialog::accept() {
         QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
         return;
     }
-    
+
     settings.seqRegion = U2Region(0, seqPart.length());
     settings.reportSeqShift = settings.reportSeq2Shift = range.startPos;
 
@@ -295,11 +295,11 @@ void FindRepeatsDialog::accept() {
         }
     }
 
-    FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, seqPart, 
+    FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, seqPart,
         cam.data.name, cam.groupName, cam.annotationObjectRef);
 
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
-    
+
     saveState();
     QDialog::accept();
 }
@@ -335,7 +335,7 @@ quint64 FindRepeatsDialog::areaSize() const {
     int maxDist = maxDistCheck->isChecked() ? maxDistBox->value(): sc->getSequenceLength();
 
     quint64 dRange = qMax(0, maxDist - minDist);
-    
+
     quint64 res = range * dRange;
     return res;
 }
@@ -343,7 +343,7 @@ quint64 FindRepeatsDialog::areaSize() const {
 int FindRepeatsDialog::estimateResultsCount() const {
     assert(identityBox->value() == 100);
     int len = minLenBox->value();
-    
+
     quint64 nVariations  = areaSize(); //max possible results
     double variationsPerLen = pow(double(4), double(len));
     quint64 res = quint64(nVariations / variationsPerLen);

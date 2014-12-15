@@ -54,24 +54,24 @@ class U2LANG_EXPORT AttributeScript {
 public:
     AttributeScript(const QString & text);
     AttributeScript() {}
-    
+
     bool isEmpty() const;
-    
+
     void setScriptText(const QString & t);
     const QString & getScriptText() const;
-    
+
     void setScriptVar(const Descriptor & desc, const QVariant & val);
     const QMap<Descriptor, QVariant> & getScriptVars() const;
     void clearScriptVars();
-    
+
     bool hasVarWithId(const QString & varName)const;
     bool hasVarWithDesc(const QString & varName)const;
     void setVarValueWithId(const QString & varName, const QVariant & value);
-    
+
 private:
     QString                         text;
     QMap<Descriptor, QVariant>      vars; // (desc, val)
-    
+
 }; // AttributeScript
 
 /**
@@ -89,11 +89,11 @@ enum AttributeGroup {
 class U2LANG_EXPORT Attribute : public Descriptor {
 public:
     Attribute(const Descriptor& d, const DataTypePtr type, bool required = false, const QVariant & defaultValue = QVariant());
-    
+
     // getters/setters
     const DataTypePtr getAttributeType()const;
     bool isRequiredAttribute() const;
-    
+
     virtual void setAttributeValue(const QVariant & newVal);
     // attribute value is kept in qvariant
     // but it can be transformed to value of specific type using scripting or not (see getAttributeValue)
@@ -101,7 +101,7 @@ public:
     virtual const QVariant &getDefaultPureValue() const;
     virtual bool isDefaultValue() const;
 
-    
+
     // base realization without scripting. to support scripting for other types: see template realizations
     template<typename T> T getAttributeValue(Workflow::WorkflowContext *) const {
         return getAttributeValueWithoutScript<T>();
@@ -110,11 +110,11 @@ public:
     template<typename T> T getAttributeValueWithoutScript() const {
         return value.value<T>();
     }
-    
+
     const AttributeScript & getAttributeScript() const;
     // used to change script data
     AttributeScript & getAttributeScript();
-    
+
     // stores value and script data in variant
     // used in saving schema to xml
     QVariant toVariant() const;
@@ -141,10 +141,10 @@ public:
 
     virtual bool validate(ProblemList &problemList);
 
-    
+
 private:
     void debugCheckAttributeId() const;
-    
+
 protected:
     // type of value
     const DataTypePtr   type;
@@ -161,7 +161,7 @@ protected:
 
     QVector<const AttributeRelation*> relations;
     QList<PortRelationDescriptor>     portRelations;
-    
+
 }; // Attribute
 
 
@@ -178,11 +178,11 @@ inline QString Attribute::getAttributeValue(Workflow::WorkflowContext *ctx) cons
         assert(!key.getId().isEmpty());
         scriptVars[key.getId()] = engine.newVariant(scriptData.getScriptVars().value(key));
     }
-    
+
     TaskStateInfo tsi;
     WorkflowScriptLibrary::initEngine(&engine);
     QScriptValue scriptResult = ScriptTask::runScript(&engine, scriptVars, scriptData.getScriptText(), tsi);
-    
+
     // FIXME: report errors!
     // FIXME: write to log
     if( tsi.cancelFlag ) {
@@ -197,7 +197,7 @@ inline QString Attribute::getAttributeValue(Workflow::WorkflowContext *ctx) cons
     if( scriptResult.isString() ) {
         return scriptResult.toString();
     }
-    
+
     return QString();
 }
 

@@ -115,7 +115,7 @@ void DNAStatMSAProfileDialog::accept() {
 
 //////////////////////////////////////////////////////////////////////////
 // task
-DNAStatMSAProfileTask::DNAStatMSAProfileTask(const DNAStatMSAProfileTaskSettings& _s) 
+DNAStatMSAProfileTask::DNAStatMSAProfileTask(const DNAStatMSAProfileTaskSettings& _s)
 : Task(tr("Generate alignment profile"), TaskFlag_None), s(_s)
 {
     setVerboseLogMode(true);
@@ -126,7 +126,7 @@ void DNAStatMSAProfileTask::run() {
     if (hasError()) {
         return;
     }
-    
+
     if (s.outFormat != DNAStatMSAProfileOutputFormat_Show && s.outURL.isEmpty()) {
         setError(tr("No output file name specified"));
         return;
@@ -134,17 +134,17 @@ void DNAStatMSAProfileTask::run() {
     if (s.outFormat == DNAStatMSAProfileOutputFormat_Show || s.outFormat == DNAStatMSAProfileOutputFormat_HTML) {
         int maxVal = s.usePercents ? 100 : s.ma.getNumRows();
         QString colors[] = {"#ff5555", "#ff9c00", "#60ff00", "#a1d1e5", "#dddddd"};
-        
+
         //setup style
         resultText= "<STYLE TYPE=\"text/css\"><!-- \n";
         resultText+="table.tbl   {\n border-width: 1px;\n border-style: solid;\n border-spacing: 0;\n border-collapse: collapse;\n}\n";
         resultText+="table.tbl td{\n max-width: 200px;\n min-width: 20px;\n text-align: center;\n border-width: 1px;\n ";
         resultText+="border-style: solid;\n margin:0px;\n padding: 0px;\n}\n";
         resultText+="--></STYLE>\n";
-        
+
         //header
         resultText+= "<h2>" + tr("Multiple Sequence Alignment Grid Profile") + "</h2><br>\n";
-        
+
         resultText+="<table>\n";
         resultText+= "<tr><td><b>"+tr("Alignment file:") + "</b></td><td>" + s.profileURL + "@" + s.profileName+ "</td></tr>\n";
         resultText+= "<tr><td><b>"+tr("Table content:") + "</b></td><td>" +(s.usePercents ? tr("symbol percents") : tr("symbol counts")) + "</td></tr>\n";
@@ -208,7 +208,7 @@ void DNAStatMSAProfileTask::run() {
             resultText+="</tr>\n";
         }
         resultText+="</table>\n";
-        
+
         //legend:
         resultText+="<br><br>\n";
         resultText+= "<table><tr><td><b>" + tr("Legend:")+"&nbsp;&nbsp;</b>\n";
@@ -238,7 +238,7 @@ void DNAStatMSAProfileTask::run() {
             resultText+="\n";
         }
     }
-    
+
     if (s.outFormat != DNAStatMSAProfileOutputFormat_Show) {
         QFile f(s.outURL);
         bool ok = f.open(QIODevice::Truncate | QIODevice::WriteOnly);

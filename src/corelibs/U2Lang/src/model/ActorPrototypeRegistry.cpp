@@ -27,7 +27,7 @@ void ActorPrototypeRegistry::registerProto(const Descriptor& group, ActorPrototy
     // debug check for proto name
     QString id = proto->getId(); Q_UNUSED(id);
     assert(!id.contains("."));
-    
+
     groups[group].append(proto);
     emit si_registryModified();
 }

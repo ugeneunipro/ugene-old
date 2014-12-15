@@ -78,7 +78,7 @@ protected:
  * Base class for dbi classes.
  * Its inheritors must have this public method for constructing new instances:
  * static QScriptValue constructor(QScriptContext *ctx, QScriptEngine *engine);
- * 
+ *
  * and this public field for keeping script class name:
  * static const QString CLASS_NAME;
  */

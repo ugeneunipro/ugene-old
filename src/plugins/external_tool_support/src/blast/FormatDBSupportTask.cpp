@@ -135,7 +135,7 @@ QString FormatDBSupportTask::prepareLink( const QString &path ) const {
     if (preparedPath.endsWith("'") || preparedPath.endsWith("\"")) {
         preparedPath.chop(1);
     }
-    return "<a href=\"file:///" + QDir::toNativeSeparators(preparedPath) + "\">" + 
+    return "<a href=\"file:///" + QDir::toNativeSeparators(preparedPath) + "\">" +
         QDir::toNativeSeparators(preparedPath) + "</a><br>";
 }
 

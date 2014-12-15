@@ -116,7 +116,7 @@ public:
 protected:
     struct CutSiteDrawData {
         CutSiteDrawData():direct(true), pos(0){}
-        QRect r; 
+        QRect r;
         QColor color;
         bool direct;
         int pos;

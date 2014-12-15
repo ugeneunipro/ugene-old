@@ -40,7 +40,7 @@ class DocumentProviderTask;
 
 class CAP3SupportTaskSettings {
 public:
-    CAP3SupportTaskSettings() 
+    CAP3SupportTaskSettings()
     {
         openView = true;
         bandExpansionSize = defaultBandExpansionSize;
@@ -59,7 +59,7 @@ public:
         clippingRange = defaultClippingRange;
         reverseReads = defaultReverseReads;
     }
-    
+
     QStringList getArgumentsList();
 
     QStringList inputFiles;

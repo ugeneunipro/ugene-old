@@ -53,15 +53,15 @@ class GTest_CheckPhyNodeHasSibling : public GTest {
     QString treeContextName;
     QString nodeName;
     QString siblingName;
-    
+
 };
 
 class GTest_CheckPhyNodeBranchDistance : public GTest {
     Q_OBJECT
         SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckPhyNodeBranchDistance, "check-phynode-branch-distance");
- 
+
     ReportResult report();
- 
+
     QString treeContextName;
     QString nodeName;
     double distance;

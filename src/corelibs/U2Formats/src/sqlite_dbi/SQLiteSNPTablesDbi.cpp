@@ -118,7 +118,7 @@ void SQLiteSNPTablesDbi::createDamageEffect( DamageEffect& effect, U2OpStatus& o
         " gerpConserved, allFreq, hapmap, gerpScore, inDbSNP, discardFilter, coding, frameshift) "
         " VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19)");
 
-    QSharedPointer<SQLiteQuery> q1 = t.getPreparedQuery(queryString, db, os); 
+    QSharedPointer<SQLiteQuery> q1 = t.getPreparedQuery(queryString, db, os);
     q1->bindDataId(1, effect.variant);
     q1->bindString(2, effect.affectedGeneName);
     q1->bindDouble(3, effect.siftEffectValue);
@@ -139,7 +139,7 @@ void SQLiteSNPTablesDbi::createDamageEffect( DamageEffect& effect, U2OpStatus& o
     q1->bindInt32(18, effect.coding ? 1 : 0);
     q1->bindInt32(19, effect.frameshift ? 1 : 0);
     q1->insert();
-    SAFE_POINT_OP(os,); 
+    SAFE_POINT_OP(os,);
 }
 
 void SQLiteSNPTablesDbi::createDamageEffectIndex( U2OpStatus& os ){
@@ -181,7 +181,7 @@ class SimpleDamageEffectLoader : public SqlRSLoader<DamageEffect> {
         de.allFreq = q->getDouble(12);
         de.hapmap = q->getDouble(13);
         de.gerpScore = q->getDouble(14);
-        
+
 
         de.inDbSNP = (q->getInt32(15) == 0 ? false : true);
 
@@ -201,7 +201,7 @@ U2DbiIterator<DamageEffect>* SQLiteSNPTablesDbi::getDamageEffectsForVariant( con
         " FROM DamageEffect WHERE variant = ?1", db, os);
     q->bindDataId(1, variantId);
 
-    return new SqlRSIterator<DamageEffect>(q, new SimpleDamageEffectLoader(), NULL, DamageEffect(), os); 
+    return new SqlRSIterator<DamageEffect>(q, new SimpleDamageEffectLoader(), NULL, DamageEffect(), os);
 }
 
 class SimpleRegulatoryEffectLoader : public SqlRSLoader<RegulatoryEffect> {
@@ -238,7 +238,7 @@ void SQLiteSNPTablesDbi::removeAllRegulatoryEffectForVariant(const U2Variant& va
         " FROM RegulatoryEffect WHERE variant = ?1", db, os);
     q->bindDataId(1, variant);
 
-    return new SqlRSIterator<RegulatoryEffect>(q, new SimpleRegulatoryEffectLoader(), NULL, RegulatoryEffect(), os); 
+    return new SqlRSIterator<RegulatoryEffect>(q, new SimpleRegulatoryEffectLoader(), NULL, RegulatoryEffect(), os);
 }
 
 /*
@@ -279,7 +279,7 @@ void SQLiteSNPTablesDbi::createFilterTable( FilterTable& table, const QString& f
 
 void SQLiteSNPTablesDbi::removeFilterTable( const FilterTable& table, U2OpStatus& os )
 {
-    
+
     QString filterTableString = QString("table_%1").arg(U2DbiUtils::toDbiId(table.id));
     SQLiteQuery q1(QString("DROP TABLE IF EXISTS FilterTable_%1").arg(filterTableString), db, os);
     q1.execute();
@@ -330,7 +330,7 @@ void SQLiteSNPTablesDbi::addVariantsToTable( const U2DataId& fTable, const U2Dat
         SAFE_POINT_OP(os,);
     }
 
-    
+
 }
 /*
 U2::FilterTable SQLiteSNPTablesDbi::getFilterTableByName( const QString& filterName, U2OpStatus& os )
@@ -352,7 +352,7 @@ class SimpleFilteredVariantLoader: public SqlRSLoader<FilterTableItem> {
 public:
     FilterTableItem load(SQLiteQuery* q) {
         FilterTableItem item;
-        
+
         item.variantTrackId = q->getDataId(0, U2Type::VariantTrack);
         item.trackType = (VariantTrackType)(q->getInt32(1));
 
@@ -392,7 +392,7 @@ U2DbiIterator<FilterTableItem>* SQLiteSNPTablesDbi::getVariantsRange( const U2Da
     if (tType != TrackType_All){
         q->bindInt32(3, tType);
     }
-    
+
     return new SqlRSIterator<FilterTableItem>(q, new SimpleFilteredVariantLoader(), NULL, FilterTableItem(), os);
 }
 */
@@ -413,7 +413,7 @@ int SQLiteSNPTablesDbi::getVariantCount( const U2DataId& fTable, VariantTrackTyp
         return -1;
     }
 
-    return q.getInt32(0); 
+    return q.getInt32(0);
 }
 
 
@@ -422,17 +422,17 @@ void SQLiteSNPTablesDbi::markNotAnnotated( const U2DataId& variant, U2OpStatus& 
     SQLiteTransaction t(db, os);
     static QString queryString("INSERT INTO NotAnnotatedVariations(variant) VALUES(?1)");
 
-    QSharedPointer<SQLiteQuery> q1 = t.getPreparedQuery(queryString, db, os); 
+    QSharedPointer<SQLiteQuery> q1 = t.getPreparedQuery(queryString, db, os);
     q1->bindDataId(1, variant);
     q1->insert();
-    SAFE_POINT_OP(os,); 
+    SAFE_POINT_OP(os,);
 }
 
 void SQLiteSNPTablesDbi::markAnnotated( const U2DataId& variant, U2OpStatus& os ){
     SQLiteTransaction t(db, os);
     static QString queryString("DELETE FROM NotAnnotatedVariations WHERE variant = ?1");
 
-    QSharedPointer<SQLiteQuery> q1 = t.getPreparedQuery(queryString, db, os); 
+    QSharedPointer<SQLiteQuery> q1 = t.getPreparedQuery(queryString, db, os);
 
     q1->bindDataId(1, variant);
     q1->execute();
@@ -443,14 +443,14 @@ int SQLiteSNPTablesDbi::checkNotAnnotated( const U2DataId& variant, U2OpStatus& 
     SQLiteTransaction t(db, os);
     static QString queryString("SELECT COUNT(*) FROM NotAnnotatedVariations WHERE variant = ?1");
 
-    QSharedPointer<SQLiteQuery> q1 = t.getPreparedQuery(queryString, db, os); 
+    QSharedPointer<SQLiteQuery> q1 = t.getPreparedQuery(queryString, db, os);
 
     q1->bindDataId(1, variant);
     if (!q1->step()) {
         return 1;
     }
 
-    return q1->getInt32(0); 
+    return q1->getInt32(0);
 }
 
 void SQLiteSNPTablesDbi::createAnnotationsMarkerIndex( U2OpStatus& os ){
@@ -473,7 +473,7 @@ void SQLiteSNPTablesDbi::createIndexForFilterTable( const U2DataId& fTable, U2Op
     os.setProgress(os.getProgress()+1);
     SQLiteQuery(QString("CREATE INDEX IF NOT EXISTS FilterTableid6_%1 ON FilterTable_%1(variantID)").arg(filterTableString) ,db, os).execute();
 
-    
+
 }
 
 void SQLiteSNPTablesDbi::updateVariantFilterTable( const U2DataId& fTable, const U2DataId& varId, VariantTrackType tType, U2OpStatus& os ){

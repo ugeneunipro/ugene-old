@@ -132,7 +132,7 @@ public:
     void setIOAdapterRegistry(IOAdapterRegistry* _io) {assert(io == NULL || _io == NULL); io = _io;}
 
     void setDNATranslationRegistry(DNATranslationRegistry* _dtr) {assert(dtr == NULL || _dtr == NULL);dtr = _dtr;}
-    
+
     void setDNAAlphabetRegistry(DNAAlphabetRegistry* _dal) {assert(dal == NULL || _dal == NULL);dal = _dal;}
 
     void setObjectViewFactoryRegistry(GObjectViewFactoryRegistry* _ovfr) {assert(ovfr == NULL || _ovfr == NULL); ovfr = _ovfr;}
@@ -140,7 +140,7 @@ public:
     void setTaskScheduler(TaskScheduler* _ts) {assert(ts == NULL || _ts == NULL); ts = _ts;}
 
     void setResourceTracker(ResourceTracker* _rt) {assert(rt == NULL || _rt == NULL); rt = _rt;}
-    
+
     void setAnnotationSettingsRegistry(AnnotationSettingsRegistry* _asr)  {assert(asr == NULL || _asr == NULL); asr = _asr;}
 
     void setTestFramework( TestFramework* _tf) { assert( tf || _tf ); tf = _tf; }
@@ -150,7 +150,7 @@ public:
     void setSubstMatrixRegistry(SubstMatrixRegistry* _smr) { assert( smr == NULL || _smr == NULL ); smr = _smr; }
 
     void setSmithWatermanTaskFactoryRegistry (SmithWatermanTaskFactoryRegistry* _swar) { assert( swar == NULL || _swar == NULL ); swar = _swar; }
-    
+
     void setMolecularSurfaceFactoryRegistry (MolecularSurfaceFactoryRegistry* _msfr) { assert( msfr == NULL || _msfr == NULL ); msfr = _msfr; }
 
     void setSWResultFilterRegistry (SWResultFilterRegistry* _swrfr) { assert( swrfr == NULL || _swrfr == NULL ); swrfr = _swrfr; }
@@ -160,7 +160,7 @@ public:
     void setMSAColorSchemeRegistry(MSAColorSchemeRegistry* _mcsr) {assert( mcsr == NULL || _mcsr == NULL ); mcsr = _mcsr;}
 
     void setMSAHighlightingSchemeRegistry(MSAHighlightingSchemeRegistry* _mhsr) {assert( mhsr == NULL || _mhsr == NULL ); mhsr = _mhsr;}
-    
+
     void setSecStructPedictAlgRegistry(SecStructPredictAlgRegistry* _sspar) {assert( secStructPredictRegistry == NULL || _sspar == NULL ); secStructPredictRegistry = _sspar;}
 
     void setCudaGpuRegistry( CudaGpuRegistry * _cgr ) { assert( cgr == NULL || _cgr == NULL ); cgr = _cgr; }
@@ -178,7 +178,7 @@ public:
     void setProtocolInfoRegistry( ProtocolInfoRegistry * pr ) { assert( NULL == protocolInfoRegistry || NULL == pr );
         protocolInfoRegistry = pr; }
 
-    void setRemoteMachineMonitor( RemoteMachineMonitor * rm ) { assert( NULL == remoteMachineMonitor || NULL == rm ); 
+    void setRemoteMachineMonitor( RemoteMachineMonitor * rm ) { assert( NULL == remoteMachineMonitor || NULL == rm );
         remoteMachineMonitor = rm; }
 
     void setPhyTreeGeneratorRegistry(PhyTreeGeneratorRegistry* genRegistry) {
@@ -200,20 +200,20 @@ public:
         assert(reg == NULL || assemblyConsensusAlgoRegistry == NULL);
         assemblyConsensusAlgoRegistry = reg;
     }
-    
+
     void setPWMConversionAlgorithmRegistry(PWMConversionAlgorithmRegistry* reg) {
         assert(reg == NULL || pwmConversionAlgoRegistry == NULL);
         pwmConversionAlgoRegistry = reg;
     }
 
     void setCMDLineRegistry(CMDLineRegistry* r) { assert(cmdLineRegistry == NULL || r == NULL); cmdLineRegistry = r; }
-    
-    void setVirtualFileSystemRegistry( VirtualFileSystemRegistry * r ) { 
+
+    void setVirtualFileSystemRegistry( VirtualFileSystemRegistry * r ) {
         assert( virtualFileSystemRegistry == NULL || r == NULL );
         virtualFileSystemRegistry = r;
     }
 
-    void setDnaAssemblyAlgRegistry( DnaAssemblyAlgRegistry * r ) { 
+    void setDnaAssemblyAlgRegistry( DnaAssemblyAlgRegistry * r ) {
         assert( dnaAssemblyAlgRegistry == NULL || r == NULL );
         dnaAssemblyAlgRegistry = r;
     }
@@ -223,7 +223,7 @@ public:
         genomeAssemblyAlgRegistry = r;
     }
 
-    void setMSAAlignAlgRegistry( MSAAlignAlgRegistry * r ) { 
+    void setMSAAlignAlgRegistry( MSAAlignAlgRegistry * r ) {
         assert( msaAlignAlgRegistry == NULL || r == NULL );
         msaAlignAlgRegistry = r;
     }
@@ -241,7 +241,7 @@ public:
         assert( qdafr == NULL || _queryfactoryRegistry == NULL );
         qdafr = _queryfactoryRegistry;
     }
-    
+
     void setAutoAnnotationsSupport(AutoAnnotationsSupport* _aaSupport) {
         assert( aaSupport == NULL || _aaSupport == NULL );
         aaSupport = _aaSupport;
@@ -361,7 +361,7 @@ protected:
     virtual SubstMatrixRegistry*            _getSubstMatrixRegistry() const {return smr;}
     virtual SmithWatermanTaskFactoryRegistry*   _getSmithWatermanTaskFactoryRegistry() const {return swar;}
     virtual PhyTreeGeneratorRegistry*         _getPhyTreeGeneratorRegistry() const {return treeGeneratorRegistry;}
-    
+
     virtual MolecularSurfaceFactoryRegistry*   _getMolecularSurfaceFactoryRegistry() const {return msfr;}
     virtual SWResultFilterRegistry*     _getSWResultFilterRegistry() const {return swrfr;}
     virtual SWMulAlignResultNamesTagsRegistry * _getSWMulAlignResultNamesTagsRegistry() const {return swmarntr;}
@@ -443,7 +443,7 @@ private:
     MSAColorSchemeRegistry* mcsr;
     MSAHighlightingSchemeRegistry *mhsr;
     SecStructPredictAlgRegistry* secStructPredictRegistry;
-    CudaGpuRegistry * cgr;   
+    CudaGpuRegistry * cgr;
     OpenCLGpuRegistry * oclgr;
     RecentlyDownloadedCache* rdc;
     ProtocolInfoRegistry * protocolInfoRegistry;
@@ -490,5 +490,5 @@ private:
 
 }//namespace
 
-#endif 
+#endif
 

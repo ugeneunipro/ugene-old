@@ -34,7 +34,7 @@ class SaveDocumentTask;
 class U2FORMATS_EXPORT ConvertFileTask : public Task {
 public:
     ConvertFileTask(const GUrl &sourceURL, const QString &detectedFormat, const QString &targetFormat, const QString &dir);
-    
+
     GUrl getSourceURL() const;
     QString getResult() const;
 

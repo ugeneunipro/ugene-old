@@ -170,7 +170,7 @@ void AutoAnnotationObject::handleUpdate( QList<AutoAnnotationsUpdater *> updater
         }
         groupNames.append( updater->getGroupName( ) );
     }
-    
+
     // envelope to unlock annotation object
     if ( !subTasks.isEmpty( ) ) {
         AutoAnnotationsUpdateTask *updateTask = new AutoAnnotationsUpdateTask( this, subTasks );
@@ -219,11 +219,11 @@ AutoAnnotationsUpdateTask::~AutoAnnotationsUpdateTask( ) {
 
 void AutoAnnotationsUpdateTask::prepare( ) {
     SAFE_POINT( NULL != aa, tr( "Empty auto-annotation object" ), );
-    
+
     lock = new StateLock( "Auto-annotations update", StateLockFlag_LiveLock );
     aaSeqObj = aa->getSeqObject( );
     aaSeqObj->lockState( lock );
-    
+
     aa->emitStateChange( true );
     foreach ( Task *subtask, subTasks ) {
         addSubTask( subtask );

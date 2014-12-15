@@ -42,11 +42,11 @@ class TCoffeeWorker : public BaseWorker {
     Q_OBJECT
 public:
     TCoffeeWorker(Actor* a);
-    
+
     virtual void init();
     virtual Task* tick();
     virtual void cleanup();
-    
+
 private slots:
     void sl_taskFinished();
 
@@ -54,8 +54,8 @@ protected:
     IntegralBus *input, *output;
     QString resultName,transId;
     TCoffeeSupportTaskSettings cfg;
-    
-}; 
+
+};
 
 class TCoffeeWorkerFactory : public DomainFactory {
 public:

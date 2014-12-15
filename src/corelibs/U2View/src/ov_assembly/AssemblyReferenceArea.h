@@ -62,10 +62,10 @@ protected:
     void paintEvent(QPaintEvent * e);
     void resizeEvent(QResizeEvent * e);
     void mouseMoveEvent(QMouseEvent * e);
-    
+
 signals:
     void si_mouseMovedToPos(const QPoint &);
-    
+
 protected slots:
     void sl_redraw();
     virtual void sl_offsetsChanged();
@@ -113,4 +113,4 @@ private:
 
 } //ns
 
-#endif 
+#endif

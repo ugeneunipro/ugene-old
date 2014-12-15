@@ -53,7 +53,7 @@ ExportReadsDialog::ExportReadsDialog(QWidget * p, const QList<DocumentFormatId> 
 
     documentFormatComboBox->addItems(formats);
     initFilePath();
-    
+
     connect(filepathToolButton, SIGNAL(clicked()), SLOT(sl_selectFile()));
     connect(documentFormatComboBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_formatChanged(const QString &)));
     setMaximumHeight(layout()->minimumSize().height());

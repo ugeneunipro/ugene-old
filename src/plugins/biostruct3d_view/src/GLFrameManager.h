@@ -27,7 +27,7 @@
 #include <QtOpenGL/QGLWidget>
 #include <QtCore/QVariantList>
 
-namespace U2 { 
+namespace U2 {
 
 class Vector3D;
 

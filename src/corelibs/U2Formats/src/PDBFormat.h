@@ -55,11 +55,11 @@ protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
 private:
-    
+
     QString formatName;
     static QHash<QByteArray,int> atomNumMap;
     static QHash<QByteArray, char> acronymNameMap;
-    
+
     void initUtilityMaps();
     void updateSecStructChainIndexes(BioStruct3D& biostruc);
 
@@ -78,7 +78,7 @@ private:
         QHash<char, int> chainIndexMap;
         QHash<char, QByteArray> seqResMap;
         QSet<QByteArray> resIndSet;
-        
+
         // Methods
         QByteArray getSpecValue(const QByteArray& specLine, const QByteArray& valueName);
         void parseHeader(BioStruct3D& biostruct, U2OpStatus& ti);

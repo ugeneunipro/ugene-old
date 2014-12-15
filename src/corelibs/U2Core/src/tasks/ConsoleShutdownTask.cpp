@@ -29,15 +29,15 @@
 
 namespace U2 {
 
-ConsoleShutdownTask::ConsoleShutdownTask(QCoreApplication* app) 
-: Task(tr("Shutdown"), TaskFlags_NR_FOSCOE | TaskFlag_NoAutoDelete), app(app) 
+ConsoleShutdownTask::ConsoleShutdownTask(QCoreApplication* app)
+: Task(tr("Shutdown"), TaskFlags_NR_FOSCOE | TaskFlag_NoAutoDelete), app(app)
 {
     connect(AppContext::getTaskScheduler(), SIGNAL(si_topLevelTaskUnregistered(Task*)), SLOT(startShutdown()));
     connect(app, SIGNAL(aboutToQuit()), SLOT(startShutdown()));
 }
 
 void ConsoleShutdownTask::startShutdown() {
-    
+
     if (sender() == app) {
         coreLog.info("Shutdown initiated by user");
     } else {
@@ -127,7 +127,7 @@ Task::ReportResult ConsoleShutdownTask::report() {
     if (stateInfo.cancelFlag) {
         coreLog.info(tr("Shutdown was canceled"));
         return Task::ReportResult_Finished;
-    } 
+    }
     if (propagateSubtaskError()) {
         coreLog.error(tr("Shutdown failed, error: %1").arg(stateInfo.getError()));
         return Task::ReportResult_Finished;

@@ -35,7 +35,7 @@ public:
     ~PhyTreeGeneratorTask(){};
     void run();
     PhyTree getResult() { return result; }
-    const CreatePhyTreeSettings& getSettings() { return settings; } 
+    const CreatePhyTreeSettings& getSettings() { return settings; }
     ReportResult report();
 protected:
     const MAlignment&           inputMA;

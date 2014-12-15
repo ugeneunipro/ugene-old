@@ -51,7 +51,7 @@ namespace U2 {
 const char FastaFormat::FASTA_HEADER_START_SYMBOL = '>';
 const char FastaFormat::FASTA_COMMENT_START_SYMBOL = ';';
 
-FastaFormat::FastaFormat(QObject* p) 
+FastaFormat::FastaFormat(QObject* p)
 : DocumentFormat(p, DocumentFormatFlags_SW, QStringList()<<"fa"<<"mpfa"<<"fna"<<"fsa"<<"fas"<<"fasta"<<"sef"<<"seq"<<"seqs")
 {
     formatName = tr("FASTA");
@@ -66,7 +66,7 @@ static QVariantMap analyzeRawData(const QByteArray& data) {
     int maxLen = -1;
     int len = 0;
     int nSequences = 0;
-    
+
     QTextStream input(data, QIODevice::ReadOnly);
     QString line;
     do {
@@ -115,7 +115,7 @@ FormatCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GUr
     if (hasBinaryBlocks) {
         return FormatDetection_NotMatched;
     }
-    
+
     //ok, format is matched -> add hints on sequence sizes
     FormatCheckResult res(FormatDetection_Matched);
     res.properties = analyzeRawData(data);
@@ -124,7 +124,7 @@ FormatCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GUr
 
 #define READ_BUFF_SIZE  4096
 static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, QList<GObject*>& objects,
-                 int gapSize, QString& writeLockReason, U2OpStatus& os) 
+                 int gapSize, QString& writeLockReason, U2OpStatus& os)
 {
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, );
@@ -139,7 +139,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     QByteArray readBuff(READ_BUFF_SIZE + 1, 0);
     char* buff = readBuff.data();
     qint64 len = 0;
-    
+
     bool merge = gapSize != -1;
     QStringList headers;
     QSet<QString> uniqueNames;
@@ -147,7 +147,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
 
     // for lower case annotations
     GObjectReference sequenceRef;
-    
+
     //skip leading whites if present
     bool lineOk = true;
     static QBitArray nonWhites = ~TextUtils::WHITES;
@@ -173,11 +173,11 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
         if (len == 0 && io->isEof()) { //end if stream
             break;
         }
-        CHECK_EXT_BREAK(lineOk, os.setError(FastaFormat::tr("Line is too long"))); 
-        
+        CHECK_EXT_BREAK(lineOk, os.setError(FastaFormat::tr("Line is too long")));
+
         QString headerLine = QString(QByteArray::fromRawData(buff+1, len-1)).trimmed();
-        CHECK_EXT_BREAK(buff[0] == FastaFormat::FASTA_HEADER_START_SYMBOL, os.setError(FastaFormat::tr("First line is not a FASTA header"))); 
-        
+        CHECK_EXT_BREAK(buff[0] == FastaFormat::FASTA_HEADER_START_SYMBOL, os.setError(FastaFormat::tr("First line is not a FASTA header")));
+
         //read sequence
         if (sequenceNumber == 0 || !merge) {
             QString objName = headerLine;
@@ -195,7 +195,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
             CHECK_OP_BREAK(os);
 
             sequenceRef = GObjectReference(io->getURL().getURLString(), objName, GObjectTypes::SEQUENCE);
-        } 
+        }
         if (sequenceNumber >= 1 && merge) {
             seqImporter.addDefaultSymbolsBlock(gapSize, os);
             sequenceStart += gapSize;
@@ -225,7 +225,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
 
             CHECK_OP_BREAK(os);
             os.setProgress(io->getProgress());
-        } 
+        }
 
         if (merge) {
             memoryLocker.tryAcquire(headerLine.size());
@@ -238,12 +238,12 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
             U2Sequence seq = seqImporter.finalizeSequenceAndValidate(os);
             CHECK_OP_BREAK(os);
             sequenceRef.entityRef = U2EntityRef(dbiRef, seq.id);
-            
+
             //TODO parse header
             U2StringAttribute attr(seq.id, DNAInfo::FASTA_HDR, headerLine);
             con.dbi->getAttributeDbi()->createStringAttribute(attr, os);
             CHECK_OP_BREAK(os);
-            
+
             objects << new U2SequenceObject(seq.visualName, U2EntityRef(dbiRef, seq.id));
             CHECK_OP_BREAK(os);
 
@@ -282,7 +282,7 @@ Document* FastaFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const
     QList<GObject*> objects;
 
     int gapSize = qBound(-1, DocumentFormatUtils::getMergeGap(fs), 1000 * 1000);
-    
+
     QString lockReason;
     load(io, dbiRef, fs, objects, gapSize, lockReason, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);

@@ -37,7 +37,7 @@ class U2CORE_EXPORT U2DataPath : public QObject {
     Q_OBJECT
 public:
     U2DataPath(const QString& name, const QString& path, bool folders = false, bool recurcive = false, const QString& descr = "");
-    
+
     const QString&      getName()  const { return name; }
     const QString&      getPath()  const { return path; }
     const QString&      getDescription()  const { return description; }

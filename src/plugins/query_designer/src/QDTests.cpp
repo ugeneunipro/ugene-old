@@ -139,7 +139,7 @@ QList<Task*> GTest_QDSchedulerTest::onSubTaskFinished(Task* subTask) {
         AnnotationGroup expResG = expectedResult->getRootGroup( ).getSubgroup( GROUP_NAME, false );
         CHECK_EXT( resG != result->getRootGroup( ), setError("Group not found!" + GROUP_NAME), subs);
         CHECK_EXT( expResG != expectedResult->getRootGroup( ), setError("Exp group not found!" + GROUP_NAME), subs);
-        
+
         const QList<AnnotationGroup> res = resG.getSubgroups();
         const QList<AnnotationGroup> expRes = expResG.getSubgroups();
         subs.append(new CompareAnnotationGroupsTask(res, expRes));

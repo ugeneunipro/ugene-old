@@ -281,13 +281,13 @@ bool PackUtils::unpackRowInfoDetails(const QByteArray &modDetails, U2MsaRow &old
     QList<QByteArray> tokens = modDetails.split(SEP);
     SAFE_POINT(3 == tokens.count(), QString("Invalid modDetails '%1'!").arg(QString(modDetails)), false);
     SAFE_POINT(VERSION == tokens[0], QString("Invalid modDetails version '%1'").arg(QString(tokens[0])), false);
-    
+
     bool ok = false;
     ok = unpackRowInfo(tokens[1], oldRow);
     CHECK(ok, false);
     ok = unpackRowInfo(tokens[2], newRow);
     CHECK(ok, false);
-    
+
     return true;
 }
 

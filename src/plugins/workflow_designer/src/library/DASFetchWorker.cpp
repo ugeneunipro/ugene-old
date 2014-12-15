@@ -71,7 +71,7 @@ QString DASFetcherPrompter::composeRichDoc()
         DASFetcherWorker::tr("sequences identified with") :
         DASFetcherWorker::tr("sequence identified with");
     QString seqidsStr = seqids.isEmpty() ? unsetStr : QString("<u>%1</u>").arg(seqids.join(", "));
-    
+
     QString dbid = getParameter(DBID_ID).value<QString>();
     DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
     if (dasRegistry){
@@ -84,7 +84,7 @@ QString DASFetcherPrompter::composeRichDoc()
     QString saveDir = getParameter(PATH_ID).value<QString>();
     saveDir = getHyperlink(PATH_ID, saveDir);
     QString saveDirStr = DASFetcherWorker::tr("Save result to <u>%1</u> directory.").arg(saveDir);
-    
+
     return DASFetcherWorker::tr("Reads %1 %2 from <u>%3</u> DAS source. %4").
         arg(seq).
         arg(getHyperlink(SEQID_ID, seqidsStr)).
@@ -101,14 +101,14 @@ DASFetcherWorker::DASFetcherWorker(Actor *a) : BaseWorker(a), output(NULL)
 void DASFetcherWorker::init()
 {
     output = ports.value(BasePorts::OUT_SEQ_PORT_ID());
-    
+
     assert(dbid.isEmpty());
     dbid = actor->getParameter(DBID_ID)->getAttributeValue<QString>(context);
 
     seqids = actor->getParameter(SEQID_ID)->getAttributeValue<QString>(context).split(";", QString::SkipEmptyParts);
 
     featureids = actor->getParameter(ANNID_ID)->getAttributeValue<QString>(context).split(",", QString::SkipEmptyParts);
-    
+
     fullPathDir = actor->getParameter(PATH_ID)->getAttributeValue<QString>(context);
     if (fullPathDir == DEFAULT_PATH) {
         fullPathDir = LoadRemoteDocumentTask::getDefaultDownloadDirectory();
@@ -128,7 +128,7 @@ Task* DASFetcherWorker::tick() {
             return new FailTask(tr("Cannot create directory '%1'").arg(fullPathDir));
         }
     }
-    
+
     Task *ret = 0;
     // fetch and load next file
     QString seqId = "";
@@ -253,7 +253,7 @@ public:
             }
             return res;
         }
-        
+
         return dependentValue;
     };
     virtual RelationType getType() const {return CUSTOM_VALUE_CHANGER;}
@@ -288,7 +288,7 @@ void DASFetcherFactory::init()
     SAFE_POINT (dasSources.size() != 0, DASFetcherWorker::tr("No DAS sources"), );
     const QList<DASSource>& featureSources = dasRegistry->getFeatureSources();
     SAFE_POINT (featureSources.size() != 0, DASFetcherWorker::tr("No DAS feature sources"), );
-    
+
 
     DASSource defaultDB = dasSources.first();
     QString defaultFeatures = "";
@@ -311,8 +311,8 @@ void DASFetcherFactory::init()
         Descriptor dbidd(DBID_ID,
                          DASFetcherWorker::tr("Reference Source"),
                          DASFetcherWorker::tr("The DAS source to read reference from."));
-        
-        
+
+
         Attribute* seqAtr = new Attribute(dbidd, BaseTypes::STRING_TYPE(), true, defaultDB.getId());
 
         seqAtr->addRelation(new DASSourceTypeRelation(ANNID_ID));
@@ -326,12 +326,12 @@ void DASFetcherFactory::init()
 
         attrs << new Attribute(seqidd, BaseTypes::STRING_TYPE(), true, "");
 
-        Descriptor fullpathd(PATH_ID, 
-                         DASFetcherWorker::tr("Save file to directory"), 
+        Descriptor fullpathd(PATH_ID,
+                         DASFetcherWorker::tr("Save file to directory"),
                          DASFetcherWorker::tr("The directory to store sequence files loaded from the source."));
         attrs << new Attribute(fullpathd, BaseTypes::STRING_TYPE(), true, DEFAULT_PATH);
     }
-    
+
     ActorPrototype *proto = new IntegralBusActorPrototype(desc, pds, attrs);
 
     QMap<QString, PropertyDelegate*> delegates;
@@ -348,7 +348,7 @@ void DASFetcherFactory::init()
     }
     {
         QVariantMap values;
-        
+
         foreach(const DASSource& fs, featureSources){
             bool active = false;
             if (fs.getReferenceType() == defaultDB.getReferenceType()){
@@ -365,7 +365,7 @@ void DASFetcherFactory::init()
     if(AppContext::isGUIMode()) {
         proto->setIcon(GUIUtils::createRoundIcon(ICOLOR, 22));
     }
-    
+
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_DATASRC(), proto);
 
     DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);

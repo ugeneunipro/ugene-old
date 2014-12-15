@@ -142,7 +142,7 @@ QList<Task*> TestRunnerTask::onSubTaskFinished(Task* subTask) {
                 newEnv->setVar("EXPECTED_OUTPUT_DIR", testCaseDir + "/_expected/");
 
                 // Create the test
-                GTest* test = tf->createTest(testState->getTestRef()->getShortName(), NULL, newEnv, loader->testData, err);               
+                GTest* test = tf->createTest(testState->getTestRef()->getShortName(), NULL, newEnv, loader->testData, err);
                 if (test == NULL) {
                     testState->setFailed(err);
                     teamcityLog.info(QString("##teamcity[testStarted name='%1 : %2']").arg(testState->getTestRef()->getSuite()->getName(),testState->getTestRef()->getShortName()));

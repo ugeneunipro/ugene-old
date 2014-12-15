@@ -99,11 +99,11 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     p.setPen(Qt::darkRed);
     p.drawLine(cursorPos, BORDER_NOTCH_START, cursorPos, BORDER_NOTCH_END);
     p.drawLine(cursorPos+1, BORDER_NOTCH_START, cursorPos+1, BORDER_NOTCH_END);
-    
+
     //2. find current position
     qint64 posXInAsm = browser->calcAsmPosX(cursorPos);
 
-    
+
     //3. format the string, add coverage if needed
     // pos + 1 because of 1-based coords
     QString cursorLabel = FormatUtils::formatNumberWithSeparators(posXInAsm + 1);
@@ -120,7 +120,7 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     if(offsetRect.right() > width() - 1) {
         offsetRect.moveRight(width() - 1);
     }
-    
+
     //4. draw cursor label
     p.drawText(offsetRect, Qt::AlignCenter, cursorLabel);
     startPositionObject->setObjectName(cursorLabel);
@@ -128,7 +128,7 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     if(!showCoords) {
         return;
     }
-    
+
     //5. draw cached labels. Skip labels intersecting the cursor label
     assert(cachedLabelsRects.size() == cachedLabels.size());
     for(int i = 0; i < cachedLabels.size(); i++) {
@@ -140,7 +140,7 @@ void AssemblyRuler::drawCursor(QPainter & p) {
 }
 
 void AssemblyRuler::drawRuler(QPainter & p) {
-    cachedLabelsRects.clear(); 
+    cachedLabelsRects.clear();
     cachedLabels.clear();
     p.setPen(Qt::black);
 
@@ -152,17 +152,17 @@ void AssemblyRuler::drawRuler(QPainter & p) {
         p.drawLine(0, BORDER_NOTCH_START, 0, BORDER_NOTCH_END);
         p.drawLine(width()-1, BORDER_NOTCH_START, width()-1, BORDER_NOTCH_END);
     }
-    
+
     int lettersPerZ = browser->calcAsmCoordX(50);
     int interval = pow((double)10, numOfDigits(lettersPerZ)-1); //interval between notches
     //int pixInterval = browser->calcPixelCoord(interval);
-    
+
     int globalOffset = browser->getXOffsetInAssembly();
     qint64 firstLetterWithNotch = globalOffset - 1;
     while((firstLetterWithNotch + 1) % interval != 0) {
         ++firstLetterWithNotch;
     }
-    
+
     int start = firstLetterWithNotch - globalOffset;
     int end = browser->basesCanBeVisible();
 
@@ -198,7 +198,7 @@ void AssemblyRuler::drawRuler(QPainter & p) {
                 cachedLabels.append(img);
             }
         } else {
-            //draw short notches 
+            //draw short notches
             p.drawLine(x_pix, SHORT_NOTCH_START, x_pix, SHORT_NOTCH_END);
         }
     }

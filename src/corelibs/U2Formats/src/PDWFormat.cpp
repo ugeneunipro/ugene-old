@@ -51,7 +51,7 @@ namespace U2 {
 #define PDW_ANNOTATION_TAG  "Annotation"
 #define PDW_CIRCULAR_TAG    "IScircular"
 
-PDWFormat::PDWFormat(QObject* p) 
+PDWFormat::PDWFormat(QObject* p)
 : DocumentFormat(p, DocumentFormatFlag(0), QStringList()<<"pdw")
 {
     formatName = tr("pDRAW");
@@ -73,7 +73,7 @@ FormatCheckResult PDWFormat::checkRawData(const QByteArray& rawData, const GUrl&
 
 
 #define READ_BUFF_SIZE  4096
-void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& os, 
+void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& os,
                      U2SequenceObject*& seqObj, AnnotationTableObject*& annObj)
 {
     DbiOperationsBlock opBlock(dbiRef, os);
@@ -83,7 +83,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
     char* buff = readBuff.data();
     qint64 len = 0;
-    
+
     bool lineOk = false;
     bool isCircular = false;
     QString seqName(docUrl.baseFileName());
@@ -101,7 +101,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
         if (!lineOk) {
             os.setError(PDWFormat::tr("Line is too long"));
         }
-        
+
         if (readBuff.startsWith(PDW_DNANAME_TAG)) {
             seqName = readPdwValue(readBuff, PDW_DNANAME_TAG);
             if(seqName.isEmpty()){
@@ -143,7 +143,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
             annotations.append(a);
         }
     }
-    
+
     if ( !annotations.isEmpty( ) ) {
         QVariantMap hints;
         hints.insert(DBI_FOLDER_HINT, fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
@@ -165,11 +165,11 @@ Document * PDWFormat::loadDocument( IOAdapter *io, const U2DbiRef &dbiRef, const
     CHECK_EXT( NULL != io && io->isOpen( ), os.setError( L10N::badArgument( "IO adapter" ) ),
         NULL );
     QList<GObject *> objects;
-    
+
     load( io, dbiRef, fs, io->getURL( ), objects, os, seqObj, annObj );
 
     CHECK_OP_EXT( os, qDeleteAll( objects ), NULL );
-    
+
     QString lockReason( DocumentFormat::CREATED_NOT_BY_UGENE );
     Document *doc = new Document( this, io->getFactory( ), io->getURL( ), dbiRef, objects, fs,
         lockReason );
@@ -182,19 +182,19 @@ Document * PDWFormat::loadDocument( IOAdapter *io, const U2DbiRef &dbiRef, const
 
 QByteArray PDWFormat::parseSequence( IOAdapter* io, U2OpStatus& ti ) {
     QByteArray result;
-    
+
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
-    
+
     while (!ti.isCoR()) {
         bool lineOk = false;
         qint64 len = io->readUntil(readBuff.data(), READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
-        if (len == 0) { 
+        if (len == 0) {
             break;
         }
         if (!lineOk) {
             ti.setError(PDWFormat::tr("Line is too long"));
-        } 
-        
+        }
+
         for (int i = 0; i < readBuff.size(); ++i) {
             char c = readBuff.at(i);
             if (c == '\n') {
@@ -231,7 +231,7 @@ AnnotationData PDWFormat::parseAnnotation( IOAdapter *io, U2OpStatus &ti ) {
     while (!ti.isCoR()) {
         bool lineOk = false;
         qint64 len = io->readUntil(readBuf.data(), READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
-        
+
         if (!readBuf.startsWith(PDW_ANNOTATION_TAG)) {
             break;
         } else if (readBuf.startsWith(PDW_ANNOTATION_NUMBER)) {
@@ -240,7 +240,7 @@ AnnotationData PDWFormat::parseAnnotation( IOAdapter *io, U2OpStatus &ti ) {
         } else if (readBuf.startsWith(PDW_ANNOTATION_NAME) ) {
             aName = readPdwValue(readBuf, PDW_ANNOTATION_NAME);
             if (aName.endsWith('\"')) {
-                aName = aName.left(aName.length() - 1).trimmed(); 
+                aName = aName.left(aName.length() - 1).trimmed();
             }
         } else if (readBuf.startsWith(PDW_ANNOTATION_START) ) {
             startPos = readPdwValue(readBuf, PDW_ANNOTATION_START).toInt();
@@ -250,7 +250,7 @@ AnnotationData PDWFormat::parseAnnotation( IOAdapter *io, U2OpStatus &ti ) {
             int orientVal = readPdwValue(readBuf, PDW_ANNOTATION_ORIENT).toInt();
             cmpl = orientVal == 0 ? true : false;
         }
-    
+
     }
 
     AnnotationData sd;

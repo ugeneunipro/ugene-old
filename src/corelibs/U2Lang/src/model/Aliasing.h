@@ -47,7 +47,7 @@ class U2LANG_EXPORT PortAlias {
 public:
     PortAlias(const Port *sourcePort, const QString &alias, const QString &description);
     bool operator ==(const PortAlias &another);
-    
+
     // these return true if adding is successful
     bool addSlot(const SlotAlias &slot);
     bool addSlot(const Port *sourcePort, const QString &slotId, const QString &alias);

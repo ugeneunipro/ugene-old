@@ -37,7 +37,7 @@ struct ReadFailed {
 
 class WorkflowSchemaReaderData {
 public:
-    WorkflowSchemaReaderData(const QString & bytes, Schema * s, Metadata * m, QMap<ActorId, ActorId>* im) 
+    WorkflowSchemaReaderData(const QString & bytes, Schema * s, Metadata * m, QMap<ActorId, ActorId>* im)
         : schema(s), meta(m), idMap(im) {
         graphDefined = false;
         tokenizer.tokenizeSchema(bytes);

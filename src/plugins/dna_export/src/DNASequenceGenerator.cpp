@@ -127,7 +127,7 @@ void DNASequenceGenerator::evaluateBaseContent(const MAlignment& ma, QMap<char, 
         evaluate(row.getCore(), rowContent);
         rowsContents.append(rowContent);
     }
-    
+
     QListIterator< QMap<char, qreal> > listIter(rowsContents);
     while (listIter.hasNext()) {
         const QMap<char, qreal>& cm = listIter.next();

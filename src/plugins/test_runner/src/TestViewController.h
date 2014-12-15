@@ -54,10 +54,10 @@ public:
 
     virtual void setupMDIToolbar(QToolBar* tb);
     virtual void setupViewMenu(QMenu* n);
-    
+
     void killAllChildForms();
     void reporterFormClosedOutside(){reporterForm=NULL;}
-    
+
 private slots:
 
     void sl_treeCustomContextMenuRequested(const QPoint & pos);
@@ -92,11 +92,11 @@ private:
     void togglePopupMenuItems(bool enabled);
 
     void updateState();
-    
+
     void createAndRunTask(const QList<GTestState*>& testsToRun);
     QList<TVTSItem*> getSelectedSuiteItems() const;
     QList<TVTestItem*> getSelectedTestItems() const;
-    
+
     void addTestSuiteList(QString url);
     void addTestSuite(GTestSuite* ts);
     void addFolderTests(TVTSItem* tsi, GTestRef* testRef,const QString* curPath,bool haveExcludedTests);
@@ -132,7 +132,7 @@ private:
     QAction* saveSelectedSuitesAction;
 
     TestRunnerTask* task;
-    TestViewReporter* reporterForm; 
+    TestViewReporter* reporterForm;
     QTime startRunTime;
     QTime endRunTime;
     int time;
@@ -149,7 +149,7 @@ enum TVItemType {
 class TVItem : public QTreeWidgetItem {
 public:
     TVItem(TVItemType t) : type(t), excludedTests(false) {}
-    
+
     virtual void updateVisual() = 0;
 
     virtual QString getRichDesc() const = 0;
@@ -159,9 +159,9 @@ public:
     bool excludedTests;
 
     QString excludeReason;
-    
+
     bool isSuite() const {return type == TVItem_TestSuite;}
-    
+
     bool isTest() const {return type == TVItem_Test;}
 
 };
@@ -172,9 +172,9 @@ public:
 
     TVTSItem(const QString& _name);
 
-    
+
     virtual void updateVisual();
-    
+
     virtual QString getRichDesc() const;
 
     GTestSuite* ts;

@@ -32,7 +32,7 @@
 namespace U2 {
 
 
-StreamShortReadsWriter::StreamShortReadsWriter(const GUrl& url, const QString& refName , int refLength ) 
+StreamShortReadsWriter::StreamShortReadsWriter(const GUrl& url, const QString& refName , int refLength )
 : numSeqWritten(0), refSeqLength(refLength)
 {
     refSeqName = QString(refName).replace(QRegExp("\\s|\\t"), "_").toLatin1();
@@ -78,13 +78,13 @@ StreamShortReadWriter::StreamShortReadWriter( bool writeQualityExplicitly) : wri
 bool StreamShortReadWriter::init( const GUrl& url ) {
     ouputPath = url;
     bool res = io->open(url, IOAdapterMode_Write);
-    return res;   
+    return res;
 }
 
 bool StreamShortReadWriter::writeNextSequence( const DNASequence& seq ) {
     U2OpStatus2Log os;
     fastaFormat->storeSequence(seq, io, os);
-    
+
     return !os.hasError();
 }
 
@@ -99,5 +99,5 @@ void StreamShortReadWriter::close() {
     io->close();
 }
 
-} //namespace 
+} //namespace
 

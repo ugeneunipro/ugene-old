@@ -106,7 +106,7 @@ void PhyMlWidget::createWidgetsControllers() {
     //Number of substitution rate categories
     widgetControllers.addWidgetController(substitutionSpinBox, PhyMlSettingsPreffixes::SubRatesNumber, "-c");
 
-    //Transition / transversion ratio 
+    //Transition / transversion ratio
     InputWidgetController* ttRatioEstimationController = widgetControllers.addWidgetController(tranCheckBox, PhyMlSettingsPreffixes::EstimateTtRatio, "");
     InputWidgetController* ttRatioController = widgetControllers.addWidgetController(tranSpinBox, PhyMlSettingsPreffixes::TtRatio, "-t");
     ttRatioEstimationController->addDependentParameter(ParameterDependence(ttRatioController, true));
@@ -150,7 +150,7 @@ void PhyMlWidget::createWidgetsControllers() {
     InputWidgetController* treeNumbersController = widgetControllers.addWidgetController(treeNumbersSpinBox, PhyMlSettingsPreffixes::BootstrapReplicatesNumber, "-b");
     treeNumbersCheckBoxController->addDependentParameter(ParameterDependence(treeNumbersController, true));
 
-    //Tree searching 
+    //Tree searching
     widgetControllers.addWidgetController(treeTypesCombo, PhyMlSettingsPreffixes::TreeSearchingType, "");
     //User tree
     widgetControllers.addWidgetController(inputFileLineEdit, PhyMlSettingsPreffixes::UserTreePath, "");

@@ -43,7 +43,7 @@ public:
         : QObject(p), graphName(_name){}
 
     virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView* v) = 0;
-    
+
     virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView* v);
 
     virtual bool isEnabled(const U2SequenceObject* o) const  = 0;
@@ -68,7 +68,7 @@ public:
 protected:
     virtual void addActionsToGraphMenu(QMenu* graphMenu);
 
-private: 
+private:
     GSequenceGraphFactory* factory;
 };
 

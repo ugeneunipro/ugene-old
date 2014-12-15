@@ -103,7 +103,7 @@ bool SearchQualifierDialog::eventFilter(QObject *obj, QEvent *e) {
         if (key == Qt::Key_Tab) {
             ui->nameEdit->setFocus();
             return true;
-        } 
+        }
         if (key == Qt::Key_Enter || key == Qt::Key_Return) {
             accept();
             return true;
@@ -134,21 +134,21 @@ void SearchQualifierDialog::sl_searchTaskStateChanged( ) {
     if(!task || task->isCanceled() || !task->isFinished()){
         return;
     }
-    
+
     if (task->isFound()){
         //save results
         parentAnnotationofPrevResult = task->getResultAnnotation();
         indexOfPrevResult = task->getIndexOfResult();
-    } 
+    }
     else{
         //dialog
         int result = QMessageBox::question(this,
-                                        tr("Search Complete"), 
-                                        tr("The end of the annotation tree has been reached. Would you like to start the search from the beginning?"), 
+                                        tr("Search Complete"),
+                                        tr("The end of the annotation tree has been reached. Would you like to start the search from the beginning?"),
                                         QMessageBox::Yes | QMessageBox::No);
         if (result == QMessageBox::Yes){
             clearPrevResults();
-        } 
+        }
     }
 }
 

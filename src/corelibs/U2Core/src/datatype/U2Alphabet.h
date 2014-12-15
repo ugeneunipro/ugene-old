@@ -27,8 +27,8 @@
 
 namespace U2 {
 
-/** 
-    Bio-sequence alphabet. 
+/**
+    Bio-sequence alphabet.
     TODO: UGENE1.x DNAAlphabet impl must be moved here after refactoring
 */
 class U2CORE_EXPORT U2AlphabetId : public AbstractStringId {

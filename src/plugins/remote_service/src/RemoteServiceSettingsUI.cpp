@@ -30,7 +30,7 @@ static const int PORT_MAX = 0x7fff;
 namespace U2 {
 
 
-RemoteServiceSettingsUI::RemoteServiceSettingsUI() 
+RemoteServiceSettingsUI::RemoteServiceSettingsUI()
 {
     setupUi(this);
 }
@@ -42,7 +42,7 @@ RemoteMachineSettingsPtr RemoteServiceSettingsUI::createMachine() const {
     if( !validate().isEmpty()) {
         return RemoteMachineSettingsPtr();
     }
-    
+
     QString url = urlLineEdit->text().trimmed();
 
     RemoteServiceSettingsPtr s( new RemoteServiceMachineSettings(url) );
@@ -53,7 +53,7 @@ RemoteMachineSettingsPtr RemoteServiceSettingsUI::createMachine() const {
         bool permanent = rememberEdit->isChecked();
         s->setupCredentials(userNameEdit->text().trimmed(), passwdEdit->text(), permanent);
     }
-    
+
     return s;
 
 }
@@ -74,12 +74,12 @@ void RemoteServiceSettingsUI::initializeWidget(const RemoteMachineSettingsPtr& s
                 passwdEdit->setText(credentials.passwd);
                 rememberEdit->setChecked(credentials.permanent);
             }
-        }        
+        }
     }
 }
 
 QString RemoteServiceSettingsUI::validate() const {
-    
+
     QString url = urlLineEdit->text();
     if( url.isEmpty() ) {
         return tr( "Url is empty!" );
@@ -107,7 +107,7 @@ void RemoteServiceSettingsUI::clearWidget() {
 QDialog* RemoteServiceSettingsUI::createUserTasksDialog( const RemoteMachineSettingsPtr& s, QWidget* parent ) {
     //TODO: remove this crap
     const RemoteServiceSettingsPtr settings = qSharedPointerDynamicCast< RemoteServiceMachineSettings >(s);
-    
+
     if (settings == NULL) {
         return NULL;
     }

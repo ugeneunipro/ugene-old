@@ -115,11 +115,11 @@ public:
     int getMaxPosSequenceLen();
 
     static float calculateSequenceScore(const char* seq, int seqLen, ExpertDiscoveryData& edData, DNATranslation* complTT);
-    
+
     double recognizationBound;
     RecognizationDataStorage recDataStorage;
     QList<EDPISequence*> selSequences;
-    
+
 private:
     SequenceBase                posBase;
     SequenceBase                negBase;

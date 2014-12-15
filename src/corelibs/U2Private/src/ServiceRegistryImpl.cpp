@@ -148,7 +148,7 @@ AbstractServiceTask::AbstractServiceTask(QString taskName, TaskFlags flag, Servi
     }
 }
 
-RegisterServiceTask::RegisterServiceTask(ServiceRegistryImpl* _sr, Service* _s, bool lockServiceResource) 
+RegisterServiceTask::RegisterServiceTask(ServiceRegistryImpl* _sr, Service* _s, bool lockServiceResource)
 : AbstractServiceTask(tr("Register '%1' service").arg(_s->getName()), TaskFlag_NoRun, _sr, _s, lockServiceResource)
 {
 }
@@ -177,7 +177,7 @@ Task::ReportResult RegisterServiceTask::report() {
 
 ///EnableServiceTask
 
-EnableServiceTask::EnableServiceTask(ServiceRegistryImpl* _sr, Service* _s, bool lockServiceResource) 
+EnableServiceTask::EnableServiceTask(ServiceRegistryImpl* _sr, Service* _s, bool lockServiceResource)
 : AbstractServiceTask(tr("Enable '%1' service").arg(_s->getName()), TaskFlag_NoRun, _sr, _s, lockServiceResource)
 {
 }
@@ -256,7 +256,7 @@ static bool checkAllParentsEnabled(ServiceRegistryImpl* sr, Service* s) {
 }
 
 /// UnregisterServiceTask
-UnregisterServiceTask::UnregisterServiceTask(ServiceRegistryImpl* _sr, Service* _s, bool lockServiceResource) 
+UnregisterServiceTask::UnregisterServiceTask(ServiceRegistryImpl* _sr, Service* _s, bool lockServiceResource)
 : AbstractServiceTask(tr("Unregister '%1' service").arg(_s->getName()), TaskFlag_NoRun, _sr, _s, lockServiceResource)
 {
 }
@@ -283,7 +283,7 @@ Task::ReportResult UnregisterServiceTask::report() {
 
 
 /// DisableServiceTask
-DisableServiceTask::DisableServiceTask(ServiceRegistryImpl* _sr, Service* _s, bool _manual, bool lockServiceResource) 
+DisableServiceTask::DisableServiceTask(ServiceRegistryImpl* _sr, Service* _s, bool _manual, bool lockServiceResource)
 : AbstractServiceTask(tr("Disable '%1' service").arg(_s->getName()), TaskFlags_NR_FOSCOE, _sr, _s, lockServiceResource), manual(_manual)
 {
 }

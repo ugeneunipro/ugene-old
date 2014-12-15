@@ -95,7 +95,7 @@ void FilterAnnotationsWorker::cleanup() {
 
 
 void FilterAnnotationsWorkerFactory::init() {
-    QList<PortDescriptor*> portDescs; 
+    QList<PortDescriptor*> portDescs;
     QList<Attribute*> attribs;
 
     //accept sequence and annotated regions as input
@@ -103,9 +103,9 @@ void FilterAnnotationsWorkerFactory::init() {
     inputMap[ BaseSlots::ANNOTATION_TABLE_SLOT() ] = BaseTypes::ANNOTATION_TABLE_TYPE();
 
     { //Create input port descriptors
-        Descriptor inDesc( BasePorts::IN_ANNOTATIONS_PORT_ID(), FilterAnnotationsWorker::tr("Input annotations"), 
+        Descriptor inDesc( BasePorts::IN_ANNOTATIONS_PORT_ID(), FilterAnnotationsWorker::tr("Input annotations"),
             FilterAnnotationsWorker::tr("Annotations to be filtered by name.") );
-        Descriptor outDesc( BasePorts::OUT_ANNOTATIONS_PORT_ID(), FilterAnnotationsWorker::tr("Result annotations"), 
+        Descriptor outDesc( BasePorts::OUT_ANNOTATIONS_PORT_ID(), FilterAnnotationsWorker::tr("Result annotations"),
             FilterAnnotationsWorker::tr("Resulted annotations, filtered by name.") );
 
         portDescs << new PortDescriptor( inDesc, DataTypePtr(new MapDataType("filter.anns", inputMap)), /*input*/ true );
@@ -114,8 +114,8 @@ void FilterAnnotationsWorkerFactory::init() {
 
     { //Create attributes descriptors
         Descriptor filterNamesDesc( FILTER_NAMES_ATTR,
-            FilterAnnotationsWorker::tr("Annotation names"), 
-            FilterAnnotationsWorker::tr("File with annotation names, separated with whitespaces or list of annotation names " 
+            FilterAnnotationsWorker::tr("Annotation names"),
+            FilterAnnotationsWorker::tr("File with annotation names, separated with whitespaces or list of annotation names "
                                         "which will be accepted or filtered. Use space as the separator.") );
         Descriptor whichFilterDesc( WHICH_FILTER_ATTR,
             FilterAnnotationsWorker::tr("Accept or filter"),
@@ -126,7 +126,7 @@ void FilterAnnotationsWorkerFactory::init() {
     }
 
     Descriptor desc( FilterAnnotationsWorkerFactory::ACTOR_ID,
-        FilterAnnotationsWorker::tr("Filter Annotations by Name"), 
+        FilterAnnotationsWorker::tr("Filter Annotations by Name"),
         FilterAnnotationsWorker::tr("Filters annotations by name.") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
 

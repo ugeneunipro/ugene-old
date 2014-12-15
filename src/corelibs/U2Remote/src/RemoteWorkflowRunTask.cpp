@@ -49,8 +49,8 @@ namespace U2 {
 ***************************************/
 
 RemoteWorkflowRunTask::RemoteWorkflowRunTask( const RemoteMachineSettingsPtr& m, const Schema & sc)
-    : Task( tr( "Workflow run task on the cloud" ), TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ), machineSettings( m ), 
-      machine( NULL ), schema( sc ), taskId(0), eventLoop(NULL),taskIsActive(false) 
+    : Task( tr( "Workflow run task on the cloud" ), TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ), machineSettings( m ),
+      machine( NULL ), schema( sc ), taskId(0), eventLoop(NULL),taskIsActive(false)
 {
     GCOUNTER(cvar, tvar, "WorkflowOnTheCloud");
     if( NULL == machineSettings ) {
@@ -61,7 +61,7 @@ RemoteWorkflowRunTask::RemoteWorkflowRunTask( const RemoteMachineSettingsPtr& m,
 }
 
 RemoteWorkflowRunTask::RemoteWorkflowRunTask( const RemoteMachineSettingsPtr& m, qint64 remoteTaskId )
-: Task( tr( "Workflow run task on the cloud" ), TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), machineSettings( m ), 
+: Task( tr( "Workflow run task on the cloud" ), TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), machineSettings( m ),
 machine( NULL ), taskId(remoteTaskId), eventLoop(NULL), taskIsActive(true)
 {
     GCOUNTER(cvar, tvar, "WorkflowOnTheCloud");
@@ -69,7 +69,7 @@ machine( NULL ), taskId(remoteTaskId), eventLoop(NULL), taskIsActive(true)
         setError( tr("Bad remote machine settings"));
         return;
     }
-    tpm = Progress_Manual;    
+    tpm = Progress_Manual;
 }
 
 void RemoteWorkflowRunTask::preprocessSchema()
@@ -79,7 +79,7 @@ void RemoteWorkflowRunTask::preprocessSchema()
         if( actor->getParameter( BaseAttributes::URL_IN_ATTRIBUTE().getId() ) != NULL &&
             actor->getParameter( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId()) == NULL ) {
 
-                actor->addParameter( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId(), 
+                actor->addParameter( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId(),
                     new Attribute( BaseAttributes::URL_LOCATION_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true ) );
         }
     }
@@ -129,7 +129,7 @@ void RemoteWorkflowRunTask::prepare()
                 QString urlpath = urlInAttr->getAttributePureValue().toString();
                 // multiple urls are in the same string
                 // TODO: folder contents handling
-                QStringList urls = urlpath.split(';', QString::SkipEmptyParts); 
+                QStringList urls = urlpath.split(';', QString::SkipEmptyParts);
                 QStringList newPathes;
                 foreach (const GUrl& filePath, urls) {
                     QString path = TASK_INPUT_DIR + filePath.fileName();
@@ -189,7 +189,7 @@ void RemoteWorkflowRunTask::sl_remoteTaskTimerUpdate()  {
         machine->cancelTask(stateInfo, taskId);
         eventLoop->exit();
         return;
-    }  
+    }
 
     State state = State_Running;
     state = machine->getTaskState(stateInfo, taskId);

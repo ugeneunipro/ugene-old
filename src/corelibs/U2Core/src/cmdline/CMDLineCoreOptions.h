@@ -52,11 +52,11 @@ public:
     static const QString USAGE;
     static const QString TMP_DIR;
     static const QString SESSION_DB;
-        
+
 public:
     // initialize help for core cmdline options
     static void initHelp();
-    
+
 }; // CMDLineCoreOptions
 
 } // U2

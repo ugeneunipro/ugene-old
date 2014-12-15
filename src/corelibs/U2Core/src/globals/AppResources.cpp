@@ -55,7 +55,7 @@ AppResourcePool::AppResourcePool() {
     registerResource(threadResource);
 
     int totalPhysicalMemory = getTotalPhysicalMemory();
-    int maxMem = s->getValue(SETTINGS_ROOT + "maxMem", totalPhysicalMemory).toInt(); 
+    int maxMem = s->getValue(SETTINGS_ROOT + "maxMem", totalPhysicalMemory).toInt();
 #if defined(Q_OS_MAC64) || defined(Q_OS_WIN64) || defined(UGENE_X86_64) || defined( __amd64__ ) || defined( __AMD64__ ) || defined( __x86_64__ ) || defined( _M_X64 )
     maxMem = maxMem > x64MaxMemoryLimitMb ? x64MaxMemoryLimitMb : maxMem;
 #else
@@ -202,9 +202,9 @@ bool AppResourcePool::isSSE2Enabled() {
     //Return Value
     //If the feature is supported, the return value is a nonzero value.
     //If the feature is not supported, the return value is zero.
-    // 
-    //If the HAL does not support detection of the feature, 
-    //whether or not the hardware supports the feature, the return value is also zero. 
+    //
+    //If the HAL does not support detection of the feature,
+    //whether or not the hardware supports the feature, the return value is also zero.
     //
     //Windows 2000: This feature is not supported.
     //
@@ -216,7 +216,7 @@ bool AppResourcePool::isSSE2Enabled() {
 #elif defined( __amd64__ ) || defined( __AMD64__ ) || defined( __x86_64__ ) || defined( _M_X64 )
     answer = true;
 #elif defined( __i386__ ) || defined( __X86__ ) || defined( _M_IX86 )
-    //cpuid instruction: 
+    //cpuid instruction:
     //- takes 0x1 on eax,
     //- returns standard features flags in edx, bit 26 is SSE2 flag
     //- clobbers ebx, ecx
@@ -229,7 +229,7 @@ bool AppResourcePool::isSSE2Enabled() {
         "=c" (stub),
         "=d" (fflags) : "a" (0x1));
     answer = ((fflags & (1<<26))!=0);
-#endif 
+#endif
     return answer;
 }
 

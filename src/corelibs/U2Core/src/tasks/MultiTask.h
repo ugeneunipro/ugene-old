@@ -44,7 +44,7 @@ public:
 private:
     StateLock *l;
     QList<Task*> tasks;
-    
+
 };
 
 //waits until each given task is finished and runs the next task after that
@@ -63,4 +63,4 @@ private:
 
 } //namespace
 
-#endif 
+#endif

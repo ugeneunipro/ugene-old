@@ -32,7 +32,7 @@
 namespace U2 {
 
 enum TreeSettingsType {
-    GENERAL_SETTINGS, 
+    GENERAL_SETTINGS,
     TEXT_FORMAT,
     BRANCHES_SETTINGS,
     BUTTONS_SETTINGS,

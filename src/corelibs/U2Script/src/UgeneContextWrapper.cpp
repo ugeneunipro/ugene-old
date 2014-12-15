@@ -250,7 +250,7 @@ UgeneContextWrapper::UgeneContextWrapper( const QString &workingDirectoryPath )
     appContext->setSecStructPedictAlgRegistry( sspar );
 
     cgr = new CudaGpuRegistry( );
-    appContext->setCudaGpuRegistry( cgr ); 
+    appContext->setCudaGpuRegistry( cgr );
 
     pwr = new PairwiseAlignmentRegistry( );
     appContext->setPairwiseAlignmentRegistry( pwr );

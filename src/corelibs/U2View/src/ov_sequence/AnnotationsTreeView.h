@@ -77,7 +77,7 @@ public:
     void adjustStaticMenu(QMenu *m) const {adjustMenu(m);}
 
     QTreeWidget* getTreeWidget() const {return tree;}
-    
+
     QStringList getQualifierColumnNames() const {return qColumns;}
     void addQualifierColumn(const QString& q);
     void removeQualifierColumn(const QString& q);
@@ -124,7 +124,7 @@ private slots:
     void sl_exportAutoAnnotationsGroup();
     void sl_searchQualifier();
     void sl_invertSelection();
-    
+
     void sl_rename();
     void sl_edit();
     void sl_addQualifier();
@@ -142,11 +142,11 @@ protected:
 private:
     void renameItem(AVItem* i);
     void editItem(AVItem* i);
-    
+
     QString renameDialogHelper(AVItem* i, const QString& defText, const QString& title);
     bool editQualifierDialogHelper(AVQualifierItem* i, bool ro, U2Qualifier& res);
     void moveDialogToItem(QTreeWidgetItem* item, QDialog& d);
-    
+
     void adjustMenu(QMenu* m_) const;
     AVGroupItem * buildGroupTree( AVGroupItem *parentGroup, const AnnotationGroup &g);
     AVAnnotationItem * buildAnnotationTree( AVGroupItem *parentGroup, const Annotation &a );
@@ -159,10 +159,10 @@ private:
     AVAnnotationItem* findAnnotationItem(const AVGroupItem* gi, const Annotation &a ) const;
     // searches for annotation items that has not-null document added to the view
     QList<AVAnnotationItem*> findAnnotationItems( const Annotation &a ) const;
-    
+
     void connectAnnotationSelection();
     void connectAnnotationGroupSelection();
-    
+
     void updateState();
     void updateColumnContextActions(AVItem* item, int col);
 
@@ -189,9 +189,9 @@ private:
     QAction*            viewAction;         // action to view active item -> could be used both for readonly and not readonly
     QAction*            addQualifierAction; // action to create qualifier. Editable annotation or editable qualifier must be selected
 
-    QAction*            searchQualifierAction; 
-    QAction*            invertAnnotationSelectionAction; 
-    
+    QAction*            searchQualifierAction;
+    QAction*            invertAnnotationSelectionAction;
+
     Qt::MouseButton     lastMB;
     QStringList         headerLabels;
     QStringList         qColumns;
@@ -287,11 +287,11 @@ public:
     virtual bool operator< ( const QTreeWidgetItem & other ) const;
     bool isColumnNumeric(int col) const;
     double getNumericVal(int col) const;
-    
+
     void removeQualifier(const U2Qualifier& q);
     void addQualifier(const U2Qualifier& q);
     AVQualifierItem* findQualifierItem(const QString& name, const QString& val) const;
-    
+
     static QMap<QString, QIcon>& getIconsCache();
     bool hasNumericQColumns;
 };

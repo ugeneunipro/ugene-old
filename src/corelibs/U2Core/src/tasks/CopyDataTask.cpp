@@ -28,7 +28,7 @@
 
 namespace U2 {
 
-CopyDataTask::CopyDataTask( IOAdapterFactory * _ioFrom, const GUrl& _urlFrom, 
+CopyDataTask::CopyDataTask( IOAdapterFactory * _ioFrom, const GUrl& _urlFrom,
                            IOAdapterFactory * _ioTo, const GUrl& _urlTo ) :
 Task(tr("Copy Data Task"), TaskFlag_None), ioFrom(_ioFrom), ioTo(_ioTo),
 urlFrom(_urlFrom), urlTo(_urlTo)
@@ -45,22 +45,22 @@ void CopyDataTask::run() {
         stateInfo.setError(L10N::errorOpeningFileRead(urlFrom));
         return;
     }
-    
+
     qint64 count = 0;
     qint64 count_w = 0;
     QByteArray buff( BUFFSIZE, 0 );
-    
+
     count = from->readBlock( buff.data(), BUFFSIZE );
     if (count == 0 || count == -1) {
         stateInfo.setError(tr("Cannot get data from: '%1'").arg(urlFrom.getURLString()));
         return;
     }
-    
+
     if (!where->open( urlTo, IOAdapterMode_Write )) {
         stateInfo.setError(L10N::errorOpeningFileWrite(urlTo));
         return;
     }
-    
+
     while( count > 0 ) {
         count_w = where->writeBlock( buff.data(), count );
         if( stateInfo.cancelFlag ) {

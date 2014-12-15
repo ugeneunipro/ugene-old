@@ -51,7 +51,7 @@ private:
 
     // A region to analyze at a time
     static const qint64 REGION_TO_ANALAYZE = 1000000;
-}; 
+};
 
 } // namespace
 

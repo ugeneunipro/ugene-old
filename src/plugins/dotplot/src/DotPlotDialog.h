@@ -41,8 +41,8 @@ class U2SequenceObject;
 class DotPlotDialog : public QDialog, public Ui_DotPlotDialog{
     Q_OBJECT
 public:
-    DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int minLen, int identity, 
-        ADVSequenceObjectContext *seqX, ADVSequenceObjectContext *seqY, bool dir, bool inv, 
+    DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int minLen, int identity,
+        ADVSequenceObjectContext *seqX, ADVSequenceObjectContext *seqY, bool dir, bool inv,
         const QColor &dColor = QColor(), const QColor &iColor = QColor(), bool hideLoadSequences = false);
 
     virtual void accept();

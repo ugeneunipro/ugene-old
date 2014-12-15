@@ -86,7 +86,7 @@ static void traceQueryDestroy(const QString& q) {
 }
 #endif
 
-SQLiteQuery::SQLiteQuery(const QString& _sql, DbRef* d, U2OpStatus& _os) 
+SQLiteQuery::SQLiteQuery(const QString& _sql, DbRef* d, U2OpStatus& _os)
 : db(d), os(&_os), st(NULL), sql(_sql), locker(&d->lock)
 {
     prepare();
@@ -111,7 +111,7 @@ void SQLiteQuery::setError(const QString& err) {
     ioLog.trace("SQL: error: " + err + " in query: " + sql);
     if (!os->hasError()) {
         os->setError(err);
-    } 
+    }
 }
 
 void SQLiteQuery::prepare() {
@@ -165,10 +165,10 @@ bool SQLiteQuery::step() {
         return false;
     }
     assert(st != NULL);
-    
+
     int rc = sqlite3_step(st);
     if (rc == SQLITE_DONE || rc == SQLITE_READONLY) {
-        return false; 
+        return false;
     } else if (rc == SQLITE_ROW) {
         return true;
     }
@@ -300,7 +300,7 @@ void SQLiteQuery::bindString(int idx, const QString& val) {
     assert(st!=NULL);
     QByteArray utf8 = val.toUtf8();
     bool transient = true;
-    int rc = sqlite3_bind_text(st, idx, utf8, utf8.length(), transient ? SQLITE_TRANSIENT : SQLITE_STATIC);    
+    int rc = sqlite3_bind_text(st, idx, utf8, utf8.length(), transient ? SQLITE_TRANSIENT : SQLITE_STATIC);
     if (rc != SQLITE_OK) {
         setError(U2DbiL10n::tr("Error binding text value! Query: '%1', idx: %2, value: '%3'").arg(sql).arg(idx).arg(val));
         return;
@@ -312,7 +312,7 @@ void SQLiteQuery::bindInt32(int idx, qint32 val) {
         return;
     }
     assert(st!=NULL);
-    int rc = sqlite3_bind_int(st, idx, val);    
+    int rc = sqlite3_bind_int(st, idx, val);
     if (rc != SQLITE_OK) {
         setError(U2DbiL10n::tr("Error binding int32 value! Query: '%1', idx: %2, value: %3").arg(sql).arg(idx).arg(val));
         return;
@@ -324,7 +324,7 @@ void SQLiteQuery::bindDouble(int idx, double val) {
         return;
     }
     assert(st!=NULL);
-    int rc = sqlite3_bind_double(st, idx, val);    
+    int rc = sqlite3_bind_double(st, idx, val);
     if (rc != SQLITE_OK) {
         setError(U2DbiL10n::tr("Error binding int64 value! Query: '%1', idx: %2, value: %3").arg(sql).arg(idx).arg(val));
         return;
@@ -473,7 +473,7 @@ static void checkStack(const QVector<SQLiteTransaction*>& stack) {
         SQLiteTransaction* t = stack[i];
         assert(t->thread == expectedThread);
     }
-#else 
+#else
     Q_UNUSED(stack);
 #endif
 }

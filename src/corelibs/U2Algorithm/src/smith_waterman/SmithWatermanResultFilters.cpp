@@ -30,7 +30,7 @@ namespace U2 {
 const QString SWRF_EmptyFilter::ID = "none";
 
 // Without any filtering
-bool SWRF_EmptyFilter::applyFilter(QList<SmithWatermanResult>* /*lst*/) {    
+bool SWRF_EmptyFilter::applyFilter(QList<SmithWatermanResult>* /*lst*/) {
     return true;
 }
 
@@ -40,7 +40,7 @@ SmithWatermanResultFilter* SWRF_EmptyFilter::clone() const {
 
 bool SWRF_EmptyFilter::needErase(
                         const SmithWatermanResult& /*currItem*/,
-                        const SmithWatermanResult& /*someItem*/) const {    
+                        const SmithWatermanResult& /*someItem*/) const {
     return false;
 }
 
@@ -72,7 +72,7 @@ bool SWRF_WithoutIntersect::applyFilter(QList<SmithWatermanResult>* lst) {
     QList<SmithWatermanResult>& results = *lst;
 
     qSort(results.begin(), results.end(), revScoreComparator);
-    
+
     int i = 0;
     int size = results.size();
     while (i < size) {
@@ -101,7 +101,7 @@ bool SWRF_WithoutIntersect::needErase(
                         const SmithWatermanResult& someItem) const {
     U2Region currRegion = currItem.refSubseq;
     U2Region someRegion = someItem.refSubseq;
-    if (currRegion.intersects(someRegion) && 
+    if (currRegion.intersects(someRegion) &&
         currItem.strand == someItem.strand) {
         return true;
     }

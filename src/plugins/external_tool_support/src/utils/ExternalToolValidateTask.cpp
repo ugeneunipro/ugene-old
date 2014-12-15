@@ -107,10 +107,10 @@ void ExternalToolJustValidateTask::run() {
 
         checkArchitecture(validation.executableFile);
         CHECK_OP(stateInfo, );
-        
+
         externalToolProcess = new QProcess();
         setEnvironment(tool);
-        
+
         externalToolProcess->start(validation.executableFile, validation.arguments);
         bool started = externalToolProcess->waitForStarted(3000);
 
@@ -140,7 +140,7 @@ void ExternalToolJustValidateTask::run() {
         if (!parseLog(validation)) {
             return;
         }
-        
+
         if (!isValid) {
             return;
         }

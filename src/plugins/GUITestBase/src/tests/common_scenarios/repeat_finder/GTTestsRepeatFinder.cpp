@@ -52,7 +52,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "seq4.fa");
     GTUtilsDocument::checkDocument(os, "seq4.fa");
 
-// 2. Run Find Repeats dialog   
+// 2. Run Find Repeats dialog
     Runnable * swDialog = new FindRepeatsDialogFiller(os, testDir + "_common_data/scenarios/sandbox/");
     GTUtilsDialog::waitForDialog(os, swDialog);
 
@@ -72,7 +72,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 // 4. Check that annotation have the qualifier "repeat homology"
     QTreeWidget *treeWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
     CHECK_SET_ERR(treeWidget != NULL, "Tree widget is NULL");
-    
+
     QTreeWidgetItem *annotationsRoot = GTUtilsAnnotationsTreeView::findItem(os, "repeat_unit  (0, 325)");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, annotationsRoot->child(0)));
     GTMouseDriver::doubleClick(os);

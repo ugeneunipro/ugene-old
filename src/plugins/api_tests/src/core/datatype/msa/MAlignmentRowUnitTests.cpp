@@ -93,7 +93,7 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_fromBytes) {
     MAlignmentRow row = almnt.getRow(0);
     CHECK_EQUAL("--GG-A---T", MAlignmentRowTestUtils::getRowData(row), "row data");
     CHECK_EQUAL("--GG-A---T", QString(row.getCore()), "core data");
-    CHECK_EQUAL(3, row.getGapModel().count(), "gaps number"); 
+    CHECK_EQUAL(3, row.getGapModel().count(), "gaps number");
     CHECK_EQUAL(0, row.getCoreStart(), "core start");
     CHECK_EQUAL(10, row.getCoreEnd(), "core end");
     CHECK_EQUAL(10, row.getCoreLength(), "core length");
@@ -108,7 +108,7 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_fromBytesTrailing) {
     MAlignmentRow row = almnt.getRow(0);
     CHECK_EQUAL("--GG-A---T--", MAlignmentRowTestUtils::getRowData(row), "row data");
     CHECK_EQUAL("--GG-A---T--", QString(row.getCore()), "core data");
-    CHECK_EQUAL(4, row.getGapModel().count(), "gaps number"); 
+    CHECK_EQUAL(4, row.getGapModel().count(), "gaps number");
     CHECK_EQUAL(0, row.getCoreStart(), "core start");
     CHECK_EQUAL(12, row.getCoreEnd(), "core end");
     CHECK_EQUAL(12, row.getCoreLength(), "core length");
@@ -123,7 +123,7 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_fromBytesGaps) {
     MAlignmentRow row = almnt.getRow(0);
     CHECK_EQUAL("----", MAlignmentRowTestUtils::getRowData(row), "row data");
     CHECK_EQUAL("----", QString(row.getCore()), "core data");
-    CHECK_EQUAL(1, row.getGapModel().count(), "gaps number"); 
+    CHECK_EQUAL(1, row.getGapModel().count(), "gaps number");
     CHECK_EQUAL(0, row.getCoreStart(), "core start");
     CHECK_EQUAL(4, row.getCoreEnd(), "core end");
     CHECK_EQUAL(4, row.getCoreLength(), "core length");
@@ -138,7 +138,7 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_oneTrailing) {
     MAlignmentRow row = almnt.getRow(0);
     CHECK_EQUAL("A-", MAlignmentRowTestUtils::getRowData(row), "row data");
     CHECK_EQUAL("A-", QString(row.getCore()), "core data");
-    CHECK_EQUAL(1, row.getGapModel().count(), "gaps number"); 
+    CHECK_EQUAL(1, row.getGapModel().count(), "gaps number");
     CHECK_EQUAL(0, row.getCoreStart(), "core start");
     CHECK_EQUAL(2, row.getCoreEnd(), "core end");
     CHECK_EQUAL(2, row.getCoreLength(), "core length");
@@ -153,7 +153,7 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_twoTrailing) {
     MAlignmentRow row = almnt.getRow(0);
     CHECK_EQUAL("A--", MAlignmentRowTestUtils::getRowData(row), "row data");
     CHECK_EQUAL("A--", QString(row.getCore()), "core data");
-    CHECK_EQUAL(1, row.getGapModel().count(), "gaps number"); 
+    CHECK_EQUAL(1, row.getGapModel().count(), "gaps number");
     CHECK_EQUAL(0, row.getCoreStart(), "core start");
     CHECK_EQUAL(3, row.getCoreEnd(), "core end");
     CHECK_EQUAL(3, row.getCoreLength(), "core length");
@@ -168,7 +168,7 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_oneMiddleGap) {
     MAlignmentRow row = almnt.getRow(0);
     CHECK_EQUAL("AC-GT", MAlignmentRowTestUtils::getRowData(row), "row data");
     CHECK_EQUAL("AC-GT", QString(row.getCore()), "core data");
-    CHECK_EQUAL(1, row.getGapModel().count(), "gaps number"); 
+    CHECK_EQUAL(1, row.getGapModel().count(), "gaps number");
     CHECK_EQUAL(0, row.getCoreStart(), "core start");
     CHECK_EQUAL(5, row.getCoreEnd(), "core end");
     CHECK_EQUAL(5, row.getCoreLength(), "core length");
@@ -183,7 +183,7 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_noGaps) {
     MAlignmentRow row = almnt.getRow(0);
     CHECK_EQUAL("ACGT", MAlignmentRowTestUtils::getRowData(row), "row data");
     CHECK_EQUAL("ACGT", QString(row.getCore()), "core data");
-    CHECK_EQUAL(0, row.getGapModel().count(), "gaps number"); 
+    CHECK_EQUAL(0, row.getGapModel().count(), "gaps number");
     CHECK_EQUAL(0, row.getCoreStart(), "core start");
     CHECK_EQUAL(4, row.getCoreEnd(), "core end");
     CHECK_EQUAL(4, row.getCoreLength(), "core length");
@@ -204,7 +204,7 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_fromSeq) {
     //MAlignmentRow row = almnt.getRow(0);
     //CHECK_EQUAL("--GG-A---T", MAlignmentRowTestUtils::getRowData(row), "row data");
     //CHECK_EQUAL("--GG-A---T", QString(row.getCore()), "core data");
-    //CHECK_EQUAL(3, row.getGapModel().count(), "gaps number"); 
+    //CHECK_EQUAL(3, row.getGapModel().count(), "gaps number");
     //CHECK_EQUAL(0, row.getCoreStart(), "core start");
     //CHECK_EQUAL(10, row.getCoreEnd(), "core end");
     //CHECK_EQUAL(10, row.getCoreLength(), "core length");
@@ -226,7 +226,7 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_fromSeqTrailing) {
     //MAlignmentRow row = almnt.getRow(0);
     //CHECK_EQUAL("--GG-A---T--", MAlignmentRowTestUtils::getRowData(row), "row data");
     //CHECK_EQUAL("--GG-A---T--", QString(row.getCore()), "core data");
-    //CHECK_EQUAL(4, row.getGapModel().count(), "gaps number"); 
+    //CHECK_EQUAL(4, row.getGapModel().count(), "gaps number");
     //CHECK_EQUAL(0, row.getCoreStart(), "core start");
     //CHECK_EQUAL(12, row.getCoreEnd(), "core end");
     //CHECK_EQUAL(12, row.getCoreLength(), "core length");
@@ -889,34 +889,34 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, charAt_allCharsNoOffset) {
     MAlignmentRow row = MAlignmentRowTestUtils::initTestRowWithGapsInMiddle();
     char ch = row.charAt(-1);
     CHECK_EQUAL('-', ch, "char -1");
-    
+
     ch = row.charAt(0);
     CHECK_EQUAL('G', ch, "char 0");
-    
+
     ch = row.charAt(1);
     CHECK_EQUAL('G', ch, "char 1");
-    
+
     ch = row.charAt(2);
     CHECK_EQUAL('-', ch, "char 2");
-    
+
     ch = row.charAt(3);
     CHECK_EQUAL('T', ch, "char 3");
-    
+
     ch = row.charAt(4);
     CHECK_EQUAL('-', ch, "char 4");
-    
+
     ch = row.charAt(5);
     CHECK_EQUAL('-', ch, "char 5");
-    
+
     ch = row.charAt(6);
     CHECK_EQUAL('A', ch, "char 6");
-    
+
     ch = row.charAt(7);
     CHECK_EQUAL('T', ch, "char 7");
-    
+
     ch = row.charAt(8);
     CHECK_EQUAL('-', ch, "char 8");
-    
+
     ch = row.charAt(9);
     CHECK_EQUAL('-', ch, "char 9");
 }
@@ -933,10 +933,10 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, charAt_offsetAndTrailing) {
 
     ch = row.charAt(0);
     CHECK_EQUAL('-', ch, "char 0");
-    
+
     ch = row.charAt(1);
     CHECK_EQUAL('A', ch, "char 1");
-    
+
     ch = row.charAt(2);
     CHECK_EQUAL('C', ch, "char 2");
 

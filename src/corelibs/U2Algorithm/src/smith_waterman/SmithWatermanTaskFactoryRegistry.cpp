@@ -40,7 +40,7 @@ SmithWatermanTaskFactoryRegistry::~SmithWatermanTaskFactoryRegistry()
 }
 
 bool SmithWatermanTaskFactoryRegistry::registerFactory(
-                                                SmithWatermanTaskFactory* factory, 
+                                                SmithWatermanTaskFactory* factory,
                                                 const QString& factoryId)
 {
     QMutexLocker locker(&mutex);

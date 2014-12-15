@@ -55,11 +55,11 @@ bool ConsoleLogDriver::helpRegistered = false;
 
 ConsoleLogDriver::ConsoleLogDriver() : printToConsole (true) {
     LogServer::getInstance()->addListener(this);
-    
+
     if( !helpRegistered ) {
         setLogCmdlineHelp();
     }
-    
+
     setLogSettings();
     setCmdLineSettings();
 }
@@ -71,7 +71,7 @@ ConsoleLogDriver::~ConsoleLogDriver() {
 void ConsoleLogDriver::setLogCmdlineHelp() {
     assert( !helpRegistered );
     helpRegistered = true;
-    
+
     CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
     assert( NULL != cmdLineRegistry );
 
@@ -165,7 +165,7 @@ void ConsoleLogDriver::setLogSettings() {
     }else {
         logLevel = "ERROR";
     }
-    
+
     LogServer* ls = LogServer::getInstance();
     const QStringList& categoryList = ls->getCategories();
     logLevel = logLevel.remove(" ");
@@ -177,7 +177,7 @@ void ConsoleLogDriver::setLogSettings() {
         for (int i=0; i<LogLevel_NumLevels; i++) {
             if(getLevelName((LogLevel)i) == logLevel) {
                 minLevel = i;
-            } 
+            }
         }
         for (int i=0; i<LogLevel_NumLevels; i++) {
             settings.activeLevelGlobalFlag[i] = (i >= minLevel);

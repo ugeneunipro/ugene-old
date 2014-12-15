@@ -61,7 +61,7 @@ public:
      */
     int                                 getAnnotationRowIdx( const Annotation &a ) const;
     PVRowData *                         getAnnotationRow( const Annotation &a ) const;
-    
+
     int                                 getNumAnnotationsInRow( int rowNum ) const;
 
 private:

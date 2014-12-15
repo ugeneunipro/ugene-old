@@ -72,7 +72,7 @@ private:
     GUrl destinationUrl;
     GUrl sourceUrl;
     BAMInfo &bamInfo;
-    
+
     bool askIfDestFileExist;
 };
 

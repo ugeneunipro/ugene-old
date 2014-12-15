@@ -114,7 +114,7 @@ void FindPrimerPairsWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
     {
         Descriptor id(BasePorts::IN_SEQ_PORT_ID(),
-            FindPrimerPairsWorker::tr("Input sequences"), 
+            FindPrimerPairsWorker::tr("Input sequences"),
             FindPrimerPairsWorker::tr("Set of primers, which must be tested."));
 
         QMap<Descriptor, DataTypePtr> inM;
@@ -124,8 +124,8 @@ void FindPrimerPairsWorkerFactory::init() {
 
     }
 
-    Descriptor desc( FindPrimerPairsWorkerFactory::ACTOR_ID, 
-        FindPrimerPairsWorker::tr("Find correct primer pairs"), 
+    Descriptor desc( FindPrimerPairsWorkerFactory::ACTOR_ID,
+        FindPrimerPairsWorker::tr("Find correct primer pairs"),
         FindPrimerPairsWorker::tr("Find correct primer pairs, which consist of valid primers without dimers.") );
 
     Descriptor reportFileDesc(FindPrimerPairsWorkerFactory::OUT_FILE,

@@ -76,7 +76,7 @@ public:
     ~PhyNode();
 
     /* const */
-    const QString & getName() const { return name; } 
+    const QString & getName() const { return name; }
     int branchCount() const {return branches.size();}
     const PhyNode * getSecondNodeOfBranch(int branchNumber) const {return branches.at(branchNumber)->node2;}
     double getBranchesDistance(int branchNumber) const { return branches.at(branchNumber)->distance;}

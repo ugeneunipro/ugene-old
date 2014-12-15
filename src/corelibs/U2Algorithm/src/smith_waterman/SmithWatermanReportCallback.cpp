@@ -175,7 +175,7 @@ QString SmithWatermanReportCallbackMAImpl::planFor_SequenceView_Search( const QL
     SWMulAlignResultNamesTagsRegistry *tagsRegistry = AppContext::getSWMulAlignResultNamesTagsRegistry( );
     Project *currentProject = AppContext::getProject( );
     TaskScheduler *taskScheduler = AppContext::getTaskScheduler( );
-    
+
     tagsRegistry->resetCounters( );
 
     foreach ( SmithWatermanResult pairAlignSeqs, results ) {
@@ -205,7 +205,7 @@ QString SmithWatermanReportCallbackMAImpl::planFor_SequenceView_Search( const QL
         alignSequences( curResultRefSubseq, curResultPtrnSubseq, pairAlignSeqs.pairAlignment );
 
         MAlignment msa( newFileName, alphabet );
-        
+
         expansionInfo.curProcessingSubseq = &pairAlignSeqs.refSubseq;
         msa.addRow( tagsRegistry->parseStringWithTags( refSubseqTemplate, expansionInfo ),
             curResultRefSubseq, stateInfo );
@@ -223,10 +223,10 @@ QString SmithWatermanReportCallbackMAImpl::planFor_SequenceView_Search( const QL
         MAlignmentObject *docObject = new MAlignmentObject( msa.getName( ), msaRef );
         alignmentDoc->addObject( docObject );
         currentProject->addDocument( alignmentDoc );
-        
+
         SaveDocFlags flags = SaveDoc_Overwrite;
         Task *saveMADocument = NULL;
-                
+
         if ( countOfLoadedDocs < SmithWatermanReportCallbackMAImpl::countOfSimultLoadedMADocs ) {
             ++countOfLoadedDocs;
         } else {

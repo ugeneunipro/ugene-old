@@ -73,7 +73,7 @@ AssemblyAdapter* SQLiteAssemblyDbi::getAdapter(const U2DataId& assemblyId, U2OpS
     if (res != NULL) {
         return res;
     }
-    
+
     SQLiteQuery q("SELECT imethod, cmethod FROM Assembly WHERE object = ?1", db, os);
     q.bindDataId(1, assemblyId);
     if (!q.step()) {
@@ -142,7 +142,7 @@ U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReads(const U2DataId& assem
 
 U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByRow(const U2DataId& assemblyId, const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
     GTIMER(c2, t2, "SQLiteAssemblyDbi::getReadsAt");
-    
+
     quint64 t0 = GTimer::currentTimeMicros();
     AssemblyAdapter* a = getAdapter(assemblyId, os);
 
@@ -170,14 +170,14 @@ U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReadsByName(const U2DataId&
 
 qint64 SQLiteAssemblyDbi::getMaxPackedRow(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
     quint64 t0 = GTimer::currentTimeMicros();
-    
+
     AssemblyAdapter* a = getAdapter(assemblyId, os);
 
     if ( a == NULL ) {
         return -1;
     }
     qint64 res = a->getMaxPackedRow(r, os);
-    
+
     perfLog.trace(QString("Assembly: get max packed row: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / (1000*1000)));
     return res;
 }
@@ -192,21 +192,21 @@ qint64 SQLiteAssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& o
         return -1;
     }
     quint64 res = a->getMaxEndPos(os);
-    
+
     perfLog.trace(QString("Assembly: get max end pos: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / (1000*1000)));
     return res;
 }
 
 
 
-void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString& folder,  
-                                             U2DbiIterator<U2AssemblyRead>* it, 
-                                             U2AssemblyReadsImportInfo& importInfo, 
-                                             U2OpStatus& os) 
+void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString& folder,
+                                             U2DbiIterator<U2AssemblyRead>* it,
+                                             U2AssemblyReadsImportInfo& importInfo,
+                                             U2OpStatus& os)
 {
     dbi->getSQLiteObjectDbi()->createObject(assembly, folder, U2DbiObjectRank_TopLevel, os);
     SAFE_POINT_OP(os,);
-    
+
     //QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE, os);
     QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_MULTITABLE_V1, os);
     //QString elenMethod = dbi->getProperty(SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE, os);
@@ -224,7 +224,7 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
 
     a->createReadsTables(os);
     SAFE_POINT_OP(os,);
-    
+
     if (it != NULL) {
         addReads(a, it, importInfo, os);
         SAFE_POINT_OP(os,);
@@ -244,11 +244,11 @@ void SQLiteAssemblyDbi::removeAssemblyData(const U2DataId &assemblyId, U2OpStatu
     removeAssemblyEntry(assemblyId, os);
 }
 
- 
+
 void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     Q_UNUSED(t);
-    
+
     SQLiteQuery q("UPDATE Assembly SET reference = ?1 WHERE object = ?2", db, os);
     q.bindDataId(1, assembly.referenceId);
     q.bindDataId(2, assembly.id);
@@ -379,7 +379,7 @@ QByteArray SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod method, const 
 #endif
     char* data = res.data();
     int pos = 0;
-    
+
     // packing type
     data[pos] = '0';
     pos++;
@@ -550,7 +550,7 @@ void SQLiteAssemblyUtils::calculateCoverage(SQLiteQuery& q, const U2Region& r, U
         if (readCroppedRegion.isEmpty()) {
             continue;
         }
-        
+
         int firstCoverageIdx = (int)((readCroppedRegion.startPos - r.startPos)/ basesPerRange);
         int lastCoverageIdx = (int)((readCroppedRegion.startPos + readCroppedRegion.length - 1 - r.startPos ) / basesPerRange);
         for (int i = firstCoverageIdx; i <= lastCoverageIdx && i < csize; i++) {

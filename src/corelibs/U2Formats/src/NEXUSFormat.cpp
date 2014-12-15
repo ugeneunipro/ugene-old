@@ -40,7 +40,7 @@
 #include "NEXUSFormat.h"
 #include "NEXUSParser.h"
 
-namespace U2 
+namespace U2
 {
 
 NEXUSFormat::NEXUSFormat(QObject *p) :
@@ -284,9 +284,9 @@ QList<GObject*> NEXUSParser::loadObjects(const U2DbiRef &dbiRef)
 
 bool NEXUSParser::skipCommand() {
     tz.skipUntil(";");
-    if (tz.get() != ";"){ 
-        errors.append("\';\' expected"); 
-        return false; 
+    if (tz.get() != ";"){
+        errors.append("\';\' expected");
+        return false;
     }
     return true;
 }
@@ -308,25 +308,25 @@ bool NEXUSParser::readSimpleCommand(Context &ctx)
         ctx.insert(name, value);
     }
 
-    if (tz.get() != ";"){ 
-        errors.append("\';\' expected"); 
-        return false; 
+    if (tz.get() != ";"){
+        errors.append("\';\' expected");
+        return false;
     }
 
     return true;
 }
 
 bool NEXUSParser::readBlock(Context &ctx, const U2DbiRef &dbiRef) {
-    if (tz.get().toLower() != BEGIN){ 
-        errors.append(QString("\'%1\' expected").arg(BEGIN)); 
-        return false; 
+    if (tz.get().toLower() != BEGIN){
+        errors.append(QString("\'%1\' expected").arg(BEGIN));
+        return false;
     }
 
     QString blockName = tz.get().toLower();
 
-    if (tz.get().toLower() != ";"){ 
-        errors.append(QString("\'%1\' expected").arg(";")); 
-        return false; 
+    if (tz.get().toLower() != ";"){
+        errors.append(QString("\'%1\' expected").arg(";"));
+        return false;
     }
 
     if (blockName == BLK_TAXA) {
@@ -347,14 +347,14 @@ bool NEXUSParser::readBlock(Context &ctx, const U2DbiRef &dbiRef) {
         }
     }
 
-    if (tz.get().toLower() != END) { 
-        errors.append(QString("\'%1\' expected").arg(END)); 
-        return false; 
+    if (tz.get().toLower() != END) {
+        errors.append(QString("\'%1\' expected").arg(END));
+        return false;
     }
 
-    if ((tz.get().toLower() != ";")){ 
-        errors.append(QString("\'%1\' expected").arg(";")); 
-        return false; 
+    if ((tz.get().toLower() != ";")){
+        errors.append(QString("\'%1\' expected").arg(";"));
+        return false;
     }
 
     return true;
@@ -445,7 +445,7 @@ bool NEXUSParser::readDataContents(Context &ctx) {
                 char missing = ctx["missing"].toLatin1()[0];
                 U2AlphabetUtils::assignAlphabet(ma, missing);
                 CHECK_EXT(ma.getAlphabet() != NULL, errors.append("Unknown alphabet"), false);
-                
+
                 char ourMissing = ma.getAlphabet()->getDefaultSymbol();
 
                 // replace missing
@@ -500,7 +500,7 @@ bool NEXUSParser::readTreesContents(Context&, const U2DbiRef &dbiRef) {
                     tz.skip();
                     break;
                 }
-                
+
                 if(tz.look() == ","){
                     tz.skip();
                     continue;
@@ -525,9 +525,9 @@ bool NEXUSParser::readTreesContents(Context&, const U2DbiRef &dbiRef) {
                 tz.skip(); // "="
             } else {
                 treeName = tz.get();
-                if (tz.get() != "="){ 
-                    errors.append(QString("\'%1\' expected").arg("=")); 
-                    return false; 
+                if (tz.get() != "="){
+                    errors.append(QString("\'%1\' expected").arg("="));
+                    return false;
                 }
             }
 
@@ -551,9 +551,9 @@ bool NEXUSParser::readTreesContents(Context&, const U2DbiRef &dbiRef) {
                 }
 
                 if (tok == "(") {
-                    if (!acc.isEmpty()) { 
-                        errors.append(QString("\'%1\' expected").arg(",")); 
-                        break; 
+                    if (!acc.isEmpty()) {
+                        errors.append(QString("\'%1\' expected").arg(","));
+                        break;
                     }
 
                     PhyNode *top = new PhyNode();
@@ -561,9 +561,9 @@ bool NEXUSParser::readTreesContents(Context&, const U2DbiRef &dbiRef) {
                     nodeStack.push(top);
                     branchStack.push(br);
                 } else if (tok == "," || tok == ")") {
-                    if (nodeStack.size() < 2){ 
-                        errors.append(QString("Unexpected \'%1\'").arg(")")); 
-                        break; 
+                    if (nodeStack.size() < 2){
+                        errors.append(QString("Unexpected \'%1\'").arg(")"));
+                        break;
                     }
 
                     double weight = 1;  // default value
@@ -573,16 +573,16 @@ bool NEXUSParser::readTreesContents(Context&, const U2DbiRef &dbiRef) {
                             // convert weight
                             bool ok;
                             weight = acc.toDouble(&ok);
-                            if (!ok){ 
-                                errors.append(QString("Invalid weight value \'%1\'").arg(acc)); 
-                                break; 
+                            if (!ok){
+                                errors.append(QString("Invalid weight value \'%1\'").arg(acc));
+                                break;
                             }
 
                             weightValue = true;
                         } else  {
                             // was ':' but was no value
-                            errors.append("Weight value expected"); 
-                            break; 
+                            errors.append("Weight value expected");
+                            break;
                         }
                     } else {
                         assert(state == NAME);
@@ -700,13 +700,13 @@ QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, const U2DbiRef& dbiRef, 
     const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
     NEXUSParser parser(io, dbiRef, folder, ti);
     QList<GObject*> objects = parser.loadObjects(dbiRef);
-    
+
     if (parser.hasError()) {
         QByteArray msg = "NEXUSParser: ";
         msg += parser.getErrors().first();
         ti.setError(tr(msg.data()));
     }
-    
+
     return objects;
 }
 
@@ -715,7 +715,7 @@ Document* NEXUSFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const
 
     QList<GObject*> objects = loadObjects(io, dbiRef, fs, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
-    
+
     Document *d = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
     return d;
 }
@@ -750,7 +750,7 @@ void writeMAligment(const MAlignment &ma, bool simpleName, IOAdapter *io, U2OpSt
     if(alphabetId == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT() || alphabetId == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED()){
         dataType = "dna";
     }else if(alphabetId == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT() || alphabetId == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED()){
-       dataType = "rna"; 
+       dataType = "rna";
     }else if (alphabetId == BaseDNAAlphabetIds::AMINO_DEFAULT()){
         dataType = "protein";
     }else {
@@ -780,7 +780,7 @@ void writeMAligment(const MAlignment &ma, bool simpleName, IOAdapter *io, U2OpSt
     foreach (const MAlignmentRow& row, rows)
     {
         QString name = row.getName();
-        
+
         if (name.contains(QRegExp("\\s|\\W"))){
             if (simpleName){
                 name.replace(' ','_');

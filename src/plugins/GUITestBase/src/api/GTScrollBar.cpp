@@ -71,7 +71,7 @@ void GTScrollBar::pageDown(U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::Use
             GTMouseDriver::click(os);
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageDown"]);
             break;
-        
+
         default:
             break;
     }
@@ -127,13 +127,13 @@ void GTScrollBar::moveSliderWithMouseUp(U2OpStatus &os, QScrollBar *scrollbar, i
     QPoint newPosition;
     if (Qt::Horizontal == scrollbar->orientation()) {
         newPosition = QPoint(QCursor::pos().x() + nPix, QCursor::pos().y());
-    }   
+    }
     else {
         newPosition = QPoint(QCursor::pos().x(), QCursor::pos().y() + nPix);
     }
     GTMouseDriver::press(os);
     GTMouseDriver::moveTo(os, newPosition);
-    GTMouseDriver::release(os);  
+    GTMouseDriver::release(os);
 }
 #undef GT_METHOD_NAME
 
@@ -145,12 +145,12 @@ void GTScrollBar::moveSliderWithMouseDown(U2OpStatus &os, QScrollBar *scrollbar,
     QPoint newPosition;
     if (Qt::Horizontal == scrollbar->orientation()) {
         newPosition = QPoint(QCursor::pos().x() - nPix , QCursor::pos().y());
-    }   
+    }
     else {
         newPosition = QPoint(QCursor::pos().x(), QCursor::pos().y() - nPix);
     }
     GTMouseDriver::moveTo(os, newPosition);
-    GTMouseDriver::release(os);   
+    GTMouseDriver::release(os);
 }
 #undef GT_METHOD_NAME
 
@@ -180,7 +180,7 @@ QPoint GTScrollBar::getUpArrowPosition(U2OpStatus &os, QScrollBar *scrollbar) {
     GT_CHECK_RESULT(scrollbar != NULL, "scrollbar is NULL", QPoint());
     QStyleOptionSlider options = initScrollbarOptions(os, scrollbar);
     QRect grooveRect = scrollbar->style()->subControlRect(QStyle::CC_ScrollBar, &options, QStyle::SC_ScrollBarGroove);
-    int upArrowWidth; 
+    int upArrowWidth;
     int upArrowHeight;
 
     if (Qt::Horizontal == scrollbar->orientation()) {
@@ -200,9 +200,9 @@ QPoint GTScrollBar::getDownArrowPosition(U2OpStatus &os, QScrollBar *scrollbar) 
     GT_CHECK_RESULT(scrollbar != NULL, "scrollbar is NULL", QPoint());
     QStyleOptionSlider options = initScrollbarOptions(os, scrollbar);
     QRect grooveRect = scrollbar->style()->subControlRect(QStyle::CC_ScrollBar, &options, QStyle::SC_ScrollBarGroove);
-    int downArrowWidth; 
+    int downArrowWidth;
     int downArrowHeight;
-    
+
     if (Qt::Horizontal == scrollbar->orientation()) {
         downArrowWidth = (scrollbar->rect().width() - grooveRect.width()) / 2;
         downArrowHeight = scrollbar->rect().height();
@@ -281,12 +281,12 @@ QStyleOptionSlider GTScrollBar::initScrollbarOptions(U2OpStatus &os, QScrollBar 
     options.sliderValue = options.sliderPosition;
     options.upsideDown = false;
     options.state = QStyle::State_Sunken | QStyle::State_Enabled;
-    
+
     return options;
 }
 #undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
-    
+
 }
 // namespace

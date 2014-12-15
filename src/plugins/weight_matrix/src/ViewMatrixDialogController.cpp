@@ -74,7 +74,7 @@ MatrixAndLogoController::MatrixAndLogoController( PFMatrix matrix, QWidget *p):Q
     }
     tableWidget->resizeRowsToContents();
     tableWidget->resizeColumnsToContents();
-    tableWidget->setMinimumWidth(tableWidget->width());    
+    tableWidget->setMinimumWidth(tableWidget->width());
     tableWidget->setFixedHeight(tableWidget->verticalHeader()->length() + tableWidget->horizontalHeader()->height() + 20);
 
     int len = matrix.getLength();
@@ -117,7 +117,7 @@ MatrixAndLogoController::MatrixAndLogoController( PFMatrix matrix, QWidget *p):Q
     logoWidget->resize(logowidth, logoheight);
     scrollArea->resize(logowidth, logoheight + 10);
     if (logoArea != NULL) {
-        logoArea->replaceSettings(logoSettings);   
+        logoArea->replaceSettings(logoSettings);
     } else {
         logoArea = new AlignmentLogoRenderArea(logoSettings, logoWidget);
     }
@@ -157,7 +157,7 @@ MatrixAndLogoController::MatrixAndLogoController( PWMatrix matrix, QWidget *p):Q
     }
     tableWidget->resizeRowsToContents();
     tableWidget->resizeColumnsToContents();
-    tableWidget->setMinimumWidth(tableWidget->width());    
+    tableWidget->setMinimumWidth(tableWidget->width());
     tableWidget->setMinimumHeight(tableWidget->verticalHeader()->length() + tableWidget->horizontalHeader()->height() + 20);
     scrollArea->setHidden(true);
 
@@ -185,7 +185,7 @@ ViewMatrixDialogController::ViewMatrixDialogController(PWMatrix matrix, QWidget 
     setupUi(this);
     new HelpButton(this, buttonBox, "4227731");
     buttonBox->button(QDialogButtonBox::Close)->setText(tr("Close"));
-    
+
     ml = new MatrixAndLogoController(matrix, this);
     MLLayout->addWidget(ml);
 

@@ -55,7 +55,7 @@ public:
     static WorkflowScriptRegistry* getScriptRegistry();
 
     static void initEngine(WorkflowScriptEngine *engine);
-    
+
     // ================== Misc =======================
     static QScriptValue print(QScriptContext *ctx, QScriptEngine *);
 
@@ -97,8 +97,8 @@ public:
     static QScriptValue writeFile(QScriptContext *ctx, QScriptEngine *engine);
     static QScriptValue appendFile(QScriptContext *ctx, QScriptEngine *engine);
     static QScriptValue readFile(QScriptContext *ctx, QScriptEngine *engine);
-    
-    
+
+
     // ================== Misc =======================
     static QScriptValue debugOut(QScriptContext *ctx, QScriptEngine *);
 

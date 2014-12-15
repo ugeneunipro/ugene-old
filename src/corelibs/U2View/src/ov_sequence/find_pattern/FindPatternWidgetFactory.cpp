@@ -44,7 +44,7 @@ QWidget * FindPatternWidgetFactory::createWidget(GObjectView* objView) {
     SAFE_POINT(NULL != objView,
         QString("Internal error: unable to create widget for group '%1', object view is NULL.").arg(GROUP_ID),
         NULL);
-    
+
     AnnotatedDNAView* annotatedDnaView = qobject_cast<AnnotatedDNAView*>(objView);
     SAFE_POINT(NULL != annotatedDnaView,
         QString("Internal error: unable to cast object view to AnnotatedDNAView for group '%1'.").arg(GROUP_ID),

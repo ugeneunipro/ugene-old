@@ -32,14 +32,14 @@ public:
     AssemblyConsensusAlgorithmFactorySamtools();
     virtual QString getDescription() const;
     virtual QString getName() const;
-    
+
     virtual AssemblyConsensusAlgorithm* createAlgorithm();
 };
 
 class U2ALGORITHM_EXPORT AssemblyConsensusAlgorithmSamtools : public AssemblyConsensusAlgorithm {
 public:
     AssemblyConsensusAlgorithmSamtools(AssemblyConsensusAlgorithmFactorySamtools* factory) : AssemblyConsensusAlgorithm(factory) {}
-    
+
     virtual QByteArray getConsensusRegion(const U2Region &region, U2DbiIterator<U2AssemblyRead>* reads, QByteArray referenceFragment, U2OpStatus &os);
 };
 

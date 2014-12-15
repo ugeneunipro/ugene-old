@@ -261,7 +261,7 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
                     if (rowsOrder != inputMsa.getRowsIds()) {
                         alObj->updateRowsOrder(rowsOrder, stateInfo);
                         SAFE_POINT_OP(stateInfo, res);
-                    }    
+                    }
                 }
 
                 Document* currentDocument = alObj->getDocument();

@@ -125,7 +125,7 @@ const static char * cu_device_total_mem_n = "cuDeviceTotalMem";
 typedef CUresult ( CALLING_CONVENTION *cu_device_get_properties_f)(CUdevprop * prop, CUdevice dev);
 const static char * cu_device_get_properties_n = "cuDeviceGetProperties";
 
-CudaSupportPlugin::Error CudaSupportPlugin::obtainGpusInfo( QString & err ) 
+CudaSupportPlugin::Error CudaSupportPlugin::obtainGpusInfo( QString & err )
 {
     //load driver library
     coreLog.details( tr("Loading CUDA driver library") );
@@ -151,7 +151,7 @@ CudaSupportPlugin::Error CudaSupportPlugin::obtainGpusInfo( QString & err )
         err = getCudaErrorString(cudaRetCode);
         return Error_CudaError;
     }
-    
+
     //call cuDeviceGetCount()
     coreLog.details( tr("Obtaining number of CUDA-enabled devices") );
     cu_device_get_count_f c_dgc = cu_device_get_count_f( cudaLib.resolve(cu_device_get_count_n) );
@@ -183,8 +183,8 @@ CudaSupportPlugin::Error CudaSupportPlugin::obtainGpusInfo( QString & err )
 
         //obtain device name
         const int maxname = 256;
-        QByteArray name(maxname, 0);      
-        
+        QByteArray name(maxname, 0);
+
         cu_device_get_name_f c_dgn = cu_device_get_name_f( cudaLib.resolve(cu_device_get_name_n) );
         if( !c_dgn ) {
             err =  tr( "Cannot resolve symbol " ) + cu_device_get_name_n;

@@ -75,7 +75,7 @@ private:
     DNAQuality *quality;
     char *seq;
     char *name;
-    quint32 seqLength; 
+    quint32 seqLength;
     quint32 nameLength;
     bool dna;
     bool wroteResult;

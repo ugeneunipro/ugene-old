@@ -59,21 +59,21 @@ namespace U2 {
 *
 * BioStruct3D Viewer is a macromolecular viewing / editing tool.
 * It is activated whenever UGENE loads document that contains BioStruct3DObject.
-* 
+*
 *
 * \subsection main Main Classes
 *
 * plugin classes:
 * - BioStruct3DGLWidget : Widget for rendering 3d representations of macromolecular structure.
-* - BioStruct3DSplitter : Multiple glWidgets layout and manipulation  
+* - BioStruct3DSplitter : Multiple glWidgets layout and manipulation
 * - GLFrame : Class for manipulating the 3d viewpoint
 *
-* plugin interfaces: 
+* plugin interfaces:
 * - BioStruct3DGLRenderer : General interface for structure 3d graphical styles
 * - BioStruct3DColorScheme : Interface for coloring atoms, bonds, etc.
 *
 *
-*/ 
+*/
 
 extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     if (AppContext::getMainWindow()) {
@@ -136,7 +136,7 @@ void BioStruct3DViewContext::onObjectAdded(GObjectView* view, GObject* obj) {
     if (obj3d == NULL || view == NULL) {
         return;
     }
-    
+
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
     BioStruct3DSplitter* splitter = NULL;
     if (splitterMap.contains(view)) {

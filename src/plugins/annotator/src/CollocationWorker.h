@@ -58,7 +58,7 @@ private slots:
 protected:
     IntegralBus *input, *output;
     CollocationsAlgorithmSettings cfg;
-}; 
+};
 
 class CollocationWorkerFactory : public DomainFactory {
 public:

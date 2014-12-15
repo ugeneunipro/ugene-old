@@ -50,7 +50,7 @@ AppSettingsGUIPageState * CudaSupportSettingsPageController::getSavedState() {
         s->enabledGpus[i] = registeredGpus.at(i)->isEnabled();
     }
 
-    return s;    
+    return s;
 }
 
 void CudaSupportSettingsPageController::saveState( AppSettingsGUIPageState * _s ) {
@@ -81,14 +81,14 @@ CudaSupportSettingsPageState::CudaSupportSettingsPageState( int num_gpus ) {
     enabledGpus.resize( num_gpus );
 }
 
-const static char * gpusDiscoveredText = 
+const static char * gpusDiscoveredText =
     "The following CUDA-enabled GPUs are detected.<br>\
     Check the GPUs to use for accelerating algorithms computations.";
 
 const static char * noGpusDiscoveredText = "No CUDA-enabled GPU detected.";
 
 CudaSupportSettingsPageWidget::CudaSupportSettingsPageWidget( const QString & _msg, CudaSupportSettingsPageController * /*ctrl*/ ) :
-onlyMsg(_msg){    
+onlyMsg(_msg){
 
     if( !onlyMsg.isEmpty() ) {
         //just display the centered warning message
@@ -104,7 +104,7 @@ onlyMsg(_msg){
         //everything is OK - adding info about all available GPUs
 
         QVBoxLayout * vLayout = new QVBoxLayout(this);
-                    
+
         QList<CudaGpuModel *> gpus = AppContext::getCudaGpuRegistry()->getRegisteredGpus();
         const QString & actualText = gpus.empty() ? tr(noGpusDiscoveredText) : tr(gpusDiscoveredText);
         QLabel * gpusDiscoveredLabel = new QLabel( actualText, this );
@@ -114,7 +114,7 @@ onlyMsg(_msg){
             vLayout->setAlignment( Qt::AlignLeft | Qt::AlignTop );
             QHBoxLayout * hLayout = new QHBoxLayout(this);
 
-            QString gpuText = m->getName() + " " + QString::number(m->getGlobalMemorySizeBytes() / (1024*1024)) + " Mb"; 
+            QString gpuText = m->getName() + " " + QString::number(m->getGlobalMemorySizeBytes() / (1024*1024)) + " Mb";
             QCheckBox * check = new QCheckBox( gpuText, this );
 
             check->setChecked(true);
@@ -124,7 +124,7 @@ onlyMsg(_msg){
             vLayout->addLayout( hLayout );
         }
         setLayout(vLayout);
-    }    
+    }
 }
 
 void CudaSupportSettingsPageWidget::setState( AppSettingsGUIPageState * _state ) {

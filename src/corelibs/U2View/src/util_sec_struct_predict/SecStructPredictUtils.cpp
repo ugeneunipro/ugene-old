@@ -47,8 +47,8 @@
 
 namespace U2 {
 
-SecStructPredictViewAction::SecStructPredictViewAction(AnnotatedDNAView* v) : 
-    ADVGlobalAction(v, QIcon(":core//images//ssp_logo.png"),  tr("Predict secondary structure...") ) 
+SecStructPredictViewAction::SecStructPredictViewAction(AnnotatedDNAView* v) :
+    ADVGlobalAction(v, QIcon(":core//images//ssp_logo.png"),  tr("Predict secondary structure...") )
 {
     connect(this, SIGNAL(triggered()), SLOT(sl_execute()));
     addAlphabetFilter(DNAAlphabet_AMINO);
@@ -101,7 +101,7 @@ QString SecStructPredictUtils::getStructNameForCharTag( char tag )
 {
     SecondaryStructure::Type type = SecondaryStructure::Type_None;
     switch(tag) {
-        case 'H': 
+        case 'H':
             type = SecondaryStructure::Type_AlphaHelix;
             break;
         case 'G':
@@ -148,11 +148,11 @@ QList<AnnotationData> SecStructPredictUtils::saveAlgorithmResultsAsAnnotations( 
                 predictedStructures.append(sd);
             }
             lastRecordedPos = i;
-        } 
+        }
         prevChar = curChar;
     }
 
-    return predictedStructures;  
+    return predictedStructures;
 }
 } //namespace
 

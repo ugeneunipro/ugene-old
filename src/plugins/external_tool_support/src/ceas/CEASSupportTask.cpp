@@ -56,7 +56,7 @@ const QString CEASTaskSettings::PNG_FORMAT("PNG");
 CEASTaskSettings::CEASTaskSettings()
 {
 }
-    
+
 CEASTaskSettings::CEASTaskSettings(const CEASSettings &_ceas, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler> &_bedData, const QString &_wigData)
 : ceas(_ceas), storage(storage), bedData(_bedData), wigData(_wigData)
 {
@@ -223,7 +223,7 @@ void CEASSupportTask::run() {
     if (!copyFile(tmpPdfFile, settings.getCeasSettings().getImageFilePath())){
         settings.getCeasSettings().setImagePath("");
     }
-    
+
     CHECK_OP(stateInfo, );
 
     if (!settings.getBedData().isEmpty()){ //no annotation file if no bed data

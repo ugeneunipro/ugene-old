@@ -66,17 +66,17 @@ public:
 class RFAlgorithmBase : public Task {
     Q_OBJECT
 public:
-    RFAlgorithmBase(RFResultsListener* l, 
+    RFAlgorithmBase(RFResultsListener* l,
                     const char* seqX, int sizeX,
-                    const char* seqY, int sizeY, DNAAlphabetType seqType, 
+                    const char* seqY, int sizeY, DNAAlphabetType seqType,
                     int w, int k, TaskFlags flags = TaskFlags_NR_FOSCOE);
 
     void setReportReflected(bool v) {reportReflected = v;}
-    
+
     void setRFResultsListener(RFResultsListener*);
-    
+
     void prepare();
-    
+
     static RFAlgorithmBase* createTask(RFResultsListener* l,
                                         const char *seqx, int sizeX,
                                         const char *seqY, int sizeY,
@@ -86,10 +86,10 @@ public:
     static char getUnknownChar(const DNAAlphabetType &type);
 
 protected:
-    // adds single result to global results 
+    // adds single result to global results
     void addToResults(const RFResult& r);
 
-    // adds multiple results to global results 
+    // adds multiple results to global results
     void addToResults(const QVector<RFResult>& newResults);
 
     //always return true. bool -> to use in assertions

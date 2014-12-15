@@ -33,12 +33,12 @@ class U2SequenceObject;
 class U2CORE_EXPORT ModifySequenceContentTask : public Task {
     Q_OBJECT
 public:
-    ModifySequenceContentTask(const DocumentFormatId& _dfId, 
-                              U2SequenceObject *_seqObj, 
+    ModifySequenceContentTask(const DocumentFormatId& _dfId,
+                              U2SequenceObject *_seqObj,
                               const U2Region& _regionToReplace,
                               const DNASequence& sequence2Insert,
-                              U1AnnotationUtils::AnnotationStrategyForResize _str = U1AnnotationUtils::AnnotationStrategyForResize_Resize, 
-                              const GUrl& _url = GUrl(), 
+                              U1AnnotationUtils::AnnotationStrategyForResize _str = U1AnnotationUtils::AnnotationStrategyForResize_Resize,
+                              const GUrl& _url = GUrl(),
                               bool _mergeAnnotations = false);
 
     virtual Task::ReportResult report();

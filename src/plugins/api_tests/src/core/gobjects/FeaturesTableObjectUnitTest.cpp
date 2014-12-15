@@ -632,7 +632,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByName ) {
 
     const QList<Annotation> anns1 = ft.getAnnotationsByName( aname2 );
     CHECK_EQUAL( 2, anns1.size( ), "annotation count" );
-    
+
     ft.addAnnotations( annotations, os, grname );
 
     const QList<Annotation> anns2 = ft.getAnnotationsByName( aname2 );

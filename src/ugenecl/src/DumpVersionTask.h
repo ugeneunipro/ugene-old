@@ -32,11 +32,11 @@ public:
     static const QString VERSION_CMDLINE_OPTION;
     static const QString VERSION_CMDLINE_OPTION_SHORT;
     static void initHelp();
-    
+
 public:
     DumpVersionTask();
     virtual void run();
-    
+
 }; // DumpVersionTask
 
 } // U2

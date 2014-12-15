@@ -28,7 +28,7 @@ namespace U2 {
 
 #define MACHINE_CFG_PATH "cfg-path"
 
-void GTest_PingRemoteServiceTask::init(XMLTestFormat*, const QDomElement& el) {    
+void GTest_PingRemoteServiceTask::init(XMLTestFormat*, const QDomElement& el) {
     pingTask = NULL;
     machineCfgPath = el.attribute(MACHINE_CFG_PATH);
     if (machineCfgPath.isEmpty()) {
@@ -53,7 +53,7 @@ Task::ReportResult GTest_PingRemoteServiceTask::report() {
     if (hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
-    
+
     if (pingTask->hasError()) {
         setError(pingTask->getError());
     }
@@ -71,7 +71,7 @@ QList<XMLTestFactory*> PingRemoteServiceTests::createTestFactories()
 {
     QList<XMLTestFactory*> res;
     res.append(GTest_PingRemoteServiceTask::createFactory());
-    
+
     return res;
 }
 

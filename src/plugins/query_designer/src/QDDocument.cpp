@@ -101,7 +101,7 @@ QString QDElementStatement::toString() const {
     else {
         res = BLOCK_START + res + " " + BLOCK_END +" ";
     }
-    
+
     res = TEXT_OFFSET + id + " " + res;
     return res;
 }

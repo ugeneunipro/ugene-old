@@ -58,7 +58,7 @@ public:
 class PFMatrixReadTask: public Task {
     Q_OBJECT
 public:
-    PFMatrixReadTask(const QString& url) 
+    PFMatrixReadTask(const QString& url)
         : Task(tr("Read Frequency Matrix"), TaskFlag_None), url(url) {}
     void run();
     PFMatrix getResult() const {return model;}
@@ -71,7 +71,7 @@ private:
 class PWMatrixReadTask: public Task {
     Q_OBJECT
 public:
-    PWMatrixReadTask(const QString& url) 
+    PWMatrixReadTask(const QString& url)
         : Task(tr("Read Weight Matrix"), TaskFlag_None), url(url) {}
     void run();
     PWMatrix getResult() const {return model;}
@@ -84,7 +84,7 @@ private:
 class PFMatrixWriteTask : public Task {
     Q_OBJECT
 public:
-    PFMatrixWriteTask(const QString& url, const PFMatrix& model, uint f = 0) 
+    PFMatrixWriteTask(const QString& url, const PFMatrix& model, uint f = 0)
         : Task(tr("Save position frequency matrix"), TaskFlag_None), url(url), model(model), fileMode(f) {}
     virtual void run();
 private:
@@ -96,7 +96,7 @@ private:
 class PWMatrixWriteTask : public Task {
     Q_OBJECT
 public:
-    PWMatrixWriteTask(const QString& url, const PWMatrix& model, uint f = 0) 
+    PWMatrixWriteTask(const QString& url, const PWMatrix& model, uint f = 0)
         : Task(tr("Save weight matrix"), TaskFlag_None), url(url), model(model), fileMode(f) {}
     virtual void run();
 private:

@@ -34,7 +34,7 @@ QScriptValue GTestScriptWrapper::qtestMouseClickE(QScriptContext *ctx, QScriptEn
             result=" Mouse Click can't find widget ";
             ctx->throwError(" can't find widget ");
         }
-        else{ 
+        else{
             switch(argsCount){
                 case 2:
                     QTest::mouseClick(widget,(Qt::MouseButton)ctx->argument(1).toInt32());
@@ -79,7 +79,7 @@ QScriptValue GTestScriptWrapper::qtestMouseDClickE(QScriptContext *ctx, QScriptE
             result=" Mouse DClick can't find widget ";
             ctx->throwError(" can't find widget ");
         }
-        else{ 
+        else{
             switch(argsCount){
                 case 2:
                     QTest::mouseDClick(widget,(Qt::MouseButton)ctx->argument(1).toInt32());
@@ -124,13 +124,13 @@ QScriptValue GTestScriptWrapper::qtestMouseMoveE(QScriptContext *ctx, QScriptEng
             result=" Mouse Move can't find widget ";
             ctx->throwError(" can't find widget ");
         }
-        else{ 
+        else{
             switch(argsCount){
                 case 1:
                     QTest::mouseMove(widget);
                     //result=true;
                     result="correctly";
-                    break;            
+                    break;
                 case 2:
                     QTest::mouseMove(widget,ctx->argument(1).toVariant().toPoint());
                     //result=true;
@@ -163,7 +163,7 @@ QScriptValue GTestScriptWrapper::qtestMousePressE(QScriptContext *ctx, QScriptEn
             result=" Mouse Press can't find widget ";
             ctx->throwError(" can't find widget ");
         }
-        else{ 
+        else{
             switch(argsCount){
                 case 2:
                     QTest::mousePress(widget,(Qt::MouseButton)ctx->argument(1).toInt32());
@@ -208,7 +208,7 @@ QScriptValue GTestScriptWrapper::qtestMouseReleaseE(QScriptContext *ctx, QScript
             result=" Mouse Release can't find widget ";
             ctx->throwError(" can't find widget ");
         }
-        else{  
+        else{
             switch(argsCount){
                 case 2:
                     QTest::mouseRelease(widget,(Qt::MouseButton)ctx->argument(1).toInt32());
@@ -253,7 +253,7 @@ QScriptValue GTestScriptWrapper::qtestKeyClickE(QScriptContext *ctx, QScriptEngi
             result=" Key Click can't find widget ";
             ctx->throwError(" can't find widget ");
         }
-        else{   
+        else{
             switch(argsCount){
                 case 2:
                     QTest::keyClick(widget,(Qt::Key)ctx->argument(1).toInt32());
@@ -293,7 +293,7 @@ QScriptValue GTestScriptWrapper::qtestKeyClicksE(QScriptContext *ctx, QScriptEng
             result=" Key Clicks can't find widget ";
             ctx->throwError(" can't find widget ");
         }
-        else{ 
+        else{
             switch(argsCount){
                 case 2:
                     QTest::keyClicks(widget,ctx->argument(1).toString());
@@ -333,7 +333,7 @@ QScriptValue GTestScriptWrapper::qtestKeyEventE(QScriptContext *ctx, QScriptEngi
             result=" Key Event can't find widget ";
             ctx->throwError(" can't find widget ");
         }
-        else{ 
+        else{
             switch(argsCount){
                 case 3:
                     QTest::keyEvent((QTest::KeyAction) ctx->argument(0).toInt32(),widget,(Qt::Key)ctx->argument(2).toInt32());
@@ -373,7 +373,7 @@ QScriptValue GTestScriptWrapper::qtestKeyPressE(QScriptContext *ctx, QScriptEngi
             result=" Key Press can't find widget ";
             ctx->throwError(" can't find widget ");
         }
-        else{ 
+        else{
             switch(argsCount){
                 case 2:
                     QTest::keyPress(widget,(Qt::Key)ctx->argument(1).toInt32());
@@ -490,7 +490,7 @@ QScriptValue GTestScriptWrapper::qtestWaitE(QScriptContext *ctx, QScriptEngine *
 }
 void GTestScriptWrapper::setQTest(QScriptEngine* curEng){
     QScriptValue qTestSV =(curEng->newArray());
-    
+
     QScriptValue scriptFunctionMouseClickE = curEng->newFunction(qtestMouseClickE);
     qTestSV.setProperty("mouseClick", scriptFunctionMouseClickE);
 
@@ -520,7 +520,7 @@ void GTestScriptWrapper::setQTest(QScriptEngine* curEng){
 
     QScriptValue scriptFunctionKeyReleaseE = curEng->newFunction(qtestKeyReleaseE);
     qTestSV.setProperty("keyRelease", scriptFunctionKeyReleaseE);
-    
+
     QScriptValue scriptFunctionSleepE = curEng->newFunction(qtestSleepE);
     qTestSV.setProperty("qSleep", scriptFunctionSleepE);
 

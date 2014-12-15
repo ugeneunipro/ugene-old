@@ -37,7 +37,7 @@ struct SaveCutoffsTaskSettings {
     float min, max;
     GSequenceGraphData *d;
 };
- 
+
 class SaveCutoffsTask : public Task {
     Q_OBJECT
 public:

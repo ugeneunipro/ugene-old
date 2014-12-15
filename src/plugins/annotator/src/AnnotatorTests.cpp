@@ -55,7 +55,7 @@ void GTest_AnnotatorSearch::init(XMLTestFormat *tf, const QDomElement& el) {
     if (docName.isEmpty()) {
         failMissingValue(DOC_ATTR);
         return;
-    } 
+    }
 
     seqName = el.attribute(SEQ_ATTR);
     if (seqName.isEmpty()) {
@@ -67,7 +67,7 @@ void GTest_AnnotatorSearch::init(XMLTestFormat *tf, const QDomElement& el) {
     if (groups.isEmpty()) {
         failMissingValue(GROUPS_ATTR);
         return;
-    } 
+    }
     groupsToSearch = (groups.split(QRegExp("\\,"))).toSet(); //may be QRegExp("\\,")
 
     QString expected = el.attribute(EXPECTED_RESULTS_ATTR);
@@ -88,8 +88,8 @@ void GTest_AnnotatorSearch::init(XMLTestFormat *tf, const QDomElement& el) {
             start--;
             expectedResults.append(U2Region(start, finish - start));
         }
-    } 
-    
+    }
+
     QString strRegionSize = el.attribute(REGION_SIZE_ATTR);
     if (strRegionSize.isEmpty()) {
         failMissingValue(REGION_SIZE_ATTR);
@@ -106,7 +106,7 @@ void GTest_AnnotatorSearch::init(XMLTestFormat *tf, const QDomElement& el) {
     if (strRegionSize.isEmpty()) {
         failMissingValue(FIT_TO_REGION_ATTR);
         return;
-    } 
+    }
     if (strFitToRegion == "true") {
         st = CollocationsAlgorithm::NormalSearch;
     } else if (strFitToRegion == "false"){
@@ -114,7 +114,7 @@ void GTest_AnnotatorSearch::init(XMLTestFormat *tf, const QDomElement& el) {
     } else {
         stateInfo.setError(  QString("Unable to convert. Value wrong %1").arg(FIT_TO_REGION_ATTR) );
         return;
-    }   
+    }
 }
 
 void GTest_AnnotatorSearch::prepare() {
@@ -184,7 +184,7 @@ void GTest_CustomAutoAnnotation::init(XMLTestFormat *tf, const QDomElement& el) 
     if (docName.isEmpty()) {
         failMissingValue(DOC_ATTR);
         return;
-    } 
+    }
 
     seqName = el.attribute(SEQ_ATTR);
     if (seqName.isEmpty()) {
@@ -197,16 +197,16 @@ void GTest_CustomAutoAnnotation::init(XMLTestFormat *tf, const QDomElement& el) 
         failMissingValue(RES_ATTR);
         return;
     }
-    
+
     isCircular = false;
     QString strCircular = el.attribute(CIRCULAR_ATTR);
     if (!strCircular.isEmpty()) {
         if (strCircular == "true") {
             isCircular = true;
         }
-    } 
+    }
 
-       
+
 }
 
 void GTest_CustomAutoAnnotation::prepare() {
@@ -216,13 +216,13 @@ void GTest_CustomAutoAnnotation::prepare() {
         stateInfo.setError(  QString("context not found %1").arg(docName) );
         return;
     }
-    
+
     QList<GObject*> list = doc->findGObjectByType(GObjectTypes::SEQUENCE);
     if (list.size() == 0) {
         stateInfo.setError(  QString("container of object with type \"%1\" is empty").arg(GObjectTypes::SEQUENCE) );
         return;
     }
-    
+
     GObject *obj = list.first();
     if(obj==NULL){
         stateInfo.setError(  QString("object with type \"%1\" not found").arg(GObjectTypes::SEQUENCE) );
@@ -234,7 +234,7 @@ void GTest_CustomAutoAnnotation::prepare() {
         stateInfo.setError(  QString("error can't cast to sequence from GObject") );
         return;
     }
-    
+
     if (isCircular) {
         dnaObj->setCircular(true);
     }
@@ -247,14 +247,14 @@ void GTest_CustomAutoAnnotation::prepare() {
         stateInfo.setError( QString("Failed to load plasmid feature database %1").arg(plasmidFeaturesPath));
         return;
     }
-    
+
     AnnotationTableObject *ao = new AnnotationTableObject( resultDocContextName, doc->getDbiRef() );
     addContext(resultDocContextName, ao);
-    
+
     searchTask = new CustomPatternAnnotationTask(ao, dnaObj->getEntityRef(), store);
     addSubTask(searchTask);
-    
-    
+
+
 }
 
 Task::ReportResult GTest_CustomAutoAnnotation::report() {
@@ -292,7 +292,7 @@ void GTest_GeneByGeneApproach::init(XMLTestFormat *tf, const QDomElement& el) {
     if (docName.isEmpty()) {
         failMissingValue(DOC_ATTR);
         return;
-    } 
+    }
 
     seqName = el.attribute(SEQ_ATTR);
     if (seqName.isEmpty()) {
@@ -314,8 +314,8 @@ void GTest_GeneByGeneApproach::init(XMLTestFormat *tf, const QDomElement& el) {
     } else {
         stateInfo.setError(  QString("Unable to convert. Value wrong %1").arg(EXPECTED_RESULT) );
         return;
-    }   
-    
+    }
+
     QString identityStr = el.attribute(IDENTITY_ATTR);
     bool ok = false;
     identity = identityStr.toFloat(&ok);

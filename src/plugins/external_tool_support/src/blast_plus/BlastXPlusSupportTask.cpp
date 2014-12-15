@@ -53,7 +53,7 @@ ExternalToolRunTask* BlastXPlusSupportTask::createBlastPlusTask(){
     }else{
         arguments <<"-word_size"<< QString::number(settings.wordSize);
     }
-    
+
     if (settings.directStrand == TriState_Yes) {
         arguments << "-strand" << "plus";
     } else if (settings.directStrand == TriState_No) {

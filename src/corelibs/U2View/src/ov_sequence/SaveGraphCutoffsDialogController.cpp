@@ -56,7 +56,7 @@ SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController( GSequenceGra
     annotationsWidget->setLayout(l);
 
     betweenRadioButton->setChecked(true);
-    
+
     float min = d->getGlobalMin(), max = d->getGlobalMax();
 
     if (max < 1){
@@ -75,7 +75,7 @@ SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController( GSequenceGra
         maxCutoffBox->setDecimals(0);
         minCutoffBox->setDecimals(0);
     }
-    
+
     maxCutoffBox->setMaximum(max);
     maxCutoffBox->setMinimum(min);
     maxCutoffBox->setValue(max);
@@ -133,15 +133,15 @@ void SaveGraphCutoffsDialogController::accept(){
 }
 
 bool SaveGraphCutoffsDialogController::isAcceptableValue(float val){
-    return 
+    return
         (val > minCutoffBox->value() &&
         val < maxCutoffBox->value() &&
-        betweenRadioButton->isChecked()) 
+        betweenRadioButton->isChecked())
         ||
         (val < minCutoffBox->value() &&
         val > maxCutoffBox->value() &&
         outsideRadioButton->isChecked());
-    
+
 }
 
 bool SaveGraphCutoffsDialogController::validate(){

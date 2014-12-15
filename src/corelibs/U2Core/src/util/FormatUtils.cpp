@@ -104,7 +104,7 @@ QString FormatUtils::getShortMonthName( int num )
             return QString("JUN");
         case 7:
             return QString("JUL");
-        case 8: 
+        case 8:
             return QString("AUG");
         case 9:
             return QString("SEP");

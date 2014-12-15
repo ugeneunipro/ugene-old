@@ -210,7 +210,7 @@ void ClustalWWithExtFileSpecifySupportRunDialog::sl_align(){
     if(maxIterationsCheckBox->isChecked()){
         settings.numIterations=maxIterationsSpinBox->value();
         }
-        }    
+        }
     if(inputFileLineEdit->text().isEmpty()){
         QMessageBox::information(this, tr("Kalign with Align"),
             tr("Input file is not set!") );

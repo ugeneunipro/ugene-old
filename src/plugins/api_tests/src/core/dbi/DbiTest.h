@@ -6,7 +6,7 @@
 
 namespace U2 {
 
-/*Helper to provide dbi for tests tests. 
+/*Helper to provide dbi for tests tests.
 In case you need to open a connection within your test useConnectionPool must be true to use the connection pool
 if you don't need to open connections within your test useConnectionPool must be false to use created dbi without the pool*/
 

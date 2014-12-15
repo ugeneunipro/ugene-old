@@ -42,11 +42,11 @@ class ClustalWWorker : public BaseWorker {
     Q_OBJECT
 public:
     ClustalWWorker(Actor* a);
-    
+
     virtual void init();
     virtual Task* tick();
     virtual void cleanup();
-    
+
 private slots:
     void sl_taskFinished();
 
@@ -57,7 +57,7 @@ private:
 
 private:
     void send(const MAlignment &msa);
-}; 
+};
 
 class ClustalWWorkerFactory : public DomainFactory {
 public:

@@ -29,19 +29,19 @@ namespace U2 {
 #define PING_REMOTE_SERVICE_LOG "ping-remote-server"
 
 RemoteServicePingTask::RemoteServicePingTask( const QString& url )
-:Task( tr( "RemoteServicePingTask" ), TaskFlags( TaskFlags_FOSCOE ) ), 
-machinePath(url), machine(NULL),  machineFactory(new RemoteServiceMachineFactory()) 
+:Task( tr( "RemoteServicePingTask" ), TaskFlags( TaskFlags_FOSCOE ) ),
+machinePath(url), machine(NULL),  machineFactory(new RemoteServiceMachineFactory())
 {
 
 }
 
 void RemoteServicePingTask::prepare() {
 
-    if( machinePath.isEmpty() ) { 
+    if( machinePath.isEmpty() ) {
         setError("Path to remote server settings file is not set");
         return;
     }
-    
+
     RemoteMachineSettingsPtr machineSettings = RemoteMachineSettingsPtr();
     if (QFile::exists(machinePath)) {
         machineSettings = SerializeUtils::deserializeRemoteMachineSettingsFromFile(machinePath);
@@ -52,10 +52,10 @@ void RemoteServicePingTask::prepare() {
         setError( tr("Can not parse remote server settings file %1").arg(machinePath) );
         return;
     }
-    
-    RemoteMachine* m = machineFactory->createInstance(machineSettings); 
+
+    RemoteMachine* m = machineFactory->createInstance(machineSettings);
     machine.reset( static_cast<RemoteServiceMachine*> (m) );
-    
+
 }
 
 void RemoteServicePingTask::run()

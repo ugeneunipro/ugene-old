@@ -35,7 +35,7 @@ public:
     virtual void run();
 
 private:
-    RemoteMachine* machine;     
+    RemoteMachine* machine;
  }; // PingTask
 
 } // U2

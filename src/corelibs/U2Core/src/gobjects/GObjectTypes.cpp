@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-GObjectTypeInfo::GObjectTypeInfo(const GObjectType& _type, const QString& _name, const QString& _pluralName, 
+GObjectTypeInfo::GObjectTypeInfo(const GObjectType& _type, const QString& _name, const QString& _pluralName,
                                  const QString& _treeSign, const QString _iconURL, const QString& _lockedIconUrl)
 : type(_type), name(_name), pluralName(_pluralName), treeSign(_treeSign), iconURL(_iconURL), lockedIconUrl(_lockedIconUrl)
 {

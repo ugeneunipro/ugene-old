@@ -54,7 +54,7 @@ public:
     bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
     bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex());
     bool insertColumns(int column, int count, const QModelIndex &parent = QModelIndex());
-    
+
     // the returning value is the count of rows which data is cached
     int loadedRowCount() const;
     bool isAnyColumnHidden() const;

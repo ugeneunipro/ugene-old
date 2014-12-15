@@ -51,7 +51,7 @@ private:
     static QList<GLuint> dlIndexStorage;
     static QMutex mutex;
 
-    RENDERER_FACTORY(BallAndStickGLRenderer)   
+    RENDERER_FACTORY(BallAndStickGLRenderer)
 };
 
 } //namespace

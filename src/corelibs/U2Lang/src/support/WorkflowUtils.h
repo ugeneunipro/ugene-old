@@ -61,7 +61,7 @@ public:
     static bool validate(const Workflow::Schema &s, QList<QListWidgetItem*> &errs);
     // used in cmdline schema validating
     static bool validate( const Workflow::Schema &s, QStringList &errs);
-    
+
     static QList<Descriptor> findMatchingTypes(DataTypePtr set, DataTypePtr elementDataType);
     static QStringList findMatchingTypesAsStringList(DataTypePtr set, DataTypePtr elementDatatype);
     static QStringList candidatesAsStringList(const QList<Descriptor> &candidates);
@@ -71,20 +71,20 @@ public:
         const QStrStrMap & bindings);
     static DataTypePtr getToDatatypeForBusport(IntegralBusPort * p);
     static DataTypePtr getFromDatatypeForBusport(IntegralBusPort * p, DataTypePtr to);
-    
+
     // find schema with 'name' in common folders or from settings
     static QString findPathToSchemaFile(const QString & name);
 
     static void getLinkedActorsId(Actor *a, QList<QString> &linkedActors); //get list of ID's of all linked actors
 
     static bool isPathExist(const Port *src, const Port *dest);
-    
+
     static QString getStringForParameterDisplayRole(const QVariant & value);
-    
+
     static Actor * findActorByParamAlias(const QList<Actor*> & procs, const QString & alias, QString & attrName, bool writeLog = true);
 
     static Descriptor getSlotDescOfDatatype(const DataTypePtr & dt);
-    
+
     static QString getParamIdFromHref(const QString& href);
 
     static void print(const QString &slotString, const QVariant &data, DataTypePtr type, WorkflowContext *context);
@@ -169,10 +169,10 @@ public:
 private:
     static QStringList initExtensions();
     static bool validate(const Workflow::Schema &s, ProblemList &problemList);
-    
+
 }; // WorkflowUtils
 
-/** 
+/**
  * provides utility functions for ActorDocument purposes
  */
 class U2LANG_EXPORT PrompterBaseImpl : public ActorDocument, public Prompter {
@@ -181,9 +181,9 @@ public:
     PrompterBaseImpl(Actor* p = 0) : ActorDocument(p) {}
 
     static bool isWildcardURL(const QString& url) {return url.indexOf(QRegExp("[*?\\[\\]]")) >= 0;}
-    
+
     virtual ActorDocument * createDescription(Actor*) = 0;
-    
+
     QString getURL(const QString& id, bool * empty = NULL );
     QString getScreenedURL(IntegralBusPort* input, const QString& id, const QString& slot);
     QString getRequiredParam(const QString& id);
@@ -202,7 +202,7 @@ protected slots:
 
 protected:
     QVariantMap map;
-    
+
 }; // PrompterBaseImpl
 
 /**
@@ -210,7 +210,7 @@ protected:
  * represents creating description, updating description and displaying description facilities
  *
  * only classes that inherit ActorDocument can be used as a template argument
- * provides 
+ * provides
  */
 template <typename T>
 class PrompterBase : public PrompterBaseImpl {
@@ -234,7 +234,7 @@ public:
     }
 protected:
     bool listenInputs;
-    
+
 }; // PrompterBase
 
 }//namespace

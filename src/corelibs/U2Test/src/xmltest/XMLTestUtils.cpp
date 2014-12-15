@@ -27,7 +27,7 @@ namespace U2 {
 
 QList<XMLTestFactory*>  XMLTestUtils::createTestFactories() {
     QList<XMLTestFactory*> res;
-    
+
     res.append(XMLMultiTest::createFactory());
     res.append(GTest_DeleteTmpFile::createFactory());
     res.append(GTest_Fail::createFactory());

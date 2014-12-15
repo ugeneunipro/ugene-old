@@ -32,14 +32,14 @@ class ImportAnnotationsWorker : public BaseWorker {
     Q_OBJECT
 public:
     ImportAnnotationsWorker(Actor * p) : BaseWorker(p), inPort(NULL), outPort(NULL) {}
-    
+
     virtual void init();
     virtual Task * tick();
     virtual void cleanup();
-    
+
 private slots:
     void sl_docsLoaded(Task *);
-    
+
 private:
     IntegralBus * inPort;
     IntegralBus * outPort;
@@ -52,11 +52,11 @@ private:
 class ImportAnnotationsWorkerFactory : public DomainFactory {
 public:
     static const QString ACTOR_ID;
-    
+
     ImportAnnotationsWorkerFactory() : DomainFactory(ACTOR_ID) {}
     static void init();
     virtual Worker * createWorker(Actor* a);
-    
+
 }; // ImportAnnotationsWorkerFactory
 
 } // LocalWorkflow

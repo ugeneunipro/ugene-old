@@ -72,7 +72,7 @@ static Actor* getLinkedActor(ActorId id, Port* output, QList<Actor*> visitedActo
 }
 
 static QMap<QString, QStringList> getListSlotsMappings(const QStrStrMap& bm, const Port* p) {
-    assert(p->isInput());    
+    assert(p->isInput());
     DataTypePtr dt = p->getType();
     QMap<QString, QStringList> res;
     if (dt->isList()) {
@@ -347,10 +347,10 @@ void IntegralBusPort::setupBusMap() {
     if( !isInput() || getWidth() != 1 ) {
         return;
     }
-    
+
     DataTypePtr to = getType();
     assert(to->isMap()); // all port types made as map datatypes
-    
+
     DataTypePtr from = bindings.uniqueKeys().first()->getType();
     QList<Descriptor> keys = to->getAllDescriptors();
     QStrStrMap busMap = getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
@@ -514,7 +514,7 @@ bool ScreenedSlotValidator::validate(const Configuration* cfg, ProblemList &prob
 /*******************************
 * ScreenedParamValidator
 *******************************/
-ScreenedParamValidator::ScreenedParamValidator(const QString& id, const QString& port, const QString& slot) 
+ScreenedParamValidator::ScreenedParamValidator(const QString& id, const QString& port, const QString& slot)
 : id(id), port(port), slot(slot) {}
 
 bool ScreenedParamValidator::validate(const Configuration* cfg, ProblemList &problemList) const {
@@ -534,17 +534,17 @@ QString ScreenedParamValidator::validate(const Configuration * cfg) const {
     QVariant val = param->getAttributePureValue();
     const Workflow::Actor* a = dynamic_cast<const Workflow::Actor*>(cfg);
     assert(a);
-    
+
     Workflow::Port* p = a->getPort(port);
     assert(p->isInput());
-    
+
     QVariant busMap = p->getParameter(Workflow::IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributePureValue();
     QString slotVal = busMap.value<QStrStrMap>().value(slot);
     const bool noParam = ( val.isNull() || val.toString().isEmpty() ) && param->getAttributeScript().isEmpty();
     const bool noSlot = slotVal.isNull() || slotVal.isEmpty();
-    
+
     if (noParam && noSlot) {
-        QString slotName = p->getType()->getDatatypeDescriptor(slot).getDisplayName(); 
+        QString slotName = p->getType()->getDatatypeDescriptor(slot).getDisplayName();
         assert(!slotName.isEmpty());
         return U2::WorkflowUtils::tr("Either parameter '%1' or input slot '%2' must be set").arg(param->getDisplayName()).arg(slotName);//FIXME translator class
     }

@@ -133,7 +133,7 @@ QList<Task*> SeqPosTask::onSubTaskFinished(Task* subTask) {
 
     if (treatTask == subTask) {
             QStringList args = settings.getArguments(treatDoc->getURLString());
-            
+
             logParser = new SeqPosLogParser();
             ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
             SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);

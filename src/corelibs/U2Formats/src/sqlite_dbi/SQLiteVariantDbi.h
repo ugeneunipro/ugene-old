@@ -38,37 +38,37 @@ public:
     virtual U2DbiIterator<U2VariantTrack>* getVariantTracks(const U2DataId& seqId, U2OpStatus& os);
 
     virtual U2DbiIterator<U2VariantTrack>* getVariantTracks(const U2DataId& seqId, VariantTrackType trackType, U2OpStatus& os);
-    
+
     /** Returns VariantTrack instance by the given track id */
     virtual U2VariantTrack getVariantTrack(const U2DataId& trackId, U2OpStatus& os);
 
     /** Returns VariantTrack instance by the given variant id */
     virtual U2VariantTrack getVariantTrackofVariant(const U2DataId& variantId, U2OpStatus& os);
 
-    /** 
+    /**
         Create Variant and add it to the track
         Requires U2DbiFeature_WriteVariants feature support
     */
     virtual void addVariantsToTrack(const U2VariantTrack& track, U2DbiIterator<U2Variant>* it,U2OpStatus& os);
 
-     /** 
+     /**
         Creates new index for variations.
     */
     virtual void createVariationsIndex(U2OpStatus& os);
 
-    /** 
+    /**
         Creates new VariantTrack instance
         Requires U2DbiFeature_WriteVariants feature support
     */
     virtual void createVariantTrack(U2VariantTrack& track, VariantTrackType trackType, const QString& folder, U2OpStatus& os);
 
-    /** 
-        Updates VariantTrack instance 
+    /**
+        Updates VariantTrack instance
         Requires U2DbiFeature_WriteVariants feature support
     */
     virtual void updateVariantTrack(U2VariantTrack& track, U2OpStatus& os);
 
-    /** Returns all Variants from the given region 
+    /** Returns all Variants from the given region
     U2_REGION_MAX to get all variants*/
     virtual U2DbiIterator<U2Variant>* getVariants(const U2DataId& track, const U2Region& region, U2OpStatus& os);
 

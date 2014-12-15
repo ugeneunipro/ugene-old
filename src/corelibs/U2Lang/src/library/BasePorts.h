@@ -42,7 +42,7 @@ public:
     static const QString IN_VARIATION_TRACK_PORT_ID();
     static const QString OUT_ASSEMBLY_PORT_ID();
     static const QString IN_ASSEMBLY_PORT_ID();
-    
+
 }; // BasePorts
 
 } // Workflow

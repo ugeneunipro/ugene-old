@@ -50,7 +50,7 @@ DotPlotFilterDialog::DotPlotFilterDialog(QWidget *parent, ADVSequenceObjectConte
     setupUi(this);
     new HelpButton(this, buttonBox, "7012354");
 
-    
+
     {
         filterGroup = new QButtonGroup(this);
         filterGroup->addButton(noFiltrationRadio, All);
@@ -153,7 +153,7 @@ void DotPlotFilterDialog::accept() {
 
 FilterType DotPlotFilterDialog::getFilterType(){
     SAFE_POINT(filterGroup, "Filter Button Group is NULL", All);
-    
+
     return FilterType(filterGroup->checkedId());
 }
 

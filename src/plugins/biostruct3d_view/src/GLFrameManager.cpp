@@ -177,7 +177,7 @@ void GLFrameManager::setSyncLock( bool lockOn, QGLWidget* syncWidget )
                 frame->updateViewPort();
                 frame->updateGL();
             }
-        }   
+        }
     }
 }
 

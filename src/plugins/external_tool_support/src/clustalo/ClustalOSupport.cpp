@@ -101,7 +101,7 @@ void ClustalOSupport::sl_runWithExtFileSpecify(){
     U2OpStatus2Log os(LogLevel_DETAILS);
     ExternalToolSupportSettings::checkTemporaryDir(os);
     CHECK_OP(os, );
-    
+
     //Call select input file and setup settings dialog
     ClustalOSupportTaskSettings settings;
     ClustalOWithExtFileSpecifySupportRunDialog clustalORunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
@@ -176,7 +176,7 @@ void ClustalOSupportContext::sl_align_with_ClustalO() {
     U2OpStatus2Log os(LogLevel_DETAILS);
     ExternalToolSupportSettings::checkTemporaryDir(os);
     CHECK_OP(os, );
-    
+
     //Call run ClustalO align dialog
     AlignMsaAction* action = qobject_cast<AlignMsaAction *>(sender());
     assert(action!=NULL);

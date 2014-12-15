@@ -71,7 +71,7 @@ private:
     QList<SWresult> expectedRes;
 
     Task * swAlgorithmTask;
-    
+
     QString machinePath;
 };
 
@@ -85,7 +85,7 @@ public:
 
 private:
     SmithWatermanSettings s;
-    
+
     QByteArray patternSeq;
     QByteArray searchSeq;
 

@@ -119,10 +119,10 @@ protected:
 private:
     const EDProcessedSignal& operator=(const EDProcessedSignal&);
     EDProcessedSignal(const EDProcessedSignal&);
-    void setYesRealizations(int iSequence, const Set& set) { 
+    void setYesRealizations(int iSequence, const Set& set) {
         m_arYesRealizations[iSequence] = set;
     }
-    void setNoRealizations(int iSequence, const Set& set) { 
+    void setNoRealizations(int iSequence, const Set& set) {
         m_arNoRealizations[iSequence] = set;
     }
     void setYesSequenceNumber(int nSeqNum) {
@@ -131,8 +131,8 @@ private:
     void setNoSequenceNumber(int nSeqNum) {
         m_arNoRealizations.resize(nSeqNum);
     }
-    void setTextDescription(QString strDesc) { 
-        m_strDescription = strDesc; 
+    void setTextDescription(QString strDesc) {
+        m_strDescription = strDesc;
     }
 
 private:
@@ -186,7 +186,7 @@ public:
     void load(QDataStream& ar, CSFolder& rootF);
     void Clear() { m_SelectedSignals.clear(); }
 private:
-    SignalList m_SelectedSignals;	
+    SignalList m_SelectedSignals;
 };
 
 typedef std::vector<double> RecognizationData;
@@ -198,12 +198,12 @@ public:
     void clear();
     void addSequence(QString& seqName);
     bool getRecognizationData(RecognizationData& d, const Sequence* seq, const SelectedSignalsContainer& rSe, U2OpStatus& st);
-    
+
 private:
     RecognizationData* getRecData(const Sequence* seq);
     QMap<QString, RecognizationData*> recMap;
 };
-  
+
 } //namespace
 
 #endif

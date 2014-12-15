@@ -27,8 +27,8 @@
 
 namespace U2 {
 
-/** 
-    Default helper stub for U2OpStatus 
+/**
+    Default helper stub for U2OpStatus
     Note: implementation is not thread safe!
 */
 class U2CORE_EXPORT U2OpStatusImpl : public U2OpStatus {
@@ -44,7 +44,7 @@ public:
         }
     }
     void markChecked() const {checked = true;}
-#else 
+#else
     U2OpStatusImpl() : cancelFlag(false), progress(-1) {}
     void markChecked() const {}
 #endif
@@ -88,8 +88,8 @@ protected:
     }
 
 
-/** 
-    Used to dump error ops to coreLog. 
+/**
+    Used to dump error ops to coreLog.
     LogLevel is specified as param. Default is ERROR
 */
 class U2CORE_EXPORT U2OpStatus2Log : public U2OpStatusImpl {
@@ -120,7 +120,7 @@ public:
         error = err;
     }
 
-    virtual bool hasError() const { 
+    virtual bool hasError() const {
         return parent->hasError() || !error.isEmpty();
     }
 

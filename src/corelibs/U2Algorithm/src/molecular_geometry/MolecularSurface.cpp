@@ -53,7 +53,7 @@ void AtomConstants::init()
         atomRadiusTable[52] = 1.47;
         atomRadiusTable[53] = 1.40;
 
-        // now we've initialized utility maps   
+        // now we've initialized utility maps
         initialized = true;
     }
 }
@@ -76,7 +76,7 @@ QList<SharedAtom> MolecularSurface::findAtomNeighbors( const SharedAtom& a, cons
     foreach (const SharedAtom& neighbor, atoms) {
         if (neighbor == a) {
             continue;
-        } 
+        }
         Vector3D v2 = neighbor->coord3d;
         if ( ( qAbs(v1.x - v2.x) <= doubleRadius) && ( qAbs(v1.y - v2.y) <= doubleRadius  ) && ( qAbs(v1.z - v2.z) <= doubleRadius ) ) {
             neighbors.append(neighbor);
@@ -103,7 +103,7 @@ bool MolecularSurface::vertexNeighboursOneOf( const Vector3D& v, const QList<Sha
                 return true;
         }
     }
-    
+
     return false;
 }
 
@@ -113,7 +113,7 @@ qint64 MolecularSurface::estimateMemoryUsage( int numberOfAtoms )
 
     // this many elements we can keep in container
     int maxInt = std::numeric_limits<int>::max();
-    
+
     return maxInt*sizeof(double)*6;
 }
 
@@ -126,11 +126,11 @@ MolecularSurfaceCalcTask::MolecularSurfaceCalcTask( const QString& surfaceTypeNa
 
     qint64 memUseMB = (molSurface->estimateMemoryUsage(atoms.size())) / 1024 / 1024;
     algoLog.trace(QString("Estimated memory usage: %1 MB").arg(memUseMB));
-    
+
     addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, true));
-    
+
     tpm = Progress_Manual;
-    
+
 }
 
 

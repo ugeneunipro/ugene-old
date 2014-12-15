@@ -372,7 +372,7 @@ Task* SWWorker::tick() {
             return NULL;
         }
         SmithWatermanSettings cfg;
-        
+
         // sequence
         SharedDbiDataHandler seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
         QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
@@ -405,7 +405,7 @@ Task* SWWorker::tick() {
                 return new FailTask(tr("Can't find weight matrix name: '%1'!").arg(matrixName.isEmpty() ? tr("<empty>") : matrixName));
             }
         }
-        
+
         if(mtrx.toLower() != "auto") {
             QByteArray alphChars = seq.alphabet->getAlphabetChars();
             if(!cfg.pSm.getAlphabet()->containsAll(alphChars.constData(), alphChars.length()) ) {

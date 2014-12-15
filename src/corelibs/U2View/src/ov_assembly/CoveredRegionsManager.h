@@ -28,7 +28,7 @@
 namespace U2 {
 
 /**
- * Wrapper for region and its coverage. Here coverage is number of reads 
+ * Wrapper for region and its coverage. Here coverage is number of reads
  * intersecting the region.
  */
 struct CoveredRegion {

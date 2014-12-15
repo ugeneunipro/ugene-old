@@ -41,15 +41,15 @@ class BaseDocReader : public BaseWorker {
 public:
     BaseDocReader(Actor* a, const QString& tid, const DocumentFormatId& fid);
     virtual ~BaseDocReader() {}
-    
+
     virtual void init() ;
     virtual Task* tick() ;
     virtual bool isDone() ;
     virtual void cleanup() ;
-    
+
 protected:
     virtual void doc2data(Document* ) = 0;
-    
+
 protected:
     CommunicationChannel* ch;
     DocumentFormatId fid;
@@ -57,7 +57,7 @@ protected:
     bool attachDoc2Proj;
     QList<Message> cache;
     DataTypePtr mtype;
-    
+
 };
 
 class BaseDocWriter : public BaseWorker {

@@ -50,12 +50,12 @@ BedtoolsSupport::BedtoolsSupport(const QString& name, const QString& path) : Ext
 #endif
     validMessage="bedtools v";
     description=tr("<i>Bedtools</i>: flexible tools for genome arithmetic and DNA sequence analysis.");
-                   
+
     versionRegExp=QRegExp("bedtools v(\\d+.\\d+.\\d+)");
     validationArguments << "--version";
     toolKitName="bedtools";
 
-    connect(this, SIGNAL(si_toolValidationStatusChanged(bool)), SLOT(sl_validationStatusChanged(bool))); 
+    connect(this, SIGNAL(si_toolValidationStatusChanged(bool)), SLOT(sl_validationStatusChanged(bool)));
 
     U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
     if (dpr){

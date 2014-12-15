@@ -64,7 +64,7 @@ private slots:
     void sl_removeAllAnnsBtnClicked();
     void sl_timerUpdate();
     void sl_taskStateChanged();
-    
+
 private:
     void addAnnotationWidget();
     void searchForAnnotatedEnzymes(ADVSequenceObjectContext* ctx);

@@ -83,7 +83,7 @@ namespace U2 {
         }
         signalsVect.push_back(pSignal);
         return 0;
-            
+
     }
 
     int	CSFolder::getSignalIndexByName(QString strName) const
@@ -120,7 +120,7 @@ namespace U2 {
     int CSFolder::addFolder(CSFolder *pFolder, bool bReplace)
     {
         int nIndex = getFolderIndexByName(pFolder->getName());
-        if (nIndex>=0) { 
+        if (nIndex>=0) {
             if (bReplace)
             {
                 CSFolder *pDestFolder = getSubfolder(nIndex);
@@ -160,7 +160,7 @@ namespace U2 {
             strResult = strPrefix + QString("%1").arg(n);
             n++;
         }while (getSignalIndexByName(strResult)>=0);
-        
+
         return strResult;
     }
 
@@ -177,7 +177,7 @@ namespace U2 {
         return strResult;
     }
 
-    void CSFolder::deleteFolder(int id) 
+    void CSFolder::deleteFolder(int id)
     {
         delete folders[id];
         folders.erase(folders.begin()+id);
@@ -221,7 +221,7 @@ namespace U2 {
             int nIndex = getSignalIndexByName(strPath);
             if (nIndex < 0)
                 return NULL;
-            else 
+            else
                 return getSignal(nIndex);
         }
 
@@ -280,7 +280,7 @@ EDProcessedSignal* EDProcessedSignal::processSignal(Operation *pOp, const Sequen
     return pPS;
 }
 
-void EDProcessedSignal::makeStandardProcessing(Operation *pOp, const SequenceBase *pYesBase, const SequenceBase *pNoBase) 
+void EDProcessedSignal::makeStandardProcessing(Operation *pOp, const SequenceBase *pYesBase, const SequenceBase *pNoBase)
 {
     bool first;
     int a[2][2] = {{0,0},{0,0}};
@@ -301,7 +301,7 @@ void EDProcessedSignal::makeStandardProcessing(Operation *pOp, const SequenceBas
             a[1][1]++;
             int nPos = rContext.getPosition();
             int nLen = rContext.getLength();
-            for (int k=nPos; k<nPos+nLen; k++) { 
+            for (int k=nPos; k<nPos+nLen; k++) {
                 if (rContext.isSignalPart(k)){
                     set.set(k);
                     set.associate(k, rContext.getTSName(k));
@@ -373,7 +373,7 @@ void EDProcessedSignal::makeStandardProcessing(Operation *pOp, const SequenceBas
 
 
     m_dFisher = fisher(a[0][0], a[0][1], a[1][0], a[1][1]);
-    
+
     addProperty("Fisher", QString("%1").arg(m_dFisher));
 
     m_dUl = ul(a[0][0], a[0][1], a[1][0], a[1][1]);
@@ -393,7 +393,7 @@ QString EDProcessedSignal::getPropertyValue(QString name) const
     return QString();
 }
 
-void EDProcessedInterval::process(Operation *pOp, const SequenceBase *pYesBase, const SequenceBase *pNoBase) 
+void EDProcessedInterval::process(Operation *pOp, const SequenceBase *pYesBase, const SequenceBase *pNoBase)
 {
 
 }
@@ -434,14 +434,14 @@ void EDProcessedDistance::process(Operation *pOp, const SequenceBase *pYesBase, 
     double dCC = corelation(ai[0][0][0], ai[0][0][1], ai[0][1][0], ai[0][1][1]);
     if (dCC == CORELATION_UNDEFINED)
         str = "Undefined";
-    else 
+    else
         str =QString("%1").arg(dCC);
     addProperty("Param. corelation on pos.", str);
 
     dCC = corelation(ai[1][0][0], ai[1][0][1], ai[1][1][0], ai[1][1][1]);
     if (dCC == CORELATION_UNDEFINED)
         str = "Undefined";
-    else 
+    else
         str = QString("%1").arg(dCC);
     addProperty("Param. corelation on neg.", str);
 }
@@ -488,7 +488,7 @@ bool SelectedSignalsContainer::IsSelected(const Signal *pSignal) const
     SignalList::const_iterator it = m_SelectedSignals.find(pSignal);
     if (m_SelectedSignals.end() != it)
         return true;
-    else 
+    else
         return false;
 }
 
@@ -539,13 +539,13 @@ void RecognizationDataStorage::addSequence(QString& seqName){
     recMap.insert(seqName, NULL);
 }
 bool RecognizationDataStorage::getRecognizationData(RecognizationData& data, const Sequence* seq, const SelectedSignalsContainer& rSe, U2OpStatus& st){
- 
+
     if (seq->isHasScore() && !(getRecData(seq) == NULL)){
         data = *getRecData(seq);
         return !data.empty();
 
     }
-  
+
     const SignalList& rSelList = rSe.GetSelectedSignals();
     int listSize = rSelList.size();
     if (listSize == 0)
@@ -593,9 +593,9 @@ bool RecognizationDataStorage::getRecognizationData(RecognizationData& data, con
         delete d;
     }
     d = new RecognizationData(data);
-   
+
     return true;
-       
+
 }
 RecognizationData* RecognizationDataStorage::getRecData(const Sequence* seq){
     if(!recMap.contains(QString::fromStdString(seq->getName())) ){

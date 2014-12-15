@@ -35,7 +35,7 @@ namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////
 //GTest_LoadDASDocumentTask
-    
+
 void GTest_LoadDASDocumentTask::init(XMLTestFormat *tf, const QDomElement& el){
     Q_UNUSED(tf);
 
@@ -107,7 +107,7 @@ Task::ReportResult GTest_LoadDASDocumentTask::report(){
             }
 
             QList<GObject*> annlist = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-            
+
             QList<AnnotationTableObject *> expectedAnnotations;
             foreach(GObject* at, annlist){
                 AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>(at);

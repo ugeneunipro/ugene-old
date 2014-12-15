@@ -41,7 +41,7 @@
 #include "DocumentFormatUtils.h"
 #include "IOLibUtils.h"
 
-/* TRANSLATOR U2::ABIFormat */    
+/* TRANSLATOR U2::ABIFormat */
 
 namespace U2 {
 
@@ -59,7 +59,7 @@ FormatCheckResult ABIFormat::checkRawData(const QByteArray& rawData, const GUrl&
 
     if (size <= 4 || data[0]!='A' || data[1]!='B' || data[2]!='I' || data[3]!='F') {
         /*
-        * Maybe we've got a file in MacBinary format in which case 
+        * Maybe we've got a file in MacBinary format in which case
         * we'll have an extra offset 128 bytes to add.
         */
         data += 128;
@@ -96,7 +96,7 @@ DNASequence *ABIFormat::loadSequence(IOAdapter *io, U2OpStatus &os)
     if (io->isEof()) {
         return NULL;
     }
-    
+
     CHECK_EXT((io != NULL) && (io->isOpen() == true), os.setError(L10N::badArgument("IO adapter")), NULL);
     QByteArray readBuff;
     QByteArray block(BUFF_SIZE, 0);
@@ -136,9 +136,9 @@ DNASequence *ABIFormat::loadSequence(IOAdapter *io, U2OpStatus &os)
 * MRC disclaims all warranties with regard to this software.
 */
 
-/* 
+/*
 * Title:    seqIOABI
-* 
+*
 * File:     seqIOABI.c
 * Purpose:  Reading (not writing) of ABI sequences
 * Last update: Fri Sep 02, 1994

@@ -41,11 +41,11 @@ class U2CORE_EXPORT DNAQuality {
 public:
     DNAQuality() : type (DNAQualityType_Sanger) {}
     DNAQuality(const QByteArray& qualScore, DNAQualityType type = DNAQualityType_Sanger);
-    
+
     bool isEmpty() const { return qualCodes.isEmpty(); }
     int getValue(int pos) const;
     static char encode(int val, DNAQualityType type);
-        
+
     static QString getDNAQualityNameByType(DNAQualityType t);
     static DNAQualityType getDNAQualityTypeByName(const QString& name);
     static QStringList getDNAQualityTypeNames();
@@ -54,7 +54,7 @@ public:
 
     QByteArray      qualCodes;
     DNAQualityType  type;
-    
+
     static const DNAQualityFormat QUAL_FORMAT;
     static const DNAQualityFormat ENCODED;
 };

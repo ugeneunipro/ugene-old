@@ -31,23 +31,23 @@ namespace U2 {
 
 class U2CORE_EXPORT U2BaseAttributeName {
 public:
-    /** 
-    Reserved to represent length: sequence or alignment 
-    This attribute can be artificial and derived directly from structure values 
+    /**
+    Reserved to represent length: sequence or alignment
+    This attribute can be artificial and derived directly from structure values
     If structure length is updated, system is responsible to update the attribute too
     */
     static const QString length;//          = "length";
 
-    /** 
-    Reserved to represent alphabet: sequence or alignment 
-    This attribute can be artificial and derived directly from structure values 
+    /**
+    Reserved to represent alphabet: sequence or alignment
+    This attribute can be artificial and derived directly from structure values
     If structure alphabet is updated, system is responsible to update the attribute too
     */
     static const QString alphabet;//        = "alphabet";
 
-    /** 
-    Reserved to represent GC-content: sequence or alignment 
-    This attribute can be artificial and derived directly from structure values 
+    /**
+    Reserved to represent GC-content: sequence or alignment
+    This attribute can be artificial and derived directly from structure values
     If structure gc-content is updated, system is responsible to update the attribute too
     */
     static const QString gc_content;//      = "GC-content";

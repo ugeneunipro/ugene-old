@@ -291,7 +291,7 @@ void AssemblyDbiUnitTests_getReadsByRowInvalid::Test() {
     const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
     qint64 begin = testData.getValue<qint64>(GET_READS_BY_ROW_BEGIN);
     qint64 end = testData.getValue<qint64>(GET_READS_BY_ROW_END);
-    const U2Region& region = testData.getValue<U2Region>(GET_READS_BY_ROW_REGION);    
+    const U2Region& region = testData.getValue<U2Region>(GET_READS_BY_ROW_REGION);
     U2OpStatusImpl os;
 
     QScopedPointer< U2DbiIterator<U2AssemblyRead> > iter;
@@ -312,7 +312,7 @@ void AssemblyDbiUnitTests_getReadsByName::Test() {
         read->packedViewRow = 0;
         read->readSequence = "AAGATCCTCATGTTATATCGGCAGTGGGTTGATCAATCCACGTGGATAG";
         read->flags = None;
-        
+
         QVariantList readsByName;
         readsByName.append(qVariantFromValue(read));
         testData.addValue(READS_BY_NAME_IN, readsByName);
@@ -422,7 +422,7 @@ void AssemblyDbiUnitTests_createAssemblyObject::Test() {
 void AssemblyDbiUnitTests_removeReads::Test() {
     U2AssemblyDbi* assemblyDbi = AssemblyTestData::getAssemblyDbi();
     APITestData testData;
-    testData.addValue(REMOVE_READS_IN, U2Region(10, 10));    
+    testData.addValue(REMOVE_READS_IN, U2Region(10, 10));
 
     const U2DataId& id = AssemblyTestData::getAssemblyIds()->first();
     const U2Region& region = testData.getValue<U2Region>(REMOVE_READS_IN);
@@ -530,7 +530,7 @@ void AssemblyDbiUnitTests_pack::Test() {
 
     assemblyDbi->pack(id, stats, os);
     CHECK_NO_ERROR(os);
-        
+
     CHECK_TRUE(stats.maxProw == 29, "incorrect max prow");
     CHECK_TRUE(stats.readsCount == 44, "incorrect count reads");
 }

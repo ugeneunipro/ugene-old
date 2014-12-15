@@ -44,17 +44,17 @@ class DASAnnotationWorker : public BaseWorker {
     Q_OBJECT
 public:
     DASAnnotationWorker(Actor* a);
-    
+
     virtual void init();
     virtual Task* tick();
     virtual void cleanup();
-    
+
 private slots:
     void sl_taskFinished();
 
 protected:
     CommunicationChannel *input, *output;
-}; 
+};
 
 class DASAnnotationWorkerFactory : public DomainFactory {
 public:

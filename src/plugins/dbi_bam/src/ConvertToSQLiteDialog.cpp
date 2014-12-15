@@ -152,7 +152,7 @@ void ConvertToSQLiteDialog::sl_inverseSelection() {
 void ConvertToSQLiteDialog::sl_bamInfoButtonClicked() {
     const Header& header = bamInfo.getHeader();
     QDialog dialog(this);
-    dialog.setWindowTitle(BAMDbiPlugin::tr("%1 file info").arg(sourceUrl.getURLString()));    
+    dialog.setWindowTitle(BAMDbiPlugin::tr("%1 file info").arg(sourceUrl.getURLString()));
     dialog.setLayout(new QVBoxLayout());
 
     {
@@ -171,8 +171,8 @@ void ConvertToSQLiteDialog::sl_bamInfoButtonClicked() {
             case Header::QueryName: sort = BAMDbiPlugin::tr("Query name"); break;
         }
 
-        list << QPair<QString, QString>(BAMDbiPlugin::tr("URL"), sourceUrl.getURLString()) 
-            << QPair<QString, QString>(BAMDbiPlugin::tr("Format version"), header.getFormatVersion().text) 
+        list << QPair<QString, QString>(BAMDbiPlugin::tr("URL"), sourceUrl.getURLString())
+            << QPair<QString, QString>(BAMDbiPlugin::tr("Format version"), header.getFormatVersion().text)
             << QPair<QString, QString>(BAMDbiPlugin::tr("Sorting order"), sort);
 
         table->setRowCount(list.count());
@@ -193,15 +193,15 @@ void ConvertToSQLiteDialog::sl_bamInfoButtonClicked() {
     {
         QTableWidget* table = new QTableWidget();
         table->setColumnCount(9);
-        table->setHorizontalHeaderLabels(QStringList() << BAMDbiPlugin::tr("Sequencing center") << BAMDbiPlugin::tr("Description") << BAMDbiPlugin::tr("Date") 
-            << BAMDbiPlugin::tr("Library") << BAMDbiPlugin::tr("Programs") << BAMDbiPlugin::tr("Predicted median insert size") << BAMDbiPlugin::tr("Platform/technology") 
+        table->setHorizontalHeaderLabels(QStringList() << BAMDbiPlugin::tr("Sequencing center") << BAMDbiPlugin::tr("Description") << BAMDbiPlugin::tr("Date")
+            << BAMDbiPlugin::tr("Library") << BAMDbiPlugin::tr("Programs") << BAMDbiPlugin::tr("Predicted median insert size") << BAMDbiPlugin::tr("Platform/technology")
             << BAMDbiPlugin::tr("Platform unit") << BAMDbiPlugin::tr("Sample"));
         table->horizontalHeader()->setStretchLastSection(true);
-        
+
         int i=0;
         foreach(const Header::ReadGroup& rg, header.getReadGroups()) {
             QStringList rgList;
-            rgList << QString(rg.getSequencingCenter()) << QString(rg.getDescription()) << QString(rg.getDate().toString()) << QString(rg.getLibrary()) 
+            rgList << QString(rg.getSequencingCenter()) << QString(rg.getDescription()) << QString(rg.getDate().toString()) << QString(rg.getLibrary())
                 << QString(rg.getPlatform()) << QString(rg.getPredictedInsertSize()) << QString(rg.getPlatform()) << QString(rg.getPlatformUnit()) << QString(rg.getSample());
             int j=0;
             foreach(const QString& s, rgList) {
@@ -355,21 +355,21 @@ void ConvertToSQLiteDialog::accept() {
         }
 
         if(QFile::exists(destinationUrl.getURLString())) {
-            int result = QMessageBox::question(this, windowTitle(), 
+            int result = QMessageBox::question(this, windowTitle(),
                                                BAMDbiPlugin::tr("Destination file already exists.\n"
                                                                 "To overwrite the file, press 'Replace'.\n"
-                                                                "To append data to existing file press 'Append'."), 
-                                               BAMDbiPlugin::tr("Replace"), 
-                                               BAMDbiPlugin::tr("Append"), 
+                                                                "To append data to existing file press 'Append'."),
+                                               BAMDbiPlugin::tr("Replace"),
+                                               BAMDbiPlugin::tr("Append"),
                                                BAMDbiPlugin::tr("Cancel"), 2);
             switch(result) {
-            case 0: 
+            case 0:
                 {
                     bool ok = QFile::remove(destinationUrl.getURLString());
                     if(!ok) {
                         QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destination file '%1' cannot be removed").arg(destinationUrl.getURLString()));
                         return;
-                    }    
+                    }
                 }
                 QDialog::accept();
                 break;
@@ -380,7 +380,7 @@ void ConvertToSQLiteDialog::accept() {
         } else {
             QDialog::accept();
         }
-        
+
     }
 }
 

@@ -46,25 +46,25 @@ public:
             " or more CMDLineHelpProvider with the same fullName. They will be"
             " placed on different lines in the options list."));
     }
-        
-    QString getHelpSectionFullName() const {return fullName;}    
+
+    QString getHelpSectionFullName() const {return fullName;}
     QString getHelpSectionShortDescription() const { return shortDescription; }
     QString getHelpSectionFullDescription() const { return fullDescription; }
     QString getHelpSectionArgsDescription() const { return argsDescription; }
     QString getHelpSectionShortName() const {return shortName;}
-    QString getHelpSectionNames() const { 
-        QString ret = fullName; 
-        if (!shortName.isEmpty()) { ret += " | -" + shortName; } 
-        return ret; 
+    QString getHelpSectionNames() const {
+        QString ret = fullName;
+        if (!shortName.isEmpty()) { ret += " | -" + shortName; }
+        return ret;
     }
-    
+
 private:
-    QString fullName;    
+    QString fullName;
     QString shortDescription;
     QString fullDescription;
     QString argsDescription;
     QString shortName;
-    
+
 }; // CMDLineHelpProvider
 
 }//namespace

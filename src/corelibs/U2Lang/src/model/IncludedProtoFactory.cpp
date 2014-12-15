@@ -116,7 +116,7 @@ bool IncludedProtoFactory::isRegisteredTheSameProto(const QString &actorName, Ac
 
     // compare ports
     {
-        QList<PortDescriptor*> portList = proto->getPortDesciptors(); 
+        QList<PortDescriptor*> portList = proto->getPortDesciptors();
         QList<PortDescriptor*> regPortList = regProto->getPortDesciptors();
         if (portList.size() != regPortList.size()) {
             return false;

@@ -62,16 +62,16 @@ const QString TMP_DIR_PATH("temp-dir");
 void ClustalWWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
     Descriptor ind(BasePorts::IN_MSA_PORT_ID(), ClustalWWorker::tr("Input MSA"), ClustalWWorker::tr("Input MSA to process."));
-    Descriptor oud(BasePorts::OUT_MSA_PORT_ID(), ClustalWWorker::tr("ClustalW result MSA"), 
+    Descriptor oud(BasePorts::OUT_MSA_PORT_ID(), ClustalWWorker::tr("ClustalW result MSA"),
         ClustalWWorker::tr("The result of the ClustalW alignment."));
-    
+
     QMap<Descriptor, DataTypePtr> inM;
     inM[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
     p << new PortDescriptor(ind, DataTypePtr(new MapDataType("clustal.in.msa", inM)), true /*input*/);
     QMap<Descriptor, DataTypePtr> outM;
     outM[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
     p << new PortDescriptor(oud, DataTypePtr(new MapDataType("clustal.out.msa", outM)), false /*input*/, true /*multi*/);
-    
+
     Descriptor gop(GAP_OPEN_PENALTY, ClustalWWorker::tr("Gap open penalty"),
                     ClustalWWorker::tr("The penalty for opening a gap."));
     Descriptor gep(GAP_EXT_PENALTY, ClustalWWorker::tr("Gap extension penalty"),
@@ -255,7 +255,7 @@ Task* ClustalWWorker::tick() {
         QScopedPointer<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
         SAFE_POINT(!msaObj.isNull(), "NULL MSA Object!", NULL);
         MAlignment msa = msaObj->getMAlignment();
-        
+
         if (msa.isEmpty()) {
             algoLog.error(tr("An empty MSA '%1' has been supplied to ClustalW.").arg(msa.getName()));
             return NULL;

@@ -37,13 +37,13 @@ public:
 
     /** Sort column*/
     QString     sortColumnName;
-    
+
     /** Type of the sort column: Integer, Real or String attribute type*/
     U2DataType  columnType;
-    
+
     /** Tells  if sorting is ascending or descending */
     bool        ascending;
-    
+
     /** Folder to localize sorting. If empty all folders are processed  */
     QString     folder;
 };
@@ -58,14 +58,14 @@ protected:
 public:
     /** Returns all attribute names available in the database */
     virtual QStringList getAvailableAttributeNames(U2OpStatus& os) = 0;
-    
-    /** 
+
+    /**
         Returns ids of all attributes with a name 'attributeName' for the object referenced by 'objectId'.
         If 'attributeName' is empty returns all object attributes.
     */
     virtual QList<U2DataId> getObjectAttributes(const U2DataId& objectId, const QString& attributeName, U2OpStatus& os) = 0;
 
-    /** 
+    /**
         Returns ids of all attributes with a childId 'childId' and a name 'attributeName'
         for the object referenced by 'objectId'.
         If 'attributeName' is empty returns ids of all object attributes with a specified childId.
@@ -74,7 +74,7 @@ public:
 
     /**
         Loads integer attribute by id.
-        If there is no integer attribute with the specified id returns 
+        If there is no integer attribute with the specified id returns
     */
     virtual U2IntegerAttribute getIntegerAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
 
@@ -86,57 +86,57 @@ public:
 
     /** Loads byte attribute by id */
     virtual U2ByteArrayAttribute getByteArrayAttribute(const U2DataId& attributeId, U2OpStatus& os) = 0;
-    
-    /** Sorts all objects in database according to U2DbiSortConfig provided  
+
+    /** Sorts all objects in database according to U2DbiSortConfig provided
         Requires U2DbiFeature_AttributeSorting support
     */
     virtual QList<U2DataId> sort(const U2DbiSortConfig& sc, qint64 offset, qint64 count, U2OpStatus& os) = 0;
 
 
-    /** 
-        Removes attributes from database 
+    /**
+        Removes attributes from database
         Requires U2DbiFeature_WriteAttribute feature support
     */
     virtual void removeAttributes(const QList<U2DataId>& attributeIds, U2OpStatus& os) = 0;
 
-    /** 
+    /**
         Removes all attributes associated with the object
         Requires U2DbiFeature_WriteAttribute feature support
     */
     virtual void removeObjectAttributes(const U2DataId& objectId, U2OpStatus& os) = 0;
-    
-    /** 
-        Creates int64 attribute in database. ObjectId must be already set in attribute and present in the same database 
+
+    /**
+        Creates int64 attribute in database. ObjectId must be already set in attribute and present in the same database
         Requires U2DbiFeature_WriteAttribute feature support
 
         NOTE: When you create a new attribute, do not forget to add it to the clone method of the corresponding object!
-    */    
+    */
     virtual void createIntegerAttribute(U2IntegerAttribute& a, U2OpStatus& os) = 0;
 
-    /** 
-        Creates real64 attribute in database. ObjectId must be already set in attribute and present in the same database 
+    /**
+        Creates real64 attribute in database. ObjectId must be already set in attribute and present in the same database
         Requires U2DbiFeature_WriteAttribute feature support
 
         NOTE: When you create a new attribute, do not forget to add it to the clone method of the corresponding object!
-    */    
+    */
     virtual void createRealAttribute(U2RealAttribute& a, U2OpStatus& os) = 0;
 
-    /** 
-        Creates String attribute in database. ObjectId must be already set in attribute and present in the same database 
+    /**
+        Creates String attribute in database. ObjectId must be already set in attribute and present in the same database
         Requires U2DbiFeature_WriteAttribute feature support
 
         NOTE: When you create a new attribute, do not forget to add it to the clone method of the corresponding object!
-    */    
+    */
     virtual void createStringAttribute(U2StringAttribute& a, U2OpStatus& os) = 0;
 
-    /** 
-        Creates Byte attribute in database. ObjectId must be already set in attribute and present in the same database 
+    /**
+        Creates Byte attribute in database. ObjectId must be already set in attribute and present in the same database
         Requires U2DbiFeature_WriteAttribute feature support
 
         NOTE: When you create a new attribute, do not forget to add it to the clone method of the corresponding object!
-    */    
+    */
     virtual void createByteArrayAttribute(U2ByteArrayAttribute& a, U2OpStatus& os) = 0;
-    
+
 };
 
 

@@ -58,7 +58,7 @@ QVariant DnaAssemblyToRefTaskSettings::getCustomValue( const QString& optionName
         return customSettings.value(optionName);
     } else {
         return defaultVal;
-    }    
+    }
 }
 
 bool DnaAssemblyToRefTaskSettings::hasCustomValue(const QString & name) const {

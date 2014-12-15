@@ -36,16 +36,16 @@ namespace Workflow {
 
 class DocActorProto : public ReadDbObjActorPrototype {
 public:
-    DocActorProto(const DocumentFormatId& _fid, const Descriptor& desc, const QList<PortDescriptor*>& ports, 
+    DocActorProto(const DocumentFormatId& _fid, const Descriptor& desc, const QList<PortDescriptor*>& ports,
         const QList<Attribute*>& attrs = QList<Attribute*>());
-    DocActorProto(const Descriptor& desc, const GObjectType& t, const QList<PortDescriptor*>& ports, 
+    DocActorProto(const Descriptor& desc, const GObjectType& t, const QList<PortDescriptor*>& ports,
         const QList<Attribute*>& attrs = QList<Attribute*>());
-    
+
     virtual bool isAcceptableDrop(const QMimeData*, QVariantMap*) const = 0;
     bool isAcceptableDrop(const QMimeData*, QVariantMap*, const QString & urlAttrId ) const;
 protected:
     QString prepareDocumentFilter();
-    
+
 protected:
     DocumentFormatId fid;
     GObjectType type;
@@ -53,7 +53,7 @@ protected:
 
 class ReadDocActorProto : public DocActorProto {
 public:
-    ReadDocActorProto( const DocumentFormatId& fid, const Descriptor& desc, const QList<PortDescriptor*>& ports, 
+    ReadDocActorProto( const DocumentFormatId& fid, const Descriptor& desc, const QList<PortDescriptor*>& ports,
         const QList<Attribute*>& attrs = QList<Attribute*>() );
     virtual bool isAcceptableDrop(const QMimeData*, QVariantMap*) const;
 };
@@ -127,10 +127,10 @@ class WriteFastaPrompter : public PrompterBaseImpl {
     Q_OBJECT
 public:
     WriteFastaPrompter(const QString & formatId, Actor* p = 0) : PrompterBaseImpl(p), format(formatId){}
-    
+
     virtual QString composeRichDoc();
     virtual ActorDocument * createDescription(Actor*);
-    
+
 private:
     QString format;
 };

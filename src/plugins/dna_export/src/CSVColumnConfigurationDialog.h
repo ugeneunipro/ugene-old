@@ -45,4 +45,4 @@ private slots:
 
 } // namespace U2
 
-#endif 
+#endif

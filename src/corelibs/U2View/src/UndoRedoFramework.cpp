@@ -53,7 +53,7 @@ MsaUndoRedoFramework::MsaUndoRedoFramework(QObject *p, MAlignmentObject *_maObj)
 
     checkUndoRedoEnabled();
 
-    connect(maObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), 
+    connect(maObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
                    SLOT(sl_alignmentChanged()));
     connect(maObj, SIGNAL(si_completeStateChanged(bool)), SLOT(sl_completeStateChanged(bool)));
     connect(maObj, SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
@@ -123,7 +123,7 @@ void MsaUndoRedoFramework::sl_undo() {
 void MsaUndoRedoFramework::sl_redo() {
     SAFE_POINT(maObj != NULL, "NULL MSA Object!", );
 
-    U2OpStatus2Log os; 
+    U2OpStatus2Log os;
     U2EntityRef msaRef =  maObj->getEntityRef();
 
     assert(stateComplete);

@@ -50,7 +50,7 @@ class U2CORE_EXPORT U1AnnotationUtils {
 public:
 
     enum AnnotationStrategyForResize {
-        AnnotationStrategyForResize_Resize, 
+        AnnotationStrategyForResize_Resize,
         AnnotationStrategyForResize_Remove,
         AnnotationStrategyForResize_Split_To_Joined,
         AnnotationStrategyForResize_Split_To_Separate

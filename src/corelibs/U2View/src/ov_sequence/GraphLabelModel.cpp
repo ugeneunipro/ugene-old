@@ -25,11 +25,11 @@
 
 namespace U2 {
 
-TextLabel::TextLabel(QWidget *parent) : 
+TextLabel::TextLabel(QWidget *parent) :
     QLabel(parent)
 {
 }
-TextLabel::~TextLabel() 
+TextLabel::~TextLabel()
 {
 }
 void TextLabel::mouseMoveEvent(QMouseEvent *me) {
@@ -40,17 +40,17 @@ void TextLabel::mouseMoveEvent(QMouseEvent *me) {
 }
 
 void TextLabel::paintEvent(QPaintEvent *e) {
-    QPainter paint; 
+    QPainter paint;
     paint.begin (this);
     paint.setBrush (QBrush (QColor (255, 255, 255, 200)));
     paint.setPen (Qt::NoPen);
-    paint.drawRect (0, 0, width(), height());   
+    paint.drawRect (0, 0, width(), height());
     paint.end();
     QLabel::paintEvent(e);
 }
 
-RoundHint::RoundHint(QWidget *parent, QColor _borderColor, QColor _fillingColor) 
-    : QWidget(parent), borderColor(_borderColor), fillingColor(_fillingColor), markedFillingColor(_borderColor), isMarked(false) 
+RoundHint::RoundHint(QWidget *parent, QColor _borderColor, QColor _fillingColor)
+    : QWidget(parent), borderColor(_borderColor), fillingColor(_fillingColor), markedFillingColor(_borderColor), isMarked(false)
 {
     this->setGeometry(QRect(0, 0, 0, 0));
 }
@@ -58,7 +58,7 @@ RoundHint::~RoundHint() {
 }
 
 void RoundHint::paintEvent(QPaintEvent *) {
-    QPainter paint; 
+    QPainter paint;
     paint.begin(this);
     paint.setPen(QPen(borderColor));
     if(false == isMarked) {
@@ -79,7 +79,7 @@ void RoundHint::unmark() {
     isMarked = false;
 }
 
-GraphLabel::GraphLabel() 
+GraphLabel::GraphLabel()
     : attachedLabel(NULL), text(), image(), position(-1), value(0.0), coord(-1,-1), radius(defaultRadius)
 {
     text.setLineWidth(3);
@@ -88,7 +88,7 @@ GraphLabel::GraphLabel()
     text.installEventFilter(this);
     image.installEventFilter(this);
 }
-GraphLabel::GraphLabel(float pos, QWidget *parent, int _radius) 
+GraphLabel::GraphLabel(float pos, QWidget *parent, int _radius)
     : attachedLabel(NULL), text(parent), image(parent), position(pos), value(0.0), coord(0,0), radius(_radius)
 {
     text.setLineWidth(3);
@@ -97,7 +97,7 @@ GraphLabel::GraphLabel(float pos, QWidget *parent, int _radius)
     text.installEventFilter(this);
     image.installEventFilter(this);
 }
-GraphLabel::~GraphLabel() 
+GraphLabel::~GraphLabel()
 {
 }
 
@@ -198,7 +198,7 @@ bool MultiLabel::removeLabel(float xPos) {
 }
 
 GraphLabel* MultiLabel::at(int i) const {
-    return labels.at(i); 
+    return labels.at(i);
 }
 
 GraphLabel* MultiLabel::findLabelByPosition(float xPos) const {

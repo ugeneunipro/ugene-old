@@ -76,12 +76,12 @@ public:
     virtual qint64 writeBlock(const char* data, qint64 size);
 
     virtual bool skip(qint64 nBytes);
-    
+
     virtual qint64 left() const;
     virtual int getProgress() const;
-    
+
     virtual qint64 bytesRead() const;
-    
+
     virtual GUrl getURL() const;
 
     virtual QString errorString() const;

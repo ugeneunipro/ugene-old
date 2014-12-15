@@ -138,15 +138,15 @@ QString SchemaSerializer::getElemType(const QString & t) {
 
 QDomElement SchemaSerializer::saveActor(const Actor* proc, QDomElement& proj) {
     QDomElement docElement = proj.ownerDocument().createElement(PROCESS_EL);
-    
+
     docElement.setAttribute(ID_ATTR, proc->getId());
     docElement.setAttribute(TYPE_ATTR, proc->getProto()->getId());
     docElement.setAttribute(NAME_ATTR, proc->getLabel());
     docElement.setAttribute(SCRIPT_TEXT, proc->getScript() == 0? "" : proc->getScript()->getScriptText());
-    
+
     saveConfiguration(*proc, docElement);
     saveParamAliases( proc->getParamAliases(), docElement );
-    
+
     proj.appendChild(docElement);
     return docElement;
 }
@@ -422,7 +422,7 @@ QString SchemaSerializer::xml2schema(const QDomElement& projectElement, Schema* 
             }
         }
     }
-    
+
     return QString();
 }
 

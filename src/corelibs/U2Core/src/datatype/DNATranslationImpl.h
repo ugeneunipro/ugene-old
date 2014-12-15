@@ -124,13 +124,13 @@ public:
             ts.append(m.t);
         }
         index.init(ts);
-        
+
         //allocate value area and fill it with default values
         int size = index.getIndexSize();
         assert(size > 0);
         resultByIndex = new T[size];
         qFill(resultByIndex, resultByIndex+size, defaultVal);
-        
+
         //assign indexed values
         foreach(const Mapping3To1<T>& m, rawMapping) {
             int i = index.indexOf(m.t);
@@ -157,7 +157,7 @@ public:
         int i = index.indexOf(c1, c2, c3);
         return resultByIndex[i];
     }
-    
+
     const T& map(const char* str) const {
         int i = index.indexOf(str);
         return resultByIndex[i];
@@ -184,7 +184,7 @@ public:
     }
 
     T*& mapData() { return resultByIndex;}
-    
+
     int getMapSize() const {return index.getIndexSize();}
 private:
     Index3To1 index;
@@ -273,7 +273,7 @@ enum BackTranslationMode {
 };
 
 class DNATranslation1to3Impl : public DNATranslation {
-public:    
+public:
 
     DNATranslation1to3Impl(const QString& _id, const QString& _name, const DNAAlphabet* src, const DNAAlphabet* dst,
         const BackTranslationRules& rules);

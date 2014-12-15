@@ -31,9 +31,9 @@ public:
 
     static void wait(U2OpStatus &os, int msec);
     static void fail(U2OpStatus &os);  //this method is used for safely exiting the application after some error. should it write in the log?
-    
+
 protected:
-    
+
 
 };
 

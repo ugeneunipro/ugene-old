@@ -40,7 +40,7 @@ public:
     SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(GTest_ImportPhredQualityScoresTask, "import-phred-qualities", TaskFlags_NR_FOSCOE);
 
     void prepare();
-    
+
     QList<U2SequenceObject*> seqList;
     QStringList seqNameList;
     QString     fileName;

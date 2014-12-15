@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-DocumentProviderTask::DocumentProviderTask(const QString& name, TaskFlags flags) 
+DocumentProviderTask::DocumentProviderTask(const QString& name, TaskFlags flags)
 : Task(name, flags), resultDocument(NULL), docOwner(true)
 {
     documentDescription = tr("[unknown]");
@@ -51,7 +51,7 @@ Document* DocumentProviderTask::getDocument(bool mainThread)  {
 
 Document* DocumentProviderTask::takeDocument(bool mainThread) {
     docOwner = false;
-    return getDocument(mainThread); 
+    return getDocument(mainThread);
 }
 
 } //namespace

@@ -39,8 +39,8 @@
 
 namespace U2 {
 
-CustomAutoAnnotationDialog::CustomAutoAnnotationDialog(ADVSequenceObjectContext* ctx) 
- : QDialog(ctx->getAnnotatedDNAView()->getWidget()), seqCtx(ctx) 
+CustomAutoAnnotationDialog::CustomAutoAnnotationDialog(ADVSequenceObjectContext* ctx)
+ : QDialog(ctx->getAnnotatedDNAView()->getWidget()), seqCtx(ctx)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "4686022");
@@ -50,7 +50,7 @@ CustomAutoAnnotationDialog::CustomAutoAnnotationDialog(ADVSequenceObjectContext*
 }
 
 void CustomAutoAnnotationDialog::loadSettings() {
-    
+
     QStringList filteredFeatures = AppContext::getSettings()->getValue(FILTERED_FEATURE_LIST, QStringList() ).toStringList();
 
     featureBox->setChecked( !filteredFeatures.contains(PlasmidFeatureTypes::FEATURE));
@@ -64,7 +64,7 @@ void CustomAutoAnnotationDialog::loadSettings() {
 
 void CustomAutoAnnotationDialog::saveSettings() {
 
-    QStringList filteredFeatures; 
+    QStringList filteredFeatures;
 
     if (!featureBox->isChecked()) {
         filteredFeatures.append(PlasmidFeatureTypes::FEATURE);
@@ -87,7 +87,7 @@ void CustomAutoAnnotationDialog::saveSettings() {
     if (!terminatorBox->isChecked()) {
         filteredFeatures.append(PlasmidFeatureTypes::TERMINATOR);
     }
-  
+
     AppContext::getSettings()->setValue(FILTERED_FEATURE_LIST, filteredFeatures );
 
 }

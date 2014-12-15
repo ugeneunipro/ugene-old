@@ -47,7 +47,7 @@ public:
     bool                trimGapsFlag;
     bool                addToProjectFlag;
 
-private:    
+private:
     SaveDocumentGroupController* saveContoller;
 };
 

@@ -48,7 +48,7 @@ public:
     bool isOneLineMode()  {return getComplementTT() == NULL && getAminoTT() == NULL;}
     bool hasTranslations()  {return getAminoTT() != NULL;}
     bool hasComplementaryStrand()  {return getComplementTT() != NULL;}
-    
+
     DNATranslation* getComplementTT() const;
     DNATranslation* getAminoTT() const;
 
@@ -70,9 +70,9 @@ protected slots:
 protected:
     void showEvent(QShowEvent * e);
     void hideEvent(QHideEvent * e);
-    
+
     void mouseReleaseEvent(QMouseEvent* me);
-    
+
     void updateActions();
 
     void resizeEvent(QResizeEvent *e);
@@ -96,7 +96,7 @@ public:
     virtual U2Region getAnnotationYRange( const Annotation &a, int region,
         const AnnotationSettings *as ) const;
     virtual U2Region getMirroredYRange( const U2Strand &mirroredStrand) const;
-    
+
     void updateSize();
 
     bool isOnTranslationsLine(int y) const;

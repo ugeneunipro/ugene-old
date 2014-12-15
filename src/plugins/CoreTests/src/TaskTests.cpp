@@ -25,7 +25,7 @@
 #include <U2Core/Task.h>
 
 namespace U2 {
-    
+
 #define VALUE_ATTR      "value"
 #define DOC_ATTR        "doc"
 #define OBJ_ATTR        "obj"
@@ -61,8 +61,8 @@ static TaskFlags flagsFromString(QString str, bool *ok = NULL) {
         hash["TaskFlag_NoRun"] = TaskFlag_NoRun;
         hash["TaskFlag_NoAutoDelete"] = TaskFlag_NoAutoDelete;
         hash["TaskFlag_RunBeforeSubtasksFinished"] = TaskFlag_RunBeforeSubtasksFinished;
-        hash["TaskFlag_FailOnSubtaskError"] = TaskFlag_FailOnSubtaskError;    
-        hash["TaskFlag_FailOnSubtaskCancel"] = TaskFlag_FailOnSubtaskCancel;    
+        hash["TaskFlag_FailOnSubtaskError"] = TaskFlag_FailOnSubtaskError;
+        hash["TaskFlag_FailOnSubtaskCancel"] = TaskFlag_FailOnSubtaskCancel;
         while ((pos = rx.indexIn(str, pos)) != -1) {
             pos += rx.matchedLength();
             QString capText = rx.cap(1);
@@ -207,7 +207,7 @@ Task::ReportResult GTest_TaskAddSubtaskTest::report() {
         stateInfo.setError(QString("invalid context: %1").arg(taskContextName));
         return ReportResult_Finished;
     }
-    
+
     Task* subtask = getContext<Task>(this, subtaskContextName);
     if(subtask==NULL) {
         stateInfo.setError(QString("invalid context: %1").arg(subtaskContextName));
@@ -435,7 +435,7 @@ void GTest_TaskStateOrder::init(XMLTestFormat *tf, const QDomElement& el) {
         }
     }
     task = new StateOrderTestTask(this, (run_after_all_subs_flag ? TaskFlag_None : TaskFlag_RunBeforeSubtasksFinished));
-    
+
     for (int i=0; i<subtask_num; i++) {
         StateOrderTestTask *sub = new StateOrderTestTask(this, TaskFlag_None);
         subs.append(sub);
@@ -463,7 +463,7 @@ void GTest_TaskStateOrder::func(StateOrderTestTask *_task, StateOrderType st) {
         ind = subs.indexOf(_task);
         if(ind < 0) {
             stateInfo.setError(QString("task test internal error: can't find subtask in list").arg(1));
-            return; 
+            return;
         }
         if(st == StateOrder_Done) {
             subs.removeAt(ind);

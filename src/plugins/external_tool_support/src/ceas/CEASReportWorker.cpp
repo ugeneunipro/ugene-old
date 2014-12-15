@@ -164,13 +164,13 @@ CEASSettings CEASReportWorker::createCEASSettings(U2OpStatus &/*os*/) {
     settings.setRelativeDist(
         actor->getParameter(REL_DIST_ATTR_ID)->getAttributeValue<int>(context));
 
-    QString groupFiles = 
+    QString groupFiles =
         actor->getParameter(GROUP_FILES_ATTR_ID)->getAttributeValue<QString>(context);
     foreach (const QString &group, groupFiles.split(",", QString::SkipEmptyParts)) {
         settings.addGeneGroup(group.simplified());
     }
 
-    QString groupNames = 
+    QString groupNames =
         actor->getParameter(GROUP_NAMES_ATTR_ID)->getAttributeValue<QString>(context);
     foreach (const QString &name, groupNames.split(",", QString::SkipEmptyParts)) {
         settings.addGeneGroup(name.simplified());
@@ -299,7 +299,7 @@ void CEASReportWorkerFactory::init() {
                 }else{
                     annGrAttr = new Attribute(gdbDesc, BaseTypes::STRING_TYPE(), true, dataPath->getPathByName(dataNames.at(hg19Idx)));
                 }
-                
+
             }else{
                 annGrAttr = new Attribute(gdbDesc, BaseTypes::STRING_TYPE(), true);
             }
@@ -307,7 +307,7 @@ void CEASReportWorkerFactory::init() {
             annGrAttr = new Attribute(gdbDesc, BaseTypes::STRING_TYPE(), true);
         }
         attrs << annGrAttr;
-        
+
         attrs << new Attribute(spanDesc, BaseTypes::NUM_TYPE(), false, QVariant(3000));
         attrs << new Attribute(profResDesc, BaseTypes::NUM_TYPE(), false, QVariant(50));
         attrs << new Attribute(sizesDesc, BaseTypes::NUM_TYPE(), false, QVariant(3000));
@@ -319,7 +319,7 @@ void CEASReportWorkerFactory::init() {
 
     QMap<QString, PropertyDelegate*> delegates;
     {
-        
+
         delegates[IMAGE_FILE_ATTR_ID] = new URLDelegate(DialogUtils::prepareFileFilter(CEASReportWorker::tr("Report file"), QStringList("pdf"), true), "", false);
 //         {
 //             QVariantMap vm;

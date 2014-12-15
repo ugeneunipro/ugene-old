@@ -91,7 +91,7 @@ U2Region MSACollapsibleItemModel::mapToRows(int pos) const {
     QVector<int>::ConstIterator i = qLowerBound(positions, pos);
 
     int idx = i - positions.constBegin();
-    
+
     if (i < positions.constEnd() && *i == pos) {
         // 'pos' is top row in group
         const MSACollapsableItem& item = items.at(idx);
@@ -261,7 +261,7 @@ int MSACollapsibleItemModel::displayedRowsCount(){
     if (!items.isEmpty()) {
         foreach(const MSACollapsableItem item, items){
             if(item.isCollapsed){
-                size -= item.numRows - 1; 
+                size -= item.numRows - 1;
             }
         }
     }

@@ -28,7 +28,7 @@ RemoteMachine::~RemoteMachine() {
 
 RemoteMachineSettings::RemoteMachineSettings( ProtocolInfo * proto, RemoteMachineType type ) :
         machineType(type) {
-    assert( NULL != proto ); 
+    assert( NULL != proto );
     protoId = proto->getId();
 }
 

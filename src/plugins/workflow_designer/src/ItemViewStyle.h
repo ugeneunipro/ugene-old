@@ -59,7 +59,7 @@ public:
     QFont defaultFont() const {return defFont;}
     void setDefaultFont(const QFont & font) { defFont = font; }
     WorkflowProcessItem const* getOwner() const { return owner; }
-    
+
 protected:
     WorkflowProcessItem* owner;
     QColor bgColor;
@@ -98,7 +98,7 @@ public:
     virtual QList<QAction*> getContextMenuActions() const;
     virtual void saveState(QDomElement& ) const;
     virtual void loadState(QDomElement& );
-    
+
     bool isAutoResized() const {return autoResize;}
     void setFixedBounds(const QRectF& b);
 
@@ -110,14 +110,14 @@ signals:
 private slots:
     void setAutoResizeEnabled(bool b);
     void linkHovered(const QString&);
-    
+
 private:
     QTextDocument* doc;
     QRectF bounds;
     bool autoResize;
 
-    enum ResizeMode {NoResize = 0, RightResize = 1, LeftResize = 2, BottomResize = 4, TopResize = 8, 
-        RBResize = RightResize + BottomResize, RTResize = RightResize + TopResize, 
+    enum ResizeMode {NoResize = 0, RightResize = 1, LeftResize = 2, BottomResize = 4, TopResize = 8,
+        RBResize = RightResize + BottomResize, RTResize = RightResize + TopResize,
         LBResize = LeftResize + BottomResize, LTResize = LeftResize + TopResize};
     int resizing;
 

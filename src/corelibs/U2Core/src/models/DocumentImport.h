@@ -71,10 +71,10 @@ public:
 
     /** returns handler by its id */
     DocumentImporter* getDocumentImporter(const QString& importerId) const;
- 
+
     /** registers new document import handler */
     void addDocumentImporter(DocumentImporter* i);
-    
+
     const QList<DocumentImporter*>& getImporters() const {return importers;}
 
 private:
@@ -91,11 +91,11 @@ public:
     virtual ~DocumentImporter() { delete dialogFactory; }
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& url) = 0;
-    
+
     virtual DocumentProviderTask* createImportTask(const FormatDetectionResult& res, bool showWizard, const QVariantMap &hints) = 0;
 
     virtual QString getImporterDescription() const {return importerDescription;}
-    
+
     const QString& getImporterName() const {return name;}
 
     const QString& getId() const {return id;}
@@ -110,7 +110,7 @@ public:
 
     // NOTE: it is hint, it should be true by default
     static const QString LOAD_RESULT_DOCUMENT;
-    
+
 protected:
     QString                 id;
     QString                 name;

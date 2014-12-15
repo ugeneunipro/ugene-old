@@ -67,7 +67,7 @@ struct DotPlotResults {
             sd += x;
         }
         return (sd >= 0) ? (sd < r.length) : (-sd < len);
-        
+
     }
 };
 
@@ -100,7 +100,7 @@ public:
     DotPlotRevComplResultsListener() : xLen(0) {}
     virtual void onResult(const RFResult& r);
     virtual void onResults(const QVector<RFResult>& v);
-   
+
     int xLen;
 };
 

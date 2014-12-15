@@ -44,7 +44,7 @@ public:
     virtual void accept();
 
 private slots:
-    
+
     void sl_selectFile();
     void sl_formatChanged(bool);
 
@@ -60,8 +60,8 @@ enum DNAStatMSAProfileOutputFormat {
 
 class DNAStatMSAProfileTaskSettings {
 public:
-    DNAStatMSAProfileTaskSettings(){ 
-        outFormat = DNAStatMSAProfileOutputFormat_Show; 
+    DNAStatMSAProfileTaskSettings(){
+        outFormat = DNAStatMSAProfileOutputFormat_Show;
         usePercents = false;
         reportGaps = false;
         stripUnused = false;
@@ -72,7 +72,7 @@ public:
     QString                         profileURL;  // document url
     MAlignment                      ma;
     bool                            usePercents; //report percents but not counts
-    DNAStatMSAProfileOutputFormat   outFormat;   
+    DNAStatMSAProfileOutputFormat   outFormat;
     QString                         outURL;
     bool                            reportGaps;  // report GAPS statistics
     bool                            stripUnused; // do not include into report chars unused in alignment
@@ -85,20 +85,20 @@ public:
     DNAStatMSAProfileTask(const DNAStatMSAProfileTaskSettings& s);
 
     void run();
-    
+
     ReportResult report();
 
 private:
     void computeStats();
-    
+
     DNAStatMSAProfileTaskSettings   s;
-    
+
     // fields to keep statistics
     struct ColumnStat {
         char                consChar;
         QVector<int>        charFreqs;
     };
-    
+
 
     QStringList                     verticalColumnNames;
     QVector<ColumnStat>             columns;

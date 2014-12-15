@@ -76,7 +76,7 @@ public:
 
             // draw text
             QRect textrect = QRect(r.left() + i*2, r.top(), r.width() - ((5*i)/2), r.height());
-            QString text = elidedText(option.fontMetrics, textrect.width(), Qt::ElideMiddle, 
+            QString text = elidedText(option.fontMetrics, textrect.width(), Qt::ElideMiddle,
                 model->data(index, Qt::DisplayRole).toString());
             m_view->style()->drawItemText(painter, textrect, Qt::AlignCenter,
                 option.palette, m_view->isEnabled(), text);
@@ -135,7 +135,7 @@ private:
 };
 
 const QString QueryPalette::MIME_TYPE("application/x-ugene-query-id");
-    
+
 QueryPalette::QueryPalette(QWidget* parent/* =NULL */)
 : QTreeWidget(parent), overItem(NULL), currentAction(NULL) {
     setFocusPolicy(Qt::NoFocus);
@@ -175,7 +175,7 @@ void QueryPalette::setContent() {
     constraintCategory->setText(0, tr("Constraints"));
     addTopLevelItem(constraintCategory);
     constraintCategory->setExpanded(true);
-    
+
     QList<QAction*> constraintItemActions;
     constraintItemActions << createItemAction(QDDistanceIds::E2S)
         << createItemAction(QDDistanceIds::S2E)
@@ -281,7 +281,7 @@ void QueryPalette::mouseMoveEvent(QMouseEvent *event) {
             QDActorPrototype* proto = action->data().value<QDActorPrototype *>();
             mimeData->setText(proto->getId());
         }
-        
+
         drag->setMimeData(mimeData);
         drag->exec(Qt::CopyAction | Qt::CopyAction);
         return;

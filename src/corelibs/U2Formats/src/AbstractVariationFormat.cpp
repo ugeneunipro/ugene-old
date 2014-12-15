@@ -117,7 +117,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
         QString seqName;
 
         foreach (int columnNumber, columnRoles.keys()) {
-            CHECK_EXT(columns.size() > columnNumber, 
+            CHECK_EXT(columns.size() > columnNumber,
                 os.setError(L10N::tr("Incorrect number of columns in the file")),
                 NULL);
             const QString& columnData = columns.at(columnNumber);
@@ -151,7 +151,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
                 case ColumnRole_PublicId:
                     v.publicId = columnData.toLatin1();
                     break;
-                case ColumnRole_AdditionalInfo: 
+                case ColumnRole_AdditionalInfo:
                     v.additionalInfo = columnData.toLatin1();
                     for(int i = columnNumber + 1; i < columns.size(); i++) {
                         v.additionalInfo += "\t" + columns.at(i);
@@ -162,7 +162,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
                     break;
             }
         }
-        
+
         if (v.publicId.isEmpty()) {
             QString prefix = seqName.contains(CHR_PREFIX) ? seqName : seqName.prepend(CHR_PREFIX);
             v.publicId = QString("%1v%2").arg(prefix).arg(snpsMap[seqName].count() + 1).toLatin1();
@@ -178,7 +178,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
             snpsMap[seqName].append(v);
         }
 
-        
+
 
     } while (!io->isEof());
 
@@ -346,7 +346,7 @@ void AbstractVariationFormat::storeTrack(IOAdapter *io, const VariantTrackObject
                         }else{
                             assert(0);
                         }
-                        
+
                         break;
                     case ColumnRole_EndPos:
                         if (indexing == AbstractVariationFormat::OneBased){

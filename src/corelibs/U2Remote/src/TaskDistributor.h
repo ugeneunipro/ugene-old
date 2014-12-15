@@ -39,7 +39,7 @@ public:
     virtual QList<LocalTaskSettings *> scatter( const LocalTaskSettings * settings)const = 0;
     /* returns new allocated results */
     virtual LocalTaskResult * gather(const QList<LocalTaskResult *> &results)const = 0;
-    
+
 }; // TaskDistributor
 
 /*
@@ -79,7 +79,7 @@ public:
 
     virtual QList<SettingsT *> scatter(const SettingsT *settings)const = 0;
     virtual ResultT *gather(const QList<const ResultT *> &results)const = 0;
-    
+
 }; // TaskDistributorTemplate
 
 } // U2

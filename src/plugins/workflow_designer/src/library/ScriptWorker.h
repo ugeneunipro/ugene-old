@@ -71,7 +71,7 @@ private:
     CommunicationChannel *input;
     CommunicationChannel *output;
     WorkflowScriptEngine *engine;
-    AttributeScript *script;  
+    AttributeScript *script;
     bool taskFinished;
 
 private:

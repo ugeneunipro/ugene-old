@@ -439,7 +439,7 @@ void ExportSequenceTask::run() {
     SAFE_POINT(NULL != f, L10N::nullPointerError("sequence document format"), );
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.fileName));
     SAFE_POINT(NULL != iof, L10N::nullPointerError("I/O adapter factory"), );
-    resultDocument = f->createNewLoadedDocument(iof, config.fileName, stateInfo); 
+    resultDocument = f->createNewLoadedDocument(iof, config.fileName, stateInfo);
     CHECK_OP(stateInfo, );
 
     const U2DbiRef dbiRef = resultDocument->getDbiRef();
@@ -455,7 +455,7 @@ void ExportSequenceTask::run() {
         if (config.strand == TriState_Yes || config.strand == TriState_Unknown) {
             r1Items.append(ei0);
         }
-        if (config.strand == TriState_No || config.strand == TriState_Unknown) { 
+        if (config.strand == TriState_No || config.strand == TriState_Unknown) {
             r1Items.append(toRevComplement(ei0, dbiRef, stateInfo));
             CHECK_OP(stateInfo, );
         }

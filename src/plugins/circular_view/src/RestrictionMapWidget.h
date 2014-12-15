@@ -52,7 +52,7 @@ public:
     EnzymeFolderItem(const QString& name);
     void addEnzymeItem( const Annotation &enzAnn);
     void removeEnzymeItem( const Annotation &enzAnn);
-    const QString& getName() const { return enzymeName; } 
+    const QString& getName() const { return enzymeName; }
 };
 
 class RestrctionMapWidget : public QWidget
@@ -60,7 +60,7 @@ class RestrctionMapWidget : public QWidget
     Q_OBJECT
 public:
     RestrctionMapWidget(ADVSequenceObjectContext* ctx, QWidget *p);
-    
+
 private slots:
     void sl_onAnnotationsAdded(const QList<Annotation>& anns);
     void sl_onAnnotationsRemoved(const QList<Annotation>& anns);

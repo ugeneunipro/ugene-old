@@ -84,7 +84,7 @@ public:
 class WorkflowPortItem;
 class WorkflowBusItem;
 enum {
-    WorkflowProcessItemType = QGraphicsItem::UserType + 1, 
+    WorkflowProcessItemType = QGraphicsItem::UserType + 1,
     WorkflowPortItemType,
     WorkflowBusItemType
 };
@@ -120,7 +120,7 @@ public:
 
     void saveState(QDomElement& ) const;
     void loadState(QDomElement& );
-    
+
     ItemViewStyle* getStyleByIdSafe(StyleId id) const;
     ItemViewStyle* getStyleById(const StyleId & id) const;
     bool containsStyle(const StyleId & id) const;
@@ -166,11 +166,11 @@ public:
     WorkflowPortItem* findNearbyBindingCandidate(const QPointF& at) const;
     void addDataFlow(WorkflowBusItem* flow);
     void removeDataFlow(WorkflowBusItem* flow);
-    // position of the arrow tip in items coordinates 
+    // position of the arrow tip in items coordinates
     QPointF head(const QGraphicsItem* item) const;
     // position of the arrow tip in scene coordinates
     QPointF headToScene() const;
-    // direction of the arrow in items coordinates 
+    // direction of the arrow in items coordinates
     QLineF arrow(const QGraphicsItem* item) const;
     QRectF boundingRect(void) const;
     void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );

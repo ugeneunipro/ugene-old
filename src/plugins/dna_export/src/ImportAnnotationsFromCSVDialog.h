@@ -59,7 +59,7 @@ private slots:
     void sl_scriptRadioToggled(bool);
     void sl_removeQuotesToggled(bool);
     void sl_linesToSkipChanged(int);
-    
+
 private:
     // returns input file name if no errors found or empty string
     QString checkInputGroup(bool silentFail);
@@ -80,7 +80,7 @@ private:
 
     SaveDocumentGroupController* saveGroupController;
     QList<ColumnConfig>          columnsConfig;
-    
+
     // script text used to parse separator
     QString parsingScript;
     // header of the script
@@ -93,4 +93,4 @@ private:
 
 } // namespace U2
 
-#endif 
+#endif

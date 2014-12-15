@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -39,14 +39,14 @@ class ExportBlastResultDialog : public QDialog, Ui_ExportBlastResultDialog {
     Q_OBJECT
 public:
     ExportBlastResultDialog(QWidget* p, const QString& defaultUrl = QString() );
-    
+
     void setOkButtonText(const QString& text) const;
     void setFileLabelText(const QString& text) const;
 
     virtual void accept();
-    
 
-public:    
+
+public:
     QString url;
     DocumentFormatId format;
     QString qualiferId;
@@ -54,7 +54,7 @@ public:
     bool    useGenbankHeader;
     bool    addRefFlag;
 
-private:    
+private:
     SaveDocumentGroupController* saveContoller;
 
 };

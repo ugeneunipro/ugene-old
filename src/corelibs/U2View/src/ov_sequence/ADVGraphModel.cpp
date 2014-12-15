@@ -118,7 +118,7 @@ float GSequenceGraphUtils::calculateAverage(const QVector<float>& data, float st
     return result;
 }
 
-void GSequenceGraphUtils::fitToScreen(const QVector<float>& data, int dataStartBase, int dataEndBase, QVector<float>& results, 
+void GSequenceGraphUtils::fitToScreen(const QVector<float>& data, int dataStartBase, int dataEndBase, QVector<float>& results,
                                        int resultStartBase, int resultEndBase, int screenWidth, float unknownVal)
 {
     //BUG:422: use intervals and max/min values instead of average!
@@ -140,7 +140,7 @@ void GSequenceGraphUtils::fitToScreen(const QVector<float>& data, int dataStartB
     }
 }
 
-int GSequenceGraphUtils::getNumSteps(const U2Region& range, int w, int s) { 
+int GSequenceGraphUtils::getNumSteps(const U2Region& range, int w, int s) {
     if(range.length < w) return 1;
     int steps = (range.length  - w) / s + 1;
     return steps;
@@ -152,7 +152,7 @@ int GSequenceGraphUtils::getNumSteps(const U2Region& range, int w, int s) {
 const QString GSequenceGraphDrawer::DEFAULT_COLOR(QObject::tr("Default color"));
 const int GSequenceGraphDrawer::UNKNOWN_VAL = -1;
 
-GSequenceGraphDrawer::GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd, 
+GSequenceGraphDrawer::GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd,
                                            QMap<QString,QColor> colors)
 : QObject(v), view(v), lineColors(colors), globalMin(0), globalMax(0), wdata(wd)
 {
@@ -177,7 +177,7 @@ GSequenceGraphDrawer::~GSequenceGraphDrawer() {
 }
 
 void GSequenceGraphDrawer::draw(QPainter& p, QList<GSequenceGraphData*> graphs, const QRect& rect) {
-    
+
     globalMin = 0;
     globalMax = 0;
 
@@ -359,9 +359,9 @@ void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const 
                 if (isUnknownValue(fy)) {
                     continue;
                 }
-                
+
                 assert(!isUnknownValue(fy2));
-                
+
                 if (fy2 >= fymax) {
                     fy2 = fymax;
                 }else if(fy2 < fymax && fy2 > fymin){
@@ -592,7 +592,7 @@ int GSequenceGraphDrawer::calculateLabelData(const QRect &rect, const PairVector
         } else {
             text = GSequenceGraphView::tr("[%2, %3]").arg(QString::number(pos)).arg(QString::number(maxValue));
         }
-    
+
         float avgValue = (maxValue + minValue) / 2;
         label->setValue(avgValue);
         ycoordInRect = qRound((avgValue - globalMin) * heightScalingFactor);
@@ -750,13 +750,13 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
     int alignedLast = 0; //start point for the last window
     align(vr.startPos, vr.endPos(), win, step, seqLen, alignedFirst, alignedLast);
     int nSteps = (alignedLast - alignedFirst) / step;
-    
+
     bool winStepNotChanged = win == d->cachedW && step == d->cachedS ;
     bool numPointsNotChanged = numPoints == d->cachedData.firstPoints.size();
 
-    bool useCached = vr.length == d->cachedLen && vr.startPos == d->cachedFrom 
+    bool useCached = vr.length == d->cachedLen && vr.startPos == d->cachedFrom
         && winStepNotChanged && numPointsNotChanged;
-    
+
     if (useCached) {
         points = d->cachedData;
     } else if (nSteps > numPoints) {
@@ -779,7 +779,7 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
         points.useIntervals = false;
         if(vr.startPos + win2 <= seqLen){
             calculateWithExpand(d, points, alignedFirst, alignedLast);
-            calculateCutoffPoints(d, points, alignedFirst, alignedLast);      
+            calculateCutoffPoints(d, points, alignedFirst, alignedLast);
         }
     }
 
@@ -812,7 +812,7 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
     if (useCached) {
         return;
     }
-    
+
     // cache this result
     d->cachedData = points;
     d->cachedFrom = vr.startPos;
@@ -827,7 +827,7 @@ void GSequenceGraphDrawer::calculateCutoffPoints(GSequenceGraphData* d, PairVect
     Q_UNUSED(alignedFirst);
     Q_UNUSED(alignedLast);
     points.cutoffPoints.clear();
-   
+
     int win = wdata.window;
     U2SequenceObject* o = view->getSequenceObject();
 
@@ -932,7 +932,7 @@ void GSequenceGraphDrawer::calculateWithExpand(GSequenceGraphData* d, PairVector
 
 
 void GSequenceGraphDrawer::showSettingsDialog() {
-    
+
     GraphSettingsDialog dlg(this, U2Region(1, view->getSequenceLength()-1), view);
 
     if (dlg.exec() == QDialog::Accepted) {

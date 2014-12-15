@@ -41,10 +41,10 @@ namespace Workflow {
  * but produced by actor connected in transitive closure of schema graph
  * information of such data is saved in busmap - StrStr map
  * saved as attribute with BUS_MAP_ATTR_ID id
- * 
+ *
  * in such cases port need to know who will produce needed data
  * thats why we need new Port
- * 
+ *
  */
 class U2LANG_EXPORT IntegralBusPort : public Port {
     Q_OBJECT
@@ -53,13 +53,13 @@ public:
     static const QString BUS_MAP_ATTR_ID;
     static const QString PATHS_ATTR_ID;
     static const uint BLIND_INPUT = 1 << 16;
-    
+
 public:
     IntegralBusPort(const PortDescriptor& d, Actor* p);
-    
+
     virtual DataTypePtr getType() const;
     DataTypePtr getOwnType() const {return type;}
-    
+
     // slot is list pairs (actorId:attrId);(actorId:attrId);(actorId:attrId)...
     Actor* getProducer(const QString& slot);
     QList<Actor*> getProducers(const QString& slot);
@@ -69,22 +69,22 @@ public:
     void setPathsBySlotsPair(const QString& dest, const QString& src, const QList<QStringList> &paths);
     void addPathBySlotsPair(const QString& dest, const QString& src, const QStringList &path);
     void clearPaths();
-    
+
     // find matching data and assign it
     void setupBusMap();
-    
+
     virtual bool validate(ProblemList& problemList) const;
     // reimplemented from Configuration
     virtual void remap(const QMap<ActorId, ActorId>&);
     virtual void updateBindings(const QMap<ActorId, ActorId> &actorsMapping);
     virtual void replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings);
-    
+
     // used when loading schema
     void setBusMapValue(const QString & slotId, const QString & value);
 
     /** input ports only */
     void copyInput(IntegralBusPort *port, const PortMapping &mapping);
-    
+
 protected:
     virtual DataTypePtr getBusType() const;
     //bool getNearestData(const Descriptor & key, QStringList candidates);
@@ -102,12 +102,12 @@ private:
  */
 class U2LANG_EXPORT IntegralBusActorPrototype : public ActorPrototype {
 public:
-    IntegralBusActorPrototype(const Descriptor& desc, 
-        const QList<PortDescriptor*>& ports = QList<PortDescriptor*>(), 
+    IntegralBusActorPrototype(const Descriptor& desc,
+        const QList<PortDescriptor*>& ports = QList<PortDescriptor*>(),
         const QList<Attribute*>& attrs = QList<Attribute*>()) : ActorPrototype(desc, ports, attrs) {}
-    
+
     virtual Port* createPort(const PortDescriptor& d, Actor* p) {return new IntegralBusPort(d, p);}
-    
+
 }; // IntegralBusActorPrototype
 
 /**
@@ -119,10 +119,10 @@ public:
     ScreenedSlotValidator(const QStringList& slotList): screenedSlots(slotList) {}
     static bool validate(const QStringList& screenedSlots, const IntegralBusPort*, ProblemList &problemList);
     virtual bool validate(const Configuration*, ProblemList& problemList) const;
-        
+
 protected:
     QStringList screenedSlots;
-    
+
 }; // ScreenedSlotValidator
 
 /**
@@ -133,19 +133,19 @@ class U2LANG_EXPORT ScreenedParamValidator : public ConfigurationValidator {
 public:
     ScreenedParamValidator(const QString& id, const QString& port, const QString& slot);
     virtual ~ScreenedParamValidator() {}
-    
+
     virtual bool validate(const Configuration*, ProblemList& problemList) const;
     QString validate(const Configuration * cfg) const;
-    
+
     QString getId() const {return id;}
     QString getPort() const {return port;}
     QString getSlot() const {return slot;}
-    
+
 protected:
     QString id;
     QString port;
     QString slot;
-    
+
 }; // ScreenedParamValidator
 
 class U2LANG_EXPORT IntegralBusSlot {

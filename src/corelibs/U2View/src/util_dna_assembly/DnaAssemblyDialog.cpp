@@ -95,7 +95,7 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
             methodNamesBox->setCurrentIndex(res);
         }
     }
-    
+
     shortReadsTable->installEventFilter(this);
     QHeaderView* header = shortReadsTable->header();
     header->setStretchLastSection( false );
@@ -115,7 +115,7 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
     connect(methodNamesBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_onAlgorithmChanged(const QString &)));
     connect(samBox, SIGNAL(clicked()), SLOT(sl_onSamBoxClicked()));
     connect(libraryComboBox, SIGNAL(currentIndexChanged(int)), SLOT(sl_onLibraryTypeChanged()));
-    
+
     QString activeRefSeqUrl = refSeqUrl.isEmpty() ? lastRefSeqUrl : refSeqUrl;
     if (!activeRefSeqUrl.isEmpty()) {
         refSeqEdit->setText(activeRefSeqUrl);
@@ -188,7 +188,7 @@ void DnaAssemblyDialog::sl_onAddRefButtonClicked() {
         }
         customGUI->validateReferenceSequence( GUrl( lod.url ) );
     }
-} 
+}
 
 void DnaAssemblyDialog::accept() {
     if (NULL != customGUI) {
@@ -211,7 +211,7 @@ void DnaAssemblyDialog::accept() {
             }
         }
     }
-    
+
     if (refSeqEdit->text().isEmpty()) {
         QMessageBox::information(this, tr("DNA Assembly"),
             tr("Reference sequence url is not set!") );
@@ -222,7 +222,7 @@ void DnaAssemblyDialog::accept() {
         QMessageBox::information(this, tr("DNA Assembly"),
             tr("Short reads list is empty!") );
     } else {
-        
+
         lastRefSeqUrl.clear();
         lastShortReadsUrls.clear();
 
@@ -282,7 +282,7 @@ const QString DnaAssemblyDialog::getAlgorithmName() {
 void DnaAssemblyDialog::sl_onRemoveShortReadsButtonClicked() {
     int currentRow = shortReadsTable->currentIndex().row();
     shortReadsTable->takeTopLevelItem(currentRow);
-    
+
 }
 
 void DnaAssemblyDialog::sl_onSetResultFileNameButtonClicked() {
@@ -334,16 +334,16 @@ void DnaAssemblyDialog::addGuiExtension() {
 
     // cleanup previous extension
     if (customGUI != NULL) {
-        layout()->removeWidget(customGUI);         
+        layout()->removeWidget(customGUI);
         setMinimumHeight(minimumHeight() - customGUI->minimumHeight());
         delete customGUI;
         customGUI = NULL;
         macFixDelta = 0;
     }
-    
+
     // insert new extension widget
     DnaAssemblyAlgorithmEnv* env = assemblyRegistry->getAlgorithm(methodNamesBox->currentText());
-    
+
     if (NULL == env) {
         adjustSize();
         return;
@@ -355,7 +355,7 @@ void DnaAssemblyDialog::addGuiExtension() {
     } else {
         libraryComboBox->setEnabled(true);
     }
-    
+
     if (!env->isDbiSupported()) {
         samBox->setChecked(true);
         samBox->setEnabled(false);
@@ -401,14 +401,14 @@ void DnaAssemblyDialog::buildResultUrl(const GUrl& refUrl, bool ignoreExtension 
         samOutput = true;
         samBox->setChecked(true);
     }
-    
+
     if (samOutput) {
         extension = "sam";
     } else {
         extension = "ugenedb";
     }
     QString tmpUrl = QString(refUrl.dirPath() + "/" + refUrl.baseFileName()+ ".%1").arg(extension.constData());
-    
+
     resultFileNameEdit->setText(tmpUrl);
 }
 
@@ -464,7 +464,7 @@ void DnaAssemblyGUIUtils::runAssembly2ReferenceDialog(const QStringList& shortRe
 
 ShortReadsTableItem::ShortReadsTableItem(QTreeWidget *treeWidget, const QString& url) : QTreeWidgetItem(treeWidget)
 {
-  
+
     mateTypeBox = new QComboBox(treeWidget);
     mateTypeBox->addItem(MATE_UPSTREAM);
     mateTypeBox->addItem(MATE_DOWNSTREAM);

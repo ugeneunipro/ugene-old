@@ -75,7 +75,7 @@ class GTest_DNASequenceAlphabetType : public GTest {
     ReportResult report();
 
     QString         objContextName;
-    
+
     DNAAlphabetType alphabetType;
 };
 
@@ -86,7 +86,7 @@ class GTest_DNASequenceAlphabetId : public GTest {
     ReportResult report();
 
     QString objContextName;
-    
+
     QString alpId;
 };
 
@@ -115,9 +115,9 @@ class GTest_DNASequenceQualityValue : public GTest {
 class GTest_CompareDNASequenceQualityInTwoObjects : public GTest {
     Q_OBJECT
     SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CompareDNASequenceQualityInTwoObjects, "compare-sequence-quality-in-two-objects");
-    
+
     ReportResult report();
-    
+
     QString doc1CtxName;
     QString doc2CtxName;
 };
@@ -156,7 +156,7 @@ class GTest_DNAMulSequenceAlphabetId : public GTest {
     ReportResult report();
 
     QString objContextName;
-    
+
     QString alpId;
 };
 

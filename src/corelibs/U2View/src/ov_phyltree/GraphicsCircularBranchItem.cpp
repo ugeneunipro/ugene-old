@@ -85,7 +85,7 @@ GraphicsCircularBranchItem::GraphicsCircularBranchItem(QGraphicsItem* parent, qr
         distanceText->setBrush(from->getDistanceText()->brush());
     }
     setPen(from->pen());
-    
+
 }
 
 QRectF GraphicsCircularBranchItem::boundingRect() const {

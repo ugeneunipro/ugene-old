@@ -71,7 +71,7 @@ DECLARE_TEST(MAlignmentUnitTests, info_setGet);
  *   ^ isEmptyTrue    - method "isEmpty" returns "true" for an empty alignment
  *   ^ get            - getting length of a non-empty alignment
  *   ^ getForEmpty    - getting length of an empty alignment
- *   ^ setLessLength  - set length less than the current one to a non-empty 
+ *   ^ setLessLength  - set length less than the current one to a non-empty
  *                      alignment, the alignment is cropped
  */
 DECLARE_TEST(MAlignmentUnitTests, length_isEmptyFalse);

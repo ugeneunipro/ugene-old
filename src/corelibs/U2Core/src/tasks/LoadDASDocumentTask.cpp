@@ -163,7 +163,7 @@ QList<Task*> LoadDasDocumentTask::onSubTaskFinished( Task *subTask ){
                 CHECK_OP(stateInfo, subTasks);
 
                 annotationTableObject = new AnnotationTableObject( "das_annotations", dbiRef );
-                
+
                 foreach ( const QString &grname, annotationData.keys( ) ) {
                     const QList<AnnotationData> sdata = annotationData[grname];
                     if ( !sdata.isEmpty( ) ) {
@@ -189,11 +189,11 @@ QList<Task*> LoadDasDocumentTask::onSubTaskFinished( Task *subTask ){
                 if ( NULL == resultDocument ) {
                     return subTasks;
                 }
-                
+
                 U2EntityRef seqRef = U2SequenceUtils::import( resultDocument->getDbiRef( ), *seq, stateInfo );
                 if ( stateInfo.isCoR( ) ) {
                     return subTasks;
-                } 
+                }
                 U2SequenceObject *danseqob = new U2SequenceObject( seq->getName( ), seqRef );
                 resultDocument->addObject( danseqob );
 
@@ -201,7 +201,7 @@ QList<Task*> LoadDasDocumentTask::onSubTaskFinished( Task *subTask ){
                     annotationTableObject->addObjectRelation( GObjectRelation( danseqob,
                         ObjectRole_Sequence ) );
                     resultDocument->addObject( annotationTableObject );
-                    
+
                 }
 
                 saveDocumentTask = new SaveDocumentTask( resultDocument );
@@ -249,7 +249,7 @@ LoadDasObjectTask::LoadDasObjectTask( const QString& accId, const DASSource& _so
 ,networkManager(NULL)
 ,seq(NULL)
 {
-    
+
 }
 
 LoadDasObjectTask::~LoadDasObjectTask(){
@@ -270,7 +270,7 @@ void LoadDasObjectTask::run(){
     connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(sl_replyFinished(QNetworkReply*)));
     connect(networkManager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
     NetworkConfiguration* nc = AppContext::getAppSettings()->getNetworkConfiguration();
-    
+
     ioLog.trace("Downloading xml file...");
 
     QString fetchUrl = DASSourceRegistry::getRequestURLString(source, accNumber, objectType);
@@ -295,7 +295,7 @@ void LoadDasObjectTask::run(){
     }
 
     ioLog.trace("Download finished.");
-    
+
     QByteArray result = downloadReply->readAll();
     if ( ( result.size() < 100 ) && result.contains("Nothing has been found")) {
         setError(tr("Sequence with ID=%1 is not found.").arg(accNumber));
@@ -320,7 +320,7 @@ void LoadDasObjectTask::run(){
             annotationData = parser.getAnnotationData();
         }
     }
-    
+
 }
 
 DNASequence* LoadDasObjectTask::getSequence() {
@@ -380,7 +380,7 @@ void LoadDasObjectTask::onProxyAuthenticationRequired(const QNetworkProxy &proxy
 
 //////////////////////////////////////////////////////////////////////////
 //LoadDasFeaturesTask
-LoadDasFeaturesTask::LoadDasFeaturesTask(const QStringList& accId, const QList<DASSource>& source) 
+LoadDasFeaturesTask::LoadDasFeaturesTask(const QStringList& accId, const QList<DASSource>& source)
 : Task(tr("Load DAS annotations for current sequence"), TaskFlags(TaskFlag_NoRun) | TaskFlag_CancelOnSubtaskCancel | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ), featureSources(source), accessionNumbers(accId) {
 }
 
@@ -530,7 +530,7 @@ void XMLDASSequenceParser::parse( const QByteArray& data ){
         const DNAAlphabet* a = U2AlphabetUtils::findBestAlphabet(sequence.data(), sequence.size());
 
         seq = new DNASequence(sequenceId, sequence, a);
-        
+
     }else{
         setError(QString("No %1 tag").arg(DAS_SEQ_SEQUENCE));
         return;
@@ -627,7 +627,7 @@ void XMLDASFeaturesParser::parse( const QByteArray& data ){
                 QDomNode featureAttrSegment = featureSegmentElement.firstChild();
                 while (!featureAttrSegment.isNull()){
                     QDomElement featureAttrElement = featureAttrSegment.toElement();
-                    
+
                     QString tagName = featureAttrElement.tagName();
                     if (tagName == DAS_FEATURE_TYPE){
                         //group name
@@ -640,14 +640,14 @@ void XMLDASFeaturesParser::parse( const QByteArray& data ){
                         methodQual = featureAttrElement.text();
                         if (methodQual.isEmpty()){
                             methodQual = featureAttrElement.attribute(DAS_FEATURE_ID);
-                        } 
+                        }
 
                     }else if (tagName == DAS_FEATURE_START_POS){
                         QString startText = featureAttrElement.text();
                         if (!startText.isEmpty()){
                             startPos = startText.toInt();
                         }
-                        
+
                     }else if (tagName == DAS_FEATURE_END_POS){
                         QString endText = featureAttrElement.text();
                         if (!endText.isEmpty()){
@@ -698,7 +698,7 @@ void XMLDASFeaturesParser::parse( const QByteArray& data ){
                 data.name = featureId.simplified( );
                 U2Region reg; //1-based start
 
-                
+
                 if (startPos == -1 || endPos == -1){//non-positional
                     data.qualifiers.append(U2Qualifier("non-positional", "yes"));
                     if ((start == 0 && stop == 0) || (start > stop)){
@@ -754,7 +754,7 @@ void XMLDASFeaturesParser::parse( const QByteArray& data ){
                 if (!featureLabel.isEmpty()){
                     data.qualifiers.append(U2Qualifier("feature_label", featureLabel.simplified()));
                 }
-                
+
                 annotationData[groupName].append(data);
             }
 

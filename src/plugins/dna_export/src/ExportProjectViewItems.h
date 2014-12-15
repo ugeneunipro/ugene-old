@@ -42,7 +42,7 @@ class ExportProjectViewItemsContoller : public QObject {
     Q_OBJECT
 public:
     ExportProjectViewItemsContoller(QObject* p);
-    
+
 private slots:
     void sl_addToProjectViewMenu(QMenu&);
 

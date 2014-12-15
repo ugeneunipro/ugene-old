@@ -43,14 +43,14 @@ public:
     QString getURL() const {return url;}
     Metadata * getMetadata() {return meta;}
     QMap<ActorId, ActorId> getRemapping() {return remap;}
-    
+
     enum FileFormat {
-        HR, 
+        HR,
         XML,
         UNKNOWN
     };
     static FileFormat detectFormat(const QString & rawData);
-    
+
 protected:
     const QString url;
     Schema* schema;
@@ -58,7 +58,7 @@ protected:
     QString rawData;
     FileFormat format;
     QMap<ActorId, ActorId> remap;
-    
+
 }; // LoadWorkflowTask
 
 class U2LANG_EXPORT SaveWorkflowTask : public Task {
@@ -67,11 +67,11 @@ public:
     SaveWorkflowTask(Schema* schema, const Metadata& meta, bool copyMode);
     Task::ReportResult report();
     virtual void run();
-    
+
 private:
     QString rawData;
     QString url;
-    
+
 }; // SaveWorkflowTask
 
 } //namespace

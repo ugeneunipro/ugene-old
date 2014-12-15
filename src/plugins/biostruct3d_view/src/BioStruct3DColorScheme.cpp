@@ -34,7 +34,7 @@
 #include <QtCore/QObject>
 #include <QtAlgorithms>
 
-namespace U2 { 
+namespace U2 {
 
 /* class BioStruct3DColorSchemeRegistry */
 const QString BioStruct3DColorSchemeRegistry::defaultFactoryName() {
@@ -279,7 +279,7 @@ Color4f SecStructColorScheme::getSchemeAtomColor( const SharedAtom& atom ) const
         if (residueTable.contains(residueIndex)) {
             QByteArray type = residueTable.value(residueIndex);
             c = secStrucColorMap.value(type);
-        }    
+        }
     }
 
     return c;

@@ -59,7 +59,7 @@ static bool registerTests(){
 
 bool SequenceTestData::registerTest = registerTests();
 
-void SequenceTestData::init() {    
+void SequenceTestData::init() {
     bool ok = dbiProvider.init(SEQ_DB_URL, false);
     SAFE_POINT(ok, "dbi provider failed to initialize",);
     U2Dbi* dbi = dbiProvider.getDbi();
@@ -229,7 +229,7 @@ void SequenceDbiUnitTests_getAllSequenceObjects::Test() {
 
 void SequenceDbiUnitTests_createSequenceObject::Test() {
     U2SequenceDbi* sequenceDbi = SequenceTestData::getSequenceDbi();
-    
+
     U2Sequence seq;
     seq.circular = true;
     seq.alphabet = BaseDNAAlphabetIds::AMINO_DEFAULT();

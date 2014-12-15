@@ -108,7 +108,7 @@ bool XMLTestFormat::unregisterTestFactory(XMLTestFactory* tf) {
 void XMLTestFormat::registerBuiltInFactories() {
     { // multitest
         QList<XMLTestFactory*> fs = XMLTestUtils::createTestFactories();
-        foreach(XMLTestFactory* f, fs) { 
+        foreach(XMLTestFactory* f, fs) {
             bool res = registerTestFactory(f);
             assert(res); Q_UNUSED(res);
         }

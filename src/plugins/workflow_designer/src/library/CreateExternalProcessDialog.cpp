@@ -80,7 +80,7 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     connect(this, SIGNAL(currentIdChanged(int)), SLOT(sl_validatePage(int)));
     //connect(button(QWizard::FinishButton), SIGNAL(clicked()), SLOT(sl_OK()));
     //connect(button(QWizard::NextButton), SIGNAL(clicked()), SLOT(sl_generateTemplateString()));
-    
+
     QFontMetrics info(ui.descr1TextEdit->font());
     ui.descr1TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
     ui.descr2TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
@@ -214,7 +214,7 @@ void CreateExternalProcessDialog::sl_deleteAttribute() {
 CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/ )
 : QWizard(p), initialCfg(NULL), lastPage(false) {
     ui.setupUi(this);
-    
+
     new U2::HelpButton(this, button(QWizard::HelpButton), "2097199");
 
     connect(ui.addInputButton, SIGNAL(clicked()), SLOT(sl_addInput()));
@@ -327,7 +327,7 @@ void CreateExternalProcessDialog::accept() {
             }
         }
     }
-    
+
     QString str = HRSchemaSerializer::actor2String(cfg);
     QString dir = WorkflowSettings::getExternalToolDirectory();
     QDir d(dir);
@@ -377,7 +377,7 @@ bool CreateExternalProcessDialog::validate() {
         if(dc.attrName.isEmpty()) {
             QMessageBox::critical(this, title, tr("For one or more parameter name was not set."));
             return false;
-        } 
+        }
         if(dc.attrName.contains(invalidSymbols)) {
             QMessageBox::critical(this, title, tr("Invalid symbols in a name.").arg(dc.attrName));
             return false;
@@ -388,7 +388,7 @@ bool CreateExternalProcessDialog::validate() {
         if(dc.attrName.isEmpty()) {
             QMessageBox::critical(this, title, tr("For one or more parameter name was not set."));
             return false;
-        } 
+        }
         if(dc.attrName.contains(invalidSymbols)) {
             QMessageBox::critical(this, title, tr("Invalid symbols in a name.").arg(dc.attrName));
             return false;
@@ -399,7 +399,7 @@ bool CreateExternalProcessDialog::validate() {
         if(ac.attrName.isEmpty()) {
             QMessageBox::critical(this, title, tr("For one or more parameter name was not set."));
             return false;
-        } 
+        }
         if(ac.attrName.contains(invalidSymbols)) {
             QMessageBox::critical(this, title, tr("Invalid symbols in a name.").arg(ac.attrName));
             return false;
@@ -482,7 +482,7 @@ static QString statusTemplate = QString("<font color=\"%1\">%2</font>");
 void CreateExternalProcessDialog::sl_validateName( const QString &text) {
     QString error;
     bool res = validateProcessName(text, error);
-    
+
     button(QWizard::NextButton)->setEnabled(res);
     QString statusStr;
     if (res) {
@@ -532,7 +532,7 @@ void CreateExternalProcessDialog::validateDataModel(const QModelIndex &, const Q
         }
         nameList << item->itemData.attrName;
     }
-    
+
 
 
     if(nameList.removeDuplicates() > 0) {
@@ -577,13 +577,13 @@ void CreateExternalProcessDialog::validateAttributeModel(const QModelIndex &, co
         }
         nameList << item->itemData.attrName;
     }
-    
+
     CfgExternalToolModelAttributes *aModel = static_cast<CfgExternalToolModelAttributes*>(ui.attributesTableView->model());
     foreach(AttributeItem *item, aModel->getItems()) {
         if(item->getName().isEmpty()) {
             //QMessageBox::critical(this, title, tr("For one or more parameter name was not set."));
             res = false;
-        } 
+        }
         if(item->getName().contains(invalidSymbols)) {
             //QMessageBox::critical(this, title, tr("Invalid symbols in a name.").arg(ac.attrName));
             res = false;

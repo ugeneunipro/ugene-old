@@ -49,7 +49,7 @@ public:
     QString getTempDataDir();
     QList<Task*> onSubTaskFinished(Task* subTask);
 
-private:    
+private:
     DnaAssemblyToRefTaskSettings config;
     QString readsFileName;
     GUrl readsFileUrl;

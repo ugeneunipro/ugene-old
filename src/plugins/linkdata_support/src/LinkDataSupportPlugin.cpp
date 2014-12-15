@@ -31,7 +31,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
-LinkDataSupportPlugin::LinkDataSupportPlugin() 
+LinkDataSupportPlugin::LinkDataSupportPlugin()
 : Plugin(tr("LinkData Support"), tr("LinkData Support"))
 {
     AppContext::getWorkflowScriptRegistry()->registerScriptFactory(new LinkDataScriptFactory());

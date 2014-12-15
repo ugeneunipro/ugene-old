@@ -29,7 +29,7 @@
 namespace U2 {
 
 class SQLiteSequenceDbi : public U2SequenceDbi, public SQLiteChildDBICommon {
-    
+
 public:
     SQLiteSequenceDbi(SQLiteDbi* dbi);
 
@@ -41,7 +41,7 @@ public:
 
 
 
-    /**  Adds new (empty) sequence instance into database, sets the assigned id on the passed U2Sequence instance. 
+    /**  Adds new (empty) sequence instance into database, sets the assigned id on the passed U2Sequence instance.
         The folder must exist in the database.
         Use 'updateSequenceData' method to supply data to the created sequence.
 
@@ -50,7 +50,7 @@ public:
     virtual void createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os, U2DbiObjectRank rank);
 
 
-    /** 
+    /**
         Updates sequence object fields.
 
         Requires: U2DbiFeature_WriteSequence feature support.
@@ -58,8 +58,8 @@ public:
     virtual void updateSequenceObject(U2Sequence& sequence, U2OpStatus& os);
 
 
-    /** 
-        Updates sequence region. 
+    /**
+        Updates sequence region.
         The region must be valid region within sequence bounds.
         Note: regionToReplace length can differ from dataToInsert length, so the method can be used to add/remove sequence regions
 

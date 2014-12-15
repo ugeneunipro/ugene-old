@@ -83,7 +83,7 @@ QVariantMap AnnotatedDNAViewState::saveState(AnnotatedDNAView* v) {
         DNASequenceSelection* sel = ctx->getSequenceSelection();
         seqSels.append(sel->isEmpty()? U2Region() : sel->getSelectedRegions().first());
     }
-    
+
     QList<GObjectReference> anRefs;
     foreach(GObject* ao, v->getAnnotationObjects()) {
         anRefs.append(ao);

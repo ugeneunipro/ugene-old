@@ -53,7 +53,7 @@ public:
 
     WriteAnnotationsWorker(Actor * p) : BaseWorker(p), annotationsPort(NULL) {}
     ~WriteAnnotationsWorker();
-    
+
     virtual void init();
     virtual Task * tick();
     virtual void cleanup();
@@ -74,17 +74,17 @@ private:
     IntegralBus * annotationsPort;
     QList<AnnotationTableObject *> createdAnnotationObjects;
     QMap<QString, QList<AnnotationTableObject *> > annotationsByUrl;
-    
+
 }; // WriteAnnotationsWorker
 
 class WriteAnnotationsWorkerFactory : public DomainFactory {
 public:
     static const QString ACTOR_ID;
-    
+
     WriteAnnotationsWorkerFactory() : DomainFactory(ACTOR_ID) {}
     static void init();
     virtual Worker * createWorker(Actor* a);
-    
+
 }; // WriteAnnotationsWorkerFactory
 
 }

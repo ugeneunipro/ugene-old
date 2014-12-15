@@ -42,7 +42,7 @@ namespace U2 {
 #define SEQUENCE_ATTR "seq"
 #define SHORTSEQ_ATTR "short_seq"
 #define HITS_ATTR "hits"
-#define ALG_ATTR "alg" 
+#define ALG_ATTR "alg"
 #define FILTERS_ATTR "filters"
 #define GAP_ATTR "gap_costs"
 #define MATCHSCORE_ATTR "match_scores"

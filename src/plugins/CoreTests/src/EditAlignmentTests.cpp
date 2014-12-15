@@ -176,7 +176,7 @@ void GTest_RemoveAlignmentRegion::init(XMLTestFormat *tf, const QDomElement& el)
     if (buf.isEmpty()) {
         failMissingValue(REGION_HEIGHT);
         return;
-    } 
+    }
 
     bool ok = false;
     height = buf.toInt(&ok);
@@ -184,14 +184,14 @@ void GTest_RemoveAlignmentRegion::init(XMLTestFormat *tf, const QDomElement& el)
         stateInfo.setError(GTest::tr("incorrect value %1").arg(buf));
         return;
     }
-    
-    // Region width 
+
+    // Region width
 
     buf = el.attribute(REGION_WIDTH);
     if (buf.isEmpty()) {
         failMissingValue(REGION_WIDTH);
         return;
-    } 
+    }
 
     ok = false;
     width = buf.toInt(&ok);
@@ -202,12 +202,12 @@ void GTest_RemoveAlignmentRegion::init(XMLTestFormat *tf, const QDomElement& el)
 
 
     // Start base
-    
+
     buf = el.attribute(START_BASE);
     if (buf.isEmpty()) {
         failMissingValue(START_BASE);
         return;
-    } 
+    }
 
     ok = false;
     startBase = buf.toInt(&ok);
@@ -215,14 +215,14 @@ void GTest_RemoveAlignmentRegion::init(XMLTestFormat *tf, const QDomElement& el)
         stateInfo.setError(GTest::tr("incorrect value %1").arg(buf));
         return;
     }
-    
+
     // Start seq
 
     buf = el.attribute(START_SEQ);
     if (buf.isEmpty()) {
         failMissingValue(START_BASE);
         return;
-    } 
+    }
 
     ok = false;
     startSeq = buf.toInt(&ok);
@@ -260,17 +260,17 @@ void GTest_RemoveAlignmentRegion::prepare(){
     expectedMaobj = (MAlignmentObject*)expList.first();
 
     maobj = (MAlignmentObject*)list.first();
-   
+
 }
 
 Task::ReportResult GTest_RemoveAlignmentRegion::report(){
-    
+
     if (!hasError()) {
-        
+
         maobj->removeRegion(startBase, startSeq, width, height, true);
         MAlignment actual = maobj->getMAlignment(),
             expected = expectedMaobj->getMAlignment();
-    
+
         if (actual != expected) {
             stateInfo.setError(GTest::tr("Expected and actual alignments not equal"));
         }
@@ -283,7 +283,7 @@ Task::ReportResult GTest_RemoveAlignmentRegion::report(){
 void GTest_AddSequenceToAlignment::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
     // Doc before name
-    
+
     QString buf = el.attribute(DOC_ATTR);
     if(buf.isEmpty()){
         stateInfo.setError(GTest::tr("value not set %1").arg(DOC_ATTR));
@@ -299,9 +299,9 @@ void GTest_AddSequenceToAlignment::init(XMLTestFormat *tf, const QDomElement& el
         return;
     }
     expectedDocName = buf;
-    
+
     // Seq name
-    
+
     buf = el.attribute(SEQ_FILE_ATTR);
     if(buf.isEmpty()){
         stateInfo.setError(GTest::tr("value not set %1").arg(SEQ_FILE_ATTR));
@@ -352,7 +352,7 @@ void GTest_AddSequenceToAlignment::prepare(){
 Task::ReportResult GTest_AddSequenceToAlignment::report(){
 
     propagateSubtaskError();
-    
+
     if (!hasError()) {
 
         const MAlignment& actual = maobj->getMAlignment();

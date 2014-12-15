@@ -34,10 +34,10 @@
 
 namespace U2 {
 
-//additional tool validations. Even with other executables 
+//additional tool validations. Even with other executables
 class U2CORE_EXPORT ExternalToolValidation {
 public:
-    
+
     ExternalToolValidation(const QString& _toolRunnerProgram, const QString& _executableFile, const QStringList& _arguments, const QString& _expectedMsg, const QStrStrMap& _possibleErrorsDescr = QStrStrMap())
         :toolRunnerProgram(_toolRunnerProgram)
         ,executableFile(_executableFile)

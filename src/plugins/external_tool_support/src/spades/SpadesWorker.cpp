@@ -156,7 +156,7 @@ GenomeAssemblyTaskSettings SpadesWorker::getSettings( U2OpStatus &os ){
         getValue<QString>(OUTPUT_DIR) + "/" + BASE_SPADES_SUBDIR,
         "_", os);
     CHECK_OP(os, settings);
-    
+
     if (outDir.endsWith("/")){
         outDir.chop(1);
     }
@@ -222,7 +222,7 @@ class SpadesInputSlotsValidator : public PortValidator {
 
 void SpadesWorkerFactory::init() {
     QList<PortDescriptor*> portDescs;
-    
+
     //in port
     QMap<Descriptor, DataTypePtr> inTypeMap;
     Descriptor readsDesc(READS_URL_SLOT_ID,
@@ -247,7 +247,7 @@ void SpadesWorkerFactory::init() {
     Descriptor scaffoldOutDesc(SCAFFOLD_OUT_SLOT_ID,
         SpadesWorker::tr("Scaffolds URL"),
         SpadesWorker::tr("Output scaffolds URL."));
-    
+
     Descriptor outPortDesc(OUT_PORT_DESCR,
         SpadesWorker::tr("SPAdes output data"),
         SpadesWorker::tr("Output assembly files."));
@@ -256,8 +256,8 @@ void SpadesWorkerFactory::init() {
 
     DataTypePtr outTypeSet(new MapDataType(OUT_TYPE_ID, outTypeMap));
     portDescs << new PortDescriptor(outPortDesc, outTypeSet, false, true);
-    
- 
+
+
      QList<Attribute*> attrs;
      {
          Descriptor outDir(OUTPUT_DIR,
@@ -334,7 +334,7 @@ Worker *SpadesWorkerFactory::createWorker(Actor *a) {
 }
 
 QString SpadesPrompter::composeRichDoc() {
-    QString res = ""; 
+    QString res = "";
 
     Actor* readsProducer = qobject_cast<IntegralBusPort*>(target->getPort(IN_PORT_DESCR))->getProducer(READS_URL_SLOT_ID);
 
@@ -342,7 +342,7 @@ QString SpadesPrompter::composeRichDoc() {
     QString readsUrl = readsProducer ? readsProducer->getLabel() : unsetStr;
 
     res.append(tr("Assemble reads from <u>%1</u>.").arg(readsUrl));
- 
+
     return res;
 }
 

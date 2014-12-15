@@ -69,7 +69,7 @@ AnnotatorPlugin::AnnotatorPlugin() : Plugin(tr("dna_annotator_plugin"), tr("dna_
             CustomPatternAutoAnnotationUpdater* aaUpdater = new CustomPatternAutoAnnotationUpdater(store);
             AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(aaUpdater);
         }
-     
+
         viewCtx = new AnnotatorViewContext(this, store->isLoaded());
         viewCtx->init();
     }
@@ -101,7 +101,7 @@ void AnnotatorViewContext::initViewContext(GObjectView* v) {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(v);
     ADVGlobalAction* a = new ADVGlobalAction(av, QIcon(":annotator/images/regions.png"), tr("Find annotated regions..."), 30);
     connect(a, SIGNAL(triggered()), SLOT(sl_showCollocationDialog()));
-   
+
     if (customFeaturesAvailable) {
         ADVGlobalAction* a = new ADVGlobalAction(av, QIcon(":annotator/images/plasmid_features.png"), tr("Annotate plasmid and custom features..."), 31);
         a->addAlphabetFilter(DNAAlphabet_NUCL);
@@ -126,9 +126,9 @@ void AnnotatorViewContext::sl_showCollocationDialog() {
         QMessageBox::warning(av->getWidget(), tr("warning"),tr("no_annotations_found"));
         return;
     }
-        
+
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
-    if (seqCtx == NULL) { 
+    if (seqCtx == NULL) {
         return;
     }
     CollocationsDialogController d(allNames.toList(), seqCtx);
@@ -143,7 +143,7 @@ void AnnotatorViewContext::sl_showCustomAutoAnnotationDialog() {
     assert(av);
 
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
-    if (seqCtx == NULL) { 
+    if (seqCtx == NULL) {
         return;
     }
     CustomAutoAnnotationDialog dlg(seqCtx);

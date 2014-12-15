@@ -56,10 +56,10 @@ void ModTrackHints::set(const QString& key, const QVariant& val) {
     if (oldVal == val) {
         return;
     }
-    
+
 //     QString newV = val.toString();
 //     QString oldV = oldVal.toString();
- 
+
     map[key] = val;
     setModified();
 }

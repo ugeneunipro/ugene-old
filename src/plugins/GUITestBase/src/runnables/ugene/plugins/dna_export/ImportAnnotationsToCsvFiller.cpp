@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -49,11 +49,11 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::ImportAnnotationsToCsvFiller"
 
 ImportAnnotationsToCsvFiller::ImportAnnotationsToCsvFiller(U2OpStatus &_os, const QString &_fileToRead, const QString &_resultFile,
-        ImportAnnotationsToCsvFiller::fileFormat _format, bool _addResultFileToProject, 
+        ImportAnnotationsToCsvFiller::fileFormat _format, bool _addResultFileToProject,
         bool _columnSeparator, const QString &_separator, bool _script, int _numberOfLines,
         const QString &_skipAllLinesStartsWith, bool _interpretMultipleAsSingle,
         bool _removeQuotesButton, const QString &_defaultAnnotationName, const RoleParameters& _roleParameters, GTGlobals::UseMethod method):
-Filler(_os, "ImportAnnotationsFromCSVDialog"), fileToRead(_fileToRead), resultFile(_resultFile), format(_format), 
+Filler(_os, "ImportAnnotationsFromCSVDialog"), fileToRead(_fileToRead), resultFile(_resultFile), format(_format),
        addResultFileToProject(_addResultFileToProject), columnSeparator(_columnSeparator), script(_script),
        numberOfLines(_numberOfLines), separator(_separator),
        skipAllLinesStartsWith(_skipAllLinesStartsWith), interpretMultipleAsSingle(_interpretMultipleAsSingle),
@@ -97,12 +97,12 @@ public:
             GTRadioButton::click(os, dialog->findChild<QRadioButton*>("endRB"));
             GTCheckBox::setChecked(os, endPosCheckBox, endP->endPos);
         }
-       
+
         ImportAnnotationsToCsvFiller::LengthParameter* lenghtP = dynamic_cast<ImportAnnotationsToCsvFiller::LengthParameter*>(parameter);
         if (lenghtP) {
             GTRadioButton::click(os, dialog->findChild<QRadioButton*>("lengthRB"));
         }
-        
+
         ImportAnnotationsToCsvFiller::StrandMarkParameter* strandMarkP = dynamic_cast<ImportAnnotationsToCsvFiller::StrandMarkParameter*>(parameter);
         if (strandMarkP) {
             GTRadioButton::click(os, dialog->findChild<QRadioButton*>("complMarkRB"));
@@ -120,15 +120,15 @@ public:
             GTRadioButton::click(os, dialog->findChild<QRadioButton*>("qualifierRB"));
             GTLineEdit::setText(os, qualifierLineEdit, qualP->name);
         }
-        
+
         ImportAnnotationsToCsvFiller::IgnoreParameter* ignoreP = dynamic_cast<ImportAnnotationsToCsvFiller::IgnoreParameter*>(parameter);
         if (ignoreP) {
             GTRadioButton::click(os, dialog->findChild<QRadioButton*>("ignoreRB"));
         }
 
-        delete parameter; 
+        delete parameter;
         parameter = NULL;
-        
+
         QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
         GT_CHECK(box != NULL, "buttonBox is NULL");
         QPushButton* button = box->button(QDialogButtonBox::Ok);
@@ -200,10 +200,10 @@ void ImportAnnotationsToCsvFiller::run()
 
     QCheckBox *separatorsModeCheckBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("separatorsModeCheck"));
     GTCheckBox::setChecked(os, separatorsModeCheckBox, interpretMultipleAsSingle);
-    
+
     QCheckBox *removeQuotesCheckBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("removeQuotesCheck"));
     GTCheckBox::setChecked(os, removeQuotesCheckBox, removeQuotesButton);
-    
+
     QLineEdit *defaultAnnotationNameLineEdit = dialog->findChild<QLineEdit*>(QString::fromUtf8("defaultNameEdit"));
     GT_CHECK(defaultAnnotationNameLineEdit != NULL, "line edit not found");
     GTLineEdit::setText(os, defaultAnnotationNameLineEdit, defaultAnnotationName);

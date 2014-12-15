@@ -51,7 +51,7 @@ private:
     QString getCopyError(const QString &url1, const QString &url2) const;
     bool needToCopyBam(const QString &sortedBamUrl) const;
     bool needToCopyFasta() const;
-}; 
+};
 
 } // namespace BAM
 } // namespace U2

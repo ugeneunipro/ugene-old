@@ -62,9 +62,9 @@ public:
 
     // Read methods for folders
 
-    /**  Returns list of folders stored in database. 
+    /**  Returns list of folders stored in database.
         Folders are separated by '/' character.
-        At least one root folder is required. 
+        At least one root folder is required.
     */
     virtual QStringList getFolders(U2OpStatus& os);
     virtual QHash<U2Object, QString> getObjectFolders(U2OpStatus &os);
@@ -86,13 +86,13 @@ public:
 
     // Write methods for objects
 
-    /** 
+    /**
         Removes the object from the database.
     */
     virtual bool removeObject(const U2DataId& dataId, bool force, U2OpStatus& os);
     virtual bool removeObject(const U2DataId& dataId, U2OpStatus& os);
-    
-    /** 
+
+    /**
         Removes collection of objects from the database
     */
     virtual bool removeObjects(const QList<U2DataId>& dataIds, bool force, U2OpStatus& os);
@@ -101,7 +101,7 @@ public:
     virtual void renameObject(const U2DataId &id, const QString &newName, U2OpStatus &os);
 
     // Write methods for folders
-    
+
     /** Creates folder in the database.
         If the specified path is already presented in the database, nothing will be done.
         It is not required that parent folders must exist, they are created automatically.
@@ -111,13 +111,13 @@ public:
     /** Removes folder. The folder must be existing path. Runs GC check for all objects in the folder */
     virtual bool removeFolder(const QString& folder, U2OpStatus& os);
 
-    /** Returns version of the folder. 
+    /** Returns version of the folder.
         The folder version increases if new object(s)/subfolder(s) are added into this folder
         Note that if object(s)/folder(s) are added into one of the subfolders the folder version is not changed
     */
     virtual qint64 getFolderLocalVersion(const QString& folder, U2OpStatus& os);
 
-    /** Returns version of the folder that changes every time object(s)/folder(s) added 
+    /** Returns version of the folder that changes every time object(s)/folder(s) added
         to the specified folder or any of its child folders
     */
     virtual qint64 getFolderGlobalVersion(const QString& folder, U2OpStatus& os);
@@ -129,7 +129,7 @@ public:
     /** Moves objects between folders.
     'fromFolder' must be existing path containing all specified objects.
     'toFolder' must be existing path or empty string.
-    If 'toFolder' is empty, removes the objects from 'fromFolder' and 
+    If 'toFolder' is empty, removes the objects from 'fromFolder' and
     deletes non-top-level objects without parents, if any appear in the specified list.
     Otherwise, moves the specified objects between the specified folders, omitting duplicates.
     */
@@ -165,8 +165,8 @@ public:
     */
     void updateObject(U2Object& obj, U2OpStatus& os);
 
-    /** 
-        Returns internal database folder id 
+    /**
+        Returns internal database folder id
         Fails if folder not found and 'mustExist' == true
     */
     static qint64 getFolderId(const QString& path, bool mustExist, DbRef* db, U2OpStatus& os);
@@ -183,9 +183,9 @@ public:
     /** Gets the trackMod value for the object */
     virtual U2TrackModType getTrackModType(const U2DataId& objectId, U2OpStatus& os);
 
-    /** 
+    /**
         Removes objects parent relation.
-        If child object has no parents and is not top level 
+        If child object has no parents and is not top level
         it will be automatically removed if 'removeDeadChild' is true
     */
     void removeParent(const U2DataId& parentId, const U2DataId& childId, bool removeDeadChild, U2OpStatus& os);

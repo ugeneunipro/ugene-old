@@ -69,8 +69,8 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
     GTUtilsDocument::checkDocument(os, "1.gb");
     GTUtilsDocument::checkDocument(os, "2.gb");
-// Expected state: 
-//     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded    
+// Expected state:
+//     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
     Document* doc1 = GTUtilsDocument::getDocument(os, "1.gb");
     Document* doc2 = GTUtilsDocument::getDocument(os, "2.gb");
     CHECK_SET_ERR(doc1 != NULL && doc2 != NULL, "there are no documents 1.gb and 2.gb");
@@ -85,7 +85,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// Expected result: NC_001363 sequence has been opened in sequence view    
+// Expected result: NC_001363 sequence has been opened in sequence view
     GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
 
 // 3. Select region 1..4 at sequence view. Right click to selected region open context menu. Use menu {Export->Export Selected Sequence region}
@@ -122,7 +122,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj4.uprj");
 
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" and "2.gb" is opened
     GTUtilsDocument::checkDocument(os, "1.gb");
     GTUtilsDocument::checkDocument(os, "2.gb");
@@ -137,7 +137,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 3. Select annotation C. Use context menu item {Export->Export Sequence of Selected Annotations}
 // Expected state: Export Sequence of selected annotations will open
-// 
+//
 // 4. Fill the next field in dialog:
 //     {Format } FASTA
 //     {Export to file:} _common_data/scenarios/sandbox/exp.fasta
@@ -146,7 +146,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations", GTGlobals::UseMouse));
 
-    Runnable *filler = new ExportSequenceOfSelectedAnnotationsFiller(os, 
+    Runnable *filler = new ExportSequenceOfSelectedAnnotationsFiller(os,
         testDir + "_common_data/scenarios/sandbox/exp.fasta",
         ExportSequenceOfSelectedAnnotationsFiller::Fasta,
         ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate
@@ -167,7 +167,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003)
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
     GTGlobals::sleep();
 
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" and "2.gb" is opened
     GTUtilsProjectTreeView::findIndex(os, doc1);//checks inside
     GTUtilsProjectTreeView::findIndex(os, doc2);
@@ -264,7 +264,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 GUI_TEST_CLASS_DEFINITION(test_0007) {
 
     Runnable *filler = new CreateDocumentFiller(os,
-        "ACGTGTGTGTACGACAGACGACAGCAGACGACAGACAGACAGACAGCAAGAGAGAGAGAG", true, 
+        "ACGTGTGTGTACGACAGACGACAGCAGACGACAGACAGACAGACAGCAAGAGAGAGAGAG", true,
         CreateDocumentFiller::StandardRNA, true, false, "",
         testDir + "_common_data/scenarios/sandbox/",
         CreateDocumentFiller::Genbank,

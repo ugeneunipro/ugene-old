@@ -49,7 +49,7 @@ QStringList LogServer::getCategories() const {
             result.append(category);
             uniqueNames.insert(category);
         }
-        
+
     }
     return result;
 }
@@ -128,8 +128,8 @@ Logger::~Logger() {
 //    categoryNames.clear();
 }
 
-LogMessage::LogMessage(const QStringList& cat, LogLevel l, const QString& m) 
-: categories(cat), level(l), text(m), time(GTimer::currentTimeMicros()) 
+LogMessage::LogMessage(const QStringList& cat, LogLevel l, const QString& m)
+: categories(cat), level(l), text(m), time(GTimer::currentTimeMicros())
 {
 }
 

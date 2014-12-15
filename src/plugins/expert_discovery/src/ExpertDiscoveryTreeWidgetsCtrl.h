@@ -74,7 +74,7 @@ protected slots:
     void sl_sortOrd(QAction* action);
 
 private:
-    
+
     QMenu* chosePopupMen(EDProjectItem* pItem);
     void createPopupsAndActions();
     QIcon getItemIcon(EDProjectItem* pItem);
@@ -150,7 +150,7 @@ signals:
     void si_clearDisplayed();
     void si_changeProp(QTreeWidgetItem* item);
 };
-    
+
 } //namespace
 
 #endif

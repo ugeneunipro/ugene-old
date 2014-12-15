@@ -52,8 +52,8 @@ public:
     QString             schemaName;
 };
 
-/** 
-    Runs workflow in a separate process and handles in-out parameters 
+/**
+    Runs workflow in a separate process and handles in-out parameters
     The result is output document
 */
 class U2LANG_EXPORT SimpleInOutWorkflowTask : public DocumentProviderTask {
@@ -62,14 +62,14 @@ public:
     SimpleInOutWorkflowTask(const SimpleInOutWorkflowTaskConfig& conf);
     void prepare();
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
-    
+
 private:
     void prepareTmpFile(QTemporaryFile& tmpFile, const QString& tmpl);
 
     SimpleInOutWorkflowTaskConfig        conf;
-    
+
     Document*                           inDoc;
-    
+
     SaveDocumentTask*                   saveInputTask;
     QTemporaryFile                      inputTmpFile;
 
@@ -97,7 +97,7 @@ class U2LANG_EXPORT SimpleMSAWorkflow4GObjectTask : public Task {
 public:
     SimpleMSAWorkflow4GObjectTask(const QString& taskName, MAlignmentObject* maObj, const SimpleMSAWorkflowTaskConfig& conf);
     ~SimpleMSAWorkflow4GObjectTask();
-    
+
     void prepare();
     ReportResult report();
     MAlignment getResult();

@@ -41,7 +41,7 @@ DBXRefRegistry::DBXRefRegistry(QObject *p) : QObject(p) {
     if(!file.exists() || !file.open(QIODevice::ReadOnly)){
         coreLog.error(tr("File with db_xref mappings not found: %1").arg(DB_XREF_FILE_NAME));
         return;
-    } 
+    }
     QTextStream in(&file);
     while (!in.atEnd()) {
         QString line = in.readLine();
@@ -70,7 +70,7 @@ void DBXRefRegistry::setupToEngine(QScriptEngine *engine){
 }
 
 QScriptValue DBXRefInfo::toScriptValue(QScriptEngine *engine, DBXRefInfo const &in)
-{ 
+{
     QScriptValue res=engine->newObject();
     res.setProperty("name", QScriptValue(engine,in.name));
     res.setProperty("url", QScriptValue(engine,in.url));

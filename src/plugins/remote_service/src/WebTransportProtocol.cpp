@@ -74,12 +74,12 @@ const QByteArray BaseGlobalProperties::TASKS_LIST_FINISHED("tasks-list-finished"
 
 void UctpSession::buildQUuid( QUuid* uuid ) const {
     assert(uuid != NULL);
-    
+
     // construct uuid from MD5 representation of session-id
-    
+
     QByteArray digest = QByteArray::fromHex(uid);
     memcpy((unsigned char*)(uuid), digest.constData(), sizeof(QUuid));
-   
+
     assert(!uuid->isNull());
 }
 
@@ -115,14 +115,14 @@ bool Uctp::parseReply( QIODevice* reply, const UctpCommand& command, QMap<QStrin
     xmlReader.setErrorHandler(handler);
     bool ok = xmlReader.parse(source);
     errorString = handler->errorString();
-    
+
     return ok;
 }
 
 
 //////////////////////////////////////////////////////////////////////////
 
-UctpReplyHandler::UctpReplyHandler(const UctpReplyContext& ctx, QMap<QString,UctpElementData>& data) 
+UctpReplyHandler::UctpReplyHandler(const UctpReplyContext& ctx, QMap<QString,UctpElementData>& data)
  : replyResultOk(false), context(ctx), replyData(data), envelope(false), header(false), contents(false)
 {
 
@@ -135,18 +135,18 @@ bool UctpReplyHandler::startElement( const QString &namespaceURI, const QString 
 
     if (qName == UctpElements::RESPONSE) {
         envelope = true;
-    } 
+    }
     xmlAttrMap.insert(qName, attributes);
     ioLog.trace(QString("Parsing element %1").arg(qName));
     curText.clear();
     return true;
-    
+
 }
 
 bool UctpReplyHandler::endElement(const QString &namespaceURI, const QString &localName, const QString &qName) {
     Q_UNUSED(namespaceURI);
     Q_UNUSED(localName);
-    
+
     const QXmlAttributes& currentAttributes = xmlAttrMap.value(qName);
 
     if (qName == UctpElements::RESPONSE) {
@@ -154,9 +154,9 @@ bool UctpReplyHandler::endElement(const QString &namespaceURI, const QString &lo
         if (status == UctpValues::STATUS_OK) {
             replyResultOk = true;
             coreLog.trace("Uctp request succeed");
-        } 
-    } 
-    
+        }
+    }
+
     UctpElementData data;
     data.textData = curText;
     for (int i = 0; i < currentAttributes.length(); ++i) {
@@ -165,7 +165,7 @@ bool UctpReplyHandler::endElement(const QString &namespaceURI, const QString &lo
         data.attributesMap.insert(aName.toLatin1(),aValue.toLatin1());
     }
     replyData.insertMulti(qName, data);
-    
+
     return true;
 }
 
@@ -206,7 +206,7 @@ bool UctpReplyHandler::validateContext() {
             return false;
         }
     }
-    
+
     return true;
 }
 

@@ -34,7 +34,7 @@ namespace U2 {
 #define OFFSET_TWO  "Frame 3"
 
 GCFramePlotFactory::GCFramePlotFactory(QObject* p)
-: GSequenceGraphFactory("GC Frame Plot", p)  
+: GSequenceGraphFactory("GC Frame Plot", p)
 {
 
 }
@@ -46,7 +46,7 @@ bool GCFramePlotFactory::isEnabled(const U2SequenceObject* o) const {
 
 QList<GSequenceGraphData*> GCFramePlotFactory::createGraphs(GSequenceGraphView* v) {
     Q_UNUSED(v);
-    
+
     //TODO: All points should be calculated during one loop over the window.
 
     QList<GSequenceGraphData*> res;
@@ -58,7 +58,7 @@ QList<GSequenceGraphData*> GCFramePlotFactory::createGraphs(GSequenceGraphView* 
     GSequenceGraphData* d2 = new GSequenceGraphData(OFFSET_ONE);
     d2->ga = new GCFramePlotAlgorithm(1);
     res.append(d2);
-    
+
     GSequenceGraphData* d3 = new GSequenceGraphData(OFFSET_TWO);
     d3->ga = new GCFramePlotAlgorithm(2);
     res.append(d3);

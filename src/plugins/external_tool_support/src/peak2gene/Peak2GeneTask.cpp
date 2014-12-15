@@ -129,7 +129,7 @@ QList<Task*> Peak2GeneTask::onSubTaskFinished(Task* subTask) {
 
     if (treatTask == subTask) {
             QStringList args = settings.getArguments(treatDoc->getURLString());
-            
+
             logParser = new Peak2GeneLogParser();
             etTask = new ExternalToolRunTask(ET_PEAK2GENE, args, logParser, workingDir);
             setListenerForTask(etTask);
@@ -145,7 +145,7 @@ QList<Task*> Peak2GeneTask::onSubTaskFinished(Task* subTask) {
             geneName,
             AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
         result.append(geneTask);
- 
+
         peaksTask=
             new LoadDocumentTask(BaseDocumentFormats::BED,
             peakName,
@@ -155,7 +155,7 @@ QList<Task*> Peak2GeneTask::onSubTaskFinished(Task* subTask) {
 
     }else if(subTask == geneTask){
         geneDoc = geneTask->takeDocument();
-        
+
     }else if(subTask == peaksTask){
         peaksDoc = peaksTask->takeDocument();
     }

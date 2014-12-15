@@ -56,7 +56,7 @@ const QByteArray MSFFormat::SECTION_SEPARATOR = "//";
 const int MSFFormat::CHARS_IN_ROW = 50;
 const int MSFFormat::CHARS_IN_WORD = 10;
 
-/* TRANSLATOR U2::MSFFormat */    
+/* TRANSLATOR U2::MSFFormat */
 
 //TODO: recheck if it does support streaming! Fix isObjectOpSupported if not!
 
@@ -216,7 +216,7 @@ void MSFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
 
     U2AlphabetUtils::assignAlphabet(al);
     CHECK_EXT(al.getAlphabet() != NULL, ti.setError(MSFFormat::tr("Alphabet unknown")), );
-    
+
     U2OpStatus2Log os;
     const QString folder = hints.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
     U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, folder, al, os);
@@ -367,9 +367,9 @@ FormatCheckResult MSFFormat::checkRawData(const QByteArray& rawData, const GUrl&
     if (hasBinaryData) {
         return FormatDetection_NotMatched;
     }
-    if (rawData.contains("MSF:") 
+    if (rawData.contains("MSF:")
         || rawData.contains("!!AA_MULTIPLE_ALIGNMENT 1.0") || rawData.contains("!!NA_MULTIPLE_ALIGNMENT 1.0")
-        || (rawData.contains("Name:") && rawData.contains("Len:") && rawData.contains("Check:") && rawData.contains("Weight:"))) 
+        || (rawData.contains("Name:") && rawData.contains("Len:") && rawData.contains("Check:") && rawData.contains("Weight:")))
     {
         return FormatDetection_VeryHighSimilarity;
     }

@@ -84,7 +84,7 @@ public:
     void setBoundingRect(const QRectF& r) { bound=r; }
     QRectF boundingRect() const { return bound; }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = 0 */);
-    
+
     void saveState(QDElementStatement* el) const;
     void loadState(QDElementStatement* el);
     //returns constraint's connection point in scene coords
@@ -102,7 +102,7 @@ public:
     void rememberSize();
 
     bool highlighted;
-    
+
     enum {Type = QDElementType};
     int type() const {return Type;}
     enum ResizeFlag {

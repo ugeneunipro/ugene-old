@@ -38,7 +38,7 @@
 #include <U2Core/FailTask.h>
 #include <U2Core/GHints.h>
 #include <U2Core/GUrlUtils.h>
-#include <U2Core/ImportObjectToDatabaseTask.h>  
+#include <U2Core/ImportObjectToDatabaseTask.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/LoadDocumentTask.h>
@@ -58,7 +58,7 @@ namespace LocalWorkflow {
 /**********************************
  * BaseDocReader
  **********************************/
-BaseDocReader::BaseDocReader(Actor* a, const QString& tid, const DocumentFormatId& fid) : BaseWorker(a), ch(NULL), fid(fid), 
+BaseDocReader::BaseDocReader(Actor* a, const QString& tid, const DocumentFormatId& fid) : BaseWorker(a), ch(NULL), fid(fid),
 attachDoc2Proj(false) {
     mtype = WorkflowEnv::getDataTypeRegistry()->getById(tid);
 }
@@ -106,7 +106,7 @@ Task* BaseDocReader::tick() {
                 delete doc;
             }
         }
-    } 
+    }
     if (docs.isEmpty()) {
         setDone();
         ch->setEnded();
@@ -136,7 +136,7 @@ void BaseDocReader::cleanup() {
 /**********************************
 * BaseDocWriter
 **********************************/
-BaseDocWriter::BaseDocWriter(Actor* a, const DocumentFormatId& fid) 
+BaseDocWriter::BaseDocWriter(Actor* a, const DocumentFormatId& fid)
     : BaseWorker(a), format(NULL), dataStorage(LocalFs), ch(NULL), append(true), fileMode(SaveDoc_Roll), objectsReceived(false)
 {
     format = AppContext::getDocumentFormatRegistry()->getFormatById(fid);

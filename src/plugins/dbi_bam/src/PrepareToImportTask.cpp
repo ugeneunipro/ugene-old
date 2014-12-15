@@ -37,10 +37,10 @@
 namespace U2 {
 namespace BAM {
 
-PrepareToImportTask::PrepareToImportTask( const GUrl& url, bool sam, const QString& refUrl, const QString &workingDir ) : Task("Prepare assembly file to import", TaskFlag_None), 
+PrepareToImportTask::PrepareToImportTask( const GUrl& url, bool sam, const QString& refUrl, const QString &workingDir ) : Task("Prepare assembly file to import", TaskFlag_None),
                                                                         sourceURL( url ), refUrl(refUrl), workingDir(workingDir), samFormat(sam), newURL(false)
-{ 
-    tpm = Progress_Manual; 
+{
+    tpm = Progress_Manual;
 }
 
 QString PrepareToImportTask::getBamUrl() const {

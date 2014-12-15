@@ -98,7 +98,7 @@ inline Set::Set() {
     data = NULL;
 }
 
-inline Set::Set(const Set& set) 
+inline Set::Set(const Set& set)
 {
     bIsInit = false;
     data_size = 0;

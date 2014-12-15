@@ -73,7 +73,7 @@ QList<Gene> SNPTablesUtils::findGenes(const U2DataId& seqId, const U2Region &reg
 }
 
 Gene SNPTablesUtils::findGenesStep( const U2Feature &parentFeature, U2FeatureDbi* dbi, U2OpStatus &opStatus, const QList<int>& excludeList ){
-    
+
     QVector<U2Region> exons;
     U2Region cdsRegion;
 
@@ -88,7 +88,7 @@ Gene SNPTablesUtils::findGenesStep( const U2Feature &parentFeature, U2FeatureDbi
             }else if(subFeature.name == U2FeatureCDSName && !excludeCDS){
                 cdsRegion = subFeature.location.region;
             }
-            
+
         }
         qStableSort(exons.begin(), exons.end());
     }
@@ -118,7 +118,7 @@ Gene SNPTablesUtils::findGenesStep( const U2Feature &parentFeature, U2FeatureDbi
                 type = key.value;
             }
         }
-    } 
+    }
     Gene gene = Gene(parentFeature.id, name, accession, altname, note, geneRegion, cdsRegion, exons, complemented);
     gene.setDisease(disease);
     gene.setType(type);
@@ -145,7 +145,7 @@ static QList<Gene> getGenesAround( const U2DataId& seqId, const U2Region &region
         }
         query.startPosOrderOp = OrderOp_Desc;
     }
-    
+
     QScopedPointer<U2DbiIterator<U2Feature> > featureIterator(dbi->getFeatures(query, opStatus));
     if(opStatus.isCoR()) {
         return QList<Gene>();
@@ -239,7 +239,7 @@ float SNPTablesUtils::damageEffectVal( const U2Variant& var, const U2DataId& seq
         return res;
     }
     if(!VariationPropertiesUtils::isDamageProtein(var, gene)){
-        return res; 
+        return res;
     }
     int nuclPos = 0;
     int aaPos = 0;
@@ -248,13 +248,13 @@ float SNPTablesUtils::damageEffectVal( const U2Variant& var, const U2DataId& seq
         return res;
     }
 
-    QByteArray referenceTriplet; 
+    QByteArray referenceTriplet;
     if (seqCache == NULL){
         referenceTriplet = VariationPropertiesUtils::getDamagedTriplet(gene, nuclPos, seqId, sequenceDbi, os);
     }else{
         referenceTriplet = VariationPropertiesUtils::getDamagedTripletBufferedSeq(gene, nuclPos, *seqCache, os);
     }
-    
+
     QByteArray observedTriplet = referenceTriplet;
     if (gene.isComplemented()){
         complTransl->translate(referenceTriplet.data(), referenceTriplet.size());
@@ -301,7 +301,7 @@ void SNPTablesUtils::calcDamageEffectForTrack( const U2VariantTrack& track, U2Db
 
     SequenceQueryCache seqCache(sequenceDbi, track.sequence);
     GeneQueryCache geneCache(featureDbi);
-    
+
 
     QScopedPointer<U2DbiIterator<U2Variant> >  variantIt(variantDbi->getVariants(track.id, U2_REGION_MAX, os));
     CHECK_OP(os, );

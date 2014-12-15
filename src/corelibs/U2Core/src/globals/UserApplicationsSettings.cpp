@@ -47,7 +47,7 @@
 
 
 namespace U2 {
-    
+
 #define SETTINGS_ROOT   QString("/user_apps/")
 #define WEB_BROWSER     QString("web_browser")
 #define USE_DEFAULT_WEB_BROWSER     QString("use_default_web_browser")

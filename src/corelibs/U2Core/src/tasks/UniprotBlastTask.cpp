@@ -529,7 +529,7 @@ void UniprotBlastTask::run() {
     }
 
     ioLog.trace("Download finished.");
-    
+
     //parse output
     QByteArray replyData = replyHandler.getReplyData();
 
@@ -537,7 +537,7 @@ void UniprotBlastTask::run() {
         setError(tr("Reply from the BLAST server is empty. Similar sequences not found"));
         return;
     }
-    
+
 
     XmlUniprotParser parser;
     parser.parse(replyData);
@@ -631,7 +631,7 @@ QList<Task *> UniprotBlastAndLoadDASAnnotations::onSubTaskFinished( Task *subTas
                 if ( uniprotRes.accession.isEmpty( ) ) {
                     continue;
                 }
-                
+
                 foreach ( const DASSource &featureSource, settings.featureSources ) {
                     LoadDasObjectTask *loadAnnotationsTask
                         = new LoadDasObjectTask( uniprotRes.accession, featureSource, DASFeatures );
@@ -678,7 +678,7 @@ DASGroup DASAnnotationData::getDasGroup( const QString& accNumber ){
     if (contains(accNumber)){
         dasGroup = dasData[accNumber];
     }
-    
+
     return dasGroup;
 }
 

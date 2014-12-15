@@ -49,7 +49,7 @@ int SmithWatermanUtil::calcWindowLen(bool transl,
     return windowLen;
 }
 
-float SmithWatermanUtil::calcScoreThreshold(float percent, 
+float SmithWatermanUtil::calcScoreThreshold(float percent,
                                             float scoreItSelf) {
     if (percent < 0 || 100 < percent) {
         percent = 100;
@@ -92,7 +92,7 @@ bool SmithWatermanUtil::removeIdenticalResults(QList<SmithWatermanResult>* lst) 
         while (j < size) {
             const SmithWatermanResult& currItem = results[i];
             const SmithWatermanResult& someItem = results[j];
-            if (currItem.refSubseq == someItem.refSubseq && 
+            if (currItem.refSubseq == someItem.refSubseq &&
                 currItem.strand == someItem.strand) {
                 results.removeAt(j);
                 size--;

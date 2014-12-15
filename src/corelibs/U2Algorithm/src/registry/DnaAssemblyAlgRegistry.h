@@ -42,17 +42,17 @@ class U2ALGORITHM_EXPORT DnaAssemblyAlgRegistry : public QObject {
 public:
     DnaAssemblyAlgRegistry(QObject* pOwn = 0);
     ~DnaAssemblyAlgRegistry();
-    
+
     bool registerAlgorithm(DnaAssemblyAlgorithmEnv* env);
     DnaAssemblyAlgorithmEnv* unregisterAlgorithm(const QString& id);
     DnaAssemblyAlgorithmEnv* getAlgorithm(const QString& id) const;
-    
+
     QStringList getRegisteredAlgorithmIds() const;
     QStringList getRegisteredAlgorithmsWithIndexFileSupport() const;
 private:
     mutable QMutex mutex;
     QMap<QString, DnaAssemblyAlgorithmEnv*> algorithms;
-    
+
     Q_DISABLE_COPY(DnaAssemblyAlgRegistry);
 };
 
@@ -68,7 +68,7 @@ public:
         const QStringList &readsFormats);
 
     virtual ~DnaAssemblyAlgorithmEnv();
-    
+
     const QString& getId()  const {return id;}
     bool isIndexFilesSupported() const {return supportsIndexFiles;}
     bool isDbiSupported() const {return supportsDbi;}

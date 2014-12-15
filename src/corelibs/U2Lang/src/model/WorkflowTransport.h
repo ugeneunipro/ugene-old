@@ -37,17 +37,17 @@ namespace Workflow {
 class U2LANG_EXPORT Message {
 public:
     Message(DataTypePtr _t, const QVariant& d);
-    
+
     int getId() const;
     DataTypePtr getType() const;
     QVariant getData() const;
     bool isEmpty() const;
 
     static Message getEmptyMapMessage();
-    
+
 private:
     static int nextid();
-    
+
 private:
     // message identifier
     int id;
@@ -55,7 +55,7 @@ private:
     DataTypePtr t;
     // data itself
     QVariant data;
-    
+
 }; // Message
 
 /**
@@ -64,7 +64,7 @@ private:
 class U2LANG_EXPORT CommunicationChannel {
 public:
     virtual ~CommunicationChannel() {}
-    
+
     // take message from channel
     virtual Message get() = 0;
     // look at message without getting it out of channel
@@ -79,13 +79,13 @@ public:
     virtual int hasMessage() const = 0;
     // how many messages taken from channel
     virtual int takenMessages() const = 0;
-    // 
+    //
     virtual int hasRoom(const DataType* t = NULL) const = 0;
     // user can set 'ended' flag to channel
     // it means that no other data will be supplied to it
     virtual bool isEnded() const = 0;
     virtual void setEnded() = 0;
-    
+
     // how many messages can be put to channel
     virtual int capacity() const = 0;
     virtual void setCapacity(int) = 0;
@@ -94,7 +94,7 @@ public:
     // indices should be treated inclusively;
     // default indices values should be used for obtaining all the messages in channel
     virtual QQueue<Message> getMessages(int startIndex = 0, int endIndex = -1) const = 0;
-    
+
 }; // CommunicationChannel
 
 /**
@@ -104,10 +104,10 @@ public:
 class U2LANG_EXPORT CommunicationSubject {
 public:
     virtual ~CommunicationSubject() {}
-    
+
     virtual bool addCommunication(const QString& portId, CommunicationChannel* ch) = 0;
     virtual CommunicationChannel* getCommunication(const QString& portId) = 0;
-    
+
 }; // CommunicationSubject
 
 }//Workflow namespace

@@ -37,11 +37,11 @@ class SaveWorkflowSceneTask : public Task {
     Q_OBJECT
 public:
     static const QString SCHEMA_PATHS_SETTINGS_TAG;
-    
+
 public:
     SaveWorkflowSceneTask(Schema *schema, const Metadata& meta);
     virtual void run();
-    
+
 private:
     Schema *schema;
     Metadata meta;
@@ -53,7 +53,7 @@ public:
     LoadWorkflowSceneTask(Schema *schema, Metadata *meta, WorkflowScene *scene, const QString &url, bool noUrl = false);
     virtual void run();
     virtual Task::ReportResult report();
-    
+
 private:
     void resetSceneAndScheme( );
 

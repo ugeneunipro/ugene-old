@@ -67,10 +67,10 @@ public:
     SQLiteDbi();
     ~SQLiteDbi();
 
-    /** 
-    Boots the database up to functional state. 
+    /**
+    Boots the database up to functional state.
     Can be called again after successful shutdown, to re-load the database.
-    special flags 
+    special flags
     "assembly-reads-compression=1" - enables reads compression for assembly. Affects new DB only
     */
     virtual void init(const QHash<QString, QString>& properties, const QVariantMap& persistentData, U2OpStatus& os);
@@ -78,8 +78,8 @@ public:
     /** Stops the database and frees up used resources. */
     virtual QVariantMap shutdown(U2OpStatus& os);
 
-    /** 
-    Ensures that dbi state is synchronized with storage 
+    /**
+    Ensures that dbi state is synchronized with storage
     Return 'true' of operation is successful
     */
     virtual bool flush(U2OpStatus& os);
@@ -94,7 +94,7 @@ public:
     /** Returns database meta-info. Any set of properties to be shown to user */
     virtual QHash<QString, QString> getDbiMetaInfo(U2OpStatus& os) ;
 
-    /** Returns type of the entity referenced by the given ID */    
+    /** Returns type of the entity referenced by the given ID */
     virtual U2DataType getEntityTypeById(const U2DataId& id) const;
 
 
@@ -107,7 +107,7 @@ public:
     virtual U2MsaDbi* getMsaDbi();
 
     virtual U2AssemblyDbi* getAssemblyDbi();
-    
+
     virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi();
 
     virtual U2AttributeDbi* getAttributeDbi();

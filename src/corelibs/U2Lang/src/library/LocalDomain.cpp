@@ -126,7 +126,7 @@ void BaseWorker::bindScriptValues() {
         if(!bus->hasMessage()) { // means that it is bus for output port
             continue;
         }
-        
+
         foreach( Attribute * attribute, actor->getParameters().values() ) {
             assert(attribute != NULL);
             setScriptVariableFromBus(&attribute->getAttributeScript(), bus);
@@ -199,13 +199,13 @@ bool BaseWorker::isReady() {
 void BaseWorker::saveCurrentChannelsStateAndRestorePrevious() {
     foreach(CommunicationChannel *channel, messagesProcessedOnLastTick.keys()) {
         assert(ports.values().contains(dynamic_cast<IntegralBus *>(channel)));
-        
+
         QQueue<Message> currentMessagesBackup;
         while(channel->hasMessage()) {
             currentMessagesBackup.enqueue(channel->get());
         }
         addMessagesFromBackupToAppropriratePort(channel);
-        
+
         messagesProcessedOnLastTick[channel] = currentMessagesBackup;
     }
 }
@@ -263,7 +263,7 @@ Message SimpleQueue::get() {
 }
 
 Message SimpleQueue::look() const {
-    assert(hasMessage()); 
+    assert(hasMessage());
     return que.head();
 }
 
@@ -399,8 +399,8 @@ Worker* LocalDomainFactory::createWorker(Actor* a) {
         assert(bw == a->getPeer());
 #endif
     }
-    
-    return w;    
+
+    return w;
 }
 
 CommunicationChannel* LocalDomainFactory::createConnection(Link* l) {

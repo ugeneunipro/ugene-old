@@ -50,9 +50,9 @@ class U2ALGORITHM_EXPORT MSADistanceAlgorithmFactory : public QObject {
     Q_OBJECT
 public:
     MSADistanceAlgorithmFactory(const QString& algoId, DistanceAlgorithmFlags flags, QObject* p = NULL);
-    
+
     virtual MSADistanceAlgorithm* createAlgorithm(const MAlignment& ma, QObject* parent = NULL) = 0;
-    
+
     QString getId() const {return algorithmId;}
 
     DistanceAlgorithmFlags getFlags() const {return flags;}
@@ -83,7 +83,7 @@ public:
     MSADistanceAlgorithm(MSADistanceAlgorithmFactory* factory, const MAlignment& ma);
 
     int getSimilarity(int row1, int row2);
-    
+
     virtual QString getDescription() const {return factory->getDescription();}
 
     virtual QString getName() const {return factory->getName();}

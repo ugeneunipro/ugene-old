@@ -40,7 +40,7 @@ namespace Workflow {
 /****************************
  * DocActorProto
  *****************************/
-DocActorProto::DocActorProto(const DocumentFormatId& _fid, const Descriptor& _desc, const QList<PortDescriptor*>& _ports, 
+DocActorProto::DocActorProto(const DocumentFormatId& _fid, const Descriptor& _desc, const QList<PortDescriptor*>& _ports,
                              const QList<Attribute*>& _attrs ) : ReadDbObjActorPrototype(_desc, _ports, _attrs), fid(_fid) {
 }
 
@@ -74,7 +74,7 @@ QString DocActorProto::prepareDocumentFilter() {
 /****************************
  * ReadDocActorProto
  *****************************/
-ReadDocActorProto::ReadDocActorProto(const DocumentFormatId& _fid, const Descriptor& _desc, const QList<PortDescriptor*>& _ports, 
+ReadDocActorProto::ReadDocActorProto(const DocumentFormatId& _fid, const Descriptor& _desc, const QList<PortDescriptor*>& _ports,
                                      const QList<Attribute*>& _attrs ) : DocActorProto( _fid, _desc, _ports, _attrs ) {
     attrs << new URLAttribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::URL_DATASETS_TYPE(), true);
     setValidator(new DatasetValidator());
@@ -94,7 +94,7 @@ WriteDocActorProto::WriteDocActorProto(const DocumentFormatId& _fid, const Descr
     construct(canWriteToSharedDB, addValidator, addPortValidator);
 }
 
-WriteDocActorProto::WriteDocActorProto(const Descriptor& _desc, const GObjectType & t, const QList<PortDescriptor*>& _ports, 
+WriteDocActorProto::WriteDocActorProto(const Descriptor& _desc, const GObjectType & t, const QList<PortDescriptor*>& _ports,
     const QString & portId, const QList<Attribute*>& _attrs, bool canWriteToSharedDB, bool addValidator, bool addPortValidator)
     : DocActorProto(_desc, t, _ports, _attrs), outPortId(portId)
 {
@@ -155,11 +155,11 @@ QString WriteGenbankPrompter::composeRichDoc() {
     if (!annName.isEmpty()) {
         annName = tr(" set of annotations from <u>%1</u>").arg(annName);
     }
-    
-    QString url = getScreenedURL( qobject_cast<IntegralBusPort*>(target->getPort(outPortId)), 
+
+    QString url = getScreenedURL( qobject_cast<IntegralBusPort*>(target->getPort(outPortId)),
         BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId() );
     url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
-    
+
     QString data;
     if (seqName.isEmpty() && annName.isEmpty()) {
         QString doc = tr("Write sequence(s) in Genbank format to <u>%1</u>.").arg(url);
@@ -169,7 +169,7 @@ QString WriteGenbankPrompter::composeRichDoc() {
     } else {
         data = tr("each ") + seqName + annName;
     }
-    
+
     return tr("Write %1 in Genbank format, to <u>%2</u>.")
         .arg(data)
         .arg(url);

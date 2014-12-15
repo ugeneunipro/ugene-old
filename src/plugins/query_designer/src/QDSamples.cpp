@@ -36,7 +36,7 @@ Q_DECLARE_METATYPE(QTextDocument*);
 namespace U2 {
 
 QList<QDSample> QDSamplesRegistry::data;
-    
+
 QDLoadSamplesTask::QDLoadSamplesTask(const QStringList& _dirs)
 : Task(tr("Load query samples"), TaskFlag_NoRun) {
     foreach(const QString& s, _dirs) {

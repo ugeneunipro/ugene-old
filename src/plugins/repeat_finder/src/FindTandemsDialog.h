@@ -42,7 +42,7 @@ public:
     FindTandemsDialog(ADVSequenceObjectContext* seq);
 
     static FindTandemsTaskSettings defaultSettings();
-    
+
     virtual void accept();
 
 protected slots:

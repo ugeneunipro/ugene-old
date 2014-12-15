@@ -45,8 +45,8 @@
 
 namespace U2 {
 
-CreateRulerDialogController::CreateRulerDialogController(const QSet<QString>& namesToFilter, 
-                                                         const U2Region& seqRange, int defaultOffset, QWidget* p) 
+CreateRulerDialogController::CreateRulerDialogController(const QSet<QString>& namesToFilter,
+                                                         const U2Region& seqRange, int defaultOffset, QWidget* p)
 : QDialog(p)
 {
     setupUi(this);
@@ -55,11 +55,11 @@ CreateRulerDialogController::CreateRulerDialogController(const QSet<QString>& na
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     setMaximumHeight(layout()->minimumSize().height());
-    
+
     filter = namesToFilter;
 
     sampleLabel->setAutoFillBackground(true);
-   
+
     nameEdit->setText(TextUtils::variate(tr("New ruler"), "_", filter));
 
     spinBox->setMinimum(INT_MIN + seqRange.length);
@@ -67,7 +67,7 @@ CreateRulerDialogController::CreateRulerDialogController(const QSet<QString>& na
     spinBox->setValue(seqRange.contains(defaultOffset+1) ? defaultOffset + 1 : spinBox->minimum());
 
     color = Qt::darkBlue;
-    
+
     updateColorSample();
 
     connect(colorButton, SIGNAL(clicked()), SLOT(sl_colorButtonClicked()));

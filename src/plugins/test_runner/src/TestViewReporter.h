@@ -38,7 +38,7 @@ namespace U2 {
 
     class TVTSItem;
     class TVTestItem;
-    
+
 
     class TestViewReporter : public  MWMDIWindow, Ui::Reporter {
      Q_OBJECT
@@ -54,10 +54,10 @@ namespace U2 {
 
     virtual void setupMDIToolbar(QToolBar* tb);
     virtual void setupViewMenu(QMenu* n);
- 
+
  private:
     const QString prepareHTMLText(QTreeWidget* tree=NULL,int runTime=0);
-     
+
     const QString getHTMLNoTests();
     const QString getHTMLHead();
     const QString getHTMLStyle();
@@ -77,11 +77,11 @@ namespace U2 {
     bool setColorInTestText(QString* inputData=NULL);
 
     QList<TVTestItem*> getFailedTests(TVTSItem* Root);
-    
-   
+
+
     QString curReportText;
     TestViewController* curParent;
-    
+
     QAction* save;
     private slots:
         void sl_save();

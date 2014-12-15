@@ -45,20 +45,20 @@ AssemblyReadsAreaHint::AssemblyReadsAreaHint(QWidget * p): QFrame(p), label(new 
     top->addWidget(label);
     top->setSpacing(0);
     top->setSizeConstraint(QLayout::SetMinimumSize);
-    
+
     setMaximumHeight(layout()->minimumSize().height());
     setMaximumWidth(HINT_MAX_WIDTH);
-    
+
     installEventFilter(this);
     label->installEventFilter(this);
     label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    
+
     {
         QPalette p(palette());
         p.setColor(QPalette::Background, QColor(245, 245, 206));
         setPalette(p);
     }
-    
+
     setWindowFlags(Qt::ToolTip);
     setWindowOpacity(0.8);
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -71,7 +71,7 @@ static QString getCigarString(const QString & ci) {
     if(ci.isEmpty()) {
         return QObject::tr("no information");
     }
-    
+
     QString cigar;
     for(int i = 0; i < ci.size(); ++i) {
         QChar ch = ci.at(i);
@@ -125,7 +125,7 @@ QString getReadNameWrapped(QString n) {
             int pos = sub.lastIndexOf(QRegExp("\\s+"));
             if(pos == -1) {
                 pos = sub.size();
-            } 
+            }
             ret += sub.mid(0, pos) + "<br>";
             n = n.mid(pos);
         } else {

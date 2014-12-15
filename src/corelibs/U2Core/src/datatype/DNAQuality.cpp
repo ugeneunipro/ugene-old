@@ -47,7 +47,7 @@ qint64 DNAQuality::memoryHint() const {
 int DNAQuality::getValue( int pos ) const
 {
     assert(pos >=0 && pos < qualCodes.count());
-    return  type == DNAQualityType_Sanger ? 
+    return  type == DNAQualityType_Sanger ?
         ( (int)qualCodes.at(pos) - 33 ) : ( (int)qualCodes.at(pos) - 64 );
 }
 
@@ -57,7 +57,7 @@ char DNAQuality::encode( int val, DNAQualityType type )
         return (char) ( (val <= 93 ? val : 93) + 33 );
     } else {
         return (char) ( (val <= 62 ? val : 62) + 64 );
-    } 
+    }
 }
 
 QString DNAQuality::getDNAQualityNameByType( DNAQualityType t )

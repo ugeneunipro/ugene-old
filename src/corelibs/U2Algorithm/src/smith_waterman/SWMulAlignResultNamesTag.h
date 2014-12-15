@@ -31,7 +31,7 @@ namespace U2 {
 
 class U2ALGORITHM_EXPORT SWMulAlignResultNamesTag {
 public:
-    inline SWMulAlignResultNamesTag(const QString _shorthand, const QString _label); 
+    inline SWMulAlignResultNamesTag(const QString _shorthand, const QString _label);
     virtual ~SWMulAlignResultNamesTag() {}
     virtual QString expandTag(const QVariant & argument = QVariant ()) const = 0;
 

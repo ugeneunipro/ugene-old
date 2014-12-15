@@ -34,10 +34,10 @@ class WorkflowDumpPlugin : public Plugin {
 public:
     WorkflowDumpPlugin ();
     //~WorkflowDumpPlugin ();
-  
+
 private slots:
     void sl_dumpWorkers();
-    
+
 };
 
 } //namespace

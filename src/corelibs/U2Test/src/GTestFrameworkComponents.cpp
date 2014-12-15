@@ -36,7 +36,7 @@ namespace U2 {
 #define TR_SETTINGS_ROOT QString("test_runner/")
 
 GTestFormatRegistry::GTestFormatRegistry() {
-    formats.append(new XMLTestFormat());    
+    formats.append(new XMLTestFormat());
 }
 
 GTestFormatRegistry::~GTestFormatRegistry() {
@@ -84,7 +84,7 @@ TestFramework::TestFramework() {
 void TestFramework::setTRHelpSections() {
     assert( !helpRegistered );
     helpRegistered = true;
-    
+
     CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
     assert( NULL != cmdLineRegistry );
 
@@ -118,7 +118,7 @@ void TestFramework::setTRHelpSections() {
         CMDLineCoreOptions::TEAMCITY_OUTPUT,
         GTestFormatRegistry::tr( "Output a test's messages to the TeamCity system." ),
         ""); // No full description
-    
+
     cmdLineRegistry->registerCMDLineHelpProvider( testRunnerThreads );
     cmdLineRegistry->registerCMDLineHelpProvider( testTimeoutSection );
     cmdLineRegistry->registerCMDLineHelpProvider( testReport );
@@ -131,7 +131,7 @@ void TestFramework::setTestRunnerSettings() {
     assert( NULL != cmdLineRegistry );
     Settings * settings = AppContext::getSettings();
     assert( NULL != settings );
-    
+
     // TODO: make constants TIME_OUT_VAR and NUM_THREADS
     int timeOut = cmdLineRegistry->getParameterValue( TEST_TIMEOUT_CMD_OPTION ).toInt();
     if (timeOut > 0)  {
