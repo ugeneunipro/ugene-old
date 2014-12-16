@@ -726,13 +726,14 @@ int main(int argc, char **argv)
 
     if(AppContext::getSettings()->getValue(ASK_VESRION_SETTING, true).toBool() && qgetenv("UGENE_GUI_TEST").toInt() != 1) {
         tasks << new CheckUpdatesTask(true);
+
+        TmpDirChecker* tempDirChecker = new TmpDirChecker;
+        tasks << tempDirChecker;
+        QObject::connect(tempDirChecker, SIGNAL(si_checkFailed(QString)), mw, SLOT(sl_tempDirPathCheckFailed(QString)));
     }
     if ( !envList.contains(ENV_UGENE_DEV+QString("=1")) ) {
         tasks << new ShtirlitzStartupTask();
     }
-    TmpDirChecker* tempDirChecker = new TmpDirChecker;
-    tasks << tempDirChecker;
-    QObject::connect(tempDirChecker, SIGNAL(si_checkFailed(QString)), mw, SLOT(sl_tempDirPathCheckFailed(QString)));
 
     mw->registerStartupChecks(tasks);
 

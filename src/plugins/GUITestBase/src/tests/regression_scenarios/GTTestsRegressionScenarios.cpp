@@ -1312,6 +1312,7 @@ GUI_TEST_CLASS_DEFINITION(test_1576) {
     // "Cannot bind convert-alignment-to-sequence:out-sequence to sequences-to-msa:in-sequence"
     GTLogTracer l;
 
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/_regression/1576", "test.uwl");
     GTGlobals::sleep();
 
@@ -1329,6 +1330,7 @@ GUI_TEST_CLASS_DEFINITION(test_1576_1) {
     // "Cannot bind sequences-to-msa:out-msa to convert-alignment-to-sequence:in-msa"
     GTLogTracer l;
 
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/_regression/1576", "test2.uwl");
     GTGlobals::sleep();
 
@@ -2421,6 +2423,7 @@ GUI_TEST_CLASS_DEFINITION(test_1798){
     int progress = text.toInt(&isNumber);
     CHECK_SET_ERR(isNumber, QString("The progress must be a number: %1").arg(text));
     CHECK_SET_ERR(progress >= 0 && progress <= 100, QString("Incorrect progress: %1").arg(progress));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1807) {
@@ -5052,7 +5055,8 @@ GUI_TEST_CLASS_DEFINITION( test_2309 ) {
         GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::NoToAll));
         GTGlobals::sleep(200);
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
-        GTGlobals::sleep(100);
+        GTGlobals::sleep();
+
 }
 GUI_TEST_CLASS_DEFINITION( test_2318 ) {
     class FirstItemPopupChooser : public PopupChooser {
@@ -7562,7 +7566,8 @@ GUI_TEST_CLASS_DEFINITION(test_2866) {
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_2866.ugenedb"));
 
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
-    GTGlobals::sleep(20000);
+    GTGlobals::sleep(5000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsLog::check(os, l);
 }
@@ -8863,6 +8868,7 @@ GUI_TEST_CLASS_DEFINITION(test_3156){
     GTUtilsProjectTreeView::dragAndDrop(os, from, to);
     GTGlobals::sleep(10000);
 //    Expected state: a new folder has appeared in the DB, objects from the document have been imported into it.
+    to = GTUtilsProjectTreeView::findIndex(os, "test_3156");
     GTUtilsProjectTreeView::checkItem(os, "murine.gb", to);
 }
 
@@ -11863,8 +11869,15 @@ GUI_TEST_CLASS_DEFINITION(test_3778) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
     //2. Open Circular View.
-    GTWidget::click(os, GTWidget::findWidget(os, "globalToggleViewAction_widget"));
-
+    QWidget* button = GTWidget::findWidget(os, "globalToggleViewAction_widget");
+    if(!button->isVisible()){
+        QWidget* ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button", GTWidget::findWidget(os, "mwtoolbar_activemdi"), GTGlobals::FindOptions(false));
+        if(ext_button != NULL){
+            GTWidget::click(os, ext_button);
+        }
+        GTGlobals::sleep(500);
+    }
+    GTWidget::click(os, button);
     //3. Context menu -> Export -> Save circular view as image.
     //Expected state: the "Export Image" dialog appears.
     //4. Press "Export".
@@ -11881,7 +11894,7 @@ GUI_TEST_CLASS_DEFINITION(test_3778) {
     };
     GTUtilsDialog::waitForDialog(os, new CircularViewExportImage(os, new Scenario()));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< ADV_MENU_EXPORT << "Save circular view as image", GTGlobals::UseMouse));
-    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3779) {

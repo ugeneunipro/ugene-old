@@ -54,6 +54,7 @@
 #include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsPhyTree.h"
 #include "GTUtilsProjectTreeView.h"
+#include "GTUtilsTaskTreeView.h"
 
 #include <U2Core/AppContext.h>
 
@@ -1846,7 +1847,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0001){
     setConsensusOutputPath(os, sandBoxDir + fileName);
 //    4. Press export button
     GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
-    GTGlobals::sleep(300);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: file rewrited
     int size = GTFile::getSize(os, sandBoxDir + fileName);
     CHECK_SET_ERR(size == 604, QString("unexpected file size %1").arg(size));
@@ -1929,6 +1930,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0004){
     };
     GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, new exportConsensusTest0004Filler()));
     GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QLineEdit* pathLe = GTWidget::findExactWidget<QLineEdit*>(os, "pathLe");
     QString pathLeText = pathLe->text();

@@ -554,7 +554,7 @@ GUI_TEST_CLASS_DEFINITION(proj_test_0003) {
     GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
     CHECK_OP(os, );
 
-    const QModelIndex dirItem = GTUtilsProjectTreeView::findIndex(os, "proj_test_0003");
+    QModelIndex dirItem = GTUtilsProjectTreeView::findIndex(os, "proj_test_0003");
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "proj_test_0003"));
     GTMouseDriver::doubleClick(os);
 
@@ -570,6 +570,7 @@ GUI_TEST_CLASS_DEFINITION(proj_test_0003) {
 
     GTUtilsProjectTreeView::rename(os, subfolderItem.data().toString(), "pt0003_new_name");
     CHECK_OP(os, );
+    dirItem = GTUtilsProjectTreeView::findIndex(os, "proj_test_0003");
     subfolderItem = model->index(0, 0, dirItem);
     QString subfolderName = subfolderItem.data().toString();
     CHECK_SET_ERR("pt0003_new_name" == subfolderName, "Renaming failed");

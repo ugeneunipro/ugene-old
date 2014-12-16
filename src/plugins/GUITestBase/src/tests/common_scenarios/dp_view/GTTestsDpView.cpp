@@ -106,14 +106,14 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){
 }
 GUI_TEST_CLASS_DEFINITION(test_0011_2){//commit DotPlotWidget.cpp exitButton
 //DIFFERENCE: EXITBUTTON IS USED
-    QMenu *menu;
-    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Build dotplot"));
 
     GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 8, 80,false,false));
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
+    GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTGlobals::sleep(500);
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
     GTWidget::click(os, GTWidget::findWidget(os, "exitButton"));

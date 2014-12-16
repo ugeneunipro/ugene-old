@@ -119,6 +119,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 //2. Activate Information tab on Options panel at the right edge of UGENE window. Expand Dinucleotides
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+    GTGlobals::sleep(500);
 
     QWidget *w=GTWidget::findWidget(os,"Dinucleotides");
     GTWidget::click(os, w);

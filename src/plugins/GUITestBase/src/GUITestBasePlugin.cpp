@@ -1407,7 +1407,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0002);//"Restore when this tool becomes available");
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0003);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0004);
-    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0005);
+    REGISTER_TEST_IGNORED(GUITest_Bowtie2::test_0005, "UGENE-3851");
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0006);
 
 /////////////////////////////////////////////////////////////////////////
@@ -1688,7 +1688,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0005);
-    REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0006);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_in_silico_pcr::test_0006, "UGENE-3854");
     REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0008);
 
