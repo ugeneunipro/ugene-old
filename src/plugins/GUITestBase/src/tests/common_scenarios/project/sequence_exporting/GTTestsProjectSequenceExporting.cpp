@@ -19,17 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTreeView>
-#else
-#include <QtWidgets/QTreeView>
-#endif
+#include <QApplication>
+#include <QCheckBox>
+#include <QTreeView>
 
 #include "GTTestsProjectSequenceExporting.h"
 #include "api/GTGlobals.h"
 #include "api/GTFileDialog.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTComboBox.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTFile.h"
@@ -58,7 +56,7 @@
 #include <U2Core/AppContext.h>
 #include <QPlainTextEdit>
 
-namespace U2{
+namespace U2 {
 
 namespace GUITest_common_scenarios_project_sequence_exporting {
 
@@ -310,6 +308,43 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
     GTGlobals::sleep(500);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0008) {
+    class CustomExportSelectedRegion : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+
+            QComboBox *formatCombo = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "formatCombo", dialog));
+            QCheckBox *withAnnotationsBox = qobject_cast<QCheckBox *>(GTWidget::findWidget(os, "withAnnotationsBox", dialog));
+
+            CHECK_SET_ERR(!withAnnotationsBox->isEnabled(), "Export with annotations flag is enabled unexpectedly");
+            CHECK_SET_ERR(!withAnnotationsBox->isChecked(), "Export with annotations flag is checked unexpectedly");
+
+            GTComboBox::setIndexWithText(os, formatCombo, "Genbank");
+            CHECK_SET_ERR(withAnnotationsBox->isEnabled(), "Export with annotations flag is disabled unexpectedly");
+            CHECK_SET_ERR(withAnnotationsBox->isChecked(), "Export with annotations flag is unchecked unexpectedly");
+
+            GTComboBox::setIndexWithText(os, formatCombo, "FASTQ");
+            CHECK_SET_ERR(!withAnnotationsBox->isEnabled(), "Export with annotations flag is enabled unexpectedly");
+            CHECK_SET_ERR(!withAnnotationsBox->isChecked(), "Export with annotations flag is checked unexpectedly");
+
+            GTComboBox::setIndexWithText(os, formatCombo, "GFF");
+            CHECK_SET_ERR(withAnnotationsBox->isEnabled(), "Export with annotations flag is disabled unexpectedly");
+            CHECK_SET_ERR(withAnnotationsBox->isChecked(), "Export with annotations flag is unchecked unexpectedly");
+
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox *>(GTWidget::findWidget(os, "buttonBox", dialog));
+            GTWidget::click(os, box->button(QDialogButtonBox::Cancel));
+        }
+    };
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, new CustomExportSelectedRegion()));
+    GTMouseDriver::click(os, Qt::RightButton);
 }
 
 }

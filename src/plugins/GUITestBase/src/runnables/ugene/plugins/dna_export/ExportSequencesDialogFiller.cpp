@@ -43,8 +43,9 @@ namespace U2 {
 QString ExportSelectedRegionFiller::defaultExportPath = "";
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportSelectedRegionFiller"
-ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method, bool translate):
-Filler(_os, "U2__ExportSequencesDialog"), name(_name), translate(translate), useMethod(method) {
+ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method, bool translate)
+    : Filler(_os, "U2__ExportSequencesDialog"), name(_name), translate(translate), useMethod(method)
+{
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (__path.at(__path.count() - 1) != '/') {
         __path += '/';
@@ -53,8 +54,14 @@ Filler(_os, "U2__ExportSequencesDialog"), name(_name), translate(translate), use
     path = __path;
 }
 
-#define GT_METHOD_NAME "run"
-void ExportSelectedRegionFiller::run()
+ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &os, CustomScenario *customScenario)
+    : Filler(os, "U2__ExportSequencesDialog", customScenario)
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void ExportSelectedRegionFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

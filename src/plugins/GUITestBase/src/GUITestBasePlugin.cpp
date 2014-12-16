@@ -765,6 +765,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0008);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/from project view/

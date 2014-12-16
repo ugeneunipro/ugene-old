@@ -19,31 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportSequencesDialog.h"
+#include <QPushButton>
+#include <QMessageBox>
+#include <QTreeWidget>
 
 #include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
 #include <U2Core/BaseDocumentFormats.h>
-
-#include <U2Gui/DialogUtils.h>
-
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/SaveDocumentGroupController.h>
-#include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
-#include <QtGui/QTreeWidget>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QTreeWidget>
-#endif
-
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/L10n.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/SaveDocumentGroupController.h>
+
+#include "ExportSequencesDialog.h"
 
 #define SETTINGS_ROOT QString("dna_export/")
 
@@ -181,21 +174,19 @@ ExportSequencesDialog::ExportSequencesDialog( bool m, bool allowComplement, bool
 
     int height = layout()->minimumSize().height();
     setMaximumHeight(height);
-
 }
 
 
 void ExportSequencesDialog::sl_formatChanged(int) {
-    //Q_UNUSED(index);
     QString text = saveGroupContoller->getFormatIdToSave();
     DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
-    assert(dfr);
-    if(dfr->getFormatById(text)->getSupportedObjectTypes().contains(GObjectTypes::ANNOTATION_TABLE)) {
-    //if(text == BaseDocumentFormats::PLAIN_GENBANK) {
+    SAFE_POINT(NULL != dfr, "Invalid document format registry", );
+    if (dfr->getFormatById(text)->getSupportedObjectTypes().contains(GObjectTypes::ANNOTATION_TABLE)) {
         withAnnotationsBox->setEnabled(true);
-    }
-    else {
+        withAnnotationsBox->setChecked(true);
+    } else {
         withAnnotationsBox->setEnabled(false);
+        withAnnotationsBox->setChecked(false);
     }
 }
 
