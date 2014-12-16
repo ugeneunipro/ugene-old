@@ -127,7 +127,7 @@ Task * WriteAnnotationsWorker::tick() {
             resultPath = context->absolutePath(resultPath);
         }
 
-        fetchIncomingAnnotations(qm, resultPath, storage);
+        fetchIncomingAnnotations(qm, resultPath);
     }
 
     bool done = annotationsPort->isEnded();
@@ -172,7 +172,7 @@ QString WriteAnnotationsWorker::getAnnotationName() const {
     return objName;
 }
 
-void WriteAnnotationsWorker::fetchIncomingAnnotations(const QVariantMap &incomingData, const QString &resultPath, DataStorage storage) {
+void WriteAnnotationsWorker::fetchIncomingAnnotations(const QVariantMap &incomingData, const QString &resultPath) {
     const QVariant annVar = incomingData[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
     QList<AnnotationTableObject *> annTables = StorageUtils::getAnnotationTableObjects(context->getDataStorage(), annVar);
 

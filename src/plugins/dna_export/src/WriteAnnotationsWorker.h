@@ -62,7 +62,7 @@ private:
     Task * takeParameters(QString &formatId, SaveDocFlags &fl, QString &resultPath, U2DbiRef &dstDbiRef, DataStorage &storage);
     QString fetchIncomingSequenceName(const QVariantMap &incomingData);
     QString getAnnotationName() const;
-    void fetchIncomingAnnotations(const QVariantMap &incomingData, const QString &resultPath, DataStorage storage);
+    void fetchIncomingAnnotations(const QVariantMap &incomingData, const QString &resultPath);
 
     bool shouldAnnotationTablesBeMerged() const;
     AnnotationTableObject *mergeAnnotationTables(const QList<AnnotationTableObject *> &annTables, const QString &mergedTableName) const;

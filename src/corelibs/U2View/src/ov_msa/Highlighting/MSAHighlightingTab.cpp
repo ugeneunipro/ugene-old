@@ -143,7 +143,7 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m)
     connect(m, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_updateHint()));
 
     connect(exportHighlightning, SIGNAL(clicked()), SLOT(sl_exportHighlightningClicked()));
-    connect(threshold, SIGNAL(valueChanged(int)), SLOT(sl_sliderValueChanged(int)));
+    connect(threshold, SIGNAL(valueChanged(int)), SLOT(sl_sliderValueChanged()));
 
     sl_updateHint();
 
@@ -216,7 +216,7 @@ void MSAHighlightingTab::sl_exportHighlightningClicked(){
     msa->exportHighlighted();
 }
 
-void MSAHighlightingTab::sl_sliderValueChanged( int val ){
+void MSAHighlightingTab::sl_sliderValueChanged() {
     thresholdLabel->setText(tr("Threshold: %1%").arg(threshold->value()));
     MSAHighlightingScheme *s = seqArea->getCurrentHighlightingScheme();
     s->setThreshold(threshold->value());

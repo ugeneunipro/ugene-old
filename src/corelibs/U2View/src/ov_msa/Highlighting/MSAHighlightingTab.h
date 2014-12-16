@@ -47,7 +47,7 @@ private slots:
     void sl_sync();
     void sl_updateHint();
     void sl_exportHighlightningClicked();
-    void sl_sliderValueChanged(int val);
+    void sl_sliderValueChanged();
 
 private:
     QWidget* createColorGroup();

@@ -217,7 +217,7 @@ protected:
 class U2DESIGNER_EXPORT ComboBoxEditableDelegate : public PropertyDelegate {
     Q_OBJECT
 public:
-    ComboBoxEditableDelegate(const QVariantMap& items, bool _isPath = false, QObject *parent = 0) : PropertyDelegate(parent), items(items) {}
+    ComboBoxEditableDelegate(const QVariantMap& items, QObject *parent = 0) : PropertyDelegate(parent), items(items) {}
     virtual ~ComboBoxEditableDelegate() {}
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,

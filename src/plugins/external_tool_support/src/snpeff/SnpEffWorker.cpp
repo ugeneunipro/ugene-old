@@ -335,7 +335,7 @@ void SnpEffWorker::cleanup(){
 }
 
 namespace {
-    QString getTargetTaskUrl(Task *task) {
+    QString getTargetTaskUrl(Task * /*task*/) {
 
         /*
         SnpEffTask *curtask = dynamic_cast<SnpEffTask*>(task);
@@ -358,7 +358,7 @@ void SnpEffWorker::sl_taskFinished(Task *task) {
     monitor()->addOutputFile(url, getActorId());
 }
 
-QString SnpEffWorker::getTargetName (const QString &fileUrl, const QString &outDir){
+QString SnpEffWorker::getTargetName (const QString & /*fileUrl*/, const QString & /*outDir*/){
     /*
     QString name = getValue<QString>(OUT_NAME_ID);
 

@@ -96,7 +96,7 @@ void SnpEffTask::run(){
     resultUrl = settings.outDir;
 }
 
-QStringList SnpEffTask::getParameters(U2OpStatus & os){
+QStringList SnpEffTask::getParameters(U2OpStatus & /*os*/){
     QStringList res;
 
     /*res << GUrlUtils::getQuotedString(settings.inputUrl);

@@ -345,9 +345,9 @@ public:
     MSAHighlightingScheme(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o);
     virtual void process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow);
     MSAHighlightingSchemeFactory* getFactory() const {return factory;}
-    void setUseDots(bool b){useDots = b;};
-    bool getUseDots() const {return useDots;};
-    virtual void setThreshold(int thresholdNew){};
+    void setUseDots(bool b) { useDots = b; }
+    bool getUseDots() const { return useDots; }
+    virtual void setThreshold(int thresholdNew) { Q_UNUSED(thresholdNew); }
 
     static QString EMPTY_NUCL;
     static QString EMPTY_AMINO;
