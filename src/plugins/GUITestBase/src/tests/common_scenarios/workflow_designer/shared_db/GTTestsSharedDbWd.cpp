@@ -230,7 +230,7 @@ GUI_TEST_CLASS_DEFINITION(read_gui_test_0008) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "ugene_gui_test", "export_test_0007"));
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "ugene_gui_test", "export_tests"));
     GTWidget::click(os, addFromDbButton);
 
     QListWidget *datasetList = qobject_cast<QListWidget *>(GTWidget::findWidget(os, "itemsArea"));
@@ -238,7 +238,7 @@ GUI_TEST_CLASS_DEFINITION(read_gui_test_0008) {
 
     CHECK_SET_ERR(2 == datasetList->count(), "Invalid dataset item count");
     CHECK_SET_ERR("pt0005_COI" == datasetList->item(0)->text(), "Invalid dataset item name");
-    CHECK_SET_ERR("export_test_0007" == datasetList->item(1)->text(), "Invalid dataset item name");
+    CHECK_SET_ERR("export_tests" == datasetList->item(1)->text(), "Invalid dataset item name");
 }
 
 GUI_TEST_CLASS_DEFINITION(read_gui_test_0009) {

@@ -129,7 +129,7 @@ const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
     FK(GBFeatureKey_sig_peptide,      "sig_peptide",      cl("000000"), false, QObject::tr("Signal peptide coding region"));
     FK(GBFeatureKey_snRNA,            "snRNA",            cl("000000"), false, QObject::tr("Small nuclear RNA"));
     FK(GBFeatureKey_source,           "source",           cl("cccccc"), false, QObject::tr("Identifies the biological source of the specified span of the sequence"));
-    FK(GBFeatureKey_stem_loop,        "stem_loop",        cl("000000"), false, QObject::tr("Hair-pin loop sQObject::tructure in DNA or RNA"));
+    FK(GBFeatureKey_stem_loop,        "stem_loop",        cl("000000"), false, QObject::tr("Hair-pin loop structure in DNA or RNA"));
     FK(GBFeatureKey_STS,              "STS",              cl("00dcdc"), false, QObject::tr("Sequence Tagged Site; operationally unique sequence that identifies the combination of primer spans used in a PCR assay"));
     FK(GBFeatureKey_TATA_signal,      "TATA_signal",      cl("000000"), false, QObject::tr("`TATA box' in eukaryotic promoters"));
     FK(GBFeatureKey_telomere,         "telomere",         cl("000000"), false, QObject::tr("Region of biological interest identified as a telomere and which has been experimentally characterized"));
