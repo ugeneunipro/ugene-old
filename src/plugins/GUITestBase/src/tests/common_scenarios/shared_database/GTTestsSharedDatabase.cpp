@@ -780,6 +780,22 @@ GUI_TEST_CLASS_DEFINITION(proj_test_0008) {
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
 
+GUI_TEST_CLASS_DEFINITION(proj_test_0009) {
+    // check objects order
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    const QModelIndex et0002_features = GTUtilsProjectTreeView::findIndex(os, "et0002_features");
+    const QModelIndex et0004_assembly = GTUtilsProjectTreeView::findIndex(os, "et0004_assembly");
+    const QModelIndex et0003_alignment = GTUtilsProjectTreeView::findIndex(os, "et0003_alignment");
+    const QModelIndex et0001_sequence = GTUtilsProjectTreeView::findIndex(os, "et0001_sequence");
+    const QModelIndex et0005_variations = GTUtilsProjectTreeView::findIndex(os, "et0005_variations");
+
+    CHECK_SET_ERR(et0002_features.row() < et0004_assembly.row(), "Unexpected objects order in project");
+    CHECK_SET_ERR(et0004_assembly.row() < et0003_alignment.row(), "Unexpected objects order in project");
+    CHECK_SET_ERR(et0003_alignment.row() < et0001_sequence.row(), "Unexpected objects order in project");
+    CHECK_SET_ERR(et0001_sequence.row() < et0005_variations.row(), "Unexpected objects order in project");
+}
+
 GUI_TEST_CLASS_DEFINITION(import_test_0001) {
 //    Object drag'n'drop
 //    1. Connect to the "ugene_gui_test" database.
