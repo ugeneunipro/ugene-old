@@ -47,6 +47,7 @@ QVector<U2Region> U2Region::circularContainingRegion(QVector<U2Region> &_regions
     CHECK(_regions.size() >= 2, _regions);
 
     QVector<U2Region> regions = join(_regions);
+    CHECK(regions.size() >= 2, regions);
     U2Region maxInterval(regions[0].endPos(), regions[1].startPos - regions[0].endPos());
     for (int i = 1; i < regions.size() - 1; i++) {
         const U2Region& r0 = regions[i];

@@ -929,28 +929,27 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
     QVector<U2Region> location = aData.getRegions();
     qStableSort(location.begin(), location.end(), isGreater);
 
-    U2Region generalLocation(location.first().startPos, location.last().startPos - location.first().startPos + location.last().length);
-
     int yLevel = 0;
     bool yFind = false;
-    for(;yLevel<regionY.count();yLevel++) {
+    for(; yLevel < regionY.count(); yLevel++) {
         bool intersects = false;
         foreach(const U2Region& r, regionY[yLevel]) {
-            if(r.intersects(generalLocation)) {
-                intersects = true;
-                break;
+            foreach (const U2Region& locRegion, location) {
+                if (r.intersects(locRegion)) {
+                    intersects = true;
+                }
             }
         }
         if(!intersects) {
             QVector<U2Region>& rY = regionY[yLevel];
-            rY.append(generalLocation);
+            rY << location;
             yFind = true;
             break;
         }
     }
     if(!yFind) {
         QVector<U2Region> newLevel;
-        newLevel.append(generalLocation);
+        newLevel << location;
         regionY.append(newLevel);
     }
     annotationYLevel[a] = yLevel;
