@@ -155,6 +155,7 @@
 #include <U2View/MSAEditorNameList.h>
 
 #include <QProgressBar>
+#include <QTextEdit>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QHeaderView>
@@ -11936,6 +11937,34 @@ GUI_TEST_CLASS_DEFINITION(test_3816) {
     GTFileDialog::openFile(os, testDir + "_common_data/newick/", "arb-silva.nwk");
     GTUtilsProjectTreeView::findIndex(os, "arb-silva.nwk", QModelIndex());
     GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3817) {
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+
+    GTKeyboardDriver::keySequence(os, "ACTGCT");
+
+    QComboBox *boxRegion = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxRegion"));
+    GTWidget::click(os, boxRegion);
+
+    GTComboBox::setIndexWithText(os, boxRegion, "Custom region");
+
+    QLineEdit *editStart = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editStart"));
+    QLineEdit *editEnd = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editEnd"));
+
+    GTLineEdit::setText(os, editStart, "123");
+    GTLineEdit::setText(os, editEnd, "1000");
+
+    GTComboBox::setIndexWithText(os, boxRegion, "Whole sequence");
+    CHECK_SET_ERR(!editStart->isVisible() && !editEnd->isVisible(), "Region boundary fields are unexpectedly visible");
+
+    GTComboBox::setIndexWithText(os, boxRegion, "Custom region");
+    CHECK_SET_ERR(editStart->isVisible() && editEnd->isVisible(), "Region boundary fields are unexpectedly invisible");
+
+    GTComboBox::setIndexWithText(os, boxRegion, "Selected region", false);
+    CHECK_SET_ERR(boxRegion->currentText() == "Custom region", QString("Region type value is unexpected: %1. Expected: Custom region").arg(boxRegion->currentText()));
 }
 
 } // GUITest_regression_scenarios namespace

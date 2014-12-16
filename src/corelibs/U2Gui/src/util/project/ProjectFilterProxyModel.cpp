@@ -127,8 +127,18 @@ bool ProjectFilterProxyModel::lessThan(const QModelIndex &left, const QModelInde
         }
     }
 
+    if (leftType == rightType && leftType == ProjectViewModel::DOCUMENT) { // keep unloaded documents in the bottom of list
+        const bool leftDocUnloaded = !srcModel->toDocument(left)->isLoaded();
+        const bool rightDocUnloaded = !srcModel->toDocument(right)->isLoaded();
+        if (leftDocUnloaded && !rightDocUnloaded) {
+            return false;
+        } else if (!leftDocUnloaded && rightDocUnloaded) {
+            return true;
+        }
+    }
+
     if (leftType == rightType) {
-        return leftName < rightName;
+        return QString::compare(leftName, rightName, Qt::CaseInsensitive) < 0;
     } else if (ProjectViewModel::FOLDER == leftType && ProjectViewModel::OBJECT == rightType) {
         return true;
     } else if (ProjectViewModel::OBJECT == leftType && ProjectViewModel::FOLDER == rightType) {

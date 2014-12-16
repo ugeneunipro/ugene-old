@@ -43,12 +43,6 @@
 
 namespace U2 {
 
-namespace {
-    bool compareGObjectsByName(const GObject *obj1, const GObject *obj2) {
-        return obj1->getGObjectName() < obj2->getGObjectName();
-    }
-}
-
 const QString ProjectViewModel::MODIFIED_ITEM_COLOR = "#0032a0";
 
 ProjectViewModel::ProjectViewModel(const ProjectTreeControllerModeSettings &settings, QObject *parent)
