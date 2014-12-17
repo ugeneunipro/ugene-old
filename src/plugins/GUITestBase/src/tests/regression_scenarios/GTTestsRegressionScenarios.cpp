@@ -1942,6 +1942,23 @@ GUI_TEST_CLASS_DEFINITION(test_1673_3) {
     CHECK_SET_ERR(edit != NULL, "Text edit is not in focus");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1673_4) {
+    //1. Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+
+    //2. Open "Annotations Highlighting" tab of the Options Panel, press "Ctrl+F"
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_ANNOT_HIGHLIGHT"));
+    GTGlobals::sleep(500);
+    GTWidget::findWidget(os, "prevAnnotationButton");
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+
+    //Expected result: "Search in Sequence" tab has been opened, other tabs have been closed
+    QWidget *prevButton = GTWidget::findWidget(os, "prevAnnotationButton", NULL, GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(NULL == prevButton, "Annotations options panel is not closed");
+    GTWidget::findWidget(os, "FindPatternForm");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1680) {
 //    For Mac only
 
