@@ -1438,6 +1438,37 @@ GUI_TEST_CLASS_DEFINITION(test_1586) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1587) {
+/*  1. Open WD and create Read sequence -> Write sequence scheme
+    2. Set any output file
+    3. Use human_t1 and any image file
+    4. Run the scheme
+
+    Expected state: human_t1 is written to the output file, there is a message in log about unsupported doucment format for the image file. The scheme is finished with successful report
+    Bug state: the scheme is finished with the error report
+*/
+    GTLogTracer l;
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    WorkflowProcessItem *reader = GTUtilsWorkflowDesigner::addElement(os, "Read sequence");
+    WorkflowProcessItem *writer = GTUtilsWorkflowDesigner::addElement(os, "Write sequence");
+    GTUtilsWorkflowDesigner::connect(os, reader, writer);
+
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read sequence", testDir + "_common_data/regression/1587/some_image.png");
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read sequence", dataDir + "samples/FASTA/human_T1.fa");
+
+    GTUtilsWorkflowDesigner::click(os, "Write sequence");
+    QFile outputFile(sandBoxDir + "out.fa");
+    const QString outputFilePath = QFileInfo(outputFile).absoluteFilePath();
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", outputFilePath, GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    CHECK_SET_ERR(l.checkMessage("Unsupported document format"), "The image file has been processed by Workflow Designer");
+    CHECK_SET_ERR(outputFile.exists() && outputFile.size() > 0, "Workflow output file is invalid");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1597 ) {
 
     // 1. Open a sequence in UGENE.
