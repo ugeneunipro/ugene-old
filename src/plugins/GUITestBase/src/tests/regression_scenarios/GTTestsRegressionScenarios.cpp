@@ -1257,6 +1257,20 @@ GUI_TEST_CLASS_DEFINITION( test_1568 ) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1573) {
+    //1. Open "_common_data/scenarios/msa/ma.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma.aln");
+
+    //2. Select some sequences in the NameList area.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 2), QPoint(2, 6));
+
+    //3. Click to the any sequence in this selection (in the NameList area).
+    GTUtilsMSAEditorSequenceArea::selectSequence(os, "Montana_montana");
+
+    //Expected state: only one sequence is selected (the clicked one).
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(0, 4), QPoint(11, 4)));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1574){
 //    1. Open "_common_data/scenarios/msa/ma.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma.aln");
