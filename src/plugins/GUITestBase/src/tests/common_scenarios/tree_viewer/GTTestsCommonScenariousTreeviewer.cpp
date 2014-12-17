@@ -982,7 +982,7 @@ GUI_TEST_CLASS_DEFINITION( test_0023 ) {
     GTGlobals::sleep( 1000 );
 
     optionsPanelWidget = GTWidget::findWidget( os, "OP_MSA_ADD_TREE_WIDGET" );
-    //GTWidget::click( os, optionsPanelWidget );
+    GTWidget::click( os, optionsPanelWidget );
 
     optionsPanelContainer = GTWidget::findWidget( os, "AddTreeWidget" );
 

@@ -2311,6 +2311,7 @@ GUI_TEST_CLASS_DEFINITION(del_test_0003) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, rbItem));
     CHECK_SET_ERR(0 == model->rowCount(rbItem), "Recycle bin is not empty");
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(export_test_0001) {

@@ -192,7 +192,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 
         GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(40,17));
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
-        GTGlobals::sleep(200);
+        GTGlobals::sleep(500);
 
         //checking images changed
         QPixmap pixmapSimple2 = QPixmap::grabWidget(overviewSimple, QRect(QPoint(0,0), QPoint(200,overviewSimple->rect().height())));

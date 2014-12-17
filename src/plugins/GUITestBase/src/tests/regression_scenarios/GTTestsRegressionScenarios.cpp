@@ -7241,7 +7241,13 @@ GUI_TEST_CLASS_DEFINITION(test_2773) {
     // out: some/valid/path
     // 3. run sheme.
     // Expected state: UGENE doesn't crash, error message appears.
-    QFile::copy(testDir + "_common_data/cmdline/_proto/translateTest.usa", dataDir + "workflow_samples/users/translateTest.usa");
+
+    //need to copy enlement to data dir
+#ifdef Q_OS_MAC
+    QFile::copy(testDir + "_common_data/cmdline/_proto/translateTest.usa", "data/workflow_samples/users/translateTest.usa");
+#else
+    QFile::copy(testDir + "_common_data/cmdline/_proto/translateTest.usa", "../../data/workflow_samples/users/translateTest.usa");
+#endif
     GTLogTracer l;
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/cmdline/custom-script-worker-functions/translateTest/", "translateTest.uwl");
@@ -9404,9 +9410,9 @@ GUI_TEST_CLASS_DEFINITION(test_3263){
     QRect geometry = CV_ADV_single_sequence_widget_1->geometry();
     for(int i = 0; i<5; i++){
         GTWidget::click(os, cvButton1);
-        GTGlobals::sleep(500);
+        GTGlobals::sleep(1000);
         GTWidget::click(os, cvButton1);
-        GTGlobals::sleep(500);
+        GTGlobals::sleep(1000);
         CHECK_SET_ERR(geometry == CV_ADV_single_sequence_widget_1->geometry(), "geometry changed");
     }
 //    See the result on the attached screenshot.
