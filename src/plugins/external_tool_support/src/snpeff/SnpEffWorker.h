@@ -49,6 +49,8 @@ public:
     Task * tick();
     void cleanup();
 
+    static const QString BASE_SNPEFF_SUBDIR;
+
     static const QString INPUT_PORT;
     static const QString OUTPUT_PORT;
     static const QString OUT_MODE_ID;

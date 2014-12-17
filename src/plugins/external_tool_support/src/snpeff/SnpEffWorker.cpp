@@ -53,6 +53,8 @@
 namespace U2 {
 namespace LocalWorkflow {
 
+
+const QString SnpEffWorker::BASE_SNPEFF_SUBDIR = "snpeff";
 const QString SnpEffWorker::INPUT_PORT = "in-file";
 const QString SnpEffWorker::OUTPUT_PORT = "out-file";
 const QString SnpEffWorker::OUT_MODE_ID = "out-mode";
@@ -68,7 +70,6 @@ const QString SnpEffWorker::FILTER_OUTPUT = "filter-out";
 const QString SnpEffWorker::CHR_POS = "chr-pos";
 
 const QString SnpEffFactory::ACTOR_ID("seff");
-
 
 ////////////////////////////////////////////////
 // SnpEffPrompter
@@ -87,16 +88,6 @@ QString SnpEffPrompter::composeRichDoc() {
 //SnpEffFactory
 void SnpEffFactory::init() {
     //init data path
-    /*
-    U2DataPath* dataPath = NULL;
-    U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
-    if (dpr){
-        U2DataPath* dp = dpr->getDataPathByName(GENOMES_DATA_NAME);
-        if (dp && dp->isValid()){
-            dataPath = dp;
-        }
-    }
-    */
     Descriptor desc( ACTOR_ID, SnpEffWorker::tr("SnpEff annotation and filtration"),
         SnpEffWorker::tr("Annotates and filters variations with SnpEff.") );
 
@@ -127,27 +118,6 @@ void SnpEffFactory::init() {
         Descriptor customDir(SnpEffWorker::CUSTOM_DIR_ID, SnpEffWorker::tr("Custom directory"),
             SnpEffWorker::tr("Select the custom output directory."));
 
-        /*
-        Descriptor genomeAttrDesc(SnpEffWorker::GENOME, SnpEffWorker::tr("Genome"),
-            SnpEffWorker::tr("File with genome length."));
-
-        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
-        Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
-        customDirAttr->addRelation(new VisibilityRelation(SnpEffWorker::OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
-        a << customDirAttr;
-        Attribute* genomeAttr = NULL;
-        if (dataPath){
-            const QList<QString>& dataNames = dataPath->getDataNames();
-            if (!dataNames.isEmpty()){
-                genomeAttr = new Attribute(genomeAttrDesc, BaseTypes::STRING_TYPE(), true, dataPath->getPathByName(dataNames.first()));
-            }else{
-                genomeAttr = new Attribute(genomeAttrDesc, BaseTypes::STRING_TYPE(), true);
-            }
-        }else{
-            genomeAttr = new Attribute(genomeAttrDesc, BaseTypes::STRING_TYPE(), true);
-        }
-        a << genomeAttr;*/
-
         Descriptor inpFormat(SnpEffWorker::INPUT_FORMAT, SnpEffWorker::tr("Input format"),
             SnpEffWorker::tr("Select the input format of variations."));
 
@@ -174,11 +144,11 @@ void SnpEffFactory::init() {
         customDirAttr->addRelation(new VisibilityRelation(SnpEffWorker::OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
         a << customDirAttr;
 
-        a << new Attribute( inpFormat, BaseTypes::STRING_TYPE(), false, "VCF");
-        a << new Attribute( outFormat, BaseTypes::STRING_TYPE(), false, "VCF");
+        a << new Attribute( inpFormat, BaseTypes::STRING_TYPE(), false, "vcf");
+        a << new Attribute( outFormat, BaseTypes::STRING_TYPE(), false, "vcf");
         a << new Attribute( chrPos, BaseTypes::STRING_TYPE(), false, "");
-        a << new Attribute( genome, BaseTypes::STRING_TYPE(), false, "");
-        a << new Attribute( updownLength, BaseTypes::STRING_TYPE(), false, "");
+        a << new Attribute( genome, BaseTypes::STRING_TYPE(), false, "hg19");
+        a << new Attribute( updownLength, BaseTypes::STRING_TYPE(), false, "0");
         a << new Attribute( honoheteroFilter, BaseTypes::STRING_TYPE(), false, "");
         a << new Attribute( outFilter, BaseTypes::STRING_TYPE(), false, "");
     }
@@ -199,63 +169,63 @@ void SnpEffFactory::init() {
 
         {
             QVariantMap inFMap;
-            inFMap["VCF"] = "VCF";
-            inFMap["Tabular"] = "Tabular";
-            inFMap["Pileup"] = "Pileup";
-            inFMap["BED"] = "BED";
+            inFMap["VCF"] = "vcf";
+            inFMap["Tabular"] = "txt";
+            inFMap["Pileup"] = "pileup";
+            inFMap["BED"] = "bed";
             delegates[SnpEffWorker::INPUT_FORMAT] = new ComboBoxDelegate(inFMap);
         }
         {
             QVariantMap outFMap;
-            outFMap["VCF (only if VCF input)"] = "VCF";
-            outFMap["Tabular"] = "Tabular";
-            outFMap["BED"] = "BED";
-            outFMap["BED Annotations"] = "BED Annotations";
+            outFMap["VCF (only if VCF input)"] = "vcf";
+            outFMap["Tabular"] = "txt";
+            outFMap["BED"] = "bed";
+            outFMap["BED Annotations"] = "bedAnn";
             delegates[SnpEffWorker::OUTPUT_FORMAT] = new ComboBoxDelegate(outFMap);
         }
         {
             QVariantMap dataMap;
-            dataMap["Use default (based on input type)"] = "Use default (based on input type)";
-            dataMap["Force zero-based positions (both input and output)"] = "Force zero-based positions (both input and output)";
-            dataMap["Force one-based positions (both input and output)"] = "Force one-based positions (both input and output)";
+            dataMap["Use default (based on input type)"] = "";
+            dataMap["Force zero-based positions (both input and output)"] = "-0";
+            dataMap["Force one-based positions (both input and output)"] = "-1";
             delegates[SnpEffWorker::CHR_POS] = new ComboBoxDelegate(dataMap);
         }
         {
             QVariantMap dataMap;
-            dataMap["No filter (analyze everything)"] = "No filter (analyze everything)";
-            dataMap["Analyze homozygous sequence changes only"] = "Analyze homozygous sequence changes only";
-            dataMap["Analyze heterozygous sequence changes only"] = "Analyze heterozygous sequence changes only";
+            dataMap["No filter (analyze everything)"] = "";
+            dataMap["Analyze homozygous sequence changes only"] = "-hom";
+            dataMap["Analyze heterozygous sequence changes only"] = "-het";
             delegates[SnpEffWorker::HOMOHETERO_CHANGES] = new ComboBoxDelegate(dataMap);
         }
         {
             QVariantMap dataMap;
-            dataMap["No upstream/downstream interval (0 bases)"] = "No upstream/downstream interval (0 bases)";
-            dataMap["200 bases"] = "200 bases";
-            dataMap["500 bases"] = "500 bases";
-            dataMap["1000 bases"] = "1000 bases";
-            dataMap["5000 bases"] = "5000 bases";
-            dataMap["10000 bases"] = "10000 bases";
-            dataMap["20000 bases"] = "20000 bases";
+            dataMap["No upstream/downstream interval (0 bases)"] = "0";
+            dataMap["200 bases"] = "200";
+            dataMap["500 bases"] = "500";
+            dataMap["1000 bases"] = "1000";
+            dataMap["5000 bases"] = "5000";
+            dataMap["10000 bases"] = "10000";
+            dataMap["20000 bases"] = "20000";
             delegates[SnpEffWorker::UPDOWN_LENGTH] = new ComboBoxDelegate(dataMap);
         }
 
         {
             QVariantMap dataMap;
-            dataMap["No filter (analyze everything)"] = "No filter (analyze everything)";
-            dataMap["Analyze deletions only"] = "Analyze deletions only";
-            dataMap["Analyze insertions only"] = "Analyze insertions only";
-            dataMap["Only MNPs (multiple nucleotide polymorphisms)"] = "Only MNPs (multiple nucleotide polymorphisms)";
-            dataMap["Only SNPs (single nucleotide polymorphisms)"] = "Only SNPs (single nucleotide polymorphisms)";
+            dataMap["No filter (analyze everything)"] = "";
+            dataMap["Analyze deletions only"] = "-del";
+            dataMap["Analyze insertions only"] = "-ins";
+            dataMap["Only MNPs (multiple nucleotide polymorphisms)"] = "-mnp";
+            dataMap["Only SNPs (single nucleotide polymorphisms)"] = "-snp";
             delegates[SnpEffWorker::SEQ_CHANGES] = new ComboBoxDelegate(dataMap);
         }
 
         {
             QVariantMap dataMap;
-            dataMap["Do not show DOWNSTREAM changes"] = "Do not show DOWNSTREAM changes";
-            dataMap["Do not show INTERGENIC changes"] = "Do not show INTERGENIC changes";
-            dataMap["Do not show INTRON changes"] = "Do not show INTRON changes";
-            dataMap["Do not show UPSTREAM changes"] = "Do not show UPSTREAM changes";
-            dataMap["Do not show 5_PRIME_UTR or 3_PRIME_UTR changes"] = "Do not show 5_PRIME_UTR or 3_PRIME_UTR changes";
+            dataMap["Do not show DOWNSTREAM changes"] = "-no-downstream";
+            dataMap["Do not show INTERGENIC changes"] = "-no-intergenic";
+            dataMap["Do not show INTRON changes"] = "-no-intron";
+            dataMap["Do not show UPSTREAM changes"] = "-no-upstream";
+            dataMap["Do not show 5_PRIME_UTR or 3_PRIME_UTR changes"] = "-no-utr";
             delegates[SnpEffWorker::FILTER_OUTPUT] = new ComboBoxWithChecksDelegate(dataMap);
         }
 
@@ -268,7 +238,6 @@ void SnpEffFactory::init() {
             genomeMap["NC_000913"] = "NC_000913";
             genomeMap["WS241"] = "WS241";
 
-            //TODO make editable combobox
             delegates[SnpEffWorker::GENOME] = new ComboBoxEditableDelegate(genomeMap);
         }
 
@@ -305,12 +274,15 @@ Task * SnpEffWorker::tick() {
         const QString url = takeUrl();
         CHECK(!url.isEmpty(), NULL);
 
-        const QString outputDir = FileAndDirectoryUtils::createWorkingDir(url, getValue<int>(OUT_MODE_ID), getValue<QString>(CUSTOM_DIR_ID), context->workingDir());
-
+        QString outputDir = FileAndDirectoryUtils::createWorkingDir(url, getValue<int>(OUT_MODE_ID), getValue<QString>(CUSTOM_DIR_ID), context->workingDir());
+        U2OpStatusImpl os;
+        outputDir = GUrlUtils::createDirectory(outputDir + SnpEffWorker::BASE_SNPEFF_SUBDIR, "_", os);
 
         SnpEffSetting setting;
         setting.inputUrl = url;
         setting.outDir = outputDir;
+        setting.inFormat = getValue<QString>(INPUT_FORMAT);
+        setting.outFormat = getValue<QString>(OUTPUT_FORMAT);
         setting.genome = getValue<QString>(GENOME);
         setting.updownLength = getValue<QString>(UPDOWN_LENGTH);
         setting.homohetero = getValue<QString>(HOMOHETERO_CHANGES);
@@ -335,14 +307,19 @@ void SnpEffWorker::cleanup(){
 }
 
 namespace {
-    QString getTargetTaskUrl(Task * /*task*/) {
-
-        /*
+    QString getTargetTaskUrl(Task * task) {
         SnpEffTask *curtask = dynamic_cast<SnpEffTask*>(task);
-
         if (NULL != curtask) {
             return curtask->getResult();
-        }*/
+        }
+        return "";
+    }
+
+    QString getSummaryUrl(Task * task) {
+        SnpEffTask *curtask = dynamic_cast<SnpEffTask*>(task);
+        if (NULL != curtask) {
+            return curtask->getSummaryUrl();
+        }
         return "";
     }
 }
@@ -356,22 +333,13 @@ void SnpEffWorker::sl_taskFinished(Task *task) {
 
     sendResult(url);
     monitor()->addOutputFile(url, getActorId());
+
+    QString summary = getSummaryUrl(task);
+    CHECK(!summary.isEmpty(), );
+    monitor()->addOutputFile(summary, getActorId());
 }
 
 QString SnpEffWorker::getTargetName (const QString & /*fileUrl*/, const QString & /*outDir*/){
-    /*
-    QString name = getValue<QString>(OUT_NAME_ID);
-
-    if(name == DEFAULT_NAME || name.isEmpty()){
-        name = QFileInfo(fileUrl).fileName();
-        name = name + getDefaultFileName();
-    }
-    if(outUrls.contains(outDir + name)){
-        name.append(QString("_%1").arg(outUrls.size()));
-    }
-    outUrls.append(outDir+name);
-    return name;
-    */
     return "";
 }
 

@@ -29,7 +29,7 @@ namespace U2 {
 
 
 class SnpEffSetting{
-public:
+public:    
     SnpEffSetting(): inputUrl(""), outDir(""), inFormat(""), outFormat(""),genome(""), updownLength(""),homohetero(""), seqChange(""), filterOut(""), chrPos(""){}
 
     QString inputUrl;
@@ -53,8 +53,11 @@ public:
     void run();
 
     QString getResult(){return resultUrl;}
+    QString getSummaryUrl();
+    QString getResFileUrl();
 
 protected:
+    QString getDataPath();
     QStringList getParameters(U2OpStatus& os);
 
 protected:

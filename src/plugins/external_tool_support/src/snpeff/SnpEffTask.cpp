@@ -25,12 +25,18 @@
 #include "SnpEffTask.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/ExternalToolRunTask.h>
 
 namespace U2 {
+
+#define RES_FILE_BASE "snp_eff"
+#define GENE_FILE "snpEff_genes.txt"
+#define SUMMARY_FILE "snpEff_summary.html"
 
 //////////////////////////////////////////////////////////////////////////
 //SnpEffParser
@@ -65,7 +71,7 @@ SnpEffTask::SnpEffTask(const SnpEffSetting &settings)
 }
 
 void SnpEffTask::prepare(){
-    /*
+
     if (settings.inputUrl.isEmpty()){
         setError("No input URL");
         return ;
@@ -77,37 +83,85 @@ void SnpEffTask::prepare(){
         return ;
     }
 
-    if(settings.genomePath.isEmpty()){
+    if(settings.genome.isEmpty()){
         setError("No path to genome lengths");
         return ;
     }
-*/
+
     const QStringList args = getParameters(stateInfo);
     CHECK_OP(stateInfo, );
 
     ExternalToolLogParser* logParser = new SnpEffParser();
     ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_SNPEFF, args, logParser, settings.outDir);
+    etTask->setStandartOutputFile( getResFileUrl() );
     addSubTask(etTask);
 }
 
 void SnpEffTask::run(){
     CHECK_OP(stateInfo, );
 
-    resultUrl = settings.outDir;
+    const QFileInfo resFile = QFileInfo(settings.outDir + "/" + GENE_FILE);
+    if (!resFile.exists()) {
+        setError("Result file does not exist: " + resFile.absoluteFilePath());
+        return ;
+    }
+    resultUrl = settings.outDir + "/" + GENE_FILE;
+}
+
+QString SnpEffTask::getSummaryUrl(){
+    QString res = "";
+    const QFileInfo resFile = QFileInfo(getResFileUrl());
+    if (!resFile.exists()) {
+        return res;
+    }
+    res = getResFileUrl();
+    return res;
+}
+
+QString SnpEffTask::getResFileUrl(){
+    QString res = "";
+    res = settings.outDir + "/" + RES_FILE_BASE + "." + settings.outFormat;
+    return res;
+}
+
+QString SnpEffTask::getDataPath(){
+    return AppContext::getAppSettings()->getUserAppsSettings()->getDownloadDirPath() + "/" + "snpeff_data";
 }
 
 QStringList SnpEffTask::getParameters(U2OpStatus & /*os*/){
     QStringList res;
 
-    /*res << GUrlUtils::getQuotedString(settings.inputUrl);
-    res << GUrlUtils::getQuotedString(settings.genomePath);
-    res << GUrlUtils::getQuotedString(settings.outDir + settings.outName);
-    res << QString("-blockSize=%1").arg(settings.blockSize);
-    res << QString("-itemsPerSlot=%1").arg(settings.itemsPerSlot);
-    if(settings.uncompressed){
-        res << QString("-unc");
+    res << QString("-dataDir %1").arg( GUrlUtils::getQuotedString(getDataPath()) );
+
+    res << QString("-i %1").arg(settings.inFormat);
+    res << QString("-o %1").arg(settings.outFormat);
+    res << QString("-upDownStreamLen %1").arg(settings.updownLength);
+
+    if (settings.homohetero.size() != 0){
+        res << settings.homohetero;
     }
-*/
+
+    if (settings.seqChange.size() != 0){
+        res << settings.seqChange;
+    }
+
+    if (settings.filterOut.size() != 0){
+        QStringList pars = settings.filterOut.split(",");
+        foreach(const QString &p, pars){
+            res << p;
+        }
+    }
+
+    if (settings.chrPos.size() != 0){
+        res << settings.chrPos;
+    }
+
+    res << QString("-v");
+
+    res << settings.genome;
+
+    res << GUrlUtils::getQuotedString(settings.inputUrl);
+
     return res;
 }
 
