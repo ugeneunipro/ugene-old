@@ -196,14 +196,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1622);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1628, "UGENE-3811");
     REGISTER_TEST(GUITest_regression_scenarios::test_1629);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1640);
+	REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_1640, "UGENE-3863");
     REGISTER_TEST(GUITest_regression_scenarios::test_1644);
     REGISTER_TEST(GUITest_regression_scenarios::test_1645);
     REGISTER_TEST(GUITest_regression_scenarios::test_1653);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1654, "UGENE-3847");
     REGISTER_TEST(GUITest_regression_scenarios::test_1660);
     REGISTER_TEST(GUITest_regression_scenarios::test_1661);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1664);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_1664, "UGENE-3863");
     REGISTER_TEST(GUITest_regression_scenarios::test_1672);
     REGISTER_TEST(GUITest_regression_scenarios::test_1673);
     REGISTER_TEST(GUITest_regression_scenarios::test_1673_3);
@@ -211,7 +211,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_MAC(GUITest_regression_scenarios::test_1680, "Mac only");
     REGISTER_TEST(GUITest_regression_scenarios::test_1687);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1688, "big data");
-    REGISTER_TEST(GUITest_regression_scenarios::test_1693);
+	REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_1693);//no tuxedo for windows
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1700);
     REGISTER_TEST_NOT_FOR_LINUX(GUITest_regression_scenarios::test_1701);//virtual display can not show 3d view
@@ -391,7 +391,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2690);
     REGISTER_TEST(GUITest_regression_scenarios::test_2701);
     REGISTER_TEST(GUITest_regression_scenarios::test_2709);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2711);
+	REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2711);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2713, "https://local.ugene.unipro.ru/tracker/browse/UGENE-3706");
     REGISTER_TEST(GUITest_regression_scenarios::test_2726);
     REGISTER_TEST(GUITest_regression_scenarios::test_2729);
@@ -467,8 +467,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3143);
     REGISTER_TEST(GUITest_regression_scenarios::test_3144);
     REGISTER_TEST(GUITest_regression_scenarios::test_3155);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3156);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3165);
+    REGISTER_TEST_LINUX(GUITest_regression_scenarios::test_3156, "drag and drop");
+    REGISTER_TEST_LINUX(GUITest_regression_scenarios::test_3165, "drag and drop");
     REGISTER_TEST(GUITest_regression_scenarios::test_3170);
     REGISTER_TEST(GUITest_regression_scenarios::test_3175);
     REGISTER_TEST(GUITest_regression_scenarios::test_3180);
@@ -504,7 +504,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3313);
     REGISTER_TEST(GUITest_regression_scenarios::test_3318);
     REGISTER_TEST(GUITest_regression_scenarios::test_3332);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3333);
+    REGISTER_TEST_LINUX(GUITest_regression_scenarios::test_3333, "drag and drop");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3335, "UGENE-3833");
     REGISTER_TEST(GUITest_regression_scenarios::test_3342);
     REGISTER_TEST(GUITest_regression_scenarios::test_3344);
@@ -1572,16 +1572,16 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0001);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0002);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0003);
-    REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0004);
-    REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0005);
-    REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0006);
+    REGISTER_TEST_LINUX(GUITest_common_scenarios_shared_database::proj_test_0004, "drag and drop");
+    REGISTER_TEST_LINUX(GUITest_common_scenarios_shared_database::proj_test_0005, "drag and drop");
+    REGISTER_TEST_LINUX(GUITest_common_scenarios_shared_database::proj_test_0006, "drag and drop");
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0007);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0008);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0009);
 
-    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0001);
-    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0002);
-    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0003);
+    REGISTER_TEST_LINUX(GUITest_common_scenarios_shared_database::import_test_0001, "drag and drop");
+    REGISTER_TEST_LINUX(GUITest_common_scenarios_shared_database::import_test_0002, "drag and drop");
+    REGISTER_TEST_LINUX(GUITest_common_scenarios_shared_database::import_test_0003, "drag and drop");
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0004);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0005);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0006);
