@@ -33,81 +33,90 @@
 
 namespace U2 {
 
-CreateAnnotationsTask::CreateAnnotationsTask( AnnotationTableObject *_ao, const QString &_g, const AnnotationData &_data )
-    : Task( tr( "Create annotations" ), TaskFlags_FOSE_COSC ), aobj( _ao ), groupName( _g ), pos( 0 )
+CreateAnnotationsTask::CreateAnnotationsTask(AnnotationTableObject *ao, const QString &g, const AnnotationData &data)
+    : Task(tr("Create annotations"), TaskFlags_FOSE_COSC), aobj(ao), groupName(g), pos(0)
 {
-    aData << _data;
-    aRef.objName = _ao->getGObjectName( );
+    aData << data;
+    AnnotationTableObject *parentObject = getGObject();
+    CHECK_EXT(NULL != parentObject, setError(tr("Annotation table has been removed unexpectedly")),);
+
+    aRef.objName = parentObject->getGObjectName();
     tpm = Progress_Manual;
 }
 
-CreateAnnotationsTask::CreateAnnotationsTask( AnnotationTableObject *_ao, const QString &_g, const QList<AnnotationData> &_data )
-    : Task( tr( "Create annotations" ), TaskFlags_FOSE_COSC ), aobj( _ao ), groupName( _g ), pos( 0 )
+CreateAnnotationsTask::CreateAnnotationsTask(AnnotationTableObject *ao, const QString &g, const QList<AnnotationData> &data)
+    : Task(tr("Create annotations"), TaskFlags_FOSE_COSC), aobj(ao), groupName(g), pos(0)
 {
-    aData = _data;
-    aRef.objName = _ao->getGObjectName( );
+    aData = data;
+    AnnotationTableObject *parentObject = getGObject();
+    CHECK_EXT(NULL != parentObject, setError(tr("Annotation table has been removed unexpectedly")),);
+
+    aRef.objName = parentObject->getGObjectName();
     tpm = Progress_Manual;
 }
 
-CreateAnnotationsTask::CreateAnnotationsTask( const GObjectReference &r, const QString &_g, const QList<AnnotationData> &_data )
-    : Task( tr( "Create annotations" ), TaskFlags_FOSE_COSC ), aRef( r ), groupName( _g ), pos( 0 )
+CreateAnnotationsTask::CreateAnnotationsTask(const GObjectReference &r, const QString &g, const QList<AnnotationData> &data)
+    : Task(tr("Create annotations"), TaskFlags_FOSE_COSC), aRef(r), groupName(g), pos(0)
 {
-    aData << _data;
-    GObject *ao = ( GObjectUtils::selectObjectByReference( aRef, UOF_LoadedAndUnloaded ) );
-    if ( NULL != ao && ao->isUnloaded( ) ) {
-        addSubTask( new LoadUnloadedDocumentTask( ao->getDocument( ) ) );
+    aData << data;
+    GObject *ao = (GObjectUtils::selectObjectByReference(aRef, UOF_LoadedAndUnloaded));
+    if (NULL != ao && ao->isUnloaded()) {
+        addSubTask(new LoadUnloadedDocumentTask(ao->getDocument()));
     }
     tpm = Progress_Manual;
 }
 
 void CreateAnnotationsTask::run() {
-    U2OpStatusImpl os;
     AnnotationTableObject *parentObject = getGObject();
+    CHECK_EXT(NULL != parentObject, setError(tr("Annotation table has been removed unexpectedly")),);
+
     const U2DataId rootFeatureId = parentObject->getRootFeatureId();
     const U2DbiRef dbiRef = parentObject->getEntityRef().dbiRef;
     const U2DataId groupId = AnnotationGroup(rootFeatureId, parentObject).getSubgroup(groupName, true).id;
 
+    U2OpStatusImpl os;
     foreach (const AnnotationData &a, aData) {
-        CHECK_OP(os, );
+        CHECK_OP(os,);
         importedFeatures << U2FeatureUtils::exportAnnotationDataToFeatures(a, rootFeatureId, groupId, dbiRef, os);
     }
 }
 
-Task::ReportResult CreateAnnotationsTask::report( ) {
-    GTIMER( c1, t1, "CreateAnnotationsTask::report" );
-    if ( hasError( ) || isCanceled( ) || importedFeatures.isEmpty( ) ) {
+Task::ReportResult CreateAnnotationsTask::report() {
+    GTIMER(c1, t1, "CreateAnnotationsTask::report");
+    if (hasError() || isCanceled() || importedFeatures.isEmpty()) {
         return ReportResult_Finished;
     }
-    AnnotationTableObject *ao = getGObject( );
-    if ( NULL == ao ) {
-        stateInfo.setError( tr( "Annotation object '%1' not found in active project: %2" ).arg( aRef.objName ).arg( aRef.docUrl ) );
+    AnnotationTableObject *ao = getGObject();
+    if (NULL == ao) {
+        setError(tr("Annotation object '%1' not found in active project: %2").arg(aRef.objName).arg(aRef.docUrl));
+        return ReportResult_Finished;
     }
 
-    if ( ao->isStateLocked( ) ) {
-        stateInfo.setDescription( tr( "Waiting for object lock released" ) );
+    if (ao->isStateLocked()) {
+        stateInfo.setDescription(tr("Waiting for object lock released"));
         return ReportResult_CallMeAgain;
     }
-    stateInfo.setDescription( QString( ) );
+    stateInfo.setDescription(QString());
 
-    GTIMER( c2, t2, "CreateAnnotationsTask::report [addAnnotations]" );
-    AnnotationGroup( ao->getRootFeatureId( ), ao ).getSubgroup( groupName, false ).addFeatures( importedFeatures );
+    GTIMER(c2, t2, "CreateAnnotationsTask::report [addAnnotations]");
+    AnnotationGroup(ao->getRootFeatureId(), ao).getSubgroup(groupName, false).addFeatures(importedFeatures);
 
     return ReportResult_Finished;
 }
 
-AnnotationTableObject * CreateAnnotationsTask::getGObject( ) const {
+AnnotationTableObject * CreateAnnotationsTask::getGObject() const {
     AnnotationTableObject *result = NULL;
-    if ( aRef.isValid( ) ) {
-        SAFE_POINT( aobj.isNull( ), "Unexpected annotation table object content!", NULL );
-        result = qobject_cast<AnnotationTableObject *>( GObjectUtils::selectObjectByReference( aRef, UOF_LoadedOnly ) );
+    if (aRef.isValid()) {
+        SAFE_POINT(aobj.isNull(), "Unexpected annotation table object content!", NULL);
+        result = qobject_cast<AnnotationTableObject *>(GObjectUtils::selectObjectByReference(aRef, UOF_LoadedOnly));
     } else {
-        result = aobj.data( );
+        result = aobj.data();
     }
     return result;
 }
 
-int CreateAnnotationsTask::getAnnotationCount( ) const {
-    return aData.size( );
+int CreateAnnotationsTask::getAnnotationCount() const {
+    return aData.size();
 }
 
 } // namespace
