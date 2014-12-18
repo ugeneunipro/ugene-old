@@ -98,10 +98,7 @@ ExternalToolRunTask* BlastNPlusSupportTask::createBlastPlusTask(){
     {
         arguments << "-window_size" << QString::number(settings.windowSize);
     }
-    //I always get error from BLAST+:
-    //ncbi-blast-2.2.24+-src/c++/src/corelib/ncbithr.cpp", line 649: Fatal: ncbi::CThread::Run()
-    //- Assertion failed: (0) CThread::Run() -- system does not support threads
-    //arguments <<"-num_threads"<< QString::number(settings.numberOfProcessors);
+    arguments <<"-num_threads"<< QString::number(settings.numberOfProcessors);
     arguments <<"-outfmt"<< QString::number(settings.outputType);//"5";//Set output file format to xml
     if(settings.outputOriginalFile.isEmpty()){
         arguments <<"-out"<< url+".xml";
@@ -110,7 +107,7 @@ ExternalToolRunTask* BlastNPlusSupportTask::createBlastPlusTask(){
         arguments <<"-out"<< settings.outputOriginalFile;
     }
 
-    algoLog.trace("Blastall arguments: "+arguments.join(" "));
+    algoLog.trace("BlastN+ arguments: "+arguments.join(" "));
     logParser=new ExternalToolLogParser();
     QString workingDirectory=QFileInfo(url).absolutePath();
     ExternalToolRunTask* toolRunTask = new ExternalToolRunTask(ET_BLASTN, arguments, logParser, workingDirectory);
