@@ -29,10 +29,10 @@ namespace U2 {
 
 ////////////////////////////////////////
 //ScriptingTool
-ScriptingTool::ScriptingTool(QString _name, QString _path) : name(_name), path(_path) {
+ScriptingTool::ScriptingTool(QString _name, QString _path, const QStringList& _runParams) : name(_name), path(_path), runParams(_runParams) {
 }
 
-void ScriptingTool::onPathChanged(ExternalTool *tool) {
+void ScriptingTool::onPathChanged(ExternalTool *tool, const QStringList& runParams) {
     ScriptingToolRegistry* reg = AppContext::getScriptingToolRegistry();
     CHECK(NULL != reg, );
 
@@ -41,7 +41,7 @@ void ScriptingTool::onPathChanged(ExternalTool *tool) {
             reg->unregisterEntry(tool->getName());
         }
         if (!tool->getPath().isEmpty()){
-            reg->registerEntry(new ScriptingTool(tool->getName(), tool->getPath()));
+            reg->registerEntry(new ScriptingTool(tool->getName(), tool->getPath(), runParams));
         }
     } else {
         reg->unregisterEntry(tool->getName());

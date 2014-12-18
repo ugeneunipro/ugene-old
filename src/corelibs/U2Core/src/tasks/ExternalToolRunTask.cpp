@@ -404,6 +404,10 @@ ProcessRun ExternalToolSupportUtils::prepareProcess(const QString &toolName, con
             return result;
         }
         result.arguments.prepend(result.program);
+
+        for (int i = stool->getRunParameters().size() - 1; i >= 0; i--){
+            result.arguments.prepend(stool->getRunParameters().at(i));
+        }
         result.program = stool->getPath();
         listenerProgramMessage.prepend(result.program + " ");
     }

@@ -60,10 +60,11 @@ public:
     static const QString OUTPUT_FORMAT;
     static const QString GENOME;
     static const QString UPDOWN_LENGTH;
-    static const QString HOMOHETERO_CHANGES;
-    static const QString SEQ_CHANGES;
-    static const QString FILTER_OUTPUT;
-    static const QString CHR_POS;
+
+    static const QString CANON;
+    static const QString HGVS;
+    static const QString LOF;
+    static const QString MOTIF;
 
 private:
     IntegralBus *inputUrlPort;

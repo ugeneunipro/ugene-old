@@ -120,6 +120,7 @@
 #include "conduct_go/ConductGOSupport.h"
 #include "python/PythonSupport.h"
 #include "perl/PerlSupport.h"
+#include "java/JavaSupport.h"
 #include "R/RSupport.h"
 #include "vcfutils/VcfutilsSupport.h"
 #include "samtools/BcfToolsSupport.h"
@@ -241,6 +242,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     //perl
     PerlSupport *perlSupport = new PerlSupport(ET_PERL);
     AppContext::getExternalToolRegistry()->registerEntry(perlSupport);
+
+    //java
+    JavaSupport *javaSupport = new JavaSupport(ET_JAVA);
+    AppContext::getExternalToolRegistry()->registerEntry(javaSupport);
 
     //Fill ExternalToolRegistry with supported tools
     //ClustalW

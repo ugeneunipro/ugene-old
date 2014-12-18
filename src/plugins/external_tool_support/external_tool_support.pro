@@ -84,6 +84,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/cufflinks/CuffmergeWorker.h \
            src/cufflinks/GffreadSupportTask.h \
            src/cufflinks/GffreadWorker.h \
+           src/java/JavaSupport.h \
            src/macs/MACSSettings.h \
            src/macs/MACSSupport.h \
            src/macs/MACSTask.h \
@@ -247,6 +248,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/cufflinks/CuffmergeWorker.cpp \
            src/cufflinks/GffreadSupportTask.cpp \
            src/cufflinks/GffreadWorker.cpp \
+           src/java/JavaSupport.cpp \
            src/macs/MACSSettings.cpp \
            src/macs/MACSSupport.cpp \
            src/macs/MACSTask.cpp \

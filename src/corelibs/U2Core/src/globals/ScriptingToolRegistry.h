@@ -24,6 +24,8 @@
 
 #include <U2Core/global.h>
 
+#include <QtCore/QStringList>
+
 namespace U2 {
 
 class ExternalTool;
@@ -31,16 +33,18 @@ class ExternalTool;
 class U2CORE_EXPORT ScriptingTool : public QObject {
     Q_OBJECT
 public:
-    ScriptingTool(QString name, QString executablePath);
+    ScriptingTool(QString name, QString executablePath, const QStringList& runParams = QStringList());
 
     const QString getName() const {return name;}
     const QString getPath() const {return path;}
+    const QStringList getRunParameters() const {return runParams;}
 
-    static void onPathChanged(ExternalTool *tool);
+    static void onPathChanged(ExternalTool *tool, const QStringList& runParams = QStringList());
 
 protected:
     QString     name;
     QString     path;
+    QStringList runParams; //used for every program run (e.g. -jar in Java)
 
 };
 

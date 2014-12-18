@@ -84,6 +84,9 @@ void ExternalToolJustValidateTask::run() {
                                .arg(toolName));
         } else {
             originalValidation.arguments.prepend(originalValidation.executableFile);
+            for (int i = stool->getRunParameters().size() - 1; i >= 0; i--){
+                originalValidation.arguments.prepend(stool->getRunParameters().at(i));
+            }
             originalValidation.executableFile = stool->getPath();
         }
     }

@@ -64,10 +64,11 @@ const QString SnpEffWorker::INPUT_FORMAT = "inp-format";
 const QString SnpEffWorker::OUTPUT_FORMAT = "out-format";
 const QString SnpEffWorker::GENOME = "genome";
 const QString SnpEffWorker::UPDOWN_LENGTH = "updown-length";
-const QString SnpEffWorker::HOMOHETERO_CHANGES = "homoheter-changes";
-const QString SnpEffWorker::SEQ_CHANGES = "seq-changes";
-const QString SnpEffWorker::FILTER_OUTPUT = "filter-out";
-const QString SnpEffWorker::CHR_POS = "chr-pos";
+
+const QString SnpEffWorker::CANON = "canon";
+const QString SnpEffWorker::HGVS = "hgvs";
+const QString SnpEffWorker::LOF = "lof";
+const QString SnpEffWorker::MOTIF = "motif";
 
 const QString SnpEffFactory::ACTOR_ID("seff");
 
@@ -124,20 +125,24 @@ void SnpEffFactory::init() {
         Descriptor outFormat(SnpEffWorker::OUTPUT_FORMAT, SnpEffWorker::tr("Output format"),
             SnpEffWorker::tr("Select the format of annotated output files."));
 
-        Descriptor chrPos(SnpEffWorker::CHR_POS, SnpEffWorker::tr("Chromosome positions"),
-            SnpEffWorker::tr("Select indexing type."));
-
         Descriptor genome(SnpEffWorker::GENOME, SnpEffWorker::tr("Genome"),
             SnpEffWorker::tr("Select the target genome. Genome data will be downloaded if it is not found."));
 
         Descriptor updownLength(SnpEffWorker::UPDOWN_LENGTH, SnpEffWorker::tr("Upstream/downstream length"),
             SnpEffWorker::tr("Upstream and downstream interval size. Eliminate any upstream and downstream effect by using 0 length"));
 
-        Descriptor honoheteroFilter(SnpEffWorker::HOMOHETERO_CHANGES, SnpEffWorker::tr("Filter by homozygous/heterozygous type"),
-            SnpEffWorker::tr("Select if filter homozygous / heterozygous changes"));
+        Descriptor canon(SnpEffWorker::CANON, SnpEffWorker::tr("Cannonical transcripts"),
+            SnpEffWorker::tr("Use only cannonical transcripts"));
 
-        Descriptor outFilter(SnpEffWorker::FILTER_OUTPUT, SnpEffWorker::tr("Post-annotation filter"),
-            SnpEffWorker::tr("Select if filter after annotation"));
+        Descriptor hgvs(SnpEffWorker::HGVS, SnpEffWorker::tr("HGVS nomenclature"),
+            SnpEffWorker::tr("Annotate using HGVS nomenclature"));
+
+        Descriptor lof(SnpEffWorker::LOF, SnpEffWorker::tr("Annotate Loss of function"),
+            SnpEffWorker::tr("Annotate Loss of function (LOF) and Nonsense mediated decay (NMD)"));
+
+        Descriptor motif(SnpEffWorker::MOTIF, SnpEffWorker::tr("Annotate TFBSs motifs"),
+            SnpEffWorker::tr("Annotate transcription factor binding site motifs (only available for latest GRCh37)"));
+
 
         a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
@@ -146,11 +151,12 @@ void SnpEffFactory::init() {
 
         a << new Attribute( inpFormat, BaseTypes::STRING_TYPE(), false, "vcf");
         a << new Attribute( outFormat, BaseTypes::STRING_TYPE(), false, "vcf");
-        a << new Attribute( chrPos, BaseTypes::STRING_TYPE(), false, "");
         a << new Attribute( genome, BaseTypes::STRING_TYPE(), false, "hg19");
         a << new Attribute( updownLength, BaseTypes::STRING_TYPE(), false, "0");
-        a << new Attribute( honoheteroFilter, BaseTypes::STRING_TYPE(), false, "");
-        a << new Attribute( outFilter, BaseTypes::STRING_TYPE(), false, "");
+        a << new Attribute( canon, BaseTypes::BOOL_TYPE(), false, false);
+        a << new Attribute( hgvs, BaseTypes::BOOL_TYPE(), false, false);
+        a << new Attribute( lof, BaseTypes::BOOL_TYPE(), false, false);
+        a << new Attribute( motif, BaseTypes::BOOL_TYPE(), false, false);
     }
 
     QMap<QString, PropertyDelegate*> delegates;
@@ -185,20 +191,6 @@ void SnpEffFactory::init() {
         }
         {
             QVariantMap dataMap;
-            dataMap["Use default (based on input type)"] = "";
-            dataMap["Force zero-based positions (both input and output)"] = "-0";
-            dataMap["Force one-based positions (both input and output)"] = "-1";
-            delegates[SnpEffWorker::CHR_POS] = new ComboBoxDelegate(dataMap);
-        }
-        {
-            QVariantMap dataMap;
-            dataMap["No filter (analyze everything)"] = "";
-            dataMap["Analyze homozygous sequence changes only"] = "-hom";
-            dataMap["Analyze heterozygous sequence changes only"] = "-het";
-            delegates[SnpEffWorker::HOMOHETERO_CHANGES] = new ComboBoxDelegate(dataMap);
-        }
-        {
-            QVariantMap dataMap;
             dataMap["No upstream/downstream interval (0 bases)"] = "0";
             dataMap["200 bases"] = "200";
             dataMap["500 bases"] = "500";
@@ -208,27 +200,6 @@ void SnpEffFactory::init() {
             dataMap["20000 bases"] = "20000";
             delegates[SnpEffWorker::UPDOWN_LENGTH] = new ComboBoxDelegate(dataMap);
         }
-
-        {
-            QVariantMap dataMap;
-            dataMap["No filter (analyze everything)"] = "";
-            dataMap["Analyze deletions only"] = "-del";
-            dataMap["Analyze insertions only"] = "-ins";
-            dataMap["Only MNPs (multiple nucleotide polymorphisms)"] = "-mnp";
-            dataMap["Only SNPs (single nucleotide polymorphisms)"] = "-snp";
-            delegates[SnpEffWorker::SEQ_CHANGES] = new ComboBoxDelegate(dataMap);
-        }
-
-        {
-            QVariantMap dataMap;
-            dataMap["Do not show DOWNSTREAM changes"] = "-no-downstream";
-            dataMap["Do not show INTERGENIC changes"] = "-no-intergenic";
-            dataMap["Do not show INTRON changes"] = "-no-intron";
-            dataMap["Do not show UPSTREAM changes"] = "-no-upstream";
-            dataMap["Do not show 5_PRIME_UTR or 3_PRIME_UTR changes"] = "-no-utr";
-            delegates[SnpEffWorker::FILTER_OUTPUT] = new ComboBoxWithChecksDelegate(dataMap);
-        }
-
         {
             QVariantMap genomeMap;
             genomeMap["athaliana130"] = "athaliana130";
@@ -237,6 +208,7 @@ void SnpEffFactory::init() {
             genomeMap["hg38"] = "hg38";
             genomeMap["NC_000913"] = "NC_000913";
             genomeMap["WS241"] = "WS241";
+
 
             delegates[SnpEffWorker::GENOME] = new ComboBoxEditableDelegate(genomeMap);
         }
@@ -285,10 +257,10 @@ Task * SnpEffWorker::tick() {
         setting.outFormat = getValue<QString>(OUTPUT_FORMAT);
         setting.genome = getValue<QString>(GENOME);
         setting.updownLength = getValue<QString>(UPDOWN_LENGTH);
-        setting.homohetero = getValue<QString>(HOMOHETERO_CHANGES);
-        setting.seqChange = getValue<QString>(SEQ_CHANGES);
-        setting.filterOut = getValue<QString>(FILTER_OUTPUT);
-        setting.chrPos = getValue<QString>(CHR_POS);
+        setting.canon = getValue<bool>(CANON);
+        setting.hgvs = getValue<bool>(HGVS);
+        setting.lof = getValue<bool>(LOF);
+        setting.motif = getValue<bool>(MOTIF);
 
         Task *t = new SnpEffTask (setting);
         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));

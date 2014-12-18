@@ -30,7 +30,7 @@ namespace U2 {
 
 class SnpEffSetting{
 public:
-    SnpEffSetting(): inputUrl(""), outDir(""), inFormat(""), outFormat(""),genome(""), updownLength(""),homohetero(""), seqChange(""), filterOut(""), chrPos(""){}
+    SnpEffSetting(): inputUrl(""), outDir(""), inFormat(""), outFormat(""),genome(""), updownLength(""),canon(false), hgvs(false), lof(false), motif(false) {}
 
     QString inputUrl;
     QString outDir;
@@ -38,10 +38,11 @@ public:
     QString outFormat;
     QString genome;
     QString updownLength;
-    QString homohetero;
-    QString seqChange;
-    QString filterOut;
-    QString chrPos;
+    bool canon;
+    bool hgvs;
+    bool lof;
+    bool motif;
+
 };
 
 class SnpEffTask : public Task {

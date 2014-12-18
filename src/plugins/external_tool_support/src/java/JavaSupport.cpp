@@ -19,45 +19,38 @@
  * MA 02110-1301, USA.
  */
 
-#include "SnpEffSupport.h"
-#include "java/JavaSupport.h"
-
 #include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
-#include <U2Core/DataPathRegistry.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/ScriptingToolRegistry.h>
 
-#include <U2Formats/ConvertFileTask.h>
+#include "JavaSupport.h"
 
 namespace U2 {
 
-
-SnpEffSupport::SnpEffSupport(const QString& name, const QString& path) : ExternalTool(name, path)
+JavaSupport::JavaSupport(const QString &name, const QString &path)
+: ExternalTool(name, path)
 {
     if (AppContext::getMainWindow()) {
         icon = QIcon(":external_tool_support/images/cmdline.png");
         grayIcon = QIcon(":external_tool_support/images/cmdline_gray.png");
         warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
+    executableFileName = "java";
 
-    executableFileName="snpEff.jar";
-    //executableFileName="snpEffJava.bin";
+    validMessage = "Java(TM) SE Runtime Environment";
+    validationArguments << "-version";
 
-    validMessage="Usage: snpEff [eff] [options] genome_version [input_file]";
-    description=tr("<i>SnpEff</i>: Genetic variant annotation and effect prediction toolbox.");
+    description += tr("Java(TM) SE Runtime Environment");
+    versionRegExp = QRegExp("(\\d+.\\d+.\\d+)");
+    toolKitName="Java";
 
-    versionRegExp=QRegExp("version SnpEff (\\d+.\\d+)");
-    validationArguments << "-h";
-    toolKitName="SnpEff";
+    muted = true;
 
-
-    toolRunnerProgramm = ET_JAVA;
-    dependencies << ET_JAVA;
-
-
+    connect(this, SIGNAL(si_toolValidationStatusChanged(bool)), SLOT(sl_toolValidationStatusChanged(bool)));
 }
 
-}//namespace
+void JavaSupport::sl_toolValidationStatusChanged(bool isValid) {
+    Q_UNUSED(isValid);
+    ScriptingTool::onPathChanged(this, QStringList() << "-Xmx6G" << "-jar");
+}
 
+} // U2

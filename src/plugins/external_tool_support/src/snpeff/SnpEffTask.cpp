@@ -100,21 +100,21 @@ void SnpEffTask::prepare(){
 void SnpEffTask::run(){
     CHECK_OP(stateInfo, );
 
-    const QFileInfo resFile = QFileInfo(settings.outDir + "/" + GENE_FILE);
+    const QFileInfo resFile = QFileInfo(getResFileUrl());
     if (!resFile.exists()) {
         setError("Result file does not exist: " + resFile.absoluteFilePath());
         return ;
     }
-    resultUrl = settings.outDir + "/" + GENE_FILE;
+    resultUrl = getResFileUrl();
 }
 
 QString SnpEffTask::getSummaryUrl(){
     QString res = "";
-    const QFileInfo resFile = QFileInfo(getResFileUrl());
+    const QFileInfo resFile = QFileInfo(settings.outDir + "/" + SUMMARY_FILE);
     if (!resFile.exists()) {
         return res;
     }
-    res = getResFileUrl();
+    res = settings.outDir + "/" + SUMMARY_FILE;
     return res;
 }
 
@@ -131,29 +131,32 @@ QString SnpEffTask::getDataPath(){
 QStringList SnpEffTask::getParameters(U2OpStatus & /*os*/){
     QStringList res;
 
-    res << QString("-dataDir %1").arg( GUrlUtils::getQuotedString(getDataPath()) );
+    res << QString("-dataDir");
+    res << GUrlUtils::getQuotedString(getDataPath());
 
-    res << QString("-i %1").arg(settings.inFormat);
-    res << QString("-o %1").arg(settings.outFormat);
-    res << QString("-upDownStreamLen %1").arg(settings.updownLength);
+    res << QString("-i");
+    res << settings.inFormat;
 
-    if (settings.homohetero.size() != 0){
-        res << settings.homohetero;
+    res << QString("-o");
+    res << settings.outFormat;
+
+    res << QString("-upDownStreamLen");
+    res << settings.updownLength;
+
+    if(settings.canon){
+        res << QString("-canon");
     }
 
-    if (settings.seqChange.size() != 0){
-        res << settings.seqChange;
+    if(settings.hgvs){
+        res << QString("-hgvs");
     }
 
-    if (settings.filterOut.size() != 0){
-        QStringList pars = settings.filterOut.split(",");
-        foreach(const QString &p, pars){
-            res << p;
-        }
+    if(settings.lof){
+        res << QString("-lof");
     }
 
-    if (settings.chrPos.size() != 0){
-        res << settings.chrPos;
+    if(settings.motif){
+        res << QString("-motif");
     }
 
     res << QString("-v");
