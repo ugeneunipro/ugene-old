@@ -1228,6 +1228,33 @@ GUI_TEST_CLASS_DEFINITION(test_1548) {
     CHECK_SET_ERR(!sortAction->isEnabled(), "'Sort alignment by tree' is unexpectedly enabled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1554) {
+//    1. Open {data/samples/CLUSTALW/COI.aln}.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+//    2. Click a "Build Tree" button on the toolbar.
+//    Expected state: a "Build Philogenetic Tree" dialog appears.
+//    3. Set the out file location and click a "Build" button.
+//    Expected state: a tree view synchronized with msa appears.
+    QDir().mkpath(sandBoxDir + "test_1554");
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_1554/COI.nwk", 0, 0, true));
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Build Tree"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    4. Call a context menu of the tree view by the right mouse button clicking.
+//    Expected state: Tree view contect menu appears.
+    GTWidget::click(os, GTUtilsMsaEditor::getTreeView(os), Qt::RightButton);
+    QWidget *contextMenu = QApplication::activePopupWidget();
+    CHECK_SET_ERR(NULL != contextMenu, "There is no expected context menu");
+
+//    5. Click somewhere on the tree view to close menu.
+//    Expected state: The context menu closes, there are not any another menus.
+    GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() - QPoint(5, 0));
+    GTMouseDriver::click(os, Qt::LeftButton);
+    contextMenu = QApplication::activePopupWidget();
+    CHECK_SET_ERR(NULL == contextMenu, "There is an unexpected context menu");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1568 ) {
 //    1. Open "COI.aln".
 //    2. Add existing tree or build tree and display it in MSAEditor.
