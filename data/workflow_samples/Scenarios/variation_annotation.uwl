@@ -1,0 +1,137 @@
+#@UGENE_WORKFLOW
+#SnpEff is a variant annotation and effect prediction tool. It annotates and predicts the effects of genetic variants (such as amino acid changes).
+#A typical SnpEff use case would be:
+#-Input: The inputs are predicted variants (SNPs, insertions, deletions and MNPs). The input file is usually obtained as a result of a sequencing experiment, and it is usually in variant call format (VCF).
+#-Output: SnpEff analyzes the input variants. It annotates the variants and calculates the effects they produce on known genes (e.g. amino acid changes). A list of effects and annotations that SnpEff can calculate can be found here.
+
+
+
+workflow "Variation annotation with SnpEff"{
+
+    get-file-list {
+        type:get-file-list;
+        name:"File(s) with variations";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    seff {
+        type:seff;
+        name:"SnpEff annotation and filtration";
+        out-mode:1;
+    }
+
+    .actor-bindings {
+        get-file-list.out-url->seff.in-file
+    }
+
+    get-file-list.url->seff.in-file.url
+
+    .meta {
+        parameter-aliases {
+            get-file-list.url-in {
+                alias:in;
+            }
+            seff.canon {
+                alias:canon;
+            }
+            seff.custom-dir {
+                alias:out_dir;
+            }
+            seff.out-mode {
+                alias:mode;
+            }
+            seff.genome {
+                alias:genome;
+            }
+            seff.hgvs {
+                alias:hgvs;
+            }
+            seff.lof {
+                alias:lof;
+            }
+            seff.motif {
+                alias:motif;
+            }
+            seff.updown-length {
+                alias:upDown;
+            }
+        }
+        visual {
+            get-file-list {
+                pos:"-681 -511";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-url.angle:360;
+            }
+            seff {
+                pos:"-462 -512";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            get-file-list.out-url->seff.in-file {
+                text-pos:"-35.7578 -24";
+            }
+        }
+        wizard {
+            name:"SnpEff Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input variations";
+                parameters-area {
+                    group {
+                        title:"Input";
+                        get-file-list.url-in {
+                        }
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"SnpEff Parameters";
+                parameters-area {
+                    group {
+                        title:Parameters;
+                        label-size:200;
+                        seff.genome {
+                        }                       
+                    }
+                    group {
+                        title:Additional;
+                        label-size:200;
+                        type:hideable;
+                        seff.canon {
+                        }
+                        seff.hgvs {
+                        }
+                        seff.lof {
+                        }
+                        seff.motif {
+                        }
+                        seff.updown-length {
+                        }    
+                    }
+                }
+            }
+            page {
+                id:3;
+                title:"Output";
+                parameters-area {
+                    group {
+                        title:"Output folder";
+                        label-size:100;
+                        seff.out-mode {
+                        }
+                        seff.custom-dir {
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
