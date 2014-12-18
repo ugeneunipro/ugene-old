@@ -197,7 +197,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1622);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1628, "UGENE-3811");
     REGISTER_TEST(GUITest_regression_scenarios::test_1629);
-	REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_1640, "UGENE-3863");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_1640, "UGENE-3863");
     REGISTER_TEST(GUITest_regression_scenarios::test_1644);
     REGISTER_TEST(GUITest_regression_scenarios::test_1645);
     REGISTER_TEST(GUITest_regression_scenarios::test_1653);
@@ -212,7 +212,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_MAC(GUITest_regression_scenarios::test_1680, "Mac only");
     REGISTER_TEST(GUITest_regression_scenarios::test_1687);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1688, "big data");
-	REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_1693);//no tuxedo for windows
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_1693);//no tuxedo for windows
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1700);
     REGISTER_TEST_NOT_FOR_LINUX(GUITest_regression_scenarios::test_1701);//virtual display can not show 3d view
@@ -392,7 +392,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2690);
     REGISTER_TEST(GUITest_regression_scenarios::test_2701);
     REGISTER_TEST(GUITest_regression_scenarios::test_2709);
-	REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2711);
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2711);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2713, "https://local.ugene.unipro.ru/tracker/browse/UGENE-3706");
     REGISTER_TEST(GUITest_regression_scenarios::test_2726);
     REGISTER_TEST(GUITest_regression_scenarios::test_2729);

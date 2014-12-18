@@ -116,11 +116,11 @@ void GTUtilsMsaEditor::toggleCollapsingGroup(U2OpStatus &os, const QString &grou
     Q_UNUSED(os);
 
     const QRect sequenceNameRect = getSequenceNameRect(os, groupName);
-	 QPoint magicExpandButtonOffset;
+    QPoint magicExpandButtonOffset;
 #ifdef Q_OS_WIN
-	 magicExpandButtonOffset = QPoint(15, 10);
+    magicExpandButtonOffset = QPoint(15, 10);
 #else
-	 magicExpandButtonOffset = QPoint(15, 5);
+    magicExpandButtonOffset = QPoint(15, 5);
 #endif
     GTMouseDriver::moveTo(os, sequenceNameRect.topLeft() + magicExpandButtonOffset);
     GTMouseDriver::click(os);

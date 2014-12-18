@@ -29,7 +29,7 @@ namespace U2 {
 
 
 class SnpEffSetting{
-public:    
+public:
     SnpEffSetting(): inputUrl(""), outDir(""), inFormat(""), outFormat(""),genome(""), updownLength(""),homohetero(""), seqChange(""), filterOut(""), chrPos(""){}
 
     QString inputUrl;
