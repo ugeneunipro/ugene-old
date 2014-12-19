@@ -720,6 +720,9 @@ void AnnotatedDNAView::sl_onContextMenuRequested( const QPoint &scrollAreaPos ) 
     QMenu m;
 
     m.addAction( posSelectorAction );
+    if (annotationsView != NULL) {
+        m.addAction(annotationsView->renameAction);
+    }
     m.addSeparator( )->setObjectName( "FIRST_SEP" );
     clipb->addCopyMenu( &m );
     m.addSeparator( )->setObjectName( ADV_MENU_SECTION1_SEP );
