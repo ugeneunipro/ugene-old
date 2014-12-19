@@ -40,7 +40,6 @@
 #include <CrashHandler.h>
 
 #include <QtCore/QCoreApplication>
-#include <QtCore/QLibraryInfo>
 
 #define TR_SETTINGS_ROOT QString("test_runner/")
 
@@ -91,14 +90,6 @@ int main(int argc, char **argv)
     GTIMER(c1, t1, "main()->QApp::exec");
 
     GApplication app(argc, argv);
-
-#ifdef Q_OS_MAC
-    // A workaround to avoid using non-bundled plugins
-    const QString pluginsPath = QLibraryInfo::location(QLibraryInfo::PluginsPath);
-    QCoreApplication::removeLibraryPath(pluginsPath);
-    QCoreApplication::addLibraryPath("../../PlugIns");
-    QCoreApplication::addLibraryPath(pluginsPath);
-#endif
 
     AppContextImpl* appContext = AppContextImpl::getApplicationContext();
     appContext->setWorkingDirectoryPath(QCoreApplication::applicationDirPath());

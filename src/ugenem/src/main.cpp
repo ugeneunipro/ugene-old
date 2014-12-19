@@ -75,10 +75,8 @@ int main(int argc, char *argv[]){
 
 #ifdef Q_OS_MAC
     // A workaround to avoid using non-bundled plugins
-    const QString pluginsPath = QLibraryInfo::location(QLibraryInfo::PluginsPath);
-    QCoreApplication::removeLibraryPath(pluginsPath);
-    QCoreApplication::addLibraryPath("../../PlugIns");
-    QCoreApplication::addLibraryPath(pluginsPath);
+    QCoreApplication::removeLibraryPath(QLibraryInfo::location(QLibraryInfo::PluginsPath));
+    QCoreApplication::addLibraryPath("../PlugIns");
 #endif
 
     SendReportDialog dlg(message);
