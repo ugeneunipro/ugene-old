@@ -52,6 +52,7 @@ namespace U2 {
 class CircularViewRenderArea;
 class CircularAnnotationItem;
 class CircularAnnotationLabel;
+class CircularAnnotationRegionItem;
 struct CircularViewSettings;
 class TextItem;
 
@@ -184,6 +185,17 @@ protected:
     QPair<int,int> getVisibleRange() const;
 
 private:
+    int findOrbit(const QVector<U2Region>& location,
+                  const Annotation &a);
+    CircularAnnotationRegionItem* createAnnotationRegionItem(const U2Region &region, int seqLen, int yLevel,
+                                                             const AnnotationData &aData,
+                                                             int index);
+    QPainterPath createAnnotationArrowPath(float startAngle, float spanAngle, float dAlpha,
+                                           const QRect &outerRect, const QRect &innerRect, const QRect &middleRect,
+                                           bool complementary, bool isShort) const;
+    void removeRegionsOutOfRange(QVector<U2Region> &location, int seqLen) const;
+    void mergeCircularJunctoinRegion(QVector<U2Region> &location, int seqLen) const;
+
     static const int OUTER_ELLIPSE_SIZE;
     static const int ELLIPSE_DELTA;
     static const int INNER_ELLIPSE_SIZE;

@@ -275,6 +275,7 @@ QList<AnnotationSelectionData> CircularView::selectAnnotationByCoord( const QPoi
     foreach(CircularAnnotationItem* item, renderArea->circItems) {
         foreach(CircularAnnotationRegionItem* r, item->getRegions()) {
             CircularAnnotationLabel* lbl = r->getLabel();
+            SAFE_POINT(lbl != NULL, "NULL annotation label item!", res);
             if(lbl->isVisible() && lbl->contains(cp)) {
                 res.append(AnnotationSelectionData(item->getAnnotation(), item->getRegions().indexOf(r)));
                 return res;
@@ -622,7 +623,9 @@ void CircularViewRenderArea::drawAnnotationsSelection(QPainter& p) {
                 item->setSelected(true);
                 item->paint(&p, NULL, this);
                 foreach(const CircularAnnotationRegionItem* r, item->getRegions()) {
+                    SAFE_POINT(r != NULL, "NULL annotataion region item is CV!", );
                     CircularAnnotationLabel* lbl = r->getLabel();
+                    SAFE_POINT(lbl != NULL, "NULL annotataion label item is CV!", );
                     if(lbl->isVisible()) {
                         lbl->paint(&p, NULL, this);
                     }
@@ -923,12 +926,31 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
     }
 
     ADVSequenceObjectContext* ctx = view->getSequenceContext();
-
+    SAFE_POINT(ctx != NULL, "Sequence object context is NULL", );
     int seqLen = ctx->getSequenceLength();
 
     QVector<U2Region> location = aData.getRegions();
-    qStableSort(location.begin(), location.end(), isGreater);
+    removeRegionsOutOfRange(location, seqLen);
 
+    qStableSort(location.begin(), location.end(), isGreater);
+    int yLevel = findOrbit(location, a);
+
+    mergeCircularJunctoinRegion(location, seqLen);
+
+    QList<CircularAnnotationRegionItem*> regions;
+    foreach(const U2Region& r, location) {
+        CircularAnnotationRegionItem* regItem = createAnnotationRegionItem(r, seqLen, yLevel, aData, location.indexOf(r));
+        if (regItem != NULL) {
+            regions.append( regItem );
+        }
+    }
+
+    CircularAnnotationItem* item = new CircularAnnotationItem(a, regions, this);
+    circItems[a] = item;
+}
+
+int CircularViewRenderArea::findOrbit(const QVector<U2Region> &location,
+                                      const Annotation &a) {
     int yLevel = 0;
     bool yFind = false;
     for(; yLevel < regionY.count(); yLevel++) {
@@ -954,93 +976,119 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
     }
     annotationYLevel[a] = yLevel;
 
-    QList<CircularAnnotationRegionItem*> regions;
+    return yLevel;
+}
 
-    bool splitted = U1AnnotationUtils::isSplitted(aData.location, U2Region(0, ctx->getSequenceLength()));
-    bool splittedItemIsReady = false;
+CircularAnnotationRegionItem* CircularViewRenderArea::createAnnotationRegionItem(const U2Region &r, int seqLen,
+                                                                                 int yLevel,
+                                                                                 const AnnotationData &aData,
+                                                                                 int index) {
+    int totalLen = r.length;
+    float startAngle = (float)r.startPos / (float)seqLen * 360;
+    float spanAngle = (float)totalLen / (float)seqLen * 360;
 
-    foreach(const U2Region& r, location) {
-
-        int totalLen = 0;
-
-        if (splitted) {
-            if (!splittedItemIsReady) {
-                totalLen = r.length + location[1].length;
-                splittedItemIsReady = true;
-            } else {
-                break;
-            }
-        } else {
-            totalLen = r.length;
-        }
-
-        float startAngle = (float)r.startPos / (float)seqLen * 360;
-        float spanAngle = (float)totalLen / (float)seqLen * 360;
-
-
-        //cut annotation border if dna is linear
-        if(!circularView->isCircularTopology()) {
-            spanAngle = qMin(spanAngle, (float)(360-startAngle));
-        }
-
-        startAngle+=rotationDegree;
-
-        QPainterPath path;
-        QRect outerRect(-outerEllipseSize/2 - yLevel * ellipseDelta/2, -outerEllipseSize/2 - yLevel * ellipseDelta/2, outerEllipseSize + yLevel * ellipseDelta, outerEllipseSize + yLevel * ellipseDelta);
-        QRect innerRect(-innerEllipseSize/2 - yLevel * ellipseDelta/2, -innerEllipseSize/2 - yLevel * ellipseDelta/2, innerEllipseSize + yLevel * ellipseDelta, innerEllipseSize + yLevel * ellipseDelta);
-        QRect middleRect(-middleEllipseSize/2 - yLevel * ellipseDelta/2, -middleEllipseSize/2 - yLevel * ellipseDelta/2, middleEllipseSize + yLevel * ellipseDelta, middleEllipseSize + yLevel * ellipseDelta);
-        arrowLength = qMin(arrowLength, ARROW_LENGTH);
-        float dAlpha = 360 * arrowLength / (float)PI / (outerEllipseSize + innerEllipseSize + yLevel*ellipseDelta);
-        bool isShort = totalLen / (float)seqLen * 360 < dAlpha;
-
-        float regionLen = spanAngle*PI/180 * outerRect.height()/2;
-        if(regionLen < REGION_MIN_LEN) {
-            spanAngle = (float)REGION_MIN_LEN / (PI*outerRect.height()) * 360;
-        }
-
-        qreal centerPercent = 0;
-        if(isShort) {
-            path.moveTo(outerRect.width()/2 * cos(-startAngle / 180.0 * PI),-outerRect.height()/2 * sin(-startAngle / 180.0 * PI));
-            path.arcTo(outerRect, -startAngle, -spanAngle);
-            path.arcTo(innerRect, -startAngle-spanAngle, spanAngle);
-            path.closeSubpath();
-        } else {
-            if(aData.getStrand().isCompementary()) {
-                path.moveTo(outerRect.width()/2 * cos((startAngle + dAlpha) / 180.0 * PI),
-                    outerRect.height()/2 * sin((startAngle + dAlpha) / 180.0 * PI));
-                path.lineTo((outerRect.width()/2 + arrowHeightDelta) * cos((startAngle + dAlpha) / 180.0 * PI),
-                    (outerRect.width()/2 + arrowHeightDelta) * sin((startAngle + dAlpha) / 180.0 * PI));
-                path.lineTo(middleRect.width()/2 * cos(startAngle / 180.0 * PI),
-                    middleRect.height()/2 * sin(startAngle/ 180.0 * PI));
-                path.lineTo((innerRect.width()/2 - arrowHeightDelta) * cos((startAngle + dAlpha) / 180.0 * PI),
-                    (innerRect.width()/2 - arrowHeightDelta) * sin((startAngle + dAlpha) / 180.0 * PI));
-                path.arcTo(innerRect, -(startAngle + dAlpha), -(spanAngle - dAlpha));
-                path.arcTo(outerRect, -startAngle - spanAngle, spanAngle - dAlpha);
-                path.closeSubpath();
-            } else {
-                path.moveTo(outerRect.width()/2 * cos(startAngle / 180.0 * PI),
-                    outerRect.height()/2 * sin(startAngle / 180.0 * PI));
-                path.arcTo(outerRect, -startAngle, -(spanAngle - dAlpha));
-                path.lineTo((outerRect.width()/2 + arrowHeightDelta) * cos((startAngle + spanAngle - dAlpha) / 180.0 * PI),
-                        (outerRect.height()/2 + arrowHeightDelta) * sin((startAngle + spanAngle - dAlpha) / 180.0 * PI));
-                path.lineTo(middleRect.width()/2 * cos((startAngle + spanAngle) / 180.0 * PI),
-                        middleRect.height()/2 * sin((startAngle + spanAngle)/ 180.0 * PI));
-                path.lineTo((innerRect.width()/2 - arrowHeightDelta) * cos((-startAngle - (spanAngle - dAlpha)) / 180.0 * PI),
-                        (innerRect.height()/2 - arrowHeightDelta) * sin((startAngle + spanAngle - dAlpha) / 180.0 * PI));
-                path.arcTo(innerRect, -startAngle - (spanAngle - dAlpha), spanAngle - dAlpha);
-                path.closeSubpath();
-            }
-            qreal center = PI * (middleRect.width() / 2) * (spanAngle - dAlpha) / 360;
-            centerPercent = center / path.length();
-        }
-        CircularAnnotationRegionItem* regItem = new CircularAnnotationRegionItem(path, isShort, location.indexOf(r));
-        regItem->setArrowCenterPercentage(centerPercent);
-        regions.append( regItem );
+    //cut annotation border if dna is linear
+    if(!circularView->isCircularTopology()) {
+        spanAngle = qMin(spanAngle, (float)(360-startAngle));
     }
 
-    CircularAnnotationItem* item = new CircularAnnotationItem(a, regions, this);
-    circItems[a] = item;
+    startAngle+=rotationDegree;
+
+    QRect outerRect(-outerEllipseSize/2 - yLevel * ellipseDelta/2, -outerEllipseSize/2 - yLevel * ellipseDelta/2, outerEllipseSize + yLevel * ellipseDelta, outerEllipseSize + yLevel * ellipseDelta);
+    QRect innerRect(-innerEllipseSize/2 - yLevel * ellipseDelta/2, -innerEllipseSize/2 - yLevel * ellipseDelta/2, innerEllipseSize + yLevel * ellipseDelta, innerEllipseSize + yLevel * ellipseDelta);
+    QRect middleRect(-middleEllipseSize/2 - yLevel * ellipseDelta/2, -middleEllipseSize/2 - yLevel * ellipseDelta/2, middleEllipseSize + yLevel * ellipseDelta, middleEllipseSize + yLevel * ellipseDelta);
+    arrowLength = qMin(arrowLength, ARROW_LENGTH);
+    float dAlpha = 360 * arrowLength / (float)PI / (outerEllipseSize + innerEllipseSize + yLevel*ellipseDelta);
+    bool isShort = totalLen / (float)seqLen * 360 < dAlpha;
+
+    float regionLen = spanAngle*PI/180 * outerRect.height()/2;
+    if(regionLen < REGION_MIN_LEN) {
+        spanAngle = (float)REGION_MIN_LEN / (PI*outerRect.height()) * 360;
+    }
+
+    QPainterPath path = createAnnotationArrowPath(startAngle, spanAngle, dAlpha,
+                                     outerRect, innerRect, middleRect,
+                                     aData.getStrand().isCompementary(), isShort);
+    CHECK(path.length() != 0, NULL);
+    qreal centerPercent = 0;
+    if (!isShort) {
+        qreal center = PI * (middleRect.width() / 2) * (spanAngle - dAlpha) / 360;
+        centerPercent = center / path.length();
+    }
+
+    CircularAnnotationRegionItem* regItem = new CircularAnnotationRegionItem(path, isShort, index);
+    CHECK(regItem != NULL, NULL);
+    regItem->setArrowCenterPercentage(centerPercent);
+
+    return regItem;
 }
+
+QPainterPath CircularViewRenderArea::createAnnotationArrowPath(float startAngle, float spanAngle, float dAlpha,
+                                                               const QRect &outerRect, const QRect &innerRect, const QRect &middleRect,
+                                                               bool complementary, bool isShort) const {
+    bool moreThan360 = spanAngle > 360;
+    QPainterPath path;
+    if(isShort) {
+        path.moveTo(outerRect.width()/2 * cos(-startAngle / 180.0 * PI),-outerRect.height()/2 * sin(-startAngle / 180.0 * PI));
+        path.arcTo(outerRect, -startAngle, -spanAngle);
+        path.arcTo(innerRect, -startAngle-spanAngle, spanAngle);
+        path.closeSubpath();
+    } else {
+        if(complementary) {
+            path.moveTo(outerRect.width()/2 * cos((startAngle + dAlpha) / 180.0 * PI),
+                outerRect.height()/2 * sin((startAngle + dAlpha) / 180.0 * PI));
+            path.lineTo((outerRect.width()/2 + arrowHeightDelta) * cos((startAngle + dAlpha) / 180.0 * PI),
+                (outerRect.width()/2 + arrowHeightDelta) * sin((startAngle + dAlpha) / 180.0 * PI));
+            path.lineTo(middleRect.width()/2 * cos(startAngle / 180.0 * PI),
+                middleRect.height()/2 * sin(startAngle/ 180.0 * PI));
+            path.lineTo((innerRect.width()/2 - arrowHeightDelta) * cos((startAngle + dAlpha) / 180.0 * PI),
+                (innerRect.width()/2 - arrowHeightDelta) * sin((startAngle + dAlpha) / 180.0 * PI));
+
+            if (moreThan360) {
+                path.setFillRule(Qt::WindingFill);
+                path.arcTo(innerRect, -(startAngle + dAlpha), -(spanAngle - 360 - dAlpha));
+                path.arcTo(innerRect, -startAngle - spanAngle + 360, -(360 - dAlpha));
+
+                path.arcTo(outerRect, -startAngle - spanAngle + dAlpha, 360 - dAlpha);
+                path.arcTo(outerRect, -startAngle - spanAngle + 360, spanAngle - 360 - dAlpha);
+            } else {
+                path.arcTo(innerRect, -(startAngle + dAlpha), -(spanAngle - dAlpha));
+                path.arcTo(outerRect, -startAngle - spanAngle, spanAngle - dAlpha);
+            }
+            path.closeSubpath();
+        } else {
+            path.moveTo(outerRect.width()/2 * cos(startAngle / 180.0 * PI),
+                outerRect.height()/2 * sin(startAngle / 180.0 * PI));
+
+            if (moreThan360) {
+                path.setFillRule(Qt::WindingFill);
+                path.arcTo(outerRect, -startAngle, -(spanAngle - 360));
+                path.arcTo(outerRect, -startAngle - (spanAngle - 360), -(360 - dAlpha));
+            } else {
+                path.arcTo(outerRect, -startAngle, -(spanAngle - dAlpha));
+            }
+
+            path.lineTo((outerRect.width()/2 + arrowHeightDelta) * cos((startAngle + spanAngle - dAlpha) / 180.0 * PI),
+                    (outerRect.height()/2 + arrowHeightDelta) * sin((startAngle + spanAngle - dAlpha) / 180.0 * PI));
+            path.lineTo(middleRect.width()/2 * cos((startAngle + spanAngle) / 180.0 * PI),
+                    middleRect.height()/2 * sin((startAngle + spanAngle)/ 180.0 * PI));
+            path.lineTo((innerRect.width()/2 - arrowHeightDelta) * cos((-startAngle - (spanAngle - dAlpha)) / 180.0 * PI),
+                    (innerRect.height()/2 - arrowHeightDelta) * sin((startAngle + spanAngle - dAlpha) / 180.0 * PI));
+
+            if (moreThan360) {
+                path.arcTo(innerRect, -startAngle - spanAngle + dAlpha, 360 - dAlpha);
+                path.arcTo(innerRect, -startAngle - spanAngle + 360, spanAngle - 360);
+
+            } else {
+                path.arcTo(innerRect, - startAngle - (spanAngle - dAlpha), spanAngle - dAlpha);
+            }
+
+            path.closeSubpath();
+        }
+    }
+    return path;
+}
+
 
 void CircularViewRenderArea::buildAnnotationLabel( const QFont &font, const Annotation &a,
                                                    const AnnotationSettings *as, bool isAutoAnnotation) {
@@ -1055,14 +1103,15 @@ void CircularViewRenderArea::buildAnnotationLabel( const QFont &font, const Anno
 
     ADVSequenceObjectContext *ctx = view->getSequenceContext( );
     U2Region seqReg( 0, ctx->getSequenceLength( ) );
-    bool splitted = U1AnnotationUtils::isSplitted( aData.location, seqReg );
 
     int seqLen = seqReg.length;
-    const QVector<U2Region> &location = aData.getRegions( );
+    QVector<U2Region> location = aData.getRegions( );
+    removeRegionsOutOfRange(location, seqLen);
+
+    qStableSort(location.begin(), location.end(), isGreater);
+    mergeCircularJunctoinRegion(location, seqLen);
+
     for( int r = 0; r < location.count( ); r++ ) {
-        if ( splitted && 0 != r ) {
-            break;
-        }
         CircularAnnotationLabel *label = new CircularAnnotationLabel( a, isAutoAnnotation, r,
                                                                       seqLen, font, this );
         labelList.append( label );
@@ -1151,6 +1200,25 @@ void CircularViewRenderArea::evaluateLabelPositions() {
 
 CircularViewRenderArea::~CircularViewRenderArea() {
     qDeleteAll(circItems.values());
+}
+
+void CircularViewRenderArea::removeRegionsOutOfRange(QVector<U2Region> &location, int seqLen) const {
+    for (int i = 0; i < location.size(); i++) {
+        if (location[i].endPos() > seqLen) {
+            location.remove(i);
+            i--;
+        }
+    }
+}
+
+void CircularViewRenderArea::mergeCircularJunctoinRegion(QVector<U2Region> &location, int seqLen) const {
+    if (location.size() >= 2) {
+        if (location.first().endPos() == seqLen && location.last().startPos == 0 && circularView->isCircularTopology()) {
+            location.first().length += location.last().length;
+            location.remove(location.size() - 1);
+        }
+    }
+
 }
 
 }//namespace
