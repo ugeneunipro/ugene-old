@@ -35,9 +35,9 @@ namespace U2 {
 // :end -> end of the region
 // :start -> start of the region  (- max read size)
 // :realStart -> real start of the region
-const QString MysqlSingleTableAssemblyAdapter::DEFAULT_RANGE_CONDITION_CHECK = " (gstart < :start AND gstart + elen > :end) ";
-const QString MysqlSingleTableAssemblyAdapter::RTM_RANGE_CONDITION_CHECK = " ((gstart < :start AND gstart > :end) AND gstart + elen > :realStart) ";
-const QString MysqlSingleTableAssemblyAdapter::RTM_RANGE_CONDITION_CHECK_COUNT = "  (gstart < :start AND gstart > :end) ";
+const QString MysqlSingleTableAssemblyAdapter::DEFAULT_RANGE_CONDITION_CHECK = " (gstart < :end AND gstart + elen > :start) ";
+const QString MysqlSingleTableAssemblyAdapter::RTM_RANGE_CONDITION_CHECK = " ((gstart < :end AND gstart > :start) AND gstart + elen > :realStart) ";
+const QString MysqlSingleTableAssemblyAdapter::RTM_RANGE_CONDITION_CHECK_COUNT = "  (gstart < :end AND gstart > :start) ";
 const QString MysqlSingleTableAssemblyAdapter::ALL_READ_FIELDS = " id, prow, gstart, elen, flags, mq, data";
 const QString MysqlSingleTableAssemblyAdapter::SORTED_READS = " ORDER BY gstart ASC ";
 
