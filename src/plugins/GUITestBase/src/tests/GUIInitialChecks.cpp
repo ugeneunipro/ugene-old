@@ -68,6 +68,9 @@ GUI_TEST_CLASS_DEFINITION(test_0000) {
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["alt"]);
 #endif
+#ifdef Q_OS_MAC
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
+#endif
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {

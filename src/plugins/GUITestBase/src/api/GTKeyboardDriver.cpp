@@ -36,7 +36,11 @@ namespace U2 {
 void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key, int modifiers)
 {
     GT_CHECK(key != 0, "key = 0");
-
+#ifdef Q_OS_MAC
+    if (modifiers==GTKeyboardDriver::key["ctrl"]){
+        modifiers=GTKeyboardDriver::key["cmd"];
+    }
+#endif
     keyPress(os, key, modifiers);
     keyRelease(os, key, modifiers);
 }

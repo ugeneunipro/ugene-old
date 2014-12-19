@@ -101,6 +101,9 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
 #define GT_METHOD_NAME "keyPress_int"
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 {
+    if (key==GTKeyboardDriver::key["ctrl"])
+        key=GTKeyboardDriver::key["cmd"];
+
     if (modifiers) {
         CGEventRef event = CGEventCreateKeyboardEvent(NULL, modifiers, true);
         GT_CHECK(event != NULL, "Can't create event");
@@ -186,6 +189,9 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, char key, int modifiers)
 #define GT_METHOD_NAME "keyRelease_int"
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 {
+    if (key==GTKeyboardDriver::key["ctrl"])
+        key=GTKeyboardDriver::key["cmd"];
+
     CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, false);
     GT_CHECK(event != NULL, "Can't create event");
 

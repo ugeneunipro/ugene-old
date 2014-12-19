@@ -1760,7 +1760,7 @@ GUI_TEST_CLASS_DEFINITION(test_1640) {
     //Expected state: all sequences of each selected column are selected
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     QString chars = GTClipboard::text(os);
-    CHECK_SET_ERR(chars == "TCAGTCTATTAA", "Wrong selection");
+    CHECK_SET_ERR(chars == "TCAGTCTATTAA", "Wrong selection: " + chars);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1643) {
@@ -6019,6 +6019,7 @@ GUI_TEST_CLASS_DEFINITION(test_2437) {
     GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(os, new Scenario()));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "BLAST" << "BLAST Search"));
     GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2449 ) {
@@ -9116,23 +9117,8 @@ GUI_TEST_CLASS_DEFINITION(test_3187) {
     QDir().mkpath(p.outputDirPath);
     GTUtilsDialog::waitForDialog(os, new FormatDBSupportRunDialogFiller(os, p));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "BLAST" << "FormatDB"));
+    GTUtilsNotifications::waitForNotification(os, false);
     GTMenu::showMainMenu(os, MWMENU_TOOLS);
-
-    //GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTGlobals::sleep();
-    QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
-    QPoint botRight = mw->rect().bottomRight();
-    botRight.setX(botRight.x() - 7);
-    botRight.setY(botRight.y() + 10);
-
-    GTMouseDriver::moveTo(os, botRight);
-    GTMouseDriver::doubleClick(os);
-
-    botRight.setX(botRight.x() - 35);
-    botRight.setY(botRight.y() - 55);
-
-    GTMouseDriver::moveTo(os, botRight);
-    GTMouseDriver::click(os);
 
     QWidget *reportWidget = GTWidget::findWidget(os, "qt_scrollarea_viewport");
     GTMouseDriver::moveTo(os, reportWidget->rect().center());
@@ -11067,6 +11053,7 @@ GUI_TEST_CLASS_DEFINITION(test_3557) {
     GTFileDialog::openFile(os, testDir + "_common_data/muscul4/", "prefab_1_ref.aln");
     GTWidget::click(os, GTAction::button(os, "Enable collapsing"));
     GTUtilsMSAEditorSequenceArea::scrollToBottom(os);
+    GTGlobals::sleep(500);
 
     GTUtilsMSAEditorSequenceArea::selectSequence(os, "2|1a0cA|gi|32470780");
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
@@ -11205,6 +11192,7 @@ GUI_TEST_CLASS_DEFINITION(test_3585) {
     // Expected state : "DownloadRemoteDocuments" task has been started
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "P05067", 7));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB);
+    GTGlobals::sleep(500);
     GTUtilsTaskTreeView::checkTask(os, "Load DAS Documents");
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsLog::check(os, l);
@@ -11613,10 +11601,16 @@ GUI_TEST_CLASS_DEFINITION(test_3640) {
     QModelIndex humanT1Doc = GTUtilsProjectTreeView::findIndex(os, "human_T1.fa", options);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, humanT1Doc));
     GTMouseDriver::click(os);
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "genomes"));
-    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "genomes"));    
+    int key = GTKeyboardDriver::key["ctrl"];
+//#ifdef Q_OS_MAC
+//    key = GTKeyboardDriver::key["cmd"];
+//#else
+//    key = GTKeyboardDriver::key["ctrl"];
+//#endif
+    GTKeyboardDriver::keyPress(os, key);
     GTMouseDriver::click(os);
-    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keyRelease(os, key);
 
     //4. Remove selected items via "del" key.
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
