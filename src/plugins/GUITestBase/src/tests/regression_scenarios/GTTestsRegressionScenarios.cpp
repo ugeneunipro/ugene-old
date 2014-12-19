@@ -1163,6 +1163,34 @@ GUI_TEST_CLASS_DEFINITION(test_1508) {
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
 }
+GUI_TEST_CLASS_DEFINITION(test_1511) {
+/*
+ * 1. Open "data/COI.aln" in MSA view
+ * 2. Select some region in Sequence Area
+ * 3. Press Esc key
+ * Expected state: selection is removed
+ * 4. Select some sequences in Name Area
+ * 5. Press Esc key
+ * Expected state: selection is removed
+*/
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(2,2), QPoint(15,6));
+    int numSelectedSequences = GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os);
+    CHECK_SET_ERR(numSelectedSequences == 5, "There is no selection in MSA, but expected (check #1)");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+    GTGlobals::sleep(200);
+    numSelectedSequences = GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os);
+    CHECK_SET_ERR(numSelectedSequences == 0, "There is selection in MSA, but not expected (check #1)");
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5,2), QPoint(-5,6));
+    numSelectedSequences = GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os);
+    CHECK_SET_ERR(numSelectedSequences == 5, "There is no selection in MSA, but expected (check #2)");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+    GTGlobals::sleep(200);
+    numSelectedSequences = GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os);
+    CHECK_SET_ERR(numSelectedSequences == 0, "There is selection in MSA, but not expected(check #2)");
+}
 
 GUI_TEST_CLASS_DEFINITION(test_1527) {
     //1. Open COI2.aln as an alignment
