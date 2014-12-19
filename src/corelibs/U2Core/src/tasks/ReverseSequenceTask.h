@@ -32,22 +32,54 @@ class AnnotationTableObject;
 class DNATranslation;
 class DNASequenceSelection;
 
-class U2CORE_EXPORT ReverseSequenceTask : public Task
+class U2CORE_EXPORT ReverseComplementSequenceTask : public Task
 {
     Q_OBJECT
 public:
-                                    ReverseSequenceTask( U2SequenceObject *dnaObj,
-                                        const QList<AnnotationTableObject *> &annotations,
-                                        DNASequenceSelection *selection, DNATranslation *complTT );
-    ReportResult                    report( );
-
+    ReverseComplementSequenceTask( U2SequenceObject *dnaObj,
+                                   const QList<AnnotationTableObject *> &annotations,
+                                   DNASequenceSelection *selection,
+                                   DNATranslation *complTT );
 private:
     U2SequenceObject *              seqObj;
     QList<AnnotationTableObject *>    aObjs;
     DNASequenceSelection *          selection;
-    DNATranslation *                complTr;
+    DNATranslation *                complTT;
 
 };
+
+class U2CORE_EXPORT ReverseSequenceTask : public Task
+{
+    Q_OBJECT
+public:
+    ReverseSequenceTask( U2SequenceObject *seqObj,
+                         const QList< AnnotationTableObject* > &annotations,
+                         DNASequenceSelection *selection);
+    ReportResult                    report( );
+
+private:
+    U2SequenceObject*               seqObj;
+    QList< AnnotationTableObject* > aObjs;
+    DNASequenceSelection*           selection;
+};
+
+class U2CORE_EXPORT ComplementSequenceTask : public Task
+{
+    Q_OBJECT
+public:
+    ComplementSequenceTask( U2SequenceObject *seqObj,
+                            const QList< AnnotationTableObject* > &annotations,
+                            DNASequenceSelection *selection,
+                            DNATranslation *complTT);
+    ReportResult                    report( );
+
+private:
+    U2SequenceObject*               seqObj;
+    QList< AnnotationTableObject* > aObjs;
+    DNASequenceSelection*           selection;
+    DNATranslation*                 complTT;
+};
+
 
 } // namespace U2
 

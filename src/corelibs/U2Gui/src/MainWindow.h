@@ -115,6 +115,8 @@ class QMainWindow;
 #define ACTION_EDIT_REMOVE_SUBSEQUENCE              "action_edit_remove_sub_sequences"
 #define ACTION_EDIT_REPLACE_SUBSEQUENCE             "action_edit_replace_sub_sequences"
 #define ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE     "action_edit_reserve_complement_sequences"
+#define ACTION_EDIT_RESERVE_SEQUENCE                "action_edit_reserve_sequences"
+#define ACTION_EDIT_COMPLEMENT_SEQUENCE             "action_edit_complement_sequences"
 #define ACTION_EDIT_SELECT_SEQUENCE_FROM_VIEW       "action_edit_select_sequences_from_view"
 
 #define ACTION_BOOKMARK_TREE_VIEW                   "action_bookmark_tree_view"

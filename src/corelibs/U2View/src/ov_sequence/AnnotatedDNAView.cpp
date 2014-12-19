@@ -160,9 +160,17 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     removeSequenceObjectAction->setObjectName(ACTION_EDIT_SELECT_SEQUENCE_FROM_VIEW);
     connect(removeSequenceObjectAction, SIGNAL(triggered()), SLOT(sl_removeSelectedSequenceObject()));
 
-    reverseSequenceAction = new QAction(tr("Reverse complement sequence"), this);
-    reverseSequenceAction->setObjectName(ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE);
+    reverseComplementSequenceAction = new QAction(tr("Reverse complement sequence"), this);
+    reverseComplementSequenceAction->setObjectName(ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE);
+    connect(reverseComplementSequenceAction, SIGNAL(triggered()), SLOT(sl_reverseComplementSequence()));
+
+    reverseSequenceAction = new QAction(tr("Reverse sequence"), this);
+    reverseSequenceAction->setObjectName(ACTION_EDIT_RESERVE_SEQUENCE);
     connect(reverseSequenceAction, SIGNAL(triggered()), SLOT(sl_reverseSequence()));
+
+    complementSequenceAction = new QAction(tr("Complement sequence"), this);
+    complementSequenceAction->setObjectName(ACTION_EDIT_COMPLEMENT_SEQUENCE);
+    connect(complementSequenceAction, SIGNAL(triggered()), SLOT(sl_complementSequence()));
 
     SecStructPredictViewAction::createAction(this);
 }
@@ -582,11 +590,15 @@ void AnnotatedDNAView::addEditMenu(QMenu* m) {
     }
     rm->addAction(removeSequencePart);
     if (seqCtx->getComplementTT() != NULL) {
-        reverseSequenceAction->setText(tr("Reverse complement sequence"));
+        reverseComplementSequenceAction->setEnabled(true);
+        complementSequenceAction->setEnabled(true);
     } else {
-        reverseSequenceAction->setText(tr("Reverse sequence"));
+        reverseComplementSequenceAction->setEnabled(false);
+        complementSequenceAction->setEnabled(false);
     }
+    rm->addAction(reverseComplementSequenceAction);
     rm->addAction(reverseSequenceAction);
+    rm->addAction(complementSequenceAction);
 }
 
 Task* AnnotatedDNAView::updateViewTask(const QString& stateName, const QVariantMap& stateData) {
@@ -1255,9 +1267,15 @@ void AnnotatedDNAView::sl_sequenceModifyTaskStateChanged( ) {
     if ( t->getState( ) == Task::State_Finished && !( t->hasError( ) || t->isCanceled( ) ) ) {
         updateAutoAnnotations( );
         // TODO: there must be better way to do this
-        ReverseSequenceTask *reverseTask = qobject_cast<ReverseSequenceTask *>( t );
+        bool reverseComplementTask = false;
+        if (qobject_cast<ReverseComplementSequenceTask*>(t) != NULL ||
+                qobject_cast<ReverseSequenceTask*>(t) != NULL ||
+                qobject_cast<ComplementSequenceTask*>(t) != NULL) {
+            reverseComplementTask = true;
+        }
+
         ADVSequenceObjectContext *seqCtx = getSequenceInFocus( );
-        if ( NULL != reverseTask && NULL != seqCtx ) {
+        if ( reverseComplementTask && NULL != seqCtx ) {
             const QVector<U2Region> regions = seqCtx->getSequenceSelection( )->getSelectedRegions( );
             if ( regions.count( ) == 1 ) {
                 const U2Region r = regions.first( );
@@ -1285,19 +1303,39 @@ void AnnotatedDNAView::onObjectRenamed(GObject* obj, const QString& oldName) {
     }
 }
 
-void AnnotatedDNAView::sl_reverseSequence( ) {
-    ADVSequenceObjectContext *seqCtx = getSequenceInFocus( );
-    U2SequenceObject *seqObj = seqCtx->getSequenceObject( );
-    QList<AnnotationTableObject *> annotations = seqCtx->getAnnotationObjects( false ).toList( );
+void AnnotatedDNAView::sl_reverseComplementSequence() {
+    reverseComplementSequence();
+}
 
-    DNATranslation *complTr = NULL;
-    if ( seqObj->getAlphabet( )->isNucleic( ) ) {
-        complTr = seqCtx->getComplementTT( );
+void AnnotatedDNAView::sl_reverseSequence() {
+    reverseComplementSequence(true, false);
+}
+
+void AnnotatedDNAView::sl_complementSequence() {
+    reverseComplementSequence(false, true);
+}
+
+void AnnotatedDNAView::reverseComplementSequence(bool reverse, bool complement) {
+    ADVSequenceObjectContext *seqCtx = getSequenceInFocus();
+    U2SequenceObject *seqObj = seqCtx->getSequenceObject();
+    QList<AnnotationTableObject *> annotations = seqCtx->getAnnotationObjects(false).toList();
+
+    DNATranslation *complTT = NULL;
+    if (seqObj->getAlphabet()->isNucleic()) {
+        complTT = seqCtx->getComplementTT();
     }
 
-    Task *t = new ReverseSequenceTask( seqObj,annotations, seqCtx->getSequenceSelection( ), complTr );
-    AppContext::getTaskScheduler( )->registerTopLevelTask( t );
-    connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_sequenceModifyTaskStateChanged( ) ) );
+    Task *t = NULL;
+    if (reverse && complement) {
+        t = new ReverseComplementSequenceTask( seqObj,annotations, seqCtx->getSequenceSelection(), complTT);
+    } else if (reverse) {
+        t = new ReverseSequenceTask( seqObj,annotations, seqCtx->getSequenceSelection());
+    } else if (complement) {
+        t = new ComplementSequenceTask( seqObj,annotations, seqCtx->getSequenceSelection(), complTT);
+    }
+
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_sequenceModifyTaskStateChanged()));
 }
 
 bool AnnotatedDNAView::areAnnotationsInRange( const QList<Annotation> &toCheck ) {

@@ -19,38 +19,79 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/TextUtils.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/L10n.h>
+#include <U2Core/SequenceWalkerTask.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "ReverseSequenceTask.h"
 
 namespace U2 {
 
-ReverseSequenceTask::ReverseSequenceTask( U2SequenceObject *dObj,
-    const QList<AnnotationTableObject *> &annotations, DNASequenceSelection *s, DNATranslation *transl )
-    : Task( "ReverseSequenceTask", TaskFlags_NR_FOSCOE ), seqObj( dObj ), aObjs( annotations ),
-    selection( s ), complTr( transl )
-{
+const int CHUNK_SIZE = 1024*256;
 
+ReverseComplementSequenceTask::ReverseComplementSequenceTask(U2SequenceObject *dObj,
+                                                             const QList<AnnotationTableObject *> &annotations,
+                                                             DNASequenceSelection *s,
+                                                             DNATranslation *transl )
+    : Task( tr("Reverse Complement Sequence Task"), TaskFlags_NR_FOSE_COSC ),
+      seqObj(dObj),
+      aObjs(annotations),
+      selection(s),
+      complTT(transl)
+{
+    SAFE_POINT_EXT(seqObj != NULL, setError(L10N::nullPointerError("sequence object")), );
+    addSubTask(new ReverseSequenceTask(seqObj, aObjs, selection));
+    addSubTask(new ComplementSequenceTask(seqObj, aObjs, selection, complTT));
+}
+
+ReverseSequenceTask::ReverseSequenceTask(U2SequenceObject *seqObj,
+                                         const QList<AnnotationTableObject *> &annotations,
+                                         DNASequenceSelection *selection)
+    : Task( tr("Reverse Sequence Task"), TaskFlags_NR_FOSE_COSC),
+      seqObj(seqObj),
+      aObjs(annotations),
+      selection(selection)
+{
+    SAFE_POINT_EXT(seqObj != NULL, setError(L10N::nullPointerError("sequence object")), );
 }
 
 Task::ReportResult ReverseSequenceTask::report( ) {
-    DNASequence sequence = seqObj->getWholeSequence( );
-    if ( sequence.seq.isEmpty( ) ) {
+    if (seqObj->getSequenceLength() == 0) {
         return ReportResult_Finished;
     }
 
-    char *data = sequence.seq.data( );
-    const int len = sequence.length( );
-    if ( NULL != complTr ) {
-        complTr->translate( data, len );
-    }
-    TextUtils::reverse( data, len );
-    seqObj->setWholeSequence( sequence );
+    QVector<U2Region> regionsForward = SequenceWalkerTask::splitRange(U2Region(0, seqObj->getSequenceLength()),
+                                                               CHUNK_SIZE, 0, 0, false);
+    QVector<U2Region> regionsReverse = SequenceWalkerTask::splitRange(U2Region(0, seqObj->getSequenceLength()),
+                                                               CHUNK_SIZE, 0, 0, true);
+    SAFE_POINT_EXT(regionsForward.size() == regionsReverse.size(),
+                   setError("Splitting sequence range worked wrong"), ReportResult_Finished);
 
+    U2OpStatusImpl os;
+    int size = regionsForward.size();
+    for (int i = 0 ; i < (size + 1)/2; i++) {
+        QByteArray buffer = seqObj->getSequenceData(regionsForward[i]);
+
+        QByteArray revSeq = seqObj->getSequenceData(regionsReverse[size - 1 - i]);
+        TextUtils::reverse(revSeq.data(), revSeq.size());
+        seqObj->replaceRegion(regionsForward[i], DNASequence(revSeq), os);
+
+        TextUtils::reverse(buffer.data(), buffer.size());
+        seqObj->replaceRegion(regionsReverse[size - 1 - i], DNASequence(buffer), os);
+
+        if (os.hasError()) {
+            setError(os.getError());
+            return ReportResult_Finished;
+        }
+    }
+
+    const int len = seqObj->getSequenceLength();
     // mirror selection
     if ( NULL != selection ) {
         QVector<U2Region> regions = selection->getSelectedRegions( );
@@ -62,15 +103,55 @@ Task::ReportResult ReverseSequenceTask::report( ) {
     // fix annotation locations
     foreach ( AnnotationTableObject *aObj, aObjs ) {
         foreach ( Annotation a, aObj->getAnnotations( ) ) {
-            if ( NULL != complTr ) {
-                U2Strand strand = a.getStrand( );
-                a.setStrand( strand == U2Strand::Direct
-                    ? U2Strand::Complementary : U2Strand::Direct );
-            }
             U2Location location = a.getLocation( );
             U2Region::mirror( len, location->regions );
             U2Region::reverse( location->regions );
             a.setLocation( location );
+        }
+    }
+
+    return ReportResult_Finished;
+}
+
+ComplementSequenceTask::ComplementSequenceTask(U2SequenceObject *seqObj,
+                                               const QList<AnnotationTableObject *> &annotations,
+                                               DNASequenceSelection *selection,
+                                               DNATranslation *complTT)
+    : Task( tr("Complement Sequence Task"), TaskFlags_NR_FOSE_COSC),
+      seqObj(seqObj),
+      aObjs(annotations),
+      selection(selection),
+      complTT(complTT)
+{
+    SAFE_POINT_EXT(seqObj != NULL, setError(L10N::nullPointerError("sequence object")), );
+    SAFE_POINT_EXT(complTT != NULL,
+                   setError(L10N::nullPointerError("DNA translation table")), );
+}
+
+Task::ReportResult ComplementSequenceTask::report() {
+    if (seqObj->getSequenceLength() == 0) {
+        return ReportResult_Finished;
+    }
+
+    QVector<U2Region> regions = SequenceWalkerTask::splitRange(U2Region(0, seqObj->getSequenceLength()),
+                                                               CHUNK_SIZE, 0, 0, false);
+    U2OpStatusImpl os;
+    foreach(const U2Region& r, regions) {
+        QByteArray chunk = seqObj->getSequenceData(r);
+        complTT->translate(chunk.data(), chunk.size());
+        seqObj->replaceRegion(r, DNASequence(chunk), os);
+        if (os.hasError()) {
+            setError(os.getError());
+            return ReportResult_Finished;
+        }
+    }
+
+    // fix annotation locations
+    foreach ( AnnotationTableObject *aObj, aObjs ) {
+        foreach ( Annotation a, aObj->getAnnotations( ) ) {
+            U2Strand strand = a.getStrand( );
+            a.setStrand( strand == U2Strand::Direct
+                         ? U2Strand::Complementary : U2Strand::Direct );
         }
     }
 

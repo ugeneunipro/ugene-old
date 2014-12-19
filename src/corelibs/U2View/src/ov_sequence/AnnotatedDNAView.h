@@ -213,7 +213,10 @@ private slots:
     void sl_removeSequencePart();
     void sl_replaceSequencePart();
     void sl_sequenceModifyTaskStateChanged();
+
+    void sl_reverseComplementSequence();
     void sl_reverseSequence();
+    void sl_complementSequence();
 
     virtual void sl_onDocumentAdded(Document*);
     virtual void sl_onDocumentLoadedStateChanged();
@@ -229,9 +232,10 @@ private:
     void cancelAutoAnnotationUpdates(AutoAnnotationObject* aaObj, bool* existsRemovedTasks = NULL);
     void addGraphs(ADVSequenceObjectContext* seqCtx);
     void importDocAnnotations(Document* doc);
-
     void seqWidgetMove(const QPoint& pos);
     void finishSeqWidgetMove();
+
+    void reverseComplementSequence(bool reverse = true, bool complement = true);
 
     QSplitter*          mainSplitter;
     QScrollArea*        scrollArea;
@@ -252,7 +256,10 @@ private:
     QAction*            removeSequencePart;
     QAction*            replaceSequencePart;
     QAction*            removeSequenceObjectAction;
+
+    QAction*            reverseComplementSequenceAction;
     QAction*            reverseSequenceAction;
+    QAction*            complementSequenceAction;
 
     PositionSelector*   posSelector;
 
