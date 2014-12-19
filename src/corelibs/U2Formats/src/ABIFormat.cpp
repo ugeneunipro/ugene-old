@@ -433,8 +433,11 @@ Document* ABIFormat::parseABI(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapter
     DNASequence dna;
     DNAChromatogram cd;
 
-    if (!loadABIObjects(fp, dna,cd)) {
+    if (!loadABIObjects(fp, dna, cd)) {
         return NULL;
+    }
+    if (dna.getName().isEmpty()) {
+        dna.setName("Sequence");
     }
 
     QList<GObject*> objects;
