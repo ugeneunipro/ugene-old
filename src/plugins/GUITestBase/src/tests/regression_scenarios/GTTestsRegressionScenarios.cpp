@@ -11960,6 +11960,14 @@ GUI_TEST_CLASS_DEFINITION(test_3755){
     CHECK_SET_ERR(before != after, "colors not changed");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3757) {
+    // Open some specific PDB file and ensure that UGENE doesn't crash
+    GTLogTracer l;
+    GTFileDialog::openFile(os, testDir + "_common_data/pdb/", "water.pdb");
+    GTUtilsProjectTreeView::findIndex(os, "water.pdb", QModelIndex());
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3778) {
     //1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");

@@ -282,7 +282,7 @@ QStringList ImportToDatabaseDialog::getFilesToImport() {
 
     QFileDialog::Options additionalOptions;
     Q_UNUSED(additionalOptions);
-#ifdef Q_OS_MAC
+#if defined(Q_OS_MAC) || (QT_VERSION >= 0x050000)
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
         additionalOptions = QFileDialog::DontUseNativeDialog;
     }

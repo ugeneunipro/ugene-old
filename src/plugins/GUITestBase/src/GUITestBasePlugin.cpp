@@ -580,10 +580,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3732, "big data");
     REGISTER_TEST(GUITest_regression_scenarios::test_3736);
     REGISTER_TEST(GUITest_regression_scenarios::test_3738);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3778);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3815);
     REGISTER_TEST(GUITest_regression_scenarios::test_3755);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3757);
     REGISTER_TEST(GUITest_regression_scenarios::test_3778);
+
     REGISTER_TEST(GUITest_regression_scenarios::test_3815);
     REGISTER_TEST(GUITest_regression_scenarios::test_3816);
     REGISTER_TEST(GUITest_regression_scenarios::test_3817);
