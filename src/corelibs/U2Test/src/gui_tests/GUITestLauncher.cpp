@@ -48,7 +48,14 @@ namespace U2 {
 
 GUITestLauncher::GUITestLauncher(int _suiteNumber, bool _noIgnored)
     : Task("gui_test_launcher", TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled),
-      suiteNumber(_suiteNumber), noIgnored(_noIgnored) {
+      suiteNumber(_suiteNumber), noIgnored(_noIgnored), pathToSuite("") {
+
+    tpm = Task::Progress_Manual;
+}
+
+GUITestLauncher::GUITestLauncher(QString _pathToSuite, bool _noIgnored)
+    : Task("gui_test_launcher", TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled),
+      suiteNumber(0), noIgnored(_noIgnored), pathToSuite(_pathToSuite) {
 
     tpm = Task::Progress_Manual;
 }
@@ -126,6 +133,30 @@ bool GUITestLauncher::initGUITestBase() {
             return false;
         }
         tests = suiteList.takeAt(suiteNumber - 1);
+    }else if(!pathToSuite.isEmpty()){
+        QString absPath = QDir().absoluteFilePath(pathToSuite);
+        QFile suite(absPath);
+        SAFE_POINT(suite.exists(), "file " + absPath + " does not exists", false);
+        if(suite.open(QFile::ReadOnly)){
+            char buf[1024];
+            while(suite.readLine(buf, sizeof(buf)) != -1){
+                QString testName(buf);
+                testName.remove('\n');
+                testName.remove('\t');
+                testName.remove(' ');
+                bool added = false;
+                foreach (GUITest* t, list) {
+                    if(t->getName() == testName){
+                        tests<<t;
+                        added = true;
+                        break;
+                    }
+                }
+                SAFE_POINT(added, "test " + testName + " not found", false)
+            }
+        }else{
+            SAFE_POINT(0, "can not open file " + absPath, false);
+        }
     }
     else{
         tests = list;

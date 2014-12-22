@@ -1151,6 +1151,16 @@ GUI_TEST_CLASS_DEFINITION(test_1475) {
     GTFileDialog::openFile(os, testDir + "_common_data/raw_sequence/", "NC_000117.txt");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1483){
+//    1. Open "data/COI.aln" in MSA view
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//    2. Press tool button "Enable collapsing"
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+//    3. Start selection in sequences name list and then go for the lower boundary of the list
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5, 5), QPoint(-4, 20));
+//    Expected state: Ugene doesn't crashes
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1497) {
     GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
 
@@ -1253,6 +1263,30 @@ GUI_TEST_CLASS_DEFINITION(test_1499) {
     CHECK_SET_ERR(msaSequences0 == msaSequences2, "MSA is not synchronized with tree");
 
     GTUtilsLog::check(os, lt);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1506){
+//    1) Open "samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+//    2) Click the "Build Tree" button on the toolbar.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/1548.nwk", 0, 0, true));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os, tree);
+    GTGlobals::sleep();
+//    3) Choose "Display tree with alignment editor".
+//    4) Build.
+//    Expected: the tree appears synchronized with the MSA Editor. Clustering blue line is shown.
+//    5) Click the "Layout" button on the Tree View toolbar and choose the circular or unrooted layout.
+    QComboBox* layoutCombo = GTWidget::findExactWidget<QComboBox*>(os, "layoutCombo");
+    GTComboBox::setIndexWithText(os, layoutCombo, "Circular");
+//    6) Zoom in the tree using mouse scroll.
+    GTWidget::click(os, GTWidget::findWidget(os, "treeView"));
+    for(int i = 0; i<10; i++){
+        GTMouseDriver::scroll(os, 1);
+        GTGlobals::sleep(300);
+    }
+//    Expected: UGENE does not crash.
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1508) {

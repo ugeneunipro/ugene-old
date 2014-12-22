@@ -197,7 +197,12 @@ Task* GUITestService::createTestSuiteLauncherTask() const {
 
     bool ok;
     int suiteNumber = cmdLine->getParameterValue(CMDLineCoreOptions::LAUNCH_GUI_TEST_SUITE).toInt(&ok);
-    Q_ASSERT(ok);
+    if(!ok){
+        QString pathToSuite = cmdLine->getParameterValue(CMDLineCoreOptions::LAUNCH_GUI_TEST_SUITE);
+        Task *task = new GUITestLauncher(pathToSuite);
+        Q_ASSERT(task);
+        return task;
+    }
 
     Task *task = new GUITestLauncher(suiteNumber);
     Q_ASSERT(task);
