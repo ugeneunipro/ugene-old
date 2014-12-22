@@ -154,8 +154,8 @@
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorNameList.h>
 
+#include <QPlainTextEdit>
 #include <QProgressBar>
-#include <QTextEdit>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QHeaderView>
@@ -1149,6 +1149,110 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
 GUI_TEST_CLASS_DEFINITION(test_1475) {
     GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/raw_sequence/", "NC_000117.txt");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1497) {
+    GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
+
+    // 1. Create or open some scheme in WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+
+    // 2. Select a few items(elements, links) in the scheme.
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read alignment"));
+    GTMouseDriver::click(os);
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Align with MUSCLE"));
+    GTMouseDriver::click(os);
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Write alignment"));
+    GTMouseDriver::click(os);
+
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+
+    // 3. Try to copy something from the log widget to the clipboard by hotkey(Ctrl + C).
+    // Expected state : you've got in the clipboard selected text from the log widget.
+    GTGlobals::sleep();
+    QWidget *logView = GTWidget::findWidget(os, "dock_log_view");
+    GTWidget::click(os, logView);
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+
+    const QString clipboardContent = GTClipboard::text(os);
+
+    QPlainTextEdit *logTextEdit = logView->findChild<QPlainTextEdit *>();
+    CHECK_SET_ERR(NULL != logTextEdit, "Log view text edit field is not found")
+
+    const QString logTextEditContent = logTextEdit->toPlainText();
+    CHECK_SET_ERR(logTextEditContent == clipboardContent,
+        QString("Clipboard content differs from what is in the log widget. Clipboard: %1, log widget: %2").arg(clipboardContent).arg(logTextEditContent));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1499) {
+    class CustomBuildTreeDialogFiller : public CustomScenario {
+    public:
+        CustomBuildTreeDialogFiller(U2OpStatus &os)
+            : CustomScenario()
+        {
+
+        }
+
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new LicenseAgreemntDialogFiller(os));
+
+            QComboBox *algorithmBox = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "algorithmBox", dialog));
+            GTComboBox::setIndexWithText(os, algorithmBox, "MrBayes");
+
+            QLineEdit *saveLineEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "fileNameEdit", dialog));
+            GTLineEdit::setText(os, saveLineEdit, sandBoxDir + "1499.nwk");
+
+            QDialogButtonBox *box = qobject_cast<QDialogButtonBox *>(GTWidget::findWidget(os, "buttonBox", dialog));
+            QPushButton* button = box->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(button != NULL, "Ok button is NULL");
+            GTWidget::click(os, button);
+        }
+    };
+
+    GTLogTracer lt;
+    // 1) Open "samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    // 2) Click the "Build Tree" button on the toolbar.
+    // 3) Choose MrBayes tree building method.
+    // 4) Choose "Display tree with alignment editor".
+    // 5) Build.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, new CustomBuildTreeDialogFiller(os)));
+    QAbstractButton *tree = GTAction::button(os, "Build Tree");
+    GTWidget::click(os, tree);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // Expected: the tree appears synchronized with the MSA Editor.
+    const QStringList msaSequences0 = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    // 6) Click the "Sort alignment by tree" button on the Tree View toolbar.
+    // = > UGENE does not crash.
+    GTMouseDriver::moveTo(os, GTUtilsMsaEditor::getSequenceNameRect(os, "Zychia_baranovi").center());
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(1000);
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, GTUtilsMsaEditor::getSequenceNameRect(os, "Montana_montana").center());
+    GTMouseDriver::release(os);
+
+    const QStringList msaSequences1 = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(msaSequences1 != msaSequences0, "MSA is not changed");
+
+    GTWidget::click(os, GTAction::button(os, "Sort Alignment"));
+
+    const QStringList msaSequences2 = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(msaSequences0 == msaSequences2, "MSA is not synchronized with tree");
+
+    GTUtilsLog::check(os, lt);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1508) {

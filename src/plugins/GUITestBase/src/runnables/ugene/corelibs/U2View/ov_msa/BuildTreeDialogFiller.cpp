@@ -55,9 +55,29 @@
 
 namespace U2 {
 
+BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os, QString _saveTree, int _model, double _alpha, bool _displayWithMsa)
+    : Filler(os, "CreatePhyTree"), saveTree(_saveTree), model(_model), replicates(0), alpha(_alpha), displayWithMsa(_displayWithMsa)
+{
+
+}
+
+BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os, int _replicates, QString _saveTree, int _seed,
+    BuildTreeDialogFiller::ConsensusType _type, double _fraction)
+    : Filler(os, "CreatePhyTree"), saveTree(_saveTree), model(0), replicates(_replicates), seed(_seed), alpha(0),
+    fraction(_fraction), type(_type)
+{
+
+}
+
+BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os, CustomScenario *cs)
+    : Filler(os, "CreatePhyTree", cs)
+{
+
+}
+
 #define GT_CLASS_NAME "GTUtilsDialog::BuildTreeDialogFiller"
-#define GT_METHOD_NAME "run"
-void BuildTreeDialogFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void BuildTreeDialogFiller::commonScenario() {
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
@@ -113,12 +133,15 @@ void BuildTreeDialogFiller::run() {
     QPushButton* button = box->button(QDialogButtonBox::Ok);
     GT_CHECK(button !=NULL, "Ok button is NULL");
     GTWidget::click(os, button);
-
-
 }
-
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
+
+BuildTreeDialogFillerPhyML::BuildTreeDialogFillerPhyML(U2OpStatus &os, bool _freqOptimRadioPressed)
+    : Filler(os, "CreatePhyTree"), freqOptimRadioPressed(_freqOptimRadioPressed)
+{
+
+}
 
 #define GT_CLASS_NAME "GTUtilsDialog::BuildTreeDialogFiller"
 #define GT_METHOD_NAME "run"

@@ -28,38 +28,32 @@ namespace U2 {
 
 class BuildTreeDialogFiller : public Filler {
 public:
-    enum consensusType{MAJORITYEXT,STRICTCONSENSUS,MAJORITY,M1};
-    BuildTreeDialogFiller(U2OpStatus &os, QString _saveTree="default", int _model=0,
-                          double _alpha=0, bool _displayWithMsa=false) : Filler(os, "CreatePhyTree"),
-        saveTree(_saveTree),
-        model(_model),
-        replicates(0),
-        alpha(_alpha),
-        displayWithMsa(_displayWithMsa){}
+    enum ConsensusType {
+        MAJORITYEXT,
+        STRICTCONSENSUS,
+        MAJORITY,
+        M1
+    };
 
-    BuildTreeDialogFiller(U2OpStatus &os, int _replicates=0,QString _saveTree="default", int _seed = 5,
-                          consensusType _type = MAJORITYEXT, double _fraction = 0.5) : Filler(os, "CreatePhyTree"),
-        saveTree(_saveTree),
-        model(0),
-        replicates(_replicates),
-        seed(_seed),
-        alpha(0),
-        fraction(_fraction),
-        type(_type){}
-    virtual void run();
+    BuildTreeDialogFiller(U2OpStatus &os, QString _saveTree = "default", int _model = 0, double _alpha = 0, bool _displayWithMsa = false);
+    BuildTreeDialogFiller(U2OpStatus &os, int _replicates=0, QString _saveTree = "default", int _seed = 5, ConsensusType _type = MAJORITYEXT, double _fraction = 0.5);
+    BuildTreeDialogFiller(U2OpStatus &os, CustomScenario *cs);
+
+    void commonScenario();
+
 private:
     QString saveTree;
     int model,replicates,seed;
     double alpha,fraction;
-    consensusType type;
+    ConsensusType type;
     bool displayWithMsa;
 };
 
-class BuildTreeDialogFillerPhyML : public Filler{
+class BuildTreeDialogFillerPhyML : public Filler {
  public:
-    BuildTreeDialogFillerPhyML(U2OpStatus &os, bool _freqOptimRadioPressed): Filler(os, "CreatePhyTree"),
-    freqOptimRadioPressed(_freqOptimRadioPressed){}
-    virtual void run();
+    BuildTreeDialogFillerPhyML(U2OpStatus &os, bool _freqOptimRadioPressed);
+    void run();
+
 private:
     bool freqOptimRadioPressed;
 };
