@@ -24,7 +24,6 @@
 #include <U2Core/U2SafePoints.h>
 
 #include "ProjectUtils.h"
-#include "ProjectViewModel.h"
 
 #include "ProjectFilterProxyModel.h"
 
@@ -116,24 +115,14 @@ bool ProjectFilterProxyModel::lessThan(const QModelIndex &left, const QModelInde
     ProjectViewModel::Type leftType = srcModel->itemType(left);
     ProjectViewModel::Type rightType = srcModel->itemType(right);
 
-    const QString leftName = left.data(Qt::DisplayRole).toString();
-    const QString rightName = right.data(Qt::DisplayRole).toString();
+    const QString leftName = getItemName(leftType, left);
+    const QString rightName = getItemName(rightType, right);
 
     if (leftType == rightType && leftType == ProjectViewModel::FOLDER) { // keep the Recycle Bin on top
         if (U2ObjectDbi::RECYCLE_BIN_FOLDER == leftName) {
             return true;
         } else if (U2ObjectDbi::RECYCLE_BIN_FOLDER == rightName) {
             return false;
-        }
-    }
-
-    if (leftType == rightType && leftType == ProjectViewModel::DOCUMENT) { // keep unloaded documents in the bottom of list
-        const bool leftDocUnloaded = !srcModel->toDocument(left)->isLoaded();
-        const bool rightDocUnloaded = !srcModel->toDocument(right)->isLoaded();
-        if (leftDocUnloaded && !rightDocUnloaded) {
-            return false;
-        } else if (!leftDocUnloaded && rightDocUnloaded) {
-            return true;
         }
     }
 
@@ -144,7 +133,23 @@ bool ProjectFilterProxyModel::lessThan(const QModelIndex &left, const QModelInde
     } else if (ProjectViewModel::OBJECT == leftType && ProjectViewModel::FOLDER == rightType) {
         return false;
     } else {
-        FAIL("Unexpected project item types", false);
+        FAIL("Unexpected project item type", false);
+    }
+}
+
+QString ProjectFilterProxyModel::getItemName(ProjectViewModel::Type itemType, const QModelIndex &index) const {
+    ProjectViewModel *srcModel = sourceModel();
+    CHECK(NULL != srcModel, QString());
+
+    switch (itemType) {
+    case ProjectViewModel::DOCUMENT:
+       return srcModel->toDocument(index)->getName();
+    case ProjectViewModel::FOLDER:
+        return srcModel->toFolder(index)->getFolderName();
+    case ProjectViewModel::OBJECT:
+        return srcModel->toObject(index)->getGObjectName();
+    default:
+        FAIL("Unexpected tree item type", QString());
     }
 }
 

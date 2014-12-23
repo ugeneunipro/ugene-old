@@ -114,21 +114,13 @@ bool ProjectViewModel::setData(const QModelIndex &index, const QVariant &value, 
         return false;
     }
     emit dataChanged(index, index);
-    changePersistentIndex(index, index);
-    emit layoutChanged();
-
     emit si_projectItemRenamed(index);
 
     return true;
 }
 
 bool ProjectViewModel::setObjectData(GObject *obj, const QString &newName) {
-    if (newName == obj->getGObjectName()) {
-        return false;
-    }
-
-    emit layoutAboutToBeChanged();
-
+    CHECK(newName != obj->getGObjectName(), false);
     obj->setGObjectName(newName);
     return true;
 }
@@ -139,17 +131,12 @@ bool ProjectViewModel::setFolderData(Folder *folder, const QString &newName) {
     QString newPath = U2ObjectDbi::ROOT_FOLDER == parentPath
         ? parentPath + newName
         : parentPath + U2ObjectDbi::PATH_SEP + newName;
-
-    if (newPath == oldPath) {
-        return false;
-    }
+    CHECK(newPath != oldPath, false);
 
     Document *doc = folder->getDocument();
     if (!renameFolderInDb(doc, oldPath, newPath)) {
         return false;
     }
-
-    emit layoutAboutToBeChanged();
 
     folders[doc]->renameFolder(oldPath, newPath);
     return true;

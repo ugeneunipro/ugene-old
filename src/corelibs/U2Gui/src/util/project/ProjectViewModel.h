@@ -24,6 +24,8 @@
 
 #include <QtCore/QAbstractItemModel>
 
+#include <U2Core/Folder.h>
+
 #include <U2Gui/ProjectTreeControllerModeSettings.h>
 
 #include "DocumentFolders.h"

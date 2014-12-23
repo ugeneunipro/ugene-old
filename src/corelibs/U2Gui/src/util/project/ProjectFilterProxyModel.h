@@ -24,12 +24,9 @@
 
 #include <QSortFilterProxyModel>
 
-#include <U2Gui/ProjectTreeControllerModeSettings.h>
+#include <U2Gui/ProjectViewModel.h>
 
 namespace U2 {
-
-class Folder;
-class ProjectViewModel;
 
 class ProjectFilterProxyModel : public QSortFilterProxyModel {
     Q_OBJECT
@@ -48,7 +45,7 @@ protected:
 
 private:
     bool filterAcceptsFolder(const Folder *folder) const;
-
+    QString getItemName(ProjectViewModel::Type itemType, const QModelIndex &index) const;
 
     ProjectTreeControllerModeSettings settings;
 };

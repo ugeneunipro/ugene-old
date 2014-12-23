@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/DocumentModel.h>
+#include <U2Core/Folder.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -227,8 +228,7 @@ int DocumentFolders::getNewFolderRowInRecycleBin(const QString &path) const {
 
 int DocumentFolders::getNewObjectRowInParent(GObject *obj, const QString &parentPath) const {
     SAFE_POINT(!hasFolderInfo(obj), "Object is already in model", -1);
-    QList<Folder*> subFolders = getSubFolders(parentPath);
-    return subFolders.size();
+    return getSubFolders(parentPath).size() + getObjects(parentPath).size();
 }
 
 QList<Folder*> DocumentFolders::getSubFolders(const QString &parentPath) const {

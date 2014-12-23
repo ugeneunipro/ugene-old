@@ -24,13 +24,13 @@
 
 #include <QtCore/QStringList>
 
-#include <U2Core/Folder.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2Type.h>
 
 namespace U2 {
 
 class GObject;
+class Folder;
 
 class DocumentFoldersUpdate {
 public:
