@@ -29,37 +29,38 @@ namespace U2 {
 
 class EnzymesADVContext;
 
-class EnzymesPlugin : public Plugin  {
+class EnzymesPlugin : public Plugin {
     Q_OBJECT
 public:
     EnzymesPlugin();
-    ~EnzymesPlugin();
+
     void createToolsMenu();
+
 private slots:
     void sl_onOpenDigestSequenceDialog();
     void sl_onOpenConstructMoleculeDialog();
     void sl_onOpenCreateFragmentDialog();
+
 private:
-    EnzymesADVContext*  ctxADV;
-    QAction* openDigestSequenceDialog;
-    QAction* openConstructMoleculeDialog;
-    QAction* openCreateFragmentDialog;
+    EnzymesADVContext *ctxADV;
+    QAction *openDigestSequenceDialog;
+    QAction *openConstructMoleculeDialog;
+    QAction *openCreateFragmentDialog;
 };
 
 class EnzymesADVContext: public GObjectViewWindowContext {
     Q_OBJECT
 public:
-    EnzymesADVContext(QObject* p, const QList<QAction*>& cloningActions);
+    EnzymesADVContext(QObject *p, const QList<QAction *> &cloningActions);
 
 protected slots:
     void sl_search();
     void sl_createPCRProduct();
 
 protected:
-    virtual void buildMenu(GObjectView* v, QMenu* m);
-    virtual void initViewContext(GObjectView* view);
-    QList<QAction*> cloningActions;
-    QAction* createPCRProductAction;
+    virtual void buildMenu(GObjectView *v, QMenu *m);
+    virtual void initViewContext(GObjectView *view);
+    QList<QAction *> cloningActions;
 };
 
 

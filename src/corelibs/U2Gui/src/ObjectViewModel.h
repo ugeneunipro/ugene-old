@@ -308,13 +308,10 @@ public:
 class U2GUI_EXPORT GObjectViewAction : public QAction {
     Q_OBJECT
 public:
-    GObjectViewAction(QObject* p, GObjectView* v, const QString& text, int order = GObjectViewAction_DefaultOrder)
-        :  QAction(text, p), view(v), actionOrder(order) {}
+    GObjectViewAction(QObject* p, GObjectView* v, const QString& text, int order = GObjectViewAction_DefaultOrder);
 
-    GObjectView* getObjectView() const {return view;}
-
-    int getActionOrder() const {return actionOrder;}
-
+    GObjectView* getObjectView() const;
+    int getActionOrder() const;
     void addToMenuWithOrder(QMenu* menu);
 
 private:
@@ -351,13 +348,14 @@ protected:
     /// init context associated with 'view'
     virtual void initViewContext(GObjectView* view) = 0;
     void addViewResource(GObjectView* view, QObject* r);
-    void addViewAction(GObjectViewAction* a) {addViewResource(a->getObjectView(), a);}
+    void addViewAction(GObjectViewAction* a);
+    GObjectViewAction * findViewAction(GObjectView* v, const QString &actionName) const;
 
 protected slots:
     virtual void sl_windowAdded(MWMDIWindow*);
     virtual void sl_windowClosing(MWMDIWindow*);
-    virtual void sl_buildContextMenu(GObjectView* v, QMenu* m) {buildMenu(v, m);}
-    virtual void sl_buildStaticMenu(GObjectView* v, QMenu* m)   {buildMenu(v, m);}
+    virtual void sl_buildContextMenu(GObjectView* v, QMenu* m);
+    virtual void sl_buildStaticMenu(GObjectView* v, QMenu* m);
 
 protected:    
     virtual void buildMenu(GObjectView* v, QMenu* m){Q_UNUSED(v); Q_UNUSED(m);}

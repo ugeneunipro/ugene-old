@@ -56,6 +56,8 @@
 #include <QtWidgets/QMessageBox>
 #endif
 
+const QString CREATE_PCR_PRODUCT_ACTION_NAME = "Create PCR product";
+
 namespace U2 {
 
 extern "C" Q_DECL_EXPORT Plugin * U2_PLUGIN_INIT_FUNC() {
@@ -63,9 +65,8 @@ extern "C" Q_DECL_EXPORT Plugin * U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
-EnzymesPlugin::EnzymesPlugin() : Plugin( tr("Restriction analysis"),
-                                        tr("Finds and annotates restriction sites on a DNA sequence.") ),
-                                        ctxADV(NULL)
+EnzymesPlugin::EnzymesPlugin()
+    : Plugin(tr("Restriction analysis"), tr("Finds and annotates restriction sites on a DNA sequence.")), ctxADV(NULL)
 {
     if (AppContext::getMainWindow()) {
         createToolsMenu();
@@ -78,8 +79,7 @@ EnzymesPlugin::EnzymesPlugin() : Plugin( tr("Restriction analysis"),
         ctxADV = new EnzymesADVContext(this,actions);
         ctxADV->init();
 
-        AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(new FindEnzymesAutoAnnotationUpdater() );
-
+        AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(new FindEnzymesAutoAnnotationUpdater());
     }
 
     EnzymesSelectorWidget::setupSettings();
@@ -102,8 +102,7 @@ EnzymesPlugin::EnzymesPlugin() : Plugin( tr("Restriction analysis"),
     }
 }
 
-void EnzymesPlugin::createToolsMenu()
-{
+void EnzymesPlugin::createToolsMenu() {
     openDigestSequenceDialog = new QAction(tr("Digest into Fragments..."), this);
     openDigestSequenceDialog->setObjectName("Digest into Fragments");
     openConstructMoleculeDialog = new QAction(tr("Construct Molecule..."), this);
@@ -123,11 +122,9 @@ void EnzymesPlugin::createToolsMenu()
     connect(openConstructMoleculeDialog, SIGNAL(triggered()), SLOT(sl_onOpenConstructMoleculeDialog()));
 
     connect(openCreateFragmentDialog, SIGNAL(triggered()), SLOT(sl_onOpenCreateFragmentDialog()));
-
 }
 
-void EnzymesPlugin::sl_onOpenDigestSequenceDialog()
-{
+void EnzymesPlugin::sl_onOpenDigestSequenceDialog() {
     GObjectViewWindow* w = GObjectViewUtils::getActiveObjectViewWindow();
 
     if (w == NULL) {
@@ -153,13 +150,9 @@ void EnzymesPlugin::sl_onOpenDigestSequenceDialog()
 
     DigestSequenceDialog dlg(view->getSequenceInFocus(), QApplication::activeWindow());
     dlg.exec();
-
-
 }
 
-
-void EnzymesPlugin::sl_onOpenCreateFragmentDialog()
-{
+void EnzymesPlugin::sl_onOpenCreateFragmentDialog() {
     GObjectViewWindow* w = GObjectViewUtils::getActiveObjectViewWindow();
 
     if (w == NULL) {
@@ -188,10 +181,7 @@ void EnzymesPlugin::sl_onOpenCreateFragmentDialog()
     dlg.exec();
 }
 
-
-
-void EnzymesPlugin::sl_onOpenConstructMoleculeDialog()
-{
+void EnzymesPlugin::sl_onOpenConstructMoleculeDialog() {
     Project* p = AppContext::getProject();
     if (p == NULL) {
         QMessageBox::information(QApplication::activeWindow(), openConstructMoleculeDialog->text(),
@@ -205,16 +195,12 @@ void EnzymesPlugin::sl_onOpenConstructMoleculeDialog()
     dlg.exec();
 }
 
-EnzymesPlugin::~EnzymesPlugin()
-{
-
-}
-
 //////////////////////////////////////////////////////////////////////////
 
-
-EnzymesADVContext::EnzymesADVContext(QObject* p,const QList<QAction*>& actions) : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID), cloningActions(actions),createPCRProductAction(NULL)
+EnzymesADVContext::EnzymesADVContext(QObject* p,const QList<QAction*>& actions)
+    : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID), cloningActions(actions)
 {
+
 }
 
 void EnzymesADVContext::initViewContext(GObjectView* view) {
@@ -224,11 +210,11 @@ void EnzymesADVContext::initViewContext(GObjectView* view) {
     a->addAlphabetFilter(DNAAlphabet_NUCL);
     connect(a, SIGNAL(triggered()), SLOT(sl_search()));
 
-    createPCRProductAction = new GObjectViewAction(av, av, "Create PCR product...");
+    GObjectViewAction *createPCRProductAction = new GObjectViewAction(av, av, tr("Create PCR product..."));
+    createPCRProductAction->setObjectName(CREATE_PCR_PRODUCT_ACTION_NAME);
     connect(createPCRProductAction, SIGNAL(triggered()), SLOT(sl_createPCRProduct()));
-
+    addViewAction(createPCRProductAction);
 }
-
 
 void EnzymesADVContext::sl_search() {
     GObjectViewAction* action = qobject_cast<GObjectViewAction*>(sender());
@@ -244,45 +230,45 @@ void EnzymesADVContext::sl_search() {
 
 // TODO: move definitions to core
 #define PRIMER_ANNOTATION_GROUP_NAME    "pair"
-#define PRIMER_ANNOTATION_NAME			"primer"
+#define PRIMER_ANNOTATION_NAME          "primer"
 
 
-void EnzymesADVContext::buildMenu( GObjectView* v, QMenu* m ) {
-    AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(v);
-    assert(NULL != av);
-    CHECK(NULL != av, );
+void EnzymesADVContext::buildMenu(GObjectView *v, QMenu *m) {
+    AnnotatedDNAView *av = qobject_cast<AnnotatedDNAView *>(v);
+    SAFE_POINT(NULL != av, "Invalid sequence view", );
+    CHECK(av->getSequenceInFocus()->getAlphabet()->isNucleic(), );
 
-    if (!av->getSequenceInFocus()->getAlphabet()->isNucleic()) {
-        return;
-    }
-
-    QMenu* cloningMenu = new QMenu(tr("Cloning"), m);
+    QMenu *cloningMenu = new QMenu(tr("Cloning"), m);
     cloningMenu->menuAction()->setObjectName("Cloning");
     cloningMenu->addActions(cloningActions);
 
-    QAction* exportMenuAction = GUIUtils::findAction(m->actions(), ADV_MENU_EXPORT);
+    QAction *exportMenuAction = GUIUtils::findAction(m->actions(), ADV_MENU_EXPORT);
     m->insertMenu(exportMenuAction, cloningMenu);
 
-    if(!av->getAnnotationsSelection()->getSelection().isEmpty()) {
-        QString annName = av->getAnnotationsSelection()->getSelection().first().annotation.getName();
+    if (!av->getAnnotationsSelection()->getSelection().isEmpty()) {
+        const Annotation &a = av->getAnnotationsSelection()->getSelection().first().annotation;
+        const QString annName = a.getName();
+        const QString groupName = a.getGroup().getName();
+        const int annCount = a.getGroup().getAnnotations().size();
 
-        if (annName == PRIMER_ANNOTATION_NAME) {
-            cloningMenu->addAction( createPCRProductAction );
+        if (annName == PRIMER_ANNOTATION_NAME && groupName.startsWith(PRIMER_ANNOTATION_GROUP_NAME) && 2 == annCount) {
+            QAction *a = findViewAction(v, CREATE_PCR_PRODUCT_ACTION_NAME);
+            SAFE_POINT(NULL != a, "Invalid menu action", );
+            cloningMenu->addAction(a);
         }
     }
 }
 
-void EnzymesADVContext::sl_createPCRProduct()
-{
-    GObjectViewAction* action = qobject_cast<GObjectViewAction*>(sender());
-    SAFE_POINT( action != NULL, "Invalid action object!", );
-    AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(action->getObjectView());
-    SAFE_POINT( av != NULL, "Invalid DNA view!", );
+void EnzymesADVContext::sl_createPCRProduct() {
+    GObjectViewAction *action = qobject_cast<GObjectViewAction *>(sender());
+    SAFE_POINT(action != NULL, "Invalid action object!", );
+    AnnotatedDNAView *av = qobject_cast<AnnotatedDNAView *>(action->getObjectView());
+    SAFE_POINT(av != NULL, "Invalid DNA view!", );
 
-    const Annotation a = av->getAnnotationsSelection()->getSelection().first().annotation;
+    const Annotation &a = av->getAnnotationsSelection()->getSelection().first().annotation;
     const AnnotationGroup group = a.getGroup();
-    if (group.getName().startsWith(PRIMER_ANNOTATION_GROUP_NAME) ) {
-        SAFE_POINT( group.getAnnotations( ).size( ) == 2, "Invalid selected annotation count!", );
+    if (group.getName().startsWith(PRIMER_ANNOTATION_GROUP_NAME)) {
+        SAFE_POINT(group.getAnnotations().size() == 2, "Invalid selected annotation count!", );
 
         const Annotation a1 = group.getAnnotations().at(0);
         const Annotation a2 = group.getAnnotations().at(1);
@@ -291,8 +277,8 @@ void EnzymesADVContext::sl_createPCRProduct()
         int endPos = a2.getLocation()->regions.at(0).endPos();
 
         U2SequenceObject* seqObj = av->getSequenceInFocus()->getSequenceObject();
-        U2Region region(startPos, endPos - startPos );
-        CreateFragmentDialog dlg(seqObj, region, av->getSequenceWidgetInFocus() );
+        U2Region region(startPos, endPos - startPos);
+        CreateFragmentDialog dlg(seqObj, region, av->getSequenceWidgetInFocus());
         dlg.setWindowTitle("Create PCR product");
         dlg.exec();
     }

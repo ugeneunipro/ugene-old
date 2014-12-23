@@ -567,6 +567,14 @@ void GObjectViewWindowContext::sl_windowClosing(MWMDIWindow* w) {
     disconnectView(v);
 }
 
+void GObjectViewWindowContext::sl_buildContextMenu(GObjectView* v, QMenu* m) {
+    buildMenu(v, m);
+}
+
+void GObjectViewWindowContext::sl_buildStaticMenu(GObjectView* v, QMenu* m) {
+    buildMenu(v, m);
+}
+
 void GObjectViewWindowContext::disconnectView(GObjectView* v) {
     QList<QObject*> resources = viewResources[v];
     foreach(QObject* a, resources) {
@@ -585,6 +593,18 @@ void GObjectViewWindowContext::addViewResource(GObjectView* v, QObject* r) {
     viewResources[v] = resources;
 }
 
+void GObjectViewWindowContext::addViewAction(GObjectViewAction* a) {
+    addViewResource(a->getObjectView(), a);
+}
+
+GObjectViewAction * GObjectViewWindowContext::findViewAction(GObjectView* v, const QString &actionName) const {
+    foreach (GObjectViewAction *a, getViewActions(v)) {
+        if (a->objectName() == actionName) {
+            return a;
+        }
+    }
+    return NULL;
+}
 
 QList<GObjectViewAction*> GObjectViewWindowContext::getViewActions(GObjectView* v) const {
     QList<GObjectViewAction*> actions;
@@ -607,6 +627,21 @@ void GObjectViewWindowContext::onObjectRemoved(GObjectView* v, GObject* obj) {
 
 //////////////////////////////////////////////////////////////////////////
 // GObjectViewAction
+
+GObjectViewAction::GObjectViewAction(QObject* p, GObjectView* v, const QString& text, int order)
+    : QAction(text, p), view(v), actionOrder(order)
+{
+
+}
+
+GObjectView * GObjectViewAction::getObjectView() const {
+    return view;
+}
+
+int GObjectViewAction::getActionOrder() const {
+    return actionOrder;
+}
+
 void GObjectViewAction::addToMenuWithOrder(QMenu* menu) {
     foreach(QAction* action, menu->actions()) {
         GObjectViewAction* viewAction = qobject_cast<GObjectViewAction*>(action);

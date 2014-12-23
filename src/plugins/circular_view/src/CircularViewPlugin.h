@@ -47,17 +47,19 @@ class CircularViewPlugin : public Plugin {
     Q_OBJECT
 public:
     CircularViewPlugin();
-    ~CircularViewPlugin();
+
 private:
-    GObjectViewWindowContext* viewCtx;
+    GObjectViewWindowContext *viewCtx;
 };
 
 class CircularViewAction : public ADVSequenceWidgetAction {
     Q_OBJECT
 public:
     CircularViewAction();
-    CircularView* view;
-    RestrctionMapWidget* rmapWidget;
+
+    CircularView *view;
+    RestrctionMapWidget *rmapWidget;
+
 public slots:
     void sl_circularStateChanged();
 };
@@ -69,6 +71,7 @@ struct CircularViewSettings {
         Mixed,
         None
     };
+
     CircularViewSettings();
 
     bool        showTitle;
@@ -89,30 +92,31 @@ class CircularViewContext: public GObjectViewWindowContext {
     friend class CircularViewSettingsWidgetFactory;
     Q_OBJECT
 public:
-    CircularViewContext(QObject* p);
-    CircularViewSettings* getSettings(AnnotatedDNAView* view) { return viewSettings.value(view); }
+    CircularViewContext(QObject *p);
+
+    CircularViewSettings * getSettings(AnnotatedDNAView *view);
+
 signals:
-    void si_cvSplitterWasCreatedOrRemoved(CircularViewSplitter*, CircularViewSettings*);
+    void si_cvSplitterWasCreatedOrRemoved(CircularViewSplitter *, CircularViewSettings *);
+
 protected slots:
     void sl_showCircular();
-    void sl_sequenceWidgetAdded(ADVSequenceWidget*);
-    void sl_sequenceWidgetRemoved(ADVSequenceWidget* w);
+    void sl_sequenceWidgetAdded(ADVSequenceWidget *);
+    void sl_sequenceWidgetRemoved(ADVSequenceWidget *w);
     void sl_toggleViews();
-    void sl_toggleBySettings(CircularViewSettings* s);
+    void sl_toggleBySettings(CircularViewSettings *s);
     void sl_setSequenceOrigin();
-    void sl_onDNAViewClosed(AnnotatedDNAView* v);
-protected:
-    virtual void initViewContext(GObjectView* view);
-    void buildMenu(GObjectView* v, QMenu* m);
-    CircularViewSplitter* getView(GObjectView* view, bool create);
-    void removeCircularView(GObjectView* view);
-    void reconnectExportAction(GObjectView* view);
-    void toggleViews(AnnotatedDNAView* view);
-private:
-    GObjectViewAction*      exportAction;
-    GObjectViewAction*      setSequenceOriginAction;
+    void sl_onDNAViewClosed(AnnotatedDNAView *v);
 
-    QMap <AnnotatedDNAView*, CircularViewSettings*> viewSettings;
+protected:
+    virtual void initViewContext(GObjectView *view);
+    void buildMenu(GObjectView *v, QMenu *m);
+    CircularViewSplitter * getView(GObjectView *view, bool create);
+    void removeCircularView(GObjectView *view);
+    void toggleViews(AnnotatedDNAView *view);
+
+private:
+    QMap<AnnotatedDNAView *, CircularViewSettings *> viewSettings;
 };
 
 } //namespace

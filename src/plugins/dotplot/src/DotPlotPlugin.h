@@ -65,8 +65,6 @@ private slots:
     void sl_loadTaskStateChanged(Task* task);
 
 private:
-    GObjectViewAction* removeDotPlotAction, *addDotPlotAction;
-
     bool createdByWizard;
     QString firstFile;
     QString secondFile;

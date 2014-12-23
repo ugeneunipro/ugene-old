@@ -58,6 +58,9 @@
 
 #include <limits>
 
+const QString EXPORT_ACTION_NAME = "Save circular view as image";
+const QString NEW_SEQ_ORIGIN_ACTION_NAME = "Set new sequence origin";
+
 namespace U2 {
 
 extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
@@ -82,7 +85,6 @@ CircularViewSettings::CircularViewSettings()
     titleFont = QApplication::font().family();
 }
 
-
 CircularViewPlugin::CircularViewPlugin() : Plugin(tr("CircularView"), tr("Enables drawing of DNA sequences using circular representation")) {
     viewCtx = new CircularViewContext(this);
     viewCtx->init();
@@ -92,28 +94,34 @@ CircularViewPlugin::CircularViewPlugin() : Plugin(tr("CircularView"), tr("Enable
     opWidgetFactoryRegistry->registerFactory(new CircularViewSettingsWidgetFactory(qobject_cast<CircularViewContext*>(viewCtx)));
 }
 
-CircularViewPlugin::~CircularViewPlugin() {
-}
-
 #define CIRCULAR_ACTION_NAME   "CircularViewAction"
 #define CIRCULAR_VIEW_NAME     "CIRCULAR_VIEW"
 
 CircularViewContext::CircularViewContext(QObject* p)
-: GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID), exportAction(NULL) {
+    : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID)
+{
+
+}
+
+CircularViewSettings * CircularViewContext::getSettings(AnnotatedDNAView *view) {
+    return viewSettings.value(view);
 }
 
 void CircularViewContext::initViewContext(GObjectView* v) {
-    exportAction = new GObjectViewAction(this, v, tr("Save circular view as image"));
-    exportAction->setIcon(QIcon(":/core/images/cam2.png"));
-    exportAction->setObjectName("Save circular view as image");
-
-    setSequenceOriginAction = new GObjectViewAction(this, v, tr("Set new sequence origin..."));
-    connect(setSequenceOriginAction, SIGNAL(triggered()), SLOT(sl_setSequenceOrigin()));
-
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(v);
-    if (!viewSettings.contains(av)) {
-        viewSettings.insert(av, new CircularViewSettings());
-    }
+    SAFE_POINT(!viewSettings.contains(av), "Unexpected sequence view", );
+
+    viewSettings.insert(av, new CircularViewSettings());
+
+    GObjectViewAction *exportAction = new GObjectViewAction(this, v, tr("Save circular view as image..."));
+    exportAction->setIcon(QIcon(":/core/images/cam2.png"));
+    exportAction->setObjectName(EXPORT_ACTION_NAME);
+    addViewAction(exportAction);
+
+    GObjectViewAction *setSequenceOriginAction = new GObjectViewAction(this, v, tr("Set new sequence origin..."));
+    setSequenceOriginAction->setObjectName(NEW_SEQ_ORIGIN_ACTION_NAME);
+    connect(setSequenceOriginAction, SIGNAL(triggered()), SLOT(sl_setSequenceOrigin()));
+    addViewAction(setSequenceOriginAction);
 
     foreach(ADVSequenceWidget* w, av->getSequenceWidgets()) {
         sl_sequenceWidgetAdded(w);
@@ -122,10 +130,9 @@ void CircularViewContext::initViewContext(GObjectView* v) {
     connect(av, SIGNAL(si_sequenceWidgetRemoved(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetRemoved(ADVSequenceWidget*)));
     connect(av, SIGNAL(si_onClose(AnnotatedDNAView*)), SLOT(sl_onDNAViewClosed(AnnotatedDNAView*)));
 
-    ADVGlobalAction* globalToggleViewAction = new ADVGlobalAction(av,
-        QIcon(":circular_view/images/circular.png"),
-        tr("Toggle circular views"),
-        std::numeric_limits<int>::max()); // big enough to be the last one?
+    ADVGlobalAction* globalToggleViewAction = new ADVGlobalAction(av, QIcon(":circular_view/images/circular.png"),
+        tr("Toggle circular views"), std::numeric_limits<int>::max()); // big enough to be the last one?
+
     globalToggleViewAction->addAlphabetFilter(DNAAlphabet_NUCL);
     globalToggleViewAction->setObjectName("globalToggleViewAction");
     connect(globalToggleViewAction, SIGNAL(triggered()), SLOT(sl_toggleViews()));
@@ -157,8 +164,7 @@ void CircularViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
         }
     }
 
-    connect(sw->getSequenceObject(), SIGNAL(si_sequenceCircularStateChanged()),
-            action, SLOT(sl_circularStateChanged()));
+    connect(sw->getSequenceObject(), SIGNAL(si_sequenceCircularStateChanged()), action, SLOT(sl_circularStateChanged()));
 }
 
 void CircularViewContext::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
@@ -181,59 +187,55 @@ void CircularViewContext::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
     }
 }
 
-
-CircularViewSplitter* CircularViewContext::getView(GObjectView* view, bool create) {
-
-    CircularViewSplitter* circularView = NULL;
-    QList<QObject*> resources = viewResources.value(view);
-    foreach(QObject* r, resources) {
+CircularViewSplitter * CircularViewContext::getView(GObjectView *view, bool create) {
+    CircularViewSplitter *circularView = NULL;
+    QList<QObject *> resources = viewResources.value(view);
+    foreach (QObject *r, resources) {
         circularView = qobject_cast<CircularViewSplitter*>(r);
-        if (circularView!=NULL) {
+        if (NULL != circularView) {
             return circularView;
         }
     }
     if (create) {
-        AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
+        AnnotatedDNAView *av = qobject_cast<AnnotatedDNAView *>(view);
         circularView = new CircularViewSplitter(av);
+        QList<GObjectViewAction *> actions = getViewActions(view);
+        SAFE_POINT(2 == actions.size(), "Unexpected CV action count", circularView);
+        connect(actions[0], SIGNAL(triggered()), circularView, SLOT(sl_export()));
+
         emit si_cvSplitterWasCreatedOrRemoved(circularView, viewSettings.value(av));
         resources.append(circularView);
         viewResources.insert(view, resources);
-
-        if (!exportAction) {
-            initViewContext(view);
-        }
-        connect(exportAction, SIGNAL(triggered()), circularView, SLOT(sl_export()));
     }
     return circularView;
 }
 
 //////////////////////////////////////////////////////////////////////////
-void CircularViewContext::buildMenu(U2::GObjectView *v, QMenu *m) {
+void CircularViewContext::buildMenu(GObjectView *v, QMenu *m) {
     bool empty = true;
-    QList<QObject*> resources = viewResources.value(v);
-    foreach(QObject* r, resources) {
-        CircularViewSplitter* circularView = qobject_cast<CircularViewSplitter*>(r);
-        if (circularView!=NULL) {
+    QList<QObject *> resources = viewResources.value(v);
+    foreach (QObject *r, resources) {
+        CircularViewSplitter *circularView = qobject_cast<CircularViewSplitter *>(r);
+        if (NULL != circularView) {
             if(!circularView->isEmpty()) {
                 empty = false;
             }
             break;
         }
     }
-    if(empty) {
-        return;
-    }
-    QMenu* exportMenu = GUIUtils::findSubMenu(m, ADV_MENU_EXPORT);
-    SAFE_POINT(exportMenu != NULL, "exportMenu", );
-    reconnectExportAction(v);
+    CHECK(!empty, );
+
+    QMenu *exportMenu = GUIUtils::findSubMenu(m, ADV_MENU_EXPORT);
+    SAFE_POINT(exportMenu != NULL, "Invalid exporting menu", );
+    GObjectViewAction *exportAction = findViewAction(v, EXPORT_ACTION_NAME);
+    SAFE_POINT(NULL != exportAction, "Invalid exporting action", );
     exportMenu->addAction(exportAction);
 
-    QMenu* editMenu = GUIUtils::findSubMenu(m, ADV_MENU_EDIT);
-    SAFE_POINT(editMenu != NULL, "editMenu", );
-    editMenu->addAction(setSequenceOriginAction);
-
-
-
+    QMenu *editMenu = GUIUtils::findSubMenu(m, ADV_MENU_EDIT);
+    SAFE_POINT(editMenu != NULL, "Invalid editing menu", );
+    GObjectViewAction *newSeqOriginAction = findViewAction(v, NEW_SEQ_ORIGIN_ACTION_NAME);
+    SAFE_POINT(NULL != newSeqOriginAction, "Invalid new sequence origin action", );
+    editMenu->addAction(newSeqOriginAction);
 }
 //////////////////////////////////////////////////////////////////////////
 
@@ -241,8 +243,8 @@ void CircularViewContext::removeCircularView(GObjectView* view) {
     QList<QObject*> resources = viewResources.value(view);
     foreach(QObject* r, resources) {
         CircularViewSplitter* circularView = qobject_cast<CircularViewSplitter*>(r);
-        if (circularView!=NULL) {
-            assert(circularView->isEmpty());
+        if (NULL != circularView) {
+            SAFE_POINT(circularView->isEmpty(), "Circular view is not empty", );
             AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
             av->unregisterSplitWidget(circularView);
             resources.removeOne(circularView);
@@ -251,20 +253,6 @@ void CircularViewContext::removeCircularView(GObjectView* view) {
             emit si_cvSplitterWasCreatedOrRemoved(NULL, viewSettings.value(av));
         }
     }
-}
-
-void CircularViewContext::reconnectExportAction(GObjectView *view) {
-    QList<QObject*> list = viewResources.value(view);
-    CHECK( !list.isEmpty(), );
-
-    CircularViewSplitter* circularView = qobject_cast<CircularViewSplitter*>(list.first());
-    SAFE_POINT( circularView != NULL, "CircularViewSplitter is NULL", );
-
-    if (!exportAction) {
-        initViewContext(view);
-    }
-    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-    connect(exportAction, SIGNAL(triggered()), circularView, SLOT(sl_export()));
 }
 
 void CircularViewContext::toggleViews(AnnotatedDNAView *av) {
@@ -296,7 +284,7 @@ void CircularViewContext::toggleViews(AnnotatedDNAView *av) {
 void CircularViewContext::sl_showCircular() {
     CircularViewAction* a = qobject_cast<CircularViewAction*>(sender());
     ADVSingleSequenceWidget* sw = qobject_cast<ADVSingleSequenceWidget*>(a->seqWidget);
-    assert(a!=NULL);
+    SAFE_POINT(NULL != a, "Invalid CV action", );
     if (a->isChecked()) {
         a->setText(tr("Remove circular view"));
         assert(a->view == NULL);
@@ -337,17 +325,15 @@ void CircularViewContext::sl_toggleViews()
 
 void CircularViewContext::sl_setSequenceOrigin()
 {
-    AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*> (setSequenceOriginAction->getObjectView());
-    if (av == NULL) {
-        return;
-    }
+    GObjectViewAction *setSequenceOriginAction = qobject_cast<GObjectViewAction *>(sender());
+    SAFE_POINT(NULL != setSequenceOriginAction, "Invalid action detected", );
+
+    AnnotatedDNAView *av = qobject_cast<AnnotatedDNAView *>(setSequenceOriginAction->getObjectView());
+    CHECK(NULL != av, );
 
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
     U2SequenceObject *seqObj = seqCtx->getSequenceObject();
-
-    if (seqObj == NULL) {
-        return;
-    }
+    CHECK(NULL != seqObj, );
 
     SetSequenceOriginDialog dlg(av->getSequenceWidgetInFocus());
     int res = dlg.exec();
