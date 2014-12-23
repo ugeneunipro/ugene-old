@@ -100,6 +100,17 @@ void SpinBoxWidget::setValue(const QVariant &value) {
     spinBox->setValue(value.toInt());
 }
 
+void SpinBoxWidget::processDelegateTags() {
+    CHECK(_tags != NULL, );
+
+    if (_tags->get("minimum") != QVariant()) {
+        spinBox->setMinimum(_tags->get("minimum").toInt());
+    }
+    if (_tags->get("maximum") != QVariant()) {
+        spinBox->setMaximum(_tags->get("maximum").toInt());
+    }
+}
+
 bool SpinBoxWidget::setProperty(const char *name, const QVariant &value) {
     return spinBox->setProperty(name, value);
 }

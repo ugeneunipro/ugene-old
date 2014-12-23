@@ -67,6 +67,7 @@ const DelegateTags * PropertyWidget::tags() const {
 
 void PropertyWidget::setDelegateTags(const DelegateTags *value) {
     _tags = value;
+    processDelegateTags();
 }
 
 void PropertyWidget::setSchemaConfig(SchemaConfig *value) {

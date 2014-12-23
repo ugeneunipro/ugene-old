@@ -74,6 +74,7 @@ public:
     SpinBoxWidget(const QVariantMap &spinProperties, QWidget *parent = NULL);
     virtual QVariant value();
     virtual void setValue(const QVariant &value);
+    virtual void processDelegateTags();
 
     /** Override */
     bool setProperty(const char *name, const QVariant &value);

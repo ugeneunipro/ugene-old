@@ -41,7 +41,6 @@ PropertyWizardController::PropertyWizardController(WizardController *wc, Attribu
 }
 
 PropertyWizardController::~PropertyWizardController() {
-
 }
 
 Attribute * PropertyWizardController::attribute() {
@@ -108,7 +107,6 @@ DefaultPropertyController::DefaultPropertyController(WizardController *wc, Attri
 }
 
 DefaultPropertyController::~DefaultPropertyController() {
-
 }
 
 QWidget * DefaultPropertyController::createGUI(U2OpStatus &os) {
@@ -118,6 +116,7 @@ QWidget * DefaultPropertyController::createGUI(U2OpStatus &os) {
     PropertyWidget *propWidget = createPropertyWidget(os);
     CHECK_OP(os, NULL);
     connect(propWidget, SIGNAL(si_valueChanged(const QVariant &)), SLOT(sl_valueChanged(const QVariant &)));
+    connect(this, SIGNAL(si_updateGUI(const QVariant &)), propWidget, SLOT(processDelegateTags()));
     connect(this, SIGNAL(si_updateGUI(const QVariant &)), propWidget, SLOT(setValue(const QVariant &)));
     propWidget->setSchemaConfig(wc);
     propWidget->setValue(wc->getAttributeValue(widget->getInfo()));
@@ -154,7 +153,12 @@ PropertyWidget * DefaultPropertyController::createPropertyWidget(U2OpStatus &os)
         } else {
             result = delegate->createWizardWidget(os, NULL);
         }
-        _tags = new DelegateTags(*delegate->tags());
+
+        _tags = wc->getTagsWithoutController(widget->getInfo());
+        if (_tags == NULL) {
+            _tags = new DelegateTags(*delegate->tags());
+        }
+
         result->setDelegateTags(tags());
         CHECK_OP(os, NULL);
     } else if (BaseTypes::BOOL_TYPE() == attribute()->getAttributeType()) {

@@ -91,7 +91,8 @@ public:
     void setAttributeValue(const AttributeInfo &info, const QVariant &value);
 
     Attribute * getAttribute(const AttributeInfo &info) const;
-    DelegateTags * getTags(const AttributeInfo &info);
+    DelegateTags * getTags(const AttributeInfo &info, bool returnNewTags = false);
+    DelegateTags * getTagsWithoutController(const AttributeInfo &info) const;
 
     bool eventFilter(QObject *watched, QEvent *event);
 
@@ -107,6 +108,7 @@ private:
     QMap<QString, SelectorActors> selectors; // varName <-> actors
     QVariantMap values;
     QMap<QString, PropertyWizardController*> propertyControllers;
+    QMap<QString, DelegateTags*> tagsWithoutController;
     bool runAfterApply;
 
 private:

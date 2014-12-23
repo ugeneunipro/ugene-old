@@ -424,6 +424,7 @@ QString ExtractMSAConsensusWorkerPrompter::composeRichDoc() {
 }
 
 QVariant SpinBoxDelegatePropertyRelation::getAffectResult( const QVariant &influencingValue, const QVariant &dependentValue, DelegateTags * /*infTags*/, DelegateTags *depTags ) const {
+    CHECK(depTags != NULL, dependentValue);
     updateDelegateTags(influencingValue, depTags);
     int res = qBound(depTags->get("minimum").toInt(), dependentValue.toInt(), depTags->get("maximum").toInt());
     return res;
@@ -436,8 +437,10 @@ void SpinBoxDelegatePropertyRelation::updateDelegateTags( const QVariant &influe
     if(!consFactory){
         return;
     }
-    dependentTags->set("minimum", consFactory->getMinThreshold());
-    dependentTags->set("maximum", consFactory->getMaxThreshold());
+    if (dependentTags != NULL) {
+        dependentTags->set("minimum", consFactory->getMinThreshold());
+        dependentTags->set("maximum", consFactory->getMaxThreshold());
+    }
 }
 
 } // LocalWorkflow

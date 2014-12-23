@@ -315,9 +315,23 @@ const QList<Actor*> & WizardController::getCurrentActors() const {
     return currentActors;
 }
 
-DelegateTags * WizardController::getTags(const AttributeInfo &info) {
-    CHECK(propertyControllers.contains(info.toString()), NULL);
+DelegateTags * WizardController::getTags(const AttributeInfo &info, bool returnNewTags) {
+    if (!propertyControllers.contains(info.toString())) {
+        if (returnNewTags) {
+            DelegateTags* t = new DelegateTags();
+            tagsWithoutController[info.toString()] = t;
+            return t;
+        } else {
+            return NULL;
+        }
+    }
+
     return propertyControllers[info.toString()]->tags();
+}
+
+DelegateTags * WizardController::getTagsWithoutController(const AttributeInfo &info) const {
+    CHECK(tagsWithoutController.contains(info.toString()), NULL);
+    return tagsWithoutController[info.toString()];
 }
 
 Attribute * WizardController::getAttribute(const AttributeInfo &info) const {
@@ -463,7 +477,6 @@ QVariant WizardController::getAttributeValue(const AttributeInfo &info) const {
     if (values.contains(info.toString())) {
         return values[info.toString()];
     }
-    QString attrId;
     Attribute *attr = getAttribute(info);
     CHECK(NULL != attr, QVariant());
 
@@ -492,7 +505,8 @@ void WizardController::setAttributeValue(const AttributeInfo &info, const QVaria
             continue;
         }
         AttributeInfo related(info.actorId, relation->getRelatedAttrId());
-        QVariant newValue = relation->getAffectResult(value, getAttributeValue(related), getTags(info), getTags(related));
+        QVariant newValue = relation->getAffectResult(value, getAttributeValue(related), getTags(info),
+                                                      getTags(related, true));
         if (canSetValue(related, newValue)) {
             setAttributeValue(related, newValue);
             if (propertyControllers.contains(related.toString())) {

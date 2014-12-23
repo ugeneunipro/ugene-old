@@ -106,6 +106,7 @@ public:
 
 public slots:
     virtual void setValue(const QVariant &value) = 0;
+    virtual void processDelegateTags() {}
 
 signals:
     void si_valueChanged(const QVariant &value);
