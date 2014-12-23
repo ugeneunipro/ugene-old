@@ -111,8 +111,6 @@ void ModifySequenceContentTask::fixAnnotations( ) {
             AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>( table );
             if ( ato->hasObjectRelation( seqObj, ObjectRole_Sequence ) ){
                 foreach ( Annotation an, ato->getAnnotations( ) ) {
-                    QVector<U2Region> locs = an.getRegions( );
-
                     QList<QVector<U2Region> > newRegions
                         = U1AnnotationUtils::fixLocationsForReplacedRegion( regionToReplace,
                         sequence2Insert.seq.length( ), an.getRegions( ), strat );

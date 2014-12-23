@@ -81,6 +81,10 @@ QList<QVector<U2Region> > U1AnnotationUtils::fixLocationsForReplacedRegion(
         if ( AnnotationStrategyForResize_Remove == s ) {
             continue;
         } else if ( AnnotationStrategyForResize_Resize == s ) {
+            // if location is in the region to remove -> remove it
+            if ( region2Remove.contains( r )) {
+                continue;
+            }
             // if location contains modified region -> update it length
             if ( r.contains( region2Remove ) ) {
                 // if set A = set B - do nothing
