@@ -296,9 +296,8 @@ void PWMSearchDialogController::addToQueue() {
 }
 
 void PWMSearchDialogController::reject() {
-    if (task!=NULL) {
+    if (task != NULL) {
         task->cancel();
-        return;
     }
     QDialog::reject();
 }

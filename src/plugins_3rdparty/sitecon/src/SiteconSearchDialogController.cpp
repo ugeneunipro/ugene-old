@@ -277,9 +277,8 @@ void SiteconSearchDialogController::sl_onSearch() {
 }
 
 void SiteconSearchDialogController::reject() {
-    if (task!=NULL) {
+    if (task != NULL) {
         task->cancel();
-        return;
     }
     QDialog::reject();
 }
