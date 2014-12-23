@@ -38,6 +38,18 @@ void LRegionsSelection::clear() {
     }
 }
 
+QVector<U2Region> LRegionsSelection::cropSelection(qint64 sequenceLength, const QVector<U2Region> &regions) {
+    QVector<U2Region> result;
+    foreach (const U2Region &region, regions) {
+        if (region.endPos() < sequenceLength) {
+            result << region;
+        } else if (region.startPos < sequenceLength) {
+            result << U2Region(region.startPos, sequenceLength - region.startPos);
+        }
+    }
+    return result;
+}
+
 void LRegionsSelection::addRegion(const U2Region& r) {
     assert(r.length > 0);
     if (regions.contains(r)) {

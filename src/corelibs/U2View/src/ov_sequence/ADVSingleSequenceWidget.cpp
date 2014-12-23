@@ -842,17 +842,15 @@ void ADVSingleSequenceWidget::sl_removeCustomRuler() {
     panView->removeCustomRuler(rulerName);
 }
 
-void ADVSingleSequenceWidget::sl_onAnnotationSelectionChanged( AnnotationSelection *s,
-    const QList<Annotation> &, const QList<Annotation> & )
-{
+void ADVSingleSequenceWidget::sl_onAnnotationSelectionChanged(AnnotationSelection *s, const QList<Annotation> &, const QList<Annotation> &) {
     // make sequence selection to match external annotation bounds
-    const QSet<AnnotationTableObject *> objs = getSequenceContext( )->getAnnotationObjects( true );
-    QVector<U2Region> annotatedRegions = s->getSelectedLocations( objs );
-    if ( !annotatedRegions.isEmpty( ) ) {
-        QVector<U2Region> joinedRegions = U2Region::join( annotatedRegions );
-        getSequenceContext( )->getSequenceSelection( )->setSelectedRegions( joinedRegions );
+    const QSet<AnnotationTableObject *> objs = getSequenceContext()->getAnnotationObjects(true);
+    QVector<U2Region> annotatedRegions = s->getSelectedLocations(objs);
+    if (!annotatedRegions.isEmpty()) {
+        QVector<U2Region> joinedRegions = LRegionsSelection::cropSelection(getSequenceContext()->getSequenceLength(), U2Region::join(annotatedRegions));
+        getSequenceContext()->getSequenceSelection()->setSelectedRegions(joinedRegions);
     }
-    updateSelectionActions( );
+    updateSelectionActions();
 }
 
 void ADVSingleSequenceWidget::updateSelectionActions() {

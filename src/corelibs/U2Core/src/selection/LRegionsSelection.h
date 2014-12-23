@@ -46,6 +46,8 @@ public:
 
     virtual void clear();
 
+    static QVector<U2Region> cropSelection(qint64 sequenceLength, const QVector<U2Region> &regions);
+
 signals:
     void si_selectionChanged(LRegionsSelection* thiz, const QVector<U2Region>& added, const QVector<U2Region>& removed);
 
