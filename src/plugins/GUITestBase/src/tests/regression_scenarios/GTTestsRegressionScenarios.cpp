@@ -1163,6 +1163,7 @@ GUI_TEST_CLASS_DEFINITION(test_1483){
 
 GUI_TEST_CLASS_DEFINITION(test_1497) {
     GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
+    uiLog.error("log should contain some text for test 1497");
 
     // 1. Create or open some scheme in WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
@@ -6824,7 +6825,7 @@ GUI_TEST_CLASS_DEFINITION(test_2581) {
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
     GTMouseDriver::click(os, Qt::RightButton);
 
-    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsLog::check(os, l);
 
 }

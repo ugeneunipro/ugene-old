@@ -1,4 +1,5 @@
 #include "GUITest.h"
+#include "GUITestOpStatus.h"
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
@@ -65,7 +66,9 @@ void GUITest::sl_fail(){
 #endif
     originalPixmap.save(GUITest::screenshotDir + name + ".jpg");
     uiLog.error("GUItest timed out");
-    exit(0);
+    uiLog.trace("\nGT_DEBUG_MESSAGE !!!FIRST FAIL");
+    GUITestOpStatus os;// = new GUITestOpStatus();
+    os.setError("time out");
 }
 
 

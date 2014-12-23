@@ -50,9 +50,9 @@ public:
     void runTest(GUITests testsToRun);
 
 public slots:
-    static void runGUICrazyUserTest();
-    static void runGUITest();
-    static void runGUITest(GUITest* t);
+     void runGUICrazyUserTest();
+     void runGUITest();
+     void runGUITest(GUITest* t);
 
     static void runAllGUITests();
 
@@ -67,6 +67,9 @@ protected slots:
     void sl_registerService();
     void sl_registerTestLauncherTask();
     void sl_taskStateChanged(Task*);
+
+private slots:
+    static void sl_testTimeOut();
 
 private:
     static void clearSandbox();

@@ -89,6 +89,7 @@ void GUITestService::sl_registerService() {
 
     switch (launchedFor) {
         case RUN_ONE_TEST:
+
             QTimer::singleShot(1000, this, SLOT(runGUITest()));
             break;
 
@@ -324,9 +325,9 @@ void GUITestService::runGUITest(GUITest* t) {
     }
     tests.append(t);
 
-    clearSandbox();
-    QTimer::singleShot(t->getTimeout(), t, SLOT(sl_fail()));
+    clearSandbox();    
 
+    QTimer::singleShot(t->getTimeout(), this, SLOT(sl_testTimeOut()));
     try {
         foreach (GUITest* t, tests) {
             if (t) {
@@ -474,5 +475,27 @@ void GUITestService::removeDir(QString dirName)
 
         }
     }dir.rmdir(dir.absoluteFilePath(dirName));
+}
+
+void GUITestService::sl_testTimeOut(){
+    CMDLineRegistry* cmdLine = AppContext::getCMDLineRegistry();
+    SAFE_POINT(NULL != cmdLine,"",);
+    QString testName = cmdLine->getParameterValue(CMDLineCoreOptions::LAUNCH_GUI_TEST);
+
+#if (QT_VERSION < 0x050000) // deprecated method
+    QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
+#else
+    QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
+#endif
+    originalPixmap.save(GUITest::screenshotDir + testName + ".jpg");
+
+    foreach(GUITest* t, postChecks()){
+        TaskStateInfo os1;
+        t->run(os1);
+    }
+
+    writeTestResult("test timed out");
+
+    exit(0);
 }
 }
