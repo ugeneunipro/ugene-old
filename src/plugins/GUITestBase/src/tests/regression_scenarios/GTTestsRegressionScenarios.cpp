@@ -1551,6 +1551,44 @@ GUI_TEST_CLASS_DEFINITION(test_1576_1) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1584) {
+//    1. Check the first line of "_common_data/genbank/pBR322.gb".
+//    Expected state:
+//    LOCUS       SYNPBR322               4361 bp    DNA     circular SYN 30-SEP-2008
+//    Look to the spaces between "bp" - "DNA" and "DNA" - "circular". There are must be 4 and 5 spaces by specification.
+//    2. Open this file in UGENE.
+//    3. Add any annotation.
+//    Expected state: new annotation was added.
+//    4. Export this document as genbank file.
+//    5. Check the first line of the exported file.
+//    Expected state: the first line of the exported file is the same as in original file.
+
+    QFile f1(testDir + "_common_data/genbank/pBR322.gb");
+    f1.open(QIODevice::ReadOnly);
+    QByteArray firstLine = f1.read(64); // after 64 position the date of file modification is located,
+                                        // so meaningfull part is before it
+    f1.close();
+
+    GTGlobals::sleep();
+
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/pBR322.gb");
+    GTUtilsAnnotationsTreeView::createAnnotation(os, "group", "annotation", "1..3", false);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export document"));
+    GTUtilsDialog::waitForDialog(os, new ExportDocumentDialogFiller(os, sandBoxDir, "test_1584.gb"));
+    GTUtilsProjectTreeView::click(os, "pBR322.gb", Qt::RightButton);
+    GTGlobals::sleep();
+
+    QFile f2(sandBoxDir + "test_1584.gb");
+    f2.open(QIODevice::ReadOnly);
+    QByteArray exportedFirstLine = f2.read(64);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR( firstLine == exportedFirstLine, QString("First line had been changed! Expected: '%1'. Current: '%2'")
+                   .arg(firstLine.data()).arg(exportedFirstLine.data()) );
+    f2.close();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1585) {
     // 1. Open "_common_data/scenarios/msa/ma.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma.aln");
@@ -11740,7 +11778,7 @@ GUI_TEST_CLASS_DEFINITION(test_3640) {
     QModelIndex humanT1Doc = GTUtilsProjectTreeView::findIndex(os, "human_T1.fa", options);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, humanT1Doc));
     GTMouseDriver::click(os);
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "genomes"));    
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "genomes"));
     int key = GTKeyboardDriver::key["ctrl"];
 //#ifdef Q_OS_MAC
 //    key = GTKeyboardDriver::key["cmd"];
