@@ -10,10 +10,10 @@ workflow "Raw RNA-Seq processing" {
             name: "Configure RNA-Seq Pipeline";
             finish-label: "Setup";
             result {
-                NGS/raw_ngs/rnaseq/rnaseq_single.uwl: pipeline.single;
-                NGS/raw_ngs/rnaseq/rnaseq_paired.uwl: pipeline.paired;
-                NGS/raw_ngs/rnaseq/rnaseq_filtration_single.uwl: pipeline.singlefiltration;
-                NGS/raw_ngs/rnaseq/rnaseq_filtration_paired.uwl: pipeline.pairedfiltration;
+                NGS/raw_ngs/rnaseq/rnaseq_single.uwl: "tags.single topHatAlignment.with";
+                NGS/raw_ngs/rnaseq/rnaseq_paired.uwl: "tags.paired topHatAlignment.with";
+                NGS/raw_ngs/rnaseq/rnaseq_filtration_single.uwl: "tags.single topHatAlignment.without";
+                NGS/raw_ngs/rnaseq/rnaseq_filtration_paired.uwl: "tags.paired topHatAlignment.without";
             }
             page {
                 id: 1;
@@ -22,22 +22,30 @@ workflow "Raw RNA-Seq processing" {
                     group {
                         title:"Analysis type";
                         radio {
-                            id: pipeline;
+                            id: topHatAlignment;
+                            value {
+                                id: with;
+                                label: "Filtering and alignment";
+                                tooltip: "Filter the sequencing reads and align them using the TopHat tool.";
+                            }
+                            value {
+                                id: without;
+                                label: "Only filtering";
+                                tooltip: "Filter the sequencing reads. The output of this pipeline can be used as input to the Tuxedo pipeline which contains the alignment step wih TopHat.";
+                            }
+                        }
+                    }
+                    group {
+                        title: "Tags type";
+                        radio {
+                            id: tags;
                             value {
                                 id: single;
-                                label: "Single tags. With TopHat alignment";
+                                label: "Single-end tags";
                             }
                             value {
                                 id: paired;
-                                label: "Paired tags. With TopHat alignment";
-                            }
-                            value {
-                                id: singlefiltration;
-                                label: "Single tags. Filtration only. Without TopHat alignment";
-                            }
-                            value {
-                                id: pairedfiltration;
-                                label: "Paired tags. Filtration only. Without TopHat alignment";
+                                label: "Paired-end tags";
                             }
                         }
                     }
