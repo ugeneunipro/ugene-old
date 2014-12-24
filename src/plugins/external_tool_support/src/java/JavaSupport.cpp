@@ -36,10 +36,10 @@ JavaSupport::JavaSupport(const QString &name, const QString &path)
     }
     executableFileName = "java";
 
-    validMessage = "Java(TM) SE Runtime Environment";
+    validMessage = "java version";
     validationArguments << "-version";
 
-    description += tr("Java(TM) SE Runtime Environment");
+    description += tr("Java Runtime Environment");
     versionRegExp = QRegExp("(\\d+.\\d+.\\d+)");
     toolKitName="Java";
 
