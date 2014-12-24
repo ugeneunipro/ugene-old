@@ -477,10 +477,8 @@ static void regExpSearch(   const QString &refSequence,
     }
 
     int foundStartPos = 0;
-
-    QString sequencePart = refSequence.mid(foundStartPos, maxResultLen);
     while ( 0 == stopFlag
-        && -1 != ( foundStartPos = regExp.indexIn( sequencePart, foundStartPos ) ) )
+        && -1 != ( foundStartPos = regExp.indexIn( refSequence, foundStartPos ) ) )
     {
         // remember that there are a few iterations, so a single one yields
         // 1 / @conEnd of total progress
@@ -506,7 +504,7 @@ static void regExpSearch(   const QString &refSequence,
         // try to find smaller substrings starting from the same position
         int substrLength = qMin(foundLength - 1, maxResultLen);
         while ( 0 == stopFlag && 0 < substrLength
-            && foundStartPos == ( regExp.indexIn( sequencePart.left( foundStartPos + substrLength ), foundStartPos ) ) )
+            && foundStartPos == ( regExp.indexIn( refSequence.left( foundStartPos + substrLength ), foundStartPos ) ) )
         {
             const int foundSubstrLength = regExp.matchedLength( );
             if ( maxResultLen >= foundSubstrLength ) {
@@ -527,7 +525,6 @@ static void regExpSearch(   const QString &refSequence,
         }
 
         ++foundStartPos;
-        sequencePart = refSequence.mid(foundStartPos, maxResultLen);
     }
 }
 
