@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 #include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include "GTTestsRegressionScenarios.h"
 
@@ -1146,6 +1147,55 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1461_1) {
+//    1. Open "_common_data/fasta/fa1.fa".
+//    Expected state: sequence viewer had opened.
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/fa1.fa");
+
+//    2. Click on toolbar "Find pattern [Smith-Waterman]".
+//    Expected state: "Smith-Waterman Search" dialog is opened.
+//    3. Check "Scoring matrix" field
+//    Expected state: "Scoring matrix" field not contain "rna" value.
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QComboBox *comboMatrix = GTWidget::findExactWidget<QComboBox *>(os, "comboMatrix", QApplication::activeModalWidget());
+            CHECK_SET_ERR(NULL != comboMatrix, "Matrix combobox is NULL");
+            U2OpStatusImpl innerOs;
+            GTComboBox::setIndexWithText(innerOs, comboMatrix, "rna", false);
+            CHECK_SET_ERR(innerOs.hasError(), "'rna' matrix unexpectedly presents in the matrix list");
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SmithWatermanDialogFiller(os, new Scenario));
+    GTWidget::click(os, GTToolbar::getWidgetForActionTooltip(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Find pattern [Smith-Waterman]"));
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1461_2) {
+//    1. Open "_common_data/fasta/RNA_1_seq.fa".
+//    Expected state: sequence viewer had opened.
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/RNA_1_seq.fa");
+
+//    2. Click on toolbar "Find pattern [Smith-Waterman]".
+//    Expected state: "Smith-Waterman Search" dialog is opened.
+//    3. Check "Scoring matrix" field
+//    Expected state: "Scoring matrix" field contain only "rna" value.
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QComboBox *comboMatrix = GTWidget::findExactWidget<QComboBox *>(os, "comboMatrix", QApplication::activeModalWidget());
+            CHECK_SET_ERR(NULL != comboMatrix, "Matrix combobox is NULL");
+            GTComboBox::setIndexWithText(os, comboMatrix, "rna");
+            CHECK_SET_ERR(1 == comboMatrix->count(), "There are several unexpected matrices");
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SmithWatermanDialogFiller(os, new Scenario));
+    GTWidget::click(os, GTToolbar::getWidgetForActionTooltip(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Find pattern [Smith-Waterman]"));
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1463) {

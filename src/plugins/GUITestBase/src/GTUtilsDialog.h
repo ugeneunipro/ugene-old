@@ -125,6 +125,7 @@ public:
 
     static QDialogButtonBox * buttonBox(U2OpStatus &os, QWidget *dialog);
 
+    static void clickButtonBox(U2OpStatus &os, QDialogButtonBox::StandardButton button);
     static void clickButtonBox(U2OpStatus &os, QWidget *dialog, QDialogButtonBox::StandardButton button);
 
     // if objectName is not empty, waits for QWidget with a given name

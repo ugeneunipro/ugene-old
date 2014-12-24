@@ -148,6 +148,12 @@ QDialogButtonBox * GTUtilsDialog::buttonBox(U2OpStatus &os, QWidget *dialog) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickButtonBox"
+void GTUtilsDialog::clickButtonBox(U2OpStatus &os, QDialogButtonBox::StandardButton button) {
+    clickButtonBox(os, QApplication::activeModalWidget(), button);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clickButtonBox"
 void GTUtilsDialog::clickButtonBox(U2OpStatus& os, QWidget* dialog, QDialogButtonBox::StandardButton button) {
     QDialogButtonBox* box = buttonBox(os, dialog);
     GT_CHECK(box != NULL, "buttonBox is NULL");

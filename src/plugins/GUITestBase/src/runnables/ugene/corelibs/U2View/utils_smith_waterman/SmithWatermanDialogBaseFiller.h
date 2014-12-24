@@ -41,7 +41,9 @@ public:
         const QString& _pattern = "", const GTRegionSelector::RegionSelectorSettings& _s
         = GTRegionSelector::RegionSelectorSettings());
 
-    virtual void run();
+    SmithWatermanDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+
+    virtual void commonScenario();
     Button button;
 
 private:
