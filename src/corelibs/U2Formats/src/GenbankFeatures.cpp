@@ -43,7 +43,6 @@ const QByteArray GBFeatureUtils::QUALIFIER_GROUP("ugene_group");
 const QString GBFeatureUtils::DEFAULT_KEY = GBFeatureUtils::getKeyInfo(GBFeatureKey_misc_feature).text;
 
 const QString GBFeatureUtils::QUALIFIER_CUT = "cut";
-const int GBFeatureUtils::MAX_KEY_LEN = 15; //max annotation key len in genbank or embl
 
 static QColor cl(const QString& txt) {
     QColor res;

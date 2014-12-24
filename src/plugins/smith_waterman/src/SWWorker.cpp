@@ -529,7 +529,7 @@ void SWWorker::sl_taskFinished(Task* t) {
         if(rcb) {
             // crop long names
             const QString qualifierName = actor->getParameter(PATTERN_NAME_QUAL_ATTR)
-                ->getAttributeValue<QString>(context).left( GBFeatureUtils::MAX_KEY_LEN );
+                ->getAttributeValue<QString>(context);
             foreach ( AnnotationData a, rcb->getAnotations( ) ) {
                 QString pattern = patterns.value(sub);
                 if(!patternNames[pattern].isEmpty()) {

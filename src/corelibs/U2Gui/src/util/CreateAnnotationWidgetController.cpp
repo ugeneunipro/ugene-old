@@ -521,9 +521,6 @@ QString CreateAnnotationWidgetController::validate() {
             return tr("Annotation name is empty");
         }
 
-        if (model.data.name.length() > GBFeatureUtils::MAX_KEY_LEN) {
-            return tr("Annotation name is too long!\nMaximum allowed size: %1 (Genbank format compatibility issue)").arg(GBFeatureUtils::MAX_KEY_LEN);
-        }
         if (!Annotation::isValidAnnotationName(model.data.name) && !model.hideAnnotationName) {
             return tr("Illegal annotation name");
         }

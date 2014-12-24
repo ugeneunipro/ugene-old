@@ -9539,6 +9539,36 @@ GUI_TEST_CLASS_DEFINITION(test_3220){
     CHECK_SET_ERR("val\"2" == annotation->annotation.findFirstQualifierValue("newqualifier2"), "Qualifier 2 is not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3221) {
+    //    1. Open "data/samples/FASTA/human_T1.fa".
+
+    //    2. Open "Find pattern" options panel tab.
+
+    //    3. Enter pattern with long annotation name(>15 characters).
+
+    //    4. Check "Use pattern name" check box
+
+    //    5. Press "Create annotations" button
+    //    Expected state: annotations created without errors.
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTGlobals::sleep(200);
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+
+    GTUtilsOptionPanelSequenceView::enterPattern(os, ">long_annotation_name");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"], GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keySequence(os, "ACGTAAA");
+
+    GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os, true);
+
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox*>(os, "usePatternNamesCheckBox"), true);
+    GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature  (0, 10)");
+    CHECK_SET_ERR(NULL != annotationGroup, "Annotations have not been found");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3226) {
     //1. Create a workflow with a 'File List' element.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);

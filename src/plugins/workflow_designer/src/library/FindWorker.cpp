@@ -467,11 +467,10 @@ void FindWorker::sl_taskFinished( Task *t ) {
                 ptrns << patterns.value( findTask );
             } else { //file pattern
                 const QString patternNameQualName = actor->getParameter( PATTERN_NAME_QUAL_ATTR )
-                    ->getAttributeValue<QString>( context ).left( GBFeatureUtils::MAX_KEY_LEN );
+                    ->getAttributeValue<QString>( context );
 
                 QString patternName = filePatterns.value( findTask ).first;
                 if ( !patternName.isEmpty( ) ) {
-                    patternName = patternName.left( GBFeatureUtils::MAX_KEY_LEN );
                     if ( !Annotation::isValidAnnotationName( patternName ) ) {
                         patternName = resultName;
                     }

@@ -904,7 +904,7 @@ void FindPatternWidget::checkState()
     }
     if(usePatternNamesCheckBox->isChecked()){
         foreach(const QString &name, nameList){
-            if (name.length() > GBFeatureUtils::MAX_KEY_LEN || !Annotation::isValidAnnotationName(name) || name.isEmpty()) {
+            if (!Annotation::isValidAnnotationName(name) || name.isEmpty()) {
                 showHideMessage(true, AnnotationNotValidName);
                 getAnnotationsPushButton->setDisabled(true);
                 return;

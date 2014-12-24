@@ -155,11 +155,6 @@ public:
     static const QString DEFAULT_KEY;
 
     static const QString QUALIFIER_CUT;
-
-    //max annotation key len in Genbank or EMBL formats
-    static const int    MAX_KEY_LEN;
-
-
 };
 
 }//namespace
