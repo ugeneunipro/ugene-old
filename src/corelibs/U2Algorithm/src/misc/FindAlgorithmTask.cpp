@@ -104,7 +104,7 @@ QList<FindAlgorithmResult> FindAlgorithmTask::popResults() {
 //////////////////////////////////////////////////////////////////////////
 //LoadPatternsFileTask
 LoadPatternsFileTask::LoadPatternsFileTask( const QString& _filePath, const QString &_annotationName)
-: Task(tr("Load pattern from file"), TaskFlag_None), filePath(_filePath), annotationName(_annotationName)
+    : Task(tr("Load pattern from file"), TaskFlag_None), filePath(_filePath), isRawSequence(false), annotationName(_annotationName)
 {
 
 }
@@ -150,7 +150,7 @@ void LoadPatternsFileTask::run()
     typedef QPair<QString, QString> NamePattern;
 
     Document *doc = getDocumentFromFilePath();
-    if(NULL != doc && isRawSequence) {
+    if(NULL != doc && !isRawSequence) {
         const QList<GObject *> &objectsFromDoc = doc->findGObjectByType(GObjectTypes::SEQUENCE);
 
         foreach(GObject *object, objectsFromDoc) {
@@ -185,7 +185,7 @@ void LoadPatternsFileTask::run()
                     }
                 }
                 if (!contains){
-                    namesPatterns.append(qMakePair(QString(""), pattern));
+                    namesPatterns.append(qMakePair("pattern" + QString::number(namesPatterns.size() + 1), pattern));
                 }
 
             }

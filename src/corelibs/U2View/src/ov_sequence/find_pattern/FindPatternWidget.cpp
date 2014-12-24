@@ -710,7 +710,7 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
                     if (!text.isEmpty()) {
                         text += "\n";
                     }
-                    text += QString(tr("Warning: annotation name or annotation group name are either invalid or too long. "));
+                    text += QString(tr("Warning: annotation name or annotation group name are invalid. "));
                     if (!additionalMsg.isEmpty()){
                         text += QString(tr("Reason: "));
                         text += additionalMsg;
@@ -902,9 +902,9 @@ void FindPatternWidget::checkState()
         getAnnotationsPushButton->setDisabled(true);
         return;
     }
-    if(usePatternNamesCheckBox->isChecked()){
+    if(usePatternNamesCheckBox->isChecked() && !loadFromFileGroupBox->isChecked()) {
         foreach(const QString &name, nameList){
-            if (!Annotation::isValidAnnotationName(name) || name.isEmpty()) {
+            if (!Annotation::isValidAnnotationName(name)) {
                 showHideMessage(true, AnnotationNotValidName);
                 getAnnotationsPushButton->setDisabled(true);
                 return;
@@ -1150,7 +1150,14 @@ void FindPatternWidget::sl_loadPatternTaskStateChanged() {
     CHECK(loadTask->isFinished() && !loadTask->isCanceled(), );
     CHECK(!loadTask->hasError(), );
 
-    const QList<NamePattern> namesPatterns = loadTask->getNamesPatterns();
+    QList<NamePattern> namesPatterns = loadTask->getNamesPatterns();
+    nameList.clear();
+    for (int i = 0; i < namesPatterns.size(); i++) {
+        nameList << namesPatterns[i].first;
+        namesPatterns[i].first = QString::number(i);
+    }
+
+    stopCurrentSearchTask();
     initFindPatternTask(namesPatterns);
 
     annotModelPrepared = false;
@@ -1324,12 +1331,7 @@ void FindPatternWidget::sl_activateNewSearch(bool forcedSearch){
         if(filePathLineEdit->text().isEmpty()){
             return;
         }
-        LoadPatternsFileTask* loadTask = NULL;
-        if(usePatternNamesCheckBox->isChecked()){
-            loadTask = new LoadPatternsFileTask(filePathLineEdit->text());
-        }else{
-            loadTask = new LoadPatternsFileTask(filePathLineEdit->text(), annotController->getModel().data.name);
-        }
+        LoadPatternsFileTask *loadTask = new LoadPatternsFileTask(filePathLineEdit->text());
         connect(loadTask, SIGNAL(si_stateChanged()), SLOT(sl_loadPatternTaskStateChanged()));
         AppContext::getTaskScheduler()->registerTopLevelTask(loadTask);
     } else {
@@ -1353,8 +1355,9 @@ void FindPatternWidget::sl_activateNewSearch(bool forcedSearch){
 }
 
 QList<NamePattern> FindPatternWidget::updateNamePatterns(){
-    U2OpStatus2Log os;
+    CHECK(!loadFromFileGroupBox->isChecked(), QList<NamePattern>());
 
+    U2OpStatus2Log os;
     QList<NamePattern> newPatterns = getPatternsFromTextPatternField(os);
 
     nameList.clear();
@@ -1379,20 +1382,30 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
     AnnotationTableObject *aTableObj = annotModel.getAnnotationObject();
     SAFE_POINT(aTableObj != NULL, "Invalid annotation table detected!", );
 
+    QList<AnnotationData> annotationsToCreate = findPatternResults;
+
     for(int i = 0; i < findPatternResults.size(); i++){
         if(usePatternNamesCheckBox->isChecked()) {
             bool ok = false;
             int index = findPatternResults[i].name.toInt(&ok);
-            SAFE_POINT(ok, "Failed conversion to integer", );
-            SAFE_POINT(nameList.size() > index, "Out of boundaries in names list", );
-            SAFE_POINT(index >= 0, "Out of boundaries in names list", );
-            findPatternResults[i].name = nameList[index];
+            if (Q_UNLIKELY(!ok)) {
+                coreLog.details(tr("Warning: can not get valid pattern name, annotation will be named 'misc_feature'"));
+                Q_ASSERT(false);
+                if (annotationsToCreate[i].name.isEmpty()) {
+                    annotationsToCreate[i].name = "misc_feature";
+                }
+            } else {
+                SAFE_POINT(ok, "Failed conversion to integer", );
+                SAFE_POINT(nameList.size() > index, "Out of boundaries in names list", );
+                SAFE_POINT(index >= 0, "Out of boundaries in names list", );
+                annotationsToCreate[i].name = nameList[index];
+            }
         }else{
-            findPatternResults[i].name = annotModel.data.name;
+            annotationsToCreate[i].name = annotModel.data.name;
         }
     }
     GCOUNTER(cvar, tvar, "FindAlgorithmTask");
-    AppContext::getTaskScheduler()->registerTopLevelTask(new CreateAnnotationsTask(aTableObj, group, findPatternResults));
+    AppContext::getTaskScheduler()->registerTopLevelTask(new CreateAnnotationsTask(aTableObj, group, annotationsToCreate));
 
     annotModelPrepared = false;
     updateAnnotationsWidget();
