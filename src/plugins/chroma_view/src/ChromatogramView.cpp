@@ -541,7 +541,8 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
         drawOriginalBaseCalls(0, 0, width(), charHeight, p, visible, chromaView->currentBaseCalls, false);
     }
 
-    if (completeRedraw || uf.testFlag(GSLV_UF_SelectionChanged)) {
+    const QVector<U2Region>& sel=seqCtx->getSequenceSelection()->getSelectedRegions();
+    if(!sel.isEmpty()) {
         //draw current selection
         //selection base on trace transform coef
         k = kLinearTransformTrace;
@@ -549,22 +550,20 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
         QPen linePenSelection(Qt::darkGray, 1, Qt::SolidLine);
         p.setPen(linePenSelection);
         p.setRenderHint(QPainter::Antialiasing, false);
-        const QVector<U2Region>& sel=seqCtx->getSequenceSelection()->getSelectedRegions();
-        if (sel.size() >= 1) {
-            U2Region self=sel.first();
-            int i1=self.startPos,i2=self.endPos()-1;
-            if (i1!=0)  {
-                p.drawLine((k*chroma.baseCalls[i1]+b+k*chroma.baseCalls[i1-1]+b)/2,0,
-                    (k*chroma.baseCalls[i1]+b+k*chroma.baseCalls[i1-1]+b)/2,pd->height());
-            }else {
-                p.drawLine(k*chroma.baseCalls[i1]+b-charWidth/2,0,k*chroma.baseCalls[i1]+b-charWidth/2,pd->height());
-            }
-            if (i2!=chroma.seqLength-1) {
-                p.drawLine((k*chroma.baseCalls[i2]+b+k*chroma.baseCalls[i2+1]+b)/2,0,
-                    (k*chroma.baseCalls[i2]+b+k*chroma.baseCalls[i2+1]+b)/2,pd->height());
-            } else {
-                p.drawLine(k*chroma.baseCalls[i2]+b+charWidth/2,0, k*chroma.baseCalls[i2]+b+charWidth/2,pd->height());
-            }
+
+        U2Region self=sel.first();
+        int i1=self.startPos,i2=self.endPos()-1;
+        if (i1!=0)  {
+            p.drawLine((k*chroma.baseCalls[i1]+b+k*chroma.baseCalls[i1-1]+b)/2,0,
+                (k*chroma.baseCalls[i1]+b+k*chroma.baseCalls[i1-1]+b)/2,pd->height());
+        }else {
+            p.drawLine(k*chroma.baseCalls[i1]+b-charWidth/2,0,k*chroma.baseCalls[i1]+b-charWidth/2,pd->height());
+        }
+        if (i2!=chroma.seqLength-1) {
+            p.drawLine((k*chroma.baseCalls[i2]+b+k*chroma.baseCalls[i2+1]+b)/2,0,
+                (k*chroma.baseCalls[i2]+b+k*chroma.baseCalls[i2+1]+b)/2,pd->height());
+        } else {
+            p.drawLine(k*chroma.baseCalls[i2]+b+charWidth/2,0, k*chroma.baseCalls[i2]+b+charWidth/2,pd->height());
         }
     }
 }
