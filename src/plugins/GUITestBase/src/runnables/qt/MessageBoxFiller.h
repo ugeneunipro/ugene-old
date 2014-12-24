@@ -34,8 +34,8 @@ namespace U2 {
 
     class MessageBoxDialogFiller : public Filler {
     public:
-        MessageBoxDialogFiller(U2OpStatus &_os, QMessageBox::StandardButton _b, QString _message = "")
-            :Filler(_os, ""), b(_b),buttonText(""), message(_message){}
+        MessageBoxDialogFiller(U2OpStatus &_os, QMessageBox::StandardButton _b, QString _message = "", const QString &objectName = "")
+            :Filler(_os, objectName), b(_b),buttonText(""), message(_message){}
         MessageBoxDialogFiller(U2OpStatus &_os, QString _buttonText, QString _message = "")
         :Filler(_os, ""), b(QMessageBox::NoButton),buttonText(_buttonText), message(_message){}
         virtual void run();
@@ -60,6 +60,14 @@ namespace U2 {
     public:
         MessageBoxOpenAnotherProject(U2OpStatus &_os) : Filler(_os, ""){}
         virtual void run();
+    };
+
+    class InputIntFiller : public Filler {
+    public:
+        InputIntFiller(U2OpStatus &os, int value);
+        void commonScenario();
+    private:
+        int value;
     };
 }
 

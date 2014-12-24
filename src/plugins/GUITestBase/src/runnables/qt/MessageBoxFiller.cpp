@@ -20,6 +20,7 @@
  */
 
 #include "MessageBoxFiller.h"
+#include "api/GTSpinBox.h"
 #include "api/GTWidget.h"
 #include "api/GTKeyboardDriver.h"
 
@@ -124,6 +125,26 @@ void MessageBoxOpenAnotherProject::run(){
     GT_CHECK(button != NULL, "There are no Abort buttons in messagebox");
 
     GTWidget::click(os, button);
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "MessageBoxOpenAnotherProject"
+InputIntFiller::InputIntFiller(U2OpStatus &os, int value)
+: Filler(os, ""), value(value)
+{
+
+}
+
+#define GT_METHOD_NAME "run"
+void InputIntFiller::commonScenario() {
+    QWidget *dialog = QApplication::activeModalWidget();
+    QSpinBox *spinBox = dialog->findChild<QSpinBox*>();
+    GT_CHECK(NULL != spinBox, "NULL spinBox");
+
+    GTSpinBox::setValue(os, spinBox, value);
+
+    GTWidget::click(os, GTWidget::findButtonByText(os, "OK", dialog));
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

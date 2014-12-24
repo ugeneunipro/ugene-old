@@ -28,9 +28,9 @@ namespace U2 {
 
 class FindEnzymesDialogFiller : public Filler {
 public:
-    FindEnzymesDialogFiller(U2OpStatus &os, const QStringList &enzymesToFind);
+    FindEnzymesDialogFiller(U2OpStatus &os, const QStringList &enzymesToFind, CustomScenario *scenario = NULL);
 
-    void run();
+    void commonScenario();
 
 private:
     QStringList enzymesToFind;

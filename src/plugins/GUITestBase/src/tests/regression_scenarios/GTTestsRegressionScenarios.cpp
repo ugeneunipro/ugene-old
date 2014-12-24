@@ -12410,6 +12410,48 @@ GUI_TEST_CLASS_DEFINITION(test_3779) {
     CHECK_SET_ERR(assemblyOverviewFound, "Assembly overview not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3813) {
+    //1. Open "samples/Genbank/murine.gb"
+    GTFileDialog::openFile(os, dataDir + "/samples/Genbank/murine.gb");
+
+    //2. Press "Find restriction sites" toolbutton
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            //3. Press "Select by length"
+            //4. Input "13" and press "Ok"
+            GTUtilsDialog::waitForDialog(os, new InputIntFiller(os, 13));
+            GTWidget::click(os, GTWidget::findWidget(os, "selectByLengthButton"));
+
+            //5. Run search
+            GTUtilsDialog::clickButtonBox(os, QApplication::activeModalWidget(), QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList(), new Scenario()));
+    GTWidget::click(os, GTWidget::findWidget(os, "Find restriction sites_widget"));
+
+    //6. Press toolbutton "Global automatic annotation updating"
+    //7. Select all types of annotating
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
+    GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Plasmid features"));
+    GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //8. Unload "murine.gb"
+    GTUtilsDocument::unloadDocument(os, "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //9. Load "murine.gb"
+    //Expected state: auto-annotating task started
+    GTUtilsDocument::loadDocument(os, "murine.gb");
+
+    //10. Unload the document, while the auto-annotating task is performing
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Failed to unload document", "UnloadWarning"));
+    GTUtilsDocument::unloadDocument(os, "murine.gb");
+    GTGlobals::sleep(3000);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3815) {
     GTLogTracer l;
     //1. Open "_common_data/fasta/cant_translate.fa".

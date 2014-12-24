@@ -156,7 +156,9 @@ void UnloadDocumentTask::runUnloadTaskHelper(const QList<Document*>& docs, Unloa
             text+=doc->getName()+" : " + err + "<br>";
             coreLog.error(tr("Failed to unload document: %1, error: %2").arg(doc->getName()).arg(err));
         }
-        QMessageBox::warning(QApplication::activeWindow(), tr("Warning"), text);
+        QMessageBox warning(QMessageBox::Warning, tr("Warning"), text, QMessageBox::Ok, QApplication::activeWindow());
+        warning.setObjectName("UnloadWarning");
+        warning.exec();
     }
 }
 

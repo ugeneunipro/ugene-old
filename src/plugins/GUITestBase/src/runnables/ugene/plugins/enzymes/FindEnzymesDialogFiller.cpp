@@ -36,14 +36,14 @@ namespace U2 {
 
 #define GT_CLASS_NAME "FindEnzymesDialogFiller"
 
-FindEnzymesDialogFiller::FindEnzymesDialogFiller(U2OpStatus &os, const QStringList &enzymesToFind) :
-    Filler(os, "FindEnzymesDialog"),
+FindEnzymesDialogFiller::FindEnzymesDialogFiller(U2OpStatus &os, const QStringList &enzymesToFind, CustomScenario *scenario) :
+    Filler(os, "FindEnzymesDialog", scenario),
     enzymesToFind(enzymesToFind)
 {
 }
 
 #define GT_METHOD_NAME "run"
-void FindEnzymesDialogFiller::run() {
+void FindEnzymesDialogFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(NULL != dialog, "activeModalWidget is NULL");
 
