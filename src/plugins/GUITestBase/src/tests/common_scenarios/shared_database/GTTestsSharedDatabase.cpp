@@ -790,10 +790,10 @@ GUI_TEST_CLASS_DEFINITION(proj_test_0009) {
     const QModelIndex et0001_sequence = GTUtilsProjectTreeView::findIndex(os, "et0001_sequence");
     const QModelIndex et0005_variations = GTUtilsProjectTreeView::findIndex(os, "et0005_variations");
 
-    CHECK_SET_ERR(et0002_features.row() < et0004_assembly.row(), "Unexpected objects order in project");
-    CHECK_SET_ERR(et0004_assembly.row() < et0003_alignment.row(), "Unexpected objects order in project");
-    CHECK_SET_ERR(et0003_alignment.row() < et0001_sequence.row(), "Unexpected objects order in project");
-    CHECK_SET_ERR(et0001_sequence.row() < et0005_variations.row(), "Unexpected objects order in project");
+    CHECK_SET_ERR(et0001_sequence.row() < et0002_features.row(), "Unexpected objects order in project");
+    CHECK_SET_ERR(et0002_features.row() < et0003_alignment.row(), "Unexpected objects order in project");
+    CHECK_SET_ERR(et0003_alignment.row() < et0004_assembly.row(), "Unexpected objects order in project");
+    CHECK_SET_ERR(et0004_assembly.row() < et0005_variations.row(), "Unexpected objects order in project");
 }
 
 GUI_TEST_CLASS_DEFINITION(import_test_0001) {
