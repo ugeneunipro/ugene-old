@@ -101,6 +101,7 @@ RestrctionMapWidget::RestrctionMapWidget( ADVSequenceObjectContext* context, QWi
     layout->setContentsMargins(0, 0, 0, 0);
 
     treeWidget = new QTreeWidget(this);
+    treeWidget->setObjectName("restrictionMapTreeWidget");
     treeWidget->setColumnCount(1);
     treeWidget->setHeaderLabel(tr("Restriction Sites Map"));
     connect(treeWidget,SIGNAL(itemSelectionChanged()), SLOT(sl_itemSelectionChanged()));

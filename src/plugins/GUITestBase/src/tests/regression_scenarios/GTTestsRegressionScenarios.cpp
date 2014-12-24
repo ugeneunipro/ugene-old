@@ -1146,6 +1146,33 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1463) {
+    //1. Open "human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+
+    //2. Click the "Find restriction sites" button on the toolbar.
+    //Expected state: the "Find restriction sites" dialog had appeared.
+    //3. Click the "OK" button.
+    //Expected state: new auto annotations had been added.
+    GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList() << "BamHI" << "XmaI" << "DraI" << "ClaI"));
+    GTWidget::click(os, GTWidget::findWidget(os, "Find restriction sites_widget"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //4. Click the "Show circular view" button on the Sequence Viewer's toolbar.
+    //Expected state: additional widget with circular view had opened.
+    GTWidget::click(os, GTWidget::findWidget(os, "CircularViewAction"));
+
+    //5. Look at the "Restrictions Sites Map" widget to the right of the circular view.
+    QTreeWidget *tree = dynamic_cast<QTreeWidget*>(GTWidget::findWidget(os, "restrictionMapTreeWidget"));
+
+    //Expected state: enzymes in this widget are ordered alphabetically.
+    QString item1 = tree->topLevelItem(0)->text(0);
+    QString item2 = tree->topLevelItem(1)->text(0);
+    QString item3 = tree->topLevelItem(2)->text(0);
+    QString item4 = tree->topLevelItem(3)->text(0);
+    CHECK_SET_ERR((item1 < item2) && (item2 < item3) && (item3 < item4), "Wrong order");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1475) {
     GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/raw_sequence/", "NC_000117.txt");
