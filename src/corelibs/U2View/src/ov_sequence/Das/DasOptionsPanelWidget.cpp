@@ -113,11 +113,12 @@ DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv)
 
     initialize();
     connectSignals();
-    checkState();
     updateShowOptions();
     setObjectName("DasOptionsPanelWidget");
 
     U2WidgetStateStorage::restoreWidgetState(savableWidget);
+
+    checkState();
 }
 
 void DasOptionsPanelWidget::sl_searchTypeChanged(int type) {

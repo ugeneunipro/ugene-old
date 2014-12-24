@@ -120,6 +120,11 @@ void DasOptionsPanelSavableTab::setChildValue(const QString &childId, const QVar
         qobject_cast<DasOptionsPanelWidget *>(wrappedWidget)->setExtendedMode(value.toBool());
     } else {
         U2SavableWidget::setChildValue(childId, value);
+        if ("idList" == childId && !value.value<QVector<QVector<QString> > >().isEmpty()) {
+            QTableWidget *idList = qobject_cast<QTableWidget *>(child);
+            SAFE_POINT(NULL != idList, "Invalid DAS results table", );
+            idList->setCurrentCell(0, 0);
+        }
     }
 }
 

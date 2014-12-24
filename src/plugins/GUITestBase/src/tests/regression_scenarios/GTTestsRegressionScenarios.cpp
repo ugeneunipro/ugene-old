@@ -1319,12 +1319,6 @@ GUI_TEST_CLASS_DEFINITION(test_1497) {
 GUI_TEST_CLASS_DEFINITION(test_1499) {
     class CustomBuildTreeDialogFiller : public CustomScenario {
     public:
-        CustomBuildTreeDialogFiller(U2OpStatus &os)
-            : CustomScenario()
-        {
-
-        }
-
         void run(U2OpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
@@ -1951,8 +1945,7 @@ GUI_TEST_CLASS_DEFINITION(test_1609) {
 
     class CustomFileDialogUtils : public CustomScenario {
     public:
-        CustomFileDialogUtils() {}
-        virtual void run(U2::U2OpStatus &os) {
+        void run(U2OpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
             GTWidget::click(os, GTWidget::findButtonByText(os, "Cancel", dialog));
@@ -2731,8 +2724,7 @@ GUI_TEST_CLASS_DEFINITION(test_1714){
 
     class DeselectCistromeAndPython : public CustomScenario {
     public:
-        DeselectCistromeAndPython() {}
-        virtual void run(U2::U2OpStatus &os) {
+        void run(U2OpStatus &os) {
             QStringList cistromeTools;
             cistromeTools << "go_analysis" << "seqpos" << "conservation_plot" << "peak2gene"
                           << "MACS" << "CEAS Tools";
@@ -3476,8 +3468,7 @@ GUI_TEST_CLASS_DEFINITION( test_2009 ){
 //    2) Set correct BWA or any other tool path (preferably just executable)
     class BWAInactivation : public CustomScenario {
     public:
-        BWAInactivation() {}
-        virtual void run(U2::U2OpStatus &os) {
+        void run(U2OpStatus &os) {
             //    3) Clear set path
             AppSettingsDialogFiller::clearToolPath(os, "BWA");
 
@@ -4513,8 +4504,7 @@ GUI_TEST_CLASS_DEFINITION(test_1984){
 
     class CuffDiffIncorrectPath : public CustomScenario {
     public:
-        CuffDiffIncorrectPath() {}
-        virtual void run(U2::U2OpStatus &os) {
+        void run(U2OpStatus &os) {
             AppSettingsDialogFiller::setExternalToolPath(os, "Cuffdiff", "./");
             GTGlobals::sleep(2000);
 
@@ -7003,8 +6993,7 @@ GUI_TEST_CLASS_DEFINITION( test_2579 ) {
 
     class MafftInactivation : public CustomScenario {
     public:
-        MafftInactivation() {}
-        virtual void run(U2::U2OpStatus &os) {
+        void run(U2OpStatus &os) {
             QString path = AppSettingsDialogFiller::getExternalToolPath(os, "MAFFT");
             AppSettingsDialogFiller::clearToolPath(os, "MAFFT");
             AppSettingsDialogFiller::setExternalToolPath(os, "MAFFT", path);
@@ -7503,8 +7492,7 @@ GUI_TEST_CLASS_DEFINITION(test_2711){
 
     class test_2711DialogFiller : public CustomScenario {
     public:
-        test_2711DialogFiller(){}
-        virtual void run(U2::U2OpStatus &os){
+        void run(U2OpStatus &os){
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
