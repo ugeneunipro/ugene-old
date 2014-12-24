@@ -644,5 +644,77 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
 
     }
 
+GUI_TEST_CLASS_DEFINITION(test_0006) {
+
+    //Check rename annotation action at popup menu (UGENE-3449)
+
+    // Rename annotation
+    //
+    // Steps:
+    //
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+        GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
+        GTUtilsDocument::checkDocument(os, "1.gb");
+    //     2) UGENE window titled with text "proj2 UGENE"
+        GTUtilsApp::checkUGENETitle(os, "proj2 UGENE - [Start Page]");
+
+    // 2. Open view for "1.gb"
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+        GTMouseDriver::doubleClick(os);
+        GTGlobals::sleep();
+
+    // 3. Check that menu item "Rename item" is disabled at popup menu of sequence view.
+        GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "rename_item",
+            PopupChecker::IsDisabled, GTGlobals::UseMouse));
+        GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+
+    // 4. Check that menu item "Rename item" is disabled at popup menu of annotations view.
+        GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "rename_item",
+            PopupChecker::IsDisabled, GTGlobals::UseMouse));
+        GTMenu::showContextMenu(os, GTWidget::findWidget(os, "annotations_tree_widget"));
+
+    }
+GUI_TEST_CLASS_DEFINITION(test_0006_1) {
+
+    //Check rename annotation action at popup menu (UGENE-3449)
+
+    // Rename annotation
+    //
+    // Steps:
+    //
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+        GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
+        GTUtilsDocument::checkDocument(os, "1.gb");
+    //     2) UGENE window titled with text "proj2 UGENE"
+        GTUtilsApp::checkUGENETitle(os, "proj2 UGENE - [Start Page]");
+
+    // 2. Open view for "1.gb"
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+        GTMouseDriver::doubleClick(os);
+        GTGlobals::sleep();
+
+    // 3. Select annotation C in annotation tree. Click F2. Change name to BB.
+
+        QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group  (0, 2)");
+
+        GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+        GTMouseDriver::click(os);
+
+    // 4. Check that menu item "Rename item" is enabled at popup menu of sequence view.
+        GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "rename_item",
+            PopupChecker::IsEnabled, GTGlobals::UseMouse));
+        GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+
+    // 5. Check that menu item "Rename item" is enabled at popup menu of annotations view.
+        GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "rename_item",
+            PopupChecker::IsEnabled, GTGlobals::UseMouse));
+        GTMenu::showContextMenu(os, GTWidget::findWidget(os, "annotations_tree_widget"));
+
+    }
+
 } // namespace GUITest_common_scenarios_annotations_edit
 } // namespace U2

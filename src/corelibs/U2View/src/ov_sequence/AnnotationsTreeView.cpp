@@ -189,6 +189,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
     connect(copyColumnURLAction, SIGNAL(triggered()), SLOT(sl_onCopyColumnURL()));
 
     renameAction = new QAction(tr("Rename item"), this);
+    renameAction->setObjectName("rename_item");
     renameAction->setShortcut(QKeySequence(Qt::Key_F2));
     renameAction->setShortcutContext(Qt::WindowShortcut);
     connect(renameAction, SIGNAL(triggered()), SLOT(sl_rename()));
