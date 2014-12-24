@@ -96,6 +96,7 @@
 #include "runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ReplaceSubsequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
@@ -1455,6 +1456,37 @@ GUI_TEST_CLASS_DEFINITION(test_1548) {
     QAction *sortAction = GTAction::findAction(os, "Sort Alignment");
     CHECK_SET_ERR(NULL != sortAction, "'Sort alignment by tree' was not found");
     CHECK_SET_ERR(!sortAction->isEnabled(), "'Sort alignment by tree' is unexpectedly enabled");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1551) {
+//    (Reproduced on MAC OS X)
+//    1. Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+//    2. Select any sequence.
+    GTUtilsMsaEditor::clickSequenceName(os, "Phaneroptera_falcata");
+
+//    3. Call context menu in the name list widget.
+//    4. Move the mouse cursor away from context menu and press the left mouse button.
+//    5. Press right mouse button on the same place.
+//    Expected state: there is no rename sequence dialog appeared.
+//    GTUtilsDialog::waitForDialogWhichMustNotBeRunned(os, new MessageBoxDialogFiller(os));
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() - QPoint(5, 0));
+            GTMouseDriver::click(os);
+            QWidget *contextMenu = QApplication::activePopupWidget();
+            CHECK_SET_ERR(NULL == contextMenu, "There is an unexpected context menu");
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, new Scenario));
+    GTWidget::click(os, GTUtilsMsaEditor::getNameListArea(os), Qt::RightButton);
+
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new PopupChecker(os, new Scenario));
+    GTUtilsDialog::waitForDialogWhichMustNotBeRunned(os, new RenameSequenceFiller(os, "test_1551"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1554) {

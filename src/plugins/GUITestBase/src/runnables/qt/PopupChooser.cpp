@@ -79,7 +79,12 @@ void PopupChooserbyText::run()
 #define GT_CLASS_NAME "PopupChecker"
 
 #define GT_METHOD_NAME "run"
-void PopupChecker::run() {
+PopupChecker::PopupChecker(U2OpStatus &os, CustomScenario *scenario) :
+    Filler(os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup), scenario)
+{
+}
+
+void PopupChecker::commonScenario() {
     GTGlobals::sleep(1000);
     GTMouseDriver::release(os);
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());

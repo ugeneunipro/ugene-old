@@ -61,10 +61,11 @@ namespace U2 {
             IsChecked = 16 | Exists | IsChecable
         };
         Q_DECLARE_FLAGS(CheckOptions, CheckOption)
+        PopupChecker(U2OpStatus &os, CustomScenario *scenario);
         PopupChecker(U2OpStatus &_os, const QStringList &_namePath, CheckOptions _options = CheckOptions(IsEnabled),
                      GTGlobals::UseMethod _useMethod = GTGlobals::UseKey) //UseKey need for Ubuntu
             :Filler(_os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)), namePath(_namePath), options(_options), useMethod(_useMethod){}
-        virtual void run();
+        virtual void commonScenario();
     protected:
         QStringList namePath;
         CheckOptions options;
