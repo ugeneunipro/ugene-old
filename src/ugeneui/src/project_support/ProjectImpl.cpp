@@ -288,7 +288,6 @@ void ProjectImpl::updateObjectRelations(const GObjectReference& oldRef, const GO
         allObjs << d->getObjects();
     }
 
-    GObject *changedObj = GObjectUtils::selectObjectByReference(newRef, UOF_LoadedOnly);
     GObjectRelationRole objRole;
     if (newRef.objType == GObjectTypes::SEQUENCE) {
         objRole = ObjectRole_Sequence;
@@ -299,7 +298,7 @@ void ProjectImpl::updateObjectRelations(const GObjectReference& oldRef, const GO
     } else {
         return; // other object types cannot be referenced
     }
-    const QList<GObject *> dependentObjs = GObjectUtils::findObjectsRelatedToObjectByRole(changedObj, "", objRole, allObjs, UOF_LoadedAndUnloaded);
+    const QList<GObject *> dependentObjs = GObjectUtils::findObjectsRelatedToObjectByRole(oldRef, "", objRole, allObjs, UOF_LoadedAndUnloaded);
 
     foreach(GObject* obj, dependentObjs) {
         obj->updateRefInRelations(oldRef, newRef);

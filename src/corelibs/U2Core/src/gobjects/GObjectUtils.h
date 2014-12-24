@@ -56,9 +56,11 @@ public:
      * Returns list of objects that references the @obj with @relationRole and have @resultObjType as well.
      * Result list is a sublist of @fromObjects list.
      */
-    static QList<GObject *>  findObjectsRelatedToObjectByRole(const GObject *obj,
-        GObjectType resultObjType, GObjectRelationRole relationRole,
+    static QList<GObject *>  findObjectsRelatedToObjectByRole(const GObject *obj, GObjectType resultObjType, GObjectRelationRole role,
         const QList<GObject *> &fromObjects, UnloadedObjectFilter f);
+
+    static QList<GObject*> findObjectsRelatedToObjectByRole(const GObjectReference &obj, GObjectType resultObjType, GObjectRelationRole role,
+        const QList<GObject*>& fromObjects, UnloadedObjectFilter f);
 
     /*
      * Selects objects from 'fromObjects' with filter 'f' that have relation(relationRole, type)
