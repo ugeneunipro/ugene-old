@@ -33,6 +33,7 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTLineEdit.h"
+#include "api/GTListWidget.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTSequenceReadingModeDialog.h"
@@ -1186,6 +1187,40 @@ GUI_TEST_CLASS_DEFINITION(test_1483){
 //    3. Start selection in sequences name list and then go for the lower boundary of the list
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5, 5), QPoint(-4, 20));
 //    Expected state: Ugene doesn't crashes
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1491) {
+    //1. Open UGENE
+    //2. Press File->Open
+    //3. Select more than three sequences (for instance all the sequences from samples/Genbank)
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            //4. Select "Join sequences..." mode
+            GTRadioButton::click(os, dynamic_cast<QRadioButton*>(GTWidget::findWidget(os, "join2alignmentMode")));
+
+            //5. Select a sequence
+            QListWidget *list = dynamic_cast<QListWidget*>(GTWidget::findWidget(os, "listDocuments"));
+            GTListWidget::click(os, list, "3. murine.gb");
+
+            //6. Press "Up" or "Down" arrow.
+            GTWidget::click(os, GTWidget::findWidget(os, "upperButton"));
+
+            //Expected state:
+            //    1) the sequence goes up or down correspondingly
+            QListWidgetItem *murine = list->item(1);
+            CHECK_SET_ERR(murine->text() == "2. murine.gb", "Wrong order file");
+
+            //    2) it is still selected
+            QList<QListWidgetItem*> selection = list->selectedItems();
+            CHECK_SET_ERR(selection.contains(murine), "Wrong selection");
+            CHECK_SET_ERR(1 == selection.size(), "Wrong selection size");
+
+            GTUtilsDialog::clickButtonBox(os, QApplication::activeModalWidget(), QDialogButtonBox::Cancel);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new GTSequenceReadingModeDialogUtils(os, new Scenario()));
+    GTFileDialog::openFileList(os, dataDir + "samples/Genbank", QStringList() << "PBR322.gb" << "sars.gb" << "murine.gb" << "NC_014267.1.gb");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1497) {
@@ -5826,7 +5861,7 @@ GUI_TEST_CLASS_DEFINITION( test_2387 ) {
     class SequenceReadingModeDialogUtils : public GTSequenceReadingModeDialogUtils {
     public:
         SequenceReadingModeDialogUtils(U2OpStatus& _os) : GTSequenceReadingModeDialogUtils(_os){}
-        virtual void run() {
+        virtual void commonScenario() {
             GTSequenceReadingModeDialog::mode = GTSequenceReadingModeDialog::Merge;
             GTFile::copy(os, testDir + "_common_data/scenarios/_regression/2387/binary.dll", testDir + "_common_data/scenarios/sandbox/sars.gb");
             GTSequenceReadingModeDialogUtils::run();

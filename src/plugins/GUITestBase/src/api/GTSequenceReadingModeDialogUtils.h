@@ -37,8 +37,8 @@ public:
     enum sequenceMode {Separate, Merge};
     enum Button {Ok, Cancel};
 
-    GTSequenceReadingModeDialogUtils(U2OpStatus&);
-    virtual void run();
+    GTSequenceReadingModeDialogUtils(U2OpStatus &os, CustomScenario *scenario = NULL);
+    virtual void commonScenario();
 private:
     void selectMode();
     void setNumSymbolsParts();

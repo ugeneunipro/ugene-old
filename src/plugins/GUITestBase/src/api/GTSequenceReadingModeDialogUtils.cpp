@@ -54,12 +54,12 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTSequenceReadingModeDialogUtils"
 
-GTSequenceReadingModeDialogUtils::GTSequenceReadingModeDialogUtils(U2OpStatus &o) : Filler(o, "MultipleDocumentsReadingModeSelectorController"), dialog(NULL)
+GTSequenceReadingModeDialogUtils::GTSequenceReadingModeDialogUtils(U2OpStatus &os, CustomScenario *scenario) : Filler(os, "MultipleDocumentsReadingModeSelectorController", scenario), dialog(NULL)
 {
 }
 
 #define GT_METHOD_NAME "run"
-void GTSequenceReadingModeDialogUtils::run()
+void GTSequenceReadingModeDialogUtils::commonScenario()
 {
     GTGlobals::sleep(1000);
     QWidget *openDialog = QApplication::activeModalWidget();
