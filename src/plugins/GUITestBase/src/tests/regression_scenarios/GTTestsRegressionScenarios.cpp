@@ -1892,7 +1892,7 @@ GUI_TEST_CLASS_DEFINITION( test_1606 ) {
                                                                         sandBoxDir));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE),
                                 QStringList() << ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
-    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Molecular Surface" << "SES"));
     QWidget *widget3d = GTWidget::findWidget(os, "1-1EZG");
@@ -9454,6 +9454,7 @@ GUI_TEST_CLASS_DEFINITION(test_3187) {
     GTUtilsNotifications::waitForNotification(os, false);
     GTMenu::showMainMenu(os, MWMENU_TOOLS);
 
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QWidget *reportWidget = GTWidget::findWidget(os, "qt_scrollarea_viewport");
     GTMouseDriver::moveTo(os, reportWidget->rect().center());
     GTMouseDriver::click(os);
@@ -11996,6 +11997,7 @@ GUI_TEST_CLASS_DEFINITION(test_3649) {
     GTUtilsDialog::waitForDialog(os, new ExportSequenceAsAlignmentFiller(os, testDir + "_common_data/scenarios/sandbox", "test_3649.aln", ExportSequenceAsAlignmentFiller::Clustalw, true));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "S"));
     GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
 
     //3. Add a sequence from the file "_common_data/smith-waterman2/simple/05/query.txt" in the alignment.
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from file"));
@@ -12250,6 +12252,25 @@ GUI_TEST_CLASS_DEFINITION(test_3724) {
     GTUtilsDialog::waitForDialogWhichMustNotBeRunned(os, new PopupChecker(os, QStringList()));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3728){
+//    1. Connect to UGENE public database.
+    GTUtilsSharedDatabaseDocument::connectToUgenePublicDatabase(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: objects appear in alphabetic order in folders
+    QModelIndex parent = GTUtilsProjectTreeView::findIndex(os, GTUtilsProjectTreeView::getTreeView(os), "genomes");
+    QStringList strList;
+    QString prev = "";
+    for(int i = 0; i < 5; i++){
+        QString s = parent.child(i, 0).data(Qt::DisplayRole).toString();
+        int res = QString::compare(prev, s);
+        CHECK_SET_ERR(res < 0, "order is not alphabet " + prev + s);
+        prev = s;
+    }
+
+
+//    Current state: object order is nearly random and is not the same in successive UGENE launches
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3730) {

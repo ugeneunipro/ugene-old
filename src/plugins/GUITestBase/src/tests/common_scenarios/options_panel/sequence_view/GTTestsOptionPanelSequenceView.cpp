@@ -281,7 +281,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
     GTWidget::click(os, GTWidget::findWidget(os, "annotateButton"));
 
     // Expected state : New annotations were downloaded and added to the annotation object
-    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os, 300000);
     GTUtilsProjectTreeView::checkItem(os, "Annotations");
 }
 

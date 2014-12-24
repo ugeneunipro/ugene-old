@@ -34,7 +34,7 @@
 namespace U2 {
 
 QWidget * GTUtilsPrimerLibrary::openLibrary(U2OpStatus &os) {
-    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Primer" << "Primer Library");
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Primer" << "Primer library");
     return GTUtilsMdi::activeWindow(os);
 }
 

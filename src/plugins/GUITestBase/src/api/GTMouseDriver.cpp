@@ -31,7 +31,7 @@ void GTMouseDriver::click(U2::U2OpStatus &os, Qt::MouseButton button)
     press(os, button);
     release(os, button);
 
-    GTGlobals::sleep(100);
+    GTGlobals::sleep(250);
 }
 
 void GTMouseDriver::dragAndDrop(U2OpStatus &os, const QPoint& start, const QPoint& end, const QPoint extraShift) {
@@ -48,8 +48,13 @@ void GTMouseDriver::dragAndDrop(U2OpStatus &os, const QPoint& start, const QPoin
 #ifndef Q_OS_MAC
 void GTMouseDriver::doubleClick(U2OpStatus &os)
 {
-    click(os, Qt::LeftButton);
-    click(os, Qt::LeftButton);
+    press(os, Qt::LeftButton);
+    release(os, Qt::LeftButton);
+    GTGlobals::sleep(100);
+
+    press(os, Qt::LeftButton);
+    release(os, Qt::LeftButton);
+    GTGlobals::sleep(250);
 }
 #endif
 
