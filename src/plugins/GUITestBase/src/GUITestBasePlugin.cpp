@@ -218,6 +218,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_1664, "UGENE-3863");
     REGISTER_TEST(GUITest_regression_scenarios::test_1672);
     REGISTER_TEST(GUITest_regression_scenarios::test_1673);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1673_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_1673_3);
     REGISTER_TEST(GUITest_regression_scenarios::test_1673_4);
     REGISTER_TEST_MAC(GUITest_regression_scenarios::test_1680, "Mac only");

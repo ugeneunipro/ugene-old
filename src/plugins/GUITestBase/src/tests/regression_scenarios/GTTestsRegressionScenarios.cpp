@@ -2336,6 +2336,39 @@ GUI_TEST_CLASS_DEFINITION(test_1673) {
     CHECK_SET_ERR(isTabOpened, "The 'General' tab is unexpectedly closed");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1673_2) {
+//    1. Open file COI.aln
+//    2. Select a options panel tab header
+//    Expected result: the tab has been opened
+//    3. Select different tab
+//    Expected result: only one selected group is shown at a time
+//    4. Select different tabs, holding "Ctrl"
+//    Expected result: only one selected group is shown at a time
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    GTUtilsOptionPanelMsa::toggleTab(os, GTUtilsOptionPanelMsa::General);
+    bool isTabOpened = GTUtilsOptionPanelMsa::isTabOpened(os, GTUtilsOptionPanelMsa::General);
+    CHECK_SET_ERR(isTabOpened, "The 'General' tab is unexpectedly closed");
+
+    GTUtilsOptionPanelMsa::toggleTab(os, GTUtilsOptionPanelMsa::Statistics);
+    isTabOpened = GTUtilsOptionPanelMsa::isTabOpened(os, GTUtilsOptionPanelMsa::General);
+    CHECK_SET_ERR(!isTabOpened, "The 'General' tab is unexpectedly opened");
+    isTabOpened = GTUtilsOptionPanelMsa::isTabOpened(os, GTUtilsOptionPanelMsa::Statistics);
+    CHECK_SET_ERR(isTabOpened, "The 'Statictics' tab is unexpectedly closed");
+
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["Ctrl"]);
+    GTUtilsOptionPanelMsa::toggleTab(os, GTUtilsOptionPanelMsa::General);
+    GTUtilsOptionPanelMsa::toggleTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["Ctrl"]);
+
+    isTabOpened = GTUtilsOptionPanelMsa::isTabOpened(os, GTUtilsOptionPanelMsa::General);
+    CHECK_SET_ERR(!isTabOpened, "The 'General' tab is unexpectedly opened");
+    isTabOpened = GTUtilsOptionPanelMsa::isTabOpened(os, GTUtilsOptionPanelMsa::ExportConsensus);
+    CHECK_SET_ERR(isTabOpened, "The 'Export Consensus' tab is unexpectedly closed");
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1673_3) {
     //1. Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
