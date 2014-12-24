@@ -38,6 +38,7 @@ CufflinksSupport::CufflinksSupport(const QString& name, const QString& path)
     }
 
     toolKitName = "Cufflinks";
+    versionRegExp=QRegExp("v(\\d+\\.\\d+\\.\\d+)");
 
     // Cuffcompare
     if (name == ET_CUFFCOMPARE) {

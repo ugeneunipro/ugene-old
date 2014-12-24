@@ -70,7 +70,7 @@ BlastDbCmdSupport::BlastDbCmdSupport(const QString& path) : ExternalTool(ET_BLAS
     description=tr("The <i>BlastDBCmd</i> fetches protein or"
         " nucleotide sequences from BLAST+ database based on a query.");
 
-    versionRegExp=QRegExp("Application to create BLAST databases, version (\\d+\\.\\d+\\.\\d+\\+?)");
+    versionRegExp=QRegExp("BLAST database client, version (\\d+\\.\\d+\\.\\d+\\+?)");
     toolKitName="BLAST+";
 
 }

@@ -492,7 +492,7 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged() {
                        "its memory footprint small: typically about 2.2 GB for the human "
                        "genome (2.9 GB for paired-end). <a href='http://qt-project.org/doc/qt-4.8/qtextbrowser.html#anchorClicked'>Link text</a> "));
     }
-    else if (name == "Cufflinks Tools") {
+    else if (name == "Cufflinks" && selectedItems.at(0)->childCount()>0) {
         descriptionTextBrowser->setText(tr("<i>Cufflinks</i> assembles transcripts, estimates"
             " their abundances, and tests for differential expression and regulation"
             " in RNA-Seq samples. It accepts aligned RNA-Seq reads and assembles"
@@ -500,7 +500,7 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged() {
             " the relative abundances of these transcripts based on how many reads"
             " support each one, taking into account biases in library preparation protocols. "));
     }
-    else if (name == "Bowtie 2 Tools") {
+    else if (name == "Bowtie2") {
         descriptionTextBrowser->setText(tr("<i>Bowtie 2</i> is an ultrafast and memory-efficient tool"
             " for aligning sequencing reads to long reference sequences. It is particularly good"
             " at aligning reads of about 50 up to 100s or 1000s of characters, and particularly"

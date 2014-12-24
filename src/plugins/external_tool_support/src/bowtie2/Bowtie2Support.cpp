@@ -38,6 +38,7 @@ Bowtie2Support::Bowtie2Support(const QString& name, const QString& path /* = */ 
     }
 
     toolKitName = "Bowtie2";
+    versionRegExp=QRegExp("(\\d+\\.\\d+\\.\\d+)");
 
     // Bowtie2-align
     if (name == ET_BOWTIE2_ALIGN) {
