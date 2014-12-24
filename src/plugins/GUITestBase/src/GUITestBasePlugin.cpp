@@ -520,7 +520,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3318);
     REGISTER_TEST(GUITest_regression_scenarios::test_3332);
     REGISTER_TEST_LINUX(GUITest_regression_scenarios::test_3333, "drag and drop");
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3335, "UGENE-3833");
+    REGISTER_TEST(GUITest_regression_scenarios::test_3335);
     REGISTER_TEST(GUITest_regression_scenarios::test_3342);
     REGISTER_TEST(GUITest_regression_scenarios::test_3344);
     REGISTER_TEST(GUITest_regression_scenarios::test_3346);

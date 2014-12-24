@@ -10307,12 +10307,12 @@ GUI_TEST_CLASS_DEFINITION(test_3335) {
     GTUtilsProjectTreeView::rename(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)", "renamed sequence");
 
     //    Expected state: the sequence object is renamed, object relations are correct, there are no errors in the log.
-     const QModelIndex sequenceObjectIndex = GTUtilsProjectTreeView::findIndex(os, "renamed sequence");
+    const QModelIndex sequenceObjectIndex = GTUtilsProjectTreeView::findIndex(os, "renamed sequence");
     CHECK_SET_ERR(sequenceObjectIndex.isValid(), "Can't find the renamed sequence object");
 
-     GTUtilsMdi::click(os, GTGlobals::Close);
-     GTUtilsProjectTreeView::doubleClickItem(os, "Annotations");
-     GTGlobals::sleep(60000);
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTUtilsProjectTreeView::doubleClickItem(os, "Annotations");
+    GTGlobals::sleep(5000);
     QWidget *relatedSequenceView = GTUtilsMdi::findWindow(os, "human_T1 [s] renamed sequence");
     CHECK_SET_ERR(NULL != relatedSequenceView, "A view for the related sequence was not opened");
 
