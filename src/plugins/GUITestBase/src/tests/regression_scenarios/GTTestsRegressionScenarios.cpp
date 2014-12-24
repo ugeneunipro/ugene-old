@@ -49,6 +49,7 @@
 
 #include "GTDatabaseConfig.h"
 #include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsAnnotationsHighlightingTreeView.h"
 #include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsCircularView.h"
@@ -12517,6 +12518,21 @@ GUI_TEST_CLASS_DEFINITION(test_3817) {
 
     GTComboBox::setIndexWithText(os, boxRegion, "Selected region", false);
     CHECK_SET_ERR(boxRegion->currentText() == "Custom region", QString("Region type value is unexpected: %1. Expected: Custom region").arg(boxRegion->currentText()));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3868) {
+    //1. Open "VectorNTI_CAN_READ.gb"
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/", "VectorNTI_CAN_READ.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //2. Open the "Annotation highlighting" OP widget.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_ANNOT_HIGHLIGHT"));
+    //Expected state: labels from genbank features are shown in annotations widgets
+    GTMouseDriver::moveTo(os, GTUtilsAnnotHighlightingTreeView::getItemCenter(os, "rep_origin"));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep();
+
+    QLineEdit *qualifiersEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editQualifiers"));
+    CHECK_SET_ERR(qualifiersEdit->text().contains("label"), "Label must be shown in annotation widget");
 }
 
 } // GUITest_regression_scenarios namespace

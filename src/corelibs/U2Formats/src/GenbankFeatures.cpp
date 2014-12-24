@@ -60,7 +60,7 @@ static QColor cl(const QString& txt) {
     }
 
 #define FK(key, text, color, amino, desc) \
-    FKE(key, text, color, amino, desc, "")
+    FKE(key, text, color, amino, desc, "label")
 
 
 const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
@@ -77,7 +77,7 @@ const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
     FK(GBFeatureKey_C_region,         "C_region",         cl("000000"), false, QObject::tr("Span of the C immunological feature"));
     FK(GBFeatureKey_CAAT_signal,      "CAAT_signal",      cl("000000"), false, QObject::tr("`CAAT box' in eukaryotic promoters"));
     FKE(GBFeatureKey_CDS,             "CDS",             cl("9bffff"), true,  QObject::tr("Sequence coding for amino acids in protein (includes stop codon)"),
-        "protein_id,locus_tag,gene,function,product");
+        "label,protein_id,locus_tag,gene,function,product");
     FK(GBFeatureKey_conflict,         "conflict",         cl("000000"), false, QObject::tr("Independent sequence determinations differ"));
     FK(GBFeatureKey_centromere,       "centromere",       cl("000000"), false, QObject::tr("Region of biological interest identified as a centromere and which has been experimentally characterized"));
     FK(GBFeatureKey_D_loop,           "D-loop",           cl("000000"), false, QObject::tr("Displacement loop"));
@@ -86,7 +86,7 @@ const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
     FK(GBFeatureKey_exon,             "exon",             cl("000000"), false, QObject::tr("Region that codes for part of spliced mRNA"));
     FK(GBFeatureKey_gap,              "gap",              cl("000000"), false, QObject::tr("Gap in the sequence"));
     FKE(GBFeatureKey_gene,            "gene",             cl("00ffc8"), false, QObject::tr("Region that defines a functional gene, possibly including upstream (promotor, enhancer, etc) and downstream control elements, and for which a name has been assigned."),
-        "gene,locus_tag,product,function");
+        "label,gene,locus_tag,product,function");
     FK(GBFeatureKey_GC_signal,        "GC_signal",        cl("000000"), false, QObject::tr("`GC box' in eukaryotic promoters"));
     FK(GBFeatureKey_iDNA,             "iDNA",             cl("000000"), false, QObject::tr("Intervening DNA eliminated by recombination"));
     FK(GBFeatureKey_intron,           "intron",           cl("000000"), false, QObject::tr("Transcribed region excised by mRNA splicing"));
@@ -96,7 +96,7 @@ const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
     FK(GBFeatureKey_misc_binding,     "misc_binding",     cl("000000"), false, QObject::tr("Miscellaneous binding site"));
     FK(GBFeatureKey_misc_difference,  "misc_difference",  cl("000000"), false, QObject::tr("Miscellaneous difference feature"));
     FKE(GBFeatureKey_misc_feature,    "misc_feature",     cl("000000"), false, QObject::tr("Region of biological significance that cannot be described by any other feature")
-        , "note");
+        , "label,note");
     FK(GBFeatureKey_misc_recomb,      "misc_recomb",      cl("000000"), false, QObject::tr("Miscellaneous, recombination feature"));
     FK(GBFeatureKey_misc_RNA,         "misc_RNA",         cl("000000"), false, QObject::tr("Miscellaneous transcript feature not defined by other RNA keys"));
     FK(GBFeatureKey_misc_signal,      "misc_signal",      cl("000000"), false, QObject::tr("Miscellaneous signal"));

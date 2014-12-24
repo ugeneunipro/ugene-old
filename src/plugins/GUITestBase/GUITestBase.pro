@@ -122,6 +122,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #   Utils classes
             src/GTDatabaseConfig.h \
             src/GTUtilsAnnotationsTreeView.h \
+            src/GTUtilsAnnotationsHighlightingTreeView.h \
             src/GTUtilsApp.h \
             src/GTUtilsAssemblyBrowser.h \
             src/GTUtilsBookmarksTreeView.h \
@@ -361,6 +362,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Utils classes
             src/GTDatabaseConfig.cpp \
             src/GTUtilsAnnotationsTreeView.cpp \
+            src/GTUtilsAnnotationsHighlightingTreeView.cpp \
             src/GTUtilsApp.cpp \
             src/GTUtilsAssemblyBrowser.cpp \
             src/GTUtilsBookmarksTreeView.cpp \

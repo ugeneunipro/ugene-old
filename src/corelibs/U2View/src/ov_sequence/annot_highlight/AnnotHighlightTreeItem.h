@@ -25,15 +25,11 @@
 
 #include <U2Core/AnnotationSettings.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTreeWidgetItem>
-#else
-#include <QtWidgets/QTreeWidgetItem>
-#endif
+#include <QTreeWidgetItem>
 
 namespace U2 {
 
-class AnnotHighlightTreeItem : public QTreeWidgetItem {
+class U2VIEW_EXPORT AnnotHighlightTreeItem : public QTreeWidgetItem {
 public:
     AnnotHighlightTreeItem(const QString& annotName, const QColor& annotColor);
 
