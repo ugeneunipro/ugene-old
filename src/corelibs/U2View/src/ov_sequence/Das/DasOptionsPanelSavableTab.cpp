@@ -51,6 +51,7 @@ struct ListWidgetItemData {
 };
 
 Q_DECLARE_METATYPE(QVector<ListWidgetItemData>)
+Q_DECLARE_METATYPE(QVector<QVector<QString> >)
 
 namespace U2 {
 

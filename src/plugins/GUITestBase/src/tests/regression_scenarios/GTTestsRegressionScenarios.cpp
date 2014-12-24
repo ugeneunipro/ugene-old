@@ -157,23 +157,15 @@
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorNameList.h>
 
+#include <QDialogButtonBox>
+#include <QHeaderView>
+#include <QListWidget>
+#include <QMainWindow>
+#include <QMenu>
 #include <QPlainTextEdit>
 #include <QProgressBar>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QHeaderView>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMenu>
-#include <QtGui/QPushButton>
-#include <QtGui/QTableWidget>
-#else
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QTableWidget>
-#endif
+#include <QPushButton>
+#include <QTableWidget>
 
 namespace U2 {
 
@@ -1345,7 +1337,7 @@ GUI_TEST_CLASS_DEFINITION(test_1499) {
     // 3) Choose MrBayes tree building method.
     // 4) Choose "Display tree with alignment editor".
     // 5) Build.
-    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, new CustomBuildTreeDialogFiller(os)));
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, new CustomBuildTreeDialogFiller()));
     QAbstractButton *tree = GTAction::button(os, "Build Tree");
     GTWidget::click(os, tree);
     GTUtilsTaskTreeView::waitTaskFinished(os);
