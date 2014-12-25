@@ -1479,6 +1479,37 @@ GUI_TEST_CLASS_DEFINITION(test_1529) {
     CHECK_SET_ERR(1 == objCount, QString("Unexpected child object count in the project. Expected %1, found %2").arg(1).arg(objCount));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1531) {
+    // 1. Open file "data/samples/CLUSTALW/COI.aln"
+        //1. Open "samples/CLUSTALW/COI.aln".
+        //2. Activate the "Statistics" options panel.
+        //3. Click "Show distances column"
+        //Expected: the hint about reference abcense is shown.
+        //4. Right click "Phaneroptera_falcata" -> Set this sequence as reference.
+        //Expected: the hint about reference abcense is not shown.
+        //5. Activate the "General" options panel.
+        //6. Click "Clear".
+        //7. Activate the "Statistics" options panel.
+        //Expected: the hint about reference abcense is shown.
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint(0, 17), QPoint(0, 17));
+
+    GTUtilsOptionPanelMsa::toggleTab(os, GTUtilsOptionPanelMsa::Statistics);
+    GTWidget::click(os, GTWidget::findWidget(os, "addSeq"));
+    QCheckBox* showDistancesColumnCheck = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "showDistancesColumnCheck"));
+    GTCheckBox::setChecked(os, showDistancesColumnCheck, true);
+
+    QWidget* warningMessage = GTWidget::findWidget(os, "refSeqWarning");
+    CHECK_SET_ERR(warningMessage->isHidden(), QString("Reference sequence warning must be hidden"));
+
+    GTUtilsOptionPanelMsa::toggleTab(os, GTUtilsOptionPanelMsa::General);
+    GTWidget::click(os, GTWidget::findWidget(os, "deleteSeq"));
+    GTUtilsOptionPanelMsa::toggleTab(os, GTUtilsOptionPanelMsa::Statistics);
+    warningMessage = GTWidget::findWidget(os, "refSeqWarning");
+    CHECK_SET_ERR(warningMessage->isVisible(), QString("Reference sequence warning must be visible"));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1548) {
     // 1. Open file "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
