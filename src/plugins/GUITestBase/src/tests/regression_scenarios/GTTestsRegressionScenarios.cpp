@@ -1992,6 +1992,24 @@ GUI_TEST_CLASS_DEFINITION( test_1622 )
         "Undo works wrong. Found text is: " + undoneContent );
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1626) {
+    //1. Open file _common_data/regression/1626/1626.fa
+    GTFileDialog::openFile(os, testDir + "_common_data/regression/1626", "1626.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //2. Align with KAlign
+    //Expected state: UGENE not crasesh, KAlign can return error message, its okay
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseKey));
+    GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //3. Change color scheme
+    //Expected state: color scheme changed successfully
+    GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors" << "Tailor"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1628 ) {
 //    1. Open COI.aln
 //    2. Renames any row in an alignment, use a non-english characters in the alignment name.
