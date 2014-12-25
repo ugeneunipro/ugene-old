@@ -1955,6 +1955,21 @@ GUI_TEST_CLASS_DEFINITION(test_1609) {
     GTGlobals::sleep(5000);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1616 ) {
+    // 1. Open "COI.aln".
+    // 2. Select any symbol in the last sequence.
+    // 3. Click the "Switch on\off collapsing" button on the toolbar.
+    // Expected state: UGENE not crashes
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint(0, 17), QPoint(0, 17));
+
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+    GTGlobals::sleep();
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1622 )
 {
     // 1. Open document "ma.aln"

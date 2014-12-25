@@ -205,6 +205,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1606);
     REGISTER_TEST(GUITest_regression_scenarios::test_1607);
     REGISTER_TEST(GUITest_regression_scenarios::test_1609);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1616);
     REGISTER_TEST(GUITest_regression_scenarios::test_1622);
     REGISTER_TEST(GUITest_regression_scenarios::test_1626);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1628, "UGENE-3811");
