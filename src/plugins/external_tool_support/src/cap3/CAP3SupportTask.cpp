@@ -166,8 +166,9 @@ QList<Task*> RunCap3AndOpenResultTask::onSubTaskFinished(Task *subTask) {
         QVariantMap hints;
         hints[ProjectLoaderHint_LoadWithoutView] = !openView;
         Task *loadTask = loader->openWithProjectTask(url, hints);
-        SAFE_POINT_EXT(NULL != loadTask, setError(tr("Load document task is NULL")), subTasks);
-        subTasks << loadTask;
+        if (NULL != loadTask) {
+            subTasks << loadTask;
+        }
     }
 
     return subTasks;
