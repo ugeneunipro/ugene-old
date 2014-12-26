@@ -1373,6 +1373,7 @@ GUI_TEST_CLASS_DEFINITION(test_1497) {
     // 3. Try to copy something from the log widget to the clipboard by hotkey(Ctrl + C).
     // Expected state : you've got in the clipboard selected text from the log widget.
     GTGlobals::sleep();
+    uiLog.error("log must contain some text");
     QWidget *logView = GTWidget::findWidget(os, "dock_log_view");
     GTWidget::click(os, logView);
 
@@ -11572,6 +11573,7 @@ GUI_TEST_CLASS_DEFINITION(test_3557) {
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
 
     GTWidget::click(os, GTWidget::findWidget(os, "OP_PAIRALIGN"));
+    GTGlobals::sleep();
 
     QLineEdit *firstEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "sequenceLineEdit", GTWidget::findWidget(os, "firstSeqSelectorWC")));
     QLineEdit *secondEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "sequenceLineEdit", GTWidget::findWidget(os, "secondSeqSelectorWC")));
