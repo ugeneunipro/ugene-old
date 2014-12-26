@@ -12571,6 +12571,25 @@ GUI_TEST_CLASS_DEFINITION(test_3779) {
     CHECK_SET_ERR(assemblyOverviewFound, "Assembly overview not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3788) {
+//    1. Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+//    2. Create an annotation on region 199950..199950.
+    GTUtilsAnnotationsTreeView::createAnnotation(os, "<auto>", "misc_feature", "199950..199950");
+
+//    3. Call context menu, select {Edit sequence -> Remove subsequence...} menu item.
+//    4. Remove region 2..199950, corresponding annotations should be cropped.
+//    Expected result: sequence has length 1, there are no annotations.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Remove subsequence..."));
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "2..199950"));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    const QList<U2Region> annotatedRegions = GTUtilsAnnotationsTreeView::getAnnotatedRegions(os);
+    CHECK_SET_ERR(0 == annotatedRegions.size(), "There are annotations unexpectedly");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3813) {
     //1. Open "samples/Genbank/murine.gb"
     GTFileDialog::openFile(os, dataDir + "/samples/Genbank/murine.gb");
