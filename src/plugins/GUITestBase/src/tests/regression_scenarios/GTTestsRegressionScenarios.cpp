@@ -1240,15 +1240,16 @@ GUI_TEST_CLASS_DEFINITION(test_1491) {
     class Scenario : public CustomScenario {
     public:
         void run(U2OpStatus &os) {
+            GTGlobals::sleep();
             //4. Select "Join sequences..." mode
-            GTRadioButton::click(os, dynamic_cast<QRadioButton*>(GTWidget::findWidget(os, "join2alignmentMode")));
+            GTRadioButton::click(os, dynamic_cast<QRadioButton*>(GTWidget::findWidget(os, "join2alignmentMode", QApplication::activeModalWidget())));
 
             //5. Select a sequence
-            QListWidget *list = dynamic_cast<QListWidget*>(GTWidget::findWidget(os, "listDocuments"));
+            QListWidget *list = dynamic_cast<QListWidget*>(GTWidget::findWidget(os, "listDocuments", QApplication::activeModalWidget()));
             GTListWidget::click(os, list, "3. murine.gb");
 
             //6. Press "Up" or "Down" arrow.
-            GTWidget::click(os, GTWidget::findWidget(os, "upperButton"));
+            GTWidget::click(os, GTWidget::findWidget(os, "upperButton", QApplication::activeModalWidget()));
 
             //Expected state:
             //    1) the sequence goes up or down correspondingly
