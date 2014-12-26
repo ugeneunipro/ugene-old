@@ -665,9 +665,15 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
 
     if (!messageFlags.isEmpty()) {
         static QString storedTextColor = currentColorOfMessageText();
-        if(storedTextColor != currentColorOfMessageText())
+        if (storedTextColor != currentColorOfMessageText()) {
             changeColorOfMessageText(storedTextColor);
+        }
 
+#ifndef Q_OS_MAC
+        const QString lineBreakShortcut = "Ctrl+Enter";
+#else
+        const QString lineBreakShortcut = "Cmd+Enter";
+#endif
         QString text = "";
         foreach (MessageFlag flag, messageFlags) {
             switch (flag) {
@@ -703,7 +709,8 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
                     if (!text.isEmpty()) {
                         text += "\n";
                     }
-                    text += QString(tr("Info: please input at least one sequence pattern to search for. Use Ctrl+Enter to input multiple patterns.\r\nAlternatively, load patterns from a FASTA file."));
+                    text += QString(tr("Info: please input at least one sequence pattern to search for. Use %1 to input multiple patterns.\r\n"
+                        "Alternatively, load patterns from a FASTA file.").arg(lineBreakShortcut));
                     changeColorOfMessageText(L10N::infoHintColor().name());
                     break;
                 case AnnotationNotValidName:

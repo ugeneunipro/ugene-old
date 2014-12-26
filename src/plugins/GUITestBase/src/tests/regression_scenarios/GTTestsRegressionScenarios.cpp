@@ -1142,6 +1142,86 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1434_1) {
+    //1. Open data / samples / FASTA / human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    //2. Open find pattern option panel
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+
+    //3. Use these settings :
+    //search for : > header
+    //             ATTCACCAAAGTTGAA*TGAAGGAAAAAATGCT
+    //Algorithm : Regular expression
+    //Region : custom region(1 - 1000)
+
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search algorithm"));
+
+    QComboBox* algorithmBox = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxAlgorithm"));
+    GTComboBox::setIndexWithText(os, algorithmBox, "Regular expression");
+
+    GTWidget::click(os, GTWidget::findWidget(os, "textPattern"));
+    GTKeyboardDriver::keySequence(os, "> header");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"], GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keySequence(os, "ATTCACCAAAGTTGAA");
+    GTKeyboardDriver::keyClick(os, '8', GTKeyboardDriver::key["shift"]);
+    GTKeyboardDriver::keySequence(os, "TGAAGGAAAAAATGCT");
+
+    QComboBox *boxRegion = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxRegion"));
+    GTWidget::click(os, boxRegion);
+    GTComboBox::setCurrentIndex(os, boxRegion, 1);
+    GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editStart")), "1");
+    GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editEnd")), "1000");
+
+    //Expected state : 1 pattern is found
+    QLabel *resultLabel = qobject_cast<QLabel *>(GTWidget::findWidget(os, "resultLabel"));
+    CHECK_SET_ERR(resultLabel->text() == "Results: 1/1", "Unexpected find algorithm result count");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1434_2) {
+    //1. Open data / samples / FASTA / human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    //2. Open find pattern option panel
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+
+    //3. Use these settings :
+    //	search for:ATTCACCAAAGTTGAA*TGAAGGAAAAAATGCT
+    // ; comment
+    //Algorithm : Regular expression
+    //Region : custom region(1 - 1000)
+
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search algorithm"));
+
+    QComboBox* algorithmBox = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxAlgorithm"));
+    GTComboBox::setIndexWithText(os, algorithmBox, "Regular expression");
+
+    GTWidget::click(os, GTWidget::findWidget(os, "textPattern"));
+    GTKeyboardDriver::keySequence(os, "ATTCACCAAAGTTGAA");
+    GTGlobals::sleep(200);
+    GTKeyboardDriver::keyClick(os, '8', GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(200);
+    GTKeyboardDriver::keySequence(os, "TGAAGGAAAAAATGCT");
+    GTGlobals::sleep(200);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"], GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    GTKeyboardDriver::keyClick(os, ';');
+    GTGlobals::sleep(200);
+    GTKeyboardDriver::keySequence(os, " comment");
+
+    QComboBox *boxRegion = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxRegion"));
+    GTWidget::click(os, boxRegion);
+    GTComboBox::setCurrentIndex(os, boxRegion, 1);
+    GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editStart")), "1");
+    GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editEnd")), "1000");
+
+    //Expected state : 1 pattern is found
+    QLabel *resultLabel = qobject_cast<QLabel *>(GTWidget::findWidget(os, "resultLabel"));
+    CHECK_SET_ERR(resultLabel->text() == "Results: 1/1", "Unexpected find algorithm result count");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1461_1) {
 //    1. Open "_common_data/fasta/fa1.fa".
 //    Expected state: sequence viewer had opened.
