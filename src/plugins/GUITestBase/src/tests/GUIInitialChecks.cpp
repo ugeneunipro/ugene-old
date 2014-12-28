@@ -122,11 +122,9 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007) {
-    QString path = AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath();
+    QString path = AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/pcr";
     GUrlUtils::removeDir(path, os);
     CHECK_OP_SET_ERR(os, os.getError());
-    bool created = QDir().mkdir(path);
-    CHECK_SET_ERR(created, "Can not create a directory");
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0000){
