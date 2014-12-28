@@ -23,6 +23,7 @@
 
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/RegionSelector.h>
 #include <U2Gui/U2WidgetStateStorage.h>
 
 #include "DasOptionsPanelWidget.h"
@@ -130,9 +131,15 @@ void DasOptionsPanelSavableTab::setChildValue(const QString &childId, const QVar
 }
 
 bool DasOptionsPanelSavableTab::childCanBeSaved(QWidget *child) const {
-    return U2SavableWidget::childCanBeSaved(child)
-        || NULL != qobject_cast<QListWidget *>(child)
-        || CHANGE_MODE_LABEL_NAME == child->objectName();
+    const QString childName = child->objectName();
+    if (childName == "start_edit_line" || childName == "end_edit_line") {
+        QComboBox *regionTypeCombo = wrappedWidget->findChild<QComboBox *>("region_type_combo");
+        SAFE_POINT(NULL != regionTypeCombo, "Cannot find region type selector", false);
+        return RegionSelector::SELECTED_REGION != regionTypeCombo->currentText();
+    } else {
+        return U2SavableWidget::childCanBeSaved(child) || NULL != qobject_cast<QListWidget *>(child)
+            || CHANGE_MODE_LABEL_NAME == childName;
+    }
 }
 
 } // namespace U2

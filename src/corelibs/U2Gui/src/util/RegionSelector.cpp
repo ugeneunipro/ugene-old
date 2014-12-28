@@ -336,7 +336,8 @@ void RegionSelector::initLayout() {
 
     startEdit->setObjectName("start_edit_line");
     endEdit->setObjectName("end_edit_line");
-    this->setObjectName("range_selector");
+    comboBox->setObjectName("region_type_combo");
+    setObjectName("range_selector");
 }
 
 void RegionSelector::init(const QList<RegionPreset> &presetRegions) {
