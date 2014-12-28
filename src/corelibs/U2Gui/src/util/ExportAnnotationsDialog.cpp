@@ -70,6 +70,8 @@ ExportAnnotationsDialog::ExportAnnotationsDialog( const QString &filename, QWidg
     connect( ui->formatsBox, SIGNAL( currentIndexChanged( const QString & ) ),
         SLOT( sl_onFormatChanged( const QString & ) ) );
     sl_onFormatChanged( ui->formatsBox->currentText( ) );
+
+    window()->resize(window()->width(), 0);
 }
 
 ExportAnnotationsDialog::~ExportAnnotationsDialog( ) {
@@ -144,6 +146,7 @@ void ExportAnnotationsDialog::sl_onChooseFileButtonClicked( ) {
 void ExportAnnotationsDialog::setExportSequenceVisible( bool value ) {
     ui->exportSequenceCheck->setVisible( value );
     ui->exportSequenceNameCheck->setVisible( value );
+    window()->resize(window()->width(), 0);
 }
 
 QString ExportAnnotationsDialog::fileFormat( ) const {

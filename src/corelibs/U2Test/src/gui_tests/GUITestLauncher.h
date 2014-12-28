@@ -35,7 +35,7 @@ class GUITest;
 class GUITestLauncher: public Task {
     Q_OBJECT
 public:
-    GUITestLauncher(int _suiteNumber=0, bool _noIgnored = false);
+    GUITestLauncher(int _suiteNumber, bool _noIgnored = false);
     GUITestLauncher(QString _pathToSuite = "", bool _noIgnored = false);
 
     virtual void run();

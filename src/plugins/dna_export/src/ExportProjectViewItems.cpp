@@ -19,14 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QAction>
+#include <QMainWindow>
+#include <QMenu>
+#include <QMessageBox>
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
@@ -73,11 +69,8 @@
 #include "ImportAnnotationsFromCSVDialog.h"
 #include "ImportAnnotationsFromCSVTask.h"
 
-#define ACTION_EXPORT_SEQUENCE "export sequences"
-#define ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT "export sequences as alignment"
-#define ACTION_EXPORT_CHROMATOGRAM "action_export_chromatogram"
-
 const char *NO_ANNOTATIONS_MESSAGE = "Selected object doesn't have annotations";
+const char *MESSAGE_BOX_INFO_TITLE = "Information";
 
 namespace U2 {
 
@@ -87,6 +80,10 @@ ExportProjectViewItemsContoller::ExportProjectViewItemsContoller(QObject* p)
     exportSequencesToSequenceFormatAction = new QAction(tr("Export sequences..."), this);
     exportSequencesToSequenceFormatAction->setObjectName(ACTION_EXPORT_SEQUENCE);
     connect(exportSequencesToSequenceFormatAction, SIGNAL(triggered()), SLOT(sl_saveSequencesToSequenceFormat()));
+
+    exportCorrespondingSeqsAction = new QAction(tr("Export corresponding sequence..."), this);
+    exportCorrespondingSeqsAction->setObjectName(ACTION_EXPORT_CORRESPONDING_SEQ);
+    connect(exportCorrespondingSeqsAction, SIGNAL(triggered()), SLOT(sl_saveCorrespondingSequence()));
 
     exportSequencesAsAlignmentAction = new QAction(tr("Export sequences as alignment..."), this);
     exportSequencesAsAlignmentAction->setObjectName(ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT);
@@ -174,6 +171,7 @@ void ExportProjectViewItemsContoller::addExportImportMenu(QMenu& m) {
             sub = new QMenu(tr("Export/Import"));
         }
         sub->addAction(exportAnnotations2CSV);
+        sub->addAction(exportCorrespondingSeqsAction);
     }
 
     set = SelectionUtils::findObjects(GObjectTypes::CHROMATOGRAM, &ms, UOF_LoadedOnly);
@@ -294,26 +292,62 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
     SAFE_POINT(NULL != pv, "Project view is NULL", );
 
     MultiGSelection ms;
-    ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
+    ms.addSelection(pv->getGObjectSelection());
+    ms.addSelection(pv->getDocumentSelection());
     QList<GObject *> set = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
     if (set.isEmpty()) {
-        QMessageBox::critical(NULL, L10N::errorTitle(), tr("No sequence objects selected!"));
+        QMessageBox::critical(NULL, tr(MESSAGE_BOX_INFO_TITLE), tr("There are no sequence objects selected."));
         return;
     }
 
-    bool allowMerge = set.size() > 1;
-    bool allowComplement = hasComplementForAll(set);
-    bool allowTranslate = hasAminoForAll(set);
-    bool allowBackTranslate = hasNucleicForAll(set);
+    exportSequences(set);
+}
+
+void ExportProjectViewItemsContoller::sl_saveCorrespondingSequence() {
+    ProjectView *pv = AppContext::getProjectView();
+    SAFE_POINT(NULL != pv, "Project view is NULL", );
+
+    MultiGSelection ms;
+    ms.addSelection(pv->getGObjectSelection());
+    ms.addSelection(pv->getDocumentSelection());
+    const QList<GObject *> annotTables = SelectionUtils::findObjects(GObjectTypes::ANNOTATION_TABLE, &ms, UOF_LoadedOnly);
+    if (annotTables.isEmpty()) {
+        QMessageBox::critical(NULL, tr(MESSAGE_BOX_INFO_TITLE), tr("There is no annotation table selected."));
+        return;
+    }
+
+    GObject *seqObj = NULL;
+    foreach (const GObjectRelation &relation, annotTables.first()->getObjectRelations()) {
+        if (ObjectRole_Sequence == relation.role) {
+            seqObj = GObjectUtils::selectObjectByReference(relation.ref, UOF_LoadedOnly);
+            break;
+        }
+    }
+
+    if (NULL == seqObj) {
+        QMessageBox::information(NULL, tr(MESSAGE_BOX_INFO_TITLE), tr("There is no associated sequence found."));
+        return;
+    }
+
+    exportSequences(QList<GObject *>() << seqObj);
+}
+
+void ExportProjectViewItemsContoller::exportSequences(const QList<GObject *> &seqs) {
+    CHECK(!seqs.isEmpty(), );
+
+    bool allowMerge = seqs.size() > 1;
+    bool allowComplement = hasComplementForAll(seqs);
+    bool allowTranslate = hasAminoForAll(seqs);
+    bool allowBackTranslate = hasNucleicForAll(seqs);
 
     QString defaultFileNameDir;
     QString fileBaseName;
-    GUrlUtils::getLocalPathFromUrl((*set.constBegin())->getDocument()->getURL(), (*set.constBegin())->getGObjectName(),
+    GUrlUtils::getLocalPathFromUrl((*seqs.constBegin())->getDocument()->getURL(), (*seqs.constBegin())->getGObjectName(),
         defaultFileNameDir, fileBaseName);
 
     QString defaultFileName = defaultFileNameDir + QDir::separator() + fileBaseName + "_new.fa";
     ExportSequencesDialog d(allowMerge, allowComplement, allowTranslate, allowBackTranslate, defaultFileName, fileBaseName,
-       BaseDocumentFormats::FASTA, AppContext::getMainWindow()->getQMainWindow());
+        BaseDocumentFormats::FASTA, AppContext::getMainWindow()->getQMainWindow());
 
     int rc = d.exec();
     if (rc == QDialog::Rejected) {
@@ -323,7 +357,7 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
 
     ExportSequenceTaskSettings s;
     ExportUtils::loadDNAExportSettingsFromDlg(s, d);
-    addExportItemsToSettings(d, set, s);
+    addExportItemsToSettings(d, seqs, s);
 
     Task* t = ExportUtils::wrapExportTask(new ExportSequenceTask(s), d.addToProject);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);

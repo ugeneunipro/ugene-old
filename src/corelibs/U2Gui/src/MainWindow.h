@@ -104,6 +104,7 @@ class QMainWindow;
 #define ACTION_BLAST_FORMAT_DB                      "FormatDB"
 
 #define ACTION_EXPORT_SEQUENCE                      "export sequences"
+#define ACTION_EXPORT_CORRESPONDING_SEQ             "export corresponding sequence"
 #define ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT         "export sequences as alignment"
 #define ACTION_EXPORT_ANNOTATIONS                   "action_export_annotations"
 #define ACTION_EXPORT_CHROMATOGRAM                  "action_export_chromatogram"

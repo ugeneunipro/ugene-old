@@ -42,12 +42,14 @@
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsSequenceView.h"
+#include "GTUtilsTaskTreeView.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
@@ -344,6 +346,106 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
     GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, new CustomExportSelectedRegion()));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0009) {
+    // the test checks that a sequence associated with an annotation table can be exported
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CORRESPONDING_SEQ));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "Project_export_test_0009.fa", GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    const QModelIndex docIndex = GTUtilsProjectTreeView::findIndex(os, "Project_export_test_0009.fa");
+    GTUtilsProjectTreeView::findIndex(os, "NC_001363", docIndex);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010) {
+    // negative test for an annotation table not associated with any sequence
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTFileDialog::openFile(os, dataDir + "samples/GFF/", "5prime_utr_intron_A21.gff");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Ca21chr5 features"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CORRESPONDING_SEQ));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // the rest part of the test checks that a newly created association can be used for sequence export
+
+    QModelIndex idxGff = GTUtilsProjectTreeView::findIndex(os, "Ca21chr5 features");
+    QWidget *seqArea = GTWidget::findWidget(os, "render_area_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Yes"));
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    GTUtilsProjectTreeView::dragAndDrop(os, idxGff, seqArea);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Ca21chr5 features"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CORRESPONDING_SEQ));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "Project_export_test_0010.fa", GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    const QModelIndex docIndex = GTUtilsProjectTreeView::findIndex(os, "Project_export_test_0010.fa");
+    GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)", docIndex);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011) {
+    // negative test for annotation table associated with a removed sequence
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363"));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(200);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CORRESPONDING_SEQ));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0012) {
+    // test for an annotation table whose sequence association was changed
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    QModelIndex annIdx = GTUtilsProjectTreeView::findIndex(os, "NC_001363 features");
+    QWidget *seqArea = GTWidget::findWidget(os, "render_area_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    GTUtilsProjectTreeView::dragAndDrop(os, annIdx, seqArea);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CORRESPONDING_SEQ));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "Project_export_test_0012.fa", GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    const QModelIndex docIndex = GTUtilsProjectTreeView::findIndex(os, "Project_export_test_0012.fa");
+    GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)", docIndex);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013) {
+    // test for multiple annotation object selection associated sequence import is not available
+    GTFileDialog::openFile(os, dataDir + "samples/GFF/", "5prime_utr_intron_A21.gff");
+
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Ca21chr5 features"));
+    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Ca21chr1 features"));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION
+        << ACTION_EXPORT_CORRESPONDING_SEQ, PopupChecker::NotExists));
     GTMouseDriver::click(os, Qt::RightButton);
 }
 

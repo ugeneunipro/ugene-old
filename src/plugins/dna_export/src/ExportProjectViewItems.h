@@ -22,20 +22,14 @@
 #ifndef _U2_EXPORT_PROJECT_VIEW_ITEMS_H_
 #define _U2_EXPORT_PROJECT_VIEW_ITEMS_H_
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QMenu>
-#endif
+#include <QObject>
 
-#include <U2Core/global.h>
-#include <U2Core/Annotation.h>
+class QAction;
+class QMenu;
 
 namespace U2 {
 
+class GObject;
 class GUrl;
 
 class ExportProjectViewItemsContoller : public QObject {
@@ -47,6 +41,7 @@ private slots:
     void sl_addToProjectViewMenu(QMenu&);
 
     void sl_saveSequencesToSequenceFormat();
+    void sl_saveCorrespondingSequence();
     void sl_saveSequencesAsAlignment();
     void sl_saveAlignmentAsSequences();
     void sl_exportNucleicAlignmentToAmino();
@@ -58,8 +53,10 @@ private slots:
 
 private:
     void addExportImportMenu(QMenu& m);
+    void exportSequences(const QList<GObject *> &seqs);
 
     QAction* exportSequencesToSequenceFormatAction;
+    QAction* exportCorrespondingSeqsAction;
     QAction* exportSequencesAsAlignmentAction;
     QAction* exportAlignmentAsSequencesAction;
     QAction* exportNucleicAlignmentToAminoAction;

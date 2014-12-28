@@ -169,7 +169,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1212);
     REGISTER_TEST(GUITest_regression_scenarios::test_1212_1);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1252, "outdated");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1252_1, "outdated");
     REGISTER_TEST(GUITest_regression_scenarios::test_1255);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1262, "outdated");
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1434_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1434_2);
@@ -218,6 +221,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1629);
     REGISTER_TEST(GUITest_regression_scenarios::test_1631);
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_1640, "UGENE-3863");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1643);
     REGISTER_TEST(GUITest_regression_scenarios::test_1644);
     REGISTER_TEST(GUITest_regression_scenarios::test_1645);
     REGISTER_TEST(GUITest_regression_scenarios::test_1653);
@@ -251,6 +255,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1797, "");
     REGISTER_TEST(GUITest_regression_scenarios::test_1798);
 
+    REGISTER_TEST(GUITest_regression_scenarios::test_1807);
     REGISTER_TEST(GUITest_regression_scenarios::test_1808);
     REGISTER_TEST(GUITest_regression_scenarios::test_1811_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1813);
@@ -293,9 +298,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2032);
     REGISTER_TEST(GUITest_regression_scenarios::test_2049);
     REGISTER_TEST(GUITest_regression_scenarios::test_2070);
-    REGISTER_TEST_ONLY_WINDOWS(GUITest_regression_scenarios::test_2089);//, "no forbidden folder characters on linux and mac");
     REGISTER_TEST(GUITest_regression_scenarios::test_2077);
-    //REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2093_1,"dashboards");
+    REGISTER_TEST_ONLY_WINDOWS(GUITest_regression_scenarios::test_2089);//, "no forbidden folder characters on linux and mac");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2093_1,"dashboards");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2091);
     REGISTER_TEST(GUITest_regression_scenarios::test_2093_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_2);
@@ -306,7 +312,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2128_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2138);
     REGISTER_TEST_NOT_FOR_MAC(GUITest_regression_scenarios::test_2140);
-    //REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2150, "task tree view cant be tested");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2144);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2150, "task tree view cant be tested");
     REGISTER_TEST(GUITest_regression_scenarios::test_2152);
     REGISTER_TEST(GUITest_regression_scenarios::test_2156);
     REGISTER_TEST(GUITest_regression_scenarios::test_2157);
@@ -332,22 +339,24 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2268, "bad permission setting");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2269, "Vladimir check this");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2270);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2281);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2282, "https://ugene.unipro.ru/tracker/browse/UGENE-2454");
     REGISTER_TEST(GUITest_regression_scenarios::test_2284);
     REGISTER_TEST(GUITest_regression_scenarios::test_2285);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2316);
-    //REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2269, "impossible to catch expected error in opStatus without stopping test");
     REGISTER_TEST(GUITest_regression_scenarios::test_2270);
     REGISTER_TEST(GUITest_regression_scenarios::test_2292);
     REGISTER_TEST(GUITest_regression_scenarios::test_2298);
     REGISTER_TEST(GUITest_regression_scenarios::test_2293);
     REGISTER_TEST(GUITest_regression_scenarios::test_2306);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2281);
     REGISTER_TEST(GUITest_regression_scenarios::test_2309);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2316);
     REGISTER_TEST(GUITest_regression_scenarios::test_2318);
     REGISTER_TEST(GUITest_regression_scenarios::test_2343);
     REGISTER_TEST(GUITest_regression_scenarios::test_2351);
     REGISTER_TEST(GUITest_regression_scenarios::test_2352);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2360);
     REGISTER_TEST(GUITest_regression_scenarios::test_2364);
     REGISTER_TEST(GUITest_regression_scenarios::test_2375);
     REGISTER_TEST(GUITest_regression_scenarios::test_2377);
@@ -433,13 +442,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2829);
     REGISTER_TEST(GUITest_regression_scenarios::test_2853);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2866);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2891);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2891_1);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2894, "task api needed");
-    REGISTER_TEST(GUITest_regression_scenarios::test_2895);
     REGISTER_TEST(GUITest_regression_scenarios::test_2884);
     REGISTER_TEST(GUITest_regression_scenarios::test_2887);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2891, "https://local.ugene.unipro.ru/tracker/browse/UGENE-3686");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2891_1);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2894, "task api needed");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2895);
     REGISTER_TEST(GUITest_regression_scenarios::test_2897);
     REGISTER_TEST(GUITest_regression_scenarios::test_2900);
     REGISTER_TEST(GUITest_regression_scenarios::test_2903);
@@ -526,6 +534,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3312);
     REGISTER_TEST(GUITest_regression_scenarios::test_3313);
     REGISTER_TEST(GUITest_regression_scenarios::test_3318);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3328, "Vladimir check this");
     REGISTER_TEST(GUITest_regression_scenarios::test_3332);
     REGISTER_TEST_LINUX(GUITest_regression_scenarios::test_3333, "drag and drop");
     REGISTER_TEST(GUITest_regression_scenarios::test_3335);
@@ -609,7 +618,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3755);
     REGISTER_TEST(GUITest_regression_scenarios::test_3757);
     REGISTER_TEST(GUITest_regression_scenarios::test_3778);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3779);
     REGISTER_TEST(GUITest_regression_scenarios::test_3788);
+
 
     REGISTER_TEST(GUITest_regression_scenarios::test_3813);
     REGISTER_TEST(GUITest_regression_scenarios::test_3815);
@@ -799,6 +810,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0008);
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0009);
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0010);
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0011);
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0012);
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0013);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/from project view/
