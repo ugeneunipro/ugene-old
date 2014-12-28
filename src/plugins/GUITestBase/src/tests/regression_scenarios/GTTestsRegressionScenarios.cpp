@@ -1297,6 +1297,21 @@ GUI_TEST_CLASS_DEFINITION(test_1439) {
     CHECK_SET_ERR(l.getError().contains("Can't align sequence longer 100000"), "Wrong error in the log");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1445) {
+/*  1. Open "data/samples/CLUSTALW/COI.aln"
+    2. Choose last sequence (i.e. in bottom) with mouse in sequences area
+    3. Choose { Edit -> Remove current sequence } in context menu
+    Expected state: UGENE doesn't crash
+*/
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5, 17), QPoint(-4, 17));
+    int numSelectedSequences = GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os);
+    CHECK_SET_ERR(numSelectedSequences == 1, "There is no selection in MSA, but expected");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "Remove current sequence", GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
 GUI_TEST_CLASS_DEFINITION(test_1461_1) {
 //    1. Open "_common_data/fasta/fa1.fa".
 //    Expected state: sequence viewer had opened.
