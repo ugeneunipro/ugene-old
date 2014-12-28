@@ -12761,6 +12761,44 @@ GUI_TEST_CLASS_DEFINITION(test_3817) {
     CHECK_SET_ERR(boxRegion->currentText() == "Custom region", QString("Region type value is unexpected: %1. Expected: Custom region").arg(boxRegion->currentText()));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3819) {
+//    1. Connect to a shared database, that contains an assembly.
+//    2. Open the assembly.
+//    Expected state: an Assembly Browser opens, there are some reads in the reads area after zooming.
+
+    GTLogTracer logTracer;
+
+    const QString folderName = "view_test_0003";
+    const QString folderPath = U2ObjectDbi::PATH_SEP + folderName;
+    const QString assemblyVisibleName = "chrM";
+    const QString assemblyVisibleNameWidget = " [as] chrM";
+    const QString databaseAssemblyObjectPath = folderPath + U2ObjectDbi::PATH_SEP + assemblyVisibleName;
+
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    QModelIndexList list = GTUtilsProjectTreeView::findIndecies(os, assemblyVisibleName,
+                                                                GTUtilsProjectTreeView::findIndex(os, folderName));
+    foreach (QModelIndex index, list) {
+        if(index.data() == "[as] chrM"){
+            GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, index);
+        }
+    }
+    GTGlobals::sleep(5000);
+    QWidget* assemblyView = GTWidget::findWidget(os, assemblyVisibleNameWidget);
+    CHECK_SET_ERR(NULL != assemblyView, "View wasn't opened");
+
+    GTUtilsAssemblyBrowser::zoomToMax(os);
+    GTUtilsAssemblyBrowser::goToPosition(os, 1);
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "copy_read_information",
+                                                      GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "assembly_reads_area"));
+
+    GTUtilsSharedDatabaseDocument::disconnectDatabase(os, databaseDoc);
+    GTUtilsLog::check(os, logTracer);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3868) {
     //1. Open "VectorNTI_CAN_READ.gb"
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/", "VectorNTI_CAN_READ.gb");

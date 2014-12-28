@@ -112,6 +112,7 @@ AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_
 
 void AssemblyReadsArea::createMenu() {
     copyDataAction = readMenu->addAction(tr("Copy read information to clipboard"));
+    copyDataAction->setObjectName("copy_read_information");
     connect(copyDataAction, SIGNAL(triggered()), SLOT(sl_onCopyReadData()));
 
     QAction * copyPosAction = readMenu->addAction(tr("Copy current position to clipboard"));
