@@ -820,6 +820,7 @@ void WorkflowView::createActions() {
     connect(editScriptAction, SIGNAL(triggered()), SLOT(sl_editScript()));
 
     externalToolAction = new QAction(tr("Create element with command line tool..."), this);
+    externalToolAction->setObjectName("createElementWithCommandLineTool");
     externalToolAction->setIcon(QIcon(":workflow_designer/images/external_cmd_tool.png"));
     connect(externalToolAction, SIGNAL(triggered()), SLOT(sl_externalAction()));
 

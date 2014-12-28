@@ -127,6 +127,7 @@
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
 #include "runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/CreateElementWithCommandLineToolFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
@@ -1220,6 +1221,80 @@ GUI_TEST_CLASS_DEFINITION(test_1434_2) {
     //Expected state : 1 pattern is found
     QLabel *resultLabel = qobject_cast<QLabel *>(GTWidget::findWidget(os, "resultLabel"));
     CHECK_SET_ERR(resultLabel->text() == "Results: 1/1", "Unexpected find algorithm result count");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1435) {
+//    1) Open WD
+//    2) Click Create element with command line tool
+//    3) input name test
+//    4) input data in1 and in2 of FASTA
+//    5) output data out1 and out2 of FASTA
+//    6) Execution string any
+//    Expected state created element with two input and two output ports
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    CreateElementWithCommandLineToolFiller::ElementWithCommandLineSettings settings;
+    settings.elementName = "Element_1435";
+
+    QList<CreateElementWithCommandLineToolFiller::InOutData> input;
+    CreateElementWithCommandLineToolFiller::InOutDataType inOutDataType;
+    inOutDataType.first = CreateElementWithCommandLineToolFiller::Sequence;
+    inOutDataType.second = "FASTA";
+
+    input << CreateElementWithCommandLineToolFiller::InOutData("in1",
+                                                               inOutDataType);
+    input << CreateElementWithCommandLineToolFiller::InOutData("in2",
+                                                               inOutDataType);
+    settings.input = input;
+
+    QList<CreateElementWithCommandLineToolFiller::InOutData> output;
+    output << CreateElementWithCommandLineToolFiller::InOutData("out1",
+                                                                inOutDataType);
+    output << CreateElementWithCommandLineToolFiller::InOutData("out2",
+                                                                inOutDataType);
+    settings.output = output;
+
+    settings.executionString = "./ugenem $in1 $in2 $out1 $out2";
+
+    GTUtilsDialog::waitForDialog(os, new CreateElementWithCommandLineToolFiller(os, settings));
+    QAbstractButton *createElement = GTAction::button(os, "createElementWithCommandLineTool");
+    GTWidget::click(os, createElement);
+
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::click(os, "Element_1435");
+    WorkflowProcessItem* element = GTUtilsWorkflowDesigner::getWorker(os, "Element_1435");
+    CHECK_SET_ERR(element != NULL, "Worker not found");
+    int portCount = GTUtilsWorkflowDesigner::getPorts(os, element).size();
+    CHECK_SET_ERR(portCount == 3,
+                  QString("Port number is wrong. Expected: 3. Current %1").arg(portCount));
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1439) {
+//    1. Open _common_data\scenarios\regression\1439\NC_000964_multi_region.fa in MSA Editor.
+//    2. Do {Align->Align sequences to profile with MUSCLE...} in context menu, and use NC_000964.fa as alignment profile.
+//    3. Select "NC_000964.fa" as profile.
+//    Expected state: there is no error with following message
+//                    "Task {MUSCLE align 'NC_000964.fa' by profile 'NC_000964_multi_region.fa'} finished with error:
+//                    Subtask {MUSCLE add to profile 'NC_000964_multi_region.fa'} is failed:
+//                    Subtask {MUSCLE alignment} is failed:
+//                    Internal MUSCLE error: Internal error MSA::ExpandCache, ColCount changed"
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os,
+                                                                                 SequenceReadingModeSelectorDialogFiller::Join));
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1439", "NC_000964_multi_region.fa");
+
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/1439", "NC_000964.fa"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align sequences to profile with MUSCLE", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(15000);
+
+    CHECK_SET_ERR(l.hasError(), "There is no error in the log");
+    CHECK_SET_ERR(l.getError().contains("Can't align sequence longer 100000"), "Wrong error in the log");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1461_1) {

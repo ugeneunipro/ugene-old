@@ -358,15 +358,21 @@ bool GTUtilsWorkflowDesigner::isWorkerExtended(U2OpStatus &os, const QString &it
 
 #define GT_METHOD_NAME "getPortById"
 WorkflowPortItem* GTUtilsWorkflowDesigner::getPortById(U2OpStatus &os, WorkflowProcessItem *worker, QString id){
-    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
-    GT_CHECK_RESULT(sceneView,"sceneView not found",NULL)
-    QList<WorkflowPortItem*> list = worker->getPortItems();
+    QList<WorkflowPortItem*> list = getPorts(os, worker);
     foreach(WorkflowPortItem* p, list){
         if(p&&p->getPort()->getId()==id){
             return p;
         }
     }
     GT_CHECK_RESULT(false, "port with id " + id + "not found",NULL);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getPorts"
+QList<WorkflowPortItem*> GTUtilsWorkflowDesigner::getPorts(U2OpStatus &os, WorkflowProcessItem *worker){
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    GT_CHECK_RESULT(sceneView,"sceneView not found", QList<WorkflowPortItem*>())
+    return worker->getPortItems();
 }
 #undef GT_METHOD_NAME
 

@@ -93,6 +93,8 @@ public:
     //returns WorkflowPortItem of worker which with ID "id"
     static WorkflowPortItem* getPortById(U2OpStatus &os,WorkflowProcessItem* worker, QString id);
 
+    static QList<WorkflowPortItem*> getPorts(U2OpStatus &os,WorkflowProcessItem* worker);
+
     //connects worker "from" with worker "to"
     static void connect(U2OpStatus &os, WorkflowProcessItem*from, WorkflowProcessItem*to);
 
