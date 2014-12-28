@@ -56,7 +56,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
-    
+
 SiteconPlugin::SiteconPlugin() : Plugin(tr("sitecon_plugin"), tr("sitecon_plugin_desc")), ctxADV(NULL)
 {
     if (AppContext::getMainWindow()) {
@@ -66,7 +66,7 @@ SiteconPlugin::SiteconPlugin() : Plugin(tr("sitecon_plugin"), tr("sitecon_plugin
         QAction* buildAction = new QAction(tr("sitecon_build"), this);
         buildAction->setObjectName("Build new SITECON model from alignment");
         connect(buildAction, SIGNAL(triggered()), SLOT(sl_build()));
-        
+
         QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         QMenu* toolsSubmenu = tools->addMenu(QIcon(":/sitecon/images/sitecon.png"), tr("sitecon_menu"));
         toolsSubmenu->menuAction()->setObjectName("SITECON");
@@ -88,11 +88,11 @@ SiteconPlugin::SiteconPlugin() : Plugin(tr("sitecon_plugin"), tr("sitecon_plugin
     QDActorPrototypeRegistry* qpfr = AppContext::getQDActorProtoRegistry();
     assert(qpfr);
     qpfr->registerProto(new QDSiteconActorPrototype());
-    
+
     GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
     l->qlist = SiteconAlgorithmTests::createTestFactories();
 
-    foreach(XMLTestFactory* f, l->qlist) { 
+    foreach(XMLTestFactory* f, l->qlist) {
         bool res = xmlTestFormat->registerTestFactory(f);
         Q_UNUSED(res);
         assert(res);
@@ -123,6 +123,7 @@ SiteconADVContext::SiteconADVContext(QObject* p) : GObjectViewWindowContext(p, A
 void SiteconADVContext::initViewContext(GObjectView* view) {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
     ADVGlobalAction* a = new ADVGlobalAction(av, QIcon(":sitecon/images/sitecon.png"), tr("Search TFBS with SITECON..."), 80);
+    a->setObjectName("SITECON");
     a->addAlphabetFilter(DNAAlphabet_NUCL);
     connect(a, SIGNAL(triggered()), SLOT(sl_search()));
 }
@@ -130,7 +131,7 @@ void SiteconADVContext::initViewContext(GObjectView* view) {
 void SiteconADVContext::sl_search() {
     GObjectViewAction* action = qobject_cast<GObjectViewAction*>(sender());
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(action->getObjectView());
-    
+
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
     assert(seqCtx->getAlphabet()->isNucleic());
     SiteconSearchDialogController d(seqCtx, av->getWidget());
