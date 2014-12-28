@@ -11477,6 +11477,105 @@ GUI_TEST_CLASS_DEFINITION(test_3518) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3519_1) {
+//    1. Open "data/samples/FASTA/human_T1.fa".
+//    2. Open a "SITECON Search" dialog, fill it and start the search.
+//    Expected state: the dialog is opened, there are search results.
+//    3. Click the "Save as annotations" button and then click the "Search" button again before all annotations are drawn.
+//    4. Try to close the dialog.
+//    Expected state: the dialog is closed, the search task is canceled.
+//    Current state: GUI waits until all annotations are drawn, then react on the button click.
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    class SiteconCustomFiller : public Filler {
+    public:
+        SiteconCustomFiller(U2OpStatus &os)
+            : Filler(os, "SiteconSearchDialog") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os,
+                                                                   dataDir + "/sitecon_models/eukaryotic",
+                                                                   "CLOCK.sitecon.gz"));
+            QWidget* modelButton = GTWidget::findWidget(os, "pbSelectModelFile", dialog);
+            GTWidget::click(os, modelButton);
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+
+            GTUtilsTaskTreeView::waitTaskFinished(os);
+
+            GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true,
+                                                                              "<auto>",
+                                                                              "sitecon_ann", ""));
+            QWidget* saveButton = GTWidget::findWidget(os, "pbSaveAnnotations", dialog);
+            GTWidget::click(os, saveButton);
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SiteconCustomFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "SITECON", GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+
+    CHECK_SET_ERR(GTUtilsTaskTreeView::getTopLevelTasksCount(os) == 0, "Some task is still running");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3519_2) {
+//    1. Open "data/samples/FASTA/human_T1.fa".
+//    2. Run "Auto-annotations update" task, e.g. find tandems with default parameters.
+//    3. Open a "SITECON Search" dialog before "auto-annotations update" task finish, fill it and start the search.
+//    Current state: a deadlock occurs: "auto-annotations update" task wait until the dialog close,
+//                   dialog can't be closed until the search task finish,
+//                   the search task waits until the "auto-annotation update" task finish.
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    class SiteconCustomFiller : public Filler {
+    public:
+        SiteconCustomFiller(U2OpStatus &os)
+            : Filler(os, "SiteconSearchDialog") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os,
+                                                                   dataDir + "/sitecon_models/eukaryotic",
+                                                                   "CLOCK.sitecon.gz"));
+            QWidget* modelButton = GTWidget::findWidget(os, "pbSelectModelFile", dialog);
+            GTWidget::click(os, modelButton);
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+
+            CHECK_SET_ERR(GTUtilsTaskTreeView::getTopLevelTasksCount(os) == 2, "Some task is still running");
+
+            GTUtilsTaskTreeView::waitTaskFinished(os);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    class AllEnzymesSearchScenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
+
+            QWidget* selectAllButton = GTWidget::findWidget(os, "selectAllButton", dialog);
+            GTWidget::click(os, selectAllButton);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList(), new AllEnzymesSearchScenario()));
+    GTWidget::click(os, GTWidget::findWidget(os, "Find restriction sites_widget"));
+
+    GTUtilsDialog::waitForDialog(os, new SiteconCustomFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "SITECON", GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3545){
 //    1. Open "_common_data\scenarios\msa\big.aln"
     GTFile::copy(os, testDir + "_common_data/scenarios/msa/big.aln", sandBoxDir + "big.aln");
