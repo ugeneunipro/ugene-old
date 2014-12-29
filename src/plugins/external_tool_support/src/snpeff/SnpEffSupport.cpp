@@ -43,7 +43,6 @@ SnpEffSupport::SnpEffSupport(const QString& name, const QString& path) : Externa
     }
 
     executableFileName="snpEff.jar";
-    //executableFileName="snpEffJava.bin";
 
     validMessage="Usage: snpEff [eff] [options] genome_version [input_file]";
     description=tr("<i>SnpEff</i>: Genetic variant annotation and effect prediction toolbox.");
