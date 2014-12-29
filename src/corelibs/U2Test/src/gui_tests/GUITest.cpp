@@ -9,6 +9,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
 #endif
+#include "QDir"
 
 namespace U2 {
 
@@ -51,7 +52,8 @@ QString getDataDir(){
 #ifdef Q_OS_MAC
 const QString GUITest::screenshotDir = "../../../../../../screenshotFol/";
 #else
-const QString GUITest::screenshotDir = "../../screenshotFol/";
+const QString GUITest::screenshotDir = QDir::homePath() + "/gui_testing_output/" +
+        QDate::currentDate().toString("dd.MM.yyyy") + "/screenshots/";
 #endif
 
 const QString GUITest::testDir = getTestDir();

@@ -1223,6 +1223,60 @@ GUI_TEST_CLASS_DEFINITION(test_1434_2) {
     CHECK_SET_ERR(resultLabel->text() == "Results: 1/1", "Unexpected find algorithm result count");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1446){
+//    1) Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+//    2) Use context menu for COI.aln in project tree view {Export/Import->Export nucleic alignment to amino}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,  QStringList() << "action_project__export_import_menu_action"
+                                                      << "action_project__export_to_amino_action"));
+    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os, -1, sandBoxDir + "test_1446.aln"));
+    GTUtilsProjectTreeView::click(os, "COI.aln", Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+
+//    Expected state: none of sequences starts from (translated), only sequence names have (translated) in the end
+    QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    QString first = names[0];
+    CHECK_SET_ERR(first.endsWith("(translated)"), "unexpected name end: " + first);
+    foreach (QString name, names) {
+        CHECK_SET_ERR(!name.startsWith("(translated)"), "unexpected name start: " + name);
+    }
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1457){
+//    1. Open "_common_data/ugenedb/example-alignment.ugenedb".
+//    Expected state: assymbly viewer had opened.
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb/example-alignment.ugenedb");
+//    2. Find navigation tool on the toolbar.
+//    Expected state: navigation tool is disabled.
+    QToolBar* mwtoolbar_activemdi = GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI);
+    QWidget* go_to_pos_line_edit = GTWidget::findWidget(os, "go_to_pos_line_edit", mwtoolbar_activemdi);
+    QWidget* go = GTWidget::findWidget(os, "Go!", mwtoolbar_activemdi);
+    CHECK_SET_ERR(!go_to_pos_line_edit->isEnabled(), "go_to_pos_line_edit on toolbar is enabled");
+    CHECK_SET_ERR(!go->isEnabled(), "go button on toolbar is enabled");
+//    3. Open navigation tab on the options panel.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_NAVIGATION"));
+//    Expected state: navigation tool on the options panel is disabled.
+    QWidget* OP_OPTIONS_WIDGET = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET");
+    QWidget* go_to_pos_line_edit_op = GTWidget::findWidget(os, "go_to_pos_line_edit", OP_OPTIONS_WIDGET);
+    QWidget* go_op = GTWidget::findWidget(os, "Go!", OP_OPTIONS_WIDGET);
+    CHECK_SET_ERR(!go_to_pos_line_edit_op->isEnabled(), "go_to_pos_line_edit on option panel is enabled");
+    CHECK_SET_ERR(!go_op->isEnabled(), "go button on option panel is enabled");
+//    4. Zoom to any location.
+    QWidget* zoomInButton = GTToolbar::getWidgetForActionTooltip(os, mwtoolbar_activemdi, "Zoom in");
+    GTWidget::click(os, zoomInButton);
+//    Expected state: navigation was enabled both on the toolbar and on the options panel.
+    CHECK_SET_ERR(go_to_pos_line_edit->isEnabled(), "go_to_pos_line_edit on toolbar is not enabled");
+    CHECK_SET_ERR(go->isEnabled(), "go button on toolbar is not enabled");
+
+    CHECK_SET_ERR(go_to_pos_line_edit_op->isEnabled(), "go_to_pos_line_edit on option panel is not enabled");
+    CHECK_SET_ERR(go_op->isEnabled(), "go button on option panel is not enabled");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1435) {
 //    1) Open WD
 //    2) Click Create element with command line tool
@@ -1312,6 +1366,7 @@ GUI_TEST_CLASS_DEFINITION(test_1445) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "Remove current sequence", GTGlobals::UseMouse));
     GTMouseDriver::click(os, Qt::RightButton);
 }
+
 GUI_TEST_CLASS_DEFINITION(test_1461_1) {
 //    1. Open "_common_data/fasta/fa1.fa".
 //    Expected state: sequence viewer had opened.
@@ -2273,6 +2328,7 @@ GUI_TEST_CLASS_DEFINITION(test_1631) {
 //    Expected state: the tree is added to the MSA Editor.
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/Newick", "COI.nwk"));
     GTWidget::click(os, GTWidget::findWidget(os, "OpenTreeButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsMsaEditor::getTreeView(os);
 
 //    5. Reopen the view.
@@ -7509,7 +7565,8 @@ GUI_TEST_CLASS_DEFINITION(test_2651) {
 
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__SEARCH_GENBANK);
 
-    GTGlobals::sleep(5000);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 6. With Ctrl pressed, select all three annotation objects in the project view
     GTUtilsProjectTreeView::openView(os);
@@ -9551,7 +9608,7 @@ GUI_TEST_CLASS_DEFINITION(test_3155) {
 
 GUI_TEST_CLASS_DEFINITION(test_3156){
 //    1. Connect to a shared database
-    QString conName = "ugene_gui_test";
+    //QString conName = "ugene_gui_test";
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
     GTUtilsProjectTreeView::expandProjectView(os);
     GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, "/", "test_3156");
@@ -12779,6 +12836,10 @@ GUI_TEST_CLASS_DEFINITION(test_3788) {
     CHECK_SET_ERR(0 == annotatedRegions.size(), "There are annotations unexpectedly");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3809){
+    GTFileDialog::openFile(os, testDir + "_common_data/regression/3809/zF849G6-6a01.p1k.scf.ab1");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3813) {
     //1. Open "samples/Genbank/murine.gb"
     GTFileDialog::openFile(os, dataDir + "/samples/Genbank/murine.gb");
@@ -12873,6 +12934,41 @@ GUI_TEST_CLASS_DEFINITION(test_3817) {
 
     GTComboBox::setIndexWithText(os, boxRegion, "Selected region", false);
     CHECK_SET_ERR(boxRegion->currentText() == "Custom region", QString("Region type value is unexpected: %1. Expected: Custom region").arg(boxRegion->currentText()));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3829){
+//    Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+//    Open "data/samples/GFF/5prime_utr_intron_A20.gff".
+    GTFileDialog::openFile(os, dataDir + "samples/GFF/5prime_utr_intron_A20.gff");
+//    Attach the first annotation object to the sequence.
+    QModelIndex index = GTUtilsProjectTreeView::findIndex(os, "Ca20Chr1 features");
+//    Expected state: UGENE warning about annotation is out of range.
+    class scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
+
+            QDialogButtonBox *buttonBox = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            CHECK_SET_ERR(NULL != buttonBox, "buttonBox is NULL");
+            QAbstractButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(NULL != okButton, "okButton is NULL");
+            //    Agree with warning.
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+            GTWidget::click(os, okButton);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os, new scenario()));
+    GTUtilsProjectTreeView::dragAndDrop(os, index, GTUtilsSequenceView::getSeqWidgetByNumber(os, 0));
+//    Expected state: there is a sequence with attached annotation table object, there is an annotation that is located beyond the sequence.
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "5_prime_UTR_intron"));
+    GTMouseDriver::click(os);
+//    Select the annotation in the tree view. Open "Statistics" options panel tab or try to find something in the selected region.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_SEQ_INFO"));
+    GTGlobals::sleep(1000);
+//    Expected state: you can't set region that is not inside the sequence.
+//    Current state: an incorrect selected region is set, crashes and safe points are possible with the region.
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3819) {

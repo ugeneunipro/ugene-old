@@ -29,8 +29,10 @@ namespace U2 {
 class CreateObjectRelationDialogFiller : public Filler {
 public:
     CreateObjectRelationDialogFiller(U2OpStatus &os);
+    CreateObjectRelationDialogFiller(U2OpStatus &os, CustomScenario* sc):
+        Filler(os, "CreateObjectRelationDialog", sc){}
 
-    virtual void run();
+    virtual void commonScenario();
 };
 
 }   // namespace U2

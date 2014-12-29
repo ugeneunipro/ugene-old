@@ -41,7 +41,7 @@ CreateObjectRelationDialogFiller::CreateObjectRelationDialogFiller(U2OpStatus& o
 {
 }
 
-void CreateObjectRelationDialogFiller::run() {
+void CreateObjectRelationDialogFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(NULL != dialog, "activeModalWidget is NULL");
 

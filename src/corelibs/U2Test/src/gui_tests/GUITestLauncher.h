@@ -51,6 +51,7 @@ private:
     static QStringList getTestProcessArguments(const QString &testName);
     static QProcessEnvironment getProcessEnvironment(const QString &testName);
     static QString testOutFile(const QString &testName);
+    static QString testOutDir();
 
     void firstTestRunCheck(const QString& testName);
     static QString performTest(const QString& testName);

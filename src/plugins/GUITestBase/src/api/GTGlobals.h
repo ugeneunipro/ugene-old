@@ -62,7 +62,7 @@ namespace U2 {
 #define CHECK_SET_ERR_RESULT(condition, errorMessage, result) \
 { \
     GT_DEBUG_MESSAGE(condition, errorMessage, result); \
-    if (os.hasError()) { return result; } \
+    if (os.hasError()) { GTGlobals::GUITestFail(); os.setError(os.getError()); return result; } \
     CHECK_EXT(condition, if (!os.hasError()) { GTGlobals::GUITestFail(); os.setError(errorMessage);}, result) \
 }
 

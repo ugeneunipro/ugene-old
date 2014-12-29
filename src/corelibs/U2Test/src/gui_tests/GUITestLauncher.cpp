@@ -182,14 +182,19 @@ QString GUITestLauncher::testOutFile(const QString &testName) {
     return "ugene_"+testName+".out";
 }
 
+QString GUITestLauncher::testOutDir(){
+    QString date = QDate::currentDate().toString("dd.MM.yyyy");
+    return QDir::homePath() + "/gui_testing_output/" + date;
+}
+
 QProcessEnvironment GUITestLauncher::getProcessEnvironment(const QString &testName) {
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 
     env.insert("UGENE_DEV", "1");
     env.insert("UGENE_GUI_TEST", "1");
     env.insert("UGENE_USE_NATIVE_DIALOGS", "0");
-    env.insert("UGENE_PRINT_TO_FILE", testOutFile(testName));
-    env.insert("UGENE_USER_INI", testName + "_UGENE.ini");
+    env.insert("UGENE_PRINT_TO_FILE", testOutDir() + "/logs/" + testOutFile(testName));
+    env.insert("UGENE_USER_INI", testOutDir() + "/inis/" + testName + "_UGENE.ini");
 
     return env;
 }
