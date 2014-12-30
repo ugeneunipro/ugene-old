@@ -190,6 +190,7 @@ QString GUITestLauncher::testOutDir(){
 QProcessEnvironment GUITestLauncher::getProcessEnvironment(const QString &testName) {
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 
+    QDir().mkpath(testOutDir() + "/logs");
     env.insert("UGENE_DEV", "1");
     env.insert("UGENE_GUI_TEST", "1");
     env.insert("UGENE_USE_NATIVE_DIALOGS", "0");
