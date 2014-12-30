@@ -114,15 +114,17 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     GTUtilsDialog::waitForDialog(os, alignShortReadsFiller);
     CHECK_OP(os, );
 
-    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    CHECK_OP(os, );
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
-    CHECK_OP(os, );
-
     ImportBAMFileFiller* importBAMFileFiller = new ImportBAMFileFiller(os);
     CHECK_OP(os, );
     GTUtilsDialog::waitForDialog(os, importBAMFileFiller);
     CHECK_OP(os, );
+
+    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    CHECK_OP(os, );
+    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
+    CHECK_OP(os, );
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
     GTGlobals::sleep();
 }
 
@@ -180,15 +182,17 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTUtilsDialog::waitForDialog(os, alignShortReadsFiller);
     CHECK_OP(os, );
 
-    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    CHECK_OP(os, );
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
-    CHECK_OP(os, );
-
     ImportBAMFileFiller* importBAMFileFiller = new ImportBAMFileFiller(os);
     CHECK_OP(os, );
     GTUtilsDialog::waitForDialog(os, importBAMFileFiller);
     CHECK_OP(os, );
+
+    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    CHECK_OP(os, );
+    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
+    CHECK_OP(os, );
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
     GTGlobals::sleep();
 }
 
@@ -254,16 +258,18 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTUtilsDialog::waitForDialog(os, alignShortReadsFiller);
     CHECK_OP(os, );
 
-    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    CHECK_OP(os, );
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
-    CHECK_OP(os, );
-
     ImportBAMFileFiller* importBAMFileFiller = new ImportBAMFileFiller(os,
                     testDir + "_common_data/scenarios/sandbox/human_T1_cutted.sam.ugenedb");
     CHECK_OP(os, );
     GTUtilsDialog::waitForDialog(os, importBAMFileFiller);
     CHECK_OP(os, );
+
+    QMenu* mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    CHECK_OP(os, );
+    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << "Align to reference" << "Align short reads");
+    CHECK_OP(os, );
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
     GTGlobals::sleep();
 }
 

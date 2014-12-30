@@ -643,7 +643,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0012);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0013);
-    REGISTER_TEST(GUITest_common_scenarios_project::test_0014);
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_project::test_0014, "UGENE-3890");
     REGISTER_TEST(GUITest_common_scenarios_project::test_0016);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
@@ -742,7 +742,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/remote request/
 //////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0001);
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_project_remote_request::test_0001, "UGENE-3890");
     REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0004);
@@ -1268,8 +1268,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0005_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0005_2);
-    REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0006);
-    REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0006_1);
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_annotations_edit::test_0006, "UGENE-3885");
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_annotations_edit::test_0006_1, "UGENE-3885");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/annotations/qualifiers
