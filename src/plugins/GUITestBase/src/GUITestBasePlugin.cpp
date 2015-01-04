@@ -1448,13 +1448,13 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_Assembly_browser::test_0001);
     REGISTER_TEST(GUITest_Assembly_browser::test_0002);
     REGISTER_TEST(GUITest_Assembly_browser::test_0004);
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0010, "native separator problem");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0011, "native separator problem");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0012, "native separator problem");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0013, "native separator problem");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0014, "native separator problem");
+    REGISTER_TEST(GUITest_Assembly_browser::test_0010);
+    REGISTER_TEST(GUITest_Assembly_browser::test_0011);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0012, "permission setter issue");
+    REGISTER_TEST(GUITest_Assembly_browser::test_0013);
+    REGISTER_TEST(GUITest_Assembly_browser::test_0014);
     REGISTER_TEST(GUITest_Assembly_browser::test_0015);
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0016, "native separator problem");
+    REGISTER_TEST(GUITest_Assembly_browser::test_0016);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/bowtie2

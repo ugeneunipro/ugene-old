@@ -166,7 +166,7 @@ void ExportCoverageDialog::sl_formatChanged(const QString &format) {
     }
 
     fileName += cbFormat->itemData(cbFormat->currentIndex()).toString() + (chbCompress->isChecked() ? ExportCoverageSettings::COMPRESSED_EXTENSION : "");
-    leFilePath->setText(GUrlUtils::rollFileName(dirPath + QDir::separator() + fileName, "_", QSet<QString>()));
+    leFilePath->setText(QDir::toNativeSeparators(GUrlUtils::rollFileName(dirPath + QDir::separator() + fileName, "_", QSet<QString>())));
 }
 
 void ExportCoverageDialog::initLayout() {
