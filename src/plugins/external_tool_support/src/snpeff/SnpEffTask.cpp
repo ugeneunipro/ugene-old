@@ -93,6 +93,7 @@ void SnpEffTask::prepare(){
 
     ExternalToolLogParser* logParser = new SnpEffParser();
     ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_SNPEFF, args, logParser, settings.outDir);
+    setListenerForTask(etTask);
     etTask->setStandartOutputFile( getResFileUrl() );
     addSubTask(etTask);
 }

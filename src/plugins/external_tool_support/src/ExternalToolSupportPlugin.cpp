@@ -143,6 +143,9 @@
 #include "snpeff/SnpEffSupport.h"
 #include "snpeff/SnpEffWorker.h"
 
+#include "fastqc/FastqcSupport.h"
+#include "fastqc/FastQCWorker.h"
+
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -454,6 +457,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     SnpEffSupport *snpeff = new SnpEffSupport(ET_SNPEFF);
     etRegistry->registerEntry(snpeff);
 
+    //FastQC
+    FastQCSupport *fastqc = new FastQCSupport(ET_FASTQC);
+    etRegistry->registerEntry(fastqc);
+
     if (AppContext::getMainWindow()) {
         ExternalToolSupportAction* formatDBAction= new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(ET_FORMATDB));
         formatDBAction->setObjectName("FormatDB");
@@ -634,6 +641,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     LocalWorkflow::BedGraphToBigWigFactory::init();
     LocalWorkflow::SpadesWorkerFactory::init();
     LocalWorkflow::SnpEffFactory::init();
+    LocalWorkflow::FastQCFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service

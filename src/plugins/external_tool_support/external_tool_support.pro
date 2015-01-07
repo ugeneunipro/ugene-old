@@ -84,6 +84,9 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/cufflinks/CuffmergeWorker.h \
            src/cufflinks/GffreadSupportTask.h \
            src/cufflinks/GffreadWorker.h \
+           src/fastqc/FastqcSupport.h \
+           src/fastqc/FastqcTask.h \
+           src/fastqc/FastqcWorker.h \
            src/java/JavaSupport.h \
            src/macs/MACSSettings.h \
            src/macs/MACSSupport.h \
@@ -248,6 +251,9 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/cufflinks/CuffmergeWorker.cpp \
            src/cufflinks/GffreadSupportTask.cpp \
            src/cufflinks/GffreadWorker.cpp \
+           src/fastqc/FastqcSupport.cpp \
+           src/fastqc/FastqcTask.cpp \
+           src/fastqc/FastqcWorker.cpp \
            src/java/JavaSupport.cpp \
            src/macs/MACSSettings.cpp \
            src/macs/MACSSupport.cpp \

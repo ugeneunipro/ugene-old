@@ -19,21 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_SNPEFF_SUPPORT_H_
-#define _U2_SNPEFF_SUPPORT_H_
+#ifndef _U2_FASTQC_SUPPORT_H_
+#define _U2_FASTQC_SUPPORT_H_
 
 #include <U2Core/ExternalToolRegistry.h>
 
-#define ET_SNPEFF "SnpEff"
+#define ET_FASTQC "FastQC"
 
 namespace U2 {
 
-class SnpEffSupport : public ExternalTool {
+class FastQCSupport : public ExternalTool {
     Q_OBJECT
 public:
-    SnpEffSupport(const QString& name, const QString& path = "");
+    FastQCSupport(const QString& name, const QString& path = "");
 
 };
 
 }//namespace
-#endif // _U2_SNPEFF_SUPPORT_H_
+#endif // _U2_FASTQC_SUPPORT_H_

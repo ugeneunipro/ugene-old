@@ -19,21 +19,58 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_SNPEFF_SUPPORT_H_
-#define _U2_SNPEFF_SUPPORT_H_
+#ifndef _U2_FASTQC_TASK_H_
+#define _U2_FASTQC_TASK_H_
 
-#include <U2Core/ExternalToolRegistry.h>
-
-#define ET_SNPEFF "SnpEff"
+#include <U2Core/Task.h>
+#include <U2Core/ExternalToolRunTask.h>
 
 namespace U2 {
 
-class SnpEffSupport : public ExternalTool {
+
+class FastQCSetting{
+public:
+    FastQCSetting() {}
+
+    QString inputUrl;
+    QString outDir;
+    QString adapters;
+    QString conts;
+};
+
+class FastQCTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
-    SnpEffSupport(const QString& name, const QString& path = "");
+    FastQCTask(const FastQCSetting &settings);
 
+    void prepare();
+    void run();
+
+    const QString& getResult(){return resultUrl;}
+    QString getResFileUrl() const;
+
+protected:
+    QStringList getParameters(U2OpStatus& os) const;
+
+protected:
+    FastQCSetting settings;
+    QString resultUrl;
+};
+
+
+class FastQCParser : public ExternalToolLogParser {
+public:
+    FastQCParser();
+
+    void parseOutput(const QString& partOfLog);
+    void parseErrOutput(const QString& partOfLog);
+    int getProgress();
+
+private:
+    QString lastErrLine;
+    int progress;
 };
 
 }//namespace
-#endif // _U2_SNPEFF_SUPPORT_H_
+
+#endif // _U2_FASTQC_TASK_H_
