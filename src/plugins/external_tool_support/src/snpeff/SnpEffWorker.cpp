@@ -45,6 +45,8 @@
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
 
+#include "java/JavaSupport.h"
+
 #include "SnpEffSupport.h"
 #include "SnpEffTask.h"
 
@@ -88,7 +90,6 @@ QString SnpEffPrompter::composeRichDoc() {
 ////////////////////////////////////////
 //SnpEffFactory
 void SnpEffFactory::init() {
-    //init data path
     Descriptor desc( ACTOR_ID, SnpEffWorker::tr("SnpEff annotation and filtration"),
         SnpEffWorker::tr("Annotates and filters variations with SnpEff.") );
 
@@ -202,14 +203,12 @@ void SnpEffFactory::init() {
         }
         {
             QVariantMap genomeMap;
-            genomeMap["athaliana130"] = "athaliana130";
-            genomeMap["dm5.48"] = "dm5.48";
-            genomeMap["hg19"] = "hg19";
-            genomeMap["hg38"] = "hg38";
-            genomeMap["NC_000913"] = "NC_000913";
-            genomeMap["WS241"] = "WS241";
-
-
+            genomeMap["Arabidopsis Thaliana (athaliana130)"] = "athaliana130";
+            genomeMap["Drosophila Melanogaster (dm5.48)"] = "dm5.48";
+            genomeMap["Homo sapiens (hg19)"] = "hg19";
+            genomeMap["Homo sapiens (hg38)"] = "hg38";
+            genomeMap["Ecoli K12 MG1655 (NC_000913)"] = "NC_000913";
+            genomeMap["C. elegans (WS241)"] = "WS241";
             delegates[SnpEffWorker::GENOME] = new ComboBoxEditableDelegate(genomeMap);
         }
 
@@ -218,6 +217,7 @@ void SnpEffFactory::init() {
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new SnpEffPrompter());
+    proto->addExternalTool(ET_JAVA);
     proto->addExternalTool(ET_SNPEFF);
 
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CALL_VARIATIONS(), proto);
@@ -262,7 +262,8 @@ Task * SnpEffWorker::tick() {
         setting.lof = getValue<bool>(LOF);
         setting.motif = getValue<bool>(MOTIF);
 
-        Task *t = new SnpEffTask (setting);
+        SnpEffTask *t = new SnpEffTask (setting);
+        t->addListeners(createLogListeners());
         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
         return t;
     }
@@ -310,11 +311,6 @@ void SnpEffWorker::sl_taskFinished(Task *task) {
     CHECK(!summary.isEmpty(), );
     monitor()->addOutputFile(summary, getActorId());
 }
-
-QString SnpEffWorker::getTargetName (const QString & /*fileUrl*/, const QString & /*outDir*/){
-    return "";
-}
-
 
 QString SnpEffWorker::takeUrl() {
     const Message inputMessage = getMessageAndSetupScriptValues(inputUrlPort);

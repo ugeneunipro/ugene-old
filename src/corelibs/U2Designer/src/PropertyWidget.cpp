@@ -215,16 +215,21 @@ QVariant ComboBoxEditableWidget::value() {
 void ComboBoxEditableWidget::setValue(const QVariant &value) {
     int idx = comboBox->findData(value);
     if (idx == -1){
-        if (customIdx == -1){
-            comboBox->addItem(value.toString(), value);
-            customIdx = comboBox->findData(value);
+        //try by text
+        idx = comboBox->findText(value.toString());
+        if (idx == -1){
+            if (customIdx == -1){
+                comboBox->addItem(value.toString(), value);
+                customIdx = comboBox->findData(value);
+            }else{
+                comboBox->setItemText(customIdx, value.toString());
+                comboBox->setItemData(customIdx, value);
+            }
+            comboBox->setCurrentIndex(customIdx);
         }else{
-            comboBox->setItemText(customIdx, value.toString());
-            comboBox->setItemData(customIdx, value);
+            comboBox->setCurrentIndex(idx);
         }
-        comboBox->setCurrentIndex(customIdx);
     }else{
-        idx = comboBox->findData(value);
         comboBox->setCurrentIndex(idx);
     }
     sl_valueChanged(0);

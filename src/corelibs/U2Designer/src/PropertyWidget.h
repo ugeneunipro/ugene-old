@@ -141,15 +141,15 @@ public:
 signals:
     void valueChanged(const QString &value);
 
-    protected slots:
-        virtual void sl_edit(const QString& val);
+protected slots:
+    virtual void sl_edit(const QString& val);
 
 protected:
     QComboBox *comboBox;
     int customIdx;
 
-    private slots:
-        void sl_valueChanged(int index);
+private slots:
+    void sl_valueChanged(int index);
 };
 
 

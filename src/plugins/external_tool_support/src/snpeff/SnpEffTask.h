@@ -45,7 +45,7 @@ public:
 
 };
 
-class SnpEffTask : public Task {
+class SnpEffTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     SnpEffTask(const SnpEffSetting &settings);
@@ -58,8 +58,8 @@ public:
     QString getResFileUrl();
 
 protected:
-    QString getDataPath();
-    QStringList getParameters(U2OpStatus& os);
+    QString getDataPath() const;
+    QStringList getParameters(U2OpStatus& os) const;
 
 protected:
     SnpEffSetting settings;

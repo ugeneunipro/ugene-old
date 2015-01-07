@@ -39,7 +39,8 @@ JavaSupport::JavaSupport(const QString &name, const QString &path)
     validMessage = "java version \"\\d+.[789]";
     validationArguments << "-version";
 
-    description += tr("Java Platform lets you develop and deploy Java applications on desktops and servers.<br><i>(Requires Java 1.7 or higher)</i>");
+    description += tr("Java Platform lets you develop and deploy Java applications on desktops and servers.<br><i>(Requires Java 1.7 or higher)</i>.<br>"
+                      "Java can be freely downloaded on the official web-site: https://www.java.com/en/download/");
     versionRegExp = QRegExp("(\\d+.\\d+.\\d+)");
     toolKitName="Java";
 
@@ -51,7 +52,12 @@ JavaSupport::JavaSupport(const QString &name, const QString &path)
 void JavaSupport::sl_toolValidationStatusChanged(bool isValid) {
     Q_UNUSED(isValid);
     ScriptingTool::onPathChanged(this, QStringList() 
-    //<< "-Xmx6G" //default memory pool is 2GB. This command makes it 6Gb
+
+     #ifdef Q_OS_WIN
+     #else
+     << "-Xmx6G" //default memory pool is 2GB. This command makes it 6Gb
+     #endif
+
     << "-jar");
 }
 

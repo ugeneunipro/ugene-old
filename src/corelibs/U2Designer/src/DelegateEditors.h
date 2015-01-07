@@ -237,8 +237,8 @@ public:
 signals:
     void si_valueChanged( const QString & newVal ) const;
 
-    private slots:
-        void sl_valueChanged(const QString &newVal);
+private slots:
+    void sl_valueChanged(const QString &newVal);
 
 protected:
     QVariantMap items;

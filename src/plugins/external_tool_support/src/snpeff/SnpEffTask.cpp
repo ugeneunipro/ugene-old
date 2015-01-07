@@ -53,10 +53,10 @@ void SnpEffParser::parseErrOutput( const QString& partOfLog ){
     lastPartOfLog=partOfLog.split(QRegExp("(\n|\r)"));
     lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
     lastErrLine=lastPartOfLog.takeLast();
-    foreach(QString buf, lastPartOfLog){
-            if(buf.contains("ERROR", Qt::CaseInsensitive)){
-                    coreLog.error("SnpEff: " + buf);
-            }
+    foreach(const QString& buf, lastPartOfLog){
+        if(buf.contains("ERROR", Qt::CaseInsensitive)){
+            coreLog.error("SnpEff: " + buf);
+        }
     }
 }
 
@@ -64,7 +64,7 @@ void SnpEffParser::parseErrOutput( const QString& partOfLog ){
 //////////////////////////////////////////////////////////////////////////
 //SnpEffTask
 SnpEffTask::SnpEffTask(const SnpEffSetting &settings)
-:Task(QString("snpEff for %1").arg(settings.inputUrl), TaskFlags_FOSE_COSC)
+:ExternalToolSupportTask(QString("snpEff for %1").arg(settings.inputUrl), TaskFlags_FOSE_COSC)
 ,settings(settings)
 {
 
@@ -100,7 +100,7 @@ void SnpEffTask::prepare(){
 void SnpEffTask::run(){
     CHECK_OP(stateInfo, );
 
-    const QFileInfo resFile = QFileInfo(getResFileUrl());
+    const QFileInfo resFile(getResFileUrl());
     if (!resFile.exists()) {
         setError("Result file does not exist: " + resFile.absoluteFilePath());
         return ;
@@ -110,25 +110,25 @@ void SnpEffTask::run(){
 
 QString SnpEffTask::getSummaryUrl(){
     QString res = "";
-    const QFileInfo resFile = QFileInfo(settings.outDir + "/" + SUMMARY_FILE);
+    const QFileInfo resFile = QFileInfo(settings.outDir + QDir::separator() + SUMMARY_FILE);
     if (!resFile.exists()) {
         return res;
     }
-    res = settings.outDir + "/" + SUMMARY_FILE;
+    res = settings.outDir + QDir::separator() + SUMMARY_FILE;
     return res;
 }
 
 QString SnpEffTask::getResFileUrl(){
     QString res = "";
-    res = settings.outDir + "/" + RES_FILE_BASE + "." + settings.outFormat;
+    res = settings.outDir + QDir::separator() + RES_FILE_BASE + "." + settings.outFormat;
     return res;
 }
 
-QString SnpEffTask::getDataPath(){
-    return AppContext::getAppSettings()->getUserAppsSettings()->getDownloadDirPath() + "/" + "snpeff_data";
+QString SnpEffTask::getDataPath() const{
+    return AppContext::getAppSettings()->getUserAppsSettings()->getDownloadDirPath() + QDir::separator() + "snpeff_data";
 }
 
-QStringList SnpEffTask::getParameters(U2OpStatus & /*os*/){
+QStringList SnpEffTask::getParameters(U2OpStatus & /*os*/) const{
     QStringList res;
 
     res << QString("-dataDir");
