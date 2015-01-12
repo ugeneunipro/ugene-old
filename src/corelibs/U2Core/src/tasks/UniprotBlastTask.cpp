@@ -161,7 +161,14 @@ void ReplyHandler::sl_replyFinished() {
 
 void ReplyHandler::sl_onError(QNetworkReply::NetworkError error) {
     timer.stop();
-    os->setError(tr("Network request error %1").arg(error));
+    QNetworkReply *netReply = qobject_cast<QNetworkReply *>(sender());
+    QString errorText;
+    if (Q_LIKELY(NULL != netReply)) {
+        errorText = netReply->errorString();
+    } else {
+        errorText = tr("undefined error (code %1)").arg(error);
+    }
+    os->setError(tr("Network error: %1").arg(errorText));
     emit si_finish();
 }
 

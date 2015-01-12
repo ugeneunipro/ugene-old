@@ -354,7 +354,14 @@ void ConvertDasIdTask::sl_replyFinished(QNetworkReply* reply) {
 }
 
 void ConvertDasIdTask::sl_onError(QNetworkReply::NetworkError error) {
-    stateInfo.setError(QString("NetworkReply error %1").arg(error));
+    QNetworkReply *netReply = qobject_cast<QNetworkReply *>(sender());
+    QString errorText;
+    if (Q_LIKELY(NULL != netReply)) {
+        errorText = netReply->errorString();
+    } else {
+        errorText = tr("undefined error (code %1)").arg(error);
+    }
+    stateInfo.setError(QString("Network error: %1").arg(errorText));
     loop->exit();
 }
 
@@ -480,7 +487,14 @@ void GetDasIdsBySequenceTask::sl_replyFinished(QNetworkReply* reply) {
 }
 
 void GetDasIdsBySequenceTask::sl_onError(QNetworkReply::NetworkError error) {
-    stateInfo.setError(QString("NetworkReply error %1").arg(error));
+    QNetworkReply *netReply = qobject_cast<QNetworkReply *>(sender());
+    QString errorText;
+    if (Q_LIKELY(NULL != netReply)) {
+        errorText = netReply->errorString();
+    } else {
+        errorText = tr("undefined error (code %1)").arg(error);
+    }
+    stateInfo.setError(QString("Network error: %1").arg(errorText));
     loop->exit();
 }
 

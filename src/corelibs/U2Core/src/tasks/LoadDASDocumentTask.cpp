@@ -345,7 +345,14 @@ void LoadDasObjectTask::sl_replyFinished( QNetworkReply* reply ) {
 }
 
 void LoadDasObjectTask::sl_onError( QNetworkReply::NetworkError error ){
-    stateInfo.setError(QString("NetworkReply error %1").arg(error));
+    QNetworkReply *netReply = qobject_cast<QNetworkReply *>(sender());
+    QString errorText;
+    if (Q_LIKELY(NULL != netReply)) {
+        errorText = netReply->errorString();
+    } else {
+        errorText = tr("undefined error (code %1)").arg(error);
+    }
+    stateInfo.setError(QString("Network error: %1").arg(errorText));
     loop->exit();
 }
 
