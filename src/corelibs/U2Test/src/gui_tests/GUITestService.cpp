@@ -227,7 +227,18 @@ GUITests GUITestService::postChecks() {
     GUITestBase* tb = AppContext::getGUITestBase();
     SAFE_POINT(NULL != tb,"",GUITests());
 
-    GUITests additionalChecks = tb->getTests(GUITestBase::PostAdditional);
+    GUITests additionalChecks = tb->getTests(GUITestBase::PostAdditionalChecks);
+    SAFE_POINT(additionalChecks.size()>0,"",GUITests());
+
+    return additionalChecks;
+}
+
+GUITests GUITestService::postActions() {
+
+    GUITestBase* tb = AppContext::getGUITestBase();
+    SAFE_POINT(NULL != tb,"",GUITests());
+
+    GUITests additionalChecks = tb->getTests(GUITestBase::PostAdditionalActions);
     SAFE_POINT(additionalChecks.size()>0,"",GUITests());
 
     return additionalChecks;
@@ -243,7 +254,8 @@ void GUITestService::sl_allStartUpPluginsLoaded() {
 void GUITestService::runAllGUITests() {
 
     GUITests initTests = preChecks();
-    GUITests postTests = postChecks();
+    GUITests postChecksTests = postChecks();
+    GUITests postActiosTests = postActions();
 
     GUITests tests = AppContext::getGUITestBase()->getTests();
     SAFE_POINT(false == tests.isEmpty(),"",);
@@ -276,8 +288,14 @@ void GUITestService::runAllGUITests() {
         t->run(os);
         log.trace("GTRUNNER - runAllGUITests - finished running test " + testName);
 
+        foreach(GUITest* t, postChecksTests) {
+            if (t) {
+                t->run(os);
+            }
+        }
+
         TaskStateInfo os2;
-        foreach(GUITest* t, postTests) {
+        foreach(GUITest* t, postActiosTests) {
             if (t) {
                 t->run(os2);
             }
@@ -324,6 +342,7 @@ void GUITestService::runGUITest(GUITest* t) {
         os.setError("GUITestService __ Test not found");
     }
     tests.append(t);
+    tests.append(postChecks());
 
     clearSandbox();    
 
@@ -345,7 +364,7 @@ void GUITestService::runGUITest(GUITest* t) {
 #endif
     originalPixmap.save(GUITest::screenshotDir + t->getName() + ".jpg");
 
-    foreach(GUITest* t, postChecks()){
+    foreach(GUITest* t, postActions()){
         TaskStateInfo os1;
         t->run(os1);
     }
@@ -489,7 +508,7 @@ void GUITestService::sl_testTimeOut(){
 #endif
     originalPixmap.save(GUITest::screenshotDir + testName + ".jpg");
 
-    foreach(GUITest* t, postChecks()){
+    foreach(GUITest* t, postActions()){
         TaskStateInfo os1;
         t->run(os1);
     }

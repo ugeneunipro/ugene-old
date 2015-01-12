@@ -61,6 +61,7 @@ protected:
 
     static GUITests preChecks();
     static GUITests postChecks();
+    static GUITests postActions();
 
 protected slots:
     void sl_allStartUpPluginsLoaded();

@@ -57,9 +57,12 @@ GUIDialogWaiter::~GUIDialogWaiter() {
 }
 
 void GUIDialogWaiter::finishWaiting() {
-
     delete timer; timer = NULL;
     delete runnable; runnable = NULL;
+}
+
+void GUIDialogWaiter::stopTimer(){
+    timer->stop();
 }
 
 bool GUIDialogWaiter::isExpectedName(const QString& widgetObjectName, const QString& expectedObjectName) {
@@ -222,6 +225,9 @@ void GTUtilsDialog::checkAllFinished(U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 void GTUtilsDialog::cleanup(U2OpStatus &os, CleanupSettings s) {
+    foreach (GUIDialogWaiter* waiter, pool) {
+        waiter->stopTimer();
+    }
 
     if (s == FailOnUnfinished) {
         checkAllFinished(os);

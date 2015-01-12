@@ -72,6 +72,7 @@ public:
     virtual ~GUIDialogWaiter();
 
     WaitSettings getSettings(){return settings;}
+    void stopTimer();
     static const int timerPeriod = 100;
 
     bool hadRun;

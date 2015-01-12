@@ -128,16 +128,16 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0000){
-    Q_UNUSED(os);
+    GTUtilsDialog::cleanup(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(post_test_0001) {
     QWidget* w = QApplication::activeModalWidget();
     while(w!=NULL){
         w = QApplication::activeModalWidget();
         w->close();
     }
-}
 
-GUI_TEST_CLASS_DEFINITION(post_test_0001) {
-    GTUtilsDialog::cleanup(os);
     GTClipboard::text(os);
 //#ifdef Q_OS_WIN
     TaskScheduler* scheduller = AppContext::getTaskScheduler();

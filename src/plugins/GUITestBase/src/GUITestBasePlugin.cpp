@@ -1771,10 +1771,11 @@ void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
         guiTestBase->registerTest(new GUITest_initial_checks::test_0006, GUITestBase::PreAdditional);
         guiTestBase->registerTest(new GUITest_initial_checks::test_0007, GUITestBase::PreAdditional);
 
-        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0000, GUITestBase::PostAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0001, GUITestBase::PostAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0002, GUITestBase::PostAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0003, GUITestBase::PostAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0000, GUITestBase::PostAdditionalChecks);
+
+        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0001, GUITestBase::PostAdditionalActions);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0002, GUITestBase::PostAdditionalActions);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0003, GUITestBase::PostAdditionalActions);
         //guiTestBase->registerTest(new GUITest_initial_checks::post_test_0004, GUITestBase::PostAdditional);
     }
 }

@@ -8,7 +8,8 @@ GUITestBase::~GUITestBase() {
 
     qDeleteAll(tests);
     qDeleteAll(preAdditional);
-    qDeleteAll(postAdditional);
+    qDeleteAll(postAdditionalActions);
+    qDeleteAll(postAdditionalChecks);
 }
 
 bool GUITestBase::registerTest(GUITest *test, TestType testType) {
@@ -59,8 +60,8 @@ QString GUITestBase::getNextTestName(TestType testType) {
 }
 
 GUITest *GUITestBase::findTest(const QString &name, TestType testType) {
-
-    return getMap(testType).value(name);
+    GUITestMap map = getMap(testType);
+    return map.value(name);
 }
 
 GUITest *GUITestBase::getTest(const QString &name, TestType testType) {
@@ -71,8 +72,12 @@ GUITest *GUITestBase::getTest(const QString &name, TestType testType) {
 GUITestMap& GUITestBase::getMap(TestType testType) {
 
     switch(testType) {
-    case PreAdditional: return preAdditional;
-    case PostAdditional: return postAdditional;
+    case PreAdditional:
+        return preAdditional;
+    case PostAdditionalChecks:
+        return postAdditionalChecks;
+    case PostAdditionalActions:
+        return postAdditionalActions;
 
     default:
     case Normal: return tests;
