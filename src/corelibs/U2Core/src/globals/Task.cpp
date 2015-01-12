@@ -57,6 +57,7 @@ void Task::setTaskName(const QString& _taskName) {
 }
 
 void Task::cancel() {
+    CHECK(!isFinished(), );
     foreach(Task* t, subtasks) {
         if (!t->isFinished()) {
             t->cancel();

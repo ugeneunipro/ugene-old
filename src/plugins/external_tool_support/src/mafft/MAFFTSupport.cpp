@@ -189,6 +189,7 @@ void MAFFTSupportContext::sl_align_with_MAFFT() {
     }
 
     MAFFTSupportTask* mAFFTSupportTask = new MAFFTSupportTask(alignmentObject->getMAlignment(), GObjectReference(alignmentObject), settings);
+    connect(alignmentObject, SIGNAL(destroyed()), mAFFTSupportTask, SLOT(cancel()));
     AppContext::getTaskScheduler()->registerTopLevelTask(mAFFTSupportTask);
 
     // Turn off rows collapsing

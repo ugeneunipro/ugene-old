@@ -194,14 +194,17 @@ void KalignMSAEditorContext::sl_align() {
         return;
     }
 
-    AlignGObjectTask * kalignTask = NULL;
-    kalignTask = new KalignGObjectRunFromSchemaTask(obj, s);
+    AlignGObjectTask * kalignTask = new KalignGObjectRunFromSchemaTask(obj, s);
+    Task *alignTask = NULL;
 
     if (dlg.translateToAmino()) {
-        AppContext::getTaskScheduler()->registerTopLevelTask(new AlignInAminoFormTask(obj, kalignTask,dlg.getTranslationId()));
+        alignTask = new AlignInAminoFormTask(obj, kalignTask, dlg.getTranslationId());
     } else {
-        AppContext::getTaskScheduler()->registerTopLevelTask(kalignTask);
+        alignTask = kalignTask;
     }
+
+    connect(obj, SIGNAL(destroyed()), alignTask, SLOT(cancel()));
+    AppContext::getTaskScheduler()->registerTopLevelTask(alignTask);
 
     // Turn off rows collapsing
     ed->resetCollapsibleModel();

@@ -163,7 +163,7 @@ SimpleMSAWorkflow4GObjectTask::~SimpleMSAWorkflow4GObjectTask() {
 void SimpleMSAWorkflow4GObjectTask::prepare() {
     CHECK_EXT(!obj.isNull(), setError(tr("Object '%1' removed").arg(docName)), );
 
-    lock = new StateLock(getTaskName(), StateLockFlag_LiveLock);
+    lock = new StateLock(getTaskName());
     obj->lockState(lock);
 }
 

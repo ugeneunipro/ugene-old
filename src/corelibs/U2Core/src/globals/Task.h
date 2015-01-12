@@ -205,9 +205,6 @@ public:
     // After task reporting succeeds, it gets State_Finished state
     virtual ReportResult report() {return ReportResult_Finished;}
 
-    // Set's cancelFlag to true. Does not wait for task to be stopped
-    void cancel();
-
     bool isCanceled() const {return stateInfo.cancelFlag;}
 
     // Returns subtasks of the task. Task must prepare it's subtask on prepare() call and can't change them latter.
@@ -320,6 +317,10 @@ public:
     int getTimeOut() const { return timeInfo.timeOut;}
 
     void addTaskResource(const TaskResourceUsage& r);
+
+public slots:
+    // Set's cancelFlag to true. Does not wait for task to be stopped
+    void cancel();
 
 signals:
     void si_subtaskAdded(Task* sub);

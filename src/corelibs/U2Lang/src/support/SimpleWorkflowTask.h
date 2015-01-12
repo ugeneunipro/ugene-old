@@ -104,7 +104,7 @@ public:
 
 private:
     QPointer<MAlignmentObject>  obj;
-    StateLock*                  lock;
+    QPointer<StateLock>         lock;
     QString                     docName;
     SimpleMSAWorkflowTaskConfig conf;
     SimpleInOutWorkflowTask*    runWorkflowTask;

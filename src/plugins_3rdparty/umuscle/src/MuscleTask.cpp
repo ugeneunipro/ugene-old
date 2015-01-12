@@ -398,7 +398,7 @@ void MuscleGObjectTask::prepare() {
         return;
     }
 
-    lock = new StateLock(MUSCLE_LOCK_REASON, StateLockFlag_LiveLock);
+    lock = new StateLock(MUSCLE_LOCK_REASON);
     obj->lockState(lock);
     muscleTask = new MuscleTask(obj->getMAlignment(), config);
 
@@ -410,9 +410,10 @@ Task::ReportResult MuscleGObjectTask::report() {
         obj->unlockState(lock);
         delete lock;
         lock = NULL;
-    }
-    else {
-        stateInfo.setError("MAlignment object has been changed");
+    } else {
+        if (!stateInfo.isCoR()) {
+            stateInfo.setError(tr("MAlignment object has been changed"));
+        }
         return ReportResult_Finished;
     }
     propagateSubtaskError();

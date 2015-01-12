@@ -206,14 +206,18 @@ void MuscleMSAEditorContext::sl_align() {
     }
     
     
-    AlignGObjectTask* muscleTask = NULL;
-    muscleTask = new MuscleGObjectRunFromSchemaTask(obj, s);
+    AlignGObjectTask* muscleTask = new MuscleGObjectRunFromSchemaTask(obj, s);
+    Task *alignTask = NULL;
+
     if (dlg.translateToAmino()) {
         QString trId = dlg.getTranslationId();
-        AppContext::getTaskScheduler()->registerTopLevelTask(new AlignInAminoFormTask(obj, muscleTask, trId));
+        alignTask = new AlignInAminoFormTask(obj, muscleTask, trId);
     } else {
-        AppContext::getTaskScheduler()->registerTopLevelTask(muscleTask);
+        alignTask = muscleTask;
     }
+
+    connect(obj, SIGNAL(destroyed()), alignTask, SLOT(cancel()));
+    AppContext::getTaskScheduler()->registerTopLevelTask(alignTask);
 
     // Turn off rows collapsing
     ed->resetCollapsibleModel();
@@ -243,7 +247,10 @@ void MuscleMSAEditorContext::sl_alignSequencesToProfile() {
     if (lod.url.isEmpty()) {
         return;
     }
-    AppContext::getTaskScheduler()->registerTopLevelTask(new MuscleAddSequencesToProfileTask(obj, lod.url, MuscleAddSequencesToProfileTask::Sequences2Profile));
+
+    Task *alignTask = new MuscleAddSequencesToProfileTask(obj, lod.url, MuscleAddSequencesToProfileTask::Sequences2Profile);
+    connect(obj, SIGNAL(destroyed()), alignTask, SLOT(cancel()));
+    AppContext::getTaskScheduler()->registerTopLevelTask(alignTask);
 
     // Turn off rows collapsing
     ed->resetCollapsibleModel();
@@ -271,7 +278,10 @@ void MuscleMSAEditorContext::sl_alignProfileToProfile() {
     if (lod.url.isEmpty()) {
         return;
     }
-    AppContext::getTaskScheduler()->registerTopLevelTask(new MuscleAddSequencesToProfileTask(obj, lod.url, MuscleAddSequencesToProfileTask::Profile2Profile));
+
+    Task *alignTask = new MuscleAddSequencesToProfileTask(obj, lod.url, MuscleAddSequencesToProfileTask::Profile2Profile);
+    connect(obj, SIGNAL(destroyed()), alignTask, SLOT(cancel()));
+    AppContext::getTaskScheduler()->registerTopLevelTask(alignTask);
 
     // Turn off rows collapsing
     ed->resetCollapsibleModel();

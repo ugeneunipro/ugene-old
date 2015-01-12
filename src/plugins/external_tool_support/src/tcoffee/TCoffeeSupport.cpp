@@ -196,6 +196,7 @@ void TCoffeeSupportContext::sl_align_with_TCoffee() {
     }
 
     TCoffeeSupportTask* tCoffeeSupportTask = new TCoffeeSupportTask(obj->getMAlignment(), GObjectReference(obj), settings);
+    connect(obj, SIGNAL(destroyed()), tCoffeeSupportTask, SLOT(cancel()));
     AppContext::getTaskScheduler()->registerTopLevelTask(tCoffeeSupportTask);
 
     // Turn off rows collapsing
