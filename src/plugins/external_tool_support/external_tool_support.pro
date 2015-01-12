@@ -84,6 +84,8 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/cufflinks/CuffmergeWorker.h \
            src/cufflinks/GffreadSupportTask.h \
            src/cufflinks/GffreadWorker.h \
+           src/cutadapt/CutadaptSupport.h \
+           src/cutadapt/CutadaptWorker.h \
            src/fastqc/FastqcSupport.h \
            src/fastqc/FastqcTask.h \
            src/fastqc/FastqcWorker.h \
@@ -251,6 +253,8 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/cufflinks/CuffmergeWorker.cpp \
            src/cufflinks/GffreadSupportTask.cpp \
            src/cufflinks/GffreadWorker.cpp \
+           src/cutadapt/CutadaptSupport.cpp \
+           src/cutadapt/CutadaptWorker.cpp \
            src/fastqc/FastqcSupport.cpp \
            src/fastqc/FastqcTask.cpp \
            src/fastqc/FastqcWorker.cpp \

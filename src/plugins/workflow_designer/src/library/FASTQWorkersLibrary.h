@@ -156,8 +156,6 @@ protected:
     QStringList getParameters(U2OpStatus& os);
 };
 
-
-
 } //LocalWorkflow
 } //U2
 

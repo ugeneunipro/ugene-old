@@ -135,6 +135,9 @@
 #include "bigWigTools/BigWigSupport.h"
 #include "bigWigTools/BedGraphToBigWigWorker.h"
 
+#include "cutadapt/CutadaptSupport.h"
+#include "cutadapt/CutadaptWorker.h"
+
 #include "spades/SpadesSupport.h"
 #include "spades/SpadesSettingsWidget.h"
 #include "spades/SpadesTask.h"
@@ -404,6 +407,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     BedtoolsSupport* bedtoolsSupport = new BedtoolsSupport(ET_BEDTOOLS);
     etRegistry->registerEntry(bedtoolsSupport);
 
+    //cutadapt
+    CutadaptSupport* cutadaptSupport = new CutadaptSupport(ET_CUTADAPT);
+    etRegistry->registerEntry(cutadaptSupport);
+
     //bigwig
     BigWigSupport* bigwigSupport = new BigWigSupport(ET_BIGWIG);
     etRegistry->registerEntry(bigwigSupport);
@@ -642,6 +649,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     LocalWorkflow::SpadesWorkerFactory::init();
     LocalWorkflow::SnpEffFactory::init();
     LocalWorkflow::FastQCFactory::init();
+    LocalWorkflow::CutAdaptFastqWorkerFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service
