@@ -172,6 +172,7 @@ public:
     void setReference(qint64 sequenceId);
     qint64 getReferenceRowId() const { return snp.seqId; }
     QString getReferenceRowName() const;
+    void updateReference();
 
     PairwiseAlignmentWidgetsSettings* getPairwiseAlignmentWidgetsSettings() const { return pairwiseAlignmentWidgetsSettings; }
 

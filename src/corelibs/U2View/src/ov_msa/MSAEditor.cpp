@@ -800,6 +800,12 @@ void MSAEditor::setReference(qint64 sequenceId) {
     //REDRAW OTHER WIDGETS
 }
 
+void MSAEditor::updateReference(){
+    if(msaObject->getRowPosById(snp.seqId) == -1){
+        setReference(MAlignmentRow::invalidRowId());
+    }
+}
+
 QString MSAEditor::getReferenceRowName() const {
     const MAlignment alignment = getMSAObject()->getMAlignment();
     U2OpStatusImpl os;

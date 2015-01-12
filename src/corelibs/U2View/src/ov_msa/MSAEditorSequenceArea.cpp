@@ -1680,6 +1680,8 @@ void MSAEditorSequenceArea::sl_alignmentChanged(const MAlignment&, const MAlignm
         updateCollapsedGroups(modInfo);
     }
 
+    editor->updateReference();
+
     //todo: set in one method!
     setFirstVisibleBase(qBound(0, startPos, aliLen-countWidthForBases(false)));
     setFirstVisibleSequence(qBound(0, startSeq, nSeq - countHeightForSequences(false)));
