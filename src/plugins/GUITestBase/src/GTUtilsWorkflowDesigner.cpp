@@ -338,7 +338,14 @@ WorkflowProcessItem* GTUtilsWorkflowDesigner::getWorker(U2OpStatus &os,QString i
         QGraphicsTextItem* textItemO = qobject_cast<QGraphicsTextItem*>(itObj);
         if (textItemO) {
             QString text = textItemO->toPlainText();
-            if (text.contains(itemName,Qt::CaseInsensitive)) {
+
+            int num = text.indexOf('\n');
+            if(num == -1){
+                continue;
+            }
+            text = text.left(num);
+
+            if (text == itemName) {
                 if(qgraphicsitem_cast<WorkflowProcessItem*>(it->parentItem()->parentItem()))
                     return (qgraphicsitem_cast<WorkflowProcessItem*>(it->parentItem()->parentItem()));
             }
@@ -379,22 +386,24 @@ QList<WorkflowPortItem*> GTUtilsWorkflowDesigner::getPorts(U2OpStatus &os, Workf
 #define GT_METHOD_NAME "getItemRect"
 QRect GTUtilsWorkflowDesigner::getItemRect(U2OpStatus &os,QString itemName){
 //TODO: support finding items when there are several similar workers in scheme
-    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
-    GT_CHECK_RESULT(sceneView !=NULL, "scene view not found", QRect());
-    QList<QGraphicsItem *> items = sceneView->items();
+    WorkflowProcessItem* w = getWorker(os, itemName);
+    return GTGraphicsItem::getGraphicsItemRect(os, w);
+//    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+//    GT_CHECK_RESULT(sceneView !=NULL, "scene view not found", QRect());
+//    QList<QGraphicsItem *> items = sceneView->items();
 
-    foreach(QGraphicsItem* it, items) {
-        QGraphicsObject *itObj = it->toGraphicsObject();
+//    foreach(QGraphicsItem* it, items) {
+//        QGraphicsObject *itObj = it->toGraphicsObject();
 
-        QGraphicsTextItem* textItemO = qobject_cast<QGraphicsTextItem*>(itObj);
-        if (textItemO) {
-            QString text = textItemO->toPlainText();
-            if (text.contains(itemName,Qt::CaseInsensitive)) {
-                return GTGraphicsItem::getGraphicsItemRect(os, it);
-            }
-        }
-    }
-    return QRect();
+//        QGraphicsTextItem* textItemO = qobject_cast<QGraphicsTextItem*>(itObj);
+//        if (textItemO) {
+//            QString text = textItemO->toPlainText();
+//            if (text.contains(itemName,Qt::CaseInsensitive)) {
+//                return GTGraphicsItem::getGraphicsItemRect(os, it);
+//            }
+//        }
+//    }
+//    return QRect();
 }
 #undef GT_METHOD_NAME
 

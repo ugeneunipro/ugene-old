@@ -84,6 +84,7 @@ void GUIDialogWaiter::checkDialogPool(){
 
 #define GT_METHOD_NAME "checkDialog"
 void GUIDialogWaiter::checkDialog() {
+    try{
     QWidget *widget = NULL;
     GT_CHECK(runnable != NULL, "Runnable is NULL");
 
@@ -134,6 +135,10 @@ void GUIDialogWaiter::checkDialog() {
             GT_CHECK(false, "TIMEOUT, waiterId = " + QString::number(waiterId));
         }
     }
+
+    }
+    catch(U2OpStatus *){}
+
 }
 #undef GT_METHOD_NAME
 
