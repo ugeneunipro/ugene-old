@@ -48,10 +48,10 @@
 #include "java/JavaSupport.h"
 #include "perl/PerlSupport.h"
 
-#include "FastQCSupport.h"
-#include "FastQCTask.h"
+#include "FastqcSupport.h"
+#include "FastqcTask.h"
 
-#include "FastQCWorker.h"
+#include "FastqcWorker.h"
 
 namespace U2 {
 namespace LocalWorkflow {

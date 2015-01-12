@@ -21,8 +21,8 @@
 
 #include <QtCore/QDir>
 
-#include "FastQCSupport.h"
-#include "FastQCTask.h"
+#include "FastqcSupport.h"
+#include "FastqcTask.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>

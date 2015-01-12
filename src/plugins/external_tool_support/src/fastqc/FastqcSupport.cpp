@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "FastQCSupport.h"
+#include "FastqcSupport.h"
 #include "java/JavaSupport.h"
 #include "perl/PerlSupport.h"
 

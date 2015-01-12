@@ -144,7 +144,7 @@
 #include "snpeff/SnpEffWorker.h"
 
 #include "fastqc/FastqcSupport.h"
-#include "fastqc/FastQCWorker.h"
+#include "fastqc/FastqcWorker.h"
 
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
