@@ -147,8 +147,8 @@ private:
     QVariant getObjectDecorationData(GObject *obj, bool itemIsEnabled) const;
     QVariant getObjectTextColorData(GObject *obj) const;
 
-    bool setFolderData(Folder *folder, const QString &newName);
-    bool setObjectData(GObject *obj, const QString &newName);
+    QModelIndex setFolderData(Folder *folder, const QString &newName);
+    QModelIndex setObjectData(GObject *obj, const QString &newName);
 
     void insertFolder(Document *doc, const QString &path);
     void insertFolderInRecycleBin(Document *doc, const QString &path);

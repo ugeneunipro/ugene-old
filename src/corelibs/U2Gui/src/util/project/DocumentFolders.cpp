@@ -45,6 +45,18 @@ DocumentFoldersUpdate::DocumentFoldersUpdate(const U2DbiRef &dbiRef, U2OpStatus 
     folders = con.oDbi->getFolders(os);
     CHECK_OP(os, );
 
+    if (!folders.isEmpty() && folders.first() != ProjectUtils::RECYCLE_BIN_FOLDER_PATH) {
+        for (int i = folders.size() - 1; i >= 0; --i) {
+            const QString currentPath = folders[i];
+            if (currentPath.startsWith(ProjectUtils::RECYCLE_BIN_FOLDER_PATH)) {
+                folders.move(i++, 0);
+                if (currentPath.length() == ProjectUtils::RECYCLE_BIN_FOLDER_PATH.length()) {
+                    break;
+                }
+            }
+        }
+    }
+
     QHash<U2Object, QString>::ConstIterator i = u2objectFolders.constBegin();
     for (; i!=u2objectFolders.constEnd(); i++) {
         objectIdFolders[i.key().id] = i.value();
@@ -66,11 +78,11 @@ void DocumentFolders::init(Document *doc, U2OpStatus &os) {
 
         foreach (GObject *obj, doc->getObjects()) {
             U2DataId id = obj->getEntityRef().entityId;
-            if (!hasFolderInfo(id)) {
+            if (hasFolderInfo(id)) {
+                addObject(obj, getFolderByObjectId(id));
+            } else {
                 coreLog.error("Unknown object id");
-                continue;
             }
-            addObject(obj, getFolderByObjectId(id));
         }
 
         foreach (const QString &path, allFolders()) {
@@ -78,10 +90,9 @@ void DocumentFolders::init(Document *doc, U2OpStatus &os) {
             QString fullPath;
             foreach (const QString &folder, pathList) {
                 fullPath += U2ObjectDbi::PATH_SEP + folder;
-                if (hasFolder(fullPath)) {
-                    continue;
+                if (!hasFolder(fullPath)) {
+                    foldersMap[fullPath] = new Folder(doc, fullPath);
                 }
-                foldersMap[fullPath] = new Folder(doc, fullPath);
             }
         }
     } else {
@@ -226,9 +237,19 @@ int DocumentFolders::getNewFolderRowInRecycleBin(const QString &path) const {
     return paths.indexOf(path);
 }
 
+namespace {
+
+bool gobjectLessThan(GObject *first, GObject *second) {
+    return QString::compare(first->getGObjectName(), second->getGObjectName(), Qt::CaseInsensitive) < 0;
+}
+
+}
+
 int DocumentFolders::getNewObjectRowInParent(GObject *obj, const QString &parentPath) const {
     SAFE_POINT(!hasFolderInfo(obj), "Object is already in model", -1);
-    return getSubFolders(parentPath).size() + getObjects(parentPath).size();
+    const QList<GObject *> objects = getObjects(parentPath);
+    QList<GObject *>::const_iterator i = std::upper_bound(objects.constBegin(), objects.constEnd(), obj, gobjectLessThan);
+    return getSubFolders(parentPath).size() + (i - objects.constBegin());
 }
 
 QList<Folder*> DocumentFolders::getSubFolders(const QString &parentPath) const {
@@ -452,10 +473,19 @@ GObject * FolderObjectTreeStorage::getObject(const U2DataId &id) const {
     return objectsIds.value(id, NULL);
 }
 
+namespace {
+
+void insertObjectToSortedList(QList<GObject *> &list, GObject *obj) {
+    QList<GObject *>::iterator insertPos = std::upper_bound(list.begin(), list.end(), obj, gobjectLessThan);
+    list.insert(insertPos, obj);
+}
+
+}
+
 void FolderObjectTreeStorage::addObject(GObject *obj, const QString &path) {
     objectsIds[obj->getEntityRef().entityId] = obj;
     objectFolders[obj] = path;
-    folderObjects[path].append(obj);
+    insertObjectToSortedList(folderObjects[path], obj);
     lastUpdate.objectIdFolders[obj->getEntityRef().entityId] = path;
 }
 
@@ -479,7 +509,7 @@ void FolderObjectTreeStorage::moveObject(GObject *obj, const QString &oldPath, c
 
     objectFolders[obj] = newPath;
     folderObjects[oldPath].removeAll(obj);
-    folderObjects[newPath].append(obj);
+    insertObjectToSortedList(folderObjects[newPath], obj);
     lastUpdate.objectIdFolders[objId] = newPath;
 }
 
@@ -574,18 +604,28 @@ QString FolderObjectTreeStorage::getFolderByObjectId(const U2DataId &id) const {
     return lastUpdate.objectIdFolders[id];
 }
 
+namespace {
+
+bool folderLessThan(const QString &first, const QString &second) {
+    return QString::compare(first, second, Qt::CaseInsensitive) < 0;
+}
+
+}
+
 int FolderObjectTreeStorage::insertSorted(const QString &value, QStringList &list) {
     GTIMER(c, t, "FolderObjectTreeStorage::insertSorted");
-    // TODO: optimize it with binary search
-    QStringList::Iterator i = list.begin();
-    for (int result=0; i != list.end(); result++, i++) {
-        if (value < *i) {
-            list.insert(i, value);
-            return result;
+
+    if (U2ObjectDbi::RECYCLE_BIN_FOLDER == value) {
+        list.prepend(value);
+        return 0;
+    } else {
+        QList<QString>::iterator i = std::upper_bound(list.begin(), list.end(), value, folderLessThan);
+        if (list.end() != i && *i == U2ObjectDbi::RECYCLE_BIN_FOLDER) {
+            ++i;
         }
+        i = list.insert(i, value);
+        return i - list.begin();
     }
-    list << value;
-    return list.size() - 1;
 }
 
 } // U2

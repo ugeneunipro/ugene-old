@@ -41,11 +41,9 @@ public:
 
 protected:
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
-    virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
 
 private:
     bool filterAcceptsFolder(const Folder *folder) const;
-    QString getItemName(ProjectViewModel::Type itemType, const QModelIndex &index) const;
 
     ProjectTreeControllerModeSettings settings;
 };

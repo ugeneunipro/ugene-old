@@ -86,7 +86,6 @@ ProjectTreeController::ProjectTreeController(QTreeView *tree, const ProjectTreeC
     connect(project, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_onDocumentRemoved(Document*)));
 
     tree->setDragDropMode(QAbstractItemView::InternalMove);
-    tree->sortByColumn(0, Qt::AscendingOrder);
     proxyModel->setSourceModel(model);
     tree->setModel(proxyModel);
     updater->start();
@@ -164,10 +163,8 @@ void ProjectTreeController::updateSettings(const ProjectTreeControllerModeSettin
 }
 
 void ProjectTreeController::sl_onDocumentAdded(Document *doc) {
-    tree->setSortingEnabled(false);
     model->addDocument(doc);
     updater->addDocument(doc);
-    tree->setSortingEnabled(true);
     connectDocument(doc);
     sl_updateActions();
 
@@ -191,9 +188,7 @@ void ProjectTreeController::sl_mergeData() {
         }
         DocumentFoldersUpdate update;
         if (updater->takeData(doc, update)) {
-            tree->setSortingEnabled(false);
             model->merge(doc, update);
-            tree->setSortingEnabled(true);
         }
     }
     sl_updateActions();
@@ -589,6 +584,9 @@ void ProjectTreeController::sl_onProjectItemRenamed(const QModelIndex &index) {
         FAIL("Unexpected project view item type", );
     }
     updater->invalidate(doc);
+
+    tree->selectionModel()->setCurrentIndex(proxyModel->mapFromSource(index), QItemSelectionModel::Select);
+    tree->setFocus();
 }
 
 void ProjectTreeController::sl_onRestoreSelectedItems() {

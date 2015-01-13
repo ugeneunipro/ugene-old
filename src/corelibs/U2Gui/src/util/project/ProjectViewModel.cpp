@@ -89,57 +89,59 @@ QVariant ProjectViewModel::data(const QModelIndex &index, int role) const {
 
 bool ProjectViewModel::setData(const QModelIndex &index, const QVariant &value, int /*role*/) {
     CHECK(index.isValid(), false);
-    CHECK(value.isValid() && !value.toString().isEmpty(), false);
+    CHECK(value.isValid(), false);
 
-    bool renameSuccessful = false;
+    const QString newName = value.toString();
+    CHECK(!newName.isEmpty(), false);
+
+    QModelIndex newItemIndex;
     switch (itemType(index)) {
     case DOCUMENT:
         FAIL("Document cannot be renamed!", false);
-    case FOLDER: {
-            Folder *folder = toFolder(index);
-            SAFE_POINT(NULL != folder, "Invalid folder detected", false);
-            renameSuccessful = setFolderData(folder, value.toString());
-        }
+    case FOLDER:
+        newItemIndex = setFolderData(toFolder(index), newName);
         break;
-    case OBJECT: {
-            GObject *obj = toObject(index);
-            SAFE_POINT(NULL != obj, "NULL object", false);
-            renameSuccessful = setObjectData(obj, value.toString());
-        }
+    case OBJECT:
+        newItemIndex = setObjectData(toObject(index), newName);
         break;
     default:
         FAIL("Unexpected project item type", false);
     }
-    if (!renameSuccessful) {
+    if (!newItemIndex.isValid()) {
         return false;
     }
-    emit dataChanged(index, index);
-    emit si_projectItemRenamed(index);
+    emit si_projectItemRenamed(newItemIndex);
 
     return true;
 }
 
-bool ProjectViewModel::setObjectData(GObject *obj, const QString &newName) {
-    CHECK(newName != obj->getGObjectName(), false);
+QModelIndex ProjectViewModel::setObjectData(GObject *obj, const QString &newName) {
+    SAFE_POINT(NULL != obj, "Invalid object detected", QModelIndex());
+    CHECK(newName != obj->getGObjectName(), QModelIndex());
     obj->setGObjectName(newName);
-    return true;
+
+    Document *doc = obj->getDocument();
+    const QString objPath = getObjectFolder(doc, obj);
+    removeObject(doc, obj);
+    insertObject(doc, obj, objPath);
+    return getIndexForObject(obj);
 }
 
-bool ProjectViewModel::setFolderData(Folder *folder, const QString &newName) {
-    const QString oldPath = folder->getFolderPath();
-    const QString parentPath = folder->getParentPath();
-    QString newPath = U2ObjectDbi::ROOT_FOLDER == parentPath
-        ? parentPath + newName
-        : parentPath + U2ObjectDbi::PATH_SEP + newName;
-    CHECK(newPath != oldPath, false);
+QModelIndex ProjectViewModel::setFolderData(Folder *folder, const QString &newName) {
+    SAFE_POINT(NULL != folder, "Invalid folder detected", QModelIndex());
 
     Document *doc = folder->getDocument();
-    if (!renameFolderInDb(doc, oldPath, newPath)) {
-        return false;
-    }
+    SAFE_POINT(NULL != doc, "Invalid document detected", QModelIndex());
+    const QString parentPath = folder->getParentPath();
+    const QString newPath = U2ObjectDbi::ROOT_FOLDER == parentPath
+        ? parentPath + newName
+        : parentPath + U2ObjectDbi::PATH_SEP + newName;
 
-    folders[doc]->renameFolder(oldPath, newPath);
-    return true;
+    const QString oldPath = folder->getFolderPath();
+    CHECK(newPath != oldPath, QModelIndex());
+
+    renameFolder(doc, oldPath, newPath);
+    return getIndexForPath(doc, newPath);
 }
 
 QModelIndex ProjectViewModel::index(int row, int column, const QModelIndex &parent) const {
