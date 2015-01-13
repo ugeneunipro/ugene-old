@@ -26,7 +26,7 @@
 #include <QToolButton>
 
 #include <U2Core/AppContext.h>
-#include <U2COre/L10n.h>
+#include <U2Core/L10n.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/U2SafePoints.h>
 
