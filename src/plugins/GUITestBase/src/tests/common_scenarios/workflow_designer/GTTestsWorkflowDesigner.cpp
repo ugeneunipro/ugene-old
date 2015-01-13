@@ -223,12 +223,11 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1){
         posList.append(item->pos());
     }
 
-    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "Write Weight Matrix"));
+    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "Write weight matrix"));
     GTMouseDriver::doubleClick(os);
 
     GTGlobals::sleep();
-    GTMouseDriver::moveTo(os,QPoint(GTUtilsWorkflowDesigner::getItemLeft(os, "Write Weight Matrix")+25,
-                                    GTUtilsWorkflowDesigner::getItemTop(os,"Write Weight Matrix")+25));
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Write weight matrix"));
     GTMouseDriver::doubleClick(os);
 
 //  Expected state: all arrows in schema still unbroken
@@ -345,8 +344,8 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 //Expected state: workers background color must be same as in prefrences
     GTUtilsWorkflowDesigner::addAlgorithm(os,"read alignment");
-    QPoint p(GTUtilsWorkflowDesigner::getItemLeft(os,"read alignment")+20,
-             GTUtilsWorkflowDesigner::getItemTop(os,"read alignment")+20);
+    QPoint p(GTUtilsWorkflowDesigner::getItemLeft(os,"Read Alignment")+20,
+             GTUtilsWorkflowDesigner::getItemTop(os,"Read Alignment")+20);
 
 #if (QT_VERSION < 0x050000) // deprecated method
     QPixmap pixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
@@ -397,16 +396,14 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0010){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. Open WD
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //    2. Place 3 HMM build workflow elements on scheme
     GTUtilsWorkflowDesigner::addAlgorithm(os, "read sequence");
     GTUtilsWorkflowDesigner::addAlgorithm(os,"write sequence");
 
-    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::getWorker(os,"read sequence");
-    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::getWorker(os,"write sequence");
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::getWorker(os,"Read Sequence");
+    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::getWorker(os,"Write Sequence");
     GTUtilsWorkflowDesigner::connect(os,read,write);
     GTGlobals::sleep();
     /*GTUtilsWorkflowDesigner::addAlgorithm(os,"hmm build");
@@ -426,13 +423,11 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0013){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. Load any sample in WD
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
 //    2. Select output port.
-    WorkflowProcessItem* gr = GTUtilsWorkflowDesigner::getWorker(os,"call variants with");
+    WorkflowProcessItem* gr = GTUtilsWorkflowDesigner::getWorker(os,"Call Variants");
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
     QList<WorkflowPortItem*> list = gr->getPortItems();
     foreach(WorkflowPortItem* p, list){
@@ -464,13 +459,11 @@ GUI_TEST_CLASS_DEFINITION(test_0013){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0015){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. open WD.
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //    2. Select any worker on palette.
     GTUtilsWorkflowDesigner::addSample(os,"call variants");
-    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os,"call variants with"));
+    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os,"Call Variants"));
     GTMouseDriver::click(os);
     GTGlobals::sleep(500);
     CHECK_SET_ERR(GTWidget::findWidget(os,"table"),"parameters table not found");

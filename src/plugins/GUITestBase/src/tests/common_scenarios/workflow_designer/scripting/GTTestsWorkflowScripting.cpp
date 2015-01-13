@@ -139,7 +139,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTUtilsWorkflowDesigner::setParameterScripting(os, "output file", "user script");
     GTGlobals::sleep(3000);
 
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os,"Read sequence"));
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os,"Read Sequence"));
     GTMouseDriver::click(os);
 
     QString dirPath = dataDir + "samples/FASTA/";

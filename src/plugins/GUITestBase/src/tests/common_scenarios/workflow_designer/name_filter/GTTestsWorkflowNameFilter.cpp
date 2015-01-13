@@ -25,6 +25,8 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTTabWidget.h"
 
+#include "GTUtilsWorkflowDesigner.h"
+
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "GTTestsWorkflowNameFilter.h"
 
@@ -141,11 +143,8 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
 }
 
 GUI_TEST_CLASS_DEFINITION( test_0003 ) {
-    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
-
     // 1. Open WD.
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     // 2. Open the samples tab.
     QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os, "tabs"));
@@ -179,7 +178,7 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
             }
         }
     }
-    CHECK_SET_ERR(count == 12, QString("Wrong number of visible items in sample tree: %1").arg(count));
+    CHECK_SET_ERR(count == 13, QString("Wrong number of visible items in sample tree: %1").arg(count));
 }
 
 }

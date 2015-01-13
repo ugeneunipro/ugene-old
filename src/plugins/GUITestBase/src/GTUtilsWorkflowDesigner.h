@@ -143,6 +143,7 @@ private:
     static void selectAlgorithm(U2OpStatus &os, QTreeWidgetItem *algorithm);
     static void selectSample(U2OpStatus &os, QTreeWidgetItem *sample);
     static QRect getItemRect(U2OpStatus &os,QString itemName);
+    static const int verticalShift;
 };
 
 } // namespace

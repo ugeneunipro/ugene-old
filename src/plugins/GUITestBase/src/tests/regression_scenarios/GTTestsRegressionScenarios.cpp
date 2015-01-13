@@ -1629,6 +1629,17 @@ GUI_TEST_CLASS_DEFINITION(test_1508) {
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
 }
+
+GUI_TEST_CLASS_DEFINITION(test_1510) {
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "Call variants");
+    GTUtilsWorkflowDesigner::click(os, "To BAM");
+    GTGlobals::sleep(500);
+
+    QWidget* inputPortBox = GTWidget::findWidget(os, "inputPortBox");
+    GTWidget::getAllWidgetsInfo(os, inputPortBox);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1511) {
 /*
  * 1. Open "data/COI.aln" in MSA view
@@ -1832,7 +1843,7 @@ GUI_TEST_CLASS_DEFINITION( test_1568 ) {
     GTUtilsMdi::closeWindow(os, "COI [m] COI");
     GTGlobals::sleep();
 
-    GTUtilsDocument::unloadDocument(os, "test_1568.nwk");
+    GTUtilsDocument::unloadDocument(os, "test_1568.nwk", false);
     GTGlobals::sleep();
     GTUtilsProjectTreeView::doubleClickItem(os, "COI.aln");
     GTGlobals::sleep();
@@ -2071,14 +2082,14 @@ GUI_TEST_CLASS_DEFINITION(test_1587) {
     GTLogTracer l;
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
-    WorkflowProcessItem *reader = GTUtilsWorkflowDesigner::addElement(os, "Read sequence");
-    WorkflowProcessItem *writer = GTUtilsWorkflowDesigner::addElement(os, "Write sequence");
+    WorkflowProcessItem *reader = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    WorkflowProcessItem *writer = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
     GTUtilsWorkflowDesigner::connect(os, reader, writer);
 
-    GTUtilsWorkflowDesigner::addInputFile(os, "Read sequence", testDir + "_common_data/regression/1587/some_image.png");
-    GTUtilsWorkflowDesigner::addInputFile(os, "Read sequence", dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", testDir + "_common_data/regression/1587/some_image.png");
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/FASTA/human_T1.fa");
 
-    GTUtilsWorkflowDesigner::click(os, "Write sequence");
+    GTUtilsWorkflowDesigner::click(os, "Write Sequence");
     QFile outputFile(sandBoxDir + "out.fa");
     const QString outputFilePath = QFileInfo(outputFile).absoluteFilePath();
     GTUtilsWorkflowDesigner::setParameter(os, "Output file", outputFilePath, GTUtilsWorkflowDesigner::textValue);
@@ -2580,6 +2591,7 @@ GUI_TEST_CLASS_DEFINITION(test_1672) {
     //Bug state: the reference sequence has 103% match with itself.
 
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTGlobals::sleep();
     GTWidget::click(os, GTWidget::findWidget(os, "OP_SEQ_STATISTICS_WIDGET"));
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(-8, 8));
     GTWidget::click(os, GTWidget::findWidget(os, "addSeq"));
@@ -3200,9 +3212,9 @@ GUI_TEST_CLASS_DEFINITION(test_1808) {
 
     // 2.Create schema "Read Annotations"->"Write annotations"
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Annotations");
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write annotations");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Annotations");
     WorkflowProcessItem *read = GTUtilsWorkflowDesigner::getWorker(os, "Read Annotations");
-    WorkflowProcessItem *write = GTUtilsWorkflowDesigner::getWorker(os, "Write annotations");
+    WorkflowProcessItem *write = GTUtilsWorkflowDesigner::getWorker(os, "Write Annotations");
     GTUtilsWorkflowDesigner::connect(os, read, write);
 
     // 3.Select any input and output file
@@ -4080,7 +4092,7 @@ GUI_TEST_CLASS_DEFINITION(test_2024){
 
 //    2. Add element "Local BLAST Search"
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Local BLAST Search" );
-    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "blast"));
+    GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os, "Local BLAST Search"));
     GTMouseDriver::click(os);
 
 //    Expected state: element has parameters "gap cost" and "match score"
@@ -5334,11 +5346,11 @@ GUI_TEST_CLASS_DEFINITION( test_2266_1 ){
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
 
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read assembly"));
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Assembly (BAM/SAM)"));
     GTMouseDriver::click(os);
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/ugenedb/", "Klebsislla.sort.bam.ugenedb");
 
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read sequence"));
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
     GTMouseDriver::click(os);
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/ugenedb/", "Klebsislla_ref.fa");
 
@@ -5598,7 +5610,7 @@ GUI_TEST_CLASS_DEFINITION( test_2293 ){
 //    Click a "Start" button.
 
 //    Expected state: a message box appeared: an offer to set "Bowtie2 Build index" tool in UGENE preferences.
-    GTUtilsExternalTools::removeTool(os, "Bowtie 2");
+    GTUtilsExternalTools::removeTool(os, "Bowtie 2 build indexer");
 
     class CheckBowtie2Filler : public Filler {
     public:
@@ -6522,11 +6534,11 @@ GUI_TEST_CLASS_DEFINITION( test_2424 ) {
 
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence" );
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence" );
-    GTUtilsWorkflowDesigner::addAlgorithm( os, "Quality filter example" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Quality Filter Example" );
 
     WorkflowProcessItem *seqReader = GTUtilsWorkflowDesigner::getWorker( os, "Read Sequence" );
     WorkflowProcessItem *seqWriter = GTUtilsWorkflowDesigner::getWorker( os, "Write Sequence" );
-    WorkflowProcessItem *qualFilter = GTUtilsWorkflowDesigner::getWorker( os, "Quality filter example" );
+    WorkflowProcessItem *qualFilter = GTUtilsWorkflowDesigner::getWorker( os, "Quality Filter Example" );
 
     GTUtilsWorkflowDesigner::connect(os, seqReader, qualFilter);
     GTUtilsWorkflowDesigner::connect(os, qualFilter, seqWriter);
@@ -6582,11 +6594,12 @@ GUI_TEST_CLASS_DEFINITION(test_2431) {
     GTUtilsWorkflowDesigner::toggleDebugMode(os);
     GTGlobals::sleep(1000);
 
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read sequence");
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read sequence"));
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep(1000);
-    CHECK_SET_ERR(GTUtilsWorkflowDesigner::getItemCenter(os, "Read sequence") == QRect().center(), "Item didn't deleted");
+    WorkflowProcessItem* readSeq = GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence",GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(readSeq == NULL, "Item didn't deleted");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2432) {
@@ -6976,7 +6989,8 @@ GUI_TEST_CLASS_DEFINITION( test_2543 ) {
 
             GTUtilsDialog::waitForDialogWhichMayRunOrNot( os, new LicenseAgreemntDialogFiller( os ) );
             //Expected state: UGENE does not allow to create tree, the message dialog appears
-            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller( os, QMessageBox::Ok ) );
+            GTUtilsNotifications::waitForNotification(os, true);
+            //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller( os, QMessageBox::Ok ) );
 
             QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
             CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
@@ -7014,6 +7028,7 @@ GUI_TEST_CLASS_DEFINITION( test_2543 ) {
 
     QAbstractButton *tree= GTAction::button( os, "Build Tree" );
     GTWidget::click( os, tree );
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep( 2000 );
 }
 
@@ -8381,7 +8396,7 @@ GUI_TEST_CLASS_DEFINITION(test_2891) {
     GTFileDialog::openFile(os, dataDir + "/workflow_samples/NGS/cistrome/", "chip_seq.uwl");
     GTGlobals::sleep();
 
-    GTUtilsWorkflowDesigner::click(os, "Gets paths of files");
+    GTUtilsWorkflowDesigner::click(os, "Read Tags");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Chip-seq/input_data/", "some_image.png");
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
@@ -11877,7 +11892,7 @@ GUI_TEST_CLASS_DEFINITION(test_3563_2) {
     GTUtilsProjectTreeView::dragAndDrop(os, idxGff, seqArea);
 
     GTUtilsDocument::unloadDocument(os, "human_T1.fa");
-    GTUtilsDocument::unloadDocument(os, "5prime_utr_intron_A21.gff");
+    GTUtilsDocument::unloadDocument(os, "5prime_utr_intron_A21.gff", false);
     GTGlobals::sleep();
 
     GTUtilsDocument::loadDocument(os, "human_T1.fa");
@@ -12560,10 +12575,10 @@ GUI_TEST_CLASS_DEFINITION(test_3697){
 
     GTUtilsDialog::waitForDialogWhichMustNotBeRunned(os, new MessageBoxDialogFiller(os, "Ok"));
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-    GTUtilsWorkflowDesigner::addElement(os, "Read alignment");
-    GTUtilsWorkflowDesigner::addElement(os, "Read sequence");
-    GTUtilsWorkflowDesigner::click(os, "Read alignment");
-    GTUtilsWorkflowDesigner::click(os, "Read sequence");
+    GTUtilsWorkflowDesigner::addElement(os, "Read Alignment");
+    GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::click(os, "Read Alignment");
+    GTUtilsWorkflowDesigner::click(os, "Read Sequence");
 
     GTUtilsLog::check(os, l);
 }
@@ -12800,6 +12815,7 @@ GUI_TEST_CLASS_DEFINITION(test_3778) {
     GTUtilsDialog::waitForDialog(os, new CircularViewExportImage(os, new Scenario()));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< ADV_MENU_EXPORT << "Save circular view as image", GTGlobals::UseMouse));
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3779) {

@@ -449,7 +449,11 @@ GUI_TEST_CLASS_DEFINITION(write_gui_test_0003) {
 
     GTWidget::click(os, GTWidget::findWidget(os, "browsePathBtn"));
 
+    GTWidget::click(os, GTWidget::findWidget(os,"sceneView"));
+    GTUtilsWorkflowDesigner::click(os, "Write Assembly");
+
     GTUtilsWorkflowDesigner::setParameter(os, "Database", 1, GTUtilsWorkflowDesigner::comboValue);
+
 
     QList<SharedConnectionsDialogFiller::Action> actions;
     actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, connectionName);
@@ -670,7 +674,7 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0006) {
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "write_to_inaccessible_shared_db.uwl");
 
-    GTUtilsWorkflowDesigner::click(os, "Read Assembly\n\n");
+    GTUtilsWorkflowDesigner::click(os, "Read Assembly");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/ugenedb/", "1.bam.ugenedb");
 
     GTUtilsDialog::waitForDialog(os, new AuthenticationDialogFiller(os, GTDatabaseConfig::login(), GTDatabaseConfig::password()));

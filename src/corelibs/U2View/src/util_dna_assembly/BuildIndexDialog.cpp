@@ -85,12 +85,12 @@ BuildIndexDialog::BuildIndexDialog(const DnaAssemblyAlgRegistry* registry, QWidg
 void BuildIndexDialog::sl_onAddRefButtonClicked() {
     LastUsedDirHelper lod;
     QString filter;
-#ifdef Q_OS_MAC
+
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
         lod.url = U2FileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter, 0, QFileDialog::DontUseNativeDialog );
-    } else
-#endif
-    lod.url = U2FileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter);
+    } else{
+        lod.url = U2FileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter);
+    }
     if (lod.url.isEmpty()) {
         return;
     }

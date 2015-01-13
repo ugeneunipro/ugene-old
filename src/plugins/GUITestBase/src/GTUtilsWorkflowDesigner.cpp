@@ -57,6 +57,7 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
 namespace U2 {
+const int GTUtilsWorkflowDesigner::verticalShift = 35;
 #define GT_CLASS_NAME "GTUtilsWorkflowDesigner"
 
 #define GT_METHOD_NAME "openWorkflowDesigner"
@@ -387,23 +388,9 @@ QList<WorkflowPortItem*> GTUtilsWorkflowDesigner::getPorts(U2OpStatus &os, Workf
 QRect GTUtilsWorkflowDesigner::getItemRect(U2OpStatus &os,QString itemName){
 //TODO: support finding items when there are several similar workers in scheme
     WorkflowProcessItem* w = getWorker(os, itemName);
-    return GTGraphicsItem::getGraphicsItemRect(os, w);
-//    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
-//    GT_CHECK_RESULT(sceneView !=NULL, "scene view not found", QRect());
-//    QList<QGraphicsItem *> items = sceneView->items();
-
-//    foreach(QGraphicsItem* it, items) {
-//        QGraphicsObject *itObj = it->toGraphicsObject();
-
-//        QGraphicsTextItem* textItemO = qobject_cast<QGraphicsTextItem*>(itObj);
-//        if (textItemO) {
-//            QString text = textItemO->toPlainText();
-//            if (text.contains(itemName,Qt::CaseInsensitive)) {
-//                return GTGraphicsItem::getGraphicsItemRect(os, it);
-//            }
-//        }
-//    }
-//    return QRect();
+    QRect result = GTGraphicsItem::getGraphicsItemRect(os, w);
+    result.setTop(result.top() + verticalShift);
+    return result;
 }
 #undef GT_METHOD_NAME
 
