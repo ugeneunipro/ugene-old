@@ -42,7 +42,7 @@ BwaSupport::BwaSupport(const QString &name, const QString &path):
     executableFileName="bwa";
     #endif
 #endif
-    validMessage="Program: bwa (alignment via Burrows-Wheeler transformation)";
+    validMessage="Program: bwa \\(alignment via Burrows-Wheeler transformation\\)";
     description=tr("<i>Burrows-Wheeler Aligner (BWA)</i> is an efficient program "
                    "that aligns relatively short nucleotide sequences "
                    "against a long reference sequence such as the human genome.");
