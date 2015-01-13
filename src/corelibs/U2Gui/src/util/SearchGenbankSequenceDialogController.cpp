@@ -19,27 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QLineEdit>
-#include <QtGui/QToolButton>
-#include <QtGui/QComboBox>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QComboBox>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QToolButton>
 
 #include <U2Core/AppContext.h>
+#include <U2COre/L10n.h>
+#include <U2Core/MultiTask.h>
+#include <U2Core/U2SafePoints.h>
 
-#include "ui/ui_SearchGenbankSequenceDialog.h"
+#include <U2Gui/HelpButton.h>
 
 #include "DownloadRemoteFileDialog.h"
 #include "SearchGenbankSequenceDialogController.h"
+#include "ui/ui_SearchGenbankSequenceDialog.h"
 
 namespace U2 {
 
@@ -106,6 +101,68 @@ void SearchGenbankSequenceDialogController::setQueryText(const QString &queryTex
     ui->queryEdit->setText(queryText);
 }
 
+void SearchGenbankSequenceDialogController::prepareSummaryRequestTask(const QStringList &results) {
+    summaryTask = NULL;
+    SAFE_POINT(!results.isEmpty(), "There are no search results to process", );
+    if (results.size() <= MAX_IDS_PER_QUERY) {
+        QString ids = results.join(",");
+        QString query(EntrezUtils::NCBI_ESUMMARY_URL.arg(ui->databaseBox->currentText()).arg(ids));
+        summaryResultHandler.reset(new ESummaryResultHandler());
+        summaryTask = new EntrezQueryTask(summaryResultHandler.data(), query);
+    } else {
+        QStringList queries = splitIds(results);
+        QList<Task *> tasks;
+        foreach (const QString &query, queries) {
+            tasks << new EntrezQueryTask(new ESummaryResultHandler, query);
+        }
+        summaryTask = new MultiTask("EntrezQueryTask", tasks, false);
+    }
+}
+
+
+QStringList SearchGenbankSequenceDialogController::splitIds(const QStringList &idsList) {
+    const int fullQueryCount = idsList.size() / MAX_IDS_PER_QUERY;
+    const int tailIdsCount = idsList.size() % MAX_IDS_PER_QUERY;
+    QStringList queries;
+
+    for (int i = 0; i < fullQueryCount; i++) {
+        const QString ids = getIdsString(idsList, i * MAX_IDS_PER_QUERY, MAX_IDS_PER_QUERY);
+        queries << EntrezUtils::NCBI_ESUMMARY_URL.arg(ui->databaseBox->currentText()).arg(ids);
+    }
+
+    if (tailIdsCount > 0) {
+        const QString tailIds = getIdsString(idsList, fullQueryCount * MAX_IDS_PER_QUERY, tailIdsCount);
+        queries << EntrezUtils::NCBI_ESUMMARY_URL.arg(ui->databaseBox->currentText()).arg(tailIds);
+    }
+
+    return queries;
+}
+
+QString SearchGenbankSequenceDialogController::getIdsString(const QStringList &idsList, int startIndex, int count) {
+    const QStringList midList = idsList.mid(startIndex, count);
+    return midList.join(",");
+}
+
+QList<EntrezSummary> SearchGenbankSequenceDialogController::getSummaryResults() const {
+    QList<EntrezSummary> results;
+    EntrezQueryTask *singleTask = qobject_cast<EntrezQueryTask *>(summaryTask);
+    MultiTask *multiTask = qobject_cast<MultiTask *>(summaryTask);
+    if (NULL != singleTask) {
+        SAFE_POINT(NULL != summaryResultHandler, L10N::nullPointerError("summary results handler"), results);
+        results << summaryResultHandler->getResults();
+    } else if (NULL != multiTask) {
+        foreach (Task *subtask, multiTask->getSubtasks()) {
+            EntrezQueryTask *summarySubtask = qobject_cast<EntrezQueryTask *>(subtask);
+            SAFE_POINT(NULL != summarySubtask, L10N::internalError(tr("an unexpected subtask")), results);
+            const ESummaryResultHandler *resultHandler = dynamic_cast<const ESummaryResultHandler *>(summarySubtask->getResultHandler());
+            SAFE_POINT(NULL != resultHandler, L10N::nullPointerError("ESummaryResultHandler"), results);
+            results << resultHandler->getResults();
+            delete resultHandler;
+        }
+    }
+    return results;
+}
+
 void SearchGenbankSequenceDialogController::sl_searchButtonClicked()
 {
     if ( !ui->searchButton->isEnabled( ) ) {
@@ -136,16 +193,14 @@ void SearchGenbankSequenceDialogController::sl_taskStateChanged( Task* task )
                     tr("No results found corresponding to the query") );
                 ui->searchButton->setEnabled( true );
             } else {
-                QString ids = results.join(",");
-                QString query(EntrezUtils::NCBI_ESUMMARY_URL.arg(ui->databaseBox->currentText()).arg(ids));
-                summaryResultHandler.reset( new ESummaryResultHandler() );
-                summaryTask = new EntrezQueryTask( summaryResultHandler.data( ), query );
-                AppContext::getTaskScheduler()->registerTopLevelTask(summaryTask);
+                prepareSummaryRequestTask(results);
+                if (NULL != summaryTask) {
+                    AppContext::getTaskScheduler()->registerTopLevelTask(summaryTask);
+                }
             }
             searchTask = NULL;
         } else if (task == summaryTask) {
-            assert(summaryResultHandler);
-            const QList<EntrezSummary>& results = summaryResultHandler->getResults();
+            QList<EntrezSummary> results = getSummaryResults();
             
             foreach (const EntrezSummary& desc, results ) {
                 QTreeWidgetItem* item = new QTreeWidgetItem(ui->treeWidget);

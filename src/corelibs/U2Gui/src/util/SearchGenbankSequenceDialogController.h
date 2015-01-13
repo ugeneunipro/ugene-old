@@ -102,14 +102,23 @@ public:
     void addQueryBlockWidget(QWidget* w);
     void removeQueryBlockWidget(QWidget* w);
     void setQueryText(const QString& queryText);
+
 private:
+    void prepareSummaryRequestTask(const QStringList &results);
+    QStringList splitIds(const QStringList &idsList);
+    static QString getIdsString(const QStringList &idsList, int startIndex, int count);
+
+    QList<EntrezSummary> getSummaryResults() const ;
+
     Ui_SearchGenbankSequenceDialog* ui;
     QueryBuilderController* queryBlockController;
     QScopedPointer<ESearchResultHandler> searchResultHandler;
     EntrezQueryTask* searchTask;
     QScopedPointer<ESummaryResultHandler> summaryResultHandler;
-    EntrezQueryTask* summaryTask;
+    Task *summaryTask;
     QPushButton* downloadButton;
+
+    static const int MAX_IDS_PER_QUERY = 100;
 
 public slots:
     void sl_searchButtonClicked();
