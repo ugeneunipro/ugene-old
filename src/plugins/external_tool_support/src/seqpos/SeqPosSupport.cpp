@@ -54,7 +54,7 @@ void SeqPosSupport::initialize() {
                  << ET_R
                  << ET_R_SEQLOGO;
 
-    validMessage = "mdseqpos (official trunk):";
+    validMessage = "mdseqpos \\(official trunk\\):";
     validationArguments << "-v";
 
     versionRegExp=QRegExp("Version (\\d+\\.\\d+)");

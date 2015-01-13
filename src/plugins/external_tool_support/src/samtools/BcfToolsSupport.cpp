@@ -40,7 +40,7 @@ BcfToolsSupport::BcfToolsSupport(const QString &name)
     executableFileName = "bcftools";
 #endif
 
-    validMessage = "bcftools (Tools for data in the VCF/BCF formats)";
+    validMessage = "bcftools \\(Tools for data in the VCF/BCF formats\\)";
     description = "<i>BCFtools</i> is a set of utilities for data in the VCF/BCF formats";
     versionRegExp = QRegExp("Version: (\\d+.\\d+.\\d+)");
 

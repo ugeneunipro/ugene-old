@@ -44,7 +44,7 @@ SnpEffSupport::SnpEffSupport(const QString& name, const QString& path) : Externa
 
     executableFileName="snpEff.jar";
 
-    validMessage = "Usage: snpEff [eff] [options] genome_version [input_file]";
+    validMessage = "Usage: snpEff \\[eff\\] \\[options\\] genome_version \\[input_file\\]";
     description = tr("<i>SnpEff</i>: Genetic variant annotation and effect prediction toolbox.");
 
     versionRegExp = QRegExp("version SnpEff (\\d+.\\d+)");
