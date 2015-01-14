@@ -465,11 +465,12 @@ void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int 
         }
     }
     modifiedRowIds = mergeLists( modifiedRowIds, trimmedRowIds );
-    if (track) {
+    if (track || removeEmptyRows) {
         MAlignmentModInfo mi;
         mi.modifiedRowIds = modifiedRowIds;
         updateCachedMAlignment(mi, removedRows );
-    } else if (!removedRows.isEmpty()) {
+    }
+    if (!track && !removedRows.isEmpty()) {
         emit si_rowsRemoved(removedRows);
     }
 }
@@ -532,21 +533,19 @@ QList<qint64> MAlignmentObject::getColumnsWithGaps(int requiredGapCount) const {
 }
 
 void MAlignmentObject::deleteColumnWithGaps(int requiredGapCount) {
-    MAlignment msa = getMAlignment();
     QList<qint64> colsForDelete = getColumnsWithGaps(requiredGapCount);
-    if (msa.getLength() == colsForDelete.count()) {
+    if (getLength() == colsForDelete.count()) {
         return;
     }
     QList<qint64>::const_iterator column = colsForDelete.constBegin();
     const QList<qint64>::const_iterator end = colsForDelete.constEnd();
     for ( ; column != end; ++column) {
-        if (*column >= msa.getLength()) {
+        if (*column >= getLength()) {
             continue;
         }
-        removeRegion(*column, 0, 1, msa.getNumRows(), true, (end - 1 == column));
+        removeRegion(*column, 0, 1, getNumRows(), true, (end - 1 == column));
     }
     //removeColumns(colsForDelete, true);
-    msa = getMAlignment();
     updateCachedMAlignment();
 }
 
