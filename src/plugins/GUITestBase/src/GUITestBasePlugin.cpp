@@ -523,7 +523,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3250);
     REGISTER_TEST(GUITest_regression_scenarios::test_3255);
     REGISTER_TEST(GUITest_regression_scenarios::test_3263);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3266);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3266, "GUITest_regression_scenarios_test_3266");
     REGISTER_TEST(GUITest_regression_scenarios::test_3274);
     REGISTER_TEST(GUITest_regression_scenarios::test_3276);
     REGISTER_TEST(GUITest_regression_scenarios::test_3277);
@@ -1632,7 +1632,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_LINUX(GUITest_common_scenarios_shared_database::proj_test_0005, "drag and drop");
     REGISTER_TEST_LINUX(GUITest_common_scenarios_shared_database::proj_test_0006, "drag and drop");
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0007);
-    REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0008);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_shared_database::proj_test_0008, "UGENE-3923");
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0009);
 
     REGISTER_TEST_LINUX(GUITest_common_scenarios_shared_database::import_test_0001, "drag and drop");

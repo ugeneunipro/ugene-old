@@ -48,16 +48,21 @@ NotificationChecker::NotificationChecker(U2OpStatus &_os):os(_os){
     t->start(100);
 }
 
+NotificationChecker::~NotificationChecker(){
+    delete t;
+}
+
 #define GT_METHOD_NAME "sl_checkNotification"
 void NotificationChecker::sl_checkNotification(){
 
 QList<QWidget*> list = QApplication::allWidgets();
     foreach(QWidget* wid, list){
-        Notification* notif = dynamic_cast<Notification*>(wid);
+        Notification* notif = qobject_cast<Notification*>(wid);
         if(notif!=NULL && notif->isVisible()){
             uiLog.trace("found");
             GTWidget::click(os, notif);
-            //t->stop();
+            t->stop();
+            return;
         }
     }
 }

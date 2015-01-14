@@ -32,6 +32,7 @@ class NotificationChecker : public QObject {
     Q_OBJECT
 public:
     NotificationChecker(U2OpStatus &_os);
+    ~NotificationChecker();
 public slots:
     void sl_checkNotification();
 private:

@@ -1098,17 +1098,6 @@ GUI_TEST_CLASS_DEFINITION(test_1255){
     s=label->text();
     CHECK_SET_ERR(s.contains("Illegal"),"Error message is: "+s);
     GTGlobals::sleep(500);
-
-    for (int i=0; i<5; i++){
-        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["down"]);
-        GTGlobals::sleep(50);
-    }
-//3.3 Input invalid annotation name (illegal)
-    GTLineEdit::setText(os,annotationNameEdit,"Too long annotation name");
-    s=label->text();
-    CHECK_SET_ERR(s.contains("too long"),"Error message is: "+s);
-    GTGlobals::sleep(500);
-//Expected: error message appears if the annotations are invalid
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1262) {
@@ -4708,7 +4697,7 @@ GUI_TEST_CLASS_DEFINITION( test_2152 ){
 
     GTUtilsWorkflowDesigner::connect(os, fileList, fileCAP3);
 
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "CAP3"));
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Assembly Sequences with CAP3"));
     GTMouseDriver::click(os);
     GTUtilsWorkflowDesigner::setParameter(os,"Output file", QDir().absoluteFilePath(sandBoxDir + "out.ace"),GTUtilsWorkflowDesigner::textValue);
 
@@ -6028,20 +6017,20 @@ GUI_TEST_CLASS_DEFINITION( test_2364 ) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     //2. Create a workflow: Read sequence -> Write sequence.
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read sequence");
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Sequence");
 
-    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read sequence"),
-                                         GTUtilsWorkflowDesigner::getWorker(os, "Write sequence"));
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"),
+                                         GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence"));
 
     //3. Set the input sequence file: "data/samples/FASTA/human_T1.fa".
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read sequence"));
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
     GTMouseDriver::click(os);
     GTGlobals::sleep(300);
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
     //4. Set the output file: "out.fa".
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Write sequence"));
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Write Sequence"));
     GTMouseDriver::click(os);
     GTGlobals::sleep(300);
     GTUtilsWorkflowDesigner::setParameter(os, "Output file", "out.fa", GTUtilsWorkflowDesigner::textValue);
@@ -6274,17 +6263,18 @@ GUI_TEST_CLASS_DEFINITION( test_2387 ) {
     GTFile::copy(os, dataDir + "samples/Genbank/PBR322.gb", sandbox + "PBR322.gb");
     GTFile::copy(os, dataDir + "samples/Genbank/sars.gb", sandbox + "sars.gb");
 
-    class SequenceReadingModeDialogUtils : public GTSequenceReadingModeDialogUtils {
+    class SequenceReadingModeDialogUtils : public CustomScenario {
     public:
-        SequenceReadingModeDialogUtils(U2OpStatus& _os) : GTSequenceReadingModeDialogUtils(_os){}
-        virtual void commonScenario() {
+        //SequenceReadingModeDialogUtils(U2OpStatus& _os) : GTSequenceReadingModeDialogUtils(_os){}
+        virtual void run(U2OpStatus &os){
             GTSequenceReadingModeDialog::mode = GTSequenceReadingModeDialog::Merge;
             GTFile::copy(os, testDir + "_common_data/scenarios/_regression/2387/binary.dll", testDir + "_common_data/scenarios/sandbox/sars.gb");
-            GTSequenceReadingModeDialogUtils::run();
+            GTSequenceReadingModeDialogUtils(os).commonScenario();
         }
     };
 
-    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeDialogUtils(os));
+    //GTSequenceReadingModeDialogUtils
+    GTUtilsDialog::waitForDialog(os, new  GTSequenceReadingModeDialogUtils(os, new SequenceReadingModeDialogUtils()));
     GTFileDialog::openFileList(os, sandbox, QStringList() << "PBR322.gb" << "sars.gb");
 }
 
@@ -6585,10 +6575,10 @@ GUI_TEST_CLASS_DEFINITION( test_2430 ) {
 
     GTUtilsWorkflowDesigner::toggleDebugMode(os);
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
     GTUtilsWorkflowDesigner::toggleBreakpointManager(os);
 
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read sequence"));
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
     GTMouseDriver::click(os);
     GTKeyboardDriver::keyClick(os, 'b', GTKeyboardDriver::key["ctrl"]);
 
@@ -8749,12 +8739,12 @@ GUI_TEST_CLASS_DEFINITION(test_2951) {
     GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence"));
 
     //4. Set the input sequence: _common_data/fasta/abcd.fa.
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read sequence"));
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
     GTMouseDriver::click(os);
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta/", "abcd.fa");
 
     //5. Set the correct output sequence.
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Write sequence"));
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Write Sequence"));
     GTMouseDriver::click(os);
     QString outFile = GUrl(sandBoxDir + "test_2951.gb").getURLString();
     GTUtilsWorkflowDesigner::setParameter(os, "Output file", outFile, GTUtilsWorkflowDesigner::textValue);
@@ -12821,15 +12811,16 @@ GUI_TEST_CLASS_DEFINITION(test_3778) {
         void run(U2OpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "dialog is NULL");
-            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+            QLineEdit* fileNameEdit = GTWidget::findExactWidget<QLineEdit*>(os, "fileNameEdit", dialog);
+            GTLineEdit::setText(os, fileNameEdit, sandBoxDir + "circular_human_T1 (UCSC April 2002 chr7:115977709-117855134).png");
             GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
-            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
         }
     };
     GTUtilsDialog::waitForDialog(os, new CircularViewExportImage(os, new Scenario()));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< ADV_MENU_EXPORT << "Save circular view as image", GTGlobals::UseMouse));
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
     GTGlobals::sleep();
+    GTFile::check(os, sandBoxDir + "circular_human_T1 (UCSC April 2002 chr7:115977709-117855134).png");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3779) {
