@@ -74,6 +74,7 @@ void ORFFindAlgorithm::find(
     bool allowOverlap = cfg.allowOverlap;
     bool circularSearch = cfg.circularSearch && (cfg.searchRegion.endPos() == dnaSeq.getSequenceLength());
     int minLen = qMax(cfg.minLen, 3);
+    CHECK(cfg.searchRegion.length >= minLen, );
 
     int onePercentLen = cfg.searchRegion.length/100;
     if (cfg.strand == ORFAlgorithmStrand_Both) onePercentLen /=2;
