@@ -13040,6 +13040,33 @@ GUI_TEST_CLASS_DEFINITION(test_3868) {
     CHECK_SET_ERR(qualifiersEdit->text().contains("label"), "Label must be shown in annotation widget");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3886) {
+    //1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    //2. Open 'Extract consensus as sequence' sample.
+    GTUtilsWorkflowDesigner::addSample(os, "Extract consensus as sequence");
+
+    //3. Show wizard.
+    class TestWizardFiller : public Filler {
+    public:
+        TestWizardFiller(U2OpStatus &os)
+        : Filler(os, "Extract Alignment Consensus as Sequence")
+        {
+
+        }
+
+        void run() {
+            //4. Click Next.
+            //Expected: UGENE does not crash.
+            GTWidget::click(os, GTWidget::findWidget(os,"__qt__passive_wizardbutton1"));
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new TestWizardFiller(os));
+    GTWidget::click(os, GTAction::button(os, "Show wizard"));
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
