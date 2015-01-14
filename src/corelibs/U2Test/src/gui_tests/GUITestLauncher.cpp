@@ -62,8 +62,9 @@ GUITestLauncher::GUITestLauncher(QString _pathToSuite, bool _noIgnored)
 
 bool GUITestLauncher::renameTestLog(const QString& testName) {
     QString outFileName = testOutFile(testName);
+    QString outFilePath = testOutDir() + "/logs/";
 
-    QFile outLog(outFileName);
+    QFile outLog(outFilePath + outFileName);
     return outLog.rename("failed_" + outFileName);
 }
 
