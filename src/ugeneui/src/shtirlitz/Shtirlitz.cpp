@@ -48,6 +48,7 @@
 
 #include <U2Core/UserApplicationsSettings.h>
 #include "Shtirlitz.h"
+#include "StatisticalReportController.h"
 
 const static char * SETTINGS_NOT_FIRST_LAUNCH     = "shtirlitz/not_first_launch";
 const static char * SETTINGS_PREVIOUS_REPORT_DATE = "shtirlitz/previous_report_date";
@@ -82,19 +83,6 @@ QUuid Shtirlitz::getUniqueUgeneId() {
     return uniqueUgeneId;
 }
 
-const static char * firstTimeNotice =
-"Dear UGENE user!\n"
-"UGENE has the possibility to collect statistical information about its usage and report it to our team. "
-"Such information helps us a lot in making our software better and more functional than it is.\n"
-"\n"
-"Kinds of information we collect:\n"
-"1. System info: UGENE version, OS name, Qt version and so on.\n"
-"2. Counters info: number of launches of certain tasks (e. g. HMM search, MUSCLE align)\n"
-"\n"
-"We DO NOT collect any personal data.\n"
-"If you want this feature enabled, press 'Yes'. Otherwise, press 'No'."
-;
-
 //Report about system is sent on the first launch of UGENE.
 //Statistical reports are sent once per DAYS_BETWEEN_REPORTS.
 QList<Task*> Shtirlitz::wakeup() {
@@ -123,8 +111,9 @@ QList<Task*> Shtirlitz::wakeup() {
     // and user did not enabled stats before -> ask to enable
     // Do not ask to enable it twice for different versions!
     if( thisVersionFirstLaunch && !enabledByUser) {
-        QMessageBox::StandardButton answ = QMessageBox::question(QApplication::activeWindow(), ShtirlitzTask::tr("Statistical reports"), ShtirlitzTask::tr(firstTimeNotice), QMessageBox::Yes | QMessageBox::No );
-        if( QMessageBox::Yes != answ ) {
+        StatisticalReportController dialog(":ugene/html/version_news.html");
+        dialog.exec();
+        if( !dialog.isInfoSharingAccepted() ) {
              AppContext::getAppSettings()->getUserAppsSettings()->setEnableCollectingStatistics( false );
              return result;
          }

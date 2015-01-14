@@ -59,5 +59,6 @@
         <file>images/welcome_page/welcome_btn_workflow.png</file>
         <file>html/welcome_page.css</file>
         <file>html/welcome_page.html</file>
+        <file>html/version_news.html</file>
     </qresource>
 </RCC>

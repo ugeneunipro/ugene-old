@@ -27,6 +27,7 @@ HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/project_view/ProjectViewDocTree.h \
            src/project_view/ProjectViewImpl.h \
            src/shtirlitz/Shtirlitz.h \
+           src/shtirlitz/StatisticalReportController.h \
            src/task_view/TaskStatusBar.h \
            src/task_view/TaskViewController.h \
            src/app_settings/directories_settings/DirectoriesSettingsGUIController.h \
@@ -57,6 +58,7 @@ FORMS += src/app_settings/directories_settings/ui/DirectoriesSettingsWidget.ui \
          src/project_support/ui/SequenceReadingModeSelectorDialog.ui \
          src/project_support/ui/SaveProjectDialog.ui \
          src/project_view/ui/ProjectViewWidget.ui \
+         src/shtirlitz/ui/StatisticalReport.ui \
          src/welcome_page/ui/WelcomePageWidget.ui
 SOURCES += src/Main.cpp \
            src/app_settings/AppSettingsDialogController.cpp \
@@ -85,6 +87,7 @@ SOURCES += src/Main.cpp \
            src/project_view/ProjectViewDocTree.cpp \
            src/project_view/ProjectViewImpl.cpp \
            src/shtirlitz/Shtirlitz.cpp \
+           src/shtirlitz/StatisticalReportController.cpp \
            src/task_view/TaskStatusBar.cpp \
            src/task_view/TaskViewController.cpp \
            src/app_settings/directories_settings/DirectoriesSettingsGUIController.cpp \
