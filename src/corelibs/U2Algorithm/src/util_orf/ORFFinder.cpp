@@ -84,8 +84,8 @@ void ORFFindAlgorithm::find(
     if (isDirect(cfg.strand)) {
         QList<int> start[3];
         if (!mustInit) {
-            for (int i=0; i<3;i++) {
-                int frame = (cfg.searchRegion.startPos + i)%3;
+            for (int i = 0; i < 3; i++) {
+                int frame = (cfg.searchRegion.startPos + i) % 3;
                 start[frame].append(cfg.searchRegion.startPos + i);
             }
         }
@@ -183,11 +183,11 @@ void ORFFindAlgorithm::find(
 
         if (!mustFit && !stopFlag && !circularSearch) {
             //check if non-terminated ORFs remained
-            for (int i=0; i<3;i++) {
-                foreach(int initiator, start[i]) {
-                    int len = end - initiator - i;
-                    len -= len%3;
-                    if (len>=minLen && !os.isCoR()) {
+            for (int i = 0; i < 3; i++) {
+                foreach (int initiator, start[i]) {
+                    int len = end - initiator;
+                    len -= len % 3;
+                    if (len >= minLen && !os.isCoR()) {
                         rl->onResult(ORFFindResult(U2Region(initiator, len), i + 1),os);
                     }
                 }
@@ -200,11 +200,12 @@ void ORFFindAlgorithm::find(
 
         QList<int> start[3];
         if (!mustInit) {
-            for (int i=0; i<3;i++) {
-                int frame = (cfg.searchRegion.endPos()-1 - i)%3;
-                start[frame].append(cfg.searchRegion.endPos()-1 - i);
+            for (int i = 0; i < 3; i++) {
+                int frame = (cfg.searchRegion.endPos() - i) % 3;
+                start[frame].append(cfg.searchRegion.endPos() - 1 - i);
             }
         }
+
         qint64 end = cfg.searchRegion.startPos;
         seqPointer = 0;
         for(int i = cfg.searchRegion.endPos()-1; i >= end && !stopFlag && !os.isCoR();i--, leftTillPercent--,seqPointer++) {
@@ -305,13 +306,14 @@ void ORFFindAlgorithm::find(
                 }
             }
         }
+
         if (!mustFit && !stopFlag && !circularSearch) {
             //check if non-terminated ORFs remained
-            for (int i=0; i<3;i++) {
-                foreach(int initiator, start[i]) {
-                    int ind = end + i%3;
-                    int len = initiator + 3 - ind;
-                    len -= len%3;
+            for (int i = 0; i < 3; i++) {
+                foreach (int initiator, start[i]) {
+                    int ind = end + i % 3;
+                    int len = initiator - ind + 1;
+                    len -= len % 3;
                     if (len >= minLen && !os.isCoR()) {
                         rl->onResult(ORFFindResult(U2Region(ind, len), i - 3),os);
                     }
