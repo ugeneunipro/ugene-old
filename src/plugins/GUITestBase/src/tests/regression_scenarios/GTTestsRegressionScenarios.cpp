@@ -13025,6 +13025,37 @@ GUI_TEST_CLASS_DEFINITION(test_3819) {
     GTUtilsLog::check(os, logTracer);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3850) {
+    GTLogTracer l;
+
+    //1. Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/human_T1.fa");
+
+    //2. Open "Search in Sequence" options panel tab.
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+
+    //5. Check "Use pattern name" checkbox.
+    GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os, true);
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox*>(os, "usePatternNamesCheckBox"), true);
+
+    //3. Check "Load patterns from file" checkbox.
+    GTUtilsOptionPanelSequenceView::toggleInputFromFilePattern(os);
+
+    //4. Set "_common_data/fasta/shuffled.fa" as input file.
+    GTUtilsOptionPanelSequenceView::enterPatternFromFile(os, testDir + "_common_data/fasta", "shuffled.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected state: there are 1802 results found.
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/1802"), "Results string not match");
+
+    //6. Click "Create annotations" button.
+    GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected state: 1802 annotations are created, each has the same name as the pattern has.
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3868) {
     //1. Open "VectorNTI_CAN_READ.gb"
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/", "VectorNTI_CAN_READ.gb");
