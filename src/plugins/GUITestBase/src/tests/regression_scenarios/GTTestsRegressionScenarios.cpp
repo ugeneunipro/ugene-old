@@ -8389,7 +8389,7 @@ GUI_TEST_CLASS_DEFINITION(test_2891) {
     GTFileDialog::openFile(os, dataDir + "/workflow_samples/NGS/cistrome/", "chip_seq.uwl");
     GTGlobals::sleep();
 
-    GTUtilsWorkflowDesigner::click(os, "Gets paths of files");
+    GTUtilsWorkflowDesigner::click(os, "Read Tags");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Chip-seq/input_data/", "chr2.bed");
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
