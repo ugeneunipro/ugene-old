@@ -1277,6 +1277,20 @@ GUI_TEST_CLASS_DEFINITION(test_1457){
     CHECK_SET_ERR(go_op->isEnabled(), "go button on option panel is not enabled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1458){
+    //1. Open document "../Samples/ACE/BL060C3.ace"
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AlignmentEditor));
+    GTFileDialog::openFile(os, dataDir + "samples/ACE/BL060C3.ace");
+
+    //2. Right click on the document in project tab
+    //Excepted state: popup menu has been appeared
+    //3. Select "Export document"
+    //4. Check, that for all output file formats export work correctly
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export document"));
+    GTUtilsDialog::waitForDialog(os, new ExportDocumentDialogFiller(os, sandBoxDir, "test_1458.fa", ExportDocumentDialogFiller::FASTA, false, true));
+    GTUtilsProjectTreeView::click(os, "BL060C3.ace", Qt::RightButton);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1435) {
 //    1) Open WD
 //    2) Click Create element with command line tool

@@ -62,6 +62,7 @@ path(_path), name(_name), useMethod(method), format(_format), compressFile(compr
     comboBoxItems[VCF] = "VCFv4";
     comboBoxItems[TEXT] = "Plain text";
     comboBoxItems[NWK] = "Newick Standard";
+    comboBoxItems[FASTA] = "FASTA";
 }
 
 #define GT_METHOD_NAME "run"
