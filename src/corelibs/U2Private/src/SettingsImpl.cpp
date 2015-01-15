@@ -169,7 +169,7 @@ QString SettingsImpl::toVersionKey(const QString& key) const {
 
 QString SettingsImpl::toMinorVersionKey(const QString& key) const {
     static QString VERSION_KEY_SUFFIX = "/" + QString::number(Version::appVersion().major)
-        + QString::number(Version::appVersion().minor);
+        + "." + QString::number(Version::appVersion().minor);
 
     if (key.endsWith("/")) {
         return key + VERSION_KEY_SUFFIX + "/";
