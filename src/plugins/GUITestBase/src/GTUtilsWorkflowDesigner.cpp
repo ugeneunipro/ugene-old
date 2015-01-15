@@ -25,6 +25,7 @@
 #include <QListWidget>
 #include <QSpinBox>
 #include <QTableView>
+#include <QTableWidget>
 #include <QToolButton>
 #include <QTreeWidget>
 #include <QtCore/qglobal.h>
@@ -554,12 +555,42 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
     GTGlobals::sleep(500);
 
     //SET VALUE
+    setCellValue(os, table, value, type, method);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setTableValue"
+void GTUtilsWorkflowDesigner::setTableValue(U2OpStatus &os,  QString parameter, QVariant value, valueType type, QTableWidget *table, GTGlobals::UseMethod method){
+    int row = -1;
+    for(int i = 0; i<table->rowCount(); i++){
+        QString s = table->item(i,0)->text();
+        if(s == parameter){
+            row = i;
+            break;
+        }
+    }
+    GT_CHECK(row != -1, QString("parameter not found: %1").arg(parameter));
+
+    QRect rect = table->visualItemRect(table->item(row, 1));
+    QPoint globalP = table->viewport()->mapToGlobal(rect.center());
+    GTMouseDriver::moveTo(os, globalP);
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(500);
+
+
+    //SET VALUE
+    setCellValue(os, table, value, type, method);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setCellValue"
+void GTUtilsWorkflowDesigner::setCellValue(U2OpStatus &os, QWidget* parent, QVariant value, valueType type, GTGlobals::UseMethod method){
     bool ok = true;
     switch(type){
     case(spinValue):{
         int spinVal = value.toInt(&ok);
         GT_CHECK(ok,"Wrong input. Int required for GTUtilsWorkflowDesigner::spinValue")
-        QSpinBox* box = qobject_cast<QSpinBox*>(table->findChild<QSpinBox*>());
+        QSpinBox* box = qobject_cast<QSpinBox*>(parent->findChild<QSpinBox*>());
         GT_CHECK(box, "spinBox not found. Widget in this cell might be not QSpinBox");
         GTSpinBox::setValue(os, box, spinVal, GTGlobals::UseKeyBoard);
         break;
@@ -567,14 +598,14 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
     case(doubleSpinValue):{
         double spinVal = value.toDouble(&ok);
         GT_CHECK(ok,"Wrong input. Double required for GTUtilsWorkflowDesigner::doubleSpinValue")
-        QDoubleSpinBox* box = qobject_cast<QDoubleSpinBox*>(table->findChild<QDoubleSpinBox*>());
+        QDoubleSpinBox* box = qobject_cast<QDoubleSpinBox*>(parent->findChild<QDoubleSpinBox*>());
         GT_CHECK(box, "QDoubleSpinBox not found. Widget in this cell might be not QDoubleSpinBox");
         GTDoubleSpinbox::setValue(os, box, spinVal, GTGlobals::UseKeyBoard);
         break;
     }
     case(comboValue):{
         int comboVal = value.toInt(&ok);
-        QComboBox* box = qobject_cast<QComboBox*>(table->findChild<QComboBox*>());
+        QComboBox* box = qobject_cast<QComboBox*>(parent->findChild<QComboBox*>());
         GT_CHECK(box, "QComboBox not found. Widget in this cell might be not QComboBox");
 
         if(!ok){
@@ -591,7 +622,7 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
     }
     case(textValue):{
         QString lineVal = value.toString();
-        QLineEdit* line = qobject_cast<QLineEdit*>(table->findChild<QLineEdit*>());
+        QLineEdit* line = qobject_cast<QLineEdit*>(parent->findChild<QLineEdit*>());
         GT_CHECK(line, "QLineEdit not found. Widget in this cell might be not QLineEdit");
         GTLineEdit::setText(os, line, lineVal);
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
@@ -599,7 +630,7 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
     }
     case ComboChecks: {
         QStringList values = value.value<QStringList>();
-        QComboBox *box = qobject_cast<QComboBox*>(table->findChild<QComboBox*>());
+        QComboBox *box = qobject_cast<QComboBox*>(parent->findChild<QComboBox*>());
         GT_CHECK(box, "QComboBox not found");
         GTComboBox::checkValues(os, box, values);
 #ifndef Q_OS_WIN
@@ -608,6 +639,22 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
         break;
     }
     }
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getInputPortsTable"
+QTableWidget* GTUtilsWorkflowDesigner::getInputPortsTable(U2OpStatus &os, int index){
+    QWidget* inputPortBox = GTWidget::findWidget(os, "inputPortBox");
+    QList<QTableWidget*> tables= inputPortBox->findChildren<QTableWidget*>();
+    int n = tables.count();
+    foreach (QTableWidget* w, tables) {
+        if(!w->isVisible()){
+            tables.removeOne(w);
+        }
+    }
+    int number = tables.count();
+    GT_CHECK_RESULT(index<number, QString("there are %1 visiable tables for input ports").arg(number), NULL);
+    return tables[index];
 }
 #undef GT_METHOD_NAME
 

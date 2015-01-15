@@ -1636,11 +1636,12 @@ GUI_TEST_CLASS_DEFINITION(test_1508) {
 GUI_TEST_CLASS_DEFINITION(test_1510) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addSample(os, "Call variants");
-    GTUtilsWorkflowDesigner::click(os, "To BAM");
+    GTUtilsWorkflowDesigner::click(os, "Call Variants");
     GTGlobals::sleep(500);
 
-    QWidget* inputPortBox = GTWidget::findWidget(os, "inputPortBox");
-    GTWidget::getAllWidgetsInfo(os, inputPortBox);
+    QTableWidget* w = GTUtilsWorkflowDesigner::getInputPortsTable(os, 1);
+    GTUtilsWorkflowDesigner::setTableValue(os, "Source URL", 2, GTUtilsWorkflowDesigner::comboValue, w);
+    //GTWidget::getAllWidgetsInfo(os, inputPortBox);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1511) {

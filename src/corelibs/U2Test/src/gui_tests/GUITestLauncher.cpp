@@ -65,7 +65,7 @@ bool GUITestLauncher::renameTestLog(const QString& testName) {
     QString outFilePath = testOutDir() + "/logs/";
 
     QFile outLog(outFilePath + outFileName);
-    return outLog.rename("failed_" + outFileName);
+    return outLog.rename(outFilePath + "failed_" + outFileName);
 }
 
 void GUITestLauncher::run() {

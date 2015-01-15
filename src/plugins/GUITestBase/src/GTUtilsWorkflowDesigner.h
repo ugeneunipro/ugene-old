@@ -33,6 +33,7 @@
 #endif
 
 class QTableView;
+class QTableWidget;
 
 namespace U2 {
 class WorkflowProcessItem;
@@ -113,7 +114,12 @@ public:
 
     //sets oneparameter worker parameter
     static void setParameter(U2OpStatus& os, QString parameter, QVariant value, valueType type, GTGlobals::UseMethod method = GTGlobals::UseMouse);
+    static void setTableValue(U2OpStatus& os, QString parameter, QVariant value, valueType type, QTableWidget* table, GTGlobals::UseMethod method = GTGlobals::UseMouse);
+    static void setCellValue(U2OpStatus& os, QWidget* parent, QVariant value, valueType type, GTGlobals::UseMethod method);
     static QStringList getAllParameters(U2OpStatus& os);
+
+
+    static QTableWidget* getInputPortsTable(U2OpStatus &os, int index);
 
     //gets oneparameter worker parameter
     static QString getParameter(U2OpStatus& os, QString parameter);
