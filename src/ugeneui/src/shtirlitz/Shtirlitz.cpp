@@ -88,43 +88,43 @@ QUuid Shtirlitz::getUniqueUgeneId() {
 QList<Task*> Shtirlitz::wakeup() {
     QList<Task*> result;
     Settings * s = AppContext::getSettings();
-    bool thisVersionFirstLaunch, allVersionsFirstLaunch;
-    getFirstLaunchInfo(thisVersionFirstLaunch, allVersionsFirstLaunch);
+    bool allVersionsFirstLaunch = true;
+    bool minorVersionFirstLaunch = true;
+    getFirstLaunchInfo(allVersionsFirstLaunch, minorVersionFirstLaunch);
 
     QString allVersionsKey = SETTINGS_NOT_FIRST_LAUNCH;
     QString thisVersionsKey = s->toVersionKey(SETTINGS_NOT_FIRST_LAUNCH);
+    QString minorVersionFirstLaunchKey = s->toMinorVersionKey(SETTINGS_NOT_FIRST_LAUNCH);
     if (allVersionsFirstLaunch) {
         s->setValue(allVersionsKey, QVariant(true));
     }
-    if (thisVersionFirstLaunch) {
-        s->setValue(thisVersionsKey, QVariant(true));
+    if (minorVersionFirstLaunch) {
+        s->setValue(minorVersionFirstLaunchKey, QVariant(true));
     }
     
     // Do nothing if Shtirlitz was disabled
      if (QProcess::systemEnvironment().contains(ENV_UGENE_DEV)) {
          return result;
      }
-
-    bool enabledByUser = AppContext::getAppSettings()->getUserAppsSettings()->isStatisticsCollectionEnabled();
-    
+ 
     // Check if this version of UGENE is launched for the first time 
     // and user did not enabled stats before -> ask to enable
     // Do not ask to enable it twice for different versions!
-    if( thisVersionFirstLaunch && !enabledByUser) {
+    if(minorVersionFirstLaunch) {
         StatisticalReportController dialog(":ugene/html/version_news.html");
         dialog.exec();
         if( !dialog.isInfoSharingAccepted() ) {
-             AppContext::getAppSettings()->getUserAppsSettings()->setEnableCollectingStatistics( false );
-             return result;
-         }
-         AppContext::getAppSettings()->getUserAppsSettings()->setEnableCollectingStatistics( true );
-         coreLog.details( ShtirlitzTask::tr("Shtirlitz is sending the first-time report") );
+            AppContext::getAppSettings()->getUserAppsSettings()->setEnableCollectingStatistics( false );
+            return result;
+        }
+        AppContext::getAppSettings()->getUserAppsSettings()->setEnableCollectingStatistics( true );
+        coreLog.details( ShtirlitzTask::tr("Shtirlitz is sending the first-time report") );
         result << sendSystemReport();
         //Leave a mark that the first-time report was sent
     } 
 
     // Check if previous report was sent more than a week ago
-    if( !allVersionsFirstLaunch && enabledByUser ) {
+    if(!allVersionsFirstLaunch && AppContext::getAppSettings()->getUserAppsSettings()->isStatisticsCollectionEnabled()) {
         QVariant prevDateQvar = AppContext::getSettings()->getValue( SETTINGS_PREVIOUS_REPORT_DATE );
         QDate prevDate = prevDateQvar.toDate();
         int daysPassed = prevDate.isValid() ? prevDate.daysTo(QDate::currentDate()) : 0;
@@ -247,17 +247,17 @@ void Shtirlitz::getOsNameAndVersion( QString & name, QString & version ) {
 #endif
 }
 
-void Shtirlitz::getFirstLaunchInfo(bool& thisVersion, bool& allVersions) {
+void Shtirlitz::getFirstLaunchInfo(bool& allVersions, bool& minorVersions) {
     Settings* settings = AppContext::getSettings();
     
     QString allVersionsKey = SETTINGS_NOT_FIRST_LAUNCH;
-    QString thisVersionsKey = settings->toVersionKey(SETTINGS_NOT_FIRST_LAUNCH);
+    QString minorVersionsKey = settings->toMinorVersionKey(SETTINGS_NOT_FIRST_LAUNCH);
 
-    QVariant launchedAllQvar = settings->getValue( allVersionsKey);
-    QVariant launchedThisQvar = settings->getValue( thisVersionsKey);
+    QVariant launchedAllQvar = settings->getValue(allVersionsKey);
+    QVariant launchedThisMajorQvar = settings->getValue(minorVersionsKey);
     
     allVersions = (!launchedAllQvar.isValid())  || launchedAllQvar.isNull();
-    thisVersion = (!launchedThisQvar.isValid()) || launchedThisQvar.isNull();
+    minorVersions = (!launchedThisMajorQvar.isValid()) || launchedThisMajorQvar.isNull();
 }
 
 QString Shtirlitz::tr( const char * str ) {

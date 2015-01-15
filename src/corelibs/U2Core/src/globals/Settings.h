@@ -44,6 +44,7 @@ public:
     virtual void setValue(const QString& key, const QVariant& value, bool versionedValue = false) = 0;
 
     virtual QString toVersionKey(const QString& key) const = 0;
+    virtual QString toMinorVersionKey(const QString& key) const = 0;
 
     virtual void sync()=0;
     virtual QString  fileName() const = 0;

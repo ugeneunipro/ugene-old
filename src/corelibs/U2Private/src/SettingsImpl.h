@@ -45,6 +45,7 @@ public:
     virtual void setValue(const QString& key, const QVariant& value, bool versionedValue = false);
 
     virtual QString toVersionKey(const QString& key) const;
+    virtual QString toMinorVersionKey(const QString& key) const;
 
     virtual void sync();
 

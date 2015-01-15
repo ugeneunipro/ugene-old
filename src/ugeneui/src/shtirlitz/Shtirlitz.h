@@ -50,7 +50,7 @@ private:
 
     static void getOsNameAndVersion( QString & name, QString & version );
 
-    static void getFirstLaunchInfo(bool& thisVersion, bool& allVersions);
+    static void getFirstLaunchInfo(bool& allVersions, bool& majorVersions);
     static bool enabled();
 
     //ugly stub for convenience - calls ShtirlitzPlugin::tr
