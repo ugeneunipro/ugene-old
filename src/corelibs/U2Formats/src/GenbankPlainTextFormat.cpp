@@ -547,7 +547,11 @@ void GenbankPlainTextFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, 
     }
 
     //write tool mark
-    QList<GObject*> annsAndSeqObjs; annsAndSeqObjs<<anns; if (seq!=NULL) {annsAndSeqObjs<<seq;}
+    QList<GObject*> annsAndSeqObjs;
+    annsAndSeqObjs << anns;
+    if (seq!=NULL) {
+        annsAndSeqObjs<<seq;
+    }
     if (!annsAndSeqObjs.isEmpty()) {
         QString unimark = annsAndSeqObjs[0]->getGObjectName();
         if (!writeKeyword(io, os, UGENE_MARK, unimark, false)) {
@@ -620,6 +624,25 @@ static QString padToLen(const QString& s, int width) {
     }
 }
 
+static QString detectTopology(const QString& savedTopology, U2SequenceObject* so) {
+    CHECK(!savedTopology.isEmpty(), QString());
+    SAFE_POINT(so != NULL, "U2SequenceObject is NULL", QString());
+
+    if (savedTopology == EMBLGenbankAbstractDocument::LOCUS_TAG_LINEAR) {
+        if (so->isCircular()) {
+            return EMBLGenbankAbstractDocument::LOCUS_TAG_CIRCULAR;
+        } else {
+            return EMBLGenbankAbstractDocument::LOCUS_TAG_LINEAR;
+        }
+    } else {
+        if (!so->isCircular()) {
+            return EMBLGenbankAbstractDocument::LOCUS_TAG_LINEAR;
+        } else {
+            return EMBLGenbankAbstractDocument::LOCUS_TAG_CIRCULAR;
+        }
+    }
+}
+
 static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so, QString& locusStrFromAttr) {
     QString loc, date;
     if (so) {
@@ -637,24 +660,19 @@ static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so, QString
             QString& mol = loi.molecule;
             if (mol.size() >= 3 && mol.at(2) != '-') loc.append("   ");
             loc = padToLen(loc.append(mol), 43);
-            loc = padToLen(loc.append(loi.topology), 52);
+            loc = padToLen(loc.append( detectTopology(loi.topology, so) ), 52);
             loc = loc.append(loi.division);
-            if (so->isCircular()) {
-                loc = loc.append(" ");
-                loc = loc.append(EMBLGenbankAbstractDocument::LOCUS_TAG_CIRCULAR);
-            }
             date = loi.date;
         } else if (!locusStrFromAttr.isEmpty()){
 
             QStringList tokens = locusStrFromAttr.split(" ", QString::SkipEmptyParts);
             assert(!tokens.isEmpty());
             loc = padToLen(loc.append(tokens[2]), 43);
-            loc = padToLen(loc.append(tokens[4]), 52);
+            loc = padToLen(loc.append( detectTopology(tokens[4], so) ), 52);
             loc = loc.append(tokens[3]);
-        }
-        if (so->isCircular()) {
-            loc = loc.append(" ");
-            loc = loc.append(EMBLGenbankAbstractDocument::LOCUS_TAG_CIRCULAR);
+        } else if (so->isCircular()) {
+                loc = loc.append(" ");
+                loc = loc.append(EMBLGenbankAbstractDocument::LOCUS_TAG_CIRCULAR);
         }
     } else {
         assert(!aos.isEmpty());

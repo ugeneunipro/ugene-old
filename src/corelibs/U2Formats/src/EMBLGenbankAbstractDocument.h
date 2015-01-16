@@ -52,6 +52,7 @@ public:
     static const QString UGENE_MARK;
     static const QString DEFAULT_OBJ_NAME;
     static const QString LOCUS_TAG_CIRCULAR;
+    static const QString LOCUS_TAG_LINEAR;
 
     // move to utils??
     static QString genObjectName(QSet<QString>& usedNames, const QString& name, const QVariantMap& info, int n, const GObjectType& t);
