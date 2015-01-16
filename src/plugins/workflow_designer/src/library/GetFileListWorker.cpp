@@ -64,9 +64,13 @@ void GetFileListWorker::init() {
 Task * GetFileListWorker::tick() {
     if (files->hasNext()) {
         QVariantMap m;
-        m[BaseSlots::URL_SLOT().getId()] = files->getNextFile();
-        m[BaseSlots::DATASET_SLOT().getId()] = files->getLastDatasetName();
-        outChannel->put(Message(outChannel->getBusType(), m));
+        QString url = files->getNextFile();
+        QString datasetName = files->getLastDatasetName();
+        m[BaseSlots::URL_SLOT().getId()] = url;
+        m[BaseSlots::DATASET_SLOT().getId()] = datasetName;
+        MessageMetadata metadata(url, datasetName);
+        context->getMetadataStorage().put(metadata);
+        outChannel->put(Message(outChannel->getBusType(), m, metadata.getId()));
     } else {
         setDone();
         outChannel->setEnded();
