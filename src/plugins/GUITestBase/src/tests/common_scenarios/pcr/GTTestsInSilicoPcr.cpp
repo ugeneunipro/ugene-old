@@ -246,15 +246,15 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     //2. Open the PCR OP.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_IN_SILICO_PCR"));
 
-    //3. Enter the forward primer "AGGCCCTTTCGTCTCGCGCGTTTCGGTGATG".
-    GTUtilsPcr::setPrimer(os, U2Strand::Direct, "AGGCCCTTTCGTCTCGCGCGTTTCGGTGATG");
+    //3. Enter the forward primer "AGACTCTTTCGTCTCACGCACTTCGCTGATA".
+    GTUtilsPcr::setPrimer(os, U2Strand::Direct, "AGACTCTTTCGTCTCACGCACTTCGCTGATA");
 
     //Expected: primer warning is hidden.
     QWidget *warning = GTWidget::findWidget(os, "warningLabel");
     CHECK_SET_ERR(!warning->isVisible(), "Primer warning is visible");
 
-    //4. Enter the reverse primer  and "TGACCGTCTCCGGGAGCTGCATGTGTCAGAGGTTTT".
-    GTUtilsPcr::setPrimer(os, U2Strand::Complementary, "TGACCGTCTCCGGGAGCTGCATGTGTCAGAGGTTTT");
+    //4. Enter the reverse primer  and "TGACCGTCTCAGGAGGTGGTTGTGTCAGAGGTTTT".
+    GTUtilsPcr::setPrimer(os, U2Strand::Complementary, "TGACCGTCTCAGGAGGTGGTTGTGTCAGAGGTTTT");
 
     //Expected: primer warning is shown, the find button text is "Find product(s) anyway".
     QAbstractButton *findButton = dynamic_cast<QAbstractButton*>(GTWidget::findWidget(os, "findProductButton"));
@@ -268,7 +268,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTMouseDriver::click(os);
 
     //6. Remove the last character of the forward primer.
-    GTUtilsPcr::setPrimer(os, U2Strand::Direct, "AGGCCCTTTCGTCTCGCGCGTTTCGGTGAT");
+    GTUtilsPcr::setPrimer(os, U2Strand::Direct, "AGACTCTTTCGTCTCACGCACTTCGCTGAT");
     //Expected: the warning is hidden, the find button text is "Find product(s)".
     CHECK_SET_ERR(!warning->isVisible(), "Primer warning is visible");
     CHECK_SET_ERR(findButton->text() == "Find product(s)", "Wrong find button text 2");
