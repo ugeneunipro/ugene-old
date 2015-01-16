@@ -43,6 +43,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/WorkflowContext.h \
            src/model/WorkflowEnv.h \
            src/model/WorkflowManager.h \
+           src/model/WorkflowMetadata.h \
            src/model/WorkflowScriptEngine.h \
            src/model/WorkflowTransport.h \
            src/run/WorkflowMonitor.h \
@@ -149,6 +150,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/SchemaActorsRegistry.cpp \
            src/model/WorkflowContext.cpp \
            src/model/WorkflowEnv.cpp \
+           src/model/WorkflowMetadata.cpp \
            src/model/WorkflowScriptEngine.cpp \
            src/model/WorkflowTransport.cpp \
            src/run/WorkflowMonitor.cpp \

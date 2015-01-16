@@ -114,7 +114,9 @@ void GenericDocReader::readObjectFromDb(const QString &url, const QString &datas
     m[BaseSlots::URL_SLOT().getId()] = url;
     m[BaseSlots::DATASET_SLOT().getId()] = datasetName;
     addReadDbObjectToData(url, m);
-    cache.append(Message(mtype, m));
+    WorkflowMetadata metadata(url, datasetName);
+    context->getMetadataStorage().put(metadata);
+    cache.append(Message(mtype, m, metadata.getId()));
 }
 
 void GenericDocReader::addReadDbObjectToData(const QString & /*objUrl*/, QVariantMap & /*data*/) {
@@ -167,7 +169,9 @@ void GenericMSAReader::onTaskFinished(Task *task) {
         m[BaseSlots::URL_SLOT().getId()] = t->url;
         m[BaseSlots::DATASET_SLOT().getId()] = t->datasetName;
         m[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = msaHandler;
-        cache.append(Message(mtype, m));
+        WorkflowMetadata metadata(t->url, t->datasetName);
+        context->getMetadataStorage().put(metadata);
+        cache.append(Message(mtype, m, metadata.getId()));
     }
 }
 
@@ -283,11 +287,14 @@ void GenericSeqReader::onTaskFinished(Task *task) {
     LoadSeqTask* t = qobject_cast<LoadSeqTask*>(task);
     int limit = cfg[GenericSeqActorProto::LIMIT_ATTR].toInt();
     int currentCount = 0;
+    QString datasetName = t->cfg.value(BaseSlots::DATASET_SLOT().getId(), "").toString();
+    WorkflowMetadata metadata(t->url, datasetName);
+    context->getMetadataStorage().put(metadata);
     foreach(const QVariantMap& m, t->results) {
         if (0 != limit && currentCount >= limit) {
             break;
         }
-        cache.append(Message(mtype, m));
+        cache.append(Message(mtype, m, metadata.getId()));
         currentCount++;
     }
     t->results.clear();

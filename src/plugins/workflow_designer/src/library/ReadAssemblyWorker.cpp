@@ -89,13 +89,15 @@ void ReadAssemblyWorker::onTaskFinished(Task *task) {
     ReadDocumentTask *t = qobject_cast<ReadDocumentTask*>(task);
     QList<SharedDbiDataHandler> result = t->takeResult();
     QString url = t->getUrl();
+    WorkflowMetadata metadata(t->getUrl(), t->getDatasetName());
+    context->getMetadataStorage().put(metadata);
     foreach(const SharedDbiDataHandler &handler, result) {
         QVariantMap m;
         m[BaseSlots::URL_SLOT().getId()] = url;
         m[BaseSlots::DATASET_SLOT().getId()] = t->getDatasetName();
         m[BaseSlots::ASSEMBLY_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(handler);
 
-        cache.append(Message(mtype, m));
+        cache.append(Message(mtype, m, metadata.getId()));
     }
     foreach (const QString &url, t->getProducedFiles()) {
         context->getMonitor()->addOutputFile(url, getActor()->getId());

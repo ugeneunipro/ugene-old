@@ -804,8 +804,8 @@ void SeqWriter::takeParameters(U2OpStatus &os) {
     }
 }
 
-QStringList SeqWriter::takeUrlList(const QVariantMap &data, U2OpStatus &os) {
-    QStringList urls = BaseDocWriter::takeUrlList(data, os);
+QStringList SeqWriter::takeUrlList(const QVariantMap &data, int metadataId, U2OpStatus &os) {
+    QStringList urls = BaseDocWriter::takeUrlList(data, metadataId, os);
     CHECK_OP(os, urls);
     SAFE_POINT(1 == urls.size(), "Several urls in the output attribute", urls);
 

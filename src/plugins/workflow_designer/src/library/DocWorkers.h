@@ -56,7 +56,7 @@ protected:
     virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
 
     virtual void takeParameters(U2OpStatus &os);
-    virtual QStringList takeUrlList(const QVariantMap &data, U2OpStatus &os);
+    virtual QStringList takeUrlList(const QVariantMap &data, int metadataId, U2OpStatus &os);
     virtual bool isStreamingSupport() const;
 };
 

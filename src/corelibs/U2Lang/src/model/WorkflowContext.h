@@ -28,6 +28,7 @@
 
 #include <U2Lang/Datatype.h>
 #include <U2Lang/DbiDataStorage.h>
+#include <U2Lang/WorkflowMetadata.h>
 
 namespace U2 {
 using namespace FileStorage;
@@ -67,9 +68,12 @@ public:
     QString workingDir() const;
     QString absolutePath(const QString &relative) const;
 
+    WorkflowMetadataStorage & getMetadataStorage();
+
 private:
     WorkflowMonitor *monitor;
     DbiDataStorage *storage;
+    WorkflowMetadataStorage metadataStorage;
     QMap<QString, Actor*> procMap;
 
     QMutex addFileMutex;

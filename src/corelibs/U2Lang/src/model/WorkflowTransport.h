@@ -36,26 +36,22 @@ namespace Workflow {
  */
 class U2LANG_EXPORT Message {
 public:
-    Message(DataTypePtr _t, const QVariant& d);
+    Message(DataTypePtr t, const QVariant &d, int metadataId = -1);
 
-    int getId() const;
     DataTypePtr getType() const;
     QVariant getData() const;
     bool isEmpty() const;
+    int getMetadataId() const;
 
     static Message getEmptyMapMessage();
 
 private:
-    static int nextid();
-
-private:
-    // message identifier
-    int id;
     // type of data
     DataTypePtr t;
     // data itself
     QVariant data;
-
+    // message metadata identifier
+    int metadataId;
 }; // Message
 
 /**

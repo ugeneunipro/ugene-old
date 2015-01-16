@@ -76,6 +76,8 @@ public:
     virtual void prepare();
     virtual void run();
 
+    const QString & getUrl() const;
+    const QString & getDatasetName() const;
     QList<QVariantMap> takeResults();
 
 private:

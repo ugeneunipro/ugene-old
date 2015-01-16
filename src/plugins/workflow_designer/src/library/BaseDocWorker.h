@@ -86,7 +86,7 @@ protected:
     virtual void storeEntry(IOAdapter *, const QVariantMap &, int) {}
     virtual Task * getWriteDocTask(Document *doc, const SaveDocFlags &flags);
     virtual void takeParameters(U2OpStatus &os);
-    virtual QStringList takeUrlList(const QVariantMap &data, U2OpStatus &os);
+    virtual QStringList takeUrlList(const QVariantMap &data, int metadataId, U2OpStatus &os);
 
 protected:
     DocumentFormat *format;

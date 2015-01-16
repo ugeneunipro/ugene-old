@@ -25,16 +25,10 @@ namespace U2 {
 
 namespace Workflow {
 
-Message::Message(DataTypePtr _t, const QVariant& d) : id(nextid()), t(_t), data(d) {
-}
+Message::Message(DataTypePtr t, const QVariant &data, int metadataId)
+: t(t), data(data), metadataId(metadataId)
+{
 
-int Message::nextid() {
-    static QAtomicInt id(0);
-    return id.fetchAndAddRelaxed(1); //memory model??
-}
-
-int Message::getId() const {
-    return id;
 }
 
 DataTypePtr Message::getType() const {
@@ -53,12 +47,16 @@ bool Message::isEmpty() const {
     }
 }
 
+int Message::getMetadataId() const {
+    return metadataId;
+}
+
 Message Message::getEmptyMapMessage() {
     static const QVariantMap emptyData;
     static const QMap<Descriptor, DataTypePtr> emptyTypeMap;
     static DataTypePtr emptyType(new MapDataType(Descriptor(), emptyTypeMap));
 
-    return Message(emptyType, emptyData);
+    return Message(emptyType, emptyData, -1);
 }
 
 } //Workflow namespace

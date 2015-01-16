@@ -202,7 +202,7 @@ void BaseDocWriter::takeParameters(U2OpStatus &os) {
     }
 }
 
-QStringList BaseDocWriter::takeUrlList(const QVariantMap &data, U2OpStatus &os) {
+QStringList BaseDocWriter::takeUrlList(const QVariantMap &data, int /*metadataId*/, U2OpStatus &os) {
     QString anUrl = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
     {
         if (anUrl.isEmpty()) {
@@ -352,7 +352,7 @@ Task * BaseDocWriter::tick() {
         }
 
         if (LocalFs == dataStorage) {
-            const QStringList urls = takeUrlList(data, os);
+            const QStringList urls = takeUrlList(data, inputMessage.getMetadataId(), os);
             CHECK_OS(os);
             storeData(urls, data, os);
             CHECK_OS(os);

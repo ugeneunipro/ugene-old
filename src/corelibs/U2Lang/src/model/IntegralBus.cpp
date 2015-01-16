@@ -82,18 +82,19 @@ inline bool equalPaths(const SlotPathMap &allPaths, const QStringList &ipath, co
     return false;
 }
 
-QVariantMap BusMap::takeMessageMap(CommunicationChannel* ch, QVariantMap &context) {
+Message BusMap::takeMessageMap(CommunicationChannel *ch, QVariantMap &context) {
     assert(input);
     Message m = ch->get();
     assert(m.getData().type() == QVariant::Map);
     QVariantMap imap = m.getData().toMap();
     context.unite(imap);
 
-    return getMessageData(m);
+    return Message(m.getType(), getMessageData(m), m.getMetadataId());
 }
 
-QVariantMap BusMap::lookMessageMap(CommunicationChannel *ch) {
-    return getMessageData(ch->look());
+Message BusMap::lookMessageMap(CommunicationChannel *ch) {
+    Message m = ch->look();
+    return Message(m.getType(), getMessageData(m), m.getMetadataId());
 }
 
 QVariantMap BusMap::getMessageData(const Message &m) const {
@@ -200,7 +201,7 @@ static QMap<QString, QStringList> getListMappings(const QStrStrMap& busMap, cons
 
 
 IntegralBus::IntegralBus(Port* p)
-: busType(p->getType()), complement(NULL), portId(p->getId()), takenMsgs(0), workflowContext(NULL) {
+: busType(p->getType()), contextMetadataId(-1), complement(NULL), portId(p->getId()), takenMsgs(0), workflowContext(NULL) {
     actorId = p->owner()->getId();
     QString name = p->owner()->getLabel() + "[" + p->owner()->getId()+"]";
     contextMutex = new QMutex();
@@ -265,9 +266,20 @@ CommunicationChannel * IntegralBus::getCommunication(const QString& id) {
 Message IntegralBus::get() {
     QVariantMap result;
     QVariantMap messageContext;
-    foreach (CommunicationChannel* ch, outerChannels) {
-        QVariantMap midResult = busMap->takeMessageMap(ch, messageContext);
-        result.unite(midResult);
+    int metadataId = -1;
+    foreach (CommunicationChannel *ch, outerChannels) {
+        Message message = busMap->takeMessageMap(ch, messageContext);
+        QVariantMap data = message.getData().toMap();
+        result.unite(data);
+
+        if (1 == outerChannels.size()) {
+            metadataId = message.getMetadataId();
+        } else {
+            // Actually there is always 1 item in the list because only one connection for one input port is allowed.
+            // But if there are several connections in the future then metadata will be lost as it is in the multiplexer.
+            // If you support several input connections remove this branch.
+            assert(0);
+        }
     }
 
     if (!printSlots.isEmpty()) {
@@ -288,11 +300,11 @@ Message IntegralBus::get() {
         data = result.values().at(0);
     }
     if (complement) {
-        complement->setContext(messageContext);
+        complement->setContext(messageContext, metadataId);
     }
 
     takenMsgs++;
-    return Message(busType, data);
+    return Message(busType, data, metadataId);
 }
 
 QQueue<Message> IntegralBus::getMessages(int startIndex, int endIndex) const {
@@ -309,12 +321,16 @@ QQueue<Message> IntegralBus::getMessages(int startIndex, int endIndex) const {
         < messagesFromChannels[messagesFromChannels.keys().first()].size(); ++messageCount)
     {
         QVariantMap resultingMessageMap;
+        int metadataId = -1;
         foreach(CommunicationChannel *channel, messagesFromChannels.keys()) {
-            assert(messagesFromChannels[channel][messageCount].getData().type() == QVariant::Map);
-            resultingMessageMap.unite(
-                messagesFromChannels[channel][messageCount].getData().toMap());
+            Message message = messagesFromChannels[channel][messageCount];
+            assert(message.getData().type() == QVariant::Map);
+            resultingMessageMap.unite(message.getData().toMap());
+            if (1 == outerChannels.size()) {
+                metadataId = message.getMetadataId();
+            }
         }
-        result.enqueue(Message(busType, resultingMessageMap));
+        result.enqueue(Message(busType, resultingMessageMap, metadataId));
     }
 
     return result;
@@ -322,19 +338,28 @@ QQueue<Message> IntegralBus::getMessages(int startIndex, int endIndex) const {
 
 Message IntegralBus::look() const {
     QVariantMap result;
+    int metadataId = -1;
     foreach(CommunicationChannel* channel, outerChannels) {
         assert(channel != NULL);
         Message message = channel->look();
         assert(message.getData().type() == QVariant::Map);
         result.unite(message.getData().toMap());
+        if (1 == outerChannels.size()) {
+            metadataId = message.getMetadataId();
+        }
     }
-    return Message(busType, result);
+    return Message(busType, result, metadataId);
 }
 
 Message IntegralBus::lookMessage() const {
     QVariantMap result;
+    int metadataId = -1;
     foreach (CommunicationChannel* ch, outerChannels) {
-        result.unite(busMap->lookMessageMap(ch));
+        Message message = busMap->lookMessageMap(ch);
+        result.unite(message.getData().toMap());
+        if (1 == outerChannels.size()) {
+            metadataId = message.getMetadataId();
+        }
     }
     QVariant data;
     if (busType->isMap()) {
@@ -342,13 +367,17 @@ Message IntegralBus::lookMessage() const {
     } else if (1 == result.size()) {
         data = result.values().first();
     }
-    return Message(busType, data);
+    return Message(busType, data, metadataId);
 }
 
 Message IntegralBus::composeMessage(const Message& m) {
     QVariantMap data(busMap->composeMessageMap(m, getContext()));
     context.clear();
-    return Message(busType, data);
+    int metadataId = m.getMetadataId();
+    if (-1 != contextMetadataId) {
+        metadataId =  contextMetadataId;
+    }
+    return Message(busType, data, metadataId);
 }
 
 void IntegralBus::put(const Message& m, bool isMessageRestored) {
@@ -445,9 +474,10 @@ IntegralBus::~IntegralBus() {
     delete busMap;
 }
 
-void IntegralBus::setContext(const QVariantMap& m) {
+void IntegralBus::setContext(const QVariantMap &m, int metadataId) {
     QMutexLocker lock(contextMutex);
     context.unite(m);
+    contextMetadataId = metadataId;
 }
 
 }//namespace Workflow

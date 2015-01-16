@@ -109,7 +109,11 @@ void ReadAnnotationsWorker::sl_datasetEnded() {
 
 void ReadAnnotationsWorker::sendData(const QList<QVariantMap> &data) {
     foreach(const QVariantMap &m, data) {
-        cache.append(Message(mtype, m));
+        QString url = m[BaseSlots::URL_SLOT().getId()].toString();
+        QString datasetName = m[BaseSlots::DATASET_SLOT().getId()].toString();
+        WorkflowMetadata metadata(url, datasetName);
+        context->getMetadataStorage().put(metadata);
+        cache.append(Message(mtype, m, metadata.getId()));
     }
 }
 

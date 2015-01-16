@@ -157,6 +157,10 @@ QString WorkflowContext::absolutePath(const QString &relative) const {
     return workingDir() + relative;
 }
 
+WorkflowMetadataStorage & WorkflowContext::getMetadataStorage() {
+    return metadataStorage;
+}
+
 bool WorkflowContext::initWorkingDir() {
     U2OpStatus2Log os;
 

@@ -40,8 +40,8 @@ public:
     BusMap(const QStrStrMap &busMap, const QMap<QString, QStringList> &listMap, const SlotPathMap &paths);
     BusMap(const QStrStrMap &busMap, bool breaksDataflow, const QString &actorId);
 
-    QVariantMap takeMessageMap(CommunicationChannel* ch, QVariantMap &context);
-    QVariantMap lookMessageMap(CommunicationChannel *ch);
+    Message takeMessageMap(CommunicationChannel *ch, QVariantMap &context);
+    Message lookMessageMap(CommunicationChannel *ch);
     QVariantMap composeMessageMap(const Message &m, const QVariantMap &context);
 
     static void parseSource(const QString &src, QString &srcId, QStringList &path);
@@ -96,7 +96,7 @@ public:
     virtual QQueue<Message> getMessages(int startIndex, int endIndex) const;
 
     virtual QVariantMap getContext() const {return context;}
-    virtual void setContext(const QVariantMap& m);
+    virtual void setContext(const QVariantMap& m, int metadataId = -1);
 
     virtual void addComplement(IntegralBus* b) {assert(!complement);complement = b;}
 
@@ -117,8 +117,9 @@ protected:
     QMap<QString, CommunicationChannel*> outerChannels;
     // busmap of port integral bus is binded to
     BusMap *busMap;
-    //
+    // context of an output message. See put() for details
     QVariantMap context;
+    int contextMetadataId;
     //
     IntegralBus* complement;
     // integral bus is binded to port with this id
