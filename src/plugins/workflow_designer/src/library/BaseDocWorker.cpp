@@ -280,8 +280,12 @@ IOAdapter * BaseDocWriter::getAdapter(const QString &url, U2OpStatus &os) {
     CHECK_OP(os, NULL);
 
     QString resultUrl = io->getURL().getURLString();
-    adapters[url] = io.data();
-    adapters[resultUrl] = io.data();
+    if (!adapters.contains(url)) {
+        adapters[url] = io.data();
+    }
+    if (!adapters.contains(resultUrl)) {
+        adapters[resultUrl] = io.data();
+        }
     usedUrls << resultUrl;
     monitor()->addOutputFile(resultUrl, getActorId());
 

@@ -92,7 +92,7 @@ namespace {
     }
 }
 
-Task * WriteAnnotationsWorker::takeParameters(int metadataId, QString &formatId, SaveDocFlags &fl, QString &resultPath, U2DbiRef &dstDbiRef,
+Task * WriteAnnotationsWorker::takeParameters(QString &formatId, SaveDocFlags &fl, QString &resultPath, U2DbiRef &dstDbiRef,
     WriteAnnotationsWorker::DataStorage &storage)
 {
     const QString storageStr = getValue<QString>(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId());
@@ -104,13 +104,6 @@ Task * WriteAnnotationsWorker::takeParameters(int metadataId, QString &formatId,
         resultPath = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
         if (formatId != CSV_FORMAT_ID && NULL == format) {
             return new FailTask(tr("Unrecognized formatId: '%1'").arg(formatId));
-        }
-        if (resultPath.isEmpty()) {
-            MessageMetadata metadata = context->getMetadataStorage().get(metadataId);
-            bool groupByDatasets = false;
-            QString suffix = getValue<QString>(BaseAttributes::URL_SUFFIX().getId());
-            QString defaultName = actor->getId() + "_output";
-            resultPath = BaseDocWriter::generateUrl(metadata, groupByDatasets, suffix, getExtension(formatId), defaultName);
         }
     } else if (BaseAttributes::SHARED_DB_DATA_STORAGE() == storageStr) {
         storage = SharedDb;
@@ -124,12 +117,26 @@ Task * WriteAnnotationsWorker::takeParameters(int metadataId, QString &formatId,
     return NULL;
 }
 
+void WriteAnnotationsWorker::updateResultPath(int metadataId, const QString &formatId, DataStorage storage, QString &resultPath) {
+    CHECK(LocalFs == storage, );
+    CHECK(resultPath.isEmpty(), );
+
+    MessageMetadata metadata = context->getMetadataStorage().get(metadataId);
+    bool groupByDatasets = false;
+    QString suffix = getValue<QString>(BaseAttributes::URL_SUFFIX().getId());
+    QString defaultName = actor->getId() + "_output";
+    resultPath = BaseDocWriter::generateUrl(metadata, groupByDatasets, suffix, getExtension(formatId), defaultName);
+}
+
 Task * WriteAnnotationsWorker::tick() {
     QString formatId;
     SaveDocFlags fl;
     QString resultPath;
     U2DbiRef dstDbiRef;
     DataStorage storage;
+
+    Task *failTask = takeParameters(formatId, fl, resultPath, dstDbiRef, storage);
+    CHECK(NULL == failTask, failTask);
 
     while(annotationsPort->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(annotationsPort);
@@ -138,11 +145,9 @@ Task * WriteAnnotationsWorker::tick() {
         }
         const QVariantMap qm = inputMessage.getData().toMap();
 
-        Task *failTask = takeParameters(inputMessage.getMetadataId(), formatId, fl, resultPath, dstDbiRef, storage);
-        CHECK(NULL == failTask, failTask);
-
         if (LocalFs == storage) {
             resultPath = resultPath.isEmpty() ? qm.value(BaseSlots::URL_SLOT().getId()).value<QString>() : resultPath;
+            updateResultPath(inputMessage.getMetadataId(), formatId, storage, resultPath);
             CHECK(!resultPath.isEmpty(), new FailTask(tr("Unspecified URL to write")));
             resultPath = context->absolutePath(resultPath);
         }

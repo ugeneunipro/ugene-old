@@ -62,7 +62,8 @@ private slots:
     void sl_saveDocTaskFinished();
 
 private:
-    Task * takeParameters(int metadataId, QString &formatId, SaveDocFlags &fl, QString &resultPath, U2DbiRef &dstDbiRef, DataStorage &storage);
+    Task * takeParameters(QString &formatId, SaveDocFlags &fl, QString &resultPath, U2DbiRef &dstDbiRef, DataStorage &storage);
+    void updateResultPath(int metadataId, const QString &formatId, DataStorage storage, QString &resultPath);
     QString fetchIncomingSequenceName(const QVariantMap &incomingData);
     QString getAnnotationName() const;
     void fetchIncomingAnnotations(const QVariantMap &incomingData, const QString &resultPath);
