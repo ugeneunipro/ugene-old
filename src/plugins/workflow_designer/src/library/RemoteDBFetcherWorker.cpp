@@ -209,7 +209,9 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
 
         DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById(TYPE);
 
-        output->put(Message(messageType, messageData));
+        MessageMetadata metadata(doc->getURLString(), "");
+        context->getMetadataStorage().put(metadata);
+        output->put(Message(messageType, messageData, metadata.getId()));
     }
 
     if (seqids.isEmpty() && idsFilePaths.isEmpty()) {
