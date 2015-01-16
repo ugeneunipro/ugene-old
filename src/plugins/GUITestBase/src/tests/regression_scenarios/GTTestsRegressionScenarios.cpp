@@ -1132,6 +1132,50 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1432) {
+//    1. Open WD
+//    2. Add worker "sequence marker"
+//    3. Click button "add" in Parameters
+//    Expected state: create marker group dialog appeared
+//    4. Add several similar markers
+//    Expected state: each new marker has a number after name
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Sequence Marker");
+
+    QToolButton* addButton = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "addButton"));
+    CHECK_SET_ERR( addButton != NULL, "AddButton not found!");
+
+    class OkClicker : public Filler {
+    public:
+        OkClicker(U2OpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK(NULL != button, );
+            GTWidget::click(os, button);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os));
+    GTWidget::click(os, addButton);
+    GTGlobals::sleep(2000);
+
+    QTableView* groupTable = qobject_cast<QTableView *>(GTWidget::findWidget(os, "markerTable"));
+    CHECK_SET_ERR( groupTable != NULL, "MarkerTable not found");
+    for (int i = 1; i < 3; i++) {
+        GTUtilsDialog::waitForDialog(os, new OkClicker(os));
+        GTWidget::click(os, addButton);
+        GTGlobals::sleep(2000);
+        GTWidget::click(os, groupTable);
+
+        QString name = GTTableView::data(os, groupTable, i, 0);
+        CHECK_SET_ERR(name.endsWith(QString::number(i)), "Wrong marker group name");
+    }
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1434_1) {
     //1. Open data / samples / FASTA / human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
