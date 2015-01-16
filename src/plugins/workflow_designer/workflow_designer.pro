@@ -41,7 +41,7 @@ HEADERS += src/ActorCfgFilterProxyModel.h \
            src/debug_messages_translation/WorkflowDebugMessageParserImpl.h \
            src/library/AminoTranslationWorker.h \
            src/library/AssemblyToSequenceWorker.h \
-           src/library/BaseDocWorker.h \
+           src/library/BaseDocWriter.h \
            src/library/CDSearchWorker.h \
            src/library/CfgExternalToolModel.h \
            src/library/ConvertFilesFormatWorker.h \
@@ -148,7 +148,7 @@ SOURCES += src/ActorCfgFilterProxyModel.cpp \
            src/debug_messages_translation/WorkflowDebugMessageParserImpl.cpp \
            src/library/AminoTranslationWorker.cpp \
            src/library/AssemblyToSequenceWorker.cpp \
-           src/library/BaseDocWorker.cpp \
+           src/library/BaseDocWriter.cpp \
            src/library/CDSearchWorker.cpp \
            src/library/CfgExternalToolModel.cpp \
            src/library/ConvertFilesFormatWorker.cpp \

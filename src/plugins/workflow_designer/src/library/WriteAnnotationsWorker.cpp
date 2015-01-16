@@ -52,7 +52,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportAnnotations2CSVTask.h>
 
-#include "BaseDocWorker.h"
+#include "BaseDocWriter.h"
 
 #include "WriteAnnotationsWorker.h"
 

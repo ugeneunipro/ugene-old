@@ -22,6 +22,7 @@
 #include "IntegralBus.h"
 #include "IntegralBusType.h"
 
+#include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 
 #include <U2Lang/WorkflowUtils.h>
@@ -278,6 +279,7 @@ Message IntegralBus::get() {
             // Actually there is always 1 item in the list because only one connection for one input port is allowed.
             // But if there are several connections in the future then metadata will be lost as it is in the multiplexer.
             // If you support several input connections remove this branch.
+            coreLog.error(L10N::internalError("Several input channels"));
             assert(0);
         }
     }
@@ -324,7 +326,10 @@ QQueue<Message> IntegralBus::getMessages(int startIndex, int endIndex) const {
         int metadataId = -1;
         foreach(CommunicationChannel *channel, messagesFromChannels.keys()) {
             Message message = messagesFromChannels[channel][messageCount];
-            assert(message.getData().type() == QVariant::Map);
+            if (message.getData().type() != QVariant::Map) {
+                coreLog.error(L10N::internalError("No message map"));
+                assert(0);
+            }
             resultingMessageMap.unite(message.getData().toMap());
             if (1 == outerChannels.size()) {
                 metadataId = message.getMetadataId();

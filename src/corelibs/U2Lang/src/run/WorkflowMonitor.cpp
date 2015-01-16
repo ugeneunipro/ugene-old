@@ -205,7 +205,7 @@ int WorkflowMonitor::getDataProduced(const QString &actor) const {
     return task->getDataProduced(actor);
 }
 
-bool WorkflowMonitor::containsFile(const QString &url) const {
+bool WorkflowMonitor::containsOutputFile(const QString &url) const {
     foreach (const FileInfo &info, outputFiles) {
         if (info.url == url) {
             return true;

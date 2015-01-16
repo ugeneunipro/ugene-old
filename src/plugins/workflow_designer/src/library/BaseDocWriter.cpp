@@ -50,7 +50,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include "BaseDocWorker.h"
+#include "BaseDocWriter.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -251,7 +251,7 @@ void BaseDocWriter::openAdapter(IOAdapter *io, const QString &aUrl, const SaveDo
             url = GUrlUtils::insertSuffix(aUrl, "_" + QString::number(suffix));
         }
         suffix++;
-    } while (monitor()->containsFile(url));
+    } while (monitor()->containsOutputFile(url));
 
     if (flags.testFlag(SaveDoc_Roll)) {
         TaskStateInfo ti;
@@ -285,7 +285,7 @@ IOAdapter * BaseDocWriter::getAdapter(const QString &url, U2OpStatus &os) {
     }
     if (!adapters.contains(resultUrl)) {
         adapters[resultUrl] = io.data();
-        }
+    }
     usedUrls << resultUrl;
     monitor()->addOutputFile(resultUrl, getActorId());
 

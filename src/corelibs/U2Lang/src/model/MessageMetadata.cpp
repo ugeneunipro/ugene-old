@@ -30,19 +30,19 @@ MessageMetadata::MessageMetadata()
 }
 
 MessageMetadata::MessageMetadata(const QString &datasetName)
-: id(nextid()), datasetName(datasetName)
+: id(nextId()), datasetName(datasetName)
 {
 
 }
 
 MessageMetadata::MessageMetadata(const QString &fileUrl, const QString &datasetName)
-: id(nextid()), datasetName(datasetName), fileUrl(fileUrl)
+: id(nextId()), datasetName(datasetName), fileUrl(fileUrl)
 {
 
 }
 
 MessageMetadata::MessageMetadata(const QString &databaseUrl, const QString &databaseId, const QString &datasetName)
-: id(nextid()), datasetName(datasetName), databaseUrl(databaseUrl), databaseId(databaseId)
+: id(nextId()), datasetName(datasetName), databaseUrl(databaseUrl), databaseId(databaseId)
 {
 
 }
@@ -67,7 +67,7 @@ const QString & MessageMetadata::getDatabaseId() const {
     return databaseId;
 }
 
-int MessageMetadata::nextid() {
+int MessageMetadata::nextId() {
     static QAtomicInt id(0);
     return id.fetchAndAddRelaxed(1);
 }

@@ -42,7 +42,7 @@ public:
     const QString & getDatabaseId() const;
 
 private:
-    static int nextid();
+    static int nextId();
 
 private:
     int id;

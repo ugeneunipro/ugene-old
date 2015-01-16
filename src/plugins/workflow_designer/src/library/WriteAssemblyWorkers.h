@@ -21,7 +21,7 @@
 
 #include <U2Core/SaveDocumentTask.h>
 
-#include "BaseDocWorker.h"
+#include "BaseDocWriter.h"
 
 namespace U2 {
 namespace LocalWorkflow {

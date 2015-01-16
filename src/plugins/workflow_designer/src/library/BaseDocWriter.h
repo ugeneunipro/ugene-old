@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_WORKFLOW_BASEDOC_WORKERS_H_
-#define _U2_WORKFLOW_BASEDOC_WORKERS_H_
+#ifndef _U2_BASEDOC_WRITER_H_
+#define _U2_BASEDOC_WRITER_H_
 
 #include <U2Lang/LocalDomain.h>
 
@@ -114,4 +114,4 @@ private:
 }// Workflow namespace
 }// U2 namespace
 
-#endif
+#endif // _U2_BASEDOC_WRITER_H_

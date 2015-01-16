@@ -22,7 +22,7 @@
 #ifndef _U2_WORKFLOW_DOC_WORKERS_H_
 #define _U2_WORKFLOW_DOC_WORKERS_H_
 
-#include "BaseDocWorker.h"
+#include "BaseDocWriter.h"
 #include "CoreLib.h"
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Core/IOAdapter.h>

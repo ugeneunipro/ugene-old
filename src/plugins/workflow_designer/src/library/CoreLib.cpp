@@ -50,7 +50,7 @@
 #include <U2Lang/WorkflowManager.h>
 #include <U2Lang/WorkflowSettings.h>
 
-#include "BaseDocWorker.h"
+#include "BaseDocWriter.h"
 #include "CDSearchWorker.h"
 #include "CoreLib.h"
 #include "DocActors.h"

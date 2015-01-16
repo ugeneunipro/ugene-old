@@ -101,7 +101,7 @@ public:
     const QMap<QString, Monitor::WorkerLogInfo> & getWorkersLog() const;
     QString actorName(const QString &id) const;
     int getDataProduced(const QString &actor) const;
-    bool containsFile(const QString &url) const;
+    bool containsOutputFile(const QString &url) const;
 
     void addOutputFile(const QString &url, const QString &producer, bool openBySystem = false);
     void addError(const QString &message, const QString &actor ,const QString &type = Problem::U2_ERROR);
