@@ -157,7 +157,7 @@ QString WorkflowContext::absolutePath(const QString &relative) const {
     return workingDir() + relative;
 }
 
-WorkflowMetadataStorage & WorkflowContext::getMetadataStorage() {
+MessageMetadataStorage & WorkflowContext::getMetadataStorage() {
     return metadataStorage;
 }
 

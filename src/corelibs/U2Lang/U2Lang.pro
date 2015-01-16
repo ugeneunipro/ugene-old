@@ -29,6 +29,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/IntegralBusType.h \
            src/model/Marker.h \
            src/model/MarkerAttribute.h \
+           src/model/MessageMetadata.h \
            src/model/Peer.h \
            src/model/Port.h \
            src/model/PortRelation.h \
@@ -43,7 +44,6 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/WorkflowContext.h \
            src/model/WorkflowEnv.h \
            src/model/WorkflowManager.h \
-           src/model/WorkflowMetadata.h \
            src/model/WorkflowScriptEngine.h \
            src/model/WorkflowTransport.h \
            src/run/WorkflowMonitor.h \
@@ -140,6 +140,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/IntegralBusType.cpp \
            src/model/Marker.cpp \
            src/model/MarkerAttribute.cpp \
+           src/model/MessageMetadata.cpp \
            src/model/Port.cpp \
            src/model/QDConstraint.cpp \
            src/model/QDScheme.cpp \
@@ -150,7 +151,6 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/SchemaActorsRegistry.cpp \
            src/model/WorkflowContext.cpp \
            src/model/WorkflowEnv.cpp \
-           src/model/WorkflowMetadata.cpp \
            src/model/WorkflowScriptEngine.cpp \
            src/model/WorkflowTransport.cpp \
            src/run/WorkflowMonitor.cpp \

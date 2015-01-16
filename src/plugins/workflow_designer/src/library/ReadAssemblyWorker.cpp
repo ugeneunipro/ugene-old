@@ -89,7 +89,7 @@ void ReadAssemblyWorker::onTaskFinished(Task *task) {
     ReadDocumentTask *t = qobject_cast<ReadDocumentTask*>(task);
     QList<SharedDbiDataHandler> result = t->takeResult();
     QString url = t->getUrl();
-    WorkflowMetadata metadata(t->getUrl(), t->getDatasetName());
+    MessageMetadata metadata(t->getUrl(), t->getDatasetName());
     context->getMetadataStorage().put(metadata);
     foreach(const SharedDbiDataHandler &handler, result) {
         QVariantMap m;

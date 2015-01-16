@@ -19,68 +19,68 @@
  * MA 02110-1301, USA.
  */
 
-#include "WorkflowMetadata.h"
+#include "MessageMetadata.h"
 
 namespace U2 {
 
-WorkflowMetadata::WorkflowMetadata()
+MessageMetadata::MessageMetadata()
 : id(-1)
 {
 
 }
 
-WorkflowMetadata::WorkflowMetadata(const QString &datasetName)
+MessageMetadata::MessageMetadata(const QString &datasetName)
 : id(nextid()), datasetName(datasetName)
 {
 
 }
 
-WorkflowMetadata::WorkflowMetadata(const QString &fileUrl, const QString &datasetName)
+MessageMetadata::MessageMetadata(const QString &fileUrl, const QString &datasetName)
 : id(nextid()), datasetName(datasetName), fileUrl(fileUrl)
 {
 
 }
 
-WorkflowMetadata::WorkflowMetadata(const QString &databaseUrl, const QString &databaseId, const QString &datasetName)
+MessageMetadata::MessageMetadata(const QString &databaseUrl, const QString &databaseId, const QString &datasetName)
 : id(nextid()), datasetName(datasetName), databaseUrl(databaseUrl), databaseId(databaseId)
 {
 
 }
 
-int WorkflowMetadata::getId() const {
+int MessageMetadata::getId() const {
     return id;
 }
 
-const QString & WorkflowMetadata::getDatasetName() const {
+const QString & MessageMetadata::getDatasetName() const {
     return datasetName;
 }
 
-const QString & WorkflowMetadata::getFileUrl() const {
+const QString & MessageMetadata::getFileUrl() const {
     return fileUrl;
 }
 
-const QString & WorkflowMetadata::getDatabaseUrl() const {
+const QString & MessageMetadata::getDatabaseUrl() const {
     return databaseUrl;
 }
 
-const QString & WorkflowMetadata::getDatabaseId() const {
+const QString & MessageMetadata::getDatabaseId() const {
     return databaseId;
 }
 
-int WorkflowMetadata::nextid() {
+int MessageMetadata::nextid() {
     static QAtomicInt id(0);
     return id.fetchAndAddRelaxed(1);
 }
 
 /************************************************************************/
-/* WorkflowMetadataStorage */
+/* MessageMetadataStorage */
 /************************************************************************/
-void WorkflowMetadataStorage::put(const WorkflowMetadata &value) {
+void MessageMetadataStorage::put(const MessageMetadata &value) {
     data[value.getId()] = value;
 }
 
-WorkflowMetadata WorkflowMetadataStorage::get(int metadataId) const {
-    return data.value(metadataId, WorkflowMetadata());
+MessageMetadata MessageMetadataStorage::get(int metadataId) const {
+    return data.value(metadataId, MessageMetadata());
 }
 
 } // U2

@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_WORKFLOW_METADATA_H_
-#define _U2_WORKFLOW_METADATA_H_
+#ifndef _U2_MESSAGE_METADATA_H_
+#define _U2_MESSAGE_METADATA_H_
 
 #include <QMap>
 
@@ -28,12 +28,12 @@
 
 namespace U2 {
 
-class U2LANG_EXPORT WorkflowMetadata {
+class U2LANG_EXPORT MessageMetadata {
 public:
-    WorkflowMetadata();
-    WorkflowMetadata(const QString &datasetName);
-    WorkflowMetadata(const QString &fileUrl, const QString &datasetName);
-    WorkflowMetadata(const QString &databaseUrl, const QString &databaseId, const QString &datasetName);
+    MessageMetadata();
+    MessageMetadata(const QString &datasetName);
+    MessageMetadata(const QString &fileUrl, const QString &datasetName);
+    MessageMetadata(const QString &databaseUrl, const QString &databaseId, const QString &datasetName);
 
     int getId() const;
     const QString & getDatasetName() const;
@@ -52,15 +52,15 @@ private:
     QString databaseId;
 };
 
-class U2LANG_EXPORT WorkflowMetadataStorage {
+class U2LANG_EXPORT MessageMetadataStorage {
 public:
-    void put(const WorkflowMetadata &value);
-    WorkflowMetadata get(int metadataId) const;
+    void put(const MessageMetadata &value);
+    MessageMetadata get(int metadataId) const;
 
 private:
-    QMap<int, WorkflowMetadata> data;
+    QMap<int, MessageMetadata> data;
 };
 
 } // U2
 
-#endif // _U2_WORKFLOW_METADATA_H_
+#endif // _U2_MESSAGE_METADATA_H_

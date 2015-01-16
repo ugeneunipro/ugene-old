@@ -74,7 +74,7 @@ Task * ReadVariationWorker::createReadTask(const QString &url, const QString &da
 
 void ReadVariationWorker::onTaskFinished(Task *task) {
     ReadVariationTask *t = qobject_cast<ReadVariationTask*>(task);
-    WorkflowMetadata metadata(t->getUrl(), t->getDatasetName());
+    MessageMetadata metadata(t->getUrl(), t->getDatasetName());
     context->getMetadataStorage().put(metadata);
     foreach(const QVariantMap &m, t->takeResults()) {
         cache.append(Message(mtype, m, metadata.getId()));
