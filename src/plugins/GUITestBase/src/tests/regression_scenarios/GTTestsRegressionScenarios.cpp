@@ -12762,6 +12762,38 @@ GUI_TEST_CLASS_DEFINITION(test_3738) {
 //    Current state: the assembly is not imported, there is an error in the log: Task {CAP3 run and open result task}
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3749) {
+    // 1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+
+    // 2. Select any base.
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(10, 10));
+    GTMouseDriver::click(os, Qt::LeftButton);
+
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            //GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() - QPoint(5, 0));
+            GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 10));
+            GTMouseDriver::click(os);
+            QWidget *contextMenu = QApplication::activePopupWidget();
+            CHECK_SET_ERR(NULL == contextMenu, "There is an unexpected context menu");
+        }
+    };
+
+    // 3. Move the mouse to another base and click the right button.
+    // Expected state: a context menu appears, a single base from the previous step is selected.
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, new Scenario));
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(10, 9));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // 4. Move the mouse to the any third base and click the left button.
+    // Expected state: the context menu closes, the first selected base is the only selected base.
+    // Current state: the context menu closes, there is a selection from the base from the second step to the base from the last step.
+    GTMouseDriver::click(os, Qt::LeftButton);
+
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(1, 10), QPoint(1, 10)));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3755){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "HIV-1.aln");
 
