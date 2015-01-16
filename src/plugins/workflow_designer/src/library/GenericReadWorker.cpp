@@ -128,7 +128,8 @@ SharedDbiDataHandler GenericDocReader::getDbObjectHandlerByUrl(const QString &ur
     const U2DataId objDbId = SharedDbUrlUtils::getObjectIdByUrl(url);
     SAFE_POINT(!objDbId.isEmpty(), "Unexpected object ID supplied", SharedDbiDataHandler());
     const U2DataType objDbType = U2DbiUtils::toType(objDbId);
-    SAFE_POINT(U2Type::Unknown != objDbType, "Unexpected object type supplied", SharedDbiDataHandler());
+    //SAFE_POINT(U2Type::Unknown != objDbType, "Unexpected object type supplied", SharedDbiDataHandler());
+    SAFE_POINT(0 != objDbType, "Unexpected object type supplied", SharedDbiDataHandler());
 
     const U2EntityRef objRef = SharedDbUrlUtils::getObjEntityRefByUrl(url);
     SAFE_POINT(objRef.isValid(), "Invalid DB object reference detected", SharedDbiDataHandler());
@@ -185,7 +186,8 @@ void GenericMSAReader::onTaskFinished(Task *task) {
 QString GenericMSAReader::addReadDbObjectToData(const QString &objUrl, QVariantMap &data) {
     SharedDbiDataHandler handler = getDbObjectHandlerByUrl(objUrl);
     data[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(handler);
-    return getObjectName(handler, U2Type::Msa);
+    //return getObjectName(handler, U2Type::Msa);
+    return getObjectName(handler, 2);
 }
 
 /**************************
@@ -312,7 +314,8 @@ void GenericSeqReader::onTaskFinished(Task *task) {
 QString GenericSeqReader::addReadDbObjectToData(const QString &objUrl, QVariantMap &data) {
     SharedDbiDataHandler handler = getDbObjectHandlerByUrl(objUrl);
     data[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(handler);
-    return getObjectName(handler, U2Type::Sequence);
+    //return getObjectName(handler, U2Type::Sequence);
+    return getObjectName(handler, 1);
 }
 
 /**************************
