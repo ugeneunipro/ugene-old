@@ -51,16 +51,20 @@ protected slots:
 protected:
     virtual void onTaskFinished(Task *task) = 0;
     virtual Task * createReadTask(const QString &url, const QString &datasetName);
-    virtual void readObjectFromDb(const QString &url, const QString &datasetName);
-    // the method is to be overridden in subclasses capable of reading from shared DBs
-    virtual void addReadDbObjectToData(const QString &objUrl, QVariantMap &data);
+    // The method is to be overridden in subclasses capable of reading from shared DBs.
+    // Returns a name of data for metadata.
+    virtual QString addReadDbObjectToData(const QString &objUrl, QVariantMap &data);
 
     SharedDbiDataHandler getDbObjectHandlerByUrl(const QString &url) const;
+    QString getObjectName(const SharedDbiDataHandler &handler, const U2DataType &type) const;
 
     CommunicationChannel *ch;
     QList<Message> cache;
     DataTypePtr mtype;
     DatasetFilesIterator *files;
+
+private:
+    void readObjectFromDb(const QString &url, const QString &datasetName);
 
 private slots:
     void sl_taskFinished();
@@ -116,7 +120,7 @@ public:
 
 protected:
     virtual void onTaskFinished(Task *task);
-    virtual void addReadDbObjectToData(const QString &objUrl, QVariantMap &data);
+    virtual QString addReadDbObjectToData(const QString &objUrl, QVariantMap &data);
 
 protected:
     virtual Task *createReadTask(const QString &url, const QString &datasetName) {
@@ -132,7 +136,7 @@ public:
 
 protected:
     virtual void onTaskFinished(Task *task);
-    virtual void addReadDbObjectToData(const QString &objUrl, QVariantMap &data);
+    virtual QString addReadDbObjectToData(const QString &objUrl, QVariantMap &data);
 
 protected:
     virtual Task * createReadTask(const QString &url, const QString &datasetName);

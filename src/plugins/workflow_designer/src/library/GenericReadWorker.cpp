@@ -113,14 +113,15 @@ void GenericDocReader::readObjectFromDb(const QString &url, const QString &datas
     QVariantMap m;
     m[BaseSlots::URL_SLOT().getId()] = url;
     m[BaseSlots::DATASET_SLOT().getId()] = datasetName;
-    addReadDbObjectToData(url, m);
-    MessageMetadata metadata(url, datasetName);
+    QString databaseUrl = SharedDbUrlUtils::getDbUrlFromEntityUrl(url);
+    QString databaseId = addReadDbObjectToData(url, m);
+    MessageMetadata metadata(databaseUrl, databaseId, datasetName);
     context->getMetadataStorage().put(metadata);
     cache.append(Message(mtype, m, metadata.getId()));
 }
 
-void GenericDocReader::addReadDbObjectToData(const QString & /*objUrl*/, QVariantMap & /*data*/) {
-
+QString GenericDocReader::addReadDbObjectToData(const QString & /*objUrl*/, QVariantMap & /*data*/) {
+    return "";
 }
 
 SharedDbiDataHandler GenericDocReader::getDbObjectHandlerByUrl(const QString &url) const {
@@ -132,6 +133,12 @@ SharedDbiDataHandler GenericDocReader::getDbObjectHandlerByUrl(const QString &ur
     const U2EntityRef objRef = SharedDbUrlUtils::getObjEntityRefByUrl(url);
     SAFE_POINT(objRef.isValid(), "Invalid DB object reference detected", SharedDbiDataHandler());
     return context->getDataStorage()->getDataHandler(objRef);
+}
+
+QString GenericDocReader::getObjectName(const SharedDbiDataHandler &handler, const U2DataType &type) const {
+    QScopedPointer<U2Object> object(context->getDataStorage()->getObject(handler, type));
+    CHECK(!object.isNull(), "");
+    return object->visualName;
 }
 
 bool GenericDocReader::isDone() {
@@ -175,8 +182,10 @@ void GenericMSAReader::onTaskFinished(Task *task) {
     }
 }
 
-void GenericMSAReader::addReadDbObjectToData(const QString &objUrl, QVariantMap &data) {
-    data[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(getDbObjectHandlerByUrl(objUrl));
+QString GenericMSAReader::addReadDbObjectToData(const QString &objUrl, QVariantMap &data) {
+    SharedDbiDataHandler handler = getDbObjectHandlerByUrl(objUrl);
+    data[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(handler);
+    return getObjectName(handler, U2Type::Msa);
 }
 
 /**************************
@@ -300,8 +309,10 @@ void GenericSeqReader::onTaskFinished(Task *task) {
     t->results.clear();
 }
 
-void GenericSeqReader::addReadDbObjectToData(const QString &objUrl, QVariantMap &data) {
-    data[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(getDbObjectHandlerByUrl(objUrl));
+QString GenericSeqReader::addReadDbObjectToData(const QString &objUrl, QVariantMap &data) {
+    SharedDbiDataHandler handler = getDbObjectHandlerByUrl(objUrl);
+    data[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(handler);
+    return getObjectName(handler, U2Type::Sequence);
 }
 
 /**************************
