@@ -52,6 +52,8 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportAnnotations2CSVTask.h>
 
+#include "BaseDocWorker.h"
+
 #include "WriteAnnotationsWorker.h"
 
 namespace U2 {
@@ -79,7 +81,18 @@ void WriteAnnotationsWorker::init() {
     annotationsPort = ports.value(BasePorts::IN_ANNOTATIONS_PORT_ID());
 }
 
-Task * WriteAnnotationsWorker::takeParameters(QString &formatId, SaveDocFlags &fl, QString &resultPath, U2DbiRef &dstDbiRef,
+namespace {
+    QString getExtension(const QString &formatId) {
+        CHECK(formatId != CSV_FORMAT_ID, "csv");
+        DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
+        CHECK(NULL != format, "");
+        QStringList exts = format->getSupportedDocumentFileExtensions();
+        CHECK(!exts.isEmpty(), "");
+        return exts[0];
+    }
+}
+
+Task * WriteAnnotationsWorker::takeParameters(int metadataId, QString &formatId, SaveDocFlags &fl, QString &resultPath, U2DbiRef &dstDbiRef,
     WriteAnnotationsWorker::DataStorage &storage)
 {
     const QString storageStr = getValue<QString>(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId());
@@ -91,6 +104,13 @@ Task * WriteAnnotationsWorker::takeParameters(QString &formatId, SaveDocFlags &f
         resultPath = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
         if (formatId != CSV_FORMAT_ID && NULL == format) {
             return new FailTask(tr("Unrecognized formatId: '%1'").arg(formatId));
+        }
+        if (resultPath.isEmpty()) {
+            MessageMetadata metadata = context->getMetadataStorage().get(metadataId);
+            bool groupByDatasets = false;
+            QString suffix = getValue<QString>(BaseAttributes::URL_SUFFIX().getId());
+            QString defaultName = actor->getId() + "_output";
+            resultPath = BaseDocWriter::generateUrl(metadata, groupByDatasets, suffix, getExtension(formatId), defaultName);
         }
     } else if (BaseAttributes::SHARED_DB_DATA_STORAGE() == storageStr) {
         storage = SharedDb;
@@ -111,15 +131,15 @@ Task * WriteAnnotationsWorker::tick() {
     U2DbiRef dstDbiRef;
     DataStorage storage;
 
-    Task *failTask = takeParameters(formatId, fl, resultPath, dstDbiRef, storage);
-    CHECK(NULL == failTask, failTask);
-
     while(annotationsPort->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(annotationsPort);
         if (inputMessage.isEmpty()) {
             continue;
         }
         const QVariantMap qm = inputMessage.getData().toMap();
+
+        Task *failTask = takeParameters(inputMessage.getMetadataId(), formatId, fl, resultPath, dstDbiRef, storage);
+        CHECK(NULL == failTask, failTask);
 
         if (LocalFs == storage) {
             resultPath = resultPath.isEmpty() ? qm.value(BaseSlots::URL_SLOT().getId()).value<QString>() : resultPath;
@@ -242,6 +262,7 @@ Task * WriteAnnotationsWorker::getSaveDocTask(const QString &formatId, SaveDocFl
     foreach (const QString &filepath, annotationsByUrl.keys()) {
         QList<AnnotationTableObject *> annTables = annotationsByUrl.value(filepath);
 
+        Task *task = NULL;
         if(formatId == CSV_FORMAT_ID) {
             createdAnnotationObjects << annTables; // will delete in destructor
             TaskStateInfo ti;
@@ -254,7 +275,7 @@ Task * WriteAnnotationsWorker::getSaveDocTask(const QString &formatId, SaveDocFl
                 annotations << annTable->getAnnotations();
             }
 
-            taskList << new ExportAnnotations2CSVTask(annotations, QByteArray(), QString(), NULL, false,
+            task = new ExportAnnotations2CSVTask(annotations, QByteArray(), QString(), NULL, false,
                 false, filepath, fl.testFlag(SaveDoc_Append), getValue<QString>(SEPARATOR));
         } else {
             fl |= SaveDoc_DestroyAfter;
@@ -272,14 +293,28 @@ Task * WriteAnnotationsWorker::getSaveDocTask(const QString &formatId, SaveDocFl
                 annTable->setModified(false);
                 doc->addObject(annTable); // savedoc task will delete doc -> doc will delete att
             }
-            taskList << new SaveDocumentTask(doc, fl, excludeFileNames);
+            task = new SaveDocumentTask(doc, fl, excludeFileNames);
         }
+        connect(task, SIGNAL(si_stateChanged()), SLOT(sl_saveDocTaskFinished()));
+        task->setProperty("output_url", filepath);
+        taskList << task;
     }
     return createWriteMultitask(taskList);
 }
 
 void WriteAnnotationsWorker::cleanup() {
 
+}
+
+void WriteAnnotationsWorker::sl_saveDocTaskFinished() {
+    Task *task = dynamic_cast<Task*>(sender());
+    CHECK(NULL != task, );
+    CHECK(task->isFinished(), );
+    CHECK(!task->isCanceled() && !task->hasError(), );
+
+    QString filePath = task->property("output_url").toString();
+    CHECK(!filePath.isEmpty(), );
+    monitor()->addOutputFile(filePath, getActorId());
 }
 
 /*******************************
@@ -318,10 +353,13 @@ void WriteAnnotationsWorkerFactory::init() {
 
         Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, format);
         docFormatAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
+        attrs << docFormatAttr;
         Attribute *urlAttr = new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false );
         urlAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
-        attrs << docFormatAttr;
         attrs << urlAttr;
+        Attribute *suffixAttr = new Attribute(BaseAttributes::URL_SUFFIX(), BaseTypes::STRING_TYPE(), false);
+        suffixAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
+        attrs << suffixAttr;
         Attribute *fileModeAttr = new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
         fileModeAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
         attrs << fileModeAttr;
@@ -408,7 +446,8 @@ QString WriteAnnotationsPrompter::composeRichDoc() {
     QString dbName;
     const bool storeToFs = dataStorage == BaseAttributes::LOCAL_FS_DATA_STORAGE();
     if (storeToFs) {
-        url = getScreenedURL(input, BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId());
+        static const QString generatedStr = "<font color='blue'>" + tr("default file") + "</font>";
+        url = getScreenedURL(input, BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId(), generatedStr);
         url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
     } else if (dataStorage == BaseAttributes::SHARED_DB_DATA_STORAGE()) {
         Attribute *dbPathAttr = target->getParameter(BaseAttributes::DB_PATH().getId());

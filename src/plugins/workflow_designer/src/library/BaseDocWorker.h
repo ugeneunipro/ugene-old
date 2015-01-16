@@ -52,6 +52,7 @@ public:
     virtual void cleanup() ;
 
     static QString getUniqueObjectName(const Document *doc, const QString &name);
+    static QString generateUrl(const MessageMetadata &metadata, bool groupByDatasets, const QString &suffix, const QString &ext, const QString &defaultName);
 
 protected:
     virtual void data2doc(Document*, const QVariantMap&) = 0;
@@ -63,10 +64,6 @@ protected:
     virtual Task * getWriteDocTask(Document *doc, const SaveDocFlags &flags);
     virtual void takeParameters(U2OpStatus &os);
     virtual QStringList takeUrlList(const QVariantMap &data, int metadataId, U2OpStatus &os);
-    virtual QString getDefaultFileName() const;
-    virtual bool ifGroupByDatasets() const;
-    virtual QString getSuffix() const;
-    virtual QString getExtension() const;
 
 protected:
     DocumentFormat *format;
@@ -105,8 +102,13 @@ private:
     void storeData(const QStringList &urls, const QVariantMap &data, U2OpStatus &os);
     Task * createWriteToSharedDbTask(const QVariantMap &data);
     void reportNoDataReceivedWarning();
-    QString getBaseName(int metadataId) const;
+
+    QString getDefaultFileName() const;
+    bool ifGroupByDatasets() const;
+    QString getSuffix() const;
+    QString getExtension() const;
     QString generateUrl(int metadataId) const;
+    static QString getBaseName(const MessageMetadata &metadata, bool groupByDatasets, const QString &defaultName);
 };
 
 }// Workflow namespace

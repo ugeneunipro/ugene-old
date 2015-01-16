@@ -161,12 +161,10 @@ QString BaseDocWriter::getExtension() const {
     return exts.first();
 }
 
-QString BaseDocWriter::getBaseName(int metadataId) const {
-    MessageMetadata metadata = context->getMetadataStorage().get(metadataId);
-
-    if (ifGroupByDatasets()) {
+QString BaseDocWriter::getBaseName(const MessageMetadata &metadata, bool groupByDatasets, const QString &defaultName) {
+    if (groupByDatasets) {
         if (metadata.getDatasetName().isEmpty()) {
-            return getDefaultFileName();
+            return defaultName;
         }
         return metadata.getDatasetName();
     } else if (!metadata.getFileUrl().isEmpty()) {
@@ -175,13 +173,16 @@ QString BaseDocWriter::getBaseName(int metadataId) const {
     } else if (!metadata.getDatabaseId().isEmpty()) {
         return metadata.getDatabaseId();
     }
-    return getDefaultFileName();
+    return defaultName;
 }
 
 QString BaseDocWriter::generateUrl(int metadataId) const {
-    QString baseName = getBaseName(metadataId);
-    QString suffix = getSuffix();
-    QString ext = getExtension();
+    MessageMetadata metadata = context->getMetadataStorage().get(metadataId);
+    return generateUrl(metadata, ifGroupByDatasets(), getSuffix(), getExtension(), getDefaultFileName());
+}
+
+QString BaseDocWriter::generateUrl(const MessageMetadata &metadata, bool groupByDatasets, const QString &suffix, const QString &ext, const QString &defaultName) {
+    QString baseName = getBaseName(metadata, groupByDatasets, defaultName);
     return toFileName(baseName, suffix, ext);
 }
 
@@ -250,7 +251,7 @@ void BaseDocWriter::openAdapter(IOAdapter *io, const QString &aUrl, const SaveDo
             url = GUrlUtils::insertSuffix(aUrl, "_" + QString::number(suffix));
         }
         suffix++;
-    } while (context->getMonitor()->containsFile(url));
+    } while (monitor()->containsFile(url));
 
     if (flags.testFlag(SaveDoc_Roll)) {
         TaskStateInfo ti;
