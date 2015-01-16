@@ -1364,7 +1364,7 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
         case Qt::Key_End:
             cancelSelection();
             if (shift) { //scroll namelist
-                int n = editor->getNumSequences() - 1;
+                int n = getNumDisplayedSequences() - 1;
                 setFirstVisibleSequence(n);
                 setCursorPos(QPoint(cursorPos.x(), n));
             } else { //scroll sequence
@@ -1393,7 +1393,7 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
             cancelSelection();
             if (shift) { //scroll namelist
                 int nVis = getNumVisibleSequences(false);
-                int nSeq = editor->getNumSequences();
+                int nSeq = getNumDisplayedSequences();
                 int fp = qMin(nSeq-1, getFirstVisibleSequence() + nVis);
                 int cp = qMin(nSeq-1, cursorPos.y() + nVis);
                 setFirstVisibleSequence(fp);

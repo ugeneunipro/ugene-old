@@ -341,7 +341,7 @@ void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
         break;
     case Qt::Key_End:
         {
-            int s = editor->getNumSequences() - 1;
+            int s = ui->seqArea->getNumDisplayedSequences() - 1;
             ui->seqArea->setFirstVisibleSequence(s);
             ui->seqArea->cancelSelection();
             //TODO: select last sequence?
@@ -358,7 +358,7 @@ void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
     case Qt::Key_PageDown:
         {
             int nVis = ui->seqArea->getNumVisibleSequences(false);
-            int nSeq = editor->getNumSequences();
+            int nSeq = ui->seqArea->getNumDisplayedSequences();
             int fp = qMin(nSeq-1, ui->seqArea->getFirstVisibleSequence() + nVis);
             ui->seqArea->setFirstVisibleSequence(fp);
             ui->seqArea->cancelSelection();
