@@ -12858,6 +12858,38 @@ GUI_TEST_CLASS_DEFINITION(test_3788) {
     CHECK_SET_ERR(0 == annotatedRegions.size(), "There are annotations unexpectedly");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3805){
+    // 1. Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    // 2. Save the initial content
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 51, 102));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString initialContent = GTClipboard::text( os );
+
+    //3. Reverse sequence
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_RESERVE_SEQUENCE, GTGlobals::UseKey);
+
+    //4. Complement sequence
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_COMPLEMENT_SEQUENCE, GTGlobals::UseKey);
+
+    //5. Reverse complement sequence
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE, GTGlobals::UseKey);
+
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 51, 102));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+
+    CHECK_SET_ERR(initialContent == GTClipboard::text(os), "Result of actions is incorrect");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3809){
     GTFileDialog::openFile(os, testDir + "_common_data/regression/3809/zF849G6-6a01.p1k.scf.ab1");
 }
