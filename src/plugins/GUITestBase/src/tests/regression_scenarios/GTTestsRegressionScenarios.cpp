@@ -1634,14 +1634,48 @@ GUI_TEST_CLASS_DEFINITION(test_1508) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1510) {
+//    1. Open workflow sample "Call variants with SAMtools"
+//    2. Substitute "Read assembly (BAM/SAM)" element with "Read Sequence" element
+//    3. Set any input sequences for "Read sequence" elements.
+//    4. Select "Call Variants" element with mouse
+//    5. Set "Source URL (by Read Sequence 1)" as "Source URL" in "Input data" area in workflow editor
+//    6. Run the scheme
+//    Expected state: Error notification appears, UGENE doesn't crash
+    GTLogTracer l;
+
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addSample(os, "Call variants");
+
+    GTUtilsWorkflowDesigner::removeItem(os, "Read Assembly (BAM/SAM)");
+    GTGlobals::sleep(500);
+    WorkflowProcessItem* toBam = GTUtilsWorkflowDesigner::getWorker(os, "To BAM");
+    CHECK_SET_ERR(toBam != NULL, "\'To BAM\' element not found");
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    GTGlobals::sleep(500);
+
+    WorkflowProcessItem* readSeq = GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence 1");
+    CHECK_SET_ERR(readSeq != NULL, "\'Read Sequence 1\' element not found");
+    GTGlobals::sleep(500);
+    GTUtilsWorkflowDesigner::connect(os, readSeq, toBam);
+
+    GTUtilsWorkflowDesigner::click(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "/samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep();
+    GTUtilsWorkflowDesigner::click(os, "Read Sequence 1");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "/samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep();
+
     GTUtilsWorkflowDesigner::click(os, "Call Variants");
     GTGlobals::sleep(500);
 
-    QTableWidget* w = GTUtilsWorkflowDesigner::getInputPortsTable(os, 1);
-    GTUtilsWorkflowDesigner::setTableValue(os, "Source URL", 2, GTUtilsWorkflowDesigner::comboValue, w);
-    //GTWidget::getAllWidgetsInfo(os, inputPortBox);
+    QTableWidget* w = GTUtilsWorkflowDesigner::getInputPortsTable(os, 0);
+    GTUtilsWorkflowDesigner::setTableValue(os, "Source URL", "Source URL (by Read Sequence 1)", GTUtilsWorkflowDesigner::comboValue, w);
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(l.hasError(), "No errors in the log");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1511) {
