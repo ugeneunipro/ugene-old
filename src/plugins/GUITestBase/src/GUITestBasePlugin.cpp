@@ -628,7 +628,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_3805);
     REGISTER_TEST(GUITest_regression_scenarios::test_3809);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3813);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3813, "UGENE-3933");
     REGISTER_TEST(GUITest_regression_scenarios::test_3815);
     REGISTER_TEST(GUITest_regression_scenarios::test_3816);
     REGISTER_TEST(GUITest_regression_scenarios::test_3817);
@@ -1335,7 +1335,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0009);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_options_panel::test_0010, "bad layout of common statistic OP lapel on mac. jira");
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0011);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_options_panel::test_0012, "UGENE-3571");
+    REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0012);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0013);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0014);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0015);
@@ -1446,7 +1446,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0014_2);
 
     REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0020);
-    //REGISTER_TEST(GUITest_Common_scenarios_dp_view::generation_test);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/Assembly browser
