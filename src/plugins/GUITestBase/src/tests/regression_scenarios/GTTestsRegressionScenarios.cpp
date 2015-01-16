@@ -4269,7 +4269,7 @@ GUI_TEST_CLASS_DEFINITION( test_2077 ){
 
     // 5) Validate scheme
     GTUtilsDialog::waitForDialog( os, new MessageBoxDialogFiller( os, QMessageBox::Ok,
-        "Please fix issues listed in the error list (located under workflow)." ) );
+        "Workflow is valid" ) );
     GTWidget::click( os,GTAction::button( os,"Validate workflow" ) );
     GTGlobals::sleep( 200 );
 
@@ -9335,12 +9335,11 @@ GUI_TEST_CLASS_DEFINITION(test_3128) {
 
     // 3. Launch scheme.
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
-    GTWidget::click( os,GTAction::button( os,"Run workflow" ) );
+    GTWidget::click( os,GTAction::button( os,"Validate workflow" ) );
     GTGlobals::sleep( );
 
     // Expected state: no errors in the log.
     GTUtilsLog::check( os, l );
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3128_1) {
