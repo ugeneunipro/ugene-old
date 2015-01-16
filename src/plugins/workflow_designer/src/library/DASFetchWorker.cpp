@@ -220,8 +220,9 @@ void DASFetcherWorker::sl_taskFinished() {
         messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(tableId);
 
         DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById(TYPE);
-
-        output->put(Message(messageType, messageData));
+        MessageMetadata metadata(doc->getURLString(), "");
+        context->getMetadataStorage().put(metadata);
+        output->put(Message(messageType, messageData, metadata.getId()));
     }
 
     if (seqids.isEmpty())
