@@ -193,6 +193,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
         SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
     connect(editor->getMSAObject(), SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
+    connect(editor->getMSAObject(), SIGNAL(si_rowsRemoved(const QList<qint64> &)), SLOT(sl_updateCollapsingMode()));
 
     connect(editor, SIGNAL(si_buildStaticMenu(GObjectView*, QMenu*)), SLOT(sl_buildStaticMenu(GObjectView*, QMenu*)));
     connect(editor, SIGNAL(si_buildStaticToolbar(GObjectView*, QToolBar*)), SLOT(sl_buildStaticToolbar(GObjectView*, QToolBar*)));
@@ -2378,6 +2379,7 @@ void MSAEditorSequenceArea::sl_setCollapsingMode(bool enabled) {
         return;
     }
 
+    ui->setCollapsibleMode(enabled);
     if (enabled) {
         collapseModeUpdateAction->setEnabled(true);
         sl_updateCollapsingMode();
@@ -2390,7 +2392,6 @@ void MSAEditorSequenceArea::sl_setCollapsingMode(bool enabled) {
         collapsibleModel->reset();
     }
 
-    ui->setCollapsibleMode(enabled);
     updateSelection();
     updateVScrollBar();
     int emptyRowsCount = prevNumVisibleSequences - getNumVisibleSequences(false);
@@ -2400,6 +2401,7 @@ void MSAEditorSequenceArea::sl_setCollapsingMode(bool enabled) {
 }
 
 void MSAEditorSequenceArea::sl_updateCollapsingMode() {
+    CHECK(ui->isCollapsibleMode(), );
     MAlignmentObject *msaObject = editor->getMSAObject();
     SAFE_POINT(NULL != msaObject, tr("NULL Msa Object!"), );
 
