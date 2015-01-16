@@ -155,7 +155,7 @@ void CoreLib::init() {
         Descriptor pd(BasePorts::IN_SEQ_PORT_ID(), tr("Sequence"), tr("A sequence along with FASTA header line."));
         p << new PortDescriptor(pd, fastaTypeSet, true);
         a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
-        IntegralBusActorPrototype* proto = new WriteDocActorProto(BaseDocumentFormats::FASTA, acd, p, pd.getId(), a, false);
+        IntegralBusActorPrototype* proto = new WriteDocActorProto(BaseDocumentFormats::FASTA, acd, p, pd.getId(), a, false, false);
         proto->setPrompter(new WriteFastaPrompter("FASTA"));
         r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
     }
@@ -198,7 +198,7 @@ void CoreLib::init() {
         Attribute *accumulateObjsAttr = new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
         accumulateObjsAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
         a << accumulateObjsAttr;
-        IntegralBusActorPrototype* proto = new WriteDocActorProto(BaseDocumentFormats::PLAIN_TEXT, acd, p, pd.getId(), a);
+        IntegralBusActorPrototype* proto = new WriteDocActorProto(BaseDocumentFormats::PLAIN_TEXT, acd, p, pd.getId(), a, true, false);
         proto->setPrompter(new WriteDocPrompter(tr("Save text from <u>%1</u> to <u>%2</u>."), BaseSlots::TEXT_SLOT().getId()));
         r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
     }
@@ -218,7 +218,7 @@ void CoreLib::init() {
             p << new PortDescriptor(pd, writeMAType, true);
             Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, format);
             a << docFormatAttr;
-            WriteDocActorProto *proto = new WriteDocActorProto(format, acd, p, pd.getId(), a);
+            WriteDocActorProto *proto = new WriteDocActorProto(format, acd, p, pd.getId(), a, true, false);
             docFormatAttr->addRelation(new FileExtensionRelation(proto->getUrlAttr()->getId()));
             docFormatAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
 

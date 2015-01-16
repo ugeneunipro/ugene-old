@@ -39,23 +39,21 @@ WriteSequenceValidator::WriteSequenceValidator(const QString &attr, const QStrin
 }
 
 bool WriteSequenceValidator::validate(const Configuration *cfg, ProblemList &problemList) const {
-    bool result = ScreenedParamValidator::validate(cfg, problemList);
-
     const Actor *actor = dynamic_cast<const Actor*>(cfg);
     SAFE_POINT(NULL != actor, "NULL actor", NULL);
     if (!isAnnotationsBinded(actor)) {
-        return result;
+        return true;
     }
 
     DocumentFormat *format = getFormatSafe(actor);
-    CHECK(NULL != format, result);
+    CHECK(NULL != format, true);
     if (!isAnnotationsSupported(format)) {
         QString warning = QObject::tr("The format %1 does not support annotations").arg(format->getFormatId().toUpper());
         problemList << Problem(warning, "", Problem::U2_WARNING);
         cmdLog.trace(warning);
     }
 
-    return result;
+    return true;
 }
 
 DocumentFormat * WriteSequenceValidator::getFormatSafe(const Actor *actor) {

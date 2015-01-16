@@ -141,7 +141,7 @@ void WriteVariationWorkerFactory::init() {
             attrs << docFormatAttr;
         }
 
-        WriteDocActorProto *childProto = new WriteDocActorProto(format, protoDesc, portDescs, inDesc.getId(), attrs);
+        WriteDocActorProto *childProto = new WriteDocActorProto(format, protoDesc, portDescs, inDesc.getId(), attrs, true, false);
         IntegralBusActorPrototype *proto = childProto;
         docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId()));
 

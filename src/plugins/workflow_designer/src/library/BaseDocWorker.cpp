@@ -56,84 +56,6 @@ namespace U2 {
 namespace LocalWorkflow {
 
 /**********************************
- * BaseDocReader
- **********************************/
-BaseDocReader::BaseDocReader(Actor* a, const QString& tid, const DocumentFormatId& fid) : BaseWorker(a), ch(NULL), fid(fid),
-attachDoc2Proj(false) {
-    mtype = WorkflowEnv::getDataTypeRegistry()->getById(tid);
-}
-
-void BaseDocReader::init() {
-    QStringList urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
-    Project* p = AppContext::getProject();
-    foreach(QString url, urls) {
-        Document* doc = NULL;
-        bool newDoc = true;
-        if (p) {
-            doc = p->findDocumentByURL(url);
-            if (doc && doc->getDocumentFormatId() == fid) {
-                newDoc = false;
-            } else {
-                doc = NULL;
-            }
-        }
-        if (!doc) {
-            DocumentFormat* format = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
-            IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-            U2OpStatus2Log os;
-            doc = format->createNewUnloadedDocument(iof, url, os);
-        }
-        //TODO lock document???
-        docs.insert(doc, newDoc);
-    }
-
-    assert(ports.size() == 1);
-    ch = ports.values().first();
-}
-
-Task* BaseDocReader::tick() {
-    if (!docs.isEmpty()) {
-        Document* doc = docs.begin().key();
-        if (!doc->isLoaded()) {
-            return new LoadUnloadedDocumentTask(doc);
-        } else {
-            doc2data(doc);
-            while (!cache.isEmpty()) {
-                ch->put(cache.takeFirst());
-            }
-            if (docs.take(doc)) {
-                doc->unload();
-                delete doc;
-            }
-        }
-    }
-    if (docs.isEmpty()) {
-        setDone();
-        ch->setEnded();
-    }
-    return NULL;
-}
-
-bool BaseDocReader::isDone() {
-    return BaseWorker::isDone() && cache.isEmpty();
-}
-
-void BaseDocReader::cleanup() {
-    QMapIterator<Document*, bool> it(docs);
-    while (it.hasNext())
-    {
-        it.next();
-        if (it.value()) {
-            if (it.key()->isLoaded()) {
-                it.key()->unload();
-            }
-            delete it.key();
-        }
-    }
-}
-
-
-/**********************************
 * BaseDocWriter
 **********************************/
 BaseDocWriter::BaseDocWriter(Actor* a, const DocumentFormatId& fid)
@@ -202,25 +124,84 @@ void BaseDocWriter::takeParameters(U2OpStatus &os) {
     }
 }
 
-QStringList BaseDocWriter::takeUrlList(const QVariantMap &data, int /*metadataId*/, U2OpStatus &os) {
-    QString anUrl = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
-    {
-        if (anUrl.isEmpty()) {
-            anUrl = data.value(BaseSlots::URL_SLOT().getId()).toString();
+namespace {
+    QString toFileName(const QString &base, const QString &suffix, const QString &ext) {
+        QString result = base + suffix;
+        if (!ext.isEmpty()) {
+            result += "." + ext;
         }
-        if (anUrl.isEmpty()) {
-            QString err = tr("Unspecified URL to write %1").arg(format->getFormatName());
-            os.setError(err);
-            return QStringList();
-        }
+        return result;
+    }
+}
 
-        anUrl = context->absolutePath(anUrl);
+QString BaseDocWriter::getDefaultFileName() const {
+    return actor->getId() + "_output";
+}
+
+bool BaseDocWriter::ifGroupByDatasets() const {
+    Attribute *a = actor->getParameter(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE().getId());
+    if(NULL == a) {
+        return false;
+    }
+    return a->getAttributeValue<bool>(context);
+}
+
+QString BaseDocWriter::getSuffix() const {
+    Attribute *a = actor->getParameter(BaseAttributes::URL_SUFFIX().getId());
+    if(NULL == a) {
+        return "";
+    }
+    return a->getAttributeValue<QString>(context);
+}
+
+QString BaseDocWriter::getExtension() const {
+    CHECK(NULL != format, "");
+    QStringList exts = format->getSupportedDocumentFileExtensions();
+    CHECK(!exts.isEmpty(), "");
+    return exts.first();
+}
+
+QString BaseDocWriter::getBaseName(int metadataId) const {
+    MessageMetadata metadata = context->getMetadataStorage().get(metadataId);
+
+    if (ifGroupByDatasets()) {
+        if (metadata.getDatasetName().isEmpty()) {
+            return getDefaultFileName();
+        }
+        return metadata.getDatasetName();
+    } else if (!metadata.getFileUrl().isEmpty()) {
+        QFileInfo info(metadata.getFileUrl());
+        return info.baseName();
+    } else if (!metadata.getDatabaseId().isEmpty()) {
+        return metadata.getDatabaseId();
+    }
+    return getDefaultFileName();
+}
+
+QString BaseDocWriter::generateUrl(int metadataId) const {
+    QString baseName = getBaseName(metadataId);
+    QString suffix = getSuffix();
+    QString ext = getExtension();
+    return toFileName(baseName, suffix, ext);
+}
+
+QStringList BaseDocWriter::takeUrlList(const QVariantMap &data, int metadataId, U2OpStatus &os) {
+    QString url = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
+    if (url.isEmpty()) {
+        url = data.value(BaseSlots::URL_SLOT().getId()).toString();
+    }
+    if (url.isEmpty()) {
+        url = generateUrl(metadataId);
+    }
+    if (url.isEmpty()) {
+        QString err = tr("Unspecified URL to write %1").arg(format->getFormatName());
+        os.setError(err);
+        return QStringList();
     }
 
-    QStringList urls;
-    urls << anUrl;
-
-    return urls;
+    QStringList result;
+    result << context->absolutePath(url);
+    return result;
 }
 
 bool BaseDocWriter::isSupportedSeveralMessages() const {
@@ -258,10 +239,18 @@ void BaseDocWriter::openAdapter(IOAdapter *io, const QString &aUrl, const SaveDo
         }
     }
 
+    // generate a target URL from the source URL
     QString url = aUrl;
-    if (counters.contains(aUrl)) {
-        url = GUrlUtils::insertSuffix(aUrl, "_" + QString::number(counters[aUrl]));
-    }
+    int suffix = 0;
+    do {
+        if ((0 == suffix) && counters.contains(aUrl)) {
+            suffix = counters[aUrl];
+        }
+        if (suffix > 0) {
+            url = GUrlUtils::insertSuffix(aUrl, "_" + QString::number(suffix));
+        }
+        suffix++;
+    } while (context->getMonitor()->containsFile(url));
 
     if (flags.testFlag(SaveDoc_Roll)) {
         TaskStateInfo ti;
@@ -276,8 +265,7 @@ void BaseDocWriter::openAdapter(IOAdapter *io, const QString &aUrl, const SaveDo
         os.setError(tr("Can not open a file for writing: %1").arg(url));
     }
 
-    int old = counters.value(aUrl, 0);
-    counters[aUrl] = old + 1;
+    counters[aUrl] = suffix;
 }
 
 IOAdapter * BaseDocWriter::getAdapter(const QString &url, U2OpStatus &os) {
@@ -291,6 +279,7 @@ IOAdapter * BaseDocWriter::getAdapter(const QString &url, U2OpStatus &os) {
     CHECK_OP(os, NULL);
 
     QString resultUrl = io->getURL().getURLString();
+    adapters[url] = io.data();
     adapters[resultUrl] = io.data();
     usedUrls << resultUrl;
     monitor()->addOutputFile(resultUrl, getActorId());

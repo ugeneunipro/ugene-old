@@ -32,6 +32,7 @@ class U2LANG_EXPORT BaseAttributes : public QObject {
 public:
     static const Descriptor URL_IN_ATTRIBUTE();
     static const Descriptor URL_OUT_ATTRIBUTE();
+    static const Descriptor URL_SUFFIX();
     static const Descriptor URL_LOCATION_ATTRIBUTE();
     static const Descriptor DATABASE_ATTRIBUTE();
     static const Descriptor DB_PATH();

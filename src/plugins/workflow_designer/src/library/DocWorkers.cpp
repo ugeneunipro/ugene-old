@@ -67,11 +67,10 @@ const int TextReader::READ_BLOCK_SIZE = 1024;
 /*************************************
  * TextReader
  *************************************/
-
 TextReader::TextReader(Actor *a)
-    : BaseDocReader(a, CoreLibConstants::TEXT_TYPESET_ID, BaseDocumentFormats::PLAIN_TEXT), io(NULL), urls(NULL)
+    : BaseWorker(a), ch(NULL), io(NULL), urls(NULL)
 {
-
+    mtype = WorkflowEnv::getDataTypeRegistry()->getById(CoreLibConstants::TEXT_TYPESET_ID);
 }
 
 void TextReader::init() {
@@ -82,12 +81,19 @@ void TextReader::init() {
     ch = ports.values().first();
 }
 
+void TextReader::cleanup() {
+    delete io;
+    delete urls;
+}
+
 void TextReader::sendMessage(const QByteArray &data) {
     QVariantMap m;
     m[BaseSlots::TEXT_SLOT().getId()] = QString(data);
     m[BaseSlots::URL_SLOT().getId()] = url;
     m[BaseSlots::DATASET_SLOT().getId()] = urls->getLastDatasetName();
-    ch->put( Message(mtype, m));
+    MessageMetadata metadata(url, urls->getLastDatasetName());
+    context->getMetadataStorage().put(metadata);
+    ch->put(Message(mtype, m, metadata.getId()));
 }
 
 Task * TextReader::tick() {
@@ -177,18 +183,6 @@ void TextReader::processNextLine() {
     sendMessage(buf);
     if(io->isEof()) {
         io->close();
-    }
-}
-
-void TextReader::doc2data(Document* doc) {
-    algoLog.info(tr("Reading text from %1").arg(doc->getURLString()));
-    foreach(GObject* go, GObjectUtils::select(doc->getObjects(), GObjectTypes::TEXT, UOF_LoadedOnly)) {
-        TextObject* txtObject = qobject_cast<TextObject*>(go);
-        assert(txtObject);
-        QVariantMap m;
-        m[BaseSlots::TEXT_SLOT().getId()] = txtObject->getText();
-        m[BaseSlots::URL_SLOT().getId()] = doc->getURLString();
-        cache << Message(mtype, m);
     }
 }
 

@@ -36,30 +36,6 @@ class IOAdapter;
 
 namespace LocalWorkflow {
 
-class BaseDocReader : public BaseWorker {
-    Q_OBJECT
-public:
-    BaseDocReader(Actor* a, const QString& tid, const DocumentFormatId& fid);
-    virtual ~BaseDocReader() {}
-
-    virtual void init() ;
-    virtual Task* tick() ;
-    virtual bool isDone() ;
-    virtual void cleanup() ;
-
-protected:
-    virtual void doc2data(Document* ) = 0;
-
-protected:
-    CommunicationChannel* ch;
-    DocumentFormatId fid;
-    QMap<Document*, bool> docs;
-    bool attachDoc2Proj;
-    QList<Message> cache;
-    DataTypePtr mtype;
-
-};
-
 class BaseDocWriter : public BaseWorker {
     Q_OBJECT
 public:
@@ -87,6 +63,10 @@ protected:
     virtual Task * getWriteDocTask(Document *doc, const SaveDocFlags &flags);
     virtual void takeParameters(U2OpStatus &os);
     virtual QStringList takeUrlList(const QVariantMap &data, int metadataId, U2OpStatus &os);
+    virtual QString getDefaultFileName() const;
+    virtual bool ifGroupByDatasets() const;
+    virtual QString getSuffix() const;
+    virtual QString getExtension() const;
 
 protected:
     DocumentFormat *format;
@@ -125,6 +105,8 @@ private:
     void storeData(const QStringList &urls, const QVariantMap &data, U2OpStatus &os);
     Task * createWriteToSharedDbTask(const QVariantMap &data);
     void reportNoDataReceivedWarning();
+    QString getBaseName(int metadataId) const;
+    QString generateUrl(int metadataId) const;
 };
 
 }// Workflow namespace

@@ -23,6 +23,7 @@
 
 static const QString URL_LOCATION_ATTR_ID("url_location");
 static const QString URL_OUT_ATTR_ID("url-out");
+static const QString URL_SUFFIX_ATTR_ID("url-suffix");
 static const QString URL_IN_ATTR_ID("url-in");
 static const QString DATA_STORAGE_ATTR_ID("data-storage");
 static const QString DATABASE_ATTR_ID("database");
@@ -46,6 +47,10 @@ const Descriptor BaseAttributes::URL_IN_ATTRIBUTE() {
 const Descriptor BaseAttributes::URL_OUT_ATTRIBUTE() {
     return Descriptor(URL_OUT_ATTR_ID, tr("Output file"), tr("Location of output data file. If this attribute is set,"
         " slot \"Location\" in port will not be used."));
+}
+
+const Descriptor BaseAttributes::URL_SUFFIX() {
+    return Descriptor(URL_SUFFIX_ATTR_ID, tr("Output file suffix"), tr("This suffix will be used for generating the output file name."));
 }
 
 const Descriptor BaseAttributes::URL_LOCATION_ATTRIBUTE() {

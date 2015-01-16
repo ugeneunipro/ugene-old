@@ -123,11 +123,14 @@ void WriteDocActorProto::construct(bool canWriteToSharedDb, bool addValidator, b
 
     urlAttr = new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false );
     attrs << urlAttr;
+    Attribute *suffixAttr = new Attribute(BaseAttributes::URL_SUFFIX(), BaseTypes::STRING_TYPE(), false);
+    attrs << suffixAttr;
     Attribute *fileModeAttr = new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
     attrs << fileModeAttr;
 
     if (canWriteToSharedDb) {
         urlAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
+        suffixAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
         fileModeAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
     }
 
@@ -178,11 +181,14 @@ QString WriteGenbankPrompter::composeRichDoc() {
 /****************************
  * WriteFastaPrompter
  *****************************/
+namespace {
+    const QString generatedStr = "<font color='blue'>"+WriteDocPrompter::tr("default file")+"</font>";
+}
 QString WriteFastaPrompter::composeRichDoc() {
     QString outPortId = target->getInputPorts().first()->getId();
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(outPortId));
-    QString url = getScreenedURL( qobject_cast<IntegralBusPort*>(target->getPort(outPortId)),
-        BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId() );
+    QString url = getScreenedURL(qobject_cast<IntegralBusPort*>(target->getPort(outPortId)),
+        BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId(), generatedStr);
     url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
 
     Actor* seqProducer = input->getProducer(BaseSlots::DNA_SEQUENCE_SLOT().getId());
@@ -229,7 +235,7 @@ QString WriteDocPrompter::composeRichDoc() {
         url = getHyperlink(BaseAttributes::DB_PATH().getId(), url);
     } else if (dataStorage == BaseAttributes::LOCAL_FS_DATA_STORAGE()) {
         url = getScreenedURL(qobject_cast<IntegralBusPort*>(target->getPort(outPortId)), BaseAttributes::URL_OUT_ATTRIBUTE().getId(),
-            BaseSlots::URL_SLOT().getId());
+            BaseSlots::URL_SLOT().getId(), generatedStr);
         url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
     } else {
         FAIL("Unexpected attribute value", QString());

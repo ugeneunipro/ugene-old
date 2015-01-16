@@ -192,7 +192,7 @@ void WriteAssemblyWorkerFactory::init() {
         attrs << indexAttr;
     }
 
-    WriteDocActorProto *proto = new WriteDocActorProto(format, protoDesc, portDescs, inDesc.getId(), attrs);
+    WriteDocActorProto *proto = new WriteDocActorProto(format, protoDesc, portDescs, inDesc.getId(), attrs, true, false);
     docFormatAttr->addRelation(new FileExtensionRelation(proto->getUrlAttr()->getId()));
 
     // set up delegates

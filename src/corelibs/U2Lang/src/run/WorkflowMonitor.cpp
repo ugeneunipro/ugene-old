@@ -205,6 +205,15 @@ int WorkflowMonitor::getDataProduced(const QString &actor) const {
     return task->getDataProduced(actor);
 }
 
+bool WorkflowMonitor::containsFile(const QString &url) const {
+    foreach (const FileInfo &info, outputFiles) {
+        if (info.url == url) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void WorkflowMonitor::addProblem(const Problem &problem) {
     if (problems.isEmpty()) {
         emit si_firstProblem();

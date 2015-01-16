@@ -1347,7 +1347,7 @@ QVariant PrompterBaseImpl::getParameter(const QString& id) {
     }
 }
 
-QString PrompterBaseImpl::getURL(const QString& id, bool * empty ) {
+QString PrompterBaseImpl::getURL(const QString& id, bool * empty, const QString &onEmpty) {
     QVariant urlVar = getParameter(id);
     QString url;
     if (urlVar.canConvert< QList<Dataset> >()) {
@@ -1360,6 +1360,9 @@ QString PrompterBaseImpl::getURL(const QString& id, bool * empty ) {
     if( !target->getParameter(id)->getAttributeScript().isEmpty() ) {
         url = "got from user script";
     } else if (url.isEmpty()) {
+        if (!onEmpty.isEmpty()) {
+            return onEmpty;
+        }
         url = "<font color='red'>"+tr("unset")+"</font>";
         if( empty != NULL ) { *empty = true; }
     } else if (url.indexOf(";") != -1) {
@@ -1385,9 +1388,9 @@ QString PrompterBaseImpl::getRequiredParam(const QString& id) {
     return url;
 }
 
-QString PrompterBaseImpl::getScreenedURL(IntegralBusPort* input, const QString& id, const QString& slot) {
+QString PrompterBaseImpl::getScreenedURL(IntegralBusPort* input, const QString& id, const QString& slot, const QString &onEmpty) {
     bool empty = false;
-    QString attrUrl = QString("<u>%1</u>").arg(getURL(id, &empty));
+    QString attrUrl = QString("<u>%1</u>").arg(getURL(id, &empty, onEmpty));
     if( !empty ) {
         return attrUrl;
     }

@@ -74,18 +74,18 @@ public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
 };
 
-class TextReader : public BaseDocReader {
+class TextReader : public BaseWorker {
     Q_OBJECT
 public:
     TextReader(Actor *a);
 
     void init();
     Task * tick();
-
-protected:
-    virtual void doc2data(Document *doc);
+    void cleanup();
 
 private:
+    DataTypePtr mtype;
+    CommunicationChannel* ch;
     IOAdapter *io;
     DatasetFilesIterator *urls;
     QString url;
