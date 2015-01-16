@@ -132,7 +132,7 @@ void AssemblyToSequencesTask::run() {
         seqData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(seqHandler);
         Message m(busType, seqData);
         // the context is needed! It keeps the corresponding data
-        channel->setContext(ctx);
+        channel->setContext(ctx, message.getMetadataId());
         channel->put(m);
     }
 }

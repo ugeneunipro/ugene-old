@@ -369,13 +369,14 @@ void AminoTranslationWorker::sl_taskFinished(){
 
     if(output){
         QVariantMap channelContext = output->getContext();
+        int metadataId = output->getContextMetadataId();
 
         QList<U2SequenceObject*> seqObjs = translate2AminoTask->popResults();
         foreach(U2SequenceObject* seqObj, seqObjs ){
             QVariantMap msgData;
             SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(seqObj->getWholeSequence());
             msgData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(seqId);
-            output->setContext(channelContext);
+            output->setContext(channelContext, metadataId);
             output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), msgData));
         }
     }

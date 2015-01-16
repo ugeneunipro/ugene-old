@@ -95,8 +95,9 @@ public:
     virtual Message lookMessage() const;
     virtual QQueue<Message> getMessages(int startIndex, int endIndex) const;
 
-    virtual QVariantMap getContext() const {return context;}
-    virtual void setContext(const QVariantMap& m, int metadataId = -1);
+    QVariantMap getContext() const {return context;}
+    void setContext(const QVariantMap& m, int metadataId);
+    int getContextMetadataId() const;
 
     virtual void addComplement(IntegralBus* b) {assert(!complement);complement = b;}
 

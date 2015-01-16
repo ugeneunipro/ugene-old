@@ -46,7 +46,7 @@ static const QString EMPTY_ACTION_ID("empty-input-action");
  *******************************/
 MultiplexerWorker::MultiplexerWorker(Actor *p)
 : BaseWorker(p, false), inChannel1(NULL), inChannel2(NULL), outChannel(NULL), rule(ONE_TO_ONE),
-hasMultiData(false), messagesInited(false)
+hasMultiData(false), multiMetadataId(-1), messagesInited(false)
 {
 }
 
@@ -115,9 +115,9 @@ bool MultiplexerWorker::hasDataFotMultiplexing() const {
     return inChannel1->hasMessage() || hasMultiData;
 }
 
-inline void MultiplexerWorker::sendUnitedMessage(const QVariantMap &m1, QVariantMap &m2) {
+inline void MultiplexerWorker::sendUnitedMessage(const QVariantMap &m1, QVariantMap &m2, int metadataId) {
     m2.unite(m1);
-    outChannel->putWithoutContext(Message(outChannel->getBusType(), m2));
+    outChannel->putWithoutContext(Message(outChannel->getBusType(), m2, metadataId));
 }
 
 Task *MultiplexerWorker::tick() {
@@ -135,8 +135,11 @@ Task *MultiplexerWorker::tick() {
         }
 
         QVariantMap m1, m2;
+        int metadataId = -1;
         if (inChannel1->hasMessage()) {
-            m1 = inChannel1->look().getData().toMap();
+            Message m = inChannel1->look();
+            m1 = m.getData().toMap();
+            metadataId = m.getMetadataId();
             inChannel1->get();
         }
         if (inChannel2->hasMessage()) {
@@ -144,13 +147,16 @@ Task *MultiplexerWorker::tick() {
             inChannel2->get();
         }
 
-        sendUnitedMessage(m1, m2);
+        sendUnitedMessage(m1, m2, metadataId);
         checkIfEnded();
     } else {
         QVariantMap m1, m2;
+        int metadataId = -1;
         bool hasMessage = inChannel1->hasMessage() || inChannel2->hasMessage();
         if (inChannel1->hasMessage()) {
-            m1 = inChannel1->look().getData().toMap();
+            Message m = inChannel1->look();
+            m1 = m.getData().toMap();
+            metadataId = m.getMetadataId();
             inChannel1->get();
         } else if (inChannel2->hasMessage()) {
             m2 = inChannel2->look().getData().toMap();
@@ -158,7 +164,7 @@ Task *MultiplexerWorker::tick() {
         }
 
         if (hasMessage) {
-            sendUnitedMessage(m1, m2);
+            sendUnitedMessage(m1, m2, metadataId);
         }
         checkIfEnded();
     }
@@ -172,17 +178,22 @@ void MultiplexerWorker::multiplexManyMode() {
         }
     }
     QVariantMap m1;
+    int metadataId = -1;
     if (hasMultiData) {
         m1 = multiData;
+        metadataId = multiMetadataId;
     } else {
         if (inChannel1->hasMessage()) {
-            m1 = inChannel1->look().getData().toMap();
+            Message m = inChannel1->look();
+            m1 = m.getData().toMap();
+            metadataId = m.getMetadataId();
             inChannel1->get(); // pop last message
         } else if (TRUNCATE == onEmptyAction) {
             shutDown();
         }
         hasMultiData = true;
         multiData = m1;
+        multiMetadataId = metadataId;
     }
 
     if (messagesInited) {
@@ -191,22 +202,23 @@ void MultiplexerWorker::multiplexManyMode() {
                 shutDown();
             } else {
                 QVariantMap m2;
-                sendUnitedMessage(m1, m2);
+                sendUnitedMessage(m1, m2, metadataId);
             }
         } else {
             foreach (QVariantMap m2, messages) {
-                sendUnitedMessage(m1, m2);
+                sendUnitedMessage(m1, m2, metadataId);
             }
         }
         hasMultiData = false;
         multiData.clear();
+        multiMetadataId = -1;
     } else {
         while (inChannel2->hasMessage()) {
             QVariantMap m2 = inChannel2->look().getData().toMap();
             inChannel2->get(); // pop last message
             messages << m2;
 
-            sendUnitedMessage(m1, m2);
+            sendUnitedMessage(m1, m2, metadataId);
         }
         if (inChannel2->isEnded()) {
             if (messages.isEmpty()) {
@@ -214,12 +226,13 @@ void MultiplexerWorker::multiplexManyMode() {
                     shutDown();
                 } else {
                     QVariantMap m2;
-                    sendUnitedMessage(m1, m2);
+                    sendUnitedMessage(m1, m2, metadataId);
                 }
             }
             messagesInited = true;
             hasMultiData = false;
             multiData.clear();
+            multiMetadataId = -1;
         }
     }
     if (!hasMultiData && inChannel1->isEnded()) { // nothing else to multiplex

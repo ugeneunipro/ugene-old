@@ -68,6 +68,7 @@ private:
     uint onEmptyAction;
     bool hasMultiData;
     QVariantMap multiData;
+    int multiMetadataId;
 
     bool messagesInited;
     QList<QVariantMap> messages;
@@ -75,7 +76,7 @@ private:
     void shutDown();
     bool checkIfEnded();
     bool hasDataFotMultiplexing() const;
-    void sendUnitedMessage(const QVariantMap &m1, QVariantMap &m2);
+    void sendUnitedMessage(const QVariantMap &m1, QVariantMap &m2, int metadataId);
     void multiplexManyMode();
 
 }; // MultiplexerWorker

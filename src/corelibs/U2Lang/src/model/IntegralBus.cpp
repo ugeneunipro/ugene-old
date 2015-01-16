@@ -480,5 +480,9 @@ void IntegralBus::setContext(const QVariantMap &m, int metadataId) {
     contextMetadataId = metadataId;
 }
 
+int IntegralBus::getContextMetadataId() const {
+    return contextMetadataId;
+}
+
 }//namespace Workflow
 }//namespace U2

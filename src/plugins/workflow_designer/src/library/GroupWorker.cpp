@@ -142,12 +142,14 @@ Task *GroupWorker::tick() {
                 data[slotId] = slotData;
             }
 
+            MessageMetadata metadata(QString("Group %1").arg(id+1));
+            context->getMetadataStorage().put(metadata);
             if (!produceOneGroup) {
                 QVariantMap context;
                 context[groupSlot] = uniqueData[id];
-                outChannel->setContext(context);
+                outChannel->setContext(context, metadata.getId());
             }
-            outChannel->put(Message(mtype, data));
+            outChannel->put(Message(mtype, data, metadata.getId()));
         }
         setDone();
         cleanup();

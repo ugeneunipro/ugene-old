@@ -181,6 +181,7 @@ void SequenceSplitWorker::cleanup() {
 
 void SequenceSplitWorker::sl_onTaskFinished( Task * ) {
     QVariantMap channelContext = outPort->getContext();
+    int metadataId = outPort->getContextMetadataId();
     foreach( Task * t, ssTasks ) {
         ExtractAnnotatedRegionTask * ssT = qobject_cast<ExtractAnnotatedRegionTask *>(t);
         SAFE_POINT(ssT, "Finished task 'ExtractAnnotatedRegionTask' is NULL", );
@@ -203,7 +204,7 @@ void SequenceSplitWorker::sl_onTaskFinished( Task * ) {
 
             DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById( REGIONED_SEQ_TYPE );
             if( outPort ) {
-                outPort->setContext(channelContext);
+                outPort->setContext(channelContext, metadataId);
                 outPort->put( Message(messageType, messageData) );
             }
         }
