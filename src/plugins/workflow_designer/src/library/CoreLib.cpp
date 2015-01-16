@@ -90,6 +90,7 @@
 #include "library/RemoteDBFetcherWorker.h"
 #include "library/RmdupBamWorker.h"
 #include "library/SortBamWorker.h"
+#include "library/WriteAnnotationsWorker.h"
 #include "library/WriteAssemblyWorkers.h"
 #include "library/WriteVariationWorker.h"
 #include "util/WriteSequenceValidator.h"
@@ -322,6 +323,7 @@ void CoreLib::init() {
     SequencesToMSAWorkerFactory::init();
     SortBamWorkerFactory::init();
     Text2SequenceWorkerFactory::init();
+    WriteAnnotationsWorkerFactory::init();
     WriteAssemblyWorkerFactory::init();
     WriteVariationWorkerFactory::init();
 

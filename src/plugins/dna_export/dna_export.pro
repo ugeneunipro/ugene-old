@@ -27,8 +27,7 @@ HEADERS += src/CSVColumnConfiguration.h \
            src/ImportAnnotationsFromCSVDialog.h \
            src/ImportAnnotationsFromCSVTask.h \
            src/ImportQualityScoresTask.h \
-           src/ImportQualityScoresWorker.h \
-           src/WriteAnnotationsWorker.h
+           src/ImportQualityScoresWorker.h
 FORMS += src/ui/BaseContentDialog.ui \
          src/ui/CSVColumnConfigurationDialog.ui \
          src/ui/DNASequenceGeneratorDialog.ui \
@@ -65,6 +64,5 @@ SOURCES += src/CSVColumnConfigurationDialog.cpp \
            src/ImportAnnotationsFromCSVDialog.cpp \
            src/ImportAnnotationsFromCSVTask.cpp \
            src/ImportQualityScoresTask.cpp \
-           src/ImportQualityScoresWorker.cpp \
-           src/WriteAnnotationsWorker.cpp
+           src/ImportQualityScoresWorker.cpp
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts

@@ -84,6 +84,7 @@ HEADERS += src/ActorCfgFilterProxyModel.h \
            src/library/StatisticWorkers.h \
            src/library/SortBamWorker.h \
            src/library/Text2SequenceWorker.h \
+           src/library/WriteAnnotationsWorker.h \
            src/library/WriteAssemblyWorkers.h \
            src/library/WriteVariationWorker.h \
            src/tasks/ReadAssemblyTask.h \
@@ -190,6 +191,7 @@ SOURCES += src/ActorCfgFilterProxyModel.cpp \
            src/library/StatisticWorkers.cpp \
            src/library/SortBamWorker.cpp \
            src/library/Text2SequenceWorker.cpp \
+           src/library/WriteAnnotationsWorker.cpp \
            src/library/WriteAssemblyWorkers.cpp \
            src/library/WriteVariationWorker.cpp \
            src/tasks/ReadAssemblyTask.cpp \
