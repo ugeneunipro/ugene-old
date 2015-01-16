@@ -39,7 +39,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::RenamesequenceFiller"
 #define GT_METHOD_NAME "run"
 
-void RenameSequenceFiller::run(){
+void RenameSequenceFiller::commonScenario(){
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
     GT_CHECK(dialog->windowTitle() == "Rename", "dialog not found");
@@ -53,7 +53,8 @@ void RenameSequenceFiller::run(){
     }
     
     if(oldName != newName){ //if filler used only for checking sequence name
-        GTLineEdit::setText(os, nameEdit, newName);
+        //GTLineEdit::setText(os, nameEdit, newName);
+        nameEdit->setText(newName);
     }
  
     GTGlobals::sleep(1000);

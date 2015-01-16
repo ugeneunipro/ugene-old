@@ -1009,7 +1009,8 @@ GUI_TEST_CLASS_DEFINITION(test_1252){
     GTUtilsProjectTreeView::findIndex(os, "Annotations", GTGlobals::FindOptions(false));
 //    5. Click search again
 
-    GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    GTGlobals::sleep();
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
@@ -1029,6 +1030,7 @@ GUI_TEST_CLASS_DEFINITION(test_1252_1){
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 //    2. Find any pattern. A new annotation document is created
     GTUtilsOptionsPanel::runFindPatternWithHotKey("TTTTTAAAAA", os);
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
@@ -1045,7 +1047,8 @@ GUI_TEST_CLASS_DEFINITION(test_1252_1){
 //check delition of annotation document
     GTUtilsProjectTreeView::findIndex(os, "Annotations", GTGlobals::FindOptions(false));//checks inside
 //    5. Click search again
-    GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    GTGlobals::sleep();
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
@@ -1117,7 +1120,7 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::click(os, Qt::RightButton);
     //4. Click search again
 
-    GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -2377,6 +2380,8 @@ GUI_TEST_CLASS_DEFINITION(test_1626) {
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1628 ) {
+    //CORRECT DISPLAYUNG OF RUSSIAN LATTERS CAN NOT BE TESTED
+
 //    1. Open COI.aln
 //    2. Renames any row in an alignment, use a non-english characters in the alignment name.
 //    3. Undo and redo.
@@ -3244,7 +3249,7 @@ GUI_TEST_CLASS_DEFINITION(test_1797){
     // Expected state: UGENE doesn't crash - it shows error: "BED parsing error: incorrect number of fields at line 1!"
 
     GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
-    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/formats", "test_1797");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/formats", "test_1797.svg");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1798){
@@ -5572,7 +5577,36 @@ GUI_TEST_CLASS_DEFINITION( test_2269 ){
     parameters.seedLengthCheckBox = true;
     parameters.seedLength = 33;
 
-    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+
+    class Scenario_test_2269: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget* dialog = QApplication::activeModalWidget();
+
+            QComboBox* methodNamesBox = GTWidget::findExactWidget<QComboBox*>(os, "methodNamesBox", dialog);
+            GTComboBox::setIndexWithText(os, methodNamesBox, "Bowtie2");
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/1093/refrence.fa"));
+            QWidget* addRefButton = GTWidget::findWidget(os, "addRefButton", dialog);
+            GTWidget::click(os, addRefButton);
+
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/1093/read.fa"));
+            QWidget* addShortreadsButton = GTWidget::findWidget(os, "addShortreadsButton", dialog);
+            GTWidget::click(os, addShortreadsButton);
+
+            QCheckBox* seedCheckBox = GTWidget::findExactWidget<QCheckBox*>(os, "seedlenCheckBox", dialog);
+            GTCheckBox::setChecked(os, seedCheckBox, true);
+
+            QSpinBox* seedSpinBox = GTWidget::findExactWidget<QSpinBox*>(os, "seedlenSpinBox", dialog);
+            int max = seedSpinBox->maximum();
+            CHECK_SET_ERR(max == 31, QString("wrong seed maximim: %1").arg(max));
+
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new Scenario_test_2269()));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
 
     CHECK_SET_ERR( !os.hasError(), "Uncorrect value is available");
@@ -9088,7 +9122,7 @@ GUI_TEST_CLASS_DEFINITION(test_3017) {
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
     QString clipboardText = GTClipboard::text(os);
-    CHECK_SET_ERR("T" == clipboardText, "Alignment is not locked");
+    CHECK_SET_ERR("T" == clipboardText, "Alignment is not locked" + clipboardText);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3031){
@@ -10959,11 +10993,11 @@ GUI_TEST_CLASS_DEFINITION(test_3396){
 //Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //Add macs worker
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "macs");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Find Peaks with MACS");
 //set paremeter wiggle output to false
-    GTUtilsWorkflowDesigner::click(os, "macs");
+    GTUtilsWorkflowDesigner::click(os, "Find Peaks with MACS");
     GTUtilsWorkflowDesigner::setParameter(os, "Wiggle output", 0, GTUtilsWorkflowDesigner::comboValue);
-    GTUtilsWorkflowDesigner::click(os, "macs");
+    GTUtilsWorkflowDesigner::click(os, "Find Peaks with MACS");
     GTGlobals::sleep(500);
 //Expected state: parrameter wiggle space is hidden
     QStringList parameters = GTUtilsWorkflowDesigner::getAllParameters(os);
@@ -11986,8 +12020,22 @@ GUI_TEST_CLASS_DEFINITION(test_3563_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_3571_1) {
     // 1. Open file "test/_common_data/fasta/numbers_in_the_middle.fa" in sequence view
-    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
-    //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    class Custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
+
+            QRadioButton *separateRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("separateRB"));
+            CHECK_SET_ERR(separateRB != NULL, "radio button not found");
+            GTRadioButton::click(os, separateRB);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, new Custom()));
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "numbers_in_the_middle.fa");
 
     // 2. Select first sequence
@@ -11998,7 +12046,7 @@ GUI_TEST_CLASS_DEFINITION(test_3571_1) {
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Statistics);
 
     // Expected state : only length info appears
-    QWidget *commonStatisticsWidget = GTWidget::findWidget(os, "ArrowHeader_Common Statistics");
+    GTWidget::findWidget(os, "ArrowHeader_Common Statistics");
 
     GTGlobals::FindOptions widgetFindSafeOptions(false);
     QWidget *charOccurWidget = GTWidget::findWidget(os, "ArrowHeader_Characters Occurrence", NULL, widgetFindSafeOptions);
@@ -12009,14 +12057,28 @@ GUI_TEST_CLASS_DEFINITION(test_3571_1) {
     GTWidget::click(os, secondSeqWidget);
 
     // Expected state : length and characters occurrence info appears
-    commonStatisticsWidget = GTWidget::findWidget(os, "ArrowHeader_Common Statistics");
+    GTWidget::findWidget(os, "ArrowHeader_Common Statistics");
     charOccurWidget = GTWidget::findWidget(os, "ArrowHeader_Characters Occurrence");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3571_2) {
     // 1. Open file test/_common_data/fasta/numbers_in_the_middle.fa in sequence view
-    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
-    //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    class Custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
+
+            QRadioButton *separateRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("separateRB"));
+            CHECK_SET_ERR(separateRB != NULL, "radio button not found");
+            GTRadioButton::click(os, separateRB);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, new Custom()));
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "numbers_in_the_middle.fa");
 
     // 2. Select second sequence
@@ -12027,7 +12089,7 @@ GUI_TEST_CLASS_DEFINITION(test_3571_2) {
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Statistics);
 
     // Expected state : length and characters occurrence info appears
-    QWidget *commonStatisticsWidget = GTWidget::findWidget(os, "ArrowHeader_Common Statistics");
+    GTWidget::findWidget(os, "ArrowHeader_Common Statistics");
     QWidget *charOccurWidget = GTWidget::findWidget(os, "ArrowHeader_Characters Occurrence");
 
     // 4. Select first sequence
@@ -12035,7 +12097,7 @@ GUI_TEST_CLASS_DEFINITION(test_3571_2) {
     GTWidget::click(os, firstSeqWidget);
 
     // Expected state : only length info appears
-    commonStatisticsWidget = GTWidget::findWidget(os, "ArrowHeader_Common Statistics");
+    GTWidget::findWidget(os, "ArrowHeader_Common Statistics");
     GTGlobals::FindOptions widgetFindSafeOptions(false);
     charOccurWidget = GTWidget::findWidget(os, "ArrowHeader_Characters Occurrence", NULL, widgetFindSafeOptions);
     CHECK_SET_ERR(!charOccurWidget->isVisible(), "Character Occurrence section is unexpectedly visible");

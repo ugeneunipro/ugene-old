@@ -21,6 +21,11 @@
 
 #include <QTableView>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
+
+#include "api/GTFile.h"
 #include "api/GTLineEdit.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTableView.h"
@@ -73,6 +78,12 @@ QWidget * GTUtilsPcr::primerBox(U2OpStatus &os, U2Strand::Direction direction) {
 
 QTableView * GTUtilsPcr::table(U2OpStatus &os) {
     return dynamic_cast<QTableView*>(GTWidget::findWidget(os, "productsTable"));
+}
+
+void GTUtilsPcr::clearPcrDir(U2OpStatus &os){
+    Q_UNUSED(os);
+    QString path = AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/pcr";
+    GTFile::removeDir(path);
 }
 
 } // U2

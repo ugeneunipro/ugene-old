@@ -742,7 +742,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010_3) {
     GTUtilsAnnotationsTreeView::createQualifier(os, "gene_id", "YT496", "ann_2");
     GTUtilsAnnotationsTreeView::createQualifier(os, "transcript_id", "0012", "ann_2");
 
-    GTGlobals::sleep(120000);
+    GTGlobals::sleep();
     GTUtilsAnnotationsTreeView::selectItems(os, annList);
 
     GTUtilsDialog::waitForDialog(os, new ExportAnnotationsFiller(sandBoxDir + "ann_export_test_0010_3.gtf",
@@ -758,7 +758,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010_3) {
     GTUtilsDocument::removeDocument(os, "ann_test_0010_3_19.gb");
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "gtf"));
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "GTF"));
     GTFileDialog::openFile(os, sandBoxDir, "ann_export_test_0010_3.gtf");
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "GXL_141619 features"), "No GXL_141619 features object!");
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "GXL_141618 features"), "No GXL_141618 features object!");

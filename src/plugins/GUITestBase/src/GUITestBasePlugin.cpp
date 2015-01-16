@@ -169,10 +169,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1212);
     REGISTER_TEST(GUITest_regression_scenarios::test_1212_1);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1252, "outdated");
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1252_1, "outdated");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1252);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1252_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1255);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1262, "outdated");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1262);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1432);
     REGISTER_TEST(GUITest_regression_scenarios::test_1434_1);
@@ -194,7 +194,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1506);
     REGISTER_TEST(GUITest_regression_scenarios::test_1508);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1510);
+    //REGISTER_TEST(GUITest_regression_scenarios::test_1510);
     REGISTER_TEST(GUITest_regression_scenarios::test_1511);
     REGISTER_TEST(GUITest_regression_scenarios::test_1527);
     REGISTER_TEST(GUITest_regression_scenarios::test_1527_1);
@@ -222,7 +222,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1616);
     REGISTER_TEST(GUITest_regression_scenarios::test_1622);
     REGISTER_TEST(GUITest_regression_scenarios::test_1626);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1628, "UGENE-3811");
     REGISTER_TEST(GUITest_regression_scenarios::test_1629);
     REGISTER_TEST(GUITest_regression_scenarios::test_1631);
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_1640, "UGENE-3863");
@@ -257,7 +256,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1747);
     REGISTER_TEST(GUITest_regression_scenarios::test_1756);
     REGISTER_TEST(GUITest_regression_scenarios::test_1786);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1797, "");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1797);
     REGISTER_TEST(GUITest_regression_scenarios::test_1798);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1807);
@@ -344,7 +343,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2268, "bad permission setting");
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2269, "Vladimir check this");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2269);
     REGISTER_TEST(GUITest_regression_scenarios::test_2270);
     REGISTER_TEST(GUITest_regression_scenarios::test_2281);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2282, "https://ugene.unipro.ru/tracker/browse/UGENE-2454");
@@ -449,7 +448,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2866);
     REGISTER_TEST(GUITest_regression_scenarios::test_2884);
     REGISTER_TEST(GUITest_regression_scenarios::test_2887);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2891, "https://local.ugene.unipro.ru/tracker/browse/UGENE-3686");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2891);
     REGISTER_TEST(GUITest_regression_scenarios::test_2891_1);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2894, "task api needed");
     REGISTER_TEST(GUITest_regression_scenarios::test_2895);
@@ -476,7 +475,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2998);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_3014);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3017, "https://local.ugene.unipro.ru/tracker/browse/UGENE-3632");
+    REGISTER_TEST(GUITest_regression_scenarios::test_3017);
     REGISTER_TEST(GUITest_regression_scenarios::test_3031);
     REGISTER_TEST(GUITest_regression_scenarios::test_3034);
     REGISTER_TEST(GUITest_regression_scenarios::test_3052);
@@ -524,7 +523,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3250);
     REGISTER_TEST(GUITest_regression_scenarios::test_3255);
     REGISTER_TEST(GUITest_regression_scenarios::test_3263);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3266, "GUITest_regression_scenarios_test_3266");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3266, "UGENE-3923");
     REGISTER_TEST(GUITest_regression_scenarios::test_3274);
     REGISTER_TEST(GUITest_regression_scenarios::test_3276);
     REGISTER_TEST(GUITest_regression_scenarios::test_3277);
@@ -551,7 +550,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3373);
     REGISTER_TEST(GUITest_regression_scenarios::test_3379);
     REGISTER_TEST(GUITest_regression_scenarios::test_3384);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3396, "UGENE-3633");
+    REGISTER_TEST(GUITest_regression_scenarios::test_3396);
     REGISTER_TEST(GUITest_regression_scenarios::test_3398_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_3398_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_3398_3);
@@ -586,8 +585,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3557);
     REGISTER_TEST(GUITest_regression_scenarios::test_3563_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_3563_2);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3571_1, "Ignored due to incorrect processing of a message box");
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3571_2, "Ignored due to incorrect processing of a message box");
+    REGISTER_TEST(GUITest_regression_scenarios::test_3571_1);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3571_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_3585);
 
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3603, "UGENE-3830");
@@ -1249,7 +1248,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0010_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0010_2);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_annotations::test_0010_3, "UGENE-3734");
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0010_3);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0011_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0011_2);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0011_3);
@@ -1776,7 +1775,6 @@ void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
         guiTestBase->registerTest(new GUITest_initial_checks::test_0004, GUITestBase::PreAdditional);
         guiTestBase->registerTest(new GUITest_initial_checks::test_0005, GUITestBase::PreAdditional);
         guiTestBase->registerTest(new GUITest_initial_checks::test_0006, GUITestBase::PreAdditional);
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0007, GUITestBase::PreAdditional);
 
         guiTestBase->registerTest(new GUITest_initial_checks::post_test_0000, GUITestBase::PostAdditionalChecks);
 

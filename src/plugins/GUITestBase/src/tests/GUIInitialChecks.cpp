@@ -121,11 +121,6 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 #endif
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0007) {
-    QString path = AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/pcr";
-    GUrlUtils::removeDir(path, os);
-    CHECK_OP_SET_ERR(os, os.getError());
-}
 
 GUI_TEST_CLASS_DEFINITION(post_test_0000){
     GTUtilsDialog::cleanup(os);

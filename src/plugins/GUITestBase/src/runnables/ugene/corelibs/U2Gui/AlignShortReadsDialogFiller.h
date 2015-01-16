@@ -170,8 +170,9 @@ public:
         parameters(parameters) {
         CHECK_SET_ERR(parameters, "Invalid filler parameters: NULL pointer");
     }
+    AlignShortReadsFiller(U2OpStatus &os, CustomScenario* c): Filler(os, "AssemblyToRefDialog", c){}
 
-    virtual void run();
+    virtual void commonScenario();
 
 private:
     void setCommonParameters(QWidget* dialog);

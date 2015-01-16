@@ -39,6 +39,7 @@ namespace U2 {
 namespace GUITest_common_scenarios_in_silico_pcr {
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
+    GTUtilsPcr::clearPcrDir(os);
     //The PCR options panel is available only for nucleic sequences
 
     //1. Open "_common_data/fasta/alphabet.fa".
@@ -67,6 +68,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
+    GTUtilsPcr::clearPcrDir(os);
     //Primer group box
 
     //1. Open "_common_data/fasta/pcr_test.fa".
@@ -100,6 +102,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
+    GTUtilsPcr::clearPcrDir(os);
     //Availability of the PCR OP find button
 
     //1. Open "_common_data/fasta/pcr_test.fa".
@@ -132,6 +135,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
+    GTUtilsPcr::clearPcrDir(os);
     //Products table:
     //    Availability of the extract button
     //    Extract product result
@@ -185,6 +189,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
+    GTUtilsPcr::clearPcrDir(os);
     //Products table:
     //    Sequence view selection
     //    Extract several products result
@@ -238,6 +243,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
+    GTUtilsPcr::clearPcrDir(os);
     //Primers pair warning and details dialog
 
     //1. Open "_common_data/fasta/pcr_test.fa".
@@ -275,6 +281,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007) {
+    GTUtilsPcr::clearPcrDir(os);
     //Algorithm parameters:
     //    Mismatches
     //    Product size
@@ -315,6 +322,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0008) {
+    GTUtilsPcr::clearPcrDir(os);
     //Circular sequences
 
     //1. Open "_common_data/fasta/pcr_test.fa".

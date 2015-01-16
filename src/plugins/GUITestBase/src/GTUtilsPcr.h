@@ -25,6 +25,7 @@
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2Type.h>
 
+
 class QTableView;
 
 namespace U2 {
@@ -39,6 +40,7 @@ public:
     static QPoint getResultPoint(U2OpStatus &os, int number);
     static QPoint getDetailsPoint(U2OpStatus &os);
     static QWidget * primerBox(U2OpStatus &os, U2Strand::Direction direction);
+    static void clearPcrDir(U2OpStatus &os);
 
 private:
     static QTableView * table(U2OpStatus &os);
