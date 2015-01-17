@@ -116,6 +116,7 @@ void FormatDBSupportRunDialogFiller::run() {
 
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, parameters.outputDirPath, "", GTFileDialogUtils::Choose));
     GTWidget::click(os, GTWidget::findWidget(os, "databasePathToolButton"));
+    GTGlobals::sleep(3000);
 
     GTWidget::click(os, GTWidget::findButtonByText(os, "Format", GTUtilsDialog::buttonBox(os, dialog)));
 }

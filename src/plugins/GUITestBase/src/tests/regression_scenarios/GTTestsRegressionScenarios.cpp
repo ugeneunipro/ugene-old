@@ -8057,7 +8057,9 @@ GUI_TEST_CLASS_DEFINITION(test_2737_1) {
     //2. Delete all annotations in random order;
     QTreeWidgetItem *annotation = NULL;
     while (NULL != (annotation = GTUtilsAnnotationsTreeView::findFirstAnnotation(os, GTGlobals::FindOptions(false)))) {
+        uiLog.trace("annotation text is: " + annotation->text(0));
         GTUtilsAnnotationsTreeView::deleteItem(os, annotation);
+        GTGlobals::sleep();
     }
 
     //Expected state: no errors in the log
@@ -11954,8 +11956,8 @@ GUI_TEST_CLASS_DEFINITION(test_3557) {
 
     QLineEdit *firstEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "sequenceLineEdit", GTWidget::findWidget(os, "firstSeqSelectorWC")));
     QLineEdit *secondEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "sequenceLineEdit", GTWidget::findWidget(os, "secondSeqSelectorWC")));
-    CHECK_SET_ERR(firstEdit->text() == "2|1a0cA|gi|32470780", "Wrong first sequence");
-    CHECK_SET_ERR(secondEdit->text() == "1a0cA", "Wrong second sequence");
+    CHECK_SET_ERR(firstEdit->text() == "2|1a0cA|gi|32470780", "Wrong first sequence: " + firstEdit->text());
+    CHECK_SET_ERR(secondEdit->text() == "1a0cA", "Wrong second sequence: " + secondEdit->text());
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3563_1) {
@@ -13300,11 +13302,13 @@ GUI_TEST_CLASS_DEFINITION(test_3886) {
             //4. Click Next.
             //Expected: UGENE does not crash.
             GTWidget::click(os, GTWidget::findWidget(os,"__qt__passive_wizardbutton1"));
+            GTGlobals::sleep();
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
         }
     };
     GTUtilsDialog::waitForDialog(os, new TestWizardFiller(os));
     GTWidget::click(os, GTAction::button(os, "Show wizard"));
+    GTGlobals::sleep();
 }
 
 } // GUITest_regression_scenarios namespace
