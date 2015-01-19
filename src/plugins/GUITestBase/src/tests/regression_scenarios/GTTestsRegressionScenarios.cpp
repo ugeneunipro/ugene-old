@@ -1134,6 +1134,33 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
 }
+GUI_TEST_CLASS_DEFINITION(test_1387) {
+    // 1) Open _common_data\regression\1387\col_of_gaps.aln
+    // 2) Use context menu: {Edit -> Remove columns of gaps}
+    // 3) In the appeared dialog select "Remove columns with percentage of gaps" and click the "Remove" button.
+    // Expected state: UGENE not crashed
+
+    GTFileDialog::openFile(os, testDir + "_common_data/regression/1387/", "col_of_gaps.aln");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "remove_columns_of_gaps"));
+
+    GTUtilsDialog::waitForDialog(os, new RemoveGapColsDialogFiller(os, RemoveGapColsDialogFiller::Percent, 15));
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1405) {
+    // 1) Open _common_data/scenarios/msa/ma2_gap_col.aln
+    // 2) Try to delete columns with gaps (first option, 1 gap).
+    // Expected state: Safe_point was not triggered, i.e. no error messages in log
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "remove_columns_of_gaps"));
+
+    GTUtilsDialog::waitForDialog(os, new RemoveGapColsDialogFiller(os, RemoveGapColsDialogFiller::Number, 1));
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+
+}
 
 GUI_TEST_CLASS_DEFINITION(test_1432) {
 //    1. Open WD
