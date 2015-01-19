@@ -77,7 +77,8 @@ Task * ReadAnnotationsWorker::createReadTask(const QString &url, const QString &
 QString ReadAnnotationsWorker::addReadDbObjectToData(const QString &objUrl, QVariantMap &data) {
     SharedDbiDataHandler handler = getDbObjectHandlerByUrl(objUrl);
     data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(handler);
-    return getObjectName(handler, U2Type::AnnotationTable);
+    //return getObjectName(handler, U2Type::AnnotationTable);
+    return getObjectName(handler, 10);
 }
 
 void ReadAnnotationsWorker::onTaskFinished(Task *task) {
