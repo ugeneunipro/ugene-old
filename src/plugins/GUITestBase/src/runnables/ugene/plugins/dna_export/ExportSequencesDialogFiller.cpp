@@ -43,8 +43,8 @@ namespace U2 {
 QString ExportSelectedRegionFiller::defaultExportPath = "";
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportSelectedRegionFiller"
-ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method, bool translate)
-    : Filler(_os, "U2__ExportSequencesDialog"), name(_name), translate(translate), useMethod(method)
+ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method, bool translate, const QString& seqName)
+    : Filler(_os, "U2__ExportSequencesDialog"), name(_name), translate(translate), useMethod(method), seqName(seqName)
 {
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (__path.at(__path.count() - 1) != '/') {
@@ -70,6 +70,15 @@ void ExportSelectedRegionFiller::commonScenario()
     GT_CHECK(lineEdit != NULL, "File name line edit not found");
     defaultExportPath = GTLineEdit::copyText(os, lineEdit);
     GTLineEdit::setText(os, lineEdit, path + name);
+
+    if(!seqName.isEmpty()) {
+        QCheckBox *customSeqCheckBox = dialog->findChild<QCheckBox*>("customSeqNameBox");
+        GT_CHECK(customSeqCheckBox != NULL, "Sequence name checkbox not found");
+        GTCheckBox::setChecked(os, customSeqCheckBox, true);
+        QLineEdit *sequenceNameEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "sequenceNameEdit", dialog));
+        GT_CHECK(sequenceNameEdit != NULL, "Sequence name line edit not found");
+        GTLineEdit::setText(os, sequenceNameEdit, seqName);
+    }
 
     QCheckBox *translateButton = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "translateButton"));
     CHECK_SET_ERR(translateButton != NULL, "translateButton not found!");

@@ -28,7 +28,7 @@ namespace U2 {
 
     class ExportSelectedRegionFiller : public Filler {
     public:
-        ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method, bool translate = false);
+        ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method, bool translate = false, const QString& seqName = QString());
         ExportSelectedRegionFiller(U2OpStatus &os, CustomScenario *customScenario);
 
         void commonScenario();
@@ -36,6 +36,7 @@ namespace U2 {
         static QString defaultExportPath;
     private:
         QString path, name;
+        QString seqName;
         bool translate;
         GTGlobals::UseMethod useMethod;
     };
