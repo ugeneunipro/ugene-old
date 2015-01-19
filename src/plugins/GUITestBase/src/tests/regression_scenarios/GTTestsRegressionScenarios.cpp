@@ -1167,6 +1167,55 @@ GUI_TEST_CLASS_DEFINITION(test_1427) {
     GTUtilsProjectTreeView::checkItem(os, "text");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1429){
+    //    0. Ensure that Bowtie2 Build index tool is not set. Remove it, if it is.
+    //    1. Do {main menu -> Tools -> ALign to reference -> Build index}.
+    //    Expected state: a "Build index" dialog appeared.
+    //    2. Fill the dialog:
+    //        {Align short reads method}: Bowtie
+    //        {Reference sequence}:       _common_data/fasta/amino_multy.fa
+    //        {Index file name}:          set any valid data or use default
+    //    Click a "Start" button.
+
+    //    Expected state: there are no errors in the log, index files appeared in the destination folder.
+    GTUtilsExternalTools::removeTool(os, "Bowtie 2 build indexer");
+
+    GTLogTracer lt;
+    class CheckBowtie2Filler : public Filler {
+    public:
+        CheckBowtie2Filler(U2OpStatus &os)
+            : Filler (os, "BuildIndexFromRefDialog") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QComboBox* methodNamesBox = dialog->findChild<QComboBox*>("methodNamesBox");
+            for(int i=0; i < methodNamesBox->count();i++){
+                if(methodNamesBox->itemText(i) == "Bowtie"){
+                    GTComboBox::setCurrentIndex(os, methodNamesBox, i);
+                }
+            }
+
+            GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/fasta/", "multy_fa.fa");
+            GTUtilsDialog::waitForDialog(os, ob);
+            GTWidget::click(os, GTWidget::findWidget(os, "addRefButton",dialog));
+
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+
+            //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Start"));
+            QPushButton* okButton = box->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(okButton !=NULL, "ok button is NULL");
+            GTWidget::click(os, okButton);
+        }
+    };
+
+
+    GTUtilsDialog::waitForDialog(os, new CheckBowtie2Filler(os));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Build index");
+    CHECK_SET_ERR(lt.hasError() == false, "Errors in log!");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1432) {
 //    1. Open WD
 //    2. Add worker "sequence marker"
