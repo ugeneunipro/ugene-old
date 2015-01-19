@@ -12936,6 +12936,27 @@ GUI_TEST_CLASS_DEFINITION(test_3749) {
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(1, 10), QPoint(1, 10)));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3753) {
+    //1. Export any document from the public database
+    //2. Rename an object from the exported document
+    // Expected state: object renamed
+    // Current state: UGENE hangs
+    GTLogTracer lt;
+    GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+    CHECK_OP(os, );
+
+    QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
+    CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "et0001_sequence"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0001_export.fasta", GTGlobals::UseMouse, false, "sequence_test_3753"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(3000);
+
+    GTUtilsProjectTreeView::rename(os, "sequence_test_3753", "test3753_renamed");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3755){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "HIV-1.aln");
 
