@@ -80,6 +80,7 @@ QWidget * AssemblySettingsWidget::createReadsSettings() {
     QVBoxLayout * layout = initLayout(group);
     AssemblyReadsArea * readsArea = ui->getReadsArea();
     hint = new QLabel("", group);
+    hint->setObjectName("HINT_HIGHLIGHTNING");
     hint->setWordWrap(true);
     hint->setStyleSheet(
         "color: green;"
@@ -90,6 +91,7 @@ QWidget * AssemblySettingsWidget::createReadsSettings() {
     layout->addWidget(new QLabel(tr("Reads highlighting:"), group));
 
     readsHighlightCombo = new QComboBox(group);
+    readsHighlightCombo->setObjectName("READS_HIGHLIGHTNING_COMBO");
     foreach(QAction * a, readsArea->getCellRendererActions()) {
         readsHighlightCombo->addItem(a->text());
         connect(a, SIGNAL(triggered()), SLOT(sl_cellRendererChanged()));

@@ -1148,6 +1148,35 @@ GUI_TEST_CLASS_DEFINITION(test_1387) {
     GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
 
 }
+GUI_TEST_CLASS_DEFINITION(test_1390) {
+/*  1. Open some assembly with assembly browser
+    2. Open the "Assembly Browser Settings" tab in options panel
+    3. Choose the "Difference" type of "Reads highlighting" (if not chosen by default)
+        Expected state: the hint about setting reference sequence is displayed
+    4. Set any other value for "Reads highlighting"
+        Expected state: the hint has vanished
+    5. Set the "Difference" again from assembly context menu { Reads highlighting -> Difference }
+        Expected state: the hint has appeared again in options panel
+*/
+
+    QString ugenedbFileName = testDir + "_common_data/scenarios/sandbox/test_1390.ugenedb";
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, ugenedbFileName));
+    GTFileDialog::openFile( os, testDir + "_common_data/bam", "chrM.sorted.bam" );
+
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_SETTINGS"));
+    QLabel* hint = qobject_cast<QLabel*>(GTWidget::findWidget(os, "HINT_HIGHLIGHTNING"));
+    CHECK_SET_ERR( hint != NULL, "Hint not found");
+    CHECK_SET_ERR(!hint->text().isEmpty(), "Hint is empty, but must not be");
+
+    QComboBox* highlightingBox = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "READS_HIGHLIGHTNING_COMBO"));
+    CHECK_SET_ERR( highlightingBox != NULL, "READS_HIGHLIGHTNING_COMBO not found");
+    GTComboBox::setIndexWithText(os, highlightingBox, "Nucleotide");
+    CHECK_SET_ERR(hint->text().isEmpty(), "Hint is not empty, but must be");
+
+    GTComboBox::setIndexWithText(os, highlightingBox, "Difference");
+    CHECK_SET_ERR(!hint->text().isEmpty(), "Hint is empty, but must not be");
+
+}
 
 GUI_TEST_CLASS_DEFINITION(test_1405) {
     // 1) Open _common_data/scenarios/msa/ma2_gap_col.aln
