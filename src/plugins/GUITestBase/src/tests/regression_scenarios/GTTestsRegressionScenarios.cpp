@@ -1162,6 +1162,11 @@ GUI_TEST_CLASS_DEFINITION(test_1405) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1427) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1427/", "text");
+    GTUtilsProjectTreeView::checkItem(os, "text");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1432) {
 //    1. Open WD
 //    2. Add worker "sequence marker"
