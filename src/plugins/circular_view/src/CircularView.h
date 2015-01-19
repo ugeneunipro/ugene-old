@@ -79,7 +79,7 @@ public:
     const QMap<Annotation,CircularAnnotationItem*>& getCircularItems() const;
     const QList<CircularAnnotationLabel*>& getLabelList() const;
 
-    bool isCircularTopology() { return true; }
+    bool isCircularTopology() const;
 
     enum Direction {CW, CCW, UNKNOWN};
 
@@ -194,7 +194,11 @@ private:
                                            const QRect &outerRect, const QRect &innerRect, const QRect &middleRect,
                                            bool complementary, bool isShort) const;
     void removeRegionsOutOfRange(QVector<U2Region> &location, int seqLen) const;
-    void mergeCircularJunctoinRegion(QVector<U2Region> &location, int seqLen) const;
+
+    /**
+     * Returns a pair of merged regions: the second one was added to the first
+     */
+    QPair<U2Region, U2Region> mergeCircularJunctoinRegion(QVector<U2Region> &location, int seqLen) const;
 
     static const int OUTER_ELLIPSE_SIZE;
     static const int ELLIPSE_DELTA;

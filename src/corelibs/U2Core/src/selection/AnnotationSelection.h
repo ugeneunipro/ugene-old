@@ -37,7 +37,8 @@ class U2OpStatus;
 
 class U2CORE_EXPORT AnnotationSelectionData {
 public:
-                        AnnotationSelectionData( const Annotation &a, int lIdx );
+    AnnotationSelectionData( const Annotation &a, int lIdx );
+    AnnotationSelectionData( const Annotation &a, const QList<int> &listIdx );
 
     bool                operator ==( const AnnotationSelectionData &d ) const;
     int                 getSelectedRegionsLen( ) const;
@@ -46,16 +47,26 @@ public:
      */
     QVector<U2Region>   getSelectedRegions( ) const;
 
+    bool contains(int locIndx) const;
+    bool contains(const AnnotationSelectionData& other) const;
+
+    /**
+     * Returns true if the selection is empty after the deletion
+     * MUST CHECK result after using this method
+     */
+    bool deselectLocation(int locIndx);
+
+    void addLocation(int locIdx);
+
     /**
      * The annotation selected
      */
     Annotation          annotation;
     /**
-     * Location idx that is preferable for visualization
-     * -1 == not specified, 0..N == idx of U2Region in 'location' field
-     * BUG:404: do we need a separate class for this feature?
+     * List of Location idx that is preferable for visualization
+     * 0..N == idx of U2Region in 'location' field
      */
-    int                 locationIdx;
+    QList<int>          locationIdxList;
 };
 
 class  U2CORE_EXPORT AnnotationSelection : public GSelection {
@@ -85,8 +96,8 @@ public:
     void                                    removeObjectAnnotations( AnnotationTableObject *obj );
 
     bool                                    contains( const Annotation &a ) const;
-
     bool                                    contains( const Annotation &a, int locationIdx ) const;
+    bool                                    contains( const AnnotationSelectionData& selData) const;
 
     static void                             getAnnotationSequence( QByteArray &res,
                                                 const AnnotationSelectionData &ad, char gapSym,

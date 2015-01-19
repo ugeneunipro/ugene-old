@@ -106,14 +106,19 @@ bool CircularAnnotationItem::contains(const QPointF &point) {
 }
 
 int CircularAnnotationItem::containsRegion(const QPointF &point) {
+    CircularAnnotationRegionItem* r = getContainingRegion(point);
+    return (r == NULL) ? -1 : r->number;
+}
+
+CircularAnnotationRegionItem* CircularAnnotationItem::getContainingRegion(const QPointF &point) {
     if(_boundingRect.contains(point)) {
         foreach(CircularAnnotationRegionItem* item, regions) {
             if(item->contains(point)) {
-                return item->number;
+                return item;
             }
         }
     }
-    return -1;
+    return NULL;
 }
 
 void CircularAnnotationItem::setSelected( bool isSelected ) {
@@ -186,12 +191,14 @@ static bool labelLengthLessThan(CircularAnnotationLabel* l1, CircularAnnotationL
 }
 
 CircularAnnotationLabel::CircularAnnotationLabel( const Annotation &ann,
+                                                  const QVector<U2Region> &annLocation,
                                                   bool isAutoAnnotation,
                                                   int _region,
                                                   int sequenceLength,
                                                   const QFont &font,
                                                   CircularViewRenderArea *renderArea )
     : annotation( ann ),
+      location(annLocation),
       isAutoAnnotation(isAutoAnnotation),
       labelFont( font ),
       region( _region ),
@@ -202,7 +209,8 @@ CircularAnnotationLabel::CircularAnnotationLabel( const Annotation &ann,
       seqLen( sequenceLength )
 {
     const AnnotationData aData = annotation.getData( );
-    const U2Region &r = aData.getRegions( )[region];
+    SAFE_POINT(0 <= region && region < location.size(), "Invalid location index", );
+    const U2Region &r = location[region];
     const qreal startAngle = renderArea->rotationDegree + (float)r.startPos / (float)sequenceLength * 360;
     const qreal spanAngle = ( float ) r.length / ( float ) sequenceLength * 360;
 

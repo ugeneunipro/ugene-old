@@ -168,7 +168,10 @@ void GSequenceLineViewAnnotated::sl_onAnnotationSelectionChanged( AnnotationSele
         const Annotation &a = added.first( );
         if ( aos.contains( a.getGObject( ) ) ) {
             const AnnotationSelectionData *asd = as->getAnnotationData( a );
-            ensureVisible( a.getData( ), asd->locationIdx );
+            SAFE_POINT(asd != NULL, "AnnotationSelectionData is NULL", );
+            foreach (int loc, asd->locationIdxList) {
+                ensureVisible( a.getData(), loc);
+            }
             changed = true;
         }
     }
@@ -281,8 +284,8 @@ void GSequenceLineViewAnnotated::mousePressEvent( QMouseEvent *me ) {
                 QMenu popup;
                 foreach ( const AnnotationSelectionData &as, selected ) {
                     const AnnotationData aData = as.annotation.getData( );
-                    QVector<U2Region> location = aData.getRegions( );
-                    const U2Region &r = location[qMax( 0, as.locationIdx )];
+                    SAFE_POINT(as.getSelectedRegions().size() == 1, "Invalid selection: only one region is possible!", );
+                    const U2Region &r = as.getSelectedRegions().first();
                     QString text = aData.name
                         + QString( " [%1, %2]" ).arg( QString::number( r.startPos + 1 ) )
                         .arg( QString::number( r.endPos( ) ) );
@@ -300,11 +303,14 @@ void GSequenceLineViewAnnotated::mousePressEvent( QMouseEvent *me ) {
             }
             if ( NULL != asd ) { //add to annotation selection
                 AnnotationSelection *asel = ctx->getAnnotationsSelection( );
-                if ( asel->contains( asd->annotation, asd->locationIdx ) ) {
-                    asel->removeFromSelection( asd->annotation, asd->locationIdx );
-                } else {
-                    asel->addToSelection( asd->annotation, asd->locationIdx );
-                }
+                    foreach (int loc, asd->locationIdxList) {
+                        if (asel->contains( asd->annotation, loc)) {
+                            asel->removeFromSelection( asd->annotation, loc);
+                        } else {
+                            asel->addToSelection( asd->annotation, loc);
+                        }
+                    }
+
                 //select region
                 if ( expandAnnotationSelectionToSequence ) {
                     QVector<U2Region> regionsToSelect;
@@ -314,7 +320,7 @@ void GSequenceLineViewAnnotated::mousePressEvent( QMouseEvent *me ) {
                         if ( !aObjs.contains( aobj ) ) {
                             continue;
                         }
-                        regionsToSelect << asd.annotation.getRegions();
+                        regionsToSelect << asd.getSelectedRegions();
                     }
                     if (!ctx->getSequenceObject()->isCircular()) {
                         ctx->getSequenceSelection( )->setRegion( U2Region::containingRegion(regionsToSelect));

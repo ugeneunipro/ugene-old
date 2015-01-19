@@ -56,6 +56,8 @@ public:
     virtual QRectF boundingRect() const;
     virtual bool contains(const QPointF &point);
     int containsRegion(const QPointF &point);
+    CircularAnnotationRegionItem* getContainingRegion(const QPointF & point);
+
     void setSelected(bool isSelected);
     const QList<CircularAnnotationRegionItem*>& getRegions();
 protected:
@@ -81,12 +83,19 @@ public:
     void setArrowCenterPercentage(qreal arrowCenter) { arrowCenterPercentage = arrowCenter; }
     qreal getArrowCenterPercentage() const { return arrowCenterPercentage; }
 
+    int getNumber() const { return number; }
+
+    bool hasJoinedRegion() const { return !joinedRegion.isEmpty(); }
+    void setJoinedRegion(const U2Region& reg) { joinedRegion = reg; }
+    const U2Region& getJoinedRegion() const { return joinedRegion; }
+
 protected:
     CircularAnnotationItem *parent;
     CircularAnnotationLabel *label;
     int number;
     bool isShort;
     qreal arrowCenterPercentage;
+    U2Region joinedRegion;
 };
 
 /************************************************************************/
@@ -94,7 +103,9 @@ protected:
 /************************************************************************/
 class CircularAnnotationLabel : public QGraphicsItem {
 public:
-    CircularAnnotationLabel( const Annotation &ann, bool isAutoAnnotation,
+    CircularAnnotationLabel( const Annotation &ann,
+                             const QVector<U2Region> &annLocation,
+                             bool isAutoAnnotation,
                              int _region, int sequenceLength,
                              const QFont& font, CircularViewRenderArea* renderArea );
     virtual void paint(QPainter *p,const QStyleOptionGraphicsItem *item,QWidget *widget);
@@ -120,6 +131,7 @@ private:
     void getConnectionPoint();
 
     Annotation annotation;
+    QVector<U2Region> location;
     bool isAutoAnnotation;
     float annotationAngle;
     QFont labelFont;

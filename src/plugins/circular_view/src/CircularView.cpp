@@ -240,16 +240,6 @@ void CircularView::setAngle(int angle) {
 void CircularView::sl_onAnnotationSelectionChanged(AnnotationSelection* selection,
     const QList<Annotation>& added, const QList<Annotation>& removed)
 {
-    foreach ( const Annotation &a, added ) {
-        bool splitted =  U1AnnotationUtils::isSplitted(a.getLocation(), U2Region(0, ctx->getSequenceLength()));
-        int locationIdx = selection->getAnnotationData(a)->locationIdx;
-        if (splitted && locationIdx != -1) {
-            // set locationIdx = -1 to make sure whole annotation region is selected
-            selection->addToSelection(a);
-            return;
-        }
-    }
-
     GSequenceLineViewAnnotated::sl_onAnnotationSelectionChanged(selection, added, removed);
     renderArea->update();
 }
@@ -266,9 +256,17 @@ QList<AnnotationSelectionData> CircularView::selectAnnotationByCoord( const QPoi
     CircularViewRenderArea* renderArea = qobject_cast<CircularViewRenderArea*>(this->renderArea);
     QPoint cp(coord - QPoint(width()/2, renderArea->getCenterY()));
     foreach(CircularAnnotationItem* item, renderArea->circItems) {
+
+        CircularAnnotationRegionItem* regItem = item->getContainingRegion(cp);
         int region = item->containsRegion(cp);
         if(region != -1) {
-            res.append(AnnotationSelectionData(item->getAnnotation(), region));
+            QList<int> indx;
+            indx << region;
+            if (regItem != NULL && regItem->hasJoinedRegion()) {
+                indx << item->getAnnotation().getRegions().indexOf(regItem->getJoinedRegion());
+            }
+
+            res.append(AnnotationSelectionData(item->getAnnotation(), indx));
             return res;
         }
     }
@@ -277,7 +275,13 @@ QList<AnnotationSelectionData> CircularView::selectAnnotationByCoord( const QPoi
             CircularAnnotationLabel* lbl = r->getLabel();
             SAFE_POINT(lbl != NULL, "NULL annotation label item!", res);
             if(lbl->isVisible() && lbl->contains(cp)) {
-                res.append(AnnotationSelectionData(item->getAnnotation(), item->getRegions().indexOf(r)));
+                QList <int> indx;
+                indx << r->getNumber();
+                if (r->hasJoinedRegion()) {
+                    indx << item->getAnnotation().getRegions().indexOf(r->getJoinedRegion());
+                }
+                res.append(AnnotationSelectionData(item->getAnnotation(),
+                                                   indx));
                 return res;
             }
         }
@@ -295,6 +299,11 @@ const QMap<Annotation,CircularAnnotationItem*>& CircularView::getCircularItems()
 
 const QList<CircularAnnotationLabel*>& CircularView::getLabelList() const {
     return ra->labelList;
+}
+
+bool CircularView::isCircularTopology() const {
+    SAFE_POINT(ctx->getSequenceObject() != NULL, "Sequence object is NULL", false);
+    return ctx->getSequenceObject()->isCircular();
 }
 
 void CircularView::wheelEvent(QWheelEvent* we) {
@@ -690,6 +699,9 @@ void CircularViewRenderArea::drawSequenceSelection( QPainter& p ) {
     ADVSequenceObjectContext* ctx = view->getSequenceContext();
     int seqLen = ctx->getSequenceLength();
     const QVector<U2Region>& selection = view->getSequenceContext()->getSequenceSelection()->getSelectedRegions();
+    if (selection.isEmpty()) {
+        return;
+    }
 
     QList<QPainterPath*> paths;
 
@@ -929,19 +941,30 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
     SAFE_POINT(ctx != NULL, "Sequence object context is NULL", );
     int seqLen = ctx->getSequenceLength();
 
+    QVector<U2Region> aDataLocation = aData.getRegions();
     QVector<U2Region> location = aData.getRegions();
     removeRegionsOutOfRange(location, seqLen);
 
     qStableSort(location.begin(), location.end(), isGreater);
     int yLevel = findOrbit(location, a);
 
-    mergeCircularJunctoinRegion(location, seqLen);
+    QPair<U2Region, U2Region> mergedRegions = mergeCircularJunctoinRegion(location, seqLen);
 
     QList<CircularAnnotationRegionItem*> regions;
     foreach(const U2Region& r, location) {
-        CircularAnnotationRegionItem* regItem = createAnnotationRegionItem(r, seqLen, yLevel, aData, location.indexOf(r));
+        int idx = aDataLocation.indexOf(r);
+        bool addJoinedRegion = false;
+        if (location.size() != aDataLocation.size() && !aDataLocation.contains(r)
+                && (!mergedRegions.first.isEmpty() && !mergedRegions.second.isEmpty())) {
+            idx = aDataLocation.indexOf(mergedRegions.first);
+            addJoinedRegion = true;
+        }
+        CircularAnnotationRegionItem* regItem = createAnnotationRegionItem(r, seqLen, yLevel, aData, idx);
         if (regItem != NULL) {
             regions.append( regItem );
+            if (addJoinedRegion) {
+                regItem->setJoinedRegion(mergedRegions.second);
+            }
         }
     }
 
@@ -1109,10 +1132,11 @@ void CircularViewRenderArea::buildAnnotationLabel( const QFont &font, const Anno
     removeRegionsOutOfRange(location, seqLen);
 
     qStableSort(location.begin(), location.end(), isGreater);
-    mergeCircularJunctoinRegion(location, seqLen);
+    QPair<U2Region, U2Region> mergedRegions = mergeCircularJunctoinRegion(location, seqLen);
 
     for( int r = 0; r < location.count( ); r++ ) {
-        CircularAnnotationLabel *label = new CircularAnnotationLabel( a, isAutoAnnotation, r,
+        CircularAnnotationLabel *label = new CircularAnnotationLabel( a, location,
+                                                                      isAutoAnnotation, r,
                                                                       seqLen, font, this );
         labelList.append( label );
         CircularAnnotationRegionItem *ri = circItems[a]->getRegions( )[r];
@@ -1211,14 +1235,17 @@ void CircularViewRenderArea::removeRegionsOutOfRange(QVector<U2Region> &location
     }
 }
 
-void CircularViewRenderArea::mergeCircularJunctoinRegion(QVector<U2Region> &location, int seqLen) const {
+QPair<U2Region, U2Region> CircularViewRenderArea::mergeCircularJunctoinRegion(QVector<U2Region> &location, int seqLen) const {
+    QPair<U2Region, U2Region> res;
     if (location.size() >= 2) {
         if (location.first().endPos() == seqLen && location.last().startPos == 0 && circularView->isCircularTopology()) {
+            res.first = location.first();
+            res.second = location.last();
             location.first().length += location.last().length;
             location.remove(location.size() - 1);
         }
     }
-
+    return res;
 }
 
 }//namespace
