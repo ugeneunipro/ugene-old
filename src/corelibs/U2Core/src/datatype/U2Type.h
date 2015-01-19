@@ -61,50 +61,49 @@ typedef QString U2DbiId;
 class U2CORE_EXPORT U2Type {
 public:
     /** Type is unknown. Default value. */
-    static const U2DataType Unknown                     = 0;
+    static const U2DataType Unknown;
 
     /** Object types */
-    static const U2DataType Sequence                    = 1;
-    static const U2DataType Msa                         = 2;
-    static const U2DataType Assembly                    = 4;
-    static const U2DataType VariantTrack                = 5;
-    static const U2DataType VariantType                 = 6;
-    static const U2DataType FilterTableType             = 7;
-    static const U2DataType KnownMutationsTrackType     = 8;
-    static const U2DataType AnnotationTable             = 10;
-    /** UDR object types 101..199 */
-    static const U2DataType Text                        = 101;
-    static const U2DataType PhyTree                     = 102;
-    static const U2DataType Chromatogram                = 103;
-    static const U2DataType BioStruct3D                 = 104;
-    static const U2DataType PFMatrix                    = 105;
-    static const U2DataType PWMatrix                    = 106;
+    static const U2DataType Sequence;
+    static const U2DataType Msa;
+    static const U2DataType Assembly;
+    static const U2DataType VariantTrack;
+    static const U2DataType VariantType;
+    static const U2DataType FilterTableType;
+    static const U2DataType KnownMutationsTrackType;
+    static const U2DataType AnnotationTable;
 
-    static const U2DataType CrossDatabaseReference      = 999;
+    /** UDR object types 101..199 */
+    static const U2DataType Text;
+    static const U2DataType PhyTree;
+    static const U2DataType Chromatogram;
+    static const U2DataType BioStruct3D;
+    static const U2DataType PFMatrix;
+    static const U2DataType PWMatrix;
+
+    static const U2DataType CrossDatabaseReference;
 
     /** SCO (non-object, non-root) types */
-    static const U2DataType Annotation                  = 1000;
-    static const U2DataType AnnotationGroup             = 1001;
+    static const U2DataType Annotation;
+    static const U2DataType AnnotationGroup;
 
     /**  Assembly read */
-    static const U2DataType AssemblyRead                = 1100;
+    static const U2DataType AssemblyRead;
 
     /** Sequence feature */
-    static const U2DataType Feature                     = 1300;
+    static const U2DataType Feature;
 
-    static const U2DataType UdrRecord                   = 1400;
+    static const U2DataType UdrRecord;
 
     /**  Attribute types */
-    static const U2DataType AttributeInteger            = 2001;
-    static const U2DataType AttributeReal               = 2002;
-    static const U2DataType AttributeString             = 2003;
-    static const U2DataType AttributeByteArray          = 2004;
+    static const U2DataType AttributeInteger;
+    static const U2DataType AttributeReal;
+    static const U2DataType AttributeString;
+    static const U2DataType AttributeByteArray;
 
-    static bool isObjectType(U2DataType type) {return type > 0 && type <= 999;}
-    static bool isUdrObjectType(U2DataType type) {return type > 100 && type < 200;}
-
-    static bool isAttributeType(U2DataType type) {return type >=2000 && type < 2100;}
-
+    static bool isObjectType(U2DataType type);
+    static bool isUdrObjectType(U2DataType type);
+    static bool isAttributeType(U2DataType type);
 };
 
 enum U2TrackModType {

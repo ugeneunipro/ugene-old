@@ -107,8 +107,7 @@ void ReadAssemblyWorker::onTaskFinished(Task *task) {
 QString ReadAssemblyWorker::addReadDbObjectToData(const QString &objUrl, QVariantMap &data) {
     SharedDbiDataHandler handler = getDbObjectHandlerByUrl(objUrl);
     data[BaseSlots::ASSEMBLY_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(handler);
-    //return getObjectName(handler, U2Type::Assembly);
-    return getObjectName(handler, 4);
+    return getObjectName(handler, U2Type::Assembly);
 }
 
 /************************************************************************/
