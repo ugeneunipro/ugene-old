@@ -13359,6 +13359,21 @@ GUI_TEST_CLASS_DEFINITION(test_3886) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3904) {
+    //1. Open file "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep(5000);
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0, 0));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    GTUtilsMSAEditorSequenceArea::selectSequence(os, "Phaneroptera_falcata");
+    GTLogTracer lt;
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "remove_columns_of_gaps"));
+    GTUtilsDialog::waitForDialog(os, new RemoveGapColsDialogFiller(os, RemoveGapColsDialogFiller::Percent, 10));
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+    GTGlobals::sleep();
+    CHECK_SET_ERR(lt.hasError() == false, "Log shouldn't contain errors");
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
