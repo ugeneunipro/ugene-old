@@ -448,8 +448,8 @@ void FindPatternWidget::connectSlots()
         this, SLOT(sl_onFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*)));
 
     // A sequence has been modified (a subsequence added, removed, etc.)
-    connect(annotatedDnaView, SIGNAL(si_sequenceModified(ADVSequenceObjectContext*)),
-        this, SLOT(sl_onSequenceModified(ADVSequenceObjectContext*)));
+    connect(annotatedDnaView->getSequenceInFocus()->getSequenceObject(), SIGNAL(si_sequenceChanged()),
+        this, SLOT(sl_onSequenceModified()));
 
     connect(loadFromFileToolButton, SIGNAL( clicked() ), SLOT( sl_onFileSelectorClicked()));
     connect(loadFromFileGroupBox, SIGNAL( toggled(bool) ), SLOT( sl_onFileSelectorToggled(bool)));
@@ -891,7 +891,7 @@ void FindPatternWidget::sl_onSequenceTranslationChanged(int /* index */)
 }
 
 
-void FindPatternWidget::sl_onSequenceModified(ADVSequenceObjectContext* /* context */)
+void FindPatternWidget::sl_onSequenceModified()
 {
     setRegionToWholeSequence();
     checkState();
@@ -1515,6 +1515,11 @@ void FindPatternWidget::setUpTabOrder() const {
     QWidget::setTabOrder(boxMaxResult, annotWidget->getTaborderEntryAndExitPoints().first);
     QWidget::setTabOrder(annotWidget->getTaborderEntryAndExitPoints().second, usePatternNamesCheckBox);
     QWidget::setTabOrder(usePatternNamesCheckBox, getAnnotationsPushButton);
+}
+
+int FindPatternWidget::getTargetSequnceLength() const {
+    SAFE_POINT(annotatedDnaView->getSequenceInFocus() != NULL, "Sequence is NULL", 0);
+    return annotatedDnaView->getSequenceInFocus()->getSequenceLength();
 }
 
 } // namespace

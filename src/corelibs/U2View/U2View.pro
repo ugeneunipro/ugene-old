@@ -148,6 +148,7 @@ HEADERS += src/LicenseDialog.h \
            src/ov_sequence/find_pattern/FindPatternTask.h \
            src/ov_sequence/find_pattern/FindPatternWidget.h \
            src/ov_sequence/find_pattern/FindPatternWidgetFactory.h \
+           src/ov_sequence/find_pattern/FindPatternWidgetSavableTab.h \
            src/ov_sequence/sequence_info/CharOccurTask.h \
            src/ov_sequence/sequence_info/DNAStatisticsTask.h \
            src/ov_sequence/sequence_info/DinuclOccurTask.h \
@@ -354,6 +355,7 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_sequence/find_pattern/FindPatternTask.cpp \
            src/ov_sequence/find_pattern/FindPatternWidget.cpp \
            src/ov_sequence/find_pattern/FindPatternWidgetFactory.cpp \
+           src/ov_sequence/find_pattern/FindPatternWidgetSavableTab.cpp \
            src/ov_sequence/sequence_info/CharOccurTask.cpp \
            src/ov_sequence/sequence_info/DinuclOccurTask.cpp \
            src/ov_sequence/sequence_info/DNAStatisticsTask.cpp \

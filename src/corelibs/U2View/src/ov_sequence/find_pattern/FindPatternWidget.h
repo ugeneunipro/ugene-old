@@ -25,7 +25,7 @@
 #include <U2Core/AnnotationData.h>
 #include <U2Core/U2Region.h>
 
-#include <U2Gui/U2SavableWidget.h>
+#include "FindPatternWidgetSavableTab.h"
 
 #include "FindPatternTask.h"
 #include "ui/ui_FindPatternForm.h"
@@ -87,6 +87,7 @@ class FindPatternWidget : public QWidget, private Ui_FindPatternForm
     Q_OBJECT
 public:
     FindPatternWidget(AnnotatedDNAView*);
+    int getTargetSequnceLength() const;
 
 private slots:
     void sl_onAlgorithmChanged(int);
@@ -104,7 +105,7 @@ private slots:
     void sl_onFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*);
 
     /** A sequence part was added, removed or replaced */
-    void sl_onSequenceModified(ADVSequenceObjectContext*);
+    void sl_onSequenceModified();
 
     void sl_onSelectedRegionChanged();
 
@@ -226,7 +227,7 @@ private:
     QStringList patternList;
     QStringList nameList;
 
-    U2SavableWidget savableWidget;
+    FindPatternWidgetSavableTab savableWidget;
 };
 
 } // namespace U2
