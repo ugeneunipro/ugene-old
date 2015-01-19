@@ -724,6 +724,17 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
                     }
                     text += QString(tr(" Please input valid annotation names "));
                     break;
+                case AnnotationNotValidFastaParsedName:
+                    if (!text.isEmpty()) {
+                        text += "\n";
+                    }
+                    text += QString(tr("Warning: annotation name are invalid. "));
+                    if (!additionalMsg.isEmpty()){
+                        text += QString(tr("Reason: "));
+                        text += additionalMsg;
+                    }
+                    text += QString(tr(" It will be automatically changed to acceptable name if 'Get annotations' button is pressed. "));
+                    break;
                 case NoPatternToSearch:
                     if (!text.isEmpty()) {
                         text += "\n";
@@ -912,12 +923,11 @@ void FindPatternWidget::checkState()
     if(usePatternNamesCheckBox->isChecked() && !loadFromFileGroupBox->isChecked()) {
         foreach(const QString &name, nameList){
             if (!Annotation::isValidAnnotationName(name)) {
-                showHideMessage(true, AnnotationNotValidName);
-                getAnnotationsPushButton->setDisabled(true);
+                showHideMessage(true, AnnotationNotValidFastaParsedName);
                 return;
             }
         }
-        showHideMessage(false, AnnotationNotValidName);
+        showHideMessage(false, AnnotationNotValidFastaParsedName);
     }
 
     getAnnotationsPushButton->setEnabled(!findPatternResults.isEmpty());
@@ -953,6 +963,7 @@ void FindPatternWidget::checkState()
         }
     }
 
+    showHideMessage(false, AnnotationNotValidFastaParsedName);
     showHideMessage(false, AnnotationNotValidName);
     showHideMessage(false, PatternsWithBadRegionInFile);
     showHideMessage(false, PatternsWithBadAlphabetInFile);
@@ -1405,10 +1416,13 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
                 SAFE_POINT(ok, "Failed conversion to integer", );
                 SAFE_POINT(nameList.size() > index, "Out of boundaries in names list", );
                 SAFE_POINT(index >= 0, "Out of boundaries in names list", );
-                annotationsToCreate[i].name = nameList[index];
+                QString name = nameList[index];
+                annotationsToCreate[i].name = Annotation::isValidAnnotationName(name) ?
+                    name : Annotation::produceValidAnnotationName(name);
             }
         }else{
-            annotationsToCreate[i].name = annotModel.data.name;
+            annotationsToCreate[i].name = Annotation::isValidAnnotationName(annotModel.data.name) ?
+                annotModel.data.name : Annotation::produceValidAnnotationName(annotModel.data.name);
         }
     }
     GCOUNTER(cvar, tvar, "FindAlgorithmTask");

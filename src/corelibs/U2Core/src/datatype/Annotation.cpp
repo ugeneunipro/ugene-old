@@ -37,6 +37,8 @@
 
 namespace U2 {
 
+int Annotation::annotationNameMaximumlength = 100;
+
 Annotation::Annotation( const U2DataId &featureId,AnnotationTableObject *_parentObject )
     : U2Entity( featureId ), parentObject( _parentObject )
 {
@@ -364,7 +366,7 @@ bool Annotation::operator <( const Annotation &other ) const {
 }
 
 bool Annotation::isValidAnnotationName( const QString &n ) {
-    if ( n.isEmpty( ) || 100 < n.length( ) ) {
+    if ( n.isEmpty( ) || annotationNameMaximumlength < n.length( ) ) {
         return false;
     }
 
@@ -383,6 +385,31 @@ bool Annotation::isValidAnnotationName( const QString &n ) {
         return false;
     }
     return true;
+}
+
+QString Annotation::produceValidAnnotationName(const QString &name) {
+    QString result = name.trimmed();
+    if (result.isEmpty()){
+        return "misc_feature";
+    }
+    if(result.length() > annotationNameMaximumlength ) {
+        result = result.left(annotationNameMaximumlength);
+    }
+
+    QBitArray validChars = TextUtils::ALPHA_NUMS;
+    validChars['_'] = true;
+    validChars['-'] = true;
+    validChars[' '] = true;
+    validChars['\''] = true;
+    validChars['*']  = true;
+
+    for(int i=0; i<result.size(); i++) {
+        unsigned char c = result[i].toAscii();
+        if (!validChars[c]) {
+            result[i] = '_';
+        }
+    }
+    return result;
 }
 
 static QList<U2CigarToken> parceCigar( const QString &cigar) {

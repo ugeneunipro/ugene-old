@@ -120,7 +120,10 @@ public:
 
     static bool             isValidQualifierValue( const QString &v );
 
+    static QString          produceValidAnnotationName( const QString &name );
+
 private:
+    static int annotationNameMaximumlength;
     AnnotationTableObject * parentObject;
 };
 

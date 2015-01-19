@@ -58,6 +58,7 @@ enum MessageFlag {
     PatternsWithBadRegionInFile,
     UseMultiplePatternsTip,
     AnnotationNotValidName,
+    AnnotationNotValidFastaParsedName,
     NoPatternToSearch,
     SearchRegionIncorrect,
     PatternWrongRegExp
