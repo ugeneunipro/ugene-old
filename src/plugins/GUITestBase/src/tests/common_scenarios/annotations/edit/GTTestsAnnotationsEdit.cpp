@@ -44,24 +44,24 @@ namespace GUITest_common_scenarios_annotations_edit {
 
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
-// Rename annotation
-//
-// Steps:
-//
-// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    // Rename annotation
+    //
+    // Steps:
+    //
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state:
-//     1) Project view with document "1.gb" has been opened
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-//     2) UGENE window titled with text "proj2 UGENE"
+    //     2) UGENE window titled with text "proj2 UGENE"
     GTUtilsApp::checkUGENETitle(os, "proj2 UGENE - [Start Page]");
 
-// 2. Open view for "1.gb"
+    // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to BB.
+    // 3. Select annotation C in annotation tree. Click F2. Change name to BB.
 
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group  (0, 2)");
 
@@ -80,22 +80,22 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0001_1) {
-// Rename annotation
-//
-// Steps:
-//
-// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    // Rename annotation
+    //
+    // Steps:
+    //
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state:
-//     1) Project view with document "1.gb" has been opened
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-// 2. Open view for "1.gb"
+    // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation B in annotation tree. Click F2. Change name to BB.
+    // 3. Select annotation B in annotation tree. Click F2. Change name to BB.
 
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group  (0, 2)");
 
@@ -127,22 +127,22 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
 
 
 GUI_TEST_CLASS_DEFINITION(test_0001_2) {
-// Rename annotation
-//
-// Steps:
-//
-// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    // Rename annotation
+    //
+    // Steps:
+    //
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state:
-//     1) Project view with document "1.gb" has been opened
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-// 2. Open view for "1.gb"
+    // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to BB.
+    // 3. Select annotation C in annotation tree. Click F2. Change name to BB.
 
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group  (0, 2)");
 
@@ -174,22 +174,22 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
-// Rename annotation
-//
-// Steps:
-//
-// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    // Rename annotation
+    //
+    // Steps:
+    //
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state:
-//     1) Project view with document "1.gb" has been opened
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-// 2. Open view for "1.gb"
+    // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+    // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
     Runnable *filler = new EditAnnotationFiller(os, "CC", "80 ..90");
@@ -203,22 +203,22 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002_1) {
-// Rename annotation
-//
-// Steps:
-//
-// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    // Rename annotation
+    //
+    // Steps:
+    //
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state:
-//     1) Project view with document "1.gb" has been opened
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-// 2. Open view for "1.gb"
+    // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+    // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
     Runnable *filler = new EditAnnotationFiller(os, "CC", "80 ..90");
@@ -245,22 +245,22 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 
 
 GUI_TEST_CLASS_DEFINITION(test_0002_2) {
-// Rename annotation
-//
-// Steps:
-//
-// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    // Rename annotation
+    //
+    // Steps:
+    //
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state:
-//     1) Project view with document "1.gb" has been opened
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-// 2. Open view for "1.gb"
+    // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+    // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
     Runnable *filler = new EditAnnotationFiller(os, "CC", "80 ..90");
@@ -287,22 +287,22 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
-// Rename annotation
-//
-// Steps:
-//
-// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    // Rename annotation
+    //
+    // Steps:
+    //
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state:
-//     1) Project view with document "1.gb" has been opened
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-// 2. Open view for "1.gb"
+    // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+    // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
     Runnable *filler = new EditAnnotationFiller(os, "C", "20 ..40");
@@ -319,22 +319,22 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003_1) {
-// Rename annotation
-//
-// Steps:
-//
-// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    // Rename annotation
+    //
+    // Steps:
+    //
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state:
-//     1) Project view with document "1.gb" has been opened
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-// 2. Open view for "1.gb"
+    // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+    // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
     Runnable *filler = new EditAnnotationFiller(os, "C", "20 ..40");
@@ -347,7 +347,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     GTGlobals::sleep();
     bool found = GTUtilsAnnotationsTreeView::findRegion(os, "C", U2Region(20, 40));
     CHECK_SET_ERR(found == true, "There is no {20 ..40} region in annotation");
-// 4. Select annotation C in annotation tree. Click F2. Change name to CC.
+    // 4. Select annotation C in annotation tree. Click F2. Change name to CC.
 
     QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "C");
     Runnable *filler1 = new EditAnnotationFiller(os, "C", "10 ..90");
@@ -363,22 +363,22 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003_2) {
-// Rename annotation
-//
-// Steps:
-//
-// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    // Rename annotation
+    //
+    // Steps:
+    //
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state:
-//     1) Project view with document "1.gb" has been opened
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-// 2. Open view for "1.gb"
+    // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+    // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
     Runnable *filler = new EditAnnotationFiller(os, "CC", "20 ..40");
     GTUtilsDialog::waitForDialog(os, filler);
@@ -406,21 +406,21 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
-//Rename annotation
+    //Rename annotation
 
-// Steps:
-// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    // Steps:
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state:
-//     1) Project view with document "1.gb" has been opened
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-// 2. Open view for "1.gb"
+    // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+    // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
     Runnable *filler = new EditAnnotationFiller(os, "C", "20 ..40", true);
@@ -436,23 +436,23 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTMouseDriver::click(os);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
     GTGlobals::sleep();
-    }
+}
 GUI_TEST_CLASS_DEFINITION(test_0004_1) {
-//Rename annotation
+    //Rename annotation
 
-// Steps:
-// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    // Steps:
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state:
-//     1) Project view with document "1.gb" has been opened
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-// 2. Open view for "1.gb"
+    // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+    // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
     Runnable *filler = new EditAnnotationFiller(os, "CC", "20 ..40", true);
@@ -468,23 +468,23 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
     GTMouseDriver::click(os);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
     GTGlobals::sleep();
-    }
+}
 GUI_TEST_CLASS_DEFINITION(test_0004_2) {
-//Rename annotation
+    //Rename annotation
 
-// Steps:
-// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    // Steps:
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-// Expected state:
-//     1) Project view with document "1.gb" has been opened
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-// 2. Open view for "1.gb"
+    // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+    // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B");
     Runnable *filler = new EditAnnotationFiller(os, "B", "20 ..40", true);
@@ -500,7 +500,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
     GTMouseDriver::click(os);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
     GTGlobals::sleep();
-    }
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
     //Rename annotation
@@ -510,8 +510,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
     //2. Press <Ctrl>+N
-        //2.1 CHECK if dialog box titled with "Create annotation" appeared
-        //2.2 CHECK if "Create new table" radio button is checked
+    //2.1 CHECK if dialog box titled with "Create annotation" appeared
+    //2.2 CHECK if "Create new table" radio button is checked
     //3. Specify the annotation with the next data and the press "Create":
     //Group name: group
     //Annotation name: misc_feature
@@ -520,8 +520,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
     //4. CHECK if new gb-format document is loaded into the annotation editor
-        //4.1 CHECK if it contains group "group" with annotation "misc_feature" in it
-        //TODO: 4.2 CHECK if "group" subgroups/annotations counter displays (0,1)
+    //4.1 CHECK if it contains group "group" with annotation "misc_feature" in it
+    //TODO: 4.2 CHECK if "group" subgroups/annotations counter displays (0,1)
     GTGlobals::sleep();
     GTUtilsAnnotationsTreeView::findItem(os, "group  (0, 1)");
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
@@ -532,11 +532,11 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Delete"]);
     GTGlobals::sleep();
     //6. CHECK if misc_feature annotation is removed
-        //TODO: 6.1 CHECK if "group" subgroups/annotations counter displays (0,0)
+    //TODO: 6.1 CHECK if "group" subgroups/annotations counter displays (0,0)
     GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", false);
     GTGlobals::sleep();
 
-    }
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     //Rename annotation
@@ -546,8 +546,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
     //2. Press <Ctrl>+N
-        //2.1 CHECK if dialog box titled with "Create annotation" appeared
-        //2.2 CHECK if "Create new table" radio button is checked
+    //2.1 CHECK if dialog box titled with "Create annotation" appeared
+    //2.2 CHECK if "Create new table" radio button is checked
     //3. Specify the annotation with the next data and the press "Create":
     //Group name: group
     //Annotation name: misc_feature
@@ -557,8 +557,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     GTGlobals::sleep();
 
     //4. CHECK if new gb-format document is loaded into the annotation editor
-        //4.1 CHECK if it contains group "group" with annotation "misc_feature" in it
-        //TODO: 4.2 CHECK if "group" subgroups/annotations counter displays (0,1)
+    //4.1 CHECK if it contains group "group" with annotation "misc_feature" in it
+    //TODO: 4.2 CHECK if "group" subgroups/annotations counter displays (0,1)
     GTGlobals::sleep();
     GTUtilsAnnotationsTreeView::findItem(os, "group  (0, 1)");
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
@@ -569,7 +569,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Delete"]);
     GTGlobals::sleep();
     //6. CHECK if misc_feature annotation is removed
-        //TODO: 6.1 CHECK if "group" subgroups/annotations counter displays (0,0)
+    //TODO: 6.1 CHECK if "group" subgroups/annotations counter displays (0,0)
     GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", false);
     GTGlobals::sleep();
 
@@ -590,7 +590,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     GTUtilsAnnotationsTreeView::findItem(os, "misc_feature_1", false);
     GTGlobals::sleep();
 
-    }
+}
 GUI_TEST_CLASS_DEFINITION(test_0005_2) {
 
     //Rename annotation
@@ -600,8 +600,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
     //2. Press <Ctrl>+N
-        //2.1 CHECK if dialog box titled with "Create annotation" appeared
-        //2.2 CHECK if "Create new table" radio button is checked
+    //2.1 CHECK if dialog box titled with "Create annotation" appeared
+    //2.2 CHECK if "Create new table" radio button is checked
     //3. Specify the annotation with the next data and the press "Create":
     //Group name: group
     //Annotation name: misc_feature
@@ -615,8 +615,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     GTGlobals::sleep();
 
     //4. CHECK if new gb-format document is loaded into the annotation editor
-        //4.1 CHECK if it contains group "group" with annotation "misc_feature" in it
-        //TODO: 4.2 CHECK if "group" subgroups/annotations counter displays (0,1)
+    //4.1 CHECK if it contains group "group" with annotation "misc_feature" in it
+    //TODO: 4.2 CHECK if "group" subgroups/annotations counter displays (0,1)
     GTGlobals::sleep();
     GTUtilsAnnotationsTreeView::findItem(os, "group  (0, 1)");
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
@@ -637,84 +637,98 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     GTGlobals::sleep();
 
     //6. CHECK if misc_feature annotation is removed
-        //TODO: 6.1 CHECK if "group" subgroups/annotations counter displays (0,0)
+    //TODO: 6.1 CHECK if "group" subgroups/annotations counter displays (0,0)
     GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", false);
     GTUtilsAnnotationsTreeView::findItem(os, "misc_feature_1", false);
     GTGlobals::sleep();
 
-    }
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
-
     //Check rename annotation action at popup menu (UGENE-3449)
-
     // Rename annotation
-    //
     // Steps:
-    //
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
-        GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
-        GTUtilsDocument::checkDocument(os, "1.gb");
-    //     2) UGENE window titled with text "proj2 UGENE"
-        GTUtilsApp::checkUGENETitle(os, "proj2 UGENE - [Start Page]");
+    GTUtilsDocument::checkDocument(os, "1.gb");
 
     // 2. Open view for "1.gb"
-        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
-        GTMouseDriver::doubleClick(os);
-        GTGlobals::sleep();
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
 
     // 3. Check that menu item "Rename item" is disabled at popup menu of sequence view.
-        GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "rename_item",
-            PopupChecker::IsDisabled, GTGlobals::UseMouse));
-        GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "rename_item",
+                                                      PopupChecker::IsDisabled, GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
 
     // 4. Check that menu item "Rename item" is disabled at popup menu of annotations view.
-        GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "rename_item",
-            PopupChecker::IsDisabled, GTGlobals::UseMouse));
-        GTMenu::showContextMenu(os, GTWidget::findWidget(os, "annotations_tree_widget"));
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "rename_item",
+                                                      PopupChecker::IsDisabled, GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "annotations_tree_widget"));
 
-    }
+}
 GUI_TEST_CLASS_DEFINITION(test_0006_1) {
-
     //Check rename annotation action at popup menu (UGENE-3449)
-
     // Rename annotation
-    //
     // Steps:
-    //
     // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
-        GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     // Expected state:
     //     1) Project view with document "1.gb" has been opened
-        GTUtilsDocument::checkDocument(os, "1.gb");
-    //     2) UGENE window titled with text "proj2 UGENE"
-        GTUtilsApp::checkUGENETitle(os, "proj2 UGENE - [Start Page]");
+    GTUtilsDocument::checkDocument(os, "1.gb");
 
     // 2. Open view for "1.gb"
-        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
-        GTMouseDriver::doubleClick(os);
-        GTGlobals::sleep();
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
 
-    // 3. Select annotation C in annotation tree. Click F2. Change name to BB.
+    // 3. Select annotation B in annotation tree.
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group  (0, 2)");
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::doubleClick(os);
 
-        QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group  (0, 2)");
-
-        GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
-        GTMouseDriver::click(os);
+    item = GTUtilsAnnotationsTreeView::findItem(os, "B");
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
 
     // 4. Check that menu item "Rename item" is enabled at popup menu of sequence view.
-        GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "rename_item",
-            PopupChecker::IsEnabled, GTGlobals::UseMouse));
-        GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "rename_item",
+                                                      PopupChecker::IsEnabled, GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
 
     // 5. Check that menu item "Rename item" is enabled at popup menu of annotations view.
-        GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "rename_item",
-            PopupChecker::IsEnabled, GTGlobals::UseMouse));
-        GTMenu::showContextMenu(os, GTWidget::findWidget(os, "annotations_tree_widget"));
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "rename_item",
+                                                      PopupChecker::IsEnabled, GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "annotations_tree_widget"));
+}
 
-    }
+GUI_TEST_CLASS_DEFINITION(test_0006_2) {
+    //Check rename annotation action at popup menu (UGENE-3449)
+    // Rename annotation
+    // Steps:
+    // 1. Open data/samples/Genbank/mirine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+
+    // 2. Select a group on annotations editor
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "CDS  (0, 4)");
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+
+    // 3. Open context menu on sequence area
+    // Expected state: 'Rename item' action is disabled
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "rename_item",
+                                                      PopupChecker::IsDisabled, GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+
+    // 3. Open context menu on sequence area
+    // Expected state: 'Rename item' action is enabled
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "rename_item",
+                                                      PopupChecker::IsEnabled, GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "annotations_tree_widget"));
+}
 
 } // namespace GUITest_common_scenarios_annotations_edit
 } // namespace U2

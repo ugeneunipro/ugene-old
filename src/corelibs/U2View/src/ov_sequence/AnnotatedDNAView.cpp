@@ -131,6 +131,7 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     removeAnnsAndQsAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
 
     renameItemAction = new QAction(tr("Rename item"), this);
+    renameItemAction->setObjectName("rename_item");
 
     syncViewManager = new ADVSyncViewManager(this);
 
