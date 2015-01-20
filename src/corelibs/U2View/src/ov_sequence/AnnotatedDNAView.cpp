@@ -130,6 +130,7 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     removeAnnsAndQsAction->setShortcut(QKeySequence(Qt::Key_Delete));
     removeAnnsAndQsAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
 
+    renameItemAction = new QAction(tr("Rename item"), this);
 
     syncViewManager = new ADVSyncViewManager(this);
 
@@ -240,10 +241,13 @@ QWidget* AnnotatedDNAView::createWidget() {
 //add view global shortcuts
 
     connect(removeAnnsAndQsAction, SIGNAL(triggered()),annotationsView->removeAnnsAndQsAction, SIGNAL(triggered()));
+    connect(renameItemAction, SIGNAL(triggered()), annotationsView->renameAction, SIGNAL(triggered()));
+
     mainSplitter->addAction(toggleHLAction);
     mainSplitter->addAction(removeSequenceObjectAction);
 
     mainSplitter->addAction(removeAnnsAndQsAction);
+    mainSplitter->addAction(renameItemAction);
 
     mainSplitter->setWindowIcon(GObjectTypes::getTypeInfo(GObjectTypes::SEQUENCE).icon);
 
@@ -728,13 +732,18 @@ void AnnotatedDNAView::updateMultiViewActions() {
 }
 
 void AnnotatedDNAView::sl_onContextMenuRequested( const QPoint &scrollAreaPos ) {
-    Q_UNUSED( scrollAreaPos );
     QMenu m;
 
     m.addAction( posSelectorAction );
-    if (annotationsView != NULL) {
-        m.addAction(annotationsView->renameAction);
+
+    QRect annTreeRect = annotationsView->getTreeWidget()->rect();
+    // convert to global coordinates
+    annTreeRect.moveTopLeft( annotationsView->getTreeWidget()->mapToGlobal( annTreeRect.topLeft() ) );
+    QPoint globalPos = mainSplitter->mapToGlobal(scrollAreaPos);
+    if (!annTreeRect.contains(globalPos)) {
+        m.addAction( renameItemAction );
     }
+
     m.addSeparator( )->setObjectName( "FIRST_SEP" );
     clipb->addCopyMenu( &m );
     m.addSeparator( )->setObjectName( ADV_MENU_SECTION1_SEP );
@@ -762,6 +771,9 @@ void AnnotatedDNAView::sl_onContextMenuRequested( const QPoint &scrollAreaPos ) 
 
         toggleHLAction->setObjectName( "toggle_HL_action" );
         m.addAction( toggleHLAction );
+        renameItemAction->setEnabled(true);
+    } else {
+        renameItemAction->setEnabled(false);
     }
 
     if ( NULL != focusedWidget ) {
