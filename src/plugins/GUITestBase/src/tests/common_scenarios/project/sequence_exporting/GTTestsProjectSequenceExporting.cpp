@@ -78,7 +78,13 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     CHECK_SET_ERR(!doc1->isLoaded(), "1.gb is loaded");
     CHECK_SET_ERR(!doc2->isLoaded(), "2.gb is loaded");
 //     2) UGENE window titled with text "proj4 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE - [Start Page]");
+    QString expectedTitle;
+#ifdef Q_OS_MAC
+    expectedTitle = "proj4 UGENE";
+#else
+    expectedTitle = "proj4 UGENE - [Start Page]";
+#endif
+    GTUtilsApp::checkUGENETitle(os, expectedTitle);
 
 // 2. Double click on "[a] Annotations" sequence object, in project view tree
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
