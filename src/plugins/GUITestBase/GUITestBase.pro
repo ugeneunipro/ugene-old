@@ -148,6 +148,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsQueryDesigner.h \
             src/GTUtilsSequenceView.h \
             src/GTUtilsSharedDatabaseDocument.h \
+            src/GTUtilsTask.h \
             src/GTUtilsTaskTreeView.h \
             src/GTUtilsToolTip.h \
             src/GTUtilsWorkflowDesigner.h \
@@ -389,6 +390,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsQueryDesigner.cpp \
             src/GTUtilsSequenceView.cpp \
             src/GTUtilsSharedDatabaseDocument.cpp \
+            src/GTUtilsTask.cpp \
             src/GTUtilsTaskTreeView.cpp \
             src/GTUtilsToolTip.cpp \
             src/GTUtilsWorkflowDesigner.cpp \

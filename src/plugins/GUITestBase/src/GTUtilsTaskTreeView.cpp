@@ -81,8 +81,8 @@ void GTUtilsTaskTreeView::openView(U2OpStatus& os) {
     QWidget *documentTreeWidget = GTWidget::findWidget(os, widgetName, NULL, options);
     if (!documentTreeWidget) {
         toggleView(os);
+        GTGlobals::sleep(500);
     }
-    GTGlobals::sleep(500);
 }
 
 void GTUtilsTaskTreeView::toggleView(U2OpStatus& os) {

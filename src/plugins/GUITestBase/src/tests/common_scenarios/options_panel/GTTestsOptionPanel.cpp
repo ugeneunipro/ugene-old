@@ -381,20 +381,25 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     QLabel *l = w->findChild<QLabel*>();
     CHECK_SET_ERR(l != NULL, "No child label in Common Statistics widget");
-    QString s = QString("<table cellspacing=5>"
-                      "<tr><td><b>Length: </b></td><td>199 950 </td></tr>"
-                      "<tr><td><b>GC Content: </b></td><td>38.84%</td></tr>"
-                      "<tr><td><b>Molar Weight: </b></td><td>61730585.82 </td></tr>"
-                      "<tr><td><b>Molar Ext. Coef: </b></td><td>2223359500 I")
-            + QString("</td></tr>"
-                      "<tr><td><b>Melting TM: </b></td><td>80.82 C</td></tr>"
-                      "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>0.00</td></tr>"
-                      "<tr><td><b>") + QChar(0x3BC) + QString("g/OD<sub>260</sub> : </b></td><td>27.76</td></tr>"
-                      "</table>");
+
+    QString s = QString("Length: </b></td><td>199 950");
+    QString s1 = QString("GC Content: </b></td><td>38.84%");
+    QString s2 = QString("Molar Weight: </b></td><td>61730585.82 Da");
+    QString s3 = QString("Molar Ext. Coef: </b></td><td>2223359500");
+    QString s4 = QString("Melting TM: </b></td><td>80.82 C");
+    QString s5 = QString("nmole/OD<sub>260</sub> : </b></td><td>0.00");
+    QString s6 = QString("g/OD<sub>260</sub> : </b></td><td>27.76");
 
     GTGlobals::sleep(1000);
+    QString labelText = l->text();
 
-    CHECK_SET_ERR(l->text() == s,"Expected: "+ s + "\nFound: " + l->text());
+    CHECK_SET_ERR(labelText.contains(s), QString("label text: %1. It does not contais %2").arg(labelText).arg(s));
+    CHECK_SET_ERR(labelText.contains(s1), QString("label text: %1. It does not contais %2").arg(labelText).arg(s1));
+    CHECK_SET_ERR(labelText.contains(s2), QString("label text: %1. It does not contais %2").arg(labelText).arg(s2));
+    CHECK_SET_ERR(labelText.contains(s3), QString("label text: %1. It does not contais %2").arg(labelText).arg(s3));
+    CHECK_SET_ERR(labelText.contains(s4), QString("label text: %1. It does not contais %2").arg(labelText).arg(s4));
+    CHECK_SET_ERR(labelText.contains(s5), QString("label text: %1. It does not contais %2").arg(labelText).arg(s5));
+    CHECK_SET_ERR(labelText.contains(s6), QString("label text: %1. It does not contais %2").arg(labelText).arg(s6));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0009) {
@@ -430,37 +435,31 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 
     QLabel *l = w->findChild<QLabel*>();
     CHECK_SET_ERR(l != NULL, "No child label in Common Statistics widget");
-    QString s = QString("<table cellspacing=5>"
-                      "<tr><td><b>Length: </b></td><td>199 950 </td></tr>"
-                      "<tr><td><b>GC Content: </b></td><td>38.84%</td></tr>"
-                      "<tr><td><b>Molar Weight: </b></td><td>61730585.82 </td></tr>"
-                      "<tr><td><b>Molar Ext. Coef: </b></td><td>2223359500 I")
-            + QString("</td></tr>"
-                      "<tr><td><b>Melting TM: </b></td><td>80.82 C</td></tr>"
-                      "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>0.00</td></tr>"
-                      "<tr><td><b>") + QChar(0x3BC) + QString("g/OD<sub>260</sub> : </b></td><td>27.76</td></tr>"
-                      "</table>");
 
     QString labelText = l->text();
 
     GTGlobals::sleep(1000);
-    CHECK_SET_ERR(l->text() == s,"Expected: "+ s + "\nFound: " + l->text());
+
+    QString s = QString("Length: </b></td><td>199 950");
+    QString s1 = QString("GC Content: </b></td><td>38.84%");
+    QString s2 = QString("Molar Weight: </b></td><td>61730585.82 Da");
+    QString s3 = QString("Molar Ext. Coef: </b></td><td>2223359500");
+    QString s4 = QString("Melting TM: </b></td><td>80.82 C");
+    QString s5 = QString("nmole/OD<sub>260</sub> : </b></td><td>0.00");
+    QString s6 = QString("g/OD<sub>260</sub> : </b></td><td>27.76");
+
+    CHECK_SET_ERR(labelText.contains(s), QString("label text: %1. It does not contais %2").arg(labelText).arg(s));
+    CHECK_SET_ERR(labelText.contains(s1), QString("label text: %1. It does not contais %2").arg(labelText).arg(s1));
+    CHECK_SET_ERR(labelText.contains(s2), QString("label text: %1. It does not contais %2").arg(labelText).arg(s2));
+    CHECK_SET_ERR(labelText.contains(s3), QString("label text: %1. It does not contais %2").arg(labelText).arg(s3));
+    CHECK_SET_ERR(labelText.contains(s4), QString("label text: %1. It does not contais %2").arg(labelText).arg(s4));
+    CHECK_SET_ERR(labelText.contains(s5), QString("label text: %1. It does not contais %2").arg(labelText).arg(s5));
+    CHECK_SET_ERR(labelText.contains(s6), QString("label text: %1. It does not contais %2").arg(labelText).arg(s6));
 
     // select sequence region
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 40);
     GTGlobals::sleep(1000);
     CHECK_SET_ERR(labelText != l->text(), "Statistics did not change");
-
-    s = QString("<table cellspacing=5>"
-                "<tr><td><b>Length: </b></td><td>40 </td></tr>"
-                "<tr><td><b>GC Content: </b></td><td>32.50%</td></tr>"
-                "<tr><td><b>Molar Weight: </b></td><td>12525.15 Da</td></tr>"
-                "<tr><td><b>Molar Ext. Coef: </b></td><td>479900 I/mol</td></tr>"
-                "<tr><td><b>Melting TM: </b></td><td>61.42 C</td></tr>"
-                "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>2.08</td></tr>"
-                "<tr><td><b>") + QChar(0x3BC) + QString("g/OD<sub>260</sub> : </b></td><td>26.10</td></tr></table>");
-
-    CHECK_SET_ERR(l->text() == s, "Found: " + l->text());
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0011) {

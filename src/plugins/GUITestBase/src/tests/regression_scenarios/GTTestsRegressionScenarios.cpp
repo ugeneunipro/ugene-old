@@ -69,6 +69,7 @@
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsSharedDatabaseDocument.h"
+#include "GTUtilsTask.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsToolTip.h"
 #include "GTUtilsWorkflowDesigner.h"
@@ -4866,7 +4867,7 @@ GUI_TEST_CLASS_DEFINITION( test_2150 ){
     //GTUtilsTaskTreeView::waitTaskFinished(os,1000);
 
     // 6. During the workflow execution open the "Tasks" panel in the bottom, find in the task tree the "MUSCLE alignment" subtask and cancel it.
-    GTUtilsTaskTreeView::cancelTask(os, "MUSCLE alignment");
+    GTUtilsTask::cancelSubTask(os, "MUSCLE alignment");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2152 ){
@@ -7335,11 +7336,11 @@ GUI_TEST_CLASS_DEFINITION(test_2562) {
 
     GTWidget::click(os, GTWidget::findWidget(os, "annotateButton"));
     const QString annotateTaskName = "Convert ID and load DAS features for: " + selectedFeatureId;
-    GTUtilsTaskTreeView::checkTask(os, annotateTaskName);
+    GTUtilsTask::checkTask(os, annotateTaskName);
 
     // 9. Cancel the task
     // Expected state : the task cancelled
-    GTUtilsTaskTreeView::cancelTask(os, annotateTaskName);
+    GTUtilsTask::cancelTask(os, annotateTaskName);
     GTGlobals::sleep(500);
     CHECK_SET_ERR(0 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "Load DAS annotations task has not been cancelled");
     GTUtilsLog::check(os, l);
@@ -7356,7 +7357,7 @@ GUI_TEST_CLASS_DEFINITION(test_2562_1) {
 
     // 3. Cancel task
     // Expected state : task has been canceled.
-    GTUtilsTaskTreeView::cancelTask(os, "Load DAS Documents");
+    GTUtilsTask::cancelTask(os, "Load DAS Documents");
     GTGlobals::sleep(500);
     CHECK_SET_ERR(0 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "Load DAS documents task has not been cancelled");
     GTUtilsLog::check(os, l);
@@ -8069,11 +8070,12 @@ GUI_TEST_CLASS_DEFINITION(test_2713) {
     murineFile.write(" ");
     murineFile.close();
 
-    GTGlobals::sleep();
+    GTGlobals::sleep(5000);
 
 //    7. Open "human_T1" sequence view
 //    Expected state: annotations from "murine.gb" present on the sequence view
     GTUtilsProjectTreeView::doubleClickItem(os, "human_T1.fa");
+       GTGlobals::sleep(15000);
     GTUtilsAnnotationsTreeView::findFirstAnnotation(os);
 }
 
@@ -8658,7 +8660,7 @@ GUI_TEST_CLASS_DEFINITION(test_2894){
         GTWidget::click(os, GTAction::button(os, "Refresh tree"));
     }
 
-    GTUtilsTaskTreeView::checkTask(os, "Calculating Phylogenetic Tree");
+    GTUtilsTask::checkTask(os, "Calculating Phylogenetic Tree");
 //    5. Press refresh button again.
 //    Expected state: a new refresh task is not started, the old one is in process.
     if(qt_toolbar_ext_button != NULL && qt_toolbar_ext_button->isVisible()){

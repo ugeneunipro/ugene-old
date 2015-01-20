@@ -207,7 +207,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1529);
     REGISTER_TEST(GUITest_regression_scenarios::test_1531);
     REGISTER_TEST(GUITest_regression_scenarios::test_1548);
-    REGISTER_TEST_MAC(GUITest_regression_scenarios::test_1551, "Mac specific test");
+    REGISTER_TEST_ONLY_MAC(GUITest_regression_scenarios::test_1551);
     REGISTER_TEST(GUITest_regression_scenarios::test_1554);
     REGISTER_TEST(GUITest_regression_scenarios::test_1568);
     REGISTER_TEST(GUITest_regression_scenarios::test_1573);
@@ -244,7 +244,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1673_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_1673_3);
     REGISTER_TEST(GUITest_regression_scenarios::test_1673_4);
-    REGISTER_TEST_MAC(GUITest_regression_scenarios::test_1680, "Mac only");
+    REGISTER_TEST_ONLY_MAC(GUITest_regression_scenarios::test_1680);
     REGISTER_TEST(GUITest_regression_scenarios::test_1687);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1688, "big data");
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_1693);//no tuxedo for windows
@@ -323,7 +323,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2138);
     REGISTER_TEST_NOT_FOR_MAC(GUITest_regression_scenarios::test_2140);
     REGISTER_TEST(GUITest_regression_scenarios::test_2144);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2150, "task tree view cant be tested");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2150);
     REGISTER_TEST(GUITest_regression_scenarios::test_2152);
     REGISTER_TEST(GUITest_regression_scenarios::test_2156);
     REGISTER_TEST(GUITest_regression_scenarios::test_2157);
@@ -406,8 +406,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2543);
     REGISTER_TEST(GUITest_regression_scenarios::test_2545);
     REGISTER_TEST(GUITest_regression_scenarios::test_2549);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2562, "tasks api needed");
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2562_1, "tasks api needed");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2562);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2562_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2565);
     REGISTER_TEST(GUITest_regression_scenarios::test_2566);
     REGISTER_TEST(GUITest_regression_scenarios::test_2567);
@@ -456,7 +456,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2887);
     REGISTER_TEST(GUITest_regression_scenarios::test_2891);
     REGISTER_TEST(GUITest_regression_scenarios::test_2891_1);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2894, "task api needed");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2894);
     REGISTER_TEST(GUITest_regression_scenarios::test_2895);
     REGISTER_TEST(GUITest_regression_scenarios::test_2897);
     REGISTER_TEST(GUITest_regression_scenarios::test_2900);
@@ -544,7 +544,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3312);
     REGISTER_TEST(GUITest_regression_scenarios::test_3313);
     REGISTER_TEST(GUITest_regression_scenarios::test_3318);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3328, "Vladimir check this");
     REGISTER_TEST(GUITest_regression_scenarios::test_3332);
     REGISTER_TEST_LINUX(GUITest_regression_scenarios::test_3333, "drag and drop");
     REGISTER_TEST(GUITest_regression_scenarios::test_3335);
@@ -569,7 +568,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3443);
     REGISTER_TEST(GUITest_regression_scenarios::test_3450);
     REGISTER_TEST(GUITest_regression_scenarios::test_3451);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3452, "temporary ignored because of mac failing");
+    REGISTER_TEST_LINUX(GUITest_regression_scenarios::test_3452, "temporary ignored because of mac failing");
     REGISTER_TEST(GUITest_regression_scenarios::test_3455);
     REGISTER_TEST(GUITest_regression_scenarios::test_3471);
     REGISTER_TEST(GUITest_regression_scenarios::test_3472);
@@ -1341,9 +1340,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0006_1);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0007);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_options_panel::test_0008, "bad layout of common statistic OP lapel on mac. jira");
+    REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0009);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_options_panel::test_0010, "bad layout of common statistic OP lapel on mac. jira");
+    REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0010);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0012);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0013);
@@ -1516,7 +1515,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer
 /////////////////////////////////////////////////////////////////////////
-    //REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0001,"out of date");
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002)//,"no such scheme on windows");
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002_1)//,"no such scheme on windows");
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0003);
@@ -1564,7 +1562,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/NIAID_pipelines
 /////////////////////////////////////////////////////////////////////////
-    //REGISTER_TEST_IGNORED(GUITest_common_scenarios_NIAID_pipelines::test_0001,"outdated");
     REGISTER_TEST(GUITest_common_scenarios_NIAID_pipelines::test_0002);
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Tree viewer
