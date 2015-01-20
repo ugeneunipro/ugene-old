@@ -32,7 +32,7 @@ class FindPatternWidgetSavableTab : public U2SavableWidget {
 public:
     FindPatternWidgetSavableTab(QWidget *wrappedWidget, MWMDIWindow *contextWindow);
     ~FindPatternWidgetSavableTab();
-    
+
     void    setChildValue(const QString &childId, const QVariant &value);
 };
 

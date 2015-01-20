@@ -51,7 +51,7 @@ JavaSupport::JavaSupport(const QString &name, const QString &path)
 
 void JavaSupport::sl_toolValidationStatusChanged(bool isValid) {
     Q_UNUSED(isValid);
-    ScriptingTool::onPathChanged(this, QStringList() 
+    ScriptingTool::onPathChanged(this, QStringList()
 
      #ifdef Q_OS_WIN
      #else
