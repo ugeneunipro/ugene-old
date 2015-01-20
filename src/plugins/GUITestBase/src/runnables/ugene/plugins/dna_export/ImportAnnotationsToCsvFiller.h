@@ -77,7 +77,8 @@ namespace U2 {
                                         bool _script, int _numberOfLines,
                                         const QString &_skipAllLinesStartsWith, bool _interpretMultipleAsSingle,
                                         bool _removeQuotesButton, const QString &_defaultAnnotationName, const RoleParameters& roleParameters = RoleParameters(), GTGlobals::UseMethod method = GTGlobals::UseMouse);
-        virtual void run();
+        ImportAnnotationsToCsvFiller(U2OpStatus &_os, CustomScenario* c):Filler(_os, "ImportAnnotationsFromCSVDialog", c){}
+        virtual void commonScenario();
     private:
         QString fileToRead;
         QString resultFile;
@@ -95,6 +96,19 @@ namespace U2 {
         RoleParameters roleParameters;
         GTGlobals::UseMethod useMethod;
     };
+
+    class RoleFiller : public Filler {
+    public:
+        RoleFiller(U2OpStatus &os, ImportAnnotationsToCsvFiller::RoleParameter* _parameter)
+            : Filler(os, "CSVColumnConfigurationDialog"), parameter(_parameter) {}
+        RoleFiller(U2OpStatus &os, CustomScenario* c):
+            Filler(os, "CSVColumnConfigurationDialog", c){}
+        virtual void commonScenario();
+    private:
+        ImportAnnotationsToCsvFiller::RoleParameter *parameter;
+    };
 }
+
+
 
 #endif

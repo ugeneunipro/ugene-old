@@ -116,6 +116,7 @@
 #include "runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/ConstructMoleculeDialogFiller.h"
@@ -1135,6 +1136,25 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
 }
+
+GUI_TEST_CLASS_DEFINITION(test_1386){
+//    1) Open a document (e.g. COI.aln)
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+//    2) Modify it (e.g. insert a gap)
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(5,5));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+//    3) Close the view of the document
+    GTUtilsMdi::click( os, GTGlobals::Close );
+//    4) Select "Unload selected documents" for the document
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"action_project__unload_selected_action"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTUtilsProjectTreeView::click(os, "COI.aln", Qt::RightButton);
+//    5) Select "No" not to save the document
+    GTUtilsDocument::isDocumentLoaded(os, "COI.aln");
+    GTUtilsProjectTreeView::itemModificationCheck(os, GTUtilsProjectTreeView::findIndex(os, "COI.aln"), false);
+//    Expected state: the document is unloaded, not marked as modified (blue).
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1387) {
     // 1) Open _common_data\regression\1387\col_of_gaps.aln
     // 2) Use context menu: {Edit -> Remove columns of gaps}
@@ -1189,6 +1209,57 @@ GUI_TEST_CLASS_DEFINITION(test_1405) {
 
     GTUtilsDialog::waitForDialog(os, new RemoveGapColsDialogFiller(os, RemoveGapColsDialogFiller::Number, 1));
     GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1408){
+//    1) Open "data/samples/FASTA/human_T1.fa"
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+//    2) Right click on "human_T1.fa" in the project tab
+
+    class innerScenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "dialog not found");
+
+            GTWidget::findWidget(os, "groupRB", dialog);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
+        }
+    };
+
+    class outerScenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "dialog not found");
+
+            QLineEdit *readFileLineEdit = GTWidget::findExactWidget<QLineEdit*>(os, "readFileName", dialog);
+            GTLineEdit::setText(os, readFileLineEdit, testDir + "_common_data/scenarios/annotations_import/anns1.csv");
+
+            GTWidget::click(os, GTWidget::findWidget(os, "guessButton", dialog));
+
+            QTableWidget *previewTable = dialog->findChild<QTableWidget*>("previewTable");
+            QRect rect = previewTable->visualItemRect(previewTable->item(1, 1));
+            GTUtilsDialog::waitForDialog(os, new RoleFiller(os, new innerScenario()));
+            GTWidget::click(os, previewTable, Qt::LeftButton, rect.center());
+
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
+        }    };
+
+
+    GTUtilsDialog::waitForDialog(os, new ImportAnnotationsToCsvFiller(os, new outerScenario()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__export_import_menu_action"
+                                                      << "import_annotations_from_CSV_file"));
+    GTUtilsProjectTreeView::click(os, "human_T1.fa", Qt::RightButton);
+//    3) Use menu {Export/Import->Import annotaions from CSV file}
+//    Expected state: "Import annotations from CSV" dialog is appeared
+
+//    4) Choose any CSV file for read
+//    Expected state: table in "Results preview" is appeared
+
+//    5) Left click on name of any column
+//    Expected state: "Select the role of the column" dialog is appeared
+
+//    6) Check that there is role "Annotation group"
 
 }
 

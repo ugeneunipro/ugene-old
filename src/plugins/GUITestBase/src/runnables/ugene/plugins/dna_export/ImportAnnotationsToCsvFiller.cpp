@@ -68,76 +68,68 @@ Filler(_os, "ImportAnnotationsFromCSVDialog"), fileToRead(_fileToRead), resultFi
     comboBoxItems[Swiss_Prot] = "Swiss_Prot";
 }
 #define GT_METHOD_NAME "run"
-class RoleFiller : public Filler {
-public:
-    RoleFiller(U2OpStatus &os, ImportAnnotationsToCsvFiller::RoleParameter* _parameter)
-        : Filler(os, "CSVColumnConfigurationDialog"), parameter(_parameter) {}
+void RoleFiller::commonScenario() {
+    QWidget *dialog = QApplication::activeModalWidget();
+    QCheckBox *addOffsetCheckBox = dialog->findChild<QCheckBox*>("startOffsetCheck");
+    QSpinBox *addOffsetSpinBox = dialog->findChild<QSpinBox*>("startOffsetValue");
+    QCheckBox *endPosCheckBox = dialog->findChild<QCheckBox*>("endInclusiveCheck");
+    QCheckBox *strandMarkCheckBox = dialog->findChild<QCheckBox*>("complValueCheck");
+    QLineEdit *markValueLineEdit = dialog->findChild<QLineEdit*>("complValueEdit");
+    QLineEdit *qualifierLineEdit = dialog->findChild<QLineEdit*>("qualifierNameEdit");
 
-    virtual void run() {
-        QWidget *dialog = QApplication::activeModalWidget();
-        QCheckBox *addOffsetCheckBox = dialog->findChild<QCheckBox*>("startOffsetCheck");
-        QSpinBox *addOffsetSpinBox = dialog->findChild<QSpinBox*>("startOffsetValue");
-        QCheckBox *endPosCheckBox = dialog->findChild<QCheckBox*>("endInclusiveCheck");
-        QCheckBox *strandMarkCheckBox = dialog->findChild<QCheckBox*>("complValueCheck");
-        QLineEdit *markValueLineEdit = dialog->findChild<QLineEdit*>("complValueEdit");
-        QLineEdit *qualifierLineEdit = dialog->findChild<QLineEdit*>("qualifierNameEdit");
-
-        GTGlobals::sleep(300);
-        ImportAnnotationsToCsvFiller::StartParameter* startP = dynamic_cast<ImportAnnotationsToCsvFiller::StartParameter*>(parameter);
-        if (startP) {
-            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("startRB"));
-            GTCheckBox::setChecked(os, addOffsetCheckBox, startP->addOffset);
-            if (startP->addOffset) {
-                GTSpinBox::setValue(os, addOffsetSpinBox, startP->numberOfBp);
-            }
+    GTGlobals::sleep(300);
+    ImportAnnotationsToCsvFiller::StartParameter* startP = dynamic_cast<ImportAnnotationsToCsvFiller::StartParameter*>(parameter);
+    if (startP) {
+        GTRadioButton::click(os, dialog->findChild<QRadioButton*>("startRB"));
+        GTCheckBox::setChecked(os, addOffsetCheckBox, startP->addOffset);
+        if (startP->addOffset) {
+            GTSpinBox::setValue(os, addOffsetSpinBox, startP->numberOfBp);
         }
-
-        ImportAnnotationsToCsvFiller::EndParameter* endP = dynamic_cast<ImportAnnotationsToCsvFiller::EndParameter*>(parameter);
-        if (endP) {
-            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("endRB"));
-            GTCheckBox::setChecked(os, endPosCheckBox, endP->endPos);
-        }
-
-        ImportAnnotationsToCsvFiller::LengthParameter* lenghtP = dynamic_cast<ImportAnnotationsToCsvFiller::LengthParameter*>(parameter);
-        if (lenghtP) {
-            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("lengthRB"));
-        }
-
-        ImportAnnotationsToCsvFiller::StrandMarkParameter* strandMarkP = dynamic_cast<ImportAnnotationsToCsvFiller::StrandMarkParameter*>(parameter);
-        if (strandMarkP) {
-            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("complMarkRB"));
-            GTCheckBox::setChecked(os, strandMarkCheckBox, strandMarkP->markValue);
-            GTLineEdit::setText(os, markValueLineEdit, strandMarkP->markValueName);
-        }
-
-        ImportAnnotationsToCsvFiller::NameParameter* nameP = dynamic_cast<ImportAnnotationsToCsvFiller::NameParameter*>(parameter);
-        if (nameP) {
-            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("nameRB"));
-        }
-
-        ImportAnnotationsToCsvFiller::QualifierParameter* qualP = dynamic_cast<ImportAnnotationsToCsvFiller::QualifierParameter*>(parameter);
-        if (qualP) {
-            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("qualifierRB"));
-            GTLineEdit::setText(os, qualifierLineEdit, qualP->name);
-        }
-
-        ImportAnnotationsToCsvFiller::IgnoreParameter* ignoreP = dynamic_cast<ImportAnnotationsToCsvFiller::IgnoreParameter*>(parameter);
-        if (ignoreP) {
-            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("ignoreRB"));
-        }
-
-        delete parameter;
-        parameter = NULL;
-
-        QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-        GT_CHECK(box != NULL, "buttonBox is NULL");
-        QPushButton* button = box->button(QDialogButtonBox::Ok);
-        GT_CHECK(button !=NULL, "ok button is NULL");
-        GTWidget::click(os, button);
     }
-private:
-    ImportAnnotationsToCsvFiller::RoleParameter *parameter;
-};
+
+    ImportAnnotationsToCsvFiller::EndParameter* endP = dynamic_cast<ImportAnnotationsToCsvFiller::EndParameter*>(parameter);
+    if (endP) {
+        GTRadioButton::click(os, dialog->findChild<QRadioButton*>("endRB"));
+        GTCheckBox::setChecked(os, endPosCheckBox, endP->endPos);
+    }
+
+    ImportAnnotationsToCsvFiller::LengthParameter* lenghtP = dynamic_cast<ImportAnnotationsToCsvFiller::LengthParameter*>(parameter);
+    if (lenghtP) {
+        GTRadioButton::click(os, dialog->findChild<QRadioButton*>("lengthRB"));
+    }
+
+    ImportAnnotationsToCsvFiller::StrandMarkParameter* strandMarkP = dynamic_cast<ImportAnnotationsToCsvFiller::StrandMarkParameter*>(parameter);
+    if (strandMarkP) {
+        GTRadioButton::click(os, dialog->findChild<QRadioButton*>("complMarkRB"));
+        GTCheckBox::setChecked(os, strandMarkCheckBox, strandMarkP->markValue);
+        GTLineEdit::setText(os, markValueLineEdit, strandMarkP->markValueName);
+    }
+
+    ImportAnnotationsToCsvFiller::NameParameter* nameP = dynamic_cast<ImportAnnotationsToCsvFiller::NameParameter*>(parameter);
+    if (nameP) {
+        GTRadioButton::click(os, dialog->findChild<QRadioButton*>("nameRB"));
+    }
+
+    ImportAnnotationsToCsvFiller::QualifierParameter* qualP = dynamic_cast<ImportAnnotationsToCsvFiller::QualifierParameter*>(parameter);
+    if (qualP) {
+        GTRadioButton::click(os, dialog->findChild<QRadioButton*>("qualifierRB"));
+        GTLineEdit::setText(os, qualifierLineEdit, qualP->name);
+    }
+
+    ImportAnnotationsToCsvFiller::IgnoreParameter* ignoreP = dynamic_cast<ImportAnnotationsToCsvFiller::IgnoreParameter*>(parameter);
+    if (ignoreP) {
+        GTRadioButton::click(os, dialog->findChild<QRadioButton*>("ignoreRB"));
+    }
+
+    delete parameter;
+    parameter = NULL;
+
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
+}
 #undef GT_METHOD_NAME
 
 class GTTableWidget {
@@ -154,7 +146,7 @@ public:
 };
 
 #define GT_METHOD_NAME "run"
-void ImportAnnotationsToCsvFiller::run()
+void ImportAnnotationsToCsvFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
