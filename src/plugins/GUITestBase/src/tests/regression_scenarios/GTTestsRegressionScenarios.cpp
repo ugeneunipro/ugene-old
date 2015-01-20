@@ -2708,8 +2708,7 @@ GUI_TEST_CLASS_DEFINITION( test_1654 ) {
 
     QWidget *createAnnotationsButton = GTWidget::findWidget(os, "getAnnotationsPushButton");
     GTGlobals::sleep(500);
-    CHECK_SET_ERR(createAnnotationsButton->isEnabled(), "Create annotations button is disabled!");
-
+    CHECK_SET_ERR(!createAnnotationsButton->isEnabled(), "Create annotations button is enabled!");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1660 ) {
