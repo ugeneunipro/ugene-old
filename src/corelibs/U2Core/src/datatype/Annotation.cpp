@@ -404,7 +404,7 @@ QString Annotation::produceValidAnnotationName(const QString &name) {
     validChars['*']  = true;
 
     for(int i=0; i<result.size(); i++) {
-        unsigned char c = result[i].toAscii();
+        unsigned char c = result[i].toLatin1();
         if (!validChars[c]) {
             result[i] = '_';
         }
