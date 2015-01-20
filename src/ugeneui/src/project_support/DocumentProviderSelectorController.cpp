@@ -96,7 +96,7 @@ DocumentProviderSelectorController::DocumentProviderSelectorController(const QLi
     formatDetectionResults(formatDetectionResults)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "invalid_link");
+    new HelpButton(this, buttonBox, "14059086");
 }
 
 int DocumentProviderSelectorController::getSelectedFormatIdx() const {

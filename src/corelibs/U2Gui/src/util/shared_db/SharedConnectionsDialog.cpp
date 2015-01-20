@@ -505,7 +505,7 @@ bool SharedConnectionsDialog::checkDbShouldBeUpgraded(const U2DbiRef &ref) {
     if (upgradeDatabase) {
         QMessageBox question(QMessageBox::Question, tr(DATABASE_UPGRADE_TITLE), tr(DATABASE_UPGRADE_TEXT), QMessageBox::Ok | QMessageBox::Cancel| QMessageBox::Help, this);
         question.button(QMessageBox::Ok)->setText(tr("Upgrade"));
-        HelpButton(&question, question.button(QMessageBox::Help), "1234567");
+        HelpButton(&question, question.button(QMessageBox::Help), "14059258");
         question.setDefaultButton(QMessageBox::Cancel);
         if (QMessageBox::Ok == question.exec()) {
             MysqlUpgradeTask *upgradeTask = new MysqlUpgradeTask(ref);
