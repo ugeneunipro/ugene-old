@@ -54,7 +54,7 @@ QList<Task*> FindPatternTask::onSubTaskFinished(Task* subTask)
         SAFE_POINT(task, "Failed to cast FindAlgorithTask!", QList<Task*>());
 
         QList<FindAlgorithmResult> resultz = task->popResults();
-        if (removeOverlaps && !results.isEmpty()) {
+        if (removeOverlaps && !resultz.isEmpty()) {
             removeOverlappedResults(resultz);
         }
 
@@ -98,8 +98,8 @@ void FindPatternTask::removeOverlappedResults(QList<FindAlgorithmResult>& result
 
             U2Region region = results.at(j).region.intersect(results.at(i).region);
             if ((region.length > 0) && (region.length >= MAX_OVERLAP_K * results.at(i).region.length)) {
-                j--;
                 results.removeAt(j);
+                j--;
                 n--;
             }
             else {
