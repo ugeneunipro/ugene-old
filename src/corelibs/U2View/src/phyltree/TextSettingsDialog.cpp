@@ -34,7 +34,7 @@ TextSettingsDialog::TextSettingsDialog(QWidget *parent, const TextSettings &text
 : QDialog(parent), settings(textSettings), changedSettings(textSettings) {
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227581");
+    new HelpButton(this, buttonBox, "14059094");
 
     updateColorButton();
     fontComboBox->setCurrentFont(settings.textFont);

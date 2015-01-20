@@ -62,7 +62,7 @@ FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
 {
     sc = _sc;
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227627");
+    new HelpButton(this, buttonBox, "14059118");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Start"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

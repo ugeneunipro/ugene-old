@@ -444,7 +444,7 @@ void ColorSchemaSettingsPageWidget::sl_onDeleteColorSchema(){
 
 CreateColorSchemaDialog::CreateColorSchemaDialog(CustomColorSchema* _newSchema, QStringList _usedNames) : usedNames(_usedNames), newSchema(_newSchema) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "7667798");
+    new HelpButton(this, buttonBox, "14059013");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Create"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

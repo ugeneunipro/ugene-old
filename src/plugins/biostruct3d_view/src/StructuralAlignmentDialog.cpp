@@ -56,7 +56,7 @@ StructuralAlignmentDialog::StructuralAlignmentDialog(const BioStruct3DObject *fi
         : QDialog(parent), task(0)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "8094103");
+    new HelpButton(this, buttonBox, "14058987");
 
     StructuralAlignmentAlgorithmRegistry *reg = AppContext::getStructuralAlignmentAlgorithmRegistry();
     foreach (const QString &id, reg->getFactoriesIds()) {

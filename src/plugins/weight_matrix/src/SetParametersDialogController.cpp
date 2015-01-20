@@ -37,7 +37,7 @@ SetParametersDialogController::SetParametersDialogController(QWidget *w)
     : QDialog(w) {
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227727");
+    new HelpButton(this, buttonBox, "14059171");
 
     QStringList algo = AppContext::getPWMConversionAlgorithmRegistry()->getAlgorithmIds();
     algorithmComboBox->addItems(algo);

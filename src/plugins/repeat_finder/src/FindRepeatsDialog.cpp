@@ -76,7 +76,7 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
 {
     sc = _sc;
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227625");
+    new HelpButton(this, buttonBox, "14059117");
 
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Start"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));

@@ -46,7 +46,7 @@ namespace U2 {
 
 ExportReadsDialog::ExportReadsDialog(QWidget * p, const QList<DocumentFormatId> & formats) : QDialog(p) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227544");
+    new HelpButton(this, buttonBox, "14059072");
 
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));

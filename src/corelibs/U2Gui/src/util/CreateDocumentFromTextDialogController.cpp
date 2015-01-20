@@ -64,7 +64,7 @@ namespace U2{
 CreateDocumentFromTextDialogController::CreateDocumentFromTextDialogController(QWidget* p): QDialog(p) {
     ui = new Ui_CreateDocumentFromTextDialog();
     ui->setupUi(this);
-    new HelpButton(this, ui->buttonBox, "4227232");
+    new HelpButton(this, ui->buttonBox, "14058894");
 
     //TODO: use format name here 
     ui->formatBox->addItem("FASTA", BaseDocumentFormats::FASTA);

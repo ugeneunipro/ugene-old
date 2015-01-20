@@ -68,7 +68,7 @@ PWMBuildDialogController::PWMBuildDialogController(QWidget* w)
 {
     task = NULL;
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227731");
+    new HelpButton(this, buttonBox, "14059173");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Start"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

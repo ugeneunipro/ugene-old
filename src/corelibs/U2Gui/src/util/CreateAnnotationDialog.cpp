@@ -60,7 +60,7 @@ CreateAnnotationDialog::CreateAnnotationDialog(QWidget* p, CreateAnnotationModel
     createButton = buttonBox->button(QDialogButtonBox::Ok);
     cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
 
-    new HelpButton(this, buttonBox, "4227346");
+    new HelpButton(this, buttonBox, "14058955");
     createButton->setText(tr("Create"));
     cancelButton->setText(tr("Cancel"));
 

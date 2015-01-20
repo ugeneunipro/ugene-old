@@ -367,7 +367,7 @@ private:
 
 CreateScriptElementDialog::CreateScriptElementDialog(QWidget *p, ActorPrototype* proto): QDialog(p), editing(false) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "2097187");
+    new HelpButton(this, buttonBox, "14058647");
 
     inputList->setModel(new CfgListModel());
     inputList->setItemDelegate(new ProxyDelegate());

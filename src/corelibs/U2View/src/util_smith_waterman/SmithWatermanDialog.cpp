@@ -78,7 +78,7 @@ SmithWatermanDialog::SmithWatermanDialog(QWidget* w,
     dialogConfig = _dialogConfig;
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227681");
+    new HelpButton(this, buttonBox, "14059147");
     buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Remote run"));
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));

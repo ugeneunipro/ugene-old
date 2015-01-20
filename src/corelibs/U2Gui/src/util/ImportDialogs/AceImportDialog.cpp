@@ -49,7 +49,7 @@ const QString AceImportDialog::EXTENSION = ".ugenedb";
 AceImportDialog::AceImportDialog(const QVariantMap& _settings) :
     ImportDialog(_settings) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "8093966");
+    new HelpButton(this, buttonBox, "14059086");
 
     QString src = settings.value(AceImporter::SRC_URL).toString();
     leSource->setText(src);

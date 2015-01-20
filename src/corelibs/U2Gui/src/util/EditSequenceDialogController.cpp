@@ -69,7 +69,7 @@ SeqPasterEventFilter::SeqPasterEventFilter( QObject* parent )
 : QDialog(p), filter(""), pos(1), config(cfg) {
     ui = new Ui_EditSequenceDialog;
     ui->setupUi(this);
-    new HelpButton(this, ui->buttonBox, "4227330");
+    new HelpButton(this, ui->buttonBox, "14058946");
 
     connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
     addSeqpasterWidget();

@@ -112,7 +112,7 @@ public:
 
 PWMSearchDialogController::PWMSearchDialogController(ADVSequenceObjectContext* _ctx, QWidget *p):QDialog(p) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227727");
+    new HelpButton(this, buttonBox, "14059171");
     buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Add to queue"));
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));

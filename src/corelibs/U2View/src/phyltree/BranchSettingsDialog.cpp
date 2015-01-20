@@ -35,7 +35,7 @@ BranchSettingsDialog::BranchSettingsDialog(QWidget *parent, const BranchSettings
     changedSettings(branchSettings)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227571");
+    new HelpButton(this, buttonBox, "14059089");
 
     thicknessSpinBox->setValue(settings.branchThickness);
     updateColorButton();

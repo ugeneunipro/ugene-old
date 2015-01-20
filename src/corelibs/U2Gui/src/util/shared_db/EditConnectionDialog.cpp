@@ -45,7 +45,7 @@ EditConnectionDialog::EditConnectionDialog(QWidget *parent, const QString &dbiUr
     ui(new Ui::EditConnectionDialog)
 {
     ui->setupUi(this);
-    new HelpButton(this, ui->buttonBox, "8093779");
+    new HelpButton(this, ui->buttonBox, "14059258");
     adjustSize();
     init(dbiUrl, connectionName, userName);
 }

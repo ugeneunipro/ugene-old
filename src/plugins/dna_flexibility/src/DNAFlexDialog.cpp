@@ -44,7 +44,7 @@ DNAFlexDialog::DNAFlexDialog(ADVSequenceObjectContext* _ctx)
   : QDialog(_ctx->getAnnotatedDNAView()->getWidget())
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227611");
+    new HelpButton(this, buttonBox, "14059108");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

@@ -39,7 +39,7 @@ EditMarkerGroupDialog::EditMarkerGroupDialog(bool isNew, Marker *marker, Workflo
 : QDialog(parent), isNew(isNew), marker(NULL), allModel(_allModel)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "2097367");
+    new HelpButton(this, buttonBox, "14058758");
     {
         QStringList types;
         types << MarkerTypes::SEQ_LENGTH().getDisplayName(); typeIds << MarkerTypes::SEQ_LENGTH().getId();
@@ -386,7 +386,7 @@ EditMarkerDialog::EditMarkerDialog(bool isNew, const QString &type, const QStrin
 : QDialog(parent), isNew(isNew), type(type), name(name), values(values), editWidget(NULL)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "2097367");
+    new HelpButton(this, buttonBox, "14058758");
     if (!isNew) {
         markerNameEdit->setText(name);
 

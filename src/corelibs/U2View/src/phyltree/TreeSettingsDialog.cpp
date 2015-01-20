@@ -33,7 +33,7 @@ TreeSettingsDialog::TreeSettingsDialog(QWidget *parent, const TreeSettings &tree
 {
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227569");
+    new HelpButton(this, buttonBox, "14059088");
 
     heightSlider->setValue(settings.height_coef);
     widthlSlider->setValue(settings.width_coef);

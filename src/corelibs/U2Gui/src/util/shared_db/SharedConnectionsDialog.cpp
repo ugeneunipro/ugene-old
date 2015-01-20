@@ -90,7 +90,7 @@ SharedConnectionsDialog::SharedConnectionsDialog(QWidget *parent) :
     ui(new Ui::SharedConnectionsDialog)
 {
     ui->setupUi(this);
-    new HelpButton(this, ui->buttonBox, "8093779");
+    new HelpButton(this, ui->buttonBox, "14059258");
 
     init();
     connectSignals();

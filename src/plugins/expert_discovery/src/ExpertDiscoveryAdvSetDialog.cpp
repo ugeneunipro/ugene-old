@@ -61,7 +61,7 @@ ExpertDiscoveryAdvSetDialog::ExpertDiscoveryAdvSetDialog(QWidget *parent,
     connect( checkCorrel, SIGNAL(clicked()), SLOT(sl_checkCorrel()) );
 
     hideParameters();
-    new HelpButton(this, buttonBox, "7668033");
+    new HelpButton(this, buttonBox, "14059198");
 
 }
 
