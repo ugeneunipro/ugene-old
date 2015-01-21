@@ -646,7 +646,6 @@ void GTUtilsWorkflowDesigner::setCellValue(U2OpStatus &os, QWidget* parent, QVar
 QTableWidget* GTUtilsWorkflowDesigner::getInputPortsTable(U2OpStatus &os, int index){
     QWidget* inputPortBox = GTWidget::findWidget(os, "inputPortBox");
     QList<QTableWidget*> tables= inputPortBox->findChildren<QTableWidget*>();
-    int n = tables.count();
     foreach (QTableWidget* w, tables) {
         if(!w->isVisible()){
             tables.removeOne(w);

@@ -42,7 +42,6 @@ void FindPatternWidgetSavableTab::setChildValue(const QString &childId, const QV
     SAFE_POINT(childExists(childId), "Child widget expected", );
 
     QVariant result = value;
-    QWidget *child = getChildWidgetById(childId);
     if (childId == "editEnd" || childId == "editStart"){
         bool ok = false;
         int intVal = value.toInt(&ok);

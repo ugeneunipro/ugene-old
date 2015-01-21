@@ -138,7 +138,7 @@ QString FastQCTask::getResFileUrl() const{
     return res;
 }
 
-QStringList FastQCTask::getParameters(U2OpStatus & os) const{
+QStringList FastQCTask::getParameters(U2OpStatus & /*os*/) const{
     QStringList res;
 
     res << QString("-o");

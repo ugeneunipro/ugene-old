@@ -782,7 +782,7 @@ GUI_TEST_CLASS_DEFINITION(proj_test_0008) {
 
 GUI_TEST_CLASS_DEFINITION(proj_test_0009) {
     // check objects order
-    Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+    GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
 
     const QModelIndex et0002_features = GTUtilsProjectTreeView::findIndex(os, "et0002_features");
     const QModelIndex et0004_assembly = GTUtilsProjectTreeView::findIndex(os, "et0004_assembly");
