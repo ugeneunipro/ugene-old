@@ -1192,7 +1192,7 @@ void FindPatternWidget::sl_findPatrernTaskStateChanged() {
             resultLabel->setText(tr("Results: 0/0"));
             nextPushButton->setDisabled(true);
             prevPushButton->setDisabled(true);
-            getAnnotationsPushButton->setEnabled(true);
+            getAnnotationsPushButton->setDisabled(true);
         } else {
             iterPos = 1;
             qSort(findPatternResults.begin(), findPatternResults.end());
