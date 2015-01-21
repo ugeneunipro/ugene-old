@@ -1137,6 +1137,16 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1376){
+    //1. Open data/position_weight_matrix/JASPAR/fungi/MA0276.1.pfm.
+    GTFileDialog::openFile(os, dataDir + "position_weight_matrix/JASPAR/fungi/MA0276.1.pfm");
+
+    //Expected: PFM matrix view with logo and weight table is opened.
+    QWidget *mdi = GTUtilsMdi::findWindow(os, "Matrix Viewer");
+    GTWidget::findWidget(os, "logoWidget", mdi);
+    GTWidget::findWidget(os, "tableWidget", mdi);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1386){
 //    1) Open a document (e.g. COI.aln)
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
