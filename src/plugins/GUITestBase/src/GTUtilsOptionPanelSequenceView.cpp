@@ -26,14 +26,15 @@
 #include <QTextEdit>
 #include <QTreeWidget>
 
-#include "api/GTWidget.h"
-#include "api/GTTextEdit.h"
-#include "api/GTClipboard.h"
 #include "api/GTCheckBox.h"
+#include "api/GTClipboard.h"
 #include "api/GTComboBox.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTSpinBox.h"
+#include "api/GTTableView.h"
+#include "api/GTTextEdit.h"
+#include "api/GTWidget.h"
 
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsTaskTreeView.h"
@@ -45,11 +46,25 @@ QMap<GTUtilsOptionPanelSequenceView::Tabs, QString> GTUtilsOptionPanelSequenceVi
     result.insert(Search, "OP_FIND_PATTERN");
     result.insert(AnnotationsHighlighting, "OP_ANNOT_HIGHLIGHT");
     result.insert(Statistics, "OP_SEQ_INFO");
+    result.insert(InSilicoPcr, "OP_IN_SILICO_PCR");
+    result.insert(CircularView, "OP_CV_SETTINGS");
     result.insert(Das, "OP_DAS");
     return result;
 }
 
+QMap<GTUtilsOptionPanelSequenceView::Tabs, QString> GTUtilsOptionPanelSequenceView::initInnerWidgetNames() {
+    QMap<Tabs, QString> result;
+    result.insert(Search, "FindPatternWidget");
+    result.insert(AnnotationsHighlighting, "AnnotHighlightWidget");
+    result.insert(Statistics, "SequenceInfo");
+    result.insert(InSilicoPcr, "InSilicoPcrOptionPanelWidget");
+    result.insert(CircularView, "CircularViewSettingsWidget");
+    result.insert(Das, "DasOptionsPanelWidget");
+    return result;
+}
+
 const QMap<GTUtilsOptionPanelSequenceView::Tabs,QString> GTUtilsOptionPanelSequenceView::tabsNames = initNames();
+const QMap<GTUtilsOptionPanelSequenceView::Tabs, QString> GTUtilsOptionPanelSequenceView::innerWidgetNames = initInnerWidgetNames();
 
 #define GT_CLASS_NAME "GTUtilsOptionPanelSequenceView"
 
@@ -72,13 +87,36 @@ void GTUtilsOptionPanelSequenceView::enterPattern( U2OpStatus &os, QString patte
 
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "openTab"
-
-void GTUtilsOptionPanelSequenceView::openTab(U2OpStatus &os, Tabs tab){
+#define GT_METHOD_NAME "toggleTab"
+void GTUtilsOptionPanelSequenceView::toggleTab(U2OpStatus &os, GTUtilsOptionPanelSequenceView::Tabs tab) {
     GTWidget::click(os, GTWidget::findWidget(os, tabsNames[tab]));
     GTGlobals::sleep(200);
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "openTab"
+void GTUtilsOptionPanelSequenceView::openTab(U2OpStatus &os, Tabs tab){
+    if (!isTabOpened(os, tab)) {
+        toggleTab(os, tab);
+    }
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "closeTab"
+void GTUtilsOptionPanelSequenceView::closeTab(U2OpStatus &os, GTUtilsOptionPanelSequenceView::Tabs tab) {
+    if (isTabOpened(os, tab)) {
+        toggleTab(os, tab);
+    }
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isTabOpened"
+bool GTUtilsOptionPanelSequenceView::isTabOpened(U2OpStatus &os, GTUtilsOptionPanelSequenceView::Tabs tab) {
+    GTGlobals::FindOptions options;
+    options.failIfNull = false;
+    QWidget *innerTabWidget = GTWidget::findWidget(os, innerWidgetNames[tab], NULL, options);
+    return NULL != innerTabWidget && innerTabWidget->isVisible();
+}
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkResultsText"
@@ -137,6 +175,20 @@ bool GTUtilsOptionPanelSequenceView::isPrevNextEnabled(U2OpStatus &os){
 bool GTUtilsOptionPanelSequenceView::isGetAnnotationsEnabled(U2OpStatus &os){
     QPushButton *getAnnotations = qobject_cast<QPushButton*>(GTWidget::findWidget(os, "getAnnotationsPushButton"));
     return getAnnotations->isEnabled();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "fetchDasIds"
+void GTUtilsOptionPanelSequenceView::fetchDasIds(U2OpStatus &os) {
+    openTab(os, Das);
+    GTWidget::click(os, GTWidget::findWidget(os, "searchIdsButton"));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getDasIdsCount"
+int GTUtilsOptionPanelSequenceView::getDasIdsCount(U2OpStatus &os) {
+    openTab(os, Das);
+    return GTTableView::rowCount(os, GTWidget::findExactWidget<QTableView *>(os, "idList"));
 }
 #undef GT_METHOD_NAME
 

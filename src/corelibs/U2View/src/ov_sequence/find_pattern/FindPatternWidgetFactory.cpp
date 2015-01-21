@@ -51,6 +51,7 @@ QWidget * FindPatternWidgetFactory::createWidget(GObjectView* objView) {
         NULL);
 
     FindPatternWidget* widget = new FindPatternWidget(annotatedDnaView);
+    widget->setObjectName("FindPatternWidget");
     return widget;
 }
 

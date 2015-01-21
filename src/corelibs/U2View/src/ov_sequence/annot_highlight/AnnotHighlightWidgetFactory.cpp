@@ -51,6 +51,7 @@ QWidget * AnnotHighlightWidgetFactory::createWidget(GObjectView* objView) {
         NULL);
 
     AnnotHighlightWidget* widget = new AnnotHighlightWidget(annotatedDnaView);
+    widget->setObjectName("AnnotHighlightWidget");
     return widget;
 }
 

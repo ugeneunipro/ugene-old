@@ -40,13 +40,29 @@ class U2OpStatus;
 
 class GTUtilsOptionPanelSequenceView{
 public:
-    enum Tabs{Search, AnnotationsHighlighting, Statistics, Das};
-    enum AddRefMethod{Button, Completer};
+    enum Tabs {
+        Search,
+        AnnotationsHighlighting,
+        Statistics,
+        InSilicoPcr,
+        CircularView,
+        Das
+    };
+
+    enum AddRefMethod {
+        Button,
+        Completer
+    };
 
     static const QMap<Tabs,QString> tabsNames;
-    //Opens option panel tab. TODO: check if tab is already opened
-    static void openTab(U2OpStatus &os, Tabs tab);
+    static const QMap<Tabs, QString> innerWidgetNames;
 
+    static void toggleTab(U2OpStatus &os, Tabs tab);
+    static void openTab(U2OpStatus &os, Tabs tab);
+    static void closeTab(U2OpStatus &os, Tabs tab);
+    static bool isTabOpened(U2OpStatus &os, Tabs tab);
+
+    // Find pattern options panel tab
     static void enterPattern(U2OpStatus &os, QString pattern, bool useCopyPaste = false);
 
     static void enterPatternFromFile(U2OpStatus &os, QString filepath, QString filename);
@@ -78,6 +94,11 @@ public:
     static bool isPrevNextEnabled(U2OpStatus &os);
     static bool isGetAnnotationsEnabled(U2OpStatus &os);
 
+    // DAS options panel tab
+    static void fetchDasIds(U2OpStatus &os);
+    static int getDasIdsCount(U2OpStatus &os);
+
+    // Utility
     static bool isSearchAlgorithmShowHideWidgetOpened(U2OpStatus &os);
     static bool isSearchInShowHideWidgetOpened(U2OpStatus &os);
     static bool isOtherSettingsShowHideWidgetOpened(U2OpStatus &os);
@@ -91,7 +112,8 @@ public:
     static void openAnnotationParametersShowHideWidget(U2OpStatus &os, bool open = true);
 
 private:
-    static QMap<Tabs,QString> initNames();
+    static QMap<Tabs, QString> initNames();
+    static QMap<Tabs, QString> initInnerWidgetNames();
 };
 
 

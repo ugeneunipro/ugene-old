@@ -50,7 +50,7 @@ QWidget* CircularViewSettingsWidgetFactory::createWidget(GObjectView *objView) {
             widget, SLOT(sl_cvSplitterWasCreatedOrRemoved(CircularViewSplitter*, CircularViewSettings*)));
     connect(widget, SIGNAL(si_openCvButtonClicked(CircularViewSettings*)),
             ctx, SLOT(sl_toggleBySettings(CircularViewSettings*)));
-
+    widget->setObjectName("CircularViewSettingsWidget");
     return widget;
 }
 

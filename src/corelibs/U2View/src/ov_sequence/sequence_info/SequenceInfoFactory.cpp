@@ -51,6 +51,7 @@ QWidget * SequenceInfoFactory::createWidget(GObjectView* objView) {
         NULL);
 
     SequenceInfo* seqInfoWidget = new SequenceInfo(annotatedDnaView);
+    seqInfoWidget->setObjectName("SequenceInfo");
     return seqInfoWidget;
 }
 

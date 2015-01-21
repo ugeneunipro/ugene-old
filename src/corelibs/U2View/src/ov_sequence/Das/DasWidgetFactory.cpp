@@ -55,6 +55,7 @@ QWidget* DasWidgetFactory::createWidget(GObjectView* objView)
         NULL);
 
     DasOptionsPanelWidget* widget = new DasOptionsPanelWidget(annotatedDnaView);
+    widget->setObjectName("DasOptionsPanelWidget");
     return widget;
 }
 
