@@ -32,6 +32,7 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTMSAEditorStatusWidget.h"
 #include "api/GTToolbar.h"
+#include "runnables/qt/PopupChooser.h"
 
 namespace U2 {
 
@@ -89,12 +90,10 @@ QRect GTUtilsMsaEditor::getSequenceNameRect(U2OpStatus &os, const QString &seque
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickSequenceName"
-void GTUtilsMsaEditor::clickSequenceName(U2OpStatus &os, const QString &sequenceName) {
-    Q_UNUSED(os);
-
+void GTUtilsMsaEditor::clickSequenceName(U2OpStatus &os, const QString &sequenceName, Qt::MouseButton mouseButton) {
     const QRect sequenceNameRect = getSequenceNameRect(os, sequenceName);
     GTMouseDriver::moveTo(os, sequenceNameRect.center());
-    GTMouseDriver::click(os);
+    GTMouseDriver::click(os, mouseButton);
 }
 #undef GT_METHOD_NAME
 
@@ -131,6 +130,26 @@ void GTUtilsMsaEditor::toggleCollapsingGroup(U2OpStatus &os, const QString &grou
 int GTUtilsMsaEditor::getSequencesCount(U2OpStatus &os) {
     QWidget *statusWidget = GTWidget::findWidget(os, "msa_editor_status_bar");
     return GTMSAEditorStatusWidget::getSequencesCount(os, statusWidget);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "undo"
+void GTUtilsMsaEditor::undo(U2OpStatus &os) {
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "msa_action_undo"));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "redo"
+void GTUtilsMsaEditor::redo(U2OpStatus &os) {
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "msa_action_redo"));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setReference"
+void GTUtilsMsaEditor::setReference(U2OpStatus &os, const QString &sequenceName) {
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Set this sequence as reference", GTGlobals::UseMouse));
+    clickSequenceName(os, sequenceName, Qt::RightButton);
+    GTGlobals::sleep(100);
 }
 #undef GT_METHOD_NAME
 

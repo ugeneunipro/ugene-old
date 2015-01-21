@@ -13565,6 +13565,26 @@ GUI_TEST_CLASS_DEFINITION(test_3904) {
     CHECK_SET_ERR(lt.hasError() == false, "Log shouldn't contain errors");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3905) {
+//    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+//    2. Remove the first sequence.
+    GTUtilsMSAEditorSequenceArea::removeSequence(os, "Phaneroptera_falcata");
+
+//    3. Undo removing.
+    GTUtilsMsaEditor::undo(os);
+
+//    4. Set the first sequence as reference.
+    GTUtilsMsaEditor::setReference(os, "Phaneroptera_falcata");
+
+//    5. Redo removing.
+//    Expected state: the reference sequence is unset.
+    GTUtilsMsaEditor::redo(os);
+    const QString &referenceName = GTUtilsMsaEditor::getReferenceSequenceName(os);
+    CHECK_SET_ERR(referenceName.isEmpty(), "A reference sequence was not reset");
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace

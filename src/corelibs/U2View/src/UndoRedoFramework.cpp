@@ -40,13 +40,13 @@ MsaUndoRedoFramework::MsaUndoRedoFramework(QObject *p, MAlignmentObject *_maObj)
     SAFE_POINT(maObj != NULL, "NULL MSA Object!", );
 
     undoAction = new QAction(this);
-    undoAction->setObjectName("Undo");
+    undoAction->setText("Undo");
     undoAction->setIcon(QIcon(":core/images/undo.png"));
     undoAction->setShortcut(QKeySequence::Undo);
     undoAction->setToolTip(QString("%1 (%2)").arg(undoAction->text()).arg(undoAction->shortcut().toString()));
 
     redoAction = new QAction(this);
-    redoAction->setObjectName("Redo");
+    redoAction->setText("Redo");
     redoAction->setIcon(QIcon(":core/images/redo.png"));
     redoAction->setShortcut(QKeySequence::Redo);
     redoAction->setToolTip(QString("%1 (%2)").arg(redoAction->text()).arg(redoAction->shortcut().toString()));
