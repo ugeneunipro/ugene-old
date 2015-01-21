@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportSelectedSequenceFromliAnmentDialogFiller.h"
+#include "ExportSelectedSequenceFromAlignmentDialogFiller.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
@@ -42,7 +42,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::exportSelectedSequenceFromAlignment"
 
-ExportSelectedSequenceFromAlignment::ExportSelectedSequenceFromAlignment(U2OpStatus &_os,QString _path,
+ExportSelectedSequenceFromAlignment::ExportSelectedSequenceFromAlignment(U2OpStatus &_os, const QString &_path,
                                                                          documentFormat _format, bool _keepGaps, bool _addToProj):
     Filler(_os, "U2__SaveSelectedSequenceFromMSADialog"),
     path(_path),
@@ -59,8 +59,14 @@ ExportSelectedSequenceFromAlignment::ExportSelectedSequenceFromAlignment(U2OpSta
 
 }
 
+ExportSelectedSequenceFromAlignment::ExportSelectedSequenceFromAlignment(U2OpStatus &os, CustomScenario *scenario)
+    : Filler(os, "U2__SaveSelectedSequenceFromMSADialog", scenario)
+{
+
+}
+
 #define GT_METHOD_NAME "run"
-void ExportSelectedSequenceFromAlignment::run()
+void ExportSelectedSequenceFromAlignment::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

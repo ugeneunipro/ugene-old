@@ -19,25 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef EXPORT_SELECTED_SEQUENCE_FROM_ALIANMENT_DIALOG_FILLER_H
-#define EXPORT_SELECTED_SEQUENCE_FROM_ALIANMENT_DIALOG_FILLER_H
+#ifndef EXPORT_SELECTED_SEQUENCE_FROM_ALIGNMENT_DIALOG_FILLER_H
+#define EXPORT_SELECTED_SEQUENCE_FROM_ALIGNMENT_DIALOG_FILLER_H
 
 #include "GTUtilsDialog.h"
 
 namespace U2 {
 
-    class ExportSelectedSequenceFromAlignment : public Filler {
-    public:
-        enum documentFormat {EMBL, FASTA, FASTQ, GFF, Genbank, Swiss_Prot};
-        ExportSelectedSequenceFromAlignment(U2OpStatus &_os,QString _path,
-                                            documentFormat _format=FASTA,bool _keepGaps=true,bool _addToProj=true);
-        virtual void run();
-    private:
-        QString path;
-        documentFormat format;
-        QMap<documentFormat, QString> comboBoxItems;
-        bool keepGaps,addToProj;
-    };
+class ExportSelectedSequenceFromAlignment : public Filler {
+public:
+    enum documentFormat {EMBL, FASTA, FASTQ, GFF, Genbank, Swiss_Prot};
+    ExportSelectedSequenceFromAlignment(U2OpStatus &_os, const QString &_path, documentFormat _format = FASTA,
+        bool _keepGaps = true, bool _addToProj = true);
+    ExportSelectedSequenceFromAlignment(U2OpStatus &os, CustomScenario *scenario);
+
+    void commonScenario();
+
+private:
+    QString path;
+    documentFormat format;
+    QMap<documentFormat, QString> comboBoxItems;
+    bool keepGaps,addToProj;
+};
+
 }
 
-#endif //EXPORT_SELECTED_SEQUENCE_FROM_ALIANMENT_DIALOG_FILLER_H
+#endif // EXPORT_SELECTED_SEQUENCE_FROM_ALIGNMENT_DIALOG_FILLER_H

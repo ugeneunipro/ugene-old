@@ -114,6 +114,7 @@
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromAlignmentDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h"
@@ -1206,7 +1207,96 @@ GUI_TEST_CLASS_DEFINITION(test_1390) {
 
     GTComboBox::setIndexWithText(os, highlightingBox, "Difference");
     CHECK_SET_ERR(!hint->text().isEmpty(), "Hint is empty, but must not be");
+}
 
+namespace {
+
+QString getFileContent(const QString &path) {
+    QFile file(path);
+    CHECK(file.open(QFile::ReadOnly), QString());
+    QTextStream fileReader(&file);
+    return fileReader.readAll();
+}
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1393) {
+    class ExportSeqsAsMsaScenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "dialog not found");
+
+            QCheckBox *addToProjectBox = qobject_cast<QCheckBox *>(GTWidget::findWidget(os, "addToProjectBox", dialog));
+            CHECK_SET_ERR(addToProjectBox->isChecked(), "'Add document to project' checkbox is not set");
+
+            QLineEdit *lineEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "fileNameEdit", dialog));
+            GTLineEdit::setText(os, lineEdit, sandBoxDir + "test_1393.aln");
+
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
+        }
+    };
+
+    // 1. Open file "_common_data/fasta/trim_fa.fa"
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "trim_fa.fa");
+
+    // 2. Choose{ Export->Export sequences as alignment } in context menu of project view
+    // Expected state : "Export sequences as alignment" dialog appears
+    // 3. Make sure that "Add document to project" checkbox is set and press "Export" button.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
+    GTUtilsDialog::waitForDialog(os, new ExportSequenceAsAlignmentFiller(os, new ExportSeqsAsMsaScenario));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "trim_fa.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // Expected state : New *.aln file appears in project view.Names of sequences in consensus area
+    // are the same as if you open the *.aln file in text editor.
+    GTUtilsProjectTreeView::checkItem(os, "test_1393.aln");
+
+    const QString referenceMsaContent = getFileContent(testDir + "_common_data/clustal/test_1393.aln");
+    const QString resultMsaContent = getFileContent(sandBoxDir + "test_1393.aln");
+    CHECK_SET_ERR(!referenceMsaContent.isEmpty() && referenceMsaContent == resultMsaContent, "Unexpected MSA content");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1404) {
+    class ExportMsaToSeqScenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "dialog not found");
+
+            // 3. Select "FASTQ" file format in "File format to use" field
+            QComboBox *formatCombo = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "formatCombo", dialog));
+            GTComboBox::setIndexWithText(os, formatCombo, "FASTQ");
+
+            // 4. Click the browse button and input "result" to "File name" field, then click "Save"
+            // Expected state : Field "Export to file" contain "result.fastq" at the of string.
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, "", "result", GTFileDialogUtils::Save, GTGlobals::UseMouse));
+            GTWidget::click(os, GTWidget::findWidget(os, "fileButton", dialog));
+
+            QLineEdit *fileNameEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "fileNameEdit", dialog));
+            QString filePath = fileNameEdit->text();
+            CHECK_SET_ERR(filePath.endsWith("result.fastq"), "Wrong file path");
+
+            // 5. Select "FASTA" extension in "File format to use" field
+            // Expected state : Field "Export to file" contain "result.fa" at the of string.
+            GTComboBox::setIndexWithText(os, formatCombo, "FASTA");
+            filePath = fileNameEdit->text();
+            CHECK_SET_ERR(filePath.endsWith("result.fa"), "Wrong file path");
+
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
+        }
+    };
+
+    // 1. Open "data/samples/CLUSTALW/COI.aln"
+    // Expected state : COI.aln is opened
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    // 2. Select "Export > Save sequence" in the context menu
+    // Expected state : Opened "Export selected sequence from alignment" dialog
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Save sequence"));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedSequenceFromAlignment(os, new ExportMsaToSeqScenario));
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(5, 5));
+    GTMouseDriver::click(os, Qt::RightButton);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1405) {
@@ -1219,7 +1309,6 @@ GUI_TEST_CLASS_DEFINITION(test_1405) {
 
     GTUtilsDialog::waitForDialog(os, new RemoveGapColsDialogFiller(os, RemoveGapColsDialogFiller::Number, 1));
     GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1408){

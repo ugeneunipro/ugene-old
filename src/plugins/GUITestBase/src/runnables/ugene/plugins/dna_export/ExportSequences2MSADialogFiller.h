@@ -29,9 +29,13 @@ namespace U2 {
     class ExportSequenceAsAlignmentFiller : public Filler {
     public:
         enum FormatToUse {Clustalw, Fasta, Msf, Mega, Nexus, Sam, Stockholm};
-        ExportSequenceAsAlignmentFiller(U2OpStatus &_os, const QString &_path, const QString &_name,
-                                        ExportSequenceAsAlignmentFiller::FormatToUse _format, bool addDocumentToProject = false, GTGlobals::UseMethod method = GTGlobals::UseMouse);
-        virtual void run();
+
+        ExportSequenceAsAlignmentFiller(U2OpStatus &_os, const QString &_path, const QString &_name, ExportSequenceAsAlignmentFiller::FormatToUse _format,
+            bool addDocumentToProject = false, GTGlobals::UseMethod method = GTGlobals::UseMouse);
+        ExportSequenceAsAlignmentFiller(U2OpStatus &_os, CustomScenario *scenario);
+
+        void commonScenario();
+
     private:
         QString path, name;
         GTGlobals::UseMethod useMethod;

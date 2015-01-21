@@ -59,8 +59,14 @@ useMethod(method) {
 
 }
 
-#define GT_METHOD_NAME "run"
-void ExportToSequenceFormatFiller::run()
+ExportToSequenceFormatFiller::ExportToSequenceFormatFiller(U2OpStatus &_os, CustomScenario *scenario)
+    : Filler(_os, "U2__ExportMSA2SequencesDialog", scenario)
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void ExportToSequenceFormatFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

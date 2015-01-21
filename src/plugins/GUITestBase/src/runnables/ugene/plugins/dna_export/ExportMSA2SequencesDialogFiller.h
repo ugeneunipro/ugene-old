@@ -26,20 +26,24 @@
 
 namespace U2 {
 
-    class ExportToSequenceFormatFiller : public Filler {
-    public:
-        enum documentFormat {EMBL, FASTA, FASTQ, GFF, Genbank, Swiss_Prot};
-        ExportToSequenceFormatFiller(U2OpStatus &_os, const QString &_path, const QString &_name, documentFormat _format,
-                                     bool saveFile, bool keepCharacters, GTGlobals::UseMethod method = GTGlobals::UseMouse);
-        virtual void run();
-    private:
-        QString path, name;
-        documentFormat format;
-        QMap<documentFormat, QString> comboBoxItems;
-        bool saveFile;
-        bool keepCharacters;
-        GTGlobals::UseMethod useMethod;
-    };
+class ExportToSequenceFormatFiller : public Filler {
+public:
+    enum documentFormat {EMBL, FASTA, FASTQ, GFF, Genbank, Swiss_Prot};
+    ExportToSequenceFormatFiller(U2OpStatus &os, const QString &path, const QString &name, documentFormat format,
+                                    bool saveFile, bool keepCharacters, GTGlobals::UseMethod method = GTGlobals::UseMouse);
+    ExportToSequenceFormatFiller(U2OpStatus &os, CustomScenario *scenario);
+
+    void commonScenario();
+
+private:
+    QString path, name;
+    documentFormat format;
+    QMap<documentFormat, QString> comboBoxItems;
+    bool saveFile;
+    bool keepCharacters;
+    GTGlobals::UseMethod useMethod;
+};
+
 }
 
 #endif

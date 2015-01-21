@@ -58,8 +58,14 @@ Filler(_os, "U2__ExportSequences2MSADialog"), name(_name), useMethod(method), fo
     comboBoxItems[Stockholm] = "Stockholm";
 }
 
+ExportSequenceAsAlignmentFiller::ExportSequenceAsAlignmentFiller(U2OpStatus &_os, CustomScenario *scenario)
+    : Filler(_os, "U2__ExportSequences2MSADialog", scenario)
+{
+
+}
+
 #define GT_METHOD_NAME "run"
-void ExportSequenceAsAlignmentFiller::run()
+void ExportSequenceAsAlignmentFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

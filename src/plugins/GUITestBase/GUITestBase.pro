@@ -94,7 +94,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h \
-            src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromliAnmentDialogFiller.h \
+            src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromAlignmentDialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h \
 #   Runnables / UGENE / plugins / enzymes
             src/runnables/ugene/plugins/enzymes/ConstructMoleculeDialogFiller.h \
@@ -337,7 +337,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.cpp \
-            src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromliAnmentDialogFiller.cpp \
+            src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromAlignmentDialogFiller.cpp \
 #   Runnables / UGENE / plugins / enzymes
             src/runnables/ugene/plugins/enzymes/ConstructMoleculeDialogFiller.cpp \
             src/runnables/ugene/plugins/enzymes/DigestSequenceDialogFiller.cpp \
