@@ -1268,6 +1268,32 @@ GUI_TEST_CLASS_DEFINITION(test_1427) {
     GTUtilsProjectTreeView::checkItem(os, "text");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1428) {
+    //1. Open human_T1.fa.
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+
+    //2. Select the document and the sequence object itself in the Project View.
+    QModelIndex docIdx = GTUtilsProjectTreeView::findIndex(os, "human_T1.fa", QModelIndex());
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, docIdx));
+    GTMouseDriver::click(os);
+    QModelIndex seqIdx = GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)", docIdx);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, seqIdx));
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+
+    //3. Use context menu {Export/Import->Export Sequences} and export sequence to any file.
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "test_1428.fa", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,  QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected state: there is only one sequence in the file (it's the same as in human_t1.fa).
+    QModelIndex expIdx = GTUtilsProjectTreeView::findIndex(os, "test_1428.fa", QModelIndex());
+    int objCount = GTUtilsProjectTreeView::getTreeView(os)->model()->rowCount(expIdx);
+    CHECK_SET_ERR(1 == objCount, "Wrong exported sequence count");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1429){
     //    0. Ensure that Bowtie2 Build index tool is not set. Remove it, if it is.
     //    1. Do {main menu -> Tools -> ALign to reference -> Build index}.
