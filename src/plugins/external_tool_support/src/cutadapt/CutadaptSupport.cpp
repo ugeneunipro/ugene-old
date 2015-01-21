@@ -29,8 +29,8 @@
 
 namespace U2 {
 
-
-CutadaptSupport::CutadaptSupport(const QString& name, const QString& path) : ExternalTool(name, path)
+CutadaptSupport::CutadaptSupport(const QString& name, const QString& path)
+    : ExternalTool(name, path)
 {
     if (AppContext::getMainWindow()) {
         icon = QIcon(":external_tool_support/images/cmdline.png");
@@ -51,8 +51,6 @@ CutadaptSupport::CutadaptSupport(const QString& name, const QString& path) : Ext
     validationArguments << "--help";
     toolKitName="cutadapt";
 
-    connect(this, SIGNAL(si_toolValidationStatusChanged(bool)), SLOT(sl_validationStatusChanged(bool)));
-
     U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
     if (dpr){
         U2DataPath* dp = new U2DataPath(ADAPTERS_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+ADAPTERS_DIR_NAME, false);
@@ -60,5 +58,4 @@ CutadaptSupport::CutadaptSupport(const QString& name, const QString& path) : Ext
     }
 }
 
-}//namespace
-
+} //namespace U2

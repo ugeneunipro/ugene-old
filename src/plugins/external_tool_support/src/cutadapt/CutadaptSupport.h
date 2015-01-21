@@ -34,7 +34,6 @@ class CutadaptSupport : public ExternalTool {
     Q_OBJECT
 public:
     CutadaptSupport(const QString& name, const QString& path = "");
-
 };
 
 }//namespace

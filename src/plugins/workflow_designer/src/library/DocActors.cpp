@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+
 #include "DocActors.h"
 #include "CoreLib.h"
 #include "../util/DatasetValidator.h"
@@ -182,7 +184,9 @@ QString WriteGenbankPrompter::composeRichDoc() {
  * WriteFastaPrompter
  *****************************/
 namespace {
-    const QString generatedStr = "<font color='blue'>"+WriteDocPrompter::tr("default file")+"</font>";
+
+const QString generatedStr = "<font color='blue'>" + QApplication::translate("WriteDocPrompter", "default file") + "</font>";
+
 }
 QString WriteFastaPrompter::composeRichDoc() {
     QString outPortId = target->getInputPorts().first()->getId();
