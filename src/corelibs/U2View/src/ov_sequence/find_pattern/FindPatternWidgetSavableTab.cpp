@@ -48,9 +48,9 @@ void FindPatternWidgetSavableTab::setChildValue(const QString &childId, const QV
         SAFE_POINT(parentWidget != NULL, "Wrong casting", )
         int sequenceLength = parentWidget->getTargetSequnceLength();
         SAFE_POINT(ok, "Invalid conversion to int", );
-        CHECK(regionWidgetIds.size() == 2, );                   
+        CHECK(regionWidgetIds.size() == 2, );
         if(intVal > sequenceLength){
-            if (childId == regionWidgetIds.at(1)) { 
+            if (childId == regionWidgetIds.at(1)) {
                 result = QVariant(sequenceLength);
             } else {
                 result = QVariant(1);
