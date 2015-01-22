@@ -834,6 +834,22 @@ void MSAEditor::sl_exportHighlighted(){
     }
 }
 
+QVariantMap MSAEditor::getHighlightingSettings(const QString &highlightingFactoryId) const {
+    const QVariant v = snp.highlightSchemeSettings.value(highlightingFactoryId);
+    if (v.isNull()) {
+        return QVariantMap();
+    } else {
+        CHECK(v.type() == QVariant::Map, QVariantMap());
+        return v.toMap();
+    }
+}
+
+void MSAEditor::saveHighlightingSettings( const QString &highlightingFactoryId, const QVariantMap &settingsMap /*= QVariant()*/ ) {
+    snp.highlightSchemeSettings.insert(highlightingFactoryId, QVariant(settingsMap));
+}
+
+
+
 //////////////////////////////////////////////////////////////////////////
 MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
 : editor(_editor), seqArea(NULL), offsetsView(NULL), statusWidget(NULL), collapsibleMode(false), multiTreeViewer(NULL), similarityStatistics(NULL) {

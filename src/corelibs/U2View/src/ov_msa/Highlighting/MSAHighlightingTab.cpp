@@ -147,6 +147,7 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m)
 
     sl_updateHint();
 
+    savableTab.disableSavingForWidgets(QStringList() << threshold->objectName() << highlightingScheme->objectName());
     U2WidgetStateStorage::restoreWidgetState(savableTab);
 }
 
@@ -186,10 +187,16 @@ void MSAHighlightingTab::sl_sync(){
 void MSAHighlightingTab::sl_updateHint() {
     MSAHighlightingScheme *s = seqArea->getCurrentHighlightingScheme();
     SAFE_POINT(s->getFactory() != NULL, "Highlighting factory is NULL!", );
+
+    QVariantMap highlightingSettings;
     if(s->getFactory()->isNeedThreshold()){
         thresholdLabel->show();
         threshold->show();
-        s->setThreshold(threshold->value());
+        bool ok;
+        int thresholdValue = s->getSettings().value(MSAHighlightingScheme::THRESHOLD_PARAMETER_NAME).toInt(&ok);
+        threshold->setValue(thresholdValue);
+        assert(ok);
+        highlightingSettings.insert(MSAHighlightingScheme::THRESHOLD_PARAMETER_NAME, thresholdValue);
     }else{
         thresholdLabel->hide();
         threshold->hide();
@@ -210,6 +217,7 @@ void MSAHighlightingTab::sl_updateHint() {
     }else{
         exportHighlightning->setEnabled(true);
     }
+    s->applySettings(highlightingSettings);
 }
 
 void MSAHighlightingTab::sl_exportHighlightningClicked(){
@@ -217,9 +225,11 @@ void MSAHighlightingTab::sl_exportHighlightningClicked(){
 }
 
 void MSAHighlightingTab::sl_sliderValueChanged() {
+    QVariantMap highlightingSettings;
     thresholdLabel->setText(tr("Threshold: %1%").arg(threshold->value()));
     MSAHighlightingScheme *s = seqArea->getCurrentHighlightingScheme();
-    s->setThreshold(threshold->value());
+    highlightingSettings.insert(MSAHighlightingScheme::THRESHOLD_PARAMETER_NAME, threshold->value());
+    s->applySettings(highlightingSettings);
     seqArea->sl_changeColorSchemeOutside(colorScheme->currentText());
 }
 

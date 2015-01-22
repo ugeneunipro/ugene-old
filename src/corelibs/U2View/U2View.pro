@@ -49,6 +49,7 @@ HEADERS += src/LicenseDialog.h \
            src/ov_msa/ExportHighlightedDialogController.h \
            src/ov_msa/General/MSAGeneralTab.h \
            src/ov_msa/General/MSAGeneralTabFactory.h \
+           src/ov_msa/Highlighting/MsaHighlightingSavableTab.h \
            src/ov_msa/Highlighting/MSAHighlightingTab.h \
            src/ov_msa/Highlighting/MSAHighlightingTabFactory.h \
            src/ov_msa/MSACollapsibleModel.h \
@@ -257,6 +258,7 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_msa/ExportHighlightedDialogController.cpp \
            src/ov_msa/General/MSAGeneralTab.cpp \
            src/ov_msa/General/MSAGeneralTabFactory.cpp \
+           src/ov_msa/Highlighting/MsaHighlightingSavableTab.cpp \
            src/ov_msa/Highlighting/MSAHighlightingTab.cpp \
            src/ov_msa/Highlighting/MSAHighlightingTabFactory.cpp \
            src/ov_msa/MSACollapsibleModel.cpp \

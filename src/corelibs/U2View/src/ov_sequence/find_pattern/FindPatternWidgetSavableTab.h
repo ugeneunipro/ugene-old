@@ -22,6 +22,8 @@
 #ifndef _U2_FIND_PATTERN_SAVABLE_TAB_H_
 #define _U2_FIND_PATTERN_SAVABLE_TAB_H_
 
+#include <QtCore/QStringList>
+
 #include <U2Gui/U2SavableWidget.h>
 
 namespace U2 {
@@ -32,8 +34,11 @@ class FindPatternWidgetSavableTab : public U2SavableWidget {
 public:
     FindPatternWidgetSavableTab(QWidget *wrappedWidget, MWMDIWindow *contextWindow);
     ~FindPatternWidgetSavableTab();
-
+    
     void    setChildValue(const QString &childId, const QVariant &value);
+    void    setRegionWidgetIds(const QStringList &s);
+private:
+    QStringList regionWidgetIds;
 };
 
 } // namespace U2

@@ -944,6 +944,14 @@ void MSAHighlightingScheme::process(const char /*refChar*/, char &seqChar, bool 
     }
 }
 
+void MSAHighlightingScheme::applySettings(const QVariantMap &settings) {
+    Q_UNUSED(settings);
+}
+
+QVariantMap MSAHighlightingScheme::getSettings() const {
+    return QVariantMap();
+}
+
 QString MSAHighlightingScheme::EMPTY_NUCL = "HIGHLIGHT_SCHEME_EMPTY_NUCL";
 QString MSAHighlightingScheme::EMPTY_AMINO = "HIGHLIGHT_SCHEME_EMPTY_AMINO";
 QString MSAHighlightingScheme::AGREEMENTS_NUCL = "HIGHLIGHT_SCHEME_AGREEMENTS_NUCL";
@@ -956,6 +964,8 @@ QString MSAHighlightingScheme::GAPS_AMINO = "HIGHLIGHT_SCHEME_GAPS_AMINO";
 QString MSAHighlightingScheme::GAPS_NUCL = "HIGHLIGHT_SCHEME_GAPS_NUCL";
 QString MSAHighlightingScheme::CONSERVATION_AMINO = "CONSERVATION_SCHEME_GAPS_AMINO";
 QString MSAHighlightingScheme::CONSERVATION_NUCL = "CONSERVATION_SCHEME_GAPS_NUCL";
+
+QString MSAHighlightingScheme::THRESHOLD_PARAMETER_NAME = "treshold";
 
 void MSAHighlightingSchemeAgreements::process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow ){
     if(refChar == seqChar){
@@ -1036,7 +1046,7 @@ void MSAHighlightingSchemeGaps::process(const char refChar, char &seqChar, bool 
 }
 
 MSAHighlightingSchemeConservation::MSAHighlightingSchemeConservation( QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o )
-:MSAHighlightingScheme(p, f, o){
+:MSAHighlightingScheme(p, f, o), threshold(50){
     connect(maObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), SLOT(sl_resetMap()));
 }
 
@@ -1056,10 +1066,6 @@ void MSAHighlightingSchemeConservation::sl_resetMap(){
     msaCharCountMap.clear();
 }
 
-void MSAHighlightingSchemeConservation::setThreshold(int thresholdNew){
-    threshold = thresholdNew;
-}
-
 void MSAHighlightingSchemeConservation::calculateStatisticForColumn(int refCharColumn){
     CHECK(!msaCharCountMap.contains(refCharColumn), );
     CharCountMap columnStatistic;
@@ -1073,6 +1079,22 @@ void MSAHighlightingSchemeConservation::calculateStatisticForColumn(int refCharC
         }
     }
     msaCharCountMap[refCharColumn] = columnStatistic;
+}
+
+void MSAHighlightingSchemeConservation::applySettings(const QVariantMap &settings){
+    QVariant thresholdQVar = settings.value(THRESHOLD_PARAMETER_NAME);
+    if(!thresholdQVar.isNull()){
+        bool ok;
+        int  convertedThreshold = thresholdQVar.toInt(&ok);
+        CHECK(ok, );
+        threshold = convertedThreshold;
+    }
+}
+
+QVariantMap MSAHighlightingSchemeConservation::getSettings() const {
+    QVariantMap settings;
+    settings.insert(THRESHOLD_PARAMETER_NAME, threshold);
+    return settings;
 }
 
 void MSAHighlightingSchemeEmpty::process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow){

@@ -22,6 +22,8 @@
 #ifndef _U2_MSA_HIGHLIGHTING_TAB_H_
 #define _U2_MSA_HIGHLIGHTING_TAB_H_
 
+#include "MsaHighlightingSavableTab.h"
+
 #include <QWidget>
 
 #include <U2Gui/U2SavableWidget.h>
@@ -64,7 +66,7 @@ private:
     QLabel *thresholdLabel;
     QSlider *threshold;
 
-    U2SavableWidget savableTab;
+    MsaHighlightingSavableTab savableTab;
 };
 
 } // namespace

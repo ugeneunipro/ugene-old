@@ -26,6 +26,7 @@
 
 #include <QtCore/QVector>
 #include <QtGui/QColor>
+#include <QtGui/QWidget>
 
 namespace U2 {
 
@@ -347,7 +348,8 @@ public:
     MSAHighlightingSchemeFactory* getFactory() const {return factory;}
     void setUseDots(bool b) { useDots = b; }
     bool getUseDots() const { return useDots; }
-    virtual void setThreshold(int thresholdNew) { Q_UNUSED(thresholdNew); }
+    virtual void applySettings(const QVariantMap &settings);
+    virtual QVariantMap getSettings() const;
 
     static QString EMPTY_NUCL;
     static QString EMPTY_AMINO;
@@ -361,6 +363,8 @@ public:
     static QString GAPS_AMINO;
     static QString CONSERVATION_NUCL;
     static QString CONSERVATION_AMINO;
+
+    static QString THRESHOLD_PARAMETER_NAME;
 
 protected:
     MSAHighlightingSchemeFactory*  factory;
@@ -423,7 +427,8 @@ class MSAHighlightingSchemeConservation : public MSAHighlightingScheme{
 public:
     MSAHighlightingSchemeConservation(QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o);
     virtual void process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow);
-    virtual void setThreshold(int thresholdNew);
+    virtual void applySettings(const QVariantMap &settings);
+    virtual QVariantMap getSettings() const;
 private slots:
     void sl_resetMap();
 private:

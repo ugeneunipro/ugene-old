@@ -454,6 +454,8 @@ void MSAEditorSequenceArea::sl_changeHighlightScheme(){
     if(!a){a = GUIUtils::getCheckedAction(customColorSchemeMenuActions);}
     if(!a){return;}
 
+    editor->saveHighlightingSettings(highlightingScheme->getFactory()->getId(), highlightingScheme->getSettings());
+
     QString id = a->data().toString();
     MSAHighlightingSchemeFactory* f = AppContext::getMSAHighlightingSchemeRegistry()->getMSAHighlightingSchemeFactoryById(id);
     delete highlightingScheme;
@@ -461,6 +463,7 @@ void MSAEditorSequenceArea::sl_changeHighlightScheme(){
         return;
 
     highlightingScheme = f->create(this, ui->editor->getMSAObject());
+    highlightingScheme->applySettings(editor->getHighlightingSettings(id));
 
     const MAlignment msa = ui->editor->getMSAObject()->getMAlignment();
 

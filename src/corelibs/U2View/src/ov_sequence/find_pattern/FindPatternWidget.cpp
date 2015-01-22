@@ -221,6 +221,9 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
 {
     setupUi(this);
 
+    savableWidget.setRegionWidgetIds(QStringList() << editStart->objectName() 
+        << editEnd->objectName());
+
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     if (activeContext != 0) {
         // Initializing the annotation model

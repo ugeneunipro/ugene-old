@@ -86,6 +86,7 @@ public:
     SNPSettings() : seqId(MAlignmentRow::invalidRowId()) { }
     QPoint clickPoint;
     qint64 seqId;
+    QVariantMap highlightSchemeSettings;
 };
 
 class PairwiseAlignmentWidgetsSettings {
@@ -171,6 +172,8 @@ public:
 
     void setReference(qint64 sequenceId);
     qint64 getReferenceRowId() const { return snp.seqId; }
+    QVariantMap getHighlightingSettings(const QString &highlightingFactoryId) const;
+    void saveHighlightingSettings(const QString &highlightingFactoryId, const QVariantMap &settingsMap = QVariantMap());
     QString getReferenceRowName() const;
     void updateReference();
 

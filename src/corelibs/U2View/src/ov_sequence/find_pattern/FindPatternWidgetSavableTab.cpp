@@ -40,25 +40,31 @@ FindPatternWidgetSavableTab::~FindPatternWidgetSavableTab() {
 
 void FindPatternWidgetSavableTab::setChildValue(const QString &childId, const QVariant &value) {
     SAFE_POINT(childExists(childId), "Child widget expected", );
-
     QVariant result = value;
-    if (childId == "editEnd" || childId == "editStart"){
+    if (regionWidgetIds.contains(childId)){
         bool ok = false;
         int intVal = value.toInt(&ok);
         FindPatternWidget *parentWidget = qobject_cast<FindPatternWidget*>(wrappedWidget);
         SAFE_POINT(parentWidget != NULL, "Wrong casting", )
         int sequenceLength = parentWidget->getTargetSequnceLength();
         SAFE_POINT(ok, "Invalid conversion to int", );
-
+        CHECK(regionWidgetIds.size() == 2, );                   
         if(intVal > sequenceLength){
-            if(childId == "editEnd"){
+            if (childId == regionWidgetIds.at(1)) { 
                 result = QVariant(sequenceLength);
-            }else{
+            } else {
                 result = QVariant(1);
             }
         }
     }
     U2SavableWidget::setChildValue(childId, result);
+}
+
+void FindPatternWidgetSavableTab::setRegionWidgetIds(const QStringList &s) {
+    /*
+    First item should be start position, second - end
+    */
+    regionWidgetIds.append(s);
 }
 
 }
