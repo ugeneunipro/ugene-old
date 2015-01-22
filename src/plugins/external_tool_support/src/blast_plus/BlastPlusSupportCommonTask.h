@@ -52,6 +52,7 @@ public:
     QList<Task*> onSubTaskFinished(Task* subTask);
 
     Task::ReportResult report();
+    virtual QString generateReport() const;
 
     QList<AnnotationData>       getResultedAnnotations() const;
     BlastTaskSettings           getSettings() const;

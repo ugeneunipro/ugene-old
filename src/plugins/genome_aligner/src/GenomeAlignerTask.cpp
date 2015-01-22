@@ -42,7 +42,6 @@
 #include <U2Algorithm/SArrayIndex.h>
 #include <U2Algorithm/SArrayBasedFindTask.h>
 
-#include <U2Gui/Notification.h>
 #include <limits.h>
 #include "GenomeAlignerFindTask.h"
 #include "GenomeAlignerIndexTask.h"

@@ -51,7 +51,7 @@
 namespace U2 {
 
 BlastPlusSupportCommonTask::BlastPlusSupportCommonTask(const BlastTaskSettings& _settings) :
-        ExternalToolSupportTask("Run NCBI Blast+ task", TaskFlags_NR_FOSCOE),
+        ExternalToolSupportTask("Run NCBI Blast+ task", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported),
         settings(_settings)
 {
     GCOUNTER( cvar, tvar, "BlastPlusSupportCommonTask" );
@@ -161,8 +161,6 @@ QList<Task*> BlastPlusSupportCommonTask::onSubTaskFinished(Task* subTask) {
                 parseTabularResult();
             }
             if((!result.isEmpty())&&(settings.needCreateAnnotations)) {
-               // Document* d = AppContext::getProject()->findDocumentByURL(url);
-                //assert(d==NULL);
                 if(!settings.outputResFile.isEmpty()) {
                     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
                     DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
@@ -177,6 +175,10 @@ QList<Task*> BlastPlusSupportCommonTask::onSubTaskFinished(Task* subTask) {
                     U2Region::shift(settings.offsInGlobalSeq, ad.location->regions);
                 }
                 res.append(new CreateAnnotationsTask(settings.aobj, settings.groupName, result));
+            }
+            if (res.isEmpty()) {
+                setReportingEnabled(true);
+                taskLog.info(tr("There were no hits found for your BLAST search."));
             }
         }
     }
@@ -197,6 +199,13 @@ Task::ReportResult BlastPlusSupportCommonTask::report(){
         emit si_stateChanged();
     }
     return ReportResult_Finished;
+}
+
+QString BlastPlusSupportCommonTask::generateReport() const {
+    if (result.isEmpty()) {
+        return tr("There were no hits found for your BLAST search.");
+    }
+    return QString();
 }
 
 QList<AnnotationData> BlastPlusSupportCommonTask::getResultedAnnotations() const {
