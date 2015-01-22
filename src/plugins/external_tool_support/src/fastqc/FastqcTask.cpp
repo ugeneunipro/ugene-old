@@ -144,14 +144,6 @@ QStringList FastQCTask::getParameters(U2OpStatus & /*os*/) const{
     res << QString("-o");
     res << GUrlUtils::getQuotedString(settings.outDir);
 
-    //TODO
-    //res << QString("-j");
-    //res << GUrlUtils::getQuotedString(settings.outDir);
-
-    //-d --dir         Selects a directory to be used for temporary files written when
-    //                    generating report images. Defaults to system temp directory if
-    //                    not specified.
-
 
     if(!settings.conts.isEmpty()){
         res << QString("-c");

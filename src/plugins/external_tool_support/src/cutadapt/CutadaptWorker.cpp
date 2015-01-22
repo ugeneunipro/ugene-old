@@ -121,14 +121,14 @@ void CutAdaptFastqWorkerFactory::init() {
         Descriptor outName(BaseNGSWorker::OUT_NAME_ID, CutAdaptFastqWorker::tr("Output file name"),
             CutAdaptFastqWorker::tr("A name of an output file. If default of empty value is provided the output name is the name of the first file with additional extention."));
 
-        Descriptor adapters(ADAPTERS_URL, CutAdaptFastqWorker::tr("FASTA File with adapters"),
+        Descriptor adapters(ADAPTERS_URL, CutAdaptFastqWorker::tr("FASTA file with adapters"),
             CutAdaptFastqWorker::tr("A FASTA file with one or multiple sequences of adapter that were ligated to the 3' end. "
                                     "The adapter itself and anything that follows is "
                                     "trimmed. If the adapter sequence ends with the '$ "
                                     "character, the adapter is anchored to the end of the "
                                     "read and only found if it is a suffix of the read."));
 
-        Descriptor front(FRONT_URL, CutAdaptFastqWorker::tr("FASTA File with reverse adapters"),
+        Descriptor front(FRONT_URL, CutAdaptFastqWorker::tr("FASTA file with reverse adapters"),
             CutAdaptFastqWorker::tr("A FASTA file with one or multiple sequences of adapters that were ligated to the 5' end. "
                                                             "If the adapter sequence starts with the character '^', "
                                                             "the adapter is 'anchored'. An anchored adapter must "
@@ -180,9 +180,9 @@ void CutAdaptFastqWorkerFactory::init() {
 
         delegates[BaseNGSWorker::CUSTOM_DIR_ID] = new URLDelegate("", "", false, true);
 
-        delegates[ADAPTERS_URL] = new URLDelegate("", "", false, false);
-        delegates[FRONT_URL] = new URLDelegate("", "", false, false);
-        delegates[ANYWHERE_URL] = new URLDelegate("", "", false, false);
+        delegates[ADAPTERS_URL] = new URLDelegate("", "", false, false, false);
+        delegates[FRONT_URL] = new URLDelegate("", "", false, false, false);
+        delegates[ANYWHERE_URL] = new URLDelegate("", "", false, false, false);
 
     }
 

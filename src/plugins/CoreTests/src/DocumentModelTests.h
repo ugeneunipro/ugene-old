@@ -208,6 +208,9 @@ class GTest_CompareFiles : public GTest {
 private:
     void replacePrefix(QString &path);
     void compareMixed();
+    QByteArray getLine(IOAdapter* io);
+    IOAdapter* createIoAdapter(const QString& filePath);
+
 
     QString doc1Path;
     QString doc2Path;
@@ -231,7 +234,6 @@ private:
     QString doc1Path;
     QString doc2Path;
 
-    static const int READ_BUFF_SIZE = 4096;
     static const QByteArray COMMENT_MARKER;
 };
 

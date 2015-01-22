@@ -51,6 +51,8 @@ namespace U2 {
 #define NAME_ATTR   "name"
 #define TYPE_ATTR   "type"
 
+#define READ_BUFF_SIZE 4096
+
 /*******************************
  * GTest_LoadDocument
  *******************************/
@@ -853,50 +855,71 @@ Task::ReportResult GTest_CompareFiles::report() {
     return ReportResult_Finished;
 }
 
+IOAdapter* GTest_CompareFiles::createIoAdapter(const QString& filePath) {
+    IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filePath));
+    CHECK_EXT(NULL != factory, setError("IOAdapterFactory is NULL"), NULL);
+    IOAdapter* ioAdapter = factory->createIOAdapter();
+
+    if (!ioAdapter->open(filePath, IOAdapterMode_Read)) {
+        delete ioAdapter;
+        setError(QString("Can't open file '%1'").arg(filePath));
+        return NULL;
+    }
+
+    return ioAdapter;
+}
+
+
+QByteArray GTest_CompareFiles::getLine(IOAdapter* io) {
+    QByteArray line;
+
+    QByteArray readBuff(READ_BUFF_SIZE + 1, 0);
+    char* buff = readBuff.data();
+    bool commentString = false;
+
+    do {
+        bool lineOk = true;
+        qint64 len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
+        CHECK(len != 0, "");
+        CHECK_EXT(lineOk, setError("Line is too long"), "");
+
+        line = (QByteArray::fromRawData(buff, len)).trimmed();
+        commentString = false;
+        foreach(const QString& comment, commentsStartWith){
+            if (line.startsWith(comment.toLatin1())){
+                commentString = true;
+                break;
+            }
+        }
+    } while (commentString);
+
+    return line;
+}
+
+
 void GTest_CompareFiles::compareMixed(){
+    QScopedPointer<IOAdapter> doc1Adapter(createIoAdapter(doc1Path));
+    CHECK_OP(stateInfo, );
 
-    QFile f1(doc1Path);
-    if(!f1.open(QIODevice::ReadOnly)) {
-        setError(QString("Cannot open file '%1'!").arg(doc1Path));
-        return;
+    QScopedPointer<IOAdapter> doc2Adapter(createIoAdapter(doc2Path));
+    CHECK_OP(stateInfo, );
+
+
+    int lineNum = 0;
+    while(!doc1Adapter->isEof() && !doc2Adapter->isEof()) {
+        QByteArray bytes1 = getLine(doc1Adapter.data());
+        QByteArray bytes2 = getLine(doc2Adapter.data());
+        lineNum++;
+
+        if (bytes1 != bytes2) {
+            setError(QString("files are note equal at line %1. \n%2\n and \n%3\n").arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
+            return ;
+        }
     }
 
-    QFile f2(doc2Path);
-    if(!f2.open(QIODevice::ReadOnly)) {
-        setError(QString("Cannot open file '%1'!").arg(doc2Path));
-        return;
-    }
-
-    if(f1.size() != f2.size()){
-        setError(QString("The files %1 and %2 are of different sizes!").arg(f1.fileName()).arg(f2.fileName()));
-        return;
-    }
-    f2.close();
-
-    while(true){
-        QByteArray bytes1 = f1.readLine(READ_LINE_MAX_SZ);
-        if(bytes1.isEmpty()){
-            return;
-        }
-
-        if(!f2.open(QIODevice::ReadOnly)) {
-            setError(QString("Cannot open file '%1'!").arg(doc2Path));
-            f1.close();
-            return;
-        }
-
-        while(true){
-            QByteArray bytes2 = f2.readLine(READ_LINE_MAX_SZ);
-            if(bytes2.isEmpty()){
-                setError(QString("line %1 not found in file %2").arg(QString(bytes1)).arg(f2.fileName()));
-                break;
-            }
-
-            if(bytes1 == bytes2){
-                break;
-            }
-        }
-        f2.close();
+    if (!doc1Adapter->isEof() || !doc2Adapter->isEof()) {
+        setError("files are of different size");
+        return ;
     }
 
 }

@@ -145,8 +145,8 @@ void FastQCFactory::init() {
 
         delegates[FastQCWorker::CUSTOM_DIR_ID] = new URLDelegate("", "", false, true);
 
-        delegates[FastQCWorker::ADAPTERS] = new URLDelegate("", "", false, false);
-        delegates[FastQCWorker::CONTAMINANTS] = new URLDelegate("", "", false, false);
+        delegates[FastQCWorker::ADAPTERS] = new URLDelegate("", "", false, false, false);
+        delegates[FastQCWorker::CONTAMINANTS] = new URLDelegate("", "", false, false, false);
     }
 
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
@@ -223,7 +223,7 @@ void FastQCWorker::sl_taskFinished(Task *task) {
     QString url = getTargetTaskUrl(task);
     CHECK(!url.isEmpty(), );
 
-    monitor()->addOutputFile(url, getActorId());
+    monitor()->addOutputFile(url, getActorId(), true);
 }
 
 QString FastQCWorker::takeUrl() {

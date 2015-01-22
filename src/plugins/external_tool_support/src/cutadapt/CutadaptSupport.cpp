@@ -38,11 +38,17 @@ CutadaptSupport::CutadaptSupport(const QString& name, const QString& path)
         warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
 #ifdef Q_OS_WIN
+
     executableFileName="cutadapt.exe";
+
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+
+    #if defined(Q_OS_UNIX) || defined(Q_OS_MAC)
+
     executableFileName="cutadapt";
+
     #endif
+
 #endif
     validMessage="Cutadapt v";
     description=tr("<i>cutadapt</i> removes adapter sequences from high-throughput sequencing data. This is necessary when the reads are longer than the molecule that is sequenced, such as in microRNA data.");
@@ -52,7 +58,7 @@ CutadaptSupport::CutadaptSupport(const QString& name, const QString& path)
     toolKitName="cutadapt";
 
     U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
-    if (dpr){
+    if (dpr != NULL){
         U2DataPath* dp = new U2DataPath(ADAPTERS_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+ADAPTERS_DIR_NAME, false);
         dpr->registerEntry(dp);
     }

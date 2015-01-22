@@ -34,6 +34,7 @@ namespace LocalWorkflow {
 //CutAdaptFastq
 class CutAdaptFastqPrompter;
 typedef PrompterBase<CutAdaptFastqPrompter> CutAdaptFastqBase;
+
 class CutAdaptFastqPrompter : public CutAdaptFastqBase {
     Q_OBJECT
 public:
