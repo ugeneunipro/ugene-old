@@ -59,8 +59,8 @@ using namespace LocalWorkflow;
 
 ////////////////////////////////////////
 //BlastAllSupportRunCommonDialog
-BlastRunCommonDialog::BlastRunCommonDialog(QWidget* _parent, BlastType blastType) :
-            QDialog(_parent), ca_c(NULL)
+BlastRunCommonDialog::BlastRunCommonDialog(QWidget *parent, BlastType blastType, bool useCompValues, QStringList compValues)
+: QDialog(parent), ca_c(NULL), useCompValues(useCompValues), compValues(compValues)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "14059181");
@@ -113,7 +113,17 @@ BlastRunCommonDialog::BlastRunCommonDialog(QWidget* _parent, BlastType blastType
     sl_onProgNameChange(0);
     okButton->setEnabled(false);
 
+    connect(compStatsComboBox, SIGNAL(currentIndexChanged(int)), SLOT(sl_onCompStatsChanged()));
+    setupCompositionBasedStatistics();
+    sl_onCompStatsChanged();
 }
+
+void BlastRunCommonDialog::setupCompositionBasedStatistics() {
+    bool visible = useCompValues && compValues.contains(programName->currentText());
+    compStatsLabel->setVisible(visible);
+    compStatsComboBox->setVisible(visible);
+}
+
 const BlastTaskSettings &BlastRunCommonDialog::getSettings() const {
     return settings;
 }
@@ -294,6 +304,7 @@ void BlastRunCommonDialog::sl_onBrowseDatabasePath(){
 }
 void BlastRunCommonDialog::sl_onProgNameChange(int index){
     Q_UNUSED(index);
+    setupCompositionBasedStatistics();
     settings.programName=programName->currentText();
     if(programName->currentText() == "blastn"){//nucl
         programName->setToolTip(tr("Direct nucleotide alignment"));
@@ -396,6 +407,12 @@ void BlastRunCommonDialog::sl_onProgNameChange(int index){
         xDropoffFGASpinBox->setEnabled(true);
     }
 }
+
+void BlastRunCommonDialog::sl_onCompStatsChanged() {
+    QString value = compStatsComboBox->currentText();
+    settings.compStats = value.left(1);
+}
+
 void BlastRunCommonDialog::getSettings(BlastTaskSettings &localSettings){
     localSettings.programName=programName->currentText();
     localSettings.databaseNameAndPath=databasePathLineEdit->text()+"/"+baseNameLineEdit->text();
@@ -468,6 +485,9 @@ void BlastRunCommonDialog::getSettings(BlastTaskSettings &localSettings){
             (localSettings.programName == "tblastn" && localSettings.threshold != 13) ||
             (localSettings.programName == "tblastx" && localSettings.threshold != 13)){
         localSettings.isDefaultThreshold=false;
+    }
+    if (useCompValues && compValues.contains(settings.programName)) {
+        localSettings.compStats = settings.compStats;
     }
 }
 

@@ -131,6 +131,8 @@ public:
     int             numberOfProcessors;     //-a Number of processors to use [Integer]
     int             numberOfHits;           //-K Number of best hits from a region to keep. Off by default.  If used a value of 100 is recommended.
 
+    QString         compStats;              //-comp_based_stats <String> (-C in blastall)
+
     bool            isNucleotideSeq;
     const DNAAlphabet*    alphabet;
     //settings for annotations

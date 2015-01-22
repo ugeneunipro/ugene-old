@@ -98,6 +98,9 @@ ExternalToolRunTask* BlastPPlusSupportTask::createBlastPlusTask(){
     if(settings.programName == "gpu-blastp") {
         arguments << "-gpu" << "t";
     }
+    if (!settings.compStats.isEmpty()) {
+        arguments << "-comp_based_stats" << settings.compStats;
+    }
     arguments <<"-num_threads"<< QString::number(settings.numberOfProcessors);
     arguments <<"-outfmt"<< QString::number(settings.outputType);//"5";//Set output file format to xml
     if(settings.outputOriginalFile.isEmpty()){

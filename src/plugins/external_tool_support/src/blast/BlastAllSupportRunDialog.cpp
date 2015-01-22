@@ -57,8 +57,8 @@ namespace U2 {
 
 ////////////////////////////////////////
 //BlastAllSupportRunDialog
-BlastAllSupportRunDialog::BlastAllSupportRunDialog(U2SequenceObject* _dnaso, QString &_lastDBPath, QString &_lastDBName, QWidget* _parent) :
-        BlastRunCommonDialog(_parent, BlastAll), dnaso(_dnaso), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
+BlastAllSupportRunDialog::BlastAllSupportRunDialog(U2SequenceObject *dnaso, QString &lastDBPath, QString &lastDBName, QWidget *parent)
+: BlastRunCommonDialog(parent, BlastAll, false, QStringList()), dnaso(dnaso), lastDBPath(lastDBPath), lastDBName(lastDBName)
 {
     CreateAnnotationModel ca_m;
     ca_m.data.name = "misc_feature";
@@ -140,13 +140,13 @@ void BlastAllSupportRunDialog::sl_runQuery(){
 }
 ////////////////////////////////////////
 //BlastAllWithExtFileSpecifySupportRunDialog
-BlastAllWithExtFileSpecifySupportRunDialog::BlastAllWithExtFileSpecifySupportRunDialog(QString &_lastDBPath, QString &_lastDBName,QWidget* _parent) :
-        BlastRunCommonDialog(_parent, BlastAll), lastDBPath(_lastDBPath), lastDBName(_lastDBName), hasValidInput(false)
+BlastAllWithExtFileSpecifySupportRunDialog::BlastAllWithExtFileSpecifySupportRunDialog(QString &lastDBPath, QString &lastDBName, QWidget *parent)
+: BlastRunCommonDialog(parent, BlastAll, false, QStringList()), lastDBPath(lastDBPath), lastDBName(lastDBName), hasValidInput(false)
 {
     ca_c=NULL;
     wasNoOpenProject=false;
     //create input file widget
-    QWidget * widget = new QWidget(_parent);
+    QWidget *widget = new QWidget(parent);
     inputFileLineEdit= new FileLineEdit("","", false, widget);
     inputFileLineEdit->setReadOnly(true);
     inputFileLineEdit->setText("");

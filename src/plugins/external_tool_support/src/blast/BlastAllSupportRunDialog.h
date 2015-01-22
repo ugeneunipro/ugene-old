@@ -35,7 +35,7 @@ namespace U2 {
 class BlastAllSupportRunDialog : public BlastRunCommonDialog {
     Q_OBJECT
 public:
-    BlastAllSupportRunDialog(U2SequenceObject* dnaso, QString &_lastDBPath, QString &_lastDBName, QWidget* parent);
+    BlastAllSupportRunDialog(U2SequenceObject *dnaso, QString &lastDBPath, QString &lastDBName, QWidget *parent);
 protected slots:
     virtual void sl_runQuery();
     virtual void sl_lineEditChanged();
@@ -51,7 +51,7 @@ private:
 class BlastAllWithExtFileSpecifySupportRunDialog : public BlastRunCommonDialog {
     Q_OBJECT
 public:
-    BlastAllWithExtFileSpecifySupportRunDialog(QString &_lastDBPath, QString &_lastDBName, QWidget* parent);
+    BlastAllWithExtFileSpecifySupportRunDialog(QString &lastDBPath, QString &lastDBName, QWidget *parent);
     const QList<BlastTaskSettings> &getSettingsList() const;
 protected slots:
     void sl_runQuery();

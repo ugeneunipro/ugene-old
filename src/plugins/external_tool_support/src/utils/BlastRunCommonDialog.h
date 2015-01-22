@@ -35,7 +35,7 @@ class BlastRunCommonDialog : public QDialog, public Ui_BlastAllSupportDialog {
     Q_OBJECT
 public:
     enum BlastType {BlastAll, BlastPlus};
-    BlastRunCommonDialog(QWidget* parent, BlastType blastType);
+    BlastRunCommonDialog(QWidget *parent, BlastType blastType, bool useCompValues, QStringList compValues);
 
     const BlastTaskSettings &getSettings()const;
     QPushButton* okButton;
@@ -45,13 +45,14 @@ protected slots:
     virtual void sl_runQuery() = 0;
     virtual void sl_lineEditChanged() = 0;
 
-    void sl_onBrowseDatabasePath();//=
+    void sl_onBrowseDatabasePath();
 
-    void sl_onProgNameChange(int i);//=
-    void sl_onMatchScoresChanged(int i);//=
-    void sl_onMatrixChanged(int i);//=
-    void sl_megablastChecked();//=
-    void sl_restoreDefault();//=
+    void sl_onProgNameChange(int i);
+    void sl_onMatchScoresChanged(int i);
+    void sl_onMatrixChanged(int i);
+    void sl_megablastChecked();
+    void sl_restoreDefault();
+    void sl_onCompStatsChanged();
 protected:
     void getSettings(BlastTaskSettings& settings);
     void enableStrandBox(bool enable);
@@ -60,6 +61,12 @@ protected:
     bool                                needRestoreDefault;
     CreateAnnotationWidgetController*   ca_c;
 
+private:
+    void setupCompositionBasedStatistics();
+
+private:
+    bool useCompValues;
+    QStringList compValues;
 };
 }//namespace
 #endif // _U2_BLAST_RUN_COMMON_DIALOG_H

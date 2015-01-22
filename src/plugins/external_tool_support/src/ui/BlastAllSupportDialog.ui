@@ -35,7 +35,7 @@
    <item>
     <widget class="QTabWidget" name="optionsTab">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -301,6 +301,115 @@ a database file</string>
       <layout class="QVBoxLayout" name="verticalLayout_8">
        <item>
         <layout class="QGridLayout" name="gridLayout">
+         <item row="2" column="4">
+          <widget class="QComboBox" name="serviceComboBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>2</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <item>
+            <property name="text">
+             <string>plain</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>psi</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>phi</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QLabel" name="matchScoreLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Match scores</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="3">
+          <widget class="QLabel" name="serviceLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Service</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="4">
+          <widget class="QComboBox" name="scoresComboBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>2</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="currentIndex">
+            <number>0</number>
+           </property>
+           <item>
+            <property name="text">
+             <string>1 -3</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1 -4</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1 -2</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1 -1</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>2 -7</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>2 -5</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>2 -3</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>4 -5</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>5 -4</string>
+            </property>
+           </item>
+          </widget>
+         </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label_4">
            <property name="sizePolicy">
@@ -352,44 +461,6 @@ a database file</string>
            <item>
             <property name="text">
              <string>PAM70</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="2" column="3">
-          <widget class="QLabel" name="serviceLabel">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Service</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="4">
-          <widget class="QComboBox" name="serviceComboBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>2</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <item>
-            <property name="text">
-             <string>plain</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>psi</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>phi</string>
             </property>
            </item>
           </widget>
@@ -463,64 +534,6 @@ a database file</string>
          <item row="1" column="1">
           <widget class="QDoubleSpinBox" name="thresholdSpinBox"/>
          </item>
-         <item row="1" column="4">
-          <widget class="QComboBox" name="scoresComboBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>2</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="currentIndex">
-            <number>0</number>
-           </property>
-           <item>
-            <property name="text">
-             <string>1 -3</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1 -4</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1 -2</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1 -1</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>2 -7</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>2 -5</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>2 -3</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>4 -5</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>5 -4</string>
-            </property>
-           </item>
-          </widget>
-         </item>
          <item row="0" column="4">
           <widget class="QComboBox" name="costsComboBox">
            <property name="sizePolicy">
@@ -547,17 +560,40 @@ a database file</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="3">
-          <widget class="QLabel" name="matchScoreLabel">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
+         <item row="5" column="0">
+          <widget class="QLabel" name="compStatsLabel">
            <property name="text">
-            <string>Match scores</string>
+            <string>Composition-based statistics</string>
            </property>
+          </widget>
+         </item>
+         <item row="5" column="1" colspan="4">
+          <widget class="QComboBox" name="compStatsComboBox">
+           <item>
+            <property name="text">
+             <string>D or d: default (equivalent to 2 )</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>0 or F or f: No composition-based statistics</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1: Composition-based statistics as in NAR 29:2994-3005, 2001</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>2 or T or t : Composition-based score adjustment as in Bioinformatics 21:902-911, 2005, conditioned on sequence properties</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>3: Composition-based score adjustment as in Bioinformatics 21:902-911, 2005, unconditionally</string>
+            </property>
+           </item>
           </widget>
          </item>
         </layout>
