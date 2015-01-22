@@ -149,7 +149,7 @@ QList<U2Feature> AnnotationDataCache::getTableFeatures(const U2DataId &rootId, c
         }
     }
 
-    std::sort(result.begin(), result.end(), featureLessThan);
+    std::stable_sort(result.begin(), result.end(), featureLessThan);
     return result;
 }
 
@@ -183,7 +183,7 @@ QList<U2Feature> AnnotationDataCache::getSubfeatures(const U2DataId &parentId, c
         }
     }
 
-    std::sort(result.begin(), result.end(), featureLessThan);
+    std::stable_sort(result.begin(), result.end(), featureLessThan);
     return result;
 }
 

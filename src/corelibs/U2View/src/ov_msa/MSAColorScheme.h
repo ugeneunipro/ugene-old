@@ -22,11 +22,10 @@
 #ifndef _U2_MSA_COLOR_SCHEME_H_
 #define _U2_MSA_COLOR_SCHEME_H_
 
-#include <U2Core/global.h>
+#include <QVector>
+#include <QColor>
 
-#include <QtCore/QVector>
-#include <QtGui/QColor>
-#include <QtGui/QWidget>
+#include <U2Core/global.h>
 
 namespace U2 {
 
