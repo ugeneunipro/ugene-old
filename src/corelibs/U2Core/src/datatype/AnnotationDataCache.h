@@ -22,18 +22,22 @@
 #ifndef _U2_ANNOTATION_DATA_CACHE_H_
 #define _U2_ANNOTATION_DATA_CACHE_H_
 
-#include <QtCore/QMutex>
-#include <QtCore/QSet>
+#include <QMutex>
+#include <QSet>
 
 #include <U2Core/AnnotationData.h>
+#include <U2Core/U2Feature.h>
 
 namespace U2 {
+
+enum OperationScope {
+    Recursive,
+    Nonrecursive
+};
 
 /**
  * The classes below are intended for caching annotation data fetched from a DBI
  */
-
-class U2Feature;
 
 /**
  * This class represents a storage for annotations belonging to a particular database.
@@ -46,29 +50,36 @@ public:
     AnnotationDataCache();
 
     void addData(const U2Feature &feature, const AnnotationData &data);
+    void addGroup(const U2Feature &feature);
     void addAnnotationTable(const U2DataId &rootId);
 
     bool containsAnnotationTable(const U2DataId &rootId);
-    bool contains(const U2DataId &featureId);
+    bool containsAnnotation(const U2DataId &featureId);
+    bool containsGroup(const U2DataId &featureId);
     int getAnnotationTableSize(const U2DataId &rootId);
 
     AnnotationData & getAnnotationData(const U2DataId &featureId);
     U2Feature & getFeature(const U2DataId &featureId);
-    QList<U2Feature> getSubfeatures(const U2DataId &rootId);
+    QList<U2Feature> getTableFeatures(const U2DataId &rootId, const FeatureFlags &type);
+    QList<U2Feature> getSubfeatures(const U2DataId &parentId, const FeatureFlags &type, OperationScope scope, SubfeatureSelectionMode mode);
     QList<U2Feature> getSubfeaturesByRegion(const U2DataId &rootId, const U2Region &range, bool contains);
 
     void removeAnnotationData(const U2DataId &featureId);
+    void removeGroup(const U2DataId &featureId);
     void removeAnnotationTableData(const U2DataId &rootId);
 
     void refAnnotationTable(const U2DataId &rootId);
     void derefAnnotationTable(const U2DataId &rootId);
 
 private:
+    void addFeature(const U2Feature &feature);
+    void removeFeature(const U2DataId &featureId);
+
     QMutex guard;
 
     QHash<U2DataId, AnnotationData> annotationDataId;
     QHash<U2DataId, U2Feature> feature2Id;
-    QHash<U2DataId, QSet<U2DataId> > rootSubfeatures;
+    QHash<U2DataId, QList<U2DataId> > rootSubfeatures;
     QHash<U2DataId, int> rootReferenceCount;
 };
 
@@ -82,17 +93,22 @@ public:
     ~DbiAnnotationCache();
 
     void addData(const U2DbiRef &dbiRef, const U2Feature &feature, const AnnotationData &data);
+    void addGroup(const U2DbiRef &dbiRef, const U2Feature &feature);
 
     bool containsAnnotationTable(const U2DbiRef &dbiRef, const U2DataId &rootId);
-    bool contains(const U2DbiRef &dbiRef, const U2DataId &featureId);
+    bool containsAnnotation(const U2DbiRef &dbiRef, const U2DataId &featureId);
+    bool containsGroup(const U2DbiRef &dbiRef, const U2DataId &featureId);
     int getAnnotationTableSize(const U2DbiRef &dbiRef, const U2DataId &rootId);
 
     AnnotationData & getAnnotationData(const U2DbiRef &dbiRef, const U2DataId &featureId);
     U2Feature & getFeature(const U2DbiRef &dbiRef, const U2DataId &featureId);
-    QList<U2Feature> getSubfeatures(const U2DbiRef &dbiRef, const U2DataId &rootId);
+    QList<U2Feature> getTableFeatures(const U2DbiRef &dbiRef, const U2DataId &rootId, const FeatureFlags &type);
+    QList<U2Feature> getSubfeatures(const U2DbiRef &dbiRef, const U2DataId &parentId, const FeatureFlags &type,
+        OperationScope scope, SubfeatureSelectionMode mode);
     QList<U2Feature> getSubfeaturesByRegion(const U2DbiRef &dbiRef, const U2DataId &rootId, const U2Region &range, bool contains);
 
     void removeAnnotationData(const U2DbiRef &dbiRef, const U2DataId &featureId);
+    void removeAnnotationGroup(const U2DbiRef &dbiRef, const U2DataId &featureId);
     void removeAnnotationTableData(const U2DbiRef &dbiRef, const U2DataId &rootId);
 
     void refAnnotationTable(const U2DbiRef &dbiRef, const U2DataId &rootId);

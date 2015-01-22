@@ -176,9 +176,9 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationMultipleRegion ) {
 
     U2OpStatusImpl os;
     const QList<U2Feature> annSubfeatures = U2FeatureUtils::getSubAnnotations( objRootFeatureId,
-        dbiRef, os, Recursive, Nonroot );
+        dbiRef, os, Recursive, Root );
     CHECK_NO_ERROR( os );
-    CHECK_EQUAL( 4, annSubfeatures.size( ), "annotating subfeatures of root feature" );
+    CHECK_EQUAL( 1, annSubfeatures.size( ), "annotating subfeatures of root feature" );
 
     const QList<U2Feature> groupSubfeatures = U2FeatureUtils::getSubGroups( objRootFeatureId,
         dbiRef, os );
@@ -252,7 +252,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addFeatureSingleRegion ) {
     CHECK_EQUAL( ft.getRootFeatureId( ), sourceFeature.parentFeatureId, "parent feature id" );
 
     // -- check retrieve --
-    U2Feature fetchedFeature = U2FeatureUtils::getFeatureById( sourceFeature.id, dbiRef, os );
+    U2Feature fetchedFeature = U2FeatureUtils::getFeatureById(sourceFeature.id, U2Feature::Group, dbiRef, os);
     CHECK_NO_ERROR(os);
     CHECK_EQUAL( sourceFeature.id, fetchedFeature.id, "retrieved feature id" );
     CHECK_EQUAL( name, fetchedFeature.name, "retrieved feature name" );

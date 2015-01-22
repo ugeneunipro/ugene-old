@@ -62,8 +62,7 @@ AnnotationData Annotation::getData( ) const {
 
 QString Annotation::getName( ) const {
     U2OpStatusImpl os;
-    const U2Feature feature = U2FeatureUtils::getFeatureById( id,
-        parentObject->getEntityRef( ).dbiRef, os );
+    const U2Feature feature = U2FeatureUtils::getFeatureById( id, U2Feature::Annotation, parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, QString( ) );
     return feature.name;
 }
@@ -71,7 +70,7 @@ QString Annotation::getName( ) const {
 void Annotation::setName( const QString &name ) {
     SAFE_POINT( !name.isEmpty( ), "Attempting to set an empty name for an annotation!", );
     U2OpStatusImpl os;
-    U2FeatureUtils::updateFeatureName( id, name, parentObject->getEntityRef( ).dbiRef, os );
+    U2FeatureUtils::updateFeatureName( id, U2Feature::Annotation, name, parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, );
 
     parentObject->setModified( true );
@@ -106,7 +105,7 @@ bool Annotation::isBond( ) const {
 U2Strand Annotation::getStrand( ) const {
     // use only root feature to determine the strand
     U2OpStatusImpl os;
-    const U2Feature feature = U2FeatureUtils::getFeatureById( id,
+    const U2Feature feature = U2FeatureUtils::getFeatureById( id, U2Feature::Annotation,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, U2Strand( ) );
     return feature.location.strand;
@@ -276,7 +275,7 @@ void Annotation::setCaseAnnotation( bool caseAnnotation ) {
 
 AnnotationGroup Annotation::getGroup( ) const {
     U2OpStatusImpl os;
-    const U2Feature feature = U2FeatureUtils::getFeatureById( id,
+    const U2Feature feature = U2FeatureUtils::getFeatureById( id, U2Feature::Annotation,
         parentObject->getEntityRef( ).dbiRef, os );
 
     AnnotationGroup result( feature.parentFeatureId, parentObject );
@@ -317,18 +316,18 @@ QString Annotation::findFirstQualifierValue( const QString &name ) const {
 bool Annotation::annotationLessThan( const Annotation &first, const Annotation &second ) {
     U2OpStatusImpl os;
 
-    const U2Feature firstFeature = U2FeatureUtils::getFeatureById( first.id,
+    const U2Feature firstFeature = U2FeatureUtils::getFeatureById( first.id, U2Feature::Annotation,
         first.getGObject( )->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, false );
     const U2Feature firstFeatureGroup = U2FeatureUtils::getFeatureById(
-        firstFeature.parentFeatureId, first.getGObject( )->getEntityRef( ).dbiRef, os );
+        firstFeature.parentFeatureId, U2Feature::Group, first.getGObject( )->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, false );
 
-    const U2Feature secondFeature = U2FeatureUtils::getFeatureById( second.id,
+    const U2Feature secondFeature = U2FeatureUtils::getFeatureById( second.id, U2Feature::Annotation,
         second.getGObject( )->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, false );
     const U2Feature secondFeatureGroup = U2FeatureUtils::getFeatureById(
-        secondFeature.parentFeatureId, second.getGObject( )->getEntityRef( ).dbiRef, os );
+        secondFeature.parentFeatureId, U2Feature::Group, second.getGObject( )->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, false );
 
     return ( firstFeatureGroup.name < secondFeatureGroup.name );

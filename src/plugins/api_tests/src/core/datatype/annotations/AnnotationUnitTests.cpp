@@ -78,7 +78,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, get_IdObjectData ) {
         "Unexpected value of annotation's parent object" );
 
     U2OpStatusImpl os;
-    const U2Feature feature = U2FeatureUtils::getFeatureById( annotation.id, dbiRef, os );
+    const U2Feature feature = U2FeatureUtils::getFeatureById(annotation.id, U2Feature::Annotation, dbiRef, os);
     CHECK_EQUAL( U2Region( ), feature.location.region, "Annotation's region" );
     CHECK_TRUE( feature.location.strand.isDirect( ), "Annotation has to belong to direct strand" );
 
@@ -309,11 +309,16 @@ IMPLEMENT_TEST( AnnotationUnitTest, get_Group ) {
     CHECK_EQUAL( 2, annotations.size( ), "count of annotations" );
 
     QBitArray groupMatches( 2, false );
+    Annotation ann1 = annotations.first();
+    Annotation ann2 = annotations.first();
+
     foreach ( const Annotation &ann, annotations ) {
         if ( ann.getGroup( ).getName( ) == "subgroup" ) {
             groupMatches.setBit( 0, true );
+            ann2 = ann;
         } else if ( ann.getGroup( ).getName( ) == "group2" ) {
             groupMatches.setBit( 1, true );
+            ann1 = ann;
         }
 
         const QList<Annotation> anns = ann.getGroup( ).getAnnotations( );
@@ -321,7 +326,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, get_Group ) {
     }
     CHECK_EQUAL( 2, groupMatches.count( true ), "matching groups" );
 
-    CHECK_TRUE( Annotation::annotationLessThan( annotations[1], annotations[0] ),
+    CHECK_TRUE( Annotation::annotationLessThan( ann1, ann2 ),
         "Unexpected annotations comparison result" );
 
     ft.deref();

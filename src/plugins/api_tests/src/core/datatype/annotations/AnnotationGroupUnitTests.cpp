@@ -69,7 +69,7 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, get_IdObject ) {
     foreach ( const AnnotationGroup &subgroup, subgroups ) {
         CHECK_TRUE( &ft == subgroup.getGObject( ), "Unexpected parent object" );
         U2OpStatusImpl os;
-        const U2Feature f = U2FeatureUtils::getFeatureById( subgroup.id, dbiRef, os );
+        const U2Feature f = U2FeatureUtils::getFeatureById( subgroup.id, U2Feature::Group, dbiRef, os );
         CHECK_NO_ERROR( os );
         if ( "subgroup1" == f.name ) {
             groupMatches.setBit( 0, true );
@@ -148,7 +148,7 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, groupHierarchy ) {
         CHECK_EQUAL( 2, subgroup.getGroupDepth( ), "Subgroup's depth" );
 
         U2OpStatusImpl os;
-        const U2Feature f = U2FeatureUtils::getFeatureById( subgroup.id, dbiRef, os );
+        const U2Feature f = U2FeatureUtils::getFeatureById(subgroup.id, U2Feature::Group, dbiRef, os);
         CHECK_NO_ERROR( os );
         AnnotationGroup secondLevelSubgroup = subgroup;
         if ( "subgroup1" == f.name ) {
@@ -204,7 +204,16 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Annotations ) {
     const QList<AnnotationGroup> subgroups = rootGroup.getSubgroups( );
     CHECK_EQUAL( 2, subgroups.size( ), "Count of subgroups" );
 
-    AnnotationGroup subgroup1 = subgroups.first( );
+    AnnotationGroup subgroup1 = rootGroup;
+    AnnotationGroup subgroup2 = rootGroup;
+    if (subgroups.first( ).getName( ) == groupName1) {
+        subgroup1 = subgroups.first( );
+        subgroup2 = subgroups.last( );
+    } else {
+        subgroup1 = subgroups.last();
+        subgroup2 = subgroups.first();
+    }
+
     QList<Annotation> annotations = subgroup1.getAnnotations( );
     CHECK_EQUAL( 3, annotations.size( ), "Count of annotations" );
 
@@ -220,7 +229,6 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Annotations ) {
     }
     CHECK_EQUAL( 3, annotationMatch.count( true ), "Count of annotations" );
 
-    AnnotationGroup subgroup2 = subgroups.last( );
     const QList<Annotation> newAnnotations = subgroup2.getAnnotations( );
     CHECK_EQUAL( 1, newAnnotations.size( ), "Count of annotations" );
 
@@ -262,7 +270,16 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, findAnnotationsInSubtree ) {
     const QList<AnnotationGroup> subgroups = rootGroup.getSubgroups( );
     CHECK_EQUAL( 2, subgroups.size( ), "Count of subgroups" );
 
-    AnnotationGroup subgroup1 = subgroups.first( );
+    AnnotationGroup subgroup1 = rootGroup;
+    AnnotationGroup subgroup3 = rootGroup;
+    if (subgroups.first().getName() == groupName1) {
+        subgroup1 = subgroups.first();
+        subgroup3 = subgroups.last();
+    } else {
+        subgroup1 = subgroups.last();
+        subgroup3 = subgroups.first();
+    }
+
     QList<Annotation> annotations = subgroup1.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "Count of annotations" );
 
@@ -285,7 +302,7 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, findAnnotationsInSubtree ) {
     }
     CHECK_EQUAL( 3, annotationMatch.count( true ), "Count of annotations" );
 
-    subgroups.last( ).findAllAnnotationsInGroupSubTree( set );
+    subgroup3.findAllAnnotationsInGroupSubTree( set );
     CHECK_EQUAL( 4, set.size( ), "Count of annotations" );
 
     ft.deref();
@@ -315,7 +332,16 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Subgroups ) {
     const QList<AnnotationGroup> subgroups = rootGroup.getSubgroups( );
     CHECK_EQUAL( 2, subgroups.size( ), "Count of subgroups" );
 
-    AnnotationGroup subgroup1 = subgroups.first( );
+    AnnotationGroup subgroup1 = rootGroup;
+    AnnotationGroup subgroup3 = rootGroup;
+    if (subgroups.first().getName() == groupName1) {
+        subgroup1 = subgroups.first();
+        subgroup3 = subgroups.last();
+    } else {
+        subgroup1 = subgroups.last();
+        subgroup3 = subgroups.first();
+    }
+
     QList<AnnotationGroup> subSubgroups = subgroup1.getSubgroups( );
     CHECK_EQUAL( 1, subSubgroups.size( ), "Count of subgroups" );
     CHECK_TRUE( subgroup1.getParentGroup( ) == rootGroup, "Unexpected parent group" );
@@ -326,7 +352,6 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Subgroups ) {
     subSubgroups = subgroup1.getSubgroups( );
     CHECK_TRUE( subSubgroups.isEmpty( ), "Unexpected subgroups" );
 
-    AnnotationGroup subgroup3 = subgroups.last( );
     QList<AnnotationGroup> subSubgroups3 = subgroup3.getSubgroups( );
     CHECK_TRUE( subgroup1.getParentGroup( ) == rootGroup, "Unexpected parent group" );
     CHECK_TRUE( subSubgroups3.isEmpty( ), "Unexpected subgroups" );

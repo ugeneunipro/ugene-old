@@ -29,7 +29,10 @@ static const QString FDBI_FIELDS("f.id, f.type, f.parent, f.root, f.name, f.sequ
 
 namespace U2 {
 
-SQLiteFeatureDbi::SQLiteFeatureDbi(SQLiteDbi* dbi) : U2FeatureDbi(dbi), SQLiteChildDBICommon(dbi) {
+SQLiteFeatureDbi::SQLiteFeatureDbi(SQLiteDbi* dbi)
+    : U2FeatureDbi(dbi), SQLiteChildDBICommon(dbi)
+{
+
 }
 
 static QString getQueryForFeatureDeletionTrigger( ) {
@@ -724,11 +727,10 @@ U2DbiIterator<U2Feature> * SQLiteFeatureDbi::getFeaturesByName( const U2DataId &
     return new SqlRSIterator<U2Feature>( q, new SqlFeatureRSLoader( ), new SqlFeatureFilter( QString( ), U2DataId( ) ), U2Feature( ), os );
 }
 
-QList<FeatureAndKey> SQLiteFeatureDbi::getFeatureTable( const U2DataId &rootFeatureId, const FeatureFlags &types, U2OpStatus &os ) {
+QList<FeatureAndKey> SQLiteFeatureDbi::getFeatureTable( const U2DataId &rootFeatureId, U2OpStatus &os ) {
     SQLiteTransaction t( db, os );
     static const QString queryStringk( "SELECT " + FDBI_FIELDS + ", fk.name, fk.value FROM Feature AS f "
-        "LEFT OUTER JOIN FeatureKey AS fk on f.id = fk.feature "
-        "WHERE f.root = ?1" + getWhereQueryPartFromType( "f", types )  + "ORDER BY f.start" );
+        "LEFT OUTER JOIN FeatureKey AS fk ON f.id = fk.feature WHERE f.root = ?1 ORDER BY f.start" );
     QSharedPointer<SQLiteQuery> q =  t.getPreparedQuery( queryStringk, db, os );
 
     q->bindDataId( 1, rootFeatureId );

@@ -77,7 +77,7 @@ public:
     /**
      * Returns all the features and keys belonging to the same annotation table with @rootFeatureId as a root feature
      */
-    QList<FeatureAndKey>            getFeatureTable( const U2DataId &rootFeatureId, const FeatureFlags &types, U2OpStatus &os );
+    QList<FeatureAndKey>            getFeatureTable( const U2DataId &rootFeatureId, U2OpStatus &os );
     /**
      * Creates new feature in database. Uses all fields in 'feature' param
      * and assign database id to it as the result

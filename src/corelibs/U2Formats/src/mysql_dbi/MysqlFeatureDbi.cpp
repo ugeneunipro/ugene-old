@@ -769,10 +769,9 @@ U2DbiIterator<U2Feature> * MysqlFeatureDbi::getFeaturesByName( const U2DataId &r
     return new MysqlRSIterator<U2Feature>( q, new MysqlFeatureRSLoader( ), new MysqlFeatureFilter( QString( ), U2DataId( ) ), U2Feature( ), os );
 }
 
-QList<FeatureAndKey> MysqlFeatureDbi::getFeatureTable( const U2DataId &rootFeatureId, const FeatureFlags &types, U2OpStatus &os ) {
+QList<FeatureAndKey> MysqlFeatureDbi::getFeatureTable( const U2DataId &rootFeatureId, U2OpStatus &os ) {
     static const QString queryStringk( "SELECT " + getFeatureFields() + ", fk.name, fk.value FROM Feature AS f "
-        "LEFT OUTER JOIN FeatureKey AS fk on f.id = fk.feature "
-        "WHERE f.root = :root" + getWhereQueryPartFromType( "f", types ) + "ORDER BY f.start" );
+        "LEFT OUTER JOIN FeatureKey AS fk ON f.id = fk.feature WHERE f.root = :root ORDER BY f.start" );
     U2SqlQuery q( queryStringk, db, os );
 
     q.bindDataId( ":root", rootFeatureId );

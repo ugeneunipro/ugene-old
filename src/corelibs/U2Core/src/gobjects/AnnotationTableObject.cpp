@@ -113,8 +113,7 @@ void AnnotationTableObject::addAnnotations( const QList<AnnotationData> &annotat
     AnnotationGroup group( rootGroup );
     QList<Annotation> resultAnnotations;
 
-    const U2Feature rootFeature = U2FeatureUtils::getFeatureById( rootFeatureId, entityRef.dbiRef,
-        os );
+    const U2Feature rootFeature = U2FeatureUtils::getFeatureById( rootFeatureId, U2Feature::Group, entityRef.dbiRef, os );
     SAFE_POINT_OP( os, );
 
     if ( groupName.isEmpty( ) ) {
@@ -310,7 +309,8 @@ void AnnotationTableObject::removeAnnotationFromDb( const Annotation &a ) {
     ensureDataLoaded();
 
     U2OpStatusImpl os;
-    U2FeatureUtils::removeFeature( a.id, entityRef.dbiRef, os );
+    U2FeatureUtils::removeFeature( a.id, U2Feature::Annotation, entityRef.dbiRef, os );
+    SAFE_POINT_OP( os, );
 }
 
 void AnnotationTableObject::copyFeaturesToObject( const U2Feature &feature,
@@ -321,15 +321,13 @@ void AnnotationTableObject::copyFeaturesToObject( const U2Feature &feature,
     U2Feature copiedFeature( feature );
     copiedFeature.parentFeatureId = newParentId;
     copiedFeature.rootFeatureId = obj->getRootFeatureId( );
-    QList<U2FeatureKey> keys = U2FeatureUtils::getFeatureKeys( feature.id, entityRef.dbiRef,
-        os );
+    QList<U2FeatureKey> keys = U2FeatureUtils::getFeatureKeys( feature.id, entityRef.dbiRef, os );
     CHECK_OP( os, );
     obj->addFeature( copiedFeature, keys, os );
     CHECK_OP( os, );
 
     // consider both grouping features and annotating
-    QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( feature.id,
-        entityRef.dbiRef, os, Nonrecursive, Nonroot );
+    QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( feature.id, entityRef.dbiRef, os, Nonrecursive, Nonroot );
     if ( U2Feature::Group == feature.type ) {
         subfeatures << U2FeatureUtils::getSubGroups( feature.id, entityRef.dbiRef, os, Nonrecursive );
         CHECK_OP( os, );
