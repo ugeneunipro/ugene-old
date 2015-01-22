@@ -1138,6 +1138,40 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1371) {
+//    1. Open file "data/samples/ACE/BL060C3.ace" as msa.
+//    Expected state: there are 2 MSA objects in document.
+
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AlignmentEditor));
+    GTFileDialog::openFile(os, dataDir + "samples/ACE", "BL060C3.ace");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsProjectTreeView::checkItem(os, "Contig1");
+    GTUtilsProjectTreeView::checkItem(os, "Contig2");
+    GTUtilsProjectTreeView::checkObjectTypes(os,
+                                             QSet<GObjectType>() << GObjectTypes::MULTIPLE_ALIGNMENT,
+                                             GTUtilsProjectTreeView::findIndex(os, "BL060C3.ace"));
+
+//    2. Open file "data/samples/ACE/BL060C3.ace" as assembly.
+//    Expected state: there are 2 assembly objects in document.
+
+    GTUtilsDocument::removeDocument(os, "BL060C3.ace");
+    QDir().mkpath(sandBoxDir + "test_1371");
+
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandBoxDir + "test_1371/test_1371.ugenedb"));
+    GTFileDialog::openFile(os, dataDir + "samples/ACE", "BL060C3.ace");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsProjectTreeView::checkItem(os, "Contig1");
+    GTUtilsProjectTreeView::checkItem(os, "ref1");
+    GTUtilsProjectTreeView::checkItem(os, "Contig2");
+    GTUtilsProjectTreeView::checkItem(os, "ref2");
+    GTUtilsProjectTreeView::checkObjectTypes(os,
+                                             QSet<GObjectType>() << GObjectTypes::ASSEMBLY << GObjectTypes::SEQUENCE,
+                                             GTUtilsProjectTreeView::findIndex(os, "test_1371.ugenedb"));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1376){
     //1. Open data/position_weight_matrix/JASPAR/fungi/MA0276.1.pfm.
     GTFileDialog::openFile(os, dataDir + "position_weight_matrix/JASPAR/fungi/MA0276.1.pfm");
