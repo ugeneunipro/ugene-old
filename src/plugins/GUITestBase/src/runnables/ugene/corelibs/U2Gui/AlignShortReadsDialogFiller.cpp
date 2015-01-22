@@ -26,14 +26,33 @@
 #include <QPushButton>
 
 #include "AlignShortReadsDialogFiller.h"
-#include "api/GTWidget.h"
-#include "api/GTSpinBox.h"
 #include "api/GTCheckBox.h"
-#include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
+#include "api/GTDoubleSpinBox.h"
+#include "api/GTLineEdit.h"
+#include "api/GTSpinBox.h"
+#include "api/GTWidget.h"
 #include "runnables/qt/MessageBoxFiller.h"
 
 namespace U2 {
+
+AlignShortReadsFiller::BwaSwParameters::BwaSwParameters(const QString &refDir, const QString &refFileName, const QString &readsDir, const QString &readsFileName) :
+    Parameters(refDir, refFileName, readsDir, readsFileName, BwaSw),
+    matchScore(1),
+    mismatchPenalty(3),
+    gapOpenPenalty(5),
+    gapExtensionPenalty(2),
+    bandWidth(50),
+    maskLevel(0.5),
+    threadsNumber(1),
+    readsChunkSize(1000000),
+    thresholdScore(30),
+    zBest(1),
+    seedsNumber(5),
+    preferHardClippingInSam(false)
+{
+
+}
 
 #define GT_CLASS_NAME "GTUtilsDialog::AlignShortReadsFiller"
 #define GT_METHOD_NAME "run"
@@ -128,6 +147,12 @@ void AlignShortReadsFiller::setAdditionalParameters(QWidget* dialog) {
     UgeneGenomeAlignerParams *ugaParameters = dynamic_cast<UgeneGenomeAlignerParams *>(parameters);
     if (NULL != ugaParameters) {
         setUgaAdditionalParameters(ugaParameters, dialog);
+        return;
+    }
+
+    BwaSwParameters *bwaSwParameters = dynamic_cast<BwaSwParameters *>(parameters);
+    if (NULL != bwaSwParameters) {
+        setBwaSwAdditionalParameters(bwaSwParameters, dialog);
         return;
     }
 }
@@ -253,6 +278,21 @@ void AlignShortReadsFiller::setBowtie2AdditionalParameters(Bowtie2Parameters* bo
 void AlignShortReadsFiller::setUgaAdditionalParameters(UgeneGenomeAlignerParams *ugaParameters, QWidget* dialog) {
     QGroupBox *mismatchesGroupbox = qobject_cast<QGroupBox *>(GTWidget::findWidget(os, "groupBox_mismatches", dialog));
     mismatchesGroupbox->setChecked(ugaParameters->mismatchesAllowed);
+}
+
+void AlignShortReadsFiller::setBwaSwAdditionalParameters(AlignShortReadsFiller::BwaSwParameters *bwaSwParameters, QWidget *dialog) {
+    GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "matchScoreSpinbox", dialog), bwaSwParameters->matchScore);
+    GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "mismatchScoreSpinbox", dialog), bwaSwParameters->mismatchPenalty);
+    GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "gapOpenSpinbox", dialog), bwaSwParameters->gapOpenPenalty);
+    GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "gapExtSpinbox", dialog), bwaSwParameters->gapExtensionPenalty);
+    GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "bandWidthSpinbox", dialog), bwaSwParameters->bandWidth);
+    GTDoubleSpinbox::setValue(os, GTWidget::findExactWidget<QDoubleSpinBox *>(os, "maskLevelSpinbox", dialog), bwaSwParameters->maskLevel);
+    GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "numThreadsSpinbox", dialog), bwaSwParameters->threadsNumber);
+    GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "chunkSizeSpinbox", dialog), bwaSwParameters->readsChunkSize);
+    GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "scoreThresholdSpinbox", dialog), bwaSwParameters->thresholdScore);
+    GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "zBestSpinbox", dialog), bwaSwParameters->zBest);
+    GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "revAlnThreshold", dialog), bwaSwParameters->seedsNumber);
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "hardClippingCheckBox", dialog), bwaSwParameters->preferHardClippingInSam);
 }
 
 #undef GT_METHOD_NAME

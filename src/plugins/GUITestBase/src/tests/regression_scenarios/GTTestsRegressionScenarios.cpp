@@ -1362,6 +1362,41 @@ GUI_TEST_CLASS_DEFINITION(test_1408){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1420) {
+//    1. Select {Tools->ALign to reference->Align short reads} from the main menu.
+//    Expected state: the "Align sequencing reads" dialog appeared.
+//    2. Fill this dialog with:
+//        {Alignment method:}	BWA-SW
+//        {Reference sequence:}	_common_data/fasta/NC_008253.fna
+//        {Result file name:}	somewhere in the temp folder
+//        {Short reads:}		_common_data/reads/long_reads.fasta
+//        other options: default
+//    3. Press the "Start" button.
+//    Expected state: after the task's end the "Import SAM file" appeared.
+//    4. Set {destination URL} and press the "Import" button.
+//    Expected state: the Assembly browser with alignment result opened.
+
+    QDir().mkpath(sandBoxDir + "test_1402");
+    AlignShortReadsFiller::BwaSwParameters parameters(testDir + "_common_data/fasta", "NC_008253.fna", testDir + "_common_data/reads", "long_reads.fasta");
+    parameters.resultDir = sandBoxDir + "test_1402";
+    parameters.resultFileName = "test_1402.sam";
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_1402/test_1402.ugenedb"));
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    const int expectedLength = 4938920;
+    const int expectedReads = 269;
+    const int assemblyLength = GTUtilsAssemblyBrowser::getLength(os, "test_1402 [as] gi|110640213|ref|NC_008253.1|");
+    const int assemblyReads = GTUtilsAssemblyBrowser::getReadsCount(os, "test_1402 [as] gi|110640213|ref|NC_008253.1|");
+    CHECK_SET_ERR(expectedLength == assemblyLength, QString("An unexpected assembly length: expect  %1, got %2").arg(expectedLength).arg(assemblyLength));
+    CHECK_SET_ERR(expectedReads == assemblyReads, QString("An unexpected assembly reads count: expect  %1, got %2").arg(expectedReads).arg(assemblyReads));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1427) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1427/", "text");
     GTUtilsProjectTreeView::checkItem(os, "text");

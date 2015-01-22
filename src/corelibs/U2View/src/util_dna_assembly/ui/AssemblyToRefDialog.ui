@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>620</width>
-    <height>350</height>
+    <height>383</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -20,6 +20,9 @@
    <string>Align Sequencing Reads</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
@@ -59,6 +62,9 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinAndMaxSize</enum>
+     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="label_2">
        <property name="toolTip">

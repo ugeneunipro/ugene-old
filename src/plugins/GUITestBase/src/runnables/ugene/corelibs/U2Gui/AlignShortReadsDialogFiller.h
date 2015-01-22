@@ -165,6 +165,27 @@ public:
         bool mismatchesAllowed;
     };
 
+    class BwaSwParameters : public Parameters {
+    public:
+        BwaSwParameters(const QString &refDir = "",
+                        const QString &refFileName = "",
+                        const QString &readsDir = "",
+                        const QString &readsFileName = "");
+
+        int matchScore;
+        int mismatchPenalty;
+        int gapOpenPenalty;
+        int gapExtensionPenalty;
+        int bandWidth;
+        double maskLevel;
+        int threadsNumber;
+        int readsChunkSize;
+        int thresholdScore;
+        int zBest;
+        int seedsNumber;
+        bool preferHardClippingInSam;
+    };
+
     AlignShortReadsFiller(U2OpStatus &os, Parameters* parameters) :
         Filler(os, "AssemblyToRefDialog"),
         parameters(parameters) {
@@ -179,6 +200,7 @@ private:
     void setAdditionalParameters(QWidget* dialog);
     void setBowtie2AdditionalParameters(Bowtie2Parameters* bowtie2Parameters, QWidget* dialog);
     void setUgaAdditionalParameters(UgeneGenomeAlignerParams *ugaParameters, QWidget* dialog);
+    void setBwaSwAdditionalParameters(BwaSwParameters *bwaSwParameters, QWidget* dialog);
 
     Parameters* parameters;
 };
