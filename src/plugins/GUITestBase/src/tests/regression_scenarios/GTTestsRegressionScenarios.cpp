@@ -9337,6 +9337,21 @@ GUI_TEST_CLASS_DEFINITION(test_2930){
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2931){
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller
+        (os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandBoxDir + "test_2931"));
+    GTFileDialog::openFile(os, dataDir+"samples/ACE", "K26.ace");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new ConvertAssemblyToSAMDialogFiller(os, sandBoxDir, "test_2931"));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS),
+        QStringList() << "DNA assembly" << "Convert UGENE Assembly database to SAM format");
+
+    CHECK_SET_ERR(!l.hasError(), "There is error message in log");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2951) {
     //1. Open WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
