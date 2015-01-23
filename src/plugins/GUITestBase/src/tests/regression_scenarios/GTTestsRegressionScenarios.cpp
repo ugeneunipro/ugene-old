@@ -9352,6 +9352,57 @@ GUI_TEST_CLASS_DEFINITION(test_2931){
     CHECK_SET_ERR(!l.hasError(), "There is error message in log");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2945){
+//    1.    Open file with annotations, e.g. murine.db
+//    2.    Open Circular View(CV)
+//    3.    Move the splitter between CV and Sequence View(SV) up to hide CV (CV action button is still active)
+//    4.    Move the splitter between Sequence View and Annotation Tree View down.
+//    expected state: CV appeared. all parts of CV are visiable
+
+    GTFileDialog::openFile(os, dataDir + "/samples/Genbank", "murine.gb");
+    GTWidget::click(os, GTAction::button(os, "CircularViewAction"));
+    QWidget* zoomIn = GTWidget::findWidget(os, "tbZoomIn_murine [s] NC_001363");
+    CHECK_SET_ERR(zoomIn != NULL, "zoomIn action on CV not found");
+
+    QWidget* splitterHandler = GTWidget::findWidget(os, "qt_splithandle_annotated_DNA_scrollarea");
+    CHECK_SET_ERR(splitterHandler != NULL, "SplitterHandle not found");
+    GTWidget::click(os, splitterHandler);
+
+    QWidget* mainToolBar = GTWidget::findWidget(os, "mwtoolbar_activemdi");
+    CHECK_SET_ERR(mainToolBar != NULL, "mwtoolbar_activemdi not found");
+    QPoint bottomLeftToolBar = mainToolBar->geometry().bottomLeft();
+    bottomLeftToolBar = mainToolBar->mapToGlobal(bottomLeftToolBar);
+    GTGlobals::sleep();
+
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, bottomLeftToolBar);
+    GTMouseDriver::release(os);
+    GTGlobals::sleep();
+
+    QAbstractButton* cvButton = GTAction::button(os, "CircularViewAction");
+    CHECK_SET_ERR(cvButton->isChecked(), "CV button is not checked!");
+
+    QSplitter* splitter = qobject_cast<QSplitter*>(GTWidget::findWidget(os, "annotated_DNA_splitter"));
+    CHECK_SET_ERR(splitter != NULL, "annotated_DNA_splitter not found");
+    int idx = splitter->indexOf(GTWidget::findWidget(os, "annotations_tree_view"));
+    QSplitterHandle* handle = splitter->handle(idx);
+    CHECK_SET_ERR(handle != NULL, "SplitterHadle not found");
+
+    GTWidget::click(os, handle);
+    GTGlobals::sleep();
+
+    QPoint p = GTMouseDriver::getMousePosition();
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, p + QPoint(0, 50));
+    GTMouseDriver::release(os);
+    GTGlobals::sleep();
+
+    zoomIn = GTWidget::findWidget(os, "tbZoomIn_murine [s] NC_001363");
+    CHECK_SET_ERR(zoomIn != NULL, "zoomIn action on CV not found");
+    GTWidget::click(os, zoomIn);
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2951) {
     //1. Open WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
