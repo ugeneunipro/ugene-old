@@ -9288,6 +9288,44 @@ GUI_TEST_CLASS_DEFINITION(test_2924) {
     }
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2929){
+//    1.    Open "human_T1.fa".
+//    2.    Click the "Search TFBS with SITECON" button on the main toolbar
+//        Expected state: a dialog appeared, model is not selected, threshold is not set.
+//    3.    Click the "Search" button.
+//        Expected state: an error message box appeared.
+//    4.    Click the "Ok" button.
+//        Expected state: the message box is closed, dialog is not accepted.
+//        Current state: the message box is closed, UGENE crashed.
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    class SiteconCustomFiller : public Filler {
+    public:
+        SiteconCustomFiller(U2OpStatus &os)
+            : Filler(os, "SiteconSearchDialog") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
+
+            QLineEdit* modelFileEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "modelFileEdit"));
+            CHECK_SET_ERR(modelFileEdit != NULL, "modelFileEdit not found!");
+            CHECK_SET_ERR(modelFileEdit->text().isEmpty(), "Model is set!");
+
+            QComboBox* errComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "errLevelBox"));
+            CHECK_SET_ERR(errComboBox->currentText().isEmpty(), "Threshold is set!");
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SiteconCustomFiller(os));
+    GTWidget::click(os, GTWidget::findWidget(os, "SITECON_widget"));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2930){
     GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller
                                  (os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));

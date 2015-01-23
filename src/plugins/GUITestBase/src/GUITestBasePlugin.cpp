@@ -470,6 +470,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2894, "proper data needed");
     REGISTER_TEST(GUITest_regression_scenarios::test_2895);
     REGISTER_TEST(GUITest_regression_scenarios::test_2897);
+
     REGISTER_TEST(GUITest_regression_scenarios::test_2900);
     REGISTER_TEST(GUITest_regression_scenarios::test_2903);
     REGISTER_TEST(GUITest_regression_scenarios::test_2907);
@@ -479,6 +480,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2910_3);
     REGISTER_TEST(GUITest_regression_scenarios::test_2923);
     REGISTER_TEST(GUITest_regression_scenarios::test_2924);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2929);
     REGISTER_TEST(GUITest_regression_scenarios::test_2930);
     REGISTER_TEST(GUITest_regression_scenarios::test_2951);
     REGISTER_TEST(GUITest_regression_scenarios::test_2962_1);
