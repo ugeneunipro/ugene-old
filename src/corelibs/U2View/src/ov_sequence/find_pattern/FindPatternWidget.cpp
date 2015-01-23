@@ -1512,6 +1512,7 @@ void FindPatternWidget::stopCurrentSearchTask(){
     nextPushButton->setDisabled(true);
     prevPushButton->setDisabled(true);
     getAnnotationsPushButton->setDisabled(true);
+    resultLabel->setText(tr("Results: 0/0"));
 }
 
 void FindPatternWidget::correctSearchInCombo(){
