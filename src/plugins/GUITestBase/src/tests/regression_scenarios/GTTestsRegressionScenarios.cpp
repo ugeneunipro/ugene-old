@@ -81,6 +81,7 @@
 #include "runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
@@ -8491,6 +8492,52 @@ GUI_TEST_CLASS_DEFINITION(test_2754) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "find_qualifier_action"));
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
     GTMouseDriver::click(os, Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2770) {
+    //1. File -> New document from text.
+    //2. Data: TTTTTTTTTTTTTTTTTTTTTTTAAATTTTTTTTTTTTTTTTTTTTTTT
+    //Location: set the valid output file.
+    //3. Create.
+    //4. Ctrl + F.
+    //5. Pattern: TTTTTTTTTTTTTTTTTTTTTTTAATTTTTTTTTTTTTTTTTTTTTTT
+    //Algorithm: InsDel
+    //Should match: 30%
+    //6. Search.
+    //Expected: two annotations are found.
+    Runnable *filler = new CreateDocumentFiller(os,
+        "TTTTTTTTTTTTTTTTTTTTTTTAAATTTTTTTTTTTTTTTTTTTTTTT", false,
+        CreateDocumentFiller::StandardRNA, true, false, "",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+    GTGlobals::sleep();
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDocument::checkDocument(os, "result");
+
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "TTTTTTTTTTTTTTTTTTTTTTTAATTTTTTTTTTTTTTTTTTTTTTT");
+    GTGlobals::sleep(200);
+
+    GTUtilsOptionPanelSequenceView::setAlgorithm(os, "InsDel");
+    GTGlobals::sleep(200);
+
+    GTUtilsOptionPanelSequenceView::setMatchPercentage(os, 30);
+    GTGlobals::sleep(200);
+
+    GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature  (0, 2)");
+    CHECK_SET_ERR(NULL != annotationGroup, "Annotations have not been found");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2773) {
