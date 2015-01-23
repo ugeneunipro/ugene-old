@@ -66,6 +66,7 @@ QString BlastPlusWorkerFactory::getHitsDescription() {
 #define BLASTPLUS_DATABASE_PATH "db-path"
 #define BLASTPLUS_DATABASE_NAME "db-name"
 #define BLASTPLUS_EXPECT_VALUE  "e-val"
+#define BLASTPLUS_COMP_STATS "comp-based-stats"
 #define BLASTPLUS_MAX_HITS "max-hits"
 #define BLASTPLUS_GROUP_NAME    "result-name"
 #define BLASTPLUS_EXT_TOOL_PATH "tool-path"
@@ -99,6 +100,7 @@ void BlastPlusWorkerFactory::init() {
                    BlastPlusWorker::tr("Base name for BLAST+ DB files."));
     Descriptor ev(BLASTPLUS_EXPECT_VALUE, BlastPlusWorker::tr("Expected value"),
                    BlastPlusWorker::tr("This setting specifies the statistical significance threshold for reporting matches against database sequences."));
+    Descriptor cbs(BLASTPLUS_COMP_STATS, BlastPlusWorker::tr("Composition-based statistics"), BlastPlusWorker::tr("Composition-based statistics."));
     Descriptor mh(BLASTPLUS_MAX_HITS, getHitsName(), getHitsDescription());
     Descriptor gn(BLASTPLUS_GROUP_NAME, BlastPlusWorker::tr("Annotate as"),
                    BlastPlusWorker::tr("Name for annotations."));
@@ -124,6 +126,11 @@ void BlastPlusWorkerFactory::init() {
     a << new Attribute(etp, BaseTypes::STRING_TYPE(), true, QVariant("default"));
     a << new Attribute(tdp, BaseTypes::STRING_TYPE(), true, QVariant("default"));
     a << new Attribute(ev, BaseTypes::NUM_TYPE(), false, QVariant(10.00));
+    Attribute *cbsAttr = new Attribute(cbs, BaseTypes::STRING_TYPE(), false, "D");
+    QVariantList cbsVisibilitylist;
+    cbsVisibilitylist << "blastp" << "blastx" << "tblastn";
+    cbsAttr->addRelation(new VisibilityRelation(BLASTPLUS_PROGRAM_NAME, cbsVisibilitylist));
+    a << cbsAttr;
     a << new Attribute(mh, BaseTypes::NUM_TYPE(), false, QVariant(0));
     a << new Attribute(gn, BaseTypes::STRING_TYPE(), false, QVariant("blast_result"));
 
@@ -165,6 +172,15 @@ void BlastPlusWorkerFactory::init() {
         m["singleStep"] = 1.0;
         m["decimals"] = 6;
         delegates[BLASTPLUS_EXPECT_VALUE] = new DoubleSpinBoxDelegate(m);
+    }
+    {
+        QVariantMap m;
+        m["D or d: default (equivalent to 2 )"] = "D";
+        m["0 or F or f: No composition-based statistics"] = "0";
+        m["1: Composition-based statistics as in NAR 29:2994-3005, 2001"] = "1";
+        m["2 or T or t : Composition-based score adjustment as in Bioinformatics 21:902-911, 2005"] = "2";
+        m["3: Composition-based score adjustment as in Bioinformatics 21:902-911, 2005"] = "3";
+        delegates[BLASTPLUS_COMP_STATS] = new ComboBoxDelegate(m);
     }
     {
         QVariantMap m;
@@ -263,6 +279,9 @@ Task* BlastPlusWorker::tick() {
         cfg.isDefaultMatrix = true;
         cfg.isDefautScores = true;
         cfg.expectValue = getValue<double>(BLASTPLUS_EXPECT_VALUE);
+        if (actor->isAttributeVisible(actor->getParameter(BLASTPLUS_COMP_STATS))) {
+            cfg.compStats = getValue<QString>(BLASTPLUS_COMP_STATS);
+        }
         cfg.numberOfHits = getValue<int>(BLASTPLUS_MAX_HITS);
         cfg.groupName = getValue<QString>(BLASTPLUS_GROUP_NAME);
         if(cfg.groupName.isEmpty()){
