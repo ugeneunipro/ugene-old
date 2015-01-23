@@ -91,6 +91,10 @@ workflow local-blast+{
                 alias:blast-out-type;
                 description:"Type of BLAST output file (using 'XML (-outfmt 5)' by default)";
             }
+            blast-plus.comp-based-stats {
+                alias:comp-based-stats;
+                description:"Composition-based statistics: D (default, equal to 2), 0, 1, 2 or 3.";
+            }
         }
         visual {
             blast-plus {
