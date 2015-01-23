@@ -28,11 +28,11 @@ namespace U2 {
 
 class SelectDocumentFormatDialogFiller : public Filler {
 public:
-    SelectDocumentFormatDialogFiller(U2OpStatus &_os) :
-        Filler(_os, "DocumentFormatSelectorDialog") {}
+    SelectDocumentFormatDialogFiller(U2OpStatus &os, CustomScenario *scenario = NULL);
 
-    virtual void run();
+    void commonScenario();
 };
+
 }
 
 #endif

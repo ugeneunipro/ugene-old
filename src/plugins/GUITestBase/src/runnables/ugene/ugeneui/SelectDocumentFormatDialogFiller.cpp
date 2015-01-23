@@ -34,10 +34,15 @@
 
 namespace U2 {
 
-#define GT_CLASS_NAME "GTUtilsDialog::SelectDocumentFormatDialogFiller"
-#define GT_METHOD_NAME "run"
-void SelectDocumentFormatDialogFiller::run()
+SelectDocumentFormatDialogFiller::SelectDocumentFormatDialogFiller(U2OpStatus &_os, CustomScenario *scenario)
+    : Filler(_os, "DocumentFormatSelectorDialog", scenario)
 {
+
+}
+
+#define GT_CLASS_NAME "GTUtilsDialog::SelectDocumentFormatDialogFiller"
+#define GT_METHOD_NAME "commonScenario"
+void SelectDocumentFormatDialogFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
     QDialogButtonBox *buttonBox = dialog->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));

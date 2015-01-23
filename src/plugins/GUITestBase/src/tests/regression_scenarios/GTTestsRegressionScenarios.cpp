@@ -1393,7 +1393,15 @@ GUI_TEST_CLASS_DEFINITION(test_1408){
 //    Expected state: "Select the role of the column" dialog is appeared
 
 //    6) Check that there is role "Annotation group"
+}
 
+GUI_TEST_CLASS_DEFINITION(test_1419) {
+    // 1. Open "_common_data/scenarios/msa/big.aln".
+    // Expected state : UGENE does not crash.File opened successfully.
+    GTLogTracer lt;
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "big.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsLog::check(os, lt);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1420) {
@@ -1775,6 +1783,34 @@ GUI_TEST_CLASS_DEFINITION(test_1439) {
 
     CHECK_SET_ERR(l.hasError(), "There is no error in the log");
     CHECK_SET_ERR(l.getError().contains("Can't align sequence longer 100000"), "Wrong error in the log");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1442_2) {
+    class SelectFormatScenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *manualFormatRadio = GTWidget::findWidget(os, "chooseFormatManuallyRadio", QApplication::activeModalWidget());
+            GTWidget::click(os, manualFormatRadio);
+
+            QComboBox *customFormatCombo = GTWidget::findExactWidget<QComboBox *>(os, "userSelectedFormat", QApplication::activeModalWidget());
+            GTComboBox::setIndexWithText(os, customFormatCombo, "Position weight matrix");
+
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
+        }
+    };
+
+    // 1. Open file "data/position_weight_matrix/UniPROBE/Cell08/Alx3_3418.2.pwm"
+    // Expected state : Opened only window with position weight matrix.
+    // In Project View not added any items.
+    GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os, new SelectFormatScenario));
+    GTFileDialog::openFile(os, dataDir + "/position_weight_matrix/UniPROBE/Cell08/", "Alx3_3418.2.pwm");
+
+    const int projectViewItemsCount = GTUtilsProjectTreeView::getTreeView(os)->model()->rowCount();
+    CHECK_SET_ERR(0 == projectViewItemsCount, "Unexpected project view items count");
+
+    GTWidget::findWidget(os, "Matrix viewer"); // check that matrix view is presented
+
+    QWidget *logoWidget = GTWidget::findWidget(os, "logoWidget", NULL);
+    CHECK_SET_ERR(!logoWidget->isVisible(), "Logo widget is unexpectedly visible");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1445) {
