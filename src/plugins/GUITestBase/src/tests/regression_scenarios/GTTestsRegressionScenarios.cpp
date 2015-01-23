@@ -6959,7 +6959,7 @@ GUI_TEST_CLASS_DEFINITION( test_2406 ) {
 
     GTGlobals::sleep(500);
     const QString expectedPreValue = "TEST";
-    const QString resultPreValue = GTUtilsWorkflowDesigner::getParameter(os, "Output file");
+    const QString resultPreValue = GTUtilsWorkflowDesigner::getParameter(os, "Output file", true);
     CHECK_SET_ERR(expectedPreValue == resultPreValue,
                   QString("Unexpected value: expected '%1' get '%2'").
                   arg(expectedPreValue).arg(resultPreValue));
@@ -6969,7 +6969,7 @@ GUI_TEST_CLASS_DEFINITION( test_2406 ) {
     GTUtilsWorkflowDesigner::setParameter(os, "Document format", 2 /*"genbank"*/, GTUtilsWorkflowDesigner::comboValue);
 
     const QString expectedPostValue = "TEST.gb";
-    const QString resultPostValue = GTUtilsWorkflowDesigner::getParameter(os, "Output file");
+    const QString resultPostValue = GTUtilsWorkflowDesigner::getParameter(os, "Output file", true);
     CHECK_SET_ERR(expectedPostValue == resultPostValue,
                   QString("Unexpected value: expected '%1' get '%2'").
                   arg(expectedPostValue).arg(resultPostValue));
@@ -11651,7 +11651,7 @@ GUI_TEST_CLASS_DEFINITION(test_3439){
     GTWidget::click(os,GTAction::button(os, "Validate workflow"));
     GTGlobals::sleep();
     //there is should be 2 errors
-    CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Write Alignment") == 2, "Errors count dont match, should be 2 validation errors");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Write Alignment") == 1, "Errors count dont match, should be 2 validation errors");
     //set paramter "Data storage" to "Shared UGENE database"
     GTUtilsWorkflowDesigner::click(os, "Write Alignment");
     GTGlobals::sleep();

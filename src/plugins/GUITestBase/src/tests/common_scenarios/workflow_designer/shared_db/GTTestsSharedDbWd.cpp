@@ -381,9 +381,10 @@ GUI_TEST_CLASS_DEFINITION(write_gui_test_0001_1) {
     const QString dataStorageParamValue = GTUtilsWorkflowDesigner::getParameter(os, "Data storage");
     CHECK_SET_ERR("Local file system" == dataStorageParamValue, "Invalid data storage parameter value");
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Output file"), "Unexpected parameter state");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Output file suffix"), "Unexpected parameter state");
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Document format"), "Unexpected parameter state");
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Existing file"), "Unexpected parameter state");
-    CHECK_SET_ERR(4 == GTUtilsWorkflowDesigner::getAllParameters(os).count(), "Unexpected parameter count");
+    CHECK_SET_ERR(5 == GTUtilsWorkflowDesigner::getAllParameters(os).count(), "Unexpected parameter count");
 
     GTUtilsWorkflowDesigner::setParameter(os, "Data storage", 1, GTUtilsWorkflowDesigner::comboValue);
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Database"), "Unexpected parameter state");
@@ -405,11 +406,12 @@ GUI_TEST_CLASS_DEFINITION(write_gui_test_0001_2) {
     const QString dataStorageParamValue = GTUtilsWorkflowDesigner::getParameter(os, "Data storage");
     CHECK_SET_ERR("Local file system" == dataStorageParamValue, "Invalid data storage parameter value");
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Output file"), "Unexpected parameter state");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Output file suffix"), "Unexpected parameter state");
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Document format"), "Unexpected parameter state");
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Existing file"), "Unexpected parameter state");
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Split sequence"), "Unexpected parameter state");
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Accumulate objects"), "Unexpected parameter state");
-    CHECK_SET_ERR(6 == GTUtilsWorkflowDesigner::getAllParameters(os).count(), "Unexpected parameter count");
+    CHECK_SET_ERR(7 == GTUtilsWorkflowDesigner::getAllParameters(os).count(), "Unexpected parameter count");
 
     GTUtilsWorkflowDesigner::setParameter(os, "Data storage", 1, GTUtilsWorkflowDesigner::comboValue);
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Database"), "Unexpected parameter state");
@@ -430,9 +432,10 @@ GUI_TEST_CLASS_DEFINITION(write_gui_test_0002) {
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Write FASTA");
 
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Output file"), "Unexpected parameter state");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Output file suffix"), "Unexpected parameter state");
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Existing file"), "Unexpected parameter state");
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Accumulate objects"), "Unexpected parameter state");
-    CHECK_SET_ERR(3 == GTUtilsWorkflowDesigner::getAllParameters(os).count(), "Unexpected parameter count");
+    CHECK_SET_ERR(4 == GTUtilsWorkflowDesigner::getAllParameters(os).count(), "Unexpected parameter count");
 }
 
 GUI_TEST_CLASS_DEFINITION(write_gui_test_0003) {

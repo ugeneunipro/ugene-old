@@ -673,8 +673,19 @@ QStringList GTUtilsWorkflowDesigner::getAllParameters(U2OpStatus &os){
 }
 #undef GT_METHOD_NAME
 
+namespace {
+    bool equalStrings(const QString &where, const QString &what, bool exactMatch) {
+        if (exactMatch) {
+            return (where == what);
+        } else {
+            return where.contains(what, Qt::CaseInsensitive);
+        }
+    }
+}
+
+
 #define GT_METHOD_NAME "getParameter"
-QString GTUtilsWorkflowDesigner::getParameter(U2OpStatus &os, QString parameter){
+QString GTUtilsWorkflowDesigner::getParameter(U2OpStatus &os, QString parameter, bool exactMatch){
     QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
     GT_CHECK_RESULT(table,"tableView not found", "");
 
@@ -684,7 +695,7 @@ QString GTUtilsWorkflowDesigner::getParameter(U2OpStatus &os, QString parameter)
     int row = -1;
     for(int i = 0; i<iMax; i++){
         QString s = model->data(model->index(i,0)).toString();
-        if (s.contains(parameter,Qt::CaseInsensitive))
+        if (equalStrings(s, parameter, exactMatch))
             row = i;
     }
     GT_CHECK_RESULT(row != -1, "parameter not found","");
@@ -776,7 +787,7 @@ QTableView *GTUtilsWorkflowDesigner::getParametersTable(U2OpStatus &os){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setParameterScripting"
-void GTUtilsWorkflowDesigner::setParameterScripting(U2OpStatus &os, QString parameter, QString scriptMode){
+void GTUtilsWorkflowDesigner::setParameterScripting(U2OpStatus &os, QString parameter, QString scriptMode, bool exactMatch){
     QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
     CHECK_SET_ERR(table,"tableView not found");
 
@@ -786,7 +797,7 @@ void GTUtilsWorkflowDesigner::setParameterScripting(U2OpStatus &os, QString para
     int row = -1;
     for(int i = 0; i<iMax; i++){
         QString s = model->data(model->index(i,0)).toString();
-        if (s.contains(parameter,Qt::CaseInsensitive))
+        if (equalStrings(s, parameter, exactMatch))
             row = i;
     }
     GT_CHECK(row != -1, "parameter not found");
