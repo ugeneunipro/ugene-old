@@ -13661,6 +13661,24 @@ GUI_TEST_CLASS_DEFINITION(test_3788) {
     CHECK_SET_ERR(0 == annotatedRegions.size(), "There are annotations unexpectedly");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3797) {
+
+    // Open "data/samples/CLUSTALW/COI.aln".
+    // Toggle the collapsing mode.
+    // Select some sequence in the name area.
+    // Click the "end" or "page down" key.
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+    GTUtilsMSAEditorSequenceArea::selectSequence(os, QString("Mecopoda_sp.__Malaysia_"));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageDown"]);
+    GTGlobals::sleep(5000);
+
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3805){
     // 1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
