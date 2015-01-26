@@ -8540,6 +8540,37 @@ GUI_TEST_CLASS_DEFINITION(test_2754) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2762) {
+/*  1. Open something, e.g. "human_T1.fa".
+    2. Close the project.
+        Expected state: a dialog will appear that offer you to save the project.
+    3. Press escape key.
+        Expected state: the dialog will closed as canceled.
+*/
+    class EscClicker : public Filler {
+    public:
+        EscClicker(U2OpStatus& _os) : Filler(_os, "SaveProjectDialog"){}
+        virtual void run(){
+
+            GTGlobals::sleep();
+#ifdef Q_OS_MAC
+            QDialogButtonBox *buttonBox = qobject_cast<QDialogButtonBox *>(GTWidget::findWidget(os, "buttonBox"));
+            QAbstractButton* cancel = buttonBox->button(QDialogButtonBox::Cancel);
+            GTWidget::click(os, cancel);
+#else
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+#endif
+        }
+    };
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsDialog::waitForDialog(os, new EscClicker(os));
+    GTGlobals::sleep(1000);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+
+    GTUtilsProject::checkProject(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2770) {
     //1. File -> New document from text.
     //2. Data: TTTTTTTTTTTTTTTTTTTTTTTAAATTTTTTTTTTTTTTTTTTTTTTT
