@@ -3643,7 +3643,53 @@ GUI_TEST_CLASS_DEFINITION(test_1731){
     CHECK_SET_ERR(num1 != "100%", "unexpected sumilarity value an line 1: " + num1);
     CHECK_SET_ERR(num3 != "100%", "unexpected sumilarity value an line 3: " + num3);
 }
+GUI_TEST_CLASS_DEFINITION(test_1733){
+    // 1) Run UGENE
+    // 2) Open Workflow Designer 
+    // 3) Open Call Variant Pipeline scheme from the samples 
+    // 4) Try to specify parameters (using wizard or wd standard interface) with files 
+    // (for example specify any of file from "data/samples/Genbank" directory as "Bed or position list file" on page #2 of wizard )
+    // Expected state: UGENE doesn't ask to specify folder
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
+    GTUtilsWorkflowDesigner::addSample(os, "Call variants with SAMtools");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Assembly (BAM/SAM)"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Assembly/", "chrM.sam");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Assembly/", "chrM.fa");
+
+}
+GUI_TEST_CLASS_DEFINITION(test_1738){
+    // 1. Open WD and load "Call variants with SAMtools" scheme from samples
+    // 2. Set files "_common_data/fasta/Mycobacterium.fna" and "_common_data/bam/Mycobacterium.sorted.bam" as input reference
+    // and assembly respectively.
+    // 2. Run the Call Variants pipeline with standard options
+    // 3. Press "Stop scheme" button on the main toolbar
+    // Expected state: the pipeline is stopped almost immediately
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::addSample(os, "Call variants with SAMtools");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Assembly (BAM/SAM)"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "bam/", "Mycobacterium.sorted.bam");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "fasta/", "Mycobacterium.fa");
+
+    GTWidget::click(os,GTAction::button(os,"Run workflow"));
+    GTGlobals::sleep(5000);
+
+    GTWidget::click(os,GTAction::button(os,"Run workflow"));
+    GTGlobals::sleep(5000);
+
+}
 GUI_TEST_CLASS_DEFINITION(test_1786){
     // 1. Use menu {File->Access remote database...}
     // 2. Select database UniProt(DAS)
