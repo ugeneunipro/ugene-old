@@ -14020,6 +14020,42 @@ GUI_TEST_CLASS_DEFINITION(test_3891) {
     CHECK_SET_ERR(fetchAnnotationsButton->isEnabled(), "Fetch annotations button is unexpectedly disabled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3903) {
+/*
+    1. Open any sequence
+    2. Open and close Find Pattern tab
+    3. Remove sub-sequence
+    4. Press Ctrl+F
+    5. Input e.g. 'A'
+    Expected state: Log shouldn't contain errors
+    Current state: SAFE_POINT is triggered
+    or
+    Current state: the warning appeared "there is no pattern to search"
+    (The problem is in 'Region to search' parameter)
+
+*/
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
+    GTGlobals::sleep(500);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Remove subsequence..."));
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "100..199950"));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTLogTracer lt;
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    GTKeyboardDriver::keySequence(os, "A");
+    GTGlobals::sleep(1000);
+    CHECK_SET_ERR(lt.hasError() == false, "Log shouldn't contain errors");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3904) {
     //1. Open file "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
