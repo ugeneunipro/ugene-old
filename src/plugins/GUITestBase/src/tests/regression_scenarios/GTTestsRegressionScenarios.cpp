@@ -14091,6 +14091,18 @@ GUI_TEST_CLASS_DEFINITION(test_3905) {
     CHECK_SET_ERR(referenceName.isEmpty(), "A reference sequence was not reset");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3927) {
+    // 1. Open "_common_data/scenarios/msa/ma.aln".
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+    // 2. Enable collapsing mode.
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+    // 3. Remove the first sequence. x3
+    GTUtilsMSAEditorSequenceArea::removeSequence(os, "Phaneroptera_falcata");
+    GTUtilsMSAEditorSequenceArea::removeSequence(os, "Isophya_altaica_EF540820");
+    GTUtilsMSAEditorSequenceArea::removeSequence(os, "Bicolorana_bicolor_EF540830");
+    //Expected state safe point didn't triggered
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
