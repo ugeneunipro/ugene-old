@@ -19,31 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _GTTESTS_PRIMER_LIBRARY_H_
-#define _GTTESTS_PRIMER_LIBRARY_H_
+#include <U2Core/L10n.h>
 
-#include <U2Test/GUITestBase.h>
+#include "ImportPrimersMultiTask.h"
 
 namespace U2 {
-namespace GUITest_common_scenarios_primer_library {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_common_scenarios_primer_library_"
 
-GUI_TEST_CLASS_DECLARATION(test_0001)
-GUI_TEST_CLASS_DECLARATION(test_0002)
-GUI_TEST_CLASS_DECLARATION(test_0003)
-GUI_TEST_CLASS_DECLARATION(test_0004)
-GUI_TEST_CLASS_DECLARATION(test_0005)
-GUI_TEST_CLASS_DECLARATION(test_0006)
-GUI_TEST_CLASS_DECLARATION(test_0007)
-GUI_TEST_CLASS_DECLARATION(test_0008)
-GUI_TEST_CLASS_DECLARATION(test_0009)
-GUI_TEST_CLASS_DECLARATION(test_0010)
-GUI_TEST_CLASS_DECLARATION(test_0011)
-GUI_TEST_CLASS_DECLARATION(test_0012)
-GUI_TEST_CLASS_DECLARATION(test_0013)
+ImportPrimersMultiTask::ImportPrimersMultiTask(const QList<Task *> &importSubtasks) :
+    MultiTask(tr("Import primers"), importSubtasks, false,
+              TaskFlags(TaskFlag_NoRun | TaskFlag_ReportingIsEnabled | TaskFlag_ReportingIsSupported)) {
+}
 
-} // GUITest_common_scenarios_primer_library
-} // U2
+QString ImportPrimersMultiTask::generateReport() const {
+    QString report = "<hr><br>";
+    foreach (Task *subtask, getSubtasks()) {
+        report += subtask->generateReport() + "<br>";
+    }
+    return report;
+}
 
-#endif // _GTTESTS_PRIMER_LIBRARY_H_
+}   // namespace U2

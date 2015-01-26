@@ -19,31 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _GTTESTS_PRIMER_LIBRARY_H_
-#define _GTTESTS_PRIMER_LIBRARY_H_
+#ifndef _U2_EXPORT_PRIMERS_DIALOG_FILLER_H_
+#define _U2_EXPORT_PRIMERS_DIALOG_FILLER_H_
 
-#include <U2Test/GUITestBase.h>
+#include "GTUtilsDialog.h"
 
 namespace U2 {
-namespace GUITest_common_scenarios_primer_library {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_common_scenarios_primer_library_"
 
-GUI_TEST_CLASS_DECLARATION(test_0001)
-GUI_TEST_CLASS_DECLARATION(test_0002)
-GUI_TEST_CLASS_DECLARATION(test_0003)
-GUI_TEST_CLASS_DECLARATION(test_0004)
-GUI_TEST_CLASS_DECLARATION(test_0005)
-GUI_TEST_CLASS_DECLARATION(test_0006)
-GUI_TEST_CLASS_DECLARATION(test_0007)
-GUI_TEST_CLASS_DECLARATION(test_0008)
-GUI_TEST_CLASS_DECLARATION(test_0009)
-GUI_TEST_CLASS_DECLARATION(test_0010)
-GUI_TEST_CLASS_DECLARATION(test_0011)
-GUI_TEST_CLASS_DECLARATION(test_0012)
-GUI_TEST_CLASS_DECLARATION(test_0013)
+class ExportPrimersDialogFiller : public Filler {
+public:
+    enum ExportTarget {LocalFile, SharedDb};
 
-} // GUITest_common_scenarios_primer_library
-} // U2
+    ExportPrimersDialogFiller(U2OpStatus &os, CustomScenario *scenario = NULL);
 
-#endif // _GTTESTS_PRIMER_LIBRARY_H_
+    void commonScenario();
+
+    static QWidget *getDialog(U2OpStatus &os);
+    static void setExportTarget(U2OpStatus &os, ExportTarget exportTarget);
+    static void setFormat(U2OpStatus &os, const QString &format);
+    static void setFilePath(U2OpStatus &os, const QString &filePath);
+    static void setDatabase(U2OpStatus &os, const QString &database);
+    static void setFolder(U2OpStatus &os, const QString &folder);
+};
+
+}   // namespace U2
+
+#endif // _U2_EXPORT_PRIMERS_DIALOG_FILLER_H_

@@ -33,6 +33,7 @@ class ADVSingleSequenceWidget;
 class GTUtilsSequenceView {
 public:
     static void getSequenceAsString(U2OpStatus &os, QString &sequence);
+    static QString getSequenceAsString(U2OpStatus &os, int number = 0);
     static QString getBeginOfSequenceAsString(U2OpStatus &os, int length);
     static QString getEndOfSequenceAsString(U2OpStatus &os, int length);
     static int getLengthOfSequence(U2OpStatus &os);
@@ -46,7 +47,8 @@ public:
 
     static ADVSingleSequenceWidget * getSeqWidgetByNumber(U2OpStatus &os, int number = 0, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
     static int getSeqWidgetsNumber(U2OpStatus &os);
-    static QString getSeqName(U2OpStatus &os, ADVSingleSequenceWidget*);
+    static QString getSeqName(U2OpStatus &os, int number = 0);
+    static QString getSeqName(U2OpStatus &os, ADVSingleSequenceWidget *seqWidget);
 };
 
 } // namespace U2

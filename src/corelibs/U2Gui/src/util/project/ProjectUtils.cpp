@@ -19,9 +19,11 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Folder.h>
+#include <U2Core/ProjectModel.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -31,6 +33,24 @@ namespace U2 {
 
 const int ProjectUtils::MAX_OBJS_TO_SHOW_LOAD_PROGRESS = 100;
 const QString ProjectUtils::RECYCLE_BIN_FOLDER_PATH = U2ObjectDbi::ROOT_FOLDER + U2ObjectDbi::RECYCLE_BIN_FOLDER;
+
+QList<Document *> ProjectUtils::getConnectedSharedDatabases() {
+    QList<Document *> result;
+    Project *proj = AppContext::getProject();
+    CHECK(NULL != proj, result);
+
+    foreach (Document *doc, proj->getDocuments()) {
+        if (doc->isDatabaseConnection()) {
+            result << doc;
+        }
+    }
+
+    return result;
+}
+
+bool ProjectUtils::areSharedDatabasesAvailable() {
+    return !getConnectedSharedDatabases().isEmpty();
+}
 
 bool ProjectUtils::isConnectedDatabaseDoc(const Document *doc) {
     CHECK(NULL != doc, false);

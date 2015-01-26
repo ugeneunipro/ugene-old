@@ -138,4 +138,21 @@ void ProjectTreeItemSelectorDialog::selectObjectsAndFolders(const ProjectTreeCon
     }
 }
 
+Folder ProjectTreeItemSelectorDialog::selectFolder(QWidget *parent) {
+    ProjectTreeControllerModeSettings settings;
+    settings.allowMultipleSelection = false;
+
+    ProjectTreeItemSelectorDialogImpl d(parent, settings);
+    int rc = d.exec();
+
+    if (rc == QDialog::Accepted) {
+        SAFE_POINT(NULL != d.controller, "Invalid project tree controller", Folder());
+        const QList<Folder> folders = d.controller->getSelectedFolders();
+        if (!folders.isEmpty()) {
+            return folders.first();
+        }
+    }
+    return Folder();
+}
+
 }//namespace

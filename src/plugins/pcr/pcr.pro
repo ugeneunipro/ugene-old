@@ -16,13 +16,24 @@ HEADERS += src/EditPrimerDialog.h \
            src/PrimerLibraryMdiWindow.h \
            src/PrimerLibrarySelector.h \
            src/PrimerLibraryTable.h \
+           src/PrimerLibraryTableController.h \
            src/PrimerLibraryWidget.h \
            src/PrimerLineEdit.h \
            src/PrimerStatistics.h \
            src/PrimersDetailsDialog.h \
-           src/PrimersGrouperWorker.h 
+           src/PrimersGrouperWorker.h \ 
+           src/export/ExportPrimersDialog.h \
+           src/export/ExportPrimersToDatabaseTask.h \
+           src/export/ExportPrimersToLocalFileTask.h \
+           src/import/ImportPrimerFromObjectTask.h \
+           src/import/ImportPrimersDialog.h \
+           src/import/ImportPrimersFromFileTask.h \
+           src/import/ImportPrimersFromFolderTask.h \
+           src/import/ImportPrimersMultiTask.h \
 
 FORMS += src/ui/EditPrimerDialog.ui \
+         src/ui/ExportPrimersDialog.ui \
+         src/ui/ImportPrimersDialog.ui \
          src/ui/InSilicoPcrOptionPanelWidget.ui \
          src/ui/PrimerGroupBox.ui \
          src/ui/PrimerLibrarySelector.ui \
@@ -45,11 +56,20 @@ SOURCES += src/EditPrimerDialog.cpp \
            src/PrimerLibraryMdiWindow.cpp \
            src/PrimerLibrarySelector.cpp \
            src/PrimerLibraryTable.cpp \
+           src/PrimerLibraryTableController.cpp \
            src/PrimerLibraryWidget.cpp \
            src/PrimerLineEdit.cpp \
            src/PrimerStatistics.cpp \
            src/PrimersDetailsDialog.cpp \
-           src/PrimersGrouperWorker.cpp 
+           src/PrimersGrouperWorker.cpp \ 
+           src/export/ExportPrimersDialog.cpp \
+           src/export/ExportPrimersToDatabaseTask.cpp \
+           src/export/ExportPrimersToLocalFileTask.cpp \
+           src/import/ImportPrimerFromObjectTask.cpp \
+           src/import/ImportPrimersDialog.cpp \
+           src/import/ImportPrimersFromFileTask.cpp \
+           src/import/ImportPrimersFromFolderTask.cpp \
+           src/import/ImportPrimersMultiTask.cpp \
 
 TRANSLATIONS += transl/czech.ts \
                 transl/english.ts \

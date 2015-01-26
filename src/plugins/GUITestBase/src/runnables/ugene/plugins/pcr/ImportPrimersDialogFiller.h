@@ -19,32 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_PRIMER_H_
-#define _U2_PRIMER_H_
+#ifndef _U2_IMPORT_PRIMERS_DIALOG_FILLER_H_
+#define _U2_IMPORT_PRIMERS_DIALOG_FILLER_H_
 
-#include <U2Core/U2Type.h>
+#include "GTUtilsDialog.h"
 
 namespace U2 {
 
-class Primer : public U2Entity {
+class ImportPrimersDialogFiller : public Filler {
 public:
-    Primer();
+    enum ImportSource {LocalFiles, SharedDb};
 
-    /* Primer name */
-    QString name;
+    ImportPrimersDialogFiller(U2OpStatus &os, CustomScenario *scenario = NULL);
 
-    /* ACGT sequence */
-    QString sequence;
+    void commonScenario();
 
-    /* GC-content [0..100] % */
-    double gc;
-
-    /* Melting temperature */
-    double tm;
-
-    static const int MAX_LEN = 1024;
+    static void setImportTarget(U2OpStatus &os, ImportSource importSource);
+    static void addFile(U2OpStatus &os, const QString &filePath);
+    static void connectDatabase(U2OpStatus &os, const QString &databaseName);
+    static void addObjects(U2OpStatus &os, const QString &databaseName, const QStringList &objectNames);
+    static void addObjects(U2OpStatus &os, const QMap<QString, QStringList> &databaseAndObjectNames);
+    static QWidget * getDialog(U2OpStatus &os);
 };
 
-} // U2
+}   // namespace U2
 
-#endif // _U2_PRIMER_H_
+#endif // _U2_IMPORT_PRIMERS_DIALOG_FILLER_H_

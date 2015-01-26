@@ -22,16 +22,22 @@
 #include <QMessageBox>
 #include <QPushButton>
 
+#include <U2Core/AppContext.h>
 #include <U2Core/L10n.h>
+#include <U2Core/TaskSignalMapper.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/HelpButton.h>
 
 #include "EditPrimerDialog.h"
+#include "PrimerLibrary.h"
 #include "PrimerLibraryTable.h"
-
+#include "PrimerLibraryTableController.h"
 #include "PrimerLibraryWidget.h"
+#include "export/ExportPrimersDialog.h"
+#include "import/ImportPrimersDialog.h"
+#include "import/ImportPrimersMultiTask.h"
 
 #define CHECK_OP_UI(os, result) \
     if (os.hasError()) { \
@@ -56,8 +62,15 @@ PrimerLibraryWidget::PrimerLibraryWidget(QWidget *parent)
     removePrimersButton = buttonBox->addButton(tr("Remove primer(s)"), QDialogButtonBox::ActionRole);
     connect(removePrimersButton, SIGNAL(clicked()), SLOT(sl_removePrimers()));
 
+    QPushButton *importPrimersButton = buttonBox->addButton(tr("Import primer(s)"), QDialogButtonBox::ActionRole);
+    connect(importPrimersButton, SIGNAL(clicked()), SLOT(sl_importPrimers()));
+
+    exportPrimersButton = buttonBox->addButton(tr("Export primer(s)"), QDialogButtonBox::ActionRole);
+    connect(exportPrimersButton, SIGNAL(clicked()), SLOT(sl_exportPrimers()));
+
     connect(buttonBox, SIGNAL(rejected()), SIGNAL(si_close()));
 
+    new PrimerLibraryTableController(this, primerTable);
     connect(primerTable, SIGNAL(doubleClicked(const QModelIndex &)), SLOT(sl_editPrimer()));
     connect(primerTable->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)), SLOT(sl_selectionChanged()));
     sl_selectionChanged();
@@ -69,8 +82,11 @@ void PrimerLibraryWidget::sl_newPrimer() {
     CHECK(QDialog::Accepted == result, );
 
     U2OpStatusImpl os;
+    PrimerLibrary *library = PrimerLibrary::getInstance(os);
+    CHECK_OP_UI(os, );
+
     Primer primer = dlg.getPrimer();
-    primerTable->addPrimer(primer, os);
+    library->addRawPrimer(primer, os);
     CHECK_OP_UI(os, );
 }
 
@@ -83,29 +99,44 @@ void PrimerLibraryWidget::sl_editPrimer() {
     CHECK(QDialog::Accepted == result, );
 
     U2OpStatusImpl os;
+    PrimerLibrary *library = PrimerLibrary::getInstance(os);
+    CHECK_OP_UI(os, );
+
     Primer primer = dlg.getPrimer();
     primer.id = primerToEdit.id;
-    primerTable->updatePrimer(primer, os);
+    library->updateRawPrimer(primer, os);
     CHECK_OP_UI(os, );
 }
 
 void PrimerLibraryWidget::sl_removePrimers() {
-    QItemSelectionModel *selectionModel = primerTable->selectionModel();
-    SAFE_POINT(NULL != selectionModel, L10N::nullPointerError("Selection"), );
+    const QList<Primer> primers = primerTable->getSelection();
 
-    QModelIndexList selection = selectionModel->selectedIndexes();
-    while (!selection.isEmpty()) {
-        U2OpStatusImpl os;
-        primerTable->removePrimer(selection.first(), os);
+    U2OpStatusImpl os;
+    PrimerLibrary *library = PrimerLibrary::getInstance(os);
+    CHECK_OP_UI(os, );
+
+    foreach (const Primer &primer, primers) {
+        library->removePrimer(primer, os);
         CHECK_OP_UI(os, );
-        selection = selectionModel->selectedIndexes();
     }
+}
+
+void PrimerLibraryWidget::sl_importPrimers() {
+    ImportPrimersDialog importDialog;
+    importDialog.exec();
+}
+
+void PrimerLibraryWidget::sl_exportPrimers() {
+    const QList<Primer> selection = primerTable->getSelection();
+    SAFE_POINT(!selection.isEmpty(), L10N::nullPointerError("Selection"), );
+    ExportPrimersDialog(selection).exec();
 }
 
 void PrimerLibraryWidget::sl_selectionChanged() {
     QList<Primer> selection = primerTable->getSelection();
     editPrimerButton->setEnabled(1 == selection.size());
     removePrimersButton->setDisabled(selection.isEmpty());
+    exportPrimersButton->setDisabled(selection.isEmpty());
 }
 
 } // U2

@@ -1786,6 +1786,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0008);
+    REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0009);
+    REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0010);
+    REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0011);
+    REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0012);
+    REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0013);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

@@ -32,6 +32,8 @@ class Folder;
 class U2GUI_EXPORT ProjectUtils {
 public:
     /** Returns true if the document is a shared database */
+    static QList<Document *> getConnectedSharedDatabases();
+    static bool areSharedDatabasesAvailable();
     static bool isConnectedDatabaseDoc(const Document *doc);
     static bool isDatabaseDoc(const Document *doc);
 

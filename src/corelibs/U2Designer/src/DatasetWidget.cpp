@@ -42,6 +42,7 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ProjectTreeControllerModeSettings.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
+#include <U2Gui/ProjectUtils.h>
 #include <U2Gui/SharedConnectionsDialog.h>
 #include <U2Gui/U2FileDialog.h>
 
@@ -133,20 +134,6 @@ void URLListWidget::sl_addDirButton() {
 
 namespace {
 
-bool sharedDbsAvailable() {
-    Project *proj = AppContext::getProject();
-    if (NULL == proj) {
-        return false;
-    }
-
-    foreach (Document *doc, proj->getDocuments()) {
-        if (doc->isDatabaseConnection()) {
-            return true;
-        }
-    }
-    return false;
-}
-
 ProjectTreeControllerModeSettings createProjectTreeSettings(const QSet<GObjectType> &compatibleObjTypes) {
     ProjectTreeControllerModeSettings settings;
     settings.objectTypesToShow += compatibleObjTypes;
@@ -173,7 +160,7 @@ void URLListWidget::sl_sharedDbConnected() {
 
 void URLListWidget::sl_addFromDbButton() {
     CHECK(!waitingForDbToConnect, );
-    if (!sharedDbsAvailable()) {
+    if (!ProjectUtils::areSharedDatabasesAvailable()) {
          if (QDialog::Accepted == connectToDbDialog->exec()) {
              waitingForDbToConnect = true;
          }

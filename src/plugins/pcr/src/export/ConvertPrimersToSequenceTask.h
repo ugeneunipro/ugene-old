@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2015 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -19,32 +19,34 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_PRIMER_H_
-#define _U2_PRIMER_H_
+#ifndef _U2_CONVERT_PRIMERS_TO_SEQUENCE_TASK_H_
+#define _U2_CONVERT_PRIMERS_TO_SEQUENCE_TASK_H_
 
-#include <U2Core/U2Type.h>
+#include <U2Core/Task.h>
+#include <U2Core/U2DbiUtils.h>
+
+#include "Primer.h"
 
 namespace U2 {
 
-class Primer : public U2Entity {
+class U2SequenceObject;
+
+class ConvertPrimersToSequenceTask : public Task {
 public:
-    Primer();
+    ConvertPrimersToSequenceTask(const QList<Primer> &primers, const U2DbiRef &dbiRef);
 
-    /* Primer name */
-    QString name;
+    void run();
 
-    /* ACGT sequence */
-    QString sequence;
+    QList<U2SequenceObject *> takeObjects();
 
-    /* GC-content [0..100] % */
-    double gc;
+private:
+    const QList<Primer> primers;
+    const U2DbiRef &dbiRef;
 
-    /* Melting temperature */
-    double tm;
-
-    static const int MAX_LEN = 1024;
+    TmpDbiObjects sequences;
+    QHash<U2DataId, QString> id2name;
 };
 
-} // U2
+}   // namespace U2
 
-#endif // _U2_PRIMER_H_
+#endif // _U2_CONVERT_PRIMERS_TO_SEQUENCE_TASK_H_

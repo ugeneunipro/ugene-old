@@ -35,9 +35,10 @@ public:
     static QString uninitializedDatabase();
     static QString versionDatabase();
     static QString login();
+    static QString readOnlyLogin();
     static QString password();
 
-    static void initTestConnectionInfo(const QString &name, const QString &db = database(), bool withCredentials = true);
+    static void initTestConnectionInfo(const QString &name, const QString &db = database(), bool withCredentials = true, bool readOnly = false);
 };
 
 } // U2

@@ -27,9 +27,9 @@
 
 #include "PrimerGroupBox.h"
 #include "PrimerLibrary.h"
-#include "PrimerStatistics.h"
 
 #include "PrimerLibraryTable.h"
+#include "PrimerStatistics.h"
 
 namespace U2 {
 
@@ -100,46 +100,28 @@ Primer PrimerLibraryModel::getPrimer(const QModelIndex &index, U2OpStatus &os) c
     return primers.at(index.row());
 }
 
-void PrimerLibraryModel::addPrimer(Primer &primer, U2OpStatus &os) {
-    PrimerLibrary *primerLibrary = PrimerLibrary::getInstance(os);
-    CHECK_OP(os, );
-
-    // Append statistics
-    PrimerStatisticsCalculator calc(primer.sequence.toLocal8Bit());
-    primer.gc = calc.getGC();
-    primer.tm = calc.getTm();
-
-    primerLibrary->addPrimer(primer, os);
-    CHECK_OP(os, );
-
+void PrimerLibraryModel::addPrimer(const Primer &primer) {
     beginInsertRows(QModelIndex(), primers.size(), primers.size());
     primers << primer;
     endInsertRows();
 }
 
-void PrimerLibraryModel::updatePrimer(Primer &primer, U2OpStatus &os) {
-    PrimerLibrary *primerLibrary = PrimerLibrary::getInstance(os);
-    CHECK_OP(os, );
-
-    // Append statistics
-    PrimerStatisticsCalculator calc(primer.sequence.toLocal8Bit());
-    primer.gc = calc.getGC();
-    primer.tm = calc.getTm();
-
-    primerLibrary->updatePrimer(primer, os);
-    CHECK_OP(os, );
-
+void PrimerLibraryModel::updatePrimer(const Primer &primer) {
     onPrimerChanged(primer);
 }
 
 void PrimerLibraryModel::removePrimer(const QModelIndex &index, U2OpStatus &os) {
-    PrimerLibrary *primerLibrary = PrimerLibrary::getInstance(os);
-    CHECK_OP(os, );
-
     SAFE_POINT_EXT(index.row() >= 0 && index.row() < primers.size(), os.setError(tr("Incorrect primer number")), );
     beginRemoveRows(QModelIndex(), index.row(), index.row());
-    Primer primer = primers.takeAt(index.row());
-    primerLibrary->removePrimer(primer, os);
+    primers.removeAt(index.row());
+    endRemoveRows();
+}
+
+void PrimerLibraryModel::removePrimer(const U2DataId &primerId, U2OpStatus &os) {
+    int row = getRow(primerId);
+    SAFE_POINT_EXT(row >= 0 && row < primers.size(), os.setError(tr("Incorrect primer number")), );
+    beginRemoveRows(QModelIndex(), row, row);
+    primers.removeAt(row);
     endRemoveRows();
 }
 
@@ -210,16 +192,16 @@ QList<Primer> PrimerLibraryTable::getSelection() const {
     return result;
 }
 
-void PrimerLibraryTable::addPrimer(Primer &primer, U2OpStatus &os) {
-    model->addPrimer(primer, os);
+void PrimerLibraryTable::addPrimer(const Primer &primer) {
+    model->addPrimer(primer);
 }
 
-void PrimerLibraryTable::updatePrimer(Primer &primer, U2OpStatus &os) {
-    model->updatePrimer(primer, os);
+void PrimerLibraryTable::updatePrimer(const Primer &primer) {
+    model->updatePrimer(primer);
 }
 
-void PrimerLibraryTable::removePrimer(const QModelIndex &index, U2OpStatus &os) {
-    model->removePrimer(index, os);
+void PrimerLibraryTable::removePrimer(const U2DataId &primerId, U2OpStatus &os) {
+    model->removePrimer(primerId, os);
 }
 
 bool PrimerLibraryTable::eventFilter(QObject *watched, QEvent *event) {

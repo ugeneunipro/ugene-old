@@ -30,6 +30,7 @@
 #include <U2Core/UdrSchemaRegistry.h>
 #include <U2Core/UserApplicationsSettings.h>
 
+#include "PrimerStatistics.h"
 #include "PrimerLibrary.h"
 
 namespace U2 {
@@ -107,7 +108,7 @@ void PrimerLibrary::initPrimerUdr(U2OpStatus &os) {
     }
 }
 
-void PrimerLibrary::addPrimer(Primer &primer, U2OpStatus &os) {
+void PrimerLibrary::addPrimer(const Primer &primer, U2OpStatus &os) {
     QList<UdrValue> values;
     values << UdrValue(primer.name);
     values << UdrValue(primer.sequence);
@@ -116,7 +117,7 @@ void PrimerLibrary::addPrimer(Primer &primer, U2OpStatus &os) {
     UdrRecordId record = udrDbi->addRecord(PRIMER_UDR_ID, values, os);
     CHECK_OP(os, );
 
-    primer.id = record.getRecordId();
+    emit si_primerAdded(record.getRecordId());
 }
 
 void PrimerLibrary::updatePrimer(const Primer &primer, U2OpStatus &os) {
@@ -127,6 +128,24 @@ void PrimerLibrary::updatePrimer(const Primer &primer, U2OpStatus &os) {
     values << UdrValue(primer.tm);
     UdrRecordId recordId(PRIMER_UDR_ID, primer.id);
     udrDbi->updateRecord(recordId, values, os);
+
+    emit si_primerChanged(primer.id);
+}
+
+Primer PrimerLibrary::getPrimer(const U2DataId &primerId, U2OpStatus &os) const {
+    Primer result;
+
+    const UdrRecord record = udrDbi->getRecord(UdrRecordId(PRIMER_UDR_ID, primerId), os);
+    CHECK_OP(os, result);
+
+    result.id = record.getId().getRecordId();
+    result.name = record.getString(NAME_FILED, os);
+    result.sequence = record.getString(SEQ_FILED, os);
+    result.gc = record.getDouble(GC_FILED, os);
+    result.tm = record.getDouble(TM_FILED, os);
+    CHECK_OP(os, result);
+
+    return result;
 }
 
 QList<Primer> PrimerLibrary::getPrimers(U2OpStatus &os) const {
@@ -150,8 +169,23 @@ QList<Primer> PrimerLibrary::getPrimers(U2OpStatus &os) const {
 }
 
 void PrimerLibrary::removePrimer(const Primer &primer, U2OpStatus &os) {
+    emit si_primerRemoved(primer.id);
     UdrRecordId recordId(PRIMER_UDR_ID, primer.id);
     udrDbi->removeRecord(recordId, os);
+}
+
+void PrimerLibrary::addRawPrimer(Primer primer, U2OpStatus &os) {
+    PrimerStatisticsCalculator calc(primer.sequence.toLocal8Bit());
+    primer.gc = calc.getGC();
+    primer.tm = calc.getTm();
+    addPrimer(primer, os);
+}
+
+void PrimerLibrary::updateRawPrimer(Primer primer, U2OpStatus &os) {
+    PrimerStatisticsCalculator calc(primer.sequence.toLocal8Bit());
+    primer.gc = calc.getGC();
+    primer.tm = calc.getTm();
+    updatePrimer(primer, os);
 }
 
 } // U2

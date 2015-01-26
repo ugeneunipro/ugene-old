@@ -19,30 +19,45 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_PROJECT_TREE_ITEM_SELECTOR_DIALOG_H_
-#define _U2_PROJECT_TREE_ITEM_SELECTOR_DIALOG_H_
+#ifndef _U2_EXPORT_PRIMERS_DIALOG_H_
+#define _U2_EXPORT_PRIMERS_DIALOG_H_
 
-#include <U2Core/Folder.h>
-
-class QWidget;
+#include "Primer.h"
+#include "ui/ui_ExportPrimersDialog.h"
 
 namespace U2 {
 
 class Document;
-class GObject;
-class ProjectTreeControllerModeSettings;
-class StateLockableTreeItem;
 
-class U2GUI_EXPORT ProjectTreeItemSelectorDialog {
+class ExportPrimersDialog : public QDialog, private Ui_ExportPrimersDialog {
+    Q_OBJECT
 public:
-    static QList<Document *> selectDocuments(const ProjectTreeControllerModeSettings &s, QWidget *p);
-    static QList<GObject *> selectObjects(const ProjectTreeControllerModeSettings &s, QWidget *p);
-    static void selectObjectsAndDocuments(const ProjectTreeControllerModeSettings &s, QWidget *p, QList<Document *> &docList, QList<GObject *> &objList);
-    static void selectObjectsAndFolders(const ProjectTreeControllerModeSettings &s, QWidget *p, QList<Folder> &folderList, QList<GObject *> &objList);
-    static Folder selectFolder(QWidget *parent);
+    ExportPrimersDialog(const QList<Primer> &primers);
+
+private slots:
+    void sl_updateState();
+    void sl_formatChanged();
+    void sl_fileBrowse();
+    void sl_connect();
+    void sl_connectionCompleted();
+    void sl_documentAdded(Document *document);
+    void sl_documentRemoved(Document *document);
+    void sl_folderBrowse();
+    void accept();
+
+private:
+    void init();
+    void initDatabases();
+    void connectSignals();
+    void connectProjectSignals();
+    bool isFileMode() const;
+
+    QList<Primer> primers;
+
+    static const QString LOCAL_FILE;
+    static const QString SHARED_DB;
 };
 
+}   // namespace U2
 
-
-}//namespace
-#endif
+#endif // _U2_EXPORT_PRIMERS_DIALOG_H_

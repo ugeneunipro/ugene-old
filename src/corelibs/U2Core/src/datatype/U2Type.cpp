@@ -142,6 +142,13 @@ bool registerMetaInfo() {
     return true;
 }
 
+bool registerDataId() {
+    qRegisterMetaType<U2DataId>("U2DataId");
+    return true;
+}
+
+bool u2DataIdRegistered = registerDataId();
+
 }
 
 bool U2DbiRef::metaInfoRegistered = registerMetaInfo();

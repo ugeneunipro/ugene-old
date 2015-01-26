@@ -108,6 +108,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h \
 #   Runnables / UGENE / plugins / pcr
             src/runnables/ugene/plugins/pcr/AddPrimerDialogFiller.h \
+            src/runnables/ugene/plugins/pcr/ExportPrimersDialogFiller.h \
+            src/runnables/ugene/plugins/pcr/ImportPrimersDialogFiller.h \
             src/runnables/ugene/plugins/pcr/PrimerLibrarySelectorFiller.h \
             src/runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h \
 #   Runnables / UGENE / plugins / weight_matrix
@@ -350,6 +352,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp \
 #   Runnables / UGENE / plugins / pcr
             src/runnables/ugene/plugins/pcr/AddPrimerDialogFiller.cpp \
+            src/runnables/ugene/plugins/pcr/ExportPrimersDialogFiller.cpp \
+            src/runnables/ugene/plugins/pcr/ImportPrimersDialogFiller.cpp \
             src/runnables/ugene/plugins/pcr/PrimerLibrarySelectorFiller.cpp \
             src/runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.cpp \
 #   Runnables / UGENE / plugins / weight_matrix

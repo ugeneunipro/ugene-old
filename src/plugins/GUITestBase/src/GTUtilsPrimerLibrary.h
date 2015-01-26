@@ -31,13 +31,19 @@ namespace U2 {
 
 class GTUtilsPrimerLibrary {
 public:
-    enum Button {Add, Edit, Remove, Close};
+    enum Button {Add, Edit, Remove, Import, Export, Close};
     static QWidget * openLibrary(U2OpStatus &os);
     static void clickButton(U2OpStatus &os, Button button);
     static QAbstractButton * getButton(U2OpStatus &os, Button button);
     static int librarySize(U2OpStatus &os);
     static QString getPrimerSequence(U2OpStatus &os, int number);
+    static QString getPrimerSequence(U2OpStatus &os, const QString &name);
     static QPoint getPrimerPoint(U2OpStatus &os, int number);
+    static void clickPrimer(U2OpStatus &os, int number);
+    static void clearLibrary(U2OpStatus &os);
+    static void addPrimer(U2OpStatus &os, const QString &name, const QString &data);
+    static void selectPrimers(U2OpStatus &os, const QList<int> &numbers);
+    static void selectAll(U2OpStatus &os);
 
 private:
     static QTableView * table(U2OpStatus &os);

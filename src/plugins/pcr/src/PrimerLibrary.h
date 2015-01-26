@@ -34,7 +34,8 @@ namespace U2 {
 class DbiConnection;
 class UdrDbi;
 
-class PrimerLibrary {
+class PrimerLibrary : public QObject {
+    Q_OBJECT
     Q_DISABLE_COPY(PrimerLibrary)
 public:
     ~PrimerLibrary();
@@ -42,10 +43,20 @@ public:
     static PrimerLibrary * getInstance(U2OpStatus &os);
     static void release();
 
-    void addPrimer(Primer &primer, U2OpStatus &os);
+    void addPrimer(const Primer &primer, U2OpStatus &os);
     void updatePrimer(const Primer &primer, U2OpStatus &os);
+    Primer getPrimer(const U2DataId &primerId, U2OpStatus &os) const;
     QList<Primer> getPrimers(U2OpStatus &os) const;
     void removePrimer(const Primer &primer, U2OpStatus &os);
+
+    /** Warning: these methods can be time-consuming, beware of calling them in the main thread */
+    void addRawPrimer(Primer primer, U2OpStatus &os);
+    void updateRawPrimer(Primer primer, U2OpStatus &os);
+
+signals:
+    void si_primerAdded(const U2DataId &primerId);
+    void si_primerChanged(const U2DataId &primerId);
+    void si_primerRemoved(const U2DataId &primerId);
 
 private:
     static void initPrimerUdr(U2OpStatus &os);

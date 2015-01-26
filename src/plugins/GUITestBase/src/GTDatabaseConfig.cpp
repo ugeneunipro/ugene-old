@@ -44,6 +44,7 @@ const QString DATABASE_PREFIX_2 = "database-prefix-2";
 const QString DATABASE_UNINITED_PREFIX = "database-uninited-prefix";
 const QString DATABASE_VERSION = "database-version";
 const QString LOGIN = "login";
+const QString READ_ONLY_LOGIN = "login_ro";
 const QString PASSWORD = "password";
 
 QVariant getSetting(const QString &key) {
@@ -95,12 +96,16 @@ QString GTDatabaseConfig::login() {
     return getStringSetting(LOGIN);
 }
 
+QString GTDatabaseConfig::readOnlyLogin() {
+    return getStringSetting(READ_ONLY_LOGIN);
+}
+
 QString GTDatabaseConfig::password() {
     return getStringSetting(PASSWORD);
 }
 
-void GTDatabaseConfig::initTestConnectionInfo(const QString &name, const QString &db, bool withCredentials) {
-    QString url =  U2DbiUtils::createFullDbiUrl(login(), host(), port(), db);
+void GTDatabaseConfig::initTestConnectionInfo(const QString &name, const QString &db, bool withCredentials, bool readOnly) {
+    QString url =  U2DbiUtils::createFullDbiUrl((readOnly ? readOnlyLogin() : login()), host(), port(), db);
     AppContext::getSettings()->setValue(SETTINGS_RECENT + name, url);
     if (withCredentials) {
         AppContext::getPasswordStorage()->addEntry(url, password(), true /*remember*/);

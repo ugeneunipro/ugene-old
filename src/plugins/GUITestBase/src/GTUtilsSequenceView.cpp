@@ -48,6 +48,7 @@
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
 
+#include "api/GTClipboard.h"
 #include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
@@ -113,6 +114,20 @@ void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
 
     GTMenu::showContextMenu(os, mdiWindow);
     GTGlobals::sleep(1000);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getSequenceAsString"
+QString GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, int number) {
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", "");
+
+    GTWidget::click(os, getSeqWidgetByNumber(os, number));
+
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os));
+    GTKeyboardUtils::selectAll(os);
+    GTKeyboardUtils::copy(os);
+    return GTClipboard::text(os);
 }
 #undef GT_METHOD_NAME
 
@@ -281,6 +296,12 @@ ADVSingleSequenceWidget* GTUtilsSequenceView::getSeqWidgetByNumber(U2OpStatus &o
 int GTUtilsSequenceView::getSeqWidgetsNumber(U2OpStatus &os) {
     QList<ADVSingleSequenceWidget*> seqWidgets = GTUtilsMdi::activeWindow(os)->findChildren<ADVSingleSequenceWidget*>();
     return seqWidgets.size();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getSeqName"
+QString GTUtilsSequenceView::getSeqName(U2OpStatus &os, int number) {
+    return getSeqName(os, getSeqWidgetByNumber(os, number));
 }
 #undef GT_METHOD_NAME
 

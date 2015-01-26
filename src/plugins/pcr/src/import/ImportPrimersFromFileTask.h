@@ -19,31 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _GTTESTS_PRIMER_LIBRARY_H_
-#define _GTTESTS_PRIMER_LIBRARY_H_
+#ifndef _U2_IMPORT_PRIMERS_FROM_FILE_TASK_H_
+#define _U2_IMPORT_PRIMERS_FROM_FILE_TASK_H_
 
-#include <U2Test/GUITestBase.h>
+#include <U2Core/Task.h>
 
 namespace U2 {
-namespace GUITest_common_scenarios_primer_library {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_common_scenarios_primer_library_"
 
-GUI_TEST_CLASS_DECLARATION(test_0001)
-GUI_TEST_CLASS_DECLARATION(test_0002)
-GUI_TEST_CLASS_DECLARATION(test_0003)
-GUI_TEST_CLASS_DECLARATION(test_0004)
-GUI_TEST_CLASS_DECLARATION(test_0005)
-GUI_TEST_CLASS_DECLARATION(test_0006)
-GUI_TEST_CLASS_DECLARATION(test_0007)
-GUI_TEST_CLASS_DECLARATION(test_0008)
-GUI_TEST_CLASS_DECLARATION(test_0009)
-GUI_TEST_CLASS_DECLARATION(test_0010)
-GUI_TEST_CLASS_DECLARATION(test_0011)
-GUI_TEST_CLASS_DECLARATION(test_0012)
-GUI_TEST_CLASS_DECLARATION(test_0013)
+class DocumentProviderTask;
 
-} // GUITest_common_scenarios_primer_library
-} // U2
+class ImportPrimersFromFileTask : public Task {
+public:
+    ImportPrimersFromFileTask(const QString &filePath);
 
-#endif // _GTTESTS_PRIMER_LIBRARY_H_
+    void prepare();
+    QList<Task *> onSubTaskFinished(Task *subTask);
+    QString generateReport() const;
+
+private:
+    const QString filePath;
+    DocumentProviderTask *loadTask;
+};
+
+}   // namespace U2
+
+#endif // _U2_IMPORT_PRIMERS_FROM_FILE_TASK_H_
