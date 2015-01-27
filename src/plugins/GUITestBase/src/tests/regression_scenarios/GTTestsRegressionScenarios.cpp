@@ -3185,7 +3185,7 @@ GUI_TEST_CLASS_DEFINITION(test_1673_4) {
     //Expected result: "Search in Sequence" tab has been opened, other tabs have been closed
     QWidget *prevButton = GTWidget::findWidget(os, "prevAnnotationButton", NULL, GTGlobals::FindOptions(false));
     CHECK_SET_ERR(NULL == prevButton, "Annotations options panel is not closed");
-    GTWidget::findWidget(os, "FindPatternForm");
+    GTWidget::findWidget(os, "FindPatternWidget");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1680) {
@@ -11787,7 +11787,6 @@ GUI_TEST_CLASS_DEFINITION(test_3428){
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Annotations");
     //QRect r = GTUtilsWorkflowDesigner::getItemRect(os, "Read Annotations");
     GTUtilsWorkflowDesigner::clickLink(os, "Read Annotations");
-
 //    2. Click on the "unset" parameter of the element.
 //    UGENE not crashes
 
