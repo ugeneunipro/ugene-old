@@ -171,15 +171,17 @@ void BuildIndexDialog::addGuiExtension() {
 
 void BuildIndexDialog::buildIndexUrl(const GUrl& refUrl ) {
     QString extension("");
+    GUrl url;
     if (NULL != customGUI) {
         extension = customGUI->getIndexFileExtension();
-        customGUI->buildIndexUrl(refUrl);
+        url = customGUI->buildIndexUrl(refUrl);
     }
-    GUrl url;
-    if (extension.isEmpty()) {
-        url = GUrlUtils::rollFileName(refUrl.dirPath() + "/" + refUrl.baseFileName(), DocumentUtils::getNewDocFileNameExcludesHint());
-    } else {
-        url = GUrlUtils::rollFileName(refUrl.dirPath() + "/" + refUrl.baseFileName()+ "." + extension, DocumentUtils::getNewDocFileNameExcludesHint());
+    if(url.isEmpty()){
+        if (extension.isEmpty()) {
+            url = GUrlUtils::rollFileName(refUrl.dirPath() + "/" + refUrl.baseFileName(), DocumentUtils::getNewDocFileNameExcludesHint());
+        } else {
+            url = GUrlUtils::rollFileName(refUrl.dirPath() + "/" + refUrl.baseFileName()+ "." + extension, DocumentUtils::getNewDocFileNameExcludesHint());
+        }
     }
     
     indexFileNameEdit->setText(url.getURLString());

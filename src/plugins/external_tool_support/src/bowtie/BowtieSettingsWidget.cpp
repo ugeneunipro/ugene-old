@@ -145,8 +145,8 @@ QString BowtieBuildSettingsWidget::getIndexFileExtension() {
     return QString();
 }
 
-void BowtieBuildSettingsWidget::buildIndexUrl(const GUrl& ) {
-    // do nothing
+GUrl BowtieBuildSettingsWidget::buildIndexUrl(const GUrl& ) {
+    return GUrl();
 }
 
 // BowtieGUIExtensionsFactory

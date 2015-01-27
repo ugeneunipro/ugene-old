@@ -65,7 +65,7 @@ void BuildSArraySettingsWidget::sl_onPartSliderChanged(int value) {
     totalSizeLabel->setText(QByteArray::number(value*13) + " Mb");
 }
 
-void BuildSArraySettingsWidget::buildIndexUrl(const GUrl& url) {
+GUrl BuildSArraySettingsWidget::buildIndexUrl(const GUrl& url) {
     QString refUrl = url.getURLString();
     QFile file(refUrl);
     if (file.exists()) {
@@ -76,6 +76,7 @@ void BuildSArraySettingsWidget::buildIndexUrl(const GUrl& url) {
         partSlider->setEnabled(true);
         partSlider->setValue(qMin(maxPartSize, DEFAULT_PART_SIZE));
     }
+    return GUrl();
 }
 
 } //namespace

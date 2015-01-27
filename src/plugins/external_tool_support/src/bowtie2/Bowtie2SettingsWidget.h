@@ -41,7 +41,7 @@ public:
     Bowtie2BuildSettingsWidget(QWidget *parent) : DnaAssemblyAlgorithmBuildIndexWidget(parent) {}
     virtual QMap<QString,QVariant> getBuildIndexCustomSettings() {return QMap<QString, QVariant>();}
     virtual QString getIndexFileExtension() { return QString(); }
-    virtual void buildIndexUrl(const GUrl& /*url*/) {}
+    virtual GUrl buildIndexUrl(const GUrl& /*url*/) {return GUrl();}
 };
 
 class Bowtie2GUIExtensionsFactory : public DnaAssemblyGUIExtensionsFactory {

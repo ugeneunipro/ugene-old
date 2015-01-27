@@ -84,7 +84,7 @@ public:
     BwaBuildSettingsWidget(QWidget *parent);
     virtual QMap<QString,QVariant> getBuildIndexCustomSettings();
     virtual QString getIndexFileExtension();
-    virtual void buildIndexUrl(const GUrl& url);
+    virtual GUrl buildIndexUrl(const GUrl& url);
     void validateReferenceSequence( const GUrl &url );
 
 private:

@@ -227,8 +227,8 @@ QString BwaBuildSettingsWidget::getIndexFileExtension() {
     return QString();
 }
 
-void BwaBuildSettingsWidget::buildIndexUrl(const GUrl& ) {
-    // do nothing
+GUrl BwaBuildSettingsWidget::buildIndexUrl(const GUrl& url) {
+    return url;
 }
 
 void BwaBuildSettingsWidget::validateReferenceSequence( const GUrl &url ) {

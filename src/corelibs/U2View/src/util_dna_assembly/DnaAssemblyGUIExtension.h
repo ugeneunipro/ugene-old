@@ -62,7 +62,7 @@ public:
         : DnaAssemblyAlgorithmBaseWidget(parent) { }
     virtual QMap<QString,QVariant> getBuildIndexCustomSettings() = 0;
     virtual QString getIndexFileExtension() = 0;
-    virtual void buildIndexUrl(const GUrl& url) = 0;
+    virtual GUrl buildIndexUrl(const GUrl& url) = 0;
 };
 
 class DnaAssemblyGUIExtensionsFactory {

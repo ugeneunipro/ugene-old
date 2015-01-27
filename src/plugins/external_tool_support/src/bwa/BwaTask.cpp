@@ -218,6 +218,8 @@ void BwaAlignTask::LogParser::parseErrOutput(const QString &partOfLog) {
             setLastError(errors.join(" "));
         } else if (i->contains("Abort!")) {
             setLastError(*i);
+        } else if (i->contains("[E::")) {
+            setLastError(*i);
         }
     }
 }
