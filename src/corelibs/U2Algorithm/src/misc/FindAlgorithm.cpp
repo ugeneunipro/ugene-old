@@ -71,6 +71,14 @@ QList<AnnotationData> FindAlgorithmResult::toTable(const QList<FindAlgorithmResu
     return list;
 }
 
+bool FindAlgorithmResult::lessByRegionStartPos(const U2::FindAlgorithmResult &r1, const U2::FindAlgorithmResult &r2) {
+    if (r1.region.startPos < r2.region.startPos) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 class StrandContext {
 public:
     StrandContext(int width, int height, bool insDel, const char* p)

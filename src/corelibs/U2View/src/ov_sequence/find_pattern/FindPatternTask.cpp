@@ -39,7 +39,6 @@ FindPatternTask::FindPatternTask(const FindAlgorithmTaskSettings& _settings,
       removeOverlaps(_removeOverlaps),
       noResults(false){}
 
-
 QList<Task*> FindPatternTask::onSubTaskFinished(Task* subTask)
 {
     QList<Task*> res;
@@ -54,6 +53,9 @@ QList<Task*> FindPatternTask::onSubTaskFinished(Task* subTask)
         SAFE_POINT(task, "Failed to cast FindAlgorithTask!", QList<Task*>());
 
         QList<FindAlgorithmResult> resultz = task->popResults();
+        if (settings.patternSettings == FindAlgorithmPatternSettings_RegExp) { //Other algos always return sorted results
+            qSort(resultz.begin(), resultz.end(), FindAlgorithmResult::lessByRegionStartPos);
+        }
         if (removeOverlaps && !resultz.isEmpty()) {
             removeOverlappedResults(resultz);
         }
@@ -65,9 +67,7 @@ QList<Task*> FindPatternTask::onSubTaskFinished(Task* subTask)
     return res;
 }
 
-
-void FindPatternTask::removeOverlappedResults(QList<FindAlgorithmResult>& results)
-{
+void FindPatternTask::removeOverlappedResults(QList<FindAlgorithmResult>& results) {
     int numberBefore = results.count();
 
     for (int i = 0, n = results.count(); i < n; ++i) {

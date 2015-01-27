@@ -53,6 +53,8 @@ public:
 
     AnnotationData toAnnotation(const QString& name, bool splitCircular = false, int seqLen = -1) const;
 
+    static bool lessByRegionStartPos(const FindAlgorithmResult &r1, const FindAlgorithmResult &r2);
+
     U2Region    region;
     bool        translation;
     U2Strand    strand;
