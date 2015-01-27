@@ -182,7 +182,7 @@ void CASAVAFilterTask::runStep(){
         if(pattern.indexIn(comment) != -1){
             ycount++;
         }else{
-            FastqFormat::writeEntry(seq.getName() + " " + comment, seq, io.data(), "Writing error", stateInfo);
+            FastqFormat::writeEntry(seq.getName() + " " + comment, seq, io.data(), "Writing error", stateInfo, false);
             ncount++;
         }
     }
@@ -361,7 +361,7 @@ void QualityTrimTask::runStep(){
                 DNASequence trimmed(dna.getName(), dna.seq.left(endPosition+1), dna.alphabet);
                 trimmed.quality = dna.quality;
                 trimmed.quality.qualCodes = trimmed.quality.qualCodes.left(endPosition+1);
-                FastqFormat::writeEntry(trimmed.getName(), trimmed, io.data(), "Writing error", stateInfo);
+                FastqFormat::writeEntry(trimmed.getName(), trimmed, io.data(), "Writing error", stateInfo, false);
                 ycount++;
             }else{
                 ncount++;
@@ -544,7 +544,7 @@ void MergeFastqTask::runStep(){
                 return;
             }
             DNASequence dna = iter.next();
-            FastqFormat::writeEntry(dna.getName(), dna, io.data(), "Writing error", stateInfo);
+            FastqFormat::writeEntry(dna.getName(), dna, io.data(), "Writing error", stateInfo, false);
             numberOfSeqs++;
         }
         numberOfFiles++;

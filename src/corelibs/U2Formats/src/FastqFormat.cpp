@@ -379,23 +379,30 @@ void FastqFormat::storeDocument( Document* d, IOAdapter* io, U2OpStatus& os) {
     }
 }
 
-void writeSequence(U2OpStatus &os, IOAdapter *io, const char* seq, int len, const QString& errorMessage) {
+void writeSequence(U2OpStatus &os, IOAdapter *io, const char* seq, int len, const QString& errorMessage, bool cutLines = true) {
 
     CHECK_EXT(io != NULL, os.setError("can't write sequence"),);
 
     static const int lineLength = 80;
 
-    for (int i = 0; i < len; i += lineLength ) {
-        int chunkSize = qMin(lineLength, len - i);
+    if (cutLines){
+        for (int i = 0; i < len; i += lineLength ) {
+            int chunkSize = qMin(lineLength, len - i);
 
-        QByteArray toWrite(seq + i, chunkSize);
+            QByteArray toWrite(seq + i, chunkSize);
+            int writtenCount = io->writeBlock(toWrite);
+            int writtenEoln = io->writeBlock("\n", 1);
+            CHECK_EXT((writtenCount == chunkSize) && (writtenEoln > 0), os.setError(errorMessage),);
+        }
+    }else{
+        QByteArray toWrite(seq, len);
         int writtenCount = io->writeBlock(toWrite);
         int writtenEoln = io->writeBlock("\n", 1);
-        CHECK_EXT((writtenCount == chunkSize) && (writtenEoln > 0), os.setError(errorMessage),);
+        CHECK_EXT((writtenCount == len) && (writtenEoln > 0), os.setError(errorMessage),);
     }
 }
 
-void FastqFormat::writeEntry(const QString& sequenceName, const DNASequence& wholeSeq, IOAdapter *io, const QString& errorMessage, U2OpStatus &os){
+void FastqFormat::writeEntry(const QString& sequenceName, const DNASequence& wholeSeq, IOAdapter *io, const QString& errorMessage, U2OpStatus &os, bool cutLines){
     QByteArray block;
 
     block.append('@').append(sequenceName).append('\n');
@@ -404,7 +411,7 @@ void FastqFormat::writeEntry(const QString& sequenceName, const DNASequence& who
     CHECK_EXT(writtenCount == block.length(), os.setError(errorMessage),);
 
     // write sequence
-    writeSequence(os, io, wholeSeq.constData(), wholeSeq.length(), errorMessage);
+    writeSequence(os, io, wholeSeq.constData(), wholeSeq.length(), errorMessage, cutLines);
 
     //write transition
     block.clear();
@@ -427,7 +434,7 @@ void FastqFormat::writeEntry(const QString& sequenceName, const DNASequence& who
         qualityData = buf.constData();
     }
 
-    writeSequence(os, io, qualityData, wholeSeq.length(), errorMessage);
+    writeSequence(os, io, qualityData, wholeSeq.length(), errorMessage, cutLines);
 }
 
 void FastqFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os) {
