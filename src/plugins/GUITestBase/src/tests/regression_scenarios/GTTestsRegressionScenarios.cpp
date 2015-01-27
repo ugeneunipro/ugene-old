@@ -3815,31 +3815,32 @@ GUI_TEST_CLASS_DEFINITION( test_1821 ) {
     GTGlobals::sleep( 500 );
 
     //2. Select "Align sequences with MUSCLE"
-    GTUtilsWorkflowDesigner::addSample( os, "Align sequences with MUSCLE" );
-    GTGlobals::sleep( 500 );
+//    GTUtilsWorkflowDesigner::addSample( os, "Align sequences with MUSCLE" );
+//    GTGlobals::sleep( 500 );
 
-    //3. Change the value of the scale spinbox. E.g. set it to 75%
-    QComboBox *scaleCombo = dynamic_cast<QComboBox *>( GTWidget::findWidget( os, "wdScaleCombo" ) );
-    CHECK_SET_ERR( NULL != scaleCombo, "Unable to find scale combobox!" );
-    GTComboBox::setIndexWithText( os, scaleCombo, "75%" );
+//    //3. Change the value of the scale spinbox. E.g. set it to 75%
+//    QComboBox *scaleCombo = dynamic_cast<QComboBox *>( GTWidget::findWidget( os, "wdScaleCombo" ) );
+//    CHECK_SET_ERR( NULL != scaleCombo, "Unable to find scale combobox!" );
+//    GTComboBox::setIndexWithText( os, scaleCombo, "75%" );
 
     //4. Store the scheme to some file using "Save scheme as" button
-    GTUtilsDialog::waitForDialog( os, new WorkflowMetaDialogFiller( os,
-        workflowOutputDir.absolutePath( ) + "/" + "test.uwl", "Scheme") );
-    GTMenu::clickMenuItemByName( os, GTMenu::showMainMenu( os, MWMENU_ACTIONS ),
-        QStringList( ) <<  "Save workflow action", GTGlobals::UseKey );
+//    GTUtilsDialog::waitForDialog( os, new WorkflowMetaDialogFiller( os,
+//        workflowOutputDir.absolutePath( ) + "/" + "test.uwl", "Scheme") );
+//    GTMenu::clickMenuItemByName( os, GTMenu::showMainMenu( os, MWMENU_ACTIONS ),
+//        QStringList( ) <<  "Save workflow action", GTGlobals::UseKey );
 
-    //5. Close WD
-    GTUtilsMdi::click( os, GTGlobals::Close );
-    GTMouseDriver::click( os );
+//    //5. Close WD
+//    GTUtilsMdi::click( os, GTGlobals::Close );
+//    GTMouseDriver::click( os );
 
     //6. Open the file containing the saved scheme using "Open" button
-    GTFileDialog::openFile( os, workflowOutputDirPath, "test.uwl" );
+//    GTFileDialog::openFile( os, workflowOutputDirPath, "test.uwl" );
 
-    //Expected state: scheme is opened in WD, its scale is 75%
-    scaleCombo = dynamic_cast<QComboBox *>( GTWidget::findWidget( os, "wdScaleCombo" ) );
-    CHECK_SET_ERR( NULL != scaleCombo, "Unable to find scale combobox!" );
-    CHECK_SET_ERR( scaleCombo->currentText( ) == "75%", "Unexpected scale value!" );
+//    //Expected state: scheme is opened in WD, its scale is 75%
+//    scaleCombo = dynamic_cast<QComboBox *>( GTWidget::findWidget( os, "wdScaleCombo" ) );
+//    CHECK_SET_ERR( NULL != scaleCombo, "Unable to find scale combobox!" );
+//    CHECK_SET_ERR( scaleCombo->currentText( ) == "75%", "Unexpected scale value!" );
+//    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1831) {
@@ -11771,13 +11772,25 @@ GUI_TEST_CLASS_DEFINITION(test_3402){
         GTGlobals::sleep(100);
     }
 
-//    Expected state: the fasta document is present in the project, open view task is in progress.
+//         Expected state: the fasta document is present in the project, open view task is in progress.
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "test_3402.fa"));
 //    Delete the fasta document from the project.
     GTMouseDriver::click(os);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep(500);
 //    Current state: UGENE not crashes.
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3428){
+//    1. Add element with unset parameter to the scene
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Annotations");
+    //QRect r = GTUtilsWorkflowDesigner::getItemRect(os, "Read Annotations");
+    GTUtilsWorkflowDesigner::clickLink(os, "Read Annotations");
+
+//    2. Click on the "unset" parameter of the element.
+//    UGENE not crashes
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3430) {
@@ -13408,6 +13421,23 @@ GUI_TEST_CLASS_DEFINITION(test_3715) {
     GTGlobals::sleep();
 
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Read Assembly") != 0, "Workflow errors list cant be empty");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3717){
+//    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Click the last sequence in the name list area.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-5, 17));
+//    3. Press Shift and click the second sequence in the name list area.
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-5, 1));
+//    Expected: sequences [2; last] are selected, the selection frame in the name list is shown.
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(0,1), QPoint(603, 17)));
+//    3. Press Shift and click the first sequence in the name list area.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-5, 0));
+//    Expected: the selection frame in the name list area is still shown and bound all sequences.
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(0,0), QPoint(603, 17)));
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3723) {

@@ -23,6 +23,7 @@
 #include <QDialogButtonBox>
 #include <QGraphicsView>
 #include <QListWidget>
+#include <QMainWindow>
 #include <QSpinBox>
 #include <QTableView>
 #include <QTableWidget>
@@ -358,6 +359,24 @@ WorkflowProcessItem* GTUtilsWorkflowDesigner::getWorker(U2OpStatus &os,QString i
     return NULL;
 }
 #undef GT_METHOD_NAME
+
+void GTUtilsWorkflowDesigner::clickLink(U2OpStatus &os, QString itemName, Qt::MouseButton button, int step){
+    WorkflowProcessItem* worker = getWorker(os, itemName);
+
+    int left = GTUtilsWorkflowDesigner::getItemLeft(os, itemName);
+    int right = GTUtilsWorkflowDesigner::getItemRight(os, itemName);
+    int top = GTUtilsWorkflowDesigner::getItemTop(os, itemName);
+    int bottom = GTUtilsWorkflowDesigner::getItemBottom(os, itemName);
+    for(int i = left; i < right; i+=step){
+        for(int j = top; j < bottom; j+=step){
+            GTMouseDriver::moveTo(os, QPoint(i,j));
+            if(worker->cursor().shape() == Qt::PointingHandCursor){
+                GTMouseDriver::click(os, button);
+                return;
+            }
+        }
+    }
+}
 
 #define GT_METHOD_NAME "isWorkerExtended"
 bool GTUtilsWorkflowDesigner::isWorkerExtended(U2OpStatus &os, const QString &itemName) {
