@@ -901,27 +901,28 @@ void GTest_CompareFiles::compareMixed(){
     QScopedPointer<IOAdapter> doc1Adapter(createIoAdapter(doc1Path));
     CHECK_OP(stateInfo, );
 
-    QScopedPointer<IOAdapter> doc2Adapter(createIoAdapter(doc2Path));
-    CHECK_OP(stateInfo, );
-
-
     int lineNum = 0;
-    while(!doc1Adapter->isEof() && !doc2Adapter->isEof()) {
+    while(!doc1Adapter->isEof()) {
         QByteArray bytes1 = getLine(doc1Adapter.data());
-        QByteArray bytes2 = getLine(doc2Adapter.data());
         lineNum++;
 
-        if (bytes1 != bytes2) {
-            setError(QString("The files %1 and %2 are not equal at line %3."
-                "The first file contains '%4'' and the second contains '%5'!")
-                .arg(doc1Path).arg(doc2Path).arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
-            return ;
-        }
-    }
+        bool found = false;
 
-    if (!doc1Adapter->isEof() || !doc2Adapter->isEof()) {
-        setError("files are of different size");
-        return ;
+        QScopedPointer<IOAdapter> doc2Adapter(createIoAdapter(doc2Path));
+        CHECK_OP(stateInfo, );
+        while(!doc2Adapter->isEof()){
+            QByteArray bytes2 = getLine(doc2Adapter.data());
+            if (bytes1 == bytes2) {
+                found = true;
+                break;
+            }
+        }
+        doc2Adapter->close();
+
+        if(!found){
+            setError(QString("Cannot find line %1. \n%2\n in \n%3\n").arg(lineNum).arg(QString(bytes1)).arg(QString(doc2Path)));
+            return;
+        }
     }
 
 }
