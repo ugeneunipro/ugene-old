@@ -71,7 +71,7 @@ QList<Task*> FindTandemsToAnnotationsTask::onSubTaskFinished(Task* subTask) {
                 foreach ( const SharedAnnotationData &data, annotations ) {
                     anns << *data;
                 }
-                Task* createTask = new CreateAnnotationsTask( annObjRef, annGroup, anns );
+                Task* createTask = new CreateAnnotationsTask( annObjRef, anns, annGroup);
                 createTask->setSubtaskProgressWeight(0);
                 res.append(createTask);
             }

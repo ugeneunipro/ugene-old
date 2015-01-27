@@ -1432,7 +1432,10 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
         }
     }
     GCOUNTER(cvar, tvar, "FindAlgorithmTask");
-    AppContext::getTaskScheduler()->registerTopLevelTask(new CreateAnnotationsTask(aTableObj, group, annotationsToCreate));
+    if (annotModel.data.name == annotModel.groupName && usePatternNamesCheckBox->isChecked()) {
+        group.clear();
+    }
+    AppContext::getTaskScheduler()->registerTopLevelTask(new CreateAnnotationsTask(aTableObj, annotationsToCreate, group));
 
     annotModelPrepared = false;
     updateAnnotationsWidget();

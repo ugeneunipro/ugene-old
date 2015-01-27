@@ -263,7 +263,7 @@ void SiteconSearchDialogController::sl_onSaveAnnotations() {
         list.append( item->res.toAnnotation( name ) );
     }
 
-    CreateAnnotationsTask* t = new CreateAnnotationsTask(m.getAnnotationObject(), m.groupName, list);
+    CreateAnnotationsTask* t = new CreateAnnotationsTask(m.getAnnotationObject(), list, m.groupName);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 

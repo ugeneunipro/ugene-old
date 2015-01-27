@@ -33,7 +33,7 @@
 
 namespace U2 {
 
-CreateAnnotationsTask::CreateAnnotationsTask(AnnotationTableObject *ao, const QString &g, const AnnotationData &data)
+CreateAnnotationsTask::CreateAnnotationsTask(AnnotationTableObject *ao, const AnnotationData &data, const QString &g)
     : Task(tr("Create annotations"), TaskFlags_FOSE_COSC), aobj(ao), groupName(g), pos(0)
 {
     aData << data;
@@ -44,7 +44,7 @@ CreateAnnotationsTask::CreateAnnotationsTask(AnnotationTableObject *ao, const QS
     tpm = Progress_Manual;
 }
 
-CreateAnnotationsTask::CreateAnnotationsTask(AnnotationTableObject *ao, const QString &g, const QList<AnnotationData> &data)
+CreateAnnotationsTask::CreateAnnotationsTask(AnnotationTableObject *ao, const QList<AnnotationData> &data,  const QString &g)
     : Task(tr("Create annotations"), TaskFlags_FOSE_COSC), aobj(ao), groupName(g), pos(0)
 {
     aData = data;
@@ -55,7 +55,7 @@ CreateAnnotationsTask::CreateAnnotationsTask(AnnotationTableObject *ao, const QS
     tpm = Progress_Manual;
 }
 
-CreateAnnotationsTask::CreateAnnotationsTask(const GObjectReference &r, const QString &g, const QList<AnnotationData> &data)
+CreateAnnotationsTask::CreateAnnotationsTask(const GObjectReference &r, const QList<AnnotationData> &data, const QString &g)
     : Task(tr("Create annotations"), TaskFlags_FOSE_COSC), aRef(r), groupName(g), pos(0)
 {
     aData << data;
@@ -72,18 +72,26 @@ void CreateAnnotationsTask::run() {
 
     const U2DataId rootFeatureId = parentObject->getRootFeatureId();
     const U2DbiRef dbiRef = parentObject->getEntityRef().dbiRef;
-    const U2DataId groupId = AnnotationGroup(rootFeatureId, parentObject).getSubgroup(groupName, true).id;
 
-    U2OpStatusImpl os;
-    foreach (const AnnotationData &a, aData) {
-        CHECK_OP(os,);
-        importedFeatures << U2FeatureUtils::exportAnnotationDataToFeatures(a, rootFeatureId, groupId, dbiRef, os);
+    if (groupName.isEmpty()) {
+        foreach (const AnnotationData &a, aData) {
+            CHECK_OP(stateInfo,);
+            const U2DataId groupId = AnnotationGroup(rootFeatureId, parentObject).getSubgroup(a.name, true).id;
+            U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures(a, rootFeatureId, groupId, dbiRef, stateInfo);
+            featuresByGroups[a.name] << feature;
+        }
+    } else {
+        const U2DataId groupId = AnnotationGroup(rootFeatureId, parentObject).getSubgroup(groupName, true).id;
+        foreach (const AnnotationData &a, aData) {
+            CHECK_OP(stateInfo,);
+            featuresByGroups[groupName] << U2FeatureUtils::exportAnnotationDataToFeatures(a, rootFeatureId, groupId, dbiRef, stateInfo);
+        }
     }
 }
 
 Task::ReportResult CreateAnnotationsTask::report() {
     GTIMER(c1, t1, "CreateAnnotationsTask::report");
-    if (hasError() || isCanceled() || importedFeatures.isEmpty()) {
+    if (hasError() || isCanceled() || featuresByGroups.isEmpty()) {
         return ReportResult_Finished;
     }
     AnnotationTableObject *ao = getGObject();
@@ -99,7 +107,10 @@ Task::ReportResult CreateAnnotationsTask::report() {
     stateInfo.setDescription(QString());
 
     GTIMER(c2, t2, "CreateAnnotationsTask::report [addAnnotations]");
-    AnnotationGroup(ao->getRootFeatureId(), ao).getSubgroup(groupName, false).addFeatures(importedFeatures);
+
+    foreach (const QString &groupName, featuresByGroups.keys()) {
+        AnnotationGroup(ao->getRootFeatureId(), ao).getSubgroup(groupName, false).addFeatures(featuresByGroups[groupName]);
+    }
 
     return ReportResult_Finished;
 }

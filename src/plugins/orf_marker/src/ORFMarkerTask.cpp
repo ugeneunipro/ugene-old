@@ -105,7 +105,7 @@ QList<Task *> FindORFsToAnnotationsTask::onSubTaskFinished(Task *subTask) {
         annotationList << res.toAnnotation(ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
     }
 
-    return QList<Task *>() << new CreateAnnotationsTask(aObj, groupName, annotationList);
+    return QList<Task *>() << new CreateAnnotationsTask(aObj, annotationList, groupName);
 }
 
 //////////////////////////////////////////////////////////////////////////

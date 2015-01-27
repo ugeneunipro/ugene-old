@@ -691,7 +691,7 @@ QList< Task* > UHMM3SWSearchToAnnotationsTask::onSubTaskFinished( Task * subTask
             return res;
         }
 
-        createAnnotationsTask = new CreateAnnotationsTask( annotationObj, agroup, annotations );
+        createAnnotationsTask = new CreateAnnotationsTask( annotationObj, annotations, agroup);
         res << createAnnotationsTask;
     } else if( createAnnotationsTask != subTask ) {
         assert( false && "undefined task finished" );

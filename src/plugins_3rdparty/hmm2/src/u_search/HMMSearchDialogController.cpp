@@ -240,7 +240,7 @@ QList<Task*> HMMSearchToAnnotationsTask::onSubTaskFinished(Task* subTask) {
         assert(searchTask->isFinished() && !searchTask->hasError());
         QList<AnnotationData> annotations = searchTask->getResultsAsAnnotations( aname );
         if (!annotations.isEmpty()) {
-            createAnnotationsTask = new CreateAnnotationsTask( aobj, agroup, annotations );
+            createAnnotationsTask = new CreateAnnotationsTask(aobj, annotations, agroup);
             createAnnotationsTask->setSubtaskProgressWeight(0);
             res.append(createAnnotationsTask);
         }

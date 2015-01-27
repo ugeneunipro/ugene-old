@@ -92,7 +92,7 @@ QList<Task *> FindEnzymesToAnnotationsTask::onSubTaskFinished(Task *subTask) {
     }
 
     foreach (const QString &groupName, resultMap.uniqueKeys()) {
-        result << new CreateAnnotationsTask(aObj, groupName, resultMap.values(groupName));
+        result << new CreateAnnotationsTask(aObj, resultMap.values(groupName), groupName);
     }
     return result;
 }

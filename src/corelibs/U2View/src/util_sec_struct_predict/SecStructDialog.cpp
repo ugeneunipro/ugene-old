@@ -215,7 +215,7 @@ void SecStructDialog::sl_onSaveAnnotations()
     if (rc != QDialog::Accepted) {
         return;
     }
-    CreateAnnotationsTask* t = new CreateAnnotationsTask(m.getAnnotationObject(), m.groupName, results);
+    CreateAnnotationsTask* t = new CreateAnnotationsTask(m.getAnnotationObject(), results, m.groupName);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 
     QDialog::accept();

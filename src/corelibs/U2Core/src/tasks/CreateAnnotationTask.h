@@ -34,11 +34,11 @@ public:
     // Adds annotations to the object. Waits object to be unlocked if needed
     // Works only in a context of active project
                                     CreateAnnotationsTask( AnnotationTableObject *o,
-                                        const QString &group, const AnnotationData &data );
+                                        const AnnotationData &data, const QString &group = QString());
                                     CreateAnnotationsTask( AnnotationTableObject *o,
-                                        const QString &group, const QList<AnnotationData> &data );
+                                        const QList<AnnotationData> &data, const QString &group = QString());
                                     CreateAnnotationsTask( const GObjectReference &ref,
-                                        const QString &group, const QList<AnnotationData> &data );
+                                        const QList<AnnotationData> &data, const QString &group = QString());
 
     void                            run( );
     ReportResult                    report( );
@@ -46,12 +46,12 @@ public:
     int                             getAnnotationCount( ) const;
 
 private:
-    GObjectReference                aRef;
-    QPointer<AnnotationTableObject> aobj;
-    QString                         groupName;
-    QList<AnnotationData>           aData;
-    QList<U2Feature>                importedFeatures;
-    int                             pos;
+    GObjectReference                    aRef;
+    QPointer<AnnotationTableObject>     aobj;
+    QMap<QString, QList<U2Feature> >    featuresByGroups;
+    QString                             groupName;
+    QList<AnnotationData>               aData;
+    int                                 pos;
 };
 
 } //namespace U2

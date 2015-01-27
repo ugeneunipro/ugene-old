@@ -156,7 +156,7 @@ QList<Task*> CustomPatternAnnotationTask::onSubTaskFinished(Task* subTask) {
     }
 
     if (taskFeatureNames.isEmpty() && annotations.size() > 0) {
-        subTasks.append( new CreateAnnotationsTask( aTableObj, featureStore->getName(), annotations) );
+        subTasks.append( new CreateAnnotationsTask( aTableObj, annotations, featureStore->getName()) );
     }
 
     return subTasks;

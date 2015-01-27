@@ -50,7 +50,7 @@ ADVCreateAnnotationsTask::ADVCreateAnnotationsTask( AnnotatedDNAView *_ctx, cons
 : Task(tr("Create annotations task"), TaskFlags_NR_FOSCOE), ctx(_ctx)
 {
     LoadUnloadedDocumentTask::addLoadingSubtask(this, LoadDocumentTaskConfig(true, aobjRef, new LDTObjectFactory(this)));
-    t  = new CreateAnnotationsTask(aobjRef, group, data);
+    t  = new CreateAnnotationsTask(aobjRef, data, group);
     addSubTask(t);
 }
 

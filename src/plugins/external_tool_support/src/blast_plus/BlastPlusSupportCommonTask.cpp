@@ -174,7 +174,7 @@ QList<Task*> BlastPlusSupportCommonTask::onSubTaskFinished(Task* subTask) {
                     AnnotationData &ad = it_ad.next();
                     U2Region::shift(settings.offsInGlobalSeq, ad.location->regions);
                 }
-                res.append(new CreateAnnotationsTask(settings.aobj, settings.groupName, result));
+                res.append(new CreateAnnotationsTask(settings.aobj, result, settings.groupName));
             }
             if (res.isEmpty()) {
                 setReportingEnabled(true);
@@ -583,7 +583,7 @@ QList<Task*> BlastPlusSupportMultiTask::onSubTaskFinished(Task *subTask){
                 AnnotationData &ad = it_ad.next();
                 U2Region::shift(settings.offsInGlobalSeq, ad.location->regions);
             }
-            res.append(new CreateAnnotationsTask(settings.aobj, settings.groupName, result));
+            res.append(new CreateAnnotationsTask(settings.aobj, result, settings.groupName));
         }
     }
     return res;

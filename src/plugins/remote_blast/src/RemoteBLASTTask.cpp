@@ -96,7 +96,7 @@ QList<Task*> RemoteBLASTToAnnotationsTask::onSubTaskFinished(Task* subTask) {
                 annotations << ad;
             }
 
-            res.append(new CreateAnnotationsTask(aobj, group, annotations));
+            res.append(new CreateAnnotationsTask(aobj, annotations, group));
         }
     }
     return res;

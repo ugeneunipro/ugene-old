@@ -561,11 +561,7 @@ void CreateAnnotationWidgetController::updateModel(bool forValidation) {
     SAFE_POINT(groupNameEdit != NULL, "CreateAnnotationWidgetController::updateModel no widget", );
     model.groupName = groupNameEdit->text();
     if (model.groupName == GROUP_NAME_AUTO) {
-        if(model.data.name.isEmpty()){
-            model.groupName = "misc_feature";
-        }else{
-            model.groupName = model.data.name;
-        }
+        model.groupName = model.data.name;
     }
 
     model.data.location->reset();

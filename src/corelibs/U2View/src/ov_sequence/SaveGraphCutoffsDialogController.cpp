@@ -127,7 +127,7 @@ void SaveGraphCutoffsDialogController::accept(){
         data.append(d);
     }
     AnnotationTableObject *aobj = mm.getAnnotationObject( );
-    Task *t  = new CreateAnnotationsTask(aobj, mm.groupName, data);
+    Task *t  = new CreateAnnotationsTask(aobj, data, mm.groupName);
     AppContext::getTaskScheduler()->registerTopLevelTask(t) ;
     QDialog::accept();
 }

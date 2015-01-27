@@ -955,7 +955,7 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
         {
             annotations.append(oligoToAnnotation(annName, *pair.getRightPrimer(), pair.getProductSize(), U2Strand::Complementary));
         }
-        createAnnotationTasks << new CreateAnnotationsTask(aobj, groupName + "/pair " + QString::number(index + 1), annotations);
+        createAnnotationTasks << new CreateAnnotationsTask(aobj,annotations, groupName + "/pair " + QString::number(index + 1));
         index++;
     }
 
@@ -968,7 +968,7 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
         }
 
         if ( !annotations.isEmpty( ) ) {
-            createAnnotationTasks << new CreateAnnotationsTask(aobj, groupName, annotations);
+            createAnnotationTasks << new CreateAnnotationsTask(aobj, annotations, groupName);
         }
     }
 

@@ -434,7 +434,7 @@ QList<Task *> UHMM3PhmmerToAnnotationsTask::onSubTaskFinished(Task *subTask) {
             return res;
         }
 
-        createAnnotationsTask = new CreateAnnotationsTask(annotationObj, annGroup, annotations);
+        createAnnotationsTask = new CreateAnnotationsTask(annotationObj, annotations, annGroup);
         res << createAnnotationsTask;
     } else if (createAnnotationsTask != subTask) {
         setError("Unexpected behavior: an undefined task finished");
