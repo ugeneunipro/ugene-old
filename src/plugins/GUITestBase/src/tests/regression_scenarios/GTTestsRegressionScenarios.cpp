@@ -3690,6 +3690,17 @@ GUI_TEST_CLASS_DEFINITION(test_1738){
     GTGlobals::sleep(5000);
 
 }
+
+GUI_TEST_CLASS_DEFINITION(test_1751){
+    //1. Prepend dot symbol to some valid file name, for instance "data/samples/COI.aln" => "data/samples/.COI.aln"
+    //2. Open it
+    GTLogTracer lt;
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1751", ".COI.aln");
+
+    //Expected state: Check log for errors
+    CHECK_SET_ERR(!lt.hasError(), "Log sholdn't contain errors");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1786){
     // 1. Use menu {File->Access remote database...}
     // 2. Select database UniProt(DAS)
