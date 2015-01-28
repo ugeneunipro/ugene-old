@@ -1176,11 +1176,12 @@ GUI_TEST_CLASS_DEFINITION(test_1371) {
 GUI_TEST_CLASS_DEFINITION(test_1376){
     //1. Open data/position_weight_matrix/JASPAR/fungi/MA0276.1.pfm.
     GTFileDialog::openFile(os, dataDir + "position_weight_matrix/JASPAR/fungi/MA0276.1.pfm");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //Expected: PFM matrix view with logo and weight table is opened.
-    QWidget *mdi = GTUtilsMdi::findWindow(os, "Matrix Viewer");
-    GTWidget::findWidget(os, "logoWidget", mdi);
-    GTWidget::findWidget(os, "tableWidget", mdi);
+    //QWidget *mdi = GTUtilsMdi::findWindow(os, "Matrix Viewer");
+    GTWidget::findWidget(os, "logoWidget");
+    GTWidget::findWidget(os, "tableWidget");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1386){
