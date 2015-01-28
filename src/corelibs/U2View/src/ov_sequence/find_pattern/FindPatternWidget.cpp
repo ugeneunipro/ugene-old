@@ -1188,7 +1188,9 @@ void FindPatternWidget::sl_loadPatternTaskStateChanged() {
 void FindPatternWidget::sl_findPatrernTaskStateChanged() {
     FindPatternListTask* findTask = qobject_cast<FindPatternListTask*>(sender());
     CHECK(NULL != findTask, );
-
+    if (findTask != searchTask){
+        return;
+    }
     if (findTask->isFinished() || findTask->isCanceled() || findTask->hasError()) {
         findPatternResults = findTask->getResults();
         if (findPatternResults.isEmpty()) {
@@ -1207,10 +1209,8 @@ void FindPatternWidget::sl_findPatrernTaskStateChanged() {
             correctSearchInCombo();
             showCurrentResult();
         }
-        if (findTask == searchTask) {
-            disconnect(this, SLOT(sl_loadPatternTaskStateChanged()));
-            searchTask = NULL;
-        }
+        disconnect(this, SLOT(sl_loadPatternTaskStateChanged()));
+        searchTask = NULL;
     }
 }
 
