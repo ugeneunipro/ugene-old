@@ -48,7 +48,7 @@ public:
 
     Annotation              addAnnotation( const AnnotationData &a );
 
-    void                    addFeatures( const QList<U2Feature> &features );
+    QList<Annotation>       addFeatures( const QList<U2Feature> &features );
 
     void                    addAnnotation( const Annotation &a );
 

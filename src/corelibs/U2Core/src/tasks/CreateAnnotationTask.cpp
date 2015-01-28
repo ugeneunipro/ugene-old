@@ -109,7 +109,7 @@ Task::ReportResult CreateAnnotationsTask::report() {
     GTIMER(c2, t2, "CreateAnnotationsTask::report [addAnnotations]");
 
     foreach (const QString &groupName, featuresByGroups.keys()) {
-        AnnotationGroup(ao->getRootFeatureId(), ao).getSubgroup(groupName, false).addFeatures(featuresByGroups[groupName]);
+        resultAnnotations << AnnotationGroup(ao->getRootFeatureId(), ao).getSubgroup(groupName, false).addFeatures(featuresByGroups[groupName]);
     }
 
     return ReportResult_Finished;
@@ -128,6 +128,10 @@ AnnotationTableObject * CreateAnnotationsTask::getGObject() const {
 
 int CreateAnnotationsTask::getAnnotationCount() const {
     return aData.size();
+}
+
+QList<Annotation> CreateAnnotationsTask::getResultAnnotations() const {
+    return resultAnnotations;
 }
 
 } // namespace

@@ -44,6 +44,7 @@ public:
     ReportResult                    report( );
     AnnotationTableObject *         getGObject( ) const;
     int                             getAnnotationCount( ) const;
+    QList<Annotation>               getResultAnnotations( ) const;
 
 private:
     GObjectReference                    aRef;
@@ -52,6 +53,7 @@ private:
     QString                             groupName;
     QList<AnnotationData>               aData;
     int                                 pos;
+    QList<Annotation>               resultAnnotations;
 };
 
 } //namespace U2

@@ -66,7 +66,11 @@ Task::ReportResult ADVCreateAnnotationsTask::report( ) {
         }
         if ( !hasError( ) ) {
             ctx->getAnnotationsSelection( )->clear( );
-            ctx->getAnnotationsSelection( )->addToSelection( ao->getAnnotations( ).last( ) );
+            AnnotationSelection* annSelection = ctx->getAnnotationsSelection();
+            CHECK(annSelection != NULL, ReportResult_Finished);
+            foreach (const Annotation& a, t->getResultAnnotations()) {
+                annSelection->addToSelection(a);
+            }
         }
     }
     return ReportResult_Finished;

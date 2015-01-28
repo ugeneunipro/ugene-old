@@ -130,7 +130,7 @@ Annotation AnnotationGroup::addAnnotation(const AnnotationData &a) {
     return result;
 }
 
-void AnnotationGroup::addFeatures(const QList<U2Feature> &features) {
+QList<Annotation> AnnotationGroup::addFeatures(const QList<U2Feature> &features) {
     QList<Annotation> anns;
 
     foreach (const U2Feature &f, features) {
@@ -141,6 +141,8 @@ void AnnotationGroup::addFeatures(const QList<U2Feature> &features) {
 
     parentObject->setModified(true);
     parentObject->emit_onAnnotationsAdded(anns);
+
+    return anns;
 }
 
 void AnnotationGroup::addAnnotation(const Annotation &a) {
