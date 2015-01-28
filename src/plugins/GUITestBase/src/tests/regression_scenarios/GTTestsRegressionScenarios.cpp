@@ -3702,6 +3702,33 @@ GUI_TEST_CLASS_DEFINITION(test_1751){
     CHECK_SET_ERR(!lt.hasError(), "Log sholdn't contain errors");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1784){
+    //1. Open murine.gb
+    GTFileDialog::openFile(os, dataDir + "/samples/Genbank/", "murine.gb");
+
+    //2. Export it as alignment
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
+    GTUtilsDialog::waitForDialog(os, new ExportSequenceAsAlignmentFiller(os, testDir + "_common_data/scenarios/sandbox", "test_1784.aln", ExportSequenceAsAlignmentFiller::Clustalw, true));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+    //3. Drag and drop one more murine sequence object to the alignment
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from current project"));
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "NC_001363"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+
+    //4. Select the first sequence as reference
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0,0));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "set_seq_as_reference"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0,1));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "set_seq_as_reference"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    //Expected state: The only selected sequence is the reference.
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1786){
     // 1. Use menu {File->Access remote database...}
     // 2. Select database UniProt(DAS)
