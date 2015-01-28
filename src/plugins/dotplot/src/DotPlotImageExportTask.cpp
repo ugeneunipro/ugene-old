@@ -70,6 +70,9 @@ void DotPlotImageExportTaskFactory::initSettingsWidget() {
     includeAreaSelection = new QCheckBox(tr("Include area selection"));
     includeRepeatSelection = new QCheckBox(tr("Include repeat selection"));
 
+    includeAreaSelection->setObjectName("include_area_selection");
+    includeRepeatSelection->setObjectName("include_repeat_selection");
+
     includeAreaSelection->setChecked(false);
     includeRepeatSelection->setChecked(false);
 

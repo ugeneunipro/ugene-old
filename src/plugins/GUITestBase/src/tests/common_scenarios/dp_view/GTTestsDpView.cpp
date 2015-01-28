@@ -41,6 +41,8 @@
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 
+#include <QCheckBox>
+
 namespace U2 {
 
 namespace GUITest_Common_scenarios_dp_view {
@@ -275,7 +277,107 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
 
 //Expected state: Dotplot view has been selected, UGENE didn't crash
 }
-} // namespace GUITest_Assembly_browser_
+
+GUI_TEST_CLASS_DEFINITION(test_0025) {
+//     Export image dialog check
+//    1. Build DP, it should not be empty (also do not click on it)
+//    Expected state: nothing is selected on DP
+//    2. Context menu: { Dotplot --> Save/Load --> Save as image}
+//    Expected state: both checkboxes are disabled
+//    3. Select an area
+//    4. Repeat step 2
+//    Expected state: "Include area selection" is enabled, the other one is disabled
+//    5. Click on DP
+//    Expected state: the nearest repeat is selected
+//    6. Repeat step 2
+//    Expected state: "Include repeat selection" is enabled, the other one is disabled
+//    7. Select an area again
+//    Expected state: there is an area an repeat selected on the dotplot
+//    8. Repeat step 2
+//    Expected state: both checkboxes are enabled
+
+    class DotPlotExportImageFiller : public Filler {
+    public:
+        DotPlotExportImageFiller(int scenario, U2OpStatus &os)
+            : Filler(os, "ImageExportForm"),
+              scenario(scenario) {}
+        virtual void run() {
+            CHECK_SET_ERR( 1<= scenario && scenario <= 4, "Wrong scenario number");
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR( dialog, "activeModalWidget is NULL");
+
+            QCheckBox *includeAreaCheckbox = dialog->findChild<QCheckBox*>("include_area_selection");
+            CHECK_SET_ERR( includeAreaCheckbox != NULL, "inlclu_area_selection is NULL");
+
+            QCheckBox *includeRepeatCheckbox = dialog->findChild<QCheckBox*>("include_repeat_selection");
+            CHECK_SET_ERR( includeRepeatCheckbox != NULL, "include_repeat_selection is NULL");
+
+            switch (scenario) {
+            case 1:
+                CHECK_SET_ERR( !includeAreaCheckbox->isEnabled(), "include_area_selection checkbox is enabled!");
+                CHECK_SET_ERR( !includeRepeatCheckbox->isEnabled(), "include_repeat_selection checkbox is enabled!");
+                break;
+            case 2:
+                CHECK_SET_ERR( includeAreaCheckbox->isEnabled(), "include_area_selection checkbox is disabled!");
+                CHECK_SET_ERR( !includeRepeatCheckbox->isEnabled(), "include_repeat_selection checkbox is enabled!");
+                break;
+            case 3:
+                CHECK_SET_ERR( !includeAreaCheckbox->isEnabled(), "include_area_selection checkbox is enabled!");
+                CHECK_SET_ERR( includeRepeatCheckbox->isEnabled(), "include_repeat_selection checkbox is disabled!");
+                break;
+            case 4:
+                CHECK_SET_ERR( includeAreaCheckbox->isEnabled(), "include_area_selection checkbox is disabled!");
+                CHECK_SET_ERR( includeRepeatCheckbox->isEnabled(), "include_repeat_selection checkbox is disabled!");
+                break;
+            }
+
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+            QPushButton* button = box->button(QDialogButtonBox::Cancel);
+            CHECK_SET_ERR(button !=NULL, "Cancel button is NULL");
+            GTWidget::click(os, button);
+        }
+
+        static void performScenario(U2OpStatus &os, int scenario) {
+            GTUtilsDialog::waitForDialog(os, new DotPlotExportImageFiller(scenario, os));
+            GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Dotplot" << "Save/Load" << "Save as image"));
+            GTWidget::click(os, GTWidget::findWidget(os, "dotplot widget"), Qt::RightButton);
+        }
+
+    private:
+        // 1, 2, 3 or 4
+        int scenario;
+    };
+
+
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 50, 50));
+    Runnable *filler = new BuildDotPlotFiller(os,
+                                              dataDir + "/samples/Genbank/murine.gb",
+                                              testDir + "_common_data/genbank/pBR322.gb");
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    QMenu *menu;
+    menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
+    GTGlobals::sleep();
+
+    DotPlotExportImageFiller::performScenario(os, 1);
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 1500, 2500);
+    DotPlotExportImageFiller::performScenario(os, 2);
+    GTGlobals::sleep();
+
+    GTWidget::click(os, GTWidget::findWidget(os, "dotplot widget"));
+    DotPlotExportImageFiller::performScenario(os, 3);
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 1000, 2000);
+    DotPlotExportImageFiller::performScenario(os, 4);
+    GTGlobals::sleep();
+}
+
+} // namespace GUITest_Common_scenarios_dp_view
 } // namespace U2
 
 

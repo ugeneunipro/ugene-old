@@ -1485,6 +1485,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0014_2);
 
     REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0020);
+    REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0025);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/Assembly browser

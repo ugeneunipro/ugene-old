@@ -130,6 +130,7 @@ void DotPlotWidget::initActionsAndSignals() {
     connect(showSettingsDialogAction, SIGNAL(triggered()), SLOT(sl_showSettingsDialog()));
 
     saveImageAction = new QAction(tr("Save as image"), this);
+    saveImageAction->setObjectName("Save as image");
     connect(saveImageAction, SIGNAL(triggered()), SLOT(sl_showSaveImageDialog()));
 
     saveDotPlotAction = new QAction(tr("Save"), this);
@@ -218,6 +219,7 @@ void DotPlotWidget::buildPopupMenu(QMenu *m) const {
         //dotPlotMenu->set
         dotPlotMenu->menuAction()->setObjectName("Dotplot");
         QMenu* saveMenu = new QMenu(tr("Save/Load"), dotPlotMenu);
+        saveMenu->menuAction()->setObjectName("Save/Load");
 
         saveMenu->addAction(saveImageAction);
         saveMenu->addAction(saveDotPlotAction);
