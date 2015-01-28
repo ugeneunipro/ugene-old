@@ -3646,9 +3646,9 @@ GUI_TEST_CLASS_DEFINITION(test_1731){
 }
 GUI_TEST_CLASS_DEFINITION(test_1733){
     // 1) Run UGENE
-    // 2) Open Workflow Designer 
-    // 3) Open Call Variant Pipeline scheme from the samples 
-    // 4) Try to specify parameters (using wizard or wd standard interface) with files 
+    // 2) Open Workflow Designer
+    // 3) Open Call Variant Pipeline scheme from the samples
+    // 4) Try to specify parameters (using wizard or wd standard interface) with files
     // (for example specify any of file from "data/samples/Genbank" directory as "Bed or position list file" on page #2 of wizard )
     // Expected state: UGENE doesn't ask to specify folder
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
