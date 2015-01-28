@@ -678,6 +678,7 @@ static const QString TMP_ATTR_SPLITTER = ",";
 static const QString BY_LINES_ATTR_ID = "by_lines";
 static const QString COMMENTS_START_WITH = "comments_start_with";
 static const QString COMPARE_LINE_NUMBER_ONLY = "line_num_only";
+static const QString COMPARE_FIRST_N_LINES = "first_n_lines";
 static const QString COMPARE_MIXED_LINES = "mixed-lines";
 
 void GTest_CompareFiles::replacePrefix(QString &path) {
@@ -742,6 +743,12 @@ void GTest_CompareFiles::init(XMLTestFormat *tf, const QDomElement& el) {
         return;
     }
 
+    if (!el.attribute(COMPARE_FIRST_N_LINES).isEmpty()){
+        first_n_lines = el.attribute(COMPARE_FIRST_N_LINES).toInt();
+    }else{
+        first_n_lines = -1;
+    }
+
     if (!el.attribute(COMPARE_LINE_NUMBER_ONLY).isEmpty()){
         line_num_only = true;
     }else{
@@ -799,6 +806,9 @@ Task::ReportResult GTest_CompareFiles::report() {
 
     int lineNum = 0;
     while(1) {
+        if(first_n_lines != -1 && lineNum >= first_n_lines){
+            break;
+        }
         QByteArray bytes1 = f1.readLine(READ_LINE_MAX_SZ);
         QByteArray bytes2 = f2.readLine(READ_LINE_MAX_SZ);
 

@@ -219,6 +219,8 @@ private:
     bool line_num_only;
     bool mixed_lines;
 
+    int first_n_lines;
+
 };
 
 class GTest_Compare_VCF_Files : public GTest {
