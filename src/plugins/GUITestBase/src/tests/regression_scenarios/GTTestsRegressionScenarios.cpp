@@ -14060,6 +14060,29 @@ GUI_TEST_CLASS_DEFINITION(test_3891) {
     CHECK_SET_ERR(fetchAnnotationsButton->isEnabled(), "Fetch annotations button is unexpectedly disabled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3901) {
+    //1. Open "_common_data/fasta/human_T1_cutted.fa".
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/human_T1_cutted.fa");
+
+    //2. Toggle circular view.
+    GTWidget::click(os, GTWidget::findWidget(os, "CircularViewAction"));
+
+    //3. Create an annotation with region: join(50..60,20..30,80..90).
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "group", "feature", "join(50..60,20..30,80..90)"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    //4. Click to the arrow (80..90).
+
+    //Expected state: the arrow's region is selected.
+    ADVSingleSequenceWidget *w=(ADVSingleSequenceWidget*)GTWidget::findWidget(os,"ADV_single_sequence_widget_0");
+    QVector<U2Region> selection = w->getSequenceSelection()->getSelectedRegions();
+    CHECK_SET_ERR(selection.size() == 1, "No selected region");
+    CHECK_SET_ERR(selection.first() == U2Region(79, 11), "Wrong selected region");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3903) {
 /*
     1. Open any sequence
