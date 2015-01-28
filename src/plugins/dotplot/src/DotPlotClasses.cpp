@@ -61,6 +61,14 @@ QPointF DotPlotMiniMap::fromMiniMap(const QPointF &p, const QPointF &zoom) const
     return result;
 }
 
+void DotPlotMiniMap::updatePosition(int bigMapW, int bigMapH) {
+    w = bigMapW/ratio;
+    h = bigMapH/ratio;
+
+    x = bigMapW - w;
+    y = bigMapH - h;
+}
+
 // draw minimap
 void DotPlotMiniMap::draw(QPainter &p, int shiftX, int shiftY, const QPointF &zoom) const {
 

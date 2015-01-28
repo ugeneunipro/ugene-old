@@ -57,6 +57,7 @@
 #include "DotPlotFilterDialog.h"
 #include "DotPlotTasks.h"
 #include "DotPlotWidget.h"
+#include "DotPlotImageExportTask.h"
 
 namespace U2 {
 
@@ -516,7 +517,10 @@ void DotPlotWidget::sl_onSequenceSelectionChanged(LRegionsSelection* s, const QV
 void DotPlotWidget::sl_showSaveImageDialog() {
     exitButton->hide();
 
-    ExportImageDialog dialog(this, ExportImageDialog::DotPlot);
+    DotPlotImageExportTaskFactory factory(this);
+    ExportImageDialog dialog(&factory,
+                             ExportImageDialog::DotPlot,
+                             ExportImageDialog::Resizable);
     dialog.exec();
 
     exitButton->show();
@@ -945,8 +949,53 @@ bool DotPlotWidget::getLineToDraw(const DotPlotResults &r, QLine *line, float ra
     return true;
 }
 
+// draw everything to provided size
+void DotPlotWidget::drawAll(QPainter &p, QSize &size, DotPlotImageExportSettings& exportSettings) {
+    p.save();
+
+    SAFE_POINT(w != 0 && h != 0, tr("Invalid weight and height parameters!"), );
+    qreal scaleCoeff = qMin( (qreal)size.width() / w, (qreal) size.height() / h );
+    QFont f = p.font();
+    f.setPointSize( (int)(f.pointSizeF()*scaleCoeff) );
+
+    p.setFont(f);
+    // save widget parameters
+    int wSaved = w;
+    int hSaved = h;
+    int textSpaceSaved = textSpace;
+    float shiftX_saved = shiftX;
+    float shiftY_saved = shiftY;
+
+    // adapt sizes to provided w and h
+    QFontMetrics fm = p.fontMetrics();
+    int minTextSpace = fm.width(" 00000 ");
+    textSpace = minTextSpace;
+    w = size.width() - 2 * textSpace;
+    h = size.height() - 2 * textSpace;
+    miniMap->updatePosition(w, h);
+    pixMapUpdateNeeded = true;
+
+    shiftX = w * shiftX_saved / wSaved;
+    shiftY = h * shiftY_saved / hSaved;
+
+    // draw all
+    drawAll(p, scaleCoeff, false, exportSettings.includeAreaSelection, exportSettings.includeRepeatSelection);
+
+    // restore widget parameters
+    w = wSaved;
+    h = hSaved;
+    miniMap->updatePosition(w, h);
+    textSpace = textSpaceSaved;
+    shiftX = shiftX_saved;
+    shiftY = shiftY_saved;
+
+    p.restore();
+    pixMapUpdateNeeded = true;
+}
+
 // draw everything
-void DotPlotWidget::drawAll(QPainter& p) {
+void DotPlotWidget::drawAll(QPainter& p, qreal rulerFontScale, bool _drawFocus,
+                            bool drawAreaSelection, bool drawRepeatSelection) {
 
     if (sequenceX == NULL || sequenceY == NULL || w <= 0 || h <= 0) {
         return;
@@ -962,16 +1011,20 @@ void DotPlotWidget::drawAll(QPainter& p) {
 
     drawAxises(p);
     drawDots(p);
-    drawSelection(p);
+    if (drawAreaSelection) {
+        drawSelection(p);
+    }
     drawMiniMap(p);
-    drawNearestRepeat(p);
+    if (drawRepeatSelection) {
+        drawNearestRepeat(p);
+    }
 
     p.translate(-textSpace, -textSpace);
-    drawRulers(p);
+    drawRulers(p, rulerFontScale);
 
     p.restore();
 
-    if(hasFocus()){
+    if(hasFocus() && _drawFocus){
         drawFocus(p);
     }
 
@@ -984,7 +1037,6 @@ void DotPlotWidget::drawFocus(QPainter& p) const{
     p.setPen(QPen(Qt::black, 1, Qt::DotLine));
     p.drawRect(0, 0, width()-1, height()-1);
 }
-
 
 void DotPlotWidget::drawNames(QPainter &p) const {
 
@@ -1085,7 +1137,7 @@ QString DotPlotWidget::getRoundedText(QPainter &p, int num, int size) const {
     return "";
 }
 
-void DotPlotWidget::drawRulers(QPainter &p) const{
+void DotPlotWidget::drawRulers(QPainter &p, qreal fontScale) const{
 
     GraphUtils::RulerConfig rConf;
 
@@ -1094,7 +1146,7 @@ void DotPlotWidget::drawRulers(QPainter &p) const{
     QFont rulerFont;
 
     rulerFont.setFamily("Arial");
-    rulerFont.setPointSize(8);
+    rulerFont.setPointSize(8 * fontScale);
 
     int startX = sequenceCoords(unshiftedUnzoomed(QPointF(0,0))).x(),
         endX = sequenceCoords(unshiftedUnzoomed(QPointF(w,0))).x(),
@@ -1933,7 +1985,7 @@ void DotPlotWidget::mouseReleaseEvent(QMouseEvent *e) {
 }
 
 
-bool DotPlotWidget::hasSelection() {
+bool DotPlotWidget::hasSelection() const {
 
     if (selectionX) {
         foreach (const U2Region &lr, selectionX->getSelectedRegions()) {
@@ -1952,6 +2004,21 @@ bool DotPlotWidget::hasSelection() {
     }
 
     return false;
+}
+
+bool DotPlotWidget::hasSelectedArea() const {
+    bool selected = true;
+    if (!sequenceX || !sequenceY) {
+        selected = false;
+    }
+
+    if (!(selectionX || selectionY)) {
+        selected = false;
+    }
+    if(clearedByRepitSel){
+        selected = false;
+    }
+    return selected;
 }
 
 bool DotPlotWidget::canZoomIn(){

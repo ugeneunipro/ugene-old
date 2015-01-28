@@ -44,6 +44,7 @@ class ADVSequenceWidget;
 class GObjectView;
 class LRegionsSelection;
 
+class DotPlotImageExportSettings;
 class DotPlotResultsListener;
 class DotPlotRevComplResultsListener;
 class DotPlotMiniMap;
@@ -54,6 +55,8 @@ class GSequenceLineView;
 class DotPlotWidget : public ADVSplitWidget {
     Q_OBJECT
 
+    friend class DotPlotImageExportToBitmapTask;
+    friend class DotPlotImageExportTaskFactory;
 public:
     DotPlotWidget(AnnotatedDNAView* dnaView);
     ~DotPlotWidget();
@@ -67,7 +70,8 @@ public:
     AnnotatedDNAView* getDnaView() const {return dnaView;}
 
     void setShiftZoom(ADVSequenceObjectContext*, ADVSequenceObjectContext*, float, float, const QPointF&);
-    bool hasSelection();
+    bool hasSelection() const;
+    bool hasSelectedArea() const;
 
     void setIgnorePanView(bool);
     void setKeepAspectRatio(bool);
@@ -184,12 +188,14 @@ private:
     void initActionsAndSignals();
     void connectSequenceSelectionSignals();
 
-    void drawAll(QPainter&);
+    void drawAll(QPainter& p, QSize& size, DotPlotImageExportSettings& exportSettings);
+    void drawAll(QPainter& p, qreal rulerFontScale = 1, bool drawFocus = true,
+                 bool drawAreaSelection = true, bool drawRepeatSelection = true);
     void drawNames(QPainter&) const;
     void drawAxises(QPainter&) const;
     void drawDots(QPainter&);
     void drawSelection(QPainter&) const;
-    void drawRulers(QPainter&) const;
+    void drawRulers(QPainter&, qreal fontScale = 1) const;
     void drawMiniMap(QPainter&) const;
     void drawNearestRepeat(QPainter&) const;
     void drawFocus(QPainter& p) const;

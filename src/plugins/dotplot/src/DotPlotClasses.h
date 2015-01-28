@@ -46,6 +46,8 @@ public:
     QRectF getBoundary() const;
     QPointF fromMiniMap(const QPointF &p, const QPointF &zoom) const;
 
+    void updatePosition(int bigMapW, int bigMapH);
+
 private:
     int x, y, w, h;
     float ratio;
