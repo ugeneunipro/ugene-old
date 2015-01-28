@@ -20,6 +20,7 @@
  */
 
 #include "CutadaptSupport.h"
+#include "python/PythonSupport.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -37,20 +38,8 @@ CutadaptSupport::CutadaptSupport(const QString& name, const QString& path)
         grayIcon = QIcon(":external_tool_support/images/cmdline_gray.png");
         warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
-#ifdef Q_OS_WIN
-
-    executableFileName="cutadapt.exe";
-
-#else
-
-    #if defined(Q_OS_UNIX) || defined(Q_OS_MAC)
-
-    executableFileName="cutadapt";
-
-    #endif
-
-#endif
-    validMessage="Cutadapt v";
+    executableFileName="cutadapt.py";
+    validMessage="cutadapt version";
     description=tr("<i>cutadapt</i> removes adapter sequences from high-throughput sequencing data. This is necessary when the reads are longer than the molecule that is sequenced, such as in microRNA data.");
 
     versionRegExp=QRegExp("cutadapt version (\\d+.\\d+.\\d+)");
@@ -62,6 +51,9 @@ CutadaptSupport::CutadaptSupport(const QString& name, const QString& path)
         U2DataPath* dp = new U2DataPath(ADAPTERS_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+ADAPTERS_DIR_NAME, false);
         dpr->registerEntry(dp);
     }
+
+    toolRunnerProgramm = ET_PYTHON;
+    dependencies << ET_PYTHON;
 }
 
 } //namespace U2
