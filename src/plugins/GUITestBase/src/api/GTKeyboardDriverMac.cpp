@@ -239,8 +239,8 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY("f10", kVK_F10);
     ADD_KEY("f12", kVK_F12);
     ADD_KEY("home", kVK_Home);
-    //ADD_KEY("pageUp", VK_PRIOR);
-    //ADD_KEY("pageDown", VK_NEXT);
+    ADD_KEY("pageup", kVK_PageUp);
+    ADD_KEY("pagedown", kVK_PageDown);
 
 // feel free to add other keys
 // macro kVK_* defined in Carbon.framework/Frameworks/HIToolbox.framework/Headers/Events.h

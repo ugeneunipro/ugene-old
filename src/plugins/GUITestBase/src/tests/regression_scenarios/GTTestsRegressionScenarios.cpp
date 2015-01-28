@@ -10846,6 +10846,7 @@ GUI_TEST_CLASS_DEFINITION(test_3221) {
     GTUtilsOptionPanelSequenceView::enterPattern(os, ">long_annotation_name");
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"], GTKeyboardDriver::key["ctrl"]);
     GTKeyboardDriver::keySequence(os, "ACGTAAA");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os, true);
 
@@ -13796,6 +13797,7 @@ GUI_TEST_CLASS_DEFINITION(test_3797) {
     GTUtilsMSAEditorSequenceArea::selectSequence(os, QString("Mecopoda_sp.__Malaysia_"));
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageDown"]);
+
     GTGlobals::sleep(5000);
 
 
