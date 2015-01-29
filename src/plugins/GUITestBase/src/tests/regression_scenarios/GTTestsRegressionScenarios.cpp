@@ -6662,6 +6662,32 @@ GUI_TEST_CLASS_DEFINITION( test_2364 ) {
     // expected button is in dashboard - it can't be checked for now
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2373) {
+    GTLogTracer logTracer;
+
+//    1. Open "COI.aln"
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+//    2. Move 'Mecopoda_elongata__Ishigaki__J' and 'Mecopoda_elongata__Sumatra_' to the end of name list
+    GTUtilsMsaEditor::replaceSequence(os, "Mecopoda_elongata__Ishigaki__J", 17);
+    GTUtilsMsaEditor::replaceSequence(os, "Mecopoda_elongata__Sumatra_", 17);
+
+//    3. Press 'Switch on/off collapsing mode' tool button
+//    Expected state: collapsing group, that contains two sequences, appeared
+    GTUtilsMsaEditor::toggleCollapsingMode(os);
+
+//    4. Mouse press on the group
+//    Expected state:  group selected
+    GTUtilsMsaEditor::clickSequenceName(os, "Mecopoda_elongata__Ishigaki__J");
+
+//    5. Mouse press under the group in the name list
+//    Expected state:  nothing happens
+    GTMouseDriver::moveTo(os, GTUtilsMsaEditor::getSequenceNameRect(os, "Mecopoda_elongata__Ishigaki__J").center() + QPoint(0, 20));
+    GTMouseDriver::click(os);
+
+    GTUtilsLog::check(os, logTracer);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2375 ) {
 //    1. Open {_common_data/sam/broken_invalid_cigar.sam}
 //    Expected state: import dialog appears.

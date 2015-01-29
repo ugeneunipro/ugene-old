@@ -89,6 +89,23 @@ QRect GTUtilsMsaEditor::getSequenceNameRect(U2OpStatus &os, const QString &seque
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "replaceSequence"
+void GTUtilsMsaEditor::replaceSequence(U2OpStatus &os, const QString &sequenceToReplace, int targetPosition) {
+    clickSequenceName(os, sequenceToReplace);
+
+    targetPosition = qMax(0, qMin(getSequencesCount(os) - 1, targetPosition));
+    const QString targetSequenceName = GTUtilsMSAEditorSequenceArea::getNameList(os)[targetPosition];
+
+    const QPoint dragFrom = getSequenceNameRect(os, sequenceToReplace).center();
+    const QPoint dragTo = getSequenceNameRect(os, targetSequenceName).center();
+
+    GTMouseDriver::moveTo(os, dragFrom);
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, dragTo);
+    GTMouseDriver::release(os);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "clickSequenceName"
 void GTUtilsMsaEditor::clickSequenceName(U2OpStatus &os, const QString &sequenceName, Qt::MouseButton mouseButton) {
     const QRect sequenceNameRect = getSequenceNameRect(os, sequenceName);

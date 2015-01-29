@@ -42,6 +42,7 @@ public:
 
     static MSAEditorNameList *getNameListArea(U2OpStatus &os);
     static QRect getSequenceNameRect(U2OpStatus &os, const QString &sequenceName);
+    static void replaceSequence(U2OpStatus &os, const QString &sequenceToReplace, int targetPosition);
 
     static void clickSequenceName(U2OpStatus &os, const QString &sequenceName, Qt::MouseButton mouseButton = Qt::LeftButton);
     static QString getReferenceSequenceName(U2OpStatus &os);
