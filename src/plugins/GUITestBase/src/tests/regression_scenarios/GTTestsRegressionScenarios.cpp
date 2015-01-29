@@ -1787,6 +1787,22 @@ GUI_TEST_CLASS_DEFINITION(test_1439) {
     CHECK_SET_ERR(l.getError().contains("Can't align sequence longer 100000"), "Wrong error in the log");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1442_1) {
+//    1. Open file "data/position_weight_matrix/JASPAR/fungi/MA0265.1.pfm"
+//    Expected state: Opened only window with position frequency matrix and it's Logo.
+//    In Project View not added any items.
+
+    GTFileDialog::openFile(os, dataDir + "position_weight_matrix/JASPAR/fungi", "MA0265.1.pfm");
+
+    const int projectViewItemsCount = GTUtilsProjectTreeView::getTreeView(os)->model()->rowCount();
+    CHECK_SET_ERR(0 == projectViewItemsCount, "Unexpected project view items count");
+
+    GTWidget::findWidget(os, "Matrix viewer"); // check that matrix view is presented
+
+    QWidget *logoWidget = GTWidget::findWidget(os, "logoWidget", NULL);
+    CHECK_SET_ERR(logoWidget->isVisible(), "Logo widget is unexpectedly invisible");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1442_2) {
     class SelectFormatScenario : public CustomScenario {
         void run(U2OpStatus &os) {
