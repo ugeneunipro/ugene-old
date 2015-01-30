@@ -85,9 +85,12 @@ void ColorSchemaDialogController::paintEvent(QPaintEvent*){
             break;
         }
     }
-    painter.drawLine(0, alphabetColorsView->size().height(), alphabetColorsView->size().width(), alphabetColorsView->size().height());
-    painter.drawLine(alphabetColorsView->size().width(), 0, alphabetColorsView->size().width(), alphabetColorsView->size().height());
 
+    painter.drawLine(2, alphabetColorsView->size().height()-2, alphabetColorsView->size().width()-2, alphabetColorsView->size().height()-2);
+    painter.drawLine(alphabetColorsView->size().width()-2, 2, alphabetColorsView->size().width()-2, alphabetColorsView->size().height()-2);
+
+    painter.drawLine(alphabetColorsView->size().width()-2, alphabetColorsView->size().height()-2, 2, alphabetColorsView->size().height()-2);
+    painter.drawLine(alphabetColorsView->size().width()-2, alphabetColorsView->size().height()-2, alphabetColorsView->size().width()-2, 2);
 
     dialogPainter.drawPixmap(alphabetColorsFrame->geometry().x(), alphabetColorsFrame->geometry().y(), *alphabetColorsView);
 }
