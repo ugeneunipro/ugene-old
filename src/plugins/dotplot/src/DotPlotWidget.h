@@ -188,7 +188,7 @@ private:
     void initActionsAndSignals();
     void connectSequenceSelectionSignals();
 
-    void drawAll(QPainter& p, QSize& size, DotPlotImageExportSettings& exportSettings);
+    void drawAll(QPainter& p, QSize& size, qreal fontScale, DotPlotImageExportSettings& exportSettings);
     void drawAll(QPainter& p, qreal rulerFontScale = 1, bool drawFocus = true,
                  bool drawAreaSelection = true, bool drawRepeatSelection = true);
     void drawNames(QPainter&) const;

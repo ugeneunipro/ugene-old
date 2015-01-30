@@ -39,11 +39,13 @@ const QString ImageExportTaskSettings::PDF_FORMAT = "pdf";
 ImageExportTaskSettings::ImageExportTaskSettings(const QString &fileName,
                                                  const QString &format,
                                                  const QSize &size,
-                                                 const int quality)
+                                                 const int quality,
+                                                 const int dpi)
     : fileName(fileName),
       format(format),
       imageSize(size),
-      imageQuality(quality)
+      imageQuality(quality),
+      imageDpi(dpi)
 {
 }
 

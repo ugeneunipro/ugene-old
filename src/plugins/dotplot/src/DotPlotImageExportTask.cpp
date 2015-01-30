@@ -37,14 +37,25 @@ namespace U2 {
 void DotPlotImageExportToBitmapTask::run() {
     SAFE_POINT_EXT(settings.isBitmapFormat(),
                    setError(WRONG_FORMAT_MESSAGE.arg(settings.format).arg("DotPlotImageExportToBitmapTask")), );
+    QImage im(settings.imageSize, QImage::Format_RGB32);
+    int dpm = settings.imageDpi / 0.0254;
+    im.setDotsPerMeterX( dpm );
+    im.setDotsPerMeterY( dpm );
+    im.fill(Qt::white);
+    QPainter painter(&im);
 
-    QPixmap *im = new QPixmap(settings.imageSize);
-    im->fill(Qt::white);
-    QPainter painter(im);
-    dotplotWidget->drawAll(painter, settings.imageSize, dpExportSettings);
+    int defaultDpm = 0;
+    {
+        QImage tmp(10, 10, QImage::Format_RGB32);
+        tmp.fill(Qt::white);
+        defaultDpm = tmp.dotsPerMeterX();
+    }
+    SAFE_POINT(dpm != 0, tr("Incorrect DPI paramter"), );
+    float fontScale = (float)defaultDpm / dpm;
+    dotplotWidget->drawAll(painter, settings.imageSize, fontScale, dpExportSettings);
 
-    CHECK_EXT( im->save(settings.fileName, qPrintable(settings.format), settings.imageQuality),
-               setError(EXPORT_FAIL_MESSAGE.arg(settings.fileName)), );
+    CHECK_EXT( im.save(settings.fileName, qPrintable(settings.format), settings.imageQuality), setError(EXPORT_FAIL_MESSAGE.arg(settings.fileName)), );
+    SAFE_POINT_EXT( settings.isBitmapFormat(), setError(WRONG_FORMAT_MESSAGE.arg(settings.format).arg("CircularViewImageExportToBitmapTask")), );
 }
 
 DotPlotImageExportTaskFactory::DotPlotImageExportTaskFactory(DotPlotWidget *wgt)

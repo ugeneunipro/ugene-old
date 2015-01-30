@@ -131,7 +131,8 @@ void ExportImageDialog::accept() {
 
     ImageExportTaskSettings settings(filename, format,
                                      QSize(getWidth(), getHeight()),
-                                     (hasQuality() ? getQuality() : -1));
+                                     (hasQuality() ? getQuality() : -1),
+                                     ui->dpiSpinBox->value());
     Task* task = exportTaskFactory->getTaskInstance(settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 
@@ -237,6 +238,9 @@ void ExportImageDialog::init() {
         FAIL("Can't find help Id",);
         break;
     }
+
+
+    ui->dpiWidget->setVisible(source == DotPlot);
 
     QList<QByteArray> list = QImageWriter::supportedImageFormats();
     foreach (QByteArray format,list){

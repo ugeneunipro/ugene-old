@@ -34,7 +34,8 @@ public:
     ImageExportTaskSettings(const QString &fileName = QString(),
                             const QString &format = QString(),
                             const QSize &size = QSize(),
-                            const int quality = -1);
+                            const int quality = -1,
+                            const int dpi = 96);
 
     bool isBitmapFormat() const;
     bool isSVGFormat() const;
@@ -44,6 +45,7 @@ public:
     QString format;
     QSize   imageSize;
     int     imageQuality;
+    int     imageDpi;
 
     static const QString SVG_FORMAT;
     static const QString PS_FORMAT;
