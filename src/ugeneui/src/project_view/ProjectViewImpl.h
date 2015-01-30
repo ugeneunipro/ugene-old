@@ -130,6 +130,7 @@ private slots:
     void sl_relocate();
     void sl_exportDocument();
     void sl_onToggleCircular();
+    void sl_onOpenContainingFolder();
 
 private:
     void saveWidgetState(ProjectViewWidget* w);
@@ -152,6 +153,8 @@ private:
     QAction*    relocateDocumentAction;
     QAction*    exportDocumentAction;
     QAction*    toggleCircularAction;
+    QAction*    openContainingFolder;
+
     bool saveProjectOnClose;
 
     ProjectViewWidget* w;

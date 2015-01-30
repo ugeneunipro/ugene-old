@@ -58,6 +58,7 @@ public:
     void highlightItem(Document *doc);
     QAction * getLoadSeletectedDocumentsAction() const;
     void updateSettings(const ProjectTreeControllerModeSettings &settings);
+    QSet<Document*> getDocsInSelection(bool deriveFromObjects) const;
 
 private slots:
     void sl_onDocumentAdded(Document *doc);
@@ -109,7 +110,6 @@ private:
     void connectToResourceTracker();
     void updateLoadingState(Document *doc);
     void runLoadDocumentTasks(const QList<Document*> &docs) const;
-    QSet<Document*> getDocsInSelection(bool deriveFromObjects) const;
     void removeItems(const QList<Document*> &docs, QList<Folder> folders, QList<GObject *> objs);
     bool removeObjects(const QList<GObject*> &objs, const QList<Document*> &excludedDocs, const QList<Folder> &excludedFolders, bool removeFromDbi);
     bool removeFolders(const QList<Folder> &folders, const QList<Document*> &excludedDocs);

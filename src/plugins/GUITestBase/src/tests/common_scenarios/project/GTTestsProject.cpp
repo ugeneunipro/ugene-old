@@ -502,6 +502,50 @@ GUI_TEST_CLASS_DEFINITION(test_0033) {
                                              GTUtilsProjectTreeView::findIndex(os, "project_test_0033.ugenedb"));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0034) {
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+    //select sequence object
+    GTUtilsProjectTreeView::click(os, "murine.gb");
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "Open containing folder",
+        PopupChecker::IsEnabled, GTGlobals::UseMouse));
+    GTUtilsProjectTreeView::click(os, "murine.gb", Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0035) {
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "sars.gb");
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+    //select 2 objects
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+    GTUtilsProjectTreeView::click(os, "NC_001363");
+    GTUtilsProjectTreeView::click(os, "NC_004718");
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "Open containing folder",
+        PopupChecker::NotExists, GTGlobals::UseMouse));
+    GTUtilsProjectTreeView::click(os, "NC_001363", Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0036) {
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "sars.gb");
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+    //select 2 files
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+    GTUtilsProjectTreeView::click(os, "sars.gb");
+    GTUtilsProjectTreeView::click(os, "murine.gb");
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "Open containing folder",
+        PopupChecker::NotExists, GTGlobals::UseMouse));
+    GTUtilsProjectTreeView::click(os, "sars.gb", Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0037) {
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "sars.gb");
+    //select 1 file
+    GTUtilsProjectTreeView::click(os, "sars.gb");
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "Open containing folder",
+        PopupChecker::NotExists, GTGlobals::UseMouse));
+    GTUtilsProjectTreeView::click(os, "sars.gb", Qt::RightButton);
+}
+
 }
 
 }

@@ -19,9 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include <QTimer>
-
 #include <QMessageBox>
+#include <QDesktopServices>
+#include <QTimer>
+#include <QUrl>
 
 #include <AppContextImpl.h>
 
@@ -412,10 +413,10 @@ ProjectViewImpl::ProjectViewImpl()
     w = NULL;
     projectTreeController = NULL;
     objectViewController = NULL;
-//    addNewDocumentAction = NULL;
     saveSelectedDocsAction = NULL;
     relocateDocumentAction = NULL;
     toggleCircularAction = NULL;
+    openContainingFolder = NULL;
     saveProjectOnClose = false;
 
     //todo: move it somewhere else -> object views could be openend without project view service active
@@ -467,6 +468,10 @@ void ProjectViewImpl::enable() {
     exportDocumentAction->setObjectName("Export document");
     exportDocumentAction->setIcon(QIcon(":ugene/images/save_copy.png"));
     connect(exportDocumentAction, SIGNAL(triggered()), SLOT(sl_exportDocument()));
+
+    openContainingFolder = new QAction(tr("Open containing folder"), w);
+    openContainingFolder->setObjectName("Open containing folder");
+    connect(openContainingFolder, SIGNAL(triggered()), SLOT(sl_onOpenContainingFolder()));
 
     initView();
 
@@ -935,13 +940,18 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
     QMenu* openViewMenu = new QMenu(tr("open_view_menu"), &m);
     QMenu* addToViewMenu= new QMenu(tr("add_to_view_menu"), &m);
 
-    const DocumentSelection* docSelection = getDocumentSelection();
+    const DocumentSelection* docsSelection = getDocumentSelection();
+    const GObjectSelection* objsSelection = getGObjectSelection();
+    
+    SAFE_POINT(docsSelection != NULL, "Document selection is NULL", );
+    SAFE_POINT(objsSelection != NULL, "Object selection is NULL", );
+
     MultiGSelection multiSelection;
-    if (!getGObjectSelection()->isEmpty()) {
-        multiSelection.addSelection(getGObjectSelection());
+    if (!objsSelection->isEmpty()) {
+        multiSelection.addSelection(objsSelection);
     }
-    if (!docSelection->isEmpty()) {
-        multiSelection.addSelection(getDocumentSelection());
+    if (!docsSelection->isEmpty()) {
+        multiSelection.addSelection(docsSelection);
     }
 
     buildOpenViewMenu(multiSelection, openViewMenu);
@@ -968,7 +978,7 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
     }
 
     bool hasModifiedDocs = false;
-    foreach(Document* doc, docSelection->getSelectedDocuments()) {
+    foreach(Document* doc, docsSelection->getSelectedDocuments()) {
         if (doc->isTreeItemModified()) {
             hasModifiedDocs = true;
             break;
@@ -982,12 +992,11 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
         m.addAction(saveSelectedDocsAction);
     }
 
-    if (!getGObjectSelection()->isEmpty()) {
-        const GObjectSelection* objSelection = getGObjectSelection();
+    if (!objsSelection->isEmpty()) {
         bool seqobjFound = false;
         bool allCirc = true;
         bool allNucl = true;
-        foreach(GObject *obj, objSelection->getSelectedObjects()){
+        foreach(GObject *obj, objsSelection->getSelectedObjects()){
             const bool objectIsModifiable = (!obj->isStateLocked() && !projectTreeController->isObjectInRecycleBin(obj));
             if(obj->getGObjectType() == GObjectTypes::SEQUENCE && objectIsModifiable){
                 seqobjFound = true;
@@ -1005,6 +1014,15 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
             m.addAction(toggleCircularAction);
         }
     }
+
+    Document *docToOpen = projectTreeController->getDocsInSelection(true).size() == 1 ? 
+        projectTreeController->getDocsInSelection(true).toList().first() : NULL;
+    if (docToOpen != NULL && !docToOpen->isDatabaseConnection()) {
+        GUrl docUrl = docToOpen->getURL();
+        if (docUrl.isLocalFile() || docUrl.isNetworkSource()) {
+            m.addAction(openContainingFolder);
+        }
+    }    
 }
 
 void ProjectViewImpl::sl_activateView() {
@@ -1115,6 +1133,17 @@ void ProjectViewImpl::sl_onToggleCircular() {
         if (objectIsModifiable && obj->getGObjectType() == GObjectTypes::SEQUENCE){
             U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(obj);
             casted->setCircular(toggleCircularAction->isChecked());
+        }
+    }
+}
+
+void ProjectViewImpl::sl_onOpenContainingFolder() {
+    Document *docToOpen = projectTreeController->getDocsInSelection(true).size() == 1 ? 
+        projectTreeController->getDocsInSelection(true).toList().first() : NULL;
+    if (docToOpen != NULL && !docToOpen->isDatabaseConnection()) {
+        GUrl docUrl = docToOpen->getURL();
+        if (docUrl.isLocalFile() || docUrl.isNetworkSource()) {
+            QDesktopServices::openUrl(QUrl(docToOpen->getURL().dirPath()));
         }
     }
 }
