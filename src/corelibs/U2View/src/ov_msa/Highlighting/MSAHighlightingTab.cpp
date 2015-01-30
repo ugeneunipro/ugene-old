@@ -149,6 +149,7 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m)
 
     savableTab.disableSavingForWidgets(QStringList() << threshold->objectName() << highlightingScheme->objectName());
     U2WidgetStateStorage::restoreWidgetState(savableTab);
+    sl_sliderValueChanged();
 }
 
 void MSAHighlightingTab::initColorCB(){

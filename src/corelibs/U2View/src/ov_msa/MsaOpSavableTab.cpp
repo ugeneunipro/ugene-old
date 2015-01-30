@@ -21,24 +21,24 @@
 
 #include <U2Gui/U2WidgetStateStorage.h>
 
-#include "../SequenceSelectorWidgetController.h"
+#include "SequenceSelectorWidgetController.h"
 
-#include "PairAlignOpSavableTab.h"
+#include "MsaOpSavableTab.h"
 
 namespace U2 {
 
-PairAlignOpSavableTab::PairAlignOpSavableTab(QWidget *wrappedWidget, MWMDIWindow *contextWindow)
+MsaOpSavableTab::MsaOpSavableTab(QWidget *wrappedWidget, MWMDIWindow *contextWindow)
     : U2SavableWidget(wrappedWidget, contextWindow)
 {
 
 }
 
-PairAlignOpSavableTab::~PairAlignOpSavableTab() {
+MsaOpSavableTab::~MsaOpSavableTab() {
     U2WidgetStateStorage::saveWidgetState(*this);
     widgetStateSaved = true;
 }
 
-QSet<QWidget *> PairAlignOpSavableTab::getCompoundChildren() const {
+QSet<QWidget *> MsaOpSavableTab::getCompoundChildren() const {
     QSet<QWidget *> result;
     foreach (QWidget *child, wrappedWidget->findChildren<QWidget *>()) {
         if (NULL != qobject_cast<SequenceSelectorWidgetController *>(child)) {

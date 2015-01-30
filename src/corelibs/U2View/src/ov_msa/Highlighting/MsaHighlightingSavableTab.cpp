@@ -28,7 +28,7 @@
 namespace U2 {
 
 MsaHighlightingSavableTab::MsaHighlightingSavableTab(QWidget *wrappedWidget, MWMDIWindow *contextWindow)
-    : U2SavableWidget(wrappedWidget, contextWindow)
+    : MsaOpSavableTab(wrappedWidget, contextWindow)
 {
     SAFE_POINT(NULL != qobject_cast<MSAHighlightingTab *>(wrappedWidget), "Invalid widget provided", );
 }

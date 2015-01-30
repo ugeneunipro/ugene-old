@@ -23,7 +23,6 @@
 #define _U2_MSA_REF_SEQ_COMMON_WIDGET_H_
 
 #include <U2Gui/OPWidgetFactory.h>
-#include <U2Gui/U2SavableWidget.h>
 
 namespace U2 {
 
@@ -44,7 +43,6 @@ private:
     QWidget* createReferenceGroup();
     MSAEditor *msaEditor;
     SequenceSelectorWidgetController *reSeqSelector;
-    U2SavableWidget savableWidget;
 };
 
 class U2VIEW_EXPORT RefSeqCommonWidgetFactory : public OPCommonWidgetFactory {

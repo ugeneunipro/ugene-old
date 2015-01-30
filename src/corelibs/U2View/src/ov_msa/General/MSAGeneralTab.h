@@ -24,7 +24,7 @@
 
 #include "ui/ui_GeneralTabOptionsPanelWidget.h"
 
-#include <U2Gui/U2SavableWidget.h>
+#include "../MsaOpSavableTab.h"
 
 namespace U2 {
 
@@ -57,7 +57,7 @@ private:
     void updateThresholdState(bool enable, int minVal = 0, int maxVal = 0, int value = 0);
 
     MSAEditor* msa;
-    U2SavableWidget savableTab;
+    MsaOpSavableTab savableTab;
 };
 
 } // namespace U2

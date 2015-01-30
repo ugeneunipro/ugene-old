@@ -33,7 +33,7 @@
 namespace U2 {
 
 RefSeqCommonWidget::RefSeqCommonWidget(MSAEditor *_msaEditor)
-    : msaEditor(_msaEditor), savableWidget(this, GObjectViewUtils::findViewByName(_msaEditor->getName()))
+    : msaEditor(_msaEditor)
 {
     connect(msaEditor, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_refSeqChanged(qint64)));
 
@@ -46,8 +46,6 @@ RefSeqCommonWidget::RefSeqCommonWidget(MSAEditor *_msaEditor)
     mainLayout->addWidget(refSeqGroup);
 
     setLayout(mainLayout);
-
-    U2WidgetStateStorage::restoreWidgetState(savableWidget);
 }
 
 QWidget* RefSeqCommonWidget::createReferenceGroup(){

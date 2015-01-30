@@ -41,8 +41,6 @@ HEADERS += src/LicenseDialog.h \
            src/ov_msa/Common/RefSeqCommonWidget.h \
            src/ov_msa/CreateSubalignmentDialogController.h \
            src/ov_msa/DeleteGapsDialog.h \
-           src/ov_msa/Display/MSADisplayTab.h \
-           src/ov_msa/Display/MSADisplayTabFactory.h \
            src/ov_msa/Export/MSAImageExportTask.h \
            src/ov_msa/ExportConsensus/MSAExportConsensusTab.h \
            src/ov_msa/ExportConsensus/MSAExportConsensusTabFactory.h \
@@ -68,6 +66,7 @@ HEADERS += src/LicenseDialog.h \
            src/ov_msa/MSAEditorStatusBar.h \
            src/ov_msa/MSAEditorTasks.h \
            src/ov_msa/MSAEditorUndoFramework.h \
+           src/ov_msa/MsaOpSavableTab.h \
            src/ov_msa/MSASelectSubalignmentDialog.h \
            src/ov_msa/MsaEditorUserModStepController.h \
            src/ov_msa/Overview/MSAGraphCalculationTask.h \
@@ -78,7 +77,6 @@ HEADERS += src/LicenseDialog.h \
            src/ov_msa/Overview/MSASimpleOverview.h \
            src/ov_msa/PairAlign/PairAlign.h \
            src/ov_msa/PairAlign/PairAlignFactory.h \
-           src/ov_msa/PairAlign/PairAlignOpSavableTab.h \
            src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h \
            src/ov_msa/PhyTrees/MSAEditorTreeManager.h \
            src/ov_msa/PhyTrees/MSAEditorTreeViewer.h \
@@ -252,8 +250,6 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_msa/Common/RefSeqCommonWidget.cpp \
            src/ov_msa/CreateSubalignmentDialogController.cpp \
            src/ov_msa/DeleteGapsDialog.cpp \
-           src/ov_msa/Display/MSADisplayTab.cpp \
-           src/ov_msa/Display/MSADisplayTabFactory.cpp \
            src/ov_msa/Export/MSAImageExportTask.cpp \
            src/ov_msa/ExportHighlightedDialogController.cpp \
            src/ov_msa/General/MSAGeneralTab.cpp \
@@ -277,6 +273,7 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_msa/MSAEditorStatusBar.cpp \
            src/ov_msa/MSAEditorTasks.cpp \
            src/ov_msa/MSAEditorUndoFramework.cpp \
+           src/ov_msa/MsaOpSavableTab.cpp \
            src/ov_msa/MSASelectSubalignmentDialog.cpp \
            src/ov_msa/MsaEditorUserModStepController.cpp \
            src/ov_msa/ExportConsensus/MSAExportConsensusTab.cpp \
@@ -289,7 +286,6 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_msa/Overview/MSASimpleOverview.cpp \
            src/ov_msa/PairAlign/PairAlign.cpp \
            src/ov_msa/PairAlign/PairAlignFactory.cpp \
-           src/ov_msa/PairAlign/PairAlignOpSavableTab.cpp \
            src/ov_msa/TreeOptions/TreeOptionsWidget.cpp \
            src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.cpp \
            src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp \

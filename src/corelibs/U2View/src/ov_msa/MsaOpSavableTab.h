@@ -18,3 +18,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
+
+#ifndef _U2_MSA_OPTIONS_PANEL_SAVABLE_TAB_H_
+#define _U2_MSA_OPTIONS_PANEL_SAVABLE_TAB_H_
+
+#include <U2Gui/U2SavableWidget.h>
+
+namespace U2 {
+
+class MsaOpSavableTab : public U2SavableWidget {
+public:
+    MsaOpSavableTab(QWidget *wrappedWidget, MWMDIWindow *contextWindow);
+    ~MsaOpSavableTab();
+
+protected:
+    QSet<QWidget *> getCompoundChildren() const;
+};
+
+} // namespace U2
+
+#endif // _U2_MSA_OPTIONS_PANEL_SAVABLE_TAB_H_

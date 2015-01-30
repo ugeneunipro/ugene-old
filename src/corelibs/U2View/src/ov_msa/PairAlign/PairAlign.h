@@ -23,7 +23,7 @@
 #define _U2_PAIR_ALIGN_H
 
 #include "ui/ui_PairwiseAlignmentOptionsPanelWidget.h"
-#include "PairAlignOpSavableTab.h"
+#include "../MsaOpSavableTab.h"
 #include "../SequenceSelectorWidgetController.h"
 
 #include <QtCore/QList>
@@ -109,7 +109,7 @@ private:
     SequenceSelectorWidgetController *firstSeqSelectorWC;
     SequenceSelectorWidgetController *secondSeqSelectorWC;
 
-    PairAlignOpSavableTab savableTab;
+    MsaOpSavableTab savableTab;
 
     bool showSequenceWidget;
     bool showAlgorithmWidget;
