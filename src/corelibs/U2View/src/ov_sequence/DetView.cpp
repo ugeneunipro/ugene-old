@@ -733,7 +733,7 @@ void DetViewRenderArea::highlight(QPainter& p, const U2Region& r, int line) {
 
 qint64 DetViewRenderArea::coordToPos(int x) const {
     U2Region visibleRange = view->getVisibleRange();
-        qint64 pos = visibleRange.startPos + int(x / (float)charWidth + 0.5f);
+    qint64 pos = visibleRange.startPos + x / charWidth;
     if (pos > visibleRange.endPos()) {
         pos = visibleRange.endPos();
     }
