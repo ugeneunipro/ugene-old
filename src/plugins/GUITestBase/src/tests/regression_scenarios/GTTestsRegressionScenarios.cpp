@@ -1158,6 +1158,41 @@ GUI_TEST_CLASS_DEFINITION(test_1325) {
     CHECK_SET_ERR(l2.hasError(), "There is no error in the log");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1326) {
+class CallVariantsWizardFiller : public Filler {
+public:
+        CallVariantsWizardFiller(U2OpStatus &os) :
+        Filler(os, "Call Variants Wizard") {}
+#define GT_CLASS_NAME "GTUtilsDialog::CallVariantsWizardFiller"
+#define GT_METHOD_NAME "run"
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            GT_CHECK(dialog, "activeModalWidget is NULL");
+
+            QSizePolicy actualPolicy = dialog->sizePolicy();
+            QSizePolicy expectedPolicy = QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+            QPoint bottomRight = dialog->mapToGlobal(dialog->rect().bottomRight());
+            CHECK_SET_ERR(actualPolicy == expectedPolicy, "size policy dont match");
+            QSize prevSize = dialog->size();
+            QPoint newBottomRight = QPoint(bottomRight.x() + 5, bottomRight.y() + 5);
+            GTMouseDriver::moveTo(os, bottomRight);
+            GTMouseDriver::press(os);
+            GTMouseDriver::moveTo(os, newBottomRight);
+            GTMouseDriver::release(os);
+            CHECK_SET_ERR(prevSize == dialog->size(), "size should not change");
+            GTWidget::click(os, GTWidget::findButtonByText(os,"Cancel"));
+        }
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+    };
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::addSample(os, "call variants");
+    
+    GTUtilsDialog::waitForDialog(os, new CallVariantsWizardFiller(os));
+    GTWidget::click(os, GTAction::button(os, "Show wizard"));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1347) {
 //    1. Run Ugene. Open file _common_data\scenarios\msa\ma2_gapped.aln
 //    2. Select some symbols(for example first three symbols of first sequence)
@@ -1222,6 +1257,22 @@ GUI_TEST_CLASS_DEFINITION(test_1348) {
                                                       << "Custom Elements with CMD Tools" << settings.elementName,
                                                       PopupChecker::NotExists));
     GTWidget::click(os, GTWidget::findWidget(os,"sceneView"), Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1358) {
+    //1. Open file "test/_common_data/scenarios/workflow designer/222.uwl" 
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::loadWorkflow(os, testDir + "_common_data/regression/1358/test_0001.uwl");
+    CHECK_OP(os, );
+
+    GTUtilsWorkflowDesigner::click(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "/samples/Genbank/", "murine.gb");
+    //2. Press "Run schema"
+
+    //Expected state: UGENE doesn't crash
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1371) {
