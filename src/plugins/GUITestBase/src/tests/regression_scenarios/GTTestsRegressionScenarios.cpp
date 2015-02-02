@@ -1139,6 +1139,31 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1347) {
+//    1. Run Ugene. Open file _common_data\scenarios\msa\ma2_gapped.aln
+//    2. Select some symbols(for example first three symbols of first sequence)
+//    3. Press ctrl+c
+//    Expected state: selection is copied into clipboard
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(3, 0));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    QTextEdit* patternEdit = qobject_cast<QTextEdit*>(GTWidget::findWidget(os, "textPattern"));
+    CHECK_SET_ERR(patternEdit != NULL, "textPattern is NULL");
+    CHECK_SET_ERR(patternEdit->toPlainText() == "AAGA",
+                  QString("Wrong text is in the buffer [%1]").arg(patternEdit->toPlainText()));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1348) {
 //    1) Create "Element with command line tool" with name "test" and any slots.
 //    2) Use context menu on "test" element in "Custom Elements with CMD Tools" in "Elements", click "Remove"
