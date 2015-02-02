@@ -142,5 +142,72 @@ void PopupChecker::commonScenario() {
 #undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "PopupCheckerByText"
+
+#define GT_METHOD_NAME "run"
+PopupCheckerByText::PopupCheckerByText(U2OpStatus &os, CustomScenario *scenario) :
+    Filler(os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup), scenario)
+{
+}
+
+void PopupCheckerByText::commonScenario() {
+    GTGlobals::sleep(1000);
+    GTMouseDriver::release(os);
+    QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+    GT_CHECK(NULL != activePopupMenu, "Active popup menu is NULL");
+
+    QAction* act;
+    if (!textPath.isEmpty()) {
+        QString actName;
+        int escCount = textPath.size();
+        if(textPath.size()>1){
+            actName = textPath.takeLast();
+            GTMenu::clickMenuItemByText(os, activePopupMenu, textPath, useMethod);
+            QMenu* activePopupMenuToCheck = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+            act = GTMenu::getMenuItem(os, activePopupMenuToCheck, actName);
+        }else{
+            QMenu* activePopupMenuToCheck = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+            actName = textPath.last();
+            act = GTMenu::getMenuItem(os, activePopupMenuToCheck, actName);
+        }
+
+        if(options.testFlag(PopupChecker::Exists)){
+            GT_CHECK(act != NULL, "action '" + actName + "' not found");
+            uiLog.trace("options.testFlag(Exists)");
+        }else{
+            GT_CHECK(act == NULL, "action '" + actName + "' unexpectidly found");
+        }
+        if(options.testFlag(PopupChecker::IsEnabled)){
+            GT_CHECK(act->isEnabled(), "action '" + act->objectName() + "' is not enabled");
+            uiLog.trace("options.testFlag(IsEnabled)");
+        }
+        if(options.testFlag(PopupChecker::IsDisabled)){
+            GT_CHECK(!act->isEnabled(), "action '" + act->objectName() + "' is enabled");
+            uiLog.trace("options.testFlag(IsDisabled");
+        }
+        if(options.testFlag(PopupChecker::IsChecable)){
+            GT_CHECK(act->isCheckable(), "action '" + act->objectName() + "' is not checkable");
+            uiLog.trace("options.testFlag(IsChecable)");
+        }
+        if(options.testFlag(PopupChecker::IsChecked)){
+            GT_CHECK(act->isCheckable(), "action '" + act->objectName() + "' is not checked");
+            uiLog.trace("options.testFlag(IsChecked)");
+        }
+        for(int i = 0; i<escCount; i++){
+            PopupChooser::clickEsc();
+            GTGlobals::sleep(300);
+        }
+    } else {
+        PopupChooser::clickEsc();
+    }
+
+    if (os.hasError()) {
+        PopupChooser::clickEsc();
+    }
+}
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
 }
 

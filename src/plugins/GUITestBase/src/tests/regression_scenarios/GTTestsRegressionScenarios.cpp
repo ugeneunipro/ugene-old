@@ -1139,6 +1139,47 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1348) {
+//    1) Create "Element with command line tool" with name "test" and any slots.
+//    2) Use context menu on "test" element in "Custom Elements with CMD Tools" in "Elements", click "Remove"
+//    3) Use context menu on WD main window, add element -> "Custom Elements with CMD Tools". Select "test", UGENE DOES NOT crash.
+
+//    Expected state: There shouldn't be "test" element on the step 3 after removing it
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    CreateElementWithCommandLineToolFiller::ElementWithCommandLineSettings settings;
+    settings.elementName = "Element_1348";
+
+    QList<CreateElementWithCommandLineToolFiller::InOutData> input;
+    CreateElementWithCommandLineToolFiller::InOutDataType inOutDataType;
+    inOutDataType.first = CreateElementWithCommandLineToolFiller::Sequence;
+    inOutDataType.second = "FASTA";
+    input << CreateElementWithCommandLineToolFiller::InOutData("in1",
+                                                               inOutDataType);
+    settings.input = input;
+    settings.executionString = "./ugenem $in1";
+
+    GTUtilsDialog::waitForDialog(os, new CreateElementWithCommandLineToolFiller(os, settings));
+    QAbstractButton *createElement = GTAction::button(os, "createElementWithCommandLineTool");
+    GTWidget::click(os, createElement);
+    GTGlobals::sleep();
+
+    QTreeWidgetItem* treeItem = GTUtilsWorkflowDesigner::findTreeItem(os, settings.elementName, GTUtilsWorkflowDesigner::algoriths);
+    CHECK_SET_ERR(treeItem != NULL, "Element not found");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove"));
+    GTTreeWidget::click(os, treeItem);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Add element"
+                                                      << "Custom Elements with CMD Tools" << settings.elementName,
+                                                      PopupChecker::NotExists));
+    GTWidget::click(os, GTWidget::findWidget(os,"sceneView"), Qt::RightButton);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1371) {
 //    1. Open file "data/samples/ACE/BL060C3.ace" as msa.
 //    Expected state: there are 2 MSA objects in document.
