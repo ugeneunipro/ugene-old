@@ -1139,6 +1139,25 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1325) {
+//    1. Open _common_data\regression\1325\long_gff.gff (choosing GFF format)
+//    2. UGENE will no open the file with error
+//    3. Double click on the unloaded document crashes UGENE
+
+//    Expected: UGENE does not crash
+
+    GTLogTracer l1;
+
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "GFF") );
+    GTFileDialog::openFile(os, testDir + "_common_data/regression/1325/", "long_gff.gff");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(l1.hasError(), "There is no error in the log");
+
+    GTLogTracer l2;
+    GTUtilsDocument::loadDocument(os, "long_gff.gff");
+    CHECK_SET_ERR(l2.hasError(), "There is no error in the log");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1347) {
 //    1. Run Ugene. Open file _common_data\scenarios\msa\ma2_gapped.aln
 //    2. Select some symbols(for example first three symbols of first sequence)

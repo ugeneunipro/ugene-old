@@ -77,18 +77,19 @@ int readLongLine( QString &buffer, IOAdapter* io, QScopedArrayPointer<char> &cha
     return buffer.length( );
 }
 
-void validateHeader( QStringList words){
+void validateHeader( QStringList words, U2OpStatus& os){
     bool isOk = false;
     if(words.size() < 2){
-        ioLog.info(GFFFormat::tr("Parsing error: invalid header"));
+        os.setError(GFFFormat::tr("Parsing error: invalid header"));
+        return;
     }
     words[0] = words[0].remove("#");
     if(!words[0].startsWith("gff-version")){
-        ioLog.info(GFFFormat::tr("Parsing error: file does not contain version header"));
+        os.setError(GFFFormat::tr("Parsing error: file does not contain version header"));
     }else{
         int ver = words[1].toInt(&isOk);
         if(!isOk){
-            ioLog.info(GFFFormat::tr("Parsing error: format version is not an integer"));
+            os.setError(GFFFormat::tr("Parsing error: format version is not an integer"));
         }
         //is version supported
         if(ver != 3){
@@ -222,7 +223,8 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     QSet<AnnotationTableObject *> atoSet;
     QMap <QString, U2SequenceObject*> seqMap;
     //header validation
-    validateHeader(words);
+    validateHeader(words, os);
+    CHECK_OP(os, );
 
     U2SequenceImporter seqImporter(hints, true);
     const QString folder = hints.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
