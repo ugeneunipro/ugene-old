@@ -286,8 +286,7 @@ void ExternalToolLogParser::parseOutput(const QString& partOfLog){
     lastPartOfLog.first()=lastLine+lastPartOfLog.first();
     lastLine=lastPartOfLog.takeLast();
     foreach(QString buf, lastPartOfLog){
-
-if(buf.contains("error",Qt::CaseInsensitive)){
+        if(buf.contains("error",Qt::CaseInsensitive)){
             setLastError(buf);
         }else{
             ioLog.trace(buf);

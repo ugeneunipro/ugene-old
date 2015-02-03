@@ -77,7 +77,7 @@ public:
 
 class U2ALGORITHM_EXPORT AssemblyReads {
 public:
-    AssemblyReads(const GUrl& left = GUrl(), const GUrl& right = GUrl(), const QString& libNumber = QString("1"), const QString& libType = PAIR_TYPE_DEFAULT, const QString& orientation = ORIENTATION_FR, const QString libName = LIBRARY_SINGLE)
+    AssemblyReads(const GUrl& left = GUrl(), const GUrl& right = GUrl(), const QString& libNumber = QString("1"), const QString& libType = PAIR_TYPE_DEFAULT, const QString& orientation = ORIENTATION_FR, const QString& libName = LIBRARY_SINGLE)
         :
          left(left)
         ,right(right)

@@ -136,7 +136,7 @@ void SpadesTask::writeYamlReads(){
         res.append(QString("orientation: \"%1\",\n").arg(r.orientation));
         res.append(QString("type: \"%1\",\n").arg(GenomeAssemblyUtils::getYamlLibraryName(r.libName, r.libType)));
         if(!GenomeAssemblyUtils::hasRightReads(r.libName)){
-            if(r.libName == LIBRARY_PAIRED_UNPAIRED || r.libNumber == LIBRARY_PAIRED_INTERLACED){
+            if(r.libName == LIBRARY_PAIRED_UNPAIRED || r.libName == LIBRARY_PAIRED_INTERLACED){
                 res.append("interlaced reads: [\n");
             }else{
                 res.append("single reads: [\n");
@@ -151,7 +151,7 @@ void SpadesTask::writeYamlReads(){
             res.append(QString("\"%1\",\n").arg(r.right.getURLString()));
             res.append("],\n");
         }
-        res.append("}\n");
+        res.append("},\n");
 
     }
     res.append("]\n");
@@ -171,7 +171,21 @@ SpadesLogParser::SpadesLogParser():ExternalToolLogParser(){
 }
 
 void SpadesLogParser::parseOutput(const QString &partOfLog){
-    ExternalToolLogParser::parseOutput(partOfLog);
+    lastPartOfLog=partOfLog.split(QRegExp("(\n|\r)"));
+    lastPartOfLog.first()=lastLine+lastPartOfLog.first();
+    lastLine=lastPartOfLog.takeLast();
+    foreach(QString buf, lastPartOfLog){
+        if(buf.contains("== Error == ")
+            || buf.contains(" ERROR ")){
+                coreLog.error("Spades: " + buf);
+                setLastError(buf);
+        }else if (buf.contains("== Warning == ")
+                  || buf.contains(" WARN ")){
+            algoLog.info(buf);
+        }else {
+            ioLog.trace(buf);
+        }
+    }
 }
 
 void SpadesLogParser::parseErrOutput(const QString &partOfLog){
@@ -182,6 +196,7 @@ void SpadesLogParser::parseErrOutput(const QString &partOfLog){
         if(buf.contains("== Error == ")
             || buf.contains(" ERROR ")){
                 coreLog.error("Spades: " + buf);
+                setLastError(buf);
         }else if (buf.contains("== Warning == ")
                   || buf.contains(" WARN ")){
             algoLog.info(buf);

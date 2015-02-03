@@ -69,6 +69,7 @@ public:
     void parseErrOutput(const QString &partOfLog);
 
 private:
+    QString lastLine;
     QString lastErrLine;
 };
 
