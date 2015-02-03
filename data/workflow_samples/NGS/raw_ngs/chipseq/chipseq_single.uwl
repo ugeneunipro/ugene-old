@@ -63,22 +63,39 @@ workflow ChIP-Seq{
         type:Sort-bam;
         name:"Sort BAM File";
     }
+    CutAdaptFastq {
+        type:CutAdaptFastq;
+        name:"Cut Adapter";
+    }
+    fastqc {
+        type:fastqc;
+        name:"FastQC Quality Control";
+        out-mode:1;
+    }
+    fastqc-1 {
+        type:fastqc;
+        name:"FastQC Quality Control";
+        out-mode:1;
+    }
 
     .actor-bindings {
-        CASAVAFilter.out-file->QualityTrim.in-file
-        QualityTrim.out-file->bwamem-id.in-data
-        get-file-list.out-url->CASAVAFilter.in-file
-        bwamem-id.out-data->files-conversion.in-file
-        files-conversion.out-file->merge-bam.in-file
+        CASAVAFilter.out-file->CutAdaptFastq.in-file
+        Sort-bam.out-file->files-conversion-1.in-file
         merge-bam.out-file->filter-bam.in-file
         filter-bam.out-file->Sort-bam-1.in-file
         rmdup-bam.out-file->Sort-bam.in-file
-        Sort-bam.out-file->files-conversion-1.in-file
+        bwamem-id.out-data->files-conversion.in-file
+        QualityTrim.out-file->bwamem-id.in-data
+        QualityTrim.out-file->fastqc-1.in-file
         Sort-bam-1.out-file->rmdup-bam.in-file
+        CutAdaptFastq.out-file->QualityTrim.in-file
+        files-conversion.out-file->merge-bam.in-file
+        get-file-list.out-url->CASAVAFilter.in-file
+        get-file-list.out-url->fastqc.in-file
     }
 
     get-file-list.url->CASAVAFilter.in-file.url
-    CASAVAFilter.url->QualityTrim.in-file.url
+    CutAdaptFastq.url->QualityTrim.in-file.url
     QualityTrim.url->bwamem-id.in-data.readsurl
     bwamem-id.assembly-out->files-conversion.in-file.url
     files-conversion.url->merge-bam.in-file.url
@@ -87,6 +104,9 @@ workflow ChIP-Seq{
     Sort-bam.url->files-conversion-1.in-file.url
     rmdup-bam.url->Sort-bam.in-file.url
     filter-bam.url->Sort-bam-1.in-file.url
+    CASAVAFilter.url->CutAdaptFastq.in-file.url
+    get-file-list.url->fastqc.in-file.url
+    QualityTrim.url->fastqc-1.in-file.url
 
     .meta {
         parameter-aliases {
@@ -105,11 +125,19 @@ workflow ChIP-Seq{
         }
         visual {
             CASAVAFilter {
-                pos:"-620 -534";
+                pos:"-840 -536";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
                 in-file.angle:192.529;
                 out-file.angle:356.112;
+            }
+            CutAdaptFastq {
+                pos:"-563 -526";
+                style:ext;
+                bg-color-ext:"236 177 178 64";
+                bounds:"-30 -30 69.375 106";
+                in-file.angle:180;
+                out-file.angle:360;
             }
             QualityTrim {
                 pos:"-388 -532";
@@ -141,6 +169,18 @@ workflow ChIP-Seq{
                 in-data-paired.angle:210;
                 out-data.angle:297.474;
             }
+            fastqc {
+                pos:"-843 -729";
+                style:simple;
+                bg-color-simple:"0 128 128 64";
+                in-file.angle:180;
+            }
+            fastqc-1 {
+                pos:"-136 -719";
+                style:simple;
+                bg-color-simple:"0 128 128 64";
+                in-file.angle:180;
+            }
             files-conversion {
                 pos:"-87 -318";
                 style:simple;
@@ -163,7 +203,7 @@ workflow ChIP-Seq{
                 out-file.angle:290.63;
             }
             get-file-list {
-                pos:"-834 -534";
+                pos:"-1053 -536";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 74 94";
@@ -183,11 +223,17 @@ workflow ChIP-Seq{
                 in-file.angle:181.736;
                 out-file.angle:356.424;
             }
-            CASAVAFilter.out-file->QualityTrim.in-file {
-                text-pos:"-33.75 -18";
+            CASAVAFilter.out-file->CutAdaptFastq.in-file {
+                text-pos:"-35.75 -24";
+            }
+            CutAdaptFastq.out-file->QualityTrim.in-file {
+                text-pos:"-35.75 -24";
             }
             QualityTrim.out-file->bwamem-id.in-data {
                 text-pos:"-31.75 -23";
+            }
+            QualityTrim.out-file->fastqc-1.in-file {
+                text-pos:"-35.75 -24";
             }
             Sort-bam-1.out-file->rmdup-bam.in-file {
                 text-pos:"-41 -24";
@@ -206,6 +252,9 @@ workflow ChIP-Seq{
             }
             get-file-list.out-url->CASAVAFilter.in-file {
                 text-pos:"-34.7578 -16";
+            }
+            get-file-list.out-url->fastqc.in-file {
+                text-pos:"-35.7578 -24";
             }
             merge-bam.out-file->filter-bam.in-file {
                 text-pos:"-41 -24";
@@ -242,6 +291,9 @@ workflow ChIP-Seq{
                         }
                         QualityTrim.len-id {
                             label:"Min length";
+                        }
+                        CutAdaptFastq.adapters-url {
+                            label:"Adapters";
                         }
                     }
                 }

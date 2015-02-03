@@ -84,25 +84,59 @@ workflow ChIP-Seq{
         len-id:1;
         qual-id:20;
     }
+    CutAdaptFastq {
+        type:CutAdaptFastq;
+        name:"Cut Adapter";
+    }
+    CutAdaptFastq-1 {
+        type:CutAdaptFastq;
+        name:"Cut Adapter";
+    }
+    fastqc {
+        type:fastqc;
+        name:"FastQC Quality Control";
+        out-mode:1;
+    }
+    fastqc-1 {
+        type:fastqc;
+        name:"FastQC Quality Control";
+        out-mode:1;
+    }
+    fastqc-2 {
+        type:fastqc;
+        name:"FastQC Quality Control";
+        out-mode:1;
+    }
+    fastqc-2-1 {
+        type:fastqc;
+        name:"FastQC Quality Control";
+        out-mode:1;
+    }
 
     .actor-bindings {
-        get-file-list.out-url->CASAVAFilter.in-file
-        CASAVAFilter.out-file->QualityTrim.in-file
-        QualityTrim.out-file->bwamem-id.in-data
-        bwamem-id.out-data->files-conversion.in-file
-        files-conversion.out-file->merge-bam.in-file
-        merge-bam.out-file->filter-bam.in-file
-        filter-bam.out-file->Sort-bam-1.in-file
         rmdup-bam.out-file->Sort-bam.in-file
-        Sort-bam.out-file->files-conversion-1.in-file
         Sort-bam-1.out-file->rmdup-bam.in-file
+        get-file-list.out-url->CASAVAFilter.in-file
+        get-file-list.out-url->fastqc.in-file
+        Sort-bam.out-file->files-conversion-1.in-file
+        CASAVAFilter.out-file->CutAdaptFastq.in-file
+        QualityTrim.out-file->bwamem-id.in-data
+        QualityTrim.out-file->fastqc-2.in-file
+        bwamem-id.out-data->files-conversion.in-file
+        filter-bam.out-file->Sort-bam-1.in-file
+        files-conversion.out-file->merge-bam.in-file
+        CutAdaptFastq.out-file->QualityTrim.in-file
+        CASAVAFilter-1.out-file->CutAdaptFastq-1.in-file
         get-file-list-1.out-url->CASAVAFilter-1.in-file
-        CASAVAFilter-1.out-file->QualityTrim-1.in-file
+        get-file-list-1.out-url->fastqc-1.in-file
+        CutAdaptFastq-1.out-file->QualityTrim-1.in-file
         QualityTrim-1.out-file->bwamem-id.in-data-paired
+        QualityTrim-1.out-file->fastqc-2-1.in-file
+        merge-bam.out-file->filter-bam.in-file
     }
 
     get-file-list.url->CASAVAFilter.in-file.url
-    CASAVAFilter.url->QualityTrim.in-file.url
+    CutAdaptFastq.url->QualityTrim.in-file.url
     QualityTrim.url->bwamem-id.in-data.readsurl
     QualityTrim-1.url->bwamem-id.in-data-paired.readspairedurl
     bwamem-id.assembly-out->files-conversion.in-file.url
@@ -113,7 +147,13 @@ workflow ChIP-Seq{
     rmdup-bam.url->Sort-bam.in-file.url
     filter-bam.url->Sort-bam-1.in-file.url
     get-file-list-1.url->CASAVAFilter-1.in-file.url
-    CASAVAFilter-1.url->QualityTrim-1.in-file.url
+    CutAdaptFastq-1.url->QualityTrim-1.in-file.url
+    CASAVAFilter.url->CutAdaptFastq.in-file.url
+    CASAVAFilter-1.url->CutAdaptFastq-1.in-file.url
+    get-file-list.url->fastqc.in-file.url
+    get-file-list-1.url->fastqc-1.in-file.url
+    QualityTrim.url->fastqc-2.in-file.url
+    QualityTrim-1.url->fastqc-2-1.in-file.url
 
     .meta {
         parameter-aliases {
@@ -135,22 +175,38 @@ workflow ChIP-Seq{
         }
         visual {
             CASAVAFilter {
-                pos:"-627 -673";
+                pos:"-865 -673";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
                 in-file.angle:192.529;
                 out-file.angle:356.112;
             }
             CASAVAFilter-1 {
-                pos:"-627 -494";
+                pos:"-857 -494";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
                 bounds:"-30 -30 125.375 81";
                 in-file.angle:192.529;
                 out-file.angle:356.112;
             }
+            CutAdaptFastq {
+                pos:"-597 -664";
+                style:ext;
+                bg-color-ext:"236 177 178 64";
+                bounds:"-30 -30 99.375 89";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            CutAdaptFastq-1 {
+                pos:"-605 -486";
+                style:ext;
+                bg-color-ext:"236 177 178 64";
+                bounds:"-30 -30 96.5 92";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
             QualityTrim {
-                pos:"-395 -671";
+                pos:"-396 -671";
                 style:ext;
                 bg-color-ext:"204 68 102 64";
                 in-file.angle:190.305;
@@ -187,6 +243,30 @@ workflow ChIP-Seq{
                 in-data-paired.angle:210;
                 out-data.angle:296.565;
             }
+            fastqc {
+                pos:"-867 -855";
+                style:simple;
+                bg-color-simple:"0 128 128 64";
+                in-file.angle:180;
+            }
+            fastqc-1 {
+                pos:"-858 -330";
+                style:simple;
+                bg-color-simple:"0 128 128 64";
+                in-file.angle:180;
+            }
+            fastqc-2 {
+                pos:"-149 -844";
+                style:simple;
+                bg-color-simple:"0 128 128 64";
+                in-file.angle:180;
+            }
+            fastqc-2-1 {
+                pos:"-181 -420";
+                style:simple;
+                bg-color-simple:"0 128 128 64";
+                in-file.angle:180;
+            }
             files-conversion {
                 pos:"-87 -318";
                 style:simple;
@@ -209,14 +289,14 @@ workflow ChIP-Seq{
                 out-file.angle:290.63;
             }
             get-file-list {
-                pos:"-841 -673";
+                pos:"-1059 -677";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 74 94";
                 out-url.angle:354.447;
             }
             get-file-list-1 {
-                pos:"-842 -494";
+                pos:"-1061 -496";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 75 94";
@@ -236,17 +316,29 @@ workflow ChIP-Seq{
                 in-file.angle:180;
                 out-file.angle:356.424;
             }
-            CASAVAFilter-1.out-file->QualityTrim-1.in-file {
-                text-pos:"-31.75 -24";
+            CASAVAFilter-1.out-file->CutAdaptFastq-1.in-file {
+                text-pos:"-35.75 -24";
             }
-            CASAVAFilter.out-file->QualityTrim.in-file {
-                text-pos:"-33.75 -18";
+            CASAVAFilter.out-file->CutAdaptFastq.in-file {
+                text-pos:"-35.75 -24";
+            }
+            CutAdaptFastq-1.out-file->QualityTrim-1.in-file {
+                text-pos:"-35.75 -24";
+            }
+            CutAdaptFastq.out-file->QualityTrim.in-file {
+                text-pos:"-35.75 -24";
             }
             QualityTrim-1.out-file->bwamem-id.in-data-paired {
                 text-pos:"-31.75 -14";
             }
+            QualityTrim-1.out-file->fastqc-2-1.in-file {
+                text-pos:"-35.75 -24";
+            }
             QualityTrim.out-file->bwamem-id.in-data {
                 text-pos:"-33.75 -12";
+            }
+            QualityTrim.out-file->fastqc-2.in-file {
+                text-pos:"-35.75 -24";
             }
             Sort-bam-1.out-file->rmdup-bam.in-file {
                 text-pos:"-41 -24";
@@ -266,8 +358,14 @@ workflow ChIP-Seq{
             get-file-list-1.out-url->CASAVAFilter-1.in-file {
                 text-pos:"-35.7578 -24";
             }
+            get-file-list-1.out-url->fastqc-1.in-file {
+                text-pos:"-35.7578 -24";
+            }
             get-file-list.out-url->CASAVAFilter.in-file {
                 text-pos:"-34.7578 -16";
+            }
+            get-file-list.out-url->fastqc.in-file {
+                text-pos:"-35.7578 -24";
             }
             merge-bam.out-file->filter-bam.in-file {
                 text-pos:"-41 -24";
@@ -314,6 +412,12 @@ workflow ChIP-Seq{
                         }
                         QualityTrim-1.len-id {
                             label:"Reads length for pairs";
+                        }
+                        CutAdaptFastq.adapters-url {
+                            label:"Adapters";
+                        }
+                        CutAdaptFastq-1.adapters-url {
+                            label:"Adapters for pairs";
                         }
                     }
                 }

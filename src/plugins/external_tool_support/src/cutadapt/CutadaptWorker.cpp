@@ -270,6 +270,21 @@ QStringList CutAdaptFastqTask::getParameters(U2OpStatus &/*os*/){
         res << QString("file:%1").arg(val);
     }
 
+    const QString detectedFormat = FileAndDirectoryUtils::detectFormat(settings.inputUrl);
+    if(detectedFormat.isEmpty()){
+        stateInfo.setError(tr("Unknown file format: ") + settings.inputUrl);
+        return res;
+    }
+
+    if(detectedFormat == BaseDocumentFormats::FASTA){
+        res << "-f";
+        res << "fasta";
+    }else if (detectedFormat == BaseDocumentFormats::FASTQ){
+
+        res << "-f";
+        res << "fastq";
+    }
+
     res << GUrlUtils::getQuotedString(settings.inputUrl);
 
     return res;

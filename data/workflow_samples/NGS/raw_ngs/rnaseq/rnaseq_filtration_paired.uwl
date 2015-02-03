@@ -59,24 +59,64 @@ workflow RNA-Seq{
         type:multiplexer;
         name:Multiplexer;
     }
+    CutAdaptFastq {
+        type:CutAdaptFastq;
+        name:"Cut Adapter";
+    }
+    CutAdaptFastq-1 {
+        type:CutAdaptFastq;
+        name:"Cut Adapter";
+    }
+    fastqc {
+        type:fastqc;
+        name:"FastQC Quality Control";
+        out-mode:1;
+    }
+    fastqc-1 {
+        type:fastqc;
+        name:"FastQC Quality Control";
+        out-mode:1;
+    }
+    fastqc-1-1 {
+        type:fastqc;
+        name:"FastQC Quality Control";
+        out-mode:1;
+    }
+    fastqc-1-1-1 {
+        type:fastqc;
+        name:"FastQC Quality Control";
+        out-mode:1;
+    }
 
     .actor-bindings {
-        get-file-list-1.out-url->CASAVAFilter-1.in-file
         MergeFastq-1.out-file->multiplexer.input-data-2
-        CASAVAFilter-1.out-file->QualityTrim-1.in-file
-        QualityTrim.out-file->MergeFastq.in-file
+        MergeFastq-1.out-file->fastqc-1-1.in-file
+        get-file-list-1.out-url->CASAVAFilter-1.in-file
+        get-file-list-1.out-url->fastqc-1.in-file
+        CASAVAFilter-1.out-file->CutAdaptFastq.in-file
         get-file-list.out-url->CASAVAFilter.in-file
-        MergeFastq.out-file->multiplexer.input-data-1
-        CASAVAFilter.out-file->QualityTrim.in-file
+        get-file-list.out-url->fastqc.in-file
+        QualityTrim.out-file->MergeFastq.in-file
+        CutAdaptFastq.out-file->QualityTrim-1.in-file
         QualityTrim-1.out-file->MergeFastq-1.in-file
+        CASAVAFilter.out-file->CutAdaptFastq-1.in-file
+        CutAdaptFastq-1.out-file->QualityTrim.in-file
+        MergeFastq.out-file->multiplexer.input-data-1
+        MergeFastq.out-file->fastqc-1-1-1.in-file
     }
 
     get-file-list.url->CASAVAFilter.in-file.url
-    CASAVAFilter.url->QualityTrim.in-file.url
+    CutAdaptFastq-1.url->QualityTrim.in-file.url
     QualityTrim.url->MergeFastq.in-file.url
     get-file-list-1.url->CASAVAFilter-1.in-file.url
-    CASAVAFilter-1.url->QualityTrim-1.in-file.url
+    CutAdaptFastq.url->QualityTrim-1.in-file.url
     QualityTrim-1.url->MergeFastq-1.in-file.url
+    CASAVAFilter-1.url->CutAdaptFastq.in-file.url
+    CASAVAFilter.url->CutAdaptFastq-1.in-file.url
+    get-file-list.url->fastqc.in-file.url
+    get-file-list-1.url->fastqc-1.in-file.url
+    MergeFastq-1.url->fastqc-1-1.in-file.url
+    MergeFastq.url->fastqc-1-1-1.in-file.url
 
     .meta {
         parameter-aliases {
@@ -95,7 +135,7 @@ workflow RNA-Seq{
         }
         visual {
             CASAVAFilter {
-                pos:"-1005 -553";
+                pos:"-1268 -716";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
                 bounds:"-30 -30 123.875 82";
@@ -103,12 +143,26 @@ workflow RNA-Seq{
                 out-file.angle:268.768;
             }
             CASAVAFilter-1 {
-                pos:"-671 -795";
+                pos:"-794 -999";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
                 bounds:"-30 -30 119.875 81";
                 in-file.angle:181.79;
                 out-file.angle:359.076;
+            }
+            CutAdaptFastq {
+                pos:"-573 -870";
+                style:ext;
+                bg-color-ext:"236 177 178 64";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            CutAdaptFastq-1 {
+                pos:"-1183 -534";
+                style:ext;
+                bg-color-ext:"236 177 178 64";
+                in-file.angle:180;
+                out-file.angle:360;
             }
             MergeFastq {
                 pos:"-725 -450";
@@ -139,15 +193,35 @@ workflow RNA-Seq{
                 in-file.angle:188.13;
                 out-file.angle:274.214;
             }
+            fastqc {
+                pos:"-1078 -814";
+                style:simple;
+                in-file.angle:180;
+            }
+            fastqc-1 {
+                pos:"-836 -862";
+                style:simple;
+                in-file.angle:180;
+            }
+            fastqc-1-1 {
+                pos:"-379 -545";
+                style:simple;
+                in-file.angle:180;
+            }
+            fastqc-1-1-1 {
+                pos:"-610 -315";
+                style:simple;
+                in-file.angle:180;
+            }
             get-file-list {
-                pos:"-1053 -740";
+                pos:"-1316 -903";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 72.25 90";
                 out-url.angle:296.095;
             }
             get-file-list-1 {
-                pos:"-883 -841";
+                pos:"-1006 -1045";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 75 92";
@@ -161,14 +235,26 @@ workflow RNA-Seq{
                 input-data-2.angle:88.2643;
                 output-data.angle:319.574;
             }
-            CASAVAFilter-1.out-file->QualityTrim-1.in-file {
-                text-pos:"-29.75 -25";
+            CASAVAFilter-1.out-file->CutAdaptFastq.in-file {
+                text-pos:"-35.75 -24";
             }
-            CASAVAFilter.out-file->QualityTrim.in-file {
-                text-pos:"-32.75 -12";
+            CASAVAFilter.out-file->CutAdaptFastq-1.in-file {
+                text-pos:"-35.75 -24";
+            }
+            CutAdaptFastq-1.out-file->QualityTrim.in-file {
+                text-pos:"-35.75 -24";
+            }
+            CutAdaptFastq.out-file->QualityTrim-1.in-file {
+                text-pos:"-35.75 -24";
+            }
+            MergeFastq-1.out-file->fastqc-1-1.in-file {
+                text-pos:"-35.75 -24";
             }
             MergeFastq-1.out-file->multiplexer.input-data-2 {
                 text-pos:"5.25 -14";
+            }
+            MergeFastq.out-file->fastqc-1-1-1.in-file {
+                text-pos:"-35.75 -24";
             }
             MergeFastq.out-file->multiplexer.input-data-1 {
                 text-pos:"-31.75 -24";
@@ -182,8 +268,14 @@ workflow RNA-Seq{
             get-file-list-1.out-url->CASAVAFilter-1.in-file {
                 text-pos:"-38.7578 -25";
             }
+            get-file-list-1.out-url->fastqc-1.in-file {
+                text-pos:"-35.7578 -24";
+            }
             get-file-list.out-url->CASAVAFilter.in-file {
                 text-pos:"7.2422 -14";
+            }
+            get-file-list.out-url->fastqc.in-file {
+                text-pos:"-35.7578 -24";
             }
         }
         wizard {
@@ -218,6 +310,9 @@ workflow RNA-Seq{
                         QualityTrim.len-id {
                             label:"Min length";
                         }
+                        CutAdaptFastq.adapters-url {
+                            label:"Adapters";
+                        }
                     }
                     group {
                         title:"Filtration 2";
@@ -226,6 +321,9 @@ workflow RNA-Seq{
                         }
                         QualityTrim-1.len-id {
                             label:"Min length";
+                        }
+                        CutAdaptFastq-1.adapters-url {
+                            label:"Adapters for pairs";
                         }
                     }
                 }
