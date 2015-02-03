@@ -49,6 +49,7 @@ QWidget * RadioController::createGUI(U2OpStatus &/*os*/) {
     QString id = wc->getVariableValue(rw->var()).toString();
     foreach (const RadioWidget::Value &value, rw->values()) {
         QRadioButton *b = new QRadioButton(value.label);
+        b->setObjectName(value.label);
         group->addButton(b);
         l->addWidget(b);
 

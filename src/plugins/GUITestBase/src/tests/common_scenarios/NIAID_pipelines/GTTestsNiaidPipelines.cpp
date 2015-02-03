@@ -37,6 +37,7 @@
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "GTUtilsWorkflowDesigner.h"
 #include "GTUtilsApp.h"
+#include "GTUtilsWizard.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -58,7 +59,7 @@ namespace U2 {
 namespace GUITest_common_scenarios_NIAID_pipelines {
 class WizardFiller0001:public WizardFiller{
 public:
-WizardFiller0001(U2OpStatus &_os, QString _label): WizardFiller(_os,"Call Variants Wizard"), label(_label){
+WizardFiller0001(U2OpStatus &_os, QString _label): WizardFiller(_os,"Call Variants Wizard", QStringList(), QMap<QString, QVariant>()), label(_label){
 
 }
 void setParameters(U2OpStatus &os, QString lab){
@@ -96,6 +97,11 @@ virtual void run(){
     CHECK_SET_ERR(dialog!=NULL, "activeModalWidget is NULL");
     wizard = qobject_cast<QWizard*>(dialog);
     CHECK_SET_ERR(wizard, "activeModalWidget is not wizard");
+
+    GTUtilsWizard::setInputFiles(os, QList<QStringList>()<<(QStringList()<< GUITest::dataDir + "samples/CLUSTALW/COI.aln"));
+    GTGlobals::sleep(50000);
+
+    GTWidget::getAllWidgetsInfo(os, wizard);
 
     path = QDir::cleanPath(QDir::currentPath() + "/" + GUITest::dataDir + "samples/CLUSTALW/COI.aln");
 

@@ -483,12 +483,14 @@ URLWidget::URLWidget(const QString &type, bool multi, bool isPath, bool saveFile
     setAutoFillBackground(true);
 
     urlLine = new URLLineEdit(type, multi, isPath, saveFile, this);
+    urlLine->setObjectName("urlLine");
     urlLine->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     connect(urlLine, SIGNAL(si_finished()), SLOT(sl_finished()));
     connect(urlLine, SIGNAL(textChanged(const QString &)), SLOT(sl_textChanged(const QString &)));
     addMainWidget(urlLine);
 
     browseButton = new QToolButton(this);
+    browseButton->setObjectName("browseButton");
     browseButton->setText("...");
     browseButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     connect(browseButton, SIGNAL(clicked()), SLOT(sl_browse()));
@@ -496,12 +498,14 @@ URLWidget::URLWidget(const QString &type, bool multi, bool isPath, bool saveFile
 
     if (urlLine->isMulti()) {
         addButton = new QToolButton(this);
+        addButton->setObjectName("addButton");
         addButton->setVisible(!urlLine->text().isEmpty());
         addButton->setText(tr("add"));
         addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
         connect(addButton, SIGNAL(clicked()), urlLine, SLOT(sl_onBrowseWithAdding()));
         layout()->addWidget(addButton);
     }
+    setObjectName("URLWidget");
 }
 
 void URLWidget::sl_textChanged(const QString &text) {

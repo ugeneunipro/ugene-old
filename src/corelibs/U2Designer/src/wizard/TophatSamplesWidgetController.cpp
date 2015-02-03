@@ -256,6 +256,7 @@ public:
         : QLineEdit(name, parent), samples(samples), initialName(name)
     {
         setValidator(new QRegExpValidator(QRegExp("\\w*"), this));
+        setObjectName(name);
     }
 
 protected:
@@ -347,6 +348,7 @@ QWidget * TophatSamples::initSample(const QString &sampleName, const QStringList
     vl->addLayout(hl);
 
     QListWidget *datasetsList = new QListWidget(this);
+    datasetsList->setObjectName(sampleName + " datasetsList");
     { // datasets
         foreach (const QString &dataset, datasets) {
             datasetsList->addItem(dataset);

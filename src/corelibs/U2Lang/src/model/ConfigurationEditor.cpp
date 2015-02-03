@@ -47,6 +47,7 @@ void PropertyWidget::addMainWidget(QWidget *w) {
     w->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     layout()->addWidget(w);
     setFocusProxy(w);
+    w->setObjectName("mainWidget");
 }
 
 QWidget * PropertyWidget::getField() {

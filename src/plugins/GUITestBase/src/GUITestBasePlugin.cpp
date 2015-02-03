@@ -179,6 +179,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1347);
     REGISTER_TEST(GUITest_regression_scenarios::test_1348);
     REGISTER_TEST(GUITest_regression_scenarios::test_1358);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1364);
     REGISTER_TEST(GUITest_regression_scenarios::test_1371);
     REGISTER_TEST(GUITest_regression_scenarios::test_1376);
     REGISTER_TEST(GUITest_regression_scenarios::test_1386);
@@ -432,6 +433,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2565);
     REGISTER_TEST(GUITest_regression_scenarios::test_2566);
     REGISTER_TEST(GUITest_regression_scenarios::test_2567);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2568);
     REGISTER_TEST(GUITest_regression_scenarios::test_2570);
     REGISTER_TEST(GUITest_regression_scenarios::test_2577);
     REGISTER_TEST(GUITest_regression_scenarios::test_2578);
@@ -447,14 +449,17 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2619);
     REGISTER_TEST(GUITest_regression_scenarios::test_2622);
     REGISTER_TEST(GUITest_regression_scenarios::test_2622_1);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2632);
     REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2651, "this test seems to break mac testing");
     REGISTER_TEST(GUITest_regression_scenarios::test_2656);
     REGISTER_TEST(GUITest_regression_scenarios::test_2667);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2683);
     REGISTER_TEST(GUITest_regression_scenarios::test_2690);
     REGISTER_TEST(GUITest_regression_scenarios::test_2701);
     REGISTER_TEST(GUITest_regression_scenarios::test_2709);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2711);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2713, "https://local.ugene.unipro.ru/tracker/browse/UGENE-3706");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2721);
     REGISTER_TEST(GUITest_regression_scenarios::test_2726);
     REGISTER_TEST(GUITest_regression_scenarios::test_2729);
     REGISTER_TEST(GUITest_regression_scenarios::test_2730);
@@ -482,6 +487,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2894, "proper data needed");
     REGISTER_TEST(GUITest_regression_scenarios::test_2895);
     REGISTER_TEST(GUITest_regression_scenarios::test_2897);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2899);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_2900);
     REGISTER_TEST(GUITest_regression_scenarios::test_2903);
@@ -1606,6 +1612,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/NIAID_pipelines
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_NIAID_pipelines::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_NIAID_pipelines::test_0001);
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Tree viewer
 /////////////////////////////////////////////////////////////////////////

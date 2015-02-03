@@ -773,6 +773,7 @@ void PageContentCreator::setPageTitle(const QString& title) {
     if (NULL != pageTitle && false == title.isEmpty()) {
         pageTitle->setText(title);
         pageTitle->show();
+        pageTitle->setObjectName("pageTitle");
     }
 }
 
@@ -849,6 +850,7 @@ GroupBox::GroupBox(bool collapsible, const QString &title, bool fullWidth)
         hLayout->addWidget(tip);
         hLayout->setContentsMargins(0, 0, 0, 0);
         showHideButton = new QToolButton(this);
+        showHideButton->setObjectName("showHideButton");
         showHideButton->setFixedSize(19, 19);
         hLayout->addWidget(showHideButton);
         layout->addLayout(hLayout);

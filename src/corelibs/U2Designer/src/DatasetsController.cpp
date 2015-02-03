@@ -592,10 +592,13 @@ QWidget * UrlAndDatasetController::createUrlWidget(URLDelegate* ctrl, const QStr
     QHBoxLayout* labeledLayout = new QHBoxLayout;
     labeledLayout->setContentsMargins(6, 8, 0, 7);
 
-    labeledLayout->addWidget(new QLabel(urlLabel));
+    QLabel* urlLabelWidget = new QLabel(urlLabel);
+    urlLabelWidget->setObjectName(urlLabel + " label");
+    labeledLayout->addWidget(urlLabelWidget);
     labeledLayout->addWidget(urlWidget);
     labeledWidget->setLayout(labeledLayout);
 
+    labeledWidget->setObjectName(urlLabel + " labeledWidget");
     return labeledWidget;
 }
 

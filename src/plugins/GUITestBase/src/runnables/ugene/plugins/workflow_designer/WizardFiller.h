@@ -36,53 +36,27 @@ namespace U2 {
 
 class WizardFiller : public Filler {
 public:
-    struct value{
-        value(int _page):page(_page),isSet(false){}
-        virtual void func(){}
-        int page;
-        bool isSet;
-    };
+    WizardFiller(U2OpStatus &_os, QString name, QList<QStringList> _inputFiles = QList<QStringList>(), QMap<QString, QVariant> _map = QMap<QString, QVariant>()):
+        Filler(_os, name),inputFiles(_inputFiles), map(_map){}
+    WizardFiller(U2OpStatus &_os, QString name, QStringList _inputFiles, QMap<QString, QVariant> _map = QMap<QString, QVariant>()):
+        Filler(_os, name),inputFiles(QList<QStringList>()<<_inputFiles), map(_map){}
+    WizardFiller(U2OpStatus &_os, QString name, CustomScenario* c): Filler(_os, name, c){}
+    void commonScenario();
 
-    struct pairValLabel{
-        pairValLabel(QString _label, value* _val):label(_label),val(_val){}
-        QString label;
-        value* val;
-    };
-    typedef QList<pairValLabel> pairValList;
-
-    struct lineEditValue: public value{
-        lineEditValue(QString _lineValue, bool _isPath, int _page=-1):value(_page),lineValue(_lineValue),isPath(_isPath){}
-        QString lineValue;
-        bool isPath;
-
-    };
-
-    struct spinBoxValue: public value{
-        spinBoxValue(int _spinValue, int _page=-1):value(_page),spinValue(_spinValue){}
-        int spinValue;
-    };
-
-    struct doubleSpinBoxValue: public value{
-        doubleSpinBoxValue(double _spinValue, int _page=-1):value(_page),spinValue(_spinValue){}
-        double spinValue;
-    };
-
-    struct ComboBoxValue: public value{
-        ComboBoxValue(int _comboValue, int _page=-1):value(_page),comboValue(_comboValue){}
-        int comboValue;
-    };
-
-    WizardFiller(U2OpStatus &_os, QString name):Filler(_os, name){}
-
-    void setParameters(U2OpStatus &_os,pairValList list, int i);
-    void fill(U2OpStatus &_os,pairValList list);
     static QPushButton* getButtonByText(U2OpStatus &_os, QString text);
     static QPushButton* getNextButton(U2OpStatus &_os);
     static QPushButton* getCancelButton(U2OpStatus &_os);
     static QPushButton* getSetupButton(U2OpStatus &_os);
     static QPushButton* getFinishButton(U2OpStatus &_os);
     static QToolButton* getExpandButton(U2OpStatus &_os);
-    QString actualizePath(lineEditValue *);
+
+
+    static void setInputFiles();
+
+private:
+    QMap<QString, QVariant> map;
+    QList<QStringList> inputFiles;
+
 };
 
 class ConfigureTuxedoWizardFiller : public WizardFiller {
@@ -97,20 +71,7 @@ private:
     reads_type reads;
 };
 
-class TuxedoWizardFiller : public WizardFiller {
-public:
-    TuxedoWizardFiller(U2OpStatus &_os, QString _path1, QString _name1,QString _path2, QString _name2, pairValList _list):
-        WizardFiller(_os, "Tuxedo Wizard"),
-        list(_list),
-        path1(_path1),
-        name1(_name1),
-        path2(_path2),
-        name2(_name2){}
-    virtual void run();
-private:
-    pairValList list;
-    QString path1,name1,path2,name2;
-};
+
 }
 
 #endif

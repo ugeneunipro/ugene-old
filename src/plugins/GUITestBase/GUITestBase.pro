@@ -244,7 +244,9 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTGraphicsItem.h \
             src/api/GTTreeView.h \
             src/api/GTListWidget.h \
-            src/api/GTSlider.h
+            src/api/GTSlider.h \
+    src/GTUtilsWizard.h \
+    src/runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -494,4 +496,6 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTGraphicsItem.cpp \
             src/api/GTTreeView.cpp \
             src/api/GTListWidget.cpp \
-            src/api/GTSlider.cpp
+            src/api/GTSlider.cpp \
+    src/GTUtilsWizard.cpp \
+    src/runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.cpp

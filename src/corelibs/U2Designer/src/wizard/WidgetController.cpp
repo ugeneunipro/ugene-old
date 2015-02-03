@@ -49,6 +49,11 @@ LabeledPropertyWidget::LabeledPropertyWidget(const QString &labelText, PropertyW
     setLayout(layout);
 
     label = new QLabel(labelText, this);
+    label->setObjectName(labelText + " label");
+    QWidget* mainWidget = widget->findChild<QWidget*>("mainWidget");
+    if(mainWidget!=NULL){
+        mainWidget->setObjectName(labelText + " widget");
+    }
     layout->addWidget(label);
     layout->addWidget(widget);
 
