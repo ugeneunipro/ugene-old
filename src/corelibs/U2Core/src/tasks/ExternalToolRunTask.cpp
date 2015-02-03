@@ -52,13 +52,16 @@ namespace U2 {
 #define WIN_LAUNCH_CMD_COMMAND "cmd /C "
 #define START_WAIT_MSEC 3000
 
-ExternalToolRunTask::ExternalToolRunTask(const QString &_toolName, const QStringList &_arguments, ExternalToolLogParser *_logParser, const QString &_workingDirectory, const QStringList &_additionalPaths)
+ExternalToolRunTask::ExternalToolRunTask(const QString &_toolName, const QStringList &_arguments, 
+ExternalToolLogParser *_logParser, const QString &_workingDirectory, const QStringList &_additionalPaths, 
+const QString &_additionalProcessToKill)
 : Task(_toolName + tr(" tool"), TaskFlag_None),
   arguments(_arguments),
   logParser(_logParser),
   toolName(_toolName),
   workingDirectory(_workingDirectory),
   additionalPaths(_additionalPaths),
+  additionalProcessToKill(_additionalProcessToKill),
   externalToolProcess(NULL),
   helper(NULL),
   listener(NULL)
@@ -137,6 +140,9 @@ void ExternalToolRunTask::killProcess() const{
 #endif
 #ifdef Q_OS_WIN
             QProcess::execute(QString("taskkill /PID %1 /T /F").arg(numPid));
+            if (!additionalProcessToKill.isEmpty()) {
+                QProcess::execute(QString("taskkill /IM %1 /T /F").arg(additionalProcessToKill));
+            }
 #endif
 #ifdef Q_OS_UNIX
             QList<long> pids = getChildPidsRecursive(numPid);

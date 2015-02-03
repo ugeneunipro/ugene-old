@@ -51,7 +51,8 @@ class U2CORE_EXPORT ExternalToolRunTask: public Task {
     Q_DISABLE_COPY(ExternalToolRunTask)
     friend class ExternalToolRunTaskHelper;
 public:
-    ExternalToolRunTask(const QString& toolName, const QStringList& arguments, ExternalToolLogParser* logParser, const QString& workingDirectory = "", const QStringList& additionalPaths = QStringList());
+    ExternalToolRunTask(const QString& toolName, const QStringList& arguments, ExternalToolLogParser* logParser, 
+        const QString& workingDirectory = "", const QStringList& additionalPaths = QStringList(), const QString &additionalProcessToKill = QString());
     ~ExternalToolRunTask();
 
     void addOutputListener(ExternalToolListener* outputListener);
@@ -77,6 +78,7 @@ private:
     QProcess*               externalToolProcess;
     QScopedPointer<ExternalToolRunTaskHelper> helper;
     ExternalToolListener*   listener;
+    QString                 additionalProcessToKill;
 };
 
 class U2CORE_EXPORT ExternalToolSupportTask: public Task{

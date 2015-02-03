@@ -173,7 +173,7 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
         arguments <<"-outfile"<<outputUrl;
         arguments <<"-newtree"<<outputDNDUrl;
         logParser=new TCoffeeLogParser();
-        tCoffeeTask=new ExternalToolRunTask(ET_TCOFFEE, arguments, logParser);
+        tCoffeeTask=new ExternalToolRunTask(ET_TCOFFEE, arguments, logParser, "", QStringList(), "t_coffee.orig.exe");
         setListenerForTask(tCoffeeTask);
         tCoffeeTask->setSubtaskProgressWeight(95);
         res.append(tCoffeeTask);
