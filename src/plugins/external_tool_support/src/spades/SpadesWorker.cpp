@@ -298,7 +298,7 @@ void SpadesWorkerFactory::init() {
 
      QMap<QString, PropertyDelegate*> delegates;
      {
-         delegates[OUTPUT_DIR] = new URLDelegate("", "", false, true, false);
+         delegates[OUTPUT_DIR] = new URLDelegate("", "", false, true);
 
          QVariantMap spinMap; spinMap["minimum"] = QVariant(1); spinMap["maximum"] = QVariant(INT_MAX);
          delegates[SpadesTask::OPTION_THREADS]  = new SpinBoxDelegate(spinMap);

@@ -14,6 +14,7 @@ workflow "Spades Single Tags"{
     spades-id {
         type:spades-id;
         name:"Assemble genomes with Spades";
+        output-dir:result;
     }
 
     .actor-bindings {

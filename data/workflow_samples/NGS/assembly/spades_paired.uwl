@@ -14,6 +14,7 @@ workflow "Spades Paired Tags"{
     spades-id {
         type:spades-id;
         name:"Assemble genomes with Spades";
+        output-dir:result;
     }
     get-file-list-1 {
         type:get-file-list;
