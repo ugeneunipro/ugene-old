@@ -128,7 +128,6 @@ QString FastQCTask::getResFileUrl() const{
             .replace(QRegExp(".bz2$"),"")
             .replace(QRegExp(".txt$"),"")
             .replace(QRegExp(".fastq$"), "")
-            .replace(QRegExp(".fq$"), "")
             .replace(QRegExp(".csfastq$"), "")
             .replace(QRegExp(".sam$"), "")
             .replace(QRegExp(".bam$"), "");
