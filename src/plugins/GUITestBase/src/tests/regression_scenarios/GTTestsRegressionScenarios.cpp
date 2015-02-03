@@ -14629,6 +14629,38 @@ GUI_TEST_CLASS_DEFINITION(test_3927) {
     //Expected state safe point didn't triggered
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3953) {
+/*
+    1. Open "human_T1.fa"
+    2. Open "find pattern" tab
+    3. Insert "TTGTCAGATTCACCA" into find pattern field
+    4. Put cursor to the beginning of find pattern field
+    5. Pres "delete" key, until all symbols are deleted
+    Expected state: "create annotation" button is disabled
+    Actual: "create annotation" button is enabled
+*/
+    QString pattern("TTGTCAGATTCACCA");
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
+    GTGlobals::sleep(500);
+
+    GTKeyboardDriver::keySequence(os, pattern);
+    GTGlobals::sleep(1000);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
+    GTGlobals::sleep(1000);
+
+    QPushButton* getAnnotations = qobject_cast<QPushButton*>(GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    CHECK_SET_ERR(getAnnotations != NULL, "getAnnotationsPushButton is NULL");
+    CHECK_SET_ERR(getAnnotations->isEnabled() == true, QString("getAnnotationsPushButton is not active"));
+
+    for (int i=0;i<=pattern.length();i++){
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+        GTGlobals::sleep(200);
+     }
+    CHECK_SET_ERR(getAnnotations->isEnabled() == false, QString("getAnnotationsPushButton is active"));
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
