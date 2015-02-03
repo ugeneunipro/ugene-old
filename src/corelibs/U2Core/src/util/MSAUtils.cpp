@@ -44,7 +44,7 @@ bool MSAUtils::equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QB
     for (int i = startPos, j = 0; i  < sLen && j < pLen; i++, j++) {
         char c1 = row.charAt(i);
         char c2 = pat[j];
-        while(c1 == MAlignment_GapChar && ++i < sLen) {
+        while((i + 1) < pLen && c1 == MAlignment_GapChar && ++i < sLen) {
             c1 = row.charAt(i);
         }
         if (c1 != c2) {
