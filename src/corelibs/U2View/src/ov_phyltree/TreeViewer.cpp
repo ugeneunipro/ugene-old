@@ -725,6 +725,7 @@ void TreeViewerUI::updateTreeSettings(bool setDefautZoom){
             }
         }
     }
+    updateLegend();
     updateRect();
     scene()->update();
 
@@ -832,11 +833,20 @@ void TreeViewerUI::addLegend(qreal scale) {
     str.truncate(i + 1);
 
     legend = new QGraphicsLineItem(0, 0, WIDTH, 0);
-    QGraphicsSimpleTextItem* text = new QGraphicsSimpleTextItem(str, legend);
-    text->setFont(TreeViewerUtils::getFont());
-    QRectF rect = text->boundingRect();
-    text->setPos(0.5 * (WIDTH - rect.width()), -rect.height());
+    scalebarText = new QGraphicsSimpleTextItem(str, legend);
+    scalebarText->setFont(TreeViewerUtils::getFont());
+    QRectF rect = scalebarText->boundingRect();
+    scalebarText->setPos(0.5 * (WIDTH - rect.width()), -rect.height());
     scene()->addItem(legend);
+}
+
+void TreeViewerUI::updateLegend() {
+    qreal coef  = qMax(1.0, TreeViewerUI::SIZE_COEF*treeSettings.width_coef);
+    qreal WIDTH = 30.0 * coef;
+
+    legend->setLine(0, 0, WIDTH, 0);
+    QRectF rect = scalebarText->boundingRect();
+    scalebarText->setPos(0.5 * (WIDTH - rect.width()), -rect.height());
 }
 
 void TreeViewerUI::wheelEvent(QWheelEvent *we) {

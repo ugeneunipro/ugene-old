@@ -258,6 +258,7 @@ private:
     void paint(QPainter &painter);
     void showLabels(LabelTypes labelTypes);
     void addLegend(qreal scale);
+    void updateLegend();
     void collapseSelected();
 
     void updateSettings();
@@ -295,7 +296,8 @@ private:
     qreal               view_scale;
     TreeLayout          layout;
     CreateBranchesTask* layoutTask;
-    QGraphicsItem*      legend;
+    QGraphicsLineItem*  legend;
+    QGraphicsSimpleTextItem* scalebarText;
     QMenu*              buttonPopup;
 
     const TreeViewer*   curTreeViewer;
