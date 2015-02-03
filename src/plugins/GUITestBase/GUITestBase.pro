@@ -246,7 +246,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTListWidget.h \
             src/api/GTSlider.h \
     src/GTUtilsWizard.h \
-    src/runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h
+    src/runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h \
+    src/runnables/qt/EscapeClicker.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -498,4 +499,5 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTListWidget.cpp \
             src/api/GTSlider.cpp \
     src/GTUtilsWizard.cpp \
-    src/runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.cpp
+    src/runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.cpp \
+    src/runnables/qt/EscapeClicker.cpp

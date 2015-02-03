@@ -75,6 +75,7 @@
 #include "GTUtilsWizard.h"
 #include "GTUtilsWorkflowDesigner.h"
 
+#include "runnables/qt/EscapeClicker.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
@@ -5052,6 +5053,55 @@ GUI_TEST_CLASS_DEFINITION( test_2077 ){
     GTUtilsWorkflowDesigner::checkErrorList( os, "file '../human_T1.fa' was specified several times" );
     }
 
+GUI_TEST_CLASS_DEFINITION( test_2078 ){
+    //    1. Go to the WD samples. Double click on the Chip-Seq WD sample.
+        GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    //    Expexted: setup dialog appears.
+        GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Pipeline", QStringList()<<
+                                                                       "Treatment tags only"));
+
+        class customWizard : public CustomScenario {
+        public:
+            void run(U2OpStatus &os) {
+                QWidget* dialog = QApplication::activeModalWidget();
+                CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+                QWizard* wizard = qobject_cast<QWizard*>(dialog);
+                CHECK_SET_ERR(wizard, "activeModalWidget is not wizard");
+
+                GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+                GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+                GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+                GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+
+                QComboBox* combo = GTWidget::findExactWidget<QComboBox*>(os, "Motif database widget", dialog);
+                GTComboBox::checkValues(os, combo, QStringList()<<"cistrome.xml"<<"jaspar.xml");
+
+                QList<QLabel*> labelList = wizard->currentPage()->findChildren<QLabel*>();
+                bool found = false;
+                foreach (QLabel* l, labelList) {
+                    if(l->text().contains("Use 'cistrome.xml' to descrease the computation time")){
+                        CHECK_SET_ERR(l->isVisible(), "hint is invisiable");
+                        found = true;
+                        break;
+                    }
+                }
+                CHECK_SET_ERR(found, "hint label not found");
+
+                GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
+                dialog = QApplication::activeModalWidget();
+                if(dialog != NULL){
+                    GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
+                }
+
+            }
+        };
+        GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "ChIP-seq Analysis Wizard", new customWizard));
+        GTUtilsWorkflowDesigner::addSample(os, "Cistrome");
+
+//    4. In 'Motif database' combobox select following databases: 'cistrome.xml', 'jaspar.xml'
+//    Expected state: hint was appeared and contains following text "Use 'cistrome.xml' to decrease computation time..."
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2089 )
 {
     // 1. Start UGENE with a new *.ini file.
@@ -6020,6 +6070,46 @@ GUI_TEST_CLASS_DEFINITION( test_2202 )
     CHECK_SET_ERR(workflowOutputDir.exists(), "Dir wasn't created");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2204 ){
+//    1. Go to the WD samples. Double click on the Chip-Seq WD sample.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    Expexted: setup dialog appears.
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Pipeline", QStringList()<<
+                                                                   "Treatment tags only"));
+
+    class customWizard : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+
+            QComboBox* combo = GTWidget::findExactWidget<QComboBox*>(os, "Motif database widget", dialog);
+            GTComboBox::checkValues(os, combo, QStringList()/*<<"cistrome.xml"*/<<"hpdi.xml"<<"jaspar.xml");
+            QString s = combo->currentText();
+            CHECK_SET_ERR(s=="hpdi.xml,jaspar.xml", "unexpected text: " + s);
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
+            dialog = QApplication::activeModalWidget();
+            if(dialog != NULL){
+                GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
+            }
+
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "ChIP-seq Analysis Wizard", new customWizard));
+    GTUtilsWorkflowDesigner::addSample(os, "Cistrome");
+//    2. Press the setup button.
+//    Expexted: the sample opens and the first wizard page appears.
+//    4. Go to the fifth wizard page by the next button.
+//    5. Change the Motif database parameter: uncheck cistrome.xml and check the hpdi.xml, jaspar.xml
+//    Expected: combobox shows "hpdi.xml,jaspar.xml"
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2224 )
 {
     // 1. Open document "ma.aln"
@@ -6759,6 +6849,27 @@ GUI_TEST_CLASS_DEFINITION( test_2351 ) {
     }
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2342 ){
+//    1. Open WD, open Cistrome sample.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Select the SeqPos element on the scene. Properties of the SeqPos element are displayed the property widget.
+    GTUtilsDialog::waitForDialog(os, new EscapeClicker(os, "ChIP-seq Analysis Wizard"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Pipeline", QStringList()<<
+                                                                   "Treatment tags only"));
+    GTUtilsWorkflowDesigner::addSample(os, "Cistrome");
+//    3. Open wizard, go to the SeqPos page.
+    QMap<QString, QVariant> map;
+    map.insert("Region width", QVariant(300));
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "ChIP-seq Analysis Wizard", QList<QStringList>(),map));
+    GTWidget::click(os, GTAction::button(os, "Show wizard"));
+//    4. Change any parameter value(e.g. "Motif database").
+//    5. Apply wizard changes.
+//    Expected state: element on the scene is updated, property widget is updated.
+    GTUtilsWorkflowDesigner::click(os, "Collect Motifs with SeqPos");
+    QString par = GTUtilsWorkflowDesigner::getParameter(os, "Region width");
+    CHECK_SET_ERR(par == "300", "unexpected parameter: " + par);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2343 ) {
 //    1. Open Workflow designer
 //    2. Add element "Align with ClustalW"
@@ -6782,6 +6893,32 @@ GUI_TEST_CLASS_DEFINITION( test_2343 ) {
 
     CHECK_SET_ERR( QApplication::focusWidget() != NULL, "No widget in focus");
     CHECK_SET_ERR( wgt != QApplication::focusWidget(), "Focus didn't changed");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2344 ){
+//    1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Add the "ChIP-seq analysis with Cistrome tools" sample.
+    GTUtilsDialog::waitForDialog(os, new EscapeClicker(os, "ChIP-seq Analysis Wizard"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Pipeline", QStringList()<<
+                                                                   "Treatment tags only"));
+    GTUtilsWorkflowDesigner::addSample(os, "Cistrome");
+//    Expected state: the sample wizard appears.
+//    3. Choose the "Treatment tags only" mode and click "Setup".
+//    Expected state: the sample is added. The workflow scale is 90%. The workflow wizard appears.
+//    4. Exit the wizard.
+    QComboBox* wdScaleCombo = GTWidget::findExactWidget<QComboBox*>(os, "wdScaleCombo");
+
+    CHECK_SET_ERR(wdScaleCombo->itemText(0) == "25%", "unexpected scale: " + wdScaleCombo->itemText(0));
+    CHECK_SET_ERR(wdScaleCombo->itemText(1) == "50%", "unexpected scale: " + wdScaleCombo->itemText(1));
+    CHECK_SET_ERR(wdScaleCombo->itemText(2) == "75%", "unexpected scale: " + wdScaleCombo->itemText(2));
+    CHECK_SET_ERR(wdScaleCombo->itemText(3) == "90%", "unexpected scale: " + wdScaleCombo->itemText(3));
+    CHECK_SET_ERR(wdScaleCombo->itemText(4) == "100%", "unexpected scale: " + wdScaleCombo->itemText(4));
+    CHECK_SET_ERR(wdScaleCombo->itemText(5) == "125%", "unexpected scale: " + wdScaleCombo->itemText(5));
+    CHECK_SET_ERR(wdScaleCombo->itemText(6) == "150%", "unexpected scale: " + wdScaleCombo->itemText(6));
+    CHECK_SET_ERR(wdScaleCombo->itemText(7) == "200%", "unexpected scale: " + wdScaleCombo->itemText(7));
+//    5. Expand the scale combobox on the toolbar.
+//    Expected state: values are sorted in the increasing order.
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2352 ) {
@@ -7528,6 +7665,39 @@ GUI_TEST_CLASS_DEFINITION( test_2449 ) {
     }
 
     CHECK_SET_ERR(0 < sizeSpinBox->value(), "Invalid size spin box bound");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2451){
+//    1. Open Workflow designer
+    GTLogTracer l;
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Open sample {Alignment->Align sequences with MUSCLE}
+    GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+//    Expected state: There is "Show wizard" tool button
+
+//    3. Press "Show wizard" button
+
+    class customWizard : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+        //    4. Select input MSA "samples\CLUSTALW\COI.aln"
+            GTUtilsWizard::setInputFiles(os, QList<QStringList>()<<(QStringList()<<dataDir + "samples/CLUSTALW/COI.aln"));
+        //    5. Press "Next" button
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+        //    6. Press "Run" button
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Run);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Align Sequences with MUSCLE Wizard", new customWizard()));
+    GTWidget::click(os, GTAction::button(os, "Show wizard"));
+//    Expected state: Align sequences with MUSCLE Wizard appeared
+
+//    Expected state: Scheme successfully performed
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsLog::check(os, l);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2459) {

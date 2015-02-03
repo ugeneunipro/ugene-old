@@ -331,6 +331,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2049);
     REGISTER_TEST(GUITest_regression_scenarios::test_2070);
     REGISTER_TEST(GUITest_regression_scenarios::test_2077);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2078);
     REGISTER_TEST_ONLY_WINDOWS(GUITest_regression_scenarios::test_2089);//, "no forbidden folder characters on linux and mac");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2093_1,"dashboards");
     REGISTER_TEST(GUITest_regression_scenarios::test_2091);
@@ -362,6 +363,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2187);
     REGISTER_TEST(GUITest_regression_scenarios::test_2188);
     REGISTER_TEST(GUITest_regression_scenarios::test_2202);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2204);
     REGISTER_TEST(GUITest_regression_scenarios::test_2224);
     REGISTER_TEST(GUITest_regression_scenarios::test_2224_flow);
     REGISTER_TEST(GUITest_regression_scenarios::test_2225_1);
@@ -385,7 +387,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2309);
     REGISTER_TEST(GUITest_regression_scenarios::test_2316);
     REGISTER_TEST(GUITest_regression_scenarios::test_2318);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2342);
     REGISTER_TEST(GUITest_regression_scenarios::test_2343);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2344);
     REGISTER_TEST(GUITest_regression_scenarios::test_2351);
     REGISTER_TEST(GUITest_regression_scenarios::test_2352);
     REGISTER_TEST(GUITest_regression_scenarios::test_2360);
@@ -414,6 +418,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2432);
     REGISTER_TEST(GUITest_regression_scenarios::test_2437);
     REGISTER_TEST(GUITest_regression_scenarios::test_2449);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2451);
     REGISTER_TEST(GUITest_regression_scenarios::test_2459);
     REGISTER_TEST(GUITest_regression_scenarios::test_2460);
     REGISTER_TEST(GUITest_regression_scenarios::test_2475);
