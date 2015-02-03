@@ -7596,9 +7596,8 @@ GUI_TEST_CLASS_DEFINITION( test_2475 ) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsDialog::waitForDialog(os, new EscClicker(os));
-    GTUtilsDialog::waitForDialog(os, new ConfigureTuxedoWizardFiller(os,
-                                                                     ConfigureTuxedoWizardFiller::single_sample,
-                                                                     ConfigureTuxedoWizardFiller::singleReads));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "Single-sample Tuxedo Pipeline"<<"Single-end reads"));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
     GTGlobals::sleep();
 

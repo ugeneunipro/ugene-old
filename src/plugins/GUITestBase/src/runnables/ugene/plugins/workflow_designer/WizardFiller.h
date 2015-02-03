@@ -43,11 +43,6 @@ public:
     WizardFiller(U2OpStatus &_os, QString name, CustomScenario* c): Filler(_os, name, c){}
     void commonScenario();
 
-    static QPushButton* getButtonByText(U2OpStatus &_os, QString text);
-    static QPushButton* getNextButton(U2OpStatus &_os);
-    static QPushButton* getCancelButton(U2OpStatus &_os);
-    static QPushButton* getSetupButton(U2OpStatus &_os);
-    static QPushButton* getFinishButton(U2OpStatus &_os);
     static QToolButton* getExpandButton(U2OpStatus &_os);
 
 
@@ -57,18 +52,6 @@ private:
     QMap<QString, QVariant> map;
     QList<QStringList> inputFiles;
 
-};
-
-class ConfigureTuxedoWizardFiller : public WizardFiller {
-public:
-    enum analysis_type {full,single_sample,no_new_transkripts};
-    enum reads_type {singleReads,pairedReads};
-    ConfigureTuxedoWizardFiller(U2OpStatus &_os,analysis_type _analys, reads_type _reads)
-        : WizardFiller(_os, "Configure Tuxedo Pipeline"),analys(_analys),reads(_reads){}
-    virtual void run();
-private:
-    analysis_type analys;
-    reads_type reads;
 };
 
 

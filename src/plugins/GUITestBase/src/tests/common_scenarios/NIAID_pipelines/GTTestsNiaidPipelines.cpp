@@ -32,6 +32,7 @@
 #include "api/GTAction.h"
 #include "api/GTFile.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
@@ -57,85 +58,14 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_NIAID_pipelines {
-class WizardFiller0001:public WizardFiller{
-public:
-WizardFiller0001(U2OpStatus &_os, QString _label): WizardFiller(_os,"Call Variants Wizard", QStringList(), QMap<QString, QVariant>()), label(_label){
 
-}
-void setParameters(U2OpStatus &os, QString lab){
-
-    QList<QLabel*> labelList = wizard->currentPage()->findChildren<QLabel*>();
-    QList<QWidget*> widgetList = wizard->currentPage()->findChildren<QWidget*>();
-
-
-
-    foreach(QLabel* label, labelList){
-        if(label->text().toLower()==lab.toLower()){
-            QList<QWidget*> yList;
-            foreach (QWidget* w, widgetList){
-                if(abs(w->mapTo(wizard,w->rect().center()).y() - label->mapTo(wizard,label->rect().center()).y())==0){
-                    yList.append(w);
-                }
-            }
-            foreach(QWidget* w, yList){
-                QToolButton* t = qobject_cast<QToolButton*>(w);
-                if (t)
-                    GTWidget::click(os,t);
-            }
-            foreach(QWidget* w, yList){
-                QLineEdit* line = qobject_cast<QLineEdit*>(w);
-                if (line){
-                    CHECK_SET_ERR(line->text()==path, "wrong path: " + line->text());
-                }
-            }
-        }
-    }
-
-}
-virtual void run(){
-    dialog = QApplication::activeModalWidget();
-    CHECK_SET_ERR(dialog!=NULL, "activeModalWidget is NULL");
-    wizard = qobject_cast<QWizard*>(dialog);
-    CHECK_SET_ERR(wizard, "activeModalWidget is not wizard");
-
-    GTUtilsWizard::setInputFiles(os, QList<QStringList>()<<(QStringList()<< GUITest::dataDir + "samples/CLUSTALW/COI.aln"));
-    GTGlobals::sleep(50000);
-
-    GTWidget::getAllWidgetsInfo(os, wizard);
-
-    path = QDir::cleanPath(QDir::currentPath() + "/" + GUITest::dataDir + "samples/CLUSTALW/COI.aln");
-
-    QPushButton* next = getNextButton(os);
-    QPushButton* finish = getFinishButton(os);
-
-    GTFileDialogUtils *ob = new GTFileDialogUtils(os, GUITest::dataDir + "samples/CLUSTALW/" , "COI.aln");
-    GTUtilsDialog::waitForDialog(os, ob);
-
-    for(int i=0;i<20;i++){
-       if(getExpandButton(os))
-           GTWidget::click(os,getExpandButton(os));
-
-       setParameters(os,label);
-       GTGlobals::sleep(500);
-       if (finish->isEnabled())
-           break;
-       else
-           GTWidget::click(os, next);
-    }
-    GTWidget::click(os, getFinishButton(os));
-    }
-private:
-    QString label,path;
-    QWidget* dialog; // = QApplication::activeModalWidget();
-    QWizard* wizard; // = qobject_cast<QWizard*>(dialog);
-};
 GUI_TEST_CLASS_DEFINITION(test_0001){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 
     GTUtilsWorkflowDesigner::addSample(os,"call variants");
-    GTUtilsDialog::waitForDialog(os, new WizardFiller0001(os,"BED or position list file"));
+    //GTUtilsDialog::waitForDialog(os, new WizardFiller0001(os,"BED or position list file"));
     QAbstractButton* wiz = GTAction::button(os, "Show wizard");
     GTWidget::click(os,wiz);
 
@@ -164,7 +94,7 @@ public:
         }
         QWidget* dataset = datasetList.takeLast();
 
-        QPushButton* cancel = WizardFiller::getCancelButton(os);
+        QPushButton* cancel = qobject_cast<QPushButton*>(GTWidget::findButtonByText(os, "Cancel", dialog));
 
         GT_CHECK(dataset,"dataset widget not found");
         GT_CHECK(cancel, "cancel button not found");
@@ -186,8 +116,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 //    2. Open tuxedo pipeline from samples
     GTUtilsDialog::waitForDialog(os, new WizardFiller0002(os));
-    GTUtilsDialog::waitForDialog(os,new ConfigureTuxedoWizardFiller(os,ConfigureTuxedoWizardFiller::full
-                                                                    ,ConfigureTuxedoWizardFiller::singleReads));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "Full Tuxedo Pipeline"<<"Single-end reads"));
     GTUtilsWorkflowDesigner::addSample(os,"Tuxedo tools");
     GTGlobals::sleep();
 //    3. Open wizard

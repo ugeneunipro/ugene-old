@@ -64,7 +64,8 @@ namespace U2 {
                           GT_CHECK(wizard, "activeModalWidget is not wizard");
 
 #define GT_CLASS_NAME "GTUtilsDialog::WizardFiller"
-#define GT_METHOD_NAME "setParameters"
+
+#define GT_METHOD_NAME "commonScenario"
 
 void WizardFiller::commonScenario(){
     GTUtilsWizard::setInputFiles(os, inputFiles);
@@ -73,7 +74,7 @@ void WizardFiller::commonScenario(){
     GTUtilsWizard::clickButton(os, GTUtilsWizard::Apply);
 }
 
-
+#undef GT_METHOD_NAME
 
 
 #define GT_METHOD_NAME "WizardFiller::getExpandButton"
@@ -97,71 +98,6 @@ QToolButton* WizardFiller::getExpandButton(U2OpStatus &os){
     return expandButton;
 }
 #undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "WizardFiller::getNextButton"
-QPushButton* WizardFiller::getNextButton(U2OpStatus &os){
-    QPushButton* next = getButtonByText(os, "&Next >");
-    GT_CHECK_RESULT(next, "Next button not found",NULL);
-    return next;
-}
-#undef GT_METHOD_NAME
-
-
-#define GT_METHOD_NAME "WizardFiller::getFinishButton"
-QPushButton* WizardFiller::getFinishButton(U2OpStatus &os){
-    QPushButton* finish = getButtonByText(os, "Apply");
-    GT_CHECK_RESULT(finish, "finish button not found",NULL);
-    return finish;
-}
-#undef GT_METHOD_NAME
-
-
-#define GT_METHOD_NAME "WizardFiller::getCancelButton"
-QPushButton* WizardFiller::getCancelButton(U2OpStatus &os){
-    QPushButton* Cancel = getButtonByText(os, "Cancel");
-    GT_CHECK_RESULT(Cancel, "Cancel button not found",NULL);
-    return Cancel;
-}
-#undef GT_METHOD_NAME
-
-
-#define GT_METHOD_NAME "WizardFiller::getSetupButton"
-QPushButton* WizardFiller::getSetupButton(U2OpStatus &os){
-    QPushButton* Setup = getButtonByText(os, "Setup");
-    GT_CHECK_RESULT(Setup, "Setup button not found",NULL);
-    return Setup;
-}
-#undef GT_METHOD_NAME
-
-#undef GT_CLASS_NAME
-
-#define GT_CLASS_NAME "GTUtilsDialog::ConfigureTuxedoWizardFiller"
-#define GT_METHOD_NAME "run"
-void ConfigureTuxedoWizardFiller::run() {
-    GET_ACTIVE_DIALOG
-    GTGlobals::sleep(500);
-    QMap<analysis_type,QString> anMap;
-    QMap<reads_type,QString> rMap;
-
-    anMap[full] = "Full Tuxedo";
-    anMap[single_sample] = "single-sample tuxedo";
-    anMap[no_new_transkripts] = "no-new-transcripts";
-
-    rMap[singleReads] = "Single-end reads";
-    rMap[pairedReads] = "Paired-end reads";
-
-    //hack. wizard conteans 2 radio buttons with same text, 1 is invisiable
-    QList<QRadioButton*> analysRadioList = GTRadioButton::getAllButtonsByText(os, anMap[analys], dialog);
-    QList<QRadioButton*> readsRadioList = GTRadioButton::getAllButtonsByText(os, rMap[reads], dialog);
-    GTRadioButton::click(os, analysRadioList[0]);
-    GTRadioButton::click(os, readsRadioList[0]);
-
-    GTWidget::click(os, getSetupButton(os));
-
-}
-#undef GT_METHOD_NAME
-#undef GT_CLASS_NAME
-
 
 #undef GT_CLASS_NAME
 }
