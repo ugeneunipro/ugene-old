@@ -1473,6 +1473,15 @@ GUI_TEST_CLASS_DEFINITION(test_1393) {
     CHECK_SET_ERR(!referenceMsaContent.isEmpty() && referenceMsaContent == resultMsaContent, "Unexpected MSA content");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1396){
+/* 1. Open file test/_common_data/scenarios/_regression/1396/empty_rows.fa
+ * Expected state: empty alignment and UGENE not crashes
+*/
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1396", "empty_rows.fa");
+    CHECK_SET_ERR(GTUtilsMsaEditor::getSequencesCount(os) == 0, "MSA is not empty");
+}
+
+
 GUI_TEST_CLASS_DEFINITION(test_1404) {
     class ExportMsaToSeqScenario : public CustomScenario {
         void run(U2OpStatus &os) {
