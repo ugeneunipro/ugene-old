@@ -167,6 +167,7 @@
 #include <U2View/MSAEditorNameList.h>
 
 #include <QDialogButtonBox>
+#include <QFileDialog>
 #include <QHeaderView>
 #include <QListWidget>
 #include <QMainWindow>
@@ -1194,6 +1195,56 @@ public:
     
     GTUtilsDialog::waitForDialog(os, new CallVariantsWizardFiller(os));
     GTWidget::click(os, GTAction::button(os, "Show wizard"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1338) {
+    // 1. Add the "Write annotation" element (or another element with a property in combo box)
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Annotations");
+
+    const QString initialText = GTUtilsWorkflowDesigner::getWorkerText(os, "Write Annotations");
+    CHECK_SET_ERR(initialText.contains("genbank"), "Worker item doesn't contain format name");
+
+    // 2. Select another document format
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", "gff", GTUtilsWorkflowDesigner::comboValue);
+    GTGlobals::sleep(500);
+
+    // 3. Click on the scene
+    // Expected state : the file format is changed in the description of the element
+    const QString textAfter = GTUtilsWorkflowDesigner::getWorkerText(os, "Write Annotations");
+    CHECK_SET_ERR(textAfter != initialText && textAfter.contains("gff"), "Worker item didn't change its content");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1342) {
+    class CustomPopupChecker : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QMenu *activePopupMenu = qobject_cast<QMenu *>(QApplication::activePopupWidget());
+            CHECK_SET_ERR(NULL != activePopupMenu, "Active popup menu is NULL");
+
+            GTMenu::clickMenuItemByText(os, activePopupMenu, QStringList() << "Add element");
+
+            activePopupMenu = qobject_cast<QMenu *>(QApplication::activePopupWidget());
+            QAction *dataReadersAction = GTMenu::getMenuItem(os, activePopupMenu, "Data Readers", true);
+            CHECK_SET_ERR(NULL == dataReadersAction, "Data Readers item is unexpectly found");
+
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+            GTGlobals::sleep(200);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
+    };
+
+    // 1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    // 2. print "mer" in line "Name filter"
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    GTKeyboardDriver::keySequence(os, "mer");
+
+    // 3. use context menu at the edit field : Add element->Data readers->File lists
+    // Expected : there is no "File list" element in the menu. UGENE doesn't crash
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, new CustomPopupChecker));
+    GTWidget::click(os, GTWidget::findWidget(os, "sceneView"), Qt::RightButton);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1347) {
@@ -13725,6 +13776,31 @@ GUI_TEST_CLASS_DEFINITION(test_3623) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::isPrevNextEnabled(os), "Next and prev buttons are disabled");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3625) {
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "ACACACACACACACACACACACACACAC");
+
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/33"), "Results string not match");
+
+    QCheckBox *removeOverlapsBox = GTWidget::findExactWidget<QCheckBox *>(os, "removeOverlapsBox");
+    GTWidget::click(os, removeOverlapsBox);
+    GTWidget::click(os, removeOverlapsBox);
+
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/7"), "Results string not match");
+
+    GTWidget::click(os, removeOverlapsBox);
+
+    GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Regular expression");
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "(AAAAAAAAAAAAAAAAAAAAA)+", true);
+
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/28"), "Results string not match");
+
+    GTWidget::click(os, removeOverlapsBox);
+
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/11"), "Results string not match");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3629) {

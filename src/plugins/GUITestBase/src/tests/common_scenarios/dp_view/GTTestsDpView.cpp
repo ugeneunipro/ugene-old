@@ -41,6 +41,7 @@
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 
+#include <QApplication>
 #include <QCheckBox>
 
 namespace U2 {

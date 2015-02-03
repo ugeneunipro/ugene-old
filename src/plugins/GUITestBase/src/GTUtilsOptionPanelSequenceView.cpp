@@ -122,6 +122,8 @@ bool GTUtilsOptionPanelSequenceView::isTabOpened(U2OpStatus &os, GTUtilsOptionPa
 #define GT_METHOD_NAME "checkResultsText"
 
 bool GTUtilsOptionPanelSequenceView::checkResultsText(U2OpStatus &os, QString expectedText) {
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
     QLabel *label = qobject_cast<QLabel*>(GTWidget::findWidget(os, "resultLabel"));
     return label->text() == expectedText;
 }

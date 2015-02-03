@@ -19,13 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QCheckBox>
-#include <QtGui/QVBoxLayout>
-#else
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QVBoxLayout>
-#endif
+#include <QCheckBox>
+#include <QVBoxLayout>
 
 #include <U2Core/U2SafePoints.h>
 

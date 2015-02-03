@@ -360,6 +360,22 @@ WorkflowProcessItem* GTUtilsWorkflowDesigner::getWorker(U2OpStatus &os,QString i
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getWorkerText"
+QString GTUtilsWorkflowDesigner::getWorkerText(U2OpStatus &os, QString itemName, const GTGlobals::FindOptions &options) {
+    WorkflowProcessItem *worker = getWorker(os, itemName, options);
+    foreach (QGraphicsItem *child, worker->childItems()) {
+        foreach (QGraphicsItem *subchild, child->childItems()) {
+            QGraphicsObject *graphObject = subchild->toGraphicsObject();
+            QGraphicsTextItem *textItem = qobject_cast<QGraphicsTextItem *>(graphObject);
+            if (NULL != textItem) {
+                return textItem->toPlainText();
+            }
+        }
+    }
+    return QString();
+}
+#undef GT_METHOD_NAME
+
 void GTUtilsWorkflowDesigner::clickLink(U2OpStatus &os, QString itemName, Qt::MouseButton button, int step){
     WorkflowProcessItem* worker = getWorker(os, itemName);
 

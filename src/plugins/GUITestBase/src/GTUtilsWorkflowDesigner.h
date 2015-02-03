@@ -89,6 +89,8 @@ public:
     //returs worker placed on workflow scene which contains item name
     static WorkflowProcessItem* getWorker(U2OpStatus &os, QString itemName,const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
 
+    static QString getWorkerText(U2OpStatus &os, QString itemName, const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
+
     static void clickLink(U2OpStatus &os, QString itemName, Qt::MouseButton button = Qt::LeftButton, int step = 10);
 
     static bool isWorkerExtended(U2OpStatus &os, const QString &itemName);
