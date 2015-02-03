@@ -32,6 +32,9 @@ workflow "Quality control by FastQC"{
             fastqc.custom-dir {
                 alias:out_dir;
             }
+            fastqc.out-mode {
+                alias:mode;
+            }
             get-file-list.url-in {
                 alias:in;
             }
@@ -83,6 +86,5 @@ workflow "Quality control by FastQC"{
             }
         }
     }
-    
 }
 
