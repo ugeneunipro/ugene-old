@@ -115,7 +115,6 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #   Runnables / UGENE / plugins / weight_matrix
             src/runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.h \
 #   Runnables / UGENE / plugins / workflow_designer
-            src/runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h \
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.h \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h \
             src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h \
@@ -363,7 +362,6 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Runnables / UGENE / plugins / weight_matrix
             src/runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.cpp \
 #   Runnables / UGENE / plugins / workflow_designer
-            src/runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.cpp \
