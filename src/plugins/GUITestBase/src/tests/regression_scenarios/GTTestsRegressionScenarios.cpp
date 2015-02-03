@@ -1309,6 +1309,15 @@ GUI_TEST_CLASS_DEFINITION(test_1364){
     GTWidget::click(os, GTWidget::findWidget(os, "addFileButton"));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1368){
+/* 1. Open _common_data\sam\crash.sam
+ * Expected state: UGENE not crashes
+*/
+    QString ugenedbFileName = testDir + "_common_data/scenarios/sandbox/test_1368.ugenedb";
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, ugenedbFileName));
+    GTFileDialog::openFile(os, testDir + "_common_data/sam", "crash.sam");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1371) {
 //    1. Open file "data/samples/ACE/BL060C3.ace" as msa.
 //    Expected state: there are 2 MSA objects in document.
