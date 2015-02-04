@@ -542,7 +542,7 @@ GUI_TEST_CLASS_DEFINITION(test_0037) {
     //select 1 file
     GTUtilsProjectTreeView::click(os, "sars.gb");
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "Open containing folder",
-        PopupChecker::NotExists, GTGlobals::UseMouse));
+        PopupChecker::IsEnabled, GTGlobals::UseMouse));
     GTUtilsProjectTreeView::click(os, "sars.gb", Qt::RightButton);
 }
 
