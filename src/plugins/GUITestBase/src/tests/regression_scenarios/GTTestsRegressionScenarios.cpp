@@ -14389,6 +14389,48 @@ GUI_TEST_CLASS_DEFINITION(test_3757) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3768) {
+
+//1. Open "data/samples/FASTA/human_T1.fa".
+//2. Click "Find ORFs" button on the main toolbar.
+//3. Uncheck "Must start with init codon" option and accept the dialog.
+//4. Call context menu, select {Edit sequence -> Remove subsequence...}
+//5. Fill the dialog:
+//Region to remove: 2..199950;
+//Annotation region resolving mode: Crop corresponding annotation
+//and accept the dialog.
+//Current state: UGENE crashes.
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+
+    class OkClicker : public Filler {
+    public:
+        OkClicker(U2OpStatus& _os) : Filler(_os, "ORFDialogBase"){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+
+            QCheckBox* ckInit = GTWidget::findExactWidget<QCheckBox*>(os, "ckInit", w);
+            CHECK(NULL != ckInit, );
+            GTCheckBox::setChecked(os, ckInit, false);
+
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK(NULL != button, );
+            GTWidget::click(os, button);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os));
+    GTWidget::click(os, GTAction::button(os, "Find ORFs"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Remove subsequence..."));
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "2..199950"));
+    //GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3778) {
     //1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
