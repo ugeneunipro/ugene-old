@@ -356,7 +356,7 @@ void DasOptionsPanelWidget::initialize() {
     cm.sequenceObjectRef = ctx->getSequenceObject( );
     cm.sequenceLen = ctx->getSequenceLength();
     cm.hideAnnotationParameters = true;
-    annotationsWidgetController = new CreateAnnotationWidgetController(cm, this, optPanel);
+    annotationsWidgetController = new CreateAnnotationWidgetController(cm, this, CreateAnnotationWidgetController::OptionsPanel);
     annotationsSettingsContainerLayout->addWidget(annotationsWidgetController->getWidget());
 
     // Setup context menu of the idList widget

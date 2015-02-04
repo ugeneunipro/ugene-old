@@ -96,7 +96,6 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     l->setMargin(0);
     l->addWidget(caw);
     annotationsWidget->setLayout(l);
-    annotationsWidget->setMinimumSize(caw->layout()->minimumSize());
 
     algoCombo->addItem(tr("Auto"), RFAlgorithm_Auto);
     algoCombo->addItem(tr("Suffix index"), RFAlgorithm_Suffix);

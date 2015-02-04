@@ -30,6 +30,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/AuthenticationWidget.h \
            src/util/BreakpointConditionEditDialog.h \
            src/util/CreateAnnotationDialog.h \
+           src/util/CreateAnnotationWidget.h \
            src/util/CreateAnnotationWidgetController.h \
            src/util/CreateDocumentFromTextDialogController.h \
            src/util/CreateObjectRelationDialogController.h \
@@ -99,6 +100,9 @@ FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/AuthenticationDialog.ui \
          src/util/ui/AuthenticationWidget.ui \
          src/util/ui/BreakpointConditionEditDialog.ui \
+         src/util/ui/CreateAnnotationDialog.ui \
+         src/util/ui/CreateAnnotationNormalWidget.ui \
+         src/util/ui/CreateAnnotationOptionsPanelWidget.ui \
          src/util/ui/CreateDocumentFromTextDialog.ui \
          src/util/ui/CreateObjectRelationDialog.ui \
          src/util/ui/DownloadRemoteFileDialog.ui \
@@ -146,6 +150,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/AuthenticationWidget.cpp \
            src/util/BreakpointConditionEditDialog.cpp \
            src/util/CreateAnnotationDialog.cpp \
+           src/util/CreateAnnotationWidget.cpp \
            src/util/CreateAnnotationWidgetController.cpp \
            src/util/CreateDocumentFromTextDialogController.cpp \
            src/util/CreateObjectRelationDialogController.cpp \

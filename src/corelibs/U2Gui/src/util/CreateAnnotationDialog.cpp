@@ -41,49 +41,31 @@
 #endif
 
 #include <U2Gui/HelpButton.h>
-
+#include "ui/ui_CreateAnnotationDialog.h"
 
 namespace U2 {
 
-CreateAnnotationDialog::CreateAnnotationDialog(QWidget* p, CreateAnnotationModel& m) : QDialog(p), model(m){
+CreateAnnotationDialog::CreateAnnotationDialog(QWidget* p, CreateAnnotationModel& m) :
+    QDialog(p),
+    model(m),
+    ui(new Ui::CreateAnnotationDialog)
+{
+    ui->setupUi(this);
     annWidgetController = new CreateAnnotationWidgetController(m, this);
     
-    this->setObjectName("new_annotation_dialog");
+    new HelpButton(this, ui->buttonBox, "14058955");
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Create"));
 
-    QHBoxLayout* buttonsLayout = new QHBoxLayout();
-    buttonsLayout->addStretch(1);
-
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
-    buttonsLayout->addWidget(buttonBox);
-    buttonBox->setObjectName("buttonBox");
-
-    createButton = buttonBox->button(QDialogButtonBox::Ok);
-    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
-
-    new HelpButton(this, buttonBox, "14058955");
-    createButton->setText(tr("Create"));
-    cancelButton->setText(tr("Cancel"));
-
-    QVBoxLayout* topLayout = new QVBoxLayout();
-    topLayout->setObjectName("new_annotation_dialog_layout");
-    
-    QWidget * annWidget = annWidgetController->getWidget();
-    topLayout->addWidget(annWidget);
-    annWidget->setMinimumSize(annWidget->layout()->minimumSize());
-    annWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    
-    topLayout->addLayout(buttonsLayout);
-    setLayout(topLayout);
-    setMaximumHeight(layout()->minimumSize().height());
-    
-    connect(createButton, SIGNAL(clicked(bool)), SLOT(sl_onCreateClicked(bool)));
-    connect(cancelButton, SIGNAL(clicked(bool)), SLOT(sl_onCancelClicked(bool)));
+    ui->mainLayout->insertWidget(0, annWidgetController->getWidget());
     
     annWidgetController->setFocusToNameEdit();
-    setWindowTitle(tr("Create Annotation"));
 }
 
-void CreateAnnotationDialog::sl_onCreateClicked(bool) {
+CreateAnnotationDialog::~CreateAnnotationDialog() {
+    delete ui;
+}
+
+void CreateAnnotationDialog::accept() {
     QString err = annWidgetController->validate();
     if (!err.isEmpty()) {
         QMessageBox::warning(this, tr("Error"), err);
@@ -95,13 +77,7 @@ void CreateAnnotationDialog::sl_onCreateClicked(bool) {
         return;
     }
     model = annWidgetController->getModel();
-    accept();
+    QDialog::accept();
 }
-
-void CreateAnnotationDialog::sl_onCancelClicked(bool) {
-    reject();
-}
-
-
 
 } // namespace

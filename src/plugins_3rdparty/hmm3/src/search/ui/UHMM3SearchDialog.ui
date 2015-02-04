@@ -19,7 +19,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>601</width>
-       <height>342</height>
+       <height>320</height>
       </size>
      </property>
      <property name="tabShape">
@@ -33,6 +33,9 @@
        <string>Input and output</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinAndMaxSize</enum>
+       </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_12">
          <item>
@@ -56,15 +59,21 @@
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinAndMaxSize</enum>
+         </property>
          <item>
           <spacer name="verticalSpacer">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::MinimumExpanding</enum>
+           </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>20</width>
-             <height>13</height>
+             <width>1</width>
+             <height>1</height>
             </size>
            </property>
           </spacer>
@@ -78,6 +87,9 @@
        <string>Reporting thresholds</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinAndMaxSize</enum>
+       </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
@@ -315,8 +327,8 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>20</width>
-           <height>5</height>
+           <width>1</width>
+           <height>1</height>
           </size>
          </property>
         </spacer>
@@ -328,6 +340,9 @@
        <string>Acceleration heuristics</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinAndMaxSize</enum>
+       </property>
        <item>
         <widget class="QCheckBox" name="nobiasCheckBox">
          <property name="sizePolicy">
@@ -467,8 +482,8 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>20</width>
-           <height>33</height>
+           <width>1</width>
+           <height>1</height>
           </size>
          </property>
         </spacer>
@@ -480,8 +495,14 @@
        <string>Other</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinAndMaxSize</enum>
+       </property>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_6">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinAndMaxSize</enum>
+         </property>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_15">
            <item>
@@ -551,8 +572,8 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>20</width>
-           <height>208</height>
+           <width>1</width>
+           <height>1</height>
           </size>
          </property>
         </spacer>

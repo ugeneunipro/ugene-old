@@ -22,13 +22,13 @@
 #ifndef _U2_CREATE_ANNOTATION_DIALOG_H_
 #define _U2_CREATE_ANNOTATION_DIALOG_H_
 
+#include <QDialog>
+
 #include <U2Core/global.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
+namespace Ui {
+class CreateAnnotationDialog;
+}
 
 namespace U2 {
 
@@ -39,17 +39,16 @@ class U2GUI_EXPORT CreateAnnotationDialog : public QDialog {
 Q_OBJECT
 public:
     //saves the results to the provided model
-	CreateAnnotationDialog(QWidget* p, CreateAnnotationModel& m);
+    CreateAnnotationDialog(QWidget* p, CreateAnnotationModel& m);
+    ~CreateAnnotationDialog();
     
 private slots:
-	void sl_onCreateClicked(bool);
-	void sl_onCancelClicked(bool);
+    void accept();
 
 private:
     CreateAnnotationModel& model;
     CreateAnnotationWidgetController* annWidgetController;
-    QPushButton* createButton;
-	QPushButton* cancelButton;
+    Ui::CreateAnnotationDialog *ui;
 };
 
 } // namespace

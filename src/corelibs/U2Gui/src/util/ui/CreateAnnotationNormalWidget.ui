@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CreateAnnotationNormalWidget</class>
+ <widget class="QWidget" name="CreateAnnotationNormalWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>411</width>
+    <height>219</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Create Annotations</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QWidget" name="saveAnnotationsInnerWidget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Choose a file to store the annotations</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMinAndMaxSize</enum>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="rbExistingTable">
+        <property name="text">
+         <string>Existing table</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cbExistingTable">
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QToolButton" name="tbBrowseExistingTable">
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../U2Gui.qrc">
+          <normaloff>:/core/images/load_selected_documents.png</normaloff>:/core/images/load_selected_documents.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="rbCreateNewTable">
+        <property name="text">
+         <string>Create new table</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="leNewTablePath"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QToolButton" name="tbBrowseNewTable">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QRadioButton" name="rbUseAutoTable">
+        <property name="text">
+         <string>Use auto-annotations table</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="annotationParametersInnerWidget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMinAndMaxSize</enum>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="leGroupName"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="locationEdit">
+        <property name="toolTip">
+         <string>Annotation location in GenBank format</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QToolButton" name="tbSelectGroupName">
+        <property name="toolTip">
+         <string>Predefined group names</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../U2Gui.qrc">
+          <normaloff>:/core/images/group_auto.png</normaloff>:/core/images/group_auto.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblGroupName">
+        <property name="text">
+         <string>Group name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblAnnotationName">
+        <property name="text">
+         <string>Annotation name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="leAnnotationName">
+        <property name="maxLength">
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QToolButton" name="tbSelectAnnotationName">
+        <property name="toolTip">
+         <string>Predefined annotation names</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../U2Gui.qrc">
+          <normaloff>:/core/images/predefined_annotation_groups.png</normaloff>:/core/images/predefined_annotation_groups.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lblLocation">
+        <property name="text">
+         <string>Location</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QToolButton" name="tbDoComplement">
+        <property name="toolTip">
+         <string>Add/remove complement flag</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../U2Gui.qrc">
+          <normaloff>:/core/images/do_complement.png</normaloff>:/core/images/do_complement.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QCheckBox" name="chbUsePatternNames">
+        <property name="toolTip">
+         <string>Use names of patterns as annotations names. In case the patterns are in FASTA format</string>
+        </property>
+        <property name="text">
+         <string>Use pattern name</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../../../U2Gui.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>chbUsePatternNames</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>leAnnotationName</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>197</x>
+     <y>215</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chbUsePatternNames</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>tbSelectAnnotationName</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>197</x>
+     <y>215</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>363</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbExistingTable</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>cbExistingTable</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>15</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>279</x>
+     <y>15</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbExistingTable</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>tbBrowseExistingTable</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>15</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>374</x>
+     <y>14</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbCreateNewTable</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>leNewTablePath</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>279</x>
+     <y>48</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbCreateNewTable</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>tbBrowseNewTable</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>375</x>
+     <y>49</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbUseAutoTable</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>annotationParametersInnerWidget</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>78</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>194</x>
+     <y>161</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

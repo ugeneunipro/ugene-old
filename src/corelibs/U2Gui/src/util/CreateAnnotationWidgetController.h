@@ -36,6 +36,7 @@ class QToolButton;
 namespace U2 {
 
 class AnnotationTableObject;
+class CreateAnnotationWidget;
 class GObjectComboBoxController;
 class ShowHideSubgroupWidget;
 
@@ -48,6 +49,7 @@ public:
 
     bool                    hideLocation;       // hides location field and does not check it in validate()
     bool                    hideAnnotationName; // hides annotation name field
+    bool                    hideUsePatternNames;// hides "use pattern names" checkbox
     bool                    useUnloadedObjects;
     QString                 groupName;          // default groupname. If empty -> <auto> value is used (annotationObject->name value).
     AnnotationData          data;               // holds name and location of the annotation
@@ -62,15 +64,16 @@ public:
     AnnotationTableObject *   getAnnotationObject( ) const;
 };
 
-// Layout mode of the annotation widget
-enum AnnotationWidgetMode {normal, compact, optPanel};
-
 class U2GUI_EXPORT CreateAnnotationWidgetController : public QObject {
 Q_OBJECT
 public:
+    enum AnnotationWidgetMode {
+        Normal,
+        OptionsPanel
+    };
     
     // useCompact defines the layout of the widget (normal or compact for the Options Panel)
-    CreateAnnotationWidgetController(const CreateAnnotationModel& m, QObject* p, AnnotationWidgetMode layoutMode = normal);
+    CreateAnnotationWidgetController(const CreateAnnotationModel& m, QObject* p, AnnotationWidgetMode layoutMode = Normal);
     ~CreateAnnotationWidgetController();
     
     // returns error message or empty string if no error found;
@@ -97,11 +100,11 @@ public:
 
     bool getEnabledNameEdit() const;
 
-    QWidget* getWidget() const {return w;}
+    QWidget* getWidget() const;
 
     const CreateAnnotationModel&    getModel() const {return model;}
 
-    QCheckBox* getUsePatternNameCheckBox() { return usePatternNamesCheckBox; }
+    QCheckBox* getUsePatternNameCheckBox();
     
     //receiver object must have sl_setPredefinedAnnotationName(), TODO: move this utility to a separate class
     static QMenu* createAnnotationNamesMenu(QWidget* p, QObject* receiver);
@@ -111,7 +114,6 @@ public:
     /** It is called from the constructor and updateWidgetForAnnotationModel(...) */
     void commonWidgetUpdate(const CreateAnnotationModel& model);
 
-    void setUsePatternNameCheckBoxVisible();
     QPair<QWidget*, QWidget*> getTaborderEntryAndExitPoints() const;
 
 signals:
@@ -132,34 +134,13 @@ private slots:
     void sl_groupNameEdited();
 
 private:
-    void initLayout(AnnotationWidgetMode layoutMode);
     void updateModel(bool forValidation);
 
     CreateAnnotationModel       model;
-    GObjectComboBoxController*  occ;
-    QWidget*                    w;
+    GObjectComboBoxController * occ;
+    CreateAnnotationWidget *    w;
     
     QString GROUP_NAME_AUTO;
-
-    // Widget layout
-    ShowHideSubgroupWidget* annotParamsWidget;
-    QLineEdit* newFileEdit;
-    QLineEdit* annotationNameEdit;
-    QLineEdit* groupNameEdit;
-    QLineEdit* locationEdit;
-    QRadioButton* newFileRB;
-    QRadioButton* existingObjectRB;
-    QRadioButton* useAutoAnnotationsRB;
-    QToolButton* groupNameButton;
-    QToolButton* existingObjectButton;
-    QToolButton* showNameGroupsButton;
-    QToolButton* complementButton;
-    QToolButton* newFileButton;
-    QComboBox* existingObjectCombo;
-    QLabel* annotationNameLabel;
-    QLabel* groupNameLabel;
-    QLabel* locationLabel;
-    QCheckBox* usePatternNamesCheckBox;
 };
 
 } // namespace U2

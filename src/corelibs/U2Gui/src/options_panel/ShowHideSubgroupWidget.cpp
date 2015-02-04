@@ -46,10 +46,11 @@ ShowHideSubgroupWidget::ShowHideSubgroupWidget(const QString &_id, const QString
 void ShowHideSubgroupWidget::init(const QString &subgroupId, const QString &caption, QWidget *innerWidget, bool isOpened) {
     this->subgroupId = subgroupId;
     this->innerWidget = innerWidget;
+
     QVBoxLayout* mainLayout = new QVBoxLayout();
-    mainLayout->setContentsMargins(0, 10, 0, 0);
+    mainLayout->setContentsMargins(0, 0, 0, 10);
     mainLayout->setSpacing(0);
-    mainLayout->setAlignment(Qt::AlignTop);
+    mainLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
     innerWidget->setContentsMargins(17, 5, 5, 5);
 
@@ -103,8 +104,7 @@ ArrowHeaderWidget::ArrowHeaderWidget(const QString &caption, bool _isOpened)
 {
     QHBoxLayout* arrowHeaderLayout = new QHBoxLayout();
     arrowHeaderLayout->setContentsMargins(0, 0, 0, 0);
-    arrowHeaderLayout->setMargin(0);
-    arrowHeaderLayout->setAlignment(Qt::AlignTop);
+    arrowHeaderLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
     arrow = new QLabel();
     arrow->setObjectName("ArrowHeader_" + caption);

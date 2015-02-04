@@ -70,7 +70,6 @@ UHMM3PhmmerDialogImpl::UHMM3PhmmerDialogImpl( const U2SequenceObject * seqObj, Q
     QVBoxLayout * curLayout = qobject_cast< QVBoxLayout* >( firstTab->layout() );
     assert( NULL != curLayout );
     curLayout->insertWidget( ANNOTATIONS_WIDGET_LOCATION, annotationsWidgetController->getWidget() );
-    firstTab->setMinimumHeight( firstTab->size().height() );
     
     QPushButton* okPushButton = buttonBox->button(QDialogButtonBox::Ok);
     QPushButton* cancelPushButton = buttonBox->button(QDialogButtonBox::Cancel);
@@ -84,6 +83,7 @@ UHMM3PhmmerDialogImpl::UHMM3PhmmerDialogImpl( const U2SequenceObject * seqObj, Q
     connect( maxCheckBox, SIGNAL( stateChanged( int ) ), SLOT( sl_maxCheckBoxChanged( int ) ) );
     connect( domESpinBox, SIGNAL( valueChanged( int ) ), SLOT( sl_domESpinBoxChanged( int ) ) );
 
+    adjustSize();
 }
 
 void UHMM3PhmmerDialogImpl::setModelValues() {

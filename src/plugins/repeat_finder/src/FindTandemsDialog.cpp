@@ -81,7 +81,6 @@ FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
     l->setMargin(0);
     l->addWidget(caw);
     annotationsWidget->setLayout(l);
-    annotationsWidget->setMinimumSize(caw->layout()->minimumSize());
 
     algoComboBox->addItem(tr("Suffix array"), TSConstants::AlgoSuffix);
     algoComboBox->addItem(tr("Suffix array (optimized)"), TSConstants::AlgoSuffixBinary);

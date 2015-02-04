@@ -71,7 +71,6 @@ HMMSearchDialogController::HMMSearchDialogController(const U2SequenceObject* seq
     QWidget* w = createController->getWidget();
     QVBoxLayout* l = qobject_cast<QVBoxLayout*>(layout());
     l->insertWidget(1, w);
-    setMinimumSize( layout()->totalSizeHint() );
 #ifdef UGENE_CELL
     algoCombo->addItem( tr("Cell BE optimized"), HMMSearchAlgo_CellOptimized );
 #endif
@@ -87,6 +86,7 @@ HMMSearchDialogController::HMMSearchDialogController(const U2SequenceObject* seq
     connect(okButton, SIGNAL(clicked()), SLOT(sl_okClicked()));
     connect(domEvalueCuttofBox,SIGNAL(valueChanged(int)), SLOT(sl_expSpinBoxValueChanged(int)));
 
+    adjustSize();
 }
 
 void HMMSearchDialogController::sl_expSpinBoxValueChanged(int i){

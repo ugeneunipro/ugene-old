@@ -434,7 +434,6 @@ void ORFDialog::createAnnotationWidget()
     l->setMargin(0);
     l->addWidget(caw);
     annotationsWidget->setLayout(l);
-    annotationsWidget->setMinimumSize(caw->layout()->minimumSize());
 
 }
 

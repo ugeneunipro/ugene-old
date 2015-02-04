@@ -29,7 +29,7 @@ namespace U2 {
     class CreateAnnotationWidgetChecker : public Filler {
     public:
         CreateAnnotationWidgetChecker(U2OpStatus &_os, bool _newTableRB, const QString &_groupName, const QString &_annotationName, const QString &_location) 
-            : Filler(_os, "new_annotation_dialog"), groupName(_groupName), annotationName(_annotationName), location(_location), newTableRB(_newTableRB){}
+            : Filler(_os, "CreateAnnotationDialog"), groupName(_groupName), annotationName(_annotationName), location(_location), newTableRB(_newTableRB){}
         virtual void run();
     private:
         const QString groupName;
@@ -41,7 +41,7 @@ namespace U2 {
     class CreateAnnotationWidgetFiller : public Filler {
     public:
         CreateAnnotationWidgetFiller(U2OpStatus &_os, bool _newTableRB, const QString &_groupName, const QString &_annotationName, const QString &_location, const QString &saveTo = "")
-            : Filler(_os, "new_annotation_dialog"), groupName(_groupName), annotationName(_annotationName), location(_location), newTableRB(_newTableRB), saveTo(saveTo) {}
+            : Filler(_os, "CreateAnnotationDialog"), groupName(_groupName), annotationName(_annotationName), location(_location), newTableRB(_newTableRB), saveTo(saveTo) {}
         virtual void run();
     private:
         const QString groupName;

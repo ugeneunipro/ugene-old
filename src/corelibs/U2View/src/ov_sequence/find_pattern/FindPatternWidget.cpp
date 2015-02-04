@@ -229,10 +229,11 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         // Initializing the annotation model
         CreateAnnotationModel annotModel;
         annotModel.hideLocation = true;
+        annotModel.hideUsePatternNames = false;
         annotModel.sequenceObjectRef = annotatedDnaView->getSequenceInFocus()->getSequenceObject();
         annotModel.sequenceLen = annotatedDnaView->getSequenceInFocus()->getSequenceLength();
 
-        annotController = new CreateAnnotationWidgetController(annotModel, this, optPanel);
+        annotController = new CreateAnnotationWidgetController(annotModel, this, CreateAnnotationWidgetController::OptionsPanel);
         annotModelPrepared = false;
         connect(annotController, SIGNAL(si_annotationNamesEdited()), SLOT(sl_onAnotationNameEdited()));
 
@@ -241,7 +242,6 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         annotsWidget = annotController->getWidget();
         annotsWidget->setObjectName("annotationsWidget");
         usePatternNamesCheckBox = annotController->getUsePatternNameCheckBox();
-        annotController->setUsePatternNameCheckBoxVisible();
 
         const DNAAlphabet* alphabet = activeContext->getAlphabet();
         isAminoSequenceSelected = alphabet->isAmino();
