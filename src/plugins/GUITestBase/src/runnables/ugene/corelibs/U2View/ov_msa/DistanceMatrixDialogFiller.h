@@ -44,7 +44,7 @@ public:
         format(_format),
         path(_path){}
     virtual void run();
-private:
+public:
     bool hamming,counts,excludeGaps,saveToFile;
     SaveFormat format;
     QString path;

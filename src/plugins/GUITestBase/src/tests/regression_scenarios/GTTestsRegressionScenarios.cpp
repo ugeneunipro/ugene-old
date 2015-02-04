@@ -1329,7 +1329,39 @@ GUI_TEST_CLASS_DEFINITION(test_1358) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
-GUI_TEST_CLASS_DEFINITION(test_1364){
+GUI_TEST_CLASS_DEFINITION(test_1362) {
+    //1) Open "_common_data/edit_alignment/COI_sub_same_with_gaps.fa".
+    GTFileDialog::openFile(os, testDir + "_common_data/edit_alignment/COI_sub_same_with_gaps.fa");
+
+    //2) MSA context menu: { Statistics -> Generate distance matrix }.
+    //3) Fill in Generate distance matrix dialog:
+    //    Distance algorithm : Identity.
+    //    Profile mode: Percents.
+    //    Exclude gaps: unchecked.
+    //4) Run the task.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Statistics" << "Generate distance matrix"));
+    DistanceMatrixDialogFiller *filler = new DistanceMatrixDialogFiller(os, false, false, false);
+    filler->saveToFile = true;
+    filler->format = DistanceMatrixDialogFiller::CSV;
+    filler->path = sandBoxDir + "test_1362.csv";
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected state:
+    // Generated report's table should contain "100%" in needed places (where sequences are the same).
+    QFile result(sandBoxDir + "test_1362.csv");
+    result.open(QIODevice::ReadOnly);
+    QByteArray data = result.readAll();
+    result.close();
+
+    CHECK_SET_ERR(data.contains("Zychia_baranovi,100%,86%,86%,86%"), "Wrong matrix content 1");
+    CHECK_SET_ERR(data.contains("Tettigonia_viridissima,86%,100%,100%,100%"), "Wrong matrix content 2");
+    CHECK_SET_ERR(data.contains("Conocephalus_discolor,86%,100%,100%,100%"), "Wrong matrix content 3");
+    CHECK_SET_ERR(data.contains("Conocephalus_sp.,86%,100%,100%,100%"), "Wrong matrix content 4");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1364) {
 //    1. Open WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //    2. Add "Read Sequence" element on the scene.
