@@ -89,7 +89,7 @@ void CreateAnnotationWidget::initNormalLayout() {
 
     leGroupName = normalUi.leGroupName;
     leAnnotationName = normalUi.leAnnotationName;
-    leLocation = normalUi.locationEdit;
+    leLocation = normalUi.leLocation;
 
     tbSelectGroupName = normalUi.tbSelectGroupName;
     tbSelectAnnotationName = normalUi.tbSelectAnnotationName;
@@ -127,7 +127,7 @@ void CreateAnnotationWidget::initOptionsPanelLayout() {
 
     leGroupName = optionsPanelUi.leGroupName;
     leAnnotationName = optionsPanelUi.leAnnotationName;
-    leLocation = optionsPanelUi.locationEdit;
+    leLocation = optionsPanelUi.leLocation;
 
     tbSelectGroupName = optionsPanelUi.tbSelectGroupName;
     tbSelectAnnotationName = optionsPanelUi.tbSelectAnnotationName;

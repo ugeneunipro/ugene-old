@@ -60,13 +60,13 @@ void Primer3DialogFiller::commonScenario() {
         GTTabWidget::setCurrentIndex(os, tabWidget, 6);
 
         if (!settings.primersGroupName.isEmpty()) {
-            QLineEdit *groupEdit = dialog->findChild<QLineEdit*>("groupNameEdit");
+            QLineEdit *groupEdit = dialog->findChild<QLineEdit*>("leGroupName");
             GT_CHECK(groupEdit != NULL, "groupNameEdit is NULL");
             GTLineEdit::setText(os, groupEdit, settings.primersGroupName);
         }
 
         if (!settings.primersName.isEmpty()) {
-            QLineEdit *primerEdit = dialog->findChild<QLineEdit*>("annotationNameEdit");
+            QLineEdit *primerEdit = dialog->findChild<QLineEdit*>("leAnnotationName");
             GT_CHECK(primerEdit != NULL, "annotationNameEdit is NULL");
             GTLineEdit::setText(os, primerEdit, settings.primersName);
         }

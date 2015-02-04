@@ -51,46 +51,46 @@ void CreateAnnotationWidgetChecker::run() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
-    //QAbstractButton *newTableRButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "newFileRB", dialog));
+    //QAbstractButton *newTableRButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "rbCreateNewTable", dialog));
     //GT_CHECK(newTableRButton != NULL, "Radiobutton is NULL");
     //GT_CHECK((newTableRButton->isEnabled()==newTableRB) && (newTableRButton->isChecked()==newTableRB), "newFileRB is not enabled and checked");
 
-    //QAbstractButton *radioButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "existingObjectRB", dialog));
+    //QAbstractButton *radioButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "rbExistingTable", dialog));
     //GT_CHECK(radioButton != NULL, "Radiobutton is NULL");
     //GT_CHECK((radioButton->isEnabled() != newTableRB) && (radioButton->isChecked() != newTableRB), "existingObjectRB is enabled or checked");
 
-    QAbstractButton *radioButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "existingObjectRB", dialog));
+    QAbstractButton *radioButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "rbExistingTable", dialog));
     GT_CHECK(radioButton != NULL, "Radiobutton is NULL");
     GT_CHECK(!radioButton->isEnabled() && !radioButton->isCheckable(), "radioButton is enabled or checkable");
 
-    QComboBox *comboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "existingObjectCombo", dialog));
+    QComboBox *comboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "cbExistingTable", dialog));
     GT_CHECK(comboBox != NULL, "ComboBox is NULL");
     GT_CHECK(comboBox->count() == 0, "comboBox count is not 0");
 
-    QAbstractButton *b = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "existingObjectButton", dialog));
+    QAbstractButton *b = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "tbBrowseExistingTable", dialog));
     GT_CHECK(b != NULL, "Button is NULL");
     GT_CHECK(b->isEnabled() == false, "Button is enabled");
 
-    QAbstractButton *newTableRB = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "newFileRB", dialog));
+    QAbstractButton *newTableRB = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "rbCreateNewTable", dialog));
     GT_CHECK(newTableRB != NULL, "Radiobutton is NULL");
     GT_CHECK(newTableRB->isEnabled() && newTableRB->isChecked(), "radioButton is not enabled and checked");
 
     if (!groupName.isEmpty()) {
-        QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("groupNameEdit");
+        QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("leGroupName");
         GT_CHECK(lineEdit != NULL, "line edit not found");
         QString text = lineEdit->text();
         GT_CHECK (text == groupName, "This name is not expected name");
         }
 
     if (!annotationName.isEmpty()) {
-        QLineEdit *lineEdit1 = dialog->findChild<QLineEdit*>("annotationNameEdit");
+        QLineEdit *lineEdit1 = dialog->findChild<QLineEdit*>("leAnnotationName");
         GT_CHECK(lineEdit1 != NULL, "line edit not found");
         QString text1 = lineEdit1->text();
         GT_CHECK (text1 == annotationName, "This name is not expected name");
         }
 
     if (!location.isEmpty()) {
-        QLineEdit *lineEdit2 = dialog->findChild<QLineEdit*>("locationEdit");
+        QLineEdit *lineEdit2 = dialog->findChild<QLineEdit*>("leLocation");
         GT_CHECK(lineEdit2 != NULL, "line edit not found");
         QString text2 = lineEdit2->text();
         GT_CHECK (text2 == location, "This name is not expected name");
@@ -115,7 +115,7 @@ void CreateAnnotationWidgetFiller::run() {
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
     if (newTableRB) {
-        QRadioButton *newFileRb = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "newFileRB", dialog));
+        QRadioButton *newFileRb = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "rbCreateNewTable", dialog));
         GT_CHECK(newFileRb != NULL, "Radio button is NULL");
         GTRadioButton::click(os, newFileRb);
         QLineEdit *leFilePath = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "newFilePath", dialog));
@@ -125,25 +125,25 @@ void CreateAnnotationWidgetFiller::run() {
             GTLineEdit::setText(os, leFilePath, saveTo);
         }
     } else {
-        QRadioButton *existingObjectRb = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "existingObjectRB", dialog));
+        QRadioButton *existingObjectRb = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "rbExistingTable", dialog));
         GT_CHECK(existingObjectRb != NULL, "Radio button is NULL");
         GTRadioButton::click(os, existingObjectRb);
-        QComboBox *cbExistingObject = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "existingObjectCombo", dialog));
+        QComboBox *cbExistingObject = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "cbExistingTable", dialog));
         GT_CHECK(cbExistingObject != NULL, "Existing object combobox is NULL");
         if (!saveTo.isEmpty()) {
             GTComboBox::setIndexWithText(os, cbExistingObject, saveTo);
         }
     }
 
-    QLineEdit *groupNameLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "groupNameEdit", dialog));
+    QLineEdit *groupNameLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "leGroupName", dialog));
     GT_CHECK(groupNameLineEdit != NULL, "LineEdit is NULL");
     GTLineEdit::setText(os, groupNameLineEdit, groupName);
 
-    QLineEdit *annotationNameLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "annotationNameEdit", dialog));
+    QLineEdit *annotationNameLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "leAnnotationName", dialog));
     GT_CHECK(annotationNameLineEdit != NULL, "LineEdit is NULL");
     GTLineEdit::setText(os, annotationNameLineEdit, annotationName);
 
-    QLineEdit *locationLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "locationEdit", dialog));
+    QLineEdit *locationLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "leLocation", dialog));
     GT_CHECK(locationLineEdit != NULL, "LineEdit is NULL");
     GTLineEdit::setText(os, locationLineEdit, location);
 

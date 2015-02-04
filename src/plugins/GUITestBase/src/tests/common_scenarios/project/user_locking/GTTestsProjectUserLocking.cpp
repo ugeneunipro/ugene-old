@@ -68,7 +68,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
             QWidget* dialog = QApplication::activeModalWidget();
             GT_CHECK(dialog != NULL, "activeModalWidget is NULL");
 
-            QRadioButton *btn = dialog->findChild<QRadioButton*>("existingObjectRB");
+            QRadioButton *btn = dialog->findChild<QRadioButton*>("rbExistingTable");
             GT_CHECK(btn != NULL, "Radio button not found");
 
             if (! btn->isEnabled()) {
@@ -121,7 +121,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
             QWidget* dialog = QApplication::activeModalWidget();
             GT_CHECK(dialog != NULL, "activeModalWidget is NULL");
 
-            QRadioButton *btn = dialog->findChild<QRadioButton*>("existingObjectRB");
+            QRadioButton *btn = dialog->findChild<QRadioButton*>("rbExistingTable");
             GT_CHECK(btn != NULL, "Radio button not found");
 
             if (! btn->isEnabled()) {

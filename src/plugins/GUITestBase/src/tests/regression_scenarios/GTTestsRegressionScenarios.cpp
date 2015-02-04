@@ -1090,7 +1090,7 @@ GUI_TEST_CLASS_DEFINITION(test_1255){
     label = (QLabel*)GTWidget::findWidget(os,"lblErrorMessage");
 
     QLineEdit *annotationNameEdit;
-    annotationNameEdit=(QLineEdit *)GTWidget::findWidget(os,"annotationNameEdit");
+    annotationNameEdit=(QLineEdit *)GTWidget::findWidget(os,"leAnnotationName");
 
 //3.1 Input invalid annotation name (empty)
     GTLineEdit::setText(os,annotationNameEdit,"");
@@ -2902,7 +2902,7 @@ GUI_TEST_CLASS_DEFINITION( test_1597 ) {
     QLabel *obj = qobject_cast<QLabel*>(GTWidget::findWidget(os, "ArrowHeader_Save annotation(s) to"));
     GTWidget::click(os, obj);
 
-    QRadioButton *newTable = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "newFileRB"));
+    QRadioButton *newTable = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "rbCreateNewTable"));
     GTWidget::click(os, newTable);
 
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
@@ -11527,7 +11527,7 @@ GUI_TEST_CLASS_DEFINITION(test_3221) {
 
     GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os, true);
 
-    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox*>(os, "usePatternNamesCheckBox"), true);
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox*>(os, "chbUsePatternNames"), true);
     GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -14763,7 +14763,7 @@ GUI_TEST_CLASS_DEFINITION(test_3850) {
 
     //5. Check "Use pattern name" checkbox.
     GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os, true);
-    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox*>(os, "usePatternNamesCheckBox"), true);
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox*>(os, "chbUsePatternNames"), true);
 
     //3. Check "Load patterns from file" checkbox.
     GTUtilsOptionPanelSequenceView::toggleInputFromFilePattern(os);

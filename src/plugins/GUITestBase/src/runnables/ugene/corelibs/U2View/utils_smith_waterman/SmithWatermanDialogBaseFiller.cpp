@@ -110,7 +110,7 @@ void SmithWatermanDialogFiller::commonScenario() {
         if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
             resultFilePathContainer = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "alignmentFilesPath", dialog));
         } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {
-            QRadioButton * newFileRB = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "newFileRB", dialog));
+            QRadioButton * newFileRB = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "rbCreateNewTable", dialog));
             newFileRB->setChecked(true);
             resultFilePathContainer = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "newFilePath", dialog));
             resultFilesPath += ANNOTATION_RESULT_FILE_NAME;
@@ -130,7 +130,7 @@ void SmithWatermanDialogFiller::commonScenario() {
             QLineEdit * refSubseqNameTmpl = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "refSubseqNameTmpl", dialog));
             refSubseqNameTmpl->setText(refSubseqNameTmpl->text() + TEST_NAME_FOR_MA_RESULTS);
         } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {
-            QLineEdit * annotationNameEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "annotationNameEdit", dialog));
+            QLineEdit * annotationNameEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "leAnnotationName", dialog));
             annotationNameEdit->setText(TEST_NAME_FOR_ANNOT_RESULTS);
         } else {
             assert(0);

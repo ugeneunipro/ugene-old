@@ -186,7 +186,7 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
-         <widget class="QLineEdit" name="locationEdit">
+         <widget class="QLineEdit" name="leLocation">
           <property name="toolTip">
            <string>Annotation location in GenBank format</string>
           </property>

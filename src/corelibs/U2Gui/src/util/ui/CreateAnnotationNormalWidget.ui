@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>411</width>
-    <height>219</height>
+    <height>224</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -118,7 +118,7 @@
        <widget class="QLineEdit" name="leGroupName"/>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="locationEdit">
+       <widget class="QLineEdit" name="leLocation">
         <property name="toolTip">
          <string>Annotation location in GenBank format</string>
         </property>
