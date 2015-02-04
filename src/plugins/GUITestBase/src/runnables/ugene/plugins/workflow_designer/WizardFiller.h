@@ -36,10 +36,10 @@ namespace U2 {
 
 class WizardFiller : public Filler {
 public:
-    WizardFiller(U2OpStatus &_os, QString name, QList<QStringList> _inputFiles = QList<QStringList>(), QMap<QString, QVariant> _map = QMap<QString, QVariant>()):
-        Filler(_os, name),inputFiles(_inputFiles), map(_map){}
-    WizardFiller(U2OpStatus &_os, QString name, QStringList _inputFiles, QMap<QString, QVariant> _map = QMap<QString, QVariant>()):
-        Filler(_os, name),inputFiles(QList<QStringList>()<<_inputFiles), map(_map){}
+    WizardFiller(U2OpStatus &_os, QString name, QList<QStringList> _inputFiles = QList<QStringList>(), QMap<QString, QVariant> _map = (QMap<QString, QVariant>())):
+        Filler(_os, name), inputFiles(_inputFiles), map(_map){}
+    WizardFiller(U2OpStatus &_os, QString name, QStringList _inputFiles, QMap<QString, QVariant> _map = (QMap<QString, QVariant>())):
+        Filler(_os, name), inputFiles(QList<QStringList>()<<_inputFiles), map(_map){}
     WizardFiller(U2OpStatus &_os, QString name, CustomScenario* c): Filler(_os, name, c){}
     void commonScenario();
 
@@ -49,8 +49,8 @@ public:
     static void setInputFiles();
 
 private:
-    QMap<QString, QVariant> map;
     QList<QStringList> inputFiles;
+    QMap<QString, QVariant> map;
 
 };
 

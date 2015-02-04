@@ -3623,11 +3623,7 @@ GUI_TEST_CLASS_DEFINITION(test_0045) {
         CancelClicker(U2OpStatus &os) : Filler(os, "SelectSubalignmentDialog") {}
         virtual void run(){
             GTGlobals::sleep();
-#ifdef Q_OS_MAC
-            GTWidget::click(os, WizardFiller::getCancelButton(os));
-#else
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
-#endif
         }
     };
 
@@ -3645,12 +3641,7 @@ GUI_TEST_CLASS_DEFINITION(test_0045) {
 
             GTGlobals::sleep();
             CHECK_SET_ERR(exportType->currentText() == "Whole alignment", "Wrong combo box text!");
-
-#ifdef Q_OS_MAC
-            GTWidget::click(os, WizardFiller::getCancelButton(os));
-#else
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
-#endif
         }
     };
 
@@ -3688,11 +3679,7 @@ GUI_TEST_CLASS_DEFINITION(test_0045_1) {
             GTGlobals::sleep();
             CHECK_SET_ERR(exportType->currentText() == "Custom region", "Wrong combo box text!");
 
-#ifdef Q_OS_MAC
-            GTWidget::click(os, WizardFiller::getCancelButton(os));
-#else
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
-#endif
         }
     };
 
@@ -3753,11 +3740,7 @@ GUI_TEST_CLASS_DEFINITION(test_0047) {
             GTWidget::click(os, ok);
 
             GTGlobals::sleep();
-#ifdef Q_OS_MAC
-            GTWidget::click(os, WizardFiller::getCancelButton(os));
-#else
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
-#endif
         }
     };
 
@@ -3774,11 +3757,7 @@ GUI_TEST_CLASS_DEFINITION(test_0047) {
             GTWidget::click(os, select);
 
             GTGlobals::sleep();
-#ifdef Q_OS_MAC
-            GTWidget::click(os, WizardFiller::getCancelButton(os));
-#else
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
-#endif
         }
     };
 

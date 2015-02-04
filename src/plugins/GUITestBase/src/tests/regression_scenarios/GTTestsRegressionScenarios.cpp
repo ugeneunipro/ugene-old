@@ -7824,11 +7824,7 @@ GUI_TEST_CLASS_DEFINITION( test_2475 ) {
         EscClicker(U2OpStatus& _os) : Filler(_os, "Tuxedo Wizard"){}
         virtual void run(){
             GTGlobals::sleep();
-#ifdef Q_OS_MAC
-            GTWidget::click(os, WizardFiller::getCancelButton(os));
-#else
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
-#endif
         }
     };
 
