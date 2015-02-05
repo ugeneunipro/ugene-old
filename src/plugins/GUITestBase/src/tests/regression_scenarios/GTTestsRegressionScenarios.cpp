@@ -1111,6 +1111,31 @@ GUI_TEST_CLASS_DEFINITION(test_1255){
     GTGlobals::sleep(500);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1259) {
+//    1. Open FindPattern on the Options Panel
+//    2. (Using ctrl+enter once) enter the following pattern:
+//    >S
+//    H
+//    3. Remove H (with backspace)
+//    Expected state: UGENE doesn't crash and the symbol is removed
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keySequence(os, ">S");
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"], GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keySequence(os, "H");
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["back"]);
+    GTGlobals::sleep();
+
+    QTextEdit* textEdit = qobject_cast<QTextEdit*>(GTWidget::findWidget(os, "textPattern"));
+    CHECK_SET_ERR( textEdit->toPlainText() == ">S\n", "Wrong pattern");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1262) {
     //1. Open human_t1.fa
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
@@ -1141,6 +1166,42 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1289) {
+//    1) Open samples/Genbank/murine.gb.
+//    2) Open Workflow Designer.
+//    3) Menu: Settings->Preferences.
+//    4) "General" tab: switch on "Tabbed documents" window layout.
+//    5) Press Ok.
+
+//    Expected state:
+//    UGENE not crashed
+//    Tabs have red cross icons.
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    class TabbedDoc : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QWidget* tabbedMode = GTWidget::findWidget(os, "tabbedButton");
+            CHECK_SET_ERR(tabbedMode != NULL, "No tubbedButton");
+            GTWidget::click(os, tabbedMode);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new TabbedDoc()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1325) {
