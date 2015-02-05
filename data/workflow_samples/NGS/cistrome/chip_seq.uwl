@@ -346,6 +346,33 @@ function cistromeTime(tagsSize, dbCount) {
             page {
                 id:4;
                 next:5;
+                title:"Peak2Gene and Gene Ontology";
+                parameters-area {
+                    group {
+                        title:"Peak2Gene Parameters";
+                        label-size:120;
+                        peak2gene-id.outpos {
+                        }
+                        peak2gene-id.symbol {
+                        }
+                        peak2gene-id.distance {
+                        }
+                        peak2gene-id.genome {
+                        }
+                    }
+                    group {
+                        title:"Conduct GO Parameters";
+                        label-size:120;
+                        conduct-go-id.title {
+                        }
+                        conduct-go-id.gene-universe {
+                        }
+                    }
+                }
+            }
+            page {
+                id:5;
+                next:6;
                 title:"Conservation Plot";
                 parameters-area {
                     group {
@@ -367,8 +394,8 @@ function cistromeTime(tagsSize, dbCount) {
                 }
             }
             page {
-                id:5;
-                next:6;
+                id:6;
+                next:7;
                 title:"SeqPos motif tool";
                 parameters-area {
                     group {
@@ -383,33 +410,6 @@ function cistromeTime(tagsSize, dbCount) {
                         seqpos-id.reg_width {
                         }
                         seqpos-id.p_val {
-                        }
-                    }
-                }
-            }
-            page {
-                id:6;
-                next:7;
-                title:"Peak2Gene and Gene Ontology";
-                parameters-area {
-                    group {
-                        title:"Peak2Gene Parameters";
-                        label-size:120;
-                        peak2gene-id.outpos {
-                        }
-                        peak2gene-id.symbol {
-                        }
-                        peak2gene-id.distance {
-                        }
-                        peak2gene-id.genome {
-                        }
-                    }
-                    group {
-                        title:"Conduct GO Parameters";
-                        label-size:120;
-                        conduct-go-id.title {
-                        }
-                        conduct-go-id.gene-universe {
                         }
                     }
                 }

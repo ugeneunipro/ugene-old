@@ -21,6 +21,10 @@
 
 #include <U2Algorithm/DnaAssemblyTask.h>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/AppResources.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentImport.h>
 #include <U2Core/DocumentModel.h>
@@ -221,6 +225,17 @@ bool ShortReadsAlignerSlotsValidator::validate(const IntegralBusPort *port, Prob
 
 //////////////////////////////////////////////////////////////////////////
 //BaseShortReadsAlignerWorkerFactory
+int BaseShortReadsAlignerWorkerFactory::getThreadsCount(){
+    AppSettings *settings = AppContext::getAppSettings();
+    CHECK(NULL != settings, 1);
+    AppResourcePool *pool = settings->getAppResourcePool();
+    CHECK(NULL != pool, 1);
+
+    int threads = pool->getIdealThreadCount();
+    CHECK(0 != threads, 1);
+    return threads;
+}
+
 void BaseShortReadsAlignerWorkerFactory::addCommonAttributes(QList<Attribute*>& attrs, QMap<QString, PropertyDelegate*>& delegates) {
     {
         Descriptor outDir(OUTPUT_DIR,

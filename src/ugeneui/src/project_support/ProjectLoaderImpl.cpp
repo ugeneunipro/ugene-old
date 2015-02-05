@@ -548,6 +548,10 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
                 }
             } else {
                 QString message = tr("Failed to detect file format: %1").arg(url.getURLString());
+                QFileInfo finfo(url.getURLString());
+                if(finfo.exists() && finfo.size() == 0){
+                    message = tr("File is empty: %1").arg(url.getURLString());
+                }
                 coreLog.error(message);
                 QMessageBox::critical(AppContext::getMainWindow()->getQMainWindow(), L10N::errorTitle(), message);
             }

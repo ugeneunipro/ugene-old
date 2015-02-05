@@ -242,7 +242,7 @@ void BwaWorkerFactory::init() {
         attrs << new Attribute(maxLongDeletions, BaseTypes::NUM_TYPE(), false, QVariant(10));
         attrs << new Attribute(barcodeLength, BaseTypes::NUM_TYPE(), false, QVariant(0));
         attrs << new Attribute(maxQueue, BaseTypes::NUM_TYPE(), false, QVariant(2000000));
-        attrs << new Attribute(numThreads, BaseTypes::NUM_TYPE(), false, QVariant(4));
+        attrs << new Attribute(numThreads, BaseTypes::NUM_TYPE(), false, QVariant(getThreadsCount()));
         attrs << new Attribute(maxSeedDiff, BaseTypes::NUM_TYPE(), false, QVariant(2));
         attrs << new Attribute(mismatchPenalty, BaseTypes::NUM_TYPE(), false, QVariant(3));
         attrs << new Attribute(gapOpen, BaseTypes::NUM_TYPE(), false, QVariant(11));

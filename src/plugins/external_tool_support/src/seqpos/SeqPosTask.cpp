@@ -163,10 +163,12 @@ QStringList SeqPosTask::getOutputFiles(){
     if (QFile::exists(current)){
         result << current;
     }
-    current = getSettings().outDir + "/results/" + "table.html";
-    if (QFile::exists(current)){
-        result << current;
-    }
+
+//index.html contains table.html
+//    current = getSettings().outDir + "/results/" + "table.html";
+//    if (QFile::exists(current)){
+//        result << current;
+//    }
 
 
     return result;

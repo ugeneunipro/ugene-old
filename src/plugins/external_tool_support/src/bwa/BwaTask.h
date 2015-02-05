@@ -26,6 +26,7 @@
 
 #include <U2Core/ExternalToolRunTask.h>
 
+
 namespace U2 {
 
 class BwaBuildIndexTask : public Task {
@@ -193,8 +194,6 @@ public:
     DnaAssemblyToReferenceTask *createTaskInstance(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex = false);
 protected:
 };
-
-
 
 } // namespace U2
 

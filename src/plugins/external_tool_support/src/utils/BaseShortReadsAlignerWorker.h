@@ -52,7 +52,9 @@ protected:
     virtual void setGenomeIndex(DnaAssemblyToRefTaskSettings& settings) = 0;
     virtual QString getDefaultFileName() const = 0;
     virtual QString getBaseSubdir() const = 0;
-    virtual DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings &settings) const = 0;
+    virtual DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings &settings) const = 0;  
+
+
 protected:
     QString      algName;
     IntegralBus *inChannel;
@@ -76,6 +78,8 @@ protected:
     static QList<PortDescriptor*> getPortDescriptors();
 
     static void addCommonAttributes(QList<Attribute*>& attrs, QMap<QString, PropertyDelegate*>& delegates);
+
+    static int getThreadsCount();
 };
 
 class ShortReadsAlignerPrompter : public PrompterBase<ShortReadsAlignerPrompter> {

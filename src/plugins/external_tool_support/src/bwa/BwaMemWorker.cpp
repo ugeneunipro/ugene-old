@@ -195,7 +195,8 @@ void BwaMemWorkerFactory::init() {
             BwaMemWorker::tr("Score threshold"),
             BwaMemWorker::tr("Minimum score to output (-T)."));
 
-        attrs << new Attribute(threads, BaseTypes::NUM_TYPE(), false, QVariant(1));
+
+        attrs << new Attribute(threads, BaseTypes::NUM_TYPE(), false, QVariant(getThreadsCount()));
         attrs << new Attribute(minSeed, BaseTypes::NUM_TYPE(), false, QVariant(19));
         attrs << new Attribute(bandWidth, BaseTypes::NUM_TYPE(), false, QVariant(100));
         attrs << new Attribute(dropoff, BaseTypes::NUM_TYPE(), false, QVariant(100));

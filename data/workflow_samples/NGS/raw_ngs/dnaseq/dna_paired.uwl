@@ -29,6 +29,7 @@ workflow DNA-Seq{
         type:bwamem-id;
         name:"Align Reads with BWA MEM";
         library:Paired-end;
+        output-dir:ouput;
     }
     files-conversion {
         type:files-conversion;
@@ -44,7 +45,6 @@ workflow DNA-Seq{
         name:"Filter Merged BAM File with SAMtools";
         flag:"The read is unmapped";
         mapq:1;
-        region:"chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr7 chr8 chr9 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr18 hr19 chr20 chr21 chr22 chrX chrY";
     }
     rmdup-bam {
         type:rmdup-bam;
@@ -109,24 +109,24 @@ workflow DNA-Seq{
     }
 
     .actor-bindings {
-        CASAVAFilter-1.out-file->CutAdaptFastq-1.in-file
-        CASAVAFilter.out-file->CutAdaptFastq.in-file
-        files-conversion.out-file->merge-bam.in-file
-        merge-bam.out-file->filter-bam.in-file
-        CutAdaptFastq.out-file->QualityTrim.in-file
-        Sort-bam-1.out-file->rmdup-bam.in-file
-        QualityTrim-1.out-file->bwamem-id.in-data-paired
-        QualityTrim-1.out-file->fastqc-1-2.in-file
-        filter-bam.out-file->Sort-bam-1.in-file
         QualityTrim.out-file->bwamem-id.in-data
         QualityTrim.out-file->fastqc-1-1.in-file
+        filter-bam.out-file->Sort-bam-1.in-file
+        rmdup-bam.out-file->Sort-bam.in-file
+        CASAVAFilter.out-file->CutAdaptFastq.in-file
+        Sort-bam-1.out-file->rmdup-bam.in-file
+        files-conversion.out-file->merge-bam.in-file
         get-file-list-1.out-url->CASAVAFilter-1.in-file
         get-file-list-1.out-url->fastqc-1.in-file
+        CutAdaptFastq.out-file->QualityTrim.in-file
+        CutAdaptFastq-1.out-file->QualityTrim-1.in-file
         get-file-list.out-url->CASAVAFilter.in-file
         get-file-list.out-url->fastqc.in-file
-        rmdup-bam.out-file->Sort-bam.in-file
-        CutAdaptFastq-1.out-file->QualityTrim-1.in-file
+        CASAVAFilter-1.out-file->CutAdaptFastq-1.in-file
+        merge-bam.out-file->filter-bam.in-file
         bwamem-id.out-data->files-conversion.in-file
+        QualityTrim-1.out-file->bwamem-id.in-data-paired
+        QualityTrim-1.out-file->fastqc-1-2.in-file
     }
 
     get-file-list.url->CASAVAFilter.in-file.url
@@ -392,7 +392,7 @@ workflow DNA-Seq{
                             label:"Reads length for pairs";
                         }
                         CutAdaptFastq.adapters-url {
-                            label:"Adapters";
+                            label:Adapters;
                         }
                         CutAdaptFastq-1.adapters-url {
                             label:"Adapters for pairs";

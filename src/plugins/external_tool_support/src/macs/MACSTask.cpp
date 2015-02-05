@@ -202,6 +202,15 @@ QStringList MACSTask::getOutputFiles(){
         result << current;
     }
 
+    if(getSettings().wiggleOut){
+        current = getSettings().fileNames +"_MACS_wiggle" + QDir::separator()
+            + "treat" + QDir::separator()
+            + getSettings().fileNames+"_treat_afterfiting_all.wig";
+        if (QFile::exists(getSettings().outDir + QDir::separator() + current)){
+            result << current;
+        }
+    }
+
 
     return result;
 }
