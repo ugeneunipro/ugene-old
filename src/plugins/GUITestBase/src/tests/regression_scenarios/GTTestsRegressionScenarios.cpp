@@ -1298,6 +1298,7 @@ GUI_TEST_CLASS_DEFINITION(test_1348) {
     GTWidget::click(os, createElement);
     GTGlobals::sleep();
 
+    GTUtilsWorkflowDesigner::setCurrentTab(os, GTUtilsWorkflowDesigner::algoriths);
     QTreeWidgetItem* treeItem = GTUtilsWorkflowDesigner::findTreeItem(os, settings.elementName, GTUtilsWorkflowDesigner::algoriths);
     CHECK_SET_ERR(treeItem != NULL, "Element not found");
 
@@ -3476,6 +3477,16 @@ GUI_TEST_CLASS_DEFINITION(test_1673_4) {
     GTWidget::findWidget(os, "FindPatternWidget");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1681){
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Add sample: Multiple dataset tuxedo: single-end reads
+//    3. Click {show wizard} toolbar button
+//    4. Fill wizard with proper data
+//    5. Run schema
+//    Expected state: Pipeline executed without errors
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1680) {
 //    For Mac only
 
@@ -3931,6 +3942,7 @@ GUI_TEST_CLASS_DEFINITION(test_1731){
     CHECK_SET_ERR(num1 != "100%", "unexpected sumilarity value an line 1: " + num1);
     CHECK_SET_ERR(num3 != "100%", "unexpected sumilarity value an line 3: " + num3);
 }
+
 GUI_TEST_CLASS_DEFINITION(test_1733){
     // 1) Run UGENE
     // 2) Open Workflow Designer
@@ -3951,6 +3963,83 @@ GUI_TEST_CLASS_DEFINITION(test_1733){
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Assembly/", "chrM.fa");
 
 }
+
+GUI_TEST_CLASS_DEFINITION(test_1734){
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Select "Call variants sample"
+
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            QWizard* wizard = qobject_cast<QWizard*>(dialog);
+            CHECK_SET_ERR(wizard, "activeModalWidget is not wizard");
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/NIAID_pipelines/Call_variants/input_data/chrM/chrM.sorted.bam"));
+            GTWidget::click(os, GTWidget::findWidget(os, "addFileButton", wizard->currentPage()));
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/NIAID_pipelines/Call_variants/input_data/chrM/chrM.sorted.bam"));
+            GTWidget::click(os, GTWidget::findWidget(os, "addFileButton", wizard->currentPage()));
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/NIAID_pipelines/Call_variants/input_data/chrM/chrM.sorted.bam"));
+            GTWidget::click(os, GTWidget::findWidget(os, "addFileButton", wizard->currentPage()));
+
+            QListWidget* itemsArea = GTWidget::findExactWidget<QListWidget*>(os, "itemsArea", wizard);
+            CHECK_SET_ERR(itemsArea->count()==3,"unexpected items number");
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
+        }
+    };
+
+    GTUtilsWorkflowDesigner::addSample(os, "Call variants with SAMtools");
+//    3. Open wizard. Try to add several bams on the first page
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Call Variants Wizard", new custom()));
+    GTWidget::click(os, GTAction::button(os, "Show wizard"));
+//    Expected state: adding several bams is enebled
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1735){
+//    1) Run UGENE
+//    2) Open Workflow Designer
+    GTLogTracer l;
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    3) Open Call variant pipeline scheme from samples
+
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            QWizard* wizard = qobject_cast<QWizard*>(dialog);
+            CHECK_SET_ERR(wizard, "activeModalWidget is not wizard");
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/NIAID_pipelines/Call_variants/input_data/chrM/chrM.fa"));
+            GTWidget::click(os, GTWidget::findWidget(os, "browseButton", GTWidget::findWidget(os, "Reference sequence file labeledWidget", dialog)));
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/NIAID_pipelines/Call_variants/input_data/chrM/chrM.sorted.bam"));
+            GTWidget::click(os, GTWidget::findWidget(os, "addFileButton", wizard->currentPage()));
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+
+            QString title = GTUtilsWizard::getPageTitle(os);
+            CHECK_SET_ERR(title == "SAMtools <i>vcfutils varFilter</i> parameters", "unexpected title: " + title);
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Run);
+        }
+    };
+
+    GTUtilsWorkflowDesigner::addSample(os, "Call variants with SAMtools");
+//    4) Click on "Show wizard" at the top of WD window yo specify vcfutils.pl parameters (page #4 of Call Variants Wizard)
+//    5) Run scheme at last page (if you specify all parameters: SAM/BAM file for Read Assembly and sequence file for Read Sequence)
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Call Variants Wizard", new custom()));
+    GTWidget::click(os, GTAction::button(os, "Show wizard"));
+
+//    Expected state: there are no errors when this pipeline scheme is running
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1738){
     // 1. Open WD and load "Call variants with SAMtools" scheme from samples
     // 2. Set files "_common_data/fasta/Mycobacterium.fna" and "_common_data/bam/Mycobacterium.sorted.bam" as input reference
@@ -3987,6 +4076,106 @@ GUI_TEST_CLASS_DEFINITION(test_1751){
 
     //Expected state: Check log for errors
     CHECK_SET_ERR(!lt.hasError(), "Log sholdn't contain errors");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1759){
+//    1. Open file "data/workflow_samples/NGS/tuxedo/tuxedo_main.uwl"
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Press "Show wizard" button on the main toolbar
+
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            //    2. Go to the second page
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            if(GTUtilsWizard::getPageTitle(os) != "Tophat settings"){
+                GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            }
+
+            QWidget* version = GTWidget::findWidget(os, "Bowtie version widget", dialog);
+            CHECK_SET_ERR(version->isVisible(), "version widget is not visiable");
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
+        }
+    };
+    //single
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "Full Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "Single-sample Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "No-new-transcripts Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+
+    //paired
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "Full Tuxedo Pipeline"<<"Paired-end reads"));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "Single-sample Tuxedo Pipeline"<<"Paired-end reads"));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "No-new-transcripts Tuxedo Pipeline"<<"Paired-end reads"));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+//    Expected state: "Tuxedo Wizard" dialog has appeared
+
+//    3. Press the "Next" button
+
+//    Expected state: the "TopHat input" groupbox contains the following fields: "Bowtie index directory",
+//    "Bowtie index basename", "Bowtie version".
+
+//    4. Repeat 2nd and 3rd steps for all the versions of the Tuxedo pipeline
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1771){
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Select tuxedo sample
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            //    2. Go to the second page
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+
+            //    3. Set bowtie index and a known transcript file.(_common_data/NIAID_pipelines/tuxedo)
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/index/chr6.1.ebwt"));
+            GTWidget::click(os, GTWidget::findButtonByText(os, "Select\nbowtie index file", dialog));
+
+            QString name = GTUtilsWizard::getParameter(os, "Bowtie index basename").toString();
+            QString version = GTUtilsWizard::getParameter(os, "Bowtie version").toString();
+            CHECK_SET_ERR(name == "chr6", "unexpected name: " + name);
+            CHECK_SET_ERR(version == "Bowtie1", "unexpected bowtie version: " + version);
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "Full Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+//    3. Select some configuration
+//    Expected state: wizard appeared
+//    4. go to "tophat settings" page. click button "Select bowtie index file"
+//    5. select file _common_data/NIAID_pipelines/tuxedo_pipeline/data/index/chr6.1.ebwt
+//    Expected state: bowtie index basename is set to "chr6", bowtie version is set to "bowtie1"
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1784){
@@ -13809,7 +13998,7 @@ GUI_TEST_CLASS_DEFINITION(test_3623) {
 GUI_TEST_CLASS_DEFINITION(test_3625) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
-    GTUtilsOptionPanelSequenceView::enterPattern(os, "ACACACACACACACACACACACACACAC");
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "ACACACACACACACACACACACACACAC", true);
 
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/33"), "Results string not match");
 

@@ -733,7 +733,7 @@ QString GTUtilsWorkflowDesigner::getParameter(U2OpStatus &os, QString parameter,
         if (equalStrings(s, parameter, exactMatch))
             row = i;
     }
-    GT_CHECK_RESULT(row != -1, "parameter not found","");
+    GT_CHECK_RESULT(row != -1, "parameter " + parameter + " not found","");
 
     QVariant var = model->data(model->index(row,1));
     return var.toString();
