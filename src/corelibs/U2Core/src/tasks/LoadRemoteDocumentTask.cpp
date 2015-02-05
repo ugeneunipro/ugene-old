@@ -413,6 +413,7 @@ void LoadDataFromEntrezTask::run( )
     connect( downloadReply, SIGNAL(uploadProgress( qint64, qint64 ) ),
         this, SLOT( sl_uploadProgress( qint64, qint64 ) ) );
 
+    QTimer::singleShot(100, this, SLOT(sl_cancelCheck()));
     loop->exec( );
 
     if ( !isCanceled( ) ) {
@@ -431,6 +432,16 @@ void LoadDataFromEntrezTask::run( )
         }
         downloadedFile.write( result );
         downloadedFile.close( );
+    }
+}
+
+void LoadDataFromEntrezTask::sl_cancelCheck() {
+    if (isCanceled()) {
+        if (loop->isRunning()) {
+            loop->exit();
+        }
+    } else {
+        QTimer::singleShot(100, this, SLOT(sl_cancelCheck()));
     }
 }
 

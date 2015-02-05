@@ -204,6 +204,7 @@ public:
 
 private slots:
     void sl_replyFinished(QNetworkReply* reply);
+    void sl_cancelCheck();
 
 private:
     QNetworkReply* searchReply;
