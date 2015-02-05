@@ -1192,7 +1192,7 @@ public:
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
-    
+
     GTUtilsDialog::waitForDialog(os, new CallVariantsWizardFiller(os));
     GTWidget::click(os, GTAction::button(os, "Show wizard"));
 }
@@ -1315,7 +1315,7 @@ GUI_TEST_CLASS_DEFINITION(test_1348) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1358) {
-    //1. Open file "test/_common_data/scenarios/workflow designer/222.uwl" 
+    //1. Open file "test/_common_data/scenarios/workflow designer/222.uwl"
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsWorkflowDesigner::loadWorkflow(os, testDir + "_common_data/regression/1358/test_0001.uwl");
@@ -15150,6 +15150,40 @@ GUI_TEST_CLASS_DEFINITION(test_3927) {
     GTUtilsMSAEditorSequenceArea::removeSequence(os, "Isophya_altaica_EF540820");
     GTUtilsMSAEditorSequenceArea::removeSequence(os, "Bicolorana_bicolor_EF540830");
     //Expected state safe point didn't triggered
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3950) {
+    // 1. Build BWA MEM index for "_common_data/bwa/NC_000021.gbk.fa
+    // 2. Open "_common_data/bwa/workflow/bwa-mem.uwl"
+    // 3. Set NC_000021.gbk.fa as reference
+    // 4. Reads: nrsf-chr21.fastq, control-chr21.fastq
+    // 5. Run workflow
+    // Expected state: no error (code 1)
+
+    GTLogTracer l;
+
+    GTFile::copy(os, testDir + "_common_data/bwa/NC_000021.gbk.fa", sandBoxDir + "test_3950.fa");
+
+    GTUtilsDialog::waitForDialog(os, new BuildIndexDialogFiller(os, sandBoxDir, "test_3950.fa", "BWA MEM"));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Build index");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    GTFileDialog::openFile(os, testDir + "_common_data/bwa/workflow/", "bwa-mem.uwl");
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::click(os, "File List");
+    GTUtilsWorkflowDesigner::setDatasetInputFolder(os, testDir + "_common_data/bwa/");
+
+    GTUtilsWorkflowDesigner::click(os, "Align reads with BWA MEM");
+    GTUtilsWorkflowDesigner::setParameter(os, "Reference genome", sandBoxDir + "test_3950.fa", GTUtilsWorkflowDesigner::textValue);
+    QDir sandBox;
+    GTUtilsWorkflowDesigner::setParameter(os, "Output directory", sandBox.absoluteFilePath(sandBoxDir), GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsLog::check(os, l);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3953) {
