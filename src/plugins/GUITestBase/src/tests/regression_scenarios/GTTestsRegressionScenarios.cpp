@@ -1235,10 +1235,10 @@ GUI_TEST_CLASS_DEFINITION(test_1342) {
 
     // 1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::setCurrentTab(os, GTUtilsWorkflowDesigner::algoriths);
 
     // 2. print "mer" in line "Name filter"
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(200);
     GTKeyboardDriver::keySequence(os, "mer");
 
     // 3. use context menu at the edit field : Add element->Data readers->File lists
@@ -14000,24 +14000,24 @@ GUI_TEST_CLASS_DEFINITION(test_3625) {
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
     GTUtilsOptionPanelSequenceView::enterPattern(os, "ACACACACACACACACACACACACACAC", true);
 
-    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/33"), "Results string not match");
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/33"), "Results string not match. Expected 33.");
 
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Other settings"));
     QCheckBox *removeOverlapsBox = GTWidget::findExactWidget<QCheckBox *>(os, "removeOverlapsBox");
     GTWidget::click(os, removeOverlapsBox);
-    GTWidget::click(os, removeOverlapsBox);
 
-    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/7"), "Results string not match");
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/7"), "Results string not match. Expected 7.");
 
     GTWidget::click(os, removeOverlapsBox);
 
     GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Regular expression");
     GTUtilsOptionPanelSequenceView::enterPattern(os, "(AAAAAAAAAAAAAAAAAAAAA)+", true);
 
-    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/28"), "Results string not match");
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/28"), "Results string not match. Expected 28.");
 
     GTWidget::click(os, removeOverlapsBox);
 
-    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/11"), "Results string not match");
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/11"), "Results string not match. Expected 11.");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3629) {
