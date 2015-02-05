@@ -50,10 +50,10 @@ protected:
 protected:
     void addRow(const QString &dataId, const QStringList &d);
     void updateRow(const QString &dataId, const QStringList &d);
+    virtual QString createRow(const QStringList &d);
 
 private:
     void addEmptyRows();
-    QString createRow(const QStringList &d);
 };
 
 } // U2

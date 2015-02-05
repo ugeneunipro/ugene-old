@@ -42,11 +42,15 @@ public:
 private slots:
     void sl_newProblem(const U2::Problem &info);
 
+protected:
+    QString createRow(const QStringList &d);
+
 private:
     QStringList createRow(const Problem &info, bool multi) const;
     QStringList createRow(const Problem &info) const;
     QStringList createMultiRow(const Problem &info) const;
     QString id(const Problem &info) const;
+    QString getTextWithWordBreaks(const QString &text) const;
 };
 
 } // U2

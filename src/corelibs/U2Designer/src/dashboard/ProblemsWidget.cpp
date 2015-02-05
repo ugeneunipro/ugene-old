@@ -63,6 +63,14 @@ QString ProblemsWidget::problemImage(const Problem &info) {
     return "<img src=\"" + image + "\" title=\"" + tooltip + "\" class=\"problem-icon\"/>";
 }
 
+QString ProblemsWidget::createRow(const QStringList &ds) {
+    QString row;
+    foreach (const QString &d, ds) {
+        row += "<td style=\"word-wrap: break-word\">" + d + "</td>";
+    }
+    return row;
+}
+
 QStringList ProblemsWidget::createRow(const Problem &info, bool multi) const {
     QStringList result;
     const WorkflowMonitor *m = dashboard->monitor();
@@ -81,8 +89,14 @@ QStringList ProblemsWidget::createRow(const Problem &info, bool multi) const {
 
     result << problemImage(info);
     result << wrapLongText(m->actorName(info.actor));
-    result << wrapLongText(prefix + info.message);
+    result << getTextWithWordBreaks(prefix + info.message);
     return result;
+}
+
+QString ProblemsWidget::getTextWithWordBreaks(const QString& text) const {
+    QString textWithBreaks = text;
+    textWithBreaks = textWithBreaks.replace("\\", "\\<wbr>").replace("/", "/<wbr>");
+    return textWithBreaks;
 }
 
 QStringList ProblemsWidget::createMultiRow(const Problem &info) const {
