@@ -351,8 +351,8 @@ public:
             if (ok) {
                 lockedMB = needMB;
             } else {
-                if (os) {
-                    errorMessage = QString("MemoryLocker - Not enough memory error, %1 megabytes are required").arg(needMB);
+                errorMessage = QString("MemoryLocker - Not enough memory error, %1 megabytes are required").arg(needMB);
+                if(NULL != os) {
                     os->setError(errorMessage);
                 }
             }
