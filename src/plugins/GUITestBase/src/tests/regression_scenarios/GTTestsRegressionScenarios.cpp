@@ -1170,6 +1170,32 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1266) {
+//    1. Open "Call variants" sample pipleine from the "NGS" category
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "call variants");
+
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            QWidget* w = GTWidget::findWidget(os, "Disable BAQ computation label", dialog);
+            QWidget* parent = qobject_cast<QWidget*>(w->parent());
+            QString s = parent->toolTip();
+            CHECK_SET_ERR(s.contains("<html>Disable"), "unexpected tooltip: " + s);
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
+        }
+    };
+//    2. Run its wizzard
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Call Variants Wizard", new custom()));
+    GTWidget::click(os, GTAction::button(os, "Show wizard"));
+//    Expected state: all parameters of the wizzard have tooltips with their descriptions
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1289) {
 //    1) Open samples/Genbank/murine.gb.
 //    2) Open Workflow Designer.
@@ -2681,6 +2707,53 @@ GUI_TEST_CLASS_DEFINITION(test_1554) {
     CHECK_SET_ERR(NULL == contextMenu, "There is an unexpected context menu");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1567 ){
+//    1. Start WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Open the "RNA-seq analysis with Tuxedo tools" sample.
+
+
+    class customWizard : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            GTGlobals::sleep();
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            QWizard* wizard = qobject_cast<QWizard*>(dialog);
+            CHECK_SET_ERR(wizard, "activeModalWidget is not wizard");
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+
+            QString tophat = GTUtilsWizard::getParameter(os, "Tophat").toString();
+            QString cufflinks = GTUtilsWizard::getParameter(os, "Cufflinks").toString();
+            QString cuffmerge = GTUtilsWizard::getParameter(os, "Cuffmerge").toString();
+            QString cuffdiff = GTUtilsWizard::getParameter(os, "Cuffdiff").toString();
+
+            CHECK_SET_ERR(tophat == "tools_output", "unexpected tophat value: " + tophat);
+            CHECK_SET_ERR(cufflinks == "tools_output", "unexpected cufflinks value: " + cufflinks);
+            CHECK_SET_ERR(cuffmerge == "tools_output", "unexpected cuffmerge value: " + cuffmerge);
+            CHECK_SET_ERR(cuffdiff == "tools_output", "unexpected cuffdiff value: " + cuffdiff);
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Apply);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "Full Tuxedo Pipeline"<<"Paired-end reads"));
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new customWizard()));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+    GTGlobals::sleep();
+//    Expected state: a wizard for the scheme appears.
+
+//    3. Click the "Setup" button, then click the  "Next" button until tou get to the last page: "Output data".
+//    Expected state: the last page has four lineedits, every lineedit has predefined value ("tools_output").
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1568 ) {
 //    1. Open "COI.aln".
 //    2. Add existing tree or build tree and display it in MSAEditor.
@@ -3549,14 +3622,67 @@ GUI_TEST_CLASS_DEFINITION(test_1673_4) {
     GTWidget::findWidget(os, "FindPatternWidget");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_1681){
+namespace {
+class customFileDialog_1681: public GTFileDialogUtils{
+public:
+    customFileDialog_1681(U2OpStatus &os, QString path): GTFileDialogUtils(os, path){}
+    void commonScenario(){
+        GTFileDialogUtils::commonScenario();
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    }
+};
+}
+
+
+GUI_TEST_CLASS_DEFINITION(test_1677){
 //    1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-//    2. Add sample: Multiple dataset tuxedo: single-end reads
-//    3. Click {show wizard} toolbar button
-//    4. Fill wizard with proper data
-//    5. Run schema
-//    Expected state: Pipeline executed without errors
+//    2. Add sample: "Main Tuxedo: paired-end reads"
+    class customWizard : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            GTGlobals::sleep();
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            QWizard* wizard = qobject_cast<QWizard*>(dialog);
+            CHECK_SET_ERR(wizard, "activeModalWidget is not wizard");
+
+            GTUtilsDialog::waitForDialog(os, new customFileDialog_1681(os, testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/exp_1_1.fastq"));
+            QList<QWidget* > list = wizard->currentPage()->findChildren<QWidget*>("addFileButton");
+            foreach (QWidget* w, list) {
+                if(w->isVisible()){
+                    GTWidget::click(os, w);
+                    break;
+                }
+            }
+
+            QMap<QString, QVariant> map;
+            map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/bowtie2_index/"));
+            map.insert("Bowtie index basename", "NC_010473");
+            map.insert("Input transcripts annotations", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/accepted_hits.bam"));
+            GTUtilsWizard::setAllParameters(os, map);
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Apply);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "Full Tuxedo Pipeline"<<"Paired-end reads"));
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new customWizard()));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+    GTGlobals::sleep();
+//    3. Press {show widget} toolbutton
+//    Expected state: wizard appears
+//    4. Add file {test/_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/exp_1_1.fastq} to {First short  reads files} window
+//    Expected state:Adding exp_1_2.fastq offer has appeared
+
+//    5. Fill all other fields with proper values except second dataset. Press {finish} at the end
+//    6. Press {validate schema} toolbar button
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTWidget::click( os,GTAction::button(os, "Validate workflow"));
+    GTGlobals::sleep();
+//    Expected state: warnings about empty datasets appeared
+    GTUtilsWorkflowDesigner::checkErrorList(os, "Dataset");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1680) {
@@ -3620,6 +3746,159 @@ GUI_TEST_CLASS_DEFINITION(test_1680) {
     }
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["shift"]);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1681){
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Add sample: Multiple dataset tuxedo: single-end reads
+    QMap<QString, QVariant> map;
+    map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/bowtie2_index/"));
+    map.insert("Bowtie index basename", "NC_010473");
+    map.insert("Input transcripts annotations", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/accepted_hits.bam"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "No-new-transcripts Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", QList<QStringList>()<<(QStringList()<<testDir +
+                                                      "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/exp_1_1.fastq")<<
+                                                      (QStringList()<<testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq2/exp_2_1.fastq"), map));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+//    3. Click {show wizard} toolbar button
+//    4. Fill wizard with proper data
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Well done!"));
+    GTWidget::click( os,GTAction::button(os, "Validate workflow"));
+    GTGlobals::sleep();
+
+//    5. Run schema
+//    Expected state: Pipeline executed without errors
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1681_1) {
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Add sample: Multiple dataset tuxedo: paired-end reads
+
+
+
+    class customWizard : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            GTGlobals::sleep();
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            QWizard* wizard = qobject_cast<QWizard*>(dialog);
+            CHECK_SET_ERR(wizard, "activeModalWidget is not wizard");
+
+            GTUtilsDialog::waitForDialog(os, new customFileDialog_1681(os, testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/exp_1_1.fastq"));
+            QList<QWidget* > list = wizard->currentPage()->findChildren<QWidget*>("addFileButton");
+            foreach (QWidget* w, list) {
+                if(w->isVisible()){
+                    GTWidget::click(os, w);
+                    break;
+                }
+            }
+
+            QTabWidget* tabWidget = dialog->findChild<QTabWidget*>();
+            CHECK_SET_ERR(tabWidget != NULL, "tabWidget not found");
+            GTTabWidget::setCurrentIndex(os, tabWidget, 1);
+
+            GTUtilsDialog::waitForDialog(os, new customFileDialog_1681(os, testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq2/exp_2_1.fastq"));
+            list = wizard->currentPage()->findChildren<QWidget*>("addFileButton");
+            foreach (QWidget* w, list) {
+                if(w->isVisible()){
+                    GTWidget::click(os, w);
+                    break;
+                }
+            }
+
+            QMap<QString, QVariant> map;
+            map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/bowtie2_index/"));
+            map.insert("Bowtie index basename", "NC_010473");
+            map.insert("Input transcripts annotations", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/accepted_hits.bam"));
+            GTUtilsWizard::setAllParameters(os, map);
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Apply);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "No-new-transcripts Tuxedo Pipeline"<<"Paired-end reads"));
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new customWizard()));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+    GTGlobals::sleep();
+//    3. Click {show wizard} toolbar button
+//    4. Fill wizard with proper data
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Well done!"));
+    GTWidget::click( os,GTAction::button(os, "Validate workflow"));
+    GTGlobals::sleep();
+//    5. Run schema
+//    Expected state: Pipeline executed without errors
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1681_2){
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Add sample: Single dataset tuxedo: single-end reads
+    QMap<QString, QVariant> map;
+    map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/bowtie2_index/"));
+    map.insert("Bowtie index basename", "NC_010473");
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "Single-sample Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard",QStringList()<<testDir +
+                                                      "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/exp_1_1.fastq", map));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+//    3. Click {show wizard} toolbar button
+//    4. Fill wizard with proper data
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Well done!"));
+    GTWidget::click( os,GTAction::button(os, "Validate workflow"));
+    GTGlobals::sleep();
+
+//    5. Run schema
+//    Expected state: Pipeline executed without errors
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1681_3) {
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Add sample: Single dataset tuxedo: paired-end reads
+    class customWizard : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            GTGlobals::sleep();
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            QWizard* wizard = qobject_cast<QWizard*>(dialog);
+            CHECK_SET_ERR(wizard, "activeModalWidget is not wizard");
+
+            GTUtilsDialog::waitForDialog(os, new customFileDialog_1681(os, testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/exp_1_1.fastq"));
+            QList<QWidget* > list = wizard->currentPage()->findChildren<QWidget*>("addFileButton");
+            foreach (QWidget* w, list) {
+                if(w->isVisible()){
+                    GTWidget::click(os, w);
+                    break;
+                }
+            }
+
+            QMap<QString, QVariant> map;
+            map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/bowtie2_index/"));
+            map.insert("Bowtie index basename", "NC_010473");
+            GTUtilsWizard::setAllParameters(os, map);
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Apply);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "Single-sample Tuxedo Pipeline"<<"Paired-end reads"));
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new customWizard()));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+    GTGlobals::sleep();
+//    3. Click {show wizard} toolbar button
+//    4. Fill wizard with proper data
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Well done!"));
+    GTWidget::click( os,GTAction::button(os, "Validate workflow"));
+    GTGlobals::sleep();
+//    5. Run schema
+//    Expected state: Pipeline executed without errors
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1687) {

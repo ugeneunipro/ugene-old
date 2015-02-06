@@ -24,8 +24,10 @@
 #include "EscapeClicker.h"
 
 namespace U2 {
+
 void EscapeClicker::commonScenario(){
     GTGlobals::sleep();
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
 }
+
 }

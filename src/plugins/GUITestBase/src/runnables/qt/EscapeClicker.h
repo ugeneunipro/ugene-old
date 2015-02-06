@@ -30,7 +30,7 @@ class EscapeClicker: public Filler
 {
 public:
     EscapeClicker(U2OpStatus &os, QString name = ""): Filler(os, name){}
-    void commonScenario();
+    virtual void commonScenario();
 };
 
 }
