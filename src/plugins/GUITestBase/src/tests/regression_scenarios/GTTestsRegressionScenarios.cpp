@@ -2161,22 +2161,9 @@ GUI_TEST_CLASS_DEFINITION(test_1442_1) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1442_2) {
-    class SelectFormatScenario : public CustomScenario {
-        void run(U2OpStatus &os) {
-            QWidget *manualFormatRadio = GTWidget::findWidget(os, "chooseFormatManuallyRadio", QApplication::activeModalWidget());
-            GTWidget::click(os, manualFormatRadio);
-
-            QComboBox *customFormatCombo = GTWidget::findExactWidget<QComboBox *>(os, "userSelectedFormat", QApplication::activeModalWidget());
-            GTComboBox::setIndexWithText(os, customFormatCombo, "Position weight matrix");
-
-            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
-        }
-    };
-
     // 1. Open file "data/position_weight_matrix/UniPROBE/Cell08/Alx3_3418.2.pwm"
     // Expected state : Opened only window with position weight matrix.
     // In Project View not added any items.
-    GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os, new SelectFormatScenario));
     GTFileDialog::openFile(os, dataDir + "/position_weight_matrix/UniPROBE/Cell08/", "Alx3_3418.2.pwm");
 
     const int projectViewItemsCount = GTUtilsProjectTreeView::getTreeView(os)->model()->rowCount();
