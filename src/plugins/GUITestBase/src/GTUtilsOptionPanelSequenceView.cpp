@@ -222,8 +222,8 @@ bool GTUtilsOptionPanelSequenceView::isOtherSettingsShowHideWidgetOpened(U2OpSta
 bool GTUtilsOptionPanelSequenceView::isSaveAnnotationToShowHideWidgetOpened(U2OpStatus &os) {
     QWidget *annotationsWidget = GTWidget::findWidget(os, "annotationsWidget");
     GT_CHECK_RESULT(NULL != annotationsWidget, "annotationsWidget is NULL", false);
-    QWidget *saveAnnotationsToInnerWidget = GTWidget::findWidget(os, "saveAnnotationsToWidget", annotationsWidget);
-    GT_CHECK_RESULT(NULL != saveAnnotationsToInnerWidget, "saveAnnotationsToInnerWidget is NULL", false);
+    QWidget *saveAnnotationsToInnerWidget = GTWidget::findWidget(os, "saveAnnotationsInnerWidget", annotationsWidget);
+    GT_CHECK_RESULT(NULL != saveAnnotationsToInnerWidget, "saveAnnotationsInnerWidget is NULL", false);
     return saveAnnotationsToInnerWidget->isVisible();
 }
 #undef GT_METHOD_NAME
@@ -232,7 +232,7 @@ bool GTUtilsOptionPanelSequenceView::isSaveAnnotationToShowHideWidgetOpened(U2Op
 bool GTUtilsOptionPanelSequenceView::isAnnotationParametersShowHideWidgetOpened(U2OpStatus &os) {
     QWidget *annotationsWidget = GTWidget::findWidget(os, "annotationsWidget");
     GT_CHECK_RESULT(NULL != annotationsWidget, "annotationsWidget is NULL", false);
-    QWidget *annotationsParametersInnerWidget = GTWidget::findWidget(os, "annotationParametersWidget", annotationsWidget);
+    QWidget *annotationsParametersInnerWidget = GTWidget::findWidget(os, "annotationParametersInnerWidget", annotationsWidget);
     GT_CHECK_RESULT(NULL != annotationsParametersInnerWidget, "annotationsParametersInnerWidget is NULL", false);
     return annotationsParametersInnerWidget->isVisible();
 }
@@ -339,7 +339,7 @@ void GTUtilsOptionPanelSequenceView::setRegion(U2OpStatus &os, int from, int to)
 
 #define GT_METHOD_NAME "enterFilepathForSavingAnnotations"
 void GTUtilsOptionPanelSequenceView::enterFilepathForSavingAnnotations(U2OpStatus &os, QString filepath) {
-    QLineEdit *leFilePath = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "newFilePath"));
+    QLineEdit *leFilePath = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "leNewTablePath"));
     GT_CHECK(leFilePath != NULL, "File path line edit is NULL");
     QDir().mkpath(QFileInfo(filepath).dir().absolutePath());
     GTLineEdit::setText(os, leFilePath, filepath);

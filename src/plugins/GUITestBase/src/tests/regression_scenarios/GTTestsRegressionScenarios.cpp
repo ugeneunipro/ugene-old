@@ -1336,6 +1336,50 @@ GUI_TEST_CLASS_DEFINITION(test_1325) {
     CHECK_SET_ERR(l2.hasError(), "There is no error in the log");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1321_1) {
+//    This scenario is about crash found during fixing current bug
+//    1. Open file _common_data/scenarios/_regression/2187/seq.fa
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/2187", "seq.fa");
+
+//    2. Open 'find repeats' dialog, and set next parameters
+//        {Minimim repeat length} 20bp
+//        {Repeats identity} 80%
+//    3. Press 'Start'
+//    Expected state: one repeat unit was found, with region join(991..1011,1161..1181), and repeat homology 85%
+    QDir().mkpath(sandBoxDir + "test_1321_1");
+    GTUtilsDialog::waitForDialog(os, new FindRepeatsDialogFiller(os, sandBoxDir + "test_1321_1", false, 20, 80));
+    GTWidget::click(os, GTToolbar::getWidgetForActionTooltip(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Find repeats"));
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    const int annotationsCount = GTUtilsAnnotationsTreeView::findItems(os, "repeat_unit").size();
+    CHECK_SET_ERR(1 == annotationsCount, QString("Unexpected annotations count: expect '%1', got '%2'").arg(1).arg(annotationsCount));
+
+    const QString homology = GTUtilsAnnotationsTreeView::getQualifierValue(os, "repeat_homology(%)", "repeat_unit");
+    CHECK_SET_ERR("85" == homology, QString("Unexpected repeat homology: expect '%1', got '%2'").arg(85).arg(homology));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1321_2) {
+//    1. Open "\samples\FASTA\human_T1.fa"
+//    Expected state: sequence view window appeared
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+//    2. Press 'Find tandems' tool button
+//    Expected state: 'Find tandems' dialog appeared
+//    3. Go to the 'Advanced' tab of the dialog
+//    Expected state: 'Advanced' tab displayed, there is 'Advanced paremeters' groupbox without 'Repeats identity' parameter
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "tabWidget"), 1);
+
+        }
+    };
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1326) {
 class CallVariantsWizardFiller : public Filler {
 public:
@@ -2059,9 +2103,7 @@ GUI_TEST_CLASS_DEFINITION(test_1434_1) {
     GTKeyboardDriver::keyClick(os, '8', GTKeyboardDriver::key["shift"]);
     GTKeyboardDriver::keySequence(os, "TGAAGGAAAAAATGCT");
 
-    QComboBox *boxRegion = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxRegion"));
-    GTWidget::click(os, boxRegion);
-    GTComboBox::setCurrentIndex(os, boxRegion, 1);
+    GTUtilsOptionPanelSequenceView::setRegionType(os, "Custom region");
     GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editStart")), "1");
     GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editEnd")), "1000");
 
@@ -2102,9 +2144,7 @@ GUI_TEST_CLASS_DEFINITION(test_1434_2) {
     GTGlobals::sleep(200);
     GTKeyboardDriver::keySequence(os, " comment");
 
-    QComboBox *boxRegion = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxRegion"));
-    GTWidget::click(os, boxRegion);
-    GTComboBox::setCurrentIndex(os, boxRegion, 1);
+    GTUtilsOptionPanelSequenceView::setRegionType(os, "Custom region");
     GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editStart")), "1");
     GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editEnd")), "1000");
 
@@ -2907,24 +2947,30 @@ GUI_TEST_CLASS_DEFINITION(test_1574){
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(QPoint(0, 10), QPoint(11, 13)));
 }
 
-GUI_TEST_CLASS_DEFINITION(test_1575){
+GUI_TEST_CLASS_DEFINITION(test_1575) {
 //    1. Open "_common_data/scenarios/msa/ma.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma.aln");
+
 //    2. Click the "Enable collapsing" button on the toolbar.
     GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+
 //    3. Open any group and try to edit any sequence:
     GTUtilsMSAEditorSequenceArea::clickCollapceTriangle(os, "Conocephalus_discolor");
+
 //    3.1 Insert gap by pressing SPACE.
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(0, 10));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+
 //    Expected state: gap was inserted in every sequence of this group.
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 10), QPoint(0, 12));
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     QString clipboardText = GTClipboard::text(os);
     CHECK_SET_ERR(clipboardText == "-\n-\n-", "Unexpected selection: " + clipboardText);
+
 //    3.2 Select some region of the grouped sequences in the Sequence area and drag this selection to the right.
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(2, 11));
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(2, 11), QPoint(3, 11));
+
 //    Expected state: all sequences in the group are changed simultaneously.
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(2, 10), QPoint(2, 12));
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
@@ -3568,9 +3614,7 @@ GUI_TEST_CLASS_DEFINITION(test_1661) {
     GTKeyboardDriver::keySequence(os, "ACAATGTATGCCTCTTGGTTTCTTCTATC");
 
     // 4. Use settings : Region - custom region; 1 - 10000.
-    QComboBox *boxRegion = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxRegion"));
-    GTWidget::click(os, boxRegion);
-    GTComboBox::setCurrentIndex(os, boxRegion, 1);
+    GTUtilsOptionPanelSequenceView::setRegionType(os, "Custom region");
     GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editStart")), "1");
     GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editEnd")), "10000");
 
@@ -3579,7 +3623,7 @@ GUI_TEST_CLASS_DEFINITION(test_1661) {
     CHECK_SET_ERR(resultLabel->text() == "Results: 0/0", "Unexpected find algorithm result count");
 
     // 5. Use settings : Region - Whole sequence.
-    GTComboBox::setCurrentIndex(os, boxRegion, 0);
+    GTUtilsOptionPanelSequenceView::setRegionType(os, "Whole sequence");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // Expected state : One match found
@@ -9261,9 +9305,7 @@ GUI_TEST_CLASS_DEFINITION(test_2622) {
     GTGlobals::sleep();
 
     // 4. Choose "Regular expression" algorithm.
-    QComboBox *boxAlgorithm = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxAlgorithm"));
-    GTWidget::click(os, boxAlgorithm);
-    GTComboBox::setCurrentIndex(os, boxAlgorithm, 1);
+    GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Regular expression");
 
     // 5. Write "X+" in the pattern string.
     QWidget *textPattern = GTWidget::findWidget(os, "textPattern");
@@ -9289,9 +9331,7 @@ GUI_TEST_CLASS_DEFINITION(test_2622_1) {
     GTGlobals::sleep();
 
     // 4. Choose "Regular expression" algorithm.
-    QComboBox *boxAlgorithm = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxAlgorithm"));
-    GTWidget::click(os, boxAlgorithm);
-    GTComboBox::setCurrentIndex(os, boxAlgorithm, 1);
+    GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Regular expression");
 
     // 5. Write "X+" in the pattern string.
     QWidget *textPattern = GTWidget::findWidget(os, "textPattern");
@@ -15282,6 +15322,8 @@ GUI_TEST_CLASS_DEFINITION(test_3817) {
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
 
     GTKeyboardDriver::keySequence(os, "ACTGCT");
+
+    GTUtilsOptionPanelSequenceView::openSearchInShowHideWidget(os);
 
     QComboBox *boxRegion = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxRegion"));
     GTWidget::click(os, boxRegion);

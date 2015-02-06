@@ -51,6 +51,7 @@ void ShowHideSubgroupWidget::init(const QString &subgroupId, const QString &capt
     mainLayout->setContentsMargins(0, 0, 0, 10);
     mainLayout->setSpacing(0);
     mainLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+    setLayout(mainLayout);
 
     innerWidget->setContentsMargins(17, 5, 5, 5);
 
@@ -58,12 +59,18 @@ void ShowHideSubgroupWidget::init(const QString &subgroupId, const QString &capt
     connect(arrowHeaderWidget, SIGNAL(si_arrowHeaderPressed(bool)), SLOT(updateSubgroupState(bool)));
     updateSubgroupState(isOpened);
 
+    QSize a = minimumSizeHint();
     mainLayout->addWidget(arrowHeaderWidget);
+    QSize b = minimumSizeHint();
+    QSize b1 = arrowHeaderWidget->minimumSizeHint();
     mainLayout->addWidget(innerWidget);
+    QSize c = minimumSizeHint();
+    QSize c1 = innerWidget->minimumSizeHint();
+    int h = 0;
 
-    setLayout(mainLayout);
 
     setObjectName(subgroupId);
+
 }
 
 void ShowHideSubgroupWidget::updateSubgroupState(bool isSubgroupOpened) {

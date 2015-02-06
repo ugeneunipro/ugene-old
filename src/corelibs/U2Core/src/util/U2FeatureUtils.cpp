@@ -236,7 +236,7 @@ AnnotationData U2FeatureUtils::getAnnotationDataFromFeature(const U2DataId &feat
     U2Feature annotatingFeature;
     QVector<U2Region> regions;
     foreach (const U2Feature &f, features) {
-        CHECK_EXT(U2Feature::Annotation == f.type,
+        SAFE_POINT_EXT(U2Feature::Annotation == f.type,
             op.setError("Invalid feature type detected!"), result);
         if (Q_UNLIKELY(f.id == featureId)) {
             CHECK_EXT(!annotatingFeature.hasValidId(),

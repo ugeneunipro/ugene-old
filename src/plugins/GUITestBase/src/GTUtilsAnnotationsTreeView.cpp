@@ -159,7 +159,7 @@ QList<QTreeWidgetItem*> GTUtilsAnnotationsTreeView::findItems(U2OpStatus &os, co
             result.append(item);
         }
     }
-    GT_CHECK_RESULT(options.failIfNull == false, "Item " + itemName + " not found in tree widget", result);
+    GT_CHECK_RESULT(!options.failIfNull || !result.isEmpty(), "Item " + itemName + " not found in tree widget", result);
 
     return result;
 }

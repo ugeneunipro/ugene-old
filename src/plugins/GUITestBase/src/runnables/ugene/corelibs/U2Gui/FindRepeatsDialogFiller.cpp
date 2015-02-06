@@ -82,7 +82,7 @@ void FindRepeatsDialogFiller::run() {
         GTSpinBox::setValue(os, minDistBox, minDistance);
     }
 
-    QLineEdit *resultLocationEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "newFilePath", dialog));
+    QLineEdit *resultLocationEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "leNewTablePath", dialog));
     resultLocationEdit->setText(resultAnnotationFilesPath);
 
     GTTabWidget::setCurrentIndex(os, tabWidget, 1);

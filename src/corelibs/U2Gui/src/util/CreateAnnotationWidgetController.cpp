@@ -236,8 +236,6 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
     }
 
     w->chbUsePatternNames->setVisible(!model.hideUsePatternNames);
-
-    w->adjustSize();
 }
 
 void CreateAnnotationWidgetController::sl_onNewDocClicked() {

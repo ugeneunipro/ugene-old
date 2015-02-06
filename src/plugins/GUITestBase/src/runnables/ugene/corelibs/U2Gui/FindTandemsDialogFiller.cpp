@@ -60,7 +60,7 @@ void FindTandemsDialogFiller::run(){
     GTTabWidget::setCurrentIndex(os, tabWidget, 0);
     */
 
-    QLineEdit *resultLocationEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "newFilePath", dialog));
+    QLineEdit *resultLocationEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "leNewTablePath", dialog));
     GT_CHECK(resultLocationEdit, "resultLocation is NULL");
     GTLineEdit::setText(os, resultLocationEdit, resultAnnotationFilesPath);
 

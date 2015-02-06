@@ -112,7 +112,7 @@ void SmithWatermanDialogFiller::commonScenario() {
         } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {
             QRadioButton * newFileRB = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "rbCreateNewTable", dialog));
             newFileRB->setChecked(true);
-            resultFilePathContainer = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "newFilePath", dialog));
+            resultFilePathContainer = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "leNewTablePath", dialog));
             resultFilesPath += ANNOTATION_RESULT_FILE_NAME;
         }
         assert(NULL != resultFilePathContainer);

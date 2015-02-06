@@ -37,7 +37,7 @@ void UHMM3SearchDialogFiller::commonScenario(){
     QLineEdit* queryHmmFileEdit = GTWidget::findExactWidget<QLineEdit*>(os, "queryHmmFileEdit", dialog);
     GTLineEdit::setText(os, queryHmmFileEdit, profile);
 
-    QLineEdit* newFilePathle = GTWidget::findExactWidget<QLineEdit*>(os, "newFilePath", dialog);
+    QLineEdit* newFilePathle = GTWidget::findExactWidget<QLineEdit*>(os, "leNewTablePath", dialog);
     GTLineEdit::setText(os, newFilePathle, newFilePath);
 
     GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);

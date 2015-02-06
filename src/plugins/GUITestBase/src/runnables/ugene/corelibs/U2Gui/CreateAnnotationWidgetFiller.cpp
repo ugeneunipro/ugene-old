@@ -118,7 +118,7 @@ void CreateAnnotationWidgetFiller::run() {
         QRadioButton *newFileRb = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "rbCreateNewTable", dialog));
         GT_CHECK(newFileRb != NULL, "Radio button is NULL");
         GTRadioButton::click(os, newFileRb);
-        QLineEdit *leFilePath = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "newFilePath", dialog));
+        QLineEdit *leFilePath = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "leNewTablePath", dialog));
         GT_CHECK(leFilePath != NULL, "File path line edit is NULL");
         if (!saveTo.isEmpty()) {
             QDir().mkpath(QFileInfo(saveTo).dir().absolutePath());
