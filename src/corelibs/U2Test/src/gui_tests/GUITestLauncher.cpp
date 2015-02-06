@@ -38,10 +38,13 @@
 
 #ifdef Q_OS_LINUX
 #define NUMBER_OF_TESTS_IN_SUTIE 450
-#else
+#endif
+#ifdef Q_OS_MAC
+#define NUMBER_OF_TESTS_IN_SUTIE 600
+#endif
+#ifdef Q_OS_WIN
 #define NUMBER_OF_TESTS_IN_SUTIE 700
 #endif
-
 #define GUITESTING_REPORT_PREFIX "GUITesting"
 
 namespace U2 {
