@@ -99,7 +99,9 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/globals/NetworkConfiguration.h \
            src/globals/PasswordStorage.h \
            src/globals/PluginModel.h \
+           src/globals/ProjectFilterTaskRegistry.h \
            src/globals/ProjectService.h \
+           src/globals/ProjectTreeControllerModeSettings.h \
            src/globals/ResourceTracker.h \
            src/globals/ScriptingToolRegistry.h \
            src/globals/ServiceModel.h \
@@ -159,6 +161,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/selection/SelectionTypes.h \
            src/selection/SelectionUtils.h \
            src/selection/TextSelection.h \
+           src/tasks/AbstractProjectFilterTask.h \
            src/tasks/AddDocumentTask.h \
            src/tasks/AddSequencesToAlignmentTask.h \
            src/tasks/BackgroundTaskRunner.h \
@@ -298,7 +301,9 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/globals/NetworkConfiguration.cpp \
            src/globals/PasswordStorage.cpp \
            src/globals/PluginModel.cpp \
+           src/globals/ProjectFilterTaskRegistry.cpp \
            src/globals/ProjectService.cpp \
+           src/globals/ProjectTreeControllerModeSettings.cpp \
            src/globals/ResourceTracker.cpp \
            src/globals/ScriptingToolRegistry.cpp \
            src/globals/ServiceModel.cpp \
@@ -348,6 +353,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/selection/SelectionModel.cpp \
            src/selection/SelectionTypes.cpp \
            src/selection/SelectionUtils.cpp \
+           src/tasks/AbstractProjectFilterTask.cpp \
            src/tasks/AddDocumentTask.cpp \
            src/tasks/AddSequencesToAlignmentTask.cpp \
            src/tasks/BackgroundTaskRunner.cpp \

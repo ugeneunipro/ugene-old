@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/ProjectFilterTaskRegistry.h>
 #include <U2Core/PasswordStorage.h>
 #include <U2Core/Log.h>
 #include <U2Core/Timer.h>
@@ -71,12 +72,19 @@
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
 #include <U2Algorithm/PairwiseAlignmentRegistry.h>
+#include <U2Algorithm/SequenceContentFilterTask.h>
 
 #include <U2Gui/CredentialsAskerGui.h>
+#include <U2Gui/FeatureKeyFilterTask.h>
 #include <U2Gui/ImportDialogsFactories.h>
+#include <U2Gui/LogView.h>
+#include <U2Gui/MsaContentFilterTask.h>
+#include <U2Gui/MsaSeqNameFilterTask.h>
+#include <U2Gui/ObjectNameFilterTask.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
-#include <U2Gui/LogView.h>
+#include <U2Gui/SequenceAccFilterTask.h>
+#include <U2Gui/TextContentFilterTask.h>
 
 #include <U2Formats/ConvertFileTask.h>
 
@@ -265,6 +273,18 @@ static void initOptionsPanels() {
 
     //Tree View groups
     opWidgetFactoryRegistry->registerFactory(new TreeOptionsWidgetFactory());
+}
+
+static void initProjectFilterTaskRegistry() {
+    ProjectFilterTaskRegistry *registry = AppContext::getProjectFilterTaskRegistry();
+
+    registry->registerTaskFactory(new ObjectNameFilterTaskFactory);
+    registry->registerTaskFactory(new MsaSeqNameFilterTaskFactory);
+    registry->registerTaskFactory(new SequenceContentFilterTaskFactory);
+    registry->registerTaskFactory(new MsaContentFilterTaskFactory);
+    registry->registerTaskFactory(new TextContentFilterTaskFactory);
+    registry->registerTaskFactory(new SequenceAccFilterTaskFactory);
+    registry->registerTaskFactory(new FeatureKeyFilterTaskFactory);
 }
 
 class GApplication: public QApplication {
@@ -633,6 +653,10 @@ int main(int argc, char **argv)
     IdRegistry<WelcomePageAction> *welcomePageActions = new IdRegistry<WelcomePageAction>();
     appContext->setWelcomePageActionRegistry(welcomePageActions);
 
+    ProjectFilterTaskRegistry *projectFilterTaskRegistry = new ProjectFilterTaskRegistry;
+    appContext->setProjectFilterTaskRegistry(projectFilterTaskRegistry);
+    initProjectFilterTaskRegistry();
+
     Workflow::WorkflowEnv::init(new Workflow::WorkflowEnvImpl());
     Workflow::WorkflowEnv::getDomainRegistry()->registerEntry(new LocalWorkflow::LocalDomainFactory());
 
@@ -741,6 +765,9 @@ int main(int argc, char **argv)
     delete wpc;
 
     delete dcu;
+
+    appContext->setProjectFilterTaskRegistry(NULL);
+    delete projectFilterTaskRegistry;
 
     appContext->setGUITestBase(NULL);
     delete tb;

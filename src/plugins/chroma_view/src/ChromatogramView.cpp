@@ -294,8 +294,8 @@ void ChromatogramView::sl_onAddExistingSequenceObject() {
     ac.sequenceSize = ctx->getSequenceLength();
     s.objectConstraints.insert(&ac);
     ac.alphabetType = ctx->getSequenceObject()->getAlphabet()->getType();
-    s.groupMode = ProjectTreeGroupMode_Flat;
-    foreach(GObject* o, ctx->getAnnotatedDNAView()->getObjects()) {
+    s.groupMode = ProjectTreeGroupMode_ByDocument;
+    foreach (GObject* o, ctx->getAnnotatedDNAView()->getObjects()) {
         s.excludeObjectList.append(o);
     }
 

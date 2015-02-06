@@ -14,6 +14,7 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/misc/RepeatFinderTaskFactory.h \
            src/misc/RollingArray.h \
            src/misc/RollingMatrix.h \
+           src/misc/SequenceContentFilterTask.h \
            src/misc/SyncSort.h \
            src/molecular_geometry/GeomUtils.h \
            src/molecular_geometry/MolecularSurface.h \
@@ -88,9 +89,9 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/util_weight_matrix/PWMConversionAlgorithmRegistry.h \
            src/util_gpu/opencl/OpenCLHelper.h \
            src/util_gpu/opencl/OpenCLUtils.h \
-    src/registry/PairwiseAlignmentRegistry.h \
-    src/registry/PairwiseAlignmentTask.h \
-    src/registry/GenomeAssemblyRegistry.h
+           src/registry/PairwiseAlignmentRegistry.h \
+           src/registry/PairwiseAlignmentTask.h \
+           src/registry/GenomeAssemblyRegistry.h
 SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/misc/BitsTable.cpp \
            src/misc/DnaAssemblyMultiTask.cpp \
@@ -98,6 +99,7 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/misc/FindAlgorithm.cpp \
            src/misc/FindAlgorithmTask.cpp \
            src/misc/GenomeAssemblyMultiTask.cpp \
+           src/misc/SequenceContentFilterTask.cpp \
            src/molecular_geometry/GeomUtils.cpp \
            src/molecular_geometry/MolecularSurface.cpp \
            src/molecular_geometry/MolecularSurfaceFactoryRegistry.cpp \
@@ -166,9 +168,9 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/util_weight_matrix/PWMConversionAlgorithmRegistry.cpp \
            src/util_gpu/opencl/OpenCLHelper.cpp \
            src/util_gpu/opencl/OpenCLUtils.cpp \
-    src/registry/PairwiseAlignmentRegistry.cpp \
-    src/registry/PairwiseAlignmentTask.cpp \
-    src/registry/GenomeAssemblyRegistry.cpp
+           src/registry/PairwiseAlignmentRegistry.cpp \
+           src/registry/PairwiseAlignmentTask.cpp \
+           src/registry/GenomeAssemblyRegistry.cpp
 RESOURCES += U2Algorithm.qrc
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
 

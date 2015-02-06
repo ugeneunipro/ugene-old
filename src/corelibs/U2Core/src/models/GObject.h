@@ -119,6 +119,8 @@ public:
 
     StateLock* getGObjectModLock(GObjectModLock type) const;
 
+    static bool objectLessThan(GObject *first, GObject *second);
+
 signals:
     void si_nameChanged(const QString& oldName);
     void si_relationChanged();

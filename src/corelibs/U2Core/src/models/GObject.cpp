@@ -290,6 +290,10 @@ StateLock *GObject::getGObjectModLock(GObjectModLock type) const {
     return modLocks.value(type, NULL);
 }
 
+bool GObject::objectLessThan(GObject *first, GObject *second) {
+    return QString::compare(first->getGObjectName(), second->getGObjectName(), Qt::CaseInsensitive) < 0;
+}
+
 void GObject::updateRefInRelations(const GObjectReference& oldRef, const GObjectReference& newRef) {
     QList<GObjectRelation> rels = getObjectRelations();
     bool changed = false;

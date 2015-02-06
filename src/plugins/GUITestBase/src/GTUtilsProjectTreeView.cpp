@@ -19,16 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <QSortFilterProxyModel>
-
-#include <QtGui/QDropEvent>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QTreeView>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QTreeView>
-#endif
+#include <QDropEvent>
+#include <QMainWindow>
+#include <QTreeView>
 
 #include <U2Gui/ProjectViewModel.h>
 
@@ -240,30 +233,29 @@ QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os,
                                                     const QString &itemName,
                                                     const QModelIndex& parent,
                                                     int parentDepth,
-                                                    const GTGlobals::FindOptions &options) {
+                                                    const GTGlobals::FindOptions &options)
+{
     QModelIndexList foundIndecies;
     CHECK(GTGlobals::FindOptions::INFINITE_DEPTH == options.depth || parentDepth < options.depth, foundIndecies);
 
-    QSortFilterProxyModel *proxyModel = qobject_cast<QSortFilterProxyModel *>(treeView->model());
-    CHECK_SET_ERR_RESULT(NULL != proxyModel, "Model is NULL", foundIndecies);
-    ProjectViewModel *model = qobject_cast<ProjectViewModel *>(proxyModel->sourceModel());
+    ProjectViewModel *model = qobject_cast<ProjectViewModel*>(treeView->model());
     CHECK_SET_ERR_RESULT(NULL != model, "Model is NULL", foundIndecies);
 
-    int rowcount = proxyModel->rowCount(parent);
+    int rowcount = model->rowCount(parent);
     for (int i = 0; i < rowcount; i++) {
-        const QModelIndex index = proxyModel->index(i, 0, parent);
+        const QModelIndex index = model->index(i, 0, parent);
         QString s = index.data(Qt::DisplayRole).toString();
 
-        GObject* object = model->toObject(proxyModel->mapToSource(index));
+        GObject* object = model->toObject(index);
         if (NULL != object) {
             const QString prefix = "[" + GObjectTypes::getTypeInfo(object->getGObjectType()).treeSign + "]";
             if (s.startsWith(prefix) || prefix == "[u]") {
                 s = s.mid(prefix.length() + 1);
             }
 
-        }else{
+        } else{
             const QString unload = "[unloaded]";
-            if(s.startsWith(unload)){
+            if (s.startsWith(unload)){
                 s = s.mid(unload.length());
             }
         }
@@ -272,7 +264,7 @@ QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os,
             if (s == itemName) {
                 foundIndecies << index;
             } else {
-                foundIndecies <<  findIndecies(os, treeView, itemName, index, parentDepth + 1, options);
+                foundIndecies << findIndecies(os, treeView, itemName, index, parentDepth + 1, options);
             }
         } else {
             foundIndecies << index;
@@ -328,18 +320,15 @@ void GTUtilsProjectTreeView::checkObjectTypes(U2OpStatus &os, QTreeView *treeVie
     CHECK_SET_ERR(NULL != treeView, "Invalid tree view detected");
     CHECK(!acceptableTypes.isEmpty(), );
 
-    QSortFilterProxyModel *proxyModel = qobject_cast<QSortFilterProxyModel *>(treeView->model());
-    CHECK_SET_ERR_RESULT(NULL != proxyModel, "Model is NULL", );
-    ProjectViewModel *model = qobject_cast<ProjectViewModel *>(proxyModel->sourceModel());
-    CHECK_SET_ERR_RESULT(NULL != model, "Invalid view model detected", );
+    ProjectViewModel *model = qobject_cast<ProjectViewModel *>(treeView->model());
+    CHECK_SET_ERR(NULL != model, "Invalid view model detected");
 
-    const int rowCount = proxyModel->rowCount(parent);
+    const int rowCount = model->rowCount(parent);
     for (int i = 0; i < rowCount; i++) {
-        const QModelIndex index = proxyModel->index(i, 0, parent);
-        const QModelIndex realIndex = proxyModel->mapToSource(index);
-        GObject *object = model->toObject(realIndex);
-        if (NULL != object && Qt::NoItemFlags != model->flags(realIndex) && !acceptableTypes.contains(object->getGObjectType()))
-            CHECK_SET_ERR(NULL == object || Qt::NoItemFlags == model->flags(realIndex) || acceptableTypes.contains(object->getGObjectType()), "Object has unexpected type");
+        const QModelIndex index = model->index(i, 0, parent);
+        GObject *object = model->toObject(index);
+        if (NULL != object && Qt::NoItemFlags != model->flags(index) && !acceptableTypes.contains(object->getGObjectType()))
+            CHECK_SET_ERR(NULL == object || Qt::NoItemFlags == model->flags(index) || acceptableTypes.contains(object->getGObjectType()), "Object has unexpected type");
 
         if (NULL == object) {
             checkObjectTypes(os, treeView, acceptableTypes, index);

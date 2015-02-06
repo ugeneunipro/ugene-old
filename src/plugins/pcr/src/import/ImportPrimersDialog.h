@@ -24,7 +24,7 @@
 
 #include <U2Core/Folder.h>
 
-#include <U2Gui/ProjectTreeControllerModeSettings.h>
+#include <U2Core/ProjectTreeControllerModeSettings.h>
 
 #include "ui/ui_ImportPrimersDialog.h"
 

@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+
 #include "GTTestsDpView.h"
 #include "../../../GTUtilsEscClicker.h"
 #include "api/GTMouseDriver.h"

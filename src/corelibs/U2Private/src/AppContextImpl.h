@@ -99,6 +99,7 @@ public:
         passwordStorage = NULL;
         cfr = NULL;
         welcomePageActionRegistry = NULL;
+        projectFilterTaskRegistry = NULL;
     }
 
     ~AppContextImpl();
@@ -317,6 +318,11 @@ public:
         welcomePageActionRegistry = value;
     }
 
+    void setProjectFilterTaskRegistry(ProjectFilterTaskRegistry *value) {
+        assert(projectFilterTaskRegistry == NULL || value == NULL);
+        projectFilterTaskRegistry = value;
+    }
+
     void setGUIMode(bool v) {
         guiMode = v;
     }
@@ -405,6 +411,8 @@ protected:
     virtual PasswordStorage*                _getPasswordStorage() const { return passwordStorage; }
     virtual ConvertFactoryRegistry*         _getConvertFactoryRegistry() const { return cfr; }
     virtual IdRegistry<WelcomePageAction>* _getWelcomePageActionRegistry() const { return welcomePageActionRegistry; }
+    virtual ProjectFilterTaskRegistry *    _getProjectFilterTaskRegistry() const { return projectFilterTaskRegistry; }
+
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
     virtual AppGlobalObject* _getGlobalObjectById(const QString& id) const;
@@ -481,6 +489,7 @@ private:
     PasswordStorage* passwordStorage;
     ConvertFactoryRegistry *cfr;
     IdRegistry<WelcomePageAction> *welcomePageActionRegistry;
+    ProjectFilterTaskRegistry *projectFilterTaskRegistry;
     bool guiMode;
     QString activeWindow;
     QString workingDirectoryPath;

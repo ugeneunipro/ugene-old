@@ -25,9 +25,9 @@
 #include <U2Core/DocumentSelection.h>
 #include <U2Core/FolderSelection.h>
 #include <U2Core/GObjectSelection.h>
+#include <U2Core/ProjectTreeControllerModeSettings.h>
 
-#include <U2Gui/ProjectTreeControllerModeSettings.h>
-
+class QAbstractItemDelegate;
 class QAction;
 class QMenu;
 class QModelIndex;
@@ -38,6 +38,7 @@ namespace U2 {
 class GObjectView;
 class MWMDIWindow;
 class ProjectFilterProxyModel;
+class ProjectViewFilterModel;
 class ProjectUpdater;
 class ProjectViewModel;
 class Task;
@@ -93,12 +94,17 @@ private slots:
     void sl_onObjRemovalTaskFinished();
     void sl_onFolderRemovalTaskFinished();
 
+    void sl_filterGroupAdded(const QModelIndex &groupIndex);
+
 signals:
     void si_onPopupMenuRequested(QMenu &popup);
     void si_doubleClicked(GObject *obj);
     void si_doubleClicked(Document *doc);
     void si_returnPressed(GObject *obj);
     void si_returnPressed(Document *doc);
+
+    void si_filteringStarted();
+    void si_filteringFinished();
 
 private:
     // QObject
@@ -125,6 +131,8 @@ private:
     void updateReadOnlyFlagActions();
     void updateRenameAction();
     void updateLoadDocumentActions();
+    QModelIndex getIndexForDoc(Document *doc) const;
+    QModelIndex getOriginalModelIndex(const QModelIndex &index) const;
 
     // after folders or objects has been removed from Project View,
     // they can still present in the database during the next merge procedure (due to their large sizes).
@@ -148,6 +156,8 @@ private:
     ProjectTreeControllerModeSettings settings;
     ProjectUpdater *updater;
     ProjectViewModel *model;
+    ProjectViewFilterModel *filterModel;
+    QAbstractItemDelegate *previousItemDelegate;
     ProjectFilterProxyModel *proxyModel;
 
     // Actions

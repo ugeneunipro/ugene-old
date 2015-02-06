@@ -19,28 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QTimer>
+#include <QItemSelectionModel>
+#include <QTimer>
 
-#include <QtGui/QKeyEvent>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#include <QtGui/QTreeView>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QTreeView>
-#endif
+#include <QKeyEvent>
+#include <QAction>
+#include <QApplication>
+#include <QMainWindow>
+#include <QMenu>
+#include <QMessageBox>
+#include <QTreeView>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DeleteObjectsTask.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/L10n.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/RemoveDocumentTask.h>
@@ -58,8 +51,10 @@
 #include <U2Gui/ProjectViewModel.h>
 #include <U2Gui/UnloadDocumentTask.h>
 
+#include "FilteredProjectItemDelegate.h"
 #include "FolderNameDialog.h"
 #include "ProjectFilterProxyModel.h"
+#include "ProjectViewFilterModel.h"
 #include "ProjectUpdater.h"
 #include "ProjectUtils.h"
 
@@ -68,13 +63,19 @@
 namespace U2 {
 
 ProjectTreeController::ProjectTreeController(QTreeView *tree, const ProjectTreeControllerModeSettings &settings, QObject *parent)
-    : QObject(parent), tree(tree), settings(settings), updater(NULL), model(NULL), proxyModel(NULL), markActiveView(NULL), objectIsBeingRecycled(NULL)
+    : QObject(parent), tree(tree), settings(settings), updater(NULL), model(NULL), filterModel(NULL), previousItemDelegate(NULL),
+    proxyModel(NULL), markActiveView(NULL), objectIsBeingRecycled(NULL)
 {
     Project *project = AppContext::getProject();
     SAFE_POINT(NULL != project, "NULL project", );
 
     model = new ProjectViewModel(settings, this);
-    proxyModel = new ProjectFilterProxyModel(settings, this);
+    if (settings.isObjectFilterActive()) {
+        proxyModel = new ProjectFilterProxyModel(settings, this);
+        proxyModel->setSourceModel(model);
+    } else {
+        filterModel = new ProjectViewFilterModel(model, settings, this);
+    }
 
     updater = new ProjectUpdater();
 
@@ -86,8 +87,7 @@ ProjectTreeController::ProjectTreeController(QTreeView *tree, const ProjectTreeC
     connect(project, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_onDocumentRemoved(Document*)));
 
     tree->setDragDropMode(QAbstractItemView::InternalMove);
-    proxyModel->setSourceModel(model);
-    tree->setModel(proxyModel);
+    tree->setModel(NULL == proxyModel ? qobject_cast<QAbstractItemModel *>(model) : qobject_cast<QAbstractItemModel *>(proxyModel));
     updater->start();
     timer->start();
 
@@ -102,6 +102,11 @@ ProjectTreeController::ProjectTreeController(QTreeView *tree, const ProjectTreeC
     connect(model, SIGNAL(si_documentContentChanged(Document *)), SLOT(sl_documentContentChanged(Document *)));
     connect(model, SIGNAL(si_projectItemRenamed(const QModelIndex &)), SLOT(sl_onProjectItemRenamed(const QModelIndex &)));
 
+    if (NULL != filterModel) {
+        connect(filterModel, SIGNAL(si_filterGroupAdded(const QModelIndex &)), SLOT(sl_filterGroupAdded(const QModelIndex &)));
+        connect(filterModel, SIGNAL(si_filteringStarted()), SIGNAL(si_filteringStarted()));
+        connect(filterModel, SIGNAL(si_filteringFinished()), SIGNAL(si_filteringFinished()));
+    }
     setupActions();
 
     foreach (Document *doc, project->getDocuments()) {
@@ -113,6 +118,8 @@ ProjectTreeController::ProjectTreeController(QTreeView *tree, const ProjectTreeC
     connect(mdi, SIGNAL(si_windowDeactivated(MWMDIWindow*)), SLOT(sl_windowDeactivated(MWMDIWindow*)));
     connect(mdi, SIGNAL(si_windowClosing(MWMDIWindow*)), SLOT(sl_windowDeactivated(MWMDIWindow*)));
     sl_windowActivated(mdi->getActiveWindow()); // if any window is active - check it content
+
+    connectToResourceTracker();
 
     sl_updateSelection();
 }
@@ -145,8 +152,13 @@ const ProjectTreeControllerModeSettings & ProjectTreeController::getModeSettings
     return settings;
 }
 
+QModelIndex ProjectTreeController::getIndexForDoc(Document *doc) const {
+    SAFE_POINT(NULL != doc, L10N::nullPointerError("document"), QModelIndex());
+    return proxyModel == NULL ? model->getIndexForDoc(doc) : proxyModel->getIndexForDoc(doc);
+}
+
 void ProjectTreeController::highlightItem(Document *doc) {
-    QModelIndex idx = proxyModel->getIndexForDoc(doc);
+    const QModelIndex idx = getIndexForDoc(doc);
     CHECK(idx.isValid(), );
     tree->selectionModel()->select(idx, QItemSelectionModel::Select);
 }
@@ -155,10 +167,46 @@ QAction * ProjectTreeController::getLoadSeletectedDocumentsAction() const {
     return loadSelectedDocumentsAction;
 }
 
+namespace {
+    // if documents number in project < MAX_DOCUMENTS_TO_AUTOEXPAND - document content will be automatically expanded on loading
+    const int MAX_DOCUMENTS_TO_AUTOEXPAND = 20;
+}
+
 void ProjectTreeController::updateSettings(const ProjectTreeControllerModeSettings &newSettings) {
+    const bool objectFilterChanged = settings.isObjectFilterActive() != newSettings.isObjectFilterActive();
     settings = newSettings;
     model->updateSettings(newSettings);
-    proxyModel->updateSettings(newSettings);
+
+    if (NULL != filterModel) {
+        filterModel->updateSettings(newSettings);
+        if (objectFilterChanged) {
+            disconnect(tree->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                this, SLOT(sl_updateSelection()));
+
+            QAbstractItemDelegate *itemDelegateToBeSet = NULL == previousItemDelegate ? new FilteredProjectItemDelegate(filterModel)
+                                                                                      : previousItemDelegate;
+            previousItemDelegate = tree->itemDelegate();
+            tree->setModel(newSettings.isObjectFilterActive() ? qobject_cast<QAbstractItemModel *>(filterModel)
+                                                              : qobject_cast<QAbstractItemModel *>(model));
+            tree->setUniformRowHeights(!newSettings.isObjectFilterActive());
+            tree->setItemDelegate(itemDelegateToBeSet);
+            connect(tree->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)), SLOT(sl_updateSelection()));
+
+            QAbstractItemModel *currentModel = tree->model();
+            const int topLevelItemCount = currentModel->rowCount(QModelIndex());
+            const int expandedItemCount = currentModel == model ? qMin(MAX_DOCUMENTS_TO_AUTOEXPAND, topLevelItemCount) : topLevelItemCount;
+            for (int i = 0; i < expandedItemCount; ++i) {
+                const QModelIndex currentIndex = currentModel->index(i, 0, QModelIndex());
+                if (currentModel == filterModel || ProjectViewModel::toDocument(currentIndex)->isLoaded()) {
+                    tree->setExpanded(currentModel->index(i, 0, QModelIndex()), true);
+                }
+            }
+        }
+    } else {
+        SAFE_POINT(NULL != proxyModel, L10N::nullPointerError("Project proxy model"), );
+        proxyModel->updateSettings(newSettings);
+    }
+
     sl_updateActions();
 }
 
@@ -168,9 +216,11 @@ void ProjectTreeController::sl_onDocumentAdded(Document *doc) {
     connectDocument(doc);
     sl_updateActions();
 
-    const QModelIndex idx = proxyModel->getIndexForDoc(doc);
-    CHECK(idx.isValid(), );
-    tree->setExpanded(idx, doc->isLoaded());
+    if (NULL != proxyModel || !settings.isObjectFilterActive()) {
+        const QModelIndex idx = getIndexForDoc(doc);
+        CHECK(idx.isValid(), );
+        tree->setExpanded(idx, doc->isLoaded());
+    }
 }
 
 void ProjectTreeController::sl_onDocumentRemoved(Document *doc) {
@@ -194,6 +244,17 @@ void ProjectTreeController::sl_mergeData() {
     sl_updateActions();
 }
 
+QModelIndex ProjectTreeController::getOriginalModelIndex(const QModelIndex &index) const {
+    QAbstractItemModel *currentModel = tree->model();
+    if (currentModel == filterModel) {
+        return filterModel->mapToSource(index);
+    } else if (currentModel == proxyModel) {
+        return proxyModel->mapToSource(index);
+    } else {
+        return index;
+    }
+}
+
 void ProjectTreeController::sl_updateSelection() {
     QList<Document*> selectedDocs;
     QList<Folder> selectedFolders;
@@ -201,19 +262,21 @@ void ProjectTreeController::sl_updateSelection() {
 
     QModelIndexList selection = tree->selectionModel()->selectedRows();
     foreach (const QModelIndex &index, selection) {
-        const QModelIndex sourceIndex = proxyModel->mapToSource(index);
-        switch (ProjectViewModel::itemType(sourceIndex)) {
+        const QModelIndex originalIndex = getOriginalModelIndex(index);
+        if (originalIndex.isValid()) {
+            switch (ProjectViewModel::itemType(originalIndex)) {
             case ProjectViewModel::DOCUMENT:
-                selectedDocs << ProjectViewModel::toDocument(sourceIndex);
+                selectedDocs << ProjectViewModel::toDocument(originalIndex);
                 break;
             case ProjectViewModel::FOLDER:
-                selectedFolders << Folder(*ProjectViewModel::toFolder(sourceIndex));
+                selectedFolders << Folder(*ProjectViewModel::toFolder(originalIndex));
                 break;
             case ProjectViewModel::OBJECT:
-                selectedObjs << ProjectViewModel::toObject(sourceIndex);
+                selectedObjs << ProjectViewModel::toObject(originalIndex);
                 break;
             default:
                 FAIL("Unexpected item type", );
+            }
         }
     }
 
@@ -229,7 +292,7 @@ void ProjectTreeController::updateAddObjectAction() {
     const bool singleDocumentIsChosen = (1 == docsItemsInSelection.size());
     const bool isDatabaseDocument = (docsItemsInSelection.size() > 0 && ProjectUtils::isConnectedDatabaseDoc(docsItemsInSelection.values().first()));
     bool canAddObjectToDocument = true;
-    foreach(Document* d, docsItemsInSelection) {
+    foreach (Document* d, docsItemsInSelection) {
         if (!DocumentUtils::canAddGObjectsToDocument(d, GObjectTypes::SEQUENCE)) {
             canAddObjectToDocument = false;
             break;
@@ -258,7 +321,7 @@ void ProjectTreeController::sl_updateActions() {
     bool canRemoveObjectFromDocument = true;
     bool allObjectsAreInRecycleBin = true;
     QList<GObject*> selectedObjects = objectSelection.getSelectedObjects();
-    bool selectedModifiableObjectsExist = !selectedObjects.isEmpty();
+    bool selectedModifiableObjectsExist = !selectedObjects.isEmpty() && !settings.isObjectFilterActive();
     foreach (GObject *obj, selectedObjects) {
         if (!DocumentUtils::canRemoveGObjectFromDocument(obj) && canRemoveObjectFromDocument) {
             canRemoveObjectFromDocument = false;
@@ -345,7 +408,7 @@ void ProjectTreeController::updateRenameAction() {
         if (!objectSelection.isEmpty()) {
             GObject *selectedObj = objectSelection.getSelectedObjects().first();
             const bool parentDocLocked = NULL != selectedObj->getDocument() && selectedObj->getDocument()->isStateLocked();
-            renameIsOk = !isObjectInRecycleBin(selectedObj) && !parentDocLocked;
+            renameIsOk = !isObjectInRecycleBin(selectedObj) && !parentDocLocked && !settings.isObjectFilterActive();
         } else {
             renameIsOk = canRenameFolder();
         }
@@ -354,16 +417,17 @@ void ProjectTreeController::updateRenameAction() {
 }
 
 void ProjectTreeController::sl_doubleClicked(const QModelIndex &index) {
-    const QModelIndex sourceIndex = proxyModel->mapToSource(index);
-    switch (ProjectViewModel::itemType(sourceIndex)) {
+    const QModelIndex originalIndex = getOriginalModelIndex(index);
+    CHECK(originalIndex.isValid(), );
+
+    switch (ProjectViewModel::itemType(originalIndex)) {
         case ProjectViewModel::DOCUMENT: {
-            Document *doc = ProjectViewModel::toDocument(sourceIndex);
+            Document *doc = ProjectViewModel::toDocument(originalIndex);
             if (!doc->isLoaded() && !doc->getObjects().isEmpty()) {
                 SAFE_POINT(loadSelectedDocumentsAction->isEnabled(), "Action is not enabled", );
                 loadSelectedDocumentsAction->trigger();
-            } else {
-                ////children > 0 -> expand action
-                tree->setExpanded(sourceIndex, false); // Magic: false
+            } else { // there are children -> expand
+                tree->setExpanded(originalIndex, false); // Magic: false
                 emit si_doubleClicked(doc);
             }
             break;
@@ -371,7 +435,7 @@ void ProjectTreeController::sl_doubleClicked(const QModelIndex &index) {
         case ProjectViewModel::FOLDER:
             break;
         case ProjectViewModel::OBJECT:
-            emit si_doubleClicked(ProjectViewModel::toObject(sourceIndex));
+            emit si_doubleClicked(ProjectViewModel::toObject(originalIndex));
             break;
         default:
             FAIL("Unexpected item type", );
@@ -380,7 +444,9 @@ void ProjectTreeController::sl_doubleClicked(const QModelIndex &index) {
 
 void ProjectTreeController::sl_documentContentChanged(Document *doc) {
     updater->invalidate(doc);
-    proxyModel->invalidate();
+    if (NULL != proxyModel) {
+        proxyModel->invalidate();
+    }
 }
 
 bool ProjectTreeController::canCreateSubFolder() const {
@@ -527,13 +593,6 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint &) {
     m.exec(QCursor::pos());
 }
 
-namespace {
-    // if objects number in document < MAX_OBJECTS_TO_AUTOEXPAND - document content will be automatically expanded on loading
-    const int MAX_OBJECTS_TO_AUTOEXPAND = 20;
-    // if documents number in project < MAX_DOCUMENTS_TO_AUTOEXPAND - document content will be automatically expanded on loading
-    const int MAX_DOCUMENTS_TO_AUTOEXPAND = 20;
-}
-
 void ProjectTreeController::sl_onDocumentLoadedStateChanged() {
     Document *doc = qobject_cast<Document*>(sender());
     SAFE_POINT(NULL != doc, "NULL document", );
@@ -547,8 +606,8 @@ void ProjectTreeController::sl_onDocumentLoadedStateChanged() {
         connect(doc, SIGNAL(si_loadedStateChanged()), SLOT(sl_onDocumentLoadedStateChanged()));
     }
 
-    if (AppContext::getProject()->getDocuments().size() < MAX_DOCUMENTS_TO_AUTOEXPAND) {
-        QModelIndex idx = proxyModel->getIndexForDoc(doc);
+    if (!settings.isObjectFilterActive() && AppContext::getProject()->getDocuments().size() < MAX_DOCUMENTS_TO_AUTOEXPAND) {
+        QModelIndex idx = getIndexForDoc(doc);
         CHECK(idx.isValid(), );
         tree->setExpanded(idx, doc->isLoaded());
     }
@@ -560,32 +619,30 @@ void ProjectTreeController::sl_onRename() {
     const QModelIndexList selection = tree->selectionModel()->selectedIndexes();
     CHECK(selection.size() == 1, );
 
-    const QModelIndex &selectedProxyIndex = selection.first();
-    const QModelIndex selectedIndex = proxyModel->mapToSource(selectedProxyIndex);
-    ProjectViewModel::Type indexType = model->itemType(selectedIndex);
-    CHECK(ProjectViewModel::DOCUMENT != indexType, );
+    const QModelIndex selectedIndex = NULL == proxyModel ? selection.first() : proxyModel->mapToSource(selection.first());
+    CHECK(ProjectViewModel::DOCUMENT != ProjectViewModel::itemType(selectedIndex), );
 
-    tree->edit(selectedProxyIndex);
+    tree->edit(selectedIndex);
 }
 
 void ProjectTreeController::sl_onProjectItemRenamed(const QModelIndex &index) {
     Document *doc = NULL;
-    switch (model->itemType(index)) {
+    switch (ProjectViewModel::itemType(index)) {
     case ProjectViewModel::OBJECT :
-        doc = model->toObject(index)->getDocument();
+        doc = ProjectViewModel::toObject(index)->getDocument();
         break;
     case ProjectViewModel::FOLDER :
-        doc = model->toFolder(index)->getDocument();
+        doc = ProjectViewModel::toFolder(index)->getDocument();
         break;
     case ProjectViewModel::DOCUMENT :
-        doc = model->toDocument(index);
+        doc = ProjectViewModel::toDocument(index);
         break;
     default:
         FAIL("Unexpected project view item type", );
     }
     updater->invalidate(doc);
 
-    tree->selectionModel()->setCurrentIndex(proxyModel->mapFromSource(index), QItemSelectionModel::Select);
+    tree->selectionModel()->setCurrentIndex(NULL == proxyModel ? index : proxyModel->mapFromSource(index), QItemSelectionModel::Select);
     tree->setFocus();
 }
 
@@ -607,7 +664,7 @@ void ProjectTreeController::sl_onEmptyRecycleBin() {
     QList<GObject *> removedObjects;
 
     int childCount = model->rowCount(rbIndex);
-    for (int i=0; i<childCount; i++) {
+    for (int i = 0; i < childCount; i++) {
         QModelIndex index = model->index(i, 0, rbIndex);
         switch (ProjectViewModel::itemType(index)) {
             case ProjectViewModel::OBJECT:
@@ -769,6 +826,9 @@ void ProjectTreeController::sl_windowActivated(MWMDIWindow *w) {
 
     // listen all add/remove to view events
     if (NULL != markActiveView) {
+        foreach (GObject *obj, markActiveView->getObjects()) {
+            updateObjectActiveStateVisual(obj);
+        }
         markActiveView->disconnect(this);
         markActiveView = NULL;
     }
@@ -1159,6 +1219,10 @@ void ProjectTreeController::sl_onObjRemovalTaskFinished() {
         }
         task2ObjectsBeingDeleted.remove(removalTask);
     }
+}
+
+void ProjectTreeController::sl_filterGroupAdded(const QModelIndex &groupIndex) {
+    tree->setExpanded(groupIndex, true);
 }
 
 void ProjectTreeController::sl_onFolderRemovalTaskFinished() {

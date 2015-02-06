@@ -25,8 +25,7 @@
 #include <QtCore/QAbstractItemModel>
 
 #include <U2Core/Folder.h>
-
-#include <U2Gui/ProjectTreeControllerModeSettings.h>
+#include <U2Core/ProjectTreeControllerModeSettings.h>
 
 #include "DocumentFolders.h"
 
@@ -39,6 +38,12 @@ class Project;
 class U2GUI_EXPORT ProjectViewModel : public QAbstractItemModel {
     Q_OBJECT
 public:
+    enum Type {
+        DOCUMENT,
+        FOLDER,
+        OBJECT
+    };
+
     ProjectViewModel(const ProjectTreeControllerModeSettings &settings, QObject *parent);
 
     void updateSettings(const ProjectTreeControllerModeSettings &settings);
@@ -79,7 +84,6 @@ public:
     QModelIndex getIndexForPath(Document *doc, const QString &path) const;
     QModelIndex getIndexForObject(GObject *obj) const;
 
-    enum Type {DOCUMENT, FOLDER, OBJECT};
     static Type itemType(const QModelIndex &index);
     static Document * toDocument(const QModelIndex &index);
     static Folder * toFolder(const QModelIndex &index);

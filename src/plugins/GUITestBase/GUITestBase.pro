@@ -7,6 +7,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/crazy_user/GTAbstractGUIAction.h \
 #   Runnables
 #   Runnables / Qt
+            src/runnables/qt/EscapeClicker.h \
             src/runnables/qt/MessageBoxFiller.h \
             src/runnables/qt/PopupChooser.h \
             src/runnables/qt/FontDialogFiller.h \
@@ -255,6 +256,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GTAbstractGUIAction.cpp \
 #   Runnables
 #   Runnables / Qt
+            src/runnables/qt/EscapeClicker.cpp \
             src/runnables/qt/MessageBoxFiller.cpp \
             src/runnables/qt/PopupChooser.cpp \
             src/runnables/qt/FontDialogFiller.cpp \

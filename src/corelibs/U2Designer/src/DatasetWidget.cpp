@@ -33,6 +33,7 @@
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/ProjectTreeControllerModeSettings.h>
 #include <U2Core/U2ObjectTypeUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -40,7 +41,6 @@
 #include <U2Designer/DatasetsController.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/ProjectTreeControllerModeSettings.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/ProjectUtils.h>
 #include <U2Gui/SharedConnectionsDialog.h>

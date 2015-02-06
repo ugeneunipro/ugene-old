@@ -237,18 +237,10 @@ int DocumentFolders::getNewFolderRowInRecycleBin(const QString &path) const {
     return paths.indexOf(path);
 }
 
-namespace {
-
-bool gobjectLessThan(GObject *first, GObject *second) {
-    return QString::compare(first->getGObjectName(), second->getGObjectName(), Qt::CaseInsensitive) < 0;
-}
-
-}
-
 int DocumentFolders::getNewObjectRowInParent(GObject *obj, const QString &parentPath) const {
     SAFE_POINT(!hasFolderInfo(obj), "Object is already in model", -1);
     const QList<GObject *> objects = getObjects(parentPath);
-    QList<GObject *>::const_iterator i = std::upper_bound(objects.constBegin(), objects.constEnd(), obj, gobjectLessThan);
+    QList<GObject *>::const_iterator i = std::upper_bound(objects.constBegin(), objects.constEnd(), obj, GObject::objectLessThan);
     return getSubFolders(parentPath).size() + (i - objects.constBegin());
 }
 
@@ -476,7 +468,7 @@ GObject * FolderObjectTreeStorage::getObject(const U2DataId &id) const {
 namespace {
 
 void insertObjectToSortedList(QList<GObject *> &list, GObject *obj) {
-    QList<GObject *>::iterator insertPos = std::upper_bound(list.begin(), list.end(), obj, gobjectLessThan);
+    QList<GObject *>::iterator insertPos = std::upper_bound(list.begin(), list.end(), obj, GObject::objectLessThan);
     list.insert(insertPos, obj);
 }
 
@@ -604,14 +596,6 @@ QString FolderObjectTreeStorage::getFolderByObjectId(const U2DataId &id) const {
     return lastUpdate.objectIdFolders[id];
 }
 
-namespace {
-
-bool folderLessThan(const QString &first, const QString &second) {
-    return QString::compare(first, second, Qt::CaseInsensitive) < 0;
-}
-
-}
-
 int FolderObjectTreeStorage::insertSorted(const QString &value, QStringList &list) {
     GTIMER(c, t, "FolderObjectTreeStorage::insertSorted");
 
@@ -619,7 +603,7 @@ int FolderObjectTreeStorage::insertSorted(const QString &value, QStringList &lis
         list.prepend(value);
         return 0;
     } else {
-        QList<QString>::iterator i = std::upper_bound(list.begin(), list.end(), value, folderLessThan);
+        QList<QString>::iterator i = std::upper_bound(list.begin(), list.end(), value, Folder::folderLessThan);
         if (list.end() != i && *i == U2ObjectDbi::RECYCLE_BIN_FOLDER) {
             ++i;
         }

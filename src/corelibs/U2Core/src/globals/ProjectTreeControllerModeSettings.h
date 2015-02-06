@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_PROJECTTREECONTROLLERMODESETTINGS_H_
-#define _U2_PROJECTTREECONTROLLERMODESETTINGS_H_
+#ifndef _U2_PROJECT_TREE_CONTROLLER_MODE_SETTINGS_H_
+#define _U2_PROJECT_TREE_CONTROLLER_MODE_SETTINGS_H_
 
 #include <QtCore/QStringList>
 
@@ -53,7 +53,7 @@ public:
     virtual bool filter(Document *d) const = 0;
 };
 
-class PTCObjectRelationFilter : public PTCObjectFilter {
+class U2CORE_EXPORT PTCObjectRelationFilter : public PTCObjectFilter {
 public:
     PTCObjectRelationFilter(const GObjectRelation &rel, QObject *p = NULL) : PTCObjectFilter(p), rel(rel) {}
     bool filter(GObject *o) const;
@@ -61,12 +61,12 @@ public:
 };
 
 
-class U2GUI_EXPORT ProjectTreeControllerModeSettings {
+class U2CORE_EXPORT ProjectTreeControllerModeSettings {
 public:
     ProjectTreeControllerModeSettings() 
-        : allowMultipleSelection(true), readOnlyFilter(TriState_Unknown), loadTaskProvider(NULL), 
-        groupMode(ProjectTreeGroupMode_ByDocument),allowSelectUnloaded(false), objectFilter(NULL), documentFilter(NULL), 
-        markActive(false){}
+        : allowMultipleSelection(true), readOnlyFilter(TriState_Unknown), loadTaskProvider(NULL),
+        groupMode(ProjectTreeGroupMode_ByDocument), allowSelectUnloaded(false), objectFilter(NULL), documentFilter(NULL),
+        markActive(false) {}
     
     QSet<GObjectType>          objectTypesToShow;  // show only objects of specified type
     QSet<GObjectConstraints*>  objectConstraints;  // show only objects that fits constraints
@@ -91,8 +91,9 @@ public:
     bool isTypeShown(GObjectType t) const;
     bool isObjectShown(GObject* o) const;
     bool isObjectFilterActive() const;
+    bool nameFilterAcceptsString(const QString &str) const;
 };
 
 } // U2
 
-#endif // _U2_PROJECTTREECONTROLLERMODESETTINGS_H_
+#endif // _U2_PROJECT_TREE_CONTROLLER_MODE_SETTINGS_H_

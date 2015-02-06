@@ -120,7 +120,7 @@ ArrowHeaderWidget::ArrowHeaderWidget(const QString &caption, bool _isOpened)
     captionLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     progressMovieLabel = new QLabel();
-    progressMovie = new QMovie(":/core/images/progress.gif");
+    progressMovie = new QMovie(":/core/images/progress.gif", QByteArray(), progressMovieLabel);
     progressMovieLabel->setMovie(progressMovie);
 
     if (progressMovie->isValid()){

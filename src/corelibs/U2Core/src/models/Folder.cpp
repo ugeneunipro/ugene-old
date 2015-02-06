@@ -114,6 +114,10 @@ bool Folder::isSubFolder(const QString &path, const QString &expectedSubpath) {
     return expectedSubpath.startsWith(path + U2ObjectDbi::PATH_SEP);
 }
 
+bool Folder::folderLessThan(const QString &first, const QString &second) {
+    return QString::compare(first, second, Qt::CaseInsensitive) < 0;
+}
+
 /************************************************************************/
 /* FolderMimeData */
 /************************************************************************/

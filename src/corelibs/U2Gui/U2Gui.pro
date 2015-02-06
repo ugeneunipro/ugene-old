@@ -80,15 +80,25 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/ImportDialogs/AceImportDialog.h \
            src/util/GenbankLocationValidator.h \
            src/util/logview/LogView.h \
+           src/util/project/filter_tasks/FeatureKeyFilterTask.h \
+           src/util/project/filter_tasks/MsaContentFilterTask.h \
+           src/util/project/filter_tasks/MsaSeqNameFilterTask.h \
+           src/util/project/filter_tasks/ObjectNameFilterTask.h \
+           src/util/project/filter_tasks/SequenceAccFilterTask.h \
+           src/util/project/filter_tasks/TextContentFilterTask.h \
            src/util/project/ConnectionHelper.h \
            src/util/project/DocumentFolders.h \
+           src/util/project/FilteredProjectItemDelegate.h \
+           src/util/project/FilteredProjectGroup.h \
            src/util/project/FolderNameDialog.h \
            src/util/project/LoadDocumentTaskProvider.h \
+           src/util/project/ProjectFilteringController.h \
+           src/util/project/ProjectFilterNames.h \
            src/util/project/ProjectFilterProxyModel.h \
            src/util/project/ProjectTreeController.h \
-           src/util/project/ProjectTreeControllerModeSettings.h \
            src/util/project/ProjectUpdater.h \
            src/util/project/ProjectUtils.h \
+           src/util/project/ProjectViewFilterModel.h \
            src/util/project/ProjectViewModel.h \
            src/util/shared_db/CommonImportOptionsDialog.h \
            src/util/shared_db/EditConnectionDialog.h \
@@ -199,14 +209,24 @@ SOURCES += src/MainWindow.cpp \
            src/util/imageExport/WidgetScreenshotExportTask.cpp \
            src/util/ImportDialogs/AceImportDialog.cpp \
            src/util/logview/LogView.cpp \
+           src/util/project/filter_tasks/FeatureKeyFilterTask.cpp \
+           src/util/project/filter_tasks/MsaContentFilterTask.cpp \
+           src/util/project/filter_tasks/MsaSeqNameFilterTask.cpp \
+           src/util/project/filter_tasks/ObjectNameFilterTask.cpp \
+           src/util/project/filter_tasks/SequenceAccFilterTask.cpp \
+           src/util/project/filter_tasks/TextContentFilterTask.cpp \
            src/util/project/ConnectionHelper.cpp \
            src/util/project/DocumentFolders.cpp \
+           src/util/project/FilteredProjectItemDelegate.cpp \
+           src/util/project/FilteredProjectGroup.cpp \
            src/util/project/FolderNameDialog.cpp \
+           src/util/project/ProjectFilteringController.cpp \
+           src/util/project/ProjectFilterNames.cpp \
            src/util/project/ProjectFilterProxyModel.cpp \
            src/util/project/ProjectTreeController.cpp \
-           src/util/project/ProjectTreeControllerModeSettings.cpp \
            src/util/project/ProjectUpdater.cpp \
            src/util/project/ProjectUtils.cpp \
+           src/util/project/ProjectViewFilterModel.cpp \
            src/util/project/ProjectViewModel.cpp \
            src/util/shared_db/CommonImportOptionsDialog.cpp \
            src/util/shared_db/EditConnectionDialog.cpp \

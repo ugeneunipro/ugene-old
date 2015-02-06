@@ -24,7 +24,7 @@
 
 #include "ui/ui_StatisticalReport.h"
 
-namespace U2{
+namespace U2 {
 
 class StatisticalReportController : public QDialog, public Ui_StatisticalReport {
     Q_OBJECT

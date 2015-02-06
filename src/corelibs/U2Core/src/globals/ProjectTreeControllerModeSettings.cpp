@@ -81,8 +81,6 @@ bool ProjectTreeControllerModeSettings::isDocumentShown(Document* doc) const {
         return false;
     }
 
-    //TODO: make document visible in GroupByDoc mode if any of its objects is visible and avoid flattening?
-
     return true;
 }
 
@@ -129,10 +127,8 @@ bool ProjectTreeControllerModeSettings::isObjectShown(GObject* o) const {
     }
     
     //filter by name
-    foreach(const QString& token, tokensToShow) {
-        if (!o->getGObjectName().contains(token, Qt::CaseInsensitive)) {
-            return false;
-        }
+    if (!nameFilterAcceptsString(o->getGObjectName())) {
+        return false;
     }
 
     // check custom filter
@@ -140,6 +136,15 @@ bool ProjectTreeControllerModeSettings::isObjectShown(GObject* o) const {
         return false;
     }
 
+    return true;
+}
+
+bool ProjectTreeControllerModeSettings::nameFilterAcceptsString(const QString &str) const {
+    foreach (const QString &token, tokensToShow) {
+        if (!str.contains(token, Qt::CaseInsensitive)) {
+            return false;
+        }
+    }
     return true;
 }
 

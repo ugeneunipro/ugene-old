@@ -272,7 +272,7 @@ void CreateAnnotationWidgetController::sl_onLoadObjectsClicked() {
     ProjectTreeControllerModeSettings s;
     s.allowMultipleSelection = false;
     s.objectTypesToShow.insert(GObjectTypes::ANNOTATION_TABLE);
-    s.groupMode = ProjectTreeGroupMode_Flat;
+    s.groupMode = ProjectTreeGroupMode_ByDocument;
     GObjectRelation rel(model.sequenceObjectRef, ObjectRole_Sequence);
     QScopedPointer<PTCAnnotationObjectFilter> filter(new PTCAnnotationObjectFilter(rel, model.useUnloadedObjects));
     s.objectFilter = filter.data();

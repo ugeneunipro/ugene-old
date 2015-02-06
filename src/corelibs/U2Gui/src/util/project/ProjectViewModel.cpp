@@ -145,7 +145,7 @@ QModelIndex ProjectViewModel::setFolderData(Folder *folder, const QString &newNa
 }
 
 QModelIndex ProjectViewModel::index(int row, int column, const QModelIndex &parent) const {
-    CHECK(row < rowCount(parent), QModelIndex());
+    CHECK(parent.isValid() || row < rowCount(parent), QModelIndex());
     if (!parent.isValid()) {
         return getTopLevelItemIndex(row, column);
     }

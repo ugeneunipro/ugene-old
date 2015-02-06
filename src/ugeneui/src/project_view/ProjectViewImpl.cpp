@@ -440,7 +440,6 @@ Task* ProjectViewImpl::createServiceDisablingTask() {
 
 void ProjectViewImpl::enable() {
     Project* pr = AppContext::getProject();
-    connect(pr, SIGNAL(si_documentAdded(Document*)), SLOT(sl_onDocumentAdded(Document*)));
     connect(pr, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_onDocumentRemoved(Document*)));
     connect(pr, SIGNAL(si_modifiedStateChanged()), SLOT(sl_onProjectModifiedStateChanged()));
 
@@ -487,10 +486,6 @@ void ProjectViewImpl::enable() {
     AppContextImpl::getApplicationContext()->setProjectView(this);
 
     updateMWTitle();
-    const QList<Document*>& docs = AppContext::getProject()->getDocuments();
-    foreach(Document* d, docs) {
-        sl_onDocumentAdded(d);
-    }
     foreach (MWMDIWindow* w, mdi->getWindows()) {
         sl_onMDIWindowAdded(w);
     }
@@ -551,6 +546,8 @@ void ProjectViewImpl::initView() {
     projectTreeController->setObjectName("document_Filter_Tree_Controller");
     connect(projectTreeController, SIGNAL(si_returnPressed(GObject*)), SLOT(sl_onActivated(GObject*)));
     connect(projectTreeController, SIGNAL(si_returnPressed(Document*)), SLOT(sl_onActivated(Document*)));
+    connect(projectTreeController, SIGNAL(si_filteringStarted()), w->nameFilterEdit, SLOT(sl_filteringStarted()));
+    connect(projectTreeController, SIGNAL(si_filteringFinished()), w->nameFilterEdit, SLOT(sl_filteringFinished()));
 
     connect(w->nameFilterEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_filterTextChanged(const QString&)));
     w->nameFilterEdit->installEventFilter(this);
@@ -1079,15 +1076,10 @@ void ProjectViewImpl::sl_openStateView() {
     }
 }
 
-
-void ProjectViewImpl::sl_onDocumentAdded(Document* /*d*/) {
-//    connect(d, SIGNAL(si_loadedStateChanged()), SLOT(sl_onDocumentLoadedStateChanged()));
-}
-
 void ProjectViewImpl::sl_filterTextChanged(const QString &str) {
     SAFE_POINT(NULL != projectTreeController, "NULL controller", );
     ProjectTreeControllerModeSettings settings = projectTreeController->getModeSettings();
-    settings.tokensToShow = str.split(" ", QString::SkipEmptyParts);
+    settings.tokensToShow = str.split(QRegExp("\\s+"), QString::SkipEmptyParts);
     projectTreeController->updateSettings(settings);
 }
 

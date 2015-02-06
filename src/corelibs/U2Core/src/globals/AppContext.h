@@ -95,6 +95,7 @@ class CredentialsAsker;
 class PasswordStorage;
 class ConvertFactoryRegistry;
 class WelcomePageAction;
+class ProjectFilterTaskRegistry;
 
 class U2CORE_EXPORT AppContext  : public QObject {
     Q_OBJECT
@@ -255,6 +256,8 @@ public:
 
     static PasswordStorage* getPasswordStorage() { return getInstance()->_getPasswordStorage(); }
 
+    static ProjectFilterTaskRegistry * getProjectFilterTaskRegistry() { return getInstance()->_getProjectFilterTaskRegistry(); }
+
 protected:
     static AppContext* getInstance() {assert(instance); return instance;}
 
@@ -326,6 +329,7 @@ protected:
     virtual PasswordStorage* _getPasswordStorage() const = 0;
     virtual ConvertFactoryRegistry* _getConvertFactoryRegistry() const = 0;
     virtual IdRegistry<WelcomePageAction>* _getWelcomePageActionRegistry() const = 0;
+    virtual ProjectFilterTaskRegistry * _getProjectFilterTaskRegistry() const = 0;
 
     virtual void _registerGlobalObject(AppGlobalObject* go) = 0;
     virtual void _unregisterGlobalObject(const QString& id) = 0;

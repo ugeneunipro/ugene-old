@@ -18,8 +18,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-#include <U2Core/U2ObjectDbi.h>
-#include <U2Core/U2OpStatusUtils.h>
 
 #include "GTTestsRegressionScenarios.h"
 
@@ -156,7 +154,10 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
+
+#include <U2Gui/ProjectViewModel.h>
 
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSingleSequenceWidget.h>
@@ -176,6 +177,7 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QTableWidget>
+#include <QWizard>
 
 namespace U2 {
 
@@ -6040,7 +6042,7 @@ GUI_TEST_CLASS_DEFINITION(test_1986){
 //9. Press "OK"
     GTUtilsTaskTreeView::waitTaskFinished(os);
     QTreeView* treeView = GTUtilsProjectTreeView::getTreeView(os);
-    QAbstractItemModel* model = treeView->model();
+    ProjectViewModel* model = qobject_cast<ProjectViewModel*>(treeView->model());
     QString text = model->data(model->index(0,0, QModelIndex()), Qt::DisplayRole).toString();
 
     CHECK_SET_ERR(text.contains(".fasta"),text);

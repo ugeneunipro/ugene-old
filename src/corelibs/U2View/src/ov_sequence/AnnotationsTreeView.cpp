@@ -896,7 +896,7 @@ void AnnotationsTreeView::adjustMenu(QMenu* m) const {
 void AnnotationsTreeView::sl_onAddAnnotationObjectToView() {
     ProjectTreeControllerModeSettings s;
     s.objectTypesToShow.insert(GObjectTypes::ANNOTATION_TABLE);
-    s.groupMode = ProjectTreeGroupMode_Flat;
+    s.groupMode = ProjectTreeGroupMode_ByDocument;
     foreach(GObject* o, ctx->getObjects()) {
         s.excludeObjectList.append(o);
     }

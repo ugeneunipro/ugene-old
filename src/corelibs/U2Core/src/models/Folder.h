@@ -51,6 +51,7 @@ public:
     static QString getFolderParentPath(const QString &path);
     static QString getFolderName(const QString &path);
     static bool isSubFolder(const QString &path, const QString &expectedSubpath);
+    static bool folderLessThan(const QString &first, const QString &second);
 
 private:
     QPointer<Document> doc;

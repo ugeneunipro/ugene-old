@@ -67,6 +67,7 @@ class ProjectViewWidget : public QWidget, public Ui_ProjectViewWidget {
     Q_OBJECT
 public:
     ProjectViewWidget();
+
 private:
     DocumentUpdater* updater;
 };
@@ -112,8 +113,6 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
-    void sl_onDocumentAdded(Document* d);
-
     void sl_onProjectModifiedStateChanged();
     void sl_onDocumentRemoved(Document* d);
     void sl_onSaveSelectedDocs();
