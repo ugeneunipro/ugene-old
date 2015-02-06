@@ -20,22 +20,17 @@
  */
 
 #include "Primer3DialogFiller.h"
+#include "api/GTCheckBox.h"
 #include "api/GTLineEdit.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTabWidget.h"
 #include "api/GTWidget.h"
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
-#include <QtGui/QTabWidget>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QTabWidget>
-#endif
+#include <QApplication>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QTabWidget>
+#include <QCheckBox>
 
 namespace U2 {
 
@@ -83,6 +78,13 @@ void Primer3DialogFiller::commonScenario() {
         GT_CHECK(end != NULL, "start_edit_line is NULL");
         GTLineEdit::setText(os, end, QString::number(settings.end));
     }
+    QCheckBox* leftCheckbox = dialog->findChild<QCheckBox*>("checkbox_PICK_LEFT");
+    GT_CHECK(leftCheckbox != NULL, "checkbox_PICK_LEFT is NULL");
+    GTCheckBox::setChecked(os, leftCheckbox, settings.pickLeft);
+
+    QCheckBox* rightCheckbox = dialog->findChild<QCheckBox*>("checkbox_PICK_RIGHT");
+    GT_CHECK(rightCheckbox != NULL, "checkbox_PICK_RIGHT is NULL");
+    GTCheckBox::setChecked(os, rightCheckbox, settings.pickRight);
 
     QPushButton* button = dialog->findChild<QPushButton*>("pickPrimersButton");
     GT_CHECK(button !=NULL, "PickPrimers button is NULL");

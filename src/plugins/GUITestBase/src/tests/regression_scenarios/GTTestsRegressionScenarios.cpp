@@ -143,6 +143,7 @@
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/MAFFT/MAFFTSupportRunDialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/primer3/Primer3DialogFiller.h"
 #include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
 #include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
@@ -1231,6 +1232,49 @@ GUI_TEST_CLASS_DEFINITION(test_1289) {
     GTMenu::showMainMenu(os, MWMENU_SETTINGS);
 
 }
+
+GUI_TEST_CLASS_DEFINITION(test_1315_1) {
+    //1. open murine.gb
+    //2. open Primer3 dialog
+    //3. Deselect "Pick left primer"
+    //Expected state: 5 primers are found
+    //Bug state: no primers are found
+    GTFileDialog::openFile(os, dataDir + "/samples/Genbank/", "murine.gb");
+
+    Primer3DialogFiller::Primer3Settings settings;
+    settings.pickLeft = false;
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "primer3_action"));
+    GTUtilsDialog::waitForDialog(os, new Primer3DialogFiller(os, settings));
+
+    GTMouseDriver::click(os);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsAnnotationsTreeView::findItem(os, "top_primers  (0, 5)");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1315_2) {
+    //1. open murine.gb
+    //2. open Primer3 dialog
+    //3. Deselect "Pick right primer"
+    //Expected state: 5 primers are found
+    //Bug state: no primers are found
+    GTFileDialog::openFile(os, dataDir + "/samples/Genbank/", "murine.gb");
+
+    Primer3DialogFiller::Primer3Settings settings;
+    settings.pickRight = false;
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "primer3_action"));
+    GTUtilsDialog::waitForDialog(os, new Primer3DialogFiller(os, settings));
+
+    GTMouseDriver::click(os);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsAnnotationsTreeView::findItem(os, "top_primers  (0, 5)");
+}
+
 
 GUI_TEST_CLASS_DEFINITION(test_1325) {
 //    1. Open _common_data\regression\1325\long_gff.gff (choosing GFF format)

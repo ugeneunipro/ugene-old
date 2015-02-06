@@ -33,7 +33,9 @@ public:
         Primer3Settings()
             : resultsCount(-1),
               start(-1),
-              end(-1)
+              end(-1),
+              pickRight(true),
+              pickLeft(true)
         {}
 
         int resultsCount;
@@ -41,6 +43,8 @@ public:
         QString primersName;
         int start;
         int end;
+        bool pickRight;
+        bool pickLeft;
     };
 
     Primer3DialogFiller(U2OpStatus &os, const Primer3Settings &settings = Primer3Settings());
