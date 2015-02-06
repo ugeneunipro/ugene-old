@@ -101,9 +101,12 @@ void PanView::ZoomUseObject::releaseZoom() {
 }
 
 
-PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewAnnotated(p, ctx)
+PanView::PanView(ADVSingleSequenceWidget* p, ADVSequenceObjectContext* ctx)
+    : GSequenceLineViewAnnotated(p, ctx),
+    seqWidget(p)
 {
     rowBar = new QScrollBar(this);
+
     rowsManager = new PVRowsManager();
     renderArea = new PanViewRenderArea(this);
 
@@ -201,7 +204,7 @@ void PanView::pack() {
     layout->addWidget(scrollBar, 1, 0, 1, 1);
     setLayout(layout);
 
-    setFixedHeight(layout->minimumSize().height());
+    setMinimumHeight(layout->minimumSize().height());
 }
 
 PanView::~PanView() {
@@ -249,7 +252,7 @@ void PanView::updateRAHeight() {
     if (heightChanged) {
         QLayout* lt = layout();
         if (lt != NULL) {
-            setFixedHeight(lt->minimumSize().height());
+            setMinimumHeight(lt->minimumSize().height());
         }
     }
 }
@@ -631,6 +634,7 @@ void PanViewRenderArea::drawAll(QPaintDevice* pd) {
                           uf.testFlag(GSLV_UF_VisibleRangeChanged) || uf.testFlag(GSLV_UF_AnnotationsChanged);
 
     QPainter p(pd);
+    int hCenter = (pd->height() - numLines * lineHeight) / 2;
     if (completeRedraw) {
         QPainter pCached(cachedView);
         pCached.fillRect(0, 0, pd->width(), pd->height(), Qt::white);
@@ -654,6 +658,8 @@ void PanViewRenderArea::drawAll(QPaintDevice* pd) {
             chunk = qMax(chunk, GraphUtils::calculateChunk(visibleRange.startPos+1-ri.offset, visibleRange.endPos()-ri.offset, panView->width(), p));
         }
         c.predefinedChunk = chunk;
+
+        pCached.translate(0, -hCenter);
         drawRuler(c, pCached, visibleRange, firstCharCenter, firstLastWidth);
         drawCustomRulers(c, pCached, visibleRange, firstCharCenter);
 
@@ -661,19 +667,22 @@ void PanViewRenderArea::drawAll(QPaintDevice* pd) {
 
         pCached.end();
     }
+
     p.drawPixmap(0, 0, *cachedView);
 
 
-    PanView* panview = qobject_cast<PanView*>(view);
-    ADVSingleSequenceWidget* ssw = qobject_cast<ADVSingleSequenceWidget*>(panview->parentWidget());
+    ADVSingleSequenceWidget* ssw = panView->seqWidget;
     assert(ssw);
     if(!ssw->isOverviewCollapsed()) {
         drawFrame(p);
     }
 
+    p.translate(0, -hCenter);
     drawSequence(p);
-    drawAnnotationsSelection(p);
     drawSequenceSelection(p);
+    p.translate(0, hCenter);
+
+    drawAnnotationsSelection(p);
 
     if (view->hasFocus()) {
         drawFocus(p);
@@ -750,7 +759,8 @@ U2Region PanViewRenderArea::getAnnotationYRange( const Annotation &a, int,
     }
     const int row = getPanView( )->getRowsManager( )->getAnnotationRowIdx( a );
     const int line = getRowLine( row );
-    return U2Region( getLineY( line ) + 2, lineHeight - 4 );
+
+    return U2Region( getLineY( line ) + 2 - (height() - numLines * lineHeight) / 2, lineHeight - 4 );
 }
 
 void PanViewRenderArea::drawAnnotations( QPainter &p ) {
@@ -785,7 +795,6 @@ void PanViewRenderArea::drawAnnotations( QPainter &p ) {
                 pen1.setWidth( 1 );
                 U2Region yr( lineY + 2, lineHeight - 4 );
                 foreach ( const Annotation &a, rData->annotations ) {
-                    const AnnotationData aData = a.getData( );
                     drawAnnotation( p, DrawAnnotationPass_DrawFill, a, pen1, false, as, yr );
                     drawAnnotation( p, DrawAnnotationPass_DrawBorder, a, pen1, false, as, yr );
                 }
@@ -829,6 +838,11 @@ void PanViewRenderArea::drawSequence(QPainter& p) {
         p.drawText(x, y, QString(c));
     }
 
+}
+
+void PanViewRenderArea::resizeEvent(QResizeEvent *e) {
+    view->addUpdateFlags(GSLV_UF_ViewResized);
+    QWidget::resizeEvent(e);
 }
 
 #define ARROW_DY 5
@@ -995,7 +1009,7 @@ bool PanViewRenderArea::updateNumVisibleRows() {
     } else {
         fromActions = false;
     }
-    setFixedHeight(numLines * lineHeight);
+    setMinimumHeight(numLines * lineHeight);
     view->addUpdateFlags(GSLV_UF_ViewResized);
     view->update();
     return true;

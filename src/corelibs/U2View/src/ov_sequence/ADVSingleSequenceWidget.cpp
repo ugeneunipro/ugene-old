@@ -66,7 +66,12 @@ namespace U2 {
 #define ADV_HEADER_HEIGHT 24
 #define IMAGE_DIR   "image"
 
-ADVSingleSequenceWidget::ADVSingleSequenceWidget(ADVSequenceObjectContext* seqCtx, AnnotatedDNAView* ctx) : ADVSequenceWidget(ctx) {
+ADVSingleSequenceWidget::ADVSingleSequenceWidget(ADVSequenceObjectContext* seqCtx, AnnotatedDNAView* ctx)
+    : ADVSequenceWidget(ctx),
+      detView(NULL),
+      panView(NULL),
+      overview(NULL)
+{
     seqContexts.append(seqCtx);
 
     toggleViewAction = new QAction(this);
@@ -114,12 +119,32 @@ ADVSingleSequenceWidget::ADVSingleSequenceWidget(ADVSequenceObjectContext* seqCt
     linesLayout = new QVBoxLayout();
     linesLayout->setMargin(0);
     linesLayout->setSpacing(0);
-    setLayout(linesLayout);
+    linesLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+
+    linesSplitter = new QSplitter(Qt::Vertical);
+    linesSplitter->setChildrenCollapsible(false);
+
+    QWidget *linesLayoutWidget = new QWidget();
+    linesLayoutWidget->setObjectName("lines_layout_widget");
+    linesLayoutWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+    linesLayoutWidget->setLayout(linesLayout);
+
+    linesSplitter->addWidget(linesLayoutWidget);
+
+    QVBoxLayout* l = new QVBoxLayout(this);
+    l->setMargin(0);
+    l->setSpacing(0);
+    l->addWidget(linesSplitter);
+    l->setSizeConstraint(QLayout::SetMinAndMaxSize);
+    setLayout(l);
+
     headerWidget = new ADVSingleSequenceHeaderWidget(this);
     headerWidget->installEventFilter(this);
+    headerWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     linesLayout->addWidget(headerWidget);
 
     init();
+    updateMinMaxHeight();
 }
 
 void ADVSingleSequenceWidget::init() {
@@ -127,25 +152,27 @@ void ADVSingleSequenceWidget::init() {
     detView = new DetView(this, seqCtx);
     detView->setObjectName("det_view_" + getSequenceObject()->getGObjectName());
     detView->setMouseTracking(true);
-    addSequenceView(detView, headerWidget);
-
+    detView->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
     panView = new PanView(this, seqCtx);
     panView->setObjectName("pan_view_" + getSequenceObject()->getGObjectName());
+    panView->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     connect(panView, SIGNAL(si_centerPosition(qint64)), SLOT(sl_onLocalCenteringRequest(qint64)));
 
     zoomUseObject.setPanView(panView);
 
-    addSequenceView(panView, headerWidget);
+    addSequenceView(panView);
+    addSequenceView(detView, panView);
 
     panView->setFrameView(detView);
 
     overview = new Overview(this, seqCtx);
     overview->setObjectName("overview_" + getSequenceObject()->getGObjectName());
     overview->setMouseTracking(true);
-    addSequenceView(overview, headerWidget);
+    overview->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    lineViews.append(overview);
+    linesLayout->addWidget(overview);
 
-    setFixedHeight(linesLayout->minimumSize().height());
 
     buttonTabOrederedNames = new QList<QString>;
 
@@ -316,17 +343,12 @@ void ADVSingleSequenceWidget::addSequenceView(GSequenceLineView* v, QWidget* aft
     assert(!lineViews.contains(v));
     lineViews.append(v);
     if (after==NULL) {
-        if(lineViews.size()>1) {
-            linesLayout->insertWidget(2, v);
-        }
-        else {
-            linesLayout->insertWidget(1, v);
-        }
+        linesSplitter->insertWidget(1, v);
     }
     else {
-        int after_ = linesLayout->indexOf(after);
+        int after_ = linesSplitter->indexOf(after);
         assert(after_!=-1);
-        linesLayout->insertWidget(after_+1, v);
+        linesSplitter->insertWidget(after_ + 1, v);
     }
     v->setVisible(true);
     v->installEventFilter(this);
@@ -337,8 +359,7 @@ void ADVSingleSequenceWidget::addSequenceView(GSequenceLineView* v, QWidget* aft
 void ADVSingleSequenceWidget::removeSequenceView(GSequenceLineView* v, bool deleteView) {
     assert(lineViews.contains(v));
     lineViews.removeOne(v);
-    linesLayout->removeWidget(v);
-    v->setVisible(false);
+    v->setVisible(false); // making widget invisible removes it from the splitter automatically
     v->disconnect(this);
     v->removeEventFilter(this);
     if (deleteView) {
@@ -367,7 +388,6 @@ void ADVSingleSequenceWidget::setNumBasesVisible(qint64 n) {
 void ADVSingleSequenceWidget::sl_onViewDestroyed(QObject* o) {
     GSequenceLineView* v = static_cast<GSequenceLineView*>(o);
     bool r = lineViews.removeOne(v);
-    linesLayout->removeWidget(v);//need here for updateMinMaxHeight
     assert(r);
     Q_UNUSED(r);
     updateMinMaxHeight();
@@ -383,8 +403,14 @@ void ADVSingleSequenceWidget::centerPosition(int pos, QWidget* skipView) {
 }
 
 void ADVSingleSequenceWidget::updateMinMaxHeight() {
-    int height = linesLayout->minimumSize().height();
-    setFixedHeight(height);
+    int height = linesSplitter->minimumHeight();
+    setMinimumHeight(height);
+
+    if (lineViews.size() == 1 && lineViews.first() == overview) {
+        setMaximumHeight(height);
+    } else {
+        setMaximumHeight(QWIDGETSIZE_MAX);
+    }
 }
 
 
@@ -783,7 +809,7 @@ void ADVSingleSequenceWidget::sl_closeView()
 }
 
 void ADVSingleSequenceWidget::sl_saveScreenshot() {
-    if (linesLayout->count() < 2) {
+    if (linesLayout->count() + linesSplitter->count() < 2) {
         return;
     }
     ExportImageDialog dialog(this, ExportImageDialog::SequenceView);

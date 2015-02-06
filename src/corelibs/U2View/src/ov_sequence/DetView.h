@@ -104,7 +104,6 @@ public:
 protected:
     virtual void drawAll(QPaintDevice* pd);
 
-
 private:
     int getLineY(int line) const {return 2 + line * lineHeight;}
     int getTextY(int line) const {return getLineY(line) + lineHeight - yCharOffset;}

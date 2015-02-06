@@ -124,8 +124,8 @@ protected:
     virtual void                    drawAnnotations( QPainter &p );
     virtual void                    drawBoundedText( QPainter &p, const QRect &r,
                                         const QString &text ) const;
-    virtual void                    drawAnnotationConnections( QPainter &p, const Annotation &a,
-                                        const AnnotationSettings *as );
+    virtual void                    drawAnnotationConnections(QPainter &p, const Annotation &a, const AnnotationSettings *as,
+                                                              U2Region yRange);
     virtual void                    drawAnnotationsSelection( QPainter &p );
     void                            drawCutSites(QPainter &p);
     virtual void                    drawCutSite( QPainter &p, const QRect &r, const QColor &color,

@@ -183,11 +183,9 @@ QWidget* AnnotatedDNAView::createWidget() {
 
     mainSplitter = new QSplitter(Qt::Vertical);
     mainSplitter->setObjectName("annotated_DNA_splitter");
-    mainSplitter->setMaximumHeight(200);
     connect(mainSplitter, SIGNAL(splitterMoved(int, int)), SLOT(sl_splitterMoved(int, int)));
 
     mainSplitter->addWidget(codonTableView);
-    mainSplitter->setSizes(QList <int>() << codonTableView->maximumHeight() );
 
     mainSplitter->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(mainSplitter, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_onContextMenuRequested(const QPoint &)));
@@ -195,6 +193,7 @@ QWidget* AnnotatedDNAView::createWidget() {
     scrollArea = new QScrollArea();
     scrollArea->setObjectName("annotated_DNA_scrollarea");
     scrollArea->setWidgetResizable(true);
+    scrollArea->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 
     mainSplitter->addWidget(scrollArea);
     mainSplitter->setHandleWidth(1); // make smaller the distance between the Annotations Editor and the  sequence sub-views
@@ -205,8 +204,10 @@ QWidget* AnnotatedDNAView::createWidget() {
     scrolledWidgetLayout = new QVBoxLayout();
     scrolledWidgetLayout->setContentsMargins(0, 0, 0, 0);
     scrolledWidgetLayout->setSpacing(0);
+    scrolledWidgetLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
     scrolledWidget->setBackgroundRole(QPalette::Light);
     scrolledWidget->installEventFilter(this);
+    scrolledWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 
     annotationsView = new AnnotationsTreeView(this);
     annotationsView->setParent(mainSplitter);
@@ -228,7 +229,6 @@ QWidget* AnnotatedDNAView::createWidget() {
 
     //TODO: scroll area does not restore focus for last active child widget after Alt-Tab...
     scrollArea->setWidget(scrolledWidget);
-    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     clipb = new ADVClipboard(this);
 
@@ -320,12 +320,27 @@ void AnnotatedDNAView::updateScrollAreaHeight() {
         return;
     }
 
-    int fw = scrollArea->frameWidth();
-    int mh = fw * 2;
+    int minH = 0;
+    int maxH = 0;
     foreach(ADVSequenceWidget* v, seqViews) {
-        mh+=v->height();
+        minH += v->minimumHeight();
+        maxH += v->maximumHeight();
     }
-    scrollArea->setMaximumHeight(mh);
+    scrollArea->setMinimumHeight(minH);
+
+    if (scrollArea->size().height() > maxH) {
+        scrollArea->setMaximumHeight(maxH);
+        scrollArea->resize(scrollArea->width(), maxH);
+
+        QList<int> mainSplitterSizes = mainSplitter->sizes();
+        int idx = mainSplitter->indexOf(scrollArea);
+        SAFE_POINT(0 <= idx  && idx < mainSplitterSizes.size(), "Invalid position of the widget in the splitter",  );
+        mainSplitterSizes[ mainSplitter->indexOf(scrollArea) ] = maxH;
+        mainSplitter->setSizes( mainSplitterSizes );
+    } else {
+        scrollArea->setMaximumHeight(QWIDGETSIZE_MAX);
+    }
+
     scrolledWidgetLayout->activate();
 }
 

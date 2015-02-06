@@ -553,7 +553,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotation( QPainter &p, DrawAnno
                     }
                 }
             }
-            drawAnnotationConnections( p, a, as );
+            drawAnnotationConnections( p, a, as, predefinedy.isEmpty( ) ? U2Region() : predefinedy);
         }
     }
 }
@@ -637,7 +637,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawCutSite(QPainter& p, const QRect&
 }
 
 void GSequenceLineViewAnnotatedRenderArea::drawAnnotationConnections(QPainter &p,
-    const Annotation &a, const AnnotationSettings *as)
+    const Annotation &a, const AnnotationSettings *as, U2Region yRange)
 {
     const AnnotationData aData = a.getData( );
     if ( aData.location->isSingleRegion( ) ) {
@@ -681,8 +681,8 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotationConnections(QPainter &p
                     x1 = qBound( -MAX_VIRTUAL_RANGE, x1, MAX_VIRTUAL_RANGE ); //qt4.4 crashes in line clipping alg for extremely large X values
                     x2 = qBound( -MAX_VIRTUAL_RANGE, x2, MAX_VIRTUAL_RANGE );
                     const int midX = ( x1 + x2 ) / 2;
-                    const U2Region pyr = getAnnotationYRange( a, ri - 1, as );
-                    const U2Region yr = getAnnotationYRange( a, ri, as );
+                    const U2Region pyr = yRange.isEmpty() ? getAnnotationYRange( a, ri - 1, as ) : yRange;
+                    const U2Region yr = yRange.isEmpty() ? getAnnotationYRange( a, ri, as ) : yRange;
                     const int y1 = pyr.startPos;
                     const int dy1 = pyr.length / 2;
                     const int y2 = yr.startPos;

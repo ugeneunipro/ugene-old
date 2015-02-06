@@ -42,11 +42,13 @@ class DetView;
 class OverviewRenderArea;
 class AnnotationModification;
 class AnnotationTableObject;
+class ADVSingleSequenceWidget;
+
 
 class Overview : public GSequenceLineView {
     Q_OBJECT
 public:
-    Overview(QWidget* p, ADVSequenceObjectContext* ctx);
+    Overview(ADVSingleSequenceWidget* p, ADVSequenceObjectContext* ctx);
 
 protected slots:
     void sl_visibleRangeChanged();
@@ -83,6 +85,8 @@ private:
     DetView*        detView;
     QPoint          mousePosToSlider;
     QToolButton*    tb;
+    ADVSingleSequenceWidget* seqWidget;
+
 
 friend class OverviewRenderArea;
 };

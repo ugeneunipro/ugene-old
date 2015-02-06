@@ -45,6 +45,8 @@ class PanViewRenderArea;
 class GScrollBar;
 class GObjectView;
 class PVRowsManager;
+class ADVSingleSequenceWidget;
+
 
 class RulerInfo {
 public:
@@ -75,7 +77,7 @@ public:
         PanView *panView;
     };
 
-    PanView(QWidget* p, ADVSequenceObjectContext* ctx);
+    PanView(ADVSingleSequenceWidget* p, ADVSequenceObjectContext* ctx);
     ~PanView();
 
     const U2Region& getFrameRange() const {return frameView->getVisibleRange();}
@@ -187,6 +189,8 @@ public:
     int                 syncOffset; //used by ADVSyncViewManager only
 
     int zoomUsing;
+
+    ADVSingleSequenceWidget*    seqWidget;
 };
 
 
@@ -216,6 +220,8 @@ protected:
     virtual void drawAll(QPaintDevice* pd);
     virtual void drawAnnotations(QPainter& p);
     virtual void drawSequence(QPainter& p);
+
+    void resizeEvent(QResizeEvent *e);
 
 private slots:
     void sl_increaseLines();

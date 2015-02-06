@@ -27,21 +27,13 @@
 #include <U2Core/GAutoDeleteList.h>
 #include "PanView.h"
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QWidget>
-#include <QtGui/QLabel>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QMenu>
-#include <QtGui/QToolBar>
-#include <QtGui/QToolButton>
-#else
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QToolButton>
-#endif
+#include <QWidget>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QMenu>
+#include <QToolBar>
+#include <QToolButton>
+#include <QSplitter>
 
 #ifdef Q_OS_UNIX
 #include <QtCore/QTimer>
@@ -192,6 +184,7 @@ private:
     Overview*                       overview;
     QList<GSequenceLineView*>       lineViews;
     QVBoxLayout*                    linesLayout;
+    QSplitter*                      linesSplitter;
     ADVSingleSequenceHeaderWidget   *headerWidget;
 
     QAction*        toggleViewAction;

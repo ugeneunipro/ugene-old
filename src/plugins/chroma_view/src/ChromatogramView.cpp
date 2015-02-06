@@ -85,7 +85,7 @@ ChromatogramView::ChromatogramView(QWidget* p, ADVSequenceObjectContext* v, GSeq
     renderArea = new ChromatogramViewRenderArea(this, chroma);
 
     scaleBar = new ScaleBar();
-    scaleBar->slider()->setRange(100,2000);
+    scaleBar->slider()->setRange(100, 1000);
     scaleBar->slider()->setTickInterval(100);
     connect(scaleBar,SIGNAL(valueChanged(int)),SLOT(setRenderAreaHeight(int)));
 
@@ -133,7 +133,7 @@ void ChromatogramView::pack() {
 
     scrollBar->setHidden(true); //todo: support mode without scrollbar at all??
 
-    setFixedHeight(renderArea->height());
+    setMinimumHeight(renderArea->minimumHeight());
 }
 
 
@@ -436,7 +436,7 @@ void ChromatogramView::sl_showAllTraces()
 ChromatogramViewRenderArea::ChromatogramViewRenderArea(ChromatogramView* p, const DNAChromatogram& _chroma)
 : GSequenceLineViewRenderArea(p), linePen(Qt::gray, 1, Qt::DotLine)
 {
-    setFixedHeight(200);
+    setMinimumHeight(200);
     font.setFamily("Courier");
     font.setPointSize(12);
     fontBold = font;
@@ -463,7 +463,7 @@ ChromatogramViewRenderArea::ChromatogramViewRenderArea(ChromatogramView* p, cons
     }
     else    {
         addUpIfQVL = heightAreaBC - 2*charHeight;
-        setFixedHeight(height()-addUpIfQVL);
+        setMinimumHeight(height()-addUpIfQVL);
         areaHeight = height()-heightAreaBC + addUpIfQVL;
     }
 }
@@ -491,6 +491,7 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
     bool completeRedraw = uf.testFlag(GSLV_UF_NeedCompleteRedraw) || uf.testFlag(GSLV_UF_ViewResized) ||
         uf.testFlag(GSLV_UF_VisibleRangeChanged);
 
+    heightPD = height();
 
     if (completeRedraw) {
         QPainter p(cachedView);
@@ -505,7 +506,6 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
             if (chroma.hasQV && chromaView->showQV()) {
                 drawQualityValues(0, charHeight, width(), heightAreaBC - 2*charHeight, p, visible, seq);
             }
-            //drawOriginalBaseCalls(0, 0, width(), charHeight, p, visible, qobject_cast<ChromatogramView*>(view)->fastaSeq, false);
         } else {
             QRectF rect(charWidth, 0, width() - 2*charWidth, 2*charHeight);
             p.drawText(rect, Qt::AlignCenter, QString(tr("selection_is_too_big")));
@@ -530,7 +530,6 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
     p.setFont(font);
     p.drawPixmap(0, 0, *cachedView);
 
-    //p.setBrush(QBrush(Qt::green, Qt::SolidPattern));
     if (hasSel) {
         p.setPen(linePen);
         p.drawRect(selRect);
@@ -648,6 +647,7 @@ void ChromatogramViewRenderArea::drawChromatogramTrace(qreal x, qreal y, qreal w
     int polylineSize = a2-a1+mk1+mk2+1;
     QPolygonF polylineA(polylineSize), polylineC(polylineSize),
         polylineG(polylineSize), polylineT(polylineSize);
+    int areaHeight = (heightPD - heightAreaBC + addUpIfQVL) * this->areaHeight / 100;
     for (int j = a1-mk1; j <= a2+mk2; ++j) {
         double x = kLinearTransformTrace*j+bLinearTransformTrace;
         double yA = - qMin<double>(chroma.A[j]*areaHeight/chromaMax, h);
@@ -819,6 +819,7 @@ void ChromatogramViewRenderArea::drawChromatogramBaseCallsLines(qreal x, qreal y
     kLinearTransformTrace = qreal (k1) / k2;
     bLinearTransformTrace = leftMargin - kLinearTransformTrace*a1;
     double yRes = 0;
+    int areaHeight = (heightPD - heightAreaBC + addUpIfQVL) * this->areaHeight / 100;
     for (int j = visible.startPos; j < visible.startPos+visible.length; j++) {
         int temp = chroma.baseCalls[j];
         if (temp >= chroma.traceLength) {

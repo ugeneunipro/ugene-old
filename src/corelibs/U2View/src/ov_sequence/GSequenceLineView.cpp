@@ -73,7 +73,7 @@ void GSequenceLineView::pack() {
     layout->addWidget(scrollBar);
     setLayout(layout);
 
-    setFixedHeight(layout->minimumSize().height());
+    setMinimumHeight(layout->minimumSize().height());
 }
 
 void GSequenceLineView::resizeEvent(QResizeEvent *e) {

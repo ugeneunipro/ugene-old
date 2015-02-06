@@ -30,30 +30,29 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/GraphUtils.h>
 #include <U2Gui/GScrollBar.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QToolTip>
-#else
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QToolTip>
-#endif
+#include <QVBoxLayout>
+#include <QToolTip>
+
 
 namespace U2 {
 
-Overview::Overview(QWidget *p, ADVSequenceObjectContext *ctx) : GSequenceLineView(p, ctx) {
+Overview::Overview(ADVSingleSequenceWidget *p, ADVSequenceObjectContext *ctx)
+    : GSequenceLineView(p, ctx),
+      seqWidget(p)
+{
     renderArea = new OverviewRenderArea(this);
     visibleRange = U2Region(0, ctx->getSequenceLength());
     renderArea->setMouseTracking(true);
     renderArea->setObjectName("OverviewRenderArea");
 
 
-    ADVSingleSequenceWidget* ssw = qobject_cast<ADVSingleSequenceWidget*>(p);
-    panView = ssw->getPanView();
-    detView = ssw->getDetView();
+    panView = p->getPanView();
+    detView = p->getDetView();
 
     tb = new QToolButton(this);
     tb->setFixedWidth(16);
@@ -186,9 +185,7 @@ void Overview::mousePressEvent(QMouseEvent *me) {
         panSliderMovedLeft = (renderAreaPos.x() - panSlider.topLeft().x() < 10) && panSliderClicked;
         offset = renderArea->coordToPos(me->pos().x()) - renderArea->coordToPos(panSlider.left());
         //don't process detSlider when details view is collapsed
-        ADVSingleSequenceWidget* parent = qobject_cast<ADVSingleSequenceWidget*>(parentWidget());
-        assert(parent);
-        if(parent->isDetViewCollapsed()) {
+        if(seqWidget->isDetViewCollapsed()) {
             detSliderClicked = false;
         }
         else {
@@ -321,9 +318,7 @@ void Overview::mouseDoubleClickEvent(QMouseEvent* me) {
         panView->setVisibleRange(U2Region(panPos, panVisLen));
 
         //don't process detSlider when details view is collapsed
-        ADVSingleSequenceWidget* parent = qobject_cast<ADVSingleSequenceWidget*>(parentWidget());
-        assert(parent);
-        if(!parent->isDetViewCollapsed()) {
+        if(!seqWidget->isDetViewCollapsed()) {
             QRectF detSlider(ra->getDetSlider());
             qint64 detVisLen = detView->getVisibleRange().length;
             qint64 detPos = ra->coordToPos(renderAreaPos.x());
@@ -499,8 +494,9 @@ void OverviewRenderArea::drawAll(QPaintDevice *pd) {
 
     //don't show arrow when det view collapsed
     Overview* overview = qobject_cast<Overview*>(view);
-    ADVSingleSequenceWidget* ssw = qobject_cast<ADVSingleSequenceWidget*>(overview->parentWidget());
-    assert(ssw);
+    SAFE_POINT(overview != NULL, tr("Overview is NULL"), );
+    ADVSingleSequenceWidget* ssw = overview->seqWidget;
+    SAFE_POINT(ssw != NULL, tr("ADVSingleSequenceWidget is NULL"), );
     if(!ssw->isPanViewCollapsed()) {
         drawSlider(p, panSlider, QColor(230, 230, 230));
     }

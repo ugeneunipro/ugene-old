@@ -197,7 +197,7 @@ void GSequenceGraphView::pack() {
 
     scrollBar->setHidden(true); //todo: support mode without scrollbar at all??
 
-    setFixedHeight(140);
+    setMinimumHeight(140);
 }
 
 GSequenceGraphView::~GSequenceGraphView() {
@@ -330,8 +330,8 @@ void GSequenceGraphViewRA::drawAll(QPaintDevice* pd) {
     p.fillRect(0, 0, pd->width(), pd->height(), Qt::white);
     p.setPen(Qt::black);
 
-    if(graphRect != QRect(1, headerHeight+1, pd->width()-2, pd->height()-headerHeight-2)) {
-    graphRect = QRect(1, headerHeight+1, pd->width()-2, pd->height()-headerHeight-2);
+    if (graphRect != QRect(1, headerHeight+1, pd->width()-2, pd->height()-headerHeight-2)) {
+        graphRect = QRect(1, headerHeight+1, pd->width()-2, pd->height()-headerHeight-2);
         emit si_graphRectChanged(graphRect);
     }
 

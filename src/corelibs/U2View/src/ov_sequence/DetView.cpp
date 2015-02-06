@@ -88,12 +88,14 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
     pack();
 
     updateActions();
+
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 }
 
 void DetView::updateSize() {
     DetViewRenderArea* detArea = (static_cast<DetViewRenderArea*>(renderArea));
     detArea->updateSize();
-    setFixedHeight(layout()->minimumSize().height());
+    setMinimumHeight(layout()->minimumSize().height());
 }
 
 void DetView::resizeEvent(QResizeEvent *e) {
@@ -113,6 +115,7 @@ void DetView::resizeEvent(QResizeEvent *e) {
 
     Q_ASSERT(visibleRange.startPos >= 0 && visibleRange.endPos()<=seqLen);
 
+    addUpdateFlags(GSLV_UF_ViewResized);
     GSequenceLineView::resizeEvent(e);
 
     onVisibleRangeChanged();
@@ -333,7 +336,8 @@ U2Region DetViewRenderArea::getAnnotationYRange( const Annotation &a, int region
     }
     SAFE_POINT( -1 != line, "Unable to calculate annotation vertical position!", U2Region( ) );
     int y = getLineY( line );
-    return U2Region( y, lineHeight );
+    int minH = numLines * lineHeight + 5;
+    return U2Region( y + (height() - minH) / 2, lineHeight);
 }
 
 U2Region DetViewRenderArea::getMirroredYRange( const U2Strand &mirroredStrand) const {
@@ -365,12 +369,17 @@ void DetViewRenderArea::drawAll(QPaintDevice* pd) {
 
     bool hasSelectedAnnotationInRange = isAnnotationSelectionInVisibleRange();
 
+    int minH = numLines * lineHeight + 5;
+    int hCenter = (height() - minH) / 2;
+
     if (completeRedraw) {
         cutsiteDataList.clear();
         QPainter pCached(cachedView);
         pCached.fillRect(0, 0, pd->width(), pd->height(), Qt::white);
         pCached.setPen(Qt::black);
         drawAnnotations(pCached);
+
+        pCached.translate(0, hCenter);
 
         drawDirect(pCached);
         drawComplement(pCached);
@@ -388,18 +397,23 @@ void DetViewRenderArea::drawAll(QPaintDevice* pd) {
     drawAnnotationsSelection(p);
 
     if (hasSelectedAnnotationInRange) {
+        p.translate(0, hCenter);
+
         drawDirect(p);
         drawComplement(p);
         drawTranslations(p);
+
+        p.translate(0, -hCenter);
     }
 
+    p.translate(0, hCenter);
     drawSequenceSelection(p);
 
     if (view->hasFocus()) {
+        p.translate(0, -hCenter);
         drawFocus(p);
     }
 }
-
 
 void DetViewRenderArea::drawDirect(QPainter& p) {
     p.setFont(sequenceFont);
@@ -758,7 +772,7 @@ double DetViewRenderArea::getCurrentScale() const {
 void DetViewRenderArea::updateSize()  {
     updateLines();
     int h = numLines * lineHeight + 5;
-    setFixedHeight(h); //todo: remove +5 and fix ruler drawing to fit its line
+    setMinimumHeight(h);
 }
 
 } // namespace U2

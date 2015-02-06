@@ -93,8 +93,8 @@ public:
 
     virtual void showSettingsDialog();
 
-    float getGlobalMin(){return globalMin;};
-    float getGlobalMax(){return globalMax;};
+    float getGlobalMin(){return globalMin;}
+    float getGlobalMax(){return globalMax;}
 
     void selectExtremumPoints(GSequenceGraphData *graph, const QRect& graphRect, int windowSize, const U2Region &visibleRange);
 
