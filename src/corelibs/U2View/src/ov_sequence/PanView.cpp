@@ -588,6 +588,7 @@ void PanView::sl_sequenceChanged(){
         setVisibleRange(newRange);
     }
     GSequenceLineView::sl_sequenceChanged();
+    updateActions();
 }
 
 void PanView::hideEvent( QHideEvent *ev ){
