@@ -27,6 +27,7 @@
 #include <AppContextImpl.h>
 
 #include <U2Core/CopyDocumentTask.h>
+#include <U2Core/Counter.h>
 #include <U2Core/ProjectService.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Settings.h>
@@ -1078,6 +1079,8 @@ void ProjectViewImpl::sl_openStateView() {
 
 void ProjectViewImpl::sl_filterTextChanged(const QString &str) {
     SAFE_POINT(NULL != projectTreeController, "NULL controller", );
+    GCOUNTER(cvar, tvar, "Project view filter");
+
     ProjectTreeControllerModeSettings settings = projectTreeController->getModeSettings();
     settings.tokensToShow = str.split(QRegExp("\\s+"), QString::SkipEmptyParts);
     projectTreeController->updateSettings(settings);
