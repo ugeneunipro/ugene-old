@@ -1233,6 +1233,47 @@ GUI_TEST_CLASS_DEFINITION(test_1289) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1295) {
+    class CustomBuildTreeDialogFiller : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new LicenseAgreemntDialogFiller(os));
+
+            QComboBox *algorithmBox = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "algorithmBox", dialog));
+            GTComboBox::setIndexWithText(os, algorithmBox, "MrBayes");
+
+            QLineEdit *saveLineEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "fileNameEdit", dialog));
+            GTLineEdit::setText(os, saveLineEdit, sandBoxDir + "1295.nwk");
+
+            QDialogButtonBox *box = qobject_cast<QDialogButtonBox *>(GTWidget::findWidget(os, "buttonBox", dialog));
+            QPushButton* button = box->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(button != NULL, "Ok button is NULL");
+            GTWidget::click(os, button);
+        }
+    };
+
+    GTLogTracer lt;
+    // 1. Open file "data/samples/MSF/HMA.msf".
+    GTFileDialog::openFile(os, dataDir + "samples/MSF/", "HMA.msf");
+
+    // 2. Call context menu on MSA area.
+    // 3. Choose { "Tree" -> "Build Tree" }.
+    // Expected state: "Build Phylogenetic Tree" dialog appears.
+    // 4. Set "Tree building method" to "MrBayes".
+    // 5. Press "Build" button.
+    // Expected state: Tree is built (can take a while), notification error message doesn't appear.
+
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, new CustomBuildTreeDialogFiller()));
+    QAbstractButton *tree = GTAction::button(os, "Build Tree");
+    GTWidget::click(os, tree);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    // Expected: the tree appears synchronized with the MSA Editor.
+
+    GTUtilsLog::check(os, lt);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1315_1) {
     //1. open murine.gb
     //2. open Primer3 dialog
