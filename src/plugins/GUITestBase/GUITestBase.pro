@@ -119,6 +119,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.h \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h \
             src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h \
+            src/runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h \
             src/runnables/ugene/plugins/workflow_designer/CreateElementWithCommandLineToolFiller.h \
             src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h \
             src/runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h \
@@ -154,6 +155,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsTask.h \
             src/GTUtilsTaskTreeView.h \
             src/GTUtilsToolTip.h \
+            src/GTUtilsWizard.h \
             src/GTUtilsWorkflowDesigner.h \
 #   Tests
             src/tests/GUIInitialChecks.h \
@@ -245,10 +247,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTGraphicsItem.h \
             src/api/GTTreeView.h \
             src/api/GTListWidget.h \
-            src/api/GTSlider.h \
-    src/GTUtilsWizard.h \
-    src/runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h \
-    src/runnables/qt/EscapeClicker.h
+            src/api/GTSlider.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -368,6 +367,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.cpp \
+            src/runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/CreateElementWithCommandLineFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.cpp \
@@ -402,6 +402,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsTask.cpp \
             src/GTUtilsTaskTreeView.cpp \
             src/GTUtilsToolTip.cpp \
+            src/GTUtilsWizard.cpp \
             src/GTUtilsWorkflowDesigner.cpp \
 #   Tests
             src/tests/GUIInitialChecks.cpp \
@@ -499,7 +500,4 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTGraphicsItem.cpp \
             src/api/GTTreeView.cpp \
             src/api/GTListWidget.cpp \
-            src/api/GTSlider.cpp \
-    src/GTUtilsWizard.cpp \
-    src/runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.cpp \
-    src/runnables/qt/EscapeClicker.cpp
+            src/api/GTSlider.cpp
