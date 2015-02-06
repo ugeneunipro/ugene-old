@@ -1258,6 +1258,28 @@ public:
     GTWidget::click(os, GTAction::button(os, "Show wizard"));
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1337 ) {
+    //1) Click "Open file" button.
+    //2) Choose two sequence files with different alphabets (e.g. "_common_data/fasta/DNA.fa" and "_common_data/fasta/amino_multy.fa") and click "Open" button.
+    //Expected state: the dialog appears.
+    //3) Choose "Merge sequence mode" and click "OK" button.
+    //Expected state: the warning about different alphabets appears.
+    GTSequenceReadingModeDialog::mode = GTSequenceReadingModeDialog::Merge;
+    GTUtilsDialog::waitForDialog(os, new  GTSequenceReadingModeDialogUtils(os));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTFileDialog::openFileList(os, testDir + "_common_data/fasta/", QStringList() << "DNA.fa" << "amino_multy.fa");
+
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+
+    //4) Close the project and repeat these steps.
+    //Current state: the warning does not appear.
+    GTUtilsDialog::waitForDialog(os, new  GTSequenceReadingModeDialogUtils(os));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTFileDialog::openFileList(os, testDir + "_common_data/fasta/", QStringList() << "DNA.fa" << "amino_multy.fa");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1338) {
     // 1. Add the "Write annotation" element (or another element with a property in combo box)
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
