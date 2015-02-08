@@ -10,12 +10,27 @@
     <height>371</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>HMM3 Search</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_7">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
    <item>
     <widget class="QTabWidget" name="tabWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="sizeHint" stdset="0">
       <size>
        <width>601</width>
@@ -29,6 +44,12 @@
       <number>0</number>
      </property>
      <widget class="QWidget" name="inputAndOutputTab">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <attribute name="title">
        <string>Input and output</string>
       </attribute>
@@ -62,22 +83,6 @@
          <property name="sizeConstraint">
           <enum>QLayout::SetMinAndMaxSize</enum>
          </property>
-         <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::MinimumExpanding</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>1</width>
-             <height>1</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
         </layout>
        </item>
       </layout>

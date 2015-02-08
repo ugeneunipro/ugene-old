@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>627</width>
-    <height>311</height>
+    <height>318</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -187,19 +187,6 @@
           </size>
          </property>
         </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>357</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>

@@ -80,7 +80,7 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl( const U2SequenceObject * seqObj, Q
     assert( NULL != curLayout );
     QWidget * aw = annotationsWidgetController->getWidget();
     curLayout->insertWidget( 1, aw );
-    aw->setMinimumSize( aw->layout()->minimumSize() );
+//    aw->setMinimumSize( aw->layout()->minimumSize() );
 
     QPushButton* searchButton = buttonBox->button(QDialogButtonBox::Ok);
     QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);

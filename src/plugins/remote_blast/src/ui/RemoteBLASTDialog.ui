@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>625</width>
-    <height>501</height>
+    <width>636</width>
+    <height>523</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+   <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -35,7 +35,7 @@
    <item>
     <widget class="QTabWidget" name="optionsTab">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+      <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -44,6 +44,12 @@
       <number>0</number>
      </property>
      <widget class="QWidget" name="tabGeneralOptions">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <attribute name="title">
        <string>General options</string>
       </attribute>
@@ -330,14 +336,14 @@ p, li { white-space: pre-wrap; }
        <item>
         <layout class="QVBoxLayout" name="layoutAnnotations">
          <property name="sizeConstraint">
-          <enum>QLayout::SetMinAndMaxSize</enum>
+          <enum>QLayout::SetFixedSize</enum>
          </property>
         </layout>
        </item>
        <item>
         <layout class="QHBoxLayout" name="layoutTimeout">
          <property name="sizeConstraint">
-          <enum>QLayout::SetMinAndMaxSize</enum>
+          <enum>QLayout::SetFixedSize</enum>
          </property>
          <item>
           <spacer name="spacerTimeout">
@@ -388,22 +394,6 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
         </layout>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>1</width>
-           <height>1</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>

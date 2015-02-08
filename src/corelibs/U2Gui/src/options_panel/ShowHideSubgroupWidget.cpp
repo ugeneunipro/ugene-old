@@ -59,15 +59,8 @@ void ShowHideSubgroupWidget::init(const QString &subgroupId, const QString &capt
     connect(arrowHeaderWidget, SIGNAL(si_arrowHeaderPressed(bool)), SLOT(updateSubgroupState(bool)));
     updateSubgroupState(isOpened);
 
-    QSize a = minimumSizeHint();
     mainLayout->addWidget(arrowHeaderWidget);
-    QSize b = minimumSizeHint();
-    QSize b1 = arrowHeaderWidget->minimumSizeHint();
     mainLayout->addWidget(innerWidget);
-    QSize c = minimumSizeHint();
-    QSize c1 = innerWidget->minimumSizeHint();
-    int h = 0;
-
 
     setObjectName(subgroupId);
 
