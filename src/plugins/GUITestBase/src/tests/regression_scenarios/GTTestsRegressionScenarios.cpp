@@ -15254,13 +15254,13 @@ GUI_TEST_CLASS_DEFINITION(test_3776) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
     GTGlobals::sleep();
 
-    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect( QPoint(1002, 1), QPoint(1016, 1)));
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect( QPoint(1029, 1), QPoint(1043, 1)));
 
     for (int i = 0; i < 4; i++) {
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
         GTGlobals::sleep();
     }
-    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect( QPoint(529, 16), QPoint(543, 16)));
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect( QPoint(1029, 16), QPoint(1043, 16)));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3778) {
