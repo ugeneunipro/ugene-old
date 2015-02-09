@@ -189,6 +189,7 @@ void CutAdaptFastqWorkerFactory::init() {
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new CutAdaptFastqPrompter());
+    proto->addExternalTool(ET_CUTADAPT);
 
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_NGS_BASIC(), proto);
     DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
