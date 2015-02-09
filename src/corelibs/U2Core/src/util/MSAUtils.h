@@ -38,7 +38,7 @@ class U2CORE_EXPORT MSAUtils : public QObject {
     Q_OBJECT
 public:
 
-    static bool equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QByteArray& pattern);
+    static bool equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QByteArray& pattern, int &alternateLen);
 
     static MAlignment seq2ma(const QList<GObject*>& dnas, U2OpStatus& os, bool useGenbankHeader = false);
 

@@ -74,7 +74,8 @@ bool MsaContentFilterTask::msaContainsPattern(MAlignmentObject *msaObject, const
         const MAlignmentRow &row = ma.getRow(i);
         for (int j = 0; j < (ma.getLength() - searchStr.length() + 1); ++j) {
             const char c = row.charAt(j);
-            if (MAlignment_GapChar != c && MSAUtils::equalsIgnoreGaps(row, j, searchStr)) {
+            int altenateLength = 0;
+            if (MAlignment_GapChar != c && MSAUtils::equalsIgnoreGaps(row, j, searchStr, altenateLength)) {
                 return true;
             }
         }

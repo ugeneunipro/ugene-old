@@ -38,19 +38,22 @@
 
 namespace U2 {
 
-bool MSAUtils::equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QByteArray& pat) {
+bool MSAUtils::equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QByteArray& pat, int &alternateLen) {
     int sLen = row.getCoreEnd();
     int pLen = pat.size();
-    for (int i = startPos, j = 0; i  < sLen && j < pLen; i++, j++) {
+    int i = startPos;
+    for (int j = 0; i  < sLen && j < pLen; i++, j++) {
         char c1 = row.charAt(i);
         char c2 = pat[j];
-        while((i + 1) < pLen && c1 == MAlignment_GapChar && ++i < sLen) {
+        while(c1 == MAlignment_GapChar && ++i < sLen) {
             c1 = row.charAt(i);
         }
         if (c1 != c2) {
+            alternateLen = i - startPos;
             return false;
         }
     }
+    alternateLen = i - startPos;
     return true;
 }
 
