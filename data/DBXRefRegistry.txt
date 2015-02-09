@@ -1,12 +1,12 @@
 #db_xref_ID|db_xref_PageLink|db_xref_FileLink|db_xref_Comment
+#Official site: http://www.ncbi.nlm.nih.gov/genbank/collab/db_xref
+AceView/WormGenes|http://www.ncbi.nlm.nih.gov/IEB/Research/Acembly/av.cgi?exdb=AceView&db=worm&term=%1||AceView Worm Genome
 
-AceView/WormGenes|http://www.ncbi.nlm.nih.gov/IEB/Research/Acembly/av.cgi?exdb=AceView&db=36a&term=%1||AceView Worm Genome
+AFTOL|http://aftol1.biology.duke.edu/pub/primers/getPrimersByAFTOLID?aftol_id=%1||Assembling the Fungal Tree of Life
 
-AFTOL|http://aftol.biology.duke.edu/pub/primers/getPrimersByAFTOLID?aftol_id=%1||Assembling the Fungal Tree of Life
+AntWeb|http://www.antweb.org/specimen.do?name=%1||Ant Database
 
-ASAP|http://asap.ahabs.wisc.edu/asap/feature_info.php?FeatureID=%1||A Systematic Annotation Package for Community Analysis of Genomes
-
-ATCC|||American Type Culture Collection database
+APHIDBASE|http://bipaa.genouest.org/apps/grs-2.3/grs?reportID=aphidbase_transcript_report&objectID=%1||Aphid Genome Database
 
 ApiDB|http://eupathdb.org/eupathdb/showSummary.do?questionFullName=GeneQuestions.GeneBySingleLocusTag&myProp%28single_gene_id%29=%1||Apicomplexan Database Resources
 
@@ -16,21 +16,35 @@ ApiDB_PlasmoDB|http://www.plasmodb.org/plasmo/showRecord.do?name=GeneRecordClass
 
 ApiDB_ToxoDB|http://www.toxodb.org/toxo/showRecord.do?name=GeneRecordClasses.GeneRecordClass&project_id=&primary_key=%1||Toxoplasma Genome Resources
 
+ASAP|http://asap.ahabs.wisc.edu/asap/feature_info.php?FeatureID=%1||A Systematic Annotation Package for Community Analysis of Genomes
+
+ATCC|||American Type Culture Collection database
+
 ATCC(in host)|||American Type Culture Collection database
 
 ATCC(dna)|||American Type Culture Collection database
 
-Axeldb|http://indigene.ibaic.u-psud.fr/cgi-bin/ace/searches/basic/default?class=Any;query=%1||A Xenopus laevis database
+Axeldb|||A Xenopus laevis database
 
 BDGP_EST|||Berkeley Drosophila Genome Project EST database
 
 BDGP_INS|||Berkeley Drosophila Genome Project database -- Insertion
 
-BHB|||BioHealthBase
+BEEBASE|||BeeBase
+
+BEETLEBASE|http://beetlebase.org/cgi-bin/gbrowse/BeetleBase3.gff3/?name=%1||Tribolium Genome Database -- Insertion
+
+BGD|http://bovinegenome.org/genepages/btau40/genes/%1||Bovine Genome Database
 
 BOLD|||Barcode of Life database
 
+CABRI|||Common Access to Biological Resources and Information Project
+
+CCAP|||Culture Collection of Algae and Protozoa
+
 CDD|http://www.ncbi.nlm.nih.gov/Structure/cdd/cddsrv.cgi?uid=%1||Conserved Domain Database
+
+CGD|http://www.candidagenome.org/cgi-bin/locus.pl?dbid=%1||Candida Genome Database
 
 CCDS|http://www.ncbi.nlm.nih.gov/projects/CCDS/CcdsBrowse.cgi?REQUEST=CCDS&DATA=%1&ORGANISM=0&BUILDS=CURRENTBUILDS||The Consensus CDS (CCDS) project is a collaborative effort to identify a core set of human and mouse protein coding regions that are consistently annotated and of high quality.
 
@@ -48,11 +62,17 @@ EcoGene|http://ecogene.org/geneInfo.php?eg_id=%1||Database of Escherichia coli S
 
 ENSEMBL|http://beta.rest.ensembl.org/sequence/id/%1?content-type=text/x-fasta|http://beta.rest.ensembl.org/sequence/id/%1?content-type=text/x-fasta|Database of automatically annotated genomic data
 
+EnsemblGenomes|http://ensemblgenomes.org/search/eg/%1||Extending Ensembl across taxonomic space
+
+EPD|||Eukaryotic Promoter Database
+
 ERIC|http://www.ericbrc.org/asap/feature_info.php?FeatureID=%1||Enteropathogen Resource Integration Center
 
 ESTLIB|||EBI's EST library identifier
 
 FANTOM_DB|||Database of Functional Annotation of Mouse
+
+FBOL|||International Fungal Working Group Fungal Barcoding
 
 FLYBASE||| Database of Genetic and molecular data of Drosophila.
 
@@ -76,7 +96,15 @@ HGNC|http://www.genenames.org/data/hgnc_data.php?hgnc_id=%1||Human Gene Nomencla
 
 H-InvDB|||H-Invitational Database
 
+HMP|||Human Microbiome Project
+
+HOMD|||Human Oral Microbiome Database
+
+HPM|||Human Proteome Map
+
 HSSP|||Database of homology-derived secondary structure of proteins
+
+IKMC|||International Knockout Mouse Consortium
 
 IMGT/GENE-DB|||Immunogenetics database, immunoglobulin and T-cell receptor genes
 
@@ -84,19 +112,23 @@ IMGT/LIGM|||Immunogenetics database, immunoglobulins and T-cell receptors
 
 IMGT/HLA|||Immunogenetics database, human MHC
 
-InterimID|||
+InterPro|http://www.ebi.ac.uk/interpro/entry/%1||InterPro protein sequence database
 
-Interpro|||InterPro protein sequence database
+IntrepidBio|||Intrepid BioInformatics
 
-ISD|||Influenza Sequence Database
+IRD|||Influenza Research Database
 
 ISFinder|||Insertion sequence elements database
 
-JCM||| Japan Collection of Microorganisms
+JCM|||Japan Collection of Microorganisms
 
-LocusID||| NCBI LocusLink ID **Discontinued March 2005
+JGIDB|||JGI Genome Portal
+
+LocusID|||NCBI LocusLink ID **Discontinued March 2005
 
 MaizeGDB|||Maize Genome Database unique identifiers
+
+MedGen|http://www.ncbi.nlm.nih.gov/medgen/?term=%1||Human Medical Genetics
 
 MGI||| Mouse Genome Informatics
 
@@ -114,7 +146,13 @@ NMPDR|||National Microbial Pathogen Data Resource
 
 NRESTdb|||Natural Rubber EST database
 
+OrthoMCL|||Ortholog Groups of Protein Sequences
+
+Osa1|||Rice Genome Annotation Project
+
 Pathema|||Pathema Genome Resource
+
+PBmice|||PiggyBac Mutagenesis Information Center
 
 PDB|http://www.rcsb.org/pdb/download/downloadFile.do?fileFormat=pdb&compression=NO&structureId=%1|http://www.rcsb.org/pdb/files/%1.pdb|Biological macromolecule three dimensional structure database
 
@@ -122,11 +160,23 @@ PFAM|||Collection of protein families
 
 PGN|||Plant Genome Network
 
+Phytozome|||Plant Genome Network
+
 PIR|||Protein Information Resource accession numbers
+
+PomBase|http://www.pombase.org/spombe/result/%1||Database of Structural and Functional Data for Schizosaccaromyces pombe
 
 PSEUDO|||EMBL pseudo protein identifier
 
+PseudoCap|http://www.pseudomonas.com/getAnnotation.do?locusID=%1||Pseudomonas Genome Database
+
+RAP-DB|||Rice Annotation Project Database
+
 RATMAP|||Rat Genome Database
+
+RBGE_garden|||Royal Botanic Garden Edinburgh Living Collections
+
+RBGE_herbarium|||Royal Botanic Garden Edinburgh Herbarium
 
 REBASE|http://rebase.neb.com/cgi-bin/reb_get.pl?enzname=%1||REBASE: The Restriction Enzyme Database
 
@@ -142,17 +192,27 @@ SEED|||The SEED Database
 
 SGD|||Saccharomyces Genome Database
 
+SGN|||SOL Genomics Network
+
+SK-FST|||Saskatoon Arabidopsis T-DNA mutant population - SK Collection
+
 SoyBase|||Glycine max Genome Database
 
 SPTREMBL|http://www.ebi.ac.uk/uniprot/unisave/?query=%1&search=Go||SWISS-PROT protein sequence database
+
+SRPDB|||Signal Recognition Particle Database
 
 SubtiList|||Bacillus subtilis genome sequencing project
 
 SWISS-PROT|http://www.uniprot.org/uniprot/%1|http://www.uniprot.org/uniprot/%1.txt|The Universal Protein Resource (UniProt) is a comprehensive resource for protein sequence and annotation data.
 
+TAIR|||Arabidopsis IR
+
 taxon|||NCBI's taxonomic identifier
 
 TIGRFAM|||TIGR protein families
+
+TubercuList|http://tuberculist.epfl.ch/quicksearch.php?gene+name=%1||TubercuList knowledge base
 
 UNILIB|||Unified Library Database, a library-level view of the EST and SAGE libraries present in dbEST, UniGene and SAGEmap
 
@@ -163,6 +223,8 @@ UniProtKB/TrEMBL|http://www.uniprot.org/uniprot/%1|http://www.uniprot.org/unipro
 UniSTS|http://www.ncbi.nlm.nih.gov/genome/sts/sts.cgi?uid=%1||NCBI UniSTS is a comprehensive database of sequence tagged sites (STSs) derived from STS-based maps and other experiments.
 
 VBASE2|||Integrative database of germ-line V genes from the immunoglobulin loci of human and mouse
+
+ViPR|||Virus Pathogen Resource
 
 VectorBase|||Bioinformatics Resource Center for Invertebrate Vectors of Human Pathogens
 
