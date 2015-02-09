@@ -1322,6 +1322,40 @@ GUI_TEST_CLASS_DEFINITION(test_1295) {
     GTUtilsLog::check(os, lt);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1299) {
+/* 1) Open WD, load "Find substrings in sequences" sample
+ * 2) Click on "Find substrings", "Text" slot
+ *  Expected state: Popup menu should appear, contains bold "Additional" item menu
+ */
+    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::addSample(os, "Find substrings in sequences");
+
+    GTUtilsWorkflowDesigner::click(os, "Find Substrings");
+
+    QTableWidget* tw = GTUtilsWorkflowDesigner::getInputPortsTable(os, 0);
+    CHECK_SET_ERR(tw != NULL, "InputPortsTable is NULL");
+
+    GTUtilsWorkflowDesigner::setTableValue(os, "Plain text", "Source URL (by Read Sequence)", GTUtilsWorkflowDesigner::comboValue, tw);
+
+    int row = -1;
+    for(int i = 0; i<tw->rowCount(); i++){
+        QString s = tw->item(i,0)->text();
+        if(s == "Plain text"){
+            row = i;
+            break;
+        }
+    }
+    QRect rect = tw->visualItemRect(tw->item(row, 1));
+    QPoint globalP = tw->viewport()->mapToGlobal(rect.center());
+    GTMouseDriver::moveTo(os, globalP);
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(500);
+    QComboBox* box = qobject_cast<QComboBox*>(tw->findChild<QComboBox*>());
+
+    CHECK_SET_ERR(box->itemText(3) != "Additional", "Additional item not found");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1315_1) {
     //1. open murine.gb
     //2. open Primer3 dialog
