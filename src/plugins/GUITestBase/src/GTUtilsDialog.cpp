@@ -206,6 +206,7 @@ void GTUtilsDialog::waitForDialogWhichMayRunOrNot(U2OpStatus &os, Runnable *r) {
     }
 
     settings.destiny = GUIDialogWaiter::NoMatter;
+    settings.timeout = 480000;
     waitForDialog(os, r, settings);
 }
 

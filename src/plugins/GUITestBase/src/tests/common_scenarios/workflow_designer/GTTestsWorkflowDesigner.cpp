@@ -45,6 +45,7 @@
 #include "GTUtilsLog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
+#include "GTUtilsTaskTreeView.h"
 #include "GTUtilsWorkflowDesigner.h"
 
 
@@ -564,12 +565,11 @@ GUI_TEST_CLASS_DEFINITION(test_0059){
 
     GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "/samples/Genbank/sars.gb");
     GTUtilsWorkflowDesigner::click(os, "Write Sequence");
-    QFileInfo sandBoxInfo(sandBoxDir);
-    sandBoxInfo.makeAbsolute();
-    GTUtilsWorkflowDesigner::setParameter(os, "Output file", sandBoxInfo.absolutePath() + "/wd_test_0059.fa",
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", QDir().absoluteFilePath(sandBoxDir) + "wd_test_0059.fa",
                                           GTUtilsWorkflowDesigner::textValue);
 
     GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
