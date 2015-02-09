@@ -34,10 +34,9 @@ MysqlBlobInputStream::MysqlBlobInputStream(MysqlDbRef *db, const QByteArray &tab
 {
     CHECK_EXT(NULL != db, os.setError("Invalid database handler detected!"), );
 
-    U2SqlQuery q("SELECT " + columnId + " FROM " + tableId
-        + " WHERE " + UdrSchema::RECORD_ID_FIELD_NAME + " = :" + UdrSchema::RECORD_ID_FIELD_NAME,
-        db, os);
-    q.bindDataId(UdrSchema::RECORD_ID_FIELD_NAME, rowId);
+    U2SqlQuery q(QString("SELECT %1 FROM %2 WHERE %3 = :%3").arg(QString(columnId), QString(tableId), QString(UdrSchema::RECORD_ID_FIELD_NAME)), db, os);
+
+    q.bindDataId(":" + UdrSchema::RECORD_ID_FIELD_NAME, rowId);
     q.step();
     CHECK_OP(os, );
     blobData = q.getBlob(0);

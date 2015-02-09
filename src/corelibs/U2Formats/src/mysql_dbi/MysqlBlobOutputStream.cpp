@@ -46,10 +46,10 @@ void MysqlBlobOutputStream::write(const char *buffer, int length, U2OpStatus &os
 
     QByteArray blobData;
     if (Q_LIKELY(wasUsed)) {
-        U2SqlQuery getBlobQuery("SELECT " + columnId + " FROM " + tableId
-            + " WHERE " + UdrSchema::RECORD_ID_FIELD_NAME + " = :" + UdrSchema::RECORD_ID_FIELD_NAME,
-            db, os);
-        getBlobQuery.bindDataId(UdrSchema::RECORD_ID_FIELD_NAME, rowId);
+        U2SqlQuery getBlobQuery(QString("SELECT %1 FROM %2 WHERE %3 = :%3")
+            .arg(QString(columnId), QString(tableId), QString(UdrSchema::RECORD_ID_FIELD_NAME)), db, os);
+
+        getBlobQuery.bindDataId(":" + UdrSchema::RECORD_ID_FIELD_NAME, rowId);
         getBlobQuery.step();
         CHECK_OP(os, );
         blobData = getBlobQuery.getBlob(0);
@@ -58,11 +58,11 @@ void MysqlBlobOutputStream::write(const char *buffer, int length, U2OpStatus &os
     }
     blobData += QByteArray(buffer, length);
 
-    U2SqlQuery updateBlobQuery("UPDATE " + tableId + " SET " + columnId
-        + " = :" + columnId + " WHERE " + UdrSchema::RECORD_ID_FIELD_NAME
-        + " = :" + UdrSchema::RECORD_ID_FIELD_NAME, db, os);
-    updateBlobQuery.bindBlob(columnId, blobData);
-    updateBlobQuery.bindDataId(UdrSchema::RECORD_ID_FIELD_NAME, rowId);
+    U2SqlQuery updateBlobQuery(QString("UPDATE %1 SET %2 = :%2 WHERE %3 = :%3")
+        .arg(QString(tableId), QString(columnId), QString(UdrSchema::RECORD_ID_FIELD_NAME)), db, os);
+
+    updateBlobQuery.bindBlob(":" + columnId, blobData);
+    updateBlobQuery.bindDataId(":" + UdrSchema::RECORD_ID_FIELD_NAME, rowId);
 
     updateBlobQuery.update();
 }
