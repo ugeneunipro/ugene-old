@@ -21,20 +21,23 @@
 
 #include <QDropEvent>
 #include <QMainWindow>
+#include <QSplitter>
 #include <QTreeView>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/ProjectModel.h>
+
+#include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectViewModel.h>
 
-#include "GTUtilsProjectTreeView.h"
+#include "api/GTLineEdit.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
-#include <U2Core/AppContext.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Gui/MainWindow.h>
-#include <QSplitter>
-
 #include "runnables/qt/PopupChooser.h"
+#include "GTUtilsProjectTreeView.h"
+
+#include "GTUtilsTaskTreeView.h"
 
 namespace U2 {
 
@@ -273,6 +276,71 @@ QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os,
     }
 
     return foundIndecies;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "filterProject"
+void GTUtilsProjectTreeView::filterProject(U2OpStatus &os, const QString &searchField) {
+    openView(os);
+    QLineEdit *nameFilterEdit = GTWidget::findExactWidget<QLineEdit *>(os, "nameFilterEdit");
+    GTLineEdit::setText(os, nameFilterEdit, searchField);
+    GTGlobals::sleep(3000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findFilteredIndexes"
+QModelIndexList GTUtilsProjectTreeView::findFilteredIndexes(U2OpStatus &os, const QString &substring, const QModelIndex &parentIndex) {
+    QModelIndexList result;
+
+    QTreeView *treeView = getTreeView(os);
+    QAbstractItemModel *model = treeView->model();
+    CHECK_SET_ERR_RESULT(NULL != model, "Model is invalid", result);
+
+    const int rowcount = model->rowCount(parentIndex);
+    for (int i = 0; i < rowcount; i++) {
+        const QModelIndex index = model->index(i, 0, parentIndex);
+        const QString itemName = index.data().toString();
+
+        if (itemName.contains(substring)) {
+            result << index;
+        }
+    }
+
+    return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkFilteredGroup"
+void GTUtilsProjectTreeView::checkFilteredGroup(U2OpStatus &os, const QString &groupName, const QStringList &namesToCheck,
+    const QStringList &alternativeNamesToCheck, const QStringList &excludedNames)
+{
+    const QModelIndexList groupIndexes = findFilteredIndexes(os, groupName);
+    CHECK_SET_ERR(groupIndexes.size() == 1, QString("Expected to find a single filter group. Found %1").arg(groupIndexes.size()));
+
+    const QModelIndex group = groupIndexes.first();
+    const int filteredItemsCount = group.model()->rowCount(group);
+    CHECK_SET_ERR(filteredItemsCount > 0, "No project items have been filtered");
+    for (int i = 0; i < filteredItemsCount; ++i) {
+        const QString childName = group.child(i, 0).data().toString();
+
+        foreach (const QString &nameToCheck, namesToCheck) {
+            CHECK_SET_ERR(childName.contains(nameToCheck, Qt::CaseInsensitive), QString("Filtered item doesn't contain '%1'").arg(nameToCheck));
+        }
+
+        bool oneAlternativeFound = alternativeNamesToCheck.isEmpty();
+        foreach (const QString &nameToCheck, alternativeNamesToCheck) {
+            if (childName.contains(nameToCheck, Qt::CaseInsensitive)) {
+                oneAlternativeFound = true;
+                break;
+            }
+        }
+        CHECK_SET_ERR(oneAlternativeFound, QString("Filtered item doesn't contain either of strings: '%1'").arg(alternativeNamesToCheck.join("', '")));
+
+        foreach(const QString &nameToCheck, excludedNames) {
+            CHECK_SET_ERR(!childName.contains(nameToCheck, Qt::CaseInsensitive), QString("Filtered item contains unexpectedly '%1'").arg(nameToCheck));
+        }
+    }
 }
 #undef GT_METHOD_NAME
 

@@ -70,6 +70,11 @@ public:
                                         int parentDepth = 0,
                                         const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
 
+    static void filterProject(U2OpStatus &os, const QString &searchField);
+    static QModelIndexList findFilteredIndexes(U2OpStatus &os, const QString &substring, const QModelIndex &parentIndex = QModelIndex());
+    static void checkFilteredGroup(U2OpStatus &os, const QString &groupName, const QStringList &namesToCheck, const QStringList &alternativeNamesToCheck,
+        const QStringList &excludedNames);
+
     // returns true if the item exists, does not set error unlike findIndex method
     static bool checkItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
     static bool checkItem(U2OpStatus &os, QTreeView *treeView, const QString &itemName, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());

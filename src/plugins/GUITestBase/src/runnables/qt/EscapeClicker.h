@@ -29,8 +29,9 @@ namespace U2 {
 class EscapeClicker: public Filler
 {
 public:
-    EscapeClicker(U2OpStatus &os, QString name = ""): Filler(os, name){}
-    virtual void commonScenario();
+    EscapeClicker(U2OpStatus &os, const QString &name = "", CustomScenario *scenario = NULL);
+
+    void commonScenario();
 };
 
 }

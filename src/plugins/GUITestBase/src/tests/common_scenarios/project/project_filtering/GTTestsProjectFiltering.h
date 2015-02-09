@@ -19,21 +19,34 @@
  * MA 02110-1301, USA.
  */
 
-#include "api/GTKeyboardDriver.h"
+#ifndef _U2_GUI_TEST_PROJECT_FILTERING_H_
+#define _U2_GUI_TEST_PROJECT_FILTERING_H_
 
-#include "EscapeClicker.h"
+#include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
-EscapeClicker::EscapeClicker(U2OpStatus &os, const QString &name, CustomScenario *scenario)
-    : Filler(os, name, scenario)
-{
+namespace GUITest_common_scenarios_project_filtering {
+#undef GUI_TEST_PREFIX
+#define GUI_TEST_PREFIX "GUITest_common_scenarios_project_filtering_"
 
+GUI_TEST_CLASS_DECLARATION(test_0001)
+GUI_TEST_CLASS_DECLARATION(test_0002)
+GUI_TEST_CLASS_DECLARATION(test_0003)
+GUI_TEST_CLASS_DECLARATION(test_0004)
+GUI_TEST_CLASS_DECLARATION(test_0005)
+GUI_TEST_CLASS_DECLARATION(test_0006)
+GUI_TEST_CLASS_DECLARATION(test_0007)
+GUI_TEST_CLASS_DECLARATION(test_0008)
+GUI_TEST_CLASS_DECLARATION(test_0009)
+GUI_TEST_CLASS_DECLARATION(test_0010)
+GUI_TEST_CLASS_DECLARATION(test_0011)
+GUI_TEST_CLASS_DECLARATION(test_0012)
+GUI_TEST_CLASS_DECLARATION(test_0013)
+
+#undef GUI_TEST_PREFIX
 }
 
-void EscapeClicker::commonScenario() {
-    GTGlobals::sleep();
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
-}
+} // namespace U2
 
-}
+#endif // _U2_GUI_TEST_PROJECT_FILTERING_H_

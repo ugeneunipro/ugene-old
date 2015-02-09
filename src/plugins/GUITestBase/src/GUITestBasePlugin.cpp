@@ -41,6 +41,7 @@
 #include "tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h"
 #include "tests/common_scenarios/project/multiple_docs/GTTestsProjectMultipleDocs.h"
 #include "tests/common_scenarios/project/anonymous_project/GTTestsProjectAnonymousProject.h"
+#include "tests/common_scenarios/project/project_filtering/GTTestsProjectFiltering.h"
 #include "tests/common_scenarios/msa_editor/GTTestsMsaEditor.h"
 #include "tests/common_scenarios/msa_editor/colors/GTTestsMSAEditorColors.h"
 #include "tests/common_scenarios/msa_editor/consensus/GTTestsMSAEditorConsensus.h"
@@ -779,7 +780,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/anonymous project/
 //////////////////////////////////////////////////////////////////////////
-
     REGISTER_TEST(GUITest_common_scenarios_project_anonymous_project::test_0003);
 
 //////////////////////////////////////////////////////////////////////////
@@ -801,8 +801,24 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0001_1);
-
     REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0002);
+
+//////////////////////////////////////////////////////////////////////////
+// Common scenarios/project/project_filtering/
+//////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0008);
+    REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0009);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_filtering::test_0010, "Need to discuss it with Vladimir");
+    REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0011);
+    REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0012);
+    REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0013);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/Sequence view/
