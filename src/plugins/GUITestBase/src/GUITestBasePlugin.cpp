@@ -169,10 +169,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1212);
     REGISTER_TEST(GUITest_regression_scenarios::test_1212_1);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1249);
     REGISTER_TEST(GUITest_regression_scenarios::test_1252);
     REGISTER_TEST(GUITest_regression_scenarios::test_1252_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1255);
     REGISTER_TEST(GUITest_regression_scenarios::test_1259);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1257);
     REGISTER_TEST(GUITest_regression_scenarios::test_1262);
     REGISTER_TEST(GUITest_regression_scenarios::test_1266);
     REGISTER_TEST(GUITest_regression_scenarios::test_1289);
@@ -181,6 +183,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1315_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1315_2);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1325, "UGENE-3975");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1323);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1324);
     REGISTER_TEST(GUITest_regression_scenarios::test_1321_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1321_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_1326);
@@ -192,6 +196,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1358);
     REGISTER_TEST(GUITest_regression_scenarios::test_1362);
     REGISTER_TEST(GUITest_regression_scenarios::test_1364);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1365);
     REGISTER_TEST(GUITest_regression_scenarios::test_1368);
     REGISTER_TEST(GUITest_regression_scenarios::test_1371);
     REGISTER_TEST(GUITest_regression_scenarios::test_1376);
@@ -692,6 +697,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3732, "big data");
     REGISTER_TEST(GUITest_regression_scenarios::test_3736);
     REGISTER_TEST(GUITest_regression_scenarios::test_3738);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3744);
     REGISTER_TEST(GUITest_regression_scenarios::test_3749);
     REGISTER_TEST(GUITest_regression_scenarios::test_3753);
     REGISTER_TEST(GUITest_regression_scenarios::test_3755);

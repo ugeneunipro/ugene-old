@@ -996,6 +996,20 @@ GUI_TEST_CLASS_DEFINITION(test_1212_1){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1249){
+
+    // 1. Open human_T1.fa.
+    // 2. Use menu {Analyze->Find restriction sites}.
+    // 3. Press "Enzymes file.." 
+    // 4. Select file "data\enzymes\rebase_v003_all.bairoch".
+    // Expected state: total number of enzymes is 4565(Enzymes with unknown sequence field are removed from list)
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+//    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "Find restriction sites"));
+//    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1252){
 //    1. Open human_t1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
@@ -1113,7 +1127,22 @@ GUI_TEST_CLASS_DEFINITION(test_1255){
     CHECK_SET_ERR(s.contains("Illegal"),"Error message is: "+s);
     GTGlobals::sleep(500);
 }
+GUI_TEST_CLASS_DEFINITION(test_1257){
 
+    // 1. Open Find Pattern on the Options Panel
+    // 2. Provide the widget with wrong input (no annotation name, bad region)
+    // Expected: Search button is disabled
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keySequence(os, ">S");
+    GTGlobals::sleep();
+
+    QWidget* prevButton = GTWidget::findWidget(os, "prevPushButton");
+    CHECK_SET_ERR(!prevButton->isEnabled(), "prevPushButton is unexpectidly enabled")
+}
 GUI_TEST_CLASS_DEFINITION(test_1259) {
 //    1. Open FindPattern on the Options Panel
 //    2. (Using ctrl+enter once) enter the following pattern:
@@ -1171,6 +1200,25 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1323) {
+    // 1. Open \test\_common_data\_regression\1323\sample.bad
+    // Expected state: document with file added to project
+
+    GTFileDialog::openFile(os, testDir + "_common_data/regression/1323/", "sample.bed");   
+    }
+GUI_TEST_CLASS_DEFINITION(test_1324) {
+    // 1. Open WD
+    // 2. Add "Search for TFBS with SITECON" element
+    // 3. Make sure it is possible to enter 0.0001 for Min Err1
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Search for TFBS with SITECON");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Search for TFBS with SITECON"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setParameter(os, "Min Err1", "0.0001", GTUtilsWorkflowDesigner::textValue);
+
+}
 GUI_TEST_CLASS_DEFINITION(test_1266) {
 //    1. Open "Call variants" sample pipleine from the "NGS" category
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
@@ -1632,6 +1680,26 @@ GUI_TEST_CLASS_DEFINITION(test_1364) {
 //    Expected: The file dialog opens with the directory B.
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, new customFileDialog()));
     GTWidget::click(os, GTWidget::findWidget(os, "addFileButton"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1365){
+    // 1. Open file "data/samples/COI.aln" in alignment editor
+    // Expected state: "Save all" button on main toolbar is enabled
+    // 2. Open Workflow Designer
+    // Expected state: "Save all" button is still enabled
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+                                                                                    
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE),
+    QStringList() << ACTION_PROJECTSUPPORT__SAVE_PROJECT, GTGlobals::UseKey);
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE),
+    QStringList() << ACTION_PROJECTSUPPORT__SAVE_PROJECT, GTGlobals::UseKey);  
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1368){
@@ -15003,6 +15071,30 @@ GUI_TEST_CLASS_DEFINITION(test_3738) {
 //    Current state: the assembly is not imported, there is an error in the log: Task {CAP3 run and open result task}
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3744) {
+    // 1. Open "data/samples/FASTA/human_T1.fa"
+    // 2. Open the Find Pattern options panel tab
+    // 3. Set the "Regular expression" search algorithm
+    // 4. Paste to the pattern field the following string: "ACT.G"
+    // Expected state: some results have been found
+    // 5. Select the pattern by mouse or pressing "Shift + Home"
+    // 6. Delete the pattern by pressing a backspace
+    // Expected state: "Previous" and "Next" buttons are disabled
+    
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
+    GTGlobals::sleep(500);
+
+    QComboBox* algorithmBox = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxAlgorithm"));
+    GTComboBox::setIndexWithText(os, algorithmBox, "Regular expression");
+
+    GTKeyboardDriver::keySequence(os, "ACT.G");
+
+    QWidget* createButton = GTWidget::findWidget(os, "getAnnotationsPushButton");
+    CHECK_SET_ERR(!createButton->isEnabled(), "prevPushButton is unexpectidly enabled")
+
+
+}
 GUI_TEST_CLASS_DEFINITION(test_3749) {
     // 1. Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
