@@ -37,12 +37,12 @@ const QString INFO_MESSAGE_FONT =                   "bold";
 const QString STYLE_SHEET_ATTRIBUTE_EQUALS_SIGN =   ": ";
 const QString STYLE_SHEET_ATTRIBUTES_SEPARATOR =     ";";
 const QString IS_BUILD_INDEX_ALGO_WARNING =          QObject::tr( "NOTE: \"is\" index algorithm "
-    "is not supposed to work with reference\nsequences having size larger than 2 GB. In order "
-    "to achieve stable\nBWA performance it is strongly recommend to set the index algorithm\nto "
+    "is not supposed to work with reference sequences having size larger than 2 GB. In order "
+    "to achieve stable BWA performance it is strongly recommend to set the index algorithm to "
     "\"bwtsw\"" );
 const QString BWTSW_BUILD_INDEX_ALGO_WARNING =       QObject::tr( "NOTE: \"bwtsw\" index algorithm"
-    " is not supposed to work with reference\nsequences having size smaller than 10 MB. In order "
-    "to achieve stable\nBWA performance it is strongly recommend to set the index algorithm\nto "
+    " is not supposed to work with reference sequences having size smaller than 10 MB. In order "
+    "to achieve stable BWA performance it is strongly recommend to set the index algorithm to "
     "\"is\"" );
 
 
@@ -265,6 +265,11 @@ BwaSwSettingsWidget::BwaSwSettingsWidget(QWidget *parent):
 
     numThreadsSpinbox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     numThreadsSpinbox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
+
+    label->setStyleSheet(
+        "color: " + L10N::successColorLabelStr() + ";"
+        "font: bold;");
+    label->setText(tr("NOTE: bwa-sw performs alignment of long sequencing reads (Sanger or 454). It accepts reads only in FASTA or FASTQ format. Reads should be compiled into single file."));
 }
 
 QMap<QString,QVariant> BwaSwSettingsWidget::getDnaAssemblyCustomSettings() {
@@ -326,6 +331,11 @@ BwaMemSettingsWidget::BwaMemSettingsWidget(QWidget *parent):
 
     numThreadsSpinbox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     numThreadsSpinbox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
+
+    label->setStyleSheet(
+        "color: " + L10N::successColorLabelStr() + ";"
+        "font: bold;");
+    label->setText(tr("NOTE: bwa mem accepts reads only in FASTA or FASTQ format. Reads should be compiled into a single file for each mate end."));
 }
 
 QMap<QString,QVariant> BwaMemSettingsWidget::getDnaAssemblyCustomSettings() {
