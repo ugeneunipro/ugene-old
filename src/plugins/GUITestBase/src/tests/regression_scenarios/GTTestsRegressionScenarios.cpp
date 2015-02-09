@@ -15124,6 +15124,27 @@ GUI_TEST_CLASS_DEFINITION(test_3768) {
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3770) {
+//    1. Select {File -> Access remote database...} menu item in the main menu.
+//    2. Fill the dialog:
+//       Resource ID: NW_003943623;
+//       Database: NCBI GenBank (DNA sequence);
+//       Force download the appropriate sequence: checked
+//    and accept the dialog.
+//    3. Try to cancel the task.
+//    Expected state: the task cancels within a half of a minute.
+//    Current state: the task doesn't cancel.
+
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "NW_003943623", 0, true, false,
+                                                                        sandBoxDir));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE),
+                                QStringList() << ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTUtilsTaskTreeView::cancelTask(os, "DownloadRemoteDocuments");
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR( GTUtilsTaskTreeView::countTasks(os, "DownloadRemoteDocuments") == 0, "Task was not canceled");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3778) {
     //1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
