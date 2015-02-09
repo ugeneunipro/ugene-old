@@ -1000,7 +1000,7 @@ GUI_TEST_CLASS_DEFINITION(test_1249){
 
     // 1. Open human_T1.fa.
     // 2. Use menu {Analyze->Find restriction sites}.
-    // 3. Press "Enzymes file.." 
+    // 3. Press "Enzymes file.."
     // 4. Select file "data\enzymes\rebase_v003_all.bairoch".
     // Expected state: total number of enzymes is 4565(Enzymes with unknown sequence field are removed from list)
 
@@ -1204,7 +1204,7 @@ GUI_TEST_CLASS_DEFINITION(test_1323) {
     // 1. Open \test\_common_data\_regression\1323\sample.bad
     // Expected state: document with file added to project
 
-    GTFileDialog::openFile(os, testDir + "_common_data/regression/1323/", "sample.bed");   
+    GTFileDialog::openFile(os, testDir + "_common_data/regression/1323/", "sample.bed");
     }
 GUI_TEST_CLASS_DEFINITION(test_1324) {
     // 1. Open WD
@@ -1689,7 +1689,7 @@ GUI_TEST_CLASS_DEFINITION(test_1365){
     // Expected state: "Save all" button is still enabled
 
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
-                                                                                    
+
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE),
     QStringList() << ACTION_PROJECTSUPPORT__SAVE_PROJECT, GTGlobals::UseKey);
@@ -1698,7 +1698,7 @@ GUI_TEST_CLASS_DEFINITION(test_1365){
 
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE),
-    QStringList() << ACTION_PROJECTSUPPORT__SAVE_PROJECT, GTGlobals::UseKey);  
+    QStringList() << ACTION_PROJECTSUPPORT__SAVE_PROJECT, GTGlobals::UseKey);
 
 }
 
@@ -15080,7 +15080,7 @@ GUI_TEST_CLASS_DEFINITION(test_3744) {
     // 5. Select the pattern by mouse or pressing "Shift + Home"
     // 6. Delete the pattern by pressing a backspace
     // Expected state: "Previous" and "Next" buttons are disabled
-    
+
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
     GTGlobals::sleep(500);
@@ -15235,6 +15235,32 @@ GUI_TEST_CLASS_DEFINITION(test_3770) {
     GTGlobals::sleep();
 
     CHECK_SET_ERR( GTUtilsTaskTreeView::countTasks(os, "DownloadRemoteDocuments") == 0, "Task was not canceled");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3776) {
+//    1. Open file "data/samples/CLUSTALW/HIV-1.aln"
+//    2. Type "CCCCTCCCATCA" to the search field
+//    3. Click "Enter"
+//    Expected state: selected result is [CCCCTCCCATC---A]
+//    4. Click "Enter" until the found highlighted sequence doesn't change.
+//    Current state: Found sequences contain only first symbols from the pattern and the rest part of them are gaps
+//    Expected state: the last found result is selected
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "HIV-1.aln");
+
+    QLineEdit *searchPattern = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "searchEdit"));
+    CHECK_SET_ERR(searchPattern != NULL, "searchedit not found");
+    GTLineEdit::setText(os, searchPattern, "CCCCTCCCATCA");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect( QPoint(1002, 1), QPoint(1016, 1)));
+
+    for (int i = 0; i < 4; i++) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        GTGlobals::sleep();
+    }
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect( QPoint(529, 16), QPoint(543, 16)));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3778) {
