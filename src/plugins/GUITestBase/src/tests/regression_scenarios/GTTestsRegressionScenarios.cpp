@@ -15743,6 +15743,35 @@ GUI_TEST_CLASS_DEFINITION(test_3927) {
     //Expected state safe point didn't triggered
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3928) {
+
+    // 1. Open file "data/samples/CLUSTALW/COI.aln"
+    // 2. Set any sequence as a reference via a context menu
+    // 3. Open the "Statistics" tab in the Options panel
+    // Expected state: reference sequence is shown in the "Reference sequence" section
+    // 4. Close the Options panel
+    // 5. Set any other sequence as a reference via a context menu
+    // 6. Open the "Statistics" tab in the Options panel
+    // Expected state: new reference sequence is shown in the "Reference sequence" section
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Set this sequence as reference"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(5, 5));
+    QString currentReference = GTUtilsMsaEditor::getReferenceSequenceName(os);
+    CHECK_SET_ERR("Metrioptera_japonica_EF540831" == currentReference, QString("An unexpected reference sequence is set: expect '%1', got '%2'").arg("Metrioptera_japonica_EF540831").arg(currentReference));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "unset_reference"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 6));
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "set_seq_as_reference"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 6));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Set this sequence as reference"));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(6, 6));
+    currentReference = GTUtilsMsaEditor::getReferenceSequenceName(os);
+    CHECK_SET_ERR("Gampsocleis_sedakovii_EF540828" == currentReference, QString("An unexpected reference sequence is set: expect '%1', got '%2'").arg("Gampsocleis_sedakovii_EF540828").arg(currentReference));
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3950) {
     // 1. Build BWA MEM index for "_common_data/bwa/NC_000021.gbk.fa
     // 2. Open "_common_data/bwa/workflow/bwa-mem.uwl"
