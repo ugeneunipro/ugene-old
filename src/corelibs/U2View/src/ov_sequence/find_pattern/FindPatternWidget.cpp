@@ -51,6 +51,7 @@
 #include <U2Gui/ShowHideSubgroupWidget.h>
 #include <U2Gui/U2FileDialog.h>
 #include <U2Gui/U2WidgetStateStorage.h>
+#include <U2Gui/GUIUtils.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVSequenceWidget.h>
@@ -693,6 +694,7 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
                     }
                     text += QString(tr("Warning: input value contains characters that"
                         " do not match the active alphabet!"));
+                    highlightBackground(textPattern);
                     break;
                 case PatternsWithBadAlphabetInFile:
                     if (!text.isEmpty()) {
@@ -766,6 +768,7 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
     }
     else {
         lblErrorMessage->setText("");
+        doNotHighlightBackground(textPattern);
     }
 }
 
