@@ -204,6 +204,7 @@ const QString QualityTrimWorkerFactory::ACTOR_ID("QualityTrim");
 
 static const QString QUALITY_ID("qual-id");
 static const QString LEN_ID("len-id");
+static const QString BOTH_ID("both-ends");
 
 /************************************************************************/
 /* QualityTrimPrompter */
@@ -262,6 +263,9 @@ void QualityTrimWorkerFactory::init() {
         Descriptor lenT(LEN_ID, QualityTrimWorker::tr("Min Length"),
             QualityTrimWorker::tr("Too short reads are discarded by the filter."));
 
+        Descriptor bothD(BOTH_ID, QualityTrimWorker::tr("Trim both ends"),
+            QualityTrimWorker::tr("Trim the both ends of a read or not. Usually, you need to set <b>True</b> for <b>Sanger</b> sequencing and <b>False</b> for <b>NGS</b>"));
+
         a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
         customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
@@ -269,6 +273,7 @@ void QualityTrimWorkerFactory::init() {
         a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(BaseNGSWorker::DEFAULT_NAME));
         a << new Attribute( qualT, BaseTypes:: NUM_TYPE(), false, QVariant(30));
         a << new Attribute( lenT, BaseTypes::NUM_TYPE(), false, QVariant(0));
+        a << new Attribute( bothD, BaseTypes::BOOL_TYPE(), false, false);
     }
 
     QMap<QString, PropertyDelegate*> delegates;
@@ -311,6 +316,7 @@ QVariantMap QualityTrimWorker::getCustomParameters() const{
     QVariantMap res;
     res.insert(QUALITY_ID, getValue<int>(QUALITY_ID));
     res.insert(LEN_ID, getValue<int>(LEN_ID));
+    res.insert(BOTH_ID, getValue<bool>(BOTH_ID));
     return res;
 }
 
@@ -338,6 +344,7 @@ void QualityTrimTask::runStep(){
 
     int quality = settings.customParameters.value(QUALITY_ID, 20).toInt();
     int minLen = settings.customParameters.value(LEN_ID, 0).toInt();
+    bool bothEnds = settings.customParameters.value(BOTH_ID, false).toInt();
 
     FASTQIterator iter(settings.inputUrl);
     while(iter.hasNext()){
@@ -357,10 +364,18 @@ void QualityTrimTask::runStep(){
                     break;
                 }
             }
-            if(endPosition>=0 && endPosition+1 >= minLen){
-                DNASequence trimmed(dna.getName(), dna.seq.left(endPosition+1), dna.alphabet);
+            int beginPosition = 0;
+            if (bothEnds) {
+                for (; beginPosition<=endPosition; beginPosition++) {
+                    if (dna.quality.getValue(beginPosition) >= quality) {
+                        break;
+                    }
+                }
+            }
+            if(endPosition>=beginPosition && endPosition-beginPosition+1 >= minLen){
+                DNASequence trimmed(dna.getName(), dna.seq.left(endPosition+1).mid(beginPosition), dna.alphabet);
                 trimmed.quality = dna.quality;
-                trimmed.quality.qualCodes = trimmed.quality.qualCodes.left(endPosition+1);
+                trimmed.quality.qualCodes = trimmed.quality.qualCodes.left(endPosition+1).mid(beginPosition);
                 FastqFormat::writeEntry(trimmed.getName(), trimmed, io.data(), "Writing error", stateInfo, false);
                 ycount++;
             }else{
