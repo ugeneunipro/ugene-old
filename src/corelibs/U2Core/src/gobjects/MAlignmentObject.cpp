@@ -550,6 +550,11 @@ void MAlignmentObject::deleteColumnWithGaps(int requiredGapCount, U2OpStatus &os
     updateCachedMAlignment();
 }
 
+void MAlignmentObject::deleteColumnWithGaps(int requiredGapCount) {
+    U2OpStatusImpl os;
+    deleteColumnWithGaps(requiredGapCount, os);
+}
+
 void MAlignmentObject::updateGapModel(QMap<qint64, QList<U2MsaGap> > rowsGapModel, U2OpStatus& os) {
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
 
