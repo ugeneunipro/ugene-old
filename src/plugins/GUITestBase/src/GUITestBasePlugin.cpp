@@ -817,7 +817,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0009);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_filtering::test_0010, "Need to discuss it with Vladimir");
+    REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0010);
     REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0012);
     REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0013);

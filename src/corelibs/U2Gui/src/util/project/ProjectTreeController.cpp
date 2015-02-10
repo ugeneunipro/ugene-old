@@ -589,8 +589,12 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint &) {
         m.addAction(unloadSelectedDocumentsAction);
         unloadSelectedDocumentsAction->setObjectName(ACTION_PROJECT__UNLOAD_SELECTED);
     }
-    m.setObjectName("popMenu");
-    m.exec(QCursor::pos());
+
+    const QList<QAction *> actions = m.actions();
+    if (!actions.isEmpty() && !(actions.size() == 1 && actions.first()->isSeparator())) {
+        m.setObjectName("popMenu");
+        m.exec(QCursor::pos());
+    }
 }
 
 void ProjectTreeController::sl_onDocumentLoadedStateChanged() {

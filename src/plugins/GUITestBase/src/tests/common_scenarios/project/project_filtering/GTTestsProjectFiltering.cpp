@@ -323,7 +323,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
     // 3. Call right click menu a few times on different second - level items
     // Expected : every time it doesn't contain the "Edit" item
     checkEditMenu(os, "Object name", "et0001_seque");
-    checkEditMenu(os, "contig", "Contigs");
+    checkEditMenu(os, "comment", "SYNPBR322 features");
 
     // 4. Select different second-level items and press "Delete"
     // Expected: number of items remains constant
@@ -343,7 +343,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
     // Expected : every time no context menu appears
     makeRightClick(os, "CDS");
     makeRightClick(os, "RBS");
-    makeRightClick(os, "contig");
+    makeRightClick(os, "comment");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0011) {
