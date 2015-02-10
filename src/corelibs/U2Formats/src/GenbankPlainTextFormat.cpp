@@ -51,6 +51,11 @@ namespace U2 {
 /* TRANSLATOR U2::EMBLGenbankAbstractDocument */
 /* TRANSLATOR U2::IOAdapter */
 
+static QString genLocusString(const QList<GObject *> &aos, U2SequenceObject* so, const QString &locustFromHeader);
+static void writeAnnotations(IOAdapter* io, const QList<GObject *> &aos, U2OpStatus& os);
+static void writeSequence(IOAdapter* io, U2SequenceObject* ao, const QList<U2Region> &lowerCaseRegs, U2OpStatus& os);
+static void prepareMultiline(QString& lineToChange, int spacesOnLineStart, bool lineBreakOnlyOnSpace = true, bool newLineAtTheEnd = true, int maxLineLen = 79);
+
 #define VAL_OFF 12
 typedef QPair<QString, QString> StrPair;
 static QList<StrPair> formatKeywords(QVariantMap& varMap, bool withLocus = false){
@@ -66,7 +71,9 @@ static QList<StrPair> formatKeywords(QVariantMap& varMap, bool withLocus = false
     tags.remove(DNAInfo::ORIGIN);
     tags.remove(EMBLGenbankAbstractDocument::UGENE_MARK);
     if (tags.contains(DNAInfo::ACCESSION)) {
-        tags.insert(DNAInfo::ACCESSION, tags.take(DNAInfo::ACCESSION).toStringList().join(" "));
+        QString accessionString = tags.take(DNAInfo::ACCESSION).toStringList().join(" ");
+        prepareMultiline(accessionString, VAL_OFF, true, false);
+        tags.insert(DNAInfo::ACCESSION, accessionString);
     }
 
     {
@@ -93,6 +100,7 @@ static QList<StrPair> formatKeywords(QVariantMap& varMap, bool withLocus = false
                     assert(0);
                     continue;
                 }
+
                 res << qMakePair(key, l.takeFirst());
                 foreach(const QString& s, l) {
                     res << qMakePair(QString(), s);
@@ -316,6 +324,7 @@ bool GenbankPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqI
         if (st->hasKey("ACCESSION") || (st->hasContinuation() && lastTagName == "ACCESSION")) {
             QVariant v = st->entry->tags.value(DNAInfo::ACCESSION);
             st->entry->tags[DNAInfo::ACCESSION] = QVariantUtils::addStr2List(v, st->value().split(" "));
+            lastTagName = "ACCESSION";
             continue;
         }
         if (TextUtils::equals(st->buff, "//", 2)) {
@@ -422,12 +431,6 @@ void GenbankPlainTextFormat::readHeaderAttributes(QVariantMap& tags, DbiConnecti
 
 //////////////////////////////////////////////////////////////////////////
 /// saving
-
-static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so, QString& locustFromHeader);
-static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& os);
-static void writeSequence(IOAdapter* io, U2SequenceObject* ao, QList<U2Region> lowerCaseRegs, U2OpStatus& os);
-static void prepareMultiline(QString& lineToChange, int spacesOnLineStart, bool lineBreakOnlyOnSpace = true, bool newLineAtTheEnd = true, int maxLineLen = 79);
-
 
 static bool writeKeyword(IOAdapter* io, U2OpStatus& os, const QString& key, const QString& value, bool wrap = true /*TODO*/) {
     Q_UNUSED(wrap);
@@ -643,7 +646,7 @@ static QString detectTopology(const QString& savedTopology, U2SequenceObject* so
     }
 }
 
-static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so, QString& locusStrFromAttr) {
+static QString genLocusString(const QList<GObject*> &aos, U2SequenceObject* so, const QString& locusStrFromAttr) {
     QString loc, date;
     if (so) {
         QString len = QString::number(so->getSequenceLength());
@@ -676,7 +679,7 @@ static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so, QString
         }
     } else {
         assert(!aos.isEmpty());
-        loc = !aos.isEmpty() ? aos.takeFirst()->getGObjectName() : "unknown"; //FIXME ???
+        loc = !aos.isEmpty() ? aos.first()->getGObjectName() : "unknown";
     }
     assert(!loc.isEmpty());
     if (date.isEmpty()) {
@@ -716,7 +719,7 @@ static void writeQualifier(const QString& name, const QString& val, IOAdapter* i
     }
 }
 
-static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si) {
+static void writeAnnotations(IOAdapter* io, const QList<GObject*> &aos, U2OpStatus& si) {
     assert(!aos.isEmpty());
     QByteArray header("FEATURES             Location/Qualifiers\n");
 
@@ -813,7 +816,7 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si)
     }
 }
 
-static void writeSequence(IOAdapter* io, U2SequenceObject* ao, QList<U2Region> lowerCaseRegs, U2OpStatus& si) {
+static void writeSequence(IOAdapter* io, U2SequenceObject* ao, const QList<U2Region> &lowerCaseRegs, U2OpStatus& si) {
     static const int charsInLine = 60;
     static const int DB_BLOCK_SIZE = charsInLine * 3000;
 
