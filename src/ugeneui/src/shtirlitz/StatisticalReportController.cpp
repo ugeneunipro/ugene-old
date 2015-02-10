@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QFile>
+#include <QFile>
 #include <QScrollBar>
 
 #include <U2Core/Version.h>
@@ -28,8 +28,11 @@
 
 namespace U2 {
 
-StatisticalReportController::StatisticalReportController(const QString &newHtmlFilepath):QDialog() {
+StatisticalReportController::StatisticalReportController(const QString &newHtmlFilepath) : QDialog() {
     setupUi(this);
+
+    lblStat->setText(tr("<b>Optional:</b> Help make UGENE better by automatically sending anonymous usage statistics."));
+
     Version v = Version::appVersion();
     setWindowTitle(tr("Welcome to UGENE %1.%2").arg(v.major).arg(v.minor));
     QFile file(newHtmlFilepath);
@@ -37,10 +40,12 @@ StatisticalReportController::StatisticalReportController(const QString &newHtmlF
         newsTextEdit->setText(tr("Error loading release new from file"));
         return;
     }
+
     QString htmlText;
     while (!file.atEnd()) {
         htmlText += file.readLine();
     }
+
     newsTextEdit->setText(htmlText);
 }
 
