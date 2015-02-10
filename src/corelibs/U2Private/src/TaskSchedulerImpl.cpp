@@ -194,7 +194,7 @@ bool TaskSchedulerImpl::processFinishedTasks() {
         hasFinished = true;
         promoteTask(ti, Task::State_Finished);
         // ensure signal about task finished to be delivered to other threads if required
-        QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+        QCoreApplication::processEvents();
 
         releaseResources(ti, true); //release resources for PREPARE stage
 
@@ -217,7 +217,7 @@ bool TaskSchedulerImpl::processFinishedTasks() {
                 QCoreApplication::postEvent (pti->thread,
                     new QEvent(static_cast<QEvent::Type>(GET_NEW_SUBTASKS_EVENT_TYPE)));
                 while (!pti->thread->newSubtasksObtained && pti->thread->isRunning()) {
-                    QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+                    QCoreApplication::processEvents();
                 }
                 if(pti->thread->newSubtasksObtained) {
                     pti->thread->subtasksLocker.lock();
