@@ -189,6 +189,11 @@ QVariantMap AlignToReferenceWorker::getResult(Task *task, U2OpStatus &os) const 
     return result;
 }
 
+MessageMetadata AlignToReferenceWorker::generateMetadata(const QString &datasetName) const {
+    SAFE_POINT(NULL != referenceDoc, L10N::nullPointerError("Reference sequence document"), BaseDatasetWorker::generateMetadata(datasetName));
+    return MessageMetadata(referenceDoc->getURLString(), datasetName);
+}
+
 /************************************************************************/
 /* AlignToReferenceTask */
 /************************************************************************/
@@ -259,7 +264,9 @@ void ComposeResultSubTask::prepare() {
         memUsage += calcMemUsageBytes(storage, read, stateInfo);
         CHECK_OP(stateInfo, );
     }
-    addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, toMb(memUsage), false));
+    if (toMb(memUsage) > 0) {
+        addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, toMb(memUsage), false));
+    }
 }
 
 void ComposeResultSubTask::run() {
@@ -481,7 +488,9 @@ U2Region KAlignSubTask::getCoreRegion() const {
 void KAlignSubTask::prepare() {
     qint64 memUsage = calcMemUsageBytes(storage, reference, stateInfo) + calcMemUsageBytes(storage, read, stateInfo);
     CHECK_OP(stateInfo, );
-    addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, toMb(memUsage), false));
+    if (toMb(memUsage) > 0) {
+        addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, toMb(memUsage), false));
+    }
 
     createAlignment();
     CHECK_OP(stateInfo, );
@@ -622,7 +631,9 @@ PairwiseAlignmentTask::PairwiseAlignmentTask(const SharedDbiDataHandler &referen
 void PairwiseAlignmentTask::prepare() {
     qint64 memUsage = calcMemUsageBytes(storage, reference, stateInfo) + calcMemUsageBytes(storage, read, stateInfo);
     CHECK_OP(stateInfo, );
-    addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, toMb(memUsage), false));
+    if (toMb(memUsage) > 0) {
+        addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, toMb(memUsage), false));
+    }
 
     createRcReads();
     CHECK_OP(stateInfo, );

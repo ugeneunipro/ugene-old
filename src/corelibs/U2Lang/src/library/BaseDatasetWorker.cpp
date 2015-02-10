@@ -70,6 +70,10 @@ void BaseDatasetWorker::cleanup() {
     datasetMessages.clear();
 }
 
+MessageMetadata BaseDatasetWorker::generateMetadata(const QString &datasetName) const {
+    return MessageMetadata(datasetName);
+}
+
 void BaseDatasetWorker::sl_taskFinished() {
     Task *task = dynamic_cast<Task*>(sender());
     CHECK(NULL != task, );
@@ -78,7 +82,7 @@ void BaseDatasetWorker::sl_taskFinished() {
     const QVariantMap result = getResult(task, os);
     CHECK_OP_EXT(os, reportError(os.getError()), );
 
-    const MessageMetadata metadata(datasetName);
+    const MessageMetadata metadata = generateMetadata(datasetName);
     context->getMetadataStorage().put(metadata);
     const Message message(output->getBusType(), result, metadata.getId());
     output->put(message);

@@ -41,6 +41,7 @@ protected:
     virtual void onPrepared(Task *task, U2OpStatus &os) = 0;
     virtual Task * createTask(const QList<Message> &messages) const = 0;
     virtual QVariantMap getResult(Task *task, U2OpStatus &os) const = 0;
+    virtual MessageMetadata generateMetadata(const QString &datasetName) const;
 
 private slots:
     void sl_taskFinished();

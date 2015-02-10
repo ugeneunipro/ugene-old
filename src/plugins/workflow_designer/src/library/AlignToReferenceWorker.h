@@ -177,6 +177,7 @@ protected:
     void onPrepared(Task *task, U2OpStatus &os);
     Task * createTask(const QList<Message> &messages) const;
     QVariantMap getResult(Task *task, U2OpStatus &os) const;
+    MessageMetadata generateMetadata(const QString &datasetName) const;
 
 private:
     Document *referenceDoc;
