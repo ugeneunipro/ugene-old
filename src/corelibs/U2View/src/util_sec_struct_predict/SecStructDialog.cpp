@@ -175,7 +175,7 @@ void SecStructDialog::sl_onTaskFinished(Task* t) {
 
     //shifting results according to startPos
     for ( QMutableListIterator<AnnotationData> it_ad(results); it_ad.hasNext(); ) {
-        AnnotationData ad = it_ad.next();
+        AnnotationData &ad = it_ad.next();
         U2Region::shift(rangeStart, ad.location->regions);
     }
     task = NULL;
