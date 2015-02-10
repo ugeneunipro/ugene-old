@@ -64,7 +64,7 @@
 #include <algorithm>
 
 #ifdef Q_WS_MACX
-#include <Authorization.h>
+#include <Security/Authorization.h>
 #include <errno.h>
 #endif
 
