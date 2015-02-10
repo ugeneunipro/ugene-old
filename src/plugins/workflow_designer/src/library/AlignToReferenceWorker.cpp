@@ -22,6 +22,7 @@
 #include <U2Algorithm/PairwiseAlignmentRegistry.h>
 #include <U2Algorithm/PairwiseAlignmentTask.h>
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/AppSettings.h>
@@ -36,6 +37,8 @@
 #include <U2Core/U2SequenceUtils.h>
 
 #include <U2Designer/DelegateEditors.h>
+
+#include <U2Formats/GenbankFeatures.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
@@ -180,7 +183,9 @@ QVariantMap AlignToReferenceWorker::getResult(Task *task, U2OpStatus &os) const 
     AlignToReferenceTask *alignTask = dynamic_cast<AlignToReferenceTask*>(task);
     CHECK_EXT(NULL != alignTask, os.setError(L10N::internalError("Unexpected task")), QVariantMap());
     QVariantMap result;
-    result[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(alignTask->getResult());
+    result[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(alignTask->getAlignment());
+    result[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(reference);
+    result[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(alignTask->getAnnotations());
     return result;
 }
 
@@ -206,8 +211,12 @@ AlignToReferenceTask::AlignToReferenceTask(const SharedDbiDataHandler &reference
     setMaxParallelSubtasks(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
 }
 
-SharedDbiDataHandler AlignToReferenceTask::getResult() const {
+SharedDbiDataHandler AlignToReferenceTask::getAlignment() const {
     return msa;
+}
+
+SharedDbiDataHandler AlignToReferenceTask::getAnnotations() const {
+    return annotations;
 }
 
 void AlignToReferenceTask::prepare() {
@@ -226,40 +235,111 @@ void AlignToReferenceTask::prepare() {
 }
 
 void AlignToReferenceTask::run() {
-    DNASequence referenceSeq = getReferenceSequence();
-    CHECK_OP(stateInfo, );
-    QList<U2MsaGap> referenceGaps = getReferenceGaps();
+    MAlignment alignment = createAlignment();
     CHECK_OP(stateInfo, );
 
-    MAlignment result("Aligned reads", referenceSeq.alphabet);
+    createAnnotations(alignment);
+    CHECK_OP(stateInfo, );
+}
+
+MAlignment AlignToReferenceTask::createAlignment() {
+    MAlignment result("Aligned reads");
+
+    DNASequence referenceSeq = getReferenceSequence();
+    CHECK_OP(stateInfo, result);
+    result.setAlphabet(referenceSeq.alphabet);
 
     // add the reference row
     result.addRow(referenceSeq.getName(), referenceSeq.seq, 0, stateInfo);
-    CHECK_OP(stateInfo, );
+    CHECK_OP(stateInfo, result);
+
+    QList<U2MsaGap> referenceGaps = getReferenceGaps();
+    CHECK_OP(stateInfo, result);
 
     insertShiftedGapsIntoReference(result, referenceGaps);
-    CHECK_OP(stateInfo, );
+    CHECK_OP(stateInfo, result);
 
     for (int i=0; i<reads.size(); i++) {
         // add the read row
         DNASequence readSeq = getReadSequence(i);
-        CHECK_OP(stateInfo, );
+        CHECK_OP(stateInfo, result);
 
         result.addRow(readSeq.getName(), readSeq.seq, i + 1, stateInfo);
-        CHECK_OP(stateInfo, );
+        CHECK_OP(stateInfo, result);
 
         PairwiseAlignmentTask *subTask = getPATask(i);
-        CHECK_OP(stateInfo, );
-        result.setRowGapModel(i + 1, subTask->getReadGaps());
+        CHECK_OP(stateInfo, result);
+        foreach (const U2MsaGap &gap, subTask->getReadGaps()) {
+            result.insertGaps(i + 1, gap.offset, gap.gap, stateInfo);
+            CHECK_OP(stateInfo, result);
+        }
 
         // add reference gaps to the read
         insertShiftedGapsIntoRead(result, i, referenceGaps);
-        CHECK_OP(stateInfo, );
+        CHECK_OP(stateInfo, result);
     }
 
     U2EntityRef msaRef = MAlignmentImporter::createAlignment(storage->getDbiRef(), result, stateInfo);
-    CHECK_OP(stateInfo, );
+    CHECK_OP(stateInfo, result);
     msa = storage->getDataHandler(msaRef);
+
+    // remove gap columns
+    QScopedPointer<MAlignmentObject> msaObject(StorageUtils::getMsaObject(storage, msa));
+    CHECK_EXT(!msaObject.isNull(), setError(L10N::nullPointerError("MSA object")), result);
+    msaObject->deleteColumnWithGaps(GAP_COLUMN_ONLY);
+
+    return msaObject->getMAlignment();
+}
+
+void AlignToReferenceTask::createAnnotations(const MAlignment &alignment) {
+    const MAlignmentRow &referenceRow = alignment.getRow(0);
+    QScopedPointer<AnnotationTableObject> annsObject(new AnnotationTableObject(referenceRow.getName() + " features", storage->getDbiRef()));
+
+    for (int i=1; i<alignment.getNumRows(); i++) {
+        const MAlignmentRow &readRow = alignment.getRow(i);
+        U2Region region = getReadRegion(readRow, referenceRow);
+        PairwiseAlignmentTask *task = getPATask(i - 1);
+        CHECK_OP(stateInfo, );
+
+        AnnotationData ann;
+        ann.location->regions << region;
+        ann.location->strand = task->isComplement() ? U2Strand(U2Strand::Complementary) : U2Strand(U2Strand::Direct);
+        ann.name = GBFeatureUtils::getKeyInfo(GBFeatureKey_misc_feature).text;
+        ann.qualifiers << U2Qualifier("label", task->getInitialReadName());
+        annsObject->addAnnotation(ann);
+    }
+
+    annotations = storage->getDataHandler(annsObject->getEntityRef());
+}
+
+U2Region AlignToReferenceTask::getReadRegion(const MAlignmentRow &readRow, const MAlignmentRow &referenceRow) const {
+    U2Region region(0, readRow.getRowLengthWithoutTrailing());
+
+    // calculate read start
+    if (!readRow.getGapModel().isEmpty()) {
+        U2MsaGap firstGap = readRow.getGapModel().first();
+        if (0 == firstGap.offset) {
+            region.startPos += firstGap.gap;
+            region.length -= firstGap.gap;
+        }
+    }
+
+    qint64 leftGap = 0;
+    qint64 innerGap = 0;
+    foreach (const U2MsaGap &gap, referenceRow.getGapModel()) {
+        qint64 endPos = gap.offset + gap.gap;
+        if (gap.offset < region.startPos) {
+            leftGap += gap.gap;
+        } else if (endPos <= region.endPos()) {
+            innerGap += gap.gap;
+        } else {
+            break;
+        }
+    }
+
+    region.startPos -= leftGap;
+    region.length -= innerGap;
+    return region;
 }
 
 PairwiseAlignmentTask * AlignToReferenceTask::getPATask(int readNum) {
@@ -498,7 +578,7 @@ PairwiseAlignmentTaskSettings * KAlignSubTask::createSettings(DbiDataStorage *st
 /* PairwiseAlignmentTask */
 /************************************************************************/
 PairwiseAlignmentTask::PairwiseAlignmentTask(const SharedDbiDataHandler &reference, const SharedDbiDataHandler &read, DbiDataStorage *storage)
-: Task("Pairwise Alignment", TaskFlags_FOSE_COSC), reference(reference), read(read), storage(storage), kalign(NULL), rcKalign(NULL), rc(false), offset(0)
+: Task("Pairwise Alignment", TaskFlags_FOSE_COSC), reference(reference), read(read), storage(storage), kalign(NULL), rKalign(NULL), cKalign(NULL), rcKalign(NULL), reverse(false), complement(false), offset(0)
 {
     setMaxParallelSubtasks(2);
 }
@@ -508,19 +588,23 @@ void PairwiseAlignmentTask::prepare() {
     CHECK_OP(stateInfo, );
     addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, toMb(memUsage), false));
 
-    createRcRead();
+    createRcReads();
     CHECK_OP(stateInfo, );
 
     kalign = new KAlignSubTask(reference, read, storage);
+    rKalign = new KAlignSubTask(reference, rRead, storage);
+    cKalign = new KAlignSubTask(reference, cRead, storage);
     rcKalign = new KAlignSubTask(reference, rcRead, storage);
     addSubTask(kalign);
+    addSubTask(rKalign);
+    addSubTask(cKalign);
     addSubTask(rcKalign);
 }
 
 QList<Task*> PairwiseAlignmentTask::onSubTaskFinished(Task *subTask) {
     QList<Task*> result;
-    CHECK((kalign == subTask) || (rcKalign == subTask), result);
-    CHECK(kalign->isFinished() && rcKalign->isFinished(), result);
+    CHECK((kalign == subTask) || (rKalign == subTask) || (cKalign == subTask) || (rcKalign == subTask), result);
+    CHECK(kalign->isFinished() && rKalign->isFinished() && cKalign->isFinished() && rcKalign->isFinished(), result);
 
     createSWAlignment(initRc());
 
@@ -552,13 +636,21 @@ void PairwiseAlignmentTask::run() {
     readGaps.prepend(U2MsaGap(0, offset));
 }
 
-bool PairwiseAlignmentTask::isRc() const {
-    return rc;
+bool PairwiseAlignmentTask::isReverse() const {
+    return reverse;
+}
+
+bool PairwiseAlignmentTask::isComplement() const {
+    return complement;
 }
 
 SharedDbiDataHandler PairwiseAlignmentTask::getRead() const {
-    if (rc) {
+    if (reverse && complement) {
         return rcKalign->getRead();
+    } else if (reverse) {
+        return rKalign->getRead();
+    } else if (complement) {
+        return cKalign->getRead();
     } else {
         return kalign->getRead();
     }
@@ -572,35 +664,86 @@ QList<U2MsaGap> PairwiseAlignmentTask::getReadGaps() const {
     return readGaps;
 }
 
-QByteArray PairwiseAlignmentTask::getReverseComplement(const QByteArray &sequence, const DNAAlphabet *alphabet) {
+QString PairwiseAlignmentTask::getInitialReadName() const {
+    return initialReadName;
+}
+
+QByteArray PairwiseAlignmentTask::getComplement(const QByteArray &sequence, const DNAAlphabet *alphabet) {
     DNATranslation *translator = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(alphabet);
     CHECK_EXT(NULL != translator, setError(tr("Can't translate read sequence to reverse complement")), "");
 
     QByteArray translation(sequence.length(), 0);
     translator->translate(sequence.constData(), sequence.length(), translation.data(), translation.length());
-    TextUtils::reverse(translation.data(), translation.length());
     return translation;
 }
 
-void PairwiseAlignmentTask::createRcRead() {
+QByteArray PairwiseAlignmentTask::getReverse(const QByteArray &sequence) const {
+    QByteArray result = sequence;
+    TextUtils::reverse(result.data(), result.length());
+    return result;
+}
+
+QByteArray PairwiseAlignmentTask::getReverseComplement(const QByteArray &sequence, const DNAAlphabet *alphabet) {
+    return getReverse(getComplement(sequence, alphabet));
+}
+
+void PairwiseAlignmentTask::createRcReads() {
     QScopedPointer<U2SequenceObject> readObject(StorageUtils::getSequenceObject(storage, read));
     CHECK_EXT(!readObject.isNull(), setError(L10N::nullPointerError("Read sequence")), );
 
     DNASequence seq = readObject->getWholeSequence();
-    seq.setName(seq.getName() + "_rev");
-    seq.seq = getReverseComplement(seq.seq, readObject->getAlphabet());
-    CHECK_OP(stateInfo, );
+    QByteArray sequence = seq.seq;
+    initialReadName = seq.getName();
 
+    seq.seq = getReverse(sequence);
+    seq.setName(initialReadName + "_rev");
+    U2EntityRef rRef = U2SequenceUtils::import(storage->getDbiRef(), seq, stateInfo);
+    CHECK_OP(stateInfo, );
+    rRead = storage->getDataHandler(rRef);
+
+    seq.seq = getComplement(sequence, readObject->getAlphabet());
+    seq.setName(initialReadName + "_compl");
+    U2EntityRef cRef = U2SequenceUtils::import(storage->getDbiRef(), seq, stateInfo);
+    CHECK_OP(stateInfo, );
+    cRead = storage->getDataHandler(cRef);
+
+    seq.seq = getReverseComplement(sequence, readObject->getAlphabet());
+    seq.setName(initialReadName + "_rev_compl");
     U2EntityRef rcRef = U2SequenceUtils::import(storage->getDbiRef(), seq, stateInfo);
     CHECK_OP(stateInfo, );
-
     rcRead = storage->getDataHandler(rcRef);
 }
 
 KAlignSubTask * PairwiseAlignmentTask::initRc() {
-    rc = (kalign->getMaxRegionSize() < rcKalign->getMaxRegionSize());
-    if (rc) {
+    QList<qint64> values;
+    values << kalign->getMaxRegionSize();
+    values << rKalign->getMaxRegionSize();
+    values << cKalign->getMaxRegionSize();
+    values << rcKalign->getMaxRegionSize();
+    qSort(values);
+    qint64 max = values.last();
+
+    if (kalign->getMaxRegionSize() == max) {
+        reverse = false;
+        complement = false;
+    } else if (rKalign->getMaxRegionSize() == max) {
+        reverse = true;
+        complement = false;
+    } else if (cKalign->getMaxRegionSize() == max) {
+        reverse = false;
+        complement = true;
+    } else {
+        assert(rcKalign->getMaxRegionSize() == max);
+        reverse = true;
+        complement = true;
+    }
+
+    if (reverse && complement) {
         return rcKalign;
+    } else if (reverse) {
+        return rKalign;
+    } else if (complement) {
+        return cKalign;
     } else {
         return kalign;
     }

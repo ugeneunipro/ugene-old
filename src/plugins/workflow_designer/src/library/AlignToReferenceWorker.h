@@ -69,14 +69,18 @@ public:
     QList<Task*> onSubTaskFinished(Task *subTask);
     void run();
 
-    bool isRc() const;
+    bool isReverse() const;
+    bool isComplement() const;
     SharedDbiDataHandler getRead() const;
     QList<U2MsaGap> getReferenceGaps() const;
     QList<U2MsaGap> getReadGaps() const;
+    QString getInitialReadName() const;
 
 private:
+    QByteArray getComplement(const QByteArray &sequence, const DNAAlphabet *alphabet);
+    QByteArray getReverse(const QByteArray &sequence) const;
     QByteArray getReverseComplement(const QByteArray &sequence, const DNAAlphabet *alphabet);
-    void createRcRead();
+    void createRcReads();
     KAlignSubTask * initRc();
     void createSWAlignment(KAlignSubTask *task);
     void shiftGaps(QList<U2MsaGap> &gaps) const;
@@ -84,18 +88,24 @@ private:
 private:
     const SharedDbiDataHandler reference;
     const SharedDbiDataHandler read;
+    SharedDbiDataHandler rRead;
+    SharedDbiDataHandler cRead;
     SharedDbiDataHandler rcRead;
     DbiDataStorage *storage;
 
     KAlignSubTask *kalign;
+    KAlignSubTask *rKalign;
+    KAlignSubTask *cKalign;
     KAlignSubTask *rcKalign;
-    bool rc;
+    bool reverse;
+    bool complement;
     qint64 offset;
 
     SharedDbiDataHandler msa;
     qint64 maxChunkSize;
     QList<U2MsaGap> referenceGaps;
     QList<U2MsaGap> readGaps;
+    QString initialReadName;
 };
 
 class AlignToReferenceTask : public Task {
@@ -103,17 +113,20 @@ public:
     AlignToReferenceTask(const SharedDbiDataHandler &reference, const QList<SharedDbiDataHandler> &reads, DbiDataStorage *storage);
     void prepare();
     void run();
-    SharedDbiDataHandler getResult() const;
+    SharedDbiDataHandler getAlignment() const;
+    SharedDbiDataHandler getAnnotations() const;
 
 private:
     PairwiseAlignmentTask * getPATask(int readNum);
     DNASequence getReadSequence(int readNum);
     DNASequence getReferenceSequence();
-
     QList<U2MsaGap> getReferenceGaps();
     QList<U2MsaGap> getShiftedGaps(int rowNum);
     void insertShiftedGapsIntoReference(MAlignment &alignment, const QList<U2MsaGap> &gaps);
     void insertShiftedGapsIntoRead(MAlignment &alignment, int readNum, const QList<U2MsaGap> &gaps);
+    MAlignment createAlignment();
+    void createAnnotations(const MAlignment &alignment);
+    U2Region getReadRegion(const MAlignmentRow &readRow, const MAlignmentRow &referenceRow) const;
 
 private:
     const SharedDbiDataHandler reference;
@@ -121,6 +134,7 @@ private:
     QList<PairwiseAlignmentTask*> subTasks;
     DbiDataStorage *storage;
     SharedDbiDataHandler msa;
+    SharedDbiDataHandler annotations;
 };
 
 class AlignToReferencePrompter : public PrompterBase<AlignToReferencePrompter> {
