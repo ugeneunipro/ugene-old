@@ -1127,6 +1127,7 @@ GUI_TEST_CLASS_DEFINITION(test_1255){
     CHECK_SET_ERR(s.contains("Illegal"),"Error message is: "+s);
     GTGlobals::sleep(500);
 }
+
 GUI_TEST_CLASS_DEFINITION(test_1257){
 
     // 1. Open Find Pattern on the Options Panel
@@ -1143,6 +1144,7 @@ GUI_TEST_CLASS_DEFINITION(test_1257){
     QWidget* prevButton = GTWidget::findWidget(os, "prevPushButton");
     CHECK_SET_ERR(!prevButton->isEnabled(), "prevPushButton is unexpectidly enabled")
 }
+
 GUI_TEST_CLASS_DEFINITION(test_1259) {
 //    1. Open FindPattern on the Options Panel
 //    2. (Using ctrl+enter once) enter the following pattern:
@@ -1166,6 +1168,19 @@ GUI_TEST_CLASS_DEFINITION(test_1259) {
 
     QTextEdit* textEdit = qobject_cast<QTextEdit*>(GTWidget::findWidget(os, "textPattern"));
     CHECK_SET_ERR( textEdit->toPlainText() == ">S\n", "Wrong pattern");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1260) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1260/", "51.fa");
+
+    GTLogTracer lt;
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_EXPORT<<"Save subalignment"));
+    GTUtilsDialog::waitForDialog(os, new ExtractSelectedAsMSADialogFiller(os,
+        testDir + "_common_data/scenarios/sandbox/1260.sto",
+        QStringList() << "Isophya_altaica_EF540820" << "Phaneroptera_falcata", 1, 51, true,
+        false, false, false, true));
+    GTMenu::showContextMenu(os,GTWidget::findWidget(os,"msa_editor_sequence_area"));
+    CHECK_SET_ERR(!lt.hasError(), "Log should not contain errosrs");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1262) {
@@ -1199,6 +1214,7 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
 }
+
 
 GUI_TEST_CLASS_DEFINITION(test_1323) {
     // 1. Open \test\_common_data\_regression\1323\sample.bad
@@ -1243,6 +1259,17 @@ GUI_TEST_CLASS_DEFINITION(test_1266) {
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Call Variants Wizard", new custom()));
     GTWidget::click(os, GTAction::button(os, "Show wizard"));
 //    Expected state: all parameters of the wizzard have tooltips with their descriptions
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1285) {
+    //1. Open human_t1.fa
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    //3. Click {show more options}
+    //4. Check comboboxes: use pattern name, load pattern from file
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+    GTUtilsOptionPanelSequenceView::toggleInputFromFilePattern(os);
+    GTUtilsOptionPanelSequenceView::enterPatternFromFile(os, testDir + "_common_data/scenarios/_regression/1285/", "small.fa");
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/1"), "Results string not match");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1289) {
@@ -1397,7 +1424,6 @@ GUI_TEST_CLASS_DEFINITION(test_1315_2) {
 
     GTUtilsAnnotationsTreeView::findItem(os, "top_primers  (0, 5)");
 }
-
 
 GUI_TEST_CLASS_DEFINITION(test_1325) {
 //    1. Open _common_data\regression\1325\long_gff.gff (choosing GFF format)

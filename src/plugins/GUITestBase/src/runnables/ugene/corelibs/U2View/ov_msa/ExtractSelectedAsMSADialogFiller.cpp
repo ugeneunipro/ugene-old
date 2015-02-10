@@ -71,7 +71,7 @@ void ExtractSelectedAsMSADialogFiller::run() {
 
     QLineEdit *filepathEdit=dialog->findChild<QLineEdit*>("filepathEdit");
     GT_CHECK(filepathEdit!=NULL, "filepathEdit is NULL");
-    GTLineEdit::setText(os,filepathEdit,filepath);
+    GTLineEdit::setText(os,filepathEdit,filepath, dontCheckFilepath);
     GTGlobals::sleep(300);
 
     QWidget *noneButton = dialog->findChild<QWidget*>("noneButton");
