@@ -21,6 +21,7 @@
 
 #include <QDropEvent>
 #include <QMainWindow>
+#include <QSortFilterProxyModel>
 #include <QSplitter>
 #include <QTreeView>
 
@@ -241,22 +242,23 @@ QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os,
     QModelIndexList foundIndecies;
     CHECK(GTGlobals::FindOptions::INFINITE_DEPTH == options.depth || parentDepth < options.depth, foundIndecies);
 
-    ProjectViewModel *model = qobject_cast<ProjectViewModel*>(treeView->model());
+    QAbstractItemModel *model = treeView->model();
     CHECK_SET_ERR_RESULT(NULL != model, "Model is NULL", foundIndecies);
 
-    int rowcount = model->rowCount(parent);
-    for (int i = 0; i < rowcount; i++) {
-        const QModelIndex index = model->index(i, 0, parent);
+    QSortFilterProxyModel *proxyModel = qobject_cast<QSortFilterProxyModel *>(treeView->model());
+
+    const int rowCount = NULL == proxyModel ? model->rowCount(parent) : proxyModel->rowCount(parent);
+    for (int i = 0; i < rowCount; i++) {
+        const QModelIndex index = NULL == proxyModel ? model->index(i, 0, parent) : proxyModel->index(i, 0, parent);
         QString s = index.data(Qt::DisplayRole).toString();
 
-        GObject* object = model->toObject(index);
+        GObject* object = ProjectViewModel::toObject(NULL == proxyModel ? index : proxyModel->mapToSource(index));
         if (NULL != object) {
             const QString prefix = "[" + GObjectTypes::getTypeInfo(object->getGObjectType()).treeSign + "]";
             if (s.startsWith(prefix) || prefix == "[u]") {
                 s = s.mid(prefix.length() + 1);
             }
-
-        } else{
+        } else {
             const QString unload = "[unloaded]";
             if (s.startsWith(unload)){
                 s = s.mid(unload.length());
@@ -388,18 +390,20 @@ void GTUtilsProjectTreeView::checkObjectTypes(U2OpStatus &os, QTreeView *treeVie
     CHECK_SET_ERR(NULL != treeView, "Invalid tree view detected");
     CHECK(!acceptableTypes.isEmpty(), );
 
-    ProjectViewModel *model = qobject_cast<ProjectViewModel *>(treeView->model());
+    QAbstractItemModel *model = treeView->model();
     CHECK_SET_ERR(NULL != model, "Invalid view model detected");
 
-    const int rowCount = model->rowCount(parent);
+    QSortFilterProxyModel *proxyModel = qobject_cast<QSortFilterProxyModel *>(model);
+
+    const int rowCount = NULL == proxyModel ? model->rowCount(parent) : proxyModel->rowCount(parent);
     for (int i = 0; i < rowCount; i++) {
-        const QModelIndex index = model->index(i, 0, parent);
-        GObject *object = model->toObject(index);
+        const QModelIndex index = NULL == proxyModel ? model->index(i, 0, parent) : proxyModel->mapToSource(proxyModel->index(i, 0, parent));
+        GObject *object = ProjectViewModel::toObject(index);
         if (NULL != object && Qt::NoItemFlags != model->flags(index) && !acceptableTypes.contains(object->getGObjectType()))
             CHECK_SET_ERR(NULL == object || Qt::NoItemFlags == model->flags(index) || acceptableTypes.contains(object->getGObjectType()), "Object has unexpected type");
 
         if (NULL == object) {
-            checkObjectTypes(os, treeView, acceptableTypes, index);
+            checkObjectTypes(os, treeView, acceptableTypes, NULL == proxyModel ? index : proxyModel->mapFromSource(index));
             CHECK_OP_BREAK(os);
         }
     }
