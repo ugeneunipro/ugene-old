@@ -532,18 +532,19 @@ QList<qint64> MAlignmentObject::getColumnsWithGaps(int requiredGapCount) const {
     return colsForDelete;
 }
 
-void MAlignmentObject::deleteColumnWithGaps(int requiredGapCount) {
+void MAlignmentObject::deleteColumnWithGaps(int requiredGapCount, U2OpStatus &os) {
     QList<qint64> colsForDelete = getColumnsWithGaps(requiredGapCount);
     if (getLength() == colsForDelete.count()) {
         return;
     }
     QList<qint64>::const_iterator column = colsForDelete.constBegin();
     const QList<qint64>::const_iterator end = colsForDelete.constEnd();
-    for ( ; column != end; ++column) {
+    for (int counter=0; column != end; ++column, counter++) {
         if (*column >= getLength()) {
             continue;
         }
         removeRegion(*column, 0, 1, getNumRows(), true, (end - 1 == column));
+        os.setProgress(100 * counter / colsForDelete.size());
     }
     //removeColumns(colsForDelete, true);
     updateCachedMAlignment();

@@ -206,35 +206,63 @@ namespace {
 }
 
 AlignToReferenceTask::AlignToReferenceTask(const SharedDbiDataHandler &reference, const QList<SharedDbiDataHandler> &reads, DbiDataStorage *storage)
-: Task(tr("Align to reference"), TaskFlags_FOSE_COSC), reference(reference), reads(reads), storage(storage)
+: Task(tr("Align to reference"), TaskFlags_NR_FOSE_COSC), reference(reference), reads(reads), composeSubTask(NULL), storage(storage), subTasksCount(0)
 {
     setMaxParallelSubtasks(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
 }
 
+void AlignToReferenceTask::prepare() {
+    foreach (const SharedDbiDataHandler &read, reads) {
+        PairwiseAlignmentTask *subTask = new PairwiseAlignmentTask(reference, read, storage);
+        subTasks << subTask;
+        subTask->setSubtaskProgressWeight(1.0f / (2 * reads.count()));
+        addSubTask(subTask);
+    }
+    subTasksCount = subTasks.size();
+}
+
+QList<Task*> AlignToReferenceTask::onSubTaskFinished(Task *subTask) {
+    QList<Task*> result;
+    if (1 == subTasksCount) {
+        composeSubTask = new ComposeResultSubTask(reference, reads, subTasks, storage);
+        composeSubTask->setSubtaskProgressWeight(0.5f);
+        result << composeSubTask;
+    }
+    subTasksCount--;
+    return result;
+}
+
 SharedDbiDataHandler AlignToReferenceTask::getAlignment() const {
-    return msa;
+    CHECK(NULL != composeSubTask, SharedDbiDataHandler());
+    return composeSubTask->getAlignment();
 }
 
 SharedDbiDataHandler AlignToReferenceTask::getAnnotations() const {
-    return annotations;
+    CHECK(NULL != composeSubTask, SharedDbiDataHandler());
+    return composeSubTask->getAnnotations();
 }
 
-void AlignToReferenceTask::prepare() {
+/************************************************************************/
+/* ComposeResultSubTask */
+/************************************************************************/
+ComposeResultSubTask::ComposeResultSubTask(const SharedDbiDataHandler &reference, const QList<SharedDbiDataHandler> &reads, const QList<PairwiseAlignmentTask*> subTasks, DbiDataStorage *storage)
+: Task(tr("Compose alignment"), TaskFlags_FOSE_COSC), reference(reference), reads(reads), subTasks(subTasks), storage(storage)
+{
+    tpm = Task::Progress_Manual;
+}
+
+void ComposeResultSubTask::prepare() {
     qint64 memUsage = calcMemUsageBytes(storage, reference, stateInfo);
     CHECK_OP(stateInfo, );
 
     foreach (const SharedDbiDataHandler &read, reads) {
         memUsage += calcMemUsageBytes(storage, read, stateInfo);
         CHECK_OP(stateInfo, );
-
-        PairwiseAlignmentTask *subTask = new PairwiseAlignmentTask(reference, read, storage);
-        subTasks << subTask;
-        addSubTask(subTask);
     }
     addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, toMb(memUsage), false));
 }
 
-void AlignToReferenceTask::run() {
+void ComposeResultSubTask::run() {
     MAlignment alignment = createAlignment();
     CHECK_OP(stateInfo, );
 
@@ -242,7 +270,15 @@ void AlignToReferenceTask::run() {
     CHECK_OP(stateInfo, );
 }
 
-MAlignment AlignToReferenceTask::createAlignment() {
+SharedDbiDataHandler ComposeResultSubTask::getAlignment() const {
+    return msa;
+}
+
+SharedDbiDataHandler ComposeResultSubTask::getAnnotations() const {
+    return annotations;
+}
+
+MAlignment ComposeResultSubTask::createAlignment() {
     MAlignment result("Aligned reads");
 
     DNASequence referenceSeq = getReferenceSequence();
@@ -286,12 +322,12 @@ MAlignment AlignToReferenceTask::createAlignment() {
     // remove gap columns
     QScopedPointer<MAlignmentObject> msaObject(StorageUtils::getMsaObject(storage, msa));
     CHECK_EXT(!msaObject.isNull(), setError(L10N::nullPointerError("MSA object")), result);
-    msaObject->deleteColumnWithGaps(GAP_COLUMN_ONLY);
+    msaObject->deleteColumnWithGaps(GAP_COLUMN_ONLY, stateInfo);
 
     return msaObject->getMAlignment();
 }
 
-void AlignToReferenceTask::createAnnotations(const MAlignment &alignment) {
+void ComposeResultSubTask::createAnnotations(const MAlignment &alignment) {
     const MAlignmentRow &referenceRow = alignment.getRow(0);
     QScopedPointer<AnnotationTableObject> annsObject(new AnnotationTableObject(referenceRow.getName() + " features", storage->getDbiRef()));
 
@@ -312,7 +348,7 @@ void AlignToReferenceTask::createAnnotations(const MAlignment &alignment) {
     annotations = storage->getDataHandler(annsObject->getEntityRef());
 }
 
-U2Region AlignToReferenceTask::getReadRegion(const MAlignmentRow &readRow, const MAlignmentRow &referenceRow) const {
+U2Region ComposeResultSubTask::getReadRegion(const MAlignmentRow &readRow, const MAlignmentRow &referenceRow) const {
     U2Region region(0, readRow.getRowLengthWithoutTrailing());
 
     // calculate read start
@@ -342,12 +378,12 @@ U2Region AlignToReferenceTask::getReadRegion(const MAlignmentRow &readRow, const
     return region;
 }
 
-PairwiseAlignmentTask * AlignToReferenceTask::getPATask(int readNum) {
+PairwiseAlignmentTask * ComposeResultSubTask::getPATask(int readNum) {
     CHECK_EXT(readNum < subTasks.size(), setError(L10N::internalError("Wrong reads number")), NULL);
     return subTasks[readNum];
 }
 
-DNASequence AlignToReferenceTask::getReadSequence(int readNum) {
+DNASequence ComposeResultSubTask::getReadSequence(int readNum) {
     PairwiseAlignmentTask *subTask = getPATask(readNum);
     CHECK_OP(stateInfo, DNASequence());
 
@@ -356,7 +392,7 @@ DNASequence AlignToReferenceTask::getReadSequence(int readNum) {
     return readObject->getWholeSequence();
 }
 
-DNASequence AlignToReferenceTask::getReferenceSequence() {
+DNASequence ComposeResultSubTask::getReferenceSequence() {
     QScopedPointer<U2SequenceObject> refObject(StorageUtils::getSequenceObject(storage, reference));
     CHECK_EXT(!refObject.isNull(), setError(L10N::nullPointerError("Reference sequence")), DNASequence());
     return refObject->getWholeSequence();
@@ -368,7 +404,7 @@ namespace {
     }
 }
 
-QList<U2MsaGap> AlignToReferenceTask::getReferenceGaps() {
+QList<U2MsaGap> ComposeResultSubTask::getReferenceGaps() {
     QList<U2MsaGap> result;
 
     for (int i=0; i<reads.size(); i++) {
@@ -379,7 +415,7 @@ QList<U2MsaGap> AlignToReferenceTask::getReferenceGaps() {
     return result;
 }
 
-QList<U2MsaGap> AlignToReferenceTask::getShiftedGaps(int rowNum) {
+QList<U2MsaGap> ComposeResultSubTask::getShiftedGaps(int rowNum) {
     QList<U2MsaGap> result;
 
     PairwiseAlignmentTask *subTask = getPATask(rowNum);
@@ -393,7 +429,7 @@ QList<U2MsaGap> AlignToReferenceTask::getShiftedGaps(int rowNum) {
     return result;
 }
 
-void AlignToReferenceTask::insertShiftedGapsIntoReference(MAlignment &alignment, const QList<U2MsaGap> &gaps) {
+void ComposeResultSubTask::insertShiftedGapsIntoReference(MAlignment &alignment, const QList<U2MsaGap> &gaps) {
     for (int i=gaps.size() - 1; i>=0; i--) {
         U2MsaGap gap = gaps[i];
         alignment.insertGaps(0, gap.offset, gap.gap, stateInfo);
@@ -401,7 +437,7 @@ void AlignToReferenceTask::insertShiftedGapsIntoReference(MAlignment &alignment,
     }
 }
 
-void AlignToReferenceTask::insertShiftedGapsIntoRead(MAlignment &alignment, int readNum, const QList<U2MsaGap> &gaps) {
+void ComposeResultSubTask::insertShiftedGapsIntoRead(MAlignment &alignment, int readNum, const QList<U2MsaGap> &gaps) {
     QList<U2MsaGap> ownGaps = getShiftedGaps(readNum);
     CHECK_OP(stateInfo, );
 
@@ -562,14 +598,14 @@ PairwiseAlignmentTaskSettings * KAlignSubTask::createSettings(DbiDataStorage *st
     QScopedPointer<MAlignmentObject> msaObject(StorageUtils::getMsaObject(storage, msa));
     CHECK_EXT(!msaObject.isNull(), os.setError(L10N::nullPointerError("MSA object")), NULL);
 
-    U2DataId refrenceId = msaObject->getRow(0).getRowDBInfo().sequenceId;
+    U2DataId referenceId = msaObject->getRow(0).getRowDBInfo().sequenceId;
     U2DataId readId = msaObject->getRow(1).getRowDBInfo().sequenceId;
 
     PairwiseAlignmentTaskSettings *settings = new PairwiseAlignmentTaskSettings();
     settings->alphabet = msaObject->getAlphabet()->getId();
     settings->inNewWindow = false;
     settings->msaRef = msaObject->getEntityRef();
-    settings->firstSequenceRef = U2EntityRef(msaObject->getEntityRef().dbiRef, refrenceId);
+    settings->firstSequenceRef = U2EntityRef(msaObject->getEntityRef().dbiRef, referenceId);
     settings->secondSequenceRef = U2EntityRef(msaObject->getEntityRef().dbiRef, readId);
     return settings;
 }

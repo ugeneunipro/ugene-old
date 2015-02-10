@@ -23,6 +23,7 @@
 #define _U2_MALIGNMENT_OBJECT_H_
 
 #include <U2Core/GObject.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/MAlignment.h>
 
@@ -143,7 +144,7 @@ public:
      * Returns shift size, besides sign of the returning value specifies direction of the shift
      */
     int shiftRegion(int startPos, int startRow, int nBases, int nRows, int shift);
-    void deleteColumnWithGaps(int requiredGapCount = GAP_COLUMN_ONLY);
+    void deleteColumnWithGaps(int requiredGapCount = GAP_COLUMN_ONLY, U2OpStatus &os = U2OpStatusImpl());
     QList<qint64> getColumnsWithGaps(int requiredGapCount = GAP_COLUMN_ONLY) const;
     void updateCachedMAlignment(const MAlignmentModInfo &mi = MAlignmentModInfo(),
         const QList<qint64> &removedRowIds = QList<qint64>());

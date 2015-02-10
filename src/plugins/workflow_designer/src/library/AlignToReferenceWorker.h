@@ -108,9 +108,9 @@ private:
     QString initialReadName;
 };
 
-class AlignToReferenceTask : public Task {
+class ComposeResultSubTask : public Task {
 public:
-    AlignToReferenceTask(const SharedDbiDataHandler &reference, const QList<SharedDbiDataHandler> &reads, DbiDataStorage *storage);
+    ComposeResultSubTask(const SharedDbiDataHandler &reference, const QList<SharedDbiDataHandler> &reads, const QList<PairwiseAlignmentTask*> subTasks, DbiDataStorage *storage);
     void prepare();
     void run();
     SharedDbiDataHandler getAlignment() const;
@@ -131,10 +131,29 @@ private:
 private:
     const SharedDbiDataHandler reference;
     const QList<SharedDbiDataHandler> reads;
-    QList<PairwiseAlignmentTask*> subTasks;
+    const QList<PairwiseAlignmentTask*> subTasks;
     DbiDataStorage *storage;
     SharedDbiDataHandler msa;
     SharedDbiDataHandler annotations;
+};
+
+class AlignToReferenceTask : public Task {
+public:
+    AlignToReferenceTask(const SharedDbiDataHandler &reference, const QList<SharedDbiDataHandler> &reads, DbiDataStorage *storage);
+    void prepare();
+    QList<Task*> onSubTaskFinished(Task *subTask);
+    SharedDbiDataHandler getAlignment() const;
+    SharedDbiDataHandler getAnnotations() const;
+
+private:
+    const SharedDbiDataHandler reference;
+    const QList<SharedDbiDataHandler> reads;
+    QList<PairwiseAlignmentTask*> subTasks;
+    ComposeResultSubTask *composeSubTask;
+    DbiDataStorage *storage;
+    SharedDbiDataHandler msa;
+    SharedDbiDataHandler annotations;
+    int subTasksCount;
 };
 
 class AlignToReferencePrompter : public PrompterBase<AlignToReferencePrompter> {
