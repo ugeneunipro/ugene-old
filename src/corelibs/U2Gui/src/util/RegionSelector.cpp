@@ -129,6 +129,10 @@ U2Region RegionSelector::getRegion(bool *_ok) const {
     }
 }
 
+bool RegionSelector::isWholeSequenceSelected() const {
+    return comboBox->currentText() == WHOLE_SEQUENCE;
+}
+
 void RegionSelector::setMaxLength(qint64 length) {
     maxLen = length;
     const int wholeSequenceIndex = comboBox->findText(WHOLE_SEQUENCE);

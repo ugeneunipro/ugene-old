@@ -255,10 +255,13 @@ void ORFDialog::reject() {
     QDialog::reject();
 }
 
-
-U2Region ORFDialog::getCompleteSearchRegion(bool *ok) const{
-    U2Region region=rs->getRegion(ok);//todo add check on wrong region
-    return region;
+U2Region ORFDialog::getCompleteSearchRegion(bool *ok) const {
+    if (rs->isWholeSequenceSelected()) {
+        return U2_REGION_MAX;
+    } else {
+        //todo add check on wrong region
+        return rs->getRegion(ok);
+    }
 }
 
 void ORFDialog::runTask() {
@@ -271,6 +274,11 @@ void ORFDialog::runTask() {
         return;
     }
 
+    const U2Region wholeSequenceRegion = U2Region(0, ctx->getSequenceLength());
+    s.searchRegion = s.searchRegion.intersect(wholeSequenceRegion);
+    if (s.searchRegion.isEmpty()) {
+        s.searchRegion = wholeSequenceRegion;
+    }
 
     task = new ORFFindTask(s, ctx->getSequenceObject()->getEntityRef());
     AppContext::getTaskScheduler()->registerTopLevelTask(task);

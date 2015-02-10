@@ -57,6 +57,7 @@ public:
                    QList<RegionPreset> presetRegions = QList<RegionPreset>());
 
     U2Region getRegion(bool *ok = NULL) const;
+    bool isWholeSequenceSelected() const;
 
     void setMaxLength(qint64 length);
     void setCustomRegion(const U2Region& value);
