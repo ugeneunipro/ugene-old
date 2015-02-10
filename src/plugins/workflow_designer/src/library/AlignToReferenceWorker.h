@@ -36,19 +36,62 @@ public:
     void prepare();
     void run();
 
-    qint64 getMaxChunkSize() const;
-    QList<U2MsaGap> getReferenceGaps() const;
-    QList<U2MsaGap> getReadGaps() const;
+    const SharedDbiDataHandler getRead() const;
+    qint64 getMaxRegionSize() const;
+    U2Region getCoreRegion() const;
+
+    static PairwiseAlignmentTaskSettings * createSettings(DbiDataStorage *storage, const SharedDbiDataHandler &msa, U2OpStatus &os);
+    static PairwiseAlignmentTaskFactory * getPairwiseAlignmentTaskFactory(const QString &algoId, const QString &implId, U2OpStatus &os);
 
 private:
-    PairwiseAlignmentTaskFactory * getPairwiseAlignmentTaskFactory(U2OpStatus &os) const;
-    void createAlignment(U2SequenceObject *refObject, U2SequenceObject *readObject);
-    PairwiseAlignmentTaskSettings * createSettings();
+    void createAlignment();
+    QList<U2Region> getRegions(const QList<U2MsaGap> &gaps, qint64 rowLength) const;
+    void calculateCoreRegion(const QList<U2Region> &regions);
+    void extendCoreRegion(const QList<U2Region> &regions);
 
 private:
     const SharedDbiDataHandler reference;
     const SharedDbiDataHandler read;
     DbiDataStorage *storage;
+    SharedDbiDataHandler msa;
+
+    qint64 maxRegionSize;
+    U2Region coreRegion;
+
+    static const qint64 MAX_GAP_SIZE;
+    static const qint64 EXTENSION_COEF;
+};
+
+class PairwiseAlignmentTask : public Task {
+public:
+    PairwiseAlignmentTask(const SharedDbiDataHandler &reference, const SharedDbiDataHandler &read, DbiDataStorage *storage);
+    void prepare();
+    QList<Task*> onSubTaskFinished(Task *subTask);
+    void run();
+
+    bool isRc() const;
+    SharedDbiDataHandler getRead() const;
+    QList<U2MsaGap> getReferenceGaps() const;
+    QList<U2MsaGap> getReadGaps() const;
+
+private:
+    QByteArray getReverseComplement(const QByteArray &sequence, const DNAAlphabet *alphabet);
+    void createRcRead();
+    KAlignSubTask * initRc();
+    void createSWAlignment(KAlignSubTask *task);
+    void shiftGaps(QList<U2MsaGap> &gaps) const;
+
+private:
+    const SharedDbiDataHandler reference;
+    const SharedDbiDataHandler read;
+    SharedDbiDataHandler rcRead;
+    DbiDataStorage *storage;
+
+    KAlignSubTask *kalign;
+    KAlignSubTask *rcKalign;
+    bool rc;
+    qint64 offset;
+
     SharedDbiDataHandler msa;
     qint64 maxChunkSize;
     QList<U2MsaGap> referenceGaps;
@@ -63,10 +106,8 @@ public:
     SharedDbiDataHandler getResult() const;
 
 private:
-    QByteArray getReverseComplement(const QByteArray &sequence, const DNAAlphabet *alphabet);
-    SharedDbiDataHandler createRcRead(const SharedDbiDataHandler &read);
-    KAlignSubTask * getBestSubTask(int readNum, bool &rc);
-    DNASequence getReadSequence(int readNum, bool rc);
+    PairwiseAlignmentTask * getPATask(int readNum);
+    DNASequence getReadSequence(int readNum);
     DNASequence getReferenceSequence();
 
     QList<U2MsaGap> getReferenceGaps();
@@ -77,9 +118,7 @@ private:
 private:
     const SharedDbiDataHandler reference;
     const QList<SharedDbiDataHandler> reads;
-    QList<SharedDbiDataHandler> rcReads;
-    QList<KAlignSubTask*> subTasks;
-    QList<KAlignSubTask*> rcSubTasks;
+    QList<PairwiseAlignmentTask*> subTasks;
     DbiDataStorage *storage;
     SharedDbiDataHandler msa;
 };
