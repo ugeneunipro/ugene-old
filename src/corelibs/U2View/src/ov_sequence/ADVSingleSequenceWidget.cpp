@@ -403,8 +403,12 @@ void ADVSingleSequenceWidget::centerPosition(int pos, QWidget* skipView) {
 }
 
 void ADVSingleSequenceWidget::updateMinMaxHeight() {
-    int height = linesSplitter->minimumHeight();
+    int height = ADV_HEADER_HEIGHT;
+    foreach(GSequenceLineView* v, lineViews) {
+        height += v->isVisible() * v->minimumHeight();
+    }
     setMinimumHeight(height);
+
 
     if (lineViews.size() == 1 && lineViews.first() == overview) {
         setMaximumHeight(height);

@@ -198,7 +198,6 @@ QWidget* AnnotatedDNAView::createWidget() {
     mainSplitter->addWidget(scrollArea);
     mainSplitter->setHandleWidth(1); // make smaller the distance between the Annotations Editor and the  sequence sub-views
     mainSplitter->setCollapsible(mainSplitter->indexOf(scrollArea), false);
-    mainSplitter->setStretchFactor(mainSplitter->count()-1, 5);
 
     scrolledWidget = new QWidget(scrollArea);
     scrolledWidgetLayout = new QVBoxLayout();
@@ -222,7 +221,6 @@ QWidget* AnnotatedDNAView::createWidget() {
 
     mainSplitter->addWidget(annotationsView);
     mainSplitter->setCollapsible(mainSplitter->indexOf(annotationsView), false);
-    mainSplitter->setStretchFactor(mainSplitter->count()-1, 1);
 
     scrolledWidget->setLayout(scrolledWidgetLayout);
     scrolledWidget->setObjectName("scrolled_widget_layout");
@@ -340,8 +338,6 @@ void AnnotatedDNAView::updateScrollAreaHeight() {
     } else {
         scrollArea->setMaximumHeight(QWIDGETSIZE_MAX);
     }
-
-    scrolledWidgetLayout->activate();
 }
 
 AnnotatedDNAView::~AnnotatedDNAView() {
