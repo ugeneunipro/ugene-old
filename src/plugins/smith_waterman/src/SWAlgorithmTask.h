@@ -118,13 +118,10 @@ public:
 
     static const QString PA_SW_GAP_OPEN;
     static const QString PA_SW_GAP_EXTD;
-    static const QString PA_SW_PERCENT_OF_SCORE;
     static const QString PA_SW_SCORING_MATRIX_NAME;
-    static const QString PA_SW_RESULT_FILTER;
     static const QString PA_SW_REALIZATION_NAME;
     static const qint64 PA_SW_DEFAULT_PERCENT_OF_SCORE = 0;
     static const QString PA_SW_DEFAULT_RESULT_FILTER;
-    static const QString PA_SW_DEFAULT_RESULT_FILE_NAME;
 };
 
 class PairwiseAlignmentSmithWatermanTask : public PairwiseAlignmentTask, public SequenceWalkerCallback {

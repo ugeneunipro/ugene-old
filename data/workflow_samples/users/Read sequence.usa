@@ -1,0 +1,12 @@
+<!DOCTYPE GB2WORKFLOW>
+<Actor>
+ <Input-port>
+  <In-Slots Slot="string"/>
+ </Input-port>
+ <Output-port>
+  <Out-Slots Slot="seq"/>
+ </Output-port>
+ <Attributes/>
+ <Element-name Name="Read sequence"/>
+ <Element-description Description="Read sequence from file"/>
+</Actor>

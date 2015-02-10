@@ -97,6 +97,7 @@ public:
     static QScriptValue writeFile(QScriptContext *ctx, QScriptEngine *engine);
     static QScriptValue appendFile(QScriptContext *ctx, QScriptEngine *engine);
     static QScriptValue readFile(QScriptContext *ctx, QScriptEngine *engine);
+    static QScriptValue readSequences(QScriptContext *ctx, QScriptEngine *engine);
 
 
     // ================== Misc =======================

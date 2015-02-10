@@ -220,7 +220,7 @@ void AlignToReferenceTask::run() {
 
     MAlignment result("Aligned reads", referenceSeq.alphabet);
 
-    // add reference row
+    // add the reference row
     result.addRow(referenceSeq.getName(), referenceSeq.seq, 0, stateInfo);
     CHECK_OP(stateInfo, );
 
@@ -232,8 +232,10 @@ void AlignToReferenceTask::run() {
         bool rc = false;
         KAlignSubTask *subTask = getBestSubTask(i, rc);
         CHECK_OP(stateInfo, );
+
         DNASequence readSeq = getReadSequence(i, rc);
         CHECK_OP(stateInfo, );
+
         result.addRow(readSeq.getName(), readSeq.seq, i + 1, stateInfo);
         CHECK_OP(stateInfo, );
         result.setRowGapModel(i + 1, subTask->getReadGaps());

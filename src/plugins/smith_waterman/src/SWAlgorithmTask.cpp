@@ -57,12 +57,9 @@ namespace U2 {
 
 const QString PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_GAP_OPEN("SW_gapOpen");
 const QString PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_GAP_EXTD("SW_gapExtd");
-const QString PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_PERCENT_OF_SCORE("SW_percentOfScore");
 const QString PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_SCORING_MATRIX_NAME("SW_scoringMatrix");
-const QString PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_RESULT_FILTER("SW_resultFilter");
 const QString PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_REALIZATION_NAME("SW_realizationName");
 const QString PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_DEFAULT_RESULT_FILTER("filter-intersections");
-const QString PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_DEFAULT_RESULT_FILE_NAME("SW_Alignment_Result");
 
 SWAlgorithmTask::SWAlgorithmTask(const SmithWatermanSettings& s,
                                  const QString& taskName, SW_AlgType _algType):Task (taskName, TaskFlag_NoRun),

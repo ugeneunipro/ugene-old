@@ -27,6 +27,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNATranslation.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/IOAdapter.h>
 #include <U2Core/Log.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/MSAUtils.h>
@@ -97,6 +99,7 @@ void WorkflowScriptLibrary::initEngine(WorkflowScriptEngine *engine) {
     foo.setProperty("writeFile", engine->newFunction(writeFile));
     foo.setProperty("appendFile", engine->newFunction(appendFile));
     foo.setProperty("readFile", engine->newFunction(readFile));
+    foo.setProperty("readSequences", engine->newFunction(readSequences));
 
     if(AppContext::getWorkflowScriptRegistry() != NULL) {
         foreach(WorkflowScriptFactory* f, AppContext::getWorkflowScriptRegistry()->getFactories()) {
@@ -949,6 +952,7 @@ QScriptValue WorkflowScriptLibrary::appendFile(QScriptContext *ctx, QScriptEngin
 
     return 0;
 }
+
 QScriptValue WorkflowScriptLibrary::readFile(QScriptContext *ctx, QScriptEngine * /*engine*/){
     if(ctx->argumentCount()!= 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
@@ -971,7 +975,51 @@ QScriptValue WorkflowScriptLibrary::readFile(QScriptContext *ctx, QScriptEngine 
     QScriptValue calee = ctx->callee();
     calee.setProperty("res", QString(result));
     return calee.property("res");
+}
 
+QScriptValue WorkflowScriptLibrary::readSequences(QScriptContext *ctx, QScriptEngine *engine) {
+    DbiDataStorage *storage = ScriptEngineUtils::dataStorage(engine);
+    CHECK(NULL != storage, QScriptValue());
+
+    if (ctx->argumentCount() != 1) {
+        return ctx->throwError(QObject::tr("Incorrect number of arguments"));
+    }
+    QString filePath = ctx->argument(0).toString();
+    QString fileName = QFileInfo(filePath).fileName();
+    if (filePath.isEmpty()) {
+        return ctx->throwError(QObject::tr("Empty file path"));
+    }
+
+    QList<DocumentFormat*> detection = DocumentUtils::toFormats(DocumentUtils::detectFormat(filePath));
+    if (detection.isEmpty()) {
+        return ctx->throwError(QObject::tr("Can't detect the sequence file format: ") + fileName);
+    }
+    DocumentFormat *format = detection.first();
+    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+    QVariantMap hints;
+    hints[DocumentFormat::DBI_REF_HINT] = qVariantFromValue(storage->getDbiRef());
+
+    U2OpStatusImpl os;
+    QScopedPointer<Document> doc(format->loadDocument(iof, filePath, hints, os));
+    if (os.hasError()) {
+        return ctx->throwError(os.getError());
+    }
+    doc->setDocumentOwnsDbiResources(false);
+
+    QList<GObject*> objects = doc->findGObjectByType(GObjectTypes::SEQUENCE);
+    if (objects.isEmpty()) {
+        return ctx->throwError(QObject::tr("There are no sequences in the file: ") + fileName);
+    }
+
+    QScriptValue array = engine->newArray(objects.size());
+    for (int i=0; i<objects.size(); i++) {
+        SharedDbiDataHandler id = storage->getDataHandler(objects[i]->getEntityRef());
+        QScriptValue value = ScriptEngineUtils::getSequenceClass(engine)->newInstance(id);
+        array.setProperty(i, value);
+    }
+
+    ctx->callee().setProperty("res", array);
+    return ctx->callee().property("res");
 }
 
 QScriptValue WorkflowScriptLibrary::debugOut(QScriptContext *ctx, QScriptEngine *) {
