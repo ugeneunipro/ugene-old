@@ -117,7 +117,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
     CHECK_SET_ERR(mw != NULL, "main window is NULL");
 #ifdef Q_OS_MAC
-    GTWidget::click(os, mw, Qt::LeftButton, QPoint(1500,300));
+    GTWidget::click(os, mw, Qt::LeftButton, QPoint(200,200));
 #endif
 }
 
