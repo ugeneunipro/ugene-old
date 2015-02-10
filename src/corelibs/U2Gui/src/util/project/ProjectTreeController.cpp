@@ -1162,9 +1162,8 @@ bool ProjectTreeController::removeObjects(const QList<GObject*> &objs, const QLi
         startTrackingRemovedObjects(t, objects2Doc);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_onObjRemovalTaskFinished()));
         AppContext::getTaskScheduler()->registerTopLevelTask(t);
-    } else {
-        qDeleteAll(objects2Doc.keys());
     }
+    qDeleteAll(objects2Doc.keys());
 
     return deletedSuccessfully;
 }
