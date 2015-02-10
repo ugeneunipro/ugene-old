@@ -82,7 +82,7 @@ public:
     static QColor successColor() { return QColor("green"); }
     static QColor infoHintColor() { return QColor("green"); }
     static QString successColorLabelHtmlStr() { return successColor().name(); }
-    static QString successColorLabelStr() { return QString("rgb(%1, %2, %2)").arg(successColor().red()).arg(successColor().green()).arg(successColor().blue()); }
+    static QString successColorLabelStr() { return QString("rgb(%1, %2, %3)").arg(successColor().red()).arg(successColor().green()).arg(successColor().blue()); }
     static QString linkColorLabelStr() {
 #ifdef Q_OS_MAC
         return "gray";

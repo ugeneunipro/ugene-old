@@ -261,7 +261,6 @@ BwaSwSettingsWidget::BwaSwSettingsWidget(QWidget *parent):
     DnaAssemblyAlgorithmMainWidget(parent)
 {
     setupUi(this);
-    layout()->setContentsMargins(0,0,0,0);
 
     numThreadsSpinbox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     numThreadsSpinbox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
@@ -270,6 +269,8 @@ BwaSwSettingsWidget::BwaSwSettingsWidget(QWidget *parent):
         "color: " + L10N::successColorLabelStr() + ";"
         "font: bold;");
     label->setText(tr("NOTE: bwa-sw performs alignment of long sequencing reads (Sanger or 454). It accepts reads only in FASTA or FASTQ format. Reads should be compiled into single file."));
+
+    adjustSize();
 }
 
 QMap<QString,QVariant> BwaSwSettingsWidget::getDnaAssemblyCustomSettings() {
@@ -327,7 +328,6 @@ BwaMemSettingsWidget::BwaMemSettingsWidget(QWidget *parent):
     DnaAssemblyAlgorithmMainWidget(parent)
 {
     setupUi(this);
-    layout()->setContentsMargins(0,0,0,0);
 
     numThreadsSpinbox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     numThreadsSpinbox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
@@ -336,6 +336,8 @@ BwaMemSettingsWidget::BwaMemSettingsWidget(QWidget *parent):
         "color: " + L10N::successColorLabelStr() + ";"
         "font: bold;");
     label->setText(tr("NOTE: bwa mem accepts reads only in FASTA or FASTQ format. Reads should be compiled into a single file for each mate end."));
+
+    adjustSize();
 }
 
 QMap<QString,QVariant> BwaMemSettingsWidget::getDnaAssemblyCustomSettings() {

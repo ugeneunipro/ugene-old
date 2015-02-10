@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>586</width>
-    <height>278</height>
+    <width>766</width>
+    <height>329</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,6 +16,9 @@
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="sizeConstraint">
     <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
+   <property name="margin">
+    <number>0</number>
    </property>
    <item>
     <widget class="QTabWidget" name="tabWidget">
@@ -33,7 +36,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <property name="sizeConstraint">
-          <enum>QLayout::SetMaximumSize</enum>
+          <enum>QLayout::SetMinAndMaxSize</enum>
          </property>
          <item>
           <widget class="QGroupBox" name="groupBox_0">
@@ -182,7 +185,7 @@
               </property>
              </widget>
             </item>
-            <item row="10" column="0">
+            <item row="10" column="0" colspan="2">
              <spacer name="verticalSpacer_2">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -190,7 +193,7 @@
               <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
-                <height>40</height>
+                <height>0</height>
                </size>
               </property>
              </spacer>
@@ -331,14 +334,7 @@
               </property>
              </widget>
             </item>
-            <item row="9" column="0">
-             <widget class="QCheckBox" name="hardClippingCheckBox">
-              <property name="text">
-               <string>Prefer hard clipping in SAM output (-H)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="10" column="0">
+            <item row="10" column="0" colspan="2">
              <spacer name="verticalSpacer">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -350,6 +346,13 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item row="9" column="0" colspan="2">
+             <widget class="QCheckBox" name="hardClippingCheckBox">
+              <property name="text">
+               <string>Prefer hard clipping in SAM output (-H)</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>

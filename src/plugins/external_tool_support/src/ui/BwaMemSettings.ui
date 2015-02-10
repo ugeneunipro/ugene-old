@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>660</width>
-    <height>350</height>
+    <height>447</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -22,6 +22,9 @@
   <layout class="QGridLayout" name="gridLayout">
    <property name="sizeConstraint">
     <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
+   <property name="margin">
+    <number>0</number>
    </property>
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
@@ -338,7 +341,7 @@
               </property>
              </widget>
             </item>
-            <item row="12" column="0">
+            <item row="12" column="0" colspan="2">
              <spacer name="verticalSpacer_2">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -566,7 +569,7 @@
               </property>
              </widget>
             </item>
-            <item row="7" column="0">
+            <item row="7" column="0" colspan="2">
              <spacer name="verticalSpacer">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -574,7 +577,7 @@
               <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
-                <height>40</height>
+                <height>0</height>
                </size>
               </property>
              </spacer>
