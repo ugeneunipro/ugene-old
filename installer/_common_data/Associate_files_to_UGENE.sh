@@ -14,10 +14,27 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
     fi
 
     echo 'Extracting the icons to "~/.local/share/icons":'  | tee -a $LOG_FILE
-    tar -xvzf icons.tar.gz -C ~/.local/share/icons 2>&1 | tee -a $LOG_FILE
+    if [ -e ~/.local/share/icons ]; then
+        tar -xvzf icons.tar.gz -C ~/.local/share/icons 2>&1 | tee -a $LOG_FILE
+    else
+        mkdir -p ~/.local/share/icons
+        tar -xvzf icons.tar.gz -C ~/.local/share/icons 2>&1 | tee -a $LOG_FILE
+    fi
+    if [ -e ~/.local/share/icons/hicolor/48x48/apps ]; then
+        cp -f ugene.png ~/.local/share/icons/hicolor/48x48/apps 2>&1 | tee -a $LOG_FILE
+    else
+        mkdir -p ~/.local/share/icons/hicolor/48x48/apps
+        cp -f ugene.png ~/.local/share/icons/hicolor/48x48/apps 2>&1 | tee -a $LOG_FILE
+    fi
+
 
     echo 'Creating the MIME types (copy application-x-ugene.xml to ~/.local/share/mime/packages):' | tee -a $LOG_FILE
-    cp -f application-x-ugene.xml ~/.local/share/mime/packages/ 2>&1 | tee -a $LOG_FILE
+    if [ -e ~/.local/share/mime/packages/ ]; then
+        cp -f application-x-ugene.xml ~/.local/share/mime/packages/ 2>&1 | tee -a $LOG_FILE
+    else
+        mkdir -p ~/.local/share/mime/packages/
+        cp -f application-x-ugene.xml ~/.local/share/mime/packages/ 2>&1 | tee -a $LOG_FILE
+    fi
 
     echo 'Updating new MIME types.' | tee -a $LOG_FILE
     update-mime-database ~/.local/share/mime/ 2>&1 | tee -a $LOG_FILE
@@ -29,7 +46,26 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
         echo "MimeType=application/x-ugene-fa;application/x-ugene-uprj;application/x-ugene-uwl;application/x-ugene-uql;application/x-ugene-abi;application/x-ugene-aln;application/x-ugene-embl;application/x-ugene-sw;application/x-ugene-fastq;application/x-ugene-gb;application/x-ugene-gff;application/x-ugene-msf;application/x-ugene-newick;application/x-ugene-pdb;application/x-ugene-sam-bam;application/x-ugene-srfa;application/x-ugene-sto;application/x-ugene-db;application/x-ugene-scf;application/x-ugene-mmdb;application/x-ugene-hmm;" >>~/.local/share/applications/ugene.desktop
         rm ~/.local/share/applications/ugene.desktop.bak
     else
-        cp ugene.desktop ~/.local/share/applications/ 2>&1 | tee -a $LOG_FILE
+        if [ -e ~/.local/share/applications/ ]; then
+            cp ugene.desktop ~/.local/share/applications/ 2>&1 | tee -a $LOG_FILE
+        else
+            mkdir -p ~/.local/share/applications/
+            cp ugene.desktop ~/.local/share/applications/ 2>&1 | tee -a $LOG_FILE
+        fi
+    fi
+
+    if [ -e ~/.local/share/applications/ugeneui.desktop ]; then
+        cp ~/.local/share/applications/ugeneui.desktop ~/.local/share/applications/ugeneui.desktop.bak
+        grep -v "MimeType=" ~/.local/share/applications/ugeneui.desktop.bak > ~/.local/share/applications/ugeneui.desktop
+        echo "MimeType=application/x-ugene-fa;application/x-ugene-uprj;application/x-ugene-uwl;application/x-ugene-uql;application/x-ugene-abi;application/x-ugene-aln;application/x-ugene-embl;application/x-ugene-sw;application/x-ugene-fastq;application/x-ugene-gb;application/x-ugene-gff;application/x-ugene-msf;application/x-ugene-newick;application/x-ugene-pdb;application/x-ugene-sam-bam;application/x-ugene-srfa;application/x-ugene-sto;application/x-ugene-db;application/x-ugene-scf;application/x-ugene-mmdb;application/x-ugene-hmm;" >>~/.local/share/applications/ugeneui.desktop
+        rm ~/.local/share/applications/ugeneui.desktop.bak
+    else
+        if [ -e ~/.local/share/applications/ ]; then
+            cp ugene.desktop ~/.local/share/applications/ugeneui.desktop 2>&1 | tee -a $LOG_FILE
+        else
+            mkdir -p ~/.local/share/applications/
+            cp ugene.desktop ~/.local/share/applications/ugeneui.desktop 2>&1 | tee -a $LOG_FILE
+        fi
     fi
 
     echo "See log of operations in $LOG_FILE file" | tee -a $LOG_FILE
@@ -49,6 +85,7 @@ else
 
     echo 'Extracting the icons to "/usr/share/icons":' | tee -a $LOG_FILE
     tar -xvzf icons.tar.gz -C /usr/share/icons 2>&1 | tee -a $LOG_FILE
+    cp -f ugene.png /usr/share/icons/hicolor/48x48/apps 2>&1 | tee -a $LOG_FILE
 
     echo 'Creating the MIME types (copy application-x-ugene.xml to /usr/share/mime/packages):' | tee -a $LOG_FILE
     cp -f application-x-ugene.xml /usr/share/mime/packages/ 2>&1 | tee -a $LOG_FILE
@@ -69,6 +106,14 @@ else
         cp ugene.desktop /usr/share/applications/ 2>&1 | tee -a $LOG_FILE
     fi
     
+    if [ -e /usr/share/applications/ugeneui.desktop ]; then
+        cp /usr/share/applications/ugeneui.desktop /usr/share/applications/ugeneui.desktop.bak
+        grep -v "MimeType=" /usr/share/applications/ugeneui.desktop.bak > /usr/share/applications/ugeneui.desktop
+        echo "MimeType=application/x-ugene-fa;application/x-ugene-uprj;application/x-ugene-uwl;application/x-ugene-uql;application/x-ugene-abi;application/x-ugene-aln;application/x-ugene-embl;application/x-ugene-sw;application/x-ugene-fastq;application/x-ugene-gb;application/x-ugene-gff;application/x-ugene-msf;application/x-ugene-newick;application/x-ugene-pdb;application/x-ugene-sam-bam;application/x-ugene-srfa;application/x-ugene-sto;application/x-ugene-db;application/x-ugene-scf;application/x-ugene-mmdb;application/x-ugene-hmm;" >>/usr/share/applications/ugeneui.desktop
+        rm /usr/share/applications/ugeneui.desktop.bak
+    else
+        cp ugene.desktop /usr/share/applications/ugeneui.desktop 2>&1 | tee -a $LOG_FILE
+    fi
 
     echo "See log of operations in $LOG_FILE file" | tee -a $LOG_FILE
     echo "(You may need to restart your file manager to see the change.)" | tee -a $LOG_FILE
