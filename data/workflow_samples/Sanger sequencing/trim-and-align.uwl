@@ -1,0 +1,241 @@
+#@UGENE_WORKFLOW
+#The workflow does the following things:
+#1) Reads a set of Sanger sequencing reads from ABI files.
+#2) Trims ends of the reads by the quality value.
+#3) Filter the short trimmed reads.
+#4) Aligns the filtered trimmed reads to a reference sequence.
+#
+#You can change the workflow parameters:
+#1) Quality threshold for the trimming.
+#2) Minimum read length. If length of a trimmed read is less than the minimum value than the read is filtered.
+#
+#The output data are:
+#1) Multiple sequence alignment file. The first sequence of the alignment is the reference and other ones are the reads.
+#2) Annotated reference sequence file. The annotations are the aligned reads.
+
+include "Read sequence.usa" as "Script-Read sequence"
+
+workflow "Trim and align Sanger reads"{
+
+    QualityTrim {
+        type:QualityTrim;
+        name:"FASTQ Quality Trimmer";
+        both-ends:true;
+        out-mode:1;
+    }
+    get-file-list {
+        type:get-file-list;
+        name:"File List";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    files-conversion {
+        type:files-conversion;
+        name:"To FASTQ";
+        document-format:fastq;
+        out-mode:1;
+    }
+    Script-Read-sequence {
+        type:"Script-Read sequence";
+        name:"Read sequence";
+        script {
+out_sequence = null;
+try {
+    var sequences = readSequences(in_text);
+    if (1 == sequences.length) {
+        out_sequence = sequences[0];
+    }
+} catch (e) {
+    print(e.toString());
+}
+        };
+    }
+    align-to-reference {
+        type:align-to-reference;
+        name:"Align to Reference";
+    }
+    write-msa {
+        type:write-msa;
+        name:"Write Alignment";
+        url-out:"alignment.aln";
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write Sequence";
+        accumulate:false;
+        document-format:genbank;
+        url-out:"sequence.gb";
+    }
+
+    .actor-bindings {
+        get-file-list.out-url->files-conversion.in-file
+        QualityTrim.out-file->Script-Read-sequence.in
+        files-conversion.out-file->QualityTrim.in-file
+        Script-Read-sequence.out->align-to-reference.in-sequence
+        align-to-reference.out->write-msa.in-msa
+        align-to-reference.out->write-sequence.in-sequence
+    }
+
+    files-conversion.url->QualityTrim.in-file.url
+    get-file-list.url->files-conversion.in-file.url
+    QualityTrim.url->Script-Read-sequence.in.text
+    Script-Read-sequence.sequence->align-to-reference.in-sequence.sequence
+    align-to-reference.msa->write-msa.in-msa.msa
+    align-to-reference.annotations->write-sequence.in-sequence.annotations
+    align-to-reference.sequence->write-sequence.in-sequence.sequence
+
+    .meta {
+        parameter-aliases {
+            QualityTrim.len-id {
+                alias:min-length;
+            }
+            QualityTrim.qual-id {
+                alias:threshold;
+            }
+            get-file-list.url-in {
+                alias:reads;
+            }
+            align-to-reference.reference {
+                alias:reference;
+            }
+            write-msa.url-out {
+                alias:out-alignemnt;
+            }
+            write-msa.url-suffix {
+                alias:alignment-suffix;
+            }
+            write-sequence.url-out {
+                alias:out-seq;
+            }
+            write-sequence.url-suffix {
+                alias:seq-suffix;
+            }
+        }
+        visual {
+            QualityTrim {
+                pos:"-585 -510";
+                style:ext;
+                bg-color-ext:"208 69 0 64";
+                in-file.angle:180;
+                out-file.angle:296.206;
+            }
+            Script-Read-sequence {
+                pos:"-540 -300";
+                style:simple;
+                bg-color-simple:"84 84 84 255";
+                in.angle:93.6914;
+                out.angle:360;
+            }
+            align-to-reference {
+                pos:"-390 -300";
+                style:ext;
+                bg-color-ext:"0 128 0 64";
+                in-sequence.angle:180;
+                out.angle:360;
+            }
+            files-conversion {
+                pos:"-750 -510";
+                style:simple;
+                bg-color-simple:"84 84 84 255";
+                in-file.angle:177.917;
+                out-file.angle:360;
+            }
+            get-file-list {
+                pos:"-930 -510";
+                style:ext;
+                bg-color-ext:"24 102 175 64";
+                out-url.angle:353.118;
+            }
+            write-msa {
+                pos:"-120 -300";
+                style:ext;
+                bg-color-ext:"64 26 96 64";
+                in-msa.angle:180;
+            }
+            write-sequence {
+                pos:"-120 -510";
+                style:ext;
+                bg-color-ext:"64 26 96 64";
+                in-sequence.angle:180;
+            }
+            QualityTrim.out-file->Script-Read-sequence.in {
+                text-pos:"-31.5 -15";
+            }
+            Script-Read-sequence.out->align-to-reference.in-sequence {
+                text-pos:"-30.5 -28";
+            }
+            align-to-reference.out->write-msa.in-msa {
+                text-pos:"-34 -24";
+            }
+            align-to-reference.out->write-sequence.in-sequence {
+                text-pos:"-31 -11";
+            }
+            files-conversion.out-file->QualityTrim.in-file {
+                text-pos:"-12 -24";
+            }
+            get-file-list.out-url->files-conversion.in-file {
+                text-pos:"-31 -24";
+            }
+        }
+        wizard {
+            name:"Trim and Align Sanger Reads";
+            page {
+                id:1;
+                next:2;
+                title:"Reference Sequence";
+                parameters-area {
+                    group {
+                        title:"Input file";
+                        label-size:120;
+                        align-to-reference.reference {
+                            label:"Reference";
+                        }
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Input Sanger Reads (ABI Files)";
+                parameters-area {
+                    get-file-list.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:3;
+                next:4;
+                title:"Trimming and Filtering";
+                parameters-area {
+                    group {
+                        title:"Settings";
+                        label-size:120;
+                        QualityTrim.qual-id {
+                        }
+                        QualityTrim.len-id {
+                        }
+                    }
+                }
+            }
+            page {
+                id:4;
+                title:"Results";
+                parameters-area {
+                    group {
+                        title:"Output files";
+                        label-size:120;
+                        write-msa.url-out {
+                            label:"Aligned reads file";
+                        }
+                        write-sequence.url-out {
+                            label:"Annotated sequence file";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
