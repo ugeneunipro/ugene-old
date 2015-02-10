@@ -226,30 +226,43 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
 }
 
 void AnnotationsTreeView::restoreWidgetState() {
-    QStringList geom = AppContext::getSettings()->getValue(SETTINGS_ROOT + COLUMN_SIZES, QStringList()).toStringList();
+    QMap<QString, QVariant> geom = AppContext::getSettings()->getValue(SETTINGS_ROOT + COLUMN_SIZES).toMap();
     if (geom.isEmpty()) {
         tree->setColumnWidth(0, 300);
-        tree->setColumnWidth(1, 300);
-    } else {
-        for (int i=0;i<geom.size(); i++) {
-            const QString& w = geom.at(i);
-            bool ok = false;
-            int width  = w.toInt(&ok);
-            if (ok) {
-                tree->setColumnWidth(i, width);
+        return;
+    }
+
+    foreach (const QString &columnName, geom.keys()) {
+        int columnIndex = -1;
+        for (int i = 0; i < tree->columnCount(); i++) {
+            if (columnName == tree->headerItem()->text(i)) {
+                columnIndex = i;
+                break;
             }
+        }
+
+        // The last column's width shouldn't  be set
+        // Since qualifier columns are not saved, 'value' column should be ignored
+        // When qualifier columns will be saved (UGENE-3962), the last item in the map should be ignored
+        if (columnName == tr("Value")) {
+            continue;
+        }
+
+        bool ok = false;
+        const int width = geom[columnName].toInt(&ok);
+        if (ok && width >= 0 && columnIndex >= 0) {
+            tree->setColumnWidth(columnIndex, width);
         }
     }
 }
 
-void AnnotationsTreeView::saveWidgetState( ) {
-    QStringList geom;
-    const int n = tree->columnCount( );
-    for ( int i = 0; i < n; i++ ) {
-        QString s = QString::number( tree->columnWidth( i ) );
-        geom.append( s );
+void AnnotationsTreeView::saveWidgetState() {
+    QMap<QString, QVariant> geom;
+    const int n = tree->columnCount();
+    for (int i = 0; i < n; i++) {
+        geom.insert(tree->headerItem()->text(i), tree->columnWidth(i));
     }
-    AppContext::getSettings( )->setValue( SETTINGS_ROOT + COLUMN_SIZES, geom );
+    AppContext::getSettings()->setValue(SETTINGS_ROOT + COLUMN_SIZES, geom);
 }
 
 
