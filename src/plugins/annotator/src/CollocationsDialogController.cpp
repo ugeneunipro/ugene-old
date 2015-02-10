@@ -259,7 +259,6 @@ void CollocationsDialogController::sl_saveClicked() {
 void CollocationsDialogController::reject() {
     if (task!=NULL) {
         task->cancel();
-        return;
     }
     QDialog::reject();
 }
