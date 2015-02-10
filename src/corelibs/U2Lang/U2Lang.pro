@@ -3,6 +3,7 @@ include (U2Lang.pri)
 # Input
 HEADERS += src/library/BaseActorCategories.h \
            src/library/BaseAttributes.h \
+           src/library/BaseDatasetWorker.h \
            src/library/BasePorts.h \
            src/library/BaseSlots.h \
            src/library/BaseTypes.h \
@@ -116,6 +117,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/serialize/Utils.h
 SOURCES += src/library/BaseActorCategories.cpp \
            src/library/BaseAttributes.cpp \
+           src/library/BaseDatasetWorker.cpp \
            src/library/BasePorts.cpp \
            src/library/BaseSlots.cpp \
            src/library/BaseTypes.cpp \
