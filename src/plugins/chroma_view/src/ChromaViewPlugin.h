@@ -64,7 +64,6 @@ class ChromaViewAction : public ADVSequenceWidgetAction {
     Q_OBJECT
 public:
     ChromaViewAction();
-    ~ChromaViewAction();
     ChromatogramView* view;
 };
 

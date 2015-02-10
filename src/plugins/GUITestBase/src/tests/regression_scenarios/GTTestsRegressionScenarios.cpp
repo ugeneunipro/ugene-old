@@ -1657,7 +1657,7 @@ GUI_TEST_CLASS_DEFINITION(test_1348) {
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Add element"
-                                                      << "Custom Elements with CMD Tools" << settings.elementName,
+                                                      << "Custom Elements with CMD Tools",
                                                       PopupChecker::NotExists));
     GTWidget::click(os, GTWidget::findWidget(os,"sceneView"), Qt::RightButton);
 }
@@ -6976,6 +6976,7 @@ GUI_TEST_CLASS_DEFINITION( test_2204 ){
             GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
             GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
             GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
 
             QComboBox* combo = GTWidget::findExactWidget<QComboBox*>(os, "Motif database widget", dialog);
             GTComboBox::checkValues(os, combo, QStringList()/*<<"cistrome.xml"*/<<"hpdi.xml"<<"jaspar.xml");
@@ -10919,6 +10920,8 @@ GUI_TEST_CLASS_DEFINITION(test_2945){
 //    4.    Move the splitter between Sequence View and Annotation Tree View down.
 //    expected state: CV appeared. all parts of CV are visiable
 
+    // New state of UGENE: seq.view is resizable now, so CV will not be visible by dragging splitter between SV and AE
+
     GTFileDialog::openFile(os, dataDir + "/samples/Genbank", "murine.gb");
     GTWidget::click(os, GTAction::button(os, "CircularViewAction"));
     QWidget* zoomIn = GTWidget::findWidget(os, "tbZoomIn_murine [s] NC_001363");
@@ -10938,6 +10941,7 @@ GUI_TEST_CLASS_DEFINITION(test_2945){
     GTMouseDriver::moveTo(os, bottomLeftToolBar);
     GTMouseDriver::release(os);
     GTGlobals::sleep();
+    QPoint handlePosition = splitterHandler->pos();
 
     QAbstractButton* cvButton = GTAction::button(os, "CircularViewAction");
     CHECK_SET_ERR(cvButton->isChecked(), "CV button is not checked!");
@@ -10957,10 +10961,7 @@ GUI_TEST_CLASS_DEFINITION(test_2945){
     GTMouseDriver::release(os);
     GTGlobals::sleep();
 
-    zoomIn = GTWidget::findWidget(os, "tbZoomIn_murine [s] NC_001363");
-    CHECK_SET_ERR(zoomIn != NULL, "zoomIn action on CV not found");
-    GTWidget::click(os, zoomIn);
-    GTGlobals::sleep();
+    CHECK_SET_ERR(handlePosition == splitterHandler->pos(), "Handler was moved");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2951) {

@@ -182,7 +182,6 @@ QString GTUtilsSequenceView::getEndOfSequenceAsString(U2OpStatus &os, int length
     Runnable *reader = new GTSequenceReader(os, &sequence);
     GTUtilsDialog::waitForDialog(os, reader);
 
-    GTMouseDriver::click(os);
     GTMenu::showContextMenu(os, mdiWindow);
     GTGlobals::sleep(1000);
 

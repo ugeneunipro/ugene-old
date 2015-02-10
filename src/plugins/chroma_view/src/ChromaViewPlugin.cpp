@@ -139,9 +139,4 @@ ChromaViewAction::ChromaViewAction() : ADVSequenceWidgetAction(CHROMA_ACTION_NAM
 {
 }
 
-ChromaViewAction::~ChromaViewAction() {
-    delete view;
-}
-
-
 }//namespace

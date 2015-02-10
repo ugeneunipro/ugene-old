@@ -548,7 +548,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CHROMATOGRAM));
     GTGlobals::sleep(1000);
 
-    Runnable *filler = new ExportChromatogramFiller(os, "C:/",
+    Runnable *filler = new ExportChromatogramFiller(os, sandBoxDir,
         "pagefile.sys", ExportChromatogramFiller::SCF, false, true, true);
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -564,7 +564,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CHROMATOGRAM));
     GTGlobals::sleep(1000);
 
-    Runnable *filler = new ExportChromatogramFiller(os, "C:/",
+    Runnable *filler = new ExportChromatogramFiller(os, sandBoxDir,
         "pagefile.sys", ExportChromatogramFiller::SCF, true, true, true);
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -579,7 +579,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_2) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CHROMATOGRAM));
     GTGlobals::sleep(1000);
 
-    Runnable *filler = new ExportChromatogramFiller(os, "D:/",
+    Runnable *filler = new ExportChromatogramFiller(os, sandBoxDir,
         "pagefile.sys", ExportChromatogramFiller::SCF, false, true, false);
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
