@@ -120,7 +120,15 @@ U2Region MSACollapsibleItemModel::mapSelectionRegionToRows(const U2Region& selec
         return selectionRegion;
     }
 
-    U2Region result(selectionRegion.startPos, 0);
+    int startSeq = 0;
+    int startItemIdx = itemAt(selectionRegion.startPos);
+    if (startItemIdx >= 0) {
+        const MSACollapsableItem& startItem = getItem(startItemIdx);
+        startSeq = startItem.row;
+    } else {
+        startSeq = mapToRow(selectionRegion.startPos);
+    }
+
     int actualLength = 0;
     for(int i = 0; i < selectionRegion.length; i++){
         int itemIdx = itemAt(selectionRegion.startPos + i);
@@ -133,8 +141,7 @@ U2Region MSACollapsibleItemModel::mapSelectionRegionToRows(const U2Region& selec
         }
         actualLength++;
     }
-    result.length = actualLength;
-    return result;
+    return U2Region(startSeq, actualLength);
 }
 
 int MSACollapsibleItemModel::rowToMap(int row) const {
@@ -189,6 +196,7 @@ void MSACollapsibleItemModel::getVisibleRows(int startPos, int endPos, QVector<U
         range.append(U2Region(start, len));
     }
 }
+
 
 bool MSACollapsibleItemModel::isTopLevel(int pos) const {
     QVector<int>::ConstIterator i = qBinaryFind(positions, pos);
