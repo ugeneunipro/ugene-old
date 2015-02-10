@@ -141,10 +141,10 @@ public:
      */
     static QList<qint64> removeEmptyRows(const U2EntityRef& msaRef, const QList<qint64>& rowIds, U2OpStatus &os);
 
-private:
     /** Calculates a new gap model when 'count' gaps are inserted to 'pos' position */
     static void calculateGapModelAfterInsert(QList<U2MsaGap>& gapModel, qint64 pos, qint64 count);
 
+private:
     /**
      * Verifies if the alignment contains columns of gaps at the beginning.
      * Delete this columns of gaps from each row.

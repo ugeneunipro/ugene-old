@@ -39,6 +39,7 @@ HEADERS += src/ActorCfgFilterProxyModel.h \
            src/debug_messages_translation/SequenceMessageTranslator.h \
            src/debug_messages_translation/VariationTrackMessageTranslator.h \
            src/debug_messages_translation/WorkflowDebugMessageParserImpl.h \
+           src/library/AlignToReferenceWorker.h \
            src/library/AminoTranslationWorker.h \
            src/library/AssemblyToSequenceWorker.h \
            src/library/BaseDocWriter.h \
@@ -146,6 +147,7 @@ SOURCES += src/ActorCfgFilterProxyModel.cpp \
            src/debug_messages_translation/SequenceMessageTranslator.cpp \
            src/debug_messages_translation/VariationTrackMessageTranslator.cpp \
            src/debug_messages_translation/WorkflowDebugMessageParserImpl.cpp \
+           src/library/AlignToReferenceWorker.cpp \
            src/library/AminoTranslationWorker.cpp \
            src/library/AssemblyToSequenceWorker.cpp \
            src/library/BaseDocWriter.cpp \

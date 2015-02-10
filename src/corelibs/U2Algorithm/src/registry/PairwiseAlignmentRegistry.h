@@ -80,7 +80,7 @@ protected:
     QMap<QString, AlgorithmRealization*> realizations;
 };
 
-class AlgorithmRealization {
+class U2ALGORITHM_EXPORT AlgorithmRealization {
 public:
     AlgorithmRealization(QString _realizationId, PairwiseAlignmentTaskFactory* tf, PairwiseAlignmentGUIExtensionFactory* guif);
     ~AlgorithmRealization();

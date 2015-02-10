@@ -256,7 +256,7 @@ void LoadDocumentTask::init() {
     }
 }
 
-LoadDocumentTask * LoadDocumentTask::getDefaultLoadDocTask(const GUrl& url) {
+LoadDocumentTask * LoadDocumentTask::getDefaultLoadDocTask(const GUrl &url, const QVariantMap &hints) {
     if( url.isEmpty() ) {
         return NULL;
     }
@@ -269,7 +269,7 @@ LoadDocumentTask * LoadDocumentTask::getDefaultLoadDocTask(const GUrl& url) {
         return NULL;
     }
     DocumentFormat * df = dfs.first().format;
-    return new LoadDocumentTask( df->getFormatId(), url, iof );
+    return new LoadDocumentTask( df->getFormatId(), url, iof, hints );
 }
 
 DocumentProviderTask * LoadDocumentTask::getCommonLoadDocTask( const GUrl & url ) {

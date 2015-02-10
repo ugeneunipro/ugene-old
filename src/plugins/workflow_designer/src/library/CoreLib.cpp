@@ -68,6 +68,7 @@
 #include "SequencesToMSAWorker.h"
 #include "StatisticWorkers.h"
 #include "Text2SequenceWorker.h"
+#include "library/AlignToReferenceWorker.h"
 #include "library/AminoTranslationWorker.h"
 #include "library/AssemblyToSequenceWorker.h"
 #include "library/ConvertFilesFormatWorker.h"
@@ -285,6 +286,7 @@ void CoreLib::init() {
             r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
         }
     }
+    AlignToReferenceWorkerFactory::init();
     Alignment2SequenceWorkerFactory::init();
     AminoTranslationWorkerFactory::init();
     AssemblyToSequencesWorkerFactory::init();

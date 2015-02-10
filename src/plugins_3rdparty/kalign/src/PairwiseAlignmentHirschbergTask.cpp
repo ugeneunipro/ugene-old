@@ -45,10 +45,10 @@ PairwiseAlignmentHirschbergTaskSettings::~PairwiseAlignmentHirschbergTaskSetting
 }
 
 bool PairwiseAlignmentHirschbergTaskSettings::convertCustomSettings() {
-    gapOpen = customSettings.value(PA_H_GAP_OPEN).toInt();
-    gapExtd = customSettings.value(PA_H_GAP_EXTD).toInt();
-    gapTerm = customSettings.value(PA_H_GAP_TERM).toInt();
-    bonusScore = customSettings.value(PA_H_BONUS_SCORE).toInt();
+    gapOpen = customSettings.value(PA_H_GAP_OPEN, 217).toInt();
+    gapExtd = customSettings.value(PA_H_GAP_EXTD, 39).toInt();
+    gapTerm = customSettings.value(PA_H_GAP_TERM, 292).toInt();
+    bonusScore = customSettings.value(PA_H_BONUS_SCORE, 283).toInt();
 
     PairwiseAlignmentTaskSettings::convertCustomSettings();
     return true;
