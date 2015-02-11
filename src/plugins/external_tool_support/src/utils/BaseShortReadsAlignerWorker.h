@@ -52,7 +52,7 @@ protected:
     virtual void setGenomeIndex(DnaAssemblyToRefTaskSettings& settings) = 0;
     virtual QString getDefaultFileName() const = 0;
     virtual QString getBaseSubdir() const = 0;
-    virtual DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings &settings) const = 0;  
+    virtual DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings &settings) const = 0;
 
 
 protected:

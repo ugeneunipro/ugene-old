@@ -52,7 +52,7 @@ namespace U2 {
 #define WIN_LAUNCH_CMD_COMMAND "cmd /C "
 #define START_WAIT_MSEC 3000
 
-ExternalToolRunTask::ExternalToolRunTask(const QString &_toolName, const QStringList &_arguments, 
+ExternalToolRunTask::ExternalToolRunTask(const QString &_toolName, const QStringList &_arguments,
 ExternalToolLogParser *_logParser, const QString &_workingDirectory, const QStringList &_additionalPaths,
 const QString &_additionalProcessToKill)
 : Task(_toolName + tr(" tool"), TaskFlag_None),

@@ -44,7 +44,7 @@ bool ProjectTreeControllerModeSettings::isDocumentShown(Document* doc) const {
     //TODO: revise readonly filters;
     //if the only lock is unloaded state lock -> not show it
     bool isReadonly = ! (doc->getStateLocks().size() == 1 && doc->getDocumentModLock(DocumentModLock_UNLOADED_STATE)!=NULL);
-    bool res = readOnlyFilter == TriState_Unknown ? true : 
+    bool res = readOnlyFilter == TriState_Unknown ? true :
         (readOnlyFilter == TriState_Yes && !isReadonly) || (readOnlyFilter == TriState_No && isReadonly);
     if (!res) {
         return false;
@@ -96,7 +96,7 @@ bool ProjectTreeControllerModeSettings::isObjectShown(GObject* o) const {
     //filter by readonly flag
     Document* doc = o->getDocument();
     //TODO: revise readonly filters -> use isStateLocked or hasReadonlyLock ?
-    res = readOnlyFilter == TriState_Unknown ? true : 
+    res = readOnlyFilter == TriState_Unknown ? true :
          (readOnlyFilter == TriState_Yes && !doc->isStateLocked()) || (readOnlyFilter == TriState_No && doc->isStateLocked());
     if (!res) {
         return false;
@@ -125,7 +125,7 @@ bool ProjectTreeControllerModeSettings::isObjectShown(GObject* o) const {
             }
         }
     }
-    
+
     //filter by name
     if (!nameFilterAcceptsString(o->getGObjectName())) {
         return false;

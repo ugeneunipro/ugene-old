@@ -88,7 +88,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     // 5. Type to the project filter field "bz162"
     GTUtilsProjectTreeView::filterProject(os, "bz162");
 
-    // Expected : There are items under the "Multiple alignment sequence name" item. They contain "ugene_gui_test" and don't contain "COI.aln" or "murine.gb" 
+    // Expected : There are items under the "Multiple alignment sequence name" item. They contain "ugene_gui_test" and don't contain "COI.aln" or "murine.gb"
     GTUtilsProjectTreeView::checkFilteredGroup(os, "Multiple alignment sequence name", QStringList() << "ugene_gui_test",
         QStringList(), QStringList() << "COI.aln" << "murine.gb");
 }

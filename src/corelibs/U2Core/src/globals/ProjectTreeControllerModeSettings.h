@@ -63,11 +63,11 @@ public:
 
 class U2CORE_EXPORT ProjectTreeControllerModeSettings {
 public:
-    ProjectTreeControllerModeSettings() 
+    ProjectTreeControllerModeSettings()
         : allowMultipleSelection(true), readOnlyFilter(TriState_Unknown), loadTaskProvider(NULL),
         groupMode(ProjectTreeGroupMode_ByDocument), allowSelectUnloaded(false), objectFilter(NULL), documentFilter(NULL),
         markActive(false) {}
-    
+
     QSet<GObjectType>          objectTypesToShow;  // show only objects of specified type
     QSet<GObjectConstraints*>  objectConstraints;  // show only objects that fits constraints
     QList<QPointer<GObject> >   excludeObjectList;  // do not show these objects
@@ -81,12 +81,12 @@ public:
 
     //Note that objectFilter and documentFilter are called only on object add/remove ops!
     //WARN: object and document filters live-range is controlled by the side created these objects
-    PTCObjectFilter*            objectFilter;       
+    PTCObjectFilter*            objectFilter;
     PTCDocumentFilter*          documentFilter;
 
     bool                        markActive;
     QFont                       activeFont;
-    
+
     bool isDocumentShown(Document* doc) const;
     bool isTypeShown(GObjectType t) const;
     bool isObjectShown(GObject* o) const;
