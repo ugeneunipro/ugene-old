@@ -15374,6 +15374,64 @@ GUI_TEST_CLASS_DEFINITION(test_3779) {
     CHECK_SET_ERR(assemblyOverviewFound, "Assembly overview not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3785_1) {
+    //1. Open "_common_data/clustal/fungal - all.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/fungal - all.aln");
+    GTGlobals::sleep(3000);
+
+    //2. Align with ClustalW.
+    GTUtilsDialog::waitForDialog(os, new ClustalWDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with ClustalW"));
+    GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+    //Expected: task started.
+    CHECK_SET_ERR(1 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "Task did not started");
+
+    //3. Close the alignment view.
+    GTUtilsMdi::closeWindow(os, GTUtilsMdi::activeWindow(os)->objectName());
+
+    //Expected: task is still running.
+    CHECK_SET_ERR(1 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "Task is cancelled");
+
+    //4. Delete the document from the project.
+    GTUtilsProjectTreeView::click(os, "fungal - all.aln");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(3000);
+
+    //Expected: task is cancelled.
+    CHECK_SET_ERR(0 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "Task is not cancelled");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3785_2) {
+    //1. Open "_common_data/clustal/fungal - all.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/fungal - all.aln");
+    GTGlobals::sleep(3000);
+
+    //2. Align with ClustalW.
+    GTUtilsDialog::waitForDialog(os, new ClustalWDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with ClustalW"));
+    GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+    //Expected: task started.
+    CHECK_SET_ERR(1 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "Task did not started");
+
+    //3. Close the alignment view.
+    GTUtilsMdi::closeWindow(os, GTUtilsMdi::activeWindow(os)->objectName());
+
+    //Expected: task is still running.
+    CHECK_SET_ERR(1 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "Task is cancelled");
+
+    //4. Delete the object from the document.
+    GTUtilsProjectTreeView::click(os, "fungal - all");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(3000);
+
+    //Expected: task is cancelled.
+    CHECK_SET_ERR(0 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "Task is not cancelled");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3788) {
 //    1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
