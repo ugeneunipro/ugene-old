@@ -15925,6 +15925,17 @@ GUI_TEST_CLASS_DEFINITION(test_3953) {
     CHECK_SET_ERR(getAnnotations->isEnabled() == false, QString("getAnnotationsPushButton is active"));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3988) {
+//    1. Open "_common_data/zero".
+//    Expected state: a message box appear, it contains a message: "File is empty: ...", the log contains the same message.
+    GTLogTracer logTracer;
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "File is empty:"));
+    GTFileDialog::openFile(os, testDir + "_common_data", "zero");
+
+    GTUtilsLog::checkContainsError(os, logTracer, "File is empty:");
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace

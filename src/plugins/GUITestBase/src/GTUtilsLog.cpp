@@ -57,9 +57,19 @@ bool GTLogTracer::checkMessage(QString s){
 
 #define GT_CLASS_NAME "GTUtilsLog"
 #define GT_METHOD_NAME "check"
-void GTUtilsLog::check(U2OpStatus &os, GTLogTracer& l) {
+void GTUtilsLog::check(U2OpStatus &os, const GTLogTracer& logTracer) {
+    Q_UNUSED(os);
     GTGlobals::sleep(500);
-    GT_CHECK(!l.hasError(), "There is an error in log: " + l.getError());
+    GT_CHECK(!logTracer.hasError(), "There is an error in log: " + logTracer.getError());
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkContainsError"
+void GTUtilsLog::checkContainsError(U2OpStatus &os, const GTLogTracer &logTracer, const QString &messagePart) {
+    Q_UNUSED(os);
+    GTGlobals::sleep(500);
+    GT_CHECK(logTracer.hasError(), "There is no errors in the log");
+    GT_CHECK(logTracer.getError().contains(messagePart), "The log doesn't contains error message");
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

@@ -48,7 +48,8 @@ private:
 
 class GTUtilsLog {
 public:
-    static void check(U2OpStatus &os, GTLogTracer& l);
+    static void check(U2OpStatus &os, const GTLogTracer &logTracer);
+    static void checkContainsError(U2OpStatus &os, const GTLogTracer& logTracer, const QString &messagePart);
 };
 
 } // namespace
