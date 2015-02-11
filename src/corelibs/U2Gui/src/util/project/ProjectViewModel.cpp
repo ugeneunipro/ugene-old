@@ -381,7 +381,10 @@ void ProjectViewModel::removeDocument(Document *doc) {
     afterRemove(row);
 }
 
-void ProjectViewModel::findFoldersDiff(const QStringList &oldFolders, const QStringList &newFolders, QStringList &added, QStringList &deleted) {
+void ProjectViewModel::findFoldersDiff(QStringList oldFolders, QStringList newFolders, QStringList &added, QStringList &deleted) {
+    oldFolders.sort();
+    newFolders.sort();
+
     QStringList::ConstIterator oldI = oldFolders.constBegin();
     QStringList::ConstIterator newI = newFolders.constBegin();
 

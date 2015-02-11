@@ -121,7 +121,7 @@ private:
     static bool isDropEnabled(const Document *doc);
     static bool isAcceptableFolder(Document *targetDoc, const QString &targetFolderPath, const Folder &folder);
     /** NOTE: the method supposes that @oldFolders and @newFolders are sorted */
-    static void findFoldersDiff(const QStringList &oldFolders, const QStringList &newFolders, QStringList &added, QStringList &deleted);
+    static void findFoldersDiff(QStringList oldFolders, QStringList newFolders, QStringList &added, QStringList &deleted);
 
     Document * getObjectDocument(GObject *obj) const;
 
