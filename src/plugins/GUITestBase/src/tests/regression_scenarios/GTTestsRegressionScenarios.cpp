@@ -1232,14 +1232,14 @@ GUI_TEST_CLASS_DEFINITION(test_1323) {
 GUI_TEST_CLASS_DEFINITION(test_1324) {
     // 1. Open WD
     // 2. Add "Search for TFBS with SITECON" element
-    // 3. Make sure it is possible to enter 0.0001 for Min Err1
+    // 3. Make sure it is possible to enter 0.00001 for Min Err1
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Search for TFBS with SITECON");
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Search for TFBS with SITECON"));
     GTMouseDriver::click(os);
-    GTUtilsWorkflowDesigner::setParameter(os, "Min Err1", "0.0001", GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Min Err1", "0.00001", GTUtilsWorkflowDesigner::textValue);
 
 }
 GUI_TEST_CLASS_DEFINITION(test_1266) {
