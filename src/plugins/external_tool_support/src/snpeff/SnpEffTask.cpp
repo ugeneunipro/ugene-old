@@ -133,7 +133,12 @@ QStringList SnpEffTask::getParameters(U2OpStatus & /*os*/) const{
     QStringList res;
 
     res << QString("-dataDir");
-    res << GUrlUtils::getQuotedString(getDataPath());
+
+    QString additionalSlash("");
+#ifdef Q_OS_WIN 
+    additionalSlash = "/";
+#endif
+    res << additionalSlash + GUrlUtils::getQuotedString(getDataPath());    
 
     res << QString("-i");
     res << settings.inFormat;
