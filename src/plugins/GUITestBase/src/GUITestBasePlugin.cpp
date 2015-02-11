@@ -173,6 +173,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1249, "TODO: add the 3, 4 steps");
     REGISTER_TEST(GUITest_regression_scenarios::test_1252);
     REGISTER_TEST(GUITest_regression_scenarios::test_1252_1);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1252_real);
     REGISTER_TEST(GUITest_regression_scenarios::test_1255);
     REGISTER_TEST(GUITest_regression_scenarios::test_1259);
     REGISTER_TEST(GUITest_regression_scenarios::test_1257);
@@ -726,6 +727,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3816);
     REGISTER_TEST(GUITest_regression_scenarios::test_3817);
     REGISTER_TEST(GUITest_regression_scenarios::test_3829);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3843);
     REGISTER_TEST(GUITest_regression_scenarios::test_3850);
     REGISTER_TEST(GUITest_regression_scenarios::test_3868);
     REGISTER_TEST(GUITest_regression_scenarios::test_3886);

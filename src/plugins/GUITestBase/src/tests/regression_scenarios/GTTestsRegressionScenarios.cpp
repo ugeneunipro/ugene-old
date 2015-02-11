@@ -1093,6 +1093,46 @@ GUI_TEST_CLASS_DEFINITION(test_1252_1){
 //    Expected: pattern is found and annotation is stored in a new document
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1252_real) {
+    // 1) Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    // 2) Add Read Sequence(RS).
+    WorkflowProcessItem *reader = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+
+    // 3) Add ORF Finder(OF).
+    WorkflowProcessItem *orfMarker = GTUtilsWorkflowDesigner::addElement(os, "ORF Marker");
+
+    // 4) Connect RS with OF.
+    GTUtilsWorkflowDesigner::connect(os, reader, orfMarker);
+
+    // 5) Add Write Sequence(WS).
+    WorkflowProcessItem *writer = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+
+    // 6) Connect OF with WS.
+    GTUtilsWorkflowDesigner::connect(os, orfMarker, writer);
+
+    // Excepted state : Input "Annotations" slot of WS is not empty and contains annotations from ORF Finder
+    GTUtilsWorkflowDesigner::click(os, "Write Sequence");
+
+    QTableWidget* tw = GTUtilsWorkflowDesigner::getInputPortsTable(os, 0);
+    CHECK_SET_ERR(tw != NULL, "InputPortsTable is NULL");
+
+    QRect rect = tw->visualItemRect(tw->item(0, 1));
+    QPoint globalP = tw->viewport()->mapToGlobal(rect.center());
+    GTMouseDriver::moveTo(os, globalP);
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(500);
+    QComboBox* box = qobject_cast<QComboBox*>(tw->findChild<QComboBox*>());
+
+    QStandardItemModel *checkBoxModel = qobject_cast<QStandardItemModel *>(box->model());
+    CHECK_SET_ERR(checkBoxModel != NULL, "Unexpected checkbox model");
+
+    QStandardItem *firstItem = checkBoxModel->item(0);
+    CHECK_SET_ERR(firstItem->data(Qt::DisplayRole).toString() == "Set of annotations (by ORF Marker)", "Unexpected port");
+    CHECK_SET_ERR(Qt::Checked == firstItem->checkState(), "Unexpected check state");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1255){
 //1. Open human_T1.fa sequence
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
@@ -3262,12 +3302,12 @@ GUI_TEST_CLASS_DEFINITION(test_1585) {
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(11, 9));
     GTMouseDriver::release(os);
 
-    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(8, 9), QPoint(13, 10), "GTCTAT\nGCTTAT\nGCTTAT\nGCTTAT");
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(8, 9), QPoint(13, 10), "GTCTAT\nGCTTAT");
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(6, 11), QPoint(14, 12));
-    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(6, 11), QPoint(14, 12), "--GCTTATT\n--GCTTATT\n--GCTTATT");
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(6, 11), QPoint(14, 12), "--GCTTATT\n--GCTTATT");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1586) {
@@ -15758,6 +15798,28 @@ GUI_TEST_CLASS_DEFINITION(test_3819) {
 
     GTUtilsSharedDatabaseDocument::disconnectDatabase(os, databaseDoc);
     GTUtilsLog::check(os, logTracer);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3843) {
+    // 1. Open file "_common_data/scenarios/msa/ma.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma.aln");
+
+    // 2. Turn the collapsing mode on.
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+
+    // 3. Expand one of the collapsed sequences.
+    GTUtilsMSAEditorSequenceArea::clickCollapceTriangle(os, "Conocephalus_discolor");
+
+    // 4. Select some region within a sequence from the chosen collapsed group.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(4, 11), QPoint(10, 11));
+
+    // 5. Click "Ctrl+C"
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+
+    // Expected state : clipboard contains a selected string
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "CTTATTA", QString("unexpected selection:\n%1").arg(clipboardText));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3850) {
