@@ -273,7 +273,7 @@ void checkEditMenu(U2OpStatus &os, const QString &groupName, const QString &obje
     CHECK_SET_ERR(groupIndexes.size() == 1, QString("Expected a single '%1' filter group in the project view").arg(groupName));
 
     const QModelIndexList objectIndexes = GTUtilsProjectTreeView::findFilteredIndexes(os, objectName, groupIndexes.first());
-    CHECK_SET_ERR(objectIndexes.size() == 1, QString("Expected a single object named '%1' in the '%2' group").arg(objectName, groupName));
+    CHECK_SET_ERR(!objectIndexes.isEmpty(), QString("Expected a single object named '%1' in the '%2' group").arg(objectName, groupName));
     GTUtilsProjectTreeView::getTreeView(os)->scrollTo(objectIndexes.first());
 
     GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, QStringList() << "Edit", PopupChecker::NotExists));
@@ -288,7 +288,7 @@ void checkDeleteButton(U2OpStatus &os, const QString &groupName, const QString &
     const int filteredObjectCount = groupIndexes.first().model()->rowCount(groupIndexes.first());
 
     const QModelIndexList objectIndexes = GTUtilsProjectTreeView::findFilteredIndexes(os, objectName, groupIndexes.first());
-    CHECK_SET_ERR(objectIndexes.size() == 1, QString("Expected a single object named '%1' in the '%2' group").arg(objectName, groupName));
+    CHECK_SET_ERR(!objectIndexes.isEmpty(), QString("Expected a single object named '%1' in the '%2' group").arg(objectName, groupName));
     GTUtilsProjectTreeView::getTreeView(os)->scrollTo(objectIndexes.first());
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, objectIndexes.first()));
@@ -323,12 +323,12 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
     // 3. Call right click menu a few times on different second - level items
     // Expected : every time it doesn't contain the "Edit" item
     checkEditMenu(os, "Object name", "et0001_seque");
-    checkEditMenu(os, "comment", "SYNPBR322 features");
+    checkEditMenu(os, "Text content", "Text");
 
     // 4. Select different second-level items and press "Delete"
     // Expected: number of items remains constant
     checkDeleteButton(os, "CDS", "NC_001363 features");
-    checkDeleteButton(os, "RBS", "SYNPBR322 features");
+    checkDeleteButton(os, "Sequence content", "et0007_seq");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0010) {
@@ -342,8 +342,8 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
     // 3. Call right click menu a few times on different top - level items
     // Expected : every time no context menu appears
     makeRightClick(os, "CDS");
-    makeRightClick(os, "RBS");
-    makeRightClick(os, "comment");
+    makeRightClick(os, "Object name");
+    makeRightClick(os, "Sequence accession number");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0011) {
