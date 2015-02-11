@@ -13,7 +13,7 @@
 #1) Multiple sequence alignment file. The first sequence of the alignment is the reference and other ones are the reads.
 #2) Annotated reference sequence file. The annotations are the aligned reads.
 
-include "Read sequence.usa" as "Script-Read sequence"
+include "Read one sequence.usa" as "Script-Read one sequence"
 
 workflow "Trim and align Sanger reads"{
 
@@ -37,7 +37,7 @@ workflow "Trim and align Sanger reads"{
         out-mode:1;
     }
     Script-Read-sequence {
-        type:"Script-Read sequence";
+        type:"Script-Read one sequence";
         name:"Read sequence";
         script {
 out_sequence = null;

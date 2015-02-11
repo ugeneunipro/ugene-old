@@ -7,6 +7,6 @@
   <Out-Slots Slot="seq"/>
  </Output-port>
  <Attributes/>
- <Element-name Name="Read sequence"/>
- <Element-description Description="Read sequence from file"/>
+ <Element-name Name="Read one sequence"/>
+ <Element-description Description="Read one sequence from input URL"/>
 </Actor>
