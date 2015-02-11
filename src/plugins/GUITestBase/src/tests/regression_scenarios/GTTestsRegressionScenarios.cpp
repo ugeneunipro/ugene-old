@@ -1383,6 +1383,27 @@ GUI_TEST_CLASS_DEFINITION(test_1299) {
     CHECK_SET_ERR(box->itemText(3) != "Additional", "Additional item not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1310) {
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "activeModalWidget is NULL");
+
+            QComboBox *algorithmBox = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "algorithmBox", dialog));
+            CHECK_SET_ERR(NULL != algorithmBox, "algorithmBox is NULL");
+            GTComboBox::setIndexWithText(os, algorithmBox, "PHYLIP Neighbor Joining");
+
+            GTUtilsDialog::waitForDialog(os, new LicenseAgreemntDialogFiller(os));
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, new Scenario()));
+    GTWidget::click(os, GTAction::button(os, "Build Tree"));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1315_1) {
     //1. open murine.gb
     //2. open Primer3 dialog
