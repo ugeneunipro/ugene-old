@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>174</width>
-    <height>35</height>
+    <height>37</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>50</horstretch>
     <verstretch>50</verstretch>
    </sizepolicy>
@@ -20,6 +20,9 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
    <item>
     <widget class="QCheckBox" name="colorspaceCheckBox">
      <property name="text">

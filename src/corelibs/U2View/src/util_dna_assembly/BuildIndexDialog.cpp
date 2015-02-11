@@ -147,26 +147,14 @@ void BuildIndexDialog::addGuiExtension() {
     DnaAssemblyGUIExtensionsFactory* gui = env->getGUIExtFactory();
     if (gui!=NULL && gui->hasBuildIndexWidget()) {
         customGUI = gui->createBuildIndexWidget(this);
-        int extensionMinWidth = customGUI->sizeHint().width();
-        int extensionMinHeight = customGUI->sizeHint().height();
-        customGUI->setMinimumWidth(extensionMinWidth);
-        customGUI->setMinimumHeight(extensionMinHeight);
         verticalLayout->insertWidget(insertPos, customGUI);
-        // adjust sizes
-        setMinimumHeight(customGUI->minimumHeight() + minimumHeight());
-        if (minimumWidth() < customGUI->minimumWidth()) {
-            setMinimumWidth(customGUI->minimumWidth());
-        }
         if (!refSeqEdit->text().isEmpty()) {
             buildIndexUrl(refSeqEdit->text());
             customGUI->validateReferenceSequence( GUrl( refSeqEdit->text( ) ) );
         }
         customGUI->show();
-        adjustSize();
-    } else 
-    {
-        adjustSize();
     }
+    adjustSize();
 }
 
 void BuildIndexDialog::buildIndexUrl(const GUrl& refUrl ) {

@@ -6,36 +6,33 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>430</width>
-    <height>170</height>
+    <width>435</width>
+    <height>181</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>430</width>
-    <height>170</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>16777215</width>
-    <height>16777215</height>
-   </size>
   </property>
   <property name="windowTitle">
    <string>Build Index</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinAndMaxSize</enum>
+     </property>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinAndMaxSize</enum>
+       </property>
        <item>
         <widget class="QLabel" name="label_3">
          <property name="toolTip">
@@ -70,6 +67,9 @@
      </item>
      <item>
       <layout class="QGridLayout" name="gridLayout">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinAndMaxSize</enum>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label_2">
          <property name="toolTip">
@@ -134,7 +134,7 @@
        <property name="sizeHint" stdset="0">
         <size>
          <width>409</width>
-         <height>10</height>
+         <height>0</height>
         </size>
        </property>
       </spacer>
