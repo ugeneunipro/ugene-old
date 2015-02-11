@@ -1138,7 +1138,10 @@ void ProjectViewImpl::sl_onOpenContainingFolder() {
     if (docToOpen != NULL && !docToOpen->isDatabaseConnection()) {
         GUrl docUrl = docToOpen->getURL();
         if (docUrl.isLocalFile() || docUrl.isNetworkSource()) {
-            QDesktopServices::openUrl(QUrl(docToOpen->getURL().dirPath()));
+            QUrl url = docToOpen->getURL().isLocalFile() ?
+                QUrl::fromLocalFile(docToOpen->getURL().dirPath()) :
+                QUrl(docToOpen->getURL().dirPath());
+            QDesktopServices::openUrl(url);
         }
     }
 }
