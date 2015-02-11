@@ -112,8 +112,18 @@ void GTUtilsWorkflowDesigner::returnToWorkflow(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+namespace {
+bool compare(QString s1, QString s2, bool exactMatch){
+    if(exactMatch){
+        return s1==s2;
+    }else{
+        return s1.toLower().contains(s2.toLower());
+    }
+}
+}
+
 #define GT_METHOD_NAME "findTreeItem"
-QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString itemName, tab t){
+QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString itemName, tab t, bool exactMatch){
 
     QTreeWidgetItem* foundItem=NULL;
     QTreeWidget *w;
@@ -137,14 +147,14 @@ QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString it
         foreach(QTreeWidgetItem* item, innerList){
             if(t==algoriths){
                 QString s = item->data(0,Qt::UserRole).value<QAction*>()->text();
-                if(s.toLower().contains(itemName.toLower())){
+                if(compare(s, itemName, exactMatch)){
                     GT_CHECK_RESULT(foundItem==NULL,"several items have this discription",item);
                     foundItem=item;
                 }
             }
             else{
                 QString s = item->text(0);
-                if(s.toLower().contains(itemName.toLower())){
+                if(compare(s, itemName, exactMatch)){
                     GT_CHECK_RESULT(foundItem==NULL,"several items have this discription",item);
                     foundItem=item;
                 }
@@ -181,14 +191,14 @@ QList<QTreeWidgetItem*> GTUtilsWorkflowDesigner::getVisibleSamples(U2OpStatus &o
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addAlgorithm"
-void GTUtilsWorkflowDesigner::addAlgorithm(U2OpStatus &os, QString algName){
+void GTUtilsWorkflowDesigner::addAlgorithm(U2OpStatus &os, QString algName, bool exactMatch){
     expandTabs(os);
     QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os,"tabs"));
     GT_CHECK(tabs!=NULL, "tabs widget not found");
 
     GTTabWidget::setCurrentIndex(os,tabs,0);
 
-    QTreeWidgetItem *alg = findTreeItem(os, algName,algoriths);
+    QTreeWidgetItem *alg = findTreeItem(os, algName, algoriths, exactMatch);
     GTGlobals::sleep(100);
     GT_CHECK(alg!=NULL,"algorithm is NULL");
 
@@ -203,8 +213,8 @@ void GTUtilsWorkflowDesigner::addAlgorithm(U2OpStatus &os, QString algName){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addElement"
-WorkflowProcessItem * GTUtilsWorkflowDesigner::addElement(U2OpStatus &os, const QString &algName) {
-    addAlgorithm(os, algName);
+WorkflowProcessItem * GTUtilsWorkflowDesigner::addElement(U2OpStatus &os, const QString &algName, bool exactMatch) {
+    addAlgorithm(os, algName, exactMatch);
     CHECK_OP(os, NULL);
     return getWorker(os, algName);
 }
@@ -325,6 +335,18 @@ void GTUtilsWorkflowDesigner::click(U2OpStatus &os, QString itemName, QPoint p){
     sceneView->ensureVisible(getWorker(os, itemName));
 
     GTMouseDriver::moveTo(os, getItemCenter(os, itemName) + p);
+    GTMouseDriver::click(os);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "click"
+void GTUtilsWorkflowDesigner::click(U2OpStatus &os, QGraphicsItem* item, QPoint p){
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    GT_CHECK(sceneView!=NULL, "scene view is NULL");
+    sceneView->ensureVisible(item);
+    QRect rect = GTGraphicsItem::getGraphicsItemRect(os, item);
+
+    GTMouseDriver::moveTo(os, rect.center() + p);
     GTMouseDriver::click(os);
 }
 #undef GT_METHOD_NAME
@@ -477,6 +499,24 @@ QStringList GTUtilsWorkflowDesigner::getBreakpointList(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getAllConnectionArrows"
+QList<WorkflowBusItem*> GTUtilsWorkflowDesigner::getAllConnectionArrows(U2OpStatus &os){
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    GT_CHECK_RESULT(sceneView,"sceneView not found", QList<WorkflowBusItem*>());
+
+    QList<WorkflowBusItem*> result;
+
+    foreach (QGraphicsItem* item, sceneView->items()) {
+        WorkflowBusItem* arrow = qgraphicsitem_cast<WorkflowBusItem*>(item);
+        if(arrow != NULL){
+            result.append(arrow);
+        }
+    };
+
+    return result;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "connect"
 void GTUtilsWorkflowDesigner::connect(U2OpStatus &os, WorkflowProcessItem * from , WorkflowProcessItem * to){
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(from->scene()->views().at(0));
@@ -491,12 +531,66 @@ void GTUtilsWorkflowDesigner::connect(U2OpStatus &os, WorkflowProcessItem * from
                 GTMouseDriver::press(os);
                 GTMouseDriver::moveTo(os,GTGraphicsItem::getItemCenter(os,toPort));
                 GTMouseDriver::release(os);
+                GTGlobals::sleep(1000);
                 return;
             }
         }
     }
 
     GT_CHECK(false,"no suitable ports to connect");
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "disconnect"
+void GTUtilsWorkflowDesigner::disconect(U2OpStatus &os, WorkflowProcessItem * from , WorkflowProcessItem * to){
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(from->scene()->views().at(0));
+    GT_CHECK(sceneView,"sceneView not found");
+
+    WorkflowBusItem* arrow = getConnectionArrow(os, from, to);
+    QGraphicsTextItem* hint = getArrowHint(os, arrow);
+    click(os, hint);
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(1000);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getConnectionArrow"
+WorkflowBusItem *GTUtilsWorkflowDesigner::getConnectionArrow(U2OpStatus &os, WorkflowProcessItem * from , WorkflowProcessItem * to){
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(from->scene()->views().at(0));
+    GT_CHECK_RESULT(sceneView,"sceneView not found", NULL)
+    QList<WorkflowPortItem*> fromList = from->getPortItems();
+    QList<WorkflowPortItem*> toList = to->getPortItems();
+
+    QList<WorkflowBusItem*> arrows = getAllConnectionArrows(os);
+    int arNum = arrows.count();
+
+    foreach(WorkflowPortItem* fromPort, fromList){
+        foreach(WorkflowPortItem* toPort, toList){
+            foreach (WorkflowBusItem* arrow, arrows) {
+                if(arrow->getInPort() == toPort && arrow->getOutPort() == fromPort){
+                    return arrow;
+                }
+            }
+        }
+    }
+
+    GT_CHECK_RESULT(false,"no suitable ports to connect", NULL);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getArrowHint"
+QGraphicsTextItem* GTUtilsWorkflowDesigner::getArrowHint(U2OpStatus &os, WorkflowBusItem *arrow){
+    GT_CHECK_RESULT(arrow != NULL, "arrow item is NULL", NULL);
+
+    foreach (QGraphicsItem* item, arrow->childItems()) {
+        QGraphicsTextItem* hint = qgraphicsitem_cast<QGraphicsTextItem*>(item);
+        if(hint != NULL){
+            return hint;
+        }
+    }
+
+    GT_CHECK_RESULT(false, "hint not found", NULL);
 }
 #undef GT_METHOD_NAME
 

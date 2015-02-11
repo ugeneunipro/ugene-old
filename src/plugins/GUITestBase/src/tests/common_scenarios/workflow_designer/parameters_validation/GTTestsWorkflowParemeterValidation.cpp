@@ -155,9 +155,9 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
     GTMenu::clickMenuItemByName( os, menu, QStringList( ) << "Workflow Designer" );
 
-    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence", true );
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Find Pattern" );
-    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence", true );
 
     WorkflowProcessItem *seqReader = GTUtilsWorkflowDesigner::getWorker( os, "Read Sequence" );
     WorkflowProcessItem *patternFinder = GTUtilsWorkflowDesigner::getWorker( os, "Find Pattern" );
@@ -267,9 +267,9 @@ GUI_TEST_CLASS_DEFINITION( test_0006 ) {
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
     GTMenu::clickMenuItemByName( os, menu, QStringList( ) << "Workflow Designer" );
 
-    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence", true );
     GTUtilsWorkflowDesigner::addAlgorithm( os, "CD-Search" );
-    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence", true );
 
     WorkflowProcessItem *seqReader = GTUtilsWorkflowDesigner::getWorker( os, "Read Sequence" );
     WorkflowProcessItem *patternFinder = GTUtilsWorkflowDesigner::getWorker( os, "CD-Search" );

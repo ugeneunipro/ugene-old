@@ -51,6 +51,7 @@
 #include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsCircularView.h"
+#include "GTUtilsDashboard.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsEscClicker.h"
 #include "GTUtilsExternalTools.h"
@@ -160,6 +161,8 @@
 
 #include <U2Gui/ProjectViewModel.h>
 
+#include "../../workflow_designer/src/WorkflowViewItems.h"
+
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
@@ -178,7 +181,11 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QTableWidget>
+#include <QWebElement>
+#include <QWebFrame>
+#include <QWebView>
 #include <QWizard>
+
 
 namespace U2 {
 
@@ -1699,6 +1706,28 @@ GUI_TEST_CLASS_DEFINITION(test_1358) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1360){
+//    1) Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2) Connect a reader element with some writer element.
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read alignment");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write alignment");
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::getWorker(os, "Read Alignment");
+    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::getWorker(os, "Write Alignment");
+    GTUtilsWorkflowDesigner::connect(os, read, write);
+//    3) Disconnect them.
+    GTUtilsWorkflowDesigner::disconect(os, read, write);
+//    4) Connect them again.
+    GTUtilsWorkflowDesigner::connect(os, read, write);
+//    5) Specify any input data
+    GTUtilsWorkflowDesigner::click(os, "Read Alignment");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    QString s = read->getProcess()->getDescription()->toPlainText();
+    CHECK_SET_ERR(s.contains("COI.aln"), "unexpected worker text: " + s);
+//    Expected state: data from dataset s displayed on the read worker
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1362) {
     //1) Open "_common_data/edit_alignment/COI_sub_same_with_gaps.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/edit_alignment/COI_sub_same_with_gaps.fa");
@@ -1735,7 +1764,7 @@ GUI_TEST_CLASS_DEFINITION(test_1364) {
 //    1. Open WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //    2. Add "Read Sequence" element on the scene.
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence", true);
 //    3. Click the element.
 //    Expected: Bottom datasets panel appears.
     GTUtilsWorkflowDesigner::click(os, "Read Sequence");
@@ -3294,8 +3323,8 @@ GUI_TEST_CLASS_DEFINITION(test_1587) {
     GTLogTracer l;
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
-    WorkflowProcessItem *reader = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
-    WorkflowProcessItem *writer = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+    WorkflowProcessItem *reader = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence", true);
+    WorkflowProcessItem *writer = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence", true);
     GTUtilsWorkflowDesigner::connect(os, reader, writer);
 
     GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", testDir + "_common_data/regression/1587/some_image.png");
@@ -3311,6 +3340,39 @@ GUI_TEST_CLASS_DEFINITION(test_1587) {
 
     CHECK_SET_ERR(l.checkMessage("Unsupported document format"), "The image file has been processed by Workflow Designer");
     CHECK_SET_ERR(outputFile.exists() && outputFile.size() > 0, "Workflow output file is invalid");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1588) {
+    GTFileDialog::openFile(os, testDir + "dash.uwl");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTGlobals::sleep();
+    GTUtilsDashboard::openTab(os, GTUtilsDashboard::ExternalTools);
+    GTGlobals::sleep();
+    GTUtilsDashboard::openTab(os, GTUtilsDashboard::Input);
+    GTGlobals::sleep();
+    GTUtilsDashboard::openTab(os, GTUtilsDashboard::Overview);
+    GTGlobals::sleep();
+//    QWebView* dashboard = GTWidget::findExactWidget<QWebView*>(os, "Dashboard");
+//    QWebFrame* frame = dashboard->page()->mainFrame();
+//    int num = frame->findAllElements("*").count();
+//    QWebElement result;
+//    foreach (QWebElement el, frame->findAllElements("A")) {
+//        QString s = el.toPlainText();
+//        QString tagName = el.tagName();
+//        QString localName = el.localName();
+//        QString rect = QString("%1").arg(el.geometry().width());
+
+//        if(rect != "0"){
+//            uiLog.trace("tag: " + tagName + " name: " + localName + " text: " + s + " width: " + rect);
+//        }
+//        if (s == "Input"){
+//            result = el;
+//        }
+//    }
+
+//    GTMouseDriver::moveTo(os,dashboard->mapToGlobal(result.geometry().center()));
+//    GTMouseDriver::click(os);
+    GTGlobals::sleep(5000);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1597 ) {
@@ -5933,8 +5995,8 @@ GUI_TEST_CLASS_DEFINITION( test_2077 ){
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
-    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence" );
-    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence", true );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence", true );
 
     WorkflowProcessItem *seqReader = GTUtilsWorkflowDesigner::getWorker( os, "Read Sequence" );
     WorkflowProcessItem *seqWriter = GTUtilsWorkflowDesigner::getWorker( os, "Write Sequence" );
@@ -7870,8 +7932,8 @@ GUI_TEST_CLASS_DEFINITION( test_2364 ) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     //2. Create a workflow: Read sequence -> Write sequence.
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence", true);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Sequence", true);
 
     GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"),
                                          GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence"));
@@ -8219,7 +8281,7 @@ GUI_TEST_CLASS_DEFINITION(test_2402) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     // 2.Add 'Read Sequence' element
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence", true);
     // 3. Add 'Assembly Sequences witn CAP3' element
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Assembly Sequences with CAP3");
     WorkflowProcessItem *readWorker = GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence");
@@ -8292,8 +8354,8 @@ GUI_TEST_CLASS_DEFINITION( test_2406 ) {
     const QString sequenceReaderName = "Read Sequence";
     const QString sequenceWriterName = "Write Sequence";
 
-    GTUtilsWorkflowDesigner::addAlgorithm(os, sequenceReaderName);
-    GTUtilsWorkflowDesigner::addAlgorithm(os, sequenceWriterName);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, sequenceReaderName, true);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, sequenceWriterName, true);
 
     WorkflowProcessItem *sequenceReader = GTUtilsWorkflowDesigner::getWorker(os, sequenceReaderName);
     WorkflowProcessItem *sequenceWriter = GTUtilsWorkflowDesigner::getWorker(os, sequenceWriterName);
@@ -8415,8 +8477,8 @@ GUI_TEST_CLASS_DEFINITION( test_2424 ) {
     QDir workflowOutputDir( workflowOutputDirPath );
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
-    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence" );
-    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence" );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence", true );
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence", true );
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Quality Filter Example" );
 
     WorkflowProcessItem *seqReader = GTUtilsWorkflowDesigner::getWorker( os, "Read Sequence" );
@@ -8454,7 +8516,7 @@ GUI_TEST_CLASS_DEFINITION( test_2430 ) {
 
     GTUtilsWorkflowDesigner::toggleDebugMode(os);
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence", true);
     GTUtilsWorkflowDesigner::toggleBreakpointManager(os);
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
@@ -8477,7 +8539,7 @@ GUI_TEST_CLASS_DEFINITION(test_2431) {
     GTUtilsWorkflowDesigner::toggleDebugMode(os);
     GTGlobals::sleep(1000);
 
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence", true);
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep(1000);
@@ -10994,8 +11056,8 @@ GUI_TEST_CLASS_DEFINITION(test_2951) {
     GTWidget::click(os, GTAction::button(os, GTAction::findActionByText(os, "Scripting mode")));
 
     //3. Create the workflow: "Read sequence" -> "Write sequence".
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence", true);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Sequence", true);
     GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence"));
 
     //4. Set the input sequence: _common_data/fasta/abcd.fa.
@@ -13100,9 +13162,9 @@ GUI_TEST_CLASS_DEFINITION(test_3373) {
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
-    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence", true);
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Reverse Complement");
-    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence", true);
 
     WorkflowProcessItem *seqReader = GTUtilsWorkflowDesigner::getWorker( os, "Read Sequence");
     WorkflowProcessItem *revComplement = GTUtilsWorkflowDesigner::getWorker( os, "Reverse Complement");

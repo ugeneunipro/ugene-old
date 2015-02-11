@@ -400,8 +400,8 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 //    1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //    2. Place 3 HMM build workflow elements on scheme
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "read sequence");
-    GTUtilsWorkflowDesigner::addAlgorithm(os,"write sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence", true);
+    GTUtilsWorkflowDesigner::addAlgorithm(os,"Write Sequence", true);
 
     WorkflowProcessItem* read = GTUtilsWorkflowDesigner::getWorker(os,"Read Sequence");
     WorkflowProcessItem* write = GTUtilsWorkflowDesigner::getWorker(os,"Write Sequence");
@@ -556,9 +556,9 @@ GUI_TEST_CLASS_DEFINITION(test_0059){
     // Expected state: all sequence objects has the corresponding region in its name
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
-    WorkflowProcessItem* readSeq = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
-    WorkflowProcessItem* seqByAnns = GTUtilsWorkflowDesigner::addElement(os, "Get Sequences by Annotations");
-    WorkflowProcessItem* writeSeq = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+    WorkflowProcessItem* readSeq = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence", true);
+    WorkflowProcessItem* seqByAnns = GTUtilsWorkflowDesigner::addElement(os, "Get Sequences by Annotations", true);
+    WorkflowProcessItem* writeSeq = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence", true);
 
     GTUtilsWorkflowDesigner::connect(os, readSeq, seqByAnns);
     GTUtilsWorkflowDesigner::connect(os, seqByAnns, writeSeq);

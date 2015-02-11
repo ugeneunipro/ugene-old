@@ -38,6 +38,7 @@ class QTableWidget;
 namespace U2 {
 class WorkflowProcessItem;
 class WorkflowPortItem;
+class WorkflowBusItem;
 
 class GTUtilsWorkflowDesigner {
 public:
@@ -60,7 +61,7 @@ public:
     static void returnToWorkflow(U2OpStatus &os);
 
     //reterns item from samples or algorithms tab
-    static QTreeWidgetItem* findTreeItem(U2OpStatus &os, QString itemName,tab t);
+    static QTreeWidgetItem* findTreeItem(U2OpStatus &os, QString itemName, tab t, bool exactMatch = false);
 
     //returns item form samples tab
     static QTreeWidgetItem* findSamplesTreeItem(U2OpStatus &os, QString itemName);
@@ -69,9 +70,9 @@ public:
     static QList<QTreeWidgetItem*> getVisibleSamples(U2OpStatus &os);
 
     //adds alogritm with worker with name algName to workflow scene
-    static void addAlgorithm(U2OpStatus &os, QString algName);
+    static void addAlgorithm(U2OpStatus &os, QString algName, bool exactMatch = false);
 
-    static WorkflowProcessItem * addElement(U2OpStatus &os, const QString &algName);
+    static WorkflowProcessItem * addElement(U2OpStatus &os, const QString &algName, bool exactMatch = false);
 
     //adds sample scheme with name sampName to workflow scene
     static void addSample(U2OpStatus &os, QString sampName);
@@ -85,6 +86,7 @@ public:
     static void removeItem(U2OpStatus &os,QString itemName);
 
     static void click(U2OpStatus &os, QString itemName,  QPoint p = QPoint(0,0));
+    static void click(U2OpStatus &os, QGraphicsItem *item,  QPoint p = QPoint(0,0));
 
     //returs worker placed on workflow scene which contains item name
     static WorkflowProcessItem* getWorker(U2OpStatus &os, QString itemName,const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
@@ -101,7 +103,13 @@ public:
     static QList<WorkflowPortItem*> getPorts(U2OpStatus &os,WorkflowProcessItem* worker);
 
     //connects worker "from" with worker "to"
-    static void connect(U2OpStatus &os, WorkflowProcessItem*from, WorkflowProcessItem*to);
+    static void connect(U2OpStatus &os, WorkflowProcessItem* from, WorkflowProcessItem* to);
+    static void disconect(U2OpStatus &os, WorkflowProcessItem* from, WorkflowProcessItem* to);
+
+    static QList<WorkflowBusItem*> getAllConnectionArrows(U2OpStatus &os);
+
+    static WorkflowBusItem* getConnectionArrow(U2OpStatus &os, WorkflowProcessItem* from, WorkflowProcessItem* to);
+    static QGraphicsTextItem* getArrowHint(U2OpStatus &os, WorkflowBusItem* arrow);
 
     //returns all workers placed on workflow scene
     static QList<WorkflowProcessItem*> getWorkers(U2OpStatus &os);

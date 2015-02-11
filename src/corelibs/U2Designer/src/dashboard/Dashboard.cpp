@@ -84,6 +84,7 @@ Dashboard::Dashboard(const WorkflowMonitor *monitor, const QString &_name, QWidg
     setContextMenuPolicy(Qt::NoContextMenu);
     loadUrl = ":U2Designer/html/Dashboard.html";
     loadDocument();
+    setObjectName("Dashboard");
 }
 
 Dashboard::Dashboard(const QString &dirPath, QWidget *parent)
