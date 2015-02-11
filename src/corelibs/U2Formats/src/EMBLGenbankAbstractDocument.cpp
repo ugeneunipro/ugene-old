@@ -159,12 +159,11 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 
         if (data.hasAnnotationObjectFlag) {
             QString annotationName = genObjectName(usedNames, data.name, data.tags, i+1, GObjectTypes::ANNOTATION_TABLE);
-            SAFE_POINT( NULL == mergedAnnotations.data( ), "Unexpected annotation table!", );
 
             QVariantMap hints;
             hints.insert(DBI_FOLDER_HINT, fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
-            if ( merge ) {
-                mergedAnnotations.reset( new AnnotationTableObject( annotationName, dbiRef, hints ) );
+            if (Q_UNLIKELY(merge && NULL == mergedAnnotations)) {
+                mergedAnnotations.reset(new AnnotationTableObject(annotationName, dbiRef, hints));
             }
             annotationsObject = merge ? mergedAnnotations.data( ) : new AnnotationTableObject( annotationName, dbiRef, hints );
 
