@@ -50,7 +50,7 @@ public:
     static void updateAlignmentAlphabet(MAlignment& ma, const DNAAlphabet* a, U2OpStatus& os);
 
     // doesn't update alphabet, appends sequence data to a given row. If region is not set, using whole sequence data
-    static void appendSequenceToAlignmentRow(MAlignment& ma, int rowIndex, const U2SequenceObject& seq, U2OpStatus& os, U2Region region = U2Region());
+    static void appendSequenceToAlignmentRow(MAlignment& ma, int rowIndex, int afterPos, const U2SequenceObject& seq, U2OpStatus& os, U2Region region = U2Region());
 
     // Returns row index or -1 if name is not present
     static int getRowIndexByName(const MAlignment& ma, const QString& name);

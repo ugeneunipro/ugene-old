@@ -69,7 +69,7 @@ void FindRepeatsDialogFiller::run() {
 
     if (-1 != minRepeatLength) {
         QSpinBox *minLenBox = qobject_cast<QSpinBox *>(GTWidget::findWidget(os, "minLenBox", dialog));
-        GTSpinBox::setValue(os, minLenBox, minRepeatLength);
+        GTSpinBox::setValue(os, minLenBox, minRepeatLength, GTGlobals::UseKeyBoard);
     }
 
     if (-1 != repeatsIdentity) {

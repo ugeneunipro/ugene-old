@@ -797,8 +797,11 @@ Task::ReportResult GTest_DNAcompareMulSequencesInTwoObjects::report() {
            stateInfo.setError(QString("sequences size not matched: size1=%1, size2=%2").arg(myMSequence->getLength()).arg(myMSequence2->getMAlignment().getLength()));
            return ReportResult_Finished;
         }
-        const QList <MAlignmentRow>& alignedSeqs1 = myMSequence->getMAlignment().getRows();
-        const QList <MAlignmentRow>& alignedSeqs2 = myMSequence2->getMAlignment().getRows();
+
+        MAlignment one = myMSequence->getMAlignment();
+        MAlignment two = myMSequence2->getMAlignment();
+        const QList <MAlignmentRow>& alignedSeqs1 = one.getRows();
+        const QList <MAlignmentRow>& alignedSeqs2 = two.getRows();
 
         if( alignedSeqs1.size() != alignedSeqs2.size() ) {
             stateInfo.setError(QString( "different_sequences_number_in_msa_in_%1_object" ).arg( i ));
@@ -887,8 +890,10 @@ Task::ReportResult GTest_DNAcompareMulSequencesNamesInTwoObjects::report() {
         stateInfo.setError(QString("sequences size not matched: size1=%1, size2=%").arg(myMSequence->getLength(), myMSequence2->getMAlignment().getLength()));
         return ReportResult_Finished;
     }
-    const QList <MAlignmentRow>& myQList1 = myMSequence->getMAlignment().getRows();
-    const QList <MAlignmentRow>& myQList2 = myMSequence2->getMAlignment().getRows();
+    MAlignment one = myMSequence->getMAlignment();
+    MAlignment two = myMSequence2->getMAlignment();
+    const QList <MAlignmentRow>& myQList1 = one.getRows();
+    const QList <MAlignmentRow>& myQList2 = two.getRows();
 
     for(int n=0;(n!=myQList1.size())||(n!=myQList2.size());n++){
         const MAlignmentRow& myItem1 = myQList1.at(i);

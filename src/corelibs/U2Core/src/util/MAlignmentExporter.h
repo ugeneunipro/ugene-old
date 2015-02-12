@@ -45,6 +45,7 @@ public:
 
     MAlignment                          getAlignment(const U2DbiRef& dbiRef, const U2DataId& msaId,
                                             U2OpStatus& os) const;
+    U2Msa                               getAlignmentObject(const U2DbiRef& dbiRef, const U2DataId& msaId, U2OpStatus& os) const;
     QList<MAlignmentRowReplacementData> getAlignmentRows(const U2DbiRef& dbiRef, const U2DataId& msaId,
                                             const QList<qint64> rowIds, U2OpStatus& os) const;
 

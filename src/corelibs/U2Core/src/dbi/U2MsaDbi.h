@@ -56,6 +56,7 @@ public:
      * Requires: U2DbiFeature_WriteMsa feature support
      */
     virtual U2DataId createMsaObject(const QString& folder, const QString& name, const U2AlphabetId& alphabet, U2OpStatus& os) = 0;
+    virtual U2DataId createMsaObject(const QString& folder, const QString& name, const U2AlphabetId& alphabet, int length, U2OpStatus& os) = 0;
 
     /**
      * Updates the multiple alignment name
@@ -119,6 +120,9 @@ public:
      * Requires: U2DbiFeature_WriteMsa feature support
      */
     virtual void setNewRowsOrder(const U2DataId& msaId, const QList<qint64>& rowIds, U2OpStatus& os) = 0;
+
+    /** Updates a part of the Msa object info - the length */
+    virtual void updateMsaLength(const U2DataId& msaId, qint64 length, U2OpStatus& os) = 0;
 };
 
 

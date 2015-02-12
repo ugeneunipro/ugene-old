@@ -44,6 +44,8 @@ public:
      */
     static void updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2OpStatus& os);
 
+    static void updateMsaLength(const U2EntityRef& msaRef, qint64 newLen, U2OpStatus& os);
+
     /**
      * Renames an alignment.
      * Parameter 'newName' must be NOT empty!
@@ -53,7 +55,6 @@ public:
     /**
      * Inserts 'count' gaps to rows with specified IDs from 'pos' position.
      * Updates the alignment length.
-     * Trims the rows.
      * Parameter 'rowIds' must contain valid IDs of the alignment rows in the database!
      * Parameter 'pos' must be >=0 and < the alignment length.
      * Parameter 'count' must be > 0.
@@ -106,7 +107,9 @@ public:
      * Updates the row sequence data and the row info (gaps, etc.) in the database.
      * Parameter 'rowId' must contain a valid row ID in the database.
      */
-    static void updateRowContent(const U2EntityRef& msaRef, qint64 rowId, const QByteArray& seqBytes, const QList<U2MsaGap>& gaps, U2OpStatus& os);
+    static void updateRowContent(const U2EntityRef& msaRef, qint64 rowId,
+                                 const QByteArray& seqBytes, const QList<U2MsaGap>& gaps,
+                                 U2OpStatus& os);
 
     /**
      * Updates a gap model of the specified row in the database.

@@ -44,7 +44,7 @@ void MuscleAdapter::align(const MAlignment& ma, MAlignment& res, TaskStateInfo& 
     if(ti.cancelFlag)  {
         return;
     }
-    try { 
+    try {
         alignUnsafe(ma, res, ti, mhack);
     } catch (MuscleException e) {
         if (!ti.cancelFlag) {
@@ -62,7 +62,7 @@ void MuscleAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
     MuscleContext* ctx = getMuscleContext();
 
     MuscleParamsHelper ph(ti,ctx);
-    
+
     SetSeqWeightMethod(ctx->params.g_SeqWeight1);
 
     setupAlphaAndScore(ma.getAlphabet(), ti);
@@ -115,7 +115,7 @@ void MuscleAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
     }
     Tree GuideTree;
     TreeFromSeqVect(v, GuideTree, ctx->params.g_Cluster1, ctx->params.g_Distance1, ctx->params.g_Root1, ctx->params.g_pstrDistMxFileName1);
-    
+
     SetMuscleTree(GuideTree);
     ValidateMuscleIds(GuideTree);
 
@@ -132,7 +132,7 @@ void MuscleAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
     }
 
     SetCurrentAlignment(msa);
-    
+
     ValidateMuscleIds(msa);
 
     if (1 == ctx->params.g_uMaxIters || 2 == uSeqCount) {
@@ -142,7 +142,7 @@ void MuscleAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
     }
 
     ti.progress = 25;
-    
+
     if(ti.cancelFlag) {
         return;
     }
@@ -164,7 +164,7 @@ void MuscleAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
 
     SetSeqWeightMethod(ctx->params.g_SeqWeight2);
     SetMuscleTree(GuideTree);
-    
+
     ti.progress = 45;
     QTime timer;
     timer.start();
@@ -182,7 +182,7 @@ void MuscleAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
     ValidateMuscleIds(GuideTree);
 
     //assert(int(msa.GetSeqCount()) == ma.getNumSequences());
-    
+
     prepareAlignResults(msa, ma.getAlphabet(), res, mhack);
 }
 
@@ -213,9 +213,9 @@ void MuscleAdapter::refineUnsafe(const MAlignment& ma, MAlignment& res, TaskStat
     ti.progress = 0;
 
     MuscleContext *ctx = getMuscleContext();
-    
+
     MuscleParamsHelper ph(ti,ctx);
-    
+
     SetSeqWeightMethod(ctx->params.g_SeqWeight1);
 
     setupAlphaAndScore(ma.getAlphabet(), ti);
@@ -285,7 +285,7 @@ void MuscleAdapter::align2Profiles(const MAlignment& ma1, const MAlignment& ma2,
         ti.setError(  tr("Invalid input alignment") );
         return;
     }
-    try { 
+    try {
         align2ProfilesUnsafe(ma1, ma2, res, ti);
     } catch (MuscleException e) {
         if (!ti.cancelFlag) {
@@ -312,7 +312,7 @@ void MuscleAdapter::align2ProfilesUnsafe(const MAlignment& ma1, const MAlignment
     if (ti.hasError()) {
         return;
     }
-    
+
     MSA msa1;
     convertMAlignment2MSA(msa1, ma1, true);
     MSA msa2;
@@ -331,7 +331,7 @@ void MuscleAdapter::align2ProfilesUnsafe(const MAlignment& ma1, const MAlignment
     PWPath Path; unsigned uLengthOut;
     ti.setDescription(tr("Aligning profiles"));
     AlignTwoProfs(Prof1.data, uLength1, 1.0, Prof2.data, uLength2, 1.0, Path, &ProfOut.data, &uLengthOut);
-    
+
     ti.setDescription(tr("Building output"));
     MSA msaOut;
     AlignTwoMSAsGivenPath(Path, msa1, msa2, msaOut);
@@ -391,7 +391,7 @@ static void originalMSAToCurrent(const QByteArray& adjPath, const QByteArray& or
 
 static void addSequenceToMSA(MAlignment& ma, const QByteArray& path, QByteArray& msaPathChanges, const QByteArray& seq, const QString& name) {
     assert(msaPathChanges.length() == ma.getLength());
-    
+
     QVector<int> insCoords; //coords of gaps to be added to model
     QByteArray alignedSeq; //a sequence to be added to model
     int pathLen = path.size();
@@ -403,13 +403,13 @@ static void addSequenceToMSA(MAlignment& ma, const QByteArray& path, QByteArray&
             alignedSeq.append((char)MAlignment_GapChar);
             continue;
         }
-        //for 'M' or 'I' insert original char to seq        
+        //for 'M' or 'I' insert original char to seq
         char sc = seq[seqPos];
         alignedSeq.append(sc);
         seqPos++;
         if (c =='I') { //insert gap to MSA
             insCoords.append(pathPos);
-        } 
+        }
     }
     assert(seqPos == seqLen); //all seq symbols used
     int aseqLen = alignedSeq.length(); Q_UNUSED(aseqLen);
@@ -438,7 +438,7 @@ static void addSequenceToMSA(MAlignment& ma, const QByteArray& path, QByteArray&
                             msaPathChangesNew.append('I');
                         }
                     } while (insCoordsPos == prevInsCoordsPos+1);
-                } 
+                }
                 newSeq.append(row.charAt(seqPos));
                 if (i == 0) {
                     msaPathChangesNew.append(msaPathChanges[seqPos]);
@@ -452,7 +452,7 @@ static void addSequenceToMSA(MAlignment& ma, const QByteArray& path, QByteArray&
                 }
             }
             assert(newSeq.length() == newLen);
-			ma.setRowContent(i, newSeq);
+            ma.setRowContent(i, newSeq);
         }
         msaPathChanges.clear();
         msaPathChanges+=msaPathChangesNew;
@@ -470,7 +470,7 @@ void MuscleAdapter::addUnalignedSequencesToProfile(const MAlignment& ma, const M
     if(ti.cancelFlag)  {
         return;
     }
-    try { 
+    try {
         addUnalignedSequencesToProfileUnsafe(ma, unalignedSeqs, res, ti);
     } catch (MuscleException e) {
         if (!ti.cancelFlag) {
@@ -487,16 +487,16 @@ void MuscleAdapter::addUnalignedSequencesToProfile(const MAlignment& ma, const M
 void MuscleAdapter::addUnalignedSequencesToProfileUnsafe(const MAlignment& ma, const MAlignment& unalignedSeqs, MAlignment& res, TaskStateInfo& ti) {
     const DNAAlphabet* al = U2AlphabetUtils::deriveCommonAlphabet(ma.getAlphabet(), unalignedSeqs.getAlphabet());
     CHECK_EXT(al != NULL, ti.setError(tr("Incompatible alphabets")), );
-        
+
     // init muscle
     MuscleContext *ctx = getMuscleContext();
 
     MuscleParamsHelper ph(ti,ctx);
     SetSeqWeightMethod(ctx->params.g_SeqWeight1);
-    
+
     setupAlphaAndScore(al, ti);
     CHECK_OP(ti, );
-    
+
     MSA::SetIdCount(ma.getNumRows() + 1);
 
     //prepare original MSA
@@ -504,7 +504,7 @@ void MuscleAdapter::addUnalignedSequencesToProfileUnsafe(const MAlignment& ma, c
     convertMAlignment2MSA(profileMSA, ma, true);
 
     res = ma;
-    
+
     //align with input sequences one by one
     Tree tree1;
     gauto_array<ProfPos> prof1(ProfileFromMSALocal_ProfileCPP(profileMSA, tree1));
@@ -514,7 +514,8 @@ void MuscleAdapter::addUnalignedSequencesToProfileUnsafe(const MAlignment& ma, c
         ti.setDescription(tr("Aligning sequence %1 of %2").arg(QString::number(i+1)).arg(QString::number(n)));
         ti.progress = dp + i*(95-dp)/n;
         const MAlignmentRow& useq = unalignedSeqs.getRow(i);
-        Seq seq; seq.FromString(useq.getCore().constData(), useq.getName().toLocal8Bit().constData());
+        Seq seq;
+        seq.FromString(useq.getCore().constData(), useq.getName().toLocal8Bit().constData());
         seq.SetId(0);
         seq.StripGaps();
         seq.FixAlpha();
@@ -526,7 +527,7 @@ void MuscleAdapter::addUnalignedSequencesToProfileUnsafe(const MAlignment& ma, c
 
         PWPath path; unsigned uLengthOut;
         AlignTwoProfs(prof1.data, profileMSA.GetColCount(), 1.0, prof2.get(), tmpMSA.GetColCount(), 1.0, path, &profOut.data, &uLengthOut);
-        
+
         AlignedSeq aseq;
         aseq.name = useq.getName();
         aseq.seq = QByteArray((const char*)&seq.front(), seq.Length());//without gaps

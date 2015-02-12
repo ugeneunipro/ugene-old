@@ -62,6 +62,7 @@ public:
      * Returns the assigned id.
      */
     virtual U2DataId createMsaObject(const QString& folder, const QString& name, const U2AlphabetId& alphabet, U2OpStatus& os);
+    virtual U2DataId createMsaObject(const QString &folder, const QString &name, const U2AlphabetId &alphabet, int length, U2OpStatus &os);
 
     /**
      * Updates the multiple alignment name.
@@ -153,6 +154,9 @@ public:
      */
     virtual void updateGapModel(const U2DataId& msaId, qint64 msaRowId, const QList<U2MsaGap>& gapModel, U2OpStatus& os);
 
+    /** Updates a part of the Msa object info - the length */
+    void updateMsaLength(const U2DataId& msaId, qint64 length, U2OpStatus& os);
+
     /**
      * Updates positions of the rows in the database according to the order in the list
      * Be careful, all IDs must exactly match IDs of the MSA!
@@ -204,8 +208,10 @@ private:
      */
     void recalculateRowsPositions(const U2DataId& msaId, U2OpStatus& os);
 
-    /** Sets the length of the alignment to the maximum length of its rows. */
-    void recalculateMsaLength(const U2DataId& msaId, U2OpStatus& os);
+    /** If the new row length (without trailing gaps) is greater than alignment length,
+     *  the method will increase the length of the alignment
+     */
+    void rowLengthChanged(const U2DataId& msaId, qint64 newRowLen, U2OpStatus& os);
 
     /** Calculates length of the row (characters + gaps), does NOT take into account trailing gaps. */
     qint64 calculateRowLength(qint64 seqLength, const QList<U2MsaGap>& gaps);
@@ -215,9 +221,6 @@ private:
 
     /** Updates 'length' field in MsaRow for specified */
     void updateRowLength(const U2DataId& msaId, qint64 rowId, qint64 newLength, U2OpStatus& os);
-
-    /** Updates a part of the Msa object info - the length */
-    void updateMsaLength(const U2DataId& msaId, qint64 length, U2OpStatus& os);
 
     /** Gets a sequence ID for the row */
     U2DataId getSequenceIdByRowId(const U2DataId& msaId, qint64 rowId, U2OpStatus& os);
@@ -236,6 +239,7 @@ private:
     void removeRowsCore(const U2DataId& msaId, const QList<qint64> &rowIds, bool removeSequence, U2OpStatus& os);
     void setNewRowsOrderCore(const U2DataId &msaId, const QList<qint64> rowIds, U2OpStatus &os);
     void updateRowInfoCore(const U2DataId &msaId, const U2MsaRow &row, U2OpStatus& os);
+    void updateMsaLengthCore(const U2DataId& msaId, qint64 length, U2OpStatus& os);
 
     ///////////////////////////////////////////////////////////
     // Undo methods
@@ -247,6 +251,7 @@ private:
     void undoUpdateGapModel(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void undoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void undoUpdateRowInfo(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void undoMsaLengthChange(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus &os);
 
     ///////////////////////////////////////////////////////////
     // Redo methods
@@ -258,6 +263,7 @@ private:
     void redoUpdateGapModel(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void redoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void redoUpdateRowInfo(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void redoMsaLengthChange(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus & os);
 
     ///////////////////////////////////////////////////////////
     // Methods included into a multi-action

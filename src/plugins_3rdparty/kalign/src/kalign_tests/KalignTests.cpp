@@ -80,7 +80,7 @@ struct GTestBoolProperty {
 failMissingValue((ATTR));\
 return;}
 
-Kalign_Load_Align_Compare_Task::Kalign_Load_Align_Compare_Task( QString inFileURL, QString patFileURL, 
+Kalign_Load_Align_Compare_Task::Kalign_Load_Align_Compare_Task( QString inFileURL, QString patFileURL,
     KalignTaskSettings& _config, QString _name)
     : Task(_name, TaskFlags_FOSCOE), str_inFileURL(inFileURL), str_patFileURL(patFileURL),kalignTask(NULL), config(_config)
 {
@@ -158,7 +158,7 @@ QList<Task*> Kalign_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
             return res;
         }
 
-        
+
         res << kalignTask;
         this->connect(kalignTask,SIGNAL(si_progressChanged()),SLOT(sl_kalignProgressChg()));
     }
@@ -250,12 +250,12 @@ Task::ReportResult Kalign_Load_Align_Compare_Task::report() {
 void GTest_Kalign_Load_Align_Compare::init(XMLTestFormat*, const QDomElement& el) {
     inFileURL = el.attribute(IN_FILE_NAME_ATTR);
     if (inFileURL.isEmpty()) {
-        failMissingValue(IN_FILE_NAME_ATTR); 
+        failMissingValue(IN_FILE_NAME_ATTR);
         return;
     }
     patFileURL = el.attribute(OUT_FILE_NAME_ATTR);
     if (inFileURL.isEmpty()) {
-        failMissingValue(OUT_FILE_NAME_ATTR); 
+        failMissingValue(OUT_FILE_NAME_ATTR);
         return;
     }
 }
@@ -294,24 +294,24 @@ GTest_Kalign_Load_Align_Compare::~GTest_Kalign_Load_Align_Compare() {
 void GTest_Kalign_Load_Align_QScore::init(XMLTestFormat*, const QDomElement& el) {
     inFileURL = el.attribute(IN_FILE_NAME_ATTR);
     if (inFileURL.isEmpty()) {
-        failMissingValue(IN_FILE_NAME_ATTR); 
+        failMissingValue(IN_FILE_NAME_ATTR);
         return;
     }
     patFileURL = el.attribute(OUT_FILE_NAME_ATTR);
     if (patFileURL.isEmpty()) {
-        failMissingValue(OUT_FILE_NAME_ATTR); 
+        failMissingValue(OUT_FILE_NAME_ATTR);
         return;
     }
 
     QString str_qscore = el.attribute(QSCORE_ATTR);
     if(str_qscore.isEmpty()) {
-        failMissingValue(QSCORE_ATTR); 
+        failMissingValue(QSCORE_ATTR);
         return;
     }
     bool ok = false;
     qscore = str_qscore.toFloat(&ok);
     if(!ok) {
-        failMissingValue(QSCORE_ATTR); 
+        failMissingValue(QSCORE_ATTR);
         return;
     }
 
@@ -322,7 +322,7 @@ void GTest_Kalign_Load_Align_QScore::init(XMLTestFormat*, const QDomElement& el)
         bool ok = false;
         dqscore = str_dqscore.toFloat(&ok);
         if(!ok) {
-            failMissingValue(QSCORE_DELTA_ATTR); 
+            failMissingValue(QSCORE_DELTA_ATTR);
             return;
         }
     }
@@ -469,9 +469,9 @@ void GTest_Kalign_Load_Align_QScore::run() {
 
     bool match = fabsl (this->qscore - qscore) < dqscore;
 
-	if (!match) {
-		stateInfo.setError(  QString("qscore not matched: %1, expected %2").arg(qscore).arg(this->qscore));
-	}
+    if (!match) {
+        stateInfo.setError(  QString("qscore not matched: %1, expected %2").arg(qscore).arg(this->qscore));
+    }
 }
 
 Task::ReportResult GTest_Kalign_Load_Align_QScore::report() {

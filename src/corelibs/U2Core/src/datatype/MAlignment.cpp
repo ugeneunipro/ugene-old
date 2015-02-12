@@ -36,50 +36,33 @@ namespace U2 {
 // MAlignmentRow
 MAlignmentRow::MAlignmentRow(const U2MsaRow& _rowInDb,
                              const DNASequence& _sequence,
-                             const QList<U2MsaGap>& _gaps)
-    : sequence(_sequence), gaps(_gaps), initialRowInDb(_rowInDb)
+                             const QList<U2MsaGap>& _gaps,
+                             MAlignment* _alignment)
+    : alignment(_alignment),
+      sequence(_sequence),
+      gaps(_gaps),
+      initialRowInDb(_rowInDb)
 {
-
+    SAFE_POINT(alignment != NULL, "Parent MAlignment is NULL", );
+    removeTrailingGaps();
 }
 
-MAlignmentRow::MAlignmentRow()
-    : sequence(DNASequence()), initialRowInDb(U2MsaRow())
+MAlignmentRow::MAlignmentRow(MAlignment* al)
+    : alignment(al),
+      sequence(DNASequence()),
+      initialRowInDb(U2MsaRow())
 {
     initialRowInDb.rowId = invalidRowId();
+    removeTrailingGaps();
 }
 
-MAlignmentRow MAlignmentRow::createRow(const QString& name, const QByteArray& bytes, U2OpStatus& /* os */) {
-    QByteArray newSequenceBytes;
-    QList<U2MsaGap> newGapsModel;
-
-    splitBytesToCharsAndGaps(bytes, newSequenceBytes, newGapsModel);
-    DNASequence newSequence(name, newSequenceBytes);
-
-    U2MsaRow row;
-    row.rowId = invalidRowId();
-
-    return MAlignmentRow(row, newSequence, newGapsModel);
-}
-
-MAlignmentRow MAlignmentRow::createRow(const U2MsaRow& rowInDb, const DNASequence& sequence, const QList<U2MsaGap>& gaps, U2OpStatus& os) {
-    QString errorDescr = "Failed to create a multiple alignment row!";
-    if (-1 != sequence.constSequence().indexOf(MAlignment_GapChar)) {
-        coreLog.trace("Attempted to create an alignment row from a sequence with gaps!");
-        os.setError(errorDescr);
-        return MAlignmentRow();
-    }
-
-    int length = sequence.length();
-    foreach (U2MsaGap gap, gaps) {
-        if (gap.offset > length || !gap.isValid()) {
-            coreLog.trace("Incorrect gap model was passed to MAlignmentRow::createRow!");
-            os.setError(errorDescr);
-            return MAlignmentRow();
-        }
-        length += gap.gap;
-    }
-
-    return MAlignmentRow(rowInDb, sequence, gaps);
+MAlignmentRow::MAlignmentRow(const MAlignmentRow &r, MAlignment* al)
+    : alignment(al),
+      sequence(r.sequence),
+      gaps(r.gaps),
+      initialRowInDb(r.initialRowInDb)
+{
+    SAFE_POINT(alignment != NULL, "Parent MAlignment is NULL", );
 }
 
 QByteArray MAlignmentRow::toByteArray(int length, U2OpStatus& os) const {
@@ -93,7 +76,7 @@ QByteArray MAlignmentRow::toByteArray(int length, U2OpStatus& os) const {
         return sequence.constSequence();
     }
 
-    QByteArray bytes = joinCharsAndGaps(true);
+    QByteArray bytes = joinCharsAndGaps(true, true);
 
     // Append additional gaps, if necessary
     if (length > bytes.count()) {
@@ -101,12 +84,25 @@ QByteArray MAlignmentRow::toByteArray(int length, U2OpStatus& os) const {
         gapsBytes.fill(MAlignment_GapChar, length - bytes.count());
         bytes.append(gapsBytes);
     }
+    if (length < bytes.count()) {
+        // cut extra trailing gaps
+        bytes = bytes.left(length);
+    }
 
     return bytes;
 }
 
+int MAlignmentRow::getRowLength() const {
+    SAFE_POINT(alignment != NULL, "Parent MAlignment is NULL", getRowLengthWithoutTrailing());
+    return alignment->getLength();
+}
+
 QByteArray MAlignmentRow::getCore() const {
-    return joinCharsAndGaps(true);
+    return joinCharsAndGaps(false, false);
+}
+
+QByteArray MAlignmentRow::getData() const {
+    return joinCharsAndGaps(true, true);
 }
 
 void MAlignmentRow::splitBytesToCharsAndGaps(const QByteArray& input, QByteArray& seqBytes, QList<U2MsaGap>& gapsModel) {
@@ -186,7 +182,7 @@ void MAlignmentRow::addOffsetToGapModel(QList<U2MsaGap>& gapModel, int offset) {
     }
 }
 
-QByteArray MAlignmentRow::joinCharsAndGaps(bool keepOffset) const {
+QByteArray MAlignmentRow::joinCharsAndGaps(bool keepOffset, bool keepTrailingGaps) const {
     QByteArray bytes = sequence.constSequence();
     int beginningOffset = 0;
 
@@ -204,6 +200,12 @@ QByteArray MAlignmentRow::joinCharsAndGaps(bool keepOffset) const {
         gapsBytes.fill(MAlignment_GapChar, gaps[i].gap);
         bytes.insert(gaps[i].offset - beginningOffset, gapsBytes);
     }
+    SAFE_POINT(alignment != NULL, "Parent MAlignment is NULL", QByteArray());
+    if (keepTrailingGaps && bytes.size() < alignment->getLength()) {
+        QByteArray gapsBytes;
+        gapsBytes.fill(MAlignment_GapChar, alignment->getLength() - bytes.size());
+        bytes.append(gapsBytes);
+    }
 
     return bytes;
 }
@@ -218,8 +220,9 @@ int MAlignmentRow::getCoreLength() const {
 }
 
 void MAlignmentRow::append(const MAlignmentRow& anotherRow, int lengthBefore, U2OpStatus& os) {
-    int rowLength = getRowLength();
-    if (lengthBefore < rowLength) {
+    int rowLength = getRowLengthWithoutTrailing();
+
+    if (lengthBefore < rowLength/*getRowLengthWithoutTrailing()*/) {
         coreLog.trace(QString("Internal error: incorrect length '%1' were passed to MAlignmentRow::append,"
             "coreEnd is '%2'").arg(lengthBefore).arg(getCoreEnd()));
         os.setError("Failed to append one row to another!");
@@ -228,8 +231,8 @@ void MAlignmentRow::append(const MAlignmentRow& anotherRow, int lengthBefore, U2
 
     // Gap between rows
     if (lengthBefore > rowLength) {
-        U2MsaGap gapBetweenRows(rowLength, lengthBefore - rowLength);
-        gaps.append(gapBetweenRows);
+        gaps.append(U2MsaGap(getRowLengthWithoutTrailing(),
+                             lengthBefore - getRowLengthWithoutTrailing()));
     }
 
     // Merge gaps
@@ -251,6 +254,7 @@ U2MsaRow MAlignmentRow::getRowDBInfo() const {
     row.gstart = 0;
     row.gend = sequence.length();
     row.gaps = gaps;
+    row.length = getRowLengthWithoutTrailing();
     return row;
 }
 
@@ -265,6 +269,12 @@ void MAlignmentRow::setRowContent(const QByteArray& bytes, int offset, U2OpStatu
 
     sequence = newSequence;
     gaps = newGapsModel;
+    removeTrailingGaps();
+}
+
+void MAlignmentRow::setGapModel(const QList<U2MsaGap> &newGapModel) {
+    gaps = newGapModel;
+    removeTrailingGaps();
 }
 
 void MAlignmentRow::setSequence(const DNASequence& newSequence) {
@@ -285,7 +295,7 @@ void MAlignmentRow::insertGaps(int pos, int count, U2OpStatus& os) {
         return;
     }
 
-    if (pos < 0 || pos >= getRowLength()) {
+    if (pos < 0 || pos >= getRowLengthWithoutTrailing()) {
         return;
     }
 
@@ -380,8 +390,7 @@ void MAlignmentRow::removeTrailingGaps() {
     }
 
     // If the last char in the row is gap, remove the last gap
-    SAFE_POINT(getRowLength() > 0, "Empty row during removing trailing gaps!",);
-    if (MAlignment_GapChar == charAt(getRowLength() - 1)) {
+    if (MAlignment_GapChar == charAt(MsaRowUtils::getRowLength(sequence.constData(), gaps) - 1)) {
         gaps.removeLast();
     }
 }
@@ -394,7 +403,7 @@ void MAlignmentRow::removeChars(int pos, int count, U2OpStatus& os) {
         return;
     }
 
-    if (pos >= getRowLength()) {
+    if (pos >= getRowLengthWithoutTrailing()) {
         return;
     }
 
@@ -413,6 +422,7 @@ void MAlignmentRow::removeChars(int pos, int count, U2OpStatus& os) {
     // Remove gaps from the gaps model
     removeGapsFromGapModel(pos, count);
 
+    removeTrailingGaps();
     mergeConsecutiveGaps();
 }
 
@@ -424,16 +434,16 @@ bool MAlignmentRow::isRowContentEqual(const MAlignmentRow& row) const {
         else {
             QList<U2MsaGap> firstRowGaps = gaps;
             if  (!firstRowGaps.isEmpty() &&
-                (MAlignment_GapChar == charAt(getRowLength() - 1)))
+                (MAlignment_GapChar == charAt(0)))
             {
-                firstRowGaps.removeLast();
+                firstRowGaps.removeFirst();
             }
 
             QList<U2MsaGap> secondRowGaps = row.getGapModel();
             if (!secondRowGaps.isEmpty() &&
-                (MAlignment_GapChar == row.charAt(row.getRowLength() - 1)))
+                (MAlignment_GapChar == row.charAt(0)))
             {
-                secondRowGaps.removeLast();
+                secondRowGaps.removeFirst();
             }
 
             if (firstRowGaps == secondRowGaps) {
@@ -447,10 +457,6 @@ bool MAlignmentRow::isRowContentEqual(const MAlignmentRow& row) const {
 
 int MAlignmentRow::getUngappedPosition(int pos) const {
     return MsaRowUtils::getUngappedPosition(sequence.seq, gaps, pos);
-}
-
-qint64 MAlignmentRow::getRowLengthWithoutTrailing() const {
-    return MsaRowUtils::getRowLengthWithoutTrailing(sequence.seq, gaps);
 }
 
 void MAlignmentRow::getStartAndEndSequencePositions(int pos, int count, int& startPosInSeq, int& endPosInSeq) {
@@ -585,6 +591,7 @@ void MAlignmentRow::crop(int pos, int count, U2OpStatus& os) {
     if (pos > 0) {
         removeGapsFromGapModel(0, pos);
     }
+    removeTrailingGaps();
 }
 
 MAlignmentRow MAlignmentRow::mid(int pos, int count, U2OpStatus& os) const {
@@ -679,6 +686,19 @@ MAlignment::MAlignment(const QString& _name, const DNAAlphabet* al, const QList<
     }
 }
 
+MAlignment::MAlignment(const MAlignment &m)
+    : alphabet(m.alphabet),
+      length(m.length),
+      info(m.info)
+{
+    U2OpStatusImpl os;
+    for (int i = 0; i < m.rows.size(); i++) {
+        MAlignmentRow r = createRow( m.rows.at(i), os);
+        addRow(r, m.length, i, os);
+        SAFE_POINT_OP(os, );
+    }
+}
+
 void MAlignment::setAlphabet(const DNAAlphabet* al) {
     SAFE_POINT(NULL != al, "Internal error: attempted to set NULL alphabet fro an alignment!",);
     alphabet = al;
@@ -686,6 +706,8 @@ void MAlignment::setAlphabet(const DNAAlphabet* al) {
 
 bool MAlignment::trim( bool removeLeadingGaps ) {
     MAStateCheck check(this);
+    Q_UNUSED(check);
+
     bool result = false;
 
     if ( removeLeadingGaps ) {
@@ -728,21 +750,11 @@ bool MAlignment::trim( bool removeLeadingGaps ) {
     // Verify right side of the alignment (trailing gaps and rows' lengths)
     int newLength = 0;
     foreach (MAlignmentRow row, rows) {
-        int lastGapLength = 0;
-        int rowLength = row.getRowLength();
-        if (!row.getGapModel().isEmpty() &&
-            (row.getSequence().length() > 0) &&
-            (MAlignment_GapChar == row.charAt(rowLength - 1)))
-        {
-            lastGapLength = row.getGapModel().last().gap;
-        }
-
-        int lengthWithoutLastGap = rowLength - lastGapLength;
         if (newLength == 0) {
-            newLength = lengthWithoutLastGap;
+            newLength = row.getRowLengthWithoutTrailing();
         }
         else {
-            newLength = qMax(lengthWithoutLastGap, newLength);
+            newLength = qMax(row.getRowLengthWithoutTrailing(), newLength);
         }
     }
 
@@ -756,6 +768,7 @@ bool MAlignment::trim( bool removeLeadingGaps ) {
 
 bool MAlignment::simplify() {
     MAStateCheck check(this);
+    Q_UNUSED(check);
 
     int newLen = 0;
     bool changed = false;
@@ -800,6 +813,7 @@ bool MAlignment::hasEqualLength() const {
 
 void MAlignment::clear() {
     MAStateCheck check(this);
+    Q_UNUSED(check);
 
     rows.clear();
     length = 0;
@@ -814,10 +828,12 @@ MAlignment MAlignment::mid(int start, int len) const {
 
     MAlignment res(getName(), alphabet);
     MAStateCheck check(&res);
+    Q_UNUSED(check);
 
     U2OpStatus2Log os;
     foreach(const MAlignmentRow& r, rows) {
         MAlignmentRow mRow = r.mid(start, len, os);
+        mRow.setParentAlignment(&res);
         res.rows.append(mRow);
     }
     res.length = len;
@@ -827,6 +843,7 @@ MAlignment MAlignment::mid(int start, int len) const {
 
 MAlignment& MAlignment::operator+=(const MAlignment& ma) {
     MAStateCheck check(this);
+    Q_UNUSED(check);
 
     SAFE_POINT(ma.alphabet == alphabet, "Different alphabets in MAlignment::operator+= !", *this);
 
@@ -865,57 +882,113 @@ int MAlignment::estimateMemorySize() const {
     return result;
 }
 
-bool MAlignment::crop(const U2Region& region, const QSet<QString>& rowNames) {
-    SAFE_POINT(region.startPos >= 0 && region.length > 0,
-        QString("Incorrect region was passed to MAlignment::crop,"
-        "startPos '%1', length '%2'!").arg(region.startPos).arg(region.length), false);
+bool MAlignment::crop(const U2Region& region, const QSet<QString>& rowNames, U2OpStatus& os) {
+    if (!(region.startPos >= 0 && region.length > 0 && region.length < length && region.startPos < length)) {
+        os.setError(QString("Incorrect region was passed to MAlignment::crop,"
+                            "startPos '%1', length '%2'!").arg(region.startPos).arg(region.length));
+        return false;
+    }
+
+    int cropLen = region.length;
+    if (region.endPos() > length) {
+        cropLen -=  (region.endPos() - length);
+    }
 
     MAStateCheck check(this);
+    Q_UNUSED(check);
 
-    U2OpStatus2Log os;
     QList<MAlignmentRow> newList;
-    foreach(const MAlignmentRow& row, rows){
+    for (int i = 0 ; i < rows.size(); i++) {
+        MAlignmentRow row = rows[i];
         const QString& rowName = row.getName();
         if (rowNames.contains(rowName)){
-            MAlignmentRow newRow = row.mid(region.startPos, region.length, os);
-            SAFE_POINT_OP(os, false);
-            newList.append(newRow);
+            row.crop(region.startPos, cropLen, os);
+            CHECK_OP(os, false);
+            newList.append(row);
         }
     }
     rows = newList;
-    length = region.length;
+
+    length = cropLen;
     return true;
 }
 
-void MAlignment::addRow(const MAlignmentRow& row, int rowIndex, U2OpStatus& /* os */) {
-    MAStateCheck check(this);
+bool MAlignment::crop(const U2Region &region, U2OpStatus& os) {
+    crop(region, getRowNames().toSet(), os);
+}
 
-    length = qMax(row.getCoreEnd(), length);
+bool MAlignment::crop(int start, int count, U2OpStatus& os) {
+    crop(U2Region(start, count), os);
+}
+
+MAlignmentRow MAlignment::createRow(const QString& name, const QByteArray& bytes, U2OpStatus& /* os */) {
+    QByteArray newSequenceBytes;
+    QList<U2MsaGap> newGapsModel;
+
+    MAlignmentRow::splitBytesToCharsAndGaps(bytes, newSequenceBytes, newGapsModel);
+    DNASequence newSequence(name, newSequenceBytes);
+
+    U2MsaRow row;
+    row.rowId = MAlignmentRow::invalidRowId();
+
+    return MAlignmentRow(row, newSequence, newGapsModel, this);
+}
+
+MAlignmentRow MAlignment::createRow(const U2MsaRow& rowInDb, const DNASequence& sequence, const QList<U2MsaGap>& gaps, U2OpStatus& os) {
+    QString errorDescr = "Failed to create a multiple alignment row!";
+    if (-1 != sequence.constSequence().indexOf(MAlignment_GapChar)) {
+        coreLog.trace("Attempted to create an alignment row from a sequence with gaps!");
+        os.setError(errorDescr);
+        return MAlignmentRow();
+    }
+
+    int length = sequence.length();
+    foreach (const U2MsaGap& gap, gaps) {
+        if (gap.offset > length || !gap.isValid()) {
+            coreLog.trace("Incorrect gap model was passed to MAlignmentRow::createRow!");
+            os.setError(errorDescr);
+            return MAlignmentRow();
+        }
+        length += gap.gap;
+    }
+
+    return MAlignmentRow(rowInDb, sequence, gaps, this);
+}
+
+MAlignmentRow MAlignment::createRow(const MAlignmentRow &r, U2OpStatus &/*os*/) {
+    return MAlignmentRow(r, this);
+}
+
+
+void MAlignment::addRow(const MAlignmentRow& row, int rowLenWithTrailingGaps, int rowIndex, U2OpStatus& /* os */) {
+    MAStateCheck check(this);
+    Q_UNUSED(check);
+
+    length = qMax(rowLenWithTrailingGaps, length);
     int idx = rowIndex == -1 ? getNumRows() : qBound(0, rowIndex, getNumRows());
     rows.insert(idx, row);
 }
 
 void MAlignment::addRow(const QString& name, const QByteArray& bytes, U2OpStatus& os) {
-    MAlignmentRow newRow = MAlignmentRow::createRow(name, bytes, os);
+    MAlignmentRow newRow = createRow(name, bytes, os);
     CHECK_OP(os, );
 
-    addRow(newRow, -1, os);
+    addRow(newRow, bytes.size(), -1, os);
 }
 
 void MAlignment::addRow(const QString& name, const QByteArray& bytes, int rowIndex, U2OpStatus& os) {
-    MAlignmentRow newRow = MAlignmentRow::createRow(name, bytes, os);
+    MAlignmentRow newRow = createRow(name, bytes, os);
     CHECK_OP(os, );
 
-    addRow(newRow, rowIndex, os);
+    addRow(newRow, bytes.size(), rowIndex, os);
 }
 
 void MAlignment::addRow(const U2MsaRow& rowInDb, const DNASequence& sequence, U2OpStatus& os) {
-    MAlignmentRow newRow = MAlignmentRow::createRow(rowInDb, sequence, rowInDb.gaps, os);
+    MAlignmentRow newRow = createRow(rowInDb, sequence, rowInDb.gaps, os);
     CHECK_OP(os, );
 
-    addRow(newRow, -1, os);
+    addRow(newRow, rowInDb.length, -1, os);
 }
-
 
 void MAlignment::removeRow(int rowIndex, U2OpStatus& os) {
     if (rowIndex < 0 || rowIndex >= getNumRows()) {
@@ -925,6 +998,7 @@ void MAlignment::removeRow(int rowIndex, U2OpStatus& os) {
         return;
     }
     MAStateCheck check(this);
+    Q_UNUSED(check);
 
     rows.removeAt(rowIndex);
 
@@ -941,11 +1015,23 @@ void MAlignment::insertGaps(int row, int pos, int count, U2OpStatus& os) {
         return;
     }
 
+    if (pos == length) {
+        // add trailing gaps --> just increase alignment len
+        length += count;
+        return;
+    }
+
     MAStateCheck check(this);
+    Q_UNUSED(check);
+
     MAlignmentRow& r = rows[row];
+    if (pos >= r.getRowLengthWithoutTrailing()) {
+        length += count;
+        return;
+    }
     r.insertGaps(pos, count, os);
 
-    int rowLength = r.getRowLength();
+    int rowLength = r.getRowLengthWithoutTrailing();
     length = qMax(length, rowLength);
 }
 
@@ -954,25 +1040,45 @@ void MAlignment::appendChars(int row, const char* str, int len) {
         QString("Incorrect row index '%1' in MAlignment::appendChars!").arg(row),);
 
     U2OpStatus2Log os;
-    MAlignmentRow appendedRow = MAlignmentRow::createRow("", QByteArray(str, len), os);
+    MAlignmentRow appendedRow = createRow("", QByteArray(str, len), os);
     CHECK_OP(os, );
 
-    int rowLength = rows[row].getRowLength();
+    int rowLength = rows[row].getRowLength();;
 
     rows[row].append(appendedRow, rowLength, os);
     CHECK_OP(os, );
 
-    rowLength = rows[row].getRowLength();
-
-    length = qMax(length, rowLength);
+    length = qMax(length, rowLength + len);
 }
 
-int MAlignment::calculateMinLength() const {
-    int res = 0;
-    foreach(const MAlignmentRow& row, rows) {
-        res = qMax(row.getRowLength(), res);
-    }
-    return res;
+void MAlignment::appendChars(int row, int afterPos, const char *str, int len) {
+    SAFE_POINT(0 <= row && row < getNumRows(),
+        QString("Incorrect row index '%1' in MAlignment::appendChars!").arg(row),);
+
+    U2OpStatus2Log os;
+    MAlignmentRow appendedRow = createRow("", QByteArray(str, len), os);
+    CHECK_OP(os, );
+
+    rows[row].append(appendedRow, afterPos, os);
+    CHECK_OP(os, );
+
+    length = qMax(length, afterPos + len);
+
+}
+
+void MAlignment::appendRow(int row, const MAlignmentRow &r, bool ignoreTrailingGaps, U2OpStatus& os) {
+    appendRow(row, ignoreTrailingGaps ? rows[row].getRowLengthWithoutTrailing()
+                                      : rows[row].getRowLength(), r, os);
+}
+
+void MAlignment::appendRow(int row, int afterPos, const MAlignmentRow &r, U2OpStatus& os) {
+    SAFE_POINT(0 <= row && row < getNumRows(),
+        QString("Incorrect row index '%1' in MAlignment::appendRow!").arg(row),);
+
+    rows[row].append(r, afterPos, os);
+    CHECK_OP(os, );
+
+    length = qMax(length, afterPos + r.getRowLength());
 }
 
 void MAlignment::removeChars(int row, int pos, int count, U2OpStatus& os) {
@@ -984,15 +1090,10 @@ void MAlignment::removeChars(int row, int pos, int count, U2OpStatus& os) {
     }
 
     MAStateCheck check(this);
+    Q_UNUSED(check);
 
     MAlignmentRow& r = rows[row];
-    bool lengthHolder = length == r.getRowLength();
     r.removeChars(pos, count, os);
-    // do not remove possible leading gap columns
-    trim( false );
-    if (lengthHolder) {
-        length = calculateMinLength();
-    }
 }
 
 void MAlignment::removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows) {
@@ -1004,11 +1105,11 @@ void MAlignment::removeRegion(int startPos, int startRow, int nBases, int nRows,
         " nRows '%2', the number of rows is '%3'!").arg(startRow).arg(nRows).arg(getNumRows()),);
 
     MAStateCheck check(this);
-    bool lengthHolder = false;
+    Q_UNUSED(check);
+
     U2OpStatus2Log os;
     for (int i = startRow + nRows; --i >= startRow;) {
         MAlignmentRow& r = rows[i];
-        lengthHolder = lengthHolder || length == r.getCoreEnd();
 
         r.removeChars(startPos, nBases, os);
         SAFE_POINT_OP(os, );
@@ -1018,10 +1119,12 @@ void MAlignment::removeRegion(int startPos, int startRow, int nBases, int nRows,
         }
     }
 
-    trim();
-
-    if (lengthHolder) {
-        length = calculateMinLength();
+    if (nRows == rows.size()) {
+        // full columns were removed
+        length -= nBases;
+        if (length == 0) {
+            rows.clear();
+        }
     }
 }
 
@@ -1029,6 +1132,7 @@ void MAlignment::setLength(int newLength) {
     SAFE_POINT(newLength >=0, QString("Internal error: attempted to set length '%1' for an alignment!").arg(newLength),);
 
     MAStateCheck check(this);
+    Q_UNUSED(check);
 
     if (newLength >= length) {
         length = newLength;
@@ -1068,18 +1172,20 @@ void MAlignment::replaceChars(int row, char origChar, char resultChar) {
     r.replaceChars(origChar, resultChar, os);
 }
 
-void MAlignment::setRowContent(int row, const QByteArray& sequence) {
+void MAlignment::setRowContent(int row, const QByteArray& sequence, int offset) {
     SAFE_POINT(row >= 0 && row < getNumRows(),
         QString("Incorrect row index '%1' was passed to MAlignment::setRowContent: "
         " the number of rows is '%2'!").arg(row).arg(getNumRows()),);
     MAStateCheck check(this);
+    Q_UNUSED(check);
+
     MAlignmentRow& r = rows[row];
 
     U2OpStatus2Log os;
-    r.setRowContent(sequence, 0, os);
+    r.setRowContent(sequence, offset, os);
     SAFE_POINT_OP(os, );
 
-    length = calculateMinLength();
+    length = qMax(length, sequence.size() + offset);
 }
 
 void MAlignment::toUpperCase() {
@@ -1213,9 +1319,8 @@ char MAlignment::charAt(int rowIndex, int pos) const {
 void MAlignment::setRowGapModel(int rowIndex, const QList<U2MsaGap>& gapModel) {
     SAFE_POINT(rowIndex >= 0 && rowIndex < getNumRows(), "Invalid row index!", );
     MAlignmentRow& row = rows[rowIndex];
+    length = qMax(length, MsaRowUtils::getGapsLength(gapModel) + row.sequence.length());
     row.setGapModel(gapModel);
-
-    length = calculateMinLength();
 }
 
 void MAlignment::setRowId(int rowIndex, qint64 rowId) {

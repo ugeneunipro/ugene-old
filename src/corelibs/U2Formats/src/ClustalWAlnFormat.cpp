@@ -76,6 +76,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObjec
     int sequenceIdx = 0;
     int valStartPos = 0;
     int valEndPos = 0;
+    int currentLen = 0;
 
     //1 skip first line
     int len = io->readUntil(buff, READ_BUFF_SIZE, LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
@@ -162,7 +163,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObjec
                     os.setError( ClustalWAlnFormat::tr("Sequence names are not matched"));
                     break;
                 }
-                al.appendChars(rowIdx, value.constData(), value.size());
+                al.appendChars(rowIdx, currentLen, value.constData(), value.size());
             }
         }
         if (lastBlockLine) {
@@ -171,6 +172,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObjec
                 break;
             }
             sequenceIdx = 0;
+            currentLen = al.getLength();
         } else {
             sequenceIdx++;
         }

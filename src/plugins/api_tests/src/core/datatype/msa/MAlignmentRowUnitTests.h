@@ -31,12 +31,12 @@ namespace U2 {
 
 class MAlignmentRowTestUtils {
 public:
-    static MAlignmentRow initTestRowWithGaps();
-    static MAlignmentRow initTestRowWithGapsInMiddle();
-    static MAlignmentRow initTestRowWithTrailingGaps();
-    static MAlignmentRow initTestRowWithoutGaps();
-    static MAlignmentRow initTestRowForModification();
-    static MAlignmentRow initEmptyRow();
+    static MAlignmentRow initTestRowWithGaps(MAlignment& ma);
+    static MAlignmentRow initTestRowWithGapsInMiddle(MAlignment& ma);
+    static MAlignmentRow initTestRowWithTrailingGaps(MAlignment& ma);
+    static MAlignmentRow initTestRowWithoutGaps(MAlignment& ma);
+    static MAlignmentRow initTestRowForModification(MAlignment& ma);
+    static MAlignmentRow initEmptyRow(MAlignment& ma);
     static QString getRowData(MAlignmentRow row);
 
     static const int rowWithGapsLength;

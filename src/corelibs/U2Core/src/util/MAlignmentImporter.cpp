@@ -81,7 +81,7 @@ U2Msa MAlignmentImporter::importMsaObject(const DbiConnection& con, const QStrin
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
     SAFE_POINT(NULL != msaDbi, "NULL MSA Dbi during importing an alignment!", U2Msa());
 
-    msa.id = msaDbi->createMsaObject(folder, msa.visualName, msa.alphabet, os);
+    msa.id = msaDbi->createMsaObject(folder, msa.visualName, msa.alphabet, msa.length, os);
     CHECK_OP(os, U2Msa());
 
     return msa;
@@ -161,9 +161,6 @@ QList<U2MsaRow> MAlignmentImporter::importRows(const DbiConnection& con, const M
     CHECK_OP(os, QList<U2MsaRow>());
 
     U2EntityRef msaRef(con.dbi->getDbiRef(), msa.id);
-
-    MsaDbiUtils::trim(msaRef, os);
-    CHECK_OP(os, QList<U2MsaRow>());
 
     MsaDbiUtils::removeEmptyRows(msaRef, rowsIds, os);
     CHECK_OP(os, QList<U2MsaRow>());

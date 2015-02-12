@@ -121,7 +121,7 @@ MAlignment MSAUtils::seq2ma(const QList<GObject*>& list, U2OpStatus& os, bool us
         CHECK_OP(os, MAlignment());
 
         SAFE_POINT(i < ma.getNumRows(), "Row count differ from expected after adding row", MAlignment());
-        appendSequenceToAlignmentRow(ma, i, seq, os);
+        appendSequenceToAlignmentRow(ma, i, 0, seq, os);
         CHECK_OP(os, MAlignment());
         i++;
     }
@@ -129,7 +129,7 @@ MAlignment MSAUtils::seq2ma(const QList<GObject*>& list, U2OpStatus& os, bool us
     return ma;
 }
 
-void MSAUtils::appendSequenceToAlignmentRow(MAlignment& ma, int rowIndex, const U2SequenceObject& seq, U2OpStatus& os, U2Region region) {
+void MSAUtils::appendSequenceToAlignmentRow(MAlignment& ma, int rowIndex, int afterPos, const U2SequenceObject& seq, U2OpStatus& os, U2Region region) {
     if (true == region.isEmpty()) {
         region = U2Region(0, seq.getSequenceLength());
     }
@@ -139,7 +139,7 @@ void MSAUtils::appendSequenceToAlignmentRow(MAlignment& ma, int rowIndex, const 
     for (qint64 startPosition = region.startPos; startPosition<region.length; startPosition+=blockReadFromBD) {
         U2Region readRegion(startPosition, qMin(blockReadFromBD, sequenceLength - startPosition));
         QByteArray readedData = seq.getSequenceData(readRegion);
-        ma.appendChars(rowIndex, readedData.constData(), readedData.size());
+        ma.appendChars(rowIndex, afterPos, readedData.constData(), readedData.size());
         CHECK_OP(os, );
     }
 }
@@ -191,7 +191,7 @@ bool MSAUtils::checkPackedModelSymmetry(MAlignment& ali, U2OpStatus& ti) {
         ti.setError(tr("Alignment is empty!"));
         return false;
     }
-    int coreLen = ali.getRow(0).getCoreEnd();
+    int coreLen = ali.getLength();
     if (coreLen == 0) {
         ti.setError(tr("Alignment is empty!"));
         return false;
@@ -199,7 +199,7 @@ bool MSAUtils::checkPackedModelSymmetry(MAlignment& ali, U2OpStatus& ti) {
     for (int i=0, n = ali.getNumRows(); i < n; i++) {
         const MAlignmentRow& row = ali.getRow(i);
         int rowCoreLength = row.getCoreLength();
-        if (rowCoreLength != coreLen) {
+        if (rowCoreLength > coreLen) {
             ti.setError(tr("Sequences in alignment have different sizes!"));
             return false;
         }
@@ -232,7 +232,6 @@ MAlignmentObject* MSAUtils::seqObjs2msaObj(const QList<GObject*>& objects, const
     if (ma.isEmpty()) {
         return NULL;
     }
-    ma.trim();
 
     int pos = 0;
     int sequenceObjectsNum = 0;

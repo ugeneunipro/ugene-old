@@ -94,28 +94,6 @@ FormatCheckResult MegaFormat::checkRawData(const QByteArray& rawData, const GUrl
     return FormatDetection_Matched;
 }
 
-static bool checkModel(const MAlignment& al, U2OpStatus& ti) {
-    //check that all sequences are of equal size
-    int size = 0;
-    for (int i=0, n = al.getNumRows(); i<n; i++) {
-        const MAlignmentRow& item = al.getRow(i);
-        if (i == 0) {
-            size = item.getCoreLength();//item.toByteArray().size();
-        } else {
-            int itemSize = item.getCoreLength();//item.toByteArray().size();
-            if (size!=itemSize) {
-                ti.setError( MegaFormat::tr("Found sequences of different sizes"));
-                return false;
-            }
-        }
-    }
-    if (size == 0) {
-        ti.setError( MegaFormat::tr("Model is of zero size"));
-        return false;
-    }
-    return true;
-}
-
 bool MegaFormat::getNextLine(IOAdapter* io, QByteArray& line) {
     line.clear();
     static int READ_BUFF_SIZE = 4096;
@@ -241,10 +219,10 @@ bool MegaFormat::skipComments(IOAdapter *io, QByteArray &line, U2OpStatus &ti) {
 }
 
 void MegaFormat::workUpIndels(MAlignment& al) {
-    QByteArray firstSequence=al.getRow(0).getCore();
+    QByteArray firstSequence=al.getRow(0).getData();
 
     for (int i=1; i<al.getNumRows(); i++) {
-        QByteArray newSeq=al.getRow(i).getCore();
+        QByteArray newSeq=al.getRow(i).getData();
         for (int j=0; j<newSeq.length(); j++) {
             if (MEGA_IDENTICAL==al.charAt(i, j)) {
                 newSeq[j]=firstSequence[j];
@@ -272,6 +250,7 @@ void MegaFormat::load(U2::IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*>
     }
 
     //read data
+    QList<int> rowLens;
     while (!os.isCoR() && !lastIteration) {
         QByteArray name;
         QByteArray value;
@@ -308,8 +287,8 @@ void MegaFormat::load(U2::IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*>
         //add the sequence to the list
         if (firstBlock) {
             al.addRow(name, value, os);
+            rowLens.append(value.size());
             CHECK_OP(os, );
-
             sequenceIdx++;
         } else {
             if (sequenceIdx<al.getNumRows()) {
@@ -319,16 +298,26 @@ void MegaFormat::load(U2::IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*>
                     os.setError(MegaFormat::tr("Incorrect order of sequences' names"));
                     return;
                 }
-                al.appendChars(sequenceIdx, value.constData(), value.size());
+                al.appendChars(sequenceIdx, rowLens[sequenceIdx], value.constData(), value.size());
+                rowLens[sequenceIdx] = rowLens[sequenceIdx] + value.size();
+            } else {
+                os.setError( MegaFormat::tr("Incorrect sequence") );
+                break;
             }
             sequenceIdx++;
-            if (sequenceIdx==al.getNumRows()) {
-                sequenceIdx=0;
+            if (sequenceIdx == al.getNumRows()) {
+                sequenceIdx = 0;
             }
         }
     }
 
-    checkModel(al, os);
+    foreach (int rowLen, rowLens) {
+        if (rowLen != al.getLength()) {
+            os.setError( MegaFormat::tr("Found sequences of different sizes"));
+            break;
+        }
+    }
+
     CHECK_OP(os, );
 
     U2AlphabetUtils::assignAlphabet(al);

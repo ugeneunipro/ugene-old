@@ -69,7 +69,7 @@ void KalignTaskSettings::reset() {
     inputFilePath="";
 }
 
-KalignTask::KalignTask(const MAlignment& ma, const KalignTaskSettings& _config) 
+KalignTask::KalignTask(const MAlignment& ma, const KalignTaskSettings& _config)
 :TLSTask(tr("KALIGN alignment"), TaskFlags_FOSCOE), config(_config), inputMA(ma)
 {
     GCOUNTER( cvar, tvar, "KalignTask" );
@@ -92,7 +92,7 @@ void KalignTask::_run() {
     }
     algoLog.info(tr("Kalign alignment started"));
     CHECK(!hasError(),);
-    doAlign(); 
+    doAlign();
     if (!hasError() && !isCanceled()) {
         SAFE_POINT_EXT(NULL != resultMA.getAlphabet(), "The alphabet is NULL",);
         algoLog.info(tr("Kalign alignment successfully finished"));
@@ -137,7 +137,7 @@ TLSContext* KalignTask::createContextInstance()
 //////////////////////////////////////////////////////////////////////////
 // KalignGObjectTask
 
-KalignGObjectTask::KalignGObjectTask(MAlignmentObject* _obj, const KalignTaskSettings& _config) 
+KalignGObjectTask::KalignGObjectTask(MAlignmentObject* _obj, const KalignTaskSettings& _config)
 : AlignGObjectTask("", TaskFlags_NR_FOSCOE, _obj), lock(NULL), kalignTask(NULL), config(_config)
 {
     QString aliName = obj->getDocument()->getName();
@@ -174,10 +174,10 @@ void KalignGObjectTask::prepare() {
 Task::ReportResult KalignGObjectTask::report() {
     propagateSubtaskError();
     CHECK_OP(stateInfo, ReportResult_Finished);
-    
+
     SAFE_POINT(!obj.isNull(), "Object was removed?!", ReportResult_Finished);
     CHECK_EXT(!obj->isStateLocked(), stateInfo.setError("object_is_state_locked"), ReportResult_Finished);
-    
+
     // Apply the result
     const MAlignment& inputMA = kalignTask->inputMA;
     MAlignment resultMA = kalignTask->resultMA;
@@ -211,6 +211,7 @@ Task::ReportResult KalignGObjectTask::report() {
 
         U2OpStatus2Log os;
         U2UseCommonUserModStep userModStep(obj->getEntityRef(), os);
+        Q_UNUSED(userModStep);
         if (os.hasError()) {
             stateInfo.setError("Failed to apply the result of the alignment!");
             return ReportResult_Finished;
@@ -233,7 +234,7 @@ Task::ReportResult KalignGObjectTask::report() {
 //KalignGObjectRunFromSchemaTask
 
 
-KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject * obj, const KalignTaskSettings & c) 
+KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject * obj, const KalignTaskSettings & c)
 : AlignGObjectTask("", TaskFlags_NR_FOSCOE,obj), config(c)
 {
     setMAObject(obj);
@@ -304,7 +305,7 @@ void KalignWithExtFileSpecifySupportTask::prepare() {
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.inputFilePath));
     loadDocumentTask = new LoadDocumentTask(alnFormat, config.inputFilePath, iof, hints);
     addSubTask(loadDocumentTask);
-    }        
+    }
 
 QList<Task*> KalignWithExtFileSpecifySupportTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> res;

@@ -206,12 +206,17 @@ QList<qint64> MysqlMsaDbi::getRowsOrder(const U2DataId& msaId, U2OpStatus& os) {
 }
 
 U2DataId MysqlMsaDbi::createMsaObject(const QString& folder, const QString& name, const U2AlphabetId& alphabet, U2OpStatus& os) {
+    return createMsaObject(folder, name, alphabet, 0, os);
+}
+
+U2DataId MysqlMsaDbi::createMsaObject(const QString& folder, const QString& name, const U2AlphabetId& alphabet, int length, U2OpStatus& os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
 
     U2Msa msa;
     msa.visualName = name;
     msa.alphabet = alphabet;
+    msa.length = length;
 
     // Create the object
     dbi->getMysqlObjectDbi()->createObject(msa, folder, U2DbiObjectRank_TopLevel, os);
@@ -221,7 +226,7 @@ U2DataId MysqlMsaDbi::createMsaObject(const QString& folder, const QString& name
     static const QString queryString = "INSERT INTO Msa(object, length, alphabet, numOfRows) VALUES(:object, :length, :alphabet, :numOfRows)";
     U2SqlQuery q(queryString, db, os);
     q.bindDataId(":object", msa.id);
-    q.bindInt64(":length", 0); // length = 0
+    q.bindInt64(":length", msa.length);
     q.bindString(":alphabet", msa.alphabet.id);
     q.bindInt64(":numOfRows", 0); // no rows
     q.insert();
@@ -479,6 +484,23 @@ void MysqlMsaDbi::updateGapModel(const U2DataId& msaId, qint64 msaRowId, const Q
     updateAction.complete(os);
 }
 
+void MysqlMsaDbi::updateMsaLength(const U2DataId& msaId, qint64 length, U2OpStatus& os) {
+    MysqlModificationAction updateAction(dbi, msaId);
+    updateAction.prepare(os);
+    CHECK_OP(os, );
+
+    QByteArray modDetails;
+    if (TrackOnUpdate == updateAction.getTrackModType()) {
+        const qint64 oldMsaLen = getMsaLength(msaId, os);
+        CHECK_OP(os, );
+        modDetails = PackUtils::packAlignmentLength(oldMsaLen, length);
+    }
+
+    updateMsaLengthCore(msaId, length, os);
+
+    updateAction.addModification(msaId, U2ModType::msaLengthChanged, modDetails, os);
+}
+
 void MysqlMsaDbi::setNewRowsOrder(const U2DataId& msaId, const QList<qint64>& rowIds, U2OpStatus& os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
@@ -534,6 +556,8 @@ void MysqlMsaDbi::undo(const U2DataId& msaId, qint64 modType, const QByteArray& 
     }
     else if (U2ModType::msaSetNewRowsOrder == modType) {
         undoSetNewRowsOrder(msaId, modDetails, os);
+    } else if (U2ModType::msaLengthChanged == modType) {
+        undoMsaLengthChange(msaId, modDetails, os);
     }
     else {
         os.setError(U2DbiL10n::tr("Unexpected modification type '%1'").arg(QString::number(modType)));
@@ -565,6 +589,8 @@ void MysqlMsaDbi::redo(const U2DataId& msaId, qint64 modType, const QByteArray& 
     }
     else if (U2ModType::msaSetNewRowsOrder == modType) {
         redoSetNewRowsOrder(msaId, modDetails, os);
+    }else if (U2ModType::msaLengthChanged == modType) {
+        redoMsaLengthChange(msaId, modDetails, os);
     }
     else {
         os.setError(U2DbiL10n::tr("Unexpected modification type '%1'").arg(QString::number(modType)));
@@ -704,23 +730,16 @@ void MysqlMsaDbi::recalculateRowsPositions(const U2DataId& msaId, U2OpStatus& os
     }
 }
 
-void MysqlMsaDbi::recalculateMsaLength(const U2DataId& msaId, U2OpStatus& os) {
+void MysqlMsaDbi::rowLengthChanged(const U2DataId& msaId, qint64 newRowLen, U2OpStatus& os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
-    qint64 msaLength = 0;
 
-    // Get maximum row length
-    static const QString queryString = "SELECT MAX(length) FROM MsaRow WHERE msa = :msa";
-    U2SqlQuery q(queryString, db, os);
-    q.bindDataId(":msa", msaId);
-    if (q.step()) {
-        msaLength = q.getInt64(0);
-        q.ensureDone();
-    }
+    qint64 msaLen = getMsaLength(msaId, os);
     CHECK_OP(os, );
 
-    // Update the MSA length
-    updateMsaLength(msaId, msaLength, os);
+    if (newRowLen > msaLen) {
+        updateMsaLength(msaId, newRowLen, os);
+    }
 }
 
 qint64 MysqlMsaDbi::calculateRowLength(qint64 seqLength, const QList<U2MsaGap>& gaps) {
@@ -766,7 +785,7 @@ void MysqlMsaDbi::updateRowLength(const U2DataId& msaId, qint64 rowId, qint64 ne
     q.update();
 }
 
-void MysqlMsaDbi::updateMsaLength(const U2DataId& msaId, qint64 length, U2OpStatus& os) {
+void MysqlMsaDbi::updateMsaLengthCore(const U2DataId& msaId, qint64 length, U2OpStatus& os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
 
@@ -836,8 +855,8 @@ void MysqlMsaDbi::updateGapModelCore(const U2DataId &msaId, qint64 msaRowId, con
     updateRowLength(msaId, msaRowId, newRowLength, os);
     CHECK_OP(os, );
 
-    // Re-calculate the alignment length
-    recalculateMsaLength(msaId, os);
+    // Check alignment length
+    rowLengthChanged(msaId, newRowLength, os);
 }
 
 void MysqlMsaDbi::addRowSubcore(const U2DataId &msaId, qint64 numOfRows, qint64 maxRowLength, const QList<qint64> &rowsOrder, U2OpStatus &os) {
@@ -929,10 +948,6 @@ void MysqlMsaDbi::addRowsCore(const U2DataId &msaId, const QList<qint64> &posInM
 void MysqlMsaDbi::removeRowSubcore(const U2DataId &msaId, qint64 numOfRows, U2OpStatus &os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
-
-    // Update the length
-    recalculateMsaLength(msaId, os);
-    CHECK_OP(os, );
 
     // Update the number of rows
     updateNumOfRows(msaId, numOfRows, os);
@@ -1125,6 +1140,19 @@ void MysqlMsaDbi::undoUpdateRowInfo(const U2DataId& msaId, const QByteArray& mod
     updateRowInfoCore(msaId, oldRow, os);
 }
 
+void MysqlMsaDbi::undoMsaLengthChange(const U2DataId &msaId, const QByteArray &modDetails, U2OpStatus &os) {
+    MysqlTransaction t(db, os);
+    Q_UNUSED(t);
+
+    qint64 oldLen;
+    qint64 newLen;
+
+    bool ok = PackUtils::unpackAlignmentLength(modDetails, oldLen, newLen);
+    CHECK_EXT(ok, os.setError(U2DbiL10n::tr("An error occurred during updating an msa length")), );
+
+    updateMsaLengthCore(msaId, oldLen, os);
+}
+
 void MysqlMsaDbi::redoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
@@ -1219,6 +1247,19 @@ void MysqlMsaDbi::redoUpdateRowInfo(const U2DataId& msaId, const QByteArray& mod
     SAFE_POINT(oldRow.sequenceId == newRow.sequenceId, "Incorrect sequenceId", );
 
     updateRowInfoCore(msaId, newRow, os);
+}
+
+void MysqlMsaDbi::redoMsaLengthChange(const U2DataId &msaId, const QByteArray &modDetails, U2OpStatus &os) {
+    MysqlTransaction t(db, os);
+    Q_UNUSED(t);
+
+    qint64 oldLen;
+    qint64 newLen;
+
+    bool ok = PackUtils::unpackAlignmentLength(modDetails, oldLen, newLen);
+    CHECK_EXT(ok, os.setError(U2DbiL10n::tr("An error occurred during updating an msa length")), );
+
+    updateMsaLengthCore(msaId, newLen, os);
 }
 
 /************************************************************************/

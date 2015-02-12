@@ -98,14 +98,14 @@ void MSAEditorBaseOffsetCache::updateCacheRow(int seqNum) {
     int nPoints = aliLen / CACHE_FREQ;
     r.rowOffsets.resize(nPoints);
     const MAlignmentRow& row = ma.getRow(seqNum);
-    const char* seq = row.getCore().constData();
     int firstCharOffset = row.getCoreStart();
     int lastCharOffset = row.getCoreEnd();
     for (int i = 0, cnt = 0; i < aliLen; i++) {
         if (i != 0 && i % CACHE_FREQ == 0) {
             r.rowOffsets[i / CACHE_FREQ - 1] = cnt;
         }
-        if (i < firstCharOffset || i >= lastCharOffset || seq[i - firstCharOffset] != MAlignment_GapChar) {
+        if (i < firstCharOffset || i >= lastCharOffset ||
+                row.charAt(i) != MAlignment_GapChar) {
             cnt++;
         }
     }

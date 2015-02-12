@@ -33,7 +33,7 @@ public:
     U2MsaGap() : offset(0), gap(0){}
     U2MsaGap(qint64 off, qint64 g) : offset(off), gap(g){}
 
-    bool isValid() { return ((offset >= 0) && (gap > 0)); }
+    bool isValid() const { return ((offset >= 0) && (gap > 0)); }
 
     bool operator==(const U2MsaGap& g) const { return ((offset == g.offset) && (gap == g.gap)); }
 

@@ -425,4 +425,25 @@ bool PackUtils::unpackSequenceDataHints(const QByteArray &str, QVariantMap &hint
     return true;
 }
 
+QByteArray PackUtils::packAlignmentLength(const qint64 oldLen, const qint64 newLen) {
+    QByteArray result;
+    result += QByteArray::number(oldLen);
+    result += SEP;
+    result += QByteArray::number(newLen);
+    return result;
+}
+
+bool PackUtils::unpackAlignmentLength(const QByteArray &modDetails, qint64 &oldLen, qint64 &newLen) {
+    QList<QByteArray> tokens = modDetails.split(SEP);
+    SAFE_POINT(tokens.count() == 2, QString("Invalid modDetails '%1'!").arg(QString(modDetails)), false);
+
+    bool ok = false;
+    oldLen = tokens.first().toInt(&ok);
+    CHECK(ok, false);
+    newLen = tokens.last().toInt(&ok);
+    CHECK(ok, false);
+
+    return true;
+}
+
 } // U2

@@ -195,7 +195,9 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     }
 
     pairwiseAlignmentWidgetsSettings = new PairwiseAlignmentWidgetsSettings;
-    pairwiseAlignmentWidgetsSettings->customSettings.insert("alphabet", msaObject->getAlphabet()->getId());
+    if (msaObject->getAlphabet() != NULL) {
+        pairwiseAlignmentWidgetsSettings->customSettings.insert("alphabet", msaObject->getAlphabet()->getId());
+    }
 
     exportHighlightedAction = new QAction(tr("Export highlighted"), this);
     exportHighlightedAction->setObjectName("Export highlighted");

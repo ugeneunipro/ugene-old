@@ -173,7 +173,7 @@ DECLARE_TEST(MAlignmentUnitTests, insertGaps_negativeCount);
  *   ^ tooBigPos             - position is greater than the alignment length => error
  *   ^ negativeCount         - gaps count is negative => error
  */
-DECLARE_TEST(MAlignmentUnitTests, removeChars_validParamsAndTrimmed);
+DECLARE_TEST(MAlignmentUnitTests, removeChars_validParams);
 DECLARE_TEST(MAlignmentUnitTests, removeChars_negativeRowIndex);
 DECLARE_TEST(MAlignmentUnitTests, removeChars_tooBigRowIndex);
 DECLARE_TEST(MAlignmentUnitTests, removeChars_negativePos);
@@ -309,7 +309,7 @@ DECLARE_METATYPE(MAlignmentUnitTests, insertGaps_tooBigRowIndex);
 DECLARE_METATYPE(MAlignmentUnitTests, insertGaps_negativePos);
 DECLARE_METATYPE(MAlignmentUnitTests, insertGaps_tooBigPos);
 DECLARE_METATYPE(MAlignmentUnitTests, insertGaps_negativeCount);
-DECLARE_METATYPE(MAlignmentUnitTests, removeChars_validParamsAndTrimmed);
+DECLARE_METATYPE(MAlignmentUnitTests, removeChars_validParams);
 DECLARE_METATYPE(MAlignmentUnitTests, removeChars_negativeRowIndex);
 DECLARE_METATYPE(MAlignmentUnitTests, removeChars_tooBigRowIndex);
 DECLARE_METATYPE(MAlignmentUnitTests, removeChars_negativePos);

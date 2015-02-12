@@ -38,9 +38,13 @@ class DNASequence;
 class MAlignmentModInfo {
 public:
     MAlignmentModInfo()
-        : sequenceContentChanged(true), sequenceListChanged(true), middleState(false) {}
+        : sequenceContentChanged(true),
+          sequenceListChanged(true),
+          alignmentLengthChanged(true),
+          middleState(false) {}
     bool sequenceContentChanged;
     bool sequenceListChanged;
+    bool alignmentLengthChanged;
     bool middleState;
     QVariantMap hints;
     QList<qint64> modifiedRowIds;

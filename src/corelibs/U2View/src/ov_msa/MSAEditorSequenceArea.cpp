@@ -1605,8 +1605,9 @@ void MSAEditorSequenceArea::setSelection(const MSAEditorSelection& s) {
     baseSelection = MSAEditorSelection(selection.topLeft().x(), getSelectedRows().startPos, selection.width(), selectedRowsRegion.length);
 
     selectedRowNames.clear();
-    for(int x = selectedRowsRegion.startPos; x < selectedRowsRegion.endPos(); x++)
+    for(int x = selectedRowsRegion.startPos; x < selectedRowsRegion.endPos(); x++) {
         selectedRowNames.append(editor->getMSAObject()->getRow(x).getName());
+    }
     emit si_selectionChanged(selectedRowNames);
     emit si_selectionChanged(selection, prevSelection);
     update();
@@ -1964,6 +1965,7 @@ void MSAEditorSequenceArea::sl_removeAllGaps() {
 
     U2OpStatus2Log os;
     U2UseCommonUserModStep userModStep(msa->getEntityRef(), os);
+    Q_UNUSED(userModStep);
     SAFE_POINT_OP(os, );
 
     QMap<qint64, QList<U2MsaGap> > noGapModel;
@@ -1973,6 +1975,12 @@ void MSAEditorSequenceArea::sl_removeAllGaps() {
     }
 
     msa->updateGapModel(noGapModel, os);
+
+    MsaDbiUtils::trim(msa->getEntityRef(), os);
+    msa->updateCachedMAlignment();
+
+    SAFE_POINT_OP(os, );
+
     setFirstVisibleBase(0);
     setFirstVisibleSequence(0);
     SAFE_POINT_OP(os, );
@@ -2285,6 +2293,7 @@ void MSAEditorSequenceArea::deleteCurrentSelection()
 
     U2OpStatusImpl os;
     U2UseCommonUserModStep userModStep(maObj->getEntityRef(), os);
+    Q_UNUSED(userModStep);
     SAFE_POINT_OP(os, );
 
     const U2Region& sel = getSelectedRows();
@@ -2425,6 +2434,7 @@ void MSAEditorSequenceArea::sl_updateCollapsingMode() {
     }
 
     MAlignmentModInfo mi;
+    mi.alignmentLengthChanged = false;
     msaObject->updateCachedMAlignment(mi);
 }
 
@@ -2554,6 +2564,7 @@ void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type
 
         MAlignmentModInfo modInfo;
         modInfo.modifiedRowIds = modifiedRowIds;
+        modInfo.alignmentLengthChanged = false;
         maObj->updateCachedMAlignment(modInfo);
     }
 }

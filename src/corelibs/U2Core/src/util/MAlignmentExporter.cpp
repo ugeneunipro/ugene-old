@@ -65,15 +65,26 @@ MAlignment MAlignmentExporter::getAlignment(const U2DbiRef& dbiRef, const U2Data
 
     al.setInfo(alInfo);
 
-    // Alphabet and name
+    // Alphabet, name and length
     U2Msa msa = exportAlignmentObject(msaId, os);
     CHECK_OP(os, MAlignment());
 
     const DNAAlphabet* alphabet = U2AlphabetUtils::getById(msa.alphabet);
     al.setAlphabet(alphabet);
     al.setName(msa.visualName);
+    al.setLength(msa.length);
 
     return al;
+}
+
+U2Msa MAlignmentExporter::getAlignmentObject(const U2DbiRef &dbiRef, const U2DataId &msaId, U2OpStatus &os) const {
+    SAFE_POINT(!con.isOpen(), OPENED_DBI_CONNECTION_ERROR, U2Msa());
+    con.open(dbiRef, false, os);
+
+    U2Msa msa = exportAlignmentObject(msaId, os);
+    CHECK_OP(os, U2Msa());
+
+    return msa;
 }
 
 QList<MAlignmentRowReplacementData> MAlignmentExporter::getAlignmentRows(const U2DbiRef& dbiRef,

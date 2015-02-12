@@ -85,6 +85,10 @@ public:
     static QByteArray packSequenceDataHints(const QVariantMap &hints);
     static bool unpackSequenceDataHints(const QByteArray &str, QVariantMap &hints);
 
+    /** Alignment length */
+    static QByteArray packAlignmentLength(const qint64 oldLen, const qint64 newLen);
+    static bool unpackAlignmentLength(const QByteArray &modDetails, qint64 &oldLen, qint64 &newLen);
+
 private:
     static const char SEP;
     static const char SECOND_SEP;

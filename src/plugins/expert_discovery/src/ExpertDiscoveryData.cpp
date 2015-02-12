@@ -61,7 +61,7 @@ inline Sequence ExpertDiscoveryData::prepareSequence( const GObject* obj ) const
     return seqReady;
 }
 inline Sequence ExpertDiscoveryData::prepareSequence(MAlignmentRow& row) const{
-    const QByteArray& seqArr = row.getCore();
+    const QByteArray& seqArr = row.getData();
     std::string seqStr = std::string(seqArr.data(),seqArr.length());
     Sequence seqReady = Sequence(row.getName().toStdString(), seqStr);
 

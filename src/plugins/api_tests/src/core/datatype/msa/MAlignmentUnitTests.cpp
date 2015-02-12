@@ -74,7 +74,7 @@ bool MAlignmentTestUtils::testAlignmentNotChanged(const MAlignment& almnt) {
         return false;
     }
 
-    if ("---AG-T" != MAlignmentTestUtils::getRowData(almnt, 0)) {
+    if ("---AG-T--" != MAlignmentTestUtils::getRowData(almnt, 0)) {
         return false;
     }
 
@@ -212,7 +212,7 @@ IMPLEMENT_TEST(MAlignmentUnitTests, trim_leadingGapColumns) {
 
     CHECK_TRUE(result, "Method trim() returned 'false' unexpectedly!");
     CHECK_EQUAL(8, almnt.getLength(), "alignment length");
-    CHECK_EQUAL("-AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row data");
+    CHECK_EQUAL("-AG-T---", MAlignmentTestUtils::getRowData(almnt, 0), "first row data");
     CHECK_EQUAL("AG-CT-TA", MAlignmentTestUtils::getRowData(almnt, 1), "second row data");
 }
 
@@ -263,7 +263,7 @@ IMPLEMENT_TEST(MAlignmentUnitTests, trim_trailingGapInOne) {
     CHECK_EQUAL(4, almnt.getLength(), "alignment length");
     CHECK_EQUAL("ACGT", MAlignmentTestUtils::getRowData(almnt, 0), "first row data");
     CHECK_EQUAL("CAC-", MAlignmentTestUtils::getRowData(almnt, 1), "second row data");
-    CHECK_EQUAL(1, almnt.getRow(1).getGapModel().size(), "number of gaps in the second row");
+    CHECK_EQUAL(0, almnt.getRow(1).getGapModel().size(), "number of gaps in the second row");
 }
 
 /** Tests simplify */
@@ -272,7 +272,7 @@ IMPLEMENT_TEST(MAlignmentUnitTests, simplify_withGaps) {
     bool result = almnt.simplify();
     CHECK_TRUE(result, "Method simplify() returned 'false' unexpectedly!");
     CHECK_EQUAL(7, almnt.getLength(), "alignment length");
-    CHECK_EQUAL("AGT", MAlignmentTestUtils::getRowData(almnt, 0), "first row data");
+    CHECK_EQUAL("AGT----", MAlignmentTestUtils::getRowData(almnt, 0), "first row data");
     CHECK_EQUAL("AGCTTAA", MAlignmentTestUtils::getRowData(almnt, 1), "second row data");
 }
 
@@ -461,14 +461,14 @@ IMPLEMENT_TEST(MAlignmentUnitTests, sortRows_similarTwoRegions) {
 IMPLEMENT_TEST(MAlignmentUnitTests, getRows_oneRow) {
     MAlignment almnt = MAlignmentTestUtils::initTestAlignment();
     MAlignmentRow row = almnt.getRow(0);
-    CHECK_EQUAL("---AG-T", MAlignmentRowTestUtils::getRowData(row), "first row");
+    CHECK_EQUAL("---AG-T--", MAlignmentRowTestUtils::getRowData(row), "first row");
 }
 
 IMPLEMENT_TEST(MAlignmentUnitTests, getRows_severalRows) {
     MAlignment almnt = MAlignmentTestUtils::initTestAlignment();
     QList<MAlignmentRow> rows = almnt.getRows();
     CHECK_EQUAL(2, rows.count(), "number of rows");
-    CHECK_EQUAL("---AG-T", MAlignmentRowTestUtils::getRowData(rows[0]), "first row");
+    CHECK_EQUAL("---AG-T--", MAlignmentRowTestUtils::getRowData(rows[0]), "first row");
     CHECK_EQUAL("AG-CT-TAA", MAlignmentRowTestUtils::getRowData(rows[1]), "second row");
 }
 
@@ -561,14 +561,14 @@ IMPLEMENT_TEST(MAlignmentUnitTests, insertGaps_negativeCount) {
 }
 
 /** Tests removeChars */
-IMPLEMENT_TEST(MAlignmentUnitTests, removeChars_validParamsAndTrimmed) {
+IMPLEMENT_TEST(MAlignmentUnitTests, removeChars_validParams) {
     MAlignment almnt = MAlignmentTestUtils::initTestAlignment();
     U2OpStatusImpl os;
     almnt.removeChars(1, 0, 2, os);
     CHECK_NO_ERROR(os);
-    CHECK_EQUAL(7, almnt.getLength(), "alignment length");
-    CHECK_EQUAL("---AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
-    CHECK_EQUAL("-CT-TAA", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
+    CHECK_EQUAL(9, almnt.getLength(), "alignment length");
+    CHECK_EQUAL("---AG-T--", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
+    CHECK_EQUAL("-CT-TAA--", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
 }
 
 IMPLEMENT_TEST(MAlignmentUnitTests, removeChars_negativeRowIndex) {
@@ -633,8 +633,8 @@ IMPLEMENT_TEST(MAlignmentUnitTests, removeRegion_validParams) {
 
     CHECK_EQUAL(4, almnt.getNumRows(), "number of rows");
     CHECK_EQUAL("---ACT", MAlignmentTestUtils::getRowData(almnt, 0), "row1");
-    CHECK_EQUAL("A-A", MAlignmentTestUtils::getRowData(almnt, 1), "row2");
-    CHECK_EQUAL("-GA", MAlignmentTestUtils::getRowData(almnt, 2), "row3");
+    CHECK_EQUAL("A-A---", MAlignmentTestUtils::getRowData(almnt, 1), "row2");
+    CHECK_EQUAL("-GA---", MAlignmentTestUtils::getRowData(almnt, 2), "row3");
     CHECK_EQUAL("AAAAAA", MAlignmentTestUtils::getRowData(almnt, 3), "row4");
 }
 
@@ -659,16 +659,16 @@ IMPLEMENT_TEST(MAlignmentUnitTests, removeRegion_removeEmpty) {
 
     CHECK_EQUAL(3, almnt.getNumRows(), "number of rows");
     CHECK_EQUAL("---ACT", MAlignmentTestUtils::getRowData(almnt, 0), "row1");
-    CHECK_EQUAL("A-A", MAlignmentTestUtils::getRowData(almnt, 1), "row2");
+    CHECK_EQUAL("A-A---", MAlignmentTestUtils::getRowData(almnt, 1), "row2");
     CHECK_EQUAL("AAAAAA", MAlignmentTestUtils::getRowData(almnt, 2), "row3");
 }
 
 IMPLEMENT_TEST(MAlignmentUnitTests, removeRegion_trimmed) {
     MAlignment almnt = MAlignmentTestUtils::initTestAlignment();
     almnt.removeRegion(0, 1, 2, 1, false);
-    CHECK_EQUAL(6, almnt.getLength(), "alignment length");
-    CHECK_EQUAL("--AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
-    CHECK_EQUAL("CT-TAA", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
+    CHECK_EQUAL(9, almnt.getLength(), "alignment length");
+    CHECK_EQUAL("---AG-T--", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
+    CHECK_EQUAL("-CT-TAA--", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
 }
 
 /** Tests renameRow */
@@ -684,9 +684,9 @@ IMPLEMENT_TEST(MAlignmentUnitTests, renameRow_validParams) {
 IMPLEMENT_TEST(MAlignmentUnitTests, setRowContent_validParamsAndNotTrimmed) {
     MAlignment almnt = MAlignmentTestUtils::initTestAlignment();
     almnt.setRowContent(1, "---AC-");
-    CHECK_EQUAL(7, almnt.getLength(), "alignment length");
-    CHECK_EQUAL("---AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
-    CHECK_EQUAL("---AC-", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
+    CHECK_EQUAL(9, almnt.getLength(), "alignment length");
+    CHECK_EQUAL("---AG-T--", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
+    CHECK_EQUAL("---AC----", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
 }
 
 IMPLEMENT_TEST(MAlignmentUnitTests, setRowContent_lengthIsIncreased) {
@@ -694,7 +694,7 @@ IMPLEMENT_TEST(MAlignmentUnitTests, setRowContent_lengthIsIncreased) {
     almnt.setRowContent(0, "ACGT-ACA-ACA");
     CHECK_EQUAL(12, almnt.getLength(), "alignment length");
     CHECK_EQUAL("ACGT-ACA-ACA", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
-    CHECK_EQUAL("AG-CT-TAA", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
+    CHECK_EQUAL("AG-CT-TAA---", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
 }
 
 /** Tests upperCase */
@@ -711,7 +711,7 @@ IMPLEMENT_TEST(MAlignmentUnitTests, upperCase_charsAndGaps) {
 
     almnt.toUpperCase();
 
-    CHECK_EQUAL("MMVA-KE", MAlignmentTestUtils::getRowData(almnt, 0), "row1");
+    CHECK_EQUAL("MMVA-KE-", MAlignmentTestUtils::getRowData(almnt, 0), "row1");
     CHECK_EQUAL("AVN-*Y-S", MAlignmentTestUtils::getRowData(almnt, 1), "row2");
 }
 
@@ -734,7 +734,8 @@ IMPLEMENT_TEST(MAlignmentUnitTests, crop_validParams) {
     QSet<QString> rowNames;
     rowNames << "First" << "Second";
 
-    almnt.crop(region, rowNames);
+    almnt.crop(region, rowNames, os);
+    CHECK_NO_ERROR(os);
 
     CHECK_EQUAL(2, almnt.getNumRows(), "number of rows");
     CHECK_EQUAL(4, almnt.getLength(), "alignment length");
@@ -760,7 +761,7 @@ IMPLEMENT_TEST(MAlignmentUnitTests, mid_validParams) {
     MAlignment almntResult = almnt.mid(2, 3);
     CHECK_EQUAL(3, almntResult.getNumRows(), "number of rows");
     CHECK_EQUAL("-AC", MAlignmentTestUtils::getRowData(almntResult, 0), "first row");
-    CHECK_EQUAL("", MAlignmentTestUtils::getRowData(almntResult, 1), "second row");
+    CHECK_EQUAL("---", MAlignmentTestUtils::getRowData(almntResult, 1), "second row");
     CHECK_EQUAL("-CG", MAlignmentTestUtils::getRowData(almntResult, 2), "third row");
 
     CHECK_EQUAL("---ACT", MAlignmentTestUtils::getRowData(almnt, 0), "first row of the original");
@@ -774,8 +775,8 @@ IMPLEMENT_TEST(MAlignmentUnitTests, addRow_appendRowFromBytes) {
     CHECK_NO_ERROR(os);
 
     CHECK_EQUAL(3, almnt.getNumRows(), "number of rows");
-    CHECK_EQUAL("---AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
-    CHECK_EQUAL("AG-CT-TAA", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
+    CHECK_EQUAL("---AG-T---", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
+    CHECK_EQUAL("AG-CT-TAA-", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
     CHECK_EQUAL("--AACT-GAG", MAlignmentTestUtils::getRowData(almnt, 2), "third row");
     CHECK_EQUAL("Added row", almnt.getRowNames().at(2), "added row name");
     CHECK_EQUAL(10, almnt.getLength(), "alignment length");
@@ -788,9 +789,9 @@ IMPLEMENT_TEST(MAlignmentUnitTests, addRow_rowFromBytesToIndex) {
     CHECK_NO_ERROR(os);
 
     CHECK_EQUAL(3, almnt.getNumRows(), "number of rows");
-    CHECK_EQUAL("---AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
+    CHECK_EQUAL("---AG-T---", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
     CHECK_EQUAL("--AACT-GAG", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
-    CHECK_EQUAL("AG-CT-TAA", MAlignmentTestUtils::getRowData(almnt, 2), "third row");
+    CHECK_EQUAL("AG-CT-TAA-", MAlignmentTestUtils::getRowData(almnt, 2), "third row");
     CHECK_EQUAL("Added row", almnt.getRowNames().at(1), "added row name");
     CHECK_EQUAL(10, almnt.getLength(), "alignment length");
 }
@@ -803,8 +804,8 @@ IMPLEMENT_TEST(MAlignmentUnitTests, addRow_zeroBound) {
 
     CHECK_EQUAL(3, almnt.getNumRows(), "number of rows");
     CHECK_EQUAL("--AACT-GAG", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
-    CHECK_EQUAL("---AG-T", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
-    CHECK_EQUAL("AG-CT-TAA", MAlignmentTestUtils::getRowData(almnt, 2), "third row");
+    CHECK_EQUAL("---AG-T---", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
+    CHECK_EQUAL("AG-CT-TAA-", MAlignmentTestUtils::getRowData(almnt, 2), "third row");
     CHECK_EQUAL("Added row", almnt.getRowNames().at(0), "added row name");
     CHECK_EQUAL(10, almnt.getLength(), "alignment length");
 }
@@ -816,8 +817,8 @@ IMPLEMENT_TEST(MAlignmentUnitTests, addRow_rowsNumBound) {
     CHECK_NO_ERROR(os);
 
     CHECK_EQUAL(3, almnt.getNumRows(), "number of rows");
-    CHECK_EQUAL("---AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
-    CHECK_EQUAL("AG-CT-TAA", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
+    CHECK_EQUAL("---AG-T---", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
+    CHECK_EQUAL("AG-CT-TAA-", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
     CHECK_EQUAL("--AACT-GAG", MAlignmentTestUtils::getRowData(almnt, 2), "third row");
     CHECK_EQUAL("Added row", almnt.getRowNames().at(2), "added row name");
     CHECK_EQUAL(10, almnt.getLength(), "alignment length");
@@ -830,7 +831,7 @@ IMPLEMENT_TEST(MAlignmentUnitTests, removeRow_validIndex) {
     almnt.removeRow(1, os);
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(1, almnt.getNumRows(), "number of rows");
-    CHECK_EQUAL("---AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
+    CHECK_EQUAL("---AG-T--", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
     CHECK_EQUAL(9, almnt.getLength(), "alignment length");
 }
 
@@ -840,7 +841,7 @@ IMPLEMENT_TEST(MAlignmentUnitTests, removeRow_negativeIndex) {
     almnt.removeRow(-1, os);
     CHECK_EQUAL("Failed to remove a row!", os.getError(), "opStatus");
     CHECK_EQUAL(2, almnt.getNumRows(), "number of rows");
-    CHECK_EQUAL("---AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
+    CHECK_EQUAL("---AG-T--", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
     CHECK_EQUAL("AG-CT-TAA", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
     CHECK_EQUAL(9, almnt.getLength(), "alignment length");
 }
@@ -851,7 +852,7 @@ IMPLEMENT_TEST(MAlignmentUnitTests, removeRow_tooBigIndex) {
     almnt.removeRow(2, os);
     CHECK_EQUAL("Failed to remove a row!", os.getError(), "opStatus");
     CHECK_EQUAL(2, almnt.getNumRows(), "number of rows");
-    CHECK_EQUAL("---AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
+    CHECK_EQUAL("---AG-T--", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
     CHECK_EQUAL("AG-CT-TAA", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
     CHECK_EQUAL(9, almnt.getLength(), "alignment length");
 }
@@ -931,7 +932,7 @@ IMPLEMENT_TEST(MAlignmentUnitTests, replaceChars_validParams) {
     CHECK_NO_ERROR(os);
 
     almnt.replaceChars(1, '.', '-');
-    CHECK_EQUAL("AGT.C.T", MAlignmentTestUtils::getRowData(almnt, 0), "first sequence");
+    CHECK_EQUAL("AGT.C.T-", MAlignmentTestUtils::getRowData(almnt, 0), "first sequence");
     CHECK_EQUAL("A-CT--AA", MAlignmentTestUtils::getRowData(almnt, 1), "second sequence");
 }
 
@@ -941,9 +942,9 @@ IMPLEMENT_TEST(MAlignmentUnitTests, appendChars_validParams) {
     const char* str = "-AC-GT-";
     int length = 7;
     almnt.appendChars(0, str, length);
-    CHECK_EQUAL("---AG-T-AC-GT-", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
-    CHECK_EQUAL(5, almnt.getRow(0).getGapModel().size(), "number of gaps");
-    CHECK_EQUAL(14, almnt.getLength(), "alignment length");
+    CHECK_EQUAL("---AG-T---AC-GT-", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
+    CHECK_EQUAL(4, almnt.getRow(0).getGapModel().size(), "number of gaps");
+    CHECK_EQUAL(16, almnt.getLength(), "alignment length");
 }
 
 /** Tests operPlusEqual */
@@ -953,7 +954,7 @@ IMPLEMENT_TEST(MAlignmentUnitTests, operPlusEqual_validParams) {
 
     almnt += almnt2;
 
-    CHECK_EQUAL("---AG-T-----AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "row1");
+    CHECK_EQUAL("---AG-T-----AG-T--", MAlignmentTestUtils::getRowData(almnt, 0), "row1");
     CHECK_EQUAL("AG-CT-TAAAG-CT-TAA", MAlignmentTestUtils::getRowData(almnt, 1), "row2");
 
     CHECK_EQUAL(4, almnt.getRow(0).getGapModel().size(), "number of gaps");

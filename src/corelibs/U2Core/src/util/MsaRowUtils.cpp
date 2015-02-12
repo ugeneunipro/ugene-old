@@ -102,4 +102,11 @@ int MsaRowUtils::getUngappedPosition(const QByteArray &seq, const QList<U2MsaGap
     return (pos - gapsLength);
 }
 
+int MsaRowUtils::getCoreStart(const QList<U2MsaGap> &gaps) {
+    if (!gaps.isEmpty() && gaps.first().offset == 0) {
+        return gaps.first().gap;
+    }
+    return 0;
+}
+
 } // U2

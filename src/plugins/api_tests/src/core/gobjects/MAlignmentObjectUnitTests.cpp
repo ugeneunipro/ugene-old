@@ -151,9 +151,11 @@ IMPLEMENT_TEST( MAlignmentObjectUnitTests, deleteGap_trailingGaps ) {
     CHECK_NO_ERROR(os);
 
     alnObj->deleteGap(U2Region(0, alnObj->getNumRows()), 10, 3, os);
-    SAFE_POINT_OP(os, );
 
-    CHECK_TRUE(alnObj->getMAlignment() == MAlignmentObjectTestData::getTestAlignment(dbiRef, malignment, os), "Alignment has changed!");
+    const MAlignment resultAlignment = alnObj->getMAlignment();
+    CHECK_TRUE(resultAlignment.getRow(0).getData() == "AC-GT--AAA-", "First row content is unexpected!");
+    CHECK_TRUE(resultAlignment.getRow(1).getData() == "-ACA---GTT-", "Second row content is unexpected!");
+    CHECK_TRUE(resultAlignment.getRow(2).getData() == "-ACACA-G---", "Third row content is unexpected!");
 }
 
 IMPLEMENT_TEST( MAlignmentObjectUnitTests, deleteGap_regionWithNonGapSymbols ) {
@@ -176,9 +178,9 @@ IMPLEMENT_TEST( MAlignmentObjectUnitTests, deleteGap_regionWithNonGapSymbols ) {
 
     CHECK_TRUE(0 == countOfDeleted, "Unexpected count of removed symbols!");
     const MAlignment resultAlignment = alnObj->getMAlignment();
-    CHECK_TRUE(resultAlignment.getRow(0).getCore() == "AC-GT--AAA----", "First row content is unexpected!");
-    CHECK_TRUE(resultAlignment.getRow(1).getCore() == "-ACA---GTT----", "Second row content is unexpected!");
-    CHECK_TRUE(resultAlignment.getRow(2).getCore() == "-ACACA-G------", "Third row content is unexpected!");
+    CHECK_TRUE(resultAlignment.getRow(0).getData() == "AC-GT--AAA----", "First row content is unexpected!");
+    CHECK_TRUE(resultAlignment.getRow(1).getData() == "-ACA---GTT----", "Second row content is unexpected!");
+    CHECK_TRUE(resultAlignment.getRow(2).getData() == "-ACACA-G------", "Third row content is unexpected!");
 }
 
 IMPLEMENT_TEST( MAlignmentObjectUnitTests, deleteGap_gapRegion ) {
@@ -204,9 +206,9 @@ IMPLEMENT_TEST( MAlignmentObjectUnitTests, deleteGap_gapRegion ) {
 
     CHECK_TRUE(2 == countOfDeleted, "Unexpected count of removed symbols!");
     const MAlignment resultAlignment = alnObj->getMAlignment();
-    CHECK_TRUE(resultAlignment.getRow(0).getCore() == "AC-GTAAA----", "First row content is unexpected!");
-    CHECK_TRUE(resultAlignment.getRow(1).getCore() == "-ACA-GTT----", "Second row content is unexpected!");
-    CHECK_TRUE(resultAlignment.getRow(2).getCore() == "-ACACA-G------", "Third row content is unexpected!");
+    CHECK_TRUE(resultAlignment.getRow(0).getData() == "AC-GTAAA---", "First row content is unexpected!");
+    CHECK_TRUE(resultAlignment.getRow(1).getData() == "-ACA-GTT---", "Second row content is unexpected!");
+    CHECK_TRUE(resultAlignment.getRow(2).getData() == "-ACACA-G---", "Third row content is unexpected!");
 }
 
 } // namespace

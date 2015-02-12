@@ -81,7 +81,16 @@ void MAlignmentObject::updateCachedMAlignment(const MAlignmentModInfo &mi, const
     QString oldName = maBefore.getName();
 
     U2OpStatus2Log os;
-    if (mi.modifiedRowIds.isEmpty() && removedRowIds.isEmpty()) { // suppose that in this case all the alignment has changed
+
+    if (mi.alignmentLengthChanged) {
+        MAlignmentExporter alExporter;
+        U2Msa msa = alExporter.getAlignmentObject(entityRef.dbiRef, entityRef.entityId, os);
+        if (msa.length != cachedMAlignment.getLength()) {
+            cachedMAlignment.setLength(msa.length);
+        }
+    }
+
+     if (mi.modifiedRowIds.isEmpty() && removedRowIds.isEmpty()) { // suppose that in this case all the alignment has changed
         loadAlignment(os);
         SAFE_POINT_OP(os, );
     } else { // only specified rows were changed
@@ -140,7 +149,9 @@ void MAlignmentObject::setMAlignment(const MAlignment& newMa, MAlignmentModInfo 
 }
 
 void MAlignmentObject::copyGapModel(const QList<MAlignmentRow> &copyRows) {
-    const QList<MAlignmentRow> &oldRows = getMAlignment().getRows();
+    MAlignment tmp = getMAlignment();
+    const QList<MAlignmentRow> &oldRows = tmp.getRows();
+
     SAFE_POINT(oldRows.count() == copyRows.count(), "Different rows count", );
 
     QMap<qint64, QList<U2MsaGap> > newGapModel;
@@ -270,7 +281,11 @@ int MAlignmentObject::getMaxWidthOfGapRegion( const U2Region &rows, int pos, int
     }
 
     if ( isRegionInRowTrailingGaps ) {
-        return 0;
+        if (rows.length == getNumRows() && rows.startPos == 0) {
+            return qMin(getLength() - pos, (qint64)maxGaps);
+        } else {
+            return 0;
+        }
     }
 
     return removingGapColumnCount;
@@ -299,6 +314,11 @@ int MAlignmentObject::deleteGap( const U2Region &rows, int pos, int maxGaps, U2O
         MsaDbiUtils::updateRowGapModel( entityRef, row.getRowId( ), row.getGapModel( ), os );
         CHECK_OP( os, 0 );
         modifiedRowIds << row.getRowId( );
+    }
+    if (rows.startPos == 0 && rows.length == getNumRows()) {
+        // delete columns
+        MsaDbiUtils::updateMsaLength( entityRef, getLength() - removingGapColumnCount, os);
+        CHECK_OP( os, 0);
     }
 
     MAlignmentModInfo mi;
@@ -338,8 +358,7 @@ void MAlignmentObject::removeRow(int rowIdx) {
 
     MAlignmentModInfo mi;
     mi.sequenceContentChanged = false;
-
-    QList<qint64> modifiedRowIds;
+    mi.alignmentLengthChanged = false;
 
     QList<qint64> removedRowIds;
     removedRowIds << rowId;
@@ -430,24 +449,17 @@ void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int 
     QList<qint64> modifiedRowIds;
     const MAlignment msa = getMAlignment();
     const QList<MAlignmentRow> msaRows = msa.getRows();
-    SAFE_POINT(nRows > 0 && startRow >= 0 && startRow + nRows <= msaRows.size(),
+    SAFE_POINT(nRows > 0 && startRow >= 0 && startRow + nRows <= msaRows.size() && startPos + nBases <= msa.getLength(),
         "Invalid parameters!", );
     QList<MAlignmentRow>::ConstIterator it = msaRows.begin() + startRow;
     QList<MAlignmentRow>::ConstIterator end = it + nRows;
     for (; it != end; it++) {
         modifiedRowIds << it->getRowId();
     }
-    const bool trimmingIsNeeded = ( 0 == startPos || msa.getLength( ) == startPos + nBases );
 
     U2OpStatus2Log os;
     MsaDbiUtils::removeRegion(entityRef, modifiedRowIds, startPos, nBases, os);
     SAFE_POINT_OP(os, );
-
-    QList<qint64> trimmedRowIds; // include this rows into modified rows further
-    if ( trimmingIsNeeded ) {
-        trimmedRowIds = MsaDbiUtils::trim(entityRef, os);
-        SAFE_POINT_OP(os, );
-    }
 
     QList<qint64> removedRows;
     if (removeEmptyRows) {
@@ -459,12 +471,10 @@ void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int 
                 removedRows );
             foreach ( qint64 removedRowId, removedRows ) { // removed rows ain't need to be update
                 modifiedRowIds.removeAll( removedRowId );
-                trimmedRowIds.removeAll( removedRowId );
             }
             modifiedRowIds = mergeLists( modifiedRowIds, rowIdsAffectedByDeletion );
         }
     }
-    modifiedRowIds = mergeLists( modifiedRowIds, trimmedRowIds );
     if (track || removeEmptyRows) {
         MAlignmentModInfo mi;
         mi.modifiedRowIds = modifiedRowIds;
@@ -487,7 +497,9 @@ void MAlignmentObject::renameRow(int rowIdx, const QString& newName) {
     MsaDbiUtils::renameRow(entityRef, rowId, newName, os);
     SAFE_POINT_OP(os, );
 
-    updateCachedMAlignment();
+    MAlignmentModInfo mi;
+    mi.alignmentLengthChanged = false;
+    updateCachedMAlignment(mi);
 }
 
 void MAlignmentObject::crop(U2Region window, const QSet<QString>& rowNames) {
@@ -546,7 +558,6 @@ void MAlignmentObject::deleteColumnWithGaps(int requiredGapCount, U2OpStatus &os
         removeRegion(*column, 0, 1, getNumRows(), true, (end - 1 == column));
         os.setProgress(100 * counter / colsForDelete.size());
     }
-    //removeColumns(colsForDelete, true);
     updateCachedMAlignment();
 }
 
@@ -611,7 +622,9 @@ void MAlignmentObject::updateRowsOrder(const QList<qint64>& rowIds, U2OpStatus& 
     MsaDbiUtils::updateRowsOrder(entityRef, rowIds, os);
     CHECK_OP(os, );
 
-    updateCachedMAlignment();
+    MAlignmentModInfo mi;
+    mi.alignmentLengthChanged = false;
+    updateCachedMAlignment(mi);
 }
 
 int MAlignmentObject::shiftRegion( int startPos, int startRow, int nBases, int nRows, int shift )
@@ -620,16 +633,34 @@ int MAlignmentObject::shiftRegion( int startPos, int startRow, int nBases, int n
     SAFE_POINT(!isRegionEmpty(startPos, startRow, nBases, nRows), "Region is empty!", 0 );
     SAFE_POINT( 0 <= startPos && 0 <= startRow && 0 < nBases && 0 < nRows,
         "Invalid parameters of selected region encountered", 0 );
+    U2OpStatusImpl os;
 
     int n = 0;
     if (shift > 0) {
+        // if some trailing gaps are selected --> save them!
+        if (startPos + nBases + shift > getLength()) {
+            bool increaseAlignmentLen = true;
+            for (int i = startRow; i < startRow + nRows; i++) {
+                const MAlignmentRow& row = getRow(i);
+                int rowLen = row.getRowLengthWithoutTrailing();
+                if (rowLen >= startPos + nBases + shift) {
+                    increaseAlignmentLen = false;
+                    break;
+                }
+            }
+            if (increaseAlignmentLen) {
+                MsaDbiUtils::updateMsaLength(entityRef, startPos + nBases + shift, os);
+                SAFE_POINT_OP( os, 0 );
+                updateCachedMAlignment();
+            }
+        }
+
         insertGap(U2Region(startRow,nRows), startPos, shift);
         n = shift;
     } else if ( 0 < startPos ) {
         if (0 > startPos + shift) {
             shift = -startPos;
         }
-        U2OpStatus2Log os;
         n = -deleteGap(U2Region(startRow, nRows), startPos + shift, -shift, os);
         SAFE_POINT_OP( os, 0 );
     }
@@ -668,8 +699,10 @@ qint64 MAlignmentObject::getNumRows() const {
 }
 
 const MAlignmentRow& MAlignmentObject::getRow(int row) const {
-    MAlignment msa = getMAlignment();
-    return msa.getRow(row);
+//    MAlignment msa = getMAlignment();
+//    return msa.getRow(row);
+    ensureDataLoaded();
+    return cachedMAlignment.getRow(row);
 }
 
 int MAlignmentObject::getRowPosById(qint64 rowId) const {
@@ -695,7 +728,9 @@ void MAlignmentObject::sortRowsByList(const QStringList& order) {
     MsaDbiUtils::updateRowsOrder(entityRef, msa.getRowsIds(), os);
     SAFE_POINT_OP(os, );
 
-    updateCachedMAlignment();
+    MAlignmentModInfo mi;
+    mi.alignmentLengthChanged = false;
+    updateCachedMAlignment(mi);
 }
 
 void MAlignmentObject::loadDataCore(U2OpStatus &os) {

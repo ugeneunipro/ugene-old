@@ -414,22 +414,6 @@ static bool blockEnded( IOAdapter* io ) {
     return 1 < nl_count;
 }
 
-//calls after reading a block
-static bool checkSeqLength( const MAlignment& msa ) {
-    int sz = msa.getNumRows();
-    int seq_length = (sz > 0)? msa.getRow(0).getCoreLength(): -1;
-    bool ret = ( sz )? true: false;
-
-    for ( int i = 0; i < sz; ++i ) {
-        const MAlignmentRow & row = msa.getRow(i);
-        int rowLength = row.getCoreLength();
-        if ( !( ret = ret && ( seq_length == rowLength ) ) ) {
-            break;
-        }
-    }
-    return ret;
-}
-
 static bool nameWasBefore( const MAlignment& msa, const QString& name ) {
     int n = msa.getNumRows();
     bool ret = false;
@@ -466,6 +450,7 @@ static bool loadOneMsa( IOAdapter* io, U2OpStatus& tsi, MAlignment& msa, Annotat
     if ( !checkHeader( buf.data(), ret ) ) {
         throw StockholmFormat::BadFileData( StockholmFormat::tr( "invalid file: bad header line" ) );
     }
+    int currentLen = 0;
     //read blocks
     bool firstBlock = true;
     while ( 1 ) {
@@ -479,6 +464,7 @@ static bool loadOneMsa( IOAdapter* io, U2OpStatus& tsi, MAlignment& msa, Annotat
 
         bool hasSeqs = true;
         int seq_ind = 0;
+        int blockSize = -1;
         while ( hasSeqs ) {
             QByteArray line;
             int name_end = getLine( io, line );
@@ -501,23 +487,30 @@ static bool loadOneMsa( IOAdapter* io, U2OpStatus& tsi, MAlignment& msa, Annotat
                 }
                 U2OpStatus2Log os;
                 msa.addRow(name.data(), seq, os);
+                if (blockSize == -1) {
+                    blockSize = seq.size();
+                } else if (blockSize != seq.size() ) {
+                    throw StockholmFormat::BadFileData( StockholmFormat::tr( "invalid file: sequences in block are not of equal size" ) );
+                }
             }
             else {
                 const MAlignmentRow& row = msa.getRow(seq_ind);
                 if( name != row.getName()) {
                     throw StockholmFormat::BadFileData( StockholmFormat::tr( "invalid file: sequence names are not equal in blocks" ) );
                 }
-                msa.appendChars(seq_ind, seq.constData(), seq.size());
+                msa.appendChars(seq_ind, currentLen, seq.constData(), seq.size());
+                if (blockSize == -1) {
+                    blockSize = seq.size();
+                } else if (blockSize != seq.size() ) {
+                    throw StockholmFormat::BadFileData( StockholmFormat::tr( "invalid file: sequences in block are not of equal size" ) );
+                }
             }
             seq_ind++;
             hasSeqs = !blockEnded( io );
             tsi.setProgress(io->getProgress());
         }
         firstBlock = false;
-        //check sequence length after every block
-        if ( !checkSeqLength( msa ) ) {
-            throw StockholmFormat::BadFileData( StockholmFormat::tr( "invalid file: sequences in block are not of equal size" ) );
-        }
+        currentLen += blockSize;
     }// while( 1 )
     readEofMsa( io );
     skipBlankLines( io );

@@ -365,20 +365,32 @@ MAlignment PhylipInterleavedFormat::parse(IOAdapter *io, U2OpStatus &os) const {
 
         os.setProgress(io->getProgress());
     }
+    int currentLen = al.getLength();
 
     // sequence blocks
     while (!os.isCoR() && len > 0 && !io->isEof()) {
+        int blockSize = -1;
         for (int i = 0; i < numberOfSpecies; i++) {
             len = io->readUntil(buff, READ_BUFF_SIZE, LINE_BREAKS, IOAdapter::Term_Skip, &resOk);
             if (len == 0) {
-                    break;
+                if (i != 0) {
+                    os.setError( PhylipInterleavedFormat::tr("Block is incomplete"));
+                }
+                break;
             }
             QByteArray value = QByteArray::fromRawData(buff, len);
             removeSpaces(value);
 
-            al.appendChars(i, value.constData(), value.size());
+            al.appendChars(i, currentLen, value.constData(), value.size());
+            if (blockSize == -1) {
+                blockSize = value.size();
+            } else if (blockSize != value.size()) {
+                os.setError( PhylipInterleavedFormat::tr("Block is incomlete") );
+                break;
+            }
         }
         os.setProgress(io->getProgress());
+        currentLen += blockSize;
     }
     CHECK_EXT(al.getLength() == numberOfCharacters, os.setError( PhylipInterleavedFormat::tr("Number of characters does not correspond to the stated number") ),
               MAlignment());

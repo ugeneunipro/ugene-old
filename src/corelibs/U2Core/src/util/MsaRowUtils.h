@@ -34,6 +34,7 @@ public:
     static char charAt(const QByteArray &seq, const QList<U2MsaGap> &gaps, int pos);
     static qint64 getRowLengthWithoutTrailing(const QByteArray &seq, const QList<U2MsaGap> &gaps);
     static int getUngappedPosition(const QByteArray &seq, const QList<U2MsaGap> &gaps, int pos);
+    static int getCoreStart(const QList<U2MsaGap>& gaps);
 };
 
 } // U2

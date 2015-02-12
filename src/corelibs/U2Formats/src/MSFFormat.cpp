@@ -138,6 +138,7 @@ void MSFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     //read info
     int sum = 0;
     QMap <QString, int> seqs;
+    QVector<int> rowLens;
     while (!ti.isCoR()) {
         QByteArray line;
         if (getNextLine(io, line)) {
@@ -160,6 +161,7 @@ void MSFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         seqs.insert(name, check);
         U2OpStatus2Log os;
         al.addRow(name, QByteArray(), os);
+        rowLens.append(0);
         if (sum < CHECK_SUM_MOD) {
             sum = (sum + check) % CHECK_SUM_MOD;
         }
@@ -194,7 +196,8 @@ void MSFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         for (int q, p = line.indexOf(' ') + 1; p > 0; p = q + 1) {
             q = line.indexOf(' ', p);
             QByteArray subSeq = (q < 0) ? line.mid(p) : line.mid(p, q - p);
-            al.appendChars(i, subSeq.constData(), subSeq.length());
+            al.appendChars(i, rowLens[i], subSeq.constData(), subSeq.length());
+            rowLens[i] = rowLens[i] + subSeq.length();
         }
 
         ti.setProgress(io->getProgress());

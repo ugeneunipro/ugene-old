@@ -241,10 +241,10 @@ void PairAlign::updatePercentOfSimilarity() {
     MAlignment ma;
     const MAlignment currentAlignment = msa->getMSAObject()->getMAlignment();
     ma.addRow(firstSeqSelectorWC->text(),
-        currentAlignment.getRowByRowId(firstSeqSelectorWC->sequenceId(), os).getCore(), -1, os);
+        currentAlignment.getRowByRowId(firstSeqSelectorWC->sequenceId(), os).getData(), -1, os);
     CHECK_OP(os, );
     ma.addRow(secondSeqSelectorWC->text(),
-        currentAlignment.getRowByRowId(secondSeqSelectorWC->sequenceId(), os).getCore(), -1, os);
+        currentAlignment.getRowByRowId(secondSeqSelectorWC->sequenceId(), os).getData(), -1, os);
     CHECK_OP(os, );
     distanceCalcTask = distanceFactory->createAlgorithm(ma);
     distanceCalcTask->setExcludeGaps(true);

@@ -46,6 +46,7 @@ public:
     static const qint64 msaUpdatedRowInfo;
     static const qint64 msaUpdatedGapModel;
     static const qint64 msaSetNewRowsOrder;
+    static const qint64 msaLengthChanged;
 
     static bool isObjectModType(qint64 modType) { return modType > 0 && modType < 999; }
     static bool isSequenceModType(qint64 modType) { return modType >= 1000 && modType < 1100; }

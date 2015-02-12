@@ -40,6 +40,7 @@ const qint64 U2ModType::msaRemovedRow         = 3005;
 const qint64 U2ModType::msaUpdatedRowInfo     = 3006;
 const qint64 U2ModType::msaUpdatedGapModel    = 3007;
 const qint64 U2ModType::msaSetNewRowsOrder    = 3008;
+const qint64 U2ModType::msaLengthChanged      = 3009;
 
 
 U2UseCommonUserModStep::U2UseCommonUserModStep(const U2EntityRef &entity, U2OpStatus &os)

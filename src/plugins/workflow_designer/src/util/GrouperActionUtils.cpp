@@ -303,7 +303,7 @@ bool Sequence2MSAPerformer::applyAction(const QVariant &newData) {
     if (unique) {
         foreach (MAlignmentRow currRow, result.getRows()) {
             if ((currRow.getName() == rowName) &&
-                (currRow.getCore() == bytes)) {
+                (currRow.getData() == bytes)) {
                     return true;
             }
         }
