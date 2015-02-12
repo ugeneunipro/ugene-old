@@ -914,11 +914,11 @@ bool MAlignment::crop(const U2Region& region, const QSet<QString>& rowNames, U2O
 }
 
 bool MAlignment::crop(const U2Region &region, U2OpStatus& os) {
-    crop(region, getRowNames().toSet(), os);
+    return crop(region, getRowNames().toSet(), os);
 }
 
 bool MAlignment::crop(int start, int count, U2OpStatus& os) {
-    crop(U2Region(start, count), os);
+    return crop(U2Region(start, count), os);
 }
 
 MAlignmentRow MAlignment::createRow(const QString& name, const QByteArray& bytes, U2OpStatus& /* os */) {
