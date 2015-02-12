@@ -160,7 +160,7 @@ SeqPosComboBoxWithChecksWidget::SeqPosComboBoxWithChecksWidget(const QVariantMap
     }
 
     QVBoxLayout* mainLayout = new QVBoxLayout;
-    mainLayout->setContentsMargins(0, 0, 0, 1);
+    mainLayout->setContentsMargins(0, 0, 0, 2);
     mainLayout->setSpacing(0);
     setLayout(mainLayout);
 
