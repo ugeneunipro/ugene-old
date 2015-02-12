@@ -33,6 +33,7 @@ public:
     static void click(U2OpStatus &os, GTGlobals::WindowAction action);
     static QPoint getMdiItemPosition(U2OpStatus &os, const QString& windowName);
     static void selectRandomRegion(U2OpStatus &os, const QString& windowName);
+    static bool isAnyPartOfWindowVisible(U2OpStatus &os, const QString& windowName);
 
     // fails if MainWindow is NULL or because of FindOptions settings
     static QWidget* activeWindow(U2OpStatus &os, const GTGlobals::FindOptions& = GTGlobals::FindOptions());

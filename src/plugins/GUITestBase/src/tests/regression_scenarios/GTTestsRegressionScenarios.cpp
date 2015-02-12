@@ -1262,26 +1262,6 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
-
-GUI_TEST_CLASS_DEFINITION(test_1323) {
-    // 1. Open \test\_common_data\_regression\1323\sample.bad
-    // Expected state: document with file added to project
-
-    GTFileDialog::openFile(os, testDir + "_common_data/regression/1323/", "sample.bed");
-    }
-GUI_TEST_CLASS_DEFINITION(test_1324) {
-    // 1. Open WD
-    // 2. Add "Search for TFBS with SITECON" element
-    // 3. Make sure it is possible to enter 0.00001 for Min Err1
-
-    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "Search for TFBS with SITECON");
-
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Search for TFBS with SITECON"));
-    GTMouseDriver::click(os);
-    GTUtilsWorkflowDesigner::setParameter(os, "Min Err1", "0.00001", GTUtilsWorkflowDesigner::textValue);
-
-}
 GUI_TEST_CLASS_DEFINITION(test_1266) {
 //    1. Open "Call variants" sample pipleine from the "NGS" category
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
@@ -1430,6 +1410,173 @@ GUI_TEST_CLASS_DEFINITION(test_1299) {
     CHECK_SET_ERR(box->itemText(3) != "Additional", "Additional item not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1300_1) {
+//    Show the opened view.
+
+//    1. Open "murine.gb".
+//    Expected state: the sequence view opens.
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    bool sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(sequenceViewIsVisible, "Sequence view is unexpectedly not visible");
+
+//    2. Open "COI.aln".
+//    Expected state: the MSA Editor opens, sequence view is opened, but is not shown.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    bool msaEditorIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI");
+    CHECK_SET_ERR(msaEditorIsVisible, "Msa editor is unexpectedly not visible");
+
+    sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(!sequenceViewIsVisible, "Sequence view is unexpectedly visible");
+
+//    3. Double click to the sequence of "murine.gb" in the project view ([s] NC_001363).
+//    Expected state: the sequence view is shown, the MSA Editor is no  visible.
+    GTUtilsProjectTreeView::doubleClickItem(os, "NC_001363");
+
+    msaEditorIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI");
+    CHECK_SET_ERR(!msaEditorIsVisible, "Msa editor is unexpectedly visible");
+
+    sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(sequenceViewIsVisible, "Sequence view is unexpectedly not visible");
+
+//    4. Double click to the msa object in the project view ([m] COI).
+//    Expected state: the MSA Editor is shown.
+    GTUtilsProjectTreeView::doubleClickItem(os, "COI");
+
+    msaEditorIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI");
+    CHECK_SET_ERR(msaEditorIsVisible, "Msa editor is unexpectedly not visible");
+
+    sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(!sequenceViewIsVisible, "Sequence view is unexpectedly visible");
+
+//    5. Double click to the annotation object of "murine.gb" in the project view ([a] NC_001363 features).
+//    Expected state: the sequence View is shown.
+    GTUtilsProjectTreeView::doubleClickItem(os, "NC_001363 features");
+
+    msaEditorIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI");
+    CHECK_SET_ERR(!msaEditorIsVisible, "Msa editor is unexpectedly visible");
+
+    sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(sequenceViewIsVisible, "Sequence view is unexpectedly not visible");
+
+//    6. Double click to the COI document name in the project view (COI.aln).
+//    Expected state: the MSA Editor is shown.
+    GTUtilsProjectTreeView::doubleClickItem(os, "COI.aln");
+
+    msaEditorIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI");
+    CHECK_SET_ERR(msaEditorIsVisible, "Msa editor is unexpectedly not visible");
+
+    sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(!sequenceViewIsVisible, "Sequence view is unexpectedly visible");
+
+//    7. Double click to the murine document name in the project view (murine.gb).
+//    Expected state: the sequence view is shown.
+    GTUtilsProjectTreeView::doubleClickItem(os, "murine.gb");
+
+    msaEditorIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI");
+    CHECK_SET_ERR(!msaEditorIsVisible, "Msa editor is unexpectedly visible");
+
+    sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(sequenceViewIsVisible, "Sequence view is unexpectedly not visible");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1300_2) {
+//    Opening new views, opening the first view of several views.
+
+//    1. Open "murine.gb".
+//    Expected state: the sequence view opens.
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    bool sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(sequenceViewIsVisible, "Sequence view is unexpectedly not visible");
+
+//    2. Close sequence view with murine.gb.
+//    Expected state: there is the "murine.gb" document in the project view, no views are opened.
+    GTUtilsMdi::click(os, GTGlobals::Close);
+
+    sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(!sequenceViewIsVisible, "Sequence view is unexpectedly visible");
+
+//    3. Open "COI.aln".
+//    Expected state: the MSA Editor opens.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    bool msaEditorIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI");
+    CHECK_SET_ERR(msaEditorIsVisible, "Msa editor is unexpectedly not visible");
+
+    sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(!sequenceViewIsVisible, "Sequence view is unexpectedly visible");
+
+//    4. Right click to the COI document in the project view, select {Open view->Open new view: alignment editor} from the context menu.
+//    Expected state: there are two MSA Editors (the second one is active) and no sequence views.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Open view" << "Open new view: Alignment Editor"));
+    GTUtilsProjectTreeView::click(os, "COI.aln", Qt::RightButton);
+
+    msaEditorIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI");
+    CHECK_SET_ERR(!msaEditorIsVisible, "Msa editor is unexpectedly visible");
+
+    bool msaEditor2IsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI 2");
+    CHECK_SET_ERR(msaEditor2IsVisible, "Msa editor is unexpectedly not visible");
+
+    sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(!sequenceViewIsVisible, "Sequence view is unexpectedly visible");
+
+//    5. Double click to the murine.gb (document, sequence object, annotation object - different tests?) in the project view.
+//    Expected state: the sequecne view opens. There are two MSA Editors and one sequence view (active).
+//    5.1 document
+    GTUtilsProjectTreeView::doubleClickItem(os, "murine.gb");
+
+    sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(sequenceViewIsVisible, "Sequence view is unexpectedly not visible");
+
+    msaEditorIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI");
+    CHECK_SET_ERR(!msaEditorIsVisible, "Msa editor is unexpectedly visible");
+
+    msaEditor2IsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI 2");
+    CHECK_SET_ERR(!msaEditor2IsVisible, "Msa editor is unexpectedly visible");
+
+//    5.2 sequence
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTUtilsProjectTreeView::doubleClickItem(os, "NC_001363");
+
+    sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(sequenceViewIsVisible, "Sequence view is unexpectedly not visible");
+
+    msaEditorIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI");
+    CHECK_SET_ERR(!msaEditorIsVisible, "Msa editor is unexpectedly visible");
+
+    msaEditor2IsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI 2");
+    CHECK_SET_ERR(!msaEditor2IsVisible, "Msa editor is unexpectedly visible");
+
+//    5.3 sequence
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTUtilsProjectTreeView::doubleClickItem(os, "NC_001363 features");
+
+    sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(sequenceViewIsVisible, "Sequence view is unexpectedly not visible");
+
+    msaEditorIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI");
+    CHECK_SET_ERR(!msaEditorIsVisible, "Msa editor is unexpectedly visible");
+
+    msaEditor2IsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI 2");
+    CHECK_SET_ERR(!msaEditor2IsVisible, "Msa editor is unexpectedly visible");
+
+//    6. Double click to the COI in the project view.
+//    Expected state: a popup menu is shown to select a MSA Editor to show. Select the first. There are two MSA Editors (the first one is active) and one sequence view.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Activate view: COI [m] COI"));
+    GTUtilsProjectTreeView::doubleClickItem(os, "COI");
+
+    sequenceViewIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "murine [s] NC_001363");
+    CHECK_SET_ERR(!sequenceViewIsVisible, "Sequence view is unexpectedly visible");
+
+    msaEditorIsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI");
+    CHECK_SET_ERR(msaEditorIsVisible, "Msa editor is unexpectedly not visible");
+
+    msaEditor2IsVisible = GTUtilsMdi::isAnyPartOfWindowVisible(os, "COI [m] COI 2");
+    CHECK_SET_ERR(!msaEditor2IsVisible, "Msa editor is unexpectedly visible");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1310) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
     class Scenario : public CustomScenario {
@@ -1493,25 +1640,6 @@ GUI_TEST_CLASS_DEFINITION(test_1315_2) {
     GTUtilsAnnotationsTreeView::findItem(os, "top_primers  (0, 5)");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_1325) {
-//    1. Open _common_data\regression\1325\long_gff.gff (choosing GFF format)
-//    2. UGENE will no open the file with error
-//    3. Double click on the unloaded document crashes UGENE
-
-//    Expected: UGENE does not crash
-
-    GTLogTracer l1;
-
-    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "GFF") );
-    GTFileDialog::openFile(os, testDir + "_common_data/regression/1325/", "long_gff.gff");
-    GTGlobals::sleep();
-    CHECK_SET_ERR(l1.hasError(), "There is no error in the log");
-
-    GTLogTracer l2;
-    GTUtilsDocument::loadDocument(os, "long_gff.gff");
-    CHECK_SET_ERR(l2.hasError(), "There is no error in the log");
-}
-
 GUI_TEST_CLASS_DEFINITION(test_1321_1) {
 //    This scenario is about crash found during fixing current bug
 //    1. Open file _common_data/scenarios/_regression/2187/seq.fa
@@ -1554,6 +1682,45 @@ GUI_TEST_CLASS_DEFINITION(test_1321_2) {
         }
     };
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1323) {
+    // 1. Open \test\_common_data\_regression\1323\sample.bad
+    // Expected state: document with file added to project
+
+    GTFileDialog::openFile(os, testDir + "_common_data/regression/1323/", "sample.bed");
+    }
+GUI_TEST_CLASS_DEFINITION(test_1324) {
+    // 1. Open WD
+    // 2. Add "Search for TFBS with SITECON" element
+    // 3. Make sure it is possible to enter 0.0001 for Min Err1
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Search for TFBS with SITECON");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Search for TFBS with SITECON"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setParameter(os, "Min Err1", "0.0001", GTUtilsWorkflowDesigner::textValue);
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1325) {
+//    1. Open _common_data\regression\1325\long_gff.gff (choosing GFF format)
+//    2. UGENE will no open the file with error
+//    3. Double click on the unloaded document crashes UGENE
+
+//    Expected: UGENE does not crash
+
+    GTLogTracer l1;
+
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "GFF") );
+    GTFileDialog::openFile(os, testDir + "_common_data/regression/1325/", "long_gff.gff");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(l1.hasError(), "There is no error in the log");
+
+    GTLogTracer l2;
+    GTUtilsDocument::loadDocument(os, "long_gff.gff");
+    CHECK_SET_ERR(l2.hasError(), "There is no error in the log");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1326) {
