@@ -64,7 +64,9 @@ PrimerLibrary * PrimerLibrary::getInstance(U2OpStatus &os) {
     U2DbiRef dbiRef(DEFAULT_DBI_ID, path.toLocal8Bit());
     QHash<QString, QString> properties;
     properties[U2DbiOptions::U2_DBI_LOCKING_MODE] = "normal";
+    coreLog.trace(QDateTime::currentDateTime().toString("Primer library initialization start: hh:mm:ss:zzz"));
     QScopedPointer<DbiConnection> connection(new DbiConnection(dbiRef, true, os, properties)); // create if not exists
+    coreLog.trace(QDateTime::currentDateTime().toString("Primer library initialization finish: hh:mm:ss:zzz"));
     CHECK_OP(os, NULL);
 
     instance.reset(new PrimerLibrary(connection.take()));
