@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QMessageBox>
+
 #include "WorkflowDesignerPlugin.h"
 #include "WorkflowViewController.h"
 #include "WorkflowDocument.h"
@@ -42,6 +44,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/Task.h>
 #include <U2Core/ServiceTypes.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Core/CMDLineRegistry.h>
 #include <U2Core/CMDLineHelpProvider.h>
@@ -259,6 +262,7 @@ void WorkflowDesignerService::serviceStateChangedCallback(ServiceState , bool en
 void WorkflowDesignerService::sl_startWorkflowPlugin() {
     initDesignerAction();
     initNewWorkflowAction();
+    initSampleActions();
 }
 
 void WorkflowDesignerService::initDesignerAction() {
@@ -301,9 +305,22 @@ bool WorkflowDesignerService::closeViews() {
     return true;
 }
 
+bool WorkflowDesignerService::checkServiceState() const {
+    if (isDisabled()) {
+        QMessageBox::warning(QApplication::activeWindow(), L10N::warningTitle(), L10N::internalError(tr("Can not open Workflow Designer. Please, try to reload UGENE.")));
+        return false;
+    }
+    return true;
+}
+
 void WorkflowDesignerService::sl_showDesignerWindow() {
-    assert(isEnabled());
+    CHECK(checkServiceState(), );
     WorkflowView::openWD(NULL); //FIXME
+}
+
+void WorkflowDesignerService::sl_sampleActionClicked(const SampleAction &action) {
+    CHECK(checkServiceState(), );
+    WorkflowView::openSample(action);
 }
 
 void WorkflowDesignerService::sl_showManagerWindow() {
@@ -315,6 +332,18 @@ Task* WorkflowDesignerService::createServiceEnablingTask()
     QString defaultDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/workflow_samples";
 
     return SampleRegistry::init(QStringList(defaultDir));
+}
+
+void WorkflowDesignerService::initSampleActions() {
+    SampleActionsManager *samples = new SampleActionsManager(this);
+    connect(samples, SIGNAL(si_clicked(const SampleAction &)), SLOT(sl_sampleActionClicked(const SampleAction &)));
+
+    SampleAction test(tr("Reads quality control and alignment"), tr("Sanger data analysis"), "Sanger sequencing/trim-and-align.uwl", SampleAction::OpenWizard);
+    test.requiredPlugins << "external_tool_support";
+    U2OpStatus2Log os;
+    samples->registerAction(test, os);
+
+    CHECK_OP(os, );
 }
 
 /************************************************************************/

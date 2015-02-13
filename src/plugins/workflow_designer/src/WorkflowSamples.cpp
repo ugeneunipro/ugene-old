@@ -74,6 +74,7 @@ QList<SampleCategory> SampleRegistry::data;
 #define INFO_ROLE Qt::UserRole + 1
 #define ICON_ROLE Qt::UserRole + 2
 #define DOC_ROLE Qt::UserRole + 3
+#define ID_ROLE Qt::UserRole + 4
 
 class SampleDelegate : public QStyledItemDelegate {
 public:
@@ -112,6 +113,38 @@ SamplesWidget::SamplesWidget(WorkflowScene *scene, QWidget *parent) : QTreeWidge
     connect(glass, SIGNAL(itemActivated(QTreeWidgetItem*)), SLOT(activateItem(QTreeWidgetItem*)));
     connect(glass, SIGNAL(cancel()), SLOT(cancelItem()));
     connect(WorkflowSettings::watcher, SIGNAL(changed()), this, SLOT(sl_refreshSampesItems()));
+}
+
+QTreeWidgetItem * SamplesWidget::getSampleItem(const QString &category, const QString &id) {
+    QList<QTreeWidgetItem*> items = findItems(category, Qt::MatchExactly);
+    CHECK(1 == items.size(), NULL);
+
+    for (int i=0; i<items.first()->childCount(); i++) {
+        QTreeWidgetItem *sampleItem = items.first()->child(i);
+        const QString sampleId = sampleItem->data(0, ID_ROLE).toString();
+        if (sampleId == id) {
+            return sampleItem;
+        }
+    }
+
+    return NULL;
+}
+
+void SamplesWidget::activateSample(const QString &category, const QString &id) {
+    QTreeWidgetItem *sampleItem = getSampleItem(category, id);
+    CHECK(NULL != sampleItem, );
+
+    scrollToItem(sampleItem);
+    setCurrentItem(sampleItem);
+    return;
+}
+
+void SamplesWidget::loadSample(const QString &category, const QString &id) {
+    QTreeWidgetItem *sampleItem = getSampleItem(category, id);
+    CHECK(NULL != sampleItem, );
+
+    activateItem(sampleItem);
+    return;
 }
 
 void SamplesWidget::activateItem(QTreeWidgetItem * item) {
@@ -178,6 +211,7 @@ void SamplesWidget::addCategory( const SampleCategory& cat )
     foreach(const Sample& item, cat.items) {
         QTreeWidgetItem* ib = new QTreeWidgetItem(ci, QStringList(item.d.getDisplayName()));
         ib->setData(0, DATA_ROLE, item.content);
+        ib->setData(0, ID_ROLE, item.id);
         QTextDocument* doc = new QTextDocument(this);
         ib->setData(0, DOC_ROLE, qVariantFromValue<QTextDocument*>(doc));
         Descriptor d = item.d;
@@ -297,6 +331,7 @@ void LoadSamplesTask::scanDir( const QString& s, int depth) {
         if (QFile::exists(icoName)) {
             sample.ico.addFile(icoName);
         }
+        sample.id = fi.fileName();
         category.items << sample;
     }
     if (!category.items.isEmpty()) {

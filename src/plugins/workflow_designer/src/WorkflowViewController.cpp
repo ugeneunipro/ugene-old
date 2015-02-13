@@ -299,26 +299,54 @@ void DashboardManagerHelper::sl_removeTaskFinished() {
 /********************************
 * WorkflowView
 ********************************/
-void WorkflowView::createInstance(WorkflowGObject *go) {
+WorkflowView * WorkflowView::createInstance(WorkflowGObject *go) {
     MWMDIManager *mdiManager = AppContext::getMainWindow()->getMDIManager();
-    SAFE_POINT(NULL != mdiManager, "NULL MDI manager", );
+    SAFE_POINT(NULL != mdiManager, "NULL MDI manager", NULL);
 
     WorkflowView *view = new WorkflowView(go);
     view->setWindowIcon(QIcon(":/workflow_designer/images/wd.png"));
     mdiManager->addMDIWindow(view);
     mdiManager->activateWindow(view);
+    return view;
 }
 
-void WorkflowView::openWD(WorkflowGObject *go) {
+WorkflowView * WorkflowView::openWD(WorkflowGObject *go) {
     if (WorkflowSettings::isOutputDirectorySet()) {
-        createInstance(go);
-        return;
+        return createInstance(go);
     }
 
     StartupDialog d(AppContext::getMainWindow()->getQMainWindow());
     if (QDialog::Accepted == d.exec()) {
-        createInstance(go);
+        return createInstance(go);
     }
+    return NULL;
+}
+
+void WorkflowView::openSample(const SampleAction &action) {
+    WorkflowView *wd = openWD(NULL);
+    CHECK(NULL != wd, );
+    int slashPos = action.samplePath.indexOf("/");
+    CHECK(-1 != slashPos, );
+    const QString category = action.samplePath.left(slashPos);
+    const QString id = action.samplePath.mid(slashPos + 1);
+
+    switch (action.mode) {
+        case SampleAction::Select:
+            wd->tabs->setCurrentIndex(SamplesTab);
+            wd->samples->activateSample(category, id);
+            break;
+        case SampleAction::Load:
+            wd->samples->loadSample(category, id);
+            break;
+        case SampleAction::OpenWizard:
+            wd->samples->loadSample(category, id);
+            wd->sl_showWizard();
+            break;
+    }
+}
+
+void WorkflowView::selectSample(const QString &category, const QString &sample) {
+    tabs->setCurrentIndex(SamplesTab);
 }
 
 WorkflowView::WorkflowView(WorkflowGObject* go)

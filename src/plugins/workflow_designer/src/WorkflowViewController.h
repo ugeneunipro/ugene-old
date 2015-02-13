@@ -22,6 +22,9 @@
 #ifndef _U2_WORKFLOW_VIEW_CONTROLLER_H_
 #define _U2_WORKFLOW_VIEW_CONTROLLER_H_
 
+#include <QAction>
+#include <QGraphicsScene>
+
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/Aliasing.h>
 #include <U2Lang/AttributeInfo.h>
@@ -32,13 +35,7 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ScriptEditorDialog.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QGraphicsScene>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QGraphicsScene>
-#endif
+#include "SampleActionsManager.h"
 
 class QComboBox;
 class QSplitter;
@@ -138,10 +135,11 @@ class WorkflowView : public MWMDIWindow, public SchemaConfig {
     Q_DISABLE_COPY(WorkflowView)
 
     WorkflowView(WorkflowGObject* go);
-    static void createInstance(WorkflowGObject *go);
+    static WorkflowView * createInstance(WorkflowGObject *go);
 
 public:
-    static void openWD(WorkflowGObject *go);
+    static WorkflowView * openWD(WorkflowGObject *go);
+    static void openSample(const SampleAction &action);
     ~WorkflowView();
 
     WorkflowEditor* getPropertyEditor() const { return propertyEditor; }
@@ -258,6 +256,8 @@ protected:
     virtual void paintEvent(QPaintEvent *event);
 
 private:
+    void selectSample(const QString &category, const QString &sample);
+
     void createActions();
     void saveState();
     void recreateScene();

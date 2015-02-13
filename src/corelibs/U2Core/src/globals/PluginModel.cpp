@@ -35,4 +35,12 @@ void Plugin::acceptLicense(){
     isLicenseAcceptedValue=true;
 }
 
+const QString & Plugin::getId() const {
+    return id;
+}
+
+void Plugin::setId(const QString &value) {
+    id = value;
+}
+
 }//namespace

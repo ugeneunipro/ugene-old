@@ -55,6 +55,9 @@ public:
     //plugin is deallocated by plugin_support service when it's removed or on application shutting down
     virtual ~Plugin(){}
 
+    const QString & getId() const;
+    void setId(const QString &value);
+
     const QString& getName() const {return name;}
 
     const QString& getDescription() const {return description;}
@@ -73,6 +76,7 @@ public:
     const QList<Service*>& getServices() const {return services;}
 
 protected:
+    QString         id;
     QString         name, description;
     QList<Service*> services;
     bool            isFreeValue;

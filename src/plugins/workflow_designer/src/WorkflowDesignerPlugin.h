@@ -30,6 +30,8 @@
 
 #include <U2Remote/RemoteWorkflowRunTask.h>
 
+#include "SampleActionsManager.h"
+
 class QAction;
 class QEvent;
 
@@ -53,7 +55,6 @@ private:
 private slots:
     void sl_saveSchemaImageTaskFinished();
     void sl_initWorkers();
-
 };
 
 class WorkflowDesignerService : public Service {
@@ -70,14 +71,17 @@ protected:
 
 public slots:
     void sl_showDesignerWindow();
+    void sl_sampleActionClicked(const SampleAction &action);
 
 private slots:
     void sl_showManagerWindow();
     void sl_startWorkflowPlugin();
 
 private:
+    bool checkServiceState() const;
     void initDesignerAction();
     void initNewWorkflowAction();
+    void initSampleActions();
 
 private:
     QAction*        designerAction;

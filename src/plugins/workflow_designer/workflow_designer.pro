@@ -13,6 +13,7 @@ HEADERS += src/ActorCfgFilterProxyModel.h \
            src/InvestigationDataModel.h \
            src/ItemViewStyle.h \
            src/PortAliasesConfigurationDialog.h \
+           src/SampleActionsManager.h \
            src/SceneSerializer.h \
            src/SchemaAliasesConfigurationDialogImpl.h \
            src/StartupDialog.h \
@@ -121,6 +122,7 @@ SOURCES += src/ActorCfgFilterProxyModel.cpp \
            src/InvestigationDataModel.cpp \
            src/ItemViewStyle.cpp \
            src/PortAliasesConfigurationDialog.cpp \
+           src/SampleActionsManager.cpp \
            src/SceneSerializer.cpp \
            src/SchemaAliasesConfigurationDialogImpl.cpp \
            src/StartupDialog.cpp \

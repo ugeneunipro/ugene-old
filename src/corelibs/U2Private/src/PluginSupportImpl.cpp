@@ -510,6 +510,7 @@ Task::ReportResult AddPluginTask::report() {
         stateInfo.setError(  tr("Plugin initialization failed: %1").arg(libUrl) );
         return ReportResult_Finished;
     }
+    p->setId(desc.id);
     p->setLicensePath(desc.licenseUrl.getURLString());
 
     if (!p->isFree()){

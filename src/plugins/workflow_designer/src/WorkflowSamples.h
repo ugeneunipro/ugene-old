@@ -52,6 +52,7 @@ public:
     QIcon ico;
     QString data;
     QString content;
+    QString id; // UWL file name of the sample workflow
 };
 
 class SampleCategory {
@@ -114,6 +115,8 @@ public:
     static const QString MIME_TYPE;
 
     SamplesWidget(WorkflowScene *scene, QWidget *parent = 0);
+    void activateSample(const QString &category, const QString &id);
+    void loadSample(const QString &category, const QString &id);
 
 public slots:
     void cancelItem();
@@ -133,6 +136,7 @@ signals:
     void setupGlass(GlassPane*);
     void sampleSelected(const QString&);
 private:
+    QTreeWidgetItem * getSampleItem(const QString &category, const QString &id);
     void addCategory(const SampleCategory& cat);
     void revisible(const QString &nameFilter);
 
