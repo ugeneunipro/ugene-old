@@ -55,8 +55,9 @@ private:
     static const int maxErrorListSize;
 
 private:
-    QList<U2MsaRow> createRows();
-    void addRows(QList<U2MsaRow> &rows);
+    /** Returns the max length of the rows including trailing gaps */
+    qint64 createRows(QList<U2MsaRow>& rows);
+    void addRows(QList<U2MsaRow> &rows, qint64 len);
     void setupError();
 };
 

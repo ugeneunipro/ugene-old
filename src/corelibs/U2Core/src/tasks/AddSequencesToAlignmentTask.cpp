@@ -107,10 +107,11 @@ Task::ReportResult AddSequencesToAlignmentTask::report() {
         delete stateLock;
     }
 
-    QList<U2MsaRow> rows = createRows();
+    QList<U2MsaRow> rows;
+    qint64 len = createRows(rows);
     CHECK_OP(stateInfo, ReportResult_Finished);
 
-    addRows(rows);
+    addRows(rows, len);
     CHECK_OP(stateInfo, ReportResult_Finished);
 
     if (!errorList.isEmpty()) {
@@ -119,20 +120,21 @@ Task::ReportResult AddSequencesToAlignmentTask::report() {
     return ReportResult_Finished;
 }
 
-QList<U2MsaRow> AddSequencesToAlignmentTask::createRows() {
-    QList<U2MsaRow> rows;
+qint64 AddSequencesToAlignmentTask::createRows(QList<U2MsaRow>& rows) {
     U2EntityRef entityRef = maObj.data()->getEntityRef();
+    qint64 maxLen = 0;
     foreach (U2SequenceObject *seqObj, seqList) {
         U2MsaRow row = MSAUtils::copyRowFromSequence(seqObj, entityRef.dbiRef, stateInfo);
         if (0 < row.gend) {
             rows << row;
+            maxLen = qMax(maxLen, seqObj->getSequenceLength());
         }
-        CHECK_OP(stateInfo, rows);
+        CHECK_OP(stateInfo, 0);
     }
-    return rows;
+    return maxLen;
 }
 
-void AddSequencesToAlignmentTask::addRows(QList<U2MsaRow> &rows) {
+void AddSequencesToAlignmentTask::addRows(QList<U2MsaRow> &rows, qint64 len) {
     U2EntityRef entityRef = maObj.data()->getEntityRef();
     // Create user mod step
     U2UseCommonUserModStep modStep(entityRef, stateInfo);
@@ -142,6 +144,11 @@ void AddSequencesToAlignmentTask::addRows(QList<U2MsaRow> &rows) {
     // Add rows
     dbi->addRows(entityRef.entityId, rows, stateInfo);
     CHECK_OP(stateInfo, );
+
+    if (len > maObj->getLength()) {
+        dbi->updateMsaLength(entityRef.entityId, len, stateInfo);
+        CHECK_OP(stateInfo, );
+    }
 
     // Update alphabet
     if (maObj->getAlphabet() != msaAlphabet) {
