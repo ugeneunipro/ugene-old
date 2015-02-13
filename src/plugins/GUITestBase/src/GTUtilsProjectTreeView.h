@@ -37,6 +37,8 @@ class GTUtilsProjectTreeView {
 public:
     // clicks on item by mouse, renames item by keyboard
     static void rename(U2OpStatus &os, const QString &itemName, const QString &newItemName, GTGlobals::UseMethod invokeMethod = GTGlobals::UseKey);
+    static void rename(U2OpStatus &os, const QModelIndex& itemIndex, const QString &newItemName, GTGlobals::UseMethod invokeMethod = GTGlobals::UseKey);
+
     static void openView(U2OpStatus& os);
     static void toggleView(U2OpStatus& os);
 

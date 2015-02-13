@@ -97,17 +97,15 @@ QPoint GTUtilsProjectTreeView::getItemCenter(U2OpStatus &os, QTreeView *treeView
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "rename"
-void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QString &itemName, const QString &newItemName, GTGlobals::UseMethod invokeMethod) {
+namespace {
 
-    GTMouseDriver::moveTo(os, getItemCenter(os, itemName));
-
+void editItemName(U2OpStatus &os, const QString &newItemName, GTGlobals::UseMethod invokeMethod) {
     switch (invokeMethod) {
-    case GTGlobals::UseKey :
+    case GTGlobals::UseKey:
         GTMouseDriver::click(os);
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
         break;
-    case GTGlobals::UseMouse :
+    case GTGlobals::UseMouse:
         GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Edit" << "Rename...", GTGlobals::UseMouse));
         GTMouseDriver::click(os, Qt::RightButton);
         break;
@@ -120,6 +118,21 @@ void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QString &itemName, con
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
 
     GTGlobals::sleep(500);
+}
+
+}
+
+#define GT_METHOD_NAME "rename"
+void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QString &itemName, const QString &newItemName, GTGlobals::UseMethod invokeMethod) {
+    GTMouseDriver::moveTo(os, getItemCenter(os, itemName));
+    editItemName(os, newItemName, invokeMethod);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "rename"
+void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QModelIndex& itemIndex, const QString &newItemName, GTGlobals::UseMethod invokeMethod) {
+    GTMouseDriver::moveTo(os, getItemCenter(os, itemIndex));
+    editItemName(os, newItemName, invokeMethod);
 }
 #undef GT_METHOD_NAME
 

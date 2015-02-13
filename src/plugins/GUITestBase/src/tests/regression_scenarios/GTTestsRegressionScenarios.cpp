@@ -1004,6 +1004,39 @@ GUI_TEST_CLASS_DEFINITION(test_1212_1){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1229) {
+    // 1. Open two sequences with same names in two documents.For instance, you can copy a file with a sequence to do that.
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1229", "1.txt");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1229", "2.txt");
+
+    // 2. The sequences in different documents have identical names. Rename both sequence objects. Now the sequences have different name.
+    const QModelIndex firstDoc = GTUtilsProjectTreeView::findIndex(os, "1.txt");
+    const QModelIndex secondDoc = GTUtilsProjectTreeView::findIndex(os, "2.txt");
+
+    GTUtilsProjectTreeView::rename(os, GTUtilsProjectTreeView::findIndex(os, "tub", firstDoc), "tub_1");
+    GTUtilsProjectTreeView::rename(os, GTUtilsProjectTreeView::findIndex(os, "tub", secondDoc), "tub_2");
+
+    // 3. Select both sequence objects and export them as multiple alignment.
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "tub_1"));
+    GTMouseDriver::click(os);
+
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
+    GTUtilsDialog::waitForDialog(os, new ExportSequenceAsAlignmentFiller(os, sandBoxDir, "test_1229.aln", ExportSequenceAsAlignmentFiller::Clustalw, true));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // 4. Sequences in the alignment have old names(identical).
+    // Expected state : sequence in the alignment renamed properly.
+    const QStringList msaNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(2 == msaNames.size(), "Unexpected sequence count in MSA");
+    CHECK_SET_ERR(msaNames.contains("tub_1") && msaNames.contains("tub_2"), "Unexpected sequences names in MSA");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1249){
 
     // 1. Open human_T1.fa.

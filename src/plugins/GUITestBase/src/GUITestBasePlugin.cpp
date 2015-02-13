@@ -170,6 +170,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1212);
     REGISTER_TEST(GUITest_regression_scenarios::test_1212_1);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1229);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1249, "TODO: add the 3, 4 steps");
     REGISTER_TEST(GUITest_regression_scenarios::test_1252);
     REGISTER_TEST(GUITest_regression_scenarios::test_1252_1);
