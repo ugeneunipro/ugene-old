@@ -278,7 +278,7 @@ QList<U2Region> GTUtilsAnnotationsTreeView::getAnnotatedRegions(U2OpStatus &os) 
 
     QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
     foreach (QTreeWidgetItem* item, treeItems) {
-        AVAnnotationItem* annotationItem = static_cast<AVAnnotationItem*>(item);
+        AVAnnotationItem* annotationItem = dynamic_cast<AVAnnotationItem*>(item);
         CHECK_OPERATION(annotationItem != NULL, continue);
 
         const Annotation ann = annotationItem->annotation;

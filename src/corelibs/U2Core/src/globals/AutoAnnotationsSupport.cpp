@@ -23,12 +23,13 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/Settings.h>
-#include <U2Core/RemoveAnnotationsTask.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/L10n.h>
+#include <U2Core/RemoveAnnotationsTask.h>
+#include <U2Core/Settings.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -139,42 +140,103 @@ void AutoAnnotationObject::updateGroup( const QString &groupName ) {
     }
 }
 
-void AutoAnnotationObject::handleUpdate( QList<AutoAnnotationsUpdater *> updaters ) {
+void AutoAnnotationObject::addNewUpdateTask(AutoAnnotationsUpdater *updater, Task *updateTask) {
+    SAFE_POINT(NULL != updater, L10N::nullPointerError("Auto-annotation updater"), );
+    SAFE_POINT(NULL != updateTask, L10N::nullPointerError("Auto-annotation update task"), );
+
+    connect(updateTask, SIGNAL(si_stateChanged()), SLOT(sl_updateTaskFinished()));
+    newUpdateTasks[updater].append(updateTask);
+}
+
+void AutoAnnotationObject::addRunningUpdateTask(AutoAnnotationsUpdater *updater, Task *updateTask) {
+    SAFE_POINT(NULL != updater, L10N::nullPointerError("Auto-annotation updater"), );
+    SAFE_POINT(NULL != updateTask, L10N::nullPointerError("Auto-annotation update task"), );
+
+    connect(updateTask, SIGNAL(si_stateChanged()), SLOT(sl_updateTaskFinished()));
+    runningUpdateTasks[updater].append(updateTask);
+}
+
+bool AutoAnnotationObject::cancelRunningUpdateTasks(AutoAnnotationsUpdater *updater) {
+    SAFE_POINT(NULL != updater, L10N::nullPointerError("Auto-annotation updater"), false);
+
+    const bool result = !runningUpdateTasks[updater].isEmpty();
+    foreach (Task *task, runningUpdateTasks[updater]) {
+        task->cancel();
+    }
+
+    qDeleteAll(newUpdateTasks[updater]);
+    newUpdateTasks[updater].clear();
+
+    return result;
+}
+
+void AutoAnnotationObject::handleUpdate(const QList<AutoAnnotationsUpdater *> &updaters) {
     QList<Task*> subTasks;
     QStringList groupNames;
 
-    foreach ( AutoAnnotationsUpdater *updater, updaters ) {
+    foreach (AutoAnnotationsUpdater *updater, updaters) {
         // check constraints
         AutoAnnotationConstraints cns;
-        cns.alphabet = dnaObj->getAlphabet( );
-        cns.hints = dnaObj->getGHints( );
-        if ( !updater->checkConstraints( cns ) ) {
+        cns.alphabet = dnaObj->getAlphabet();
+        cns.hints = dnaObj->getGHints();
+        if (!updater->checkConstraints(cns)) {
             continue;
         }
 
+        const bool deferredLaunch = cancelRunningUpdateTasks(updater);
+
         // cleanup
-        AnnotationGroup root = aobj->getRootGroup( );
-        AnnotationGroup sub = root.getSubgroup( updater->getGroupName( ), false );
-        if ( sub != root ) {
-            Task *t = new RemoveAnnotationsTask( aobj, updater->getGroupName( ) );
-            subTasks.append( t );
+        AnnotationGroup root = aobj->getRootGroup();
+        AnnotationGroup sub = root.getSubgroup(updater->getGroupName(), false);
+        if (sub != root) {
+            Task *t = new RemoveAnnotationsTask(aobj, updater->getGroupName());
+            if (deferredLaunch) {
+                addNewUpdateTask(updater, t);
+            } else {
+                addRunningUpdateTask(updater, t);
+                subTasks.append(t);
+            }
         }
 
         // update
-        if ( enabledGroups.contains( updater->getGroupName( ) ) ) {
+        if (enabledGroups.contains(updater->getGroupName())) {
             // create update tasks
-            Task *t = updater->createAutoAnnotationsUpdateTask( this );
-            if ( NULL != t ) {
-                subTasks.append( t );
+            Task *t = updater->createAutoAnnotationsUpdateTask(this);
+            if (NULL != t) {
+                if (deferredLaunch) {
+                    addNewUpdateTask(updater, t);
+                } else {
+                    addRunningUpdateTask(updater, t);
+                    subTasks.append(t);
+                }
             }
         }
-        groupNames.append( updater->getGroupName( ) );
-    }
+        groupNames.append(updater->getGroupName());
 
-    // envelope to unlock annotation object
-    if ( !subTasks.isEmpty( ) ) {
-        AutoAnnotationsUpdateTask *updateTask = new AutoAnnotationsUpdateTask( this, subTasks );
-        AppContext::getTaskScheduler( )->registerTopLevelTask( updateTask );
+        // envelope to unlock annotation object
+        if (!subTasks.isEmpty()) {
+            AppContext::getTaskScheduler()->registerTopLevelTask(new AutoAnnotationsUpdateTask(this, subTasks));
+        }
+    }
+}
+
+void AutoAnnotationObject::sl_updateTaskFinished() {
+    Task *task = qobject_cast<Task *>(sender());
+    SAFE_POINT(NULL != task, L10N::nullPointerError("Auto-annotation update task"), );
+
+    CHECK(task->isFinished(), );
+
+    foreach (AutoAnnotationsUpdater *updater, runningUpdateTasks.keys()) {
+        QList<Task *> &updateTasks = runningUpdateTasks[updater];
+        if (updateTasks.contains(task)) {
+            updateTasks.removeAll(task);
+
+            if (updateTasks.isEmpty()) {
+                runningUpdateTasks[updater] = newUpdateTasks[updater];
+                newUpdateTasks[updater].clear();
+                AppContext::getTaskScheduler()->registerTopLevelTask(new AutoAnnotationsUpdateTask(this, runningUpdateTasks[updater]));
+            }
+        }
     }
 }
 
@@ -206,7 +268,7 @@ const QString AutoAnnotationsUpdateTask::NAME( "Auto-annotations update task" );
 
 AutoAnnotationsUpdateTask::AutoAnnotationsUpdateTask( AutoAnnotationObject *aaObj,
     QList<Task *> updateTasks )
-    : Task( NAME, TaskFlags_NR_FOSCOE ), aa( aaObj ), aaSeqObj( NULL ), lock( NULL ),
+    : Task( NAME, TaskFlags_NR_FOSE_COSC), aa( aaObj ), aaSeqObj( NULL ), lock( NULL ),
     subTasks( updateTasks )
 {
     aaObjectInvalid = false;

@@ -576,7 +576,6 @@ void AnnotationsTreeView::sl_onAnnotationsRemoved( const QList<Annotation> &as )
     foreach ( const Annotation &a, as ) {
         QList<AVAnnotationItem *> aItems;
         groupItem->findAnnotationItems( aItems, a );
-        SAFE_POINT( !aItems.isEmpty( ), "Unexpected annotation view items detected!", );
         foreach ( AVAnnotationItem *ai, aItems ) {
             AVGroupItem *parentGroup = static_cast<AVGroupItem*>( ai->parent( ) );
             if ( groups2RemovedCount.contains( parentGroup ) ) {

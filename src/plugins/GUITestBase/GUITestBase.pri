@@ -5,6 +5,8 @@ PLUGIN_NAME=GUI Test Base
 PLUGIN_VENDOR=Unipro
 
 QT += testlib
+greaterThan(QT_MAJOR_VERSION, 4): QT += webkitwidgets
+
 INCLUDEPATH += ../../corelibs/U2View/_tmp/
 
 unix {
