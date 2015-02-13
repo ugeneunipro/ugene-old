@@ -222,6 +222,8 @@ UniProtKB/TrEMBL|http://www.uniprot.org/uniprot/%1|http://www.uniprot.org/unipro
 
 UniSTS|http://www.ncbi.nlm.nih.gov/genome/sts/sts.cgi?uid=%1||NCBI UniSTS is a comprehensive database of sequence tagged sites (STSs) derived from STS-based maps and other experiments.
 
+UNITE|||Molecular database for the identification of fungi
+
 VBASE2|||Integrative database of germ-line V genes from the immunoglobulin loci of human and mouse
 
 ViPR|||Virus Pathogen Resource
