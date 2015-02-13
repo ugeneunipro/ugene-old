@@ -186,15 +186,19 @@ unix {
     desktop.files += installer/_common_data/ugene.desktop
     desktop.path = $$UGENE_INSTALL_DESKTOP
 
-    icons.files += installer/_common_data/ugene.png installer/_common_data/ugene.xpm
-    icons.path = $$UGENE_INSTALL_PIXMAPS
+    pixmaps.files += installer/_common_data/ugene.png installer/_common_data/ugene.xpm
+    pixmaps.path = $$UGENE_INSTALL_PIXMAPS
 
     manual.files += installer/_common_data/ugene.1.gz
     manual.path = $$UGENE_INSTALL_MAN
 
-#    mime.files += 
-#    mime.path = /usr/share/mime/packages/
+    mime.files += installer/_common_data/application-x-ugene.xml
+    mime.path = $$UGENE_INSTALL_MIME
 
-    INSTALLS += binscript ugene_starter transl plugins scripts data desktop icons manual
+    icons.files += installer/_common_data/application-x-ugene-ext.png
+    icons.path = $$UGENE_INSTALL_ICONS
+
+
+    INSTALLS += binscript ugene_starter transl plugins scripts data desktop pixmaps mime icons manual
 }
  
