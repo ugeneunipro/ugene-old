@@ -67,8 +67,6 @@ public:
     static bool runWebBrowser(const QString& url);
 
     static void setWidgetWarning(QWidget *widget, bool value);
-
-    static void addToolsMenuAction(const QString &subMenuObjectName, QAction *action);
 };
 
 } //namespace

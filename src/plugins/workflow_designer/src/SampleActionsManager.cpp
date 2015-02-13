@@ -29,7 +29,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Gui/GUIUtils.h>
+#include <U2Gui/ToolsMenu.h>
 
 #include "SampleActionsManager.h"
 
@@ -59,7 +59,7 @@ void SampleActionsManager::registerAction(const SampleAction &action) {
     a->setObjectName(action.actionName);
     a->setProperty(ID_PROPERTY, id);
     connect(a, SIGNAL(triggered()), SLOT(sl_clicked()));
-    GUIUtils::addToolsMenuAction(action.toolsCategory, a);
+    ToolsMenu::addAction(action.toolsCategory, a);
 }
 
 int SampleActionsManager::getValidClickedActionId(U2OpStatus &os) const {

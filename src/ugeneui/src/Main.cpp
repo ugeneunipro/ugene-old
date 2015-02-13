@@ -85,6 +85,7 @@
 #include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/SequenceAccFilterTask.h>
 #include <U2Gui/TextContentFilterTask.h>
+#include <U2Gui/ToolsMenu.h>
 
 #include <U2Formats/ConvertFileTask.h>
 
@@ -365,6 +366,7 @@ int main(int argc, char **argv)
     QT_REQUIRE_VERSION( argc, argv, QT_VERSION_STR );
 
     GTIMER(c1, t1, "main()->QApp::exec");
+    ToolsMenu::init();
 
 #ifdef Q_OS_MACX
     fixMacFonts();

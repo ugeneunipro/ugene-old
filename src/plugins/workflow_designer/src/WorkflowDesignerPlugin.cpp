@@ -39,7 +39,6 @@
 #include <U2Lang/WorkflowTasksRegistry.h>
 
 #include <U2Core/AppContext.h>
-#include <U2Gui/MainWindow.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
 #include <U2Core/Task.h>
@@ -50,6 +49,8 @@
 #include <U2Core/CMDLineUtils.h>
 #include <cmdline/WorkflowCMDLineTasks.h>
 #include <cmdline/GalaxyConfigTask.h>
+
+#include <U2Gui/ToolsMenu.h>
 
 #include <U2Core/TaskStarter.h>
 #include <U2Core/GAutoDeleteList.h>
@@ -266,12 +267,12 @@ void WorkflowDesignerService::sl_startWorkflowPlugin() {
 
 void WorkflowDesignerService::initDesignerAction() {
     designerAction = new QAction( QIcon(":/workflow_designer/images/wd.png"), tr("Workflow Designer..."), this);
-    designerAction->setObjectName("Workflow Designer");
+    designerAction->setObjectName(ToolsMenu::WORKFLOW_DESIGNER);
 #ifdef _DEBUG
     designerAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_D));
 #endif
     connect(designerAction, SIGNAL(triggered()), SLOT(sl_showDesignerWindow()));
-    AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS)->addAction(designerAction);
+    ToolsMenu::addAction(ToolsMenu::TOOLS, designerAction);
 }
 
 void WorkflowDesignerService::initNewWorkflowAction() {
@@ -337,7 +338,7 @@ void WorkflowDesignerService::initSampleActions() {
     SampleActionsManager *samples = new SampleActionsManager(this);
     connect(samples, SIGNAL(si_clicked(const SampleAction &)), SLOT(sl_sampleActionClicked(const SampleAction &)));
 
-    SampleAction test(tr("Reads quality control and alignment"), tr("Sanger data analysis"), "Sanger sequencing/trim-and-align.uwl", SampleAction::OpenWizard);
+    SampleAction test(tr("Reads quality control and alignment"), ToolsMenu::SANGER_MENU, "Sanger sequencing/trim-and-align.uwl", SampleAction::OpenWizard);
     test.requiredPlugins << "external_tool_support";
     samples->registerAction(test);
 }

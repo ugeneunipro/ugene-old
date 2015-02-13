@@ -12,6 +12,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/PluginViewer.h \
            src/ProjectParsing.h \
            src/ProjectView.h \
+           src/ToolsMenu.h \
            src/U2SavableWidget.h \
            src/U2WidgetStateStorage.h \
            src/UnloadDocumentTask.h \
@@ -143,6 +144,7 @@ SOURCES += src/MainWindow.cpp \
            src/ObjectViewTasks.cpp \
            src/OpenViewTask.cpp \
            src/ProjectParsing.cpp \
+           src/ToolsMenu.cpp \
            src/UnloadDocumentTask.cpp \
            src/U2SavableWidget.cpp \
            src/U2WidgetStateStorage.cpp \

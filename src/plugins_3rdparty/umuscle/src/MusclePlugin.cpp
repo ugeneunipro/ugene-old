@@ -35,6 +35,7 @@
 #include <U2Lang/WorkflowSettings.h>
 
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/ToolsMenu.h>
 #include <U2Gui/LastUsedDirHelper.h>
 
 #include <U2View/MSAEditor.h>
@@ -72,15 +73,10 @@ MusclePlugin::MusclePlugin()
         //Add to tools menu for fast run
         QAction* muscleAction = new QAction(tr("MUSCLE..."), this);
         muscleAction->setIcon(QIcon(":umuscle/images/muscle_16.png"));
-        muscleAction->setObjectName("Align with muscle");
-        QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-        QMenu* toolsSubmenu = tools->findChild<QMenu*>(MWMENU_TOOLS_MALIGN);
-        if(toolsSubmenu == NULL){
-            toolsSubmenu = tools->addMenu(tr("Multiple alignment"));
-            toolsSubmenu->setObjectName(MWMENU_TOOLS_MALIGN);
-        }
-        toolsSubmenu->addAction(muscleAction);
+        muscleAction->setObjectName(ToolsMenu::MALIGN_MUSCLE);
         connect(muscleAction,SIGNAL(triggered()),SLOT(sl_runWithExtFileSpecify()));
+
+        ToolsMenu::addAction(ToolsMenu::MALIGN_MENU, muscleAction);
     }
     LocalWorkflow::MuscleWorkerFactory::init();
     LocalWorkflow::ProfileToProfileWorkerFactory::init();
