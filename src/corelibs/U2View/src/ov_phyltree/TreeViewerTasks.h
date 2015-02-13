@@ -23,6 +23,7 @@
 #define _U2_TREE_VIEWER_TASKS_H_
 
 #include <U2Core/GObjectReference.h>
+#include <U2Core/StateLockableDataModel.h>
 #include <U2Gui/ObjectViewTasks.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QSplitter>
