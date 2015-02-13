@@ -23,9 +23,14 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
-#include <U2Gui/AppSettingsGUI.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
+
+#include <U2Gui/AppSettingsGUI.h>
+#include <U2Gui/MainWindow.h>
 
 #include <QtCore/QFile>
 #include <QtCore/QProcess>
@@ -230,6 +235,27 @@ void GUIUtils::setWidgetWarning(QWidget *widget, bool value) {
     QPalette p = widget->palette();
     p.setColor(QPalette::Active, QPalette::Base, color);
     widget->setPalette(p);
+}
+
+namespace {
+    QMenu * getToolsSubMenu(const QString &subMenuObjectName, U2OpStatus &os) {
+        QMenu *tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
+        CHECK_EXT(NULL != tools, os.setError(L10N::nullPointerError("Tools menu")), NULL);
+
+        QMenu *subMenu = tools->findChild<QMenu*>(subMenuObjectName);
+        if (NULL == subMenu) {
+            subMenu = tools->addMenu(subMenuObjectName); // TODO: get it from actions order. And icon.
+            subMenu->setObjectName(subMenuObjectName);
+        }
+        return subMenu;
+    }
+}
+
+void GUIUtils::addToolsMenuAction(const QString &subMenuObjectName, QAction *action) {
+    U2OpStatus2Log os;
+    QMenu *subMenu = getToolsSubMenu(subMenuObjectName, os);
+    CHECK_OP(os, );
+    subMenu->addAction(action);
 }
 
 } //endif

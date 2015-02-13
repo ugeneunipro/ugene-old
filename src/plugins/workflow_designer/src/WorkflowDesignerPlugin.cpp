@@ -44,7 +44,6 @@
 #include <U2Core/Settings.h>
 #include <U2Core/Task.h>
 #include <U2Core/ServiceTypes.h>
-#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Core/CMDLineRegistry.h>
 #include <U2Core/CMDLineHelpProvider.h>
@@ -340,10 +339,7 @@ void WorkflowDesignerService::initSampleActions() {
 
     SampleAction test(tr("Reads quality control and alignment"), tr("Sanger data analysis"), "Sanger sequencing/trim-and-align.uwl", SampleAction::OpenWizard);
     test.requiredPlugins << "external_tool_support";
-    U2OpStatus2Log os;
-    samples->registerAction(test, os);
-
-    CHECK_OP(os, );
+    samples->registerAction(test);
 }
 
 /************************************************************************/

@@ -26,8 +26,6 @@
 
 #include <U2Core/U2OpStatus.h>
 
-class QMenu;
-
 namespace U2 {
 
 class SampleAction {
@@ -46,7 +44,7 @@ class SampleActionsManager : public QObject {
     Q_OBJECT
 public:
     SampleActionsManager(QObject *parent);
-    void registerAction(const SampleAction &action, U2OpStatus &os);
+    void registerAction(const SampleAction &action);
 
 signals:
     void si_clicked(const SampleAction &action);
@@ -55,7 +53,6 @@ private slots:
     void sl_clicked();
 
 private:
-    QMenu * getMenu(const QString &category, U2OpStatus &os) const;
     int getValidClickedActionId(U2OpStatus &os) const;
     SampleAction getClickedAction(U2OpStatus &os) const;
     QStringList getAbsentPlugins(const QStringList &requiredPlugins) const;

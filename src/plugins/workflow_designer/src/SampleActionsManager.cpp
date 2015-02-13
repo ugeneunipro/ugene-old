@@ -25,10 +25,11 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/L10n.h>
+#include <U2Core/PluginModel.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Gui/MainWindow.h>
+#include <U2Gui/GUIUtils.h>
 
 #include "SampleActionsManager.h"
 
@@ -50,10 +51,7 @@ SampleActionsManager::SampleActionsManager(QObject *parent)
 
 }
 
-void SampleActionsManager::registerAction(const SampleAction &action, U2OpStatus &os) {
-    QMenu *menu = getMenu(action.toolsCategory, os);
-    CHECK_OP(os, );
-
+void SampleActionsManager::registerAction(const SampleAction &action) {
     actions.append(action);
     int id = actions.size() - 1;
 
@@ -61,19 +59,7 @@ void SampleActionsManager::registerAction(const SampleAction &action, U2OpStatus
     a->setObjectName(action.actionName);
     a->setProperty(ID_PROPERTY, id);
     connect(a, SIGNAL(triggered()), SLOT(sl_clicked()));
-    menu->addAction(a);
-}
-
-QMenu * SampleActionsManager::getMenu(const QString &category, U2OpStatus &os) const {
-    QMenu *tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-    CHECK_EXT(NULL != tools, os.setError(L10N::nullPointerError("Tools menu")), NULL);
-
-    QMenu *subMenu = tools->findChild<QMenu*>(category);
-    if (NULL == subMenu) {
-        subMenu = tools->addMenu(category);
-        subMenu->setObjectName(category);
-    }
-    return subMenu;
+    GUIUtils::addToolsMenuAction(action.toolsCategory, a);
 }
 
 int SampleActionsManager::getValidClickedActionId(U2OpStatus &os) const {
