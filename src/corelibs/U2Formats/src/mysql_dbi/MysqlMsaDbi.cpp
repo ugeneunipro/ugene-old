@@ -289,8 +289,14 @@ void MysqlMsaDbi::addRows(const U2DataId& msaId, QList<U2MsaRow>& rows, U2OpStat
     CHECK_OP(os, );
 
     QList<qint64> posInMsa;
+    qint64 maxLen = 0;
     for (int i = 0; i < rows.count(); i++) {
         posInMsa << i + numOfRows;
+        maxLen = qMax(maxLen, rows[i].length);
+    }
+    if (maxLen > getMsaLength(msaId, os)) {
+        updateMsaLength(updateAction, msaId, maxLen, os);
+        CHECK_OP(os, );
     }
 
     QByteArray modDetails;
@@ -331,6 +337,9 @@ void MysqlMsaDbi::addRow(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row, 
     if (TrackOnUpdate == trackMod) {
         modDetails = PackUtils::packRow(posInMsa, row);
     }
+    if (row.length > getMsaLength(msaId, os)) {
+        updateMsaLength(updateAction, msaId, row.length, os);
+    }
 
     // Update track mod type for child sequence object
     if (TrackOnUpdate == trackMod) {
@@ -354,6 +363,7 @@ void MysqlMsaDbi::removeRows(const U2DataId& msaId, const QList<qint64>& rowIds,
     CHECK_OP(os, );
 
     QByteArray modDetails;
+    int numOfRows = getNumOfRows(msaId, os);
     if (TrackOnUpdate == trackMod) {
         QList<qint64> posInMsa;
         QList<U2MsaRow> rows;
@@ -369,6 +379,10 @@ void MysqlMsaDbi::removeRows(const U2DataId& msaId, const QList<qint64>& rowIds,
     bool removeSequence = (TrackOnUpdate != trackMod);
     removeRowsCore(msaId, rowIds, removeSequence, os);
     CHECK_OP(os, );
+
+    if (numOfRows == rowIds.count()) {
+        updateMsaLength(updateAction, msaId, 0, os);
+    }
 
     // Increment version; track the modification, if required
     updateAction.addModification(msaId, U2ModType::msaRemovedRows, modDetails, os);
@@ -485,10 +499,19 @@ void MysqlMsaDbi::updateGapModel(const U2DataId& msaId, qint64 msaRowId, const Q
 }
 
 void MysqlMsaDbi::updateMsaLength(const U2DataId& msaId, qint64 length, U2OpStatus& os) {
+    MysqlTransaction t(db, os);
+    Q_UNUSED(t);
+
     MysqlModificationAction updateAction(dbi, msaId);
     updateAction.prepare(os);
-    CHECK_OP(os, );
+        CHECK_OP(os, );
 
+    updateMsaLength(updateAction, msaId, length, os);
+
+    updateAction.complete(os);
+}
+
+void MysqlMsaDbi::updateMsaLength(MysqlModificationAction &updateAction, const U2DataId &msaId, qint64 length, U2OpStatus &os) {
     QByteArray modDetails;
     if (TrackOnUpdate == updateAction.getTrackModType()) {
         const qint64 oldMsaLen = getMsaLength(msaId, os);
@@ -730,18 +753,6 @@ void MysqlMsaDbi::recalculateRowsPositions(const U2DataId& msaId, U2OpStatus& os
     }
 }
 
-void MysqlMsaDbi::rowLengthChanged(const U2DataId& msaId, qint64 newRowLen, U2OpStatus& os) {
-    MysqlTransaction t(db, os);
-    Q_UNUSED(t);
-
-    qint64 msaLen = getMsaLength(msaId, os);
-    CHECK_OP(os, );
-
-    if (newRowLen > msaLen) {
-        updateMsaLength(msaId, newRowLen, os);
-    }
-}
-
 qint64 MysqlMsaDbi::calculateRowLength(qint64 seqLength, const QList<U2MsaGap>& gaps) {
     qint64 res = seqLength;
     foreach (const U2MsaGap& gap, gaps) {
@@ -854,23 +865,11 @@ void MysqlMsaDbi::updateGapModelCore(const U2DataId &msaId, qint64 msaRowId, con
     qint64 newRowLength = calculateRowLength(rowSequenceLength, gapModel);
     updateRowLength(msaId, msaRowId, newRowLength, os);
     CHECK_OP(os, );
-
-    // Check alignment length
-    rowLengthChanged(msaId, newRowLength, os);
 }
 
 void MysqlMsaDbi::addRowSubcore(const U2DataId &msaId, qint64 numOfRows, qint64 maxRowLength, const QList<qint64> &rowsOrder, U2OpStatus &os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
-
-    // Update the alignment length
-    qint64 msaLength = getMsaLength(msaId, os);
-    CHECK_OP(os, );
-
-    if (maxRowLength > msaLength) {
-        updateMsaLength(msaId, maxRowLength, os);
-        CHECK_OP(os, );
-    }
 
     // Re-calculate position, if needed
     setNewRowsOrderCore(msaId, rowsOrder, os);
@@ -1297,6 +1296,17 @@ void MysqlMsaDbi::updateGapModel(MysqlModificationAction &updateAction, const U2
 
     updateGapModelCore(msaId, msaRowId, gapModel, os);
     CHECK_OP(os, );
+
+    qint64 len = 0;
+    foreach(const U2MsaGap& gap, gapModel) {
+        len += gap.gap;
+    }
+    len += getRowSequenceLength(msaId, msaRowId, os);
+    SAFE_POINT_OP(os, );
+    if (len > getMsaLength(msaId, os)) {
+        updateMsaLength(updateAction, msaId, len, os);
+    }
+    SAFE_POINT_OP(os, );
 
     // Track the modification, if required; add the object to the list (versions of the objects will be incremented on the updateAction completion)
     updateAction.addModification(msaId, U2ModType::msaUpdatedGapModel, gapsDetails, os);

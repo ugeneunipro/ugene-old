@@ -990,6 +990,21 @@ void MAlignment::addRow(const U2MsaRow& rowInDb, const DNASequence& sequence, U2
     addRow(newRow, rowInDb.length, -1, os);
 }
 
+void MAlignment::addRow(const QString& name, const DNASequence &sequence, const QList<U2MsaGap> &gaps, U2OpStatus &os) {
+    U2MsaRow row;
+    row.rowId = MAlignmentRow::invalidRowId();
+
+    MAlignmentRow newRow = createRow(row, sequence, gaps, os);
+    CHECK_OP(os, );
+
+    int len = sequence.length();
+    foreach (const U2MsaGap& gap, gaps) {
+        len += gap.gap;
+    }
+
+    addRow(newRow, len, -1, os);
+}
+
 void MAlignment::removeRow(int rowIndex, U2OpStatus& os) {
     if (rowIndex < 0 || rowIndex >= getNumRows()) {
         coreLog.trace(QString("Internal error: incorrect parameters was passed to MAlignment::removeRow,"

@@ -191,90 +191,90 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_noGaps) {
 }
 
 IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_fromSeq) {
-//    MAlignment almnt("Test alignment");
-//    DNASequence sequence("Test sequence", "GGAT");
-//    QList<U2MsaGap> gaps;
-//    U2MsaGap gapBeginning(0, 2);
-//    U2MsaGap gapMiddle1(4, 1);
-//    U2MsaGap gapMiddle2(6, 3);
-//    gaps << gapBeginning << gapMiddle1 << gapMiddle2;
-//    U2OpStatusImpl os;
-//    almnt.addRow(sequence, gaps, os);
-//    CHECK_NO_ERROR(os);
-//    MAlignmentRow row = almnt.getRow(0);
-//    CHECK_EQUAL("--GG-A---T", MAlignmentRowTestUtils::getRowData(row), "row data");
-//    CHECK_EQUAL("GG-A---T", QString(row.getCore()), "core data");
-//    CHECK_EQUAL(3, row.getGapModel().count(), "gaps number");
-//    CHECK_EQUAL(2, row.getCoreStart(), "core start");
-//    CHECK_EQUAL(10, row.getCoreEnd(), "core end");
-//    CHECK_EQUAL(8, row.getCoreLength(), "core length");
-//    CHECK_EQUAL(10, row.getRowLength(), "row length");
+    MAlignment almnt("Test alignment");
+    DNASequence sequence("Test sequence", "GGAT");
+    QList<U2MsaGap> gaps;
+    U2MsaGap gapBeginning(0, 2);
+    U2MsaGap gapMiddle1(4, 1);
+    U2MsaGap gapMiddle2(6, 3);
+    gaps << gapBeginning << gapMiddle1 << gapMiddle2;
+    U2OpStatusImpl os;
+    almnt.addRow("Row", sequence, gaps, os);
+    CHECK_NO_ERROR(os);
+    MAlignmentRow row = almnt.getRow(0);
+    CHECK_EQUAL("--GG-A---T", MAlignmentRowTestUtils::getRowData(row), "row data");
+    CHECK_EQUAL("GG-A---T", QString(row.getCore()), "core data");
+    CHECK_EQUAL(3, row.getGapModel().count(), "gaps number");
+    CHECK_EQUAL(2, row.getCoreStart(), "core start");
+    CHECK_EQUAL(10, row.getCoreEnd(), "core end");
+    CHECK_EQUAL(8, row.getCoreLength(), "core length");
+    CHECK_EQUAL(10, row.getRowLength(), "row length");
 }
 
 IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_fromSeqTrailing) {
-//    MAlignment almnt("Test alignment");
-//    DNASequence sequence("Test sequence", "GGAT");
-//    QList<U2MsaGap> gaps;
-//    U2MsaGap gapBeginning(0, 2);
-//    U2MsaGap gapMiddle1(4, 1);
-//    U2MsaGap gapMiddle2(6, 3);
-//    U2MsaGap gapTrailing(10, 2);
-//    gaps << gapBeginning << gapMiddle1 << gapMiddle2 << gapTrailing;
-//    U2OpStatusImpl os;
-//    almnt.addRow(sequence, gaps, os);
-//    CHECK_NO_ERROR(os);
-//    MAlignmentRow row = almnt.getRow(0);
-//    CHECK_EQUAL("--GG-A---T--", MAlignmentRowTestUtils::getRowData(row), "row data");
-//    CHECK_EQUAL("GG-A---T--", QString(row.getCore()), "core data");
-//    CHECK_EQUAL(3, row.getGapModel().count(), "gaps number");
-//    CHECK_EQUAL(2, row.getCoreStart(), "core start");
-//    CHECK_EQUAL(10, row.getCoreEnd(), "core end");
-//    CHECK_EQUAL(8, row.getCoreLength(), "core length");
-//    CHECK_EQUAL(12, row.getRowLength(), "row length");
+    MAlignment almnt("Test alignment");
+    DNASequence sequence("Test sequence", "GGAT");
+    QList<U2MsaGap> gaps;
+    U2MsaGap gapBeginning(0, 2);
+    U2MsaGap gapMiddle1(4, 1);
+    U2MsaGap gapMiddle2(6, 3);
+    U2MsaGap gapTrailing(10, 2);
+    gaps << gapBeginning << gapMiddle1 << gapMiddle2 << gapTrailing;
+    U2OpStatusImpl os;
+    almnt.addRow("Row", sequence, gaps, os);
+    CHECK_NO_ERROR(os);
+    MAlignmentRow row = almnt.getRow(0);
+    CHECK_EQUAL("--GG-A---T--", MAlignmentRowTestUtils::getRowData(row), "row data");
+    CHECK_EQUAL("GG-A---T", QString(row.getCore()), "core data");
+    CHECK_EQUAL(3, row.getGapModel().count(), "gaps number");
+    CHECK_EQUAL(2, row.getCoreStart(), "core start");
+    CHECK_EQUAL(10, row.getCoreEnd(), "core end");
+    CHECK_EQUAL(8, row.getCoreLength(), "core length");
+    CHECK_EQUAL(12, row.getRowLength(), "row length");
 }
 
 IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_fromSeqWithGaps) {
-//    MAlignment almnt("Test alignment");
-//    DNASequence sequence("Test sequence", "GG-AT");
-//    QList<U2MsaGap> gaps;
-//    U2OpStatusImpl os;
-//    almnt.addRow(sequence, gaps, os);
-//    CHECK_EQUAL("Failed to create a multiple alignment row!", os.getError(), "opStatus");
+    MAlignment almnt("Test alignment");
+    DNASequence sequence("Test sequence", "GG-AT");
+    QList<U2MsaGap> gaps;
+    U2OpStatusImpl os;
+    almnt.addRow("Row", sequence, gaps, os);
+    CHECK_EQUAL("Failed to create a multiple alignment row!", os.getError(), "opStatus");
 }
 
 IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_gapPositionTooBig) {
-//    MAlignment almnt("Test alignment");
-//    DNASequence sequence("Test sequence", "GGAT");
-//    QList<U2MsaGap> gaps;
-//    U2MsaGap gapBeginning(0, 2);
-//    U2MsaGap gapMiddle1(4, 1);
-//    U2MsaGap gapMiddle2(8, 3);
-//    gaps << gapBeginning << gapMiddle1 << gapMiddle2;
-//    U2OpStatusImpl os;
-//    almnt.addRow(sequence, gaps, os);
-//    CHECK_EQUAL("Failed to create a multiple alignment row!", os.getError(), "opStatus");
+    MAlignment almnt("Test alignment");
+    DNASequence sequence("Test sequence", "GGAT");
+    QList<U2MsaGap> gaps;
+    U2MsaGap gapBeginning(0, 2);
+    U2MsaGap gapMiddle1(4, 1);
+    U2MsaGap gapMiddle2(8, 3);
+    gaps << gapBeginning << gapMiddle1 << gapMiddle2;
+    U2OpStatusImpl os;
+    almnt.addRow("Row", sequence, gaps, os);
+    CHECK_EQUAL("Failed to create a multiple alignment row!", os.getError(), "opStatus");
 }
 
 IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_negativeGapPos) {
-//    MAlignment almnt("Test alignment");
-//    DNASequence sequence("Test sequence", "ACGT");
-//    QList<U2MsaGap> gaps;
-//    U2MsaGap invalidGap(-1, 2);
-//    gaps << invalidGap;
-//    U2OpStatusImpl os;
-//    almnt.addRow(sequence, gaps, os);
-//    CHECK_EQUAL("Failed to create a multiple alignment row!", os.getError(), "opStatus");
+    MAlignment almnt("Test alignment");
+    DNASequence sequence("Test sequence", "ACGT");
+    QList<U2MsaGap> gaps;
+    U2MsaGap invalidGap(-1, 2);
+    gaps << invalidGap;
+    U2OpStatusImpl os;
+    almnt.addRow("Row", sequence, gaps, os);
+    CHECK_EQUAL("Failed to create a multiple alignment row!", os.getError(), "opStatus");
 }
 
 IMPLEMENT_TEST(MAlignmentRowUnitTests, createRow_negativeGapOffset) {
-//    MAlignment almnt("Test alignment");
-//    DNASequence sequence("Test sequence", "ACGT");
-//    QList<U2MsaGap> gaps;
-//    U2MsaGap invalidGap(0, -1);
-//    gaps << invalidGap;
-//    U2OpStatusImpl os;
-//    almnt.addRow(sequence, gaps, os);
-//    CHECK_EQUAL("Failed to create a multiple alignment row!", os.getError(), "opStatus");
+    MAlignment almnt("Test alignment");
+    DNASequence sequence("Test sequence", "ACGT");
+    QList<U2MsaGap> gaps;
+    U2MsaGap invalidGap(0, -1);
+    gaps << invalidGap;
+    U2OpStatusImpl os;
+    almnt.addRow("Row", sequence, gaps, os);
+    CHECK_EQUAL("Failed to create a multiple alignment row!", os.getError(), "opStatus");
 }
 
 /** Tests rowName */

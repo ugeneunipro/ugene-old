@@ -2459,6 +2459,7 @@ void MSAEditorSequenceArea::insertGapsBeforeSelection( int countOfGaps )
     }
     U2OpStatus2Log os;
     U2UseCommonUserModStep userModStep( maObj->getEntityRef( ), os );
+    Q_UNUSED(userModStep);
     SAFE_POINT_OP( os, );
 
     const MAlignment &msa = maObj->getMAlignment( );

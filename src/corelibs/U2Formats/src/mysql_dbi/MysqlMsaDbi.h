@@ -208,11 +208,6 @@ private:
      */
     void recalculateRowsPositions(const U2DataId& msaId, U2OpStatus& os);
 
-    /** If the new row length (without trailing gaps) is greater than alignment length,
-     *  the method will increase the length of the alignment
-     */
-    void rowLengthChanged(const U2DataId& msaId, qint64 newRowLen, U2OpStatus& os);
-
     /** Calculates length of the row (characters + gaps), does NOT take into account trailing gaps. */
     qint64 calculateRowLength(qint64 seqLength, const QList<U2MsaGap>& gaps);
 
@@ -269,6 +264,7 @@ private:
     // Methods included into a multi-action
     void updateRowInfo(MysqlModificationAction &updateAction, const U2DataId &msaId, const U2MsaRow &row, U2OpStatus &os);
     void updateGapModel(MysqlModificationAction &updateAction, const U2DataId& msaId, qint64 msaRowId, const QList<U2MsaGap>& gapModel, U2OpStatus& os);
+    void updateMsaLength(MysqlModificationAction &updateAction, const U2DataId& msaId, qint64 length, U2OpStatus &os);
 };
 
 }   // namespace U2
