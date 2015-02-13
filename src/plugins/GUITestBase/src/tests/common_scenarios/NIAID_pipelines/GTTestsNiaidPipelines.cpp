@@ -40,6 +40,9 @@
 #include "GTUtilsApp.h"
 #include "GTUtilsWizard.h"
 
+#include <U2Core/AppContext.h>
+#include <U2Gui/ToolsMenu.h>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QGraphicsItem>
@@ -51,7 +54,7 @@
 #include <QtWidgets/QWizard>
 #include <QtWidgets/QLineEdit>
 #endif
-#include <U2Core/AppContext.h>
+
 #include <QProcess>
 
 
@@ -62,7 +65,7 @@ namespace GUITest_common_scenarios_NIAID_pipelines {
 GUI_TEST_CLASS_DEFINITION(test_0001){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
 
     GTUtilsWorkflowDesigner::addSample(os,"call variants");
     //GTUtilsDialog::waitForDialog(os, new WizardFiller0001(os,"BED or position list file"));
@@ -113,7 +116,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 //    1. Open WD
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
 //    2. Open tuxedo pipeline from samples
     GTUtilsDialog::waitForDialog(os, new WizardFiller0002(os));
     GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<

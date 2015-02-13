@@ -54,6 +54,7 @@
 #include <U2View/MSAEditor.h>
 
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/ToolsMenu.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 
@@ -85,31 +86,20 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 uHMMPlugin::uHMMPlugin() : Plugin(tr("uhmm_plugin"), tr("uhmm_plugin_desc")), ctxMSA(NULL), ctxADV(NULL)
 {
     if (AppContext::getMainWindow()) {
-        QAction* buildAction = new QAction(tr("Build HMM2 profile"), this);
-        buildAction->setObjectName("Build HMM2 profile");
+        QAction* buildAction = new QAction(tr("Build HMM2 profile..."), this);
+        buildAction->setObjectName(ToolsMenu::HMMER_BUILD2);
         connect(buildAction, SIGNAL(triggered()), SLOT(sl_build()));
+        ToolsMenu::addAction(ToolsMenu::HMMER_MENU, buildAction);
 
-        QAction* calibrateAction = new QAction(tr("Calibrate profile with HMM2"), this);
-        calibrateAction->setObjectName("Calibrate profile with HMM2");
+        QAction* calibrateAction = new QAction(tr("Calibrate profile with HMM2..."), this);
+        calibrateAction->setObjectName(ToolsMenu::HMMER_CALIBRATE2);
         connect(calibrateAction, SIGNAL(triggered()), SLOT(sl_calibrate()));
+        ToolsMenu::addAction(ToolsMenu::HMMER_MENU, calibrateAction);
         
-        QAction* searchAction = new QAction(tr("Search with HMM2"), this);
-        searchAction->setObjectName("Search with HMM2");
+        QAction* searchAction = new QAction(tr("Search with HMM2..."), this);
+        searchAction->setObjectName(ToolsMenu::HMMER_SEARCH2);
         connect(searchAction, SIGNAL(triggered()), SLOT(sl_search()));
-
-        QMenu* toolsMenu = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-        QMenu * hmmMenu = toolsMenu->property("hmm_menu").value<QMenu*>();
-        if(hmmMenu == NULL) {
-            hmmMenu = toolsMenu->addMenu(QIcon(":/hmm2/images/hmmer_16.png"), tr("HMMER tools"));
-            toolsMenu->setProperty("hmm_menu", qVariantFromValue<QMenu*>(hmmMenu));
-        }
-        
-        hmmMenu->menuAction()->setObjectName("HMMER tools");
-        QMenu* hmm2ToolsSub = hmmMenu->addMenu(QIcon(":/hmm2/images/hmmer_16.png"), tr("HMMER2 tools"));
-        hmm2ToolsSub->menuAction()->setObjectName("HMMER2 tools");
-        hmm2ToolsSub->addAction(buildAction);
-        hmm2ToolsSub->addAction(calibrateAction);
-        hmm2ToolsSub->addAction(searchAction);
+        ToolsMenu::addAction(ToolsMenu::HMMER_MENU, searchAction);
 
         ctxMSA = new HMMMSAEditorContext(this);
         ctxMSA->init();

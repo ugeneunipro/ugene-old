@@ -3,24 +3,24 @@
 #include "ExpertDiscoveryViewCtx.h"
 #include "ExpertDiscoveryTask.h"
 
-#include <U2Core/DNASequence.h>
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AutoAnnotationsSupport.h>
-#include <U2Gui/MainWindow.h>
-#include <U2View/AnnotatedDNAViewFactory.h>
-
-
-#include <U2Core/ProjectModel.h>
+#include <U2Core/DNASequence.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
-
-#include <U2Core/SelectionUtils.h>
 #include <U2Core/DocumentSelection.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/SelectionUtils.h>
 
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectSelection.h>
+
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/ToolsMenu.h>
+
+#include <U2View/AnnotatedDNAViewFactory.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
@@ -58,13 +58,10 @@ void ExpertDiscoveryPlugin::sl_initExpertDiscoveryViewCtx() {
           Q_ASSERT(viewCtx);
           viewCtx->init();
 
-          //AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(new ExpertDiscoverySignalsAutoAnnotationUpdater );
-          //change the icon
           QAction* action = new QAction(  tr("Expert Discovery"), this );
-          action->setObjectName("Expert Discovery");
+          action->setObjectName(ToolsMenu::EXPERT_DISCOVERY);
           connect( action, SIGNAL( triggered() ), SLOT( sl_expertDiscoveryView() ) );
-
-          AppContext::getMainWindow()->getTopLevelMenu( MWMENU_TOOLS )->addAction( action );
+          ToolsMenu::addAction(ToolsMenu::TOOLS, action);
      }
 }
 

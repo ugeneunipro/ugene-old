@@ -48,6 +48,10 @@
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsWorkflowDesigner.h"
 
+#include <U2Core/AppContext.h>
+
+#include <U2Gui/ToolsMenu.h>
+
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -62,7 +66,7 @@
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QDesktopWidget>
 #endif
-#include <U2Core/AppContext.h>
+
 #include <QProcess>
 #include "../../workflow_designer/src/WorkflowViewItems.h"
 #include <U2Lang/WorkflowSettings.h>
@@ -267,7 +271,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //1. Open WD
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
 //2. Press button Validate schema
     GTUtilsDialog::waitForDialog(os,new MessageBoxDialogFiller(os, QMessageBox::Ok,"Nothing to run: empty workflow"));
     GTWidget::click(os,GTAction::button(os,"Validate workflow"));
@@ -288,7 +292,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 
 //5. Open WD
     menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
 //6. Load any scheme from samples tab
     GTUtilsWorkflowDesigner::addAlgorithm(os,"read alignment");
 //Expected state: item style on loaded schema must be Minimal
@@ -316,7 +320,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1){
 
 //5. Open WD
     menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
 //6. Load any scheme from samples tab
     GTUtilsWorkflowDesigner::addAlgorithm(os,"read alignment");
 //Expected state: item style on loaded schema must be Minimal
@@ -342,7 +346,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 
 //3. Open WD and place any worker on working area.
     menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
 //Expected state: workers background color must be same as in prefrences
     GTUtilsWorkflowDesigner::addAlgorithm(os,"read alignment");
     QPoint p(GTUtilsWorkflowDesigner::getItemLeft(os,"Read Alignment")+20,
@@ -364,7 +368,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. Open schema from examples
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
 //    2. Clear dashboard (select all + del button)
     GTGlobals::sleep(500);
@@ -495,7 +499,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. open WD.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
 
 //    2. Place Read align element on schema
     GTUtilsWorkflowDesigner::addAlgorithm(os, "read alignment");
@@ -529,7 +533,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, testDir + "_common_data/scenarios/sandbox/somedir"));
     //1. Open Workflow Designer
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
     //2. Write the path to the directory which does not exist(in the StartupDialogFiller).
     //3. Click OK(in the StartupDialogFiller).
     CHECK_SET_ERR(!l.hasError(), "There are error messages about write access in WD directory");
@@ -543,7 +547,7 @@ GUI_TEST_CLASS_DEFINITION(test_0058){
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "New workflow");
     QWidget *wdView = GTUtilsMdi::activeWindow(os);
     CHECK_OP(os, );
-    CHECK_SET_ERR(wdView->objectName() == "Workflow Designer", "Wrong mdi window");
+    CHECK_SET_ERR(wdView->objectName() == ToolsMenu::WORKFLOW_DESIGNER, "Wrong mdi window");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0059){

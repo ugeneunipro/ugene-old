@@ -38,8 +38,9 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVUtils.h>
 
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/ToolsMenu.h>
 
 #include <U2Test/XMLTestFormat.h>
 #include <U2Test/GTest.h>
@@ -63,15 +64,11 @@ SiteconPlugin::SiteconPlugin() : Plugin(tr("sitecon_plugin"), tr("sitecon_plugin
         ctxADV = new SiteconADVContext(this);
         ctxADV->init();
 
-        QAction* buildAction = new QAction(tr("sitecon_build"), this);
-        buildAction->setObjectName("Build new SITECON model from alignment");
+        QAction* buildAction = new QAction(tr("Build sitecon model..."), this);
+        //buildAction->setObjectName("Build new SITECON model from alignment");
+        buildAction->setObjectName(ToolsMenu::TFBS_SITECON);
         connect(buildAction, SIGNAL(triggered()), SLOT(sl_build()));
-
-        QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-        QMenu* toolsSubmenu = tools->addMenu(QIcon(":/sitecon/images/sitecon.png"), tr("sitecon_menu"));
-        toolsSubmenu->menuAction()->setObjectName("SITECON");
-
-        toolsSubmenu->addAction(buildAction);
+        ToolsMenu::addAction(ToolsMenu::TFBS_MENU, buildAction);
     }
 
     LocalWorkflow::SiteconWorkerFactory::init();

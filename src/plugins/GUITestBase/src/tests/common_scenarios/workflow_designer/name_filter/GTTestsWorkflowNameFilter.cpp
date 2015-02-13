@@ -30,6 +30,8 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "GTTestsWorkflowNameFilter.h"
 
+#include <U2Gui/ToolsMenu.h>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeWidget>
 #else
@@ -45,7 +47,7 @@ GUI_TEST_CLASS_DEFINITION( test_0001 ) {
 
     // 1. Open WD.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
 
     // 2. Open the samples tab.
     QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os, "tabs"));
@@ -86,7 +88,7 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
 
     // 1. Open WD.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
 
     // 2. Open the samples tab.
     GTWidget::click(os, GTWidget::findWidget(os, "samples"));

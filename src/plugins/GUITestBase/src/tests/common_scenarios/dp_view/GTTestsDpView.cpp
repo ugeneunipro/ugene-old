@@ -18,9 +18,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-
-#include <QApplication>
-
 #include "GTTestsDpView.h"
 #include "../../../GTUtilsEscClicker.h"
 #include "api/GTMouseDriver.h"
@@ -42,6 +39,8 @@
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
+
+#include <U2Gui/ToolsMenu.h>
 
 #include <QApplication>
 #include <QCheckBox>
@@ -69,7 +68,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa", testDir + "_common_data/scenarios/dp_view/dp2.fa");
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
     GTGlobals::sleep(1000);
 //Expected state: Dot plot view has appear. There is 1 line at view.
 //6. Use context menu on dot plot view {Dotplot->Remove}
@@ -96,7 +95,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Dotplot"<<"Remove"));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
@@ -111,7 +110,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){
 }
 GUI_TEST_CLASS_DEFINITION(test_0011_2){//commit DotPlotWidget.cpp exitButton
 //DIFFERENCE: EXITBUTTON IS USED
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Build dotplot"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::DOTPLOT));
 
     GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 8, 80,false,false));
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
@@ -156,7 +155,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/NC_014267.gb", "secondparametrTest",true,true,false,10);
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
     GTGlobals::sleep();
 
 }
@@ -182,7 +181,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
     GTGlobals::sleep(500);
     GTUtilsProjectTreeView::openView(os);
 
@@ -213,7 +212,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014_1){
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
     GTGlobals::sleep(500);
     GTUtilsProjectTreeView::openView(os);
 
@@ -236,7 +235,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014_2){
     Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
     GTGlobals::sleep(500);
     GTUtilsProjectTreeView::openView(os);
 
@@ -270,7 +269,7 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
     Runnable *filler2 = new BuildDotPlotFiller(os, dataDir + "samples/PDB/1CF7.PDB","",false,true);
     GTUtilsDialog::waitForDialog(os, filler2);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
     GTGlobals::sleep(4000);
     GTUtilsProjectTreeView::openView(os);
     GTGlobals::sleep(500);
@@ -361,7 +360,7 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
 
     QMenu *menu;
     menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
     GTGlobals::sleep();
 
     DotPlotExportImageFiller::performScenario(os, 1);

@@ -41,7 +41,9 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/ScriptingToolRegistry.h>
+
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/ToolsMenu.h>
 
 #include <U2Test/XMLTestFormat.h>
 #include <U2Test/GTest.h>
@@ -282,44 +284,34 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
         clustalWTool->getViewContext()->setParent(this);
         clustalWTool->getViewContext()->init();
 
-        ExternalToolSupportAction* clustalWAction = new ExternalToolSupportAction(tr("ClustalW..."), this, QStringList(ET_CLUSTAL));
-        clustalWAction->setObjectName("ClustalW");
+        ExternalToolSupportAction* clustalWAction = new ExternalToolSupportAction(tr("Align with ClustalW..."), this, QStringList(ET_CLUSTAL));
+        clustalWAction->setObjectName(ToolsMenu::MALIGN_CLUSTALW);
         connect(clustalWAction, SIGNAL(triggered()), clustalWTool, SLOT(sl_runWithExtFileSpecify()));
+        ToolsMenu::addAction(ToolsMenu::MALIGN_MENU, clustalWAction);
 
         clustalOTool->getViewContext()->setParent(this);
         clustalOTool->getViewContext()->init();
 
-        ExternalToolSupportAction* clustalOAction = new ExternalToolSupportAction(tr("ClustalO..."), this, QStringList(ET_CLUSTALO));
+        ExternalToolSupportAction* clustalOAction = new ExternalToolSupportAction(tr("Align with ClustalO..."), this, QStringList(ET_CLUSTALO));
+        clustalOAction->setObjectName(ToolsMenu::MALIGN_CLUSTALO);
         connect(clustalOAction, SIGNAL(triggered()), clustalOTool, SLOT(sl_runWithExtFileSpecify()));
+        ToolsMenu::addAction(ToolsMenu::MALIGN_MENU, clustalWAction);
 
         mAFFTTool->getViewContext()->setParent(this);
         mAFFTTool->getViewContext()->init();
 
-        ExternalToolSupportAction* mAFFTAction= new ExternalToolSupportAction(tr("MAFFT..."), this, QStringList(ET_MAFFT));
-        mAFFTAction->setObjectName("MAFFT");
+        ExternalToolSupportAction* mAFFTAction= new ExternalToolSupportAction(tr("Align with MAFFT..."), this, QStringList(ET_MAFFT));
+        mAFFTAction->setObjectName(ToolsMenu::MALIGN_MAFFT);
         connect(mAFFTAction, SIGNAL(triggered()), mAFFTTool, SLOT(sl_runWithExtFileSpecify()));
+        ToolsMenu::addAction(ToolsMenu::MALIGN_MENU, mAFFTAction);
 
         tCoffeeTool->getViewContext()->setParent(this);
         tCoffeeTool->getViewContext()->init();
 
-        ExternalToolSupportAction* tCoffeeAction= new ExternalToolSupportAction(tr("T-Coffee..."), this, QStringList(ET_TCOFFEE));
-        tCoffeeAction->setObjectName("T-Coffee");
+        ExternalToolSupportAction* tCoffeeAction= new ExternalToolSupportAction(tr("Align with T-Coffee..."), this, QStringList(ET_TCOFFEE));
+        tCoffeeAction->setObjectName(ToolsMenu::MALIGN_TCOFFEE);
         connect(tCoffeeAction, SIGNAL(triggered()), tCoffeeTool, SLOT(sl_runWithExtFileSpecify()));
-
-        //Add to menu MA
-        QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-        QMenu* toolsSubmenu = tools->findChild<QMenu*>(MWMENU_TOOLS_MALIGN);
-        if(toolsSubmenu == NULL){
-            toolsSubmenu = tools->addMenu(tr("Multiple alignment"));
-            toolsSubmenu->setObjectName(MWMENU_TOOLS_MALIGN);
-            toolsSubmenu->menuAction()->setObjectName("Multiple alignment");
-        }
-
-        toolsSubmenu->setIcon(QIcon(":core/images/msa.png"));//bad code
-        toolsSubmenu->addAction(clustalWAction);
-        toolsSubmenu->addAction(clustalOAction);
-        toolsSubmenu->addAction(mAFFTAction);
-        toolsSubmenu->addAction(tCoffeeAction);
+        ToolsMenu::addAction(ToolsMenu::MALIGN_MENU, tCoffeeAction);
     }
     ExternalToolRegistry *etRegistry = AppContext::getExternalToolRegistry();
     CHECK(NULL != etRegistry, );

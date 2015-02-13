@@ -25,37 +25,28 @@
 #include "DotPlotFilesDialog.h"
 #include "DotPlotTasks.h"
 
+#include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
+#include <U2Algorithm/RepeatFinderTaskFactory.h>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/GObjectSelection.h>
+#include <U2Core/GObjectUtils.h>
+
+#include <U2Gui/ToolsMenu.h>
+
 #include <U2View/ADVUtils.h>
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
 
-#include <U2Core/AppContext.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/DNASequenceObject.h>
-
-#include <U2Core/GObjectSelection.h>
-#include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
-#include <U2Algorithm/RepeatFinderTaskFactory.h>
-
 namespace U2 {
 
 extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
-
-    /*RepeatFinderTaskFactoryRegistry *fr = AppContext::getRepeatFinderTaskFactoryRegistry();
-    Q_ASSERT(fr);
-
-    RepeatFinderTaskFactory *factory = fr->getFactory("");
-    if (!factory) {
-        // can't work without repeat finder algorithm
-        return NULL;
-    }*/
-
     DotPlotPlugin* plug = new DotPlotPlugin();
     return plug;
 }
-
 
 DotPlotPlugin::DotPlotPlugin() : Plugin(tr("Dotplot"), tr("Build dotplot for sequences")), viewCtx(NULL) {
     connect( AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), SLOT(sl_initDotPlotView()));
@@ -77,9 +68,10 @@ DotPlotViewContext::DotPlotViewContext(QObject* p)
 {
     // add dotplot item to the tools menu
     QAction* showDlgAction = new QAction( QIcon(":dotplot/images/dotplot.png"), tr("Build dotplot..."), this );
-    showDlgAction->setObjectName("Build dotplot");
+    showDlgAction->setObjectName(ToolsMenu::DOTPLOT);
     connect( showDlgAction, SIGNAL( triggered() ), SLOT( sl_showDotPlotDialog() ) );
-    AppContext::getMainWindow()->getTopLevelMenu( MWMENU_TOOLS )->addAction( showDlgAction );
+    ToolsMenu::addAction(ToolsMenu::TOOLS, showDlgAction);
+    
 
     // need to know it build dotplot wizard finished work
     connect( AppContext::getTaskScheduler(), SIGNAL( si_stateChanged(Task*) ), SLOT( sl_loadTaskStateChanged(Task*) ) );

@@ -28,13 +28,16 @@
 #include "GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsLog.h"
-#include <QtCore/QDir>
+#include "GTUtilsWorkflowDesigner.h"
+#include "GTTestsWorkflowParemeterValidation.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
-#include "GTUtilsWorkflowDesigner.h"
+#include <U2Gui/ToolsMenu.h>
 
-#include "GTTestsWorkflowParemeterValidation.h"
+#include <QtCore/QDir>
+
+
 
 namespace U2 {
 
@@ -44,7 +47,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     // 1. Open WD sample "Align Sequences with MUSCLE
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
     GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
 
     // 2. Set some name for an output file
@@ -102,7 +105,7 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. Open WD sample "Align Sequences with MUSCLE"
     QMenu* menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
     GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
 
 //    2. Set some name for an output file
@@ -153,7 +156,7 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
     GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
 
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItemByName( os, menu, QStringList( ) << "Workflow Designer" );
+    GTMenu::clickMenuItemByName( os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER );
 
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence", true );
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Find Pattern" );
@@ -211,7 +214,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, testDir + "_common_data/scenarios/sandbox/permDir"));
     // 1. Open WD sample "Align Sequences with MUSCLE
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
     GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
 
     // 2. Set some name for an output file
@@ -265,7 +268,7 @@ GUI_TEST_CLASS_DEFINITION( test_0006 ) {
     GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
 
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItemByName( os, menu, QStringList( ) << "Workflow Designer" );
+    GTMenu::clickMenuItemByName( os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER );
 
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence", true );
     GTUtilsWorkflowDesigner::addAlgorithm( os, "CD-Search" );

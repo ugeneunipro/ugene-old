@@ -58,7 +58,10 @@
 #include "runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
+#include <U2Gui/ToolsMenu.h>
+
 namespace U2 {
+
 const int GTUtilsWorkflowDesigner::verticalShift = 35;
 #define GT_CLASS_NAME "GTUtilsWorkflowDesigner"
 
@@ -67,7 +70,7 @@ void GTUtilsWorkflowDesigner::openWorkflowDesigner(U2OpStatus &os){
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
 
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
     GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME

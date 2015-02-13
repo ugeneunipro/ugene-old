@@ -52,6 +52,7 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/Notification.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/ToolsMenu.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 
@@ -82,16 +83,10 @@ KalignPlugin::KalignPlugin()
         ctx = new KalignMSAEditorContext(this);
         ctx->init();
 
-        QAction* kalignAction = new QAction(tr("Kalign..."), this);
-        kalignAction->setObjectName("Kalign");
+        QAction* kalignAction = new QAction(tr("Align with Kalign..."), this);
+        kalignAction->setObjectName(ToolsMenu::MALIGN_KALIGN);
         kalignAction->setIcon(QIcon(":kalign/images/kalign_16.png"));
-        QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-        QMenu* toolsSubmenu = tools->findChild<QMenu*>(MWMENU_TOOLS_MALIGN);
-        if (toolsSubmenu == NULL){
-            toolsSubmenu = tools->addMenu(tr("Multiple alignment"));
-            toolsSubmenu->setObjectName(MWMENU_TOOLS_MALIGN);
-        }
-        toolsSubmenu->addAction(kalignAction);
+        ToolsMenu::addAction(ToolsMenu::MALIGN_MENU, kalignAction);
         connect(kalignAction,SIGNAL(triggered()),SLOT(sl_runWithExtFileSpecify()));
     }
 

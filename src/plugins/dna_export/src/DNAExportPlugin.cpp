@@ -33,8 +33,11 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/GAutoDeleteList.h>
 
+#include <U2Gui/ToolsMenu.h>
+
 #include <U2Test/XMLTestFormat.h>
 #include <U2Test/GTestFrameworkComponents.h>
+
 
 namespace U2 {
 
@@ -47,10 +50,9 @@ DNAExportPlugin::DNAExportPlugin() : Plugin(tr("DNA export"), tr("Export and imp
     if (AppContext::getMainWindow()) {
         services.push_back(new DNAExportService());
         QAction* a = new QAction(QIcon(":/core/images/add_sequence.png"), tr("Generate sequence..."), this);
-        a->setObjectName("Generate Sequence");
+        a->setObjectName(ToolsMenu::GENERATE_SEQUENCE);
         connect(a, SIGNAL(triggered()), SLOT(sl_generateSequence()));
-        QMenu* toolsMenu = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-        toolsMenu->addAction(a);
+        ToolsMenu::addAction(ToolsMenu::TOOLS, a);
     }
 
     //tests

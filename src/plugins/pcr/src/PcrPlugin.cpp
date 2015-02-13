@@ -27,6 +27,7 @@
 
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
+#include <U2Gui/ToolsMenu.h>
 
 #include "InSilicoPcrOPWidgetFactory.h"
 #include "PrimerLibrary.h"
@@ -56,10 +57,11 @@ PcrPlugin::PcrPlugin()
         SAFE_POINT(opRegistry != NULL, L10N::nullPointerError("Options Panel Registry"), );
         opRegistry->registerFactory(new InSilicoPcrOPWidgetFactory());
 
-        QMenu *tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-        QMenu *toolsSubmenu = tools->addMenu(tr("Primer"));
         if (NULL != library) {
-            toolsSubmenu->addAction(QIcon(":/core/images/db/database_go.png"), tr("Primer library"), this, SLOT(sl_primerLibrary()));
+            QAction *libraryAction = new QAction(QIcon(":/core/images/db/database_go.png"), tr("Primer library"), this);
+            libraryAction->setObjectName(ToolsMenu::PRIMER_LIBRARY);
+            connect(libraryAction, SIGNAL(triggered()), SLOT(sl_primerLibrary()));
+            ToolsMenu::addAction(ToolsMenu::PRIMER_MENU, libraryAction);
         }
     }
     LocalWorkflow::FindPrimerPairsWorkerFactory::init();

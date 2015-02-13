@@ -40,6 +40,7 @@
 #include <U2View/AnnotatedDNAView.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/ToolsMenu.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 
@@ -147,12 +148,12 @@ bool QueryDesignerService::closeViews() {
 }
 
 void QueryDesignerService::sl_startQDPlugin() {
-    QAction* action = new QAction(QIcon(":query_designer/images/query_designer.png"), tr("Query Designer..."), this);
-    action->setObjectName("Query Designer");
+    QAction* action = new QAction(QIcon(":query_designer/images/query_designer.png"), tr("Query Designer"), this);
+    //action->setObjectName("Query Designer");
     connect(action, SIGNAL(triggered()), SLOT(sl_showDesignerWindow()));
-
-    QMenu* toolsMenu = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-    toolsMenu->addAction(action);
+    
+    action->setObjectName(ToolsMenu::QUERY_DESIGNER);
+    ToolsMenu::addAction(ToolsMenu::TOOLS, action);
 }
 
 void QueryDesignerService::sl_showDesignerWindow() {

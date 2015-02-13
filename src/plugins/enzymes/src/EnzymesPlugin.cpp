@@ -37,13 +37,13 @@
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/ToolsMenu.h>
 
 #include <U2View/ADVConstants.h>
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVSequenceWidget.h>
 #include <U2View/ADVUtils.h>
-
 
 #include <U2Test/GTestFrameworkComponents.h>
 
@@ -104,23 +104,14 @@ EnzymesPlugin::EnzymesPlugin()
 
 void EnzymesPlugin::createToolsMenu() {
     openDigestSequenceDialog = new QAction(tr("Digest into Fragments..."), this);
-    openDigestSequenceDialog->setObjectName("Digest into Fragments");
+    openDigestSequenceDialog->setObjectName(ToolsMenu::CLONING_FRAGMENTS);
     openConstructMoleculeDialog = new QAction(tr("Construct Molecule..."), this);
-    openConstructMoleculeDialog->setObjectName("Construct Molecule");
+    openConstructMoleculeDialog->setObjectName(ToolsMenu::CLONING_CONSTRUCT);
     openCreateFragmentDialog = new QAction(tr("Create Fragment..."), this);
     openCreateFragmentDialog->setObjectName("Create Fragment");
 
-    QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-
-    QMenu* cloningMenu = tools->addMenu(QIcon(":core/images/dna_helix.png"), tr("Cloning"));
-    cloningMenu->menuAction()->setObjectName("Cloning");
-
-    cloningMenu->addAction(openDigestSequenceDialog);
     connect(openDigestSequenceDialog, SIGNAL(triggered()), SLOT(sl_onOpenDigestSequenceDialog()));
-
-    cloningMenu->addAction(openConstructMoleculeDialog);
     connect(openConstructMoleculeDialog, SIGNAL(triggered()), SLOT(sl_onOpenConstructMoleculeDialog()));
-
     connect(openCreateFragmentDialog, SIGNAL(triggered()), SLOT(sl_onOpenCreateFragmentDialog()));
 }
 

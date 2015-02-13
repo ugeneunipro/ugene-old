@@ -160,6 +160,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/ProjectViewModel.h>
+#include <U2Gui/ToolsMenu.h>
 
 #include "../../workflow_designer/src/WorkflowViewItems.h"
 
@@ -1382,7 +1383,7 @@ GUI_TEST_CLASS_DEFINITION(test_1299) {
  *  Expected state: Popup menu should appear, contains bold "Additional" item menu
  */
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
     GTUtilsWorkflowDesigner::addSample(os, "Find substrings in sequences");
 
     GTUtilsWorkflowDesigner::click(os, "Find Substrings");
@@ -1751,7 +1752,7 @@ public:
 #undef GT_CLASS_NAME
     };
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
 
     GTUtilsDialog::waitForDialog(os, new CallVariantsWizardFiller(os));
@@ -5224,7 +5225,7 @@ GUI_TEST_CLASS_DEFINITION( test_1821 ) {
 
     //1. Open WD
     QMenu* menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItemByName( os, menu, QStringList( ) << "Workflow Designer" );
+    GTMenu::clickMenuItemByName( os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER );
     GTGlobals::sleep( 500 );
 
     //2. Select "Align sequences with MUSCLE"
@@ -5373,7 +5374,7 @@ GUI_TEST_CLASS_DEFINITION(test_1860) {
     // 1) Open Workflow Designer
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItemByName( os, menu, QStringList( ) << "Workflow Designer" );
+    GTMenu::clickMenuItemByName( os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER );
 
     const QString textReaderName = "Read Plain Text";
     const QString textWriterName = "Write Plain Text";
@@ -5401,7 +5402,7 @@ GUI_TEST_CLASS_DEFINITION(test_1865) {
     // 1) Open Workflow Designer
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItemByName( os, menu, QStringList( ) << "Workflow Designer" );
+    GTMenu::clickMenuItemByName( os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER );
 
     const QString sequenceWriterName = "Write Sequence";
 
@@ -6289,7 +6290,7 @@ GUI_TEST_CLASS_DEFINITION( test_2089 )
     // 2. Open WD
     // 3. Set any folder without write access as workflow output directory. Click OK.
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2100_1 ){
@@ -7243,7 +7244,7 @@ GUI_TEST_CLASS_DEFINITION( test_2202 )
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, workflowOutputDir.absolutePath()));
     QMenu* menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
 
     GTGlobals::sleep();
     CHECK_SET_ERR(workflowOutputDir.exists(), "Dir wasn't created");
@@ -7392,7 +7393,7 @@ GUI_TEST_CLASS_DEFINITION( test_2266_1 ){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, testDir + "_common_data/scenarios/sandbox"));
 
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Assembly (BAM/SAM)"));
@@ -7588,7 +7589,7 @@ GUI_TEST_CLASS_DEFINITION( test_2281 ){
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     //1. Open WD
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
     QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os,"tabs"));
     CHECK_SET_ERR(tabs!=NULL, "tabs widget not found");
 
@@ -8113,7 +8114,7 @@ GUI_TEST_CLASS_DEFINITION( test_2352 ) {
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
 
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItemByName( os, menu, QStringList( ) << "Build dotplot" );
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
 
     GTGlobals::sleep();
 }
@@ -8226,7 +8227,7 @@ GUI_TEST_CLASS_DEFINITION( test_2377 ) {
     GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
 
     QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItemByName( os, menu, QStringList( ) << "Workflow Designer" );
+    GTMenu::clickMenuItemByName( os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER );
 
     const QString assemblyReaderName = "Read Assembly";
     const QString assemblyWriterName = "Write Assembly";
@@ -9590,7 +9591,7 @@ GUI_TEST_CLASS_DEFINITION(test_2581_2) {
 
 //    3. Press the "Align" button
 //    Expected state: after a few seconds alignment has finished, UGENE does not crash
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Align" << "Align with ClustalO..."));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << ToolsMenu::MALIGN_MENU << ToolsMenu::MALIGN_CLUSTALO));
     GTUtilsDialog::waitForDialog(os, new ClustalOSupportRunDialogFiller(os));
     GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
 
@@ -14014,7 +14015,7 @@ GUI_TEST_CLASS_DEFINITION(test_3477) {
 //    Expected state: "Digest sequence into fragments" dialog appeared.
 //    5. Add "TaaI" to selected enzymes and accept the dialog.
     GTUtilsDialog::waitForDialog(os, new DigestSequenceDialogFiller(os));
-    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Cloning" << "Digest into Fragments...");
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::CLONING_MENU << ToolsMenu::CLONING_FRAGMENTS);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    6. Select {Tools -> Cloning -> Construct molecule} menu item in the main menu.
@@ -14037,7 +14038,7 @@ GUI_TEST_CLASS_DEFINITION(test_3477) {
     actions << ConstructMoleculeDialogFiller::Action(ConstructMoleculeDialogFiller::ClickCancel, "");
 
     GTUtilsDialog::waitForDialog(os, new ConstructMoleculeDialogFiller(os, actions));
-    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Cloning" << "Construct Molecule...");
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::CLONING_MENU << ToolsMenu::CLONING_CONSTRUCT);
     GTGlobals::sleep();
 }
 
@@ -14154,7 +14155,7 @@ GUI_TEST_CLASS_DEFINITION(test_3518) {
     actions << PwmBuildDialogFiller::Action(PwmBuildDialogFiller::ClickCancel, "");
     GTUtilsDialog::waitForDialog(os, new PwmBuildDialogFiller(os, actions));
 
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Weight matrix" << "Build Weight Matrix");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::TFBS_MENU << ToolsMenu::TFBS_WEIGHT);
     GTGlobals::sleep();
 }
 

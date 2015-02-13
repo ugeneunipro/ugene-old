@@ -37,9 +37,11 @@
 
 #include <U2Algorithm/PWMConversionAlgorithm.h>
 
-#include <U2Lang/QueryDesignerRegistry.h>
-
 #include <U2Core/AppContext.h>
+
+#include <U2Gui/ToolsMenu.h>
+
+#include <U2Lang/QueryDesignerRegistry.h>
 
 #include <QtCore/QDir>
 
@@ -56,15 +58,10 @@ WeightMatrixPlugin::WeightMatrixPlugin() : Plugin(tr("Weight matrix"), tr("Searc
         ctxADV = new WeightMatrixADVContext(this);
         ctxADV->init();
 
-        QAction* buildAction = new QAction(tr("Build Weight Matrix"), this);
-        buildAction->setObjectName("Build Weight Matrix");
+        QAction* buildAction = new QAction(tr("Build Weight Matrix..."), this);
+        buildAction->setObjectName(ToolsMenu::TFBS_WEIGHT);
         connect(buildAction, SIGNAL(triggered()), SLOT(sl_build()));
-
-        QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-        QMenu* toolsSubmenu = tools->addMenu(QIcon(":/weight_matrix/images/weight_matrix.png"), tr("Weight matrix"));
-        toolsSubmenu->menuAction()->setObjectName("Weight matrix");
-
-        toolsSubmenu->addAction(buildAction);
+        ToolsMenu::addAction(ToolsMenu::TFBS_MENU, buildAction);
 
         GObjectViewFactory *ff = new PFMatrixViewFactory(this);
         AppContext::getObjectViewFactoryRegistry()->registerGObjectViewFactory(ff);

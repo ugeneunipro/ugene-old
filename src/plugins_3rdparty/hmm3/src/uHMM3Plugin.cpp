@@ -30,20 +30,24 @@
 #include <QtWidgets/QMessageBox>
 #endif
 
-#include <U2Gui/MainWindow.h>
+
 #include <U2Core/AppContext.h>
+#include <U2Core/GAutoDeleteList.h>
+#include <U2Core/GObjectSelection.h>
+#include <U2Core/MAlignmentObject.h>
+
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/MainWindow.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/ProjectView.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/GAutoDeleteList.h>
+#include <U2Gui/ToolsMenu.h>
+
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVUtils.h>
-#include <U2View/MSAEditorFactory.h>
 #include <U2View/MSAEditor.h>
-#include <U2Gui/GUIUtils.h>
-#include <U2Core/GObjectSelection.h>
+#include <U2View/MSAEditorFactory.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 #include <U2Test/XMLTestFormat.h>
@@ -102,31 +106,21 @@ UHMM3Plugin::UHMM3Plugin() : Plugin( tr( "hmm3_plugin_name" ), tr( "hmm3_plugin_
     
     // HMMER3 menu
     MainWindow * mainWnd = AppContext::getMainWindow();
-    if( mainWnd ) {
-        QMenu * toolsMenu = mainWnd->getTopLevelMenu(MWMENU_TOOLS);
-        assert( NULL != toolsMenu );
-        QMenu * hmmMenu = toolsMenu->property("hmm_menu").value<QMenu*>();
-        if(hmmMenu == NULL) {
-            hmmMenu = toolsMenu->addMenu(QIcon( ":/hmm3/images/hmmer_16.png" ), tr("HMMER tools"));
-            toolsMenu->setProperty("hmm_menu", qVariantFromValue<QMenu*>(hmmMenu));
-        }
-        
-        QMenu * hmm3ToolsSub = hmmMenu->addMenu(QIcon( ":/hmm3/images/hmmer_16.png" ), tr("HMMER3 tools"));
-        hmm3ToolsSub->menuAction()->setObjectName("HMMER3 tools");
-        QAction * buildAction = new QAction( tr( "Build HMM3 profile" ), this );
-        buildAction->setObjectName("Build HMM3 profile");
+    if( mainWnd ) {  
+        QAction * buildAction = new QAction( tr( "Build HMM3 profile..." ), this );
+        buildAction->setObjectName(ToolsMenu::HMMER_BUILD3);
         connect( buildAction, SIGNAL( triggered() ), SLOT( sl_buildProfile() ) );
-        hmm3ToolsSub->addAction( buildAction );
+        ToolsMenu::addAction(ToolsMenu::HMMER_MENU, buildAction);
         
-        QAction * searchAction = new QAction( tr( "Search with HMM3" ), this );
-        searchAction->setObjectName("Search with HMM3");
+        QAction * searchAction = new QAction( tr( "Search with HMM3..." ), this );
+        searchAction->setObjectName(ToolsMenu::HMMER_SEARCH3);
         connect( searchAction, SIGNAL( triggered() ), SLOT( sl_searchHMMSignals() ) );
-        hmm3ToolsSub->addAction( searchAction );
+        ToolsMenu::addAction(ToolsMenu::HMMER_MENU, searchAction);
         
-        QAction * phmmerAction = new QAction( tr( "Search with HMM3 phmmer" ), this );
-        phmmerAction->setObjectName("Search with HMM3 phmmer");
+        QAction * phmmerAction = new QAction( tr( "Search with HMM3 phmmer..." ), this );
+        phmmerAction->setObjectName(ToolsMenu::HMMER_SEARCH3P);
         connect( phmmerAction, SIGNAL( triggered() ), SLOT( sl_phmmerSearch() ) );
-        hmm3ToolsSub->addAction( phmmerAction );
+        ToolsMenu::addAction(ToolsMenu::HMMER_MENU, phmmerAction);
         
         // contexts
         msaEditorCtx = new UHMM3MSAEditorContext( this );
@@ -134,8 +128,7 @@ UHMM3Plugin::UHMM3Plugin() : Plugin( tr( "hmm3_plugin_name" ), tr( "hmm3_plugin_
         
         advCtx = new UHMM3ADVContext( this );
         advCtx->init();
-    }
-    
+    }    
 }
 
 void UHMM3Plugin::sl_buildProfile() {
