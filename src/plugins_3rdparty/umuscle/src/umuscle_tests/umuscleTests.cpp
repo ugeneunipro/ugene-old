@@ -264,8 +264,8 @@ Task::ReportResult GTest_CompareMAlignment::report() {
             foreach(const MAlignmentRow &maItem2, alignedSeqs2) {
                 if (maItem1.getName() == maItem2.getName()) {
                     nameFound = true;
-					int l1 = maItem1.getCoreEnd();
-					int l2 = maItem2.getCoreEnd();
+                    int l1 = maItem1.getCoreEnd();
+                    int l2 = maItem2.getCoreEnd();
                     if(l1!=l2) {
                         stateInfo.setError(  QString("Aligned sequences \"%1\" length not matched \"%2\", expected \"%3\"").arg(maItem1.getName()).arg(l1).arg(l2) );
                         return ReportResult_Finished;
@@ -401,7 +401,7 @@ Task::ReportResult GTest_uMuscleAddUnalignedSequenceToProfile::report() {
 
     U2OpStatus2Log os;
     for (int i = origAliSeqs, j = 0; i < ma.getNumRows(); i++, j++) {
-		const MAlignmentRow& row = ma.getRow(i);
+        const MAlignmentRow& row = ma.getRow(i);
         QByteArray seq = row.toByteArray(ma.getLength(), os);
         QList<int> seqGaps = gapPositionsForSeqs[j];
         for (int pos = 0; pos < seq.size(); pos++) {
@@ -435,26 +435,26 @@ void GTest_Muscle_Load_Align_QScore::init(XMLTestFormat *tf, const QDomElement& 
     muscleTask = NULL;
     ma1 = NULL;
     ma2 = NULL;
-    
+
     if (inFileURL.isEmpty()) {
-        failMissingValue(IN_FILE_NAME_ATTR); 
+        failMissingValue(IN_FILE_NAME_ATTR);
         return;
     }
     patFileURL = el.attribute(OUT_FILE_NAME_ATTR);
     if (patFileURL.isEmpty()) {
-        failMissingValue(OUT_FILE_NAME_ATTR); 
+        failMissingValue(OUT_FILE_NAME_ATTR);
         return;
     }
 
     QString str_qscore = el.attribute(QSCORE_ATTR);
     if (str_qscore.isEmpty()) {
-        failMissingValue(QSCORE_ATTR); 
+        failMissingValue(QSCORE_ATTR);
         return;
     }
     bool ok = false;
     qscore = str_qscore.toFloat(&ok);
     if (!ok) {
-        failMissingValue(QSCORE_ATTR); 
+        failMissingValue(QSCORE_ATTR);
         return;
     }
 
@@ -464,7 +464,7 @@ void GTest_Muscle_Load_Align_QScore::init(XMLTestFormat *tf, const QDomElement& 
         bool ok = false;
         dqscore = str_dqscore.toFloat(&ok);
         if (!ok) {
-            failMissingValue(QSCORE_DELTA_ATTR); 
+            failMissingValue(QSCORE_DELTA_ATTR);
             return;
         }
     }
@@ -496,7 +496,7 @@ void GTest_Muscle_Load_Align_QScore::prepare() {
     loadTask1->setSubtaskProgressWeight(0);
     addSubTask(loadTask1);
     iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(env->getVar("COMMON_DATA_DIR")+"/"+patFileURL));
-    
+
     loadTask2 = new LoadDocumentTask(BaseDocumentFormats::FASTA,env->getVar("COMMON_DATA_DIR")+"/"+patFileURL,iof);
 
     addSubTask(loadTask2);
@@ -565,11 +565,11 @@ QList<Task*> GTest_Muscle_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
             setError( muscleTask->getError() );
             return res;
         }
-        
+
         MuscleTask * localMuscle = qobject_cast<MuscleTask*>( subTask );
         assert( NULL != localMuscle );
         ma1->setMAlignment( localMuscle->resultMA );
-        
+
     }
     else if (subTask == loadTask2) {
         if (loadTask2->hasError()) {
@@ -613,7 +613,7 @@ void GTest_Muscle_Load_Align_QScore::run() {
     }
 
     bool match = fabsl (this->qscore - qscore) < dqscore;
-    
+
     if(!match) stateInfo.setError(  QString("qscore not matched: %1, expected %2").arg(qscore).arg(this->qscore));
 }
 
@@ -625,7 +625,7 @@ Task::ReportResult GTest_Muscle_Load_Align_QScore::report() {
 GTest_Muscle_Load_Align_QScore::~GTest_Muscle_Load_Align_QScore() {
 }
 
-Muscle_Load_Align_Compare_Task::Muscle_Load_Align_Compare_Task( QString inFileURL, QString patFileURL, 
+Muscle_Load_Align_Compare_Task::Muscle_Load_Align_Compare_Task( QString inFileURL, QString patFileURL,
                                                                 MuscleTaskSettings& _config, QString _name)
 : Task(_name, TaskFlags_FOSCOE), str_inFileURL(inFileURL), str_patFileURL(patFileURL),muscleTask(NULL), config(_config)
 {
@@ -701,9 +701,9 @@ QList<Task*> Muscle_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
             stateInfo.setError(  QString("can't convert dna sequences to MAlignment") );
             return res;
         }
-        
+
         muscleTask = new MuscleTask(ma1->getMAlignment(),config);
-        
+
         res << muscleTask;
         this->connect(muscleTask,SIGNAL(si_progressChanged()),SLOT(sl_muscleProgressChg()));
     }
@@ -762,8 +762,8 @@ void Muscle_Load_Align_Compare_Task::run() {
         foreach(const MAlignmentRow&maItem2, alignedSeqs2) {
             if (maItem1.getName()== maItem2.getName()) {
                 nameFound = true;
-				int l1 = maItem1.getCoreLength();
-				int l2 = maItem2.getCoreLength();
+                int l1 = maItem1.getCoreLength();
+                int l2 = maItem2.getCoreLength();
                 if (l1!= l2) {
                     stateInfo.setError(  QString("Aligned sequences \"%1\" length not matched \"%2\", expected \"%3\"").arg(maItem1.getName()).arg(l1).arg(l2) );
                     return;
@@ -798,15 +798,15 @@ Task::ReportResult Muscle_Load_Align_Compare_Task::report() {
 void GTest_Muscle_Load_Align_Compare::init(XMLTestFormat *, const QDomElement& el) {
     inFileURL = el.attribute(IN_FILE_NAME_ATTR);
     if (inFileURL.isEmpty()) {
-        failMissingValue(IN_FILE_NAME_ATTR); 
+        failMissingValue(IN_FILE_NAME_ATTR);
         return;
     }
     patFileURL = el.attribute(OUT_FILE_NAME_ATTR);
     if (inFileURL.isEmpty()) {
-        failMissingValue(OUT_FILE_NAME_ATTR); 
+        failMissingValue(OUT_FILE_NAME_ATTR);
         return;
     }
-    
+
 }
 
 void GTest_Muscle_Load_Align_Compare::prepare() {
@@ -829,7 +829,7 @@ void GTest_Muscle_Load_Align_Compare::prepare() {
         stateInfo.setError(  QString("file not exist %1").arg(patFile.absoluteFilePath()) );
         return;
     }
-    
+
     worker = new Muscle_Load_Align_Compare_Task(inFile.absoluteFilePath(),patFile.absoluteFilePath(),mSettings,inFile.fileName());
     addSubTask(worker);
 }

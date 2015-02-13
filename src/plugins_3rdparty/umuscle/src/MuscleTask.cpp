@@ -50,15 +50,15 @@
 
 #include <U2Gui/OpenViewTask.h>
 
-#include "muscle/muscle.h" 
-#include "muscle/muscle_context.h" 
+#include "muscle/muscle.h"
+#include "muscle/muscle_context.h"
 
 #define MUSCLE_LOCK_REASON "Muscle lock"
 
 namespace U2 {
 
 void MuscleTaskSettings::reset() {
-    nThreads = 0; 
+    nThreads = 0;
     op = MuscleTaskOp_Align;
     maxIterations = 8;
     maxSecs = 0;
@@ -70,12 +70,12 @@ void MuscleTaskSettings::reset() {
     mode = Default;
 }
 
-MuscleTask::MuscleTask(const MAlignment& ma, const MuscleTaskSettings& _config) 
+MuscleTask::MuscleTask(const MAlignment& ma, const MuscleTaskSettings& _config)
 :Task(tr("MUSCLE alignment"), TaskFlags_FOSCOE), config(_config), inputMA(ma)
 {
     GCOUNTER( cvar, tvar, "MuscleTask" );
     config.nThreads = (config.nThreads == 0) ? AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount():config.nThreads;
-    SAFE_POINT_EXT(config.nThreads > 0, 
+    SAFE_POINT_EXT(config.nThreads > 0,
         setError("Incorrect number of max parallel subtasks"), );
     setMaxParallelSubtasks(config.nThreads);
 
@@ -96,15 +96,15 @@ MuscleTask::MuscleTask(const MAlignment& ma, const MuscleTaskSettings& _config)
     QString inputAlName = inputMA.getName();
     resultMA.setName(inputAlName);
     resultSubMA.setName(inputAlName);
-    
+
     inputSubMA = inputMA;
     if (config.alignRegion && config.regionToAlign.length != inputMA.getLength()) {
-        SAFE_POINT_EXT(config.regionToAlign.length > 0, 
+        SAFE_POINT_EXT(config.regionToAlign.length > 0,
             setError(tr("Incorrect region to align")), );
         inputSubMA = inputMA.mid(config.regionToAlign.startPos, config.regionToAlign.length);
         CHECK_EXT(inputSubMA != MAlignment(), setError(tr("Stopping MUSCLE task, because of error in MAlignment::mid function")), );
     }
-    
+
     ctx->input_uIds = new unsigned[inputSubMA.getNumRows()];
     ctx->tmp_uIds = new unsigned[inputSubMA.getNumRows()];
     for(unsigned i=0, n = inputSubMA.getNumRows(); i<n; i++) {
@@ -131,20 +131,20 @@ void MuscleTask::run() {
 
     switch(config.op) {
         case MuscleTaskOp_Align:
-            doAlign(false); 
+            doAlign(false);
             break;
-        case MuscleTaskOp_Refine: 
-            doAlign(true); 
+        case MuscleTaskOp_Refine:
+            doAlign(true);
             break;
-        case MuscleTaskOp_AddUnalignedToProfile: 
+        case MuscleTaskOp_AddUnalignedToProfile:
             doAddUnalignedToProfile();
             break;
-        case MuscleTaskOp_ProfileToProfile: 
+        case MuscleTaskOp_ProfileToProfile:
             doProfile2Profile();
             break;
     }
     if (!hasError() && !isCanceled()) {
-        SAFE_POINT_EXT(NULL != resultMA.getAlphabet(), 
+        SAFE_POINT_EXT(NULL != resultMA.getAlphabet(),
             stateInfo.setError("The alphabet of result alignment is null"),);
     }
     TaskLocalData::detachMuscleTLSContext();
@@ -167,7 +167,7 @@ void MuscleTask::doAlign(bool refine) {
     U2OpStatus2Log os;
 
     if(!isCanceled()) {
-        SAFE_POINT_EXT(!resultSubMA.isEmpty(), 
+        SAFE_POINT_EXT(!resultSubMA.isEmpty(),
             stateInfo.setError("The result multiple alignment is empty!"), );
 
         resultMA.setAlphabet(inputMA.getAlphabet());
@@ -203,10 +203,10 @@ void MuscleTask::doAlign(bool refine) {
         }
         delete[] existID;
 
-        SAFE_POINT_EXT(resultSubMA.getNumRows() == inputMA.getNumRows(), 
+        SAFE_POINT_EXT(resultSubMA.getNumRows() == inputMA.getNumRows(),
             stateInfo.setError(tr("Unexpected number of rows in the result multiple alignment!")), );
 
-        if (config.alignRegion && config.regionToAlign.length != inputMA.getLength()) {                        
+        if (config.alignRegion && config.regionToAlign.length != inputMA.getLength()) {
 
             for(int i=0, n = inputMA.getNumRows(); i < n; i++) {
                 const MAlignmentRow& row= inputMA.getRow(ids[i]);
@@ -216,20 +216,21 @@ void MuscleTask::doAlign(bool refine) {
                 for(int i=0; i < nSeq; i++)  {
                     int regionLen = config.regionToAlign.startPos;
                     MAlignmentRow inputRow = inputMA.getRow(ids[i]).mid(0,regionLen, os);
-                    resultMA.appendChars(i, inputRow.toByteArray(regionLen, os).constData(), regionLen);
+                    resultMA.appendChars(i, 0, inputRow.toByteArray(regionLen, os).constData(), regionLen);
                 }
             }
             resultMA += resultSubMA;
+            int resultLen = resultMA.getLength();
             if (config.regionToAlign.endPos() != inputMA.getLength()) {
                 int subStart = config.regionToAlign.endPos();
                 int subLen = inputMA.getLength() - config.regionToAlign.endPos();
                 for(int i = 0; i < nSeq; i++) {
                     MAlignmentRow inputRow = inputMA.getRow(ids[i]).mid(subStart, subLen, os);
-                    resultMA.appendChars(i, inputRow.toByteArray(subLen, os).constData(), subLen);
+                    resultMA.appendChars(i, resultLen, inputRow.toByteArray(subLen, os).constData(), subLen);
                 }
             }
             delete[] ids;
-            //TODO: check if there are GAP columns on borders and remove them        
+            //TODO: check if there are GAP columns on borders and remove them
         } else {
             resultMA = resultSubMA;
         }
@@ -253,12 +254,12 @@ Task::ReportResult MuscleTask::report() {
 //////////////////////////////////////////////////////////////////////////
 // MuscleAddSequencesToProfileTask
 
-MuscleAddSequencesToProfileTask::MuscleAddSequencesToProfileTask(MAlignmentObject* _obj, const QString& fileWithSequencesOrProfile, MMode _mode) 
+MuscleAddSequencesToProfileTask::MuscleAddSequencesToProfileTask(MAlignmentObject* _obj, const QString& fileWithSequencesOrProfile, MMode _mode)
 : Task("", TaskFlags_NR_FOSCOE), maObj(_obj), mode(_mode)
 {
     setUseDescriptionFromSubtask(true);
     setVerboseLogMode(true);
-    
+
     QString aliName = maObj->getDocument()->getName();
     QString fileName = QFileInfo(fileWithSequencesOrProfile).fileName();
     QString tn;
@@ -269,7 +270,7 @@ MuscleAddSequencesToProfileTask::MuscleAddSequencesToProfileTask(MAlignmentObjec
     }
     setTaskName(tn);
 
-    QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(fileWithSequencesOrProfile);    
+    QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(fileWithSequencesOrProfile);
     if (detectedFormats.isEmpty()) {
         setError("Unknown format");
         return;
@@ -322,7 +323,7 @@ QList<Task*> MuscleAddSequencesToProfileTask::onSubTaskFinished(Task* subTask) {
             s.profile = maObj->getMAlignment();
         }
     }
-    
+
     if (s.profile.isEmpty()) {
         if (mode == Sequences2Profile) {
             stateInfo.setError(tr("No sequences found in file %1").arg(loadTask->getDocument()->getURLString()));
@@ -345,7 +346,7 @@ Task::ReportResult MuscleAddSequencesToProfileTask::report() {
 //////////////////////////////////////////////////////////////////////////
 // MuscleGObjectTask
 
-MuscleGObjectTask::MuscleGObjectTask(MAlignmentObject* _obj, const MuscleTaskSettings& _config) 
+MuscleGObjectTask::MuscleGObjectTask(MAlignmentObject* _obj, const MuscleTaskSettings& _config)
 : AlignGObjectTask("", TaskFlags_NR_FOSCOE,_obj), lock(NULL), muscleTask(NULL), config(_config)
 {
     QString aliName;
@@ -359,13 +360,13 @@ MuscleGObjectTask::MuscleGObjectTask(MAlignmentObject* _obj, const MuscleTaskSet
         case MuscleTaskOp_Align:
             tn = tr("MUSCLE align '%1'").arg(aliName);
             break;
-        case MuscleTaskOp_Refine: 
+        case MuscleTaskOp_Refine:
             tn = tr("MUSCLE refine '%1'").arg(aliName);
             break;
-        case MuscleTaskOp_AddUnalignedToProfile: 
+        case MuscleTaskOp_AddUnalignedToProfile:
             tn = tr("MUSCLE add to profile '%1'").arg(aliName);
             break;
-        case MuscleTaskOp_ProfileToProfile: 
+        case MuscleTaskOp_ProfileToProfile:
             tn = tr("MUSCLE align profiles");
             break;
         default: assert(0);
@@ -436,7 +437,7 @@ Task::ReportResult MuscleGObjectTask::report() {
             return ReportResult_Finished;
         }
 
-        obj->setMAlignment(muscleTask->resultMA);    
+        obj->setMAlignment(muscleTask->resultMA);
     }
     else if (config.op == MuscleTaskOp_Align || config.op == MuscleTaskOp_Refine) {
         QList<qint64> rowsOrder = MSAUtils::compareRowsAfterAlignment(muscleTask->inputMA, muscleTask->resultMA, stateInfo);
@@ -448,7 +449,7 @@ Task::ReportResult MuscleGObjectTask::report() {
         }
 
         QMap<qint64, QList<U2MsaGap> > rowsGapModel;
-        for (int i = 0, n = muscleTask->resultMA.getNumRows(); i < n; ++i) {            
+        for (int i = 0, n = muscleTask->resultMA.getNumRows(); i < n; ++i) {
             qint64 rowId = muscleTask->resultMA.getRow(i).getRowDBInfo().rowId;
             const QList<U2MsaGap>& newGapModel = muscleTask->resultMA.getRow(i).getGapModel();
             rowsGapModel.insert(rowId, newGapModel);
@@ -573,7 +574,7 @@ Task::ReportResult MuscleWithExtFileSpecifySupportTask::report(){
 
 //////////////////////////////////
 //MuscleGObjectRunFromSchemaTask
-MuscleGObjectRunFromSchemaTask::MuscleGObjectRunFromSchemaTask(MAlignmentObject * obj, const MuscleTaskSettings & c) 
+MuscleGObjectRunFromSchemaTask::MuscleGObjectRunFromSchemaTask(MAlignmentObject * obj, const MuscleTaskSettings & c)
 : AlignGObjectTask("", TaskFlags_NR_FOSCOE, obj), config(c)
 {
     setMAObject(obj);
@@ -608,7 +609,7 @@ void MuscleGObjectRunFromSchemaTask::setMAObject(MAlignmentObject* maobj) {
         case MuscleTaskOp_Align:
             tName = tr("MUSCLE align '%1'").arg(objName);
             break;
-        case MuscleTaskOp_Refine: 
+        case MuscleTaskOp_Refine:
             tName = tr("MUSCLE refine '%1'").arg(objName);
             break;
         default:
