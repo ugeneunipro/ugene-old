@@ -36,7 +36,7 @@ public:
     bool isAppliable(const Version &dbVersion) const;
     bool operator < (const U2DbiUpgrader &other) const;
 
-private:
+protected:
     const Version versionFrom;
     const Version versionTo;
 };
