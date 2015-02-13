@@ -45,6 +45,9 @@ GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(const Ph
         QList<GraphicsRectangularBranchItem*> items;
         int ind = -1;
         for (int i = 0; i < branches; ++i) {
+            if (isCanceled() || stateInfo.hasError()) {
+                return NULL;
+            }
             if (node->getSecondNodeOfBranch(i) != node) {
                 GraphicsRectangularBranchItem *item = getBranch(node->getSecondNodeOfBranch(i));
                 items.append(item);
@@ -87,6 +90,9 @@ GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(const Ph
                 if (items[i] == NULL) {
                     continue;
                 }
+                if (isCanceled() || stateInfo.hasError()) {
+                    return NULL;
+                }
                 qreal dist = qAbs(node->getBranchesDistance(i));
                 if (minDistance > -1) {
                     minDistance = qMin(minDistance, dist);
@@ -117,6 +123,9 @@ GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(const Ph
 }
 
 void CreateRectangularBranchesTask::run() {
+    if (isCanceled() || stateInfo.hasError()) {
+        return;
+    }
     minDistance = -2;
     maxDistance = 0;
     GraphicsRectangularBranchItem* item = getBranch(node); // modifies minDistance and maxDistance

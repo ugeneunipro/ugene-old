@@ -100,6 +100,7 @@ class CreateMSAEditorTreeViewerTask: public Task {
     CreateRectangularBranchesTask* subTask;
     QVariantMap stateData;
     TreeViewer* view;
+    StateLock *docLock;
 public:
     CreateMSAEditorTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& stateData);
     virtual void prepare();
@@ -113,6 +114,7 @@ class CreateTreeViewerTask: public Task {
     QPointer<PhyTreeObject> phyObj;
     CreateRectangularBranchesTask* subTask;
     QVariantMap stateData;
+    StateLock *docLock;
 public:
     CreateTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& stateData);
     virtual void prepare();

@@ -210,7 +210,13 @@ void UpdateTreeViewerTask::update() {
 /// create view
 
 CreateMSAEditorTreeViewerTask::CreateMSAEditorTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& sData)
-: Task("Open tree viewer", TaskFlag_NoRun), viewName(name), phyObj(obj), subTask(NULL), stateData(sData), view(NULL) {}
+: Task("Open tree viewer", TaskFlag_NoRun), viewName(name), phyObj(obj), subTask(NULL), stateData(sData), view(NULL), docLock(NULL) {
+    Document* doc = obj->getDocument();
+    if(NULL != doc) {
+        docLock = new StateLock(getTaskName(), StateLockFlag_LiveLock);
+        obj->getDocument()->lockState(docLock);
+    }
+}
 
 void CreateMSAEditorTreeViewerTask::prepare() {
     subTask = new CreateRectangularBranchesTask(phyObj->getTree()->getRootNode());
@@ -224,6 +230,12 @@ Task::ReportResult CreateMSAEditorTreeViewerTask::report() {
     if (!stateData.isEmpty()) {
         OpenSavedTreeViewerTask::updateRanges(stateData, view);
     }
+    Document* doc = phyObj->getDocument();
+    if(NULL != doc && NULL != docLock){
+        phyObj->getDocument()->unlockState(docLock);
+        delete docLock;
+        docLock = NULL;
+    }
     return Task::ReportResult_Finished;
 }
 TreeViewer* CreateMSAEditorTreeViewerTask::getTreeViewer() {
@@ -234,8 +246,13 @@ const QVariantMap& CreateMSAEditorTreeViewerTask::getStateData() {
 }
 
 CreateTreeViewerTask::CreateTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& sData)
-: Task("Open tree viewer", TaskFlag_NoRun), viewName(name), phyObj(obj), subTask(NULL), stateData(sData) {}
-
+: Task("Open tree viewer", TaskFlag_NoRun), viewName(name), phyObj(obj), subTask(NULL), stateData(sData), docLock(NULL) {
+    docLock = new StateLock(getTaskName(), StateLockFlag_LiveLock);
+    Document* doc = obj->getDocument();
+    if(NULL != doc) {
+        doc->lockState(docLock);
+    }
+}
 void CreateTreeViewerTask::prepare() {
     subTask = new CreateRectangularBranchesTask(phyObj->getTree()->getRootNode());
     addSubTask(subTask);
@@ -250,6 +267,12 @@ Task::ReportResult CreateTreeViewerTask::report() {
     mdiManager->addMDIWindow(w);
     if (!stateData.isEmpty()) {
         OpenSavedTreeViewerTask::updateRanges(stateData, v);
+    }
+    Document* doc = phyObj->getDocument();
+    if(NULL != doc && NULL != docLock){
+        phyObj->getDocument()->unlockState(docLock);
+        delete docLock;
+        docLock = NULL;
     }
     return Task::ReportResult_Finished;
 }
