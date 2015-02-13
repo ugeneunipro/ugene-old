@@ -38,6 +38,10 @@ SqliteUpgraderFrom_0_To_1_13::SqliteUpgraderFrom_0_To_1_13(SQLiteDbi *dbi) :
 }
 
 void SqliteUpgraderFrom_0_To_1_13::upgrade(U2OpStatus &os) const {
+    coreLog.trace(QString("Upgrage database from version %1 to %2").
+                  arg(dbi->getProperty(U2DbiOptions::APP_MIN_COMPATIBLE_VERSION, "0.0.0", os)).
+                  arg(versionTo.text));
+
     SQLiteTransaction t(dbi->getDbRef(), os);
     Q_UNUSED(t);
 
@@ -110,9 +114,6 @@ void SqliteUpgraderFrom_0_To_1_13::upgradeAssemblyDbi(U2OpStatus &os) const {
 
         additionalInfo += "\n";
         additionalInfo += QString("Database URL: '%1'\n").arg(dbi->getDbiId());
-
-        additionalInfo += "\n";
-        additionalInfo += "Current time: " + QDateTime::currentDateTime().toString("hh:mm:ss:zzz");
         additionalInfo += "\n";
 
         coreLog.trace(additionalInfo);
