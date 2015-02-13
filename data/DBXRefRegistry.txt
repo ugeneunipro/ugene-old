@@ -120,6 +120,8 @@ IRD|||Influenza Research Database
 
 ISFinder|||Insertion sequence elements database
 
+ISHAM-ITS|||ITS reference database for pathogenic fungi
+
 JCM|||Japan Collection of Microorganisms
 
 JGIDB|||JGI Genome Portal
@@ -135,6 +137,8 @@ MGI||| Mouse Genome Informatics
 MIM|http://www.ncbi.nlm.nih.gov/entrez/dispomim.cgi?id=%1|| Mendelian Inheritance in Man numbers
 
 miRBase|http://microrna.sanger.ac.uk/cgi-bin/sequences/mirna_entry.pl?acc=%1||miRBase is the new home of microRNA data on the web, providing data previously accessible from the miRNA Registry.
+
+MycoBank|||Fungal Nomenclature and Species Bank
 
 NBRC|||NITE Biological Resource Center
 
