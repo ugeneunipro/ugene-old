@@ -232,7 +232,8 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
 void AnnotationsTreeView::restoreWidgetState() {
     QMap<QString, QVariant> geom = AppContext::getSettings()->getValue(SETTINGS_ROOT + COLUMN_SIZES).toMap();
     if (geom.isEmpty()) {
-        tree->setColumnWidth(0, 300);
+        tree->setColumnWidth(COLUMN_NAME, 300);
+        tree->setColumnWidth(COLUMN_TYPE, 150);
         return;
     }
 
@@ -775,15 +776,15 @@ void AnnotationsTreeView::sl_onAnnotationSettingsChanged(const QStringList& chan
 }
 
 void AnnotationsTreeView::updateColumnContextActions(AVItem* item, int col) {
-    copyColumnTextAction->setEnabled(item!=NULL && (col >= 2 || (item->type == AVItemType_Annotation && col == 1)) && !item->text(col).isEmpty());
-    copyColumnURLAction->setEnabled(item!=NULL && col >= 2 && item->isColumnLinked(col));
+    copyColumnTextAction->setEnabled(item!=NULL && (col >= 3 || (item->type == AVItemType_Annotation && col == 1)) && !item->text(col).isEmpty());
+    copyColumnURLAction->setEnabled(item!=NULL && col >= 3 && item->isColumnLinked(col));
     if (!copyColumnTextAction->isEnabled()) {
         copyColumnTextAction->setText(tr("Copy column text"));
     } else {
         QString colName;
-        if (col >= 2) {
-            assert(qColumns.size() > col - 2);
-            colName = qColumns[col - 2];
+        if (col >= 3) {
+            assert(qColumns.size() > col - 3);
+            colName = qColumns[col - 3];
             copyColumnTextAction->setText(tr("Copy column '%1' text").arg(colName));
         } else {
             AVAnnotationItem* ai = static_cast<AVAnnotationItem*>(item);
@@ -794,8 +795,8 @@ void AnnotationsTreeView::updateColumnContextActions(AVItem* item, int col) {
     if (!copyColumnURLAction->isEnabled()) {
         copyColumnURLAction->setText(tr("copy column URL"));
     } else {
-        assert(qColumns.size() > col - 2);
-        QString colName = qColumns[col - 2];
+        assert(qColumns.size() > col - 3);
+        QString colName = qColumns[col - 3];
         copyColumnURLAction->setText(tr("Copy column '%1' URL").arg(colName));
     }
 }
@@ -815,10 +816,10 @@ void AnnotationsTreeView::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
     QPoint headerPoint = header->mapFromGlobal(globalPos);
     if (header->rect().contains(headerPoint)) {
         int idx = header->logicalIndexAt(headerPoint);
-        if (idx >= 2) {
-            assert(idx - 2 < qColumns.size());
+        if (idx >= 3) {
+            assert(idx - 3 < qColumns.size());
             lastClickedColumn = idx;
-            removeColumnByHeaderClickAction->setText(tr("Hide '%1' column").arg(qColumns[lastClickedColumn-2]));
+            removeColumnByHeaderClickAction->setText(tr("Hide '%1' column").arg(qColumns[lastClickedColumn - 3]));
             QAction* first = m->actions().first();
             m->insertAction(first, removeColumnByHeaderClickAction);
             m->insertSeparator(first);
@@ -1609,9 +1610,9 @@ void AnnotationsTreeView::sl_onRemoveColumnByHeaderClick() {
         return;
     }
 
-    assert(lastClickedColumn >= 2);
-    assert(lastClickedColumn-2 <= qColumns.size());
-    removeQualifierColumn(qColumns[lastClickedColumn-2]);
+    assert(lastClickedColumn >= 3);
+    assert(lastClickedColumn - 3 <= qColumns.size());
+    removeQualifierColumn(qColumns[lastClickedColumn - 3]);
 }
 
 void AnnotationsTreeView::sl_searchQualifier( ) {
@@ -1638,7 +1639,7 @@ void AnnotationsTreeView::addQualifierColumn(const QString& q) {
     int nColumns = headerLabels.size() + qColumns.size();
     tree->setColumnCount(nColumns);
     tree->setHeaderLabels(headerLabels + qColumns);
-    tree->setColumnWidth(nColumns-2, nColumns - 2 == 1 ? 200 : 100);
+    tree->setColumnWidth(nColumns - 2, nColumns - 3 == 1 ? 200 : 100);
     updateAllAnnotations(ATVAnnUpdateFlag_QualColumns);
 
     updateState();
@@ -2127,10 +2128,10 @@ void AVAnnotationItem::updateVisual( ATVAnnUpdateFlags f ) {
         const QStringList &colNames = atv->getQualifierColumnNames( );
         hasNumericQColumns = false;
         for ( int i = 0, n = colNames.size( ); i < n ;i++ ) {
-            const int col = 2 + i;
+            const int col = 3 + i;
             const QString colName = colNames[i];
             const QString colText = aData.findFirstQualifierValue( colName );
-            setText( 2 + i, colText );
+            setText( 3 + i, colText );
             const bool linked = processLinks( colName, colText,  col );
             if ( !linked ) {
                 bool ok  = false;
