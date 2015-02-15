@@ -111,7 +111,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     GObjectReference sequenceRef(GObjectReference(io->getURL().getURLString(), "", GObjectTypes::SEQUENCE));
 
     QByteArray readBuffer(ParserState::READ_BUFF_SIZE, '\0');
-    ParserState st(getFormatId() == BaseDocumentFormats::PLAIN_GENBANK ? 12 : 5, io, NULL, os);
+    ParserState st(isNcbiLikeFormat() ? 12 : 5, io, NULL, os);
     st.buff = readBuffer.data();
 
     TmpDbiObjects dbiObjects(dbiRef, os);
@@ -188,18 +188,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
                 }
             }
 
-            if (data.tags.contains(DNAInfo::COMMENT) && getFormatId() == BaseDocumentFormats::PLAIN_GENBANK) {
-                QStringList commentSection = data.tags.value(DNAInfo::COMMENT).toStringList();
-                if (commentSection.size() > 0) {
-                    AnnotationData f;
-                    f.name = "comment";
-                    f.location->regions.append(U2Region(0, sequenceSize));
-                    for(int i = 0; i < commentSection.size(); ++i) {
-                        f.qualifiers.append( U2Qualifier(QString("%1").arg(i + 1,2,10,QChar('0')), commentSection[i]));
-                    }
-                    annotationsObject->addAnnotation( f, "comment" );
-                }
-            }
+            createCommentAnnotation(data.tags.value(DNAInfo::COMMENT).toStringList(), sequenceSize, annotationsObject);
 
             if (!merge) {
                 objects.append(annotationsObject);
@@ -296,7 +285,7 @@ DNASequence* EMBLGenbankAbstractDocument::loadSequence(IOAdapter* io, U2OpStatus
     QByteArray sequenceData;
     U2MemorySequenceImporter seqImporter(sequenceData);
     QByteArray readBuffer(ParserState::READ_BUFF_SIZE, '\0');
-    ParserState st(getFormatId() == BaseDocumentFormats::PLAIN_GENBANK ? 12 : 5, io, NULL, os);
+    ParserState st(isNcbiLikeFormat() ? 12 : 5, io, NULL, os);
     st.buff = readBuffer.data();
 
     int sequenceSize = 0;
@@ -535,6 +524,7 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
         return SharedAnnotationData();
     }
     a->name = key;
+    a->type = getFeatureType(key);
 
     //qualifier starts on offset 22;
     int qlen = len + readMultilineQualifier(io, cbuff, READ_BUFF_SIZE - len, true, len, si);
@@ -638,7 +628,7 @@ bool EMBLGenbankAbstractDocument::readSequence(ParserState* st, U2SequenceImport
     bool ok = true;
     int len;
     int dataOffset = 0;
-    bool numIsPrefix = getFormatId() == BaseDocumentFormats::PLAIN_GENBANK;
+    bool numIsPrefix = isNcbiLikeFormat();
     while (ok && (len = io->readLine(buff, READ_BUFF_SIZE)) > 0) {
         if (si.isCoR()) {
             res.clear();
@@ -735,6 +725,18 @@ void EMBLGenbankAbstractDocument::readAnnotations(ParserState* st, int offset) {
         SharedAnnotationData f = readAnnotation(st->io, st->buff, st->len, ParserState::READ_BUFF_SIZE, st->si, offset, st->entry->seqLen);
         st->entry->features.push_back(f);
     } while (st->readNextLine());
+}
+
+bool EMBLGenbankAbstractDocument::isNcbiLikeFormat() const {
+    return false;
+}
+
+void EMBLGenbankAbstractDocument::createCommentAnnotation(const QStringList & /*comments*/, int /*sequenceLength*/, AnnotationTableObject * /*annTable*/) const {
+    // Do nothing
+}
+
+U2FeatureType EMBLGenbankAbstractDocument::getFeatureType(const QString & /*typeString*/) const {
+    return U2FeatureTypes::MiscFeature;
 }
 
 bool ParserState::hasKey( const char* key, int slen ) const {

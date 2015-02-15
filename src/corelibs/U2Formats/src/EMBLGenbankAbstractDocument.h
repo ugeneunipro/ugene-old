@@ -32,10 +32,10 @@
 
 namespace U2 {
 
+class AnnotationTableObject;
+class EMBLGenbankDataEntry;
 class IOAdapter;
 class ParserState;
-class EMBLGenbankDataEntry;
-
 
 class U2FORMATS_EXPORT EMBLGenbankAbstractDocument : public DocumentFormat {
     Q_OBJECT
@@ -71,6 +71,10 @@ protected:
     virtual void readHeaderAttributes(QVariantMap& tags, DbiConnection& con, U2SequenceObject* so) {
         Q_UNUSED(tags); Q_UNUSED(con); Q_UNUSED(so);
     } // does nothing if not overloaded
+
+    virtual bool isNcbiLikeFormat() const;
+    virtual void createCommentAnnotation(const QStringList &comments, int sequenceLength, AnnotationTableObject *annTable) const;
+    virtual U2FeatureType getFeatureType(const QString &typeString) const;
 
     DocumentFormatId id;
     QString     formatName;

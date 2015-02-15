@@ -155,7 +155,7 @@ void MysqlSingleTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it
 
     static const QString q = "INSERT INTO %1(name, prow, flags, gstart, elen, mq, data) VALUES (:name, :prow, :flags, :gstart, :elen, :mq, :data)";
 
-    while (it->hasNext()) {
+    while (it->hasNext() && !os.isCoR()) {
         U2SqlQuery insertQ(q.arg(readsTable), db, os);
 
         U2AssemblyRead read = it->next();

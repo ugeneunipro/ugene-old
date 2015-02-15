@@ -178,7 +178,7 @@ void SingleTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2A
     SQLiteTransaction t(db, os);
     QString q = "INSERT INTO %1(name, prow, flags, gstart, elen, mq, data) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)";
     SQLiteQuery insertQ(q.arg(readsTable), db, os);
-    while (it->hasNext()) {
+    while (it->hasNext() && !os.isCoR()) {
         U2AssemblyRead read = it->next();
         bool dnaExt = false; //TODO:
         qint64 flags = read->flags;

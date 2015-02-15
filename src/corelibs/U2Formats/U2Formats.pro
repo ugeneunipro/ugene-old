@@ -44,6 +44,7 @@ HEADERS += src/ABIFormat.h \
            src/StreamSequenceWriter.h \
            src/SwissProtPlainTextFormat.h \
            src/VCF4VariationFormat.h \
+           src/VectorNtiSequenceFormat.h \
            src/ace/AceFormat.h \
            src/ace/AceImportUtils.h \
            src/ace/AceImporter.h \
@@ -139,6 +140,7 @@ SOURCES += src/ABIFormat.cpp \
            src/StreamSequenceWriter.cpp \
            src/SwissProtPlainTextFormat.cpp \
            src/VCF4VariationFormat.cpp \
+           src/VectorNtiSequenceFormat.cpp \
            src/ace/AceFormat.cpp \
            src/ace/AceImporter.cpp \
            src/ace/AceImportUtils.cpp \

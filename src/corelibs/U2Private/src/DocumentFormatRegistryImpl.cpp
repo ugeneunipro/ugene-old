@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "DocumentFormatRegistryImpl.h"
-
 #include <U2Core/AppContext.h>
 #include <U2Core/DbiDocumentFormat.h>
 #include <U2Core/RawDataUdrSchema.h>
@@ -59,6 +57,9 @@
 #include <U2Formats/StockholmFormat.h>
 #include <U2Formats/SwissProtPlainTextFormat.h>
 #include <U2Formats/VCF4VariationFormat.h>
+#include <U2Formats/VectorNtiSequenceFormat.h>
+
+#include "DocumentFormatRegistryImpl.h"
 
 namespace U2 {
 
@@ -215,6 +216,7 @@ void DocumentFormatRegistryImpl::init() {
     registerFormat(phSeq);
 
     registerFormat(new DatabaseConnectionFormat(this));
+    registerFormat(new VectorNtiSequenceFormat(this));
 
     AppContext::getDbiRegistry()->registerDbiFactory(new SQLiteDbiFactory());
     AppContext::getDbiRegistry()->registerDbiFactory(new MysqlDbiFactory());
