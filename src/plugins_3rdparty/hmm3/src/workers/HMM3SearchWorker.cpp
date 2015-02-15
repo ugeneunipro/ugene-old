@@ -247,7 +247,7 @@ void HMM3SearchWorker::sl_taskFinished( Task *t ) {
             if (hst == NULL){
                 continue;
             }
-            foreach ( const SharedAnnotationData &data, hst->getResultsAsAnnotations( resultName ) ) {
+            foreach (const SharedAnnotationData &data, hst->getResultsAsAnnotations(U2FeatureTypes::MiscSignal, resultName)) {
                 list << *data;
             }
         }

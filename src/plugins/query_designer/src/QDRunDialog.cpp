@@ -304,6 +304,7 @@ void QDDialog::addAnnotationsWidget() {
     U2SequenceObject *dnaso = qobject_cast<U2SequenceObject*>(ctx->getSequenceGObject());
     CreateAnnotationModel acm;
     acm.sequenceObjectRef = GObjectReference(dnaso);
+    acm.hideAnnotationType = true;
     acm.hideAnnotationName = true;
     acm.hideLocation = true;
     acm.data.name = "Query_results";

@@ -26,6 +26,7 @@
 #include <U2Core/U2Location.h>
 #include <U2Core/U2Qualifier.h>
 #include <U2Core/U2Type.h>
+#include <U2Core/U2FeatureType.h>
 
 const QString QUALIFIER_NAME_CIGAR = "cigar";
 const QString QUALIFIER_NAME_SUBJECT = "subj_seq";
@@ -50,6 +51,8 @@ public:
     AnnotationData          getData( ) const;
 
     QString                 getName( ) const;
+
+    U2FeatureType           getType() const;
 
     void                    setName( const QString &name );
 

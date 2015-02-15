@@ -45,7 +45,7 @@ void MysqlUpgraderFrom_1_14_To_1_15::upgrade(U2OpStatus &os) const {
     upgradeObjectDbi(os, dbi->getDbRef());
     CHECK_OP(os, );
 
-    dbi->setProperty(U2DbiOptions::APP_MIN_COMPATIBLE_VERSION, "1.15.0", os);
+    dbi->setProperty(U2DbiOptions::APP_MIN_COMPATIBLE_VERSION, versionTo.text, os);
 }
 
 void MysqlUpgraderFrom_1_14_To_1_15::upgradeObjectDbi(U2OpStatus &os, MysqlDbRef *dbRef) const {

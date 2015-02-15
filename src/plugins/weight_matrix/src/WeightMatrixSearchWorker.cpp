@@ -236,7 +236,7 @@ void PWMatrixSearchWorker::sl_taskFinished( Task *t ) {
     }
     foreach ( Task *sub, t->getSubtasks( ) ) {
         WeightMatrixSingleSearchTask *sst = qobject_cast<WeightMatrixSingleSearchTask *>( sub );
-        res += WeightMatrixSearchResult::toTable( sst->takeResults( ), resultName );
+        res += WeightMatrixSearchResult::toTable( sst->takeResults( ), U2FeatureTypes::MiscFeature, resultName );
     }
     const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( res );
     const QVariant v = qVariantFromValue<SharedDbiDataHandler>( tableId );

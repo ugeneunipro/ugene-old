@@ -40,6 +40,7 @@
 #include "util/MysqlDbiUtils.h"
 #include "util/MysqlHelpers.h"
 #include "util/upgraders/MysqlUpgraderFrom_1_14_To_1_15.h"
+#include "util/upgraders/MysqlUpgraderFrom_1_15_To_1_16.h"
 
 namespace U2 {
 
@@ -63,6 +64,7 @@ MysqlDbi::MysqlDbi()
     variantDbi =            new MysqlVariantDbi(this);
 
     upgraders << new MysqlUpgraderFrom_1_14_To_1_15(this);
+    upgraders << new MysqlUpgraderFrom_1_15_To_1_16(this);
 }
 
 MysqlDbi::~MysqlDbi() {

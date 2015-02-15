@@ -328,7 +328,7 @@ void AnnotationTableObject::copyFeaturesToObject( const U2Feature &feature,
 
     // consider both grouping features and annotating
     QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( feature.id, entityRef.dbiRef, os, Nonrecursive, Nonroot );
-    if ( U2Feature::Group == feature.type ) {
+    if ( U2Feature::Group == feature.featureClass ) {
         subfeatures << U2FeatureUtils::getSubGroups( feature.id, entityRef.dbiRef, os, Nonrecursive );
         CHECK_OP( os, );
     }
@@ -347,7 +347,7 @@ QList<Annotation> AnnotationTableObject::convertFeaturesToAnnotations(
 
     U2OpStatusImpl os;
     foreach ( const U2Feature &feature, features ) {
-        if ( U2Feature::Annotation == feature.type && !feature.name.isEmpty( ) ) {
+        if ( U2Feature::Annotation == feature.featureClass && !feature.name.isEmpty( ) ) {
             // this case corresponds to complete annotations, not to partial (e.g. joins, orders)
             results << Annotation( feature.id, const_cast<AnnotationTableObject *>( this ) );
         }

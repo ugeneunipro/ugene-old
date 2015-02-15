@@ -51,7 +51,7 @@ struct RegionPreset {
 class U2GUI_EXPORT RegionSelector : public QWidget {
     Q_OBJECT
 public:
-    RegionSelector(QWidget* p, qint64 len, bool isVertical = false,
+    RegionSelector(QWidget* p, qint64 len = 0, bool isVertical = false,
                    DNASequenceSelection* selection = NULL,
                    bool isCircularSelectionAvailable = false,
                    QList<RegionPreset> presetRegions = QList<RegionPreset>());

@@ -27,54 +27,90 @@
 #include <U2Gui/ShowHideSubgroupWidget.h>
 
 #include "CreateAnnotationWidgetController.h"
+#include "ui/ui_CreateAnnotationFullWidget.h"
 #include "ui/ui_CreateAnnotationNormalWidget.h"
 #include "ui/ui_CreateAnnotationOptionsPanelWidget.h"
 
 namespace U2 {
 
+class GObjectComboBoxControllerConstraints;
 class ShowHideSubgroupWidget;
 
 class CreateAnnotationWidget : public QWidget {
     Q_OBJECT
     friend class CreateAnnotationWidgetController;
 public:
-    CreateAnnotationWidget(CreateAnnotationWidgetController::AnnotationWidgetMode layoutMode, QWidget *parent = NULL);
+    CreateAnnotationWidget(QWidget *parent = NULL);
 
-private:
-    void initNormalLayout();
-    void initOptionsPanelLayout();
+    virtual void setLocationVisible(bool visible) = 0;
+    virtual void setAnnotationParametersVisible(bool visible) = 0;
+    virtual void setAnnotationTypeVisible(bool visible) = 0;
+    virtual void setAnnotationNameVisible(bool visible) = 0;
+    virtual void setAutoTableOptionVisible(bool visible) = 0;
+    virtual void setDescriptionVisible(bool visible) = 0;
+    virtual void setUsePatternNamesVisible(bool visible) = 0;
 
-    Ui::CreateAnnotationNormalWidget normalUi;
-    Ui::CreateAnnotationOptionsPanelWidget optionsPanelUi;
+    virtual void setAnnotationNameEnabled(bool enable) = 0;
 
-    QWidget *saveAnnotationsInnerWidget;
-    QWidget *annotationParametersInnerWidget;
-    ShowHideSubgroupWidget *saveAnnotationsWidget;
-    ShowHideSubgroupWidget *annotationParametersWidget;
+    virtual void focusGroupName() = 0;
+    virtual void focusAnnotationType() = 0;
+    virtual void focusAnnotationName() = 0;
+    virtual void focusLocation() = 0;
 
-    QRadioButton *rbExistingTable;
-    QRadioButton *rbCreateNewTable;
-    QRadioButton *rbUseAutoTable;
+    virtual void setNewTablePath(const QString &path) = 0;
+    virtual void setGroupName(const QString &name) = 0;
+    virtual void setAnnotationType(U2FeatureType featureType) = 0;
+    virtual void setAnnotationName(const QString &name) = 0;
+    virtual void setLocation(const U2Location &location) = 0;
 
-    QComboBox *cbExistingTable;
-    QLineEdit *leNewTablePath;
+    virtual QString getNewTablePath() const = 0;
+    virtual QString getAnnotationTypeString() const = 0;
+    virtual QString getGroupName() const = 0;
+    virtual QString getAnnotationName() const = 0;
+    virtual QString getDescription() const = 0;
+    virtual QString getLocationString() const = 0;
+    virtual bool isUsePatternNamesChecked() const = 0;
 
-    QToolButton *tbBrowseExistingTable;
-    QToolButton *tbBrowseNewTable;
+    virtual bool isExistingTablesListEmpty() const = 0;
 
-    QLabel *lblGroupName;
-    QLabel *lblAnnotationName;
-    QLabel *lblLocation;
+    virtual void selectNewTableOption() = 0;
+    virtual void selectAutoTableOption() = 0;
 
-    QLineEdit *leGroupName;
-    QLineEdit *leAnnotationName;
-    QLineEdit *leLocation;
+    virtual void setExistingTableOptionEnable(bool enable) = 0;
 
-    QToolButton *tbSelectGroupName;
-    QToolButton *tbSelectAnnotationName;
-    QToolButton *tbDoComplement;
+    virtual bool isNewTableOptionSelected() const = 0;
+    virtual bool isExistingTableOptionSelected() const = 0;
+    virtual bool isAutoTableOptionSelected() const = 0;
 
-    QCheckBox *chbUsePatternNames;
+    virtual void showSelectGroupMenu(QMenu &menu) = 0;
+    QPair<QWidget*, QWidget*> getTabOrderEntryAndExitPoints() const;
+    virtual GObjectComboBoxController * createGObjectComboBoxController(const GObjectComboBoxControllerConstraints &constraints) = 0;
+
+signals:
+    void si_selectExistingTableRequest();
+    void si_selectNewTableRequest();
+    void si_selectGroupNameMenuRequest();
+    void si_groupNameEdited();
+    void si_annotationNameEdited();
+    void si_usePatternNamesStateChanged();
+
+protected slots:
+    void sl_selectExistingTableRequest();
+    void sl_selectNewTableRequest();
+    void sl_selectGroupNameMenuRequest();
+    void sl_groupNameEdited();
+    void sl_annotationNameEdited();
+    void sl_usePatternNamesStateChanged();
+
+private slots:
+    void sl_complementLocation();
+
+protected:
+    static QString getGenbankLocationString(const U2Location &location);
+    static U2Location parseGenbankLocationString(const QString &locationString);
+    static bool isComplementLocation(const QString &locationString);
+    static QStringList getFeatureTypes();
+    static bool caseInsensitiveLessThan(const QString &first, const QString &second);
 };
 
 }   // namespace U2

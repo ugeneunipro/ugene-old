@@ -64,6 +64,7 @@ HMMSearchDialogController::HMMSearchDialogController(const U2SequenceObject* seq
     CreateAnnotationModel cm;
     cm.hideLocation = true;
     cm.sequenceObjectRef = seqObj;
+    cm.data.type = U2FeatureTypes::MiscSignal;
     cm.data.name = "hmm_signal";
     cm.sequenceLen = seqObj->getSequenceLength();
     createController = new CreateAnnotationWidgetController(cm, this);
@@ -153,7 +154,7 @@ void HMMSearchDialogController::sl_okClicked() {
     
     const CreateAnnotationModel& cm = createController->getModel();
     QString annotationName = cm.data.name;
-    searchTask = new HMMSearchToAnnotationsTask(hmmFile, dnaSequence, cm.getAnnotationObject(), cm.groupName, annotationName, s);
+    searchTask = new HMMSearchToAnnotationsTask(hmmFile, dnaSequence, cm.getAnnotationObject(), cm.groupName, cm.data.type, annotationName, s);
     searchTask->setReportingEnabled(true);
     connect(searchTask, SIGNAL(si_stateChanged()), SLOT(sl_onStateChanged()));
     connect(searchTask, SIGNAL(si_progressChanged()), SLOT(sl_onProgressChanged()));
@@ -195,11 +196,11 @@ void HMMSearchDialogController::sl_onProgressChanged() {
 //////////////////////////////////////////////////////////////////////////
 // TASKS
 
-HMMSearchToAnnotationsTask::HMMSearchToAnnotationsTask(const QString& _hmmFile, const DNASequence& s, 
-                                                       AnnotationTableObject *ao, const QString& _agroup, const QString& _aname,
+HMMSearchToAnnotationsTask::HMMSearchToAnnotationsTask(const QString& _hmmFile, const DNASequence& s,
+                                                       AnnotationTableObject *ao, const QString& _agroup, U2FeatureType aType, const QString& _aname,
                                                        const UHMMSearchSettings& _settings)
 : Task("", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported), 
-hmmFile(_hmmFile), dnaSequence(s), agroup(_agroup), aname(_aname), settings(_settings), 
+hmmFile(_hmmFile), dnaSequence(s), agroup(_agroup), aType(aType), aname(_aname), settings(_settings),
 readHMMTask(NULL), searchTask(NULL), createAnnotationsTask(NULL), aobj(ao)
 {
     setVerboseLogMode(true);
@@ -238,7 +239,7 @@ QList<Task*> HMMSearchToAnnotationsTask::onSubTaskFinished(Task* subTask) {
         res.append(searchTask);
     } else if (createAnnotationsTask == NULL){
         assert(searchTask->isFinished() && !searchTask->hasError());
-        QList<AnnotationData> annotations = searchTask->getResultsAsAnnotations( aname );
+        QList<AnnotationData> annotations = searchTask->getResultsAsAnnotations(aType, aname);
         if (!annotations.isEmpty()) {
             createAnnotationsTask = new CreateAnnotationsTask(aobj, annotations, agroup);
             createAnnotationsTask->setSubtaskProgressWeight(0);

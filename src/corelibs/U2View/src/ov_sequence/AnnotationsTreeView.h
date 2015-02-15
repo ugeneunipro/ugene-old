@@ -89,6 +89,10 @@ public:
 
     AVItem* currentItem();
 
+    static const int COLUMN_NAME;
+    static const int COLUMN_TYPE;
+    static const int COLUMN_VALUE;
+
 private slots:
 
     void sl_onAnnotationObjectAdded( AnnotationTableObject *obj );

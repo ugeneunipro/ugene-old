@@ -796,7 +796,7 @@ void Primer3SWTask::relocatePrimerOverMedian(Primer *primer) {
 //////////////////////////////////////////////////////////////////////////
 ////Primer3ToAnnotationsTask
 
-Primer3ToAnnotationsTask::Primer3ToAnnotationsTask( const Primer3TaskSettings &settings, U2SequenceObject* so_,
+Primer3ToAnnotationsTask::Primer3ToAnnotationsTask(const Primer3TaskSettings &settings, U2SequenceObject* so_,
 AnnotationTableObject *aobj_, const QString & groupName_, const QString & annName_ ) :
 Task(tr("Search primers to annotations"), /*TaskFlags_NR_FOSCOE*/TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled | TaskFlag_FailOnSubtaskError),
     settings(settings), seqObj(so_), aobj(aobj_),
@@ -981,6 +981,7 @@ AnnotationData Primer3ToAnnotationsTask::oligoToAnnotation(const QString& title,
 {
     AnnotationData annotationData;
     annotationData.name = title;
+    annotationData.type = U2FeatureTypes::Primer;
     qint64 seqLen = seqObj->getSequenceLength();
     // primer can be found on circular extension of the sequence
     int start = primer.getStart() + (primer.getStart() > seqLen ?  (- seqLen) : 0);

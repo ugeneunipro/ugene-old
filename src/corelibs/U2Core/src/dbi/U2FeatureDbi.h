@@ -57,7 +57,8 @@ public:
         keyValueCompareOp(ComparisonOp_Invalid), keyValueOrderOp(OrderOp_None),
         intersectRegion(-1, 0), startPosOrderOp(OrderOp_None),
         closestFeature(ComparisonOp_Invalid), strandQuery(Strand_Both),
-        featureType(U2Feature::Annotation)
+        featureClass(U2Feature::Annotation),
+        featureType(U2FeatureTypes::Invalid)
     {
 
     }
@@ -116,7 +117,8 @@ public:
 
     StrandQuery     strandQuery;
 
-    U2Feature::FeatureType featureType;
+    U2Feature::FeatureClass featureClass;
+    U2FeatureType          featureType;
 };
 
 struct FeatureAndKey {
@@ -202,6 +204,11 @@ public:
      * Requires: U2DbiFeature_WriteFeature feature support
      */
     virtual void                        updateLocation( const U2DataId &featureId, const U2FeatureLocation &location, U2OpStatus &os ) = 0;
+    /**
+     * Updates feature type
+     * Requires: U2DbiFeature_WriteFeature feature support
+     */
+    virtual void                        updateType( const U2DataId &featureId, U2FeatureType newType, U2OpStatus &os ) = 0;
     /**
      * Updates feature name
      * Requires: U2DbiFeature_WriteFeature feature support

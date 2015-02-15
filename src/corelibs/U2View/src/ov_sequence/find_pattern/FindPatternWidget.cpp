@@ -216,8 +216,11 @@ const QString FindPatternWidget::ALGORITHM_SETTINGS = QObject::tr("Search algori
 const QString FindPatternWidget::SEARCH_IN_SETTINGS = QObject::tr("Search in");
 const QString FindPatternWidget::OTHER_SETTINGS = QObject::tr("Other settings");
 
-FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
-    : annotatedDnaView(_annotatedDnaView), iterPos(1), searchTask(NULL), previousPatternString(""),
+FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView) :
+    annotatedDnaView(_annotatedDnaView),
+    iterPos(1),
+    searchTask(NULL),
+    usePatternNames(false),
     savableWidget(this, GObjectViewUtils::findViewByName(_annotatedDnaView->getName()))
 {
     setupUi(this);
@@ -242,7 +245,6 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
 
         annotsWidget = annotController->getWidget();
         annotsWidget->setObjectName("annotationsWidget");
-        usePatternNamesCheckBox = annotController->getUsePatternNameCheckBox();
 
         const DNAAlphabet* alphabet = activeContext->getAlphabet();
         isAminoSequenceSelected = alphabet->isAmino();
@@ -262,7 +264,7 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
 
         connect(findPatternEventFilter, SIGNAL(si_enterPressed()), SLOT(sl_onEnterPressed()));
         connect(findPatternEventFilter, SIGNAL(si_shiftEnterPressed()), SLOT(sl_onShiftEnterPressed()));
-        connect(usePatternNamesCheckBox, SIGNAL(stateChanged(int)), SLOT(sl_usePatternNamesCbClicked()));
+        connect(annotController, SIGNAL(si_usePatternNamesStateChanged()), SLOT(sl_usePatternNamesCbClicked()));
 
         sl_onSearchPatternChanged();
     }
@@ -926,7 +928,7 @@ void FindPatternWidget::checkState()
         getAnnotationsPushButton->setDisabled(true);
         return;
     }
-    if(usePatternNamesCheckBox->isChecked() && !loadFromFileGroupBox->isChecked()) {
+    if(usePatternNames && !loadFromFileGroupBox->isChecked()) {
         foreach(const QString &name, nameList){
             if (!Annotation::isValidAnnotationName(name)) {
                 showHideMessage(true, AnnotationNotValidFastaParsedName);
@@ -1034,7 +1036,8 @@ QList <QPair<QString, QString> > FindPatternWidget::getPatternsFromTextPatternFi
         }
     }
 
-    if(!usePatternNamesCheckBox->isChecked()){
+    if(!usePatternNames){
+        annotController->validate();
         const CreateAnnotationModel& model = annotController->getModel();
         for(int i = 0; i < result.size(); i++){
             result[i].first = model.data.name;
@@ -1051,9 +1054,7 @@ void FindPatternWidget::updateAnnotationsWidget()
         "There is no sequence in focus to update the annotations widget on the 'Search in Sequence' tab.",);
     CreateAnnotationModel newAnnotModel = annotController->getModel();
 
-    if(!newAnnotModel.newDocUrl.isEmpty())
-        newAnnotModel.newDocUrl = "";
-
+    newAnnotModel.newDocUrl.clear();
     newAnnotModel.hideLocation = true;
     newAnnotModel.sequenceObjectRef = annotatedDnaView->getSequenceInFocus()->getSequenceObject();
     newAnnotModel.sequenceLen = annotatedDnaView->getSequenceInFocus()->getSequenceLength();
@@ -1293,7 +1294,7 @@ void FindPatternWidget::sl_onAnotationNameEdited(){
 }
 
 void FindPatternWidget::sl_onUsePatternNamesClicked(){
-    bool isAnnotNamesEnabled = !usePatternNamesCheckBox->isChecked();
+    bool isAnnotNamesEnabled = !usePatternNames;
     annotController->setEnabledNameEdit(isAnnotNamesEnabled);
 }
 
@@ -1412,7 +1413,7 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
     QList<AnnotationData> annotationsToCreate = findPatternResults;
 
     for(int i = 0; i < findPatternResults.size(); i++){
-        if(usePatternNamesCheckBox->isChecked()) {
+        if(usePatternNames) {
             bool ok = false;
             int index = findPatternResults[i].name.toInt(&ok);
             if (Q_UNLIKELY(!ok)) {
@@ -1429,13 +1430,15 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
                 annotationsToCreate[i].name = Annotation::isValidAnnotationName(name) ?
                     name : Annotation::produceValidAnnotationName(name);
             }
-        }else{
+        } else {
             annotationsToCreate[i].name = Annotation::isValidAnnotationName(annotModel.data.name) ?
                 annotModel.data.name : Annotation::produceValidAnnotationName(annotModel.data.name);
         }
+
+        annotationsToCreate[i].type = annotModel.data.type;
     }
     GCOUNTER(cvar, tvar, "FindAlgorithmTask");
-    if (annotModel.data.name == annotModel.groupName && usePatternNamesCheckBox->isChecked()) {
+    if (annotModel.data.name == annotModel.groupName && usePatternNames) {
         group.clear();
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(new CreateAnnotationsTask(aTableObj, annotationsToCreate, group));
@@ -1489,7 +1492,8 @@ void FindPatternWidget::sl_onShiftEnterPressed(){
     }
 }
 
-void FindPatternWidget::sl_usePatternNamesCbClicked(){
+void FindPatternWidget::sl_usePatternNamesCbClicked() {
+    usePatternNames = !usePatternNames;
     updateNamePatterns();
     checkState();
 }
@@ -1540,8 +1544,7 @@ void FindPatternWidget::setUpTabOrder() const {
     QWidget::setTabOrder(editEnd, removeOverlapsBox);
     QWidget::setTabOrder(removeOverlapsBox, boxMaxResult);
     QWidget::setTabOrder(boxMaxResult, annotWidget->getTaborderEntryAndExitPoints().first);
-    QWidget::setTabOrder(annotWidget->getTaborderEntryAndExitPoints().second, usePatternNamesCheckBox);
-    QWidget::setTabOrder(usePatternNamesCheckBox, getAnnotationsPushButton);
+    QWidget::setTabOrder(annotWidget->getTaborderEntryAndExitPoints().second, getAnnotationsPushButton);
 }
 
 int FindPatternWidget::getTargetSequnceLength() const {

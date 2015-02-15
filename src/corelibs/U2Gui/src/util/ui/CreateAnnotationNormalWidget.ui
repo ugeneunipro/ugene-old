@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>411</width>
-    <height>224</height>
+    <width>389</width>
+    <height>282</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -114,10 +114,58 @@
       <property name="margin">
        <number>0</number>
       </property>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="leGroupName"/>
+      <item row="2" column="1" colspan="2">
+       <widget class="QLineEdit" name="leAnnotationName">
+        <property name="maxLength">
+         <number>100</number>
+        </property>
+        <property name="placeholderText">
+         <string>by type</string>
+        </property>
+       </widget>
       </item>
-      <item row="2" column="1">
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="leGroupName">
+        <property name="placeholderText">
+         <string>auto</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QToolButton" name="tbDoComplement">
+        <property name="toolTip">
+         <string>Add/remove complement flag</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../U2Gui.qrc">
+          <normaloff>:/core/images/do_complement.png</normaloff>:/core/images/do_complement.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lblLocation">
+        <property name="text">
+         <string>Location</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QComboBox" name="cbAnnotationType"/>
+      </item>
+      <item row="5" column="0" colspan="2">
+       <widget class="QCheckBox" name="chbUsePatternNames">
+        <property name="toolTip">
+         <string>Use names of patterns as annotations names. In case the patterns are in FASTA format</string>
+        </property>
+        <property name="text">
+         <string>Use pattern name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
        <widget class="QLineEdit" name="leLocation">
         <property name="toolTip">
          <string>Annotation location in GenBank format</string>
@@ -145,64 +193,29 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="lblAnnotationName">
         <property name="text">
          <string>Annotation name</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="leAnnotationName">
-        <property name="maxLength">
-         <number>100</number>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblAnnotationType">
+        <property name="text">
+         <string>Annotation type</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QToolButton" name="tbSelectAnnotationName">
-        <property name="toolTip">
-         <string>Predefined annotation names</string>
-        </property>
+      <item row="4" column="0">
+       <widget class="QLabel" name="lblDescription">
         <property name="text">
-         <string>...</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../U2Gui.qrc">
-          <normaloff>:/core/images/predefined_annotation_groups.png</normaloff>:/core/images/predefined_annotation_groups.png</iconset>
+         <string>Description</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="lblLocation">
-        <property name="text">
-         <string>Location</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QToolButton" name="tbDoComplement">
-        <property name="toolTip">
-         <string>Add/remove complement flag</string>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../U2Gui.qrc">
-          <normaloff>:/core/images/do_complement.png</normaloff>:/core/images/do_complement.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="QCheckBox" name="chbUsePatternNames">
-        <property name="toolTip">
-         <string>Use names of patterns as annotations names. In case the patterns are in FASTA format</string>
-        </property>
-        <property name="text">
-         <string>Use pattern name</string>
-        </property>
-       </widget>
+      <item row="4" column="1" colspan="2">
+       <widget class="QLineEdit" name="leDescription"/>
       </item>
      </layout>
     </widget>
@@ -225,22 +238,6 @@
     </hint>
     <hint type="destinationlabel">
      <x>234</x>
-     <y>149</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chbUsePatternNames</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>tbSelectAnnotationName</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>197</x>
-     <y>215</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>363</x>
      <y>149</y>
     </hint>
    </hints>

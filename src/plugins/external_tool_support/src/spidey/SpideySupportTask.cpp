@@ -138,6 +138,7 @@ QList<Task *> SpideyAlignmentTask::onSubTaskFinished( Task *subTask ) {
             AnnotationData  data;
             data.location = location;
             data.setStrand( U2Strand( strandDirect ? U2Strand::Direct : U2Strand::Complementary ) );
+            data.type = U2FeatureTypes::Exon;
             data.name = "exon";
             resultAnnotations.append( data );
         }

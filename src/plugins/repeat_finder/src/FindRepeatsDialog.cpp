@@ -84,6 +84,7 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     tabWidget->setCurrentIndex(0);
 
     CreateAnnotationModel m;
+    m.hideAnnotationType = true;
     m.hideLocation = true;
     m.data.name = GBFeatureUtils::getKeyInfo(GBFeatureKey_repeat_unit).text;
     m.sequenceObjectRef = sc->getSequenceObject();

@@ -172,6 +172,7 @@ void CreateFragmentDialog::accept()
 void CreateFragmentDialog::setupAnnotationsWidget() {
     CreateAnnotationModel acm;
     acm.sequenceObjectRef = GObjectReference(seqObj);
+    acm.hideAnnotationType = true;
     acm.hideAnnotationName = true;
     acm.hideLocation = true;
     acm.data.name = ANNOTATION_GROUP_FRAGMENTS;

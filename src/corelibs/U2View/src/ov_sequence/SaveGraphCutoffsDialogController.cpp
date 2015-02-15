@@ -51,6 +51,7 @@ SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController( GSequenceGra
 
     QWidget* caw = ac->getWidget();
     QVBoxLayout* l = new QVBoxLayout();
+    l->setSizeConstraint(QLayout::SetMinAndMaxSize);
     l->setMargin(0);
     l->addWidget(caw);
     annotationsWidget->setLayout(l);
@@ -123,6 +124,7 @@ void SaveGraphCutoffsDialogController::accept(){
     foreach ( const U2Region &r, resultRegions ) {
         AnnotationData d;
         d.location->regions.append(r);
+        d.type = mm.data.type;
         d.name = mm.data.name;
         data.append(d);
     }

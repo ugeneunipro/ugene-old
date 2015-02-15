@@ -25,7 +25,7 @@
 #include "SQLiteObjectDbi.h"
 #include "SQLiteFeatureDbi.h"
 
-static const QString FDBI_FIELDS("f.id, f.type, f.parent, f.root, f.name, f.sequence, f.strand, f.start, f.len ");
+static const QString FDBI_FIELDS("f.id, f.class, f.type, f.parent, f.root, f.name, f.sequence, f.strand, f.start, f.len ");
 
 namespace U2 {
 
@@ -47,7 +47,7 @@ static QString getQueryForFeatureDeletionTrigger( ) {
 void SQLiteFeatureDbi::initSqlSchema(U2OpStatus& os) {
     //nameHash is used for better indexing
     SQLiteQuery("CREATE TABLE Feature (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
-        "type INTEGER NOT NULL, parent INTEGER, root INTEGER, nameHash INTEGER, name TEXT, "
+        "class INTEGER NOT NULL, type INTEGER NOT NULL, parent INTEGER, root INTEGER, nameHash INTEGER, name TEXT, "
         "sequence INTEGER, strand INTEGER NOT NULL, "
         "start INTEGER NOT NULL DEFAULT 0, len INTEGER NOT NULL DEFAULT 0)", db, os).execute();
 
@@ -85,14 +85,15 @@ public:
         U2Feature res;
         //type, parent, root, name, sequence, strand, start, len
         res.id = q->getDataId(0, U2Type::Feature);
-        res.type = static_cast<U2Feature::FeatureType>(q->getInt32(1));
-        res.parentFeatureId = q->getDataId(2, U2Type::Feature);
-        res.rootFeatureId = q->getDataId(3, U2Type::Feature);
-        res.name = q->getString(4);
-        res.sequenceId = q->getDataId(5, U2Type::Sequence);
-        res.location.strand = U2Strand(U2Strand::Direction(q->getInt32(6)));
-        res.location.region.startPos = q->getInt64(7);
-        res.location.region.length= q->getInt64(8);
+        res.featureClass = static_cast<U2Feature::FeatureClass>(q->getInt32(1));
+        res.featureType = static_cast<U2FeatureType>(q->getInt32(2));
+        res.parentFeatureId = q->getDataId(3, U2Type::Feature);
+        res.rootFeatureId = q->getDataId(4, U2Type::Feature);
+        res.name = q->getString(5);
+        res.sequenceId = q->getDataId(6, U2Type::Sequence);
+        res.location.strand = U2Strand(U2Strand::Direction(q->getInt32(7)));
+        res.location.region.startPos = q->getInt64(8);
+        res.location.region.length= q->getInt64(9);
         return res;
     }
 };
@@ -273,7 +274,12 @@ QSharedPointer<SQLiteQuery> SQLiteFeatureDbi::createFeatureQuery( const QString 
         add( wherePart, "f.root", "=", n );
     }
 
-    bool useType = ( U2Feature::Invalid != fq.featureType );
+    bool useClass = ( U2Feature::Invalid != fq.featureClass );
+    if ( useClass ) {
+        add( wherePart, "f.class", "=", n );
+    }
+
+    bool useType = (U2FeatureTypes::Invalid != fq.featureType);
     if ( useType ) {
         add( wherePart, "f.type", "=", n );
     }
@@ -376,7 +382,10 @@ QSharedPointer<SQLiteQuery> SQLiteFeatureDbi::createFeatureQuery( const QString 
     if ( useRoot ) {
         q->bindDataId( ++m, fq.rootFeatureId );
     }
-    if ( useType ) {
+    if ( useClass ) {
+        q->bindInt32( ++m, fq.featureClass );
+    }
+    if (useType) {
         q->bindInt32( ++m, fq.featureType );
     }
     if ( useName ) {
@@ -453,8 +462,8 @@ static void addKeyCommon(SQLiteQuery& qk, const U2DataId& featureId, const U2Fea
 void SQLiteFeatureDbi::createFeature(U2Feature& feature, const QList<U2FeatureKey>& keys, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
 
-    static const QString queryStringf("INSERT INTO Feature(type, parent, root, name, sequence, strand, start, len, nameHash) "
-                                                   "VALUES(?1,   ?2,     ?3,   ?4,   ?5,       ?6,     ?7,    ?8,  ?9)");
+    static const QString queryStringf("INSERT INTO Feature(class, type, parent, root, name, sequence, strand, start, len, nameHash) "
+                                                   "VALUES(?1,    ?2,   ?3,     ?4,   ?5,   ?6,       ?7,     ?8,    ?9,   ?10)");
     QSharedPointer<SQLiteQuery>qf = t.getPreparedQuery(queryStringf, db, os);
 
     static const QString queryStringk("INSERT INTO FeatureKey(feature, name, value) VALUES(?1, ?2, ?3)");
@@ -464,15 +473,16 @@ void SQLiteFeatureDbi::createFeature(U2Feature& feature, const QList<U2FeatureKe
     QSharedPointer<SQLiteQuery> qr = t.getPreparedQuery(queryStringr, db, os);
 
     CHECK_OP(os, );
-    qf->bindInt32(1, feature.type);
-    qf->bindDataId(2, feature.parentFeatureId);
-    qf->bindDataId(3, feature.rootFeatureId);
-    qf->bindString(4, feature.name);
-    qf->bindDataId(5, feature.sequenceId);
-    qf->bindInt32(6, feature.location.strand.getDirectionValue());
-    qf->bindInt64(7, feature.location.region.startPos);
-    qf->bindInt64(8, feature.location.region.length);
-    qf->bindInt32(9, qHash(feature.name));
+    qf->bindInt32(1, feature.featureClass);
+    qf->bindInt32(2, feature.featureType);
+    qf->bindDataId(3, feature.parentFeatureId);
+    qf->bindDataId(4, feature.rootFeatureId);
+    qf->bindString(5, feature.name);
+    qf->bindDataId(6, feature.sequenceId);
+    qf->bindInt32(7, feature.location.strand.getDirectionValue());
+    qf->bindInt64(8, feature.location.region.startPos);
+    qf->bindInt64(9, feature.location.region.length);
+    qf->bindInt32(10, qHash(feature.name));
     feature.id = qf->insert(U2Type::Feature);
     CHECK_OP(os, );
 
@@ -591,6 +601,15 @@ void SQLiteFeatureDbi::updateLocation(const U2DataId& featureId, const U2Feature
     qr.bindInt64(2, location.region.endPos());
     qr.bindDataId(3, featureId);
     qr.execute();
+}
+
+void SQLiteFeatureDbi::updateType(const U2DataId &featureId, U2FeatureType newType, U2OpStatus &os) {
+    DBI_TYPE_CHECK(featureId, U2Type::Feature, os, );
+
+    SQLiteQuery qf("UPDATE Feature SET type = ?2 WHERE id = ?1" , db, os);
+    qf.bindDataId(1, featureId);
+    qf.bindInt32(2, newType);
+    qf.execute();
 }
 
 void SQLiteFeatureDbi::removeFeature(const U2DataId& featureId, U2OpStatus& os) {

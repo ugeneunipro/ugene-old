@@ -39,8 +39,9 @@ public:
         qual = QMap<QString, QString>();
     }
 
-    AnnotationData toAnnotation(const QString& name) const {
+    AnnotationData toAnnotation(U2FeatureType type, const QString& name) const {
         AnnotationData data;
+        data.type = type;
         data.name = name;
         data.location->regions << region;
         data.setStrand(strand);
@@ -56,11 +57,11 @@ public:
         return data;
     }
 
-    static QList<AnnotationData> toTable(const QList<WeightMatrixSearchResult>& res, const QString& name)
+    static QList<AnnotationData> toTable(const QList<WeightMatrixSearchResult>& res, U2FeatureType type, const QString& name)
     {
         QList<AnnotationData> list;
         foreach (const WeightMatrixSearchResult& f, res) {
-            list.append( f.toAnnotation( name ) );
+            list.append(f.toAnnotation(type, name));
         }
         return list;
     }

@@ -203,10 +203,11 @@ Task::ReportResult HMMSearchTask::report() {
     return ReportResult_Finished;
 }
 
-QList<AnnotationData> HMMSearchTask::getResultsAsAnnotations(const QString& name) const {
+QList<AnnotationData> HMMSearchTask::getResultsAsAnnotations(U2FeatureType type , const QString& name) const {
     QList<AnnotationData>  annotations;
     foreach ( const HMMSearchTaskResult &hmmRes, results ) {
         AnnotationData a;
+        a.type = type;
         a.name = name;
         a.setStrand(hmmRes.onCompl ? U2Strand::Complementary : U2Strand::Direct);
         a.location->regions << hmmRes.r;

@@ -48,11 +48,15 @@ public:
     bool                    defaultIsNewDoc;    //new doc field is selected by default
 
     bool                    hideLocation;       // hides location field and does not check it in validate()
+    bool                    hideAnnotationType; // hides annotation type field
     bool                    hideAnnotationName; // hides annotation name field
+    bool                    hideDescription;    // hides description field
     bool                    hideUsePatternNames;// hides "use pattern names" checkbox
     bool                    useUnloadedObjects;
+
     QString                 groupName;          // default groupname. If empty -> <auto> value is used (annotationObject->name value).
-    AnnotationData          data;               // holds name and location of the annotation
+    AnnotationData          data;               // holds name, location and preferred type of the annotation
+    QString                 description;        // some info that will be saved as qualifier /note
 
     GObjectReference        annotationObjectRef; // the object to be loaded
     QString                 newDocUrl;        // the URL of new document with annotation table to be created
@@ -61,20 +65,20 @@ public:
     bool                    hideAutoAnnotationsOption; // show automated highlighting for new annotation if possible
     bool                    hideAnnotationParameters;   // hides annotation parameters groupbox
 
-    AnnotationTableObject *   getAnnotationObject( ) const;
+    AnnotationTableObject *   getAnnotationObject() const;
 };
 
 class U2GUI_EXPORT CreateAnnotationWidgetController : public QObject {
-Q_OBJECT
+    Q_OBJECT
 public:
     enum AnnotationWidgetMode {
+        Full,
         Normal,
         OptionsPanel
     };
     
     // useCompact defines the layout of the widget (normal or compact for the Options Panel)
     CreateAnnotationWidgetController(const CreateAnnotationModel& m, QObject* p, AnnotationWidgetMode layoutMode = Normal);
-    ~CreateAnnotationWidgetController();
     
     // returns error message or empty string if no error found;
     // does not create any new objects
@@ -94,20 +98,14 @@ public:
     // property of GUI
     bool useAutoAnnotationModel() const;
 
+    void setFocusToAnnotationType();
     void setFocusToNameEdit();
 
     void setEnabledNameEdit(bool enbaled);
 
-    bool getEnabledNameEdit() const;
-
     QWidget* getWidget() const;
 
     const CreateAnnotationModel&    getModel() const {return model;}
-
-    QCheckBox* getUsePatternNameCheckBox();
-    
-    //receiver object must have sl_setPredefinedAnnotationName(), TODO: move this utility to a separate class
-    static QMenu* createAnnotationNamesMenu(QWidget* p, QObject* receiver);
 
     void updateWidgetForAnnotationModel(const CreateAnnotationModel& model);
 
@@ -118,13 +116,12 @@ public:
 
 signals:
     void si_annotationNamesEdited();
+    void si_usePatternNamesStateChanged();
 
 private slots:
     void sl_onNewDocClicked();
     void sl_onLoadObjectsClicked();
-    void sl_setPredefinedAnnotationName();
     void sl_groupName();
-    void sl_complementLocation();
     void sl_setPredefinedGroupName();
 
     void sl_documentsComboUpdated();
@@ -132,15 +129,18 @@ private slots:
     //edit slots
     void sl_annotationNameEdited();
     void sl_groupNameEdited();
+    void sl_usePatternNamesStateChanged();
 
 private:
     void updateModel(bool forValidation);
+    void createWidget(AnnotationWidgetMode layoutMode);
 
     CreateAnnotationModel       model;
     GObjectComboBoxController * occ;
     CreateAnnotationWidget *    w;
     
-    QString GROUP_NAME_AUTO;
+    static const QString GROUP_NAME_AUTO;
+    static const QString DESCRIPTION_QUALIFIER_KEY;
 };
 
 } // namespace U2

@@ -502,6 +502,7 @@ bool SharedConnectionsDialog::checkDbShouldBeUpgraded(const U2DbiRef &ref) {
     U2OpStatusImpl os;
     const bool upgradeDatabase = U2DbiUtils::isDatabaseTooOld(ref, Version::minVersionForMySQL(), os);
     CHECK_OP(os, false);
+
     if (upgradeDatabase) {
         QMessageBox question(QMessageBox::Question, tr(DATABASE_UPGRADE_TITLE), tr(DATABASE_UPGRADE_TEXT), QMessageBox::Ok | QMessageBox::Cancel| QMessageBox::Help, this);
         question.button(QMessageBox::Ok)->setText(tr("Upgrade"));
@@ -510,7 +511,7 @@ bool SharedConnectionsDialog::checkDbShouldBeUpgraded(const U2DbiRef &ref) {
         if (QMessageBox::Ok == question.exec()) {
             MysqlUpgradeTask *upgradeTask = new MysqlUpgradeTask(ref);
             upgradeTasks.insert(ui->lwConnections->currentItem(), upgradeTask);
-            connect(new TaskSignalMapper(upgradeTask), SIGNAL(si_taskFinished()), SLOT(sl_upgradeComplete()));
+            connect(new TaskSignalMapper(upgradeTask), SIGNAL(si_taskFinished(Task *)), SLOT(sl_upgradeComplete(Task *)));
             AppContext::getTaskScheduler()->registerTopLevelTask(upgradeTask);
         }
         return false;

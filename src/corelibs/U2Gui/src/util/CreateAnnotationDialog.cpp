@@ -51,14 +51,14 @@ CreateAnnotationDialog::CreateAnnotationDialog(QWidget* p, CreateAnnotationModel
     ui(new Ui::CreateAnnotationDialog)
 {
     ui->setupUi(this);
-    annWidgetController = new CreateAnnotationWidgetController(m, this);
+    annWidgetController = new CreateAnnotationWidgetController(m, this, CreateAnnotationWidgetController::Full);
     
     new HelpButton(this, ui->buttonBox, "14058955");
     ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Create"));
 
     ui->mainLayout->insertWidget(0, annWidgetController->getWidget());
     
-    annWidgetController->setFocusToNameEdit();
+    annWidgetController->setFocusToAnnotationType();
 }
 
 CreateAnnotationDialog::~CreateAnnotationDialog() {

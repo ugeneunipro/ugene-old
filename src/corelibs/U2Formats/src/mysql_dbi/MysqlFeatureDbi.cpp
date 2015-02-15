@@ -42,7 +42,7 @@ void MysqlFeatureDbi::initSqlSchema(U2OpStatus& os) {
 
     //nameHash is used for better indexing
     U2SqlQuery("CREATE TABLE Feature (id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT, "
-        "type INTEGER NOT NULL, parent BIGINT, root BIGINT, nameHash INTEGER, name TEXT, "
+        "class INTEGER NOT NULL, type INTEGER NOT NULL, parent BIGINT, root BIGINT, nameHash INTEGER, name TEXT, "
         "sequence BIGINT, strand INTEGER NOT NULL DEFAULT 0, start BIGINT NOT NULL DEFAULT 0, "
         "len BIGINT NOT NULL DEFAULT 0, end BIGINT NOT NULL DEFAULT 0) ENGINE=InnoDB DEFAULT CHARSET=utf8", db, os).execute();
 
@@ -66,7 +66,7 @@ void MysqlFeatureDbi::initSqlSchema(U2OpStatus& os) {
 namespace {
 
 inline QString getFeatureFields(const QString &featureAlias = "f") {
-    return QString("%1.id, %1.type, %1.parent, %1.root, %1.name, %1.sequence, "
+    return QString("%1.id, %1.class, %1.type, %1.parent, %1.root, %1.name, %1.sequence, "
         "%1.strand, %1.start, %1.len ").arg(featureAlias);
 }
 
@@ -82,14 +82,15 @@ public:
         U2Feature res;
         //type, parent, root, name, sequence, strand, start, len
         res.id = q->getDataId(0, U2Type::Feature);
-        res.type = static_cast<U2Feature::FeatureType>(q->getInt32(1));
-        res.parentFeatureId = q->getDataId(2, U2Type::Feature);
-        res.rootFeatureId = q->getDataId(3, U2Type::Feature);
-        res.name = q->getString(4);
-        res.sequenceId = q->getDataId(5, U2Type::Sequence);
-        res.location.strand = U2Strand(U2Strand::Direction(q->getInt32(6)));
-        res.location.region.startPos = q->getInt64(7);
-        res.location.region.length= q->getInt64(8);
+        res.featureClass = static_cast<U2Feature::FeatureClass>(q->getInt32(1));
+        res.featureType= static_cast<U2FeatureType>(q->getInt32(2));
+        res.parentFeatureId = q->getDataId(3, U2Type::Feature);
+        res.rootFeatureId = q->getDataId(4, U2Type::Feature);
+        res.name = q->getString(5);
+        res.sequenceId = q->getDataId(6, U2Type::Sequence);
+        res.location.strand = U2Strand(U2Strand::Direction(q->getInt32(7)));
+        res.location.region.startPos = q->getInt64(8);
+        res.location.region.length= q->getInt64(9);
         return res;
     }
 };
@@ -312,7 +313,12 @@ QSharedPointer<U2SqlQuery> MysqlFeatureDbi::createFeatureQuery( const QString &s
         add( wherePart, "f.root", "=", "root", n );
     }
 
-    bool useType = ( U2Feature::Invalid != fq.featureType );
+    bool useClass = ( U2Feature::Invalid != fq.featureClass );
+    if ( useClass ) {
+        add( wherePart, "f.class", "=", "class", n );
+    }
+
+    bool useType = ( U2FeatureTypes::Invalid != fq.featureType );
     if ( useType ) {
         add( wherePart, "f.type", "=", "type", n );
     }
@@ -407,6 +413,9 @@ QSharedPointer<U2SqlQuery> MysqlFeatureDbi::createFeatureQuery( const QString &s
     if ( useRoot ) {
         q->bindDataId( ":root" + QString::number(++m), fq.rootFeatureId );
     }
+    if ( useClass ) {
+        q->bindInt32( ":class" + QString::number(++m), fq.featureClass );
+    }
     if ( useType ) {
         q->bindInt32( ":type" + QString::number(++m), fq.featureType );
     }
@@ -492,7 +501,7 @@ void MysqlFeatureDbi::createFeature(U2Feature& feature, const QList<U2FeatureKey
     static const QString queryStringf("INSERT INTO Feature(type, parent, root, name, sequence, strand, start, len, end, nameHash) "
                                       "VALUES(:type, :parent, :root, :name, :sequence, :strand, :start, :len, :end, :nameHash)");
     U2SqlQuery qf(queryStringf, db, os);
-    qf.bindInt32(":type", feature.type);
+    qf.bindInt32(":type", feature.featureClass);
     qf.bindDataId(":parent", feature.parentFeatureId);
     qf.bindDataId(":root", feature.rootFeatureId);
     qf.bindString(":name", feature.name);
@@ -641,6 +650,19 @@ void MysqlFeatureDbi::updateLocation(const U2DataId& featureId, const U2FeatureL
     qf.execute();
 }
 
+void MysqlFeatureDbi::updateType(const U2DataId &featureId, U2FeatureType newType, U2OpStatus &os) {
+    DBI_TYPE_CHECK(featureId, U2Type::Feature, os, );
+
+    MysqlTransaction t(db, os);
+    Q_UNUSED(t);
+
+    static const QString queryString = "UPDATE Feature SET type = :type WHERE id = :id";
+    U2SqlQuery qf(queryString, db, os);
+    qf.bindDataId(":id", featureId);
+    qf.bindInt32(":type", newType);
+    qf.execute();
+}
+
 void MysqlFeatureDbi::removeFeature(const U2DataId& featureId, U2OpStatus& os) {
     DBI_TYPE_CHECK(featureId, U2Type::Feature, os, );
     MysqlTransaction t(db, os);
@@ -780,8 +802,8 @@ QList<FeatureAndKey> MysqlFeatureDbi::getFeatureTable( const U2DataId &rootFeatu
     while (q.step()) {
         FeatureAndKey fnk;
         fnk.feature = MysqlFeatureRSLoader::loadStatic(&q);
-        fnk.key.name = q.getCString(9);
-        fnk.key.value = q.getCString(10);
+        fnk.key.name = q.getCString(10);
+        fnk.key.value = q.getCString(11);
         result.append(fnk);
     }
 

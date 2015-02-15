@@ -477,6 +477,7 @@ QList<AnnotationData> FindRepeatsToAnnotationsTask::importAnnotations( ) {
     QList<AnnotationData> res;
     foreach ( const RFResult &r, findTask->getResults( ) ) {
         AnnotationData ad;
+        ad.type = U2FeatureTypes::RepeatRegion;
         ad.name = annName;
         U2Region l1(r.x + settings.reportSeqShift, r.l);
         U2Region l2(r.y + settings.reportSeq2Shift, r.l);

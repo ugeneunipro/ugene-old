@@ -345,6 +345,13 @@ QList<PluginDesc> PluginDescriptorHelper::orderPlugins(const QList<PluginDesc>& 
     resetState(allNodes.qlist);
     orderTopological(rootNode, result);
 
+    foreach (const PluginDesc &desc, result) {
+        if (desc.id.contains("pcr", Qt::CaseInsensitive)) {
+            result.removeAll(desc);
+            result.prepend(desc);
+        }
+    }
+
 #ifdef _DEBUG
     assert(result.size() == unordered.size());
     foreach (const PluginDesc& desc, unordered) {

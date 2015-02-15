@@ -38,7 +38,7 @@ AnnotationDataCache::AnnotationDataCache()
 }
 
 void AnnotationDataCache::addData(const U2Feature &feature, const AnnotationData &data) {
-    SAFE_POINT(U2Feature::Annotation == feature.type, "Invalid feature type", );
+    SAFE_POINT(U2Feature::Annotation == feature.featureClass, "Invalid feature class", );
 
     QMutexLocker locker(&guard);
     addFeature(feature);
@@ -46,7 +46,7 @@ void AnnotationDataCache::addData(const U2Feature &feature, const AnnotationData
 }
 
 void AnnotationDataCache::addGroup(const U2Feature &feature) {
-    SAFE_POINT(U2Feature::Group == feature.type, "Invalid feature type", );
+    SAFE_POINT(U2Feature::Group == feature.featureClass, "Invalid feature class", );
     addFeature(feature);
 }
 
@@ -92,7 +92,7 @@ bool AnnotationDataCache::containsAnnotation(const U2DataId &featureId) {
 
 bool AnnotationDataCache::containsGroup(const U2DataId &featureId) {
     QMutexLocker locker(&guard);
-    return feature2Id.contains(featureId) && feature2Id[featureId].type == U2Feature::Group;
+    return feature2Id.contains(featureId) && feature2Id[featureId].featureClass == U2Feature::Group;
 }
 
 int AnnotationDataCache::getAnnotationTableSize(const U2DataId &rootId) {
@@ -144,7 +144,7 @@ QList<U2Feature> AnnotationDataCache::getTableFeatures(const U2DataId &rootId, c
     QList<U2Feature> result;
     foreach (const U2DataId &featureId, rootSubfeatures.value(rootId)) {
         const U2Feature subfeature = feature2Id.value(featureId);
-        if (type & subfeature.type) {
+        if (type & subfeature.featureClass) {
             result.append(subfeature);
         }
     }
@@ -171,7 +171,7 @@ QList<U2Feature> AnnotationDataCache::getSubfeatures(const U2DataId &parentId, c
         const U2Feature subfeature = feature2Id.value(featureId);
         if (subfeature.parentFeatureId == parentId) {
             subfeatures.append(subfeature);
-            if (type & subfeature.type) {
+            if (type & subfeature.featureClass) {
                 result.append(subfeature);
             }
         }
@@ -227,7 +227,7 @@ void AnnotationDataCache::removeAnnotationTableData(const U2DataId &rootId) {
     QMutexLocker locker(&guard);
 
     foreach (const U2DataId &featureId, rootSubfeatures.value(rootId)) {
-        U2Feature::FeatureType type = feature2Id[featureId].type;
+        U2Feature::FeatureClass type = feature2Id[featureId].featureClass;
         if (U2Feature::Annotation == type) {
             removeAnnotationData(featureId);
         } else if (U2Feature::Group == type) {

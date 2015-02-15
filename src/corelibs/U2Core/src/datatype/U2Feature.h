@@ -22,12 +22,13 @@
 #ifndef _U2_FEATURE_H_
 #define _U2_FEATURE_H_
 
-#include <U2Core/U2Type.h>
-#include <U2Core/U2Region.h>
-
+#include <QtCore/QSharedData>
 #include <QtCore/QStringList>
 #include <QtCore/QVector>
-#include <QtCore/QSharedData>
+
+#include <U2Core/U2FeatureType.h>
+#include <U2Core/U2Region.h>
+#include <U2Core/U2Type.h>
 
 namespace U2 {
 
@@ -91,16 +92,17 @@ enum SubfeatureSelectionMode {
 /**
  * Sequence annotation. Used to annotate set of sequence regions
  */
-class U2CORE_EXPORT U2Feature: public U2Entity {
+class U2CORE_EXPORT U2Feature : public U2Entity {
 public:
-    enum FeatureType {
+    enum FeatureClass {
         Invalid,
         Annotation,
         Group
     };
 
-    U2Feature( )
-        : type( Annotation )
+    U2Feature() :
+        featureClass(Annotation),
+        featureType(U2FeatureTypes::Invalid)
     {
 
     }
@@ -130,10 +132,11 @@ public:
     /**
      * Type of feature
      */
-    FeatureType                 type;
+    FeatureClass                featureClass;
+    U2FeatureType               featureType;
 };
 
-typedef QFlags<U2Feature::FeatureType> FeatureFlags;
+typedef QFlags<U2Feature::FeatureClass> FeatureFlags;
 
 /**
  * Feature key

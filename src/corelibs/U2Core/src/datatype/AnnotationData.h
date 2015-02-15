@@ -22,6 +22,7 @@
 #ifndef _U2_ANNOTATION_DATA_H_
 #define _U2_ANNOTATION_DATA_H_
 
+#include <U2Core/U2FeatureType.h>
 #include <U2Core/U2Location.h>
 #include <U2Core/U2Qualifier.h>
 
@@ -33,7 +34,7 @@ namespace U2 {
 
 class U2CORE_EXPORT AnnotationData : public QSharedData {
 public:
-    AnnotationData() : caseAnnotation( false ) {location = new U2LocationData();}
+    AnnotationData() : location(new U2LocationData()), caseAnnotation(false), type(U2FeatureTypes::MiscFeature) {}
 
     inline AnnotationData& operator= ( const AnnotationData & a );
 
@@ -67,6 +68,7 @@ public:
     U2Location              location;
     QVector<U2Qualifier>    qualifiers;
     bool                    caseAnnotation;
+    U2FeatureType           type;
 };
 
 typedef QSharedDataPointer<AnnotationData> SharedAnnotationData;
@@ -79,6 +81,7 @@ U2CORE_EXPORT QDataStream& operator>>(QDataStream& dataStream, AnnotationData& d
 U2CORE_EXPORT QDataStream& operator<<(QDataStream& dataStream, const AnnotationData& data);
 
 AnnotationData& AnnotationData::operator= ( const AnnotationData & a ) {
+    type = a.type;
     name = a.name;
     location = a.location;
     qualifiers = a.qualifiers;
@@ -86,6 +89,10 @@ AnnotationData& AnnotationData::operator= ( const AnnotationData & a ) {
 }
 
 bool AnnotationData::operator== (const AnnotationData &other) const {
+    if (this->type != other.type) {
+        return false;
+    }
+
     if (this->name != other.name) {
         return false;
     }
@@ -149,8 +156,8 @@ bool AnnotationData::operator< (const AnnotationData &other) const {
 
 }//namespace
 
-Q_DECLARE_METATYPE(U2::AnnotationData);
-Q_DECLARE_METATYPE(U2::SharedAnnotationData);
-Q_DECLARE_METATYPE(QList<U2::SharedAnnotationData>);
+Q_DECLARE_METATYPE(U2::AnnotationData)
+Q_DECLARE_METATYPE(U2::SharedAnnotationData)
+Q_DECLARE_METATYPE(QList<U2::SharedAnnotationData>)
 
 #endif

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>199</width>
-    <height>349</height>
+    <width>198</width>
+    <height>454</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -126,7 +126,11 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QLineEdit" name="leGroupName"/>
+         <widget class="QLineEdit" name="leGroupName">
+          <property name="placeholderText">
+           <string>auto</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QToolButton" name="tbSelectGroupName">
@@ -145,6 +149,20 @@
        </layout>
       </item>
       <item>
+       <widget class="QLabel" name="lblAnnotationType">
+        <property name="text">
+         <string>Annotation type:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="cbAnnotationType">
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="lblAnnotationName">
         <property name="text">
          <string>Annotation name:</string>
@@ -158,19 +176,8 @@
           <property name="maxLength">
            <number>100</number>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="tbSelectAnnotationName">
-          <property name="toolTip">
-           <string>Predefined annotation names</string>
-          </property>
-          <property name="text">
-           <string>...</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../../U2Gui.qrc">
-            <normaloff>:/core/images/predefined_annotation_groups.png</normaloff>:/core/images/predefined_annotation_groups.png</iconset>
+          <property name="placeholderText">
+           <string>by type</string>
           </property>
          </widget>
         </item>
@@ -207,6 +214,16 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblDescription">
+        <property name="text">
+         <string>Description:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="leDescription"/>
       </item>
       <item>
        <widget class="QCheckBox" name="chbUsePatternNames">

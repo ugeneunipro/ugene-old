@@ -250,7 +250,7 @@ void PWMSearchDialogController::sl_onSaveAnnotations() {
     QList<AnnotationData> list;
     for (int i=0, n = resultsTree->topLevelItemCount(); i<n; ++i) {
         WeightMatrixResultItem* item = static_cast<WeightMatrixResultItem* >(resultsTree->topLevelItem(i));
-        list.append(item->res.toAnnotation(name));
+        list.append(item->res.toAnnotation(m.data.type, name));
     }
 
     CreateAnnotationsTask* t = new CreateAnnotationsTask(m.getAnnotationObject(), list, m.groupName);

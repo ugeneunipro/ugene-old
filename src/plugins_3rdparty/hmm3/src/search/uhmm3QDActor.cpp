@@ -123,7 +123,7 @@ Task* UHMM3QDActor::getAlgorithmTask( const QVector<U2Region>& location ) {
 void UHMM3QDActor::sl_onTaskFinished(Task*) {
     QString aname = cfg->getAnnotationKey();
     foreach(UHMM3SWSearchTask* t, offsets.keys()) {
-        QList<SharedAnnotationData> annotations = t->getResultsAsAnnotations(aname);
+        QList<SharedAnnotationData> annotations = t->getResultsAsAnnotations(U2FeatureTypes::MiscSignal, aname);
         int offset = offsets.value(t);
         foreach(SharedAnnotationData d, annotations) {
             U2Region r = d->location->regions.first();

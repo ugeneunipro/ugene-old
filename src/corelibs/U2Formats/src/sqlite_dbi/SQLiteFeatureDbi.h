@@ -122,6 +122,11 @@ public:
     void                            updateLocation( const U2DataId &featureId,
                                         const U2FeatureLocation &location, U2OpStatus &os );
     /**
+     * Updates feature type
+     * Requires: U2DbiFeature_WriteFeature feature support
+     */
+    void                            updateType( const U2DataId &featureId, U2FeatureType newType, U2OpStatus &os );
+    /**
      * Updates feature name
      * Requires: U2DbiFeature_WriteFeature feature support
      */

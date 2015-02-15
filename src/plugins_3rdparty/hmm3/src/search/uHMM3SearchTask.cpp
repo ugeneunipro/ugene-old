@@ -415,12 +415,13 @@ QList<UHMM3SWSearchTaskDomainResult> UHMM3SWSearchTask::getResults() const {
 }
 
 QList< SharedAnnotationData >
-UHMM3SWSearchTask::getResultsAsAnnotations( const QList<UHMM3SWSearchTaskDomainResult> & results, const P7_HMM * hmm, const QString & name ) {
+UHMM3SWSearchTask::getResultsAsAnnotations( const QList<UHMM3SWSearchTaskDomainResult> & results, const P7_HMM * hmm, U2FeatureType type, const QString & name ) {
     assert( !name.isEmpty() );
     QList< SharedAnnotationData > annotations;
 
     foreach( const UHMM3SWSearchTaskDomainResult & res, results ) {
         AnnotationData * annData = new AnnotationData();
+        annData->type = type;
         annData->name = name;
         annData->setStrand(res.onCompl ? U2Strand::Complementary : U2Strand::Direct);
         annData->location->regions << res.generalResult.seqRegion;
@@ -443,10 +444,10 @@ UHMM3SWSearchTask::getResultsAsAnnotations( const QList<UHMM3SWSearchTaskDomainR
     return annotations;
 }
 
-QList< SharedAnnotationData > UHMM3SWSearchTask::getResultsAsAnnotations( const QString & aname ) {
+QList< SharedAnnotationData > UHMM3SWSearchTask::getResultsAsAnnotations(U2FeatureType aType, const QString & aname) {
     QList< SharedAnnotationData > res;
     for(int i = 0; i<hmms.size(); i++){
-        res.append( getResultsAsAnnotations( results[i], hmms.at(i), aname ) );
+        res.append(getResultsAsAnnotations(results[i], hmms.at(i), aType, aname));
     }
     return res;
 }
@@ -571,9 +572,9 @@ void UHMM3SWSearchToAnnotationsTask::checkArgs() {
 
 UHMM3SWSearchToAnnotationsTask::UHMM3SWSearchToAnnotationsTask( const QString & hmmf, const DNASequence & s,
                                                                 AnnotationTableObject *o, const QString & gr,
-                                                                const QString & name, const UHMM3SearchTaskSettings & set )
+                                                                U2FeatureType aType, const QString & name, const UHMM3SearchTaskSettings & set )
 : Task( "", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ),
-hmmfile( hmmf ), sequence( s ), annotationObj( o ), agroup( gr ), aname( name ), searchSettings( set ),
+hmmfile( hmmf ), sequence( s ), annotationObj( o ), agroup( gr ), aType(aType), aname( name ), searchSettings( set ),
 loadSequenceTask( NULL ), searchTask( NULL ), createAnnotationsTask( NULL ) {
 
     setTaskName( tr( "HMMER3 search task" ) );
@@ -592,10 +593,10 @@ loadSequenceTask( NULL ), searchTask( NULL ), createAnnotationsTask( NULL ) {
 
 UHMM3SWSearchToAnnotationsTask::UHMM3SWSearchToAnnotationsTask( const QString & hmmf, const QString & seqFile,
                                                                 AnnotationTableObject *obj, const QString & gr,
-                                                                const QString & name,
+                                                                U2FeatureType aType, const QString & name,
                                                                 const UHMM3SearchTaskSettings & set )
 : Task( "", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ),
-hmmfile( hmmf ), annotationObj( obj ), agroup( gr ), aname( name ), searchSettings( set ),
+hmmfile( hmmf ), annotationObj( obj ), agroup( gr ), aType(aType), aname( name ), searchSettings( set ),
 loadSequenceTask( NULL ), searchTask( NULL ), createAnnotationsTask( NULL ) {
 
     setTaskName( tr( "HMMER3 search task" ) );
@@ -684,7 +685,7 @@ QList< Task* > UHMM3SWSearchToAnnotationsTask::onSubTaskFinished( Task * subTask
         res << searchTask;
     } else if( searchTask == subTask ) {
         QList<AnnotationData> annotations;
-        foreach ( const SharedAnnotationData &data, searchTask->getResultsAsAnnotations( aname ) ) {
+        foreach (const SharedAnnotationData &data, searchTask->getResultsAsAnnotations(aType, aname)) {
             annotations << *data;
         }
         if( annotations.isEmpty() ) {

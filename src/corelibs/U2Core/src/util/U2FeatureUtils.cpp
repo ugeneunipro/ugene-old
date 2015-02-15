@@ -89,20 +89,20 @@ U2Feature createRootFeature(const U2DataId &rootId) {
 
     result.id = rootId;
     result.name = AnnotationGroup::ROOT_GROUP_NAME;
-    result.type = U2Feature::Group;
+    result.featureClass = U2Feature::Group;
     return result;
 }
 
 }
 
-U2Feature U2FeatureUtils::getFeatureById(const U2DataId &id, U2Feature::FeatureType type, const U2DbiRef &dbiRef, U2OpStatus &op) {
+U2Feature U2FeatureUtils::getFeatureById(const U2DataId &id, U2Feature::FeatureClass featureClass, const U2DbiRef &dbiRef, U2OpStatus &op) {
     U2Feature result;
     SAFE_POINT(!id.isEmpty(), "Invalid feature ID detected!", result);
     SAFE_POINT(dbiRef.isValid(), "Invalid DBI reference detected!", result);
 
     if (dbiAnnotationCache.containsAnnotationTable(dbiRef, id)) { // it's a root group
         return createRootFeature(id);
-    } else if (cacheContainsAnnotation(id, type, dbiRef) || cacheContainsGroup(id, type, dbiRef)) {
+    } else if (cacheContainsAnnotation(id, featureClass, dbiRef) || cacheContainsGroup(id, featureClass, dbiRef)) {
         return dbiAnnotationCache.getFeature(dbiRef, id);
     } else {
         DbiConnection connection;
@@ -168,7 +168,7 @@ U2Feature U2FeatureUtils::exportAnnotationGroupToFeature(const QString &name, co
     U2FeatureDbi *dbi = connection.dbi->getFeatureDbi();
     SAFE_POINT(NULL != dbi, "Feature DBI is not initialized!", result);
 
-    result.type = U2Feature::Group;
+    result.featureClass = U2Feature::Group;
     //store to db to get ID
     result.name = name;
     result.parentFeatureId = parentFeatureId;
@@ -236,7 +236,7 @@ AnnotationData U2FeatureUtils::getAnnotationDataFromFeature(const U2DataId &feat
     U2Feature annotatingFeature;
     QVector<U2Region> regions;
     foreach (const U2Feature &f, features) {
-        SAFE_POINT_EXT(U2Feature::Annotation == f.type,
+        SAFE_POINT_EXT(U2Feature::Annotation == f.featureClass,
             op.setError("Invalid feature type detected!"), result);
         if (Q_UNLIKELY(f.id == featureId)) {
             CHECK_EXT(!annotatingFeature.hasValidId(),
@@ -252,6 +252,7 @@ AnnotationData U2FeatureUtils::getAnnotationDataFromFeature(const U2DataId &feat
     result.location->strand = annotatingFeature.location.strand;
 
     result.location->regions = regions;
+    result.type = annotatingFeature.featureType;
     result.name = annotatingFeature.name;
 
     dbiAnnotationCache.addData(dbiRef, annotatingFeature, result);
@@ -275,7 +276,7 @@ QList<U2Feature> U2FeatureUtils::getSubGroups(const U2DataId &parentFeatureId, c
         : getFeaturesByParent(parentFeatureId, dbiRef, os, resursive, U2Feature::Group);
 }
 
-void U2FeatureUtils::removeFeature(const U2DataId &featureId, U2Feature::FeatureType type, const U2DbiRef &dbiRef, U2OpStatus &op) {
+void U2FeatureUtils::removeFeature(const U2DataId &featureId, U2Feature::FeatureClass featureClass, const U2DbiRef &dbiRef, U2OpStatus &op) {
     SAFE_POINT(!featureId.isEmpty(), "Invalid feature detected!", );
     SAFE_POINT(dbiRef.isValid(), "Invalid DBI reference detected!", );
 
@@ -287,9 +288,9 @@ void U2FeatureUtils::removeFeature(const U2DataId &featureId, U2Feature::Feature
 
     dbi->removeFeaturesByParent(featureId, op, SelectParentFeature);
 
-    if (cacheContainsAnnotation(featureId, type, dbiRef)) {
+    if (cacheContainsAnnotation(featureId, featureClass, dbiRef)) {
         dbiAnnotationCache.removeAnnotationData(dbiRef, featureId);
-    } else if (cacheContainsGroup(featureId, type, dbiRef)) {
+    } else if (cacheContainsGroup(featureId, featureClass, dbiRef)) {
         dbiAnnotationCache.removeAnnotationGroup(dbiRef, featureId);
     }
 }
@@ -341,7 +342,7 @@ void U2FeatureUtils::addSubFeatures(const QVector<U2Region> &regions, const U2St
     foreach (const U2Region &reg, regions) {
         SAFE_POINT(!reg.isEmpty(), "Attempting to assign annotation to an empty region!", );
         U2Feature sub;
-        sub.type = U2Feature::Annotation;
+        sub.featureClass = U2Feature::Annotation;
         sub.location.region = reg;
         sub.location.strand = strand;
         sub.parentFeatureId = parentFeatureId;
@@ -352,14 +353,14 @@ void U2FeatureUtils::addSubFeatures(const QVector<U2Region> &regions, const U2St
 }
 
 QList<U2Feature> U2FeatureUtils::getFeaturesByParent(const U2DataId &parentFeatureId, const U2DbiRef &dbiRef, U2OpStatus &os,
-    OperationScope scope, const FeatureFlags &type, SubfeatureSelectionMode mode)
+    OperationScope scope, const FeatureFlags &featureClass, SubfeatureSelectionMode mode)
 {
     QList<U2Feature> result;
     SAFE_POINT(!parentFeatureId.isEmpty(), "Invalid feature detected!", result);
     SAFE_POINT(dbiRef.isValid(), "Invalid DBI reference detected!", result);
 
     if (dbiAnnotationCache.containsGroup(dbiRef, parentFeatureId)) {
-        return dbiAnnotationCache.getSubfeatures(dbiRef, parentFeatureId, type, scope, mode);
+        return dbiAnnotationCache.getSubfeatures(dbiRef, parentFeatureId, featureClass, scope, mode);
     }
 
     DbiConnection connection;
@@ -374,7 +375,7 @@ QList<U2Feature> U2FeatureUtils::getFeaturesByParent(const U2DataId &parentFeatu
     QList<U2Feature> subfeatures;
     while (featureIter->hasNext()) {
         const U2Feature feature = featureIter->next();
-        if (type.testFlag(feature.type)) {
+        if (featureClass.testFlag(feature.featureClass)) {
             result << feature;
         }
         CHECK_OP(os, result);
@@ -382,7 +383,7 @@ QList<U2Feature> U2FeatureUtils::getFeaturesByParent(const U2DataId &parentFeatu
     }
     if (Recursive == scope) {
         foreach (const U2Feature &feature, subfeatures) {
-            result << getFeaturesByParent(feature.id, dbiRef, os, Recursive, type, NotSelectParentFeature);
+            result << getFeaturesByParent(feature.id, dbiRef, os, Recursive, featureClass, NotSelectParentFeature);
             CHECK_OP(os, result);
         }
     }
@@ -391,14 +392,14 @@ QList<U2Feature> U2FeatureUtils::getFeaturesByParent(const U2DataId &parentFeatu
 }
 
 QList<U2Feature> U2FeatureUtils::getFeaturesByRoot(const U2DataId &rootFeatureId, const U2DbiRef &dbiRef,
-    U2OpStatus &os, OperationScope scope, const FeatureFlags &type)
+    U2OpStatus &os, OperationScope scope, const FeatureFlags &featureClass)
 {
     QList<U2Feature> result;
     SAFE_POINT(!rootFeatureId.isEmpty(), "Invalid feature detected!", result);
     SAFE_POINT(dbiRef.isValid(), "Invalid DBI reference detected!", result);
 
     if (dbiAnnotationCache.containsAnnotationTable(dbiRef, rootFeatureId)) {
-        const QList<U2Feature> allSubfeatures = dbiAnnotationCache.getTableFeatures(dbiRef, rootFeatureId, type);
+        const QList<U2Feature> allSubfeatures = dbiAnnotationCache.getTableFeatures(dbiRef, rootFeatureId, featureClass);
         if (Recursive == scope) {
             return allSubfeatures;
         }
@@ -417,13 +418,13 @@ QList<U2Feature> U2FeatureUtils::getFeaturesByRoot(const U2DataId &rootFeatureId
     U2FeatureDbi *dbi = connection.dbi->getFeatureDbi();
     SAFE_POINT(NULL != dbi, "Invalid DBI pointer encountered!", result);
 
-    QScopedPointer<U2DbiIterator<U2Feature> > featureIter(dbi->getFeaturesByRoot(rootFeatureId, type, os));
+    QScopedPointer<U2DbiIterator<U2Feature> > featureIter(dbi->getFeaturesByRoot(rootFeatureId, featureClass, os));
     CHECK_OP(os, result);
 
     QList<U2Feature> subfeatures;
     while (featureIter->hasNext()) {
         const U2Feature feature = featureIter->next();
-        if (type.testFlag(feature.type) && (Recursive == scope || feature.parentFeatureId == rootFeatureId)) {
+        if (featureClass.testFlag(feature.featureClass) && (Recursive == scope || feature.parentFeatureId == rootFeatureId)) {
             result << feature;
         }
         CHECK_OP(os, result);
@@ -481,7 +482,7 @@ QList<U2Feature> U2FeatureUtils::getAnnotatingFeaturesByName(const U2DataId &roo
 }
 
 qint64 U2FeatureUtils::countOfChildren(const U2DataId &parentFeatureId, ParentFeatureStatus parentIs, const U2DbiRef &dbiRef,
-    const U2Feature::FeatureType &childrenType, U2OpStatus &os)
+    const U2Feature::FeatureClass &childrenClass, U2OpStatus &os)
 {
     qint64 result = -1;
     SAFE_POINT(!parentFeatureId.isEmpty(), "Invalid feature detected!", result);
@@ -494,7 +495,7 @@ qint64 U2FeatureUtils::countOfChildren(const U2DataId &parentFeatureId, ParentFe
     SAFE_POINT(NULL != dbi, "Invalid DBI pointer encountered!", result);
 
     FeatureQuery query;
-    query.featureType = childrenType;
+    query.featureClass = childrenClass;
 
     if (Root == parentIs) {
         if (dbiAnnotationCache.containsAnnotationTable(dbiRef, parentFeatureId)) {
@@ -566,7 +567,7 @@ QList<U2Feature> U2FeatureUtils::getAnnotatingFeaturesByRegion(const U2DataId &r
         const U2Feature feature = regionFeatureIter->next();
         CHECK_OP(os, result);
 
-        if (U2Feature::Annotation == feature.type) {
+        if (U2Feature::Annotation == feature.featureClass) {
             if (result.contains(feature)) { // this can happen if the @range starts with "0"
                 continue;
             }
@@ -596,7 +597,7 @@ void U2FeatureUtils::loadAnnotationTable(const U2DataId &rootFeatureId, const U2
 
     const QList<FeatureAndKey> rawData = dbi->getFeatureTable(rootFeatureId, op);
     foreach (const FeatureAndKey &fnk, rawData) {
-        if (U2Feature::Group == fnk.feature.type) {
+        if (U2Feature::Group == fnk.feature.featureClass) {
             dbiAnnotationCache.addGroup(dbiRef, fnk.feature);
         } else if (dbiAnnotationCache.containsAnnotation(dbiRef, fnk.feature.parentFeatureId)) { // add a region to an already fetched annotation
             SAFE_POINT(!fnk.feature.location.region.isEmpty() && !fnk.key.isValid(), "Unexpected feature data fetched from DB",);
@@ -607,6 +608,7 @@ void U2FeatureUtils::loadAnnotationTable(const U2DataId &rootFeatureId, const U2
             addFeatureKeyToAnnotation(fnk.key, data, op);
         } else { // fetch annotation
             AnnotationData aData;
+            aData.type = fnk.feature.featureType;
             aData.name = fnk.feature.name;
             aData.location->strand = fnk.feature.location.strand;
             if (!fnk.feature.location.region.isEmpty()) {
@@ -677,15 +679,34 @@ void U2FeatureUtils::updateFeatureSequence(const U2DataId &featureId, const U2Da
     }
 }
 
-bool U2FeatureUtils::cacheContainsAnnotation(const U2DataId &featureId, U2Feature::FeatureType type, const U2DbiRef &dbiRef) {
-    return U2Feature::Annotation == type && dbiAnnotationCache.containsAnnotation(dbiRef, featureId);
+void U2FeatureUtils::updateFeatureType(const U2DataId &featureId, U2Feature::FeatureClass featureClass, U2FeatureType newType, const U2DbiRef &dbiRef, U2OpStatus &os) {
+    SAFE_POINT(!featureId.isEmpty(), "Invalid feature ID detected!", );
+
+    DbiConnection connection;
+    connection.open(dbiRef, os);
+    CHECK_OP(os, );
+    U2FeatureDbi *fDbi = connection.dbi->getFeatureDbi();
+    SAFE_POINT(NULL != fDbi, "Invalid DBI pointer encountered!", );
+
+    fDbi->updateType(featureId, newType, os);
+
+    if (cacheContainsAnnotation(featureId, featureClass, dbiRef)) {
+        dbiAnnotationCache.getAnnotationData(dbiRef, featureId).type = newType;
+        dbiAnnotationCache.getFeature(dbiRef, featureId).featureType = newType;
+    } else if (cacheContainsGroup(featureId, featureClass, dbiRef)) {
+        dbiAnnotationCache.getFeature(dbiRef, featureId).featureType = newType;
+    }
 }
 
-bool U2FeatureUtils::cacheContainsGroup(const U2DataId &featureId, U2Feature::FeatureType type, const U2DbiRef &dbiRef) {
-    return U2Feature::Group == type && dbiAnnotationCache.containsGroup(dbiRef, featureId);
+bool U2FeatureUtils::cacheContainsAnnotation(const U2DataId &featureId, U2Feature::FeatureClass featureClass, const U2DbiRef &dbiRef) {
+    return U2Feature::Annotation == featureClass && dbiAnnotationCache.containsAnnotation(dbiRef, featureId);
 }
 
-void U2FeatureUtils::updateFeatureName(const U2DataId &featureId, U2Feature::FeatureType type, const QString &newName,
+bool U2FeatureUtils::cacheContainsGroup(const U2DataId &featureId, U2Feature::FeatureClass featureClass, const U2DbiRef &dbiRef) {
+    return U2Feature::Group == featureClass && dbiAnnotationCache.containsGroup(dbiRef, featureId);
+}
+
+void U2FeatureUtils::updateFeatureName(const U2DataId &featureId, U2Feature::FeatureClass featureClass, const QString &newName,
     const U2DbiRef &dbiRef, U2OpStatus &os)
 {
     SAFE_POINT(!featureId.isEmpty(), "Invalid feature ID detected!", );
@@ -699,10 +720,10 @@ void U2FeatureUtils::updateFeatureName(const U2DataId &featureId, U2Feature::Fea
 
     fDbi->updateName(featureId, newName, os);
 
-    if (cacheContainsAnnotation(featureId, type, dbiRef)) {
+    if (cacheContainsAnnotation(featureId, featureClass, dbiRef)) {
         dbiAnnotationCache.getAnnotationData(dbiRef, featureId).name = newName;
         dbiAnnotationCache.getFeature(dbiRef, featureId).name = newName;
-    } else if (cacheContainsGroup(featureId, type, dbiRef)) {
+    } else if (cacheContainsGroup(featureId, featureClass, dbiRef)) {
         dbiAnnotationCache.getFeature(dbiRef, featureId).name = newName;
     }
 }
@@ -802,9 +823,10 @@ void U2FeatureUtils::removeFeatureKey(const U2DataId &featureId, const U2Feature
 void U2FeatureUtils::createFeatureEntityFromAnnotationData(const AnnotationData &annotation, const U2DataId &rootFeatureId,
     const U2DataId &parentFeatureId, U2Feature &resFeature, QList<U2FeatureKey> &resFeatureKeys)
 {
-    resFeature.type = U2Feature::Annotation;
+    resFeature.featureClass = U2Feature::Annotation;
     //copy data
     resFeature.name = annotation.name;
+    resFeature.featureType = annotation.type;
     resFeature.parentFeatureId = parentFeatureId;
     resFeature.rootFeatureId = rootFeatureId;
     if (annotation.location->isSingleRegion()) {

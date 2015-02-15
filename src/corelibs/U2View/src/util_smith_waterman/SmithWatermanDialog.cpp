@@ -318,6 +318,7 @@ void SmithWatermanDialog::addAnnotationWidget()
     CreateAnnotationModel acm;
 
     acm.sequenceObjectRef = GObjectReference(dnaso);
+    acm.hideAnnotationType = false;
     acm.hideAnnotationName = false;
     acm.hideLocation = true;
     acm.sequenceLen = dnaso->getSequenceLength();
@@ -490,10 +491,11 @@ void SmithWatermanDialog::sl_bttnRun()
             }
             const CreateAnnotationModel& m = annotationController->getModel();
             AnnotationTableObject *obj = m.getAnnotationObject();
+            U2FeatureType annotationType = m.data.type;
             QString annotationName = m.data.name;
             QString annotationGroup = m.groupName;
 
-            config.resultCallback = new SmithWatermanReportCallbackAnnotImpl(obj, annotationName,
+            config.resultCallback = new SmithWatermanReportCallbackAnnotImpl(obj, annotationType, annotationName,
                 annotationGroup, addPatternContentQualifier->isChecked());
             config.includePatternContent = addPatternContentQualifier->isChecked( );
         } else if (SmithWatermanSettings::MULTIPLE_ALIGNMENT == config.resultView){

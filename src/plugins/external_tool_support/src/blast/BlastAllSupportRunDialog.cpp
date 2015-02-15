@@ -62,6 +62,7 @@ BlastAllSupportRunDialog::BlastAllSupportRunDialog(U2SequenceObject *dnaso, QStr
 {
     CreateAnnotationModel ca_m;
     ca_m.data.name = "misc_feature";
+    ca_m.hideAnnotationType = true;
     ca_m.hideAnnotationName = true;
     ca_m.hideLocation = true;
     ca_m.sequenceObjectRef = GObjectReference(dnaso);
@@ -296,6 +297,7 @@ void BlastAllWithExtFileSpecifySupportRunDialog::tryApplyDoc(Document *doc) {
 
     CreateAnnotationModel ca_m;
     ca_m.data.name = "misc_feature";
+    ca_m.hideAnnotationType = true;
     ca_m.hideAnnotationName = true;
     ca_m.hideLocation = true;
     ca_m.sequenceObjectRef = sequencesRefList[0];

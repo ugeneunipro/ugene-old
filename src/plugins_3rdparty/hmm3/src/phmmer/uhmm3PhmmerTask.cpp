@@ -341,12 +341,13 @@ QList<TaskResourceUsage> UHMM3SWPhmmerTask::getResources(SequenceWalkerSubtask *
 }
 
 QList<SharedAnnotationData>
-UHMM3SWPhmmerTask::getResultsAsAnnotations(const QString &name) const {
+UHMM3SWPhmmerTask::getResultsAsAnnotations(U2FeatureType type, const QString &name) const {
     QList<SharedAnnotationData> annotations;
     SAFE_POINT(!name.isEmpty(), "An annotation name is empty", annotations);
 
     foreach(const UHMM3SWSearchTaskDomainResult &res, results) {
         AnnotationData *annData = new AnnotationData();
+        annData->type = type;
         annData->name = name;
         annData->setStrand(res.onCompl ? U2Strand::Complementary : U2Strand::Direct);
         annData->location->regions << res.generalResult.seqRegion;
@@ -396,6 +397,7 @@ UHMM3PhmmerToAnnotationsTask::UHMM3PhmmerToAnnotationsTask(const QString &qfile,
                                                            const DNASequence &db,
                                                            AnnotationTableObject *o,
                                                            const QString &gr,
+                                                           U2FeatureType type,
                                                            const QString &name,
                                                            const UHMM3PhmmerSettings &set) :
     Task(tr("HMM Phmmer task"), TaskFlags_NR_FOSE_COSC | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled),
@@ -403,6 +405,7 @@ UHMM3PhmmerToAnnotationsTask::UHMM3PhmmerToAnnotationsTask(const QString &qfile,
     dbSeq(db),
     annotationObj(o),
     annGroup(gr),
+    annType(type),
     annName(name),
     settings(set),
     phmmerTask(NULL),
@@ -426,7 +429,7 @@ QList<Task *> UHMM3PhmmerToAnnotationsTask::onSubTaskFinished(Task *subTask) {
 
     if (phmmerTask == subTask) {
         QList<AnnotationData> annotations;
-        foreach (const SharedAnnotationData &data, phmmerTask->getResultsAsAnnotations(annName)) {
+        foreach (const SharedAnnotationData &data, phmmerTask->getResultsAsAnnotations(annType, annName)) {
             annotations << *data;
         }
 

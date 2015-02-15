@@ -85,6 +85,10 @@ public:
 #define SETTINGS_ROOT QString("view_adv/annotations_tree_view/")
 #define COLUMN_SIZES QString("columnSizes")
 
+const int AnnotationsTreeView::COLUMN_NAME = 0;
+const int AnnotationsTreeView::COLUMN_TYPE = 1;
+const int AnnotationsTreeView::COLUMN_VALUE = 2;
+
 const QString AnnotationsTreeView::annotationMimeType = "application/x-annotations-and-groups";
 AVGroupItem* AnnotationsTreeView::dropDestination = NULL;
 QList<Annotation> AnnotationsTreeView::dndAdded = QList<Annotation>( );
@@ -99,8 +103,8 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
     tree->setSortingEnabled(true);
     tree->sortItems(0, Qt::AscendingOrder);
 
-    tree->setColumnCount(2);
-    headerLabels << tr("Name") << tr("Value");
+    tree->setColumnCount(3);
+    headerLabels << tr("Name") << tr("Type") << tr("Value");
 
     tree->setHeaderLabels(headerLabels);
     tree->setUniformRowHeights(true);
@@ -264,7 +268,6 @@ void AnnotationsTreeView::saveWidgetState() {
     }
     AppContext::getSettings()->setValue(SETTINGS_ROOT + COLUMN_SIZES, geom);
 }
-
 
 AVGroupItem * AnnotationsTreeView::findGroupItem( const AnnotationGroup &g ) const {
     if ( g.getParentGroup( ) == g ) {
@@ -455,6 +458,7 @@ void AnnotationsTreeView::sl_onAnnotationGroupSelectionChanged( AnnotationGroupS
 
 void AnnotationsTreeView::sl_onAnnotationObjectAdded( AnnotationTableObject *obj ) {
     TreeSorter ts( this );
+    Q_UNUSED(ts);
 
     SAFE_POINT( findGroupItem( obj->getRootGroup( ) ) == NULL, "Invalid annotation group!", );
 
@@ -1882,6 +1886,7 @@ void AnnotationsTreeView::sl_exportAutoAnnotationsGroup()
     ADVSequenceObjectContext* seqCtx = ctx->getSequenceInFocus();
 
     CreateAnnotationModel m;
+    m.hideAnnotationType = true;
     m.hideAnnotationName = true;
     m.hideLocation = true;
     m.groupName = ag.getName();
@@ -1930,7 +1935,6 @@ bool AVItem::processLinks(const QString& qName, const QString& qValue, int col) 
     if (qName == "db_xref") {
         QStringList l = qValue.split(":");
         QString dbName = l[0];
-        QString dbId = l.size() > 1 ? l[1] : "";
         DBXRefInfo info = AppContext::getDBXRefRegistry()->getRefByKey(dbName);
         linked = !info.url.isEmpty();
         setToolTip(col, info.comment);
@@ -2005,15 +2009,15 @@ void AVGroupItem::updateVisual( int removedAnnotationCount ) {
                 text += " *";
             }
         }
-        setText( 0, text );
-        setIcon( 0, getDocumentIcon( ) );
+        setText( AnnotationsTreeView::COLUMN_NAME, text );
+        setIcon( AnnotationsTreeView::COLUMN_NAME, getDocumentIcon( ) );
         GUIUtils::setMutedLnF( this, !aobj->hasAnnotations( ), false );
     } else { // usual groups with annotations
         int na = group.getAnnotations( ).size( ) - removedAnnotationCount;
         int ng = group.getSubgroups( ).size( );
         const QString nameString = group.getName( ) + "  " + QString( "(%1, %2)" ).arg( ng ).arg( na );
-        setText( 0, nameString );
-        setIcon( 0, getGroupIcon( ) );
+        setText( AnnotationsTreeView::COLUMN_NAME, nameString );
+        setIcon( AnnotationsTreeView::COLUMN_NAME, getGroupIcon( ) );
 
         // if all child items are muted -> mute this group too
         bool showDisabled = childCount( ) > 0; //empty group is not disabled
@@ -2109,10 +2113,11 @@ void AVAnnotationItem::updateVisual( ATVAnnUpdateFlags f ) {
         }
         SAFE_POINT( !icon.isNull( ), "Unable to initialize icon for annotation tree item!", );
 
-        setIcon( 0, icon );
-        setText( 0, aData.name );
+        setIcon(AnnotationsTreeView::COLUMN_NAME, icon);
+        setText(AnnotationsTreeView::COLUMN_NAME, aData.name);
         locationString = Genbank::LocationParser::buildLocationString( &aData );
-        setText( 1, locationString );
+        setText(AnnotationsTreeView::COLUMN_TYPE, U2FeatureTypes::getVisualName(aData.type));
+        setText(AnnotationsTreeView::COLUMN_VALUE, locationString);
     }
 
     if ( f.testFlag( ATVAnnUpdateFlag_QualColumns ) ) {
@@ -2146,7 +2151,7 @@ void AVAnnotationItem::updateVisual( ATVAnnUpdateFlags f ) {
 }
 
 QVariant AVAnnotationItem::data( int col, int role ) const {
-    if (col == 1 && role == Qt::DisplayRole) {
+    if (col == AnnotationsTreeView::COLUMN_VALUE && role == Qt::DisplayRole) {
         if (locationString.isEmpty()) {
             const AnnotationData data = annotation.getData();
             locationString = Genbank::LocationParser::buildLocationString( &data );
@@ -2164,7 +2169,7 @@ bool AVAnnotationItem::operator<(const QTreeWidgetItem & other) const {
         return text(col) < other.text(col);
     }
     const AVAnnotationItem& ai = (const AVAnnotationItem&)other;
-    if (col == 0) {
+    if (col == AnnotationsTreeView::COLUMN_NAME) {
         const AnnotationData aData1 = annotation.getData();
         const AnnotationData aData2 = ai.annotation.getData();
         if (aData1.name == aData2.name) {
@@ -2174,7 +2179,7 @@ bool AVAnnotationItem::operator<(const QTreeWidgetItem & other) const {
         }
         return aData1.name < aData2.name;
     }
-    if (col == 1 || (isColumnNumeric(col) && ai.isColumnNumeric(col))) {
+    if (col == AnnotationsTreeView::COLUMN_VALUE || (isColumnNumeric(col) && ai.isColumnNumeric(col))) {
         double oval = ai.getNumericVal(col);
         double mval = getNumericVal(col);
         return mval < oval;
@@ -2183,10 +2188,10 @@ bool AVAnnotationItem::operator<(const QTreeWidgetItem & other) const {
 }
 
 bool AVAnnotationItem::isColumnNumeric(int col) const {
-    if (col == 0) {
+    if (col == AnnotationsTreeView::COLUMN_NAME) {
         return false;
     }
-    if (col == 1) {
+    if (col == AnnotationsTreeView::COLUMN_VALUE) {
         return true;
     }
     if (!hasNumericQColumns) {
@@ -2196,7 +2201,7 @@ bool AVAnnotationItem::isColumnNumeric(int col) const {
 }
 
 double AVAnnotationItem::getNumericVal(int col) const {
-    if (col == 1) {
+    if (col == AnnotationsTreeView::COLUMN_VALUE) {
         const U2Region& r = annotation.getLocation()->regions[0];
         return r.startPos;
     }
@@ -2236,8 +2241,8 @@ AVQualifierItem* AVAnnotationItem::findQualifierItem(const QString& name, const 
 AVQualifierItem::AVQualifierItem(AVAnnotationItem* parent, const U2Qualifier& q)
 : AVItem(parent, AVItemType_Qualifier), qName(q.name), qValue(q.value)
 {
-    setText(0, qName);
-    setText(1, qValue);
+    setText(AnnotationsTreeView::COLUMN_NAME, qName);
+    setText(AnnotationsTreeView::COLUMN_VALUE, qValue);
 
     processLinks(qName, qValue, 1);
 }

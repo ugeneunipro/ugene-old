@@ -49,10 +49,9 @@ namespace U2 {
 
 // SmithWatermanReportCallbackAnnotImpl realization //////////////////////////////////////////////////////////////////////////
 
-SmithWatermanReportCallbackAnnotImpl::SmithWatermanReportCallbackAnnotImpl(
-    AnnotationTableObject *_aobj, const QString &_annotationName, const QString &_annotationGroup,
+SmithWatermanReportCallbackAnnotImpl::SmithWatermanReportCallbackAnnotImpl(AnnotationTableObject *_aobj, U2FeatureType annotationType, const QString &_annotationName, const QString &_annotationGroup,
     bool _addPatternSubseqToQual, QObject *pOwn )
-    : QObject( pOwn ), annotationName( _annotationName ), annotationGroup( _annotationGroup ),
+    : QObject( pOwn ), annotationType(annotationType), annotationName( _annotationName ), annotationGroup( _annotationGroup ),
     aObj( _aobj ), autoReport( _aobj != NULL ), addPatternSubseqToQual( _addPatternSubseqToQual )
 {
 
@@ -67,8 +66,9 @@ QString SmithWatermanReportCallbackAnnotImpl::report(const QList<SmithWatermanRe
         return tr("Annotation table is read-only");
     }
 
-    foreach (const SmithWatermanResult& res , results) {
+    foreach (const SmithWatermanResult& res, results) {
         AnnotationData annotation = res.toAnnotation( annotationName );
+        annotation.type = annotationType;
         if ( addPatternSubseqToQual && 0 != res.ptrnSubseq.length ) {
             annotation.qualifiers.append( U2Qualifier( "pattern_match_start",
                 QString::number( res.ptrnSubseq.startPos ) ) );

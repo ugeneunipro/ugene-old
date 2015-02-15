@@ -133,9 +133,9 @@ public:
     QList<UHMM3SWSearchTaskDomainResult> getResults() const;
     
     static QList< SharedAnnotationData > getResultsAsAnnotations( const QList<UHMM3SWSearchTaskDomainResult> & results,
-        const P7_HMM * hmm, const QString & name );
+        const P7_HMM * hmm, U2FeatureType type, const QString & name );
     
-    QList< SharedAnnotationData > getResultsAsAnnotations( const QString & aname );
+    QList< SharedAnnotationData > getResultsAsAnnotations(U2FeatureType aType, const QString & aname );
     
     QList< Task* > onSubTaskFinished( Task* subTask );
     
@@ -173,10 +173,10 @@ class UHMM3SWSearchToAnnotationsTask : public Task {
     Q_OBJECT
 public:
     UHMM3SWSearchToAnnotationsTask( const QString & hmmfile, const DNASequence & seq, AnnotationTableObject *obj,
-        const QString & group, const QString & aname, const UHMM3SearchTaskSettings & settings );
+        const QString & group, U2FeatureType aType, const QString & aname, const UHMM3SearchTaskSettings & settings );
     
     UHMM3SWSearchToAnnotationsTask( const QString & hmmfile, const QString & seqFile, AnnotationTableObject *obj,
-        const QString & group, const QString & aname, const UHMM3SearchTaskSettings & settings );
+        const QString & group, U2FeatureType aType, const QString & aname, const UHMM3SearchTaskSettings & settings );
     
     QList< Task* > onSubTaskFinished( Task * subTask );
     
@@ -190,9 +190,10 @@ private:
     QString                             hmmfile;
     DNASequence                         sequence;
     QString                             agroup;
+    U2FeatureType                       aType;
     QString                             aname;
     UHMM3SearchTaskSettings             searchSettings;
-    QPointer<AnnotationTableObject>       annotationObj;
+    QPointer<AnnotationTableObject>     annotationObj;
     LoadDocumentTask *                  loadSequenceTask;
     UHMM3SWSearchTask *                 searchTask;
     CreateAnnotationsTask *             createAnnotationsTask;

@@ -31,8 +31,8 @@ static const QString LABEL_STYLE_SHEET = "border: 0px; padding: 0px;";
 namespace U2 {
 
 ProjectViewSearchBox::ProjectViewSearchBox(QWidget *p)
-    : QLineEdit(p), progressLabel(new QLabel(this)), progressMovie(new QMovie(":/core/images/progress.gif", QByteArray(), progressLabel)),
-    searchIconLabel(new QLabel(this)), firstShow(true)
+    : QLineEdit(p), firstShow(true), progressLabel(new QLabel(this)), progressMovie(new QMovie(":/core/images/progress.gif", QByteArray(), progressLabel)),
+    searchIconLabel(new QLabel(this))
 {
     setObjectName("nameFilterEdit");
 

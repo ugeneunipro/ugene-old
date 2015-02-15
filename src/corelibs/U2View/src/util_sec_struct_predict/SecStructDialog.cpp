@@ -207,6 +207,7 @@ void SecStructDialog::sl_onSaveAnnotations()
     CreateAnnotationModel m;
     m.sequenceObjectRef = ctx->getSequenceObject();
     m.hideLocation = true;
+    m.hideAnnotationType = true;
     m.hideAnnotationName = true;
     m.data.name = SEC_STRUCT_ANNOTATION_GROUP_NAME;
     m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();

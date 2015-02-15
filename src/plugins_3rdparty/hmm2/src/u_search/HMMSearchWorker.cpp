@@ -227,7 +227,7 @@ void HMMSearchWorker::sl_taskFinished( Task *t ) {
         QList<AnnotationData> list;
         foreach( Task *sub, t->getSubtasks( ) ) {
             HMMSearchTask *hst = qobject_cast<HMMSearchTask *>( sub );
-            list += hst->getResultsAsAnnotations( resultName );
+            list += hst->getResultsAsAnnotations(U2FeatureTypes::MiscSignal, resultName);
         }
 
         const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( list );

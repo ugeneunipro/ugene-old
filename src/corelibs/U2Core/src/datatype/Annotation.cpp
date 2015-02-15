@@ -67,6 +67,13 @@ QString Annotation::getName( ) const {
     return feature.name;
 }
 
+U2FeatureType Annotation::getType() const {
+    U2OpStatusImpl os;
+    const U2Feature feature = U2FeatureUtils::getFeatureById(id, U2Feature::Annotation, parentObject->getEntityRef().dbiRef, os);
+    SAFE_POINT_OP(os, U2FeatureTypes::MiscFeature);
+    return feature.featureType;
+}
+
 void Annotation::setName( const QString &name ) {
     SAFE_POINT( !name.isEmpty( ), "Attempting to set an empty name for an annotation!", );
     U2OpStatusImpl os;

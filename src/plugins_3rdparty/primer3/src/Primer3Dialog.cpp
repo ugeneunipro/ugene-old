@@ -62,6 +62,7 @@ Primer3Dialog::Primer3Dialog(const Primer3TaskSettings &defaultSettings, ADVSequ
         CreateAnnotationModel createAnnotationModel;
         createAnnotationModel.data.name = "top_primers";
         createAnnotationModel.sequenceObjectRef = GObjectReference(context->getSequenceGObject());
+        createAnnotationModel.hideAnnotationType = true;
         createAnnotationModel.hideAnnotationName = false;
         createAnnotationModel.hideLocation = true;
         createAnnotationWidgetController = new CreateAnnotationWidgetController(createAnnotationModel,this);

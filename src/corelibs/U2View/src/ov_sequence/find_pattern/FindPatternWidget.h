@@ -210,7 +210,6 @@ private:
     QSpinBox* boxMaxResultLen;
 
     QWidget* annotsWidget;
-    QCheckBox* usePatternNamesCheckBox;
 
     DNASequenceSelection *currentSelection;
 
@@ -227,6 +226,7 @@ private:
     QString previousPatternString;
     QStringList patternList;
     QStringList nameList;
+    bool usePatternNames;
 
     FindPatternWidgetSavableTab savableWidget;
 };

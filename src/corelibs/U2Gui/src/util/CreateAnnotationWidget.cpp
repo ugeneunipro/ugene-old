@@ -19,122 +19,93 @@
  * MA 02110-1301, USA.
  */
 
+#include <QMenu>
+
+#include <U2Core/L10n.h>
+#include <U2Core/U2FeatureType.h>
 #include <U2Core/U2SafePoints.h>
+
+#include <U2Formats/GenbankFeatures.h>
+#include <U2Formats/GenbankLocationParser.h>
 
 #include "CreateAnnotationWidget.h"
 
 namespace U2 {
 
-CreateAnnotationWidget::CreateAnnotationWidget(CreateAnnotationWidgetController::AnnotationWidgetMode layoutMode, QWidget *parent) :
-    QWidget(parent),
-    saveAnnotationsInnerWidget(NULL),
-    annotationParametersInnerWidget(NULL),
-    saveAnnotationsWidget(NULL),
-    annotationParametersWidget(NULL),
-    rbExistingTable(NULL),
-    rbCreateNewTable(NULL),
-    rbUseAutoTable(NULL),
-    cbExistingTable(NULL),
-    leNewTablePath(NULL),
-    tbBrowseExistingTable(NULL),
-    tbBrowseNewTable(NULL),
-    lblGroupName(NULL),
-    lblAnnotationName(NULL),
-    lblLocation(NULL),
-    leGroupName(NULL),
-    leAnnotationName(NULL),
-    leLocation(NULL),
-    tbSelectGroupName(NULL),
-    tbSelectAnnotationName(NULL),
-    tbDoComplement(NULL),
-    chbUsePatternNames(NULL)
+CreateAnnotationWidget::CreateAnnotationWidget(QWidget *parent) :
+    QWidget(parent)
 {
-    switch (layoutMode) {
-    case CreateAnnotationWidgetController::Normal:
-        normalUi.setupUi(this);
-        initNormalLayout();
-        break;
-    case CreateAnnotationWidgetController::OptionsPanel:
-        optionsPanelUi.setupUi(this);
-        initOptionsPanelLayout();
-        break;
-    default:
-        FAIL("Undefined widget layout mode", );
+}
+
+QPair<QWidget *, QWidget *> CreateAnnotationWidget::getTabOrderEntryAndExitPoints() const {
+    return QPair<QWidget *, QWidget *>(NULL, NULL);
+}
+
+void CreateAnnotationWidget::sl_selectExistingTableRequest() {
+    emit si_selectExistingTableRequest();
+}
+
+void CreateAnnotationWidget::sl_selectNewTableRequest() {
+    emit si_selectNewTableRequest();
+}
+
+void CreateAnnotationWidget::sl_selectGroupNameMenuRequest() {
+    emit si_selectGroupNameMenuRequest();
+}
+
+void CreateAnnotationWidget::sl_groupNameEdited() {
+    emit si_groupNameEdited();
+}
+
+void CreateAnnotationWidget::sl_annotationNameEdited() {
+    emit si_annotationNameEdited();
+}
+
+void CreateAnnotationWidget::sl_usePatternNamesStateChanged() {
+    emit si_usePatternNamesStateChanged();
+}
+
+QStringList CreateAnnotationWidget::getFeatureTypes() {
+    static QStringList featureTypes;
+    CHECK(featureTypes.isEmpty(), featureTypes);
+
+    for (int i = U2FeatureTypes::FIRST_FEATURE_TYPE; i <= U2FeatureTypes::LAST_FEATURE_TYPE; i++) {
+        featureTypes << U2FeatureTypes::getVisualName(static_cast<U2FeatureType>(i));
     }
+    return featureTypes;
 }
 
-void CreateAnnotationWidget::initNormalLayout() {
-    saveAnnotationsInnerWidget = normalUi.saveAnnotationsInnerWidget;
-    annotationParametersInnerWidget = normalUi.annotationParametersInnerWidget;
-
-    saveAnnotationsWidget = new ShowHideSubgroupWidget("save_params", tr("Save annotation(s) to"), saveAnnotationsInnerWidget, true);
-    annotationParametersWidget = new ShowHideSubgroupWidget("annotparams", tr("Annotation parameters"), annotationParametersInnerWidget, true);
-
-    normalUi.mainLayout->insertWidget(0, saveAnnotationsWidget);
-    normalUi.mainLayout->insertWidget(1, annotationParametersWidget);
-
-    rbExistingTable = normalUi.rbExistingTable;
-    rbCreateNewTable = normalUi.rbCreateNewTable;
-    rbUseAutoTable = normalUi.rbUseAutoTable;
-
-    cbExistingTable = normalUi.cbExistingTable;
-    leNewTablePath = normalUi.leNewTablePath;
-
-    tbBrowseExistingTable = normalUi.tbBrowseExistingTable;
-    tbBrowseNewTable = normalUi.tbBrowseNewTable;
-
-    lblGroupName = normalUi.lblGroupName;
-    lblAnnotationName = normalUi.lblAnnotationName;
-    lblLocation = normalUi.lblLocation;
-
-    leGroupName = normalUi.leGroupName;
-    leAnnotationName = normalUi.leAnnotationName;
-    leLocation = normalUi.leLocation;
-
-    tbSelectGroupName = normalUi.tbSelectGroupName;
-    tbSelectAnnotationName = normalUi.tbSelectAnnotationName;
-    tbDoComplement = normalUi.tbDoComplement;
-
-    chbUsePatternNames = normalUi.chbUsePatternNames;
-
-    saveAnnotationsWidget->setPermanentlyOpen(true);
-    annotationParametersWidget->setPermanentlyOpen(true);
+bool CreateAnnotationWidget::caseInsensitiveLessThan(const QString &first, const QString &second) {
+    return QString::compare(first, second, Qt::CaseInsensitive) < 0;
 }
 
-void CreateAnnotationWidget::initOptionsPanelLayout() {
-    saveAnnotationsInnerWidget = optionsPanelUi.saveAnnotationsInnerWidget;
-    annotationParametersInnerWidget = optionsPanelUi.annotationParametersInnerWidget;
-
-    saveAnnotationsWidget = new ShowHideSubgroupWidget("save_params", tr("Save annotation(s) to"), saveAnnotationsInnerWidget, false);
-    annotationParametersWidget = new ShowHideSubgroupWidget("annotparams", tr("Annotation parameters"), annotationParametersInnerWidget, false);
-
-    optionsPanelUi.mainLayout->insertWidget(0, saveAnnotationsWidget);
-    optionsPanelUi.mainLayout->insertWidget(1, annotationParametersWidget);
-
-    rbExistingTable = optionsPanelUi.rbExistingTable;
-    rbCreateNewTable = optionsPanelUi.rbCreateNewTable;
-    rbUseAutoTable = optionsPanelUi.rbUseAutoTable;
-
-    cbExistingTable = optionsPanelUi.cbExistingTable;
-    leNewTablePath = optionsPanelUi.leNewTablePath;
-
-    tbBrowseExistingTable = optionsPanelUi.tbBrowseExistingTable;
-    tbBrowseNewTable = optionsPanelUi.tbBrowseNewTable;
-
-    lblGroupName = optionsPanelUi.lblGroupName;
-    lblAnnotationName = optionsPanelUi.lblAnnotationName;
-    lblLocation = optionsPanelUi.lblLocation;
-
-    leGroupName = optionsPanelUi.leGroupName;
-    leAnnotationName = optionsPanelUi.leAnnotationName;
-    leLocation = optionsPanelUi.leLocation;
-
-    tbSelectGroupName = optionsPanelUi.tbSelectGroupName;
-    tbSelectAnnotationName = optionsPanelUi.tbSelectAnnotationName;
-    tbDoComplement = optionsPanelUi.tbDoComplement;
-
-    chbUsePatternNames = optionsPanelUi.chbUsePatternNames;
+void CreateAnnotationWidget::sl_complementLocation() {
+    QString locationString = getLocationString();
+    const bool wasComplement = isComplementLocation(locationString);
+    if (wasComplement) {
+        locationString = locationString.mid(11, locationString.length() - 12);
+    } else {
+        locationString = "complement(" + locationString + ")";
+    }
+    setLocation(parseGenbankLocationString(locationString));
 }
 
+QString CreateAnnotationWidget::getGenbankLocationString(const U2Location &location) {
+    QString locationString = Genbank::LocationParser::buildLocationString(location->regions);
+    if (location->strand.isCompementary()) {
+        locationString = "complement(" + locationString + ")";
+    }
+    return locationString;
+}
+
+U2Location CreateAnnotationWidget::parseGenbankLocationString(const QString &locationString) {
+    U2Location location;
+    Genbank::LocationParser::parseLocation(locationString.toLatin1().constData(), locationString.length(), location);
+    return location;
+}
+
+bool CreateAnnotationWidget::isComplementLocation(const QString &locationString) {
+    return locationString.startsWith("complement(") && locationString.endsWith(")");
+}
 
 }   // namespace U2

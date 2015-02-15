@@ -56,7 +56,8 @@ public:
 
 private:
     HighFlexSettings                    settings;
-    QPointer<AnnotationTableObject>       annotObject;
+    QPointer<AnnotationTableObject>     annotObject;
+    U2FeatureType                       annotType;
     QString                             annotName;
     QString                             annotGroup;
     DNASequence                         sequence;

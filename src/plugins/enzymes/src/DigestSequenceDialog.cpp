@@ -183,6 +183,7 @@ void DigestSequenceDialog::addAnnotationWidget()
     CreateAnnotationModel acm;
 
     acm.sequenceObjectRef = GObjectReference(dnaObj);
+    acm.hideAnnotationType = true;
     acm.hideAnnotationName = true;
     acm.hideLocation = true;
     acm.sequenceLen = dnaObj->getSequenceLength();

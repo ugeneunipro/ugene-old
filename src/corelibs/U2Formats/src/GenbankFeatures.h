@@ -23,6 +23,7 @@
 #define _U2_GENBANK_FEATURES_H_
 
 #include <U2Core/global.h>
+#include <U2Core/U2FeatureType.h>
 
 #include <QtCore/QMultiMap>
 #include <QtCore/QVector>
@@ -33,7 +34,7 @@ namespace U2 {
 
 enum GBFeatureKey {
 
-    GBFeatureKey_assembly_gap,    // Gap between two components of a genome or transcriptome assembly
+    GBFeatureKey_assembly_gap = 0,// Gap between two components of a genome or transcriptome assembly
 
     GBFeatureKey_attenuator,      // Sequence related to transcription termination
     GBFeatureKey_bond,            // Describes disulfide bonds (for protein files)
@@ -52,6 +53,7 @@ enum GBFeatureKey {
     GBFeatureKey_iDNA,            // Intervening DNA eliminated by recombination
     GBFeatureKey_intron,          // Transcribed region excised by mRNA splicing
     GBFeatureKey_J_region,        // Span of the J immunological feature
+    GBFeatureKey_J_segment,       // Joining segment of immunoglobulin light and heavy chains, and T-cell receptor alpha, beta, and gamma chains    // it might duplicate J_region
     GBFeatureKey_LTR,             // Long terminal repeat
     GBFeatureKey_mat_peptide,     // Mature peptide coding region (does not include stop codon)
     GBFeatureKey_misc_binding,    // Miscellaneous binding site
@@ -107,6 +109,7 @@ enum GBFeatureKey {
     GBFeatureKey_3_UTR,           // 3' untranslated region (trailer)
     GBFeatureKey_5_clip,          // 5'-most region of a precursor transcript removed in processing
     GBFeatureKey_5_UTR,           // 5' untranslated region (leader)
+    GBFeatureKey_regulatory,      // any region of sequence that functions in the regulation of transcription or translation
     GBFeatureKey_Protein,         //
     GBFeatureKey_Region,          //
     GBFeatureKey_Site,            //
@@ -117,10 +120,11 @@ enum GBFeatureKey {
 class U2FORMATS_EXPORT GBFeatureKeyInfo {
 public:
     GBFeatureKeyInfo() : id (GBFeatureKey_UNKNOWN), showOnaminoFrame(false) {}
-    GBFeatureKeyInfo(GBFeatureKey _id, const QString& _text, const QColor& _color, bool _aminoFrame, QString _desc)
-        : id (_id), text(_text), color(_color), showOnaminoFrame(_aminoFrame), desc(_desc) {}
+    GBFeatureKeyInfo(GBFeatureKey _id, U2FeatureType type, const QString& _text, const QColor& _color, bool _aminoFrame, QString _desc)
+        : id (_id), type(type), text(_text), color(_color), showOnaminoFrame(_aminoFrame), desc(_desc) {}
 
     GBFeatureKey  id;
+    U2FeatureType type;
     QString     text;
     QColor      color;
     bool        showOnaminoFrame;
@@ -141,6 +145,7 @@ public:
     static const QMultiMap<QString, GBFeatureKey>& getKeyGroups();
 
     static GBFeatureKey getKey(const QString& text);
+    static GBFeatureKey getKey(U2FeatureType featureType);
 
     // Some features do not have values in GenBank (e.g. "/pseudo")
     static bool isFeatureHasNoValue(const QString& featureName);

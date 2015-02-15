@@ -177,6 +177,7 @@ void SpideySupportContext::sl_align_with_Spidey() {
         CreateAnnotationModel m;
         m.sequenceObjectRef = dnaObj;
         m.hideLocation = true;
+        m.hideAnnotationType = true;
         m.hideAnnotationName = true;
         m.groupName = "exon";
         CreateAnnotationDialog dlg(parent,m);

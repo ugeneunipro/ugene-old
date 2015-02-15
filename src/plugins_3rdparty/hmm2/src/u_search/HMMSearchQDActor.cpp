@@ -106,7 +106,7 @@ Task* HMM2QDActor::getAlgorithmTask( const QVector<U2Region>& location ) {
 void HMM2QDActor::sl_onTaskFinished(Task*) {
     QString aname = cfg->getAnnotationKey();
     foreach(HMMSearchTask* t, offsets.keys()) {
-        QList<AnnotationData> annotations = t->getResultsAsAnnotations(aname);
+        QList<AnnotationData> annotations = t->getResultsAsAnnotations(U2FeatureTypes::MiscSignal, aname);
         int offset = offsets.value(t);
         foreach(const AnnotationData &d, annotations) {
             U2Region r = d.location->regions.first();

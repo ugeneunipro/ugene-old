@@ -92,6 +92,7 @@ QList<SharedAnnotationData> FindTandemsToAnnotationsTask::importTandemAnnotation
         const unsigned maxOffset = tan.size % tan.repeatLen;
         do{
             SharedAnnotationData ad(new AnnotationData());
+            ad->type = U2FeatureTypes::RepeatRegion;
             ad->name = annName;
             const quint32 tandemEnd = tan.offset+tan.size+seqStart;
             quint32 pos = tan.offset+seqStart+offset;

@@ -85,7 +85,7 @@ public:
     UHMM3SWPhmmerTask(const QString &queryFilename, const DNASequence &db,
                       const UHMM3PhmmerSettings &settings, int chunk = DEFAULT_CHUNK_SIZE);
     
-    QList<SharedAnnotationData> getResultsAsAnnotations(const QString &name) const;
+    QList<SharedAnnotationData> getResultsAsAnnotations(U2FeatureType type, const QString &name) const;
     QList<UHMM3SWSearchTaskDomainResult> getResult()const;
     
     QList<Task *> onSubTaskFinished(Task *subTask);
@@ -125,7 +125,7 @@ class UHMM3PhmmerToAnnotationsTask : public Task {
     Q_OBJECT
 public:
     UHMM3PhmmerToAnnotationsTask(const QString &querySeqfile, const DNASequence &dbSeq, AnnotationTableObject *obj,
-        const QString &group, const QString &name, const UHMM3PhmmerSettings &setings);
+        const QString &group, U2FeatureType type, const QString &name, const UHMM3PhmmerSettings &setings);
     
     QList<Task *> onSubTaskFinished(Task *subTask);
     
@@ -138,6 +138,7 @@ private:
     QString                             queryfile;
     DNASequence                         dbSeq;
     QString                             annGroup;
+    U2FeatureType                       annType;
     QString                             annName;
     UHMM3PhmmerSettings                 settings;
     QPointer<AnnotationTableObject>     annotationObj;

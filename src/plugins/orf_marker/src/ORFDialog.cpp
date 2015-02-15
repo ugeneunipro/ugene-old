@@ -431,6 +431,7 @@ void ORFDialog::createAnnotationWidget()
 
     U2SequenceObject* seqObj = ctx->getSequenceObject();
     acm.sequenceObjectRef = GObjectReference(seqObj);
+    acm.hideAnnotationType = true;
     acm.hideAnnotationName = true;
     acm.hideLocation = true;
     acm.hideAutoAnnotationsOption = false;

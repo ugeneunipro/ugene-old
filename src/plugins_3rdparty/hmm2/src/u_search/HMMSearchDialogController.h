@@ -86,7 +86,7 @@ class HMMSearchToAnnotationsTask : public Task {
     Q_OBJECT
 public:
     HMMSearchToAnnotationsTask(const QString& hmmFile, const DNASequence& s, AnnotationTableObject* aobj,
-        const QString& group, const QString& aname, 
+        const QString& group, U2FeatureType aType, const QString& aname,
         const UHMMSearchSettings& settings);
 
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
@@ -97,6 +97,7 @@ private:
     QString                     hmmFile;
     DNASequence                 dnaSequence;
     QString                     agroup;
+    U2FeatureType               aType;
     QString                     aname;
     UHMMSearchSettings          settings;
     

@@ -37,6 +37,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/U2Attribute.h \
            src/datatype/U2CoreAttributes.h \
            src/datatype/U2Feature.h \
+           src/datatype/U2FeatureType.h \
            src/datatype/U2Identity.h \
            src/datatype/U2IdTypes.h \
            src/datatype/U2Location.h \
@@ -264,6 +265,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/PWMatrix.cpp \
            src/datatype/SMatrix.cpp \
            src/datatype/U2CoreAttributes.cpp \
+           src/datatype/U2FeatureType.cpp \
            src/datatype/U2Mod.cpp \
            src/datatype/U2Region.cpp \
            src/datatype/U2Type.cpp \

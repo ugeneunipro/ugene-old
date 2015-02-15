@@ -31,6 +31,9 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/AuthenticationWidget.h \
            src/util/BreakpointConditionEditDialog.h \
            src/util/CreateAnnotationDialog.h \
+           src/util/CreateAnnotationFullWidget.h \
+           src/util/CreateAnnotationNormalWidget.h \
+           src/util/CreateAnnotationOptionsPanelWidget.h \
            src/util/CreateAnnotationWidget.h \
            src/util/CreateAnnotationWidgetController.h \
            src/util/CreateDocumentFromTextDialogController.h \
@@ -112,6 +115,7 @@ FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/AuthenticationWidget.ui \
          src/util/ui/BreakpointConditionEditDialog.ui \
          src/util/ui/CreateAnnotationDialog.ui \
+         src/util/ui/CreateAnnotationFullWidget.ui \
          src/util/ui/CreateAnnotationNormalWidget.ui \
          src/util/ui/CreateAnnotationOptionsPanelWidget.ui \
          src/util/ui/CreateDocumentFromTextDialog.ui \
@@ -163,6 +167,9 @@ SOURCES += src/MainWindow.cpp \
            src/util/BreakpointConditionEditDialog.cpp \
            src/util/CreateAnnotationDialog.cpp \
            src/util/CreateAnnotationWidget.cpp \
+           src/util/CreateAnnotationFullWidget.cpp \
+           src/util/CreateAnnotationNormalWidget.cpp \
+           src/util/CreateAnnotationOptionsPanelWidget.cpp \
            src/util/CreateAnnotationWidgetController.cpp \
            src/util/CreateDocumentFromTextDialogController.cpp \
            src/util/CreateObjectRelationDialogController.cpp \
