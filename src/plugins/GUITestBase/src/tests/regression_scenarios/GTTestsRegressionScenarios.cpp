@@ -753,7 +753,7 @@ GUI_TEST_CLASS_DEFINITION(test_1093) {
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters)) ;
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
 
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "NGS data analysis" << "Map reads to reference");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //The short reads can't be mapped to the reference sequence!
@@ -987,7 +987,7 @@ GUI_TEST_CLASS_DEFINITION(test_1190){//add AlignShortReadsFiller
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTLogTracer l;
 
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "NGS data analysis" << "Map reads to reference");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os,QMessageBox::Ok));
     GTGlobals::sleep(10000);
@@ -2442,7 +2442,7 @@ GUI_TEST_CLASS_DEFINITION(test_1420) {
 
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_1402/test_1402.ugenedb"));
-    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "NGS data analysis" << "Map reads to reference");
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
@@ -2532,7 +2532,7 @@ GUI_TEST_CLASS_DEFINITION(test_1429){
 
 
     GTUtilsDialog::waitForDialog(os, new CheckBowtie2Filler(os));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "NGS data analysis" << "Build index for reads mapping");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_INDEX);
     CHECK_SET_ERR(lt.hasError() == false, "Errors in log!");
 }
 
@@ -6735,7 +6735,7 @@ GUI_TEST_CLASS_DEFINITION( test_2140 )
     GTLogTracer l;
     GTUtilsDialog::waitForDialog(os, new ConvertAssemblyToSAMDialogFiller(os, dataDir + "samples/FASTA/", "human_T1.fa"));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS),
-                          QStringList() << "NGS data analysis" << "Convert UGENE assembly database to SAM");
+        QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_CONVERT_SAM);
 
     CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
 }
@@ -7687,7 +7687,7 @@ GUI_TEST_CLASS_DEFINITION( test_2269 ){
     };
 
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new Scenario_test_2269()));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "NGS data analysis" << "Map reads to reference");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
 
     CHECK_SET_ERR( !os.hasError(), "Uncorrect value is available");
 }
@@ -7843,7 +7843,7 @@ GUI_TEST_CLASS_DEFINITION( test_2293 ){
 
 
     GTUtilsDialog::waitForDialog(os, new CheckBowtie2Filler(os));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "NGS data analysis" << "Build index for reads mapping");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_INDEX);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2282 ) {
@@ -10518,7 +10518,7 @@ GUI_TEST_CLASS_DEFINITION(test_2778) {
     parameters.samOutput = false;
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
 
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "NGS data analysis" << "Map reads to reference");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsLog::check(os, l);
@@ -10837,7 +10837,7 @@ GUI_TEST_CLASS_DEFINITION(test_2866) {
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Yes"));
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_2866.ugenedb"));
 
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "NGS data analysis" << "Map reads to reference");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
     GTGlobals::sleep(5000);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -11316,7 +11316,7 @@ GUI_TEST_CLASS_DEFINITION(test_2931){
     GTLogTracer l;
     GTUtilsDialog::waitForDialog(os, new ConvertAssemblyToSAMDialogFiller(os, sandBoxDir, "test_2931"));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS),
-        QStringList() << "NGS data analysis" << "Convert UGENE assembly database to SAM");
+        QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_CONVERT_SAM);
 
     CHECK_SET_ERR(!l.hasError(), "There is error message in log");
 }
@@ -16358,7 +16358,7 @@ GUI_TEST_CLASS_DEFINITION(test_3950) {
     GTFile::copy(os, testDir + "_common_data/bwa/NC_000021.gbk.fa", sandBoxDir + "test_3950.fa");
 
     GTUtilsDialog::waitForDialog(os, new BuildIndexDialogFiller(os, sandBoxDir, "test_3950.fa", "BWA MEM"));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "NGS data analysis" << "Build index for reads mapping");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_INDEX);
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 

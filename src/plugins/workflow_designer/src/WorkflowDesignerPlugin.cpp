@@ -340,7 +340,7 @@ void WorkflowDesignerService::initSampleActions() {
 
     const QString externalToolsPlugin = "external_tool_support";
 
-    SampleAction sangerAlign(ToolsMenu::SANGER_ALIGN, ToolsMenu::SANGER_MENU, "Sanger sequencing/trim-and-align.uwl", SampleAction::Select, tr("Reads quality control and alignment"));
+    SampleAction sangerAlign(ToolsMenu::SANGER_CONTROL, ToolsMenu::SANGER_MENU, "Sanger sequencing/trim-and-align.uwl", SampleAction::Select, tr("Reads quality control and alignment"));
 
     SampleAction ngsControl(ToolsMenu::NGS_CONTROL, ToolsMenu::NGS_MENU, "NGS/fastqc.uwl", SampleAction::OpenWizard, tr("Reads quality control"));
     ngsControl.requiredPlugins << externalToolsPlugin;

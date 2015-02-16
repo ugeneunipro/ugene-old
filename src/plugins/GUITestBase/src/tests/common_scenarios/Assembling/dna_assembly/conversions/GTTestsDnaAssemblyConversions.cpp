@@ -30,6 +30,8 @@
 #include "GTUtilsTaskTreeView.h"
 #include "api/GTFile.h"
 
+#include <U2Gui/ToolsMenu.h>
+
 namespace U2 {
 namespace GUITest_dna_assembly_conversions {
 
@@ -52,8 +54,8 @@ GUI_TEST_CLASS_DEFINITION( test_0001 ) {
 
     QMenu *mainMenu = GTMenu::showMainMenu( os, MWMENU_TOOLS );
     CHECK_OP( os, );
-    GTMenu::clickMenuItemByName( os, mainMenu, QStringList( ) << "NGS data analysis"
-        << "Map reads to reference" );
+    GTMenu::clickMenuItemByName( os, mainMenu, QStringList( ) << ToolsMenu::NGS_MENU
+        << ToolsMenu::NGS_MAP );
     CHECK_OP( os, );
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -80,8 +82,8 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
 
     QMenu *mainMenu = GTMenu::showMainMenu( os, MWMENU_TOOLS );
     CHECK_OP( os, );
-    GTMenu::clickMenuItemByName( os, mainMenu, QStringList( ) << "NGS data analysis"
-        << "Map reads to reference" );
+    GTMenu::clickMenuItemByName( os, mainMenu, QStringList( ) << ToolsMenu::NGS_MENU
+        << ToolsMenu::NGS_MAP );
     CHECK_OP( os, );
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -111,8 +113,8 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
     CHECK_OP( os, );
     QMenu *mainMenu = GTMenu::showMainMenu( os, MWMENU_TOOLS );
     CHECK_OP( os, );
-    GTMenu::clickMenuItemByName( os, mainMenu, QStringList( ) << "NGS data analysis"
-        << "Map reads to reference" );
+    GTMenu::clickMenuItemByName( os, mainMenu, QStringList( ) << ToolsMenu::NGS_MENU
+        << ToolsMenu::NGS_MAP );
     CHECK_OP( os, );
     GTGlobals::sleep( 5000 );
 //     3. Click start:
@@ -137,7 +139,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     QMenu *mainMenu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
     CHECK_OP(os, );
-    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << "NGS data analysis" << "Map reads to reference");
+    GTMenu::clickMenuItemByName(os, mainMenu, QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
     CHECK_OP(os, );
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os,sandBoxDir + "resule.ugenedb"));
 //UGENE can hang up here
