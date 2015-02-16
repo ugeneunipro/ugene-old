@@ -16467,6 +16467,24 @@ GUI_TEST_CLASS_DEFINITION(test_3959) {
     CHECK_SET_ERR(NULL != annotationGroup, "Annotations have not been found");  */
         
 }
+GUI_TEST_CLASS_DEFINITION(test_3960) {
+/* 1. Open _common_data/scenarios/_regression/3960/all.gb
+ *   Expected state: No error messages in log
+*/
+    GTLogTracer logTracer;
+
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/3960", "all.gb"));
+
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "Genbank"));
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge));
+
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__OPEN_AS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    CHECK_SET_ERR(logTracer.hasError() == false, QString("Error message found: %1, but not expected.").arg(logTracer.getError()));
+
+}
 
 GUI_TEST_CLASS_DEFINITION(test_3988) {
 //    1. Open "_common_data/zero".
