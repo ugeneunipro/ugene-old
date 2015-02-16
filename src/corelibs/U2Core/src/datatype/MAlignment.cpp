@@ -460,7 +460,9 @@ int MAlignmentRow::getUngappedPosition(int pos) const {
 }
 
 int MAlignmentRow::getBaseCount(int before) const {
-    return MsaRowUtils::getUngappedPosition(sequence.seq, gaps, before, true);
+    const int rowLength = MsaRowUtils::getRowLength(sequence.seq, gaps);
+    const int trimmedRowPos = before < rowLength ? before : rowLength;
+    return MsaRowUtils::getUngappedPosition(sequence.seq, gaps, trimmedRowPos, true);
 }
 
 void MAlignmentRow::getStartAndEndSequencePositions(int pos, int count, int& startPosInSeq, int& endPosInSeq) {
