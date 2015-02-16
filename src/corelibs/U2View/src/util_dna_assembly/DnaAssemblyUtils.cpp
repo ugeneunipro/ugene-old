@@ -47,6 +47,7 @@
 #include <U2Formats/ConvertAssemblyToSamTask.h>
 #include <U2Formats/ConvertFileTask.h>
 #include <U2Gui/OpenViewTask.h>
+#include <U2Gui/ToolsMenu.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/DocumentUtils.h>
@@ -62,38 +63,29 @@ namespace U2 {
 
 DnaAssemblySupport::DnaAssemblySupport()
 {
-    QMenu *toolsMenu = AppContext::getMainWindow()->getTopLevelMenu( MWMENU_TOOLS );
-    QMenu *dnaAssemblySub = toolsMenu->addMenu(QIcon( ":core/images/align.png" ), tr("DNA assembly"));
-    dnaAssemblySub->setObjectName(MWMENU_TOOLS_ASSEMBLY);
-    dnaAssemblySub->menuAction()->setObjectName("DNA assembly");
-
-    QAction* convertAssemblyToSamAction = new QAction( tr("Convert UGENE Assembly database to SAM format..."), this );
-    convertAssemblyToSamAction->setObjectName("Convert UGENE Assembly database to SAM format");
+    QAction* convertAssemblyToSamAction = new QAction( tr("Convert UGENE assembly database to SAM..."), this );
+    convertAssemblyToSamAction->setObjectName(ToolsMenu::NGS_CONVERT_SAM);
     convertAssemblyToSamAction->setIcon(QIcon(":core/images/align.png"));
     connect( convertAssemblyToSamAction, SIGNAL( triggered() ), SLOT( sl_showConvertToSamDialog() ) );
-    dnaAssemblySub->addAction( convertAssemblyToSamAction );
+    ToolsMenu::addAction(ToolsMenu::NGS_MENU, convertAssemblyToSamAction);
 
-    QAction* genomeAssemblyAction = new QAction( tr("Assemble genomes"), this );
-    genomeAssemblyAction->setObjectName("Assemble genomes");
+    QAction* genomeAssemblyAction = new QAction( tr("Genome de novo assembly"), this );
+    genomeAssemblyAction->setObjectName(ToolsMenu::NGS_DENOVO);
     genomeAssemblyAction->setIcon(QIcon(":core/images/align.png"));
     connect( genomeAssemblyAction, SIGNAL( triggered() ), SLOT( sl_showGenomeAssemblyDialog() ) );
-    dnaAssemblySub->addAction( genomeAssemblyAction );
+    ToolsMenu::addAction(ToolsMenu::NGS_MENU, genomeAssemblyAction);
 
-    QMenu *refAlignSub = toolsMenu->addMenu(QIcon( ":core/images/align.png" ), tr("Align to reference"));
-    refAlignSub->menuAction()->setObjectName("Align to reference");
-    refAlignSub->setObjectName(MWMENU_TOOLS_REF_ALIGN);
-
-    QAction* dnaAssemblyAction = new QAction( tr("Align short reads"), this );
-    dnaAssemblyAction->setObjectName("Align short reads");
+    QAction* dnaAssemblyAction = new QAction(tr("Map reads to reference"), this );
+    dnaAssemblyAction->setObjectName(ToolsMenu::NGS_MAP);
     dnaAssemblyAction->setIcon(QIcon(":core/images/align.png"));
     connect( dnaAssemblyAction, SIGNAL( triggered() ), SLOT( sl_showDnaAssemblyDialog() ) );
-    refAlignSub->addAction( dnaAssemblyAction );
+    ToolsMenu::addAction(ToolsMenu::NGS_MENU, dnaAssemblyAction);
 
-    QAction* buildIndexAction = new QAction( tr("Build index"), this );
-    buildIndexAction->setObjectName("Build index");
+    QAction* buildIndexAction = new QAction( tr("Build index for reads mapping"), this );
+    buildIndexAction->setObjectName(ToolsMenu::NGS_MAP);
     buildIndexAction->setIcon(QIcon(":core/images/align.png"));
     connect( buildIndexAction, SIGNAL( triggered() ), SLOT( sl_showBuildIndexDialog() ) );
-    refAlignSub->addAction( buildIndexAction );
+    ToolsMenu::addAction(ToolsMenu::NGS_MENU, buildIndexAction);
 }
 
 void DnaAssemblySupport::sl_showDnaAssemblyDialog()
