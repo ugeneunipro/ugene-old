@@ -309,7 +309,7 @@ void SnpEffWorker::sl_taskFinished(Task *task) {
 
     QString summary = getSummaryUrl(task);
     CHECK(!summary.isEmpty(), );
-    monitor()->addOutputFile(summary, getActorId());
+    monitor()->addOutputFile(summary, getActorId(), true);
 }
 
 QString SnpEffWorker::takeUrl() {
