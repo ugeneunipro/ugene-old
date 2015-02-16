@@ -871,6 +871,7 @@ void ProjectTreeController::sl_objectRemovedFromActiveView(GObjectView *, GObjec
 void ProjectTreeController::sl_onResourceUserRegistered(const QString & /*res*/, Task *t) {
     LoadUnloadedDocumentTask *lut = qobject_cast<LoadUnloadedDocumentTask*>(t);
     CHECK(NULL != lut, );
+    CHECK(model->hasDocument(lut->getDocument()), );
     connect(lut, SIGNAL(si_progressChanged()), SLOT(sl_onLoadingDocumentProgressChanged()));
 }
 
@@ -881,6 +882,7 @@ void ProjectTreeController::sl_onResourceUserUnregistered(const QString & /*res*
 
     Document *doc = lut->getDocument();
     CHECK(NULL != doc, );
+    CHECK(model->hasDocument(doc), );
     updateLoadingState(doc);
 }
 
