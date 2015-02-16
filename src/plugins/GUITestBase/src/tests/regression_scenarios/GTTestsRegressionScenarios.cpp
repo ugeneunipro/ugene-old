@@ -11461,9 +11461,7 @@ GUI_TEST_CLASS_DEFINITION(test_2972){
     GTFileDialog::openFile(os, dataDir +"samples/FASTA/", "human_T1.fa");
 //    2. Click the menu Tools -> HMMER tools -> HMM3 -> Search with HMM3 phmmer.
     GTUtilsDialog::waitForDialog(os, new UHMM3PhmmerDialogFiller(os, dataDir + "samples/Newick/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "HMMER tools"
-                                                       << "HMMER3 tools"
-                                                       << "Search with HMM3 phmmer"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::HMMER_MENU << ToolsMenu::HMMER_SEARCH3P));
     GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTGlobals::sleep();
 
@@ -14091,7 +14089,7 @@ GUI_TEST_CLASS_DEFINITION(test_3477) {
 //    Expected state: "Digest sequence into fragments" dialog appeared.
 //    5. Add "TaaI" to selected enzymes and accept the dialog.
     GTUtilsDialog::waitForDialog(os, new DigestSequenceDialogFiller(os));
-    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::CLONING_MENU << ToolsMenu::CLONING_FRAGMENTS);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::CLONING_MENU << ToolsMenu::CLONING_FRAGMENTS);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    6. Select {Tools -> Cloning -> Construct molecule} menu item in the main menu.

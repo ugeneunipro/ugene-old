@@ -64,8 +64,7 @@ SiteconPlugin::SiteconPlugin() : Plugin(tr("sitecon_plugin"), tr("sitecon_plugin
         ctxADV = new SiteconADVContext(this);
         ctxADV->init();
 
-        QAction* buildAction = new QAction(tr("Build sitecon model..."), this);
-        //buildAction->setObjectName("Build new SITECON model from alignment");
+        QAction* buildAction = new QAction(tr("Build SITECON model..."), this);
         buildAction->setObjectName(ToolsMenu::TFBS_SITECON);
         connect(buildAction, SIGNAL(triggered()), SLOT(sl_build()));
         ToolsMenu::addAction(ToolsMenu::TFBS_MENU, buildAction);
