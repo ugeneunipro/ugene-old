@@ -103,9 +103,9 @@ EnzymesPlugin::EnzymesPlugin()
 }
 
 void EnzymesPlugin::createToolsMenu() {
-    openDigestSequenceDialog = new QAction(tr("Digest into Fragments..."), this);
+    openDigestSequenceDialog = new QAction(tr("Digest into fragments..."), this);
     openDigestSequenceDialog->setObjectName(ToolsMenu::CLONING_FRAGMENTS);
-    openConstructMoleculeDialog = new QAction(tr("Construct Molecule..."), this);
+    openConstructMoleculeDialog = new QAction(tr("Construct molecule..."), this);
     openConstructMoleculeDialog->setObjectName(ToolsMenu::CLONING_CONSTRUCT);
     openCreateFragmentDialog = new QAction(tr("Create Fragment..."), this);
     openCreateFragmentDialog->setObjectName("Create Fragment");

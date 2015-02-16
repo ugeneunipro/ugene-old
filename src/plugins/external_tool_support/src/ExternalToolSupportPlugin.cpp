@@ -461,11 +461,11 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     etRegistry->registerEntry(fastqc);
 
     if (AppContext::getMainWindow()) {
-        ExternalToolSupportAction* formatDBAction= new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(ET_FORMATDB));
+        ExternalToolSupportAction* formatDBAction= new ExternalToolSupportAction(tr("Blast format database..."), this, QStringList(ET_FORMATDB));
         formatDBAction->setObjectName(ToolsMenu::BLAST_DB);
         connect(formatDBAction, SIGNAL(triggered()), formatDBTool, SLOT(sl_runWithExtFileSpecify()));
 
-        ExternalToolSupportAction* makeBLASTDBAction= new ExternalToolSupportAction(tr("BLAST+ make DB..."), this, QStringList(ET_MAKEBLASTDB));
+        ExternalToolSupportAction* makeBLASTDBAction= new ExternalToolSupportAction(tr("BLAST+ make database..."), this, QStringList(ET_MAKEBLASTDB));
         makeBLASTDBAction->setObjectName(ToolsMenu::BLAST_DBP);
         connect(makeBLASTDBAction, SIGNAL(triggered()), makeBLASTDBTool, SLOT(sl_runWithExtFileSpecify()));
 
@@ -483,11 +483,11 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
         blastPlusViewCtx->init();
         QStringList toolList;
         toolList << ET_BLASTN << ET_BLASTP << ET_BLASTX << ET_TBLASTN << ET_TBLASTX << ET_RPSBLAST;
-        ExternalToolSupportAction* blastPlusAction= new ExternalToolSupportAction(tr("BLAST+ Search..."), this, toolList);
+        ExternalToolSupportAction* blastPlusAction= new ExternalToolSupportAction(tr("BLAST+ search..."), this, toolList);
         blastPlusAction->setObjectName(ToolsMenu::BLAST_SEARCHP);
         connect(blastPlusAction, SIGNAL(triggered()), blastNPlusTool, SLOT(sl_runWithExtFileSpecify()));
 
-        ExternalToolSupportAction* blastPlusCmdAction= new ExternalToolSupportAction(tr("BLAST+ query DB"), this, QStringList(ET_BLASTDBCMD));
+        ExternalToolSupportAction* blastPlusCmdAction= new ExternalToolSupportAction(tr("BLAST+ query database..."), this, QStringList(ET_BLASTDBCMD));
         blastPlusCmdAction->setObjectName(ToolsMenu::BLAST_QUERYP);
         connect(blastPlusCmdAction, SIGNAL(triggered()), blastDbCmdSupport, SLOT(sl_runWithExtFileSpecify()));
 
