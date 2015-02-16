@@ -752,9 +752,17 @@ float** protein_wu_distance(struct alignment* si,float** dm,struct parameters* p
 		//for(j = 0; j < si->sl[i]-2;j++){
 			//hv = (p[j+1] << 5) + p[j+2];
 			//hash[hv] = big_insert_hash(hash[hv],j);
-			hv = (p[j] << 5) + p[j+1];
+            long tmp = (p[j] << 5) + p[j+1];
+            if (tmp < 0) {
+                throwKalignException("Sequences are too long for alignment");
+            }
+			hv = tmp;
 			hash[hv] = big_insert_hash(hash[hv],j);
-			hv = (p[j] << 5) + p[j+2];
+            tmp = (p[j] << 5) + p[j+2];
+            if (tmp < 0) {
+                throwKalignException("Sequences are too long for alignment");
+            }
+			hv = tmp;
 			hash[hv] = big_insert_hash(hash[hv],j);
 		}
 		for (j = i+1; j < numseq;j++){

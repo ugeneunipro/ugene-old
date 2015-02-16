@@ -51,9 +51,38 @@ void KalignAdapter::align(const MAlignment& ma, MAlignment& res, TaskStateInfo& 
         alignUnsafe(ma, res, ti);
     } catch (KalignException e) {
         if (!ti.cancelFlag) {
-            ti.setError(  tr("Internal Kalign error: %1").arg(e.str) );
+            ti.setError(tr("Internal Kalign error: %1").arg(e.str));
         }
     }
+}
+
+namespace {
+
+void cleanupMemory(float **submatrix, unsigned int numseq, float **dm, struct alignment *aln, struct parameters *param) {
+    if (NULL != submatrix) {
+        for (int i = 32; i--;){
+            free(submatrix[i]);
+        }
+        free(submatrix);
+    }
+    if (NULL != dm) {
+        for (int i = numseq; i--;){
+            free(dm[i]);
+        }
+        free(dm);
+    }
+    if (NULL != aln) {
+        free_aln(aln);
+    }
+    if (NULL != param) {
+        free_param(param);
+    }
+}
+
+void throwCancellingException() {
+    throwKalignException("Align task has been cancelled");
+}
+
 }
 
 void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskStateInfo& ti) {
@@ -64,7 +93,6 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
     struct alignment* aln = 0;
     struct parameters* param = 0;
     struct aln_tree_node* tree2 = 0;
-
 
     param = (parameters*)malloc(sizeof(struct parameters));
 
@@ -204,21 +232,17 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
             //if(byg_start(param->tree,"njNJ") != -1){
             //	dm =  protein_wu_distance(aln,dm,param,1);
             //}else{
+            try {
                 dm =  protein_wu_distance(aln,dm,param,0);
+            } catch (const KalignException &) {
+                cleanupMemory(submatrix, numseq, dm, aln, param);
+                throw;
+            }
             //}
         }
         if(check_task_canceled(ctx)) {
-            for (int i = 32;i--;){
-                free(submatrix[i]);
-            }
-            free(submatrix);
-            for (int i = numseq;i--;){
-                free(dm[i]);
-            }
-            free(dm);
-            free_aln(aln);
-            free_param(param);
-            throwKalignException("Canceled");
+            cleanupMemory(submatrix, numseq, dm, aln, param);
+            throwCancellingException();
         }
         /*int j;
         for (int i = 0; i< numseq;i++){
@@ -269,9 +293,6 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
         free(tree2->internal_lables);
         free(tree2);
     }
-
-
-
 
     //get matrices...
     //struct feature_matrix* fm = 0;
@@ -344,9 +365,8 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
         free_aln(aln);
         free(map);
         free(tree);
-        throwKalignException("Canceled");
+        throwCancellingException();
     }
-
 
     //clear up sequence array to be reused as gap array....
     int *p = 0;
@@ -373,8 +393,6 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
         aln->nsip[i] = 0;
     }
 
-
-
     aln =  sort_sequences(aln,tree,param->sort);
 
     //for (int i = 0; i < numseq;i++){
@@ -396,9 +414,6 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
         res.addRow(QString(aln->sn[f]), seq.toLatin1(), os);
     }
 
-
-
-
     //output(aln,param);
     /*	if(!param->format){
     fasta_output(aln,param->outfile);
@@ -417,7 +432,6 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
     free(map);
     free(tree);
     //KalignContext* ctx = getKalignContext();
-
 }
 
 } //namespace
