@@ -16447,24 +16447,6 @@ GUI_TEST_CLASS_DEFINITION(test_3959) {
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
     GTGlobals::sleep();
 
-    //GTUtilsDocument::checkDocument(os, "result");
-
-    //GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
-
-    //GTUtilsOptionPanelSequenceView::enterPattern(os, "TTTTTTTTTTTTTTTTTTTTTTTAATTTTTTTTTTTTTTTTTTTTTTT");
-    //GTGlobals::sleep(200);
-
-    /*GTUtilsOptionPanelSequenceView::setAlgorithm(os, "InsDel");
-    GTGlobals::sleep(200);
-
-    GTUtilsOptionPanelSequenceView::setMatchPercentage(os, 30);
-    GTGlobals::sleep(200);
-
-    GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
-    GTUtilsTaskTreeView::waitTaskFinished(os);
-
-    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature  (0, 2)");
-    CHECK_SET_ERR(NULL != annotationGroup, "Annotations have not been found");  */
 
 }
 GUI_TEST_CLASS_DEFINITION(test_3960) {
