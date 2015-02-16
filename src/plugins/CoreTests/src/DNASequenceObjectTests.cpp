@@ -619,7 +619,8 @@ Task::ReportResult GTest_DNAMulSequencePart::report() {
     }
     bool ok_flag=false;
     U2OpStatus2Log os;
-    foreach(const MAlignmentRow& myItem , myMSequence->getMAlignment().getRows()){
+    const MAlignment ma = myMSequence->getMAlignment();
+    foreach(const MAlignmentRow& myItem , ma.getRows()){
         if (myItem.getName() == seqName){
             ok_flag=true;
             QByteArray objSubSeq = myItem.mid(startPos, subseq.length(), os).toByteArray(subseq.length(), os);
