@@ -247,8 +247,8 @@ void CreateAnnotationFullWidget::sl_locationChanged() {
 }
 
 void CreateAnnotationFullWidget::initLayout() {
-    leRegionStart->setValidator(new U2LongLongValidator(1, LONG_LONG_MAX, leRegionStart));
-    leRegionEnd->setValidator(new U2LongLongValidator(1, LONG_LONG_MAX, leRegionEnd));
+    leRegionStart->setValidator(new U2LongLongValidator(1, LLONG_MAX, leRegionStart));
+    leRegionEnd->setValidator(new U2LongLongValidator(1, LLONG_MAX, leRegionEnd));
 }
 
 void CreateAnnotationFullWidget::init() {
