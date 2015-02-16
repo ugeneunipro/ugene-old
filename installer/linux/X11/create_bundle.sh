@@ -57,6 +57,7 @@ cp -v ../../_common_data/Associate_files_to_UGENE.sh "$TARGET_APP_DIR"
 cp -v ../../_common_data/icons.tar.gz "$TARGET_APP_DIR"
 cp -v ../../_common_data/application-x-ugene.xml "$TARGET_APP_DIR"
 cp -v ../../_common_data/ugene.desktop "$TARGET_APP_DIR"
+cp -v ../../_common_data/ugene.png "$TARGET_APP_DIR"
 
 mkdir "${TARGET_APP_DIR}/plugins"
 
