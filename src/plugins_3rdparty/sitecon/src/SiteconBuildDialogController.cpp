@@ -287,7 +287,7 @@ QList<Task*> SiteconBuildToFileTask::onSubTaskFinished(Task* subTask) {
             stateInfo.setError(  tr("no_alignments_found") );
         } else {
             MAlignmentObject* mobj =  qobject_cast<MAlignmentObject*>(mobjs.first());
-            MAlignment ma = mobj->getMAlignment();
+            const MAlignment &ma = mobj->getMAlignment();
             QString baseName = mobj->getDocument()->getURL().baseFileName();
             buildTask = new SiteconBuildTask(settings, ma, baseName);
             res.append(buildTask);

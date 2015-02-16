@@ -159,7 +159,7 @@ Task::ReportResult GTest_PFMCreateTest::report() {
             return ReportResult_Finished;
         }
         MAlignmentObject * myAlign = (MAlignmentObject*)list.first();
-        MAlignment al = myAlign->getMAlignment();
+        const MAlignment &al = myAlign->getMAlignment();
         PFMatrix pfm(al, type);
         for (int i = 0, n = (type == PFM_MONONUCLEOTIDE) ? 4 : 16; i < n; i++) {
             for (int j = 0, nn = (type == PFM_MONONUCLEOTIDE) ? length : length - 1; j < nn; j++) {
@@ -328,7 +328,7 @@ Task::ReportResult GTest_PWMCreateTest::report() {
             return ReportResult_Finished;
         }
         MAlignmentObject * myAlign = (MAlignmentObject*)list.first();
-        MAlignment al = myAlign->getMAlignment();
+        const MAlignment &al = myAlign->getMAlignment();
 
         PFMatrix pfm(al, pftype);
         pwm = algorithm->convert(pfm);

@@ -120,7 +120,7 @@ QPixmap MSAEditorNameList::drawNames(const QList<qint64> &seqIdx, bool drawSelec
 
     MAlignmentObject* msaObj = editor->getMSAObject();
     SAFE_POINT(NULL != msaObj, tr("MSA Object is NULL"), QPixmap());
-    MAlignment al = msaObj->getMAlignment();
+    const MAlignment &al = msaObj->getMAlignment();
 
     QStringList seqNames = al.getRowNames();
     for (qint64 i = 0; i < seqIdx.size(); i++) {
@@ -676,7 +676,7 @@ void MSAEditorNameList::drawContent(QPainter& p) {
     MAlignmentObject* msaObj = editor->getMSAObject();
     SAFE_POINT(NULL != msaObj, "NULL Msa Object in MSAEditorNameList::drawContent!",);
 
-    MAlignment al = msaObj->getMAlignment();
+    const MAlignment &al = msaObj->getMAlignment();
 
     if (ui->isCollapsibleMode()) {
         MSACollapsibleItemModel* m = ui->getCollapseModel();
@@ -783,7 +783,7 @@ void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, const QString& , bo
     }
 
     const MSAEditor *editor = ui->getEditor();
-    const MAlignment alignment = editor->getMSAObject()->getMAlignment();
+    const MAlignment &alignment = editor->getMSAObject()->getMAlignment();
     U2OpStatusImpl os;
     if (s == alignment.getRowIndexByRowId(editor->getReferenceRowId(), os)) {
         drawRefSequence(p, textRect);

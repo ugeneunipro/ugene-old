@@ -167,7 +167,7 @@ void MSAEditorStatusWidget::sl_findNext( ) {
     if ( pat.isEmpty( ) ) {
         return;
     }
-    const MAlignment ma = aliObj->getMAlignment( );
+    const MAlignment &ma = aliObj->getMAlignment( );
     if ( !ma.getAlphabet( )->isCaseSensitive( ) ) {
         pat = pat.toUpper( );
     }
@@ -209,7 +209,7 @@ void MSAEditorStatusWidget::sl_findPrev( ) {
     if ( pat.isEmpty( ) ) {
         return;
     }
-    const MAlignment ma = aliObj->getMAlignment();
+    const MAlignment &ma = aliObj->getMAlignment();
     if ( !ma.getAlphabet( )->isCaseSensitive( ) ) {
         pat = pat.toUpper( );
     }

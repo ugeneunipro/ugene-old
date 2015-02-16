@@ -154,6 +154,11 @@ public:
     int getUngappedPosition(int pos) const;
 
     /**
+     * Returns base count located leftward to the 'before' position in the alignment.
+     */
+    int getBaseCount(int before) const;
+
+    /**
      * Exactly compares the rows. Sequences and gap models must match.
      * However, the rows are considered equal if they differ by trailing gaps only.
      */

@@ -75,7 +75,7 @@ public:
     /** Sets type of modifications tracking for the alignment */
     void setTrackMod(U2TrackModType trackMod, U2OpStatus& os);
 
-    MAlignment getMAlignment() const;
+    const MAlignment & getMAlignment() const;
     void setMAlignment(const MAlignment& ma, MAlignmentModInfo mi = MAlignmentModInfo(), const QVariantMap& hints = QVariantMap());
     void copyGapModel(const QList<MAlignmentRow> &copyRows);
 

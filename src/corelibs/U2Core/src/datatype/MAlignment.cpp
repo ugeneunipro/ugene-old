@@ -459,6 +459,10 @@ int MAlignmentRow::getUngappedPosition(int pos) const {
     return MsaRowUtils::getUngappedPosition(sequence.seq, gaps, pos);
 }
 
+int MAlignmentRow::getBaseCount(int before) const {
+    return MsaRowUtils::getUngappedPosition(sequence.seq, gaps, before, true);
+}
+
 void MAlignmentRow::getStartAndEndSequencePositions(int pos, int count, int& startPosInSeq, int& endPosInSeq) {
     int rowLengthWithoutTrailingGap = getRowLengthWithoutTrailing();
     SAFE_POINT(pos < rowLengthWithoutTrailingGap,

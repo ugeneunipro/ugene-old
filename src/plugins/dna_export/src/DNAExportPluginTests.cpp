@@ -236,7 +236,7 @@ Task::ReportResult GTest_ExportNucleicToAminoAlignmentTask::report() {
         return ReportResult_Finished;
     }
     MAlignmentObject * expAlign = qobject_cast<MAlignmentObject*>(explist.first());
-    MAlignment expAl = expAlign->getMAlignment();
+    const MAlignment &expAl = expAlign->getMAlignment();
 
     if (resAl.getLength() != expAl.getLength()) {
         stateInfo.setError(GTest::tr("Unexpected alignment length %1, expected %2").arg(resAl.getLength()).arg(expAl.getLength()));

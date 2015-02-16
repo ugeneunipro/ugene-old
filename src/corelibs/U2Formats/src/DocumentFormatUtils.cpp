@@ -166,7 +166,7 @@ QList<DNASequence> DocumentFormatUtils::toSequences(const GObject* obj) {
     const DNAAlphabet* al = maObj->getAlphabet();
     U2OpStatus2Log os;
     qint64 alLen = maObj->getMAlignment().getLength();
-    foreach(const MAlignmentRow& row, maObj->getMAlignment().getRows()) {
+    foreach (const MAlignmentRow& row, maObj->getMAlignment().getRows()) {
         DNASequence seq;
         seq.seq = row.toByteArray(alLen, os);
         seq.setName(row.getName());

@@ -67,7 +67,7 @@ bool MsaContentFilterTask::msaContainsPattern(MAlignmentObject *msaObject, const
     SAFE_POINT(NULL != msaObject, L10N::nullPointerError("MSA object"), false);
     SAFE_POINT(!pattern.isEmpty(), "Empty pattern to search", false);
 
-    const MAlignment ma = msaObject->getMAlignment();
+    const MAlignment &ma = msaObject->getMAlignment();
     const QByteArray searchStr = pattern.toUpper().toLatin1();
 
     for (int i = 0, n = ma.getNumRows(); i < n; ++i) {

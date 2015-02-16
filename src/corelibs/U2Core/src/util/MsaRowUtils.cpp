@@ -34,7 +34,7 @@ int MsaRowUtils::getRowLength(const QByteArray &seq, const QList<U2MsaGap> &gaps
 
 int MsaRowUtils::getGapsLength(const QList<U2MsaGap> &gaps) {
     int length = 0;
-    foreach (U2MsaGap elt, gaps) {
+    foreach (const U2MsaGap &elt, gaps) {
         length += elt.gap;
     }
     return length;
@@ -86,15 +86,19 @@ qint64 MsaRowUtils::getRowLengthWithoutTrailing(const QByteArray &seq, const QLi
     return rowLengthWithoutTrailingGap;
 }
 
-int MsaRowUtils::getUngappedPosition(const QByteArray &seq, const QList<U2MsaGap> &gaps, int pos) {
-    if (MAlignment_GapChar == charAt(seq, gaps, pos)) {
+int MsaRowUtils::getUngappedPosition(const QByteArray &seq, const QList<U2MsaGap> &gaps, int pos, bool allowGapInPos) {
+    if (MAlignment_GapChar == charAt(seq, gaps, pos) && !allowGapInPos) {
         return -1;
     }
 
     int gapsLength = 0;
     foreach (const U2MsaGap &gap, gaps) {
         if (gap.offset < pos) {
-            gapsLength += gap.gap;
+            if (allowGapInPos) {
+                gapsLength += (gap.offset + gap.gap < pos) ? gap.gap : gap.gap - (gap.offset + gap.gap - pos);
+            } else {
+                gapsLength += gap.gap;
+            }
         } else {
             break;
         }

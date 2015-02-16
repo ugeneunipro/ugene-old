@@ -388,7 +388,7 @@ Task::ReportResult GTest_uMuscleAddUnalignedSequenceToProfile::report() {
     if (hasError()) {
         return ReportResult_Finished;
     }
-    MAlignment ma = aliObj->getMAlignment();
+    const MAlignment &ma = aliObj->getMAlignment();
     if (ma.getLength()!=resultAliLen) {
         stateInfo.setError(  QString("result alignment length notmatches: %1, expected: %2").arg(ma.getLength()).arg(resultAliLen) );
         return ReportResult_Finished;

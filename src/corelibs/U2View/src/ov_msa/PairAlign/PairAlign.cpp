@@ -239,7 +239,7 @@ void PairAlign::updatePercentOfSimilarity() {
 
     U2OpStatusImpl os;
     MAlignment ma;
-    const MAlignment currentAlignment = msa->getMSAObject()->getMAlignment();
+    const MAlignment &currentAlignment = msa->getMSAObject()->getMAlignment();
     ma.addRow(firstSeqSelectorWC->text(),
         currentAlignment.getRowByRowId(firstSeqSelectorWC->sequenceId(), os).getData(), -1, os);
     CHECK_OP(os, );

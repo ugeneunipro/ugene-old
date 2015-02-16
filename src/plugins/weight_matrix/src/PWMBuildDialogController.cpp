@@ -136,7 +136,7 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
     QList<GObject*> mobjs = doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
     if (!mobjs.isEmpty()) {
         MAlignmentObject* mobj =  qobject_cast<MAlignmentObject*>(mobjs.first());
-        MAlignment ma = mobj->getMAlignment();
+        const MAlignment &ma = mobj->getMAlignment();
         replaceLogo(ma);
     } else {
         mobjs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
@@ -412,7 +412,7 @@ QList<Task*> PFMatrixBuildToFileTask::onSubTaskFinished(Task* subTask) {
         QList<GObject*> mobjs = d->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
         if (!mobjs.isEmpty()) {
             MAlignmentObject* mobj =  qobject_cast<MAlignmentObject*>(mobjs.first());
-            MAlignment ma = mobj->getMAlignment();
+            const MAlignment &ma = mobj->getMAlignment();
             buildTask = new PFMatrixBuildTask(settings, ma);
             res.append(buildTask);
         } else {
@@ -542,7 +542,7 @@ QList<Task*> PWMatrixBuildToFileTask::onSubTaskFinished(Task* subTask) {
         QList<GObject*> mobjs = d->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
         if (!mobjs.isEmpty()) {
             MAlignmentObject* mobj =  qobject_cast<MAlignmentObject*>(mobjs.first());
-            MAlignment ma = mobj->getMAlignment();
+            const MAlignment &ma = mobj->getMAlignment();
             buildTask = new PWMatrixBuildTask(settings, ma);
             res.append(buildTask);
         } else {

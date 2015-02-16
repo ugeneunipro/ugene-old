@@ -71,7 +71,7 @@ Task * ProfileToProfileWorker::tick() {
         SharedDbiDataHandler masterMsaId = qm.value(MASTER_PROFILE_SLOT_ID).value<SharedDbiDataHandler>();
         QScopedPointer<MAlignmentObject> masterMsaObj(StorageUtils::getMsaObject(context->getDataStorage(), masterMsaId));
         SAFE_POINT(!masterMsaObj.isNull(), "NULL MSA Object!", NULL);
-        MAlignment masterMsa = masterMsaObj->getMAlignment();
+        const MAlignment &masterMsa = masterMsaObj->getMAlignment();
 
         SharedDbiDataHandler secondMsaId = qm.value(SECOND_PROFILE_SLOT_ID).value<SharedDbiDataHandler>();
         QScopedPointer<MAlignmentObject> secondMsaObj(StorageUtils::getMsaObject(context->getDataStorage(), secondMsaId));

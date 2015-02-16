@@ -465,7 +465,7 @@ void MSAEditorSequenceArea::sl_changeHighlightScheme(){
     highlightingScheme = f->create(this, ui->editor->getMSAObject());
     highlightingScheme->applySettings(editor->getHighlightingSettings(id));
 
-    const MAlignment msa = ui->editor->getMSAObject()->getMAlignment();
+    const MAlignment &msa = ui->editor->getMSAObject()->getMAlignment();
 
     U2OpStatusImpl os;
     const int refSeq = msa.getRowIndexByRowId(editor->getReferenceRowId(), os);
@@ -575,7 +575,7 @@ void MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, con
 
     MAlignmentObject* maObj = editor->getMSAObject();
     SAFE_POINT(maObj != NULL, tr("Alignment object is NULL"), );
-    const MAlignment msa = maObj->getMAlignment();
+    const MAlignment &msa = maObj->getMAlignment();
 
     U2OpStatusImpl os;
     const int refSeq = msa.getRowIndexByRowId(editor->getReferenceRowId(), os);
@@ -1977,7 +1977,7 @@ void MSAEditorSequenceArea::sl_removeAllGaps() {
     SAFE_POINT_OP(os, );
 
     QMap<qint64, QList<U2MsaGap> > noGapModel;
-    MAlignment ma = msa->getMAlignment();
+    const MAlignment &ma = msa->getMAlignment();
     foreach (qint64 rowId, ma.getRowsIds()) {
         noGapModel[rowId] = QList<U2MsaGap>();
     }
@@ -2503,7 +2503,7 @@ void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type
         // then shifting should be canceled
         cancelShiftTracking( );
 
-        MAlignment ma = maObj->getMAlignment();
+        const MAlignment &ma = maObj->getMAlignment();
         DNATranslation* trans =
             AppContext::getDNATranslationRegistry()->lookupComplementTranslation(ma.getAlphabet());
         if (trans == NULL || !trans->isOne2One()) {
@@ -2620,7 +2620,7 @@ void MSAEditorSequenceArea::sl_setCollapsingRegions(const QList<QStringList>& co
     m->reset();
 
     MAlignmentObject* msaObject = editor->getMSAObject();
-    MAlignment ma = msaObject->getMAlignment();
+    const MAlignment &ma = msaObject->getMAlignment();
     QStringList rowNames = ma.getRowNames();
     QVector<U2Region> collapsedRegions;
 
@@ -2668,7 +2668,7 @@ QString MSAEditorSequenceArea::exportHighligtning( int startPos, int endPos, int
 
     const MAlignment& msa = maObj->getMAlignment();
     const MSAEditor *editor = ui->getEditor();
-    const MAlignment alignment = editor->getMSAObject()->getMAlignment();
+    const MAlignment &alignment = editor->getMSAObject()->getMAlignment();
     U2OpStatusImpl os;
     const int refSeq = alignment.getRowIndexByRowId(editor->getReferenceRowId(), os);
     const MAlignmentRow *r = NULL;

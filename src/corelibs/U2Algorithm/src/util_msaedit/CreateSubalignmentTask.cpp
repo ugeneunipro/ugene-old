@@ -59,7 +59,7 @@ void CreateSubalignmentTask::prepare() {
         resultDocument = dfd->createNewLoadedDocument(iof, cfg.url, stateInfo, hints);
         CHECK_OP(stateInfo, );
 
-        MAlignment msa = origMAObj->getMAlignment();
+        const MAlignment &msa = origMAObj->getMAlignment();
         U2EntityRef msaRef = MAlignmentImporter::createAlignment(resultDocument->getDbiRef(), origMAObj->getMAlignment(), stateInfo);
         CHECK_OP(stateInfo, );
 

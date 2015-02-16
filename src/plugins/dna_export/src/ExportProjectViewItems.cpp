@@ -158,7 +158,7 @@ void ExportProjectViewItemsContoller::addExportImportMenu(QMenu& m) {
             sub = new QMenu(tr("Export/Import"));
             sub->addAction(exportAlignmentAsSequencesAction);
             GObject* obj = set.first();
-            MAlignment ma = qobject_cast<MAlignmentObject*>(obj)->getMAlignment();
+            const MAlignment &ma = qobject_cast<MAlignmentObject*>(obj)->getMAlignment();
             if (ma.getAlphabet()->isNucleic()) {
                 sub->addAction(exportNucleicAlignmentToAminoAction);
             }
@@ -446,7 +446,7 @@ void ExportProjectViewItemsContoller::sl_exportNucleicAlignmentToAmino() {
     }
 
     GObject* obj = set.first();
-    MAlignment ma = qobject_cast<MAlignmentObject*>(obj)->getMAlignment();
+    const MAlignment &ma = qobject_cast<MAlignmentObject*>(obj)->getMAlignment();
 
     GObject* firstObject = set.first();
     Document* doc = firstObject->getDocument();

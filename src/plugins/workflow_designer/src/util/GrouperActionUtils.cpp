@@ -123,8 +123,8 @@ bool GrouperActionUtils::equalData(const QString &groupOp, const QVariant &data1
         SAFE_POINT(NULL != alObj2.data(), "NULL MSA Object!", NULL);
 
 
-        MAlignment al1 = alObj1->getMAlignment();
-        MAlignment al2 = alObj2->getMAlignment();
+        const MAlignment &al1 = alObj1->getMAlignment();
+        const MAlignment &al2 = alObj2->getMAlignment();
 
         if (GroupOperations::BY_NAME() == groupOp) {
             return al1.getName() == al2.getName();
@@ -329,7 +329,7 @@ bool MergerMSAPerformer::applyAction(const QVariant &newData) {
     SharedDbiDataHandler newAlId = newData.value<SharedDbiDataHandler>();
     QScopedPointer<MAlignmentObject> newAlObj(StorageUtils::getMsaObject(context->getDataStorage(), newAlId));
     SAFE_POINT(NULL != newAlObj.data(), "NULL MSA Object!", false);
-    MAlignment newAl = newAlObj->getMAlignment();
+    const MAlignment &newAl = newAlObj->getMAlignment();
 
     if (!started) {
         QString name;

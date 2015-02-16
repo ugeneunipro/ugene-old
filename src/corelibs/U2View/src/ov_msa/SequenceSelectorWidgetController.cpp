@@ -60,7 +60,7 @@ QString SequenceSelectorWidgetController::text() const {
 }
 
 void SequenceSelectorWidgetController::setSequenceId(qint64 newId) {
-    const MAlignment ma = msa->getMSAObject()->getMAlignment();
+    const MAlignment &ma = msa->getMSAObject()->getMAlignment();
     U2OpStatusImpl os;
     const MAlignmentRow selectedRow = ma.getRowByRowId(newId, os);
     seqId = newId;

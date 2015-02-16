@@ -22,15 +22,7 @@
 #ifndef _U2_MSA_EDITOR_OFFSETS_VIEW_H_
 #define _U2_MSA_EDITOR_OFFSETS_VIEW_H_
 
-#include <QtCore/QObject>
-#include <QtCore/QVector>
-#include <QtCore/QEvent>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QWidget>
-#else
-#include <QtWidgets/QWidget>
-#endif
+#include <QWidget>
 
 namespace U2 {
 
@@ -39,7 +31,6 @@ class MAlignmentObject;
 class MAlignment;
 class MAlignmentModInfo;
 class MSAEditorSequenceArea;
-class MSAEditorBaseOffsetCache;
 class MSAEditorOffsetsViewWidget;
 
 class MSAEditorOffsetsViewController : public QObject {
@@ -47,19 +38,20 @@ class MSAEditorOffsetsViewController : public QObject {
 public:
     MSAEditorOffsetsViewController(QObject* p, MSAEditor* editor, MSAEditorSequenceArea* seqArea);
 
-    MSAEditorOffsetsViewWidget* getLeftWidget() const {return lw;}
-    MSAEditorOffsetsViewWidget* getRightWidget() const {return rw;}
+    MSAEditorOffsetsViewWidget* getLeftWidget() const;
+    MSAEditorOffsetsViewWidget* getRightWidget() const;
 
-    QAction* getToggleColumnsViewAction() const {return viewAction;}
+    QAction* getToggleColumnsViewAction() const;
     bool eventFilter(QObject* o, QEvent* e);
 
 private slots:
-    void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&){updateOffsets();}
-    void sl_startChanged(const QPoint& , const QPoint& ) {updateOffsets();}
-    void sl_fontChanged() {updateOffsets();}
-    void sl_modelChanged() {updateOffsets();}
-    void sl_refSeqChanged(qint64) { updateOffsets(); }
+    void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&);
+    void sl_startChanged(const QPoint& , const QPoint& );
+    void sl_fontChanged();
+    void sl_modelChanged();
+    void sl_refSeqChanged(qint64);
     void sl_showOffsets(bool);
+
 private:
     void updateOffsets();
 
@@ -73,23 +65,23 @@ private:
 class MSAEditorOffsetsViewWidget : public QWidget {
     friend class MSAEditorOffsetsViewController;
 public:
-    MSAEditorOffsetsViewWidget(MSAEditor* editor, MSAEditorSequenceArea* seqArea, MSAEditorBaseOffsetCache* cache, bool showStartPos);
-    ~MSAEditorOffsetsViewWidget();
+    MSAEditorOffsetsViewWidget(MSAEditor *editor, MSAEditorSequenceArea *seqArea, bool showStartPos);
 
 protected:
-    void paintEvent(QPaintEvent* e);
+    void paintEvent(QPaintEvent *e);
     void updateView();
-    void drawAll(QPainter& p);
+    void drawAll(QPainter &p);
     QFont getOffsetsFont();
-    void drawRefSequence(QPainter &p, QRect r);
+    void drawRefSequence(QPainter &p, const QRect &r);
 
 private:
-    MSAEditorSequenceArea*      seqArea;
-    MSAEditor*                  editor;
-    MSAEditorBaseOffsetCache*   cache;
+    int getBaseCounts(int seqNum, int aliPos, bool inclAliPos) const;
+
+    MSAEditorSequenceArea *     seqArea;
+    MSAEditor *                 editor;
     bool                        showStartPos;
     bool                        completeRedraw;
-    QPixmap*                    cachedView;
+    QPixmap                     cachedView;
 };
 
 }//namespace;

@@ -154,7 +154,7 @@ void MSAEditorConsensusArea::paintParsialConsenusToPixmap(QPixmap &pixmap, const
     MSAConsensusAlgorithm *alg = getConsensusAlgorithm();
     SAFE_POINT(alg != NULL, tr("MSA consensus algorothm is NULL"), );
     SAFE_POINT(editor->getMSAObject() != NULL, tr("MSA object is NULL"), );
-    MAlignment msa = editor->getMSAObject()->getMAlignment();
+    const MAlignment &msa = editor->getMSAObject()->getMAlignment();
     for (int pos = region.startPos; pos < region.endPos(); pos++) {
         char c = alg->getConsensusChar(msa, pos, seqIdx.toVector());
         drawConsensusChar(p, pos, c, false, true);

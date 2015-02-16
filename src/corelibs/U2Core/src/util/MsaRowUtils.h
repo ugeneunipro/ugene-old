@@ -33,7 +33,13 @@ public:
     static int getGapsLength(const QList<U2MsaGap> &gaps);
     static char charAt(const QByteArray &seq, const QList<U2MsaGap> &gaps, int pos);
     static qint64 getRowLengthWithoutTrailing(const QByteArray &seq, const QList<U2MsaGap> &gaps);
-    static int getUngappedPosition(const QByteArray &seq, const QList<U2MsaGap> &gaps, int pos);
+    /**
+     * The method maps `pos` in MSA coordinates to a character position in 'seq', i.e. gaps aren't taken into account.
+     * If false == 'allowGapInPos' and the gap symbol is located in 'pos' then the method returns -1.
+     * Otherwise if true == 'allowGapInPos' and the gap symbol is located in 'pos' then the method returns
+     * the position of a non-gap character left-most to the 'pos'.
+     */
+    static int getUngappedPosition(const QByteArray &seq, const QList<U2MsaGap> &gaps, int pos, bool allowGapInPos = false);
     static int getCoreStart(const QList<U2MsaGap>& gaps);
 };
 
