@@ -19,18 +19,11 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QDir>
+#include <QAction>
+#include <QDir>
+#include <QMessageBox>
 
 #include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMessageBox>
-#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -39,7 +32,6 @@
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/ProjectModel.h>
-#include <U2Gui/MainWindow.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 #include <U2Algorithm/GenomeAssemblyRegistry.h>
 #include <U2Algorithm/GenomeAssemblyMultiTask.h>
