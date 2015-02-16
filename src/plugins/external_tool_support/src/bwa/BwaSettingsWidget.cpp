@@ -84,11 +84,11 @@ void BwaIndexAlgorithmWarningReporter::sl_IndexAlgorithmChanged( int index ) {
         return;
     }
     QString infoText = QString( );
-    if ( 2 == index ) {
+    if ( 3 == index ) {
         if ( MAX_REFERENCE_SIZE_FOR_IS_METHOD < referenceSequenceFile.size( ) ) {
             infoText = IS_BUILD_INDEX_ALGO_WARNING;
         }
-    } else if ( 0 == index ) {
+    } else if ( 1 == index ) {
         if ( MIN_REFERENCE_SIZE_FOR_BWTSW_METHOD > referenceSequenceFile.size( ) ) {
             infoText = BWTSW_BUILD_INDEX_ALGO_WARNING;
         }
@@ -206,12 +206,15 @@ QMap<QString,QVariant> BwaBuildSettingsWidget::getBuildIndexCustomSettings() {
         QString algorithm;
         switch(indexAlgorithmComboBox->currentIndex()) {
         case 0:
-            algorithm = "bwtsw";
+            algorithm = "autodetect";
             break;
         case 1:
-            algorithm = "div";
+            algorithm = "bwtsw";
             break;
         case 2:
+            algorithm = "div";
+            break;
+        case 3:
             algorithm = "is";
             break;
         default:
@@ -258,7 +261,8 @@ bool BwaGUIExtensionsFactory::hasBuildIndexWidget() {
 // BwaSettingsWidget
 
 BwaSwSettingsWidget::BwaSwSettingsWidget(QWidget *parent):
-    DnaAssemblyAlgorithmMainWidget(parent)
+    DnaAssemblyAlgorithmMainWidget(parent),
+    warningReporter( new BwaIndexAlgorithmWarningReporter( this ))
 {
     setupUi(this);
 
@@ -271,6 +275,10 @@ BwaSwSettingsWidget::BwaSwSettingsWidget(QWidget *parent):
     label->setText(tr("NOTE: bwa-sw performs alignment of long sequencing reads (Sanger or 454). It accepts reads only in FASTA or FASTQ format. Reads should be compiled into single file."));
 
     adjustSize();
+
+    warningReporter->setReportingLabel(warningLabel);
+    connect( indexAlgorithmComboBox, SIGNAL( currentIndexChanged ( int ) ), warningReporter,
+        SLOT( sl_IndexAlgorithmChanged( int ) ) );
 }
 
 QMap<QString,QVariant> BwaSwSettingsWidget::getDnaAssemblyCustomSettings() {
@@ -304,6 +312,11 @@ bool BwaSwSettingsWidget::isParametersOk(QString &) {
     return true;
 }
 
+void BwaSwSettingsWidget::validateReferenceSequence( const GUrl &url ) {
+    warningReporter->setRefSequencePath( url );
+    warningReporter->sl_IndexAlgorithmChanged( indexAlgorithmComboBox->currentIndex( ) );
+}
+
 // BwaGUIExtensionsFactory
 
 DnaAssemblyAlgorithmMainWidget *BwaSwGUIExtensionsFactory::createMainWidget(QWidget *parent) {
@@ -325,7 +338,8 @@ bool BwaSwGUIExtensionsFactory::hasBuildIndexWidget() {
 // BwaMemSettingsWidget
 
 BwaMemSettingsWidget::BwaMemSettingsWidget(QWidget *parent):
-    DnaAssemblyAlgorithmMainWidget(parent)
+    DnaAssemblyAlgorithmMainWidget(parent),
+    warningReporter( new BwaIndexAlgorithmWarningReporter( this ) )
 {
     setupUi(this);
 
@@ -338,6 +352,10 @@ BwaMemSettingsWidget::BwaMemSettingsWidget(QWidget *parent):
     label->setText(tr("NOTE: bwa mem accepts reads only in FASTA or FASTQ format. Reads should be compiled into a single file for each mate end."));
 
     adjustSize();
+
+    warningReporter->setReportingLabel(warningLabel);
+    connect( indexAlgorithmComboBox, SIGNAL( currentIndexChanged ( int ) ), warningReporter,
+        SLOT( sl_IndexAlgorithmChanged( int ) ) );
 }
 
 QMap<QString,QVariant> BwaMemSettingsWidget::getDnaAssemblyCustomSettings() {
@@ -377,6 +395,11 @@ void BwaMemSettingsWidget::buildIndexUrl(const GUrl &) {
 
 bool BwaMemSettingsWidget::isParametersOk(QString &) {
     return true;
+}
+
+void BwaMemSettingsWidget::validateReferenceSequence( const GUrl &url ) {
+    warningReporter->setRefSequencePath( url );
+    warningReporter->sl_IndexAlgorithmChanged( indexAlgorithmComboBox->currentIndex( ) );
 }
 
 // BwaMemGUIExtensionsFactory

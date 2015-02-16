@@ -228,7 +228,7 @@ void BwaWorkerFactory::init() {
 
         attrs << new Attribute(seedLength, BaseTypes::NUM_TYPE(), false, QVariant(32));
         attrs << new Attribute(maxGap, BaseTypes::NUM_TYPE(), false, QVariant(1));
-        attrs << new Attribute(indexAlg, BaseTypes::STRING_TYPE(), false, QVariant("is"));
+        attrs << new Attribute(indexAlg, BaseTypes::STRING_TYPE(), false, QVariant("autodetect"));
         attrs << new Attribute(bestHits, BaseTypes::NUM_TYPE(), false, QVariant(30));
         attrs << new Attribute(longGapPenalty, BaseTypes::BOOL_TYPE(), false, QVariant(false));
         attrs << new Attribute(nonIterative, BaseTypes::BOOL_TYPE(), false, QVariant(false));
@@ -272,6 +272,7 @@ void BwaWorkerFactory::init() {
          delegates[ENABLE_LONG_GAPS] = new ComboBoxWithBoolsDelegate();
 
          QVariantMap vm;
+         vm["autodetect"] = "autodetect";
          vm["bwtsw"] = "bwtsw";
          vm["div"] = "div";
          vm["is"] = "is";

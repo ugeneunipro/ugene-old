@@ -44,8 +44,11 @@ BwaBuildIndexTask::BwaBuildIndexTask(const QString &referencePath, const QString
 void BwaBuildIndexTask::prepare() {
     QStringList arguments;
     arguments.append("index");
-    arguments.append("-a");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_INDEX_ALGORITHM, "is").toString());
+    QString indexAlg = settings.getCustomValue(BwaTask::OPTION_INDEX_ALGORITHM, "autodetect").toString();
+    if(indexAlg != "autodetect") {
+        arguments.append("-a");
+        arguments.append(indexAlg);
+    }
     arguments.append("-p");
     arguments.append(indexPath);
     arguments.append(referencePath);

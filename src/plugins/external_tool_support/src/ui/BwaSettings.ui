@@ -95,8 +95,13 @@
           <item row="1" column="1">
            <widget class="QComboBox" name="indexAlgorithmComboBox">
             <property name="currentIndex">
-             <number>2</number>
+             <number>0</number>
             </property>
+            <item>
+             <property name="text">
+              <string>autodetect</string>
+             </property>
+            </item>
             <item>
              <property name="text">
               <string>bwtsw</string>

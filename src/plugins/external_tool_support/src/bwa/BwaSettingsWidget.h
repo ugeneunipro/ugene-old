@@ -54,7 +54,7 @@ public:
     QMap<QString, QVariant> getDnaAssemblyCustomSettings();
     void buildIndexUrl(const GUrl &url);
     bool isParametersOk(QString &);
-    void validateReferenceSequence( const GUrl &url );
+    void validateReferenceSequence(const GUrl &url);
 
 private:
     BwaIndexAlgorithmWarningReporter *warningReporter;
@@ -67,6 +67,9 @@ public:
     QMap<QString, QVariant> getDnaAssemblyCustomSettings();
     void buildIndexUrl(const GUrl &url);
     bool isParametersOk(QString &);
+    void validateReferenceSequence(const GUrl &url);
+private:
+    BwaIndexAlgorithmWarningReporter *warningReporter;
 };
 
 class BwaMemSettingsWidget : public DnaAssemblyAlgorithmMainWidget, Ui_BwaMemSettings {
@@ -76,6 +79,9 @@ public:
     QMap<QString, QVariant> getDnaAssemblyCustomSettings();
     void buildIndexUrl(const GUrl &url);
     bool isParametersOk(QString &);
+    void validateReferenceSequence(const GUrl &url);
+private:
+    BwaIndexAlgorithmWarningReporter *warningReporter;
 };
 
 class BwaBuildSettingsWidget : public DnaAssemblyAlgorithmBuildIndexWidget, Ui_BwaBuildSettings {

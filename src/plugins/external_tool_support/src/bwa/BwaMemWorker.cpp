@@ -41,6 +41,7 @@ const QString BwaMemWorkerFactory::ACTOR_ID("bwamem-id");
 
 static const QString THREADS = "threads";
 static const QString MIN_SEED = "min-seed";
+static const QString INDEX_ALG = "index-alg";
 static const QString BAND_WIDTH = "band-width";
 static const QString DROPOFF = "dropoff";
 static const QString INTERNAL_SEED_LOOKUP = "seed-lookup";
@@ -72,6 +73,7 @@ BwaMemWorker::BwaMemWorker(Actor *p)
 QVariantMap BwaMemWorker::getCustomParameters() const {
     QMap<QString, QVariant> customSettings;
 
+    customSettings.insert(BwaTask::OPTION_INDEX_ALGORITHM, getValue<QString>(INDEX_ALG));
     customSettings.insert(BwaTask::OPTION_THREADS, getValue<int>(THREADS));
     customSettings.insert(BwaTask::OPTION_MIN_SEED, getValue<int>(MIN_SEED));
     customSettings.insert(BwaTask::OPTION_BAND_WIDTH, getValue<int>(BAND_WIDTH));
@@ -131,9 +133,14 @@ void BwaMemWorkerFactory::init() {
         Descriptor threads(THREADS,
             BwaMemWorker::tr("Number of threads"),
             BwaMemWorker::tr("Number of threads (-t)."));
+
         Descriptor minSeed(MIN_SEED,
             BwaMemWorker::tr("Min seed length"),
             BwaMemWorker::tr("Path to indexed reference genome (-k)."));
+
+        Descriptor indexAlg(INDEX_ALG,
+            BwaMemWorker::tr("Index algorithm"),
+            BwaMemWorker::tr("Index algorithm (-a)."));
 
         Descriptor bandWidth(BAND_WIDTH,
             BwaMemWorker::tr("Band width"),
@@ -198,6 +205,7 @@ void BwaMemWorkerFactory::init() {
 
         attrs << new Attribute(threads, BaseTypes::NUM_TYPE(), false, QVariant(getThreadsCount()));
         attrs << new Attribute(minSeed, BaseTypes::NUM_TYPE(), false, QVariant(19));
+        attrs << new Attribute(indexAlg, BaseTypes::STRING_TYPE(), false, QVariant("autodetect"));
         attrs << new Attribute(bandWidth, BaseTypes::NUM_TYPE(), false, QVariant(100));
         attrs << new Attribute(dropoff, BaseTypes::NUM_TYPE(), false, QVariant(100));
         attrs << new Attribute(internalSeed, BaseTypes::NUM_TYPE(), false, QVariant(1.5));
@@ -232,6 +240,13 @@ void BwaMemWorkerFactory::init() {
          delegates[CLIPPING_PENALTY] = new SpinBoxDelegate(spinMap);
          delegates[UNPAIRED_PENALTY] = new SpinBoxDelegate(spinMap);
          delegates[SCORE_THRESHOLD] = new SpinBoxDelegate(spinMap);
+
+         QVariantMap vm;
+         vm["autodetect"] = "autodetect";
+         vm["bwtsw"] = "bwtsw";
+         vm["div"] = "div";
+         vm["is"] = "is";
+         delegates[INDEX_ALG] = new ComboBoxDelegate(vm);
     }
 
     Descriptor protoDesc(BwaMemWorkerFactory::ACTOR_ID,
