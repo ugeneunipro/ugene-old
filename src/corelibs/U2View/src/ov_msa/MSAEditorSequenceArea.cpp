@@ -1464,7 +1464,7 @@ void MSAEditorSequenceArea::focusOutEvent(QFocusEvent* fe) {
     update();
 }
 
-void MSAEditorSequenceArea::moveSelection( int dx, int dy )
+void MSAEditorSequenceArea::moveSelection( int dx, int dy, bool allowSelectionResize)
 {
     int leftX = selection.x();
     int topY = selection.y();
@@ -1476,9 +1476,17 @@ void MSAEditorSequenceArea::moveSelection( int dx, int dy )
     QPoint newTopLeft = baseTopLeft  + QPoint(dx,dy);
     QPoint newBottomRight = baseBottomRight + QPoint(dx,dy);
 
-    if ((!isInRange(newTopLeft)) || (!isInRange(newBottomRight)) ) {
-        return;
+    if ((!isInRange(newTopLeft)) || (!isInRange(newBottomRight)) )  {
+        if (!allowSelectionResize) {
+            return;
+        } else {
+            MSAEditorSelection newSelection(selection.topLeft(),
+                                            qMin( selection.width(), editor->getAlignmentLen() - newTopLeft.x()),
+                                            qMin( selection.height(), editor->getNumSequences() - newTopLeft.y()));
+            setSelection(newSelection);
+        }
     }
+
 
      if (!isVisible(newTopLeft, false)) {
          if (isVisible(newTopLeft, true)) {
@@ -2471,7 +2479,7 @@ void MSAEditorSequenceArea::insertGapsBeforeSelection( int countOfGaps )
         : countOfGaps;
     const U2Region& sequences = getSelectedRows( );
     maObj->insertGap( sequences,  selection.x( ) , removedRegionWidth );
-    moveSelection( removedRegionWidth, 0 );
+    moveSelection( removedRegionWidth, 0, true);
 }
 
 void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type) {

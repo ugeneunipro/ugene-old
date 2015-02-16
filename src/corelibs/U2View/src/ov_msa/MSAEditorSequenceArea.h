@@ -232,7 +232,7 @@ public:
 
     void setSelection(const MSAEditorSelection& sel);
 
-    void moveSelection(int dx, int dy);
+    void moveSelection(int dx, int dy, bool allowSelectionResize = false);
 
     /**
      * Shifts currently selected region to @shift.

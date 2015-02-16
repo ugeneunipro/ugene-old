@@ -54,6 +54,9 @@ bool MSAUtils::equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QB
         }
     }
     alternateLen = i - startPos;
+    if (alternateLen < pLen) {
+        return false;
+    }
     return true;
 }
 
@@ -315,7 +318,7 @@ U2MsaRow MSAUtils::copyRowFromSequence(U2SequenceObject *seqObj, const U2DbiRef 
     row.sequenceId = seq.id;
     row.gstart = 0;
     row.gend = seq.length;
-	row.length = MsaRowUtils::getRowLengthWithoutTrailing(dnaSeq.seq, row.gaps);
+    row.length = MsaRowUtils::getRowLengthWithoutTrailing(dnaSeq.seq, row.gaps);
     return row;
 }
 
