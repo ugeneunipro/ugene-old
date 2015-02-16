@@ -258,12 +258,7 @@ void LoadAllPluginsTask::addToOrderingQueue(const QString& url) {
             return;
         }
     }
-    if (desc.id.contains("pcr",Qt::CaseInsensitive)) {
-        coreLog.error("PCR plugin prepended");
-        orderedPlugins.prepend(desc);
-    } else {
-        orderedPlugins.append(desc);
-    }
+    orderedPlugins.append(desc);
 }
 
 
