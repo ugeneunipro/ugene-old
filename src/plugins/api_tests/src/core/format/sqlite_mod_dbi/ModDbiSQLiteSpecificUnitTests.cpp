@@ -226,7 +226,7 @@ U2MsaRow ModSQLiteSpecificTestData::addRow(const U2DataId &msaId, const QByteArr
     row.gstart = 0;
     row.gend = seq.length();
     row.gaps = gaps;
-	row.length = MsaRowUtils::getRowLengthWithoutTrailing(seq, gaps);
+    row.length = MsaRowUtils::getRowLengthWithoutTrailing(seq, gaps);
 
     sqliteDbi->getMsaDbi()->addRow(msaId, -1, row, os);
     CHECK_OP(os, U2MsaRow());

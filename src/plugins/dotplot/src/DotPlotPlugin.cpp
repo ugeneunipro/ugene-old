@@ -71,7 +71,7 @@ DotPlotViewContext::DotPlotViewContext(QObject* p)
     showDlgAction->setObjectName(ToolsMenu::DOTPLOT);
     connect( showDlgAction, SIGNAL( triggered() ), SLOT( sl_showDotPlotDialog() ) );
     ToolsMenu::addAction(ToolsMenu::TOOLS, showDlgAction);
-    
+
 
     // need to know it build dotplot wizard finished work
     connect( AppContext::getTaskScheduler(), SIGNAL( si_stateChanged(Task*) ), SLOT( sl_loadTaskStateChanged(Task*) ) );

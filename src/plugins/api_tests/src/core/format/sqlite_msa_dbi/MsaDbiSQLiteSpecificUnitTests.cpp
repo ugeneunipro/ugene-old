@@ -104,7 +104,7 @@ U2MsaRow MsaSQLiteSpecificTestData::addRow(const U2DataId &msaId, const QByteArr
     row.gstart = 0;
     row.gend = seq.length();
     row.gaps = gaps;
-	row.length = MsaRowUtils::getRowLengthWithoutTrailing(seq, gaps);
+    row.length = MsaRowUtils::getRowLengthWithoutTrailing(seq, gaps);
 
     sqliteDbi->getMsaDbi()->addRow(msaId, -1, row, os);
     CHECK_OP(os, U2MsaRow());
@@ -1971,7 +1971,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_append_noModTrack) {
     row.gend = 20;
     row.gaps = gaps;
     qint64 rowLength = row.gend - row.gstart + gapLength;
-	row.length = rowLength;
+    row.length = rowLength;
 
     sqliteDbi->getMsaDbi()->addRow(msaId, -1, row, os);
     CHECK_NO_ERROR(os);
@@ -2046,7 +2046,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_append_undo) {
     row.gend = 20;
     row.gaps = gaps;
     qint64 rowLength = row.gend - row.gstart + gapLength;
-	row.length = rowLength;
+    row.length = rowLength;
 
     sqliteDbi->getMsaDbi()->addRow(msaId, -1, row, os);
     CHECK_NO_ERROR(os);
@@ -2146,7 +2146,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_append_redo) {
     row.gend = 20;
     row.gaps = gaps;
     qint64 rowLength = row.gend - row.gstart + gapLength;
-	row.length = rowLength;
+    row.length = rowLength;
 
     sqliteDbi->getMsaDbi()->addRow(msaId, -1, row, os);
     CHECK_NO_ERROR(os);
@@ -2218,7 +2218,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_zeroPos_undo) {
     row.gend = 20;
     row.gaps = gaps;
     qint64 rowLength = row.gend - row.gstart + gapLength;
-	row.length = rowLength;
+    row.length = rowLength;
 
     qint64 posInMsa = 0;
 
@@ -2324,7 +2324,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_zeroPos_redo) {
     row.gend = 20;
     row.gaps = gaps;
     qint64 rowLength = row.gend - row.gstart + gapLength;
-	row.length = rowLength;
+    row.length = rowLength;
 
     qint64 posInMsa = 0;
 
@@ -2406,7 +2406,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_middlePos_undo) {
     row.gend = 20;
     row.gaps = gaps;
     qint64 posInMsa = 3;
-	row.length = row.gend - row.gstart + gapLength;
+    row.length = row.gend - row.gstart + gapLength;
 
     // Call test function
     sqliteDbi->getMsaDbi()->addRow(msaId, posInMsa, row, os);
@@ -2468,7 +2468,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_middlePos_redo) {
     row.gend = 20;
     row.gaps = gaps;
     qint64 rowLength = row.gend - row.gstart + gapLength;
-	row.length = rowLength;
+    row.length = rowLength;
 
     qint64 posInMsa = 3;
 
@@ -2550,7 +2550,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_lastRowPos_undo) {
     row.gend = 20;
     row.gaps = gaps;
     qint64 posInMsa = baseNumOfRows;
-	row.length = row.gend - row.gstart + gapLength;
+    row.length = row.gend - row.gstart + gapLength;
 
     // Call test function
     sqliteDbi->getMsaDbi()->addRow(msaId, posInMsa, row, os);
@@ -2612,7 +2612,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_lastRowPos_redo) {
     row.gend = 20;
     row.gaps = gaps;
     qint64 rowLength = row.gend - row.gstart + gapLength;
-	row.length = rowLength;
+    row.length = rowLength;
 
     qint64 posInMsa = baseNumOfRows;
 
@@ -2688,7 +2688,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_child_noModTrack) {
     row.gend = 20;
     row.gaps = gaps;
     qint64 posInMsa = 5;
-	row.length = row.gend - row.gstart + gapLength;
+    row.length = row.gend - row.gstart + gapLength;
 
     // Prepare expected values
     U2TrackModType expectedChildModTrackType = seqTrackModType;
@@ -2727,7 +2727,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_child_Track) {
     row.gend = 20;
     row.gaps = gaps;
     qint64 posInMsa = 5;
-	row.length = row.gend - row.gstart + gapLength;
+    row.length = row.gend - row.gstart + gapLength;
 
     // Prepare expected values
     U2TrackModType expectedChildModTrackType = sqliteDbi->getObjectDbi()->getTrackModType(msaId, os);

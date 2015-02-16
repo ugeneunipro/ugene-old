@@ -867,9 +867,9 @@ GUI_TEST_CLASS_DEFINITION(test_1113_1){//commit AboutDialogController.cpp
 }
 GUI_TEST_CLASS_DEFINITION(test_1163){
 
-    // 1. Open file *.ugenedb (for example _common_data\ugenedb\example-alignment.ugenedb) in assembly browser.  
+    // 1. Open file *.ugenedb (for example _common_data\ugenedb\example-alignment.ugenedb) in assembly browser.
     // 2. right click it and choose "Unload selected documents".
-    // 3. click "Yes" in appeared message box. 
+    // 3. click "Yes" in appeared message box.
     // Expected state: UGENE not crashes
 
     GTFileDialog::openFile(os, testDir+"_common_data/ugenedb/", "example-alignment.ugenedb");
@@ -16465,7 +16465,7 @@ GUI_TEST_CLASS_DEFINITION(test_3959) {
 
     QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature  (0, 2)");
     CHECK_SET_ERR(NULL != annotationGroup, "Annotations have not been found");  */
-        
+
 }
 GUI_TEST_CLASS_DEFINITION(test_3960) {
 /* 1. Open _common_data/scenarios/_regression/3960/all.gb
