@@ -108,6 +108,11 @@ public:
 private:
     static QMenu * getToolsMenu();
     static QMenu * getMenu(const QString &menuName);
+    static QMenu * createMenu(QMenu *tools, const QString &menuName);
+    static QAction * getPrevAction(QMenu *menu, const QString &menuName, const QString &actionName);
+    static QAction * getNextAction(QMenu *menu, const QString &menuName, const QString &actionName);
+    static void insertAction(QMenu *menu, const QString &menuName, QAction *action);
+    static bool mustHaveSeparator(const QString &menuName, const QString &actionName1, const QString &actionName2);
 
 private:
     static QMap<QString, QString> actionText;
