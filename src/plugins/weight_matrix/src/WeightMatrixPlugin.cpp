@@ -58,7 +58,7 @@ WeightMatrixPlugin::WeightMatrixPlugin() : Plugin(tr("Weight matrix"), tr("Searc
         ctxADV = new WeightMatrixADVContext(this);
         ctxADV->init();
 
-        QAction* buildAction = new QAction(tr("Build Weight Matrix..."), this);
+        QAction* buildAction = new QAction(tr("Build weight matrix..."), this);
         buildAction->setObjectName(ToolsMenu::TFBS_WEIGHT);
         connect(buildAction, SIGNAL(triggered()), SLOT(sl_build()));
         ToolsMenu::addAction(ToolsMenu::TFBS_MENU, buildAction);

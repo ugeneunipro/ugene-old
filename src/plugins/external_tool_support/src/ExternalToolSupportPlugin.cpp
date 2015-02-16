@@ -295,7 +295,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
         ExternalToolSupportAction* clustalOAction = new ExternalToolSupportAction(tr("Align with ClustalO..."), this, QStringList(ET_CLUSTALO));
         clustalOAction->setObjectName(ToolsMenu::MALIGN_CLUSTALO);
         connect(clustalOAction, SIGNAL(triggered()), clustalOTool, SLOT(sl_runWithExtFileSpecify()));
-        ToolsMenu::addAction(ToolsMenu::MALIGN_MENU, clustalWAction);
+        ToolsMenu::addAction(ToolsMenu::MALIGN_MENU, clustalOAction);
 
         mAFFTTool->getViewContext()->setParent(this);
         mAFFTTool->getViewContext()->init();
@@ -462,11 +462,11 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
 
     if (AppContext::getMainWindow()) {
         ExternalToolSupportAction* formatDBAction= new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(ET_FORMATDB));
-        formatDBAction->setObjectName("FormatDB");
+        formatDBAction->setObjectName(ToolsMenu::BLAST_DB);
         connect(formatDBAction, SIGNAL(triggered()), formatDBTool, SLOT(sl_runWithExtFileSpecify()));
 
         ExternalToolSupportAction* makeBLASTDBAction= new ExternalToolSupportAction(tr("BLAST+ make DB..."), this, QStringList(ET_MAKEBLASTDB));
-        makeBLASTDBAction->setObjectName("BLAST+ make DB");
+        makeBLASTDBAction->setObjectName(ToolsMenu::BLAST_DBP);
         connect(makeBLASTDBAction, SIGNAL(triggered()), makeBLASTDBTool, SLOT(sl_runWithExtFileSpecify()));
 
         BlastAllSupportContext *blastAllViewContext = new BlastAllSupportContext(this);
@@ -474,7 +474,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
         blastAllViewContext->init();
 
         ExternalToolSupportAction* blastallAction= new ExternalToolSupportAction(tr("BLAST Search..."), this, QStringList(ET_BLASTALL));
-        blastallAction->setObjectName("BLAST Search");
+        blastallAction->setObjectName(ToolsMenu::BLAST_SEARCH);
         connect(blastallAction, SIGNAL(triggered()), blastallTool, SLOT(sl_runWithExtFileSpecify()));
 
 
@@ -484,31 +484,24 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
         QStringList toolList;
         toolList << ET_BLASTN << ET_BLASTP << ET_BLASTX << ET_TBLASTN << ET_TBLASTX << ET_RPSBLAST;
         ExternalToolSupportAction* blastPlusAction= new ExternalToolSupportAction(tr("BLAST+ Search..."), this, toolList);
-        blastPlusAction->setObjectName("BLAST+ Search");
+        blastPlusAction->setObjectName(ToolsMenu::BLAST_SEARCHP);
         connect(blastPlusAction, SIGNAL(triggered()), blastNPlusTool, SLOT(sl_runWithExtFileSpecify()));
 
         ExternalToolSupportAction* blastPlusCmdAction= new ExternalToolSupportAction(tr("BLAST+ query DB"), this, QStringList(ET_BLASTDBCMD));
-        blastPlusCmdAction->setObjectName("BLAST+ query DB");
+        blastPlusCmdAction->setObjectName(ToolsMenu::BLAST_QUERYP);
         connect(blastPlusCmdAction, SIGNAL(triggered()), blastDbCmdSupport, SLOT(sl_runWithExtFileSpecify()));
 
-
-
         //Add to menu NCBI Toolkit
-        QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-        QMenu* blastSubmenu = tools->addMenu(tr("BLAST"));
-        blastSubmenu->menuAction()->setObjectName("BLAST");
-        blastSubmenu->setIcon(QIcon(":external_tool_support/images/ncbi.png"));
-        blastSubmenu->addAction(formatDBAction);
-        blastSubmenu->addAction(blastallAction);
-        blastSubmenu->addAction(makeBLASTDBAction);
-        blastSubmenu->addAction(blastPlusAction);
-        blastSubmenu->addAction(blastPlusCmdAction);
+        ToolsMenu::addAction(ToolsMenu::BLAST_MENU, formatDBAction);
+        ToolsMenu::addAction(ToolsMenu::BLAST_MENU, makeBLASTDBAction);
+        ToolsMenu::addAction(ToolsMenu::BLAST_MENU, blastallAction);
+        ToolsMenu::addAction(ToolsMenu::BLAST_MENU, blastPlusAction);
+        ToolsMenu::addAction(ToolsMenu::BLAST_MENU, blastPlusCmdAction);
 
-        ExternalToolSupportAction* cap3Action = new ExternalToolSupportAction(QString("Contig assembly with %1").arg(cap3Tool->getName()), this, QStringList(cap3Tool->getName()));
-        cap3Action->setObjectName(QString("Contig assembly with %1").arg(cap3Tool->getName()));
+        ExternalToolSupportAction* cap3Action = new ExternalToolSupportAction(QString("Contig assembly with %1...").arg(cap3Tool->getName()), this, QStringList(cap3Tool->getName()));
+        cap3Action->setObjectName(ToolsMenu::SANGER_DENOVO);
         connect(cap3Action, SIGNAL(triggered()), cap3Tool, SLOT(sl_runWithExtFileSpecify()));
-        QMenu* assemblySumbenu = tools->findChild<QMenu*>(MWMENU_TOOLS_ASSEMBLY);
-        assemblySumbenu->addAction(cap3Action);
+        ToolsMenu::addAction(ToolsMenu::SANGER_MENU, cap3Action);
 
         GObjectViewWindowContext* spideyCtx = spideySupport->getViewContext();
         spideyCtx->setParent(this);

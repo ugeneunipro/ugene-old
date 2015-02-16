@@ -113,6 +113,9 @@ void EnzymesPlugin::createToolsMenu() {
     connect(openDigestSequenceDialog, SIGNAL(triggered()), SLOT(sl_onOpenDigestSequenceDialog()));
     connect(openConstructMoleculeDialog, SIGNAL(triggered()), SLOT(sl_onOpenConstructMoleculeDialog()));
     connect(openCreateFragmentDialog, SIGNAL(triggered()), SLOT(sl_onOpenCreateFragmentDialog()));
+
+    ToolsMenu::addAction(ToolsMenu::CLONING_MENU, openDigestSequenceDialog);
+    ToolsMenu::addAction(ToolsMenu::CLONING_MENU, openConstructMoleculeDialog);
 }
 
 void EnzymesPlugin::sl_onOpenDigestSequenceDialog() {

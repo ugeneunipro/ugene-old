@@ -8864,7 +8864,7 @@ GUI_TEST_CLASS_DEFINITION(test_2437) {
     p.outputDirPath = sandBoxDir + "test_2437";
     QDir().mkpath(p.outputDirPath);
     GTUtilsDialog::waitForDialog(os, new FormatDBSupportRunDialogFiller(os, p));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "BLAST" << "FormatDB"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::BLAST_MENU << ToolsMenu::BLAST_DB));
     GTMenu::showMainMenu(os, MWMENU_TOOLS);
 
     //3. Wait for the task end.
@@ -8888,7 +8888,7 @@ GUI_TEST_CLASS_DEFINITION(test_2437) {
         }
     };
     GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(os, new Scenario()));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "BLAST" << "BLAST Search"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::BLAST_MENU << ToolsMenu::BLAST_SEARCH));
     GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTGlobals::sleep();
 }
@@ -12486,7 +12486,7 @@ GUI_TEST_CLASS_DEFINITION(test_3209_1) {
     blastParams.withInputFile = true;
     blastParams.inputPath = dataDir + "samples/FASTA/human_T1.fa";
     GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(blastParams, os));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "BLAST" << "BLAST+ Search");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::BLAST_MENU << ToolsMenu::BLAST_SEARCHP);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     bool found = GTUtilsAnnotationsTreeView::findRegion(os, "blast result", U2Region(5061, 291));
@@ -12503,7 +12503,7 @@ GUI_TEST_CLASS_DEFINITION(test_3209_2) {
     blastParams.withInputFile = true;
     blastParams.inputPath = dataDir + "samples/FASTA/human_T1.fa";
     GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(blastParams, os));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "BLAST" << "BLAST Search");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::BLAST_MENU << ToolsMenu::BLAST_SEARCH);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     bool found = GTUtilsAnnotationsTreeView::findRegion(os, "blast result", U2Region(5061, 291));
@@ -12518,7 +12518,7 @@ GUI_TEST_CLASS_DEFINITION(test_3211) {
     parameters.inputPath = dataDir + "samples/FASTA/human_T1.fa";
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(parameters, os));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "BLAST" << "BLAST Search");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::BLAST_MENU << ToolsMenu::BLAST_SEARCH);
     //Expected state: there is a "Request to Local BLAST Database" dialog without an annotation widget.
     //2. Set any input sequence.
     //Expected state: an annotation widget was added.
