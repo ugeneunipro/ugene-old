@@ -55,7 +55,7 @@ public:
     static const QString NGS_VARIANT_EFFECT;
     static const QString NGS_RAW_RNA;
     static const QString NGS_RNA;
-    static const QString NGS_TRASCRIPT;
+    static const QString NGS_TRANSCRIPT;
     static const QString NGS_RAW_CHIP;
     static const QString NGS_CHIP;
     static const QString NGS_CHIP_COVERAGE;

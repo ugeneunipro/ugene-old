@@ -31,10 +31,11 @@ namespace U2 {
 class SampleAction {
 public:
     enum LoadingMode {Select, Load, OpenWizard};
-    SampleAction(const QString &actionName, const QString &toolsCategory, const QString &samplePath, LoadingMode mode);
+    SampleAction(const QString &actionName, const QString &toolsMenu, const QString &samplePath, LoadingMode mode, const QString &actionText);
 
+    QString actionText;
     QString actionName;
-    QString toolsCategory;
+    QString toolsMenu;
     QString samplePath;
     LoadingMode mode;
     QStringList requiredPlugins;

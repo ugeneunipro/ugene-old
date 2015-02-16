@@ -39,8 +39,8 @@ namespace {
     const char *ID_PROPERTY = "action_id";
 }
 
-SampleAction::SampleAction(const QString &actionName, const QString &toolsCategory, const QString &samplePath, LoadingMode mode)
-: actionName(actionName), toolsCategory(toolsCategory), samplePath(samplePath), mode(mode)
+SampleAction::SampleAction(const QString &actionName, const QString &toolsMenu, const QString &samplePath, LoadingMode mode, const QString &actionText)
+: actionName(actionName), toolsMenu(toolsMenu), samplePath(samplePath), mode(mode), actionText(actionText)
 {
 
 }
@@ -55,11 +55,11 @@ void SampleActionsManager::registerAction(const SampleAction &action) {
     actions.append(action);
     int id = actions.size() - 1;
 
-    QAction *a = new QAction(action.actionName, this);
+    QAction *a = new QAction(action.actionText, this);
     a->setObjectName(action.actionName);
     a->setProperty(ID_PROPERTY, id);
     connect(a, SIGNAL(triggered()), SLOT(sl_clicked()));
-    ToolsMenu::addAction(action.toolsCategory, a);
+    ToolsMenu::addAction(action.toolsMenu, a);
 }
 
 int SampleActionsManager::getValidClickedActionId(U2OpStatus &os) const {
@@ -76,7 +76,7 @@ int SampleActionsManager::getValidClickedActionId(U2OpStatus &os) const {
 
 SampleAction SampleActionsManager::getClickedAction(U2OpStatus &os) const {
     int id = getValidClickedActionId(os);
-    CHECK_OP(os, SampleAction("", "", "", SampleAction::Select));
+    CHECK_OP(os, SampleAction("", "", "", SampleAction::Select, ""));
     return actions[id];
 }
 

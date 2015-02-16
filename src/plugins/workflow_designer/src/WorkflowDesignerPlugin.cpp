@@ -338,9 +338,55 @@ void WorkflowDesignerService::initSampleActions() {
     SampleActionsManager *samples = new SampleActionsManager(this);
     connect(samples, SIGNAL(si_clicked(const SampleAction &)), SLOT(sl_sampleActionClicked(const SampleAction &)));
 
-    SampleAction test(tr("Reads quality control and alignment"), ToolsMenu::SANGER_MENU, "Sanger sequencing/trim-and-align.uwl", SampleAction::OpenWizard);
-    test.requiredPlugins << "external_tool_support";
-    samples->registerAction(test);
+    const QString externalToolsPlugin = "external_tool_support";
+
+    SampleAction sangerAlign(ToolsMenu::SANGER_ALIGN, ToolsMenu::SANGER_MENU, "Sanger sequencing/trim-and-align.uwl", SampleAction::Select, tr("Reads quality control and alignment"));
+
+    SampleAction ngsControl(ToolsMenu::NGS_CONTROL, ToolsMenu::NGS_MENU, "NGS/fastqc.uwl", SampleAction::OpenWizard, tr("Reads quality control"));
+    ngsControl.requiredPlugins << externalToolsPlugin;
+    SampleAction ngsDenovo(ToolsMenu::NGS_DENOVO, ToolsMenu::NGS_MENU, "NGS/assembly.uwl", SampleAction::Select, tr("Genome de novo assembly"));
+    ngsDenovo.requiredPlugins << externalToolsPlugin;
+    SampleAction ngsRawDna(ToolsMenu::NGS_RAW_DNA, ToolsMenu::NGS_MENU, "NGS/raw_dna.uwl", SampleAction::Select, tr("Raw DNA-Seq data processing"));
+    ngsRawDna.requiredPlugins << externalToolsPlugin;
+    SampleAction ngsVariants(ToolsMenu::NGS_CALL_VARIANTS, ToolsMenu::NGS_MENU, "NGS/call_variants.uwl", SampleAction::Select, tr("Call variants"));
+    ngsVariants.requiredPlugins << externalToolsPlugin;
+    SampleAction ngsEffect(ToolsMenu::NGS_VARIANT_EFFECT, ToolsMenu::NGS_MENU, "NGS/variation_annotation.uwl", SampleAction::Select, tr("Annotate variants and predict effects"));
+    ngsEffect.requiredPlugins << externalToolsPlugin;
+    SampleAction ngsRawRna(ToolsMenu::NGS_RAW_RNA, ToolsMenu::NGS_MENU, "NGS/raw_rna.uwl", SampleAction::Select, tr("Raw RNA-Seq data processing"));
+    ngsRawRna.requiredPlugins << externalToolsPlugin;
+    SampleAction ngsRna(ToolsMenu::NGS_RNA, ToolsMenu::NGS_MENU, "NGS/tuxedo.uwl", SampleAction::Select, tr("RNA-Seq data analysis"));
+    ngsRna.requiredPlugins << externalToolsPlugin;
+    SampleAction ngsTranscript(ToolsMenu::NGS_TRANSCRIPT, ToolsMenu::NGS_MENU, "NGS/extract_transcript_seq.uwl", SampleAction::Select, tr("Extract transcript sequences"));
+    ngsTranscript.requiredPlugins << externalToolsPlugin;
+    SampleAction ngsRawChip(ToolsMenu::NGS_RAW_CHIP, ToolsMenu::NGS_MENU, "NGS/raw_chip.uwl", SampleAction::Select, tr("Raw ChIP-Seq data processing"));
+    ngsRawChip.requiredPlugins << externalToolsPlugin;
+    SampleAction ngsChip(ToolsMenu::NGS_CHIP, ToolsMenu::NGS_MENU, "NGS/cistrome.uwl", SampleAction::Select, tr("ChIP-Seq data analysis"));
+    ngsChip.requiredPlugins << externalToolsPlugin;
+    SampleAction ngsChipCov(ToolsMenu::NGS_CHIP_COVERAGE, ToolsMenu::NGS_MENU, "NGS/chipseq_coverage.uwl", SampleAction::Select, tr("ChIP-Seq coverage"));
+    ngsChipCov.requiredPlugins << externalToolsPlugin;
+    SampleAction ngsCovegare(ToolsMenu::NGS_COVERAGE, ToolsMenu::NGS_MENU, "NGS/extract_coverage.uwl", SampleAction::Select, tr("Extract coverage from assemblies"));
+    ngsCovegare.requiredPlugins << externalToolsPlugin;
+    SampleAction ngsConsensus(ToolsMenu::NGS_CONSENSUS, ToolsMenu::NGS_MENU, "NGS/consensus.uwl", SampleAction::Select, tr("Extract consensus from assemblies"));
+    ngsConsensus.requiredPlugins << externalToolsPlugin;
+
+    SampleAction blastNcbi(ToolsMenu::BLAST_NCBI, ToolsMenu::BLAST_MENU, "Scenarios/remote_blasting.uwl", SampleAction::Select, tr("Remote NCBI BLAST"));
+    blastNcbi.requiredPlugins << "remote_blast";
+
+    samples->registerAction(sangerAlign);
+    samples->registerAction(ngsControl);
+    samples->registerAction(ngsDenovo);
+    samples->registerAction(ngsRawDna);
+    samples->registerAction(ngsVariants);
+    samples->registerAction(ngsEffect);
+    samples->registerAction(ngsRawRna);
+    samples->registerAction(ngsRna);
+    samples->registerAction(ngsTranscript);
+    samples->registerAction(ngsRawChip);
+    samples->registerAction(ngsChip);
+    samples->registerAction(ngsChipCov);
+    samples->registerAction(ngsCovegare);
+    samples->registerAction(ngsConsensus);
+    samples->registerAction(blastNcbi);
 }
 
 /************************************************************************/

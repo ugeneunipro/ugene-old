@@ -48,7 +48,7 @@ const QString ToolsMenu::NGS_CALL_VARIANTS = "NGS_CALL_VARIANTS";
 const QString ToolsMenu::NGS_VARIANT_EFFECT = "NGS_VARIANT_EFFECT";
 const QString ToolsMenu::NGS_RAW_RNA = "NGS_RAW_RNA";
 const QString ToolsMenu::NGS_RNA = "NGS_RNA";
-const QString ToolsMenu::NGS_TRASCRIPT = "NGS_TRASCRIPT";
+const QString ToolsMenu::NGS_TRANSCRIPT = "NGS_TRANSCRIPT";
 const QString ToolsMenu::NGS_RAW_CHIP = "NGS_RAW_CHIP";
 const QString ToolsMenu::NGS_CHIP = "NGS_CHIP";
 const QString ToolsMenu::NGS_CHIP_COVERAGE = "NGS_CHIP_COVERAGE";
@@ -129,7 +129,7 @@ void ToolsMenu::init() {
         subMenuAction[NGS_MENU] << LINE;
         subMenuAction[NGS_MENU] << NGS_RAW_RNA;
         subMenuAction[NGS_MENU] << NGS_RNA;
-        subMenuAction[NGS_MENU] << NGS_TRASCRIPT;
+        subMenuAction[NGS_MENU] << NGS_TRANSCRIPT;
         subMenuAction[NGS_MENU] << LINE;
         subMenuAction[NGS_MENU] << NGS_RAW_CHIP;
         subMenuAction[NGS_MENU] << NGS_CHIP;
