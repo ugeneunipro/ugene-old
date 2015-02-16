@@ -1080,6 +1080,47 @@ GUI_TEST_CLASS_DEFINITION(test_1229) {
     CHECK_SET_ERR(msaNames.contains("tub_1") && msaNames.contains("tub_2"), "Unexpected sequences names in MSA");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1234) {
+/* 1. Select a sequence region.
+ * 2. Do {Export->Export selected sequence region...}
+ * 3. Check "Translate to amino alphabet" and "Save all amino frames"
+ *   Expected state: no bad characters at the end of the frames. Sequences are translated correctly.
+ */
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsSequenceView::selectSequenceRegion(os, 100, 120);
+    //DLSAETL
+    //ISRQKP
+    //SLGRNP
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "test_1234.fa", GTGlobals::UseMouse, true));
+
+    QWidget* activeWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(activeWindow != NULL, "there is no active MDI window");
+
+    QPoint p = activeWindow->mapToGlobal(activeWindow->rect().center());
+    GTMouseDriver::moveTo(os, QPoint(p.x(), 200));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(2000);
+
+    QWidget* parent=GTWidget::findWidget(os,"test_1234.fa");
+    CHECK_SET_ERR(NULL != parent, "Failed to find parent widget!");
+
+    ADVSingleSequenceWidget *seq0 = dynamic_cast<ADVSingleSequenceWidget*>(GTWidget::findWidget(os, "ADV_single_sequence_widget_0", parent));
+    ADVSingleSequenceWidget *seq1 = dynamic_cast<ADVSingleSequenceWidget*>(GTWidget::findWidget(os, "ADV_single_sequence_widget_1", parent));
+    ADVSingleSequenceWidget *seq2 = dynamic_cast<ADVSingleSequenceWidget*>(GTWidget::findWidget(os, "ADV_single_sequence_widget_2", parent));
+
+    CHECK_SET_ERR(NULL != seq0, "Failed to find a sequence widget for seq0!");
+    CHECK_SET_ERR(NULL != seq1, "Failed to find a sequence widget for seq1!");
+    CHECK_SET_ERR(NULL != seq2, "Failed to find a sequence widget for seq2!");
+
+    CHECK_SET_ERR("DLSAETL" == QString(seq0->getSequenceObject()->getWholeSequenceData()), QString("Unexpected sequence. Expected %1, Actual %2").arg("DLSAETL").arg(QString(seq0->getSequenceObject()->getWholeSequenceData())));
+    CHECK_SET_ERR("ISRQKP" == QString(seq1->getSequenceObject()->getWholeSequenceData()), QString("Unexpected sequence. Expected %1, Actual %2").arg("ISRQKP").arg(QString(seq1->getSequenceObject()->getWholeSequenceData())));
+    CHECK_SET_ERR("SLGRNP" == QString(seq2->getSequenceObject()->getWholeSequenceData()), QString("Unexpected sequence. Expected %1, Actual %2").arg("SLGRNP").arg(QString(seq2->getSequenceObject()->getWholeSequenceData())));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1249){
 
     // 1. Open human_T1.fa.
