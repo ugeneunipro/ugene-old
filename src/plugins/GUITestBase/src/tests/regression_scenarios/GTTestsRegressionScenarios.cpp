@@ -865,7 +865,21 @@ GUI_TEST_CLASS_DEFINITION(test_1113_1){//commit AboutDialogController.cpp
 //Expected state: About dialog appeared, shown info includes platform info (32/64)
 
 }
+GUI_TEST_CLASS_DEFINITION(test_1163){
 
+    // 1. Open file *.ugenedb (for example _common_data\ugenedb\example-alignment.ugenedb) in assembly browser.  
+    // 2. right click it and choose "Unload selected documents".
+    // 3. click "Yes" in appeared message box. 
+    // Expected state: UGENE not crashes
+
+    GTFileDialog::openFile(os, testDir+"_common_data/ugenedb/", "example-alignment.ugenedb");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"action_project__unload_selected_action"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTUtilsProjectTreeView::click(os, "example-alignment.ugenedb", Qt::RightButton);
+
+
+}
 GUI_TEST_CLASS_DEFINITION(test_1165){
 //1. Open file "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
@@ -884,6 +898,21 @@ GUI_TEST_CLASS_DEFINITION(test_1165){
     GTWidget::click(os,nameList);
     GTGlobals::sleep(500);
     GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["delete"]);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1172){
+    // 1. Open file "\data\samples\Stockholm\CBS.sto" or "\data\samples\ACE\BL060C3.ace"
+    // 2. Select any area in msa (or just one symbol)
+    // 3. Press at selected area (or at selected symbol) again
+    // Expected state: UGENE not crashes
+
+    GTFileDialog::openFile(os, dataDir+"samples/Stockholm/", "CBS.sto");
+
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(2, 2));
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(2, 2));
+
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1189){
@@ -975,6 +1004,20 @@ GUI_TEST_CLASS_DEFINITION(test_1190){//add AlignShortReadsFiller
 
 //repeat these steps 3 times, UGENE shouldn't crash
 }
+GUI_TEST_CLASS_DEFINITION(test_1204){
+    // 1) Open files data\samples\FASTA\human_T1.fa
+    // 2) Use context menu {Analyze -> Query NCBI BLAST database}
+    // Expected state: "max hits" spinbox can be set to 5000
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    GTUtilsDialog::waitForDialog(os, new RemoteBLASTDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE"
+        << "Query NCBI BLAST database"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1212){
 //    1. Open any sequence. (human_t1.fa)
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
@@ -16327,6 +16370,63 @@ GUI_TEST_CLASS_DEFINITION(test_3953) {
         GTGlobals::sleep(200);
      }
     CHECK_SET_ERR(getAnnotations->isEnabled() == false, QString("getAnnotationsPushButton is active"));
+}
+GUI_TEST_CLASS_DEFINITION(test_3959) {
+    // 1. { File -> New document from text... }
+    // Expected state: the "Create document" dialog has appeared
+    // 2. Set sequence "AAAA", set some valid document path and click "Create".
+    // Expected state: the Sequence view has opened, the "Zoom out" button is disabled.
+    // 3. Call context menu { Edit sequence -> Insert subsequence... }
+    // Expected state: the "Insert Sequence" dialog has appeared
+    // 4. Set sequence "AAAA", position to insert - 5 and click "OK".
+    // Expected state: the same sequence region is displayed, scrollbar has shrunk, "Zoom out" has enabled.
+
+    Runnable *filler = new CreateDocumentFiller(os,
+        "AAAA", false,
+        CreateDocumentFiller::StandardRNA, true, false, "",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+    GTGlobals::sleep();
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //QToolBar* mwtoolbar_activemdi = GTToolbar::getToolbar(os, MWTOOLBAR_MAIN);
+    //QWidget* zoomOutButton = GTToolbar::getWidgetForActionTooltip(os, mwtoolbar_activemdi, "Zoom Out");
+    //CHECK_SET_ERR(!zoomOutButton->isEnabled(), "zoomOutButton button on toolbar is not disabled");
+
+    GTGlobals::sleep();
+    Runnable *filler1 = new InsertSequenceFiller(os,
+        "AAAA"
+        );
+    GTUtilsDialog::waitForDialog(os, filler1);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    //GTUtilsDocument::checkDocument(os, "result");
+
+    //GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+
+    //GTUtilsOptionPanelSequenceView::enterPattern(os, "TTTTTTTTTTTTTTTTTTTTTTTAATTTTTTTTTTTTTTTTTTTTTTT");
+    //GTGlobals::sleep(200);
+
+    /*GTUtilsOptionPanelSequenceView::setAlgorithm(os, "InsDel");
+    GTGlobals::sleep(200);
+
+    GTUtilsOptionPanelSequenceView::setMatchPercentage(os, 30);
+    GTGlobals::sleep(200);
+
+    GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature  (0, 2)");
+    CHECK_SET_ERR(NULL != annotationGroup, "Annotations have not been found");  */
+        
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3988) {
