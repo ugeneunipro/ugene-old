@@ -267,11 +267,11 @@ QString CreateAnnotationWidgetController::validate() {
         }
     }
 
-    if (!w->isUsePatternNamesChecked() && !model.hideAnnotationName && !Annotation::isValidAnnotationName(model.data.name)) {
+    if (!w->isUsePatternNamesChecked() && !model.hideAnnotationName && model.data.name.isEmpty()) {
         return tr("Illegal annotation name");
     }
 
-    if (!AnnotationGroup::isValidGroupName(model.groupName, true)) {
+    if (model.groupName.isEmpty()) {
         w->focusGroupName();
         return tr("Illegal group name");
     }
