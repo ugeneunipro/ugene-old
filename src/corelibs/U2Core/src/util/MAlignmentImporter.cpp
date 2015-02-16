@@ -147,6 +147,7 @@ QList<U2MsaRow> MAlignmentImporter::importRows(const DbiConnection& con, const M
         row.gstart = 0;
         row.gend = seq.length;
         row.gaps = al.getRow(i).getGapModel();
+		row.length = al.getRow(i).getRowLengthWithoutTrailing();
 
         rows.append(row);
     }
