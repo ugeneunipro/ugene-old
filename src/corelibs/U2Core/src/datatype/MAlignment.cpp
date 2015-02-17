@@ -706,6 +706,8 @@ MAlignment::MAlignment(const MAlignment &m)
 }
 
 MAlignment & MAlignment::operator=(const MAlignment &other) {
+    clear();
+
     alphabet = other.alphabet;
     length = other.length;
     info = other.info;
