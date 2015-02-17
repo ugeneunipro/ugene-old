@@ -15625,8 +15625,7 @@ GUI_TEST_CLASS_DEFINITION(test_3738) {
     GTUtilsDialog::waitForDialog(os, new CAP3SupportDialogFiller(os, QStringList()<<testDir + "_common_data/scf/Sequence A.scf"
                                                                  <<testDir + "_common_data/scf/Sequence B.scf",
                                                                  sandBoxDir + "test_3738.ace"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "DNA assembly"
-     << "Contig assembly with CAP3"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::SANGER_MENU << ToolsMenu::SANGER_DENOVO));
     GTMenu::showMainMenu(os, "mwmenu_tools");
 
 //    menu item in the main menu.
