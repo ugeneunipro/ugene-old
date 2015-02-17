@@ -25,6 +25,7 @@
 #include "MuscleWorkPool.h"
 #include "TaskLocalStorage.h"
 
+#include <U2Core/AppResources.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Log.h>
@@ -54,6 +55,25 @@ MuscleParallelTask::MuscleParallelTask(const MAlignment& ma, MAlignment& res, co
     prepareTask = new MusclePrepareTask(workpool);
     prepareTask->setSubtaskProgressWeight(0);
     addSubTask(prepareTask);
+
+    addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, estimateMemoryUsageInMb(ma), true));
+}
+
+int MuscleParallelTask::estimateMemoryUsageInMb(const MAlignment& ma) {
+    QList<int> rowsLengths;
+    foreach(const MAlignmentRow& row, ma.getRows()) {
+        rowsLengths.append(row.getCoreLength());
+    }
+    qSort(rowsLengths.begin(), rowsLengths.end(), qGreater<int>());
+
+    qint64 usedBytes = 0;
+    int availableThreads = workpool->nThreads;
+    for(int i = 0; i < rowsLengths.size() && availableThreads > 0; i++) {
+        for(int j = 0; j < rowsLengths.size() && availableThreads > 0; j++, availableThreads--) {
+            usedBytes += (rowsLengths[i] + 1025) * (rowsLengths[j] + 1025);
+        }
+    }
+    return usedBytes / 1024 / 1024;
 }
 
 QList<Task*> MuscleParallelTask::onSubTaskFinished(Task* subTask) {

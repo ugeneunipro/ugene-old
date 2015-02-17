@@ -51,6 +51,7 @@ public:
     ~MuscleParallelTask() {cleanup();}
     void cleanup();
     QList<Task*> onSubTaskFinished(Task* subTask);
+    int estimateMemoryUsageInMb(const MAlignment& ma);
 
 private:
     MuscleWorkPool *workpool;
