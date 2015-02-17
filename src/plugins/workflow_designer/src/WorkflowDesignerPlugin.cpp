@@ -342,7 +342,7 @@ void WorkflowDesignerService::initSampleActions() {
 
     SampleAction sangerAlign(ToolsMenu::SANGER_CONTROL, ToolsMenu::SANGER_MENU, "Sanger sequencing/trim-and-align.uwl", SampleAction::Select, tr("Reads quality control and alignment"));
 
-    SampleAction ngsControl(ToolsMenu::NGS_CONTROL, ToolsMenu::NGS_MENU, "NGS/fastqc.uwl", SampleAction::OpenWizard, tr("Reads quality control"));
+    SampleAction ngsControl(ToolsMenu::NGS_CONTROL, ToolsMenu::NGS_MENU, "NGS/fastqc.uwl", SampleAction::OpenWizard, tr("Reads quality control..."));
     ngsControl.requiredPlugins << externalToolsPlugin;
     SampleAction ngsRawDna(ToolsMenu::NGS_RAW_DNA, ToolsMenu::NGS_MENU, "NGS/raw_dna.uwl", SampleAction::Select, tr("Raw DNA-Seq data processing"));
     ngsRawDna.requiredPlugins << externalToolsPlugin;
