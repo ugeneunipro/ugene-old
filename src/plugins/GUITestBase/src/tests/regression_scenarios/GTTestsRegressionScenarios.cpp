@@ -16409,6 +16409,50 @@ GUI_TEST_CLASS_DEFINITION(test_3905) {
     CHECK_SET_ERR(referenceName.isEmpty(), "A reference sequence was not reset");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3920) {
+//    1. Open "data/samples/FASTA/human_T1.fa".
+//    2. Click "find ORFs" button on the toolbar.
+//       Set custom region that differs from the whole sequence region and accept the dialog.
+//    Expected state: ORFs are found in the set region.
+//    Current state: ORFs on the whole sequence are found.
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    class ORFDialogFiller : public Filler {
+    public:
+        ORFDialogFiller(U2OpStatus& _os) : Filler(_os, "ORFDialogBase"){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+
+            QLineEdit* start = w->findChild<QLineEdit*>("start_edit_line");
+            CHECK_SET_ERR(start != NULL, "start_edit_line not found");
+            GTLineEdit::setText(os, start, "1000");
+
+            QLineEdit* end = w->findChild<QLineEdit*>("end_edit_line");
+            CHECK_SET_ERR(end != NULL, "end_edit_line not found");
+            GTLineEdit::setText(os, end, "4000");
+
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK(NULL != button, );
+            GTWidget::click(os, button);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ORFDialogFiller(os));
+    GTWidget::click(os, GTAction::button(os, "Find ORFs"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QList<U2Region> regions = GTUtilsAnnotationsTreeView::getAnnotatedRegions(os);
+    foreach(const U2Region& r, regions) {
+        CHECK_SET_ERR((r.startPos >= 1000 && r.startPos <= 4000 &&
+                      r.endPos() >= 1000 && r.endPos() <= 4000), "Invalid annotated region!");
+    }
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3927) {
     // 1. Open "_common_data/scenarios/msa/ma.aln".
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
