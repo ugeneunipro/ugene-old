@@ -1121,6 +1121,107 @@ GUI_TEST_CLASS_DEFINITION(test_1234) {
     CHECK_SET_ERR("SLGRNP" == QString(seq2->getSequenceObject()->getWholeSequenceData()), QString("Unexpected sequence. Expected %1, Actual %2").arg("SLGRNP").arg(QString(seq2->getSequenceObject()->getWholeSequenceData())));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1245){
+//    1. Open the file human_T1.fa.
+//    2. Click on the document context menu "Export Document" in the project view. The Export Document dialog appears.
+//    3. Be sure what 'FASTA' format is choosen
+//    4. Press on the browse button. Select file location dialog appears. Set the saving file: "test" and click "Save".
+//    Expected state: In the "Save to file" field in the Export Document dialog path of the document "test" appears with "fa" extension
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    class ExportDocumentCustomFiller : public Filler {
+        public:
+            ExportDocumentCustomFiller(U2OpStatus &os)
+                : Filler(os, "ExportDocumentDialog") {}
+            virtual void run() {
+                QWidget *dialog = QApplication::activeModalWidget();
+                CHECK_SET_ERR(dialog != NULL, "dialog not found");
+
+                QComboBox *comboBox = dialog->findChild<QComboBox*>("formatCombo");
+                CHECK_SET_ERR(comboBox != NULL, "ComboBox not found");
+                int index = comboBox->findText("FASTA");
+
+                CHECK_SET_ERR(index != -1, QString("item \"FASTA\" in combobox not found"));
+                if (comboBox->currentIndex() != index){
+                    GTComboBox::setCurrentIndex(os, comboBox, index);
+                }
+
+                GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, sandBoxDir, "test_1245", GTFileDialogUtils::Save));
+                GTWidget::click(os, GTWidget::findWidget(os, "browseButton"));
+                GTGlobals::sleep();
+
+                QLineEdit* lineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "fileNameEdit"));
+                CHECK_SET_ERR(lineEdit != NULL, "fileNameEdit not found");
+                CHECK_SET_ERR(GTLineEdit::copyText(os, lineEdit).endsWith(".fa"), "Wrong extention");
+
+                QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+                CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+                QPushButton* button = box->button(QDialogButtonBox::Cancel);
+                CHECK_SET_ERR(button !=NULL, "cancel button is NULL");
+                GTWidget::click(os, button);
+            }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ExportDocumentCustomFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export document"));
+    GTUtilsProjectTreeView::click(os, "human_T1.fa", Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1246){
+//    1. Open the file data/samples/Assembly/chrM.sorted.bam
+//    2. Select file in the project view and click on the document context menu "Export Document" in the project view.
+//    Expected state: the Export Document dialog appears.
+//    3. Press on the browse button.
+//    Expected state: Select file location dialog appears.
+//    4. Fill this dialog with:
+//        {Save to file:} anything
+//        {File format:} SAM.
+//    5. Click the Export button.
+//    Expected state: UGENE does not crash.
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_1246.ugenedb"));
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly/", "chrM.sorted.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    class ExportDocumentCustomFiller : public Filler {
+        public:
+            ExportDocumentCustomFiller(U2OpStatus &os)
+                : Filler(os, "ExportDocumentDialog") {}
+            virtual void run() {
+                QWidget *dialog = QApplication::activeModalWidget();
+                CHECK_SET_ERR(dialog != NULL, "dialog not found");
+
+                GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, sandBoxDir, "test_1246", GTFileDialogUtils::Save));
+                GTWidget::click(os, GTWidget::findWidget(os, "browseButton"));
+                GTGlobals::sleep();
+
+                QComboBox *comboBox = dialog->findChild<QComboBox*>("formatCombo");
+                CHECK_SET_ERR(comboBox != NULL, "ComboBox not found");
+                int index = comboBox->findText("SAM");
+
+                CHECK_SET_ERR(index != -1, QString("item \"SAM\" in combobox not found"));
+                if (comboBox->currentIndex() != index){
+                    GTComboBox::setCurrentIndex(os, comboBox, index);
+                }
+
+                QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+                CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+                QPushButton* button = box->button(QDialogButtonBox::Ok);
+                CHECK_SET_ERR(button !=NULL, "ok button is NULL");
+                GTWidget::click(os, button);
+            }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_1246_2"));
+
+    GTUtilsDialog::waitForDialog(os, new ExportDocumentCustomFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export document"));
+    GTUtilsProjectTreeView::click(os, "test_1246.ugenedb", Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1249){
 
     // 1. Open human_T1.fa.

@@ -41,7 +41,7 @@ namespace U2 {
 QString ExportDocumentDialogFiller::defaultExportString = "";
 
 #define GT_CLASS_NAME "ExportDocumentDialogFiller"
-ExportDocumentDialogFiller::ExportDocumentDialogFiller(U2OpStatus &_os, const QString &_path, const QString &_name, 
+ExportDocumentDialogFiller::ExportDocumentDialogFiller(U2OpStatus &_os, const QString &_path, const QString &_name,
                          ExportDocumentDialogFiller::FormatToUse _format, bool compressFile,
                          bool addToProject, GTGlobals::UseMethod method):
 Filler(_os, "ExportDocumentDialog"),
@@ -98,7 +98,7 @@ void ExportDocumentDialogFiller::run()
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
     GT_CHECK(box != NULL, "buttonBox is NULL");
     QPushButton* button = box->button(QDialogButtonBox::Ok);
-    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GT_CHECK(button !=NULL, "ok button is NULL");
     GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
