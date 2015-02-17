@@ -50,6 +50,7 @@ DNAStatsWindow::DNAStatsWindow(ADVSequenceObjectContext* context)
 
     webView = new DNAStatsWebView(this);
     webView->addAction(new QAction("New action!", this));
+    webView->setObjectName("DNAStatWebView" + context->getSequenceObject()->getGObjectName());
     l->addWidget(webView);
     connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_onTaskStateChanged(Task*)));
 

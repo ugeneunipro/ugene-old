@@ -1080,6 +1080,54 @@ GUI_TEST_CLASS_DEFINITION(test_1229) {
     CHECK_SET_ERR(msaNames.contains("tub_1") && msaNames.contains("tub_2"), "Unexpected sequences names in MSA");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1232) {
+// 1. Open "human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+// 2. Select {Actions->Statistics} from the main menu.
+// Expected state: Statistic view si shown.
+    QMenu* menu = GTMenu::showMainMenu(os, "mwmenu_actions");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Statistics");
+    GTGlobals::sleep();
+    QWebView *wv = qobject_cast<QWebView*>(GTWidget::findWidget(os, "DNAStatWebViewhuman_T1 (UCSC April 2002 chr7:115977709-117855134)"));
+    bool foundAtFirstWV = wv->findText("2223359500 I/mol (at 260 nm)");
+
+    GTKeyboardDriver::keyClick(os, 'w',GTKeyboardDriver::key["ctrl"]);
+    GTUtilsProjectTreeView::doubleClickItem(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 100, 120);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "test_1232.fa", GTGlobals::UseMouse));
+
+    QWidget* activeWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(activeWindow != NULL, "there is no active MDI window");
+
+    QPoint p = activeWindow->mapToGlobal(activeWindow->rect().center());
+    GTMouseDriver::moveTo(os, QPoint(p.x(), 200));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    //GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(2000);
+
+    menu = GTMenu::showMainMenu(os, "mwmenu_actions");
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Statistics");
+
+    GTGlobals::sleep();
+    QWebView *wv2 = qobject_cast<QWebView*>(GTWidget::findWidget(os, "DNAStatWebViewregion [100 120]"));
+    bool foundAtSecondWV = wv2->findText("225500 I/mol (at 260 nm)");
+
+    CHECK_SET_ERR(foundAtSecondWV && foundAtFirstWV, "Expected molar coeffs wasn't found");
+
+// 3. Remember the "Molar ext. coef.". Close this statistics view.
+// 
+// 4. Select and export some region of the sequence.
+// Expected state: new sequence viewer with part of the whole human_T1.fa.
+// 
+// 5. Call statistics view for the exported part.
+// Expected state: "Molar ext. coef" should be different from the remembered value.
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1234) {
 /* 1. Select a sequence region.
  * 2. Do {Export->Export selected sequence region...}
