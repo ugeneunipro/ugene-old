@@ -74,7 +74,7 @@ DnaAssemblySupport::DnaAssemblySupport()
     ToolsMenu::addAction(ToolsMenu::NGS_MENU, dnaAssemblyAction);
 
     QAction* buildIndexAction = new QAction( tr("Build index for reads mapping..."), this );
-    buildIndexAction->setObjectName(ToolsMenu::NGS_MAP);
+    buildIndexAction->setObjectName(ToolsMenu::NGS_INDEX);
     buildIndexAction->setIcon(QIcon(":core/images/align.png"));
     connect( buildIndexAction, SIGNAL( triggered() ), SLOT( sl_showBuildIndexDialog() ) );
     ToolsMenu::addAction(ToolsMenu::NGS_MENU, buildIndexAction);

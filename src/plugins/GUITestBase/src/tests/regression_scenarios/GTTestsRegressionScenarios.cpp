@@ -12558,7 +12558,7 @@ GUI_TEST_CLASS_DEFINITION(test_3187) {
     p.outputDirPath = sandBoxDir + "test_3187";
     QDir().mkpath(p.outputDirPath);
     GTUtilsDialog::waitForDialog(os, new FormatDBSupportRunDialogFiller(os, p));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "BLAST" << "FormatDB"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::BLAST_MENU << ToolsMenu::BLAST_DB));
     GTUtilsNotifications::waitForNotification(os, false);
     GTMenu::showMainMenu(os, MWMENU_TOOLS);
 
