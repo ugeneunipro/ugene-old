@@ -104,10 +104,6 @@ QList<Task*> CuffmergeSupportTask::onSubTaskFinished(Task *subTask) {
 
 void CuffmergeSupportTask::run() {
     ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/merged.gtf", outputFiles);
-    ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/genes.fpkm_tracking", outputFiles);
-    ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/isoforms.fpkm_tracking", outputFiles);
-    ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/skipped.gtf", outputFiles);
-    ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/transcripts.gtf", outputFiles);
 }
 
 void CuffmergeSupportTask::setupWorkingDirPath() {

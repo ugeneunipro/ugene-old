@@ -366,8 +366,10 @@ void CuffdiffWorker::sl_onTaskFinished() {
         return;
     }
 
+    QStringList systemOutputFiles = task->getSystemOutputFiles();
     foreach (const QString &url, task->getOutputFiles()) {
-        context->getMonitor()->addOutputFile(url, getActor()->getId());
+        bool openBySystem = systemOutputFiles.contains(url);
+        context->getMonitor()->addOutputFile(url, getActor()->getId(), openBySystem);
     }
 }
 

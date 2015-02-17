@@ -186,22 +186,50 @@ Task * CuffdiffSupportTask::createCuffdiffTask() {
     return diffTask;
 }
 
-void CuffdiffSupportTask::addFile(const QString &fileName) {
-    ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/" + fileName, outputFiles);
+void CuffdiffSupportTask::addFile(const QString &fileName, bool openBySystem) {
+    QString path = GUrl(settings.outDir + "/" + fileName).getURLString();
+    ExternalToolSupportUtils::appendExistingFile(path, outputFiles);
+    if (openBySystem && outputFiles.contains(path)) {
+        systemOutputFiles << path;
+    }
 }
 
 void CuffdiffSupportTask::addOutFiles() {
-    addFile("splicing.diff");
-    addFile("promoters.diff");
-    addFile("cds.diff");
-    addFile("cds_exp.diff");
-    addFile("cds.fpkm_tracking");
-    addFile("tss_group_exp.diff");
-    addFile("tss_groups.fpkm_tracking");
-    addFile("gene_exp.diff");
-    addFile("genes.fpkm_tracking");
-    addFile("isoform_exp.diff");
+    // FPKM tracking files
     addFile("isoforms.fpkm_tracking");
+    addFile("genes.fpkm_tracking");
+    addFile("cds.fpkm_tracking");
+    addFile("tss_groups.fpkm_tracking");
+
+    // Count tracking files
+    addFile("isoforms.count_tracking", true);
+    addFile("genes.count_tracking", true);
+    addFile("cds.count_tracking", true);
+    addFile("tss_groups.count_tracking", true);
+
+    // Read group tracking files
+    addFile("isoforms.read_group_tracking", true);
+    addFile("genes.read_group_tracking", true);
+    addFile("cds.read_group_tracking", true);
+    addFile("tss_groups.read_group_tracking", true);
+
+    // Differential expression tests
+    addFile("isoform_exp.diff");
+    addFile("gene_exp.diff");
+    addFile("tss_group_exp.diff");
+    addFile("cds_exp.diff");
+
+    // Differential splicing tests
+    addFile("splicing.diff");
+
+    // Differential coding output
+    addFile("cds.diff");
+
+    // Differential promoter use
+    addFile("promoters.diff");
+
+    // Read group info
+    addFile("read_groups.info", true);
 }
 
 void CuffdiffSupportTask::createTranscriptDoc() {
@@ -224,6 +252,10 @@ void CuffdiffSupportTask::createTranscriptDoc() {
 
 QStringList CuffdiffSupportTask::getOutputFiles() const {
     return outputFiles;
+}
+
+QStringList CuffdiffSupportTask::getSystemOutputFiles() const {
+    return systemOutputFiles;
 }
 
 CuffdiffSupportTask::LogParser::LogParser()

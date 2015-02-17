@@ -85,6 +85,7 @@ public:
     QList<Task*> onSubTaskFinished(Task *subTask);
     ReportResult report();
     QStringList getOutputFiles() const;
+    QStringList getSystemOutputFiles() const;
 
 private:
     CuffdiffSettings settings;
@@ -97,6 +98,7 @@ private:
     QScopedPointer<ExternalToolLogParser> logParser;
     ExternalToolRunTask *diffTask;
     QStringList outputFiles;
+    QStringList systemOutputFiles;
 
     static const QString outSubDirBaseName;
 private:
@@ -105,7 +107,7 @@ private:
     void createTranscriptDoc();
     Task * createCuffdiffTask();
     void addOutFiles();
-    void addFile(const QString &fileName);
+    void addFile(const QString &fileName, bool openBySystem = false);
     void setupWorkingDir();
 };
 

@@ -123,10 +123,11 @@ QString OutputFilesWidget::createFileButton(const Monitor::FileInfo& info) const
 QString OutputFilesWidget::createFileSubMenu(const Monitor::FileInfo& info) const {
     return QString(
         "<li class=\"file-sub-menu dropdown-submenu left-align\">"
-        "<a tabindex=\"-1\" href=\"#\" onclick=\"agent.openUrl('%1')\" title=\"%1\">%2</a>"
-            "%3"
+        "<a tabindex=\"-1\" href=\"#\" onclick=%1 title=\"%2\">%3</a>"
+            "%4"
         "</li>"
     )
+    .arg(onClickAction(info))
     .arg(relative(info.url))
     .arg(fileName(info.url))
     .arg(createActionsSubMenu(info, false));
