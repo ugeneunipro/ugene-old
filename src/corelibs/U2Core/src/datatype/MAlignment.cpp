@@ -705,6 +705,21 @@ MAlignment::MAlignment(const MAlignment &m)
     }
 }
 
+MAlignment & MAlignment::operator=(const MAlignment &other) {
+    alphabet = other.alphabet;
+    length = other.length;
+    info = other.info;
+
+    U2OpStatusImpl os;
+    for (int i = 0; i < other.rows.size(); i++) {
+        const MAlignmentRow r = createRow(other.rows.at(i), os);
+        addRow(r, other.length, i, os);
+        SAFE_POINT_OP(os, *this);
+    }
+
+    return *this;
+}
+
 void MAlignment::setAlphabet(const DNAAlphabet* al) {
     SAFE_POINT(NULL != al, "Internal error: attempted to set NULL alphabet fro an alignment!",);
     alphabet = al;

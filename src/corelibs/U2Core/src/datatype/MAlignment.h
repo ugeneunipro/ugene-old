@@ -313,6 +313,8 @@ public:
                const QList<MAlignmentRow>& rows = QList<MAlignmentRow>());
     MAlignment(const MAlignment& m);
 
+    MAlignment & operator=(const MAlignment &other);
+
     /**
      * Clears the alignment. Makes alignment length == 0.
      * Doesn't change alphabet or name
