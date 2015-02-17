@@ -797,8 +797,10 @@ void MSAEditor::setReference(qint64 sequenceId) {
     }else{
         exportHighlightedAction->setEnabled(true);
     }
-    snp.seqId = sequenceId;
-    emit si_referenceSeqChanged(sequenceId);
+    if(snp.seqId != sequenceId) {
+        snp.seqId = sequenceId;
+        emit si_referenceSeqChanged(sequenceId);
+    }
     //REDRAW OTHER WIDGETS
 }
 

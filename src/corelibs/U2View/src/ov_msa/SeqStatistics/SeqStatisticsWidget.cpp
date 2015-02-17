@@ -164,7 +164,7 @@ void SeqStatisticsWidget::sl_onAutoUpdateChanged(int state) {
 }
 
 void SeqStatisticsWidget::sl_onRefSeqChanged(qint64 referenceRowId) {
-    if(MAlignmentRow::invalidRowId() == referenceRowId) {
+    if(MAlignmentRow::invalidRowId() == referenceRowId && statisticsIsShown) {
         ui.refSeqWarning->show();
     } else {
         ui.refSeqWarning->hide();
