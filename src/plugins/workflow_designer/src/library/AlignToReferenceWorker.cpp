@@ -345,8 +345,7 @@ void ComposeResultSubTask::createAnnotations(const MAlignment &alignment) {
         CHECK_OP(stateInfo, );
 
         AnnotationData ann;
-        ann.location->regions << region;
-        ann.location->strand = task->isComplement() ? U2Strand(U2Strand::Complementary) : U2Strand(U2Strand::Direct);
+        ann.location = getLocation(region, task->isComplement(), referenceRow.getSequence().length());
         ann.name = GBFeatureUtils::getKeyInfo(GBFeatureKey_misc_feature).text;
         ann.qualifiers << U2Qualifier("label", task->getInitialReadName());
         annsObject->addAnnotation(ann);
@@ -383,6 +382,21 @@ U2Region ComposeResultSubTask::getReadRegion(const MAlignmentRow &readRow, const
     region.startPos -= leftGap;
     region.length -= innerGap;
     return region;
+}
+
+U2Location ComposeResultSubTask::getLocation(const U2Region &region, bool isComplement, qint64 referenceLength) {
+    U2Location result;
+    result->strand = isComplement ? U2Strand(U2Strand::Complementary) : U2Strand(U2Strand::Direct);
+
+    if (region.startPos < 0) {
+        // TODO: just trim the region because it is incorrect to make the annotation circular: the left (negative) part of the read is not aligned.
+        // Fix it when the task can work with circular references.
+        result->regions << U2Region(0, region.length + region.startPos);
+    } else {
+        result->regions << region;
+    }
+
+    return result;
 }
 
 PairwiseAlignmentTask * ComposeResultSubTask::getPATask(int readNum) {
