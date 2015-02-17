@@ -759,8 +759,8 @@ QList<FeatureAndKey> SQLiteFeatureDbi::getFeatureTable( const U2DataId &rootFeat
     while (q->step()) {
         FeatureAndKey fnk;
         fnk.feature = SqlFeatureRSLoader::loadStatic(q.data());
-        fnk.key.name = q->getCString(9);
-        fnk.key.value = q->getCString(10);
+        fnk.key.name = q->getCString(10);
+        fnk.key.value = q->getCString(11);
         result.append(fnk);
     }
     return result;
