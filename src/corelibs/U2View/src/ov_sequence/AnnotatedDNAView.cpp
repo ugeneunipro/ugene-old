@@ -324,11 +324,9 @@ void AnnotatedDNAView::updateScrollAreaHeight() {
         minH += v->minimumHeight();
         maxH += v->maximumHeight();
     }
-    scrollArea->setMinimumHeight(minH);
 
-    if (scrollArea->size().height() > maxH) {
+    if (scrollArea->size().height() >= maxH) {
         scrollArea->setMaximumHeight(maxH);
-        scrollArea->resize(scrollArea->width(), maxH);
 
         QList<int> mainSplitterSizes = mainSplitter->sizes();
         int idx = mainSplitter->indexOf(scrollArea);

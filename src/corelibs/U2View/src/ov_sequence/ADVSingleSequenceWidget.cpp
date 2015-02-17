@@ -409,7 +409,6 @@ void ADVSingleSequenceWidget::updateMinMaxHeight() {
     }
     setMinimumHeight(height);
 
-
     if (lineViews.size() == 1 && lineViews.first() == overview) {
         setMaximumHeight(height);
     } else {
