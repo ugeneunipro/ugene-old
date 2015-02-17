@@ -283,7 +283,7 @@ void SQLiteSequenceDbi::updateSequenceDataCore(const U2DataId& sequenceId, const
 
         // remove all affected regions
         static const QString removeString("DELETE FROM SequenceData WHERE sequence = ?1 "
-            " AND ((sstart >= ?2 AND sstart <= ?3) OR (?2 >= sstart  AND send >= ?2))");
+            " AND ((sstart >= ?2 AND sstart < ?3) OR (?2 >= sstart  AND send >= ?2))");
         QSharedPointer<SQLiteQuery> removeQ = t.getPreparedQuery(removeString, db, os);
         CHECK_OP(os, );
         removeQ->bindDataId(1, sequenceId);

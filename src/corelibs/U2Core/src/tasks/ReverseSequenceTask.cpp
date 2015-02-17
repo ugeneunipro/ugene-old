@@ -73,21 +73,47 @@ Task::ReportResult ReverseSequenceTask::report( ) {
     SAFE_POINT_EXT(regionsForward.size() == regionsReverse.size(),
                    setError("Splitting sequence range worked wrong"), ReportResult_Finished);
 
-    U2OpStatusImpl os;
     int size = regionsForward.size();
-    for (int i = 0 ; i < (size + 1)/2; i++) {
+    U2Region middleRegion;
+    for (int i = 0 ; i < (size - 1)/2; i++) {
         QByteArray buffer = seqObj->getSequenceData(regionsForward[i]);
 
         QByteArray revSeq = seqObj->getSequenceData(regionsReverse[size - 1 - i]);
         TextUtils::reverse(revSeq.data(), revSeq.size());
-        seqObj->replaceRegion(regionsForward[i], DNASequence(revSeq), os);
+        seqObj->replaceRegion(regionsForward[i], DNASequence(revSeq), stateInfo);
 
         TextUtils::reverse(buffer.data(), buffer.size());
-        seqObj->replaceRegion(regionsReverse[size - 1 - i], DNASequence(buffer), os);
+        seqObj->replaceRegion(regionsReverse[size - 1 - i], DNASequence(buffer), stateInfo);
 
-        if (os.hasError()) {
-            setError(os.getError());
+        middleRegion.startPos = regionsForward[i].endPos();
+        middleRegion.length = regionsReverse[size - 1 - i].startPos - middleRegion.startPos;
+
+        if (hasError()) {
             return ReportResult_Finished;
+        }
+    }
+    if(middleRegion.length > 1) {
+        if(middleRegion.length <= CHUNK_SIZE) {
+            QByteArray revSeq = seqObj->getSequenceData(middleRegion);
+            TextUtils::reverse(revSeq.data(), revSeq.size());
+            seqObj->replaceRegion(middleRegion, DNASequence(revSeq), stateInfo);
+        } else {
+            SAFE_POINT(middleRegion.length <= CHUNK_SIZE * 2, "Incorrect middle region", ReportResult_Finished);
+            U2Region secondRegion(middleRegion.startPos + CHUNK_SIZE, middleRegion.length - CHUNK_SIZE);
+            middleRegion.length = CHUNK_SIZE;
+
+            QByteArray revSeq = seqObj->getSequenceData(middleRegion);
+            TextUtils::reverse(revSeq.data(), revSeq.size());
+
+            QByteArray secondRevSeq = seqObj->getSequenceData(secondRegion);
+            TextUtils::reverse(secondRevSeq.data(), secondRevSeq.size());
+
+            middleRegion.length = secondRegion.length;
+            secondRegion.startPos = middleRegion.endPos();
+            secondRegion.length = CHUNK_SIZE;
+
+            seqObj->replaceRegion(middleRegion, DNASequence(secondRevSeq), stateInfo);
+            seqObj->replaceRegion(secondRegion, DNASequence(revSeq), stateInfo);
         }
     }
 

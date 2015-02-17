@@ -302,7 +302,7 @@ void MysqlSequenceDbi::updateSequenceDataCore(const U2DataId& sequenceId, const 
         }
 
         // remove all affected regions
-        static const QString removeString = "DELETE FROM SequenceData WHERE sequence = :sequence AND ((:startPos1 <= sstart AND sstart <= :endPos) OR (sstart <= :startPos2 AND :startPos3 <= send))";
+        static const QString removeString = "DELETE FROM SequenceData WHERE sequence = :sequence AND ((:startPos1 <= sstart AND sstart < :endPos) OR (sstart <= :startPos2 AND :startPos3 <= send))";
         U2SqlQuery removeQ(removeString, db, os);
         removeQ.bindDataId(":sequence", sequenceId);
         removeQ.bindInt64(":startPos1", regionToReplace.startPos);
