@@ -90,12 +90,14 @@ void GTUtilsTaskTreeView::toggleView(U2OpStatus& os) {
 }
 
 #define GT_METHOD_NAME "getTreeWidgetItem"
-QTreeWidgetItem* GTUtilsTaskTreeView::getTreeWidgetItem( U2OpStatus &os, const QString &itemName ){
+QTreeWidgetItem* GTUtilsTaskTreeView::getTreeWidgetItem( U2OpStatus &os, const QString &itemName, bool failOnNull){
     QTreeWidget *treeWidget = getTreeWidget(os);
     GT_CHECK_RESULT(treeWidget != NULL, "Tree widget not found", NULL);
 
     QTreeWidgetItem *item = getTreeWidgetItem(treeWidget, itemName);
-    GT_CHECK_RESULT(item != NULL, "Item " + itemName + " not found in tree widget", NULL);
+    if (failOnNull) {
+        GT_CHECK_RESULT(item != NULL, "Item " + itemName + " not found in tree widget", NULL);
+    }
 
     return item;
 }
@@ -191,7 +193,7 @@ QPoint GTUtilsTaskTreeView::getTreeViewItemPosition( U2OpStatus &os, const QStri
 #define GT_METHOD_NAME "checkTask"
 bool GTUtilsTaskTreeView::checkTask(U2OpStatus &os, const QString &itemName){
     openView(os);
-    QTreeWidgetItem* item = getTreeWidgetItem(os, itemName);
+    QTreeWidgetItem* item = getTreeWidgetItem(os, itemName, false);
     return item != NULL;
 }
 #undef GT_METHOD_NAME

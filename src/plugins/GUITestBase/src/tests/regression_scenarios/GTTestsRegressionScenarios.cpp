@@ -14448,7 +14448,7 @@ GUI_TEST_CLASS_DEFINITION(test_3519_2) {
 
             CHECK_SET_ERR(GTUtilsTaskTreeView::getTopLevelTasksCount(os) == 2, "Some task is still running");
 
-            GTUtilsTaskTreeView::waitTaskFinished(os);
+            GTGlobals::sleep();
 
             GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
         }
@@ -14472,6 +14472,11 @@ GUI_TEST_CLASS_DEFINITION(test_3519_2) {
     GTUtilsDialog::waitForDialog(os, new SiteconCustomFiller(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "SITECON", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR( GTUtilsTaskTreeView::checkTask(os, "SITECON search") == false, "SITECON task is still running");
+    GTUtilsTaskTreeView::cancelTask(os, "Auto-annotations update task");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3545){
