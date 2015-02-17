@@ -24,6 +24,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2ObjectDbi.h>
@@ -135,10 +136,10 @@ FormatCheckResult RawDNASequenceFormat::checkRawData(const QByteArray& rawData, 
 
 void RawDNASequenceFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     QList<GObject*> objects = d->findGObjectByType(GObjectTypes::SEQUENCE);
-    assert(objects.size() == 1);
+    CHECK(objects.size() == 1, );
     GObject* obj = objects.first();
     U2SequenceObject* so = qobject_cast<U2SequenceObject*>(obj);
-    assert(so!=NULL);
+    SAFE_POINT(NULL != so, L10N::nullPointerError("Sequence object"), );
     PlainTextFormat::storeRawData(so->getWholeSequenceData(), os, io);
 }
 

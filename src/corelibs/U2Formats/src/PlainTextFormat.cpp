@@ -92,10 +92,10 @@ Document* PlainTextFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, c
 }
 
 void PlainTextFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
-    assert(d->getObjects().size() == 1);
+    CHECK(d->getObjects().size() == 1, );
     GObject* obj = d->getObjects().first();
     TextObject* to = qobject_cast<TextObject*>(obj);
-    assert(to!=NULL);
+    SAFE_POINT(NULL != to, L10N::nullPointerError("Text object"), );
     const QString& text = to->getText();
 
     QByteArray local8bit = text.toLocal8Bit();

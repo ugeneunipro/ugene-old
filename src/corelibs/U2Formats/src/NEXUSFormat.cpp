@@ -24,6 +24,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/PhyTreeObject.h>
@@ -884,7 +885,7 @@ void writePhyTree(const PhyTree &pt, IOAdapter *io, U2OpStatus &ti) {
 
 void NEXUSFormat::storeObjects( QList<GObject*> objects, bool simpleNames, IOAdapter *io, U2OpStatus &ti )
 {
-    assert(io && "IO must exist");
+    SAFE_POINT(NULL != io, L10N::nullPointerError("I/O Adapter"), );
     writeHeader(io, ti);
 
     foreach (GObject *object, objects) {
