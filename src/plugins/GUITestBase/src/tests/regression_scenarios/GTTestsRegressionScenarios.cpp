@@ -14447,6 +14447,18 @@ GUI_TEST_CLASS_DEFINITION(test_3478) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3480) {
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, testDir + "_common_data/bwa/workflow/", "bwa-mem.uwl");
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::click(os, "Align reads with BWA MEM");
+    GTUtilsWorkflowDesigner::setParameter(os, "Library", 0, GTUtilsWorkflowDesigner::comboValue);
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3484) {
 //    1. Open an alignment
 //    2. Build the tree
