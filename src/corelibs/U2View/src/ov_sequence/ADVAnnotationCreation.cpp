@@ -19,29 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#include "ADVAnnotationCreation.h"
+#include <QFileInfo>
 
-#include "AnnotatedDNAView.h"
-#include "ADVSequenceObjectContext.h"
-#include "AnnotationsTreeView.h"
-
-#include <U2Gui/CreateAnnotationDialog.h>
-#include <U2Gui/CreateAnnotationWidgetController.h>
-#include <U2Core/CreateAnnotationTask.h>
-
-#include <U2Core/GObjectReference.h>
-#include <U2Core/GObjectUtils.h>
 #include <U2Core/AnnotationSelection.h>
-#include <U2Core/DNASequenceSelection.h>
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/GObjectReference.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Task.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Core/LoadDocumentTask.h>
+#include <U2Gui/CreateAnnotationDialog.h>
+#include <U2Gui/CreateAnnotationWidgetController.h>
 
-#include <QtCore/QFileInfo>
+#include "ADVAnnotationCreation.h"
+#include "ADVSequenceObjectContext.h"
+#include "AnnotatedDNAView.h"
+#include "AnnotationsTreeView.h"
 
 namespace U2 {
 
@@ -93,6 +92,7 @@ void ADVAnnotationCreation::sl_createAnnotation( ) {
     SAFE_POINT( NULL != seqCtx, "Invalid sequence context detected!", );
     CreateAnnotationModel m;
     m.useUnloadedObjects = true;
+    m.useAminoAnnotationTypes = seqCtx->getAlphabet()->isAmino();
     m.sequenceObjectRef = GObjectReference( seqCtx->getSequenceObject( ) );
     m.sequenceLen = seqCtx->getSequenceObject( )->getSequenceLength( );
     if ( !seqCtx->getSequenceSelection( )->isEmpty( ) ) {

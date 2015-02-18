@@ -318,9 +318,8 @@ void SmithWatermanDialog::addAnnotationWidget()
     CreateAnnotationModel acm;
 
     acm.sequenceObjectRef = GObjectReference(dnaso);
-    acm.hideAnnotationType = false;
-    acm.hideAnnotationName = false;
     acm.hideLocation = true;
+    acm.useAminoAnnotationTypes = ctxSeq->getAlphabet()->isAmino();
     acm.sequenceLen = dnaso->getSequenceLength();
     annotationController = new CreateAnnotationWidgetController(acm, this);
     QWidget* caw = annotationController->getWidget();

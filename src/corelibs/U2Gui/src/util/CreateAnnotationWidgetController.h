@@ -53,6 +53,7 @@ public:
     bool                    hideDescription;    // hides description field
     bool                    hideUsePatternNames;// hides "use pattern names" checkbox
     bool                    useUnloadedObjects;
+    bool                    useAminoAnnotationTypes;
 
     QString                 groupName;          // default groupname. If empty -> <auto> value is used (annotationObject->name value).
     AnnotationData          data;               // holds name, location and preferred type of the annotation

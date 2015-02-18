@@ -169,6 +169,7 @@ void VectorNtiSequenceFormat::createCommentAnnotation(const QStringList &comment
     CHECK(!parsedComments.isEmpty(), );
 
     AnnotationData f;
+    f.type = U2FeatureTypes::Comment;
     f.name = "comment";
     f.location->regions.append(U2Region(0, sequenceLength));
     foreach (const QString &qualName, parsedComments.keys()) {
@@ -507,10 +508,10 @@ QMap<U2FeatureType, VectorNtiSequenceFormat::VntiProteinFeatureTypes> VectorNtiS
     proteinFeatureTypesMap.insert(U2FeatureTypes::Basic,                        ProteinBasic);
     proteinFeatureTypesMap.insert(U2FeatureTypes::BetaSheet,                    ProteinBetaSheet);
     proteinFeatureTypesMap.insert(U2FeatureTypes::BetaStrandRegion,             ProteinBetaStrandRegion);
-    proteinFeatureTypesMap.insert(U2FeatureTypes::BindingSiteMisc,              ProteinBindingSiteMisc);
+    proteinFeatureTypesMap.insert(U2FeatureTypes::MiscBindingSite,              ProteinBindingSiteMisc);
     proteinFeatureTypesMap.insert(U2FeatureTypes::BiotinBindingSite,            ProteinBiotinBindingSite);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Blocked,                      ProteinBlocked);
-    proteinFeatureTypesMap.insert(U2FeatureTypes::BondMisc,                     ProteinBondMisc);
+    proteinFeatureTypesMap.insert(U2FeatureTypes::MiscBond,                     ProteinBondMisc);
     proteinFeatureTypesMap.insert(U2FeatureTypes::C2,                           ProteinC2);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Calcium,                      ProteinCalcium);
     proteinFeatureTypesMap.insert(U2FeatureTypes::CatalyticRegion,              ProteinCatalyticRegion);
@@ -524,8 +525,8 @@ QMap<U2FeatureType, VectorNtiSequenceFormat::VntiProteinFeatureTypes> VectorNtiS
     proteinFeatureTypesMap.insert(U2FeatureTypes::Cub,                          ProteinCub);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Cytoplasmic,                  ProteinCytoplasmic);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Disulfide,                    ProteinDisulfide);
-    proteinFeatureTypesMap.insert(U2FeatureTypes::DnaRnaBindingRegionMisc,      ProteinDnaRnaBindingRegionMisc);
-    proteinFeatureTypesMap.insert(U2FeatureTypes::DomainMisc,                   ProteinDomainMisc);
+    proteinFeatureTypesMap.insert(U2FeatureTypes::MiscDnaRnaBindingRegion,      ProteinDnaRnaBindingRegionMisc);
+    proteinFeatureTypesMap.insert(U2FeatureTypes::MiscDomain,                   ProteinDomainMisc);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Egf,                          ProteinEgf);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Exoplasmic,                   ProteinExoplasmic);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Extracellular,                ProteinExtracellular);
@@ -548,15 +549,15 @@ QMap<U2FeatureType, VectorNtiSequenceFormat::VntiProteinFeatureTypes> VectorNtiS
     proteinFeatureTypesMap.insert(U2FeatureTypes::Kh,                           ProteinKh);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Kinase,                       ProteinKinase);
     proteinFeatureTypesMap.insert(U2FeatureTypes::LeucineZipper,                ProteinLeucineZipper);
-    proteinFeatureTypesMap.insert(U2FeatureTypes::LipidMisc,                    ProteinLipidMisc);
+    proteinFeatureTypesMap.insert(U2FeatureTypes::MiscLipid,                    ProteinLipidMisc);
     proteinFeatureTypesMap.insert(U2FeatureTypes::MatureChain,                  ProteinMatureChain);
-    proteinFeatureTypesMap.insert(U2FeatureTypes::MetalMisc,                    ProteinMetalMisc);
+    proteinFeatureTypesMap.insert(U2FeatureTypes::MiscMetal,                    ProteinMetalMisc);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Methylation,                  ProteinMethylation);
     proteinFeatureTypesMap.insert(U2FeatureTypes::MiscFeature,                  ProteinMiscFeature);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Myristate,                    ProteinMyristate);
     proteinFeatureTypesMap.insert(U2FeatureTypes::NAcylDiglyceride,             ProteinNAcylDiglyceride);
     proteinFeatureTypesMap.insert(U2FeatureTypes::NonConsecutiveResidues,       ProteinNonConsecutiveResidues);
-    proteinFeatureTypesMap.insert(U2FeatureTypes::NpBindingRegionMisc,          ProteinNpBindingRegionMisc);
+    proteinFeatureTypesMap.insert(U2FeatureTypes::MiscNpBindingRegion,          ProteinNpBindingRegionMisc);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Nuclease,                     ProteinNuclease);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Palmitate,                    ProteinPalmitate);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Periplasmic,                  ProteinPeriplasmic);
@@ -570,15 +571,15 @@ QMap<U2FeatureType, VectorNtiSequenceFormat::VntiProteinFeatureTypes> VectorNtiS
     proteinFeatureTypesMap.insert(U2FeatureTypes::Protease,                     ProteinProtease);
     proteinFeatureTypesMap.insert(U2FeatureTypes::PyridoxalPhBindingSite,       ProteinPyridoxalPhBindingSite);
     proteinFeatureTypesMap.insert(U2FeatureTypes::PyrrolidoneCarboxylicAcid,    ProteinPyrrolidoneCarboxylicAcid);
-    proteinFeatureTypesMap.insert(U2FeatureTypes::RegionMisc,                   ProteinRegionMisc);
+    proteinFeatureTypesMap.insert(U2FeatureTypes::MiscRegion,                   ProteinRegionMisc);
     proteinFeatureTypesMap.insert(U2FeatureTypes::RepetitiveRegion,             ProteinRepetitiveRegion);
-    proteinFeatureTypesMap.insert(U2FeatureTypes::ResidueModificationMisc,      ProteinResidueModificationMisc);
+    proteinFeatureTypesMap.insert(U2FeatureTypes::MiscResidueModification,      ProteinResidueModificationMisc);
     proteinFeatureTypesMap.insert(U2FeatureTypes::SeconadaryStructure,          ProteinSeconadaryStructure);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Sh2,                          ProteinSh2);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Sh3,                          ProteinSh3);
     proteinFeatureTypesMap.insert(U2FeatureTypes::SignalSequence,               ProteinSignalSequence);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Similarity,                   ProteinSimilarity);
-    proteinFeatureTypesMap.insert(U2FeatureTypes::SiteMisc,                     ProteinSiteMisc);
+    proteinFeatureTypesMap.insert(U2FeatureTypes::MiscSite,                     ProteinSiteMisc);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Source,                       ProteinSource);
     proteinFeatureTypesMap.insert(U2FeatureTypes::SplicingVariant,              ProteinSplicingVariant);
     proteinFeatureTypesMap.insert(U2FeatureTypes::Sulfatation,                  ProteinSulfatation);

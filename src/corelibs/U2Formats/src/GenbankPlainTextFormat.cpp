@@ -317,6 +317,7 @@ bool GenbankPlainTextFormat::isNcbiLikeFormat() const {
 void GenbankPlainTextFormat::createCommentAnnotation(const QStringList &comments, int sequenceLength, AnnotationTableObject *annTable) const {
     CHECK(!comments.isEmpty(), );
     AnnotationData f;
+    f.type = U2FeatureTypes::Comment;
     f.name = "comment";
     f.location->regions.append(U2Region(0, sequenceLength));
     for (int i = 0, digitsCount = QString::number(comments.size()).size(); i < comments.size(); ++i) {

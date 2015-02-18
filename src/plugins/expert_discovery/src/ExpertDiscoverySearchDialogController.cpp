@@ -166,6 +166,7 @@ void ExpertDiscoverySearchDialogController::sl_onSaveAnnotations() {
     CreateAnnotationModel m;
     m.sequenceObjectRef = ctx->getSequenceObject();
     m.hideLocation = true;
+    m.useAminoAnnotationTypes = ctx->getAlphabet()->isAmino();
     m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
     CreateAnnotationDialog d(this, m);
     int rc = d.exec();

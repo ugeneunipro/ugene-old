@@ -62,6 +62,7 @@ UHMM3PhmmerDialogImpl::UHMM3PhmmerDialogImpl( const U2SequenceObject * seqObj, Q
     CreateAnnotationModel annModel;
     annModel.hideLocation = true;
     annModel.sequenceObjectRef = seqObj;
+    annModel.useAminoAnnotationTypes = seqObj->getAlphabet()->isAmino();
     annModel.data.type = U2FeatureTypes::MiscSignal;
     annModel.data.name = ANNOTATIONS_DEFAULT_NAME;
     annModel.sequenceLen = seqObj->getSequenceLength();

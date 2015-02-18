@@ -21,16 +21,11 @@
 
 #include <math.h>
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/GObjectTypes.h>
 
 #include <U2Gui/DialogUtils.h>
@@ -71,6 +66,7 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl( const U2SequenceObject * seqObj, Q
     CreateAnnotationModel annModel;
     annModel.hideLocation = true;
     annModel.sequenceObjectRef = seqObj;
+    annModel.useAminoAnnotationTypes = seqObj->getAlphabet()->isAmino();
     annModel.data.type = U2FeatureTypes::MiscSignal;
     annModel.data.name = ANNOTATIONS_DEFAULT_NAME;
     annModel.sequenceLen = seqObj->getSequenceLength();

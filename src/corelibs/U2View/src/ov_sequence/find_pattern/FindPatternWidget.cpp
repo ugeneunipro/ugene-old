@@ -234,6 +234,7 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView) :
         CreateAnnotationModel annotModel;
         annotModel.hideLocation = true;
         annotModel.hideUsePatternNames = false;
+        annotModel.useAminoAnnotationTypes = annotatedDnaView->getSequenceInFocus()->getAlphabet()->isAmino();
         annotModel.sequenceObjectRef = annotatedDnaView->getSequenceInFocus()->getSequenceObject();
         annotModel.sequenceLen = annotatedDnaView->getSequenceInFocus()->getSequenceLength();
 

@@ -65,12 +65,11 @@ void CreateAnnotationWidget::sl_usePatternNamesStateChanged() {
     emit si_usePatternNamesStateChanged();
 }
 
-QStringList CreateAnnotationWidget::getFeatureTypes() {
-    static QStringList featureTypes;
-    CHECK(featureTypes.isEmpty(), featureTypes);
-
-    for (int i = U2FeatureTypes::FIRST_FEATURE_TYPE; i <= U2FeatureTypes::LAST_FEATURE_TYPE; i++) {
-        featureTypes << U2FeatureTypes::getVisualName(static_cast<U2FeatureType>(i));
+QStringList CreateAnnotationWidget::getFeatureTypes(bool useAminoAnnotationTypes) {
+    QStringList featureTypes;
+    const QList<U2FeatureType> types = U2FeatureTypes::getTypes(useAminoAnnotationTypes ? U2FeatureTypes::Alphabet_Amino : U2FeatureTypes::Alphabet_Nucleic);
+    foreach (U2FeatureType type, types) {
+        featureTypes << U2FeatureTypes::getVisualName(type);
     }
     return featureTypes;
 }

@@ -64,6 +64,7 @@ HMMSearchDialogController::HMMSearchDialogController(const U2SequenceObject* seq
     CreateAnnotationModel cm;
     cm.hideLocation = true;
     cm.sequenceObjectRef = seqObj;
+    cm.useAminoAnnotationTypes = seqObj->getAlphabet()->isAmino();
     cm.data.type = U2FeatureTypes::MiscSignal;
     cm.data.name = "hmm_signal";
     cm.sequenceLen = seqObj->getSequenceLength();

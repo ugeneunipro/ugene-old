@@ -76,6 +76,7 @@ CreateAnnotationModel::CreateAnnotationModel() :
     hideDescription(true),
     hideUsePatternNames(true),
     useUnloadedObjects(false),
+    useAminoAnnotationTypes(false),
     hideAutoAnnotationsOption(true),
     hideAnnotationParameters(false)
 {
@@ -176,9 +177,7 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
     } 
 
     //default field values
-    if (U2FeatureTypes::Invalid != model.data.type) {
-        w->setAnnotationType(model.data.type);
-    }
+
 
     w->setAnnotationName(model.data.name);
     w->setGroupName(model.groupName.isEmpty() ? GROUP_NAME_AUTO : model.groupName);
@@ -204,6 +203,11 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
     w->setAnnotationTypeVisible(!model.hideAnnotationType);
     w->setAnnotationParametersVisible(!model.hideAnnotationParameters);
     w->setUsePatternNamesVisible(!model.hideUsePatternNames);
+
+    w->useAminoAnnotationTypes(model.useAminoAnnotationTypes);
+    if (U2FeatureTypes::Invalid != model.data.type) {
+        w->setAnnotationType(model.data.type);
+    }
 }
 
 void CreateAnnotationWidgetController::sl_onNewDocClicked() {

@@ -74,6 +74,13 @@ void CreateAnnotationNormalWidget::setAnnotationNameEnabled(bool enable) {
     leAnnotationName->setEnabled(enable);
 }
 
+void CreateAnnotationNormalWidget::useAminoAnnotationTypes(bool useAmino) {
+    const QStringList featureTypes = getFeatureTypes(useAmino);
+    cbAnnotationType->clear();
+    cbAnnotationType->addItems(featureTypes);
+    cbAnnotationType->setCurrentIndex(featureTypes.indexOf(U2FeatureTypes::getVisualName(U2FeatureTypes::MiscFeature)));
+}
+
 void CreateAnnotationNormalWidget::focusGroupName() {
     leGroupName->setFocus();
 }
@@ -101,6 +108,7 @@ void CreateAnnotationNormalWidget::setGroupName(const QString &name) {
 void CreateAnnotationNormalWidget::setAnnotationType(U2FeatureType type) {
     int index = cbAnnotationType->findText(U2FeatureTypes::getVisualName(type));
     if (Q_UNLIKELY(index == -1)) {
+        Q_ASSERT(false);    // an incorrect type
         index = cbAnnotationType->findText(U2FeatureTypes::getVisualName(U2FeatureTypes::MiscFeature));
     }
     cbAnnotationType->setCurrentIndex(index);
@@ -191,9 +199,7 @@ void CreateAnnotationNormalWidget::initLayout() {
 }
 
 void CreateAnnotationNormalWidget::init() {
-    const QStringList featureTypes = getFeatureTypes();
-    cbAnnotationType->addItems(featureTypes);
-    cbAnnotationType->setCurrentIndex(featureTypes.indexOf(U2FeatureTypes::getVisualName(U2FeatureTypes::MiscFeature)));
+    useAminoAnnotationTypes(false);
 }
 
 void CreateAnnotationNormalWidget::connectSignals() {

@@ -22,15 +22,17 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-#include "SaveGraphCutoffsDialogController.h"
-
-#include <U2View/ADVAnnotationCreation.h>
-#include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/LoadDocumentTask.h>
 
 #include <U2Gui/HelpButton.h>
+
+#include <U2View/ADVAnnotationCreation.h>
+
+#include "SaveGraphCutoffsDialogController.h"
 
 namespace U2{
 
@@ -46,6 +48,7 @@ SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController( GSequenceGra
     m.data.name = QString("graph_cutoffs");
     m.sequenceObjectRef = ctx->getSequenceObject();
     m.useUnloadedObjects = false;
+    m.useAminoAnnotationTypes = ctx->getAlphabet()->isAmino();
     m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
     ac = new CreateAnnotationWidgetController(m, this);
 

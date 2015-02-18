@@ -43,6 +43,8 @@ public:
 
     void setAnnotationNameEnabled(bool enable);
 
+    void useAminoAnnotationTypes(bool useAmino);
+
     void focusGroupName();
     void focusAnnotationType();
     void focusAnnotationName();

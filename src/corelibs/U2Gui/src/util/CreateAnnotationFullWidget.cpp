@@ -123,6 +123,17 @@ void CreateAnnotationFullWidget::setAnnotationNameEnabled(bool enable) {
     leAnnotationName->setEnabled(enable);
 }
 
+void CreateAnnotationFullWidget::useAminoAnnotationTypes(bool useAmino) {
+    QStringList featureTypes = getFeatureTypes(useAmino);
+    qSort(featureTypes.begin(), featureTypes.end(), caseInsensitiveLessThan);
+
+    lwAnnotationType->clear();
+    lwAnnotationType->addItems(featureTypes);
+
+    const int index = featureTypes.indexOf(U2FeatureTypes::getVisualName(U2FeatureTypes::MiscFeature));
+    lwAnnotationType->setCurrentRow(index);
+}
+
 void CreateAnnotationFullWidget::focusGroupName() {
     leGroupName->setFocus();
 }
@@ -158,6 +169,7 @@ void CreateAnnotationFullWidget::setAnnotationType(U2FeatureType type) {
         return;
     }
 
+    Q_ASSERT(false);    // an incorrect type
     items = lwAnnotationType->findItems(U2FeatureTypes::getVisualName(U2FeatureTypes::MiscFeature), Qt::MatchExactly);
     if (Q_LIKELY(!items.isEmpty())) {
         lwAnnotationType->setCurrentItem(items.first());
@@ -298,12 +310,7 @@ void CreateAnnotationFullWidget::initLayout() {
 }
 
 void CreateAnnotationFullWidget::init() {
-    QStringList featureTypes = getFeatureTypes();
-    qSort(featureTypes.begin(), featureTypes.end(), caseInsensitiveLessThan);
-    lwAnnotationType->addItems(featureTypes);
-
-    const int index = featureTypes.indexOf(U2FeatureTypes::getVisualName(U2FeatureTypes::MiscFeature));
-    lwAnnotationType->setCurrentRow(index);
+    useAminoAnnotationTypes(false);
 }
 
 void CreateAnnotationFullWidget::connectSignals() {

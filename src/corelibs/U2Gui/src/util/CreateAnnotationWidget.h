@@ -52,6 +52,8 @@ public:
 
     virtual void setAnnotationNameEnabled(bool enable) = 0;
 
+    virtual void useAminoAnnotationTypes(bool useAmino) = 0;
+
     virtual void focusGroupName() = 0;
     virtual void focusAnnotationType() = 0;
     virtual void focusAnnotationName() = 0;
@@ -109,7 +111,7 @@ protected:
     static QString getGenbankLocationString(const U2Location &location);
     static U2Location parseGenbankLocationString(const QString &locationString);
     static bool isComplementLocation(const QString &locationString);
-    static QStringList getFeatureTypes();
+    static QStringList getFeatureTypes(bool useAminoAnnotationTypes);
     static bool caseInsensitiveLessThan(const QString &first, const QString &second);
 };
 

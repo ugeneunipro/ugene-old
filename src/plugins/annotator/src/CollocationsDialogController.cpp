@@ -19,35 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#include "CollocationsDialogController.h"
+#include <QFileInfo>
+#include <QMenu>
+#include <QToolButton>
 
 #include <U2Core/AnnotationSettings.h>
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVSequenceObjectContext.h>
-#include <U2View/ADVAnnotationCreation.h>
-
-#include <U2Core/AppContext.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/Counter.h>
-
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/CreateAnnotationDialog.h>
+#include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/GUIUtils.h>
 #include <U2Gui/HelpButton.h>
 
-#include <QtCore/QFileInfo>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QToolButton>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QMenu>
-#endif
+#include <U2View/ADVAnnotationCreation.h>
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/AnnotatedDNAView.h>
+
+#include "CollocationsDialogController.h"
 
 namespace U2 {
 class U2SequenceObject;
@@ -237,6 +232,7 @@ void CollocationsDialogController::sl_saveClicked() {
     CreateAnnotationModel m;
     m.sequenceObjectRef = ctx->getSequenceGObject();
     m.hideLocation = true;
+    m.useAminoAnnotationTypes = ctx->getAlphabet()->isAmino();
     m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
     CreateAnnotationDialog d(this, m);
     int rc = d.exec();
