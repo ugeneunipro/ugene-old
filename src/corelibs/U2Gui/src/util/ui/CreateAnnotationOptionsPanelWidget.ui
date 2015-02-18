@@ -80,10 +80,17 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QLineEdit" name="leNewTablePath"/>
+         <widget class="QLineEdit" name="leNewTablePath">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QToolButton" name="tbBrowseNewTable">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>...</string>
           </property>
@@ -243,5 +250,70 @@
  <resources>
   <include location="../../../U2Gui.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>rbCreateNewTable</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>leNewTablePath</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>81</x>
+     <y>103</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbCreateNewTable</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>tbBrowseNewTable</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>183</x>
+     <y>104</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbExistingTable</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>cbExistingTable</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>9</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>82</x>
+     <y>41</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbExistingTable</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>tbBrowseExistingTable</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>9</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>183</x>
+     <y>40</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

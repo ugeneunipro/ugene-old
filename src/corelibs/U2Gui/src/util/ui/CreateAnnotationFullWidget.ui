@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>727</width>
-    <height>452</height>
+    <width>625</width>
+    <height>457</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="annotationParametersLayout" stretch="0,1">
+    <layout class="QHBoxLayout" name="annotationParametersLayout" stretch="0,0">
      <property name="sizeConstraint">
       <enum>QLayout::SetMinAndMaxSize</enum>
      </property>
@@ -56,177 +56,215 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="parametersLayout">
+      <layout class="QVBoxLayout" name="spacerLayout" stretch="1,0">
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <property name="sizeConstraint">
         <enum>QLayout::SetMinAndMaxSize</enum>
        </property>
-       <property name="topMargin">
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
-        <layout class="QGridLayout" name="gridLayout">
+        <layout class="QVBoxLayout" name="parametersLayout">
          <property name="sizeConstraint">
           <enum>QLayout::SetMinAndMaxSize</enum>
          </property>
-         <item row="1" column="0">
-          <widget class="QLabel" name="lblAnnotationName">
-           <property name="text">
-            <string>Annotation name</string>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <layout class="QGridLayout" name="gridLayout">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMinAndMaxSize</enum>
            </property>
-          </widget>
+           <property name="spacing">
+            <number>11</number>
+           </property>
+           <item row="1" column="0">
+            <widget class="QLabel" name="lblAnnotationName">
+             <property name="text">
+              <string>Annotation name</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" colspan="3">
+            <widget class="QCheckBox" name="chbUsePatternNames">
+             <property name="toolTip">
+              <string>Use names of patterns as annotations names. In case the patterns are in FASTA format</string>
+             </property>
+             <property name="text">
+              <string>Use pattern name</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="lblGroupName">
+             <property name="text">
+              <string>Group name</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QToolButton" name="tbSelectGroupName">
+             <property name="toolTip">
+              <string>Predefined group names</string>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../../../U2Gui.qrc">
+               <normaloff>:/core/images/group_auto.png</normaloff>:/core/images/group_auto.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" colspan="2">
+            <widget class="QLineEdit" name="leAnnotationName">
+             <property name="maxLength">
+              <number>100</number>
+             </property>
+             <property name="placeholderText">
+              <string>by type</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1" colspan="2">
+            <widget class="QLineEdit" name="leDescription"/>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="lblDescription">
+             <property name="text">
+              <string>Description</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="leGroupName">
+             <property name="placeholderText">
+              <string>auto</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="leGroupName">
-           <property name="placeholderText">
-            <string>auto</string>
+         <item>
+          <widget class="QGroupBox" name="gbLocation">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-          </widget>
-         </item>
-         <item row="3" column="0" colspan="3">
-          <widget class="QCheckBox" name="chbUsePatternNames">
-           <property name="toolTip">
-            <string>Use names of patterns as annotations names. In case the patterns are in FASTA format</string>
+           <property name="title">
+            <string>Location</string>
            </property>
-           <property name="text">
-            <string>Use pattern name</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="lblGroupName">
-           <property name="text">
-            <string>Group name</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QToolButton" name="tbSelectGroupName">
-           <property name="toolTip">
-            <string>Predefined group names</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../../U2Gui.qrc">
-             <normaloff>:/core/images/group_auto.png</normaloff>:/core/images/group_auto.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" colspan="2">
-          <widget class="QLineEdit" name="leAnnotationName">
-           <property name="maxLength">
-            <number>100</number>
-           </property>
-           <property name="placeholderText">
-            <string>by type</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" colspan="2">
-          <widget class="QLineEdit" name="leDescription"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="lblDescription">
-           <property name="text">
-            <string>Description</string>
-           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinAndMaxSize</enum>
+            </property>
+            <item>
+             <widget class="QGroupBox" name="gbSimpleFormat">
+              <property name="title">
+               <string>Simple format</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_3">
+               <property name="sizeConstraint">
+                <enum>QLayout::SetMinAndMaxSize</enum>
+               </property>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetMinAndMaxSize</enum>
+                 </property>
+                 <item>
+                  <widget class="QLineEdit" name="leRegionStart"/>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="lblDash">
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="leRegionEnd"/>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="chbComplement">
+                 <property name="text">
+                  <string>Complement</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="gbGenbankFormat">
+              <property name="title">
+               <string>GenBank/EMBL format</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="checked">
+               <bool>false</bool>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <property name="sizeConstraint">
+                <enum>QLayout::SetMinAndMaxSize</enum>
+               </property>
+               <item>
+                <widget class="QLineEdit" name="leLocation">
+                 <property name="toolTip">
+                  <string>Annotation location in GenBank format</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QToolButton" name="tbDoComplement">
+                 <property name="toolTip">
+                  <string>Add/remove complement flag</string>
+                 </property>
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../../U2Gui.qrc">
+                   <normaloff>:/core/images/do_complement.png</normaloff>:/core/images/do_complement.png</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <widget class="QGroupBox" name="gbLocation">
-         <property name="title">
-          <string>Location</string>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetMinAndMaxSize</enum>
-          </property>
-          <item>
-           <widget class="QGroupBox" name="gbSimpleFormat">
-            <property name="title">
-             <string>Simple format</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_3">
-             <property name="sizeConstraint">
-              <enum>QLayout::SetMinAndMaxSize</enum>
-             </property>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <property name="sizeConstraint">
-                <enum>QLayout::SetMinAndMaxSize</enum>
-               </property>
-               <item>
-                <widget class="QLineEdit" name="leRegionStart"/>
-               </item>
-               <item>
-                <widget class="QLabel" name="lblDash">
-                 <property name="text">
-                  <string>-</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="leRegionEnd"/>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="chbComplement">
-               <property name="text">
-                <string>Complement</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="gbGenbankFormat">
-            <property name="title">
-             <string>GenBank/EMBL format</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <property name="sizeConstraint">
-              <enum>QLayout::SetMinAndMaxSize</enum>
-             </property>
-             <item>
-              <widget class="QLineEdit" name="leLocation">
-               <property name="toolTip">
-                <string>Annotation location in GenBank format</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QToolButton" name="tbDoComplement">
-               <property name="toolTip">
-                <string>Add/remove complement flag</string>
-               </property>
-               <property name="text">
-                <string>...</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../../U2Gui.qrc">
-                 <normaloff>:/core/images/do_complement.png</normaloff>:/core/images/do_complement.png</iconset>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </item>
@@ -243,7 +281,7 @@
      <property name="toolTip">
       <string>Choose a file to store the annotations</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
+     <layout class="QGridLayout" name="saveAnnotationsLayout">
       <property name="sizeConstraint">
        <enum>QLayout::SetMinAndMaxSize</enum>
       </property>
@@ -285,7 +323,11 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="leNewTablePath"/>
+       <widget class="QLineEdit" name="leNewTablePath">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QRadioButton" name="rbExistingTable">
@@ -306,6 +348,9 @@
       </item>
       <item row="2" column="2">
        <widget class="QToolButton" name="tbBrowseNewTable">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>...</string>
         </property>

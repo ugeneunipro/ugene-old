@@ -195,15 +195,15 @@ void CreateAnnotationOptionsPanelWidget::init() {
 }
 
 void CreateAnnotationOptionsPanelWidget::connectSignals() {
-    connect(tbBrowseExistingTable, SIGNAL(clicked()), SLOT(si_selectExistingTableRequest()));
-    connect(tbBrowseNewTable, SIGNAL(clicked()), SLOT(si_selectNewTableRequest()));
-    connect(tbSelectGroupName, SIGNAL(clicked()), SLOT(si_selectGroupNameMenuRequest()));
+    connect(tbBrowseExistingTable, SIGNAL(clicked()), SIGNAL(si_selectExistingTableRequest()));
+    connect(tbBrowseNewTable, SIGNAL(clicked()), SIGNAL(si_selectNewTableRequest()));
+    connect(tbSelectGroupName, SIGNAL(clicked()), SIGNAL(si_selectGroupNameMenuRequest()));
     connect(tbDoComplement, SIGNAL(clicked()), SLOT(sl_complementLocation()));
-    connect(leGroupName, SIGNAL(textEdited(const QString &)), SLOT(si_groupNameEdited()));
-    connect(leGroupName, SIGNAL(textChanged(const QString &)), SLOT(si_groupNameEdited()));
-    connect(leAnnotationName, SIGNAL(textEdited(const QString &)), SLOT(si_annotationNameEdited()));
-    connect(leAnnotationName, SIGNAL(textChanged(const QString &)), SLOT(si_annotationNameEdited()));
-    connect(chbUsePatternNames, SIGNAL(stateChanged(int)), SLOT(si_usePatternNamesStateChanged()));
+    connect(leGroupName, SIGNAL(textEdited(const QString &)), SIGNAL(si_groupNameEdited()));
+    connect(leGroupName, SIGNAL(textChanged(const QString &)), SIGNAL(si_groupNameEdited()));
+    connect(leAnnotationName, SIGNAL(textEdited(const QString &)), SIGNAL(si_annotationNameEdited()));
+    connect(leAnnotationName, SIGNAL(textChanged(const QString &)), SIGNAL(si_annotationNameEdited()));
+    connect(chbUsePatternNames, SIGNAL(stateChanged(int)), SIGNAL(si_usePatternNamesStateChanged()));
 }
 
 }   // namespace U2
