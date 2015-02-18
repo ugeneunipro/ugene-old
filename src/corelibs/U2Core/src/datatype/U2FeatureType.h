@@ -242,9 +242,10 @@ private:
     const static QList<U2FeatureTypeInfo> typeInfos;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(U2FeatureTypes::Alphabets)
 typedef U2FeatureTypes::U2FeatureType U2FeatureType;
 
 }   // namespace U2
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(U2::U2FeatureTypes::Alphabets)
 
 #endif // _U2_FEATURE_TYPE_H_
