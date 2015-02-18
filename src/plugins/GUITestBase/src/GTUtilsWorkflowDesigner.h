@@ -127,6 +127,7 @@ public:
     //sets oneparameter worker parameter
     static void setParameter(U2OpStatus& os, QString parameter, QVariant value, valueType type, GTGlobals::UseMethod method = GTGlobals::UseMouse);
     static void setTableValue(U2OpStatus& os, QString parameter, QVariant value, valueType type, QTableWidget* table, GTGlobals::UseMethod method = GTGlobals::UseMouse);
+    static QString getCellValue(U2OpStatus& os, QString parameter, QTableWidget* table);
     static void setCellValue(U2OpStatus& os, QWidget* parent, QVariant value, valueType type, GTGlobals::UseMethod method);
     static QStringList getAllParameters(U2OpStatus& os);
 

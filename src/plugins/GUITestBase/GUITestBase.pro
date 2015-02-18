@@ -249,7 +249,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTTreeView.h \
             src/api/GTListWidget.h \
             src/api/GTSlider.h \
-    src/GTUtilsDashboard.h
+    src/GTUtilsDashboard.h \
+    src/runnables/ugene/plugins/external_tools/SpadesGenomeAssemblyDialogFiller.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -504,4 +505,5 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTTreeView.cpp \
             src/api/GTListWidget.cpp \
             src/api/GTSlider.cpp \
-    src/GTUtilsDashboard.cpp
+    src/GTUtilsDashboard.cpp \
+    src/runnables/ugene/plugins/external_tools/SpadesGenomeAssemblyDialogFiller.cpp

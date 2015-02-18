@@ -68,7 +68,10 @@ namespace U2 {
 #define GT_METHOD_NAME "commonScenario"
 
 void WizardFiller::commonScenario(){
-    GTUtilsWizard::setInputFiles(os, inputFiles);
+    GTGlobals::sleep();
+    if(inputFiles.count() != 0 && !inputFiles.first().isEmpty()){
+        GTUtilsWizard::setInputFiles(os, inputFiles);
+    }
     GTUtilsWizard::setAllParameters(os, map);
 
     GTUtilsWizard::clickButton(os, GTUtilsWizard::Apply);

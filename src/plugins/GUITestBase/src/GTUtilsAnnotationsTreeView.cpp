@@ -100,7 +100,7 @@ QString GTUtilsAnnotationsTreeView::getQualifierValue(U2OpStatus &os, const QStr
     getItemCenter(os, parentName);
     QTreeWidgetItem *qualItem = findItem(os, qualName);
     GT_CHECK_RESULT(NULL != qualItem, "Qualifier item not found", "");
-    return qualItem->text(1);
+    return qualItem->text(2);
 }
 #undef GT_METHOD_NAME
 

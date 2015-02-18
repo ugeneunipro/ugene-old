@@ -35,7 +35,8 @@ class GTUtilsDashboard
 public:
     enum Tabs{Overview, Input, ExternalTools};
     static QWebView* getDashboard(U2OpStatus &os);
-    static QWebElement findElement(U2OpStatus &os, QString text, QString tag = "*");
+    static QWebElement findElement(U2OpStatus &os, QString text, QString tag = "*", bool exactMatch = false);
+    static void checkElement(U2OpStatus &os, QString text, QString tag = "*", bool exists = true, bool exactMatch = false);
     static void click(U2OpStatus &os, QWebElement el, Qt::MouseButton button = Qt::LeftButton);
 
     static void openTab(U2OpStatus &os, Tabs tab);

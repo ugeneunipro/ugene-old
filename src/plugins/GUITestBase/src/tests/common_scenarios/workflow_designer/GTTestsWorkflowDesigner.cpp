@@ -547,7 +547,7 @@ GUI_TEST_CLASS_DEFINITION(test_0058){
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "New workflow");
     QWidget *wdView = GTUtilsMdi::activeWindow(os);
     CHECK_OP(os, );
-    CHECK_SET_ERR(wdView->objectName() == ToolsMenu::WORKFLOW_DESIGNER, "Wrong mdi window");
+    CHECK_SET_ERR(wdView->objectName() == ToolsMenu::WORKFLOW_DESIGNER, "Wrong mdi window " + wdView->objectName());
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0059){

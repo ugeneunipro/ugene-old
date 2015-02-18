@@ -129,6 +129,7 @@
 #include "runnables/ugene/plugins/external_tools/ClustalOSupportRunDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/FormatDBDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h"
+#include "runnables/ugene/plugins/external_tools/SpadesGenomeAssemblyDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
 #include "runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h"
@@ -1150,7 +1151,6 @@ GUI_TEST_CLASS_DEFINITION(test_1234) {
     GTMouseDriver::moveTo(os, QPoint(p.x(), 200));
     GTMouseDriver::click(os, Qt::RightButton);
 
-    GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(2000);
 
     QWidget* parent=GTWidget::findWidget(os,"test_1234.fa");
@@ -1412,11 +1412,6 @@ GUI_TEST_CLASS_DEFINITION(test_1255){
 //3. Input invalid annotation name (empty, too long, illegal)
     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Annotation parameters"));
     GTWidget::click(os, GTWidget::findWidget(os, "titleWidget"));
-    for (int i = 0; i < 15; i++) {
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
-        GTGlobals::sleep(50);
-    }
-
     QLabel *label;
     label = (QLabel*)GTWidget::findWidget(os,"lblErrorMessage");
 
@@ -1555,6 +1550,33 @@ GUI_TEST_CLASS_DEFINITION(test_1266) {
 //    Expected state: all parameters of the wizzard have tooltips with their descriptions
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1274){
+//    1. Select "Tabbed documents" mode in the Application Settings.
+    class TabbedDoc : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QWidget* tabbedMode = GTWidget::findWidget(os, "tabbedButton");
+            CHECK_SET_ERR(tabbedMode != NULL, "No tubbedButton");
+            GTWidget::click(os, tabbedMode);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new TabbedDoc()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+//    2. Open a document
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+//    3. Click the cross button of the window to close it
+    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
+//    Expected state: UGENE not crashes
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1273) {
     //1) Open "_common_data/genbank/JQ040024.1.gb".
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/JQ040024.1.gb");
@@ -1592,6 +1614,27 @@ GUI_TEST_CLASS_DEFINITION(test_1285) {
     GTUtilsOptionPanelSequenceView::toggleInputFromFilePattern(os);
     GTUtilsOptionPanelSequenceView::enterPatternFromFile(os, testDir + "_common_data/scenarios/_regression/1285/", "small.fa");
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/1"), "Results string not match");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1288){
+//    1) Open Workflow Designer.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2) Open Tab "Elements".
+
+//    3) Create element "Basic Analysis->Find Pattern".
+    WorkflowProcessItem* fp = GTUtilsWorkflowDesigner::addElement(os, "Find Pattern");
+//    4) Create element "Data Readers->Read Sequence".
+    WorkflowProcessItem* rs = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+//    5) Connect "Read Sequence" to "Find Pattern".
+    GTUtilsWorkflowDesigner::connect(os, rs, fp);
+//    Wrong state: "Plain text" slot in "Find Pattern" has value "Dataset".
+    GTUtilsWorkflowDesigner::click(os, "Find Pattern");
+//    Expected: "Plain text" slot in "Find Pattern" has value "<empty>".
+    QTableWidget* tw = GTUtilsWorkflowDesigner::getInputPortsTable(os, 0);
+    CHECK_SET_ERR(tw != NULL, "InputPortsTable is NULL");
+    QString s = GTUtilsWorkflowDesigner::getCellValue(os, "Plain text", tw);
+
+    CHECK_SET_ERR(s == "<empty>", "unexpected value: " + s);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1289) {
@@ -3845,32 +3888,38 @@ GUI_TEST_CLASS_DEFINITION(test_1587) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1588) {
-    GTFileDialog::openFile(os, testDir + "dash.uwl");
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Launch tuxedo pipeline with valid data(get from _common_data/NIAID_pipelines/tuxedo_pipeline/data)
+    QMap<QString, QVariant> map;
+    map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/index/"));
+    map.insert("Bowtie index basename", "chr6");
+    map.insert("Bowtie version", "Bowtie1");
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "Single-sample Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", QStringList()<<testDir +
+                                                      "_common_data/NIAID_pipelines/tuxedo_pipeline/data/lymph_aln.fastq", map));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+//    3. Wait for finishing
     GTUtilsWorkflowDesigner::runWorkflow(os);
-    GTGlobals::sleep();
+    //GTGlobals::sleep(5000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    4. Go to dashboard, click "External tools" button
     GTUtilsDashboard::openTab(os, GTUtilsDashboard::ExternalTools);
-    GTGlobals::sleep();
-    GTUtilsDashboard::openTab(os, GTUtilsDashboard::Input);
-    GTGlobals::sleep();
-    GTUtilsDashboard::openTab(os, GTUtilsDashboard::Overview);
-    GTGlobals::sleep();
-//    QWebView* dashboard = GTWidget::findExactWidget<QWebView*>(os, "Dashboard");
-//    QWebFrame* frame = dashboard->page()->mainFrame();
-//    int num = frame->findAllElements("*").count();
-//    QWebElement result;
-//    foreach (QWebElement el, frame->findAllElements("A")) {
-//        QString s = el.toPlainText();
-//        QString tagName = el.tagName();
-//        QString localName = el.localName();
-//        QString rect = QString("%1").arg(el.geometry().width());
+//    Expected state: A tree appeared, it contains information about every tool launch including errors
+    QWebElement topHat = GTUtilsDashboard::findElement(os, "TopHat run 1", "SPAN");
+    GTUtilsDashboard::findElement(os, "Cufflinks run 1", "SPAN");
 
-//        if(rect != "0"){
-//            uiLog.trace("tag: " + tagName + " name: " + localName + " text: " + s + " width: " + rect);
-//        }
-//        if (s == "Input"){
-//            result = el;
-//        }
-//    }
+    GTUtilsDashboard::click(os, topHat);
+    GTUtilsDashboard::findElement(os, "Run info", "SPAN");
+    GTUtilsDashboard::findElement(os, "Executable file", "SPAN");
+    GTUtilsDashboard::findElement(os, "Arguments", "SPAN");
+    GTUtilsDashboard::findElement(os, "Error log", "SPAN");
+    GTUtilsDashboard::findElement(os, "--mate-inner-dist 50", "LI", false);
+    GTUtilsDashboard::findElement(os, "tophat-2.0.8b", "SPAN", false);
+    GTUtilsDashboard::findElement(os, "Beginning TopHat run", "LI", false);
+
+
 
 //    GTMouseDriver::moveTo(os,dashboard->mapToGlobal(result.geometry().center()));
 //    GTMouseDriver::click(os);
@@ -4341,6 +4390,34 @@ GUI_TEST_CLASS_DEFINITION(test_1661) {
 
     // Expected state : One match found
     CHECK_SET_ERR(resultLabel->text() == "Results: 1/1", "Unexpected find algorithm result count");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1662){
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Add sample: Multiple dataset tuxedo: single-end reads
+    QMap<QString, QVariant> map;
+    map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/bowtie2_index/"));
+    map.insert("Bowtie index basename", "NC_010473");
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
+                                                                   "Full Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", QList<QStringList>()<<(QStringList()<<
+                                                       testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/exp_1_1.fastq"<<
+                                                       testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/exp_1_2.fastq")<<
+                                                      (QStringList()<<testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq2/exp_2_1.fastq"<<
+                                                       testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq2/exp_2_2.fastq"), map));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+//    3. Click {show wizard} toolbar button
+//    4. Add several files to each dataset. Fill other fields with proper data
+//    5. Run schema
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os, 360000);
+//    Expected state: Tophat tool ran 2 times
+    GTUtilsDashboard::openTab(os, GTUtilsDashboard::ExternalTools);
+    GTGlobals::sleep();
+    GTUtilsDashboard::findElement(os, "TopHat run 1", "SPAN");
+    GTUtilsDashboard::findElement(os, "TopHat run 2", "SPAN");
+    GTUtilsDashboard::checkElement(os, "TopHat run 3", "SPAN", false);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1664){
@@ -5286,7 +5363,7 @@ GUI_TEST_CLASS_DEFINITION(test_1759){
             if(GTUtilsWizard::getPageTitle(os) != "Tophat settings"){
                 GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
             }
-
+            GTGlobals::sleep();
             QWidget* version = GTWidget::findWidget(os, "Bowtie version widget", dialog);
             CHECK_SET_ERR(version->isVisible(), "version widget is not visiable");
 
@@ -8884,7 +8961,7 @@ GUI_TEST_CLASS_DEFINITION( test_2406 ) {
 
 //    3. Change the file format to the genbank
 //    Expected: TEST.gb file name appears in the output file name field
-    GTUtilsWorkflowDesigner::setParameter(os, "Document format", 2 /*"genbank"*/, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", "genbank", GTUtilsWorkflowDesigner::comboValue);
 
     const QString expectedPostValue = "TEST.gb";
     const QString resultPostValue = GTUtilsWorkflowDesigner::getParameter(os, "Output file", true);
@@ -10627,7 +10704,7 @@ GUI_TEST_CLASS_DEFINITION(test_2770) {
 
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
 
-    GTUtilsOptionPanelSequenceView::enterPattern(os, "TTTTTTTTTTTTTTTTTTTTTTTAATTTTTTTTTTTTTTTTTTTTTTT");
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "TTTTTTTTTTTTTTTTTTTTTTTAATTTTTTTTTTTTTTTTTTTTTTT", true);
     GTGlobals::sleep(200);
 
     GTUtilsOptionPanelSequenceView::setAlgorithm(os, "InsDel");
@@ -10980,7 +11057,7 @@ GUI_TEST_CLASS_DEFINITION(test_2829) {
     //5) In second sequence view choose { Toggle view -> Remove sequence } on the toolbar
     //Expected state: DotPlot closed and UGENE didn't crash
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "remove_sequence"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_NC_001363", GTUtilsSequenceView::getSeqWidgetByNumber(os, 1)));
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_NC_001363", GTUtilsSequenceView::getSeqWidgetByNumber(os, 1)), Qt::RightButton);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2853 ){
@@ -12912,6 +12989,24 @@ GUI_TEST_CLASS_DEFINITION(test_3221) {
     CHECK_SET_ERR(NULL != annotationGroup, "Annotations have not been found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3223){
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+    QString pattern = ">zzz\n"
+            "ACCTGAA\n"
+            ">yyy\n"
+            "ATTGACA\n";
+    GTUtilsOptionPanelSequenceView::enterPattern(os, pattern, true);
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Annotation parameters"));
+    QCheckBox* chbUsePatternNames = GTWidget::findExactWidget<QCheckBox*>(os, "chbUsePatternNames");
+    GTCheckBox::setChecked(os, chbUsePatternNames, true);
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsAnnotationsTreeView::findItem(os, "yyy  (0, 32)");
+    GTUtilsAnnotationsTreeView::findItem(os, "zzz  (0, 34)");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3226) {
     //1. Create a workflow with a 'File List' element.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
@@ -13675,7 +13770,7 @@ GUI_TEST_CLASS_DEFINITION(test_3373) {
 
     GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Write Sequence" ) );
     GTMouseDriver::click( os );
-    GTUtilsWorkflowDesigner::setParameter(os, "Document format", 2, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", "genbank", GTUtilsWorkflowDesigner::comboValue);
     GTUtilsWorkflowDesigner::setParameter(os, "Output file", "result.gb", GTUtilsWorkflowDesigner::textValue);
     GTWidget::click( os, GTUtilsMdi::activeWindow( os ) );
 
@@ -14545,6 +14640,7 @@ GUI_TEST_CLASS_DEFINITION(test_3519_2) {
     GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList(), new AllEnzymesSearchScenario()));
     GTWidget::click(os, GTWidget::findWidget(os, "Find restriction sites_widget"));
 
+    GTUtilsTaskTreeView::openView(os);
     GTUtilsDialog::waitForDialog(os, new SiteconCustomFiller(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "SITECON", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
@@ -16691,6 +16787,30 @@ GUI_TEST_CLASS_DEFINITION(test_3960) {
 
     CHECK_SET_ERR(logTracer.hasError() == false, QString("Error message found: %1, but not expected.").arg(logTracer.getError()));
 
+}
+GUI_TEST_CLASS_DEFINITION(test_3967){
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new SpadesGenomeAssemblyDialogFiller(os, "Paired-end (Interlaced)", QStringList()<<testDir + "_common_data/cmdline/external-tool-support/spades/ecoli_1K_1.fq",
+                                                                          QStringList(), sandBoxDir));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ToolsMenu::NGS_MENU<<ToolsMenu::NGS_DENOVO));
+    GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsLog::check(os, l);
+////  1. Open workflow designer
+///
+//    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    QMap<QString, QVariant> map;
+//    map.insert("Left Read URL(s)", testDir + "_common_data/cmdline/external-tool-support/spades/ecoli_1K_1.fq");
+//    map.insert("Right Read URL(s)", testDir + "_common_data/cmdline/external-tool-support/spades/ecoli_1K_2.fq");
+//    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Assembly Pipeline", QStringList()<<"Paired tags"));
+//    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Assemble Genomes Wizard", QStringList(), map));
+////  2. Add spades sampale. Use interlaced paired-read mode
+//    GTUtilsWorkflowDesigner::addSample(os, "Assembly with Spades");
+////  3. Run workflow
+//    GTUtilsWorkflowDesigner::runWorkflow(os);
+//    GTUtilsTaskTreeView::waitTaskFinished(os);
+////  4. Expected stat
+//    GTUtilsLog::check(os, l);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3988) {

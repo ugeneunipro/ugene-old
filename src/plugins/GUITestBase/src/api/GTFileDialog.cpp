@@ -67,9 +67,9 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, cons
     }
 }
 
-GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &os, const QString &filePath, GTGlobals::UseMethod method) :
+GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &os, const QString &filePath, GTGlobals::UseMethod method, Button b) :
     Filler(os, "QFileDialog"),
-    button(Open),
+    button(b),
     method(method)
 
 {

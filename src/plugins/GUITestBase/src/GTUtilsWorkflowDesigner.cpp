@@ -774,6 +774,24 @@ void GTUtilsWorkflowDesigner::setCellValue(U2OpStatus &os, QWidget* parent, QVar
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getCellValue"
+QString GTUtilsWorkflowDesigner::getCellValue(U2OpStatus &os, QString parameter, QTableWidget *table){
+    Q_UNUSED(os);
+    int row = -1;
+    for(int i = 0; i<table->rowCount(); i++){
+        QString s = table->item(i,0)->text();
+        if(s == parameter){
+            row = i;
+            break;
+        }
+    }
+    GT_CHECK_RESULT(row != -1, QString("parameter not found: %1").arg(parameter), QString());
+
+    QString result = table->item(row, 1)->text();
+    return result;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getInputPortsTable"
 QTableWidget* GTUtilsWorkflowDesigner::getInputPortsTable(U2OpStatus &os, int index){
     QWidget* inputPortBox = GTWidget::findWidget(os, "inputPortBox");

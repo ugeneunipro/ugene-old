@@ -150,7 +150,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 //     {Add created document to project} set checked
 // 5. Click Export button.
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations", GTGlobals::UseKey));
 
     Runnable *filler = new ExportSequenceOfSelectedAnnotationsFiller(os,
         testDir + "_common_data/scenarios/sandbox/exp.fasta",

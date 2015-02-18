@@ -29,6 +29,15 @@
 #include "GTUtilsDashboard.h"
 
 namespace U2 {
+namespace {
+bool compare(QString s1, QString s2, bool exactMatch){
+    if(exactMatch){
+        return s1==s2;
+    }else{
+        return s1.contains(s2);
+    }
+}
+}
 
 #define GT_CLASS_NAME "GTUtilsDashboard"
 QMap<QString, GTUtilsDashboard::Tabs> GTUtilsDashboard::initTabMap(){
@@ -46,18 +55,39 @@ QWebView* GTUtilsDashboard::getDashboard(U2OpStatus &os){
 }
 
 #define GT_METHOD_NAME "findElement"
-QWebElement GTUtilsDashboard::findElement(U2OpStatus &os, QString text, QString tag){
+QWebElement GTUtilsDashboard::findElement(U2OpStatus &os, QString text, QString tag, bool exactMatch){
     QWebView* dashboard = getDashboard(os);
     QWebFrame* frame = dashboard->page()->mainFrame();
     foreach (QWebElement el, frame->findAllElements(tag)) {
         QString s = el.toPlainText();
         int width = el.geometry().width();
 
-        if (s == text && width != 0){
+        if (compare(s, text, exactMatch) && width != 0){
             return el;
         }
     }
     GT_CHECK_RESULT(false, "element with text " + text + " and tag " + tag + " not found", QWebElement());
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findElement"
+void GTUtilsDashboard::checkElement(U2OpStatus &os, QString text, QString tag, bool exists, bool exactMatch){
+    QWebView* dashboard = getDashboard(os);
+    QWebFrame* frame = dashboard->page()->mainFrame();
+    bool found = false;
+    foreach (QWebElement el, frame->findAllElements(tag)) {
+        QString s = el.toPlainText();
+        int width = el.geometry().width();
+
+        if (compare(s, text, exactMatch) && width != 0){
+            bool found = true;
+        }
+    }
+    if(exists){
+        GT_CHECK(found, "element with text " + text + " and tag " + tag + " not found");
+    }else{
+        GT_CHECK(!found, "element with text " + text + " and tag " + tag + " unexpectidly found");
+    }
 }
 #undef GT_METHOD_NAME
 
@@ -77,3 +107,21 @@ void GTUtilsDashboard::openTab(U2OpStatus &os, Tabs tab){
 
 #undef GT_CLASS_NAME
 }
+
+//    QWebView* dashboard = GTWidget::findExactWidget<QWebView*>(os, "Dashboard");
+//    QWebFrame* frame = dashboard->page()->mainFrame();
+//    int num = frame->findAllElements("*").count();
+//    QWebElement result;
+//    foreach (QWebElement el, frame->findAllElements("*")) {
+//        QString s = el.toPlainText();
+//        QString tagName = el.tagName();
+//        QString localName = el.localName();
+//        QString rect = QString("%1").arg(el.geometry().width());
+
+//        if(rect != "0"){
+//            uiLog.trace("tag: " + tagName + " name: " + localName + " text: " + s + " width: " + rect);
+//        }
+//        if (s == "Input"){
+//            result = el;
+//        }
+//    }

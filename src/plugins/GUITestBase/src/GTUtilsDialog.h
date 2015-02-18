@@ -144,6 +144,7 @@ private:
     static void checkAllFinished(U2OpStatus &os);
 
     static QList<GUIDialogWaiter*> pool;
+    static QWidget* activeDialog;
     static const int timerPeriod = 100;
 };
 

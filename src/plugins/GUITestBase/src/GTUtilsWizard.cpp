@@ -88,8 +88,7 @@ void GTUtilsWizard::setAllParameters(U2OpStatus &os, QMap<QString, QVariant> map
 
     QWidget* nextButton = GTWidget::findButtonByText(os, "&Next >", wizard);
 
-    while(nextButton != NULL && nextButton->isVisible()){
-
+    do{
         QMap<QString, QVariant>::iterator iter = map.begin();
         while(iter != map.end()){
             QString k = iter.key();
@@ -114,7 +113,7 @@ void GTUtilsWizard::setAllParameters(U2OpStatus &os, QMap<QString, QVariant> map
         if(nextButton != NULL && nextButton->isVisible()){
             GTWidget::click(os, nextButton);
         }
-    }
+    }while(nextButton != NULL && nextButton->isVisible());
 
 }
 #undef GT_METHOD_NAME
