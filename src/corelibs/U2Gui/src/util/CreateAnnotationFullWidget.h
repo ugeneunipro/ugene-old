@@ -79,7 +79,6 @@ public:
 
 private slots:
     void sl_regionChanged();
-    void sl_regionFormatChanged(bool changed);
     void sl_locationChanged();
 
 private:

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>625</width>
-    <height>457</height>
+    <width>627</width>
+    <height>467</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -168,85 +168,144 @@
              <enum>QLayout::SetMinAndMaxSize</enum>
             </property>
             <item>
-             <widget class="QGroupBox" name="gbSimpleFormat">
-              <property name="title">
-               <string>Simple format</string>
+             <layout class="QVBoxLayout" name="verticalLayout_4">
+              <property name="spacing">
+               <number>0</number>
               </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_3">
-               <property name="sizeConstraint">
-                <enum>QLayout::SetMinAndMaxSize</enum>
-               </property>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_5">
+                <item>
+                 <spacer name="horizontalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>10</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="rbSimpleFormat">
+                  <property name="text">
+                   <string>Simple format</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="gbSimpleFormat">
+                <layout class="QVBoxLayout" name="verticalLayout_3">
                  <property name="sizeConstraint">
                   <enum>QLayout::SetMinAndMaxSize</enum>
                  </property>
                  <item>
-                  <widget class="QLineEdit" name="leRegionStart"/>
+                  <layout class="QHBoxLayout" name="horizontalLayout">
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetMinAndMaxSize</enum>
+                   </property>
+                   <item>
+                    <widget class="QLineEdit" name="leRegionStart"/>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="lblDash">
+                     <property name="text">
+                      <string>-</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="leRegionEnd"/>
+                   </item>
+                  </layout>
                  </item>
                  <item>
-                  <widget class="QLabel" name="lblDash">
+                  <widget class="QCheckBox" name="chbComplement">
                    <property name="text">
-                    <string>-</string>
+                    <string>Complement</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <item>
+                 <spacer name="horizontalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>10</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="rbGenbankFormat">
+                  <property name="text">
+                   <string>GenBank/EMBL format</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="gbGenbankFormat">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_2">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetMinAndMaxSize</enum>
+                 </property>
+                 <item>
+                  <widget class="QLineEdit" name="leLocation">
+                   <property name="toolTip">
+                    <string>Annotation location in GenBank format</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLineEdit" name="leRegionEnd"/>
+                  <widget class="QToolButton" name="tbDoComplement">
+                   <property name="toolTip">
+                    <string>Add/remove complement flag</string>
+                   </property>
+                   <property name="text">
+                    <string>...</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../../../U2Gui.qrc">
+                     <normaloff>:/core/images/do_complement.png</normaloff>:/core/images/do_complement.png</iconset>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="chbComplement">
-                 <property name="text">
-                  <string>Complement</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QGroupBox" name="gbGenbankFormat">
-              <property name="title">
-               <string>GenBank/EMBL format</string>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-              <property name="checked">
-               <bool>false</bool>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_2">
-               <property name="sizeConstraint">
-                <enum>QLayout::SetMinAndMaxSize</enum>
-               </property>
-               <item>
-                <widget class="QLineEdit" name="leLocation">
-                 <property name="toolTip">
-                  <string>Annotation location in GenBank format</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="tbDoComplement">
-                 <property name="toolTip">
-                  <string>Add/remove complement flag</string>
-                 </property>
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../../../U2Gui.qrc">
-                   <normaloff>:/core/images/do_complement.png</normaloff>:/core/images/do_complement.png</iconset>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </widget>
@@ -261,7 +320,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>40</height>
+           <height>0</height>
           </size>
          </property>
         </spacer>
@@ -426,6 +485,38 @@
     <hint type="destinationlabel">
      <x>794</x>
      <y>426</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbSimpleFormat</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>gbSimpleFormat</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>450</x>
+     <y>162</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>440</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbGenbankFormat</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>gbGenbankFormat</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>450</x>
+     <y>271</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>440</x>
+     <y>310</y>
     </hint>
    </hints>
   </connection>

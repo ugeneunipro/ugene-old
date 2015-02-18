@@ -147,7 +147,7 @@ void CreateAnnotationFullWidget::focusAnnotationName() {
 }
 
 void CreateAnnotationFullWidget::focusLocation() {
-    if (gbSimpleFormat->isChecked()) {
+    if (rbSimpleFormat->isChecked()) {
         leRegionStart->setFocus();
     } else {
         leLocation->setFocus();
@@ -278,28 +278,6 @@ void CreateAnnotationFullWidget::sl_regionChanged() {
     leLocation->setText(Genbank::LocationParser::buildLocationString(&annotationData));
 }
 
-void CreateAnnotationFullWidget::sl_regionFormatChanged(bool checked) {
-    disconnect(gbSimpleFormat, SIGNAL(clicked(bool)), this, SLOT(sl_regionFormatChanged(bool)));
-    disconnect(gbGenbankFormat, SIGNAL(clicked(bool)), this, SLOT(sl_regionFormatChanged(bool)));
-
-    if (checked) {
-        switch (formatType) {
-        case Simple:
-            formatType = GenBank;
-            break;
-        case GenBank:
-            formatType = Simple;
-            break;
-        }
-    }
-
-    gbSimpleFormat->setChecked(formatType == Simple);
-    gbGenbankFormat->setChecked(formatType == GenBank);
-
-    connect(gbSimpleFormat, SIGNAL(clicked(bool)), SLOT(sl_regionFormatChanged(bool)));
-    connect(gbGenbankFormat, SIGNAL(clicked(bool)), SLOT(sl_regionFormatChanged(bool)));
-}
-
 void CreateAnnotationFullWidget::sl_locationChanged() {
     setLocation(parseGenbankLocationString(leLocation->text()));
 }
@@ -322,8 +300,6 @@ void CreateAnnotationFullWidget::connectSignals() {
     connect(leAnnotationName, SIGNAL(textChanged(const QString &)), SLOT(sl_annotationNameEdited()));
     connect(leRegionStart, SIGNAL(textEdited(const QString &)), SLOT(sl_regionChanged()));
     connect(leRegionEnd, SIGNAL(textEdited(const QString &)), SLOT(sl_regionChanged()));
-    connect(gbSimpleFormat, SIGNAL(clicked(bool)), SLOT(sl_regionFormatChanged(bool)));
-    connect(gbGenbankFormat, SIGNAL(clicked(bool)), SLOT(sl_regionFormatChanged(bool)));
     connect(leLocation, SIGNAL(editingFinished()), SLOT(sl_locationChanged()));
     connect(tbDoComplement, SIGNAL(clicked()), SLOT(sl_complementLocation()));
     connect(chbComplement, SIGNAL(clicked()), SLOT(sl_complementLocation()));
