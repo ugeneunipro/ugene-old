@@ -29,6 +29,7 @@ namespace U2 {
 #define STRING_ATTR     "string"
 #define WITH_LINE_BREAK "whole_line"
 #define MUST_EXIST      "must_exist"
+#define NEWLINES        "newlines"
 
 void GTest_CheckStringExists::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
@@ -46,8 +47,12 @@ void GTest_CheckStringExists::init(XMLTestFormat *tf, const QDomElement& el) {
     }
 
     wholeLine = (el.attribute(WITH_LINE_BREAK) == "true");
-
     mustExist = (el.attribute(MUST_EXIST) == "true");
+    newlines = (el.attribute(NEWLINES) == "true");
+
+    while (newlines && stringToCheck.contains("\\n")) {
+        stringToCheck.replace("\\n", "\n");
+    }
 }
 
 Task::ReportResult GTest_CheckStringExists::report() {

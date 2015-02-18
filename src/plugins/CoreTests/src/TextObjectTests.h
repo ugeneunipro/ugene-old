@@ -37,6 +37,7 @@ private:
     QString stringToCheck;
     bool wholeLine;
     bool mustExist;
+    bool newlines;
 };
 
 class TextObjectTests {
