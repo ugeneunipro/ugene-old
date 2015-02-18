@@ -1502,7 +1502,6 @@ void WorkflowView::localHostLaunch() {
         schema->setDomain(WorkflowEnv::getDomainRegistry()->getAllIds().value(0));
     }
 
-    Metadata meta = getMeta();
     if (meta.isSample()) {
         GRUNTIME_NAMED_COUNTER(cvar, tvar, meta.name, "WDSample:run");
     }
