@@ -78,6 +78,7 @@ public:
     bool hadRun;
     int waiterId;
 
+    bool isExpectedName(const QString& widgetObjectName, const QString& expectedObjectName);
 public slots:
     void checkDialog();
     void checkDialogPool();
@@ -91,7 +92,7 @@ private:
     int waitingTime;
 
     void finishWaiting(); // deletes timer and runnable
-    bool isExpectedName(const QString& widgetObjectName, const QString& expectedObjectName);
+
 };
 
 class CustomScenario {
@@ -116,9 +117,21 @@ protected:
     CustomScenario *scenario;
 };
 
+class HangChecker: public QObject{
+    Q_OBJECT
+public:
+    HangChecker(U2OpStatus &_os);
+    QTimer* timer;
+    void startChecking();
+    U2OpStatus &os;
+public slots:
+    void sl_check();
+};
+
 class GTUtilsDialog{
     friend class TimerLauncher;
     friend class GUIDialogWaiter;
+    friend class HangChecker;
 public:
     enum CleanupSettings {
         FailOnUnfinished, NoFailOnUnfinished
@@ -140,11 +153,15 @@ public:
 
     // deletes all GUIDialogWaiters, sets err if there are unfinished waiters
     static void cleanup(U2OpStatus &os, CleanupSettings s = FailOnUnfinished);
+
+    static void startHangChecking(U2OpStatus &os);
+    static void stopHangChecking();
+
 private:
     static void checkAllFinished(U2OpStatus &os);
 
     static QList<GUIDialogWaiter*> pool;
-    static QWidget* activeDialog;
+    static HangChecker* hangChecker;
     static const int timerPeriod = 100;
 };
 

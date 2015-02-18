@@ -107,9 +107,9 @@ void GUIDialogWaiter::checkDialog() {
         uiLog.trace("GUIDialogWaiter::wait Id = " + QString::number(waiterId) + ", going to RUN");
         uiLog.trace("-------------------------");
 
-        hadRun = true;
         try {
             runnable->run();
+            hadRun = true;
         } catch(U2OpStatus *) {
             GTGlobals::takeScreenShot(GUITest::screenshotDir + QDateTime::currentDateTime().toString() + ".jpg");
             QWidget* w = QApplication::activeModalWidget();
@@ -147,7 +147,62 @@ void GUIDialogWaiter::checkDialog() {
 
 #define GT_CLASS_NAME "GTUtilsDialog"
 
+HangChecker::HangChecker(U2OpStatus &_os):os(_os){
+    timer = new QTimer();
+}
+
+void HangChecker::startChecking(){
+    timer->connect(timer, SIGNAL(timeout()), this, SLOT(sl_check()));
+    timer->start(GTUtilsDialog::timerPeriod);
+}
+
+#define GT_METHOD_NAME "sl_check"
+void HangChecker::sl_check(){
+    QWidget* dialog = QApplication::activeModalWidget();
+    try{
+        if(dialog != NULL){
+            bool found = false;
+            foreach (GUIDialogWaiter* waiter, GTUtilsDialog::pool) {
+                if(!waiter->hadRun && waiter->isExpectedName(dialog->objectName(), waiter->getSettings().objectName)){
+                    found = true;
+                }
+            }
+            GT_CHECK(found, "dialog " + QString(dialog->metaObject()->className()) + " hang up");
+        }
+    } catch(U2OpStatus *) {
+        GTGlobals::takeScreenShot(GUITest::screenshotDir + QDateTime::currentDateTime().toString() + ".jpg");
+        QWidget* w = QApplication::activeModalWidget();
+        while (w != NULL){
+            w->close();
+            w = QApplication::activeModalWidget();
+        }
+        w = QApplication::activePopupWidget();
+        while (w != NULL){
+            w->close();
+            w = QApplication::activePopupWidget();
+        }
+    }
+}
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
+
+
+#define GT_CLASS_NAME "GTUtilsDialog"
+
 QList<GUIDialogWaiter*> GTUtilsDialog::pool = QList<GUIDialogWaiter*>();
+HangChecker* GTUtilsDialog::hangChecker = NULL;
+
+void GTUtilsDialog::startHangChecking(U2OpStatus &os){
+    hangChecker = new HangChecker(os);
+    hangChecker->startChecking();
+}
+
+void GTUtilsDialog::stopHangChecking(){
+    if(hangChecker != NULL){
+        hangChecker->timer->stop();
+    }
+}
 
 #define GT_METHOD_NAME "buttonBox"
 QDialogButtonBox * GTUtilsDialog::buttonBox(U2OpStatus &os, QWidget *dialog) {
@@ -238,6 +293,8 @@ void GTUtilsDialog::cleanup(U2OpStatus &os, CleanupSettings s) {
     if (s == FailOnUnfinished) {
         checkAllFinished(os);
     }
+
+    stopHangChecking();
 
     qDeleteAll(pool);
     pool.clear();

@@ -71,6 +71,8 @@ GUI_TEST_CLASS_DEFINITION(test_0000) {
 #ifdef Q_OS_MAC
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
 #endif
+
+    GTUtilsDialog::startHangChecking(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
