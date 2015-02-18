@@ -1091,7 +1091,7 @@ void MSAEditorSequenceArea::updateSelection() {
         return;
     }
     MSACollapsibleItemModel* m = ui->getCollapseModel();
-    CHECK(NULL != m, );
+    CHECK_EXT(NULL != m, cancelSelection(), );
 
     int startPos = baseSelection.y();
     int endPos = startPos + baseSelection.height();
@@ -1100,7 +1100,10 @@ void MSAEditorSequenceArea::updateSelection() {
     int newStart = m->rowToMap(startPos);
     int newEnd = m->rowToMap(endPos);
 
+    SAFE_POINT_EXT(newStart >= 0 && newEnd >= 0, cancelSelection(), );
+
     int selectionHeight = newEnd - newStart;
+    SAFE_POINT_EXT(selectionHeight > 0, cancelSelection(), );
     // accounting of collapsing children items
     int itemIndex = m->itemAt(newEnd);
     if (selectionHeight <= 1 && itemIndex >= 0) {
@@ -1113,8 +1116,7 @@ void MSAEditorSequenceArea::updateSelection() {
     if(selectionHeight > 0 && newStart + selectionHeight <= m->displayedRowsCount()) {
         MSAEditorSelection s(selection.topLeft().x(), newStart, selection.width(), selectionHeight);
         setSelection(s);
-    }
-    else {
+    } else {
         cancelSelection();
     }
 }
@@ -1726,11 +1728,15 @@ void MSAEditorSequenceArea::updateCollapsedGroups(const MAlignmentModInfo& modIn
         QList<qint64> updatedRows;
         bool isModelChanged = false;
         QMap<qint64, QList<U2MsaGap> > curGapModel = editor->getMSAObject()->getGapModel();
-        foreach(qint64 modifiedSeqId, modInfo.modifiedRowIds) {
+        QList<U2Region> updatedRegions;
+        foreach (qint64 modifiedSeqId, modInfo.modifiedRowIds) {
             int modifiedRowPos = editor->getMSAObject()->getRowPosById(modifiedSeqId);
             const MAlignmentRow& modifiedRowRef = editor->getMSAObject()->getRow(modifiedRowPos);
             modifiedRowPos = ui->getCollapseModel()->rowToMap(modifiedRowPos);
-            U2Region rowsCollapsibleGroup = ui->getCollapseModel()->mapSelectionRegionToRows(U2Region(modifiedRowPos, 1));
+            const U2Region rowsCollapsibleGroup = ui->getCollapseModel()->mapSelectionRegionToRows(U2Region(modifiedRowPos, 1));
+            if (updatedRegions.contains(rowsCollapsibleGroup)) {
+                continue;
+            }
             for(int i = rowsCollapsibleGroup.startPos; i < rowsCollapsibleGroup.endPos(); i++) {
                 qint64 identicalRowId = editor->getMSAObject()->getRow(i).getRowId();
                 if(!updatedRows.contains(identicalRowId) && !modInfo.modifiedRowIds.contains(identicalRowId)) {
@@ -1739,6 +1745,7 @@ void MSAEditorSequenceArea::updateCollapsedGroups(const MAlignmentModInfo& modIn
                     updatedRows.append(identicalRowId);
                 }
             }
+            updatedRegions.append(rowsCollapsibleGroup);
         }
         if(isModelChanged) {
             editor->getMSAObject()->updateGapModel(curGapModel, os);
@@ -2389,6 +2396,8 @@ void MSAEditorSequenceArea::sl_sortByName() {
 }
 
 void MSAEditorSequenceArea::sl_setCollapsingMode(bool enabled) {
+    GCOUNTER(cvar, tvar, "Switch collapsing mode");
+
     MAlignmentObject* msaObject = editor->getMSAObject();
     int prevNumVisibleSequences = getNumVisibleSequences(false);
     if (msaObject == NULL  || msaObject->isStateLocked() ) {
@@ -2421,6 +2430,8 @@ void MSAEditorSequenceArea::sl_setCollapsingMode(bool enabled) {
 }
 
 void MSAEditorSequenceArea::sl_updateCollapsingMode() {
+    GCOUNTER(cvar, tvar, "Update collapsing mode");
+
     CHECK(ui->isCollapsibleMode(), );
     MAlignmentObject *msaObject = editor->getMSAObject();
     SAFE_POINT(NULL != msaObject, tr("NULL Msa Object!"), );

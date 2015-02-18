@@ -120,37 +120,39 @@ U2Region MSACollapsibleItemModel::mapSelectionRegionToRows(const U2Region& selec
         return selectionRegion;
     }
 
+    int startPos = selectionRegion.startPos;
+    int endPos = startPos + selectionRegion.length - 1;
+
     int startSeq = 0;
-    int startItemIdx = itemAt(selectionRegion.startPos);
+    int endSeq = 0;
+
+    int startItemIdx = itemAt(startPos);
+
     if (startItemIdx >= 0) {
         const MSACollapsableItem& startItem = getItem(startItemIdx);
         startSeq = startItem.row;
     } else {
-        startSeq = mapToRow(selectionRegion.startPos);
+        startSeq = mapToRow(startPos);
     }
 
-    int actualLength = 0;
-    for(int i = 0; i < selectionRegion.length; i++){
-        int itemIdx = itemAt(selectionRegion.startPos + i);
-        if (itemIdx >= 0) {
-            const MSACollapsableItem& item = getItem(itemIdx);
-            if (item.isCollapsed) {
-                actualLength += item.numRows;
-                continue;
-            }
-        }
-        actualLength++;
+    int endItemIdx = itemAt(endPos);
+
+    if (endItemIdx >= 0) {
+        const MSACollapsableItem& endItem = getItem(endItemIdx);
+        endSeq = endItem.row + endItem.numRows;
+    } else {
+        endSeq = mapToRow(endPos) + 1;
     }
-    return U2Region(startSeq, actualLength);
+
+    return U2Region(startSeq, endSeq - startSeq);
 }
 
 int MSACollapsibleItemModel::rowToMap(int row) const {
     int invisibleRows = 0;
-    for (QVector<MSACollapsableItem>::ConstIterator it = items.constBegin();
-        it < items.constEnd() && it->row < row; it++) {
-            if (it->isCollapsed) {
-                invisibleRows += it->numRows - 1;
-            }
+    for (QVector<MSACollapsableItem>::ConstIterator it = items.constBegin(); it < items.constEnd() && it->row < row; it++) {
+        if (it->isCollapsed) {
+            invisibleRows += (it->row + it->numRows <= row) ? it->numRows - 1 : row - it->row;
+        }
     }
     return row - invisibleRows;
 }
