@@ -1555,6 +1555,34 @@ GUI_TEST_CLASS_DEFINITION(test_1266) {
 //    Expected state: all parameters of the wizzard have tooltips with their descriptions
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1273) {
+    //1) Open "_common_data/genbank/JQ040024.1.gb".
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/JQ040024.1.gb");
+
+    //2) Switch the windows layout to the tabbed documents mode
+    //(Settings -> Preferences -> General -> Windows Layout -> Tabbed documents -> OK)
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QList<QRadioButton*> buttons = GTRadioButton::getAllButtonsByText(os, "Tabbed documents", QApplication::activeModalWidget());
+            foreach (QRadioButton *tabbedMode, buttons) {
+                GTRadioButton::click(os, tabbedMode);
+                break;
+            }
+            GTUtilsDialog::clickButtonBox(os, QApplication::activeModalWidget(), QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new Scenario()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+
+    //Expected: the name of the sequence view tab starts with "JQ040024.1", but not with "JQ040024".
+    QTabBar *tabs = AppContext::getMainWindow()->getQMainWindow()->findChild<QTabBar*>("");
+    CHECK_SET_ERR(NULL != tabs, "No tab bar");
+    CHECK_SET_ERR(tabs->tabText(1).startsWith("JQ040024.1"), "Wrong tab name");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1285) {
     //1. Open human_t1.fa
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
