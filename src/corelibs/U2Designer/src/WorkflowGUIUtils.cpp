@@ -116,19 +116,33 @@ void DesignerGUIUtils::paintSamplesDocument(QPainter* painter, QTextDocument* do
 void DesignerGUIUtils::setupSamplesDocument(const Descriptor& d, const QIcon& ico, QTextDocument* doc) {
     bool hasIcon = (ico.availableSizes().size() > 0);
     QString text =
-        "<html>"
-        "<table align='center' border='0' cellpadding='3' cellspacing='3'>"
-        "<tr><td colspan='2'><h1 align='center'>%1</h1></td></tr>"
-        "<tr>"
-            "<td valign='middle' width='20%'>" + QString(hasIcon? "<img src=\"%2\"/>" : "%2") + "</td>"
-            "<td valign='bottom'><br>%3</td></tr>"
-        "<tr><td colspan='2' valign='top'>%4<br></td></tr>"
-        "<tr><td colspan='2' bgcolor='gainsboro' align='center'><font color='maroon' size='+2' face='Courier'><b>%5</b></font></td></tr>"
-        "</table>"
-        "</html>";
+            QString(hasIcon ?
+                        "<html>"
+                        "<table align='center' border='0' cellpadding='3' cellspacing='3'>"
+                        "<tr><td colspan='2'><h1 align='center'>%1</h1></td></tr>"
+                        "<tr>"
+                            "<td valign='middle' width='20%'><img src=\"%2\"/></td>"
+                            "<td valign='bottom'><br>%3</td></tr>"
+                        "<tr><td colspan='2' valign='top'>%4<br></td></tr>"
+                        "<tr><td colspan='2' bgcolor='gainsboro' align='center'><font color='maroon' size='+2' face='Courier'><b>%5</b></font></td></tr>"
+                        "</table>"
+                        "</html>"
+                      :
+                        "<html>"
+                        "<table align='center' border='0' cellpadding='3' cellspacing='3'>"
+                        "<tr><td><h1 align='center'>%1</h1></td></tr>"
+                        "<tr>%2"
+                            "<td valign='bottom'><br>%3</td></tr>"
+                        "<tr><td valign='top' halign='right'>%4<br></td></tr>"
+                        "<tr><td bgcolor='gainsboro' align='center'><font color='maroon' size='+2' face='Courier'><b>%5</b></font></td></tr>"
+                        "</table>"
+                        "</html>"
+                        );
     QString img("img://img");
 
-    doc->addResource(QTextDocument::ImageResource, QUrl(img), ico.pixmap(200));
+    if (hasIcon) {
+        doc->addResource(QTextDocument::ImageResource, QUrl(img), ico.pixmap(200));
+    }
 #if (QT_VERSION < 0x050000) //Qt 5
     QString body = Qt::escape(d.getDocumentation()).replace("\n", "<br>");
 #else
