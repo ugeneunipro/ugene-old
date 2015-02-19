@@ -1,13 +1,13 @@
 #@UGENE_WORKFLOW
 #ChIP-seq analysis is started from MACS tool. CEAS then takes peak regions and signal wiggle file to check which chromosome is enriched with binding/modification sites, whether bindings events are significant at gene features like promoters, gene bodies, exons, introns or UTRs, and the signal aggregation at gene transcription start/end sites or meta-gene bodies (average all genes). Then peaks are investigated in these ways: 1. to check which genes are nearby so can be regarded as potential regulated genes, then perform GO analysis; 2. to check the conservation scores at the binding sites;3 the DNA motifs at binding sites.
 
-workflow "ChIP-seq analysis with Cistrome tools" {
+workflow "ChIP-Seq analysis with Cistrome tools" {
     .meta {
         wizard {
             auto-run: true;
             has-run-button: false;
             has-defaults-button: false;
-            name: "Configure Cistrome Pipeline";
+            name: "Configure Cistrome Workflow";
             finish-label: "Setup";
             result {
                 NGS/cistrome/chip_seq.uwl: pipeline.no-control;
@@ -15,7 +15,7 @@ workflow "ChIP-seq analysis with Cistrome tools" {
             }
             page {
                 id: 1;
-                title: "Cistrome Pipeline Settings";
+                title: "General settings";
                 parameters-area {
                     group {
                         title:"Analysis type";
@@ -23,11 +23,11 @@ workflow "ChIP-seq analysis with Cistrome tools" {
                             id: pipeline;
                             value {
                                 id: no-control;
-                                label: "Treatment tags only";
+                                label: "Only treatment tags";
                             }
                             value {
                                 id: control;
-                                label: "Treatment and control tags";
+                                label: "Treatment and control";
                             }
                         }
                     }

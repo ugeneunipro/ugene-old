@@ -1,13 +1,19 @@
 #@UGENE_WORKFLOW
-#Assemble genomes from short reads with Spades
+#The workflow takes FASTQ files as input with one of the following content:
+# - Single-end reads;
+# - Paired-end reads.
+#
+#Using the SPAdes tool, the sequencing reads are assembled into a set of scaffolds.
+#Note that SPAdes is intended for both standard isolates and single-cell MDA bacteria assemblies.
+#
 
-workflow "Assembly with Spades" {
+workflow "De novo assembly with SPAdes" {
     .meta {
         wizard {
             auto-run: true;
             has-run-button: false;
             has-defaults-button: false;
-            name: "Assembly Pipeline";
+            name: "Configure De novo Assembly with SPAdes";
             finish-label: "Setup";
             result {
                 NGS/assembly/spades_single.uwl: pipeline.single;
@@ -15,19 +21,19 @@ workflow "Assembly with Spades" {
             }
             page {
                 id: 1;
-                title: "Assembly Pipeline Settings";
+                title: "General settings";
                 parameters-area {
                     group {
-                        title:"Assembly type";
+                        title:"Sequencing reads";
                         radio {
                             id: pipeline;
                             value {
                                 id: single;
-                                label: "Single tags";
+                                label: "Single-end";
                             }
                             value {
                                 id: paired;
-                                label: "Paired tags";
+                                label: "Paired-end";
                             }
                         }
                     }

@@ -312,7 +312,7 @@ function cistromeTime(tagsSize, dbCount) {
             [time];
         }
         wizard {
-            name:"ChIP-seq Analysis Wizard";
+            name:"ChIP-Seq Analysis Wizard";
             page {
                 id:1;
                 next:2;
@@ -322,10 +322,10 @@ function cistromeTime(tagsSize, dbCount) {
                         title:"Input files";
                         label-size:120;
                         get-file-list.url-in {
-                            label:"Treatment Tags";
+                            label:"Treatment FASTQ";
                         }
                         get-file-list-1.url-in {
-                            label:"Control Tags";
+                            label:"Control FASTQ";
                         }
                     }
                 }
@@ -414,7 +414,7 @@ function cistromeTime(tagsSize, dbCount) {
                 title:"Peak2Gene and Gene Ontology";
                 parameters-area {
                     group {
-                        title:"Peak2Gene Parameters";
+                        title:"Peak2Gene parameters";
                         label-size:120;
                         peak2gene-id.outpos {
                         }
@@ -426,7 +426,7 @@ function cistromeTime(tagsSize, dbCount) {
                         }
                     }
                     group {
-                        title:"Conduct GO Parameters";
+                        title:"Conduct GO parameters";
                         label-size:120;
                         conduct-go-id.title {
                         }
@@ -438,7 +438,7 @@ function cistromeTime(tagsSize, dbCount) {
             page {
                 id:5;
                 next:6;
-                title:"Conservation Plot";
+                title:"Conservation plot";
                 parameters-area {
                     group {
                         title:Parameters;

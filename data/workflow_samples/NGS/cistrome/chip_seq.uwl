@@ -349,7 +349,7 @@ function cistromeTime(tagsSize, dbCount) {
                 title:"Peak2Gene and Gene Ontology";
                 parameters-area {
                     group {
-                        title:"Peak2Gene Parameters";
+                        title:"Peak2Gene parameters";
                         label-size:120;
                         peak2gene-id.outpos {
                         }
@@ -361,7 +361,7 @@ function cistromeTime(tagsSize, dbCount) {
                         }
                     }
                     group {
-                        title:"Conduct GO Parameters";
+                        title:"Conduct GO parameters";
                         label-size:120;
                         conduct-go-id.title {
                         }
@@ -373,7 +373,7 @@ function cistromeTime(tagsSize, dbCount) {
             page {
                 id:5;
                 next:6;
-                title:"Conservation Plot";
+                title:"Conservation plot";
                 parameters-area {
                     group {
                         title:Parameters;

@@ -1,8 +1,12 @@
 #@UGENE_WORKFLOW
+#The workflow takes FASTQ files as input with paired-end reads.
+#
+#Using the SPAdes tool, the sequencing reads are assembled into a set of scaffolds.
+#Note that SPAdes is intended for both standard isolates and single-cell MDA bacteria assemblies.
+#
 
 
-
-workflow "Spades Paired Tags"{
+workflow "De novo assembly of paired-end reads with SPAdes"{
 
     get-file-list {
         type:get-file-list;
@@ -13,7 +17,7 @@ workflow "Spades Paired Tags"{
     }
     spades-id {
         type:spades-id;
-        name:"Assemble genomes with Spades";
+        name:"Assemble genomes with SPAdes";
         output-dir:result;
     }
     get-file-list-1 {
@@ -100,19 +104,19 @@ workflow "Spades Paired Tags"{
             }
         }
         wizard {
-            name:"Assemble Genomes Wizard";
+            name:"De novo Assembly with SPAdes Wizard";
             page {
                 id:1;
-                title:"Assembly Genomes with Spades";
+                title:"Genome assembly settings";
                 parameters-area {
                     group {
                         title:"Input parameters";
                         label-size:120;
                         get-file-list.url-in {
-                            label:"Left Read URL(s)";
+                            label:"Left reads URL(s)";
                         }
                         get-file-list-1.url-in {
-                            label:"Right Read URL(s)";
+                            label:"Right reads URL(s)";
                         }
                     }
                     group {

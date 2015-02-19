@@ -1,13 +1,13 @@
 #@UGENE_WORKFLOW
 #Pipeline for comparing the gene expression of samples from different conditions, optionally with replicates. Uses the Tuxedo suite (TopHat, Cufflinks, CuffMerge, Cuffdiff). Gives an analysis of differentially expressed genes and splice isoforms.
 
-workflow "RNA-seq analysis with Tuxedo tools" {
+workflow "RNA-Seq analysis with Tuxedo tools" {
     .meta {
         wizard {
             auto-run: true;
             has-run-button: false;
             has-defaults-button: false;
-            name: "Configure Tuxedo Pipeline";
+            name: "Configure Tuxedo Workflow";
             finish-label: "Setup";
             result {
                 NGS/tuxedo/tuxedo_main.uwl: "pipeline.full reads.single";
@@ -19,7 +19,7 @@ workflow "RNA-seq analysis with Tuxedo tools" {
             }
             page {
                 id: 1;
-                title: "Tuxedo Pipeline Settings";
+                title: "General settings";
                 parameters-area {
                     group {
                         title:"Analysis type";
@@ -27,32 +27,32 @@ workflow "RNA-seq analysis with Tuxedo tools" {
                             id: pipeline;
                             value {
                                 id: full;
-                                label: "Full Tuxedo Pipeline";
-                                tooltip: "Use this pipeline to analyze multiple samples with TopHat, Cufflinks, Cuffmerge and Cuffdiff tools.";
+                                label: "Full";
+                                tooltip: "Use this workflow to analyze multiple samples with TopHat, Cufflinks, Cuffmerge and Cuffdiff tools.";
                             }
                             value {
                                 id: single;
-                                label: "Single-sample Tuxedo Pipeline";
-                                tooltip: "Use this pipeline to analyze a single sample with TopHat and Cufflinks tools."
+                                label: "Single-sample";
+                                tooltip: "Use this workflow to analyze a single sample with TopHat and Cufflinks tools."
                             }
                             value {
                                 id: multiple;
-                                label: "No-new-transcripts Tuxedo Pipeline";
-                                tooltip: "Use this pipeline to analyze multiple samples with TopHat and Cuffdiff tools only, i.e. without producing new transcripts."
+                                label: "No-new-transcripts";
+                                tooltip: "Use this workflow to analyze multiple samples with TopHat and Cuffdiff tools only, i.e. without producing new transcripts."
                             }
                         }
                     }
                     group {
-                        title:"Short reads type";
+                        title:"Sequencing reads";
                         radio {
                             id: reads;
                             value {
                                 id: single;
-                                label: "Single-end reads";
+                                label: "Single-end";
                             }
                             value {
                                 id: paired;
-                                label: "Paired-end reads";
+                                label: "Paired-end";
                             }
                         }
                     }
