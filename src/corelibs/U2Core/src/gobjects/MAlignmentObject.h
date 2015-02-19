@@ -127,7 +127,8 @@ public:
     void updateRowsOrder(const QList<qint64>& rowIds, U2OpStatus& os);
 
 
-    /** Method that affect the whole alignment, including sequences */
+    /** Method that affect the whole alignment, including sequences
+     */
     void removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows, bool track = true);
     void crop(U2Region window, const QSet<QString>& rowNames);
     /**

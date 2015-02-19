@@ -872,25 +872,19 @@ static DbiConnection * getCheckedConnection(const U2DbiRef &dbiRef, U2OpStatus &
     return con.take();
 }
 
-void MsaDbiUtils::removeRegion(const U2EntityRef& msaRef, const QList<qint64>& rowIds, qint64 pos,
-                               qint64 count, U2OpStatus& os) {
+void MsaDbiUtils::removeRegion(const U2EntityRef& msaRef, const QList<qint64>& rowIds, qint64 pos, qint64 count, U2OpStatus& os) {
+    // Check parameters
+    CHECK_EXT(pos >= 0, os.setError(QString("Negative MSA pos: %1").arg(pos)), );
+    CHECK_EXT(count > 0, os.setError(QString("Wrong MSA base count: %1").arg(count)), );
+
     // Prepare the connection
     QScopedPointer<DbiConnection> con(getCheckedConnection(msaRef.dbiRef, os));
     SAFE_POINT_OP(os, );
     U2MsaDbi* msaDbi = con->dbi->getMsaDbi();
     U2SequenceDbi* sequenceDbi = con->dbi->getSequenceDbi();
 
-    // Check parameters
     U2Msa msa = msaDbi->getMsaObject(msaRef.entityId, os);
     SAFE_POINT_OP(os, );
-    if (pos < 0) {
-        os.setError(QString("Negative pos: %1").arg(pos));
-        return;
-    }
-    if (count <= 0) {
-        os.setError(QString("Wrong count: %1").arg(count));
-        return;
-    }
 
     validateRowIds(msaDbi, msaRef.entityId, rowIds, os);
     CHECK_OP(os, );

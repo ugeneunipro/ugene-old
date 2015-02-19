@@ -161,15 +161,16 @@ void SQLiteMsaDbi::createMsaRow(const U2DataId& msaId, qint64 posInMsa, U2MsaRow
 
 void SQLiteMsaDbi::createMsaRowGap(const U2DataId& msaId, qint64 msaRowId, const U2MsaGap& msaGap, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
-    SQLiteQuery q("INSERT INTO MsaRowGap(msa, rowId, gapStart, gapEnd) VALUES(?1, ?2, ?3, ?4)",
-        db, os);
+
+    static const QString queryString("INSERT INTO MsaRowGap(msa, rowId, gapStart, gapEnd) VALUES(?1, ?2, ?3, ?4)");
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
     CHECK_OP(os, );
 
-    q.bindDataId(1, msaId);
-    q.bindInt64(2, msaRowId);
-    q.bindInt64(3, msaGap.offset);
-    q.bindInt64(4, msaGap.offset + msaGap.gap);
-    q.insert();
+    q->bindDataId(1, msaId);
+    q->bindInt64(2, msaRowId);
+    q->bindInt64(3, msaGap.offset);
+    q->bindInt64(4, msaGap.offset + msaGap.gap);
+    q->insert();
 }
 
 void SQLiteMsaDbi::addMsaRowAndGaps(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row, U2OpStatus& os) {
