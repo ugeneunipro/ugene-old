@@ -1,13 +1,24 @@
 #@UGENE_WORKFLOW
-#Processing of Illumina raw RNA-Seq NGS data. Reads are filtered to reduce alignment time and aligned with TopHat. The result of the processing is TopHat output. For the filtration onIy mode, the data is just filtered, without the alignment. If there is a number of input FASTQ files they are merged in single FASTQ file (one for each paired tag) before TopHat alignment
+#The workflow takes FASTQ files as input and process this data as follows:
+#    - Filters the input sequencing reads by the CASAVA header (for Illumina platform).
+#    - Cuts of adapter sequences.
+#    - Trims the sequencing reads by quality.
+#    - Merges different FASTQ files.
+#    - [Optionally] Maps the sequencing reads by TopHat. You can skip this step, if after running this workflow you’re going to analyze the data with the Tuxedo workflow.
+#
+#The workflow also performs quality control of the data with FastQC: first, on the input FASTQ files and, second, after the pre-processing step.
+#
+#Besides intermediate files and FastQC reports, the final result of the workflow running is a merged FASTQ file. If mapping was selected, the output would also contain a BAM file with aligned reads and other TopHat output files.
+#
 
-workflow "Raw RNA-Seq processing" {
+
+workflow "Raw RNA-Seq data processing" {
     .meta {
         wizard {
             auto-run: true;
             has-run-button: false;
             has-defaults-button: false;
-            name: "Configure RNA-Seq Pipeline";
+            name: "Configure Raw RNA-Seq Data Processing";
             finish-label: "Setup";
             result {
                 NGS/raw_ngs/rnaseq/rnaseq_single.uwl: "tags.single topHatAlignment.with";
@@ -17,7 +28,7 @@ workflow "Raw RNA-Seq processing" {
             }
             page {
                 id: 1;
-                title: "RNA-Seq Pipeline Settings";
+                title: "General settings";
                 parameters-area {
                     group {
                         title:"Analysis type";
@@ -25,27 +36,25 @@ workflow "Raw RNA-Seq processing" {
                             id: topHatAlignment;
                             value {
                                 id: with;
-                                label: "Filtering and alignment";
-                                tooltip: "Filter the sequencing reads and align them using the TopHat tool.";
+                                label: "Include mapping with TopHat";
                             }
                             value {
                                 id: without;
-                                label: "Only filtering";
-                                tooltip: "Filter the sequencing reads. The output of this pipeline can be used as input to the Tuxedo pipeline which contains the alignment step wih TopHat.";
+                                label: "Skip mapping";
                             }
                         }
                     }
                     group {
-                        title: "Tags type";
+                        title: "Sequencing reads";
                         radio {
                             id: tags;
                             value {
                                 id: single;
-                                label: "Single-end tags";
+                                label: "Single-end";
                             }
                             value {
                                 id: paired;
-                                label: "Paired-end tags";
+                                label: "Paired-end";
                             }
                         }
                     }

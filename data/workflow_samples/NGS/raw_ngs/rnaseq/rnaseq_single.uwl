@@ -1,9 +1,19 @@
 #@UGENE_WORKFLOW
-#Processing of Illumina raw RNA-Seq NGS data. Reads are filtered to reduce alignment time and aligned with TopHat. The result of the processing is TopHat output. If there is a number of input FASTQ files they are merged in single FASTQ file (one for each paired tag) before TopHat alignment
+#The workflow takes FASTQ files as input and process this data as follows:
+#    - Filters the input sequencing reads by the CASAVA header (for Illumina platform).
+#    - Cuts of adapter sequences.
+#    - Trims the sequencing reads by quality.
+#    - Merges different FASTQ files.
+#    - Maps the sequencing reads by TopHat.
+#
+#The workflow also performs quality control of the data with FastQC: first, on the input FASTQ files and, second, after the pre-processing step.
+#
+#Besides intermediate files and FastQC reports, the final result is a BAM file with aligned reads and other TopHat output files.
+#
 
 
 
-workflow RNA-Seq{
+workflow "Processing of raw RNA-Seq single-end reads with mapping"{
 
     CASAVAFilter {
         type:CASAVAFilter;
@@ -55,13 +65,13 @@ workflow RNA-Seq{
     }
 
     .actor-bindings {
-        get-file-list.out-url->CASAVAFilter.in-file
-        get-file-list.out-url->fastqc.in-file
-        QualityTrim.out-file->MergeFastq.in-file
         MergeFastq.out-file->tophat.in-sequence
         MergeFastq.out-file->fastqc-1.in-file
+        QualityTrim.out-file->MergeFastq.in-file
         CutAdaptFastq.out-file->QualityTrim.in-file
         CASAVAFilter.out-file->CutAdaptFastq.in-file
+        get-file-list.out-url->CASAVAFilter.in-file
+        get-file-list.out-url->fastqc.in-file
     }
 
     get-file-list.url->CASAVAFilter.in-file.url
@@ -92,29 +102,29 @@ workflow RNA-Seq{
         }
         visual {
             CASAVAFilter {
-                pos:"-770 -529";
+                pos:"-810 -528";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
-                bounds:"-30 -30 111.875 92";
+                bounds:"-30 -30 181.875 92";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             CutAdaptFastq {
-                pos:"-528 -534";
+                pos:"-452 -528";
                 style:ext;
                 bg-color-ext:"236 177 178 64";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             MergeFastq {
-                pos:"-316 -325";
+                pos:"-107 -290";
                 style:simple;
                 bg-color-simple:"78 151 184 255";
                 in-file.angle:90;
                 out-file.angle:270;
             }
             QualityTrim {
-                pos:"-352 -535";
+                pos:"-144 -527";
                 style:ext;
                 bg-color-ext:"204 68 102 64";
                 bounds:"-30 -30 106 96";
@@ -122,60 +132,62 @@ workflow RNA-Seq{
                 out-file.angle:290.925;
             }
             fastqc {
-                pos:"-790 -650";
+                pos:"-976 -294";
                 style:simple;
-                in-file.angle:180;
+                bg-color-simple:"0 128 128 255";
+                in-file.angle:90;
             }
             fastqc-1 {
-                pos:"-135 -289";
+                pos:"-352 -254";
                 style:simple;
-                in-file.angle:180;
+                bg-color-simple:"0 128 128 255";
+                in-file.angle:358.091;
             }
             get-file-list {
-                pos:"-995 -528";
+                pos:"-1086 -528";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
-                bounds:"-30 -30 74.25 92";
+                bounds:"-30 -30 102.25 92";
                 out-url.angle:360;
             }
             tophat {
-                pos:"-344 -194";
+                pos:"-180 -119";
                 style:ext;
                 bg-color-ext:"0 128 0 64";
-                in-sequence.angle:46.7357;
+                in-sequence.angle:21.9745;
                 out-assembly.angle:207.408;
             }
             CASAVAFilter.out-file->CutAdaptFastq.in-file {
-                text-pos:"-35.75 -24";
+                text-pos:"-38.75 -27";
             }
             CutAdaptFastq.out-file->QualityTrim.in-file {
-                text-pos:"-35.75 -24";
+                text-pos:"-40.75 -27";
             }
             MergeFastq.out-file->fastqc-1.in-file {
-                text-pos:"-35.75 -24";
+                text-pos:"-49.75 -28";
             }
             MergeFastq.out-file->tophat.in-sequence {
-                text-pos:"1.25 -19";
+                text-pos:"-25.75 -19";
             }
             QualityTrim.out-file->MergeFastq.in-file {
-                text-pos:"0.25 -13";
+                text-pos:"-48.75 -15";
             }
             get-file-list.out-url->CASAVAFilter.in-file {
-                text-pos:"-35.7578 -24";
+                text-pos:"-39.7578 -27";
             }
             get-file-list.out-url->fastqc.in-file {
-                text-pos:"-35.7578 -24";
+                text-pos:"-49.7578 25";
             }
         }
         wizard {
-            name:"Raw RNA-Seq Processing Wizard";
+            name:"Raw RNA-Seq Data Processing Wizard";
             page {
                 id:1;
                 next:2;
                 title:"Input data";
                 parameters-area {
                     group {
-                        title:"Short Reads";
+                        title:"Sequencing reads";
                         label-size:120;
                         get-file-list.url-in {
                             label:"FASTQ files";

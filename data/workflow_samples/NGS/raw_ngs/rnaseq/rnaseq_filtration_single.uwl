@@ -1,9 +1,18 @@
 #@UGENE_WORKFLOW
-#Processing of Illumina raw RNA-Seq NGS data. Reads are filtered to reduce alignment time. The result of the processing is a filtered FASTQ file as a ready-to-use TopHat input. If there is a number of input FASTQ files they are merged in single FASTQ file (one for each paired tag)
+#The workflow takes FASTQ files (with single-end sequencing reads) as input and process this data as follows:
+#    - Filters the input sequencing reads by the CASAVA header (for Illumina platform).
+#    - Cuts of adapter sequences.
+#    - Trims the sequencing reads by quality.
+#    - Merges different FASTQ files.
+#
+#The workflow also performs quality control of the data with FastQC: first, on the input FASTQ files and, second, after the pre-processing step.
+#
+#Besides intermediate files and FastQC reports, the final result of the workflow running is a merged FASTQ file.
+#
 
 
 
-workflow RNA-Seq{
+workflow "Processing of raw RNA-Seq single-end reads"{
 
     CASAVAFilter {
         type:CASAVAFilter;
@@ -48,8 +57,8 @@ workflow RNA-Seq{
     .actor-bindings {
         get-file-list.out-url->CASAVAFilter.in-file
         get-file-list.out-url->fastqc.in-file
-        CASAVAFilter.out-file->CutAdaptFastq.in-file
         CutAdaptFastq.out-file->QualityTrim.in-file
+        CASAVAFilter.out-file->CutAdaptFastq.in-file
         QualityTrim.out-file->MergeFastq.in-file
         QualityTrim.out-file->fastqc-1.in-file
     }
@@ -72,80 +81,83 @@ workflow RNA-Seq{
         }
         visual {
             CASAVAFilter {
-                pos:"-784 -536";
+                pos:"-840 -536";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
-                bounds:"-30 -30 111.875 92";
+                bounds:"-30 -30 179.875 92";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             CutAdaptFastq {
-                pos:"-536 -534";
+                pos:"-525 -534";
                 style:ext;
                 bg-color-ext:"236 177 178 64";
+                bounds:"-30 -30 173.25 95";
                 in-file.angle:180;
-                out-file.angle:360;
+                out-file.angle:303.69;
             }
             MergeFastq {
-                pos:"-316 -325";
+                pos:"-475 -103";
                 style:simple;
                 bg-color-simple:"78 151 184 255";
                 in-file.angle:90;
-                out-file.angle:270;
+                out-file.angle:251.565;
             }
             QualityTrim {
-                pos:"-352 -535";
+                pos:"-500 -327";
                 style:ext;
                 bg-color-ext:"204 68 102 64";
-                bounds:"-30 -30 106 96";
-                in-file.angle:180;
-                out-file.angle:290.925;
+                bounds:"-30 -30 140 96";
+                in-file.angle:37.5041;
+                out-file.angle:293.86;
             }
             fastqc {
-                pos:"-828 -355";
+                pos:"-871 -329";
                 style:simple;
-                in-file.angle:180;
+                bg-color-simple:"0 128 128 255";
+                in-file.angle:128.047;
             }
             fastqc-1 {
-                pos:"-71 -389";
+                pos:"-307 -26";
                 style:simple;
-                in-file.angle:180;
+                bg-color-simple:"0 128 128 255";
+                in-file.angle:149.744;
             }
             get-file-list {
-                pos:"-1009 -535";
+                pos:"-1055 -536";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 74.25 92";
                 out-url.angle:360;
             }
             CASAVAFilter.out-file->CutAdaptFastq.in-file {
-                text-pos:"-35.75 -24";
+                text-pos:"-38.75 -27";
             }
             CutAdaptFastq.out-file->QualityTrim.in-file {
-                text-pos:"-35.75 -24";
+                text-pos:"-41.75 -18";
             }
             QualityTrim.out-file->MergeFastq.in-file {
-                text-pos:"0.25 -13";
+                text-pos:"-60.75 -3";
             }
             QualityTrim.out-file->fastqc-1.in-file {
-                text-pos:"-35.75 -24";
+                text-pos:"0.25 7";
             }
             get-file-list.out-url->CASAVAFilter.in-file {
-                text-pos:"-35.7578 -24";
+                text-pos:"-36.7578 -28";
             }
             get-file-list.out-url->fastqc.in-file {
-                text-pos:"-35.7578 -24";
+                text-pos:"-33.7578 26";
             }
         }
         wizard {
-            name:"Raw RNA-Seq Processing Wizard";
+            name:"Raw RNA-Seq Data Processing Wizard";
             page {
                 id:1;
                 next:2;
                 title:"Input data";
                 parameters-area {
                     group {
-                        title:"Short Reads";
+                        title:"Sequencing reads";
                         label-size:120;
                         get-file-list.url-in {
                             label:"FASTQ files";
@@ -167,7 +179,7 @@ workflow RNA-Seq{
                             label:"Min length";
                         }
                         CutAdaptFastq.adapters-url {
-                            label:"Adapters";
+                            label:Adapters;
                         }
                     }
                 }

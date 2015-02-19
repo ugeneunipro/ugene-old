@@ -1,13 +1,30 @@
 #@UGENE_WORKFLOW
-#Processing of Illumina raw DNA-Seq NGS data. Reads are filtered to reduce alignment time, aligned with BWA-MEM, filtered with SAMTools, sorted and indexed. If a number of input FASTQ files is given - they are merged after the alignment in one BAM file. The result of the processing is filtered, sorted and indexed BAM file
+#The workflow takes FASTQ files as input and process this data as follows:
+#  * Pre-processing:
+#    - Filtration of the input sequencing reads by the CASAVA header (for Illumina platform).
+#    - Cutting of adapter sequences.
+#    - Trimming of the sequencing reads by quality.
+#
+#  * Mapping:
+#    - Mapping of the reads to a reference sequence (the BWA-MEM tool is used).
+#
+#  * Post-processing:
+#    - Merging of all data into one file.
+#    - Filtration of aligned reads by SAMtools to remove reads with low mapping quality, unpaired/unaligned reads, etc.
+#    - Removing of PCR duplicates.
+#
+#The workflow also performs quality control of the data with FastQC: first, on the input FASTQ files and, second, after the pre-processing step.
+#
+#Besides intermediate files and FastQC reports, the final result of the workflow running is a filtered, sorted, and indexed BAM file.
+#
 
-workflow "Raw DNA-Seq processing" {
+workflow "Raw DNA-Seq data processing" {
     .meta {
         wizard {
             auto-run: true;
             has-run-button: false;
             has-defaults-button: false;
-            name: "Configure DNA-Seq Pipeline";
+            name: "Configure Raw DNA-Seq Data Processing";
             finish-label: "Setup";
             result {
                 NGS/raw_ngs/dnaseq/dna_single.uwl: pipeline.single;
@@ -15,19 +32,19 @@ workflow "Raw DNA-Seq processing" {
             }
             page {
                 id: 1;
-                title: "DNA-Seq Pipeline Settings";
+                title: "General settings";
                 parameters-area {
                     group {
-                        title:"Analysis type";
+                        title:"Sequencing reads";
                         radio {
                             id: pipeline;
                             value {
                                 id: single;
-                                label: "Single tags";
+                                label: "Single-end";
                             }
                             value {
                                 id: paired;
-                                label: "Paired tags";
+                                label: "Paired-end";
                             }
                         }
                     }

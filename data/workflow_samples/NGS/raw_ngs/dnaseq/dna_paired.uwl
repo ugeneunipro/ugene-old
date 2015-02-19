@@ -1,9 +1,26 @@
 #@UGENE_WORKFLOW
-#Processing of Illumina raw DNA-Seq NGS data. Reads are filtered to reduce alignment time, aligned with BWA-MEM, filtered with SAMTools, sorted and indexed. If a number of input FASTQ files is given - they are merged after the alignment in one BAM file. The result of the processing is filtered, sorted and indexed BAM file
+#The workflow takes FASTQ files as input (with paired-end sequencing reads) and process this data as follows:
+#  * Pre-processing:
+#    - Filtration of the input sequencing reads by the CASAVA header (for Illumina platform).
+#    - Cutting of adapter sequences.
+#    - Trimming of the sequencing reads by quality.
+#
+#  * Mapping:
+#    - Mapping of the reads to a reference sequence (the BWA-MEM tool is used).
+#
+#  * Post-processing:
+#    - Merging of all data into one file.
+#    - Filtration of aligned reads by SAMtools to remove reads with low mapping quality, unpaired/unaligned reads, etc.
+#    - Removing of PCR duplicates.
+#
+#The workflow also performs quality control of the data  with FastQC: first, on the input FASTQ files and, second, after the pre-processing step.
+#
+#Besides the intermediate files, the final result of the workflow is a filtered, sorted, and indexed BAM file.
+#
 
 
 
-workflow DNA-Seq{
+workflow "Processing of raw DNA-Seq paired-end reads"{
 
     CASAVAFilter {
         type:CASAVAFilter;
@@ -48,7 +65,7 @@ workflow DNA-Seq{
     }
     rmdup-bam {
         type:rmdup-bam;
-        name:"Remove Duplicated Reads";
+        name:"Remove Duplicates";
         remove-single-end:true;
     }
     Sort-bam {
@@ -109,24 +126,24 @@ workflow DNA-Seq{
     }
 
     .actor-bindings {
+        CASAVAFilter.out-file->CutAdaptFastq.in-file
         QualityTrim.out-file->bwamem-id.in-data
         QualityTrim.out-file->fastqc-1-1.in-file
-        filter-bam.out-file->Sort-bam-1.in-file
-        rmdup-bam.out-file->Sort-bam.in-file
-        CASAVAFilter.out-file->CutAdaptFastq.in-file
-        Sort-bam-1.out-file->rmdup-bam.in-file
-        files-conversion.out-file->merge-bam.in-file
-        get-file-list-1.out-url->CASAVAFilter-1.in-file
-        get-file-list-1.out-url->fastqc-1.in-file
-        CutAdaptFastq.out-file->QualityTrim.in-file
-        CutAdaptFastq-1.out-file->QualityTrim-1.in-file
         get-file-list.out-url->CASAVAFilter.in-file
         get-file-list.out-url->fastqc.in-file
-        CASAVAFilter-1.out-file->CutAdaptFastq-1.in-file
-        merge-bam.out-file->filter-bam.in-file
         bwamem-id.out-data->files-conversion.in-file
+        files-conversion.out-file->merge-bam.in-file
+        merge-bam.out-file->filter-bam.in-file
+        filter-bam.out-file->Sort-bam-1.in-file
+        rmdup-bam.out-file->Sort-bam.in-file
+        Sort-bam-1.out-file->rmdup-bam.in-file
+        CASAVAFilter-1.out-file->CutAdaptFastq-1.in-file
+        get-file-list-1.out-url->CASAVAFilter-1.in-file
+        get-file-list-1.out-url->fastqc-1.in-file
         QualityTrim-1.out-file->bwamem-id.in-data-paired
         QualityTrim-1.out-file->fastqc-1-2.in-file
+        CutAdaptFastq.out-file->QualityTrim.in-file
+        CutAdaptFastq-1.out-file->QualityTrim-1.in-file
     }
 
     get-file-list.url->CASAVAFilter.in-file.url
@@ -168,7 +185,7 @@ workflow DNA-Seq{
         }
         visual {
             CASAVAFilter {
-                pos:"-933 -813";
+                pos:"-972 -813";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
                 bounds:"-30 -30 123.875 80";
@@ -176,7 +193,7 @@ workflow DNA-Seq{
                 out-file.angle:360;
             }
             CASAVAFilter-1 {
-                pos:"-931 -641";
+                pos:"-971 -649";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
                 bounds:"-30 -30 122.875 82";
@@ -184,49 +201,49 @@ workflow DNA-Seq{
                 out-file.angle:360;
             }
             CutAdaptFastq {
-                pos:"-677 -813";
+                pos:"-701 -813";
                 style:ext;
                 bg-color-ext:"236 177 178 64";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             CutAdaptFastq-1 {
-                pos:"-677 -640";
+                pos:"-700 -649";
                 style:ext;
                 bg-color-ext:"236 177 178 64";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             QualityTrim {
-                pos:"-486 -814";
+                pos:"-413 -811";
                 style:ext;
                 bg-color-ext:"204 68 102 64";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             QualityTrim-1 {
-                pos:"-484 -642";
+                pos:"-414 -648";
                 style:ext;
                 bg-color-ext:"204 68 102 64";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             Sort-bam {
-                pos:"-207 -258";
+                pos:"-1 -234";
                 style:simple;
                 bg-color-simple:"84 84 84 255";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             Sort-bam-1 {
-                pos:"-703 -258";
+                pos:"-497 -234";
                 style:simple;
                 bg-color-simple:"84 84 84 255";
                 in-file.angle:90;
                 out-file.angle:360;
             }
             bwamem-id {
-                pos:"-246 -752";
+                pos:"-39 -746";
                 style:ext;
                 bg-color-ext:"0 128 0 64";
                 bounds:"-30 -30 108 135";
@@ -235,7 +252,7 @@ workflow DNA-Seq{
                 out-data.angle:287.162;
             }
             fastqc {
-                pos:"-934 -929";
+                pos:"-920 -989";
                 style:simple;
                 in-file.angle:180;
             }
@@ -245,24 +262,25 @@ workflow DNA-Seq{
                 in-file.angle:180;
             }
             fastqc-1-1 {
-                pos:"-251 -931";
+                pos:"-145 -964";
                 style:simple;
-                in-file.angle:180;
+                bg-color-simple:"0 128 128 255";
+                in-file.angle:232.815;
             }
             fastqc-1-2 {
-                pos:"-283 -546";
+                pos:"-150 -522";
                 style:simple;
-                in-file.angle:180;
+                in-file.angle:138.18;
             }
             files-conversion {
-                pos:"-209 -442";
+                pos:"1 -418";
                 style:simple;
                 bg-color-simple:"84 84 84 255";
                 in-file.angle:83.2902;
                 out-file.angle:176.186;
             }
             filter-bam {
-                pos:"-747 -466";
+                pos:"-541 -442";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
                 bounds:"-30 -30 121.875 79";
@@ -270,38 +288,38 @@ workflow DNA-Seq{
                 out-file.angle:298.996;
             }
             get-file-list {
-                pos:"-1133 -814";
+                pos:"-1215 -813";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 63 87";
                 out-url.angle:360;
             }
             get-file-list-1 {
-                pos:"-1131 -642";
+                pos:"-1214 -650";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 61 92";
                 out-url.angle:360;
             }
             merge-bam {
-                pos:"-434 -443";
+                pos:"-228 -419";
                 style:simple;
                 bg-color-simple:"78 151 184 255";
                 in-file.angle:1.7357;
                 out-file.angle:180;
             }
             rmdup-bam {
-                pos:"-441 -258";
+                pos:"-235 -234";
                 style:simple;
                 bg-color-simple:"218 98 98 255";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             CASAVAFilter-1.out-file->CutAdaptFastq-1.in-file {
-                text-pos:"-35.75 -24";
+                text-pos:"-38.75 -24";
             }
             CASAVAFilter.out-file->CutAdaptFastq.in-file {
-                text-pos:"-35.75 -24";
+                text-pos:"-40.75 -25";
             }
             CutAdaptFastq-1.out-file->QualityTrim-1.in-file {
                 text-pos:"-35.75 -24";
@@ -337,7 +355,7 @@ workflow DNA-Seq{
                 text-pos:"-35.7578 -24";
             }
             get-file-list-1.out-url->fastqc-1.in-file {
-                text-pos:"-35.7578 -24";
+                text-pos:"-33.7578 18";
             }
             get-file-list.out-url->CASAVAFilter.in-file {
                 text-pos:"-35.7578 -24";
@@ -353,14 +371,14 @@ workflow DNA-Seq{
             }
         }
         wizard {
-            name:"Raw DNA-seq Processing Wizard";
+            name:"Raw DNA-Seq Data Processing Wizard";
             page {
                 id:1;
                 next:2;
                 title:"Input data";
                 parameters-area {
                     group {
-                        title:"Short Reads";
+                        title:"Sequencing reads";
                         label-size:120;
                         get-file-list.url-in {
                             label:"FASTQ files";
@@ -406,7 +424,7 @@ workflow DNA-Seq{
                 title:Mapping;
                 parameters-area {
                     group {
-                        title:"BWA-MEM Mapping";
+                        title:"BWA-MEM mapping";
                         label-size:120;
                         bwamem-id.reference {
                         }
@@ -468,7 +486,7 @@ workflow DNA-Seq{
                         }
                     }
                     group {
-                        title:"Remove Duplicates";
+                        title:"Remove duplicates";
                         label-size:120;
                         rmdup-bam.remove-single-end {
                             label:"For single-end reads";
