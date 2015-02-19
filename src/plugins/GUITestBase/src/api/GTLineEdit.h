@@ -37,8 +37,11 @@ public:
 
     // fails if lineEdit is NULL, GTLineEdit::clear fails
     // or a set text differs from a given string
-    static void setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck = false);
-
+#ifdef Q_OS_MAC
+    static void setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck = false, bool useCopyPaste = true);
+#else
+    static void setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck = false, bool useCopyPaste = false);
+#endif
     // fails if lineEdit is NULL, or lineEdit's text wasn't cleared
     static void clear(U2OpStatus& os, QLineEdit* lineEdit);
 

@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include "GTClipboard.h"
 #include "GTLineEdit.h"
 #include "GTWidget.h"
 
@@ -31,7 +32,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTLineEdit"
 
 #define GT_METHOD_NAME ""
-void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck /* = false*/) {
+void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck /* = false*/, bool useCopyPaste) {
 
     GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
     if(lineEdit->text() == str){
@@ -46,7 +47,12 @@ void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str
         clear(os, lineEdit);
     }
 
-    GTKeyboardDriver::keySequence(os, str);
+    if(useCopyPaste){
+        GTClipboard::setText(os, str);
+        GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    }else{
+        GTKeyboardDriver::keySequence(os, str);
+    }
     GTGlobals::sleep(500);
 
     if(noCheck){
