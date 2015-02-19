@@ -322,6 +322,8 @@ MAlignment ComposeResultSubTask::createAlignment() {
         CHECK_OP(stateInfo, result);
     }
 
+    result.trim(false);
+
     U2EntityRef msaRef = MAlignmentImporter::createAlignment(storage->getDbiRef(), result, stateInfo);
     CHECK_OP(stateInfo, result);
     msa = storage->getDataHandler(msaRef);
