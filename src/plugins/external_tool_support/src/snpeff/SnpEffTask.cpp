@@ -111,22 +111,22 @@ void SnpEffTask::run(){
 
 QString SnpEffTask::getSummaryUrl(){
     QString res = "";
-    const QFileInfo resFile = QFileInfo(settings.outDir + QDir::separator() + SUMMARY_FILE);
+    const QFileInfo resFile = QFileInfo(settings.outDir + "/" + SUMMARY_FILE);
     if (!resFile.exists()) {
         return res;
     }
-    res = settings.outDir + QDir::separator() + SUMMARY_FILE;
+    res = settings.outDir + "/" + SUMMARY_FILE;
     return res;
 }
 
 QString SnpEffTask::getResFileUrl(){
     QString res = "";
-    res = settings.outDir + QDir::separator() + RES_FILE_BASE + "." + settings.outFormat;
+    res = settings.outDir + "/" + RES_FILE_BASE + "." + settings.outFormat;
     return res;
 }
 
 QString SnpEffTask::getDataPath() const{
-    return AppContext::getAppSettings()->getUserAppsSettings()->getDownloadDirPath() + QDir::separator() + "snpeff_data";
+    return AppContext::getAppSettings()->getUserAppsSettings()->getDownloadDirPath() + "/" + "snpeff_data";
 }
 
 QStringList SnpEffTask::getParameters(U2OpStatus & /*os*/) const{
