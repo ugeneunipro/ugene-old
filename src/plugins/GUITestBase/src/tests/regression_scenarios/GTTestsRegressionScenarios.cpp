@@ -866,6 +866,42 @@ GUI_TEST_CLASS_DEFINITION(test_1113_1){//commit AboutDialogController.cpp
 //Expected state: About dialog appeared, shown info includes platform info (32/64)
 
 }
+
+GUI_TEST_CLASS_DEFINITION(test_1122){
+//    1. Select "Tools->DNA Assembly->Contig assembly with CAP3" from the main menu.
+//    Expected state: the "Contig Assembly With CAP3" dialog appeared.
+//    2. Click "Add" button.
+//    Expected state: the "Add sequences to assembly" dialog appeared.
+//    3. Select two files: "_common_data/scenarios/CAP3/xyz.fa" and "_common_data/scenarios/CAP3/xyz.qual". Click "Open" button.
+//    Expected state: this files had been added to the "Input files" field of the "Contig Assembly With CAP3" dialog. Some path in the "Result contig" field appeared.
+//    4. Click the "Run" button.
+//    Expected state: CAP3 task started. Multiply alignment as a result of the task appeared.
+//    5. Run CAP3 again with "_common_data/scenarios/CAP3/xyz.fastq".
+//    Expected state: Result is the same as in the step 4.
+
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandBoxDir + "test_1122_1.ugenedb"));
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AlignmentEditor));
+    GTUtilsDialog::waitForDialog(os, new CAP3SupportDialogFiller(os, QStringList() << testDir + "_common_data/scenarios/CAP3/xyz.fa"
+                                                                 << testDir + "_common_data/scenarios/CAP3/xyz.qual",
+                                                                 sandBoxDir + "test_1122_1"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::SANGER_MENU << ToolsMenu::SANGER_DENOVO));
+    GTMenu::showMainMenu(os, "mwmenu_tools");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandBoxDir + "test_1122_2.ugenedb"));
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AlignmentEditor));
+    GTUtilsDialog::waitForDialog(os, new CAP3SupportDialogFiller(os, QStringList() << testDir + "_common_data/scenarios/CAP3/xyz.fastq",
+                                                                 sandBoxDir + "test_1122_2"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::SANGER_MENU << ToolsMenu::SANGER_DENOVO));
+    GTMenu::showMainMenu(os, "mwmenu_tools");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    CHECK_SET_ERR(GTFile::equals(os, sandBoxDir + "test_1122_1.ace", sandBoxDir + "test_1122_2.ace"), "Files are not equal");
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1163){
 
     // 1. Open file *.ugenedb (for example _common_data\ugenedb\example-alignment.ugenedb) in assembly browser.
@@ -914,6 +950,32 @@ GUI_TEST_CLASS_DEFINITION(test_1172){
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(2, 2));
 
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1184){
+//    1. Open WD
+//    2. Place worker on the scheme 'Write FASTA', set worker parameters to the next values:
+//        {Output file} file.fa
+//        {Existing file} Overwrite
+
+//    3. Copy & Paste worker
+//    Expected state: parameters of original worker are equal with parameters on copied worker
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write FASTA");
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", "file.fa", GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Existing file", "Overwrite", GTUtilsWorkflowDesigner::comboValue);
+
+    GTUtilsWorkflowDesigner::click(os, "Write FASTA");
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::getParameter(os, "Output file", true) == "file.fa",
+                  QString("Incorrect output file parameter [%1]").arg(GTUtilsWorkflowDesigner::getParameter(os, "Output file")));
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::getParameter(os, "Existing file", true) == "Overwrite",
+                  QString("Incorrect existing file parameter [%1]").arg(GTUtilsWorkflowDesigner::getParameter(os, "Existing file")));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1189){
@@ -1120,10 +1182,10 @@ GUI_TEST_CLASS_DEFINITION(test_1232) {
     CHECK_SET_ERR(foundAtSecondWV && foundAtFirstWV, "Expected molar coeffs wasn't found");
 
 // 3. Remember the "Molar ext. coef.". Close this statistics view.
-// 
+//
 // 4. Select and export some region of the sequence.
 // Expected state: new sequence viewer with part of the whole human_T1.fa.
-// 
+//
 // 5. Call statistics view for the exported part.
 // Expected state: "Molar ext. coef" should be different from the remembered value.
 
