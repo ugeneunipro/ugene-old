@@ -1103,7 +1103,6 @@ void MSAEditorSequenceArea::updateSelection() {
     SAFE_POINT_EXT(newStart >= 0 && newEnd >= 0, cancelSelection(), );
 
     int selectionHeight = newEnd - newStart;
-    SAFE_POINT_EXT(selectionHeight > 0, cancelSelection(), );
     // accounting of collapsing children items
     int itemIndex = m->itemAt(newEnd);
     if (selectionHeight <= 1 && itemIndex >= 0) {
