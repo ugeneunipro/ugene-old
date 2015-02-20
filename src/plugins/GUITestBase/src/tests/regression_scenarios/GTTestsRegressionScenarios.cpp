@@ -3748,8 +3748,8 @@ GUI_TEST_CLASS_DEFINITION( test_1567 ){
         }
     };
 
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Full Tuxedo Pipeline"<<"Paired-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Full"<<"Single-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new customWizard()));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
     GTGlobals::sleep();
@@ -4052,8 +4052,8 @@ GUI_TEST_CLASS_DEFINITION(test_1588) {
     map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/index/"));
     map.insert("Bowtie index basename", "chr6");
     map.insert("Bowtie version", "Bowtie1");
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Single-sample Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Single-sample"<<"Single-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", QStringList()<<testDir +
                                                       "_common_data/NIAID_pipelines/tuxedo_pipeline/data/lymph_aln.fastq", map));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
@@ -4552,12 +4552,12 @@ GUI_TEST_CLASS_DEFINITION(test_1661) {
 GUI_TEST_CLASS_DEFINITION(test_1662){
 //    1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-//    2. Add sample: Multiple dataset tuxedo: single-end reads
+//    2. Add sample: Multiple dataset tuxedo: Single-end
     QMap<QString, QVariant> map;
     map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/bowtie2_index/"));
     map.insert("Bowtie index basename", "NC_010473");
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Full Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Full"<<"Single-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", QList<QStringList>()<<(QStringList()<<
                                                        testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/exp_1_1.fastq"<<
                                                        testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/exp_1_2.fastq")<<
@@ -4713,7 +4713,7 @@ public:
 GUI_TEST_CLASS_DEFINITION(test_1677){
 //    1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-//    2. Add sample: "Main Tuxedo: paired-end reads"
+//    2. Add sample: "Main Tuxedo: Single-end"
     class customWizard : public CustomScenario {
     public:
         void run(U2OpStatus &os) {
@@ -4742,8 +4742,8 @@ GUI_TEST_CLASS_DEFINITION(test_1677){
         }
     };
 
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Full Tuxedo Pipeline"<<"Paired-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Full"<<"Single-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new customWizard()));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
     GTGlobals::sleep();
@@ -4827,13 +4827,13 @@ GUI_TEST_CLASS_DEFINITION(test_1680) {
 GUI_TEST_CLASS_DEFINITION(test_1681){
 //    1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-//    2. Add sample: Multiple dataset tuxedo: single-end reads
+//    2. Add sample: Multiple dataset tuxedo: Single-end
     QMap<QString, QVariant> map;
     map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/bowtie2_index/"));
     map.insert("Bowtie index basename", "NC_010473");
     map.insert("Input transcripts annotations", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/accepted_hits.bam"));
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "No-new-transcripts Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "No-new-transcripts"<<"Single-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", QList<QStringList>()<<(QStringList()<<testDir +
                                                       "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/exp_1_1.fastq")<<
                                                       (QStringList()<<testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq2/exp_2_1.fastq"), map));
@@ -4851,7 +4851,7 @@ GUI_TEST_CLASS_DEFINITION(test_1681){
 GUI_TEST_CLASS_DEFINITION(test_1681_1) {
 //    1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-//    2. Add sample: Multiple dataset tuxedo: paired-end reads
+//    2. Add sample: Multiple dataset tuxedo: Single-end
 
 
 
@@ -4896,8 +4896,8 @@ GUI_TEST_CLASS_DEFINITION(test_1681_1) {
         }
     };
 
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "No-new-transcripts Tuxedo Pipeline"<<"Paired-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "No-new-transcripts"<<"Single-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new customWizard()));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
     GTGlobals::sleep();
@@ -4913,12 +4913,12 @@ GUI_TEST_CLASS_DEFINITION(test_1681_1) {
 GUI_TEST_CLASS_DEFINITION(test_1681_2){
 //    1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-//    2. Add sample: Single dataset tuxedo: single-end reads
+//    2. Add sample: Single dataset tuxedo: Single-end
     QMap<QString, QVariant> map;
     map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/bowtie2_index/"));
     map.insert("Bowtie index basename", "NC_010473");
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Single-sample Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Single-sample"<<"Single-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard",QStringList()<<testDir +
                                                       "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/exp_1_1.fastq", map));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
@@ -4935,7 +4935,7 @@ GUI_TEST_CLASS_DEFINITION(test_1681_2){
 GUI_TEST_CLASS_DEFINITION(test_1681_3) {
 //    1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-//    2. Add sample: Single dataset tuxedo: paired-end reads
+//    2. Add sample: Single dataset tuxedo: Single-end
     class customWizard : public CustomScenario {
     public:
         void run(U2OpStatus &os) {
@@ -4963,8 +4963,8 @@ GUI_TEST_CLASS_DEFINITION(test_1681_3) {
         }
     };
 
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Single-sample Tuxedo Pipeline"<<"Paired-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Single-sample"<<"Single-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new customWizard()));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
     GTGlobals::sleep();
@@ -5021,8 +5021,8 @@ GUI_TEST_CLASS_DEFINITION(test_1693) {
     QMap<QString, QVariant> map;
     map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/bowtie2_index/"));
     map.insert("Bowtie index basename", "NC_010473");
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Full Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Full"<<"Single-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", QList<QStringList>()<<(QStringList()<<testDir +
                                                       "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/exp_1_1.fastq")<<
                                                       (QStringList()<<testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq2/exp_2_1.fastq"), map));
@@ -5529,34 +5529,34 @@ GUI_TEST_CLASS_DEFINITION(test_1759){
     };
     //single
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Full Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Full"<<"Single-end"));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
 
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Single-sample Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Single-sample"<<"Single-end"));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
 
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "No-new-transcripts Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "No-new-transcripts"<<"Single-end"));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
 
     //paired
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Full Tuxedo Pipeline"<<"Paired-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Full"<<"Single-end"));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
 
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Single-sample Tuxedo Pipeline"<<"Paired-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Single-sample"<<"Single-end"));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
 
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "No-new-transcripts Tuxedo Pipeline"<<"Paired-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "No-new-transcripts"<<"Single-end"));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
 //    Expected state: "Tuxedo Wizard" dialog has appeared
 
@@ -5595,8 +5595,8 @@ GUI_TEST_CLASS_DEFINITION(test_1771){
     };
 
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Full Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Full"<<"Single-end"));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
 //    3. Select some configuration
 //    Expected state: wizard appeared
@@ -9462,7 +9462,7 @@ GUI_TEST_CLASS_DEFINITION( test_2460 ) {
 
 GUI_TEST_CLASS_DEFINITION( test_2475 ) {
     //1. Open WD.
-    //2. Open Single-sample Tuxedo Pipeline (NGS samples).
+    //2. Open Single-sample (NGS samples).
     //3. Set proper input data.
     //4. Validate scheme.
     //Expected state: validation passed.
@@ -9480,8 +9480,8 @@ GUI_TEST_CLASS_DEFINITION( test_2475 ) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsDialog::waitForDialog(os, new EscClicker(os));
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Single-sample Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Single-sample"<<"Single-end"));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
     GTGlobals::sleep();
 
@@ -10328,8 +10328,8 @@ GUI_TEST_CLASS_DEFINITION(test_2632){
             GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
         }
     };
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Full Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Full"<<"Single-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
 }
@@ -10472,8 +10472,8 @@ GUI_TEST_CLASS_DEFINITION(test_2683){
             GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
         }
     };
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Full Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Full"<<"Single-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
 //    Expected state: in appeared wizard there is a page "Cuffdiff Samples"
@@ -10584,8 +10584,8 @@ GUI_TEST_CLASS_DEFINITION(test_2709) {
         }
     };
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "No-new-transcripts Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "No-new-transcripts"<<"Single-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new test_2709_canceler()));
     GTUtilsWorkflowDesigner::addSample(os, "tuxedo");
     GTGlobals::sleep();
@@ -11415,9 +11415,9 @@ GUI_TEST_CLASS_DEFINITION(test_2899){
 //    1. Start WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //    2. Open "RNA-seq analysis with Tuxedo tools" sample.
-//    3. Click the "Setup" button (default values: Full Tuxedo Pipeline, Single-end reads).
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Full Tuxedo Pipeline"<<"Single-end reads"));
+//    3. Click the "Setup" button (default values: Full, Single-end).
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Full"<<"Single-end"));
 
     class custom : public CustomScenario {
     public:

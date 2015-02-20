@@ -153,7 +153,7 @@ HangChecker::HangChecker(U2OpStatus &_os):os(_os){
 
 void HangChecker::startChecking(){
     timer->connect(timer, SIGNAL(timeout()), this, SLOT(sl_check()));
-    timer->start(GTUtilsDialog::timerPeriod);
+    timer->start(GTUtilsDialog::timerPeriod*100);
 }
 
 #define GT_METHOD_NAME "sl_check"
@@ -164,10 +164,10 @@ void HangChecker::sl_check(){
             bool found = false;
             foreach (GUIDialogWaiter* waiter, GTUtilsDialog::pool) {
                 if(!waiter->hadRun && waiter->isExpectedName(dialog->objectName(), waiter->getSettings().objectName)){
-                    found = true;
+                    found = true;                    
                 }
             }
-            GT_CHECK(found, "dialog " + QString(dialog->metaObject()->className()) + " hang up");
+            GT_CHECK(found, "dialog " + QString(dialog->metaObject()->className()) + " name: " + dialog->objectName() + " hang up");
         }
     } catch(U2OpStatus *) {
         GTGlobals::takeScreenShot(GUITest::screenshotDir + QDateTime::currentDateTime().toString() + ".jpg");
