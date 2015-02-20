@@ -41,26 +41,27 @@ workflow "Quality control by FastQC"{
         }
         visual {
             fastqc {
-                pos:"-574 -563";
+                pos:"-493 -559";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"0 128 64 64";
                 in-file.angle:180;
             }
             get-file-list {
-                pos:"-821 -562";
+                pos:"-773 -560";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"216 113 57 64";
+                bounds:"-30 -30 116.25 84";
                 out-url.angle:360;
             }
             get-file-list.out-url->fastqc.in-file {
-                text-pos:"-35.7578 -24";
+                text-pos:"-40.7578 -29";
             }
         }
         wizard {
-            name:"Quality Control Wizard";
+            name:"Quality Control by FastQC Wizard";
             page {
                 id:1;
-                title:"High Throughput Sequence QC Report by FastQC";
+                title:"QC report settings";
                 parameters-area {
                     group {
                         title:"Input parameters";
