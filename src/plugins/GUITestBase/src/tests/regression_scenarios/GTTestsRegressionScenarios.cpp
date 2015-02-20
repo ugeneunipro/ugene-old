@@ -726,6 +726,101 @@ GUI_TEST_CLASS_DEFINITION(test_1199) {
     GTUtilsProject::checkProject(os, GTUtilsProject::Empty);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1065_1) {
+//    Building index with the "Bowtie" tool.
+//    1. Select "Tools->Align to reference->Build index" from the main menu.
+//    Expected state: the "Build index" dialog appeared.
+//    2. Fill the dialog with the next values:
+//        {Align short reads method}	Bowtie
+//        {reference sequence}		_common_data/scenarios/_regression/1065/e_coli_1000.fa
+//        {Index file name}		_tmp/e_coli_1000
+//    Click the "Start" button.
+//    Expected state: task completes successfully, there are six files in the _tmp directory:
+//    e_coli_1000.1.ebwt
+//    e_coli_1000.2.ebwt
+//    e_coli_1000.3.ebwt
+//    e_coli_1000.4.ebwt
+//    e_coli_1000.rev.1.ebwt
+//    e_coli_1000.rev.2.ebwt
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new BuildIndexDialogFiller(os, testDir + "_common_data/scenarios/_regression/1065/", "e_coli_1000.fa",
+                                                                 "Bowtie", false, sandBoxDir, "e_colli_1000"));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_INDEX);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QDir dir(sandBoxDir);
+    CHECK_SET_ERR( dir.entryList(QDir::Files).count() == 6, QString("Incorrect count of index files: got %1, expected 6").arg(dir.entryList(QDir::Files).count()));
+    foreach (const QString &fileName, dir.entryList(QDir::Files)) {
+        CHECK_SET_ERR(fileName.endsWith("ebwt"), "Incorrect result file");
+    }
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1065_2) {
+//    Align short reads with the "Bowtie" tool by index.
+//    1. Select {Tools->Align to reference->Align short reads} in the main menu.
+//    Expected state: the "Align sequencing reads" dialog appeared.
+//    2. Fill the dialog with next values:
+//        {Alignmnet method}	Bowtie
+//        {Reference sequence}	_common_data/scenarios/_regression/1065/index/e_coli_100
+//        {Result file name}	_tmp/e_coli_1000.sam
+//        {Prebuild index}	checked
+//        {Short reads}		_common_data/scanarios/_regression/1065/e_coli_1000.fq
+//    And click the "Start" button.
+//    Expected state: the Bowtie task successfully completes, the "Import SAM file" dialog appeared.
+//    3. Set the {Destination URL} field with "_tmp/e_coli_1000.sam.ugenedb" value and click "Import" button.
+//    Expected state: SAM importing task successfully finish, the Assembly Viewer opens.
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/1065_2"));
+    AlignShortReadsFiller::Parameters p(testDir + "_common_data/scenarios/_regression/1065/", "e_coli_1000.fa",
+                                        testDir + "_common_data/scenarios/_regression/1065/", "e_coli_1000.fq",
+                                        AlignShortReadsFiller::Parameters::Bowtie);
+    p.prebuiltIndex = true;
+    p.useDefaultResultPath = false;
+    p.resultDir = sandBoxDir;
+    p.resultFileName = "1065_2";
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &p));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTGlobals::sleep();
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1065_3) {
+//    Bowtie align without prebuilt index.
+//    1. Select {Tools->Align to reference->Align short reads} in the main menu.
+//    Expected state: the "Align sequencing reads" dialog appeared.
+//    2. Fill the dialog with next values:
+//        {Alignmnet method}	Bowtie
+//        {Reference sequence}	_common_data/scenarios/_regression/1065/e_coli_100.fa
+//        {Result file name}	_tmp/e_coli_1000.sam
+//        {Prebuild index}	unchecked
+//        {Short reads}		_common_data/scanarios/_regression/1065/e_coli_1000.fq
+//    And click the "Start" button.
+//    Expected state: the Bowtie task successfully completes, the "Import SAM file" dialog appeared.
+//    3. Set the {Destination URL} field with "_tmp/e_coli_1000.sam.ugenedb" value and click "Import" button.
+//    Expected state: SAM importing task successfully finish, the Assembly Viewer opens.
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/1065_3"));
+    AlignShortReadsFiller::Parameters p(testDir + "_common_data/scenarios/_regression/1065/", "e_coli_1000.fa",
+                                        testDir + "_common_data/scenarios/_regression/1065/", "e_coli_1000.fq",
+                                        AlignShortReadsFiller::Parameters::Bowtie);
+    p.useDefaultResultPath = false;
+    p.resultDir = sandBoxDir;
+    p.resultFileName = "1065_3";
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &p));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTGlobals::sleep();
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1083) {
 //1. open files data\samples\FASTA\human_T1.fa
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");

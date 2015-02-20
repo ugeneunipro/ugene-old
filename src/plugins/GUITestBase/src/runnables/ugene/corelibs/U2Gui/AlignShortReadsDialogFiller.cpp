@@ -103,7 +103,7 @@ void AlignShortReadsFiller::setCommonParameters(QWidget* dialog) {
     CHECK_OP(os, );
 
     if (!parameters->useDefaultResultPath) {
-        GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils (os, parameters->resultDir, parameters->resultFileName));
+        GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils (os, parameters->resultDir, parameters->resultFileName, GTFileDialogUtils::Save));
         CHECK_OP(os, );
 
         QWidget* setResultFileNameButton = GTWidget::findWidget(os, "setResultFileNameButton", dialog);
