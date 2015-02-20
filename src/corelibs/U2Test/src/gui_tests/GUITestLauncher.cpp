@@ -43,7 +43,7 @@
 #define NUMBER_OF_TESTS_IN_SUTIE 600
 #endif
 #ifdef Q_OS_WIN
-#define NUMBER_OF_TESTS_IN_SUTIE 700
+#define NUMBER_OF_TESTS_IN_SUTIE 850
 #endif
 #define GUITESTING_REPORT_PREFIX "GUITesting"
 
