@@ -106,6 +106,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/external_tools/ClustalOSupportRunDialogFiller.h \
             src/runnables/ugene/plugins/external_tools/FormatDBDialogFiller.h \
             src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h \
+            src/runnables/ugene/plugins/external_tools/SpadesGenomeAssemblyDialogFiller.h \
             src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h \
 #   Runnables / UGENE / plugins / pcr
             src/runnables/ugene/plugins/pcr/AddPrimerDialogFiller.h \
@@ -132,6 +133,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsAssemblyBrowser.h \
             src/GTUtilsBookmarksTreeView.h \
             src/GTUtilsCircularView.h \
+            src/GTUtilsDashboard.h \
             src/GTUtilsDialog.h \
             src/GTUtilsDocument.h \
             src/GTUtilsEscClicker.h \
@@ -248,9 +250,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTGraphicsItem.h \
             src/api/GTTreeView.h \
             src/api/GTListWidget.h \
-            src/api/GTSlider.h \
-    src/GTUtilsDashboard.h \
-    src/runnables/ugene/plugins/external_tools/SpadesGenomeAssemblyDialogFiller.h
+            src/api/GTSlider.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -356,6 +356,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/external_tools/ClustalOSupportRunDialogFiller.cpp \
             src/runnables/ugene/plugins/external_tools/FormatDBDialogFiller.cpp \
             src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.cpp \
+            src/runnables/ugene/plugins/external_tools/SpadesGenomeAssemblyDialogFiller.cpp \
             src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp \
 #   Runnables / UGENE / plugins / pcr
             src/runnables/ugene/plugins/pcr/AddPrimerDialogFiller.cpp \
@@ -382,6 +383,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsAssemblyBrowser.cpp \
             src/GTUtilsBookmarksTreeView.cpp \
             src/GTUtilsCircularView.cpp \
+            src/GTUtilsDashboard.cpp \
             src/GTUtilsDialog.cpp \
             src/GTUtilsDocument.cpp \
             src/GTUtilsEscClicker.cpp \
@@ -410,7 +412,11 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Tests
             src/tests/GUIInitialChecks.cpp \
 #   Tests/Regression Scenarios
-            src/tests/regression_scenarios/GTTestsRegressionScenarios.cpp \
+            src/tests/regression_scenarios/GTTestsRegressionScenarios_1_1000.cpp \
+            src/tests/regression_scenarios/GTTestsRegressionScenarios_1001_2000.cpp \
+            src/tests/regression_scenarios/GTTestsRegressionScenarios_2001_3000.cpp \
+            src/tests/regression_scenarios/GTTestsRegressionScenarios_3001_4000.cpp \
+            src/tests/regression_scenarios/GTTestsRegressionScenarios_4001_5000.cpp \
 #   Tests/Common Scenarios
             src/tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.cpp \
             src/tests/common_scenarios/sequence_view/GTTestsSequenceView.cpp \
@@ -504,6 +510,4 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTGraphicsItem.cpp \
             src/api/GTTreeView.cpp \
             src/api/GTListWidget.cpp \
-            src/api/GTSlider.cpp \
-    src/GTUtilsDashboard.cpp \
-    src/runnables/ugene/plugins/external_tools/SpadesGenomeAssemblyDialogFiller.cpp
+            src/api/GTSlider.cpp

@@ -193,9 +193,6 @@ namespace U2 {
 
 namespace GUITest_regression_scenarios {
 
-
-
-
 GUI_TEST_CLASS_DEFINITION(test_3014) {
     //1. Open the _common_data/scenarios/_regression/3014/pdb2q41.ent.gz
     GTLogTracer l;
