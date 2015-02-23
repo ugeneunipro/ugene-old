@@ -124,6 +124,7 @@ public:
     QTimer* timer;
     void startChecking();
     U2OpStatus &os;
+    bool mightHung;
 public slots:
     void sl_check();
 };
