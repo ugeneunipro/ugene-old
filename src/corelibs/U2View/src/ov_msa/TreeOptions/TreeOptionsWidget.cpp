@@ -104,15 +104,13 @@ TreeOptionsWidget::~TreeOptionsWidget()
 
 void TreeOptionsWidget::initColorButtonsStyle() {
 #if (QT_VERSION < 0x050000) //Qt 5
-    QStyle *buttonStyle = new QPlastiqueStyle(this);
-    labelsColorButton->setStyle(buttonStyle);
-    branchesColorButton->setStyle(buttonStyle);
+    QStyle *buttonStyle = new QPlastiqueStyle;
 #else
     QStyle *buttonStyle = new QProxyStyle(QStyleFactory::create("fusion"));
+#endif
     buttonStyle->setParent(this);
     labelsColorButton->setStyle(buttonStyle);
     branchesColorButton->setStyle(buttonStyle);
-#endif
 }
 
 const TreeOpWidgetViewSettings& TreeOptionsWidget::getViewSettings() {

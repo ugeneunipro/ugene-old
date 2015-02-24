@@ -42,12 +42,12 @@ TextSettingsDialog::TextSettingsDialog(QWidget *parent, const OptionsMap& settin
     curColor = qvariant_cast<QColor>(settings[LABEL_COLOR]);
 
 #if (QT_VERSION < 0x050000) //Qt 5
-    colorButton->setStyle(new QPlastiqueStyle(colorButton));
+    QStyle *buttonStyle = new QPlastiqueStyle;
 #else
     QStyle *buttonStyle = new QProxyStyle(QStyleFactory::create("fusion"));
+#endif
     buttonStyle->setParent(colorButton);
     colorButton->setStyle(buttonStyle);
-#endif
 
     updateColorButton();
     QFont curFont = qvariant_cast<QFont>(settings[LABEL_FONT]);

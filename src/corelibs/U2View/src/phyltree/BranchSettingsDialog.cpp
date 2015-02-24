@@ -44,12 +44,12 @@ BranchSettingsDialog::BranchSettingsDialog(QWidget *parent, const OptionsMap& se
     thicknessSpinBox->setValue(changedSettings[BRANCH_THICKNESS].toInt());
 
 #if (QT_VERSION < 0x050000) //Qt 5
-    colorButton->setStyle(new QPlastiqueStyle(colorButton));
+    QStyle *buttonStyle = new QPlastiqueStyle;
 #else
     QStyle *buttonStyle = new QProxyStyle(QStyleFactory::create("fusion"));
+#endif
     buttonStyle->setParent(colorButton);
     colorButton->setStyle(buttonStyle);
-#endif
 
     updateColorButton();
 
