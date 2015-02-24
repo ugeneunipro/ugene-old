@@ -61,10 +61,10 @@ const QString &_additionalProcessToKill)
   toolName(_toolName),
   workingDirectory(_workingDirectory),
   additionalPaths(_additionalPaths),
-  additionalProcessToKill(_additionalProcessToKill),
   externalToolProcess(NULL),
   helper(NULL),
-  listener(NULL)
+  listener(NULL),
+  additionalProcessToKill(_additionalProcessToKill)
 {
     coreLog.trace("Creating run task for: " + toolName);
 }

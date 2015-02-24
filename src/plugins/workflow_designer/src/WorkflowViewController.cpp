@@ -345,10 +345,6 @@ void WorkflowView::openSample(const SampleAction &action) {
     }
 }
 
-void WorkflowView::selectSample(const QString &category, const QString &sample) {
-    tabs->setCurrentIndex(SamplesTab);
-}
-
 WorkflowView::WorkflowView(WorkflowGObject* go)
 : MWMDIWindow(tr("Workflow Designer")), running(false), sceneRecreation(false), go(go), currentProto(NULL), currentActor(NULL),
 pasteCount(0), debugInfo(new WorkflowDebugStatus(this)), debugActions()

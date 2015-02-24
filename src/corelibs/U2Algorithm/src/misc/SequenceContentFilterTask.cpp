@@ -149,7 +149,7 @@ bool SequenceContentFilterTask::initFindAlgorithmSettings(U2SequenceObject *seqO
     return true;
 }
 
-void SequenceContentFilterTask::onResult(const FindAlgorithmResult &r) {
+void SequenceContentFilterTask::onResult(const FindAlgorithmResult & /*r*/) {
     searchStopFlag = 1;
 }
 

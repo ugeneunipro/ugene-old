@@ -226,7 +226,7 @@ void AlignToReferenceTask::prepare() {
     subTasksCount = subTasks.size();
 }
 
-QList<Task*> AlignToReferenceTask::onSubTaskFinished(Task *subTask) {
+QList<Task*> AlignToReferenceTask::onSubTaskFinished(Task * /*subTask*/) {
     QList<Task*> result;
     if (1 == subTasksCount) {
         composeSubTask = new ComposeResultSubTask(reference, reads, subTasks, storage);
@@ -347,7 +347,7 @@ void ComposeResultSubTask::createAnnotations(const MAlignment &alignment) {
         CHECK_OP(stateInfo, );
 
         AnnotationData ann;
-        ann.location = getLocation(region, task->isComplement(), referenceRow.getSequence().length());
+        ann.location = getLocation(region, task->isComplement());
         ann.name = GBFeatureUtils::getKeyInfo(GBFeatureKey_misc_feature).text;
         ann.qualifiers << U2Qualifier("label", task->getInitialReadName());
         annsObject->addAnnotation(ann);
@@ -386,7 +386,7 @@ U2Region ComposeResultSubTask::getReadRegion(const MAlignmentRow &readRow, const
     return region;
 }
 
-U2Location ComposeResultSubTask::getLocation(const U2Region &region, bool isComplement, qint64 referenceLength) {
+U2Location ComposeResultSubTask::getLocation(const U2Region &region, bool isComplement) {
     U2Location result;
     result->strand = isComplement ? U2Strand(U2Strand::Complementary) : U2Strand(U2Strand::Direct);
 

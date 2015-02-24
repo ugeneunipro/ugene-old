@@ -256,8 +256,6 @@ protected:
     virtual void paintEvent(QPaintEvent *event);
 
 private:
-    void selectSample(const QString &category, const QString &sample);
-
     void createActions();
     void saveState();
     void recreateScene();

@@ -127,7 +127,7 @@ private:
     MAlignment createAlignment();
     void createAnnotations(const MAlignment &alignment);
     U2Region getReadRegion(const MAlignmentRow &readRow, const MAlignmentRow &referenceRow) const;
-    U2Location getLocation(const U2Region &region, bool isComplement, qint64 referenceLength);
+    U2Location getLocation(const U2Region &region, bool isComplement);
 
 private:
     const SharedDbiDataHandler reference;

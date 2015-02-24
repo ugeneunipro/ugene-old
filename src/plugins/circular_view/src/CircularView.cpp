@@ -1132,7 +1132,7 @@ void CircularViewRenderArea::buildAnnotationLabel( const QFont &font, const Anno
     removeRegionsOutOfRange(location, seqLen);
 
     qStableSort(location.begin(), location.end(), isGreater);
-    QPair<U2Region, U2Region> mergedRegions = mergeCircularJunctoinRegion(location, seqLen);
+    mergeCircularJunctoinRegion(location, seqLen);
 
     for( int r = 0; r < location.count( ); r++ ) {
         CircularAnnotationLabel *label = new CircularAnnotationLabel( a, location,

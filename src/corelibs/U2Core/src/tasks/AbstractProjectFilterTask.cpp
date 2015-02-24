@@ -79,7 +79,7 @@ void AbstractProjectFilterTask::filterDocument(Document *doc) {
     }
 }
 
-bool AbstractProjectFilterTask::filterAcceptsObject(GObject *obj) {
+bool AbstractProjectFilterTask::filterAcceptsObject(GObject * /*obj*/) {
     FAIL("AbstractProjectFilterTask::filterAcceptsObject is not implemented", false);
 }
 

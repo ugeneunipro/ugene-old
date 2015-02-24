@@ -40,7 +40,7 @@ namespace {
 }
 
 SampleAction::SampleAction(const QString &actionName, const QString &toolsMenu, const QString &samplePath, LoadingMode mode, const QString &actionText)
-: actionName(actionName), toolsMenu(toolsMenu), samplePath(samplePath), mode(mode), actionText(actionText)
+: actionText(actionText), actionName(actionName), toolsMenu(toolsMenu), samplePath(samplePath), mode(mode)
 {
 
 }

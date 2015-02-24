@@ -1025,6 +1025,7 @@ void MAlignment::addRow(const QString& name, const DNASequence &sequence, const 
         len += gap.gap;
     }
 
+    newRow.setName(name);
     addRow(newRow, len, -1, os);
 }
 

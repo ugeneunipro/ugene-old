@@ -914,7 +914,7 @@ void SQLiteMsaDbi::updateGapModelCore(const U2DataId &msaId, qint64 msaRowId, co
     CHECK_OP(os, );
 }
 
-void SQLiteMsaDbi::addRowSubcore(const U2DataId &msaId, qint64 numOfRows, qint64 maxRowLength, const QList<qint64> &rowsOrder, U2OpStatus &os) {
+void SQLiteMsaDbi::addRowSubcore(const U2DataId &msaId, qint64 numOfRows, const QList<qint64> &rowsOrder, U2OpStatus &os) {
     // Re-calculate position, if needed
     setNewRowsOrderCore(msaId, rowsOrder, os);
     CHECK_OP(os, );
@@ -949,7 +949,7 @@ void SQLiteMsaDbi::addRowCore(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& 
     if (posInMsa != numOfRows) {
         rowsOrder.insert(posInMsa, row.rowId);
     }
-    addRowSubcore(msaId, numOfRows+1, row.length, rowsOrder, os);
+    addRowSubcore(msaId, numOfRows+1, rowsOrder, os);
 }
 
 void SQLiteMsaDbi::addRowsCore(const U2DataId &msaId, const QList<qint64> &posInMsa, QList<U2MsaRow> &rows, U2OpStatus &os) {
@@ -962,7 +962,6 @@ void SQLiteMsaDbi::addRowsCore(const U2DataId &msaId, const QList<qint64> &posIn
     SAFE_POINT(rowsOrder.count() == numOfRows, "Incorrect number of rows!", );
 
     // Add new rows
-    qint64 maxRowLength = 0;
     QList<qint64>::ConstIterator pi = posInMsa.begin();
     QList<U2MsaRow>::Iterator ri = rows.begin();
     for (; ri != rows.end(); ri++, pi++) {
@@ -974,12 +973,11 @@ void SQLiteMsaDbi::addRowsCore(const U2DataId &msaId, const QList<qint64> &posIn
         addMsaRowAndGaps(msaId, pos, *ri, os);
         CHECK_OP(os, );
         ri->length = calculateRowLength(ri->gend - ri->gstart, ri->gaps);
-        maxRowLength = qMax(ri->length, maxRowLength);
         numOfRows++;
         rowsOrder.insert(pos, ri->rowId);
     }
 
-    addRowSubcore(msaId, numOfRows, maxRowLength, rowsOrder, os);
+    addRowSubcore(msaId, numOfRows, rowsOrder, os);
 }
 
 void SQLiteMsaDbi::removeRowSubcore(const U2DataId &msaId, qint64 numOfRows, U2OpStatus &os) {

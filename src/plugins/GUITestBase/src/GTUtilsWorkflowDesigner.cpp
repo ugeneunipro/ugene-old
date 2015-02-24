@@ -566,7 +566,6 @@ WorkflowBusItem *GTUtilsWorkflowDesigner::getConnectionArrow(U2OpStatus &os, Wor
     QList<WorkflowPortItem*> toList = to->getPortItems();
 
     QList<WorkflowBusItem*> arrows = getAllConnectionArrows(os);
-    int arNum = arrows.count();
 
     foreach(WorkflowPortItem* fromPort, fromList){
         foreach(WorkflowPortItem* toPort, toList){

@@ -80,7 +80,7 @@ void GTUtilsDashboard::checkElement(U2OpStatus &os, QString text, QString tag, b
         int width = el.geometry().width();
 
         if (compare(s, text, exactMatch) && width != 0){
-            bool found = true;
+            found = true;
         }
     }
     if(exists){
