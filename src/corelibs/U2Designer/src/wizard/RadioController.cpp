@@ -56,13 +56,16 @@ QWidget * RadioController::createGUI(U2OpStatus &/*os*/) {
         b->setChecked(value.id == id);
         b->setProperty(VAR_ID, value.id);
         if (!value.tooltip.isEmpty()) {
+            QHBoxLayout *labelLayout = new QHBoxLayout;
+            labelLayout->setContentsMargins(20, 0, 0, 10);
+            l->addLayout(labelLayout);
+
             QLabel *label = new QLabel(value.tooltip);
             label->setWordWrap(true);
             label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
             label->setMinimumSize(0, 0);
 
-            label->setStyleSheet("padding: 0px 0px 10px 15px;");
-            l->addWidget(label);
+            labelLayout->addWidget(label);
 
             b->setToolTip(value.tooltip);
         }
