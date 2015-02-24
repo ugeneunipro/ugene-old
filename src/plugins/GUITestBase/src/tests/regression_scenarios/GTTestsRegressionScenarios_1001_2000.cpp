@@ -826,6 +826,24 @@ GUI_TEST_CLASS_DEFINITION(test_1122){
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1133) {
+    //    1. Open "_common_data/fasta/fa1.fa".
+    //    Expected state: sequence viewer had opened.
+    GTFileDialog::openFile(os, dataDir + "/samples/FASTA/human_T1.fa");
+
+    //    2. Click on toolbar "Find pattern [Smith-Waterman]".
+    //    Expected state: "Smith-Waterman Search" dialog is opened.
+    //    3. Check "Scoring matrix" field
+    //    Expected state: "Scoring matrix" field not contain "rna" value.
+    QString patttern = "ATGAA    GGAAAAA\nA T G CTA AG GG\nCAGC    CAGAG AGAGGTCA GGT";
+    GTUtilsDialog::waitForDialog(os, new SmithWatermanDialogFiller(os, patttern));
+    GTWidget::click(os, GTToolbar::getWidgetForActionTooltip(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Find pattern [Smith-Waterman]"));
+    GTGlobals::sleep();
+
+    GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature  (0, 1)");
+}
+
+
 GUI_TEST_CLASS_DEFINITION(test_1163){
 
     // 1. Open file *.ugenedb (for example _common_data\ugenedb\example-alignment.ugenedb) in assembly browser.
