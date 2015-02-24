@@ -83,14 +83,13 @@ void VectorNtiSequenceFormat::storeEntry(IOAdapter *io, const QMap<GObjectType, 
         SAFE_POINT(1 >= seqs.size(), "Vector NTI entry storing: sequence objects count error", );
         if (1 == seqs.size()) {
             seq = dynamic_cast<U2SequenceObject *>(seqs.first());
-            SAFE_POINT(NULL != seq, "Vector NTI entry storing: NULL sequence object", );
         }
     }
+    SAFE_POINT(NULL != seq, "Vector NTI entry storing: NULL sequence object", );
 
     if (objectsMap.contains(GObjectTypes::ANNOTATION_TABLE)) {
         anns = objectsMap[GObjectTypes::ANNOTATION_TABLE];
     }
-    SAFE_POINT(NULL != seq, "Store entry: nothing to write", );
 
     //reading header attribute
     QString locusFromAttributes;
@@ -141,7 +140,6 @@ void VectorNtiSequenceFormat::storeEntry(IOAdapter *io, const QMap<GObjectType, 
 
     // write annotations
     if (!anns.isEmpty()) {
-        // TODO: parse labels on read
         SAFE_POINT_EXT(NULL != seq->getAlphabet(), os.setError(L10N::nullPointerError("sequence alphabet")), );
         const bool isAmino = seq->getAlphabet()->isAmino();
         writeAnnotations(io, anns, isAmino, os);
@@ -149,7 +147,6 @@ void VectorNtiSequenceFormat::storeEntry(IOAdapter *io, const QMap<GObjectType, 
     }
 
     if (NULL != seq) {
-        //todo: store sequence alphabet!
         QList<U2Region> lowerCaseRegs = U1AnnotationUtils::getRelatedLowerCaseRegions(seq, anns);
         writeSequence(io, seq, lowerCaseRegs, os);
         CHECK_OP(os, );
@@ -187,7 +184,6 @@ U2FeatureType VectorNtiSequenceFormat::getFeatureType(const QString &typeString)
 }
 
 QString VectorNtiSequenceFormat::getFeatureTypeString(U2FeatureType featureType, bool isAmino) const {
-    // TODO: switch key and value in maps
     if (isAmino) {
         return proteinFeatureType2StringMap.value(proteinFeatureTypesMap.value(featureType, ProteinMiscFeature), DEFAULT_FEATURE_TYPE_NAME);
     } else {
