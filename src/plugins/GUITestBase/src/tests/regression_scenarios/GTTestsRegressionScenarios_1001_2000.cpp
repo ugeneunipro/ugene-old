@@ -1005,6 +1005,20 @@ GUI_TEST_CLASS_DEFINITION(test_1204){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1210){
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    WorkflowProcessItem *readSequence = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    WorkflowProcessItem *readAlignment = GTUtilsWorkflowDesigner::addElement(os, "Read Alignment");
+    WorkflowProcessItem *callVariants = GTUtilsWorkflowDesigner::addElement(os, "Call Variants with SAMtools");
+
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Alignment", dataDir + "samples/Assembly/ChrM.sam");
+
+    GTUtilsWorkflowDesigner::connect(os, readSequence, callVariants);
+    GTUtilsWorkflowDesigner::connect(os, readAlignment, callVariants);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1212){
 //    1. Open any sequence. (human_t1.fa)
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
