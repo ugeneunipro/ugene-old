@@ -827,14 +827,13 @@ GUI_TEST_CLASS_DEFINITION(test_1122){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1133) {
-    //    1. Open "_common_data/fasta/fa1.fa".
-    //    Expected state: sequence viewer had opened.
+//     1. Open human_t1.fa
+//     2. Open Smith-Waterman search dialog
+//     3. Paste sequence from text file to pattern field
+//     4. Run search
+// 
+//     Expected state: Search successfully perfoms 
     GTFileDialog::openFile(os, dataDir + "/samples/FASTA/human_T1.fa");
-
-    //    2. Click on toolbar "Find pattern [Smith-Waterman]".
-    //    Expected state: "Smith-Waterman Search" dialog is opened.
-    //    3. Check "Scoring matrix" field
-    //    Expected state: "Scoring matrix" field not contain "rna" value.
     QString patttern = "ATGAA    GGAAAAA\nA T G CTA AG GG\nCAGC    CAGAG AGAGGTCA GGT";
     GTUtilsDialog::waitForDialog(os, new SmithWatermanDialogFiller(os, patttern));
     GTWidget::click(os, GTToolbar::getWidgetForActionTooltip(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Find pattern [Smith-Waterman]"));
@@ -843,6 +842,35 @@ GUI_TEST_CLASS_DEFINITION(test_1133) {
     GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature  (0, 1)");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1157) {
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    WorkflowProcessItem *readSequence = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    WorkflowProcessItem *writeSequence = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+    
+    QString resultFilePath = testDir + "_common_data/scenarios/sandbox/test_1157.gb";
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", "genbank", GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", resultFilePath, GTUtilsWorkflowDesigner::textValue);
+    
+    WorkflowProcessItem *callocationSearch = GTUtilsWorkflowDesigner::addElement(os, "Collocation Search");
+    GTUtilsWorkflowDesigner::setParameter(os, "Result type", "Copy original annotations", GTUtilsWorkflowDesigner::comboValue);
+    GTGlobals::sleep(750);
+    GTUtilsWorkflowDesigner::setParameter(os, "Group of annotations", "mat_peptide, CDS", GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Must fit into region", "False", GTUtilsWorkflowDesigner::comboValue);
+
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/Genbank/sars.gb");
+
+    GTUtilsWorkflowDesigner::connect(os, readSequence, callocationSearch);
+    GTUtilsWorkflowDesigner::connect(os, callocationSearch, writeSequence);
+    
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTFileDialog::openFile(os, resultFilePath);
+
+    GTUtilsAnnotationsTreeView::findItem(os, "CDS  (0, 17)");
+    GTUtilsAnnotationsTreeView::findItem(os, "mat_peptide  (0, 32)");
+}
 
 GUI_TEST_CLASS_DEFINITION(test_1163){
 
