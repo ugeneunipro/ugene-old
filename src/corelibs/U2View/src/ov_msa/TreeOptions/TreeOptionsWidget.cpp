@@ -20,6 +20,12 @@
  */
 
 #include <QColorDialog>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QPlastiqueStyle>
+#else
+#include <QProxyStyle>
+#include <QStyleFactory>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/L10n.h>
@@ -69,9 +75,7 @@ TreeOptionsWidget::TreeOptionsWidget(MSAEditor* m, const TreeOpWidgetViewSetting
     contentWidget = new QWidget();
     setupUi(contentWidget);
 
-    labelsColorButton->setStyle(&colorButtonsStyle);
-    branchesColorButton->setStyle(&colorButtonsStyle);
-
+    initColorButtonsStyle();
     createGroups();
 
     U2WidgetStateStorage::restoreWidgetState(savableTab);
@@ -86,9 +90,7 @@ TreeOptionsWidget::TreeOptionsWidget(TreeViewer* tree, const TreeOpWidgetViewSet
     contentWidget = new QWidget();
     setupUi(contentWidget);
 
-    labelsColorButton->setStyle(&colorButtonsStyle);
-    branchesColorButton->setStyle(&colorButtonsStyle);
-
+    initColorButtonsStyle();
     createGroups();
 
     U2WidgetStateStorage::restoreWidgetState(savableTab);
@@ -98,6 +100,19 @@ TreeOptionsWidget::~TreeOptionsWidget()
 {
     emit saveViewSettings(getViewSettings());
     delete contentWidget;
+}
+
+void TreeOptionsWidget::initColorButtonsStyle() {
+#if (QT_VERSION < 0x050000) //Qt 5
+    QStyle *buttonStyle = new QPlastiqueStyle(this);
+    labelsColorButton->setStyle(buttonStyle);
+    branchesColorButton->setStyle(buttonStyle);
+#else
+    QStyle *buttonStyle = new QProxyStyle(QStyleFactory::create("fusion"));
+    buttonStyle->setParent(this);
+    labelsColorButton->setStyle(buttonStyle);
+    branchesColorButton->setStyle(buttonStyle);
+#endif
 }
 
 const TreeOpWidgetViewSettings& TreeOptionsWidget::getViewSettings() {

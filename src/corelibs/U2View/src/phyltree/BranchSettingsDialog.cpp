@@ -19,25 +19,41 @@
  * MA 02110-1301, USA.
  */
 
-#include "BranchSettingsDialog.h"
 #include <QColorDialog>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QPlastiqueStyle>
+#else
+#include <QProxyStyle>
+#include <QStyleFactory>
+#endif
+
 #include <U2Gui/HelpButton.h>
+
+#include "BranchSettingsDialog.h"
 
 namespace U2 {
 
-BranchSettingsDialog::BranchSettingsDialog(QWidget *parent, const OptionsMap& settings) :
-    BaseSettingsDialog(parent) {
+BranchSettingsDialog::BranchSettingsDialog(QWidget *parent, const OptionsMap& settings)
+    : BaseSettingsDialog(parent)
+{
     changedSettings[BRANCH_COLOR] = settings[BRANCH_COLOR];
     changedSettings[BRANCH_THICKNESS] = settings[BRANCH_THICKNESS];
     setupUi(this);
     new HelpButton(this, buttonBox, "14059089");
 
     thicknessSpinBox->setValue(changedSettings[BRANCH_THICKNESS].toInt());
-    colorButton->setStyle(&buttonStyle);
+
+#if (QT_VERSION < 0x050000) //Qt 5
+    colorButton->setStyle(new QPlastiqueStyle(colorButton));
+#else
+    QStyle *buttonStyle = new QProxyStyle(QStyleFactory::create("fusion"));
+    buttonStyle->setParent(colorButton);
+    colorButton->setStyle(buttonStyle);
+#endif
+
     updateColorButton();
 
     connect(colorButton, SIGNAL(clicked()), SLOT(sl_colorButton()));
-
 }
 
 void BranchSettingsDialog::updateColorButton() {
@@ -67,4 +83,5 @@ void BranchSettingsDialog::accept() {
     changedSettings[BRANCH_THICKNESS] = thicknessSpinBox->value();
     QDialog::accept();
 }
+
 } //namespace

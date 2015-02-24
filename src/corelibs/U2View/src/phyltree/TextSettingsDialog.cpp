@@ -19,9 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include "TextSettingsDialog.h"
 #include <QColorDialog>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QPlastiqueStyle>
+#else
+#include <QProxyStyle>
+#include <QStyleFactory>
+#endif
+
 #include <U2Gui/HelpButton.h>
+
+#include "TextSettingsDialog.h"
 
 namespace U2 {
 
@@ -32,7 +40,15 @@ TextSettingsDialog::TextSettingsDialog(QWidget *parent, const OptionsMap& settin
     new HelpButton(this, buttonBox, "14059094");
 
     curColor = qvariant_cast<QColor>(settings[LABEL_COLOR]);
-    colorButton->setStyle(&colorStyle);
+
+#if (QT_VERSION < 0x050000) //Qt 5
+    colorButton->setStyle(new QPlastiqueStyle(colorButton));
+#else
+    QStyle *buttonStyle = new QProxyStyle(QStyleFactory::create("fusion"));
+    buttonStyle->setParent(colorButton);
+    colorButton->setStyle(buttonStyle);
+#endif
+
     updateColorButton();
     QFont curFont = qvariant_cast<QFont>(settings[LABEL_FONT]);
     fontComboBox->setCurrentFont(curFont);

@@ -302,7 +302,6 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_phyltree/GraphicsCircularBranchItem.cpp \
            src/ov_phyltree/GraphicsRectangularBranchItem.cpp \
            src/ov_phyltree/GraphicsUnrootedBranchItem.cpp \
-           src/ov_phyltree/TreeSettings.cpp \
            src/ov_phyltree/TreeViewer.cpp \
            src/ov_phyltree/TreeViewerFactory.cpp \
            src/ov_phyltree/TreeViewerState.cpp \

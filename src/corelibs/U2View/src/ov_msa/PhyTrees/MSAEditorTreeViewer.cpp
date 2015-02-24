@@ -433,7 +433,7 @@ void MSAEditorTreeViewerUI::sl_sortAlignment() {
 
 void MSAEditorTreeViewerUI::highlightBranches() {
     OptionsMap settings = rectRoot->getSettings();
-    settings[BRANCH_COLOR] = Qt::black;
+    settings[BRANCH_COLOR] = static_cast<int>(Qt::black);
     if(rectRoot) {
         rectRoot->updateSettings(settings);
         rectRoot->updateChildSettings(settings);

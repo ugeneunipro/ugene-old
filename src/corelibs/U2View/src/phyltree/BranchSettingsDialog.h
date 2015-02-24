@@ -25,11 +25,10 @@
 #include "BaseSettingsDialog.h"
 #include "ov_phyltree/TreeSettings.h"
 #include <ui/ui_BranchSettingsDialog.h>
-#include <QPlastiqueStyle>
 
 namespace U2 {
 
-class BranchSettingsDialog : public BaseSettingsDialog, public Ui_BranchSettingsDialog{
+class BranchSettingsDialog : public BaseSettingsDialog, public Ui_BranchSettingsDialog {
     Q_OBJECT
 public:
     BranchSettingsDialog(QWidget *parent, const OptionsMap& settings);
@@ -41,7 +40,6 @@ protected slots:
 
 private:
     void updateColorButton();
-    QPlastiqueStyle buttonStyle;
 };
 
 } //namespace
