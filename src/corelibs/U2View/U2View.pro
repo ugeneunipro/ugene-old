@@ -154,6 +154,7 @@ HEADERS += src/LicenseDialog.h \
            src/ov_sequence/sequence_info/SequenceInfoFactory.h \
            src/ov_text/SimpleTextObjectView.h \
            src/ov_text/SimpleTextObjectViewTasks.h \
+           src/phyltree/BaseSettingsDialog.h \
            src/phyltree/BranchSettingsDialog.h \
            src/phyltree/CreatePhyTreeDialogController.h \
            src/phyltree/CreatePhyTreeWidget.h \
@@ -360,6 +361,7 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_sequence/codon_table/CodonTable.cpp \
            src/ov_text/SimpleTextObjectView.cpp \
            src/ov_text/SimpleTextObjectViewTasks.cpp \
+           src/phyltree/BaseSettingsDialog.cpp \
            src/phyltree/BranchSettingsDialog.cpp \
            src/phyltree/CreatePhyTreeDialogController.cpp \
            src/phyltree/CreatePhyTreeWidget.cpp \

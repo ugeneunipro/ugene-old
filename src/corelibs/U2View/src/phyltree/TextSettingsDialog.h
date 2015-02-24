@@ -22,27 +22,24 @@
 #ifndef _U2_PHYLTREE_TEXT_SETTINGS_DIALOG_H_
 #define _U2_PHYLTREE_TEXT_SETTINGS_DIALOG_H_
 
+#include "BaseSettingsDialog.h"
 #include <ui/ui_TextSettingsDialog.h>
 #include "ov_phyltree/TreeSettings.h"
 
 namespace U2 {
 
-class TextSettingsDialog : public QDialog, public Ui_TextSettingsDialog{
+class TextSettingsDialog : public BaseSettingsDialog, public Ui_TextSettingsDialog{
     Q_OBJECT
 public:
-    TextSettingsDialog(QWidget *parent, const TextSettings &textSettings);
-
+    TextSettingsDialog(QWidget *parent, const OptionsMap& settings);
     virtual void accept();
-    const TextSettings& getSettings() const;
 
 protected slots:
     void sl_colorButton();
 
 private:
-    TextSettings settings;
-    TextSettings changedSettings;
-
     void updateColorButton();
+    QColor curColor;
 };
 
 } //namespace

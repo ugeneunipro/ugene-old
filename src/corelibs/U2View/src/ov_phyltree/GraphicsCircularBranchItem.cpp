@@ -47,7 +47,7 @@ namespace U2 {
 GraphicsCircularBranchItem::GraphicsCircularBranchItem(QGraphicsItem* parent, qreal h, GraphicsRectangularBranchItem* from)
 : GraphicsBranchItem(true), height(h), direction(from->getDirection()), visible(true) {
     setParentItem(parent);
-    settings = from->getBranchSettings();
+    settings = from->getSettings();
     qreal w = from->getWidth();
     setWidthW(w);
     setDist(from->getDist());

@@ -111,8 +111,6 @@ public:
 
     U2Region getTreeSize();
 
-    virtual void setTreeLayout(TreeLayout newLayout);
-
     bool canSynchronizeWithMSA(MSAEditor* msa);
 
     void setSynchronizeMode(SynchronizationMode syncMode);
@@ -124,8 +122,9 @@ protected:
     virtual void resizeEvent(QResizeEvent *e);
 
     virtual void onLayoutChanged(const TreeLayout& layout);
-    virtual void updateSettings(const TreeSettings &settings);
+    void onSettingsChanged(TreeViewOption option, const QVariant& newValue);
     virtual void updateTreeSettings(bool setDefaultZoom = true);
+    virtual void setTreeLayout(TreeLayout newLayout);
 signals:
     void si_collapseModelChangedInTree(const QList<QStringList>&);
     void si_seqOrderChanged(const QStringList& order);

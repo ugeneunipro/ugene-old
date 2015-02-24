@@ -39,6 +39,9 @@
 
 #include "TreeOptionsWidget.h"
 
+#include <QLineEdit>
+#include <QTextEdit>
+
 namespace U2 {
 
 static const int ITEMS_SPACING = 10;
@@ -63,30 +66,26 @@ const QString TreeOptionsWidget::COLOR_BOX_STYLE = "QPushButton {"
                                                         "background-color : %1;}";
 
 TreeOptionsWidget::TreeOptionsWidget(MSAEditor* m, const TreeOpWidgetViewSettings& viewSettings)
-    : msa(m), treeViewer(NULL), viewSettings(viewSettings), settings(NULL), showFontSettings(false), showPenSettings(false),
-    savableTab(this, GObjectViewUtils::findViewByName(m->getName()))
+    : msa(m), treeViewer(NULL), viewSettings(viewSettings), showFontSettings(false), showPenSettings(false),
+    savableTab(this, GObjectViewUtils::findViewByName(m->getName())), isUpdating(false) 
 {
     SAFE_POINT(NULL != msa, QString("Invalid parameter were passed into constructor TreeOptionsWidget"), );
 
     contentWidget = new QWidget();
     setupUi(contentWidget);
-
-    treeSettings = getTreeViewer()->getTreeSettings();
     createGroups();
 
     U2WidgetStateStorage::restoreWidgetState(savableTab);
 }
 
 TreeOptionsWidget::TreeOptionsWidget(TreeViewer* tree, const TreeOpWidgetViewSettings& viewSettings)
-    : msa(NULL), treeViewer(tree->getTreeViewerUI()), viewSettings(viewSettings), settings(NULL), showFontSettings(false), showPenSettings(false),
-    savableTab(this, GObjectViewUtils::findViewByName(tree->getName()))
+    : msa(NULL), treeViewer(tree->getTreeViewerUI()), viewSettings(viewSettings), showFontSettings(false), showPenSettings(false),
+    savableTab(this, GObjectViewUtils::findViewByName(tree->getName())), isUpdating(false)
 {
     SAFE_POINT(NULL != treeViewer, QString("Invalid parameter were passed into constructor TreeOptionsWidget"), );
 
     contentWidget = new QWidget();
     setupUi(contentWidget);
-
-    treeSettings = treeViewer->getTreeSettings();
     createGroups();
 
     U2WidgetStateStorage::restoreWidgetState(savableTab);
@@ -99,9 +98,6 @@ TreeOptionsWidget::~TreeOptionsWidget()
 }
 
 const TreeOpWidgetViewSettings& TreeOptionsWidget::getViewSettings() {
-    viewSettings.openBranchesGroup = branchesOpGroup->isSubgroupOpened();
-    viewSettings.openGeneralGroup = generalOpGroup->isSubgroupOpened();
-    viewSettings.openLabelsGroup = labelsOpGroup->isSubgroupOpened();
     viewSettings.showFontSettings = showFontSettings;
     viewSettings.showPenSettings = showPenSettings;
     return viewSettings;
@@ -111,13 +107,16 @@ void TreeOptionsWidget::createGroups() {
     QVBoxLayout* mainLayout = initLayout(this);
     mainLayout->setSpacing(0);
 
-    generalOpGroup = new ShowHideSubgroupWidget("TREE_GENERAL_OP", tr("General"), treeLayoutWidget, viewSettings.openGeneralGroup);
+    ShowHideSubgroupWidget* generalOpGroup = new ShowHideSubgroupWidget("TREE_GENERAL_OP", tr("General"), treeLayoutWidget, true);
     mainLayout->addWidget(generalOpGroup);
-    labelsOpGroup = new ShowHideSubgroupWidget("TREE_LABELS_OP", tr("Labels"), labelsGroup, viewSettings.openLabelsGroup);
+    ShowHideSubgroupWidget* labelsOpGroup = new ShowHideSubgroupWidget("TREE_LABELS_OP", tr("Labels"), labelsGroup, true);
     mainLayout->addWidget(labelsOpGroup);
-    branchesOpGroup = new ShowHideSubgroupWidget("TREE_BRANCHES_OP", tr("Branches"), branchesGroup, viewSettings.openBranchesGroup);
+    ShowHideSubgroupWidget* scalebarOpGroup = new ShowHideSubgroupWidget("SCALEBAR_OP", tr("Scale Bar"), scalebarGroup, true);
+    mainLayout->addWidget(scalebarOpGroup);
+    ShowHideSubgroupWidget* branchesOpGroup = new ShowHideSubgroupWidget("TREE_BRANCHES_OP", tr("Branches"), branchesGroup, true);
     mainLayout->addWidget(branchesOpGroup);
 
+    initialazeOptionsMap();
     updateAllWidgets();
     connectSlots();
 }
@@ -127,14 +126,57 @@ void TreeOptionsWidget::updateAllWidgets()
     showFontSettings = viewSettings.showFontSettings;
     showPenSettings = viewSettings.showPenSettings;
     createGeneralSettingsWidgets();
-    updateLabelsSettingsWidgets();
-    updateFormatSettings();
-    updateBranchSettings();
 
-    updateShowFontOpLabel("Show font settings");
-    updateShowPenOpLabel("Show pen settings");
-    fontSettingsWidget->setVisible(showFontSettings);
-    penGroup->setVisible(showPenSettings);
+    QString fontLabel = showFontSettings ? "Hide font settings" : "Show font settings";
+    updateShowFontOpLabel(fontLabel);
+    QString penLabel = showPenSettings ? "Hide pen settings" : "Show pen settings";
+    updateShowPenOpLabel(penLabel);
+    fontSettingsWidget->setVisible(viewSettings.showFontSettings);
+    penGroup->setVisible(viewSettings.showPenSettings);
+
+    QMap<TreeViewOption, QVariant> settings = getTreeViewer()->getSettings();
+    foreach(TreeViewOption option, settings.keys()) {
+        sl_onOptionChanged(option, settings[option]);
+    }
+}
+
+void TreeOptionsWidget::sl_onOptionChanged(TreeViewOption option, const QVariant& value) {
+    if(option == LABEL_COLOR || option == LABEL_FONT) {
+        updateFormatSettings();
+        return;
+    }
+    if(option == BRANCH_COLOR) {
+        updateButtonColor(branchesColorButton, qvariant_cast<QColor>(value));
+        return;
+    }
+    updateRelations(option, value);
+
+    QString objectName = optionsMap.key(option);
+    if(objectName.isEmpty()) {
+        return;
+    }
+    isUpdating = true;
+    savableTab.setChildValue(objectName, value);
+    isUpdating = false;
+}
+
+void TreeOptionsWidget::initialazeOptionsMap() {
+    //Scalebar settings widgets
+    optionsMap[scaleSpinBox->objectName()] = SCALEBAR_RANGE;
+    optionsMap[scaleFontSizeSpinBox->objectName()] = SCALEBAR_FONT_SIZE;
+    optionsMap[lineWidthSpinBox->objectName()] = SCALEBAR_LINE_WIDTH;
+
+    optionsMap[showNamesCheck->objectName()] = SHOW_LABELS;
+    optionsMap[showDistancesCheck->objectName()] = SHOW_DISTANCES;
+    optionsMap[alignLabelsCheck->objectName()] = ALIGN_LABELS;
+
+    optionsMap[lineWeightSpinBox->objectName()] = BRANCH_THICKNESS;
+
+    optionsMap[heightSlider->objectName()] = HEIGHT_COEF;
+    optionsMap[widthSlider->objectName()] = WIDTH_COEF;
+
+    optionsMap[treeViewCombo->objectName()] = BRANCHES_TRANSFORMATION_TYPE;
+    optionsMap[layoutCombo->objectName()] = TREE_LAYOUT;
 }
 
 void TreeOptionsWidget::connectSlots()
@@ -144,15 +186,15 @@ void TreeOptionsWidget::connectSlots()
     connect(lblFontSettings, SIGNAL(linkActivated(const QString&)), SLOT(sl_onLblLinkActivated(const QString&)));
 
     // General settings widgets
-    connect(treeViewCombo, SIGNAL(currentIndexChanged(int)), SLOT(sl_onGeneralSettingsChanged()));
-    connect(layoutCombo,   SIGNAL(currentIndexChanged(int)), SLOT(sl_onLayoutChanged(int)));
+    connect(treeViewCombo, SIGNAL(currentIndexChanged(int)), SLOT(sl_valueChanged()));
+    connect(layoutCombo,   SIGNAL(currentIndexChanged(int)), SLOT(sl_valueChanged()));
 
-    connect(getTreeViewer(), SIGNAL(si_settingsChanged(TreeSettingsType)), SLOT(sl_onSettingsChanged(TreeSettingsType)));
+    connect(getTreeViewer(), SIGNAL(si_optionChanged(TreeViewOption, const QVariant&)), SLOT(sl_onOptionChanged(TreeViewOption, const QVariant&)));
 
     //Labels settings widgets
-    connect(showNamesCheck,      SIGNAL(stateChanged(int)), SLOT(sl_onLabelsSettingsChanged()));
-    connect(showDistancesCheck,  SIGNAL(stateChanged(int)), SLOT(sl_onLabelsSettingsChanged()));
-    connect(alignLabelsCheck,    SIGNAL(stateChanged(int)), SLOT(sl_onLabelsSettingsChanged()));
+    connect(showNamesCheck,      SIGNAL(stateChanged(int)), SLOT(sl_valueChanged()));
+    connect(showDistancesCheck,  SIGNAL(stateChanged(int)), SLOT(sl_valueChanged()));
+    connect(alignLabelsCheck,    SIGNAL(stateChanged(int)), SLOT(sl_valueChanged()));
 
     //Labels format widgets
     connect(labelsColorButton,   SIGNAL(clicked()),     SLOT(sl_labelsColorButton()));
@@ -162,12 +204,28 @@ void TreeOptionsWidget::connectSlots()
     connect(fontSizeSpinBox,     SIGNAL(valueChanged(int)), SLOT(sl_fontChanged()));
     connect(fontComboBox,        SIGNAL(currentFontChanged(const QFont &)), SLOT(sl_fontChanged()));
 
+    //Scalebar settings widgets
+    connect(scaleSpinBox,        SIGNAL(valueChanged(double)), SLOT(sl_valueChanged()));
+    connect(scaleFontSizeSpinBox,SIGNAL(valueChanged(int)),    SLOT(sl_valueChanged()));
+    connect(lineWidthSpinBox,    SIGNAL(valueChanged(int)),    SLOT(sl_valueChanged()));
+
     //Branches settings widgets
-    connect(widthSlider,   SIGNAL(valueChanged(int)), SLOT(sl_onGeneralSettingsChanged()));
-    connect(heightSlider,  SIGNAL(valueChanged(int)), SLOT(sl_onGeneralSettingsChanged()));
+    connect(widthSlider,   SIGNAL(valueChanged(int)), SLOT(sl_valueChanged()));
+    connect(heightSlider,  SIGNAL(valueChanged(int)), SLOT(sl_valueChanged()));
 
     connect(branchesColorButton, SIGNAL(clicked()),         SLOT(sl_branchesColorButton()));
-    connect(lineWeightSpinBox,   SIGNAL(valueChanged(int)), SLOT(sl_branchSettingsChanged()));
+    connect(lineWeightSpinBox,   SIGNAL(valueChanged(int)), SLOT(sl_valueChanged()));
+}
+
+void TreeOptionsWidget::sl_valueChanged() {
+    QWidget* inputWidget = qobject_cast<QWidget*>(sender());
+    SAFE_POINT(NULL != inputWidget, "Null sender in slot",);
+    QVariant newValue = savableTab.getChildValue(inputWidget->objectName());
+    TreeViewOption option = optionsMap[inputWidget->objectName()];
+    updateRelations(option, newValue);
+
+    CHECK(!isUpdating, );
+    getTreeViewer()->changeOption(option, newValue);
 }
 
 void TreeOptionsWidget::createGeneralSettingsWidgets(){
@@ -178,107 +236,30 @@ void TreeOptionsWidget::createGeneralSettingsWidgets(){
     treeViewCombo->addItem(TreeSettingsDialog::treeDefaultText());
     treeViewCombo->addItem(TreeSettingsDialog::treePhylogramText());
     treeViewCombo->addItem(TreeSettingsDialog::treeCladogramText());
-    updateGeneralSettingsWidgets();
-}
-
-void TreeOptionsWidget::updateGeneralSettingsWidgets() {
-    switch (treeSettings.type)
-    {
-    case TreeSettings::DEFAULT:
-        treeViewCombo->setCurrentIndex(treeViewCombo->findText(TreeSettingsDialog::treeDefaultText()));
-        break;
-    case TreeSettings::PHYLOGRAM:
-        treeViewCombo->setCurrentIndex(treeViewCombo->findText(TreeSettingsDialog::treePhylogramText()));
-        break;
-    case TreeSettings::CLADOGRAM:
-        treeViewCombo->setCurrentIndex(treeViewCombo->findText(TreeSettingsDialog::treeCladogramText()));
-        break;
-    }
-
-    TreeViewerUI::TreeLayout layout = getTreeViewer()->getTreeLayout();
-    switch(layout) {
-    case TreeViewerUI::TreeLayout_Rectangular:
-        layoutCombo->setCurrentIndex(0);
-        break;
-    case TreeViewerUI::TreeLayout_Circular:
-        layoutCombo->setCurrentIndex(1);
-        break;
-    case TreeViewerUI::TreeLayout_Unrooted:
-        layoutCombo->setCurrentIndex(2);
-        break;
-    };
-}
-
-void TreeOptionsWidget::updateLabelsSettingsWidgets() {
-    labelsSettings = getTreeViewer()->getLabelsSettings();
-
-    showNamesCheck->setCheckState(labelsSettings.showNames ? Qt::Checked : Qt::Unchecked);
-    showDistancesCheck->setCheckState(labelsSettings.showDistances ? Qt::Checked : Qt::Unchecked);
-    alignLabelsCheck->setCheckState(labelsSettings.alignLabels ? Qt::Checked : Qt::Unchecked);
-
-    textSettings = getTreeViewer()->getTextSettings();
 }
 
 void TreeOptionsWidget::updateFormatSettings() {
     //Update labels format settings widgets
-    updateButtonColor(labelsColorButton, textSettings.textColor);
+    QColor curColor = qvariant_cast<QColor>(getTreeViewer()->getOptionValue(LABEL_COLOR));
+    updateButtonColor(labelsColorButton, curColor);
 
-    fontSizeSpinBox->setValue(textSettings.textFont.pointSize());
+    QFont curFont = qvariant_cast<QFont>(getTreeViewer()->getOptionValue(LABEL_FONT));
+    fontSizeSpinBox->setValue(curFont.pointSize());
 
     boldAttrButton->setCheckable(true);
     italicAttrButton->setCheckable(true);
     underlineAttrButton->setCheckable(true);
 
-    boldAttrButton->setChecked(textSettings.textFont.bold());
-    italicAttrButton->setChecked(textSettings.textFont.italic());
-    underlineAttrButton->setChecked(textSettings.textFont.underline());
+    boldAttrButton->setChecked(curFont.bold());
+    italicAttrButton->setChecked(curFont.italic());
+    underlineAttrButton->setChecked(curFont.underline());
 
-    fontComboBox->setCurrentFont(textSettings.textFont);
-}
-
-void TreeOptionsWidget::updateBranchSettings() {
-    //Update branches size settings widgets
-    widthSlider->setMinimum(10);
-    widthSlider->setMaximum(50);
-
-    heightSlider->setMinimum(1);
-    heightSlider->setMaximum(20);
-
-    heightSlider->setSliderPosition(treeSettings.height_coef);
-    widthSlider->setSliderPosition(treeSettings.width_coef);
-
-    heightSlider->setEnabled(getTreeViewer()->layoutIsRectangular());
-    //Update branches pen settings
-    lineWeightSpinBox->setMinimum(1);
-
-    branchSettings = getTreeViewer()->getBranchSettings();
-    lineWeightSpinBox->setValue(branchSettings.branchThickness);
-    updateButtonColor(branchesColorButton, branchSettings.branchColor);
+    fontComboBox->setCurrentFont(curFont);
 }
 
 TreeViewerUI* TreeOptionsWidget::getTreeViewer() {
     SAFE_POINT(msa != NULL || treeViewer != NULL, QString("Invalid parameter in constructor TreeOptionsWidget"), NULL);
     return treeViewer != NULL ? treeViewer : msa->getUI()->getCurrentTree()->getTreeViewerUI();
-}
-
-void TreeOptionsWidget::sl_onGeneralSettingsChanged()
-{
-    treeSettings.height_coef = heightSlider->value();
-    treeSettings.width_coef = widthSlider->value();
-
-    if (treeViewCombo->currentText() == TreeSettingsDialog::treeDefaultText())
-    {
-        treeSettings.type = TreeSettings::DEFAULT;
-    }
-    else if (treeViewCombo->currentText() == TreeSettingsDialog::treePhylogramText())
-    {
-        treeSettings.type = TreeSettings::PHYLOGRAM;
-    } else {
-        SAFE_POINT(treeViewCombo->currentText() == TreeSettingsDialog::treeCladogramText() , QString("Unexpected tree type value in TreeOptionsWidget"),);
-        treeSettings.type = TreeSettings::CLADOGRAM;
-    }
-
-    getTreeViewer()->updateSettings(treeSettings);
 }
 
 void TreeOptionsWidget::sl_fontChanged() {
@@ -289,64 +270,25 @@ void TreeOptionsWidget::sl_fontChanged() {
     newFont.setItalic(italicAttrButton->isChecked());
     newFont.setUnderline(underlineAttrButton->isChecked());
 
-    if(newFont != textSettings.textFont) {
-        textSettings.textFont = newFont;
-        getTreeViewer()->updateSettings(textSettings);
-    }
-}
-
-void TreeOptionsWidget::sl_onLabelsSettingsChanged() {
-    TreeLabelsSettings newSettings;
-    newSettings.alignLabels = (Qt::Checked ==  alignLabelsCheck->checkState());
-    newSettings.showNames = (Qt::Checked ==  showNamesCheck->checkState());
-    newSettings.showDistances = (Qt::Checked ==  showDistancesCheck->checkState());
-    if(labelsSettings != newSettings) {
-        labelsSettings = newSettings;
-        alignLabelsCheck->setEnabled(labelsSettings.showNames);
-
-        getTreeViewer()->updateSettings(labelsSettings);
-    }
-}
-
-void TreeOptionsWidget::sl_onLayoutChanged(int index) {
-    heightSlider->setEnabled(false);
-    lblHeightSlider->setEnabled(false);
-    switch(index) {
-        case 0:
-            getTreeViewer()->setTreeLayout(TreeViewerUI::TreeLayout_Rectangular);
-            heightSlider->setEnabled(true);
-            lblHeightSlider->setEnabled(true);
-            break;
-        case 1:
-            getTreeViewer()->setTreeLayout(TreeViewerUI::TreeLayout_Circular);
-            break;
-        case 2:
-            getTreeViewer()->setTreeLayout(TreeViewerUI::TreeLayout_Unrooted);
-            break;
-    }
+    getTreeViewer()->changeOption(LABEL_FONT, newFont);
 }
 
 void TreeOptionsWidget::sl_labelsColorButton() {
-    QColor newColor = QColorDialog::getColor(textSettings.textColor, this);
+    QColor curColor = qvariant_cast<QColor>(getTreeViewer()->getOptionValue(LABEL_COLOR));
+    QColor newColor = QColorDialog::getColor(curColor, this);
     if (newColor.isValid()) {
-       textSettings.textColor = newColor;
-        labelsColorButton->setStyleSheet(COLOR_BOX_STYLE.arg(textSettings.textColor.name()));
-        getTreeViewer()->updateSettings(textSettings);
+        labelsColorButton->setStyleSheet(COLOR_BOX_STYLE.arg(newColor.name()));
+        getTreeViewer()->changeOption(LABEL_COLOR, newColor);
     }
 }
 
 void TreeOptionsWidget::sl_branchesColorButton() {
-    QColor newColor = QColorDialog::getColor(branchSettings.branchColor, this);
+    QColor curColor = qvariant_cast<QColor>(getTreeViewer()->getOptionValue(BRANCH_COLOR));
+    QColor newColor = QColorDialog::getColor(curColor,  this);
     if (newColor.isValid()) {
-        branchSettings.branchColor = newColor;
-        branchesColorButton->setStyleSheet(COLOR_BOX_STYLE.arg(branchSettings.branchColor.name()));
-        sl_branchSettingsChanged();
+        branchesColorButton->setStyleSheet(COLOR_BOX_STYLE.arg(newColor.name()));
+        getTreeViewer()->changeOption(BRANCH_COLOR, newColor);
     }
-}
-
-void TreeOptionsWidget::sl_branchSettingsChanged() {
-    branchSettings.branchThickness = lineWeightSpinBox->value();
-    getTreeViewer()->updateSettings(branchSettings);
 }
 
 void TreeOptionsWidget::sl_onLblLinkActivated(const QString& link) {
@@ -362,34 +304,6 @@ void TreeOptionsWidget::sl_onLblLinkActivated(const QString& link) {
         QString labelText = showPenSettings ? "Hide pen settings" : "Show pen settings";
         updateShowPenOpLabel(labelText);
         penGroup->setVisible(showPenSettings);
-    }
-}
-
-void TreeOptionsWidget::sl_onSettingsChanged(TreeSettingsType settingsType) {
-    TreeViewerUI* treeViewer = getTreeViewer();
-    CHECK(NULL != treeViewer,);
-    switch(settingsType) {
-        case GENERAL_SETTINGS:
-            treeSettings = treeViewer->getTreeSettings();
-            updateGeneralSettingsWidgets();
-            updateBranchSettings();
-            break;
-        case LABELS_SETTINGS:
-            labelsSettings = treeViewer->getLabelsSettings();
-            updateLabelsSettingsWidgets();
-            break;
-        case TEXT_FORMAT:
-            textSettings = treeViewer->getTextSettings();
-            updateFormatSettings();
-            break;
-        case BRANCHES_SETTINGS:
-            branchSettings = treeViewer->getBranchSettings();
-            updateBranchSettings();
-            updateButtonColor(branchesColorButton, branchSettings.branchColor);
-            break;
-        default:
-            //Can not change this type of settings
-            break;
     }
 }
 
@@ -415,7 +329,16 @@ void TreeOptionsWidget::updateShowPenOpLabel(QString newText) {
     lblPenSettings->setTextInteractionFlags(Qt::LinksAccessibleByKeyboard | Qt::LinksAccessibleByMouse);
 }
 
-
+void TreeOptionsWidget::updateRelations(TreeViewOption option, QVariant newValue) {
+    if(option == BRANCHES_TRANSFORMATION_TYPE) {
+        TREE_TYPE type = static_cast<TREE_TYPE>(newValue.toUInt());
+        scalebarGroup->setEnabled(type == PHYLOGRAM);
+    } else if(option == TREE_LAYOUT) {
+        TreeLayout layout = static_cast<TreeLayout>(newValue.toUInt());
+        heightSlider->setEnabled(layout == RECTANGULAR_LAYOUT);
+        lblHeightSlider->setEnabled(layout == RECTANGULAR_LAYOUT);
+    }
+}
 
 AddTreeWidget::AddTreeWidget(MSAEditor* msa)
     : editor(msa), openTreeButton(NULL), buildTreeButton(NULL), addTreeHint(NULL)

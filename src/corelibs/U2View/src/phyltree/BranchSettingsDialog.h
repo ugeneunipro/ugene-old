@@ -22,30 +22,23 @@
 #ifndef _U2_PHYLTREE_BRANCH_SETTINGS_DIALOG_H_
 #define _U2_PHYLTREE_BRANCH_SETTINGS_DIALOG_H_
 
+#include "BaseSettingsDialog.h"
 #include "ov_phyltree/TreeSettings.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
 #include <ui/ui_BranchSettingsDialog.h>
 
 namespace U2 {
 
-class BranchSettingsDialog : public QDialog, public Ui_BranchSettingsDialog{
+class BranchSettingsDialog : public BaseSettingsDialog, public Ui_BranchSettingsDialog{
     Q_OBJECT
 public:
-    BranchSettingsDialog(QWidget *parent, const BranchSettings& branchSettings);
+    BranchSettingsDialog(QWidget *parent, const OptionsMap& settings);
 
     virtual void accept();
-    const BranchSettings& getSettings() const;
 
 protected slots:
     void sl_colorButton();
 
 private:
-    BranchSettings settings;
-    BranchSettings changedSettings;
 
     void updateColorButton();
 };

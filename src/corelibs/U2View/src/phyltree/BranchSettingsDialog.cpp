@@ -20,24 +20,19 @@
  */
 
 #include "BranchSettingsDialog.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QColorDialog>
-#else
-#include <QtWidgets/QColorDialog>
-#endif
+#include <QColorDialog>
 #include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
-BranchSettingsDialog::BranchSettingsDialog(QWidget *parent, const BranchSettings &branchSettings) :
-    QDialog(parent),
-    settings(branchSettings),
-    changedSettings(branchSettings)
-{
+BranchSettingsDialog::BranchSettingsDialog(QWidget *parent, const OptionsMap& settings) :
+    BaseSettingsDialog(parent) {
+    changedSettings[BRANCH_COLOR] = settings[BRANCH_COLOR];
+    changedSettings[BRANCH_THICKNESS] = settings[BRANCH_THICKNESS];
     setupUi(this);
     new HelpButton(this, buttonBox, "14059089");
 
-    thicknessSpinBox->setValue(settings.branchThickness);
+    thicknessSpinBox->setValue(changedSettings[BRANCH_THICKNESS].toInt());
     updateColorButton();
 
     connect(colorButton, SIGNAL(clicked()), SLOT(sl_colorButton()));
@@ -46,7 +41,8 @@ BranchSettingsDialog::BranchSettingsDialog(QWidget *parent, const BranchSettings
 
 void BranchSettingsDialog::updateColorButton() {
     static const QString COLOR_STYLE("QPushButton { background-color : %1;}");
-    colorButton->setStyleSheet(COLOR_STYLE.arg(changedSettings.branchColor.name()));
+    QColor branchColor = qvariant_cast<QColor>(changedSettings[BRANCH_COLOR]);
+    colorButton->setStyleSheet(COLOR_STYLE.arg(branchColor.name()));
 }
 
 void BranchSettingsDialog::sl_colorButton() {
@@ -57,22 +53,16 @@ void BranchSettingsDialog::sl_colorButton() {
     }
 #endif
 
-    QColor newColor = QColorDialog::getColor(changedSettings.branchColor, this, tr("Select Color"), options);
+    QColor branchColor = qvariant_cast<QColor>(changedSettings[BRANCH_COLOR]);
+    QColor newColor = QColorDialog::getColor(branchColor, this, tr("Select Color"), options);
     if (newColor.isValid()) {
-        changedSettings.branchColor = newColor;
+        changedSettings[BRANCH_COLOR] = newColor;
         updateColorButton();
     }
 }
 
 void BranchSettingsDialog::accept() {
-    changedSettings.branchThickness = thicknessSpinBox->value();
-    settings = changedSettings;
-
+    changedSettings[BRANCH_THICKNESS] = thicknessSpinBox->value();
     QDialog::accept();
 }
-
-const BranchSettings& BranchSettingsDialog::getSettings() const {
-    return settings;
-}
-
 } //namespace

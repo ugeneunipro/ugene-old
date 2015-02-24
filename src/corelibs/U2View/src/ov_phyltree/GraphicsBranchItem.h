@@ -22,12 +22,7 @@
 #ifndef _U2_GRAPHICS_BRANCH_ITEM_H_
 #define _U2_GRAPHICS_BRANCH_ITEM_H_
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAbstractGraphicsShapeItem>
-#else
-#include <QtWidgets/QAbstractGraphicsShapeItem>
-#endif
+#include <QAbstractGraphicsShapeItem>
 #include "TreeSettings.h"
 
 namespace U2 {
@@ -56,8 +51,9 @@ protected:
     qreal width;
     qreal dist;
     bool collapsed;
-    BranchSettings settings;
     int lengthCoef;
+
+    OptionsMap settings;
 
     GraphicsBranchItem(const QString& name);
     GraphicsBranchItem(qreal d, bool withButton = true);
@@ -80,11 +76,11 @@ public:
     void setSelected(bool sel);
     bool isCollapsed() const;
 
-    void updateSettings(const BranchSettings& branchSettings);
-    void updateChildSettings(const BranchSettings& branchSettings);
+    void updateSettings(const OptionsMap& settings);
+    void updateChildSettings(const OptionsMap& settings);
     void updateTextSettings(const QFont& font, const QColor& color);
 
-    const BranchSettings& getBranchSettings() const {return settings;}
+    const OptionsMap& getSettings() const;
 
     GraphicsBranchItem* getCorrespondingItem() const {return correspondingItem;}
     void setCorrespondingItem(GraphicsBranchItem* cItem) {correspondingItem = cItem;}

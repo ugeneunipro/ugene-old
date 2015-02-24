@@ -395,7 +395,7 @@ void MSAEditorTreeViewerUI::setTreeLayout(TreeLayout newLayout) {
 }
 
 void MSAEditorTreeViewerUI::onLayoutChanged(const TreeLayout& layout) {
-    curLayoutIsRectangular = (TreeViewerUI::TreeLayout_Rectangular == layout);
+    curLayoutIsRectangular = (RECTANGULAR_LAYOUT == layout);
     curMSATreeViewer->getSortSeqsAction()->setEnabled(false);
     if(curLayoutIsRectangular) {
         subgroupSelector->show();
@@ -432,8 +432,8 @@ void MSAEditorTreeViewerUI::sl_sortAlignment() {
 }
 
 void MSAEditorTreeViewerUI::highlightBranches() {
-    BranchSettings settings = rectRoot->getBranchSettings();
-    settings.branchColor = Qt::black;
+    OptionsMap settings = rectRoot->getSettings();
+    settings[BRANCH_COLOR] = Qt::black;
     if(rectRoot) {
         rectRoot->updateSettings(settings);
         rectRoot->updateChildSettings(settings);
@@ -480,15 +480,15 @@ void MSAEditorTreeViewerUI::highlightBranches() {
             continue;
         }
         if(colorSchema.contains(secondNode)) {
-            BranchSettings settings = branchItem->getBranchSettings();
-            settings.branchColor = colorSchema[secondNode];
+            OptionsMap settings = branchItem->getSettings();
+            settings[BRANCH_COLOR] = colorSchema[secondNode];
             branchItem->updateSettings(settings);
             branchItem->updateChildSettings(settings);
         }
         else {
             colorSchema[secondNode] = groupColors.getColor(colorIndex);
-            BranchSettings settings = branchItem->getBranchSettings();
-            settings.branchColor = colorSchema[secondNode];
+            OptionsMap settings = branchItem->getSettings();
+            settings[BRANCH_COLOR] = colorSchema[secondNode];
             branchItem->updateSettings(settings);
             branchItem->updateChildSettings(settings);
             colorIndex++;
@@ -507,7 +507,7 @@ void MSAEditorTreeViewerUI::highlightBranches() {
             continue;
         }
         QString name = nameItem->text();
-        groupColorSchema[nameItem->text()] = branchItem->getBranchSettings().branchColor;
+        groupColorSchema[nameItem->text()] = qvariant_cast<QColor>(branchItem->getSettings()[BRANCH_COLOR]);
     }
     emit si_groupColorsChanged(groupColorSchema);
 }
@@ -560,16 +560,25 @@ QList<GraphicsBranchItem*> MSAEditorTreeViewerUI::getListNodesOfTree() {
     return result;
 }
 
-void MSAEditorTreeViewerUI::updateSettings(const TreeSettings &settings) {
+void MSAEditorTreeViewerUI::onSettingsChanged(TreeViewOption option, const QVariant& newValue) {
     bool isSizeSynchronized = (FullSynchronization == syncMode && curLayoutIsRectangular);
     if(!isSizeSynchronized) {
-        TreeViewerUI::updateSettings(settings);
+        TreeViewerUI::onSettingsChanged(option, newValue);
         return;
     }
-
-    bool widthChanged = treeSettings.width_coef == settings.width_coef;
-    treeSettings = settings;
-    updateTreeSettings(widthChanged);
+    switch(option) {
+        case WIDTH_COEF:
+            updateTreeSettings(true);
+            break;
+        case HEIGHT_COEF:
+            break;
+        case BRANCHES_TRANSFORMATION_TYPE:
+            updateTreeSettings(true);
+            break;
+        default:
+            TreeViewerUI::onSettingsChanged(option, newValue);
+            break;
+    }
 }
 
 void MSAEditorTreeViewerUI::updateTreeSettings(bool setDefaultZoom) {
@@ -585,9 +594,6 @@ void MSAEditorTreeViewerUI::sl_rectLayoutRecomputed() {
     TreeViewerUI::sl_rectLayoutRecomputed();
     curMSATreeViewer->setSynchronizationMode(syncMode);
     setMatrix(curMatrix);
-    TreeLabelsSettings tempSettings = labelsSettings;
-    TreeViewerUI::updateSettings(TreeLabelsSettings());
-    TreeViewerUI::updateSettings(tempSettings);
 }
 
 void MSAEditorTreeViewerUI::sl_onVisibleRangeChanged(QStringList visibleSeqs, int height) {

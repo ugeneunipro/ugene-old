@@ -23,17 +23,11 @@
 #define _U2_TREE_VIEWER_H_
 
 #include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QGraphicsView>
-#include <QtGui/QToolBar>
-#include <QtGui/QToolButton>
-#include <QtGui/QScrollBar>
-#else
-#include <QtWidgets/QGraphicsView>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QScrollBar>
-#endif
+
+#include <QGraphicsView>
+#include <QToolBar>
+#include <QToolButton>
+#include <QScrollBar>
 
 #include <QtCore/QMap>
 #include <U2Core/MAlignment.h>
@@ -150,7 +144,6 @@ private:
     void setupCameraMenu(QMenu* m);
 protected:
     TreeViewerUI*       ui;
-
 };
 
 class TreeViewerUI: public QGraphicsView {
@@ -167,20 +160,12 @@ public:
     static const int MARGIN;
     static const qreal SIZE_COEF;
 
-    const BranchSettings& getBranchSettings() const;
-    const ButtonSettings& getButtonSettings() const;
-    const TextSettings& getTextSettings() const;
-    const TreeSettings& getTreeSettings() const;
-    const TreeLabelsSettings& getLabelsSettings() const;
+    const QMap<TreeViewOption, QVariant>& getSettings() const;
+    QVariant getOptionValue(TreeViewOption option) const;
+    void setOptionValue(TreeViewOption option, QVariant value);
 
-    void updateSettings(const BranchSettings &settings);
-    void updateSettings(const ButtonSettings &settings);
-    void updateSettings(const TextSettings &settings);
-    virtual void updateSettings(const TreeSettings &settings);
-    void updateSettings(const TreeLabelsSettings &settings);
-
-    //qreal getZoom() const {return zoom;}
-    //void setZoom(qreal z) {zoom = z;}
+    void updateSettings(const OptionsMap &settings);
+    void changeOption(TreeViewOption option, const QVariant& newValue);
 
     qreal getHorizontalZoom() const {return horizontalScale;}
     void setHorizontalZoom(qreal z) {horizontalScale = z;}
@@ -188,20 +173,11 @@ public:
     qreal getVerticalZoom() const {return verticalScale;}
     void setVerticalZoom(qreal z) {verticalScale = z;}
 
-
     QVariantMap getSettingsState() const;
     void setSettingsState(const QVariantMap& m);
 
-
-    enum TreeLayout {
-        TreeLayout_Rectangular,
-        TreeLayout_Circular,
-        TreeLayout_Unrooted
-    };
-
-    virtual void setTreeLayout(TreeLayout newLayout);
-    const TreeLayout& getTreeLayout() const;
-    bool layoutIsRectangular() const {return TreeLayout_Rectangular == layout;}
+    const TreeLayout getTreeLayout() const;
+    bool layoutIsRectangular() const;
 
     void onPhyTreeChanged();
 
@@ -211,6 +187,7 @@ protected:
     virtual void mousePressEvent(QMouseEvent *e);
     virtual void mouseReleaseEvent(QMouseEvent *e);
 
+    virtual void setTreeLayout(TreeLayout newLayout);
     GraphicsBranchItem* getRoot() {return root;}
     GraphicsRectangularBranchItem* getRectRoot() {return rectRoot;}
     void zooming(qreal newZoom);
@@ -220,8 +197,9 @@ protected:
 
     virtual void onLayoutChanged(const TreeLayout& ) {}
     virtual void updateTreeSettings(bool setDefaultZoom = true);
+    virtual void onSettingsChanged(TreeViewOption option, const QVariant& newValue);
 signals:
-    void si_settingsChanged(TreeSettingsType settingsType );
+    void si_optionChanged(TreeViewOption option, const QVariant& value);
 protected slots:
     virtual void sl_swapTriggered();
     virtual void sl_collapseTriggered();
@@ -257,8 +235,10 @@ private:
 
     void paint(QPainter &painter);
     void showLabels(LabelTypes labelTypes);
+//Scalebar
     void addLegend(qreal scale);
     void updateLegend();
+
     void collapseSelected();
 
     void updateSettings();
@@ -266,6 +246,8 @@ private:
     void updateLayout();
 
     void updateTextSettings();
+
+    void updateBrachSettings();
 
     void redrawRectangularLayout();
     bool isSelectedCollapsed();
@@ -277,16 +259,17 @@ private:
 
     qreal avgWidth();
 
-    void updateLabelsAlignment(bool on);
+    void updateLabelsAlignment();
 
     void determineBranchLengths();
 
     int getBranchLength();
 
     void changeLayout(TreeLayout newLayout);
-    void changeNamesDisplay(bool showNames);
-    void changeDistancesDisplay(bool showDistances);
-    void changeAlignmentSettings(bool alignLabels);
+    void changeNamesDisplay();
+    void changeLabelsAlignment();
+
+    void initializeSettings();
 
     PhyTreeObject*      phyObject;
     GraphicsBranchItem* root;
@@ -294,7 +277,6 @@ private:
     qreal               verticalScale;
     qreal               horizontalScale;
     qreal               view_scale;
-    TreeLayout          layout;
     CreateBranchesTask* layoutTask;
     QGraphicsLineItem*  legend;
     QGraphicsSimpleTextItem* scalebarText;
@@ -312,13 +294,10 @@ private:
     QAction*            captureAction;
     QAction*            exportAction;
 
-    BranchSettings      branchSettings;
-    ButtonSettings      buttonSettings;
-    TextSettings        textSettings;
+    OptionsMap settings;
+    bool updatingFromOP;
 protected:
     GraphicsRectangularBranchItem* rectRoot;
-    TreeSettings        treeSettings;
-    TreeLabelsSettings  labelsSettings;
 };
 
 

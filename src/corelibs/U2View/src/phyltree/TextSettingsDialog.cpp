@@ -20,68 +20,58 @@
  */
 
 #include "TextSettingsDialog.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QColorDialog>
-#else
-#include <QtWidgets/QColorDialog>
-#endif
+#include <QColorDialog>
 #include <U2Gui/HelpButton.h>
-
 
 namespace U2 {
 
-TextSettingsDialog::TextSettingsDialog(QWidget *parent, const TextSettings &textSettings)
-: QDialog(parent), settings(textSettings), changedSettings(textSettings) {
+TextSettingsDialog::TextSettingsDialog(QWidget *parent, const OptionsMap& settings)
+: BaseSettingsDialog(parent) {
 
     setupUi(this);
     new HelpButton(this, buttonBox, "14059094");
 
+    curColor = qvariant_cast<QColor>(settings[LABEL_COLOR]);
     updateColorButton();
-    fontComboBox->setCurrentFont(settings.textFont);
-    sizeSpinBox->setValue(settings.textFont.pointSize());
+    QFont curFont = qvariant_cast<QFont>(settings[LABEL_FONT]);
+    fontComboBox->setCurrentFont(curFont);
+    sizeSpinBox->setValue(curFont.pointSize());
 
-    boldToolButton->setChecked(settings.textFont.bold());
-    italicToolButton->setChecked(settings.textFont.italic());
-    underlineToolButton->setChecked(settings.textFont.underline());
-    overlineToolButton->setChecked(settings.textFont.overline());
+    boldToolButton->setChecked(curFont.bold());
+    italicToolButton->setChecked(curFont.italic());
+    underlineToolButton->setChecked(curFont.underline());
+    overlineToolButton->setChecked(curFont.overline());
 
     overlineToolButton->setVisible(false);
 
     connect(colorButton, SIGNAL(clicked()), SLOT(sl_colorButton()));
-
 }
 
 void TextSettingsDialog::updateColorButton() {
-
     static const QString COLOR_STYLE("QPushButton { background-color : %1;}");
-    colorButton->setStyleSheet(COLOR_STYLE.arg(changedSettings.textColor.name()));
+    colorButton->setStyleSheet(COLOR_STYLE.arg(curColor.name()));
 }
 
 void TextSettingsDialog::sl_colorButton() {
-
-    QColor newColor = QColorDialog::getColor(changedSettings.textColor, this);
-    if (newColor.isValid()) {
-        changedSettings.textColor = newColor;
+    curColor = QColorDialog::getColor(curColor, this);
+    if (curColor.isValid()) {
+        changedSettings[LABEL_COLOR] = curColor;
         updateColorButton();
     }
 }
 
 void TextSettingsDialog::accept() {
+    QFont curFont = fontComboBox->currentFont();
+    curFont.setPointSize(sizeSpinBox->value());
 
-    changedSettings.textFont = fontComboBox->currentFont();
-    changedSettings.textFont.setPointSize(sizeSpinBox->value());
+    curFont.setBold(boldToolButton->isChecked());
+    curFont.setItalic(italicToolButton->isChecked());
+    curFont.setUnderline(underlineToolButton->isChecked());
+    curFont.setOverline(overlineToolButton->isChecked());
 
-    changedSettings.textFont.setBold(boldToolButton->isChecked());
-    changedSettings.textFont.setItalic(italicToolButton->isChecked());
-    changedSettings.textFont.setUnderline(underlineToolButton->isChecked());
-    changedSettings.textFont.setOverline(overlineToolButton->isChecked());
+    changedSettings[LABEL_FONT] = curFont;
 
-    settings = changedSettings;
     QDialog::accept();
-}
-
-const TextSettings& TextSettingsDialog::getSettings() const {
-    return settings;
 }
 
 } //namespace

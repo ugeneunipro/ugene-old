@@ -19,40 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#pragma once
-
+#ifndef _TREE_SETTIHS_DIALOG_
+#define _TREE_SETTIHS_DIALOG_
+    
+#include "BaseSettingsDialog.h"
 #include <ui/ui_TreeSettingsDialog.h>
 #include "ov_phyltree/TreeSettings.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
 
 namespace U2 {
 
-class TreeSettingsDialog : public QDialog, public Ui_TreeSettingsDialog{
+class TreeSettingsDialog : public BaseSettingsDialog, public Ui_TreeSettingsDialog{
     Q_OBJECT
 public:
-    TreeSettingsDialog(QWidget *parent, const TreeSettings &treeSettings, bool isRectLayout);
+    TreeSettingsDialog(QWidget *parent, const OptionsMap &settings, bool isRectLayout);
 
     virtual void accept();
-    const TreeSettings& getSettings() const;
 
-    static QString treeDefaultText() { return tr("Default"); }
-    static QString treePhylogramText() { return tr("Phylogram"); }
-    static QString treeCladogramText() { return tr("Cladogram"); }
-
-protected slots:
-   // void sl_colorButton();
-
-private:
-
-    TreeSettings settings;
-    TreeSettings changedSettings;
-
+    static QString treeDefaultText();
+    static QString treePhylogramText();
+    static QString treeCladogramText();
+private slots:
+    void sl_treeTypeChanged(int);
 };
 
 } //namespace
-
-
+#endif

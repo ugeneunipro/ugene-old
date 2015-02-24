@@ -37,28 +37,29 @@ namespace U2 {
 const int GraphicsBranchItem::TextSpace = 8;
 const int GraphicsBranchItem::SelectedPenWidth = 1;
 
-void GraphicsBranchItem::updateSettings(const BranchSettings& branchSettings) {
+void GraphicsBranchItem::updateSettings(const OptionsMap& newSettings) {
+    settings[BRANCH_COLOR] = newSettings[BRANCH_COLOR];
+    settings[BRANCH_THICKNESS] = newSettings[BRANCH_THICKNESS];
 
-    settings = branchSettings;
-
-    int penWidth = settings.branchThickness;
+    int penWidth = settings[BRANCH_THICKNESS].toUInt();
     if (isSelected()) {
         penWidth += SelectedPenWidth;
     }
 
+    QColor branchColor = qvariant_cast<QColor>(settings[BRANCH_COLOR]);
     QPen currentPen = this->pen();
-    currentPen.setColor(settings.branchColor);
+    currentPen.setColor(branchColor);
     currentPen.setWidth(penWidth);
 
     this->setPen(currentPen);
 }
 
-void GraphicsBranchItem::updateChildSettings(const BranchSettings& branchSettings) {
+void GraphicsBranchItem::updateChildSettings(const OptionsMap& newSettings) {
     foreach(QGraphicsItem* graphItem, this->childItems()) {
         GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(graphItem);
         if (branchItem) {
-            branchItem->updateSettings(branchSettings);
-            branchItem->updateChildSettings(branchSettings);
+            branchItem->updateSettings(newSettings);
+            branchItem->updateChildSettings(newSettings);
         }
     }
 }
@@ -74,6 +75,10 @@ void GraphicsBranchItem::updateTextSettings(const QFont& font, const QColor& col
     }
 }
 
+const OptionsMap& GraphicsBranchItem::getSettings() const {
+    return settings;
+}
+
 void GraphicsBranchItem::collapse() {
     collapsed = !collapsed;
     QList<QGraphicsItem*> items = childItems();
@@ -84,12 +89,13 @@ void GraphicsBranchItem::collapse() {
             }
         }
 
-        int penWidth = settings.branchThickness;
+        int penWidth = settings[BRANCH_THICKNESS].toUInt();
         if (isSelected()) {
             penWidth += SelectedPenWidth;
         }
 
-        QPen pen1(settings.branchColor);
+        QColor branchColor = qvariant_cast<QColor>(settings[BRANCH_COLOR]);
+        QPen pen1(branchColor);
         pen1.setWidth(penWidth);
         pen1.setCosmetic(true);
         QGraphicsRectItem *r = new QGraphicsRectItem(0, -4, 16, 8, this);
@@ -110,17 +116,7 @@ void GraphicsBranchItem::collapse() {
 }
 
 void GraphicsBranchItem::setSelectedRecurs(bool sel, bool selectChilds) {
-
-    int penWidth = settings.branchThickness;
-    if (sel) {
-        penWidth = settings.branchThickness + SelectedPenWidth;
-    }
-
-    QPen thisPen = this->pen();
-    thisPen.setWidth(penWidth);
-
     if (!selectChilds) {
-        setPen(thisPen);
         setSelected(sel);
         scene()->update();
         return;
@@ -131,12 +127,7 @@ void GraphicsBranchItem::setSelectedRecurs(bool sel, bool selectChilds) {
     graphicsItems.push(this);
     do {
         GraphicsBranchItem* branchItem = graphicsItems.pop();
-
-        QPen branchPen = branchItem->pen();
-        branchPen.setWidth(penWidth);
-
         branchItem->setSelected(sel);
-        branchItem->setPen(branchPen);
 
         foreach(QGraphicsItem* graphItem, branchItem->childItems()) {
             GraphicsBranchItem *childItem = dynamic_cast<GraphicsBranchItem*>(graphItem);
@@ -153,6 +144,15 @@ void GraphicsBranchItem::setSelected(bool sel) {
     if (buttonItem) {
         buttonItem->setSelected(sel);
     }
+
+    int penWidth = settings[BRANCH_THICKNESS].toUInt();
+    if (sel) {
+        penWidth += SelectedPenWidth;
+    }
+    QPen currentPen = this->pen();
+    currentPen.setWidth(penWidth);
+    this->setPen(currentPen);
+
     QAbstractGraphicsShapeItem::setSelected(sel);
 }
 
@@ -190,7 +190,7 @@ GraphicsBranchItem::GraphicsBranchItem(bool withButton)
   collapsed(false),
   lengthCoef(1)
 {
-
+    settings[BRANCH_THICKNESS] = 1;
     setFlag(QGraphicsItem::ItemIsSelectable);
     setAcceptHoverEvents(false);
     setAcceptedMouseButtons(Qt::NoButton);
@@ -200,8 +200,9 @@ GraphicsBranchItem::GraphicsBranchItem(bool withButton)
         buttonItem->setParentItem(this);
     }
 
-    setBrush(settings.branchColor);
-    QPen pen1(settings.branchColor);
+    QColor branchColor = qvariant_cast<QColor>(settings[BRANCH_COLOR]);
+    setBrush(branchColor);
+    QPen pen1(branchColor);
     pen1.setCosmetic(true);
     setPen(pen1);
 }
@@ -215,12 +216,13 @@ GraphicsBranchItem::GraphicsBranchItem(const QString& name)
   collapsed(false),
   lengthCoef(1)
 {
-
+    settings[BRANCH_THICKNESS] = 1;
     setFlag(QGraphicsItem::ItemIsSelectable);
     setAcceptHoverEvents(false);
     setAcceptedMouseButtons(Qt::NoButton);
 
-    QPen pen1(settings.branchColor);
+    QColor branchColor = qvariant_cast<QColor>(settings[BRANCH_COLOR]);
+    QPen pen1(branchColor);
     pen1.setStyle(Qt::DotLine);
     pen1.setCosmetic(true);
     setPen(pen1);
@@ -249,7 +251,7 @@ GraphicsBranchItem::GraphicsBranchItem(qreal d, bool withButton)
   collapsed(false),
   lengthCoef(1)
 {
-
+    settings[BRANCH_THICKNESS] = 1;
     setFlag(QGraphicsItem::ItemIsSelectable);
     setAcceptHoverEvents(false);
     setAcceptedMouseButtons(Qt::NoButton);
@@ -260,13 +262,14 @@ GraphicsBranchItem::GraphicsBranchItem(qreal d, bool withButton)
     }
 
     initText(d);
-    QPen pen1(settings.branchColor);
+    QColor branchColor = qvariant_cast<QColor>(settings[BRANCH_COLOR]);
+    QPen pen1(branchColor);
     pen1.setCosmetic(true);
     if (d < 0) {
         pen1.setStyle(Qt::DashLine);
     }
     setPen(pen1);
-    setBrush(settings.branchColor);
+    setBrush(branchColor);
 }
 
 void GraphicsBranchItem::setDistanceText(const QString& text){
@@ -296,21 +299,22 @@ bool GraphicsBranchItem::isCollapsed() const{
 
 void GraphicsBranchItem::paint(QPainter* painter,const QStyleOptionGraphicsItem*, QWidget*) {
     CHECK(NULL != nameText,);
-    if (isSelected()) {
-            qreal radius = settings.branchThickness + 1.5;
-            QRectF rect(-radius, -radius, radius*2, radius*2);
-            painter->setBrush(settings.branchColor);
-            if(NULL == nameItemSelection) {
-                nameItemSelection = scene()->addEllipse(rect, QPen(settings.branchColor), QBrush(settings.branchColor));
-                nameItemSelection->setParentItem(this);
-                nameItemSelection->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-                nameItemSelection->setPen(QPen(Qt::gray));
-                nameItemSelection->setBrush(QBrush(settings.branchColor));
-            }
-            else if (!nameItemSelection->isVisible()) {
-                nameItemSelection->setRect(rect);
-                nameItemSelection->show();
-            }
+    if(isSelected()) {
+        qreal radius = settings[BRANCH_THICKNESS].toUInt() + 1.5;
+        QRectF rect(-radius, -radius, radius*2, radius*2);
+        QColor branchColor = qvariant_cast<QColor>(settings[BRANCH_COLOR]);
+        painter->setBrush(branchColor);
+        if(NULL == nameItemSelection) {
+            nameItemSelection = scene()->addEllipse(rect, QPen(branchColor), QBrush(branchColor));
+            nameItemSelection->setParentItem(this);
+            nameItemSelection->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+            nameItemSelection->setPen(QPen(Qt::gray));
+            nameItemSelection->setBrush(QBrush(branchColor));
+        }
+        else if (!nameItemSelection->isVisible()) {
+            nameItemSelection->setRect(rect);
+            nameItemSelection->show();
+        }
     }
     else {
         if(NULL != nameItemSelection) {

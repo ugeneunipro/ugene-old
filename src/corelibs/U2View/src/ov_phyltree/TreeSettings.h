@@ -22,95 +22,46 @@
 #ifndef _U2_TREE_SETTINGS_H_
 #define _U2_TREE_SETTINGS_H_
 
-#include <QtGui/QFontInfo>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
+#include <QtCore/QMap>
+#include <QtCore/QVariant>
+#include <QDialog>
+#include <QFontInfo>
 
 namespace U2 {
+enum TREE_TYPE {DEFAULT, PHYLOGRAM, CLADOGRAM};
 
-enum TreeSettingsType {
-    GENERAL_SETTINGS,
-    TEXT_FORMAT,
-    BRANCHES_SETTINGS,
-    BUTTONS_SETTINGS,
-    LABELS_SETTINGS
+enum TreeLayout {
+    RECTANGULAR_LAYOUT,
+    CIRCULAR_LAYOUT,
+    UNROOTED_LAYOUT
 };
 
-class TreeSettings
-{
-public:
-    TreeSettings();
+enum TreeViewOption {
+    BRANCHES_TRANSFORMATION_TYPE,
+    TREE_LAYOUT,
+    WIDTH_COEF,
+    HEIGHT_COEF,
 
-    enum TREE_TYPE { PHYLOGRAM, CLADOGRAM, DEFAULT };
+    LABEL_COLOR,
+    LABEL_FONT,
 
-    TREE_TYPE type;
-    int width_coef;
-    int height_coef;
+    BRANCH_COLOR,
+    BRANCH_THICKNESS,
 
-    static int default_width_coef;
-    static int default_height_coef;
+    NODE_COLOR,
+    NODE_RADIUS,
 
-    bool operator==(const TreeSettings &other) const;
-    inline bool operator !=(const TreeSettings &other) const { return !operator==(other); }
+    SHOW_LABELS,
+    SHOW_DISTANCES,
+    ALIGN_LABELS,
+
+    SCALEBAR_RANGE,
+    SCALEBAR_FONT_SIZE,
+    SCALEBAR_LINE_WIDTH,
+
+    OPTION_ENUM_END
 };
 
-class TextSettings {
-public:
-    TextSettings();
-
-    QColor textColor;
-    QFont textFont;
-
-    static QColor defaultColor;
-    static QFont defaultFont;
-
-    bool operator==(const TextSettings &other) const;
-    inline bool operator !=(const TextSettings &other) const { return !operator==(other); }
-};
-
-class BranchSettings {
-public:
-    BranchSettings();
-
-    QColor branchColor;
-    int branchThickness;
-
-    static QColor defaultColor;
-    static int defaultThickness;
-
-    bool operator==(const BranchSettings &other) const;
-    inline bool operator !=(const BranchSettings &other) const { return !operator==(other); }
-};
-
-class ButtonSettings {
-public:
-    ButtonSettings();
-
-    QColor col;
-    int radius;
-
-    static QColor defaultColor;
-    static int defaultRadius;
-
-    bool operator==(const ButtonSettings &other) const;
-    inline bool operator !=(const ButtonSettings &other) const { return !operator==(other); }
-};
-
-class TreeLabelsSettings {
-public:
-    TreeLabelsSettings()
-        : showNames(true), showDistances(true), alignLabels(false) {}
-
-    bool showNames;
-    bool showDistances;
-    bool alignLabels;
-
-    bool operator==(const TreeLabelsSettings &other) const;
-    inline bool operator !=(const TreeLabelsSettings &other) const { return !operator==(other); }
-};
-
+typedef QMap<TreeViewOption, QVariant> OptionsMap;
 } //namespace
 #endif

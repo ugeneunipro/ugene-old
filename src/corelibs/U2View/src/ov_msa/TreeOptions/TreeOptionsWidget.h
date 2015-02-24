@@ -38,11 +38,7 @@ class TreeViewerUI;
 
 struct TreeOpWidgetViewSettings {
     TreeOpWidgetViewSettings()
-        : openGeneralGroup(true), openLabelsGroup(true), openBranchesGroup(true), showFontSettings(false), showPenSettings(false){}
-
-    bool openGeneralGroup;
-    bool openLabelsGroup;
-    bool openBranchesGroup;
+        : showFontSettings(false), showPenSettings(false){}
 
     bool showFontSettings;
     bool showPenSettings;
@@ -60,23 +56,21 @@ public:
 signals:
     void saveViewSettings(const TreeOpWidgetViewSettings&);
 private slots:
-    void sl_onGeneralSettingsChanged();
-    void sl_onLabelsSettingsChanged();
-    void sl_onLayoutChanged(int index);
     void sl_labelsColorButton();
     void sl_branchesColorButton();
     void sl_fontChanged();
-    void sl_branchSettingsChanged();
 
     void sl_onLblLinkActivated(const QString& link);
-    void sl_onSettingsChanged(TreeSettingsType settingsType);
+    void sl_valueChanged();
+
+    void sl_onOptionChanged(TreeViewOption option, const QVariant& value);
+
 private:
+    void initialazeOptionsMap();
+
     void createGroups();
     void createGeneralSettingsWidgets();
-    void updateGeneralSettingsWidgets();
-    void updateLabelsSettingsWidgets();
     void updateFormatSettings();
-    void updateBranchSettings();
     void updateAllWidgets();
     void connectSlots();
 
@@ -84,22 +78,14 @@ private:
     void updateShowFontOpLabel(QString newText);
     void updateShowPenOpLabel(QString newText);
 
+    void updateRelations(TreeViewOption option, QVariant newValue);
+
     TreeViewerUI* getTreeViewer();
 
     MSAEditor    *msa;
     TreeViewerUI *treeViewer;
 
     TreeOpWidgetViewSettings viewSettings;
-
-    TreeSettings* settings;
-    TreeSettings treeSettings;
-    TreeLabelsSettings labelsSettings;
-    TextSettings textSettings;
-    BranchSettings branchSettings;
-
-    ShowHideSubgroupWidget* generalOpGroup;
-    ShowHideSubgroupWidget* labelsOpGroup;
-    ShowHideSubgroupWidget* branchesOpGroup;
 
     bool showFontSettings;
     bool showPenSettings;
@@ -109,6 +95,9 @@ private:
     U2SavableWidget savableTab;
 
     static const QString COLOR_BOX_STYLE;
+    QMap<QString, TreeViewOption> optionsMap;
+
+    bool isUpdating;
 };
 
 class U2VIEW_EXPORT AddTreeWidget : public QWidget
