@@ -27,6 +27,7 @@
 #include "ov_phyltree/TreeSettings.h"
 
 #include "ui/ui_TreeOptionsWidget.h"
+#include <QPlastiqueStyle>
 
 namespace U2 {
 
@@ -94,7 +95,7 @@ private:
 
     U2SavableWidget savableTab;
 
-    static const QString COLOR_BOX_STYLE;
+    QPlastiqueStyle colorButtonsStyle;
     QMap<QString, TreeViewOption> optionsMap;
 
     bool isUpdating;

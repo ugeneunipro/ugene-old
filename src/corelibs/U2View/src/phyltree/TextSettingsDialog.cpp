@@ -32,6 +32,7 @@ TextSettingsDialog::TextSettingsDialog(QWidget *parent, const OptionsMap& settin
     new HelpButton(this, buttonBox, "14059094");
 
     curColor = qvariant_cast<QColor>(settings[LABEL_COLOR]);
+    colorButton->setStyle(&colorStyle);
     updateColorButton();
     QFont curFont = qvariant_cast<QFont>(settings[LABEL_FONT]);
     fontComboBox->setCurrentFont(curFont);
@@ -48,8 +49,9 @@ TextSettingsDialog::TextSettingsDialog(QWidget *parent, const OptionsMap& settin
 }
 
 void TextSettingsDialog::updateColorButton() {
-    static const QString COLOR_STYLE("QPushButton { background-color : %1;}");
-    colorButton->setStyleSheet(COLOR_STYLE.arg(curColor.name()));
+    QPalette palette = colorButton->palette();
+    palette.setColor(colorButton->backgroundRole(), curColor);
+    colorButton->setPalette(palette);
 }
 
 void TextSettingsDialog::sl_colorButton() {

@@ -60,19 +60,18 @@ static inline QVBoxLayout * initLayout(QWidget * w) {
     return layout;
 }
 
-const QString TreeOptionsWidget::COLOR_BOX_STYLE = "QPushButton {"
-                                                        "border: none;"
-                                                        "min-height: 20px;"
-                                                        "background-color : %1;}";
-
 TreeOptionsWidget::TreeOptionsWidget(MSAEditor* m, const TreeOpWidgetViewSettings& viewSettings)
     : msa(m), treeViewer(NULL), viewSettings(viewSettings), showFontSettings(false), showPenSettings(false),
-    savableTab(this, GObjectViewUtils::findViewByName(m->getName())), isUpdating(false) 
+    savableTab(this, GObjectViewUtils::findViewByName(m->getName())), isUpdating(false)
 {
     SAFE_POINT(NULL != msa, QString("Invalid parameter were passed into constructor TreeOptionsWidget"), );
 
     contentWidget = new QWidget();
     setupUi(contentWidget);
+
+    labelsColorButton->setStyle(&colorButtonsStyle);
+    branchesColorButton->setStyle(&colorButtonsStyle);
+
     createGroups();
 
     U2WidgetStateStorage::restoreWidgetState(savableTab);
@@ -86,6 +85,10 @@ TreeOptionsWidget::TreeOptionsWidget(TreeViewer* tree, const TreeOpWidgetViewSet
 
     contentWidget = new QWidget();
     setupUi(contentWidget);
+
+    labelsColorButton->setStyle(&colorButtonsStyle);
+    branchesColorButton->setStyle(&colorButtonsStyle);
+
     createGroups();
 
     U2WidgetStateStorage::restoreWidgetState(savableTab);
@@ -277,7 +280,7 @@ void TreeOptionsWidget::sl_labelsColorButton() {
     QColor curColor = qvariant_cast<QColor>(getTreeViewer()->getOptionValue(LABEL_COLOR));
     QColor newColor = QColorDialog::getColor(curColor, this);
     if (newColor.isValid()) {
-        labelsColorButton->setStyleSheet(COLOR_BOX_STYLE.arg(newColor.name()));
+        updateButtonColor(labelsColorButton, newColor);
         getTreeViewer()->changeOption(LABEL_COLOR, newColor);
     }
 }
@@ -286,7 +289,7 @@ void TreeOptionsWidget::sl_branchesColorButton() {
     QColor curColor = qvariant_cast<QColor>(getTreeViewer()->getOptionValue(BRANCH_COLOR));
     QColor newColor = QColorDialog::getColor(curColor,  this);
     if (newColor.isValid()) {
-        branchesColorButton->setStyleSheet(COLOR_BOX_STYLE.arg(newColor.name()));
+        updateButtonColor(branchesColorButton, newColor);
         getTreeViewer()->changeOption(BRANCH_COLOR, newColor);
     }
 }
@@ -308,7 +311,9 @@ void TreeOptionsWidget::sl_onLblLinkActivated(const QString& link) {
 }
 
 void TreeOptionsWidget::updateButtonColor(QPushButton* button, const QColor& newColor ) {
-    button->setStyleSheet(COLOR_BOX_STYLE.arg(newColor.name()));
+    QPalette palette = button->palette();
+    palette.setColor(button->backgroundRole(), newColor);
+    button->setPalette(palette);
 }
 
 void TreeOptionsWidget::updateShowFontOpLabel(QString newText) {

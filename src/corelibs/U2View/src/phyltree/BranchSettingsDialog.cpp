@@ -33,6 +33,7 @@ BranchSettingsDialog::BranchSettingsDialog(QWidget *parent, const OptionsMap& se
     new HelpButton(this, buttonBox, "14059089");
 
     thicknessSpinBox->setValue(changedSettings[BRANCH_THICKNESS].toInt());
+    colorButton->setStyle(&buttonStyle);
     updateColorButton();
 
     connect(colorButton, SIGNAL(clicked()), SLOT(sl_colorButton()));
@@ -40,9 +41,10 @@ BranchSettingsDialog::BranchSettingsDialog(QWidget *parent, const OptionsMap& se
 }
 
 void BranchSettingsDialog::updateColorButton() {
-    static const QString COLOR_STYLE("QPushButton { background-color : %1;}");
     QColor branchColor = qvariant_cast<QColor>(changedSettings[BRANCH_COLOR]);
-    colorButton->setStyleSheet(COLOR_STYLE.arg(branchColor.name()));
+    QPalette palette = colorButton->palette();
+    palette.setColor(colorButton->backgroundRole(), branchColor);
+    colorButton->setPalette(palette);
 }
 
 void BranchSettingsDialog::sl_colorButton() {

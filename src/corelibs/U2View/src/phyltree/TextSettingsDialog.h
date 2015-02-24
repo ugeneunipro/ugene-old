@@ -25,6 +25,7 @@
 #include "BaseSettingsDialog.h"
 #include <ui/ui_TextSettingsDialog.h>
 #include "ov_phyltree/TreeSettings.h"
+#include <QPlastiqueStyle>
 
 namespace U2 {
 
@@ -40,6 +41,7 @@ protected slots:
 private:
     void updateColorButton();
     QColor curColor;
+    QPlastiqueStyle colorStyle;
 };
 
 } //namespace
