@@ -1757,8 +1757,8 @@ GUI_TEST_CLASS_DEFINITION( test_2204 ){
 //    1. Go to the WD samples. Double click on the Chip-Seq WD sample.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //    Expexted: setup dialog appears.
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Pipeline", QStringList()<<
-                                                                   "Treatment tags only"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Workflow", QStringList()<<
+                                                                   "Only treatment tags"));
 
     class customWizard : public CustomScenario {
     public:

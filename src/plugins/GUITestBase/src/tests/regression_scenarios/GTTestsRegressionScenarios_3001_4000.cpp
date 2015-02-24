@@ -4704,15 +4704,16 @@ GUI_TEST_CLASS_DEFINITION(test_3843) {
     GTUtilsMSAEditorSequenceArea::clickCollapceTriangle(os, "Conocephalus_discolor");
 
     // 4. Select some region within a sequence from the chosen collapsed group.
-    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(4, 11), QPoint(10, 11));
+    //GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(4, 11), QPoint(10, 11));
 
     // 5. Click "Ctrl+C"
-    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(500);
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(4, 11), QPoint(10, 11), "CTTATTA");
+//    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+//    GTGlobals::sleep(500);
 
-    // Expected state : clipboard contains a selected string
-    QString clipboardText = GTClipboard::text(os);
-    CHECK_SET_ERR(clipboardText == "CTTATTA", QString("unexpected selection:\n%1").arg(clipboardText));
+//    // Expected state : clipboard contains a selected string
+//    QString clipboardText = GTClipboard::text(os);
+//    CHECK_SET_ERR(clipboardText == "CTTATTA", QString("unexpected selection:\n%1").arg(clipboardText));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3850) {

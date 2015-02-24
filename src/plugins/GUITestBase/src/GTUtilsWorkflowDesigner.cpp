@@ -744,7 +744,7 @@ void GTUtilsWorkflowDesigner::setCellValue(U2OpStatus &os, QWidget* parent, QVar
             QString comboString = value.toString();
             GTComboBox::setIndexWithText(os, box, comboString, true, method);
         }else{
-            GTComboBox::setCurrentIndex(os, box, comboVal);
+            GTComboBox::setCurrentIndex(os, box, comboVal, true, method);
         }
 #ifdef Q_OS_WIN
         //added to fix UGENE-3597

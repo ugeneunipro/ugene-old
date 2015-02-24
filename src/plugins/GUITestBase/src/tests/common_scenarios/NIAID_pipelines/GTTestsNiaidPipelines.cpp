@@ -119,8 +119,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
 //    2. Open tuxedo pipeline from samples
     GTUtilsDialog::waitForDialog(os, new WizardFiller0002(os));
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Pipeline", QStringList()<<
-                                                                   "Full Tuxedo Pipeline"<<"Single-end reads"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Full"<<"Single-end"));
     GTUtilsWorkflowDesigner::addSample(os,"Tuxedo tools");
     GTGlobals::sleep();
 //    3. Open wizard

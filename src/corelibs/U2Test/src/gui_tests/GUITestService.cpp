@@ -444,7 +444,8 @@ void GUITestService::setQtFileDialogView()
 {
 #ifdef Q_OS_LINUX
 #if (QT_VERSION < 0x050000) //Qt 5
-    if (!qgetenv("UGENE_USE_NATIVE_DIALOGS").isEmpty()) {
+    if (!qgetenv("UGENE_USE_NATIVE_DIALOGS").isEmpty()) {//this condition does not controls native dialogs
+    //if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
         qt_filedialog_open_filename_hook = 0;
         qt_filedialog_open_filenames_hook = 0;
         qt_filedialog_save_filename_hook = 0;

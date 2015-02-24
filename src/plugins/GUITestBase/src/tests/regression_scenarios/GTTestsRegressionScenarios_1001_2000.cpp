@@ -2084,7 +2084,7 @@ GUI_TEST_CLASS_DEFINITION(test_1324) {
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Search for TFBS with SITECON"));
     GTMouseDriver::click(os);
-    GTUtilsWorkflowDesigner::setParameter(os, "Min Err1", "0.0001", GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Min Err1", "0.00010", GTUtilsWorkflowDesigner::textValue);
 
 }
 
@@ -3638,7 +3638,7 @@ GUI_TEST_CLASS_DEFINITION( test_1567 ){
     };
 
     GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
-                                                                   "Full"<<"Single-end"));
+                                                                   "Full"<<"Paired-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new customWizard()));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
     GTGlobals::sleep();
@@ -4602,7 +4602,7 @@ public:
 GUI_TEST_CLASS_DEFINITION(test_1677){
 //    1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-//    2. Add sample: "Main Tuxedo: Single-end"
+//    2. Add sample: "Main Tuxedo: Paired-end"
     class customWizard : public CustomScenario {
     public:
         void run(U2OpStatus &os) {
@@ -4632,7 +4632,7 @@ GUI_TEST_CLASS_DEFINITION(test_1677){
     };
 
     GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
-                                                                   "Full"<<"Single-end"));
+                                                                   "Full"<<"Paired-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new customWizard()));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
     GTGlobals::sleep();
@@ -4740,7 +4740,7 @@ GUI_TEST_CLASS_DEFINITION(test_1681){
 GUI_TEST_CLASS_DEFINITION(test_1681_1) {
 //    1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-//    2. Add sample: Multiple dataset tuxedo: Single-end
+//    2. Add sample: Multiple dataset tuxedo: Paired-end
 
 
 
@@ -4786,7 +4786,7 @@ GUI_TEST_CLASS_DEFINITION(test_1681_1) {
     };
 
     GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
-                                                                   "No-new-transcripts"<<"Single-end"));
+                                                                   "No-new-transcripts"<<"Paired-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new customWizard()));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
     GTGlobals::sleep();
@@ -4824,7 +4824,7 @@ GUI_TEST_CLASS_DEFINITION(test_1681_2){
 GUI_TEST_CLASS_DEFINITION(test_1681_3) {
 //    1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-//    2. Add sample: Single dataset tuxedo: Single-end
+//    2. Add sample: Single dataset tuxedo: Paired-end
     class customWizard : public CustomScenario {
     public:
         void run(U2OpStatus &os) {
@@ -4853,7 +4853,7 @@ GUI_TEST_CLASS_DEFINITION(test_1681_3) {
     };
 
     GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
-                                                                   "Single-sample"<<"Single-end"));
+                                                                   "Single-sample"<<"Paired-end"));
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new customWizard()));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
     GTGlobals::sleep();
@@ -5435,17 +5435,17 @@ GUI_TEST_CLASS_DEFINITION(test_1759){
     //paired
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
     GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
-                                                                   "Full"<<"Single-end"));
+                                                                   "Full"<<"Paired-end"));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
 
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
     GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
-                                                                   "Single-sample"<<"Single-end"));
+                                                                   "Single-sample"<<"Paired-end"));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
 
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", new custom()));
     GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
-                                                                   "No-new-transcripts"<<"Single-end"));
+                                                                   "No-new-transcripts"<<"Paired-end"));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
 //    Expected state: "Tuxedo Wizard" dialog has appeared
 
@@ -5722,8 +5722,8 @@ GUI_TEST_CLASS_DEFINITION(test_1834) {
 
     //4. Set the "Document format" parameter of the "File Format Conversion" element to "mega".
     GTUtilsWorkflowDesigner::click(os, "File Format Conversion");
-    GTUtilsWorkflowDesigner::setParameter(os, "Document format", 13, GTUtilsWorkflowDesigner::comboValue);
-    GTUtilsWorkflowDesigner::setParameter(os, "Output directory", 0, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", "mega", GTUtilsWorkflowDesigner::comboValue, GTGlobals::UseMouse);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output directory", 0, GTUtilsWorkflowDesigner::comboValue, GTGlobals::UseMouse);
     GTUtilsWorkflowDesigner::setParameter(os, "Custom directory", QDir().absoluteFilePath(sandBoxDir + "regression_1834"), GTUtilsWorkflowDesigner::textValue);
 
     //5. Run the scheme.
