@@ -21,9 +21,41 @@
 
 #include "GTTestsRegressionScenarios.h"
 
+#include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsTaskTreeView.h"
+
+#include "api/GTFileDialog.h"
+
+#include "runnables/qt/PopupChooser.h"
+
 namespace U2 {
 
 namespace GUITest_regression_scenarios {
+
+GUI_TEST_CLASS_DEFINITION(test_4008) {
+//    1. Open "samples/CLUSTALW/COI.aln".
+//    2. Use Alignment Viewer context menu -> View.
+//    Expected: "Show offsets" option is enabled.
+//    3. Open "_common_data/clustal/big.aln".
+//    4. Use Alignment Viewer context menu -> View.
+//    Expected: "Show offsets" option is enabled.
+//    Current: "Show offsets" option is disabled.
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "MSAE_MENU_VIEW" << "show_offsets",
+                                                            PopupChecker::IsEnabled | PopupChecker::IsChecable));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTGlobals::sleep();
+
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/", "big.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTGlobals::sleep();
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "MSAE_MENU_VIEW" << "show_offsets",
+                                                            PopupChecker::IsEnabled | PopupChecker::IsChecable));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+}
 
 }
 

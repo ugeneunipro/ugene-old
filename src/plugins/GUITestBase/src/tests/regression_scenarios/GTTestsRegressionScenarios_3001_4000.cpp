@@ -5147,6 +5147,28 @@ GUI_TEST_CLASS_DEFINITION(test_3967){
 //    GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3983) {
+//    1. Open file "_common_data\fasta\amino_multy.aln"
+//    2. Open "Pairwise Alignment" OP tab
+//    3. Select first two sequences in the tab
+//    4. Run alignment
+//    Current state: UGENE crashes
+
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "amino_multy.aln");
+
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "chr1_gl000191_random_Amino_translation_");
+
+    GTUtilsMSAEditorSequenceArea::clickToPosition(os, QPoint(1, 1));
+    GTWidget::click(os, GTUtilsOptionPanelMsa::getAddButton(os, 2));
+    GTGlobals::sleep();
+
+    GTWidget::click(os, GTUtilsOptionPanelMsa::getAlignButton(os));
+    CHECK_SET_ERR(l.hasError(), "No error in the log");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3988) {
 //    1. Open "_common_data/zero".
 //    Expected state: a message box appear, it contains a message: "File is empty: ...", the log contains the same message.
