@@ -791,6 +791,26 @@ GUI_TEST_CLASS_DEFINITION(test_1113_1){//commit AboutDialogController.cpp
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1121) {
+    GTLogTracer lt;
+
+    //1) Open alignment with amino alphabet
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/", "amino_ext.aln");
+
+    //2) join line with nucl alphabet.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_LOAD_SEQ" << "Sequence from file"));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/fasta/", "fa1.fa"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_editor_name_list"));
+
+    //3) Then delete line with amino alphabet.
+    GTUtilsMSAEditorSequenceArea::selectSequence(os, "FOSB_HUMAN");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(500);
+
+    //Expected state : Ugene did not crash on assert
+    GTUtilsLog::check(os, lt);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1122){
 //    1. Select "Tools->DNA Assembly->Contig assembly with CAP3" from the main menu.
 //    Expected state: the "Contig Assembly With CAP3" dialog appeared.
@@ -842,6 +862,54 @@ GUI_TEST_CLASS_DEFINITION(test_1133) {
     GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature  (0, 1)");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1156) {
+    class DigestCircularSequenceScenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+
+            QListWidget *availableEnzymeWidget = GTWidget::findExactWidget<QListWidget *>(os, "availableEnzymeWidget", dialog);
+            CHECK_SET_ERR(NULL != availableEnzymeWidget, "Cannot find available enzyme list widget");
+
+            QList<QListWidgetItem *> items = availableEnzymeWidget->findItems("BamHI", Qt::MatchStartsWith);
+            CHECK_SET_ERR(items.size() == 1, "Unexpected number of enzymes starting with 'BamHI'");
+
+            const QPoint enzymePosition = availableEnzymeWidget->mapToGlobal(availableEnzymeWidget->visualItemRect(items.first()).center());
+            GTMouseDriver::moveTo(os, enzymePosition);
+            GTMouseDriver::click(os);
+
+            GTWidget::click(os, GTWidget::findWidget(os, "addButton"));
+
+            GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "circularBox"));
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    // 1. Open human_T1
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    // 2. Use menu{ Analyze->Find restriction sites }.
+    // Expected state : "Find restriction sites" dialog has appeared
+    // 3. Press "Ok" button in the dialog.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "Find restriction sites"));
+    GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList("BamHI")));
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // 4. Use menu{ Cloning->Digest into fragments }.
+    // Expected state : "Find restriction sites" dialog has appeared. It contains a checkbox "Circular molecule"
+    // 5. Choose "Circular molecule" mode
+    // 6. Press "Ok"
+    GTUtilsDialog::waitForDialog(os, new DigestSequenceDialogFiller(os, new DigestCircularSequenceScenario));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Cloning" << "Digest into fragments..."));
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QTreeWidgetItem *fragmentGroupItem = GTUtilsAnnotationsTreeView::findItem(os, "fragments  (0, 24)");
+    CHECK_SET_ERR(24 == fragmentGroupItem->childCount(), "Unexpected sequence fragments count");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1157) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
@@ -873,7 +941,6 @@ GUI_TEST_CLASS_DEFINITION(test_1157) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1163){
-
     // 1. Open file *.ugenedb (for example _common_data\ugenedb\example-alignment.ugenedb) in assembly browser.
     // 2. right click it and choose "Unload selected documents".
     // 3. click "Yes" in appeared message box.
@@ -884,9 +951,8 @@ GUI_TEST_CLASS_DEFINITION(test_1163){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"action_project__unload_selected_action"));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     GTUtilsProjectTreeView::click(os, "example-alignment.ugenedb", Qt::RightButton);
-
-
 }
+
 GUI_TEST_CLASS_DEFINITION(test_1165){
 //1. Open file "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");

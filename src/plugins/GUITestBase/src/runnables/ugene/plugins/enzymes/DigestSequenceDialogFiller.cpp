@@ -29,13 +29,14 @@ namespace U2 {
 
 #define GT_CLASS_NAME "DigestSequenceDialogFiller"
 
-DigestSequenceDialogFiller::DigestSequenceDialogFiller(U2OpStatus &os) :
-    Filler(os, "DigestSequenceDialog")
+DigestSequenceDialogFiller::DigestSequenceDialogFiller(U2OpStatus &os, CustomScenario *scenario)
+    : Filler(os, "DigestSequenceDialog", scenario)
 {
+
 }
 
-#define GT_METHOD_NAME "run"
-void DigestSequenceDialogFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void DigestSequenceDialogFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(NULL != dialog, "activeModalWidget is NULL");
 

@@ -28,9 +28,9 @@ namespace U2 {
 
 class DigestSequenceDialogFiller : public Filler {
 public:
-    DigestSequenceDialogFiller(U2OpStatus &os);
+    DigestSequenceDialogFiller(U2OpStatus &os, CustomScenario *scenario = NULL);
 
-    void run();
+    void commonScenario();
 };
 
 }   // namespace U2
