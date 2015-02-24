@@ -132,7 +132,6 @@ private:
     void onFolderAdded(const QString &path); // updates caches
     void onFolderAddedToRecycleBin(const QString &path); // updates caches
     void onFolderRemoved(Folder *folder); // updates caches
-    void onFolderRenamed(const QString &oldPath, const QString &newPath); // updates caches
     QList<Folder*> getSubFoldersNatural(const QString &path) const; // without recycle bin rules
     void addFolderToCache(const QString &path);
 

@@ -318,10 +318,8 @@ void AnnotatedDNAView::updateScrollAreaHeight() {
         return;
     }
 
-    int minH = 0;
     int maxH = 0;
     foreach(ADVSequenceWidget* v, seqViews) {
-        minH += v->minimumHeight();
         maxH += v->maximumHeight();
     }
 

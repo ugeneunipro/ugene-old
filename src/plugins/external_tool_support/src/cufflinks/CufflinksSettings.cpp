@@ -24,8 +24,12 @@
 
 namespace U2 {
 
-CufflinksSettings::CufflinksSettings()
-: fromFile(false)
+CufflinksSettings::CufflinksSettings() :
+    multiReadCorrect(false),
+    minIsoformFraction(0),
+    preMrnaFraction(0),
+    storage(NULL),
+    fromFile(false)
 {
 }
 

@@ -16,11 +16,13 @@ public:
 private:
     bool static isClippingOperation(Alignment::CigarOperation::Operation op);
 
+#if 0
     bool static isRealOperation(Alignment::CigarOperation::Operation op);
 
     bool static isInDelOperation(Alignment::CigarOperation::Operation op);
 
     bool static isPaddingOperation(Alignment::CigarOperation::Operation op);
+#endif
 
     QList<Alignment::CigarOperation> cigar;
 };

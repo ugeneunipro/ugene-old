@@ -79,6 +79,7 @@ BaseShortReadsAlignerWorker::BaseShortReadsAlignerWorker(Actor *a, const QString
 : BaseWorker(a, false)
 , algName(algName)
 , inChannel(NULL)
+, inPairedChannel(NULL)
 , output(NULL)
 , pairedReadsInput(false)
 {

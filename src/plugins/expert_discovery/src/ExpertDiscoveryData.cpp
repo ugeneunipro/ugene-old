@@ -738,8 +738,9 @@ bool ExpertDiscoveryData::generateRecognizationReportFooter(QString& resultText)
 }
 bool ExpertDiscoveryData::generateRecognizationReportSignals(QString& resultText) const{
     const SignalList& rSelList = selectedSignals.GetSelectedSignals();
-    if (rSelList.size() == 0)
+    if (rSelList.empty()) {
         return true;
+    }
 
     resultText.append("<BR><H2>Selected signals</H2><BR>");
     resultText.append(QString("Total signals selected <I>%1</I><BR>").arg(selectedSignals.GetSelectedSignals().size()));

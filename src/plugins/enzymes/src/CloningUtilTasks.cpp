@@ -19,30 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AppContext.h>
-#include <U2Core/Counter.h>
-#include <U2Core/Version.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/DocumentModel.h>
 #include <U2Core/AddDocumentTask.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/SaveDocumentTask.h>
-#include <U2Core/MultiTask.h>
-#include <U2Core/FormatUtils.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/Counter.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/FormatUtils.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/MultiTask.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/SaveDocumentTask.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
+#include <U2Core/Version.h>
 
 #include <U2Gui/OpenViewTask.h>
 
-#include "FindEnzymesTask.h"
 #include "CloningUtilTasks.h"
+#include "FindEnzymesTask.h"
 
 namespace U2 {
 
@@ -59,16 +60,14 @@ DigestSequenceTask::DigestSequenceTask( U2SequenceObject* so, AnnotationTableObj
 {
     GCOUNTER(cvar,tvar,"DigestSequenceIntoFragments");
 
-    assert(sourceObj != NULL);
-    assert(destObj != NULL);
-    assert(dnaObj != NULL);
-
-
+    SAFE_POINT_EXT(sourceObj != NULL, setError(L10N::nullPointerError("source object")), );
+    SAFE_POINT_EXT(destObj != NULL, setError(L10N::nullPointerError("destination object")), );
+    SAFE_POINT_EXT(dnaObj != NULL, setError(L10N::nullPointerError("sequence object")), );
+    isCircular = dnaObj->isCircular() || cfg.forceCircular;
 }
 
 void DigestSequenceTask::prepare() {
     seqRange = U2Region(0, dnaObj->getSequenceLength());
-    isCircular = dnaObj->isCircular() || cfg.forceCircular;
 
     if (cfg.searchForRestrictionSites) {
         assert(sourceObj == destObj);

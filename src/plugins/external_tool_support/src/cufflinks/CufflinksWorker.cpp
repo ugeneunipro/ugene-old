@@ -301,7 +301,8 @@ QString CufflinksPrompter::composeRichDoc()
 CufflinksWorker::CufflinksWorker(Actor* actor)
     : BaseWorker(actor),
       input(NULL),
-      output(NULL)
+      output(NULL),
+      settingsAreCorrect(false)
 {
 }
 

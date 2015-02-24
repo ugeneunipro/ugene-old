@@ -561,7 +561,7 @@ void AnnotationsTreeView::sl_onAnnotationsAdded( const QList<Annotation> &as ) {
         AVGroupItem* i= *toUpdate.begin();
         toUpdate.remove(i);
         i->updateVisual();
-        AVGroupItem* p = (AVGroupItem*)(i->parent());
+        AVGroupItem* p = dynamic_cast<AVGroupItem *>(i->parent());
         if (p != NULL) {
             toUpdate.insert(p);
         }

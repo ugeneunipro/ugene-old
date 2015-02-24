@@ -277,7 +277,9 @@ void CuffdiffSupportTask::LogParser::parseErrOutput(const QString &partOfLog) {
 /************************************************************************/
 /* CuffdiffSettings */
 /************************************************************************/
-CuffdiffSettings::CuffdiffSettings() {
+CuffdiffSettings::CuffdiffSettings() :
+    storage(NULL)
+{
     timeSeriesAnalysis = false;
     upperQuartileNorm = false;
     hitsNorm = Compatible;

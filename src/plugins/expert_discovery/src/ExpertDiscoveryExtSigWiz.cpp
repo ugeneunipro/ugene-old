@@ -145,7 +145,7 @@ void ExpertDiscoveryExtSigWiz::sl_deleteButton(){
     QTreeWidgetItem* item = predicatesTree->selectedItems().first();
     QVariant variant = item->data(0, Qt::UserRole);
     void* pointer = variant.value<void*>();
-    Operation* pOp = (Operation*) pointer;
+    Operation* pOp = reinterpret_cast<Operation *>(pointer);
     if (pOp == NULL)
         return;
     if (sigSetLayout->currentIndex() != T_UNDEFINED) {
@@ -258,7 +258,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
     foreach(QTreeWidgetItem* item, ch){
         variant = item->data(0, Qt::UserRole);
         pointer = variant.value<void*>();
-        pOp = (Operation*) pointer;
+        pOp = reinterpret_cast<Operation *>(pointer);
         predicates.push_back(pOp);
         delete item;
     }
@@ -267,7 +267,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
     foreach(QTreeWidgetItem* item, ch){
         variant = item->data(0, Qt::UserRole);
         pointer = variant.value<void*>();
-        pOp = (Operation*) pointer;
+        pOp = reinterpret_cast<Operation *>(pointer);
         predicates.push_back(pOp);
         delete item;
     }
@@ -276,7 +276,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
     foreach(QTreeWidgetItem* item, ch){
         variant = item->data(0, Qt::UserRole);
         pointer = variant.value<void*>();
-        pOp = (Operation*) pointer;
+        pOp = reinterpret_cast<Operation *>(pointer);
         predicates.push_back(pOp);
         delete item;
     }
@@ -285,7 +285,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
         for(int i = 0; i < posSize; i++){
             OpInterval *pOp = new OpInterval;
             pOp->setInt(Interval(i, i));
-            predicates.push_back((Operation*)pOp);
+            predicates.push_back(pOp);
         }
     }
 
@@ -310,14 +310,12 @@ void ExpertDiscoveryExtSigWiz::accept(){
             QTreeWidgetItem* item = treeFoldersWidget->selectedItems().first();
             QVariant variant = item->data(0, Qt::UserRole);
             void* pointer = variant.value<void*>();
-            CSFolder* f = (CSFolder*) pointer;
+            CSFolder* f = reinterpret_cast<CSFolder *>(pointer);
             folder = f;
         }
 
         QWizard::accept();
     }
-
-
 }
 
 void ExpertDiscoveryExtSigWiz::hideParameters(){
@@ -331,7 +329,6 @@ void ExpertDiscoveryExtSigWiz::hideParameters(){
     label_6->hide();
     levelBoundEdit->hide();
     advancedButton->hide();
-
 }
 
 bool ExpertDiscoveryExtSigWiz::checkD(const QLineEdit* lineE) const{

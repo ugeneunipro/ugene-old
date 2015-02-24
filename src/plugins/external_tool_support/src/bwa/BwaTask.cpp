@@ -455,7 +455,9 @@ const QString BwaTask::ALGORITHM_BWA_MEM = "BWA-MEM";
 
 
 BwaTask::BwaTask(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex):
-    DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSCOE, justBuildIndex)
+    DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSCOE, justBuildIndex),
+    buildIndexTask(NULL),
+    alignTask(NULL)
 {
     GCOUNTER(cvar, tvar, "NGS:BWATask");
 }

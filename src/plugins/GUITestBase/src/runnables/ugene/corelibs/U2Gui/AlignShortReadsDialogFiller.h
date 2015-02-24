@@ -191,7 +191,7 @@ public:
         parameters(parameters) {
         CHECK_SET_ERR(parameters, "Invalid filler parameters: NULL pointer");
     }
-    AlignShortReadsFiller(U2OpStatus &os, CustomScenario* c): Filler(os, "AssemblyToRefDialog", c){}
+    AlignShortReadsFiller(U2OpStatus &os, CustomScenario* c): Filler(os, "AssemblyToRefDialog", c), parameters(NULL) {}
 
     virtual void commonScenario();
 

@@ -10,7 +10,14 @@
 
 namespace U2{
 
-ColorSchemaDialogController::ColorSchemaDialogController(QMap<char, QColor>& colors):QDialog(), newColors(colors), storedColors(colors){}
+ColorSchemaDialogController::ColorSchemaDialogController(QMap<char, QColor>& colors) :
+    QDialog(),
+    alphabetColorsView(NULL),
+    newColors(colors),
+    storedColors(colors)
+{
+
+}
 
 int ColorSchemaDialogController::adjustAlphabetColors(){
     setupUi(this);

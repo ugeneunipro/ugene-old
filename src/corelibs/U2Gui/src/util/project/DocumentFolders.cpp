@@ -441,18 +441,6 @@ void DocumentFolders::onFolderRemoved(Folder *folder) {
     }
 }
 
-void DocumentFolders::onFolderRenamed(const QString &oldPath, const QString &newPath) {
-    QString parentPath = getParentFolder(newPath);
-    CHECK(ProjectUtils::RECYCLE_BIN_FOLDER_PATH != parentPath, );
-    if (hasCachedSubFolders.value(oldPath, false)) {
-        hasCachedSubFolders.remove(oldPath);
-        cachedSubFoldersNames.remove(oldPath);
-        cachedSubFolders.remove(oldPath);
-    }
-
-    addFolderToCache(newPath);
-}
-
 /************************************************************************/
 /* FolderObjectTreeStorage */
 /************************************************************************/

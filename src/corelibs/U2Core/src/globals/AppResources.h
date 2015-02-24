@@ -321,8 +321,12 @@ public:
         memoryLockType = other.memoryLockType;
         os = NULL;
         preLockMB = other.preLockMB;
-        lockedMB = other.lockedMB; other.lockedMB = 0;
-        needBytes = other.needBytes; other.needBytes = 0;
+        lockedMB = other.lockedMB;
+        other.lockedMB = 0;
+        needBytes = other.needBytes;
+        other.needBytes = 0;
+        resource = NULL;
+        errorMessage = "";
     }
 
     MemoryLocker& operator=(MemoryLocker& other) {

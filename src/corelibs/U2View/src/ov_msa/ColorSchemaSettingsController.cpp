@@ -437,7 +437,7 @@ void ColorSchemaSettingsPageWidget::sl_onDeleteColorSchema(){
             return;
         }
     }
-    SAFE_POINT(true != true, "something wrong causes color scheme deletion, this code must be unreacheble",);
+    FAIL("something wrong causes color scheme deletion, this code must be unreacheble", );
 }
 
 /*Create MSA scheme dialog*/

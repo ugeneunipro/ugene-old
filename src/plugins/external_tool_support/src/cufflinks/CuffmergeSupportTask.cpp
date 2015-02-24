@@ -229,7 +229,8 @@ QStringList CuffmergeSupportTask::getOutputFiles( ) const {
 /* CuffmergeSettings */
 /************************************************************************/
 CuffmergeSettings::CuffmergeSettings() :
-    minIsoformFraction(0.05)
+    minIsoformFraction(0.05),
+    storage(NULL)
 {
 }
 

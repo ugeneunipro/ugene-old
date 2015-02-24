@@ -24,28 +24,23 @@
 #include "GTUtilsDialog.h"
 namespace U2{
 
-class DistanceMatrixDialogFiller : public Filler
-{
+class DistanceMatrixDialogFiller : public Filler {
 public:
-    enum SaveFormat{HTML,CSV};
-    DistanceMatrixDialogFiller(U2OpStatus &os, bool _hamming=true, bool _counts=true, bool _excludeGaps=true) :
-        Filler(os,"DistanceMatrixMSAProfileDialog"),
-        hamming(_hamming),
-        counts(_counts),
-        excludeGaps(_excludeGaps),
-        saveToFile(false){}
+    enum SaveFormat {
+        HTML,
+        CSV
+    };
 
-    DistanceMatrixDialogFiller(U2OpStatus &os, SaveFormat _format,QString _path) :
-        Filler(os,"DistanceMatrixMSAProfileDialog"),
-        hamming(true),
-        counts(true),
-        excludeGaps(true),
-        saveToFile(true),
-        format(_format),
-        path(_path){}
+    DistanceMatrixDialogFiller(U2OpStatus &os, bool _hamming=true, bool _counts=true, bool _excludeGaps=true);
+    DistanceMatrixDialogFiller(U2OpStatus &os, SaveFormat _format,QString _path);
+
     virtual void run();
+
 public:
-    bool hamming,counts,excludeGaps,saveToFile;
+    bool hamming;
+    bool counts;
+    bool excludeGaps;
+    bool saveToFile;
     SaveFormat format;
     QString path;
 };

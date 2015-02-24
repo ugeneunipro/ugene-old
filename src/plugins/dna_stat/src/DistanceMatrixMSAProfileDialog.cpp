@@ -339,5 +339,14 @@ Task::ReportResult DistanceMatrixMSAProfileTask::report() {
     return Task::ReportResult_Finished;
 }
 
-}//namespace
+DistanceMatrixMSAProfileTaskSettings::DistanceMatrixMSAProfileTaskSettings() :
+    usePercents(false),
+    excludeGaps(false),
+    showGroupStatistic(false),
+    outFormat(DistanceMatrixMSAProfileOutputFormat_Show),
+    ctx(NULL)
+{
 
+}
+
+}//namespace

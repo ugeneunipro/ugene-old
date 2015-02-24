@@ -61,10 +61,7 @@ enum DistanceMatrixMSAProfileOutputFormat {
 
 class DistanceMatrixMSAProfileTaskSettings {
 public:
-    DistanceMatrixMSAProfileTaskSettings(){
-        outFormat = DistanceMatrixMSAProfileOutputFormat_Show;
-        usePercents = false;
-    }
+    DistanceMatrixMSAProfileTaskSettings();
 
     QString                         algoName;    // selected algorithm
     QString                         profileName; // usually object name

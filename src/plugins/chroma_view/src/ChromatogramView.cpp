@@ -433,8 +433,11 @@ void ChromatogramView::sl_showAllTraces()
 
 //////////////////////////////////////
 ////render area
-ChromatogramViewRenderArea::ChromatogramViewRenderArea(ChromatogramView* p, const DNAChromatogram& _chroma)
-: GSequenceLineViewRenderArea(p), linePen(Qt::gray, 1, Qt::DotLine)
+ChromatogramViewRenderArea::ChromatogramViewRenderArea(ChromatogramView* p, const DNAChromatogram& _chroma) :
+    GSequenceLineViewRenderArea(p),
+    linePen(Qt::gray, 1, Qt::DotLine),
+    k(0),
+    b(0)
 {
     setMinimumHeight(200);
     font.setFamily("Courier");

@@ -34,7 +34,9 @@
 
 namespace U2 {
 
-TestDbiProvider::TestDbiProvider(){
+TestDbiProvider::TestDbiProvider() :
+    useConnectionPool(false)
+{
     initialized = false;
     dbi = NULL;
 }

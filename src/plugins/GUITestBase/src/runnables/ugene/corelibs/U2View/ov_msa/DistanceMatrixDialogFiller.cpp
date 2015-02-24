@@ -42,6 +42,30 @@
 namespace U2{
 
 #define GT_CLASS_NAME "GTUtilsDialog::DistanceMatrixDialogFiller"
+
+DistanceMatrixDialogFiller::DistanceMatrixDialogFiller(U2OpStatus &os, bool _hamming, bool _counts, bool _excludeGaps) :
+    Filler(os,"DistanceMatrixMSAProfileDialog"),
+    hamming(_hamming),
+    counts(_counts),
+    excludeGaps(_excludeGaps),
+    saveToFile(false),
+    format(HTML)
+{
+
+}
+
+DistanceMatrixDialogFiller::DistanceMatrixDialogFiller(U2OpStatus &os, DistanceMatrixDialogFiller::SaveFormat _format, QString _path) :
+    Filler(os,"DistanceMatrixMSAProfileDialog"),
+    hamming(true),
+    counts(true),
+    excludeGaps(true),
+    saveToFile(true),
+    format(_format),
+    path(_path)
+{
+
+}
+
 #define GT_METHOD_NAME "run"
 void DistanceMatrixDialogFiller::run(){
 

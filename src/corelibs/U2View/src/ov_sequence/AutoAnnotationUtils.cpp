@@ -308,7 +308,7 @@ QList<QAction*> AutoAnnotationUtils::getAutoAnnotationToggleActions( ADVSequence
 
 ExportAutoAnnotationsGroupTask::ExportAutoAnnotationsGroupTask( const AnnotationGroup &ag,
     GObjectReference& ref, ADVSequenceObjectContext* ctx)
-    : Task("ExportAutoAnnotationsGroupTask", TaskFlags_NR_FOSCOE), aGroup(ag), aRef(ref), seqCtx(ctx)
+    : Task("ExportAutoAnnotationsGroupTask", TaskFlags_NR_FOSCOE), aGroup(ag), aRef(ref), seqCtx(ctx), createTask(NULL)
 {
 
 }

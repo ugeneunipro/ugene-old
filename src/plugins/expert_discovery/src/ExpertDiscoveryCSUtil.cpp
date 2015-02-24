@@ -46,7 +46,7 @@ namespace U2 {
 
     CSFolder* CSFolder::getParentFolder() const
     {
-        return (CSFolder*)parent();
+        return qobject_cast<CSFolder *>(parent());
     }
 
     void CSFolder::setParentFolder(CSFolder* pParentFolder)

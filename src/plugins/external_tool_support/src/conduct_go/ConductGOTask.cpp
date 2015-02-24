@@ -203,8 +203,10 @@ QStringList ConductGOTask::getResultFileNames(){
 
 //////////////////////////////////////////////////////////////////////////
 //ConductGOLogParser
-ConductGOLogParser::ConductGOLogParser()
-:ExternalToolLogParser(){
+ConductGOLogParser::ConductGOLogParser() :
+    ExternalToolLogParser(),
+    progress(-1)
+{
 
 }
 

@@ -158,16 +158,6 @@ private:
     qreal           yBaseCallsOfEdited;
     qreal           wBaseCallsOfEdited;
     qreal           hBaseCallsOfEdited;
-    bool            heightChanged;
-
-private:
-    int             lineHeight;
-    int             yCharOffset;
-    int             xCharOffset;
-
-
-    int             lm;
-    int             rm;
 };
 
 

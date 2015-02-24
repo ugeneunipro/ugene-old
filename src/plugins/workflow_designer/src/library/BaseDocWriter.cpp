@@ -65,7 +65,7 @@ BaseDocWriter::BaseDocWriter(Actor* a, const DocumentFormatId& fid)
 }
 
 BaseDocWriter::BaseDocWriter(Actor *a)
-    : BaseWorker(a), format(NULL), dataStorage(LocalFs), ch(NULL), append(true), fileMode(SaveDoc_Roll)
+    : BaseWorker(a), format(NULL), dataStorage(LocalFs), ch(NULL), append(true), fileMode(SaveDoc_Roll), objectsReceived(false)
 {
 
 }

@@ -39,6 +39,7 @@ void BlastDBCmdSupportTaskSettings::reset() {
     outputPath = "";
     databasePath = "";
     isNuclDatabase = true;
+    addToProject = false;
 }
 
 BlastDBCmdSupportTask::BlastDBCmdSupportTask(const BlastDBCmdSupportTaskSettings& _settings) :

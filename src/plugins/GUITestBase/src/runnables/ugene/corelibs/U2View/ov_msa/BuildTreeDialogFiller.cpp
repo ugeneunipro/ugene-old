@@ -70,7 +70,14 @@ BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os, int _replicates, QS
 }
 
 BuildTreeDialogFiller::BuildTreeDialogFiller(U2OpStatus &os, CustomScenario *cs)
-    : Filler(os, "CreatePhyTree", cs)
+    : Filler(os, "CreatePhyTree", cs),
+    model(0),
+    replicates(0),
+    seed(0),
+    alpha(0),
+    fraction(0),
+    type(MAJORITYEXT),
+    displayWithMsa(false)
 {
 
 }

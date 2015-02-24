@@ -53,7 +53,8 @@ namespace U2 {
 const QString CEASTaskSettings::PDF_FORMAT("PDF");
 const QString CEASTaskSettings::PNG_FORMAT("PNG");
 
-CEASTaskSettings::CEASTaskSettings()
+CEASTaskSettings::CEASTaskSettings() :
+    storage(NULL)
 {
 }
 
@@ -241,14 +242,16 @@ const CEASTaskSettings & CEASSupportTask::getSettings() const {
 
 //////////////////////////////////////////////////////////////////////////
 //CEASLogParser
-CEASLogParser::CEASLogParser()
-:ExternalToolLogParser(){
+CEASLogParser::CEASLogParser() :
+    ExternalToolLogParser(),
+    progress(-1)
+{
 
 }
 
 int CEASLogParser::getProgress(){
     //parsing INFO  @ Fri, 07 Dec 2012 19:30:16: #1 read tag files...
-    int max_step = 8;
+    static const int max_step = 8;
     if(!lastPartOfLog.isEmpty()){
         QString lastMessage=lastPartOfLog.last();
         QRegExp rx(" #(\\d+) \\w");

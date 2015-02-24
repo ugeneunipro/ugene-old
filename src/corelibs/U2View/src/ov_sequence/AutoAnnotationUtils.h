@@ -70,7 +70,6 @@ public:
 private:
     AnnotationGroup aGroup;
     GObjectReference aRef;
-    AnnotatedDNAView* view;
     ADVSequenceObjectContext* seqCtx;
     ADVCreateAnnotationsTask* createTask;
 };

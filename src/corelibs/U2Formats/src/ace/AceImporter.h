@@ -50,7 +50,6 @@ private:
     LoadDocumentTask *       loadDocTask;
 
     bool                     isSqliteDbTransit;
-    bool                     useGui;
 
     QVariantMap              settings;
     QVariantMap              hints;

@@ -102,6 +102,7 @@ bool CigarValidator::isClippingOperation(Alignment::CigarOperation::Operation op
         Alignment::CigarOperation::SoftClip == op;
 }
 
+#if 0
 bool CigarValidator::isRealOperation(Alignment::CigarOperation::Operation op) {
     switch(op) {
     case Alignment::CigarOperation::AlignmentMatch:
@@ -124,6 +125,7 @@ bool CigarValidator::isInDelOperation(Alignment::CigarOperation::Operation op) {
 bool CigarValidator::isPaddingOperation(Alignment::CigarOperation::Operation op) {
     return Alignment::CigarOperation::Padding == op;
 }
+#endif
 
 } //ns BAM
 } //ns U2

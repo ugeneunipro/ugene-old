@@ -158,8 +158,8 @@ size_t AppResourcePool::getCurrentAppMemory() {
 
 #ifdef Q_OS_WIN
     PROCESS_MEMORY_COUNTERS memCounter;
-    bool result = GetProcessMemoryInfo(GetCurrentProcess(), &memCounter, sizeof( memCounter ));
-    return memCounter.WorkingSetSize;
+    bool result = GetProcessMemoryInfo(GetCurrentProcess(), &memCounter, sizeof(memCounter));
+    return result ? memCounter.WorkingSetSize : -1;
 #elif defined(Q_OS_LINUX)
     struct proc_t usage;
     memset(&usage, 0, sizeof(usage));

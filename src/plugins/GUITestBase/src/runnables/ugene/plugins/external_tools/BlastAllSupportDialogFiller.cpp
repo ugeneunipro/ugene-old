@@ -49,7 +49,7 @@ BlastAllSupportDialogFiller::BlastAllSupportDialogFiller(const Parameters &param
 }
 
 BlastAllSupportDialogFiller::BlastAllSupportDialogFiller(U2OpStatus &os, CustomScenario *scenario)
-: Filler(os, "BlastAllSupportDialog", scenario)
+    : Filler(os, "BlastAllSupportDialog", scenario), dialog(NULL)
 {
 
 }
