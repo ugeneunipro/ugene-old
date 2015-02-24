@@ -217,7 +217,10 @@ void SamplesWidget::addCategory( const SampleCategory& cat )
         Descriptor d = item.d;
         QIcon ico = item.ico;
         if (ico.isNull()) {
-            ico.addPixmap(SaveSchemaImageUtils::generateSchemaSnapshot(item.content.toUtf8()));
+            const QPixmap pixmap = SaveSchemaImageUtils::generateSchemaSnapshot(item.content.toUtf8());
+            if (!pixmap.isNull()) {
+                ico.addPixmap(pixmap);
+            }
         }
         DesignerGUIUtils::setupSamplesDocument(d, ico, doc);
     }

@@ -174,15 +174,16 @@ QPixmap SaveSchemaImageUtils::generateSchemaSnapshot(const QString & data) {
         return QPixmap();
     }
     SceneCreator sc(&schema, meta);
-    WorkflowScene* scene = sc.createScene(NULL);
+    QScopedPointer<WorkflowScene> scene(sc.createScene(NULL));
 
     QRectF bounds = scene->itemsBoundingRect();
+    CHECK(!bounds.isEmpty(), QPixmap());
+
     QPixmap pixmap(bounds.size().toSize());
     pixmap.fill();
     QPainter painter(&pixmap);
     painter.setRenderHint(QPainter::Antialiasing);
     scene->render(&painter, QRectF(), bounds);
-    delete scene;
     return pixmap;
 }
 
