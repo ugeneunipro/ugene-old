@@ -21,18 +21,23 @@
 
 #include "GTTestsRegressionScenarios.h"
 #include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsLog.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsProjectTreeView.h"
 #include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
+#include "GTUtilsWorkflowDesigner.h"
 
 #include "api/GTFileDialog.h"
+#include "api/GTMenu.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTTextEdit.h"
 #include "api/GTWidget.h"
 
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
 
 namespace U2 {
@@ -62,6 +67,22 @@ GUI_TEST_CLASS_DEFINITION(test_4008) {
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "MSAE_MENU_VIEW" << "show_offsets",
                                                             PopupChecker::IsEnabled | PopupChecker::IsChecable));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4011){
+    GTLogTracer l;
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Open sample "Align sequences with MUSCLE"
+    GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+//    3. Align attached file
+    GTUtilsWorkflowDesigner::click(os, "Read alignment");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/regression/4011", "human_T1.aln");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+//    Current state:
+//    Runtime error occured(x86 version of UGENE)
+//    Windows hangs(x64 version)
+    l.checkMessage("Nothing to write");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4010) {

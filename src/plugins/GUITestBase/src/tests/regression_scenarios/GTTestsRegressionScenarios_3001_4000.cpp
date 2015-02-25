@@ -5181,6 +5181,46 @@ GUI_TEST_CLASS_DEFINITION(test_3988) {
     GTUtilsLog::checkContainsError(os, logTracer, "File is empty:");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3998){
+//    1. Open attached sequence
+    GTLogTracer l;
+//    2. a) Use menu
+//    {Edit sequence->Reverse complement sequence}
+    GTFileDialog::openFile(os, testDir + "_common_data/regression/3998/sequence.fasta");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_EDIT<<ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::click(os, "sequence.fasta");
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+//    Current state: UGENE crashes
+//    b) Use menu
+//    {Edit sequence->Reverse sequence}
+    GTFileDialog::openFile(os, testDir + "_common_data/regression/3998/sequence.fasta");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_EDIT<<ACTION_EDIT_RESERVE_SEQUENCE));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::click(os, "sequence.fasta");
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+//    Current state: UGENE crashes
+//    c) Use menu
+//    {Edit sequence->Complement sequence}
+    GTFileDialog::openFile(os, testDir + "_common_data/regression/3998/sequence.fasta");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_EDIT<<ACTION_EDIT_COMPLEMENT_SEQUENCE));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::click(os, "sequence.fasta");
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+
+//    Current state: error occured, sequence disappeared from the display
+    GTUtilsLog::check(os, l);
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
