@@ -356,10 +356,13 @@ MAlignment PhylipInterleavedFormat::parse(IOAdapter *io, U2OpStatus &os) const {
         QByteArray name;
         name.append(QByteArray::fromRawData(buff, len).trimmed());
 
-        len = io->readUntil(buff, READ_BUFF_SIZE, LINE_BREAKS, IOAdapter::Term_Skip, &resOk);
-        CHECK_EXT(len != 0, os.setError( PhylipSequentialFormat::tr("Error parsing file") ), MAlignment());
+        QByteArray value;
+        do {
+            len = io->readUntil(buff, READ_BUFF_SIZE, LINE_BREAKS, IOAdapter::Term_Skip, &resOk);
+            CHECK_EXT(len != 0, os.setError( PhylipSequentialFormat::tr("Error parsing file") ), MAlignment());
+            value.append(QByteArray::fromRawData(buff, len));
+        } while (!resOk);
 
-        QByteArray value = QByteArray::fromRawData(buff, len);
         removeSpaces(value);
         al.addRow(name, value, os);
 
@@ -371,14 +374,18 @@ MAlignment PhylipInterleavedFormat::parse(IOAdapter *io, U2OpStatus &os) const {
     while (!os.isCoR() && len > 0 && !io->isEof()) {
         int blockSize = -1;
         for (int i = 0; i < numberOfSpecies; i++) {
-            len = io->readUntil(buff, READ_BUFF_SIZE, LINE_BREAKS, IOAdapter::Term_Skip, &resOk);
-            if (len == 0) {
+            QByteArray value;
+            do {
+                len = io->readUntil(buff, READ_BUFF_SIZE, LINE_BREAKS, IOAdapter::Term_Skip, &resOk);
+                value.append(QByteArray::fromRawData(buff, len));
+            } while (!resOk && !io->isEof());
+            if (value.size() == 0) {
                 if (i != 0) {
                     os.setError( PhylipInterleavedFormat::tr("Block is incomplete"));
                 }
                 break;
             }
-            QByteArray value = QByteArray::fromRawData(buff, len);
+
             removeSpaces(value);
 
             al.appendChars(i, currentLen, value.constData(), value.size());
