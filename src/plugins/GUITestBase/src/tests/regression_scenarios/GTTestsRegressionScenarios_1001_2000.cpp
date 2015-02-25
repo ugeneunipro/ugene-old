@@ -41,13 +41,14 @@
 #include "api/GTSpinBox.h"
 #include "api/GTTabWidget.h"
 #include "api/GTTableView.h"
+#include "api/GTTextEdit.h"
 #include "api/GTToolbar.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
 
 #include "GTDatabaseConfig.h"
-#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsAnnotationsHighlightingTreeView.h"
+#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsCircularView.h"
@@ -61,8 +62,8 @@
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsNotifications.h"
 #include "GTUtilsOptionPanelMSA.h"
-#include "GTUtilsOptionsPanel.h"
 #include "GTUtilsOptionPanelSequenceView.h"
+#include "GTUtilsOptionsPanel.h"
 #include "GTUtilsPhyTree.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
@@ -173,6 +174,7 @@
 #include <U2View/AssemblyModel.h>
 #include <U2View/AssemblyNavigationWidget.h>
 #include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorFactory.h>
 #include <U2View/MSAEditorNameList.h>
 
 #include <QDialogButtonBox>
@@ -1383,6 +1385,62 @@ GUI_TEST_CLASS_DEFINITION(test_1212_1){
     ADVSingleSequenceWidget *w=(ADVSingleSequenceWidget*)GTWidget::findWidget(os,"ADV_single_sequence_widget_0");
     CHECK_SET_ERR(!w->getSequenceSelection()->isEmpty(), "No selected region");
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1219) {
+//    1. Open any sequence. (human_t1.fa)
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+//    2. Open Smith-Waterman search dialog
+//    Excepted state: default value of combobox "Save result as" is "Annotations"
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            GTTextEdit::setText(os, GTWidget::findExactWidget<QTextEdit *>(os, "teditPattern", dialog), "CTAAGGG");
+
+//    3. Open tab "Input and output"
+            GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "tabWidget", dialog), 1);
+
+//    4. Chose in the combobox "Multiple alignment"
+            GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "resultViewVariants", dialog), "Multiple alignment");
+
+//    5. Check that "pattern sequence name" is "PN", where "N" is number of SW search launch.
+            GTLineEdit::checkText(os, GTWidget::findExactWidget<QLineEdit *>(os, "patternSequenceName", dialog), "P1");
+
+//    6. Click "Align" button
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SmithWatermanDialogFiller(os, new Scenario));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Find pattern [Smith-Waterman]");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Excepted state: new *.aln documents (with specified names) should be created and contain founded subsequences for
+//    one pair in each [m]object. Few documents must be loaded to current project, others will stay unloaded
+//    7. Check that numeration of founded sequences starting from 1
+//    8. Check that there are some separators between template values to default strings in files names and sequences names
+    GTUtilsDocument::checkDocument(os, "P1_human_T1_1.aln");
+    GTUtilsDocument::checkDocument(os, "P1_human_T1_2.aln");
+    GTUtilsDocument::checkDocument(os, "P1_human_T1_3.aln");
+    GTUtilsDocument::checkDocument(os, "P1_human_T1_4.aln");
+    GTUtilsDocument::checkDocument(os, "P1_human_T1_5.aln");
+    GTUtilsDocument::checkDocument(os, "P1_human_T1_6.aln", GTUtilsDocument::DocumentUnloaded);
+    GTUtilsDocument::checkDocument(os, "P1_human_T1_7.aln", GTUtilsDocument::DocumentUnloaded);
+
+    const QSet<GObjectType> acceptableTypes = QSet<GObjectType>() << GObjectTypes::MULTIPLE_ALIGNMENT;
+    GTUtilsProjectTreeView::checkObjectTypes(os, acceptableTypes, GTUtilsProjectTreeView::findIndex(os, "P1_human_T1_1.aln"));
+    GTUtilsProjectTreeView::checkObjectTypes(os, acceptableTypes, GTUtilsProjectTreeView::findIndex(os, "P1_human_T1_2.aln"));
+    GTUtilsProjectTreeView::checkObjectTypes(os, acceptableTypes, GTUtilsProjectTreeView::findIndex(os, "P1_human_T1_3.aln"));
+    GTUtilsProjectTreeView::checkObjectTypes(os, acceptableTypes, GTUtilsProjectTreeView::findIndex(os, "P1_human_T1_4.aln"));
+    GTUtilsProjectTreeView::checkObjectTypes(os, acceptableTypes, GTUtilsProjectTreeView::findIndex(os, "P1_human_T1_5.aln"));
+
+    GTUtilsProjectTreeView::doubleClickItem(os, "P1_human_T1_1");
+    const QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    const QStringList expectedNames = QStringList() << "human_T1_39_45" << "P1_1_7";
+    CHECK_SET_ERR(expectedNames == names, QString("There are unexpected sequence names in the msa: expect '%1', got '%2'").arg(expectedNames.join(", ")).arg(names.join(", ")));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1229) {

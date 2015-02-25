@@ -75,6 +75,12 @@ namespace U2 {
     }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "clickButtonByTooltipOnToolbar"
+void GTToolbar::clickButtonByTooltipOnToolbar(U2OpStatus &os, const QString &toolbarSysName, const QString &tooltip) {
+    GTWidget::click(os, GTToolbar::getWidgetForActionTooltip(os, getToolbar(os, toolbarSysName), tooltip));
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getToolbarAction"
     QAction* GTToolbar::getToolbarAction(U2OpStatus &os, const QString &actionName, const QToolBar *toolbar) {
         QString toolbarTypeCheck = "QToolBar";

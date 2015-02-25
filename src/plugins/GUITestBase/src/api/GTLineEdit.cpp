@@ -120,6 +120,14 @@ void GTLineEdit::checkTextSize(U2OpStatus& os, QLineEdit* lineEdit) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "checkText"
+void GTLineEdit::checkText(U2OpStatus &os, QLineEdit *lineEdit, const QString &expectedText) {
+    Q_UNUSED(os);
+    GT_CHECK(NULL != lineEdit, "Line edit is NULL");
+    GT_CHECK(expectedText == lineEdit->text(), QString("The text differs: expect '%1', got '%2'").arg(expectedText).arg(lineEdit->text()));
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "copyText"
 QString GTLineEdit::copyText(U2OpStatus& os, QLineEdit* lineEdit) {
     GT_CHECK_RESULT(lineEdit != NULL, "lineEdit is NULL", QString());

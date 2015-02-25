@@ -51,6 +51,7 @@ public:
     // fails if lineEdit is NULL or lineEdit text is not in lineEdit's rect
     // considering lineEdit's fontMetrics and textMargins
     static void checkTextSize(U2OpStatus& os, QLineEdit* lineEdit);
+    static void checkText(U2OpStatus& os, QLineEdit* lineEdit, const QString &expectedText);
 
     static QString copyText(U2OpStatus& os, QLineEdit* lineEdit);
 

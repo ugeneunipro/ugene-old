@@ -40,6 +40,7 @@ public:
     static QWidget* getWidgetForActionName(U2OpStatus &os, const QToolBar *toolbar, const QString &actionName);
     static QWidget* getWidgetForActionTooltip(U2OpStatus &os, const QToolBar *toolbar, const QString &tooltip);
 
+    static void clickButtonByTooltipOnToolbar(U2OpStatus &os, const QString &toolbarSysName, const QString &tooltip);
 
 private:
 
