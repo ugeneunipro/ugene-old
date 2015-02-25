@@ -169,6 +169,8 @@
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/AnnotationsTreeView.h>
+#include <U2View/AssemblyBrowser.h>
+#include <U2View/AssemblyModel.h>
 #include <U2View/AssemblyNavigationWidget.h>
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorNameList.h>
@@ -542,6 +544,131 @@ GUI_TEST_CLASS_DEFINITION(test_1022) {
     GTGlobals::sleep(5000);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1029) {
+//    1. Open all files from "samples/genbank/" directory in separate mode
+//    2. Close all views except one
+//    3. Add other sequences to existing view using "add to view" from project context menu
+//    4. Close all opened circular views with buttons on sequence view toolbar
+//    5. Open circular views with button "Toggle circular views" on the UGENE toolbar
+//    Expected state: all opened sequences have circular views
+//    6. Close circular views with same button
+//    Expected state: all circular views are closed
+
+    GTSequenceReadingModeDialog::mode = GTSequenceReadingModeDialog::Separate;
+    GTUtilsDialog::waitForDialog(os, new GTSequenceReadingModeDialogUtils(os));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils_list(os, dataDir + "samples/Genbank/", QStringList() << "murine.gb" << "sars.gb" << "CVU55762.gb" << "PBR322.gb" << "NC_014267.1.gb"));
+
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__OPEN_PROJECT);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(5000);
+
+    QStringList windowsNames;
+    windowsNames << "murine [s] NC_001363" << "sars [s] NC_004718" << "CVU55762 [s] CVU55762" << "PBR322 [s] SYNPBR322";
+
+    foreach (const QString &window, windowsNames) {
+        GTUtilsMdi::closeWindow(os, window);
+        GTGlobals::sleep();
+    }
+    GTUtilsMdi::closeWindow(os, "Start Page");
+
+    foreach (const QString &window, windowsNames) {
+        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Add to view" << "Add to view: NC_014267.1 [s] NC_014267"));
+        QString seqName = window.right( window.size() - window.indexOf("[s] ") - 4);
+        GTUtilsProjectTreeView::click(os, seqName, Qt::RightButton);
+        GTGlobals::sleep();
+    }
+
+    int seqNum = GTUtilsSequenceView::getSeqWidgetsNumber(os);
+    QScrollArea* scroll = qobject_cast<QScrollArea*>(GTWidget::findWidget(os, "annotated_DNA_scrollarea"));
+    CHECK_SET_ERR(scroll != NULL, "annotated_DNA_scrollarea not found");
+    for (int i = 0; i < seqNum; i++) {
+        ADVSingleSequenceWidget* seqWgt = GTUtilsSequenceView::getSeqWidgetByNumber(os, i);
+        // Comment to UGENE-4076 : the following code should scroll to the single sequence widget and close CV if it is present, but is does not work
+        // FAILED BLOCK start
+        scroll->ensureWidgetVisible(seqWgt);
+        if (GTUtilsCv::isCvPresent(os, seqWgt)) {
+            GTUtilsCv::cvBtn::click(os, seqWgt);
+            GTGlobals::sleep();
+        }
+        // FAILED BLOCK end
+    }
+
+    GTUtilsCv::commonCvBtn::click(os);
+
+    for (int i = 0; i < seqNum; i++) {
+        ADVSingleSequenceWidget* seqWgt = GTUtilsSequenceView::getSeqWidgetByNumber(os, i);
+        CHECK_SET_ERR( GTUtilsCv::isCvPresent(os, seqWgt), QString("No CV for %1 single sequence view").arg(i) );
+    }
+
+    GTUtilsCv::commonCvBtn::click(os);
+
+    for (int i = 0; i < seqNum; i++) {
+        ADVSingleSequenceWidget* seqWgt = GTUtilsSequenceView::getSeqWidgetByNumber(os, i);
+        CHECK_SET_ERR( !GTUtilsCv::isCvPresent(os, seqWgt), QString("No CV for %1 single sequence view").arg(i) );
+    }
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1038) {
+//    1. Open WD
+//    2. Create a scheme with the following elments: "Read assembly", "Write sequence", "Split assembly into sequences"
+//    3. Set samples/Assembly/chrM.sorted.bam as an input assembly. Set any output sequence file
+//    4. Run the scheme
+//    5. Open chrM in assembly browser
+//    Expected: output sequences file has the same sequences as you can see in Assmbly Browser
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    WorkflowProcessItem* readAsmbl = GTUtilsWorkflowDesigner::addElement(os, "Read Assembly");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/bam", "small.bam.sorted.bam");
+
+    WorkflowProcessItem* split = GTUtilsWorkflowDesigner::addElement(os, "Split Assembly into Sequences");
+    WorkflowProcessItem* writeSeq = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", QDir(sandBoxDir).absolutePath() + "/test_1038_seq", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::connect(os, readAsmbl, split);
+    GTUtilsWorkflowDesigner::connect(os, split, writeSeq);
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+    GTFileDialog::openFile(os, sandBoxDir, "test_1038_seq");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // get the list of sequences in file and read names in assembly
+    Document* seqDoc = GTUtilsDocument::getDocument(os, "test_1038_seq");
+    CHECK_SET_ERR(seqDoc != NULL, "Document is NULL");
+    QList<GObject*> seqList = seqDoc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded);
+    CHECK_SET_ERR(!seqList.isEmpty(), "The list of sequences is empty");
+    QList<QByteArray> seqNames;
+    foreach (GObject* obj, seqList) {
+        CHECK_SET_ERR(obj != NULL, "GObject is NULL");
+        seqNames << obj->getGObjectName().toLatin1();
+    }
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_1038_bam"));
+    GTFileDialog::openFile(os, testDir + "_common_data/bam", "small.bam.sorted.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(5000);
+
+    AssemblyBrowserUi* ui = GTUtilsAssemblyBrowser::getView(os, "test_1038_bam [as] ref_and_others");
+    QSharedPointer<AssemblyModel> model = ui->getModel();
+
+    U2DbiIterator<U2AssemblyRead> * it = model->getReads(U2Region(0, model->getModelLength(os)), os);
+    CHECK_SET_ERR(it != NULL, "NULL iterator");
+
+    int matchCount = 0;
+    while(it->hasNext()) {
+        U2AssemblyRead read = it->next();
+        if ( seqNames.contains( read->name ) ){
+            matchCount++;
+        }
+    }
+
+    CHECK_SET_ERR(matchCount == seqNames.size(), QString("Number of reads and sequences are not matched: got %1, expected %2").arg(matchCount).arg((seqNames.size())));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1199) {
 //1. Open any samples/PDB/1CF7.pdb file.
     GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
@@ -851,8 +978,8 @@ GUI_TEST_CLASS_DEFINITION(test_1133) {
 //     2. Open Smith-Waterman search dialog
 //     3. Paste sequence from text file to pattern field
 //     4. Run search
-// 
-//     Expected state: Search successfully perfoms 
+//
+//     Expected state: Search successfully perfoms
     GTFileDialog::openFile(os, dataDir + "/samples/FASTA/human_T1.fa");
     QString patttern = "ATGAA    GGAAAAA\nA T G CTA AG GG\nCAGC    CAGAG AGAGGTCA GGT";
     GTUtilsDialog::waitForDialog(os, new SmithWatermanDialogFiller(os, patttern));
@@ -915,11 +1042,11 @@ GUI_TEST_CLASS_DEFINITION(test_1157) {
 
     WorkflowProcessItem *readSequence = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
     WorkflowProcessItem *writeSequence = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
-    
+
     QString resultFilePath = testDir + "_common_data/scenarios/sandbox/test_1157.gb";
     GTUtilsWorkflowDesigner::setParameter(os, "Document format", "genbank", GTUtilsWorkflowDesigner::comboValue);
     GTUtilsWorkflowDesigner::setParameter(os, "Output file", resultFilePath, GTUtilsWorkflowDesigner::textValue);
-    
+
     WorkflowProcessItem *callocationSearch = GTUtilsWorkflowDesigner::addElement(os, "Collocation Search");
     GTUtilsWorkflowDesigner::setParameter(os, "Result type", "Copy original annotations", GTUtilsWorkflowDesigner::comboValue);
     GTGlobals::sleep(750);
@@ -930,7 +1057,7 @@ GUI_TEST_CLASS_DEFINITION(test_1157) {
 
     GTUtilsWorkflowDesigner::connect(os, readSequence, callocationSearch);
     GTUtilsWorkflowDesigner::connect(os, callocationSearch, writeSequence);
-    
+
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
