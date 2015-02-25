@@ -79,6 +79,7 @@ CircularView::CircularView(QWidget* p, ADVSequenceObjectContext* ctx, CircularVi
     setMouseTracking(true);
 
     connect(ctx->getSequenceGObject(), SIGNAL(si_nameChanged(const QString&)), this, SLOT(sl_onSequenceObjectRenamed(const QString&)));
+    connect(ctx->getSequenceObject(), SIGNAL(si_sequenceCircularStateChanged()), this, SLOT(sl_onCircularTopologyChange()));
     pack();
 }
 
@@ -371,6 +372,11 @@ void CircularView::sl_zoomOut() {
 
 void CircularView::sl_onSequenceObjectRenamed(const QString&) {
     update();
+}
+
+void CircularView::sl_onCircularTopologyChange() {
+    addUpdateFlags(GSLV_UF_AnnotationsChanged);
+    ra->update();
 }
 
 void CircularView::updateZoomActions() {
@@ -885,7 +891,6 @@ void CircularViewRenderArea::drawAnnotations( QPainter &p ) {
     labelList.clear( );
     annotationYLevel.clear( );
     regionY.clear( );
-    circItems.clear( );
 
     AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
     //TODO: there need const order of annotation tables
@@ -913,7 +918,6 @@ void CircularViewRenderArea::drawAnnotations( QPainter &p ) {
         return;
     }
     foreach(CircularAnnotationLabel* label, labelList) {
-        const Annotation ann = label->getAnnotation();
         label->setLabelPosition();
         label->paint(&p, NULL, this);
     }

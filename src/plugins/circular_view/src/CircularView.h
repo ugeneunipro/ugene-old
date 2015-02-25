@@ -105,6 +105,7 @@ public slots:
     void sl_zoomOut();
     void sl_fitInView();
     void sl_onSequenceObjectRenamed(const QString& oldName);
+    void sl_onCircularTopologyChange();
 
 protected slots:
     virtual void sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation>& added, const QList<Annotation>& removed);

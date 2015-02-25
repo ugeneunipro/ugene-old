@@ -272,6 +272,8 @@ void MSAGraphOverview::sl_unblockRendering(bool update) {
     isBlocked = false;
     if (update) {
         sl_drawGraph();
+    } else {
+        this->update();
     }
 
     connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(MAlignment,MAlignmentModInfo)),

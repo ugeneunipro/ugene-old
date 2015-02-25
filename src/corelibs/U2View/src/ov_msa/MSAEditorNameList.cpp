@@ -522,6 +522,8 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
             emit si_stopMsaChanging(false);
         }
         scribbling = false;
+    } else {
+        emit si_stopMsaChanging(false);
     }
     ui->seqArea->getVBar()->setupRepeatAction(QAbstractSlider::SliderNoAction);
 
