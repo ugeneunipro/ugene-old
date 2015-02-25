@@ -5188,8 +5188,16 @@ GUI_TEST_CLASS_DEFINITION(test_2829) {
 
     //5) In second sequence view choose { Toggle view -> Remove sequence } on the toolbar
     //Expected state: DotPlot closed and UGENE didn't crash
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "remove_sequence"));
-    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_NC_001363", GTUtilsSequenceView::getSeqWidgetByNumber(os, 1)), Qt::RightButton);
+
+    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggle_view_button_NC_001363");
+    const QPoint clickPos = toggleViewButton->mapToGlobal(toggleViewButton->rect().center());
+    GTMouseDriver::moveTo(os, clickPos);
+    GTMouseDriver::click(os);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2853 ){
