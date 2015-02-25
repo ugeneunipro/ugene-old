@@ -1115,6 +1115,24 @@ GUI_TEST_CLASS_DEFINITION(test_1172){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1180) {
+    //1) Open Settings, External tools.
+    //2) Set wrong path to the Bowtie tool.
+    QString toolPath = QFileInfo(dataDir + "samples/FASTA/human_T1.fa").absoluteFilePath();
+    GTUtilsExternalTools::setToolUrl(os, "Bowtie aligner", toolPath);
+    GTUtilsExternalTools::setToolUrl(os, "Bowtie build indexer", toolPath);
+
+    //3) Run Bowtie aligning on any data.
+    //Expected state: UGENE not crashed.
+    AlignShortReadsFiller::Parameters parameters(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/index/",
+        "chr6.fa",
+        testDir + "_common_data/e_coli/",
+        "e_coli_1000.fastq",
+        AlignShortReadsFiller::Parameters::Bowtie);
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters)) ;
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1184){
 //    1. Open WD
 //    2. Place worker on the scheme 'Write FASTA', set worker parameters to the next values:
@@ -1230,6 +1248,7 @@ GUI_TEST_CLASS_DEFINITION(test_1190){//add AlignShortReadsFiller
 
 //repeat these steps 3 times, UGENE shouldn't crash
 }
+
 GUI_TEST_CLASS_DEFINITION(test_1204){
     // 1) Open files data\samples\FASTA\human_T1.fa
     // 2) Use context menu {Analyze -> Query NCBI BLAST database}
