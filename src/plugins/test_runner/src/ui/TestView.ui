@@ -20,6 +20,9 @@
       <enum>Qt::Vertical</enum>
      </property>
      <widget class="QTreeWidget" name="tree">
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
       <column>
        <property name="text">
         <string>testColumn</string>
