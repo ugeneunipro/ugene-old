@@ -26,30 +26,25 @@
 
 namespace U2 {
 
-    class CreateAnnotationWidgetChecker : public Filler {
-    public:
-        CreateAnnotationWidgetChecker(U2OpStatus &_os, bool _newTableRB, const QString &_groupName, const QString &_annotationName, const QString &_location) 
-            : Filler(_os, "CreateAnnotationDialog"), groupName(_groupName), annotationName(_annotationName), location(_location), newTableRB(_newTableRB){}
-        virtual void run();
-    private:
-        const QString groupName;
-        const QString annotationName;
-        const QString location;
-        bool newTableRB;
-    };
+class CreateAnnotationWidgetFiller : public Filler {
+public:
+    CreateAnnotationWidgetFiller(U2OpStatus &os,
+                                 bool newTableRB,
+                                 const QString &groupName,
+                                 const QString &annotationName,
+                                 const QString &location,
+                                 const QString &saveTo = "");
 
-    class CreateAnnotationWidgetFiller : public Filler {
-    public:
-        CreateAnnotationWidgetFiller(U2OpStatus &_os, bool _newTableRB, const QString &_groupName, const QString &_annotationName, const QString &_location, const QString &saveTo = "")
-            : Filler(_os, "CreateAnnotationDialog"), groupName(_groupName), annotationName(_annotationName), location(_location), newTableRB(_newTableRB), saveTo(saveTo) {}
-        virtual void run();
-    private:
-        const QString groupName;
-        const QString annotationName;
-        const QString location;
-        bool newTableRB;
-        const QString saveTo;
-    };
-}
+    virtual void run();
 
-#endif
+private:
+    const QString groupName;
+    const QString annotationName;
+    const QString location;
+    const bool newTableRB;
+    const QString saveTo;
+};
+
+}   // namespace U2
+
+#endif // _U2_GT_RUNNABLES_CREATE_ANNOTATIONS_WIDGET_FILLER_H_
