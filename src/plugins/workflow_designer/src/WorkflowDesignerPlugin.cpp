@@ -276,7 +276,7 @@ void WorkflowDesignerService::initDesignerAction() {
 }
 
 void WorkflowDesignerService::initNewWorkflowAction() {
-    newWorkflowAction = new QAction(QIcon(":/workflow_designer/images/wd.png"), tr("New workflow..."), this);
+    newWorkflowAction = new QAction(QIcon(":/workflow_designer/images/wd.png"), tr("New workflow"), this);
     newWorkflowAction->setObjectName("New workflow");
     connect(newWorkflowAction, SIGNAL(triggered()), SLOT(sl_showDesignerWindow()));
 
