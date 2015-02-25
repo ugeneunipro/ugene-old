@@ -1445,6 +1445,22 @@ GUI_TEST_CLASS_DEFINITION(test_1234) {
     CHECK_SET_ERR("SLGRNP" == QString(seq2->getSequenceObject()->getWholeSequenceData()), QString("Unexpected sequence. Expected %1, Actual %2").arg("SLGRNP").arg(QString(seq2->getSequenceObject()->getWholeSequenceData())));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1241) {
+    GTLogTracer lt;
+
+    //1. Open file _common_data/scenarios/regression/1241/tt.fa.
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1241/tt.fa");
+
+    //2. Select ma959 sequence.
+    GTUtilsMsaEditor::clickSequenceName(os, "ma959");
+
+    //3. Press "Enable collapsing".
+    GTWidget::click(os, GTAction::button(os, "Enable collapsing"));
+
+    //Expected: UGENE doesn't crash, no errors in log.
+    CHECK_SET_ERR(!lt.hasError(), "Errors in log");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1245){
 //    1. Open the file human_T1.fa.
 //    2. Click on the document context menu "Export Document" in the project view. The Export Document dialog appears.
