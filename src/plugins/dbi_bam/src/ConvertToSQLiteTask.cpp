@@ -180,6 +180,7 @@ class SamIterator : public Iterator {
 public:
     SamIterator(SamReader &reader):
         reader(reader),
+        readReferenceId(-1),
         readValid(false)
     {
     }
@@ -363,7 +364,7 @@ public:
     SequentialDbiIterator(int referenceId, bool skipUnmapped, Iterator &inputIterator, TaskStateInfo &stateInfo, const IOAdapter &ioAdapter):
         referenceIterator(referenceId, inputIterator),
         skipUnmappedIterator(skipUnmapped? new SkipUnmappedIterator(referenceIterator):NULL),
-        iterator(skipUnmapped? (Iterator *)skipUnmappedIterator.data():(Iterator *)&referenceIterator),
+        iterator(skipUnmapped ? dynamic_cast<Iterator *>(skipUnmappedIterator.data()) : dynamic_cast<Iterator *>(&referenceIterator)),
         readsImported(0),
         stateInfo(stateInfo),
         ioAdapter(ioAdapter)
@@ -508,8 +509,9 @@ void ConvertToSQLiteTask::run() {
 
         stateInfo.setDescription("Importing reads");
 
-        if((Header::Coordinate == reader->getHeader().getSortingOrder()) ||
-           (Header::QueryName == reader->getHeader().getSortingOrder())) {
+        if(Header::Coordinate == reader->getHeader().getSortingOrder() ||
+           Header::QueryName == reader->getHeader().getSortingOrder() ||
+           bamInfo.hasIndex()) {
 
             QScopedPointer<Iterator> iterator;
             if(!bamInfo.hasIndex()) {

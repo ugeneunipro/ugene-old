@@ -19,15 +19,17 @@
 * MA 02110-1301, USA.
 */
 
-#include <U2Core/Task.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/Task.h>
 
-#include "Reader.h"
-#include "Index.h"
+#include <U2Formats/BAMUtils.h>
+
 #include "BaiReader.h"
-#include "LoadBamInfoTask.h"
 #include "Exception.h"
+#include "Index.h"
+#include "LoadBamInfoTask.h"
+#include "Reader.h"
 #include "SamReader.h"
 
 namespace U2 {
@@ -51,8 +53,8 @@ void LoadInfoTask::run() {
             ioAdapter.reset(factory->createIOAdapter());
         }
 
-        GUrl baiUrl(sourceUrl.getURLString() + ".bai");
-        bool hasIndex = true;
+        GUrl baiUrl = BAMUtils::getBamIndexUrl(sourceUrl);
+
         QScopedPointer<IOAdapter> ioIndexAdapter;
         IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(baiUrl));
         ioIndexAdapter.reset(factory->createIOAdapter());
@@ -62,12 +64,11 @@ void LoadInfoTask::run() {
             return;
         }
 
+        bool hasIndex = false;
         if (sam) {
             hasIndex = false;
         } else {
-            if(!ioIndexAdapter->open(baiUrl, IOAdapterMode_Read)) {
-                hasIndex = false;
-            }
+            hasIndex = ioIndexAdapter->open(baiUrl, IOAdapterMode_Read);
         }
 
         QScopedPointer<Reader> reader(NULL);

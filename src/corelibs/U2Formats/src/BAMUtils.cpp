@@ -432,6 +432,22 @@ void BAMUtils::createBamIndex(const GUrl &bamUrl, U2OpStatus &os) {
     }
 }
 
+GUrl BAMUtils::getBamIndexUrl(const GUrl &bamUrl) {
+    CHECK(hasValidBamIndex(bamUrl), GUrl());
+
+    const QByteArray bamFileName = bamUrl.getURLString().toLocal8Bit();
+    QFileInfo fileInfo(bamFileName + ".bai");
+    if (!fileInfo.exists()) {
+        QString shortIndexUrl = bamFileName;
+        shortIndexUrl.chop(4);
+        shortIndexUrl += ".bai";
+        fileInfo.setFile(shortIndexUrl);
+    }
+    SAFE_POINT(fileInfo.exists(), "Can't find the index file", GUrl());
+
+    return GUrl(fileInfo.filePath());
+}
+
 static qint64 getSequenceLength(U2Dbi *dbi, const U2DataId &objectId, U2OpStatus &os) {
     qint64 seqLength = -1;
 

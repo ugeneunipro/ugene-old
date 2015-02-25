@@ -64,6 +64,8 @@ public:
 
     static void createBamIndex(const GUrl &bamUrl, U2OpStatus &os);
 
+    static GUrl getBamIndexUrl(const GUrl &bamUrl);
+
     static void writeDocument(Document *doc, U2OpStatus &os);
 
     static void writeObjects(const QList<GObject*> &objects, const GUrl &url, const DocumentFormatId &formatId, U2OpStatus &os);
