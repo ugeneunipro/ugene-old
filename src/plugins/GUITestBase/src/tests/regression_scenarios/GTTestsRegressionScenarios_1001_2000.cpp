@@ -993,6 +993,67 @@ GUI_TEST_CLASS_DEFINITION(test_1133) {
 
     GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature  (0, 1)");
 }
+GUI_TEST_CLASS_DEFINITION(test_1152) {
+    // 1. Open human_t1.fa
+    // 2. Open Find Pattern bar on the Options Pannel
+    // 3. Copy a few subsequences of human_t1 in the pattern area putting each of them on a new line
+    // 4. Press Enter
+    // 5. All the subsequences are found on right places
+
+    GTFileDialog::openFile(os, dataDir + "/samples/FASTA/human_T1.fa");
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    GTKeyboardDriver::keySequence(os, "TAACG");
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"], GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keySequence(os, "AAAAAA");
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"], GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    //Expected state : 1 pattern is found
+    QLabel *resultLabel = qobject_cast<QLabel *>(GTWidget::findWidget(os, "resultLabel"));
+    CHECK_SET_ERR(resultLabel->text() == "Results: 1/1328", "Unexpected find algorithm result count");
+
+}
+
+
+GUI_TEST_CLASS_DEFINITION(test_1152_1) {
+    // 1. Open human_t1.fa
+    // 2. Open Find Pattern bar on the Options Pannel
+    // 3. Copy a few subsequences of human_t1 in any file. Put each puttern on a new line
+    // 4. Check "Load Pattern(s) from file"
+    // 5. Select the file that you've created in [3]
+    // 6. Press "Search"
+    // Expected state: All patterns're found on their places
+
+    GTFileDialog::openFile(os, dataDir + "/samples/FASTA/human_T1.fa");
+
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+    GTUtilsOptionPanelSequenceView::toggleInputFromFilePattern(os);
+    GTUtilsOptionPanelSequenceView::enterPatternFromFile(os, testDir + "_common_data/scenarios/_regression/1285/", "small.fa");
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/1"), "Results string not match");
+}
+
+
+GUI_TEST_CLASS_DEFINITION(test_1155) {
+    // 1. Open corresponding schema (_common_data/scenarios/regression/1155/crash.uwl)
+    // 2. Set the correct input sequence file for Read Sequence.
+    // 3. Do not the change output file for Write Sequence.
+    // 4. Run the schema.
+    // Expected state: UGENE not crashed
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1155", "crash.uwl");
+
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/Genbank/sars.gb");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok,
+        "Please fix issues listed in the error list (located under workflow)."));
+    GTGlobals::sleep(100);
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+
+}
 
 GUI_TEST_CLASS_DEFINITION(test_1156) {
     class DigestCircularSequenceScenario : public CustomScenario {
