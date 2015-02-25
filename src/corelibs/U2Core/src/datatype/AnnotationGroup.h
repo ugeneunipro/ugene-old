@@ -31,7 +31,9 @@ class AnnotationTableObject;
 
 class U2CORE_EXPORT AnnotationGroup : public U2Entity {
 public:
+                            AnnotationGroup();
                             AnnotationGroup( const U2DataId &featureId, AnnotationTableObject *parentObject );
+                            AnnotationGroup( const AnnotationGroup &other );
     /*
      * Returning value specifies whether the @name may be used as an annotation name or not.
      * @pathMode allows to take into account group path separation symbol (currently "/")

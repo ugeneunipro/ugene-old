@@ -34,10 +34,23 @@ const QChar U2::AnnotationGroup::GROUP_PATH_SEPARATOR('/');
 
 namespace U2 {
 
+AnnotationGroup::AnnotationGroup() :
+    U2Entity(), parentObject(NULL)
+{
+
+}
+
 AnnotationGroup::AnnotationGroup(const U2DataId &_featureId, AnnotationTableObject *_parentObject)
     : U2Entity(_featureId), parentObject(_parentObject)
 {
     SAFE_POINT(NULL != parentObject && hasValidId(), "Invalid feature table detected!", );
+}
+
+AnnotationGroup::AnnotationGroup(const AnnotationGroup &other) :
+    U2Entity(other),
+    parentObject(other.parentObject)
+{
+
 }
 
 bool AnnotationGroup::isValidGroupName(const QString &name, bool pathMode) {
@@ -337,6 +350,16 @@ bool AnnotationGroup::isTopLevelGroup() const {
 
 bool AnnotationGroup::operator ==(const AnnotationGroup &other) const {
     return id == other.id && parentObject == other.getGObject();
+}
+
+namespace {
+
+bool registerAnnotationGroupMeta() {
+    qRegisterMetaType<AnnotationGroup>("AnnotationGroup");
+    return true;
+}
+static const bool annotationGroupMetaRegistered = registerAnnotationGroupMeta();
+
 }
 
 } // namespace U2
