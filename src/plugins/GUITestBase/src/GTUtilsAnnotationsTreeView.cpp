@@ -251,7 +251,7 @@ QString GTUtilsAnnotationsTreeView::getSelectedItem(U2OpStatus &os)
     QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
     foreach (QTreeWidgetItem* item, treeItems) {
         if (item->isSelected()) {
-            return getAVItemName(os, (AVItem*)item);
+            return getAVItemName(os, dynamic_cast<AVItem *>(item));
         }
     }
 

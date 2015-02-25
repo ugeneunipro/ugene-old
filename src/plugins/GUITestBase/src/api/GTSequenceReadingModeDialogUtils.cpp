@@ -199,7 +199,6 @@ void GTSequenceReadingModeDialogUtils::changeSpinBoxValue(QSpinBox *sb, int val)
 {
     QPoint arrowPos;
     QRect spinBoxRect;
-    int key;
 
     if (sb->value() != val) {
         switch(GTSequenceReadingModeDialog::useMethod) {
@@ -218,7 +217,8 @@ void GTSequenceReadingModeDialogUtils::changeSpinBoxValue(QSpinBox *sb, int val)
             }
             break;
 
-        case GTGlobals::UseKey:
+        case GTGlobals::UseKey: {
+            int key = 0;
             if (val > sb->value()) {
                 key = GTKeyboardDriver::key["up"];
             } else {
@@ -230,6 +230,7 @@ void GTSequenceReadingModeDialogUtils::changeSpinBoxValue(QSpinBox *sb, int val)
                 GTKeyboardDriver::keyClick(os, key);
                 GTGlobals::sleep(100);
             }
+        }
         default:
             break;
         }

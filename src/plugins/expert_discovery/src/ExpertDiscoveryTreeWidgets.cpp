@@ -39,7 +39,7 @@ EDPIProperty::~EDPIProperty() {
     delete m_pCallback;
 }
 
-const EDPIProperty& EDPIProperty::operator =(const EDPIProperty& rProperty) {
+EDPIProperty& EDPIProperty::operator =(const EDPIProperty& rProperty) {
     setType( rProperty.m_pType);
     setName( rProperty.getName() );
     if (rProperty.m_pCallback)
@@ -99,7 +99,7 @@ EDPIPropertyGroup::~EDPIPropertyGroup()
 {
 }
 
-const EDPIPropertyGroup& EDPIPropertyGroup::operator=(const EDPIPropertyGroup& rGroup)
+EDPIPropertyGroup& EDPIPropertyGroup::operator=(const EDPIPropertyGroup& rGroup)
 {
     m_strName = rGroup.getName();
     m_arProperties = rGroup.m_arProperties;
@@ -440,8 +440,8 @@ bool EDProjectItem::operator<(const QTreeWidgetItem &other) const{
         }
     }
     if (type1 == PIT_CS && type2 == PIT_CS){
-        const Signal* pSnl1 = ((EDPICS*) pItem1)->getSignal();
-        const Signal* pSnl2 = ((EDPICS*) pItem2)->getSignal();
+        const Signal* pSnl1 = qobject_cast<const EDPICS *>(pItem1)->getSignal();
+        const Signal* pSnl2 = qobject_cast<const EDPICS *>(pItem2)->getSignal();
         switch (sortField) {
          case ED_FIELD_UNDEFINED: return QTreeWidgetItem::operator<(other);
          case ED_FIELD_PROBABILITY: return (pSnl1->getPriorProbability()<pSnl2->getPriorProbability());
@@ -683,9 +683,6 @@ void EDPISequence::update(bool bUpdateChildren)
     GenInfo.addProperty(PropName);
     GenInfo.addProperty(PropSize);
     addGroup(GenInfo);
-
-    double dScore = m_rSeq.getScore();
-    double dBound = edData.getRecognizationBound();
 
     EDPIProperty PropScore(strScore);
     PropScore.setCallback(new Callback<EDPISequence, QString>(this, &EDPISequence::getScore));
@@ -1360,8 +1357,6 @@ void EDPICSNInterval::update(bool bupdateChildren)
     QString strFrom = "Distance from";
     QString strTo = "Distance to";
     QString strEditor = "Editor";
-
-    OpInterval* pOp = dynamic_cast<OpInterval*>(getOperation());
 
     EDPIPropertyTypeList *pTList = EDPIPropertyTypeListCSNodeTypes::getInstance();
     EDPIProperty PropType(strType);

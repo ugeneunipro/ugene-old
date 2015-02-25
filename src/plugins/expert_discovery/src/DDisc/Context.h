@@ -54,7 +54,7 @@ protected:
     */
    Context();
 	Context(const Context &);
-	const Context& operator =(const Context &rContext);
+    Context& operator =(const Context &rContext);
 	virtual ~Context();
 
    /**
@@ -88,7 +88,7 @@ protected:
 	ConInterval();
 	ConInterval(const ConInterval &);
 	virtual ~ConInterval();
-	const ConInterval& operator =(const ConInterval &rContext);
+    ConInterval& operator =(const ConInterval &rContext);
 
    /**
     *	Sets context of operation argument
@@ -126,7 +126,7 @@ protected:
 	ConReiteration();
 	ConReiteration(const ConReiteration&);
 	virtual ~ConReiteration();
-	const ConReiteration& operator =(const ConReiteration &rContext);
+    ConReiteration& operator =(const ConReiteration &rContext);
 
    /**
    *	Sets context of operation argument
@@ -172,7 +172,7 @@ protected:
 	ConDistance();
 	ConDistance(const ConDistance&);
 	virtual ~ConDistance();
-	const ConDistance& operator =(const ConDistance &rContext);
+    ConDistance& operator =(const ConDistance &rContext);
 
    /**
     * Sets context of first operation argument
@@ -223,7 +223,7 @@ protected:
 	ConTS(std::string name);
 	ConTS(const ConTS&);
 	virtual ~ConTS();
-	const ConTS& operator =(const ConTS &rContext);
+    ConTS& operator =(const ConTS &rContext);
 	virtual bool isSignalPart(int nPos) const;
 	virtual std::string getTSName(int nPos) const;
     virtual int getDistributionHash() const;

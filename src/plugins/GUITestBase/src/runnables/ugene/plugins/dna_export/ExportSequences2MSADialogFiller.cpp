@@ -59,7 +59,9 @@ Filler(_os, "U2__ExportSequences2MSADialog"), name(_name), useMethod(method), fo
 }
 
 ExportSequenceAsAlignmentFiller::ExportSequenceAsAlignmentFiller(U2OpStatus &_os, CustomScenario *scenario)
-    : Filler(_os, "U2__ExportSequences2MSADialog", scenario)
+    : Filler(_os, "U2__ExportSequences2MSADialog", scenario),
+      format(Clustalw),
+      addToProject(false)
 {
 
 }

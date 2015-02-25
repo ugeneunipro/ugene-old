@@ -40,6 +40,7 @@ namespace U2 {
 ExportConsensusVariationsTask::ExportConsensusVariationsTask(const ExportConsensusVariationsTaskSettings &settings_)
     : DocumentProviderTask("", TaskFlags_NR_FOSE_COSC)
     , settings(settings_)
+    , consensusTask(NULL)
     , varTrackObject(NULL)
 {
     setTaskName(tr("Export consensus variations of assembly '%1' to '%2'")

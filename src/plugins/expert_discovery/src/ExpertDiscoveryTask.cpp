@@ -583,11 +583,15 @@ void ExpertDiscoveryErrors::markupLoadError() {
     mb.exec();
 }
 
-ExpertDiscoverySignalExtractorTask::ExpertDiscoverySignalExtractorTask(ExpertDiscoveryData* d)
-: Task(tr("ExpertDiscovery signals extracting"), TaskFlags(TaskFlag_FailOnSubtaskCancel)){
-    data = d;
-    extractor = NULL;
+ExpertDiscoverySignalExtractorTask::ExpertDiscoverySignalExtractorTask(ExpertDiscoveryData* d) :
+    Task(tr("ExpertDiscovery signals extracting"), TaskFlags(TaskFlag_FailOnSubtaskCancel)),
+    extractor(NULL),
+    folder(NULL),
+    data(d)
+{
+
 }
+
 ExpertDiscoverySignalExtractorTask::~ExpertDiscoverySignalExtractorTask(){
     delete extractor;
 }
@@ -797,8 +801,16 @@ bool ExpertDiscoverySignalsAutoAnnotationUpdater::checkConstraints(const AutoAnn
 
 ExpertDiscoveryToAnnotationTask::ExpertDiscoveryToAnnotationTask(AnnotationTableObject *aobj,
     const DNASequence &seq, ExpertDiscoveryData* d, const EDProcessedSignal* ps, QMutex& mut)
-    :Task(tr("Find and store expert discovery signals on a sequence"), TaskFlags_FOSCOE), dna(seq),
-    edData(d), aObj(aobj), curPS(ps), mutex(mut), recDataTask(NULL)
+    :Task(tr("Find and store expert discovery signals on a sequence"), TaskFlags_FOSCOE),
+      recDataTask(NULL),
+      dna(seq),
+      edData(d),
+      aObj(aobj),
+      curPS(ps),
+      hasRecData(false),
+      isControl(false),
+      isPos(false),
+      mutex(mut)
 {
     seqRange = U2Region(0, seq.length());
     curDnaName = seq.getName();
@@ -1280,7 +1292,7 @@ void ExpertDiscoveryCalculateErrors::run(){
 //search
 
 ExpertDiscoverySearchTask::ExpertDiscoverySearchTask(ExpertDiscoveryData& data, const QByteArray& seq, const ExpertDiscoverySearchCfg& cfg, int ro)
-: Task(tr("ExpertDiscovery Search"), TaskFlags_NR_FOSCOE), edData(data), cfg(cfg), resultsOffset(ro), wholeSeq(seq), lenLeft(0)
+    : Task(tr("ExpertDiscovery Search"), TaskFlags_NR_FOSCOE), edData(data), cfg(cfg), resultsOffset(ro), wholeSeq(seq), lenLeft(0), curLeft(-1)
 {
     SequenceWalkerConfig c;
     c.walkCircular = false;

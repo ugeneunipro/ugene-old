@@ -145,7 +145,7 @@ void ExpertDiscoveryExtSigWiz::sl_deleteButton(){
     QTreeWidgetItem* item = predicatesTree->selectedItems().first();
     QVariant variant = item->data(0, Qt::UserRole);
     void* pointer = variant.value<void*>();
-    Operation* pOp = reinterpret_cast<Operation *>(pointer);
+    Operation* pOp = static_cast<Operation *>(pointer);
     if (pOp == NULL)
         return;
     if (sigSetLayout->currentIndex() != T_UNDEFINED) {
@@ -258,7 +258,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
     foreach(QTreeWidgetItem* item, ch){
         variant = item->data(0, Qt::UserRole);
         pointer = variant.value<void*>();
-        pOp = reinterpret_cast<Operation *>(pointer);
+        pOp = static_cast<Operation *>(pointer);
         predicates.push_back(pOp);
         delete item;
     }
@@ -267,7 +267,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
     foreach(QTreeWidgetItem* item, ch){
         variant = item->data(0, Qt::UserRole);
         pointer = variant.value<void*>();
-        pOp = reinterpret_cast<Operation *>(pointer);
+        pOp = static_cast<Operation *>(pointer);
         predicates.push_back(pOp);
         delete item;
     }
@@ -276,7 +276,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
     foreach(QTreeWidgetItem* item, ch){
         variant = item->data(0, Qt::UserRole);
         pointer = variant.value<void*>();
-        pOp = reinterpret_cast<Operation *>(pointer);
+        pOp = static_cast<Operation *>(pointer);
         predicates.push_back(pOp);
         delete item;
     }
@@ -310,7 +310,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
             QTreeWidgetItem* item = treeFoldersWidget->selectedItems().first();
             QVariant variant = item->data(0, Qt::UserRole);
             void* pointer = variant.value<void*>();
-            CSFolder* f = reinterpret_cast<CSFolder *>(pointer);
+            CSFolder* f = static_cast<CSFolder *>(pointer);
             folder = f;
         }
 
@@ -385,7 +385,7 @@ void ExpertDiscoveryExtSigWiz::sl_selectionChanged (QTreeWidgetItem * current, Q
     if(previous != distItem && previous != intervItem && previous != repetItem && sigSet[curIndex]->isReadyToClose() && curIndex != T_UNDEFINED){
         QVariant variant = previous->data(0, Qt::UserRole);
         void* pointer = variant.value<void*>();
-        Operation* pOp = (Operation*) pointer;
+        Operation* pOp = static_cast<Operation *>(pointer);
         sigSet[curIndex]->saveData(pOp);
         previous->setText(0, QString::fromStdString(pOp->getDescription()));
         variant = QVariant::fromValue(pointer);
@@ -401,17 +401,17 @@ void ExpertDiscoveryExtSigWiz::sl_selectionChanged (QTreeWidgetItem * current, Q
         sigSetLayout->setCurrentIndex(T_DISTANCE);
         QVariant variant = current->data(0,Qt::UserRole);
         void* dataP = variant.value<void*>();
-        ((DistanceSet*)sigSet[T_DISTANCE])->loadData(dataP);
+        static_cast<DistanceSet *>(sigSet[T_DISTANCE])->loadData(dataP);
     }else if(current->parent()==intervItem){
         sigSetLayout->setCurrentIndex(T_INTERVAL);
         QVariant variant = current->data(0,Qt::UserRole);
         void* dataP = variant.value<void*>();
-        ((IntervalSet*)sigSet[T_INTERVAL])->loadData(dataP);
+        static_cast<IntervalSet *>(sigSet[T_INTERVAL])->loadData(dataP);
     }else if(current->parent()==repetItem){
         sigSetLayout->setCurrentIndex(T_REITERATION);
         QVariant variant = current->data(0,Qt::UserRole);
         void* dataP = variant.value<void*>();
-        ((RepetitionSet*)sigSet[T_REITERATION])->loadData(dataP);
+        static_cast<RepetitionSet *>(sigSet[T_REITERATION])->loadData(dataP);
     }
 }
 
@@ -481,7 +481,7 @@ DistanceSet::DistanceSet (QWidget* parent)
 }
 
 void DistanceSet::loadData(void *pData){
-    OpDistance *pOp = reinterpret_cast<OpDistance*>(pData);
+    OpDistance *pOp = static_cast<OpDistance*>(pData);
     Interval i = pOp->getDistance();
     from = i.getFrom();
     to = i.getTo();
@@ -492,7 +492,7 @@ void DistanceSet::loadData(void *pData){
     updateData(false);
 }
 void DistanceSet::saveData(void *pData){
-    OpDistance *pOp = reinterpret_cast<OpDistance*>(pData);
+    OpDistance *pOp = static_cast<OpDistance*>(pData);
     updateData();
     if (isMaxUNL) to = PINF;
     pOp->setDistance( Interval(from, to) );
@@ -565,7 +565,7 @@ IntervalSet::IntervalSet (QWidget* parent)
 }
 
 void IntervalSet::loadData(void *pData){
-    OpInterval *pOp = reinterpret_cast<OpInterval*>(pData);
+    OpInterval *pOp = static_cast<OpInterval*>(pData);
     Interval i = pOp->getInt();
     from = i.getFrom();
     to = i.getTo();
@@ -575,7 +575,7 @@ void IntervalSet::loadData(void *pData){
     updateData(false);
 }
 void IntervalSet::saveData(void *pData){
-    OpInterval *pOp = reinterpret_cast<OpInterval*>(pData);
+    OpInterval *pOp = static_cast<OpInterval*>(pData);
     updateData();
     if (isMaxUNL) to = PINF;
     pOp->setInt( Interval(from, to) );
@@ -656,7 +656,7 @@ RepetitionSet::RepetitionSet (QWidget* parent)
 }
 
 void RepetitionSet::loadData(void *pData){
-    OpReiteration *pOp = reinterpret_cast<OpReiteration*>(pData);
+    OpReiteration *pOp = static_cast<OpReiteration*>(pData);
     Interval i = pOp->getCount();
     nmin = i.getFrom();
     nmax = i.getTo();
@@ -669,7 +669,7 @@ void RepetitionSet::loadData(void *pData){
     updateData(false);
 }
 void RepetitionSet::saveData(void *pData){
-    OpReiteration *pOp = reinterpret_cast<OpReiteration*>(pData);
+    OpReiteration *pOp = static_cast<OpReiteration*>(pData);
     updateData();
     if (isMaxUNL) max = PINF;
     pOp->setCount( Interval(nmin, nmax) );

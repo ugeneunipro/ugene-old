@@ -47,7 +47,7 @@ public:
     U2SequenceObject * takeOwnedSeq();
     bool ownsSeq() const;
 
-    const ExportSequenceItem & operator =(const ExportSequenceItem &other);
+    ExportSequenceItem & operator =(const ExportSequenceItem &other);
 
     U2EntityRef                 seqRef; // sequence to copy
     QString                     name;

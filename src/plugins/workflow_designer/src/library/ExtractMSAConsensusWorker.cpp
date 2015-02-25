@@ -56,7 +56,8 @@ namespace {
 }
 
 ExtractMSAConsensusWorker::ExtractMSAConsensusWorker(Actor *actor)
-: BaseWorker(actor)
+    : BaseWorker(actor),
+      extractMsaConsensus(NULL)
 {
 
 }

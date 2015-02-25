@@ -86,7 +86,8 @@ struct ShortReadData {
 class AlignContext {
 public:
     AlignContext(): w(-1), ptMismatches(0), nMismatches(0), absMismatches(0), bestMode(false),
-        openCL(false), minReadLength(-1), maxReadLength(-1), isReadingFinished(false), needIndex(true), indexLoaded(-1) {}
+        openCL(false), minReadLength(-1), maxReadLength(-1), isReadingFinished(false), isReadingStarted(false),
+        needIndex(true), indexLoaded(-1) {}
     ~AlignContext() {
         cleanVectors();
     }

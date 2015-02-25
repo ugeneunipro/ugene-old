@@ -55,7 +55,8 @@ ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QS
 }
 
 ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &os, CustomScenario *customScenario)
-    : Filler(os, "U2__ExportSequencesDialog", customScenario)
+    : Filler(os, "U2__ExportSequencesDialog", customScenario),
+      translate(false)
 {
 
 }

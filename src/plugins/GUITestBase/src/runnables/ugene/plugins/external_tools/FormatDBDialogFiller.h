@@ -32,7 +32,7 @@ public:
     class Parameters {
     public:
         Parameters():
-            justCancel(false), checkAlphabetType(false), customFiller_3551(false)
+            justCancel(false), checkAlphabetType(false), alphabetType(Nucleotide), customFiller_3551(false)
         {
 
         }

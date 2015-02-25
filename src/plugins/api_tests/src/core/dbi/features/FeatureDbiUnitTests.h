@@ -47,9 +47,10 @@ public:
     static U2Feature createTestFeatureWithoutKeys( const U2Sequence &seq, U2OpStatus &os,
         const U2Feature &parentFeature = U2Feature( ) );
 
+    static void shutdown( );
+
 private:
     static void init( );
-    static void shutdown( );
 
     static TestDbiProvider dbiProvider;
     static const QString featureDbiUrl;

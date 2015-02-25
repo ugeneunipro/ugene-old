@@ -268,11 +268,7 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
 #define GT_METHOD_NAME "keyClick"
 void GTKeyboardDriver::keyClick(U2OpStatus &os, char key, int modifiers)
 {
-    if (key == 0) {
-        int i = 100;
-    }
     GT_CHECK(key != 0, "key = 0");
-//    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     keyPress(os, key, modifiers);
     keyRelease(os, key, modifiers);

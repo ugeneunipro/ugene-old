@@ -223,7 +223,6 @@ void ExpertDiscoveryRecognitionErrorGraphWidget::drawGraph(QPainter& p){
     int regLen = calcualteSettings.scoreReg.length;
     int stepsNum = regLen/step;
 
-    int offset = 2;
     int scoreWidthPoint = 0;
     const ErrorsInfo& errorsInfo = errorsTask.getResult();
     QPainterPath erFirstTypePath;

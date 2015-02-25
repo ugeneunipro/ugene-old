@@ -870,15 +870,14 @@ U2SequenceObject* ExpertDiscoveryView::getSeqObjectFromEDSequence(EDPISequence* 
             default:
                 return NULL;
         }
+        CHECK(NULL != curDoc, NULL);
+
         QByteArray seqarray  = QByteArray(sItem->getSequenceCode().toLatin1());
         DNASequence dnaseq (sItem->getSequenceName(), seqarray);
         dnaseq.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
         TaskStateInfo stateInfo;
         U2EntityRef seqRef = U2SequenceUtils::import(curDoc->getDbiRef(), dnaseq, stateInfo);
         if (stateInfo.isCoR()) {
-            return NULL;
-        }
-        if(!curDoc){
             return NULL;
         }
         U2SequenceObject* danseqob = new U2SequenceObject(sItem->getSequenceName(), seqRef);

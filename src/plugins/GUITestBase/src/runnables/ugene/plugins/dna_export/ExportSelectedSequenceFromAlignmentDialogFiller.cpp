@@ -60,7 +60,10 @@ ExportSelectedSequenceFromAlignment::ExportSelectedSequenceFromAlignment(U2OpSta
 }
 
 ExportSelectedSequenceFromAlignment::ExportSelectedSequenceFromAlignment(U2OpStatus &os, CustomScenario *scenario)
-    : Filler(os, "U2__SaveSelectedSequenceFromMSADialog", scenario)
+    : Filler(os, "U2__SaveSelectedSequenceFromMSADialog", scenario),
+      format(EMBL),
+      keepGaps(false),
+      addToProj(false)
 {
 
 }

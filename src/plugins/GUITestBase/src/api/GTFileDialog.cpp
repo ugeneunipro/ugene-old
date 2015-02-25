@@ -82,7 +82,10 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &os, const QString &filePath, GT
 }
 
 GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &os, CustomScenario *customScenario)
-    : Filler(os, "QFileDialog", customScenario)
+    : Filler(os, "QFileDialog", customScenario),
+      fileDialog(NULL),
+      button(Open),
+      method(GTGlobals::UseMouse)
 {
 
 }

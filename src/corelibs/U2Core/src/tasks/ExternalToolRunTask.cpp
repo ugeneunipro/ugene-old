@@ -134,9 +134,11 @@ void ExternalToolRunTask::run(){
 void ExternalToolRunTask::killProcess() const{
 #if (!defined(Q_OS_WIN32) && !defined(Q_OS_WINCE)) || defined(qdoc)
             long numPid = externalToolProcess->pid();
+            Q_UNUSED(numPid);
 #else
             Q_PID pid = externalToolProcess->pid();
             long numPid = pid->dwProcessId;
+            Q_UNUSED(numPid);
 #endif
 #ifdef Q_OS_WIN
             QProcess::execute(QString("taskkill /PID %1 /T /F").arg(numPid));

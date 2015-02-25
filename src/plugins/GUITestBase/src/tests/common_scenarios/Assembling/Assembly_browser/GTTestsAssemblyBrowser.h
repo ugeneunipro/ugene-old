@@ -36,7 +36,7 @@ GUI_TEST_CLASS_DECLARATION(test_0002)
 class test_0004 : public GUITest {
     Q_OBJECT
 public:
-    test_0004 () : GUITest(TESTNAME(test_0004)){}
+    test_0004 () : GUITest(TESTNAME(test_0004)), _os(NULL) {}
 protected slots:
     void sl_fail();
 protected:

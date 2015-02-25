@@ -36,7 +36,7 @@
 namespace U2 {
 
 GenomeAlignerIndexTask::GenomeAlignerIndexTask(const GenomeAlignerIndexSettings &settings)
-: Task("Building genome aligner's index", TaskFlag_None), objLens(NULL),  unknownChar('N')
+    : Task("Building genome aligner's index", TaskFlag_None), objLens(NULL), objCount(0), unknownChar('N')
 {
     GUrl i = settings.indexFileName;
     baseFileName = i.dirPath() + "/" + i.baseFileName();
@@ -159,7 +159,8 @@ void GenomeAlignerIndexTask::run() {
         index->indexPart.bitMask = new BMType[maxLength];
         index->indexPart.sArray = new SAType[maxLength];
         index->indexPart.seq = new char[maxLength];
-    } catch(std::bad_alloc e) {
+    } catch(std::bad_alloc &e) {
+        Q_UNUSED(e);
         setError("Can't allocate this amount of memory. Try to close some of your programs or to decrease \"maxMemorySize\"-option");
         return;
     }

@@ -67,7 +67,7 @@ ExportSequenceItem::ExportSequenceItem(const ExportSequenceItem &other)
     }
 }
 
-const ExportSequenceItem & ExportSequenceItem::operator =(const ExportSequenceItem &other) {
+ExportSequenceItem & ExportSequenceItem::operator =(const ExportSequenceItem &other) {
     seqRef = other.seqRef;
     name = other.name;
     circular = other.circular;
@@ -495,7 +495,7 @@ ExportSequenceAItem::ExportSequenceAItem()
 }
 
 ExportAnnotationSequenceTask::ExportAnnotationSequenceTask(const ExportAnnotationSequenceTaskSettings &s)
-    : DocumentProviderTask(tr("Export annotations"), TaskFlags_NR_FOSE_COSC), config(s)
+    : DocumentProviderTask(tr("Export annotations"), TaskFlags_NR_FOSE_COSC), config(s), exportSubTask(NULL)
 {
     extractSubTask = new ExportAnnotationSequenceSubTask(config);
     addSubTask(extractSubTask);

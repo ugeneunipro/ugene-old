@@ -136,13 +136,12 @@ int readGTFLine( QString &buffer, IOAdapter *io, QScopedArrayPointer<char> &char
 QMap<QString, QList<AnnotationData> > GTFFormat::parseDocument( IOAdapter *io, U2OpStatus &os ) {
     QMap<QString, QList<AnnotationData> > result;
 
-    int length;
     QScopedArrayPointer<char> buff( new char[READ_BUFF_SIZE] );
     QString qstrbuf;
 
     bool fileIsValid = true;
     int lineNumber = 1;
-    while ( ( length = readGTFLine( qstrbuf, io, buff ) ) > 0 ) {
+    while (readGTFLine(qstrbuf, io, buff) > 0) {
         if (qstrbuf.startsWith("track")){ //skip comments
             lineNumber++;
             continue;

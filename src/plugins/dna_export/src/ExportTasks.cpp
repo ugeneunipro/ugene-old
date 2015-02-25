@@ -54,7 +54,8 @@ namespace U2 {
 // AddDocumentAndOpenViewTask
 
 AddExportedDocumentAndOpenViewTask::AddExportedDocumentAndOpenViewTask(DocumentProviderTask* t)
-: Task("Export sequence to document", TaskFlags_NR_FOSCOE)
+: Task("Export sequence to document", TaskFlags_NR_FOSCOE),
+  loadTask(NULL)
 {
     exportTask = t;
     addSubTask(exportTask);

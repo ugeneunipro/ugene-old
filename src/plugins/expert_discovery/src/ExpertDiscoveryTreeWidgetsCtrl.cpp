@@ -209,8 +209,8 @@ void EDProjectTree::sl_propChanged(EDProjectItem* item, const EDPIProperty* prop
                     return;
                 }
                 pFolder->setName(newVal);
-                updateTree(ED_ITEM_NAME_CHANGED, (EDProjectItem *)pPI);
-                updateTree(ED_CURRENT_ITEM_CHANGED, (EDProjectItem *) pPI);
+                updateTree(ED_ITEM_NAME_CHANGED, qobject_cast<EDProjectItem *>(pPI));
+                updateTree(ED_CURRENT_ITEM_CHANGED, qobject_cast<EDProjectItem *>(pPI));
             }
             return;
         case PIT_CS:{
@@ -248,7 +248,7 @@ void EDProjectTree::sl_propChanged(EDProjectItem* item, const EDPIProperty* prop
             pParent->update(true);
            // updatingItem = false;
             EDProjectItem* pCurItem = const_cast<EDProjectItem*>(pParent->findItemConnectedTo(pSignal));
-            updateTree(ED_UPDATE_CHILDREN, (EDProjectItem* ) pParent);
+            updateTree(ED_UPDATE_CHILDREN, qobject_cast<EDProjectItem *>(pParent));
             updateTree(ED_CURRENT_ITEM_CHANGED, pCurItem);
             return;
                     }
@@ -322,7 +322,7 @@ QMenu* EDProjectTree::chosePopupMen(EDProjectItem* pItem){
         return popupMenuSequence;
     }else if(pItem->getType() == PIT_POSSEQUENCEBASE || pItem->getType() == PIT_NEGSEQUENCEBASE || pItem->getType() == PIT_CONTROLSEQUENCEBASE){
         EDPISequenceBase* pBaseItem = dynamic_cast<EDPISequenceBase*>(pItem);
-        if (!pItem)
+        if (!pBaseItem)
         {
             return NULL;
         }
@@ -559,7 +559,7 @@ void EDProjectTree::onCSNPropertyChanged(EDProjectItem* pItem, const EDPIPropert
         const EDProjectItem *pNewItemc = pParent->findItemConnectedTo(pNewOp);
         EDProjectItem *pNewItem = const_cast<EDProjectItem*>(pNewItemc);
         connect(pNewItem, SIGNAL(si_getMetaInfoBase()), SLOT(sl_setMetainfoBase()));
-        updateTree(ED_UPDATE_CHILDREN, (EDProjectItem* ) pParent);
+        updateTree(ED_UPDATE_CHILDREN, qobject_cast<EDProjectItem *>(pParent));
         updateTree(ED_CURRENT_ITEM_CHANGED, pNewItem);
     }
     else {
@@ -643,7 +643,7 @@ void EDProjectTree::onDistancePropertyChanged(EDProjectItem* pItem, const EDPIPr
                 else assert(0);
                 pDist->update(true);
                 EDProjectItem* pIt = dynamic_cast<EDProjectItem*>(dynamic_cast<QTreeWidgetItem*>(pDist)->parent());
-                updateTree(ED_UPDATE_CHILDREN, (EDProjectItem* ) pIt);
+                updateTree(ED_UPDATE_CHILDREN, qobject_cast<EDProjectItem *>(pIt));
                 updateTree(ED_CURRENT_ITEM_CHANGED, pDist);
 }
 void EDProjectTree::onRepetitionPropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue){
@@ -731,7 +731,7 @@ void EDProjectTree::onRepetitionPropertyChanged(EDProjectItem* pItem, const EDPI
                     else assert(0);
                     pDist->update(true);
                     EDProjectItem* pIt = dynamic_cast<EDProjectItem*>(dynamic_cast<QTreeWidgetItem*>(pDist)->parent());
-                    updateTree(ED_UPDATE_CHILDREN, (EDProjectItem* ) pIt);
+                    updateTree(ED_UPDATE_CHILDREN, qobject_cast<EDProjectItem *>(pIt));
                     updateTree(ED_CURRENT_ITEM_CHANGED, pDist);
 }
 void EDProjectTree::onIntervalPropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue){
@@ -780,7 +780,7 @@ void EDProjectTree::onIntervalPropertyChanged(EDProjectItem* pItem, const EDPIPr
         else assert(0);
         pInt->update(true);
         EDProjectItem* pIt = dynamic_cast<EDProjectItem*>(dynamic_cast<QTreeWidgetItem*>(pInt)->parent());
-        updateTree(ED_UPDATE_CHILDREN, (EDProjectItem* ) pIt);
+        updateTree(ED_UPDATE_CHILDREN, qobject_cast<EDProjectItem *>(pIt));
         updateTree(ED_CURRENT_ITEM_CHANGED, pInt);
 }
 void EDProjectTree::onWordPropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue){
@@ -802,7 +802,7 @@ void EDProjectTree::onWordPropertyChanged(EDProjectItem* pItem, const EDPIProper
 
     pPITS->update(true);
     EDProjectItem* pIt = dynamic_cast<EDProjectItem*>(dynamic_cast<QTreeWidgetItem*>(pPITS)->parent());
-    updateTree(ED_UPDATE_CHILDREN, (EDProjectItem* ) pIt);
+    updateTree(ED_UPDATE_CHILDREN, qobject_cast<EDProjectItem *>(pIt));
     updateTree(ED_CURRENT_ITEM_CHANGED, pPITS);
 }
 void EDProjectTree::onMrkItemPropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue){
@@ -826,7 +826,7 @@ void EDProjectTree::onMrkItemPropertyChanged(EDProjectItem* pItem, const EDPIPro
 
     pPITS->update(true);
     EDProjectItem* pIt = dynamic_cast<EDProjectItem*>(dynamic_cast<QTreeWidgetItem*>(pPITS)->parent());
-    updateTree(ED_UPDATE_CHILDREN, (EDProjectItem* ) pIt);
+    updateTree(ED_UPDATE_CHILDREN, qobject_cast<EDProjectItem *>(pIt));
     updateTree(ED_CURRENT_ITEM_CHANGED, pPITS);
     emit si_changeProp(pPITS);
 }

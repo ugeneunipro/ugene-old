@@ -760,7 +760,7 @@ QString EventFilter::widgetsProcessingCode(QRadioButton* radio) const {
 }
 
 
-EventFilter::EventFilter(GUITestingWindow *_w): focusWidget(NULL),isSubmenuClicked(false),gtw(_w),bufferObj(NULL){
+EventFilter::EventFilter(GUITestingWindow *_w): m(NULL), focusWidget(NULL),isSubmenuClicked(false),gtw(_w),bufferObj(NULL){
     classes << "QComboBox"
             << "QLineEdit"
             << "QToolButton"

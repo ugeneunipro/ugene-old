@@ -38,7 +38,6 @@ void GTDoubleSpinbox::setValue(U2OpStatus& os, QDoubleSpinBox *spinBox, double v
 
     QPoint arrowPos;
     QRect spinBoxRect;
-    int key;
 
     GT_CHECK(spinBox->isEnabled(), "SpinBox is not enabled");
 
@@ -59,7 +58,8 @@ void GTDoubleSpinbox::setValue(U2OpStatus& os, QDoubleSpinBox *spinBox, double v
             }
             break;
 
-        case GTGlobals::UseKey:
+        case GTGlobals::UseKey: {
+            int key = 0;
             if (v > spinBox->value()) {
                 key = GTKeyboardDriver::key["up"];
             } else {
@@ -72,7 +72,7 @@ void GTDoubleSpinbox::setValue(U2OpStatus& os, QDoubleSpinBox *spinBox, double v
                 GTGlobals::sleep(100);
             }
             break;
-
+        }
         case GTGlobals::UseKeyBoard:
             QString s = QString::number(v);
             GTWidget::setFocus(os, spinBox);

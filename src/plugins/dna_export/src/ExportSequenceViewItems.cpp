@@ -82,7 +82,8 @@ namespace U2 {
 // ExportSequenceViewItemsController
 
 ExportSequenceViewItemsController::ExportSequenceViewItemsController(QObject* p)
-: GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID)
+: GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID),
+  av(NULL)
 {
 }
 

@@ -60,7 +60,10 @@ useMethod(method) {
 }
 
 ExportToSequenceFormatFiller::ExportToSequenceFormatFiller(U2OpStatus &_os, CustomScenario *scenario)
-    : Filler(_os, "U2__ExportMSA2SequencesDialog", scenario)
+    : Filler(_os, "U2__ExportMSA2SequencesDialog", scenario),
+      format(EMBL),
+      saveFile(false),
+      keepCharacters(false)
 {
 
 }

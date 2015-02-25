@@ -19,7 +19,7 @@ const TSNO INVALID_TSNO = {-1,-1};
 PredicatBase::PredicatBase(const MetaInfoBase &rBase) 
    : rMIBase(rBase)
 {
-
+    setPredicatNumber(0);
 }
 
 PredicatBase::~PredicatBase()
@@ -62,7 +62,6 @@ TS* PredicatBase::getPrevTS(TSNO& no) const {
    if (no.iFamily < 0) 
       return NULL;
 
-   int family_num = rMIBase.getFamilyNumber();
    const Family& family = rMIBase.getSignalFamily(no.iFamily);
    int signal_num = family.getSignalNumber();
    if (no.iSignal >= signal_num)
@@ -125,11 +124,29 @@ int PredicatBase::getTSNumber()
 Extractor::Extractor(const SequenceBase* pYesBase, 
                      const SequenceBase* pNoBase, 
                      PredicatBase* pPredicatBase)
-: m_pYesBase(pYesBase)
-, m_pNoBase(pNoBase)
-, m_pPredicatBase(pPredicatBase)
-, m_bFirst(true)
+    : m_pYesBase(pYesBase)
+    , m_pNoBase(pNoBase)
+    , m_pPredicatBase(pPredicatBase)
+    , m_bFirst(true)
 {
+    memset(&m_SP, 0, sizeof(m_SP));
+    setFisherBound(0);
+    setProbabilityBound(0);
+    setInterestFisher(0);
+    setInterestProbability(0);
+    setCoverageBound(0);
+    setMaxComplexity(0);
+    setMinComplexity(0);
+    setMinCorrelationOnPos(0);
+    setMaxCorrelationOnPos(0);
+    setMinCorrelationOnNeg(0);
+    setMaxCorrelationOnNeg(0);
+    setCorrelationImportant(false);
+    setCheckFisherMinimization(false);
+    setStoreOnlyDifferent(false);
+    setUmBound(0);
+    setUmSamplesBound(0);
+    setUmEnabled(false);
 }
 
 Extractor::~Extractor(void)
@@ -178,7 +195,7 @@ double Extractor::progress()
 {
    double progress;
 
-   if (selection_stack.size()==0) {
+   if (selection_stack.empty()) {
       progress = 100;
    }
    else {
@@ -240,7 +257,7 @@ void Extractor::clearInternalData(void)
 
 bool Extractor::doBranch()
 {
-   assert(selection_stack.size()!=0);
+   assert(!selection_stack.empty());
    SelectionNode& cur = selection_stack.back();
    TS* pTS = NULL;
 
@@ -351,7 +368,7 @@ bool Extractor::insertPredicat(Operation *&structure, int ts, Operation* predica
 
 bool Extractor::doNext()
 {
-   assert(selection_stack.size()!=0);
+   assert(!selection_stack.empty());
    signal.detach();
    SelectionNode cur;
 

@@ -126,7 +126,7 @@ public:
     EDPIProperty(QString strName = "");
     ~EDPIProperty();
 
-    const EDPIProperty& operator =(const EDPIProperty&);
+    EDPIProperty& operator =(const EDPIProperty&);
     const EDPIPropertyType* getType() const;
     void setType(EDPIPropertyType*);
 
@@ -149,7 +149,7 @@ public:
     EDPIPropertyGroup(QString strName ="");
     EDPIPropertyGroup(const EDPIPropertyGroup&);
     ~EDPIPropertyGroup();
-    const EDPIPropertyGroup& operator=(const EDPIPropertyGroup&);
+    EDPIPropertyGroup& operator=(const EDPIPropertyGroup&);
 
     QString getName() const;
     void	setName(QString strName);
@@ -449,6 +449,7 @@ public:
 
 class EDPICSDirectory : public EDProjectItem
 {
+    Q_OBJECT
 public:
     EDPICSDirectory(const CSFolder* pFolder) : folder (pFolder)  {}
     virtual ~EDPICSDirectory() {}
@@ -507,6 +508,7 @@ public:
 
 class EDPICS : public EDPICSNode
 {
+    Q_OBJECT
 public:
     EDPICS(const Signal *pSignal);
     virtual ~EDPICS();

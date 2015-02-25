@@ -26,6 +26,7 @@
 #include "core/datatype/udr/RawDataUdrSchemaUnitTests.h"
 #include "core/dbi/assembly/AssemblyDbiUnitTests.h"
 #include "core/dbi/attribute/AttributeDbiUnitTests.h"
+#include "core/dbi/features/FeatureDbiUnitTests.h"
 #include "core/dbi/sequence/SequenceDbiUnitTests.h"
 #include "core/dbi/udr/UdrDbiUnitTests.h"
 #include "core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.h"
@@ -134,6 +135,7 @@ void UnitTestSuite::cleanup() {
     AssemblyTestData::shutdown();
     AttributeTestData::shutdown();
     DNAChromatogramObjectTestData::shutdown();
+    FeatureTestData::shutdown();
     FeaturesTableObjectTestData::shutdown();
     MAlignmentObjectTestData::shutdown();
     MsaSQLiteSpecificTestData::shutdown();
