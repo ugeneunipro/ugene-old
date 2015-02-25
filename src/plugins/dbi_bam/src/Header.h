@@ -40,6 +40,9 @@ public:
         QueryName,
         Coordinate
     };
+
+    Header();
+
     class Reference {
     public:
         Reference(const QByteArray &name, int length);

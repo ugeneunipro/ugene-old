@@ -201,6 +201,12 @@ void Header::Program::setVersion(const QByteArray &version) {
 
 // Header
 
+Header::Header() :
+    sortingOrder(Unknown)
+{
+
+}
+
 const Version &Header::getFormatVersion()const {
     return formatVersion;
 }

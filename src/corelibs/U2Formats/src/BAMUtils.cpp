@@ -165,8 +165,8 @@ void BAMUtils::convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, const C
     }
     // convert files
     bam1_t *b = bam_init1();
-    int r;
     {
+        int r = 0;
         while ((r = samread(in, b)) >= 0) { // read one alignment from `in'
             samwrite(out, b); // write the alignment to `out'
         }
@@ -386,7 +386,13 @@ bool BAMUtils::hasValidBamIndex(const GUrl &bamUrl) {
         bam_index_destroy(index);
 
         QFileInfo idxFileInfo(bamUrl.getURLString() + ".bai");
+        if (!idxFileInfo.exists()) {
+            QString indexUrl = bamUrl.getURLString();
+            indexUrl.chop(4);
+            idxFileInfo.setFile(indexUrl + ".bai");
+        }
         QFileInfo bamFileInfo(bamUrl.getURLString());
+
         if (idxFileInfo.created() < bamFileInfo.created()) {
             return false;
         }
@@ -612,9 +618,9 @@ bool BAMUtils::isEqualByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpS
 
     bam1_t *b1 = bam_init1();
     bam1_t *b2 = bam_init1();
-    int r1;
-    int r2;
     {
+        int r1 = 0;
+        int r2 = 0;
         while ((r1 = samread(in, b1)) >= 0) { // read one alignment from file1
             if((r2 = samread(out, b2) >= 0)){ //read one alignment from file2
                 if(b1->data_len != b2->data_len) {
