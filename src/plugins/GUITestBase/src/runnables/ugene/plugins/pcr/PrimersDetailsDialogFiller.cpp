@@ -31,9 +31,15 @@ PrimersDetailsDialogFiller::PrimersDetailsDialogFiller(U2OpStatus &os)
 
 }
 
+PrimersDetailsDialogFiller::PrimersDetailsDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+    Filler(os, "PrimersDetailsDialog", scenario)
+{
+
+}
+
 #define GT_CLASS_NAME "GTUtilsDialog::PrimersDetailsDialogFiller"
-#define GT_METHOD_NAME "run"
-void PrimersDetailsDialogFiller::run() {
+#define GT_METHOD_NAME "commonScenario"
+void PrimersDetailsDialogFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

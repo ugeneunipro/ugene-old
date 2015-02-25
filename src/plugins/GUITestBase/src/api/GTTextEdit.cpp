@@ -45,6 +45,21 @@ void GTTextEdit::setText(U2OpStatus& os, QTextEdit* textEdit, const QString &tex
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getText"
+QString GTTextEdit::getText(U2OpStatus &os, QTextEdit *textEdit) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(NULL != textEdit, "Text edit is NULL", "");
+    return textEdit->toPlainText();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "containsString"
+bool GTTextEdit::containsString(U2OpStatus &os, QTextEdit *textEdit, const QString &string) {
+    const QString text = getText(os, textEdit);
+    return text.contains(string);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "clear"
 void GTTextEdit::clear(U2OpStatus& os, QTextEdit* textEdit) {
 

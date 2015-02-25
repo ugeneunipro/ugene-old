@@ -194,6 +194,31 @@ int GTUtilsOptionPanelSequenceView::getDasIdsCount(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setForwardPrimer"
+void GTUtilsOptionPanelSequenceView::setForwardPrimer(U2OpStatus &os, const QString &primer) {
+    openTab(os, InSilicoPcr);
+    QWidget *primerContainer = GTWidget::findWidget(os, "forwardPrimerBox");
+    GT_CHECK(NULL != primerContainer, "Forward primer container widget is NULL");
+    GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "primerEdit", primerContainer), primer);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setReversePrimer"
+void GTUtilsOptionPanelSequenceView::setReversePrimer(U2OpStatus &os, const QString &primer) {
+    openTab(os, InSilicoPcr);
+    QWidget *primerContainer = GTWidget::findWidget(os, "reversePrimerBox");
+    GT_CHECK(NULL != primerContainer, "Reverse primer container widget is NULL");
+    GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "primerEdit", primerContainer), primer);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "showPrimersDetails"
+void GTUtilsOptionPanelSequenceView::showPrimersDetails(U2OpStatus &os) {
+    openTab(os, InSilicoPcr);
+    GTWidget::click(os, GTWidget::findWidget(os, "detailsLinkLabel"));
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "isSearchAlgorithmShowHideWidgetOpened"
 bool GTUtilsOptionPanelSequenceView::isSearchAlgorithmShowHideWidgetOpened(U2OpStatus &os) {
     QWidget *algorithmInnerWidget = GTWidget::findWidget(os, "widgetAlgorithm");

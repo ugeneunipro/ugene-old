@@ -215,7 +215,7 @@ bool GTFileDialogUtils::setPath()
     }
 
     QLineEdit* lineEdit = fileDialog->findChild<QLineEdit*>(FILE_NAME_LINE_EDIT);
-    GT_CHECK_RESULT(lineEdit != 0, QString("line edit \"1\" not found").arg(FILE_NAME_LINE_EDIT), false);
+    GT_CHECK_RESULT(lineEdit != 0, QString("line edit \"%1\" not found").arg(FILE_NAME_LINE_EDIT), false);
     lineEdit->setCompleter(NULL);
     GTLineEdit::setText(os,lineEdit,path);
 

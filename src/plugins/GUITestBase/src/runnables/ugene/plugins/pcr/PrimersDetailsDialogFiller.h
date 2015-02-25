@@ -30,8 +30,9 @@ namespace U2 {
 class PrimersDetailsDialogFiller : public Filler {
 public:
     PrimersDetailsDialogFiller(U2OpStatus &os);
+    PrimersDetailsDialogFiller(U2OpStatus &os, CustomScenario *scenario);
 
-    void run();
+    void commonScenario();
 };
 
 } // U2

@@ -98,6 +98,11 @@ public:
     static void fetchDasIds(U2OpStatus &os);
     static int getDasIdsCount(U2OpStatus &os);
 
+    // In Silico PCR tab
+    static void setForwardPrimer(U2OpStatus &os, const QString &primer);
+    static void setReversePrimer(U2OpStatus &os, const QString &primer);
+    static void showPrimersDetails(U2OpStatus &os);
+
     // Utility
     static bool isSearchAlgorithmShowHideWidgetOpened(U2OpStatus &os);
     static bool isSearchInShowHideWidgetOpened(U2OpStatus &os);

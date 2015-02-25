@@ -19,19 +19,21 @@
  * MA 02110-1301, USA.
  */
 
+#include "GTTestsRegressionScenarios.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsOptionPanelMSA.h"
+#include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
 
 #include "api/GTFileDialog.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTTextEdit.h"
 #include "api/GTWidget.h"
 
 #include "runnables/qt/PopupChooser.h"
-
-#include "GTTestsRegressionScenarios.h"
+#include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
 
 namespace U2 {
 
@@ -60,6 +62,35 @@ GUI_TEST_CLASS_DEFINITION(test_4008) {
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "MSAE_MENU_VIEW" << "show_offsets",
                                                             PopupChecker::IsEnabled | PopupChecker::IsChecable));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4010) {
+//    1. Open "samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+//    2. Open the PCR OP tab.
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::InSilicoPcr);
+
+//    3. Enter the forward primer: AAGGAAAAAATGCT.
+    GTUtilsOptionPanelSequenceView::setForwardPrimer(os, "AAGGAAAAAATGCT");
+
+//    4. Enter the reverse primer: AGCATTTTTTCCTT.
+    GTUtilsOptionPanelSequenceView::setReversePrimer(os, "AGCATTTTTTCCTT");
+
+//    5. Click the Primers Details dialog.
+//    Expected: the primers are whole dimers, 14 red lines.
+    class Scenario : public CustomScenario {
+        void run(U2::U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            GTTextEdit::containsString(os, GTWidget::findExactWidget<QTextEdit *>(os, "textEdit"), "||||||||||||||");
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new PrimersDetailsDialogFiller(os, new Scenario));
+    GTUtilsOptionPanelSequenceView::showPrimersDetails(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4026) {
