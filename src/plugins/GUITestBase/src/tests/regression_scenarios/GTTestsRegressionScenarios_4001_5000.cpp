@@ -21,11 +21,13 @@
 
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
 
 #include "api/GTFileDialog.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTWidget.h"
 
 #include "runnables/qt/PopupChooser.h"
 
@@ -63,7 +65,7 @@ GUI_TEST_CLASS_DEFINITION(test_4008) {
 GUI_TEST_CLASS_DEFINITION(test_4026) {
     //1. Open "samples/Genbank/sars.gb".
     //Expected: there are a lot of annotations in the panoramic and details views.
-    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "sars.gb");
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
 
     //2. Close the MDI window.
     GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
@@ -75,6 +77,22 @@ GUI_TEST_CLASS_DEFINITION(test_4026) {
     //Actual: annotations are now shown in the views. Their locations and qualifier names are deleted.
     QString value = GTUtilsAnnotationsTreeView::getQualifierValue(os, "evidence", "5'UTR");
     CHECK_SET_ERR("not_experimental" == value, QString("Unexpected qualifier value"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4030) {
+    //1. Open "samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    //2. Open the "Statistics" tab.
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
+
+    //3. Edit the alignment.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(1, 1), QPoint(1, 1));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+
+    //Expected state: hint about reference sequence is hidden
+    QWidget *label = GTWidget::findWidget(os, "refSeqWarning");
+    CHECK_SET_ERR(!label->isVisible(), "Label is shown");
 }
 
 }
