@@ -4094,7 +4094,7 @@ GUI_TEST_CLASS_DEFINITION(test_2581_2) {
 
 //    3. Press the "Align" button
 //    Expected state: after a few seconds alignment has finished, UGENE does not crash
-    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << ToolsMenu::MALIGN_MENU << ToolsMenu::MALIGN_CLUSTALO));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Align" << "Align with ClustalO..."));
     GTUtilsDialog::waitForDialog(os, new ClustalOSupportRunDialogFiller(os));
     GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
 
