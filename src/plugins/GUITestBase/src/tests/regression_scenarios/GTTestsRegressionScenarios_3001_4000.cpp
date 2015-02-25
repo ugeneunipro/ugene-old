@@ -4449,6 +4449,8 @@ GUI_TEST_CLASS_DEFINITION(test_3785_2) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3788) {
+    GTLogTracer logTracer;
+
 //    1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
@@ -4465,6 +4467,8 @@ GUI_TEST_CLASS_DEFINITION(test_3788) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     const QList<U2Region> annotatedRegions = GTUtilsAnnotationsTreeView::getAnnotatedRegions(os);
     CHECK_SET_ERR(0 == annotatedRegions.size(), "There are annotations unexpectedly");
+
+    GTUtilsLog::check(os, logTracer);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3797) {
