@@ -71,6 +71,7 @@ Task::ReportResult UnloadDocumentTask::report() {
     if (doc.isNull() || !doc->isLoaded()) {
         if (!doc.isNull()) {
             doc->unlockState(lock);
+            doc->setModified(false);
         }
         return Task::ReportResult_Finished;
     }
@@ -93,6 +94,7 @@ Task::ReportResult UnloadDocumentTask::report() {
     CHECK_EXT(ok, stateInfo.setError(errPrefix + tr("unexpected error")),
         Task::ReportResult_Finished);
     doc->unlockState(lock);
+    doc->setModified(false);
     return Task::ReportResult_Finished;
 }
 

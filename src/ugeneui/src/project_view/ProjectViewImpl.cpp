@@ -1038,7 +1038,10 @@ void ProjectViewImpl::sl_openNewView() {
     QAction* action  = (QAction*)sender();
     OpenViewContext* c = static_cast<OpenViewContext*>(action->data().value<void*>());
     SAFE_POINT(c->factory->canCreateView(c->selection), "Invalid object view factory!", );
-    AppContext::getTaskScheduler()->registerTopLevelTask(c->factory->createViewTask(c->selection));
+    Task *openViewTask = c->factory->createViewTask(c->selection);
+    if (NULL != openViewTask) {
+        AppContext::getTaskScheduler()->registerTopLevelTask(openViewTask);
+    }
 }
 
 void ProjectViewImpl::sl_addToView() {
