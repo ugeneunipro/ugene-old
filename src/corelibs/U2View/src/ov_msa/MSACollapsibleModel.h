@@ -50,9 +50,9 @@ public:
     /**
     * The method converts the row position in the whole msa into its "visible" position (i.e.
     * the row position that takes into account collapsed items).
-    * Returns -1 if the row is inside a collapsed item.
+    * Returns -1 if the row is inside a collapsed item and @failIfNotVisible is true.
     */
-    int rowToMap(int row) const;
+    int rowToMap(int row, bool failIfNotVisible = false) const;
 
     void getVisibleRows(int startPos, int endPos, QVector<U2Region>& rows) const;
 

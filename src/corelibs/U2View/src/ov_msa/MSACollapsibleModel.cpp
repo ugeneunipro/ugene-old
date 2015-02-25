@@ -147,10 +147,13 @@ U2Region MSACollapsibleItemModel::mapSelectionRegionToRows(const U2Region& selec
     return U2Region(startSeq, endSeq - startSeq);
 }
 
-int MSACollapsibleItemModel::rowToMap(int row) const {
+int MSACollapsibleItemModel::rowToMap(int row, bool failIfNotVisible) const {
     int invisibleRows = 0;
     for (QVector<MSACollapsableItem>::ConstIterator it = items.constBegin(); it < items.constEnd() && it->row < row; it++) {
         if (it->isCollapsed) {
+            if (it->row + it->numRows > row && failIfNotVisible) {
+                return -1;
+            }
             invisibleRows += (it->row + it->numRows <= row) ? it->numRows - 1 : row - it->row;
         }
     }

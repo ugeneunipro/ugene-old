@@ -3472,7 +3472,7 @@ GUI_TEST_CLASS_DEFINITION(test_3612) {
     GTUtilsMsaEditor::toggleCollapsingMode(os);
 
 //    3. Expand "Conocephalus_discolor" group.
-    GTUtilsMsaEditor::toggleCollapsingGroup(os, "Conocephalus_discolor");
+    GTUtilsMSAEditorSequenceArea::clickCollapceTriangle(os, "Conocephalus_discolor");
 
 //    4. Open "Pairwise alignment" options panel tab.
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);

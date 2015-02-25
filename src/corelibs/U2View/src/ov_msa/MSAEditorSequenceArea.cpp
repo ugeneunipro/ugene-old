@@ -2221,10 +2221,17 @@ void MSAEditorSequenceArea::sl_copyCurrentSelection()
         return;
     }
     const MAlignment& msa = maObj->getMAlignment();
-    const U2Region& sel = getSelectedRows();
+
+    MSACollapsibleItemModel* m = ui->getCollapseModel();
+    U2Region sel( m->mapToRow(selection.y()),
+                  m->mapToRow(selection.y() + selection.height()) - m->mapToRow(selection.y()));
+
     QString selText;
     U2OpStatus2Log os;
     for (int i = sel.startPos; i < sel.endPos(); ++i) {
+        if (ui->getCollapseModel()->rowToMap(i, true) < 0) {
+            continue;
+        }
         const MAlignmentRow& row = msa.getRow(i);
         int len = selection.width();
         QByteArray seqPart = row.mid(selection.x(), len, os).toByteArray(len, os);
