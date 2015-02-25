@@ -253,20 +253,20 @@ void ReloadDocumentTask::restoreObjectRelationsForDoc( ) {
     }
 }
 
-void ReloadDocumentTask::restoreObjectRelationsForObject( GObject *obj,
-    const QList<GObjectRelation> &relations )
-{
-    Project *currentProj = AppContext::getProject( );
-    SAFE_POINT( NULL != currentProj, "Invalid project state!", );
+void ReloadDocumentTask::restoreObjectRelationsForObject(GObject *obj, const QList<GObjectRelation> &relations) {
+    Project *currentProj = AppContext::getProject();
+    SAFE_POINT(NULL != currentProj, "Invalid project state!", );
 
-    foreach ( const GObjectRelation &relation, relations ) {
-        Document *relatedDoc = currentProj->findDocumentByURL( relation.ref.docUrl );
-        if ( NULL == relatedDoc ) {
+    obj->setObjectRelations(QList<GObjectRelation>());
+
+    foreach (const GObjectRelation &relation, relations) {
+        Document *relatedDoc = currentProj->findDocumentByURL(relation.ref.docUrl);
+        if (NULL == relatedDoc) {
             continue;
         }
-        GObject *relatedObj = relatedDoc->findGObjectByName( relation.ref.objName );
-        if ( NULL != relatedObj && relatedObj->getGObjectType( ) == relation.ref.objType ) {
-            obj->addObjectRelation( relation );
+        GObject *relatedObj = relatedDoc->findGObjectByName(relation.ref.objName);
+        if (NULL != relatedObj && relatedObj->getGObjectType() == relation.ref.objType) {
+            obj->addObjectRelation(relation);
         }
     }
 }
