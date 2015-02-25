@@ -19,14 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTTestsRegressionScenarios.h"
-
+#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
 
 #include "api/GTFileDialog.h"
+#include "api/GTKeyboardDriver.h"
 
 #include "runnables/qt/PopupChooser.h"
+
+#include "GTTestsRegressionScenarios.h"
 
 namespace U2 {
 
@@ -55,6 +58,23 @@ GUI_TEST_CLASS_DEFINITION(test_4008) {
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "MSAE_MENU_VIEW" << "show_offsets",
                                                             PopupChecker::IsEnabled | PopupChecker::IsChecable));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4026) {
+    //1. Open "samples/Genbank/sars.gb".
+    //Expected: there are a lot of annotations in the panoramic and details views.
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "sars.gb");
+
+    //2. Close the MDI window.
+    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
+
+    //3. Double click the sequence in the project.
+    GTUtilsProjectTreeView::doubleClickItem(os, "NC_004718");
+
+    //Expected: there is the same amount of annotations in the panoramic and details views.
+    //Actual: annotations are now shown in the views. Their locations and qualifier names are deleted.
+    QString value = GTUtilsAnnotationsTreeView::getQualifierValue(os, "evidence", "5'UTR");
+    CHECK_SET_ERR("not_experimental" == value, QString("Unexpected qualifier value"));
 }
 
 }
