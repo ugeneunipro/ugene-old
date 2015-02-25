@@ -669,19 +669,6 @@ GUI_TEST_CLASS_DEFINITION(test_1038) {
     CHECK_SET_ERR(matchCount == seqNames.size(), QString("Number of reads and sequences are not matched: got %1, expected %2").arg(matchCount).arg((seqNames.size())));
 }
 
-GUI_TEST_CLASS_DEFINITION(test_1199) {
-//1. Open any samples/PDB/1CF7.pdb file.
-    GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
-
-//2. Select document in project tree view. Press 'Delete'
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7.PDB"));
-    GTMouseDriver::click(os);
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
-
-//Expected state: document removed, UGENE not crashes.
-    GTUtilsProject::checkProject(os, GTUtilsProject::Empty);
-}
-
 GUI_TEST_CLASS_DEFINITION(test_1065_1) {
 //    Building index with the "Bowtie" tool.
 //    1. Select "Tools->Align to reference->Build index" from the main menu.
@@ -775,6 +762,25 @@ GUI_TEST_CLASS_DEFINITION(test_1065_3) {
     GTGlobals::sleep();
 
     GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1078){ //Need to add the test
+/* 1. File-New Project
+ * 2. Open as - HannaRescued.fa(https://ugene.unipro.ru/tracker/browse/UGENE-1078) (FASTA format. Score:13 (Perfect match) - OK, As separate sequences in sequence viewer - OK)
+ * Bug state: Then crush and hung of the program
+ * Expected state: Error message with format error
+ * System: Ubuntu 12.04
+*/
+    GTLogTracer l;
+
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/1078/", "HannaRescued.fa");
+    GTUtilsDialog::waitForDialog(os, ob);
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "FASTA"));
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__OPEN_AS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    CHECK_SET_ERR(l.hasError(), "Error in log expected");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1083) {
@@ -917,7 +923,6 @@ GUI_TEST_CLASS_DEFINITION(test_1113_1){//commit AboutDialogController.cpp
 //Expected state: About dialog appeared, shown info includes platform info (32/64)
 
 }
-
 GUI_TEST_CLASS_DEFINITION(test_1121) {
     GTLogTracer lt;
 
@@ -1247,6 +1252,19 @@ GUI_TEST_CLASS_DEFINITION(test_1190){//add AlignShortReadsFiller
 //2) wait for dialog to appear, click "OK"
 
 //repeat these steps 3 times, UGENE shouldn't crash
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1199) {
+//1. Open any samples/PDB/1CF7.pdb file.
+    GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
+
+//2. Select document in project tree view. Press 'Delete'
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7.PDB"));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+//Expected state: document removed, UGENE not crashes.
+    GTUtilsProject::checkProject(os, GTUtilsProject::Empty);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1204){

@@ -2,6 +2,7 @@
 #include "Context.h"
 #include "statmath.h"
 #include <assert.h>
+#include <string.h>
 
 using namespace std;
 #define INVALID_VALUE -1
