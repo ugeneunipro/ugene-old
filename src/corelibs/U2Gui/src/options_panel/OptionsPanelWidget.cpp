@@ -22,6 +22,7 @@
 #include <QHBoxLayout>
 #include <QSpacerItem>
 #include <QVBoxLayout>
+#include <QCoreApplication>
 
 #include <U2Core/U2SafePoints.h>
 
@@ -212,10 +213,8 @@ void OptionsPanelWidget::focusOptionsWidget(const QString& groupId) {
     SAFE_POINT(NULL != optionsWidget,
         QString("Internal error: failed to find an options widget for group '%1' to activate it.").arg(groupId),);
 
-    optionsLayout->removeWidget(optionsWidget);
-    optionsLayout->insertWidget(0, optionsWidget);
-
-    optionsWidget->setFocus();
+    optionsWidget->hide();
+    optionsWidget->show();
 }
 
 } // namespace U2
