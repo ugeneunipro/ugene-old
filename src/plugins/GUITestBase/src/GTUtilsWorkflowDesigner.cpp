@@ -235,7 +235,7 @@ void GTUtilsWorkflowDesigner::selectAlgorithm(U2OpStatus &os, QTreeWidgetItem* a
     }
 
     algorithm->parent()->setExpanded(true);
-    algorithm->treeWidget()->scrollToItem(algorithm);
+    algorithm->treeWidget()->scrollToItem(algorithm, QAbstractItemView::PositionAtCenter);
     GTMouseDriver::moveTo(os,GTTreeWidget::getItemCenter(os,algorithm));
 }
 #undef GT_METHOD_NAME

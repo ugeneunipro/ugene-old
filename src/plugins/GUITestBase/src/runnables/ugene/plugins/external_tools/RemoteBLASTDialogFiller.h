@@ -29,10 +29,10 @@ namespace U2 {
 
 class RemoteBLASTDialogFiller : public Filler {
 public:
-    RemoteBLASTDialogFiller(U2OpStatus &os) :
-        Filler(os, "RemoteBLASTDialog"){}
+    RemoteBLASTDialogFiller(U2OpStatus &os);
+    RemoteBLASTDialogFiller(U2OpStatus &os, CustomScenario *scenario);
 
-virtual void run();
+virtual void commonScenario();
 
 };
 

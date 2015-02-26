@@ -1330,6 +1330,82 @@ GUI_TEST_CLASS_DEFINITION(test_1199) {
     GTUtilsProject::checkProject(os, GTUtilsProject::Empty);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1203_1) {
+//    1) Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+//    2) Place "Remote BLAST" element on the scheme
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Remote BLAST", true);
+    GTUtilsWorkflowDesigner::click(os, "Remote BLAST");
+
+//    3) Select "Database" to "ncbi-blastn"
+//    Expected state: "Entrez query" lineedit is enabled
+    GTUtilsWorkflowDesigner::setParameter(os, "Database", "ncbi-blastn", GTUtilsWorkflowDesigner::comboValue);
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterEnabled(os, "Entrez query"), "Parameter is unexpectedly disabled");
+
+//    4) Select "Database" to "ncbi-blastp"
+//    Expected state: "Entrez query" lineedit is enabled
+    GTUtilsWorkflowDesigner::setParameter(os, "Database", "ncbi-blastp", GTUtilsWorkflowDesigner::comboValue);
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterEnabled(os, "Entrez query"), "Parameter is unexpectedly disabled");
+
+//    5) Select "Database" to "ncbi-cdd"
+//    Expected state: "Entrez query" lineedit is not visible
+    GTUtilsWorkflowDesigner::setParameter(os, "Database", "ncbi-cdd", GTUtilsWorkflowDesigner::comboValue);
+    CHECK_SET_ERR(!GTUtilsWorkflowDesigner::isParameterVisible(os, "Entrez query"), "Parameter is unexpectedly visible");
+
+//    6) Select "Database" to "ncbi-blastn"
+//    Expected state: "Entrez query" lineedit is enabled
+    GTUtilsWorkflowDesigner::clickParameter(os, "BLAST output");
+    GTUtilsWorkflowDesigner::setParameter(os, "Database", "ncbi-blastn", GTUtilsWorkflowDesigner::comboValue);
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterEnabled(os, "Entrez query"), "Parameter is unexpectedly disabled");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1203_2) {
+//    1) Open data\samples\FASTA\human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+//    2) Use context menu {Analyze -> Search NCBI BLAST database}
+
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active model widget is NULL");
+
+//    3) Set "Search the search type" to "blastn"
+//    Expected state: "Entrez query" presents on "Advanced options" tab
+            GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "dataBase", dialog), "blastn");
+            GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "optionsTab", dialog), 1);
+            QLineEdit *entrezQueryEdit = GTWidget::findExactWidget<QLineEdit *>(os, "entrezQueryEdit", dialog);
+            CHECK_SET_ERR(NULL != entrezQueryEdit, "entrezQueryEdit is NULL");
+            CHECK_SET_ERR(entrezQueryEdit->isVisible(), "entrezQueryEdit is unexpectedly not visible");
+
+//    4) Set "Search the search type" to "blastp"
+//    Expected state: "Entrez query" presents on "Advanced options" tab
+            GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "optionsTab", dialog), 0);
+            GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "dataBase", dialog), "blastp");
+            GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "optionsTab", dialog), 1);
+            entrezQueryEdit = GTWidget::findExactWidget<QLineEdit *>(os, "entrezQueryEdit", dialog);
+            CHECK_SET_ERR(NULL != entrezQueryEdit, "entrezQueryEdit is NULL");
+            CHECK_SET_ERR(entrezQueryEdit->isVisible(), "entrezQueryEdit is unexpectedly not visible");
+
+//    5) Set "Search the search type" to "cdd"
+//    Expected state: "Advanced options" tab is disabled
+            GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "optionsTab", dialog), 0);
+            GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "dataBase", dialog), "cdd");
+            QTabWidget *tabWidget = GTWidget::findExactWidget<QTabWidget *>(os, "optionsTab", dialog);
+            CHECK_SET_ERR(NULL != tabWidget, "tabWidget is NULL");
+            CHECK_SET_ERR(!tabWidget->isTabEnabled(1), "'Advanced options' tab is unexpectedly enabled");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Analyze" << "Query NCBI BLAST database..."));
+    GTUtilsDialog::waitForDialog(os, new RemoteBLASTDialogFiller(os, new Scenario));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1204){
     // 1) Open files data\samples\FASTA\human_T1.fa
     // 2) Use context menu {Analyze -> Query NCBI BLAST database}
