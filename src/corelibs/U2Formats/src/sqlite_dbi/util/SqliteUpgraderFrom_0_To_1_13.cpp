@@ -21,7 +21,6 @@
 
 #include <U2Core/L10n.h>
 #include <U2Core/U2Dbi.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SqlHelpers.h>
 
@@ -38,10 +37,6 @@ SqliteUpgraderFrom_0_To_1_13::SqliteUpgraderFrom_0_To_1_13(SQLiteDbi *dbi) :
 }
 
 void SqliteUpgraderFrom_0_To_1_13::upgrade(U2OpStatus &os) const {
-    coreLog.trace(QString("Upgrage database from version %1 to %2").
-                  arg(dbi->getProperty(U2DbiOptions::APP_MIN_COMPATIBLE_VERSION, "0.0.0", os)).
-                  arg(versionTo.text));
-
     SQLiteTransaction t(dbi->getDbRef(), os);
     Q_UNUSED(t);
 
@@ -103,21 +98,6 @@ void SqliteUpgraderFrom_0_To_1_13::upgradeAssemblyDbi(U2OpStatus &os) const {
     SAFE_POINT_OP(os,);
 
     SQLiteQuery assemblyFetch("SELECT object, reference, imethod, cmethod, idata, cdata FROM Assembly", db, os);
-    if (os.isCoR()) {
-        U2OpStatus2Log innerOs;
-        QString additionalInfo;
-
-        SQLiteQuery tablesFetch("SELECT name FROM sqlite_master WHERE type='table'", db, innerOs);
-        additionalInfo += "\n";
-        additionalInfo += "Tables in the database:\n";
-        additionalInfo += tablesFetch.selectStrings().join("\n");
-
-        additionalInfo += "\n";
-        additionalInfo += QString("Database URL: '%1'\n").arg(dbi->getDbiId());
-        additionalInfo += "\n";
-
-        coreLog.trace(additionalInfo);
-    }
     SAFE_POINT_OP(os, );
 
     SQLiteQuery assemblyInsert(QString("INSERT INTO %1 (object, reference, imethod, cmethod, idata, cdata) VALUES(?1, ?2, ?3, ?4, ?5, ?6)")

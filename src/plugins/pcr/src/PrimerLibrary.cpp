@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <QFileInfo>
-
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/L10n.h>
@@ -64,17 +62,11 @@ PrimerLibrary * PrimerLibrary::getInstance(U2OpStatus &os) {
     // open DBI connection
     const QString path = settings->getFileStorageDir() + "/" + libraryName;
 
-    coreLog.trace("Library path QString: " + path);
-    coreLog.trace("Library path QByteArray: " + path.toLocal8Bit());
-
     U2DbiRef dbiRef(DEFAULT_DBI_ID, path.toLocal8Bit());
     QHash<QString, QString> properties;
     properties[U2DbiOptions::U2_DBI_LOCKING_MODE] = "normal";
 
-    QFileInfo libraryFile(path);
-    coreLog.trace(QString("Library already exists: %1; creation time: %2").arg(libraryFile.exists()).arg(libraryFile.created().toString()));
     QScopedPointer<DbiConnection> connection(new DbiConnection(dbiRef, true, os, properties)); // create if not exists
-    coreLog.trace(QString("Library file existing after initialization: %1; creation time: %2").arg(libraryFile.exists()).arg(libraryFile.created().toString()));
     SAFE_POINT_OP(os, NULL);
 
     instance.reset(new PrimerLibrary(connection.take()));
