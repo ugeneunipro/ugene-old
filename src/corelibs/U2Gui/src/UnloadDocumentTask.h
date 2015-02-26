@@ -47,7 +47,7 @@ public:
     UnloadDocumentTask(Document* doc, bool save);
     ReportResult report();
 
-    static void runUnloadTaskHelper(const QList<Document*>& docs, UnloadDocumentTask_SaveMode sm);
+    static QList<Task *> runUnloadTaskHelper(const QList<Document*>& docs, UnloadDocumentTask_SaveMode sm);
     static QString checkSafeUnload(Document* d);
 
 private:

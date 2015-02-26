@@ -98,12 +98,14 @@ Task::ReportResult UnloadDocumentTask::report() {
     return Task::ReportResult_Finished;
 }
 
-void UnloadDocumentTask::runUnloadTaskHelper(const QList<Document*>& docs, UnloadDocumentTask_SaveMode sm) {
+QList<Task *> UnloadDocumentTask::runUnloadTaskHelper(const QList<Document*>& docs, UnloadDocumentTask_SaveMode sm) {
     QMap<Document*, QString> failedToUnload;
 
     // document can be unloaded if there are no active view with this doc + it's not state locked by user
     TriState saveAll = sm == UnloadDocumentTask_SaveMode_Ask ? TriState_Unknown :
         (sm == UnloadDocumentTask_SaveMode_NotSave ? TriState_No : TriState_Yes);
+
+    QList<Task *> result;
 
     foreach(Document* doc, docs) {
         QString err = checkSafeUnload(doc);
@@ -148,7 +150,7 @@ void UnloadDocumentTask::runUnloadTaskHelper(const QList<Document*>& docs, Unloa
                 saveCurrentDoc = true;
             }
         }
-        AppContext::getTaskScheduler()->registerTopLevelTask(new UnloadDocumentTask(doc, saveCurrentDoc));
+        result.append(new UnloadDocumentTask(doc, saveCurrentDoc));
     }
 
     if (!failedToUnload.isEmpty()) {
@@ -162,6 +164,7 @@ void UnloadDocumentTask::runUnloadTaskHelper(const QList<Document*>& docs, Unloa
         warning.setObjectName("UnloadWarning");
         warning.exec();
     }
+    return result;
 }
 
 QString UnloadDocumentTask::checkSafeUnload(Document* doc) {

@@ -68,6 +68,7 @@ void ProjectFilteringController::sl_startFiltering() {
         addNewActiveTask(task);
     }
     emit si_filteringStarted();
+    GCOUNTER(cvar, tvar, "Project filtering launch");
 }
 
 void ProjectFilteringController::sl_objectsFiltered(const QString &groupName, const SafeObjList &objs) {

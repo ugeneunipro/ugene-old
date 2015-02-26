@@ -519,11 +519,15 @@ void ProjectTreeController::sl_onUnloadSelectedDocuments() {
             locks.insert(doc, lock);
         }
     }
-    UnloadDocumentTask::runUnloadTaskHelper(docsToUnload, UnloadDocumentTask_SaveMode_Ask);
+    const QList<Task *> unloadTasks = UnloadDocumentTask::runUnloadTaskHelper(docsToUnload, UnloadDocumentTask_SaveMode_Ask);
     foreach (Document* doc, locks.keys()) {
         StateLock* lock = locks.value(doc);
         doc->unlockState(lock);
         delete lock;
+    }
+
+    foreach (Task *unloadTask, unloadTasks) {
+        AppContext::getTaskScheduler()->registerTopLevelTask(unloadTask);
     }
 }
 
