@@ -27,7 +27,6 @@
 #include <AppContextImpl.h>
 
 #include <U2Core/CopyDocumentTask.h>
-#include <U2Core/Counter.h>
 #include <U2Core/ProjectService.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Settings.h>
