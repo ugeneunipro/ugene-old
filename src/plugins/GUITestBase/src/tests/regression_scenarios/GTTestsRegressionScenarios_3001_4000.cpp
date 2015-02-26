@@ -1419,6 +1419,89 @@ GUI_TEST_CLASS_DEFINITION(test_3250) {
     CHECK_SET_ERR(opStatus.hasError(), "Export item exists");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3253) {
+/*  1. Open "data/samples/ABIF/A01.abi".
+ *  2. Minimaze annotation tree view
+ *    Expected state: Chromatagram view resized
+*/
+
+    GTFileDialog::openFile(os, dataDir + "/samples/ABIF/", "A01.abi");
+    GTGlobals::sleep();
+    QSplitterHandle *splitterHandle = qobject_cast<QSplitterHandle*>(GTWidget::findWidget(os, "qt_splithandle_"));
+    CHECK_SET_ERR( NULL != splitterHandle, "splitterHandle is not present" );
+
+    QWidget *chromaView = GTWidget::findWidget( os, "chromatogram_view_A1#berezikov");
+    CHECK_SET_ERR( NULL != chromaView, "chromaView is NULL" );
+
+    QWidget *annotationTreeWidget = GTWidget::findWidget( os, "annotations_tree_widget");
+    CHECK_SET_ERR( NULL != annotationTreeWidget, "annotationTreeWidget is NULL" );
+
+    QSize startSize=chromaView->size();
+    GTMouseDriver::moveTo(os, QPoint(annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).x()+100,annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).y()));
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, QPoint(annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).x()+100,annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).y()+annotationTreeWidget->size().height()));
+    GTMouseDriver::release(os);
+    GTGlobals::sleep();
+
+    QSize endSize=chromaView->size();
+    CHECK_SET_ERR( startSize != endSize, "chromatogram_view is not resized" );
+
+}
+GUI_TEST_CLASS_DEFINITION(test_3253_1) {
+/*  1. Open "data/samples/ABIF/A01.abi".
+ *  2. Toggle Show Detail View
+ *  3. Resize annotation tree view
+ *    Expected state: Detail View view resized
+*/
+    GTFileDialog::openFile(os, dataDir + "/samples/ABIF/", "A01.abi");
+    GTGlobals::sleep();
+    QWidget *annotationTreeWidget = GTWidget::findWidget( os, "annotations_tree_widget");
+    Runnable *chooser = new PopupChooser(os, QStringList() << "show_hide_details_view",GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, chooser);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_A1#berezikov"));
+    GTGlobals::sleep();
+
+    QSplitterHandle *splitterHandle = qobject_cast<QSplitterHandle*>(GTWidget::findWidget(os, "qt_splithandle_det_view_A1#berezikov"));
+    CHECK_SET_ERR( NULL != splitterHandle, "splitterHandle is not present" );
+
+    QWidget *detView = GTWidget::findWidget( os, "render_area_A1#berezikov");
+    QSize  startSize=detView->size();
+    GTMouseDriver::moveTo(os, QPoint(annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).x()+100,annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).y()));
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, QPoint(annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).x()+100,annotationTreeWidget->mapToGlobal(annotationTreeWidget->pos()).y()-detView->size().height()));
+    GTMouseDriver::release(os);
+    QSize endSize=detView->size();
+    CHECK_SET_ERR( startSize != endSize, "detView is not resized" );
+}
+GUI_TEST_CLASS_DEFINITION(test_3253_2) {
+/*  1. Open "data/samples/ABIF/A01.abi".
+ *  3. Open GC Content (%) graph
+ *  2. Close chomatogram view
+ *    Expected state: GC Content (%) graph view resized
+*/
+    GTFileDialog::openFile(os, dataDir + "/samples/ABIF/", "A01.abi");
+    GTGlobals::sleep();
+
+    QWidget *sequenceWidget = GTWidget::findWidget( os, "ADV_single_sequence_widget_0" );
+    CHECK_SET_ERR( NULL != sequenceWidget, "sequenceWidget is not present" );
+
+    GTWidget::click( os, sequenceWidget );
+
+    QWidget *graphAction = GTWidget::findWidget( os, "GraphMenuAction", sequenceWidget, false );
+    Runnable *chooser = new PopupChooser( os, QStringList( ) << "GC Content (%)" );
+    GTUtilsDialog::waitForDialog( os, chooser );
+
+    GTWidget::click( os, graphAction );
+    GTGlobals::sleep();
+    QSplitterHandle *splitterHandle = qobject_cast<QSplitterHandle*>(GTWidget::findWidget(os, "qt_splithandle_chromatogram_view_A1#berezikov"));
+    CHECK_SET_ERR( NULL != splitterHandle, "splitterHandle is not present" );
+
+    QWidget *graphView = GTWidget::findWidget( os, "GSequenceGraphViewRenderArea");
+    QSize startSize=graphView->size();
+    GTWidget::click(os, GTWidget::findWidget(os, "CHROMA_ACTION"));
+    QSize endSize=graphView->size();
+    CHECK_SET_ERR( startSize != endSize, "graphView is not resized" );
+}
 GUI_TEST_CLASS_DEFINITION(test_3255) {
 //    1. Open "data/samples/Assembly/chrM.sam.bam".
 //    Expected state: an import dialog appears.
