@@ -2348,7 +2348,7 @@ GUI_TEST_CLASS_DEFINITION( test_2306 ) {
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
     GTGlobals::sleep( 200 );
     const QString finalMsaContent = GTClipboard::text( os );
-    CHECK_SET_ERR("---\n---\n---\n---\n---\n---\n---" == finalMsaContent, "Unexpected MSA content has occurred" );
+    CHECK_SET_ERR("---\n---\n---\n---\n---\n---\n---" == finalMsaContent, "Unexpected MSA content has occurred: " + finalMsaContent );
 
 
 
@@ -2584,8 +2584,8 @@ GUI_TEST_CLASS_DEFINITION( test_2344 ){
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //    2. Add the "ChIP-seq analysis with Cistrome tools" sample.
     GTUtilsDialog::waitForDialog(os, new EscapeClicker(os, "ChIP-seq Analysis Wizard"));
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Pipeline", QStringList()<<
-                                                                   "Treatment tags only"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Workflow", QStringList()<<
+                                                                   "Only treatment tags"));
     GTUtilsWorkflowDesigner::addSample(os, "Cistrome");
 //    Expected state: the sample wizard appears.
 //    3. Choose the "Treatment tags only" mode and click "Setup".

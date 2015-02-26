@@ -1046,6 +1046,7 @@ GUI_TEST_CLASS_DEFINITION(test_1155) {
     // 4. Run the schema.
     // Expected state: UGENE not crashed
 
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1155", "crash.uwl");
 
     GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/Genbank/sars.gb");
@@ -1113,7 +1114,7 @@ GUI_TEST_CLASS_DEFINITION(test_1157) {
 
     QString resultFilePath = testDir + "_common_data/scenarios/sandbox/test_1157.gb";
     GTUtilsWorkflowDesigner::setParameter(os, "Document format", "genbank", GTUtilsWorkflowDesigner::comboValue);
-    GTUtilsWorkflowDesigner::setParameter(os, "Output file", resultFilePath, GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", QDir().absoluteFilePath(resultFilePath), GTUtilsWorkflowDesigner::textValue);
 
     WorkflowProcessItem *callocationSearch = GTUtilsWorkflowDesigner::addElement(os, "Collocation Search");
     GTUtilsWorkflowDesigner::setParameter(os, "Result type", "Copy original annotations", GTUtilsWorkflowDesigner::comboValue);
@@ -1428,7 +1429,7 @@ GUI_TEST_CLASS_DEFINITION(test_1210){
     WorkflowProcessItem *callVariants = GTUtilsWorkflowDesigner::addElement(os, "Call Variants with SAMtools");
 
     GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/FASTA/human_T1.fa");
-    GTUtilsWorkflowDesigner::addInputFile(os, "Read Alignment", dataDir + "samples/Assembly/ChrM.sam");
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Alignment", dataDir + "samples/Assembly/chrM.sam");
 
     GTUtilsWorkflowDesigner::connect(os, readSequence, callVariants);
     GTUtilsWorkflowDesigner::connect(os, readAlignment, callVariants);
