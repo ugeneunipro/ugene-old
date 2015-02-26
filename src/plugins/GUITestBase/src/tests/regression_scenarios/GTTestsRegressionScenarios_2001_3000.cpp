@@ -397,12 +397,12 @@ GUI_TEST_CLASS_DEFINITION( test_2021_3 )
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
     GTGlobals::sleep( 200 );
     const QString finalMsaContent = GTClipboard::text( os );
-    CHECK_SET_ERR(  "AAGCTTCTTTTAA\nAAGTTACTAA---\nTAG---TTATTAA\nAAGC---TATTAA\n"
-                    "TAGTTATTAA---\nTAGTTATTAA---\nTAGTTATTAA---\nAAGCTTT---TAA\n"
-                    "A--AGAATAATTA\nAAGCTTTTAA---" == finalMsaContent,
-                    "Unexpected MSA content has occurred\n expected: \nAAGCTTCTTTTAA\nAAGTTACTAA---\nTAG---TTATTAA\nAAGC---TATTAA\n"
-                    "TAGTTATTAA---\nTAGTTATTAA---\nTAGTTATTAA---\nAAGCTTT---TAA\n"
-                    "A--AGAATAATTA\nAAGCTTTTAA---\n actual: \n" + finalMsaContent);
+    CHECK_SET_ERR(  "AAGCTTCTTTTAA--\nAAGTTACTAA-----\nTAG---TTATTAA--\nAAGC---TATTAA--\n"
+                    "TAGTTATTAA-----\nTAGTTATTAA-----\nTAGTTATTAA-----\nAAGCTTT---TAA--\n"
+                    "A--AGAATAATTA--\nAAGCTTTTAA-----" == finalMsaContent,
+                    "Unexpected MSA content has occurred\n expected: \nAAGCTTCTTTTAA--\nAAGTTACTAA-----\nTAG---TTATTAA--\nAAGC---TATTAA--\n"
+                    "TAGTTATTAA-----\nTAGTTATTAA-----\nTAGTTATTAA-----\nAAGCTTT---TAA--\n"
+                    "A--AGAATAATTA--\nAAGCTTTTAA-----\n actual: \n" + finalMsaContent);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2021_4 )
@@ -453,9 +453,9 @@ GUI_TEST_CLASS_DEFINITION( test_2021_5 )
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
     GTGlobals::sleep( 200 );
     const QString finalMsaContent = GTClipboard::text( os );
-    CHECK_SET_ERR(  "AAGCTTCTTTTAA\nAAGTTACTAA---\nTAG---TTATTAA\nAAGC---TATTAA\n"
-        "TAGTTATTAA---\nTAGTTATTAA---\nTAGTTATTAA---\nAAGCTTT---TAA\n"
-        "A--AGAATAATTA\nAAGCTTTTAA---" == finalMsaContent,
+    CHECK_SET_ERR(  "AAGCTTCTTTTAA--\nAAGTTACTAA-----\nTAG---TTATTAA--\nAAGC---TATTAA--\n"
+        "TAGTTATTAA-----\nTAGTTATTAA-----\nTAGTTATTAA-----\nAAGCTTT---TAA--\n"
+        "A--AGAATAATTA--\nAAGCTTTTAA-----" == finalMsaContent,
         "Unexpected MSA content has occurred" );
 }
 
@@ -2348,7 +2348,7 @@ GUI_TEST_CLASS_DEFINITION( test_2306 ) {
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
     GTGlobals::sleep( 200 );
     const QString finalMsaContent = GTClipboard::text( os );
-    CHECK_SET_ERR("---\n---\n---\n---\n---\n---\n---" == finalMsaContent, "Unexpected MSA content has occurred: " + finalMsaContent );
+    CHECK_SET_ERR("---\n---\n---\n---\n---\n---" == finalMsaContent, "Unexpected MSA content has occurred"  + finalMsaContent);
 
 
 
