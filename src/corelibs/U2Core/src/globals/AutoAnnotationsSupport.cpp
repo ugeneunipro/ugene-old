@@ -216,6 +216,7 @@ void AutoAnnotationObject::handleUpdate(const QList<AutoAnnotationsUpdater *> &u
         // envelope to unlock annotation object
         if (!subTasks.isEmpty()) {
             AppContext::getTaskScheduler()->registerTopLevelTask(new AutoAnnotationsUpdateTask(this, subTasks));
+            subTasks.clear();
         }
     }
 }
