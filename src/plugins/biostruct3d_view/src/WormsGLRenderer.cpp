@@ -41,68 +41,37 @@ WormsGLRenderer::WormsGLRenderer( const BioStruct3D& struc, const BioStruct3DCol
 }
 
 bool WormsGLRenderer::isAvailableFor(const BioStruct3D &bioStruct) {
-    bool available = false;
+    // Try to construct objects to draw
+    QMap<int, BioPolymer > bioPolymerMap;
+    createBioPolymerMap(bioStruct.moleculeMap, bioPolymerMap);
 
-    const char* alphaCarbonTag = "CA";
-    const char* phosophorTag = "P";
-    const char* carbonylOxygenTag = "O";
-    bool alphaCarbonAndPhosophor = false;
-    bool needCarbonylOxygenCheck = false;
-
-    foreach (const SharedMolecule &mol, bioStruct.moleculeMap) {
-        foreach (const Molecule3DModel& model, mol->models.values()) {
-            foreach (const SharedAtom atom, model.atoms) {
-                if (    (atom->name.trimmed() == alphaCarbonTag)
-                        || (atom->name.trimmed() == phosophorTag)   ) {
-                    available = true;
-                    alphaCarbonAndPhosophor = true;
-                }
-                if (atom->name.trimmed() == carbonylOxygenTag) {
-                    needCarbonylOxygenCheck = true;
+    // Find objects to draw
+    foreach (const SharedSecondaryStructure ss, bioStruct.secondaryStructures) {
+        int startId = ss->startSequenceNumber;
+        int endId = ss->endSequenceNumber;
+        int chainId = ss->chainIndex;
+        Q_ASSERT( chainId != 0 );
+        if (bioPolymerMap.contains(chainId)) {
+            const BioPolymer& bpolymer = bioPolymerMap.value(chainId);
+            foreach (const BioPolymerModel& bpModel, bpolymer.bpModels.values() ) {
+                if (bpModel.monomerMap.contains(startId) && bpModel.monomerMap.contains(endId)) {
+                    if (ss->type == SecondaryStructure::Type_AlphaHelix ) {
+                        return true;
+                    } else if (ss->type == SecondaryStructure::Type_BetaStrand) {
+                        return true;
+                    }
                 }
             }
         }
     }
-    if (needCarbonylOxygenCheck && alphaCarbonAndPhosophor && !available) {
-        available = true;
-    }
 
-    return available;
-
+    return false;
 }
 
 void WormsGLRenderer::create() {
     assert(isAvailableFor(bioStruct) && "Availability must be checked first!");
 
-    const char* alphaCarbonTag = "CA";
-    const char* phosophorTag = "P";
-    const char* carbonylOxygenTag = "O";
-
-    QMapIterator<int, SharedMolecule> i(bioStruct.moleculeMap);
-    while (i.hasNext()) {
-        i.next();
-        const SharedMolecule mol = i.value();
-        BioPolymer bioPolymer;
-        foreach (int modelId, mol->models.keys()) {
-            const Molecule3DModel& model = mol->models.value(modelId);
-            BioPolymerModel& bpModel = bioPolymer.bpModels[modelId];
-            foreach (const SharedAtom atom, model.atoms) {
-                if ((atom->name.trimmed() == alphaCarbonTag) || (atom->name.trimmed() == phosophorTag)) {
-                    bpModel.monomerMap[atom->residueIndex.toInt()].alphaCarbon = atom;
-                }
-                if ( (atom->name.trimmed() == carbonylOxygenTag) && (bpModel.monomerMap.contains(atom->residueIndex.toInt()))) {
-                    bpModel.monomerMap[atom->residueIndex.toInt()].carbonylOxygen = atom;
-                }
-            }
-            if (bpModel.monomerMap.isEmpty()) {
-                bioPolymer.bpModels.remove(modelId);
-            }
-        }
-        if (!bioPolymer.bpModels.isEmpty()) {
-            bioPolymerMap.insert(i.key(), bioPolymer);
-        }
-    }
-
+    createBioPolymerMap(bioStruct.moleculeMap, bioPolymerMap);
     createWorms();
 }
 
@@ -272,9 +241,74 @@ void WormsGLRenderer::createWorms()
         const int chainID = i.key();
         wormMap.insert(chainID, worm);
     }
-
     createObjects3D();
 
+}
+
+void WormsGLRenderer::createBioPolymerMap(const QMap<int, SharedMolecule> &moleculeMap, QMap<int, BioPolymer> &bioPolymerMap) {
+    const char* alphaCarbonTag = "CA";
+    const char* phosophorTag = "P";
+    const char* carbonylOxygenTag = "O";
+
+    QMapIterator<int, SharedMolecule> i(moleculeMap);
+    while (i.hasNext()) {
+        i.next();
+        const SharedMolecule mol = i.value();
+        BioPolymer bioPolymer;
+        foreach (int modelId, mol->models.keys()) {
+            const Molecule3DModel& model = mol->models.value(modelId);
+            BioPolymerModel& bpModel = bioPolymer.bpModels[modelId];
+            QMap<int, QPair<bool, bool> > checkList;
+            foreach (const SharedAtom atom, model.atoms) {
+                int residueIdx = atom->residueIndex.toInt();
+                if ((atom->name.trimmed() == alphaCarbonTag) || (atom->name.trimmed() == phosophorTag)) {
+
+                    if (checkList.contains(residueIdx)) {
+                        QPair<bool, bool> check = checkList.value(residueIdx);
+                        if (check.first == false) {
+                            SAFE_POINT(check.second == true, "Invalid checklist state", );
+                            bpModel.monomerMap[residueIdx].alphaCarbon = atom;
+                            checkList.remove(residueIdx);
+                        } else {
+                           FAIL("Reapeated alpha carbon atom in the same residue", );
+                        }
+                    } else {
+                        checkList[residueIdx] = QPair<bool, bool>(true, false);
+                        bpModel.monomerMap[residueIdx].alphaCarbon = atom;
+                    }
+                }
+                if ( (atom->name.trimmed() == carbonylOxygenTag)) {
+                    if (checkList.contains(residueIdx)) {
+                        QPair<bool, bool> check = checkList.value(residueIdx);
+                        if (check.second == false) {
+                            SAFE_POINT(check.first == true, "", );
+                            bpModel.monomerMap[residueIdx].carbonylOxygen = atom;
+                            checkList.remove(residueIdx);
+                        } else {
+                            FAIL("Reapeated carbonyl oxygen atom in the same residue", );
+                        }
+
+                    } else {
+                        checkList[residueIdx] = QPair<bool, bool>(false, true);
+                        bpModel.monomerMap[residueIdx].carbonylOxygen = atom;
+                    }
+                }
+            }
+            foreach (int residueIdx, checkList.keys()) {
+                QPair<bool, bool> check = checkList[residueIdx];
+                if (check.first == false && check.second == true) {
+                    bpModel.monomerMap.remove(residueIdx);
+                }
+            }
+
+            if (bpModel.monomerMap.isEmpty()) {
+                bioPolymer.bpModels.remove(modelId);
+            }
+        }
+        if (!bioPolymer.bpModels.isEmpty()) {
+            bioPolymerMap.insert(i.key(), bioPolymer);
+        }
+    }
 }
 
 

@@ -91,6 +91,9 @@ class WormsGLRenderer : public BioStruct3DGLRenderer {
     void drawSecondaryStructure();
     const float* getAtomColor(const SharedAtom& atom);
 
+private:
+    static void createBioPolymerMap(const QMap <int, SharedMolecule>& moleculeMap, QMap<int, BioPolymer>& bioPolymerMap);
+
 protected:
     WormsGLRenderer(const BioStruct3D& struc, const BioStruct3DColorScheme* s, const QList<int> &shownModels, const BioStruct3DRendererSettings *settings);
 

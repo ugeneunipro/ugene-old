@@ -63,13 +63,17 @@ PDBFormat::PDBFormat( QObject* p ) : DocumentFormat(p, DocumentFormatFlag(0), QS
 }
 
 FormatCheckResult PDBFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
-    static const char* headerTag = "HEADER";
-    static const char* atomTag = "ATOM";
-    static const char* modelTag = "MODEL";
+    static QList< const char* > tags;
+    tags << "HEADER" << "ATOM" << "MODEL" << "REMARK" << "OBSLTE"
+         << "TITLE" << "SPLIT" << "CAVEAT" << "COMPND" << "SOURCE"
+         << "KEYWDS" << "EXPDTA" << "AUTHOR" << "REVDAT" << "SPRSDE" << "JRNL";
 
     bool ok = false;
-    if (rawData.startsWith(headerTag) || rawData.startsWith(atomTag) || rawData.startsWith(modelTag) ) {
-        ok = true;
+    foreach (const char* tag, tags) {
+        if (rawData.startsWith(tag)) {
+            ok = true;
+            break;
+        }
     }
 
     if (!ok) {
