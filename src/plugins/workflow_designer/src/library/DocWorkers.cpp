@@ -602,6 +602,8 @@ void GenbankWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, c
             objectsMap[GObjectTypes::ANNOTATION_TABLE] = anObjList;
         }
     }
+    CHECK(!objectsMap.isEmpty(), );
+
     format->storeEntry(io, objectsMap, os);
 
     foreach (GObject *o, anObjList) {

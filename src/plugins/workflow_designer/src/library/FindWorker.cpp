@@ -455,12 +455,16 @@ void FindWorker::sl_taskFinished( Task *t ) {
     QStringList ptrns;
     QList<FindAlgorithmResult> annData;
     QList<AnnotationData> result;
+    bool isCircular = false;
+    int seqLen = -1;
     foreach ( Task *sub, subs ) {
         FindAlgorithmTask *findTask = qobject_cast<FindAlgorithmTask *>( sub );
         if ( NULL != findTask ) {
             if ( findTask->isCanceled( ) || findTask->hasError( ) ) {
                 return;
             }
+            isCircular = findTask->getSettings().searchIsCircular;
+            seqLen = findTask->getSettings().sequence.length();
             //parameters pattern
             if ( !filePatterns.contains( sub ) ) {
                 annData << findTask->popResults( );
@@ -505,7 +509,7 @@ void FindWorker::sl_taskFinished( Task *t ) {
     }
     if ( NULL != output ) {
         if ( result.isEmpty( ) ) {
-            result << FindAlgorithmResult::toTable( annData, resultName );
+            result << FindAlgorithmResult::toTable( annData, resultName, isCircular, seqLen );
         }
 
         const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( result );
