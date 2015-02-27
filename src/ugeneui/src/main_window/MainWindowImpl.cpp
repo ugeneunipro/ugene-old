@@ -84,12 +84,10 @@ public:
     MWStub(MainWindowImpl* _owner)  : owner(_owner){
         setAttribute(Qt::WA_NativeWindow);
         setAcceptDrops(true);
-        //setWindowIcon(QIcon(":/ugene/images/ugene.icl"));
-//        setWindowIcon(QIcon(":/ugene/images/ugene_16.png"));
     }
     virtual QMenu * createPopupMenu () {return NULL;} //todo: decide if we do really need this menu and fix it if yes?
 protected:
-    virtual void closeEvent(QCloseEvent* e); 
+    virtual void closeEvent(QCloseEvent* e);
     virtual void dragEnterEvent(QDragEnterEvent *event);
     virtual void dropEvent ( QDropEvent * event );
     virtual void dragMoveEvent ( QDragMoveEvent * event );
@@ -141,10 +139,10 @@ void MainWindowDragNDrop::dropEvent(QDropEvent *event) {
     } else {
         if(event->mimeData()->hasFormat(DocumentMimeData::MIME_TYPE)) {
             const DocumentMimeData *docData = static_cast<const DocumentMimeData *>(event->mimeData());
-            
-            DocumentSelection ds; 
+
+            DocumentSelection ds;
             ds.setSelection(QList<Document*>() << docData->objPtr);
-            MultiGSelection ms; 
+            MultiGSelection ms;
             ms.addSelection(&ds);
             foreach(GObjectViewFactory *f, AppContext::getObjectViewFactoryRegistry()->getAllFactories()) {
                 if(f->canCreateView(ms)) {
@@ -231,6 +229,9 @@ void MainWindowImpl::close() {
     delete mw;    mw = NULL;
 }
 
+void MainWindowImpl::setDisabled(bool disabled) {
+    mw->setDisabled(disabled);
+}
 
 void MainWindowImpl::createActions() {
     exitAction = new QAction(tr("Exit"), this);
@@ -530,7 +531,7 @@ void FixedMdiArea::sysContextMenuAction(QAction* action) {
         if (!lst.isEmpty() && action == lst.first() ) { //RestoreAction always comes before CloseAction
             //FIXME better to detect via shortcut or icon ???
             assert(action->icon().pixmap(32).toImage() == style()->standardIcon(QStyle::SP_TitleBarNormalButton).pixmap(32).toImage() );
-            activeSubWindow()->showMaximized(); 
+            activeSubWindow()->showMaximized();
         }
     }
 }
@@ -553,7 +554,7 @@ void MainWindowImpl::sl_show(){
     if(mw != NULL){
         if (maximized) {
             mw->showMaximized();
-        } else {        
+        } else {
             mw->show();
             if (!geom.isNull()) {
                 mw->setGeometry(geom);

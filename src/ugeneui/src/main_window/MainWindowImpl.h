@@ -67,21 +67,22 @@ private slots:
 class MainWindowImpl: public MainWindow {
     Q_OBJECT
 public:
-	MainWindowImpl();
-	~MainWindowImpl();
-    
+    MainWindowImpl();
+    ~MainWindowImpl();
+
     virtual QMenu* getTopLevelMenu(const QString& sysName) const;
     virtual QToolBar* getToolbar(const QString& sysName) const;
 
     virtual MWMDIManager*           getMDIManager() const {return mdiManager;}
     virtual MWDockManager*          getDockManager() const {return dockManager;}
     virtual QMainWindow*            getQMainWindow() const {return mw;}
-	virtual NotificationStack*		getNotificationStack() const {return nStack;}
+    virtual NotificationStack*		getNotificationStack() const {return nStack;}
 
-	virtual void setWindowTitle(const QString& title);
-    
+    virtual void setWindowTitle(const QString& title);
+
     void prepare();
     void close();
+    void setDisabled(bool disabled);
 
     void runClosingTask();
     void setShutDownInProcess(bool flag) {shutDownInProcess = flag;}
@@ -114,13 +115,13 @@ private:
 
     QMainWindow*            mw;
     FixedMdiArea*           mdi;
-    
+
     MWMenuManagerImpl*      menuManager;
-	MWToolBarManagerImpl*   toolbarManager;
+    MWToolBarManagerImpl*   toolbarManager;
     MWMDIManager*           mdiManager;
     MWDockManager*          dockManager;
 
-	NotificationStack*      nStack;
+    NotificationStack*      nStack;
 
     QAction*                exitAction;
     QAction*                aboutAction;

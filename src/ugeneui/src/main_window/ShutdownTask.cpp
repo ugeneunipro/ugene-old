@@ -42,7 +42,7 @@ namespace U2 {
 ShutdownTask::ShutdownTask(MainWindowImpl* _mw)
     : Task(tr("shutdown_task_name"), TaskFlags(TaskFlag_NoRun)), mw(_mw), docsToRemoveAreFetched(false)
 {
-
+    mw->setShutDownInProcess(true);
 }
 
 static bool isReadyToBeDisabled(Service* s, ServiceRegistry* sr) {
@@ -76,7 +76,7 @@ static bool closeViews() {
     MWMDIManager* wm = AppContext::getMainWindow()->getMDIManager();
     MWMDIWindow* w = NULL;
     // close windows one by one, asking active window first
-    // straightforward foreach() cycle appears not flexible enough, 
+    // straightforward foreach() cycle appears not flexible enough,
     // as interdependent windows may close each other (happened with TestRunner and TestReporter)
     while ((w = wm->getActiveWindow())) {
         if (!wm->closeMDIWindow(w)) {
@@ -101,7 +101,7 @@ public:
         }
         if ( proj->isTreeItemModified() || proj->getProjectURL().isEmpty() ) {
             addSubTask(AppContext::getProjectService()->saveProjectTask(SaveProjectTaskKind_SaveProjectAndDocumentsAskEach));
-        } 
+        }
     }
 
     QList<Task*> onSubTaskFinished(Task* subTask) {
@@ -151,7 +151,7 @@ public:
     }
 };
 
-// This function prepends empty string to RecentProjects in UGENE SETTINGS in order 
+// This function prepends empty string to RecentProjects in UGENE SETTINGS in order
 // to prevent project auto loading on next UGENE launch
 static void cancelProjectAutoLoad() {
     QStringList recentFiles = AppContext::getSettings()->getValue(SETTINGS_DIR + RECENT_PROJECTS_SETTINGS_NAME, QStringList(),  true).toStringList();
@@ -168,10 +168,10 @@ void ShutdownTask::prepare() {
     if (currProject == NULL) {
         cancelProjectAutoLoad();
     }
-    
+
     Task* ct = new CloseWindowsTask();
     addSubTask(ct);
-    
+
     QList<Task*> activeTopTasks = AppContext::getTaskScheduler()->getTopLevelTasks();
     activeTopTasks.removeOne(this);
     if (!activeTopTasks.isEmpty()) {
@@ -180,9 +180,9 @@ void ShutdownTask::prepare() {
             sl.append(t->getTaskName());
         }
 
-        QMessageBox::StandardButton ret = QMessageBox::question(mw->getQMainWindow(), 
-            tr("Shutdown confirmation"), 
-            tr("There are active tasks. Stop them now?")+QString("\n\n - %1").arg(sl.join("\n - ")), 
+        QMessageBox::StandardButton ret = QMessageBox::question(mw->getQMainWindow(),
+            tr("Shutdown confirmation"),
+            tr("There are active tasks. Stop them now?")+QString("\n\n - %1").arg(sl.join("\n - ")),
             QMessageBox::Ok|QMessageBox::Cancel);
         if (ret != QMessageBox::Ok) {
             cancel();
@@ -192,11 +192,12 @@ void ShutdownTask::prepare() {
         // otherwise it may cancel tasks produced by closing windows (e.g. SaveWorkflowTask)
         ct->addSubTask(new CancelAllTask());
     }
+    mw->setDisabled(true);
 }
 
 QList<Task*> ShutdownTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    
+
     stateInfo.cancelFlag = subTask->isCanceled();
     if (isCanceled() || subTask->hasError() ) {
         mw->setShutDownInProcess(false);
@@ -228,6 +229,7 @@ QList<Task*> ShutdownTask::onSubTaskFinished(Task* subTask) {
 Task::ReportResult ShutdownTask::report() {
     if (propagateSubtaskError() || hasError() || isCanceled()) {
         setErrorNotificationSuppression(true);
+        mw->setDisabled(false);
         return Task::ReportResult_Finished;
     }
 
