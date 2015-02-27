@@ -227,15 +227,17 @@ void AlignShortReadsFiller::setBowtie2AdditionalParameters(Bowtie2Parameters* bo
     }
     CHECK_OP(os, );
 
+#ifndef Q_OS_WIN
     QSpinBox* threadsSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "threadsSpinBox", dialog));
     CHECK_OP(os, );
-    GT_CHECK(seedSpinBox, "threadsSpinBox is NULL");
+    GT_CHECK(threadsSpinBox, "threadsSpinBox is NULL");
     if ( threadsSpinBox->minimum( ) <= bowtie2Parameters->threads
          && threadsSpinBox->maximum( ) >= bowtie2Parameters->threads )
     {
         GTSpinBox::setValue(os, threadsSpinBox, bowtie2Parameters->threads);
         CHECK_OP(os, );
     }
+#endif
 
     // Flags
     QCheckBox* nomixedCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "nomixedCheckBox", dialog));
