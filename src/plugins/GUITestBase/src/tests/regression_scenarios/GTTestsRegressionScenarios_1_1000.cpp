@@ -335,6 +335,18 @@ GUI_TEST_CLASS_DEFINITION(test_0986_4) {
     GTGlobals::sleep(5000);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_994) {
+/* 1. _common_data/scenarios/regression/994/musMusc.gb
+ * 2. Expand contigs_snp group.
+ * 3. Call a tooltip of he first annotation in the group.
+ *   Expected state: UGENE not crashes
+*/
+    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/_regression/994/", "musMusc.gb");
+    GTGlobals::sleep(1000);
+    GTMouseDriver::moveTo(os,GTUtilsAnnotationsTreeView::getItemCenter(os,"106-c1_38ftp"));
+    GTGlobals::sleep(1000);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1001) {
 
     GTUtilsProject::openFiles(os, dataDir+"samples/FASTA/human_T1.fa");
