@@ -30,6 +30,7 @@
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsWorkflowDesigner.h"
 
+#include "api/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
 #include "api/GTKeyboardDriver.h"
@@ -147,7 +148,45 @@ GUI_TEST_CLASS_DEFINITION(test_4030) {
     CHECK_SET_ERR(!label->isVisible(), "Label is shown");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4064) {
+//    1. Copy "_common_data/bam/scerevisiae.bam" and "_common_data/bam/scerevisiae.bam.bai" to separate folder
+//    2. Rename "scerevisiae.bam.bai" to "scerevisiae.bai"
+//    3. Open "scerevisiae.bam" in UGENE
+//    Expected state: "Import BAM file" dialog appeared - there is no "Index is not available" warning message.
+
+    GTFile::copy(os, testDir + "_common_data/bam/scerevisiae.bam", sandBoxDir + "test_4064.bam");
+
+    class CustomImportBAMDialogFiller : public Filler {
+    public:
+        CustomImportBAMDialogFiller(U2OpStatus &os, bool warningExistence)
+            : Filler(os, "Import BAM File"),
+              warningExistence(warningExistence) {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QLabel *label = qobject_cast<QLabel*>(GTWidget::findWidget(os,"indexNotAvailableLabel",dialog));
+            CHECK_SET_ERR(label != NULL, "indexNotAvailableLabel not found");
+            CHECK_SET_ERR(label->isVisible() == warningExistence, "Warning message is shown");
+
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            QPushButton* button = box->button(QDialogButtonBox::Cancel);
+            CHECK_SET_ERR(button !=NULL, "cancel button is NULL");
+            GTWidget::click(os, button);
+        }
+    private:
+        bool warningExistence;
+    };
+
+    GTUtilsDialog::waitForDialog(os, new CustomImportBAMDialogFiller(os, true));
+    GTFileDialog::openFile(os, sandBoxDir, "test_4064.bam");
+
+    GTFile::copy(os, testDir + "_common_data/bam/scerevisiae.bam.bai", sandBoxDir + "test_4064.bai");
+    GTUtilsDialog::waitForDialog(os, new CustomImportBAMDialogFiller(os, false));
+    GTFileDialog::openFile(os, sandBoxDir, "test_4064.bam");
 }
 
-}
+} // namespace GUITest_regression_scenarios
+
+} // namespace U2
 
