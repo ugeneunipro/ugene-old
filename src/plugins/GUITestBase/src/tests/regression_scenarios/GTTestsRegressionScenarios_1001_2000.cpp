@@ -672,6 +672,8 @@ GUI_TEST_CLASS_DEFINITION(test_1038) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1064) {
+    //1) Open "_common_data\regression\1064\test_data.sam"
+    //Expected state: "Import SAM file" dialog opened with Reference lineedit and red text saying that the SAM file doesn't contain the header
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_1064.ugenedb", dataDir + "samples/Assembly", "chrM.fa"));
     GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sam");
     GTUtilsTaskTreeView::waitTaskFinished(os);
