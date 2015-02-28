@@ -1169,6 +1169,35 @@ GUI_TEST_CLASS_DEFINITION(test_1165){
     GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["delete"]);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1166) {
+    //1. Open file "data/samples/CLUSTALW/COI.aln" in alignment editor 
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(44,6), QPoint(49,9));
+
+    //2. Select any region in msa with left button, move it left 
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(46,7));
+    GTMouseDriver::press(os);
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(40,7));
+    GTMouseDriver::release(os);
+
+    //3. Drag the region you selected to its original place
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(43,7));
+    GTMouseDriver::press(os);
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(46,7));
+    GTMouseDriver::release(os);
+
+    //4. Press right mouse button, choose "Align"->"Align with T-Coffee"
+    //Expected state: UGENE not crashes
+    GTUtilsDialog::waitForDialog(os, new TCoffeeDailogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with T-Coffee", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1172){
     // 1. Open file "\data\samples\Stockholm\CBS.sto" or "\data\samples\ACE\BL060C3.ace"
     // 2. Select any area in msa (or just one symbol)
