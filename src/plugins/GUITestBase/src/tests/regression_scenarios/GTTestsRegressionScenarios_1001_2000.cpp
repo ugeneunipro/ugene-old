@@ -671,6 +671,12 @@ GUI_TEST_CLASS_DEFINITION(test_1038) {
     CHECK_SET_ERR(matchCount == seqNames.size(), QString("Number of reads and sequences are not matched: got %1, expected %2").arg(matchCount).arg((seqNames.size())));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1064) {
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_1064.ugenedb", dataDir + "samples/Assembly", "chrM.fa"));
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1065_1) {
 //    Building index with the "Bowtie" tool.
 //    1. Select "Tools->Align to reference->Build index" from the main menu.
