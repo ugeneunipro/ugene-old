@@ -1184,6 +1184,30 @@ GUI_TEST_CLASS_DEFINITION(test_1172){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1175){
+//     1. Open WD.
+//     2. Create any scheme with element, that correspond to an external tool.
+//     3. Delete path to the extarnal tool if it is selected
+//     4. Press "Validate schema" or "Run scheme"
+//     Expected state: error "Extarnal tool "Name of tool" is not set" appeared
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::addSample(os, "Gene-by-gene approach");
+
+    GTUtilsExternalTools::removeTool(os, "BlastAll");
+
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsWorkflowDesigner::click(os, "Local BLAST Search");
+    GTUtilsWorkflowDesigner::setParameter(os, "Database Path", sandBoxDir, GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Database Name", "test", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTWidget::click( os,GTAction::button(os, "Validate workflow"));
+
+    GTUtilsWorkflowDesigner::checkErrorList(os, "External tool \"BlastAll\" is not set.");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1180) {
     //1) Open Settings, External tools.
     //2) Set wrong path to the Bowtie tool.
