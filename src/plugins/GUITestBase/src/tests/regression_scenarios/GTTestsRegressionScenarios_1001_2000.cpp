@@ -1228,6 +1228,83 @@ GUI_TEST_CLASS_DEFINITION(test_1184){
                   QString("Incorrect existing file parameter [%1]").arg(GTUtilsWorkflowDesigner::getParameter(os, "Existing file")));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1186_1){
+    //     1) Open "Align Short Read Dialog"
+    //     2) Set "Result file name" 'test.sam'
+    //     3) Select "Reference sequence" for example human_T1.fa
+    //     Expected state: "Result file name" is 'test.sam'
+    class Scenario_test_1186_1: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget* dialog = QApplication::activeModalWidget();
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils (os, sandBoxDir, "test_1186_1.sam", GTFileDialogUtils::Save, GTGlobals::UseMouse));
+            CHECK_OP(os, );
+
+            QWidget* setResultFileNameButton = GTWidget::findWidget(os, "setResultFileNameButton", dialog);
+            CHECK_OP(os, );
+
+            GTWidget::click(os, setResultFileNameButton);
+            CHECK_OP(os, );
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/FASTA/", "human_T1.fa"));
+            QWidget* addRefButton = GTWidget::findWidget(os, "addRefButton", dialog);
+            GTWidget::click(os, addRefButton);
+
+            QLineEdit* resultFileNameEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "resultFileNameEdit", dialog));
+            CHECK_SET_ERR(resultFileNameEdit != NULL, "resultFileNameEdit is NULL");
+            CHECK_SET_ERR(resultFileNameEdit->text().contains("test_1186_1.sam"), "Incorrect output file");
+
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new Scenario_test_1186_1()));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+
+    CHECK_SET_ERR( !os.hasError(), "Uncorrect value is available");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1186_2){
+    //     1) Open Align Short Read Dialog
+    //     2) Uncheck "SAM output" checkbox
+    //     3) Set "Result file name" for example 'test.ugenedb'
+    //     Expected state: "Result file name" is 'test.ugenedb'
+
+    class Scenario_test_1186_2: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget* dialog = QApplication::activeModalWidget();
+
+            QCheckBox* samBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "samBox", dialog));
+            CHECK_OP(os, );
+            CHECK_SET_ERR(samBox != NULL, "samBox is NULL");
+            GTCheckBox::setChecked(os, samBox, false);
+            CHECK_OP(os, );
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils (os, sandBoxDir, "test_1186_2.ugenedb", GTFileDialogUtils::Save, GTGlobals::UseMouse));
+            CHECK_OP(os, );
+
+            QWidget* setResultFileNameButton = GTWidget::findWidget(os, "setResultFileNameButton", dialog);
+            CHECK_OP(os, );
+
+            GTWidget::click(os, setResultFileNameButton);
+            CHECK_OP(os, );
+
+            QLineEdit* resultFileNameEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "resultFileNameEdit", dialog));
+            CHECK_SET_ERR(resultFileNameEdit != NULL, "resultFileNameEdit is NULL");
+            CHECK_SET_ERR(resultFileNameEdit->text().contains("test_1186_2.ugenedb"), "Incorrect output file");
+
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new Scenario_test_1186_2()));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+
+    CHECK_SET_ERR( !os.hasError(), "Uncorrect value is available");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1189){
 //1) Open samples/FASTA/human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
