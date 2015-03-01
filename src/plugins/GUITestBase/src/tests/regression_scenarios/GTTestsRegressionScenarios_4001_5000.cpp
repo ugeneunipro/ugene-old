@@ -21,6 +21,7 @@
 
 #include "GTTestsRegressionScenarios.h"
 #include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
@@ -30,6 +31,7 @@
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsWorkflowDesigner.h"
 
+#include "api/GTAction.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
@@ -146,6 +148,41 @@ GUI_TEST_CLASS_DEFINITION(test_4030) {
     //Expected state: hint about reference sequence is hidden
     QWidget *label = GTWidget::findWidget(os, "refSeqWarning");
     CHECK_SET_ERR(!label->isVisible(), "Label is shown");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4045) {
+    //1. Open "murine.gb"
+    //2. Find ORFs
+    //3. Unload "murine.gb"
+    //4. Open "murine.gb"
+    //Current state: SAFE_POINT is triggered
+    GTLogTracer logTracer;
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+
+    class OkClicker : public Filler {
+    public:
+        OkClicker(U2OpStatus& _os) : Filler(_os, "ORFDialogBase"){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK(NULL != button, );
+            GTWidget::click(os, button);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os));
+    GTWidget::click(os, GTAction::button(os, "Find ORFs"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDocument::unloadDocument(os, "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsDocument::loadDocument(os, "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsLog::check(os, logTracer);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4064) {
