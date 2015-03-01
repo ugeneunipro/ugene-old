@@ -40,8 +40,10 @@
 #include "api/GTWidget.h"
 
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
+
 
 namespace U2 {
 
@@ -148,6 +150,24 @@ GUI_TEST_CLASS_DEFINITION(test_4030) {
     //Expected state: hint about reference sequence is hidden
     QWidget *label = GTWidget::findWidget(os, "refSeqWarning");
     CHECK_SET_ERR(!label->isVisible(), "Label is shown");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4036) {
+//     1. Open "_common_data/clustal/gap_column.aln".
+//     2. MSA sequence area context menu -> Edit -> Remove columns of gaps.
+//     3. Choose "Remove all gap-only columns".
+//     4. Click "Remove".
+//     UGENE 1.16-dev: it take ~15 minutes to remove gaps.
+//     UGENE 1.15.1: it takes ~5 seconds to remove gaps.
+
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/", "gap_column.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "remove_columns_of_gaps"));
+    GTUtilsDialog::waitForDialog(os, new DeleteGapsDialogFiller(os, 1));
+
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4045) {
