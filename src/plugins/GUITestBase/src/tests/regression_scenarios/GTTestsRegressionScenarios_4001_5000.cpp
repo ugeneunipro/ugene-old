@@ -40,6 +40,7 @@
 #include "api/GTWidget.h"
 
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
@@ -150,6 +151,21 @@ GUI_TEST_CLASS_DEFINITION(test_4030) {
     //Expected state: hint about reference sequence is hidden
     QWidget *label = GTWidget::findWidget(os, "refSeqWarning");
     CHECK_SET_ERR(!label->isVisible(), "Label is shown");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4034) {
+    //1. Open "samples/Genbank/murine.gb".
+    //2. Ctrl + N.
+    //There are two check boxes for switching the location type. Usually, when you choose between several actions (switch them), GUI shows you radio buttons, not check boxes.
+    //Check boxes are used to switch on/off an option but not to choose between options. In this dialog, you even can't switch off the check box when you click it. 
+    //It is a wrong behavior for this graphic primitive
+    //Solution: replace the check boxes with radio buttons.
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "exon", "annotation", "200..300",
+        sandBoxDir + "ann_test_4034.gb"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
+    GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4036) {
