@@ -286,7 +286,8 @@ void ExtractConsensusTask::run() {
     if(!cache->getConsensusAlgorithm()->getFactory()->isSequenceLikeResult()){
         keepGaps = true;
     }
-    foreach(QChar c, cache->getConsensusLine(true)){
+    QByteArray consensusLine = cache->getConsensusLine(true);
+    foreach(QChar c, consensusLine){
         if(c == '-' && !keepGaps){
             continue;
         }

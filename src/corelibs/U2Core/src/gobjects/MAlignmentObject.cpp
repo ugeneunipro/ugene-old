@@ -53,6 +53,7 @@ MAlignmentObject::MAlignmentObject(const QString& name, const U2EntityRef& msaRe
 }
 
 MAlignmentObject::~MAlignmentObject(){
+    emit si_invalidateAlignmentObject();
     delete memento;
 }
 

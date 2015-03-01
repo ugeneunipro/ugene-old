@@ -34,6 +34,7 @@ MSAEditorConsensusCache::MSAEditorConsensusCache(QObject* p, MAlignmentObject* o
 
     connect(aliObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
         SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
+    connect(aliObj, SIGNAL(si_invalidateAlignmentObject()), SLOT(sl_invalidateAlignmentObject()));
 
     curCacheSize = aliObj->getLength();
     updateMap.resize(curCacheSize);
@@ -63,7 +64,7 @@ void MSAEditorConsensusCache::sl_alignmentChanged(const MAlignment&, const MAlig
 }
 
 void MSAEditorConsensusCache::updateCacheItem(int pos) {
-    if(!updateMap.at(pos)) {
+    if(!updateMap.at(pos) && aliObj != NULL) {
         const MAlignment& ma = aliObj->getMAlignment();
         QString errorMessage = tr("Can not update consensus chache item");
         SAFE_POINT(pos >= 0 && pos < curCacheSize, errorMessage,);
@@ -108,6 +109,10 @@ QByteArray MSAEditorConsensusCache::getConsensusLine(bool withGaps) {
 void MSAEditorConsensusCache::sl_thresholdChanged(int newValue) {
     Q_UNUSED(newValue);
     updateMap.fill(false);
+}
+
+void MSAEditorConsensusCache::sl_invalidateAlignmentObject() {
+    aliObj = NULL;
 }
 
 }//namespace

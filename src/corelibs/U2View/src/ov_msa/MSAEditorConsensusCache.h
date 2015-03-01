@@ -56,6 +56,7 @@ public:
 private slots:
     void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&);
     void sl_thresholdChanged(int newValue);
+    void sl_invalidateAlignmentObject();
 
 private:
     struct CacheItem {
