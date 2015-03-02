@@ -193,6 +193,14 @@ void VectorNtiSequenceFormat::createCommentAnnotation(const QStringList &comment
     annTable->addAnnotation(f, "comment");
 }
 
+U2Qualifier VectorNtiSequenceFormat::createQualifier(const QString &qualifierName, const QString &qualifierValue, bool containsDoubleQuotes) const {
+    QString parsedQualifierValue = qualifierValue;
+    if ("label" == qualifierName) {
+        parsedQualifierValue.replace(QString("\\"), " ");
+    }
+    return EMBLGenbankAbstractDocument::createQualifier(qualifierName, parsedQualifierValue, containsDoubleQuotes);
+}
+
 U2FeatureType VectorNtiSequenceFormat::getFeatureType(const QString &typeString) const {
     if (proteinFeatureType2StringMap.values().contains(typeString)) {
         return proteinFeatureTypesMap.key(proteinFeatureType2StringMap.key(typeString, ProteinMiscFeature), U2FeatureTypes::MiscFeature);
@@ -349,8 +357,8 @@ void VectorNtiSequenceFormat::prepareQualifiersToWrite(QMap<AnnotationGroup, QLi
                     if (!labelExists) {
                         labelExists = true;
                         U2Qualifier labelQualifier(qualifier);
-                        labelQualifier.value.replace(" ", "\\");
-                        qualifiers << qualifier;
+                        labelQualifier.value.replace(" ", QString("\\"));
+                        qualifiers << labelQualifier;
                     }
                     continue;
                 }

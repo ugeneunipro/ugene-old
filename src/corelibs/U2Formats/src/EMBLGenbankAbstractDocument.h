@@ -75,6 +75,7 @@ protected:
     virtual bool isNcbiLikeFormat() const;
     virtual void createCommentAnnotation(const QStringList &comments, int sequenceLength, AnnotationTableObject *annTable) const;
     virtual U2FeatureType getFeatureType(const QString &typeString) const;
+    virtual U2Qualifier createQualifier(const QString &qualifierName, const QString &qualifierValue, bool containsDoubleQuotes) const;
 
     DocumentFormatId id;
     QString     formatName;

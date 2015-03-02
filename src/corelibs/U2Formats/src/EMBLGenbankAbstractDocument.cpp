@@ -601,10 +601,7 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
         } else {
             QString nameQStr = QString::fromLocal8Bit(qname, qnameLen);
             QString valQStr = QString::fromLocal8Bit(qval, qvalLen);
-            if (containsDoubleQuotes) {
-                valQStr = valQStr.replace("\"\"", "\"");
-            }
-            a->qualifiers.append(U2Qualifier(nameQStr, valQStr));
+            a->qualifiers << createQualifier(nameQStr, valQStr, containsDoubleQuotes);
         }
     }
     return f;
@@ -737,6 +734,14 @@ void EMBLGenbankAbstractDocument::createCommentAnnotation(const QStringList & /*
 
 U2FeatureType EMBLGenbankAbstractDocument::getFeatureType(const QString & /*typeString*/) const {
     return U2FeatureTypes::MiscFeature;
+}
+
+U2Qualifier EMBLGenbankAbstractDocument::createQualifier(const QString &qualifierName, const QString &qualifierValue, bool containsDoubleQuotes) const {
+    QString parsedQualifierValue = qualifierValue;
+    if (containsDoubleQuotes) {
+        parsedQualifierValue = parsedQualifierValue.replace("\"\"", "\"");
+    }
+    return U2Qualifier(qualifierName, parsedQualifierValue);
 }
 
 bool ParserState::hasKey( const char* key, int slen ) const {

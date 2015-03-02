@@ -39,6 +39,7 @@ public:
 private:
     QList<StrPair> processCommentKeys(QMultiMap<QString, QVariant> &tags);
     void createCommentAnnotation(const QStringList &comments, int sequenceLength, AnnotationTableObject *annTable) const;
+    U2Qualifier createQualifier(const QString &qualifierName, const QString &qualifierValue, bool containsDoubleQuotes) const;
     U2FeatureType getFeatureType(const QString &typeString) const;
     QString getFeatureTypeString(U2FeatureType featureType, bool isAmino) const;
     QStrStrMap parseComments(const QStringList &comments) const;
