@@ -321,9 +321,7 @@ void CreateAnnotationWidgetController::updateModel(bool forValidation) {
     model.description = w->getDescription();
     if (forValidation) {
         model.data.qualifiers.clear();
-        if (!model.description.isEmpty()) {
-            model.data.qualifiers << U2Qualifier(DESCRIPTION_QUALIFIER_KEY, model.description);
-        }
+        model.data.qualifiers << U2Qualifier(DESCRIPTION_QUALIFIER_KEY, model.description);
     }
 
     if (w->isExistingTableOptionSelected()) {
