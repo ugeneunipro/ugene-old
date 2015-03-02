@@ -473,12 +473,12 @@ void AnnotationsTreeView::sl_onAnnotationObjectAdded( AnnotationTableObject *obj
     connect( obj, SIGNAL( si_onAnnotationModified( const AnnotationModification & ) ),
         SLOT( sl_onAnnotationModified( const AnnotationModification & ) ) );
 
-    connect( obj, SIGNAL( si_onGroupCreated( const AnnotationGroup & ) ),
-        SLOT( sl_onGroupCreated( const AnnotationGroup & ) ) );
-    connect( obj, SIGNAL( si_onGroupRemoved( const AnnotationGroup &, const AnnotationGroup & ) ),
-        SLOT( sl_onGroupRemoved( const AnnotationGroup &, const AnnotationGroup & ) ) );
-    connect( obj, SIGNAL( si_onGroupRenamed( const AnnotationGroup & ) ),
-        SLOT( sl_onGroupRenamed( const AnnotationGroup & ) ) );
+//    connect( obj, SIGNAL( si_onGroupCreated( const AnnotationGroup & ) ),
+//        SLOT( sl_onGroupCreated( const AnnotationGroup & ) ) );
+//    connect( obj, SIGNAL( si_onGroupRemoved( const AnnotationGroup &, const AnnotationGroup & ) ),
+//        SLOT( sl_onGroupRemoved( const AnnotationGroup &, const AnnotationGroup & ) ) );
+//    connect( obj, SIGNAL( si_onGroupRenamed( const AnnotationGroup & ) ),
+//        SLOT( sl_onGroupRenamed( const AnnotationGroup & ) ) );
 
     connect( obj, SIGNAL( si_modifiedStateChanged( ) ),
         SLOT( sl_annotationObjectModifiedStateChanged( ) ) );
