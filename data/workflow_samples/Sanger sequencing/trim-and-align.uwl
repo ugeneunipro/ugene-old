@@ -179,6 +179,7 @@ try {
             }
         }
         wizard {
+            auto-run: true;
             name:"Trim and Align Sanger Reads";
             page {
                 id:1;
