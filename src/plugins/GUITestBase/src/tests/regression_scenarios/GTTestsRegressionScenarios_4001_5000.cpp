@@ -40,6 +40,7 @@
 #include "api/GTWidget.h"
 
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
@@ -259,7 +260,19 @@ GUI_TEST_CLASS_DEFINITION(test_4064) {
     GTFileDialog::openFile(os, sandBoxDir, "test_4064.bam");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4065) {
+/* 1. Open _common_data/scenarios/_regression/4065/example_bam.bam
+ * 2. Check log for error: "No bam index given, preparing sequential import"
+*/
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_4065.ugenedb"));
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4065/example_bam.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    bool hasMessage = l.checkMessage("No bam index given");
+    CHECK_SET_ERR(false == hasMessage , "Error message is found. Bam index file not found.");
+}
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2
-
