@@ -448,7 +448,7 @@ void ProjectViewImpl::enable() {
     MWMDIManager* mdi = AppContext::getMainWindow()->getMDIManager();
     connect(mdi, SIGNAL(si_windowAdded(MWMDIWindow*)), SLOT(sl_onMDIWindowAdded(MWMDIWindow*)));
 
-    assert(w == NULL);
+    SAFE_POINT(w == NULL, "Project widget is already initialized", );
     w = new ProjectViewWidget();
 
     saveSelectedDocsAction = new QAction(QIcon(":ugene/images/save_selected_documents.png"), tr("save_selected_modified_docs_action"), w);

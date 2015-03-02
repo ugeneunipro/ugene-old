@@ -893,6 +893,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0012);
     REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0013);
+    REGISTER_TEST(GUITest_common_scenarios_project_filtering::test_0014);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/Sequence view/

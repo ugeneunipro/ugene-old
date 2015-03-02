@@ -443,6 +443,51 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
         && "Sequence content" == filterModel->index(2, 0).data().toString(), "Unexpected project filter groups");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0014) {
+    // 1. Open "data/samples/Genbank/murine.gb"
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+
+    // 2. Open "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    // Expected state: Project filter clear button is invisible
+    QWidget *clearButton = GTWidget::findWidget(os, "project filter clear button");
+    CHECK_SET_ERR(!clearButton->isVisible(), "Project filter clear button is unexpectedly visible");
+
+    // 3. Type to the project filter field "polyprotein"
+    GTUtilsProjectTreeView::openView(os);
+    QLineEdit *nameFilterEdit = GTWidget::findExactWidget<QLineEdit *>(os, "nameFilterEdit");
+    GTLineEdit::setText(os, nameFilterEdit, "polyprotein");
+
+    // Expected state: Project filter clear button is visible
+    CHECK_SET_ERR(clearButton->isVisible(), "Project filter clear button is unexpectedly invisible");
+    GTGlobals::sleep(3000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    CHECK_SET_ERR(clearButton->isVisible(), "Project filter clear button is unexpectedly invisible");
+
+    // 4. Click the clear button
+    GTWidget::click(os, clearButton);
+
+    // Expected state: project filter field is empty, clear button is invisible
+    CHECK_SET_ERR(nameFilterEdit->text().isEmpty(), "Project filter clear button hasn't wiped filter");
+    CHECK_SET_ERR(!clearButton->isVisible(), "Project filter clear button is unexpectedly visible");
+
+    // 5. Type to the project filter field "AAA"
+    GTLineEdit::setText(os, nameFilterEdit, "AAA");
+
+    // Expected state: Project filter clear button is visible
+    CHECK_SET_ERR(clearButton->isVisible(), "Project filter clear button is unexpectedly invisible");
+
+    // 6. Remove typed word using a backspace
+    for (int i = 0; i < 3; ++i) {
+        GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["backspace"]);
+        GTGlobals::sleep(100);
+    }
+
+    // Expected state: Project filter clear button is invisible
+    CHECK_SET_ERR(!clearButton->isVisible(), "Project filter clear button is unexpectedly visible");
+}
+
 } // GUITest_common_scenarios_project_filtering
 
 } // U2

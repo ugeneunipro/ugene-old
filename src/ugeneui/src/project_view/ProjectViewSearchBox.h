@@ -26,6 +26,7 @@
 
 class QLabel;
 class QMovie;
+class QToolButton;
 
 namespace U2 {
 
@@ -42,13 +43,19 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void paintEvent(QPaintEvent *event);
 
+private slots:
+    void sl_filterCleared();
+    void sl_textChanged(const QString &text);
+
 private:
-    void updateProgressLabelPosition();
+    void initStyle();
+    void updateInternalControlsPosition();
 
     bool firstShow;
     QLabel *progressLabel;
     QMovie *progressMovie;
     QLabel *searchIconLabel;
+    QToolButton *clearButton;
 };
 
 }
