@@ -813,6 +813,70 @@ GUI_TEST_CLASS_DEFINITION(test_1079){
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1080) {
+    class OkClicker2 : public Filler {
+    public:
+        OkClicker2(U2OpStatus& _os) : Filler(_os, "EditMarkerDialog"){}
+        virtual void run() {
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
+            GTKeyboardDriver::keySequence(os, "0.001");
+
+            GTUtilsDialog::clickButtonBox(os, QApplication::activeModalWidget(), QDialogButtonBox::Ok);
+            GTGlobals::sleep(2000);
+        }
+    };
+
+    class OkClicker : public Filler {
+    public:
+        OkClicker(U2OpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
+        virtual void run() {
+            GTUtilsDialog::waitForDialog(os, new OkClicker2(os));
+
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+
+            QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os, "table", w));
+            GTMouseDriver::moveTo(os, GTTableView::getCellPosition(os, table, 0,0));
+            GTMouseDriver::click(os);
+
+            QToolButton* editButton = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "editButton", w));
+            CHECK_SET_ERR( editButton != NULL, "editButton not found!");
+            GTWidget::click(os, editButton);
+
+            
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK(NULL != button, );
+            GTWidget::click(os, button);
+            GTGlobals::sleep(2000);
+        }
+    };
+
+    GTFileDialog::openFile(os, testDir + "_common_data/regression/1080", "blast+marker_new.uwl");
+
+    GTUtilsWorkflowDesigner::click(os, "Sequence Marker");
+
+    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"markerTable"));
+    GTMouseDriver::moveTo(os, GTTableView::getCellPosition(os, table, 0,0));
+    GTMouseDriver::click(os);
+
+    QToolButton* editButton = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "editButton"));
+    CHECK_SET_ERR( editButton != NULL, "editButton not found!");
+
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os));
+    GTWidget::click(os, editButton);
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/Genbank/sars.gb");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1083) {
 //1. open files data\samples\FASTA\human_T1.fa
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
