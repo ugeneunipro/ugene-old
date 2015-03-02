@@ -74,7 +74,7 @@ Task::ReportResult ReverseSequenceTask::report( ) {
                    setError("Splitting sequence range worked wrong"), ReportResult_Finished);
 
     int size = regionsForward.size();
-    U2Region middleRegion;
+    U2Region middleRegion = regionsForward.first();
     for (int i = 0 ; i < (size - 1)/2; i++) {
         QByteArray buffer = seqObj->getSequenceData(regionsForward[i]);
 
