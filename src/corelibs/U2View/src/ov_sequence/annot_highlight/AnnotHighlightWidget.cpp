@@ -37,8 +37,8 @@
 
 namespace U2 {
 
-const QString ShowAllAnnotTypesLabel::SHOW_ALL_ANNOT_TYPES = QObject::tr("Show all annotation types");
-const QString ShowAllAnnotTypesLabel::SHOW_ANNOT_TYPES_FOR_SEQ = QObject::tr("Show types for the sequence only");
+const QString ShowAllAnnotTypesLabel::SHOW_ALL_ANNOT_TYPES = QObject::tr("Show all annotation names");
+const QString ShowAllAnnotTypesLabel::SHOW_ANNOT_TYPES_FOR_SEQ = QObject::tr("Show names for the sequence only");
 
 ShowAllAnnotTypesLabel::ShowAllAnnotTypesLabel()
 {
@@ -89,7 +89,7 @@ void AnnotHighlightWidget::initLayout() {
     setNoAnnotTypesLabelValue();
     noAnnotTypesLabel->setStyleSheet("margin-left: 2px;");
 
-    annotTreeTitle = new QLabel(tr("Select an annotation type:"));
+    annotTreeTitle = new QLabel(tr("Select an annotation name:"));
 
     // Tree
     QVBoxLayout* treeLayout = new QVBoxLayout();
@@ -109,7 +109,7 @@ void AnnotHighlightWidget::initLayout() {
     settingsLayout->setSpacing(0);
     settingsLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
-    settingsTitle = new QLabel(tr("Configure the annotation type:"));
+    settingsTitle = new QLabel(tr("Configure the annotations:"));
     annotSettingsWidget = new AnnotHighlightSettingsWidget();
 
     settingsLayout->addWidget(settingsTitle);
