@@ -330,6 +330,7 @@ void SmithWatermanDialog::addAnnotationWidget()
     addPatternContentQualifier = new QCheckBox(
         tr( "Add qualifier with corresponding pattern subsequences to result annotations" ),
         annotationsWidget );
+    addPatternContentQualifier->setObjectName("addPatternContentQualifierCheck");
     l->addWidget( addPatternContentQualifier );
 
     annotationsWidget->setLayout(l);

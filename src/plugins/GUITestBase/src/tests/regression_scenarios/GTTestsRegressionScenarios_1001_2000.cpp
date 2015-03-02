@@ -1742,6 +1742,38 @@ GUI_TEST_CLASS_DEFINITION(test_1219) {
     CHECK_SET_ERR(expectedNames == names, QString("There are unexpected sequence names in the msa: expect '%1', got '%2'").arg(expectedNames.join(", ")).arg(names.join(", ")));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1220){
+//    1) Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+//    2) Run Smith-waterman search using:
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+//    pattern: "ATCGAT"; note that pattern length is 6.
+            GTTextEdit::setText(os, GTWidget::findExactWidget<QTextEdit *>(os, "teditPattern", dialog), "ATCGAT");
+//    min: 100%
+            QSpinBox* spinScorePercent = GTWidget::findExactWidget<QSpinBox*>(os, "spinScorePercent", dialog);
+            GTSpinBox::setValue(os, spinScorePercent, 100);
+//    {input-output tab} "Add qualifier...": checked
+            GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "tabWidget", dialog), 1);
+            QCheckBox* addPatternContentQualifierCheck = GTWidget::findExactWidget<QCheckBox*>(os, "addPatternContentQualifierCheck", dialog);
+            GTCheckBox::setChecked(os, addPatternContentQualifierCheck, true);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SmithWatermanDialogFiller(os, new Scenario));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: misc_feature annotations created with pattern subsequence length qualifiers set to 6
+    QString val = GTUtilsAnnotationsTreeView::getQualifierValue(os, "pattern_match_len", "Misc. Feature");
+    CHECK_SET_ERR(val == "6", "unexpected value: " + val);
+//    Current state: "pattern_subseq_length" qualifiers created and set to 5.
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1229) {
     // 1. Open two sequences with same names in two documents.For instance, you can copy a file with a sequence to do that.
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1229", "1.txt");
