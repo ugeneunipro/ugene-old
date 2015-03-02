@@ -68,7 +68,7 @@ const QString GenomeAlignerTask::OPTION_READS_MEMORY_SIZE("reads_mem_size");
 const QString GenomeAlignerTask::OPTION_SEQ_PART_SIZE("seq_part_size");
 
 GenomeAlignerTask::GenomeAlignerTask( const DnaAssemblyToRefTaskSettings& _settings, bool _justBuildIndex )
-: DnaAssemblyToReferenceTask(_settings, TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled, _justBuildIndex),
+: DnaAssemblyToReferenceTask(_settings, TaskFlags_NR_FOSE_COSC | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled, _justBuildIndex),
   loadDbiTask(NULL),
   createIndexTask(NULL),
   readTask(NULL),
@@ -317,7 +317,7 @@ void GenomeAlignerTask::setupCreateIndexTask() {
 
 Task::ReportResult GenomeAlignerTask::report() {
     TaskTimeInfo inf=getTimeInfo();
-    if (hasError()) {
+    if (hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
 
