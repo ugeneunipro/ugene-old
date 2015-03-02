@@ -37,6 +37,18 @@
 
 namespace U2 {
 
+MSAGraphCalculationTask::MSAGraphCalculationTask(MAlignmentObject* msa, int msaLength, int width, int height)
+    : BackgroundTask<QPolygonF>(tr("Render overview"), TaskFlag_None),
+      msa(msa),
+      msaLength( msaLength ),
+      width( width ),
+      height( height )
+{
+    connect(msa, SIGNAL(si_invalidateAlignmentObject()), this, SLOT(cancel()));
+    connect(msa, SIGNAL(si_startMsaUpdating()), this, SLOT(cancel()));
+    connect(msa, SIGNAL(si_alignmentChanged(MAlignment,MAlignmentModInfo)), this, SLOT(cancel()));
+}
+
 void MSAGraphCalculationTask::run() {
     emit si_calculationStarted();
     constructPolygon(result);

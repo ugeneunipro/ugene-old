@@ -159,6 +159,7 @@ public:
     void releaseState();
 
 signals:
+    void si_startMsaUpdating();
     void si_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);
     void si_alignmentBecomesEmpty(bool isEmpty);
     void si_completeStateChanged(bool complete);

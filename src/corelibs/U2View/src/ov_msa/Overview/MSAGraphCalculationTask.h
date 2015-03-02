@@ -41,12 +41,7 @@ class MSAHighlightingScheme;
 class MSAGraphCalculationTask : public BackgroundTask<QPolygonF> {
     Q_OBJECT
 public:
-    MSAGraphCalculationTask(MAlignmentObject* msa, int msaLength, int width, int height)
-        : BackgroundTask<QPolygonF>(tr("Render overview"), TaskFlag_None),
-          msa(msa),
-          msaLength( msaLength ),
-          width( width ),
-          height( height ){}
+    MSAGraphCalculationTask(MAlignmentObject* msa, int msaLength, int width, int height);
 
     void run();
 signals:

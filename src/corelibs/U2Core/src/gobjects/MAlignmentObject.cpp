@@ -77,6 +77,7 @@ const MAlignment & MAlignmentObject::getMAlignment() const {
 void MAlignmentObject::updateCachedMAlignment(const MAlignmentModInfo &mi, const QList<qint64> &removedRowIds)
 {
     ensureDataLoaded();
+    emit si_startMsaUpdating();
 
     MAlignment maBefore = cachedMAlignment;
     QString oldName = maBefore.getName();
