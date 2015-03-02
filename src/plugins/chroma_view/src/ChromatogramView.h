@@ -152,8 +152,6 @@ private:
     qreal           bLinearTransformTrace;
     qreal           kLinearTransformBaseCallsOfEdited;
     qreal           bLinearTransformBaseCallsOfEdited;
-    float           k;
-    float           b;
     qreal           xBaseCallsOfEdited;
     qreal           yBaseCallsOfEdited;
     qreal           wBaseCallsOfEdited;

@@ -436,8 +436,8 @@ void ChromatogramView::sl_showAllTraces()
 ChromatogramViewRenderArea::ChromatogramViewRenderArea(ChromatogramView* p, const DNAChromatogram& _chroma) :
     GSequenceLineViewRenderArea(p),
     linePen(Qt::gray, 1, Qt::DotLine),
-    k(0),
-    b(0)
+    kLinearTransformTrace(0.0),
+    bLinearTransformTrace(0.0)
 {
     setMinimumHeight(200);
     font.setFamily("Courier");
@@ -547,25 +547,30 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
     if(!sel.isEmpty()) {
         //draw current selection
         //selection base on trace transform coef
-        k = kLinearTransformTrace;
-        b = bLinearTransformTrace;
+        bLinearTransformTrace = bLinearTransformTrace;
         QPen linePenSelection(Qt::darkGray, 1, Qt::SolidLine);
         p.setPen(linePenSelection);
         p.setRenderHint(QPainter::Antialiasing, false);
 
         U2Region self=sel.first();
         int i1=self.startPos,i2=self.endPos()-1;
+        unsigned int startBaseCall = kLinearTransformTrace * chroma.baseCalls[i1];
+        unsigned int endBaseCall = kLinearTransformTrace * chroma.baseCalls[i2];
         if (i1!=0)  {
-            p.drawLine((k*chroma.baseCalls[i1]+b+k*chroma.baseCalls[i1-1]+b)/2,0,
-                (k*chroma.baseCalls[i1]+b+k*chroma.baseCalls[i1-1]+b)/2,pd->height());
+            unsigned int prevBaseCall = kLinearTransformTrace * chroma.baseCalls[i1-1];
+            p.drawLine((startBaseCall + prevBaseCall) / 2 + bLinearTransformTrace, 0,
+                (startBaseCall+ prevBaseCall)/2 + bLinearTransformTrace, pd->height());
         }else {
-            p.drawLine(k*chroma.baseCalls[i1]+b-charWidth/2,0,k*chroma.baseCalls[i1]+b-charWidth/2,pd->height());
+            p.drawLine(startBaseCall + bLinearTransformTrace - charWidth / 2, 0,
+                startBaseCall + bLinearTransformTrace - charWidth / 2, pd->height());
         }
         if (i2!=chroma.seqLength-1) {
-            p.drawLine((k*chroma.baseCalls[i2]+b+k*chroma.baseCalls[i2+1]+b)/2,0,
-                (k*chroma.baseCalls[i2]+b+k*chroma.baseCalls[i2+1]+b)/2,pd->height());
+            unsigned int nextBaseCall = kLinearTransformTrace * chroma.baseCalls[i2+1];
+            p.drawLine((endBaseCall + nextBaseCall) / 2 + bLinearTransformTrace, 0,
+                (endBaseCall + nextBaseCall) / 2 + bLinearTransformTrace, pd->height());
         } else {
-            p.drawLine(k*chroma.baseCalls[i2]+b+charWidth/2,0, k*chroma.baseCalls[i2]+b+charWidth/2,pd->height());
+            p.drawLine(endBaseCall + bLinearTransformTrace + charWidth / 2, 0,
+                endBaseCall + bLinearTransformTrace + charWidth / 2, pd->height());
         }
     }
 }
@@ -577,18 +582,16 @@ void ChromatogramViewRenderArea::setAreaHeight(int newH) {
 
 qint64 ChromatogramViewRenderArea::coordToPos(int c) const {
     const U2Region& visibleRange = view->getVisibleRange();
-    if (visibleRange.startPos+visibleRange.length==chroma.seqLength
-        && c>k*chroma.baseCalls[chroma.seqLength-1]+b)
-    {
+    int lastBaseCall = kLinearTransformTrace * chroma.baseCalls[chroma.seqLength-1] + bLinearTransformTrace;
+    if (visibleRange.startPos + visibleRange.length == chroma.seqLength && c > lastBaseCall) {
         return chroma.seqLength;
     }
-    int m = 0;
-    while ((m+visibleRange.startPos<chroma.seqLength-1)
-        && ((k*chroma.baseCalls[visibleRange.startPos+m]+b+k*chroma.baseCalls[visibleRange.startPos+m+1]+b)/2<c))
-    {
-        m+=1;
+    int nearestPos = visibleRange.startPos;
+    while (nearestPos < chroma.seqLength - 1
+    && ((kLinearTransformTrace * chroma.baseCalls[nearestPos] + kLinearTransformTrace * chroma.baseCalls[nearestPos+1])/2 + bLinearTransformTrace < c)) {
+        nearestPos++;
     }
-    return visibleRange.startPos+m;
+    return nearestPos;
 }
 
 int ChromatogramViewRenderArea::posToCoord(qint64 p, bool useVirtualSpace) const {
@@ -596,7 +599,7 @@ int ChromatogramViewRenderArea::posToCoord(qint64 p, bool useVirtualSpace) const
     if (!useVirtualSpace && !visibleRange.contains(p) && p!=visibleRange.endPos()) {
         return -1;
     }
-    int res = k*chroma.baseCalls[visibleRange.startPos+p]+b;
+    int res = kLinearTransformTrace*chroma.baseCalls[visibleRange.startPos+p]+bLinearTransformTrace;
     assert(useVirtualSpace || res <= width());
     return res;
 }
