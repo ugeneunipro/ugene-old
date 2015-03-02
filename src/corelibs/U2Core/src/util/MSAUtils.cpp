@@ -143,6 +143,7 @@ void MSAUtils::appendSequenceToAlignmentRow(MAlignment& ma, int rowIndex, int af
         U2Region readRegion(startPosition, qMin(blockReadFromBD, sequenceLength - startPosition));
         QByteArray readedData = seq.getSequenceData(readRegion);
         ma.appendChars(rowIndex, afterPos, readedData.constData(), readedData.size());
+        afterPos += readRegion.length;
         CHECK_OP(os, );
     }
 }
