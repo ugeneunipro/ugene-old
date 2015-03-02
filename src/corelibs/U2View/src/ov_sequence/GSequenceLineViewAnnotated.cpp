@@ -259,65 +259,59 @@ QList<AnnotationSelectionData> GSequenceLineViewAnnotated::selectAnnotationByCoo
     return res;
 }
 
-void GSequenceLineViewAnnotated::mousePressEvent( QMouseEvent *me ) {
-    setFocus( );
-    const QPoint p = toRenderAreaPoint( me->pos( ) );
-    const Qt::KeyboardModifiers km = QApplication::keyboardModifiers( );
-    const bool singleBaseSelectionMode = km.testFlag( Qt::AltModifier );
+void GSequenceLineViewAnnotated::mousePressEvent(QMouseEvent *me) {
+    setFocus();
+    const QPoint p = toRenderAreaPoint(me->pos());
+    const Qt::KeyboardModifiers km = QApplication::keyboardModifiers();
+    const bool singleBaseSelectionMode = km.testFlag(Qt::AltModifier);
     bool annotationEvent = false; // true if mouse pressed in some annotation area
-    if ( renderArea->rect( ).contains( p ) && me->button( ) == Qt::LeftButton
-        && !singleBaseSelectionMode )
-    {
-        const Qt::KeyboardModifiers usedModifiers = me->modifiers( );
-        const bool expandAnnotationSelectionToSequence = usedModifiers.testFlag( Qt::ShiftModifier );
-        if ( !( usedModifiers.testFlag( Qt::ControlModifier )
-            || expandAnnotationSelectionToSequence ) )
-        {
-            ctx->getAnnotationsSelection( )->clear( );
+    if (renderArea->rect().contains(p) && me->button() == Qt::LeftButton && !singleBaseSelectionMode) {
+        const Qt::KeyboardModifiers usedModifiers = me->modifiers();
+        const bool expandAnnotationSelectionToSequence = usedModifiers.testFlag(Qt::ShiftModifier);
+        if (!(usedModifiers.testFlag(Qt::ControlModifier) || expandAnnotationSelectionToSequence)) {
+            ctx->getAnnotationsSelection()->clear();
         }
-        QList<AnnotationSelectionData> selected = selectAnnotationByCoord( p );
-        annotationEvent = !selected.isEmpty( );
-        if ( annotationEvent ) {
-            AnnotationSelectionData *asd = &selected.first( );
-            if ( selected.size( ) > 1 ) {
-                AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
+        QList<AnnotationSelectionData> selected = selectAnnotationByCoord(p);
+        annotationEvent = !selected.isEmpty();
+        if (annotationEvent) {
+            AnnotationSelectionData *asd = &selected.first();
+            if (selected.size() > 1) {
+                AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
                 QMenu popup;
-                foreach ( const AnnotationSelectionData &as, selected ) {
-                    const AnnotationData aData = as.annotation.getData( );
+                foreach (const AnnotationSelectionData &as, selected) {
+                    const AnnotationData aData = as.annotation.getData();
                     SAFE_POINT(as.getSelectedRegions().size() == 1, "Invalid selection: only one region is possible!", );
-                    const U2Region &r = as.getSelectedRegions().first();
-                    QString text = aData.name
-                        + QString( " [%1, %2]" ).arg( QString::number( r.startPos + 1 ) )
-                        .arg( QString::number( r.endPos( ) ) );
-                    AnnotationSettings *asettings = asr->getAnnotationSettings( aData );
-                    const QIcon icon = GUIUtils::createSquareIcon( asettings->color, 10 );
-                    popup.addAction( icon, text );
+                    const U2Region r = as.getSelectedRegions().first();
+                    const QString text = aData.name + QString(" [%1, %2]").arg(r.startPos + 1).arg(r.endPos());
+                    AnnotationSettings *asettings = asr->getAnnotationSettings(aData);
+                    const QIcon icon = GUIUtils::createSquareIcon(asettings->color, 10);
+                    popup.addAction(icon, text);
                 }
-                QAction *a = popup.exec( QCursor::pos( ) );
+                QAction *a = popup.exec(QCursor::pos());
                 if ( NULL == a ) {
                     asd = NULL;
                 } else {
-                    int idx = popup.actions( ).indexOf( a );
+                    int idx = popup.actions().indexOf(a);
                     asd = &selected[idx];
                 }
             }
             if ( NULL != asd ) { //add to annotation selection
-                AnnotationSelection *asel = ctx->getAnnotationsSelection( );
+                AnnotationSelection *asel = ctx->getAnnotationsSelection();
                     foreach (int loc, asd->locationIdxList) {
                         if (asel->contains( asd->annotation, loc)) {
-                            asel->removeFromSelection( asd->annotation, loc);
+                            asel->removeFromSelection(asd->annotation, loc);
                         } else {
-                            asel->addToSelection( asd->annotation, loc);
+                            asel->addToSelection(asd->annotation, loc);
                         }
                     }
 
                 //select region
-                if ( expandAnnotationSelectionToSequence ) {
+                if (expandAnnotationSelectionToSequence) {
                     QVector<U2Region> regionsToSelect;
-                    foreach ( const AnnotationSelectionData &asd, asel->getSelection( ) ) {
-                        AnnotationTableObject *aobj = asd.annotation.getGObject( );
-                        const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects( true );
-                        if ( !aObjs.contains( aobj ) ) {
+                    foreach (const AnnotationSelectionData &asd, asel->getSelection()) {
+                        AnnotationTableObject *aobj = asd.annotation.getGObject();
+                        const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects(true);
+                        if (!aObjs.contains(aobj)) {
                             continue;
                         }
                         regionsToSelect << asd.getSelectedRegions();
@@ -336,7 +330,7 @@ void GSequenceLineViewAnnotated::mousePressEvent( QMouseEvent *me ) {
     }
     // a hint to parent class: if mouse action leads to annotation selection -> skip selection handling for mouse press
     ignoreMouseSelectionEvents = annotationEvent;
-    GSequenceLineView::mousePressEvent( me );
+    GSequenceLineView::mousePressEvent(me);
     ignoreMouseSelectionEvents = false;
 }
 
