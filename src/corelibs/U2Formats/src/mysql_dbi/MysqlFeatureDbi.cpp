@@ -498,10 +498,11 @@ void MysqlFeatureDbi::createFeature(U2Feature& feature, const QList<U2FeatureKey
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
 
-    static const QString queryStringf("INSERT INTO Feature(type, parent, root, name, sequence, strand, start, len, end, nameHash) "
-                                      "VALUES(:type, :parent, :root, :name, :sequence, :strand, :start, :len, :end, :nameHash)");
+    static const QString queryStringf("INSERT INTO Feature(class, type, parent, root, name, sequence, strand, start, len, end, nameHash) "
+                                      "VALUES(:class, :type, :parent, :root, :name, :sequence, :strand, :start, :len, :end, :nameHash)");
     U2SqlQuery qf(queryStringf, db, os);
-    qf.bindInt32(":type", feature.featureClass);
+    qf.bindInt32(":class", feature.featureClass);
+    qf.bindInt32(":type", feature.featureType);
     qf.bindDataId(":parent", feature.parentFeatureId);
     qf.bindDataId(":root", feature.rootFeatureId);
     qf.bindString(":name", feature.name);

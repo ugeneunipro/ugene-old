@@ -602,6 +602,7 @@ bool ProjectViewModel::restoreFolderItemFromRecycleBin(Document *doc, const QStr
 
     const QString originPath = con.oDbi->getFolderPreviousPath(oldPath, os);
     CHECK_OP(os, false);
+    CHECK(!originPath.isEmpty(), false); // the folder doesn't have a previous path
 
     if (!folders[doc]->hasFolder(Folder::getFolderParentPath(originPath))) {
         return false;
@@ -1407,8 +1408,14 @@ void ProjectViewModel::sl_documentImported() {
         insertFolder(doc, resultPath);
     }
     foreach (GObject *importedObj, task->getImportedObjects()) {
-        doc->addObject(importedObj);
-        insertObject(doc, importedObj, resultPath);
+        if (Q_LIKELY(NULL == doc->getObjectById(importedObj->getEntityRef().entityId))) {
+            doc->addObject(importedObj);
+            insertObject(doc, importedObj, resultPath);
+        } else {                    // object hasn't been imported atomically
+            delete importedObj;     // and it detected on a previous merging phase
+            coreLog.error("Imported object is included unexpectedly to a document");
+            assert(false);
+        }
     }
     emit si_documentContentChanged(doc);
 }

@@ -25,6 +25,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GHints.h>
 #include <U2Core/Timer.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2FeatureUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -168,6 +169,9 @@ GObject * AnnotationTableObject::clone(const U2DbiRef &ref, U2OpStatus &os, cons
 
     GHintsDefaultImpl gHints(getGHintsMap());
     gHints.setAll(hints);
+
+    DbiOperationsBlock opBlock(ref, os);
+    Q_UNUSED(opBlock);
 
     AnnotationTableObject *cln = new AnnotationTableObject( getGObjectName( ), ref, gHints.getMap() );
     cln->setIndexInfo( getIndexInfo( ) );
