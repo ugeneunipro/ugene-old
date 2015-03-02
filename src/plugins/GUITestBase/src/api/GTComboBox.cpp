@@ -48,7 +48,12 @@ void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index,
     int comboCount = comboBox->count();
     GT_CHECK(index>=0 && index<comboCount, "invalid index");
 
-    GTWidget::setFocus(os, comboBox);
+    if(comboBox->isEditable()){
+        QPoint p = QPoint(comboBox->rect().width() - 10, 10);
+        GTWidget::click(os, comboBox, Qt::LeftButton, p);
+    }else{
+        GTWidget::setFocus(os, comboBox);
+    }
     GTGlobals::sleep();
 
     switch (method){
