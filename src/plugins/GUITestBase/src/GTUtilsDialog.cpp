@@ -299,6 +299,16 @@ void GTUtilsDialog::checkAllFinished(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "isButtonEnabled"
+bool GTUtilsDialog::isButtonEnabled(U2OpStatus& os, QWidget* dialog, QDialogButtonBox::StandardButton button) {
+    QDialogButtonBox* box = buttonBox(os, dialog);
+    GT_CHECK_RESULT(box != NULL, "buttonBox is NULL", false);
+    QPushButton* pushButton = box->button(button);
+    GT_CHECK_RESULT(pushButton != NULL, "pushButton is NULL", false);
+    return pushButton->isEnabled();
+}
+#undef GT_METHOD_NAME
+
 void GTUtilsDialog::cleanup(U2OpStatus &os, CleanupSettings s) {
     foreach (GUIDialogWaiter* waiter, pool) {
         waiter->stopTimer();

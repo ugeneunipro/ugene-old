@@ -793,6 +793,26 @@ GUI_TEST_CLASS_DEFINITION(test_1078){ //Need to add the test
     CHECK_SET_ERR(l.hasError(), "Error in log expected");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1079){
+    //1. Select {Tools->BLAST->BLAST Search}
+    //2. Enter a database path with spaces
+    //Expected state: the line edit is highlighted and has tooltip that the path contains spaces. The Search button is disabled
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QLineEdit *path = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "databasePathLineEdit"));
+            GTLineEdit::setText(os, path, sandBoxDir + "test_1079/s p a c e s/human_T1formatDB.log");
+            bool isDisabled = !GTUtilsDialog::isButtonEnabled(os, QApplication::activeModalWidget(), QDialogButtonBox::Ok);
+            CHECK_SET_ERR(isDisabled, "Search button unexpectedly enabled");
+            GTUtilsDialog::clickButtonBox(os, QApplication::activeModalWidget(), QDialogButtonBox::Cancel);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(os, new Scenario()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::BLAST_MENU << ToolsMenu::BLAST_SEARCH));
+    GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1083) {
 //1. open files data\samples\FASTA\human_T1.fa
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");

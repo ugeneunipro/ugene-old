@@ -157,6 +157,8 @@ public:
 
     static void startHangChecking(U2OpStatus &os);
     static void stopHangChecking();
+    
+    static bool isButtonEnabled(U2OpStatus& os, QWidget* dialog, QDialogButtonBox::StandardButton button);
 
 private:
     static void checkAllFinished(U2OpStatus &os);
