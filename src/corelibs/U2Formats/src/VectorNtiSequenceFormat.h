@@ -37,6 +37,7 @@ public:
     virtual void storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os);
 
 private:
+    QList<StrPair> processCommentKeys(QMultiMap<QString, QVariant> &tags);
     void createCommentAnnotation(const QStringList &comments, int sequenceLength, AnnotationTableObject *annTable) const;
     U2FeatureType getFeatureType(const QString &typeString) const;
     QString getFeatureTypeString(U2FeatureType featureType, bool isAmino) const;

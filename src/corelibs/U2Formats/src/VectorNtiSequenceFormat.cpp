@@ -161,6 +161,24 @@ void VectorNtiSequenceFormat::storeEntry(IOAdapter *io, const QMap<GObjectType, 
     }
 }
 
+QList<GenbankPlainTextFormat::StrPair> VectorNtiSequenceFormat::processCommentKeys(QMultiMap<QString, QVariant> &tags) {
+    QList<StrPair> res;
+    QStringList comments;
+
+    while (tags.contains(DNAInfo::COMMENT)) {
+        const QVariant v = tags.take(DNAInfo::COMMENT);
+        CHECK_EXT(v.canConvert<QStringList>(), coreLog.info("Unexpected COMMENT section"), res);
+        comments << v.value<QStringList>();
+    }
+
+    foreach (QString comment, comments) {
+        CHECK_BREAK(!comment.contains("Vector_NTI_Display_Data"));
+        res << qMakePair(DNAInfo::COMMENT, comment.replace("\n", "\n" + QString(VAL_OFF, ' ')));
+    }
+
+    return res;
+}
+
 void VectorNtiSequenceFormat::createCommentAnnotation(const QStringList &comments, int sequenceLength, AnnotationTableObject *annTable) const {
     const QStrStrMap parsedComments = parseComments(comments);
     CHECK(!parsedComments.isEmpty(), );

@@ -715,17 +715,8 @@ QList<GenbankPlainTextFormat::StrPair> GenbankPlainTextFormat::formatKeywords(co
             res<< qMakePair(key, ri.referencesRecord);
         }
     }
-    {
-        const QString key = DNAInfo::COMMENT;
-        while (tags.contains(key)) {
-            const QVariant v = tags.take(key);
-            CHECK_EXT_BREAK(v.canConvert<QStringList>(), coreLog.info("Unexpected Genbank COMMENT section"));
-            const QStringList comments = v.value<QStringList>();
-            foreach (QString comment, comments) {
-                res << qMakePair(key, comment.replace("\n", "\n" + QString(VAL_OFF, ' ')));
-            }
-        }
-    }
+
+    res << processCommentKeys(tags);
 
     QMapIterator<QString, QVariant> it(tags);
     while (it.hasNext())
@@ -745,6 +736,19 @@ QList<GenbankPlainTextFormat::StrPair> GenbankPlainTextFormat::formatKeywords(co
             }
         } else {
             assert(0);
+        }
+    }
+    return res;
+}
+
+QList<GenbankPlainTextFormat::StrPair> GenbankPlainTextFormat::processCommentKeys(QMultiMap<QString, QVariant> &tags) {
+    QList<StrPair> res;
+    while (tags.contains(DNAInfo::COMMENT)) {
+        const QVariant v = tags.take(DNAInfo::COMMENT);
+        CHECK_EXT(v.canConvert<QStringList>(), coreLog.info("Unexpected Genbank COMMENT section"), res);
+        const QStringList comments = v.value<QStringList>();
+        foreach (QString comment, comments) {
+            res << qMakePair(DNAInfo::COMMENT, comment.replace("\n", "\n" + QString(VAL_OFF, ' ')));
         }
     }
     return res;

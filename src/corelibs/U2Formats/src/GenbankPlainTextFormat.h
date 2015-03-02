@@ -56,6 +56,7 @@ protected:
     void prepareMultiline(QString& line, int spacesOnLineStart, bool lineBreakOnlyOnSpace = true, bool newLineAtTheEnd = true, int maxLineLen = 79);
     void writeQualifier(const QString& name, const QString& val, IOAdapter* io, U2OpStatus& si, const char* spaceLine);
     QList<StrPair> formatKeywords(const QVariantMap &varMap, bool withLocus = false);
+    virtual QList<StrPair> processCommentKeys(QMultiMap<QString, QVariant> &tags);
 
     bool isNcbiLikeFormat() const;
     void createCommentAnnotation(const QStringList &comments, int sequenceLength, AnnotationTableObject *annTable) const;
