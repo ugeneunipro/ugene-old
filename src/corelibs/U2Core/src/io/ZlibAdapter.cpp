@@ -145,14 +145,23 @@ qint64 GzipUtil::uncompress(char* outBuff, qint64 outSize)
         int ret = inflate(&strm, Z_SYNC_FLUSH);
         assert(ret != Z_STREAM_ERROR);  /* state not clobbered */
         switch (ret) {
-case Z_NEED_DICT:
-case Z_DATA_ERROR:
-case Z_MEM_ERROR:
-    return -1;
-case Z_BUF_ERROR:
-case Z_STREAM_END:
-    curPos += outSize - strm.avail_out;
-    return outSize - strm.avail_out;
+            case Z_NEED_DICT:
+            case Z_DATA_ERROR:
+            case Z_MEM_ERROR:
+                return -1;
+            case Z_STREAM_END:
+            {
+                qint64 readBytes = 0;
+                readBytes = outSize - strm.avail_out;
+                inflateReset(&strm);
+                inflateInit2(&strm, 32 + 15);
+
+                return readBytes;
+            }
+            case Z_BUF_ERROR:
+            case Z_FINISH:
+                curPos += outSize - strm.avail_out;
+                return outSize - strm.avail_out;
         }
         if (strm.avail_out != 0 && strm.avail_in != 0) {
             assert(0);
