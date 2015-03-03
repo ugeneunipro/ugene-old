@@ -91,7 +91,7 @@ MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar)
     connect(ui->getCollapseModel(), SIGNAL(toggled()), SLOT(sl_modelChanged()));
     connect(editor, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_referenceSeqChanged(qint64)));
 
-    nhBar->setEnabled(false);
+    nhBar->setVisible(false);
     updateActions();
 
     QObject *labelsParent = new QObject(this);
@@ -179,7 +179,7 @@ void MSAEditorNameList::updateScrollBar() {
     nhBar->setMaximum(nSteps - 1);
     nhBar->setValue(0);
 
-    nhBar->setEnabled(nSteps > 1);
+    nhBar->setVisible(nSteps > 1);
     connect(nhBar, SIGNAL(valueChanged(int)), SLOT(sl_nameBarMoved(int)));
 }
 
@@ -626,7 +626,7 @@ QRect MSAEditorNameList::calculateTextRect(const U2Region& yRange, bool selected
     int textY = yRange.startPos + MARGIN_TEXT_TOP;
     int textH = yRange.length - MARGIN_TEXT_TOP - MARGIN_TEXT_BOTTOM;
     QRect textRect(textX, textY, textW, textH);
-    if (nhBar->isEnabled()) {
+    if (nhBar->isVisible()) {
         QFontMetrics fm(getFont(selected));
         int stepSize = fm.width('W');
         int dx = stepSize * nhBar->value();
@@ -669,7 +669,7 @@ void MSAEditorNameList::drawContent(QPainter& p) {
     }
 
     int startSeq = seqArea->getFirstVisibleSequence();
-    int lastSeq = seqArea->getLastVisibleSequence(true);
+    int lastSeq = qBound(startSeq, seqArea->getLastVisibleSequence(true) + 1, seqArea->getNumDisplayedSequences() - 1);
 
     if (labels) {
         labels->setObjectName("");

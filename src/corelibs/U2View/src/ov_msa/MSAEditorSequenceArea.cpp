@@ -829,7 +829,7 @@ void MSAEditorSequenceArea::updateHScrollBar() {
     shBar->disconnect(this);
 
     if (isAlignmentEmpty()) {
-        shBar->setDisabled(true);
+        shBar->setVisible(false);
     } else {
         int numVisibleBases = getNumVisibleBases(false);
         int alignmentLen = editor->getAlignmentLen();
@@ -843,7 +843,7 @@ void MSAEditorSequenceArea::updateHScrollBar() {
         shBar->setSingleStep(1);
         shBar->setPageStep(numVisibleBases);
 
-        shBar->setDisabled(numVisibleBases == alignmentLen);
+        shBar->setVisible(numVisibleBases != alignmentLen);
     }
 
     connect(shBar, SIGNAL(valueChanged(int)), SLOT(sl_onHScrollMoved(int)));
@@ -853,7 +853,7 @@ void MSAEditorSequenceArea::updateVScrollBar() {
     svBar->disconnect(this);
 
     if (isAlignmentEmpty()) {
-        svBar->setDisabled(true);
+        svBar->setVisible(false);
     } else {
         int start = getFirstVisibleSequence();
         int numVisibleSequences = getNumVisibleSequences(false);
@@ -868,7 +868,7 @@ void MSAEditorSequenceArea::updateVScrollBar() {
         svBar->setSingleStep(1);
         svBar->setPageStep(numVisibleSequences);
 
-        svBar->setDisabled(numVisibleSequences == nSeqs);
+        svBar->setVisible(numVisibleSequences != nSeqs);
     }
 
     connect(svBar, SIGNAL(valueChanged(int)), SLOT(sl_onVScrollMoved(int)));
