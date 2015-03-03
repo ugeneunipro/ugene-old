@@ -198,6 +198,10 @@ void MAlignmentObject::releaseState(){
 
 
 GObject* MAlignmentObject::clone(const U2DbiRef& dstDbiRef, U2OpStatus& os, const QVariantMap &hints) const {
+    DbiOperationsBlock opBlock(dstDbiRef, os);
+    Q_UNUSED(opBlock);
+    CHECK_OP(os, NULL);
+
     GHintsDefaultImpl gHints(getGHintsMap());
     gHints.setAll(hints);
     const QString dstFolder = gHints.get(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();

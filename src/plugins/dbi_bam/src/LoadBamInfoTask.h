@@ -39,7 +39,7 @@ public:
     BAMInfo(const BAMInfo& src) : header(src.header), selected(src.selected), index(src.index), _hasIndex(src._hasIndex), unmappedSelected(src.unmappedSelected) {}
 
     inline QList<bool>& getSelected() { return selected; }
-    inline bool hasIndex() { return _hasIndex; }
+    inline bool hasIndex() const { return _hasIndex; }
     inline bool isReferenceSelected(int id) { if(id == -1) return unmappedSelected; else return selected.at(id); }
     inline Index& getIndex() { return index; }
     inline const Header& getHeader() { return header; }

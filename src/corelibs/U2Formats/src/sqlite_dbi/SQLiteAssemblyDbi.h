@@ -66,7 +66,6 @@ public:
     */
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const U2DataId& assemblyId, const QByteArray& name, U2OpStatus& os);
 
-
     /**
         Return max packed row at the given coordinate
         'Intersect' here means that region(leftmost pos, rightmost pos) intersects with 'r'
@@ -76,12 +75,18 @@ public:
     /** Count 'length of assembly' - position of the rightmost base of all reads */
     virtual qint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os);
 
-
     /**
         Creates new empty assembly object. Reads iterator can be NULL
         Requires: U2DbiFeature_WriteAssembly feature support
     */
     virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder,  U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os);
+
+    /**
+        Creates indexes for reads tables.
+        This method mustn't be called inside transaction.
+        Requires: U2DbiFeature_WriteAssembly feature support
+    */
+    virtual void finalizeAssemblyObject(U2Assembly &assembly, U2OpStatus &os);
 
     /**
         Removes all assembly data and tables.

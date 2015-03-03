@@ -169,6 +169,13 @@ QByteArray RawDataUdrSchema::readAllContent(const U2EntityRef &objRef, U2OpStatu
 void RawDataUdrSchema::cloneObject(const U2EntityRef &srcObjRef, const U2DbiRef &dstDbiRef,
                                    const QString &dstFolder, U2RawData &dstObject, U2OpStatus &os)
 {
+    DbiOperationsBlock srcOpBlock(srcObjRef.dbiRef, os);
+    Q_UNUSED(srcOpBlock);
+    CHECK_OP(os, );
+    DbiOperationsBlock dstOpBlock(dstDbiRef, os);
+    Q_UNUSED(dstOpBlock);
+    CHECK_OP(os, );
+
     // Prepare dbi connection
     DbiHelper src(srcObjRef.dbiRef, os);
     CHECK_OP(os, );

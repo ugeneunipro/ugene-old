@@ -234,7 +234,6 @@ void SingleTableAssemblyAdapter::dropReadsTables(U2OpStatus &os) {
 void SingleTableAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) {
     SingleTablePackAlgorithmAdapter packAdapter(db, readsTable);
     AssemblyPackAlgorithm::pack(packAdapter, stat, os);
-    createReadsIndexes(os);
 }
 
 void SingleTableAssemblyAdapter::calculateCoverage(const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os) {

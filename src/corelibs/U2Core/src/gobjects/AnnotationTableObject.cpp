@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QCoreApplication>
+#include <QCoreApplication>
 
 #include <U2Core/AnnotationTableObjectConstraints.h>
 #include <U2Core/DocumentModel.h>
@@ -165,6 +165,10 @@ void AnnotationTableObject::removeAnnotations( const QList<Annotation> &annotati
 }
 
 GObject * AnnotationTableObject::clone(const U2DbiRef &ref, U2OpStatus &os, const QVariantMap &hints ) const {
+    DbiOperationsBlock opBlock(ref, os);
+    Q_UNUSED(opBlock);
+    CHECK_OP(os, NULL);
+
     ensureDataLoaded();
 
     GHintsDefaultImpl gHints(getGHintsMap());

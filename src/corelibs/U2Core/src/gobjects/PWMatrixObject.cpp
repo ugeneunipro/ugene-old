@@ -23,6 +23,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GHints.h>
 #include <U2Core/RawDataUdrSchema.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 
 #include "../util/PMatrixSerializeUtils.h"
@@ -84,6 +85,10 @@ const PWMatrix & PWMatrixObject::getMatrix() const {
 }
 
 GObject * PWMatrixObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints) const {
+    DbiOperationsBlock opBlock(dstDbiRef, os);
+    Q_UNUSED(opBlock);
+    CHECK_OP(os, NULL);
+
     GHintsDefaultImpl gHints(getGHintsMap());
     gHints.setAll(hints);
     const QString dstFolder = gHints.get(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();

@@ -202,6 +202,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/shared_db/ImportFileToDatabaseTask.h \
            src/tasks/shared_db/ImportObjectToDatabaseTask.h \
            src/tasks/shared_db/ImportToDatabaseTask.h \
+           src/util/AssemblyImporter.h \
            src/util/DatatypeSerializeUtils.h \
            src/util/FileAndDirectoryUtils.h \
            src/util/FilesIterator.h \
@@ -394,6 +395,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/shared_db/ImportFileToDatabaseTask.cpp \
            src/tasks/shared_db/ImportObjectToDatabaseTask.cpp \
            src/tasks/shared_db/ImportToDatabaseTask.cpp \
+           src/util/AssemblyImporter.cpp \
            src/util/DatatypeSerializeUtils.cpp \
            src/util/FileAndDirectoryUtils.cpp \
            src/util/FilesIterator.cpp \

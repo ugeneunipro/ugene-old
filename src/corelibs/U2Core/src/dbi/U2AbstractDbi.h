@@ -113,6 +113,8 @@ public:
         }
     }
 
+    bool isTransactionActive() const { return false; }
+
 protected:
     U2DbiState                  state;
     U2DbiId                     dbiId;
@@ -216,6 +218,10 @@ public:
     virtual void createAssemblyObject(U2Assembly&, const QString&,  U2DbiIterator<U2AssemblyRead>*, U2AssemblyReadsImportInfo&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
     }
+
+    virtual void finalizeAssemblyObject(U2Assembly & /*assembly*/, U2OpStatus &os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
+        }
 
     virtual void removeAssemblyData(const U2DataId&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);

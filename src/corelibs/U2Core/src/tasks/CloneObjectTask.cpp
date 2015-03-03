@@ -60,15 +60,9 @@ CloneObjectTask::~CloneObjectTask() {
 }
 
 void CloneObjectTask::run() {
-    DbiOperationsBlock opBlock(dstDbiRef, stateInfo);
-    Q_UNUSED(opBlock);
-    CHECK_OP(stateInfo, );
-
     DbiConnection con(dstDbiRef, stateInfo);
     CHECK_OP(stateInfo, );
     SAFE_POINT_EXT(NULL != con.dbi, setError(tr("Error! No DBI")), );
-    U2ObjectDbi *oDbi = con.dbi->getObjectDbi();
-    SAFE_POINT_EXT(NULL != oDbi, setError(tr("Error! No object DBI")), );
 
     QVariantMap hints;
     hints[DocumentFormat::DBI_FOLDER_HINT] = dstFolder;

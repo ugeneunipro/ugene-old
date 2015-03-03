@@ -212,22 +212,17 @@ inline void checkOperationStatus(const U2OpStatus &status) {
     }
 }
 
-GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(QString dbiFilePath, QString refName, int refLength) {
+GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(const QString &dbiFilePath, const QString &refName, int refLength) :
+    importer(status)
+{
     //TODO: support several assemblies.
     dbiHandle = QSharedPointer<DbiConnection>(new DbiConnection(U2DbiRef(SQLITE_DBI_ID, dbiFilePath), true, status));
     checkOperationStatus(status);
     sqliteDbi = dbiHandle->dbi;
     wDbi = sqliteDbi->getAssemblyDbi();
 
-    QStringList folders = sqliteDbi->getObjectDbi()->getFolders(status);
-    checkOperationStatus(status);
-    if (!folders.contains("/")) {
-        sqliteDbi->getObjectDbi()->createFolder("/", status);
-        checkOperationStatus(status);
-    }
     assembly.visualName = refName;
-    U2AssemblyReadsImportInfo importInfo;
-    wDbi->createAssemblyObject(assembly, "/", NULL, importInfo, status);
+    importer.createAssembly(sqliteDbi->getDbiRef(), U2ObjectDbi::ROOT_FOLDER, assembly);
     checkOperationStatus(status);
 
     U2IntegerAttribute lenAttr;
@@ -252,7 +247,7 @@ void GenomeAlignerDbiWriter::write(SearchQuery *seq, SAType offset) {
     reads.append(read);
     if (reads.size() >= readBunchSize) {
         BufferedDbiIterator<U2AssemblyRead> readsIterator(reads);
-        wDbi->addReads(assembly.id, &readsIterator, status);
+        importer.addReads(&readsIterator);
         checkOperationStatus(status);
         reads.clear();
     }
@@ -261,13 +256,13 @@ void GenomeAlignerDbiWriter::write(SearchQuery *seq, SAType offset) {
 void GenomeAlignerDbiWriter::close() {
     if (reads.size() > 0) {
         BufferedDbiIterator<U2AssemblyRead> readsIterator(reads);
-        wDbi->addReads(assembly.id, &readsIterator, status);
+        importer.addReads(&readsIterator);
         checkOperationStatus(status);
         reads.clear();
     }
 
-    U2AssemblyPackStat packStatus;
-    wDbi->pack(assembly.id, packStatus, status);
+    U2AssemblyReadsImportInfo info;
+    importer.packReads(info);
     checkOperationStatus(status);
     sqliteDbi->flush(status);
 }

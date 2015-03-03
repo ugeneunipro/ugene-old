@@ -19,15 +19,16 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AssemblyImporter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GHints.h>
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2AttributeUtils.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "AssemblyObject.h"
@@ -109,7 +110,9 @@ U2EntityRef AssemblyObject::dbi2dbiClone(const AssemblyObject *const srcObj, con
     U2Assembly assembly;
     assembly.visualName = srcObj->getGObjectName();
     CloneInfo info(readsCount, os);
-    dstAssemblyDbi->createAssemblyObject(assembly, dstFolder, iter, info, os);
+
+    AssemblyImporter importer(os);
+    importer.createAssembly(dstDbiRef, dstFolder, iter, info, assembly);
     CHECK_OP(os, U2EntityRef());
 
     // copy attributes

@@ -114,6 +114,8 @@ public:
 
     virtual bool isReadOnly() const;
 
+    bool isTransactionActive() const;
+
     static const int BIND_PARAMETERS_LIMIT;
 
 private:

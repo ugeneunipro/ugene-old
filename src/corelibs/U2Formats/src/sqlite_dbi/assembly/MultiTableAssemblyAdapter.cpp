@@ -476,7 +476,6 @@ void MultiTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2As
             break;
         }
     }
-    createReadsIndexes(os);
 
     if (packIsOn && !os.hasError()) {
         ii.packStat.readsCount = ii.nReads;
@@ -556,12 +555,6 @@ void MultiTableAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) {
     quint64 t0 = GTimer::currentTimeMicros();
     packAdapter.migrateAll(os);
     perfLog.trace(QString("Assembly: table migration pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
-
-
-    t0 = GTimer::currentTimeMicros();
-    // if new tables created during the pack algorithm -> create indexes
-    createReadsIndexes(os);
-    perfLog.trace(QString("Assembly: re-indexing pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 
     flushTables(os);
 }

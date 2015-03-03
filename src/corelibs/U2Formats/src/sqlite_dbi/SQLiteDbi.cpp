@@ -204,6 +204,10 @@ bool SQLiteDbi::isReadOnly() const {
     return SQLiteUtils::isDatabaseReadOnly(db, "main") == 1;
 }
 
+bool SQLiteDbi::isTransactionActive() const {
+    return !db->transactionStack.isEmpty();
+}
+
 static int isEmptyCallback(void *o, int argc, char ** /*argv*/, char ** /*column*/) {
     int* res = (int*)o;
     *res = argc;

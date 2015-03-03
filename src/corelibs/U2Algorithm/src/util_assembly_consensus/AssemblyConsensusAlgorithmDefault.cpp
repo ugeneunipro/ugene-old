@@ -71,7 +71,6 @@ QByteArray AssemblyConsensusAlgorithmDefault::getConsensusRegion(const U2Region 
                 char c = readIterator.nextLetter();
                 fi.addToCharFrequency(c);
             } else {
-                coreLog.trace(QString("Internal: read sequence iterator has no more items at pos %1 of %2").arg(i).arg(length));
                 break;
             }
         }

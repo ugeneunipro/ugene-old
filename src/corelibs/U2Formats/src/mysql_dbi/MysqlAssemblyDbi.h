@@ -68,7 +68,6 @@ public:
     */
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const U2DataId& assemblyId, const QByteArray& name, U2OpStatus& os);
 
-
     /**
         Return max packed row at the given coordinate
         'Intersect' here means that region(leftmost pos, rightmost pos) intersects with 'r'
@@ -78,13 +77,18 @@ public:
     /** Count 'length of assembly' - position of the rightmost base of all reads */
     virtual qint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os);
 
-
     /**
         Creates new empty assembly object. Reads iterator can be NULL
         Requires: U2DbiFeature_WriteAssembly feature support
         WARNING: this function will commit your transaction right before reads will be inserted.
     */
     virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder,  U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os);
+
+    /**
+        Corrects the object type in the 'Object' table or removes it if @os has an error or a cancel flag.
+        Requires: U2DbiFeature_WriteAssembly feature support
+    */
+    virtual void finalizeAssemblyObject(U2Assembly &assembly, U2OpStatus &os);
 
     /**
         Removes all assembly data and tables.
@@ -125,6 +129,7 @@ private:
 
     void removeTables(const U2DataId &assemblyId, U2OpStatus& os);
     void removeAssemblyEntry(const U2DataId &assemblyId, U2OpStatus& os);
+    void correctAssemblyType(U2Assembly &assembly, U2OpStatus &os);
 
     /** Return assembly storage adapter for the given assembly */
     MysqlAssemblyAdapter* getAdapter(const U2DataId& assemblyId, U2OpStatus& os);

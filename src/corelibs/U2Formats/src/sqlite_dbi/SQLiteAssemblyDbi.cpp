@@ -229,9 +229,18 @@ void SQLiteAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString
         addReads(a, it, importInfo, os);
         SAFE_POINT_OP(os,);
     }
+}
+
+void SQLiteAssemblyDbi::finalizeAssemblyObject(U2Assembly &assembly, U2OpStatus &os) {
+    const quint64 t0 = GTimer::currentTimeMicros();
+
+    AssemblyAdapter* a = getAdapter(assembly.id, os);
+    SAFE_POINT_OP(os,);
 
     a->createReadsIndexes(os);
     SAFE_POINT_OP(os,);
+
+    perfLog.trace(QString("Assembly: re-indexing pack time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000 * 1000)));
 }
 
 void SQLiteAssemblyDbi::removeAssemblyData(const U2DataId &assemblyId, U2OpStatus &os) {
@@ -243,7 +252,6 @@ void SQLiteAssemblyDbi::removeAssemblyData(const U2DataId &assemblyId, U2OpStatu
     CHECK_OP(os, );
     removeAssemblyEntry(assemblyId, os);
 }
-
 
 void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& os) {
     SQLiteTransaction t(db, os);

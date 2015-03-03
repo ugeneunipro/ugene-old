@@ -360,6 +360,8 @@ public:
 
     virtual bool isReadOnly() const = 0;
 
+    virtual bool isTransactionActive() const = 0;
+
 protected:
     /** Stores to database the following properties:
         U2DbiOptions::APP_MIN_COMPATIBLE_VERSION */

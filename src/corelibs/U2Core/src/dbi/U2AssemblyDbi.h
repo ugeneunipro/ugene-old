@@ -150,11 +150,21 @@ public:
         If iterator is not NULL adapter can automatically try to pack reads. If pack is performed, the corresponding
         structure is filled with  pack statistics. Assembly object gets its id assigned.
         Folder 'folder' must exist in database.
+        The created object must be finalized.
 
         Requires: U2DbiFeature_WriteAssembly feature support
     */
     virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder,
         U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& importInfo, U2OpStatus& os) = 0;
+
+    /**
+        Does some additional actions that should be done after object creating and reads adding.
+        The set of actions is provider-dependent
+        In common case this method shouldn't be called inside transaction.
+
+        Requires: U2DbiFeature_WriteAssembly feature support
+    */
+    virtual void finalizeAssemblyObject(U2Assembly &assembly, U2OpStatus &os) = 0;
 
     /**
         Removes all assembly data and tables.

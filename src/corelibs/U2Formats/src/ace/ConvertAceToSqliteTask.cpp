@@ -19,9 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QFile>
+#include <QFile>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/AssemblyImporter.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -132,10 +133,6 @@ QMap<U2Sequence, U2Assembly> ConvertAceToSqliteTask::getImportedObjects() const 
 qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
     qint64 totalReadsImported = 0;
 
-    U2AssemblyDbi* assDbi = dbi->getAssemblyDbi();
-    SAFE_POINT(assDbi, tr("Assembly DBI is NULL"), totalReadsImported);
-    U2CrossDatabaseReferenceDbi* crossDbi = dbi->getCrossDatabaseReferenceDbi();
-    SAFE_POINT(crossDbi, tr("Cross DBI is NULL"), totalReadsImported);
     U2SequenceDbi* seqDbi = dbi->getSequenceDbi();
     SAFE_POINT(seqDbi, tr("Sequence DBI is NULL"), totalReadsImported);
 
@@ -150,9 +147,7 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
     while (iterator->hasNext()) {
         CHECK(!isCanceled(), totalReadsImported);
 
-        DbiOperationsBlock opBlock(dstDbiRef, stateInfo);
-        Q_UNUSED(opBlock);
-        CHECK_OP(stateInfo, totalReadsImported);
+        TmpDbiObjects tmpObjects(dstDbiRef, os);
 
         U2Assembly assembly;
 
@@ -170,12 +165,20 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
         seqDbi->createSequenceObject(reference, U2ObjectDbi::ROOT_FOLDER, stateInfo);
         CHECK_OP(stateInfo, totalReadsImported);
         importedReferences.insert(countImportedAssembly, reference);
+        tmpObjects.objects << reference.id;
+
+        QVariantMap refHints;
+        refHints[U2SequenceDbiHints::EMPTY_SEQUENCE] = true;
+        refHints[U2SequenceDbiHints::UPDATE_SEQUENCE_LENGTH] = true;
+        seqDbi->updateSequenceData(reference.id, U2_REGION_MAX, aceReference.data, refHints, stateInfo);
+        CHECK_OP(stateInfo, totalReadsImported);
 
         assembly.visualName = aceAssembly.getName();
         assembly.referenceId = reference.id;
 
         U2AssemblyReadsImportInfo & importInfo = importInfos[countImportedAssembly];
-        assDbi->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, NULL, importInfo, stateInfo);
+        AssemblyImporter importer(stateInfo);
+        importer.createAssembly(dstDbiRef, U2ObjectDbi::ROOT_FOLDER, NULL, importInfo, assembly);
         CHECK_OP(stateInfo, totalReadsImported);
 
         importInfo.packed = false;
@@ -185,14 +188,10 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
         QList<U2AssemblyRead> reads = aceAssembly.getReads();
 
         BufferedDbiIterator<U2AssemblyRead> readsIterator(reads);
-        assDbi->addReads(assembly.id, &readsIterator, stateInfo);
+        importer.addReads(&readsIterator);
         CHECK_OP(stateInfo, totalReadsImported);
 
-        QVariantMap refHints;
-        refHints[U2SequenceDbiHints::EMPTY_SEQUENCE] = true;
-        refHints[U2SequenceDbiHints::UPDATE_SEQUENCE_LENGTH] = true;
-        seqDbi->updateSequenceData(reference.id, U2_REGION_MAX, aceReference.data, refHints, stateInfo);
-        CHECK_OP(stateInfo, totalReadsImported);
+        tmpObjects.objects.removeAll(reference.id);
 
         totalReadsImported += aceAssembly.getReadsCount();
         countImportedAssembly++;

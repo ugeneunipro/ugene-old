@@ -215,6 +215,10 @@ void U2SequenceObject::replaceRegion(const U2Region& region, const DNASequence& 
 }
 
 GObject * U2SequenceObject::clone(const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hints) const {
+    DbiOperationsBlock opBlock(dbiRef, os);
+    Q_UNUSED(opBlock);
+    CHECK_OP(os, NULL);
+
     DbiConnection srcCon(this->entityRef.dbiRef, os);
     CHECK_OP(os, NULL);
     DbiConnection dstCon(dbiRef, true, os);

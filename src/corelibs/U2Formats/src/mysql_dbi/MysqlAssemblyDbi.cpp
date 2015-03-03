@@ -19,57 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#include "MysqlAssemblyDbi.h"
-#include "MysqlObjectDbi.h"
-#include "util/MysqlSingleTableAssemblyAdapter.h"
-#include "util/MysqlMultiTableAssemblyAdapter.h"
-
-#include <QtCore/QVarLengthArray>
+#include <QVarLengthArray>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U2AssemblyUtils.h>
-#include <U2Core/U2SqlHelpers.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SqlHelpers.h>
 
 #include <U2Formats/BAMUtils.h>
 
+#include "MysqlAssemblyDbi.h"
+#include "MysqlObjectDbi.h"
+#include "util/MysqlMultiTableAssemblyAdapter.h"
+#include "util/MysqlSingleTableAssemblyAdapter.h"
+
 namespace U2 {
-
-class MysqlAssemblyConsistencyGuard {
-public:
-    MysqlAssemblyConsistencyGuard(MysqlDbi *dbi, U2Assembly &assembly, U2OpStatus &os) :
-        dbi(dbi),
-        assembly(assembly),
-        os(os)
-    {
-    }
-
-    ~MysqlAssemblyConsistencyGuard() {
-        if (os.hasError()) {
-            removeAssembly();
-        } else {
-            finalizeAssembly();
-        }
-    }
-
-private:
-    void removeAssembly() {
-        finalizeAssembly();
-        dbi->getMysqlObjectDbi()->removeObject(assembly.id, true, os);
-        SAFE_POINT_OP(os, );
-    }
-
-    void finalizeAssembly() {
-        dbi->getMysqlObjectDbi()->updateObjectType(assembly, os);
-        SAFE_POINT_OP(os, );
-        assembly.id = U2DbiUtils::toU2DataId(U2DbiUtils::toDbiId(assembly.id), U2Type::Assembly, U2DbiUtils::toDbExtra(assembly.id));
-    }
-
-    MysqlDbi *dbi;
-    U2Assembly &assembly;
-    U2OpStatus &os;
-};
 
 MysqlAssemblyDbi::MysqlAssemblyDbi(MysqlDbi* dbi) : U2AssemblyDbi(dbi), MysqlChildDbiCommon(dbi) {
 }
@@ -242,9 +208,6 @@ void MysqlAssemblyDbi::createAssemblyObject(U2Assembly& assembly,
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
 
-    MysqlAssemblyConsistencyGuard guard(dbi, assembly, os);
-    Q_UNUSED(guard);
-
     U2Object fakeObject;
     fakeObject.visualName = assembly.visualName;
     fakeObject.trackModType = assembly.trackModType;
@@ -252,7 +215,7 @@ void MysqlAssemblyDbi::createAssemblyObject(U2Assembly& assembly,
     dbi->getMysqlObjectDbi()->createObject(fakeObject, folder, U2DbiObjectRank_TopLevel, os);
     SAFE_POINT_OP(os, );
 
-    assembly.id = fakeObject.id;
+    assembly.id = U2DbiUtils::toU2DataId(U2DbiUtils::toDbiId(fakeObject.id), U2Type::Assembly, U2DbiUtils::toDbExtra(fakeObject.id));
     assembly.dbiId = fakeObject.dbiId;
     assembly.version = fakeObject.version;
 
@@ -284,6 +247,23 @@ void MysqlAssemblyDbi::createAssemblyObject(U2Assembly& assembly,
     SAFE_POINT_OP(os, );
 }
 
+void MysqlAssemblyDbi::finalizeAssemblyObject(U2Assembly &assembly, U2OpStatus &os) {
+    U2OpStatusImpl correctTypeOs;
+    U2OpStatusImpl removeObjectOs;
+
+    correctAssemblyType(assembly, correctTypeOs);
+
+    if (os.isCoR() || correctTypeOs.isCoR()) {
+        dbi->getMysqlObjectDbi()->removeObject(assembly.id, true, removeObjectOs);
+    }
+
+    if (!os.isCoR() && correctTypeOs.isCoR()) {
+        os.setError(correctTypeOs.getError());
+    } else if (!os.isCoR() && removeObjectOs.isCoR()) {
+        os.setError(removeObjectOs.getError());
+    }
+}
+
 void MysqlAssemblyDbi::removeAssemblyData(const U2DataId &assemblyId, U2OpStatus &os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
@@ -293,7 +273,6 @@ void MysqlAssemblyDbi::removeAssemblyData(const U2DataId &assemblyId, U2OpStatus
     CHECK_OP(os, );
     removeAssemblyEntry(assemblyId, os);
 }
-
 
 void MysqlAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& os) {
     MysqlTransaction t(db, os);
@@ -351,6 +330,11 @@ void MysqlAssemblyDbi::removeAssemblyEntry(const U2DataId &assemblyId, U2OpStatu
     U2SqlQuery q(queryString, db, os);
     q.bindDataId(":object", assemblyId);
     q.execute();
+}
+
+void MysqlAssemblyDbi::correctAssemblyType(U2Assembly &assembly, U2OpStatus &os) {
+    dbi->getMysqlObjectDbi()->updateObjectType(assembly, os);
+    SAFE_POINT_OP(os, );
 }
 
 void MysqlAssemblyDbi::addReads(const U2DataId& assemblyId, U2DbiIterator<U2AssemblyRead>* it, U2OpStatus& os) {

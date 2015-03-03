@@ -236,6 +236,10 @@ bool MysqlDbi::isReadOnly() const {
     return features.contains(U2DbiFeature_GlobalReadOnly);
 }
 
+bool MysqlDbi::isTransactionActive() const {
+    return !db->transactionStack.isEmpty();
+}
+
 void MysqlDbi::createHandle(const QHash<QString, QString> &props) {
     const QString url = props.value(U2DbiOptions::U2_DBI_OPTION_URL);
     const QString connectionName = url + "_" + QString::number((qint64)QThread::currentThread());

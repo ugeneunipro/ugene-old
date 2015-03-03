@@ -23,6 +23,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GHints.h>
 #include <U2Core/RawDataUdrSchema.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -116,6 +117,10 @@ const PhyTree& PhyTreeObject::getTree() const {
 }
 
 GObject* PhyTreeObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints) const {
+    DbiOperationsBlock opBlock(dstDbiRef, os);
+    Q_UNUSED(opBlock);
+    CHECK_OP(os, NULL);
+
     ensureDataLoaded();
 
     GHintsDefaultImpl gHints(getGHintsMap());

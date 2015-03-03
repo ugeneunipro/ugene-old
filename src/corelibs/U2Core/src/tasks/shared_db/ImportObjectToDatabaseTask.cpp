@@ -43,32 +43,19 @@ ImportObjectToDatabaseTask::ImportObjectToDatabaseTask(GObject* object, const U2
 }
 
 void ImportObjectToDatabaseTask::run() {
-    DbiOperationsBlock opBlock(dstDbiRef, stateInfo);
-    Q_UNUSED(opBlock);
-    CHECK_OP(stateInfo, );
-
     DbiConnection con(dstDbiRef, stateInfo);
     CHECK_OP(stateInfo, );
     SAFE_POINT_EXT(NULL != con.dbi, setError(tr("Error! No DBI")), );
     U2ObjectDbi *oDbi = con.dbi->getObjectDbi();
     SAFE_POINT_EXT(NULL != oDbi, setError(tr("Error! No object DBI")), );
 
+    QVariantMap hints;
+    hints[DocumentFormat::DBI_FOLDER_HINT] = U2DbiUtils::makeFolderCanonical(dstFolder);
+
     CHECK_EXT(!object.isNull(), setError(tr("The object has been removed")), );
-    dstObject = object->clone(dstDbiRef, stateInfo);
+    dstObject = object->clone(dstDbiRef, stateInfo, hints);
     CHECK_OP(stateInfo, );
     dstObject->moveToThread(QCoreApplication::instance()->thread());
-
-    // TODO: clone to the destination folder
-    QStringList folders = oDbi->getFolders(stateInfo);
-    CHECK_OP(stateInfo, );
-
-    if (!folders.contains(dstFolder)) {
-        oDbi->createFolder(dstFolder, stateInfo);
-        CHECK_OP(stateInfo, );
-    }
-
-    oDbi->moveObjects(QList<U2DataId>() << dstObject->getEntityRef().entityId, U2ObjectDbi::ROOT_FOLDER, dstFolder, stateInfo);
-    CHECK_OP(stateInfo, );
 }
 
 GObject * ImportObjectToDatabaseTask::takeResult() {

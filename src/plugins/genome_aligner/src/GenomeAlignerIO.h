@@ -22,23 +22,24 @@
 #ifndef _GENOME_ALIGNER_IO_H_
 #define _GENOME_ALIGNER_IO_H_
 
+#include <QSharedPointer>
+#include <QString>
 
-#include "GenomeAlignerSearchQuery.h"
-#include "GenomeAlignerIndexPart.h"
-
+#include <U2Core/AssemblyImporter.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/MAlignment.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/StreamSequenceReader.h>
 #include <U2Formats/StreamSequenceWriter.h>
+
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
 
-#include <QtCore/QString>
-#include <QtCore/QSharedPointer>
+#include "GenomeAlignerSearchQuery.h"
+#include "GenomeAlignerIndexPart.h"
 
 namespace U2 {
 
@@ -168,7 +169,7 @@ private:
 
 class GenomeAlignerDbiWriter : public GenomeAlignerWriter {
 public:
-    GenomeAlignerDbiWriter(QString dbiFilePath, QString refName, int refLength);
+    GenomeAlignerDbiWriter(const QString &dbiFilePath, const QString &refName, int refLength);
     inline void write(SearchQuery *seq, SAType offset);
     void close();
     void setReferenceName(const QString &) {}
@@ -176,6 +177,7 @@ private:
     U2OpStatusImpl status;
     QSharedPointer<DbiConnection> dbiHandle;
     U2Dbi* sqliteDbi;
+    AssemblyImporter importer;
     U2AssemblyDbi *wDbi;
     U2Assembly assembly;
     QList<U2AssemblyRead> reads;
