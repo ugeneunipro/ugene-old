@@ -4335,6 +4335,13 @@ GUI_TEST_CLASS_DEFINITION(test_3757) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3760) {
+    GTLogTracer l;
+    GTFileDialog::openFile(os, testDir + "_common_data/phylip/", "Three Kingdoms.phy");
+    GTUtilsProjectTreeView::findIndex(os, "Three Kingdoms.phy", QModelIndex());
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3768) {
 
 //1. Open "data/samples/FASTA/human_T1.fa".
@@ -4792,16 +4799,9 @@ GUI_TEST_CLASS_DEFINITION(test_3843) {
     GTUtilsMSAEditorSequenceArea::clickCollapceTriangle(os, "Conocephalus_discolor");
 
     // 4. Select some region within a sequence from the chosen collapsed group.
-    //GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(4, 11), QPoint(10, 11));
-
     // 5. Click "Ctrl+C"
+    // Expected state : clipboard contains a selected string
     GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(4, 11), QPoint(10, 11), "CTTATTA");
-//    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
-//    GTGlobals::sleep(500);
-
-//    // Expected state : clipboard contains a selected string
-//    QString clipboardText = GTClipboard::text(os);
-//    CHECK_SET_ERR(clipboardText == "CTTATTA", QString("unexpected selection:\n%1").arg(clipboardText));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3850) {
@@ -5086,6 +5086,16 @@ GUI_TEST_CLASS_DEFINITION(test_3928) {
     currentReference = GTUtilsMsaEditor::getReferenceSequenceName(os);
     CHECK_SET_ERR("Gampsocleis_sedakovii_EF540828" == currentReference, QString("An unexpected reference sequence is set: expect '%1', got '%2'").arg("Gampsocleis_sedakovii_EF540828").arg(currentReference));
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3938) {
+    GTLogTracer lt;
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "Variation annotation with SnpEff");
+    GTUtilsWorkflowDesigner::addInputFile(os, "File(s) with variations", testDir + "_common_data/vcf/valid.vcf");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    CHECK_SET_ERR(!lt.getError().contains("finished with error", Qt::CaseInsensitive), "Unexpected error message in the log");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3950) {

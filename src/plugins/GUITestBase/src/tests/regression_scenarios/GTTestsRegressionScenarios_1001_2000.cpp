@@ -5502,6 +5502,7 @@ GUI_TEST_CLASS_DEFINITION(test_1673_4) {
     QWidget *prevButton = GTWidget::findWidget(os, "prevAnnotationButton", NULL, GTGlobals::FindOptions(false));
     CHECK_SET_ERR(NULL == prevButton, "Annotations options panel is not closed");
     GTWidget::findWidget(os, "FindPatternWidget");
+    CHECK_SET_ERR(GTWidget::findWidget(os, "textPattern")->hasFocus(), "Find pattern field has no focus");
 }
 
 namespace {
