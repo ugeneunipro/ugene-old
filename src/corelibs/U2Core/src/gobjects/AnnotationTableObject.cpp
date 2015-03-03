@@ -165,10 +165,6 @@ void AnnotationTableObject::removeAnnotations( const QList<Annotation> &annotati
 }
 
 GObject * AnnotationTableObject::clone(const U2DbiRef &ref, U2OpStatus &os, const QVariantMap &hints ) const {
-    DbiOperationsBlock opBlock(ref, os);
-    Q_UNUSED(opBlock);
-    CHECK_OP(os, NULL);
-
     ensureDataLoaded();
 
     GHintsDefaultImpl gHints(getGHintsMap());
@@ -176,6 +172,7 @@ GObject * AnnotationTableObject::clone(const U2DbiRef &ref, U2OpStatus &os, cons
 
     DbiOperationsBlock opBlock(ref, os);
     Q_UNUSED(opBlock);
+    CHECK_OP(os, NULL);
 
     AnnotationTableObject *cln = new AnnotationTableObject( getGObjectName( ), ref, gHints.getMap() );
     cln->setIndexInfo( getIndexInfo( ) );
