@@ -26,6 +26,7 @@
 #include "api/GTCheckBox.h"
 #include "api/GTClipboard.h"
 #include "api/GTComboBox.h"
+#include "api/GTGraphicsItem.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTGlobals.h"
@@ -1345,6 +1346,21 @@ GUI_TEST_CLASS_DEFINITION(test_1180) {
         AlignShortReadsFiller::Parameters::Bowtie);
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters)) ;
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1182){
+//    1.Create a new output text slot for Grouper element in WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    WorkflowProcessItem* worker = GTUtilsWorkflowDesigner::addElement(os, "Grouper");
+//    2. The slot contains the size of created group which hold a number of element in each group
+    WorkflowPortItem* port = GTUtilsWorkflowDesigner::getPortById(os, worker, "output-data");
+    GTMouseDriver::moveTo(os, GTGraphicsItem::getItemCenter(os, port));
+    GTMouseDriver::click(os);
+
+    QWidget* paramBox = GTWidget::findWidget(os, "paramBox");
+    QTableWidget* table = paramBox->findChild<QTableWidget*>();
+    QList<QTableWidgetItem*> tableItems = table->findItems("Group size (by Grouper)", Qt::MatchExactly);
+    CHECK_SET_ERR(tableItems.size() == 1, QString("unexpected items number: %1").arg(tableItems.size()));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1184){
