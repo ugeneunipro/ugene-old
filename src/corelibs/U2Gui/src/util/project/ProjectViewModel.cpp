@@ -1408,13 +1408,11 @@ void ProjectViewModel::sl_documentImported() {
         insertFolder(doc, resultPath);
     }
     foreach (GObject *importedObj, task->getImportedObjects()) {
-        if (Q_LIKELY(NULL == doc->getObjectById(importedObj->getEntityRef().entityId))) {
+        if (NULL == doc->getObjectById(importedObj->getEntityRef().entityId)) {
             doc->addObject(importedObj);
             insertObject(doc, importedObj, resultPath);
-        } else {                    // object hasn't been imported atomically
-            delete importedObj;     // and it detected on a previous merging phase
-            coreLog.error("Imported object is included unexpectedly to a document");
-            assert(false);
+        } else { // object has been already detected on a previous merging phase
+            delete importedObj;
         }
     }
     emit si_documentContentChanged(doc);
