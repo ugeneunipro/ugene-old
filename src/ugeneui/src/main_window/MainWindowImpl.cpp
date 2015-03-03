@@ -539,6 +539,8 @@ void FixedMdiArea::sysContextMenuAction(QAction* action) {
 QMdiSubWindow* FixedMdiArea::addSubWindow(QWidget* widget)
 {
     QMdiSubWindow* subWindow = QMdiArea::addSubWindow(widget);
+    SAFE_POINT(widget != NULL, "Trying to add empty subwindow!", NULL);
+    subWindow->setMinimumSize(widget->minimumSize());
     //Workaround for QTBUG-17428
     connect(subWindow->systemMenu(), SIGNAL(triggered(QAction*)), SLOT(sysContextMenuAction(QAction*)));
     return subWindow;

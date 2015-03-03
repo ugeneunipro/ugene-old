@@ -76,6 +76,10 @@ void OptionsPanel::openGroupById(const QString& groupId) {
     }
 }
 
+int OptionsPanel::getOptionsPanelWidth() const {
+    return widget->getWidth() + 2/*for the border!*/;
+}
+
 void OptionsPanel::sl_groupHeaderPressed(QString groupId) {
     OPWidgetFactory* opWidgetFactory = findFactoryByGroupId(groupId);
     SAFE_POINT(NULL != opWidgetFactory,

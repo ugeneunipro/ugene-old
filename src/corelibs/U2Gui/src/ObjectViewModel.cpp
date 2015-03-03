@@ -49,8 +49,8 @@ const GObjectViewFactoryId GObjectViewFactory::SIMPLE_TEXT_FACTORY("SimpleTextVi
 
 void GObjectViewState::setViewName(const QString& newName) {
     // this method is not a real state modification: state caches view name as a reference, but not its internal data
-    // it is used only on view renaming 
-     viewName = newName; 
+    // it is used only on view renaming
+     viewName = newName;
 }
 
 void GObjectViewState::setStateName(const QString& newName) {
@@ -81,6 +81,9 @@ GObjectViewFactory* GObjectViewFactoryRegistry::getFactoryById(GObjectViewFactor
 
 //////////////////////////////////////////////////////////////////////////
 /// GObjectView
+
+QSize GObjectView::DEFAULT_MIN_VIEW_SIZE = QSize(250, 400);
+
 GObjectView::GObjectView(GObjectViewFactoryId _factoryId, const QString& _viewName, QObject* prnt): QObject(prnt)
 {
     factoryId = _factoryId;
@@ -218,6 +221,7 @@ QWidget* GObjectView::getWidget() {
     if (widget == NULL) {
         assert(closeInterface!=NULL);
         widget = createWidget();
+        widget->setMinimumSize(DEFAULT_MIN_VIEW_SIZE);
     }
     return widget;
 }
@@ -268,7 +272,7 @@ void GObjectView::setName(const QString& newName) {
 //////////////////////////////////////////////////////////////////////////
 /// GObjectViewWindow
 
-GObjectViewWindow::GObjectViewWindow(GObjectView* v, const QString& _viewName, bool _persistent) 
+GObjectViewWindow::GObjectViewWindow(GObjectView* v, const QString& _viewName, bool _persistent)
 : MWMDIWindow(_viewName), view(v), persistent(_persistent)
 {
     v->setParent(this);
@@ -285,6 +289,7 @@ GObjectViewWindow::GObjectViewWindow(GObjectView* v, const QString& _viewName, b
     QHBoxLayout *windowLayout = new QHBoxLayout();
     windowLayout->setContentsMargins(0, 0, 0, 0);
     windowLayout->setSpacing(0);
+    windowLayout->setSizeConstraint(QLayout::SetMinimumSize);
 
     OptionsPanel* optionsPanel = v->getOptionsPanel();
 
@@ -292,15 +297,24 @@ GObjectViewWindow::GObjectViewWindow(GObjectView* v, const QString& _viewName, b
     QVBoxLayout *objectLayout = new QVBoxLayout();
     objectLayout->setContentsMargins(0, 0, 0, 0);
     objectLayout->setSpacing(0);
+    objectLayout->setSizeConstraint(QLayout::SetMinimumSize);
 
     // Add the widget to the layout and "parent" it
     objectLayout->addWidget(viewWidget);
-    
+
+    const int RESERVE = 30;
+    int minW = viewWidget->minimumWidth() + RESERVE;
+
     // Set the layout of the whole window
     windowLayout->addLayout(objectLayout);
     if (optionsPanel != NULL) {
         windowLayout->addWidget(optionsPanel->getMainWidget());
+        minW += optionsPanel->getOptionsPanelWidth();
     }
+
+    int minH = viewWidget->minimumHeight() + RESERVE;
+    setMinimumSize(minW, minH);
+
     setLayout(windowLayout);
 
     // Set the icon
@@ -473,7 +487,7 @@ QList<GObjectViewState*> GObjectViewUtils::selectStates(GObjectViewFactory* f, c
             if (f->isStateInSelection(ms, s->getStateData())) {
                 result.append(s);
             }
-        } 
+        }
     }
     return result;
 }
@@ -499,7 +513,7 @@ QList<GObjectViewWindow*> GObjectViewUtils::findViewsWithAnyOfObjects(const QLis
             if(!res.contains(vw)) {
                 res+=tmp;
             }
-        }  
+        }
     }
     return res;
 }
@@ -513,7 +527,7 @@ GObjectViewWindow* GObjectViewUtils::getActiveObjectViewWindow() {
 //////////////////////////////////////////////////////////////////////////
 // GObjectViewWindowContext
 
-GObjectViewWindowContext::GObjectViewWindowContext(QObject* p, const GObjectViewFactoryId& _id) : 
+GObjectViewWindowContext::GObjectViewWindowContext(QObject* p, const GObjectViewFactoryId& _id) :
 QObject(p) , id(_id), initialzed(false) {}
 
 void GObjectViewWindowContext::init() {

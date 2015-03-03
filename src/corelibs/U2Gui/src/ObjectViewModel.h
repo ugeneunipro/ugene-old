@@ -65,8 +65,8 @@ class GObjectReference;
 class U2GUI_EXPORT GObjectViewState : public QObject {
     Q_OBJECT
 public:
-    GObjectViewState(GObjectViewFactoryId _factoryId, const QString& _viewName, const QString& _stateName, 
-        const QVariantMap& _stateData, QObject* p = NULL) 
+    GObjectViewState(GObjectViewFactoryId _factoryId, const QString& _viewName, const QString& _stateName,
+        const QVariantMap& _stateData, QObject* p = NULL)
         : QObject(p), factoryId(_factoryId), viewName(_viewName), stateName(_stateName), stateData(_stateData){}
 
     GObjectViewFactoryId getViewFactoryId() const {return factoryId;}
@@ -96,10 +96,10 @@ private:
 };
 
 class U2GUI_EXPORT GObjectViewFactory : public QObject {
-public:	
+public:
     static const GObjectViewFactoryId SIMPLE_TEXT_FACTORY;
 
-    GObjectViewFactory(GObjectViewFactoryId _id, const QString& _name, QObject* p = NULL) 
+    GObjectViewFactory(GObjectViewFactoryId _id, const QString& _name, QObject* p = NULL)
         : QObject(p), id(_id), name(_name){}
 
     GObjectViewFactoryId getId() const {return id;}
@@ -136,7 +136,7 @@ public:
     GObjectViewFactoryId getFactoryId() const {return factoryId;}
 
     const QString& getName() const {return viewName;}
-    
+
     void setName(const QString& name);
 
     QWidget*        getWidget();
@@ -216,6 +216,8 @@ protected:
     bool                                closing;
     QList<GObjectViewObjectHandler*>    objectHandlers;
     OptionsPanel*                       optionsPanel;
+
+    static QSize                        DEFAULT_MIN_VIEW_SIZE;
 };
 
 class U2GUI_EXPORT GObjectViewCloseInterface {
@@ -299,7 +301,7 @@ public:
 
     static QList<GObjectViewState*> selectStates(GObjectViewFactory* f, const MultiGSelection& ms, const QList<GObjectViewState*>& states);
 
-    // Returns active object view window. 
+    // Returns active object view window.
     // Returns NULL if active window is not object view window
     static GObjectViewWindow* getActiveObjectViewWindow();
 };
@@ -357,7 +359,7 @@ protected slots:
     virtual void sl_buildContextMenu(GObjectView* v, QMenu* m);
     virtual void sl_buildStaticMenu(GObjectView* v, QMenu* m);
 
-protected:    
+protected:
     virtual void buildMenu(GObjectView* v, QMenu* m){Q_UNUSED(v); Q_UNUSED(m);}
     virtual void disconnectView(GObjectView* v);
 

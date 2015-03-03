@@ -49,7 +49,7 @@ public:
 /** Options Panel Widget state */
 enum OPMainWidgetState {OPMainWidgetState_Opened, OPMainWidgetState_Closed};
 
-/** 
+/**
  * Serves as a parent widget for all header image and option widgets.
  * Provides general layout and style of the widgets (but it DOESN'T handle the behavior of selecting a group!).
  */
@@ -90,6 +90,8 @@ public:
 
     /** Returns NULL if not found */
     GroupOptionsWidget* findOptionsWidgetByGroupId(const QString& groupId);
+
+    int getWidth() const;
 
 private:
     /** Layouts */
