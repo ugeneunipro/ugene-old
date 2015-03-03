@@ -19,10 +19,13 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2View/MSAGraphOverview.h>
+
 #include "GTTestsRegressionScenarios.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
+#include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsOptionPanelMSA.h"
@@ -45,7 +48,6 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
-
 
 namespace U2 {
 
@@ -271,6 +273,34 @@ GUI_TEST_CLASS_DEFINITION(test_4065) {
 
     bool hasMessage = l.checkMessage("No bam index given");
     CHECK_SET_ERR(false == hasMessage , "Error message is found. Bam index file not found.");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4070) {
+//    1. Open file "_common_data/scenarios/msa/ma.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma.aln");
+
+//    2. Switch on collapsing mode.
+    GTUtilsMsaEditor::toggleCollapsingMode(os);
+
+//    3. Expand "Conocephalus_discolor" group.
+    GTUtilsMsaEditor::toggleCollapsingGroup(os, "Conocephalus_discolor");
+
+//    Expected state: the overview is calculated and shown.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QWidget *graphOverview = GTUtilsMsaEditor::getGraphOverview(os);
+    CHECK_SET_ERR(NULL != graphOverview, "Graph overview widget is NULL");
+
+    bool colorFound = false;
+    for (int i = 0; i < graphOverview->width() && !colorFound; i++) {
+        for (int j = 0; j < graphOverview->height() && !colorFound; j++) {
+            if (QColor(0, 0, 0) == GTUtilsMsaEditor::getGraphOverviewPixelColor(os, QPoint(i, j))) {
+                colorFound = true;
+            }
+        }
+    }
+
+    CHECK_SET_ERR(colorFound, "The overview doesn't contain white color");
 }
 
 } // namespace GUITest_regression_scenarios
