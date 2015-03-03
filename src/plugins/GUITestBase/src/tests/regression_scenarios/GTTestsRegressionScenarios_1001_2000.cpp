@@ -2266,6 +2266,35 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1263){
+//    1. Open "human_T1"
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+//    2. Use tool button "Primers3"
+    GTUtilsDialog::waitForDialog(os, new Primer3DialogFiller(os));
+    GTWidget::click(os, GTWidget::findWidget(os, "primer3_action_widget"));
+//    3. Press button "Pick Primers"
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    4. Select pair of primers
+    //GTUtilsAnnotationsTreeView::selectItems(os, QStringList()<<"top_primers"<<"top_primers");
+    QTreeWidgetItem* parent = GTUtilsAnnotationsTreeView::findItem(os, "pair 1  (0, 2)");
+    QTreeWidgetItem* first = parent->child(0);
+    QTreeWidgetItem* second = parent->child(1);
+//    5. Use context menu {Cloning->Create PCR product}
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, first));
+    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, second));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Cloning"<<"Create PCR product"));
+    GTMouseDriver::click(os, Qt::RightButton);
+//    6. Press 'Ok'
+    //TODO: complete after UGENE-4101 is fixed
+//    Excepted state: PCR product has been created
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1266) {
 //    1. Open "Call variants" sample pipleine from the "NGS" category
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
