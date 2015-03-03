@@ -176,7 +176,7 @@ public:
     QVariantMap getSettingsState() const;
     void setSettingsState(const QVariantMap& m);
 
-    const TreeLayout getTreeLayout() const;
+    TreeLayout getTreeLayout() const;
     bool layoutIsRectangular() const;
 
     void onPhyTreeChanged();
@@ -236,7 +236,7 @@ private:
     void paint(QPainter &painter);
     void showLabels(LabelTypes labelTypes);
 //Scalebar
-    void addLegend(qreal scale);
+    void addLegend();
     void updateLegend();
 
     void collapseSelected();

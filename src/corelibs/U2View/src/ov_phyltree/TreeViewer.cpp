@@ -377,12 +377,16 @@ const int TreeViewerUI::MARGIN = 10;
 const qreal TreeViewerUI::SIZE_COEF = 0.1;
 
 
-TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhyObject()), root(treeViewer->getRoot()), curTreeViewer(NULL), rectRoot(treeViewer->getRoot()), updatingFromOP(false) {
-    curTreeViewer = treeViewer;
-    maxNameWidth = 0.0;
-    horizontalScale = 1.0;
-    verticalScale = 1.0;
-
+TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): 
+    phyObject(treeViewer->getPhyObject()), 
+    root(treeViewer->getRoot()), 
+    maxNameWidth(0.0),
+    verticalScale(1.0),
+    horizontalScale(1.0),
+    curTreeViewer(treeViewer), 
+    updatingFromOP(false), 
+    rectRoot(treeViewer->getRoot()) 
+{
     setWindowIcon(GObjectTypes::getTypeInfo(GObjectTypes::PHYLOGENETIC_TREE).icon);
 
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -393,7 +397,7 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
     scene()->addItem(root);
     setScale(treeViewer->getScale());
     initializeSettings();
-    addLegend(treeViewer->getScale());
+    addLegend();
     updateRect();
 
     treeViewer->createActions();
@@ -492,7 +496,7 @@ void TreeViewerUI::setTreeLayout(TreeLayout newLayout) {
             FAIL("Unrecognized tree layout",);
     }
 }
-const TreeLayout TreeViewerUI::getTreeLayout() const {
+TreeLayout TreeViewerUI::getTreeLayout() const {
     return static_cast<TreeLayout>(getOptionValue(TREE_LAYOUT).toUInt());
 }
 bool TreeViewerUI::layoutIsRectangular() const {
@@ -566,6 +570,9 @@ void TreeViewerUI::onSettingsChanged(TreeViewOption option, const QVariant& newV
         case SCALEBAR_FONT_SIZE:
         case SCALEBAR_LINE_WIDTH:
             updateLegend();
+            break;
+        default:
+            FAIL("Unrecongnized option in TreeViewerUI::onSettingsChanged",);
             break;
     }
 }
@@ -845,9 +852,8 @@ void TreeViewerUI::setSettingsState(const QVariantMap& m) {
     }
 }
 
-void TreeViewerUI::addLegend(qreal scale) {
+void TreeViewerUI::addLegend() {
     qreal d = getOptionValue(SCALEBAR_RANGE).toReal();
-    const qreal WIDTH = d * curTreeViewer->getScale();
     QString str = QString::number(d, 'f', 3);
     int i = str.length() - 1;
     for (; i >= 0 && str[i] == '0'; --i) ;
