@@ -46,6 +46,9 @@ AppSettingsGUIImpl::AppSettingsGUIImpl(QObject* p) : AppSettingsGUI(p)
     QAction* settingsdialogAction = new QAction(QIcon(":ugene/images/preferences.png"), tr("Preferences..."), this);
     connect(settingsdialogAction, SIGNAL(triggered()), SLOT(sl_showSettingsDialog()));
     settingsdialogAction->setObjectName("action__settings");
+#ifdef Q_OS_MAC
+    settingsdialogAction->setMenuRole(QAction::ApplicationSpecificRole);
+#endif
     m->addAction(settingsdialogAction);
     //m->addAction(tr("app_settings"), this, SLOT(sl_showSettingsDialog()));
 }
