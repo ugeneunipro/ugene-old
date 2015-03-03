@@ -844,8 +844,10 @@ QString GTUtilsWorkflowDesigner::getParameter(U2OpStatus &os, QString parameter,
     int row = -1;
     for(int i = 0; i<iMax; i++){
         QString s = model->data(model->index(i,0)).toString();
-        if (equalStrings(s, parameter, exactMatch))
+        if (equalStrings(s, parameter, exactMatch)) {
             row = i;
+            break;
+        }
     }
     GT_CHECK_RESULT(row != -1, "parameter " + parameter + " not found","");
 

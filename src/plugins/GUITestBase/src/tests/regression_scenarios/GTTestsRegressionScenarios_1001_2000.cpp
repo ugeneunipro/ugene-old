@@ -672,6 +672,182 @@ GUI_TEST_CLASS_DEFINITION(test_1038) {
     CHECK_SET_ERR(matchCount == seqNames.size(), QString("Number of reads and sequences are not matched: got %1, expected %2").arg(matchCount).arg((seqNames.size())));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1059) {
+    //1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    //2. Place the "Write sequence" element on the scene
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Sequence");
+
+    //3. Set 'Output file' parameter 'sample'
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", "sample", GTUtilsWorkflowDesigner::textValue);
+
+    //4. Copy&Paste this worker
+    GTUtilsWorkflowDesigner::click(os, GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence"));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(100);
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(100);
+
+    const QPoint workerCenterPos = GTUtilsWorkflowDesigner::getItemCenter(os, "Write Sequence");
+    GTMouseDriver::moveTo(os, workerCenterPos);
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, workerCenterPos + QPoint(100, 0));
+    GTMouseDriver::release(os);
+
+    GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "nameEdit"), "Write Sequence 1");
+
+    //5. Change 'Output file' parameter to 'ssss' at fist worker
+    //Expected state : 'Output file' parameter for 2nd worker not 'sssss'
+    GTUtilsWorkflowDesigner::click(os, GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence"));
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", "sssss", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::click(os, GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence 1"));
+    const QString outputFile = GTUtilsWorkflowDesigner::getParameter(os, "Output file");
+    CHECK_SET_ERR(outputFile == "sample", "Unexpected output file parameter value");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1061) {
+    class CreateMarkerDialogFiller : public Filler {
+    public:
+        CreateMarkerDialogFiller(U2OpStatus &os)
+            : Filler(os, "EditMarkerDialog")
+        {
+
+        }
+
+        void run() {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Unable to find active dialog");
+
+            QLineEdit *markerNameEdit = GTWidget::findExactWidget<QLineEdit *>(os, "markerNameEdit", dialog);
+            GTLineEdit::setText(os, markerNameEdit, "1");
+
+            GTWidget::click(os, GTWidget::findWidget(os, "containsButton", dialog));
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "containsEdit"), "1");
+
+            GTUtilsDialog::clickButtonBox(os, QApplication::activeModalWidget(), QDialogButtonBox::Ok);
+        }
+    };
+
+    class AddMarkerDialogFiller : public Filler {
+    public:
+        AddMarkerDialogFiller(U2OpStatus &os)
+            : Filler(os, "EditMarkerGroupDialog")
+        {
+
+        }
+
+        void run() {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Unable to find active dialog");
+
+            QComboBox *typeBox = GTWidget::findExactWidget<QComboBox *>(os, "typeBox", dialog);
+            GTComboBox::setIndexWithText(os, typeBox, "Qualifier text value markers");
+
+            QLineEdit *addParamEdit = GTWidget::findExactWidget<QLineEdit *>(os, "addParamEdit", dialog);
+            GTLineEdit::setText(os, addParamEdit, "protein_id");
+
+            GTUtilsDialog::waitForDialog(os, new CreateMarkerDialogFiller(os));
+            GTWidget::click(os, GTWidget::findWidget(os, "addButton", dialog));
+
+            GTUtilsDialog::clickButtonBox(os, QApplication::activeModalWidget(), QDialogButtonBox::Ok);
+        }
+    };
+
+    //1. Create a scheme with "Read sequence", "Write sequence", "Filter", "Sequence marker" element.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Sequence marker");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Filter", true);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Sequence");
+
+    //2. In the "Marker" element create a text qualifier marker containing value "1"
+    GTUtilsWorkflowDesigner::click(os, GTUtilsWorkflowDesigner::getWorker(os, "Sequence Marker"));
+    GTUtilsDialog::waitForDialog(os, new AddMarkerDialogFiller(os));
+    GTWidget::click(os, GTWidget::findWidget(os, "addButton"));
+
+    GTUtilsWorkflowDesigner::click(os, GTUtilsWorkflowDesigner::getWorker(os, "Filter"));
+    GTUtilsWorkflowDesigner::setParameter(os, "Filter by value(s)", "1", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/Genbank/murine.gb");
+
+    GTUtilsWorkflowDesigner::click(os, GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence"));
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", "genbank", GTUtilsWorkflowDesigner::comboValue);
+
+    //3. Connect all elements, setup connections, provide any annotated sequence as an input
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), GTUtilsWorkflowDesigner::getWorker(os, "Sequence Marker"));
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Sequence Marker"), GTUtilsWorkflowDesigner::getWorker(os, "Filter"));
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Filter"), GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence"));
+
+    //4. Run the scheme
+    //Expected state : UGENE does not crash
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1063) {
+    class EnableWdDebuggerFiller : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QTreeWidget *tree = qobject_cast<QTreeWidget *>(GTWidget::findWidget(os, "tree", dialog));
+            CHECK_SET_ERR(NULL != tree, "tree widger not found");
+
+            QList<QTreeWidgetItem *> items = GTTreeWidget::getItems(tree->invisibleRootItem());
+            foreach (QTreeWidgetItem *item, items) {
+                if (item->text(0) == "  Workflow Designer") {
+                    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+                    GTMouseDriver::click(os);
+                }
+            }
+
+            GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "debuggerBox", dialog), true);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTLogTracer lt;
+
+    //1) Set "Enable debugger" in Settings->WD
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new EnableWdDebuggerFiller()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+
+    //2) Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    //3) Create schema{ Read sequence->Write sequence }, set valid input and output files
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Sequence");
+
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence"));
+
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/FASTA/human_T1.fa");
+
+    //4) Right - click on Read sequence element, click "Toggle breakpoint"
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Break at element..."));
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    //5) Run workflow
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTGlobals::sleep(5000);
+
+    //Expected state : Workflow is paused, "Pause scheme" button is disabled
+    QAbstractButton *pauseButton = GTAction::button(os, "Pause workflow");
+    CHECK_SET_ERR(pauseButton->isVisible() && !pauseButton->isEnabled(), "'Pause workflow' button is either invisible or active unexpectedly");
+
+    //6) Click "Run schema" button
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    //Expected state : run finished successfully
+    GTUtilsLog::check(os, lt);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1064) {
     //1) Open "_common_data\regression\1064\test_data.sam"
     //Expected state: "Import SAM file" dialog opened with Reference lineedit and red text saying that the SAM file doesn't contain the header

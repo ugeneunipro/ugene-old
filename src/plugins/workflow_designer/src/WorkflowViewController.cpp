@@ -658,6 +658,7 @@ void WorkflowView::createActions() {
     connect(estimateAction, SIGNAL(triggered()), SLOT(sl_estimate()));
 
     pauseAction = new QAction(tr("&Pause workflow"), this);
+    pauseAction->setObjectName("Pause workflow");
     pauseAction->setIcon(QIcon(":workflow_designer/images/pause.png"));
     pauseAction->setShortcut(QKeySequence("Ctrl+P"));
     pauseAction->setEnabled(false);

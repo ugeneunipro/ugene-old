@@ -204,7 +204,7 @@ void EditMarkerGroupDialog::sl_onTypeChanged(int newTypeIndex) {
             MarkerDataType oldType = MarkerTypes::getDataTypeById(oldMarker->getType());
             MarkerDataType newType = MarkerTypes::getDataTypeById(marker->getType());
             if (oldType == newType) {
-                foreach (QString key, oldMarker->getValues().keys()) {
+                foreach (const QString &key, oldMarker->getValues().keys()) {
                     marker->addValue(key, oldMarker->getValues().value(key));
                 }
             } else {

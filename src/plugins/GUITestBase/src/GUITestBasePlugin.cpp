@@ -159,6 +159,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1022);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1029, "UGENE-4076");
     REGISTER_TEST(GUITest_regression_scenarios::test_1038);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1059);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1061);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1063,
+        "The test causes a dead-lock in the task scheduler. See test scenario in the 'Strange' folder");
     REGISTER_TEST(GUITest_regression_scenarios::test_1064);
     REGISTER_TEST(GUITest_regression_scenarios::test_1065_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1065_2);
