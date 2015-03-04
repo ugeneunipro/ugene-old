@@ -105,6 +105,27 @@ void GTUtilsDashboard::openTab(U2OpStatus &os, Tabs tab){
 
 #undef GT_METHOD_NAME
 
+void GTUtilsDashboard::traceAllWebElements(U2OpStatus &os){
+    QWebView* dashboard = GTWidget::findExactWidget<QWebView*>(os, "Dashboard");
+    QWebFrame* frame = dashboard->page()->mainFrame();
+    int num = frame->findAllElements("*").count();
+    QWebElement result;
+    foreach (QWebElement el, frame->findAllElements("*")) {
+        QString s = el.toPlainText();
+        QString tagName = el.tagName();
+        QString localName = el.localName();
+        QString rect = QString("%1").arg(el.geometry().width());
+
+        if(rect != "0"){
+            uiLog.trace("tag: " + tagName + " name: " + localName + " text: " + s + " width: " + rect);
+        }
+        if (s == "Input"){
+            result = el;
+        }
+    }
+
+}
+
 #undef GT_CLASS_NAME
 }
 

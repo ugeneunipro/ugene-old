@@ -1073,6 +1073,7 @@ GUI_TEST_CLASS_DEFINITION(test_1080) {
         }
     };
 
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/regression/1080", "blast+marker_new.uwl");
 
     GTUtilsWorkflowDesigner::click(os, "Sequence Marker");
@@ -6412,6 +6413,43 @@ GUI_TEST_CLASS_DEFINITION(test_1759){
 //    4. Repeat 2nd and 3rd steps for all the versions of the Tuxedo pipeline
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1764){
+//    1) Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2) Create schema {Read sequence -> Write sequence}
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+    GTUtilsWorkflowDesigner::connect(os, read, write);
+//    3) Set input sequence to "human_T1.fa" from "data/samples/FASTA", set output filename to "readed_fasta.fa"
+    GTUtilsWorkflowDesigner::click(os, read);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsWorkflowDesigner::click(os, write);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", "readed_fasta.fa", GTUtilsWorkflowDesigner::textValue);
+//    4) Run workflow, click on dashboard "readed_fasta.fa"
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    QWebElement button = GTUtilsDashboard::findElement(os, "readed_fasta.fa", "BUTTON");
+    GTUtilsDashboard::click(os, button);
+    GTGlobals::sleep();
+    //GTUtilsDashboard::traceAllWebElements(os);
+//    Expected state: "readed_fasta.fa" is opened in UGENE
+//    5) Click "Return to workflow", repeat step 4
+    GTUtilsMdi::activateWindow(os, "Workflow Designer - New workflow");
+    GTWidget::click(os, GTWidget::findButtonByText(os, "To Workflow Designer"));
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    button = GTUtilsDashboard::findElement(os, "readed_fasta.fa", "BUTTON");
+    GTUtilsDashboard::click(os, button);
+    GTGlobals::sleep();
+//    Expected state: opened fasta files have different file path in tooltips
+    QList<QModelIndex> docs = GTUtilsProjectTreeView::findIndecies(os, "readed_fasta.fa");
+    CHECK_SET_ERR(docs.size() == 2, QString("unexpected documents number: %1").arg(docs.size()));
+    QString toolTip0 = docs[0].data(Qt::ToolTipRole).toString();
+    QString toolTip1 = docs[1].data(Qt::ToolTipRole).toString();
+
+    CHECK_SET_ERR(toolTip0 != toolTip1, "tooltips are equal");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1771){
 //    1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
@@ -6684,6 +6722,11 @@ GUI_TEST_CLASS_DEFINITION(test_1834) {
     //5. Run the scheme.
     GTWidget::click(os, GTAction::button(os, "Run workflow"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QWebElement button = GTUtilsDashboard::findElement(os, "COI.aln.meg", "BUTTON");
+    GTUtilsDashboard::click(os, button);
+    GTGlobals::sleep(1000);
+    GTUtilsProjectTreeView::findIndex(os, "COI.aln.meg");
 
     //Expected state: Scheme ran successfully, the "COI.aln.mega" output file has appeared on the "Output Files" panel of the dashboard.
     //The output file is valid, might be opened with MSA editor and has the same content as the source file.

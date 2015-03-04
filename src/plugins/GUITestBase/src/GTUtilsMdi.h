@@ -37,6 +37,7 @@ public:
 
     // fails if MainWindow is NULL or because of FindOptions settings
     static QWidget* activeWindow(U2OpStatus &os, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static void activateWindow(U2OpStatus &os, const QString& windowName);
 
     // finds a window with a given window title in MDIManager windows
     // fails if windowName is empty or because of FindOptions settings

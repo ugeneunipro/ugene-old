@@ -40,6 +40,8 @@ public:
     static void click(U2OpStatus &os, QWebElement el, Qt::MouseButton button = Qt::LeftButton);
 
     static void openTab(U2OpStatus &os, Tabs tab);
+
+    static void traceAllWebElements(U2OpStatus &os);
 private:
     static QMap<QString, Tabs> initTabMap();
     static const QMap<QString, Tabs> tabMap;

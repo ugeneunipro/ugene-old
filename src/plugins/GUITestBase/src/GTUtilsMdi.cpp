@@ -136,6 +136,17 @@ QWidget* GTUtilsMdi::activeWindow(U2OpStatus &os, const GTGlobals::FindOptions& 
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "activateWindow"
+void GTUtilsMdi::activateWindow(U2OpStatus &os, const QString &windowName){
+    MainWindow* mw = AppContext::getMainWindow();
+    GT_CHECK(mw != NULL, "MainWindow == NULL");
+
+    MWMDIWindow* window = qobject_cast<MWMDIWindow*>(findWindow(os, windowName));
+    GT_CHECK(window != NULL, "window " + windowName + " not found")
+    mw->getMDIManager()->activateWindow(window);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getMdiItemPosition"
 QPoint GTUtilsMdi::getMdiItemPosition(U2OpStatus &os, const QString& windowName){
     QWidget* w = findWindow(os, windowName);
