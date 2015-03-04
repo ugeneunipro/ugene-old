@@ -288,6 +288,14 @@ QList<U2Region> GTUtilsAnnotationsTreeView::getAnnotatedRegions(U2OpStatus &os) 
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getAnnotationRegionString"
+QString GTUtilsAnnotationsTreeView::getAnnotationRegionString(U2OpStatus &os, const QString &annotationName) {
+    QTreeWidgetItem * annotationItem = findItem(os, annotationName);
+    GT_CHECK_RESULT(NULL != annotationItem, "Annotation item is NULL", "");
+    return annotationItem->text(AnnotationsTreeView::COLUMN_VALUE);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "createQualifier"
 void GTUtilsAnnotationsTreeView::createQualifier(U2OpStatus &os, const QString &qualName, const QString &qualValue, const QString &parentName) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "add_qualifier_action"));

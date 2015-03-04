@@ -1232,6 +1232,7 @@ GUI_TEST_CLASS_DEFINITION(test_1113_1){//commit AboutDialogController.cpp
 //Expected state: About dialog appeared, shown info includes platform info (32/64)
 
 }
+
 GUI_TEST_CLASS_DEFINITION(test_1121) {
     GTLogTracer lt;
 
@@ -3070,17 +3071,21 @@ GUI_TEST_CLASS_DEFINITION(test_1321_1) {
 
     const QString homology = GTUtilsAnnotationsTreeView::getQualifierValue(os, "repeat_homology(%)", "repeat_unit");
     CHECK_SET_ERR("85" == homology, QString("Unexpected repeat homology: expect '%1', got '%2'").arg(85).arg(homology));
+
+    const QString annotationRegions = GTUtilsAnnotationsTreeView::getAnnotationRegionString(os, "repeat_unit");
+    CHECK_SET_ERR("join(991..1011,1161..1181)" == annotationRegions, QString("Unexpected annotation region: expect '%1', got '%2'")
+                  .arg("join(991..1011,1161..1181)").arg(annotationRegions));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1321_2) {
 //    1. Open "\samples\FASTA\human_T1.fa"
 //    Expected state: sequence view window appeared
-    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
 
 //    2. Press 'Find tandems' tool button
 //    Expected state: 'Find tandems' dialog appeared
 //    3. Go to the 'Advanced' tab of the dialog
-//    Expected state: 'Advanced' tab displayed, there is 'Advanced paremeters' groupbox without 'Repeats identity' parameter
+//    Expected state: 'Advanced' tab displayed, there is 'Advanced parameters' groupbox without 'Repeats identity' parameter
     class Scenario : public CustomScenario {
         void run(U2OpStatus &os) {
             QWidget *dialog = QApplication::activeModalWidget();
@@ -3088,9 +3093,27 @@ GUI_TEST_CLASS_DEFINITION(test_1321_2) {
 
             GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "tabWidget"), 1);
 
+            GTWidget::findExactWidget<QCheckBox *>(os, "algoCheck", dialog);
+            GTWidget::findExactWidget<QComboBox *>(os, "algoCombo", dialog);
+            GTWidget::findExactWidget<QCheckBox *>(os, "annotationFitCheck", dialog);
+            GTWidget::findExactWidget<QLineEdit *>(os, "annotationFitEdit", dialog);
+            GTWidget::findExactWidget<QToolButton *>(os, "annotationFitButton", dialog);
+            GTWidget::findExactWidget<QCheckBox *>(os, "annotationAroundKeepCheck", dialog);
+            GTWidget::findExactWidget<QLineEdit *>(os, "annotationAroundKeepEdit", dialog);
+            GTWidget::findExactWidget<QToolButton *>(os, "annotationAroundKeepButton", dialog);
+            GTWidget::findExactWidget<QCheckBox *>(os, "annotationAroundFilterCheck", dialog);
+            GTWidget::findExactWidget<QLineEdit *>(os, "annotationAroundFilterEdit", dialog);
+            GTWidget::findExactWidget<QToolButton *>(os, "annotationAroundFilterButton", dialog);
+            GTWidget::findExactWidget<QComboBox *>(os, "filterAlgorithms", dialog);
+            GTWidget::findExactWidget<QCheckBox *>(os, "invertCheck", dialog);
+            GTWidget::findExactWidget<QCheckBox *>(os, "excludeTandemsBox", dialog);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
         }
     };
 
+    GTUtilsDialog::waitForDialog(os, new FindRepeatsDialogFiller(os, new Scenario));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Find repeats");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1323) {

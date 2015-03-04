@@ -55,6 +55,7 @@ public:
     static QString getAVItemName(U2OpStatus &os, AVItem* avItem);
     static QString getQualifierValue(U2OpStatus &os, const QString &qualName, const QString &parentName);
     static QList<U2Region> getAnnotatedRegions(U2OpStatus &os);
+    static QString getAnnotationRegionString(U2OpStatus &os, const QString &annotationName);
 
     static void createQualifier(U2OpStatus &os, const QString &qualName, const QString &qualValue, const QString &parentName);
 

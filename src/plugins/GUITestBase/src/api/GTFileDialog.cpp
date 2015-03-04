@@ -315,9 +315,10 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
     QMap<ViewMode, QString> button;
     button[List] = "listModeButton";
     button[Detail] = "detailModeButton";
-    QWidget *w = fileDialog->findChild<QWidget*>(button[v]);
+    QAbstractButton *w = qobject_cast<QAbstractButton *>(fileDialog->findChild<QWidget*>(button[v]));
 
     GT_CHECK(w != NULL, "view mode button not found");
+    CHECK(!w->isChecked(), );
 
     switch(method) {
     case GTGlobals::UseMouse:

@@ -53,7 +53,18 @@ FindRepeatsDialogFiller::FindRepeatsDialogFiller(U2OpStatus &_os, const QString 
 
 }
 
-void FindRepeatsDialogFiller::run() {
+FindRepeatsDialogFiller::FindRepeatsDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+    Filler(os, "FindRepeatsDialog", scenario),
+    button(Start),
+    searchInverted(false),
+    minRepeatLength(0),
+    repeatsIdentity(0),
+    minDistance(0)
+{
+
+}
+
+void FindRepeatsDialogFiller::customScenario() {
     GTGlobals::sleep(1000);
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");

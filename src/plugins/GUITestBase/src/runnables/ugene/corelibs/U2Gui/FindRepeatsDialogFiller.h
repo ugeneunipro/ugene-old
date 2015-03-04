@@ -32,10 +32,11 @@ class FindRepeatsDialogFiller : public Filler {
 public:
     enum Button {Start, Cancel};
 
-    FindRepeatsDialogFiller(U2OpStatus &_os, const QString & _resultFilesPath, bool _searchInverted = false,
+    FindRepeatsDialogFiller(U2OpStatus &os, const QString & _resultFilesPath, bool _searchInverted = false,
         int minRepeatLength = -1, int repeatsIdentity = -1, int minDistance = -1);
+    FindRepeatsDialogFiller(U2OpStatus &os, CustomScenario *scenario);
 
-    virtual void run();
+    virtual void customScenario();
     Button button;
 
 private:
