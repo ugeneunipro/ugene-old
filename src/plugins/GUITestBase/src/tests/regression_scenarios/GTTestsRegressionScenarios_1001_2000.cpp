@@ -1286,6 +1286,48 @@ GUI_TEST_CLASS_DEFINITION(test_1122){
 
     GTUtilsLog::check(os, l);
 }
+GUI_TEST_CLASS_DEFINITION(test_1123){
+    //1. Select {Tools->DNA assembly->Contig assembly with CAP3} in the main menu.
+    // Expected state: the "Contig Assembly With CAP3" dialog appeared.
+    // 2. Fill the dialog with values:
+    // {Input files}:
+    // "_common_data/abif/19_022.ab1"
+    // "_common_data/abif/39_034.ab1"
+    // {Result contig}: "_tmp/1123_abi.cap.ace"
+    // And click the "Run" button.
+    // Expected state: task complete successfully, result file opens in the MSA Editor (or in the Assembly Viewer).
+
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AlignmentEditor));
+    GTUtilsDialog::waitForDialog(os, new CAP3SupportDialogFiller(os, QStringList() << testDir + "_common_data/abif/19_022.ab1"
+        << testDir + "_common_data/abif/39_034.ab1",
+        sandBoxDir + "1123_abi.cap.ace"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::SANGER_MENU << ToolsMenu::SANGER_DENOVO));
+    GTMenu::showMainMenu(os, "mwmenu_tools");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+   
+}
+GUI_TEST_CLASS_DEFINITION(test_1123_1){
+    // 1. Select {Tools->DNA assembly->Contig assembly with CAP3} in the main menu.
+    // Expected state: the "Contig Assembly With CAP3" dialog appeared.
+    // 2. Fill the dialog with values:
+    // {Input files}:
+    // "_common_data/scf/Sequence A.scf"
+    // "_common_data/scf/Sequence B.scf"
+    // {Result contig}: "_tmp/1123_scf.cap.ace"
+    // And click the "Run" button.
+    // Expected state: task complete successfully, result file opens in the MSA Editor (or in the Assembly Viewer).
+
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AlignmentEditor));
+    GTUtilsDialog::waitForDialog(os, new CAP3SupportDialogFiller(os, QStringList() << testDir + "_common_data/scf/Sequence A.scf"
+        << testDir + "_common_data/scf/Sequence A.scf",
+        sandBoxDir + "1123_scf.cap.ace"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::SANGER_MENU << ToolsMenu::SANGER_DENOVO));
+    GTMenu::showMainMenu(os, "mwmenu_tools");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
 
 GUI_TEST_CLASS_DEFINITION(test_1133) {
 //     1. Open human_t1.fa
