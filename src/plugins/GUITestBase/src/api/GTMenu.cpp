@@ -42,6 +42,13 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTMenu"
 
+const QString GTMenu::FILE = MWMENU_FILE;
+const QString GTMenu::ACTIONS = MWMENU_ACTIONS;
+const QString GTMenu::SETTINGS = MWMENU_SETTINGS;
+const QString GTMenu::TOOLS = MWMENU_TOOLS;
+const QString GTMenu::WINDOW = MWMENU_WINDOW;
+const QString GTMenu::HELP = MWMENU_HELP;
+
 #define GT_METHOD_NAME "showMainMenu"
 QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m)
 {

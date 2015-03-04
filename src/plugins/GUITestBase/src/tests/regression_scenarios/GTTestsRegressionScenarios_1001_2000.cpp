@@ -1407,6 +1407,34 @@ GUI_TEST_CLASS_DEFINITION(test_1155) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1154) {
+//    1. Download "read.fa", "read2.fa", "reference.fa" from https://ugene.unipro.ru/tracker/browse/UGENE-1154 or use other sequences
+//    2. Use menu { Tools -> NGS data analysis -> Map reads to reference... }
+//    Expected state: "Align sequences reads" dialog has appeared
+//    3. Add "read.fa" and "read2.fa" to short reads list in the dialog
+//    4. Set "refrence.fa" as reference sequence
+//    5. Uncheck "Use best-mode"
+//    Expected state: reads are aligned and statistics is correct
+    GTLogTracer logTracer;
+
+    GTFile::copyDir(os, testDir + "_common_data/regression/1154", sandBoxDir + "1154");
+
+    AlignShortReadsFiller::UgeneGenomeAlignerParams parameters(sandBoxDir + "1154/reference.fa",
+                                                               QStringList() << sandBoxDir + "1154/read.fa"
+                                                                             << sandBoxDir + "1154/read2.fa");
+    parameters.useBestMode = false;
+    parameters.samOutput = false;
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTUtilsDialog::waitForDialogWhichMustNotBeRunned(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "The short reads can't be mapped to the reference sequence!"));
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, GTMenu::TOOLS), QStringList() << "NGS data analysis" << "Map reads to reference...");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsDocument::checkDocument(os, "reference.ugenedb");
+
+    const bool hasMessage = logTracer.checkMessage("50% reads aligned.");
+    CHECK_SET_ERR(hasMessage, "The expected message is not found in the log");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1156) {
     class DigestCircularSequenceScenario : public CustomScenario {
     public:

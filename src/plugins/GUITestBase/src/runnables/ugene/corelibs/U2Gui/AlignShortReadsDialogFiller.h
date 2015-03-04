@@ -51,46 +51,31 @@ public:
                    const QString& refFileName = "",
                    const QString& readsDir = "",
                    const QString& readsFileName = "",
-                   AlignmentMethod alignmentMethod = UgeneGenomeAligner) :
-            alignmentMethod(alignmentMethod),
-            refDir(refDir),
-            refFileName(refFileName),
-            readsDir(readsDir),
-            readsFileName(readsFileName),
-            library(SingleEnd),
-            prebuiltIndex(false),
-            samOutput(true),
-            useDefaultResultPath(true) {
-            alignmentMethodMap.insert(Bwa, "BWA");
-            alignmentMethodMap.insert(BwaSw, "BWA-SW");
-            alignmentMethodMap.insert(BwaMem, "BWA-MEM");
-            alignmentMethodMap.insert(Bowtie, "Bowtie");
-            alignmentMethodMap.insert(Bowtie2, "Bowtie2");
-            alignmentMethodMap.insert(UgeneGenomeAligner, "UGENE Genome Aligner");
-
-            libraryMap.insert(SingleEnd, "Single-end");
-            libraryMap.insert(PairedEnd, "Paired-end");
-        }
+                   AlignmentMethod alignmentMethod = UgeneGenomeAligner);
+        Parameters(const QString &reference,
+                   const QStringList &readsFiles,
+                   AlignmentMethod alignmentMethod = UgeneGenomeAligner);
         virtual ~Parameters() {}
 
         const QString getAlignmentMethod() const { return alignmentMethodMap[alignmentMethod]; }
         const QString getLibrary() const { return libraryMap[library]; }
 
         AlignmentMethod alignmentMethod;
-        QString refDir;
-        QString refFileName;
+        QString referenceFile;
         QString resultDir;
         QString resultFileName;
-        QString readsDir;
-        QString readsFileName;
+        QStringList readsFiles;
         Library library;
         bool prebuiltIndex;
         bool samOutput;
         bool useDefaultResultPath;
 
     private:
-        QMap<AlignmentMethod, QString> alignmentMethodMap;
-        QMap<Library, QString> libraryMap;
+        static QMap<AlignmentMethod, QString> initAlignmentMethodMap();
+        static QMap<Library, QString> initLibraryMap();
+
+        static const QMap<AlignmentMethod, QString> alignmentMethodMap;
+        static const QMap<Library, QString> libraryMap;
     };
 
     class Bowtie2Parameters : public Parameters {
@@ -155,14 +140,16 @@ public:
 
     class UgeneGenomeAlignerParams : public Parameters {
     public:
-        UgeneGenomeAlignerParams(const QString &refDir, const QString &refFileName, const QString &readsDir,
-            const QString &readsFileName, bool allowMismatches)
-            : Parameters(refDir, refFileName, readsDir, readsFileName, UgeneGenomeAligner), mismatchesAllowed(allowMismatches)
-        {
-
-        }
+        UgeneGenomeAlignerParams(const QString &refDir,
+                                 const QString &refFileName,
+                                 const QString &readsDir,
+                                 const QString &readsFileName,
+                                 bool allowMismatches);
+        UgeneGenomeAlignerParams(const QString &referenceFile,
+                                 const QStringList &readsFiles);
 
         bool mismatchesAllowed;
+        bool useBestMode;
     };
 
     class BwaSwParameters : public Parameters {

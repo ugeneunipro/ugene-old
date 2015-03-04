@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QComboBox>
 #include <QDialogButtonBox>
+#include <QDir>
 #include <QGroupBox>
 #include <QPushButton>
 
@@ -55,8 +56,8 @@ AlignShortReadsFiller::BwaSwParameters::BwaSwParameters(const QString &refDir, c
 }
 
 #define GT_CLASS_NAME "GTUtilsDialog::AlignShortReadsFiller"
-#define GT_METHOD_NAME "run"
 
+#define GT_METHOD_NAME "run"
 void AlignShortReadsFiller::commonScenario() {
     SAFE_POINT_EXT(parameters, GT_CHECK(0, "Invalid input parameters: NULL pointer"), );
 
@@ -86,57 +87,40 @@ void AlignShortReadsFiller::commonScenario() {
     GTWidget::click(os, button);
 
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setCommonParameters"
 void AlignShortReadsFiller::setCommonParameters(QWidget* dialog) {
-    QComboBox* methodNamesBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "methodNamesBox", dialog));
-    CHECK_OP(os, );
-    GT_CHECK(methodNamesBox, "methodNamesBox is NULL");
-    GTComboBox::setIndexWithText(os, methodNamesBox, parameters->getAlignmentMethod());
-    CHECK_OP(os, );
+    GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "methodNamesBox", dialog), parameters->getAlignmentMethod());
 
-    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, parameters->refDir, parameters->refFileName));
-    CHECK_OP(os, );
-
-    QWidget* addRefButton = GTWidget::findWidget(os, "addRefButton", dialog);
-    CHECK_OP(os, );
-    GTWidget::click(os, addRefButton);
-    CHECK_OP(os, );
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, parameters->referenceFile));
+    GTWidget::click(os, GTWidget::findWidget(os, "addRefButton", dialog));
 
     if (!parameters->useDefaultResultPath) {
         GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils (os, parameters->resultDir, parameters->resultFileName, GTFileDialogUtils::Save));
-        CHECK_OP(os, );
-
-        QWidget* setResultFileNameButton = GTWidget::findWidget(os, "setResultFileNameButton", dialog);
-        CHECK_OP(os, );
-        GTWidget::click(os, setResultFileNameButton);
-        CHECK_OP(os, );
+        GTWidget::click(os, GTWidget::findWidget(os, "setResultFileNameButton", dialog));
     }
 
-    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, parameters->readsDir, parameters->readsFileName));
-    CHECK_OP(os, );
-
-    QWidget* addShortreadsButton = GTWidget::findWidget(os, "addShortreadsButton", dialog);
-    CHECK_OP(os, );
-    GTWidget::click(os, addShortreadsButton);
-    CHECK_OP(os, );
+    foreach (const QString &readsFile, parameters->readsFiles) {
+        GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, readsFile));
+        GTWidget::click(os, GTWidget::findWidget(os, "addShortreadsButton", dialog));
+    }
 
     QComboBox* libraryComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "libraryComboBox", dialog));
-    CHECK_OP(os, );
     GT_CHECK(libraryComboBox, "libraryComboBox is NULL");
     if (libraryComboBox->isEnabled()) {
         GTComboBox::setIndexWithText(os, libraryComboBox, parameters->getLibrary());
-        CHECK_OP(os, );
     }
 
     QCheckBox* samBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "samBox", dialog));
-    CHECK_OP(os, );
     GT_CHECK(samBox, "samBox is NULL");
     if (samBox->isEnabled()) {
         GTCheckBox::setChecked(os, samBox, parameters->samOutput);
-        CHECK_OP(os, );
     }
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setAdditionalParameters"
 void AlignShortReadsFiller::setAdditionalParameters(QWidget* dialog) {
     Bowtie2Parameters* bowtie2Parameters = dynamic_cast<Bowtie2Parameters*>(parameters);
     if (NULL != bowtie2Parameters) {
@@ -156,7 +140,9 @@ void AlignShortReadsFiller::setAdditionalParameters(QWidget* dialog) {
         return;
     }
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setBowtie2AdditionalParameters"
 void AlignShortReadsFiller::setBowtie2AdditionalParameters(Bowtie2Parameters* bowtie2Parameters, QWidget* dialog) {
     // Parameters
     QComboBox* modeComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "modeComboBox", dialog));
@@ -276,12 +262,18 @@ void AlignShortReadsFiller::setBowtie2AdditionalParameters(Bowtie2Parameters* bo
     GTCheckBox::setChecked(os, nocontainCheckBox, bowtie2Parameters->noMatesContainingOneAnother);
     CHECK_OP(os, );
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setUgaAdditionalParameters"
 void AlignShortReadsFiller::setUgaAdditionalParameters(UgeneGenomeAlignerParams *ugaParameters, QWidget* dialog) {
     QGroupBox *mismatchesGroupbox = qobject_cast<QGroupBox *>(GTWidget::findWidget(os, "groupBox_mismatches", dialog));
     mismatchesGroupbox->setChecked(ugaParameters->mismatchesAllowed);
-}
 
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "firstMatchBox", dialog), ugaParameters->useBestMode);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setAdditionalParameters"
 void AlignShortReadsFiller::setBwaSwAdditionalParameters(AlignShortReadsFiller::BwaSwParameters *bwaSwParameters, QWidget *dialog) {
     GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "matchScoreSpinbox", dialog), bwaSwParameters->matchScore);
     GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "mismatchScoreSpinbox", dialog), bwaSwParameters->mismatchPenalty);
@@ -296,8 +288,78 @@ void AlignShortReadsFiller::setBwaSwAdditionalParameters(AlignShortReadsFiller::
     GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "revAlnThreshold", dialog), bwaSwParameters->seedsNumber);
     GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "hardClippingCheckBox", dialog), bwaSwParameters->preferHardClippingInSam);
 }
-
 #undef GT_METHOD_NAME
+
+AlignShortReadsFiller::UgeneGenomeAlignerParams::UgeneGenomeAlignerParams(const QString &refDir,
+                                                                          const QString &refFileName,
+                                                                          const QString &readsDir,
+                                                                          const QString &readsFileName,
+                                                                          bool allowMismatches) :
+    Parameters(refDir, refFileName, readsDir, readsFileName, UgeneGenomeAligner),
+    mismatchesAllowed(allowMismatches),
+    useBestMode(true)
+{
+
+}
+
+AlignShortReadsFiller::UgeneGenomeAlignerParams::UgeneGenomeAlignerParams(const QString &referenceFile,
+                                                                          const QStringList &readsFiles) :
+    Parameters(referenceFile, readsFiles, UgeneGenomeAligner),
+    mismatchesAllowed(false),
+    useBestMode(true)
+{
+
+}
+
+AlignShortReadsFiller::Parameters::Parameters(const QString &refDir,
+                                              const QString &refFileName,
+                                              const QString &readsDir,
+                                              const QString &readsFileName,
+                                              AlignShortReadsFiller::Parameters::AlignmentMethod alignmentMethod) :
+    alignmentMethod(alignmentMethod),
+    referenceFile(refDir + "/" + refFileName),
+    readsFiles(readsDir + "/" + readsFileName),
+    library(SingleEnd),
+    prebuiltIndex(false),
+    samOutput(true),
+    useDefaultResultPath(true)
+{
+
+}
+
+AlignShortReadsFiller::Parameters::Parameters(const QString &reference, const QStringList &reads, AlignmentMethod alignmentMethod) :
+    alignmentMethod(alignmentMethod),
+    referenceFile(reference),
+    readsFiles(reads),
+    library(SingleEnd),
+    prebuiltIndex(false),
+    samOutput(true),
+    useDefaultResultPath(true)
+{
+
+}
+
+const QMap<AlignShortReadsFiller::Parameters::AlignmentMethod, QString> AlignShortReadsFiller::Parameters::alignmentMethodMap = AlignShortReadsFiller::Parameters::initAlignmentMethodMap();
+const QMap<AlignShortReadsFiller::Parameters::Library, QString> AlignShortReadsFiller::Parameters::libraryMap = AlignShortReadsFiller::Parameters::initLibraryMap();
+
+QMap<AlignShortReadsFiller::Parameters::AlignmentMethod, QString> AlignShortReadsFiller::Parameters::initAlignmentMethodMap() {
+    QMap<AlignmentMethod, QString> result;
+    result.insert(Bwa, "BWA");
+    result.insert(BwaSw, "BWA-SW");
+    result.insert(BwaMem, "BWA-MEM");
+    result.insert(Bowtie, "Bowtie");
+    result.insert(Bowtie2, "Bowtie2");
+    result.insert(UgeneGenomeAligner, "UGENE Genome Aligner");
+    return result;
+}
+
+QMap<AlignShortReadsFiller::Parameters::Library, QString> AlignShortReadsFiller::Parameters::initLibraryMap() {
+    QMap<Library, QString> result;
+    result.insert(SingleEnd, "Single-end");
+    result.insert(PairedEnd, "Paired-end");
+    return result;
+}
+
 #undef GT_CLASS_NAME
 
 }
