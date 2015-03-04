@@ -87,6 +87,7 @@ private:
     QList<Header::Reference> references;
     QMap<int, U2AssemblyReadsImportInfo> importInfos;
     QMap<int, AssemblyImporter *> importers;
+    QList<U2Assembly> importedAssemblies;
 };
 
 class Iterator {

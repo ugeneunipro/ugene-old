@@ -22,6 +22,8 @@
 #ifndef _U2_SQLITE_DBI_H_
 #define _U2_SQLITE_DBI_H_
 
+#include <QStack>
+
 #include <U2Core/U2AbstractDbi.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2SqlHelpers.h>
@@ -175,8 +177,9 @@ private:
     SQLiteVariantDbi*                   variantDbi;
     SQLiteFeatureDbi*                   featureDbi;
     SQLiteModDbi*                       modDbi;
-    SQLiteTransaction*                  operationsBlockTransaction;
     SQLiteUdrDbi*                       udrDbi;
+
+    QStack<SQLiteTransaction *>         operationsBlockTransactions;
 
     friend class SQLiteObjectDbi;
     friend class SQLiteCrossDatabaseReferenceDbi;

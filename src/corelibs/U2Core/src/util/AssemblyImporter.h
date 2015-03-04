@@ -42,6 +42,7 @@ public:
     void addReads(U2DbiIterator<U2AssemblyRead> *readsIterator);
     void packReads(U2AssemblyReadsImportInfo &importInfo);
 
+    bool isObjectExist() const;
     const U2Assembly & getAssembly() const;
 
 private:

@@ -60,7 +60,6 @@ SQLiteDbi::SQLiteDbi()
     attributeDbi = new SQLiteAttributeDbi(this);
     variantDbi = new SQLiteVariantDbi(this);
     featureDbi = new SQLiteFeatureDbi(this);
-    operationsBlockTransaction = NULL;
     udrDbi = new SQLiteUdrDbi(this);
 
     upgraders << new SqliteUpgraderFrom_0_To_1_13(this);
@@ -183,17 +182,17 @@ void SQLiteDbi::setProperty(const QString& name, const QString& value, U2OpStatu
 }
 
 void SQLiteDbi::startOperationsBlock(U2OpStatus &os) {
-    SQLiteTransaction *newTransaction = new SQLiteTransaction(this->db, os);
-    this->db->useCache = true;
-    SAFE_POINT(NULL == operationsBlockTransaction, "Operations block initializing error", );
-    operationsBlockTransaction = newTransaction;
+    db->useCache = true;
+    operationsBlockTransactions.push(new SQLiteTransaction(this->db, os));
 }
 
-void SQLiteDbi::stopOperationBlock(U2OpStatus& /*os*/) {
-    SQLiteTransaction *transactionToDelete = operationsBlockTransaction;
-    this->db->useCache = false;
-    operationsBlockTransaction = NULL;
-    delete transactionToDelete;
+void SQLiteDbi::stopOperationBlock(U2OpStatus& os) {
+    SAFE_POINT_EXT(!operationsBlockTransactions.isEmpty(), os.setError("There is no transaction to delete"), );
+    delete operationsBlockTransactions.pop();
+
+    if (operationsBlockTransactions.isEmpty()) {
+        db->useCache = false;
+    }
 }
 
 QMutex * SQLiteDbi::getDbMutex( ) const {

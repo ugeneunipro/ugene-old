@@ -102,6 +102,10 @@ void AssemblyImporter::packReads(U2AssemblyReadsImportInfo &importInfo) {
     importInfo.packStat = stat;
 }
 
+bool AssemblyImporter::isObjectExist() const {
+    return objectExists;
+}
+
 const U2Assembly &AssemblyImporter::getAssembly() const {
     return assembly;
 }

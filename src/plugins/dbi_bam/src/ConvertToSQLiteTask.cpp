@@ -450,6 +450,9 @@ void ConvertToSQLiteTask::run() {
 
         updateAttributes();
 
+        foreach (AssemblyImporter *importer, importers) {
+            importedAssemblies << importer->getAssembly();
+        }
         qDeleteAll(importers);
         importers.clear();
 
@@ -489,11 +492,7 @@ GUrl ConvertToSQLiteTask::getDestinationUrl() const {
 }
 
 QList<U2Assembly> ConvertToSQLiteTask::getAssemblies() const {
-    QList<U2Assembly> assemblies;
-    foreach (AssemblyImporter *importer, importers) {
-        assemblies << importer->getAssembly();
-    }
-    return assemblies;
+    return importedAssemblies;
 }
 
 bool ConvertToSQLiteTask::isSorted(Reader *reader) const {
@@ -529,6 +528,13 @@ qint64 ConvertToSQLiteTask::importReads() {
         totalReadsImported += importSortedReads(samReader, bamReader, reader.data(), ioAdapter.data());
     } else {
         totalReadsImported += importUnsortedReads(samReader, bamReader, reader.data(), importInfos);
+    }
+
+    foreach (int referenceId, importers.keys()) {
+        if (!importers[referenceId]->isObjectExist()) {
+            delete importers[referenceId];
+            importers.remove(referenceId);
+        }
     }
 
     return totalReadsImported;
