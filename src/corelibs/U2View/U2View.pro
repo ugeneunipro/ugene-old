@@ -369,6 +369,7 @@ SOURCES += src/LicenseDialog.cpp \
            src/util_dna_assembly/BuildIndexDialog.cpp \
            src/util_dna_assembly/ConvertAssemblyToSamDialog.cpp \
            src/util_dna_assembly/DnaAssemblyDialog.cpp \
+           src/util_dna_assembly/DnaAssemblyGUIExtension.cpp \
            src/util_dna_assembly/DnaAssemblyUtils.cpp \
            src/util_dna_assembly/GenomeAssemblyDialog.cpp \
            src/util_msa_align/PairwiseAlignmentGUIExtension.cpp \

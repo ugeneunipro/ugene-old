@@ -77,6 +77,9 @@ public:
     static const QString OPTION_NOOVERLAP;
     static const QString OPTION_NOCONTAIN;
 
+    static const QStringList indexSuffixes;
+    static const QStringList largeIndexSuffixes;
+
 private:
     Bowtie2BuildIndexTask *buildIndexTask;
     Bowtie2AlignTask *alignTask;

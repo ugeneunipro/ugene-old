@@ -120,6 +120,9 @@ public:
     static const QString OPTION_ALL;
     static const QString OPTION_COLORSPACE;
     static const QString OPTION_THREADS;
+
+    static const QStringList indexSuffixes;
+    static const QStringList largeIndexSuffixes;
 private:
     BowtieBuildIndexTask *buildIndexTask;
     BowtieAssembleTask *assembleTask;

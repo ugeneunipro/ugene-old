@@ -105,10 +105,12 @@ DnaAssemblyToReferenceTask* BowtieWorker::getTask(const DnaAssemblyToRefTaskSett
 }
 
 void BowtieWorker::setGenomeIndex(DnaAssemblyToRefTaskSettings& settings){
-    QString refGenome = getValue<QString>(REFERENCE_GENOME);
-    settings.prebuiltIndex = !refGenome.contains(".fa");
-    settings.indexFileName = refGenome;
-    settings.refSeqUrl = refGenome;
+    settings.refSeqUrl = getValue<QString>(REFERENCE_GENOME);
+
+    QStringList suffixes = QStringList() << BowtieTask::indexSuffixes << BowtieTask::largeIndexSuffixes;
+    if (!DnaAssemblyToReferenceTask::isIndexUrl(settings.refSeqUrl.getURLString(), suffixes)) {
+        settings.indexFileName = QDir(settings.refSeqUrl.dirPath()).filePath(settings.refSeqUrl.baseFileName());
+    }
 }
 
 /************************************************************************/

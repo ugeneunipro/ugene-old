@@ -199,7 +199,7 @@ void DnaAssemblyDialog::accept() {
             }
             return;
         }
-        if (!customGUI->isIndexOk(error, refSeqEdit->text())) {
+        if (!customGUI->isIndexOk(refSeqEdit->text(), error)) {
             if (!prebuiltIndex) {
                 QMessageBox::StandardButton res = QMessageBox::warning(this, tr("DNA Assembly"), error, QMessageBox::Ok | QMessageBox::Cancel);
                 if (QMessageBox::Cancel == res) {
@@ -232,8 +232,20 @@ void DnaAssemblyDialog::accept() {
             lastShortReadsUrls.append(shortReadsTable->topLevelItem(i)->data(0,0).toString());
         }
 
+        DnaAssemblyToRefTaskSettings settings = DnaAssemblyGUIUtils::getSettings(this);
+        if (customGUI->isIndex(refSeqEdit->text())) {
+            if (customGUI->isValidIndex(refSeqEdit->text())) {
+                settings.prebuiltIndex = true;
+            } else {
+                QMessageBox::warning(this,
+                    tr("DNA Assembly"),
+                    tr("You set the index as a reference and the index files are corrupted.\n\nTry to build it again or choose a reference sequence."));
+                return;
+            }
+        }
+
         QList<GUrl> unknownFormatFiles;
-        QMap<QString, QString> toConvert = DnaAssemblySupport::toConvert(DnaAssemblyGUIUtils::getSettings(this), unknownFormatFiles);
+        QMap<QString, QString> toConvert = DnaAssemblySupport::toConvert(settings, unknownFormatFiles);
         if (!unknownFormatFiles.isEmpty()) {
             QString filesText = DnaAssemblySupport::unknownText(unknownFormatFiles);
             QMessageBox::warning(this,
@@ -317,6 +329,11 @@ bool DnaAssemblyDialog::isPaired() const {
 
 bool DnaAssemblyDialog::isSamOutput() const {
     return samBox->isChecked();
+}
+
+bool DnaAssemblyDialog::isPrebuiltIndex() const {
+    CHECK(NULL != customGUI, false);
+    return customGUI->isIndex(refSeqEdit->text());
 }
 
 QMap<QString, QVariant> DnaAssemblyDialog::getCustomSettings() {

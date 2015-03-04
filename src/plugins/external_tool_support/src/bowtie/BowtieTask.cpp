@@ -338,6 +338,9 @@ const QString BowtieTask::OPTION_ALL = "all";
 const QString BowtieTask::OPTION_COLORSPACE = "colorspace";
 const QString BowtieTask::OPTION_THREADS = "threads";
 
+const QStringList BowtieTask::indexSuffixes = QStringList() << ".1.ebwt" << ".2.ebwt" << ".3.ebwt" << ".4.ebwt" << ".rev.1.ebwt" << ".rev.2.ebwt";
+const QStringList BowtieTask::largeIndexSuffixes = QStringList() << ".1.ebwtl" << ".2.ebwtl" << ".3.ebwtl" << ".4.ebwtl" << ".rev.1.ebwtl" << ".rev.2.ebwtl";
+
 BowtieTask::BowtieTask(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex):
     DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSCOE, justBuildIndex),
     buildIndexTask(NULL),
@@ -354,18 +357,10 @@ void BowtieTask::prepare() {
         settings.refSeqUrl = GUrl(QFileInfo(temp).absoluteFilePath());
     }
 
-    QStringList indexSuffixes;
-    indexSuffixes << ".1.ebwt" << ".2.ebwt" << ".3.ebwt" << ".4.ebwt" << ".rev.1.ebwt" << ".rev.2.ebwt";
-
     if(!justBuildIndex) {
         setUpIndexBuilding(indexSuffixes);
         if(!settings.prebuiltIndex) {
-            QStringList largeIndexSuffixes;
-            largeIndexSuffixes << ".1.ebwtl" << ".2.ebwtl" << ".3.ebwtl" << ".4.ebwtl" << ".rev.1.ebwtl" << ".rev.2.ebwtl";
             setUpIndexBuilding(largeIndexSuffixes);
-            if(settings.prebuiltIndex) {
-                indexSuffixes = largeIndexSuffixes;
-            }
         }
     }
 

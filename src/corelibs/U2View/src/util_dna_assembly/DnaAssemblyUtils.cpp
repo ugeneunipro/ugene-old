@@ -100,6 +100,7 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
         s.shortReadSets = dlg.getShortReadSets();
         s.pairedReads = dlg.isPaired();
         s.openView = true;
+        s.prebuiltIndex = dlg.isPrebuiltIndex();
         Task* assemblyTask = new DnaAssemblyTaskWithConversions(s, true);
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
     }

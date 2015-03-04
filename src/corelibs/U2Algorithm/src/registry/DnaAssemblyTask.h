@@ -80,14 +80,17 @@ private:
 class U2ALGORITHM_EXPORT DnaAssemblyToReferenceTask : public Task {
     Q_OBJECT
 public:
-    DnaAssemblyToReferenceTask(const DnaAssemblyToRefTaskSettings& settings, TaskFlags flags = TaskFlags_FOSCOE, bool justBuildIndex = false);
-    virtual ~DnaAssemblyToReferenceTask() {}
+    DnaAssemblyToReferenceTask(const DnaAssemblyToRefTaskSettings &settings, TaskFlags flags = TaskFlags_FOSCOE, bool justBuildIndex = false);
+
     bool isHaveResult() const {return haveResults;}
     const DnaAssemblyToRefTaskSettings& getSettings() const{return settings;}
 
+    static bool isIndexUrl(const QString &url, const QStringList &indexSuffixes);
+    static QString getBaseUrl(const QString &url, const QStringList &indexSuffixes);
+    static bool isPrebuiltIndex(const QString &baseFileName, const QStringList& indexExtensions);
+
 protected:
     void setUpIndexBuilding(const QStringList& indexExtensions);
-    bool isPrebuiltIndex(const QString& baseFileName, const QStringList& indexExtensions);
 
     DnaAssemblyToRefTaskSettings settings;
     bool justBuildIndex;

@@ -32,9 +32,9 @@ class BowtieSettingsWidget : public DnaAssemblyAlgorithmMainWidget, Ui_BowtieSet
     Q_OBJECT
 public:
     BowtieSettingsWidget(QWidget *parent);
-    QMap<QString, QVariant> getDnaAssemblyCustomSettings();
-    void buildIndexUrl(const GUrl &url);
-    bool isParametersOk(QString &);
+    QMap<QString, QVariant> getDnaAssemblyCustomSettings() const;
+    bool isParametersOk(QString &) const;
+    bool isValidIndex(const QString &oneFileUrl) const;
 };
 
 class BowtieBuildSettingsWidget : public DnaAssemblyAlgorithmBuildIndexWidget, Ui_BowtieBuildSettings {

@@ -154,6 +154,7 @@ public:
     static const QString OPTION_UNPAIRED_PENALTY;
     static const QString OPTION_SCORE_THRESHOLD;
 
+    static const QStringList indexSuffixes;
 
     /*
     -k INT     minimum seed length [19]

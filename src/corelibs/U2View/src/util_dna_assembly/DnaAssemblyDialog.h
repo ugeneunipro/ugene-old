@@ -68,6 +68,7 @@ public:
     const QString getResultFileName();
     bool isPaired() const;
     bool isSamOutput() const;
+    bool isPrebuiltIndex() const;
     QMap<QString,QVariant> getCustomSettings();
 
 protected:

@@ -54,9 +54,11 @@ Bowtie2SettingsWidget::Bowtie2SettingsWidget(QWidget *parent):
     threadsLabel->setVisible(false);
     threadsSpinBox->setVisible(false);
 #endif
+    indexSuffixes << Bowtie2Task::indexSuffixes;
+    indexSuffixes << Bowtie2Task::largeIndexSuffixes;
 }
 
-QMap<QString,QVariant> Bowtie2SettingsWidget::getDnaAssemblyCustomSettings() {
+QMap<QString,QVariant> Bowtie2SettingsWidget::getDnaAssemblyCustomSettings() const {
     QMap<QString, QVariant> settings;
 
     switch(modeComboBox->currentIndex()) {
@@ -97,7 +99,7 @@ QMap<QString,QVariant> Bowtie2SettingsWidget::getDnaAssemblyCustomSettings() {
     return settings;
 }
 
-bool Bowtie2SettingsWidget::isParametersOk(QString& /*error*/) {
+bool Bowtie2SettingsWidget::isParametersOk(QString& /*error*/) const {
 
     ExternalTool* bowtie2 = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE2_ALIGN);
     ExternalTool* bowtie2Build = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE2_BUILD);
@@ -118,6 +120,17 @@ bool Bowtie2SettingsWidget::isParametersOk(QString& /*error*/) {
     }
 
     return true;
+}
+
+bool Bowtie2SettingsWidget::isValidIndex(const QString &oneIndexFileUrl) const {
+    QStringList suffixes;
+    suffixes << Bowtie2Task::indexSuffixes;
+    suffixes << Bowtie2Task::largeIndexSuffixes;
+
+    QString baseUrl = DnaAssemblyToReferenceTask::getBaseUrl(oneIndexFileUrl, suffixes);
+    bool index = DnaAssemblyToReferenceTask::isPrebuiltIndex(baseUrl, Bowtie2Task::indexSuffixes);
+    bool largeIndex = DnaAssemblyToReferenceTask::isPrebuiltIndex(baseUrl, Bowtie2Task::largeIndexSuffixes);
+    return index || largeIndex;
 }
 
 // Bowtie2GUIExtensionsFactory

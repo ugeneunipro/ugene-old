@@ -216,6 +216,8 @@ const QString Bowtie2Task::OPTION_NOFW = "nofw";
 const QString Bowtie2Task::OPTION_NORC = "norc";
 const QString Bowtie2Task::OPTION_NOOVERLAP = "no-overlap";
 const QString Bowtie2Task::OPTION_NOCONTAIN = "no-contain";
+const QStringList Bowtie2Task::indexSuffixes = QStringList() << ".1.bt2" << ".2.bt2" << ".3.bt2" << ".4.bt2" << ".rev.1.bt2" << ".rev.2.bt2";
+const QStringList Bowtie2Task::largeIndexSuffixes = QStringList() << ".1.bt2l" << ".2.bt2l" << ".3.bt2l" << ".4.bt2l" << ".rev.1.bt2l" << ".rev.2.bt2l";
 
 Bowtie2Task::Bowtie2Task(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex):
     DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSE_COSC, justBuildIndex),
@@ -226,18 +228,10 @@ Bowtie2Task::Bowtie2Task(const DnaAssemblyToRefTaskSettings &settings, bool just
 }
 
 void Bowtie2Task::prepare() {
-    QStringList indexSuffixes;
-    indexSuffixes << ".1.bt2" << ".2.bt2" << ".3.bt2" << ".4.bt2" << ".rev.1.bt2" << ".rev.2.bt2";
-
     if(!justBuildIndex) {
         setUpIndexBuilding(indexSuffixes);
         if(!settings.prebuiltIndex) {
-            QStringList largeIndexSuffixes;
-            largeIndexSuffixes << ".1.bt2l" << ".2.bt2l" << ".3.bt2l" << ".4.bt2l" << ".rev.1.bt2l" << ".rev.2.bt2l";
             setUpIndexBuilding(largeIndexSuffixes);
-            if(settings.prebuiltIndex) {
-                indexSuffixes = largeIndexSuffixes;
-            }
         }
     }
 

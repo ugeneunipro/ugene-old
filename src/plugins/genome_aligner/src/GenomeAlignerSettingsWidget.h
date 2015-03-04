@@ -31,11 +31,10 @@ class GenomeAlignerSettingsWidget : public DnaAssemblyAlgorithmMainWidget, Ui_Ge
     Q_OBJECT
 public:
     GenomeAlignerSettingsWidget(QWidget* parent);
-    virtual QMap<QString,QVariant> getDnaAssemblyCustomSettings();
-    virtual bool isParametersOk(QString &error);
-    virtual bool buildIndexUrl(const GUrl& url, bool prebuiltIndex, QString &error);
-    virtual void prebuiltIndex(bool value);
-    virtual bool isIndexOk(QString &error, GUrl refName);
+    virtual QMap<QString,QVariant> getDnaAssemblyCustomSettings() const;
+    virtual bool isParametersOk(QString &error) const;
+    virtual bool buildIndexUrl(const GUrl& url, bool prebuiltIndex, QString &error) const;
+    virtual bool isIndexOk(const GUrl &url, QString &error) const;
 
 private slots:
     void sl_onSetIndexDirButtonClicked();

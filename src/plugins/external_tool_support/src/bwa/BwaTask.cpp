@@ -451,8 +451,7 @@ const QString BwaTask::ALGORITHM_BWA_SW = "BWA-SW";
 const QString BwaTask::ALGORITHM_BWA_ALN = "BWA";
 const QString BwaTask::ALGORITHM_BWA_MEM = "BWA-MEM";
 
-
-
+const QStringList BwaTask::indexSuffixes = QStringList() << ".amb" << ".ann" << ".bwt" << ".pac" << ".sa";
 
 BwaTask::BwaTask(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex):
     DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSCOE, justBuildIndex),
@@ -463,11 +462,8 @@ BwaTask::BwaTask(const DnaAssemblyToRefTaskSettings &settings, bool justBuildInd
 }
 
 void BwaTask::prepare() {
-    QStringList indexExtensions;
-    indexExtensions << ".amb" << ".ann" << ".bwt" << ".pac" << ".sa";
-
     if(!justBuildIndex) {
-        setUpIndexBuilding(indexExtensions);
+        setUpIndexBuilding(indexSuffixes);
     }
 
     QString indexFileName = settings.indexFileName;

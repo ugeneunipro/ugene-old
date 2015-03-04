@@ -125,9 +125,10 @@ BwaSettingsWidget::BwaSettingsWidget(QWidget *parent)
     warningReporter->setReportingLabel( infoLabel );
     connect( indexAlgorithmComboBox, SIGNAL( currentIndexChanged ( int ) ), warningReporter,
         SLOT( sl_IndexAlgorithmChanged( int ) ) );
+    indexSuffixes << BwaTask::indexSuffixes;
 }
 
-QMap<QString,QVariant> BwaSettingsWidget::getDnaAssemblyCustomSettings() {
+QMap<QString,QVariant> BwaSettingsWidget::getDnaAssemblyCustomSettings() const {
     QMap<QString, QVariant> settings;
 
     {
@@ -175,15 +176,7 @@ QMap<QString,QVariant> BwaSettingsWidget::getDnaAssemblyCustomSettings() {
     return settings;
 }
 
-void BwaSettingsWidget::buildIndexUrl(const GUrl &) {
-    // do nothing
-}
-
-bool BwaSettingsWidget::isParametersOk(QString &) {
-    return true;
-}
-
-void BwaSettingsWidget::validateReferenceSequence( const GUrl &url ) {
+void BwaSettingsWidget::validateReferenceSequence( const GUrl &url ) const {
     warningReporter->setRefSequencePath( url );
     warningReporter->sl_IndexAlgorithmChanged( indexAlgorithmComboBox->currentIndex( ) );
 }
@@ -281,7 +274,7 @@ BwaSwSettingsWidget::BwaSwSettingsWidget(QWidget *parent):
         SLOT( sl_IndexAlgorithmChanged( int ) ) );
 }
 
-QMap<QString,QVariant> BwaSwSettingsWidget::getDnaAssemblyCustomSettings() {
+QMap<QString,QVariant> BwaSwSettingsWidget::getDnaAssemblyCustomSettings() const {
     QMap<QString, QVariant> settings;
 
     settings.insert(BwaTask::OPTION_SW_ALIGNMENT,true);
@@ -304,15 +297,7 @@ QMap<QString,QVariant> BwaSwSettingsWidget::getDnaAssemblyCustomSettings() {
     return settings;
 }
 
-void BwaSwSettingsWidget::buildIndexUrl(const GUrl &) {
-    // do nothing
-}
-
-bool BwaSwSettingsWidget::isParametersOk(QString &) {
-    return true;
-}
-
-void BwaSwSettingsWidget::validateReferenceSequence( const GUrl &url ) {
+void BwaSwSettingsWidget::validateReferenceSequence( const GUrl &url ) const {
     warningReporter->setRefSequencePath( url );
     warningReporter->sl_IndexAlgorithmChanged( indexAlgorithmComboBox->currentIndex( ) );
 }
@@ -358,7 +343,7 @@ BwaMemSettingsWidget::BwaMemSettingsWidget(QWidget *parent):
         SLOT( sl_IndexAlgorithmChanged( int ) ) );
 }
 
-QMap<QString,QVariant> BwaMemSettingsWidget::getDnaAssemblyCustomSettings() {
+QMap<QString,QVariant> BwaMemSettingsWidget::getDnaAssemblyCustomSettings() const {
     QMap<QString, QVariant> settings;
 
     settings.insert(BwaTask::OPTION_THREADS, numThreadsSpinbox->value());
@@ -389,15 +374,7 @@ QMap<QString,QVariant> BwaMemSettingsWidget::getDnaAssemblyCustomSettings() {
     return settings;
 }
 
-void BwaMemSettingsWidget::buildIndexUrl(const GUrl &) {
-    // do nothing
-}
-
-bool BwaMemSettingsWidget::isParametersOk(QString &) {
-    return true;
-}
-
-void BwaMemSettingsWidget::validateReferenceSequence( const GUrl &url ) {
+void BwaMemSettingsWidget::validateReferenceSequence( const GUrl &url ) const {
     warningReporter->setRefSequencePath( url );
     warningReporter->sl_IndexAlgorithmChanged( indexAlgorithmComboBox->currentIndex( ) );
 }

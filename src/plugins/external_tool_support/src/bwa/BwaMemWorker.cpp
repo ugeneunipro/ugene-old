@@ -116,9 +116,12 @@ DnaAssemblyToReferenceTask* BwaMemWorker::getTask(const DnaAssemblyToRefTaskSett
 }
 
 void BwaMemWorker::setGenomeIndex(DnaAssemblyToRefTaskSettings& settings) {
-    settings.prebuiltIndex = true;
-    settings.indexFileName = getValue<QString>(REFERENCE_GENOME);
-    settings.refSeqUrl = GUrl(settings.indexFileName);
+    settings.refSeqUrl = getValue<QString>(REFERENCE_GENOME);
+    settings.prebuiltIndex = DnaAssemblyToReferenceTask::isIndexUrl(settings.refSeqUrl.getURLString(), BwaTask::indexSuffixes);
+
+    if (!settings.prebuiltIndex) {
+        settings.indexFileName = QDir(settings.refSeqUrl.dirPath()).filePath(settings.refSeqUrl.baseFileName());
+    }
 }
 
 /************************************************************************/

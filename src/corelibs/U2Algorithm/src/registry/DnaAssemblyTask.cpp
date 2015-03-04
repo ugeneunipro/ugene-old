@@ -19,27 +19,54 @@
  * MA 02110-1301, USA.
  */
 
+#include <QDir>
+#include <QFileInfo>
+
 #include "DnaAssemblyTask.h"
-#include <QtCore/QFileInfo>
 
 namespace U2 {
 
-DnaAssemblyToReferenceTask::DnaAssemblyToReferenceTask( const DnaAssemblyToRefTaskSettings& s, TaskFlags _flags, bool _justBuildIndex )
- : Task("DnaAssemblyToRefTask", _flags), settings(s), justBuildIndex(_justBuildIndex) {
+DnaAssemblyToReferenceTask::DnaAssemblyToReferenceTask(const DnaAssemblyToRefTaskSettings &settings, TaskFlags flags, bool justBuildIndex)
+: Task(tr("Align short reads"), flags), settings(settings), justBuildIndex(justBuildIndex) {
 }
 
-void DnaAssemblyToReferenceTask::setUpIndexBuilding(const QStringList& indexExtensions) {
-    settings.prebuiltIndex = isPrebuiltIndex(settings.refSeqUrl.getURLString(), indexExtensions);
-    if(!settings.prebuiltIndex) {
-        int extensionSeparatorPos = settings.refSeqUrl.getURLString().lastIndexOf('.');
-        if(extensionSeparatorPos > 0) {
-            QString baseIndexName = settings.refSeqUrl.getURLString().left(extensionSeparatorPos);
-            if(isPrebuiltIndex(baseIndexName, indexExtensions)) {
-                settings.prebuiltIndex = true;
-                settings.refSeqUrl = GUrl(baseIndexName);
-            }
+void DnaAssemblyToReferenceTask::setUpIndexBuilding(const QStringList &indexSuffixes) {
+    if (isIndexUrl(settings.refSeqUrl.getURLString(), indexSuffixes)) {
+        settings.prebuiltIndex = true;
+        settings.refSeqUrl = getBaseUrl(settings.refSeqUrl.getURLString(), indexSuffixes);
+        settings.indexFileName = settings.refSeqUrl.getURLString();
+        return;
+    }
+
+    settings.prebuiltIndex = isPrebuiltIndex(settings.refSeqUrl.getURLString(), indexSuffixes);
+    if (settings.prebuiltIndex) {
+        settings.indexFileName = settings.refSeqUrl.getURLString();
+    } else {
+        QString baseUrl = QDir(settings.refSeqUrl.dirPath()).filePath(settings.refSeqUrl.baseFileName());
+        settings.prebuiltIndex = isPrebuiltIndex(baseUrl, indexSuffixes);
+        if (settings.prebuiltIndex) {
+            settings.refSeqUrl = baseUrl;
+            settings.indexFileName = baseUrl;
         }
     }
+}
+
+bool DnaAssemblyToReferenceTask::isIndexUrl(const QString &url, const QStringList &indexSuffixes) {
+    foreach (const QString &suffix, indexSuffixes) {
+        if (url.endsWith(suffix)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+QString DnaAssemblyToReferenceTask::getBaseUrl(const QString &url, const QStringList &indexSuffixes) {
+    foreach (const QString &suffix, indexSuffixes) {
+        if (url.endsWith(suffix)) {
+            return url.left(url.length() - suffix.length());
+        }
+    }
+    return url;
 }
 
 bool DnaAssemblyToReferenceTask::isPrebuiltIndex(const QString& baseFileName, const QStringList& indexExtensions) {

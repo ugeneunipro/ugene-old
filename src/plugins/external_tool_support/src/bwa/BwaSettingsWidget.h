@@ -51,10 +51,8 @@ class BwaSettingsWidget : public DnaAssemblyAlgorithmMainWidget, Ui_BwaSettings 
     Q_OBJECT
 public:
     BwaSettingsWidget(QWidget *parent);
-    QMap<QString, QVariant> getDnaAssemblyCustomSettings();
-    void buildIndexUrl(const GUrl &url);
-    bool isParametersOk(QString &);
-    void validateReferenceSequence(const GUrl &url);
+    QMap<QString, QVariant> getDnaAssemblyCustomSettings() const;
+    void validateReferenceSequence(const GUrl &url) const;
 
 private:
     BwaIndexAlgorithmWarningReporter *warningReporter;
@@ -64,10 +62,8 @@ class BwaSwSettingsWidget : public DnaAssemblyAlgorithmMainWidget, Ui_BwaSwSetti
     Q_OBJECT
 public:
     BwaSwSettingsWidget(QWidget *parent);
-    QMap<QString, QVariant> getDnaAssemblyCustomSettings();
-    void buildIndexUrl(const GUrl &url);
-    bool isParametersOk(QString &);
-    void validateReferenceSequence(const GUrl &url);
+    QMap<QString, QVariant> getDnaAssemblyCustomSettings() const;
+    void validateReferenceSequence(const GUrl &url) const;
 private:
     BwaIndexAlgorithmWarningReporter *warningReporter;
 };
@@ -76,10 +72,8 @@ class BwaMemSettingsWidget : public DnaAssemblyAlgorithmMainWidget, Ui_BwaMemSet
     Q_OBJECT
 public:
     BwaMemSettingsWidget(QWidget *parent);
-    QMap<QString, QVariant> getDnaAssemblyCustomSettings();
-    void buildIndexUrl(const GUrl &url);
-    bool isParametersOk(QString &);
-    void validateReferenceSequence(const GUrl &url);
+    QMap<QString, QVariant> getDnaAssemblyCustomSettings() const;
+    void validateReferenceSequence(const GUrl &url) const;
 private:
     BwaIndexAlgorithmWarningReporter *warningReporter;
 };
