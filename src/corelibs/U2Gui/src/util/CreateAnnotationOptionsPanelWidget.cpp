@@ -172,7 +172,7 @@ bool CreateAnnotationOptionsPanelWidget::isNewTableOptionSelected() const {
 }
 
 bool CreateAnnotationOptionsPanelWidget::isExistingTableOptionSelected() const {
-    return rbUseAutoTable->isChecked();
+    return rbExistingTable->isChecked();
 }
 
 bool CreateAnnotationOptionsPanelWidget::isAutoTableOptionSelected() const {
