@@ -168,7 +168,8 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
             annotationsObject = merge ? mergedAnnotations.data( ) : new AnnotationTableObject( annotationName, dbiRef, hints );
 
             QStringList groupNames;
-            foreach ( SharedAnnotationData d, data.features ) {
+            for (int i = 0, n = data.features.size(); i < n; ++i) {
+                SharedAnnotationData &d = data.features[i];
                 if (!d->location->regions.isEmpty()) {
                     for (int i = 0, n = d->location->regions.size(); i < n; ++i) {
                         // for some reason larger numbers cannot be stored within rtree SQLite tables
@@ -177,13 +178,13 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
                         }
                     }
                 }
-                groupNames.clear( );
-                d->removeAllQualifiers( GBFeatureUtils::QUALIFIER_GROUP, groupNames );
+                groupNames.clear();
+                d->removeAllQualifiers(GBFeatureUtils::QUALIFIER_GROUP, groupNames);
                 if (groupNames.isEmpty()) {
-                    annotationsObject->addAnnotation( *d );
+                    annotationsObject->addAnnotation(*d);
                 } else {
                     foreach(const QString& gName, groupNames) {
-                        annotationsObject->addAnnotation( *d, gName );
+                        annotationsObject->addAnnotation(*d, gName);
                     }
                 }
             }

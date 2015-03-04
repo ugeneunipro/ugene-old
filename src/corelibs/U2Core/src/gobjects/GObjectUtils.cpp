@@ -151,6 +151,11 @@ QList<GObject *> findRelatedObjectsForUnloadedObjects(const GObjectReference &ob
     return res;
 }
 
+bool objectHasInMemoryRelationToReference(GObject *object, const GObjectReference &reference, GObjectRelationRole role) {
+    SAFE_POINT(NULL != object && reference.isValid(), "Invalid object reference detected", false);
+    return object->getGHints()->get(GObjectHint_RelatedObjects).value<QList<GObjectRelation> >().contains(GObjectRelation(reference, role));
+}
+
 QList<GObject *> findRelatedObjectsForLoadedObjects(const GObjectReference &obj, GObjectRelationRole role, const QSet<GObject*> &fromObjects) {
     QList<GObject *> res;
 
@@ -167,6 +172,8 @@ QList<GObject *> findRelatedObjectsForLoadedObjects(const GObjectReference &obj,
             const U2DbiRef dbiRef = object->getEntityRef().dbiRef;
             if (obj.entityRef.dbiRef == dbiRef) {
                 doc2DbiRef.insert(doc, obj.entityRef.dbiRef);
+            } else if (objectHasInMemoryRelationToReference(object, obj, role)) {
+                res.append(object);
             }
         }
     }

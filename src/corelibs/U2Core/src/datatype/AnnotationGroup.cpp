@@ -105,7 +105,7 @@ namespace {
 ParentFeatureStatus isRootGroup(const AnnotationGroup &group, const U2DbiRef &dbiRef, U2OpStatus &os) {
     const U2Feature feature = U2FeatureUtils::getFeatureById(group.id, U2Feature::Group, dbiRef, os);
     CHECK_OP(os, Nonroot);
-    return group.id == feature.rootFeatureId ? Root : Nonroot;
+    return feature.rootFeatureId.isEmpty() ? Root : Nonroot;
 }
 
 }
