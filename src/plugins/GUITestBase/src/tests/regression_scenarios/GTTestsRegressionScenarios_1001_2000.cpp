@@ -971,6 +971,23 @@ GUI_TEST_CLASS_DEFINITION(test_1069) {
     CHECK_SET_ERR(annItem == NULL, "Auto-annotations are switched on");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1071) {
+    GTLogTracer l;
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTUtilsAnnotationsTreeView::selectItems(os, QStringList() << "CDS");
+
+    //1. Open edit annotation name and region dialog (by F2).
+    //2. Enter an invalid region (e.g. asdfsadf12..25).
+    //3. Click OK.
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTUtilsDialog::waitForDialog(os, new EditAnnotationFiller(os, "CDS", "asdfsadf12..25"));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+
+    //expected state: Error message appears, UGENE does not crash.
+    CHECK_SET_ERR(!l.hasError(), "Errors in log");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1078){ //Need to add the test
 /* 1. File-New Project
  * 2. Open as - HannaRescued.fa(https://ugene.unipro.ru/tracker/browse/UGENE-1078) (FASTA format. Score:13 (Perfect match) - OK, As separate sequences in sequence viewer - OK)
