@@ -951,6 +951,26 @@ GUI_TEST_CLASS_DEFINITION(test_1065_3) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1069) {
+    //1. Open any sequence
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+    //2. Switch on auto-annotations
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
+    GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //3. Close the sequence view
+    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
+
+    //4. Open human_t1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+
+    //Expected state: auto-annotations are switched off
+    QTreeWidgetItem *annItem =  GTUtilsAnnotationsTreeView::findFirstAnnotation(os, GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(annItem == NULL, "Auto-annotations are switched on");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1078){ //Need to add the test
 /* 1. File-New Project
  * 2. Open as - HannaRescued.fa(https://ugene.unipro.ru/tracker/browse/UGENE-1078) (FASTA format. Score:13 (Perfect match) - OK, As separate sequences in sequence viewer - OK)
