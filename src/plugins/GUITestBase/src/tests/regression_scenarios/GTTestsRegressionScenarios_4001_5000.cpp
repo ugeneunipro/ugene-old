@@ -38,14 +38,17 @@
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTTextEdit.h"
 #include "api/GTWidget.h"
 
+#include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
+#include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
 
@@ -222,6 +225,30 @@ GUI_TEST_CLASS_DEFINITION(test_4045) {
     GTUtilsDocument::loadDocument(os, "murine.gb");
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsLog::check(os, logTracer);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4059) {
+    GTLogTracer l;
+    //1. Open "_common_data/text/text.txt".
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "Plain text"));
+    GTFileDialog::openFile(os, testDir + "_common_data/text/text.txt");
+
+    //2. Delete the "Text" object.
+    GTUtilsProjectTreeView::click(os, "text");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    //3. Unload the document.
+    MessageBoxDialogFiller *filler = new MessageBoxDialogFiller(os, "No");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsDocument::unloadDocument(os, "text.txt", false);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //4. Load the document.
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "text.txt"));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+
+    //Expected: no safe points triggered.
+    CHECK_SET_ERR(!l.hasError(), "Errors in log");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4064) {
