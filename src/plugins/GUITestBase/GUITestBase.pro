@@ -91,6 +91,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h \
 #   Runnables / UGENE / plugins / dna_export
             src/runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h \
+            src/runnables/ugene/plugins/dna_export/ExportBlastResultDialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h \
@@ -341,6 +342,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.cpp \
 #   Runnables / UGENE / plugins / dna_export
             src/runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.cpp \
+            src/runnables/ugene/plugins/dna_export/ExportBlastResultDialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.cpp \

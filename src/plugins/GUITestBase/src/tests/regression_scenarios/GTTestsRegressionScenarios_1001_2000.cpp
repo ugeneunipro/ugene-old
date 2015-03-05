@@ -116,6 +116,7 @@
 #include "runnables/ugene/plugins/biostruct3d_view/StructuralAlignmentDialogFiller.h"
 #include "runnables/ugene/plugins/cap3/CAP3SupportDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportBlastResultDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromAlignmentDialogFiller.h"
@@ -1230,7 +1231,43 @@ GUI_TEST_CLASS_DEFINITION(test_1113_1){//commit AboutDialogController.cpp
     GTMenu::clickMenuItemByName(os, menu, QStringList() << ACTION__ABOUT);
     GTGlobals::sleep(1000);
 //Expected state: About dialog appeared, shown info includes platform info (32/64)
+}
 
+GUI_TEST_CLASS_DEFINITION(test_1115) {
+//    1. Open file "Genbank\murine.gb"
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+//    2. Use menu {Analyze->Query NCBI BLAST database}
+//    3. Run Blast
+    GTUtilsSequenceView::selectSequenceRegion(os, 1, 100);
+
+    GTUtilsDialog::waitForDialog(os, new RemoteBLASTDialogFiller(os));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Query NCBI BLAST database");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QList<QTreeWidgetItem *> blastResultItems = GTUtilsAnnotationsTreeView::findItems(os, "blast result");
+    CHECK_SET_ERR(2 <= blastResultItems.size(), "Not enough BLAST results");
+
+    const QStringList expectedNames = QStringList() << GTUtilsAnnotationsTreeView::getQualifierValue(os, "accession", blastResultItems.first())
+                                                    << GTUtilsAnnotationsTreeView::getQualifierValue(os, "accession", blastResultItems.last());
+
+//    4. Select two or more BLAST annotations
+    GTUtilsAnnotationsTreeView::selectItems(os, QList<QTreeWidgetItem *>() << blastResultItems.first() << blastResultItems.last());
+
+//    5. Use menu {Export->Export blast result to alignment}
+//    6. Click "Export"
+    QDir().mkpath(sandBoxDir + "test_1115");
+    GTUtilsDialog::waitForDialog(os, new ExportBlastResultDialogFiller(os, sandBoxDir + "test_1115/test_1115.aln"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Export BLAST result to alignment"));
+    GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, blastResultItems.first());
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    7. Check that annotations correctly exported
+    GTUtilsDocument::checkDocument(os, "test_1115.aln", MSAEditorFactory::ID);
+
+    const QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(expectedNames == names, QString("Unexpected msa rows names: expect '%1', got '%2'")
+                  .arg(expectedNames.join(", ")).arg(names.join(", ")));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1121) {

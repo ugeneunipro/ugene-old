@@ -88,7 +88,6 @@ void GTTreeWidget::checkItem(U2OpStatus &os, QTreeWidgetItem *item, int column, 
         const QPoint magicCheckBoxOffset = QPoint(15, 35);
         GTMouseDriver::moveTo(os, tree->mapToGlobal(itemStartPos + itemLevelOffset + columnOffset + magicCheckBoxOffset));
         GTMouseDriver::click(os);
-        coreLog.error(QString("column: %1").arg(columnOffset.x()));
         break;
     }
     default:

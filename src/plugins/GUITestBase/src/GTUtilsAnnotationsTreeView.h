@@ -53,6 +53,7 @@ public:
 
     static QString getSelectedItem(U2OpStatus &os);
     static QString getAVItemName(U2OpStatus &os, AVItem* avItem);
+    static QString getQualifierValue(U2OpStatus &os, const QString &qualifierName, QTreeWidgetItem *parentItem);
     static QString getQualifierValue(U2OpStatus &os, const QString &qualName, const QString &parentName);
     static QList<U2Region> getAnnotatedRegions(U2OpStatus &os);
     static QString getAnnotationRegionString(U2OpStatus &os, const QString &annotationName);
@@ -60,6 +61,7 @@ public:
     static void createQualifier(U2OpStatus &os, const QString &qualName, const QString &qualValue, const QString &parentName);
 
     static void selectItems(U2OpStatus &os, const QStringList& items);
+    static void selectItems(U2OpStatus &os, const QList<QTreeWidgetItem *> &items);
 
     // location string format: 1..51
     static void createAnnotation(U2OpStatus &os, const QString &groupName, const QString &annotationName, const QString &location, bool createNewTable = true, const QString &saveTo = "");
@@ -67,6 +69,7 @@ public:
     static void deleteItem(U2OpStatus &os, const QString &itemName);
     static void deleteItem(U2OpStatus &os, QTreeWidgetItem *item);
 
+    static void callContextMenuOnItem(U2OpStatus &os, QTreeWidgetItem *item);
     static void callContextMenuOnItem(U2OpStatus &os, const QString &itemName);
     static void callContextMenuOnQualifier(U2OpStatus &os, const QString &parentName, const QString &qualifierName);
 
