@@ -105,7 +105,7 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
     thresholdSlider->setMaximum(100);
     thresholdSlider->setValue(50);
     thresholdSlider->setTickPosition(QSlider::TicksRight);
-    thresholdSlider->setObjectName("thresholdSlider");    
+    thresholdSlider->setObjectName("thresholdSlider");
 
     thresholdLabel = new QLabel(tr("Threshold: %1%").arg(thresholdSlider->value()), this);
 
