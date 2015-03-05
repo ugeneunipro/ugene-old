@@ -149,7 +149,6 @@ bool MWMDIManagerImpl::eventFilter(QObject *obj, QEvent *event) {
     } else if (t == QEvent::WindowStateChange) {
         QMdiSubWindow* qw = qobject_cast<QMdiSubWindow*>(obj);
         defaultIsMaximized = qw->isMaximized();
-
     }
     return QObject::eventFilter(obj, event);
 }

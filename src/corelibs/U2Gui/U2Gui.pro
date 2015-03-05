@@ -75,6 +75,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/ScriptHighlighter.h \
            src/util/SearchGenbankSequenceDialogController.h \
            src/util/SeqPasterWidgetController.h \
+           src/util/SequenceTextEdit.h \
            src/util/SuggestCompleter.h \
            src/util/TreeWidgetUtils.h \
            src/util/U2FileDialog.h \
@@ -209,6 +210,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/ScriptHighlighter.cpp \
            src/util/SearchGenbankSequenceDialogController.cpp \
            src/util/SeqPasterWidgetController.cpp \
+           src/util/SequenceTextEdit.cpp \
            src/util/SuggestCompleter.cpp \
            src/util/TreeWidgetUtils.cpp \
            src/util/U2FileDialog.cpp \

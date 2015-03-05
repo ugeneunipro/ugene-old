@@ -6,15 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
-    <height>302</height>
+    <width>354</width>
+    <height>303</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Create annotation</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -25,7 +34,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QPlainTextEdit" name="sequenceEdit">
+    <widget class="U2::SequenceTextEdit" name="sequenceEdit">
      <property name="minimumSize">
       <size>
        <width>300</width>
@@ -94,6 +103,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>U2::SequenceTextEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header location="global">U2Gui/SequenceTextEdit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

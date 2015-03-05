@@ -28,12 +28,10 @@
 #include <QtGui/QApplication>
 #include <QtGui/QDialog>
 #include <QtGui/QGridLayout>
-#include <QtGui/QTextEdit>
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QGridLayout>
-#include <QtWidgets/QTextEdit>
 #endif
 
 #include <U2Core/AnnotationTableObject.h>
