@@ -48,6 +48,8 @@ AppSettingsGUIImpl::AppSettingsGUIImpl(QObject* p) : AppSettingsGUI(p)
     settingsdialogAction->setObjectName("action__settings");
 #ifdef Q_OS_MAC
     settingsdialogAction->setMenuRole(QAction::ApplicationSpecificRole);
+    settingsdialogAction->setShortcut(QKeySequence("Ctrl+,"));
+    settingsdialogAction->setShortcutContext(Qt::ApplicationShortcut);
 #endif
     m->addAction(settingsdialogAction);
     //m->addAction(tr("app_settings"), this, SLOT(sl_showSettingsDialog()));
