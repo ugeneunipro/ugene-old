@@ -26,6 +26,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/DataPathRegistry.h>
+#include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/ScriptingToolRegistry.h>
@@ -49,13 +50,34 @@ FastQCSupport::FastQCSupport(const QString& name, const QString& path) : Externa
     description = tr("<i>FastQC</i>: A quality control tool for high throughput sequence data.");
 
     versionRegExp = QRegExp("FastQC v(\\d+.\\d+.\\d+)");
-    validationArguments << "-v";
     toolKitName = "FastQC";
-
 
     toolRunnerProgramm = ET_PERL;
     dependencies << ET_JAVA;
     dependencies << ET_PERL;
+
+    ExternalTool *java = getJava();
+    CHECK(NULL != java, );
+    connect(java, SIGNAL(si_pathChanged()), SLOT(sl_javaPathChanged()));
+    sl_javaPathChanged();
+}
+
+void FastQCSupport::sl_javaPathChanged() {
+    ExternalTool *java = getJava();
+    CHECK(NULL != java, );
+
+    validationArguments.clear();
+    validationArguments << "-v";
+    validationArguments << "-java";
+    validationArguments << java->getPath();
+}
+
+ExternalTool * FastQCSupport::getJava() {
+    ExternalToolRegistry *registry = AppContext::getExternalToolRegistry();
+    SAFE_POINT(NULL != registry, L10N::nullPointerError("External tool registry"), NULL);
+    ExternalTool *java = registry->getByName(ET_JAVA);
+    SAFE_POINT(NULL != java, L10N::nullPointerError("Java tool"), NULL);
+    return java;
 }
 
 }//namespace

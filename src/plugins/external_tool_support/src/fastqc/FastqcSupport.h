@@ -33,6 +33,10 @@ class FastQCSupport : public ExternalTool {
 public:
     FastQCSupport(const QString& name, const QString& path = "");
 
+    static ExternalTool * getJava();
+
+private slots:
+    void sl_javaPathChanged();
 };
 
 }//namespace

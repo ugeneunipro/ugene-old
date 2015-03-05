@@ -154,6 +154,11 @@ QStringList FastQCTask::getParameters(U2OpStatus & /*os*/) const{
         res << GUrlUtils::getQuotedString(settings.adapters);
     }
 
+    ExternalTool *java = FastQCSupport::getJava();
+    CHECK(NULL != java, res);
+    res << QString("-java");
+    res << java->getPath();
+
     res << GUrlUtils::getQuotedString(settings.inputUrl);
 
     return res;
