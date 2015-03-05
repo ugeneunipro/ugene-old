@@ -9,101 +9,91 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="49"/>
-        <source>Minimum repeat length</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="84"/>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="233"/>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="293"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="87"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="239"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="299"/>
         <source>bp</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="112"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="115"/>
         <source>Heuristic based selection of repeat length so the number of repeats in the sequence will not exceed 1000</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="115"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="118"/>
         <source>1k</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="122"/>
-        <source>Repeats  identity</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="157"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="163"/>
         <source>%</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="179"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="185"/>
         <source>Resets repeats identity to 100%</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="182"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="188"/>
         <source>100</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="205"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="211"/>
         <source>Minimum distance between repeats</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="252"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="258"/>
         <source>Maximum distance between repeats</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="357"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="350"/>
         <source>Advanced</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="363"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="356"/>
         <source>Advanced parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="369"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="362"/>
         <source>Custom algorithm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="396"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="389"/>
         <source>Search only for repeats that lie inside of an annotated region</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="438"/>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="487"/>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="536"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="431"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="480"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="529"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="445"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="438"/>
         <source>Search only for repeats that have an annotated region inside</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="494"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="487"/>
         <source>Filter repeats that have an annotated region inside</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="543"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="536"/>
         <source>Search for inverted repeats</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="315"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="321"/>
         <source>Region to process</source>
         <translation></translation>
     </message>
@@ -118,12 +108,32 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="603"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="49"/>
+        <source>Number of bases in a sliding window that is moved along the sequence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="52"/>
+        <source>Window size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="125"/>
+        <source>How similar the two windows of the sequence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="128"/>
+        <source>Minimum indentity per window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="596"/>
         <source>Nested repeats filter algorithm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindRepeatsDialog.ui" line="563"/>
+        <location filename="../src/ui/FindRepeatsDialog.ui" line="556"/>
         <source>Exclude tandems areas</source>
         <translation type="unfinished"></translation>
     </message>
@@ -160,12 +170,12 @@
         <translation>Max period</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="208"/>
+        <location filename="../src/ui/FindTandemsDialog.ui" line="195"/>
         <source>Advanced</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="214"/>
+        <location filename="../src/ui/FindTandemsDialog.ui" line="201"/>
         <source>Advanced parameters</source>
         <translation type="unfinished"></translation>
     </message>
@@ -178,27 +188,27 @@
         <translation type="obsolete">%</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="296"/>
+        <location filename="../src/ui/FindTandemsDialog.ui" line="283"/>
         <source>Algorithm</source>
         <translation>Algorithm</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="253"/>
+        <location filename="../src/ui/FindTandemsDialog.ui" line="240"/>
         <source>Minimum tandem size</source>
         <translation>Minimum tandem size</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="316"/>
+        <location filename="../src/ui/FindTandemsDialog.ui" line="303"/>
         <source>Minimum repeat count</source>
         <translation>Minimum repeat count</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="233"/>
+        <location filename="../src/ui/FindTandemsDialog.ui" line="220"/>
         <source>x</source>
         <translation>x</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindTandemsDialog.ui" line="246"/>
+        <location filename="../src/ui/FindTandemsDialog.ui" line="233"/>
         <source>Show overlapped tandems</source>
         <translation type="unfinished"></translation>
     </message>
@@ -246,7 +256,7 @@
 <context>
     <name>U2::ExactSizedTandemFinder</name>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="265"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="267"/>
         <source>Find %1-period tandems</source>
         <translation>Find %1-period tandems</translation>
     </message>
@@ -489,7 +499,7 @@
 <context>
     <name>U2::LargeSizedTandemFinder</name>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="439"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="441"/>
         <source>Find big-period tandems</source>
         <translation>Find big-period tandems</translation>
     </message>
@@ -497,27 +507,27 @@
 <context>
     <name>U2::LocalWorkflow::RepeatPrompter</name>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="186"/>
+        <location filename="../src/RepeatWorker.cpp" line="188"/>
         <source>unset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="187"/>
+        <location filename="../src/RepeatWorker.cpp" line="189"/>
         <source> from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="191"/>
+        <location filename="../src/RepeatWorker.cpp" line="193"/>
         <source>inverted</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="191"/>
+        <location filename="../src/RepeatWorker.cpp" line="193"/>
         <source>direct</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="193"/>
+        <location filename="../src/RepeatWorker.cpp" line="195"/>
         <source>For each sequence%1, find &lt;u&gt;%2&lt;/u&gt; repeats.&lt;br&gt;Detect &lt;u&gt;%3% identical&lt;/u&gt; repeats &lt;u&gt;not shorter than %4 bps&lt;/u&gt;.&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%5&lt;/u&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -671,34 +681,34 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="143"/>
+        <location filename="../src/RepeatWorker.cpp" line="145"/>
         <source>Any</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="244"/>
+        <location filename="../src/RepeatWorker.cpp" line="246"/>
         <source>result name is empty, default name used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="247"/>
-        <location filename="../src/RepeatWorker.cpp" line="248"/>
+        <location filename="../src/RepeatWorker.cpp" line="249"/>
+        <location filename="../src/RepeatWorker.cpp" line="250"/>
         <source>Incorrect value: identity value must be between 0 and 100</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="259"/>
-        <location filename="../src/RepeatWorker.cpp" line="260"/>
+        <location filename="../src/RepeatWorker.cpp" line="261"/>
+        <location filename="../src/RepeatWorker.cpp" line="262"/>
         <source>Incorrect value: minimal distance must be greater then zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="264"/>
+        <location filename="../src/RepeatWorker.cpp" line="266"/>
         <source>Sequence alphabet is not nucleic!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RepeatWorker.cpp" line="287"/>
+        <location filename="../src/RepeatWorker.cpp" line="289"/>
         <source>Found %1 repeats</source>
         <translation></translation>
     </message>
@@ -932,12 +942,12 @@
 <context>
     <name>U2::RFAlgorithmBase</name>
     <message>
-        <location filename="../src/RFBase.cpp" line="83"/>
+        <location filename="../src/RFBase.cpp" line="84"/>
         <source>Find Repeats</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RFBase.cpp" line="144"/>
+        <location filename="../src/RFBase.cpp" line="141"/>
         <source>Repeat length is too large: %1, sequence size: %2</source>
         <translation></translation>
     </message>
@@ -1023,13 +1033,13 @@
 <context>
     <name>U2::TandemFinder</name>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="149"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="151"/>
         <source>Find tandems finished %1</source>
         <translation>Find tandems finished %1</translation>
     </message>
     <message>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="114"/>
-        <location filename="../src/RF_SArray_TandemFinder.cpp" line="142"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="115"/>
+        <location filename="../src/RF_SArray_TandemFinder.cpp" line="144"/>
         <source>Find tandems</source>
         <translation>Find tandems</translation>
     </message>

@@ -147,12 +147,12 @@
 <context>
     <name>U2::KalignGObjectRunFromSchemaTask</name>
     <message>
-        <location filename="../src/KalignTask.cpp" line="253"/>
+        <location filename="../src/KalignTask.cpp" line="254"/>
         <source>Workflow wrapper &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/KalignTask.cpp" line="263"/>
+        <location filename="../src/KalignTask.cpp" line="264"/>
         <source>KAlign align &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -168,7 +168,7 @@
 <context>
     <name>U2::KalignMSAEditorContext</name>
     <message>
-        <location filename="../src/KalignPlugin.cpp" line="169"/>
+        <location filename="../src/KalignPlugin.cpp" line="158"/>
         <source>Align with Kalign...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -176,23 +176,18 @@
 <context>
     <name>U2::KalignPlugin</name>
     <message>
-        <location filename="../src/KalignPlugin.cpp" line="80"/>
+        <location filename="../src/KalignPlugin.cpp" line="75"/>
         <source>Kalign</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/KalignPlugin.cpp" line="81"/>
+        <location filename="../src/KalignPlugin.cpp" line="76"/>
         <source>A port of Kalign package for multiple sequence alignment. Check http://msa.sbc.su.se for the original version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/KalignPlugin.cpp" line="91"/>
-        <source>Kalign...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/KalignPlugin.cpp" line="97"/>
-        <source>Multiple alignment</source>
+        <location filename="../src/KalignPlugin.cpp" line="86"/>
+        <source>Align with Kalign...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

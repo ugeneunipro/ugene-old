@@ -24,12 +24,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.ui" line="86"/>
+        <location filename="../src/ui/PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.ui" line="77"/>
         <source>Open:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.ui" line="93"/>
+        <location filename="../src/ui/PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.ui" line="84"/>
         <source>Extension:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -383,27 +383,27 @@
 <context>
     <name>U2::PairwiseAlignmentSmithWatermanTask</name>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="542"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="554"/>
         <source>Substitution matrix is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="755"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="767"/>
         <source>Smith Waterman2 SequenceWalker</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="785"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="797"/>
         <source>Not enough memory on CUDA-enabled device. The space required is %1 bytes, but only %2 bytes are available. Device id: %3, device name: %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="791"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="803"/>
         <source>The Smith-Waterman search allocates ~%1 bytes (%2 Mb) on CUDA device</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="845"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="857"/>
         <source>%1 results found</source>
         <translation type="unfinished"></translation>
     </message>
@@ -590,22 +590,22 @@
 <context>
     <name>U2::SWAlgorithmTask</name>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="194"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="198"/>
         <source>Smith Waterman2 SequenceWalker</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="209"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="213"/>
         <source>Not enough memory on CUDA-enabled device. The space required is %1 bytes, but only %2 bytes are available. Device id: %3, device name: %4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="215"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="219"/>
         <source>The Smith-Waterman search allocates ~%1 bytes (%2 Mb) on CUDA device</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="418"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="422"/>
         <source>%1 results found</source>
         <translation></translation>
     </message>

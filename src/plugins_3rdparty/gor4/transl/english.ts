@@ -2,6 +2,14 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
+    <name>QObject</name>
+    <message>
+        <location filename="../src/GorIVAlgTask.cpp" line="32"/>
+        <source>GORIV</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SecStructPredictTask</name>
     <message>
         <location filename="../src/GorIVAlgTask.cpp" line="48"/>
@@ -17,14 +25,6 @@
         <location filename="../src/GorIVAlgTask.cpp" line="61"/>
         <source>sequence is too long, max seq size is 10000</source>
         <translation>Too long input sequence: maximum allowed length is 10000</translation>
-    </message>
-</context>
-<context>
-    <name>U2</name>
-    <message>
-        <location filename="../src/GorIVAlgTask.cpp" line="32"/>
-        <source>GORIV</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

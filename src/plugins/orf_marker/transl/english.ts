@@ -164,10 +164,6 @@ Ignore boundary ORFs which last beyond the search region
         <translation></translation>
     </message>
     <message>
-        <source>Annotation obj %1 is locked for modifications</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Annotation table object is NULL!</source>
         <translation type="unfinished"></translation>
     </message>

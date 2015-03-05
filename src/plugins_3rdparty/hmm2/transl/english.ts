@@ -120,28 +120,28 @@ This is analogous to the standard Smith/Waterman algorithm or the hmmsw program 
 <context>
     <name>HMMBuildWorker</name>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="88"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="89"/>
         <source>Fixed tip</source>
         <translation type="unfinished">Fix the length of the random sequences to &lt;n&gt;, where &lt;n&gt; is a positive (and reasonably sized) integer. 
 The default is instead to generate sequences with a variety of different lengths, controlled by a Gaussian (normal) distribution.</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="90"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="91"/>
         <source>mean_tip_1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="92"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="93"/>
         <source>num_tip_1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="94"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="95"/>
         <source>sd_tip_1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="96"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="97"/>
         <source>seed_tip_1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -264,76 +264,76 @@ You can use this option to generate reproducible results for different hmmcalibr
 <context>
     <name>HMMSearchDialog</name>
     <message>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="26"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="23"/>
         <source>HMM Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="34"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="37"/>
         <source>File with HMM profile:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="44"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="47"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="59"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="62"/>
         <source>Expert options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="71"/>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="74"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="77"/>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="220"/>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="223"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="80"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="83"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="226"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="229"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="232"/>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="75"/>
         <source>E-value filtering can be used to exclude low-probability hits from result.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="80"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="86"/>
         <source>Filter results with E-value greater then:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="113"/>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="116"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="119"/>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="129"/>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="132"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="122"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="125"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="135"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="138"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="141"/>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="76"/>
         <source>Score based filtering is an alternative to E-value filtering to exclude low-probability hits from result.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="122"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="128"/>
         <source>Filter results with Score lower than:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="182"/>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="185"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="188"/>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="204"/>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="207"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="191"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="194"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="210"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="213"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="216"/>
         <source>Calculate the E-value scores as if we had seen a sequence database of &lt;n&gt; sequences.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="213"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="219"/>
         <source>Number of sequences in dababase:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="271"/>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="274"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="277"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="280"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="283"/>
         <source>Variants of algorithm</source>
         <translation type="unfinished"></translation>
     </message>
@@ -366,7 +366,7 @@ You can use this option to generate reproducible results for different hmmcalibr
         <translation type="obsolete">Close</translation>
     </message>
     <message>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="235"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="241"/>
         <source>1E</source>
         <translation>1e</translation>
     </message>
@@ -391,13 +391,21 @@ You can use this option to generate reproducible results for different hmmcalibr
         <translation type="obsolete">Variants of algorithm</translation>
     </message>
     <message>
-        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="251"/>
+        <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="257"/>
         <source>Algorithm</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="74"/>
         <source>Calculate the E-value scores as if we had seen a sequence database of &amp;lt;n&amp;gt; sequences.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="../src/HMMIOWorker.cpp" line="68"/>
+        <source>HMM Profile</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -496,17 +504,17 @@ You can use this option to generate reproducible results for different hmmcalibr
 <context>
     <name>U2::HMMADVContext</name>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="272"/>
+        <location filename="../src/uHMMPlugin.cpp" line="260"/>
         <source>Search with HMM model...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="289"/>
+        <location filename="../src/uHMMPlugin.cpp" line="277"/>
         <source>error</source>
         <translation>Error!</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="289"/>
+        <location filename="../src/uHMMPlugin.cpp" line="277"/>
         <source>no_sequence_found</source>
         <translation>No sequences found</translation>
     </message>
@@ -514,82 +522,82 @@ You can use this option to generate reproducible results for different hmmcalibr
 <context>
     <name>U2::HMMBuildDialogController</name>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="93"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="112"/>
         <source>incorrect_ali_file</source>
         <translation>Incorrect alignment file!</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="98"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="117"/>
         <source>incorrect_hmm_file</source>
         <translation>Incorrect HMM file!</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="114"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="133"/>
         <source>error</source>
         <translation>Error!</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="123"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="142"/>
         <source>starting_build_process</source>
         <translation>Starting build process</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="126"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="145"/>
         <source>back_button</source>
         <translation>Hide</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="150"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="169"/>
         <source>build_finished_with_errors_%1</source>
         <translation>HMM build finished with errors: %1</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="154"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="173"/>
         <source>build_finished_successfuly</source>
         <translation>HMM build finished successfuly!</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="156"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="175"/>
         <source>ok_button</source>
         <translation>Build</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="166"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="185"/>
         <source>progress_%1%</source>
         <translation>Progress: %1%</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="127"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="146"/>
         <source>cancel_button</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="157"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="176"/>
         <source>close_button</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="152"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="171"/>
         <source>build_canceled</source>
         <translation>HMM build canceled</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="39"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="58"/>
         <source>Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="40"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="59"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="61"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="80"/>
         <source>select_file_with_alignment</source>
         <translation>Select file with alignment</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="73"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="92"/>
         <source>Select file with HMM profile</source>
         <translation></translation>
     </message>
@@ -597,12 +605,12 @@ You can use this option to generate reproducible results for different hmmcalibr
 <context>
     <name>U2::HMMBuildTask</name>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="323"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="342"/>
         <source>multiple_alignment_is_empty</source>
         <translation>Multiple alignment is empty</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="327"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="346"/>
         <source>multiple_alignment_is_0_len</source>
         <translation>Multiple alignment is of 0 length</translation>
     </message>
@@ -611,17 +619,17 @@ You can use this option to generate reproducible results for different hmmcalibr
         <translation type="obsolete">Multiple alignment is not consistent</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="332"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="351"/>
         <source>only_amino_and_nucl_alphabets_are_supported</source>
         <translation>Invalid alphabet! Only amino and nucleic alphabets are supported</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="340"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="359"/>
         <source>error_creating_msa</source>
         <translation>Error creating MSA structure</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="306"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="325"/>
         <source>Build HMM profile &apos;%1&apos;</source>
         <translation></translation>
     </message>
@@ -629,57 +637,57 @@ You can use this option to generate reproducible results for different hmmcalibr
 <context>
     <name>U2::HMMBuildToFileTask</name>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="237"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="256"/>
         <source>alignment_object_not_found</source>
         <translation>Alignment object not found!</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="291"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="310"/>
         <source>none</source>
         <translation>none</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="190"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="209"/>
         <source>input_format_error</source>
         <translation>Error reading alignment file</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="177"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="196"/>
         <source>Build HMM profile &apos;%1&apos; -&gt; &apos;%2&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="207"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="226"/>
         <source>Build HMM profile to &apos;%1&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="232"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="251"/>
         <source>Incorrect input file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="279"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="298"/>
         <source>Source alignment</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="280"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="299"/>
         <source>Profile name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="282"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="301"/>
         <source>Task was not finished</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="287"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="306"/>
         <source>Profile file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="288"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="307"/>
         <source>Expert options</source>
         <translation></translation>
     </message>
@@ -687,83 +695,83 @@ You can use this option to generate reproducible results for different hmmcalibr
 <context>
     <name>U2::HMMCalibrateDialogController</name>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="46"/>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="55"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="65"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="74"/>
         <source>select_file_with_hmm_model</source>
         <translation>Select file with HMM model</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="76"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="95"/>
         <source>illegal_in_file_name</source>
         <translation>Incorrect HMM file!</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="82"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="101"/>
         <source>illegal fixed value</source>
         <translation>Illegal fixed length value!</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="99"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="118"/>
         <source>illegal_out_file_name</source>
         <translation>Invalid output file name</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="105"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="124"/>
         <source>error</source>
         <translation>Error!</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="115"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="134"/>
         <source>starting_calibration_process</source>
         <translation>Starting calibration process</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="118"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="137"/>
         <source>back_button</source>
         <translation>Hide</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="135"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="154"/>
         <source>calibration_finished_with_errors_%1</source>
         <translation>Calibration finished with errors: %1</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="139"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="158"/>
         <source>calibration_finished_successfuly</source>
         <translation>Calibration finished successfuly!</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="141"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="160"/>
         <source>ok_button</source>
         <translation>Calibrate</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="149"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="168"/>
         <source>progress_%1%</source>
         <translation>Progress: %1%</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="119"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="138"/>
         <source>cancel_button</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="32"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="51"/>
         <source>Calibrate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="33"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="52"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="142"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="161"/>
         <source>close_button</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="137"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="156"/>
         <source>calibration_canceled</source>
         <translation>Calibration was cancelled</translation>
     </message>
@@ -941,7 +949,7 @@ You can use this option to generate reproducible results for different hmmcalibr
         <translation type="obsolete">Build HMM model from alignment</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="229"/>
+        <location filename="../src/uHMMPlugin.cpp" line="217"/>
         <source>Build HMMER2 profile</source>
         <translation></translation>
     </message>
@@ -1022,27 +1030,27 @@ You can use this option to generate reproducible results for different hmmcalibr
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="78"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="77"/>
         <source>Cell BE optimized</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="63"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="61"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="64"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="62"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="81"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="80"/>
         <source>SSE optimized</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="83"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="82"/>
         <source>Conservative</source>
         <translation></translation>
     </message>
@@ -1050,12 +1058,12 @@ You can use this option to generate reproducible results for different hmmcalibr
 <context>
     <name>U2::HMMSearchTask</name>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="309"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="311"/>
         <source>parallel_hmm_search_task</source>
         <translation>Parallel HMM search</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="244"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="245"/>
         <source>invalid_hmm_alphabet_type</source>
         <translation>Invalid HMM alphabet!</translation>
     </message>
@@ -1065,12 +1073,12 @@ You can use this option to generate reproducible results for different hmmcalibr
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="248"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="249"/>
         <source>invalid_sequence_alphabet_type</source>
         <translation>Invalid sequence alphabet!</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="276"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="277"/>
         <source>can_t_find_amino</source>
         <translation>Amino translation is not available for the sequence alphabet!</translation>
     </message>
@@ -1139,27 +1147,27 @@ You can use this option to generate reproducible results for different hmmcalibr
 <context>
     <name>U2::LocalWorkflow::HMMBuildPrompter</name>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="174"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="175"/>
         <source>For each MSA from &lt;u&gt;%1&lt;/u&gt;,</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="178"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="179"/>
         <source> and calibrate</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="180"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="181"/>
         <source>default</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="180"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="181"/>
         <source>custom</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="182"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="183"/>
         <source>%1 build%2 HMM profile using &lt;u&gt;%3&lt;/u&gt; settings.</source>
         <translation></translation>
     </message>
@@ -1167,17 +1175,17 @@ You can use this option to generate reproducible results for different hmmcalibr
 <context>
     <name>U2::LocalWorkflow::HMMBuildWorker</name>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="288"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="289"/>
         <source>Built HMM profile</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="294"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="295"/>
         <source>Calibrated HMM profile</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="114"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="115"/>
         <source>HMM Build</source>
         <translation></translation>
     </message>
@@ -1217,38 +1225,38 @@ You can use this option to generate reproducible results for different hmmcalibr
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="87"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="88"/>
         <source>Fixed length of samples</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="89"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="90"/>
         <source>Mean length of samples</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="91"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="92"/>
         <source>Number of samples</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="93"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="94"/>
         <source>Standard deviation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="95"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="96"/>
         <source>Random seed</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="210"/>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="211"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="212"/>
         <source>Incorrect value for seed parameter</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="229"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="230"/>
         <source>Schema name not specified. Using default value: &apos;%1&apos;</source>
         <translation></translation>
     </message>
@@ -1278,7 +1286,7 @@ You can use this option to generate reproducible results for different hmmcalibr
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="114"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="115"/>
         <source>Builds a HMM profile from a multiple sequence alignment.&lt;p&gt;The HMM profile is a statistical model which captures position-specific information about how conserved each column of the alignment is, and which residues are likely.</source>
         <translation></translation>
     </message>
@@ -1287,7 +1295,6 @@ You can use this option to generate reproducible results for different hmmcalibr
     <name>U2::LocalWorkflow::HMMLib</name>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="62"/>
-        <location filename="../src/HMMIOWorker.cpp" line="68"/>
         <source>HMM Profile</source>
         <translation></translation>
     </message>
@@ -1347,7 +1354,7 @@ You can use this option to generate reproducible results for different hmmcalibr
     <name>U2::LocalWorkflow::HMMReadPrompter</name>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="168"/>
-        <source>Read HMM profile(s) from %1</source>
+        <source>Read HMM profile(s) from %1.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1506,7 +1513,7 @@ You can use this option to generate reproducible results for different hmmcalibr
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/HMMIOWorker.cpp" line="275"/>
+        <location filename="../src/HMMIOWorker.cpp" line="270"/>
         <source>Writing HMM profile to %1</source>
         <translation></translation>
     </message>
@@ -1529,55 +1536,45 @@ You can use this option to generate reproducible results for different hmmcalibr
 <context>
     <name>U2::uHMMPlugin</name>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="87"/>
+        <location filename="../src/uHMMPlugin.cpp" line="86"/>
         <source>uhmm_plugin</source>
         <translation>HMM2</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="87"/>
+        <location filename="../src/uHMMPlugin.cpp" line="86"/>
         <source>uhmm_plugin_desc</source>
         <translation>Based on HMMER 2.3.2 package
 Biological sequence analysis using profile hidden Markov models</translation>
+    </message>
+    <message>
+        <location filename="../src/uHMMPlugin.cpp" line="89"/>
+        <source>Build HMM2 profile...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/uHMMPlugin.cpp" line="94"/>
+        <source>Calibrate profile with HMM2...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/uHMMPlugin.cpp" line="99"/>
+        <source>Search with HMM2...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>hmmcalibrate</source>
         <translation type="obsolete">HMM calibrate</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="90"/>
-        <source>Build HMM2 profile</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/uHMMPlugin.cpp" line="94"/>
-        <source>Calibrate profile with HMM2</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/uHMMPlugin.cpp" line="98"/>
-        <source>Search with HMM2</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/uHMMPlugin.cpp" line="105"/>
-        <source>HMMER tools</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/uHMMPlugin.cpp" line="208"/>
+        <location filename="../src/uHMMPlugin.cpp" line="196"/>
         <source>error</source>
         <translation>Error!</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="208"/>
+        <location filename="../src/uHMMPlugin.cpp" line="196"/>
         <source>neither_annotatedview_nor_pv_selection_found</source>
         <translation>Error! 
 Select sequence in Project view or open sequence view</translation>
-    </message>
-    <message>
-        <location filename="../src/uHMMPlugin.cpp" line="110"/>
-        <source>HMMER2 tools</source>
-        <translation></translation>
     </message>
 </context>
 <context>
