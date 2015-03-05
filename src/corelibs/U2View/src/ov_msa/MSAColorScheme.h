@@ -107,27 +107,26 @@ public:
     virtual QColor getColor(int seq, int pos, char c) = 0;
     MSAColorSchemeFactory* getFactory() const {return factory;}
 
-    static QString EMPTY_NUCL;
-    static QString UGENE_NUCL;
-    static QString JALVIEW_NUCL;
-    static QString IDENTPERC_NUCL;
-    static QString IDENTPERC_NUCL_GRAY;
-    static QString CUSTOM_NUCL;
+    static const QString EMPTY_NUCL;
+    static const QString UGENE_NUCL;
+    static const QString JALVIEW_NUCL;
+    static const QString IDENTPERC_NUCL;
+    static const QString IDENTPERC_NUCL_GRAY;
+    static const QString CUSTOM_NUCL;
 
-    static QString EMPTY_AMINO;
-    static QString UGENE_AMINO;
-    static QString ZAPPO_AMINO;
-    static QString TAILOR_AMINO;
-    static QString HYDRO_AMINO;
-    static QString HELIX_AMINO;
-    static QString STRAND_AMINO;
-    static QString TURN_AMINO;
-    static QString BURIED_AMINO;
-    static QString IDENTPERC_AMINO;
-    static QString IDENTPERC_AMINO_GRAY;
-    static QString CLUSTALX_AMINO;
-    static QString CUSTOM_AMINO;
-
+    static const QString EMPTY_AMINO;
+    static const QString UGENE_AMINO;
+    static const QString ZAPPO_AMINO;
+    static const QString TAILOR_AMINO;
+    static const QString HYDRO_AMINO;
+    static const QString HELIX_AMINO;
+    static const QString STRAND_AMINO;
+    static const QString TURN_AMINO;
+    static const QString BURIED_AMINO;
+    static const QString IDENTPERC_AMINO;
+    static const QString IDENTPERC_AMINO_GRAY;
+    static const QString CLUSTALX_AMINO;
+    static const QString CUSTOM_AMINO;
 protected:
     MSAColorSchemeFactory*  factory;
     MAlignmentObject*       maObj;
@@ -350,21 +349,21 @@ public:
     virtual void applySettings(const QVariantMap &settings);
     virtual QVariantMap getSettings() const;
 
-    static QString EMPTY_NUCL;
-    static QString EMPTY_AMINO;
-    static QString AGREEMENTS_NUCL;
-    static QString AGREEMENTS_AMINO;
-    static QString DISAGREEMENTS_NUCL;
-    static QString DISAGREEMENTS_AMINO;
-    static QString TRANSITIONS_NUCL;
-    static QString TRANSVERSIONS_NUCL;
-    static QString GAPS_NUCL;
-    static QString GAPS_AMINO;
-    static QString CONSERVATION_NUCL;
-    static QString CONSERVATION_AMINO;
+    static const QString EMPTY_NUCL;
+    static const QString EMPTY_AMINO;
+    static const QString AGREEMENTS_NUCL;
+    static const QString AGREEMENTS_AMINO;
+    static const QString DISAGREEMENTS_NUCL;
+    static const QString DISAGREEMENTS_AMINO;
+    static const QString TRANSITIONS_NUCL;
+    static const QString TRANSVERSIONS_NUCL;
+    static const QString GAPS_NUCL;
+    static const QString GAPS_AMINO;
+    static const QString CONSERVATION_NUCL;
+    static const QString CONSERVATION_AMINO;
 
-    static QString THRESHOLD_PARAMETER_NAME;
-
+    static const QString THRESHOLD_PARAMETER_NAME;
+    static const QString LESS_THEN_THRESHOLD_PARAMETER_NAME;
 protected:
     MSAHighlightingSchemeFactory*  factory;
     MAlignmentObject*       maObj;
@@ -434,6 +433,7 @@ private:
     void calculateStatisticForColumn(int refCharColumn);
     QMap<int, CharCountMap> msaCharCountMap;
     int threshold;
+    bool lessThenThreshold;
 };
 
 }//namespace

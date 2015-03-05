@@ -90,20 +90,34 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
     layout2->addWidget(exportHighlightning);
     layout2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
-    threshold = new QSlider(Qt::Horizontal, this);
-    threshold->setMinimum(0);
-    threshold->setMaximum(100);
-    threshold->setValue(50);
-    threshold->setTickPosition(QSlider::TicksRight);
-    threshold->setObjectName("thresholdSlider");
+    lessMoreLabel = new QLabel(tr("Highlight characters with conservation level:"));
+    lessMoreLabel->setWordWrap(true);
 
-    thresholdLabel = new QLabel(tr("Threshold: %1%").arg(threshold->value()), this);
+    thresholdMoreRb = new QRadioButton(QString::fromWCharArray(L"\x2265") + tr(" threshold"));
+    thresholdLessRb = new QRadioButton(QString::fromWCharArray(L"\x2264") + tr(" threshold"));
+    thresholdMoreRb->setObjectName("thresholdMoreRb");
+    thresholdLessRb->setObjectName("thresholdLessRb");
+    
+    QSpacerItem *verticalSpacer = new QSpacerItem(1,15);
+
+    thresholdSlider = new QSlider(Qt::Horizontal, this);
+    thresholdSlider->setMinimum(0);
+    thresholdSlider->setMaximum(100);
+    thresholdSlider->setValue(50);
+    thresholdSlider->setTickPosition(QSlider::TicksRight);
+    thresholdSlider->setObjectName("thresholdSlider");    
+
+    thresholdLabel = new QLabel(tr("Threshold: %1%").arg(thresholdSlider->value()), this);
 
     layout->setSpacing(ITEMS_SPACING);
     layout->addSpacing(TITLE_SPACING);
     layout->addWidget(highlightingScheme);
     layout->addWidget(thresholdLabel);
-    layout->addWidget(threshold);
+    layout->addWidget(thresholdSlider);
+    layout->addSpacerItem(verticalSpacer);
+    layout->addWidget(lessMoreLabel);
+    layout->addWidget(thresholdLessRb);
+    layout->addWidget(thresholdMoreRb);
     layout->addWidget(hint);
     layout->addWidget(useDots);
 #ifdef Q_OS_MAC
@@ -143,13 +157,15 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m)
     connect(m, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_updateHint()));
 
     connect(exportHighlightning, SIGNAL(clicked()), SLOT(sl_exportHighlightningClicked()));
-    connect(threshold, SIGNAL(valueChanged(int)), SLOT(sl_sliderValueChanged()));
+    connect(thresholdSlider, SIGNAL(valueChanged(int)), SLOT(sl_highlightingParametersChanged()));
+    connect(thresholdMoreRb, SIGNAL(toggled(bool)), SLOT(sl_highlightingParametersChanged()));
+    connect(thresholdLessRb, SIGNAL(toggled(bool)), SLOT(sl_highlightingParametersChanged()));
 
     sl_updateHint();
 
-    savableTab.disableSavingForWidgets(QStringList() << threshold->objectName() << highlightingScheme->objectName());
+    savableTab.disableSavingForWidgets(QStringList() << thresholdSlider->objectName() << highlightingScheme->objectName());
     U2WidgetStateStorage::restoreWidgetState(savableTab);
-    sl_sliderValueChanged();
+    sl_highlightingParametersChanged();
 }
 
 void MSAHighlightingTab::initColorCB(){
@@ -192,15 +208,25 @@ void MSAHighlightingTab::sl_updateHint() {
     QVariantMap highlightingSettings;
     if(s->getFactory()->isNeedThreshold()){
         thresholdLabel->show();
-        threshold->show();
-        bool ok;
+        thresholdSlider->show();
+        thresholdLessRb->show();
+        thresholdMoreRb->show();
+        lessMoreLabel->show();
+        bool ok = false;
         int thresholdValue = s->getSettings().value(MSAHighlightingScheme::THRESHOLD_PARAMETER_NAME).toInt(&ok);
-        threshold->setValue(thresholdValue);
         assert(ok);
+        thresholdSlider->setValue(thresholdValue);
+        bool lessThenThreshold = s->getSettings().value(MSAHighlightingScheme::LESS_THEN_THRESHOLD_PARAMETER_NAME, thresholdLessRb->isChecked()).toBool();
+        thresholdLessRb->setChecked(lessThenThreshold);
+        thresholdMoreRb->setChecked(!lessThenThreshold);        
         highlightingSettings.insert(MSAHighlightingScheme::THRESHOLD_PARAMETER_NAME, thresholdValue);
+        highlightingSettings.insert(MSAHighlightingScheme::LESS_THEN_THRESHOLD_PARAMETER_NAME, lessThenThreshold);
     }else{
         thresholdLabel->hide();
-        threshold->hide();
+        thresholdSlider->hide();
+        thresholdLessRb->hide();
+        thresholdMoreRb->hide();
+        lessMoreLabel->hide();
     }
     if (MAlignmentRow::invalidRowId() == msa->getReferenceRowId()
         && !seqArea->getCurrentHighlightingScheme()->getFactory()->isRefFree())
@@ -225,11 +251,12 @@ void MSAHighlightingTab::sl_exportHighlightningClicked(){
     msa->exportHighlighted();
 }
 
-void MSAHighlightingTab::sl_sliderValueChanged() {
+void MSAHighlightingTab::sl_highlightingParametersChanged() {
     QVariantMap highlightingSettings;
-    thresholdLabel->setText(tr("Threshold: %1%").arg(threshold->value()));
+    thresholdLabel->setText(tr("Threshold: %1%").arg(thresholdSlider->value()));
     MSAHighlightingScheme *s = seqArea->getCurrentHighlightingScheme();
-    highlightingSettings.insert(MSAHighlightingScheme::THRESHOLD_PARAMETER_NAME, threshold->value());
+    highlightingSettings.insert(MSAHighlightingScheme::THRESHOLD_PARAMETER_NAME, thresholdSlider->value());
+    highlightingSettings.insert(MSAHighlightingScheme::LESS_THEN_THRESHOLD_PARAMETER_NAME, thresholdLessRb->isChecked());
     s->applySettings(highlightingSettings);
     seqArea->sl_changeColorSchemeOutside(colorScheme->currentText());
 }

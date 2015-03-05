@@ -30,9 +30,11 @@
 
 class QCheckBox;
 class QComboBox;
+class QGroupBox;
 class QLabel;
-class QToolButton;
+class QRadioButton;
 class QSlider;
+class QToolButton;
 
 namespace U2 {
 
@@ -49,7 +51,7 @@ private slots:
     void sl_sync();
     void sl_updateHint();
     void sl_exportHighlightningClicked();
-    void sl_sliderValueChanged();
+    void sl_highlightingParametersChanged();
 
 private:
     QWidget* createColorGroup();
@@ -64,7 +66,10 @@ private:
     QCheckBox *useDots;
     QToolButton *exportHighlightning;
     QLabel *thresholdLabel;
-    QSlider *threshold;
+    QSlider *thresholdSlider;
+    QLabel *lessMoreLabel;
+    QRadioButton *thresholdLessRb;
+    QRadioButton *thresholdMoreRb;
 
     MsaHighlightingSavableTab savableTab;
 };

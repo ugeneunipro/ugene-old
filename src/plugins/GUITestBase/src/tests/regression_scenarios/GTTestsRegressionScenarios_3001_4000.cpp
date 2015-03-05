@@ -5279,6 +5279,24 @@ GUI_TEST_CLASS_DEFINITION(test_3988) {
     GTUtilsLog::checkContainsError(os, logTracer, "File is empty:");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3994){
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "HIV-1.aln");
+
+    QWidget* seqArea = GTWidget::findWidget(os, "msa_editor_sequence_area");
+    QColor before = GTUtilsMSAEditorSequenceArea::getColor(os, QPoint(7,0));
+    //    Open the "Highlighting" options panel tab.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    //    Select different highlighting schemes.
+    QComboBox* highlightingScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
+    GTComboBox::setIndexWithText(os, highlightingScheme, "Conservation level");
+    QWidget *w = GTWidget::findWidget(os, "thresholdLessRb");
+    GTRadioButton::click(os, qobject_cast<QRadioButton*>(w));
+    GTGlobals::sleep();
+    QColor after = GTUtilsMSAEditorSequenceArea::getColor(os, QPoint(7,0));
+    //check color change
+    CHECK_SET_ERR(before != after, "colors not changed");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3998){
 //    1. Open attached sequence
     GTLogTracer l;

@@ -740,26 +740,26 @@ static void addJalviewNucl(QVector<QColor>& colorsPerChar) {
 
 //SET_C('', "#");
 
-QString MSAColorScheme::EMPTY_NUCL      = "COLOR_SCHEME_EMPTY_NUCL";
-QString MSAColorScheme::UGENE_NUCL      = "COLOR_SCHEME_UGENE_NUCL";
-QString MSAColorScheme::JALVIEW_NUCL    = "COLOR_SCHEME_JALVIEW_NUCL";
-QString MSAColorScheme::IDENTPERC_NUCL  = "COLOR_SCHEME_IDENTPERC_NUCL";
-QString MSAColorScheme::IDENTPERC_NUCL_GRAY  = "COLOR_SCHEME_IDENTPERC_NUCL_GRAY";
-QString MSAColorScheme::CUSTOM_NUCL       = "COLOR_SCHEME_CUSTOM_NUCL";
+const QString MSAColorScheme::EMPTY_NUCL        = "COLOR_SCHEME_EMPTY_NUCL";
+const QString MSAColorScheme::UGENE_NUCL        = "COLOR_SCHEME_UGENE_NUCL";
+const QString MSAColorScheme::JALVIEW_NUCL      = "COLOR_SCHEME_JALVIEW_NUCL";
+const QString MSAColorScheme::IDENTPERC_NUCL    = "COLOR_SCHEME_IDENTPERC_NUCL";
+const QString MSAColorScheme::IDENTPERC_NUCL_GRAY   = "COLOR_SCHEME_IDENTPERC_NUCL_GRAY";
+const QString MSAColorScheme::CUSTOM_NUCL       = "COLOR_SCHEME_CUSTOM_NUCL";
 
-QString MSAColorScheme::EMPTY_AMINO     = "COLOR_SCHEME_EMPTY_AMINO";
-QString MSAColorScheme::UGENE_AMINO     = "COLOR_SCHEME_UGENE_AMINO";
-QString MSAColorScheme::ZAPPO_AMINO     = "COLOR_SCHEME_ZAPPO_AMINO";
-QString MSAColorScheme::TAILOR_AMINO    = "COLOR_SCHEME_TAILOR_AMINO";
-QString MSAColorScheme::HYDRO_AMINO     = "COLOR_SCHEME_HYDRO_AMINO";
-QString MSAColorScheme::HELIX_AMINO     = "COLOR_SCHEME_HELIX_AMINO";
-QString MSAColorScheme::STRAND_AMINO    = "COLOR_SCHEME_STRAND_AMINO";
-QString MSAColorScheme::TURN_AMINO      = "COLOR_SCHEME_TURN_AMINO";
-QString MSAColorScheme::BURIED_AMINO    = "COLOR_SCHEME_BURIED_AMINO";
-QString MSAColorScheme::IDENTPERC_AMINO = "COLOR_SCHEME_IDENTPERC_AMINO";
-QString MSAColorScheme::IDENTPERC_AMINO_GRAY = "COLOR_SCHEME_IDENTPERC_AMINO_GRAY";
-QString MSAColorScheme::CLUSTALX_AMINO  = "COLOR_SCHEME_CLUSTALX_AMINO";
-QString MSAColorScheme::CUSTOM_AMINO      = "COLOR_SCHEME_CUSTOM_AMINO";
+const QString MSAColorScheme::EMPTY_AMINO       = "COLOR_SCHEME_EMPTY_AMINO";
+const QString MSAColorScheme::UGENE_AMINO       = "COLOR_SCHEME_UGENE_AMINO";
+const QString MSAColorScheme::ZAPPO_AMINO       = "COLOR_SCHEME_ZAPPO_AMINO";
+const QString MSAColorScheme::TAILOR_AMINO      = "COLOR_SCHEME_TAILOR_AMINO";
+const QString MSAColorScheme::HYDRO_AMINO       = "COLOR_SCHEME_HYDRO_AMINO";
+const QString MSAColorScheme::HELIX_AMINO       = "COLOR_SCHEME_HELIX_AMINO";
+const QString MSAColorScheme::STRAND_AMINO      = "COLOR_SCHEME_STRAND_AMINO";
+const QString MSAColorScheme::TURN_AMINO        = "COLOR_SCHEME_TURN_AMINO";
+const QString MSAColorScheme::BURIED_AMINO      = "COLOR_SCHEME_BURIED_AMINO";
+const QString MSAColorScheme::IDENTPERC_AMINO   = "COLOR_SCHEME_IDENTPERC_AMINO";
+const QString MSAColorScheme::IDENTPERC_AMINO_GRAY  = "COLOR_SCHEME_IDENTPERC_AMINO_GRAY";
+const QString MSAColorScheme::CLUSTALX_AMINO    = "COLOR_SCHEME_CLUSTALX_AMINO";
+const QString MSAColorScheme::CUSTOM_AMINO      = "COLOR_SCHEME_CUSTOM_AMINO";
 
 
 void MSAColorSchemeRegistry::initCustomSchema(){
@@ -952,20 +952,21 @@ QVariantMap MSAHighlightingScheme::getSettings() const {
     return QVariantMap();
 }
 
-QString MSAHighlightingScheme::EMPTY_NUCL = "HIGHLIGHT_SCHEME_EMPTY_NUCL";
-QString MSAHighlightingScheme::EMPTY_AMINO = "HIGHLIGHT_SCHEME_EMPTY_AMINO";
-QString MSAHighlightingScheme::AGREEMENTS_NUCL = "HIGHLIGHT_SCHEME_AGREEMENTS_NUCL";
-QString MSAHighlightingScheme::AGREEMENTS_AMINO = "HIGHLIGHT_SCHEME_AGREEMENTS_AMINO";
-QString MSAHighlightingScheme::DISAGREEMENTS_NUCL = "HIGHLIGHT_SCHEME_DISAGREEMENTS_NUCL";
-QString MSAHighlightingScheme::DISAGREEMENTS_AMINO = "HIGHLIGHT_SCHEME_DISAGREEMENTS_AMINO";
-QString MSAHighlightingScheme::TRANSITIONS_NUCL = "HIGHLIGHT_SCHEME_TRANSITIONS_AMINO";
-QString MSAHighlightingScheme::TRANSVERSIONS_NUCL = "HIGHLIGHT_SCHEME_TRANSVERSIONS_AMINO";
-QString MSAHighlightingScheme::GAPS_AMINO = "HIGHLIGHT_SCHEME_GAPS_AMINO";
-QString MSAHighlightingScheme::GAPS_NUCL = "HIGHLIGHT_SCHEME_GAPS_NUCL";
-QString MSAHighlightingScheme::CONSERVATION_AMINO = "CONSERVATION_SCHEME_GAPS_AMINO";
-QString MSAHighlightingScheme::CONSERVATION_NUCL = "CONSERVATION_SCHEME_GAPS_NUCL";
+const QString MSAHighlightingScheme::EMPTY_NUCL     = "HIGHLIGHT_SCHEME_EMPTY_NUCL";
+const QString MSAHighlightingScheme::EMPTY_AMINO    = "HIGHLIGHT_SCHEME_EMPTY_AMINO";
+const QString MSAHighlightingScheme::AGREEMENTS_NUCL    = "HIGHLIGHT_SCHEME_AGREEMENTS_NUCL";
+const QString MSAHighlightingScheme::AGREEMENTS_AMINO   = "HIGHLIGHT_SCHEME_AGREEMENTS_AMINO";
+const QString MSAHighlightingScheme::DISAGREEMENTS_NUCL = "HIGHLIGHT_SCHEME_DISAGREEMENTS_NUCL";
+const QString MSAHighlightingScheme::DISAGREEMENTS_AMINO    = "HIGHLIGHT_SCHEME_DISAGREEMENTS_AMINO";
+const QString MSAHighlightingScheme::TRANSITIONS_NUCL   = "HIGHLIGHT_SCHEME_TRANSITIONS_AMINO";
+const QString MSAHighlightingScheme::TRANSVERSIONS_NUCL = "HIGHLIGHT_SCHEME_TRANSVERSIONS_AMINO";
+const QString MSAHighlightingScheme::GAPS_AMINO     = "HIGHLIGHT_SCHEME_GAPS_AMINO";
+const QString MSAHighlightingScheme::GAPS_NUCL  = "HIGHLIGHT_SCHEME_GAPS_NUCL";
+const QString MSAHighlightingScheme::CONSERVATION_AMINO = "CONSERVATION_SCHEME_GAPS_AMINO";
+const QString MSAHighlightingScheme::CONSERVATION_NUCL  = "CONSERVATION_SCHEME_GAPS_NUCL";
 
-QString MSAHighlightingScheme::THRESHOLD_PARAMETER_NAME = "treshold";
+const QString MSAHighlightingScheme::THRESHOLD_PARAMETER_NAME   = "threshold";
+const QString MSAHighlightingScheme::LESS_THEN_THRESHOLD_PARAMETER_NAME = "less_then_threshold";
 
 void MSAHighlightingSchemeAgreements::process(const char refChar, char &seqChar, bool &color, int refCharColumn, int refCharRow ){
     if(refChar == seqChar){
@@ -1046,7 +1047,7 @@ void MSAHighlightingSchemeGaps::process(const char refChar, char &seqChar, bool 
 }
 
 MSAHighlightingSchemeConservation::MSAHighlightingSchemeConservation( QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o )
-:MSAHighlightingScheme(p, f, o), threshold(50){
+:MSAHighlightingScheme(p, f, o), threshold(50), lessThenThreshold(false){
     connect(maObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), SLOT(sl_resetMap()));
 }
 
@@ -1054,10 +1055,16 @@ void MSAHighlightingSchemeConservation::process(const char refChar, char &seqCha
     if (!msaCharCountMap.contains(refCharColumn)){
             calculateStatisticForColumn(refCharColumn);
     }
-    if(msaCharCountMap[refCharColumn][seqChar] >= (int)((threshold * maObj->getNumRows())/100)){
-        color = true;
-    }else{
-        color = false;
+    color = lessThenThreshold;
+    int neededThr = (int)((float)(threshold * maObj->getNumRows())/100.0 + 0.5);
+    if(lessThenThreshold) {
+        if(msaCharCountMap[refCharColumn][seqChar] <= neededThr){
+            color = !lessThenThreshold;
+        }
+    } else {
+        if(msaCharCountMap[refCharColumn][seqChar] >= neededThr){
+            color = !lessThenThreshold;
+        }
     }
     MSAHighlightingScheme::process(refChar, seqChar, color, refCharColumn, refCharRow);
 }
@@ -1089,11 +1096,13 @@ void MSAHighlightingSchemeConservation::applySettings(const QVariantMap &setting
         CHECK(ok, );
         threshold = convertedThreshold;
     }
+    lessThenThreshold = settings.value(LESS_THEN_THRESHOLD_PARAMETER_NAME, lessThenThreshold).toBool();
 }
 
 QVariantMap MSAHighlightingSchemeConservation::getSettings() const {
     QVariantMap settings;
     settings.insert(THRESHOLD_PARAMETER_NAME, threshold);
+    settings.insert(LESS_THEN_THRESHOLD_PARAMETER_NAME, lessThenThreshold);
     return settings;
 }
 
