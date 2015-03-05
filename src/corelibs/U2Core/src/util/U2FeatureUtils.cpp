@@ -175,9 +175,7 @@ U2Feature U2FeatureUtils::exportAnnotationGroupToFeature(const QString &name, co
     result.rootFeatureId = rootFeatureId;
     dbi->createFeature(result, QList<U2FeatureKey>(), op);
 
-    if (!result.parentFeatureId.isEmpty()) { // this is not a root group
-        dbiAnnotationCache.addGroup(dbiRef, result);
-    }
+    dbiAnnotationCache.addGroup(dbiRef, result);
 
     return result;
 }
@@ -312,18 +310,6 @@ void U2FeatureUtils::removeFeaturesByRoot(const U2DataId &rootId, const U2DbiRef
     if (dbiAnnotationCache.containsAnnotationTable(dbiRef, rootId)) {
         dbiAnnotationCache.removeAnnotationTableData(dbiRef, rootId);
     }
-}
-
-void U2FeatureUtils::importFeatureToDb(U2Feature &feature, const QList<U2FeatureKey> &keys, const U2DbiRef &dbiRef, U2OpStatus &op) {
-    SAFE_POINT(dbiRef.isValid(), "Invalid DBI reference detected!", );
-
-    DbiConnection connection;
-    connection.open(dbiRef, op);
-    CHECK_OP(op, );
-    U2FeatureDbi *dbi = connection.dbi->getFeatureDbi();
-    SAFE_POINT(NULL != dbi, "Invalid DBI pointer encountered!", );
-
-    dbi->createFeature(feature, keys, op);
 }
 
 void U2FeatureUtils::addSubFeatures(const QVector<U2Region> &regions, const U2Strand &strand, const U2DataId &parentFeatureId,

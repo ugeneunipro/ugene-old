@@ -105,12 +105,6 @@ public:
      */
     static void                     removeFeaturesByRoot(const U2DataId &rootId, const U2DbiRef &dbiRef, U2OpStatus &op);
     /**
-     * Adds @feature with @keys to DB. After the invocation @feature.id
-     * will contain some valid value
-     */
-     static void                    importFeatureToDb(U2Feature &feature, const QList<U2FeatureKey> &keys,
-                                        const U2DbiRef &dbiRef, U2OpStatus &op);
-    /**
      * Adds a set of subfeatures to the feature having @parentFeatureId
      * and representing an annotation. Each new subfeature corresponds an item from @regions.
      * The parent feature has to represent an annotation.

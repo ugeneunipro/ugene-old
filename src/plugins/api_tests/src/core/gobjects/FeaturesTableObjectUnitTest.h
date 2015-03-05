@@ -59,8 +59,6 @@ DECLARE_TEST( FeatureTableObjectUnitTest, getAnnotationsByName );
 DECLARE_TEST( FeatureTableObjectUnitTest, getAnnotatedRegions );
 DECLARE_TEST( FeatureTableObjectUnitTest, getAnnotationsByRegion );
 DECLARE_TEST( FeatureTableObjectUnitTest, checkConstraints );
-// feature interface tests
-DECLARE_TEST( FeatureTableObjectUnitTest, addFeatureSingleRegion );
 
 }//namespace
 
@@ -78,6 +76,5 @@ DECLARE_METATYPE( FeatureTableObjectUnitTest, getAnnotationsByName )
 DECLARE_METATYPE( FeatureTableObjectUnitTest, getAnnotatedRegions )
 DECLARE_METATYPE( FeatureTableObjectUnitTest, getAnnotationsByRegion )
 DECLARE_METATYPE( FeatureTableObjectUnitTest, checkConstraints )
-DECLARE_METATYPE( FeatureTableObjectUnitTest, addFeatureSingleRegion )
 
 #endif //_U2_FEATURE_TABLE_OBJECT_TESTS_H_

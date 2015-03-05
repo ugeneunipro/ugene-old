@@ -47,6 +47,8 @@ AnnotationTableObject::AnnotationTableObject( const QString &objectName, const U
     entityRef = U2EntityRef( dbiRef, table.id );
     rootFeatureId = table.rootFeature;
     dataLoaded = true;
+
+    ref();
 }
 
 AnnotationTableObject::AnnotationTableObject( const QString &objectName,
@@ -54,6 +56,12 @@ AnnotationTableObject::AnnotationTableObject( const QString &objectName,
     : GObject( GObjectTypes::ANNOTATION_TABLE, objectName, hintsMap )
 {
     entityRef = tableRef;
+}
+
+AnnotationTableObject::~AnnotationTableObject() {
+    if (dataLoaded) {
+        deref();
+    }
 }
 
 QList<Annotation> AnnotationTableObject::getAnnotations( ) const {
@@ -177,17 +185,20 @@ GObject * AnnotationTableObject::clone(const U2DbiRef &ref, U2OpStatus &os, cons
     AnnotationTableObject *cln = new AnnotationTableObject( getGObjectName( ), ref, gHints.getMap() );
     cln->setIndexInfo( getIndexInfo( ) );
 
-    QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( rootFeatureId,
-        entityRef.dbiRef, os, Nonrecursive, Nonroot );
-    CHECK_OP_EXT( os, delete cln, NULL );
-    subfeatures << U2FeatureUtils::getSubGroups( rootFeatureId, entityRef.dbiRef, os,
-        Nonrecursive );
-    CHECK_OP_EXT( os, delete cln, NULL );
+    AnnotationGroup rootGroup = const_cast<AnnotationTableObject *>(this)->getRootGroup();
+    QStringList subgroupPaths;
+    rootGroup.getSubgroupPaths(subgroupPaths);
+    AnnotationGroup clonedRootGroup = cln->getRootGroup();
+    foreach (const QString &groupPath, subgroupPaths) {
+        AnnotationGroup originalGroup = rootGroup.getSubgroup(groupPath, false);
+        SAFE_POINT(originalGroup != rootGroup, "Unexpected annotation group", NULL);
 
-    foreach ( const U2Feature &feature, subfeatures ) {
-        copyFeaturesToObject( feature, cln->getRootFeatureId( ), cln, os );
-        CHECK_OP_EXT( os, delete cln, NULL );
+        AnnotationGroup clonedGroup = clonedRootGroup.getSubgroup(groupPath, true);
+        foreach (const Annotation &a, originalGroup.getAnnotations()) {
+            clonedGroup.addAnnotation(a.getData());
+        }
     }
+
     return cln;
 }
 
@@ -294,19 +305,6 @@ U2DataId AnnotationTableObject::getRootFeatureId( ) const {
     return rootFeatureId;
 }
 
-void AnnotationTableObject::addFeature( U2Feature &f, QList<U2FeatureKey> keys, U2OpStatus &os ) {
-    ensureDataLoaded();
-
-    if ( f.parentFeatureId.isEmpty( ) ) {
-        f.parentFeatureId = rootFeatureId;
-    } else if ( f.parentFeatureId != rootFeatureId ) {
-        SAFE_POINT( U2FeatureUtils::isChild( f.parentFeatureId, rootFeatureId, entityRef.dbiRef,
-            os ), "Invalid parent feature!", );
-    }
-
-    U2FeatureUtils::importFeatureToDb( f, keys, entityRef.dbiRef, os );
-}
-
 void AnnotationTableObject::removeAnnotationFromDb( const Annotation &a ) {
     SAFE_POINT( this == a.getGObject( ), "Annotation belongs to another object!", );
     SAFE_POINT( a.hasValidId( ), "Invalid feature ID detected!", );
@@ -316,31 +314,6 @@ void AnnotationTableObject::removeAnnotationFromDb( const Annotation &a ) {
     U2OpStatusImpl os;
     U2FeatureUtils::removeFeature( a.id, U2Feature::Annotation, entityRef.dbiRef, os );
     SAFE_POINT_OP( os, );
-}
-
-void AnnotationTableObject::copyFeaturesToObject( const U2Feature &feature,
-    const U2DataId &newParentId, AnnotationTableObject *obj, U2OpStatus &os ) const
-{
-    ensureDataLoaded();
-
-    U2Feature copiedFeature( feature );
-    copiedFeature.parentFeatureId = newParentId;
-    copiedFeature.rootFeatureId = obj->getRootFeatureId( );
-    QList<U2FeatureKey> keys = U2FeatureUtils::getFeatureKeys( feature.id, entityRef.dbiRef, os );
-    CHECK_OP( os, );
-    obj->addFeature( copiedFeature, keys, os );
-    CHECK_OP( os, );
-
-    // consider both grouping features and annotating
-    QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( feature.id, entityRef.dbiRef, os, Nonrecursive, Nonroot );
-    if ( U2Feature::Group == feature.featureClass ) {
-        subfeatures << U2FeatureUtils::getSubGroups( feature.id, entityRef.dbiRef, os, Nonrecursive );
-        CHECK_OP( os, );
-    }
-
-    foreach ( const U2Feature &subfeature, subfeatures ) {
-        copyFeaturesToObject( subfeature, copiedFeature.id, obj, os );
-    }
 }
 
 QList<Annotation> AnnotationTableObject::convertFeaturesToAnnotations(

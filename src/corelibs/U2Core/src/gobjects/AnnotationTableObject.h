@@ -46,6 +46,8 @@ public:
                             AnnotationTableObject( const QString &objectName,
                                 const U2EntityRef &tableRef,
                                 const QVariantMap &hintsMap = QVariantMap( ) );
+
+                            ~AnnotationTableObject();
     /**
      * Converts all the features stored in DB to annotations and returns the result
      */
@@ -108,11 +110,6 @@ public:
      */
     U2DataId               getRootFeatureId( ) const;
     /**
-     * Adds a new feature. Sets its id to the correct value. Also adds the list of keys
-     * to the feature. If not specified otherwise, parentFeatureId is set to the root feature.
-     */
-    void                    addFeature( U2Feature &f, QList<U2FeatureKey> keys, U2OpStatus &os );
-    /**
      * Increases reference count for this object
      */
     void                    ref( ) const;
@@ -146,10 +143,7 @@ protected:
 
 private:
     void                    removeAnnotationFromDb( const Annotation &a );
-    void                    copyFeaturesToObject( const U2Feature &feature,
-                                const U2DataId &newParentId, AnnotationTableObject *obj,
-                                U2OpStatus &os ) const;
-    QList<Annotation>     convertFeaturesToAnnotations( const QList<U2Feature> &features ) const;
+    QList<Annotation>       convertFeaturesToAnnotations( const QList<U2Feature> &features ) const;
 
     U2DataId                rootFeatureId;
 };

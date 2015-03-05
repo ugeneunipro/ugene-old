@@ -113,7 +113,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationSingleRegion ) {
 
     AnnotationTableObject ft( "aname_table_single", dbiRef );
     ft.addAnnotation( anData, grname );
-    ft.ref();
 
     const U2DataId &objRootFeatureId = ft.getRootFeatureId( );
     CHECK_TRUE( !objRootFeatureId.isEmpty( ), "invalid root feature id" );
@@ -145,8 +144,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationSingleRegion ) {
         }
     }
     CHECK_TRUE( hasQual, "qualifier not found in feature keys" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationMultipleRegion ) {
@@ -169,7 +166,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationMultipleRegion ) {
 
     AnnotationTableObject ft( fname, dbiRef );
     ft.addAnnotation( anData, grname );
-    ft.ref();
 
     const U2DataId &objRootFeatureId = ft.getRootFeatureId( );
     CHECK_TRUE( !objRootFeatureId.isEmpty( ), "invalid root feature id" );
@@ -219,61 +215,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationMultipleRegion ) {
         }
     }
     CHECK_EQUAL( 3, regs.count( true ), "matching regions" );
-
-    ft.deref();
-}
-
-IMPLEMENT_TEST( FeatureTableObjectUnitTest, addFeatureSingleRegion ) {
-    // -- prepare --
-    U2OpStatusImpl os;
-
-    const QString objName = "fname_table_single";
-    const QString name = "fname_single";
-    const QString keyName = "kname_single";
-    const QString keyValue = "kval_single";
-    const U2FeatureLocation loc( U2Strand::Direct, U2Region( 2, 20 ) );
-    const U2DbiRef dbiRef( getDbiRef( ) );
-
-    U2Feature sourceFeature;
-    sourceFeature.name = name;
-    sourceFeature.location = loc;
-
-    QList<U2FeatureKey> keys;
-    keys << U2FeatureKey( keyName, keyValue );
-
-    // -- do --
-    AnnotationTableObject ft( objName, dbiRef );
-    ft.addFeature( sourceFeature, keys, os );
-    CHECK_NO_ERROR( os );
-    ft.ref();
-
-    // -- check fields autofill --
-    CHECK_FALSE( sourceFeature.id.isEmpty( ), "id should have been set" );
-    CHECK_EQUAL( ft.getRootFeatureId( ), sourceFeature.parentFeatureId, "parent feature id" );
-
-    // -- check retrieve --
-    U2Feature fetchedFeature = U2FeatureUtils::getFeatureById(sourceFeature.id, U2Feature::Group, dbiRef, os);
-    CHECK_NO_ERROR(os);
-    CHECK_EQUAL( sourceFeature.id, fetchedFeature.id, "retrieved feature id" );
-    CHECK_EQUAL( name, fetchedFeature.name, "retrieved feature name" );
-    CHECK_EQUAL( loc, fetchedFeature.location, "retrieved feature location" );
-    CHECK_EQUAL( sourceFeature.parentFeatureId, fetchedFeature.parentFeatureId,
-        "retrieved feature parent id" );
-
-    const QList<U2FeatureKey> fetchedKeys = U2FeatureUtils::getFeatureKeys( fetchedFeature.id,
-        dbiRef, os );
-    CHECK_EQUAL( 1, fetchedKeys.size( ), "count of feature keys" );
-    CHECK_EQUAL( fetchedKeys.first( ).name, keyName, "feature's key name" );
-    CHECK_EQUAL( fetchedKeys.first( ).value, keyValue, "feature's key value" );
-
-    // -- check accessible as subfeature --
-    const QList<U2Feature> subs = U2FeatureUtils::getSubAnnotations( ft.getRootFeatureId( ),
-        dbiRef, os, Recursive, Nonroot );
-    CHECK_NO_ERROR( os );
-    CHECK_EQUAL( 1, subs.size( ), "number of subfeatures of root feature" );
-    CHECK_EQUAL( sourceFeature.id, subs.first( ).id, "first subfeature of root feature" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotations ) {
@@ -300,7 +241,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotations ) {
     ft.addAnnotation( anData1, grname );
     ft.addAnnotation( anData2, grname );
     ft.addAnnotation( anData3, grname );
-    ft.ref();
 
     const QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 3, annotations.size( ), "annotation count" );
@@ -316,8 +256,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotations ) {
         }
     }
     CHECK_EQUAL( 3, annotationMatches.count( true ), "matching annotations" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getRootGroup ) {
@@ -332,7 +270,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getRootGroup ) {
 
     AnnotationTableObject ft( "ftable_name", dbiRef );
     ft.addAnnotation( anData, grname );
-    ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
     CHECK_TRUE( rootGroup.hasValidId( ), "root group ID" );
@@ -340,8 +277,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getRootGroup ) {
     const QList<AnnotationGroup> subgroups = rootGroup.getSubgroups( );
     CHECK_EQUAL( 1, subgroups.size( ), "count of annotation groups" );
     CHECK_EQUAL( grname, subgroups.first( ).getName( ), "group's name" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToRootGroup ) {
@@ -369,7 +304,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToRootGroup ) {
     AnnotationTableObject ft( "ftable_name", dbiRef );
     U2OpStatusImpl os;
     ft.addAnnotations( annotations, os );
-    ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
     CHECK_TRUE( rootGroup.hasValidId( ), "root group ID" );
@@ -395,8 +329,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToRootGroup ) {
         }
     }
     CHECK_EQUAL( 2, groupMatches.count( true ), "matching groups" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToSubgroup ) {
@@ -425,7 +357,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToSubgroup ) {
     U2OpStatusImpl os;
     AnnotationTableObject ft( "ftable_name", dbiRef );
     ft.addAnnotations( annotations, os, grname );
-    ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
     CHECK_TRUE( rootGroup.hasValidId( ), "root group ID" );
@@ -441,8 +372,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToSubgroup ) {
 
     const QList<Annotation> anns2 = subgroup2.first( ).getAnnotations( );
     CHECK_EQUAL( 3, anns2.size( ), "annotation count" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotation ) {
@@ -471,7 +400,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotation ) {
     AnnotationTableObject ft( "ftable_name", dbiRef );
     U2OpStatusImpl os;
     ft.addAnnotations( annotations, os, grname );
-    ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
     CHECK_TRUE( rootGroup.hasValidId( ), "root group ID" );
@@ -492,8 +420,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotation ) {
         subgroup.first( ).id, dbiRef, os, Recursive, Nonroot );
     CHECK_NO_ERROR( os );
     CHECK_EQUAL( 2, featuresAfter.size( ), "annotation count" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotations ) {
@@ -522,7 +448,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotations ) {
     AnnotationTableObject ft( "ftable_name", dbiRef );
     U2OpStatusImpl os;
     ft.addAnnotations( annotations, os, grname );
-    ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
     CHECK_TRUE( rootGroup.hasValidId( ), "root group ID" );
@@ -539,8 +464,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotations ) {
         subgroup.first( ).id, dbiRef, os, Recursive, Nonroot );
     CHECK_NO_ERROR( os );
     CHECK_EQUAL( 0, featuresAfter.size( ), "annotation count" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, clone ) {
@@ -569,7 +492,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, clone ) {
     AnnotationTableObject ft( "ftable_name", dbiRef );
     U2OpStatusImpl os;
     ft.addAnnotations( annotations, os );
-    ft.ref();
 
     const AnnotationGroup sourceRootGroup = ft.getRootGroup( );
 
@@ -598,8 +520,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, clone ) {
         }
         CHECK_TRUE( groupMatched, "cloned group not found" );
     }
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByName ) {
@@ -628,7 +548,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByName ) {
     AnnotationTableObject ft( "ftable_name", dbiRef );
     U2OpStatusImpl os;
     ft.addAnnotations( annotations, os );
-    ft.ref();
 
     const QList<Annotation> anns1 = ft.getAnnotationsByName( aname2 );
     CHECK_EQUAL( 2, anns1.size( ), "annotation count" );
@@ -637,8 +556,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByName ) {
 
     const QList<Annotation> anns2 = ft.getAnnotationsByName( aname2 );
     CHECK_EQUAL( 4, anns2.size( ), "annotation count" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotatedRegions ) {
@@ -666,7 +583,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotatedRegions ) {
     AnnotationTableObject ft( "ftable_name", dbiRef );
     U2OpStatusImpl os;
     ft.addAnnotations( annotations, os );
-    ft.ref();
 
     const QList<U2Region> regions = ft.getAnnotatedRegions( );
     CHECK_EQUAL( 2, regions.size( ), "region count" );
@@ -680,8 +596,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotatedRegions ) {
         }
     }
     CHECK_EQUAL( 2, regionMatches.count( true ), "matching regions" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByRegion ) {
@@ -709,7 +623,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByRegion ) {
     AnnotationTableObject ft( "ftable_name", dbiRef );
     U2OpStatusImpl os;
     ft.addAnnotations( annotations, os );
-    ft.ref();
 
     const QList<Annotation> anns1 = ft.getAnnotationsByRegion( U2Region( 500, 500 ), false );
     CHECK_EQUAL( 0, anns1.size( ), "annotation count" );
@@ -722,8 +635,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByRegion ) {
     foreach ( const Annotation &ann, anns3 ) {
         CHECK_TRUE( ann.getRegions( ).contains( areg1 ), "count of annotation regions" );
     }
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, checkConstraints ) {
@@ -751,7 +662,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, checkConstraints ) {
     AnnotationTableObject ft( "ftable_name", dbiRef );
     U2OpStatusImpl os;
     ft.addAnnotations( annotations, os );
-    ft.ref();
 
     AnnotationTableObjectConstraints constraints;
 
@@ -763,8 +673,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, checkConstraints ) {
 
     constraints.sequenceSizeToFit = 2000;
     CHECK_TRUE( ft.checkConstraints( &constraints ), "unexpected constraint test result" );
-
-    ft.deref();
 }
 
 } // namespace
