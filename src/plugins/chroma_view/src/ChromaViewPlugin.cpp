@@ -59,7 +59,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 }
 
 
-ChromaViewPlugin::ChromaViewPlugin() : Plugin(tr("ChromaView"), tr("chroma_view_plugin_desc")) {
+ChromaViewPlugin::ChromaViewPlugin() : Plugin(tr("Chromatogram View"), tr("Chromatograms visualization")) {
     viewCtx = new ChromaViewContext(this);
     viewCtx->init();
 }
@@ -135,7 +135,7 @@ void ChromaViewContext::sl_showChromatogram() {
     }
 }
 
-ChromaViewAction::ChromaViewAction() : ADVSequenceWidgetAction(CHROMA_ACTION_NAME, tr("show_chromatogram")), view(NULL)
+ChromaViewAction::ChromaViewAction() : ADVSequenceWidgetAction(CHROMA_ACTION_NAME, tr("Show chromatogram")), view(NULL) 
 {
 }
 

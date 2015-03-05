@@ -28,6 +28,7 @@
 namespace U2 {
 
 class PrimerStatistics : public QObject {
+    Q_OBJECT
 public:
     static bool checkPcrPrimersPair(const QByteArray &forward, const QByteArray &reverse, QString &error);
     static double getMeltingTemperature(const QByteArray &sequence);

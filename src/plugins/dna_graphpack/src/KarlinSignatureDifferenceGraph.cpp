@@ -34,7 +34,7 @@
 
 namespace U2 {
 static QString nameByType() {
-    return KarlinGraphFactory::tr("karlin_signature_difference_graph");
+    return KarlinGraphFactory::tr("Karlin Signature Difference");
 
 }
 

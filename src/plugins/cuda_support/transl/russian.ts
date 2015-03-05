@@ -16,17 +16,17 @@
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="71"/>
         <source>Invalid device</source>
-        <translation type="unfinished"></translation>
+        <translation>Некорректное устройство</translation>
     </message>
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="72"/>
         <source>No cuda-enabled devices found</source>
-        <translation type="unfinished"></translation>
+        <translation>Не найдено устройств</translation>
     </message>
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="73"/>
         <source>Unknown error</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестная ошибка</translation>
     </message>
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="81"/>
@@ -37,27 +37,27 @@
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="86"/>
         <source>Cannot obtain needed info about Nvidia GPU.&lt;p&gt;Consider reinstallation of GPU driver.&lt;br&gt;See CUDA Support plugin log for details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cannot obtain needed info about Nvidia GPU.&lt;p&gt;Consider reinstallation of GPU driver.&lt;br&gt;See CUDA Support plugin log for details.</translation>
     </message>
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="91"/>
         <source>An error occurred while obtaining information about installed Nvidia GPUs.&lt;br&gt;See CUDA Support plugin log for details</source>
-        <translation type="unfinished"></translation>
+        <translation>An error occurred while obtaining information about installed Nvidia GPUs.&lt;br&gt;See CUDA Support plugin log for details</translation>
     </message>
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="131"/>
         <source>Loading CUDA driver library</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка библиотеки драйвера</translation>
     </message>
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="135"/>
         <source>Cannot load driver library. Error while loading %1: </source>
-        <translation type="unfinished"></translation>
+        <translation>Cannot load driver library. Error while loading %1:</translation>
     </message>
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="143"/>
         <source>Initializing CUDA</source>
-        <translation type="unfinished"></translation>
+        <translation>Initializing CUDA</translation>
     </message>
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="146"/>
@@ -65,23 +65,23 @@
         <location filename="../src/CudaSupportPlugin.cpp" line="175"/>
         <location filename="../src/CudaSupportPlugin.cpp" line="190"/>
         <source>Cannot resolve symbol </source>
-        <translation type="unfinished"></translation>
+        <translation>Cannot resolve symbol </translation>
     </message>
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="156"/>
         <source>Obtaining number of CUDA-enabled devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Obtaining number of CUDA-enabled devices</translation>
     </message>
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="203"/>
         <location filename="../src/CudaSupportPlugin.cpp" line="215"/>
         <source>Cannot resolve symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Cannot resolve symbol</translation>
     </message>
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="238"/>
         <source>Registering CUDA-enabled GPU: %1, id: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Registering CUDA-enabled GPU: %1, id: %2</translation>
     </message>
 </context>
 <context>

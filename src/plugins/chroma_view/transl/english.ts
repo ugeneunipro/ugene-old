@@ -5,7 +5,7 @@
     <name>U2::ChromaViewAction</name>
     <message>
         <location filename="../src/ChromaViewPlugin.cpp" line="138"/>
-        <source>show_chromatogram</source>
+        <source>Show chromatogram</source>
         <translation>Show chromatogram</translation>
     </message>
 </context>
@@ -13,83 +13,75 @@
     <name>U2::ChromaViewPlugin</name>
     <message>
         <location filename="../src/ChromaViewPlugin.cpp" line="62"/>
-        <source>chroma_view_plugin_desc</source>
-        <translation>Chromatograms visualization</translation>
+        <source>Chromatogram View</source>
+        <translation>Chromatogram View</translation>
     </message>
     <message>
         <location filename="../src/ChromaViewPlugin.cpp" line="62"/>
-        <source>ChromaView</source>
-        <translation></translation>
+        <source>Chromatograms visualization</source>
+        <translation>Chromatograms visualization</translation>
     </message>
 </context>
 <context>
     <name>U2::ChromatogramView</name>
     <message>
-        <source>-</source>
-        <translation type="obsolete">-</translation>
-    </message>
-    <message>
-        <source>+</source>
-        <translation type="obsolete">+</translation>
-    </message>
-    <message>
         <location filename="../src/ChromatogramView.cpp" line="74"/>
         <source>Show all</source>
-        <translation type="unfinished"></translation>
+        <translation>Show all</translation>
     </message>
     <message>
         <location filename="../src/ChromatogramView.cpp" line="77"/>
         <source>Show/hide trace</source>
-        <translation type="unfinished"></translation>
+        <translation>Show/hide trace</translation>
     </message>
     <message>
         <location filename="../src/ChromatogramView.cpp" line="108"/>
-        <source>add_new_seq</source>
+        <source>Edit new sequence</source>
         <translation>Edit new sequence</translation>
     </message>
     <message>
         <location filename="../src/ChromatogramView.cpp" line="111"/>
-        <source>add_exist_seq</source>
+        <source>Edit existing sequence</source>
         <translation>Edit existing sequence</translation>
     </message>
     <message>
         <location filename="../src/ChromatogramView.cpp" line="114"/>
-        <source>remove_editable_sequence</source>
+        <source>Remove edited sequence</source>
         <translation>Remove edited sequence</translation>
     </message>
     <message>
         <location filename="../src/ChromatogramView.cpp" line="117"/>
-        <source>remove_changes</source>
+        <source>Undo changes</source>
         <translation>Undo changes</translation>
     </message>
     <message>
         <location filename="../src/ChromatogramView.cpp" line="215"/>
         <location filename="../src/ChromatogramView.cpp" line="346"/>
-        <source>error</source>
+        <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
         <location filename="../src/ChromatogramView.cpp" line="215"/>
         <location filename="../src/ChromatogramView.cpp" line="346"/>
-        <source>sequence_object_was_locked</source>
-        <translation>Sequence is  locked</translation>
+        <source>Sequence is locked</source>
+        <translation>Sequence is locked</translation>
     </message>
     <message>
         <location filename="../src/ChromatogramView.cpp" line="68"/>
         <source>Show quality bars</source>
-        <translation></translation>
+        <translation>Show quality bars</translation>
     </message>
 </context>
 <context>
     <name>U2::ChromatogramViewRenderArea</name>
     <message>
         <location filename="../src/ChromatogramView.cpp" line="511"/>
-        <source>selection_is_too_big</source>
+        <source>Chromatogram view (zoom in to see base calls)</source>
         <translation>Chromatogram view (zoom in to see base calls)</translation>
     </message>
     <message>
         <location filename="../src/ChromatogramView.cpp" line="733"/>
-        <source>original</source>
+        <source>original sequence</source>
         <translation>original sequence</translation>
     </message>
 </context>

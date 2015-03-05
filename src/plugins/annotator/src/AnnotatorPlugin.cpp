@@ -58,7 +58,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
-AnnotatorPlugin::AnnotatorPlugin() : Plugin(tr("dna_annotator_plugin"), tr("dna_annotator_plugin_desc")), viewCtx(NULL)
+AnnotatorPlugin::AnnotatorPlugin() : Plugin(tr("DNA Annotator"), tr("This plugin contains routines to manipulate and search DNA sequence annotations")), viewCtx(NULL)
 {
     if (AppContext::getMainWindow()) {
         QString customAnnotationDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/custom_annotations";
@@ -123,7 +123,7 @@ void AnnotatorViewContext::sl_showCollocationDialog() {
         }
     }
     if (allNames.isEmpty()) {
-        QMessageBox::warning(av->getWidget(), tr("warning"),tr("no_annotations_found"));
+        QMessageBox::warning(av->getWidget(), tr("Warning"),tr("No annotations found"));
         return;
     }
 

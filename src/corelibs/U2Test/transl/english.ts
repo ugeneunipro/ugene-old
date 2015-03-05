@@ -6,33 +6,33 @@
     <message>
         <location filename="../src/GTestFrameworkComponents.cpp" line="93"/>
         <source>Sets timeout for the tests.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sets timeout for the tests.</translation>
     </message>
     <message>
         <location filename="../src/GTestFrameworkComponents.cpp" line="99"/>
         <source>Sets the number of threads.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sets the number of threads.</translation>
     </message>
     <message>
         <location filename="../src/GTestFrameworkComponents.cpp" line="100"/>
         <source>Sets the number of threads in the Test Runner that can run at the same time.</source>
         <comment>&lt;number_of_threads&gt;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Sets the number of threads in the Test Runner that can run at the same time.</translation>
     </message>
     <message>
         <location filename="../src/GTestFrameworkComponents.cpp" line="107"/>
         <source>Sets the directory for the test report.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sets the directory for the test report.</translation>
     </message>
     <message>
         <location filename="../src/GTestFrameworkComponents.cpp" line="113"/>
         <source>Loads test suites and runs them.</source>
-        <translation type="unfinished"></translation>
+        <translation>Loads test suites and runs them.</translation>
     </message>
     <message>
         <location filename="../src/GTestFrameworkComponents.cpp" line="119"/>
         <source>Output a test&apos;s messages to the TeamCity system.</source>
-        <translation type="unfinished"></translation>
+        <translation>Output a test&apos;s messages to the TeamCity system.</translation>
     </message>
 </context>
 <context>
@@ -40,73 +40,73 @@
     <message>
         <location filename="../src/GTest.cpp" line="323"/>
         <source>Can&apos;t load suite list %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Can&apos;t load suite list %1</translation>
     </message>
     <message>
         <location filename="../src/GTest.cpp" line="324"/>
         <source>Can&apos;t open suite list %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Can&apos;t open suite list %1</translation>
     </message>
 </context>
 <context>
     <name>U2::GUITestLauncher</name>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="109"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="115"/>
         <source>No tests to run</source>
-        <translation type="unfinished"></translation>
+        <translation>No tests to run</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="119"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="125"/>
         <source>Invalid suite number: %1. There are %2 suites</source>
-        <translation type="unfinished"></translation>
+        <translation>Invalid suite number: %1. There are %2 suites</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="171"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="177"/>
         <source>An error occurred while starting UGENE: </source>
-        <translation type="unfinished"></translation>
+        <translation>An error occurred while starting UGENE: </translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="188"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="194"/>
         <source>An error occurred while finishing UGENE: </source>
-        <translation type="unfinished"></translation>
+        <translation>An error occurred while finishing UGENE: </translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="190"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="196"/>
         <source>Test fails because of timeout.</source>
-        <translation type="unfinished"></translation>
+        <translation>Test fails because of timeout.</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="222"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="228"/>
         <source>Test name</source>
-        <translation type="unfinished"></translation>
+        <translation>Test name</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="222"/>
+        <location filename="../src/gui_tests/GUITestLauncher.cpp" line="228"/>
         <source>Status</source>
-        <translation type="unfinished"></translation>
+        <translation>Status</translation>
     </message>
 </context>
 <context>
     <name>U2::GUITestService</name>
     <message>
-        <location filename="../src/gui_tests/GUITestService.cpp" line="71"/>
+        <location filename="../src/gui_tests/GUITestService.cpp" line="76"/>
         <source>GUI test viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>GUI test viewer</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestService.cpp" line="71"/>
+        <location filename="../src/gui_tests/GUITestService.cpp" line="76"/>
         <source>Service to support UGENE GUI testing</source>
-        <translation type="unfinished"></translation>
+        <translation>Service to support UGENE GUI testing</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestService.cpp" line="227"/>
+        <location filename="../src/gui_tests/GUITestService.cpp" line="232"/>
         <source>Can&apos;t connect external tool manager signal</source>
-        <translation type="unfinished"></translation>
+        <translation>Can&apos;t connect external tool manager signal</translation>
     </message>
     <message>
-        <location filename="../src/gui_tests/GUITestService.cpp" line="364"/>
+        <location filename="../src/gui_tests/GUITestService.cpp" line="380"/>
         <source>GUI testing</source>
-        <translation type="unfinished"></translation>
+        <translation>GUI testing</translation>
     </message>
 </context>
 <context>
@@ -114,12 +114,12 @@
     <message>
         <location filename="../src/TestRunnerTask.cpp" line="176"/>
         <source>TestLoader for %1</source>
-        <translation></translation>
+        <translation>TestLoader for %1</translation>
     </message>
     <message>
         <location filename="../src/TestRunnerTask.cpp" line="184"/>
         <source>Cannot open file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Cannot open file: %1</translation>
     </message>
 </context>
 <context>
@@ -127,12 +127,12 @@
     <message>
         <location filename="../src/TestRunnerTask.cpp" line="36"/>
         <source>Test runner</source>
-        <translation></translation>
+        <translation>Test runner</translation>
     </message>
     <message>
         <location filename="../src/TestRunnerTask.cpp" line="100"/>
         <source>Test format not supported: %1</source>
-        <translation></translation>
+        <translation>Test format not supported: %1</translation>
     </message>
 </context>
 </TS>

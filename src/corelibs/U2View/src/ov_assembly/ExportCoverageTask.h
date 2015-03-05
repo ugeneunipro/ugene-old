@@ -94,6 +94,7 @@ protected:
 };
 
 class U2VIEW_EXPORT ExportCoverageHistogramTask : public ExportCoverageTask {
+    Q_OBJECT
 public:
     ExportCoverageHistogramTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings);
 

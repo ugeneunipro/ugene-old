@@ -70,7 +70,7 @@ void CMDLineCoreOptions::initHelp() {
     CMDLineHelpProvider * translSection = new CMDLineHelpProvider(
         TRANSLATION,
         tr( "Specifies the language to use." ),
-        tr( "Specifies the language to use. The following values are available: CS, EN, RU." ),
+        tr( "Specifies the language to use. The following values are available: CS, EN, RU, ZH." ),
         tr( "<language_code>" ));
 
     CMDLineHelpProvider * tmpDirSection = new CMDLineHelpProvider(

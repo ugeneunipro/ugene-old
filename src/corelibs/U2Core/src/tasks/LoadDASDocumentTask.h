@@ -166,6 +166,7 @@ private:
 };
 
 class U2CORE_EXPORT ConvertIdAndLoadDasFeaturesTask : public Task {
+    Q_OBJECT
 public:
     ConvertIdAndLoadDasFeaturesTask(const QStringList& accessionNumbers, const QList<DASSource>& featureSources, bool convertId = false);
 

@@ -537,10 +537,6 @@
         <translation>Транслировать входную нуклеотидную последовательность в протеиновую, искать указанный паттерн в последней.</translation>
     </message>
     <message>
-        <source>Search in</source>
-        <translation type="obsolete">Направление</translation>
-    </message>
-    <message>
         <source>Which strands should be searched: direct, complement or both.</source>
         <translation type="obsolete"> В каких стрендах последовательности следует искать паттерн: прямых, комплементарных или всех.</translation>
     </message>

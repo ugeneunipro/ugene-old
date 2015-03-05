@@ -2,41 +2,77 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
+    <name>QObject</name>
+    <message>
+        <location filename="../src/CredentialsAskerCli.cpp" line="87"/>
+        <source>Enter password: </source>
+        <translation>Enter password: </translation>
+    </message>
+    <message>
+        <location filename="../src/CredentialsAskerCli.cpp" line="88"/>
+        <source>Enter user name: </source>
+        <translation>Enter user name: </translation>
+    </message>
+    <message>
+        <location filename="../src/CredentialsAskerCli.cpp" line="90"/>
+        <source>Would you like UGENE to remember the password?</source>
+        <translation>Would you like UGENE to remember the password?</translation>
+    </message>
+    <message>
+        <location filename="../src/CredentialsAskerCli.cpp" line="91"/>
+        <source>Connect to the &apos;%1&apos; ...
+</source>
+        <translation>Connect to the &apos;%1&apos; ...
+</translation>
+    </message>
+    <message>
+        <location filename="../src/CredentialsAskerCli.cpp" line="92"/>
+        <source>You are going to log in as &apos;%1&apos;.
+</source>
+        <translation>You are going to log in as &apos;%1&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../src/CredentialsAskerCli.cpp" line="93"/>
+        <source>Would you like to log in as another user?</source>
+        <translation>Would you like to log in as another user?</translation>
+    </message>
+</context>
+<context>
     <name>U2::AddPluginTask</name>
     <message>
         <location filename="../src/PluginSupportImpl.cpp" line="463"/>
         <source>Add plugin task: %1</source>
-        <translation></translation>
+        <translation>Add plugin task: %1</translation>
     </message>
     <message>
         <location filename="../src/PluginSupportImpl.cpp" line="470"/>
         <source>Plugin is already loaded: %1</source>
-        <translation></translation>
+        <translation>Plugin is already loaded: %1</translation>
     </message>
     <message>
         <location filename="../src/PluginSupportImpl.cpp" line="478"/>
         <source>Plugin %1 depends on %2 which is not loaded</source>
-        <translation></translation>
+        <translation>Plugin %1 depends on %2 which is not loaded</translation>
     </message>
     <message>
         <location filename="../src/PluginSupportImpl.cpp" line="482"/>
         <source>Plugin %1 depends on %2 which is available, but the version is too old</source>
-        <translation></translation>
+        <translation>Plugin %1 depends on %2 which is available, but the version is too old</translation>
     </message>
     <message>
         <location filename="../src/PluginSupportImpl.cpp" line="493"/>
         <source>Plugin loading error: %1, Error string %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin loading error: %1, Error string %2</translation>
     </message>
     <message>
         <location filename="../src/PluginSupportImpl.cpp" line="500"/>
         <source>Plugin initialization routine was not found: %1</source>
-        <translation></translation>
+        <translation>Plugin initialization routine was not found: %1</translation>
     </message>
     <message>
         <location filename="../src/PluginSupportImpl.cpp" line="506"/>
         <source>Plugin initialization failed: %1</source>
-        <translation></translation>
+        <translation>Plugin initialization failed: %1</translation>
     </message>
 </context>
 <context>
@@ -44,7 +80,7 @@
     <message>
         <location filename="../src/ConsoleLogDriver.cpp" line="80"/>
         <source>Specifies the format of a log line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifies the format of a log line.</translation>
     </message>
     <message>
         <location filename="../src/ConsoleLogDriver.cpp" line="81"/>
@@ -53,17 +89,21 @@
 Use the following notations: L - level, C - category, YYYY or YY - year, MM - month, dd - day, hh - hour, mm - minutes, ss - seconds, zzz - milliseconds. 
 
 By default, logformat=&quot;[L][hh:mm]&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifies the format of a log line.
+
+Use the following notations: L - level, C - category, YYYY or YY - year, MM - month, dd - day, hh - hour, mm - minutes, ss - seconds, zzz - milliseconds. 
+
+By default, logformat=&quot;[L][hh:mm]&quot;.</translation>
     </message>
     <message>
         <location filename="../src/ConsoleLogDriver.cpp" line="86"/>
         <source>&quot;&lt;format_string&gt;&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;&lt;format_string&gt;&quot;</translation>
     </message>
     <message>
         <location filename="../src/ConsoleLogDriver.cpp" line="90"/>
         <source>Sets the log level.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sets the log level.</translation>
     </message>
     <message>
         <location filename="../src/ConsoleLogDriver.cpp" line="91"/>
@@ -75,17 +115,24 @@ The following categories are available:
 The following log levels are available: TRACE, DETAILS, INFO, ERROR or NONE.
 
 By default, loglevel=&quot;ERROR&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sets the log level per category. If a category is not specified, the log level is applied to all categories.
+
+The following categories are available: 
+&quot;Algorithms&quot;, &quot;Console&quot;, &quot;Core Services&quot;, &quot;Input/Output&quot;, &quot;Performance&quot;, &quot;Remote Service&quot;, &quot;Scripts&quot;, &quot;Tasks&quot;.
+
+The following log levels are available: TRACE, DETAILS, INFO, ERROR or NONE.
+
+By default, loglevel=&quot;ERROR&quot;.</translation>
     </message>
     <message>
         <location filename="../src/ConsoleLogDriver.cpp" line="98"/>
         <source>&quot;&lt;category1&gt;=&lt;level1&gt; [&lt;category2&gt;=&lt;level2&gt; ...]&quot; | &lt;level&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;&lt;category1&gt;=&lt;level1&gt; [&lt;category2&gt;=&lt;level2&gt; ...]&quot; | &lt;level&gt;</translation>
     </message>
     <message>
         <location filename="../src/ConsoleLogDriver.cpp" line="101"/>
         <source>Enables colored output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enables colored output.</translation>
     </message>
 </context>
 <context>
@@ -93,27 +140,27 @@ By default, loglevel=&quot;ERROR&quot;.</source>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="287"/>
         <source>Disable &apos;%1&apos; service</source>
-        <translation type="unfinished"></translation>
+        <translation>Disable &apos;%1&apos; service</translation>
     </message>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="301"/>
         <source>Service is not registered</source>
-        <translation type="unfinished"></translation>
+        <translation>Service is not registered</translation>
     </message>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="302"/>
         <source>Service is not enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Service is not enabled</translation>
     </message>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="308"/>
         <source>Active top-level task name: %1</source>
-        <translation></translation>
+        <translation>Active top-level task name: %1</translation>
     </message>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="310"/>
         <source>Active task was found</source>
-        <translation></translation>
+        <translation>Active task was found</translation>
     </message>
 </context>
 <context>
@@ -121,7 +168,7 @@ By default, loglevel=&quot;ERROR&quot;.</source>
     <message>
         <location filename="../src/DocumentFormatRegistryImpl.cpp" line="218"/>
         <source>UGENE Database</source>
-        <translation type="unfinished"></translation>
+        <translation>UGENE Database</translation>
     </message>
 </context>
 <context>
@@ -129,27 +176,27 @@ By default, loglevel=&quot;ERROR&quot;.</source>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="181"/>
         <source>Enable &apos;%1&apos; service</source>
-        <translation type="unfinished"></translation>
+        <translation>Enable &apos;%1&apos; service</translation>
     </message>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="191"/>
         <source>Service is enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Service is enabled</translation>
     </message>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="192"/>
         <source>Service is not registered</source>
-        <translation type="unfinished"></translation>
+        <translation>Service is not registered</translation>
     </message>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="197"/>
         <source>Circular service dependency: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Circular service dependency: %1</translation>
     </message>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="203"/>
         <source>Required service is not enabled: %1</source>
-        <translation></translation>
+        <translation>Required service is not enabled: %1</translation>
     </message>
 </context>
 <context>
@@ -157,22 +204,22 @@ By default, loglevel=&quot;ERROR&quot;.</source>
     <message>
         <location filename="../src/PluginSupportImpl.cpp" line="106"/>
         <source>Loading start up plugins</source>
-        <translation></translation>
+        <translation>Loading start up plugins</translation>
     </message>
     <message>
         <location filename="../src/PluginSupportImpl.cpp" line="157"/>
         <source>Problem occurred loading the OpenCL driver. Please try to update drivers if                                    you&apos;re going to make calculations on your video card. For details see this page:                                    &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Problem occurred loading the OpenCL driver. Please try to update drivers if                                    you&apos;re going to make calculations on your video card. For details see this page:                                    &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../src/PluginSupportImpl.cpp" line="168"/>
         <source>File not found: %1</source>
-        <translation></translation>
+        <translation>File not found: %1</translation>
     </message>
     <message>
         <location filename="../src/PluginSupportImpl.cpp" line="173"/>
         <source>Invalid file format: %1</source>
-        <translation></translation>
+        <translation>Invalid file format: %1</translation>
     </message>
 </context>
 <context>
@@ -180,22 +227,22 @@ By default, loglevel=&quot;ERROR&quot;.</source>
     <message>
         <location filename="../src/LogSettings.cpp" line="37"/>
         <source>TRACE</source>
-        <translation></translation>
+        <translation>TRACE</translation>
     </message>
     <message>
         <location filename="../src/LogSettings.cpp" line="38"/>
         <source>DETAILS</source>
-        <translation></translation>
+        <translation>DETAILS</translation>
     </message>
     <message>
         <location filename="../src/LogSettings.cpp" line="39"/>
         <source>INFO</source>
-        <translation></translation>
+        <translation>INFO</translation>
     </message>
     <message>
         <location filename="../src/LogSettings.cpp" line="40"/>
         <source>ERROR</source>
-        <translation></translation>
+        <translation>ERROR</translation>
     </message>
 </context>
 <context>
@@ -206,44 +253,44 @@ By default, loglevel=&quot;ERROR&quot;.</source>
         <location filename="../src/PluginDescriptor.cpp" line="121"/>
         <location filename="../src/PluginDescriptor.cpp" line="127"/>
         <source>Required attribute not found %1</source>
-        <translation></translation>
+        <translation>Required attribute not found %1</translation>
     </message>
     <message>
         <location filename="../src/PluginDescriptor.cpp" line="138"/>
         <location filename="../src/PluginDescriptor.cpp" line="149"/>
         <location filename="../src/PluginDescriptor.cpp" line="155"/>
         <source>Required element not found %1</source>
-        <translation></translation>
+        <translation>Required element not found %1</translation>
     </message>
     <message>
         <location filename="../src/PluginDescriptor.cpp" line="162"/>
         <source>Not valid value: &apos;%1&apos;, plugin: %2</source>
-        <translation></translation>
+        <translation>Not valid value: &apos;%1&apos;, plugin: %2</translation>
     </message>
     <message>
         <location filename="../src/PluginDescriptor.cpp" line="170"/>
         <source>Platform arch is unknown: %1</source>
-        <translation></translation>
+        <translation>Platform arch is unknown: %1</translation>
     </message>
     <message>
         <location filename="../src/PluginDescriptor.cpp" line="177"/>
         <source>Platform bits is unknown: %1</source>
-        <translation></translation>
+        <translation>Platform bits is unknown: %1</translation>
     </message>
     <message>
         <location filename="../src/PluginDescriptor.cpp" line="196"/>
         <source>Invalid depends token: %1</source>
-        <translation></translation>
+        <translation>Invalid depends token: %1</translation>
     </message>
     <message>
         <location filename="../src/PluginDescriptor.cpp" line="256"/>
         <source>Plugin circular dependency detected: %1 &lt;-&gt; %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin circular dependency detected: %1 &lt;-&gt; %2</translation>
     </message>
     <message>
         <location filename="../src/PluginDescriptor.cpp" line="340"/>
         <source>Can&apos;t satisfy dependencies for %1 !</source>
-        <translation></translation>
+        <translation>Can&apos;t satisfy dependencies for %1 !</translation>
     </message>
 </context>
 <context>
@@ -251,139 +298,139 @@ By default, loglevel=&quot;ERROR&quot;.</source>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="152"/>
         <source>Register &apos;%1&apos; service</source>
-        <translation type="unfinished"></translation>
+        <translation>Register &apos;%1&apos; service</translation>
     </message>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="158"/>
         <source>Service has already registered</source>
-        <translation type="unfinished"></translation>
+        <translation>Service has already registered</translation>
     </message>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="159"/>
         <source>Illegal service state: %1</source>
-        <translation></translation>
+        <translation>Illegal service state: %1</translation>
     </message>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="163"/>
         <source>Only one service of specified type is allowed: %1</source>
-        <translation></translation>
+        <translation>Only one service of specified type is allowed: %1</translation>
     </message>
 </context>
 <context>
     <name>U2::TaskSchedulerImpl</name>
     <message>
         <location filename="../src/TaskSchedulerImpl.cpp" line="82"/>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="645"/>
-        <source>New</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="82"/>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="647"/>
-        <source>Prepared</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="82"/>
         <location filename="../src/TaskSchedulerImpl.cpp" line="649"/>
-        <source>Running</source>
-        <translation></translation>
+        <source>New</source>
+        <translation>New</translation>
     </message>
     <message>
         <location filename="../src/TaskSchedulerImpl.cpp" line="82"/>
         <location filename="../src/TaskSchedulerImpl.cpp" line="651"/>
+        <source>Prepared</source>
+        <translation>Prepared</translation>
+    </message>
+    <message>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="82"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="653"/>
+        <source>Running</source>
+        <translation>Running</translation>
+    </message>
+    <message>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="82"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="655"/>
         <source>Finished</source>
-        <translation></translation>
+        <translation>Finished</translation>
     </message>
     <message>
         <location filename="../src/TaskSchedulerImpl.cpp" line="101"/>
         <source>Canceling task: %1</source>
-        <translation></translation>
+        <translation>Canceling task: %1</translation>
     </message>
     <message>
         <location filename="../src/TaskSchedulerImpl.cpp" line="135"/>
         <source>Subtask {%1} is failed: %2</source>
-        <translation></translation>
+        <translation>Subtask {%1} is failed: %2</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="355"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="356"/>
         <source>Waiting for resource &apos;%1&apos;, count: %2</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="370"/>
-        <source>No required resources for the task, resource id: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Waiting for resource &apos;%1&apos;, count: %2</translation>
     </message>
     <message>
         <location filename="../src/TaskSchedulerImpl.cpp" line="371"/>
+        <source>No required resources for the task, resource id: &apos;%1&apos;</source>
+        <translation>No required resources for the task, resource id: &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="372"/>
         <source>Unable to run test because required resource not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Unable to run test because required resource not found</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="378"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="379"/>
         <source>Not enough resources for the task, resource name: &apos;%1&apos; max: %2%3 requested: %4%5</source>
-        <translation></translation>
+        <translation>Not enough resources for the task, resource name: &apos;%1&apos; max: %2%3 requested: %4%5</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="381"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="382"/>
         <source>Waiting for resource &apos;%1&apos;, count: %2%3</source>
-        <translation></translation>
+        <translation>Waiting for resource &apos;%1&apos;, count: %2%3</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="511"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="515"/>
         <source>Registering new task: %1</source>
-        <translation></translation>
+        <translation>Registering new task: %1</translation>
     </message>
     <message>
         <location filename="../src/TaskSchedulerImpl.cpp" line="127"/>
         <source>Subtask {%1} is canceled %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Subtask {%1} is canceled %2</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="569"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="573"/>
         <source>Unregistering task: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Unregistering task: %1</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="654"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="658"/>
         <source>Invalid name</source>
-        <translation></translation>
+        <translation>Invalid name</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="728"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="732"/>
         <source>Promoting task {%1} to &apos;%2&apos;</source>
-        <translation></translation>
+        <translation>Promoting task {%1} to &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="730"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="734"/>
         <source>Promoting task {%1} to &apos;%2&apos;, error &apos;%3&apos;</source>
-        <translation></translation>
+        <translation>Promoting task {%1} to &apos;%2&apos;, error &apos;%3&apos;</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="740"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="744"/>
         <source>Starting {%1} task</source>
-        <translation></translation>
+        <translation>Starting {%1} task</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="766"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="772"/>
         <source>Task {%1} finished with error: %2</source>
-        <translation></translation>
+        <translation>Task {%1} finished with error: %2</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="770"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="776"/>
         <source>Task {%1} canceled</source>
-        <translation></translation>
+        <translation>Task {%1} canceled</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="773"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="779"/>
         <source>Task {%1} finished</source>
-        <translation></translation>
+        <translation>Task {%1} finished</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="876"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="882"/>
         <source>Deleting task: %1</source>
-        <translation></translation>
+        <translation>Deleting task: %1</translation>
     </message>
 </context>
 <context>
@@ -391,12 +438,12 @@ By default, loglevel=&quot;ERROR&quot;.</source>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="260"/>
         <source>Unregister &apos;%1&apos; service</source>
-        <translation type="unfinished"></translation>
+        <translation>Unregister &apos;%1&apos; service</translation>
     </message>
     <message>
         <location filename="../src/ServiceRegistryImpl.cpp" line="266"/>
         <source>Service is not registered</source>
-        <translation type="unfinished"></translation>
+        <translation>Service is not registered</translation>
     </message>
 </context>
 <context>
@@ -404,7 +451,7 @@ By default, loglevel=&quot;ERROR&quot;.</source>
     <message>
         <location filename="../src/PluginSupportImpl.cpp" line="533"/>
         <source>Verify plugin task: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Verify plugin task: %1</translation>
     </message>
 </context>
 </TS>

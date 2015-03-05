@@ -29,6 +29,7 @@
 namespace U2 {
 
 class ExtractProductTask : public Task {
+    Q_OBJECT
 public:
     ExtractProductTask(const InSilicoPcrProduct &product, const U2EntityRef &sequenceRef, const QString &outputFile = "");
     ~ExtractProductTask();

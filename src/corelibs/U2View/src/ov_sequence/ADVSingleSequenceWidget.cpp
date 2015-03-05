@@ -108,7 +108,7 @@ ADVSingleSequenceWidget::ADVSingleSequenceWidget(ADVSequenceObjectContext* seqCt
     selectOutAnnotationRangeAction->setObjectName("Sequence around selected annotations");
     connect(selectOutAnnotationRangeAction, SIGNAL(triggered()), SLOT(sl_onSelectOutRange()));
 
-    zoomToRangeAction = new QAction(QIcon(":/core/images/zoom_reg.png"), tr("Zoom to range.."), this);
+    zoomToRangeAction = new QAction(QIcon(":/core/images/zoom_reg.png"), tr("Zoom to range..."), this);
     zoomToRangeAction->setObjectName("zoom_to_range_" + getSequenceObject()->getGObjectName());
     connect(zoomToRangeAction, SIGNAL(triggered()), SLOT(sl_zoomToRange()));
 

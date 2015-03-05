@@ -40,7 +40,7 @@
 namespace U2 {
 
 static QString nameByType() {
-    return EntropyGraphFactory::tr("informational_entropy");
+    return EntropyGraphFactory::tr("Informational Entropy");
 
 }
 

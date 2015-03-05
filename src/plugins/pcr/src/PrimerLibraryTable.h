@@ -32,6 +32,7 @@
 namespace U2 {
 
 class PrimerLibraryModel : public QAbstractItemModel {
+    Q_OBJECT
 public:
     PrimerLibraryModel(QObject *parent);
 

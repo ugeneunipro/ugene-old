@@ -57,7 +57,7 @@ public:
     // messages to work with a shared database
     static QString errorWrongDbObjUrlFormat(const QString &url) { return tr("'%1' does not match database object URL format").arg(url); }
     static QString errorWrongDbFolderUrlFormat(const QString &url) { return tr("'%1' does not match database folder URL format").arg(url); }
-    static QString errorDbInacsessible(const QString &url) { return tr("Unable to connect to the database '%1'. Check your connection settings in File -> Connect to shared database...").arg(url); }
+    static QString errorDbInacsessible(const QString &url) { return tr("Unable to connect to the database '%1'. Check your connection settings in File -> Connect to shared database").arg(url); }
     static QString errorDbObjectInaccessible(const QString &url, const QString &name) {
         return tr("Unable to find the object '%1' in the database '%2'").arg(name).arg(url);
     }

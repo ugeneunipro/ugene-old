@@ -32,9 +32,9 @@
 namespace U2 {
 static QString nameByType(DeviationGraphFactory::GDeviationType t) {
     if (t == DeviationGraphFactory::AT) {
-        return DeviationGraphFactory::tr("at_deviation_graph");
+        return DeviationGraphFactory::tr("AT Deviation (A-T)/(A+T)");
     }
-    return DeviationGraphFactory::tr("gc_deviation_graph");
+    return DeviationGraphFactory::tr("GC Deviation (G-C)/(G+C)");
 
 }
 

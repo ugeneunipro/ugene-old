@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="ru_RU">
 <context>
     <name>DNAFlexDialog</name>
     <message>
@@ -53,14 +53,6 @@
         <source>Output</source>
         <translation>Выходные параметры</translation>
     </message>
-    <message>
-        <source>Search</source>
-        <translation type="obsolete">Искать</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Отмена</translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -85,23 +77,23 @@
     <message>
         <location filename="../src/DNAFlexDialog.cpp" line="48"/>
         <source>Search</source>
-        <translation type="unfinished">Искать</translation>
+        <translation>Искать</translation>
     </message>
     <message>
         <location filename="../src/DNAFlexDialog.cpp" line="49"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../src/DNAFlexDialog.cpp" line="100"/>
         <location filename="../src/DNAFlexDialog.cpp" line="105"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <location filename="../src/DNAFlexDialog.cpp" line="105"/>
         <source>Cannot create an annotation object. Please check settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно создать аннотацию. Проверьте настройки</translation>
     </message>
 </context>
 <context>
@@ -109,7 +101,7 @@
     <message>
         <location filename="../src/DNAFlexGraph.cpp" line="40"/>
         <source>DNA Flexibility</source>
-        <translation type="unfinished">ДНК флексибильность</translation>
+        <translation>ДНК флексибильность</translation>
     </message>
 </context>
 <context>
@@ -141,13 +133,9 @@
 <context>
     <name>U2::DNAFlexViewContext</name>
     <message>
-        <source>The input sequence must contain only A, C, G and T characters!</source>
-        <translation type="obsolete">Входная последовательность должна состоять из букв A, C, G и T!</translation>
-    </message>
-    <message>
         <location filename="../src/DNAFlexPlugin.cpp" line="89"/>
         <source>Unsupported sequence alphabet, only standard DNA alphabet is supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Неподдерживаемый алфавит, входная последовательность должна состоять из букв A, C, G и T</translation>
     </message>
     <message>
         <location filename="../src/DNAFlexPlugin.cpp" line="112"/>

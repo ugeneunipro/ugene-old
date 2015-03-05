@@ -93,7 +93,7 @@ Task::ReportResult AddDocumentTask::report() {
             p->addDocument(document);
         }
     } else if (!stateInfo.isCanceled()) {
-        stateInfo.setError(stateInfo.getError() + tr(". Document was removed"));
+        stateInfo.setError(stateInfo.getError() + tr("Document was removed"));
     }
     return ReportResult_Finished;
 }

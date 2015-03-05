@@ -163,7 +163,7 @@
         </size>
        </property>
        <property name="toolTip">
-        <string>Delete urls (s)</string>
+        <string>Delete urls(s)</string>
        </property>
        <property name="autoFillBackground">
         <bool>true</bool>

@@ -6,145 +6,117 @@
     <message>
         <location filename="../src/ui/CustomAutoAnnotationDialog.ui" line="14"/>
         <source>Plasmid Auto Annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск плазмид</translation>
     </message>
     <message>
         <location filename="../src/ui/CustomAutoAnnotationDialog.ui" line="20"/>
         <source>Selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбранные аннотации</translation>
     </message>
     <message>
         <location filename="../src/ui/CustomAutoAnnotationDialog.ui" line="26"/>
         <source>Promoter</source>
-        <translation type="unfinished"></translation>
+        <translation>Promoter</translation>
     </message>
     <message>
         <location filename="../src/ui/CustomAutoAnnotationDialog.ui" line="33"/>
         <source>Origin</source>
-        <translation type="unfinished"></translation>
+        <translation>Origin</translation>
     </message>
     <message>
         <location filename="../src/ui/CustomAutoAnnotationDialog.ui" line="40"/>
         <source>Terminator</source>
-        <translation type="unfinished"></translation>
+        <translation>Terminator</translation>
     </message>
     <message>
         <location filename="../src/ui/CustomAutoAnnotationDialog.ui" line="47"/>
         <source>Primer</source>
-        <translation type="unfinished"></translation>
+        <translation>Primer</translation>
     </message>
     <message>
         <location filename="../src/ui/CustomAutoAnnotationDialog.ui" line="54"/>
         <source>Gene</source>
-        <translation type="unfinished"></translation>
+        <translation>Gene</translation>
     </message>
     <message>
         <location filename="../src/ui/CustomAutoAnnotationDialog.ui" line="61"/>
         <source>Other features</source>
-        <translation type="unfinished"></translation>
+        <translation>Другие аннотации</translation>
     </message>
     <message>
         <location filename="../src/ui/CustomAutoAnnotationDialog.ui" line="68"/>
         <source>Regulatory</source>
-        <translation type="unfinished"></translation>
+        <translation>Regulatory</translation>
     </message>
 </context>
 <context>
     <name>FindAnnotationCollocationsDialog</name>
     <message>
-        <source>dialog_tittle</source>
-        <translation type="obsolete">Поиск сгруппировавнных аннотаций</translation>
-    </message>
-    <message>
-        <source>region_size_label</source>
-        <translation type="obsolete">Размер региона:</translation>
-    </message>
-    <message>
-        <source>search_button</source>
-        <translation type="obsolete">Искать</translation>
-    </message>
-    <message>
-        <source>save_annotations_button</source>
-        <translation type="obsolete">Сохранить как аннотации</translation>
-    </message>
-    <message>
-        <source>clear_results_button</source>
-        <translation type="obsolete">Сбросить результаты</translation>
-    </message>
-    <message>
-        <source>cancel_button</source>
-        <translation type="obsolete">Отменить</translation>
-    </message>
-    <message>
         <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="49"/>
         <source>1</source>
-        <translation></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="54"/>
         <source>2</source>
-        <translation></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="87"/>
         <source>Region size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер региона:</translation>
     </message>
     <message>
         <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="20"/>
         <source>Find Groups of Annotated Regions</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск сгруппированных аннотаций</translation>
     </message>
     <message>
         <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="146"/>
         <source>Save regions as annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить регионы как аннотации</translation>
     </message>
     <message>
         <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="153"/>
         <source>Clear results</source>
-        <translation type="unfinished"></translation>
+        <translation>Сбросить результаты</translation>
     </message>
     <message>
         <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="164"/>
         <source>Result strand</source>
-        <translation type="unfinished"></translation>
+        <translation>Расположение результатов</translation>
     </message>
     <message>
         <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="170"/>
         <source>Direct</source>
-        <translation type="unfinished"></translation>
+        <translation>Прямая</translation>
     </message>
     <message>
         <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="177"/>
         <source>Complement</source>
-        <translation type="unfinished"></translation>
+        <translation>Комплементарная</translation>
     </message>
     <message>
         <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="184"/>
         <source>Both</source>
-        <translation type="unfinished"></translation>
+        <translation>Обе</translation>
     </message>
     <message>
         <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="207"/>
         <source>Annotation must fit into region</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>whole annotations</source>
-        <translation type="obsolete">Аннотации не должны пересекать регион</translation>
+        <translation>Аннотация должна содержаться в регионе</translation>
     </message>
 </context>
 <context>
     <name>U2::AnnotatorPlugin</name>
     <message>
         <location filename="../src/AnnotatorPlugin.cpp" line="61"/>
-        <source>dna_annotator_plugin</source>
+        <source>DNA Annotator</source>
         <translation>Поиск сгруппированных аннотаций</translation>
     </message>
     <message>
         <location filename="../src/AnnotatorPlugin.cpp" line="61"/>
-        <source>dna_annotator_plugin_desc</source>
+        <source>This plugin contains routines to manipulate and search DNA sequence annotations</source>
         <translation>Поиск сгруппированных аннотаций</translation>
     </message>
 </context>
@@ -158,17 +130,17 @@
     <message>
         <location filename="../src/AnnotatorPlugin.cpp" line="106"/>
         <source>Annotate plasmid and custom features...</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск плазмид и пользовательских аннотаций...</translation>
     </message>
     <message>
         <location filename="../src/AnnotatorPlugin.cpp" line="125"/>
-        <source>warning</source>
-        <translation>Информация</translation>
+        <source>Warning</source>
+        <translation>Предупреждение</translation>
     </message>
     <message>
         <location filename="../src/AnnotatorPlugin.cpp" line="125"/>
-        <source>no_annotations_found</source>
-        <translation>Ничего не нашли</translation>
+        <source>No annotations found</source>
+        <translation>Аннотаций не найдено</translation>
     </message>
 </context>
 <context>
@@ -176,7 +148,7 @@
     <message>
         <location filename="../src/CollocationsDialogController.cpp" line="326"/>
         <location filename="../src/CollocationsDialogController.cpp" line="356"/>
-        <source>collocation_search_task</source>
+        <source>Search for annotated regions</source>
         <translation>Поиск сгруппированных аннотаций</translation>
     </message>
 </context>
@@ -185,52 +157,48 @@
     <message>
         <location filename="../src/CollocationsDialogController.cpp" line="64"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск</translation>
     </message>
     <message>
         <location filename="../src/CollocationsDialogController.cpp" line="65"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="107"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../src/CollocationsDialogController.cpp" line="68"/>
-        <source>click_to_add_new_annotation</source>
+        <source>&lt;&lt;click &apos;+&apos; button to add new annotation&gt;&gt;</source>
         <translation>&lt;&lt; Кликните &apos;+&apos; чтобы добавить аннотацию &gt;&gt;</translation>
     </message>
     <message>
         <location filename="../src/CollocationsDialogController.cpp" line="107"/>
-        <source>stop</source>
+        <source>Stop</source>
         <translation>Остановить</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="107"/>
-        <source>cancel</source>
-        <translation>Отменить</translation>
-    </message>
-    <message>
         <location filename="../src/CollocationsDialogController.cpp" line="113"/>
-        <source>searching__found_%1_items_progress_%2</source>
-        <translation>Сканируется последовательность, прогресс %2. Найдено %1 регионов.</translation>
+        <source>Searching... found %1 regions. Progress: %2%</source>
+        <translation>Сканируется последовательность, прогресс %2. Найдено %1 регионов</translation>
     </message>
     <message>
         <location filename="../src/CollocationsDialogController.cpp" line="115"/>
-        <source>found_%1_items</source>
-        <translation>Найдено %1</translation>
+        <source>Found %1 regions</source>
+        <translation>Найдено %1 регионов</translation>
     </message>
     <message>
         <location filename="../src/CollocationsDialogController.cpp" line="117"/>
-        <source>ready</source>
+        <source>Ready</source>
         <translation>Готов к поиску</translation>
     </message>
     <message>
         <location filename="../src/CollocationsDialogController.cpp" line="117"/>
-        <source>select_annotations</source>
+        <source>Select annotation names to search</source>
         <translation>Выберите аннотации</translation>
     </message>
     <message>
         <location filename="../src/CollocationsDialogController.cpp" line="136"/>
-        <source>no_more_annotations_left</source>
-        <translation>Аннотаций больше нет.</translation>
+        <source>No annotations left</source>
+        <translation>Аннотаций больше нет</translation>
     </message>
 </context>
 <context>
@@ -238,7 +206,7 @@
     <message>
         <location filename="../src/CustomAutoAnnotationDialog.cpp" line="47"/>
         <source>Annotate</source>
-        <translation type="unfinished"></translation>
+        <translation>Аннотировать</translation>
     </message>
 </context>
 <context>
@@ -246,7 +214,7 @@
     <message>
         <location filename="../src/CustomPatternAnnotationTask.cpp" line="51"/>
         <source>Custom pattern annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Пользовательская аннотация</translation>
     </message>
 </context>
 <context>
@@ -254,7 +222,7 @@
     <message>
         <location filename="../src/CustomPatternAnnotationTask.cpp" line="213"/>
         <source>Plasmid features</source>
-        <translation type="unfinished"></translation>
+        <translation>Плазмиды</translation>
     </message>
 </context>
 <context>
@@ -282,7 +250,7 @@
     <message>
         <location filename="../src/CollocationWorker.cpp" line="185"/>
         <source> Annotations themselves may not span beyond the region.</source>
-        <translation>целиком</translation>
+        <translation>целиком.</translation>
     </message>
     <message>
         <location filename="../src/CollocationWorker.cpp" line="189"/>
@@ -293,10 +261,6 @@
 <context>
     <name>U2::LocalWorkflow::CollocationWorker</name>
     <message>
-        <source>Found %1 collocations</source>
-        <translation type="obsolete">Найдено %1 групп</translation>
-    </message>
-    <message>
         <location filename="../src/CollocationWorker.cpp" line="99"/>
         <source>Group annotations</source>
         <translation>Найденные регионы</translation>
@@ -304,7 +268,7 @@
     <message>
         <location filename="../src/CollocationWorker.cpp" line="102"/>
         <source>Create new annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать новые аннотации</translation>
     </message>
     <message>
         <location filename="../src/CollocationWorker.cpp" line="104"/>
@@ -314,7 +278,7 @@
     <message>
         <location filename="../src/CollocationWorker.cpp" line="105"/>
         <source>Name of the result annotations to mark found collocations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя результирующих аннотаций отмечающих найденные группы.</translation>
     </message>
     <message>
         <location filename="../src/CollocationWorker.cpp" line="106"/>
@@ -329,7 +293,7 @@
     <message>
         <location filename="../src/CollocationWorker.cpp" line="109"/>
         <source>Effectively this is the maximum allowed distance between the interesting annotations in a group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Фактически, это максимальная допустимая дистанция между аннотациями в одной группе.</translation>
     </message>
     <message>
         <location filename="../src/CollocationWorker.cpp" line="110"/>
@@ -339,27 +303,27 @@
     <message>
         <location filename="../src/CollocationWorker.cpp" line="111"/>
         <source>Whether the interesting annotations should entirely fit into the specified region to form a group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Аннотации в группе должны целиком входить в указанный регион - т.е. дистанция в группе считается по внешним границам аннотаций.</translation>
     </message>
     <message>
         <location filename="../src/CollocationWorker.cpp" line="112"/>
         <source>Result type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип аннотации</translation>
     </message>
     <message>
         <location filename="../src/CollocationWorker.cpp" line="113"/>
         <source>Copy original annotations or annotate found regions with new ones.</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать оригинальные аннотации или аннотировать найденные регионы новыми.</translation>
     </message>
     <message>
         <location filename="../src/CollocationWorker.cpp" line="114"/>
         <source>Include boundaries</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить границы</translation>
     </message>
     <message>
         <location filename="../src/CollocationWorker.cpp" line="115"/>
         <source>Include most left and most right boundary annotations regions into result or exclude them.</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить границы региона в аннотацию или исключить их.</translation>
     </message>
     <message>
         <location filename="../src/CollocationWorker.cpp" line="130"/>
@@ -377,21 +341,9 @@
         <translation>Список аннотаций отмечающих найденные группы аннотаций.</translation>
     </message>
     <message>
-        <source>Name of the result annotations to mark found collocations</source>
-        <translation type="obsolete">Имя результирующих аннотаций отмечающих найденные группы</translation>
-    </message>
-    <message>
         <location filename="../src/CollocationWorker.cpp" line="107"/>
         <source>A list of annotation names to search. Found regions will contain all the named annotations.</source>
         <translation>Список имён интересующих аннотаций в группе. Ищутся регионы содержащие все указанные аннотации.</translation>
-    </message>
-    <message>
-        <source>Effectively this is the maximum allowed distance between the interesting annotations in a group</source>
-        <translation type="obsolete">Фактически, это максимальная допустимая дистанция между аннотациями в одной группе.</translation>
-    </message>
-    <message>
-        <source>Whether the interesting annotations should entirely fit into the specified region to form a group</source>
-        <translation type="obsolete">Аннотации в группе должны целиком входить в указанный регион - т.е. дистанция в группе считается по внешним границам аннотаций.</translation>
     </message>
     <message>
         <location filename="../src/CollocationWorker.cpp" line="131"/>
@@ -414,32 +366,32 @@
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="231"/>
         <source>unset</source>
-        <translation type="unfinished"></translation>
+        <translation>не указан</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="239"/>
         <source>For annotated genes from &lt;u&gt;%1&lt;/u&gt; build gene-by-gene approach report.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для аннотированных генов из &lt;u&gt;%1&lt;/u&gt; построить приближенный отчет gene-by-gene.</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="240"/>
         <source> With sequence identity of &lt;u&gt;%1&lt;/u&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>С идентичностью последовательности &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="241"/>
         <source> Using &lt;u&gt;%1&lt;/u&gt; to compare gene and genome sequences.</source>
-        <translation type="unfinished"></translation>
+        <translation> Использовать &lt;u&gt;%1&lt;/u&gt; для сравнения гена и геномных последовательностей.</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="242"/>
         <source> Output result table to &lt;u&gt;%1&lt;/u&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation> Выходная таблица в &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="243"/>
         <source> If a report file already exists, &lt;u&gt;%1&lt;/u&gt; it</source>
-        <translation type="unfinished"></translation>
+        <translation> Если файл уже существует, &lt;u&gt;%1&lt;/u&gt; его</translation>
     </message>
 </context>
 <context>
@@ -447,82 +399,82 @@
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="152"/>
         <source>Input annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Входные аннотации</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="153"/>
         <source>Gene annotations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Аннотации гена.</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="156"/>
         <source>Input sequences</source>
-        <translation type="unfinished"></translation>
+        <translation>Входные последовательности</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="157"/>
         <source>Gene sequences.</source>
-        <translation type="unfinished"></translation>
+        <translation>Последовательности гена.</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="161"/>
         <source>Gene by gene report data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отчетные данные.</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="162"/>
         <source>Gene with similar regions to for report.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ген со схожими регионами для отчета.</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="170"/>
         <source>Output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Выходной файл</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="171"/>
         <source>File to store a report.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл для сохранения отчета.</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="173"/>
         <source>Annotation name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя аннотации</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="174"/>
         <source>Annotation name used to compare genes and reference genomes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя аннотации используемое для сравнения генов и референсных геномов.</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="176"/>
         <source>Existing file</source>
-        <translation type="unfinished"></translation>
+        <translation>Существующий файл</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="177"/>
         <source>If a target report already exists you should specify how to handle that. &lt;b&gt;Merge&lt;/b&gt; two table in one. &lt;b&gt;Overwrite&lt;/b&gt; or &lt;b&gt;Rename&lt;/b&gt; existing file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Если файл уже существует выберите операцию. &lt;b&gt;Соединить&lt;/b&gt; две таблицы в одну. &lt;b&gt;Переписать&lt;/b&gt; или &lt;b&gt;Переименовать&lt;/b&gt; существующий файл.</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="180"/>
         <source>Identity cutoff</source>
-        <translation type="unfinished"></translation>
+        <translation>Сдвиг идентичности</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="181"/>
         <source>Identity between gene sequence length and annotation length in per cent. BLAST identity (if specified) is checked after.</source>
-        <translation type="unfinished"></translation>
+        <translation>Идентичность между длиной гена и длиной аннотации в процентах.</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="212"/>
         <source>Gene-by-gene Approach Report</source>
-        <translation type="unfinished"></translation>
+        <translation>Gene-by-gene отчет</translation>
     </message>
     <message>
         <location filename="../src/GeneByGeneReportWorker.cpp" line="213"/>
         <source>Output a table of genes found in a reference sequence.</source>
-        <translation type="unfinished"></translation>
+        <translation>Таблица генов найденных в референсной последовательности.</translation>
     </message>
 </context>
 </TS>

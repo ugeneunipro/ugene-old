@@ -56,7 +56,7 @@
     <message>
         <location filename="../src/ui/DNAStatMSAProfileDialog.ui" line="98"/>
         <source>...</source>
-        <translation></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/DNAStatMSAProfileDialog.ui" line="105"/>
@@ -68,84 +68,68 @@
         <source>Comma separated ( .CSV)</source>
         <translation>Значения через запятую (.CSV)</translation>
     </message>
-    <message>
-        <source>Generate </source>
-        <translation type="obsolete">Создать отчет</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Отмена</translation>
-    </message>
 </context>
 <context>
     <name>DistanceMatrixMSAProfileDialog</name>
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="14"/>
         <source>Generate Distance Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Генерация матрицы расстояний</translation>
     </message>
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="22"/>
         <source>Distance algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>Алгоритм</translation>
     </message>
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="34"/>
         <source>Profile mode</source>
-        <translation type="unfinished">Использовать</translation>
+        <translation>Использовать</translation>
     </message>
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="40"/>
         <source>Counts</source>
-        <translation type="unfinished">Числа</translation>
+        <translation>Числа</translation>
     </message>
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="50"/>
         <source>Percents</source>
-        <translation type="unfinished">Проценты</translation>
+        <translation>Проценты</translation>
     </message>
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="57"/>
         <source>Exclude gaps</source>
-        <translation type="unfinished"></translation>
+        <translation>Исключить пробелы</translation>
     </message>
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="67"/>
         <source>Show group statistics of multiple alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать групповую статистику множественного выравнивания</translation>
     </message>
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="77"/>
         <source>Save profile to file</source>
-        <translation type="unfinished">Сохранить отчет в файл</translation>
+        <translation>Сохранить отчет в файл</translation>
     </message>
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="89"/>
         <source>File</source>
-        <translation type="unfinished">Файл</translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="99"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="106"/>
         <source>Hypertext  (.HTML)</source>
-        <translation type="unfinished">Гипертекст (.HTML)</translation>
+        <translation>Гипертекст (.HTML)</translation>
     </message>
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="116"/>
         <source>Comma separated ( .CSV)</source>
-        <translation type="unfinished">Значения через запятую (.CSV)</translation>
-    </message>
-    <message>
-        <source>Generate </source>
-        <translation type="obsolete">Создать отчет</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Отмена</translation>
+        <translation>Значения через запятую (.CSV)</translation>
     </message>
 </context>
 <context>
@@ -171,7 +155,7 @@
     <message>
         <location filename="../src/DNAStatMSAProfileDialog.cpp" line="63"/>
         <source>Select file to save report to..</source>
-        <translation>Выберете файл для сохранения отчета</translation>
+        <translation>Выберете файл для сохранения отчета..</translation>
     </message>
     <message>
         <location filename="../src/DNAStatMSAProfileDialog.cpp" line="106"/>
@@ -260,77 +244,77 @@
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="41"/>
         <source>Generate sequence statistics profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Генерация профиля статистики последовательности</translation>
     </message>
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="47"/>
         <source>Sequence context is NULL</source>
-        <translation type="unfinished"></translation>
+        <translation>Sequence context is NULL</translation>
     </message>
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="142"/>
         <source>Sequence Statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Статистика последовательности</translation>
     </message>
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="144"/>
         <source>Sequence file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл:</translation>
     </message>
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="145"/>
         <source>Sequence length:</source>
-        <translation type="unfinished"></translation>
+        <translation>Длина последовательности:</translation>
     </message>
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="151"/>
         <source>GC content:</source>
-        <translation type="unfinished"></translation>
+        <translation>Состав GC:</translation>
     </message>
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="154"/>
         <source>Molar Weight:</source>
-        <translation type="unfinished"></translation>
+        <translation>Молярный вес:</translation>
     </message>
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="157"/>
         <source>Molar ext. coef.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Молярный коэф.:</translation>
     </message>
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="160"/>
         <source>Melting Tm:</source>
-        <translation type="unfinished"></translation>
+        <translation>Плавление Tm:</translation>
     </message>
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="164"/>
         <source>Molecular Weight:</source>
-        <translation type="unfinished"></translation>
+        <translation>Молекулярный вес:</translation>
     </message>
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="167"/>
         <source>Isoelectric Point (pI):</source>
-        <translation type="unfinished"></translation>
+        <translation>Изоэлектрическая точка (pI):</translation>
     </message>
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="99"/>
         <source>Symbol counts</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество символов</translation>
     </message>
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="100"/>
         <source>Symbol percents %</source>
-        <translation type="unfinished"></translation>
+        <translation>Содержание символов %</translation>
     </message>
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="121"/>
         <source>Dinucleotide counts</source>
-        <translation type="unfinished"></translation>
+        <translation>Число динуклеотидов</translation>
     </message>
     <message>
         <location filename="../src/DNAStatProfileTask.cpp" line="122"/>
         <source>Dinucleotide percents %</source>
-        <translation type="unfinished"></translation>
+        <translation>Содержание динуклеотидов %</translation>
     </message>
 </context>
 <context>
@@ -338,7 +322,7 @@
     <message>
         <location filename="../src/DNAStatsWindow.cpp" line="44"/>
         <source>Statistics for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Статистика для %1</translation>
     </message>
 </context>
 <context>
@@ -346,7 +330,7 @@
     <message>
         <location filename="../src/DNAStatPlugin.cpp" line="164"/>
         <source>Statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Статистика</translation>
     </message>
 </context>
 <context>
@@ -354,7 +338,7 @@
     <message>
         <location filename="../src/DNAStatPlugin.cpp" line="114"/>
         <source>Generate distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Генерация матрицы расстояний</translation>
     </message>
 </context>
 <context>
@@ -362,37 +346,37 @@
     <message>
         <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="55"/>
         <source>Generate</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать отчет</translation>
     </message>
     <message>
         <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="56"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="80"/>
         <source>CSV files</source>
-        <translation type="unfinished">CSV файлы</translation>
+        <translation>CSV файлы</translation>
     </message>
     <message>
         <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="82"/>
         <source>HTML files</source>
-        <translation type="unfinished">HTML файлы</translation>
+        <translation>HTML файлы</translation>
     </message>
     <message>
         <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="84"/>
         <source>Select file to save report to..</source>
-        <translation type="unfinished">Выберете файл для сохранения отчета</translation>
+        <translation>Выберете файл для сохранения отчета..</translation>
     </message>
     <message>
         <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="129"/>
         <source>Error</source>
-        <translation type="unfinished">Ошибка</translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="129"/>
         <source>File URL is empty</source>
-        <translation type="unfinished">Не указан файл для сохранения отчета</translation>
+        <translation>Не указан файл для сохранения отчета</translation>
     </message>
 </context>
 <context>
@@ -400,57 +384,57 @@
     <message>
         <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="142"/>
         <source>Generate distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Генерация матрицы расстояний</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="166"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="170"/>
         <source>No output file name specified</source>
-        <translation type="unfinished">Не указано имя файла для сохранения отчета</translation>
-    </message>
-    <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="180"/>
-        <source>Multiple Sequence Alignment Distance Matrix</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="183"/>
-        <source>Alignment file:</source>
-        <translation type="unfinished">Файл:</translation>
+        <translation>Не указано имя файла для сохранения отчета</translation>
     </message>
     <message>
         <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="184"/>
+        <source>Multiple Sequence Alignment Distance Matrix</source>
+        <translation>Матрица расстояний множественного выравнивания</translation>
+    </message>
+    <message>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="187"/>
+        <source>Alignment file:</source>
+        <translation>Файл:</translation>
+    </message>
+    <message>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="188"/>
         <source>Table content:</source>
-        <translation type="unfinished">Результаты:</translation>
+        <translation>Результаты:</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="195"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="199"/>
         <source>Group statistics of multiple alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Групповая статистика множественного выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="221"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="225"/>
         <source>Legend:</source>
-        <translation type="unfinished">Легенда:</translation>
+        <translation>Легенда:</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="261"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="265"/>
         <source>Can&apos;t open file for write: %1</source>
-        <translation type="unfinished">Не могу открыть файл для записи: %1</translation>
+        <translation>Не могу открыть файл для записи: %1</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="278"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="282"/>
         <source>There is not enough groups to create distance matrix!</source>
-        <translation type="unfinished"></translation>
+        <translation>Недостаточно групп для того, чтобы создать матрицу расстояний!</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="331"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="335"/>
         <source>Distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Матрица расстояний</translation>
     </message>
     <message>
-        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="331"/>
+        <location filename="../src/DistanceMatrixMSAProfileDialog.cpp" line="335"/>
         <source>Distance matrix for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Матрица расстояний для %1</translation>
     </message>
 </context>
 </TS>

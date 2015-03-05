@@ -60,7 +60,7 @@ CollocationsDialogController::CollocationsDialogController(QStringList _names, A
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     QStringList list;
-    list.append(tr("click_to_add_new_annotation"));
+    list.append(tr("<<click '+' button to add new annotation>>"));
     QTreeWidgetItem* item = new QTreeWidgetItem(annotationsTree, list);
     plusButton = new QToolButton(annotationsTree);
     plusButton->setText("+");
@@ -99,17 +99,17 @@ void CollocationsDialogController::updateState() {
     searchButton->setEnabled(!hasActiveTask && readyToSearch);
     saveResultsButton->setEnabled(!hasActiveTask && resultsList->count() > 0);
     clearResultsButton->setEnabled(!hasActiveTask && resultsList->count() > 0);
-    cancelButton->setText(hasActiveTask ? tr("stop") : tr("cancel"));
+    cancelButton->setText(hasActiveTask ? tr("Stop") : tr("Cancel"));
     updateStatus();
 }
 
 void CollocationsDialogController::updateStatus() {
     if (task!=NULL) {
-        statusBar->setText(tr("searching__found_%1_items_progress_%2").arg(resultsList->count()).arg(task->getProgress()));
+        statusBar->setText(tr("Searching... found %1 regions. Progress: %2%").arg(resultsList->count()).arg(task->getProgress()));
     } else if (resultsList->count() > 0) {
-        statusBar->setText(tr("found_%1_items").arg(resultsList->count()));
+        statusBar->setText(tr("Found %1 regions").arg(resultsList->count()));
     } else {
-        statusBar->setText(searchButton->isEnabled() ? tr("ready") : tr("select_annotations"));
+        statusBar->setText(searchButton->isEnabled() ? tr("Ready") : tr("Select annotation names to search"));
     }
 }
 
@@ -128,7 +128,7 @@ void CollocationsDialogController::sl_plusClicked() {
         assert(a->parent() == &m); Q_UNUSED(a);
     }
     if (m.isEmpty()) {
-        m.addAction(tr("no_more_annotations_left"));
+        m.addAction(tr("No annotations left"));
     }
     m.exec(QCursor::pos());
 }
@@ -318,7 +318,7 @@ CDCResultItem::CDCResultItem(const U2Region& _r) : r(_r) {
 // task
 CollocationSearchTask::CollocationSearchTask(const QList<AnnotationTableObject*> &table, const QSet<QString>& names,
                                              const CollocationsAlgorithmSettings& cfg)
-: Task(tr("collocation_search_task"), TaskFlag_None), cfg(cfg), lock(QMutex::Recursive), keepSourceAnns(false)
+: Task(tr("Search for annotated regions"), TaskFlag_None), cfg(cfg), lock(QMutex::Recursive), keepSourceAnns(false)
 {
     GCOUNTER(cvar, tvar, "CollocationSearchTask");
     assert(cfg.distance >= 0);
@@ -348,7 +348,7 @@ CollocationSearchTask::CollocationSearchTask(const QList<AnnotationTableObject*>
 
 CollocationSearchTask::CollocationSearchTask(const QList<AnnotationData> &table, const QSet<QString>& names,
                       const CollocationsAlgorithmSettings& cfg, bool _keepSourceAnns)
-: Task(tr("collocation_search_task"), TaskFlag_None), cfg(cfg), lock(QMutex::Recursive), keepSourceAnns(_keepSourceAnns)
+: Task(tr("Search for annotated regions"), TaskFlag_None), cfg(cfg), lock(QMutex::Recursive), keepSourceAnns(_keepSourceAnns)
 {
     assert(cfg.distance >= 0);
     assert(!names.isEmpty());

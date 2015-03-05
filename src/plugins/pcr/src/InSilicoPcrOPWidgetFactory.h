@@ -27,6 +27,7 @@
 namespace U2 {
 
 class InSilicoPcrOPWidgetFactory : public OPWidgetFactory {
+    Q_OBJECT
 public:
     InSilicoPcrOPWidgetFactory();
 

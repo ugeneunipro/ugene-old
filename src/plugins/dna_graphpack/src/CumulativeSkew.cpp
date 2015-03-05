@@ -36,9 +36,9 @@
 namespace U2 {
 static QString nameByType(CumulativeSkewGraphFactory::GCumulativeSkewType t) {
     if (t == CumulativeSkewGraphFactory::AT) {
-        return CumulativeSkewGraphFactory::tr("at_cumulative_skew_not_optimal_version");
+        return CumulativeSkewGraphFactory::tr("AT Cumulative Skew");
     }
-    return CumulativeSkewGraphFactory::tr("gc_cumulative_skew_not_optimal_version");
+    return CumulativeSkewGraphFactory::tr("GC Cumulative Skew");
 
 }
 

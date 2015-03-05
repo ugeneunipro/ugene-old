@@ -38,6 +38,7 @@ BallPlugin::BallPlugin()
 {
     AppContext::getMolecularSurfaceFactoryRegistry()->registerSurfaceFactory(new SolventExcludedSurfaceFactory(),QString("SES"));
     AppContext::getMolecularSurfaceFactoryRegistry()->registerSurfaceFactory(new SolventAccessibleSurfaceFactory(),QString("SAS"));
+
 }
 
 } // namespace

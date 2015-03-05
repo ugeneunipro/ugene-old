@@ -432,7 +432,7 @@ void GTUtilsOptionPanelSequenceView::setMatchPercentage( U2OpStatus &os, int per
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setSearchInTranslation"
-void GTUtilsOptionPanelSequenceView::setSearchInTranslation( U2OpStatus &os, bool inTranslation /*= true*/ ){
+void GTUtilsOptionPanelSequenceView::setSearchInTranslation( U2OpStatus &os, bool inTranslation /* = true*/ ){
     QComboBox *searchIn = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "boxSeqTransl", NULL, GTGlobals::FindOptions(false)));
     GT_CHECK(searchIn != NULL, "combobox is NULL");
 

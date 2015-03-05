@@ -1758,7 +1758,7 @@ Do you want view online documentation?</source>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="114"/>
-        <source>Connect to shared database...</source>
+        <source>Connect to shared database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

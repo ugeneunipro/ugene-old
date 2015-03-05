@@ -105,16 +105,16 @@ ChromatogramView::ChromatogramView(QWidget* p, ADVSequenceObjectContext* v, GSeq
     connect(mP, SIGNAL(triggered(QAction*)),SLOT(sl_onPopupMenuCkicked(QAction*)));
 
 
-    addNewSeqAction = new QAction(tr("add_new_seq"), this);
+    addNewSeqAction = new QAction(tr("Edit new sequence"), this);
     connect(addNewSeqAction, SIGNAL(triggered()), SLOT(sl_addNewSequenceObject()));
 
-    addExistSeqAction = new QAction(tr("add_exist_seq"),this);
+    addExistSeqAction = new QAction(tr("Edit existing sequence"),this);
     connect(addExistSeqAction, SIGNAL(triggered()), SLOT(sl_onAddExistingSequenceObject()));
 
-    clearEditableSequence = new QAction(tr("remove_editable_sequence"),this);
+    clearEditableSequence = new QAction(tr("Remove edited sequence"),this);
     connect(clearEditableSequence, SIGNAL(triggered()), SLOT(sl_clearEditableSequence()));
 
-    removeChanges = new QAction(tr("remove_changes"),this);
+    removeChanges = new QAction(tr("Undo changes"),this);
     connect(removeChanges, SIGNAL(triggered()), SLOT(sl_removeChanges()));
 
     connect(ctx->getAnnotatedDNAView(), SIGNAL(si_objectRemoved(GObjectView*, GObject*)), SLOT(sl_onObjectRemoved(GObjectView*, GObject*)));
@@ -212,7 +212,7 @@ int ChromatogramView::getEditSeqIndex(int bcIndex) {
 
 void ChromatogramView::sl_onPopupMenuCkicked(QAction* a) {
     if (editDNASeq->isStateLocked()) {
-        QMessageBox::critical(this, tr("error"), tr("sequence_object_was_locked"));
+        QMessageBox::critical(this, tr("Error"), tr("Sequence is locked"));
         return;
     }
     char newBase = a->text().at(0).toLatin1();
@@ -343,7 +343,7 @@ void ChromatogramView::sl_clearEditableSequence() {
 
 void ChromatogramView::sl_removeChanges()   {
     if (editDNASeq->isStateLocked()) {
-        QMessageBox::critical(this, tr("error"), tr("sequence_object_was_locked"));
+        QMessageBox::critical(this, tr("Error"), tr("Sequence is locked"));
         return;
     }
 
@@ -511,7 +511,7 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
             }
         } else {
             QRectF rect(charWidth, 0, width() - 2*charWidth, 2*charHeight);
-            p.drawText(rect, Qt::AlignCenter, QString(tr("selection_is_too_big")));
+            p.drawText(rect, Qt::AlignCenter, QString(tr("Chromatogram view (zoom in to see base calls)")));
             int curCP = width() - charWidth;
             for (int i = 0; i < 4; ++i) {
                 curCP-= 2*charWidth;
@@ -735,7 +735,7 @@ void ChromatogramViewRenderArea::drawOriginalBaseCalls(qreal x, qreal y, qreal w
     if (is) {
         p.setPen(linePen);
         p.setFont(QFont(QString("Courier New"), 8));
-        p.drawText(charWidth*1.3, charHeight/2, QString(tr("original")));
+        p.drawText(charWidth*1.3, charHeight/2, QString(tr("original sequence")));
     }
     p.resetTransform();
 }

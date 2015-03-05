@@ -85,19 +85,19 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     ServiceRegistry* sr = AppContext::getServiceRegistry();
     connect(sr, SIGNAL(si_serviceStateChanged(Service*, ServiceState)), SLOT(sl_serviceStateChanged(Service*, ServiceState)));
     
-    newProjectAction = new QAction(QIcon(":ugene/images/project_new.png"), tr("&New project..."), this);
+    newProjectAction = new QAction(QIcon(":ugene/images/project_new.png"), tr("&New project"), this);
     newProjectAction->setObjectName(ACTION_PROJECTSUPPORT__NEW_PROJECT);
 //    newProjectAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_N));
     newProjectAction->setShortcutContext(Qt::WindowShortcut);
     connect(newProjectAction, SIGNAL(triggered()), SLOT(sl_newProject()));
 
-    addExistingDocumentAction = new QAction(QIcon(":ugene/images/advanced_open.png"), tr("Open as..."), this);
+    addExistingDocumentAction = new QAction(QIcon(":ugene/images/advanced_open.png"), tr("Open as"), this);
     addExistingDocumentAction->setObjectName(ACTION_PROJECTSUPPORT__OPEN_AS);
     addExistingDocumentAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_O));
     addExistingDocumentAction->setShortcutContext(Qt::ApplicationShortcut);
     connect(addExistingDocumentAction, SIGNAL(triggered()), SLOT(sl_onAddExistingDocument()));
 
-    newDocumentFromtext = new QAction(QIcon(), tr("New document from text..."), this);
+    newDocumentFromtext = new QAction(QIcon(), tr("New document from text"), this);
     newDocumentFromtext->setObjectName("NewDocumentFromText");
     newDocumentFromtext->setShortcutContext(Qt::WindowShortcut);
     connect(newDocumentFromtext, SIGNAL(triggered()), SLOT(sl_newDocumentFromText()));
@@ -108,18 +108,18 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     openProjectAction->setShortcutContext(Qt::WindowShortcut);
     connect(openProjectAction, SIGNAL(triggered()), SLOT(sl_openProject()));
     
-    downloadRemoteFileAction = new QAction(tr("Access remote database..."), this);
+    downloadRemoteFileAction = new QAction(tr("Access remote database"), this);
     downloadRemoteFileAction->setObjectName(ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB);
     downloadRemoteFileAction->setIcon(QIcon(":ugene/images/world_go.png"));
     connect(downloadRemoteFileAction, SIGNAL(triggered()), SLOT(sl_downloadRemoteFile()));
 
-    accessSharedDatabaseAction = new QAction(tr("Connect to shared database..."), this);
+    accessSharedDatabaseAction = new QAction(tr("Connect to shared database"), this);
     accessSharedDatabaseAction->setObjectName(ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
     accessSharedDatabaseAction->setIcon(QIcon(":core/images/db/database_go.png"));
     accessSharedDatabaseAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_L));
     connect(accessSharedDatabaseAction, SIGNAL(triggered()), SLOT(sl_accessSharedDatabase()));
 
-    searchGenbankEntryAction = new QAction(tr("Search NCBI Genbank..."), this);
+    searchGenbankEntryAction = new QAction(tr("Search NCBI Genbank"), this);
     searchGenbankEntryAction->setObjectName(ACTION_PROJECTSUPPORT__SEARCH_GENBANK);
     searchGenbankEntryAction->setIcon(QIcon(":ugene/images/world_go.png"));
     connect(searchGenbankEntryAction, SIGNAL(triggered()), SLOT(sl_searchGenbankEntry()));

@@ -473,10 +473,6 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
         <translation>Аннотации</translation>
     </message>
     <message>
-        <source>Search in</source>
-        <translation type="obsolete">Направление</translation>
-    </message>
-    <message>
         <location filename="../src/SiteconSearchWorker.cpp" line="87"/>
         <source>Alternative setting for filtering results, minimal value of Error type I.&lt;br&gt;Note that all thresholds (by score, by err1 and by err2) are applied when filtering results.&lt;p&gt;&lt;i&gt;If you need to switch off this filter choose &lt;b&gt;&quot;0&quot;&lt;/b&gt; value&lt;/i&gt;&lt;/p&gt;.</source>
         <translation type="unfinished"></translation>
@@ -688,10 +684,6 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
         <location filename="../src/SiteconQuery.cpp" line="91"/>
         <source>Searches transcription factor binding sites (TFBS) %1.&lt;br&gt;Recognize sites with %2, process %3.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Search in</source>
-        <translation type="obsolete">Направление</translation>
     </message>
     <message>
         <location filename="../src/SiteconQuery.cpp" line="170"/>

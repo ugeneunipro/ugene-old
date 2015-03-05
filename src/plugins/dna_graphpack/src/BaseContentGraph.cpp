@@ -33,9 +33,9 @@ namespace U2 {
 
 static QString nameByType(BaseContentGraphFactory::GType t) {
     if (t == BaseContentGraphFactory::AG) {
-        return BaseContentGraphFactory::tr("ag_content_graph");
+        return BaseContentGraphFactory::tr("AG Content (%)");
     }
-    return BaseContentGraphFactory::tr("gc_content_graph");
+    return BaseContentGraphFactory::tr("GC Content (%)");
 
 }
 

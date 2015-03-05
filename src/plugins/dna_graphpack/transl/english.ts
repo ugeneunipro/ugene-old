@@ -5,12 +5,12 @@
     <name>U2::BaseContentGraphFactory</name>
     <message>
         <location filename="../src/BaseContentGraph.cpp" line="36"/>
-        <source>ag_content_graph</source>
+        <source>AG Content (%)</source>
         <translation>AG Content (%)</translation>
     </message>
     <message>
         <location filename="../src/BaseContentGraph.cpp" line="38"/>
-        <source>gc_content_graph</source>
+        <source>GC Content (%)</source>
         <translation>GC Content (%)</translation>
     </message>
 </context>
@@ -18,46 +18,38 @@
     <name>U2::CumulativeSkewGraphFactory</name>
     <message>
         <location filename="../src/CumulativeSkew.cpp" line="39"/>
-        <source>at_cumulative_skew_not_optimal_version</source>
+        <source>AT Cumulative Skew</source>
         <translation>AT Cumulative Skew</translation>
     </message>
     <message>
         <location filename="../src/CumulativeSkew.cpp" line="41"/>
-        <source>gc_cumulative_skew_not_optimal_version</source>
+        <source>GC Cumulative Skew</source>
         <translation>GC Cumulative Skew</translation>
     </message>
 </context>
 <context>
     <name>U2::DNAGraphPackPlugin</name>
     <message>
-        <source>dna_graphpack_plugin</source>
-        <translation type="obsolete">DNA GraphPack</translation>
-    </message>
-    <message>
-        <source>dna_graphpack_plugin_desc</source>
-        <translation type="obsolete">This plugin contains a set of graphs for DNA sequences</translation>
-    </message>
-    <message>
         <location filename="../src/DNAGraphPackPlugin.cpp" line="52"/>
         <source>DNA/RNA Graph Package</source>
-        <translation type="unfinished"></translation>
+        <translation>DNA/RNA Graph Package</translation>
     </message>
     <message>
         <location filename="../src/DNAGraphPackPlugin.cpp" line="53"/>
         <source>Contains a set of graphs for DNA/RNA sequences.</source>
-        <translation type="unfinished"></translation>
+        <translation>Contains a set of graphs for DNA/RNA sequences.</translation>
     </message>
 </context>
 <context>
     <name>U2::DeviationGraphFactory</name>
     <message>
         <location filename="../src/DeviationGraph.cpp" line="35"/>
-        <source>at_deviation_graph</source>
+        <source>AT Deviation (A-T)/(A+T)</source>
         <translation>AT Deviation (A-T)/(A+T)</translation>
     </message>
     <message>
         <location filename="../src/DeviationGraph.cpp" line="37"/>
-        <source>gc_deviation_graph</source>
+        <source>GC Deviation (G-C)/(G+C)</source>
         <translation>GC Deviation (G-C)/(G+C)</translation>
     </message>
 </context>
@@ -65,22 +57,15 @@
     <name>U2::EntropyGraphFactory</name>
     <message>
         <location filename="../src/EntropyAlgorithm.cpp" line="43"/>
-        <source>informational_entropy</source>
+        <source>Informational Entropy</source>
         <translation>Informational Entropy</translation>
-    </message>
-</context>
-<context>
-    <name>U2::GraphMenuAction</name>
-    <message>
-        <source>graph_menu</source>
-        <translation type="obsolete">Graphs</translation>
     </message>
 </context>
 <context>
     <name>U2::KarlinGraphFactory</name>
     <message>
         <location filename="../src/KarlinSignatureDifferenceGraph.cpp" line="37"/>
-        <source>karlin_signature_difference_graph</source>
+        <source>Karlin Signature Difference</source>
         <translation>Karlin Signature Difference</translation>
     </message>
 </context>
