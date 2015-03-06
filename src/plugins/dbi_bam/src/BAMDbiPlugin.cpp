@@ -252,11 +252,14 @@ void BAMImporterTask::initPrepareToImportTask() {
         if (rc == QDialog::Accepted) {
             localDbiRef = U2DbiRef(SQLITE_DBI_ID, convertDialog.getDestinationUrl().getURLString());
             refUrl = convertDialog.getReferenceUrl();
-            convert = true;
+
         } else {
             convert = false;
             stateInfo.setCanceled(true);
         }
+    } else if (loadInfoTask->isSam() && loadInfoTask->getInfo().getHeader().getReferences().isEmpty()) {
+        convert = false;
+        setError(tr("SAM cannot be converted to BAM: neither reference nor header in SAM file is present"));
     }
 
     if (convert) {
