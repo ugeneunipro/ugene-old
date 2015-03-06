@@ -329,6 +329,30 @@ GUI_TEST_CLASS_DEFINITION(test_4070) {
 
     CHECK_SET_ERR(colorFound, "The overview doesn't contain white color");
 }
+GUI_TEST_CLASS_DEFINITION(test_4122) {
+/* 1. Open "data/samples/Genbank/murine.gb".
+ * 2. Search any existing pattern.
+ * 3. Try to create annotations from the search results to the existing annotations table.
+ *   Expected state: annotations are created.
+ *   Current state: annotations are not created, a safe point is triggered
+*/
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "GAGTTCTGAACACCCGGC");
+    GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QTreeWidgetItem* annotationTable = GTUtilsAnnotationsTreeView::findItem(os, "NC_001363 features [murine.gb] *");
+    CHECK_SET_ERR(NULL != annotationTable, "AnnotationTable (NC_001363 features [murine.gb]) is NULL or not changed");
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "NC_001363 features [murine.gb] *"));
+    GTMouseDriver::click(os);
+
+    QTreeWidgetItem* newItem = GTUtilsAnnotationsTreeView::findItem(os, "Misc_ Feature",annotationTable);
+    CHECK_SET_ERR(NULL != newItem, "New annotation is NULL or not created");
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "Misc_ Feature"));
+    GTMouseDriver::click(os);
+
+}
 
 } // namespace GUITest_regression_scenarios
 
