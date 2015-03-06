@@ -280,6 +280,31 @@ GUI_TEST_CLASS_DEFINITION(test_0928) {
     CHECK_SET_ERR(item->childCount() == 837, QString("ORFs count mismatch. Expected: %1. Actual: %2").arg(837).arg(item->childCount()));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0938) {
+//    1. Open any file in assembly view.
+//    2. Browse options panel.
+//    3. Open "Navigation" tab.
+//    Expected state: The tab contains "Enter position in assembly" edit field, "Go!" button and "Most Covered Regions".
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "chrM.sorted.bam.ugenedb"));
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sorted.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_NAVIGATION"));
+    GTGlobals::sleep();
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_INFO"));
+    GTGlobals::sleep();
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_SETTINGS"));
+    GTGlobals::sleep();
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_NAVIGATION"));
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(GTWidget::findWidget(os, "go_to_pos_line_edit") != NULL, "go_to_pos_line_edit not found");
+    CHECK_SET_ERR(GTWidget::findWidget(os, "Go!") != NULL, "Go! button not found");
+    CHECK_SET_ERR(GTWidget::findWidget(os, "COVERED") != NULL, "Covered regions widget not found");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0958) {
 //    1. Create *.csv file with the following content
 //    "Name","Start","End","Length","Complementary","Gene","desc","property","prop1","prop2"
