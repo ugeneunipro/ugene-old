@@ -208,6 +208,8 @@ void ImportAnnotationsToCsvFiller::commonScenario()
     QTableWidget *previewTable = dialog->findChild<QTableWidget*>("previewTable");
     foreach (RoleColumnParameter r, roleParameters) {
         GTUtilsDialog::waitForDialog(os, new RoleFiller(os, r.parameter));
+        GT_CHECK(previewTable->item(0, r.column) != NULL, "Table item not found");
+        previewTable->scrollToItem(previewTable->item(0, r.column));
         GTMouseDriver::moveTo(os, GTTableWidget::headerItemCenter(os, previewTable, r.column));
         GTMouseDriver::click(os);
     }

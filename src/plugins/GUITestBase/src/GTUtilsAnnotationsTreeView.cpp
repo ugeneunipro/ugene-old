@@ -107,7 +107,10 @@ QString GTUtilsAnnotationsTreeView::getQualifierValue(U2OpStatus &os, const QStr
 #define GT_METHOD_NAME "getQualifierValue"
 QString GTUtilsAnnotationsTreeView::getQualifierValue(U2OpStatus &os, const QString &qualName, const QString &parentName) {
     getItemCenter(os, parentName);
-    QTreeWidgetItem *qualItem = findItem(os, qualName);
+    QTreeWidgetItem* parent = findItem(os, parentName);
+    GT_CHECK_RESULT(parent != NULL, "Parent item not found", "");
+
+    QTreeWidgetItem *qualItem = findItem(os, qualName, parent);
     GT_CHECK_RESULT(NULL != qualItem, "Qualifier item not found", "");
     return qualItem->text(AnnotationsTreeView::COLUMN_VALUE);
 }
@@ -177,6 +180,28 @@ QTreeWidgetItem * GTUtilsAnnotationsTreeView::findItem(U2OpStatus &os, const QSt
 
     return NULL;
 }
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findItem"
+QTreeWidgetItem * GTUtilsAnnotationsTreeView::findItem(U2OpStatus &os, const QString &itemName, QTreeWidgetItem* parentItem, const GTGlobals::FindOptions& options) {
+    GT_CHECK_RESULT(itemName.isEmpty() == false, "Item name is empty", NULL);
+
+    if (parentItem == NULL) {
+        return findItem(os, itemName, options);
+    }
+
+    QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(parentItem);
+    foreach (QTreeWidgetItem* item, treeItems) {
+        QString treeItemName = item->text(0);
+        if (treeItemName == itemName) {
+            return item;
+        }
+    }
+    GT_CHECK_RESULT(options.failIfNull == false, "Item " + itemName + " not found in tree widget", NULL);
+
+    return NULL;
+}
+
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findItems"

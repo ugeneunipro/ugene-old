@@ -42,6 +42,7 @@ public:
 
     static QTreeWidgetItem * findFirstAnnotation(U2OpStatus &os, const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
     static QTreeWidgetItem * findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QTreeWidgetItem * findItem(U2OpStatus &os, const QString &itemName, QTreeWidgetItem* parentItem, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
     static QList<QTreeWidgetItem*> findItems(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
     static QStringList getAnnotationNamesOfGroup(U2OpStatus &os, const QString &groupName);
