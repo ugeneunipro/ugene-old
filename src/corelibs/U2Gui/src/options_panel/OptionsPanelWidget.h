@@ -91,8 +91,6 @@ public:
     /** Returns NULL if not found */
     GroupOptionsWidget* findOptionsWidgetByGroupId(const QString& groupId);
 
-    int getWidth() const;
-
 private:
     /** Layouts */
     QVBoxLayout* optionsLayout;

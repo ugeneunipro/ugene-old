@@ -159,12 +159,6 @@ void MWMDIManagerImpl::updateState() {
     sl_updateWindowMenu();
 
     AppContext::getSettings()->setValue(SETTINGS_DIR + "maximized", defaultIsMaximized);
-
-    if (mdiArea != NULL && mdiArea->activeSubWindow() != NULL) {
-        QSize minSize = mdiArea->activeSubWindow()->minimumSize();
-        mdiArea->setMinimumSize(minSize);
-    }
-
 }
 
 void MWMDIManagerImpl::updateActions() {
@@ -242,6 +236,8 @@ void MWMDIManagerImpl::addMDIWindow(MWMDIWindow* w) {
 
     uiLog.trace(QString("Adding window: '%1'").arg(w->windowTitle()));
 
+    updateState();
+
     emit si_windowAdded(w);
 
     if (items.count() == 1 && defaultIsMaximized) {
@@ -250,8 +246,6 @@ void MWMDIManagerImpl::addMDIWindow(MWMDIWindow* w) {
         qw->show();
     }
     qw->raise();
-
-    updateState();
 }
 
 QList<MWMDIWindow*> MWMDIManagerImpl::getWindows() const {
@@ -309,8 +303,8 @@ void MWMDIManagerImpl::activateWindow(MWMDIWindow* w)  {
         return;
     }
     AppContext::setActiveWindowName(w->windowTitle());
-    updateState();
     mdiArea->setActiveSubWindow(i->qw);
+    updateState();
 }
 
 void MWMDIManagerImpl::sl_setActiveSubWindow(QWidget *w) {

@@ -198,10 +198,6 @@ GroupOptionsWidget* OptionsPanelWidget::findOptionsWidgetByGroupId(const QString
     return NULL;
 }
 
-int OptionsPanelWidget::getWidth() const {
-    return optionsScrollArea->sizeHint().width();
-}
-
 void OptionsPanelWidget::deleteOptionsWidget(const QString& groupId) {
     GroupOptionsWidget* optionsWidget = findOptionsWidgetByGroupId(groupId);
     SAFE_POINT(NULL != optionsWidget,

@@ -407,7 +407,7 @@ void ADVSingleSequenceWidget::updateMinMaxHeight() {
     foreach(GSequenceLineView* v, lineViews) {
         height += v->isVisible() * v->minimumHeight();
     }
-    setMinimumHeight(height);
+    setMinimumHeight(linesSplitter->minimumHeight());
 
     if (lineViews.size() == 1 && lineViews.first() == overview) {
         setMaximumHeight(height);

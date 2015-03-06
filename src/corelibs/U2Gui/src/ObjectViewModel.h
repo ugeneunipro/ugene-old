@@ -216,8 +216,6 @@ protected:
     bool                                closing;
     QList<GObjectViewObjectHandler*>    objectHandlers;
     OptionsPanel*                       optionsPanel;
-
-    static QSize                        DEFAULT_MIN_VIEW_SIZE;
 };
 
 class U2GUI_EXPORT GObjectViewCloseInterface {

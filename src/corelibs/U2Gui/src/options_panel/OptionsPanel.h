@@ -61,8 +61,6 @@ public:
     /** Returs Id for current tab **/
     QString getActiveGroupId(){return activeGroupId;}
 
-    int getOptionsPanelWidth() const;
-
 public slots:
     /** Catches signals that a group header has been pressed
         and implements the behavior of groups selection (only one group at a time can be opened) */

@@ -34,8 +34,10 @@
 #include <QtCore/QFileInfo>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QScrollArea>
 #else
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QScrollArea>
 #endif
 
 
@@ -81,9 +83,6 @@ GObjectViewFactory* GObjectViewFactoryRegistry::getFactoryById(GObjectViewFactor
 
 //////////////////////////////////////////////////////////////////////////
 /// GObjectView
-
-QSize GObjectView::DEFAULT_MIN_VIEW_SIZE = QSize(250, 400);
-
 GObjectView::GObjectView(GObjectViewFactoryId _factoryId, const QString& _viewName, QObject* prnt): QObject(prnt)
 {
     factoryId = _factoryId;
@@ -221,7 +220,6 @@ QWidget* GObjectView::getWidget() {
     if (widget == NULL) {
         assert(closeInterface!=NULL);
         widget = createWidget();
-        widget->setMinimumSize(DEFAULT_MIN_VIEW_SIZE);
     }
     return widget;
 }
@@ -289,7 +287,6 @@ GObjectViewWindow::GObjectViewWindow(GObjectView* v, const QString& _viewName, b
     QHBoxLayout *windowLayout = new QHBoxLayout();
     windowLayout->setContentsMargins(0, 0, 0, 0);
     windowLayout->setSpacing(0);
-    windowLayout->setSizeConstraint(QLayout::SetMinimumSize);
 
     OptionsPanel* optionsPanel = v->getOptionsPanel();
 
@@ -297,25 +294,28 @@ GObjectViewWindow::GObjectViewWindow(GObjectView* v, const QString& _viewName, b
     QVBoxLayout *objectLayout = new QVBoxLayout();
     objectLayout->setContentsMargins(0, 0, 0, 0);
     objectLayout->setSpacing(0);
-    objectLayout->setSizeConstraint(QLayout::SetMinimumSize);
 
     // Add the widget to the layout and "parent" it
     objectLayout->addWidget(viewWidget);
-
-    const int RESERVE = 30;
-    int minW = viewWidget->minimumWidth() + RESERVE;
 
     // Set the layout of the whole window
     windowLayout->addLayout(objectLayout);
     if (optionsPanel != NULL) {
         windowLayout->addWidget(optionsPanel->getMainWidget());
-        minW += optionsPanel->getOptionsPanelWidth();
     }
 
-    int minH = viewWidget->minimumHeight() + RESERVE;
-    setMinimumSize(minW, minH);
+    QScrollArea* windowScrollArea = new QScrollArea();
+    windowScrollArea->setFrameStyle(QFrame::NoFrame);
+    windowScrollArea->setWidgetResizable(true);
 
-    setLayout(windowLayout);
+    QWidget* windowContentWidget = new QWidget();
+    windowContentWidget->setLayout(windowLayout);
+    windowScrollArea->setWidget(windowContentWidget);
+
+    QHBoxLayout* l = new QHBoxLayout();
+    l->setContentsMargins(0, 0, 0, 0);
+    l->addWidget(windowScrollArea);
+    setLayout(l);
 
     // Set the icon
     setWindowIcon(viewWidget->windowIcon());
