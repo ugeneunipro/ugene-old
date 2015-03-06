@@ -339,6 +339,66 @@ GUI_TEST_CLASS_DEFINITION(test_0958) {
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::getQualifierValue(os, "prop1", "test02") == "kobietghiginua", "Qualifier prop1 was improted incorrectly");
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::getQualifierValue(os, "prop2", "test02") == "addsomethinghere", "Qualifier prop2 was improted incorrectly");
 }
+GUI_TEST_CLASS_DEFINITION(test_0967_1) {
+/* 1. Open any document
+ *   Expected state: Project View showed.
+ * 2. Minimize and then restore the main window.
+ *   Expected state: Project View should be not hidden.
+*/
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTUtilsProject::checkProject(os);
+    CHECK_SET_ERR(true == GTUtilsProjectTreeView::isVisible(os), "ProjectTreeView is not visible (check #1)");
+
+    QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    mw->showMinimized();
+    GTGlobals::sleep();
+    mw->showMaximized();
+    GTGlobals::sleep();
+    GTUtilsProject::checkProject(os);
+    CHECK_SET_ERR(true == GTUtilsProjectTreeView::isVisible(os), "ProjectTreeView is not visible (check #2)");
+}
+GUI_TEST_CLASS_DEFINITION(test_0967_2) {
+/* 1. Open Log view
+ *   Expected state: Log view showed.
+ * 2. Minimize and then restore the main window.
+ *   Expected state: Log view should be not hidden.
+*/
+    GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+    QWidget *logView = GTWidget::findWidget(os, "dock_log_view");
+    CHECK_SET_ERR(NULL != logView, "Log View is NULL (check #1)");
+    CHECK_SET_ERR(true == logView->isVisible(), "Log View is not visible (check #1)");
+
+    QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    mw->showMinimized();
+    GTGlobals::sleep();
+    mw->showMaximized();
+    GTGlobals::sleep();
+    logView = GTWidget::findWidget(os, "dock_log_view");
+    CHECK_SET_ERR(NULL != logView, "Log View is NULL (check #2)");
+    CHECK_SET_ERR(true == logView->isVisible(), "Log View is not visible (check #2)");
+}
+GUI_TEST_CLASS_DEFINITION(test_0967_3) {
+/* 1. Open Tasks view
+ *   Expected state: Tasks view showed.
+ * 2. Minimize and then restore the main window.
+ *   Expected state: Tasks view should be not hidden
+*/
+    GTKeyboardDriver::keyClick(os, '2', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+    QWidget *logView = GTWidget::findWidget(os, "taskViewTree");
+    CHECK_SET_ERR(NULL != logView, "taskViewTree is NULL (check #1)");
+    CHECK_SET_ERR(true == logView->isVisible(), "taskViewTree is not visible (check #1)");
+
+    QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    mw->showMinimized();
+    GTGlobals::sleep();
+    mw->showMaximized();
+    GTGlobals::sleep();
+    logView = GTWidget::findWidget(os, "taskViewTree");
+    CHECK_SET_ERR(NULL != logView, "taskViewTree is NULL (check #2)");
+    CHECK_SET_ERR(true == logView->isVisible(), "taskViewTree is not visible (check #2)");
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0986) {
 
