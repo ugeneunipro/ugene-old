@@ -63,6 +63,7 @@ public:
     QList<U2Feature> getTableFeatures(const U2DataId &rootId, const FeatureFlags &type);
     QList<U2Feature> getSubfeatures(const U2DataId &parentId, const FeatureFlags &type, OperationScope scope, SubfeatureSelectionMode mode);
     QList<U2Feature> getSubfeaturesByRegion(const U2DataId &rootId, const U2Region &range, bool contains);
+    QList<U2Feature> getSubfeaturesByName(const U2DataId &rootId, const QString &name, const FeatureFlags &type);
 
     void removeAnnotationData(const U2DataId &featureId);
     void removeGroup(const U2DataId &featureId);
@@ -106,6 +107,7 @@ public:
     QList<U2Feature> getSubfeatures(const U2DbiRef &dbiRef, const U2DataId &parentId, const FeatureFlags &type,
         OperationScope scope, SubfeatureSelectionMode mode);
     QList<U2Feature> getSubfeaturesByRegion(const U2DbiRef &dbiRef, const U2DataId &rootId, const U2Region &range, bool contains);
+    QList<U2Feature> getSubfeaturesByName(const U2DbiRef &dbiRef, const U2DataId &rootId, const QString &name, const FeatureFlags &type);
 
     void removeAnnotationData(const U2DbiRef &dbiRef, const U2DataId &featureId);
     void removeAnnotationGroup(const U2DbiRef &dbiRef, const U2DataId &featureId);

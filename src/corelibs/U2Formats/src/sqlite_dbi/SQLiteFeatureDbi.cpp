@@ -64,7 +64,7 @@ void SQLiteFeatureDbi::initSqlSchema(U2OpStatus& os) {
     SQLiteQuery("CREATE VIRTUAL TABLE FeatureLocationRTreeIndex USING rtree_i32(id, start, end)",
         db, os).execute();
 
-    SQLiteQuery("CREATE INDEX IF NOT EXISTS FeatureRootIndex ON Feature(root, type)" ,db, os).execute();
+    SQLiteQuery("CREATE INDEX IF NOT EXISTS FeatureRootIndex ON Feature(root, class)" ,db, os).execute();
     SQLiteQuery("CREATE INDEX IF NOT EXISTS FeatureParentIndex ON Feature(parent)", db, os).execute();
     SQLiteQuery("CREATE INDEX IF NOT EXISTS FeatureNameIndex ON Feature(root, nameHash)", db, os).execute();
 
@@ -83,7 +83,7 @@ public:
 
     static U2Feature loadStatic(SQLiteQuery* q) {
         U2Feature res;
-        //type, parent, root, name, sequence, strand, start, len
+        //class, type, parent, root, name, sequence, strand, start, len
         res.id = q->getDataId(0, U2Type::Feature);
         res.featureClass = static_cast<U2Feature::FeatureClass>(q->getInt32(1));
         res.featureType = static_cast<U2FeatureType>(q->getInt32(2));
@@ -234,18 +234,16 @@ static QString toSqlOrderOpFromCompareOp(ComparisonOp op) {
     return res;
 }
 
-static QString getWhereQueryPartFromType( const QString &featurePlaceholder,
-    const FeatureFlags &types )
-{
+static QString getWhereQueryPartFromType( const QString &featurePlaceholder, const FeatureFlags &types ) {
     QString result;
     if ( types.testFlag( U2Feature::Annotation ) ) {
-        result += featurePlaceholder + ".type = " + QString::number( U2Feature::Annotation );
+        result += featurePlaceholder + ".class = " + QString::number( U2Feature::Annotation );
     }
     if ( types.testFlag( U2Feature::Group ) ) {
         if ( !result.isEmpty( ) ) {
             result += " OR ";
         }
-        result += featurePlaceholder + ".type = " + QString::number( U2Feature::Group );
+        result += featurePlaceholder + ".class = " + QString::number( U2Feature::Group );
     }
 
     if ( !result.isEmpty( ) ) {
@@ -679,7 +677,7 @@ U2DbiIterator<U2Feature> * SQLiteFeatureDbi::getFeaturesByRegion( const U2Region
     QSharedPointer<SQLiteQuery> q = t.getPreparedQuery( queryByRegion, db, os );
 
     q->bindInt64( 1, reg.startPos );
-    q->bindInt64( 2, reg.endPos( ) );
+    q->bindInt64( 2, reg.endPos( ) - 1 );
     if ( selectByRoot ) {
         q->bindDataId( 3, rootId );
     }
@@ -724,7 +722,7 @@ U2DbiIterator<U2Feature> * SQLiteFeatureDbi::getFeaturesByParent( const U2DataId
 
 U2DbiIterator<U2Feature> * SQLiteFeatureDbi::getFeaturesByRoot( const U2DataId &rootId, const FeatureFlags &types, U2OpStatus &os ) {
     SQLiteTransaction t( db, os );
-    static const QString queryStringk( "SELECT " + FDBI_FIELDS + " FROM Feature AS f "
+    const QString queryStringk( "SELECT " + FDBI_FIELDS + " FROM Feature AS f "
         "WHERE f.root = ?1" + getWhereQueryPartFromType( "f", types ) +  "ORDER BY f.start" );
     QSharedPointer<SQLiteQuery> q =  t.getPreparedQuery( queryStringk, db, os );
 
@@ -736,7 +734,7 @@ U2DbiIterator<U2Feature> * SQLiteFeatureDbi::getFeaturesByRoot( const U2DataId &
 
 U2DbiIterator<U2Feature> * SQLiteFeatureDbi::getFeaturesByName( const U2DataId &rootId, const QString &name, const FeatureFlags &types, U2OpStatus &os ) {
     SQLiteTransaction t( db, os );
-    static const QString queryStringk( "SELECT " + FDBI_FIELDS + " FROM Feature AS f "
+    const QString queryStringk( "SELECT " + FDBI_FIELDS + " FROM Feature AS f "
         "WHERE f.root = ?1" + getWhereQueryPartFromType( "f", types ) +  " AND nameHash = ?2 ORDER BY f.start" );
     QSharedPointer<SQLiteQuery> q =  t.getPreparedQuery( queryStringk, db, os );
 

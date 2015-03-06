@@ -558,46 +558,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByName ) {
     CHECK_EQUAL( 4, anns2.size( ), "annotation count" );
 }
 
-IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotatedRegions ) {
-    const QString aname1 = "aname1";
-    const QString aname2 = "aname2";
-    const U2Region areg1( 7, 100 );
-    const U2Region areg2( 1000, 200 );
-    const U2DbiRef dbiRef( getDbiRef( ) );
-
-    AnnotationData anData1;
-    anData1.location->regions << areg1 << areg2;
-    anData1.name = aname1;
-
-    AnnotationData anData2;
-    anData2.location->regions << areg1;
-    anData2.name = aname2;
-
-    AnnotationData anData3;
-    anData3.location->regions << areg2;
-    anData3.name = aname2;
-
-    QList<AnnotationData> annotations;
-    annotations << anData1 << anData2 << anData3;
-
-    AnnotationTableObject ft( "ftable_name", dbiRef );
-    U2OpStatusImpl os;
-    ft.addAnnotations( annotations, os );
-
-    const QList<U2Region> regions = ft.getAnnotatedRegions( );
-    CHECK_EQUAL( 2, regions.size( ), "region count" );
-
-    QBitArray regionMatches( 2, false );
-    foreach ( const U2Region &reg, regions ) {
-        if ( reg == areg1 ) {
-            regionMatches.setBit( 0, true );
-        } else if ( reg == areg2 ) {
-            regionMatches.setBit( 1, true );
-        }
-    }
-    CHECK_EQUAL( 2, regionMatches.count( true ), "matching regions" );
-}
-
 IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByRegion ) {
     const QString aname1 = "aname1";
     const QString aname2 = "aname2";

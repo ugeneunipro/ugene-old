@@ -56,13 +56,13 @@ namespace U2 {
 #define DAS_UNIPROT "dasuniprot"    // hardcoded, taken from U2Core/DASSource.cpp
 // TODO: add combobox with all available sources.
 
-const QString DasOptionsPanelWidget::BLAST_SEARCH = DasOptionsPanelWidget::tr("BLAST");
-const QString DasOptionsPanelWidget::ALGORITHM_SETTINGS = DasOptionsPanelWidget::tr("Algorithm settings");
-const QString DasOptionsPanelWidget::ANNOTATIONS_SETTINGS = DasOptionsPanelWidget::tr("Annotations settings");
-const QString DasOptionsPanelWidget::SOURCES = DasOptionsPanelWidget::tr("DAS features sources");
-const QString DasOptionsPanelWidget::WHOLE_SEQUENCE = DasOptionsPanelWidget::tr("Whole sequence");
-const QString DasOptionsPanelWidget::SELECTED_REGION = DasOptionsPanelWidget::tr("Selected region");
-const QString DasOptionsPanelWidget::CUSTOM_REGION = DasOptionsPanelWidget::tr("Custom region");
+const QString DasOptionsPanelWidget::BLAST_SEARCH = QApplication::translate("DasOptionsPanelWidget", "BLAST");
+const QString DasOptionsPanelWidget::ALGORITHM_SETTINGS = QApplication::translate("DasOptionsPanelWidget", "Algorithm settings");
+const QString DasOptionsPanelWidget::ANNOTATIONS_SETTINGS = QApplication::translate("DasOptionsPanelWidget", "Annotations settings");
+const QString DasOptionsPanelWidget::SOURCES = QApplication::translate("DasOptionsPanelWidget", "DAS features sources");
+const QString DasOptionsPanelWidget::WHOLE_SEQUENCE = QApplication::translate("DasOptionsPanelWidget", "Whole sequence");
+const QString DasOptionsPanelWidget::SELECTED_REGION = QApplication::translate("DasOptionsPanelWidget", "Selected region");
+const QString DasOptionsPanelWidget::CUSTOM_REGION = QApplication::translate("DasOptionsPanelWidget", "Custom region");
 
 const static QString SHOW_OPTIONS_LINK("show_options_link");
 

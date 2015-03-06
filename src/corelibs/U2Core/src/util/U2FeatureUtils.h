@@ -116,9 +116,9 @@ public:
      */
     static QList<U2FeatureKey>      getFeatureKeys(const U2DataId &featureId, const U2DbiRef &dbiRef, U2OpStatus &os);
     /**
-     * Fetches features representing annotations by @name and given @parentFeatureId
+     * Fetches features belonging to the @featureClass by @name and given @parentFeatureId
      */
-    static QList<U2Feature>         getAnnotatingFeaturesByName(const U2DataId &rootFeatureId, const QString &name,
+    static QList<U2Feature>         getFeaturesByName(const U2DataId &rootFeatureId, const QString &name, U2Feature::FeatureClass featureClass,
                                         const U2DbiRef &dbiRef, U2OpStatus &os);
     /**
      * Returns true if the feature with @childFeatureId has the feature with @parentFeatureId

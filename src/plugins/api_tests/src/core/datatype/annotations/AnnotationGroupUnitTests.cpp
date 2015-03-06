@@ -58,7 +58,6 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, get_IdObject ) {
     ft.addAnnotation( anData, groupName1 );
     ft.addAnnotation( anData, groupName2 );
     ft.addAnnotation( anData, groupName3 );
-    ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
     CHECK_TRUE( rootGroup.hasValidId( ), "Invalid root group ID" );
@@ -92,8 +91,6 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, get_IdObject ) {
         }
     }
     CHECK_EQUAL( 2, groupMatches.count( true ), "Count of subgroups" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Name ) {
@@ -103,7 +100,6 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Name ) {
 
     AnnotationTableObject ft( "aname_table", dbiRef );
     ft.addAnnotation( anData, groupName );
-    ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
     CHECK_TRUE( rootGroup.hasValidId( ), "Invalid root group ID" );
@@ -116,8 +112,6 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Name ) {
     const QString newName = "misc_feature";
     group.setName( newName );
     CHECK_EQUAL( newName, group.getName( ), "annotation group name" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( AnnotationGroupUnitTest, groupHierarchy ) {
@@ -131,7 +125,6 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, groupHierarchy ) {
     ft.addAnnotation( anData, groupName1 );
     ft.addAnnotation( anData, groupName2 );
     ft.addAnnotation( anData, groupName3 );
-    ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
     CHECK_FALSE( rootGroup.isTopLevelGroup( ), "Unexpected top level group" );
@@ -177,8 +170,6 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, groupHierarchy ) {
         CHECK_EQUAL( 3, secondLevelSubgroup.getGroupDepth( ), "Subgroup's depth" );
     }
     CHECK_EQUAL( 2, groupMatches.count( true ), "Count of subgroups" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Annotations ) {
@@ -198,7 +189,6 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Annotations ) {
     ft.addAnnotation( anData2, groupName1 );
     ft.addAnnotation( anData3, groupName1 );
     ft.addAnnotation( anData4, groupName2 );
-    ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
     const QList<AnnotationGroup> subgroups = rootGroup.getSubgroups( );
@@ -242,8 +232,6 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Annotations ) {
 
     subgroup1.removeAnnotations( annotations );
     CHECK_TRUE( subgroup1.getAnnotations( ).isEmpty( ), "Count of annotations" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( AnnotationGroupUnitTest, findAnnotationsInSubtree ) {
@@ -264,7 +252,6 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, findAnnotationsInSubtree ) {
     ft.addAnnotation( anData2, groupName2 );
     ft.addAnnotation( anData3, groupName2 );
     ft.addAnnotation( anData4, groupName3 );
-    ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
     const QList<AnnotationGroup> subgroups = rootGroup.getSubgroups( );
@@ -304,8 +291,6 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, findAnnotationsInSubtree ) {
 
     subgroup3.findAllAnnotationsInGroupSubTree( set );
     CHECK_EQUAL( 4, set.size( ), "Count of annotations" );
-
-    ft.deref();
 }
 
 IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Subgroups ) {
@@ -326,7 +311,6 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Subgroups ) {
     ft.addAnnotation( anData2, groupName2 );
     ft.addAnnotation( anData3, groupName2 );
     ft.addAnnotation( anData4, groupName3 );
-    ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
     const QList<AnnotationGroup> subgroups = rootGroup.getSubgroups( );
@@ -366,8 +350,6 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Subgroups ) {
     CHECK_FALSE( newSubGroup.getParentGroup( ) == subgroup3, "Unexpected parent group" );
     subSubgroups3 = subgroup3.getSubgroups( );
     CHECK_EQUAL( 1, subSubgroups3.size( ), "Count of subgroups" );
-
-    ft.deref();
 }
 
 } // namespace U2

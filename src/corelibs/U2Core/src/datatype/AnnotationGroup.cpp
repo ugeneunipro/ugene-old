@@ -79,8 +79,7 @@ bool AnnotationGroup::isValidGroupName(const QString &name, bool pathMode) {
 
 void AnnotationGroup::findAllAnnotationsInGroupSubTree(QList<Annotation> &set) const {
     U2OpStatusImpl os;
-    QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations(id,
-        parentObject->getEntityRef().dbiRef, os, Recursive, Nonroot);
+    QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations(id, parentObject->getEntityRef().dbiRef, os, Recursive, Nonroot);
     SAFE_POINT_OP(os, );
 
     foreach (const U2Feature &feature, subfeatures) {
@@ -278,14 +277,17 @@ AnnotationGroup AnnotationGroup::getSubgroup(const QString &path, bool create) {
     U2OpStatusImpl os;
     const ParentFeatureStatus parent = isRootGroup(*this, dbiRef, os);
     SAFE_POINT_OP(os, subgroup);
-    const QList<U2Feature> subfeatures = U2FeatureUtils::getSubGroups(id, dbiRef, os, Nonrecursive, parent);
+
+    const QList<U2Feature> subfeatures = U2FeatureUtils::getFeaturesByName(parentObject->getRootFeatureId(),
+        subgroupName, U2Feature::Group, dbiRef, os);
     SAFE_POINT_OP(os, subgroup);
     foreach (const U2Feature &feature, subfeatures) {
-        if (feature.name == subgroupName) {
+        if (feature.parentFeatureId == id) {
             subgroup = AnnotationGroup(feature.id, parentObject);
             break;
         }
     }
+
     if (id == subgroup.id && create) {
         const U2Feature subgroupFeature = U2FeatureUtils::exportAnnotationGroupToFeature(subgroupName,
             parentObject->getRootFeatureId(), id, dbiRef, os);

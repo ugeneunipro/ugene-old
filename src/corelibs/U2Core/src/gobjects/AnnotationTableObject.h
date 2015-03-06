@@ -87,10 +87,6 @@ public:
      */
     QList<Annotation>       getAnnotationsByName( const QString &name ) const;
     /**
-     * Returns list containing all annotation regions
-     */
-    QList<U2Region>         getAnnotatedRegions( ) const;
-    /**
      * Returns list of annotations having belonging to the @region. @contains specifies
      * whether the result set should include only annotations that has no region or its part
      * beyond the @region or each annotation that intersects it.

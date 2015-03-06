@@ -19,9 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include "SequenceTextEdit.h"
-
 #include <QMessageBox>
+#include <QMimeData>
+
+#include "SequenceTextEdit.h"
 
 namespace U2 {
 

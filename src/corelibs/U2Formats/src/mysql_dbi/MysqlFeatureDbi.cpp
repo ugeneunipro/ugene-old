@@ -54,7 +54,7 @@ void MysqlFeatureDbi::initSqlSchema(U2OpStatus& os) {
         "FOREIGN KEY(object) REFERENCES Object(id) ON DELETE CASCADE, "
         "FOREIGN KEY(rootId) REFERENCES Feature(id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8", db, os).execute();
 
-    U2SqlQuery("CREATE INDEX FeatureRootIndex ON Feature(root, type)", db, os).execute();
+    U2SqlQuery("CREATE INDEX FeatureRootIndex ON Feature(root, class)", db, os).execute();
     U2SqlQuery("CREATE INDEX FeatureParentIndex ON Feature(parent)", db, os).execute();
     U2SqlQuery("CREATE INDEX FeatureLocationIndex ON Feature(start, end)", db, os).execute();
     U2SqlQuery("CREATE INDEX FeatureNameIndex ON Feature(root, nameHash)", db, os).execute();
@@ -80,7 +80,7 @@ public:
 
     static U2Feature loadStatic(U2SqlQuery* q) {
         U2Feature res;
-        //type, parent, root, name, sequence, strand, start, len
+        //class, type, parent, root, name, sequence, strand, start, len
         res.id = q->getDataId(0, U2Type::Feature);
         res.featureClass = static_cast<U2Feature::FeatureClass>(q->getInt32(1));
         res.featureType= static_cast<U2FeatureType>(q->getInt32(2));
@@ -277,13 +277,13 @@ QString toSqlOrderOpFromCompareOp(ComparisonOp op) {
 QString getWhereQueryPartFromType( const QString &featurePlaceholder, const FeatureFlags &types ) {
     QString result;
     if ( types.testFlag( U2Feature::Annotation ) ) {
-        result += featurePlaceholder + ".type = " + QString::number( U2Feature::Annotation );
+        result += featurePlaceholder + ".class = " + QString::number( U2Feature::Annotation );
     }
     if ( types.testFlag( U2Feature::Group ) ) {
         if ( !result.isEmpty( ) ) {
             result += " OR ";
         }
-        result += featurePlaceholder + ".type = " + QString::number( U2Feature::Group );
+        result += featurePlaceholder + ".class = " + QString::number( U2Feature::Group );
     }
 
     if ( !result.isEmpty( ) ) {
@@ -727,8 +727,8 @@ U2DbiIterator<U2Feature>* MysqlFeatureDbi::getFeaturesByRegion( const U2Region& 
     const bool selectByRoot = !rootId.isEmpty( );
     const QString queryByRegion = "SELECT " + getFeatureFields( ) + " FROM Feature AS f WHERE "
         + ( selectByRoot ? QString("f.root = :root AND ") : QString( ) )
-        + ( contains ? QString("f.start >= %1 AND f.end <= %2").arg(reg.startPos).arg(reg.endPos())
-        : QString("f.start <= %1 AND f.end >= %2").arg(reg.endPos()).arg(reg.startPos));
+        + ( contains ? QString("f.start >= %1 AND f.end <= %2").arg(reg.startPos).arg(reg.endPos() - 1)
+        : QString("f.start <= %1 AND f.end >= %2").arg(reg.endPos() - 1).arg(reg.startPos));
 
     QSharedPointer<U2SqlQuery> q( new U2SqlQuery( queryByRegion, db, os ) );
 
@@ -772,7 +772,7 @@ U2DbiIterator<U2Feature> * MysqlFeatureDbi::getFeaturesByParent( const U2DataId 
 }
 
 U2DbiIterator<U2Feature> * MysqlFeatureDbi::getFeaturesByRoot( const U2DataId &rootId, const FeatureFlags &types, U2OpStatus &os ) {
-    static const QString queryStringk( "SELECT " + getFeatureFields() + " FROM Feature AS f "
+    const QString queryStringk( "SELECT " + getFeatureFields() + " FROM Feature AS f "
         "WHERE f.root = :root" + getWhereQueryPartFromType( "f", types ) +  "ORDER BY f.start" );
     QSharedPointer<U2SqlQuery> q(new U2SqlQuery( queryStringk, db, os ));
 
@@ -782,7 +782,7 @@ U2DbiIterator<U2Feature> * MysqlFeatureDbi::getFeaturesByRoot( const U2DataId &r
 }
 
 U2DbiIterator<U2Feature> * MysqlFeatureDbi::getFeaturesByName( const U2DataId &rootId, const QString &name, const FeatureFlags &types, U2OpStatus &os ) {
-    static const QString queryStringk( "SELECT " + getFeatureFields() + " FROM Feature AS f "
+    const QString queryStringk( "SELECT " + getFeatureFields() + " FROM Feature AS f "
         "WHERE f.root = :root" + getWhereQueryPartFromType( "f", types ) +  " AND nameHash = :nameHash ORDER BY f.start" );
     QSharedPointer<U2SqlQuery> q(new U2SqlQuery( queryStringk, db, os ));
 

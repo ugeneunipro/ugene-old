@@ -64,32 +64,31 @@ AnnotationTableObject::~AnnotationTableObject() {
     }
 }
 
-QList<Annotation> AnnotationTableObject::getAnnotations( ) const {
+QList<Annotation> AnnotationTableObject::getAnnotations() const {
     QList<Annotation> result;
 
     ensureDataLoaded();
 
     U2OpStatusImpl os;
-    const QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( rootFeatureId, entityRef.dbiRef, os );
-    SAFE_POINT_OP( os, result );
+    const QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations(rootFeatureId, entityRef.dbiRef, os);
+    SAFE_POINT_OP(os, result);
 
-    foreach ( const U2Feature &feature, subfeatures ) {
-        if ( !feature.name.isEmpty( ) ) {
-            result << Annotation( feature.id, const_cast<AnnotationTableObject *>( this ) );
+    foreach (const U2Feature &feature, subfeatures) {
+        if (!feature.name.isEmpty()) {
+            result << Annotation(feature.id, const_cast<AnnotationTableObject *>(this));
         }
     }
 
     return result;
 }
 
-bool AnnotationTableObject::hasAnnotations( ) const {
+bool AnnotationTableObject::hasAnnotations() const {
     ensureDataLoaded();
 
     U2OpStatusImpl os;
-    const qint64 subFeaturesCount = U2FeatureUtils::countOfChildren( rootFeatureId, Root,
-        entityRef.dbiRef, U2Feature::Annotation, os );
-    SAFE_POINT_OP( os, false );
-    return ( 0 != subFeaturesCount );
+    const qint64 subFeaturesCount = U2FeatureUtils::countOfChildren(rootFeatureId, Root, entityRef.dbiRef, U2Feature::Annotation, os);
+    SAFE_POINT_OP(os, false);
+    return 0 != subFeaturesCount;
 }
 
 AnnotationGroup AnnotationTableObject::getRootGroup( ) {
@@ -202,68 +201,45 @@ GObject * AnnotationTableObject::clone(const U2DbiRef &ref, U2OpStatus &os, cons
     return cln;
 }
 
-QList<Annotation> AnnotationTableObject::getAnnotationsByName( const QString &name ) const {
+QList<Annotation> AnnotationTableObject::getAnnotationsByName(const QString &name) const {
     QList<Annotation> result;
 
     ensureDataLoaded();
 
     U2OpStatusImpl os;
-    QList<U2Feature> features = U2FeatureUtils::getAnnotatingFeaturesByName( rootFeatureId, name,
-        entityRef.dbiRef, os );
-    SAFE_POINT_OP( os, result );
+    QList<U2Feature> features = U2FeatureUtils::getFeaturesByName(rootFeatureId, name, U2Feature::Annotation, entityRef.dbiRef, os);
+    SAFE_POINT_OP(os, result);
 
-    return convertFeaturesToAnnotations( features );
+    return convertFeaturesToAnnotations(features);
 }
 
-QList<U2Region> AnnotationTableObject::getAnnotatedRegions( ) const {
-    QList<U2Region> result;
-
-    ensureDataLoaded();
-
-    U2OpStatusImpl os;
-    QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( rootFeatureId, entityRef.dbiRef,
-        os );
-    SAFE_POINT_OP( os, result );
-    foreach ( const U2Feature &f, subfeatures ) {
-        if ( U2Region( ) != f.location.region && !result.contains( f.location.region ) ) {
-            result << f.location.region;
-        }
-    }
-    return result;
-}
-
-QList<Annotation> AnnotationTableObject::getAnnotationsByRegion( const U2Region &region,
-    bool contains ) const
-{
+QList<Annotation> AnnotationTableObject::getAnnotationsByRegion(const U2Region &region, bool contains) const {
     QList<Annotation> result;
 
     ensureDataLoaded();
 
     U2OpStatusImpl os;
-    const QList<U2Feature> features = U2FeatureUtils::getAnnotatingFeaturesByRegion( rootFeatureId,
-        entityRef.dbiRef, region, os, contains );
-    SAFE_POINT_OP( os, result );
+    const QList<U2Feature> features = U2FeatureUtils::getAnnotatingFeaturesByRegion(rootFeatureId, entityRef.dbiRef, region, os, contains);
+    SAFE_POINT_OP(os, result);
 
-    return convertFeaturesToAnnotations( features );
+    return convertFeaturesToAnnotations(features);
 }
 
-bool AnnotationTableObject::checkConstraints( const GObjectConstraints *c ) const {
-    const AnnotationTableObjectConstraints *ac
-        = qobject_cast<const AnnotationTableObjectConstraints *>( c );
-    SAFE_POINT( NULL != ac, "Invalid feature constraints!", false );
+bool AnnotationTableObject::checkConstraints(const GObjectConstraints *c) const {
+    const AnnotationTableObjectConstraints *ac = qobject_cast<const AnnotationTableObjectConstraints *>(c);
+    SAFE_POINT(NULL != ac, "Invalid feature constraints!", false);
 
     ensureDataLoaded();
 
     U2OpStatusImpl os;
-    QList<U2Feature> allSubfeatures = U2FeatureUtils::getSubAnnotations( rootFeatureId,
-        entityRef.dbiRef, os );
-    SAFE_POINT_OP( os, false );
+    QList<U2Feature> allSubfeatures = U2FeatureUtils::getSubAnnotations(rootFeatureId, entityRef.dbiRef, os);
+    SAFE_POINT_OP(os, false);
 
     const int fitSize = ac->sequenceSizeToFit;
-    SAFE_POINT( 0 < fitSize, "Invalid sequence length provided!", false );
-    foreach ( const U2Feature &feature, allSubfeatures ) {
-        SAFE_POINT( 0 <= feature.location.region.startPos, "Invalid annotation region!", false );
-        if ( feature.location.region.endPos( ) > fitSize ) {
+    SAFE_POINT(0 < fitSize, "Invalid sequence length provided!", false);
+    foreach (const U2Feature &feature, allSubfeatures) {
+        SAFE_POINT(0 <= feature.location.region.startPos, "Invalid annotation region!", false);
+        if (feature.location.region.endPos() > fitSize) {
             return false;
         }
     }

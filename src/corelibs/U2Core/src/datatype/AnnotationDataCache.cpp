@@ -191,10 +191,23 @@ QList<U2Feature> AnnotationDataCache::getSubfeaturesByRegion(const U2DataId &roo
     QMutexLocker locker(&guard);
 
     QList<U2Feature> result;
-    foreach(const U2DataId &featureId, rootSubfeatures.value(rootId)) {
+    foreach (const U2DataId &featureId, rootSubfeatures.value(rootId)) {
         const AnnotationData a = annotationDataId.value(featureId);
         if (annotationIntersectsRange(a, range, contains)) {
             result << feature2Id.value(featureId);
+        }
+    }
+    return result;
+}
+
+QList<U2Feature> AnnotationDataCache::getSubfeaturesByName(const U2DataId &rootId, const QString &name, const FeatureFlags &type) {
+    QMutexLocker locker(&guard);
+
+    QList<U2Feature> result;
+    foreach (const U2DataId &featureId, rootSubfeatures.value(rootId)) {
+        const U2Feature subfeature = feature2Id.value(featureId);
+        if ((type & subfeature.featureClass) && subfeature.name == name) {
+            result.append(subfeature);
         }
     }
     return result;
@@ -322,6 +335,13 @@ QList<U2Feature> DbiAnnotationCache::getSubfeatures(const U2DbiRef &dbiRef, cons
 QList<U2Feature> DbiAnnotationCache::getSubfeaturesByRegion(const U2DbiRef &dbiRef, const U2DataId &rootId, const U2Region &range, bool contains) {
     SAFE_POINT(containsAnnotationTable(dbiRef, rootId), "Unexpected annotation table requested from cache", QList<U2Feature>());
     return dbiDataCache[dbiRef]->getSubfeaturesByRegion(rootId, range, contains);
+}
+
+QList<U2Feature> DbiAnnotationCache::getSubfeaturesByName(const U2DbiRef &dbiRef, const U2DataId &rootId, const QString &name,
+    const FeatureFlags &type)
+{
+    SAFE_POINT(containsAnnotationTable(dbiRef, rootId), "Unexpected annotation table requested from cache", QList<U2Feature>());
+    return dbiDataCache[dbiRef]->getSubfeaturesByName(rootId, name, type);
 }
 
 void DbiAnnotationCache::removeAnnotationData(const U2DbiRef &dbiRef, const U2DataId &featureId) {

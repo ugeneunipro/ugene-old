@@ -56,7 +56,6 @@ DECLARE_TEST( FeatureTableObjectUnitTest, removeAnnotation );
 DECLARE_TEST( FeatureTableObjectUnitTest, removeAnnotations );
 DECLARE_TEST( FeatureTableObjectUnitTest, clone );
 DECLARE_TEST( FeatureTableObjectUnitTest, getAnnotationsByName );
-DECLARE_TEST( FeatureTableObjectUnitTest, getAnnotatedRegions );
 DECLARE_TEST( FeatureTableObjectUnitTest, getAnnotationsByRegion );
 DECLARE_TEST( FeatureTableObjectUnitTest, checkConstraints );
 
@@ -73,7 +72,6 @@ DECLARE_METATYPE( FeatureTableObjectUnitTest, removeAnnotation )
 DECLARE_METATYPE( FeatureTableObjectUnitTest, removeAnnotations )
 DECLARE_METATYPE( FeatureTableObjectUnitTest, clone )
 DECLARE_METATYPE( FeatureTableObjectUnitTest, getAnnotationsByName )
-DECLARE_METATYPE( FeatureTableObjectUnitTest, getAnnotatedRegions )
 DECLARE_METATYPE( FeatureTableObjectUnitTest, getAnnotationsByRegion )
 DECLARE_METATYPE( FeatureTableObjectUnitTest, checkConstraints )
 

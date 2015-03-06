@@ -165,7 +165,7 @@ bool AnnotHighlightWidget::noAnnotatedRegions() const {
     const QList<AnnotationTableObject*> items = annotatedDnaView->getAnnotationObjects(true);
     foreach (AnnotationTableObject* object, items) {
         SAFE_POINT(object != NULL, "Annotation table object is NULL", true);
-        if (!object->getAnnotatedRegions().isEmpty()) {
+        if (object->hasAnnotations()) {
             return false;
         }
     }

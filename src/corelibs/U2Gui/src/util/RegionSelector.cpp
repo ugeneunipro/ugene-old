@@ -21,33 +21,20 @@
 
 #include <math.h>
 
-#include <QtGui/QContextMenuEvent>
-#include <QtGui/QIntValidator>
-#include <QtGui/QPalette>
-
-#if (QT_VERSION < 0x050000) //Qt 5
 #include <QAction>
-#include <QtGui/QComboBox>
-#include <QtGui/QGroupBox>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#include <QtGui/QToolButton>
-#include <QtGui/QVBoxLayout>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QVBoxLayout>
-#endif
+#include <QApplication>
+#include <QComboBox>
+#include <QContextMenuEvent>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QIntValidator>
+#include <QLabel>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPalette>
+#include <QPushButton>
+#include <QToolButton>
+#include <QVBoxLayout>
 
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
@@ -59,9 +46,9 @@
 namespace U2 {
 ////////////////////////////////////////
 // RangeSelectorWidget
-const QString RegionSelector::WHOLE_SEQUENCE = RegionSelector::tr("Whole sequence");
-const QString RegionSelector::SELECTED_REGION = RegionSelector::tr("Selected region");
-const QString RegionSelector::CUSTOM_REGION = RegionSelector::tr("Custom region");
+const QString RegionSelector::WHOLE_SEQUENCE = QApplication::translate("RegionSelector", "Whole sequence");
+const QString RegionSelector::SELECTED_REGION = QApplication::translate("RegionSelector", "Selected region");
+const QString RegionSelector::CUSTOM_REGION = QApplication::translate("RegionSelector", "Custom region");
 
 RegionSelector::RegionSelector(QWidget* p, qint64 len, bool isVertical,
                                DNASequenceSelection* selection,
