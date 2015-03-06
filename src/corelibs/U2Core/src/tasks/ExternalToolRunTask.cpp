@@ -26,6 +26,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
@@ -438,7 +439,15 @@ ProcessRun ExternalToolSupportUtils::prepareProcess(const QString &toolName, con
         result.process->setWorkingDirectory(workingDirectory);
         algoLog.details(tr("Working directory is \"%1\"").arg(result.process->workingDirectory()));
     }
-    algoLog.details(tr("Launching %1 tool: %2 %3").arg(toolName).arg(result.program).arg(result.arguments.join(" ")));
+
+    // QProcess wraps arguments that contain spaces in quotes automatically.
+    // But launched line should look correctly in the log.
+    QStringList argumentListForDisplay;
+    foreach (const QString& arg, result.arguments) {
+        argumentListForDisplay << GUrlUtils::getQuotedString(arg);
+    }
+    algoLog.details(tr("Launching %1 tool: %2 %3").arg(toolName).arg(result.program).arg(argumentListForDisplay.join(" ")));
+
     if(NULL != listener) {
         listener->setToolName(toolName);
         listener->addNewLogMessage(listenerProgramMessage, PROGRAM_PATH);

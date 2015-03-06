@@ -141,17 +141,17 @@ QStringList FastQCTask::getParameters(U2OpStatus & /*os*/) const{
     QStringList res;
 
     res << QString("-o");
-    res << GUrlUtils::getQuotedString(settings.outDir);
+    res << settings.outDir;
 
 
     if(!settings.conts.isEmpty()){
         res << QString("-c");
-        res << GUrlUtils::getQuotedString(settings.conts);
+        res << settings.conts;
     }
 
     if(!settings.adapters.isEmpty()){
         res << QString("-a");
-        res << GUrlUtils::getQuotedString(settings.adapters);
+        res << settings.adapters;
     }
 
     ExternalTool *java = FastQCSupport::getJava();
@@ -159,7 +159,7 @@ QStringList FastQCTask::getParameters(U2OpStatus & /*os*/) const{
     res << QString("-java");
     res << java->getPath();
 
-    res << GUrlUtils::getQuotedString(settings.inputUrl);
+    res << settings.inputUrl;
 
     return res;
 }
