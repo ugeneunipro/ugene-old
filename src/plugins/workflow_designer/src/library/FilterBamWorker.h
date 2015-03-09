@@ -73,7 +73,7 @@ public:
 
 class BamFilterSetting{
 public:
-    BamFilterSetting(): outDir(""), outName(""),inputUrl(""), inputFormat(""), outputFormat(""),mapq(0), skipFilter(""),regionFilter(""){}
+    BamFilterSetting(): outDir(""), outName(""),inputUrl(""), inputFormat(""), outputFormat(""),mapq(0), acceptFilter(""), skipFilter(""),regionFilter(""){}
 
     QString outDir;
     QString outName;
@@ -81,6 +81,7 @@ public:
     QString inputFormat;
     QString outputFormat;
     int     mapq;
+    QString acceptFilter;
     QString skipFilter;
     QString regionFilter;
 

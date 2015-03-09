@@ -60,6 +60,7 @@ static const QString OUT_NAME_ID( "out-name" );
 static const QString OUT_FORMAT_ID( "out-format" );
 static const QString REGION_ID( "region" );
 static const QString MAPQ_ID( "mapq" );
+static const QString ACCEPT_FLAG_ID( "accept-flag" );
 static const QString FLAG_ID( "flag" );
 
 
@@ -70,7 +71,7 @@ QString FilterBamPrompter::composeRichDoc() {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(INPUT_PORT));
     const Actor* producer = input->getProducer(BaseSlots::URL_SLOT().getId());
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
-    QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
+    QString producerName = tr("<u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
 
     QString doc = tr("Filter BAM/SAM files from %1 with SAMTools view.").arg(producerName);
     return doc;
@@ -158,6 +159,9 @@ void FilterBamWorkerFactory::init() {
         Descriptor mapqFilter(MAPQ_ID, FilterBamWorker::tr("MAPQ threshold"),
             FilterBamWorker::tr("Minimum MAPQ quality score."));
 
+        Descriptor flagAccept(ACCEPT_FLAG_ID, FilterBamWorker::tr("Accept flag"),
+            FilterBamWorker::tr("Only output alignments with the selected items. Select the items in the combobox to configure bit flag. Do not select the items to avoid filtration by this parameter."));
+
         Descriptor flagFilter(FLAG_ID, FilterBamWorker::tr("Skip flag"),
             FilterBamWorker::tr("Skip alignment with the selected items. Select the items in the combobox to configure bit flag. Do not select the items to avoid filtration by this parameter."));
 
@@ -169,6 +173,7 @@ void FilterBamWorkerFactory::init() {
         a << new Attribute( outFormat, BaseTypes::STRING_TYPE(), false, QVariant(BaseDocumentFormats::BAM));
         a << new Attribute( regionFilter, BaseTypes::STRING_TYPE(), false, QVariant(""));
         a << new Attribute( mapqFilter, BaseTypes::NUM_TYPE(), false, QVariant(0));
+        a << new Attribute( flagAccept, BaseTypes::STRING_TYPE(), false, QVariant(""));
         a << new Attribute( flagFilter, BaseTypes::STRING_TYPE(), false, QVariant(""));
     }
 
@@ -197,6 +202,7 @@ void FilterBamWorkerFactory::init() {
         foreach(const QString& key, filterCodes.keys()){
             flags[key] = false;
         }
+        delegates[ACCEPT_FLAG_ID] = new ComboBoxWithChecksDelegate(flags);
         delegates[FLAG_ID] = new ComboBoxWithChecksDelegate(flags);
     }
 
@@ -246,6 +252,7 @@ Task * FilterBamWorker::tick() {
             setting.inputFormat = detectedFormat;
             setting.outputFormat = getValue<QString>(OUT_FORMAT_ID);
             setting.mapq = getValue<int>(MAPQ_ID);
+            setting.acceptFilter = getHexValueByFilterString(getValue<QString>(ACCEPT_FLAG_ID), getFilterCodes());
             setting.skipFilter = getHexValueByFilterString(getValue<QString>(FLAG_ID), getFilterCodes());
             setting.regionFilter = getValue<QString>(REGION_ID);
 
@@ -330,6 +337,11 @@ QStringList BamFilterSetting::getSamtoolsArguments() const{
     if(outputFormat == BaseDocumentFormats::BAM){
         result << "-b";
     }
+
+    if(!acceptFilter.isEmpty()){
+        result<< "-f" << acceptFilter;
+    }
+
     if(!skipFilter.isEmpty()){
         result<< "-F" << skipFilter;
     }

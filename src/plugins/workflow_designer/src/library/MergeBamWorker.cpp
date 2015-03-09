@@ -64,7 +64,7 @@ QString MergeBamPrompter::composeRichDoc() {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(INPUT_PORT));
     const Actor* producer = input->getProducer(BaseSlots::URL_SLOT().getId());
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
-    QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
+    QString producerName = tr("<u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
 
     QString doc = tr("Merge BAM files from %1 with SAMTools merge.").arg(producerName);
     return doc;

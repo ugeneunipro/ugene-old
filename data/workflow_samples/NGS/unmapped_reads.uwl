@@ -1,0 +1,126 @@
+#@UGENE_WORKFLOW
+#The workflow extracts unmapped reads from an input SAM/BAM file. Using the “samtools view –f 4” command the workflow returns unmapped reads in the BAM format by default.
+
+
+
+workflow "Get unmapped reads"{
+
+    filter-bam {
+        type:filter-bam;
+        name:"Filter BAM/SAM files";
+        accept-flag:"The read is unmapped";
+    }
+    get-file-list {
+        type:get-file-list;
+        name:"SAM/BAM File List";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+
+    .actor-bindings {
+        get-file-list.out-url->filter-bam.in-file
+    }
+
+    get-file-list.url->filter-bam.in-file.url
+
+    .meta {
+        parameter-aliases {
+            filter-bam.accept-flag {
+                alias:f;
+            }
+            filter-bam.custom-dir {
+                alias:out_dir;
+            }
+            filter-bam.flag {
+                alias:F;
+            }
+            filter-bam.mapq {
+                alias:q;
+            }
+            filter-bam.out-format {
+                alias:format;
+            }
+            filter-bam.out-mode {
+                alias:out_mode;
+            }
+            filter-bam.out-name {
+                alias:out_name;
+            }
+            filter-bam.region {
+                alias:r;
+            }
+            get-file-list.url-in {
+                alias:in;
+            }
+        }
+        visual {
+            filter-bam {
+                pos:"-546 -540";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            get-file-list {
+                pos:"-780 -540";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-url.angle:360;
+            }
+            get-file-list.out-url->filter-bam.in-file {
+                text-pos:"-39.9844 -27";
+            }
+        }
+        wizard {
+            name:"Get Unmapped Reads";
+            auto-run:true;
+            page {
+                id:1;
+                next:2;
+                title:"Input SAM/BAM File(s)";
+                parameters-area {
+                    get-file-list.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:Filtration;
+                parameters-area {
+                    group {
+                        title:Settings;
+                        label-size:120;
+                        filter-bam.accept-flag {
+                        }
+                        filter-bam.flag {
+                        }
+                        filter-bam.region {
+                        }
+                        filter-bam.mapq {
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                title:Results;
+                parameters-area {
+                    group {
+                        title:Output;
+                        label-size:120;
+                        filter-bam.out-mode {
+                        }
+                        filter-bam.custom-dir {
+                        }
+                        filter-bam.out-format {
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
