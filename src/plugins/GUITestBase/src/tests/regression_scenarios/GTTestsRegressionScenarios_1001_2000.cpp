@@ -246,6 +246,49 @@ GUI_TEST_CLASS_DEFINITION(test_1001_4) {
     GTGlobals::sleep(5000);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1003) {
+
+    // 1. Open "murine.gb", search for all available restriction sites (i.e. click "Select All" in the "Find Restriction Sites" dialog).
+    // Expected state: UGENE not hangs at 100% complition of 'Auto-annotation update task'
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+
+    class Scenario_test_1003: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget *dialog = QApplication::activeModalWidget();
+            QWidget *enzymesSelectorWidget = GTWidget::findWidget(os, "enzymesSelectorWidget");
+            GTWidget::click(os, GTWidget::findWidget(os, "selectAllButton", enzymesSelectorWidget));
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "Find restriction sites"));
+    GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList(), new Scenario_test_1003()));
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1013) {
+
+    // 1) Open any MSA (data\samples\MSF\HMA.msf)
+    // 2) Right-click on sequences name list.
+    // Expected state: "Edit -> replace selected rows with rev-complement" presend in popup menu
+    // 3) Start the selection by clicking on any sequence in the alignment area and moving the pointer to the whitespace
+    // Expected state: selection is present
+    // 4) Start the selection by clicking on the whitespace ("Consensus" widget counts) and moving the pointer to any sequence in the alignment area
+    // Expected state: selection is present
+
+    GTFileDialog::openFile(os, dataDir+"samples/MSF/", "HMA.msf");
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement"));
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1015) {
 
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
@@ -258,6 +301,16 @@ GUI_TEST_CLASS_DEFINITION(test_1015) {
     GTUtilsMdi::click(os, GTGlobals::Close);
 
     GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1016) {
+
+    // 1) Open "\test\_common_data\scenarios\_regression\1016\eg1.sam"
+    // Expected state: "Import SAM File" dialog appeared, not "select format" dialog
+    
+    //GTFileDialog::openFile(os, testDir+"_common_data/scenarios/_regression/1016/eg1.sam");
+
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1015_1) {
