@@ -36,6 +36,7 @@
 #include "GTUtilsDialog.h"
 
 #include "api/GTAction.h"
+#include "api/GTClipboard.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
@@ -50,12 +51,14 @@
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
 
+#include <U2View/ADVConstants.h>
 
 namespace U2 {
 
@@ -334,6 +337,26 @@ GUI_TEST_CLASS_DEFINITION(test_4070) {
 
     CHECK_SET_ERR(colorFound, "The overview doesn't contain white color");
 }
+GUI_TEST_CLASS_DEFINITION(test_4095) {
+/* 1. Open file "test/_common_data/fasta/fa1.fa"
+ * 2. Call context menu on the sequence view { Edit sequence -> Reverse sequence }
+ *   Expected state: nucleotides order has reversed
+ *   Current state: nothing happens
+*/
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "fa1.fa");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_EDIT<<ACTION_EDIT_RESERVE_SEQUENCE));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //GTCA
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 4));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString selectionContent = GTClipboard::text( os );
+    CHECK_SET_ERR( "GTCA" == selectionContent, "Sequence reversing is failed" );
+}
+
 namespace {
     QString getFileContent(const QString &path) {
         QFile file(path);
