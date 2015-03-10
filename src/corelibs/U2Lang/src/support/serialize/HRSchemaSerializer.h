@@ -84,7 +84,7 @@ public:
     static void addPart( QString & to, const QString & w);
     static QString header2String(const Metadata * meta);
     static QString makeBlock(const QString & title, const QString & name, const QString & blockItself, int tabsNum = 1, bool nl = false, bool sc = false);
-    static QString makeEqualsPair(const QString & key, const QString & value, int tabsNum = 2);
+    static QString makeEqualsPair(const QString & key, const QString & value, int tabsNum = 2, bool quoteEmpty = false);
     static QString makeArrowPair( const QString & left, const QString & right, int tabsNum = 1 );
     static QString scriptBlock(const QString & scriptText, int tabsNum = 3);
     static QString includesDefinition(const QList<Actor*> & procs);
@@ -108,7 +108,7 @@ public:
     static QMap<ActorId, ActorId> deepCopy(const Schema& from, Schema* to, U2OpStatus &os);
 
     static bool isHeaderLine(const QString &line);
-    static QString valueString(const QString & s);
+    static QString valueString(const QString & s, bool quoteEmpty = false);
 
     static void saveSchema(Schema *schema, Metadata *meta, const QString &url, U2OpStatus &os);
 

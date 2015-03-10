@@ -277,7 +277,7 @@ void Tokenizer::tokenizeLine(const QString & l, QTextStream & s) {
             }
         } else if(ch == Constants::QUOTE.at(0)) {
             if( finishAtQuote ) {
-                appendToken(curToken);
+                appendToken(curToken, false);
                 curToken.clear();
                 finishAtQuote = false;
             } else {

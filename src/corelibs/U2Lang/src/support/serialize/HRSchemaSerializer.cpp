@@ -117,13 +117,14 @@ namespace {
     };
 }
 
-QString HRSchemaSerializer::valueString(const QString & s) {
+QString HRSchemaSerializer::valueString(const QString & s, bool quoteEmpty) {
     QString str = s;
     str.replace("\"", "'");
     if( str.contains(QRegExp("\\s") ) || str.contains(Constants::SEMICOLON) ||
         str.contains(Constants::EQUALS_SIGN) || str.contains(Constants::DATAFLOW_SIGN) ||
         str.contains(Constants::BLOCK_START) || str.contains(Constants::BLOCK_END) ||
-        str.contains(OldConstants::MARKER_START)) {
+        str.contains(OldConstants::MARKER_START) ||
+        (str.isEmpty() && quoteEmpty)) {
         return quotedString(str);
     } else {
         return str;
@@ -1380,8 +1381,8 @@ QString HRSchemaSerializer::makeBlock(const QString & title, const QString & nam
     return indent + title + " " + valueString(name) + blockStart + blockItself + indent + blockEnd;
 }
 
-QString HRSchemaSerializer::makeEqualsPair(const QString & key, const QString & value, int tabsNum) {
-    return makeIndent(tabsNum) + key + Constants::EQUALS_SIGN + valueString(value) + Constants::SEMICOLON + Constants::NEW_LINE;
+QString HRSchemaSerializer::makeEqualsPair(const QString & key, const QString & value, int tabsNum, bool quoteEmpty) {
+    return makeIndent(tabsNum) + key + Constants::EQUALS_SIGN + valueString(value, quoteEmpty) + Constants::SEMICOLON + Constants::NEW_LINE;
 }
 
 QString HRSchemaSerializer::makeArrowPair( const QString & left, const QString & right, int tabsNum ) {
@@ -1593,10 +1594,7 @@ static QString elementsDefinitionBlock(Actor * actor, bool copyMode) {
             }
             QVariant value = attribute->getAttributePureValue();
             assert(value.isNull() || value.canConvert<QString>());
-            QString valueStr = value.toString();
-            if(!valueStr.isEmpty()) {
-                res += HRSchemaSerializer::makeEqualsPair(attributeId, valueStr);
-            }
+            res += HRSchemaSerializer::makeEqualsPair(attributeId, value.toString(), 2, true);
         }
     }
 
