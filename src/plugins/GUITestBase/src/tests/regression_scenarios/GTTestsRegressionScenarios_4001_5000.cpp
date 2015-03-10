@@ -333,7 +333,15 @@ GUI_TEST_CLASS_DEFINITION(test_4070) {
 
     CHECK_SET_ERR(colorFound, "The overview doesn't contain white color");
 }
+namespace {
+    QString getFileContent(const QString &path) {
+        QFile file(path);
+        CHECK(file.open(QFile::ReadOnly), QString());
+        QTextStream fileReader(&file);
+        return fileReader.readAll();
+    }
 
+}
 GUI_TEST_CLASS_DEFINITION(test_4096) {
     // 1. Open "human_T1.fa"
     // 2. Use context menu on sequence object
@@ -415,15 +423,6 @@ GUI_TEST_CLASS_DEFINITION(test_4122) {
     GTMouseDriver::click(os);  
 
    }
-namespace {    
-    QString getFileContent(const QString &path) {
-        QFile file(path);
-        CHECK(file.open(QFile::ReadOnly), QString());
-        QTextStream fileReader(&file);
-        return fileReader.readAll();
-    }
-
-}
 
 } // namespace GUITest_regression_scenarios
 
