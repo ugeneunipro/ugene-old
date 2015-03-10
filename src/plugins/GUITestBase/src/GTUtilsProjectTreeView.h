@@ -92,7 +92,6 @@ public:
     static QFont getFont(U2OpStatus &os, QModelIndex index);
     static QIcon getIcon(U2OpStatus &os, QModelIndex index);
 
-
     static void itemModificationCheck(U2OpStatus &os, QModelIndex index, bool modified = true);
 
     static void itemActiveCheck(U2OpStatus &os, QModelIndex index, bool active = true);
@@ -104,6 +103,8 @@ public:
     static void dragAndDropSeveralElements(U2OpStatus &os, QModelIndexList from, QModelIndex to);
 
     static void expandProjectView(U2OpStatus &os);
+
+    static void markSequenceAsCircular(U2OpStatus &os, const QString &sequenceObjectName);
 
     static const QString widgetName;
 

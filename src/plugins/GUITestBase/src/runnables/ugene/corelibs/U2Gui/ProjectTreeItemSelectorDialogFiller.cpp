@@ -56,6 +56,14 @@ ProjectTreeItemSelectorDialogFiller::ProjectTreeItemSelectorDialogFiller(U2OpSta
 
 }
 
+ProjectTreeItemSelectorDialogFiller::ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+    Filler(os, "ProjectTreeItemSelectorDialogBase", scenario),
+    mode(Single),
+    expectedDocCount(0)
+{
+
+}
+
 namespace {
 
 bool checkTreeRowCount(QTreeView *tree, int expectedDocCount) {
@@ -70,8 +78,8 @@ bool checkTreeRowCount(QTreeView *tree, int expectedDocCount) {
 
 }
 
-#define GT_METHOD_NAME "run"
-void ProjectTreeItemSelectorDialogFiller::run(){
+#define GT_METHOD_NAME "commonScenario"
+void ProjectTreeItemSelectorDialogFiller::commonScenario(){
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog was not found");
 

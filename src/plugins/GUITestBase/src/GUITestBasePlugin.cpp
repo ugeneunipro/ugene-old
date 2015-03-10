@@ -48,6 +48,7 @@
 #include "tests/common_scenarios/msa_editor/edit/GTTestsMSAEditorEdit.h"
 #include "tests/common_scenarios/msa_editor/overview/GTTestsMSAEditorOverview.h"
 #include "tests/common_scenarios/annotations/GTTestsAnnotations.h"
+#include "tests/common_scenarios/annotations/GTTestsCreateAnnotationWidget.h"
 #include "tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h"
 #include "tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h"
 #include "tests/common_scenarios/document_from_text/GTTestsDocumentFromText.h"
@@ -1487,6 +1488,50 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0012_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0012_2);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0012_3);
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/annotations/CreateAnnotationWidget
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0008);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0009);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0010);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0011);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0012);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0013);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0014);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0015);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0016);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0017);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0018);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0019);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0020);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0021);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0022);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0023);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0024);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0025);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0026);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0027);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0028);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0029);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0030);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0031);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0032);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0033);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0034);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0035);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0036);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0037);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0038);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0039);
+    REGISTER_TEST(GUITest_common_scenarios_create_annotation_widget::test_0040);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/annotations/edit

@@ -53,9 +53,16 @@ CreateAnnotationWidgetFiller::CreateAnnotationWidgetFiller(U2OpStatus &os,
 
 }
 
-#define GT_METHOD_NAME "run"
+CreateAnnotationWidgetFiller::CreateAnnotationWidgetFiller(U2OpStatus &os, CustomScenario *scenario) :
+    Filler(os, "CreateAnnotationDialog", scenario),
+    newTableRB(false)
+{
 
-void CreateAnnotationWidgetFiller::run() {
+}
+
+#define GT_METHOD_NAME "commonScenario"
+
+void CreateAnnotationWidgetFiller::commonScenario() {
 #ifdef Q_OS_MAC
     GTKeyboardDriver::keyRelease(os,GTKeyboardDriver::key["cmd"]);
 #endif

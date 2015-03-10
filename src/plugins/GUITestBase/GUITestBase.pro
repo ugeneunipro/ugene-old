@@ -109,6 +109,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h \
             src/runnables/ugene/plugins/external_tools/SpadesGenomeAssemblyDialogFiller.h \
             src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h \
+#   Runnables / UGENE / plugins / orf_marker
+            src/runnables/ugene/plugins/orf_marker/OrfDialogFiller.h \
 #   Runnables / UGENE / plugins / pcr
             src/runnables/ugene/plugins/pcr/AddPrimerDialogFiller.h \
             src/runnables/ugene/plugins/pcr/ExportPrimersDialogFiller.h \
@@ -187,6 +189,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/msa_editor/edit/GTTestsMSAEditorEdit.h \
             src/tests/common_scenarios/msa_editor/overview/GTTestsMSAEditorOverview.h \
             src/tests/common_scenarios/annotations/GTTestsAnnotations.h \
+            src/tests/common_scenarios/annotations/GTTestsCreateAnnotationWidget.h \
             src/tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h \
             src/tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h \
             src/tests/common_scenarios/document_from_text/GTTestsDocumentFromText.h \
@@ -362,6 +365,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.cpp \
             src/runnables/ugene/plugins/external_tools/SpadesGenomeAssemblyDialogFiller.cpp \
             src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp \
+#   Runnables / UGENE / plugins / orf_marker
+            src/runnables/ugene/plugins/orf_marker/OrfDialogFiller.cpp \
 #   Runnables / UGENE / plugins / pcr
             src/runnables/ugene/plugins/pcr/AddPrimerDialogFiller.cpp \
             src/runnables/ugene/plugins/pcr/ExportPrimersDialogFiller.cpp \
@@ -444,6 +449,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/msa_editor/edit/GTTestsMSAEditorEdit.cpp  \
             src/tests/common_scenarios/msa_editor/overview/GTTestsMSAEditorOverview.cpp \
             src/tests/common_scenarios/annotations/GTTestsAnnotations.cpp \
+            src/tests/common_scenarios/annotations/GTTestsCreateAnnotationWidget.cpp \
             src/tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.cpp \
             src/tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.cpp \
             src/tests/common_scenarios/document_from_text/GTTestsDocumentFromText.cpp \

@@ -19,33 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_RUNNABLES_CREATE_ANNOTATIONS_WIDGET_FILLER_H_
-#define _U2_GT_RUNNABLES_CREATE_ANNOTATIONS_WIDGET_FILLER_H_
+#ifndef _U2_ORF_DIALOG_FILLER_H_
+#define _U2_ORF_DIALOG_FILLER_H_
 
 #include "GTUtilsDialog.h"
 
 namespace U2 {
 
-class CreateAnnotationWidgetFiller : public Filler {
+class OrfDialogFiller : public Filler {
 public:
-    CreateAnnotationWidgetFiller(U2OpStatus &os,
-                                 bool newTableRB,
-                                 const QString &groupName,
-                                 const QString &annotationName,
-                                 const QString &location,
-                                 const QString &saveTo = "");
-    CreateAnnotationWidgetFiller(U2OpStatus &os, CustomScenario *scenario);
+    OrfDialogFiller(U2OpStatus &os, CustomScenario *scenario);
 
-    virtual void commonScenario();
-
-private:
-    const QString groupName;
-    const QString annotationName;
-    const QString location;
-    const bool newTableRB;
-    const QString saveTo;
+    void commonScenario();
 };
 
 }   // namespace U2
 
-#endif // _U2_GT_RUNNABLES_CREATE_ANNOTATIONS_WIDGET_FILLER_H_
+#endif // _U2_ORF_DIALOG_FILLER_H_

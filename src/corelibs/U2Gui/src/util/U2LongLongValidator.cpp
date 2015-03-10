@@ -35,6 +35,10 @@ U2LongLongValidator::U2LongLongValidator(qint64 minimum, qint64 maximum, QObject
 QValidator::State U2LongLongValidator::validate(QString &input, int & /*pos*/) const {
     CHECK(!input.isEmpty(), QValidator::Acceptable);
 
+    if ((minimum >= 0 && input.startsWith('-')) || (maximum < 0 && input.startsWith('+'))) {
+        return Invalid;
+    }
+
     if (input.size() == 1 && (input[0] == '+' || input[0] == '-')) {
         return Intermediate;
     }
@@ -43,10 +47,6 @@ QValidator::State U2LongLongValidator::validate(QString &input, int & /*pos*/) c
     const qint64 currentValue = input.toLongLong(&isConverted);
     if (!isConverted) {
         return QValidator::Invalid;
-    }
-
-    if ((minimum >= 0 && input.startsWith('-')) || (maximum < 0 && input.startsWith('+'))) {
-        return Invalid;
     }
 
     if (currentValue < minimum) {

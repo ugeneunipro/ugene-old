@@ -37,7 +37,9 @@ public:
         const QSet<GObjectType> &acceptableTypes = QSet<GObjectType>(), SelectionMode mode = Single, int expectedDocCount = -1);
     ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, const QMap<QString, QStringList> &itemsToSelect,
         const QSet<GObjectType> &acceptableTypes = QSet<GObjectType>(), SelectionMode mode = Single, int expectedDocCount = -1);
-    virtual void run();
+    ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+
+    virtual void commonScenario();
 
 private:
     QMap<QString, QStringList> itemsToSelect;

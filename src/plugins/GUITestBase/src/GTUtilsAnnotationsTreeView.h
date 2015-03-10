@@ -36,6 +36,8 @@ class GTUtilsAnnotationsTreeView {
 public:
     static QTreeWidget* getTreeWidget(U2OpStatus &os);
 
+    static void addAnnotationsTableFromProject(U2OpStatus &os, const QString &tableName);
+
     // returns center or item's rect
     // fails if the item wasn't found
     static QPoint getItemCenter(U2OpStatus &os, const QString &itemName);
@@ -44,6 +46,8 @@ public:
     static QTreeWidgetItem * findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
     static QTreeWidgetItem * findItem(U2OpStatus &os, const QString &itemName, QTreeWidgetItem* parentItem, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
     static QList<QTreeWidgetItem*> findItems(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+
+    static QStringList getGroupNames(U2OpStatus &os, const QString &annotationTableName = "");
 
     static QStringList getAnnotationNamesOfGroup(U2OpStatus &os, const QString &groupName);
     static QList<U2Region> getAnnotatedRegionsOfGroup(U2OpStatus &os, const QString &groupName);
@@ -58,6 +62,7 @@ public:
     static QString getQualifierValue(U2OpStatus &os, const QString &qualName, const QString &parentName);
     static QList<U2Region> getAnnotatedRegions(U2OpStatus &os);
     static QString getAnnotationRegionString(U2OpStatus &os, const QString &annotationName);
+    static QString getAnnotationType(U2OpStatus &os, const QString &annotationName);
 
     static void createQualifier(U2OpStatus &os, const QString &qualName, const QString &qualValue, const QString &parentName);
 
