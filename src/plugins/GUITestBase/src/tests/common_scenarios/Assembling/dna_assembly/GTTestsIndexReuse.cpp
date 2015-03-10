@@ -145,7 +145,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
             GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No, "These files have the incompatible format:"));
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
             GTGlobals::sleep();
-            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::QDialogButtonBox::Cancel);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
         }
     };
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new custom()));
