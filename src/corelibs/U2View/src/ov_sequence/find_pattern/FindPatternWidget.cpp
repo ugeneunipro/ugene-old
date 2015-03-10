@@ -226,6 +226,8 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView) :
 {
     setupUi(this);
     progressMovie = new QMovie(":/core/images/progress.gif", QByteArray(), progressLabel);
+    progressLabel->setObjectName("progressLabel");
+    resultLabel->setObjectName("resultLabel");
     savableWidget.setRegionWidgetIds(QStringList() << editStart->objectName()
         << editEnd->objectName());
 

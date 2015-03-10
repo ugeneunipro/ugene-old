@@ -3608,6 +3608,19 @@ GUI_TEST_CLASS_DEFINITION(test_3613) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3619) {
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+
+    QWidget* progressLabel = GTWidget::findWidget(os, "progressLabel");
+    QWidget* resultLabel = GTWidget::findWidget(os, "resultLabel");
+
+    GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Regular expression");
+    GTUtilsOptionPanelSequenceView::enterPattern(os, ".");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    CHECK_SET_ERR(progressLabel->isHidden() && resultLabel->isVisible(), "Wrong hide, show conditions 2");    
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3622) {
 //    1. Open "data/samples/FASTA/human_T1.fa".
 
