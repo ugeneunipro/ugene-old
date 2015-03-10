@@ -774,6 +774,7 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
                         text += "\n";
                     }
                     text += QString(tr("Warning: invalid regexp. "));
+                    highlightBackground(textPattern);
                     break;
                 default:
                     FAIL("Unexpected value of the error flag in show/hide error message for pattern!",);
