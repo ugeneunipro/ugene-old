@@ -4932,6 +4932,29 @@ GUI_TEST_CLASS_DEFINITION(test_3901) {
     CHECK_SET_ERR(selection.first() == U2Region(79, 11), "Wrong selected region");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3902) {
+    // Open "data/samples/Genbank/murine.gb" and 
+    // "data/samples/Genbank/sars.gb" as separate sequences (in different views).
+    // Select these two documents in the project view and unload them. Agree to close views.
+    // Expected state: both documents are unloaded, there are no errors in the log.
+
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+    GTGlobals::sleep(500);
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "sars.gb");
+    GTGlobals::sleep(500);
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTUtilsDocument::unloadDocument(os, "murine.gb", false);
+    GTGlobals::sleep(500);
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTUtilsDocument::unloadDocument(os, "sars.gb", false);
+    GTGlobals::sleep(500);
+
+    GTUtilsLog::check(os, l);
+
+}
 GUI_TEST_CLASS_DEFINITION(test_3903) {
 /*
     1. Open any sequence
