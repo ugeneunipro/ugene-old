@@ -958,7 +958,8 @@ void FindPatternWidget::checkState()
     //and pattern is not loaded from a file
     if (textPattern->toPlainText().isEmpty()
         && !loadFromFileGroupBox->isChecked()) {
-        //showHideMessage(true, NoPatternToSearch);
+        showHideMessage(false, PatternAlphabetDoNotMatch);
+        doNotHighlightBackground(textPattern);
         return;
     }
 
