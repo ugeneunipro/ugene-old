@@ -333,6 +333,23 @@ GUI_TEST_CLASS_DEFINITION(test_4070) {
 
     CHECK_SET_ERR(colorFound, "The overview doesn't contain white color");
 }
+GUI_TEST_CLASS_DEFINITION(test_4099) {
+/* 1. Open file _common_data/scenarios/_regression/4099/p4228.gb
+ * 2. Select CDS annotation 1656..2450 and select 'label' item
+ *   Expected state: Value has "Tn5 neomycin resistance"
+ *   Note: The value of the "label" qualifier is displayed both on the circular view and the zoom view as annotation names.
+*/
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4099", "p4228.gb");
+    QList<QTreeWidgetItem*> items = GTUtilsAnnotationsTreeView::findItems(os,"CDS");
+    CHECK_SET_ERR( 2 == items.length(), "CDS annotations count is not 2");
+    foreach (QTreeWidgetItem* item, items) {
+        if (item->text(2)=="1656..2450")
+        {
+            CHECK_SET_ERR("Tn5 neomycin resistance" == GTUtilsAnnotationsTreeView::getQualifierValue(os,"label",item), "Wrong label value");
+            break;
+        }
+    }
+}
 GUI_TEST_CLASS_DEFINITION(test_4122) {
 /* 1. Open "data/samples/Genbank/murine.gb".
  * 2. Search any existing pattern.
