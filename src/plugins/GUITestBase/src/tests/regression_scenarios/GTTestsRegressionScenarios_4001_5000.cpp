@@ -49,6 +49,7 @@
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
@@ -381,7 +382,32 @@ GUI_TEST_CLASS_DEFINITION(test_4096) {
     CHECK_SET_ERR(!referenceMsaContent.isEmpty() && referenceMsaContent == resultMsaContent, "Unexpected MSA content");
 
 }
+GUI_TEST_CLASS_DEFINITION(test_4097) {
+/* 1. Open "_common_data/vector_nti_sequence/unrefined.gb".
+ * 2. Export the document somewhere to the vector NTI sequence format.
+ *   Expected state: the saved file contains only 8 entries in the COMMENT section and doesn't contain "Vector_NTI_Display_Data_(Do_Not_Edit!)" comment.
+*/
+    GTFileDialog::openFile(os, testDir + "_common_data/vector_nti_sequence", "unrefined.gb");
 
+    GTUtilsDialog::waitForDialog(os, new ExportDocumentDialogFiller(os, sandBoxDir, "test_4097.gb", ExportDocumentDialogFiller::VectorNTI, false, false));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export document"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "unrefined.gb"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    const QString resultFileContent = getFileContent(sandBoxDir + "test_4097.gb");
+    CHECK_SET_ERR(false == resultFileContent.contains("Vector_NTI_Display_Data_(Do_Not_Edit!)",Qt::CaseInsensitive), "Unexpected file content");
+    QRegExp rx("COMMENT");
+    int pos = 0;
+    int count = 0;
+    while (pos >= 0) {
+        pos = rx.indexIn(resultFileContent, pos);
+        if (pos >= 0) {
+            ++pos;
+            ++count;
+        }
+    }
+    CHECK_SET_ERR(8 == count, "The saved file contains more/less then 8 entries in the COMMENT section");
+}
 GUI_TEST_CLASS_DEFINITION(test_4099) {
 /* 1. Open file _common_data/scenarios/_regression/4099/p4228.gb
  * 2. Select CDS annotation 1656..2450 and select 'label' item

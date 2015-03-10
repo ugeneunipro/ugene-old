@@ -63,6 +63,7 @@ path(_path), name(_name), useMethod(method), format(_format), compressFile(compr
     comboBoxItems[TEXT] = "Plain text";
     comboBoxItems[NWK] = "Newick Standard";
     comboBoxItems[FASTA] = "FASTA";
+    comboBoxItems[VectorNTI] = "Vector NTI sequence";
 }
 
 #define GT_METHOD_NAME "run"
