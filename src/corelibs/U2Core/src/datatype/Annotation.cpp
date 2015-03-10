@@ -37,7 +37,7 @@
 
 namespace U2 {
 
-int Annotation::annotationNameMaximumlength = 100;
+int Annotation::annotationNameMaximumlength = 32767;
 
 Annotation::Annotation( const U2DataId &featureId,AnnotationTableObject *_parentObject )
     : U2Entity( featureId ), parentObject( _parentObject )
@@ -371,23 +371,60 @@ bool Annotation::operator <( const Annotation &other ) const {
     return ( U2DbiUtils::toDbiId( id ) + parentObject ) < ( U2DbiUtils::toDbiId( other.id ) + other.getGObject( ) );
 }
 
-bool Annotation::isValidAnnotationName( const QString &n ) {
-    if ( n.isEmpty( ) || annotationNameMaximumlength < n.length( ) ) {
-        return false;
-    }
+namespace {
 
+QBitArray getValidAnnotationChars() {
     QBitArray validChars = TextUtils::ALPHA_NUMS;
-    validChars['_'] = true;
-    validChars['-'] = true;
     validChars[' '] = true;
-    validChars['\''] = true;
-    validChars['*']  = true;
+    validChars['`'] = true;
+    validChars['~'] = true;
+    validChars['!'] = true;
+    validChars['@'] = true;
+    validChars['#'] = true;
+    validChars['$'] = true;
+    validChars['%'] = true;
+    validChars['^'] = true;
+    validChars['&'] = true;
+    validChars['*'] = true;
+    validChars['('] = true;
+    validChars[')'] = true;
+    validChars['-'] = true;
+    validChars['_'] = true;
+    validChars['='] = true;
+    validChars['+'] = true;
+    validChars['\\'] = true;
+    validChars['|'] = true;
+    validChars[',']  = true;
+    validChars['.']  = true;
+    validChars['<']  = true;
+    validChars['>']  = true;
+    validChars['?']  = true;
+    validChars[';']  = true;
+    validChars[':']  = true;
+    validChars['\'']  = true;
+    validChars['[']  = true;
+    validChars[']']  = true;
+    validChars['{']  = true;
+    validChars['}']  = true;
+    validChars['\"']  = false;
+    validChars['/']  = false;
+    return validChars;
+}
 
-    QByteArray name = n.toLocal8Bit( );
-    if ( !TextUtils::fits( validChars, name.constData( ), name.size( ) ) ) {
+}
+
+bool Annotation::isValidAnnotationName( const QString &n ) {
+    if (n.isEmpty() || annotationNameMaximumlength < n.length()) {
         return false;
     }
-    if ( ' ' == name[0] || ' ' == name[name.size( ) - 1] ) {
+
+    static const QBitArray validChars = getValidAnnotationChars();
+
+    QByteArray name = n.toLocal8Bit();
+    if (!TextUtils::fits(validChars, name.constData(), name.size())) {
+        return false;
+    }
+    if (' ' == name[0] || ' ' == name[name.size() - 1]) {
         return false;
     }
     return true;
@@ -395,23 +432,20 @@ bool Annotation::isValidAnnotationName( const QString &n ) {
 
 QString Annotation::produceValidAnnotationName(const QString &name) {
     QString result = name.trimmed();
-    if (result.isEmpty()){
-        return "misc_feature";
+    if (result.isEmpty()) {
+        return U2FeatureTypes::getVisualName(U2FeatureTypes::MiscFeature);
     }
     if(result.length() > annotationNameMaximumlength ) {
         result = result.left(annotationNameMaximumlength);
     }
 
-    QBitArray validChars = TextUtils::ALPHA_NUMS;
-    validChars['_'] = true;
-    validChars['-'] = true;
-    validChars[' '] = true;
-    validChars['\''] = true;
-    validChars['*']  = true;
+    static const QBitArray validChars = getValidAnnotationChars();
 
-    for(int i=0; i<result.size(); i++) {
+    for (int i = 0; i < result.size(); i++) {
         unsigned char c = result[i].toLatin1();
-        if (!validChars[c]) {
+        if (c == '\"') {
+            result[i] = '\'';
+        } else if (!validChars[c]) {
             result[i] = '_';
         }
     }
