@@ -333,6 +333,47 @@ GUI_TEST_CLASS_DEFINITION(test_4070) {
 
     CHECK_SET_ERR(colorFound, "The overview doesn't contain white color");
 }
+
+GUI_TEST_CLASS_DEFINITION(test_4096) {
+    // 1. Open "human_T1.fa"
+    // 2. Use context menu on sequence object
+    // {Export/Import->Export sequences as alignment}
+    // Expected state: "Export Sequences as Alignment" dialog appeared
+    // 3. Press "Export"
+    // Current state: only part of human_T1(128000 nb) exported to alignment
+
+    class ExportSeqsAsMsaScenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "dialog not found");
+
+            QCheckBox *addToProjectBox = qobject_cast<QCheckBox *>(GTWidget::findWidget(os, "addToProjectBox", dialog));
+            CHECK_SET_ERR(addToProjectBox->isChecked(), "'Add document to project' checkbox is not set");
+
+            QLineEdit *lineEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "fileNameEdit", dialog));
+            GTLineEdit::setText(os, lineEdit, sandBoxDir + "test_4096.aln");
+
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
+        }
+    };
+
+    //GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
+    GTUtilsDialog::waitForDialog(os, new ExportSequenceAsAlignmentFiller(os, new ExportSeqsAsMsaScenario));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsProjectTreeView::checkItem(os, "test_4096.aln");
+
+    const QString referenceMsaContent = getFileContent(testDir + "_common_data/clustal/test_4096.aln");
+    const QString resultMsaContent = getFileContent(sandBoxDir + "test_4096.aln");
+    CHECK_SET_ERR(!referenceMsaContent.isEmpty() && referenceMsaContent == resultMsaContent, "Unexpected MSA content");
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4099) {
 /* 1. Open file _common_data/scenarios/_regression/4099/p4228.gb
  * 2. Select CDS annotation 1656..2450 and select 'label' item
@@ -382,46 +423,6 @@ namespace {
         return fileReader.readAll();
     }
 
-}
-
-GUI_TEST_CLASS_DEFINITION(test_4096) {
-    // 1. Open "human_T1.fa"
-    // 2. Use context menu on sequence object
-    // {Export/Import->Export sequences as alignment}
-    // Expected state: "Export Sequences as Alignment" dialog appeared
-    // 3. Press "Export"
-    // Current state: only part of human_T1(128000 nb) exported to alignment
-
-    class ExportSeqsAsMsaScenario : public CustomScenario {
-        void run(U2OpStatus &os) {
-            QWidget *dialog = QApplication::activeModalWidget();
-            CHECK_SET_ERR(dialog != NULL, "dialog not found");
-
-            QCheckBox *addToProjectBox = qobject_cast<QCheckBox *>(GTWidget::findWidget(os, "addToProjectBox", dialog));
-            CHECK_SET_ERR(addToProjectBox->isChecked(), "'Add document to project' checkbox is not set");
-
-            QLineEdit *lineEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "fileNameEdit", dialog));
-            GTLineEdit::setText(os, lineEdit, sandBoxDir + "test_4096.aln");
-
-            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
-        }
-    };
-
-    //GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
-    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
-
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
-    GTUtilsDialog::waitForDialog(os, new ExportSequenceAsAlignmentFiller(os, new ExportSeqsAsMsaScenario));
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
-    GTMouseDriver::click(os, Qt::RightButton);
-    GTUtilsTaskTreeView::waitTaskFinished(os);
-
-    GTUtilsProjectTreeView::checkItem(os, "test_4096.aln");
-
-    const QString referenceMsaContent = getFileContent(testDir + "_common_data/clustal/test_4096.aln");
-    const QString resultMsaContent = getFileContent(sandBoxDir + "test_4096.aln");
-    CHECK_SET_ERR(!referenceMsaContent.isEmpty() && referenceMsaContent == resultMsaContent, "Unexpected MSA content");
- 
 }
 
 } // namespace GUITest_regression_scenarios
