@@ -389,8 +389,10 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
 
     GTGlobals::sleep();
-    GTUtilsAnnotationsTreeView::findItem(os, "enzymes", false);
-    GTUtilsAnnotationsTreeView::findItem(os, "orfs", false);
+    QTreeWidgetItem* enz = GTUtilsAnnotationsTreeView::findItem(os, "enzymes", GTGlobals::FindOptions(false));
+    QTreeWidgetItem* orf = GTUtilsAnnotationsTreeView::findItem(os, "orfs", GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(enz == NULL, "enzymes unexpectedly present");
+    CHECK_SET_ERR(orf == NULL, "orfs unexpectedly present");
     GTGlobals::sleep();
 
     }
@@ -464,8 +466,10 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
 
     //Expected state: there is no auto-annotations for opened sequences
     GTGlobals::sleep();
-    GTUtilsAnnotationsTreeView::findItem(os, "enzymes", false);
-    GTUtilsAnnotationsTreeView::findItem(os, "orfs", false);
+    QTreeWidgetItem* enz = GTUtilsAnnotationsTreeView::findItem(os, "enzymes", GTGlobals::FindOptions(false));
+    QTreeWidgetItem* orf = GTUtilsAnnotationsTreeView::findItem(os, "orfs", GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(enz == NULL, "enzymes unexpectedly present");
+    CHECK_SET_ERR(orf == NULL, "orfs unexpectedly present");
     GTGlobals::sleep();
 
     }
@@ -501,8 +505,10 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2) {
 
     //Expected state: there is no auto-annotations for opened sequences
     GTGlobals::sleep();
-    GTUtilsAnnotationsTreeView::findItem(os, "enzymes", false);
-    GTUtilsAnnotationsTreeView::findItem(os, "orfs", false);
+    QTreeWidgetItem* enz = GTUtilsAnnotationsTreeView::findItem(os, "enzymes", GTGlobals::FindOptions(false));
+    QTreeWidgetItem* orf = GTUtilsAnnotationsTreeView::findItem(os, "orfs", GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(enz == NULL, "enzymes unexpectedly present");
+    CHECK_SET_ERR(orf == NULL, "orfs unexpectedly present");
     GTGlobals::sleep();
 
     }

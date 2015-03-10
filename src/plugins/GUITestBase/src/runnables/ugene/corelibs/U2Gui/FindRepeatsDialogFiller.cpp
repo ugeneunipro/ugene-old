@@ -50,7 +50,7 @@ FindRepeatsDialogFiller::FindRepeatsDialogFiller(U2OpStatus &_os, const QString 
     : Filler(_os, "FindRepeatsDialog"), button(Start), resultAnnotationFilesPath(_resultFilesPath),
     searchInverted(_searchInverted), minRepeatLength(minRepeatLength), repeatsIdentity(repeatsIdentity), minDistance(minDistance)
 {
-
+    GTGlobals::sleep(10);
 }
 
 FindRepeatsDialogFiller::FindRepeatsDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
@@ -64,7 +64,7 @@ FindRepeatsDialogFiller::FindRepeatsDialogFiller(U2OpStatus &os, CustomScenario 
 
 }
 
-void FindRepeatsDialogFiller::customScenario() {
+void FindRepeatsDialogFiller::commonScenario() {
     GTGlobals::sleep(1000);
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");

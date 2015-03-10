@@ -36,7 +36,7 @@ public:
         int minRepeatLength = -1, int repeatsIdentity = -1, int minDistance = -1);
     FindRepeatsDialogFiller(U2OpStatus &os, CustomScenario *scenario);
 
-    virtual void customScenario();
+    virtual void commonScenario();
     Button button;
 
 private:
