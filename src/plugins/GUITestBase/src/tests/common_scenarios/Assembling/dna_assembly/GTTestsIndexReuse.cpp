@@ -143,7 +143,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 
             //    Expcted state: warning messagebox appeared
             GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No, "These files have the incompatible format:"));
-            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::QDialogButtonBox::Ok);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
             GTGlobals::sleep();
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::QDialogButtonBox::Cancel);
         }
