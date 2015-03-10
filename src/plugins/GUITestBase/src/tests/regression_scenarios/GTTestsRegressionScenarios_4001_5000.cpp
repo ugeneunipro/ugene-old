@@ -235,6 +235,20 @@ GUI_TEST_CLASS_DEFINITION(test_4045) {
     GTUtilsLog::check(os, logTracer);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4046){
+//    Open 'human_T1.fa'
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+//    Create a new annotation
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "<auto>", "ann1", "complement(1.. 20)"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+//    Current state: new annotation has an empty qualifier 'note'
+    QTreeWidgetItem* ann = GTUtilsAnnotationsTreeView::findItem(os, "ann1");
+//    Expected state: new annotation does not have any qualifiers
+    CHECK_SET_ERR(ann->childCount() == 0, QString("Unexpected qualifier number: %1").arg(ann->childCount()));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4059) {
     GTLogTracer l;
     //1. Open "_common_data/text/text.txt".

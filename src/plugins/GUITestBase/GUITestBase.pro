@@ -251,7 +251,9 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTGraphicsItem.h \
             src/api/GTTreeView.h \
             src/api/GTListWidget.h \
-            src/api/GTSlider.h
+            src/api/GTSlider.h \
+    src/tests/common_scenarios/Assembling/dna_assembly/GTTestsIndexReuse.h \
+    src/runnables/qt/DefaultDialogFiller.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -512,4 +514,6 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTGraphicsItem.cpp \
             src/api/GTTreeView.cpp \
             src/api/GTListWidget.cpp \
-            src/api/GTSlider.cpp
+            src/api/GTSlider.cpp \
+    src/tests/common_scenarios/Assembling/dna_assembly/GTTestsIndexReuse.cpp \
+    src/runnables/qt/DefaultDialogFiller.cpp

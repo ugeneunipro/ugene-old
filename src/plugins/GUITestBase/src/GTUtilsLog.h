@@ -30,12 +30,14 @@ namespace U2 {
 class GTLogTracer : public QObject, public LogListener {
     Q_OBJECT
 public:
-    GTLogTracer();
+    GTLogTracer(QString _expectedMessage = "");
     ~GTLogTracer();
 
     void reset() { wasError = false; }
     bool hasError() const { return wasError; }
+    bool messageFound() const {return wasMessage;}
     QString getError() const {return error;}
+    QString getExpectedMessage() const {return expectedMessage;}
 
     void onMessage(const LogMessage& msg);
     static QList<LogMessage*> getMessages();
@@ -43,13 +45,17 @@ public:
 
 private:
     bool wasError;
+    bool wasMessage;
     QString error;
+    QString expectedMessage;
 };
 
 class GTUtilsLog {
 public:
     static void check(U2OpStatus &os, const GTLogTracer &logTracer);
     static void checkContainsError(U2OpStatus &os, const GTLogTracer& logTracer, const QString &messagePart);
+    static void checkContainsMessage(U2OpStatus &os, const GTLogTracer& logTracer, bool expected = true);
+
 };
 
 } // namespace

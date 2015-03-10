@@ -24,8 +24,8 @@
 
 namespace U2 {
 
-GTLogTracer::GTLogTracer()
-: wasError(false) {
+GTLogTracer::GTLogTracer(QString _expectedMessage)
+: wasError(false), wasMessage(false), expectedMessage(_expectedMessage) {
     LogServer::getInstance()->addListener(this);
 }
 
@@ -39,6 +39,13 @@ void GTLogTracer::onMessage(const LogMessage &msg) {
         wasError = true;
         error = msg.text;
     }
+
+    if(expectedMessage != ""){
+        if (msg.text.contains(expectedMessage)){
+            wasMessage = true;
+        }
+    }
+
 
 }
 
@@ -72,6 +79,20 @@ void GTUtilsLog::checkContainsError(U2OpStatus &os, const GTLogTracer &logTracer
     GT_CHECK(logTracer.getError().contains(messagePart), "The log doesn't contains error message");
 }
 #undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkContainsMessage"
+void GTUtilsLog::checkContainsMessage(U2OpStatus &os, const GTLogTracer &logTracer, bool expected) {
+    Q_UNUSED(os);
+    GT_CHECK(logTracer.getExpectedMessage() != "", "Expected message shoul be specyfied on creating GTLogtracer");
+    GTGlobals::sleep(500);
+    if(expected){
+        GT_CHECK(logTracer.messageFound(), "message not found");
+    }else{
+        GT_CHECK(!logTracer.messageFound(), "message unexpectidly found");
+    }
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 } // namespace

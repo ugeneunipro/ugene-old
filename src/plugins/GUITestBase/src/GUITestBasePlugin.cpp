@@ -59,6 +59,7 @@
 #include "tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h"
 #include "tests/common_scenarios/Assembling/bowtie2/GTTestsBowtie2.h"
 #include "tests/common_scenarios/Assembling/dna_assembly/GTTestsDnaAssembly.h"
+#include "tests/common_scenarios/Assembling/dna_assembly/GTTestsIndexReuse.h"
 #include "tests/common_scenarios/Assembling/dna_assembly/conversions/GTTestsDnaAssemblyConversions.h"
 #include "tests/common_scenarios/Assembling/sam/GTTestsSAM.h"
 #include "tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h"
@@ -165,6 +166,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1022);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1029, "UGENE-4076");
     REGISTER_TEST(GUITest_regression_scenarios::test_1038);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1052);
     REGISTER_TEST(GUITest_regression_scenarios::test_1059);
     REGISTER_TEST(GUITest_regression_scenarios::test_1061);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1063,
@@ -336,7 +338,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1626);
     REGISTER_TEST(GUITest_regression_scenarios::test_1629);
     REGISTER_TEST(GUITest_regression_scenarios::test_1631);
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_1640, "UGENE-3863");
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_1640);
     REGISTER_TEST(GUITest_regression_scenarios::test_1643);
     REGISTER_TEST(GUITest_regression_scenarios::test_1644);
     REGISTER_TEST(GUITest_regression_scenarios::test_1645);
@@ -345,7 +347,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1660);
     REGISTER_TEST(GUITest_regression_scenarios::test_1661);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_1662);
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_1664, "UGENE-3863");
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_1664);
     REGISTER_TEST(GUITest_regression_scenarios::test_1672);
     REGISTER_TEST(GUITest_regression_scenarios::test_1673);
     REGISTER_TEST(GUITest_regression_scenarios::test_1673_2);
@@ -407,6 +409,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1919);
     REGISTER_TEST(GUITest_regression_scenarios::test_1921);
     REGISTER_TEST(GUITest_regression_scenarios::test_1924);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1946);
     REGISTER_TEST(GUITest_regression_scenarios::test_1984);
     REGISTER_TEST(GUITest_regression_scenarios::test_1986);
 
@@ -830,6 +833,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_4034);
     REGISTER_TEST(GUITest_regression_scenarios::test_4036);
     REGISTER_TEST(GUITest_regression_scenarios::test_4045);
+    REGISTER_TEST(GUITest_regression_scenarios::test_4046);
     REGISTER_TEST(GUITest_regression_scenarios::test_4059);
     REGISTER_TEST(GUITest_regression_scenarios::test_4064);
     REGISTER_TEST(GUITest_regression_scenarios::test_4065);
@@ -1707,15 +1711,22 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_dna_assembly::test_0005);
     REGISTER_TEST(GUITest_dna_assembly::test_0006);
 
-    /////////////////////////////////////////////////////////////////////////
-    // Common scenarios/Assembling/dna_assembly/conversions
-    /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_dna_assembly_conversions::test_0001);
-    REGISTER_TEST(GUITest_dna_assembly_conversions::test_0002);
-    REGISTER_TEST(GUITest_dna_assembly_conversions::test_0003);
-    REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
 
-    /////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/Assembling/index_reuse
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_index_reuse::test_0001);
+    REGISTER_TEST(GUITest_index_reuse::test_0002);
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/Assembling/dna_assembly/conversions
+/////////////////////////////////////////////////////////////////////////
+REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_dna_assembly_conversions::test_0001);
+REGISTER_TEST(GUITest_dna_assembly_conversions::test_0002);
+REGISTER_TEST(GUITest_dna_assembly_conversions::test_0003);
+REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
+
+/////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/sam
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_SAM::test_0002);

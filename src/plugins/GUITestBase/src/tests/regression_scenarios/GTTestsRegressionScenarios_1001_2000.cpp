@@ -673,6 +673,34 @@ GUI_TEST_CLASS_DEFINITION(test_1038) {
     CHECK_SET_ERR(matchCount == seqNames.size(), QString("Number of reads and sequences are not matched: got %1, expected %2").arg(matchCount).arg((seqNames.size())));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1052){
+//    1. Open human_t1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+//    2. Open "Find restriction sites" dialog
+    class custom: public CustomScenario{
+    public:
+        void run(U2::U2OpStatus &os){
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Unable to find active dialog");
+            //    3. Select all sites.
+            GTWidget::click(os, GTWidget::findWidget(os, "selectAllButton", dialog));
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "Find restriction sites"));
+    GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList(), new custom()));
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+    GTGlobals::sleep();
+
+//    4. Close sequence view immediately
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTGlobals::sleep();
+
+//    Expected state: UGENE does not crash
+    QString title = GTUtilsMdi::activeWindow(os)->windowTitle();
+    CHECK_SET_ERR(title == "Start Page", "unexpected title: " + title);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1059) {
     //1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
@@ -7191,6 +7219,26 @@ GUI_TEST_CLASS_DEFINITION( test_1921 )
         GTGlobals::sleep(20);
     }
 //    Expected state: UGENE not crashes.
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1946 ){
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Add tuxedo scheme from samples
+    QMap<QString, QVariant> map;
+    map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/bowtie2_index/"));
+    map.insert("Bowtie index basename", "NC_010473");
+    map.insert("Input transcripts annotations", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/accepted_hits.bam"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "No-new-transcripts"<<"Single-end"));
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", QList<QStringList>()<<(QStringList()<<testDir +
+                                                      "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/exp_1_1.fastq")<<
+                                                      (QStringList()<<testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq2/exp_2_1.fastq"), map));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+//    3. fill all needed parameters and run schema
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: there are more then 10 result files and they are grouped into sublists
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2006 )
