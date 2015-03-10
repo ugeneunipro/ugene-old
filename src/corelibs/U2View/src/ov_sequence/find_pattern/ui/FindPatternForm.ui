@@ -23,9 +23,6 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="sizeConstraint">
-    <enum>QLayout::SetMinAndMaxSize</enum>
-   </property>
    <item>
     <widget class="QLabel" name="searchForLabel">
      <property name="sizePolicy">
@@ -115,14 +112,28 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="resultLabel">
-     <property name="text">
-      <string notr="true">Results: 0/0</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QLabel" name="resultLabel">
+       <property name="text">
+        <string notr="true">Results: 0/0</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="progressLabel">
+       <property name="text">
+        <string notr="true"/>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -428,14 +439,6 @@
     </spacer>
    </item>
   </layout>
-  <zorder>searchForLabel</zorder>
-  <zorder>textPattern</zorder>
-  <zorder>loadFromFileGroupBox</zorder>
-  <zorder>widgetAlgorithm</zorder>
-  <zorder>widgetSearchIn</zorder>
-  <zorder>widgetOther</zorder>
-  <zorder>lblErrorMessage</zorder>
-  <zorder>resultLabel</zorder>
  </widget>
  <tabstops>
   <tabstop>textPattern</tabstop>

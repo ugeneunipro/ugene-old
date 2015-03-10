@@ -21,6 +21,7 @@
 
 #include <QFlags>
 #include <QKeyEvent>
+#include <QMovie>
 
 #include <U2Algorithm/FindAlgorithmTask.h>
 
@@ -224,11 +225,12 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView) :
     savableWidget(this, GObjectViewUtils::findViewByName(_annotatedDnaView->getName()))
 {
     setupUi(this);
-
+    progressMovie = new QMovie(":/core/images/progress.gif", QByteArray(), progressLabel);
     savableWidget.setRegionWidgetIds(QStringList() << editStart->objectName()
         << editEnd->objectName());
 
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
+    progressLabel->setMovie(progressMovie);
     if (activeContext != 0) {
         // Initializing the annotation model
         CreateAnnotationModel annotModel;
@@ -272,9 +274,17 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView) :
     nextPushButton->setDisabled(true);
     prevPushButton->setDisabled(true);
     getAnnotationsPushButton->setDisabled(true);
-    resultLabel->setText(tr("Results: 0/0"));
+    showCurrentResultAndStopProgress(0, 0);
     setUpTabOrder();
     U2WidgetStateStorage::restoreWidgetState(savableWidget);
+}
+
+void FindPatternWidget::showCurrentResultAndStopProgress(const int current, const int total) {
+    progressMovie->stop();
+    progressLabel->hide();
+    resultLabel->show();
+    assert(total >= current);
+    resultLabel->setText(tr("Results: %1/%2").arg(QString::number(current)).arg(QString::number(total)));
 }
 
 void FindPatternWidget::initLayout() {
@@ -1166,7 +1176,7 @@ void FindPatternWidget::initFindPatternTask(const QList<NamePattern> &patterns) 
         removeOverlaps,
         spinMatch->value());
     connect(searchTask, SIGNAL(si_stateChanged()), SLOT(sl_findPatrernTaskStateChanged()));
-
+    startProgressAnimation();
     AppContext::getTaskScheduler()->registerTopLevelTask(searchTask);
 }
 
@@ -1199,14 +1209,14 @@ void FindPatternWidget::sl_findPatrernTaskStateChanged() {
     if (findTask->isFinished() || findTask->isCanceled() || findTask->hasError()) {
         findPatternResults = findTask->getResults();
         if (findPatternResults.isEmpty()) {
-            resultLabel->setText(tr("Results: 0/0"));
+            showCurrentResultAndStopProgress(0, 0);
             nextPushButton->setDisabled(true);
             prevPushButton->setDisabled(true);
             getAnnotationsPushButton->setDisabled(true);
         } else {
             iterPos = 1;
             qSort(findPatternResults.begin(), findPatternResults.end());
-            resultLabel->setText(tr("Results: %1/%2").arg(QString::number(iterPos)).arg(QString::number(findPatternResults.size())));
+            showCurrentResultAndStopProgress(iterPos, findPatternResults.size());
             nextPushButton->setEnabled(true);
             prevPushButton->setEnabled(true);
             getAnnotationsPushButton->setEnabled(true);
@@ -1471,7 +1481,7 @@ void FindPatternWidget::sl_nextButtonClicked() {
 void FindPatternWidget::showCurrentResult() const {
     resultLabel->setText(tr("Results: %1/%2").arg(QString::number(iterPos)).arg(QString::number(findPatternResults.size())));
     CHECK(findPatternResults.size() >= iterPos, );
-    const AnnotationData &ad = findPatternResults.at(iterPos-1);
+    const AnnotationData &ad = findPatternResults.at(iterPos - 1);
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     const QVector<U2Region> regions = ad.getRegions();
     CHECK(activeContext->getSequenceSelection() != NULL, );
@@ -1523,7 +1533,7 @@ void FindPatternWidget::stopCurrentSearchTask(){
     nextPushButton->setDisabled(true);
     prevPushButton->setDisabled(true);
     getAnnotationsPushButton->setDisabled(true);
-    resultLabel->setText(tr("Results: 0/0"));
+    showCurrentResultAndStopProgress(0, 0);
 }
 
 void FindPatternWidget::correctSearchInCombo(){
@@ -1551,6 +1561,12 @@ void FindPatternWidget::setUpTabOrder() const {
 int FindPatternWidget::getTargetSequnceLength() const {
     SAFE_POINT(annotatedDnaView->getSequenceInFocus() != NULL, "Sequence is NULL", 0);
     return annotatedDnaView->getSequenceInFocus()->getSequenceLength();
+}
+
+void FindPatternWidget::startProgressAnimation() {
+    resultLabel->hide();
+    progressLabel->show();
+    progressMovie->start();
 }
 
 } // namespace

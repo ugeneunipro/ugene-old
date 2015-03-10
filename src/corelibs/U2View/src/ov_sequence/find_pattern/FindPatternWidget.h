@@ -139,6 +139,8 @@ private:
     void correctSearchInCombo();
     void setUpTabOrder() const;
     QList<NamePattern> updateNamePatterns();
+    void showCurrentResultAndStopProgress(const int current, const int total);
+    void startProgressAnimation();
 
     /**
      * Enables or disables the Search button depending on
@@ -227,6 +229,7 @@ private:
     QStringList patternList;
     QStringList nameList;
     bool usePatternNames;
+    QMovie *progressMovie;
 
     FindPatternWidgetSavableTab savableWidget;
 };
