@@ -242,6 +242,8 @@ void CreateAnnotationFullWidget::selectAutoTableOption() {
 void CreateAnnotationFullWidget::setExistingTableOptionEnable(bool enable) {
     rbExistingTable->setCheckable(enable);
     rbExistingTable->setEnabled(enable);
+    cbExistingTable->setEnabled(enable && rbExistingTable->isChecked());
+    tbBrowseExistingTable->setEnabled(enable && rbExistingTable->isChecked());
 }
 
 bool CreateAnnotationFullWidget::isNewTableOptionSelected() const {

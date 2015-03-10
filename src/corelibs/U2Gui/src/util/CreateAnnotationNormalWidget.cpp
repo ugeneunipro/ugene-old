@@ -165,6 +165,8 @@ void CreateAnnotationNormalWidget::selectAutoTableOption() {
 void CreateAnnotationNormalWidget::setExistingTableOptionEnable(bool enable) {
     rbExistingTable->setCheckable(enable);
     rbExistingTable->setEnabled(enable);
+    cbExistingTable->setEnabled(enable && rbExistingTable->isChecked());
+    tbBrowseExistingTable->setEnabled(enable && rbExistingTable->isChecked());
 }
 
 bool CreateAnnotationNormalWidget::isNewTableOptionSelected() const {
