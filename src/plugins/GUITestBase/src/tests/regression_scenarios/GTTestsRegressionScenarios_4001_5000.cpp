@@ -50,6 +50,7 @@
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
@@ -63,6 +64,51 @@
 namespace U2 {
 
 namespace GUITest_regression_scenarios {
+
+
+GUI_TEST_CLASS_DEFINITION(test_4007) {
+    GTLogTracer l;
+    //    1. Open file {data/samples/Genbank/murine.gb}
+    QDir().mkpath(sandBoxDir + "test_4007");
+    GTFile::copy(os, dataDir + "samples/Genbank/murine.gb", sandBoxDir + "test_4007/murine.gb");
+    GTFileDialog::openFile(os, sandBoxDir + "test_4007", "murine.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //    2. Open file {data/samples/FASTA/human_T1.fa}
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //    3. Drag and drop annotations object to the human_T1 sequence.
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    GTUtilsProjectTreeView::dragAndDrop(os, GTUtilsProjectTreeView::findIndex(os, "NC_001363 features"), GTUtilsAnnotationsTreeView::getTreeWidget(os));
+
+
+    //    4. Edit "murine.gb" file with an external editor.
+    //    Expected state: UGENE offers to reload the changed file.
+    //    5. Agree to reload the file.
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+
+    QFile murineFile(sandBoxDir + "test_4007/murine.gb");
+    const bool opened = murineFile.open(QFile::ReadWrite);
+    CHECK_SET_ERR(opened, "Can't open the file: " + sandBoxDir + "test_4007/murine.gb");
+    murineFile.write("L");
+    murineFile.close();
+
+    GTGlobals::sleep(5000);
+
+
+    GTGlobals::FindOptions murineOptions(false);
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findFirstAnnotation(os, murineOptions) == NULL, "Annotations are connected to murine.gb");
+
+    //    Expected state: the file is reloaded, annotations object still have an association only with human_T1 sequence (if annotations object exists and has the same name as before reloading),
+    //there is no errors in the log.
+    GTUtilsProjectTreeView::doubleClickItem(os, "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(5000);
+    GTUtilsAnnotationsTreeView::findFirstAnnotation(os);
+
+    CHECK_SET_ERR(!l.hasError(), "There is error in the log");
+}
 
 GUI_TEST_CLASS_DEFINITION(test_4008) {
 //    1. Open "samples/CLUSTALW/COI.aln".
