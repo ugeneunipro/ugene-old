@@ -1055,16 +1055,12 @@ void MSAHighlightingSchemeConservation::process(const char refChar, char &seqCha
     if (!msaCharCountMap.contains(refCharColumn)){
             calculateStatisticForColumn(refCharColumn);
     }
-    color = lessThenThreshold;
+
     int neededThr = (int)((float)(threshold * maObj->getNumRows())/100.0 + 0.5);
     if(lessThenThreshold) {
-        if(msaCharCountMap[refCharColumn][seqChar] <= neededThr){
-            color = !lessThenThreshold;
-        }
+        color = (msaCharCountMap[refCharColumn][seqChar] <= neededThr) ? true : false;
     } else {
-        if(msaCharCountMap[refCharColumn][seqChar] >= neededThr){
-            color = !lessThenThreshold;
-        }
+        color = (msaCharCountMap[refCharColumn][seqChar] >= neededThr) ? true : false;
     }
     MSAHighlightingScheme::process(refChar, seqChar, color, refCharColumn, refCharRow);
 }
