@@ -467,6 +467,12 @@ GUI_TEST_CLASS_DEFINITION(test_3085_2) {
     CHECK_SET_ERR(!l.hasError(), "Errors in log");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3086) {
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_3086/test_3086.ugenedb"));
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/3086/", "UGENE-3086.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3092) {
 //    1. Open "data/samples/FASTA/human_T1.fa".
 
