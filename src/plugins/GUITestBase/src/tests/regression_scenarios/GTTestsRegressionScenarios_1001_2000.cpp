@@ -726,6 +726,22 @@ GUI_TEST_CLASS_DEFINITION(test_1038) {
     CHECK_SET_ERR(matchCount == seqNames.size(), QString("Number of reads and sequences are not matched: got %1, expected %2").arg(matchCount).arg((seqNames.size())));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1044) {
+    //1. Open "data/samples/COI.aln".
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/COI.aln");
+
+    //2. In MSA context menu choose {Align -> Align with MUSCLE...}.
+    //Expected state: "Align with MUSCLE" dialog appears.
+    //3. Set checkbox "Translate to amino when aligning".
+    //Expected state: The "Translation table" field becomes enabled.
+    //4. Press the "Align" dialog button.
+    //Expected state: UGENE doesn't crash.
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os, MuscleDialogFiller::Default, true, true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1052){
 //    1. Open human_t1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
