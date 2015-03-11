@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+
 #include <U2Gui/ToolsMenu.h>
 
 #include "api/GTComboBox.h"

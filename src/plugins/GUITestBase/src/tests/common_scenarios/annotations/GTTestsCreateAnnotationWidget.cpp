@@ -20,6 +20,9 @@
  */
 
 #include <QApplication>
+#include <QAbstractItemModel>
+#include <QListWidget>
+#include <QTreeView>
 
 #include "GTTestsCreateAnnotationWidget.h"
 #include "GTUtilsAnnotationsTreeView.h"
