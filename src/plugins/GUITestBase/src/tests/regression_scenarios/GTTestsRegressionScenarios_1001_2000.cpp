@@ -433,14 +433,14 @@ GUI_TEST_CLASS_DEFINITION(test_1020) {
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(500);
 
-    CHECK_SET_ERR(QFileInfo::exists(sandBoxDir + "test_1020.html"), "Distance matrix file not found");
+    CHECK_SET_ERR(QFileInfo(sandBoxDir + "test_1020.html").exists(), "Distance matrix file not found");
 
     GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os, DistanceMatrixDialogFiller::CSV, sandBoxDir + "test_1020.csv"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_STATISTICS << "Generate distance matrix", GTGlobals::UseMouse));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(500);
 
-    CHECK_SET_ERR(QFileInfo::exists(sandBoxDir + "test_1020.csv"), "Distance matrix file not found");
+    CHECK_SET_ERR(QFileInfo(sandBoxDir + "test_1020.csv").exists(), "Distance matrix file not found");
 
     //Expected result : Distance matrix is generated and / or saved correctly in all cases.
     GTUtilsLog::check(os, lt);
