@@ -5367,6 +5367,11 @@ GUI_TEST_CLASS_DEFINITION(test_3994){
     CHECK_SET_ERR(before != after, "colors not changed");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3997){
+     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "3000_sequences.nwk");
+     GTUtilsDocument::removeDocument(os, "3000_sequences.nwk");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3998){
 //    1. Open attached sequence
     GTLogTracer l;
