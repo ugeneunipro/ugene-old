@@ -473,12 +473,12 @@ void AnnotationsTreeView::sl_onAnnotationObjectAdded( AnnotationTableObject *obj
     connect( obj, SIGNAL( si_onAnnotationModified( const AnnotationModification & ) ),
         SLOT( sl_onAnnotationModified( const AnnotationModification & ) ) );
 
-//    connect( obj, SIGNAL( si_onGroupCreated( const AnnotationGroup & ) ),
-//        SLOT( sl_onGroupCreated( const AnnotationGroup & ) ) );
-//    connect( obj, SIGNAL( si_onGroupRemoved( const AnnotationGroup &, const AnnotationGroup & ) ),
-//        SLOT( sl_onGroupRemoved( const AnnotationGroup &, const AnnotationGroup & ) ) );
-//    connect( obj, SIGNAL( si_onGroupRenamed( const AnnotationGroup & ) ),
-//        SLOT( sl_onGroupRenamed( const AnnotationGroup & ) ) );
+    connect( obj, SIGNAL( si_onGroupCreated( const AnnotationGroup & ) ),
+        SLOT( sl_onGroupCreated( const AnnotationGroup & ) ) );
+    connect( obj, SIGNAL( si_onGroupRemoved( const AnnotationGroup &, const AnnotationGroup & ) ),
+        SLOT( sl_onGroupRemoved( const AnnotationGroup &, const AnnotationGroup & ) ) );
+    connect( obj, SIGNAL( si_onGroupRenamed( const AnnotationGroup & ) ),
+        SLOT( sl_onGroupRenamed( const AnnotationGroup & ) ) );
 
     connect( obj, SIGNAL( si_modifiedStateChanged( ) ),
         SLOT( sl_annotationObjectModifiedStateChanged( ) ) );
@@ -658,6 +658,7 @@ void AnnotationsTreeView::sl_onAnnotationModified( const AnnotationModification 
 }
 
 void AnnotationsTreeView::sl_onGroupCreated( const AnnotationGroup &g ) {
+    CHECK(NULL == findGroupItem(g), );
     AVGroupItem *pg = g.getParentGroup( ) == g ? NULL : findGroupItem( g.getParentGroup( ) );
     buildGroupTree( pg, g );
     pg->updateVisual( );
@@ -716,7 +717,9 @@ AVGroupItem* AnnotationsTreeView::buildGroupTree( AVGroupItem *parentGroupItem,
 AVAnnotationItem * AnnotationsTreeView::buildAnnotationTree( AVGroupItem *parentGroup,
     const Annotation &a )
 {
-    AVAnnotationItem *annotationItem = new AVAnnotationItem( parentGroup, a );
+    AVAnnotationItem *annotationItem = findAnnotationItem(parentGroup, a);
+    CHECK(NULL == annotationItem, annotationItem);
+    annotationItem = new AVAnnotationItem( parentGroup, a );
     const QVector<U2Qualifier> qualifiers = a.getQualifiers( );
     if ( !qualifiers.isEmpty( ) ) {
         annotationItem->setChildIndicatorPolicy( QTreeWidgetItem::ShowIndicator );
