@@ -110,6 +110,7 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExportHighlightedDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h"
@@ -382,6 +383,67 @@ GUI_TEST_CLASS_DEFINITION(test_1015_4) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
     GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1020) {
+    GTLogTracer lt;
+
+    //1. Open file data / CLUSTALW / COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    //2. In MSA context menu choose "Statistics" > "Generate distance matrix".
+    //3. Try to generate distance matrix with both "Haming dissimilarity" and "Identity" algorithms.
+    GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os, true, true, true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_STATISTICS << "Generate distance matrix", GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
+
+    CHECK_SET_ERR(GTUtilsMdi::activeWindow(os)->windowTitle() == "Distance matrix for COI", "Unexpected active window name");
+
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
+
+    GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os, false, true, true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_STATISTICS << "Generate distance matrix", GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
+
+    CHECK_SET_ERR(GTUtilsMdi::activeWindow(os)->windowTitle() == "Distance matrix for COI", "Unexpected active window name");
+
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
+
+    //4. Then run this dialog in "Profile mode".
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_STATISTICS << "Generate grid profile", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
+
+    CHECK_SET_ERR(GTUtilsMdi::activeWindow(os)->windowTitle() == "Alignment profile for COI", "Unexpected active window name");
+
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
+
+    //5. Finally, try to save results as *.html and *.csv files.
+    GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os, DistanceMatrixDialogFiller::HTML, sandBoxDir + "test_1020.html"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_STATISTICS << "Generate distance matrix", GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
+
+    CHECK_SET_ERR(QFileInfo::exists(sandBoxDir + "test_1020.html"), "Distance matrix file not found");
+
+    GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os, DistanceMatrixDialogFiller::CSV, sandBoxDir + "test_1020.csv"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_STATISTICS << "Generate distance matrix", GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
+
+    CHECK_SET_ERR(QFileInfo::exists(sandBoxDir + "test_1020.csv"), "Distance matrix file not found");
+
+    //Expected result : Distance matrix is generated and / or saved correctly in all cases.
+    GTUtilsLog::check(os, lt);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1021) {
