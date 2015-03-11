@@ -98,7 +98,7 @@
               <string>Use names of patterns as annotations names. In case the patterns are in FASTA format</string>
              </property>
              <property name="text">
-              <string>Use pattern name</string>
+              <string>Use pattern names</string>
              </property>
             </widget>
            </item>
