@@ -1451,8 +1451,8 @@ GUI_TEST_CLASS_DEFINITION(test_3253) {
 
     QSize endSize=chromaView->size();
     CHECK_SET_ERR( startSize != endSize, "chromatogram_view is not resized" );
-
 }
+
 GUI_TEST_CLASS_DEFINITION(test_3253_1) {
 /*  1. Open "data/samples/ABIF/A01.abi".
  *  2. Toggle Show Detail View
@@ -5365,6 +5365,27 @@ GUI_TEST_CLASS_DEFINITION(test_3994){
     QColor after = GTUtilsMSAEditorSequenceArea::getColor(os, QPoint(1,0));
     //check color change
     CHECK_SET_ERR(before != after, "colors not changed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3996) {
+    GTLogTracer l;
+
+    //1. Open "samples/ABIF/A01.abi"
+    GTFileDialog::openFile(os, dataDir + "/samples/ABIF/", "A01.abi");
+
+    //2. Zoom In
+    GTWidget::click(os, GTWidget::findWidget(os, "action_zoom_in_A1#berezikov"));
+
+    //3. Click on the chrom.view
+    QWidget *chromaView = GTWidget::findWidget(os, "chromatogram_view_A1#berezikov");
+    const QRect chromaViewRect = chromaView->rect();
+
+    GTMouseDriver::moveTo(os, chromaView->mapToGlobal(chromaViewRect.center() - QPoint(20, 0)));
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, chromaView->mapToGlobal(chromaViewRect.center() + QPoint(20, 0)));
+    GTMouseDriver::release(os);
+
+    GTUtilsLog::check(os, l);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3997){

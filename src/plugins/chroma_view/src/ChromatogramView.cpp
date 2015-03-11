@@ -547,7 +547,6 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
     if(!sel.isEmpty()) {
         //draw current selection
         //selection base on trace transform coef
-        bLinearTransformTrace = bLinearTransformTrace;
         QPen linePenSelection(Qt::darkGray, 1, Qt::SolidLine);
         p.setPen(linePenSelection);
         p.setRenderHint(QPainter::Antialiasing, false);

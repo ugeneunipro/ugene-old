@@ -830,6 +830,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3983);
     REGISTER_TEST(GUITest_regression_scenarios::test_3988);
     REGISTER_TEST(GUITest_regression_scenarios::test_3994);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3996);
     REGISTER_TEST(GUITest_regression_scenarios::test_3997);
     REGISTER_TEST(GUITest_regression_scenarios::test_3998);
 
@@ -1753,7 +1754,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0002);//"Restore when this tool becomes available");
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0003);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0004);
-    REGISTER_TEST_IGNORED(GUITest_Bowtie2::test_0005, "UGENE-3851");
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0005);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0006);
 
 /////////////////////////////////////////////////////////////////////////
