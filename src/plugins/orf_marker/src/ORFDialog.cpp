@@ -365,12 +365,19 @@ void ORFDialog::accept()
             QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
             return;
         }
-        const CreateAnnotationModel& m = ac->getModel();
+
+        const U2Region wholeSequenceRegion = U2Region(0, ctx->getSequenceLength());
+        s.searchRegion = s.searchRegion.intersect(wholeSequenceRegion);
+        if (s.searchRegion.isEmpty()) {
+            s.searchRegion = wholeSequenceRegion;
+        }
+
+        const CreateAnnotationModel &m = ac->getModel();
         AnnotationTableObject *aObj = m.getAnnotationObject();
-        FindORFsToAnnotationsTask* orfTask =
-            new FindORFsToAnnotationsTask(aObj, ctx->getSequenceObject()->getEntityRef(),s, m.groupName);
+        FindORFsToAnnotationsTask *orfTask = new FindORFsToAnnotationsTask(aObj, ctx->getSequenceObject()->getEntityRef(), s, m.groupName);
         AppContext::getTaskScheduler()->registerTopLevelTask(orfTask);
     }
+
     QDialog::accept();
 }
 
