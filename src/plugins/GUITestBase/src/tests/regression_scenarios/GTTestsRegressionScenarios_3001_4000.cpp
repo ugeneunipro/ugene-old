@@ -4418,6 +4418,34 @@ GUI_TEST_CLASS_DEFINITION(test_3770) {
     CHECK_SET_ERR( GTUtilsTaskTreeView::countTasks(os, "DownloadRemoteDocuments") == 0, "Task was not canceled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3772) {
+    //1. Open "samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+
+    //2. Ctrl + F.
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+
+    //3. Type "X".
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "X");
+
+    //Expected:
+    //a) The alphabets warning appears.
+    //b) The pattern text area is red.
+    QLabel *label = dynamic_cast<QLabel*>(GTWidget::findWidget(os, "lblErrorMessage"));
+    CHECK_SET_ERR(label->isVisible(), "Warning is not shown 1");
+    CHECK_SET_ERR(label->text().contains("Warning"), "Warning is not shown 2");
+
+    //4. Remove the character.
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "");
+
+    //Expected:
+    //a) The alphabets warning disappears.
+    //b) The pattern text area is white.
+    if (label->isVisible()) {
+        CHECK_SET_ERR(!label->text().contains("Warning"), "Warning is shown");
+    }
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3776) {
 //    1. Open file "data/samples/CLUSTALW/HIV-1.aln"
 //    2. Type "CCCCTCCCATCA" to the search field
