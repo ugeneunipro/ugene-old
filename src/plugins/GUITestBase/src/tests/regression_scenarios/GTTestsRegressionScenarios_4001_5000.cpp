@@ -89,6 +89,31 @@ GUI_TEST_CLASS_DEFINITION(test_4008) {
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4009) {
+    //1. Open file "_common_data/clustal/big.aln"
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/big.aln");
+    GTGlobals::sleep();
+
+    //2. Open "Export Consensus" OP tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
+
+    //3. Press "Export" button
+    GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
+
+    //4. Remove "big.aln" document
+    GTUtilsDocument::removeDocument(os, "big.aln");
+
+    //Current state: the task hangs, debug error occured with message "Infinite wait has timed out"
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, new Scenario()));
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4011){
     GTLogTracer l;
 //    1. Open WD
