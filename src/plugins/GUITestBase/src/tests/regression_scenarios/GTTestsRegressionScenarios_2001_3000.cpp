@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTTestsRegressionScenarios.h"
+#include "GTTestsRegressionScenarios_2001_3000.h"
 
 #include "api/GTRadioButton.h"
 #include "api/GTAction.h"
@@ -191,6 +191,47 @@
 namespace U2 {
 
 namespace GUITest_regression_scenarios {
+
+GUI_TEST_CLASS_DEFINITION( test_2006 )
+{
+    const int MSA_WIDTH = 30;
+    const int MSA_HEIGHT = 3;
+
+    // 1. Open "data/samples/CLUSTAL/COI.aln" and save it's part to a string
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( MSA_WIDTH, MSA_HEIGHT ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString initialMsaContent = GTClipboard::text( os );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["esc"] );
+
+    // 2. Select the second symbol in the first line
+    const QPoint initialSelectionPos( 1, 0 );
+    GTUtilsMSAEditorSequenceArea::click( os, initialSelectionPos );
+    GTGlobals::sleep(200);
+
+    // 3. Drag it to the first symbol in the first line
+    const QPoint mouseDragPosition( 1, 0 );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition );
+    GTMouseDriver::press( os );
+    GTGlobals::sleep( 200 );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition + QPoint( 0, 0 ) );
+    GTMouseDriver::release( os );
+    GTGlobals::sleep( 200 );
+
+    // 4. Check that the content has not been changed
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( MSA_WIDTH, MSA_HEIGHT ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString finalMsaContent = GTClipboard::text( os );
+    CHECK_SET_ERR( initialMsaContent == finalMsaContent, "MSA has unexpectedly changed" );
+
+    // 5. Check that "Undo" and "Redo" buttons are disabled
+    const QAbstractButton *undo = GTAction::button( os, "msa_action_undo" );
+    CHECK_SET_ERR( !undo->isEnabled( ), "Undo button is unexpectedly enabled" );
+    const QAbstractButton *redo = GTAction::button( os, "msa_action_redo" );
+    CHECK_SET_ERR( !redo->isEnabled( ), "Redo button is unexpectedly enabled" );
+}
 
 GUI_TEST_CLASS_DEFINITION( test_2007 )
 {
@@ -1277,95 +1318,7 @@ GUI_TEST_CLASS_DEFINITION( test_2160 )
         "MSA row count unexpectedly changed" );
 }
 
-GUI_TEST_CLASS_DEFINITION( test_1924 )
-{
-    //1. Open any sequence
-    GTFileDialog::openFile( os, dataDir + "samples/FASTA/", "human_T1.fa");
-    GTGlobals::sleep();
 
-    //2. Use context menu on the sequence     {Edit sequence -> Insert subsequence}
-    //3. Fill in "atcgtac" or any valid sequence containing lower case
-    Runnable *filler = new InsertSequenceFiller(os,
-        "atcgtac"
-        );
-    GTUtilsDialog::waitForDialog(os, filler);
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
-    GTGlobals::sleep();
-
-    //4. Click OK
-    //Expected state: subsequence inserted
-    //Bug state: Warning message is shown first
-
-    int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
-    CHECK_SET_ERR(sequenceLength == 199957, "Sequence length is " + QString::number(sequenceLength) + ", expected 199957");
-
-    QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 7);
-    CHECK_SET_ERR(sequenceBegin == "ATCGTAC", "Sequence starts with <" + sequenceBegin + ">, expected ATCGTAC");
-
-}
-
-GUI_TEST_CLASS_DEFINITION(test_1984){
-//    1) Run UGENE
-//    2) Open Settings/Preferences/External tools
-//    3) Set incorrect path for any external tool (cistrome toolkit, cufflinks toolkit, samtools toolkit, Rscript with its modules, python, perl, tophat)
-//    4) Press OK
-//    Expected state: UGENE doesn't show any warning to user. Error should be at UGENE log ("Details" columns should be enabled)
-
-    class CuffDiffIncorrectPath : public CustomScenario {
-    public:
-        void run(U2OpStatus &os) {
-            AppSettingsDialogFiller::setExternalToolPath(os, "Cuffdiff", "./");
-            GTGlobals::sleep(2000);
-
-            QWidget *dialog = QApplication::activeModalWidget();
-            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
-            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
-        }
-    };
-
-    GTLogTracer l;
-    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new CuffDiffIncorrectPath()));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
-    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
-
-    CHECK_SET_ERR(l.checkMessage("Cuffdiff validate task failed: Tool does not start."), "No error in the log!");
-}
-
-GUI_TEST_CLASS_DEFINITION(test_1986){
-//1. Run UGENE
-//2. Use main toolbar { File -> Search NCBI Genbank }
-    GTUtilsDialog::waitForDialog(os, new NCBISearchDialogFillerDeprecated(os, "human", false,5));
-
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SEARCH_GENBANK);
-    GTGlobals::sleep();
-//Expected state: the "NCBI Sequence Search" dialog has appeared
-
-//3. Type "human" to the request string
-
-//4. In the dialog's right bottom corner set "Result limit" to 5
-
-//5. Press the "Search" button
-
-//Expected state: only 5 results has appeared in the "Results" list
-
-//6. Choose some result sequence
-
-//7. Press the "Download" button
-
-//Expected state: the "Fetch Data from Remote Database" dialog has appeared, it has the "Output format" combobox
-
-//8. Select "fasta" output format
-
-//9. Press "OK"
-    GTUtilsTaskTreeView::waitTaskFinished(os);
-    QTreeView* treeView = GTUtilsProjectTreeView::getTreeView(os);
-    ProjectViewModel* model = qobject_cast<ProjectViewModel*>(treeView->model());
-    QString text = model->data(model->index(0,0, QModelIndex()), Qt::DisplayRole).toString();
-
-    CHECK_SET_ERR(text.contains(".fasta"),text);
-
-//Expected state: the chosen sequence has been downloaded, saved in FASTA format and displayed in sequence view
-}
 GUI_TEST_CLASS_DEFINITION( test_2163 ) {
     // 1. Open "_common_data/fasta/AMINO.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "AMINO.fa");

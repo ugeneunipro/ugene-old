@@ -21,7 +21,7 @@
 
 #include <U2View/MSAGraphOverview.h>
 
-#include "GTTestsRegressionScenarios.h"
+#include "GTTestsRegressionScenarios_4001_5000.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"

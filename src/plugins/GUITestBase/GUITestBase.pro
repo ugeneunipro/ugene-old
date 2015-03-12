@@ -7,11 +7,12 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/crazy_user/GTAbstractGUIAction.h \
 #   Runnables
 #   Runnables / Qt
+            src/runnables/qt/ColorDialogFiller.h \
+            src/runnables/qt/DefaultDialogFiller.h \
             src/runnables/qt/EscapeClicker.h \
+            src/runnables/qt/FontDialogFiller.h \
             src/runnables/qt/MessageBoxFiller.h \
             src/runnables/qt/PopupChooser.h \
-            src/runnables/qt/FontDialogFiller.h \
-            src/runnables/qt/ColorDialogFiller.h \
 #   Runnables / UGENE
 #   Runnables / UGENE / ugeneui
             src/runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h \
@@ -165,7 +166,11 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #   Tests
             src/tests/GUIInitialChecks.h \
 #   Tests/Regression Scenarios
-            src/tests/regression_scenarios/GTTestsRegressionScenarios.h \
+            src/tests/regression_scenarios/GTTestsRegressionScenarios_1_1000.h \
+            src/tests/regression_scenarios/GTTestsRegressionScenarios_1001_2000.h \
+            src/tests/regression_scenarios/GTTestsRegressionScenarios_2001_3000.h \
+            src/tests/regression_scenarios/GTTestsRegressionScenarios_3001_4000.h \
+            src/tests/regression_scenarios/GTTestsRegressionScenarios_4001_5000.h \
 #   Tests/Common Scenarios
             src/tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.h \
             src/tests/common_scenarios/sequence_view/GTTestsSequenceView.h \
@@ -203,6 +208,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h \
             src/tests/common_scenarios/Assembling/bowtie2/GTTestsBowtie2.h \
             src/tests/common_scenarios/Assembling/dna_assembly/GTTestsDnaAssembly.h \
+            src/tests/common_scenarios/Assembling/dna_assembly/GTTestsIndexReuse.h \
             src/tests/common_scenarios/Assembling/dna_assembly/conversions/GTTestsDnaAssemblyConversions.h \
             src/tests/common_scenarios/Assembling/sam/GTTestsSAM.h \
             src/tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h \
@@ -254,9 +260,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTGraphicsItem.h \
             src/api/GTTreeView.h \
             src/api/GTListWidget.h \
-            src/api/GTSlider.h \
-    src/tests/common_scenarios/Assembling/dna_assembly/GTTestsIndexReuse.h \
-    src/runnables/qt/DefaultDialogFiller.h
+            src/api/GTSlider.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -264,11 +268,12 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GTAbstractGUIAction.cpp \
 #   Runnables
 #   Runnables / Qt
+            src/runnables/qt/ColorDialogFiller.cpp \
+            src/runnables/qt/DefaultDialogFiller.cpp \
             src/runnables/qt/EscapeClicker.cpp \
+            src/runnables/qt/FontDialogFiller.cpp \
             src/runnables/qt/MessageBoxFiller.cpp \
             src/runnables/qt/PopupChooser.cpp \
-            src/runnables/qt/FontDialogFiller.cpp \
-            src/runnables/qt/ColorDialogFiller.cpp \
 #   Runnables / UGENE
 #   Runnables / UGENE / ugeneui
             src/runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.cpp \
@@ -463,6 +468,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.cpp \
             src/tests/common_scenarios/Assembling/bowtie2/GTTestsBowtie2.cpp \
             src/tests/common_scenarios/Assembling/dna_assembly/GTTestsDnaAssembly.cpp \
+            src/tests/common_scenarios/Assembling/dna_assembly/GTTestsIndexReuse.cpp \
             src/tests/common_scenarios/Assembling/dna_assembly/conversions/GTTestsDnaAssemblyConversions.cpp \
             src/tests/common_scenarios/Assembling/sam/GTTestsSAM.cpp \
             src/tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.cpp \
@@ -520,6 +526,4 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTGraphicsItem.cpp \
             src/api/GTTreeView.cpp \
             src/api/GTListWidget.cpp \
-            src/api/GTSlider.cpp \
-    src/tests/common_scenarios/Assembling/dna_assembly/GTTestsIndexReuse.cpp \
-    src/runnables/qt/DefaultDialogFiller.cpp
+            src/api/GTSlider.cpp

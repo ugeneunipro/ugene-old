@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTTestsRegressionScenarios.h"
+#include "GTTestsRegressionScenarios_1_1000.h"
 
 #include "api/GTRadioButton.h"
 #include "api/GTAction.h"
@@ -521,31 +521,6 @@ GUI_TEST_CLASS_DEFINITION(test_994) {
     GTGlobals::sleep(1000);
 }
 
-GUI_TEST_CLASS_DEFINITION(test_1001) {
-
-    GTUtilsProject::openFiles(os, dataDir+"samples/FASTA/human_T1.fa");
-    GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
-    GTGlobals::sleep();
-
-    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 4));
-    GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
-    GTGlobals::sleep();
-
-    GTGlobals::sleep(15000);
-}
-
-GUI_TEST_CLASS_DEFINITION(test_1001_1) {
-
-    GTUtilsProject::openFiles(os, dataDir+"samples/FASTA/human_T1.fa");
-    GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
-    GTGlobals::sleep();
-
-    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 100, 50));
-    GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
-    GTGlobals::sleep();
-
-    GTGlobals::sleep(5000);
-}
 }
 
 }

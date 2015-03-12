@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTTestsRegressionScenarios.h"
+#include "GTTestsRegressionScenarios_3001_4000.h"
 
 #include "api/GTRadioButton.h"
 #include "api/GTAction.h"
@@ -5352,7 +5352,7 @@ GUI_TEST_CLASS_DEFINITION(test_3988) {
 GUI_TEST_CLASS_DEFINITION(test_3994){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "HIV-1.aln");
 
-    QWidget* seqArea = GTWidget::findWidget(os, "msa_editor_sequence_area");
+    GTWidget::findWidget(os, "msa_editor_sequence_area");
     QColor before = GTUtilsMSAEditorSequenceArea::getColor(os, QPoint(1,0));
     //    Open the "Highlighting" options panel tab.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));

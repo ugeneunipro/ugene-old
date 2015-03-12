@@ -24,7 +24,6 @@
 #include <U2Test/GUITestBase.h>
 
 #include "tests/GUIInitialChecks.h"
-#include "tests/regression_scenarios/GTTestsRegressionScenarios.h"
 #include "tests/common_scenarios/pcr/GTTestsInSilicoPcr.h"
 #include "tests/common_scenarios/pcr/GTTestsPrimerLibrary.h"
 #include "tests/common_scenarios/project/GTTestsProject.h"
@@ -78,6 +77,11 @@
 #include "tests/common_scenarios/circular_view/GTTestsCvGeneral.h"
 #include "tests/common_scenarios/options_panel/sequence_view/GTTestsOptionPanelSequenceView.h"
 #include "tests/crazy_user/GUICrazyUserTest.h"
+#include "tests/regression_scenarios/GTTestsRegressionScenarios_1_1000.h"
+#include "tests/regression_scenarios/GTTestsRegressionScenarios_1001_2000.h"
+#include "tests/regression_scenarios/GTTestsRegressionScenarios_2001_3000.h"
+#include "tests/regression_scenarios/GTTestsRegressionScenarios_3001_4000.h"
+#include "tests/regression_scenarios/GTTestsRegressionScenarios_4001_5000.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
 #define REGISTER_TEST_WITH_TIMEOUT(X, TIMEOUT) \
@@ -161,7 +165,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1015_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_1015_3);
     REGISTER_TEST(GUITest_regression_scenarios::test_1015_4);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1016);
     REGISTER_TEST(GUITest_regression_scenarios::test_1020);
     REGISTER_TEST(GUITest_regression_scenarios::test_1021);
     REGISTER_TEST(GUITest_regression_scenarios::test_1021_1);
