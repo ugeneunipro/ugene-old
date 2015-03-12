@@ -34,7 +34,12 @@ JavaSupport::JavaSupport(const QString &name, const QString &path)
         grayIcon = QIcon(":external_tool_support/images/cmdline_gray.png");
         warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
+
+#ifdef Q_OS_WIN
+    executableFileName = "java.exe";
+#elif defined(Q_OS_UNIX)
     executableFileName = "java";
+#endif
 
     validMessage = "java version \"\\d+.[789]";
     validationArguments << "-version";
