@@ -98,7 +98,7 @@ QString WorkflowMonitor::actorName(const QString &id) const {
 
 void WorkflowMonitor::addOutputFile(const QString &url, const QString &producer, bool openBySystem) {
     CHECK(!url.isEmpty(), );
-    FileInfo info(url, producer, openBySystem);
+    FileInfo info(MonitorUtils::toSlashedUrl(url), producer, openBySystem);
 
     CHECK(!outputFiles.contains(info), );
 
@@ -207,7 +207,7 @@ int WorkflowMonitor::getDataProduced(const QString &actor) const {
 
 bool WorkflowMonitor::containsOutputFile(const QString &url) const {
     foreach (const FileInfo &info, outputFiles) {
-        if (info.url == url) {
+        if (info.url == MonitorUtils::toSlashedUrl(url)) {
             return true;
         }
     }
@@ -310,6 +310,12 @@ QStringList MonitorUtils::sortedByAppearanceActorIds(const WorkflowMonitor *m) {
             result << info.actor;
         }
     }
+    return result;
+}
+
+QString MonitorUtils::toSlashedUrl(const QString &url) {
+    QString result = url;
+    result.replace("\\", "/");
     return result;
 }
 

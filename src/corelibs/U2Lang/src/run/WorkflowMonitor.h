@@ -170,6 +170,7 @@ class U2LANG_EXPORT MonitorUtils {
 public:
     static QMap< QString, QList<Monitor::FileInfo> > filesByActor(const WorkflowMonitor *m);
     static QStringList sortedByAppearanceActorIds(const WorkflowMonitor *m);
+    static QString toSlashedUrl(const QString &url);
 };
 
 class U2LANG_EXPORT WDListener: public ExternalToolListener{
