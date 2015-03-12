@@ -162,7 +162,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1015_3);
     REGISTER_TEST(GUITest_regression_scenarios::test_1015_4);
     REGISTER_TEST(GUITest_regression_scenarios::test_1016);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1020, "DistanceMatrixDialogFiller works incorrectly");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1020);
     REGISTER_TEST(GUITest_regression_scenarios::test_1021);
     REGISTER_TEST(GUITest_regression_scenarios::test_1021_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1021_2);

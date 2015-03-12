@@ -400,9 +400,7 @@ GUI_TEST_CLASS_DEFINITION(test_1020) {
 
     CHECK_SET_ERR(GTUtilsMdi::activeWindow(os)->windowTitle() == "Distance matrix for COI", "Unexpected active window name");
 
-    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(500);
-    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
+    GTUtilsMdi::activateWindow(os, "COI [m] COI");
 
     GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os, false, true, true));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_STATISTICS << "Generate distance matrix", GTGlobals::UseMouse));
@@ -411,9 +409,7 @@ GUI_TEST_CLASS_DEFINITION(test_1020) {
 
     CHECK_SET_ERR(GTUtilsMdi::activeWindow(os)->windowTitle() == "Distance matrix for COI", "Unexpected active window name");
 
-    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(500);
-    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
+    GTUtilsMdi::activateWindow(os, "COI [m] COI");
 
     //4. Then run this dialog in "Profile mode".
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_STATISTICS << "Generate grid profile", GTGlobals::UseMouse));
@@ -423,9 +419,7 @@ GUI_TEST_CLASS_DEFINITION(test_1020) {
 
     CHECK_SET_ERR(GTUtilsMdi::activeWindow(os)->windowTitle() == "Alignment profile for COI", "Unexpected active window name");
 
-    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(500);
-    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
+    GTUtilsMdi::activateWindow(os, "COI [m] COI");
 
     //5. Finally, try to save results as *.html and *.csv files.
     GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os, DistanceMatrixDialogFiller::HTML, sandBoxDir + "test_1020.html"));
