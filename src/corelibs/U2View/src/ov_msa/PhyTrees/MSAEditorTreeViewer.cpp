@@ -468,6 +468,11 @@ void MSAEditorTreeViewerUI::highlightBranches() {
         }
     } while(!graphicsItems.isEmpty());
 
+    if(groupRoots.isEmpty()) {
+        emit si_groupColorsChanged(GroupColorSchema());
+        return;
+    }
+
     int colorIndex = 0;
     QMap<PhyNode*, QColor> colorSchema;
 
