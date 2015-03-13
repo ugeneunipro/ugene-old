@@ -325,6 +325,7 @@ QStringList ProjectViewModel::mimeTypes() const {
 }
 
 bool ProjectViewModel::dropMimeData(const QMimeData *data, Qt::DropAction /*action*/, int row, int /*column*/, const QModelIndex &parent) {
+    CHECK(parent.isValid(), false);
     Folder target = getDropFolder(parent);
     const QString folderPath = target.getFolderPath();
     Document *targetDoc = target.getDocument();

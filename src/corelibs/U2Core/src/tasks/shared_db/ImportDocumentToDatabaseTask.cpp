@@ -147,6 +147,7 @@ void ImportDocumentToDatabaseTask::propagateObjectsRelations(QStringList& errors
 
     foreach(GObject* srcObject, objects.keys()) {
         GObject* dstObject = objects.value(srcObject);
+        dstObject->setObjectRelations(QList<GObjectRelation>());
 
         QList<GObjectRelation> relations = srcObject->getObjectRelations();
         foreach (const GObjectRelation& relation, relations) {
