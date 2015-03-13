@@ -327,7 +327,7 @@ void CreateAnnotationWidgetController::updateModel(bool forValidation) {
     }
 
     if (w->isExistingTableOptionSelected()) {
-        model.annotationObjectRef = occ->getSelectedObject();
+        model.annotationObjectRef = occ->getSelectedObjectReference();
         model.newDocUrl = "";
     } else {
         if (!forValidation){

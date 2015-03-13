@@ -164,6 +164,15 @@ bool GObjectComboBoxController::setSelectedObject(const GObjectReference& objRef
     return true;
 }
 
+GObjectReference GObjectComboBoxController::getSelectedObjectReference() const {
+    GObject *object = getSelectedObject();
+    if (NULL != object) {
+        return GObjectReference(object);
+    } else {
+        return GObjectReference();
+    }
+}
+
 GObject* GObjectComboBoxController::getSelectedObject() const {
     int n = combo->currentIndex();
     if (n == -1) {

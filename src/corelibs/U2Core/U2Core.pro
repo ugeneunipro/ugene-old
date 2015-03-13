@@ -345,6 +345,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/models/Folder.cpp \
            src/models/GHints.cpp \
            src/models/GObject.cpp \
+           src/models/GObjectReference.cpp \
            src/models/MimeDataIterator.cpp \
            src/models/ProjectModel.cpp \
            src/models/StateLockableDataModel.cpp \

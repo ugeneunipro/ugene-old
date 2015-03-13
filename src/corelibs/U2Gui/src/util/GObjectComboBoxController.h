@@ -56,6 +56,7 @@ public:
     bool setSelectedObject(GObject* obj) {return setSelectedObject(GObjectReference(obj));}
     bool setSelectedObject(const GObjectReference& ref);
 
+    GObjectReference getSelectedObjectReference() const;
     GObject* getSelectedObject() const;
 
     void updateConstrains(const GObjectComboBoxControllerConstraints& c);
