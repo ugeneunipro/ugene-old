@@ -126,10 +126,14 @@ QString SnpEffTask::getResFileUrl(){
 }
 
 QString SnpEffTask::getDataPath() const{
-    return AppContext::getAppSettings()->getUserAppsSettings()->getDownloadDirPath() + "/" + "snpeff_data";
+    CHECK(NULL != AppContext::getAppSettings(), QString());
+    CHECK(NULL != AppContext::getAppSettings()->getUserAppsSettings(), QString());
+    CHECK(NULL != AppContext::getExternalToolRegistry(), QString());
+    CHECK(NULL != AppContext::getExternalToolRegistry()->getByName(ET_SNPEFF), QString());
+    return AppContext::getAppSettings()->getUserAppsSettings()->getDownloadDirPath() + "/" + "snpeff_data_" + AppContext::getExternalToolRegistry()->getByName(ET_SNPEFF)->getVersion();
 }
 
-QStringList SnpEffTask::getParameters(U2OpStatus & /*os*/) const{
+QStringList SnpEffTask::getParameters(U2OpStatus & os) const{
     QStringList res;
 
     res << QString("-dataDir");
@@ -138,7 +142,12 @@ QStringList SnpEffTask::getParameters(U2OpStatus & /*os*/) const{
 #ifdef Q_OS_WIN
     additionalSlash = "/";
 #endif
-    res << additionalSlash + GUrlUtils::getQuotedString(getDataPath());
+    QString dataPath=getDataPath();
+    if (dataPath.isEmpty()){
+        os.setError(tr("SNPEff dataDir is not initialized."));
+    }else{
+        res << additionalSlash + GUrlUtils::getQuotedString(dataPath);
+    }
 
     res << QString("-i");
     res << settings.inFormat;
