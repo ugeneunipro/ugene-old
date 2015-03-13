@@ -91,6 +91,7 @@ MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar)
     connect(ui->getCollapseModel(), SIGNAL(toggled()), SLOT(sl_modelChanged()));
     connect(editor, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_referenceSeqChanged(qint64)));
 
+    nhBar->setParent(this);
     nhBar->setVisible(false);
     updateActions();
 

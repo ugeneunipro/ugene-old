@@ -98,6 +98,10 @@ QString MSAEditorSimilarityColumn::getSeqName(int s) {
     return ma.getRowNames().at(s);
 }
 
+void MSAEditorSimilarityColumn::updateScrollBar() {
+    // do nothing
+}
+
 void MSAEditorSimilarityColumn::setSettings(const UpdatedWidgetSettings* _settings) {
     const SimilarityStatisticsSettings* set= static_cast<const SimilarityStatisticsSettings*>(_settings);
     CHECK(NULL != set,);

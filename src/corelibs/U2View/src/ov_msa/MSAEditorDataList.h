@@ -95,9 +95,12 @@ public:
     DataState getState() {return state;}
 
     void setAlgorithm(MSADistanceMatrix* _algo) {algo = _algo;}
+
 protected:
     QString getTextForRow(int s);
     QString getSeqName(int s);
+    void updateScrollBar();
+
 signals:
     void si_dataStateChanged(DataState newState);
 private slots:

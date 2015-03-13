@@ -80,6 +80,7 @@ private slots:
     void sl_onGroupColorsChanged(const GroupColorSchema&);
 protected:
     void updateContent();
+    virtual void updateScrollBar();
 
 protected:
     void resizeEvent(QResizeEvent* e);
@@ -113,7 +114,6 @@ private:
     bool isRowInSelection(int row);
     void updateActions();
     void buildMenu(QMenu* m);
-    void updateScrollBar();
     void updateSelection(int newSeqNum);
     void moveSelectedRegion( int shift );
     void drawAll();
