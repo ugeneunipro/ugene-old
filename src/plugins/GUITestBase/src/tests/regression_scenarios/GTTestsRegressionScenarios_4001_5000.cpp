@@ -551,9 +551,9 @@ GUI_TEST_CLASS_DEFINITION(test_4122) {
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "NC_001363 features [murine.gb] *"));
     GTMouseDriver::click(os);
 
-    QTreeWidgetItem* newItem = GTUtilsAnnotationsTreeView::findItem(os, "Misc_ Feature",annotationTable);
+    QTreeWidgetItem* newItem = GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature",annotationTable);
     CHECK_SET_ERR(NULL != newItem, "New annotation is NULL or not created");
-    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "Misc_ Feature"));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "Misc. Feature"));
     GTMouseDriver::click(os);  
 
    }
