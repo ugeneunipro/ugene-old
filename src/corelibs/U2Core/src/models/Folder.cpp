@@ -114,8 +114,17 @@ bool Folder::isSubFolder(const QString &path, const QString &expectedSubpath) {
     return expectedSubpath.startsWith(path + U2ObjectDbi::PATH_SEP);
 }
 
-bool Folder::folderLessThan(const QString &first, const QString &second) {
-    return QString::compare(first, second, Qt::CaseInsensitive) < 0;
+bool Folder::folderNameLessThan(const QString &first, const QString &second) {
+    const bool firstIsRecycleBin = U2ObjectDbi::RECYCLE_BIN_FOLDER == first;
+    const bool secondIsRecycleBin = U2ObjectDbi::RECYCLE_BIN_FOLDER == second;
+
+    if (firstIsRecycleBin && !secondIsRecycleBin) {
+        return true;
+    } else if (!firstIsRecycleBin && secondIsRecycleBin) {
+        return false;
+    } else {
+        return QString::compare(first, second, Qt::CaseInsensitive) < 0;
+    }
 }
 
 /************************************************************************/

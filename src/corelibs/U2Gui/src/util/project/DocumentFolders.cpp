@@ -135,10 +135,6 @@ void DocumentFolders::addFolder(const QString &path) {
     }
 
     addFolderToStorage(path);
-
-    if (ProjectUtils::RECYCLE_BIN_FOLDER_PATH == getParentFolder(path)) {
-        onFolderAddedToRecycleBin(path);
-    }
 }
 
 void DocumentFolders::renameFolder(const QString &oldPath, const QString &newPath) {
@@ -214,27 +210,10 @@ int DocumentFolders::getNewFolderRowInParent(const QString &path) const {
         subFoldersNames = calculateSubFoldersNames(parentPath);
         cacheSubFoldersNames(parentPath, subFoldersNames);
     }
-    bool _debugFalse = subFoldersNames.contains(name);
+    SAFE_POINT(!subFoldersNames.contains(name), "The name is already in model", 0);
+    int result = FolderObjectTreeStorage::insertSorted(name, subFoldersNames);
 
-    FolderObjectTreeStorage::insertSorted(name, subFoldersNames);
-    int result = subFoldersNames.indexOf(name);
-
-    SAFE_POINT(false == _debugFalse, "The name is already in model", result);
     return result;
-}
-
-int DocumentFolders::getNewFolderRowInRecycleBin(const QString &path) const {
-    SAFE_POINT(ProjectUtils::isFolderInRecycleBin(path), "Not in recycle bin path", -1);
-    QStringList paths;
-    if (hasCachedSubFolders.value(ProjectUtils::RECYCLE_BIN_FOLDER_PATH, false)) {
-        paths = cachedRecycleBinFolders;
-    } else {
-        paths = calculateRecycleBinSubFoldersPaths();
-        cacheRecycleBinSubFoldersPaths(paths);
-    }
-    paths << path;
-    qSort(paths);
-    return paths.indexOf(path);
 }
 
 int DocumentFolders::getNewObjectRowInParent(GObject *obj, const QString &parentPath) const {
@@ -249,10 +228,7 @@ QList<Folder*> DocumentFolders::getSubFolders(const QString &parentPath) const {
         return cachedSubFolders[parentPath];
     }
 
-    if (ProjectUtils::RECYCLE_BIN_FOLDER_PATH == parentPath) {
-        QStringList subFoldersPaths = calculateRecycleBinSubFoldersPaths();
-        return cacheRecycleBinSubFoldersPaths(subFoldersPaths);
-    } else if (ProjectUtils::isFolderInRecycleBinSubtree(parentPath)) {
+    if (ProjectUtils::isFolderInRecycleBin(parentPath)) {
         return QList<Folder*>();
     } else {
         QStringList subFoldersNames = calculateSubFoldersNames(parentPath);
@@ -293,10 +269,10 @@ QList<GObject*> DocumentFolders::getObjects(const QString &parentPath) const {
 bool DocumentFolders::isRootRecycleBinFolder(const QString &path) const {
     QStringList paths;
     if (hasCachedSubFolders.value(ProjectUtils::RECYCLE_BIN_FOLDER_PATH, false)) {
-        paths = cachedRecycleBinFolders;
+        paths = cachedSubFoldersNames[ProjectUtils::RECYCLE_BIN_FOLDER_PATH];
     } else {
-        paths = calculateRecycleBinSubFoldersPaths();
-        cacheRecycleBinSubFoldersPaths(paths);
+        paths = calculateSubFoldersNames(ProjectUtils::RECYCLE_BIN_FOLDER_PATH);
+        cacheSubFoldersNames(ProjectUtils::RECYCLE_BIN_FOLDER_PATH, paths);
     }
 
     foreach (const QString &pathInRB, paths) {
@@ -336,33 +312,6 @@ QStringList DocumentFolders::calculateSubFoldersNames(const QString &parentPath)
     return result;
 }
 
-QStringList DocumentFolders::calculateRecycleBinSubFoldersPaths() const {
-    QStringList allPaths;
-    QString parentPathFin = ProjectUtils::RECYCLE_BIN_FOLDER_PATH + U2ObjectDbi::PATH_SEP;
-    foreach (const QString &path, allFolders()) {
-        if (path.startsWith(parentPathFin)) {
-            allPaths << path;
-        }
-    }
-    CHECK(!allPaths.isEmpty(), allPaths);
-
-    qSort(allPaths);
-    QString visibleFolderPath = allPaths.takeFirst();
-    QStringList result;
-    result << visibleFolderPath;
-
-    while (!allPaths.isEmpty()) {
-        QString path = allPaths.takeFirst();
-        if (path.startsWith(visibleFolderPath + U2ObjectDbi::PATH_SEP)) {
-            continue;
-        }
-        visibleFolderPath = path;
-        result << visibleFolderPath;
-    }
-
-    return result;
-}
-
 QList<Folder*> & DocumentFolders::cacheSubFoldersNames(const QString &parentPath, const QStringList &subFoldersNames) const {
     QList<Folder*> result;
     foreach (const QString &name, subFoldersNames) {
@@ -376,20 +325,6 @@ QList<Folder*> & DocumentFolders::cacheSubFoldersNames(const QString &parentPath
     cachedSubFolders[parentPath] = result;
     cachedSubFoldersNames[parentPath] = subFoldersNames;
     return cachedSubFolders[parentPath];
-}
-
-QList<Folder*> & DocumentFolders::cacheRecycleBinSubFoldersPaths(const QStringList &subFoldersPaths) const {
-    QList<Folder*> result;
-    foreach (const QString &path, subFoldersPaths) {
-        Folder *f = getFolder(path);
-        if (NULL != f) {
-            result << f;
-        }
-    }
-    hasCachedSubFolders[ProjectUtils::RECYCLE_BIN_FOLDER_PATH] = true;
-    cachedSubFolders[ProjectUtils::RECYCLE_BIN_FOLDER_PATH] = result;
-    cachedRecycleBinFolders = subFoldersPaths;
-    return cachedSubFolders[ProjectUtils::RECYCLE_BIN_FOLDER_PATH];
 }
 
 QStringList DocumentFolders::getAllSubFolders(const QString &path) const {
@@ -406,19 +341,7 @@ QStringList DocumentFolders::getAllSubFolders(const QString &path) const {
 
 void DocumentFolders::onFolderAdded(const QString &path) {
     QString parentPath = getParentFolder(path);
-    CHECK(ProjectUtils::RECYCLE_BIN_FOLDER_PATH != parentPath, );
-
     addFolderToCache(path);
-}
-
-void DocumentFolders::onFolderAddedToRecycleBin(const QString &path) {
-    QString parentPath = getParentFolder(path);
-    CHECK(ProjectUtils::RECYCLE_BIN_FOLDER_PATH == parentPath, );
-    CHECK(isRootRecycleBinFolder(path), );
-
-    cachedRecycleBinFolders << path;
-    qSort(cachedRecycleBinFolders);
-    cachedSubFolders[parentPath] << getFolder(path);
 }
 
 void DocumentFolders::onFolderRemoved(Folder *folder) {
@@ -432,11 +355,7 @@ void DocumentFolders::onFolderRemoved(Folder *folder) {
     // if parent folder has cached subfolders -> remove folder from its cache
     QString parentPath = getParentFolder(path);
     if (hasCachedSubFolders.value(parentPath, false)) {
-        if (ProjectUtils::RECYCLE_BIN_FOLDER_PATH == parentPath) {
-            cachedRecycleBinFolders.removeAll(path);
-        } else {
-            cachedSubFoldersNames[parentPath].removeAll(folder->getFolderName());
-        }
+        cachedSubFoldersNames[parentPath].removeAll(folder->getFolderName());
         cachedSubFolders[parentPath].removeAll(folder);
     }
 }
@@ -591,7 +510,7 @@ int FolderObjectTreeStorage::insertSorted(const QString &value, QStringList &lis
         list.prepend(value);
         return 0;
     } else {
-        QList<QString>::iterator i = std::upper_bound(list.begin(), list.end(), value, Folder::folderLessThan);
+        QList<QString>::iterator i = std::upper_bound(list.begin(), list.end(), value, Folder::folderNameLessThan);
         if (list.end() != i && *i == U2ObjectDbi::RECYCLE_BIN_FOLDER) {
             ++i;
         }

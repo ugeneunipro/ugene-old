@@ -115,7 +115,6 @@ public:
     void renameFolder(const QString &oldPath, const QString &newPath);
 
     int getNewFolderRowInParent(const QString &path) const;
-    int getNewFolderRowInRecycleBin(const QString &path) const;
     int getNewObjectRowInParent(GObject *obj, const QString &parentPath) const;
     QList<Folder*> getSubFolders(const QString &path) const;
     QList<GObject*> getObjects(const QString &path) const;
@@ -126,11 +125,8 @@ public:
 
 private:
     QStringList calculateSubFoldersNames(const QString &parentPath) const;
-    QStringList calculateRecycleBinSubFoldersPaths() const;
     QList<Folder*> & cacheSubFoldersNames(const QString &parentPath, const QStringList &subFoldersNames) const;
-    QList<Folder*> & cacheRecycleBinSubFoldersPaths(const QStringList &subFoldersPaths) const;
     void onFolderAdded(const QString &path); // updates caches
-    void onFolderAddedToRecycleBin(const QString &path); // updates caches
     void onFolderRemoved(Folder *folder); // updates caches
     QList<Folder*> getSubFoldersNatural(const QString &path) const; // without recycle bin rules
     void addFolderToCache(const QString &path);
@@ -143,7 +139,6 @@ private:
     mutable QHash<QString, bool> hasCachedSubFolders;
     mutable QHash<QString, QStringList> cachedSubFoldersNames; // sorted
     mutable QHash<QString, QList<Folder *> > cachedSubFolders;
-    mutable QStringList cachedRecycleBinFolders;
 };
 
 } // U2
