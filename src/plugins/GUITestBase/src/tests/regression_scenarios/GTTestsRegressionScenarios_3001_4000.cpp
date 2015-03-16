@@ -4984,24 +4984,6 @@ GUI_TEST_CLASS_DEFINITION(test_3891) {
     CHECK_SET_ERR(fetchAnnotationsButton->isEnabled(), "Fetch annotations button is unexpectedly disabled");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_3896) {
-    //1. Open "_common_data/fasta/human_T1_cutted.fa".
-    GTFileDialog::openFile(os, testDir + "_common_data/fasta/human_T1_cutted.fa");
-    GTUtilsTaskTreeView::waitTaskFinished(os);
-
-    //2. Create any annotation.
-    //Expected state: there is an annotation group with an annotation within.
-    //Current state: there is an annotation group with two similar annotations within.
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "group", "feature", "50..60"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTGlobals::sleep();
-
-    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "group  (0, 1)");
-    CHECK_SET_ERR(NULL != annotationGroup, "Wrong annotations number");
-}
-
 GUI_TEST_CLASS_DEFINITION(test_3901) {
     //1. Open "_common_data/fasta/human_T1_cutted.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/human_T1_cutted.fa");
