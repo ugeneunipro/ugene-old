@@ -305,6 +305,25 @@ GUI_TEST_CLASS_DEFINITION(test_0938) {
     CHECK_SET_ERR(GTWidget::findWidget(os, "COVERED") != NULL, "Covered regions widget not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0940) {
+    //1. Open samples/CLUSTALW/COI.aln.
+    //2. Select any part of the alignment.
+    //3. Context menu of the selected part -> Export -> Save subalignment.
+    //4. Choose the same output file (samples/CLUSTALW/COI.aln) and press "Extract" button.
+    //Expected state: UGENE does not crash.
+
+    GTFile::copy(os, dataDir+"samples/CLUSTALW/COI.aln", sandBoxDir + "test_0940.aln");
+
+    GTFileDialog::openFile(os, sandBoxDir, "test_0940.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Save subalignment"));
+    GTUtilsDialog::waitForDialog(os, new ExtractSelectedAsMSADialogFiller(os,
+        sandBoxDir + "test_0940.aln",
+        GTUtilsMSAEditorSequenceArea::getNameList(os)));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0958) {
 //    1. Create *.csv file with the following content
 //    "Name","Start","End","Length","Complementary","Gene","desc","property","prop1","prop2"
