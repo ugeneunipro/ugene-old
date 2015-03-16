@@ -225,14 +225,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>IntegralBusPort</name>
-    <message>
-        <location filename="../src/GenomeAlignerWorker.cpp" line="222"/>
-        <source>The slot must be not empty: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <location filename="../src/GenomeAlignerTask.cpp" line="55"/>

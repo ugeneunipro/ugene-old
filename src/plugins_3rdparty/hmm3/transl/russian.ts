@@ -20,6 +20,34 @@
     </message>
 </context>
 <context>
+    <name>QObject</name>
+    <message>
+        <location filename="../src/format/uHMMFormat.cpp" line="41"/>
+        <source>write_to_file_failed</source>
+        <translation type="unfinished">Ошибка записи файла!</translation>
+    </message>
+    <message>
+        <location filename="../src/format/uHMMFormat.cpp" line="302"/>
+        <source>hmm_files_are_read_only</source>
+        <translation type="unfinished">HMM профайлы доступны только для чтения</translation>
+    </message>
+    <message>
+        <location filename="../src/format/uHMMFormatReader.cpp" line="350"/>
+        <source>HMM reader error occurred: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/format/uHMMFormatReader.cpp" line="351"/>
+        <source>reading file failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/workers/HMM3IOWorker.cpp" line="78"/>
+        <source>HMM3 Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::GTest_CompareHmmFiles</name>
     <message>
         <location filename="../src/tests/uhmmer3BuildTests.cpp" line="304"/>
@@ -171,7 +199,6 @@
     <name>U2::LocalWorkflow::HMM3Lib</name>
     <message>
         <location filename="../src/workers/HMM3IOWorker.cpp" line="72"/>
-        <location filename="../src/workers/HMM3IOWorker.cpp" line="78"/>
         <source>HMM3 Profile</source>
         <translation type="unfinished"></translation>
     </message>
@@ -231,7 +258,7 @@
     <name>U2::LocalWorkflow::HMM3ReadPrompter</name>
     <message>
         <location filename="../src/workers/HMM3IOWorker.cpp" line="178"/>
-        <source>Read HMM3 profile(s) from %1</source>
+        <source>Read HMM3 profile(s) from %1.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -408,17 +435,17 @@
 <context>
     <name>U2::UHMM3ADVContext</name>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="263"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="256"/>
         <source>Search HMM signals with HMMER3...</source>
         <translation type="unfinished">HMMER3: поиск сигналов хмм-модели...</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="272"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="266"/>
         <source>error</source>
         <translation type="unfinished">Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="272"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="266"/>
         <source>No sequence in focus found</source>
         <translation type="unfinished">Не найдено открытой последовательности</translation>
     </message>
@@ -464,37 +491,37 @@
 <context>
     <name>U2::UHMM3BuildDialogImpl</name>
     <message>
-        <location filename="../src/build/uHMM3BuildDialogImpl.cpp" line="68"/>
+        <location filename="../src/build/uHMM3BuildDialogImpl.cpp" line="69"/>
         <source>Build</source>
         <translation type="unfinished">Построить</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildDialogImpl.cpp" line="69"/>
+        <location filename="../src/build/uHMM3BuildDialogImpl.cpp" line="70"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildDialogImpl.cpp" line="108"/>
+        <location filename="../src/build/uHMM3BuildDialogImpl.cpp" line="109"/>
         <source>Select multiple alignment file</source>
         <translation type="unfinished">Выберите файл множественного выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildDialogImpl.cpp" line="117"/>
+        <location filename="../src/build/uHMM3BuildDialogImpl.cpp" line="118"/>
         <source>Select hmm file to create</source>
         <translation type="unfinished">Выберите файл HMM профайла</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildDialogImpl.cpp" line="183"/>
+        <location filename="../src/build/uHMM3BuildDialogImpl.cpp" line="184"/>
         <source>input file is empty</source>
         <translation type="unfinished">Входной файл не выбран</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildDialogImpl.cpp" line="186"/>
+        <location filename="../src/build/uHMM3BuildDialogImpl.cpp" line="187"/>
         <source>output hmm file is empty</source>
         <translation type="unfinished">Выходной HMM файл не выбран</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildDialogImpl.cpp" line="195"/>
+        <location filename="../src/build/uHMM3BuildDialogImpl.cpp" line="196"/>
         <source>Error: bad arguments!</source>
         <translation type="unfinished">Ошибка: неверные входные параметры!</translation>
     </message>
@@ -654,7 +681,7 @@
 <context>
     <name>U2::UHMM3LoadProfileAndSearchTask</name>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="512"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="513"/>
         <source>HMM search with &apos;%1&apos; HMM profile file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -666,7 +693,7 @@
         <translation type="obsolete">Построить хмм-модель HMMER3</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="219"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="212"/>
         <source>Build HMMER3 profile</source>
         <translation type="unfinished"></translation>
     </message>
@@ -732,38 +759,38 @@
 <context>
     <name>U2::UHMM3PhmmerDialogImpl</name>
     <message>
-        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="54"/>
+        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="55"/>
         <source>Search</source>
         <translation type="unfinished">Искать</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="55"/>
+        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="56"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="109"/>
+        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="112"/>
         <source>Select query sequence file</source>
         <translation type="unfinished">Выберите последовательность</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="157"/>
+        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="160"/>
         <source>Query sequence file path is empty</source>
         <translation type="unfinished">Путь до файла последовательности пуст</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="162"/>
-        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="173"/>
+        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="165"/>
+        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="176"/>
         <source>Error: bad arguments!</source>
         <translation type="unfinished">Ошибка: неверные входные параметры!</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="178"/>
+        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="181"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="178"/>
+        <location filename="../src/phmmer/uHMM3PhmmerDialogImpl.cpp" line="181"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -867,42 +894,42 @@
         <translation type="obsolete">Путь до файла последовательности-запроса</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="370"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="371"/>
         <source>querySeq sequence file path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="375"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="376"/>
         <source>db sequence</source>
         <translation type="unfinished">последовательность, в которой производится поиск</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="380"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="381"/>
         <source>annotation object</source>
         <translation type="unfinished">Объект аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="385"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="386"/>
         <source>annotation name</source>
         <translation type="unfinished">Имя аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="390"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="391"/>
         <source>annotation group</source>
         <translation type="unfinished">Группа аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="401"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="403"/>
         <source>HMM Phmmer task</source>
         <translation type="unfinished">Поиск phmmer</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="413"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="416"/>
         <source>HMM Phmmer search %1 sequence with %2 database</source>
         <translation type="unfinished">Phmmer-поиск последовательности %1 в последовательности %2</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="423"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="426"/>
         <source>Annotation object was removed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -911,32 +938,32 @@
         <translation type="obsolete">Выбранный объект аннотаций удалён</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="450"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="453"/>
         <source>Query sequence</source>
         <translation type="unfinished">Входная последовательность-запрос</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="453"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="456"/>
         <source>Task was not finished</source>
         <translation type="unfinished">Задание завершено с ошибкой</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="458"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="461"/>
         <source>Result annotation table</source>
         <translation type="unfinished">Таблица аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="459"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="462"/>
         <source>Result annotation group</source>
         <translation type="unfinished">Группа аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="460"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="463"/>
         <source>Result annotation name</source>
         <translation type="unfinished">Имя аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="463"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="466"/>
         <source>Results count</source>
         <translation type="unfinished">Количество результатов</translation>
     </message>
@@ -944,43 +971,53 @@
 <context>
     <name>U2::UHMM3Plugin</name>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="76"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="80"/>
         <source>hmm3_plugin_name</source>
         <translation type="unfinished">HMM3</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="76"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="80"/>
         <source>hmm3_plugin_desc</source>
         <translation type="unfinished">Инструменты работы с HMM профайлами. Модуль основан на пакете HMMER3.0b3: анализ биологических последовательностей при помощи скрытых марковских моделей (HMM). Домашняя страница проекта: http://hmmer.janelia.org/</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="116"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="110"/>
+        <source>Build HMM3 profile...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/uHMM3Plugin.cpp" line="115"/>
+        <source>Search with HMM3...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/uHMM3Plugin.cpp" line="120"/>
+        <source>Search with HMM3 phmmer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Build HMM3 profile</source>
-        <translation>Построить профайл с помощью HMM3</translation>
+        <translation type="obsolete">Построить профайл с помощью HMM3</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="121"/>
         <source>Search with HMM3</source>
-        <translation>Искать сигналы HMM3</translation>
+        <translation type="obsolete">Искать сигналы HMM3</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="126"/>
         <source>Search with HMM3 phmmer</source>
-        <translation>Искать сигналы HMM3 phmmer</translation>
+        <translation type="obsolete">Искать сигналы HMM3 phmmer</translation>
     </message>
     <message>
         <source>HMM3 tools</source>
         <translation type="obsolete">HMM3 (Скрытые модели Маркова)</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="110"/>
         <source>HMMER tools</source>
-        <translation>HMMER (Скрытые модели Маркова)</translation>
+        <translation type="obsolete">HMMER (Скрытые модели Маркова)</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="114"/>
         <source>HMMER3 tools</source>
-        <translation type="unfinished">HMMER3 (Скрытые Модели Маркова)</translation>
+        <translation type="obsolete">HMMER3 (Скрытые Модели Маркова)</translation>
     </message>
     <message>
         <source>build profile</source>
@@ -995,14 +1032,14 @@
         <translation type="obsolete">Поиск phmmer</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="184"/>
-        <location filename="../src/uHMM3Plugin.cpp" line="195"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="177"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="188"/>
         <source>Error!</source>
         <translation type="unfinished">Ошибка!</translation>
     </message>
     <message>
-        <location filename="../src/uHMM3Plugin.cpp" line="184"/>
-        <location filename="../src/uHMM3Plugin.cpp" line="195"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="177"/>
+        <location filename="../src/uHMM3Plugin.cpp" line="188"/>
         <source>Target sequence not selected: no opened annotated dna view</source>
         <translation type="unfinished">Не открыта последовательность для поиска!</translation>
     </message>
@@ -1317,99 +1354,99 @@
 <context>
     <name>U2::UHMM3SWSearchToAnnotationsTask</name>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="555"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="556"/>
         <source>hmm profile filename</source>
         <translation type="unfinished">Путь до HMM профайла</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="559"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="560"/>
         <source>annotation object</source>
         <translation type="unfinished">Объект аннотации</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="563"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="564"/>
         <source>annotations group name</source>
         <translation type="unfinished">Имя группы аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="567"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="568"/>
         <source>annotations name</source>
         <translation type="unfinished">Имя аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="579"/>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="601"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="580"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="602"/>
         <source>HMMER3 search task</source>
         <translation type="unfinished">Поиск HMM сигналов</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="582"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="583"/>
         <source>dna sequence</source>
         <translation type="unfinished">Последовательность для поиска</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="587"/>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="609"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="588"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="610"/>
         <source>HMMER3 search task with &apos;%1&apos; profile</source>
         <translation type="unfinished">Поиск сигналов HMM профайла &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="604"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="605"/>
         <source>Sequence file</source>
         <translation type="unfinished">Путь до файла последовательности для поиска</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="623"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="624"/>
         <source>HMM profile used</source>
         <translation type="unfinished">HMM профайл</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="626"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="627"/>
         <source>Task was not finished</source>
         <translation type="unfinished">Задание завершено с ошибкой</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="631"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="632"/>
         <source>Result annotation table</source>
         <translation type="unfinished">Таблица результатов</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="632"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="633"/>
         <source>Result annotation group</source>
         <translation type="unfinished">Группа аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="633"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="634"/>
         <source>Result annotation name</source>
         <translation type="unfinished">Имя аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="636"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="637"/>
         <source>Results count</source>
         <translation type="unfinished">Количество результатов</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="646"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="647"/>
         <source>Cannot load sequence document</source>
         <translation type="unfinished">Не удалось загрузить документ последовательности</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="651"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="652"/>
         <source>No sequence objects loaded</source>
         <translation type="unfinished">Не загружен объект последовательности</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="655"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="656"/>
         <source>Unknown sequence type loaded</source>
         <translation type="unfinished">Загружена последовательность неизвестного типа</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="658"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="659"/>
         <source>Empty sequence loaded</source>
         <translation type="unfinished">Загружена пустая последовательность</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="674"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="675"/>
         <source>Annotation object removed</source>
         <translation type="unfinished">Выбранный объект аннотаций удалён</translation>
     </message>
@@ -1475,32 +1512,32 @@
 <context>
     <name>U2::UHMM3SearchDialogImpl</name>
     <message>
-        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="58"/>
+        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="53"/>
         <source>Run</source>
         <translation type="unfinished">Запуск</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="59"/>
+        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="54"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="164"/>
+        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="161"/>
         <source>HMM profile file path is empty</source>
         <translation type="unfinished">Путь до HMM профайла не задан</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="179"/>
+        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="176"/>
         <source>Error: bad arguments!</source>
         <translation type="unfinished">Ошибка: неверные входные параметры!</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="184"/>
+        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="181"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="184"/>
+        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="181"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1517,7 +1554,7 @@
         <translation type="obsolete">Распределенный запуск на нескольких машинах в данный пока не поддерживается. Выберите одну машину</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="234"/>
+        <location filename="../src/search/uHMM3SearchDialogImpl.cpp" line="231"/>
         <source>Select query HMM profile</source>
         <translation type="unfinished">Выберите HMM профайл</translation>
     </message>
@@ -1560,12 +1597,12 @@
 <context>
     <name>U2::UHMM3SearchTask</name>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="467"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="468"/>
         <source>HMM search task</source>
         <translation type="unfinished">Поиск сигналов HMM</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="476"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="477"/>
         <source>HMM search with %1 profiles</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1574,7 +1611,7 @@
         <translation type="obsolete">HMM профайл не задан</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="474"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="475"/>
         <source>HMM search with &apos;%1&apos;</source>
         <translation type="unfinished">Поиск сигналов HMM &apos;%1&apos;</translation>
     </message>
@@ -1594,9 +1631,8 @@
 <context>
     <name>U2::UHMMFormat</name>
     <message>
-        <location filename="../src/format/uHMMFormat.cpp" line="41"/>
         <source>write_to_file_failed</source>
-        <translation type="unfinished">Ошибка записи файла!</translation>
+        <translation type="obsolete">Ошибка записи файла!</translation>
     </message>
     <message>
         <location filename="../src/format/uHMMFormat.cpp" line="279"/>
@@ -1604,9 +1640,8 @@
         <translation type="unfinished">Неизвестная ошибка!</translation>
     </message>
     <message>
-        <location filename="../src/format/uHMMFormat.cpp" line="302"/>
         <source>hmm_files_are_read_only</source>
-        <translation type="unfinished">HMM профайлы доступны только для чтения</translation>
+        <translation type="obsolete">HMM профайлы доступны только для чтения</translation>
     </message>
     <message>
         <location filename="../src/format/uHMMFormat.cpp" line="305"/>
@@ -1698,16 +1733,6 @@
         <location filename="../src/format/uHMMFormatReader.cpp" line="299"/>
         <source>unexpected_end_of_line</source>
         <translation type="unfinished">Неожиданный конец строки</translation>
-    </message>
-    <message>
-        <location filename="../src/format/uHMMFormatReader.cpp" line="350"/>
-        <source>HMM reader error occurred: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/format/uHMMFormatReader.cpp" line="351"/>
-        <source>reading file failed</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/format/uHMMFormatReader.cpp" line="387"/>
@@ -2457,7 +2482,7 @@
         <translation type="obsolete">Ввод и вывод</translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="41"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="65"/>
         <source>Query HMM file:</source>
         <translation type="unfinished">HMM профайл</translation>
     </message>
@@ -2494,32 +2519,32 @@
         <translation type="obsolete">Порог итоговой суммы</translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="33"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="54"/>
         <source>Input and output</source>
         <translation type="unfinished">Ввод и вывод</translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="51"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="75"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="78"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="92"/>
         <source>Reporting thresholds</source>
         <translation type="unfinished">Допустимые результаты</translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="92"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="109"/>
         <source>Report domains with E-value less than</source>
         <translation type="unfinished">Сохранять результаты c величиной E-value менее</translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="102"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="119"/>
         <source>1E+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="129"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="146"/>
         <source>Report domains with score greater than</source>
         <translation type="unfinished">Отсечение по итоговой сумме</translation>
     </message>
@@ -2544,77 +2569,77 @@
         <translation type="obsolete">Число значимых последовательностей для подсчета E-value домена</translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="14"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="20"/>
         <source>HMM3 Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="163"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="180"/>
         <source>Score threshold:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="212"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="229"/>
         <source>Use profile&apos;s GA gathering cutoffs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="248"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="265"/>
         <source>Use profile&apos;s NC noise cutoffs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="278"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="295"/>
         <source>Use profile&apos;s TC trusted cutoffs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="295"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="312"/>
         <source>Number of significant sequences for domain E-value calculation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="328"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="345"/>
         <source>Acceleration heuristics</source>
         <translation type="unfinished">Производительность</translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="340"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="360"/>
         <source>Turn off composition bias filter</source>
         <translation type="unfinished">Выключить composition bias фильтр</translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="353"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="373"/>
         <source>Turn off biased composition score corrections</source>
         <translation type="unfinished">Выключить diased composition коррекию итоговой суммы</translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="381"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="401"/>
         <source>MSV filter threshold:</source>
         <translation type="unfinished">Порог фильтрации MSV:</translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="414"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="434"/>
         <source>Viterbi filter threshold:</source>
         <translation type="unfinished">Порог фильтрации Viterbi:</translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="444"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="464"/>
         <source>Forward filter threshold:</source>
         <translation type="unfinished">Порог фильтрации Forward:</translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="480"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="500"/>
         <source>Other</source>
         <translation type="unfinished">Разное</translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="496"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="522"/>
         <source>Random generator seed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="539"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="565"/>
         <source>* 0 means that one-time arbitrary seed will be used</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2631,7 +2656,7 @@
         <translation type="obsolete">Выключить biased composition коррекцию итоговой суммы</translation>
     </message>
     <message>
-        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="366"/>
+        <location filename="../src/search/ui/UHMM3SearchDialog.ui" line="386"/>
         <source>Turn all heuristic filters off (less speed, more power)</source>
         <translation type="unfinished">Отключить все эвристические фильтры (более точно, менее производительно)</translation>
     </message>

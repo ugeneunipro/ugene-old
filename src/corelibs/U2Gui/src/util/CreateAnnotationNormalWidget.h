@@ -30,6 +30,7 @@ namespace U2 {
 class ShowHideSubgroupWidget;
 
 class CreateAnnotationNormalWidget : public CreateAnnotationWidget, private Ui::CreateAnnotationNormalWidget {
+    Q_OBJECT
 public:
     CreateAnnotationNormalWidget(QWidget *parent = NULL);
 

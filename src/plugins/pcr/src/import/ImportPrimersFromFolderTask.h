@@ -28,6 +28,7 @@
 namespace U2 {
 
 class ImportPrimersFromFolderTask : public Task {
+    Q_OBJECT
 public:
     ImportPrimersFromFolderTask(const Folder &folder);
 

@@ -41,6 +41,7 @@ public:
 };
 
 class DotPlotImageExportToBitmapTask : public ImageExportTask {
+    Q_OBJECT
 public:
     DotPlotImageExportToBitmapTask(DotPlotWidget *wgt,
                                    const DotPlotImageExportSettings &dotPlotExportSettings,

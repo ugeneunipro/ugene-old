@@ -29,6 +29,7 @@
 namespace U2 {
 
 class U2GUI_EXPORT SequenceTextEdit : public QPlainTextEdit {
+    Q_OBJECT
 public:
     /**
      * From qt-project.org:

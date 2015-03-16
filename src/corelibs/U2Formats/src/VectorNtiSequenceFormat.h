@@ -29,6 +29,7 @@
 namespace U2 {
 
 class U2FORMATS_EXPORT VectorNtiSequenceFormat : public GenbankPlainTextFormat {
+    Q_OBJECT
 public:
     VectorNtiSequenceFormat(QObject* parent);
 

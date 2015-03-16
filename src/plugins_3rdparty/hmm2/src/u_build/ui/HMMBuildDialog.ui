@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>hmmbuild_dialog_title</string>
+   <string>HMM Build</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -19,7 +19,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="msaFileLabel">
        <property name="text">
-        <string>msa_file_label</string>
+        <string>Multiple alignment file:</string>
        </property>
       </widget>
      </item>

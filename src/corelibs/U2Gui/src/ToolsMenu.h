@@ -32,6 +32,7 @@ class QMenu;
 namespace U2 {
 
 class U2GUI_EXPORT ToolsMenu : public QObject {
+    Q_OBJECT
 public:
     static void init();
 

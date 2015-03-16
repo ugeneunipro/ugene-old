@@ -95,13 +95,13 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
         <property name="toolTip">
-         <string>mean_tip</string>
+         <string>Mean length of the synthetic sequences, positive real number. The default value is 325.</string>
         </property>
         <property name="statusTip">
-         <string>mean_tip</string>
+         <string>Mean length of the synthetic sequences, positive real number. The default value is 325.</string>
         </property>
         <property name="whatsThis">
-         <string>mean_tip</string>
+         <string>Mean length of the synthetic sequences, positive real number. The default value is 325.</string>
         </property>
         <property name="text">
          <string>mean</string>
@@ -130,13 +130,13 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>mean_tip</string>
+         <string>mean_tip_tool</string>
         </property>
         <property name="statusTip">
-         <string notr="true"/>
+            <string>mean_tip_status</string>
         </property>
         <property name="whatsThis">
-         <string notr="true"/>
+            <string>mean_tip_whats</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -155,13 +155,13 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_4">
         <property name="toolTip">
-         <string>num_tip</string>
+         <string>num_tip_tool</string>
         </property>
         <property name="statusTip">
-         <string>num_tip</string>
+         <string>num_tip_status</string>
         </property>
         <property name="whatsThis">
-         <string>num_tip</string>
+         <string>num_tip_whats</string>
         </property>
         <property name="text">
          <string>num</string>
@@ -190,13 +190,13 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>num_tip</string>
+         <string>num_tip_tool_1</string>
         </property>
         <property name="statusTip">
-         <string notr="true"/>
+            <string>num_tip_status_1</string>
         </property>
         <property name="whatsThis">
-         <string notr="true"/>
+            <string>num_tip_whats_1</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -215,13 +215,13 @@
       <item row="3" column="0" rowspan="2">
        <widget class="QLabel" name="label_5">
         <property name="toolTip">
-         <string>sd_tip</string>
+         <string>sd_tip_tool</string>
         </property>
         <property name="statusTip">
-         <string>sd_tip</string>
+         <string>sd_tip_status</string>
         </property>
         <property name="whatsThis">
-         <string>sd_tip</string>
+         <string>sd_tip_whats</string>
         </property>
         <property name="text">
          <string>sd</string>
@@ -244,7 +244,7 @@
       <item row="3" column="2" rowspan="2">
        <widget class="QDoubleSpinBox" name="sdBox">
         <property name="toolTip">
-         <string>sd_tip</string>
+         <string>sd_tip_1</string>
         </property>
         <property name="statusTip">
          <string notr="true"/>

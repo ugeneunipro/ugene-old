@@ -1881,71 +1881,8 @@ You can use this worker to convert .fasta and .qual pair to fastq format.</trans
 <context>
     <name>U2::LocalWorkflow::WriteAnnotationsPrompter</name>
     <message>
-        <source>unset</source>
-        <translation type="obsolete">unset</translation>
-    </message>
-    <message>
         <source>Save all annotations from &lt;u&gt;%1&lt;/u&gt; to %2 in %3 format</source>
         <translation type="obsolete">Save all annotations from &lt;u&gt;%1&lt;/u&gt; to %2 in %3 format</translation>
-    </message>
-</context>
-<context>
-    <name>U2::LocalWorkflow::WriteAnnotationsWorker</name>
-    <message>
-        <source>Unrecognized formatId: &apos;%1&apos;</source>
-        <translation type="obsolete">Unrecognized formatId: &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Unspecified URL to write %1</source>
-        <translation type="obsolete">Unspecified URL to write %1</translation>
-    </message>
-    <message>
-        <source>Annotations name not specified. Default value used: &apos;%1&apos;</source>
-        <translation type="obsolete">Annotations name not specified. Default value used: &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Save annotations</source>
-        <translation type="obsolete">Save annotations</translation>
-    </message>
-    <message>
-        <source>Input annotations</source>
-        <translation type="obsolete">Input annotations</translation>
-    </message>
-    <message>
-        <source>Input annotations which will be written to output file</source>
-        <translation type="obsolete">Input annotations which will be written to output file</translation>
-    </message>
-    <message>
-        <source>Annotations name</source>
-        <translation type="obsolete">Annotations name</translation>
-    </message>
-    <message>
-        <source>Annotations name: Name of the saved annotations. This option is only available for document formats that support saving of annotations names.</source>
-        <translation type="obsolete">Annotations name: Name of the saved annotations. This option is only available for document formats that support saving of annotations names.</translation>
-    </message>
-    <message>
-        <source>CSV separator</source>
-        <translation type="obsolete">CSV separator</translation>
-    </message>
-    <message>
-        <source>String which separates values in CSV files.</source>
-        <translation type="obsolete">String which separates values in CSV files.</translation>
-    </message>
-    <message>
-        <source>Write sequence names</source>
-        <translation type="obsolete">Write sequence names</translation>
-    </message>
-    <message>
-        <source>Add names of sequences into CSV file.</source>
-        <translation type="obsolete">Add names of sequences into CSV file.</translation>
-    </message>
-    <message>
-        <source>Write Annotations</source>
-        <translation type="obsolete">Write Annotations</translation>
-    </message>
-    <message>
-        <source>Writes all supplied annotations to file(s) in selected formatId.</source>
-        <translation type="obsolete">Writes all supplied annotations to file(s) in selected formatId.</translation>
     </message>
 </context>
 <context>

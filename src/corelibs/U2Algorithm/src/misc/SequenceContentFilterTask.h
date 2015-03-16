@@ -35,6 +35,7 @@ class U2SequenceObject;
 //////////////////////////////////////////////////////////////////////////
 
 class SequenceContentFilterTask : public AbstractProjectFilterTask, public FindAlgorithmResultsListener {
+    Q_OBJECT
 public:
     SequenceContentFilterTask(const ProjectTreeControllerModeSettings &settings, const QList<QPointer<Document> > &docs);
 

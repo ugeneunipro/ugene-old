@@ -30,6 +30,7 @@ namespace U2 {
 class ShowHideSubgroupWidget;
 
 class CreateAnnotationOptionsPanelWidget : public CreateAnnotationWidget, private Ui::CreateAnnotationOptionsPanelWidget {
+    Q_OBJECT
 public:
     CreateAnnotationOptionsPanelWidget(QWidget *parent = NULL);
 

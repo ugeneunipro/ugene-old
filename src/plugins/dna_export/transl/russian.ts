@@ -1881,71 +1881,8 @@ You can use this worker to convert .fasta and .qual pair to fastq format.</sourc
 <context>
     <name>U2::LocalWorkflow::WriteAnnotationsPrompter</name>
     <message>
-        <source>unset</source>
-        <translation type="obsolete">не указан</translation>
-    </message>
-    <message>
         <source>Save all annotations from &lt;u&gt;%1&lt;/u&gt; to %2 in %3 format</source>
         <translation type="obsolete">Сохранить все аннотации из &lt;u&gt;%1&lt;/u&gt; в %2 в %3 формат</translation>
-    </message>
-</context>
-<context>
-    <name>U2::LocalWorkflow::WriteAnnotationsWorker</name>
-    <message>
-        <source>Unrecognized formatId: &apos;%1&apos;</source>
-        <translation type="obsolete">Unrecognized formatId: &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Unspecified URL to write %1</source>
-        <translation type="obsolete">Unspecified URL to write %1</translation>
-    </message>
-    <message>
-        <source>Annotations name not specified. Default value used: &apos;%1&apos;</source>
-        <translation type="obsolete">Annotations name not specified. Default value used: &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Save annotations</source>
-        <translation type="obsolete">Сохранить аннотации</translation>
-    </message>
-    <message>
-        <source>Input annotations</source>
-        <translation type="obsolete">Входные аннотации</translation>
-    </message>
-    <message>
-        <source>Input annotations which will be written to output file</source>
-        <translation type="obsolete">Входные аннотации для которых будет записан выходной файл</translation>
-    </message>
-    <message>
-        <source>Annotations name</source>
-        <translation type="obsolete">Имя аннотаций</translation>
-    </message>
-    <message>
-        <source>Annotations name: Name of the saved annotations. This option is only available for document formats that support saving of annotations names.</source>
-        <translation type="obsolete">Имя сохраняемой аннотации. Данный параметр доступен только для форматов, поддерживающих сохранение имен аннотаций.</translation>
-    </message>
-    <message>
-        <source>CSV separator</source>
-        <translation type="obsolete">Разделитель CSV</translation>
-    </message>
-    <message>
-        <source>String which separates values in CSV files.</source>
-        <translation type="obsolete">Строка, которая разделяет значения в файлах CSV.</translation>
-    </message>
-    <message>
-        <source>Write sequence names</source>
-        <translation type="obsolete">Записать имена последовательностей</translation>
-    </message>
-    <message>
-        <source>Add names of sequences into CSV file.</source>
-        <translation type="obsolete">Добавить имена последовательностей в CSV файл.</translation>
-    </message>
-    <message>
-        <source>Write Annotations</source>
-        <translation type="obsolete">Запись аннотаций</translation>
-    </message>
-    <message>
-        <source>Writes all supplied annotations to file(s) in selected formatId.</source>
-        <translation type="obsolete">Записывает все поддерживаемые аннотации в файл(ы) в выбранном формате.</translation>
     </message>
 </context>
 <context>

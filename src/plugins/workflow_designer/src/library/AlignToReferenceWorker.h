@@ -31,6 +31,7 @@ class PairwiseAlignmentTaskSettings;
 namespace LocalWorkflow {
 
 class KAlignSubTask : public Task {
+    Q_OBJECT
 public:
     KAlignSubTask(const SharedDbiDataHandler &reference, const SharedDbiDataHandler &read, DbiDataStorage *storage);
     void prepare();
@@ -63,6 +64,7 @@ private:
 };
 
 class PairwiseAlignmentTask : public Task {
+    Q_OBJECT
 public:
     PairwiseAlignmentTask(const SharedDbiDataHandler &reference, const SharedDbiDataHandler &read, DbiDataStorage *storage);
     void prepare();
@@ -109,6 +111,7 @@ private:
 };
 
 class ComposeResultSubTask : public Task {
+    Q_OBJECT
 public:
     ComposeResultSubTask(const SharedDbiDataHandler &reference, const QList<SharedDbiDataHandler> &reads, const QList<PairwiseAlignmentTask*> subTasks, DbiDataStorage *storage);
     void prepare();
@@ -139,6 +142,7 @@ private:
 };
 
 class AlignToReferenceTask : public Task {
+    Q_OBJECT
 public:
     AlignToReferenceTask(const SharedDbiDataHandler &reference, const QList<SharedDbiDataHandler> &reads, DbiDataStorage *storage);
     void prepare();

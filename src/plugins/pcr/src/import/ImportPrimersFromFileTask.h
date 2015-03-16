@@ -29,6 +29,7 @@ namespace U2 {
 class DocumentProviderTask;
 
 class ImportPrimersFromFileTask : public Task {
+    Q_OBJECT
 public:
     ImportPrimersFromFileTask(const QString &filePath);
 

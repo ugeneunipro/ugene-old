@@ -32,8 +32,10 @@ namespace U2 {
 class Document;
 class DocumentFormat;
 class U2DbiRef;
+class ExportPrimersToDatabaseTask;
 
 class ExportPrimersToLocalFileTask : public Task {
+    Q_OBJECT
 public:
     ExportPrimersToLocalFileTask(const QList<Primer> &primers, const DocumentFormatId &formatId, const QString &localFilePath);
 

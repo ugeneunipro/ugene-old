@@ -11,12 +11,12 @@
     </message>
     <message>
         <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="14"/>
-        <source>hmmbuild_dialog_title</source>
+        <source>HMM Build</source>
         <translation>HMM Build</translation>
     </message>
     <message>
         <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="22"/>
-        <source>msa_file_label</source>
+        <source>Multiple alignment file:</source>
         <translation>Multiple alignment file:</translation>
     </message>
     <message>
@@ -170,14 +170,69 @@ The default is instead to generate sequences with a variety of different lengths
         <translation>Mean length of the synthetic sequences:</translation>
     </message>
     <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="158"/>
+        <source>num_tip_tool</source>
+        <translation type="unfinished">Number of synthetic sequences.
+ If &lt;n&gt; is less than about 1000, the fit to the EVD may fail
+Higher numbers of &lt;n&gt; will give better determined EVD parameters. 
+The default is 5000; it was empirically chosen as a tradeoff between accuracy and computation time.</translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="161"/>
+        <source>num_tip_status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="164"/>
+        <source>num_tip_whats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="167"/>
         <source>num</source>
         <translation>Number of synthetic sequences:</translation>
     </message>
     <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="193"/>
+        <source>num_tip_tool_1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="196"/>
+        <source>num_tip_status_1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="199"/>
+        <source>num_tip_whats_1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="218"/>
+        <source>sd_tip_tool</source>
+        <translation type="unfinished">Standard deviation of the synthetic sequence length.
+A positive number. The default is 200. 
+Note that the Gaussian is left-truncated so that no sequences have lengths &lt;= 0.</translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="221"/>
+        <source>sd_tip_status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="224"/>
+        <source>sd_tip_whats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="227"/>
         <source>sd</source>
         <translation>Standard deviation:</translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="247"/>
+        <source>sd_tip_1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="281"/>
@@ -220,28 +275,27 @@ The default is instead to generate sequences with a variety of different lengths
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="98"/>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="101"/>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="104"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="133"/>
-        <source>mean_tip</source>
+        <source>Mean length of the synthetic sequences, positive real number. The default value is 325.</source>
         <translation>Mean length of the synthetic sequences, positive real number. The default value is 325.</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="158"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="161"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="164"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="193"/>
-        <source>num_tip</source>
-        <translation>Number of synthetic sequences.
- If &lt;n&gt; is less than about 1000, the fit to the EVD may fail
-Higher numbers of &lt;n&gt; will give better determined EVD parameters. 
-The default is 5000; it was empirically chosen as a tradeoff between accuracy and computation time.</translation>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="133"/>
+        <source>mean_tip_tool</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="218"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="221"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="224"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="247"/>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="136"/>
+        <source>mean_tip_status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="139"/>
+        <source>mean_tip_whats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>sd_tip</source>
-        <translation>Standard deviation of the synthetic sequence length.
+        <translation type="obsolete">Standard deviation of the synthetic sequence length.
 A positive number. The default is 200. 
 Note that the Gaussian is left-truncated so that no sequences have lengths &lt;= 0.</translation>
     </message>

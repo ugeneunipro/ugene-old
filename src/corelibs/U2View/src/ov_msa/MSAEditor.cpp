@@ -848,7 +848,7 @@ QVariantMap MSAEditor::getHighlightingSettings(const QString &highlightingFactor
     }
 }
 
-void MSAEditor::saveHighlightingSettings( const QString &highlightingFactoryId, const QVariantMap &settingsMap /*= QVariant()*/ ) {
+void MSAEditor::saveHighlightingSettings( const QString &highlightingFactoryId, const QVariantMap &settingsMap /* = QVariant()*/ ) {
     snp.highlightSchemeSettings.insert(highlightingFactoryId, QVariant(settingsMap));
 }
 
