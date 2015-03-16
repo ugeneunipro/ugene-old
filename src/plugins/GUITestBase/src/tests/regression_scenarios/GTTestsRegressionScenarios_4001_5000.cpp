@@ -205,6 +205,27 @@ GUI_TEST_CLASS_DEFINITION(test_4010) {
     GTUtilsOptionPanelSequenceView::showPrimersDetails(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4013) {
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    int length = GTUtilsMSAEditorSequenceArea::getLength(os);
+
+    GTUtilsMSAEditorSequenceArea::scrollToPosition(os, QPoint(length - 1, 1));
+    int columnsNumber = GTUtilsMSAEditorSequenceArea::getNumVisibleBases(os);
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(columnsNumber - 10, 0), QPoint(columnsNumber, 10));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+
+    GTGlobals::sleep();
+    QRect oldRect = GTUtilsMSAEditorSequenceArea::getSelectedRect(os);
+
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keySequence(os, "ACCCTATTTTATACCAACAAACTare");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, oldRect);
+}
+
+
 GUI_TEST_CLASS_DEFINITION(test_4026) {
     //1. Open "samples/Genbank/sars.gb".
     //Expected: there are a lot of annotations in the panoramic and details views.

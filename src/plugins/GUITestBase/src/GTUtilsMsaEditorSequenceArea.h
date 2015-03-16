@@ -52,6 +52,8 @@ public:
     static int getLength(U2OpStatus &os);
     static int getNumVisibleBases(U2OpStatus &os);
 
+    static QRect getSelectedRect(U2OpStatus &os);
+
     static void moveTo(U2OpStatus &os, const QPoint &p);
 
     // selects area in MSA coordinats, if some p coordinate less than 0, it becomes max valid coordinate

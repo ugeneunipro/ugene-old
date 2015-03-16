@@ -331,6 +331,15 @@ int GTUtilsMSAEditorSequenceArea::getNumVisibleBases(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getSelectedRect"
+QRect GTUtilsMSAEditorSequenceArea::getSelectedRect(U2OpStatus &os) {
+    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    GT_CHECK_RESULT(msaEditArea != NULL, "MsaEditorSequenceArea not found", QRect());
+
+    return msaEditArea->getSelection().getRect();
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "offsetsVisible"
 bool GTUtilsMSAEditorSequenceArea::offsetsVisible(U2OpStatus &os) {
 
