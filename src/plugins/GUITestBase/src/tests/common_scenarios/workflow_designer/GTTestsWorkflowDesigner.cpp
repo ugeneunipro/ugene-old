@@ -542,12 +542,17 @@ GUI_TEST_CLASS_DEFINITION(test_0017){
 GUI_TEST_CLASS_DEFINITION(test_0058){
     //1. Click the menu {File -> New workflow}
     //Expected: Workflow Designer is opened.
+    /*
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     QMenu *menu = GTMenu::showMainMenu(os, MWMENU_FILE);
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "New workflow");
+    */
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    
     QWidget *wdView = GTUtilsMdi::activeWindow(os);
     CHECK_OP(os, );
-    CHECK_SET_ERR(wdView->objectName() == ToolsMenu::WORKFLOW_DESIGNER, "Wrong mdi window " + wdView->objectName());
+    QString windowName = wdView->objectName();
+    CHECK_SET_ERR(wdView->objectName() == "Workflow Designer", "Wrong mdi window " + wdView->objectName());
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0059){
