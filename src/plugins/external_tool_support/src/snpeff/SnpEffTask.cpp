@@ -146,7 +146,7 @@ QStringList SnpEffTask::getParameters(U2OpStatus & os) const{
     if (dataPath.isEmpty()){
         os.setError(tr("SNPEff dataDir is not initialized."));
     }else{
-        res << additionalSlash + GUrlUtils::getQuotedString(dataPath);
+        res << additionalSlash + dataPath;
     }
 
     res << QString("-i");
@@ -178,7 +178,7 @@ QStringList SnpEffTask::getParameters(U2OpStatus & os) const{
 
     res << settings.genome;
 
-    res << GUrlUtils::getQuotedString(settings.inputUrl);
+    res << settings.inputUrl;
 
     return res;
 }
