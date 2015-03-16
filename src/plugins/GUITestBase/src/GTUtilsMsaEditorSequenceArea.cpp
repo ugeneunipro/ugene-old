@@ -322,6 +322,15 @@ int GTUtilsMSAEditorSequenceArea::getLength(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getNumVisibleBases"
+int GTUtilsMSAEditorSequenceArea::getNumVisibleBases(U2OpStatus &os) {
+    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", GTUtilsMdi::activeWindow(os)));
+    GT_CHECK_RESULT(msaEditArea != NULL, "MsaEditorSequenceArea not found", -1);
+
+    return msaEditArea->getNumVisibleBases(true);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "offsetsVisible"
 bool GTUtilsMSAEditorSequenceArea::offsetsVisible(U2OpStatus &os) {
 

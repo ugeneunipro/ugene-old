@@ -107,6 +107,13 @@ void ExtractSelectedAsMSADialogFiller::run() {
         GTCheckBox::setChecked(os,addToProjCheck,addToProj);
     }
 
+    if(!format.isEmpty()) {
+        GTGlobals::sleep(300);
+        QComboBox *formatCombo = dialog->findChild<QComboBox*>("formatCombo");
+        GT_CHECK(formatCombo != NULL, "formatCombo is null");
+        GTComboBox::setIndexWithText(os, formatCombo, format);
+    }
+
     QTableWidget *table=dialog->findChild<QTableWidget*>("sequencesTableWidget");
     GT_CHECK(table!=NULL, "tableWidget is NULL");
     QPoint p=table->geometry().topRight();

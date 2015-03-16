@@ -4897,6 +4897,34 @@ GUI_TEST_CLASS_DEFINITION(test_3868) {
     CHECK_SET_ERR(qualifiersEdit->text().contains("label"), "Label must be shown in annotation widget");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3870) {
+    //1. Open file "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    int length = GTUtilsMSAEditorSequenceArea::getLength(os);
+
+    //2. Insert gaps
+    GTUtilsMSAEditorSequenceArea::scrollToPosition(os, QPoint(length - 1, 1));
+    int columnsNumber = GTUtilsMSAEditorSequenceArea::getNumVisibleBases(os);
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(columnsNumber - 10, 0), QPoint(columnsNumber, 10));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+
+    //3. Export sequences with terminal gaps to FASTA
+    //Expected state: terminal gaps are not cut off
+    length = GTUtilsMSAEditorSequenceArea::getLength(os);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_EXPORT<<"Save subalignment"));
+    GTUtilsDialog::waitForDialog(os, new ExtractSelectedAsMSADialogFiller(os,
+        testDir + "_common_data/scenarios/sandbox/3870.fa",
+        GTUtilsMSAEditorSequenceArea::getNameList(os), length - 60, length - 1, true, false, false, false, true, "FASTA"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
+
+    QFile resFile(testDir + "_common_data/scenarios/sandbox/3870.fa");
+    QFile templateFile(testDir + "_common_data/scenarios/_regression/3870/3870.fa");
+    CHECK_SET_ERR(resFile.size() == templateFile.size(), "Result file is incorrect");
+}
+
+
 GUI_TEST_CLASS_DEFINITION(test_3886) {
     //1. Open WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
@@ -4954,6 +4982,24 @@ GUI_TEST_CLASS_DEFINITION(test_3891) {
     fetchAnnotationsButton = GTWidget::findButtonByText(os, "Fetch annotations");
     CHECK_SET_ERR(NULL != fetchAnnotationsButton, "Fetch annotations button is NULL");
     CHECK_SET_ERR(fetchAnnotationsButton->isEnabled(), "Fetch annotations button is unexpectedly disabled");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3896) {
+    //1. Open "_common_data/fasta/human_T1_cutted.fa".
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/human_T1_cutted.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //2. Create any annotation.
+    //Expected state: there is an annotation group with an annotation within.
+    //Current state: there is an annotation group with two similar annotations within.
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "group", "feature", "50..60"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "group  (0, 1)");
+    CHECK_SET_ERR(NULL != annotationGroup, "Wrong annotations number");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3901) {

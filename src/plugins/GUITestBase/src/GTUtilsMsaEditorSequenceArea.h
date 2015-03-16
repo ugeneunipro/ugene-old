@@ -50,6 +50,7 @@ public:
     static int getRightOffset(U2OpStatus &os);
 
     static int getLength(U2OpStatus &os);
+    static int getNumVisibleBases(U2OpStatus &os);
 
     static void moveTo(U2OpStatus &os, const QPoint &p);
 
