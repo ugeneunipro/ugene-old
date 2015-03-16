@@ -508,6 +508,8 @@ public:
     ExportHighligtningTask(ExportHighligtningDialogController *dialog, MSAEditorSequenceArea *msaese_);
 
     void run();
+    QString generateReport() const;
+    Task::ReportResult report();
 
 private:
     int startPos;

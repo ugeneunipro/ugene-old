@@ -2762,7 +2762,7 @@ void MSAEditorSequenceArea::cancelShiftTracking( ) {
 }
 
 ExportHighligtningTask::ExportHighligtningTask( ExportHighligtningDialogController *dialog, MSAEditorSequenceArea *msaese_ )
-    : Task(tr("Export highlighting"), TaskFlags_FOSCOE)
+    : Task(tr("Export highlighting"), TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)
 {
     msaese = msaese_;
     startPos = dialog->startPos;
@@ -2781,6 +2781,18 @@ void ExportHighligtningTask::run(){
     CHECK_EXT(resultFile.open( QFile::WriteOnly | QFile::Truncate ), url.getURLString(),);
     QTextStream contentWriter(&resultFile);
     contentWriter << exportedData;
+}
+
+Task::ReportResult ExportHighligtningTask::report() {
+    return ReportResult_Finished;
+}
+
+QString ExportHighligtningTask::generateReport() const {
+    QString res;
+    if(!isCanceled() && !hasError()){
+        res += "<b>" + tr("Export highligtning finished successfully") + "</b><br><b>" + tr("Result file:") + "</b> " + url.getURLString();
+    }
+    return res;
 }
 
 }//namespace
