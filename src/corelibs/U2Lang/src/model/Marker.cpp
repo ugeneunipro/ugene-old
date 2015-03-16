@@ -343,6 +343,8 @@ Marker *SequenceMarker::clone() {
 /* QualifierMarker */
 /************************************************************************/
 QString QualifierMarker::getMarkingResult( const QVariant &object ) {
+    const QString rest = values.value(MarkerUtils::REST_OPERATION);
+
     QList<AnnotationData> anns;
     foreach ( const QVariant &ann, object.toList( ) ) {
         SAFE_POINT( ann.canConvert<AnnotationData>( ), "Invalid annotation data encountered!",
@@ -363,15 +365,18 @@ QString QualifierMarker::getMarkingResult( const QVariant &object ) {
                     value = qVariantFromValue( qual.value );
                     ok = true;
                 } else {
-                    FAIL( "Unexpected marker type!", values.value( MarkerUtils::REST_OPERATION ) );
+                    FAIL( "Unexpected marker type!", rest );
                 }
                 SAFE_POINT( ok, "Variant conversion error!", QString( ) );
-                return Marker::getMarkingResult(value);
+                QString mark = Marker::getMarkingResult(value);
+                if (rest != mark) {
+                    return mark;
+                }
             }
         }
     }
 
-    return values.value(MarkerUtils::REST_OPERATION);
+    return rest;
 }
 
 MarkerGroup QualifierMarker::getGroup() {
