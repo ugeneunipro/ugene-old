@@ -263,7 +263,7 @@ GUI_TEST_CLASS_DEFINITION(test_4034) {
     //1. Open "samples/Genbank/murine.gb".
     //2. Ctrl + N.
     //There are two check boxes for switching the location type. Usually, when you choose between several actions (switch them), GUI shows you radio buttons, not check boxes.
-    //Check boxes are used to switch on/off an option but not to choose between options. In this dialog, you even can't switch off the check box when you click it. 
+    //Check boxes are used to switch on/off an option but not to choose between options. In this dialog, you even can't switch off the check box when you click it.
     //It is a wrong behavior for this graphic primitive
     //Solution: replace the check boxes with radio buttons.
     GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
@@ -444,6 +444,46 @@ GUI_TEST_CLASS_DEFINITION(test_4070) {
     CHECK_SET_ERR(colorFound, "The overview doesn't contain white color");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4072) {
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    QWidget *hSeqScroll = GTWidget::findWidget(os, "horizontal_sequence_scroll");
+    CHECK_SET_ERR(hSeqScroll != NULL, "No scroll bar at the bottom of sequence area");
+    CHECK_SET_ERR(hSeqScroll->isVisible(), "Scroll bat at the bottom of sequence area is invisible");
+
+    QWidget *vSeqScroll = GTWidget::findWidget(os, "vertical_sequence_scroll");
+    CHECK_SET_ERR(vSeqScroll != NULL, "No scroll bar at the bottom of sequence area");
+    CHECK_SET_ERR(!vSeqScroll->isVisible(), "Scroll bat at the rigth side of sequence area is visible");
+
+    QWidget* hNameScroll = GTWidget::findWidget(os, "horizontal_names_scroll");
+    CHECK_SET_ERR(hNameScroll != NULL, "No scroll bar at the bottom of name list area");
+    CHECK_SET_ERR(!hNameScroll->isVisible(), "Scroll bar at the botton of name list area is visible");
+
+    QSplitter* splitter = qobject_cast<QSplitter*>(GTWidget::findWidget(os, "msa_editor_horizontal_splitter"));
+    CHECK_SET_ERR(splitter != NULL, "MSA Splitter not found");
+    QSplitterHandle* handle = splitter->handle(1);
+    CHECK_SET_ERR(handle != NULL, "MSA Splitter handle is NULL");
+
+    QWidget* nameList = GTWidget::findWidget(os, "msa_editor_name_list");
+    CHECK_SET_ERR(nameList != NULL, "MSA Editor name list not found");
+
+    GTWidget::click(os, handle);
+    QPoint p = GTMouseDriver::getMousePosition();
+    p.setX( p.x() - 2*nameList->width()/3);
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::release(os);
+
+    CHECK_SET_ERR(hNameScroll->isVisible(), "Scroll bar at the botton of name list area is invisible");
+
+
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/fungal - all.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    hNameScroll = GTWidget::findWidget(os, "horizontal_names_scroll");
+    CHECK_SET_ERR(hNameScroll != NULL, "No scroll bar at the bottom of name list area");
+    CHECK_SET_ERR(hNameScroll->isVisible(), "Scroll bar at the botton of name list area is visible");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4084) {
     //1. Open "_common_data/fasta/human_T1_cutted.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/human_T1_cutted.fa");
@@ -594,7 +634,7 @@ GUI_TEST_CLASS_DEFINITION(test_4122) {
     QTreeWidgetItem* newItem = GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature",annotationTable);
     CHECK_SET_ERR(NULL != newItem, "New annotation is NULL or not created");
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "Misc. Feature"));
-    GTMouseDriver::click(os);  
+    GTMouseDriver::click(os);
 
    }
 

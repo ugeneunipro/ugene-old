@@ -878,8 +878,11 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
 
     QWidget *label;
     GScrollBar* shBar = new GScrollBar(Qt::Horizontal);
+    shBar->setObjectName("horizontal_sequence_scroll");
     QScrollBar* nhBar = new QScrollBar(Qt::Horizontal);
+    nhBar->setObjectName("horizontal_names_scroll");
     GScrollBar* cvBar = new GScrollBar(Qt::Vertical);
+    cvBar->setObjectName("vertical_sequence_scroll");
 
     seqArea = new MSAEditorSequenceArea(this, shBar, cvBar);
     nameList = new MSAEditorNameList(this, nhBar);
@@ -1115,6 +1118,7 @@ SinchronizedObjectView::SinchronizedObjectView()
     : seqArea(NULL)
 {
     spliter = new QSplitter(Qt::Horizontal);
+    spliter->setObjectName("msa_editor_horizontal_splitter");
 }
 SinchronizedObjectView::SinchronizedObjectView(QSplitter *_spliter)
     : seqArea(NULL), spliter(_spliter)

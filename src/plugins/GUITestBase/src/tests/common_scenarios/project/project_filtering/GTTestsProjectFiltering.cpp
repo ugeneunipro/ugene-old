@@ -483,6 +483,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
         GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["backspace"]);
         GTGlobals::sleep(100);
     }
+    GTGlobals::sleep(3000);
 
     // Expected state: Project filter clear button is invisible
     CHECK_SET_ERR(!clearButton->isVisible(), "Project filter clear button is unexpectedly visible");
