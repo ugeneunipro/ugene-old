@@ -210,7 +210,7 @@ void ReadCSVAsAnnotationsTask::run() {
     QString text;
     while ((blockLen = io->readBlock(block.data(), BUFF_SIZE)) > 0) {
         int sizeBefore = text.length();
-        QString line = QString::fromLocal8Bit(block.data(), blockLen).trimmed();
+        QString line = QString::fromLocal8Bit(block.data(), blockLen);
         text.append(line);
         if (text.length() != sizeBefore + line.length()) {
             setError(L10N::errorReadingFile(url));
@@ -231,7 +231,7 @@ void ReadCSVAsAnnotationsTask::run() {
         QString groupName;
 
         for (int column = 0; column < lineTokens.size() && ok; column++) {
-            if (column > config.columns.size()) {
+            if (column >= config.columns.size()) {
                 break;
             }
             const ColumnConfig& columnConf = config.columns.at(column);
