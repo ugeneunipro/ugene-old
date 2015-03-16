@@ -3971,6 +3971,26 @@ GUI_TEST_CLASS_DEFINITION(test_3675){
     GTGlobals::sleep();
     CHECK_SET_ERR(QFile::exists(sandBoxDir + "some_not_existing_folder/COI.nwk"), "File sandBoxDir/some_not_existing_folder/COI.nwk does not exist");
 }
+
+GUI_TEST_CLASS_DEFINITION(test_3676){
+    //1. Open human_T1.fa
+    //2. Context menu {Analyze --> Primer3}
+    //Expected state: 'Primer Designer' dialog appeared
+    //3. Go to Result Settings tab
+    //4. Set group name and annotation name
+    //5. Pick primers
+    //Current state: a group name is correct, but annotations name is 'primer'
+    //Expected state: all items have corresponding values from the dialog.
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    Primer3DialogFiller::Primer3Settings settings;
+    settings.primersName = "testPrimer";
+    GTUtilsDialog::waitForDialog(os, new Primer3DialogFiller(os, settings));
+    GTWidget::click(os, GTWidget::findWidget(os, "primer3_action_widget"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    QTreeWidgetItem* testPrimer = GTUtilsAnnotationsTreeView::findItem(os, "testPrimer");
+    CHECK_SET_ERR(testPrimer != NULL, "Can not find item with name \"testPrimer\"");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3690){
 //    1. Open human_T1.fa
 //    Expected state: there are two opened windows - start page and human_T1
