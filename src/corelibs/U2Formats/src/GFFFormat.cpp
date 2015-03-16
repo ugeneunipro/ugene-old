@@ -77,7 +77,10 @@ int readLongLine( QString &buffer, IOAdapter* io, QScopedArrayPointer<char> &cha
     return buffer.length( );
 }
 
-void validateHeader( QStringList words){
+bool validateHeader( QStringList words){
+    if (!words[0].startsWith('#')) {
+        return false;
+    }
     bool isOk = false;
     if(words.size() < 2){
         ioLog.error(GFFFormat::tr("Parsing error: invalid header"));
@@ -95,6 +98,7 @@ void validateHeader( QStringList words){
             ioLog.info(GFFFormat::tr("Parsing error: GFF version %1 is not supported").arg(ver));
         }
     }
+    return true;
 }
 
 static QMap<QString, QString> initEscapeCharactersMap() {
@@ -222,12 +226,16 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     QSet<AnnotationTableObject *> atoSet;
     QMap <QString, U2SequenceObject*> seqMap;
     //header validation
-    validateHeader(words);
+    bool skipHeader = validateHeader(words);
+    int lineNumber = 2;//because first line checked in method validateHeader above
+    if (!skipHeader) {
+        io->skip( -io->bytesRead() );
+        lineNumber--;
+    }
 
     U2SequenceImporter seqImporter(hints, true);
     const QString folder = hints.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
 
-    int lineNumber = 2;//because first line checked in method validateHeader above
     QMap<QString, AnnotationData *> joinedAnnotations;
     QMap<AnnotationData *, QString> annotationGroups;
     QMap<AnnotationData *, AnnotationTableObject *> annotationTables;
