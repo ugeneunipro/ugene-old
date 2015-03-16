@@ -99,7 +99,6 @@ freeMemorySize(m), prevMemoryHint(0), dataBunch(NULL)
 void ReadShortReadsSubTask::readingFinishedWakeAll() {
     taskLog.trace("Wake all");
 
-    assert(dataBunch->bitValuesV.size() == 0);
     delete dataBunch; dataBunch = NULL;
 
     QMutexLocker lock(&alignContext.readingStatusMutex);
@@ -149,6 +148,10 @@ void ReadShortReadsSubTask::run() {
     bunchSize = 0;
     int readNum = 0;
     while(!seqReader->isEnd()) {
+        if (isCanceled()) {
+            readingFinishedWakeAll();
+            return;
+        }
         SearchQuery *query = seqReader->read();
         if (NULL == query) {
             if (!seqReader->isEnd()) {

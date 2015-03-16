@@ -91,6 +91,7 @@ void LoadIndexTask::run() {
 
     alignContext->indexLock.lockForWrite();
     while (true) {
+        CHECK_EXT(!isCanceled(), alignContext->indexLock.unlock(), );
         if (!alignContext->needIndex) {
             alignContext->loadIndexTaskWait.wait(&alignContext->indexLock);
         }
@@ -204,6 +205,7 @@ void ShortReadAlignerCPU::run() {
         }
 
         do {
+            CHECK_OP(stateInfo, );
             DataBunch *dataBunch = parent->waitForDataBunch();
             GA_CHECK_BREAK(dataBunch);
             algoLog.trace(QString("[%1] Got for aligning").arg(taskNo));
