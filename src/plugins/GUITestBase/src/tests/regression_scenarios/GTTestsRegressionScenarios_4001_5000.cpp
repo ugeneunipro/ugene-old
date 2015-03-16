@@ -259,6 +259,40 @@ GUI_TEST_CLASS_DEFINITION(test_4030) {
     CHECK_SET_ERR(!label->isVisible(), "Label is shown");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4033) {
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            QWidget *cbExistingTable = GTWidget::findWidget(os, "cbExistingTable", dialog);
+            QWidget *tbBrowseExistingTable = GTWidget::findWidget(os, "tbBrowseExistingTable", dialog);
+            QWidget *leNewTablePath = GTWidget::findWidget(os, "leNewTablePath", dialog);
+            QWidget *tbBrowseNewTable = GTWidget::findWidget(os, "tbBrowseNewTable", dialog);
+
+            GTWidget::click(os, GTWidget::findWidget(os, "rbExistingTable", dialog));
+            CHECK_SET_ERR(cbExistingTable->isEnabled() && tbBrowseExistingTable->isEnabled(), "Create annotation dialog controls are disabled unexpectedly");
+            CHECK_SET_ERR(!leNewTablePath->isEnabled() && !tbBrowseNewTable->isEnabled(), "Create annotation dialog controls are enabled unexpectedly");
+
+            GTWidget::click(os, GTWidget::findWidget(os, "rbCreateNewTable", dialog));
+            CHECK_SET_ERR(!cbExistingTable->isEnabled() && !tbBrowseExistingTable->isEnabled(), "Create annotation dialog controls are enabled unexpectedly");
+            CHECK_SET_ERR(leNewTablePath->isEnabled() && tbBrowseNewTable->isEnabled(), "Create annotation dialog controls are disabled unexpectedly");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    //1. Open "samples/Genbank/murine.gb".
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+    //2. Ctrl + N.
+    //Expected: if the "Existing table" radio button is not checked, then the URL line edit is disabled.
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, new Scenario));
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4034) {
     //1. Open "samples/Genbank/murine.gb".
     //2. Ctrl + N.
