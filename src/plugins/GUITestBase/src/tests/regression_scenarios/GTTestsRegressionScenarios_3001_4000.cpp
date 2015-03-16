@@ -4984,6 +4984,33 @@ GUI_TEST_CLASS_DEFINITION(test_3891) {
     CHECK_SET_ERR(fetchAnnotationsButton->isEnabled(), "Fetch annotations button is unexpectedly disabled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3895) {
+    //1. Open '_common_data/genbank/pBR322.gb' (file contains circular marker)
+    GTGlobals::sleep();
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank", "pBR322.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //2. Export document to genbank format
+    //Current state: there are two circular markers in the first line
+    GTUtilsDialog::waitForDialog(os, new ExportDocumentDialogFiller(os, sandBoxDir, "test_3895.gb", ExportDocumentDialogFiller::Genbank, false, false));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export document"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "pBR322.gb"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTGlobals::sleep();
+    QFile exportedDoc(sandBoxDir + "test_3895.gb");
+    bool isOpened = exportedDoc.open(QFile::ReadOnly);
+    CHECK_SET_ERR(isOpened, QString("Can not open file: \"%1\"").arg(exportedDoc.fileName()));
+    QTextStream fileReader(&exportedDoc);
+    QString firstLine = fileReader.readLine();
+
+    int firstIndex = firstLine.indexOf("circular", Qt::CaseInsensitive);
+    int lastIndex = firstLine.indexOf("circular", firstIndex + 1, Qt::CaseInsensitive);
+    CHECK_SET_ERR(lastIndex < 0, "There are several circular markers");
+}
+
+
 GUI_TEST_CLASS_DEFINITION(test_3901) {
     //1. Open "_common_data/fasta/human_T1_cutted.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/human_T1_cutted.fa");
