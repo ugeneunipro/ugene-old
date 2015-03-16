@@ -30,18 +30,13 @@
 #include "api/GTPlainTextEdit.h"
 #include "api/GTSpinBox.h"
 
+#include "runnables/qt/MessageBoxFiller.h"
+
 #include <QtCore/QDir>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QGroupBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QGroupBox>
-#endif
+#include <QApplication>
+#include <QPushButton>
+#include <QDialogButtonBox>
+#include <QGroupBox>
 
 namespace U2 {
 
@@ -146,6 +141,7 @@ void InsertSequenceFiller::run()
     GT_CHECK(box != NULL, "buttonBox is NULL");
     QPushButton* button = box->button(QDialogButtonBox::Ok);
     GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
     GTWidget::click(os, button);
 
 }

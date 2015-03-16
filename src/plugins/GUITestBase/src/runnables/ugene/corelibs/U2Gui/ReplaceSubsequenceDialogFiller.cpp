@@ -41,6 +41,8 @@
 #include "api/GTRadioButton.h"
 #include "api/GTPlainTextEdit.h"
 
+#include "runnables/qt/MessageBoxFiller.h"
+
 #include "ReplaceSubsequenceDialogFiller.h"
 
 namespace U2 {
@@ -69,6 +71,7 @@ namespace U2 {
         GT_CHECK(box != NULL, "buttonBox is NULL");
         QPushButton* button = box->button(QDialogButtonBox::Ok);
         GT_CHECK(button !=NULL, "cancel button is NULL");
+        GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
         GTWidget::click(os, button);
 
     }

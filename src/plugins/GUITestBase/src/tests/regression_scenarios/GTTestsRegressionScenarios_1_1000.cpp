@@ -425,6 +425,38 @@ GUI_TEST_CLASS_DEFINITION(test_0967_3) {
     CHECK_SET_ERR(true == logView->isVisible(), "taskViewTree is not visible (check #2)");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0981_1) {
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTGlobals::sleep();
+    Runnable *filler1 = new InsertSequenceFiller(os,
+        "qweqwea"
+        );
+    GTUtilsDialog::waitForDialog(os, filler1);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0981_2) {
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 2));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+    GTGlobals::sleep();
+    Runnable *filler1 = new ReplaceSubsequenceDialogFiller(os,
+        "qweqwea"
+        );
+    GTUtilsDialog::waitForDialog(os, filler1);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE,GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0986) {
 
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
