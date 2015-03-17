@@ -52,6 +52,7 @@ AssemblyReadsAreaHint::AssemblyReadsAreaHint(QWidget * p): QFrame(p), label(new 
     installEventFilter(this);
     label->installEventFilter(this);
     label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    label->setObjectName("hintLabel");
 
     {
         QPalette p(palette());
@@ -65,6 +66,7 @@ AssemblyReadsAreaHint::AssemblyReadsAreaHint(QWidget * p): QFrame(p), label(new 
     setMouseTracking(true);
     setLineWidth(1);
     setFrameShape(QFrame::Box);
+    setObjectName("AssemblyReadsAreaHint");
 }
 
 static QString getCigarString(const QString & ci) {

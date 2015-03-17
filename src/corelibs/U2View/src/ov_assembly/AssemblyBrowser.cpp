@@ -665,6 +665,7 @@ void AssemblyBrowser::setupActions() {
     connect(showCoverageOnRulerAction, SIGNAL(toggled(bool)), SLOT(sl_onShowCoverageOnRulerChanged(bool)));
 
     readHintEnabledAction = new QAction(QIcon(":core/images/tooltip.png"), tr("Show information about read under cursor in pop-up hint"), this);
+    readHintEnabledAction->setObjectName("readHintEnabledAction");
     readHintEnabledAction->setCheckable(true);
     connect(readHintEnabledAction, SIGNAL(toggled(bool)), SLOT(sl_onReadHintEnabledChanged(bool)));
 

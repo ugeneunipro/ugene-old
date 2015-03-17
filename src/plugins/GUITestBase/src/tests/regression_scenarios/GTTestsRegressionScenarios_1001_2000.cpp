@@ -814,6 +814,85 @@ GUI_TEST_CLASS_DEFINITION(test_1044) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1048){
+//    Open a few assembly views.
+    GTFile::copy(os, testDir + "_common_data/bam/chrM.sorted.bam", testDir + "_common_data/scenarios/sandbox/1.bam");
+    GTFile::copy(os, testDir + "_common_data/bam/chrM.sorted.bam", testDir + "_common_data/scenarios/sandbox/2.bam");
+//    Switch on "Show pop-up hint" option in one of them and switch it off in others.
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/1.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/2.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QWidget* act = GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "readHintEnabledAction");
+    GTWidget::click(os, act);
+
+    QWidget* w2 = GTUtilsMdi::activeWindow(os);
+    GTWidget::click(os, w2);
+    for (int i = 0;i < 50;i++){
+        GTKeyboardDriver::keyClick(os, '=', GTKeyboardDriver::key["shift"]);
+        GTGlobals::sleep(50);
+    }
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
+    GTGlobals::sleep(500);
+    bool vis = GTWidget::findWidget(os, "AssemblyReadsAreaHint", GTUtilsMdi::activeWindow(os))->isVisible();
+    CHECK_SET_ERR(!vis, "hint unexpectidly visiable");
+
+    GTUtilsMdi::activateWindow(os, "1.bam [as] chrM");
+
+    QWidget* w1 = GTUtilsMdi::activeWindow(os);
+    GTWidget::click(os, w1);
+    for (int i = 0;i < 50;i++){
+        GTKeyboardDriver::keyClick(os, '=', GTKeyboardDriver::key["shift"]);
+        GTGlobals::sleep(50);
+    }
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
+    GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(10,10));
+    GTGlobals::sleep(500);
+    vis = GTWidget::findWidget(os, "AssemblyReadsAreaHint", GTUtilsMdi::activeWindow(os))->isVisible();
+    CHECK_SET_ERR(vis, "hint unexpectidly invisiable");
+
+//    Expected state: Popups are shown in views where it is switched on, and are not shown is views where it is switched off
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1049){
+//    1. Open "_common_data/scenarios/msa/ma.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma.aln");
+//    2. Click the "Enable collapsing" button on the toolbar.
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+//    Expected state: some sequences are collapsed into two groups.
+
+
+//    3. Click {Statistics->Generate distance matrix} in the context menu.
+    class custom: public CustomScenario{
+    public:
+        void run(U2::U2OpStatus &os){
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Unable to find active dialog");
+            //    4. Check the "Show group statistics of multiple alignment" checkbox and press the "Generate" button.
+            QCheckBox* groupStatisticsCheck = GTWidget::findExactWidget<QCheckBox*>(os, "groupStatisticsCheck", dialog);
+            GTCheckBox::setChecked(os, groupStatisticsCheck, false);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os, new custom()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_STATISTICS"
+                                                     << "Generate distance matrix"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_editor_sequence_area"));
+//    Expected state: the "Generate Distance matrix" dialog appeared.
+
+    GTGlobals::sleep();
+//    Expeceted state: Statistics View opened, it contains two tables: full statistics and additional group statistics.
+    QWebView* v = GTUtilsMdi::activeWindow(os)->findChild<QWebView*>();
+    QString text = v->page()->currentFrame()->toHtml();
+    CHECK_SET_ERR(text.contains("Group statistics of multiple alignment"), text);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1052){
 //    1. Open human_t1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");

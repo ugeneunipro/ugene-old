@@ -46,6 +46,7 @@
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 
+#include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
@@ -58,7 +59,10 @@
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 
+#include <U2Gui/ToolsMenu.h>
 #include <U2View/ADVConstants.h>
 
 namespace U2 {
@@ -647,6 +651,41 @@ GUI_TEST_CLASS_DEFINITION(test_4099) {
         }
     }
 }
+
+GUI_TEST_CLASS_DEFINITION(test_4117){
+    GTLogTracer l;
+    QDir().mkpath(testDir + "_common_data/scenarios/sandbox/space containing dir");
+    GTFile::copy(os, testDir + "_common_data/fastq/short_sample.fastq",
+                 testDir + "_common_data/scenarios/sandbox/space containing dir/short_sample.fastq");
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "Quality control by FastQC");
+
+    GTUtilsWorkflowDesigner::click(os, "FASTQ File List");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/sandbox/space containing dir",
+                                                 "short_sample.fastq" );
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4118){
+//1. Add sample raw data processing
+    GTLogTracer l;
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    QMap<QString, QVariant> parameters;
+    parameters.insert("FASTQ files", QVariant(testDir + "_common_data/NGS_tutorials/RNA-Seq_Analysis/Prepare_Raw_Data/lymph.fastq"));
+    parameters.insert("Adapters", QVariant(""));
+
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Raw RNA-Seq Data Processing", QStringList()<<"Skip mapping"<<"Single-end"));
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Raw RNA-Seq Data Processing Wizard", QStringList(), parameters));
+    GTUtilsWorkflowDesigner::addSample(os, "Raw RNA-Seq data processing");
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os, 60000);
+    GTUtilsLog::check(os, l);
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4122) {
 /* 1. Open "data/samples/Genbank/murine.gb".
  * 2. Search any existing pattern.
@@ -656,7 +695,7 @@ GUI_TEST_CLASS_DEFINITION(test_4122) {
 */
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
-    GTUtilsOptionPanelSequenceView::enterPattern(os, "GAGTTCTGAACACCCGGC");
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "GAGTTCTGAACACCCGGC", true);
     GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 

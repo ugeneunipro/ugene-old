@@ -168,7 +168,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1001_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_1001_3);
     REGISTER_TEST(GUITest_regression_scenarios::test_1001_4);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1003);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1003, "too long test");
     REGISTER_TEST(GUITest_regression_scenarios::test_1013);
     REGISTER_TEST(GUITest_regression_scenarios::test_1015);
     REGISTER_TEST(GUITest_regression_scenarios::test_1015_1);
@@ -185,6 +185,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1029, "UGENE-4076");
     REGISTER_TEST(GUITest_regression_scenarios::test_1038);
     REGISTER_TEST(GUITest_regression_scenarios::test_1044);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1048);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1049);
     REGISTER_TEST(GUITest_regression_scenarios::test_1052);
     REGISTER_TEST(GUITest_regression_scenarios::test_1059);
     REGISTER_TEST(GUITest_regression_scenarios::test_1061);
@@ -877,6 +879,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_4097);
     REGISTER_TEST(GUITest_regression_scenarios::test_4099);
 
+    REGISTER_TEST(GUITest_regression_scenarios::test_4117);
+    REGISTER_TEST(GUITest_regression_scenarios::test_4118);
     REGISTER_TEST(GUITest_regression_scenarios::test_4122);
 
 //////////////////////////////////////////////////////////////////////////
@@ -1795,6 +1799,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_index_reuse::test_0001);
     REGISTER_TEST(GUITest_index_reuse::test_0002);
+    REGISTER_TEST(GUITest_index_reuse::test_0003);
+    REGISTER_TEST(GUITest_index_reuse::test_0004);
+    REGISTER_TEST(GUITest_index_reuse::test_0005);
+    REGISTER_TEST(GUITest_index_reuse::test_0006);
+    REGISTER_TEST(GUITest_index_reuse::test_0007);
+    REGISTER_TEST(GUITest_index_reuse::test_0008);
+    REGISTER_TEST(GUITest_index_reuse::test_0009);
+    REGISTER_TEST(GUITest_index_reuse::test_0010);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/dna_assembly/conversions

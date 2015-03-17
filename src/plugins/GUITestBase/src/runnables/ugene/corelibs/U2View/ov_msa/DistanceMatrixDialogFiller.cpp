@@ -66,8 +66,11 @@ DistanceMatrixDialogFiller::DistanceMatrixDialogFiller(U2OpStatus &os, DistanceM
 
 }
 
+DistanceMatrixDialogFiller::DistanceMatrixDialogFiller(U2OpStatus &os, CustomScenario *c):
+    Filler(os, "DistanceMatrixMSAProfileDialog", c){}
+
 #define GT_METHOD_NAME "run"
-void DistanceMatrixDialogFiller::run(){
+void DistanceMatrixDialogFiller::commonScenario(){
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog!=NULL, "dialog not found");
