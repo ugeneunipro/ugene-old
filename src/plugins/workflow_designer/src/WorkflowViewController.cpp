@@ -855,6 +855,7 @@ void WorkflowView::createActions() {
     connect(editExternalToolAction, SIGNAL(triggered()), SLOT(sl_editExternalTool()));
 
     appendExternalTool = new QAction(tr("Add element with command line tool..."), this);
+    appendExternalTool->setObjectName("AddElementWithCommandLineTool");
     appendExternalTool->setIcon(QIcon(":workflow_designer/images/external_cmd_tool_add.png"));
     connect(appendExternalTool, SIGNAL(triggered()), SLOT(sl_appendExternalToolWorker()));
 
