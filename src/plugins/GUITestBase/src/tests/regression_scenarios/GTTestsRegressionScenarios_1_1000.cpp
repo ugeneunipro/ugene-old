@@ -311,6 +311,57 @@ GUI_TEST_CLASS_DEFINITION(test_0908) {
     GTUtilsWorkflowDesigner::runWorkflow(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0896) {
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/896/_input", "SAMtools.etc");
+    GTUtilsDialog::waitForDialog(os, ob);    
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Discard));
+
+    QAbstractButton* button = GTAction::button(os, "AddElementWithCommandLineTool");
+    GTWidget::click(os, button);
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/896/_input/url_out_in_exttool.uwl");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QString outputFile = QDir(sandBoxDir).absolutePath() + "/test_0896out.bam";
+
+    class OkClicker : public Filler {
+    public:
+        OkClicker(U2OpStatus& _os) : Filler(_os, "CreateExternalProcessWorkerDialog"){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+
+            ExternalTool *samtools = AppContext::getExternalToolRegistry()->getByName("SAMtools");
+            QLineEdit *ed = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "templateLineEdit", w));
+            GTLineEdit::setText(os, ed, samtools->getPath() + " view -b -S -o " + QDir(sandBoxDir).absolutePath() + "/test_0896out.bam $sam");
+
+            QAbstractButton *button = GTWidget::findButtonByText(os, "Finish");
+            CHECK(NULL != button, );
+            GTWidget::click(os, button);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os));
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "SAMtools"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "editConfiguration"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::click(os, "File List");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/bowtie/pattern", "e_coli_1000.sam");
+   
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_0896"));
+    GTFileDialog::openFile(os, sandBoxDir, "/test_0896out.bam");
+    
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0910) {
 //    1. Create a scheme with the "Read sequence" element and the "Write sequence element".
 //    2. Take a file with more then one sequence as an input for the "Read sequence" element.

@@ -850,6 +850,7 @@ void WorkflowView::createActions() {
     connect(externalToolAction, SIGNAL(triggered()), SLOT(sl_externalAction()));
 
     editExternalToolAction = new QAction(tr("Edit configuration..."),this);
+    editExternalToolAction->setObjectName("editConfiguration");
     editExternalToolAction->setIcon(QIcon(":workflow_designer/images/external_cmd_tool.png"));
     editExternalToolAction->setEnabled(false); // because user need to select actor with script to enable it
     connect(editExternalToolAction, SIGNAL(triggered()), SLOT(sl_editExternalTool()));
