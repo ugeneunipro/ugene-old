@@ -266,7 +266,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
     GTGlobals::sleep();
 
     GTUtilsTaskTreeView::openView(os);
-    GTUtilsTaskTreeView::cancelTask(os, "DownloadRemoteDocuments");
+    GTUtilsTaskTreeView::cancelTask(os, "Download remote documents");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0016) {

@@ -208,11 +208,11 @@ void DownloadRemoteFileDialog::accept()
         QVariantMap hints;
         hints.insert(FORCE_DOWNLOAD_SEQUENCE_HINT, ui->chbForceDownloadSequence->isVisible() && ui->chbForceDownloadSequence->isChecked());
 
-        foreach (const QString& resId, resIds) {
-            tasks.append( new LoadRemoteDocumentAndOpenViewTask(resId, dbId, fullPath, fileFormat, hints) );
+        foreach (const QString &resId, resIds) {
+            tasks.append(new LoadRemoteDocumentAndOpenViewTask(resId, dbId, fullPath, fileFormat, hints));
         }
 
-        AppContext::getTaskScheduler()->registerTopLevelTask( new MultiTask("DownloadRemoteDocuments", tasks) );
+        AppContext::getTaskScheduler()->registerTopLevelTask(new MultiTask(tr("Download remote documents"), tasks));
     } else { //DAS ID
         DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
         if (dasRegistry){
@@ -231,7 +231,7 @@ void DownloadRemoteFileDialog::accept()
             //get sequence
             DASSource refSource = dasRegistry->findById(dbId);
             if (refSource.isValid()) {
-                foreach (const QString& resId, resIds) {
+                foreach (const QString &resId, resIds) {
                     tasks.append(new LoadDASDocumentsAndOpenViewTask(resId, fullPath, refSource, featureSources));
                 }
                 TaskFlags multiTaskFlags(TaskFlag_NoRun | TaskFlag_ReportingIsEnabled | TaskFlag_ReportingIsSupported);

@@ -3760,7 +3760,7 @@ GUI_TEST_CLASS_DEFINITION(test_2562_1) {
     GTLogTracer l;
     // 1. Open "File -> Access Remote Database..." from the main menu.
     // 2. Get something adequate from the Uniprot(DAS) database(e.g.use example ID : P05067).
-    // Expected state : "DownloadRemoteDocuments" task has been started
+    // Expected state : "Download remote documents" task has been started
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "P05067", 7));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB);
     GTUtilsTaskTreeView::checkTask(os, "Load DAS Documents");

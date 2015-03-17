@@ -279,13 +279,45 @@ GUI_TEST_CLASS_DEFINITION(test_0878) {
     CHECK_SET_ERR(win == GTUtilsMdi::activeWindow(os), "Incorrect active window");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0908) {
+    //1) Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    //2) Click "Create element with command line tool"
+    //3) input name "test"
+    //4) input data : "in1" and "in2" of FASTA
+    //5) output data : "out1" of FASTA
+    //6) Execution string : "cmd /c copy $in1 $out1 | copy $in2 $out1"
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/908/test.etc"));
+    GTWidget::click(os, GTAction::button(os, "AddElementWithCommandLineTool"));
+
+    //7) Add input and output readers of FASTA
+    GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta", "AMINO.fa");
+
+    GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta", "alphabet.fa");
+
+    WorkflowProcessItem* writer = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+
+    WorkflowProcessItem *cmdlineWorker = GTUtilsWorkflowDesigner::getWorker(os, "test");
+
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), cmdlineWorker);
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence 1"), cmdlineWorker);
+    GTUtilsWorkflowDesigner::connect(os, cmdlineWorker, writer);
+
+    //8) Run schema
+    //Expected state : UGENE not crashed
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0910) {
 //    1. Create a scheme with the "Read sequence" element and the "Write sequence element".
 //    2. Take a file with more then one sequence as an input for the "Read sequence" element.
 //    3. Set the "Accumulate objects" parameters to False
 //    4. Set the "Existing file" parameter to "Rename"
 //    5. Run the scheme
-//    6. The number of output files must be equel to the number of input sequences
+//    6. The number of output files must be equal to the number of input sequences
 
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 

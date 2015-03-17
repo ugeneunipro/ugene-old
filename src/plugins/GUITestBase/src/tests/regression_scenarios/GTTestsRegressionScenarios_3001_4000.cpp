@@ -3402,7 +3402,7 @@ GUI_TEST_CLASS_DEFINITION(test_3585) {
     GTLogTracer l;
     // 1. Open "File -> Access Remote Database..." from the main menu.
     // 2. Get something adequate from the Uniprot(DAS) database(e.g.use example ID : P05067).
-    // Expected state : "DownloadRemoteDocuments" task has been started
+    // Expected state : "Download remote documents" task has been started
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "P05067", 7));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB);
     GTGlobals::sleep(500);
@@ -4438,10 +4438,10 @@ GUI_TEST_CLASS_DEFINITION(test_3770) {
                                                                         sandBoxDir));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE),
                                 QStringList() << ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
-    GTUtilsTaskTreeView::cancelTask(os, "DownloadRemoteDocuments");
+    GTUtilsTaskTreeView::cancelTask(os, "Download remote documents");
     GTGlobals::sleep();
 
-    CHECK_SET_ERR( GTUtilsTaskTreeView::countTasks(os, "DownloadRemoteDocuments") == 0, "Task was not canceled");
+    CHECK_SET_ERR( GTUtilsTaskTreeView::countTasks(os, "Download remote documents") == 0, "Task was not canceled");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3772) {

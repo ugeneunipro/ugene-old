@@ -129,10 +129,10 @@ QString HMMSearchPrompter::composeRichDoc() {
     QString resultName = getHyperlink(NAME_ATTR, getRequiredParam(NAME_ATTR));
     QString cfg = isDefaultCfg(this) ? tr("Use <u>default</u> settings.") : tr("Use <u>custom</u> settings.");
 
-    QString doc = tr("%1 search HMM signals %2. %3"
+    QString doc = tr("%1 HMM signals. %3"
         "<br>Output the list of found regions annotated as <u>%4</u>.")
-        .arg(seqName)
-        .arg(hmmName)
+        .arg(seqName.isEmpty() ? "Search" : seqName + " search")
+        .arg(hmmName.isEmpty() ? "" : " " + hmmName)
         .arg(cfg)
         .arg(resultName);
 
