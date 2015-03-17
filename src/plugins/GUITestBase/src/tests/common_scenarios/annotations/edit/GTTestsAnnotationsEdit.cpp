@@ -681,7 +681,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     // 2. Open view for "1.gb"
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
