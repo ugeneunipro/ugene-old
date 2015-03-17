@@ -24,6 +24,8 @@
 
 #include "SequenceTextEdit.h"
 
+#include <U2Core/U2SafePoints.h>
+
 namespace U2 {
 
 SequenceTextEdit::SequenceTextEdit(QWidget *p)
@@ -31,26 +33,33 @@ SequenceTextEdit::SequenceTextEdit(QWidget *p)
 {}
 
 void SequenceTextEdit::insertFromMimeData(const QMimeData *source) {
-    QString data = source->text();
-    if (data.size() > NO_QUESTION_LIMIT
-            && QMessageBox::question(this,
-                                     tr("Pasting large data"),
-                                     tr("The clipboard contains a large amount of data.\nIt will take time to paste it.\nDo you want to continue?"),
-                                     QMessageBox::Yes, QMessageBox::No)
-            == QMessageBox::No) {
-        return;
-    }
+    try {
+        SAFE_POINT(source != NULL, tr("Invalid mimedata"), );
+        QString data = source->text();
+        if (data.size() > NO_QUESTION_LIMIT
+                && QMessageBox::question(this,
+                                         tr("Pasting large data"),
+                                         tr("The clipboard contains a large amount of data.\nIt will take time to paste it.\nDo you want to continue?"),
+                                         QMessageBox::Yes, QMessageBox::No)
+                == QMessageBox::No) {
+            return;
+        }
 
-    int splitter = PARAGRAPH_SIZE;
-    while ( splitter < data.size() ) {
-        data.insert(splitter, '\n');
-        splitter += PARAGRAPH_SIZE + 1;
-    }
+        int splitter = PARAGRAPH_SIZE;
+        while ( splitter < data.size() ) {
+            data.insert(splitter, '\n');
+            splitter += PARAGRAPH_SIZE + 1;
+        }
 
-    QMimeData* mimeData = new QMimeData();
-    mimeData->setText(data);
-    QPlainTextEdit::insertFromMimeData(mimeData);
-    delete mimeData;
+        QMimeData* mimeData = new QMimeData();
+        mimeData->setText(data);
+        QPlainTextEdit::insertFromMimeData(mimeData);
+        delete mimeData;
+    }
+    catch (...) {
+        QMessageBox::warning(this, tr("Error on pasting large data"), tr("An error occurred on pasting large amount of data.\nText edit was cleared."));
+        clear();
+    }
 }
 
 } // namespace
