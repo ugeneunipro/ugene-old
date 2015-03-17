@@ -56,6 +56,8 @@ Bowtie2SettingsWidget::Bowtie2SettingsWidget(QWidget *parent):
 #endif
     indexSuffixes << Bowtie2Task::indexSuffixes;
     indexSuffixes << Bowtie2Task::largeIndexSuffixes;
+
+    requiredExtToolNames << ET_BOWTIE2_ALIGN << ET_BOWTIE2_BUILD;
 }
 
 QMap<QString,QVariant> Bowtie2SettingsWidget::getDnaAssemblyCustomSettings() const {
@@ -97,29 +99,6 @@ QMap<QString,QVariant> Bowtie2SettingsWidget::getDnaAssemblyCustomSettings() con
     settings.insert(Bowtie2Task::OPTION_NOCONTAIN, nocontainCheckBox->isChecked());
 
     return settings;
-}
-
-bool Bowtie2SettingsWidget::isParametersOk(QString& /*error*/) const {
-
-    ExternalTool* bowtie2 = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE2_ALIGN);
-    ExternalTool* bowtie2Build = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE2_BUILD);
-    bool bowtie2ToolsExist = bowtie2 && bowtie2Build;
-
-    if( !bowtie2ToolsExist || bowtie2->getPath().isEmpty() || bowtie2Build->getPath().isEmpty() ) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("DNA Assembly"));
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        msgBox.setText(tr("Path for <i>Bowtie2</i> and <i>Bowtie2-build</i> tools is not set."));
-        int ret = msgBox.exec();
-        if (ret == QMessageBox::Yes) {
-            AppContext::getAppSettingsGUI()->showSettingsDialog(APP_SETTINGS_EXTERNAL_TOOLS);
-        }
-        return false;
-    }
-
-    return true;
 }
 
 bool Bowtie2SettingsWidget::isValidIndex(const QString &oneIndexFileUrl) const {

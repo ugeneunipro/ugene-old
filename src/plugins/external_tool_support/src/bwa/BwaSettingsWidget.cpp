@@ -27,6 +27,7 @@
 #include <U2Core/L10n.h>
 
 #include "BwaSettingsWidget.h"
+#include "BwaSupport.h"
 #include "BwaTask.h"
 
 const qint64 MAX_REFERENCE_SIZE_FOR_IS_METHOD =     2.147e+9;
@@ -122,10 +123,10 @@ BwaSettingsWidget::BwaSettingsWidget(QWidget *parent)
 
     threadsSpinBox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     threadsSpinBox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
-    warningReporter->setReportingLabel( infoLabel );
-    connect( indexAlgorithmComboBox, SIGNAL( currentIndexChanged ( int ) ), warningReporter,
-        SLOT( sl_IndexAlgorithmChanged( int ) ) );
+    warningReporter->setReportingLabel(infoLabel);
+    connect(indexAlgorithmComboBox, SIGNAL(currentIndexChanged(int)), warningReporter, SLOT(sl_IndexAlgorithmChanged(int)));
     indexSuffixes << BwaTask::indexSuffixes;
+    requiredExtToolNames << ET_BWA;
 }
 
 QMap<QString,QVariant> BwaSettingsWidget::getDnaAssemblyCustomSettings() const {
@@ -262,16 +263,15 @@ BwaSwSettingsWidget::BwaSwSettingsWidget(QWidget *parent):
     numThreadsSpinbox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     numThreadsSpinbox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
 
-    label->setStyleSheet(
-        "color: " + L10N::successColorLabelStr() + ";"
-        "font: bold;");
-    label->setText(tr("NOTE: bwa-sw performs alignment of long sequencing reads (Sanger or 454). It accepts reads only in FASTA or FASTQ format. Reads should be compiled into single file."));
+    label->setStyleSheet(QString("color: %1; font: bold;").arg(L10N::successColorLabelStr()));
+    label->setText(tr("NOTE: bwa-sw performs alignment of long sequencing reads (Sanger or 454). It accepts reads only in FASTA or FASTQ format. "
+        "Reads should be compiled into single file."));
 
     adjustSize();
 
     warningReporter->setReportingLabel(warningLabel);
-    connect( indexAlgorithmComboBox, SIGNAL( currentIndexChanged ( int ) ), warningReporter,
-        SLOT( sl_IndexAlgorithmChanged( int ) ) );
+    connect(indexAlgorithmComboBox, SIGNAL(currentIndexChanged(int)), warningReporter, SLOT(sl_IndexAlgorithmChanged(int)));
+    requiredExtToolNames << ET_BWA;
 }
 
 QMap<QString,QVariant> BwaSwSettingsWidget::getDnaAssemblyCustomSettings() const {
@@ -331,16 +331,14 @@ BwaMemSettingsWidget::BwaMemSettingsWidget(QWidget *parent):
     numThreadsSpinbox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     numThreadsSpinbox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
 
-    label->setStyleSheet(
-        "color: " + L10N::successColorLabelStr() + ";"
-        "font: bold;");
+    label->setStyleSheet(QString("color: %1; font: bold;").arg(L10N::successColorLabelStr()));
     label->setText(tr("NOTE: bwa mem accepts reads only in FASTA or FASTQ format. Reads should be compiled into a single file for each mate end."));
 
     adjustSize();
 
     warningReporter->setReportingLabel(warningLabel);
-    connect( indexAlgorithmComboBox, SIGNAL( currentIndexChanged ( int ) ), warningReporter,
-        SLOT( sl_IndexAlgorithmChanged( int ) ) );
+    connect(indexAlgorithmComboBox, SIGNAL(currentIndexChanged(int)), warningReporter, SLOT(sl_IndexAlgorithmChanged(int)));
+    requiredExtToolNames << ET_BWA;
 }
 
 QMap<QString,QVariant> BwaMemSettingsWidget::getDnaAssemblyCustomSettings() const {

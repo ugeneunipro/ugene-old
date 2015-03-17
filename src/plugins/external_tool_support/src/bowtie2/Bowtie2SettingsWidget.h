@@ -32,7 +32,6 @@ class Bowtie2SettingsWidget : public DnaAssemblyAlgorithmMainWidget, Ui_Bowtie2S
 public:
     Bowtie2SettingsWidget(QWidget *parent);
     QMap<QString, QVariant> getDnaAssemblyCustomSettings() const;
-    bool isParametersOk(QString &error) const;
     bool isValidIndex(const QString &oneFileUrl) const;
 };
 

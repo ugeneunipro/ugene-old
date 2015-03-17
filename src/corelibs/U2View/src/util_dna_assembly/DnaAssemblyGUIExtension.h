@@ -59,7 +59,10 @@ public:
     virtual bool isValidIndex(const QString &oneIndexFileUrl) const;
 
 protected:
+    bool requiredToolsAreOk() const;
+
     QStringList indexSuffixes;
+    QStringList requiredExtToolNames;
 };
 
 class U2VIEW_EXPORT DnaAssemblyAlgorithmBuildIndexWidget : public DnaAssemblyAlgorithmBaseWidget {

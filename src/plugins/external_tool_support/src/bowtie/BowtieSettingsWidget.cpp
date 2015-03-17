@@ -55,6 +55,8 @@ BowtieSettingsWidget::BowtieSettingsWidget(QWidget *parent):
 
     indexSuffixes << BowtieTask::indexSuffixes;
     indexSuffixes << BowtieTask::largeIndexSuffixes;
+
+    requiredExtToolNames << ET_BOWTIE << ET_BOWTIE_BUILD;
 }
 
 QMap<QString,QVariant> BowtieSettingsWidget::getDnaAssemblyCustomSettings() const {
@@ -96,30 +98,6 @@ QMap<QString,QVariant> BowtieSettingsWidget::getDnaAssemblyCustomSettings() cons
     settings.insert(BowtieTask::OPTION_COLORSPACE, colorspaceCheckBox->isChecked());
 
     return settings;
-}
-
-bool BowtieSettingsWidget::isParametersOk(QString & /*error*/) const {
-
-    ExternalTool* bowtie = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE);
-    ExternalTool* bowtieBuild = AppContext::getExternalToolRegistry()->getByName(ET_BOWTIE_BUILD);
-    bool bowtieToolsExist = bowtie && bowtieBuild;
-
-    if( !bowtieToolsExist || bowtie->getPath().isEmpty() || bowtieBuild->getPath().isEmpty() ) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("DNA Assembly"));
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        msgBox.setText(tr("Path for <i>Bowtie</i> and <i>Bowtie-build</i> tools is not set."));
-        int ret = msgBox.exec();
-        if (ret == QMessageBox::Yes) {
-            AppContext::getAppSettingsGUI()->showSettingsDialog(APP_SETTINGS_EXTERNAL_TOOLS);
-        }
-
-        return false;
-    }
-
-    return true;
 }
 
 bool BowtieSettingsWidget::isValidIndex(const QString &oneIndexFileUrl) const {

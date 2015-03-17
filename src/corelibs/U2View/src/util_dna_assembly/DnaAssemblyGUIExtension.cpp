@@ -19,6 +19,14 @@
  * MA 02110-1301, USA.
  */
 
+#include <QMessageBox>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/L10n.h>
+
+#include <U2Gui/AppSettingsGUI.h>
+
 #include "DnaAssemblyGUIExtension.h"
 
 namespace U2 {
@@ -46,7 +54,7 @@ DnaAssemblyAlgorithmMainWidget::DnaAssemblyAlgorithmMainWidget(QWidget *parent)
 }
 
 bool DnaAssemblyAlgorithmMainWidget::isParametersOk(QString & /*error*/) const {
-    return true;
+    return requiredToolsAreOk();
 }
 
 bool DnaAssemblyAlgorithmMainWidget::buildIndexUrl(const GUrl & /*url*/, bool /*prebuiltIndex*/, QString & /*error*/) const {
@@ -64,6 +72,43 @@ bool DnaAssemblyAlgorithmMainWidget::isIndex(const QString &url) const {
 bool DnaAssemblyAlgorithmMainWidget::isValidIndex(const QString &oneIndexFileUrl) const {
     QString baseUrl = DnaAssemblyToReferenceTask::getBaseUrl(oneIndexFileUrl, indexSuffixes);
     return DnaAssemblyToReferenceTask::isPrebuiltIndex(baseUrl, indexSuffixes);
+}
+
+bool DnaAssemblyAlgorithmMainWidget::requiredToolsAreOk() const {
+    QStringList missedExtTools;
+    ExternalToolRegistry *extToolRegistry = AppContext::getExternalToolRegistry();
+    SAFE_POINT(NULL != extToolRegistry, L10N::nullPointerError("External tool subsystem"), false);
+    foreach (const QString &toolName, requiredExtToolNames) {
+        ExternalTool *tool = extToolRegistry->getByName(toolName);
+        if (NULL == tool || tool->getPath().isEmpty()) {
+            missedExtTools.append(toolName);
+        }
+    }
+
+    if (!missedExtTools.isEmpty()) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("DNA Assembly"));
+        msgBox.setInformativeText(tr("Do you want to specify it now?"));
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::Yes);
+
+        QString msgText(tr("Path for "));
+        for (int i = 0, n = missedExtTools.size(); i < n; ++i) {
+            QString &toolName = missedExtTools[i];
+            msgText.append(i > 0 ? (i == n - 1 ? tr(" and ") : ", ") : "");
+            msgText.append(QString("<i>%1</i>").arg(toolName));
+        }
+        msgText.append(tr(" is not set."));
+        msgBox.setText(msgText);
+
+        int ret = msgBox.exec();
+        if (ret == QMessageBox::Yes) {
+            AppContext::getAppSettingsGUI()->showSettingsDialog(APP_SETTINGS_EXTERNAL_TOOLS);
+        }
+        return false;
+    } else {
+        return true;
+    }
 }
 
 /************************************************************************/
