@@ -93,6 +93,7 @@ void SequenceInfo::initLayout()
 
     // Characters occurrence
     charOccurLabel = new QLabel(this);
+    charOccurLabel->setObjectName("characters_occurrence_label");
     charOccurWidget = new ShowHideSubgroupWidget(
         CHAR_OCCUR_GROUP_ID, tr("Characters Occurrence"), charOccurLabel, true);
     charOccurWidget->setObjectName("Characters Occurrence");

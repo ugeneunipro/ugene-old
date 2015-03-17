@@ -217,6 +217,68 @@ GUI_TEST_CLASS_DEFINITION(test_0734) {
         QString("Inserted sequence name mismatch. Expected: %1. Actual: %2").arg("Sequence4").arg(names.last()));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0858) {
+//    1. Open human_t1.fa
+//    2. Open the Statistics bar on the Options Panel
+//    3. Select and copy Characters Occurrence table
+//    4. Paste the table in a Text Editor
+//    Expected state: the table in the editor and in the Options Panel have the same content
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Statistics);
+
+    QWidget* label = GTWidget::findWidget(os, "characters_occurrence_label");
+    CHECK_SET_ERR(label != NULL, "characters_occurrence label not found");
+
+    QRect r = label->geometry();
+    CHECK_SET_ERR(label->parentWidget() != NULL, "Parent widget is NULL");
+    GTMouseDriver::moveTo(os, label->parentWidget()->mapToGlobal(r.topLeft()));
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, label->parentWidget()->mapToGlobal(r.bottomRight()));
+    GTMouseDriver::release(os);
+
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    QString expected = "\n"
+            "A:  \n"
+            "62 842   \n"
+            "31.4%  \n"
+            "C:  \n"
+            "40 041   \n"
+            "20.0%  \n"
+            "G:  \n"
+            "37 622   \n"
+            "18.8%  \n"
+            "T:  \n"
+            "59 445   \n"
+            "29.7%  \n";
+    QString got = QApplication::clipboard()->text();
+    CHECK_SET_ERR(got == expected, QString("The clipboard text is incorrect: [%1], expected [%2]").arg(got).arg(expected));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0878) {
+//    1. Open several documents of any kind - sequence view, workflow designer, whatever.
+//    2. Activate any document except the #1 (as numbered in Window menu).
+//    3. Click on the Log button at bottom toolbar.
+//    Expected state: Log view is opened, selected document is shown.
+//    4. Click on the Log button again.
+//    Expected state: Log view is closed, selected document is active (not first).
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+
+    QWidget* win = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(win != NULL, "Active window not found");
+
+    GTWidget::click(os, GTWidget::findWidget(os, "doc_lable_dock_log_view"));
+    CHECK_SET_ERR(win == GTUtilsMdi::activeWindow(os), "Incorrect active window");
+    GTWidget::click(os, GTWidget::findWidget(os, "doc_lable_dock_log_view"));
+    CHECK_SET_ERR(win == GTUtilsMdi::activeWindow(os), "Incorrect active window");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0910) {
 //    1. Create a scheme with the "Read sequence" element and the "Write sequence element".
 //    2. Take a file with more then one sequence as an input for the "Read sequence" element.
