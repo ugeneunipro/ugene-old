@@ -324,6 +324,24 @@ GUI_TEST_CLASS_DEFINITION(test_0940) {
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0948) {
+
+    // 1. Open "open file" dialog
+    // 2. Select both files _common_data\scenarios\_regression\948\s1.fa and _common_data\scenarios\_regression\948\s2.fa
+    // 3. Press "Open" and select "merge mode"
+    // Expected state: warning messagebox about different alphabets has appeared, sequences not merged, but opened in different views
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+
+    GTSequenceReadingModeDialog::mode = GTSequenceReadingModeDialog::Merge;
+    GTUtilsDialog::waitForDialog(os, new GTSequenceReadingModeDialogUtils(os));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils_list(os, testDir + "_common_data/scenarios/_regression/948/", QStringList() << "s1.fa" << "s2.fa"));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__OPEN_PROJECT);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(500);
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0958) {
 //    1. Create *.csv file with the following content
 //    "Name","Start","End","Length","Complementary","Gene","desc","property","prop1","prop2"
@@ -442,6 +460,25 @@ GUI_TEST_CLASS_DEFINITION(test_0967_3) {
     logView = GTWidget::findWidget(os, "taskViewTree");
     CHECK_SET_ERR(NULL != logView, "taskViewTree is NULL (check #2)");
     CHECK_SET_ERR(true == logView->isVisible(), "taskViewTree is not visible (check #2)");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0969) {
+    // 1. Open any scheme file and do nothing with the opened scene (do not change).
+    // 2. Click on 'Load scheme' or 'New scheme' button.
+    // Expected state: WD don't asks to save the current scene
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "call variants");
+    GTWidget::click(os, GTAction::button(os, "New workflow action"));
+    GTGlobals::sleep();
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0970) {
+
+    // 1. Enable Auto Annotations. Open human_T1.fa
+    // 2. Open context menu for the Auto annotation in annotation tree view
+    // Expected state: "Disable 'annotation' highlighting" item not presents in menu
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0981_1) {
