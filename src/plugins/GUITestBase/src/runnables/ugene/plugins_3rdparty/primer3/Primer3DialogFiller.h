@@ -35,7 +35,8 @@ public:
               start(-1),
               end(-1),
               pickRight(true),
-              pickLeft(true)
+              pickLeft(true),
+              shortRegion(false)
         {}
 
         int resultsCount;
@@ -45,6 +46,7 @@ public:
         int end;
         bool pickRight;
         bool pickLeft;
+        bool shortRegion;
     };
 
     Primer3DialogFiller(U2OpStatus &os, const Primer3Settings &settings = Primer3Settings());

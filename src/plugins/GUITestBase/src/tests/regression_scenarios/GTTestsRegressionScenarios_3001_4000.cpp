@@ -4782,6 +4782,23 @@ GUI_TEST_CLASS_DEFINITION(test_3817) {
     CHECK_SET_ERR(boxRegion->currentText() == "Custom region", QString("Region type value is unexpected: %1. Expected: Custom region").arg(boxRegion->currentText()));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3821) {
+
+    // 1. Open any genbank file with a COMMENT section
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 2));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+    Primer3DialogFiller::Primer3Settings settings;
+    settings.shortRegion = true;
+    GTUtilsDialog::waitForDialog(os, new Primer3DialogFiller(os, settings));
+    GTWidget::click(os, GTWidget::findWidget(os, "primer3_action_widget"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3829){
 //    Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");

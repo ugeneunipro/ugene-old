@@ -21,10 +21,13 @@
 
 #include "Primer3DialogFiller.h"
 #include "api/GTCheckBox.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTabWidget.h"
 #include "api/GTWidget.h"
+
+#include "runnables/qt/MessageBoxFiller.h"
 
 #include <QApplication>
 #include <QLineEdit>
@@ -86,9 +89,17 @@ void Primer3DialogFiller::commonScenario() {
     GT_CHECK(rightCheckbox != NULL, "checkbox_PICK_RIGHT is NULL");
     GTCheckBox::setChecked(os, rightCheckbox, settings.pickRight);
 
-    QPushButton* button = dialog->findChild<QPushButton*>("pickPrimersButton");
-    GT_CHECK(button !=NULL, "PickPrimers button is NULL");
-    GTWidget::click(os, button);
+    if(!settings.shortRegion) {
+        QPushButton* button = dialog->findChild<QPushButton*>("pickPrimersButton");
+        GT_CHECK(button !=NULL, "PickPrimers button is NULL");
+        GTWidget::click(os, button);
+    } else {
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+        QPushButton* button = dialog->findChild<QPushButton*>("pickPrimersButton");
+        GT_CHECK(button != NULL, "PickPrimers button is NULL");
+        GTWidget::click(os, button);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+    }
 }
 
 #undef GT_METHOD_NAME
