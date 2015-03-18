@@ -52,6 +52,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ItemToImportEditDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/PredictSecondaryStructureDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.h \
@@ -313,6 +314,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ItemToImportEditDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/PredictSecondaryStructureDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.cpp \

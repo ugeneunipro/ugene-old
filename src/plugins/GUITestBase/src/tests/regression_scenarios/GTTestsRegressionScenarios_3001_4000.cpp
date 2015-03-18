@@ -96,6 +96,7 @@
 #include "runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/PredictSecondaryStructureDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h"
@@ -4214,6 +4215,37 @@ GUI_TEST_CLASS_DEFINITION(test_3730) {
     GTUtilsMSAEditorSequenceArea::createColorScheme(os, "test_3730_scheme_2", NewColorSchemeCreator::amino);
     const QString colorScheme = GTUtilsOptionPanelMsa::getColorScheme(os);
     CHECK_SET_ERR(colorScheme == "test_3730_scheme_1", "The color scheme was unexpectedly changed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3731) {
+    //1. Open /data/sample/PDB/1CRN.pdb
+    //Expected state: Sequence is opened
+    //2. Do context menu "Analyze - Predict Secondary Structure"
+    //Expected state: Predict Secondary Structure dialog is appeared
+    //3. Set "Range Start" 20, "Range End": 46, set any prediction algorithm
+    //4. Press "Start prediction" button
+    //Expected state: you get annotation(s) in range 20..46
+    //Current state for GOR IV: you get annotations with ranges 11..15 and 24..25
+    GTFileDialog::openFile(os, dataDir + "samples/MMDB", "1CRN.prt");
+
+    QPoint itemCenter = GTUtilsAnnotationsTreeView::getItemCenter(os, "1CRN chain 1 annotation [1CRN.prt]");
+    itemCenter.setX(itemCenter.x() + 10);
+    GTMouseDriver::moveTo(os, itemCenter);
+    GTMouseDriver::click(os);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_REMOVE << "Selected objects with annotations from view"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new PredictSecondaryStructureDialogFiller(os, 20, 46));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "Predict secondary structure"));
+    GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
+    GTGlobals::sleep();
+
+    QList<U2Region> annotatedRegions = GTUtilsAnnotationsTreeView::getAnnotatedRegions(os);
+    foreach(U2Region curRegion, annotatedRegions) {
+        CHECK_SET_ERR(curRegion.startPos >= 20, "Incorrect annotated region");
+    }
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3732) {

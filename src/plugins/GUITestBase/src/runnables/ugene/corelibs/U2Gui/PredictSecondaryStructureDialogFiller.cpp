@@ -1,0 +1,84 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2015 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+
+#include "PredictSecondaryStructureDialogFiller.h"
+
+#include "api/GTFileDialog.h"
+#include "api/GTSpinBox.h"
+#include "api/GTWidget.h"
+
+#include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
+
+#include "GTUtilsTaskTreeView.h"
+
+#include <QApplication>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QDialogButtonBox>
+
+namespace U2 {
+
+#define GT_CLASS_NAME "GTUtilsDialog::PredictSecondaryStructureDialogFiller"
+#define GT_METHOD_NAME "run"
+void PredictSecondaryStructureDialogFiller::run() {
+
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QSpinBox* startSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "rangeStartSpinBox", dialog));
+    GT_CHECK(startSpinBox != NULL, "Start spinbox is NULL");
+    GTSpinBox::setValue(os, startSpinBox, startPos);
+
+    QSpinBox* endSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "rangeEndSpinBox", dialog));
+    GT_CHECK(endSpinBox != NULL, "End spinbox is NULL");
+    GTSpinBox::setValue(os, endSpinBox, endPos);
+
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button != NULL, "ok button is NULL");
+    GTWidget::click(os, button);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, new Scenario));
+
+    QPushButton* saveButton = box->button(QDialogButtonBox::Save);
+    GT_CHECK(saveButton != NULL, "save button is NULL");
+    GTWidget::click(os, saveButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+} // namespace
