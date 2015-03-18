@@ -42,6 +42,8 @@
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTRadioButton.h"
+#include "api/GTTabWidget.h"
 #include "api/GTTextEdit.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
@@ -60,6 +62,7 @@
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
+#include "runnables/ugene/plugins/orf_marker/OrfDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 
@@ -752,7 +755,41 @@ GUI_TEST_CLASS_DEFINITION(test_4122) {
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "Misc. Feature"));
     GTMouseDriver::click(os);
 
-   }
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4127) {
+/* 1. Open attached file _common_data/scenarios/_regression/4127/merged_document.gb
+ * 2. Press "Find ORFs" tool button
+ *   Expected state: "ORF marker" dialog appeared
+ * 3. Open "Output" tab in the dialog
+ * 4. Press "Create new table" radio button
+ * 5. Press "Ok"
+ *   Current state: UGENE crashes
+ *   Expected state: UGENE does not crash
+*/
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4127", "merged_document.gb");
+    class OrfScenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "dialog not found");
+
+            QTabWidget *tabWidget = qobject_cast<QTabWidget*>(GTWidget::findWidget(os, "tabWidget", dialog));
+            CHECK_SET_ERR(tabWidget != NULL, "tabWidget not found!");
+            GTTabWidget::setCurrentIndex(os, tabWidget, 1);
+
+            QRadioButton* radio = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "rbCreateNewTable", dialog));
+                    //GTRadioButton::getRadioButtonByText(os, "Create new table", dialog);
+            CHECK_SET_ERR(radio != NULL, "rbCreateNewTable not found!");
+            GTRadioButton::click(os, radio);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new OrfDialogFiller(os, new OrfScenario));
+    GTWidget::click(os, GTAction::button(os, "Find ORFs"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
 
 } // namespace GUITest_regression_scenarios
 
