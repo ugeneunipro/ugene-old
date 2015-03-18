@@ -546,6 +546,26 @@ GUI_TEST_CLASS_DEFINITION(test_0958) {
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::getQualifierValue(os, "prop1", "test02") == "kobietghiginua", "Qualifier prop1 was improted incorrectly");
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::getQualifierValue(os, "prop2", "test02") == "addsomethinghere", "Qualifier prop2 was improted incorrectly");
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0965) {
+    //1. Open a few files supporting bookmarks.
+    //Expected state: in "Bookmarks" area corresponding number of root bookmarks are created.
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+    //2. Create a few sub bookmarks for each view.
+    GTUtilsBookmarksTreeView::addBookmark(os, GTUtilsMdi::activeWindow(os)->objectName(), "murine");
+    GTMouseDriver::moveTo(os, GTUtilsBookmarksTreeView::getItemCenter(os, "sars [s] NC_004718"));
+    GTMouseDriver::doubleClick(os);
+    GTUtilsBookmarksTreeView::addBookmark(os, GTUtilsMdi::activeWindow(os)->objectName(), "sars");
+
+    //3. Press right mouse button on any bookmark connected with currently invisible view.
+    //Expected state: "Add bookmark" action is disabled in appeared context menu.
+    GTMouseDriver::moveTo(os, GTUtilsBookmarksTreeView::getItemCenter(os, "murine"));
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList(ACTION_ADD_BOOKMARK), PopupChecker::IsDisabled));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0967_1) {
 /* 1. Open any document
  *   Expected state: Project View showed.
