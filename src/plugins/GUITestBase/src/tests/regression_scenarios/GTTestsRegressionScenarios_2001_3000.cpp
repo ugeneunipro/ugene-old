@@ -2679,11 +2679,7 @@ GUI_TEST_CLASS_DEFINITION( test_2375 ) {
 
 GUI_TEST_CLASS_DEFINITION( test_2377 ) {
     GTLogTracer l;
-
-    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
-
-    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItemByName( os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER );
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     const QString assemblyReaderName = "Read Assembly";
     const QString assemblyWriterName = "Write Assembly";

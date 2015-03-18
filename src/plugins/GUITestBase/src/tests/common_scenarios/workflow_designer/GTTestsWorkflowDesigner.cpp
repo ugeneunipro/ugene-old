@@ -268,10 +268,8 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //1. Open WD
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //2. Press button Validate schema
     GTUtilsDialog::waitForDialog(os,new MessageBoxDialogFiller(os, QMessageBox::Ok,"Nothing to run: empty workflow"));
     GTWidget::click(os,GTAction::button(os,"Validate workflow"));
@@ -365,10 +363,8 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0009){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. Open schema from examples
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
 //    2. Clear dashboard (select all + del button)
     GTGlobals::sleep(500);
@@ -496,10 +492,8 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1){//DIFFERENCE:file is loaded
 //    Expected state: Actor info (parameters, input data ...) will be displayed at the right part of window
 }
 GUI_TEST_CLASS_DEFINITION(test_0016){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. open WD.
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
 //    2. Place Read align element on schema
     GTUtilsWorkflowDesigner::addAlgorithm(os, "read alignment");

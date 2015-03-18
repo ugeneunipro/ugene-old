@@ -44,10 +44,8 @@ namespace U2 {
 namespace GUITest_common_scenarios_workflow_parameters_validation {
 
 GUI_TEST_CLASS_DEFINITION(test_0001){
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     // 1. Open WD sample "Align Sequences with MUSCLE
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
 
     // 2. Set some name for an output file
@@ -102,10 +100,8 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 
 GUI_TEST_CLASS_DEFINITION( test_0002 ) {
 //    Workflow dataset input directory validation
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //    1. Open WD sample "Align Sequences with MUSCLE"
-    QMenu* menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
 
 //    2. Set some name for an output file
@@ -153,10 +149,7 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
 
 GUI_TEST_CLASS_DEFINITION( test_0003 ) {
     //1. Create the following workflow { Read Sequence -> Find Pattern -> Write Sequence }
-    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
-
-    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItemByName( os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER );
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence", true );
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Find Pattern" );
@@ -211,10 +204,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     QDir d(testDir + "_common_data/scenarios/sandbox/permDir");
     bool sucsess = d.mkpath(d.absolutePath());
     CHECK_SET_ERR(sucsess,QString("Can't create a new directory: '%1'").arg(d.absolutePath()));
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, testDir + "_common_data/scenarios/sandbox/permDir"));
     // 1. Open WD sample "Align Sequences with MUSCLE
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
 
     // 2. Set some name for an output file
@@ -265,10 +256,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 GUI_TEST_CLASS_DEFINITION( test_0006 ) {
     //Workflow worker directory parameter validation
     //1. Create the following workflow { Read Sequence -> CD-Search -> Write Sequence }
-    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
-
-    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItemByName( os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER );
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence", true );
     GTUtilsWorkflowDesigner::addAlgorithm( os, "CD-Search" );
