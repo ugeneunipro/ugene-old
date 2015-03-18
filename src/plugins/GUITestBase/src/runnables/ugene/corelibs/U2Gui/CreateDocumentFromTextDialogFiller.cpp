@@ -66,8 +66,14 @@ Filler(_os, "CreateDocumentFromTextDialog"), customSettings(_customSettings), al
     comboBoxAlphabetItems[AllSymbols] = "All symbols";
 }
 
-#define GT_METHOD_NAME "run"
-void CreateDocumentFiller::run()
+CreateDocumentFiller::CreateDocumentFiller(U2OpStatus &os, CustomScenario *scenario)
+: Filler(os, "CreateDocumentFromTextDialog", scenario)
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void CreateDocumentFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

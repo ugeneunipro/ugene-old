@@ -51,6 +51,7 @@
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
@@ -229,6 +230,48 @@ GUI_TEST_CLASS_DEFINITION(test_4013) {
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, oldRect);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4022) {
+    //1. Download sequence: http://www.ncbi.nlm.nih.gov/nuccore/CM000265.1
+    //2. Open the sequence by UGENE.
+    //3. Select the whole sequence.
+    //4. Use context menu {Copy->Copy sequence}.
+    QString sequence;
+    for (int i=0; i<1376256; i++) {
+        sequence += "AAAACCCCGGGGTTTTAAAACCCCGGGGTTTTAAAACCCCGGGGTTTTAAAACCCCGGGGTTTT";
+    }
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(sequence);
+
+    //5. Use menu {File->New document from text...}.
+    //Expected state: "Create document" dialog appeared.
+    //6. Paste sequence into the dialog.
+    //Expected: UGENE does not crash.
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "dialog not found");
+            QPlainTextEdit *plainText = dialog->findChild<QPlainTextEdit*>("sequenceEdit");
+            CHECK_SET_ERR(plainText != NULL, "plain text not found");
+            GTWidget::click(os, plainText);
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No, "amount of data"));
+            GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+            GTGlobals::sleep();
+
+            GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "An error occurred", "ExceptionWarning"));
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes, "amount of data"));
+            GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new CreateDocumentFiller(os, new Scenario()));
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+}
 
 GUI_TEST_CLASS_DEFINITION(test_4026) {
     //1. Open "samples/Genbank/sars.gb".

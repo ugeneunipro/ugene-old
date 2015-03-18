@@ -34,7 +34,8 @@ namespace U2 {
         CreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool customSettings, documentAlphabet _alphabet, bool skipUnknownSymbols,
                              bool replaceUnknownSymbols, const QString symbol, const QString &_documentLocation,
                              documentFormat _format, const QString &_sequenceName, bool saveFile, GTGlobals::UseMethod method = GTGlobals::UseMouse);
-        virtual void run();
+        CreateDocumentFiller(U2OpStatus &os, CustomScenario *scenario);
+        void commonScenario();
     private:
 
         QString pasteDataHere;

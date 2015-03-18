@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
 #include <QMessageBox>
 #include <QMimeData>
 
@@ -57,7 +58,9 @@ void SequenceTextEdit::insertFromMimeData(const QMimeData *source) {
         delete mimeData;
     }
     catch (...) {
-        QMessageBox::warning(this, tr("Error on pasting large data"), tr("An error occurred on pasting large amount of data.\nText edit was cleared."));
+        QMessageBox warning(QMessageBox::Warning, tr("Error on pasting large data"), tr("An error occurred on pasting large amount of data.\nText edit was cleared."), QMessageBox::Ok, QApplication::activeWindow());
+        warning.setObjectName("ExceptionWarning");
+        warning.exec();
         clear();
     }
 }
