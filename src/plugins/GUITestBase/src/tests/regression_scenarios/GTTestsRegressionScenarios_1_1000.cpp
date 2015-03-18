@@ -487,6 +487,28 @@ GUI_TEST_CLASS_DEFINITION(test_0948) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0952) {
+    //1. Start UGENE.
+    //2. Press "Ctrl+O" or "Open" button on the main toolbar.
+    //Expected state: "Select files to open..." dialog appears.
+    //3. Explore to the directory "data/samples/Genbank", then choose "CVU55762.gb" and "murine.gb" using Ctrl key
+    //and press "Open" button.
+    //Expected state: "Multiple sequence reading mode" dialog appears.
+    //4. Set radio button "Merge sequence mode", set "New document name" if you need, then press "OK".
+
+    GTSequenceReadingModeDialog::mode = GTSequenceReadingModeDialog::Merge;
+    GTUtilsDialog::waitForDialog(os, new GTSequenceReadingModeDialogUtils(os));
+    GTFileDialog::openFileList(os, dataDir + "samples/Genbank/", QStringList() << "murine.gb" << "sars.gb");
+
+    //Expected state: New merged document appears in project view.
+    //5. Open the sequences from the third step in sequence view.
+    //Expected state: all the annotations from both sequences were converted correctly to the merged document i.e. without
+    //any shifts relatively to a start of sequence.
+    GTUtilsAnnotationsTreeView::getItemCenter(os, "3'UTR");
+    bool found = GTUtilsAnnotationsTreeView::findRegion(os, "3'UTR", U2Region(35232, 363));
+    CHECK_SET_ERR(found, "Wrong annotations shifting");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0958) {
 //    1. Create *.csv file with the following content
 //    "Name","Start","End","Length","Complementary","Gene","desc","property","prop1","prop2"
