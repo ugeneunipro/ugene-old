@@ -205,7 +205,6 @@ private slots:
     void sl_onContextMenuRequested(const QPoint & pos);
     void sl_onFindPatternClicked();
     void sl_onShowPosSelectorRequest();
-    void sl_toggleHL();
     void sl_splitterMoved(int, int);
     void sl_onSequenceWidgetTitleClicked(ADVSequenceWidget* seqWidget);
 
@@ -248,7 +247,6 @@ private:
     QAction*            createAnnotationAction;
     QAction*            findPatternAction;
     QAction*            posSelectorAction;
-    QAction*            toggleHLAction;
     QAction*            posSelectorWidgetAction;
     QAction*            removeAnnsAndQsAction;
     QAction*            renameItemAction;

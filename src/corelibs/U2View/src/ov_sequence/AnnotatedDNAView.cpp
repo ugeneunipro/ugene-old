@@ -123,9 +123,6 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     posSelectorAction->setObjectName(ADV_GOTO_ACTION);
     connect(posSelectorAction, SIGNAL(triggered()), SLOT(sl_onShowPosSelectorRequest()));
 
-    toggleHLAction = new QAction("", this);
-    connect(toggleHLAction, SIGNAL(triggered()), SLOT(sl_toggleHL()));
-
     removeAnnsAndQsAction = new QAction("",this);
     removeAnnsAndQsAction->setShortcut(QKeySequence(Qt::Key_Delete));
     removeAnnsAndQsAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
@@ -242,7 +239,6 @@ QWidget* AnnotatedDNAView::createWidget() {
     connect(removeAnnsAndQsAction, SIGNAL(triggered()),annotationsView->removeAnnsAndQsAction, SIGNAL(triggered()));
     connect(renameItemAction, SIGNAL(triggered()), annotationsView->renameAction, SIGNAL(triggered()));
 
-    mainSplitter->addAction(toggleHLAction);
     mainSplitter->addAction(removeSequenceObjectAction);
 
     mainSplitter->addAction(removeAnnsAndQsAction);
@@ -768,17 +764,9 @@ void AnnotatedDNAView::sl_onContextMenuRequested( const QPoint &scrollAreaPos ) 
         const AnnotationData aData = a.getData( );
         AnnotationSettingsRegistry *registry = AppContext::getAnnotationsSettingsRegistry( );
         AnnotationSettings *as = registry->getAnnotationSettings( aData );
-        if ( as->visible ) {
-            toggleHLAction->setText( tr( "Disable '%1' highlighting").arg( aData.name ) );
-        } else {
-            toggleHLAction->setText( tr( "Enable '%1' highlighting" ).arg( aData.name ) );
-        }
 
         const QIcon icon = GUIUtils::createSquareIcon( as->color, 10 );
-        toggleHLAction->setIcon( icon );
-
-        toggleHLAction->setObjectName( "toggle_HL_action" );
-        m.addAction( toggleHLAction );
+        
         renameItemAction->setEnabled(true);
     } else {
         renameItemAction->setEnabled(false);
@@ -799,18 +787,6 @@ void AnnotatedDNAView::sl_onFindPatternClicked( ) {
 
     const QString &findPatternGroupId = FindPatternWidgetFactory::getGroupId( );
     optionsPanel->openGroupById( findPatternGroupId );
-}
-
-void AnnotatedDNAView::sl_toggleHL( ) {
-    if ( annotationSelection->isEmpty( ) ) {
-        return;
-    }
-    const Annotation a= annotationSelection->getSelection( ).first( ).annotation;
-    const AnnotationData aData = a.getData( );
-    AnnotationSettingsRegistry *registry = AppContext::getAnnotationsSettingsRegistry( );
-    AnnotationSettings *as = registry->getAnnotationSettings( aData );
-    as->visible = !as->visible;
-    registry->changeSettings( QList<AnnotationSettings *>( ) << as, true );
 }
 
 QString AnnotatedDNAView::tryAddObject(GObject* o) {
