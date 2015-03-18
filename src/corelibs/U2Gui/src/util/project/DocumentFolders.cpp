@@ -44,6 +44,7 @@ DocumentFoldersUpdate::DocumentFoldersUpdate(const U2DbiRef &dbiRef, U2OpStatus 
 
     folders = con.oDbi->getFolders(os);
     CHECK_OP(os, );
+    std::sort(folders.begin(), folders.end(), Folder::folderNameLessThan);
 
     if (!folders.isEmpty() && folders.first() != ProjectUtils::RECYCLE_BIN_FOLDER_PATH) {
         for (int i = folders.size() - 1; i >= 0; --i) {
