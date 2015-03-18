@@ -228,6 +228,7 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView) :
     progressMovie = new QMovie(":/core/images/progress.gif", QByteArray(), progressLabel);
     progressLabel->setObjectName("progressLabel");
     resultLabel->setObjectName("resultLabel");
+    resultLabel->setFixedHeight(progressLabel->height());
     savableWidget.setRegionWidgetIds(QStringList() << editStart->objectName()
         << editEnd->objectName());
 
@@ -1568,7 +1569,7 @@ int FindPatternWidget::getTargetSequnceLength() const {
 }
 
 void FindPatternWidget::startProgressAnimation() {
-    resultLabel->hide();
+    resultLabel->setText(tr("Results: "));
     progressLabel->show();
     progressMovie->start();
 }
