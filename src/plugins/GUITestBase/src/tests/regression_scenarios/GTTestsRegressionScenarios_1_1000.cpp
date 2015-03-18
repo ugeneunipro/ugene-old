@@ -216,6 +216,28 @@ GUI_TEST_CLASS_DEFINITION(test_0734) {
     CHECK_SET_ERR(names.last() == "Sequence4",
         QString("Inserted sequence name mismatch. Expected: %1. Actual: %2").arg("Sequence4").arg(names.last()));
 }
+GUI_TEST_CLASS_DEFINITION(test_0854) {
+/* 1. Open samples/genbank/PBR322.gb.
+ * 2. Export the sequence into alignment using context menu in project tab.
+ * 3. Align it with MUSCLE.
+ *   Expected result: UGENE doesn't crash.
+*/
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/PBR322.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "PBR322.gb"));
+    GTMouseDriver::click(os);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
+    GTUtilsDialog::waitForDialog(os, new ExportSequenceAsAlignmentFiller(os, sandBoxDir, "test_0854.aln", ExportSequenceAsAlignmentFiller::Clustalw, true));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os, MuscleDialogFiller::Default));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0858) {
 //    1. Open human_t1.fa
