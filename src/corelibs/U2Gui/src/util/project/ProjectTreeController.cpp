@@ -423,7 +423,7 @@ void ProjectTreeController::sl_doubleClicked(const QModelIndex &index) {
     switch (ProjectViewModel::itemType(originalIndex)) {
         case ProjectViewModel::DOCUMENT: {
             Document *doc = ProjectViewModel::toDocument(originalIndex);
-            if (!doc->isLoaded() && !doc->getObjects().isEmpty()) {
+            if (!doc->isLoaded()) {
                 SAFE_POINT(loadSelectedDocumentsAction->isEnabled(), "Action is not enabled", );
                 loadSelectedDocumentsAction->trigger();
             } else { // there are children -> expand
