@@ -369,6 +369,7 @@ GUI_TEST_CLASS_DEFINITION(test_0896) {
     GTUtilsDialog::waitForDialog(os, new OkClicker(os));
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "SAMtools"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "editConfiguration"));
+    GTMouseDriver::click(os);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -696,7 +697,7 @@ GUI_TEST_CLASS_DEFINITION(test_0981_1) {
 
     GTGlobals::sleep();
     Runnable *filler1 = new InsertSequenceFiller(os,
-        "qweqwea"
+        "qweqwea", InsertSequenceFiller::Resize, 1, "", InsertSequenceFiller::FASTA, false, false, GTGlobals::UseMouse, true
         );
     GTUtilsDialog::waitForDialog(os, filler1);
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);

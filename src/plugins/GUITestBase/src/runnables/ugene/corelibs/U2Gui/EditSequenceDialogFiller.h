@@ -34,7 +34,7 @@ namespace U2 {
         InsertSequenceFiller(U2OpStatus &_os, const QString &_pasteDataHere, RegionResolvingMode _regionResolvingMode = Resize, int _insertPosition = 1,
                              const QString &_documentLocation = "", 
                              documentFormat _format = FASTA, bool _saveToNewFile = false, bool _mergeAnnotations = false,
-                             GTGlobals::UseMethod method = GTGlobals::UseMouse);
+                             GTGlobals::UseMethod method = GTGlobals::UseMouse, bool _wrongInput = false);
         virtual void run();
     private:
         QString pasteDataHere;
@@ -45,6 +45,7 @@ namespace U2 {
         bool saveToNewFile;
         bool mergeAnnotations;
         GTGlobals::UseMethod useMethod;
+        bool wrongInput;
 
         QMap<documentFormat, QString> comboBoxItems;
     };

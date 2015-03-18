@@ -876,7 +876,7 @@ GUI_TEST_CLASS_DEFINITION(test_1049){
             CHECK_SET_ERR(NULL != dialog, "Unable to find active dialog");
             //    4. Check the "Show group statistics of multiple alignment" checkbox and press the "Generate" button.
             QCheckBox* groupStatisticsCheck = GTWidget::findExactWidget<QCheckBox*>(os, "groupStatisticsCheck", dialog);
-            GTCheckBox::setChecked(os, groupStatisticsCheck, false);
+            GTCheckBox::setChecked(os, groupStatisticsCheck, true);
             GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
         }
     };
@@ -1196,6 +1196,7 @@ GUI_TEST_CLASS_DEFINITION(test_1065_3) {
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &p));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
     GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsLog::check(os, l);
 }

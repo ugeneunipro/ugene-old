@@ -42,12 +42,12 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::insertSequenceFiller"
 InsertSequenceFiller::InsertSequenceFiller(U2OpStatus &_os, const QString &_pasteDataHere, RegionResolvingMode _regionResolvingMode, int _insertPosition,
-    const QString &_documentLocation, 
+    const QString &_documentLocation,
     documentFormat _format, bool _saveToNewFile, bool _mergeAnnotations,
-    GTGlobals::UseMethod method):
+    GTGlobals::UseMethod method, bool _wrongInput):
 Filler(_os, "EditSequenceDialog"), pasteDataHere(_pasteDataHere), regionResolvingMode(_regionResolvingMode), insertPosition(_insertPosition),
 documentLocation(_documentLocation), format(_format), saveToNewFile(_saveToNewFile), mergeAnnotations(_mergeAnnotations),
-useMethod(method)
+useMethod(method), wrongInput(_wrongInput)
 {
     if (!documentLocation.isEmpty()) {
         documentLocation = QDir::cleanPath(QDir::currentPath() + "/" + documentLocation);
@@ -141,7 +141,9 @@ void InsertSequenceFiller::run()
     GT_CHECK(box != NULL, "buttonBox is NULL");
     QPushButton* button = box->button(QDialogButtonBox::Ok);
     GT_CHECK(button !=NULL, "cancel button is NULL");
-    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    if(wrongInput){
+        GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    }
     GTWidget::click(os, button);
 
 }
