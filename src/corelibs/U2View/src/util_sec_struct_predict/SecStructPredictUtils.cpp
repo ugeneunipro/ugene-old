@@ -51,6 +51,7 @@ SecStructPredictViewAction::SecStructPredictViewAction(AnnotatedDNAView* v) :
     ADVGlobalAction(v, QIcon(":core//images//ssp_logo.png"),  tr("Predict secondary structure...") )
 {
     connect(this, SIGNAL(triggered()), SLOT(sl_execute()));
+    setObjectName("Predict secondary structure");
     addAlphabetFilter(DNAAlphabet_AMINO);
 
 }
