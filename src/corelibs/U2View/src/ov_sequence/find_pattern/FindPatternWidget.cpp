@@ -1309,11 +1309,6 @@ void FindPatternWidget::sl_onAnotationNameEdited(){
     checkState();
 }
 
-void FindPatternWidget::sl_onUsePatternNamesClicked(){
-    bool isAnnotNamesEnabled = !usePatternNames;
-    annotController->setEnabledNameEdit(isAnnotNamesEnabled);
-}
-
 void FindPatternWidget::updatePatternText(int previousAlgorithm) {
     // Save a previous state.
     if (FindAlgorithmPatternSettings_RegExp == previousAlgorithm) {
@@ -1510,6 +1505,7 @@ void FindPatternWidget::sl_onShiftEnterPressed(){
 
 void FindPatternWidget::sl_usePatternNamesCbClicked() {
     usePatternNames = !usePatternNames;
+    annotController->setEnabledNameEdit(!usePatternNames);
     updateNamePatterns();
     checkState();
 }

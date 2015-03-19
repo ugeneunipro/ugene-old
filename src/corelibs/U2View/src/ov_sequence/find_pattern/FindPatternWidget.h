@@ -110,7 +110,6 @@ private slots:
 
     void sl_onSelectedRegionChanged();
 
-    void sl_onUsePatternNamesClicked();
     void sl_onAnotationNameEdited();
 
     void sl_activateNewSearch(bool forcedSearch = true);
