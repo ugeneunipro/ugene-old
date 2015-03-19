@@ -530,6 +530,36 @@ GUI_TEST_CLASS_DEFINITION(test_0941) {
     CHECK_SET_ERR(resFileContent == testFileContent, "Incorrect result file");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0947) {
+/*  1. Open "data/samples/ABIF/A01.abi".
+ *  3. Open GC Content (%) graph
+ *  2. Close chomatogram view
+ *    Expected state: GC Content (%) graph view resized
+*/
+    GTFileDialog::openFile(os, dataDir + "/samples/ABIF/", "A01.abi");
+    GTGlobals::sleep();
+
+    QWidget *sequenceWidget = GTWidget::findWidget( os, "ADV_single_sequence_widget_0" );
+    CHECK_SET_ERR( NULL != sequenceWidget, "sequenceWidget is not present" );
+
+    GTWidget::click( os, sequenceWidget );
+
+    QWidget *graphAction = GTWidget::findWidget( os, "GraphMenuAction", sequenceWidget, false );
+    Runnable *chooser = new PopupChooser( os, QStringList( ) << "GC Content (%)" );
+    GTUtilsDialog::waitForDialog( os, chooser );
+
+    GTWidget::click( os, graphAction );
+    GTGlobals::sleep();
+
+    QToolButton *zoomAction = GTWidget::findExactWidget<QToolButton *>(os, "action_zoom_in_A1#berezikov");
+    CHECK_SET_ERR( NULL != zoomAction, "zoomAction is not present" );
+
+    for(int i = 0; i < 10; i++) {
+        GTWidget::click( os, zoomAction);
+        GTGlobals::sleep(100);
+    }
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0948) {
 
     // 1. Open "open file" dialog
