@@ -1565,7 +1565,7 @@ int FindPatternWidget::getTargetSequnceLength() const {
 }
 
 void FindPatternWidget::startProgressAnimation() {
-    resultLabel->setText(tr("Results: "));
+    resultLabel->setText(tr("Results:"));
     progressLabel->show();
     progressMovie->start();
 }
