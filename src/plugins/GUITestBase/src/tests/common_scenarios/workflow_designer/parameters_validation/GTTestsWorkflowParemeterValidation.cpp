@@ -213,10 +213,9 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     CHECK_SET_ERR(table,"tableView not found");
     GTMouseDriver::moveTo(os,GTUtilsWorkflowDesigner::getItemCenter(os,"Write alignment"));
     GTMouseDriver::click(os);
-    GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,1,1));
-    GTMouseDriver::click(os);
+    //GTGlobals::sleep(60000);
     QString s = QFileInfo(testDir + "_common_data/scenarios/sandbox/permDir").absoluteFilePath();
-    GTKeyboardDriver::keySequence(os, s+"/wd_pv_0001.sto");
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", QVariant(s+"/wd_pv_0001.sto"), GTUtilsWorkflowDesigner::textValue);
     GTWidget::click(os,GTUtilsMdi::activeWindow(os));
 
     // 3. Add the file "test/_common_data/clustal/align.aln" as input
