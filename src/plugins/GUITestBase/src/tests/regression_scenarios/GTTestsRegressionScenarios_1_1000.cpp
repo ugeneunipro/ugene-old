@@ -333,6 +333,36 @@ GUI_TEST_CLASS_DEFINITION(test_0908) {
     GTUtilsWorkflowDesigner::runWorkflow(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0889) {
+//  1) Open RNA.fa
+//  2) Use context menu on sequence {Align->Align sequence to mRNA}
+//  3) Select any item
+//  4) Click "Create"
+// 
+//  Expected state: UGENE not crashed
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "RNA.fa");
+
+    class OkClicker : public Filler {
+    public:
+        OkClicker(U2OpStatus& _os) : Filler(_os, "CreateAnnotationDialog"){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK(NULL != button, );
+            GTWidget::click(os, button);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os));
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "RNA.fa", "Sequence"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ALIGN" << "Align sequence to mRNA"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0896) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
