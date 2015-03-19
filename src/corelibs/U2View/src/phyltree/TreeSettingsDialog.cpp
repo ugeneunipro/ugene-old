@@ -30,7 +30,7 @@ namespace U2 {
 TreeSettingsDialog::TreeSettingsDialog(QWidget *parent, const OptionsMap &settings, bool isRectLayout)
 : BaseSettingsDialog(parent) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "14059088");
+    new HelpButton(this, buttonBox, "16122303");
 
     heightSlider->setValue(settings[HEIGHT_COEF].toUInt());
     widthlSlider->setValue(settings[WIDTH_COEF].toUInt());

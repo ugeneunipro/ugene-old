@@ -43,7 +43,7 @@ namespace U2{
 
 ExportHighligtningDialogController::ExportHighligtningDialogController(MSAEditorUI *msaui_, QWidget* p ): QDialog(p), msaui(msaui_){
     setupUi(this);
-    new HelpButton(this, buttonBox, "14059018");
+    new HelpButton(this, buttonBox, "16122233");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     CHECK(AppContext::getAppSettings(), );

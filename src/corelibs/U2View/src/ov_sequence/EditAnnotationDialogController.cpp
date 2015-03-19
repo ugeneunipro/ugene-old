@@ -42,7 +42,7 @@ EditAnnotationDialogController::EditAnnotationDialogController( const Annotation
 {
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "14058956");
+    new HelpButton(this, buttonBox, "16122171");
 
     nameEdit->setText(a.name);
     locationEdit->setText(Genbank::LocationParser::buildLocationString(&a));

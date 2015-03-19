@@ -49,7 +49,7 @@ namespace U2 {
 
 ExportChromatogramDialog::ExportChromatogramDialog(QWidget* p, const GUrl& fileUrl): QDialog(p) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "14058989");
+    new HelpButton(this, buttonBox, "16122204");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

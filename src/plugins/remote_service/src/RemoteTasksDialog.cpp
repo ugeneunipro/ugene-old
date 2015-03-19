@@ -57,7 +57,7 @@ RemoteTasksDialog::RemoteTasksDialog(const RemoteServiceSettingsPtr& settings,QW
     refresh();
 
     updateState();
-    new HelpButton(this, buttonBox, "14058865");
+    new HelpButton(this, buttonBox, "16122077");
 
 }
 

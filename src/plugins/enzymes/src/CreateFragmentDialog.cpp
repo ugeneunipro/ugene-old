@@ -52,7 +52,7 @@ CreateFragmentDialog::CreateFragmentDialog( ADVSequenceObjectContext* ctx,  QWid
 {
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "14059129");
+    new HelpButton(this, buttonBox, "16122344");
 
     tabWidget->setCurrentIndex(0);
 
@@ -72,7 +72,7 @@ CreateFragmentDialog::CreateFragmentDialog( U2SequenceObject* obj, const U2Regio
     : QDialog(p)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "14059129");
+    new HelpButton(this, buttonBox, "16122344");
     seqObj = obj;
 
     QList<GObject*> aObjects = GObjectUtils::findAllObjects(UOF_LoadedOnly,GObjectTypes::ANNOTATION_TABLE);

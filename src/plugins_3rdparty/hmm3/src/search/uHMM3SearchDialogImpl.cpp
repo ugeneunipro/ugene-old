@@ -49,7 +49,7 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl( const U2SequenceObject * seqObj, Q
     assert( NULL != seqObj );
     
     setupUi( this );
-    new HelpButton(this, buttonBox, "14059154");
+    new HelpButton(this, buttonBox, "16122369");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Run"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

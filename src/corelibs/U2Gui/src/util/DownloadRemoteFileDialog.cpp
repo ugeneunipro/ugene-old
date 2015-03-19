@@ -60,7 +60,7 @@ QString DownloadRemoteFileDialog::defaultDB("");
 DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQueryDB(false) {
     ui = new Ui_DownloadRemoteFileDialog;
     ui->setupUi(this);
-    new HelpButton(this, ui->buttonBox, "14058907");
+    new HelpButton(this, ui->buttonBox, "16122121");
 
     ui->dasfeaturesWidget->setResizeMode(QListView::Adjust);
     ui->dasBox->hide();
@@ -105,7 +105,7 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog( const QString& id, const QSt
 {
     ui = new Ui_DownloadRemoteFileDialog;
     ui->setupUi(this);
-    new HelpButton(this, ui->buttonBox, "14058920");
+    new HelpButton(this, ui->buttonBox, "16122134");
 
     ui->dasfeaturesWidget->setResizeMode(QListView::Adjust);
     ui->dasBox->hide();

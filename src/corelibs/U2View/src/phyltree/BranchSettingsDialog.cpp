@@ -39,7 +39,7 @@ BranchSettingsDialog::BranchSettingsDialog(QWidget *parent, const OptionsMap& se
     changedSettings[BRANCH_COLOR] = settings[BRANCH_COLOR];
     changedSettings[BRANCH_THICKNESS] = settings[BRANCH_THICKNESS];
     setupUi(this);
-    new HelpButton(this, buttonBox, "14059089");
+    new HelpButton(this, buttonBox, "16122304");
 
     thicknessSpinBox->setValue(changedSettings[BRANCH_THICKNESS].toInt());
 

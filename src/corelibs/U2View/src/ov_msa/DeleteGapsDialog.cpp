@@ -32,7 +32,7 @@ namespace U2 {
 
 DeleteGapsDialog::DeleteGapsDialog(QWidget* parent, int rowNum): QDialog(parent) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "14059026");
+    new HelpButton(this, buttonBox, "16122241");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Remove"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

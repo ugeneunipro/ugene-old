@@ -51,7 +51,7 @@ const QString UHMM3PhmmerDialogImpl::ANNOTATIONS_DEFAULT_NAME   = "signal";
 UHMM3PhmmerDialogImpl::UHMM3PhmmerDialogImpl( const U2SequenceObject * seqObj, QWidget * p ) : QDialog( p ) {
     assert( NULL != seqObj );
     setupUi( this );
-    new HelpButton(this, buttonBox, "14059155");
+    new HelpButton(this, buttonBox, "16122370");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

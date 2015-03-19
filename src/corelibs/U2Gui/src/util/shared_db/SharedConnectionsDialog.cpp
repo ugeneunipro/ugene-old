@@ -90,7 +90,7 @@ SharedConnectionsDialog::SharedConnectionsDialog(QWidget *parent) :
     ui(new Ui::SharedConnectionsDialog)
 {
     ui->setupUi(this);
-    new HelpButton(this, ui->buttonBox, "14059258");
+    new HelpButton(this, ui->buttonBox, "16122476");
 
     init();
     connectSignals();
@@ -506,7 +506,7 @@ bool SharedConnectionsDialog::checkDbShouldBeUpgraded(const U2DbiRef &ref) {
     if (upgradeDatabase) {
         QMessageBox question(QMessageBox::Question, tr(DATABASE_UPGRADE_TITLE), tr(DATABASE_UPGRADE_TEXT), QMessageBox::Ok | QMessageBox::Cancel| QMessageBox::Help, this);
         question.button(QMessageBox::Ok)->setText(tr("Upgrade"));
-        HelpButton(&question, question.button(QMessageBox::Help), "14059258");
+        HelpButton(&question, question.button(QMessageBox::Help), "16122476");
         question.setDefaultButton(QMessageBox::Cancel);
         if (QMessageBox::Ok == question.exec()) {
             MysqlUpgradeTask *upgradeTask = new MysqlUpgradeTask(ref);
