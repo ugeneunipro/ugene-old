@@ -492,6 +492,44 @@ GUI_TEST_CLASS_DEFINITION(test_0940) {
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
 }
 
+namespace {
+
+    QString getFileContent(const QString &path) {
+        QFile file(path);
+        CHECK(file.open(QFile::ReadOnly), QString("Can not open file"));
+        QTextStream fileReader(&file);
+        return fileReader.readAll();
+    }
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0941) {
+    //1. Open COI.aln
+    //2. Select the first sequence and choose {Edit->Replace slected row with reverse}. Expected state: The sequences is reversed
+    //3. Select the second sequence and choose {Edit->Replace slected row with complement}. Expected state: The sequences is complemented
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsMSAEditorSequenceArea::selectSequence(os, "Phaneroptera_falcata");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
+
+    GTUtilsMSAEditorSequenceArea::selectSequence(os, "Isophya_altaica_EF540820");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Save subalignment"));
+    GTUtilsDialog::waitForDialog(os, new ExtractSelectedAsMSADialogFiller(os,
+        sandBoxDir + "test_0941.aln",
+        GTUtilsMSAEditorSequenceArea::getNameList(os)));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
+    GTGlobals::sleep();
+
+    QString resFileContent = getFileContent(sandBoxDir + "test_0941.aln");
+    QString testFileContent = getFileContent(testDir + "_common_data/scenarios/_regression/941/test_0941.aln");
+    CHECK_SET_ERR(resFileContent == testFileContent, "Incorrect result file");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0948) {
 
     // 1. Open "open file" dialog
