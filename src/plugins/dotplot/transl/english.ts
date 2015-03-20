@@ -293,11 +293,15 @@
     </message>
     <message>
         <location filename="../src/DotPlotFilesDialog.cpp" line="156"/>
+        <source>Unable to detect file format %1.
+Select valid file to build dotplot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/DotPlotFilesDialog.cpp" line="164"/>
         <source>Unable to detect format of given file %1.
 Select valid file to build dotplot</source>
-        <translation>Unable to detect format of given file %1.
-Select valid file to build dotplot</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/DotPlotFilesDialog.cpp" line="174"/>
@@ -373,12 +377,12 @@ Select valid file to build dotplot</translation>
 <context>
     <name>U2::DotPlotPlugin</name>
     <message>
-        <location filename="../src/DotPlotPlugin.cpp" line="60"/>
+        <location filename="../src/DotPlotPlugin.cpp" line="51"/>
         <source>Dotplot</source>
         <translation>Dotplot</translation>
     </message>
     <message>
-        <location filename="../src/DotPlotPlugin.cpp" line="60"/>
+        <location filename="../src/DotPlotPlugin.cpp" line="51"/>
         <source>Build dotplot for sequences</source>
         <translation>Build dotplot for sequences</translation>
     </message>
@@ -437,18 +441,18 @@ Select valid file to build dotplot</translation>
 <context>
     <name>U2::DotPlotViewContext</name>
     <message>
-        <location filename="../src/DotPlotPlugin.cpp" line="79"/>
-        <location filename="../src/DotPlotPlugin.cpp" line="224"/>
+        <location filename="../src/DotPlotPlugin.cpp" line="70"/>
+        <location filename="../src/DotPlotPlugin.cpp" line="216"/>
         <source>Build dotplot...</source>
         <translation>Build dotplot...</translation>
     </message>
     <message>
-        <location filename="../src/DotPlotPlugin.cpp" line="97"/>
+        <location filename="../src/DotPlotPlugin.cpp" line="89"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/DotPlotPlugin.cpp" line="97"/>
+        <location filename="../src/DotPlotPlugin.cpp" line="89"/>
         <source>Error opening files</source>
         <translation>Error opening files</translation>
     </message>

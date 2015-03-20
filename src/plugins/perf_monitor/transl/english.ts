@@ -5,34 +5,34 @@
     <name>U2::PerfMonitorPlugin</name>
     <message>
         <source>Performance Monitor</source>
-        <translation type="unfinished"></translation>
+        <translation>Performance Monitor</translation>
     </message>
     <message>
         <source>Shows performance counters</source>
-        <translation type="unfinished"></translation>
+        <translation>Shows performance counters</translation>
     </message>
     <message>
         <source>Show counters</source>
-        <translation type="unfinished"></translation>
+        <translation>Show counters</translation>
     </message>
 </context>
 <context>
     <name>U2::PerfMonitorView</name>
     <message>
         <source>Application counters</source>
-        <translation></translation>
+        <translation>Application counters</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation></translation>
+        <translation>Value</translation>
     </message>
     <message>
         <source>Scale</source>
-        <translation></translation>
+        <translation>Scale</translation>
     </message>
 </context>
 </TS>

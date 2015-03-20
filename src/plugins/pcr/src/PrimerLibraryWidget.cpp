@@ -41,7 +41,7 @@
 
 #define CHECK_OP_UI(os, result) \
     if (os.hasError()) { \
-    QMessageBox::warning(this, QObject::tr("Error"), os.getError()); \
+    QMessageBox::warning(this, QCoreApplication::translate("Global", "Error"), os.getError()); \
     } \
     CHECK_OP(os, result);
                              

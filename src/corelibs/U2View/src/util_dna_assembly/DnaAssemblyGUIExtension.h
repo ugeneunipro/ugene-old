@@ -47,6 +47,7 @@ public:
 // with options specific to the assembly algorithm
 
 class U2VIEW_EXPORT DnaAssemblyAlgorithmMainWidget : public DnaAssemblyAlgorithmBaseWidget {
+    Q_OBJECT
 public:
     DnaAssemblyAlgorithmMainWidget(QWidget *parent);
 

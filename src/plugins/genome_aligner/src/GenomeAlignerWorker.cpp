@@ -219,7 +219,7 @@ public:
         bool data = isBinded(busMap.value<QStrStrMap>(), READS_URL_SLOT_ID);
         if (!data){
             QString dataName = slotName(port, READS_URL_SLOT_ID);
-            problemList.append(Problem(IntegralBusPort::tr("The slot must be not empty: '%1'").arg(dataName)));
+            problemList.append(Problem(GenomeAlignerWorker::tr("The slot must be not empty: '%1'").arg(dataName)));
             return false;
         }
 

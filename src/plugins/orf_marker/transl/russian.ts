@@ -158,19 +158,19 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <source>Max result</source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальное количество результатов</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Выходной файл</translation>
     </message>
     <message>
         <source>Ignore ORFs shorter than the specified length.</source>
-        <translation type="unfinished"></translation>
+        <translation>Игнорировать открытые рамки считывания, которые короче указанной длины.</translation>
     </message>
 </context>
 <context>
@@ -180,12 +180,8 @@ Ignore boundary ORFs which last beyond the search region
         <translation>Найти ORF и сохранить аннотации</translation>
     </message>
     <message>
-        <source>Annotation obj %1 is locked for modifications</source>
-        <translation>Аннотация %1 не может быть изменена</translation>
-    </message>
-    <message>
         <source>Annotation table object is NULL!</source>
-        <translation type="unfinished"></translation>
+        <translation>Annotation table object is NULL!</translation>
     </message>
 </context>
 <context>
@@ -204,7 +200,7 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>, allow ORFs %1 other than terminator</source>
-        <translation> допускать ORF кроме терминатора</translation>
+        <translation>, допускать ORF %1 кроме терминатора</translation>
     </message>
     <message>
         <source>alternative start codons</source>
@@ -212,7 +208,7 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>, take into account %1</source>
-        <translation>, принимать во внимание </translation>
+        <translation>, принимать во внимание %1</translation>
     </message>
     <message>
         <source>ignore non-terminated</source>
@@ -250,16 +246,12 @@ Ignore boundary ORFs which last beyond the search region
         <translation>Аннотации</translation>
     </message>
     <message>
-        <source>Name of the result annotations marking found ORFs</source>
-        <translation type="obsolete">Имя аннотации для разметки найденных ORF</translation>
-    </message>
-    <message>
         <source>Genetic code</source>
         <translation>Код трансляции</translation>
     </message>
     <message>
         <source>Which genetic code should be used for translating the input nucleotide sequence.</source>
-        <translation>Выбор генетического кода (таблицы трансляции в протеины) для входных последовательностей</translation>
+        <translation>Выбор генетического кода (таблицы трансляции в протеины) для входных последовательностей.</translation>
     </message>
     <message>
         <source>Require stop codon</source>
@@ -272,10 +264,6 @@ Ignore boundary ORFs which last beyond the search region
     <message>
         <source>Allow alternative codons</source>
         <translation>Альтернативные кодоны</translation>
-    </message>
-    <message>
-        <source>The result annotation will includes stop codon if this option is set</source>
-        <translation type="obsolete">В аннотацию будет включен стоп-кодон</translation>
     </message>
     <message>
         <source>ORF: result name is empty, default name used</source>
@@ -301,7 +289,7 @@ Ignore boundary ORFs which last beyond the search region
         <source>Finds Open Reading Frames (ORFs) in each supplied nucleotide sequence, stores found regions as annotations.&lt;p&gt;Protein sequences are skipped if any supplied to input.&lt;p&gt;&lt;dfn&gt;ORFs are DNA sequence regions that could potentially encode a protein, and usually give a good indication of the presence of a gene in the surrounding sequence.&lt;/dfn&gt;&lt;/p&gt;&lt;p&gt;In the sequence, ORFs are located between a start-code sequence (initiation codon) and a stop-code sequence (termination codon), defined by the selected genetic code.&lt;/p&gt;</source>
         <translation>
         Поиск открытых рамок считывания (ОRF). ORF ищутся в каждой нуклеотидной последовательности, поданной на вход задачи; найденные регионы выдаются как набор аннотаций.
-        Протеиновые последовательности на входе допустимы но не обрабатываются.
+        &lt;p&gt;Протеиновые последовательности на входе допустимы но не обрабатываются.&lt;/p&gt;
       </translation>
     </message>
     <message>
@@ -330,27 +318,27 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>Name of the result annotations marking found ORFs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя для результирующих аннотаций.</translation>
     </message>
     <message>
         <source>The result annotation will includes stop codon if this option is set.</source>
-        <translation type="unfinished"></translation>
+        <translation>Результирующая аннотация будет включать стоп кодон если эта опция установлена.</translation>
     </message>
     <message>
         <source>Max result</source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальное количество результатов</translation>
     </message>
     <message>
         <source>Find results not achieved by specified count.</source>
-        <translation type="unfinished"></translation>
+        <translation>Найденные результаты не достигли заданного количества.</translation>
     </message>
     <message>
         <source>Limit results</source>
-        <translation type="unfinished"></translation>
+        <translation>Предел результатов</translation>
     </message>
     <message>
         <source>The amount of results will be limited id that option is setted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество результатов будет ограничего если эта опция установлена.</translation>
     </message>
 </context>
 <context>
@@ -364,7 +352,7 @@ Ignore boundary ORFs which last beyond the search region
     <name>U2::ORFDialog</name>
     <message>
         <source>%1 results found.</source>
-        <translation>Найдено %1</translation>
+        <translation>Найдено %1.</translation>
     </message>
     <message>
         <source>Complement</source>
@@ -376,15 +364,15 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>Start codons</source>
-        <translation>Стартовые кодоны:</translation>
+        <translation>Стартовые кодоны</translation>
     </message>
     <message>
         <source>Alternative start codons</source>
-        <translation>Альтернативные стартовые кодоны:</translation>
+        <translation>Альтернативные стартовые кодоны</translation>
     </message>
     <message>
         <source>Stop codons</source>
-        <translation>Стоп-кодоны:</translation>
+        <translation>Стоп-кодоны</translation>
     </message>
     <message>
         <source>Results list contains results from the previous search. Clear?</source>
@@ -396,15 +384,15 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <source>Cannot create an annotation object. Please check settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно создать аннотацию. Проверьте настройки</translation>
     </message>
     <message>
         <source>Sequence object is NULL</source>
-        <translation type="unfinished"></translation>
+        <translation>Sequence object is NULL</translation>
     </message>
 </context>
 <context>
@@ -422,7 +410,7 @@ Ignore boundary ORFs which last beyond the search region
     <name>U2::ORFViewContext</name>
     <message>
         <source>Find ORFs...</source>
-        <translation>ORF: Искать рамки считывания</translation>
+        <translation>ORF: Искать рамки считывания...</translation>
     </message>
 </context>
 <context>
@@ -469,7 +457,7 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>ORF</source>
-        <translation></translation>
+        <translation>ORF</translation>
     </message>
     <message>
         <source>Genetic code</source>
@@ -489,7 +477,7 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>Maximum length of annotation allowed.</source>
-        <translation>Максимальная длина аннотации</translation>
+        <translation>Максимальная длина аннотации.</translation>
     </message>
     <message>
         <source>Finds Open Reading Frames (ORFs) in supplied nucleotide sequence, stores found regions as annotations.&lt;p&gt;Protein sequences are skipped if any.&lt;p&gt;&lt;dfn&gt;ORFs are DNA sequence regions that could potentially encode a protein, and usually give a good indication of the presence of a gene in the surrounding sequence.&lt;/dfn&gt;&lt;/p&gt;&lt;p&gt;In the sequence, ORFs are located between a start-code sequence (initiation codon) and a stop-code sequence (termination codon), defined by the selected genetic code.&lt;/p&gt;</source>
@@ -497,7 +485,7 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>Which genetic code should be used for translating the input nucleotide sequence.</source>
-        <translation>Выбор генетического кода (таблицы трансляции в протеины) для входных последовательностей</translation>
+        <translation>Выбор генетического кода (таблицы трансляции в протеины) для входных последовательностей.</translation>
     </message>
     <message>
         <source>Require stop codon</source>
@@ -505,23 +493,23 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>Require stop codon.</source>
-        <translation type="unfinished"></translation>
+        <translation>Стоп-кодон обязателен.</translation>
     </message>
     <message>
         <source>Max result</source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальное количество результатов</translation>
     </message>
     <message>
         <source>Find results not achieved by specified count.</source>
-        <translation type="unfinished"></translation>
+        <translation>Найденные результаты не достигли заданного количества.</translation>
     </message>
     <message>
         <source>Limit results</source>
-        <translation type="unfinished"></translation>
+        <translation>Предел результатов</translation>
     </message>
     <message>
         <source>The amount of results will be limited id that option is setted</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество результатов будет ограничего если эта опция установлена</translation>
     </message>
 </context>
 </TS>
