@@ -58,12 +58,10 @@ const QString HRWizardParser::DATASETS_PROVIDER("datasets-provider");
 const QString HRWizardParser::TEXT("text");
 const QString HRWizardParser::TEXT_COLOR("text-color");
 const QString HRWizardParser::BACKGROUND_COLOR("background-color");
+const QString HRWizardParser::HELP_PAGE_ID("help-page-id");
 
 HRWizardParser::HRWizardParser(Tokenizer &tokenizer, const QMap<QString, Actor*> &_actorMap)
-: tokenizer(tokenizer), actorMap(_actorMap)
-{
-    wizardName = Wizard::DEFAULT_NAME;
-}
+: tokenizer(tokenizer), actorMap(_actorMap), wizardName(Wizard::DEFAULT_NAME){}
 
 HRWizardParser::~HRWizardParser() {
     qDeleteAll(pagesMap);
@@ -74,7 +72,7 @@ Wizard * HRWizardParser::takeResult() {
     pages.clear();
     pagesMap.clear();
 
-    Wizard *wizard = new Wizard(wizardName, retPages);
+    Wizard *wizard = new Wizard(wizardName, retPages, helpPageId);
     foreach (const QString &name, vars.keys()) {
         wizard->addVariable(vars[name]);
     }
@@ -99,6 +97,9 @@ Wizard * HRWizardParser::parseWizard(U2OpStatus &os) {
         } else if (NAME == tok) {
             tokenizer.assertToken(Constants::EQUALS_SIGN);
             wizardName = tokenizer.take();
+        } else if (HELP_PAGE_ID == tok) {
+            tokenizer.assertToken(Constants::EQUALS_SIGN);
+            helpPageId = tokenizer.take();
         } else if (AUTORUN == tok) {
             tokenizer.assertToken(Constants::EQUALS_SIGN);
             autoRun = ("true" == tokenizer.take());

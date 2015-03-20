@@ -48,6 +48,7 @@ private:
     const QMap<QString, Actor*> &actorMap;
     QString wizardName;
     QString finishLabel;
+    QString helpPageId;
     QList<WizardPage*> pages;
     QMap<QString, Variable> vars;
 
@@ -95,6 +96,7 @@ public:
     static const QString TEXT;
     static const QString TEXT_COLOR;
     static const QString BACKGROUND_COLOR;
+    static const QString HELP_PAGE_ID;
 };
 
 class U2LANG_EXPORT HRWizardSerializer {

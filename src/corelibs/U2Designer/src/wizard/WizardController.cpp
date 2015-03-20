@@ -29,6 +29,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/MainWindow.h>
 
 #include <U2Lang/WizardPage.h>
@@ -100,8 +101,14 @@ QWizard * WizardController::createGui() {
     }
     result->setButtonText(QWizard::FinishButton, finishLabel);
     result->setOption(QWizard::NoBackButtonOnStartPage);
+    
+    if (!wizard->getHelpPageId().isEmpty()) {
+        result->setOption(QWizard::HaveHelpButton);
+        new HelpButton(this, result->button(QWizard::HelpButton), wizard->getHelpPageId());
+    }
 
     result->installEventFilter(this);
+    
     connect(result, SIGNAL(currentIdChanged(int)), SLOT(sl_pageChanged(int)));
     return result;
 }
@@ -109,7 +116,7 @@ QWizard * WizardController::createGui() {
 void WizardController::setupButtons(QWizard *gui) {
     connect(gui, SIGNAL(customButtonClicked(int)), SLOT(sl_customButtonClicked(int)));
     QList<QWizard::WizardButton> order;
-    order << QWizard::Stretch << QWizard::BackButton << QWizard::NextButton << QWizard::FinishButton  << QWizard::CancelButton;
+    order << QWizard::Stretch << QWizard::BackButton << QWizard::NextButton << QWizard::FinishButton  << QWizard::CancelButton << QWizard::HelpButton;
 
     if (wizard->hasDefaultsButton()) {
         gui->setOption(QWizard::HaveCustomButton2);

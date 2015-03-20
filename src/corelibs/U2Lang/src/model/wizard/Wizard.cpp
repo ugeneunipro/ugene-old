@@ -29,8 +29,8 @@ namespace U2 {
 
 const QString Wizard::DEFAULT_NAME("Wizard");
 
-Wizard::Wizard(const QString &_name, const QList<WizardPage*> &_pages)
-: name(_name), pages(_pages), autoRun(false), withRunButton(true), withDefaultsButton(true)
+Wizard::Wizard(const QString &_name, const QList<WizardPage*> &_pages, const QString &_helpPageId)
+: name(_name), pages(_pages), autoRun(false), withRunButton(true), withDefaultsButton(true), helpPageId(_helpPageId)
 {
 
 }
@@ -117,6 +117,10 @@ bool Wizard::hasDefaultsButton() const {
 
 void Wizard::setHasDefaultsButton(bool value) {
     withDefaultsButton = value;
+}
+
+const QString Wizard::getHelpPageId()const {
+    return helpPageId;
 }
 
 } // U2

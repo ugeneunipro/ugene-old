@@ -34,7 +34,7 @@ class WizardPage;
 
 class U2LANG_EXPORT Wizard {
 public:
-    Wizard(const QString &name, const QList<WizardPage*> &pages);
+    Wizard(const QString &name, const QList<WizardPage*> &pages, const QString &helpPageId);
     virtual ~Wizard();
 
     void validate(const Workflow::Schema *schema, U2OpStatus &os) const;
@@ -60,6 +60,8 @@ public:
     bool hasDefaultsButton() const;
     void setHasDefaultsButton(bool value);
 
+    const QString getHelpPageId() const;
+
     static const QString DEFAULT_NAME;
 
 private:
@@ -71,6 +73,7 @@ private:
     bool withDefaultsButton;
     QMap<QString, QList<Predicate> > results;
     QString finishLabel;
+    const QString helpPageId;
 };
 
 } // U2
