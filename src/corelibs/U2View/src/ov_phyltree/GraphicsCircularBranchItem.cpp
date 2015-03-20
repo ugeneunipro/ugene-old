@@ -55,35 +55,18 @@ GraphicsCircularBranchItem::GraphicsCircularBranchItem(QGraphicsItem* parent, qr
     QPointF p = mapFromScene(0, 0);
     setTransform(QTransform().translate(p.x(), p.y()).rotate((direction == GraphicsBranchItem::up ? -1 : 1) * h / M_PI * 180).translate(-p.x(), -p.y()));
 
-    //QPen pen1;
-    //pen1.setCosmetic(true);
     if (from->getNameText() != NULL) {
         nameText = new QGraphicsSimpleTextItem(from->getNameText()->text(), this);
         nameText->setFont(from->getNameText()->font());
-        QRectF rect = nameText->boundingRect();
-        qreal h = rect.height();
-        nameText->setPos(GraphicsBranchItem::TextSpace, -h * 0.5);
-        if (nameText->scenePos().x() < 0.0) {
-            QPointF p = rect.center();
-            nameText->setTransform(QTransform().translate(p.x(), p.y()).rotate(180).translate(-p.x(), -p.y()));
-        }
 
-//         pen1.setStyle(Qt::DotLine);
-//         pen1.setColor(Qt::darkGray);
         nameText->setBrush(from->getNameText()->brush());
     }
     if (from->getDistanceText() != NULL) {
         distanceText = new QGraphicsSimpleTextItem(from->getDistanceText()->text(), this);
         distanceText->setFont(from->getDistanceText()->font());
-        QRectF rect = distanceText->boundingRect();
-        if (distanceText->scenePos().x() < 0) {
-            QPointF p(rect.center().x(), rect.height());
-            distanceText->setTransform(QTransform().translate(p.x(), p.y()).rotate(180).translate(-p.x(), -p.y()));
-        }
-        distanceText->setPos(-0.5 * (w + rect.width()), -rect.height());
-
         distanceText->setBrush(from->getDistanceText()->brush());
     }
+    setLabelPositions();
     setPen(from->pen());
 
 }
@@ -118,6 +101,26 @@ QPainterPath GraphicsCircularBranchItem::shape() const {
     path.arcTo(rect, 0, (direction == GraphicsBranchItem::up ? -1 : 1) * height * 16 * 180 / M_PI);
 
     return path;
+}
+
+void GraphicsCircularBranchItem::setLabelPositions() {
+    if(nameText != NULL) {
+        QRectF rect = nameText->boundingRect();
+        qreal h = rect.height();
+        nameText->setPos(GraphicsBranchItem::TextSpace, -h * 0.5);
+        if (nameText->scenePos().x() < 0.0) {
+            QPointF p = rect.center();
+            nameText->setTransform(QTransform().translate(p.x(), p.y()).rotate(180).translate(-p.x(), -p.y()));
+        }
+    }
+    if(distanceText != NULL) {
+        QRectF rect = distanceText->boundingRect();
+        if (distanceText->scenePos().x() < 0) {
+            QPointF p(rect.center().x(), rect.height());
+            distanceText->setTransform(QTransform().translate(p.x(), p.y()).rotate(180).translate(-p.x(), -p.y()));
+        }
+        distanceText->setPos(-0.5 * (width + rect.width()), -rect.height());
+    }
 }
 
 }//namespace

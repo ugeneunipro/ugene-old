@@ -154,6 +154,9 @@ void TreeOptionsWidget::updateAllWidgets()
     foreach(TreeViewOption option, settings.keys()) {
         sl_onOptionChanged(option, settings[option]);
     }
+    if(!settings[SHOW_NODE_LABELS].toBool()) {
+        showNodeLabelsCheck->setEnabled(false);
+    }
 }
 
 void TreeOptionsWidget::sl_onOptionChanged(TreeViewOption option, const QVariant& value) {
@@ -185,6 +188,7 @@ void TreeOptionsWidget::initialazeOptionsMap() {
     optionsMap[showNamesCheck->objectName()] = SHOW_LABELS;
     optionsMap[showDistancesCheck->objectName()] = SHOW_DISTANCES;
     optionsMap[alignLabelsCheck->objectName()] = ALIGN_LABELS;
+    optionsMap[showNodeLabelsCheck->objectName()] = SHOW_NODE_LABELS;
 
     optionsMap[lineWeightSpinBox->objectName()] = BRANCH_THICKNESS;
 
@@ -211,6 +215,7 @@ void TreeOptionsWidget::connectSlots()
     connect(showNamesCheck,      SIGNAL(stateChanged(int)), SLOT(sl_valueChanged()));
     connect(showDistancesCheck,  SIGNAL(stateChanged(int)), SLOT(sl_valueChanged()));
     connect(alignLabelsCheck,    SIGNAL(stateChanged(int)), SLOT(sl_valueChanged()));
+    connect(showNodeLabelsCheck, SIGNAL(stateChanged(int)), SLOT(sl_valueChanged()));
 
     //Labels format widgets
     connect(labelsColorButton,   SIGNAL(clicked()),     SLOT(sl_labelsColorButton()));

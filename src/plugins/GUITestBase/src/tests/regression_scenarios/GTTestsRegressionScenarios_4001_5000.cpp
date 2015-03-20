@@ -30,6 +30,7 @@
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsOptionPanelSequenceView.h"
+#include "GTUtilsPhyTree.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsWorkflowDesigner.h"
@@ -57,6 +58,7 @@
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
@@ -358,6 +360,18 @@ GUI_TEST_CLASS_DEFINITION(test_4034) {
         sandBoxDir + "ann_test_4034.gb"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4035) {
+    //1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    //2. Click the "Build tree" button on the main toolbar.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFillerPhyML(os, false, 10));
+    GTWidget::click(os, GTAction::button(os, "Build Tree"));
+    //3. Select the "PhyML" tool, set "Bootstrap" option to 10, build the tree
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    int labelsCount = GTUtilsPhyTree::getDistances(os).count();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4036) {

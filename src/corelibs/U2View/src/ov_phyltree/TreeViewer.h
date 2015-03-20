@@ -122,6 +122,7 @@ private:
     QAction*            branchesSettingsAction;
 
     QAction*            nameLabelsAction;
+    QAction*            nodeLabelsAction;
     QAction*            distanceLabelsAction;
     QAction*            textSettingsAction;
     QAction*            contAction;
@@ -267,6 +268,7 @@ private:
 
     void changeLayout(TreeLayout newLayout);
     void changeNamesDisplay();
+    void changeNodeValuesDisplay();
     void changeLabelsAlignment();
 
     void initializeSettings();

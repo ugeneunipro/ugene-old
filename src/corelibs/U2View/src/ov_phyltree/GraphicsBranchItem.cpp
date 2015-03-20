@@ -26,11 +26,8 @@
 #include <QtGui/QPainter>
 #include <QtCore/QStack>
 #include <U2Core/U2SafePoints.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QGraphicsScene>
-#else
-#include <QtWidgets/QGraphicsScene>
-#endif
+#include <QGraphicsScene>
+#include <QEvent>
 
 namespace U2 {
 
@@ -65,13 +62,19 @@ void GraphicsBranchItem::updateChildSettings(const OptionsMap& newSettings) {
 }
 
 void GraphicsBranchItem::updateTextSettings(const QFont& font, const QColor& color){
+    QFont prevFont;
     if(distanceText){
+        prevFont = distanceText->font();
         distanceText->setFont(font);
         distanceText->setBrush(color);
     }
     if(nameText){
+        prevFont = nameText->font();
         nameText->setFont(font);
         nameText->setBrush(color);
+    }
+    if(font != prevFont) {
+        setLabelPositions();
     }
 }
 
@@ -172,13 +175,12 @@ void GraphicsBranchItem::initText(qreal d) {
     distanceText = new QGraphicsSimpleTextItem(str);
     distanceText->setFont(TreeViewerUtils::getFont());
     distanceText->setBrush(Qt::darkGray);
-    QRectF rect = distanceText->boundingRect();
-    distanceText->setPos(-rect.width(), 0);
+    setLabelPositions();
     distanceText->setParentItem(this);
     distanceText->setZValue(1);
 }
 
-GraphicsBranchItem::GraphicsBranchItem(bool withButton)
+GraphicsBranchItem::GraphicsBranchItem(bool withButton, double nodeValue)
 : correspondingItem(NULL),
   buttonItem(NULL),
   branchLength(0),
@@ -196,7 +198,7 @@ GraphicsBranchItem::GraphicsBranchItem(bool withButton)
     setAcceptedMouseButtons(Qt::NoButton);
 
     if (withButton) {
-        buttonItem = new GraphicsButtonItem();
+        buttonItem = new GraphicsButtonItem(nodeValue);
         buttonItem->setParentItem(this);
     }
 
@@ -233,13 +235,12 @@ GraphicsBranchItem::GraphicsBranchItem(const QString& name)
     nameText = new QGraphicsSimpleTextItem(name);
     nameText->setFont(TreeViewerUtils::getFont());
     nameText->setBrush(Qt::darkGray);
-    QRectF rect = nameText->boundingRect();
-    nameText->setPos(GraphicsBranchItem::TextSpace, -rect.height() / 2);
+    setLabelPositions();
     nameText->setParentItem(this);
     nameText->setZValue(1);
 }
 
-GraphicsBranchItem::GraphicsBranchItem(qreal d, bool withButton)
+GraphicsBranchItem::GraphicsBranchItem(qreal d, bool withButton, double nodeValue)
 : correspondingItem(NULL),
   buttonItem(NULL),
   branchLength(0),
@@ -257,7 +258,7 @@ GraphicsBranchItem::GraphicsBranchItem(qreal d, bool withButton)
     setAcceptedMouseButtons(Qt::NoButton);
 
     if (withButton) {
-        buttonItem = new GraphicsButtonItem();
+        buttonItem = new GraphicsButtonItem(nodeValue);
         buttonItem->setParentItem(this);
     }
 
@@ -270,6 +271,17 @@ GraphicsBranchItem::GraphicsBranchItem(qreal d, bool withButton)
     }
     setPen(pen1);
     setBrush(branchColor);
+}
+
+void GraphicsBranchItem::setLabelPositions() {
+    if(nameText != NULL) {
+        QRectF rect = nameText->boundingRect();
+        nameText->setPos(GraphicsBranchItem::TextSpace, -rect.height() / 2);
+    }
+    if(distanceText != NULL) {
+        QRectF rect = distanceText->boundingRect();
+        distanceText->setPos(-rect.width(), 0);
+    }
 }
 
 void GraphicsBranchItem::setDistanceText(const QString& text){
@@ -288,6 +300,7 @@ void GraphicsBranchItem::setWidth(qreal w) {
         QPointF pos = getDistanceText()->pos();
         getDistanceText()->setPos(pos.x() + (width - w) * 0.5, pos.y());
     }
+    setLabelPositions();
 
     prepareGeometryChange();
     width = w;

@@ -90,6 +90,7 @@ TreeViewer::TreeViewer(const QString& viewName, GObject* obj, GraphicsRectangula
     unrootedLayoutAction(NULL),
     branchesSettingsAction(NULL),
     nameLabelsAction(NULL),
+    nodeLabelsAction(NULL),
     distanceLabelsAction(NULL),
     textSettingsAction(NULL),
     contAction(NULL),
@@ -182,6 +183,11 @@ void TreeViewer::createActions() {
     nameLabelsAction->setCheckable(true);
     nameLabelsAction->setChecked(true);
     nameLabelsAction->setObjectName("Show Names");
+    // Show Node Labels
+    nodeLabelsAction = new QAction(tr("Show Node Labels"), ui);
+    nodeLabelsAction->setCheckable(phyObject->haveNodeLabels());
+    nodeLabelsAction->setChecked(true);
+    nodeLabelsAction->setObjectName("Show Names");
 
     distanceLabelsAction = new QAction(tr("Show Distances"), ui);
     distanceLabelsAction->setCheckable(true);
@@ -561,6 +567,9 @@ void TreeViewerUI::onSettingsChanged(TreeViewOption option, const QVariant& newV
             showLabels(LabelType_Distance);
             action->setChecked(newValue.toBool());
             break;
+        case SHOW_NODE_LABELS:
+            changeNodeValuesDisplay();
+            break;
         case ALIGN_LABELS:
             action = curTreeViewer->getContAction();
             changeLabelsAlignment();
@@ -601,6 +610,7 @@ void TreeViewerUI::initializeSettings() {
 
     setOptionValue(SHOW_LABELS, true);
     setOptionValue(SHOW_DISTANCES,  true);
+    setOptionValue(SHOW_NODE_LABELS,  phyObject->haveNodeLabels());
     setOptionValue(ALIGN_LABELS, false);
 
     setOptionValue(BRANCH_COLOR, QColor(0, 0, 0));
@@ -663,12 +673,17 @@ void TreeViewerUI::updateTextSettings(){
     QFont curFont = qvariant_cast<QFont>(getOptionValue(LABEL_FONT));
     foreach (QGraphicsItem *graphItem, updatingItems) {
         GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(graphItem);
-        if (branchItem) {
+        if (branchItem != NULL) {
             branchItem->updateTextSettings(qvariant_cast<QFont>(getOptionValue(LABEL_FONT)), curColor);
             if(branchItem->getCorrespondingItem()){
                 branchItem->getCorrespondingItem()->updateTextSettings(curFont, curColor);
             }
         }
+        GraphicsButtonItem *buttonItem = dynamic_cast<GraphicsButtonItem*>(graphItem);
+        if (buttonItem != NULL) {
+            buttonItem->updateSettings(getSettings());
+        }
+
     }
 
     updateLayout();
@@ -1296,6 +1311,16 @@ void TreeViewerUI::changeNamesDisplay() {
     QRectF rect = sceneRect();
     rect.setWidth(rect.width() + (showNames ? 1 : -1) * maxNameWidth);
     scene()->setSceneRect(rect);
+}
+
+void TreeViewerUI::changeNodeValuesDisplay() {
+    QList<QGraphicsItem *> allItems = scene()->items();
+    foreach(QGraphicsItem* curItem, allItems) {
+        GraphicsButtonItem* buttonItem = dynamic_cast<GraphicsButtonItem*>(curItem);
+        if(NULL != buttonItem) {
+            buttonItem->updateSettings(getSettings());
+        }
+    }
 }
 
 void TreeViewerUI::sl_showDistanceLabelsTriggered(bool on) {

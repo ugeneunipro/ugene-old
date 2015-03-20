@@ -51,11 +51,12 @@ private:
 
 class BuildTreeDialogFillerPhyML : public Filler {
  public:
-    BuildTreeDialogFillerPhyML(U2OpStatus &os, bool _freqOptimRadioPressed);
+    BuildTreeDialogFillerPhyML(U2OpStatus &os, bool _freqOptimRadioPressed, int bootstrap = -1);
     void run();
 
 private:
     bool freqOptimRadioPressed;
+    int bootstrap;
 };
 
 }

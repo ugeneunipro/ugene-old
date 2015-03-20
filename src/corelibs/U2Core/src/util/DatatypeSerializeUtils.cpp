@@ -219,6 +219,9 @@ namespace {
                         binary.append(",");
                     }
                     packTreeNode(binary, node->getSecondNodeOfBranch(i));
+                    if(node->getBranchesNodeValue(i) >= 0) {
+                        binary.append(QByteArray::number(node->getBranchesNodeValue(i)));
+                    }
                     binary.append(":");
                     binary.append(QByteArray::number(node->getBranchesDistance(i)));
                 }
@@ -245,6 +248,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
     QByteArray block(BUFF_SIZE, '\0');
     int blockLen;
     bool done = true;
+    bool haveNodeLabels = false;
 
     QBitArray ops(256);
     ops['('] = true;
@@ -295,19 +299,21 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                 continue;
             }
 
-            if (state == RS_NAME) {
-                nodeStack.top()->setName(lastStr);
-            } else {
-                assert(state == RS_WEIGHT);
-                if (!branchStack.isEmpty()) { //ignore root node weight if present
-                    if (nodeStack.size() < 2) {
-                        si.setError(DatatypeSerializers::tr("Unexpected weight: %1").arg(lastStr));
-                    }
-                    bool ok = false;
-                    branchStack.top()->distance = lastStr.toDouble(&ok);
-                    if (!ok) {
-                        si.setError(DatatypeSerializers::tr("Error parsing weight: %1").arg(lastStr));
-                        break;
+            if(!lastStr.isEmpty()) {
+                if (state == RS_NAME) {
+                    nodeStack.top()->setName(lastStr);
+                } else {
+                    assert(state == RS_WEIGHT);
+                    if (!branchStack.isEmpty()) { //ignore root node weight if present
+                        if (nodeStack.size() < 2) {
+                            si.setError(DatatypeSerializers::tr("Unexpected weight: %1").arg(lastStr));
+                        }
+                        bool ok = false;
+                        branchStack.top()->distance = lastStr.toDouble(&ok);
+                        if (!ok) {
+                            si.setError(DatatypeSerializers::tr("Error parsing weight: %1").arg(lastStr));
+                            break;
+                        }
                     }
                 }
             }
@@ -321,9 +327,17 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                 branchStack.push(bd);
                 state = RS_NAME;
             } else if (c == ':') { //weight start
-                if (state == RS_WEIGHT) {
-                    si.setError(DatatypeSerializers::tr("Unexpected weight start token: %1").arg(lastStr));
-                    break;
+                if (state == RS_WEIGHT && !lastStr.isEmpty()) {
+                    if (!branchStack.isEmpty()) { //ignore root node weight if present
+                        bool ok = false;
+                        branchStack.top()->nodeValue = lastStr.toDouble(&ok);
+                        if (!ok) {
+                            si.setError(DatatypeSerializers::tr("Error parsing nodeValue: %1").arg(lastStr));
+                            break;
+                        } else {
+                            haveNodeLabels = true;
+                        }
+                    }
                 }
                 state = RS_WEIGHT;
             } else if ( c == ',') { //new sibling
@@ -348,7 +362,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                 }
                 assert(!branchStack.isEmpty());
                 branchStack.pop();
-                state = RS_NAME;
+                state = RS_WEIGHT;
             } else if (c == ';') {
                 if (!branchStack.isEmpty() || nodeStack.size()!=1) {
                     si.setError(DatatypeSerializers::tr("Unexpected end of file"));
@@ -356,6 +370,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                 }
                 PhyTree tree(new PhyTreeData());
                 tree->setRootNode(nodeStack.pop());
+                tree->setUsingNodeLabels(haveNodeLabels);
                 result << tree;
                 nodeStack.push(rd = new PhyNode());
                 done = true;
@@ -379,6 +394,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
             PhyNode *node = nodeStack.pop();
             PhyTree tree(new PhyTreeData());
             tree->setRootNode(node);
+            tree->setUsingNodeLabels(haveNodeLabels);
             result << tree;
         } else {
             delete rd;

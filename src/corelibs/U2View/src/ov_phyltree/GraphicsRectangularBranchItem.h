@@ -42,7 +42,7 @@ public:
 
     GraphicsRectangularBranchItem(const QString& name, GraphicsRectangularBranchItem* pitem);
     GraphicsRectangularBranchItem();
-    GraphicsRectangularBranchItem(qreal d, PhyBranch *branch);
+    GraphicsRectangularBranchItem(qreal d, PhyBranch *branch, double nodeValue);
     GraphicsRectangularBranchItem(qreal x, qreal y, const QString& name, qreal d, PhyBranch *branch);
     GraphicsRectangularBranchItem(qreal x, qreal y, const QString& name);
 

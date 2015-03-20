@@ -62,7 +62,10 @@ GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(const Ph
             item = new GraphicsRectangularBranchItem();
         }
         else {
-            item = new GraphicsRectangularBranchItem(node->getBranchesDistance(ind), node->getBranch(ind));
+            const PhyBranch* parentBranch = node->getParentBranch();
+            if(parentBranch != NULL) {
+                item = new GraphicsRectangularBranchItem(node->getBranchesDistance(ind), node->getBranch(ind), parentBranch->nodeValue);
+            }
         }
         int size = items.size();
         assert(size > 0);

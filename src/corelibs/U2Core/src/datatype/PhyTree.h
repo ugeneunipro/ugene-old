@@ -48,10 +48,14 @@ public:
     static PhyBranch* addBranch(PhyNode* node1, PhyNode* node2, double distance);
     static void removeBranch(PhyNode* node1, PhyNode* node2);
 
-    void renameNodes(const QMap<QString, QString>& newNamesByOldNames);private:
+    void setUsingNodeLabels(bool haveNodeLabels);
+    bool usingNodeLabels() const {return haveNodeLabels;}
+
+    void renameNodes(const QMap<QString, QString>& newNamesByOldNames);
 private:
     PhyTreeData & operator= (const PhyTreeData &) {return *this;}
     PhyNode* rootNode;
+    bool haveNodeLabels;
 };
 typedef QSharedDataPointer<PhyTreeData> PhyTree;
 
@@ -65,6 +69,7 @@ public:
     PhyNode* node1;
     PhyNode* node2;
     double   distance;
+    double      nodeValue;
 };
 
 class U2CORE_EXPORT PhyNode {
@@ -78,8 +83,9 @@ public:
     /* const */
     const QString & getName() const { return name; }
     int branchCount() const {return branches.size();}
-    const PhyNode * getSecondNodeOfBranch(int branchNumber) const {return branches.at(branchNumber)->node2;}
-    double getBranchesDistance(int branchNumber) const { return branches.at(branchNumber)->distance;}
+    const PhyNode * getSecondNodeOfBranch(int branchNumber) const;
+    double getBranchesDistance(int branchNumber) const;
+    double getBranchesNodeValue(int branchNumber) const;
     void validate(QList<const PhyNode*>& track) const;
     bool isConnected(const PhyNode* node) const;
     PhyNode * clone() const;
@@ -99,6 +105,8 @@ public:
     void swapBranches(int firstBrunch, int secondBranch){branches.swap(firstBrunch, secondBranch);}
     double getDistanceToRoot() const;
 
+    const PhyBranch * getParentBranch() const;
+
 private:
     QString             name;
     QList<PhyBranch*>   branches;
@@ -106,7 +114,6 @@ private:
 private:
     PhyBranch * getBranchAt(int i) const;
     PhyNode * parent() const;
-    const PhyBranch * getParentBranch() const;
     void addToTrack(QSet<const PhyNode*>& track) const;
 };
 

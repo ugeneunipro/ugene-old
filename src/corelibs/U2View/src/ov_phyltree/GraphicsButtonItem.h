@@ -23,12 +23,9 @@
 #define _U2_GRAPHICS_BUTTON_ITEM_H_
 
 #include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QGraphicsEllipseItem>
-#else
-#include <QtWidgets/QGraphicsEllipseItem>
-#endif
+#include <QGraphicsEllipseItem>
 #include <QtGui/QBrush>
+#include "TreeSettings.h"
 
 namespace U2 {
 
@@ -43,7 +40,7 @@ protected:
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
 public:
-    GraphicsButtonItem();
+    GraphicsButtonItem(double nodeValue = 0);
 
     bool isSelectedTop();
     void collapse();
@@ -53,6 +50,15 @@ public:
     void setSelected(bool selected);
 
     void rerootTree(PhyTreeObject* treeObject);
+
+    void updateSettings(const OptionsMap& settings);
+
+    virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
+
+    const QGraphicsSimpleTextItem* getLabel() const;
+
+    virtual QRectF boundingRect();
+
 private:
     void setHighlighting(bool enabled);
 
@@ -61,6 +67,8 @@ private:
     static const QBrush highlightingBrush;
     static const QBrush ordinaryBrush;
     bool isSelected;
+    QGraphicsSimpleTextItem* nameText;
+    qreal scaleFactor;
 };
 
 }//namespace;

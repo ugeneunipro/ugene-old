@@ -152,8 +152,8 @@ GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(qreal x, qreal y, c
     setPos(x, y);
 }
 
-GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(qreal d, PhyBranch *branch)
-: GraphicsBranchItem(d), height(0.0), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), phyBranch(branch)
+GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(qreal d, PhyBranch *branch, double nodeValue)
+: GraphicsBranchItem(d, true, nodeValue), height(0.0), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), phyBranch(branch)
 {
 
 }

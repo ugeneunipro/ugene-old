@@ -144,8 +144,8 @@ void BuildTreeDialogFiller::commonScenario() {
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
-BuildTreeDialogFillerPhyML::BuildTreeDialogFillerPhyML(U2OpStatus &os, bool _freqOptimRadioPressed)
-    : Filler(os, "CreatePhyTree"), freqOptimRadioPressed(_freqOptimRadioPressed)
+BuildTreeDialogFillerPhyML::BuildTreeDialogFillerPhyML(U2OpStatus &os, bool _freqOptimRadioPressed, int bootstrap)
+    : Filler(os, "CreatePhyTree"), freqOptimRadioPressed(_freqOptimRadioPressed), bootstrap(bootstrap)
 {
 
 }
@@ -164,6 +164,16 @@ void BuildTreeDialogFillerPhyML::run(){
     QRadioButton* freqOptimRadio = GTWidget::findExactWidget<QRadioButton*>(os, "freqOptimRadio");
     if(freqOptimRadioPressed){
         GTRadioButton::click(os, freqOptimRadio);
+    }
+
+    if(bootstrap >= 0) {
+        QCheckBox* bootstrapCheck = GTWidget::findExactWidget<QCheckBox*>(os, "bootstrapCheckBox");
+        GT_CHECK(bootstrapCheck != NULL, "bootstrapCheck is NULL");
+        GTCheckBox::setChecked(os, bootstrapCheck, true);
+
+        QSpinBox* bootstrapSpin = GTWidget::findExactWidget<QSpinBox*>(os, "bootstrapSpinBox");
+        GT_CHECK(bootstrapSpin != NULL, "bootstrapSpin is NULL");
+        GTSpinBox::setValue(os, bootstrapSpin, bootstrap);
     }
 
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));

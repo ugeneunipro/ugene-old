@@ -25,10 +25,10 @@
 
 namespace U2 {
 
-PhyTreeData::PhyTreeData() : rootNode(NULL)  {
+PhyTreeData::PhyTreeData() : rootNode(NULL), haveNodeLabels(NULL)  {
 }
 
-PhyTreeData::PhyTreeData(const PhyTreeData& other) : QSharedData(other) {
+PhyTreeData::PhyTreeData(const PhyTreeData& other) : QSharedData(other), haveNodeLabels(NULL) {
     rootNode = other.rootNode == NULL ? NULL : other.rootNode->clone();
 }
 
@@ -65,6 +65,10 @@ void PhyTreeData::removeBranch(PhyNode* node1, PhyNode* node2) {
     assert(0);
 }
 
+void PhyTreeData::setUsingNodeLabels(bool _haveNodeLabels) {
+    haveNodeLabels = _haveNodeLabels;
+}
+
 void PhyTreeData::renameNodes(const QMap<QString, QString>& newNamesByOldNames) {
     SAFE_POINT(NULL != rootNode, QObject::tr("UGENE internal error"),);
 
@@ -82,7 +86,7 @@ void PhyTreeData::renameNodes(const QMap<QString, QString>& newNamesByOldNames) 
 PhyNode::PhyNode() {
 }
 
-PhyBranch::PhyBranch() : node1(NULL), node2(NULL), distance(0) {
+PhyBranch::PhyBranch() : node1(NULL), node2(NULL), distance(0), nodeValue(-1.0) {
 }
 
 void PhyTreeData::print() const{
@@ -102,6 +106,21 @@ QList<const PhyNode*> PhyTreeData::collectNodes() const
     return track;
 
 }
+
+const PhyNode * PhyNode::getSecondNodeOfBranch(int branchNumber) const {
+    SAFE_POINT(branchNumber < branches.size() && branchNumber >= 0, "Invalid branch number", NULL);
+    return branches.at(branchNumber)->node2;
+}
+double PhyNode::getBranchesDistance(int branchNumber) const {
+    SAFE_POINT(branchNumber < branches.size() && branchNumber >= 0, "Invalid branch number", -1.0);
+    return branches.at(branchNumber)->distance;
+}
+
+double PhyNode::getBranchesNodeValue(int branchNumber) const { 
+    SAFE_POINT(branchNumber < branches.size() && branchNumber >= 0, "Invalid branch number", -1.0);
+    return branches.at(branchNumber)->nodeValue;
+}
+
 void PhyNode::validate(QList<const PhyNode*>& track) const {
     if (track.contains(this)) {
         return;

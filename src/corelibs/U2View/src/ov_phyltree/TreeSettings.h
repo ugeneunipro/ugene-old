@@ -53,6 +53,7 @@ enum TreeViewOption {
 
     SHOW_LABELS,
     SHOW_DISTANCES,
+    SHOW_NODE_LABELS,
     ALIGN_LABELS,
 
     SCALEBAR_RANGE,

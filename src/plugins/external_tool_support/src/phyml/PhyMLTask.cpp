@@ -137,12 +137,7 @@ QList<Task*> PhyMLSupportTask::onSubTaskFinished(Task* subTask){
         phyMlTask->setSubtaskProgressWeight(95);
         res.append(phyMlTask);
     }else if(subTask == phyMlTask){
-        if(settings.bootstrap) {
-            getTreeTask = new PhyMLGetCalculatedTreeTask(tmpPhylipFile + PhyMLSupportTask::RESULT_BOOTSTRAP_EXT);
-        }
-        else {
-            getTreeTask = new PhyMLGetCalculatedTreeTask(tmpPhylipFile + PhyMLSupportTask::RESULT_TREE_EXT);
-        }
+        getTreeTask = new PhyMLGetCalculatedTreeTask(tmpPhylipFile + PhyMLSupportTask::RESULT_TREE_EXT);
         getTreeTask->setSubtaskProgressWeight(5);
         res.append(getTreeTask);
     }else if(subTask == getTreeTask){

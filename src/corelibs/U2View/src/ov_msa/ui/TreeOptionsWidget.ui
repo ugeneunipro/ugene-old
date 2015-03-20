@@ -122,6 +122,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QCheckBox" name="showNodeLabelsCheck">
+          <property name="text">
+           <string>Show node labels</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QCheckBox" name="alignLabelsCheck">
           <property name="text">
            <string>Align labels</string>

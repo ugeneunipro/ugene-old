@@ -22,20 +22,17 @@
 #include "GraphicsButtonItem.h"
 #include "GraphicsBranchItem.h"
 #include "GraphicsRectangularBranchItem.h"
+#include "TreeViewerUtils.h"
+
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/PhyTreeObject.h>
-#include <QtGui/QPainter>
-#include <QtGui/QPen>
 #include <QtCore/QList>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QGraphicsScene>
-#include <QtGui/QGraphicsSceneMouseEvent>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QGraphicsScene>
-#include <QtWidgets/QGraphicsSceneMouseEvent>
-#include <QtWidgets/QMenu>
-#endif
+
+#include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
+#include <QMenu>
+#include <QPainter>
+#include <QPen>
 
 namespace U2 {
 
@@ -45,17 +42,49 @@ const QBrush GraphicsButtonItem::highlightingBrush = QBrush(QColor(170, 170, 230
 const QBrush GraphicsButtonItem::ordinaryBrush = QBrush(Qt::gray);
 
 
-GraphicsButtonItem::GraphicsButtonItem()
-    : QGraphicsEllipseItem(QRectF(-radiusMin, -radiusMin, 2 * radiusMin, 2 * radiusMin)), isSelected(false) {
+GraphicsButtonItem::GraphicsButtonItem(double nodeValue)
+    : QGraphicsEllipseItem(QRectF(-radiusMin, -radiusMin, 2 * radiusMin, 2 * radiusMin)), isSelected(false), nameText(NULL), scaleFactor(1.0) {
     setPen(QColor(0, 0, 0));
     setBrush(ordinaryBrush);
     setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::LeftButton);
     setZValue(2);
     setFlag(QGraphicsItem::ItemIsSelectable);
-    setFlag(QGraphicsItem::ItemIgnoresTransformations);
     setToolTip(QObject::tr("Left click to select the branch\nDouble-click to collapse the branch"));
+
+    if(nodeValue >= 0) {
+        nameText = new QGraphicsSimpleTextItem(QString::number(nodeValue), this);
+        nameText->setFont(TreeViewerUtils::getFont());
+        nameText->setBrush(Qt::darkGray);
+        QRectF rect = nameText->boundingRect();
+        nameText->setPos(GraphicsBranchItem::TextSpace, -rect.height() / 2);
+        nameText->setParentItem(this);
+        nameText->setFlag(QGraphicsItem::ItemIgnoresTransformations,false);
+        nameText->setZValue(1);
+    }
 }
+
+void GraphicsButtonItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
+    QTransform worldTransform = painter->worldTransform();
+    //worldTransform = worldTransform.scale(1.0 / worldTransform.m11(), 1.0 / worldTransform.m22());
+    scaleFactor = 1.0 / worldTransform.m11();
+    worldTransform.setMatrix(1.0, 0, 0, 0, 1.0, 0, worldTransform.m31(), worldTransform.m32(), worldTransform.m33());
+    painter->setWorldTransform(worldTransform);
+    QGraphicsEllipseItem::paint(painter, option, widget);
+
+    QRectF rect = boundingRect();
+}
+
+QRectF GraphicsButtonItem::boundingRect() {
+    QRectF resultRect = QGraphicsEllipseItem::boundingRect();
+    qreal delta = (resultRect.width() / scaleFactor - resultRect.width()) / 2;
+    return resultRect.adjusted(delta, delta, delta, delta);
+}
+
+const QGraphicsSimpleTextItem* GraphicsButtonItem::getLabel() const{
+    return nameText;
+}
+
 
 void GraphicsButtonItem::mousePressEvent(QGraphicsSceneMouseEvent *e) {
     uiLog.trace("Tree button pressed");
@@ -199,6 +228,16 @@ void GraphicsButtonItem::rerootTree(PhyTreeObject* treeObject) {
     CHECK(NULL != newRoot, );
 
     treeObject->rerootPhyTree(newRoot);
+}
+
+void GraphicsButtonItem::updateSettings(const OptionsMap& settings) {
+    CHECK(NULL != nameText,);
+    QFont newFont = qvariant_cast<QFont>(settings[LABEL_FONT]);
+    nameText->setFont(newFont);
+    QColor labelsColor = qvariant_cast<QColor>(settings[LABEL_COLOR]);
+    nameText->setBrush(labelsColor);
+    bool showNodeLabels = settings[SHOW_NODE_LABELS].toBool();
+    nameText->setVisible(showNodeLabels);
 }
 
 }//namespace
