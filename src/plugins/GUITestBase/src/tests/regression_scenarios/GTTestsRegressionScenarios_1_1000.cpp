@@ -280,6 +280,66 @@ GUI_TEST_CLASS_DEFINITION(test_0858) {
     CHECK_SET_ERR(got == expected, QString("The clipboard text is incorrect: [%1], expected [%2]").arg(got).arg(expected));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_861_1) {
+    //1. Open sars.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+
+    //2. Open the "Annotations Highlighting" bar of the Options Panel
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::AnnotationsHighlighting);
+
+    //Expected state : all annotation groups of sars.gb are in the "Annotation type" window:
+    // 3'UTR, 5'UTR, CDS, comment, gene, mat_peptide, misc_feature, source
+    QTreeWidget *highlightTree = GTWidget::findExactWidget<QTreeWidget *>(os, "OP_ANNOT_HIGHLIGHT_TREE");
+    CHECK_SET_ERR(highlightTree->topLevelItemCount() == 8, "Unexpected number of annotations");
+    CHECK_SET_ERR(highlightTree->topLevelItem(0)->text(0) == "3'UTR", QString("Unexpected annotation name at row %1").arg(0));
+    CHECK_SET_ERR(highlightTree->topLevelItem(1)->text(0) == "5'UTR", QString("Unexpected annotation name at row %1").arg(1));
+    CHECK_SET_ERR(highlightTree->topLevelItem(2)->text(0) == "CDS", QString("Unexpected annotation name at row %1").arg(2));
+    CHECK_SET_ERR(highlightTree->topLevelItem(3)->text(0) == "comment", QString("Unexpected annotation name at row %1").arg(3));
+    CHECK_SET_ERR(highlightTree->topLevelItem(4)->text(0) == "gene", QString("Unexpected annotation name at row %1").arg(4));
+    CHECK_SET_ERR(highlightTree->topLevelItem(5)->text(0) == "mat_peptide", QString("Unexpected annotation name at row %1").arg(5));
+    CHECK_SET_ERR(highlightTree->topLevelItem(6)->text(0) == "misc_feature", QString("Unexpected annotation name at row %1").arg(6));
+    CHECK_SET_ERR(highlightTree->topLevelItem(7)->text(0) == "source", QString("Unexpected annotation name at row %1").arg(7));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_861_2) {
+    //1. Open sars.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+
+    //2. Open the "Annotations Highlighting" bar of the Options Panel
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::AnnotationsHighlighting);
+    QTreeWidget *highlightTree = GTWidget::findExactWidget<QTreeWidget *>(os, "OP_ANNOT_HIGHLIGHT_TREE");
+    CHECK_SET_ERR(highlightTree->topLevelItemCount() == 8, "Unexpected number of annotations");
+
+    //3. Switch on ORFs auto annotation
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Show ORFs"));
+    GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected : "ORF" annotation appeared in the "Annotation type" window
+    CHECK_SET_ERR(highlightTree->topLevelItemCount() == 9, "Unexpected number of annotations");
+    CHECK_SET_ERR(highlightTree->topLevelItem(7)->text(0) == "orf", QString("Unexpected annotation name at row %1").arg(7));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_861_3) {
+    //1. Open sars.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+
+    //2. Open the "Annotations Highlighting" bar of the Options Panel
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::AnnotationsHighlighting);
+    QTreeWidget *highlightTree = GTWidget::findExactWidget<QTreeWidget *>(os, "OP_ANNOT_HIGHLIGHT_TREE");
+    CHECK_SET_ERR(highlightTree->topLevelItemCount() == 8, "Unexpected number of annotations");
+
+    //3. Remove 3'UTR annotation group.
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "3'UTR  (0, 1)"));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(100);
+
+    //Expected state : 3'UTR group disapeared from "Annotation type" window
+    CHECK_SET_ERR(highlightTree->topLevelItemCount() == 7, "Unexpected number of annotations");
+    CHECK_SET_ERR(highlightTree->topLevelItem(0)->text(0) == "5'UTR", QString("Unexpected annotation name at row %1").arg(0));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0878) {
 //    1. Open several documents of any kind - sequence view, workflow designer, whatever.
 //    2. Activate any document except the #1 (as numbered in Window menu).
