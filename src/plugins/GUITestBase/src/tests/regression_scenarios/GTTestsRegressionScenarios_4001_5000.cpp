@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2View/MSAGraphOverview.h>
+#include <QPlainTextEdit>
 
 #include "GTTestsRegressionScenarios_4001_5000.h"
 #include "GTUtilsAnnotationsTreeView.h"
@@ -67,7 +67,9 @@
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 
 #include <U2Gui/ToolsMenu.h>
+
 #include <U2View/ADVConstants.h>
+#include <U2View/MSAGraphOverview.h>
 
 namespace U2 {
 
