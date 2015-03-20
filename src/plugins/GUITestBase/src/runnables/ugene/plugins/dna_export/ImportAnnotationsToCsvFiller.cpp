@@ -19,30 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "ImportAnnotationsToCsvFiller.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTWidget.h"
+#include <QApplication>
+#include <QDialogButtonBox>
+#include <QDir>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QTableWidget>
+
 #include "api/GTCheckBox.h"
+#include "api/GTClipboard.h"
 #include "api/GTComboBox.h"
-#include "api/GTSpinBox.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTPlainTextEdit.h"
 #include "api/GTRadioButton.h"
+#include "api/GTSpinBox.h"
+#include "api/GTWidget.h"
 
-#include <QtCore/QDir>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QRadioButton>
-#include <QtGui/QTableWidget>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QTableWidget>
-#endif
+#include "ImportAnnotationsToCsvFiller.h"
 
 namespace U2 {
 
@@ -176,15 +171,16 @@ void ImportAnnotationsToCsvFiller::commonScenario()
         QRadioButton* columnSeparator = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "columnSeparatorRadioButton", dialog));
         columnSeparator->setChecked(true);
 
-        QLineEdit *separatorLineEdit = dialog->findChild<QLineEdit*>("separatorEdit");
-        GT_CHECK(separatorLineEdit != NULL, "line edit not found");
-        GTLineEdit::setText(os, separatorLineEdit, separator);
-        }
+        QLineEdit *separatorEdit = GTWidget::findExactWidget<QLineEdit *>(os, "separatorEdit", dialog);
+        GTLineEdit::setText(os, separatorEdit, "");
 
-    else {
+        GTClipboard::setText(os, separator);
+        GTWidget::click(os, separatorEdit);
+        GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    } else {
         QRadioButton* scriptRadioButton = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "scriptRadioButton", dialog));
         scriptRadioButton->setChecked(true);
-         }
+    }
 
     QLineEdit *firstLinesLineEdit = dialog->findChild<QLineEdit*>(QString::fromUtf8("prefixToSkipEdit"));
     GT_CHECK(firstLinesLineEdit != NULL, "line edit not found");

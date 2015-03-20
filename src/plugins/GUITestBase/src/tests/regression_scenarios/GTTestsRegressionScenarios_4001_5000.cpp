@@ -20,11 +20,14 @@
  */
 
 #include <QPlainTextEdit>
+#include <QWebElement>
 
 #include "GTTestsRegressionScenarios_4001_5000.h"
 #include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsDashboard.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
@@ -37,6 +40,7 @@
 #include "GTUtilsDialog.h"
 
 #include "api/GTAction.h"
+#include "api/GTCheckBox.h"
 #include "api/GTClipboard.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
@@ -62,10 +66,12 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
-#include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h"
 #include "runnables/ugene/plugins/orf_marker/OrfDialogFiller.h"
+#include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 
 #include <U2Gui/ToolsMenu.h>
@@ -602,6 +608,34 @@ GUI_TEST_CLASS_DEFINITION(test_4084) {
     CHECK_SET_ERR(NULL != annotationGroup, "Wrong annotations number");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4093) {
+    //1. Open "human_T1.fa"
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+
+    //2. Call context menu on the document
+    //{ Export / Import->Import annotations from CSV... }
+    //Expected state : "Import Annotations from CSV" dialog appeared
+    //3. Select the attached file for reading
+    //4. Copy tab to clipboard and insert to "Column separator" field
+    //5. Select 3rd column as "Start position", 4th column as "End position" and 5th as "Complement strand mark"
+    //6. Press "Run"
+
+    ImportAnnotationsToCsvFiller::RoleParameters r;
+    r << ImportAnnotationsToCsvFiller::RoleColumnParameter(2, new ImportAnnotationsToCsvFiller::StartParameter(false))
+        << ImportAnnotationsToCsvFiller::RoleColumnParameter(3, new ImportAnnotationsToCsvFiller::EndParameter(true))
+        << ImportAnnotationsToCsvFiller::RoleColumnParameter(4, new ImportAnnotationsToCsvFiller::StrandMarkParameter(false, ""));
+
+    ImportAnnotationsToCsvFiller *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/_regression/4093/test.xls",
+        sandBoxDir + "test_4093.gb", ImportAnnotationsToCsvFiller::Genbank, true, true, "	", false, 0, "", true, false, "misc_feature", r);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export/Import" << "Import annotations from CSV file..."));
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsProjectTreeView::click(os, "human_T1.fa", Qt::RightButton);
+
+    //Expected state: UGENE doesn't crash
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4095) {
 /* 1. Open file "test/_common_data/fasta/fa1.fa"
  * 2. Call context menu on the sequence view { Edit sequence -> Reverse sequence }
@@ -714,6 +748,34 @@ GUI_TEST_CLASS_DEFINITION(test_4099) {
     }
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4104) {
+    GTLogTracer l;
+    //1. Open the attached workflow file.
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4104/test.uwl");
+
+    //2. Set file "data/samples/Genbank/murine.gb" as input.
+    GTUtilsWorkflowDesigner::click(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Genbank/", "murine.gb");
+
+    //3. Run the workflow.
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+
+    //Expected state : a result file has been produced.It's a copy of murine.gb
+    //Current state : the "Write Sequence" worker gives the "Nothing to write" error in the log.
+    GTUtilsLog::check(os, l);
+
+    QWebElement button = GTUtilsDashboard::findElement(os, "Dataset 1.gb", "BUTTON");
+    GTUtilsDashboard::click(os, button);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    const QString activeWindowName = GTUtilsMdi::activeWindow(os)->windowTitle();
+    CHECK_SET_ERR(activeWindowName == "Dataset 1 [s] NC_001363", "Unexpected active window name");
+    GTUtilsProjectTreeView::findIndex(os, "NC_001363");
+    GTUtilsProjectTreeView::findIndex(os, "NC_001363 features");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4117){
     GTLogTracer l;
     QDir().mkpath(testDir + "_common_data/scenarios/sandbox/space containing dir");
@@ -805,6 +867,21 @@ GUI_TEST_CLASS_DEFINITION(test_4127) {
     GTUtilsDialog::waitForDialog(os, new OrfDialogFiller(os, new OrfScenario));
     GTWidget::click(os, GTAction::button(os, "Find ORFs"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4141) {
+    QWidget *appWindow = QApplication::activeWindow();
+    //1. Open file "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    //2. Open the "Statistics" tab on the Options panel
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
+
+    //3. Check "Show distances column"
+    //Expected state : distances column has appeared between the name list and the sequence area
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "showDistancesColumnCheck"));
+    GTWidget::findWidget(os, "msa_editor_similarity_column");
+    CHECK_SET_ERR(QApplication::activeWindow() == appWindow, "Active window changed");
 }
 
 } // namespace GUITest_regression_scenarios
