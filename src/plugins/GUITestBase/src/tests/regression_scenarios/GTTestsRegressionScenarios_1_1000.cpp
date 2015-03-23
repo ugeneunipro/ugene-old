@@ -216,6 +216,99 @@ GUI_TEST_CLASS_DEFINITION(test_0734) {
     CHECK_SET_ERR(names.last() == "Sequence4",
         QString("Inserted sequence name mismatch. Expected: %1. Actual: %2").arg("Sequence4").arg(names.last()));
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0814) {
+//    1. Open UGENE preferences in main menu.
+//    Expected state: "Application settings" dialog appeared.
+//    2. Go to the {Logging} part.
+//    Expected state: logging settings were shown.
+//    3. Check the {Save output to file} checkbox, click OK button.
+//    Expected state: warning message appeared.
+//    4. Close warning message.
+//    Expected state: "Application settings" dialog closed.
+//    5. Repeat steps 1-3.
+//    Expected state: logging settings were shown, {Save output to file} checkbox is unchecked.
+//    6. Check the {Save output to file} checkbox, enter some file (manually or by select file dialog) and click OK button.
+//    Expected state: "Application settings dialog" closed without any messages.
+//    7. Find your file on on the disk.
+//    Expected state: log file exists.
+
+    class LogFile_1 : public CustomScenario {
+    public:
+        LogFile_1(QString name = QString())
+            : name(name) {}
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            AppSettingsDialogFiller::openTab(os, AppSettingsDialogFiller::Logging);
+
+            QCheckBox* fileOut = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "fileOutCB"));
+            CHECK_SET_ERR(fileOut != NULL, "No fileOutCB");
+            CHECK_SET_ERR(!fileOut->isChecked(), "CheckBox is checked!");
+            GTCheckBox::setChecked(os, fileOut);
+
+            QLineEdit* fileName = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "outFileEdit"));
+            CHECK_SET_ERR(fileName != NULL, "No outFileEdit");
+            GTLineEdit::setText(os, fileName, name);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    private:
+        QString name;
+    };
+
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new LogFile_1()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new LogFile_1(QDir(sandBoxDir).absolutePath() + "test_0814_log")));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+
+    CHECK_SET_ERR(GTFile::check(os, QDir(sandBoxDir).absolutePath() + "test_0814_log") == true, "Log file not found");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0818) {
+//    1) Open WD, Click "create element with command line tool"
+//    2) Fill in the "Name" lineedit with a name containing space symbol
+//    Expected state:
+//        Status - text is red
+//        Next button is disabled
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    class SpaceNameFiller: public Filler {
+    public:
+        SpaceNameFiller(U2OpStatus& _os) : Filler(_os, "CreateExternalProcessWorkerDialog"){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+
+            QLineEdit* nameEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "nameLineEdit", w));
+            CHECK_SET_ERR(nameEdit != NULL, "nameLineEdit not found");
+            GTLineEdit::setText(os, nameEdit, "External tool element");
+            GTGlobals::sleep();
+
+            QWidget* nextButton = GTWidget::findWidget(os, "__qt__passive_wizardbutton1", w);
+            CHECK_SET_ERR(nextButton != NULL, "Next button not found");
+            CHECK_SET_ERR(!nextButton->isEnabled(), "Next button is enabled");
+            GTGlobals::sleep();
+
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SpaceNameFiller(os));
+    QAbstractButton *createElement = GTAction::button(os, "createElementWithCommandLineTool");
+    GTWidget::click(os, createElement);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0844) {
 /* 1. Open "samples/human_t1".
  * 2. In advanced settings of Tandem Finder choose "Suffix array" (unoptimized algorithm)
@@ -431,7 +524,7 @@ GUI_TEST_CLASS_DEFINITION(test_0889) {
 //  2) Use context menu on sequence {Align->Align sequence to mRNA}
 //  3) Select any item
 //  4) Click "Create"
-// 
+//
 //  Expected state: UGENE not crashed
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge));
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "RNA.fa");
@@ -460,13 +553,13 @@ GUI_TEST_CLASS_DEFINITION(test_0896) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/896/_input", "SAMtools.etc");
-    GTUtilsDialog::waitForDialog(os, ob);    
+    GTUtilsDialog::waitForDialog(os, ob);
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Discard));
 
     QAbstractButton* button = GTAction::button(os, "AddElementWithCommandLineTool");
     GTWidget::click(os, button);
     GTUtilsMdi::click(os, GTGlobals::Close);
-    
+
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/896/_input/url_out_in_exttool.uwl");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -498,13 +591,13 @@ GUI_TEST_CLASS_DEFINITION(test_0896) {
 
     GTUtilsWorkflowDesigner::click(os, "File List");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/bowtie/pattern", "e_coli_1000.sam");
-   
+
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_0896"));
     GTFileDialog::openFile(os, sandBoxDir, "/test_0896out.bam");
-    
+
 
 }
 
