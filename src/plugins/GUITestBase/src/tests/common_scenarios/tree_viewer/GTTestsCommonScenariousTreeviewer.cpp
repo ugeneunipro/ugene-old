@@ -858,6 +858,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2){
     foreach(QGraphicsItem* item, list){
             QGraphicsSimpleTextItem * textItem = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
             if(textItem && !textItem->text().contains("0.106") && !textItem->text().contains("0.007") && !textItem->text().contains("0.103")
+                    && !textItem->text().contains("0")
                     && !textItem->text().contains("Phaneroptera_falcata") && !textItem->text().contains("Isophya_altaica_EF540820")){
                 branchList.append(textItem);
             }
