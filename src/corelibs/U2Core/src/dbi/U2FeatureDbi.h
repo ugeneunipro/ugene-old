@@ -256,6 +256,12 @@ public:
 
     virtual U2DbiIterator<U2Feature> *  getFeaturesByName( const U2DataId &rootId, const QString &name, const FeatureFlags &types, U2OpStatus &os ) = 0;
 
+    /**
+     * Returns the map where a key corresponds to a annotation table and a value is the subset of the @values
+     * that occurs within a single qualifier value belonging to the annotation table.
+     */
+    virtual QMap<U2DataId, QStringList> getAnnotationTablesByFeatureKey(const QStringList &values, U2OpStatus &os) = 0;
+
 protected:
     U2FeatureDbi( U2Dbi *rootDbi )
         : U2ChildDbi( rootDbi )

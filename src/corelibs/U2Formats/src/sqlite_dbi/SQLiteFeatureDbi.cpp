@@ -764,4 +764,34 @@ QList<FeatureAndKey> SQLiteFeatureDbi::getFeatureTable( const U2DataId &rootFeat
     return result;
 }
 
+QMap<U2DataId, QStringList> SQLiteFeatureDbi::getAnnotationTablesByFeatureKey(const QStringList &values, U2OpStatus &os) {
+    SQLiteTransaction t(db, os);
+    QMap<U2DataId, QStringList> result;
+    CHECK(!values.isEmpty(), result);
+    // Pay attention here if there is the need of processing more search terms
+    CHECK_EXT(values.size() < SQLiteDbi::BIND_PARAMETERS_LIMIT, os.setError("Too many search terms provided"), result);
+
+    QString queryStringk("SELECT DISTINCT A.object, F.name FROM AnnotationTable AS A, Feature AS F, FeatureKey AS FK "
+        "WHERE A.rootId = F.root AND F.id = FK.feature ");
+
+    for (int i = 1, n = values.size(); i <= n; ++i) {
+        queryStringk.append(QString("AND FK.value LIKE ?%1 ").arg(i));
+    }
+
+    queryStringk.append("COLLATE NOCASE");
+
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryStringk, db, os);
+
+    for (int i = 1, n = values.size(); i <= n; ++i) {
+        q->bindString(i, QString("%%1%").arg(values[i - 1]));
+        CHECK_OP(os, result);
+    }
+
+    while (q->step()) {
+        result[q->getDataId(0, U2Type::AnnotationTable)].append(q->getString(1));
+    }
+
+    return result;
+}
+
 } //namespace

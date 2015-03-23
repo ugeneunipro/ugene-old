@@ -51,9 +51,7 @@ AbstractProjectFilterTask::AbstractProjectFilterTask(const ProjectTreeController
 
 void AbstractProjectFilterTask::run() {
     foreach (const QPointer<Document> &doc, docs) {
-        if (!doc.isNull()) {
-            filterDocument(doc.data());
-        }
+        filterDocument(doc.data());
     }
     const int filteredObjectCount = filteredObjs.size();
     if (!stateInfo.isCoR() && 0 != filteredObjectCount % filteredObjCountPerIteration && filteredObjCountPerIteration > 1) {
@@ -61,11 +59,12 @@ void AbstractProjectFilterTask::run() {
     }
 }
 
-void AbstractProjectFilterTask::filterDocument(Document *doc) {
-    SAFE_POINT(NULL != doc, L10N::nullPointerError("document"), );
+void AbstractProjectFilterTask::filterDocument(const QPointer<Document> &doc) {
+    CHECK(!doc.isNull(), );
     CHECK(doc->isLoaded(), );
 
     foreach (GObject *obj, doc->getObjects()) {
+        CHECK(!doc.isNull(), );
         if (filterAcceptsObject(obj)) {
             filteredObjs.append(obj);
             if (0 == filteredObjs.size() % filteredObjCountPerIteration || 1 == filteredObjCountPerIteration) {

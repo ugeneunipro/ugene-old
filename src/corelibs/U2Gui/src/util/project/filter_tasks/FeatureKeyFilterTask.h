@@ -40,7 +40,8 @@ public:
 
 private:
     void filterDocument(Document *doc);
-    QSet<QString> getMatchedFilterNames(GObject *obj);
+
+    QMap<U2DbiRef, QMap<U2DataId, QStringList> > dbiRef2AnnotationTables;
 };
 
 //////////////////////////////////////////////////////////////////////////

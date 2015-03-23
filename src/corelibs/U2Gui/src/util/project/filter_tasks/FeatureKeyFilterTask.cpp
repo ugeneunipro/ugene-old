@@ -19,8 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/L10n.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2FeatureDbi.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "../ProjectFilterNames.h"
@@ -51,50 +52,39 @@ void FeatureKeyFilterTask::run() {
 }
 
 void FeatureKeyFilterTask::filterDocument(Document *doc) {
-    SAFE_POINT(NULL != doc, L10N::nullPointerError("document"), );
+    SAFE_POINT_EXT(NULL != doc, stateInfo.setError(L10N::nullPointerError("document")), );
     CHECK(doc->isLoaded(), );
 
-    foreach (GObject *obj, doc->getObjects()) {
-        QSet<QString> filterNames = getMatchedFilterNames(obj);
-        SafeObjList filteredResult;
-        filteredResult.append(obj);
-        foreach (const QString &filterName, filterNames) {
-            emit si_objectsFiltered(filterName, filteredResult);
-        }
-        stateInfo.setProgress(++processedObjectCount / totalObjectCount);
-        if (stateInfo.isCoR()) {
-            break;
-        }
+    const U2DbiRef dbiRef = doc->getDbiRef();
+    if (!dbiRef2AnnotationTables.contains(dbiRef)) {
+        DbiConnection connection(dbiRef, stateInfo);
+        SAFE_POINT_EXT(NULL != connection.dbi, stateInfo.setError(L10N::nullPointerError("Database connection")), );
+        U2FeatureDbi *featureDbi = connection.dbi->getFeatureDbi();
+        SAFE_POINT_EXT(NULL != featureDbi, stateInfo.setError(L10N::nullPointerError("Feature DBI")), );
+
+        dbiRef2AnnotationTables[dbiRef] = featureDbi->getAnnotationTablesByFeatureKey(settings.tokensToShow, stateInfo);
+        SAFE_POINT_OP(stateInfo, );
     }
-}
 
-QSet<QString> FeatureKeyFilterTask::getMatchedFilterNames(GObject *obj) {
-    QSet<QString> filterNames;
-
-    AnnotationTableObject *annObject = qobject_cast<AnnotationTableObject *>(obj);
-    CHECK(NULL != annObject, filterNames);
-
-    annObject->ref();
-
-    foreach (const Annotation &annotation, annObject->getAnnotations()) {
-        const QString annotationName = annotation.getName();
-        if (filterNames.contains(annotationName)) {
+    const QMap<U2DataId, QStringList> &annNames = dbiRef2AnnotationTables[dbiRef];
+    const int foundObjectsNumber = annNames.size();
+    const int totalDocObjectsNumber = doc->getObjects().size();
+    foreach (const U2DataId &annTableId, annNames.keys()) {
+        GObject *annTable = doc->getObjectById(annTableId);
+        if (NULL == annTable) {
+            coreLog.error("Annotation table object not found in the document");
             continue;
         }
-        foreach (const U2Qualifier &qual, annotation.getQualifiers()) {
-            if (settings.nameFilterAcceptsString(qual.value)) {
-                filterNames.insert(annotationName);
-                break;
-            }
+        SafeObjList filteredResult;
+        filteredResult.append(annTable);
+        foreach (const QString &filterName, annNames[annTableId]) {
+            emit si_objectsFiltered(filterName, filteredResult);
         }
+        stateInfo.setProgress(stateInfo.getProgress() + (totalDocObjectsNumber / foundObjectsNumber / totalObjectCount) * 100);
         if (stateInfo.isCoR()) {
             break;
         }
     }
-
-    annObject->deref();
-
-    return filterNames;
 }
 
 //////////////////////////////////////////////////////////////////////////

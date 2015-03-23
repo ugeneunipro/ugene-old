@@ -58,7 +58,7 @@ protected:
     int processedObjectCount;
 
 private:
-    void filterDocument(Document *doc);
+    void filterDocument(const QPointer<Document> &doc);
 
     static void doStaticInitialization();
 };
