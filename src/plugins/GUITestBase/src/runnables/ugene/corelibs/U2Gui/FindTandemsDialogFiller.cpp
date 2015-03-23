@@ -45,7 +45,14 @@ FindTandemsDialogFiller::FindTandemsDialogFiller( U2OpStatus &_os, const QString
 #define GT_CLASS_NAME "GTUtilsDialog::FindTandemsDialogFiller"
 #define GT_METHOD_NAME "run"
 
-void FindTandemsDialogFiller::run(){
+FindTandemsDialogFiller::FindTandemsDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+    Filler(os, "FindTandemsDialog", scenario),
+    button(Start)
+{
+
+}
+
+void FindTandemsDialogFiller::commonScenario(){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

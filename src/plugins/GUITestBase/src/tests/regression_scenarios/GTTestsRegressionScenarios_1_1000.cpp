@@ -216,6 +216,39 @@ GUI_TEST_CLASS_DEFINITION(test_0734) {
     CHECK_SET_ERR(names.last() == "Sequence4",
         QString("Inserted sequence name mismatch. Expected: %1. Actual: %2").arg("Sequence4").arg(names.last()));
 }
+GUI_TEST_CLASS_DEFINITION(test_0844) {
+/* 1. Open "samples/human_t1".
+ * 2. In advanced settings of Tandem Finder choose "Suffix array" (unoptimized algorithm)
+ * 3. Start finding tandems
+ *   Expected state: UGENE no crashes
+*/
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            QLineEdit* pathEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "leNewTablePath"));
+            pathEdit->setText(sandBoxDir + "test_0844.gb");
+            GTGlobals::sleep();
+
+            GTTabWidget::setCurrentIndex(os, GTWidget::findExactWidget<QTabWidget *>(os, "tabWidget"), 1);
+
+            QComboBox* combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "algoComboBox"));
+            CHECK_SET_ERR(combo != NULL, "algoComboBox not found!");
+            GTComboBox::setIndexWithText(os, combo , "Suffix array");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new FindTandemsDialogFiller(os, new Scenario));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Find tandems");
+    GTGlobals::sleep(200);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0854) {
 /* 1. Open samples/genbank/PBR322.gb.
  * 2. Export the sequence into alignment using context menu in project tab.

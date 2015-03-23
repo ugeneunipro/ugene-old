@@ -32,8 +32,9 @@ public:
     enum Button {Start, Cancel};
 
     FindTandemsDialogFiller(U2OpStatus &_os, const QString & _resultFilesPath);
+    FindTandemsDialogFiller(U2OpStatus &os, CustomScenario *scenario);
 
-    virtual void run();
+    virtual void commonScenario();
     Button button;
 
 private:
