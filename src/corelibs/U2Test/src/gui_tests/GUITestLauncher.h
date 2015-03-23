@@ -47,16 +47,17 @@ private:
     int suiteNumber;
     bool noIgnored;
     QString pathToSuite;
+    QString testOutDir;
 
     static QStringList getTestProcessArguments(const QString &testName);
-    static QProcessEnvironment getProcessEnvironment(const QString &testName);
+    QProcessEnvironment getProcessEnvironment(const QString &testName);
     static QString testOutFile(const QString &testName);
-    static QString testOutDir();
+    static QString getTestOutDir();
 
     void firstTestRunCheck(const QString& testName);
-    static QString performTest(const QString& testName);
+    QString performTest(const QString& testName);
     static QString readTestResult(const QByteArray& output);
-    static bool renameTestLog(const QString& testName);
+    bool renameTestLog(const QString& testName);
 
     bool initGUITestBase();
     void updateProgress(int finishedCount);

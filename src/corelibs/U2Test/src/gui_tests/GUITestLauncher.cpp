@@ -54,6 +54,7 @@ GUITestLauncher::GUITestLauncher(int _suiteNumber, bool _noIgnored)
       suiteNumber(_suiteNumber), noIgnored(_noIgnored), pathToSuite("") {
 
     tpm = Task::Progress_Manual;
+    testOutDir = getTestOutDir();
 }
 
 GUITestLauncher::GUITestLauncher(QString _pathToSuite, bool _noIgnored)
@@ -61,11 +62,12 @@ GUITestLauncher::GUITestLauncher(QString _pathToSuite, bool _noIgnored)
       suiteNumber(0), noIgnored(_noIgnored), pathToSuite(_pathToSuite) {
 
     tpm = Task::Progress_Manual;
+    testOutDir = getTestOutDir();
 }
 
 bool GUITestLauncher::renameTestLog(const QString& testName) {
     QString outFileName = testOutFile(testName);
-    QString outFilePath = testOutDir() + "/logs/";
+    QString outFilePath = testOutDir + QString("/logs/");
 
     QFile outLog(outFilePath + outFileName);
     return outLog.rename(outFilePath + "failed_" + outFileName);
@@ -186,20 +188,27 @@ QString GUITestLauncher::testOutFile(const QString &testName) {
     return "ugene_"+testName+".out";
 }
 
-QString GUITestLauncher::testOutDir(){
+QString GUITestLauncher::getTestOutDir(){
     QString date = QDate::currentDate().toString("dd.MM.yyyy");
-    return QDir::homePath() + "/gui_testing_output/" + date;
+    QString initPath = QDir::homePath() + "/gui_testing_output/" + date;
+    QDir d(initPath);
+    int i = 1;
+    while(d.exists()){
+        d = QDir(initPath + QString("_%1").arg(i));
+        i++;
+    }
+    return d.absolutePath();
 }
 
 QProcessEnvironment GUITestLauncher::getProcessEnvironment(const QString &testName) {
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 
-    QDir().mkpath(testOutDir() + "/logs");
+    QDir().mkpath(testOutDir + "/logs");
     env.insert("UGENE_DEV", "1");
     env.insert("UGENE_GUI_TEST", "1");
     env.insert("UGENE_USE_NATIVE_DIALOGS", "0");
-    env.insert("UGENE_PRINT_TO_FILE", testOutDir() + "/logs/" + testOutFile(testName));
-    env.insert("UGENE_USER_INI", testOutDir() + "/inis/" + testName + "_UGENE.ini");
+    env.insert("UGENE_PRINT_TO_FILE", testOutDir + "/logs/" + testOutFile(testName));
+    env.insert("UGENE_USER_INI", testOutDir + "/inis/" + testName + "_UGENE.ini");
 
     return env;
 }
