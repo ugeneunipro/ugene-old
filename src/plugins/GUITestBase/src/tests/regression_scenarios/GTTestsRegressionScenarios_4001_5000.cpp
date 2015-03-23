@@ -31,6 +31,7 @@
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
+#include "GTUtilsOptionsPanel.h"
 #include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsPhyTree.h"
@@ -50,6 +51,7 @@
 #include "api/GTRadioButton.h"
 #include "api/GTTabWidget.h"
 #include "api/GTTextEdit.h"
+#include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 
@@ -882,6 +884,56 @@ GUI_TEST_CLASS_DEFINITION(test_4141) {
     GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "showDistancesColumnCheck"));
     GTWidget::findWidget(os, "msa_editor_similarity_column");
     CHECK_SET_ERR(QApplication::activeWindow() == appWindow, "Active window changed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4170) {
+/* Annotation pattern line edit should be disabled if "Use pattern name" option checked.
+ * 1. Open file data/samples/FASTA/human_T1.fa
+ * 2. enter search pattern :
+ *   >pattern1
+ *   TGGCAAGCT
+ * 3. Expand annotation parameters
+ * 4. Set annotation name "pat"
+ * 5. Set Use "pattern name" option checked
+ *   Expected state: "Annotation name" line edit is disabled
+ * 6. Press "Create annotations"
+ *   Expected state: here is one created annotation in annotation tree view with name "pattern1"
+*/
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTGlobals::sleep(1000);
+
+    GTKeyboardDriver::keyClick( os, 'f', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(1000);
+    GTKeyboardDriver::keySequence(os,">pattern1");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"], GTKeyboardDriver::key["ctrl"] );
+    GTKeyboardDriver::keySequence(os,"TGGCAAGCT");
+
+    GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os);
+    GTGlobals::sleep(1000);
+
+    QLineEdit *annotationNameEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os,"leAnnotationName"));
+    CHECK_SET_ERR(annotationNameEdit != NULL, "chbUsePatternNames not found!");
+    annotationNameEdit->setText("pat");
+    GTGlobals::sleep(1000);
+
+    QCheckBox* check = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "chbUsePatternNames"));
+    CHECK_SET_ERR(check != NULL, "chbUsePatternNames not found!");
+    GTCheckBox::setChecked(os, check, 1);
+
+    CHECK_SET_ERR(annotationNameEdit->isEnabled() != true, "annotationNameEdit is enabled!");
+
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    GTGlobals::sleep(500);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
+    GTGlobals::sleep(1000);
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "pattern1");
+    QTreeWidgetItem *item2 = GTUtilsAnnotationsTreeView::findItem(os, "pat", GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(item1 != NULL, "item1 not found!");
+    CHECK_SET_ERR(item2 == NULL, "item2 found!");
+
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item1));
 }
 
 } // namespace GUITest_regression_scenarios
