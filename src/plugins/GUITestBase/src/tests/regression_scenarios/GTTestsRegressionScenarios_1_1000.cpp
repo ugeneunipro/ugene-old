@@ -406,7 +406,7 @@ GUI_TEST_CLASS_DEFINITION(test_0858) {
     CHECK_SET_ERR(got == expected, QString("The clipboard text is incorrect: [%1], expected [%2]").arg(got).arg(expected));
 }
 
-GUI_TEST_CLASS_DEFINITION(test_861_1) {
+GUI_TEST_CLASS_DEFINITION(test_0861_1) {
     //1. Open sars.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
 
@@ -427,7 +427,7 @@ GUI_TEST_CLASS_DEFINITION(test_861_1) {
     CHECK_SET_ERR(highlightTree->topLevelItem(7)->text(0) == "source", QString("Unexpected annotation name at row %1").arg(7));
 }
 
-GUI_TEST_CLASS_DEFINITION(test_861_2) {
+GUI_TEST_CLASS_DEFINITION(test_0861_2) {
     //1. Open sars.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
 
@@ -446,7 +446,7 @@ GUI_TEST_CLASS_DEFINITION(test_861_2) {
     CHECK_SET_ERR(highlightTree->topLevelItem(7)->text(0) == "orf", QString("Unexpected annotation name at row %1").arg(7));
 }
 
-GUI_TEST_CLASS_DEFINITION(test_861_3) {
+GUI_TEST_CLASS_DEFINITION(test_0861_3) {
     //1. Open sars.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
 
@@ -465,6 +465,45 @@ GUI_TEST_CLASS_DEFINITION(test_861_3) {
     CHECK_SET_ERR(highlightTree->topLevelItemCount() == 7, "Unexpected number of annotations");
     CHECK_SET_ERR(highlightTree->topLevelItem(0)->text(0) == "5'UTR", QString("Unexpected annotation name at row %1").arg(0));
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0861_4) {
+    // 1. Open human_t1.fa
+    // 2. Open the "Annotations Highlighting" bar of the Options Panel
+    // TODO: Expected state: the message "The sequence doesn't have any annotations." is shown on the bar
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::AnnotationsHighlighting);
+
+
+}
+GUI_TEST_CLASS_DEFINITION(test_0871) {
+    // 1. Open WD
+    // 2. Create a scheme with the following elements: Read Sequence, Amino Translation, Write Sequence
+    // 3. Put humant_t1.fa as an input sequence
+    // 4. Run the scheme
+    // Expected state: the sequences that correspond to 3 translations frames of human_t1 are created
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    WorkflowProcessItem* amino = GTUtilsWorkflowDesigner::addElement(os, "Amino Translation");
+    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", QDir(sandBoxDir).absolutePath() + "/test_0871", GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::connect(os, read, amino);
+    GTUtilsWorkflowDesigner::connect(os, amino, write);
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTFileDialog::openFile(os, sandBoxDir, "/test_0871");
+
+    GTUtilsProjectTreeView::rename(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134) Amino translation 0 direct", "0");
+    GTUtilsProjectTreeView::rename(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134) Amino translation 1 direct", "1");
+    GTUtilsProjectTreeView::rename(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134) Amino translation 2 direct", "2");
+}
+
+
 
 GUI_TEST_CLASS_DEFINITION(test_0878) {
 //    1. Open several documents of any kind - sequence view, workflow designer, whatever.
@@ -485,6 +524,13 @@ GUI_TEST_CLASS_DEFINITION(test_0878) {
     CHECK_SET_ERR(win == GTUtilsMdi::activeWindow(os), "Incorrect active window");
     GTWidget::click(os, GTWidget::findWidget(os, "doc_lable_dock_log_view"));
     CHECK_SET_ERR(win == GTUtilsMdi::activeWindow(os), "Incorrect active window");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0886) {
+    // 1. Open file "_common_data/fasta/Gene.fa" in UGENE.
+    // Expected result: UGENE doesn't crash
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "Gene.fa");
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0908) {
@@ -1091,7 +1137,7 @@ GUI_TEST_CLASS_DEFINITION(test_0986_4) {
     GTGlobals::sleep(5000);
 }
 
-GUI_TEST_CLASS_DEFINITION(test_994) {
+GUI_TEST_CLASS_DEFINITION(test_0994) {
 /* 1. _common_data/scenarios/regression/994/musMusc.gb
  * 2. Expand contigs_snp group.
  * 3. Call a tooltip of he first annotation in the group.

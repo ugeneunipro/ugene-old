@@ -54,6 +54,7 @@
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
+#include "GTUtilsSharedDatabaseDocument.h"
 
 #include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
@@ -884,6 +885,31 @@ GUI_TEST_CLASS_DEFINITION(test_4141) {
     GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "showDistancesColumnCheck"));
     GTWidget::findWidget(os, "msa_editor_similarity_column");
     CHECK_SET_ERR(QApplication::activeWindow() == appWindow, "Active window changed");
+}
+GUI_TEST_CLASS_DEFINITION(test_4150) {
+    // Connect to the ugene-quad-ubuntu shared DB
+    // Create a new folder "qwe" there
+    // Open file "data/samples/Genbank/murine.gb"
+    // Close the sequence view
+    // Drag&drop the sequence document to "qwe" in the DB
+    // Expected state: a new folder named "murine.gb" has been created in "qwe"
+    // TODO: Do double click on the sequence object from the "murine.gb" file
+    // TODO: Expected state: sequence view has opened, it contains a single set of annotations
+    // TODO: Do double click on the sequence object from the "murine.gb" folder
+    // TODO: Expected state: sequence view has opened, it contains a single set of annotations
+
+    Document *dbDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+    GTUtilsSharedDatabaseDocument::createFolder(os, dbDoc, "/", "qwe");
+    GTFile::copy(os, dataDir + "samples/Genbank/murine.gb", sandBoxDir + "test_4150_murine.gb");
+    GTFileDialog::openFile(os, sandBoxDir, "test_4150_murine.gb");
+    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
+    QModelIndex from = GTUtilsProjectTreeView::findIndex(os, "test_4150_murine.gb");
+    QModelIndex to = GTUtilsProjectTreeView::findIndex(os, "test_4150");
+    GTUtilsProjectTreeView::dragAndDrop(os, from, to);
+    GTGlobals::sleep(10000);
+    to = GTUtilsProjectTreeView::findIndex(os, "test_4150");
+    GTUtilsProjectTreeView::checkItem(os, "murine.gb", to); 
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4170) {
