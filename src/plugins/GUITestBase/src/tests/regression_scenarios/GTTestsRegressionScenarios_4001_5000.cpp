@@ -35,7 +35,10 @@
 #include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsPhyTree.h"
+#include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
+#include "GTUtilsSequenceView.h"
+#include "GTUtilsSharedDatabaseDocument.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsWorkflowDesigner.h"
 #include "GTUtilsDialog.h"
@@ -60,6 +63,7 @@
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
@@ -80,6 +84,7 @@
 #include <U2Gui/ToolsMenu.h>
 
 #include <U2View/ADVConstants.h>
+#include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/MSAGraphOverview.h>
 
 namespace U2 {
@@ -749,6 +754,68 @@ GUI_TEST_CLASS_DEFINITION(test_4099) {
             break;
         }
     }
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4100) {
+//    1. Create or open a file with a few annotations
+//    2. Import that file to shared database and open it
+//    Expected state: annotations in database are the same as the annotations from step 1
+
+    ADVSingleSequenceWidget* wgt = GTUtilsProject::openFileExpectSequence(os, testDir + "_common_data/genbank/", "JQ040024.1.gb", "JQ040025");
+    CHECK_SET_ERR(wgt != NULL, "No ADVSignleSequenceWidget found");
+    ADVSequenceObjectContext* ctx = wgt->getActiveSequenceContext();
+    CHECK_SET_ERR(ctx != NULL, "Sequence context is NULL");
+    QSet<AnnotationTableObject*> annTables = ctx->getAnnotationObjects();
+
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    QList<ImportToDatabaseDialogFiller::Action> actions;
+    QVariantMap addFileAction;
+    addFileAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__PATHS_LIST, testDir + "_common_data/genbank/JQ040024.1.gb");
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_FILES, addFileAction);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
+
+    GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Add" << "Import to the database"));
+    GTUtilsProjectTreeView::click(os, "ugene_gui_test", Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(5000);
+
+    GTUtilsSharedDatabaseDocument::doubleClickItem(os, databaseDoc, "JQ040024.1");
+    QModelIndex idx = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, "/JQ040024.1/JQ040025");
+    GTUtilsProjectTreeView::doubleClickItem(os, idx);
+    GTGlobals::sleep();
+
+    ADVSingleSequenceWidget* wgtDB = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+    CHECK_SET_ERR(wgtDB != NULL, "No ADVSingleSequenceWidget fond");
+    ctx = wgtDB->getActiveSequenceContext();
+    CHECK_SET_ERR(ctx != NULL, "Sequence context is NULL");
+    QSet<AnnotationTableObject*> annTablesDB = ctx->getAnnotationObjects();
+
+    CHECK_SET_ERR(annTables.size() == annTablesDB.size(), "Number of annotation tables imported is incorrect");
+    CHECK_SET_ERR(annTables.size() == 1, "Number of annotation tables is incorrect");
+
+    CHECK_SET_ERR(annTables.values().first() != NULL, "AnnotationTable is NULL");
+    QList<Annotation> annInitial = annTables.values().first()->getAnnotations();
+    CHECK_SET_ERR(annTablesDB.values().first() != NULL, "AnnotationTable is NULL");
+    QList<Annotation> annImported = annTablesDB.values().first()->getAnnotations();
+
+    foreach (const Annotation& ann, annInitial) {
+        bool found = false;
+        foreach (const Annotation& aImported, annImported) {
+            if (ann.getData() == aImported.getData()) {
+                found = true;
+                break;
+            }
+        }
+        CHECK_SET_ERR(found == true, QString("Annotation '%1' was not imported").arg(ann.getName()));
+    }
+
+    GTUtilsSharedDatabaseDocument::doubleClickItem(os, databaseDoc, "JQ040024.1");
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+    GTUtilsSharedDatabaseDocument::disconnectDatabase(os, databaseDoc);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4104) {
