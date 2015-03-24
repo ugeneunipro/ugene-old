@@ -21,7 +21,6 @@
 
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectUtils.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U2SafePoints.h>
 

@@ -269,12 +269,12 @@ QMap<QString, QList<AnnotationData> > GTFFormat::parseDocument( IOAdapter *io, U
 }
 
 
-void GTFFormat::load( IOAdapter *io, QList<GObject *> &objects, const U2DbiRef &dbiRef,
-    const QVariantMap& hints, U2OpStatus &os )
-{
+void GTFFormat::load(IOAdapter *io, QList<GObject *> &objects, const U2DbiRef &dbiRef, const QVariantMap& hints, U2OpStatus &os) {
     QMultiMap<QString, QList<AnnotationData> > annotationsMap = parseDocument( io, os );
 
     QMultiMap<QString, QList<AnnotationData> >::const_iterator iter = annotationsMap.constBegin();
+    const int objectsCountLimit = hints.contains(DocumentReadingMode_MaxObjectsInDoc) ? hints[DocumentReadingMode_MaxObjectsInDoc].toInt() : -1;
+
     while (iter != annotationsMap.constEnd()) {
         const QString& sequenceName = iter.key();
 
@@ -288,6 +288,10 @@ void GTFFormat::load( IOAdapter *io, QList<GObject *> &objects, const U2DbiRef &
             }
         }
         if (!annotTable) {
+            if (objectsCountLimit > 0 && objects.size() >= objectsCountLimit) {
+                os.setError(tr("File \"%1\" contains too much sequences to be displayed.").arg(io->getURL().getURLString()));
+                break;
+            }
             QVariantMap objectHints;
             objectHints.insert(DBI_FOLDER_HINT, hints.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
             annotTable = new AnnotationTableObject( annotTableName, dbiRef, objectHints );

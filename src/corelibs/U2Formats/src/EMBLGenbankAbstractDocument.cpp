@@ -120,8 +120,15 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     qint64 sequenceStart = 0;
     int sequenceSize = 0;
     int fullSequenceSize = 0;
+    const int objectsCountLimit = fs.contains(DocumentReadingMode_MaxObjectsInDoc) ? fs[DocumentReadingMode_MaxObjectsInDoc].toInt() : -1;
 
     for (int i=0; !os.isCoR(); i++, ++num_sequence) {
+        if (objectsCountLimit > 0 && objects.size() >= objectsCountLimit) {
+            os.setError(EMBLGenbankAbstractDocument::tr("File \"%1\" contains too much sequences to be displayed.")
+                .arg(io->getURL().getURLString()));
+            break;
+        }
+
         //TODO: reference to a local variable??? Such a pointer will become invalid
         EMBLGenbankDataEntry data;
         st.entry = &data;

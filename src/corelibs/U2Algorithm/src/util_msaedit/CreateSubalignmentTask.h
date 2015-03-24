@@ -26,12 +26,10 @@
 #include <U2Core/GUrl.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/BaseDocumentFormats.h>
-
+#include <U2Core/DocumentProviderTask.h>
 
 namespace U2{
-
 
 class U2ALGORITHM_EXPORT CreateSubalignmentSettings {
 public:

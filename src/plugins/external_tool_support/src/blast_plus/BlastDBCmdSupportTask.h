@@ -25,7 +25,6 @@
 #include <U2Core/Task.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/ExternalToolRunTask.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include "utils/ExportTasks.h"
 

@@ -25,7 +25,6 @@
 #include <QtCore/QMutex>
 
 #include <U2Core/Task.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SequenceWalkerTask.h>
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequence.h>
@@ -36,6 +35,7 @@
 namespace U2 {
 
 class AnnotationTableObject;
+class LoadDocumentTask;
 
 /**************************************
 * General hmmer3 search task.

@@ -28,7 +28,6 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/IOAdapter.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2SafePoints.h>
 

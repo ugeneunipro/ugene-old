@@ -27,7 +27,6 @@
 #include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/GObjectReference.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/SaveDocumentTask.h>
@@ -76,7 +75,10 @@ Miscellaneous:
   --force                   Force file overwriting
 
 */
+
 class ClustalOLogParser;
+class LoadDocumentTask;
+
 class ClustalOSupportTaskSettings {
 public:
     ClustalOSupportTaskSettings() {reset();}

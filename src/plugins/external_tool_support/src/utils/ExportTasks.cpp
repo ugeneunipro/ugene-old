@@ -33,7 +33,6 @@
 #include <U2Core/GHints.h>
 #include <U2Core/DNAChromatogramObject.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/TextUtils.h>

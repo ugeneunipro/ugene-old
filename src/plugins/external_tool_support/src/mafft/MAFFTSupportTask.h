@@ -27,7 +27,6 @@
 #include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/GObjectReference.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/Task.h>
@@ -46,7 +45,10 @@ namespace U2 {
 ? --thread # :     Number of threads. (# must be <= number of physical cores - 1)
 
 */
+
+class LoadDocumentTask;
 class MAFFTLogParser;
+
 class MAFFTSupportTaskSettings  {
 public:
     MAFFTSupportTaskSettings() {reset();}

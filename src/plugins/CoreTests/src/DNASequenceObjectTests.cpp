@@ -28,7 +28,6 @@
 #include <U2Core/GObject.h>
 #include <U2Core/U2OpStatusUtils.h>
 
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/DNASequenceObject.h>
 
 namespace U2 {

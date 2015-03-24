@@ -22,27 +22,17 @@
 #ifndef _U2_BLASTPLUS_SUPPORT_TASK_H
 #define _U2_BLASTPLUS_SUPPORT_TASK_H
 
-#include <U2Core/Task.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/DocumentModel.h>
-
-#include <U2Core/AnnotationData.h>
-
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/SaveDocumentTask.h>
-#include "utils/ExportTasks.h"
-
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationData.h>
 #include <U2Core/ExternalToolRunTask.h>
-#include <U2Core/U2SequenceUtils.h>
 
 #include "utils/BlastTaskSettings.h"
 
-#include <QtXml/QDomNode>
-#include <QtXml/QDomDocument>
+class QDomNode;
 
 namespace U2 {
+
+class SaveDocumentTask;
+class U2PseudoCircularization;
 
 class BlastPlusSupportCommonTask : public ExternalToolSupportTask {
     Q_OBJECT

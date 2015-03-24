@@ -25,8 +25,6 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObject.h>
 
-#include <U2Core/LoadDocumentTask.h>
-
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNATranslationImpl.h>
 #include <U2Core/DNAAlphabetRegistryImpl.h>

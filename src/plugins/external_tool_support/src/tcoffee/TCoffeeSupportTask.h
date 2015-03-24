@@ -28,16 +28,14 @@
 #include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/GObjectReference.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/Task.h>
 
-
-
 namespace U2 {
 
 class TCoffeeLogParser;
+
 class TCoffeeSupportTaskSettings  {
 public:
     TCoffeeSupportTaskSettings() {reset();}
@@ -50,6 +48,7 @@ public:
     QString outputFilePath;
 };
 
+class LoadDocumentTask;
 
 class TCoffeeSupportTask : public ExternalToolSupportTask {
     Q_OBJECT

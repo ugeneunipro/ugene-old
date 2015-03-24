@@ -29,11 +29,12 @@
 #include <U2Algorithm/PhyTreeGenerator.h>
 #include <U2Algorithm/PhyTreeGeneratorTask.h>
 #include <U2Core/ExternalToolRunTask.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/PhyTreeObject.h>
 
-
 namespace U2 {
+
+class LoadDocumentTask;
+
 class MrBayesPrepareDataForCalculation :public Task{
     Q_OBJECT
 public:

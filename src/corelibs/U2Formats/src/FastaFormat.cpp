@@ -57,7 +57,9 @@ FastaFormat::FastaFormat(QObject* p)
     formatName = tr("FASTA");
     supportedObjectTypes+=GObjectTypes::SEQUENCE;
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
-    formatDescription = tr("FASTA format is a text-based format for representing either nucleotide sequences or peptide sequences, in which base pairs or amino acids are represented using single-letter codes. The format also allows for sequence names and comments to precede the sequences.");
+    formatDescription = tr("FASTA format is a text-based format for representing either nucleotide sequences or peptide sequences, "
+        "in which base pairs or amino acids are represented using single-letter codes. "
+        "The format also allows for sequence names and comments to precede the sequences.");
 }
 
 static QVariantMap analyzeRawData(const QByteArray& data) {
@@ -161,6 +163,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     DbiConnection con(dbiRef, os);
     bool headerReaded = false;
 
+    const int objectsCountLimit = fs.contains(DocumentReadingMode_MaxObjectsInDoc) ? fs[DocumentReadingMode_MaxObjectsInDoc].toInt() : -1;
     const bool settingsMakeUniqueName = !fs.value(DocumentReadingMode_DontMakeUniqueNames, false).toBool();
     while (!os.isCoR()) {
         //skip start comments and read header
@@ -233,6 +236,11 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
             headers.append(headerLine);
             mergedMapping.append(U2Region(sequenceStart, sequenceLen));
         } else {
+            if (objectsCountLimit > 0 && objects.size() >= objectsCountLimit) {
+                os.setError(FastaFormat::tr("File \"%1\" contains too much sequences to be displayed.")
+                    .arg(io->getURL().getURLString()));
+                break;
+            }
             memoryLocker.tryAcquire(800);
             CHECK_OP_BREAK(os);
             U2Sequence seq = seqImporter.finalizeSequenceAndValidate(os);

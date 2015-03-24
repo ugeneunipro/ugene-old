@@ -35,7 +35,6 @@ namespace U2 {
 class AnnotationTableObject;
 class Document;
 class SaveDocumentTask;
-class LoadDocumentTask;
 
 class SeqPosTask : public ExternalToolSupportTask {
     Q_OBJECT

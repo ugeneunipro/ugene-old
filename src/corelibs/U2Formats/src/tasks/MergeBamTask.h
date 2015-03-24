@@ -27,9 +27,6 @@
 
 namespace U2 {
 
-class LoadDocumentTask;
-class SaveDocumentTask;
-
 class U2FORMATS_EXPORT MergeBamTask : public Task {
 public:
     MergeBamTask(const QStringList& urls, const QString &dir, const QString &outName);

@@ -27,8 +27,8 @@
 
 #include <U2Core/Task.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentProviderTask.h>
 #include <U2Core/SaveDocumentTask.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MAlignment.h>
 
 #include <U2Lang/Schema.h>
@@ -39,6 +39,7 @@ namespace U2 {
 
 using namespace Workflow;
 
+class LoadDocumentTask;
 class MAlignmentObject;
 
 class U2LANG_EXPORT SimpleInOutWorkflowTaskConfig {

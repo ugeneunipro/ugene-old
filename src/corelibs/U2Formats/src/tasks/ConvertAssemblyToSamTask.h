@@ -23,14 +23,11 @@
 #define _U2_CONVERT_ASSEMBLY_TO_SAM_TASK_H_
 
 #include <U2Core/AssemblyObject.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Task.h>
 #include <U2Core/GUrl.h>
 
-
 namespace U2 {
 
-class LoadDocumentTask;
 class DbiConnection;
 
 class U2FORMATS_EXPORT ConvertAssemblyToSamTask : public Task {

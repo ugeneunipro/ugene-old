@@ -30,7 +30,6 @@
 namespace U2 {
 
 class Document;
-class LoadDocumentTask;
 
 //---------------------------------------------------------------------
 class GTest_DNATranslation3to1Test : public GTest {

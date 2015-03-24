@@ -33,6 +33,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/LoadDocumentTask.h>
 
 #include <U2Lang/DbiDataHandler.h>
 #include <U2Lang/BasePorts.h>

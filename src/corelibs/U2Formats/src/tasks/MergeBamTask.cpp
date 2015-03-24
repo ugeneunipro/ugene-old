@@ -23,8 +23,6 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/SaveDocumentTask.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Core/BaseDocumentFormats.h>

@@ -30,14 +30,13 @@
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/MultiTask.h>
-#include <U2Core/LoadDocumentTask.h>
-
 
 class QDomDocument;
 
-
 namespace U2 {
 
+class LoadDocumentTask;
+class LoadUnloadedDocumentTask;
 class Project;
 class StateLock;
 

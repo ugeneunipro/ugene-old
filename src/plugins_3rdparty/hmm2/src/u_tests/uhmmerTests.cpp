@@ -19,7 +19,6 @@
 #include <U2Core/GObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/SaveDocumentTask.h>
-#include <U2Core/LoadDocumentTask.h>
 
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/AnnotationTableObject.h>
@@ -59,7 +58,6 @@ namespace U2 {
 class GTest_LoadDocument;
 class Document;
 class GObject;
-class LoadDocumentTask;
 
 //**********uHMMER Search********************
 

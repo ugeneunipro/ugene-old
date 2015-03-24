@@ -55,7 +55,6 @@ public:
 protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
-
 private:
     QString fn;
 };

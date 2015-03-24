@@ -21,7 +21,6 @@
 
 #include "bowtieTests.h"
 
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>

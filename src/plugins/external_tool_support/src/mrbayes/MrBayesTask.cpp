@@ -24,11 +24,12 @@
 
 #include "MrBayesTask.h"
 
-#include <U2Core/Counter.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/DocumentModel.h>
 

@@ -31,6 +31,7 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Counter.h>
 #include <U2Core/L10n.h>
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Log.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/DNASequenceObject.h>

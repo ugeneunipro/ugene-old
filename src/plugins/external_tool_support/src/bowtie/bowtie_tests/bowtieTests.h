@@ -34,7 +34,6 @@ namespace U2 {
 class BowtieGObjectTask;
 class DnaAssemblyMultiTask;
 class MAlignmentObject;
-class LoadDocumentTask;
 class MAlignment;
 
 class GTest_Bowtie : public GTest {

@@ -34,7 +34,6 @@ namespace U2 {
 
 class AnnotationTableObject;
 class Document;
-class LoadDocumentTask;
 class SaveDocumentTask;
 
 class ConductGOTask : public ExternalToolSupportTask {

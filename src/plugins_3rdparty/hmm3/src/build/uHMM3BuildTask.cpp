@@ -27,6 +27,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Counter.h>
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Log.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/MAlignmentObject.h>

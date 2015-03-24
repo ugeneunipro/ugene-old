@@ -32,8 +32,6 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Core/LoadDocumentTask.h>
-
 namespace U2 {
 
 /* TRANSLATOR U2::GTest */

@@ -31,6 +31,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/L10n.h>
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Log.h>
 #include <U2Core/U2SafePoints.h>
 

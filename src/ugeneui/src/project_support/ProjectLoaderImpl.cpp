@@ -38,6 +38,7 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/IdRegistry.h>
 #include <U2Core/L10n.h>
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/ServiceTypes.h>
 #include <U2Core/Settings.h>
@@ -396,7 +397,7 @@ bool detectFormat(const GUrl &url, QList<FormatDetectionResult> &formats, const 
 }
 
 #define MAX_DOCS_TO_OPEN_VIEWS 5
-#define MAX_OBJECT_PER_DOC 5000000
+#define MAX_OBJECT_PER_DOC 50000
 
 Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVariantMap& hints) {
     QList<GUrl> urls = _urls;
@@ -523,8 +524,6 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
                             info.loadDocuments = true;
                         }
 
-                        
-                        
                         info.url = url;
                         info.hints = dr.rawDataCheckResult.properties;
                         if (!info.hints.contains(DocumentReadingMode_MaxObjectsInDoc)) {

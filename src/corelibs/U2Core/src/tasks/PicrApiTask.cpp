@@ -27,7 +27,6 @@
 #include <QtXml/QDomDocument>
 
 #include <U2Core/DocumentModel.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/DNAAlphabet.h>

@@ -30,11 +30,10 @@
 namespace U2 {
 
 class Document;
-class LoadDocumentTask;
+class LoadUnloadedDocumentTask;
 class LoadRemoteDocumentTask;
 class ConvertIdAndLoadDasDocumentTask;
 class DocumentProviderTask;
-
 
 class U2GUI_EXPORT LoadUnloadedDocumentAndOpenViewTask : public Task {
     Q_OBJECT
@@ -48,7 +47,7 @@ protected:
 private:
     void clearResourceUse();
 
-    class LoadUnloadedDocumentTask* loadUnloadedTask;
+    LoadUnloadedDocumentTask* loadUnloadedTask;
 };
 
 class U2GUI_EXPORT LoadRemoteDocumentAndOpenViewTask : public Task {

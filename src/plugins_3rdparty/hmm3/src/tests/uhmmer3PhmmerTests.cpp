@@ -22,6 +22,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Algorithm/SubstMatrixRegistry.h>
 #include <U2Core/L10n.h>
+#include <U2Core/LoadDocumentTask.h>
 
 #include "uhmmer3BuildTests.h"
 #include "uhmmer3SearchTests.h"

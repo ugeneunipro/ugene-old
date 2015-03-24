@@ -210,6 +210,11 @@ static QStringList splitGffAttributes(const QString& line, char sep) {
     return result;
 }
 
+#define CHECK_OBJECT_COUNT() \
+    if (objectsCountLimit > 0 && objects.size() >= objectsCountLimit) { \
+        os.setError(tr("File \"%1\" contains too much sequences to be displayed.").arg(io->getURL().getURLString())); \
+        break; \
+    }
 
 void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os){
     DbiOperationsBlock opBlock(dbiRef, os);
@@ -229,7 +234,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     bool skipHeader = validateHeader(words);
     int lineNumber = 2;//because first line checked in method validateHeader above
     if (!skipHeader) {
-        io->skip( -io->bytesRead() );
+        io->skip(-io->bytesRead());
         lineNumber--;
     }
 
@@ -244,6 +249,8 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     QByteArray seq;
     QSet<QString> names;
     TmpDbiObjects dbiObjects(dbiRef, os);
+    const int objectsCountLimit = hints.contains(DocumentReadingMode_MaxObjectsInDoc) ? hints[DocumentReadingMode_MaxObjectsInDoc].toInt() : -1;
+
     while(!io->isEof()){
         len = readLongLine(qstrbuf, io, buff);
         //skip empty lines
@@ -267,6 +274,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
             if(words[0].startsWith(">") && fastaHeaderName == DEFAULT_EMPTY_FASTA_SEQUENCE_NAME){
                 objName = extractSeqObjectName(fastaHeaderName, words, names);
             }else if(words[0].startsWith(">")){
+                CHECK_OBJECT_COUNT();
                 DNASequence sequence(objName, seq);
                 sequence.info.insert(DNAInfo::FASTA_HDR, objName);
                 U2SequenceObject *seqObj = importSequence(sequence, objName, objects, seqImporter, dbiRef, folder, os);
@@ -378,6 +386,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                     }
                 }
                 if(!ato){
+                    CHECK_OBJECT_COUNT();
                     QVariantMap objectHints;
                     objectHints.insert(DBI_FOLDER_HINT, hints.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
                     ato = new AnnotationTableObject( atoName, dbiRef, objectHints );

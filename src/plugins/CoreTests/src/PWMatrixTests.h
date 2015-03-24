@@ -32,7 +32,6 @@
 namespace U2 {
 
 class Document;
-class LoadDocumentTask;
 
 //---------------------------------------------------------------------
 class GTest_PFMtoPWMConvertTest : public GTest {

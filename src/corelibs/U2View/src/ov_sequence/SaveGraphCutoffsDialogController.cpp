@@ -26,7 +26,6 @@
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/LoadDocumentTask.h>
 
 #include <U2Gui/HelpButton.h>
 

@@ -29,6 +29,7 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2Type.h>
 

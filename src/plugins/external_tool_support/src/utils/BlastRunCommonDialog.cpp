@@ -38,7 +38,6 @@
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/IOAdapter.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/ProjectModel.h>
 

@@ -21,7 +21,6 @@
 
 #include "PhyMLTests.h"
 #include "PhyMLSupport.h"
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 
 #include <U2Core/DocumentModel.h>

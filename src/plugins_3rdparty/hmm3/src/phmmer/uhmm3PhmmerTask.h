@@ -27,7 +27,6 @@
 
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequence.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SequenceWalkerTask.h>
 #include <U2Core/Task.h>
 
@@ -37,6 +36,7 @@
 namespace U2 {
 
 class AnnotationTableObject;
+class LoadDocumentTask;
 
 /**************************************
   *General hmmer3 phmmer task.

@@ -26,7 +26,6 @@
 
 #include <U2Core/Task.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/MAlignment.h>
 
@@ -35,6 +34,8 @@
 #include <hmmer3/hmmer.h>
 
 namespace U2 {
+
+class LoadDocumentTask;
 
 /* if we build multi-malignments file and error occurs while building -> we will return empty hmm list */
 class UHMM3BuildTask : public Task {

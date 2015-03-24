@@ -41,7 +41,6 @@
 #include <U2Core/ImportObjectToDatabaseTask.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Log.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/ProjectModel.h>

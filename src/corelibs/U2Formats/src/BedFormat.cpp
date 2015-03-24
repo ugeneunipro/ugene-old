@@ -120,6 +120,7 @@ Document* BedFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
 void BedFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, U2OpStatus& os, const QVariantMap& fs) {
     QString defaultAnnotName = "misc_feature";
     const QHash<QString, QList<SharedAnnotationData> >& annotationsHash = parseDocument(io, defaultAnnotName, os);
+    const int objectsCountLimit = fs.contains(DocumentReadingMode_MaxObjectsInDoc) ? fs[DocumentReadingMode_MaxObjectsInDoc].toInt() : -1;
 
     foreach ( const QString &sequenceName, annotationsHash.keys( ) ) {
         const QString annotTableName = sequenceName + FEATURES_TAG;
@@ -130,6 +131,10 @@ void BedFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& db
             }
         }
         if (!annotTable) {
+            if (objectsCountLimit > 0 && objects.size() >= objectsCountLimit) {
+                os.setError(tr("File \"%1\" contains too much sequences to be displayed.").arg(io->getURL().getURLString()));
+                break;
+            }
             QVariantMap hints;
             hints.insert(DBI_FOLDER_HINT, fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
             annotTable = new AnnotationTableObject( annotTableName, dbiRef, hints);

@@ -31,7 +31,6 @@
 namespace U2 {
 
 class Document;
-class LoadDocumentTask;
 
 class GTestAnnotationDataItem: public QObject {
     Q_OBJECT

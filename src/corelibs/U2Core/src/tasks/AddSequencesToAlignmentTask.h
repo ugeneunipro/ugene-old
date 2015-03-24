@@ -22,16 +22,14 @@
 #ifndef _U2_ADD_SEQUENCES_TO_ALIGNMENT_TASK_H_
 #define _U2_ADD_SEQUENCES_TO_ALIGNMENT_TASK_H_
 
+#include <QPointer>
+
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/Task.h>
 #include <U2Core/MAlignmentObject.h>
 
-#include <QtCore/QPointer>
-
-
 namespace U2 {
 
-class LoadDocumentTask;
 class StateLock;
 
 class U2CORE_EXPORT AddSequencesToAlignmentTask : public Task {

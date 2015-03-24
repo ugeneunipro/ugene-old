@@ -28,7 +28,6 @@
 
 #include <U2Core/AnnotationData.h>
 
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include "utils/ExportTasks.h"
 

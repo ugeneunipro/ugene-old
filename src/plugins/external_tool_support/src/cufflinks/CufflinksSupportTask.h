@@ -35,6 +35,7 @@
 namespace U2 {
 
 class AnnotationTableObject;
+class LoadDocumentTask;
 
 enum CufflinksOutputFormat {
     CufflinksOutputFpkm,

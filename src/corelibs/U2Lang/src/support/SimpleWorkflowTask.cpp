@@ -19,24 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#include "SimpleWorkflowTask.h"
-
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
-#include <U2Core/AppContext.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Lang/WorkflowRunTask.h>
 
+#include "SimpleWorkflowTask.h"
 
 namespace U2 {
 

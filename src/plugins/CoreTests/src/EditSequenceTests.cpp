@@ -21,7 +21,6 @@
 
 #include "EditSequenceTests.h"
 
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AnnotationTableObject.h>

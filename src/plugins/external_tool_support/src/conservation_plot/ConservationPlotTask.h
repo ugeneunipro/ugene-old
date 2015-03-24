@@ -33,7 +33,6 @@
 namespace U2 {
 
 class Document;
-class LoadDocumentTask;
 class SaveDocumentTask;
 
 class ConservationPlotTask : public ExternalToolSupportTask {

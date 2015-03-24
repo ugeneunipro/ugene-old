@@ -22,12 +22,11 @@
 #ifndef _U2_UNLOAD_DOCUMENT_TASK_H_
 #define _U2_UNLOAD_DOCUMENT_TASK_H_
 
+#include <QPointer>
+
 #include <U2Core/GUrl.h>
 #include <U2Core/Task.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/UnloadedObject.h>
-
-#include <QtCore/QPointer>
 
 namespace U2 {
 

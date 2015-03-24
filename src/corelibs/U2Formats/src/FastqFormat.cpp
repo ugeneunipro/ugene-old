@@ -50,10 +50,11 @@ FastqFormat::FastqFormat(QObject* p)
 : DocumentFormat(p, DocumentFormatFlags_SW, QStringList("fastq")), fn(tr("FASTQ"))
 {
     supportedObjectTypes+=GObjectTypes::SEQUENCE;
-    formatDescription  = tr("FASTQ format is a text-based format for storing both a biological sequence (usually nucleotide sequence) and its corresponding quality scores. \
-Both the sequence letter and quality score are encoded with a single ASCII character for brevity. \
-It was originally developed at the Wellcome Trust Sanger Institute to bundle a FASTA sequence and its quality data, \
-but has recently become the de facto standard for storing the output of high throughput sequencing instruments.");
+    formatDescription  = tr("FASTQ format is a text-based format for storing both a biological sequence (usually nucleotide sequence) "
+        "and its corresponding quality scores. \
+        Both the sequence letter and quality score are encoded with a single ASCII character for brevity. \
+        It was originally developed at the Wellcome Trust Sanger Institute to bundle a FASTA sequence and its quality data, \
+        but has recently become the de facto standard for storing the output of high throughput sequencing instruments.");
 }
 
 
@@ -242,6 +243,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
     int seqNumber = 0;
     int progressUpNum = 0;
 
+    const int objectsCountLimit = hints.contains(DocumentReadingMode_MaxObjectsInDoc) ? hints[DocumentReadingMode_MaxObjectsInDoc].toInt() : -1;
     const bool settingsMakeUniqueName = !hints.value(DocumentReadingMode_DontMakeUniqueNames, false).toBool();
     while (!os.isCoR()) {
         //read header
@@ -307,6 +309,12 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
             mergedMapping.append(U2Region(sequenceStart, sequence.length() ));
         }
         else {
+            if (objectsCountLimit > 0 && objects.size() >= objectsCountLimit) {
+                os.setError(FastqFormat::tr("File \"%1\" contains too much sequences to be displayed.")
+                    .arg(io->getURL().getURLString()));
+                break;
+            }
+
             U2Sequence u2seq = seqImporter.finalizeSequenceAndValidate(os);
             CHECK_OP_BREAK(os);
             sequenceRef = GObjectReference(io->getURL().getURLString(), u2seq.visualName, GObjectTypes::SEQUENCE, U2EntityRef(dbiRef, u2seq.id));

@@ -25,11 +25,13 @@
 #include <U2Core/global.h>
 #include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/Task.h>
-#include <U2Core/LoadDocumentTask.h>
 
 #include <U2Lang/LocalDomain.h>
 
 namespace U2 {
+
+class LoadDocumentTask;
+
 namespace LocalWorkflow{
 
 class CallVariantsTaskSettings{

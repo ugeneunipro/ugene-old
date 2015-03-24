@@ -30,7 +30,6 @@
 namespace U2 {
 
 class Document;
-class LoadDocumentTask;
 
 class GTest_DNASequenceSize : public GTest {
     Q_OBJECT
