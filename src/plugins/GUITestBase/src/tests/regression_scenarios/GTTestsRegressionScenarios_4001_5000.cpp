@@ -872,6 +872,44 @@ GUI_TEST_CLASS_DEFINITION(test_4104) {
     GTUtilsProjectTreeView::findIndex(os, "NC_001363 features");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4110){
+    GTUtilsMdi::click(os, GTGlobals::Close);
+//    1. Connect to the shared database "ugene_gui_test_win" located on "ugene-quad-ubuntu".
+    GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+//    2. Open sequence view for sequence from ugene_gui_test_win:/view_test_0001/NC_001363.
+    QModelIndex fol = GTUtilsProjectTreeView::findIndex(os, "view_test_0001");
+    QModelIndex seqFol = GTUtilsProjectTreeView::findIndex(os, "NC_001363", fol);
+    QModelIndex annFol = GTUtilsProjectTreeView::findIndex(os, "NC_001363 features", fol);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, seqFol));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+//    Expected state: sequence is opened with its annotations on the same view.
+    QList<QTreeWidgetItem*> annotationsInFile = GTTreeWidget::getItems(GTUtilsAnnotationsTreeView::getTreeWidget(os)->invisibleRootItem());
+    int num = annotationsInFile.size();
+    CHECK_SET_ERR(num == 12, QString("1: unexpected annotations number: %1").arg(num));
+//    3. Open file "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+//    4. Drag&drop annotation object "ugene_gui_test_win:/view_test_0001/NC_001363 features" to the sequence view.
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    GTUtilsProjectTreeView::dragAndDrop(os, annFol, GTWidget::findWidget(os, "ADV_single_sequence_widget_0", GTUtilsMdi::activeWindow(os)));
+    GTGlobals::sleep(1000);
+//    Expected state: annotations successfully associated with a new sequence.
+    annotationsInFile = GTTreeWidget::getItems(GTUtilsAnnotationsTreeView::getTreeWidget(os)->invisibleRootItem());
+    num = annotationsInFile.size();
+    CHECK_SET_ERR(num == 12, QString("2: unexpected annotations number: %1").arg(num));
+//    5. Close both sequence views.
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTUtilsMdi::click(os, GTGlobals::Close);
+//    6. Open a sequence view for "human_T1" again.
+    GTUtilsProjectTreeView::doubleClickItem(os, "human_T1.fa");
+    GTGlobals::sleep();
+//    Expected state: it still displays annotations along with the sequence
+    annotationsInFile = GTTreeWidget::getItems(GTUtilsAnnotationsTreeView::getTreeWidget(os)->invisibleRootItem());
+    num = annotationsInFile.size();
+    CHECK_SET_ERR(num == 12, QString("3: unexpected annotations number: %1").arg(num));
+//    Current state: only sequence is shown
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4111){
     GTLogTracer l;
     AlignShortReadsFiller::Parameters parameters(testDir + "_common_data/bowtie/index/",
