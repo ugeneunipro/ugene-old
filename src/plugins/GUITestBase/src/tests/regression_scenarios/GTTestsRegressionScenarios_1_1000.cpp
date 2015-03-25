@@ -375,34 +375,13 @@ GUI_TEST_CLASS_DEFINITION(test_0858) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Statistics);
 
-    QWidget* label = GTWidget::findWidget(os, "characters_occurrence_label");
-    CHECK_SET_ERR(label != NULL, "characters_occurrence label not found");
+    QLabel* label = GTWidget::findExactWidget<QLabel*>(os, "characters_occurrence_label");
 
-    QRect r = label->geometry();
-    CHECK_SET_ERR(label->parentWidget() != NULL, "Parent widget is NULL");
-    GTMouseDriver::moveTo(os, label->parentWidget()->mapToGlobal(r.topLeft()));
-    GTMouseDriver::press(os);
-    GTMouseDriver::moveTo(os, label->parentWidget()->mapToGlobal(r.bottomRight()));
-    GTMouseDriver::release(os);
-
-    GTGlobals::sleep();
-    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep();
-
-    QString expected = "\n"
-            "A:  \n"
-            "62 842   \n"
-            "31.4%  \n"
-            "C:  \n"
-            "40 041   \n"
-            "20.0%  \n"
-            "G:  \n"
-            "37 622   \n"
-            "18.8%  \n"
-            "T:  \n"
-            "59 445   \n"
-            "29.7%  \n";
-    QString got = QApplication::clipboard()->text();
+    QString expected = "<table cellspacing=5><tr><td><b>A:&nbsp;&nbsp;</td><td>62 842 &nbsp;&nbsp;</td><td>"
+            "31.4%&nbsp;&nbsp;</td></tr><tr><td><b>C:&nbsp;&nbsp;</td><td>40 041 &nbsp;&nbsp;</td><td>20.0%&nbsp;"
+            "&nbsp;</td></tr><tr><td><b>G:&nbsp;&nbsp;</td><td>37 622 &nbsp;&nbsp;</td><td>18.8%&nbsp;&nbsp;</td>"
+            "</tr><tr><td><b>T:&nbsp;&nbsp;</td><td>59 445 &nbsp;&nbsp;</td><td>29.7%&nbsp;&nbsp;</td></tr></table>";
+    QString got = label->text();
     CHECK_SET_ERR(got == expected, QString("The clipboard text is incorrect: [%1], expected [%2]").arg(got).arg(expected));
 }
 

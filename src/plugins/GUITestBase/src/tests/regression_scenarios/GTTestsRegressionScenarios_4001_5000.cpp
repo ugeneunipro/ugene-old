@@ -1029,6 +1029,25 @@ GUI_TEST_CLASS_DEFINITION(test_4150) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4164){
+    GTLogTracer l;
+    QDir().mkpath(testDir + "_common_data/scenarios/sandbox/space dir");
+    GTFile::copy(os, testDir + "_common_data/vcf/valid.vcf", testDir + "_common_data/scenarios/sandbox/space dir/valid.vcf");
+//1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//2. Add sample: snpEff
+    GTUtilsWorkflowDesigner::addSample(os, "SnpEff");
+//3. Set input file which contains spaces in path
+    GTUtilsWorkflowDesigner::click(os, "File(s) with variations");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/sandbox/space dir", "valid.vcf");
+//4. Run workflow
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTGlobals::sleep(5000);
+    GTUtilsLog::check(os, l);
+    GTUtilsTaskTreeView::cancelTask(os, "Execute workflow");
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4170) {
 /* Annotation pattern line edit should be disabled if "Use pattern name" option checked.
  * 1. Open file data/samples/FASTA/human_T1.fa

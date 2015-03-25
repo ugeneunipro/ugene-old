@@ -3561,16 +3561,8 @@ GUI_TEST_CLASS_DEFINITION(test_1347) {
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
-    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
-    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep();
-    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep();
-
-    QTextEdit* patternEdit = qobject_cast<QTextEdit*>(GTWidget::findWidget(os, "textPattern"));
-    CHECK_SET_ERR(patternEdit != NULL, "textPattern is NULL");
-    CHECK_SET_ERR(patternEdit->toPlainText() == "AAGA",
-                  QString("Wrong text is in the buffer [%1]").arg(patternEdit->toPlainText()));
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "AAGA", QString("unexpected clipboard text: %1").arg(clipboardText));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1348) {
@@ -3836,6 +3828,7 @@ GUI_TEST_CLASS_DEFINITION(test_1390) {
     QString ugenedbFileName = testDir + "_common_data/scenarios/sandbox/test_1390.ugenedb";
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, ugenedbFileName));
     GTFileDialog::openFile( os, testDir + "_common_data/bam", "chrM.sorted.bam" );
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_SETTINGS"));
     QLabel* hint = qobject_cast<QLabel*>(GTWidget::findWidget(os, "HINT_HIGHLIGHTNING"));
