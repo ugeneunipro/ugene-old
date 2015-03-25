@@ -5441,6 +5441,27 @@ GUI_TEST_CLASS_DEFINITION(test_3967){
 //    GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3975) {
+    // 1. Open _common_data/gff/noheader.gff
+    // 2. Connect it with some sequence to observe annotations
+    // 3. Open the file in some text editor
+    // Current state: there is annotation "chromosome"
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTFileDialog::openFile(os, testDir + "_common_data/gff/", "noheader.gff");
+
+    QModelIndex idxGff = GTUtilsProjectTreeView::findIndex(os, "scaffold_1 features");
+    CHECK_SET_ERR( idxGff.isValid(), "Can not find 'scaffold_1 features' object");
+    QWidget* seqArea = GTWidget::findWidget(os, "render_area_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    CHECK_SET_ERR( seqArea != NULL, "No sequence view opened");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Yes"));
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    GTUtilsProjectTreeView::dragAndDrop(os, idxGff, seqArea);
+
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "chromosome  (0, 1)");
+    CHECK_SET_ERR(NULL != annotationGroup, "Annotations have not been found");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3983) {
 //    1. Open file "_common_data\fasta\amino_multy.aln"
 //    2. Open "Pairwise Alignment" OP tab
