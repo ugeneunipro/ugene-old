@@ -26,6 +26,7 @@
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsDashboard.h"
 #include "GTUtilsDocument.h"
+#include "GTUtilsExternalTools.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditor.h"
@@ -46,6 +47,7 @@
 #include "api/GTAction.h"
 #include "api/GTCheckBox.h"
 #include "api/GTClipboard.h"
+#include "api/GTComboBox.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
@@ -62,6 +64,7 @@
 #include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
@@ -953,6 +956,53 @@ GUI_TEST_CLASS_DEFINITION(test_4141) {
     GTWidget::findWidget(os, "msa_editor_similarity_column");
     CHECK_SET_ERR(QApplication::activeWindow() == appWindow, "Active window changed");
 }
+
+GUI_TEST_CLASS_DEFINITION(test_4148) {
+//    0. Remove BWA from external tools.
+//    1. Tools -> NGS data analysis -> Map reads to reference.
+//    2. Method: BWA.
+//    3. Reference: samples/FASTA/human_T1.fa.
+//    4. Reads: samples/FASTA/human_T1.fa.
+//    5. Start.
+//    Expected: UGENE offers to choose the path to BWA executables.
+//    Repeat for other aligners: Bowtie, Bowtie2, BWA SW, MWA MEM
+
+    QStringList aligners;
+    aligners << "BWA" << "Bowtie aligner" << "Bowtie 2 aligner";
+    foreach (const QString& al, aligners) {
+        GTUtilsExternalTools::removeTool(os, al);
+    }
+
+    class Scenario_test_4148: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget* dialog = QApplication::activeModalWidget();
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/FASTA/human_T1.fa"));
+            QWidget* addRefButton = GTWidget::findWidget(os, "addRefButton", dialog);
+            GTWidget::click(os, addRefButton);
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/FASTA/human_T1.fa"));
+            QWidget* addShortreadsButton = GTWidget::findWidget(os, "addShortreadsButton", dialog);
+            GTWidget::click(os, addShortreadsButton);
+
+            QStringList aligners;
+            aligners << "BWA" << "BWA-SW" << "BWA-MEM" << "Bowtie" << "Bowtie2";
+            QComboBox* methodNamesBox = GTWidget::findExactWidget<QComboBox*>(os, "methodNamesBox", dialog);
+            foreach (const QString& al, aligners) {
+                GTComboBox::setIndexWithText(os, methodNamesBox, al);
+                GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+                GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
+            }
+
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new Scenario_test_4148()));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4150) {
     // Connect to the ugene-quad-ubuntu shared DB
     // Create a new folder "qwe" there
@@ -975,7 +1025,7 @@ GUI_TEST_CLASS_DEFINITION(test_4150) {
     GTUtilsProjectTreeView::dragAndDrop(os, from, to);
     GTGlobals::sleep(10000);
     to = GTUtilsProjectTreeView::findIndex(os, "test_4150");
-    GTUtilsProjectTreeView::checkItem(os, "murine.gb", to); 
+    GTUtilsProjectTreeView::checkItem(os, "murine.gb", to);
 
 }
 

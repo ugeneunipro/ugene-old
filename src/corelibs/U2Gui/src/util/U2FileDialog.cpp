@@ -39,7 +39,7 @@ namespace U2 {
 
 QString U2FileDialog::getOpenFileName(QWidget *parent, const QString &caption, const QString &dir, const QString &filter, QString *selectedFilter, QFileDialog::Options options) {
     QString name;
-#if defined(Q_OS_MAC) || (QT_VERSION >= 0x050000)
+#if defined(Q_OS_MAC) || (QT_VERSION >= 0x050000) || defined(Q_OS_LINUX)
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
         name = QFileDialog::getOpenFileName(parent, caption, dir, filter, selectedFilter, options | QFileDialog::DontUseNativeDialog);
     } else
