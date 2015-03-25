@@ -455,6 +455,24 @@ GUI_TEST_CLASS_DEFINITION(test_0861_4) {
 
 
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0866) {
+//1. Open WD
+//2. Ad the following elements to the scheme: File List, Write Plain Text 1, Write Plain Text 2
+//3. Connect File List to both writers
+//Expected state: File List connected successfully
+
+    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
+    GTMenu::clickMenuItemByName( os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER );
+
+    WorkflowProcessItem *fileList = GTUtilsWorkflowDesigner::addElement(os, "File List");
+    WorkflowProcessItem *writer1 = GTUtilsWorkflowDesigner::addElement(os, "Write Plain Text");
+    WorkflowProcessItem *writer2 = GTUtilsWorkflowDesigner::addElement(os, "Write Plain Text");
+
+    GTUtilsWorkflowDesigner::connect(os, fileList, writer1);
+    GTUtilsWorkflowDesigner::connect(os, fileList, GTUtilsWorkflowDesigner::getWorker( os, "Write Plain Text 1"));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0871) {
     // 1. Open WD
     // 2. Create a scheme with the following elements: Read Sequence, Amino Translation, Write Sequence
