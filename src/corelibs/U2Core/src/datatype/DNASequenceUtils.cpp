@@ -19,10 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "DNASequenceUtils.h"
-
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Log.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
 
+#include "DNASequenceUtils.h"
 
 namespace U2 {
 
@@ -60,6 +65,28 @@ void DNASequenceUtils::toUpperCase(DNASequence& sequence) {
 
 void DNASequenceUtils::makeEmpty(DNASequence& sequence) {
     sequence.seq = QByteArray();
+}
+
+QByteArray DNASequenceUtils::reverse(const QByteArray &sequence) {
+    QByteArray result = sequence;
+    TextUtils::reverse(result.data(), result.length());
+    return result;
+}
+
+QByteArray DNASequenceUtils::complement(const QByteArray &sequence) {
+    const DNAAlphabet *alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    SAFE_POINT(NULL != alphabet, L10N::nullPointerError("DNA Alphabet"), "");
+
+    DNATranslation *translator = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(alphabet);
+    SAFE_POINT(NULL != translator, L10N::nullPointerError("DNA Translator"), "");
+
+    QByteArray result(sequence.length(), 0);
+    translator->translate(sequence.constData(), sequence.length(), result.data(), result.length());
+    return result;
+}
+
+QByteArray DNASequenceUtils::reverseComplement(const QByteArray &sequence) {
+    return reverse(complement(sequence));
 }
 
 } // namespace

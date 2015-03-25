@@ -22,6 +22,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceUtils.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/L10n.h>
 
@@ -32,7 +33,7 @@
 namespace U2 {
 
 InSilicoPcrTaskSettings::InSilicoPcrTaskSettings()
-: isCircular(false), forwardMismatches(0), reverseMismatches(0), maxProductSize(0)
+: isCircular(false), forwardMismatches(0), reverseMismatches(0), maxProductSize(0), perfectMatch(0)
 {
 
 }
@@ -45,9 +46,10 @@ InSilicoPcrProduct::InSilicoPcrProduct()
 
 InSilicoPcrTask::InSilicoPcrTask(const InSilicoPcrTaskSettings &settings)
 : Task(tr("In Silico PCR"), TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled | TaskFlags_FOSE_COSC),
-settings(settings), forwardSearch(NULL), reverseSearch(NULL)
+settings(settings), forwardSearch(NULL), reverseSearch(NULL), minProductSize(0)
 {
     GCOUNTER(cvar, tvar, "InSilicoPcrTask");
+    minProductSize = qMax(settings.forwardPrimer.length(), settings.reversePrimer.length());
 }
 
 namespace {
@@ -99,25 +101,79 @@ void InSilicoPcrTask::run() {
     algoLog.details(tr("Forward primers found: %1").arg(forwardResults.size()));
     algoLog.details(tr("Reverse primers found: %1").arg(reverseResults.size()));
 
-    int minProductSize = qMax(settings.forwardPrimer.length(), settings.reversePrimer.length());
     foreach (const FindAlgorithmResult &forward, forwardResults) {
         foreach (const FindAlgorithmResult &reverse, reverseResults) {
             CHECK(!isCanceled(), );
             if (forward.strand == reverse.strand) {
                 continue;
             }
-            U2Region left = forward.region;
-            U2Region right = reverse.region;
-            if (forward.strand.isCompementary()) {
-                qSwap(left, right);
-            }
-            qint64 productSize = getProductSize(left, right);
-            if (productSize >= minProductSize && productSize <= qint64(settings.maxProductSize)) {
-                InSilicoPcrProduct product = createResult(left, U2Region(left.startPos, productSize), right, forward.strand.getDirection());
+            PrimerBind leftBind = getPrimerBind(forward, reverse, U2Strand::Direct);
+            PrimerBind rightBind = getPrimerBind(forward, reverse, U2Strand::Complementary);
+
+            qint64 productSize = getProductSize(leftBind.region, rightBind.region);
+            bool accepted = filter(leftBind, rightBind, productSize);
+            if (accepted) {
+                U2Region productRegion(leftBind.region.startPos, productSize);
+                InSilicoPcrProduct product = createResult(leftBind.region, productRegion, rightBind.region, forward.strand.getDirection());
                 results << product;
             }
         }
     }
+}
+
+InSilicoPcrTask::PrimerBind InSilicoPcrTask::getPrimerBind(const FindAlgorithmResult &forward, const FindAlgorithmResult &reverse, U2Strand::Direction direction) const {
+    PrimerBind result;
+    bool switched = forward.strand.isCompementary();
+    if ((U2Strand::Direct == direction && switched) ||
+        (U2Strand::Complementary == direction && !switched)) {
+        result.primer = settings.reversePrimer;
+        result.mismatches = settings.reverseMismatches;
+        result.region = reverse.region;
+    } else {
+        result.primer = settings.forwardPrimer;
+        result.mismatches = settings.forwardMismatches;
+        result.region = forward.region;
+    }
+    return result;
+}
+
+bool InSilicoPcrTask::filter(const PrimerBind &leftBind, const PrimerBind &rightBind, qint64 productSize) const {
+    CHECK(isCorrectProductSize(productSize, minProductSize), false);
+
+    if (settings.perfectMatch > 0) {
+        if (leftBind.mismatches > 0) {
+            CHECK(checkPerfectMatch(leftBind.region, leftBind.primer, U2Strand::Direct), false);
+        }
+        if (rightBind.mismatches > 0) {
+            CHECK(checkPerfectMatch(rightBind.region, rightBind.primer, U2Strand::Complementary), false);
+        }
+    }
+    return true;
+}
+
+bool InSilicoPcrTask::isCorrectProductSize(qint64 productSize, qint64 minPrimerSize) const {
+    return (productSize >= minPrimerSize) && (productSize <= qint64(settings.maxProductSize));
+}
+
+bool InSilicoPcrTask::checkPerfectMatch(const U2Region &region, QByteArray primer, U2Strand::Direction direction) const {
+    const QByteArray sequence = getSequence(region, direction);
+    SAFE_POINT(sequence.length() == primer.length(), L10N::internalError("Wrong match length"), false);
+
+    int perfectMatch = qMin(sequence.length(), int(settings.perfectMatch));
+    for (int i=0; i<perfectMatch; i++) {
+        if (sequence.at(sequence.length() - 1 - i) != primer.at(primer.length() - 1 - i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+QByteArray InSilicoPcrTask::getSequence(const U2Region &region, U2Strand::Direction direction) const {
+    const QByteArray sequence = settings.sequence.mid(region.startPos, region.length);
+    if (U2Strand::Complementary == direction) {
+        return DNASequenceUtils::reverseComplement(sequence);
+    }
+    return sequence;
 }
 
 QString InSilicoPcrTask::generateReport() const {

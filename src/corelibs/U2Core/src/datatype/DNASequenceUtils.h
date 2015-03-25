@@ -49,6 +49,15 @@ public:
 
     /** Make the sequence empty (do not change name, alphabet, etc.) */
     static void makeEmpty(DNASequence& sequence);
+
+    /** Returns the reverse sequence */
+    static QByteArray reverse(const QByteArray &sequence);
+
+    /** Returns the complement DNA sequence */
+    static QByteArray complement(const QByteArray &sequence);
+
+    /** Returns the reverse-complement DNA sequence */
+    static QByteArray reverseComplement(const QByteArray &sequence);
 };
 
 } // namespace

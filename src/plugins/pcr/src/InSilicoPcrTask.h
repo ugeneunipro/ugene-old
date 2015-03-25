@@ -41,6 +41,7 @@ public:
     uint forwardMismatches;
     uint reverseMismatches;
     uint maxProductSize;
+    uint perfectMatch;
 };
 
 class InSilicoPcrProduct {
@@ -75,8 +76,20 @@ public:
     const InSilicoPcrTaskSettings & getSettings() const;
 
 private:
+    class PrimerBind {
+    public:
+        QByteArray primer;
+        uint mismatches;
+        U2Region region;
+    };
+    PrimerBind getPrimerBind(const FindAlgorithmResult &forward, const FindAlgorithmResult &reverse, U2Strand::Direction direction) const;
+
     qint64 getProductSize(const U2Region &left, const U2Region &right) const;
     FindAlgorithmTaskSettings getFindPatternSettings(U2Strand::Direction direction);
+    bool isCorrectProductSize(qint64 productSize, qint64 minPrimerSize) const;
+    bool filter(const PrimerBind &leftBind, const PrimerBind &rightBind, qint64 productSize) const;
+    bool checkPerfectMatch(const U2Region &region, QByteArray primer, U2Strand::Direction direction) const;
+    QByteArray getSequence(const U2Region &region, U2Strand::Direction direction) const;
     InSilicoPcrProduct createResult(const U2Region &leftPrimer, const U2Region &product, const U2Region &rightPrimer, U2Strand::Direction direction) const;
 
 private:
@@ -84,6 +97,7 @@ private:
     FindAlgorithmTask *forwardSearch;
     FindAlgorithmTask *reverseSearch;
     QList<InSilicoPcrProduct> results;
+    int minProductSize;
 };
 
 } // U2

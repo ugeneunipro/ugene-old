@@ -129,6 +129,8 @@ void InSilicoPcrOptionPanelWidget::sl_onPrimerChanged() {
 void InSilicoPcrOptionPanelWidget::sl_findProduct() {
     int maxProduct = productSizeSpinBox->value();
     SAFE_POINT(maxProduct > 0, "Non-positive product size", );
+    int perfectMatch = perfectSpinBox->value();
+    SAFE_POINT(perfectMatch >= 0, "Negative perfect match", );
     ADVSequenceObjectContext *sequenceContext = annotatedDnaView->getSequenceInFocus();
     SAFE_POINT(NULL != sequenceContext, L10N::nullPointerError("Sequence Context"), );
     U2SequenceObject *sequenceObject = sequenceContext->getSequenceObject();
@@ -140,6 +142,7 @@ void InSilicoPcrOptionPanelWidget::sl_findProduct() {
     settings.forwardMismatches = forwardPrimerBox->getMismatches();
     settings.reverseMismatches = reversePrimerBox->getMismatches();
     settings.maxProductSize = uint(maxProduct);
+    settings.perfectMatch = uint(perfectMatch);
     settings.sequence = sequenceObject->getWholeSequenceData();
     settings.sequenceObject = GObjectReference(sequenceObject);
     settings.isCircular = sequenceObject->isCircular();

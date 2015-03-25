@@ -19,11 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AppContext.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/L10n.h>
-#include <U2Core/TextUtils.h>
+#include <U2Core/DNASequenceUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "PrimerLibrarySelector.h"
@@ -65,18 +61,7 @@ uint PrimerGroupBox::getMismatches() const {
 }
 
 void PrimerGroupBox::sl_translate() {
-    const DNAAlphabet *alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
-    SAFE_POINT(NULL != alphabet, L10N::nullPointerError("DNA Alphabet"), );
-
-    DNATranslation *translator = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(alphabet);
-    SAFE_POINT(NULL != translator, L10N::nullPointerError("DNA Translator"), );
-
-    QByteArray sequence = primerEdit->text().toLocal8Bit();
-    QByteArray translation(sequence.length(), 0);
-
-    translator->translate(sequence.constData(), sequence.length(), translation.data(), translation.length());
-    TextUtils::reverse(translation.data(), translation.length());
-
+    const QByteArray translation = DNASequenceUtils::reverseComplement(primerEdit->text().toLocal8Bit());
     primerEdit->setInvalidatedText(translation);
 }
 
