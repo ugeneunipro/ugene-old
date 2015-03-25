@@ -1044,28 +1044,48 @@ GUI_TEST_CLASS_DEFINITION(test_4148) {
 
 GUI_TEST_CLASS_DEFINITION(test_4150) {
     // Connect to the ugene-quad-ubuntu shared DB
-    // Create a new folder "qwe" there
-    // Open file "data/samples/Genbank/murine.gb"
-    // Close the sequence view
-    // Drag&drop the sequence document to "qwe" in the DB
-    // Expected state: a new folder named "murine.gb" has been created in "qwe"
-    // TODO: Do double click on the sequence object from the "murine.gb" file
-    // TODO: Expected state: sequence view has opened, it contains a single set of annotations
-    // TODO: Do double click on the sequence object from the "murine.gb" folder
-    // TODO: Expected state: sequence view has opened, it contains a single set of annotations
-
     Document *dbDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
-    GTUtilsSharedDatabaseDocument::createFolder(os, dbDoc, "/", "qwe");
+
+    // Create a new folder "qwe" there
+    GTUtilsSharedDatabaseDocument::createFolder(os, dbDoc, "/", "test_4150");
     GTFile::copy(os, dataDir + "samples/Genbank/murine.gb", sandBoxDir + "test_4150_murine.gb");
+
+    // Open file "data/samples/Genbank/murine.gb"
     GTFileDialog::openFile(os, sandBoxDir, "test_4150_murine.gb");
-    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
+
+    // Close the sequence view
+    GTUtilsMdi::click(os, GTGlobals::Close);
+
+    // Drag&drop the sequence document to "qwe" in the DB
     QModelIndex from = GTUtilsProjectTreeView::findIndex(os, "test_4150_murine.gb");
     QModelIndex to = GTUtilsProjectTreeView::findIndex(os, "test_4150");
     GTUtilsProjectTreeView::dragAndDrop(os, from, to);
-    GTGlobals::sleep(10000);
+    GTGlobals::sleep(1000);
     to = GTUtilsProjectTreeView::findIndex(os, "test_4150");
-    GTUtilsProjectTreeView::checkItem(os, "murine.gb", to);
 
+    // Do double click on the sequence object from the "murine.gb" file
+    QModelIndex seqFile = GTUtilsProjectTreeView::findIndex(os, "NC_001363", from);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, seqFile));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    // Expected state: sequence view has opened, it contains a single set of annotations
+    QList<QTreeWidgetItem*> annotationsInFile = GTTreeWidget::getItems(GTUtilsAnnotationsTreeView::getTreeWidget(os)->invisibleRootItem());
+    int num = annotationsInFile.size();
+    CHECK_SET_ERR(num == 14, QString("unexpected annotations number: %1").arg(num));
+
+    // Do double click on the sequence object from the "murine.gb" folder
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    QModelIndex murineFol = GTUtilsProjectTreeView::findIndex(os, "test_4150_murine.gb", to);
+    QModelIndex seqFol = GTUtilsProjectTreeView::findIndex(os, "NC_001363", murineFol);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, seqFol));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    // Expected state: sequence view has opened, it contains a single set of annotations
+    annotationsInFile = GTTreeWidget::getItems(GTUtilsAnnotationsTreeView::getTreeWidget(os)->invisibleRootItem());
+    num = annotationsInFile.size();
+    CHECK_SET_ERR(num == 14, QString("unexpected annotations number: %1").arg(num));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4164){
