@@ -356,5 +356,41 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     CHECK_SET_ERR("7223 - 60" == GTUtilsPcr::getResultRegion(os, 0), "Wrong result");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0009) {
+    GTUtilsPcr::clearPcrDir(os);
+    //Algorithm parameters:
+    //    3' perfect match
+    //1. Open "_common_data/fasta/pcr_test.fa".
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "pcr_test.fa");
+
+    //2. Open the PCR OP.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_IN_SILICO_PCR"));
+
+    //3. Enter the primers: "CGCGCGTTTCGGTGA" and "CGACATCCGCTTACAGAC".
+    GTUtilsPcr::setPrimer(os, U2Strand::Direct, "CGCGCGTTTCGGTGA");
+    GTUtilsPcr::setPrimer(os, U2Strand::Complementary, "CGACATCCGCTTACAGAC");
+
+    //4. Set the reverse mismatches: 1.
+    GTUtilsPcr::setMismatches(os, U2Strand::Complementary, 1);
+
+    //5. Click the find button.
+    GTWidget::click(os, GTWidget::findWidget(os, "findProductButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected: the product table is shown with one result.
+    CHECK_SET_ERR(1 == GTUtilsPcr::productsCount(os), "Wrong results count 1");
+
+    //6. Set the 3' perfect match: 16.
+    QSpinBox *perfectSpinBox = dynamic_cast<QSpinBox*>(GTWidget::findWidget(os, "perfectSpinBox"));
+    GTSpinBox::setValue(os, perfectSpinBox, 16, GTGlobals::UseKeyBoard);
+
+    //7. Click the find button.
+    GTWidget::click(os, GTWidget::findWidget(os, "findProductButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected: there are no results in the table.
+    CHECK_SET_ERR(0 == GTUtilsPcr::productsCount(os), "Wrong results count 2");
+}
+
 } // GUITest_common_scenarios_in_silico_pcr
 } // U2
