@@ -561,6 +561,29 @@ GUI_TEST_CLASS_DEFINITION(test_4070) {
     CHECK_SET_ERR(colorFound, "The overview doesn't contain white color");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4071) {
+    GTLogTracer l;
+    //1. Open any file (for example, human_T1.fa).
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+
+    //2. Select the object "[s] human_T1 (UCSC April 2002 chr7:115977709-117855134)".
+    GTUtilsProjectTreeView::click(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+
+    //3. Press "delete" key.
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    //4. Unload and load document.
+    MessageBoxDialogFiller *filler = new MessageBoxDialogFiller(os, "No");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsDocument::unloadDocument(os, "human_T1.fa", false);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+
+    //Expected: no safe points are triggered.
+    CHECK_SET_ERR(!l.hasError(), "Errors in log");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4072) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
 
