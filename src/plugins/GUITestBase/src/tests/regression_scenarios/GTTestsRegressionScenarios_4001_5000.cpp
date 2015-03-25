@@ -849,6 +849,22 @@ GUI_TEST_CLASS_DEFINITION(test_4104) {
     GTUtilsProjectTreeView::findIndex(os, "NC_001363 features");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4111){
+    GTLogTracer l;
+    AlignShortReadsFiller::Parameters parameters(testDir + "_common_data/bowtie/index/",
+        "e_coli.1.ebwt",
+        testDir + "_common_data/fastq/",
+        "short_sample.fastq",
+        AlignShortReadsFiller::Parameters::Bowtie);
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_4111.ugenedb"));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4117){
     GTLogTracer l;
     QDir().mkpath(testDir + "_common_data/scenarios/sandbox/space containing dir");
