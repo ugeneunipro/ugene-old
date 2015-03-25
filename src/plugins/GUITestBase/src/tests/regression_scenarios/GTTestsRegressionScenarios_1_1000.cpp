@@ -543,6 +543,20 @@ GUI_TEST_CLASS_DEFINITION(test_0878) {
     CHECK_SET_ERR(win == GTUtilsMdi::activeWindow(os), "Incorrect active window");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0882) {
+    //1. Open "data/samples/FASTQ/eas.fastq".
+    //2. Choose the "Align reads to reference sequence" option in appearing "Sequence reading option" dialog.
+    //3. Click "Ok" and specify a reference sequence in the "Align short reads" dialog (Use UGENE genome aligner).
+    //4. Click "Start" button.
+    //Expected result: The dialog disappears, a notification about alignment results appears.
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Align));
+    AlignShortReadsFiller::UgeneGenomeAlignerParams parameters(dataDir + "samples/FASTA/human_T1.fa", QStringList());
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "can't be mapped"));
+    GTFileDialog::openFile(os, dataDir + "samples/FASTQ/eas.fastq");
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0886) {
     // 1. Open file "_common_data/fasta/Gene.fa" in UGENE.
     // Expected result: UGENE doesn't crash
