@@ -52,7 +52,15 @@ ImportBAMFileFiller::ImportBAMFileFiller(U2OpStatus &os, const QString destinati
     settings.timeout = timeoutMs;
 }
 
-void ImportBAMFileFiller::run() {
+ImportBAMFileFiller::ImportBAMFileFiller(U2OpStatus &os, CustomScenario* _c):Filler(os, "Import BAM File", _c),
+    referenceFolderPath(""),
+    referenceFileName(""),
+    destinationUrl(""),
+    importUnmappedReads(false) {
+    settings.timeout = 120000;
+}
+
+void ImportBAMFileFiller::commonScenario() {
 
     GTGlobals::sleep(500);
     QWidget* dialog = QApplication::activeModalWidget();

@@ -741,6 +741,31 @@ GUI_TEST_CLASS_DEFINITION(test_0928) {
     CHECK_SET_ERR(item->childCount() == 837, QString("ORFs count mismatch. Expected: %1. Actual: %2").arg(837).arg(item->childCount()));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0930){
+//    1. Open any *.bam file (e.g. "_common_data/bam/scerevisiae.bam").
+
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            //    2. Look at the first column in the table above "Source URL" label.
+            //    Expected state: you saw "Assembly name" in the colunms head.
+
+            QTableWidget* tableWidget = GTWidget::findExactWidget<QTableWidget*>(os, "tableWidget", dialog);
+            QString header = tableWidget->horizontalHeaderItem(0)->text();
+            CHECK_SET_ERR(header == "Assembly name", "unexpected header: " + header);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, new Scenario()));
+    GTFileDialog::openFile(os, testDir + "_common_data/bam/scerevisiae.bam");
+    GTGlobals::sleep();
+//    Expected state: the "Import BAM File" dialog appeared.
+}
+
+
 GUI_TEST_CLASS_DEFINITION(test_0935){
 //    1. Start the Workflow Designer.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);

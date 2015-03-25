@@ -32,8 +32,9 @@ public:
                         const QString referenceFolderPath = "", const QString referenceFileName = "",
                         bool importUnmappedReads = false,
                         int timeoutMs = 120000);
+    ImportBAMFileFiller(U2OpStatus &os, CustomScenario *_c);
 
-    virtual void run();
+    virtual void commonScenario();
 private:
     const QString referenceFolderPath;
     const QString referenceFileName;
