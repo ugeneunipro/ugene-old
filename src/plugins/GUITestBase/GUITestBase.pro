@@ -173,6 +173,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/regression_scenarios/GTTestsRegressionScenarios_3001_4000.h \
             src/tests/regression_scenarios/GTTestsRegressionScenarios_4001_5000.h \
 #   Tests/Common Scenarios
+            src/tests/common_scenarios/cloning/GTTestsCloning.h \
             src/tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.h \
             src/tests/common_scenarios/sequence_view/GTTestsSequenceView.h \
             src/tests/common_scenarios/toggle_view/GTTestsToggleView.h \
@@ -434,6 +435,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/regression_scenarios/GTTestsRegressionScenarios_3001_4000.cpp \
             src/tests/regression_scenarios/GTTestsRegressionScenarios_4001_5000.cpp \
 #   Tests/Common Scenarios
+            src/tests/common_scenarios/cloning/GTTestsCloning.cpp \
             src/tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.cpp \
             src/tests/common_scenarios/sequence_view/GTTestsSequenceView.cpp \
             src/tests/common_scenarios/toggle_view/GTTestsToggleView.cpp \

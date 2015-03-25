@@ -24,6 +24,7 @@
 #include <U2Test/GUITestBase.h>
 
 #include "tests/GUIInitialChecks.h"
+#include "tests/common_scenarios/cloning/GTTestsCloning.h"
 #include "tests/common_scenarios/pcr/GTTestsInSilicoPcr.h"
 #include "tests/common_scenarios/pcr/GTTestsPrimerLibrary.h"
 #include "tests/common_scenarios/project/GTTestsProject.h"
@@ -2046,6 +2047,11 @@ REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_6);
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_7);
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_8);
+
+/////////////////////////////////////////////////////////////////////////
+// common_scenarios/cloning
+/////////////////////////////////////////////////////////////////////////
+        REGISTER_TEST(GUITest_common_scenarios_cloning::test_0011);
 
 /////////////////////////////////////////////////////////////////////////
 // common_scenarios/options_panel/sequence_view
