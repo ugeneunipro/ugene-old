@@ -500,7 +500,27 @@ GUI_TEST_CLASS_DEFINITION(test_0871) {
     GTUtilsProjectTreeView::rename(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134) Amino translation 2 direct", "2");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_0873 ){
+    //    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
+    GTUtilsWorkflowDesigner::addSample(os, "Merge sequences and shift corresponding annotations");
+
+    GTUtilsWorkflowDesigner::click(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Genbank", "murine.gb");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Genbank", "sars.gb");
+
+    //    3. fill all needed parameters and run schema
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //    Expected state: there are more then 10 result files and they are grouped into sublists
+
+    QWebElement button = GTUtilsDashboard::findElement(os, "merged.fa", "BUTTON");
+    GTUtilsDashboard::click(os, button);
+
+    int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
+    CHECK_SET_ERR(sequenceLength == 35594, "Sequence length is " + QString::number(sequenceLength) + ", expected 35594");
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0878) {
 //    1. Open several documents of any kind - sequence view, workflow designer, whatever.
