@@ -741,6 +741,35 @@ GUI_TEST_CLASS_DEFINITION(test_0928) {
     CHECK_SET_ERR(item->childCount() == 837, QString("ORFs count mismatch. Expected: %1. Actual: %2").arg(837).arg(item->childCount()));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0935){
+//    1. Start the Workflow Designer.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    Expected state: the Eorkflow Designeg opened.
+
+//    2. Add to the scene three elements: any Data Reader (e.g. Read Alignment), any Data Writer(e.g. Write Alignment), any element with input and output (e.g. Find Repeats).
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Alignment");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Alignment");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "CD-Search");
+//    Expected state: three elements are presented on the scene.
+
+//    3. For each element: select element, see to its properties.
+    GTUtilsWorkflowDesigner::click(os, "Read Alignment");
+    QGroupBox* out = GTWidget::findExactWidget<QGroupBox*>(os, "outputPortBox");
+    CHECK_SET_ERR(out->title() == "Output data", "unexpected out box title: " + out->title());
+
+    GTUtilsWorkflowDesigner::click(os, "Write Alignment");
+    QGroupBox* in = GTWidget::findExactWidget<QGroupBox*>(os, "inputPortBox");
+    CHECK_SET_ERR(in->title() == "Input data", "unexpected in box title: " + in->title());
+
+    GTUtilsWorkflowDesigner::click(os, "CD-Search");
+    in = GTWidget::findExactWidget<QGroupBox*>(os, "inputPortBox");
+    CHECK_SET_ERR(in->title() == "Input data", "unexpected in box title: " + in->title());
+    out = GTWidget::findExactWidget<QGroupBox*>(os, "outputPortBox");
+    CHECK_SET_ERR(out->title() == "Output data", "unexpected out box title: " + out->title());
+//    Expected state: if element hasn't the input port, there is no "Input data" section in properties.
+//            if element hasn't the output port, there is no "Outpu data" section in propeties.
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0938) {
 //    1. Open any file in assembly view.
 //    2. Browse options panel.
