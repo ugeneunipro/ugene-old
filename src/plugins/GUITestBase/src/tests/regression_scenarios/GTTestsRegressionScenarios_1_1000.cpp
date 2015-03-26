@@ -462,8 +462,7 @@ GUI_TEST_CLASS_DEFINITION(test_0866) {
 //3. Connect File List to both writers
 //Expected state: File List connected successfully
 
-    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItemByName( os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER );
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     WorkflowProcessItem *fileList = GTUtilsWorkflowDesigner::addElement(os, "File List");
     WorkflowProcessItem *writer1 = GTUtilsWorkflowDesigner::addElement(os, "Write Plain Text");
@@ -782,7 +781,7 @@ GUI_TEST_CLASS_DEFINITION(test_0935){
     QGroupBox* out = GTWidget::findExactWidget<QGroupBox*>(os, "outputPortBox");
     CHECK_SET_ERR(out->title() == "Output data", "unexpected out box title: " + out->title());
 
-    GTUtilsWorkflowDesigner::click(os, "Write Alignment");
+    GTUtilsWorkflowDesigner::click(os, "Write Alignment", QPoint(-20,-20));
     QGroupBox* in = GTWidget::findExactWidget<QGroupBox*>(os, "inputPortBox");
     CHECK_SET_ERR(in->title() == "Input data", "unexpected in box title: " + in->title());
 
