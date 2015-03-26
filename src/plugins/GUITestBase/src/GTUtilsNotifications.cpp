@@ -89,9 +89,9 @@ void NotificationDialogFiller::run(){
 
 #define GT_CLASS_NAME "NotificationChecker"
 #define GT_METHOD_NAME "waitForNotification"
-void GTUtilsNotifications::waitForNotification(U2OpStatus &os, bool dialogExpected){
+void GTUtilsNotifications::waitForNotification(U2OpStatus &os, bool dialogExpected, const QString &message){
     if(dialogExpected){
-        GTUtilsDialog::waitForDialog(os, new NotificationDialogFiller(os));
+        GTUtilsDialog::waitForDialog(os, new NotificationDialogFiller(os, message));
     }
     new NotificationChecker(os);
 }

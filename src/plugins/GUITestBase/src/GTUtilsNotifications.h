@@ -52,7 +52,7 @@ private:
 class GTUtilsNotifications
 {
 public:
-    static void waitForNotification(U2OpStatus &os, bool dialogExpected = true);
+    static void waitForNotification(U2OpStatus &os, bool dialogExpected = true, const QString &message = "");
 };
 }
 

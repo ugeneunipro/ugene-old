@@ -3993,6 +3993,30 @@ GUI_TEST_CLASS_DEFINITION(test_3676){
     CHECK_SET_ERR(testPrimer != NULL, "Can not find item with name \"testPrimer\"");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3687_1) {
+    //1. Open file "_common_data/NGS_tutorials/RNA-Seq_Analysis/Prepare_Raw_Data/lymph.fastq".
+    //Expected state: "Sequence Reading Options" dialog appeared.
+    //2. Select "As separate sequences in sequence viewer" in the dialog.
+    //3. Press "Ok".
+    //Expected: the finishes with error about sequences amount.
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
+    GTUtilsNotifications::waitForNotification(os, true, "contains too much sequences to be displayed");
+    GTFileDialog::openFile(os, testDir + "_common_data/NGS_tutorials/RNA-Seq_Analysis/Prepare_Raw_Data/lymph.fastq");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3687_2) {
+    //1. Open file "_common_data/NGS_tutorials/RNA-Seq_Analysis/Prepare_Raw_Data/lymph.fastq".
+    //Expected state: "Sequence Reading Options" dialog appeared.
+    //2. Select "Join sequences into alignment" in the dialog.
+    //3. Press "Ok".
+    //Expected: the finishes with error about sequences amount.
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
+    GTUtilsNotifications::waitForNotification(os, true, "contains too much sequences to be displayed");
+    GTFileDialog::openFile(os, testDir + "_common_data/NGS_tutorials/RNA-Seq_Analysis/Prepare_Raw_Data/lymph.fastq");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3690){
 //    1. Open human_T1.fa
 //    Expected state: there are two opened windows - start page and human_T1
