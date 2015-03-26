@@ -91,7 +91,7 @@
 <context>
     <name>U2::GTest_UHMM3Search</name>
     <message>
-        <location filename="../src/tests/uhmmer3SearchTests.cpp" line="245"/>
+        <location filename="../src/tests/uhmmer3SearchTests.cpp" line="246"/>
         <source>Sequence is empty</source>
         <translation type="unfinished"></translation>
     </message>
@@ -99,17 +99,17 @@
 <context>
     <name>U2::GTest_UHMM3SearchCompare</name>
     <message>
-        <location filename="../src/tests/uhmmer3SearchTests.cpp" line="372"/>
+        <location filename="../src/tests/uhmmer3SearchTests.cpp" line="373"/>
         <source>cannot_parse_double_number_from_string:%1</source>
         <translation type="unfinished">Internal error (cannot parse float number from string &apos;%1&apos;)</translation>
     </message>
     <message>
-        <location filename="../src/tests/uhmmer3SearchTests.cpp" line="385"/>
+        <location filename="../src/tests/uhmmer3SearchTests.cpp" line="386"/>
         <source>cannot_parse_significance:%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tests/uhmmer3SearchTests.cpp" line="600"/>
+        <location filename="../src/tests/uhmmer3SearchTests.cpp" line="601"/>
         <source>cannot_find_search_task_in_context</source>
         <translation type="unfinished">No search task in test context</translation>
     </message>
@@ -522,17 +522,17 @@
 <context>
     <name>U2::UHMM3BuildTask</name>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="56"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="57"/>
         <source>Build HMM profile from %1 alignment</source>
         <translation type="unfinished">Build HMM profile from %1 alignment</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="70"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="71"/>
         <source>multiple_alignment_is_empty</source>
         <translation type="unfinished">Given multiple alignment has no sequences</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="73"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="74"/>
         <source>multiple_alignment_is_0_len</source>
         <translation type="unfinished">Given multiple alignment is empty</translation>
     </message>
@@ -540,125 +540,125 @@
 <context>
     <name>U2::UHMM3BuildToFileTask</name>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="125"/>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="145"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="126"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="146"/>
         <source>Build HMM profile to &apos;%1&apos;</source>
         <translation type="unfinished">Build HMM profile to &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="128"/>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="148"/>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="169"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="129"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="149"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="170"/>
         <source>no_output_file_given</source>
         <translation type="unfinished">Output file is not given</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="133"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="134"/>
         <source>empty_msa_list_given</source>
         <translation type="unfinished">No multiple alignments given</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="162"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="163"/>
         <source>Build HMM profile &apos;%1&apos; -&gt; &apos;%2&apos;</source>
         <translation type="unfinished">Build HMM profile &apos;%1&apos; -&gt; &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="165"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="166"/>
         <source>no_input_file_given</source>
         <translation type="unfinished">Input file is not given</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="180"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="181"/>
         <source>input_format_error</source>
         <translation type="unfinished">Unrecognized input alignment file format</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="187"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="188"/>
         <source>cannot_create_io_adapter_for_%1_file</source>
         <translation type="unfinished">Error opening &apos;%1&apos; file</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="228"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="229"/>
         <source>alignment_objects_not_found_in_document</source>
         <translation type="unfinished">No multiple alignments found in input file</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="275"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="276"/>
         <source>Source alignment</source>
         <translation type="unfinished">Source alignment</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="277"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="278"/>
         <source>Profile name</source>
         <translation type="unfinished">Profile name</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="281"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="282"/>
         <source>Options:</source>
         <translation type="unfinished">Options:</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="282"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="283"/>
         <source>Model construction strategies</source>
         <translation type="unfinished">Model construction strategies</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="290"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="291"/>
         <source>Relative model construction strategies</source>
         <translation type="unfinished">Relative model construction strategies</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="292"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="293"/>
         <source>Gerstein/Sonnhammer/Chothia tree weights</source>
         <translation type="unfinished">Gerstein/Sonnhammer/Chothia tree weights</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="293"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="294"/>
         <source>Henikoff simple filter weights</source>
         <translation type="unfinished">Henikoff simple filter weights</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="294"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="295"/>
         <source>Henikoff position-based weights</source>
         <translation type="unfinished">Henikoff position-based weights</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="295"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="296"/>
         <source>No relative weighting; set all to 1</source>
         <translation type="unfinished">No relative weighting; set all to 1</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="296"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="297"/>
         <source>Weights given in MSA file</source>
         <translation type="unfinished">Weights given in MSA file</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="301"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="302"/>
         <source>Effective sequence weighting strategies</source>
         <translation type="unfinished">Effective sequence weighting strategies</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="303"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="304"/>
         <source>adjust effective sequence number to achieve relative entropy target</source>
         <translation type="unfinished">Adjust effective sequence number to achieve relative entropy target</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="304"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="305"/>
         <source>effective sequence number is number of single linkage clusters</source>
         <translation type="unfinished">Effective sequence number is number of single linkage clusters</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="305"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="306"/>
         <source>no effective sequence number weighting: just use number of sequences</source>
         <translation type="unfinished">No effective sequence number weighting: just use number of sequences</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="306"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="307"/>
         <source>set effective sequence number for all models to: %1</source>
         <translation type="unfinished">Set effective sequence number for all models to: %1</translation>
     </message>
     <message>
-        <location filename="../src/build/uHMM3BuildTask.cpp" line="312"/>
+        <location filename="../src/build/uHMM3BuildTask.cpp" line="313"/>
         <source>Task finished with error: &apos;%1&apos;</source>
         <translation type="unfinished">Task finished with error: &apos;%1&apos;</translation>
     </message>
@@ -666,7 +666,7 @@
 <context>
     <name>U2::UHMM3LoadProfileAndSearchTask</name>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="513"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="514"/>
         <source>HMM search with &apos;%1&apos; HMM profile file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -779,83 +779,83 @@
 <context>
     <name>U2::UHMM3PhmmerTask</name>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="59"/>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="77"/>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="99"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="60"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="78"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="100"/>
         <source>HMM Phmmer task</source>
         <translation type="unfinished">HMM Phmmer task</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="67"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="68"/>
         <source>query_sequence</source>
         <translation type="unfinished">Input query sequence</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="68"/>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="106"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="69"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="107"/>
         <source>sequence_to_search_in</source>
         <translation type="unfinished">Database sequence to search in</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="70"/>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="108"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="71"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="109"/>
         <source>HMM Phmmer search %1 sequence in %2 database</source>
         <translation type="unfinished">HMM Phmmer search %1 sequence in %2 databas</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="82"/>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="105"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="83"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="106"/>
         <source>query_sequence_filename</source>
         <translation type="unfinished">Query sequence file path</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="83"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="84"/>
         <source>db_sequence_to_search_in</source>
         <translation type="unfinished">Database sequence file path</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="85"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="86"/>
         <source>HMM Phmmer search %1 sequence with %2 database</source>
         <translation type="unfinished">HMM Phmmer search %1 sequence with %2 database</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="88"/>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="111"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="89"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="112"/>
         <source>cannot_create_load_query_doc_task</source>
         <translation type="unfinished">Error opening query sequence file</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="92"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="93"/>
         <source>cannot_create_load_db_doc_task</source>
         <translation type="unfinished">Error opening database sequence file</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="126"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="127"/>
         <source>cannot load document from:</source>
         <translation type="unfinished">Error loading sequence document</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="129"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="130"/>
         <source>no_dna_sequence_objects_in_document</source>
         <translation type="unfinished">No dna sequence objects found in document</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="132"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="133"/>
         <source>cannot_cast_to_dna_object</source>
         <translation type="unfinished">No dna sequence objects found in document</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="135"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="136"/>
         <source>empty_sequence_given</source>
         <translation type="unfinished">Empty sequence loaded from document</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="147"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="148"/>
         <source> query sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="151"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="152"/>
         <source> db sequence</source>
         <translation type="unfinished"></translation>
     </message>
@@ -863,72 +863,72 @@
 <context>
     <name>U2::UHMM3PhmmerToAnnotationsTask</name>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="371"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="372"/>
         <source>querySeq sequence file path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="376"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="377"/>
         <source>db sequence</source>
         <translation type="unfinished">Database sequence</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="381"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="382"/>
         <source>annotation object</source>
         <translation type="unfinished">Annotation object</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="386"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="387"/>
         <source>annotation name</source>
         <translation type="unfinished">Annotation name</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="391"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="392"/>
         <source>annotation group</source>
         <translation type="unfinished">Annotation group</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="403"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="404"/>
         <source>HMM Phmmer task</source>
         <translation type="unfinished">HMM Phmmer task</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="416"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="417"/>
         <source>HMM Phmmer search %1 sequence with %2 database</source>
         <translation type="unfinished">Phmmer search %1 sequence with %2 database</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="426"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="427"/>
         <source>Annotation object was removed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="453"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="454"/>
         <source>Query sequence</source>
         <translation type="unfinished">Query sequence</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="456"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="457"/>
         <source>Task was not finished</source>
         <translation type="unfinished">Task was not finished</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="461"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="462"/>
         <source>Result annotation table</source>
         <translation type="unfinished">Result annotation table</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="462"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="463"/>
         <source>Result annotation group</source>
         <translation type="unfinished">Result annotation group</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="463"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="464"/>
         <source>Result annotation name</source>
         <translation type="unfinished">Result annotation name</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="466"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="467"/>
         <source>Results count</source>
         <translation type="unfinished">Results count</translation>
     </message>
@@ -1135,37 +1135,37 @@
 <context>
     <name>U2::UHMM3SWPhmmerTask</name>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="213"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="214"/>
         <source>HMM Phmmer search %1 sequence in %2 database</source>
         <translation type="unfinished">HMM Phmmer search %1 sequence in %2 databas</translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="219"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="220"/>
         <source>Can not create load query doc task</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="229"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="230"/>
         <source> querySeq sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="242"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="243"/>
         <source>Invalid db sequence alphabet: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="248"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="249"/>
         <source>Invalid query sequence alphabet: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="271"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="272"/>
         <source>Cannot search for nucleic query in amino sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="299"/>
+        <location filename="../src/phmmer/uhmm3PhmmerTask.cpp" line="300"/>
         <source>HMMER3 phmmer sequence walker search task</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1173,34 +1173,34 @@
 <context>
     <name>U2::UHMM3SWSearchTask</name>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="85"/>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="105"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="86"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="106"/>
         <source>Sequence_walker_HMM_search_task</source>
         <translation type="unfinished">HMM search task with amino and complement translations</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="91"/>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="109"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="92"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="110"/>
         <source>Sequence_walker_hmm_search_with_&apos;%1&apos;</source>
         <translation type="unfinished">HMM search task with amino and complement translations using &apos;%1&apos; profile HMM</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="146"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="147"/>
         <source>sequence_walker_hmmer3_search_task</source>
         <translation type="unfinished">HMM search task with amino and complement translations</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="364"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="365"/>
         <source>unknown_alphabet_type</source>
         <translation type="unfinished">Unrecognized alphabet of sequence</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="368"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="369"/>
         <source>invalid_sequence_alphabet_type</source>
         <translation type="unfinished">Invalid alphabet of sequence</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="374"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="375"/>
         <source>cannot_search_for_nucleic_hmm_in_amino_sequence</source>
         <translation type="unfinished">Cannot search for nucleic HMM profile in amino sequence</translation>
     </message>
@@ -1208,99 +1208,99 @@
 <context>
     <name>U2::UHMM3SWSearchToAnnotationsTask</name>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="556"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="557"/>
         <source>hmm profile filename</source>
         <translation type="unfinished">Profile HMM file path</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="560"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="561"/>
         <source>annotation object</source>
         <translation type="unfinished">Annotation object</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="564"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="565"/>
         <source>annotations group name</source>
         <translation type="unfinished">Annotations group name</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="568"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="569"/>
         <source>annotations name</source>
         <translation type="unfinished">Annotations name</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="580"/>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="602"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="581"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="603"/>
         <source>HMMER3 search task</source>
         <translation type="unfinished">HMM3 search task</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="583"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="584"/>
         <source>dna sequence</source>
         <translation type="unfinished">Sequence to search in</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="588"/>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="610"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="589"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="611"/>
         <source>HMMER3 search task with &apos;%1&apos; profile</source>
         <translation type="unfinished">HMMER3 search task with &apos;%1&apos; profile</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="605"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="606"/>
         <source>Sequence file</source>
         <translation type="unfinished">Sequence file path</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="624"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="625"/>
         <source>HMM profile used</source>
         <translation type="unfinished">HMM profile used</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="627"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="628"/>
         <source>Task was not finished</source>
         <translation type="unfinished">Task was not finished</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="632"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="633"/>
         <source>Result annotation table</source>
         <translation type="unfinished">Result annotation table</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="633"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="634"/>
         <source>Result annotation group</source>
         <translation type="unfinished">Result annotation group</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="634"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="635"/>
         <source>Result annotation name</source>
         <translation type="unfinished">Result annotation name</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="637"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="638"/>
         <source>Results count</source>
         <translation type="unfinished">Results count</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="647"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="648"/>
         <source>Cannot load sequence document</source>
         <translation type="unfinished">Cannot load sequence document</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="652"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="653"/>
         <source>No sequence objects loaded</source>
         <translation type="unfinished">No sequence objects found in document</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="656"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="657"/>
         <source>Unknown sequence type loaded</source>
         <translation type="unfinished">No sequence objects found in document</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="659"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="660"/>
         <source>Empty sequence loaded</source>
         <translation type="unfinished">Empty sequence loaded</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="675"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="676"/>
         <source>Annotation object removed</source>
         <translation type="unfinished">Choosed annotation object removed</translation>
     </message>
@@ -1404,17 +1404,17 @@
 <context>
     <name>U2::UHMM3SearchTask</name>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="468"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="469"/>
         <source>HMM search task</source>
         <translation type="unfinished">HMM search task</translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="477"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="478"/>
         <source>HMM search with %1 profiles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/search/uHMM3SearchTask.cpp" line="475"/>
+        <location filename="../src/search/uHMM3SearchTask.cpp" line="476"/>
         <source>HMM search with &apos;%1&apos;</source>
         <translation type="unfinished">HMM search with &apos;%1&apos;</translation>
     </message>

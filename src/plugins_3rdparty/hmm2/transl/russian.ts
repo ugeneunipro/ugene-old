@@ -457,7 +457,7 @@
 <context>
     <name>U2::GTest_uHMMERCalibrate</name>
     <message>
-        <location filename="../src/u_tests/uhmmerTests.cpp" line="571"/>
+        <location filename="../src/u_tests/uhmmerTests.cpp" line="569"/>
         <source>uhmmer-calibrate-subtask</source>
         <translation></translation>
     </message>
@@ -1010,92 +1010,92 @@
 <context>
     <name>U2::HMMSearchDialogController</name>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="112"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="111"/>
         <source>select_file_with_hmm_model</source>
         <translation>Выбор HMM профайла</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="129"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="128"/>
         <source>hmm_file_not_set</source>
         <translation>Укажите файл с HMM профайлом</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="146"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="145"/>
         <source>error</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="152"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="151"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="152"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="151"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="163"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="162"/>
         <source>starting_search_process</source>
         <translation>Начинается поиск</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="166"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="165"/>
         <source>back_button</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="182"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="181"/>
         <source>search_finished_with_errors_%1</source>
         <translation>Поиск завершен с ошибкой: %1</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="184"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="183"/>
         <source>search_finished_successfuly</source>
         <translation>Поиск успешно завершен</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="186"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="185"/>
         <source>ok_button</source>
         <translation>Искать</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="194"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="193"/>
         <source>progress_%1%</source>
         <translation>Прогресс %1%</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="167"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="166"/>
         <source>cancel_button</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="187"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="186"/>
         <source>close_button</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="77"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="76"/>
         <source>Cell BE optimized</source>
         <translation>Оптимизирован для Cell BE</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="61"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="60"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="62"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="61"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="80"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="79"/>
         <source>SSE optimized</source>
         <translation>Оптимизирован для SSE</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="82"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="81"/>
         <source>Conservative</source>
         <translation>Стандартный</translation>
     </message>
@@ -1136,47 +1136,47 @@
 <context>
     <name>U2::HMMSearchToAnnotationsTask</name>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="214"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="213"/>
         <source>raw_alphabet_not_supported</source>
         <translation>Неправильный алфавит последовательности</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="230"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="229"/>
         <source>annotation_obj_removed</source>
         <translation>Объект аннотаций был удалён</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="208"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="207"/>
         <source>HMM search, file &apos;%1&apos;</source>
         <translation>HMM поиск, файл &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="256"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="255"/>
         <source>HMM profile used</source>
         <translation>Использованный HMM профайл</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="259"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="258"/>
         <source>Task was not finished</source>
         <translation>Задача была не завершена</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="264"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="263"/>
         <source>Result annotation table</source>
         <translation>Таблица аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="265"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="264"/>
         <source>Result annotation group</source>
         <translation>Группа аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="266"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="265"/>
         <source>Result annotation name</source>
         <translation>Имя аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="269"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="268"/>
         <source>Results count</source>
         <translation>Количество найденных регионов</translation>
     </message>
@@ -1450,8 +1450,12 @@
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="132"/>
+        <source>%1 HMM signals. %3&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%4&lt;/u&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>%1 search HMM signals %2. %3&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%4&lt;/u&gt;.</source>
-        <translation>%1 искать HMM сигналы %2. %3&lt;br&gt;Выдать список найденных регионов аннотированных как &lt;u&gt;%4&lt;/u&gt;.</translation>
+        <translation type="obsolete">%1 искать HMM сигналы %2. %3&lt;br&gt;Выдать список найденных регионов аннотированных как &lt;u&gt;%4&lt;/u&gt;.</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="127"/>

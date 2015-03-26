@@ -2,6 +2,14 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
+    <name>QObject</name>
+    <message>
+        <location filename="../src/SiteconIOWorkers.cpp" line="69"/>
+        <source>Sitecon model</source>
+        <translation type="unfinished">Профайл SITECON</translation>
+    </message>
+</context>
+<context>
     <name>SiteconBuildDialog</name>
     <message>
         <source>SITECON build</source>
@@ -732,7 +740,7 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
 <context>
     <name>U2::SiteconADVContext</name>
     <message>
-        <location filename="../src/SiteconPlugin.cpp" line="125"/>
+        <location filename="../src/SiteconPlugin.cpp" line="121"/>
         <source>Search TFBS with SITECON...</source>
         <translation type="unfinished">SITECON: Искать сайты связывания ТФ...</translation>
     </message>
@@ -740,82 +748,82 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
 <context>
     <name>U2::SiteconBuildDialogController</name>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="66"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="63"/>
         <source>Build</source>
         <translation type="unfinished">Построить</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="67"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="64"/>
         <source>Cancel</source>
         <translation type="unfinished">Отменить</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="83"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="80"/>
         <source>select_file_with_alignment</source>
         <translation>Выбор выравнивания для построения модели SITECON</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="119"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="116"/>
         <source>illegal_in_file_name</source>
         <translation>Укажите входной файл выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="124"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="121"/>
         <source>illegal_out_file_name</source>
         <translation>Укажите файл результирующей модели</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="130"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="127"/>
         <source>error</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="142"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="139"/>
         <source>starting_calibration_process</source>
         <translation>Начинается построение</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="145"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="142"/>
         <source>hide_button</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="146"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="143"/>
         <source>cancel_button</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="159"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="156"/>
         <source>build_finished_with_errors_%1</source>
         <translation>Построение завершено с ошибкой: %1</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="161"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="158"/>
         <source>build_canceled</source>
         <translation>Построение отменено</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="163"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="160"/>
         <source>build_finished_successfuly</source>
         <translation>Построение успешно завершено</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="165"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="162"/>
         <source>start_button</source>
         <translation>Построить</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="166"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="163"/>
         <source>close_button</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="172"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="169"/>
         <source>running_state_%1_progress_%2%</source>
         <translation>Прогресс %2%: %1</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="93"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="90"/>
         <source>Select file to save model to...</source>
         <translation>Выбор файла для сохранения профайла</translation>
     </message>
@@ -823,52 +831,52 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
 <context>
     <name>U2::SiteconBuildTask</name>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="187"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="184"/>
         <source>build_sitecon_model</source>
         <translation>Построение модели SITECON</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="197"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="194"/>
         <source>alignment_has_gaps</source>
         <translation>Выравнивание содержит пропуски</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="201"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="198"/>
         <source>alignment_is_empty</source>
         <translation>Выравнивание не содержит данных</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="205"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="202"/>
         <source>Alignment must have at least 2 sequences</source>
         <translation>Выравнивание должно содержать минимум 2 последовательности</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="209"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="206"/>
         <source>alignment_is_not_nucleic</source>
         <translation>Поддерживаются только нуклеотидные выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="213"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="210"/>
         <source>window_greater_then_length</source>
         <translation>Размер окна больше длины последовательности</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="227"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="224"/>
         <source>calculating_ave_disp_matrix</source>
         <translation>расчёт матрицы средних и дисперсии</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="232"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="229"/>
         <source>calculating_weights</source>
         <translation>расчёт весов</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="238"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="235"/>
         <source>calculating_firstTypeErr</source>
         <translation>расчёт ошибки ошибки 1-го рода</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="244"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="241"/>
         <source>calculating_second_type_err</source>
         <translation>расчёт ошибки ошибки 2-го рода</translation>
     </message>
@@ -876,22 +884,22 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
 <context>
     <name>U2::SiteconBuildToFileTask</name>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="252"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="249"/>
         <source>build_sitecon_model</source>
         <translation>Построение модели SITECON</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="263"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="260"/>
         <source>input_format_error</source>
         <translation>Неверный формат файла</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="271"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="268"/>
         <source>loading_ali</source>
         <translation>загрузка выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/SiteconBuildDialogController.cpp" line="290"/>
+        <location filename="../src/SiteconBuildDialogController.cpp" line="287"/>
         <source>no_alignments_found</source>
         <translation>Выравнивание не найдено</translation>
     </message>
@@ -1006,7 +1014,6 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
     </message>
     <message>
         <location filename="../src/SiteconIOWorkers.cpp" line="63"/>
-        <location filename="../src/SiteconIOWorkers.cpp" line="69"/>
         <location filename="../src/SiteconIOWorkers.cpp" line="139"/>
         <location filename="../src/SiteconIOWorkers.cpp" line="148"/>
         <source>Sitecon model</source>
@@ -1068,25 +1075,28 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
 <context>
     <name>U2::SiteconPlugin</name>
     <message>
-        <location filename="../src/SiteconPlugin.cpp" line="60"/>
+        <location filename="../src/SiteconPlugin.cpp" line="61"/>
         <source>sitecon_plugin</source>
         <translation>SITECON</translation>
     </message>
     <message>
-        <location filename="../src/SiteconPlugin.cpp" line="60"/>
+        <location filename="../src/SiteconPlugin.cpp" line="61"/>
         <source>sitecon_plugin_desc</source>
         <translation>Адаптированная версия программы SITECON: поиск сайтов связывания транскрипционных факторов. Включает около сотни откалиброванных моделей ССТФ. 
 Домашняя страница проекта: http://wwwmgs.bionet.nsc.ru/cgi-bin/mgs/sitecon/sitecon.pl?stage=0</translation>
     </message>
     <message>
-        <location filename="../src/SiteconPlugin.cpp" line="66"/>
-        <source>sitecon_build</source>
-        <translation>Построить модель SITECON</translation>
+        <location filename="../src/SiteconPlugin.cpp" line="67"/>
+        <source>Build SITECON model...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/SiteconPlugin.cpp" line="71"/>
+        <source>sitecon_build</source>
+        <translation type="obsolete">Построить модель SITECON</translation>
+    </message>
+    <message>
         <source>sitecon_menu</source>
-        <translation>SITECON (Сайты Связывания ТФ)</translation>
+        <translation type="obsolete">SITECON (Сайты Связывания ТФ)</translation>
     </message>
 </context>
 <context>
@@ -1108,75 +1118,75 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
 <context>
     <name>U2::SiteconSearchDialogController</name>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="93"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="91"/>
         <source>Search</source>
         <translation type="unfinished">Искать</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="94"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="92"/>
         <source>Cancel</source>
         <translation type="unfinished">Отменить</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="156"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="154"/>
         <source>cancel_button</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="156"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="154"/>
         <source>close_button</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="168"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="166"/>
         <source>progress_%1%_</source>
         <translation>Прогресс  %1%</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="170"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="168"/>
         <source>%1_results_found.</source>
         <translation>найдено %1</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="189"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="187"/>
         <source>select_file_with_model</source>
         <translation>Выбор модели SITECON</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="198"/>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="297"/>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="307"/>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="317"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="196"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="295"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="305"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="315"/>
         <source>error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="234"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="232"/>
         <source>%1%	err1=%2	err2=%3</source>
         <translation>%1%	err1=%2	err2=%3</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="297"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="295"/>
         <source>model not selected</source>
         <translation>Укажите файл модели</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="307"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="305"/>
         <source>range_is_too_small</source>
         <translation>Слишком маленький регион для поиска</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="317"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="315"/>
         <source>error_parsing_min_score</source>
         <translation>Неразборчивая строка минимальной ошибки</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="381"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="379"/>
         <source>complement_strand</source>
         <translation>комплeментарный</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="381"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="379"/>
         <source>direct_strand</source>
         <translation>прямой</translation>
     </message>

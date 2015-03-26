@@ -451,7 +451,7 @@ int main(int argc, char **argv)
     initLogsCache(logsCache, envList);
     LogCache::setAppGlobalInstance(&logsCache);
     app.installEventFilter(new UserActionsWriter());
-    coreLog.details(AppContextImpl::tr("UGENE initialization started"));
+    coreLog.details(UserAppsSettings::tr("UGENE initialization started"));
     GCOUNTER( cvar, tvar, "ugeneui" );
 
     coreLog.trace(QString("UGENE run at dir %1 with parameters %2").arg(AppContext::getWorkingDirectoryPath()).arg(app.arguments().join(" ")));

@@ -6,32 +6,32 @@
     <message>
         <location filename="../src/ui/PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../src/ui/PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.ui" line="29"/>
         <source>Algorithm version:</source>
-        <translation type="unfinished"></translation>
+        <translation>Версия алгоритма:</translation>
     </message>
     <message>
         <location filename="../src/ui/PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.ui" line="39"/>
         <source>Scoring matrix:</source>
-        <translation type="unfinished"></translation>
+        <translation>Матрица:</translation>
     </message>
     <message>
         <location filename="../src/ui/PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.ui" line="62"/>
         <source>Gap penalty</source>
-        <translation type="unfinished"></translation>
+        <translation>Штраф за пропуск</translation>
     </message>
     <message>
-        <location filename="../src/ui/PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.ui" line="86"/>
+        <location filename="../src/ui/PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.ui" line="77"/>
         <source>Open:</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть:</translation>
     </message>
     <message>
-        <location filename="../src/ui/PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.ui" line="93"/>
+        <location filename="../src/ui/PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.ui" line="84"/>
         <source>Extension:</source>
-        <translation type="unfinished"></translation>
+        <translation>Расширение:</translation>
     </message>
 </context>
 <context>
@@ -39,7 +39,7 @@
     <message>
         <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="150"/>
         <source>START SmithWatermanAlgorithmOPENCL::launch</source>
-        <translation type="unfinished"></translation>
+        <translation>START SmithWatermanAlgorithmOPENCL::launch</translation>
     </message>
     <message>
         <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="306"/>
@@ -70,27 +70,27 @@
         <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="410"/>
         <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="414"/>
         <source>Kernel::setArg(%1) failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Kernel::setArg(%1) failed</translation>
     </message>
     <message>
         <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="421"/>
         <source>OPENCL: Running CL program</source>
-        <translation type="unfinished"></translation>
+        <translation>OPENCL: Running CL program</translation>
     </message>
     <message>
         <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="603"/>
         <source>FINISH SmithWatermanAlgorithmOPENCL::launch</source>
-        <translation type="unfinished"></translation>
+        <translation>FINISH SmithWatermanAlgorithmOPENCL::launch</translation>
     </message>
     <message>
         <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="607"/>
         <source>Starting cleanup OpenCL resources</source>
-        <translation type="unfinished"></translation>
+        <translation>Starting cleanup OpenCL resources</translation>
     </message>
     <message>
         <location filename="../src/SmithWatermanAlgorithmOPENCL.cpp" line="675"/>
         <source>Finish cleanup OpenCL resources</source>
-        <translation type="unfinished"></translation>
+        <translation>Finish cleanup OpenCL resources</translation>
     </message>
 </context>
 <context>
@@ -98,17 +98,17 @@
     <message>
         <location filename="../src/SmithWatermanTests.cpp" line="226"/>
         <source>**</source>
-        <translation></translation>
+        <translation>**</translation>
     </message>
     <message>
         <location filename="../src/SmithWatermanTests.cpp" line="229"/>
         <source>,</source>
-        <translation></translation>
+        <translation>,</translation>
     </message>
     <message>
         <location filename="../src/SmithWatermanTests.cpp" line="236"/>
         <source>..</source>
-        <translation></translation>
+        <translation>..</translation>
     </message>
 </context>
 <context>
@@ -126,11 +126,7 @@
     <message>
         <location filename="../src/SWWorker.cpp" line="309"/>
         <source>Searches regions in each sequence from &lt;u&gt;%1&lt;/u&gt; similar to all pattern(s) taken from &lt;u&gt;%2&lt;/u&gt;. &lt;br/&gt;Percent similarity between a sequence and a pattern is %3. &lt;br/&gt;Seaches in %4 of a %5 sequence. &lt;br/&gt;Outputs the regions found annotated as %6.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Searches regions in each sequence from &lt;u&gt;%1&lt;/u&gt; similar to &lt;u&gt;%2&lt;/u&gt; pattern(s). &lt;br/&gt;Percent similarity between a sequence and a pattern is &lt;u&gt;%3%&lt;/u&gt;. &lt;br/&gt;Seaches in &lt;u&gt;%4&lt;/u&gt; of a %5sequence. &lt;br/&gt;Outputs the regions found annotated as &lt;u&gt;%6&lt;/u&gt;.</source>
-        <translation type="obsolete">В каждой последовательности, полученной от &lt;u&gt;%1&lt;/u&gt; ищет регионы, похожие на паттерн(ы) &lt;u&gt;%2&lt;/u&gt;. &lt;br/&gt;Совпадение между регионом последовательности и паттерном должно быть как минимум &lt;u&gt;%3%&lt;/u&gt;. Поиск ведется в &lt;u&gt;%4&lt;/u&gt; %5последовательности.&lt;br/&gt;Возвращает найденные регионы как &lt;u&gt;%6&lt;/u&gt; аннотации.</translation>
+        <translation>В каждой последовательности, полученной от &lt;u&gt;%1&lt;/u&gt; ищет регионы, похожие на паттерн(ы) &lt;u&gt;%2&lt;/u&gt;. &lt;br/&gt;Совпадение между регионом последовательности и паттерном должно быть как минимум &lt;u&gt;%3%&lt;/u&gt;. Поиск ведется в &lt;u&gt;%4&lt;/u&gt; %5последовательности.&lt;br/&gt;Возвращает найденные регионы как &lt;u&gt;%6&lt;/u&gt; аннотации.</translation>
     </message>
 </context>
 <context>
@@ -139,14 +135,6 @@
         <location filename="../src/SWWorker.cpp" line="136"/>
         <source>Annotate as</source>
         <translation>Аннотации</translation>
-    </message>
-    <message>
-        <source>Pattern(s)</source>
-        <translation type="obsolete">Паттерн(ы)</translation>
-    </message>
-    <message>
-        <source>Semicolon-separated list of patterns to search for.</source>
-        <translation type="obsolete">Список паттернов для поиска.</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="144"/>
@@ -245,22 +233,22 @@
     <message>
         <location filename="../src/SWWorker.cpp" line="173"/>
         <source>Use Pattern Names</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать имя паттерна</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="174"/>
         <source>Use a pattern name as an annotation name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать имя паттерна в качестве имени аннотации.</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="177"/>
         <source>Qualifier name for pattern name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя квалификатора для имени паттерна</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="178"/>
         <source>Name of qualifier in result annotations which is containing a pattern name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя квалификатора в аннотации, которая содержит имя паттерна.</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="195"/>
@@ -295,133 +283,133 @@
     <message>
         <location filename="../src/SWWorker.cpp" line="385"/>
         <source>Null sequence supplied to Smith-Waterman: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Null sequence supplied to Smith-Waterman: %1</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="482"/>
         <source>Incorrect value: pattern alphabet doesn&apos;t match sequence alphabet </source>
-        <translation type="unfinished"></translation>
+        <translation>Incorrect value: pattern alphabet doesn&apos;t match sequence alphabet </translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="483"/>
         <source>Pattern symbols not matching to alphabet</source>
-        <translation type="unfinished"></translation>
+        <translation>Pattern symbols not matching to alphabet</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="422"/>
         <location filename="../src/SWWorker.cpp" line="423"/>
         <source>Incorrect value: score value must lay between 0 and 100</source>
-        <translation type="unfinished"></translation>
+        <translation>Incorrect value: score value must lay between 0 and 100</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="433"/>
         <source>Incorrect value:  filter name incorrect, default value used</source>
-        <translation type="unfinished"></translation>
+        <translation>Incorrect value:  filter name incorrect, default value used</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="440"/>
         <source>Incorrect value: result name is empty, default value used</source>
-        <translation type="unfinished"></translation>
+        <translation>Incorrect value: result name is empty, default value used</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="455"/>
         <source>Could not find complement translation for %1, searching only direct strand</source>
-        <translation type="unfinished"></translation>
+        <translation>Could not find complement translation for %1, searching only direct strand</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="394"/>
         <location filename="../src/SWWorker.cpp" line="395"/>
         <source>Invalid value: weight matrix with given name not exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Invalid value: weight matrix with given name not exists</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="107"/>
         <source>Pattern Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Паттерн(ы)</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="108"/>
         <source>An input pattern sequence to search for.</source>
-        <translation type="unfinished"></translation>
+        <translation>Входной паттерн для поиска.</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="112"/>
         <source>An input reference sequence to search in.</source>
-        <translation type="unfinished"></translation>
+        <translation>Входная последовательность для поиска в ней.</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="359"/>
         <source>Null pattern supplied to Smith-Waterman: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Null pattern supplied to Smith-Waterman: %1</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="405"/>
         <source>Can&apos;t find weight matrix name: &apos;%1&apos;!</source>
-        <translation type="unfinished"></translation>
+        <translation>Can&apos;t find weight matrix name: &apos;%1&apos;!</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="405"/>
         <source>&lt;empty&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;empty&gt;</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="412"/>
         <source>Wrong matrix selected. Alphabets do not match</source>
-        <translation type="unfinished"></translation>
+        <translation>Wrong matrix selected. Alphabets do not match</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="471"/>
         <source>SmithWaterman algorithm not found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>SmithWaterman algorithm not found: %1</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="476"/>
         <location filename="../src/SWWorker.cpp" line="477"/>
         <source>Incorrect value: search pattern, pattern is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Incorrect value: search pattern, pattern is empty</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="498"/>
         <source>smith_waterman_task</source>
-        <translation type="unfinished"></translation>
+        <translation>Smith waterman task</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="505"/>
         <source>Smith waterman subtasks</source>
-        <translation type="unfinished"></translation>
+        <translation>Smith waterman subtasks</translation>
     </message>
     <message>
         <location filename="../src/SWWorker.cpp" line="549"/>
         <source>Found %1 matches of pattern &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Found %1 matches of pattern &apos;%2&apos;</translation>
     </message>
 </context>
 <context>
     <name>U2::PairwiseAlignmentSmithWatermanTask</name>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="557"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="554"/>
         <source>Substitution matrix is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Substitution matrix is empty</translation>
     </message>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="770"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="767"/>
         <source>Smith Waterman2 SequenceWalker</source>
-        <translation type="unfinished"></translation>
+        <translation>Smith Waterman2 SequenceWalker</translation>
     </message>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="800"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="797"/>
         <source>Not enough memory on CUDA-enabled device. The space required is %1 bytes, but only %2 bytes are available. Device id: %3, device name: %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Not enough memory on CUDA-enabled device. The space required is %1 bytes, but only %2 bytes are available. Device id: %3, device name: %4</translation>
     </message>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="806"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="803"/>
         <source>The Smith-Waterman search allocates ~%1 bytes (%2 Mb) on CUDA device</source>
-        <translation type="unfinished"></translation>
+        <translation>The Smith-Waterman search allocates ~%1 bytes (%2 Mb) on CUDA device</translation>
     </message>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="860"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="857"/>
         <source>%1 results found</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 results found</translation>
     </message>
 </context>
 <context>
@@ -454,42 +442,42 @@
     <message>
         <location filename="../src/SWQuery.cpp" line="104"/>
         <source>Finds pattern &lt;u&gt;%1&lt;/u&gt;.&lt;br&gt;Looks for &lt;u&gt;%2&lt;/u&gt; in &lt;u&gt;%3&lt;/u&gt;.</source>
-        <translation type="unfinished">Искать паттерн &lt;u&gt;%1&lt;/u&gt;.&lt;br&gt;Искать совпадения &lt;u&gt;%2&lt;/u&gt; в &lt;u&gt;%3&lt;/u&gt;.</translation>
+        <translation>Искать паттерн &lt;u&gt;%1&lt;/u&gt;.&lt;br&gt;Искать совпадения &lt;u&gt;%2&lt;/u&gt; в &lt;u&gt;%3&lt;/u&gt;.</translation>
     </message>
     <message>
         <location filename="../src/SWQuery.cpp" line="132"/>
         <source>%1: percent of score out of bounds.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: percent of score out of bounds.</translation>
     </message>
     <message>
         <location filename="../src/SWQuery.cpp" line="142"/>
         <source>%1: incorrect result filter.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: incorrect result filter.</translation>
     </message>
     <message>
         <location filename="../src/SWQuery.cpp" line="147"/>
         <source>%1: pattern is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: pattern is empty.</translation>
     </message>
     <message>
         <location filename="../src/SWQuery.cpp" line="153"/>
         <source>%1: can not find %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: can not find %2.</translation>
     </message>
     <message>
         <location filename="../src/SWQuery.cpp" line="197"/>
         <source>SSearch</source>
-        <translation></translation>
+        <translation>SSearch</translation>
     </message>
     <message>
         <location filename="../src/SWQuery.cpp" line="205"/>
         <source>smith_waterman_task</source>
-        <translation></translation>
+        <translation>Поиск Смита-Ватермана</translation>
     </message>
     <message>
         <location filename="../src/SWQuery.cpp" line="235"/>
         <source>Smith-Waterman</source>
-        <translation></translation>
+        <translation>Поиск Смита-Ватермана</translation>
     </message>
     <message>
         <location filename="../src/SWQuery.cpp" line="236"/>
@@ -610,24 +598,24 @@
 <context>
     <name>U2::SWAlgorithmTask</name>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="201"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="198"/>
         <source>Smith Waterman2 SequenceWalker</source>
-        <translation></translation>
+        <translation>Smith Waterman2 SequenceWalker</translation>
     </message>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="216"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="213"/>
         <source>Not enough memory on CUDA-enabled device. The space required is %1 bytes, but only %2 bytes are available. Device id: %3, device name: %4</source>
-        <translation></translation>
+        <translation>Not enough memory on CUDA-enabled device. The space required is %1 bytes, but only %2 bytes are available. Device id: %3, device name: %4</translation>
     </message>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="222"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="219"/>
         <source>The Smith-Waterman search allocates ~%1 bytes (%2 Mb) on CUDA device</source>
-        <translation></translation>
+        <translation>The Smith-Waterman search allocates ~%1 bytes (%2 Mb) on CUDA device</translation>
     </message>
     <message>
-        <location filename="../src/SWAlgorithmTask.cpp" line="425"/>
+        <location filename="../src/SWAlgorithmTask.cpp" line="422"/>
         <source>%1 results found</source>
-        <translation></translation>
+        <translation>%1 results found</translation>
     </message>
 </context>
 </TS>

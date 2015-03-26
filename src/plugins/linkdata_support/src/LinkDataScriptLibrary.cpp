@@ -94,7 +94,7 @@ void LinkDataScriptLibrary::init(WorkflowScriptEngine* engine) {
 
 QScriptValue LinkDataScriptLibrary::fetchFile(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() < 2 && ctx->argumentCount() >3) {
-        return ctx->throwError(QObject::tr("Incorrect number of arguments"));
+        return ctx->throwError(LinkDataRequestHandler::tr("Incorrect number of arguments"));
     }
 
     QString workId = ctx->argument(0).toString();

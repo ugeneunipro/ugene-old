@@ -181,9 +181,6 @@
              <string/>
             </property>
             <property name="whatsThis">
-             <string>strand_direct_wit</string>
-            </property>
-            <property name="text">
              <string>Direct strand</string>
             </property>
             <property name="shortcut">
@@ -200,9 +197,6 @@
              <string/>
             </property>
             <property name="whatsThis">
-             <string>strand_complement_wit</string>
-            </property>
-            <property name="text">
              <string>Reverse complement strand</string>
             </property>
             <property name="shortcut">

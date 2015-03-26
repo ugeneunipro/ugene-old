@@ -63,18 +63,19 @@
         <location filename="../src/DistMatrixModelWidget.cpp" line="117"/>
         <source>Probably, for that alignment there is no enough memory to run PHYLIP dnadist module.The module will require more than %1 MB in the estimation.
 It could cause an error. Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Возможно, для этого выравнивания недостаточно памяти для запуска модуля PHYLIP.Это, по предварительной оценке, потребует больше, чем%1 Мб памяти.
+Это может привести к ошибке. Вы хотите продолжить?</translation>
     </message>
 </context>
 <context>
     <name>U2::PhylipPlugin</name>
     <message>
-        <location filename="../src/PhylipPlugin.cpp" line="61"/>
+        <location filename="../src/PhylipPlugin.cpp" line="59"/>
         <source>PHYLIP</source>
-        <translation></translation>
+        <translation>PHYLIP</translation>
     </message>
     <message>
-        <location filename="../src/PhylipPlugin.cpp" line="61"/>
+        <location filename="../src/PhylipPlugin.cpp" line="59"/>
         <source>PHYLIP (the PHYLogeny Inference Package) is a package of programs for inferring phylogenies (evolutionary trees). Original version at: http://evolution.genetics.washington.edu/phylip.html</source>
         <translation>PHYLIP (the PHYLogeny Inference Package) - пакет программ для построения филогенетических деревьев. Оригинальная версия находится по адресу: http://evolution.genetics.washington.edu/phylip.html</translation>
     </message>
@@ -84,7 +85,7 @@ It could cause an error. Do you want to continue?</source>
     <message>
         <location filename="../src/SeqBootModelWidget.cpp" line="119"/>
         <source>Seed must be odd</source>
-        <translation type="unfinished"></translation>
+        <translation>Затравка должна быть нечетной</translation>
     </message>
 </context>
 </TS>

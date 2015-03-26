@@ -81,7 +81,7 @@ void PWMatrixSearchWorker::registerProto() {
         Descriptor nd(NAME_ATTR, PWMatrixSearchWorker::tr("Result annotation"),
             PWMatrixSearchWorker::tr("Annotation name for marking found regions."));
         Descriptor scd(SCORE_ATTR, PWMatrixSearchWorker::tr("Min score"),
-            QApplication::translate("PWMSearchDialog", "min_err_tip", 0));
+            QApplication::translate("PWMSearchDialog", "Minimum score to detect transcription factor binding site", 0));
 
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, "misc_feature");
         a << new Attribute(BaseAttributes::STRAND_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, BaseAttributes::STRAND_BOTH());

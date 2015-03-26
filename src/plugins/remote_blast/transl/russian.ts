@@ -2,117 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>Dialog</name>
-    <message>
-        <source>Search Through a Remote Database</source>
-        <translation type="obsolete">Запрос к удаленной базе данных</translation>
-    </message>
-    <message>
-        <source>General options</source>
-        <translation type="obsolete">Основные параметры</translation>
-    </message>
-    <message>
-        <source>Select the search type:</source>
-        <translation type="obsolete">Выберите вид поиска:</translation>
-    </message>
-    <message>
-        <source>Expectation value</source>
-        <translation type="obsolete">Математическое ожидание</translation>
-    </message>
-    <message>
-        <source>Search for short, nearly exact matches</source>
-        <translation type="obsolete">Поиск коротких последовательностей</translation>
-    </message>
-    <message>
-        <source>Max hits</source>
-        <translation type="obsolete">Макс. число совпадений:</translation>
-    </message>
-    <message>
-        <source>The database:</source>
-        <translation type="obsolete">База данных:</translation>
-    </message>
-    <message>
-        <source>The database description:</source>
-        <translation type="obsolete">Описание базы данных:</translation>
-    </message>
-    <message>
-        <source>Search timeout</source>
-        <translation type="obsolete">Тайм-аут поиска:</translation>
-    </message>
-    <message>
-        <source> min</source>
-        <translation type="obsolete">мин</translation>
-    </message>
-    <message>
-        <source>Word size</source>
-        <translation type="obsolete">Размер слова</translation>
-    </message>
-    <message>
-        <source>Gap costs</source>
-        <translation type="obsolete">Вес пропуска</translation>
-    </message>
-    <message>
-        <source>Search</source>
-        <translation type="obsolete">Искать</translation>
-    </message>
-    <message>
-        <source>Advanced options</source>
-        <translation type="obsolete">Расширенные опции</translation>
-    </message>
-    <message>
-        <source>Matrix</source>
-        <translation type="obsolete">Матрица</translation>
-    </message>
-    <message>
-        <source>Match scores</source>
-        <translation type="obsolete">Веса совпадений:</translation>
-    </message>
-    <message>
-        <source>Filters</source>
-        <translation type="obsolete">Фильтры</translation>
-    </message>
-    <message>
-        <source>Low complexity filter</source>
-        <translation type="obsolete">Фильтр низкой сложности</translation>
-    </message>
-    <message>
-        <source>Human repeats filter</source>
-        <translation type="obsolete">Фильтр человеческих повторов</translation>
-    </message>
-    <message>
-        <source>Masks</source>
-        <translation type="obsolete">Маски</translation>
-    </message>
-    <message>
-        <source>Mask for lookup table only</source>
-        <translation type="obsolete">Только маска таблицы поиска</translation>
-    </message>
-    <message>
-        <source>Mask lower case letters</source>
-        <translation type="obsolete">Маска символов нижн. регистра</translation>
-    </message>
-    <message>
-        <source>PHI pattern</source>
-        <translation type="obsolete">Шаблон PHI:</translation>
-    </message>
-    <message>
-        <source>Database Description:</source>
-        <translation type="obsolete">Описание базы данных:</translation>
-    </message>
-    <message>
-        <source>Estimate time of request (seconds): </source>
-        <translation type="obsolete">Примерное время выполнения запроса (секудны):</translation>
-    </message>
-    <message>
-        <source>Estimate time of request: </source>
-        <translation type="obsolete">Примерное время выполнения запроса:</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Отмена</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <location filename="../src/HttpRequestBLAST.cpp" line="35"/>
@@ -120,151 +9,71 @@
         <translation>Неудалось открыть адаптер</translation>
     </message>
     <message>
-        <source>Cannot load a page</source>
-        <translation type="obsolete">Не удалось загрузить страницу</translation>
-    </message>
-    <message>
-        <source>Empty response</source>
-        <translation type="obsolete">Пустой ответ</translation>
-    </message>
-    <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="97"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="96"/>
         <source>Cannot get the request ID</source>
         <translation>Не удалось получить ID для поиска</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="105"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="104"/>
         <source>Cannot get the waiting time</source>
         <translation>Не удалось получить время ожидания</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="128"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="127"/>
         <source>The response is empty</source>
         <translation>Пустой ответ</translation>
     </message>
     <message>
-        <source>Database couldn&apos;t prepare the response</source>
-        <translation type="obsolete">База данных не смогла подготовить ответ</translation>
-    </message>
-    <message>
-        <source>The database couldn&apos;t prepare the response</source>
-        <translation type="obsolete">База данных не смогла подготовить ответ</translation>
-    </message>
-    <message>
         <location filename="../src/HttpRequestBLAST.cpp" line="54"/>
         <source>Cannot load a page. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось загрузить страницу. %1</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="145"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="144"/>
         <source>Database couldn&apos;t prepare the response. You can increase timeout and perform search again.</source>
-        <translation type="unfinished"></translation>
+        <translation>База данных не готова для запроса. Вы можете увеличить таймаут и запустить снова.</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="150"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="149"/>
         <source>CPU usage limit in BLAST was exceeded, probably query sequence is too large</source>
-        <translation type="unfinished"></translation>
+        <translation>Был превышен предел использования CPU в BLAST, вероятно, последовательность слишком большая</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="168"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="167"/>
         <source>Cannot read the response</source>
         <translation>Не удалось прочитать ответ</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="231"/>
-        <location filename="../src/HttpRequestBLAST.cpp" line="239"/>
-        <location filename="../src/HttpRequestBLAST.cpp" line="257"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="235"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="243"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="261"/>
         <source>Cannot get the location</source>
         <translation>Не удалось получитьь локацию</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="268"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="272"/>
         <source>Cannot get the identity</source>
         <translation>Не удалось получить идентификатор последовательности</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="276"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="280"/>
         <source>Cannot evaluate the gaps</source>
         <translation>Не удалось вычислить пропуски</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="284"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="288"/>
         <source>Cannot get the alignment length</source>
         <translation>Не удалось получить длину выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/HttpRequestBLAST.cpp" line="298"/>
+        <location filename="../src/HttpRequestBLAST.cpp" line="302"/>
         <source>Cannot evaluate the location</source>
         <translation>Не удалось вычислить локацию</translation>
     </message>
     <message>
-        <source>Cannot load page</source>
-        <translation type="obsolete">Не могу загрузить страницу</translation>
-    </message>
-    <message>
-        <source>The database did not respond</source>
-        <translation type="obsolete">База данных не отвечает</translation>
-    </message>
-    <message>
-        <source>Incorrect query</source>
-        <translation type="obsolete">Неверный запрос</translation>
-    </message>
-    <message>
-        <source>Input sequence</source>
-        <translation type="obsolete">Входная последовательность</translation>
-    </message>
-    <message>
-        <source>Finds annotations for DNA sequences in a remote database</source>
-        <translation type="obsolete">Находит аннотации для ДНК последовательностей в удаленной базе данных</translation>
-    </message>
-    <message>
-        <source>Database</source>
-        <translation type="obsolete">База данных</translation>
-    </message>
-    <message>
-        <source>Select the database to search through. Available databases are blastn, blastp and cdd</source>
-        <translation type="obsolete">Выберите базу данных для поиска. Доступные базы данных: blastn, blastp и cdd</translation>
-    </message>
-    <message>
-        <source>Expected value</source>
-        <translation type="obsolete">Мат. ожидание</translation>
-    </message>
-    <message>
-        <source>This parameter specifies the statistical significance threshold of reporting matches against the database sequences.</source>
-        <translation type="obsolete">Этот параметр устанавливает порог статистического соответствия для совпадений в найденных последовательностях.</translation>
-    </message>
-    <message>
-        <source>Max hits</source>
-        <translation type="obsolete">Макс. число совпадений</translation>
-    </message>
-    <message>
-        <source>Maximum number of hits.</source>
-        <translation type="obsolete">Максимальное количество хитов.</translation>
-    </message>
-    <message>
-        <source>Short sequence</source>
-        <translation type="obsolete">Короткая последовательность</translation>
-    </message>
-    <message>
-        <source>Optimize search for short sequences.</source>
-        <translation type="obsolete">Оптимизировать поиск для коротких последовательностей.</translation>
-    </message>
-    <message>
-        <source>Name for annotations</source>
-        <translation type="obsolete">Имя для аннотаций</translation>
-    </message>
-    <message>
-        <source>Minimum result length</source>
-        <translation type="obsolete">Минимальная длина результата</translation>
-    </message>
-    <message>
-        <source>Maximum result length</source>
-        <translation type="obsolete">Максимальная длина результата</translation>
-    </message>
-    <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="103"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="105"/>
         <source>Incorrect list of Blastn databases</source>
-        <translation type="unfinished"></translation>
+        <translation>Некорректный список баз данных Blastn</translation>
     </message>
 </context>
 <context>
@@ -272,527 +81,461 @@
     <message>
         <location filename="../src/ui/RemoteBLASTDialog.ui" line="20"/>
         <source>Search Through a Remote Database</source>
-        <translation type="unfinished">Запрос к удаленной базе данных</translation>
+        <translation>Запрос к удаленной базе данных</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="48"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="54"/>
         <source>General options</source>
-        <translation type="unfinished">Основные параметры</translation>
+        <translation>Основные параметры</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="68"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="74"/>
         <source>Select the search type:</source>
-        <translation type="unfinished">Выберите вид поиска:</translation>
+        <translation>Выберите вид поиска:</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="76"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="82"/>
         <source>blastn</source>
-        <translation type="unfinished"></translation>
+        <translation>blastn</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="81"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="87"/>
         <source>blastp</source>
-        <translation type="unfinished"></translation>
+        <translation>blastp</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="86"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="92"/>
         <source>cdd</source>
-        <translation type="unfinished"></translation>
+        <translation>cdd</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="94"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="100"/>
         <source>Search for short, nearly exact matches</source>
-        <translation type="unfinished">Поиск коротких последовательностей</translation>
+        <translation>Поиск коротких последовательностей</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="101"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="107"/>
         <source>Expectation value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Математическое ожидание:</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="108"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="114"/>
         <source>Megablast</source>
-        <translation type="unfinished"></translation>
+        <translation>Megablast</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="115"/>
-        <source>Max hits:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="170"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="182"/>
         <source>The database:</source>
-        <translation type="unfinished">База данных:</translation>
+        <translation>База данных:</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="181"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="193"/>
         <source>Human genomic plus transcript - est_human</source>
-        <translation type="unfinished"></translation>
+        <translation>Human genomic plus transcript - est_human</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="186"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="198"/>
         <source>Mouse genomic plus transcript - est_mouse</source>
-        <translation type="unfinished"></translation>
+        <translation>Mouse genomic plus transcript - est_mouse</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="191"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="203"/>
         <source>Nucleotide collection - nr</source>
-        <translation type="unfinished"></translation>
+        <translation>Nucleotide collection - nr</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="196"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="208"/>
         <source>Reference nRNA sequences - refseq_rna</source>
-        <translation type="unfinished"></translation>
+        <translation>Reference nRNA sequences - refseq_rna</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="201"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="213"/>
         <source>Reference genomic seqence - refseq_genomic</source>
-        <translation type="unfinished"></translation>
+        <translation>Reference genomic seqence - refseq_genomic</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="206"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="218"/>
         <source>NCBI genomes - chromosome</source>
-        <translation type="unfinished"></translation>
+        <translation>NCBI genomes - chromosome</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="211"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="223"/>
         <source>Express sequence tags - est</source>
-        <translation type="unfinished"></translation>
+        <translation>Express sequence tags - est</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="216"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="228"/>
         <source>Non-human, non-mouse ESTs - est_other</source>
-        <translation type="unfinished"></translation>
+        <translation>Non-human, non-mouse ESTs - est_other</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="221"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="233"/>
         <source>Genomic survey sequences - gss</source>
-        <translation type="unfinished"></translation>
+        <translation>Genomic survey sequences - gss</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="226"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="238"/>
         <source>High throughput genomic sequences - HTGS</source>
-        <translation type="unfinished"></translation>
+        <translation>High throughput genomic sequences - HTGS</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="231"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="243"/>
         <source>Patent sequences - pat</source>
-        <translation type="unfinished"></translation>
+        <translation>Patent sequences - pat</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="236"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="248"/>
         <source>Protein data bank - pdb</source>
-        <translation type="unfinished"></translation>
+        <translation>Protein data bank - pdb</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="241"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="253"/>
         <source>Human ALU repeat elements - alu_repeats</source>
-        <translation type="unfinished"></translation>
+        <translation>Human ALU repeat elements - alu_repeats</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="246"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="258"/>
         <source>Sequence tagged sites - dbsts</source>
-        <translation type="unfinished"></translation>
+        <translation>Sequence tagged sites - dbsts</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="251"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="263"/>
         <source>Whole-genome shotgun reads - wgs</source>
-        <translation type="unfinished"></translation>
+        <translation>Whole-genome shotgun reads - wgs</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="256"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="268"/>
         <source>Environmental samples - env_nt</source>
-        <translation type="unfinished"></translation>
+        <translation>Environmental samples - env_nt</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="280"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="298"/>
         <source>The database description:</source>
-        <translation type="unfinished">Описание базы данных:</translation>
+        <translation>Описание базы данных:</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="308"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="326"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="346"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="364"/>
         <source>Search timeout</source>
-        <translation type="unfinished">Тайм-аут поиска:</translation>
+        <translation>Тайм-аут поиска</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="362"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="380"/>
         <source> min</source>
-        <translation type="unfinished">мин</translation>
+        <translation>мин</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="400"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="402"/>
         <source>Advanced options</source>
-        <translation type="unfinished">Расширенные опции</translation>
+        <translation>Расширенные опции</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="421"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="423"/>
         <source>3</source>
-        <translation type="unfinished"></translation>
+        <translation>3</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="426"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="428"/>
         <source>7</source>
-        <translation type="unfinished"></translation>
+        <translation>7</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="431"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="433"/>
         <source>11</source>
-        <translation type="unfinished"></translation>
+        <translation>11</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="436"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="438"/>
         <source>15</source>
-        <translation type="unfinished"></translation>
+        <translation>15</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="450"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="452"/>
         <source>Word size</source>
-        <translation type="unfinished">Размер слова</translation>
+        <translation>Размер слова</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="457"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="459"/>
         <source>Gap costs</source>
-        <translation type="unfinished">Вес пропуска</translation>
+        <translation>Вес пропуска</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="474"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="476"/>
         <source>11 1</source>
-        <translation type="unfinished"></translation>
+        <translation>11 1</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="479"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="481"/>
         <source>5 2</source>
-        <translation type="unfinished"></translation>
+        <translation>5 2</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="484"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="486"/>
         <source>4 2</source>
-        <translation type="unfinished"></translation>
+        <translation>4 2</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="489"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="491"/>
         <source>1 2</source>
-        <translation type="unfinished"></translation>
+        <translation>1 2</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="494"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="496"/>
         <source>0 2</source>
-        <translation type="unfinished"></translation>
+        <translation>0 2</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="499"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="501"/>
         <source>3 1</source>
-        <translation type="unfinished"></translation>
+        <translation>3 1</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="504"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="506"/>
         <source>2 1</source>
-        <translation type="unfinished"></translation>
+        <translation>2 1</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="509"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="511"/>
         <source>1 1</source>
-        <translation type="unfinished"></translation>
+        <translation>1 1</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="523"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="525"/>
         <source>Match scores</source>
-        <translation type="unfinished">Веса совпадений:</translation>
+        <translation>Веса совпадений</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="534"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="536"/>
         <source>1 -2</source>
-        <translation type="unfinished"></translation>
+        <translation>1 -2</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="539"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="541"/>
         <source>1 -3</source>
-        <translation type="unfinished"></translation>
+        <translation>1 -3</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="544"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="546"/>
         <source>1 -4</source>
-        <translation type="unfinished"></translation>
+        <translation>1 -4</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="549"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="551"/>
         <source>2 -3</source>
-        <translation type="unfinished"></translation>
+        <translation>2 -3</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="554"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="556"/>
         <source>4 -5</source>
-        <translation type="unfinished"></translation>
+        <translation>4 -5</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="559"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="561"/>
         <source>1 -1</source>
-        <translation type="unfinished"></translation>
+        <translation>1 -1</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="573"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="575"/>
         <source>Matrix</source>
-        <translation type="unfinished">Матрица</translation>
+        <translation>Матрица</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="586"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="588"/>
         <source>PHI pattern</source>
-        <translation type="unfinished">Шаблон PHI:</translation>
+        <translation>Шаблон PHI</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="606"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="608"/>
         <source>Entrez query</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrez запрос</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="616"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="618"/>
         <source>Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервис</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="637"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="639"/>
         <source>plain</source>
-        <translation type="unfinished"></translation>
+        <translation>plain</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="642"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="644"/>
         <source>psi</source>
-        <translation type="unfinished"></translation>
+        <translation>psi</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="647"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="649"/>
         <source>phi</source>
-        <translation type="unfinished"></translation>
+        <translation>phi</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="659"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="661"/>
         <source>Filters</source>
-        <translation type="unfinished">Фильтры</translation>
+        <translation>Фильтры</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="665"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="667"/>
         <source>Low complexity filter</source>
-        <translation type="unfinished">Фильтр низкой сложности</translation>
+        <translation>Фильтр низкой сложности</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="672"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="674"/>
         <source>Human repeats filter</source>
-        <translation type="unfinished">Фильтр человеческих повторов</translation>
+        <translation>Фильтр человеческих повторов</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="682"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="684"/>
         <source>Masks</source>
-        <translation type="unfinished">Маски</translation>
+        <translation>Маски</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="688"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="690"/>
         <source>Mask for lookup table only</source>
-        <translation type="unfinished">Только маска таблицы поиска</translation>
+        <translation>Только маска таблицы поиска</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="695"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="697"/>
         <source>Mask lower case letters</source>
-        <translation type="unfinished">Маска символов нижн. регистра</translation>
+        <translation>Маска символов нижн. регистра</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="707"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="709"/>
         <source>Filter results</source>
-        <translation type="unfinished"></translation>
+        <translation>Результаты фильтрации</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="741"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="717"/>
         <source>Filter by</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="748"/>
-        <source>Select result by</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="755"/>
-        <source>accession</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтровать по</translation>
     </message>
     <message>
         <location filename="../src/ui/RemoteBLASTDialog.ui" line="762"/>
+        <source>Select result by</source>
+        <translation>Выбрать результаты по</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="738"/>
+        <source>accession</source>
+        <translation>accession</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="121"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="131"/>
+        <source>The maximum number of results</source>
+        <translation>Максимальное число результатов</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="124"/>
+        <source>Results limit:</source>
+        <translation>Предел результатов:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="752"/>
         <source>EValue</source>
-        <translation type="unfinished"></translation>
+        <translation>EValue</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="772"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="724"/>
         <source>def (filter by definition of annotations)</source>
-        <translation type="unfinished"></translation>
+        <translation>def (фильтр по определению аннотаций)</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="779"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="745"/>
         <source>id</source>
-        <translation type="unfinished"></translation>
+        <translation>id</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteBLASTDialog.ui" line="786"/>
+        <location filename="../src/ui/RemoteBLASTDialog.ui" line="731"/>
         <source>Score</source>
-        <translation type="unfinished"></translation>
+        <translation>Score</translation>
     </message>
 </context>
 <context>
-    <name>RemoteQueryWorker</name>
+    <name>U2::CheckNCBISequenceCircularityTask</name>
     <message>
-        <source>Input sequence</source>
-        <translation type="obsolete">Входная последовательность</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="547"/>
+        <source>Check NCBI sequence circularity</source>
+        <translation>Проверка циркулярности NCBI последовательности</translation>
     </message>
     <message>
-        <source>The sequence to search the annotations for</source>
-        <translation type="obsolete">Последовательность, для которой ищутся аннотации</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="552"/>
+        <source>ID is empty</source>
+        <translation>ID пуст</translation>
     </message>
     <message>
-        <source>Annotations</source>
-        <translation type="obsolete">Аннотации</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="578"/>
+        <source>Can not check if sequence is circular! Sequence is considered to be linear.</source>
+        <translation>Невозможно проверить циркулярность последовательности! Последовательность считается линейной.</translation>
     </message>
     <message>
-        <source>Found annotations</source>
-        <translation type="obsolete">Найденные аннотации</translation>
-    </message>
-    <message>
-        <source>Database</source>
-        <translation type="obsolete">База данных</translation>
-    </message>
-    <message>
-        <source>Select the database to search through</source>
-        <translation type="obsolete">Выберите базу данных в которой будет производиться поиск.</translation>
-    </message>
-    <message>
-        <source>This parameter specifies the statistical significance threshold of reporting matches against the database sequences.</source>
-        <translation type="obsolete">Этот параметр устанавливает порог статистического соответствия для совпадений в найденных последовательностях.</translation>
-    </message>
-    <message>
-        <source>Maximum number of hits.</source>
-        <translation type="obsolete">Максимальное количество хитов.</translation>
-    </message>
-    <message>
-        <source>Optimize search for short sequences.</source>
-        <translation type="obsolete">Оптимизировать поиск для коротких последовательностей.</translation>
-    </message>
-    <message>
-        <source>Annotate as</source>
-        <translation type="obsolete">Аннотации</translation>
-    </message>
-    <message>
-        <source>Name for annotations</source>
-        <translation type="obsolete">Имя для аннотаций</translation>
-    </message>
-    <message>
-        <source>Location of BLAST output file. This parameter insignificant for cdd search.</source>
-        <translation type="obsolete">Путь к выходному файлу BLAST. Этот параметр не учитывается при cdd поиске.</translation>
-    </message>
-    <message>
-        <source>Request to remote database</source>
-        <translation type="obsolete">Запрос к удаленной базе данных</translation>
-    </message>
-    <message>
-        <source>Finds annotations for DNA sequence in remote database.</source>
-        <translation type="obsolete">Находит аннотации для ДНК последовательностей в удаленной базе данных</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="582"/>
+        <source>Can not remove temporary file.</source>
+        <translation>Невозможно удалить временный файл.</translation>
     </message>
 </context>
 <context>
-    <name>U2::BlastQDActor</name>
+    <name>U2::CreateAnnotationsFromHttpBlastResultTask</name>
     <message>
-        <source>Search through the database &lt;u&gt;%1&lt;/u&gt; for annotations for the given sequence</source>
-        <translation type="obsolete">Для заданной последовательности найти аннотации в базе данных &lt;u&gt;%1&lt;/u&gt;</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="236"/>
+        <source>Create annotations from BLAST results</source>
+        <translation>Создать аннотации из результатов BLAST</translation>
     </message>
     <message>
-        <source>The nucleotide database is selected</source>
-        <translation type="obsolete">Выбрана нуклеотидная база данных</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="241"/>
+        <source>HttpBlastResult list is empty</source>
+        <translation>HttpBlastResult list is empty</translation>
     </message>
     <message>
-        <source>The amino acid database is selected</source>
-        <translation type="obsolete">Выбрана аминная база данных</translation>
-    </message>
-</context>
-<context>
-    <name>U2::CDDQDActor</name>
-    <message>
-        <source>Searches through the NCBI CDD database for annotations.</source>
-        <translation type="obsolete">Искать аннотации в базе данных NCBI CDD.</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="253"/>
+        <source>HttpRequest is NULL!</source>
+        <translation>HttpRequest is NULL!</translation>
     </message>
     <message>
-        <source>Finds annotations for DNA sequences in a remote database</source>
-        <translation type="obsolete">Находит аннотации для ДНК последовательностей в удаленной базе данных</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="476"/>
+        <location filename="../src/RemoteBLASTTask.cpp" line="477"/>
+        <source>Wrong number of annotations</source>
+        <translation>Wrong number of annotations</translation>
     </message>
     <message>
-        <source>This parameter specifies the statistical significance threshold of reporting matches against the database sequences.</source>
-        <translation type="obsolete">Этот параметр устанавливает порог статистического соответствия для совпадений в найденных последовательностях.</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="533"/>
+        <source>Invalid subtask</source>
+        <translation>Invalid subtask</translation>
     </message>
     <message>
-        <source>Pattern</source>
-        <translation type="obsolete">Паттерн</translation>
-    </message>
-    <message>
-        <source>Include results containing specified value</source>
-        <translation type="obsolete">Включать результаты содержащие заданное значение</translation>
-    </message>
-    <message>
-        <source>Include results containing specified qualifier value</source>
-        <translation type="obsolete">Сохранять результаты содержащие заданное значение квалификатора</translation>
-    </message>
-    <message>
-        <source>Annotate as</source>
-        <translation type="obsolete">Аннотации</translation>
-    </message>
-    <message>
-        <source>Name for annotations</source>
-        <translation type="obsolete">Имя для аннотаций</translation>
-    </message>
-    <message>
-        <source>Min length</source>
-        <translation type="obsolete">Минимальная длина</translation>
-    </message>
-    <message>
-        <source>Minimum result length</source>
-        <translation type="obsolete">Минимальная длина результата</translation>
-    </message>
-    <message>
-        <source>Max length</source>
-        <translation type="obsolete">Максимальная длина</translation>
-    </message>
-    <message>
-        <source>Maximum result length</source>
-        <translation type="obsolete">Максимальная длина результата</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="534"/>
+        <source>No corresponding annotations</source>
+        <translation>No corresponding annotations</translation>
     </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::RemoteBLASTPrompter</name>
     <message>
-        <source> from %1</source>
-        <translation type="obsolete"> из %1</translation>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="206"/>
+        <source>unset</source>
+        <translation>не указан</translation>
     </message>
     <message>
-        <source>For sequence &lt;u&gt;%1&lt;/u&gt; find annotations in database &lt;u&gt;%2&lt;/u&gt;.</source>
-        <translation type="obsolete">Для последовательности &lt;u&gt;%1&lt;/u&gt; находит аннотации в базе данных &lt;u&gt;%2&lt;/u&gt;</translation>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="207"/>
+        <source> from &lt;u&gt;%1&lt;/u&gt;</source>
+        <translation>из &lt;u&gt;%1&lt;/u&gt;</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="209"/>
-        <source>unset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="210"/>
-        <source> from &lt;u&gt;%1&lt;/u&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="212"/>
         <source>For sequence %1 find annotations in database &lt;u&gt;%2&lt;/u&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для последовательности &lt;u&gt;%1&lt;/u&gt; находит аннотации в базе данных &lt;u&gt;%2&lt;/u&gt;.</translation>
     </message>
 </context>
 <context>
@@ -800,274 +543,197 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="53"/>
         <source>Input sequence</source>
-        <translation type="unfinished">Входная последовательность</translation>
+        <translation>Входная последовательность</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="54"/>
         <source>The sequence to search the annotations for</source>
-        <translation type="unfinished">Последовательность, для которой ищутся аннотации</translation>
+        <translation>Последовательность, для которой ищутся аннотации</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="55"/>
         <source>Annotations</source>
-        <translation type="unfinished">Аннотации</translation>
+        <translation>Аннотации</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="56"/>
         <source>Found annotations</source>
-        <translation type="unfinished">Найденные аннотации</translation>
+        <translation>Найденные аннотации</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="65"/>
         <location filename="../src/RemoteBLASTWorker.cpp" line="67"/>
         <source>Database</source>
-        <translation type="unfinished">База данных</translation>
-    </message>
-    <message>
-        <source>Select the database to search through. Available databases are blastn, blastp and cdd</source>
-        <translation type="obsolete">Выберите базу данных для поиска. Доступные базы данных: blastn, blastp и cdd</translation>
+        <translation>База данных</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="66"/>
         <source>Select the database to search through. Available databases are blastn, blastp and cdd.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать базу данных для поиска. Доступные базы данных blastn, blastp и cdd.</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="68"/>
         <source>Select the database to search through.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите базу данных в которой будет производиться поиск.</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="69"/>
         <source>Expected value</source>
-        <translation type="unfinished">Мат. ожидание</translation>
+        <translation>Мат. ожидание</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="70"/>
         <source>This parameter specifies the statistical significance threshold of reporting matches against the database sequences.</source>
-        <translation type="unfinished">Этот параметр устанавливает порог статистического соответствия для совпадений в найденных последовательностях.</translation>
-    </message>
-    <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="71"/>
-        <source>Max hits</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="72"/>
-        <source>Maximum number of hits.</source>
-        <translation type="unfinished">Максимальное количество хитов.</translation>
-    </message>
-    <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="73"/>
-        <source>Short sequence</source>
-        <translation type="unfinished">Короткая последовательность</translation>
-    </message>
-    <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="74"/>
-        <source>Optimize search for short sequences.</source>
-        <translation type="unfinished">Оптимизировать поиск для коротких последовательностей.</translation>
+        <translation>Этот параметр устанавливает порог статистического соответствия для совпадений в найденных последовательностях.</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="75"/>
-        <source>Entrez query</source>
-        <translation type="unfinished"></translation>
+        <source>Short sequence</source>
+        <translation>Короткая последовательность</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="76"/>
-        <source>Enter an Entrez query to limit search.</source>
-        <translation type="unfinished"></translation>
+        <source>Optimize search for short sequences.</source>
+        <translation>Оптимизировать поиск для коротких последовательностей.</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="77"/>
-        <source>Annotate as</source>
-        <translation type="unfinished">Аннотации</translation>
+        <source>Entrez query</source>
+        <translation>Entrez запрос</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="78"/>
-        <source>Name for annotations.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Name for annotations</source>
-        <translation type="obsolete">Имя для аннотаций</translation>
+        <source>Enter an Entrez query to limit search.</source>
+        <translation>Введите Entrez запрос чтобы ограничить поиск.</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="79"/>
-        <source>BLAST output</source>
-        <translation type="unfinished">Вывод BLAST</translation>
+        <source>Annotate as</source>
+        <translation>Аннотации</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="80"/>
-        <source>Location of BLAST output file. This parameter insignificant for cdd search.</source>
-        <translation type="unfinished">Путь к выходному файлу BLAST. Этот параметр не учитывается при cdd поиске.</translation>
+        <source>Name for annotations.</source>
+        <translation>Имя для аннотаций.</translation>
+    </message>
+    <message>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="71"/>
+        <source>Results limit</source>
+        <translation>Предел результатов</translation>
+    </message>
+    <message>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="72"/>
+        <source>The maximum number of results.</source>
+        <translation>Максимальное число результатов.</translation>
+    </message>
+    <message>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="73"/>
+        <source>Megablast</source>
+        <translation>Megablast</translation>
+    </message>
+    <message>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="74"/>
+        <source>Use megablast.</source>
+        <translation>Использовать megablast.</translation>
+    </message>
+    <message>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="81"/>
+        <source>BLAST output</source>
+        <translation>Вывод BLAST</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="82"/>
-        <source>Gap costs</source>
-        <translation type="unfinished">Вес пропуска</translation>
-    </message>
-    <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="83"/>
-        <source>Cost to create and extend a gap in an alignment.</source>
-        <translation type="unfinished"></translation>
+        <source>Location of BLAST output file. This parameter insignificant for cdd search.</source>
+        <translation>Путь к выходному файлу BLAST. Этот параметр не учитывается при cdd поиске.</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="84"/>
-        <source>Match scores</source>
-        <translation type="unfinished">Веса совпадений:</translation>
+        <source>Gap costs</source>
+        <translation>Вес пропуска</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="85"/>
+        <source>Cost to create and extend a gap in an alignment.</source>
+        <translation>Стоимость создания и расширения пропуска.</translation>
+    </message>
+    <message>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="86"/>
+        <source>Match scores</source>
+        <translation>Веса совпадений</translation>
+    </message>
+    <message>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="87"/>
         <source>Reward and penalty for matching and mismatching bases.</source>
-        <translation type="unfinished"></translation>
+        <translation>Штрафы и награждения за соответствие или несоответствие баз.</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="135"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="140"/>
         <source>Remote BLAST</source>
-        <translation></translation>
+        <translation>Удаленный BLAST поиск</translation>
     </message>
     <message>
-        <source>Request to remote database</source>
-        <translation type="obsolete">Запрос к удаленной базе данных</translation>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="240"/>
+        <source>Incorrect value for the &apos;e-value&apos; parameter, default value passed to the workflow</source>
+        <translation>Неккоректное значение параметра &quot;мат. ожидание&quot;, значение по умолчанию передано схеме</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="136"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="141"/>
         <source>Finds annotations for DNA sequence in remote database.</source>
-        <translation type="unfinished">Находит аннотации для ДНК последовательностей в удаленной базе данных</translation>
+        <translation>Находит аннотации для ДНК последовательностей в удаленной базе данных.</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="224"/>
+        <location filename="../src/RemoteBLASTWorker.cpp" line="221"/>
         <source>Annotations name is empty, default name used</source>
-        <translation type="unfinished">Имя аннотации пусто, использовано значение по умолчанию</translation>
-    </message>
-    <message>
-        <location filename="../src/RemoteBLASTWorker.cpp" line="243"/>
-        <source>Incorrect value for &apos;e-value&apos; parameter, default value passed to schema</source>
-        <translation type="unfinished">Неккоректное значение параметра &quot;мат. ожидание&quot;, значение по умолчанию передано схеме</translation>
+        <translation>Имя аннотации пусто, использовано значение по умолчанию</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="297"/>
         <source>Selected nucleotide database</source>
-        <translation type="unfinished">Выбрана нуклеотидная база данных</translation>
+        <translation>Выбрана нуклеотидная база данных</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="303"/>
         <source>Selected amino acid database</source>
-        <translation type="unfinished">Выбрана аминная база данных</translation>
+        <translation>Выбрана аминная база данных</translation>
     </message>
 </context>
 <context>
-    <name>U2::LocalWorkflow::RemoteQueryPrompter</name>
+    <name>U2::Merge</name>
     <message>
-        <source> from %1</source>
-        <translation type="obsolete"> из %1</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="626"/>
+        <source>Qualifier %1 not found</source>
+        <translation>Квалификатор %1 не найден</translation>
     </message>
     <message>
-        <source>For sequence &lt;u&gt;%1&lt;/u&gt; find annotations in database &lt;u&gt;%2&lt;/u&gt;</source>
-        <translation type="obsolete">Для последовательности &lt;u&gt;%1&lt;/u&gt; находит аннотации в базе данных &lt;u&gt;%2&lt;/u&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>U2::LocalWorkflow::RemoteQueryWorker</name>
-    <message>
-        <source>The sequence is too long</source>
-        <translation type="obsolete">Слишком длинная последовательность</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="628"/>
+        <source>Can not merge %1 qualifiers: values are not the same.</source>
+        <translation>Can not merge %1 qualifiers: values are not the same.</translation>
     </message>
     <message>
-        <source>Selected nucleotide database</source>
-        <translation type="obsolete">Выбрана нуклеотидная база данных</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="635"/>
+        <location filename="../src/RemoteBLASTTask.cpp" line="641"/>
+        <location filename="../src/RemoteBLASTTask.cpp" line="666"/>
+        <location filename="../src/RemoteBLASTTask.cpp" line="672"/>
+        <source>Can not find &apos;%1&apos; qualifier</source>
+        <translation>Can not find &apos;%1&apos; qualifier</translation>
     </message>
     <message>
-        <source>Selected amino acid database</source>
-        <translation type="obsolete">Выбрана аминная база данных</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="669"/>
+        <location filename="../src/RemoteBLASTTask.cpp" line="674"/>
+        <location filename="../src/RemoteBLASTTask.cpp" line="684"/>
+        <location filename="../src/RemoteBLASTTask.cpp" line="688"/>
+        <source>Can not convert qualifier value &apos;%1&apos; to double</source>
+        <translation>Can not convert qualifier value &apos;%1&apos; to double</translation>
     </message>
     <message>
-        <source>Input sequence</source>
-        <translation type="obsolete">Входная последовательность</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="681"/>
+        <source>Can not find &apos;E-value&apos; qualifier</source>
+        <translation>Can not find &apos;E-value&apos; qualifier</translation>
     </message>
     <message>
-        <source>The sequence to search the annotations for</source>
-        <translation type="obsolete">Последовательность, для которой ищутся аннотации</translation>
-    </message>
-    <message>
-        <source>Annotations</source>
-        <translation type="obsolete">Аннотации</translation>
-    </message>
-    <message>
-        <source>Found annotations</source>
-        <translation type="obsolete">Найденные аннотации</translation>
-    </message>
-    <message>
-        <source>Database</source>
-        <translation type="obsolete">База данных</translation>
-    </message>
-    <message>
-        <source>Select database in witch search should be made.</source>
-        <translation type="obsolete">Выберите базу данных в которой будет производиться поиск.</translation>
-    </message>
-    <message>
-        <source>Select the database to search through. Available databases are blastn, blastp and cdd</source>
-        <translation type="obsolete">Выберите базу данных для поиска. Доступные базы данных: blastn, blastp и cdd</translation>
-    </message>
-    <message>
-        <source>Expected value</source>
-        <translation type="obsolete">Мат. ожидание</translation>
-    </message>
-    <message>
-        <source>This setting specifies the statistical significance threshold for reporting matches against database sequences.</source>
-        <translation type="obsolete">Этот параметр устанавливает порог статистического соответствия для совпадений в найденных последовательностях.</translation>
-    </message>
-    <message>
-        <source>This parameter specifies the statistical significance threshold of reporting matches against the database sequences.</source>
-        <translation type="obsolete">Этот параметр устанавливает порог статистического соответствия для совпадений в найденных последовательностях.</translation>
-    </message>
-    <message>
-        <source>Max hits</source>
-        <translation type="obsolete">Макс. число совпадений</translation>
-    </message>
-    <message>
-        <source>Maximum number of hits.</source>
-        <translation type="obsolete">Максимальное количество хитов.</translation>
-    </message>
-    <message>
-        <source>Short sequence</source>
-        <translation type="obsolete">Короткая последовательность</translation>
-    </message>
-    <message>
-        <source>Optimize search for short sequences.</source>
-        <translation type="obsolete">Оптимизировать поиск для коротких последовательностей.</translation>
-    </message>
-    <message>
-        <source>Annotate as</source>
-        <translation type="obsolete">Аннотации</translation>
-    </message>
-    <message>
-        <source>Name for annotations</source>
-        <translation type="obsolete">Имя для аннотаций</translation>
-    </message>
-    <message>
-        <source>BLAST output</source>
-        <translation type="obsolete">Вывод BLAST</translation>
-    </message>
-    <message>
-        <source>Location of BLAST output file. This parameter insignificant for cdd search.</source>
-        <translation type="obsolete">Путь к выходному файлу BLAST. Этот параметр не учитывается при cdd поиске.</translation>
-    </message>
-    <message>
-        <source>Request to remote database</source>
-        <translation type="obsolete">Запрос к удаленной базе данных</translation>
-    </message>
-    <message>
-        <source>Finds annotations for DNA sequence in remote database.</source>
-        <translation type="obsolete">Находит аннотации для ДНК последовательностей в удаленной базе данных</translation>
-    </message>
-    <message>
-        <source>Annotations name is empty, default name used</source>
-        <translation type="obsolete">Имя аннотации пусто, использовано значение по умолчанию</translation>
-    </message>
-    <message>
-        <source>Incorrect value for &apos;e-value&apos; parameter, default value passed to schema</source>
-        <translation type="obsolete">Неккоректное значение параметра &quot;мат. ожидание&quot;, значение по умолчанию передано схеме</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="692"/>
+        <source>Can not convert qualifier value &apos;%1&apos; to int</source>
+        <translation>Can not convert qualifier value &apos;%1&apos; to int</translation>
     </message>
 </context>
 <context>
@@ -1075,67 +741,67 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/BlastQuery.cpp" line="59"/>
         <source>Searches through the NCBI CDD database for annotations.</source>
-        <translation type="unfinished">Искать аннотации в базе данных NCBI CDD.</translation>
+        <translation>Искать аннотации в базе данных NCBI CDD.</translation>
     </message>
     <message>
         <location filename="../src/BlastQuery.cpp" line="89"/>
         <source>Bad sequence.</source>
-        <translation type="unfinished"></translation>
+        <translation>Плохая последовательность.</translation>
     </message>
     <message>
         <location filename="../src/BlastQuery.cpp" line="93"/>
         <source>CDD Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск CDD</translation>
     </message>
     <message>
         <location filename="../src/BlastQuery.cpp" line="150"/>
         <source>CDD</source>
-        <translation type="unfinished"></translation>
+        <translation>CDD</translation>
     </message>
     <message>
         <location filename="../src/BlastQuery.cpp" line="151"/>
         <source>Finds annotations for DNA sequences in a remote database</source>
-        <translation type="unfinished">Находит аннотации для ДНК последовательностей в удаленной базе данных</translation>
+        <translation>Находит аннотации для ДНК последовательностей в удаленной базе данных</translation>
     </message>
     <message>
         <location filename="../src/BlastQuery.cpp" line="153"/>
         <source>Expected value</source>
-        <translation type="unfinished">Мат. ожидание</translation>
+        <translation>Мат. ожидание</translation>
     </message>
     <message>
         <location filename="../src/BlastQuery.cpp" line="154"/>
         <source>This parameter specifies the statistical significance threshold of reporting matches against the database sequences.</source>
-        <translation type="unfinished">Этот параметр устанавливает порог статистического соответствия для совпадений в найденных последовательностях.</translation>
+        <translation>Этот параметр устанавливает порог статистического соответствия для совпадений в найденных последовательностях.</translation>
     </message>
     <message>
         <location filename="../src/BlastQuery.cpp" line="155"/>
         <source>Pattern</source>
-        <translation type="unfinished">Паттерн</translation>
+        <translation>Паттерн</translation>
     </message>
     <message>
         <location filename="../src/BlastQuery.cpp" line="155"/>
         <source>Include results containing specified value</source>
-        <translation type="unfinished">Включать результаты содержащие заданное значение</translation>
+        <translation>Включать результаты содержащие заданное значение</translation>
     </message>
     <message>
         <location filename="../src/BlastQuery.cpp" line="156"/>
         <source>Min length</source>
-        <translation type="unfinished">Минимальная длина</translation>
+        <translation>Минимальная длина</translation>
     </message>
     <message>
         <location filename="../src/BlastQuery.cpp" line="156"/>
         <source>Minimum result length</source>
-        <translation type="unfinished">Минимальная длина результата</translation>
+        <translation>Минимальная длина результата</translation>
     </message>
     <message>
         <location filename="../src/BlastQuery.cpp" line="157"/>
         <source>Max length</source>
-        <translation type="unfinished">Максимальная длина</translation>
+        <translation>Максимальная длина</translation>
     </message>
     <message>
         <location filename="../src/BlastQuery.cpp" line="157"/>
         <source>Maximum result length</source>
-        <translation type="unfinished">Максимальная длина результата</translation>
+        <translation>Максимальная длина результата</translation>
     </message>
 </context>
 <context>
@@ -1143,44 +809,39 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/RemoteBLASTPlugin.cpp" line="64"/>
         <source>Performs remote database queries: BLAST, CDD, etc...</source>
-        <translation type="unfinished">Посылает запрос в удаленную базу данных: BLAST, CDD и т.д...</translation>
+        <translation>Посылает запрос в удаленную базу данных: BLAST, CDD и т.д...</translation>
     </message>
     <message>
         <location filename="../src/RemoteBLASTPlugin.cpp" line="64"/>
         <source>Remote BLAST</source>
-        <translation></translation>
+        <translation>Удаленный BLAST поиск</translation>
     </message>
 </context>
 <context>
     <name>U2::RemoteBLASTTask</name>
     <message>
-        <location filename="../src/RemoteBLASTTask.cpp" line="101"/>
+        <location filename="../src/RemoteBLASTTask.cpp" line="107"/>
         <source>RemoteBLASTTask</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/RemoteBLASTTask.cpp" line="139"/>
-        <source>Incorrect database</source>
-        <translation type="unfinished">Неверно задана база данных</translation>
+        <translation>RemoteBLASTTask</translation>
     </message>
 </context>
 <context>
     <name>U2::RemoteBLASTToAnnotationsTask</name>
     <message>
-        <location filename="../src/RemoteBLASTTask.cpp" line="40"/>
+        <location filename="../src/RemoteBLASTTask.cpp" line="46"/>
         <source>RemoteBLASTTask</source>
-        <translation type="unfinished"></translation>
+        <translation>RemoteBLASTTask</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTTask.cpp" line="61"/>
+        <location filename="../src/RemoteBLASTTask.cpp" line="67"/>
         <source>The object was removed
 </source>
-        <translation type="unfinished">Объект был удален</translation>
+        <translation>Объект был удален</translation>
     </message>
     <message>
-        <location filename="../src/RemoteBLASTTask.cpp" line="82"/>
+        <location filename="../src/RemoteBLASTTask.cpp" line="88"/>
         <source>File %1 already exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл %1 уже существует</translation>
     </message>
 </context>
 <context>
@@ -1188,77 +849,54 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/RemoteBLASTPlugin.cpp" line="102"/>
         <source>Query NCBI BLAST database...</source>
-        <translation type="unfinished"></translation>
+        <translation>Запрос к базе данных NCBI BLAST ...</translation>
+    </message>
+    <message>
+        <location filename="../src/RemoteBLASTPlugin.cpp" line="134"/>
+        <source>Sequence objects is NULL</source>
+        <translation>Sequence objects is NULL</translation>
     </message>
 </context>
 <context>
-    <name>U2::RemoteQueryPlugin</name>
+    <name>U2::RemoteBlastHttpRequestTask</name>
     <message>
-        <source>Performs remote database queries: BLAST, CDD, etc...</source>
-        <translation type="obsolete">Посылает запрос в удаленную базу данных: BLAST, CDD и т.д...</translation>
+        <location filename="../src/RemoteBLASTTask.cpp" line="150"/>
+        <source>Http Blast requests task</source>
+        <translation>Http Blast requests task</translation>
     </message>
-</context>
-<context>
-    <name>U2::RemoteQueryTask</name>
     <message>
+        <location filename="../src/RemoteBLASTTask.cpp" line="161"/>
         <source>Incorrect database</source>
-        <translation type="obsolete">Неверно задана база данных</translation>
-    </message>
-</context>
-<context>
-    <name>U2::RemoteQueryToAnnotationsTask</name>
-    <message>
-        <source>The object was removed
-</source>
-        <translation type="obsolete">Объект был удален</translation>
-    </message>
-</context>
-<context>
-    <name>U2::RemoteQueryViewContext</name>
-    <message>
-        <source>Too large selection size</source>
-        <translation type="obsolete">Слишком длинная последовательность</translation>
-    </message>
-    <message>
-        <source>Query remote database...</source>
-        <translation type="obsolete">Запрос к удаленной базе данных...</translation>
-    </message>
-    <message>
-        <source>No sequence is selected.</source>
-        <translation type="obsolete">Не выбрана последовательность.</translation>
-    </message>
-    <message>
-        <source>too_large_selection_size</source>
-        <translation type="obsolete">Выделена слишком большая последовательность</translation>
+        <translation>Неверно задана база данных</translation>
     </message>
 </context>
 <context>
     <name>U2::SendSelectionDialog</name>
     <message>
-        <location filename="../src/SendSelectionDialog.cpp" line="140"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="139"/>
         <source>Search</source>
-        <translation type="unfinished">Искать</translation>
+        <translation>Искать</translation>
     </message>
     <message>
-        <location filename="../src/SendSelectionDialog.cpp" line="141"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="140"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/SendSelectionDialog.cpp" line="210"/>
-        <location filename="../src/SendSelectionDialog.cpp" line="310"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="209"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="309"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/SendSelectionDialog.cpp" line="210"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="209"/>
         <source>Cannot create an annotation object. Please check settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно создать аннотацию. Проверьте настройки</translation>
     </message>
     <message>
-        <location filename="../src/SendSelectionDialog.cpp" line="396"/>
+        <location filename="../src/SendSelectionDialog.cpp" line="394"/>
         <source>You chose to search nucleotide sequence in protein database. This sequence will be converted into 6 sequences(3 translations for both strands).Therefore this search may take some time. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы выбрали поиск нуклеотидной последовательности в протеиновой базе данных. Эта последовательность будет сконвертирована в 6 последовательностей(3 трансляции для обоих направлений).Этот поиск может занять некоторое время. Продолжить?</translation>
     </message>
 </context>
 </TS>

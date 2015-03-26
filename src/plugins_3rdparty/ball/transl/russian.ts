@@ -6,12 +6,12 @@
     <message>
         <location filename="../src/BallPlugin.cpp" line="37"/>
         <source>BALL</source>
-        <translation type="unfinished"></translation>
+        <translation>BALL</translation>
     </message>
     <message>
         <location filename="../src/BallPlugin.cpp" line="37"/>
         <source>A port of BALL framework for molecular surface calculation</source>
-        <translation type="unfinished">Перенесённый фреймворк BALL для вычисления молекулярной поверхности</translation>
+        <translation>Перенесённый фреймворк BALL для вычисления молекулярной поверхности</translation>
     </message>
 </context>
 </TS>

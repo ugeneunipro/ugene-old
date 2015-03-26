@@ -301,17 +301,33 @@
     </message>
     <message>
         <location filename="../src/DNAExportPluginTests.cpp" line="169"/>
-        <location filename="../src/DNAExportPluginTests.cpp" line="206"/>
-        <location filename="../src/DNAExportPluginTests.cpp" line="229"/>
-        <source>context not found %1</source>
-        <translation>context not found %1</translation>
+        <source> context not found %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/DNAExportPluginTests.cpp" line="175"/>
+        <source> container of object with type &quot;%1&quot; is empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="206"/>
+        <source>context  not found %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/DNAExportPluginTests.cpp" line="212"/>
+        <source>container  of object with type &quot;%1&quot; is empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DNAExportPluginTests.cpp" line="229"/>
+        <source>context not  found %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/DNAExportPluginTests.cpp" line="235"/>
-        <source>container of object with type &quot;%1&quot; is empty</source>
-        <translation>container of object with type &quot;%1&quot; is empty</translation>
+        <source>container of  object with type &quot;%1&quot; is empty</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/DNAExportPluginTests.cpp" line="242"/>
@@ -467,158 +483,158 @@
 <context>
     <name>U2::ADVExportContext</name>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="123"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="124"/>
         <source>Export selected sequence region...</source>
         <translation>Export selected sequence region...</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="127"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="128"/>
         <source>Export sequence of selected annotations...</source>
         <translation>Export sequence of selected annotations...</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="135"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="136"/>
         <source>Align selected annotations...</source>
         <translation>Align selected annotations...</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="139"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="140"/>
         <source>Align selected annotations (amino acids)...</source>
         <translation>Align selected annotations (amino acids)...</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="143"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="144"/>
         <source>Align selected sequence regions...</source>
         <translation>Align selected sequence regions...</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="147"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="148"/>
         <source>Align selected sequence regions (amino acids)...</source>
         <translation>Align selected sequence regions (amino acids)...</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="151"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="152"/>
         <source>Export sequences by &apos;id&apos;</source>
         <translation>Export sequences by &apos;id&apos;</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="153"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="154"/>
         <source>Export sequences by &apos;accession&apos;</source>
         <translation>Export sequences by &apos;accession&apos;</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="155"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="156"/>
         <source>Export sequences by &apos;db_xref&apos;</source>
         <translation>Export sequences by &apos;db_xref&apos;</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="269"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="270"/>
         <source>Fetch sequences from remote database</source>
         <translation>Fetch sequences from remote database</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="272"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="273"/>
         <source>Fetch sequences by &apos;id&apos; %1</source>
         <translation>Fetch sequences by &apos;id&apos; %1</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="276"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="277"/>
         <source>Fetch sequences by &apos;accession&apos; %1</source>
         <translation>Fetch sequences by &apos;accession&apos; %1</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="280"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="281"/>
         <source>Fetch sequences by &apos;db_xref&apos; %1</source>
         <translation>Fetch sequences by &apos;db_xref&apos; %1</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="482"/>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="540"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="483"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="541"/>
         <source>Illegal parameter: input alignment is not empty!</source>
         <translation>Illegal parameter: input alignment is not empty!</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="495"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="496"/>
         <source>%1 is not a BLAST annotation</source>
         <translation>%1 is not a BLAST annotation</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="500"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="501"/>
         <source>Can not export BLAST annotations from different sequences</source>
         <translation>Can not export BLAST annotations from different sequences</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="503"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="504"/>
         <source>Can not find qualifier to set as a name for BLAST sequence</source>
         <translation>Can not find qualifier to set as a name for BLAST sequence</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="587"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="588"/>
         <source>Illegal parameter: Input alignment is not empty!</source>
         <translation>Illegal parameter: Input alignment is not empty!</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="661"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="662"/>
         <source>Create alignment</source>
         <translation>Create alignment</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="662"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="663"/>
         <source>Save alignment to file</source>
         <translation>Save alignment to file</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="306"/>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="437"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="307"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="438"/>
         <source>No annotations selected!</source>
         <translation>No annotations selected!</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="131"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="132"/>
         <source>Export annotations...</source>
         <translation>Export annotations...</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="158"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="159"/>
         <source>Export BLAST result to alignment</source>
         <translation>Export BLAST result to alignment</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="384"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="385"/>
         <source>No sequence regions selected!</source>
         <translation>No sequence regions selected!</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="484"/>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="542"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="485"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="543"/>
         <source>At least 2 annotations are required</source>
         <translation>At least 2 annotations are required</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="557"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="558"/>
         <source>Different sequence alphabets</source>
         <translation>Different sequence alphabets</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="615"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="616"/>
         <source>At least 2 sequences required</source>
         <translation>At least 2 sequences required</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="499"/>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="550"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="500"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="551"/>
         <source>No sequence object found</source>
         <translation>No sequence object found</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="509"/>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="571"/>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="629"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="510"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="572"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="630"/>
         <source>Alignment is too large</source>
         <translation>Alignment is too large</translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="609"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="610"/>
         <source>Can&apos;t derive alignment alphabet</source>
         <translation>Can&apos;t derive alignment alphabet</translation>
     </message>
@@ -626,7 +642,7 @@
 <context>
     <name>U2::AddExportedDocumentAndOpenViewTask</name>
     <message>
-        <location filename="../src/ExportTasks.cpp" line="73"/>
+        <location filename="../src/ExportTasks.cpp" line="74"/>
         <source>Document is already added to the project %1</source>
         <translation>Document is already added to the project %1</translation>
     </message>
@@ -685,17 +701,17 @@
 <context>
     <name>U2::DNAExportPlugin</name>
     <message>
-        <location filename="../src/DNAExportPlugin.cpp" line="46"/>
+        <location filename="../src/DNAExportPlugin.cpp" line="49"/>
         <source>DNA export</source>
         <translation>DNA export</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPlugin.cpp" line="46"/>
+        <location filename="../src/DNAExportPlugin.cpp" line="49"/>
         <source>Export and import support for DNA &amp; protein sequences</source>
         <translation>Export and import support for DNA &amp; protein sequences</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPlugin.cpp" line="49"/>
+        <location filename="../src/DNAExportPlugin.cpp" line="52"/>
         <source>Generate sequence...</source>
         <translation>Generate sequence...</translation>
     </message>
@@ -703,12 +719,12 @@
 <context>
     <name>U2::DNAExportService</name>
     <message>
-        <location filename="../src/DNAExportPlugin.cpp" line="84"/>
+        <location filename="../src/DNAExportPlugin.cpp" line="86"/>
         <source>DNA export service</source>
         <translation>DNA export service</translation>
     </message>
     <message>
-        <location filename="../src/DNAExportPlugin.cpp" line="84"/>
+        <location filename="../src/DNAExportPlugin.cpp" line="86"/>
         <source>Export and import support for DNA &amp; protein sequences</source>
         <translation>Export and import support for DNA &amp; protein sequences</translation>
     </message>
@@ -797,7 +813,7 @@
 <context>
     <name>U2::ExportAlignmentTask</name>
     <message>
-        <location filename="../src/ExportTasks.cpp" line="94"/>
+        <location filename="../src/ExportTasks.cpp" line="95"/>
         <source>Export alignment to &apos;%1&apos;</source>
         <translation>Export alignment to &apos;%1&apos;</translation>
     </message>
@@ -867,7 +883,7 @@
 <context>
     <name>U2::ExportDNAChromatogramTask</name>
     <message>
-        <location filename="../src/ExportTasks.cpp" line="210"/>
+        <location filename="../src/ExportTasks.cpp" line="211"/>
         <source>Export chromatogram to SCF</source>
         <translation>Export chromatogram to SCF</translation>
     </message>
@@ -943,17 +959,17 @@
 <context>
     <name>U2::ExportMSA2MSATask</name>
     <message>
-        <location filename="../src/ExportTasks.cpp" line="154"/>
+        <location filename="../src/ExportTasks.cpp" line="155"/>
         <source>Export alignment to alignment: %1</source>
         <translation>Export alignment to alignment: %1</translation>
     </message>
     <message>
-        <location filename="../src/ExportTasks.cpp" line="158"/>
+        <location filename="../src/ExportTasks.cpp" line="159"/>
         <source>Nothing to export: multiple alignment is empty</source>
         <translation>Nothing to export: multiple alignment is empty</translation>
     </message>
     <message>
-        <location filename="../src/ExportTasks.cpp" line="182"/>
+        <location filename="../src/ExportTasks.cpp" line="183"/>
         <source>Out of memory</source>
         <translation>Out of memory</translation>
     </message>
@@ -1019,7 +1035,7 @@
 <context>
     <name>U2::ExportMSA2SequencesTask</name>
     <message>
-        <location filename="../src/ExportTasks.cpp" line="120"/>
+        <location filename="../src/ExportTasks.cpp" line="121"/>
         <source>Export alignment to sequence: %1</source>
         <translation>Export alignment to sequence: %1</translation>
     </message>

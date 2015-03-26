@@ -185,7 +185,7 @@ QDWMActorPrototype::QDWMActorPrototype() {
     descriptor.setDisplayName(QObject::tr("Weight Matrix"));
     descriptor.setDocumentation(QObject::tr("Searches the sequence for transcription factor binding sites significantly similar to the specified weight matrix."));
 
-    Descriptor scd(SCORE_ATTR, QObject::tr("Min score"), QApplication::translate("PWMSearchDialog", "min_err_tip", 0));
+    Descriptor scd(SCORE_ATTR, QObject::tr("Min score"), QApplication::translate("PWMSearchDialog", "Minimum score to detect transcription factor binding site", 0));
     Descriptor mx(PROFILE_URL_ATTR, QObject::tr("Matrix"), QObject::tr("Path to profile"));
 
     attributes << new Attribute(scd, BaseTypes::NUM_TYPE(), false, 85);

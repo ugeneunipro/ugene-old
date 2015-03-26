@@ -166,13 +166,13 @@ void GTest_ExportNucleicToAminoAlignmentTask::prepare() {
     }
     Document* doc = getContext<Document>(this, inputFile);
     if (doc == NULL) {
-        stateInfo.setError(GTest::tr("context not found %1").arg(inputFile));
+        stateInfo.setError(GTest::tr(" context not found %1").arg(inputFile));
         return;
     }
 
     QList<GObject*> list = doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
     if (list.size() == 0) {
-        stateInfo.setError(GTest::tr("container of object with type \"%1\" is empty").arg(GObjectTypes::MULTIPLE_ALIGNMENT));
+        stateInfo.setError(GTest::tr(" container of object with type \"%1\" is empty").arg(GObjectTypes::MULTIPLE_ALIGNMENT));
         return;
     }
     MAlignmentObject* alObj = qobject_cast<MAlignmentObject*>(list.first());
@@ -203,13 +203,13 @@ QList<Task*> GTest_ExportNucleicToAminoAlignmentTask::onSubTaskFinished(Task* su
         Document* resdoc = resultLoadTask->getDocument();
 
         if (resdoc == NULL) {
-            stateInfo.setError(GTest::tr("context not found %1").arg(outputFileName));
+            stateInfo.setError(GTest::tr("context  not found %1").arg(outputFileName));
             return res;
         }
 
         QList<GObject*> reslist = resdoc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
         if (reslist.size() == 0) {
-            stateInfo.setError(GTest::tr("container of object with type \"%1\" is empty").arg(GObjectTypes::MULTIPLE_ALIGNMENT));
+            stateInfo.setError(GTest::tr("container  of object with type \"%1\" is empty").arg(GObjectTypes::MULTIPLE_ALIGNMENT));
             return res;
         }
         MAlignmentObject * resAlign = qobject_cast<MAlignmentObject*>(reslist.first());
@@ -226,13 +226,13 @@ Task::ReportResult GTest_ExportNucleicToAminoAlignmentTask::report() {
 
     Document* expdoc = getContext<Document>(this, expectedOutputFile);
     if (expdoc == NULL) {
-        stateInfo.setError(GTest::tr("context not found %1").arg(expectedOutputFile));
+        stateInfo.setError(GTest::tr("context not  found %1").arg(expectedOutputFile));
         return ReportResult_Finished;
     }
 
     QList<GObject*> explist = expdoc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
     if (explist.size() == 0) {
-        stateInfo.setError(GTest::tr("container of object with type \"%1\" is empty").arg(GObjectTypes::MULTIPLE_ALIGNMENT));
+        stateInfo.setError(GTest::tr("container of  object with type \"%1\" is empty").arg(GObjectTypes::MULTIPLE_ALIGNMENT));
         return ReportResult_Finished;
     }
     MAlignmentObject * expAlign = qobject_cast<MAlignmentObject*>(explist.first());

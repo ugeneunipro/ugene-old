@@ -6,12 +6,12 @@
     <message>
         <location filename="../src/BallPlugin.cpp" line="37"/>
         <source>BALL</source>
-        <translation></translation>
+        <translation>BALL</translation>
     </message>
     <message>
         <location filename="../src/BallPlugin.cpp" line="37"/>
         <source>A port of BALL framework for molecular surface calculation</source>
-        <translation></translation>
+        <translation>A port of BALL framework for molecular surface calculation</translation>
     </message>
 </context>
 </TS>

@@ -79,7 +79,7 @@ void PWMatrixBuildWorker::registerProto() {
     
     {
         Descriptor ad(ALG_ATTR, PWMatrixBuildWorker::tr("Weight algorithm"), 
-            QApplication::translate("PWMBuildDialog", "algo_tip", 0));
+            QApplication::translate("PWMBuildDialog", "Different weight algorithms uses different functions to build weight matrices. It allows us to get better precision on different data sets. Log-odds, NLG and Match algorithms are sensitive to input matrices with zero values, so some of them may not work on those matrices.", 0));
         a << new Attribute(ad, BaseTypes::STRING_TYPE(), true, BuiltInPWMConversionAlgorithms::BVH_ALGO);
     }
 
