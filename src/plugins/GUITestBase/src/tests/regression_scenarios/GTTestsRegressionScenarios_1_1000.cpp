@@ -235,6 +235,36 @@ GUI_TEST_CLASS_DEFINITION(test_0734) {
     CHECK_SET_ERR(names.last() == "Sequence4",
         QString("Inserted sequence name mismatch. Expected: %1. Actual: %2").arg("Sequence4").arg(names.last()));
 }
+GUI_TEST_CLASS_DEFINITION(test_0776) {
+/* 1. Open WD.
+ * 2. Create a scheme with the "Search for TFBS with weight matrix" element.
+ * 3. Run the scheme with following parameters: input sequence - human_t1, input weight matrix - position_weight_matrix/UniPROBE/Cell08/Alx3_3418.2.pwm.
+ *   Expected state: error report "Bad sequence supplied to Weight Matrix Search" doesn't appear
+*/
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    WorkflowProcessItem* readWM = GTUtilsWorkflowDesigner::addElement(os, "Read Weight Matrix");
+    GTUtilsWorkflowDesigner::setParameter(os, "Input file(s)", QDir(dataDir).absolutePath() + "/position_weight_matrix/UniPROBE/Cell08/Alx3_3418.2.pwm", GTUtilsWorkflowDesigner::textValue);
+
+    WorkflowProcessItem* search = GTUtilsWorkflowDesigner::addElement(os, "Search for TFBS with Weight Matrix");
+    //Search for TFBS with Weight Matrix
+
+    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+
+    GTUtilsWorkflowDesigner::connect(os, read, search);
+    GTUtilsWorkflowDesigner::connect(os, readWM, search);
+    GTUtilsWorkflowDesigner::connect(os, search, write);
+
+    GTUtilsWorkflowDesigner::click(os, write);
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", "genbank", GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", QDir(sandBoxDir).absolutePath() + "/test_0776.gb", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0814) {
 //    1. Open UGENE preferences in main menu.
