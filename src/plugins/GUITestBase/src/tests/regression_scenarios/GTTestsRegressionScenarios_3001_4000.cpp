@@ -5314,7 +5314,8 @@ GUI_TEST_CLASS_DEFINITION(test_3938) {
     GTUtilsWorkflowDesigner::addInputFile(os, "File(s) with variations", testDir + "_common_data/vcf/valid.vcf");
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    CHECK_SET_ERR(!lt.getError().contains("finished with error", Qt::CaseInsensitive), "Unexpected error message in the log");
+    QString error = lt.getError();
+    CHECK_SET_ERR(!error.contains("finished with error", Qt::CaseInsensitive), "Unexpected error message in the log: " + error);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3950) {

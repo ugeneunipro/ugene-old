@@ -1535,7 +1535,7 @@ GUI_TEST_CLASS_DEFINITION( test_2172 ) {
         "searchIdsButton" ) );
     CHECK_SET_ERR( NULL != fetchButton, "Cannot find the \"Fetch IDs\" button" );
     fetchButton->click( );
-    GTGlobals::sleep( 2000 );
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 5. Check error message in log
     CHECK_SET_ERR( logTracer.hasError( ), "Error message expected in log" );
