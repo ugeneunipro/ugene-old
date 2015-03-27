@@ -289,7 +289,8 @@ void GTFFormat::load(IOAdapter *io, QList<GObject *> &objects, const U2DbiRef &d
         }
         if (!annotTable) {
             if (objectsCountLimit > 0 && objects.size() >= objectsCountLimit) {
-                os.setError(tr("File \"%1\" contains too much sequences to be displayed.").arg(io->getURL().getURLString()));
+                os.setError(tr("File \"%1\" contains too many annotation tables to be displayed. "
+                    "However, you can process these data using pipelines built with Workflow Designer.").arg(io->getURL().getURLString()));
                 break;
             }
             QVariantMap objectHints;

@@ -310,7 +310,9 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
         }
         else {
             if (objectsCountLimit > 0 && objects.size() >= objectsCountLimit) {
-                os.setError(FastqFormat::tr("File \"%1\" contains too much sequences to be displayed.")
+                os.setError(FastqFormat::tr("File \"%1\" contains too many sequences to be displayed. "
+                    "However, you can process these data using instruments from the menu <i>Tools -> NGS data analysis</i> "
+                    "or pipelines built with Workflow Designer.")
                     .arg(io->getURL().getURLString()));
                 break;
             }

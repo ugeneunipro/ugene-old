@@ -124,7 +124,9 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 
     for (int i=0; !os.isCoR(); i++, ++num_sequence) {
         if (objectsCountLimit > 0 && objects.size() >= objectsCountLimit) {
-            os.setError(EMBLGenbankAbstractDocument::tr("File \"%1\" contains too much sequences to be displayed.")
+            os.setError(EMBLGenbankAbstractDocument::tr("File \"%1\" contains too many sequences to be displayed. "
+                "However, you can process these data using instruments from the menu <i>Tools -> NGS data analysis</i> "
+                "or pipelines built with Workflow Designer.")
                 .arg(io->getURL().getURLString()));
             break;
         }
