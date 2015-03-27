@@ -191,6 +191,25 @@
 namespace U2 {
 
 namespace GUITest_regression_scenarios {
+GUI_TEST_CLASS_DEFINITION(test_0700) {
+/* Selecting "Cancel" in the "Import BAM file" dialog causes an error (UGENE-700)
+ * 1. Open a _common_data/scenarios/assembly/example-alignment.bam
+ * 2. Click "Cancel".
+ *   Expected state: UGENE not crashed
+*/
+    class CancelScenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            GTGlobals::sleep(500);
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, new CancelScenario()));
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/assembly/example-alignment.bam");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0734) {
     //1. Open "_common_data/fasta/test.TXT".
     GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/test.TXT");
