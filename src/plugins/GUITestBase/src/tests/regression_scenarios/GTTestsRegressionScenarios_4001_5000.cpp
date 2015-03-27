@@ -43,6 +43,7 @@
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsWorkflowDesigner.h"
 #include "GTUtilsDialog.h"
+#include "GTUtilsWizard.h"
 
 #include "api/GTAction.h"
 #include "api/GTCheckBox.h"
@@ -1017,6 +1018,29 @@ GUI_TEST_CLASS_DEFINITION(test_4127) {
     GTUtilsDialog::waitForDialog(os, new OrfDialogFiller(os, new OrfScenario));
     GTWidget::click(os, GTAction::button(os, "Find ORFs"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4134){
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
+            
+            QString trimBothValue = GTUtilsWizard::getParameter(os, "Trim both ends").toString();
+            
+            CHECK_SET_ERR(trimBothValue == "True", "unexpected 'Trim both ends value' : " + trimBothValue);
+
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Raw DNA-Seq Data Processing Wizard", new custom()));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Raw DNA-Seq Data Processing", QStringList()<<"Single-end"));
+    GTUtilsWorkflowDesigner::addSample(os, "Raw DNA-Seq data processing");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4141) {

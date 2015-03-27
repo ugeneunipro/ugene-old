@@ -292,6 +292,9 @@ workflow "Processing of raw DNA-Seq single-end reads"{
                         QualityTrim.len-id {
                             label:"Min length";
                         }
+                        QualityTrim.both-ends {
+                            label:"Trim both ends";
+                        }
                         CutAdaptFastq.adapters-url {
                             label:Adapters;
                         }

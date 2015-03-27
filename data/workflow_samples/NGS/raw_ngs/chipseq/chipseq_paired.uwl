@@ -425,11 +425,17 @@ workflow "Processing of raw ChIP-Seq paired-end reads"{
                         QualityTrim.len-id {
                             label:"Reads length";
                         }
+                        QualityTrim.both-ends {
+                            label:"Trim both ends";
+                        }
                         QualityTrim-1.qual-id {
                             label:"Base quality for pairs";
                         }
                         QualityTrim-1.len-id {
                             label:"Reads length for pairs";
+                        }
+                        QualityTrim-1.both-ends {
+                            label:"Trim both ends for pairs";
                         }
                         CutAdaptFastq.adapters-url {
                             label:Adapters;

@@ -178,6 +178,9 @@ workflow "Processing of raw RNA-Seq single-end reads"{
                         QualityTrim.len-id {
                             label:"Min length";
                         }
+                        QualityTrim.both-ends {
+                            label:"Trim both ends";
+                        }
                         CutAdaptFastq.adapters-url {
                             label:Adapters;
                         }

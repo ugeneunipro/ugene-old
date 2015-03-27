@@ -273,7 +273,7 @@ void QualityTrimWorkerFactory::init() {
         a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(BaseNGSWorker::DEFAULT_NAME));
         a << new Attribute( qualT, BaseTypes:: NUM_TYPE(), false, QVariant(30));
         a << new Attribute( lenT, BaseTypes::NUM_TYPE(), false, QVariant(0));
-        a << new Attribute( bothD, BaseTypes::BOOL_TYPE(), false, false);
+        a << new Attribute( bothD, BaseTypes::BOOL_TYPE(), false, true);
     }
 
     QMap<QString, PropertyDelegate*> delegates;
