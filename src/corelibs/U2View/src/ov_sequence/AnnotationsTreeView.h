@@ -306,7 +306,7 @@ public:
 
     //TODO: keep values in U2Qualifier struct
     const QString qName;
-    const QString qValue;
+    QString qValue;
 };
 
 class FindQualifierTaskSettings{

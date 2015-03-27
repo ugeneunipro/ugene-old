@@ -2246,6 +2246,7 @@ AVQualifierItem::AVQualifierItem(AVAnnotationItem* parent, const U2Qualifier& q)
 : AVItem(parent, AVItemType_Qualifier), qName(q.name), qValue(q.value)
 {
     setText(AnnotationsTreeView::COLUMN_NAME, qName);
+    qValue = qValue.replace('\n'," ");
     setText(AnnotationsTreeView::COLUMN_VALUE, qValue);
 
     processLinks(qName, qValue, 1);
