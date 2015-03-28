@@ -3801,7 +3801,7 @@ GUI_TEST_CLASS_DEFINITION(test_2566) {
 
 //4. Choose the algorithm: Substitute.
     GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Substitute");
-
+    
 //5. Enter the "Should match" value: 97%
     GTUtilsOptionPanelSequenceView::setMatchPercentage(os, 97);
 

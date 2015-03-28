@@ -191,6 +191,64 @@
 namespace U2 {
 
 namespace GUITest_regression_scenarios {
+
+GUI_TEST_CLASS_DEFINITION(test_0407) {
+    // 1. Open _common_data/scenarios/_regression/407/trail.fas
+    // Expected state: a message box appears
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/_regression/407/trail.fas");
+}
+GUI_TEST_CLASS_DEFINITION(test_0490) {
+    // 1. Select "Tools > Multiple alignment > [any item]"
+    // 2. In the dialog appeared select _common_data/scenarios/_regression/490/fasta-example.fa
+    // 3. Click "Align"
+    // Expected stat:  UGENE not crashes
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/490/fasta-example.fa"); 
+    GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign"));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+}
+GUI_TEST_CLASS_DEFINITION(test_0677) {
+    // 1. Open the file bamExample.bam.
+    // 2. Check the box 'Import unmapped reads' and import the file.
+    // Expected state: UGENE not crashed
+
+    GTLogTracer l;     
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_0677/test_0677.ugenedb", "", "", true));
+    GTFileDialog::openFile(os, testDir + "_common_data/bam/", "1.bam");
+    GTUtilsLog::check(os, l);
+}
+GUI_TEST_CLASS_DEFINITION(test_0678) {
+    // 1. Open samples/PDB/1CF7.pdb
+    // 2. Navigate in annotation tree, unfolding following items: {1CF7 chain 1 annotation —> chain_info (0, 1) —> chain_info}
+    // Expected state: UGENE not crashes
+
+    GTFileDialog::openFile(os, dataDir + "samples/PDB/1CF7.pdb");
+    GTUtilsAnnotationsTreeView::selectItems(os, QStringList() << "chain_info");
+
+}
+GUI_TEST_CLASS_DEFINITION(test_0685) {
+    // 1. Do menu tools->Blast+ Search (ext. tools must be configured)
+    // 2. Set next parameters:
+    // {Select input file} _common_data\scenarios\external_tools\blast\SequenceLength_00003000.txt
+    // {Select search} blastp
+    // Expected state: UGENE not crashes
+    BlastAllSupportDialogFiller::Parameters blastParams;
+    blastParams.runBlast = true;
+    blastParams.programNameText = "blastp";
+    blastParams.withInputFile = true;
+    blastParams.inputPath = testDir + "_common_data/scenarios/external_tools/blast/SequenceLength_00003000.txt";
+    blastParams.dbPath = testDir + "_common_data/cmdline/external-tool-support/blastplus/human_T1/human_T1.nhr";
+    GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(blastParams, os));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::BLAST_MENU << ToolsMenu::BLAST_SEARCHP);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+}                                     
+    
 GUI_TEST_CLASS_DEFINITION(test_0700) {
 /* Selecting "Cancel" in the "Import BAM file" dialog causes an error (UGENE-700)
  * 1. Open a _common_data/scenarios/assembly/example-alignment.bam
@@ -235,6 +293,23 @@ GUI_TEST_CLASS_DEFINITION(test_0734) {
     CHECK_SET_ERR(names.last() == "Sequence4",
         QString("Inserted sequence name mismatch. Expected: %1. Actual: %2").arg("Sequence4").arg(names.last()));
 }
+GUI_TEST_CLASS_DEFINITION(test_0746) {
+    // 1. Open file _common_data\scenarios\_regression\764\short.fa
+    // 2. Make 'Detailed view' visible (if not)
+    // Expected state: 'Show amino translation' and 'Complement strand' buttons are enabled (not grey)
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/_regression/764/short.fa");
+    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
+    Runnable *chooser = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    QAbstractButton* translation = GTAction::button(os, "translation_action");
+    CHECK_SET_ERR(translation -> isEnabled() == true, "button is not enabled");
+    GTGlobals::sleep();
+    QAbstractButton* complement = GTAction::button(os, "complement_action");
+    CHECK_SET_ERR(complement -> isEnabled() == true, "button is not enabled");
+}
 GUI_TEST_CLASS_DEFINITION(test_0776) {
 /* 1. Open WD.
  * 2. Create a scheme with the "Search for TFBS with weight matrix" element.
@@ -242,7 +317,6 @@ GUI_TEST_CLASS_DEFINITION(test_0776) {
  *   Expected state: error report "Bad sequence supplied to Weight Matrix Search" doesn't appear
 */
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-
     WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
@@ -265,7 +339,71 @@ GUI_TEST_CLASS_DEFINITION(test_0776) {
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
+GUI_TEST_CLASS_DEFINITION(test_0779) {
+    // 1.Create a simple scheme with two elements: 
+    // The Read sequence element
+    // The Write annotations element
+    // 2. Connect the elements.
+    // 3. Switch the "File format" property of the Write annotations element from "genbank" (defualt) to "csv".
+    // 4. Click on the scheme area and you will get the crash.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Annotations");
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", "csv", GTUtilsWorkflowDesigner::comboValue);
+    GTGlobals::sleep(500);
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), GTUtilsWorkflowDesigner::getWorker(os, "Write Annotations"));
 
+}
+GUI_TEST_CLASS_DEFINITION(test_0801) {
+    // 1. Open human_T1.fa sequence
+    // 2. Open find pattern tab on options panel {Ctrl+f}. Fill fields with next data:
+    // {Search for} AAAGCTTTA
+    // {Region} Custom region 2 5
+    // Expected state: UGENE does not crash}
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsOptionsPanel::runFindPatternWithHotKey("AAAGCTTTA", os);
+    GTUtilsOptionPanelSequenceView::setRegionType(os, "Custom region");
+    GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editStart")), "2");
+    GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editEnd")), "5");
+}
+
+
+GUI_TEST_CLASS_DEFINITION(test_0812) {
+    // 1. Create a "seq.txt" file in <some_path> location.
+    // 2. Click "Create element with command line tool".
+    // 3. Input a name.
+    // 4. Specify a slot.
+    // 5. There is no need to add a parameter.
+    // 6. Input the following execution string: "copy <some_path>\seq.txt <some_path>\seq2.txt" (change <some_path> to your location).
+    // or the following execution string: "copy "<some_path>\seq.txt" "<some_path>\seq3.txt"" (with quotes for paths).
+    // 7. Execute the schema (that contains this element only).
+    // => The schema executes successfully.
+    // 4. Verify whether the file has been copied.
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);  
+    CreateElementWithCommandLineToolFiller::ElementWithCommandLineSettings settings;
+    settings.elementName = "Element_0812";
+
+    QList<CreateElementWithCommandLineToolFiller::InOutData> input;
+    CreateElementWithCommandLineToolFiller::InOutDataType inOutDataType;
+    inOutDataType.first = CreateElementWithCommandLineToolFiller::Sequence;
+    inOutDataType.second = "FASTA";
+    input << CreateElementWithCommandLineToolFiller::InOutData("in1",
+        inOutDataType);
+    settings.input = input;
+    settings.executionString = "copy _common_data/scenarios/_regression/812/seq.txt _common_data/scenarios/_regression/812/seq2.txt";
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Continue"));
+
+    GTUtilsDialog::waitForDialog(os, new CreateElementWithCommandLineToolFiller(os, settings));
+    QAbstractButton *createElement = GTAction::button(os, "createElementWithCommandLineTool");
+    GTWidget::click(os, createElement);
+    GTGlobals::sleep();
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Ok"));
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
 GUI_TEST_CLASS_DEFINITION(test_0814) {
 //    1. Open UGENE preferences in main menu.
 //    Expected state: "Application settings" dialog appeared.
@@ -357,7 +495,21 @@ GUI_TEST_CLASS_DEFINITION(test_0818) {
     QAbstractButton *createElement = GTAction::button(os, "createElementWithCommandLineTool");
     GTWidget::click(os, createElement);
 }
+GUI_TEST_CLASS_DEFINITION(test_0821) {
+    // 1. Open files samples/genbank/sars.gb and samples/genbank/murine.gb in merge mode
+    // Expected state: annotations in both files has right coordinates
 
+    GTSequenceReadingModeDialog::mode = GTSequenceReadingModeDialog::Merge;
+    GTUtilsDialog::waitForDialog(os, new GTSequenceReadingModeDialogUtils(os));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils_list(os, dataDir + "samples/genbank/", QStringList() << "sars.gb" << "murine.gb"));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__OPEN_PROJECT);
+
+    GTGlobals::sleep(5000);
+
+    // TODO: QList<U2Region> cds = GTUtilsAnnotationsTreeView::getAnnotatedRegionsOfGroup(os, "contig (0, 2)");
+    // TODO: CHECK_SET_ERR( cds.contains(U2Region(0, 5833)), "No 1..5833 region");
+
+}
 GUI_TEST_CLASS_DEFINITION(test_0844) {
 /* 1. Open "samples/human_t1".
  * 2. In advanced settings of Tandem Finder choose "Suffix array" (unoptimized algorithm)
@@ -501,8 +653,6 @@ GUI_TEST_CLASS_DEFINITION(test_0861_4) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::AnnotationsHighlighting);
-
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0866) {
