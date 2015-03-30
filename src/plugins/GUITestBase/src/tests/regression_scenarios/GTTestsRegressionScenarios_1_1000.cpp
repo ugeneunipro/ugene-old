@@ -604,6 +604,89 @@ GUI_TEST_CLASS_DEFINITION(test_0821) {
     // TODO: CHECK_SET_ERR( cds.contains(U2Region(0, 5833)), "No 1..5833 region");
 
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0828) {
+//     1. Open WD.
+//     2. Add to scheme "Sequence marker" element.
+//     3. In property editor groupbox "Parameters" press "Add" button.
+//     Expected state: "Create marker group" dialog appears, its combobox "Marker group type" contains field "Sequence name markers".
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addElement(os, "Sequence Marker");
+    GTUtilsWorkflowDesigner::click(os, "Sequence Marker");
+
+    QToolButton* addButton = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "addButton"));
+    CHECK_SET_ERR( addButton != NULL, "AddButton not found!");
+
+    class OkClicker : public Filler {
+    public:
+        OkClicker(U2OpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+
+            QComboBox* combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "typeBox"));
+            GTComboBox::setIndexWithText(os, combo, "Sequence name markers", true);
+
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Cancel);
+            CHECK(NULL != button, );
+            GTWidget::click(os, button);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os));
+    GTWidget::click(os, addButton);
+    GTGlobals::sleep(2000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0829) {
+//1. Add input files into CAP3, for example, 1.fa, 2.fa, 3.fa and press "Run". The result contig name will be "3.cap.ace".
+//2. Add input files into CAP3, for example, 4.fa, 5.fa, 3.fa and press "Run". The result contig name will be "3.cap.ace". But error occurs:
+//Bug state:
+//[20:46:07] 'CAP3SupportTask' task failed: Subtask {Opening view for document: 3.cap.ace} is failed: Subtask {Adding document to project: D:/Documents/tests/3.cap.ace} is failed: Document is already added to the project D:/Documents/tests/3.cap.ace.
+//Expected state:
+//Dialog with the following options appears: rewrite the existent file, rename the new file or cancel.
+    GTLogTracer lt;
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    WorkflowProcessItem *readSeq = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    WorkflowProcessItem *cap3 = GTUtilsWorkflowDesigner::addElement(os, "Assembly Sequences with CAP3");
+    
+    GTUtilsWorkflowDesigner::connect(os, readSeq, cap3);
+    
+    GTUtilsWorkflowDesigner::click(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/_regression/829", "1.fa");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/_regression/829", "2.fa");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/_regression/829", "3.fa");
+    
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    QWidget *w = QApplication::activeWindow();
+    //GTWidget::click(os, GTWidget::findWidget(os, "toggleDashboard", w));
+    GTWidget::click(os,
+        GTToolbar::getWidgetForActionName(os,
+        GTToolbar::getToolbar(os, "mwtoolbar_activemdi")
+        , "toggleDashboard"));
+
+    GTUtilsWorkflowDesigner::removeItem(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::removeItem(os, "Assembly Sequences with CAP3");
+
+    readSeq = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    cap3 = GTUtilsWorkflowDesigner::addElement(os, "Assembly Sequences with CAP3");
+
+    GTUtilsWorkflowDesigner::connect(os, readSeq, cap3);
+
+    GTUtilsWorkflowDesigner::click(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/_regression/829", "1.fa");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/_regression/829", "2.fa");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/_regression/829", "4.fa");
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    CHECK_SET_ERR(!lt.hasError(), "Log contains error");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0844) {
 /* 1. Open "samples/human_t1".
  * 2. In advanced settings of Tandem Finder choose "Suffix array" (unoptimized algorithm)

@@ -717,6 +717,7 @@ void WorkflowView::createActions() {
 
     { // toggle dashboard action
         toggleDashboard = new QAction(this);
+        toggleDashboard->setObjectName("toggleDashboard");
         connect(toggleDashboard, SIGNAL(triggered()), SLOT(sl_toggleDashboard()));
     }
 
