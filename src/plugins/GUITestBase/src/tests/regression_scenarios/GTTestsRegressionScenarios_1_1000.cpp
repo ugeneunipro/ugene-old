@@ -204,7 +204,7 @@ GUI_TEST_CLASS_DEFINITION(test_0490) {
     // 3. Click "Align"
     // Expected stat:  UGENE not crashes
 
-    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/490/fasta-example.fa"); 
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/490/fasta-example.fa");
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign"));
@@ -217,14 +217,14 @@ GUI_TEST_CLASS_DEFINITION(test_0677) {
     // 2. Check the box 'Import unmapped reads' and import the file.
     // Expected state: UGENE not crashed
 
-    GTLogTracer l;     
+    GTLogTracer l;
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_0677/test_0677.ugenedb", "", "", true));
     GTFileDialog::openFile(os, testDir + "_common_data/bam/", "1.bam");
     GTUtilsLog::check(os, l);
 }
 GUI_TEST_CLASS_DEFINITION(test_0678) {
     // 1. Open samples/PDB/1CF7.pdb
-    // 2. Navigate in annotation tree, unfolding following items: {1CF7 chain 1 annotation —> chain_info (0, 1) —> chain_info}
+    // 2. Navigate in annotation tree, unfolding following items: {1CF7 chain 1 annotation <97> chain_info (0, 1) <97> chain_info}
     // Expected state: UGENE not crashes
 
     GTFileDialog::openFile(os, dataDir + "samples/PDB/1CF7.PDB");
@@ -247,8 +247,8 @@ GUI_TEST_CLASS_DEFINITION(test_0685) {
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::BLAST_MENU << ToolsMenu::BLAST_SEARCHP);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-}                                     
-    
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0700) {
 /* Selecting "Cancel" in the "Import BAM file" dialog causes an error (UGENE-700)
  * 1. Open a _common_data/scenarios/assembly/example-alignment.bam
@@ -310,6 +310,43 @@ GUI_TEST_CLASS_DEFINITION(test_0746) {
     QAbstractButton* complement = GTAction::button(os, "complement_action");
     CHECK_SET_ERR(complement -> isEnabled() == true, "button is not enabled");
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0774) {
+//    1. Create new scheme in Workflow Designer: "Read sequence" > "Write sequence".
+//    2. Input two files in the "Input files" parameter of the "Read sequence" element.
+//    3. Select "Merge" in the "Mode" parameter of the "Read sequence" element.
+//    4. Set location of an output data file in the "Output file" parameter of the "Write sequence".
+//    5. Run the schema.
+//    Expected result: The scheme finished successfully.
+//    6. Open the result file in Sequence View.
+//    Expected result: The result file contains two sequences. Each sequence is merged sequences from
+//    each input file respectively.
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    CHECK_SET_ERR(read != NULL, "Read Sequence element not found");
+//    GTUtilsWorkflowDesigner::setDatasetInputFolder(os, dataDir + "samples/Genbank");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Genbank/", "sars.gb");
+    GTUtilsWorkflowDesigner::setParameter(os, "Mode", "Merge", GTUtilsWorkflowDesigner::comboValue);
+
+    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+    CHECK_SET_ERR(write != NULL, "Write Sequence element not found");
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", QDir(sandBoxDir).absolutePath() +"/test_0774", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::connect(os, read, write);
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+    GTFileDialog::openFile(os, sandBoxDir + "/test_0774");
+
+    CHECK_SET_ERR( GTUtilsSequenceView::getSeqWidgetsNumber(os) == 2, "Incorrect count of sequences");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0776) {
 /* 1. Open WD.
  * 2. Create a scheme with the "Search for TFBS with weight matrix" element.
@@ -339,8 +376,65 @@ GUI_TEST_CLASS_DEFINITION(test_0776) {
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0778) {
+//    1. Open file _common_data\scenarios\_regression\778\mixed.fa
+//    2. Open menu {Settings->Prfrences}
+//    Expected state: Application settings dialog opened
+//    3. Select File format section, set {Create annotations for case switchings:} "Upper case annotation" and press OK button
+//    Expected state: sequence view reopened, sequence marked with two "upper_case" annotations with coodinates 1..4, 8..10
+//    4. Open menu {Settings->Prfrences}
+//    Expected state: Application settings dialog opened
+//    5. Select File format section, set {Create annotations for case switchings:} "Lower case annotation" and press OK button
+//    Expected state: sequence view reopened, sequence marked with two "upper_case" annotations with coodinates 5..7, 11..13
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/778/mixed.fa");
+
+    class CaseAnnotations : public CustomScenario {
+    public:
+        CaseAnnotations(QString name = QString())
+            : name(name) {}
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            AppSettingsDialogFiller::openTab(os, AppSettingsDialogFiller::FileFormat);
+
+            QComboBox* caseCombo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "caseCombo"));
+            CHECK_SET_ERR(caseCombo != NULL, "No caseCombo");
+            GTComboBox::setIndexWithText(os, caseCombo, name);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    private:
+        QString name;
+    };
+
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new CaseAnnotations("Use upper case annotations")));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+    GTGlobals::sleep();
+
+    QList<U2Region> regions = GTUtilsAnnotationsTreeView::getAnnotatedRegions(os);
+    CHECK_SET_ERR( regions.size() == 2, "Annotated regions number is incorrect");
+    CHECK_SET_ERR( regions.contains( U2Region(0, 4) ), "No annotation 1..4");
+    CHECK_SET_ERR( regions.contains( U2Region(7, 3) ), "No annotation 8..10");
+
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new CaseAnnotations("Use lower case annotations")));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+    GTGlobals::sleep();
+
+    regions = GTUtilsAnnotationsTreeView::getAnnotatedRegions(os);
+    CHECK_SET_ERR( regions.size() == 2, "Annotated regions number is incorrect");
+    CHECK_SET_ERR( regions.contains( U2Region(4, 3) ), "No annotation 1..4");
+    CHECK_SET_ERR( regions.contains( U2Region(10, 3) ), "No annotation 8..10");
+
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0779) {
-    // 1.Create a simple scheme with two elements: 
+    // 1.Create a simple scheme with two elements:
     // The Read sequence element
     // The Write annotations element
     // 2. Connect the elements.
@@ -380,7 +474,7 @@ GUI_TEST_CLASS_DEFINITION(test_0812) {
     // => The schema executes successfully.
     // 4. Verify whether the file has been copied.
 
-    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);  
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     CreateElementWithCommandLineToolFiller::ElementWithCommandLineSettings settings;
     settings.elementName = "Element_0812";
 
