@@ -4012,7 +4012,7 @@ GUI_TEST_CLASS_DEFINITION(test_3687_2) {
     //3. Press "Ok".
     //Expected: the finishes with error about sequences amount.
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
-    GTUtilsNotifications::waitForNotification(os, true, "contains too much sequences to be displayed");
+    GTUtilsNotifications::waitForNotification(os, true, "contains too many sequences to be displayed");
     GTFileDialog::openFile(os, testDir + "_common_data/NGS_tutorials/RNA-Seq_Analysis/Prepare_Raw_Data/lymph.fastq");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }

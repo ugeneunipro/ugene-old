@@ -227,7 +227,7 @@ GUI_TEST_CLASS_DEFINITION(test_0678) {
     // 2. Navigate in annotation tree, unfolding following items: {1CF7 chain 1 annotation —> chain_info (0, 1) —> chain_info}
     // Expected state: UGENE not crashes
 
-    GTFileDialog::openFile(os, dataDir + "samples/PDB/1CF7.pdb");
+    GTFileDialog::openFile(os, dataDir + "samples/PDB/1CF7.PDB");
     GTUtilsAnnotationsTreeView::selectItems(os, QStringList() << "chain_info");
 
 }
@@ -501,7 +501,7 @@ GUI_TEST_CLASS_DEFINITION(test_0821) {
 
     GTSequenceReadingModeDialog::mode = GTSequenceReadingModeDialog::Merge;
     GTUtilsDialog::waitForDialog(os, new GTSequenceReadingModeDialogUtils(os));
-    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils_list(os, dataDir + "samples/genbank/", QStringList() << "sars.gb" << "murine.gb"));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils_list(os, dataDir + "samples/Genbank/", QStringList() << "sars.gb" << "murine.gb"));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__OPEN_PROJECT);
 
     GTGlobals::sleep(5000);

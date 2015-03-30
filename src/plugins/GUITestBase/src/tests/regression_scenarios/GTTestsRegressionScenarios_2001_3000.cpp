@@ -1267,6 +1267,9 @@ GUI_TEST_CLASS_DEFINITION( test_2152 ){
 GUI_TEST_CLASS_DEFINITION( test_2156 ){
 //    1. Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/","COI.aln");
+    GTUtilsProjectTreeView::openView(os);
+    GTUtilsProjectTreeView::toggleView(os);
+    GTGlobals::sleep(500);
 //    2. Select six symbols (45-50) of the first line.
     GTUtilsMSAEditorSequenceArea::selectArea(os,QPoint(44,0),QPoint(49,0));
 //    3. Press BACKSPACE.

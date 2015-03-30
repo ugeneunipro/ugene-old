@@ -3308,8 +3308,7 @@ GUI_TEST_CLASS_DEFINITION(test_1315_1) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "primer3_action"));
     GTUtilsDialog::waitForDialog(os, new Primer3DialogFiller(os, settings));
 
-    GTMouseDriver::click(os);
-    GTMouseDriver::click(os, Qt::RightButton);
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsAnnotationsTreeView::findItem(os, "top_primers  (0, 5)");
@@ -3329,8 +3328,7 @@ GUI_TEST_CLASS_DEFINITION(test_1315_2) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "primer3_action"));
     GTUtilsDialog::waitForDialog(os, new Primer3DialogFiller(os, settings));
 
-    GTMouseDriver::click(os);
-    GTMouseDriver::click(os, Qt::RightButton);
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsAnnotationsTreeView::findItem(os, "top_primers  (0, 5)");
