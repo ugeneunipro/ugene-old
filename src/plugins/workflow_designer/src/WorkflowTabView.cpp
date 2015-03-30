@@ -57,6 +57,7 @@ private:
 WorkflowTabView::WorkflowTabView(WorkflowView *_parent)
 : QTabWidget(_parent), parent(_parent)
 {
+    setUsesScrollButtons(true);
     setTabPosition(QTabWidget::North);
     tabBar()->setShape(QTabBar::TriangularNorth);
     tabBar()->setMovable(true);
