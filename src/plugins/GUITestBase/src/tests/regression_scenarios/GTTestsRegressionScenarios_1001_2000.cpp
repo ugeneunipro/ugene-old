@@ -1616,6 +1616,33 @@ GUI_TEST_CLASS_DEFINITION(test_1123_1){
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1124){
+//    1. Select {Tools->DNA assembly->Contig assembly with CAP3} in main menu ("CAP3" external tool must be installed).
+//    Expected state: "Contig Assembly With CAP3" dialog appeared.
+
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            GTGlobals::sleep();
+            QWidget *dialog = QApplication::activeModalWidget();
+            //    2. Hover the {Input files (long DNA reads to assembly)} field with mouse and wait the tooltip appeares.
+            QListWidget* seqList = GTWidget::findExactWidget<QListWidget*>(os, "seqList", dialog);
+            GTWidget::click(os, seqList);
+            GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(20,20));
+            GTGlobals::sleep(3000);
+            //    Expected state: tooltip is presented.
+            GTUtilsToolTip::checkExistingToolTip(os, "The quality scores for FASTA sequences can be provided in an additional file");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new CAP3SupportDialogFiller(os, new Scenario()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::SANGER_MENU
+                                                      << ToolsMenu::SANGER_DENOVO));
+    GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1133) {
 //     1. Open human_t1.fa
 //     2. Open Smith-Waterman search dialog
