@@ -152,6 +152,16 @@ void GTComboBox::checkValues(U2OpStatus& os, QComboBox *comboBox, const QStringL
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "checkValuesPresence"
+void GTComboBox::checkValuesPresence(U2OpStatus &os, QComboBox *comboBox, const QStringList &values){
+    Q_UNUSED(os)
+    foreach (QString s, values) {
+        int index = comboBox->findText(s);
+        GT_CHECK(index != -1, "text not found " + s);
+    }
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }

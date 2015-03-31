@@ -102,6 +102,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ReplaceSubsequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_assembly/ExportConsensusDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
@@ -1051,6 +1052,43 @@ GUI_TEST_CLASS_DEFINITION(test_0896) {
     GTFileDialog::openFile(os, sandBoxDir, "/test_0896out.bam");
 
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0899){
+//    1) Import data\samples\Assembly\chrM.sorted.bam
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "chrM.sorted.bam.ugenedb"));
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sorted.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            //    Expected state:
+            //        1) opened dialog have File formats: {FASTA, FASTQ, GFF, Genbank, Vector NTI sequence}
+            QComboBox* documentFormatComboBox = GTWidget::findExactWidget<QComboBox*>(os, "documentFormatComboBox", dialog);
+            QStringList comboList;
+            comboList<<"FASTA"<<"FASTQ"<<"GFF"<<"Genbank"<<"Vector NTI sequence";
+            GTComboBox::checkValuesPresence(os, documentFormatComboBox, comboList);
+
+            //        2) region: {whole sequence, visible, custom}
+            QComboBox* region_type_combo = GTWidget::findExactWidget<QComboBox*>(os, "region_type_combo", dialog);
+            QStringList regionComboList;
+            regionComboList<<"Whole sequence"<<"Visible"<<"Custom region";
+            GTComboBox::checkValuesPresence(os, region_type_combo, regionComboList);
+
+            GTComboBox::setIndexWithText(os, documentFormatComboBox, "Genbank");
+            GTComboBox::setIndexWithText(os, region_type_combo, "Whole sequence");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+//    Export consensus
+    GTUtilsDialog::waitForDialog(os, new ExportConsensusDialogFiller(os, new Scenario()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export consensus..."));
+    GTWidget::click(os, GTWidget::findWidget(os, "Consensus area"), Qt::RightButton);
+    GTUtilsProjectTreeView::checkItem(os, "chrM_consensus.gb");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0910) {

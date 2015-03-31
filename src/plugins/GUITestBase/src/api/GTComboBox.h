@@ -42,6 +42,8 @@ public:
     static void setIndexWithText(U2OpStatus& os, QComboBox *comboBox, const QString& text, bool checkVal = true, GTGlobals::UseMethod method = GTGlobals::UseKey);
 
     static void checkValues(U2OpStatus& os, QComboBox *comboBox, const QStringList &values);
+
+    static void checkValuesPresence(U2OpStatus& os, QComboBox *comboBox, const QStringList &values);
 };
 
 }
