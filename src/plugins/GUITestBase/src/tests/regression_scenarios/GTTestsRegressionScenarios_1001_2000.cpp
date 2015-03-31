@@ -76,6 +76,7 @@
 #include "GTUtilsWizard.h"
 #include "GTUtilsWorkflowDesigner.h"
 
+#include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/EscapeClicker.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
@@ -399,6 +400,13 @@ GUI_TEST_CLASS_DEFINITION(test_1015_4) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
     GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1016){
+//    1) Open "\test\_common_data\scenarios\_regression\1016\eg1.sam"
+    GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1016/eg1.sam");
+//    Expected state: "Import SAM File" dialog appeared, not "select format" dialog
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1020) {
