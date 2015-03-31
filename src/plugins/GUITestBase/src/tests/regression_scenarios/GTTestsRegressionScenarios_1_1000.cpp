@@ -830,6 +830,11 @@ GUI_TEST_CLASS_DEFINITION(test_0861_4) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::AnnotationsHighlighting);
+    GTGlobals::sleep(500);
+    QLabel* noAnnotTypesLabel = GTWidget::findExactWidget<QLabel*>(os, "noAnnotTypesLabel");
+    CHECK_SET_ERR(noAnnotTypesLabel->isVisible(), "label is not visiable");
+    CHECK_SET_ERR(noAnnotTypesLabel->text() == "The sequence doesn't have any annotations.",
+                  "unexpected text: " + noAnnotTypesLabel->text());
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0866) {

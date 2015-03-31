@@ -88,6 +88,7 @@ void AnnotHighlightWidget::initLayout() {
     noAnnotTypesLabel->setWordWrap(true);
     setNoAnnotTypesLabelValue();
     noAnnotTypesLabel->setStyleSheet("margin-left: 2px;");
+    noAnnotTypesLabel->setObjectName("noAnnotTypesLabel");
 
     annotTreeTitle = new QLabel(tr("Select an annotation name:"));
 
