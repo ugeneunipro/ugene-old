@@ -165,6 +165,7 @@ QWidget * AssemblySettingsWidget::createConsensusSettings() {
     layout->addWidget(new QLabel(tr("Consensus algorithm:")));
 
     algorithmCombo = new QComboBox(group);
+    algorithmCombo->setObjectName("consensusAlgorithmCombo");
     foreach(QAction * a, consensusArea->getAlgorithmActions()) {
         algorithmCombo->addItem(a->text());
         connect(a, SIGNAL(triggered()), SLOT(sl_consensusAlgorithmChanged()));

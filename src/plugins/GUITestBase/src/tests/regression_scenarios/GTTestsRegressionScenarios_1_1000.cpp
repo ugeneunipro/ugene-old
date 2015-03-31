@@ -662,8 +662,7 @@ GUI_TEST_CLASS_DEFINITION(test_0829) {
     
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    QWidget *w = QApplication::activeWindow();
-    //GTWidget::click(os, GTWidget::findWidget(os, "toggleDashboard", w));
+    QApplication::activeWindow();
     GTWidget::click(os,
         GTToolbar::getWidgetForActionName(os,
         GTToolbar::getToolbar(os, "mwtoolbar_activemdi")
@@ -843,7 +842,7 @@ GUI_TEST_CLASS_DEFINITION(test_0866) {
 
     WorkflowProcessItem *fileList = GTUtilsWorkflowDesigner::addElement(os, "File List");
     WorkflowProcessItem *writer1 = GTUtilsWorkflowDesigner::addElement(os, "Write Plain Text");
-    WorkflowProcessItem *writer2 = GTUtilsWorkflowDesigner::addElement(os, "Write Plain Text");
+    GTUtilsWorkflowDesigner::addElement(os, "Write Plain Text");
 
     GTUtilsWorkflowDesigner::connect(os, fileList, writer1);
     GTUtilsWorkflowDesigner::connect(os, fileList, GTUtilsWorkflowDesigner::getWorker( os, "Write Plain Text 1"));
@@ -1052,6 +1051,24 @@ GUI_TEST_CLASS_DEFINITION(test_0896) {
     GTFileDialog::openFile(os, sandBoxDir, "/test_0896out.bam");
 
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0898){
+//    1. Open _common_data/ugenedb/example_alignment.ugenedb
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb/example-alignment.ugenedb");
+//    2. Zoom in until reads appear.
+
+//    3. Try to find consensus above reads area.
+//    Expected state: you found consensus.
+    QWidget* consArea = GTWidget::findWidget(os, "Consensus area");
+    CHECK_SET_ERR(consArea->isVisible(), "consensus area is not visiable");
+//    4. Open {Assembly Browser Settings} on options panel.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_SETTINGS"));
+    GTGlobals::sleep(500);
+//    5. Look for any algorithms in {Consensus algorithm} combobox (SAMtools, for example).
+    QComboBox* consensusAlgorithmCombo = GTWidget::findExactWidget<QComboBox*>(os, "consensusAlgorithmCombo");
+//    Expected state: there are some algorithms.
+    GTComboBox::checkValuesPresence(os, consensusAlgorithmCombo, QStringList()<<"SAMtools"<<"Default");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0899){
