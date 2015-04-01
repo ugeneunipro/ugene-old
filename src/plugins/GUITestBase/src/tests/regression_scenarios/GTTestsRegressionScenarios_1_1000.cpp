@@ -687,6 +687,39 @@ GUI_TEST_CLASS_DEFINITION(test_0829) {
     CHECK_SET_ERR(!lt.hasError(), "Log contains error");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0835) {
+    //1. Open, for example, "murine.gb" and "sars.gb".
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+
+    //2. Open the sequence objects in one Sequence View.
+    //= > Both sequences are shown in one Sequence View.
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363"));
+    GTMouseDriver::press(os);
+    GTGlobals::sleep(100);
+    QWidget *seqView = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+    GTMouseDriver::moveTo(os, seqView->mapToGlobal(seqView->rect().center()));
+    GTMouseDriver::release(os);
+
+    //3. Enable Circular View for one of the sequences(for example, "murine.gb").
+    //= > The Circular View with the Restriction Site Map is shown.
+    GTWidget::click(os, GTWidget::findWidget(os, "CircularViewAction"));
+
+    QWidget *restrictionMapTreeWidget = GTWidget::findWidget(os, "restrictionMapTreeWidget");
+    CHECK_SET_ERR(NULL != restrictionMapTreeWidget && restrictionMapTreeWidget->isVisible(),
+        "Restriction map widget isn't visible unexpectedly");
+
+    //4. Delete the sequence with the Circular View from the Project View.
+    //= > The sequence has been deleted, the Circular View is not shown.
+    //!= > The Restriction Site Map is NOT still shown.
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "sars.gb"));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(100);
+
+    restrictionMapTreeWidget = GTWidget::findWidget(os, "restrictionMapTreeWidget");
+    CHECK_SET_ERR(NULL == restrictionMapTreeWidget, "Restriction map widget is visible unexpectedly");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0840) {
     //"Digest Into Fragments" displays number of cuts incorrectly
     //When enzyme is presented both in auto-annotation and in permanent annotation, the number of cuts shows +1.
