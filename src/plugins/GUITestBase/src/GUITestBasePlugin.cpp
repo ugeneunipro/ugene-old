@@ -1585,6 +1585,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0012_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0012_2);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0012_3);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0013);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/annotations/CreateAnnotationWidget

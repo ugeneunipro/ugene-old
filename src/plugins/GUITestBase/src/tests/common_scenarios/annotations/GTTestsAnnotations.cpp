@@ -27,6 +27,7 @@
 #include "api/GTWidget.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
+#include "api/GTTreeWidget.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
@@ -1004,6 +1005,34 @@ GUI_TEST_CLASS_DEFINITION(test_0012_3) {
     GTFileDialog::openFile(os, sandBoxDir, "ann_export_test_0012_3.gtf");
     CHECK_SET_ERR(GTUtilsProjectTreeView::checkItem(os, "NC_004718 features"), "Object not found");
     CHECK_SET_ERR(!GTUtilsProjectTreeView::checkItem(os, "scaffold_90 features"), "Object shound not be in the project");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013) {
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+    // Expected state:
+    //     1) Project view with document "1.gb" has been opened
+    GTUtilsDocument::checkDocument(os, "1.gb");
+
+    // 2. Open view for "1.gb"
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    // 3. Create annotation using menu {Actions->Add->New Annotation}, with description field filled
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "<auto>", "ann1", "complement(1.. 20)", "", "description"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+
+    //4. Check what created annotation has corresponding qualifier 'note'
+    QTreeWidget *treeWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
+    CHECK_SET_ERR(treeWidget != NULL, "Tree widget is NULL");
+
+    QTreeWidgetItem *annotationsRoot = GTUtilsAnnotationsTreeView::findItem(os, "ann1  (0, 1)");
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, annotationsRoot->child(0)));
+    GTMouseDriver::doubleClick(os);
+    GTUtilsAnnotationsTreeView::findItem(os, "note");
 }
 
 } // namespace GUITest_common_scenarios_annotations

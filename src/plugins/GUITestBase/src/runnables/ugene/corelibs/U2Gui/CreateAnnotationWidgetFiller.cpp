@@ -42,13 +42,15 @@ CreateAnnotationWidgetFiller::CreateAnnotationWidgetFiller(U2OpStatus &os,
                                                            const QString &groupName,
                                                            const QString &annotationName,
                                                            const QString &location,
-                                                           const QString &saveTo) :
+                                                           const QString &saveTo,
+                                                           const QString &description) :
     Filler(os, "CreateAnnotationDialog"),
     groupName(groupName),
     annotationName(annotationName),
     location(location),
     newTableRB(newTableRB),
-    saveTo(saveTo)
+    saveTo(saveTo),
+    description(description)
 {
 
 }
@@ -89,6 +91,9 @@ void CreateAnnotationWidgetFiller::commonScenario() {
     GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leAnnotationName", dialog), annotationName);
     GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton *>(os, "rbGenbankFormat", dialog));
     GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leLocation", dialog), location);
+    if (!description.isEmpty()) {
+        GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leDescription", dialog), description);
+    }
 
     GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }

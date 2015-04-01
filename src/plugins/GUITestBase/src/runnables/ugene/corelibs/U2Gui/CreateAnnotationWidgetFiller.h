@@ -33,7 +33,8 @@ public:
                                  const QString &groupName,
                                  const QString &annotationName,
                                  const QString &location,
-                                 const QString &saveTo = "");
+                                 const QString &saveTo = "",
+                                 const QString &description = "");
     CreateAnnotationWidgetFiller(U2OpStatus &os, CustomScenario *scenario);
 
     virtual void commonScenario();
@@ -44,6 +45,7 @@ private:
     const QString location;
     const bool newTableRB;
     const QString saveTo;
+    const QString description;
 };
 
 }   // namespace U2

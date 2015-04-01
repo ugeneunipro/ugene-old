@@ -95,6 +95,7 @@ void ADVAnnotationCreation::sl_createAnnotation( ) {
     m.useAminoAnnotationTypes = seqCtx->getAlphabet()->isAmino();
     m.sequenceObjectRef = GObjectReference( seqCtx->getSequenceObject( ) );
     m.sequenceLen = seqCtx->getSequenceObject( )->getSequenceLength( );
+    m.hideDescription = false;
     if ( !seqCtx->getSequenceSelection( )->isEmpty( ) ) {
         m.data.location->regions << seqCtx->getSequenceSelection( )->getSelectedRegions( );
     }
