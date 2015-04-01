@@ -179,11 +179,12 @@ GUI_TEST_CLASS_DEFINITION(test_4009) {
     //4. Remove "big.aln" document
     GTUtilsDocument::removeDocument(os, "big.aln");
 
+
     //Current state: the task hangs, debug error occured with message "Infinite wait has timed out"
     class Scenario : public CustomScenario {
     public:
         void run(U2OpStatus &os) {
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+            GTUtilsDialog::clickButtonBox(os, QApplication::activeModalWidget(), QDialogButtonBox::Cancel);
         }
     };
     GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, new Scenario()));
@@ -948,7 +949,7 @@ GUI_TEST_CLASS_DEFINITION(test_4118){
     GTLogTracer l;
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     QMap<QString, QVariant> parameters;
-    parameters.insert("FASTQ files", QVariant(testDir + "_common_data/NGS_tutorials/RNA-Seq_Analysis/Prepare_Raw_Data/lymph.fastq"));
+    parameters.insert("FASTQ files", QVariant(QDir().absoluteFilePath(testDir + "_common_data/NGS_tutorials/RNA-Seq_Analysis/Prepare_Raw_Data/lymph.fastq")));
     parameters.insert("Adapters", QVariant(""));
 
     GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Raw RNA-Seq Data Processing", QStringList()<<"Skip mapping"<<"Single-end"));

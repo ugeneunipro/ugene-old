@@ -38,6 +38,7 @@
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsTaskTreeView.h"
+#include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/FontDialogFiller.h"
@@ -3618,16 +3619,6 @@ GUI_TEST_CLASS_DEFINITION(test_0044) {
 GUI_TEST_CLASS_DEFINITION(test_0045) {
     // check the connection between export comboBox and selectRegion dialog
     // there should be no selection
-
-    class CancelClicker : public Filler {
-    public:
-        CancelClicker(U2OpStatus &os) : Filler(os, "SelectSubalignmentDialog") {}
-        virtual void run(){
-            GTGlobals::sleep();
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
-        }
-    };
-
     class ExportDialogChecker : public Filler {
     public:
         ExportDialogChecker(U2OpStatus &os)
@@ -3636,13 +3627,13 @@ GUI_TEST_CLASS_DEFINITION(test_0045) {
             QWidget* dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(dialog != NULL, "activeModalWidget is NULL");
 
-            GTUtilsDialog::waitForDialog(os, new CancelClicker(os));
+            GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "SelectSubalignmentDialog", QDialogButtonBox::Cancel));
             QComboBox* exportType = dialog->findChild<QComboBox*>("comboBox");
             GTComboBox::setIndexWithText(os, exportType, "Custom region", false);
 
             GTGlobals::sleep();
             CHECK_SET_ERR(exportType->currentText() == "Whole alignment", "Wrong combo box text!");
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
         }
     };
 
@@ -3680,7 +3671,7 @@ GUI_TEST_CLASS_DEFINITION(test_0045_1) {
             GTGlobals::sleep();
             CHECK_SET_ERR(exportType->currentText() == "Custom region", "Wrong combo box text!");
 
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
         }
     };
 
@@ -3741,7 +3732,7 @@ GUI_TEST_CLASS_DEFINITION(test_0047) {
             GTWidget::click(os, ok);
 
             GTGlobals::sleep();
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
         }
     };
 
@@ -3758,7 +3749,7 @@ GUI_TEST_CLASS_DEFINITION(test_0047) {
             GTWidget::click(os, select);
 
             GTGlobals::sleep();
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
         }
     };
 

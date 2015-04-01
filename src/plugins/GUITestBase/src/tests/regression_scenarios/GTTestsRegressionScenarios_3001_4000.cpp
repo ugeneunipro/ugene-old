@@ -5040,7 +5040,7 @@ GUI_TEST_CLASS_DEFINITION(test_3886) {
             //Expected: UGENE does not crash.
             GTWidget::click(os, GTWidget::findWidget(os,"__qt__passive_wizardbutton1"));
             GTGlobals::sleep();
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
         }
     };
     GTUtilsDialog::waitForDialog(os, new TestWizardFiller(os));
@@ -5517,7 +5517,9 @@ GUI_TEST_CLASS_DEFINITION(test_3988) {
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "File is empty:"));
     GTFileDialog::openFile(os, testDir + "_common_data", "zero");
 
+    GTGlobals::sleep();
     GTUtilsLog::checkContainsError(os, logTracer, "File is empty:");
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3994){
