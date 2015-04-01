@@ -687,6 +687,74 @@ GUI_TEST_CLASS_DEFINITION(test_0829) {
     CHECK_SET_ERR(!lt.hasError(), "Log contains error");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0840) {
+    //"Digest Into Fragments" displays number of cuts incorrectly
+    //When enzyme is presented both in auto-annotation and in permanent annotation, the number of cuts shows +1.
+
+    class DigestCircularSequenceScenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+
+            QListWidget *availableEnzymeWidget = GTWidget::findExactWidget<QListWidget *>(os, "availableEnzymeWidget", dialog);
+            CHECK_SET_ERR(NULL != availableEnzymeWidget, "Cannot find available enzyme list widget");
+
+            QList<QListWidgetItem *> items = availableEnzymeWidget->findItems("EcoRV : 1 cut(s)", Qt::MatchExactly);
+            CHECK_SET_ERR(items.size() == 1, "Unexpected number of enzymes");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    class CreateAnnotationScenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leAnnotationName", dialog), "EcoRV");
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leGroupName", dialog), "enzyme");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    //1. Open "_common_data/enzymes/bsai_reverse_test.fa".
+    GTFileDialog::openFile(os, testDir + "_common_data/enzymes/bsai_reverse_test.fa");
+
+    //2. Click "Find restriction sites" on toolbar.
+    //3. Click OK button in dialog appeared.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "Find restriction sites"));
+    GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList("EcoRV")));
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected state: One new auto-annotation appears ("enzyme/EcoRV")
+    //4. Select this annotation.
+    CHECK_SET_ERR(1 == GTUtilsAnnotationsTreeView::findItems(os, "EcoRV").size(), "Unexpected annotation count");
+    GTUtilsAnnotationsTreeView::selectItems(os, QStringList() << "EcoRV");
+
+    //5. Select "New annotation" in context menu.
+    //6. Fill fields with: "Group name" - "enzyme", "Annotation name" - "EcoRV".
+    //7. Click Create button.
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, new CreateAnnotationScenario));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "New annotation");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected state: Non-auto annotation appears ("enzyme/EcoRV") for the same region.
+    QList<QTreeWidgetItem *> items = GTUtilsAnnotationsTreeView::findItems(os, "EcoRV");
+    CHECK_SET_ERR(2 == items.size(), "Unexpected annotation count");
+    CHECK_SET_ERR(items[0]->parent() != items[1]->parent(), "Annotations are siblings unexpectedly");
+
+    //8. Select "Actions"->"Cloning"->"Digest into Fragments..." in main menu.
+    //Expected state: there is only one enzyme in the "Available enzymes" field with 1 cut.
+    //Bug state: there is one enzyme but with 2 cuts.
+    GTUtilsDialog::waitForDialog(os, new DigestSequenceDialogFiller(os, new DigestCircularSequenceScenario));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Cloning" << "Digest into fragments..."));
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0844) {
 /* 1. Open "samples/human_t1".
  * 2. In advanced settings of Tandem Finder choose "Suffix array" (unoptimized algorithm)
