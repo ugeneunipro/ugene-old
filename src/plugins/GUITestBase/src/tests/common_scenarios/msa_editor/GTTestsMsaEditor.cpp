@@ -2811,7 +2811,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028_linux){
 //    file name: test/_common_data/scenarios/sandbox/image.bmp
 //    press Save
     qint64 fileSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/test.svg");
-    CHECK_SET_ERR(fileSize==618764, "Expected size: 618764, Current size: " + QString().setNum(fileSize));
+    CHECK_SET_ERR(fileSize==651903, "Expected size: 651903, Current size: " + QString().setNum(fileSize));
 //    Expected state:  SVG is exported
 
 }
