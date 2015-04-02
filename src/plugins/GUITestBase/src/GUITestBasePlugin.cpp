@@ -161,6 +161,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_0821);
     REGISTER_TEST(GUITest_regression_scenarios::test_0828);
     REGISTER_TEST(GUITest_regression_scenarios::test_0829);
+    REGISTER_TEST(GUITest_regression_scenarios::test_0830);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_0835, "Drag&drop from project to sequence view doesn't work");
     REGISTER_TEST(GUITest_regression_scenarios::test_0840);
     REGISTER_TEST(GUITest_regression_scenarios::test_0844);

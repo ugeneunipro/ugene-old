@@ -687,6 +687,26 @@ GUI_TEST_CLASS_DEFINITION(test_0829) {
     CHECK_SET_ERR(!lt.hasError(), "Log contains error");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0830) {
+    //1) Tools->DNA assembly->Config assembly with CAPS3
+    //2) Base ->
+    //    Input Files:
+    //        _common_data/scenarios/CAP3/region2.fa
+    //        _common_data/scenarios/CAP3/region4.fa
+    //    Run
+    QString outUrl = sandBoxDir + "830.ace";
+    GTUtilsDialog::waitForDialog(os, new CAP3SupportDialogFiller(os, QStringList()
+        << testDir + "_common_data/scenarios/CAP3/region2.fa"
+        << testDir + "_common_data/scenarios/CAP3/region4.fa",
+        outUrl));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::SANGER_MENU << ToolsMenu::SANGER_DENOVO));
+    GTMenu::showMainMenu(os, "mwmenu_tools");
+
+    //3) wait for task error, ensure that no output files are created
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    CHECK_SET_ERR(!QFile::exists(outUrl), "The output file is created");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0835) {
     //1. Open, for example, "murine.gb" and "sars.gb".
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
