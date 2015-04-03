@@ -312,6 +312,20 @@ GUI_TEST_CLASS_DEFINITION(test_0746) {
     CHECK_SET_ERR(complement -> isEnabled() == true, "button is not enabled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0762) {
+// 1. Open human_T1.fa from examples
+// 
+// 2. Try search tandems with default settings and with new Annotations Table.
+// Expected state: UGENE not crashes
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new FindTandemsDialogFiller(os, sandBoxDir + "test_0762.gb"));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Find tandems");
+    GTGlobals::sleep(200);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0774) {
 //    1. Create new scheme in Workflow Designer: "Read sequence" > "Write sequence".
 //    2. Input two files in the "Input files" parameter of the "Read sequence" element.
