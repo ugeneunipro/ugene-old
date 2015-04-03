@@ -55,6 +55,7 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTRadioButton.h"
+#include "api/GTSlider.h"
 #include "api/GTTabWidget.h"
 #include "api/GTTextEdit.h"
 #include "api/GTTreeWidget.h"
@@ -1149,6 +1150,39 @@ GUI_TEST_CLASS_DEFINITION(test_4150) {
     annotationsInFile = GTTreeWidget::getItems(GTUtilsAnnotationsTreeView::getTreeWidget(os)->invisibleRootItem());
     num = annotationsInFile.size();
     CHECK_SET_ERR(num == 14, QString("unexpected annotations number: %1").arg(num));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4153) {
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
+    QWidget *overview = GTWidget::findWidget(os, "msa_overview_area_graph");
+    CHECK_OP(os, );
+    GTWidget::click(os, overview, Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    //    Select different highlighting schemes.
+    QComboBox* highlightingScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
+    GTComboBox::setIndexWithText(os, highlightingScheme, "Conservation level");
+
+    QSlider* thresholdSlider = GTWidget::findExactWidget<QSlider*>(os, "thresholdSlider");
+    CHECK_SET_ERR(thresholdSlider != NULL, "Threshold slider is null");
+
+    GTSlider::setValue(os, thresholdSlider, 78);
+
+    QWidget *simpleOverview = GTWidget::findWidget(os, "msa_overview_area_simple");
+    CHECK_SET_ERR(overview != NULL, "Simple overview is null");
+
+    QPoint rightBottom = simpleOverview->rect().topRight();
+    rightBottom += QPoint(-3,3);
+    QColor curColor = GTWidget::getColor(os, simpleOverview, rightBottom);
+    //GTWidget.getColor(os, )
+    GTSlider::setValue(os, thresholdSlider, 81);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    QColor newColor = GTWidget::getColor(os, simpleOverview, rightBottom);
+    CHECK_SET_ERR(curColor != newColor, "Color is not changed");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4164){
