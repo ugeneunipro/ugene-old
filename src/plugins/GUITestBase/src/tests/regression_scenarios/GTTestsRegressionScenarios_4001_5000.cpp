@@ -1220,6 +1220,17 @@ GUI_TEST_CLASS_DEFINITION(test_4170) {
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item1));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4179) {
+    //1. Open file "data/samples/Genabnk/sars.gb"
+    //Current state: Two words are merged into a single one, in the file they are separated by a newline symbol.
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+
+    QTreeWidgetItem* item = GTUtilsAnnotationsTreeView::findItem(os,"comment");
+    CHECK_SET_ERR(item != NULL, "Can't find \"comment\" item");
+    QString qualifier = GTUtilsAnnotationsTreeView::getQualifierValue(os,"1", item);
+    CHECK_SET_ERR(qualifier.indexOf("The reference") > 0, "Expected string is not found");
+}
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2
