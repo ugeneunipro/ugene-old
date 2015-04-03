@@ -740,6 +740,27 @@ GUI_TEST_CLASS_DEFINITION(test_0835) {
     CHECK_SET_ERR(NULL == restrictionMapTreeWidget, "Restriction map widget is visible unexpectedly");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0839) {
+// 1. Use menu {Tools->Weight matrix->Build Weight Matrix}.
+// Expected state: "Build weight or frequency matrix" dialog appeared.
+// 
+// 2. Click {...} button for "Input item".
+// Expected state: "Select file with alignment" dialog appeared.
+// 
+// 3. Open any non msa file (e.g. a tree file  - *.nwk format).
+// Expected state: 
+// 1). UGENE doesn`t crach.
+// 2). Messagebox  about unsupported format appeared.
+    QList<PwmBuildDialogFiller::Action> actions;
+    actions << PwmBuildDialogFiller::Action(PwmBuildDialogFiller::ExpectInvalidFile, "");
+    actions << PwmBuildDialogFiller::Action(PwmBuildDialogFiller::SelectInput, dataDir + "samples/GFF/5prime_utr_intron_A20.gff");
+    actions << PwmBuildDialogFiller::Action(PwmBuildDialogFiller::ClickCancel, "");
+    GTUtilsDialog::waitForDialog(os, new PwmBuildDialogFiller(os, actions));
+
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::TFBS_MENU << ToolsMenu::TFBS_WEIGHT);
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0840) {
     //"Digest Into Fragments" displays number of cuts incorrectly
     //When enzyme is presented both in auto-annotation and in permanent annotation, the number of cuts shows +1.
