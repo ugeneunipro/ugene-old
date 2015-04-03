@@ -31,6 +31,18 @@
 
 namespace U2 {
 
+bool folderPathLessThan(const QString &first, const QString &second) {
+    const bool firstPathInRecycle = ProjectUtils::isFolderInRecycleBinSubtree(first);
+    const bool secondPathInRecycle = ProjectUtils::isFolderInRecycleBinSubtree(second);
+    if (firstPathInRecycle && !secondPathInRecycle) {
+        return true;
+    } else if (secondPathInRecycle && !firstPathInRecycle) {
+        return false;
+    } else {
+        return QString::compare(first, second, Qt::CaseInsensitive) < 0;
+    }
+}
+
 DocumentFoldersUpdate::DocumentFoldersUpdate() {
 
 }
@@ -44,20 +56,7 @@ DocumentFoldersUpdate::DocumentFoldersUpdate(const U2DbiRef &dbiRef, U2OpStatus 
 
     folders = con.oDbi->getFolders(os);
     CHECK_OP(os, );
-    std::sort(folders.begin(), folders.end(), Folder::folderNameLessThan);
-
-    if (!folders.isEmpty() && folders.first() != ProjectUtils::RECYCLE_BIN_FOLDER_PATH) {
-        for (int i = folders.size() - 1; i >= 0; --i) {
-            const QString currentPath = folders[i];
-            if (currentPath.startsWith(ProjectUtils::RECYCLE_BIN_FOLDER_PATH)) {
-                folders.move(i++, 0);
-                if (currentPath.length() == ProjectUtils::RECYCLE_BIN_FOLDER_PATH.length()) {
-                    break;
-                }
-            }
-        }
-    }
-
+    std::sort(folders.begin(), folders.end(), folderPathLessThan);
     QHash<U2Object, QString>::ConstIterator i = u2objectFolders.constBegin();
     for (; i!=u2objectFolders.constEnd(); i++) {
         objectIdFolders[i.key().id] = i.value();
@@ -511,7 +510,12 @@ int FolderObjectTreeStorage::insertSorted(const QString &value, QStringList &lis
         list.prepend(value);
         return 0;
     } else {
-        QList<QString>::iterator i = std::upper_bound(list.begin(), list.end(), value, Folder::folderNameLessThan);
+        QList<QString>::iterator i;
+        if (value.startsWith(U2ObjectDbi::ROOT_FOLDER)) {
+            i = std::upper_bound(list.begin(), list.end(), value, folderPathLessThan);
+        } else {
+            i = std::upper_bound(list.begin(), list.end(), value, Folder::folderNameLessThan);
+        }
         if (list.end() != i && *i == U2ObjectDbi::RECYCLE_BIN_FOLDER) {
             ++i;
         }
