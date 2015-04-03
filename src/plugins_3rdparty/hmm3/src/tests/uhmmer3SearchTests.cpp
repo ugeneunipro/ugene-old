@@ -370,7 +370,7 @@ static double getDouble( const QByteArray& numStr ) {
     if( ok ) {
         return ret;
     }
-    throw QString( GTest_UHMM3SearchCompare::tr( "cannot_parse_double_number_from_string:%1" ).arg( QString( numStr ) ) );
+    throw QString( GTest_UHMM3SearchCompare::tr( "Internal error (cannot parse float number from string '%1')" ).arg( QString( numStr ) ) );
 }
 
 static float getFloat( const QByteArray& numStr ) {
@@ -383,7 +383,7 @@ static bool getSignificance( const QByteArray& str ) {
     } else if( "?" == str ) {
         return false;
     }
-    throw QString( GTest_UHMM3SearchCompare::tr( "cannot_parse_significance:%1" ).arg( QString( str ) ) );
+    throw QString( GTest_UHMM3SearchCompare::tr( "Can't parse significance:%1" ).arg( QString( str ) ) );
 }
 
 static UHMM3SearchSeqDomainResult getDomainRes( QStringList& tokens ) {
@@ -598,7 +598,7 @@ void GTest_UHMM3SearchCompare::setAndCheckArgs() {
 
     Task* searchTask = getContext<Task>( this, searchTaskCtxName );
     if( NULL == searchTask ) {
-        stateInfo.setError( tr( "cannot_find_search_task_in_context" ) );
+        stateInfo.setError( tr( "No search task in test context" ) );
         return;
     }
     

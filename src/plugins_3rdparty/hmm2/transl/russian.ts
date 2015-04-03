@@ -7,7 +7,7 @@
         <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="32"/>
         <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="49"/>
         <source>...</source>
-        <translation></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="14"/>
@@ -21,129 +21,113 @@
     </message>
     <message>
         <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="39"/>
-        <source>result_hmm_label</source>
-        <translation>Файл HMM профайла</translation>
+        <source>File to save HMM profile:</source>
+        <translation>Файл HMM профайла:</translation>
     </message>
     <message>
         <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="58"/>
-        <source>expert_options</source>
-        <translation>Экспертные настройки</translation>
+        <source>Expert options</source>
+        <translation>Дополнительные опции</translation>
+    </message>
+    <message utf8="true">
+        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="70"/>
+        <source>Name can be any string of non-whitespace characters (e.g. one ”word”).</source>
+        <translation>Удобное для человека имя профайла, не должно содержать пропусков.</translation>
     </message>
     <message>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="79"/>
-        <source>name</source>
+        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="73"/>
+        <source>Name this HMM:</source>
         <translation>Имя HMM профайла:</translation>
     </message>
     <message>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="108"/>
-        <source>default_hmmls</source>
-        <translation>Стандартное поведение (hmmls)</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="156"/>
-        <source>multi_domain_hmmfs</source>
-        <translation>Эмуляция hmmfs</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="201"/>
-        <source>single_global_hmms</source>
-        <translation>Эмуляция hmms</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="240"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="243"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="246"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="266"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="269"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="272"/>
-        <source>single_local_hmmsw</source>
-        <translation>Эмуляция hmmsw</translation>
-    </message>
-    <message>
-        <source>ok_button</source>
-        <translation type="obsolete">Построить</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="70"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="73"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="76"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="86"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="89"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="92"/>
-        <source>name_tip</source>
-        <translation>Удобное для человека имя профайла, не должно содержать пропусков</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="99"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="102"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="105"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="128"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="131"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="134"/>
-        <source>default_hmmls_tip</source>
+        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="84"/>
+        <source>
+             By default, the model is configured to find one or more nonoverlapping alignments to the complete model:
+             multiple global alignments with respect to the model, and local with respect to the sequence
+         </source>
         <translation>По умолчанию, профайл настраивается на поиск одного или более неперекрывающихся выравниваний к полной модели:
 множественные выравнивания глобальные относительно профайла, локальные относительно последовательности</translation>
     </message>
     <message>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="147"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="150"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="153"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="176"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="179"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="182"/>
-        <source>multi_domain_hmmfs_tip</source>
+        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="90"/>
+        <source>Default (hmmls) behaviour:</source>
+        <translation>Стандартное поведение (hmmls):</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="120"/>
+        <source>
+             Configure the model for finding multiple domains per sequence, where each domain can be a local (fragmentary) alignment.
+             This is analogous to the old hmmfs program of HMMER 1.
+         </source>
         <translation>Профайл настраивается на поиск множественных доменов, каждый из которых может быть локальным (фрагментарным) выравниванием.
-Это аналог программы hmmfs пакета HMMER 1</translation>
+Это аналог программы hmmfs пакета HMMER 1.</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="126"/>
+        <source>Emulate hmmfs behaviour:</source>
+        <translation>Эмуляция hmmfs:</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="153"/>
+        <source>
+             Configure the model for finding a single global alignment to a target sequence,
+             analogous to the old hmms program of HMMER 1.
+         </source>
+        <translation>Профайл настраивается на поиск единственного глобального выравнивания в целевой последовательности.
+Это аналог программы hmms пакета HMMER 1.</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="159"/>
+        <source>Emulate hmms behaviour:</source>
+        <translation>Эмуляция hmms:</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="186"/>
+        <source>
+             Configure the model for finding a single local alignment per target sequence.
+             This is analogous to the standard Smith/Waterman algorithm or the hmmsw program of HMMER 1.
+         </source>
+        <translation>Профайл настраивается на поиск единственного локального выравнивания в целевой последовательности.
+Это аналог стандартного алгоритма Смита-Ватермана или программы hmmsw пакета HMMER 1.</translation>
     </message>
     <message>
         <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="192"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="195"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="198"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="221"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="224"/>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="227"/>
-        <source>single_global_hmms_tip</source>
-        <translation>Профайл настраивается на поиск единственного глобального выравнивания в целевой последовательности.
-Это аналог программы hmms пакета HMMER 1</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="237"/>
-        <source>single_local_hmmsw_tip</source>
-        <translation>Профайл настраивается на поиск единственного локального выравнивания в целевой последовательности.
-Это аналог стандартного алгоритма Смита-Ватермана или программы hmmsw пакета HMMER 1</translation>
-    </message>
-    <message>
-        <source>close_button</source>
-        <translation type="obsolete">Закрыть</translation>
+        <source>Emulate hmmsw behaviour:</source>
+        <translation>Эмуляция hmmsw:</translation>
     </message>
 </context>
 <context>
     <name>HMMBuildWorker</name>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="89"/>
-        <source>Fixed tip</source>
-        <translation type="unfinished">Фиксированная длина случайных последовательностей, положительное число разумной величины.
+        <source>Fix the length of the random sequences to &lt;n&gt;, where &lt;n&gt; is a positive (and reasonably sized) integer. &lt;p&gt;The default is instead to generate sequences with a variety of different lengths, controlled by a Gaussian (normal) distribution.</source>
+        <translation>Фиксированная длина случайных последовательностей, положительное число разумной величины.
 По умолчанию, генерируются последовательности с нормальным (Гауссовым) распределением по длине.</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="91"/>
-        <source>mean_tip_1</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="92"/>
+        <source>Mean length of the synthetic sequences, positive real number. The default value is 325.</source>
+        <translation>Средняя длина синтетических последовательностей.
+Положительное число, 325 по умолчанию.</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="93"/>
-        <source>num_tip_1</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="94"/>
+        <source>Number of synthetic sequences. If &lt;n&gt; is less than about 1000, the fit to the EVD may fail. &lt;p&gt;Higher numbers of &lt;n&gt; will give better determined EVD parameters. &lt;p&gt;The default is 5000; it was empirically chosen as a tradeoff between accuracy and computation time.</source>
+        <translation>Количество синтетических последовательностей.
+Значение по умолчанию (5000) было эмпирически определено как компромисс между точностью и временем вычисления.</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="95"/>
-        <source>sd_tip_1</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="98"/>
+        <source>Standard deviation of the synthetic sequence length. A positive number. &lt;p&gt;The default is 200. Note that the Gaussian is left-truncated so that no sequences have lengths &lt;= 0.</source>
+        <translation>Стандартное отклонение длины синтетической последовательности.
+Должно быть больше нуля, по умолчанию 200.</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="97"/>
-        <source>seed_tip_1</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="101"/>
+        <source>The random seed, where &lt;n&gt; is a positive integer. &lt;p&gt;The default is to use time() to generate a different seed for each run, &lt;p&gt;which means that two different runs of hmmcalibrate on the same HMM will give slightly different results. &lt;p&gt;You can use this option to generate reproducible results for different hmmcalibrate runs on the same HMM.</source>
+        <translation>Случайная затравка положительным целым числом. 
+По умолчанию используется текущее время в миллисекундах для каждого запуска,что приводит к небольшим и незначительным различиям при каждой калибровке одного и того же профайла.
+Вы можете использовать эту опцию для получения воспроизводимых результатов калибровки.</translation>
     </message>
 </context>
 <context>
@@ -151,159 +135,104 @@
     <message>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="22"/>
         <source>HMM file: </source>
-        <translation>Файл c HMM профайлом</translation>
+        <translation>Файл c HMM профайлом:</translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="32"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="348"/>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="297"/>
         <source>...</source>
-        <translation></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="41"/>
-        <source>expert_options</source>
-        <translation>Экспертные настройки</translation>
+        <source>Expert options</source>
+        <translation>Дополнительные опции</translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="53"/>
-        <source>Fixed tip</source>
-        <translation type="unfinished">Фиксированная длина случайных последовательностей, положительное число разумной величины.
+        <source>
+             Fix the length of the random sequences to n
+                 , where n is a positive (and reasonably sized) integer. 
+The default is instead to generate sequences with a variety of different lengths, controlled by a Gaussian (normal) distribution.</source>
+        <translation>Фиксированная длина случайных последовательностей, положительное число разумной величины.
 По умолчанию, генерируются последовательности с нормальным (Гауссовым) распределением по длине.</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="107"/>
-        <source>mean</source>
-        <translation>Средняя длина последовательностей</translation>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="59"/>
+        <source>Fix the length of the random sequences to:</source>
+        <translation>Фиксированная длина случайных последовательностей:</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="158"/>
-        <source>num_tip_tool</source>
-        <translation type="unfinished">Количество синтетических последовательностей.
-Значение по умолчанию (5000) было эмпирически определено как компромисс между точностью и временем вычисления</translation>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="104"/>
+        <source>Mean length of the synthetic sequences:</source>
+        <translation>Средняя длина последовательностей:</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="161"/>
-        <source>num_tip_status</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="146"/>
+        <source>
+             Number of synthetic sequences.
+             If n is less than about 1000, the fit to the EVD may fail
+             Higher numbers of n will give better determined EVD parameters. 
+             The default is 5000; it was empirically chosen as a tradeoff between accuracy and computation time.</source>
+        <translation>Количество синтетических последовательностей.
+Значение по умолчанию (5000) было эмпирически определено как компромисс между точностью и временем вычисления.</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="164"/>
-        <source>num_tip_whats</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="153"/>
+        <source>Number of synthetic sequences:</source>
+        <translation>Количество последовательностей:</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="167"/>
-        <source>num</source>
-        <translation>Количество последовательностей</translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="193"/>
-        <source>num_tip_tool_1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="196"/>
-        <source>num_tip_status_1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="199"/>
-        <source>num_tip_whats_1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="218"/>
-        <source>sd_tip_tool</source>
-        <translation type="unfinished">Стандартное отклонение длины синтетической последовательности.
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="195"/>
+        <source>
+             Standard deviation of the synthetic sequence length.
+             A positive number. The default is 200.
+             Note that the Gaussian is left-truncated so that no sequences have lengths less or equal 0.
+         </source>
+        <translation>Стандартное отклонение длины синтетической последовательности.
 Должно быть больше нуля, по умолчанию 200.</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="221"/>
-        <source>sd_tip_status</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="202"/>
+        <source>Standard deviation:</source>
+        <translation>Стандартное отклонение:</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="224"/>
-        <source>sd_tip_whats</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="227"/>
-        <source>sd</source>
-        <translation>Стандартное отклонение</translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="247"/>
-        <source>sd_tip_1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="281"/>
-        <source>seed</source>
-        <translation>Случайная затравка:</translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="56"/>
-        <source>fixed</source>
-        <translation>Фиксированная длина случайных последовательностей</translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="14"/>
-        <source>HMM Calibrate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="323"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="335"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="338"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="341"/>
-        <source>output_file_name</source>
-        <translation>Сохранить откалиброванный HMM профайл</translation>
-    </message>
-    <message>
-        <source>ok_button</source>
-        <translation type="obsolete">Калибровать</translation>
-    </message>
-    <message>
-        <source>hmmcalibrate_dialog_title</source>
-        <translation type="obsolete">Калибровка HMM профайла</translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="98"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="101"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="104"/>
-        <source>Mean length of the synthetic sequences, positive real number. The default value is 325.</source>
-        <translation>Средняя длина синтетических последовательностей.
-Положительное число, 325 по умолчанию</translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="133"/>
-        <source>mean_tip_tool</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="136"/>
-        <source>mean_tip_status</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="139"/>
-        <source>mean_tip_whats</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="272"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="275"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="278"/>
-        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="301"/>
-        <source>seed_tip</source>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="238"/>
+        <source>
+             The random seed, where n is a positive integer. 
+             The default is to use time() to generate a different seed for each run, 
+             which means that two different runs of hmmcalibrate on the same HMM will give slightly different results. 
+             You can use this option to generate reproducible results for different hmmcalibrate runs on the same HMM.</source>
         <translation>Случайная затравка положительным целым числом. 
 По умолчанию используется текущее время в миллисекундах для каждого запуска,что приводит к небольшим и незначительным различиям при каждой калибровке одного и того же профайла.
 Вы можете использовать эту опцию для получения воспроизводимых результатов калибровки.</translation>
     </message>
     <message>
-        <source>close_button</source>
-        <translation type="obsolete">Закрыть</translation>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="245"/>
+        <source>Random seed:</source>
+        <translation>Случайная затравка:</translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="278"/>
+        <source>Save calibrated profile to file</source>
+        <translation>Сохранить откалиброванный HMM профайл</translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="290"/>
+        <source>Save calibrated profile to file:</source>
+        <translation>Сохранить откалиброванный HMM профайл:</translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="14"/>
+        <source>HMM Calibrate</source>
+        <translation>Калибровать HMM профайл</translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="101"/>
+        <source>Mean length of the synthetic sequences, positive real number. The default value is 325.</source>
+        <translation>Средняя длина синтетических последовательностей.
+Положительное число, 325 по умолчанию.</translation>
     </message>
 </context>
 <context>
@@ -311,22 +240,22 @@
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="23"/>
         <source>HMM Search</source>
-        <translation type="unfinished">Поиск HMM</translation>
+        <translation>Поиск HMM сигналов в последовательности</translation>
     </message>
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="37"/>
         <source>File with HMM profile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл HMM профайла:</translation>
     </message>
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="47"/>
         <source>...</source>
-        <translation></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="62"/>
         <source>Expert options</source>
-        <translation type="unfinished">Дополнительные опции</translation>
+        <translation>Дополнительные опции</translation>
     </message>
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="77"/>
@@ -337,12 +266,12 @@
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="232"/>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="75"/>
         <source>E-value filtering can be used to exclude low-probability hits from result.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отбрасывание результатов по Е-величине помогает исключить мало-вероятные сигналы.</translation>
     </message>
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="86"/>
         <source>Filter results with E-value greater then:</source>
-        <translation type="unfinished"></translation>
+        <translation>Отбрасывать результаты с Е-величиной более:</translation>
     </message>
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="119"/>
@@ -353,12 +282,12 @@
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="141"/>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="76"/>
         <source>Score based filtering is an alternative to E-value filtering to exclude low-probability hits from result.</source>
-        <translation type="unfinished"></translation>
+        <translation>Помогает исключить мало-вероятные сигналы.</translation>
     </message>
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="128"/>
         <source>Filter results with Score lower than:</source>
-        <translation type="unfinished"></translation>
+        <translation>Отбрасывать результаты с итоговой суммой меньше:</translation>
     </message>
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="188"/>
@@ -368,72 +297,24 @@
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="213"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="216"/>
         <source>Calculate the E-value scores as if we had seen a sequence database of &lt;n&gt; sequences.</source>
-        <translation type="unfinished"></translation>
+        <translation>Считать Е-величину как если бы имелась база из &lt;n&gt; последовательностей.</translation>
     </message>
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="219"/>
         <source>Number of sequences in dababase:</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество последовательностей в базе:</translation>
     </message>
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="277"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="280"/>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="283"/>
         <source>Variants of algorithm</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>hmm_search_dialog_title</source>
-        <translation type="obsolete">Поиск HMM сигналов в последовательности</translation>
-    </message>
-    <message>
-        <source>hmm_file</source>
-        <translation type="obsolete">Файл HMM профайла</translation>
-    </message>
-    <message>
-        <source>expert_box_title</source>
-        <translation type="obsolete">Экспертные настройки</translation>
-    </message>
-    <message>
-        <source>e_value_as_n_seq</source>
-        <translation type="obsolete">Количество последовательностей в базе</translation>
-    </message>
-    <message>
-        <source>ok_button</source>
-        <translation type="obsolete">Искать</translation>
-    </message>
-    <message>
-        <source>e_value_as_nsec_tip</source>
-        <translation type="obsolete">Считать Е-величину как если бы имелась база из &lt;n&gt; последовательностей</translation>
-    </message>
-    <message>
-        <source>close_button</source>
-        <translation type="obsolete">Закрыть</translation>
+        <translation>Версии алгоритма</translation>
     </message>
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="241"/>
         <source>1E</source>
         <translation>1e</translation>
-    </message>
-    <message>
-        <source>results_evalue_cutoff</source>
-        <translation type="obsolete">Отбрасывать результаты с Е-величиной более</translation>
-    </message>
-    <message>
-        <source>results_score_cutoff_tip</source>
-        <translation type="obsolete">Помогает исключить мало-вероятные сигналы</translation>
-    </message>
-    <message>
-        <source>results_score_cutoff</source>
-        <translation type="obsolete">Отбрасывать результаты с итоговой суммой меньше</translation>
-    </message>
-    <message>
-        <source>results_evalue_cutoff_tip</source>
-        <translation type="obsolete">Отбрасывание результатов по Е-величине помогает исключить мало-вероятные сигналы</translation>
-    </message>
-    <message>
-        <source>algo_combo_tip</source>
-        <translation type="obsolete">Версии алгоритма</translation>
     </message>
     <message>
         <location filename="../src/u_search/ui/HMMSearchDialog.ui" line="257"/>
@@ -443,7 +324,7 @@
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="74"/>
         <source>Calculate the E-value scores as if we had seen a sequence database of &amp;lt;n&amp;gt; sequences.</source>
-        <translation type="unfinished"></translation>
+        <translation>Считать Е-величину как если бы имелась база из &lt;n&gt; последовательностей.</translation>
     </message>
 </context>
 <context>
@@ -451,7 +332,7 @@
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="68"/>
         <source>HMM Profile</source>
-        <translation type="unfinished">Профайл HMM</translation>
+        <translation>Профайл HMM</translation>
     </message>
 </context>
 <context>
@@ -459,7 +340,7 @@
     <message>
         <location filename="../src/u_tests/uhmmerTests.cpp" line="569"/>
         <source>uhmmer-calibrate-subtask</source>
-        <translation></translation>
+        <translation>Калибровка HMM профайла</translation>
     </message>
 </context>
 <context>
@@ -468,12 +349,12 @@
         <location filename="../src/u_search/HMMSearchQDActor.cpp" line="65"/>
         <location filename="../src/u_search/HMMSearchQDActor.cpp" line="150"/>
         <source>HMM2</source>
-        <translation></translation>
+        <translation>HMM2</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchQDActor.cpp" line="76"/>
         <source>QD HMM2 search</source>
-        <translation></translation>
+        <translation>Искать сигналы HMM2</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchQDActor.cpp" line="82"/>
@@ -555,90 +436,32 @@
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="277"/>
-        <source>error</source>
-        <translation>Внимание</translation>
+        <source>Error</source>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="277"/>
-        <source>no_sequence_found</source>
+        <source>No sequences found</source>
         <translation>Не выбрана последовательность</translation>
     </message>
 </context>
 <context>
     <name>U2::HMMBuildDialogController</name>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="112"/>
-        <source>incorrect_ali_file</source>
-        <translation>Некорректный файл выравнивания</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="117"/>
-        <source>incorrect_hmm_file</source>
-        <translation>Укажите файл с HMM профайлом</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="133"/>
-        <source>error</source>
-        <translation>Ошибка</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="142"/>
-        <source>starting_build_process</source>
-        <translation>Начинается построение</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="145"/>
-        <source>back_button</source>
-        <translation>Скрыть</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="169"/>
-        <source>build_finished_with_errors_%1</source>
-        <translation>Построение HMM профайла завершилось с ошибкой: %1</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="173"/>
-        <source>build_finished_successfuly</source>
-        <translation>HMM профайл успешно построен</translation>
-    </message>
-    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="58"/>
         <location filename="../src/u_build/HMMBuildDialogController.cpp" line="175"/>
-        <source>ok_button</source>
+        <source>Build</source>
         <translation>Построить</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="185"/>
-        <source>progress_%1%</source>
-        <translation>Прогресс %1%</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="146"/>
-        <source>cancel_button</source>
-        <translation>Отменить</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="176"/>
-        <source>close_button</source>
-        <translation>Закрыть</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="171"/>
-        <source>build_canceled</source>
-        <translation>Построение HMM профайла отменено</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="58"/>
-        <source>Build</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/u_build/HMMBuildDialogController.cpp" line="59"/>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="176"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Close</translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildDialogController.cpp" line="80"/>
-        <source>select_file_with_alignment</source>
+        <source>Select file with alignment</source>
         <translation>Выберете файл с выравниванием</translation>
     </message>
     <message>
@@ -646,60 +469,101 @@
         <source>Select file with HMM profile</source>
         <translation>Выберете файл с HMM профайлом</translation>
     </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="112"/>
+        <source>Incorrect alignment file!</source>
+        <translation>Некорректный файл выравнивания!</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="117"/>
+        <source>Incorrect HMM file!</source>
+        <translation>Укажите файл с HMM профайлом!</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="133"/>
+        <source>Error</source>
+        <translation>Ошибка</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="142"/>
+        <source>Starting build process</source>
+        <translation>Начинается построение</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="145"/>
+        <source>Hide</source>
+        <translation>Скрыть</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="146"/>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="169"/>
+        <source>HMM build finished with errors: %1</source>
+        <translation>Построение HMM профайла завершилось с ошибкой: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="171"/>
+        <source>HMM build canceled</source>
+        <translation>Построение HMM профайла отменено</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="173"/>
+        <source>HMM build finished successfuly!</source>
+        <translation>HMM профайл успешно построен!</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="185"/>
+        <source>Progress: %1%</source>
+        <translation>Прогресс: %1%</translation>
+    </message>
 </context>
 <context>
     <name>U2::HMMBuildTask</name>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="342"/>
-        <source>multiple_alignment_is_empty</source>
-        <translation>Выравнивание не содержит данных</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="346"/>
-        <source>multiple_alignment_is_0_len</source>
-        <translation>Выравнивание длины 0</translation>
-    </message>
-    <message>
-        <source>miltiple_alignment_is_not_consistent</source>
-        <translation type="obsolete">Выравнивание не нормализовано</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="351"/>
-        <source>only_amino_and_nucl_alphabets_are_supported</source>
-        <translation>Неподдерживаемый тип алфавита</translation>
-    </message>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="359"/>
-        <source>error_creating_msa</source>
-        <translation>Недостаточно памяти для построения выравнивания</translation>
-    </message>
     <message>
         <location filename="../src/u_build/HMMBuildDialogController.cpp" line="325"/>
         <source>Build HMM profile &apos;%1&apos;</source>
         <translation>Построение HMM профала &apos;%1&apos;</translation>
     </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="342"/>
+        <source>Multiple alignment is empty</source>
+        <translation>Выравнивание не содержит данных</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="346"/>
+        <source>Multiple alignment is of 0 length</source>
+        <translation>Выравнивание длины 0</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="351"/>
+        <source>Invalid alphabet! Only amino and nucleic alphabets are supported</source>
+        <translation>Неподдерживаемый тип алфавита</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="359"/>
+        <source>Error creating MSA structure</source>
+        <translation>Недостаточно памяти для построения выравнивания</translation>
+    </message>
 </context>
 <context>
     <name>U2::HMMBuildToFileTask</name>
-    <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="256"/>
-        <source>alignment_object_not_found</source>
-        <translation>Объект выравнивания не найден</translation>
-    </message>
     <message>
         <location filename="../src/u_build/HMMBuildDialogController.cpp" line="310"/>
         <source>none</source>
         <translation>нет</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="209"/>
-        <source>input_format_error</source>
-        <translation>Не могу определить тип файла</translation>
-    </message>
-    <message>
         <location filename="../src/u_build/HMMBuildDialogController.cpp" line="196"/>
         <source>Build HMM profile &apos;%1&apos; -&gt; &apos;%2&apos;</source>
         <translation>Построение HMM профайла &apos;%1&apos;-&gt;&apos;%2&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="209"/>
+        <source>Error reading alignment file</source>
+        <translation>Ошибка чтения файла</translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildDialogController.cpp" line="226"/>
@@ -710,6 +574,11 @@
         <location filename="../src/u_build/HMMBuildDialogController.cpp" line="251"/>
         <source>Incorrect input file</source>
         <translation>Неправильный входной файл</translation>
+    </message>
+    <message>
+        <location filename="../src/u_build/HMMBuildDialogController.cpp" line="256"/>
+        <source>Alignment object not found!</source>
+        <translation>Объект выравнивания не найден!</translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildDialogController.cpp" line="298"/>
@@ -740,85 +609,77 @@
 <context>
     <name>U2::HMMCalibrateDialogController</name>
     <message>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="51"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="160"/>
+        <source>Calibrate</source>
+        <translation>Калибровать</translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="52"/>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="161"/>
+        <source>Close</source>
+        <translation>Закрыть</translation>
+    </message>
+    <message>
         <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="65"/>
         <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="74"/>
-        <source>select_file_with_hmm_model</source>
+        <source>Select file with HMM model</source>
         <translation>Выбор HMM профайла для калибровки</translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="95"/>
-        <source>illegal_in_file_name</source>
-        <translation>Не указан файл c исходным HMM профайлом</translation>
+        <source>Incorrect HMM file!</source>
+        <translation>Не указан файл c исходным HMM профайлом!</translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="101"/>
-        <source>illegal fixed value</source>
-        <translation>Некорректное значение фиксированной длины последовательностей</translation>
+        <source>Illegal fixed length value!</source>
+        <translation>Некорректное значение фиксированной длины последовательностей!</translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="118"/>
-        <source>illegal_out_file_name</source>
+        <source>Invalid output file name</source>
         <translation>Не указан файл для сохранения результата</translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="124"/>
-        <source>error</source>
+        <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="134"/>
-        <source>starting_calibration_process</source>
-        <translation>Начинается калибрование</translation>
+        <source>Starting calibration process</source>
+        <translation>Начинается калибровка</translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="137"/>
-        <source>back_button</source>
+        <source>Hide</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="154"/>
-        <source>calibration_finished_with_errors_%1</source>
-        <translation>Калибрование завершено с ошибкой: %1</translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="158"/>
-        <source>calibration_finished_successfuly</source>
-        <translation>Калибрование успешно завершено</translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="160"/>
-        <source>ok_button</source>
-        <translation>Калибровать</translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="168"/>
-        <source>progress_%1%</source>
-        <translation>Прогресс %1%</translation>
-    </message>
-    <message>
         <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="138"/>
-        <source>cancel_button</source>
-        <translation>Отменить</translation>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="51"/>
-        <source>Calibrate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="52"/>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="161"/>
-        <source>close_button</source>
-        <translation>Закрыть</translation>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="154"/>
+        <source>Calibration finished with errors: %1</source>
+        <translation>Калибровка завершена с ошибкой: %1</translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="156"/>
-        <source>calibration_canceled</source>
-        <translation>Калибрование отменено</translation>
+        <source>Calibration was cancelled</source>
+        <translation>Калибровка отменена</translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="158"/>
+        <source>Calibration finished successfuly!</source>
+        <translation>Калибровка успешно завершена!</translation>
+    </message>
+    <message>
+        <location filename="../src/u_calibrate/HMMCalibrateDialogController.cpp" line="168"/>
+        <source>Progress: %1%</source>
+        <translation>Прогресс: %1%</translation>
     </message>
 </context>
 <context>
@@ -916,20 +777,13 @@
         <location filename="../src/HMMIO.cpp" line="423"/>
         <location filename="../src/HMMIO.cpp" line="454"/>
         <location filename="../src/HMMIO.cpp" line="479"/>
-        <source>illegal line</source>
+        <source>Illegal line</source>
         <translation>Ошибка формата</translation>
     </message>
     <message>
         <location filename="../src/HMMIO.cpp" line="219"/>
-        <source>file_format_is_not_supported</source>
+        <source>File format is not supported</source>
         <translation>Формат не поддерживается</translation>
-    </message>
-    <message>
-        <location filename="../src/HMMIO.cpp" line="248"/>
-        <location filename="../src/HMMIO.cpp" line="374"/>
-        <location filename="../src/HMMIO.cpp" line="378"/>
-        <source>value is illegal %1</source>
-        <translation>Некорректное значение: &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../src/HMMIO.cpp" line="277"/>
@@ -958,28 +812,35 @@
         <location filename="../src/HMMIO.cpp" line="493"/>
         <location filename="../src/HMMIO.cpp" line="499"/>
         <location filename="../src/HMMIO.cpp" line="504"/>
-        <source>invalid_file_structure_near_%1</source>
+        <source>Invalid file structure near %1</source>
         <translation>Некорректная структура файла вблизи &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <location filename="../src/HMMIO.cpp" line="382"/>
-        <source>value is not set for %1</source>
-        <translation>Не установлено значение для &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <location filename="../src/HMMIO.cpp" line="518"/>
-        <source>no // symbol found</source>
-        <translation>Не найден маркер конца структуры: &apos;//&apos;</translation>
-    </message>
-    <message>
-        <location filename="../src/HMMIO.cpp" line="72"/>
-        <source>alphabet_not_set</source>
-        <translation>Не установлен алфавит</translation>
     </message>
     <message>
         <location filename="../src/HMMIO.cpp" line="339"/>
         <source>ALPH must precede NULE in HMM save files</source>
-        <translation></translation>
+        <translation>ALPH must precede NULE in HMM save files</translation>
+    </message>
+    <message>
+        <location filename="../src/HMMIO.cpp" line="248"/>
+        <location filename="../src/HMMIO.cpp" line="374"/>
+        <location filename="../src/HMMIO.cpp" line="378"/>
+        <source>Value is illegal: %1</source>
+        <translation>Некорректное значение: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <location filename="../src/HMMIO.cpp" line="72"/>
+        <source>Alphabet is not set</source>
+        <translation>Не установлен алфавит</translation>
+    </message>
+    <message>
+        <location filename="../src/HMMIO.cpp" line="382"/>
+        <source>Value is not set for &apos;%1&apos;</source>
+        <translation>Не установлено значение для &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <location filename="../src/HMMIO.cpp" line="518"/>
+        <source>No &apos;//&apos; symbol found</source>
+        <translation>Не найден маркер конца структуры: &apos;//&apos;</translation>
     </message>
     <message>
         <location filename="../src/HMMIO.cpp" line="636"/>
@@ -990,13 +851,9 @@
 <context>
     <name>U2::HMMMSAEditorContext</name>
     <message>
-        <source>do_hmmbuild</source>
-        <translation type="obsolete">Построить HMM профайл ...</translation>
-    </message>
-    <message>
         <location filename="../src/uHMMPlugin.cpp" line="217"/>
         <source>Build HMMER2 profile</source>
-        <translation></translation>
+        <translation>Построить профайл с помощью HMM2</translation>
     </message>
 </context>
 <context>
@@ -1004,75 +861,61 @@
     <message>
         <location filename="../src/HMMIO.cpp" line="651"/>
         <source>Read HMM profile &apos;%1&apos;.</source>
-        <translation>Чтение HMM профайла &apos;%1&apos;</translation>
+        <translation>Чтение HMM профайла &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
     <name>U2::HMMSearchDialogController</name>
     <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="111"/>
-        <source>select_file_with_hmm_model</source>
-        <translation>Выбор HMM профайла</translation>
+        <source>Select file with HMM model</source>
+        <translation>Выбор HMM профайла для калибровки</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="128"/>
-        <source>hmm_file_not_set</source>
-        <translation>Укажите файл с HMM профайлом</translation>
+        <source>HMM file not set!</source>
+        <translation>Укажите файл с HMM профайлом!</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="145"/>
-        <source>error</source>
-        <translation>Внимание</translation>
-    </message>
-    <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="151"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="151"/>
         <source>Cannot create an annotation object. Please check settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно создать аннотацию. Проверьте настройки</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="162"/>
-        <source>starting_search_process</source>
+        <source>Starting search process</source>
         <translation>Начинается поиск</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="165"/>
-        <source>back_button</source>
+        <source>Hide</source>
         <translation>Скрыть</translation>
     </message>
     <message>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="166"/>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="181"/>
-        <source>search_finished_with_errors_%1</source>
-        <translation>Поиск завершен с ошибкой: %1</translation>
+        <source>HMM search finished with error: %1</source>
+        <translation>Построение HMM профайла завершилось с ошибкой: %1</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="183"/>
-        <source>search_finished_successfuly</source>
-        <translation>Поиск успешно завершен</translation>
-    </message>
-    <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="185"/>
-        <source>ok_button</source>
-        <translation>Искать</translation>
+        <source>HMM search finished successfuly!</source>
+        <translation>HMM профайл успешно построен!</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="193"/>
-        <source>progress_%1%</source>
-        <translation>Прогресс %1%</translation>
-    </message>
-    <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="166"/>
-        <source>cancel_button</source>
-        <translation>Отменить</translation>
-    </message>
-    <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="186"/>
-        <source>close_button</source>
-        <translation>Закрыть</translation>
+        <source>Progress: %1%</source>
+        <translation>Прогресс: %1%</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="76"/>
@@ -1081,13 +924,15 @@
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="60"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="185"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Искать</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="61"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="186"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="79"/>
@@ -1103,29 +948,29 @@
 <context>
     <name>U2::HMMSearchTask</name>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="311"/>
-        <source>parallel_hmm_search_task</source>
-        <translation>Параллельный поиск HMM сигналов</translation>
-    </message>
-    <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="245"/>
-        <source>invalid_hmm_alphabet_type</source>
-        <translation>Неправильный алфавит HMM профайла</translation>
-    </message>
-    <message>
         <location filename="../src/u_search/HMMSearchTask.cpp" line="27"/>
         <source>HMM Search</source>
         <translation>Поиск HMM</translation>
     </message>
     <message>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="245"/>
+        <source>Invalid HMM alphabet!</source>
+        <translation>Неправильный алфавит HMM профайла!</translation>
+    </message>
+    <message>
         <location filename="../src/u_search/HMMSearchTask.cpp" line="249"/>
-        <source>invalid_sequence_alphabet_type</source>
-        <translation>Неправильный алфавит последовательности</translation>
+        <source>Invalid sequence alphabet!</source>
+        <translation>Неправильный алфавит последовательности!</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchTask.cpp" line="277"/>
-        <source>can_t_find_amino</source>
-        <translation>Не найдена таблица аминокислотной трансляции для выбранной последовательности</translation>
+        <source>Amino translation is not available for the sequence alphabet!</source>
+        <translation>Не найдена таблица аминокислотной трансляции для выбранной последовательности!</translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="311"/>
+        <source>Parallel HMM search</source>
+        <translation>Параллельный поиск HMM сигналов</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchTask.cpp" line="19"/>
@@ -1136,19 +981,19 @@
 <context>
     <name>U2::HMMSearchToAnnotationsTask</name>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="213"/>
-        <source>raw_alphabet_not_supported</source>
-        <translation>Неправильный алфавит последовательности</translation>
-    </message>
-    <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="229"/>
-        <source>annotation_obj_removed</source>
-        <translation>Объект аннотаций был удалён</translation>
-    </message>
-    <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="207"/>
         <source>HMM search, file &apos;%1&apos;</source>
         <translation>HMM поиск, файл &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="213"/>
+        <source>RAW alphabet is not supported!</source>
+        <translation>Неправильный алфавит последовательности!</translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="229"/>
+        <source>Annotation object was removed</source>
+        <translation>Объект аннотаций был удалён</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchDialogController.cpp" line="255"/>
@@ -1192,27 +1037,27 @@
 <context>
     <name>U2::LocalWorkflow::HMMBuildPrompter</name>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="175"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="182"/>
         <source>For each MSA from &lt;u&gt;%1&lt;/u&gt;,</source>
         <translation>Для каждого выравнивания из &lt;u&gt;%1&lt;/u&gt;,</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="179"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="186"/>
         <source> and calibrate</source>
         <translation> и калибровать</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="181"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="188"/>
         <source>default</source>
         <translation>настройки по умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="181"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="188"/>
         <source>custom</source>
         <translation>выбранные настройки</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="183"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="190"/>
         <source>%1 build%2 HMM profile using &lt;u&gt;%3&lt;/u&gt; settings.</source>
         <translation>%1 построить%2 HMM профайл используя &lt;u&gt;%3&lt;/u&gt;.</translation>
     </message>
@@ -1220,17 +1065,17 @@
 <context>
     <name>U2::LocalWorkflow::HMMBuildWorker</name>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="289"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="296"/>
         <source>Built HMM profile</source>
         <translation>Построен профайл HMM</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="295"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="302"/>
         <source>Calibrated HMM profile</source>
-        <translation>Откалиброван профайл HMM.</translation>
+        <translation>Откалиброван профайл HMM</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="115"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="122"/>
         <source>HMM Build</source>
         <translation>Построить HMM</translation>
     </message>
@@ -1247,7 +1092,7 @@
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="75"/>
         <source>Specifies kind of alignments you want to allow.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбор типа искомого выравнивания.</translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="76"/>
@@ -1257,7 +1102,7 @@
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="76"/>
         <source>Descriptive name of the HMM profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Описательное имя целевого профайла HMM.</translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="83"/>
@@ -1275,35 +1120,35 @@
         <translation>Фиксированная длина сэмплов</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="90"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="91"/>
         <source>Mean length of samples</source>
         <translation>Средняя длина сэмплов</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="92"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="93"/>
         <source>Number of samples</source>
         <translation>Число сэмплов</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="94"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="97"/>
         <source>Standard deviation</source>
         <translation>Стандартное отклонение</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="96"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="100"/>
         <source>Random seed</source>
         <translation>Затравка</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="211"/>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="212"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="218"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="219"/>
         <source>Incorrect value for seed parameter</source>
-        <translation></translation>
+        <translation>Некорректное значение для параметра затравки</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="230"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="237"/>
         <source>Schema name not specified. Using default value: &apos;%1&apos;</source>
-        <translation></translation>
+        <translation>Не задано имя схемы. Использовано значение по умолчанию: &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="63"/>
@@ -1321,14 +1166,6 @@
         <translation>Произведённый профайл HMM</translation>
     </message>
     <message>
-        <source>Specifies kind of alignments you want to allow</source>
-        <translation type="obsolete">Выбор типа искомого выравнивания.</translation>
-    </message>
-    <message>
-        <source>Descriptive name of the HMM profile</source>
-        <translation type="obsolete">Описательное имя целевого профайла HMM.</translation>
-    </message>
-    <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="83"/>
         <source>Enables/disables optional profile calibration.&lt;p&gt;An empirical HMM calibration costs time but it only has to be done once per model, and can greatly increase the sensitivity of a database search.</source>
         <translation>Включить/выключить калибрацию профайлов. &lt;p&gt;Однократная калибрация случайными синтетическими последовательностями занимает некоторое время, но может существенно улучшить чувствительность поиска.</translation>
@@ -1339,13 +1176,9 @@
         <translation>Число потоков для параллельной калибрации.</translation>
     </message>
     <message>
-        <location filename="../src/u_build/HMMBuildWorker.cpp" line="115"/>
+        <location filename="../src/u_build/HMMBuildWorker.cpp" line="122"/>
         <source>Builds a HMM profile from a multiple sequence alignment.&lt;p&gt;The HMM profile is a statistical model which captures position-specific information about how conserved each column of the alignment is, and which residues are likely.</source>
-        <translation>Строит профайлы HMM по входящим множественным выравниваниям. &lt;p&gt;</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="obsolete">По умолчанию</translation>
+        <translation>Строит профайлы HMM по входящим множественным выравниваниям.</translation>
     </message>
 </context>
 <context>
@@ -1382,10 +1215,6 @@
         <translation>Сохранить HMM профайл</translation>
     </message>
     <message>
-        <source>Location of the data file.</source>
-        <translation type="obsolete">Адрес файла данных.</translation>
-    </message>
-    <message>
         <location filename="../src/HMMIOWorker.cpp" line="132"/>
         <source>Input HMM profile</source>
         <translation>Входной профайл HMM</translation>
@@ -1393,7 +1222,7 @@
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="133"/>
         <source>Location hint for the target file.</source>
-        <translation>Адрес файла для записи</translation>
+        <translation>Адрес файла для записи.</translation>
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="143"/>
@@ -1416,11 +1245,7 @@
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="168"/>
         <source>Read HMM profile(s) from %1.</source>
-        <translation type="unfinished">Загрузить HMM профайл(ы) из %1</translation>
-    </message>
-    <message>
-        <source>Read HMM profile(s) from %1</source>
-        <translation type="obsolete">Загрузить HMM профайл(ы) из %1 {1?}</translation>
+        <translation>Загрузить HMM профайл(ы) из %1.</translation>
     </message>
 </context>
 <context>
@@ -1451,11 +1276,7 @@
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="132"/>
         <source>%1 HMM signals. %3&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%4&lt;/u&gt;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 search HMM signals %2. %3&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%4&lt;/u&gt;.</source>
-        <translation type="obsolete">%1 искать HMM сигналы %2. %3&lt;br&gt;Выдать список найденных регионов аннотированных как &lt;u&gt;%4&lt;/u&gt;.</translation>
+        <translation>%1 искать HMM сигналы. %3&lt;br&gt;Выдать список найденных регионов аннотированных как &lt;u&gt;%4&lt;/u&gt;.</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="127"/>
@@ -1468,7 +1289,7 @@
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="212"/>
         <source>Bad sequence supplied to input: %1</source>
-        <translation></translation>
+        <translation>Некорректная последовательность: %1</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="236"/>
@@ -1518,12 +1339,12 @@
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="157"/>
         <source>Power of e-value must be less or equal to zero. Using default value: 1e-1</source>
-        <translation></translation>
+        <translation>Степень e-value должна быть меньше или равна нулю. Исползутся значение по умолчанию: 1е-1</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="166"/>
         <source>Value for attribute name is empty, default name used</source>
-        <translation></translation>
+        <translation>Имя не указано, использовано значение по умолчанию</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="208"/>
@@ -1561,7 +1382,7 @@
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="174"/>
         <source>unset</source>
-        <translation></translation>
+        <translation>не указан</translation>
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="178"/>
@@ -1574,12 +1395,12 @@
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="259"/>
         <source>Empty HMM passed for writing to %1</source>
-        <translation></translation>
+        <translation>Пустой HMM профайл для записи в %1</translation>
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="259"/>
         <source>Unspecified URL for writing HMM</source>
-        <translation></translation>
+        <translation>Некорректный путь для записи HMM</translation>
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="270"/>
@@ -1592,19 +1413,19 @@
     <message>
         <location filename="../src/u_build/uhmmbuild.cpp" line="184"/>
         <source>bogus configuration choice</source>
-        <translation></translation>
+        <translation>некорректный выбор конфигурации</translation>
     </message>
 </context>
 <context>
     <name>U2::uHMMPlugin</name>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="86"/>
-        <source>uhmm_plugin</source>
+        <source>HMM2</source>
         <translation>HMM2</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="86"/>
-        <source>uhmm_plugin_desc</source>
+        <source>Based on HMMER 2.3.2 package. Biological sequence analysis using profile hidden Markov models</source>
         <translation>Основан на пакете HMMER 2.3.2: анализ биологических последовательностей при помощи скрытых марковских моделей (HMM).
 Домашняя страница проекта: http://hmmer.janelia.org/.
 Включает в себя оригинальные оптимизированные версии алгоритмов</translation>
@@ -1612,59 +1433,27 @@
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="89"/>
         <source>Build HMM2 profile...</source>
-        <translation type="unfinished"></translation>
+        <translation>Построить профайл с помощью HMM2...</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="94"/>
         <source>Calibrate profile with HMM2...</source>
-        <translation type="unfinished"></translation>
+        <translation>Калибровать профайл с помощью HMM2...</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="99"/>
         <source>Search with HMM2...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>hmmcalibrate</source>
-        <translation type="obsolete">Калибровать HMM профайл</translation>
-    </message>
-    <message>
-        <source>hmmbuild</source>
-        <translation type="obsolete">Построить HMM профайл</translation>
-    </message>
-    <message>
-        <source>hmmsearch</source>
-        <translation type="obsolete">Искать сигналы HMM</translation>
-    </message>
-    <message>
-        <source>Build HMM2 profile</source>
-        <translation type="obsolete">Построить профайл с помощью HMM2</translation>
-    </message>
-    <message>
-        <source>Calibrate profile with HMM2</source>
-        <translation type="obsolete">Калибровать профайл с помощью HMM2</translation>
-    </message>
-    <message>
-        <source>Search with HMM2</source>
-        <translation type="obsolete">Искать сигналы HMM2</translation>
-    </message>
-    <message>
-        <source>HMMER tools</source>
-        <translation type="obsolete">HMMER (Скрытые модели Маркова)</translation>
+        <translation>Искать сигналы HMM2...</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="196"/>
-        <source>error</source>
-        <translation>Внимание</translation>
+        <source>Error</source>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="196"/>
-        <source>neither_annotatedview_nor_pv_selection_found</source>
-        <translation>Сначала выберите последовательность</translation>
-    </message>
-    <message>
-        <source>HMMER2 tools</source>
-        <translation type="obsolete">HMMER2 (Скрытые Модели Маркова)</translation>
+        <source>Error! Select sequence in Project view or open sequence view.</source>
+        <translation>Сначала выберите последовательность.</translation>
     </message>
 </context>
 </TS>

@@ -77,7 +77,7 @@ SiteconBuildDialogController::SiteconBuildDialogController(SiteconPlugin* pl, QW
 
 void SiteconBuildDialogController::sl_inFileButtonClicked() {
     LastUsedDirHelper lod;
-    lod.url = U2FileDialog::getOpenFileName(this, tr("select_file_with_alignment"), lod,
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Select file with alignment"), lod,
                                                 DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
     if (lod.url.isEmpty()) {
         return;
@@ -113,18 +113,18 @@ void SiteconBuildDialogController::sl_okButtonClicked() {
 
    QString inFile = inputEdit->text();
    if (inFile.isEmpty() && !QFileInfo(inFile).exists()) {
-       errMsg = tr("illegal_in_file_name");
+       errMsg = tr("Illegal alignment file");
        inputEdit->setFocus();
    }
    QString outFile = outputEdit->text();
    if (outFile.isEmpty()) {
-       errMsg = tr("illegal_out_file_name");
+       errMsg = tr("Illegal SITECON model file");
        outputEdit->setFocus();
    }
    
    s.windowSize = windowSizeSpin->value();
    if (!errMsg.isEmpty())  {
-       QMessageBox::critical(this, tr("error"), errMsg);
+       QMessageBox::critical(this, tr("Error"), errMsg);
        return;
    }
    //save settings
@@ -136,11 +136,11 @@ void SiteconBuildDialogController::sl_okButtonClicked() {
    connect(task, SIGNAL(si_stateChanged()), SLOT(sl_onStateChanged()));
    connect(task, SIGNAL(si_progressChanged()), SLOT(sl_onProgressChanged()));
    AppContext::getTaskScheduler()->registerTopLevelTask(task);
-   statusLabel->setText(tr("starting_calibration_process"));
+   statusLabel->setText(tr("Starting calibration process"));
 
    //update buttons
-   okButton->setText(tr("hide_button"));
-   cancelButton->setText(tr("cancel_button"));
+   okButton->setText(tr("Hide"));
+   cancelButton->setText(tr("Cancel"));
 }
 
 
@@ -153,20 +153,20 @@ void SiteconBuildDialogController::sl_onStateChanged() {
     task->disconnect(this);
     const TaskStateInfo& si = task->getStateInfo();
     if (si.hasError()) {
-        statusLabel->setText(tr("build_finished_with_errors_%1").arg(si.getError()));
+        statusLabel->setText(tr("Build finished with error: %1").arg(si.getError()));
     } else if (task->isCanceled()) {
-        statusLabel->setText(tr("build_canceled"));
+        statusLabel->setText(tr("Build canceled"));
     } else {
-        statusLabel->setText(tr("build_finished_successfuly"));
+        statusLabel->setText(tr("Build finished successfully"));
     }
-    okButton->setText(tr("start_button"));
-    cancelButton->setText(tr("close_button"));
+    okButton->setText(tr("Build"));
+    cancelButton->setText(tr("Close"));
     task = NULL;
 }
 
 void SiteconBuildDialogController::sl_onProgressChanged() {
     assert(task==sender());
-    statusLabel->setText(tr("running_state_%1_progress_%2%").arg(task->getStateInfo().getDescription()).arg(task->getProgress()));
+    statusLabel->setText(tr("Running... State :%1 Progress: %2").arg(task->getStateInfo().getDescription()).arg(task->getProgress()));
 }
 
 void SiteconBuildDialogController::reject() {
@@ -181,7 +181,7 @@ void SiteconBuildDialogController::reject() {
 // task
 
 SiteconBuildTask::SiteconBuildTask(const SiteconBuildSettings& s, const MAlignment& ma, const QString& origin) 
-: Task (tr("build_sitecon_model"), TaskFlag_None), settings(s), ma(ma)
+: Task (tr("Build SITECON Model"), TaskFlag_None), settings(s), ma(ma)
 {
     GCOUNTER( cvar, tvar, "SiteconBuildTask" );
     tpm = Task::Progress_Manual;
@@ -191,11 +191,11 @@ SiteconBuildTask::SiteconBuildTask(const SiteconBuildSettings& s, const MAlignme
 void SiteconBuildTask::run() {
     // compute average/dispersion matrix
     if (!ma.hasEmptyGapModel()) {
-        stateInfo.setError( tr("alignment_has_gaps") );
+        stateInfo.setError( tr("Alignment contains gaps") );
         return;
     }
     if (ma.isEmpty()) {
-        stateInfo.setError(  tr("alignment_is_empty") );
+        stateInfo.setError(  tr("Alignment is empty") );
         return;
     }
     if (ma.getNumRows() < 2) {
@@ -203,11 +203,11 @@ void SiteconBuildTask::run() {
         return;
     }
     if (!ma.getAlphabet()->isNucleic()) {
-        stateInfo.setError(  tr("alignment_is_not_nucleic") );
+        stateInfo.setError(  tr("Alignment is not nucleic") );
         return;
     }
     if (ma.getLength() < settings.windowSize) {
-        stateInfo.setError(  tr("window_greater_then_length") );
+        stateInfo.setError(  tr("Window size is greater than alignment length") );
         return;
     }
     
@@ -221,24 +221,24 @@ void SiteconBuildTask::run() {
     SiteconAlgorithm::calculateACGTContent(ma, settings);
     settings.numSequencesInAlignment = ma.getNumRows();
     m.settings = settings;
-    stateInfo.setDescription(tr("calculating_ave_disp_matrix"));
+    stateInfo.setDescription(tr("Calculating average and dispersion matrixes"));
     m.matrix = SiteconAlgorithm::calculateDispersionAndAverage(ma, settings, stateInfo);
     if (stateInfo.hasError() || isCanceled()) {
         return;
     }
-    stateInfo.setDescription(tr("calculating_weights"));
+    stateInfo.setDescription(tr("Calculating weights"));
     SiteconAlgorithm::calculateWeights(ma, m.matrix, m.settings, false, stateInfo);
     if (stateInfo.hasError() || isCanceled()) {
         return;
     }
     stateInfo.progress+=5;
-    stateInfo.setDescription(tr("calculating_firstTypeErr"));
+    stateInfo.setDescription(tr("Calibrating first type error"));
     m.err1 = SiteconAlgorithm::calculateFirstTypeError(ma, settings, stateInfo);
     if (stateInfo.hasError() || isCanceled()) {
         return;
     }
     stateInfo.progress+=10;
-    stateInfo.setDescription(tr("calculating_second_type_err"));
+    stateInfo.setDescription(tr("Calibrating second type error"));
     m.err2 = SiteconAlgorithm::calculateSecondTypeError(m.matrix, settings, stateInfo);
     if (stateInfo.hasError() || isCanceled()) {
         return;
@@ -246,7 +246,7 @@ void SiteconBuildTask::run() {
 }
 
 SiteconBuildToFileTask::SiteconBuildToFileTask(const QString& inFile, const QString& _outFile, const SiteconBuildSettings& s) 
-: Task (tr("build_sitecon_model"), TaskFlag_NoRun), loadTask(NULL), buildTask(NULL), outFile(_outFile), settings(s)
+: Task (tr("Build SITECON model to file"), TaskFlag_NoRun), loadTask(NULL), buildTask(NULL), outFile(_outFile), settings(s)
 {
     tpm = Task::Progress_SubTasksBased;
     
@@ -257,7 +257,7 @@ SiteconBuildToFileTask::SiteconBuildToFileTask(const QString& inFile, const QStr
     c.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
-        stateInfo.setError(  tr("input_format_error") );
+        stateInfo.setError(  tr("Unknown alignment format") );
         return;
     }
     DocumentFormatId format = formats.first();
@@ -265,7 +265,7 @@ SiteconBuildToFileTask::SiteconBuildToFileTask(const QString& inFile, const QStr
     loadTask = new LoadDocumentTask(format, inFile, iof);
     loadTask->setSubtaskProgressWeight(0.03F);
     stateInfo.progress = 0;
-    stateInfo.setDescription(tr("loading_ali"));
+    stateInfo.setDescription(tr("Loading alignment"));
     addSubTask(loadTask);
 }
 
@@ -284,7 +284,7 @@ QList<Task*> SiteconBuildToFileTask::onSubTaskFinished(Task* subTask) {
         assert(d != NULL);
         QList<GObject*> mobjs = d->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
         if (mobjs.isEmpty()) {
-            stateInfo.setError(  tr("no_alignments_found") );
+            stateInfo.setError(  tr("No alignment found") );
         } else {
             MAlignmentObject* mobj =  qobject_cast<MAlignmentObject*>(mobjs.first());
             const MAlignment &ma = mobj->getMAlignment();

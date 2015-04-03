@@ -151,7 +151,7 @@ void SiteconSearchDialogController::updateState() {
     
     pbSaveAnnotations->setEnabled(!hasActiveTask && hasResults);
     pbClear->setEnabled(!hasActiveTask && hasResults);
-    pbClose->setText(hasActiveTask ? tr("cancel_button") : tr("close_button"));  
+    pbClose->setText(hasActiveTask ? tr("Cancel") : tr("Close"));  
 
     rbBoth->setEnabled(!hasActiveTask && hasCompl);
     rbDirect->setEnabled(!hasActiveTask);
@@ -163,9 +163,9 @@ void SiteconSearchDialogController::updateState() {
 void SiteconSearchDialogController::updateStatus() {
     QString message;
     if (task != NULL) {
-        message = tr("progress_%1%_").arg(qMax(0, task->getProgress()));
+        message = tr("Progress: %1% ").arg(qMax(0, task->getProgress()));
     }
-    message += tr("%1_results_found.").arg(resultsTree->topLevelItemCount());
+    message += tr("%1 results found").arg(resultsTree->topLevelItemCount());
     statusLabel->setText(message);
 }
 
@@ -184,7 +184,7 @@ bool SiteconSearchDialogController::eventFilter(QObject *obj, QEvent *ev) {
 
 void SiteconSearchDialogController::sl_selectModelFile() {
     LastUsedDirHelper lod(SiteconIO::SITECON_ID);
-    lod.url = U2FileDialog::getOpenFileName(this, tr("select_file_with_model"), lod, SiteconIO::getFileFilter());
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Select file with SITECON model"), lod, SiteconIO::getFileFilter());
     if (lod.url.isEmpty()) {
         return;
     }
@@ -193,7 +193,7 @@ void SiteconSearchDialogController::sl_selectModelFile() {
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(lod.url));
     SiteconModel m = SiteconIO::readModel(iof, lod.url, si);
     if (si.hasError()) {
-        QMessageBox::critical(this, tr("error"), si.getError());
+        QMessageBox::critical(this, tr("Error"), si.getError());
         return;
     }
     assert(!m.modelName.isEmpty());    
@@ -229,7 +229,7 @@ void SiteconSearchDialogController::updateModel(const SiteconModel& m) {
     assert(pStart<=pEnd);
     int activeIdx = -1;
     for (int i=qMax(pStart-1, 0); i <=qMin(pEnd+1, 99); i++) {
-        QString text = tr("%1%\terr1=%2\terr2=%3").arg(i).arg(model->err1[i]).arg(model->err2[i]);
+        QString text = tr("%1%,  first type error %2,  second type error %3").arg(i).arg(model->err1[i]).arg(model->err2[i]);
         errLevelBox->addItem(text, QVariant(i));
         if (activeIdx == -1 && model->err1[i] >= 0.5F) {
             activeIdx = errLevelBox->count()-1;
@@ -292,7 +292,7 @@ void SiteconSearchDialogController::sl_onClose() {
 void SiteconSearchDialogController::runTask() {
     assert(task == NULL);
     if (model == NULL) {
-        QMessageBox::critical(this, tr("error"), tr("model not selected"));
+        QMessageBox::critical(this, tr("Error"), tr("No model selected"));
         return;
     }
     bool isRegionOk=false;
@@ -302,7 +302,7 @@ void SiteconSearchDialogController::runTask() {
         return;
     }
     if (reg.length <= model->settings.windowSize) {
-        QMessageBox::critical(this, tr("error"), tr("range_is_too_small"));
+        QMessageBox::critical(this, tr("Error"), tr("Range is too small"));
         return;
     }
     QByteArray seq = ctx->getSequenceData(reg);
@@ -312,7 +312,7 @@ void SiteconSearchDialogController::runTask() {
     cfg.complOnly = rbComplement->isChecked();
     cfg.minPSUM = errLevelBox->itemData(errLevelBox->currentIndex()).toInt();
     if (cfg.minPSUM == 0) {
-        QMessageBox::critical(this, tr("error"), tr("error_parsing_min_score"));
+        QMessageBox::critical(this, tr("Error"), tr("Error parsing minumum score"));
         return;
     }
 
@@ -376,7 +376,7 @@ SiteconResultItem::SiteconResultItem(const SiteconSearchResult& r) : res(r)
     setTextAlignment(4, Qt::AlignRight);
 
     setText(0, range);
-    QString strand = res.strand.isCompementary()? SiteconSearchDialogController::tr("complement_strand") : SiteconSearchDialogController::tr("direct_strand") ;
+    QString strand = res.strand.isCompementary()? SiteconSearchDialogController::tr("Complement strand") : SiteconSearchDialogController::tr("Direct strand") ;
     setText(1, strand);
     setText(2, QString::number(res.psum, 'f', 2)+"%");
     setText(3, QString::number(res.err1, 'g', 4));

@@ -225,13 +225,13 @@ void GTest_UHMMER3Build::setAndCheckArgs() {
     }
 
     if( inFile.isEmpty() ) {
-        stateInfo.setError( tr( "input_file_not_given" ) );
+        stateInfo.setError( tr( "No input file given" ) );
         return;
     }
     inFile = env->getVar( "COMMON_DATA_DIR" ) + "/" + inFile;
 
     if( outFile.isEmpty() ) {
-        stateInfo.setError( tr( "output_file_not_given" ) );
+        stateInfo.setError( tr( "No output file given" ) );
         return;
     }
     outFile = env->getVar( "TEMP_DATA_DIR" ) + "/" + outFile;
@@ -301,13 +301,13 @@ void GTest_CompareHmmFiles::init( XMLTestFormat *tf, const QDomElement &el ) {
 
 void GTest_CompareHmmFiles::setAndCheckArgs() {
     if( filename1.isEmpty() ) {
-        stateInfo.setError( tr( "file1_not_given" ) );
+        stateInfo.setError( tr( "File #1 not set" ) );
         return;
     }
     filename1 = env->getVar( file1Tmp? "TEMP_DATA_DIR" : "COMMON_DATA_DIR" ) + "/" + filename1;
 
     if( filename2.isEmpty() ) {
-        stateInfo.setError( tr( "file2_not_given" ) );
+        stateInfo.setError( tr( "File #2 not set" ) );
         return;
     }
     filename2 = env->getVar( file2Tmp? "TEMP_DATA_DIR" : "COMMON_DATA_DIR" ) + "/" + filename2;
@@ -367,22 +367,22 @@ Task::ReportResult GTest_CompareHmmFiles::report() {
     IOAdapterFactory* iof1 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filename1));
     QScopedPointer<IOAdapter> io1(iof1->createIOAdapter());
     if (io1.isNull()) {
-        stateInfo.setError( tr( "cannot_create_io_adapter_for_1_file" ) );
+        stateInfo.setError( tr( "Error creating ioadapter for first file" ) );
         return ReportResult_Finished;
     }
     if( !io1->open( filename1, IOAdapterMode_Read ) ) {
-        stateInfo.setError( tr( "cannot_open_1_file" ) );
+        stateInfo.setError( tr( "Error opening 1 file" ) );
         return ReportResult_Finished;
     }
 
     IOAdapterFactory* iof2 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filename2));
     QScopedPointer<IOAdapter> io2(iof2->createIOAdapter());
     if (io2.isNull()) {
-        stateInfo.setError( tr( "cannot_create_io_adapter_for_2_file" ) );
+        stateInfo.setError( tr( "Error creating ioadapter for second file" ) );
         return ReportResult_Finished;
     }
     if( !io2->open( filename2, IOAdapterMode_Read ) ) {
-        stateInfo.setError( tr( "cannot_open_2_file" ) );
+        stateInfo.setError( tr( "Error opening second file" ) );
         return ReportResult_Finished;
     }
 
@@ -407,18 +407,18 @@ Task::ReportResult GTest_CompareHmmFiles::report() {
             if( name1.startsWith( name2 ) || name2.startsWith( name1 ) ) {
                 continue;
             }
-            stateInfo.setError( tr( "names_of_alignments_not_similar" ) );
+            stateInfo.setError( tr( "Names of aligments not matched" ) );
             return ReportResult_Finished;
         }
         if( bytes1 != bytes2 ) {
-            stateInfo.setError( tr( "strings_written_from_files:different_length" ) );
+            stateInfo.setError( tr( "Comparing files length not matched" ) );
             return ReportResult_Finished;
         }
 
         QString s1 = QString::fromLatin1( buf1.data(), bytes1 );
         QString s2 = QString::fromLatin1( buf2.data(), bytes2 );
         if( !compareStr( s1, s2 ) ) {
-            stateInfo.setError( tr( "files_not_equal: \"%1\" and \"%2\"" ).arg( s1 ).arg( s2 ) );
+            stateInfo.setError( tr( "Files parts not equal:'%1' and '%2'" ).arg( s1 ).arg( s2 ) );
             return ReportResult_Finished;
         }
     } while( 0 < bytes1 && 0 < bytes2 );

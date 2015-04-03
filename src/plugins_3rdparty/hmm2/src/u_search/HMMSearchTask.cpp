@@ -242,11 +242,11 @@ bool HMMSearchTask::checkAlphabets(int hmmAlType, const DNAAlphabet* seqAl, DNAT
     assert(stateInfo.getError().isEmpty());
     DNAAlphabetType hmmAl = HMMIO::convertHMMAlphabet(hmmAlType);
     if (hmmAl == DNAAlphabet_RAW) {
-        stateInfo.setError(  tr("invalid_hmm_alphabet_type") );
+        stateInfo.setError(  tr("Invalid HMM alphabet!") );
         return false;
     }
     if (seqAl->isRaw()) {
-        stateInfo.setError(  tr("invalid_sequence_alphabet_type") );
+        stateInfo.setError(  tr("Invalid sequence alphabet!") );
         return false;
     }
 
@@ -274,7 +274,7 @@ bool HMMSearchTask::checkAlphabets(int hmmAlType, const DNAAlphabet* seqAl, DNAT
             assert(complTrans == NULL && aminoTrans == NULL);
         } else {
             if (aminoTrans == NULL) {
-                stateInfo.setError(  tr("can_t_find_amino") );
+                stateInfo.setError(  tr("Amino translation is not available for the sequence alphabet!") );
                 return false;
             }
         }
@@ -308,7 +308,7 @@ SequenceWalkerTask* HMMSearchTask::getSWSubtask()
 
     config.nThreads = MAX_PARALLEL_SUBTASKS_AUTO;
 
-    return new SequenceWalkerTask(config, this, tr("parallel_hmm_search_task"));
+    return new SequenceWalkerTask(config, this, tr("Parallel HMM search"));
 }
 
 QList< Task* > HMMSearchTask::onSubTaskFinished( Task* subTask )

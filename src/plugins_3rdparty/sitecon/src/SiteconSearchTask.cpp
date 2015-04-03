@@ -25,7 +25,7 @@
 namespace U2 {
 
 SiteconSearchTask::SiteconSearchTask(const SiteconModel& m, const QByteArray& seq, const SiteconSearchCfg& cfg, int ro)
-: Task(tr("sitecon_search"), TaskFlags_NR_FOSCOE), model(new SiteconModel(m)), cfg(new SiteconSearchCfg(cfg)), resultsOffset(ro), wholeSeq(seq)
+: Task(tr("SITECON search"), TaskFlags_NR_FOSCOE), model(new SiteconModel(m)), cfg(new SiteconSearchCfg(cfg)), resultsOffset(ro), wholeSeq(seq)
 {
     lock = new QMutex();
     GCOUNTER( cvar, tvar, "SiteconSearchTask" );
@@ -42,7 +42,7 @@ SiteconSearchTask::SiteconSearchTask(const SiteconModel& m, const QByteArray& se
     c.chunkSize = seq.length();
     c.overlapSize = 0;
 
-    SequenceWalkerTask* t = new SequenceWalkerTask(c, this, tr("sitecon_search_parallel"));
+    SequenceWalkerTask* t = new SequenceWalkerTask(c, this, tr("SITECON search parallel subtask"));
     addSubTask(t);
 }
 
@@ -62,7 +62,7 @@ void SiteconSearchTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
     for (int i = 0, n = seqLen - modelSize; i <= n && !ti.cancelFlag; i++, --pLeft) {
         float psum = SiteconAlgorithm::calculatePSum(seq+i, modelSize, model->matrix, model->settings, model->deviationThresh, complTT);
         if (psum < 0 || psum >=1) {
-            ti.setError(  tr("internal_error_invalid_psum:%1").arg(psum) );
+            ti.setError(  tr("Internal error: invalid PSUM: %1").arg(psum) );
             return;
         }
         SiteconSearchResult r;

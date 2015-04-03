@@ -101,7 +101,7 @@ void MuscleAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
     }
 
     if (0 == uSeqCount) {
-        ti.setError(  tr("alignment_is_empty") );
+        ti.setError(  tr("Alignment is empty") );
         return;
     }
 

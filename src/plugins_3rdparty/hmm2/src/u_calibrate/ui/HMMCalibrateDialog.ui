@@ -38,7 +38,7 @@
    <item>
     <widget class="QGroupBox" name="expertGroupBox">
      <property name="title">
-      <string>expert_options</string>
+      <string>Expert options</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -50,10 +50,13 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
         <property name="toolTip">
-         <string>Fixed tip</string>
+         <string>
+             Fix the length of the random sequences to n
+                 , where n is a positive (and reasonably sized) integer. 
+The default is instead to generate sequences with a variety of different lengths, controlled by a Gaussian (normal) distribution.</string>
         </property>
         <property name="text">
-         <string>fixed</string>
+         <string>Fix the length of the random sequences to:</string>
         </property>
        </widget>
       </item>
@@ -97,14 +100,8 @@
         <property name="toolTip">
          <string>Mean length of the synthetic sequences, positive real number. The default value is 325.</string>
         </property>
-        <property name="statusTip">
-         <string>Mean length of the synthetic sequences, positive real number. The default value is 325.</string>
-        </property>
-        <property name="whatsThis">
-         <string>Mean length of the synthetic sequences, positive real number. The default value is 325.</string>
-        </property>
         <property name="text">
-         <string>mean</string>
+         <string>Mean length of the synthetic sequences:</string>
         </property>
        </widget>
       </item>
@@ -129,15 +126,6 @@
           <height>0</height>
          </size>
         </property>
-        <property name="toolTip">
-         <string>mean_tip_tool</string>
-        </property>
-        <property name="statusTip">
-            <string>mean_tip_status</string>
-        </property>
-        <property name="whatsThis">
-            <string>mean_tip_whats</string>
-        </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -155,16 +143,14 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_4">
         <property name="toolTip">
-         <string>num_tip_tool</string>
-        </property>
-        <property name="statusTip">
-         <string>num_tip_status</string>
-        </property>
-        <property name="whatsThis">
-         <string>num_tip_whats</string>
+         <string>
+             Number of synthetic sequences.
+             If n is less than about 1000, the fit to the EVD may fail
+             Higher numbers of n will give better determined EVD parameters. 
+             The default is 5000; it was empirically chosen as a tradeoff between accuracy and computation time.</string>
         </property>
         <property name="text">
-         <string>num</string>
+         <string>Number of synthetic sequences:</string>
         </property>
        </widget>
       </item>
@@ -189,15 +175,6 @@
           <height>0</height>
          </size>
         </property>
-        <property name="toolTip">
-         <string>num_tip_tool_1</string>
-        </property>
-        <property name="statusTip">
-            <string>num_tip_status_1</string>
-        </property>
-        <property name="whatsThis">
-            <string>num_tip_whats_1</string>
-        </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -215,16 +192,14 @@
       <item row="3" column="0" rowspan="2">
        <widget class="QLabel" name="label_5">
         <property name="toolTip">
-         <string>sd_tip_tool</string>
-        </property>
-        <property name="statusTip">
-         <string>sd_tip_status</string>
-        </property>
-        <property name="whatsThis">
-         <string>sd_tip_whats</string>
+         <string>
+             Standard deviation of the synthetic sequence length.
+             A positive number. The default is 200.
+             Note that the Gaussian is left-truncated so that no sequences have lengths less or equal 0.
+         </string>
         </property>
         <property name="text">
-         <string>sd</string>
+         <string>Standard deviation:</string>
         </property>
        </widget>
       </item>
@@ -243,15 +218,6 @@
       </item>
       <item row="3" column="2" rowspan="2">
        <widget class="QDoubleSpinBox" name="sdBox">
-        <property name="toolTip">
-         <string>sd_tip_1</string>
-        </property>
-        <property name="statusTip">
-         <string notr="true"/>
-        </property>
-        <property name="whatsThis">
-         <string notr="true"/>
-        </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -269,16 +235,14 @@
       <item row="5" column="0">
        <widget class="QLabel" name="label_6">
         <property name="toolTip">
-         <string>seed_tip</string>
-        </property>
-        <property name="statusTip">
-         <string>seed_tip</string>
-        </property>
-        <property name="whatsThis">
-         <string>seed_tip</string>
+         <string>
+             The random seed, where n is a positive integer. 
+             The default is to use time() to generate a different seed for each run, 
+             which means that two different runs of hmmcalibrate on the same HMM will give slightly different results. 
+             You can use this option to generate reproducible results for different hmmcalibrate runs on the same HMM.</string>
         </property>
         <property name="text">
-         <string>seed</string>
+         <string>Random seed:</string>
         </property>
        </widget>
       </item>
@@ -297,15 +261,6 @@
       </item>
       <item row="5" column="2">
        <widget class="QSpinBox" name="seedBox">
-        <property name="toolTip">
-         <string>seed_tip</string>
-        </property>
-        <property name="statusTip">
-         <string notr="true"/>
-        </property>
-        <property name="whatsThis">
-         <string notr="true"/>
-        </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -320,7 +275,7 @@
    <item>
     <widget class="QGroupBox" name="outputGroupBox">
      <property name="title">
-      <string>output_file_name</string>
+      <string>Save calibrated profile to file</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -332,13 +287,7 @@
       <item row="0" column="0">
        <widget class="QLineEdit" name="outFileEdit">
         <property name="toolTip">
-         <string>output_file_name</string>
-        </property>
-        <property name="statusTip">
-         <string>output_file_name</string>
-        </property>
-        <property name="whatsThis">
-         <string>output_file_name</string>
+         <string>Save calibrated profile to file:</string>
         </property>
        </widget>
       </item>

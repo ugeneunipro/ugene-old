@@ -108,7 +108,7 @@ void HMMSearchDialogController::reject() {
 
 void HMMSearchDialogController::sl_hmmFileClicked() {
     LastUsedDirHelper lod(HMMIO::HMM_ID);
-    lod.url = U2FileDialog::getOpenFileName(this, tr("select_file_with_hmm_model"), lod, HMMIO::getHMMFileFilter());
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Select file with HMM model"), lod, HMMIO::getHMMFileFilter());
     if (lod.url.isEmpty()) {
         return;
     }
@@ -125,7 +125,7 @@ void HMMSearchDialogController::sl_okClicked() {
     QString hmmFile = hmmFileEdit->text();
     if (hmmFile.isEmpty()) {
         hmmFileEdit->setFocus();
-        errMsg = tr("hmm_file_not_set");
+        errMsg = tr("HMM file not set!");
     }
 
     
@@ -142,7 +142,7 @@ void HMMSearchDialogController::sl_okClicked() {
     }
 
     if (!errMsg.isEmpty())  {
-        QMessageBox::critical(this, tr("error"), errMsg);
+        QMessageBox::critical(this, tr("Error"), errMsg);
         return;
     }
 
@@ -159,11 +159,11 @@ void HMMSearchDialogController::sl_okClicked() {
     connect(searchTask, SIGNAL(si_stateChanged()), SLOT(sl_onStateChanged()));
     connect(searchTask, SIGNAL(si_progressChanged()), SLOT(sl_onProgressChanged()));
     AppContext::getTaskScheduler()->registerTopLevelTask(searchTask);
-    statusLabel->setText(tr("starting_search_process"));
+    statusLabel->setText(tr("Starting search process"));
 
     //update buttons
-    okButton->setText(tr("back_button"));
-    cancelButton->setText(tr("cancel_button"));
+    okButton->setText(tr("Hide"));
+    cancelButton->setText(tr("Cancel"));
 
     // new default behavior: hide dialog and use taskview to track the progress and results
     accept(); //go to background
@@ -178,19 +178,19 @@ void HMMSearchDialogController::sl_onStateChanged() {
     searchTask->disconnect(this);
     const TaskStateInfo& si = searchTask->getStateInfo();
     if (si.hasError()) {
-        statusLabel->setText(tr("search_finished_with_errors_%1").arg(si.getError()));
+        statusLabel->setText(tr("HMM search finished with error: %1").arg(si.getError()));
     } else {
-        statusLabel->setText(tr("search_finished_successfuly"));
+        statusLabel->setText(tr("HMM search finished successfuly!"));
     }
-    okButton->setText(tr("ok_button"));
-    cancelButton->setText(tr("close_button"));
+    okButton->setText(tr("Search"));
+    cancelButton->setText(tr("Close"));
 
     searchTask = NULL;
 }
 
 void HMMSearchDialogController::sl_onProgressChanged() {
     assert(searchTask == sender());
-    statusLabel->setText(tr("progress_%1%").arg(qMax(0, searchTask->getProgress())));
+    statusLabel->setText(tr("Progress: %1%").arg(qMax(0, searchTask->getProgress())));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -210,7 +210,7 @@ readHMMTask(NULL), searchTask(NULL), createAnnotationsTask(NULL), aobj(ao)
     readHMMTask->setSubtaskProgressWeight(0);
     
     if (dnaSequence.alphabet->isRaw()) {
-        stateInfo.setError(  tr("raw_alphabet_not_supported") );
+        stateInfo.setError(  tr("RAW alphabet is not supported!") );
     } else {
         addSubTask(readHMMTask);
     }
@@ -226,7 +226,7 @@ QList<Task*> HMMSearchToAnnotationsTask::onSubTaskFinished(Task* subTask) {
     }
     
     if (aobj.isNull()) {
-        stateInfo.setError(  tr("annotation_obj_removed") );
+        stateInfo.setError(  tr("Annotation object was removed") );
         return res;
     }
 

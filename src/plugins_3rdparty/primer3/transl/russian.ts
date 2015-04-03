@@ -6,80 +6,80 @@
     <message>
         <location filename="../src/Primer3Tests.cpp" line="360"/>
         <source>Contradiction in primer_task definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Contradiction in primer_task definition</translation>
     </message>
     <message>
         <location filename="../src/Primer3Tests.cpp" line="348"/>
         <source>Unrecognized PRIMER_TASK</source>
-        <translation type="unfinished"></translation>
+        <translation>Unrecognized PRIMER_TASK</translation>
     </message>
     <message>
         <location filename="../src/Primer3Tests.cpp" line="211"/>
         <source>Illegal TARGET value: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Illegal TARGET value: %1</translation>
     </message>
     <message>
         <location filename="../src/Primer3Tests.cpp" line="230"/>
         <location filename="../src/Primer3Tests.cpp" line="299"/>
         <source>Illegal PRIMER_DEFAULT_PRODUCT value: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Illegal PRIMER_DEFAULT_PRODUCT value: %1</translation>
     </message>
     <message>
         <location filename="../src/Primer3Tests.cpp" line="248"/>
         <source>Illegal PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION value: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Illegal PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION value: %1</translation>
     </message>
     <message>
         <location filename="../src/Primer3Tests.cpp" line="263"/>
         <source>Illegal INCLUDED_REGION value: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Illegal INCLUDED_REGION value: %1</translation>
     </message>
     <message>
         <location filename="../src/Primer3Tests.cpp" line="317"/>
         <source>Illegal EXCLUDED_REGION value: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Illegal EXCLUDED_REGION value: %1</translation>
     </message>
     <message>
         <location filename="../src/Primer3Tests.cpp" line="418"/>
         <source>Missing SEQUENCE tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Missing SEQUENCE tag</translation>
     </message>
     <message>
         <location filename="../src/Primer3Tests.cpp" line="425"/>
         <source>Error in sequence quality data</source>
-        <translation type="unfinished"></translation>
+        <translation>Error in sequence quality data</translation>
     </message>
     <message>
         <location filename="../src/Primer3Tests.cpp" line="427"/>
         <source>Sequence quality data missing</source>
-        <translation type="unfinished"></translation>
+        <translation>Sequence quality data missing</translation>
     </message>
     <message>
         <location filename="../src/Primer3Tests.cpp" line="450"/>
         <source>PRIMER_PAIRS_NUMBER is incorrect. Expected:%2, but Actual:%3</source>
-        <translation type="unfinished"></translation>
+        <translation>PRIMER_PAIRS_NUMBER is incorrect. Expected:%2, but Actual:%3</translation>
     </message>
     <message>
         <location filename="../src/Primer3Tests.cpp" line="552"/>
         <source>%1 is incorrect. Expected:%2,%3, but Actual:NULL</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 is incorrect. Expected:%2,%3, but Actual:NULL</translation>
     </message>
     <message>
         <location filename="../src/Primer3Tests.cpp" line="561"/>
         <source>%1 is incorrect. Expected:NULL, but Actual:%2,%3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 is incorrect. Expected:NULL, but Actual:%2,%3</translation>
     </message>
     <message>
         <location filename="../src/Primer3Tests.cpp" line="571"/>
         <source>%1 is incorrect. Expected:%2,%3, but Actual:%4,%5</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 is incorrect. Expected:%2,%3, but Actual:%4,%5</translation>
     </message>
     <message>
         <location filename="../src/Primer3Tests.cpp" line="610"/>
         <location filename="../src/Primer3Tests.cpp" line="620"/>
         <location filename="../src/Primer3Tests.cpp" line="630"/>
         <source>%1 is incorrect. Expected:%2, but Actual:%3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 is incorrect. Expected:%2, but Actual:%3</translation>
     </message>
 </context>
 <context>
@@ -1583,7 +1583,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Primer3Plugin.cpp" line="143"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ошибка</translation>
     </message>
     <message>
         <location filename="../src/Primer3Plugin.cpp" line="143"/>

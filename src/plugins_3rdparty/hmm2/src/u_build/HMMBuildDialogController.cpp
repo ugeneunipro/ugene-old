@@ -77,7 +77,7 @@ HMMBuildDialogController::HMMBuildDialogController(const QString& _pn, const MAl
 
 void HMMBuildDialogController::sl_msaFileClicked() {
     LastUsedDirHelper lod;
-    lod.url = U2FileDialog::getOpenFileName(this, tr("select_file_with_alignment"),
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Select file with alignment"),
         lod, DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
     
     if (lod.url.isEmpty()) {
@@ -109,12 +109,12 @@ void HMMBuildDialogController::sl_okClicked() {
 
     QString inFile = msaFileEdit->text();
     if (ma.isEmpty() && (inFile.isEmpty() || !QFileInfo(inFile).exists())) {
-        errMsg = tr("incorrect_ali_file");
+        errMsg = tr("Incorrect alignment file!");
         msaFileEdit->setFocus();
     }
     QString outFile = resultFileEdit->text();
     if (outFile.isEmpty() && errMsg.isEmpty()) {
-        errMsg = tr("incorrect_hmm_file");
+        errMsg = tr("Incorrect HMM file!");
         resultFileEdit->setFocus();
     }
     if (expertGroup->isChecked() && errMsg.isEmpty()) {
@@ -130,7 +130,7 @@ void HMMBuildDialogController::sl_okClicked() {
     }
     
     if (!errMsg.isEmpty()) {
-        QMessageBox::critical(this, tr("error"), errMsg);
+        QMessageBox::critical(this, tr("Error"), errMsg);
         return;
     }
 
@@ -139,11 +139,11 @@ void HMMBuildDialogController::sl_okClicked() {
     connect(task, SIGNAL(si_stateChanged()), SLOT(sl_onStateChanged()));
     connect(task, SIGNAL(si_progressChanged()), SLOT(sl_onProgressChanged()));
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
-    statusLabel->setText(tr("starting_build_process"));
+    statusLabel->setText(tr("Starting build process"));
 
     //update buttons
-    okButton->setText(tr("back_button"));
-    cancelButton->setText(tr("cancel_button"));
+    okButton->setText(tr("Hide"));
+    cancelButton->setText(tr("Cancel"));
 
     // new default behavior: hide dialog and use taskview to track the progress and results
     accept(); //go to background
@@ -166,14 +166,14 @@ void HMMBuildDialogController::sl_onStateChanged() {
     task->disconnect(this);
     const TaskStateInfo& si = task->getStateInfo();
     if (si.hasError()) {
-        statusLabel->setText(tr("build_finished_with_errors_%1").arg(si.getError()));
+        statusLabel->setText(tr("HMM build finished with errors: %1").arg(si.getError()));
     } else if (task->isCanceled()) {
-        statusLabel->setText(tr("build_canceled"));
+        statusLabel->setText(tr("HMM build canceled"));
     } else {
-        statusLabel->setText(tr("build_finished_successfuly"));
+        statusLabel->setText(tr("HMM build finished successfuly!"));
     }
-    okButton->setText(tr("ok_button"));
-    cancelButton->setText(tr("close_button"));
+    okButton->setText(tr("Build"));
+    cancelButton->setText(tr("Close"));
 
     AppContext::getTaskScheduler()->disconnect(this);
     task = NULL;
@@ -182,7 +182,7 @@ void HMMBuildDialogController::sl_onStateChanged() {
 
 void HMMBuildDialogController::sl_onProgressChanged() {
     assert(task==sender());
-    statusLabel->setText(tr("progress_%1%").arg(task->getProgress()));
+    statusLabel->setText(tr("Progress: %1%").arg(task->getProgress()));
 }
 
 
@@ -206,7 +206,7 @@ HMMBuildToFileTask::HMMBuildToFileTask(const QString& inFile, const QString& _ou
     c.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
-        stateInfo.setError(  tr("input_format_error") );
+        stateInfo.setError(  tr("Error reading alignment file") );
         return;
     }
 
@@ -253,7 +253,7 @@ QList<Task*> HMMBuildToFileTask::onSubTaskFinished(Task* subTask) {
         }
         QList<GObject*> list = doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
         if (list.isEmpty()) {
-            stateInfo.setError(  tr("alignment_object_not_found") );
+            stateInfo.setError(  tr("Alignment object not found!") );
         } else {
             MAlignmentObject* msa = qobject_cast<MAlignmentObject*>(list.first());
             const MAlignment &ma = msa->getMAlignment();
@@ -339,16 +339,16 @@ void HMMBuildTask::run() {
 
 void HMMBuildTask::_run() {
     if (ma.getNumRows() == 0) {
-        stateInfo.setError(  tr("multiple_alignment_is_empty") );
+        stateInfo.setError(  tr("Multiple alignment is empty") );
         return;
     }
     if (ma.getLength() == 0) {
-        stateInfo.setError(  tr("multiple_alignment_is_0_len") );
+        stateInfo.setError(  tr("Multiple alignment is of 0 length") );
         return;
     }
     //todo: check HMM for RAW alphabet!
     if (ma.getAlphabet()->isRaw()) {
-        stateInfo.setError(  tr("only_amino_and_nucl_alphabets_are_supported") );
+        stateInfo.setError(  tr("Invalid alphabet! Only amino and nucleic alphabets are supported") );
         return;
     }
 
@@ -356,7 +356,7 @@ void HMMBuildTask::_run() {
 
     msa_struct* msa = MSAAlloc(ma.getNumRows(), ma.getLength());
     if (msa == NULL) {
-        stateInfo.setError(  tr("error_creating_msa") );
+        stateInfo.setError(  tr("Error creating MSA structure") );
         return;
     }
     U2OpStatus2Log os;

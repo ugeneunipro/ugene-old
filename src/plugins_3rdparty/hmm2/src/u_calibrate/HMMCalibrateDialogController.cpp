@@ -62,7 +62,7 @@ HMMCalibrateDialogController::HMMCalibrateDialogController(QWidget* w)
 
 void HMMCalibrateDialogController::sl_hmmFileButtonClicked() {
     LastUsedDirHelper lod(HMMIO::HMM_ID);
-    lod.url = U2FileDialog::getOpenFileName(this, tr("select_file_with_hmm_model"), lod, HMMIO::getHMMFileFilter());
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Select file with HMM model"), lod, HMMIO::getHMMFileFilter());
     if (lod.url.isEmpty()) {
         return;
     }
@@ -71,7 +71,7 @@ void HMMCalibrateDialogController::sl_hmmFileButtonClicked() {
 
 void HMMCalibrateDialogController::sl_outFileButtonClicked() {
     LastUsedDirHelper lod(HMMIO::HMM_ID);
-    lod.url= U2FileDialog::getSaveFileName(this, tr("select_file_with_hmm_model"), lod, HMMIO::getHMMFileFilter());
+    lod.url= U2FileDialog::getSaveFileName(this, tr("Select file with HMM model"), lod, HMMIO::getHMMFileFilter());
     if (lod.url.isEmpty()) {
         return;
     }
@@ -92,13 +92,13 @@ void HMMCalibrateDialogController::sl_okButtonClicked() {
    QString inFile = hmmFileEdit->text();
    QString outFile = inFile;
    if (inFile.isEmpty() && !QFileInfo(inFile).exists()) {
-       errMsg = tr("illegal_in_file_name");
+       errMsg = tr("Incorrect HMM file!");
        hmmFileEdit->setFocus();
    }
 
    if (expertGroupBox->isChecked() && errMsg.isEmpty()) {
        if (fixedBox->value() < 0) {
-           errMsg = tr("illegal fixed value");
+           errMsg = tr("Illegal fixed length value!");
            fixedBox->setFocus();
        } else {
            s.fixedlen = fixedBox->value();
@@ -115,13 +115,13 @@ void HMMCalibrateDialogController::sl_okButtonClicked() {
    if (outputGroupBox->isChecked() && errMsg.isEmpty()) {
         outFile = outFileEdit->text();        
         if (outFile.isEmpty()) {
-            errMsg = tr("illegal_out_file_name");
+            errMsg = tr("Invalid output file name");
             outFileEdit->setFocus();
         }
    }
 
    if (!errMsg.isEmpty())  {
-       QMessageBox::critical(this, tr("error"), errMsg);
+       QMessageBox::critical(this, tr("Error"), errMsg);
        return;
    }
 
@@ -131,11 +131,11 @@ void HMMCalibrateDialogController::sl_okButtonClicked() {
    connect(task, SIGNAL(si_stateChanged()), SLOT(sl_onStateChanged()));
    connect(task, SIGNAL(si_progressChanged()), SLOT(sl_onProgressChanged()));
    AppContext::getTaskScheduler()->registerTopLevelTask(task);
-   statusLabel->setText(tr("starting_calibration_process"));
+   statusLabel->setText(tr("Starting calibration process"));
 
    //update buttons
-   okButton->setText(tr("back_button"));
-   cancelButton->setText(tr("cancel_button"));
+   okButton->setText(tr("Hide"));
+   cancelButton->setText(tr("Cancel"));
 
    // new default behavior: hide dialog and use taskview to track the progress and results
    accept(); //go to background
@@ -151,21 +151,21 @@ void HMMCalibrateDialogController::sl_onStateChanged() {
     task->disconnect(this);
     const TaskStateInfo& si = task->getStateInfo();
     if (si.hasError()) {
-        statusLabel->setText(tr("calibration_finished_with_errors_%1").arg(si.getError()));
+        statusLabel->setText(tr("Calibration finished with errors: %1").arg(si.getError()));
     } else if (task->isCanceled()) {
-        statusLabel->setText(tr("calibration_canceled"));
+        statusLabel->setText(tr("Calibration was cancelled"));
     } else {
-        statusLabel->setText(tr("calibration_finished_successfuly"));
+        statusLabel->setText(tr("Calibration finished successfuly!"));
     }
-    okButton->setText(tr("ok_button"));
-    cancelButton->setText(tr("close_button"));
+    okButton->setText(tr("Calibrate"));
+    cancelButton->setText(tr("Close"));
 
     task = NULL;
 }
 
 void HMMCalibrateDialogController::sl_onProgressChanged() {
     assert(task==sender());
-    statusLabel->setText(tr("progress_%1%").arg(task->getProgress()));
+    statusLabel->setText(tr("Progress: %1%").arg(task->getProgress()));
 }
 
 void HMMCalibrateDialogController::reject() {

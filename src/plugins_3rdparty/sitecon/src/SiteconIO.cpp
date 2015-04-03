@@ -191,7 +191,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
                     } else if (name == "WALG") {
                         int alg = val.toInt(&ok);
                         if (!ok) {
-                            si.setError(  tr("error_parsing_nsequence_in_ali_%1").arg(line) );
+                            si.setError(  tr("Error parsing in alignment %1").arg(line) );
                             break;
                         } 
                         if (alg == 0) {
@@ -234,7 +234,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
                                 passedPropsWeight.insert(idx);
                             }
                             if (duplicate) {
-                                si.setError(  tr("duplicate_prop_%1").arg(propNum) );
+                                si.setError(  tr("Duplicate property: %1").arg(propNum) );
                                 break;
                             }
                             break;
@@ -260,7 +260,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
                             fval = (float)valStr.trimmed().toDouble(&ok);
                         }
                         if (!ok) {
-                            si.setError(  tr("error_parsing_matrix_val_%1_in_line_%2").arg(valStr).arg(line) );
+                            si.setError(  tr("Error parsing %1 in line %2").arg(valStr).arg(line) );
                             break;
                         }
                         if (state == AVE_S) {
@@ -278,7 +278,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
                 {
                     QStringList l = line.split(' ');
                     if (l.size() != 2) {
-                        si.setError(  tr("error_parsing_errors_line_%1").arg(line) );
+                        si.setError(  tr("Error parsing in line %1").arg(line) );
                         break;
                     }
                     bool ok = true;
@@ -288,16 +288,16 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
                     // percentStr.left(percentStr.length()-1);
                     int p = percentStr.toInt(&ok);
                     if (!ok) {
-                        si.setError(  tr("error_parsing_error_val_%1").arg(line) );
+                        si.setError(  tr("Error parsing %1").arg(line) );
                         break;
                     }
                     float e = (float)errStr.toDouble(&ok);
                     if (!ok) {
-                        si.setError(  tr("error_parsing_error_val_%1").arg(line) );
+                        si.setError(  tr("Error parsing %1").arg(line) );
                         break;
                     }
                     if (p < 0 || p >= 100) {
-                        si.setError(  tr("illegal_err_val_%1").arg(line) );
+                        si.setError(  tr("Illegal error %1").arg(line) );
                         break;
                     }
                     if (state == ERR1_S) {
@@ -307,7 +307,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
                     }
                 }
                 break;
-            default: si.setError(  tr("error_parsing_file_line_%1").arg(line) );
+            default: si.setError(  tr("Error parsing file in line %1").arg(line) );
         }
     }
     
@@ -316,17 +316,17 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
     }
 
     if (passedPropsAve.size() != passedPropsSDev.size()) {
-        si.setError(  tr("ave_props_in_file_%1_not_matched_sdev_props_%2").arg(passedPropsAve.size()).arg(passedPropsSDev.size()) );
+        si.setError(  tr("Number of 'average' and  'sdev' properties not matches").arg(passedPropsAve.size()).arg(passedPropsSDev.size()) );
         return model;
     }
     
     if (passedPropsAve.size() != passedPropsWeight.size()) {
-        si.setError(  tr("ave_props_in_file_%1_not_matched_weight_props_%2").arg(passedPropsAve.size()).arg(passedPropsWeight.size()) );
+        si.setError(  tr("Number of 'average' and 'weight' properties not matches").arg(passedPropsAve.size()).arg(passedPropsWeight.size()) );
         return model;
     }
     
     if (passedPropsAve.size() != props.size()) {
-        si.setError(  tr("props_in_file_%1_not_matched_actual_props_%2").arg(passedPropsAve.size()).arg(props.size()) );
+        si.setError(  tr("Property in file %1 is not the same as built-in: %2").arg(passedPropsAve.size()).arg(props.size()) );
         return model;
     }
     
@@ -354,14 +354,14 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
     }
 
     if (model.err1.contains(defaultVal) || model.err2.contains(defaultVal)) {
-        si.setError(  tr("error_info_not_complete") );
+        si.setError(  tr("Error info in file is not complete") );
         return model;
     }
     model.deviationThresh = (float)critchi(model.settings.chisquare, model.settings.numSequencesInAlignment - 1) / model.settings.numSequencesInAlignment;
 
     bool ok = model.checkState(false);
     if(!ok) {
-        si.setError(  tr("model_verification_error") );
+        si.setError(  tr("Model verification error") );
     } 
     return model;
 }

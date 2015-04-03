@@ -165,51 +165,51 @@ UHMM3SearchResult UHMM3Phmmer::phmmer( const char * p_querySq, int querySqLen, c
         return res;
     }
     if( NULL == p_querySq || 0 >= querySqLen ) {
-        ti.setError( tr( "query_sequence_not_given" ) );
+        ti.setError( tr( "No input query sequence given" ) );
         return res;
     }
     if( NULL == p_dbSq || 0 >= dbSqLen ) {
-        ti.setError( tr( "sequence_to_search_in_not_given" ) );
+        ti.setError( tr( "Database sequence to search in is not given" ) );
         return res;
     }
     
     try {
         abc = esl_alphabet_Create( eslAMINO );
         if( NULL == abc ) {
-            errStr = tr( "no_memory:cannot_create_alphabet" ).toLatin1();
+            errStr = tr( "Run out of memory (creating alphabet failed)" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         bg = p7_bg_Create( abc );
         if( NULL == bg ) {
-            errStr = tr( "no_memory:cannot_create_null_model" ).toLatin1();
+            errStr = tr( "Run out of memory (creating null model failed)" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         UHMM3BuildSettings bldSettings = settings.getBuildSettings();
         bld = p7_builder_Create( &bldSettings, abc );
         if( NULL == bld ) {
-            errStr = tr( "no_memory:cannot_create_builder" ).toLatin1();
+            errStr = tr( "Run out of memory (creating builder failed)" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         ESL_SCOREMATRIX * hmmer3SubstMatr = UHMM3Utilities::convertScoreMatrix( settings.substMatr );
         status = p7_builder_SetScoreSystem( bld, hmmer3SubstMatr, settings.popen, settings.pextend );
         if( status != eslOK ) {
-            errStr = tr( "failed_to_set_scoring_system_with_error:%1" ).arg( bld->errbuf ).toLatin1();
+            errStr = tr( "Setting scoring system failed with error: '%1'" ).arg( bld->errbuf ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         dbSq = esl_sq_CreateFrom( NULL, p_dbSq, dbSqLen, NULL, NULL, NULL );
         esl_sq_Digitize( abc, dbSq );
         if( NULL == dbSq || NULL == dbSq->dsq ) {
-            errStr = tr( "cannot_convert_sequence:sequence_to_search_in" ).toLatin1();
+            errStr = tr( "Error with digitizing sequence to search in" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         querySq = esl_sq_CreateFrom( NULL, p_querySq, querySqLen, NULL, NULL, NULL );
         esl_sq_Digitize( abc, querySq );
         if( NULL == querySq || NULL == querySq->dsq ) {
-            errStr = tr( "cannot_convert_sequence:query_sequence" ).toLatin1();
+            errStr = tr( "Error digitizing query sequence" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
@@ -219,19 +219,19 @@ UHMM3SearchResult UHMM3Phmmer::phmmer( const char * p_querySq, int querySqLen, c
             errStr = tr( HMMER3_CANCELED_ERROR ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         } else if( eslOK != status ) {
-            errStr = tr( "cannot_create_optimized_profile_for_query_sequence" ).toLatin1();
+            errStr = tr( "Error with creating HMM profile for query sequence" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         th   = p7_tophits_Create();
         if( NULL == th ) {
-            errStr = tr( "no_memory:cannot_create_top_hits_list" ).toLatin1();
+            errStr = tr( "Run out of memory (creating top hits list failed)" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         UHMM3SearchSettings searchSettings = settings.getSearchSettings();
         pli  = p7_pipeline_Create( &searchSettings, om->M, 400, p7_SEARCH_SEQS );  /* 400 is a dummy length for now */
         if( NULL == pli ) {
-            errStr = tr( "no_memory:cannot_create_pipeline" ).toLatin1();
+            errStr = tr( "Run out of memory (creating pipeline failed)" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         

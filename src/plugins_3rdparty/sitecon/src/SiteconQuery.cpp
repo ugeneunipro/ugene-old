@@ -168,7 +168,7 @@ QDSiteconActorPrototype::QDSiteconActorPrototype() {
 
     {
         Descriptor scd(SCORE_ATTR, QDSiteconActor::tr("Min score"),
-            QApplication::translate("SiteconSearchDialog", "min_err_tip", 0));
+            QApplication::translate("SiteconSearchDialog", "Recognition quality percentage threshold. If you need to switch off this filter choose <b>the lowest</b> value</i></p>.", 0));
         Descriptor e1d(E1_ATTR, QDSiteconActor::tr("Min Err1"),
             QDSiteconActor::tr("Alternative setting for filtering results, minimal value of Error type I."
             "<br>Note that all thresholds (by score, by err1 and by err2) are applied when filtering results."));

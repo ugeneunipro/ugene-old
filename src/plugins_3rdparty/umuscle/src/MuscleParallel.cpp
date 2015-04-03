@@ -179,7 +179,7 @@ void MusclePrepareTask::alignPrepareUnsafe()
     }
 
     if (0 == uSeqCount) {
-        stateInfo.setError(  tr("alignment_is_empty") );
+        stateInfo.setError(  tr("Alignment is empty") );
         return;
     }
 

@@ -86,15 +86,22 @@ void HMMBuildWorkerFactory::init() {
         HMMBuildWorker::tr("Number of parallel threads that the calibration will run in."));
 
     Descriptor fid(FIXEDLEN_ATTR, HMMBuildWorker::tr("Fixed length of samples"), 
-        QApplication::translate("HMMBuildWorker", "Fixed tip", 0));
+        QApplication::translate("HMMBuildWorker", "Fix the length of the random sequences to <n>, where <n> is a positive (and reasonably sized) integer. "
+        "<p>The default is instead to generate sequences with a variety of different lengths, controlled by a Gaussian (normal) distribution.", 0));
     Descriptor lmd(LENMEAN_ATTR, HMMBuildWorker::tr("Mean length of samples"), 
-        QApplication::translate("HMMBuildWorker", "mean_tip_1", 0));
+        QApplication::translate("HMMBuildWorker", "Mean length of the synthetic sequences, positive real number. The default value is 325.", 0));
     Descriptor nud(NUM_ATTR, HMMBuildWorker::tr("Number of samples"), 
-        QApplication::translate("HMMBuildWorker", "num_tip_1", 0));
+        QApplication::translate("HMMBuildWorker", "Number of synthetic sequences. If <n> is less than about 1000, the fit to the EVD may fail. "
+        "<p>Higher numbers of <n> will give better determined EVD parameters. "
+        "<p>The default is 5000; it was empirically chosen as a tradeoff between accuracy and computation time.", 0));
     Descriptor ldd(LENDEV_ATTR, HMMBuildWorker::tr("Standard deviation"), 
-        QApplication::translate("HMMBuildWorker", "sd_tip_1", 0));
+        QApplication::translate("HMMBuildWorker", "Standard deviation of the synthetic sequence length. A positive number. "
+        "<p>The default is 200. Note that the Gaussian is left-truncated so that no sequences have lengths <= 0.", 0));
     Descriptor sed(SEED_ATTR, HMMBuildWorker::tr("Random seed"),
-        QApplication::translate("HMMBuildWorker", "seed_tip_1", 0));
+        QApplication::translate("HMMBuildWorker", "The random seed, where <n> is a positive integer. "
+        "<p>The default is to use time() to generate a different seed for each run, "
+        "<p>which means that two different runs of hmmcalibrate on the same HMM will give slightly different results. "
+        "<p>You can use this option to generate reproducible results for different hmmcalibrate runs on the same HMM.", 0));
 
 //     nsample      = 5000;
 //     fixedlen     = 0;

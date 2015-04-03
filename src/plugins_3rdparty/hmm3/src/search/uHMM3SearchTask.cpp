@@ -83,13 +83,13 @@ UHMM3SWSearchTask::UHMM3SWSearchTask( const P7_HMM* h, const DNASequence& s, con
 
     assert(searchChunkSize > 0);
     if( NULL == h ) {
-        setTaskName( tr( "Sequence_walker_HMM_search_task" ) );
+        setTaskName( tr( "HMM search task with amino and complement translations" ) );
         stateInfo.setError( L10N::badArgument( "hmm" ) );
         return;
     }
     hmms.append(h);
     assert( NULL != h->name );
-    setTaskName( tr( "Sequence_walker_hmm_search_with_'%1'" ).arg( h->name ) );
+    setTaskName( tr( "HMM search task with amino and complement translations using '%1' profile HMM" ).arg( h->name ) );
 
     if( !sequence.seq.length() ) {
         stateInfo.setError( L10N::badArgument( "sequence" ) );
@@ -103,11 +103,11 @@ UHMM3SWSearchTask::UHMM3SWSearchTask( const QString& hF, const DNASequence& seq,
 
     assert(searchChunkSize > 0);
     if( hmmFilename.isEmpty() ) {
-        setTaskName( tr( "Sequence_walker_HMM_search_task" ) );
+        setTaskName( tr( "HMM search task with amino and complement translations" ) );
         stateInfo.setError( L10N::badArgument( "hmm_filename" ) );
         return;
     }
-    setTaskName( tr( "Sequence_walker_hmm_search_with_'%1'" ).arg( hmmFilename ) );
+    setTaskName( tr( "HMM search task with amino and complement translations using '%1' profile HMM" ).arg( hmmFilename ) );
 
     if( !sequence.seq.length() ) {
         stateInfo.setError( L10N::badArgument( "sequence" ) );
@@ -144,7 +144,7 @@ SequenceWalkerTask* UHMM3SWSearchTask::getSWSubtask() {
     config.nThreads             = MAX_PARALLEL_SUBTASKS_AUTO;
     config.walkCircular         = false;
 
-    return new SequenceWalkerTask( config, this, tr( "sequence_walker_hmmer3_search_task" ) );
+    return new SequenceWalkerTask( config, this, tr( "HMM search task with amino and complement translations" ) );
 }
 
 void UHMM3SWSearchTask::prepare() {
@@ -362,17 +362,17 @@ bool UHMM3SWSearchTask::checkAlphabets( int hmmAl, const DNAAlphabet* seqAl ) {
     assert( 0 <= hmmAl );
 
     if( eslUNKNOWN == hmmAl || eslNONSTANDARD == hmmAl ) {
-        stateInfo.setError( tr( "unknown_alphabet_type" ) );
+        stateInfo.setError( tr( "Unrecognized alphabet of sequence" ) );
         return false;
     }
     if( seqAl->isRaw() ) {
-        stateInfo.setError( tr( "invalid_sequence_alphabet_type" ) );
+        stateInfo.setError( tr( "Invalid alphabet of sequence" ) );
         return false;
     }
 
     if( eslDNA == hmmAl || eslRNA == hmmAl ) {
         if( seqAl->isAmino() ) {
-            stateInfo.setError( tr( "cannot_search_for_nucleic_hmm_in_amino_sequence" ) );
+            stateInfo.setError( tr( "Cannot search for nucleic HMM profile in amino sequence" ) );
             return false;
         }
     }

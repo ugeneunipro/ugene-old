@@ -83,7 +83,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
-uHMMPlugin::uHMMPlugin() : Plugin(tr("uhmm_plugin"), tr("uhmm_plugin_desc")), ctxMSA(NULL), ctxADV(NULL)
+uHMMPlugin::uHMMPlugin() : Plugin(tr("HMM2"), tr("Based on HMMER 2.3.2 package. Biological sequence analysis using profile hidden Markov models")), ctxMSA(NULL), ctxADV(NULL)
 {
     if (AppContext::getMainWindow()) {
         QAction* buildAction = new QAction(tr("Build HMM2 profile..."), this);
@@ -193,7 +193,7 @@ void uHMMPlugin::sl_search() {
     }
     QWidget *p = (QWidget*)AppContext::getMainWindow()->getQMainWindow();
     if (obj == NULL) {
-        QMessageBox::critical(p, tr("error"), tr("neither_annotatedview_nor_pv_selection_found"));
+        QMessageBox::critical(p, tr("Error"), tr("Error! Select sequence in Project view or open sequence view."));
         return;
     }
     HMMSearchDialogController d(obj, p);
@@ -274,7 +274,7 @@ void HMMADVContext::sl_search() {
     }
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
     if(seqCtx == NULL) {
-        QMessageBox::critical(p, tr("error"), tr("no_sequence_found"));
+        QMessageBox::critical(p, tr("Error"), tr("No sequences found"));
         return;
     }
     HMMSearchDialogController d(seqCtx->getSequenceObject(), p);

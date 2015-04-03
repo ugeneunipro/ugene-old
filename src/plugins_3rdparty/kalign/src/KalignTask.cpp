@@ -294,7 +294,7 @@ void KalignWithExtFileSpecifySupportTask::prepare() {
     c.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
-        stateInfo.setError("input_format_error");
+        stateInfo.setError("Unrecognized input alignment file format");
         return;
         }
     DocumentFormatId alnFormat = formats.first();

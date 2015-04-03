@@ -58,11 +58,11 @@ UHMM3SearchResult UHMM3Search::search( const P7_HMM* hmm, const char* sq, int sq
         return res;
     }
     if( NULL == hmm ) {
-        tsi.setError( tr( "no_hmm_given" ) );
+        tsi.setError( tr( "Bad HMM profile given" ) );
         return res;
     }
     if( NULL == sq || 0 >= sqLen ) {
-        tsi.setError( tr( "no_sequence_given" ) );
+        tsi.setError( tr( "Empty sequence given" ) );
         return res;
     }
     
@@ -70,41 +70,41 @@ UHMM3SearchResult UHMM3Search::search( const P7_HMM* hmm, const char* sq, int sq
         // preparing...
 		dbsq = esl_sq_CreateFrom( NULL, sq, sqLen, NULL, NULL, NULL );
         if( NULL == dbsq ) {
-            errStr = tr( "no_memory:cannot_convert_sequence" ).toLatin1();
+            errStr = tr( "Run out of memory (creation of sequence failed)" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         int dbsqAbcType = eslUNKNOWN;
         esl_sq_GuessAlphabet( dbsq, &dbsqAbcType );
         if( eslUNKNOWN != dbsqAbcType && dbsqAbcType != hmm->abc->type ) { /* if we can recognize */
-            errStr = tr( "sequence_and_hmm_alphabets_not_match" ).toLatin1();
+            errStr = tr( "Profile HMM and sequence alphabets no matched" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         abc = esl_alphabet_Create( hmm->abc->type );
         if( NULL == abc ) {
-            errStr = tr( "no_memory:cannot_create_alphabet" ).toLatin1();
+            errStr = tr( "Run out of memory (creation of alphabet failed)" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         esl_sq_Digitize( abc, dbsq );
         if( NULL == dbsq || NULL == dbsq->dsq ) {
-            errStr = tr( "cannot_digitize_sequence" ).toLatin1();
+            errStr = tr( "Run out of memory (digitizing of sequence failed)" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         bg = p7_bg_Create( abc );
         if( NULL == bg ) {
-            errStr = tr( "no_memory:cannot_create_null_model" ).toLatin1();
+            errStr = tr( "Run out of memory (creation of null model failed)" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         
         gm = p7_profile_Create (hmm->M, abc);
         if( NULL == gm ) {
-            errStr = tr( "no_memory:cannot_create_profile" ).toLatin1();
+            errStr = tr( "Run out of memory" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         om = p7_oprofile_Create(hmm->M, abc);
         if( NULL == om ) {
-            errStr = tr( "no_memory:cannot_create_optimized_profile" ).toLatin1();
+            errStr = tr( "Run out of memory (creation of optimized profile failed)" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         p7_ProfileConfig(hmm, bg, gm, 100, p7_LOCAL); /* 100 is a dummy length for now; and MSVFilter requires local mode */
@@ -113,12 +113,12 @@ UHMM3SearchResult UHMM3Search::search( const P7_HMM* hmm, const char* sq, int sq
         /* Create processing pipeline and hit list */
         pli = p7_pipeline_Create( &settings, om->M, 100, p7_SEARCH_SEQS); /* L_hint = 100 is just a dummy for now */
         if( NULL == pli ) {
-            errStr = tr( "no_memory:cannot_create_pipeline" ).toLatin1();
+            errStr = tr( "Run out of memory" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         th  = p7_tophits_Create();
         if( NULL == th ) {
-            errStr = tr( "no_memory:cannot_create_tophits" ).toLatin1();
+            errStr = tr( "Run out of memory (top hits list creation failed)" ).toLatin1();
             throwUHMMER3Exception( errStr.data() );
         }
         

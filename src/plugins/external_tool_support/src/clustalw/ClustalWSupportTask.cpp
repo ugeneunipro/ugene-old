@@ -347,7 +347,7 @@ void ClustalWWithExtFileSpecifySupportTask::prepare(){
     c.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
-        stateInfo.setError(tr("input_format_error"));
+        stateInfo.setError(tr("Unrecognized input alignment file format"));
         return;
     }
 

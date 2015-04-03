@@ -137,7 +137,7 @@ static void getTagValue( const QByteArray& ln, QByteArray& tag, QByteArray& val 
             tag = words.at(0).toLatin1();
             val = "hmm_profile";
         } else {
-            throw UHMMFormatReader::UHMMFormatReaderException(UHMMFormatReader::tr("bad_line_in_header_section:%1").arg(QString(ln)));
+            throw UHMMFormatReader::UHMMFormatReaderException(UHMMFormatReader::tr("Bad line in header section: '%1'").arg(QString(ln)));
         }
     } else {
         tag = words.first().toLatin1();
@@ -154,7 +154,7 @@ static void setInteger( int& num, const QByteArray& numStr ) {
     int ret = numStr.toInt( &ok );
     if( !ok ) {
         throw UHMMFormatReader::UHMMFormatReaderException( 
-            UHMMFormatReader::tr( "cannot_parse_integer_number_from_string:%1" ).arg( QString(numStr) ) );
+            UHMMFormatReader::tr( "Cannot parse integer from string: '%1'" ).arg( QString(numStr) ) );
     } else {
         num = ret;
     }
@@ -165,7 +165,7 @@ static void setFloat( float& num, const QByteArray& numStr ) {
     float ret = numStr.toFloat( &ok );
     if( !ok ) {
         throw UHMMFormatReader::UHMMFormatReaderException( 
-            UHMMFormatReader::tr( "cannot_parse_float_number_from_string:%1" ).arg( QString(numStr) ) );
+            UHMMFormatReader::tr( "Cannot parse float number from string: '%1'" ).arg( QString(numStr) ) );
     } else {
         num = ret;
     }
@@ -181,7 +181,7 @@ static void set2Floats( float& f1, float& f2, const QByteArray& str ) {
 
     if( 2 != words.size() ) {
         throw UHMMFormatReader::UHMMFormatReaderException( 
-            UHMMFormatReader::tr( "cannot_parse_2_float_numbers_in_str:%1" ).arg( QString(str) ) );
+            UHMMFormatReader::tr( "Cannot parse 2 float numbers from string: '%1'" ).arg( QString(str) ) );
     }
     setFloat( f1, words.at( 0 ).toLatin1() );
     setFloat( f2, words.at( 1 ).toLatin1() );
@@ -192,7 +192,7 @@ static void setUInteger( uint32_t& num, const QByteArray& numStr ) {
     uint32_t ret = numStr.toUInt( &ok );
     if( !ok ) {
         throw UHMMFormatReader::UHMMFormatReaderException( 
-            UHMMFormatReader::tr( "cannot_parse_uinteger_number_from_string:%1" ).arg( QString(numStr) ) );
+            UHMMFormatReader::tr( "Cannot parse unsigned integer from string: '%1'" ).arg( QString(numStr) ) );
     } else {
         num = ret;
     }
@@ -204,7 +204,7 @@ static void setYesNoValue( int& flags, int val, const QByteArray& s ) {
         flags |= val;
     } else if( "no" != str ) {
         throw UHMMFormatReader::UHMMFormatReaderException( 
-            UHMMFormatReader::tr( "cannot_parse_yes/no_value_from_string:%1" ).arg( QString(str) ) );
+            UHMMFormatReader::tr( "Cannot parse y/n value from string: '%1'" ).arg( QString(str) ) );
     }
 }
 
@@ -213,7 +213,7 @@ static void allocAndCopyStr( const QByteArray& from, char** to ) {
     int sz = from.size();
     *to = (char*)calloc( sizeof( char ), sz + 1 );
     if( NULL == *to ) {
-        throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "no_memory:cannot_allocate_hmm_date" ) );
+        throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "Run out of memory (date allocation failed)" ) );
     }
     qCopy( from.data(), from.data() + sz, *to );
     (*to)[sz] = TERM_SYM;
@@ -228,11 +228,11 @@ static void setHmmStats( float* params, const QByteArray& s, uint32_t& statstrac
     QStringList words = str.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
     int wordsSz = words.size();
     if( ALPHA_VERSION_STATS_FIELDS_NUM != wordsSz && BETA_VERSION_STATS_FIELDS_NUM != wordsSz ) {
-        throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "bad_stats_line:%1" ).arg( QString(str) ) );
+        throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "Bad STATS line: '%1'" ).arg( QString(str) ) );
     }
     if( "LOCAL" != words.at( 0 ).toUpper() ) {
         throw UHMMFormatReader::UHMMFormatReaderException( 
-            UHMMFormatReader::tr( "bad_stats_line:%1.\"LOCAL\" word is not found" ).arg( QString(str) ) );
+            UHMMFormatReader::tr( "Bad STATS line: '%1'/  LOCAL word was not found" ).arg( QString(str) ) );
     }
 
     if( ALPHA_VERSION_STATS_FIELDS_NUM == wordsSz ) {
@@ -260,7 +260,7 @@ static void setHmmStats( float* params, const QByteArray& s, uint32_t& statstrac
                 setFloat( params[p7_FTAU], numStr );
                 statstracker |= 0x4;
             } else {
-                throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "bad_stats_line:%1.%2 is not recognized" ).
+                throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "Bad STATS line: %1. %2 not recognized" ).
                     arg( str ).arg( tagStr ) );
             }
         }
@@ -283,7 +283,7 @@ static void setHmmStats( float* params, const QByteArray& s, uint32_t& statstrac
                 setFloat( params[p7_FLAMBDA], num2Str );
                 statstracker |= 0x4;
             } else {
-                throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "bad_stats_line:%1. %2 not recognized" ).
+                throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "Bad STATS line: %1. %2 not recognized" ).
                     arg( str ).arg( tagStr ) );
             }
         }
@@ -296,7 +296,7 @@ static void setHmmStats( float* params, const QByteArray& s, uint32_t& statstrac
 
 static QByteArray getNextToken( QStringList& tokens ) {
     if( tokens.isEmpty() ) {
-        throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "unexpected_end_of_line" ) );
+        throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "Unexpected end of file" ) );
     }
     return tokens.takeFirst().toLatin1();
 }
@@ -348,7 +348,7 @@ static void readLine( IOAdapter* io, QByteArray& to, QStringList* tokens = NULL 
 namespace U2 {
 
 const QString UHMMFormatReader::HMM_FORMAT_READER_ERROR_PREFIX  = QObject::tr("HMM reader error occurred: ");
-const QString UHMMFormatReader::READ_FAILED                     = QObject::tr("reading file failed");
+const QString UHMMFormatReader::READ_FAILED                     = QObject::tr("Reading file failed");
 const QString UHMMFormatReader::HMMER2_VERSION_HEADER           = "HMMER2";
 const QString UHMMFormatReader::HMMER3_VERSION_HEADER           = "HMMER3";
 
@@ -406,7 +406,7 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
     
     try {
         if ((hmm = p7_hmm_CreateShell()) == NULL) {
-            throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "no_memory:cannot_create_hmm_shell" ) );
+            throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "Run out of memory (allocation of HMM shell failed)" ) );
         }
         
         /* Header section */
@@ -436,7 +436,7 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
                 setInteger( hmm->M, valueStr );
                 if( 0 >= hmm->M ) {
                     throw UHMMFormatReader::UHMMFormatReaderException(
-                        UHMMFormatReader::tr( "length_of_a_model_should_be_positive.we_have:%1" ).arg( hmm->M ) );
+                        UHMMFormatReader::tr( "Length of HMM model should be positive. Found: %1" ).arg( hmm->M ) );
                 }
                 break;
             case HMM3_ALPH:
@@ -444,7 +444,7 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
                     int abcType = esl_abc_EncodeType( valueStr.data() );
                     if( eslUNKNOWN == abcType ) {
                         throw UHMMFormatReader::UHMMFormatReaderException( 
-                            UHMMFormatReader::tr( "unrecognized_alphabet_type:%1" ).arg( QString(valueStr) ) );
+                            UHMMFormatReader::tr( "Unrecognized alphabet type: %1" ).arg( QString(valueStr) ) );
                     }
                     abc = esl_alphabet_Create( abcType );
                 }
@@ -467,14 +467,14 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
                 setInteger( hmm->nseq, valueStr );
                 if( 0 >= hmm->nseq ) {
                     throw UHMMFormatReader::UHMMFormatReaderException(
-                        UHMMFormatReader::tr( "nseq_should_be_positive.we_have:%1" ).arg( hmm->nseq ) );
+                        UHMMFormatReader::tr( "Number of sequences should be positive. Found: %1" ).arg( hmm->nseq ) );
                 }
                 break;
             case HMM3_EFFN:
                 setFloat( hmm->eff_nseq, valueStr );
                 if( 0 >= hmm->eff_nseq ) {
                     throw UHMMFormatReader::UHMMFormatReaderException(
-                        UHMMFormatReader::tr( "effn_should_be_positive.we_have:%1" ).arg( hmm->eff_nseq ) );
+                        UHMMFormatReader::tr( "EFFN shoold be positive. Found: %1" ).arg( hmm->eff_nseq ) );
                 }
                 break;
             case HMM3_CKSUM:
@@ -509,7 +509,7 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
                 break;
             case HMM3_BAD_TAG:
                 throw UHMMFormatReader::UHMMFormatReaderException(
-                    UHMMFormatReader::tr( "unrecognized_tag_in_header_section:%1" ).arg( QString(tagStr) ) );
+                    UHMMFormatReader::tr( "Unrecognized tag in header section: '%1'" ).arg( QString(tagStr) ) );
             default:
                 assert( 0 );
             }
@@ -520,17 +520,17 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
             hmm->flags |= p7H_STATS;
         } else if( statstracker != 0x0 ) {
             throw UHMMFormatReader::UHMMFormatReaderException(
-                UHMMFormatReader::tr( "missing_one_or_more_STATS_parameter_lines" ) );
+                UHMMFormatReader::tr( "Missing one or more STATS parameters" ) );
         }
         
         if( NULL == abc ) {
             throw UHMMFormatReader::UHMMFormatReaderException(
-                UHMMFormatReader::tr( "failed_to_create_alphabet" ) );
+                UHMMFormatReader::tr( "Run out of memory (failed to create alphabet)" ) );
         }
         
         if( p7_hmm_CreateBody( hmm, hmm->M, abc->type ) != eslOK ) {
             throw UHMMFormatReader::UHMMFormatReaderException(
-                UHMMFormatReader::tr( "failed_to_allocate_body_of_hmm" ) );
+                UHMMFormatReader::tr( "Run out of memory (allocation of HMM body failed)" ) );
         }
         
         QByteArray line;
@@ -571,7 +571,7 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
             setInteger( n, curToken );
             if( k != n ) {
                 throw UHMMFormatReader::UHMMFormatReaderException(
-                    UHMMFormatReader::tr( "expected_line_to_start_with:%1.it_starts_with:%2" ).arg( k ).arg( QString(curToken) ) );
+                    UHMMFormatReader::tr( "Line was excpected to start with %1. Found: %2" ).arg( k ).arg( QString(curToken) ) );
             }
             for( x = 0; x < abc->K; x++ ) {
                 curToken = getNextToken( tokens );
@@ -613,7 +613,7 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
         curToken = getNextToken( tokens );
         if( "//" != curToken ) {
             throw UHMMFormatReader::UHMMFormatReaderException(
-                UHMMFormatReader::tr( "expected_closing_//.found_%1_instead" ).arg( QString(curToken) ) );
+                UHMMFormatReader::tr( "Excpected to find closing '//'. Found %1 instead" ).arg( QString(curToken) ) );
         }
         skipBlankLines( io );
         
@@ -630,7 +630,7 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
             hmm->map[0] = 0;
         }
         if( hmm->name == NULL ) {
-            throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "no_name_found_in_hmm" ) );
+            throw UHMMFormatReader::UHMMFormatReaderException( UHMMFormatReader::tr( "HMM name not found" ) );
         }
         assert( 0 <= hmm->M );
         assert( NULL != hmm->abc );
@@ -656,7 +656,7 @@ P7_HMM * UHMMFormatReader::readHMMER2ASCII() {
     
     try {
         if( ( hmm = p7_hmm_CreateShell()) == NULL ) {
-            throw UHMMFormatReaderException( tr( "allocation failure, HMM shell" ) );
+            throw UHMMFormatReaderException( tr( "Allocation failure, HMM shell" ) );
         }
         
         /* Header */
@@ -694,7 +694,7 @@ P7_HMM * UHMMFormatReader::readHMMER2ASCII() {
                 setInteger( hmm->M, valueStr );
                 if( 0 >= hmm->M ) {
                     throw UHMMFormatReader::UHMMFormatReaderException(
-                        UHMMFormatReader::tr( "length_of_a_model_should_be_positive.we_have:%1" ).arg( hmm->M ) );
+                        UHMMFormatReader::tr( "Length of HMM model should be positive. Found: %1" ).arg( hmm->M ) );
                 }
                 break;
             case HMM3_ALPH:
@@ -704,7 +704,7 @@ P7_HMM * UHMMFormatReader::readHMMER2ASCII() {
                         int abcType = esl_abc_EncodeType( valueStr.data() );
                         if( eslUNKNOWN == abcType ) {
                             throw UHMMFormatReader::UHMMFormatReaderException(
-                                tr( "unrecognized_alphabet_type:%1\n" ).arg( QString(valueStr) ) );
+                                tr( "Unrecognized alphabet type: %1" ).arg( QString(valueStr) ) );
                         }
                         abc = esl_alphabet_Create( abcType );
                     }
@@ -728,7 +728,7 @@ P7_HMM * UHMMFormatReader::readHMMER2ASCII() {
                 setInteger( hmm->nseq, valueStr );
                 if( 0 >= hmm->nseq ) {
                     throw UHMMFormatReader::UHMMFormatReaderException(
-                        UHMMFormatReader::tr( "nseq_should_be_positive.we_have:%1" ).arg( hmm->nseq ) );
+                        UHMMFormatReader::tr( "Number of sequences should be positive. Found: %1" ).arg( hmm->nseq ) );
                 }
                 break;
             case HMM3_GA:
@@ -797,7 +797,7 @@ P7_HMM * UHMMFormatReader::readHMMER2ASCII() {
             throw UHMMFormatReaderException( tr( "Failed to allocate body of the new HMM" ) );
         }
         if( (bg = p7_bg_Create( abc )) == NULL ) {
-            throw UHMMFormatReaderException( tr( "failed to create background model" ) );
+            throw UHMMFormatReaderException( tr( "Failed to create background model" ) );
         }
         
         /* H2's tbd1 line ==> translated to H3's node 0 */

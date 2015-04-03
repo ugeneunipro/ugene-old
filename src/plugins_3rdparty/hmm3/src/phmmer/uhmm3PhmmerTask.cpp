@@ -65,8 +65,8 @@ UHMM3PhmmerTask::UHMM3PhmmerTask(const DNASequence &q,
     loadDbTask(NULL)
 {
     GCOUNTER(cvar, tvar, "UHMM3PhmmerTask");
-    CHECK_EXT(0 != query.length(), stateInfo.setError(L10N::badArgument(tr("query_sequence"))), );
-    CHECK_EXT(0 < db.length(), stateInfo.setError(L10N::badArgument(tr("sequence_to_search_in"))), );
+    CHECK_EXT(0 != query.length(), stateInfo.setError(L10N::badArgument(tr("Input query sequence"))), );
+    CHECK_EXT(0 < db.length(), stateInfo.setError(L10N::badArgument(tr("Database sequence to search in"))), );
 
     setTaskName(tr("HMM Phmmer search %1 sequence in %2 database").arg(query.getName()).arg(db.getName()));
     addMemResource();
@@ -80,17 +80,17 @@ UHMM3PhmmerTask::UHMM3PhmmerTask(const QString &queryFilename,
     loadQueryTask(NULL),
     loadDbTask(NULL)
 {
-    CHECK_EXT(!queryFilename.isEmpty(), stateInfo.setError(L10N::badArgument(tr("query_sequence_filename"))), );
-    CHECK_EXT(!dbFilename.isEmpty(), stateInfo.setError(L10N::badArgument(tr("db_sequence_to_search_in"))), );
+    CHECK_EXT(!queryFilename.isEmpty(), stateInfo.setError(L10N::badArgument(tr("Query sequence file path"))), );
+    CHECK_EXT(!dbFilename.isEmpty(), stateInfo.setError(L10N::badArgument(tr("Database sequence file path"))), );
 
     setTaskName(tr("HMM Phmmer search %1 sequence with %2 database").arg(queryFilename).arg(dbFilename));
 
     loadQueryTask = LoadDocumentTask::getDefaultLoadDocTask(queryFilename);
-    CHECK_EXT(NULL != loadQueryTask, stateInfo.setError(tr("cannot_create_load_query_doc_task")), );
+    CHECK_EXT(NULL != loadQueryTask, stateInfo.setError(tr("Error opening query sequence file")), );
     addSubTask(loadQueryTask);
 
     loadDbTask = LoadDocumentTask::getDefaultLoadDocTask(dbFilename);
-    CHECK_EXT(NULL != loadDbTask, stateInfo.setError(tr("cannot_create_load_db_doc_task")), );
+    CHECK_EXT(NULL != loadDbTask, stateInfo.setError(tr("Error opening database sequence file")), );
     addSubTask(loadDbTask);
 }
 
@@ -103,13 +103,13 @@ UHMM3PhmmerTask::UHMM3PhmmerTask(const QString &queryFilename,
     loadQueryTask(NULL),
     loadDbTask(NULL)
 {
-    CHECK_EXT(!queryFilename.isEmpty(), stateInfo.setError(L10N::badArgument(tr("query_sequence_filename"))), );
-    CHECK_EXT(0 < db.length(), stateInfo.setError(L10N::badArgument(tr("sequence_to_search_in"))), );
+    CHECK_EXT(!queryFilename.isEmpty(), stateInfo.setError(L10N::badArgument(tr("Query sequence file path"))), );
+    CHECK_EXT(0 < db.length(), stateInfo.setError(L10N::badArgument(tr("Database sequence to search in"))), );
 
     setTaskName(tr("HMM Phmmer search %1 sequence in %2 database").arg(queryFilename).arg(db.getName()));
 
     loadQueryTask = LoadDocumentTask::getDefaultLoadDocTask(queryFilename);
-    CHECK_EXT(NULL != loadQueryTask, stateInfo.setError(tr("cannot_create_load_query_doc_task")), );
+    CHECK_EXT(NULL != loadQueryTask, stateInfo.setError(tr("Error opening query sequence file")), );
     addSubTask(loadQueryTask);
 }
 
@@ -124,16 +124,16 @@ void UHMM3PhmmerTask::addMemResource() {
 
 DNASequence UHMM3PhmmerTask::getSequenceFromDocument(Document *doc, TaskStateInfo &ti) {
     DNASequence ret;
-    CHECK_EXT(NULL != doc, ti.setError(tr("cannot load document from:")), ret);
+    CHECK_EXT(NULL != doc, ti.setError(tr("Error loading sequence document:")), ret);
 
     QList<GObject *> objsList = doc->findGObjectByType(GObjectTypes::SEQUENCE);
-    CHECK_EXT(!objsList.isEmpty(), ti.setError(tr("no_dna_sequence_objects_in_document")), ret);
+    CHECK_EXT(!objsList.isEmpty(), ti.setError(tr("No dna sequence objects found in document")), ret);
 
     U2SequenceObject *seqObj = qobject_cast<U2SequenceObject *>(objsList.first());
-    CHECK_EXT(NULL != seqObj, ti.setError(tr("cannot_cast_to_dna_object")), ret);
+    CHECK_EXT(NULL != seqObj, ti.setError(tr("No dna sequence objects found in document")), ret);
 
     ret = seqObj->getWholeSequence();
-    CHECK_EXT(0 < ret.length(), ti.setError(tr("empty_sequence_given")), ret);
+    CHECK_EXT(0 < ret.length(), ti.setError(tr("Empty sequence loaded from document")), ret);
 
     return ret;
 }

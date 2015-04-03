@@ -38,7 +38,7 @@
 
 using namespace U2;
 
-const QString UHMMFormat::WRITE_FAILED = QObject::tr("write_to_file_failed");
+const QString UHMMFormat::WRITE_FAILED = QObject::tr("Writing HMM profile file failed");
 
 static void loadOne( IOAdapter* io, QList< GObject* >& objects, U2OpStatus& os) {
     CHECK_OP(os, );
@@ -276,7 +276,7 @@ static void saveOne( IOAdapter* io, const P7_HMM* hmm, U2OpStatus& os) {
     } catch( const UHMMFormat::UHMMWriteException& ex ) {
         os.setError( ex.what );
     } catch(...) {
-        os.setError( UHMMFormat::tr( "unknown_error_occurred" ) );
+        os.setError( UHMMFormat::tr( "Unknown error occurred" ) );
     }
 }
 
@@ -299,10 +299,10 @@ static void saveAll( IOAdapter* io, const QList< GObject* >& objects, U2OpStatus
 namespace U2 {
 
 const DocumentFormatId  UHMMFormat::UHHMER_FORMAT_ID   = "hmmer_document_format";
-const QString           UHMMFormat::WRITE_LOCK_REASON = QObject::tr("hmm_files_are_read_only");
+const QString           UHMMFormat::WRITE_LOCK_REASON = QObject::tr("HMM files are read only");
 
 UHMMFormat::UHMMFormat( QObject* obj ) : DocumentFormat( obj, DocumentFormatFlags_SW, QStringList("hmm")) {
-    formatName = tr( "hmmer_format" );
+    formatName = tr( "Profile HMM format" );
 	formatDescription = tr("hmm is a format for storing hmm profiles");
 	supportedObjectTypes+=UHMMObject::UHMM_OT;
 }

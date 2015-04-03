@@ -77,7 +77,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
-UHMM3Plugin::UHMM3Plugin() : Plugin( tr( "hmm3_plugin_name" ), tr( "hmm3_plugin_desc" ) ) {
+UHMM3Plugin::UHMM3Plugin() : Plugin( tr( "HMM3" ), tr( "HMM profile tools. Plugin is based on HMMER 3.0b3 package: freely distributable implementation of profile HMM software for protein sequence analysis. Home page of project: http://hmmer.janelia.org/" ) ) {
     // UHMMFormat
     DocumentFormatRegistry* dfRegistry = AppContext::getDocumentFormatRegistry();
     assert( NULL != dfRegistry );

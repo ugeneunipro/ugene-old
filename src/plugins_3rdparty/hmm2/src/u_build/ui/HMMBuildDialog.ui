@@ -36,7 +36,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>result_hmm_label</string>
+        <string>File to save HMM profile:</string>
        </property>
       </widget>
      </item>
@@ -55,7 +55,7 @@
    <item>
     <widget class="QGroupBox" name="expertGroup">
      <property name="title">
-      <string>expert_options</string>
+      <string>Expert options</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -67,45 +67,27 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label_5">
         <property name="toolTip">
-         <string>name_tip</string>
-        </property>
-        <property name="statusTip">
-         <string>name_tip</string>
-        </property>
-        <property name="whatsThis">
-         <string>name_tip</string>
+         <string>Name can be any string of non-whitespace characters (e.g. one ”word”).</string>
         </property>
         <property name="text">
-         <string>name</string>
+         <string>Name this HMM:</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1" colspan="2">
        <widget class="QLineEdit" name="nameEdit">
-        <property name="toolTip">
-         <string>name_tip</string>
-        </property>
-        <property name="statusTip">
-         <string>name_tip</string>
-        </property>
-        <property name="whatsThis">
-         <string>name_tip</string>
-        </property>
        </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_7">
         <property name="toolTip">
-         <string>default_hmmls_tip</string>
-        </property>
-        <property name="statusTip">
-         <string>default_hmmls_tip</string>
-        </property>
-        <property name="whatsThis">
-         <string>default_hmmls_tip</string>
+         <string>
+             By default, the model is configured to find one or more nonoverlapping alignments to the complete model:
+             multiple global alignments with respect to the model, and local with respect to the sequence
+         </string>
         </property>
         <property name="text">
-         <string>default_hmmls</string>
+         <string>Default (hmmls) behaviour:</string>
         </property>
        </widget>
       </item>
@@ -124,15 +106,6 @@
       </item>
       <item row="1" column="2">
        <widget class="QRadioButton" name="hmmlsButton">
-        <property name="toolTip">
-         <string>default_hmmls_tip</string>
-        </property>
-        <property name="statusTip">
-         <string>default_hmmls_tip</string>
-        </property>
-        <property name="whatsThis">
-         <string>default_hmmls_tip</string>
-        </property>
         <property name="text">
          <string/>
         </property>
@@ -144,16 +117,13 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
         <property name="toolTip">
-         <string>multi_domain_hmmfs_tip</string>
-        </property>
-        <property name="statusTip">
-         <string>multi_domain_hmmfs_tip</string>
-        </property>
-        <property name="whatsThis">
-         <string>multi_domain_hmmfs_tip</string>
+         <string>
+             Configure the model for finding multiple domains per sequence, where each domain can be a local (fragmentary) alignment.
+             This is analogous to the old hmmfs program of HMMER 1.
+         </string>
         </property>
         <property name="text">
-         <string>multi_domain_hmmfs</string>
+         <string>Emulate hmmfs behaviour:</string>
         </property>
        </widget>
       </item>
@@ -172,15 +142,6 @@
       </item>
       <item row="2" column="2">
        <widget class="QRadioButton" name="hmmfsButton">
-        <property name="toolTip">
-         <string>multi_domain_hmmfs_tip</string>
-        </property>
-        <property name="statusTip">
-         <string>multi_domain_hmmfs_tip</string>
-        </property>
-        <property name="whatsThis">
-         <string>multi_domain_hmmfs_tip</string>
-        </property>
         <property name="text">
          <string/>
         </property>
@@ -189,16 +150,13 @@
       <item row="3" column="0">
        <widget class="QLabel" name="label_4">
         <property name="toolTip">
-         <string>single_global_hmms_tip</string>
-        </property>
-        <property name="statusTip">
-         <string>single_global_hmms_tip</string>
-        </property>
-        <property name="whatsThis">
-         <string>single_global_hmms_tip</string>
+         <string>
+             Configure the model for finding a single global alignment to a target sequence,
+             analogous to the old hmms program of HMMER 1.
+         </string>
         </property>
         <property name="text">
-         <string>single_global_hmms</string>
+         <string>Emulate hmms behaviour:</string>
         </property>
        </widget>
       </item>
@@ -217,15 +175,6 @@
       </item>
       <item row="3" column="2">
        <widget class="QRadioButton" name="hmmsButton">
-        <property name="toolTip">
-         <string>single_global_hmms_tip</string>
-        </property>
-        <property name="statusTip">
-         <string>single_global_hmms_tip</string>
-        </property>
-        <property name="whatsThis">
-         <string>single_global_hmms_tip</string>
-        </property>
         <property name="text">
          <string/>
         </property>
@@ -234,16 +183,13 @@
       <item row="4" column="0">
        <widget class="QLabel" name="label_6">
         <property name="toolTip">
-         <string>single_local_hmmsw_tip</string>
-        </property>
-        <property name="statusTip">
-         <string>single_local_hmmsw</string>
-        </property>
-        <property name="whatsThis">
-         <string>single_local_hmmsw</string>
+         <string>
+             Configure the model for finding a single local alignment per target sequence.
+             This is analogous to the standard Smith/Waterman algorithm or the hmmsw program of HMMER 1.
+         </string>
         </property>
         <property name="text">
-         <string>single_local_hmmsw</string>
+         <string>Emulate hmmsw behaviour:</string>
         </property>
        </widget>
       </item>
@@ -262,15 +208,6 @@
       </item>
       <item row="4" column="2">
        <widget class="QRadioButton" name="hmmswButton">
-        <property name="toolTip">
-         <string>single_local_hmmsw</string>
-        </property>
-        <property name="statusTip">
-         <string>single_local_hmmsw</string>
-        </property>
-        <property name="whatsThis">
-         <string>single_local_hmmsw</string>
-        </property>
         <property name="text">
          <string/>
         </property>

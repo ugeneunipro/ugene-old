@@ -11,19 +11,19 @@
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="54"/>
         <source>Input file</source>
-        <translation type="unfinished"></translation>
+        <translation>Входной файл</translation>
     </message>
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="64"/>
         <location filename="../src/ui/KalignDialog.ui" line="81"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="71"/>
         <location filename="../src/ui/KalignDialog.ui" line="307"/>
         <source>Output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Выходной файл</translation>
     </message>
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="99"/>
@@ -55,53 +55,33 @@
         <source>Translate to amino when aligning</source>
         <translation>Транслировать в амины в процессе выравнивания</translation>
     </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; color:#3d3d3d;&quot;&gt;*Note that default values for unchecked options may differs dependent from alphabet of alignment.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; color:#3d3d3d;&quot;&gt;*Обратите внимание, что значения по умолчанию для неотмеченных параметров отличаются в зависимости от алфавита.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Align</source>
-        <translation type="obsolete">Выровнять</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Отмена</translation>
-    </message>
 </context>
 <context>
     <name>PairwiseAlignmentHirschbergOptionsPanelMainWidget</name>
     <message>
         <location filename="../src/ui/PairwiseAlignmentHirschbergOptionsPanelMainWidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../src/ui/PairwiseAlignmentHirschbergOptionsPanelMainWidget.ui" line="37"/>
         <source>Gap open penalty</source>
-        <translation type="unfinished">Штраф за открывающий пропуск</translation>
+        <translation>Штраф за открывающий пропуск</translation>
     </message>
     <message>
         <location filename="../src/ui/PairwiseAlignmentHirschbergOptionsPanelMainWidget.ui" line="57"/>
         <source>Gap extension penalty</source>
-        <translation type="unfinished">Штраф за промежуточный пропуск</translation>
+        <translation>Штраф за промежуточный пропуск</translation>
     </message>
     <message>
         <location filename="../src/ui/PairwiseAlignmentHirschbergOptionsPanelMainWidget.ui" line="77"/>
         <source>Terminate gap penalty</source>
-        <translation type="unfinished"></translation>
+        <translation>Штраф за закрывающий пропуск</translation>
     </message>
     <message>
         <location filename="../src/ui/PairwiseAlignmentHirschbergOptionsPanelMainWidget.ui" line="97"/>
         <source>Bonus score</source>
-        <translation type="unfinished">Бонусные очки</translation>
+        <translation>Бонусные очки</translation>
     </message>
 </context>
 <context>
@@ -117,38 +97,38 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/KalignDialogController.cpp" line="133"/>
         <source>Align</source>
-        <translation type="unfinished">Выровнять</translation>
+        <translation>Выровнять</translation>
     </message>
     <message>
         <location filename="../src/KalignDialogController.cpp" line="134"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../src/KalignDialogController.cpp" line="150"/>
         <source>Open an alignment file</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть выравнивание</translation>
     </message>
     <message>
         <location filename="../src/KalignDialogController.cpp" line="160"/>
         <source>Save an multiple alignment file</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить выранивание</translation>
     </message>
     <message>
         <location filename="../src/KalignDialogController.cpp" line="200"/>
         <location filename="../src/KalignDialogController.cpp" line="203"/>
         <source>Kalign with Align</source>
-        <translation type="unfinished"></translation>
+        <translation>Выравнивание Kalign</translation>
     </message>
     <message>
         <location filename="../src/KalignDialogController.cpp" line="201"/>
         <source>Input file is not set!</source>
-        <translation type="unfinished"></translation>
+        <translation>Входной файл не выбран!</translation>
     </message>
     <message>
         <location filename="../src/KalignDialogController.cpp" line="204"/>
         <source>Output file is not set!</source>
-        <translation type="unfinished"></translation>
+        <translation>Выходной файл не указан!</translation>
     </message>
 </context>
 <context>
@@ -156,12 +136,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/KalignDialogController.cpp" line="70"/>
         <source>Align</source>
-        <translation type="unfinished">Выровнять</translation>
+        <translation>Выровнять</translation>
     </message>
     <message>
         <location filename="../src/KalignDialogController.cpp" line="71"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
@@ -169,12 +149,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/KalignTask.cpp" line="254"/>
         <source>Workflow wrapper &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Workflow wrapper &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/KalignTask.cpp" line="264"/>
         <source>KAlign align &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Выравнивание Kalign &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -182,7 +162,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/KalignTask.cpp" line="145"/>
         <source>KALIGN align &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Выравнивание Kalign &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -190,7 +170,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/KalignPlugin.cpp" line="157"/>
         <source>Align with Kalign...</source>
-        <translation>Выравнивание Kalign</translation>
+        <translation>Выравнивание Kalign...</translation>
     </message>
 </context>
 <context>
@@ -198,25 +178,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/KalignPlugin.cpp" line="74"/>
         <source>Kalign</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalign</translation>
     </message>
     <message>
         <location filename="../src/KalignPlugin.cpp" line="75"/>
         <source>A port of Kalign package for multiple sequence alignment. Check http://msa.sbc.su.se for the original version</source>
-        <translation type="unfinished">Встроенный в UGENE программный пакет для множественного выравнивания последовательности. Здесь http://msa.sbc.su.se находится оригинальная версия</translation>
+        <translation>Встроенный в UGENE программный пакет для множественного выравнивания последовательности. Здесь http://msa.sbc.su.se находится оригинальная версия</translation>
     </message>
     <message>
         <location filename="../src/KalignPlugin.cpp" line="85"/>
         <source>Align with Kalign...</source>
-        <translation type="unfinished">Выравнивание Kalign</translation>
-    </message>
-    <message>
-        <source>Multiple alignment</source>
-        <translation type="obsolete">Множественное выравнивание</translation>
-    </message>
-    <message>
-        <source>Multiple Alignment</source>
-        <translation type="obsolete">Множественное Выравнивание</translation>
+        <translation>Выравнивание Kalign...</translation>
     </message>
 </context>
 <context>
@@ -229,24 +201,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/KalignTask.cpp" line="90"/>
         <source>Unsupported alphabet: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неподдерживаемый алфавит: %1</translation>
     </message>
     <message>
         <location filename="../src/KalignTask.cpp" line="93"/>
         <source>Kalign alignment started</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalign alignment started</translation>
     </message>
     <message>
         <location filename="../src/KalignTask.cpp" line="98"/>
         <source>Kalign alignment successfully finished</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>U2::KalignWithExtFileSpecifyDialogController</name>
-    <message>
-        <source>Select input file</source>
-        <translation type="obsolete">Выберите входной файл</translation>
+        <translation>Kalign alignment successfully finished</translation>
     </message>
 </context>
 <context>
@@ -287,32 +252,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/KalignWorker.cpp" line="69"/>
         <source>Gap open penalty</source>
-        <translation type="unfinished">Штраф за открывающий пропуск</translation>
+        <translation>Штраф за открывающий пропуск</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="70"/>
         <source>The penalty for opening/closing a gap. Half the value will be subtracted from the alignment score when opening, and half when closing a gap.</source>
-        <translation type="unfinished"></translation>
+        <translation>Штраф за открытие/закрытие пропуска. Половина значения будет вычитаться из результата выравнивания при открытии, и половина при закрытии разрыва.</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="71"/>
         <source>Gap extension penalty</source>
-        <translation type="unfinished">Штраф за промежуточный пропуск</translation>
+        <translation>Штраф за промежуточный пропуск</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="72"/>
         <source>The penalty for extending a gap.</source>
-        <translation type="unfinished"></translation>
+        <translation>Штраф за открытие пропуска.</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="73"/>
         <source>Terminal gap penalty</source>
-        <translation type="unfinished">Штраф за закрывающий пропуск</translation>
+        <translation>Штраф за закрывающий пропуск</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="74"/>
         <source>The penalty to extend gaps from the N/C terminal of protein or 5&apos;/3&apos; terminal of nucleotide sequences.</source>
-        <translation type="unfinished"></translation>
+        <translation>Штраф за расширение пропуска терминала N/C для белков или терминала 5&apos;/3&apos; для нуклеотидных последовательностей.</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="75"/>
@@ -332,27 +297,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/KalignWorker.cpp" line="84"/>
         <source>Aligns multiple sequence alignments (MSAs) supplied with Kalign.&lt;p&gt;Kalign is a fast and accurate multiple sequence alignment tool. The original version of the tool can be found on &lt;a href=&quot;http://msa.sbc.su.se&quot;&gt;http://msa.sbc.su.se&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для каждого множественного выравнивания (МВ) применяет Kalign.
+&lt;p&gt;Kalign это быстрый и точный алгоритм множественного выравнивания последовательности. 
+Здесь &lt;a href=&quot;http://msa.sbc.su.se&quot;&gt;http://msa.sbc.su.se&lt;/a&gt; находится оригинальная версия.       </translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="160"/>
         <source>An empty MSA &apos;%1&apos; has been supplied to Kalign.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-          Aligns multiple sequence alignments (MSAs) supplied with Kalign.
-          &lt;p&gt;Kalign is a fast and accurate multiple sequence alignment tool. The original version of the tool can be found on &lt;a href=&quot;http://msa.sbc.su.se&quot;&gt;http://msa.sbc.su.se&lt;/a&gt;.
-        </source>
-        <translation type="obsolete">
-          Для каждого множественного выравнивания (МВ) применяет Kalign.
-          &lt;p&gt;Kalign это быстрый и точный алгоритм множественного выравнивания последовательности. 
-          Здесь &lt;a href=&quot;http://msa.sbc.su.se&quot;&gt;http://msa.sbc.su.se&lt;/a&gt; находится оригинальная версия.
-        </translation>
-    </message>
-    <message>
-        <source>An empty MSA has been supplied to Kalign.</source>
-        <translation type="obsolete">Kalign получил пустое МВ.</translation>
+        <translation>Kalign получил пустое МВ &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="188"/>

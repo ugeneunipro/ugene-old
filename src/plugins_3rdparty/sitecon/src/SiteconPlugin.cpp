@@ -58,7 +58,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 }
 
 
-SiteconPlugin::SiteconPlugin() : Plugin(tr("sitecon_plugin"), tr("sitecon_plugin_desc")), ctxADV(NULL)
+SiteconPlugin::SiteconPlugin() : Plugin(tr("SITECON"), tr("SITECON - is a program package for revealing and analysis of conservative conformational and physicochemical properties in transcription factor binding sites sets.")), ctxADV(NULL)
 {
     if (AppContext::getMainWindow()) {
         ctxADV = new SiteconADVContext(this);
