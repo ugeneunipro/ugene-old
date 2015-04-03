@@ -707,6 +707,13 @@ GUI_TEST_CLASS_DEFINITION(test_0830) {
     CHECK_SET_ERR(!QFile::exists(outUrl), "The output file is created");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0834) {
+    GTFileDialog::openFile(os,  testDir + "_common_data/genbank/NC_014267.1_cut.gb");
+
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::getQualifierValue(os, "gene", "gene  (0, 1)") == "join(1..74213,77094..140426)", 
+        "Annotation \"gene\" has incorrect location");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0835) {
     //1. Open, for example, "murine.gb" and "sars.gb".
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
