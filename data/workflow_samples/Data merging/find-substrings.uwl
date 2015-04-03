@@ -136,6 +136,7 @@ workflow "Find substrings in sequences"{
         }
         wizard {
             name:"Find substrings in sequences Wizard";
+            help-page-id:16122696;
             page {
                 id:1;
                 next:2;

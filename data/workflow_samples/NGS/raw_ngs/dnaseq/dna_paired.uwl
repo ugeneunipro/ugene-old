@@ -372,6 +372,7 @@ workflow "Processing of raw DNA-Seq paired-end reads"{
         }
         wizard {
             name:"Raw DNA-Seq Data Processing Wizard";
+            help-page-id:16122726;
             page {
                 id:1;
                 next:2;

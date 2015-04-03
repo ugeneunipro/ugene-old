@@ -41,6 +41,7 @@ workflow "Convert alignments to ClustalW"{
         }
         wizard {
             name:"Convert alignments to ClustalW Wizard";
+            help-page-id:16122705;
             page {
                 id:1;
                 next:2;

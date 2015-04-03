@@ -21,6 +21,7 @@
 workflow "Raw DNA-Seq data processing" {
     .meta {
         wizard {
+            help-page-id:16122726;
             auto-run: true;
             has-run-button: false;
             has-defaults-button: false;

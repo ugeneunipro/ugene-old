@@ -4,6 +4,7 @@
 workflow "ChIP-Seq analysis with Cistrome tools" {
     .meta {
         wizard {
+            help-page-id:16122719;
             auto-run: true;
             has-run-button: false;
             has-defaults-button: false;

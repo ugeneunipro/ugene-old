@@ -181,6 +181,7 @@ workflow "Processing of raw RNA-Seq single-end reads with mapping"{
         }
         wizard {
             name:"Raw RNA-Seq Data Processing Wizard";
+            help-page-id:16122727;
             page {
                 id:1;
                 next:2;

@@ -92,6 +92,7 @@ url_out = dir + "_consensus.fa"
         }
         wizard {
             name:"Extract Alignment Consensus as Sequence";
+            help-page-id:16122701;
             page {
                 id:1;
                 next:2;

@@ -161,6 +161,7 @@ out_sequence = subsequence(in_sequence, size(in_sequence) / 2, size(in_sequence)
         }
         wizard {
             name:"Search for Inverted Repeats Wizard";
+            help-page-id:16122701;
             page {
                 id:1;
                 next:2;

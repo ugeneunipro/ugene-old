@@ -74,6 +74,7 @@ workflow "Get unmapped reads"{
         }
         wizard {
             name:"Get Unmapped Reads";
+            help-page-id:16123235;
             auto-run:true;
             page {
                 id:1;

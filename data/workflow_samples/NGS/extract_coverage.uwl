@@ -66,6 +66,7 @@ workflow "Extract coverage from assembly"{
         }
         wizard {
             name:"Extract the assembly coverage and / or bases count";
+            help-page-id:16122724;
             page {
                 id:1;
                 next:2;

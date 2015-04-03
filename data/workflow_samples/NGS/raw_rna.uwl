@@ -15,6 +15,7 @@
 workflow "Raw RNA-Seq data processing" {
     .meta {
         wizard {
+            help-page-id:16122727;
             auto-run: true;
             has-run-button: false;
             has-defaults-button: false;

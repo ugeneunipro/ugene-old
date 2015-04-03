@@ -44,6 +44,7 @@ workflow "Convert sequence to Genbank"{
         }
         wizard {
             name:"Convert sequence to Genbank Wizard";
+            help-page-id:16122707;
             page {
                 id:1;
                 next:2;

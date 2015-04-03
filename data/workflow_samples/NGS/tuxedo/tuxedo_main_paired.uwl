@@ -266,6 +266,7 @@ function tophatTime(reads, idx) {
         }
         wizard {
             name:"Tuxedo Wizard";
+            help-page-id:16122721;
             page {
                 id:1;
                 next:2;

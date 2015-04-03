@@ -23,6 +23,7 @@
 workflow "Raw ChIP-Seq data processing" {
     .meta {
         wizard {
+            help-page-id:16122725;
             auto-run: true;
             has-run-button: false;
             has-defaults-button: false;

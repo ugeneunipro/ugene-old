@@ -75,6 +75,7 @@ workflow "Search sequences with profile HMM"{
         }
         wizard {
             name:"Search sequences with profile HMM Wizard";
+            help-page-id:16122716;
             page {
                 id:1;
                 next:2;

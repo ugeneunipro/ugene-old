@@ -147,6 +147,7 @@ workflow "Search for tfbs"{
         }
         wizard {
             name:"Search for tfbs Wizard";
+            help-page-id:16122698;
             page {
                 id:1;
                 next:2;

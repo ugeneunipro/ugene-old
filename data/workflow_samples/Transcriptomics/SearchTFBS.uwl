@@ -143,6 +143,7 @@ workflow "Search for transcription factor binding sites (TFBS) in genomic sequen
         }
         wizard {
             name:"Search for transcription factor binding sites (TFBS) in genomic sequences Wizard";
+            help-page-id:16122701;
             page {
                 id:1;
                 next:2;

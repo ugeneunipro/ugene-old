@@ -105,6 +105,7 @@ workflow "De novo assembly of paired-end reads with SPAdes"{
         }
         wizard {
             name:"De novo Assembly with SPAdes Wizard";
+            help-page-id:16122728;
             page {
                 id:1;
                 title:"Genome assembly settings";

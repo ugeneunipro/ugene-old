@@ -59,6 +59,7 @@ workflow "Quality control by FastQC"{
         }
         wizard {
             name:"Quality Control by FastQC Wizard";
+            help-page-id:16122729;
             page {
                 id:1;
                 title:"QC report settings";

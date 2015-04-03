@@ -166,6 +166,7 @@ function samtoolsTime(bam, ref) {
         }
         wizard {
             name:"Call Variants Wizard";
+            help-page-id:16122718;
             page {
                 id:1;
                 next:2;

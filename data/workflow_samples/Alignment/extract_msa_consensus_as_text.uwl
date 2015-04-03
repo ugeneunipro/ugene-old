@@ -90,6 +90,7 @@ url_out = dir + "_consensus.txt"
         }
         wizard {
             name:"Extract Alignment Consensus as Text";
+            help-page-id:16122702;
             page {
                 id:1;
                 next:2;

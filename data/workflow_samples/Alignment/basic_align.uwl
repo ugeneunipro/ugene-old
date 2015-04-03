@@ -58,6 +58,7 @@ workflow "Align sequences with MUSCLE"{
         }
         wizard {
             name:"Align Sequences with MUSCLE Wizard";
+            help-page-id:16122700;
             page {
                 id:1;
                 next:2;

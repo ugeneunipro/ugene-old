@@ -283,6 +283,7 @@ workflow "Processing of raw ChIP-Seq single-end reads"{
         }
         wizard {
             name:"Raw ChIP-Seq Data Processing Wizard";
+            help-page-id:16122725;
             page {
                 id:1;
                 next:2;
