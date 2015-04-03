@@ -5158,6 +5158,7 @@ GUI_TEST_CLASS_DEFINITION( test_2853 ){
     GTUtilsDialog::waitForDialog(os, filler);
 
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SEARCH_GENBANK, GTGlobals::UseKey);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
 }
 

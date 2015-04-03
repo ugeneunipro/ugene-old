@@ -370,7 +370,11 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
     GTUtilsLog::checkContainsMessage(os, l1, false);
 
     QFileInfoList fList = QDir(sandBoxDir).entryInfoList();
-    CHECK_SET_ERR(fList.size() == 14, QString("unexpected files number: %1").arg(fList.size()));
+    QString s;
+    foreach (QFileInfo info, fList) {
+        s.append(info.absoluteFilePath() + "\n");
+    }
+    CHECK_SET_ERR(fList.size() == 14, s + QString("unexpected files number: %1").arg(fList.size()));
 
 //    3. Rename index files to refName.fa.1.ebwt. Repeat step 1.
     QFile::rename(sandBoxDir + refName + ".fa.amb", sandBoxDir + refName + ".amb");
@@ -391,7 +395,11 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
     GTUtilsLog::checkContainsMessage(os, l2, false);
 
     QFileInfoList fListRenamed = QDir(sandBoxDir).entryInfoList();
-    CHECK_SET_ERR(fListRenamed.size() == 14, QString("2: unexpected files number: %1").arg(fListRenamed.size()));
+    QString s1;
+    foreach (QFileInfo info, fListRenamed) {
+        s1.append(info.absoluteFilePath() + "\n");
+    }
+    CHECK_SET_ERR(fListRenamed.size() == 14, s1 + QString("2: unexpected files number: %1").arg(fListRenamed.size()));
 
 //    4.  An index file is set as a reference sequence
     GTLogTracer l3("bwa index -a bwtsw -p");
@@ -408,7 +416,11 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
     GTUtilsLog::checkContainsMessage(os, l3, false);
 
     QFileInfoList fListIndex = QDir(sandBoxDir).entryInfoList();
-    CHECK_SET_ERR(fListIndex.size() == 14, QString("3: unexpected files number: %1").arg(fListIndex.size()));
+    QString s2;
+    foreach (QFileInfo info, fListIndex) {
+        s2.append(info.absoluteFilePath() + "\n");
+    }
+    CHECK_SET_ERR(fListIndex.size() == 14, s2 + QString("3: unexpected files number: %1").arg(fListIndex.size()));
 
 }
 
