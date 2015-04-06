@@ -51,6 +51,12 @@ void ImportPrimerFromObjectTask::run() {
     primer.name = sequenceObject->getGObjectName();
     primer.sequence = sequenceObject->getWholeSequenceData();
 
+    QRegExp regExp("[^ACGT]");
+    if (primer.sequence.contains(regExp)) {
+        setError(tr("The primer sequence contains non-ACGT symbols"));
+        return;
+    }
+
     PrimerLibrary *library = PrimerLibrary::getInstance(stateInfo);
     CHECK_OP(stateInfo, );
     library->addRawPrimer(primer, stateInfo);
