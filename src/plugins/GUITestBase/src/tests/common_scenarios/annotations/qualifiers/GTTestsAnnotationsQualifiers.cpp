@@ -33,6 +33,7 @@
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
+#include "api/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
@@ -560,7 +561,8 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0008) {
-    GTFileDialog::openFile(os, testDir + "_common_data/genbank/", "1anot_1seq.gen");
+    GTFile::copy(os, testDir + "_common_data/genbank/1anot_1seq.gen", sandBoxDir + "1anot_1seq.gen");
+    GTFileDialog::openFile(os, sandBoxDir + "1anot_1seq.gen");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -575,7 +577,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     Runnable *filler = new EditQualifierFiller(os, "long", longQualifierValueNoSpaces);
     GTUtilsDialog::waitForDialog(os, filler);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "add_qualifier_action"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "add_qualifier_action", GTGlobals::UseMouse));
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
     GTMouseDriver::click(os, Qt::RightButton);
 
@@ -592,13 +594,11 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     GTMouseDriver::click(os);
 
     QTreeWidgetItem* qualifierTreeItem = GTUtilsAnnotationsTreeView::findItem(os, "long");
-    CHECK_SET_ERR(qualifierTreeItem->text(1) == longQualifierValueNoSpaces, "Different qualifier value!");
+    CHECK_SET_ERR(qualifierTreeItem->text(AnnotationsTreeView::COLUMN_VALUE) == longQualifierValueNoSpaces, "Different qualifier value!");
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_REMOVE << "Selected annotations and qualifiers"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_REMOVE << "Selected annotations and qualifiers", GTGlobals::UseMouse));
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "long"));
     GTMouseDriver::click(os, Qt::RightButton);
-
-    GTUtilsDocument::saveDocument(os, "1anot_1seq.gen");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0009) {
