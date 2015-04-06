@@ -1686,8 +1686,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0005_2);
 
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0006);
-    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0006_1);
-    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0006_2);
 
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007_1);

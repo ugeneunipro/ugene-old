@@ -2249,7 +2249,7 @@ AVQualifierItem::AVQualifierItem(AVAnnotationItem* parent, const U2Qualifier& q)
     qValue = qValue.replace('\n'," ");
     setText(AnnotationsTreeView::COLUMN_VALUE, qValue);
 
-    processLinks(qName, qValue, 1);
+    processLinks(qName, qValue, AnnotationsTreeView::COLUMN_VALUE);
 }
 
 FindQualifierTask::FindQualifierTask(AnnotationsTreeView * _treeView, const FindQualifierTaskSettings& settings)

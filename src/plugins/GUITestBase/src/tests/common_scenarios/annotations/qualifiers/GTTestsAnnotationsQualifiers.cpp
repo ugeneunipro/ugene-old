@@ -19,29 +19,29 @@
  * MA 02110-1301, USA.
  */
 
+#include <QHeaderView>
+#include <QTreeWidgetItem>
+
+#include <U2View/ADVConstants.h>
+#include <U2View/AnnotationsTreeView.h>
+
 #include "GTTestsAnnotationsQualifiers.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTWidget.h"
-#include "api/GTFileDialog.h"
-#include "api/GTMenu.h"
-#include "api/GTTreeWidget.h"
+#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
-#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsSequenceView.h"
+#include "GTUtilsTaskTreeView.h"
+#include "api/GTFileDialog.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTTreeWidget.h"
+#include "api/GTWidget.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
-#include <U2View/ADVConstants.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QHeaderView>
-#include <QtGui/QTreeWidgetItem>
-#else
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QTreeWidgetItem>
-#endif
 
 namespace U2 {
 
@@ -424,100 +424,40 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
-    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_qualifiers/", "test_6_murine.gb");
+    // Open "_common_data/scenarios/annotations_qualifiers/test_6_murine.gb".
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_qualifiers/test_6_murine.gb");
 
+    // Click the "db_xref" qualifier value in any "CDS" annotation.
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
     GTGlobals::sleep();
 
-    QTreeWidgetItem* it = GTUtilsAnnotationsTreeView::findItem(os, "db_xref");
+    GTTreeWidget::click(os, GTUtilsAnnotationsTreeView::findItem(os, "db_xref"), AnnotationsTreeView::COLUMN_VALUE);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    QRect kl = GTTreeWidget::getItemRect(os, it);
-    QPoint p (kl.x() + kl.width()/2, kl.y() + kl.height()/2);
+    // Expected state: a P03334 is loaded and opened.
+    QWidget *activeWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(NULL != activeWindow, "Active window is NULL");
+    QString expectedTitle = "P03334 [s] GAG_MSVMO";
+    CHECK_SET_ERR(expectedTitle == activeWindow->windowTitle(), QString("An unexpected window is active: expect '%1', got '%2'")
+            .arg(expectedTitle).arg(activeWindow->windowTitle()));
 
-    QTreeWidget *treeWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
-    QHeaderView *headerView = treeWidget->header();
-    int headerHeight = headerView->height();
-    p.setY(p.y() + headerHeight);
+    // Open "test_6_murine.gb" view and click the same qualifier value again.
+    GTUtilsProjectTreeView::doubleClickItem(os, "test_6_murine.gb");
 
-    GTMouseDriver::moveTo(os, treeWidget->mapToGlobal(p));
-    GTGlobals::sleep(5000);
+    activeWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(NULL != activeWindow, "Active window is NULL");
+    expectedTitle = "test_6_murine [s] NC_001363";
+    CHECK_SET_ERR(expectedTitle == activeWindow->windowTitle(), QString("An unexpected window is active: expect '%1', got '%2'")
+            .arg(expectedTitle).arg(activeWindow->windowTitle()));
 
-    GTMouseDriver::click(os);
-    GTGlobals::sleep();
+    GTTreeWidget::click(os, GTUtilsAnnotationsTreeView::findItem(os, "db_xref"), AnnotationsTreeView::COLUMN_VALUE);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "test_6_murine.gb"));
-    GTMouseDriver::doubleClick(os);
-    GTGlobals::sleep();
-
-    GTMouseDriver::moveTo(os, treeWidget->mapToGlobal(p));
-    GTGlobals::sleep(5000);
-
-    GTMouseDriver::click(os);
-    GTGlobals::sleep();
-
-}
-
-GUI_TEST_CLASS_DEFINITION(test_0006_1) {
-    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_qualifiers/", "test_6_murine.gb");
-
-    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
-    GTGlobals::sleep();
-
-    QTreeWidgetItem* it = GTUtilsAnnotationsTreeView::findItem(os, "db_xref");
-
-    QRect kl = GTTreeWidget::getItemRect(os, it);
-    QPoint p (kl.x() + kl.width()/2, kl.y() + kl.height()/2);
-
-    QTreeWidget *treeWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
-    QHeaderView *headerView = treeWidget->header();
-    int headerHeight = headerView->height();
-    p.setY(p.y() + headerHeight);
-
-    GTMouseDriver::moveTo(os, treeWidget->mapToGlobal(p));
-    GTGlobals::sleep(5000);
-
-    GTMouseDriver::click(os);
-    GTGlobals::sleep();
-}
-
-GUI_TEST_CLASS_DEFINITION(test_0006_2) {
-    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_qualifiers/", "test_6_murine.gb");
-
-    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
-    GTGlobals::sleep();
-
-    QTreeWidgetItem* it = GTUtilsAnnotationsTreeView::findItem(os, "db_xref");
-
-    QRect kl = GTTreeWidget::getItemRect(os, it);
-    QPoint p (kl.x() + kl.width()/2, kl.y() + kl.height()/2);
-
-    QTreeWidget *treeWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
-    QHeaderView *headerView = treeWidget->header();
-    int headerHeight = headerView->height();
-    p.setY(p.y() + headerHeight);
-
-    GTMouseDriver::moveTo(os, treeWidget->mapToGlobal(p));
-    GTGlobals::sleep(5000);
-
-    GTMouseDriver::click(os);
-    GTGlobals::sleep();
-
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "test_6_murine.gb"));
-    GTMouseDriver::doubleClick(os);
-    GTGlobals::sleep();
-
-    GTMouseDriver::moveTo(os, treeWidget->mapToGlobal(p));
-    GTGlobals::sleep(5000);
-
-    GTMouseDriver::click(os);
-    GTGlobals::sleep();
-
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "P03334.txt"));
-    GTMouseDriver::doubleClick(os);
-    GTGlobals::sleep();
-
-    GTMouseDriver::click(os);
-    GTGlobals::sleep();
+    // Expected state: nothing happens, the original view is still active.
+    activeWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(NULL != activeWindow, "Active window is NULL");
+    CHECK_SET_ERR(expectedTitle == activeWindow->windowTitle(), QString("An unexpected window is active: expect '%1', got '%2'")
+            .arg(expectedTitle).arg(activeWindow->windowTitle()));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007) {

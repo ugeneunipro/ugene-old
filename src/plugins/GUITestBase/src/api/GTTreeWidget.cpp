@@ -183,12 +183,21 @@ QTreeWidgetItem* GTTreeWidget::findItem(U2OpStatus &os, QTreeWidget *tree, const
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "click"
-void GTTreeWidget::click(U2OpStatus &os, QTreeWidgetItem *item){
+void GTTreeWidget::click(U2OpStatus &os, QTreeWidgetItem *item, int column) {
     GT_CHECK(item != NULL, "item is NULL");
     QTreeWidget* tree = item->treeWidget();
     tree->scrollToItem(item);
 
-    GTMouseDriver::moveTo(os, getItemCenter(os, item));
+    QPoint point;
+    if (-1 == column) {
+        point = getItemCenter(os, item);
+    } else {
+        const QRect itemRect = getItemRect(os, item);
+        point = tree->viewport()->mapToGlobal(itemRect.topLeft());
+        point += QPoint(tree->columnViewportPosition(column) + tree->columnWidth(column) / 2, itemRect.height() / 2);
+    }
+
+    GTMouseDriver::moveTo(os, point);
     GTMouseDriver::click(os);
 }
 #undef GT_METHOD_NAME

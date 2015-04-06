@@ -49,7 +49,7 @@ public:
     static QStringList getItemNames(U2OpStatus &os, QTreeWidget *treeWidget);
 
     static QTreeWidgetItem* findItem(U2OpStatus &os, QTreeWidget* tree, const QString& text, QTreeWidgetItem* parent = NULL, int column = 0, Qt::MatchFlags flags = Qt::MatchExactly);
-    static void click(U2OpStatus &os, QTreeWidgetItem* item);
+    static void click(U2OpStatus &os, QTreeWidgetItem* item, int column = -1);  //  column == -1 - item center
 
     // Returns item level, 0 - top level item
     static int getItemLevel(U2OpStatus &os, QTreeWidgetItem *item);
