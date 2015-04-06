@@ -602,7 +602,8 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0009) {
-    GTFileDialog::openFile(os, testDir + "_common_data/genbank/", "1anot_1seq.gen");
+    GTFile::copy(os, testDir + "_common_data/genbank/1anot_1seq.gen", sandBoxDir + "1anot_1seq.gen");
+    GTFileDialog::openFile(os, sandBoxDir + "1anot_1seq.gen");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -613,7 +614,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
     Runnable *filler = new EditQualifierFiller(os, "noSpaces", longQualifierValueNoSpaces);
     GTUtilsDialog::waitForDialog(os, filler);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "add_qualifier_action"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "add_qualifier_action", GTGlobals::UseMouse));
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
     GTMouseDriver::click(os, Qt::RightButton);
 
@@ -630,13 +631,11 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
     GTMouseDriver::click(os);
 
     QTreeWidgetItem* qualifierTreeItem = GTUtilsAnnotationsTreeView::findItem(os, "noSpaces");
-    CHECK_SET_ERR(qualifierTreeItem->text(1) == longQualifierValueNoSpaces, "Different qualifier value!");
+    CHECK_SET_ERR(qualifierTreeItem->text(AnnotationsTreeView::COLUMN_VALUE) == longQualifierValueNoSpaces, "Different qualifier value!");
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_REMOVE << "Selected annotations and qualifiers"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_REMOVE << "Selected annotations and qualifiers", GTGlobals::UseMouse));
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "noSpaces"));
     GTMouseDriver::click(os, Qt::RightButton);
-
-    GTUtilsDocument::saveDocument(os, "1anot_1seq.gen");
 }
 
 } // namespace GUITest_common_scenarios_annotations_qualifiers
