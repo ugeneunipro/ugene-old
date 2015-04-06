@@ -19,17 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTreeWidgetItem>
-#else
-#include <QtWidgets/QTreeWidgetItem>
-#endif
+#include <QTreeWidgetItem>
 
 #include <U2Core/ImportToDatabaseOptions.h>
 #include <U2Core/U2ObjectDbi.h>
 
 #include <U2Test/GUITest.h>
+
+#include <U2View/AnnotationsTreeView.h>
 
 #include "GTDatabaseConfig.h"
 #include "GTUtilsAnnotationsTreeView.h"
@@ -1628,8 +1625,8 @@ GUI_TEST_CLASS_DEFINITION(import_test_0013) {
     QTreeWidgetItem* secondContig = contigGroup->child(1);
     CHECK_SET_ERR(NULL != contigGroup, "Second contig annotation is NULL");
 
-    const QString seconContigRegion = secondContig->text(1);
-    CHECK_SET_ERR(expectedSecondContigRegion == seconContigRegion, QString("Invalid contig region: expected %1, got %1").arg(expectedSecondContigRegion).arg(seconContigRegion));
+    const QString secondContigRegion = secondContig->text(AnnotationsTreeView::COLUMN_VALUE);
+    CHECK_SET_ERR(expectedSecondContigRegion == secondContigRegion, QString("Invalid contig region: expected %1, got %2").arg(expectedSecondContigRegion).arg(secondContigRegion));
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log: " + lt.getError());
 }
