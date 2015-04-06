@@ -404,11 +404,11 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     Document *databaseConnection = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, "ugene_gui_test");
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseConnection, "/pcrlib/test_0008/primer1");
-    const QString firstSeq = GTUtilsSequenceView::getSequenceAsString(os, 0);
+    const QString firstSeq = GTUtilsSequenceView::getSequenceAsString(os);
     CHECK_SET_ERR("AAAA" == firstSeq, QString("Incorrect sequence data: expect '%1', got '%2'").arg("AAAA").arg(firstSeq));
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseConnection, "/pcrlib/test_0008/primer2 features");
-    const QString secondSeq = GTUtilsSequenceView::getSequenceAsString(os, 1);
+    const QString secondSeq = GTUtilsSequenceView::getSequenceAsString(os);
     CHECK_SET_ERR("CCCC" == secondSeq, QString("Incorrect sequence data: expect '%1', got '%2'").arg("CCCC").arg(secondSeq));
 
     const QStringList itemPaths = QStringList() << "/pcrlib/test_0008/primer1"

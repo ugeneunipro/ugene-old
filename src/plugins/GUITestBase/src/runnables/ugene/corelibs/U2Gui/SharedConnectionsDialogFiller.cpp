@@ -119,10 +119,12 @@ void establishConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Ac
     const QFlags<SharedConnectionsDialogFiller::Behavior> &behavior)
 {
     GTGlobals::sleep(1000);
-    QWidget *cnctBtn = GTWidget::findWidget(os,"pbConnect");
-    QWidget *dcntBtn = GTWidget::findWidget(os,"pbDisconnect");
-    QWidget *editBtn = GTWidget::findWidget(os,"pbEdit");
-    QListWidget *list = dynamic_cast<QListWidget*>(GTWidget::findWidget(os, "lwConnections"));
+    QWidget* dialog = QApplication::activeModalWidget();
+
+    QWidget *cnctBtn = GTWidget::findWidget(os,"pbConnect", dialog);
+    QWidget *dcntBtn = GTWidget::findWidget(os,"pbDisconnect", dialog);
+    QWidget *editBtn = GTWidget::findWidget(os,"pbEdit", dialog);
+    QListWidget *list = dynamic_cast<QListWidget*>(GTWidget::findWidget(os, "lwConnections", dialog));
 
     waitForConnection(os, action);
     CHECK_OP(os, );
@@ -190,7 +192,7 @@ void stopConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Action 
 void SharedConnectionsDialogFiller::run() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
-    QListWidget *list = dynamic_cast<QListWidget*>(GTWidget::findWidget(os, "lwConnections"));
+    QListWidget *list = dynamic_cast<QListWidget*>(GTWidget::findWidget(os, "lwConnections", dialog));
     CHECK_SET_ERR(NULL != list, "NULL list");
     GTGlobals::sleep(1000);
 
