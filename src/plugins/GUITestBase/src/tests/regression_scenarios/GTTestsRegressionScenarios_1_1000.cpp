@@ -213,6 +213,138 @@ GUI_TEST_CLASS_DEFINITION(test_0490) {
     GTGlobals::sleep();
     GTGlobals::sleep();
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0567) {
+//    1. Open samples/human_T1.fa
+//    2. Press button "build dotplot" on toolbar.
+//    Expected: "Build dotplot" dialog is opened.
+//    3. Press button "Load sequence".
+//    4. Open File _common_data/scenarios/dp_view/dpm1.fa
+//    5. Press button "Load sequence"
+//    6. Open File _common_data/scenarios/dp_view/dpm2.fa
+//    Expected: UGENE does not crash.
+
+    class Test_0567 : public Filler {
+    public:
+        Test_0567(U2OpStatus& os)
+            : Filler(os, "DotPlotDialog") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/dp_view/dpm1.fa"));
+            GTWidget::click(os, dialog->findChild<QPushButton*>("loadSequenceButton"));
+            GTGlobals::sleep();
+
+            GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/dp_view/dpm2.fa"));
+            GTWidget::click(os, dialog->findChild<QPushButton*>("loadSequenceButton"));
+            GTGlobals::sleep();
+
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            QPushButton* button =  box->button(QDialogButtonBox::Cancel);
+            CHECK_SET_ERR(button !=NULL, "cancel button is NULL");
+            GTWidget::click(os, button);
+
+        }
+    };
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new Test_0567(os));
+    GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0627) {
+//    1. Open _common_data/fasta/fa1.fa.
+//    Expected state: the file opens in the sequence viewer.
+//    2. Click the {Primer3} button on the toolbar.
+//    Expected state: Primer designer dialog appeares.
+//    3. Check all fields except the list below for tooltips presence.
+//    List of exceptions:
+//        Region defenition on all tags;
+//        "Reset Form" and "Pick Primers" buttons on all tags;
+//        Main tag (tag has not tooltip):
+//            Pick left primer checkbox
+//            left primer lineedit below checkbox
+//            Pick hybridization probe checkbox
+//            olygo lineedit below checkbox
+//            Pick right primer checkbox
+//            right primer lineedit below checkbox
+//        General settings tag:
+//            Liberal base checkbox
+//            Show debug info checkbox
+//            Do not treat ambiguity codes in libraries as consensus checkbox
+//            Lowercase masking checkbox
+//        Internal Oligo tag: nothing
+//        Penalty Weights: nothing
+//        Span Intron/Exon: nothing
+//        Sequence quality: nothing
+//        Resul Settings: all fields and buttons
+//    Expected state: tooltips are presented.
+
+    class ToolTipsChecker : public Filler {
+    public:
+        ToolTipsChecker(U2OpStatus &os)
+            : Filler( os, "Primer3Dialog") {}
+        virtual void run() {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "dialog not found");
+            GTGlobals::sleep();
+
+            QList<QObject*> children = findAllChildren(dialog);
+
+            QList<QString> objsWithoutTooltips;
+            foreach (QObject *obj, children) {
+                bool lineEditSpinBoxOrComboBox = qobject_cast<QLineEdit*>(obj) != NULL ||
+                        qobject_cast<QSpinBox*>(obj) != NULL ||
+                        qobject_cast<QComboBox*>(obj) != NULL;
+                bool widgetWithoutToolTip = qobject_cast<QWidget*>(obj) != NULL &&
+                        qobject_cast<QWidget*>(obj)->toolTip().isEmpty();
+                if ( lineEditSpinBoxOrComboBox && widgetWithoutToolTip && obj->objectName() != "qt_spinbox_lineedit") {
+                    objsWithoutTooltips << obj->objectName();
+                }
+            }
+
+            QList<QString> exceptions;
+            exceptions << "start_edit_line" << "end_edit_line" << "region_type_combo"
+                       << "edit_PRIMER_LEFT_INPUT" << "edit_PRIMER_RIGHT_INPUT"
+                       << "edit_PRIMER_INTERNAL_OLIGO_INPUT"
+                       << "cbExistingTable" << "cbAnnotationType"
+                       << "leNewTablePath" << "leDescription"
+                       << "leftOverlapSizeSpinBox" << "rightOverlapSizeSpinBox"
+                       << "leGroupName" << "leAnnotationName";
+
+            foreach (const QString& name, objsWithoutTooltips) {
+                CHECK_SET_ERR( exceptions.contains(name), QString("The following field has no tool tip: %1").arg(name));
+            }
+
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
+
+    private:
+        QList<QObject*> findAllChildren(QObject* obj) {
+            QList<QObject*> children;
+            foreach (QObject* o, obj->children()) {
+                children << o;
+                children << findAllChildren(o);
+            }
+            return children;
+        }
+    };
+
+
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/fa1.fa");
+
+    QAbstractButton* primer3 = GTAction::button(os, "primer3_action");
+    CHECK_SET_ERR(primer3 != NULL, "primer3_action not found");
+
+    GTUtilsDialog::waitForDialog(os, new ToolTipsChecker(os));
+    GTWidget::click(os, primer3);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0677) {
     // 1. Open the file bamExample.bam.
     // 2. Check the box 'Import unmapped reads' and import the file.
@@ -314,7 +446,7 @@ GUI_TEST_CLASS_DEFINITION(test_0746) {
 
 GUI_TEST_CLASS_DEFINITION(test_0762) {
 // 1. Open human_T1.fa from examples
-// 
+//
 // 2. Try search tandems with default settings and with new Annotations Table.
 // Expected state: UGENE not crashes
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
@@ -666,14 +798,14 @@ GUI_TEST_CLASS_DEFINITION(test_0829) {
 
     WorkflowProcessItem *readSeq = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
     WorkflowProcessItem *cap3 = GTUtilsWorkflowDesigner::addElement(os, "Assembly Sequences with CAP3");
-    
+
     GTUtilsWorkflowDesigner::connect(os, readSeq, cap3);
-    
+
     GTUtilsWorkflowDesigner::click(os, "Read Sequence");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/_regression/829", "1.fa");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/_regression/829", "2.fa");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/_regression/829", "3.fa");
-    
+
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
     QApplication::activeWindow();
@@ -724,7 +856,7 @@ GUI_TEST_CLASS_DEFINITION(test_0830) {
 GUI_TEST_CLASS_DEFINITION(test_0834) {
     GTFileDialog::openFile(os,  testDir + "_common_data/genbank/NC_014267.1_cut.gb");
 
-    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::getQualifierValue(os, "gene", "gene  (0, 1)") == "join(1..74213,77094..140426)", 
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::getQualifierValue(os, "gene", "gene  (0, 1)") == "join(1..74213,77094..140426)",
         "Annotation \"gene\" has incorrect location");
 }
 
@@ -764,12 +896,12 @@ GUI_TEST_CLASS_DEFINITION(test_0835) {
 GUI_TEST_CLASS_DEFINITION(test_0839) {
 // 1. Use menu {Tools->Weight matrix->Build Weight Matrix}.
 // Expected state: "Build weight or frequency matrix" dialog appeared.
-// 
+//
 // 2. Click {...} button for "Input item".
 // Expected state: "Select file with alignment" dialog appeared.
-// 
+//
 // 3. Open any non msa file (e.g. a tree file  - *.nwk format).
-// Expected state: 
+// Expected state:
 // 1). UGENE doesn`t crach.
 // 2). Messagebox  about unsupported format appeared.
     QList<PwmBuildDialogFiller::Action> actions;
