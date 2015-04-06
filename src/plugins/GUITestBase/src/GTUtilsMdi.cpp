@@ -169,13 +169,33 @@ void GTUtilsMdi::selectRandomRegion(U2OpStatus &os, const QString& windowName){
 }
 #undef GT_METHOD_NAME
 
+namespace {
+
+bool isWidgetPartVisible(QWidget *widget) {
+    CHECK(NULL != widget, false);
+
+    if (!widget->visibleRegion().isEmpty()) {
+        return true;
+    }
+
+    foreach (QObject *child, widget->children()) {
+        if (child->isWidgetType() && isWidgetPartVisible(qobject_cast<QWidget *>(child))) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+}
+
 #define GT_METHOD_NAME "isAnyPartOfWindowVisible"
 bool GTUtilsMdi::isAnyPartOfWindowVisible(U2OpStatus &os, const QString &windowName) {
     GTGlobals::FindOptions options;
     options.failIfNull = false;
     QWidget *window = findWindow(os, windowName, options);
     CHECK(NULL != window, false);
-    return !window->visibleRegion().isEmpty();
+    return isWidgetPartVisible(window);
 }
 #undef GT_METHOD_NAME
 
