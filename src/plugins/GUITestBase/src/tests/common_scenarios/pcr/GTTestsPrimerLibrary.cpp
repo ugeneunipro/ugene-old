@@ -353,8 +353,8 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     CHECK_SET_ERR(items.size() == 2, QString("Unexpected annotations count: epxect %1, got %2").arg(2).arg(items.size()));
 
     const QString sequenceQualifier = GTUtilsAnnotationsTreeView::getQualifierValue(os, "sequence", "primer_bind");
-    const QString gcQualifier = GTUtilsAnnotationsTreeView::getQualifierValue(os, "GC%", "primer_bind");
-    const QString tmQualifier = GTUtilsAnnotationsTreeView::getQualifierValue(os, "Tm", "primer_bind");
+    const QString gcQualifier = GTUtilsAnnotationsTreeView::getQualifierValue(os, "gc%", "primer_bind");
+    const QString tmQualifier = GTUtilsAnnotationsTreeView::getQualifierValue(os, "tm", "primer_bind");
 
     CHECK_SET_ERR("AAAA" == sequenceQualifier, QString("Incorrect value of sequence qualifier: '%1'").arg(sequenceQualifier));
     CHECK_SET_ERR("0" == gcQualifier, QString("Incorrect value of gc content qualifier: '%1'").arg(gcQualifier));
