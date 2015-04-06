@@ -193,7 +193,7 @@ QTreeWidgetItem * GTUtilsAnnotationsTreeView::findItem(U2OpStatus &os, const QSt
             return item;
         }
     }
-    GT_CHECK_RESULT(options.failIfNull == false, "Item " + itemName + " not found in tree widget", NULL);
+    GT_CHECK_RESULT(options.failIfNull == false, QString("Item '%1' not found in tree widget").arg(itemName), NULL);
 
     return NULL;
 }
