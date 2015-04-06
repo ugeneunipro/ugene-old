@@ -19,45 +19,49 @@
 * MA 02110-1301, USA.
 */
 
-#ifndef _U2_BASE_DATASET_WORKER_H_
-#define _U2_BASE_DATASET_WORKER_H_
+#ifndef _U2_BASE_ONE_ONE_WORKER_H_
+#define _U2_BASE_ONE_ONE_WORKER_H_
 
-#include <U2Lang/BaseOneOneWorker.h>
+#include <U2Lang/LocalDomain.h>
 
 namespace U2 {
 namespace LocalWorkflow {
 
-class U2LANG_EXPORT BaseDatasetWorker : public BaseOneOneWorker {
+/**
+ * The base class for the workers with one input and one output port.
+ */
+class U2LANG_EXPORT BaseOneOneWorker : public BaseWorker {
     Q_OBJECT
 public:
-    BaseDatasetWorker(Actor *a, const QString &inPortId, const QString &outPortId);
+    BaseOneOneWorker(Actor *a, bool autoTransitBus, const QString &inPortId, const QString &outPortId);
 
     void init();
-    void cleanup();
+    Task * tick();
 
 protected:
-    // BaseOneOneWorker
-    Task * processNextInputMessage();
-    Task * onInputEnded();
-    QList<Message> fetchResult(Task *task, U2OpStatus &os);
+    virtual Task * createPrepareTask(U2OpStatus &os) const;
+    virtual void onPrepared(Task *task, U2OpStatus &os);
+    virtual Task * processNextInputMessage() = 0;
+    virtual Task * onInputEnded() = 0;
+    virtual QList<Message> fetchResult(Task *task, U2OpStatus &os) = 0;
 
-    virtual Task * createTask(const QList<Message> &messages) const = 0;
-    virtual QVariantMap getResult(Task *task, U2OpStatus &os) const = 0;
-    virtual MessageMetadata generateMetadata(const QString &datasetName) const;
-
-private:
-    QString getDatasetName(const Message &message) const;
-    bool datasetChanged(const Message &message) const;
-    void takeMessage();
-    Task * onDatasetChanged();
+private slots:
+    void sl_taskFinished();
+    void sl_prepared();
 
 private:
-    bool datasetInited;
-    QString datasetName;
-    QList<Message> datasetMessages;
+    Task * prepare(U2OpStatus &os);
+
+protected:
+    const QString inPortId;
+    const QString outPortId;
+    IntegralBus *input;
+    IntegralBus *output;
+
+    bool prepared;
 };
 
 } // LocalWorkflow
 } // U2
 
-#endif // _U2_BASE_DATASET_WORKER_H_
+#endif // _U2_BASE_ONE_ONE_WORKER_H_

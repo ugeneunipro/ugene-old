@@ -29,91 +29,47 @@ namespace U2 {
 namespace LocalWorkflow {
 
 BaseDatasetWorker::BaseDatasetWorker(Actor *a, const QString &inPortId, const QString &outPortId)
-: BaseWorker(a, /* autoTransitBus= */false), inPortId(inPortId), outPortId(outPortId), input(NULL), output(NULL), prepared(false), datasetInited(false)
+: BaseOneOneWorker(a, /* autoTransitBus= */false, inPortId, outPortId), datasetInited(false)
 {
 
 }
 
 void BaseDatasetWorker::init() {
-    input = ports.value(inPortId);
-    output = ports.value(outPortId);
+    BaseOneOneWorker::init();
     datasetInited = false;
-}
-
-Task * BaseDatasetWorker::tick() {
-    if (!prepared) {
-        U2OpStatusImpl os;
-        Task *prepareTask = prepare(os);
-        CHECK_OP(os, NULL);
-        if (NULL != prepareTask) {
-            return prepareTask;
-        }
-    }
-
-    if (input->hasMessage()) {
-        if (datasetChanged(input->lookMessage())) {
-            return onDatasetChanged();
-        } else {
-            takeMessage();
-        }
-    } else if (input->isEnded()) {
-        if (!datasetMessages.isEmpty()) {
-            return onDatasetChanged();
-        }
-        output->setEnded();
-        setDone();
-    }
-    return NULL;
 }
 
 void BaseDatasetWorker::cleanup() {
     datasetMessages.clear();
 }
 
-MessageMetadata BaseDatasetWorker::generateMetadata(const QString &datasetName) const {
-    return MessageMetadata(datasetName);
+Task * BaseDatasetWorker::processNextInputMessage() {
+    if (datasetChanged(input->lookMessage())) {
+        return onDatasetChanged();
+    }
+    takeMessage();
+    return NULL;
 }
 
-void BaseDatasetWorker::sl_taskFinished() {
-    Task *task = dynamic_cast<Task*>(sender());
-    CHECK(NULL != task, );
-    CHECK(task->isFinished() && !task->isCanceled() && !task->hasError(), );
-    U2OpStatusImpl os;
-    const QVariantMap result = getResult(task, os);
-    CHECK_OP_EXT(os, reportError(os.getError()), );
+Task * BaseDatasetWorker::onInputEnded() {
+    if (!datasetMessages.isEmpty()) {
+        return onDatasetChanged();
+    }
+    return NULL;
+}
 
+QList<Message> BaseDatasetWorker::fetchResult(Task *task, U2OpStatus &os) {
+    QVariantMap data = getResult(task, os);
     const MessageMetadata metadata = generateMetadata(datasetName);
     context->getMetadataStorage().put(metadata);
-    const Message message(output->getBusType(), result, metadata.getId());
-    output->put(message);
+
+    QList<Message> result;
+    result << Message(output->getBusType(), data, metadata.getId());
+    return result;
 }
 
-void BaseDatasetWorker::sl_prepared() {
-    Task *task = dynamic_cast<Task*>(sender());
-    CHECK(NULL != task, );
-    CHECK(task->isFinished() && !task->isCanceled() && !task->hasError(), );
-    U2OpStatusImpl os;
-    onPrepared(task, os);
-    if (os.hasError()) {
-        reportError(os.getError());
-        output->setEnded();
-        setDone();
-    }
-}
-
-Task * BaseDatasetWorker::prepare(U2OpStatus &os) {
-    CHECK(!prepared, NULL);
-    Task *task = createPrepareTask(os);
-    if (os.hasError()) {
-        reportError(os.getError());
-        output->setEnded();
-        setDone();
-    }
-    if (NULL != task) {
-        connect(task, SIGNAL(si_stateChanged()), SLOT(sl_prepared()));
-    }
-    prepared = true;
-    return task;
+MessageMetadata BaseDatasetWorker::generateMetadata(const QString &datasetName) const {
+    return MessageMetadata(datasetName);
 }
 
 QString BaseDatasetWorker::getDatasetName(const Message &message) const {
@@ -142,7 +98,6 @@ void BaseDatasetWorker::takeMessage() {
 Task * BaseDatasetWorker::onDatasetChanged() {
     datasetInited = false;
     Task *task = createTask(datasetMessages);
-    connect(task, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
     datasetMessages.clear();
     return task;
 }

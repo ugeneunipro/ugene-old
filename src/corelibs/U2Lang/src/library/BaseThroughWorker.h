@@ -19,45 +19,35 @@
 * MA 02110-1301, USA.
 */
 
-#ifndef _U2_BASE_DATASET_WORKER_H_
-#define _U2_BASE_DATASET_WORKER_H_
+#ifndef _U2_BASE_THROUGH_WORKER_H_
+#define _U2_BASE_THROUGH_WORKER_H_
 
 #include <U2Lang/BaseOneOneWorker.h>
 
 namespace U2 {
 namespace LocalWorkflow {
 
-class U2LANG_EXPORT BaseDatasetWorker : public BaseOneOneWorker {
-    Q_OBJECT
+/**
+ * The base class for simple workers:
+ * 1) one input and one output port;
+ * 2) no grouping by datasets.
+ */
+class U2LANG_EXPORT BaseThroughWorker : public BaseOneOneWorker {
 public:
-    BaseDatasetWorker(Actor *a, const QString &inPortId, const QString &outPortId);
+    BaseThroughWorker(Actor *a, const QString &inPortId, const QString &outPortId);
 
-    void init();
     void cleanup();
 
 protected:
     // BaseOneOneWorker
     Task * processNextInputMessage();
     Task * onInputEnded();
-    QList<Message> fetchResult(Task *task, U2OpStatus &os);
+    Message composeMessage(const QVariantMap &data);
 
-    virtual Task * createTask(const QList<Message> &messages) const = 0;
-    virtual QVariantMap getResult(Task *task, U2OpStatus &os) const = 0;
-    virtual MessageMetadata generateMetadata(const QString &datasetName) const;
-
-private:
-    QString getDatasetName(const Message &message) const;
-    bool datasetChanged(const Message &message) const;
-    void takeMessage();
-    Task * onDatasetChanged();
-
-private:
-    bool datasetInited;
-    QString datasetName;
-    QList<Message> datasetMessages;
+    virtual Task * createTask(const Message &message, U2OpStatus &os) = 0;
 };
 
 } // LocalWorkflow
 } // U2
 
-#endif // _U2_BASE_DATASET_WORKER_H_
+#endif // _U2_BASE_THROUGH_WORKER_H_

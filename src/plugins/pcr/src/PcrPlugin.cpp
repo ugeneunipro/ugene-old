@@ -35,6 +35,7 @@
 
 #include "PcrPlugin.h"
 
+#include "InSilicoPcrWorker.h"
 #include "PrimersGrouperWorker.h"
 #include "FindPrimerPairsWorker.h"
 
@@ -66,6 +67,7 @@ PcrPlugin::PcrPlugin()
     }
     LocalWorkflow::FindPrimerPairsWorkerFactory::init();
     LocalWorkflow::PrimersGrouperWorkerFactory::init();
+    LocalWorkflow::InSilicoPcrWorkerFactory::init();
 }
 
 PcrPlugin::~PcrPlugin() {

@@ -40,9 +40,11 @@ public:
     /* Moves the document to the main thread */
     Document * takeResult();
 
+    static AnnotationData getPrimerAnnotation(const QByteArray &primer, int matchLengh, U2Strand::Direction strand, int sequenceLength);
+    static QString getProductName(const QString &sequenceName, qint64 sequenceLength, const U2Region &region, bool fileName = false);
+
 private:
     DNASequence getProductSequence();
-    AnnotationData getPrimerAnnotation(const QByteArray &primer, int matchLengh, U2Strand::Direction strand, int sequenceLength) const;
 
 private:
     InSilicoPcrProduct product;

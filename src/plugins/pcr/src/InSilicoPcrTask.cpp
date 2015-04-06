@@ -32,6 +32,8 @@
 
 namespace U2 {
 
+const qint64 InSilicoPcrTaskSettings::MAX_SEQUENCE_LENGTH = 5*1024*1024; // 500 Mb
+
 InSilicoPcrTaskSettings::InSilicoPcrTaskSettings()
 : isCircular(false), forwardMismatches(0), reverseMismatches(0), maxProductSize(0), perfectMatch(0)
 {

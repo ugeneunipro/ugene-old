@@ -42,6 +42,10 @@ public:
     uint reverseMismatches;
     uint maxProductSize;
     uint perfectMatch;
+
+    QString sequenceName;
+
+    static const qint64 MAX_SEQUENCE_LENGTH;
 };
 
 class InSilicoPcrProduct {

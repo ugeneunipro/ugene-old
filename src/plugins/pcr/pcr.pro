@@ -7,6 +7,7 @@ HEADERS += src/EditPrimerDialog.h \
            src/InSilicoPcrOptionPanelWidget.h \
            src/InSilicoPcrProductsTable.h \
            src/InSilicoPcrTask.h \
+           src/InSilicoPcrWorker.h \
            src/PcrOptionsPanelSavableTab.h \
            src/PcrPlugin.h \
            src/Primer.h \
@@ -21,7 +22,7 @@ HEADERS += src/EditPrimerDialog.h \
            src/PrimerLineEdit.h \
            src/PrimerStatistics.h \
            src/PrimersDetailsDialog.h \
-           src/PrimersGrouperWorker.h \ 
+           src/PrimersGrouperWorker.h \
            src/export/ExportPrimersDialog.h \
            src/export/ExportPrimersToDatabaseTask.h \
            src/export/ExportPrimersToLocalFileTask.h \
@@ -47,6 +48,7 @@ SOURCES += src/EditPrimerDialog.cpp \
            src/InSilicoPcrOptionPanelWidget.cpp \
            src/InSilicoPcrProductsTable.cpp \
            src/InSilicoPcrTask.cpp \
+           src/InSilicoPcrWorker.cpp \
            src/PcrOptionsPanelSavableTab.cpp \
            src/PcrPlugin.cpp \
            src/Primer.cpp \
@@ -61,7 +63,7 @@ SOURCES += src/EditPrimerDialog.cpp \
            src/PrimerLineEdit.cpp \
            src/PrimerStatistics.cpp \
            src/PrimersDetailsDialog.cpp \
-           src/PrimersGrouperWorker.cpp \ 
+           src/PrimersGrouperWorker.cpp \
            src/export/ExportPrimersDialog.cpp \
            src/export/ExportPrimersToDatabaseTask.cpp \
            src/export/ExportPrimersToLocalFileTask.cpp \

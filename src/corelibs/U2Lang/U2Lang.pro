@@ -4,8 +4,10 @@ include (U2Lang.pri)
 HEADERS += src/library/BaseActorCategories.h \
            src/library/BaseAttributes.h \
            src/library/BaseDatasetWorker.h \
+           src/library/BaseOneOneWorker.h \
            src/library/BasePorts.h \
            src/library/BaseSlots.h \
+           src/library/BaseThroughWorker.h \
            src/library/BaseTypes.h \
            src/library/LastReadyScheduler.h \
            src/library/LocalDomain.h \
@@ -118,8 +120,10 @@ HEADERS += src/library/BaseActorCategories.h \
 SOURCES += src/library/BaseActorCategories.cpp \
            src/library/BaseAttributes.cpp \
            src/library/BaseDatasetWorker.cpp \
+           src/library/BaseOneOneWorker.cpp \
            src/library/BasePorts.cpp \
            src/library/BaseSlots.cpp \
+           src/library/BaseThroughWorker.cpp \
            src/library/BaseTypes.cpp \
            src/library/LastReadyScheduler.cpp \
            src/library/LocalDomain.cpp \

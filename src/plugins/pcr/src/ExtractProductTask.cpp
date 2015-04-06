@@ -44,20 +44,17 @@
 
 namespace U2 {
 
-namespace {
-
-QString getProductName(const QString &sequenceName, qint64 sequenceLength, const U2Region &region) {
+QString ExtractProductTask::getProductName(const QString &sequenceName, qint64 sequenceLength, const U2Region &region, bool fileName) {
     qint64 endPos = region.endPos();
     if (endPos > sequenceLength) {
         endPos = endPos % sequenceLength;
     }
 
-    return QString("%1:%2-%3")
+    return QString("%1%2%3-%4")
         .arg(sequenceName)
+        .arg(fileName ? "_" : ":")
         .arg(region.startPos + 1)
         .arg(endPos);
-}
-
 }
 
 ExtractProductTask::ExtractProductTask(const InSilicoPcrProduct &product, const U2EntityRef &sequenceRef, const QString &outputFile)
@@ -93,7 +90,7 @@ DNASequence ExtractProductTask::getProductSequence() {
     return result;
 }
 
-AnnotationData ExtractProductTask::getPrimerAnnotation(const QByteArray &primer, int matchLengh, U2Strand::Direction strand, int sequenceLength) const {
+AnnotationData ExtractProductTask::getPrimerAnnotation(const QByteArray &primer, int matchLengh, U2Strand::Direction strand, int sequenceLength) {
     AnnotationData result;
     U2Region region;
     if (U2Strand::Direct == strand) {
@@ -183,7 +180,7 @@ Task::ReportResult ExtractProductWrapperTask::report() {
 
 void ExtractProductWrapperTask::prepareUrl(const InSilicoPcrProduct &product, const QString &sequenceName, qint64 sequenceLength) {
     // generate file name
-    QString fileName = getProductName(sequenceName, sequenceLength, product.region) + ".gb";
+    QString fileName = ExtractProductTask::getProductName(sequenceName, sequenceLength, product.region) + ".gb";
     QRegExp regExp("[^A-z0-9_\\-\\s\\.\\(\\)]");
     fileName.replace(regExp, "_");
 

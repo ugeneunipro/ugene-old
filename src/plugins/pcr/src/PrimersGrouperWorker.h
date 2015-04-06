@@ -77,14 +77,15 @@ public:
 
     void run();
     QString getReport() const { return report; }
+
+    static QString createCell(const QString& value);
+    static QString createColumn(const QString& name);
 private:
     void generateReport(const QList<QList<int> >& groups);
     void fillReportTable(const QList<QList<int> >& groups);
     void writeReportToFile();
 
     QString createRow(const QString& groupName, const QString& forwardName, const QString& reverseName, const QString& forwardTm, const QString& reverseTm);
-    QString createCell(const QString& value);
-    QString createColumn(const QString& name);
 
     bool isCompatiblePairs(int firstPairIndex, int secondPairIndex);
     void findCompatibleGroups();
