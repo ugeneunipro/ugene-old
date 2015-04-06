@@ -32,6 +32,7 @@ public:
                                      bool _invertButtonPress=false,bool _allButtonPress=false,
                                      bool _noneButtonPress=false, bool _dontCheckFilepath = false, QString format = "") : Filler(os, "CreateSubalignmentDialog"),
         filepath(_filepath),
+        format(format),
         list(_list),
         from(_from),
         to(_to),
@@ -39,8 +40,7 @@ public:
         invertButtonPress(_invertButtonPress),
         allButtonPress(_allButtonPress),
         noneButtonPress(_noneButtonPress),
-        dontCheckFilepath(_dontCheckFilepath),
-        format(format) {}
+        dontCheckFilepath(_dontCheckFilepath) {}
     virtual void run();
 private:
     QString filepath;

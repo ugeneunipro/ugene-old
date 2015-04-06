@@ -108,7 +108,6 @@ void GTUtilsDashboard::openTab(U2OpStatus &os, Tabs tab){
 void GTUtilsDashboard::traceAllWebElements(U2OpStatus &os){
     QWebView* dashboard = GTWidget::findExactWidget<QWebView*>(os, "Dashboard");
     QWebFrame* frame = dashboard->page()->mainFrame();
-    int num = frame->findAllElements("*").count();
     QWebElement result;
     foreach (QWebElement el, frame->findAllElements("*")) {
         QString s = el.toPlainText();
