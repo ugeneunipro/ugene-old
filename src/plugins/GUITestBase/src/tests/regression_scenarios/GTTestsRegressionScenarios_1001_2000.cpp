@@ -2764,43 +2764,6 @@ GUI_TEST_CLASS_DEFINITION(test_1252_real) {
     CHECK_SET_ERR(Qt::Checked == firstItem->checkState(), "Unexpected check state");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_1255){
-//1. Open human_T1.fa sequence
-    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
-
-//2. Open Find Pattern on the Option Panel. Enter a vaild pattern
-    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(200);
-    GTKeyboardDriver::keySequence(os, "TA");
-
-//3. Input invalid annotation name (empty, too long, illegal)
-    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Annotation parameters"));
-    GTWidget::click(os, GTWidget::findWidget(os, "titleWidget"));
-    QLabel *label;
-    label = (QLabel*)GTWidget::findWidget(os,"lblErrorMessage");
-
-    QLineEdit *annotationNameEdit;
-    annotationNameEdit=(QLineEdit *)GTWidget::findWidget(os,"leAnnotationName");
-
-//3.1 Input invalid annotation name (empty)
-    GTLineEdit::setText(os,annotationNameEdit,"");
-    QString s=label->text();
-    CHECK_SET_ERR(s.contains("empty"),"Error message is: "+s);
-    GTGlobals::sleep(500);
-
-    for (int i=0; i<5; i++){
-        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["down"]);
-        GTGlobals::sleep(50);
-    }
-
-//3.2 Input invalid annotation name (illegal)
-
-    GTLineEdit::setText(os,annotationNameEdit," test");
-    s=label->text();
-    CHECK_SET_ERR(s.contains("Illegal"),"Error message is: "+s);
-    GTGlobals::sleep(500);
-}
-
 GUI_TEST_CLASS_DEFINITION(test_1257){
 
     // 1. Open Find Pattern on the Options Panel
