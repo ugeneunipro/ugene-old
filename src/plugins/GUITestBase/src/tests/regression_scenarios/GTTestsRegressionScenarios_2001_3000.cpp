@@ -2494,8 +2494,8 @@ GUI_TEST_CLASS_DEFINITION( test_2342 ){
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //    2. Select the SeqPos element on the scene. Properties of the SeqPos element are displayed the property widget.
     GTUtilsDialog::waitForDialog(os, new EscapeClicker(os, "ChIP-seq Analysis Wizard"));
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Pipeline", QStringList()<<
-                                                                   "Treatment tags only"));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Workflow", QStringList()<<
+                                                                   "Only treatment tags"));
     GTUtilsWorkflowDesigner::addSample(os, "Cistrome");
 //    3. Open wizard, go to the SeqPos page.
     QMap<QString, QVariant> map;
