@@ -2657,7 +2657,7 @@ GUI_TEST_CLASS_DEFINITION(test_1252){
     GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
     GTGlobals::sleep(500);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
-    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
 //    3. Delete found annotations from human_t1 annotations tree
     GTMouseDriver::click(os);
@@ -2676,7 +2676,7 @@ GUI_TEST_CLASS_DEFINITION(test_1252){
     GTGlobals::sleep();
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
-    item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+    item = GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
 // delete annotations manually to cache MessageBox
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
