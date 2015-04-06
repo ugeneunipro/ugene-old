@@ -392,6 +392,7 @@ GUI_TEST_CLASS_DEFINITION(test_4035) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     int labelsCount = GTUtilsPhyTree::getDistances(os).count();
+    CHECK_SET_ERR(labelsCount == 50, QString("Number of distances is incorrect"));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4036) {
