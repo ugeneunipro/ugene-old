@@ -322,7 +322,6 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006_1) {
-
 // DEFFERS: OTHER SOURSE FILE, OTHER SUBSEQUENCE
 // PROJECT IS CLOSED MANUALY TO CACHE MESSAGEBOX
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
@@ -332,7 +331,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
     GTGlobals::sleep(500);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
-    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
@@ -341,7 +340,6 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTGlobals::sleep();
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007) {
