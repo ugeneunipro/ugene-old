@@ -576,7 +576,10 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     GTGlobals::sleep();
     //6. CHECK if misc_feature annotation is removed
     //TODO: 6.1 CHECK if "group" subgroups/annotations counter displays (0,0)
-    GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", false);
+    GTGlobals::FindOptions options;
+    options.failIfNull = false;
+    QTreeWidgetItem *annotationItem = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", options);
+    CHECK_SET_ERR(NULL == annotationItem, "The annotation 'misc_feature' unexpectedly was not removed");
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "group_new", "misc_feature_1", "1..500"));
@@ -593,10 +596,11 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Delete"]);
 
     GTGlobals::sleep();
-    GTUtilsAnnotationsTreeView::findItem(os, "misc_feature_1", false);
+    annotationItem = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature_1", options);
+    CHECK_SET_ERR(NULL == annotationItem, "The annotation 'misc_feature_1' unexpectedly was not removed");
     GTGlobals::sleep();
-
 }
+
 GUI_TEST_CLASS_DEFINITION(test_0005_2) {
 
     //Rename annotation
