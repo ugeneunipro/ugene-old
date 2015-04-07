@@ -324,7 +324,7 @@ void AnnotatedDNAView::updateScrollAreaHeight() {
     }
 
     if (scrollArea->size().height() >= maxH) {
-        scrollArea->setMaximumHeight(maxH);
+        scrollArea->setMaximumHeight(maxH + 2); // magic '+2' is for the borders, without it unneccessary scroll bar will appear
 
         QList<int> mainSplitterSizes = mainSplitter->sizes();
         int idx = mainSplitter->indexOf(scrollArea);
