@@ -59,6 +59,10 @@ void PredictSecondaryStructureDialogFiller::run() {
     GT_CHECK(button != NULL, "ok button is NULL");
     GTWidget::click(os, button);
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    if (onlyPressOk) {
+        GTWidget::click(os, box->button(QDialogButtonBox::Cancel));
+        return;
+    }
 
     class Scenario : public CustomScenario {
     public:

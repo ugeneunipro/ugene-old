@@ -155,6 +155,7 @@
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/PredictSecondaryStructureDialogFiller.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
@@ -438,6 +439,22 @@ GUI_TEST_CLASS_DEFINITION(test_0678) {
     GTUtilsAnnotationsTreeView::selectItems(os, QStringList() << "chain_info");
 
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0680) {
+    //1. Open /data/sample/PDB/1CRN.pdb
+    //Expected state: Sequence is opened
+    //2. Do context menu "Analyze - Predict Secondary Structure"
+    //Expected state: Predict Secondary Structure dialog is appeared
+    //3. Set "Range Start" 1, "Range End": 2, set any prediction algorithm
+    //4. Press "Start prediction" button
+    //UGENE not crashes
+    GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.pdb");
+    GTUtilsDialog::waitForDialog(os, new PredictSecondaryStructureDialogFiller(os, 1, 2, true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "Predict secondary structure"));
+    GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0685) {
     // 1. Do menu tools->Blast+ Search (ext. tools must be configured)
     // 2. Set next parameters:

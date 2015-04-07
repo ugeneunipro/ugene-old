@@ -28,12 +28,13 @@ namespace U2 {
 
 class PredictSecondaryStructureDialogFiller : public Filler {
 public:
-    PredictSecondaryStructureDialogFiller(U2OpStatus &os, int startPos, int endPos):
-        Filler(os, "SecStructDialog"), startPos(startPos), endPos(endPos) {}
+    PredictSecondaryStructureDialogFiller(U2OpStatus &os, int startPos, int endPos, bool onlyPressOk = false):
+        Filler(os, "SecStructDialog"), startPos(startPos), endPos(endPos), onlyPressOk(onlyPressOk) {}
     virtual void run();
 private:
     int startPos;
     int endPos;
+    bool onlyPressOk;
 };
 
 }
