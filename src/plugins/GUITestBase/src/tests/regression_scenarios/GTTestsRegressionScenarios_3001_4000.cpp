@@ -1034,7 +1034,8 @@ GUI_TEST_CLASS_DEFINITION(test_3180) {
 
 GUI_TEST_CLASS_DEFINITION(test_3187) {
     FormatDBSupportRunDialogFiller::Parameters p;
-    p.inputFilePath = dataDir + "samples/FASTA/human_T1.fa";
+    GTFile::copy(os, dataDir + "samples/FASTA/human_T1.fa", sandBoxDir + "human_T1.fa");
+    p.inputFilePath = sandBoxDir + "human_T1.fa";
     p.alphabetType = FormatDBSupportRunDialogFiller::Parameters::Nucleotide;
     p.outputDirPath = sandBoxDir + "test_3187";
     QDir().mkpath(p.outputDirPath);
