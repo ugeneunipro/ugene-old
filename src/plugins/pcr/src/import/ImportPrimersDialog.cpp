@@ -59,13 +59,8 @@ void ImportPrimersDialog::sl_updateState() {
     filesContainer->setVisible(isLocalFilesMode);
     objectsContainer->setVisible(!isLocalFilesMode);
 
-    if (isLocalFilesMode) {
-        pbRemoveFile->setEnabled(!lwFiles->selectedItems().isEmpty());
-        buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!lwFiles->count());
-    } else {
-        pbRemoveObject->setEnabled(!lwObjects->selectedItems().isEmpty());
-        buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!lwObjects->count());
-    }
+    sl_selectionChanged();
+    sl_contentChanged();
 }
 
 void ImportPrimersDialog::sl_connectClicked() {
@@ -153,6 +148,19 @@ void ImportPrimersDialog::sl_connectionComplete() {
     sl_addObjectClicked();
 }
 
+void ImportPrimersDialog::sl_selectionChanged() {
+    const bool isLocalFilesMode = (LOCAL_FILES == cbSource->currentText());
+    QListWidget *listWidget = isLocalFilesMode ? lwFiles : lwObjects;
+    QPushButton *removeButton = isLocalFilesMode ? pbRemoveFile : pbRemoveObject;
+    removeButton->setEnabled(!listWidget->selectedItems().isEmpty());
+}
+
+void ImportPrimersDialog::sl_contentChanged() {
+    const bool isLocalFilesMode = (LOCAL_FILES == cbSource->currentText());
+    QListWidget *listWidget = isLocalFilesMode ? lwFiles : lwObjects;
+    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(listWidget->count() > 0);
+}
+
 void ImportPrimersDialog::accept() {
     QList<Task *> tasks;
     if (LOCAL_FILES == cbSource->currentText()) {
@@ -188,6 +196,12 @@ void ImportPrimersDialog::connectSignals() {
     connect(pbRemoveFile, SIGNAL(clicked()), SLOT(sl_removeFileClicked()));
     connect(pbAddObject, SIGNAL(clicked()), SLOT(sl_addObjectClicked()));
     connect(pbRemoveObject, SIGNAL(clicked()), SLOT(sl_removeObjectClicked()));
+    connect(lwFiles, SIGNAL(itemSelectionChanged()), SLOT(sl_selectionChanged()));
+    connect(lwObjects, SIGNAL(itemSelectionChanged()), SLOT(sl_selectionChanged()));
+    connect(lwFiles->model(), SIGNAL(rowsInserted(const QModelIndex &, int, int)), SLOT(sl_contentChanged()));
+    connect(lwFiles->model(), SIGNAL(rowsRemoved(const QModelIndex &, int, int)), SLOT(sl_contentChanged()));
+    connect(lwObjects->model(), SIGNAL(rowsInserted(const QModelIndex &, int, int)), SLOT(sl_contentChanged()));
+    connect(lwObjects->model(), SIGNAL(rowsRemoved(const QModelIndex &, int, int)), SLOT(sl_contentChanged()));
 }
 
 ProjectTreeControllerModeSettings ImportPrimersDialog::prepareProjectItemsSelectionSettings() const {

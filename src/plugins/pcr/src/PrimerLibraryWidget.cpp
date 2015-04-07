@@ -122,7 +122,7 @@ void PrimerLibraryWidget::sl_removePrimers() {
 }
 
 void PrimerLibraryWidget::sl_importPrimers() {
-    ImportPrimersDialog importDialog;
+    ImportPrimersDialog importDialog(this);
     importDialog.exec();
 }
 

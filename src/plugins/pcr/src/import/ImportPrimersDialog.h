@@ -45,6 +45,8 @@ private slots:
     void sl_addObjectClicked();
     void sl_removeObjectClicked();
     void sl_connectionComplete();
+    void sl_selectionChanged();
+    void sl_contentChanged();
     void accept();
 
 private:
