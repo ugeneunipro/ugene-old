@@ -455,6 +455,22 @@ GUI_TEST_CLASS_DEFINITION(test_0680) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0681) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/681", "seq.fa");
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 9));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY << ADV_COPY_TRANSLATION_ACTION, GTGlobals::UseKey));
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep(1000);
+    QString text = GTClipboard::text(os);
+
+    CHECK_SET_ERR(text == "TRC", "Sequcence part translated to <" + text + ">, expected TRC");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0685) {
     // 1. Do menu tools->Blast+ Search (ext. tools must be configured)
     // 2. Set next parameters:
