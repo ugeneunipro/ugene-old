@@ -93,6 +93,8 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
 }
 
 void DetView::updateSize() {
+    addUpdateFlags(GSLV_UF_ViewResized);
+
     DetViewRenderArea* detArea = (static_cast<DetViewRenderArea*>(renderArea));
     detArea->updateSize();
     setMinimumHeight(layout()->minimumSize().height());
@@ -444,6 +446,7 @@ void DetViewRenderArea::drawComplement(QPainter& p) {
         const char* seq = visibleSequence.constData();
 
         DNATranslation* complTrans = detView->getComplementTT();
+        CHECK(complTrans != NULL, );
         QByteArray map = complTrans->getOne2OneMapper();
         int y = getTextY(complementLine);
         for(int i=0;i< visibleRange.length; i++) {
@@ -480,7 +483,7 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
         return;
     }
     DNATranslation3to1Impl* aminoTable = (DNATranslation3to1Impl*)detView->getAminoTT();
-    assert(aminoTable!=NULL && aminoTable->isThree2One());
+    CHECK(aminoTable != NULL && aminoTable->isThree2One(), );
 
     const U2Region& visibleRange  = detView->getVisibleRange();
     qint64 wholeSeqLen = detView->getSequenceLength();
@@ -773,6 +776,7 @@ void DetViewRenderArea::updateSize()  {
     updateLines();
     int h = numLines * lineHeight + 5;
     setMinimumHeight(h);
+    repaint();
 }
 
 } // namespace U2
