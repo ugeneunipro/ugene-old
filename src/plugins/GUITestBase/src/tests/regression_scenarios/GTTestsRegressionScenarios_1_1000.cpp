@@ -193,6 +193,80 @@ namespace U2 {
 
 namespace GUITest_regression_scenarios {
 
+GUI_TEST_CLASS_DEFINITION(test_0057_4) {
+//    Crash on a number of multisequence files opening in the merge mode
+//    1. Open samples/Genbank/murine.gb.
+//    2. Click on right mouse button on NC_001363 annotations tree view and select menu item "Find qualifier"
+//    Expected state: Opened "Find Qualifier" dialog.
+//    3. Enter to Name and Value fields 'protein' and 'NP_5', then click "Select All" button
+//    Expected state: Founded 2 qualifiers:
+//    protein_id - NP_597742.2
+//    protein_id - NP_597744.1
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTGlobals::sleep();
+
+    QTreeWidgetItem* featuresItem = GTUtilsAnnotationsTreeView::findItem(os, "NC_001363 features [murine.gb]");
+    CHECK_SET_ERR(featuresItem != NULL, "\'NC_001363 features [murine.gb]\' item not found");
+
+    FindQualifierFiller::FindQualifierFillerSettings settings("protein",
+                                                              "NP_5",
+                                                              false,
+                                                              false);
+    settings.selectAll = true;
+    GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, settings));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Find qualifier"));
+    GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, featuresItem);
+
+    QStringList qualValues;
+    QList<QTreeWidgetItem*> items = GTUtilsAnnotationsTreeView::getAllSelectedItems(os);
+    foreach (QTreeWidgetItem* i, items) {
+        AVItem* item = dynamic_cast<AVItem *>(i);
+        CHECK_SET_ERR(item != NULL, "AvItem is NULL");
+        if (item->type == AVItemType_Qualifier) {
+            AVQualifierItem* avQualifierItem = (AVQualifierItem*)item;
+            qualValues << avQualifierItem->qValue;
+        }
+    }
+
+    CHECK_SET_ERR( qualValues.size() == 2, "Incorrect qualifiers count");
+    CHECK_SET_ERR( qualValues.contains("NP_597742.2"), "NP_597742.2 qualifier was not selected");
+    CHECK_SET_ERR( qualValues.contains("NP_597742.1"), "NP_597742.1 qualifier was not selected");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0057_5) {
+//    Crash on a number of multisequence files opening in the merge mode
+//    1. Open samples/Genbank/murine.gb.
+//    2. Click on right mouse button on NC_001363 annotations tree view and select menu item "Find qualifier"
+//    Expected state: Opened "Find Qualifier" dialog.
+//    3. Enter to Name and Value fields 'protein' and 'NP_5'. Also set checkbox to 'Exact match', then click "Next" button
+//    Expected state: Showed message box with information about end of annotation tree.
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+    GTGlobals::sleep();
+
+    QTreeWidgetItem* featuresItem = GTUtilsAnnotationsTreeView::findItem(os, "NC_001363 features [murine.gb]");
+    CHECK_SET_ERR(featuresItem != NULL, "\'NC_001363 features [murine.gb]\' item not found");
+
+    FindQualifierFiller::FindQualifierFillerSettings settings("protein",
+                                                              "NP_5",
+                                                              true,
+                                                              true, 1,
+                                                              true,
+                                                              false);
+    GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, settings));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Find qualifier"));
+    GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, featuresItem);
+    GTGlobals::sleep();
+
+    QList<QTreeWidgetItem*> items = GTUtilsAnnotationsTreeView::getAllSelectedItems(os);
+    foreach (QTreeWidgetItem* i, items) {
+        AVItem* item = dynamic_cast<AVItem *>(i);
+        CHECK_SET_ERR(item != NULL, "AvItem is NULL");
+        CHECK_SET_ERR(item->type == AVItemType_Group, "There are items selected");
+    }
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0407) {
     // 1. Open _common_data/scenarios/_regression/407/trail.fas
     // Expected state: a message box appears

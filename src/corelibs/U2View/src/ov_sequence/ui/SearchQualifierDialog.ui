@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>395</width>
-    <height>263</height>
+    <height>265</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
        <enum>QLayout::SetMinAndMaxSize</enum>
       </property>
       <item row="1" column="0">
-       <widget class="QRadioButton" name="contaiinsButton">
+       <widget class="QRadioButton" name="containsButton">
         <property name="text">
          <string>Contains substring</string>
         </property>

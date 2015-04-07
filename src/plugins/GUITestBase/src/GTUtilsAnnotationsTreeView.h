@@ -57,6 +57,7 @@ public:
     static bool findRegion(U2OpStatus &os, const QString &itemName, const U2Region& region);
 
     static QString getSelectedItem(U2OpStatus &os);
+    static QList<QTreeWidgetItem*> getAllSelectedItems(U2OpStatus &os);
     static QString getAVItemName(U2OpStatus &os, AVItem* avItem);
     static QString getQualifierValue(U2OpStatus &os, const QString &qualifierName, QTreeWidgetItem *parentItem);
     static QString getQualifierValue(U2OpStatus &os, const QString &qualName, const QString &parentName);

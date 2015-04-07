@@ -28,12 +28,39 @@ namespace U2 {
 
     class FindQualifierFiller : public Filler {
     public:
-        FindQualifierFiller(U2OpStatus &os, bool nextQualifier = true, bool selectAll = true)
-            :Filler(os, "SearchQualifierDialog"), nextQualifier(nextQualifier), selectAll(selectAll) {}
+        struct FindQualifierFillerSettings {
+            FindQualifierFillerSettings(const QString& name = QString(),
+                                        const QString& value = QString(),
+                                        bool exactMatch = true,
+                                        bool nextQualifier = true,
+                                        unsigned int nextCount = 1,
+                                        bool expectTheEndOfTree = false,
+                                        bool selectAll = true)
+                : name(name),
+                  value(value),
+                  exactMatch(exactMatch),
+                  nextQualifier(nextQualifier),
+                  nextCount(nextCount),
+                  expectTheEndOfTree(expectTheEndOfTree),
+                  selectAll(selectAll) {}
+
+            QString name;
+            QString value;
+            bool exactMatch;
+            bool nextQualifier;
+            unsigned int nextCount;
+            bool expectTheEndOfTree;
+            bool selectAll;
+        };
+
+        FindQualifierFiller(U2OpStatus &os,
+                            const FindQualifierFillerSettings& settings = FindQualifierFillerSettings())
+            : Filler(os, "SearchQualifierDialog"),
+              settings(settings)
+        {}
         virtual void run();
     private:
-        bool nextQualifier;
-        bool selectAll;
+        FindQualifierFillerSettings settings;
     };
 
 }

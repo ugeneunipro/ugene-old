@@ -360,6 +360,25 @@ QString GTUtilsAnnotationsTreeView::getSelectedItem(U2OpStatus &os)
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getAllSelectedItem"
+QList<QTreeWidgetItem*> GTUtilsAnnotationsTreeView::getAllSelectedItems(U2OpStatus &os)
+{
+    QList<QTreeWidgetItem*> res;
+
+    QTreeWidget *treeWidget = getTreeWidget(os);
+    GT_CHECK_RESULT(treeWidget != NULL, "Tree widget is NULL", res);
+
+    QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
+    foreach (QTreeWidgetItem* item, treeItems) {
+        if (item->isSelected()) {
+            res << item;
+        }
+    }
+
+    return res;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getItemCenter"
 QPoint GTUtilsAnnotationsTreeView::getItemCenter(U2OpStatus &os, const QString &itemName) {
 

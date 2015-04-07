@@ -20,7 +20,12 @@
  */
 
 #include "FindQualifierDialogFiller.h"
+
+#include "api/GTLineEdit.h"
 #include "api/GTWidget.h"
+#include "api/GTRadioButton.h"
+
+#include "runnables/qt/MessageBoxFiller.h"
 
 #include <QApplication>
 #include <QDialogButtonBox>
@@ -35,20 +40,45 @@ void FindQualifierFiller::run()
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
+    QLineEdit* nameEdit = dialog->findChild<QLineEdit*>("nameEdit");
+    GT_CHECK(nameEdit != NULL, "nameEdit not found");
+    GTLineEdit::setText(os, nameEdit, settings.name);
+
+    QLineEdit* valueEdit = dialog->findChild<QLineEdit*>("valueEdit");
+    GT_CHECK(valueEdit != NULL, "valueEdit not found");
+    GTLineEdit::setText(os, valueEdit, settings.value);
+
+    if (settings.exactMatch) {
+        QRadioButton* exactButton = dialog->findChild<QRadioButton*>("exactButton");
+        GT_CHECK(exactButton != NULL, "exactButton not found");
+        GTRadioButton::click(os, exactButton);
+    } else {
+        QRadioButton* containsButton = dialog->findChild<QRadioButton*>("containsButton");
+        GT_CHECK(containsButton != NULL, "exactButton not found");
+        GTRadioButton::click(os, containsButton);
+    }
+
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
     GT_CHECK(box != NULL, "buttonBox is NULL");
 
-    if(nextQualifier) {
-        QPushButton* nextButton = box->button(QDialogButtonBox::Ok);
-        GT_CHECK(nextButton != NULL, "\"Next\" button is NULL");
-        GTWidget::click(os, nextButton);
+    if (settings.expectTheEndOfTree) {
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     }
 
-    if(selectAll) {
+    if (settings.nextQualifier && settings.nextCount > 0) {
+        QPushButton* nextButton = box->button(QDialogButtonBox::Ok);
+        GT_CHECK(nextButton != NULL, "\"Next\" button is NULL");
+        for (int i = 0; i < settings.nextCount; i++) {
+            GTWidget::click(os, nextButton);
+        }
+    }
+
+    if (settings.selectAll) {
         QPushButton* selectAllButton = box->button(QDialogButtonBox::Yes);
         GT_CHECK(selectAllButton != NULL, "\"Select all\" button is NULL");
         GTWidget::click(os, selectAllButton);
     }
+    GTGlobals::sleep();
 
     QPushButton* cancelButton = box->button(QDialogButtonBox::Cancel);
     GT_CHECK(cancelButton != NULL, "\"Cancel\" button is NULL");
