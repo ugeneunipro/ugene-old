@@ -112,6 +112,48 @@ protected:
     QStringList getParameters(U2OpStatus& os);
 };
 
+//////////////////////////////////////////////////
+//dedtools intersect
+class BedtoolsIntersectWorker : public BaseWorker {
+    Q_OBJECT
+public:
+    BedtoolsIntersectWorker(Actor *a);
+    virtual void init();
+    virtual Task * tick();
+    virtual void cleanup() {}
+    virtual bool isReady();
+private slots:
+    void sl_taskFinished(Task *task);
+private:
+    Task* createTask();
+    QList<U2EntityRef> getAnnotationsEntityRefFromMessages(const QList<Message>& mList, const QString& portId);
+    U2EntityRef getAnnotationsEntityRef(const Message& m, const QString& portId, U2OpStatus &os);
+    void storeMessages(IntegralBus* bus, QList<Message>& store);
+    IntegralBus* inputA;
+    IntegralBus* inputB;
+    IntegralBus* output;
+
+    QList<Message> storeA;
+    QList<Message> storeB;
+}; //BedtoolsIntersectWorker
+
+class BedtoolsIntersectWorkerFactory : public DomainFactory {
+public:
+    static const QString ACTOR_ID;
+    static void init();
+    BedtoolsIntersectWorkerFactory() : DomainFactory(ACTOR_ID) {}
+    virtual Worker* createWorker(Actor *a) { return new BedtoolsIntersectWorker(a); }
+}; //BedtoolsIntersectWorkerFactory
+
+class BedtoolsIntersectPrompter : public PrompterBase<BedtoolsIntersectPrompter> {
+    Q_OBJECT
+public:
+    BedtoolsIntersectPrompter(Actor* p = 0) : PrompterBase<BedtoolsIntersectPrompter>(p) {}
+protected:
+    QString composeRichDoc();
+}; //BedtoolsIntersectPrompter
+
+
 } //LocalWorkflow
 } //U2
 

@@ -9,6 +9,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/ExternalToolSupportSettingsController.h \
            src/RnaSeqCommon.h \
            src/TaskLocalStorage.h \
+           src/bedtools/BedtoolsIntersectTask.h \
            src/bedtools/BedToolsWorkersLibrary.h \
            src/bedtools/BedtoolsSupport.h \
            src/bedtools/BedtoolsSupportTask.h \
@@ -39,11 +40,11 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/bowtie/BowtieSettingsWidget.h \
            src/bowtie/BowtieSupport.h \
            src/bowtie/BowtieTask.h \
-           src/bowtie/BowtieWorker.h \ 
+           src/bowtie/BowtieWorker.h \
            src/bowtie2/Bowtie2Support.h \
            src/bowtie2/Bowtie2Task.h \
            src/bowtie2/Bowtie2SettingsWidget.h \
-           src/bowtie2/Bowtie2Worker.h \ 
+           src/bowtie2/Bowtie2Worker.h \
            src/bwa/bwa_tests/bwaTests.h \
            src/bwa/BwaSettingsWidget.h \
            src/bwa/BwaSupport.h \
@@ -167,7 +168,7 @@ FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/ETSSettingsWidget.ui \
          src/ui/FormatDBSupportRunDialog.ui \
          src/ui/MAFFTSupportRunDialog.ui \
-         src/ui/MrBayesDialog.ui \ 
+         src/ui/MrBayesDialog.ui \
          src/ui/PhyMLDialog.ui \
          src/ui/TCoffeeSupportRunDialog.ui \
          src/ui/SpadesSettings.ui
@@ -178,6 +179,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/ExternalToolSupportSettingsController.cpp \
            src/RnaSeqCommon.cpp \
            src/TaskLocalStorage.cpp \
+           src/bedtools/BedtoolsIntersectTask.cpp \
            src/bedtools/BedToolsWorkersLibrary.cpp \
            src/bedtools/BedtoolsSupport.cpp \
            src/bedtools/BedtoolsSupportTask.cpp \

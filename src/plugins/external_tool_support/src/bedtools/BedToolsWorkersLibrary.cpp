@@ -19,21 +19,29 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DataPathRegistry.h>
 #include <U2Core/FileAndDirectoryUtils.h>
+#include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2OpStatusUtils.h>
+
 #include <U2Designer/DelegateEditors.h>
+
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/BaseAttributes.h>
+#include <U2Lang/BasePorts.h>
+#include <U2Lang/BaseSlots.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/DbiDataStorage.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
-#include <U2Lang/BaseAttributes.h>
-#include <U2Lang/BaseTypes.h>
-#include <U2Lang/BaseSlots.h>
 
+#include "BedtoolsIntersectTask.h"
 #include "BedtoolsSupport.h"
 #include "BedToolsWorkersLibrary.h"
 
@@ -763,6 +771,223 @@ QStringList GenomecovTask::getParameters(U2OpStatus &os){
     return res;
 }
 
+
+/************************************************************************/
+/* IntersectAnnotationsWorker */
+/************************************************************************/
+
+const QString BedtoolsIntersectWorkerFactory::ACTOR_ID("intersect-annotations");
+
+const static QString IN_PORT_A_ID("input-annotations-a");
+const static QString IN_PORT_B_ID("input-annotations-b");
+const static QString OUT_PORT_ID("output-intersect-annotations");
+
+const static QString MIN_OVERLAP("minimum-overlap");
+const static QString REPORT_ABSENCE("report-absence");
+const static QString REPORT_FEATURES("return-features");
+
+BedtoolsIntersectWorker::BedtoolsIntersectWorker(Actor *a)
+    : BaseWorker(a, false),
+      inputA(NULL),
+      inputB(NULL),
+      output(NULL)
+{
+}
+
+void BedtoolsIntersectWorker::init() {
+    inputA = ports.value(IN_PORT_A_ID);
+    inputB = ports.value(IN_PORT_B_ID);
+    output = ports.value(OUT_PORT_ID);
+}
+
+Task* BedtoolsIntersectWorker::tick() {
+    storeMessages(inputA, storeA);
+    storeMessages(inputB, storeB);
+
+    if (inputA->isEnded() && inputB->isEnded()) {
+        return createTask();
+    }
+
+    return NULL;
+}
+
+bool BedtoolsIntersectWorker::isReady() {
+    if (isDone()) {
+        return false;
+    }
+
+    int hasA = inputA->hasMessage();
+    bool endedA = inputA->isEnded();
+
+    int hasB = inputB->hasMessage();
+    bool endedB = inputB->isEnded();
+
+    return hasA || hasB || (endedA && endedB);
+}
+
+void BedtoolsIntersectWorker::sl_taskFinished(Task *task) {
+    if (task->isCanceled() || task->hasError()) {
+        return;
+    }
+    BedtoolsIntersectAnnotationsByEntityTask* intersectTask = qobject_cast<BedtoolsIntersectAnnotationsByEntityTask*>(task);
+    if (intersectTask == NULL) {
+        return;
+    }
+    setDone();
+
+    QList<GObject*> objList = intersectTask->getResult();
+    CHECK_EXT(!objList.isEmpty(), output->setEnded(), );
+
+    foreach(GObject* gObj, objList) {
+        AnnotationTableObject* obj = qobject_cast<AnnotationTableObject*>(gObj);
+        CHECK_EXT(obj != NULL, output->setEnded(), );
+        const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(obj);
+        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE(),
+                              qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
+    }
+
+    output->setEnded();
+}
+
+Task* BedtoolsIntersectWorker::createTask() {
+    BedtoolsIntersectByEntityRefSettings settings;
+
+    settings.minOverlap = actor->getParameter(MIN_OVERLAP)->getAttributeValue<double>(context) / 100;
+    settings.reportAbsence = actor->getParameter(REPORT_ABSENCE)->getAttributeValue<bool>(context);
+    settings.reportFeatures = actor->getParameter(REPORT_FEATURES)->getAttributeValue<bool>(context);
+
+    settings.entitiesA = getAnnotationsEntityRefFromMessages(storeA, IN_PORT_A_ID);
+    settings.entitiesB = getAnnotationsEntityRefFromMessages(storeB, IN_PORT_B_ID);
+
+    Task* t = new BedtoolsIntersectAnnotationsByEntityTask(settings);
+    connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
+    return t;
+}
+
+QList<U2EntityRef> BedtoolsIntersectWorker::getAnnotationsEntityRefFromMessages(const QList<Message> &mList, const QString& portId) {
+    QList<U2EntityRef> res;
+
+    U2OpStatusImpl os;
+    foreach (const Message& m, mList) {
+        CHECK(!m.isEmpty(), res);
+        U2EntityRef ref = getAnnotationsEntityRef(m, portId, os);
+        res << ref;
+    }
+    return res;
+}
+
+U2EntityRef BedtoolsIntersectWorker::getAnnotationsEntityRef(const Message &m, const QString& portId, U2OpStatus &os) {
+    const QVariantMap data = m.getData().toMap();
+    CHECK_EXT(data.contains(portId), os.setError(tr("Data not found by %1 id").arg(portId)), U2EntityRef());
+
+    const SharedDbiDataHandler dbiHandler = data[portId].value<SharedDbiDataHandler>();
+    const AnnotationTableObject *obj = StorageUtils::getAnnotationTableObject(context->getDataStorage(), dbiHandler);
+    CHECK_EXT(obj != NULL, os.setError(tr("Can not get annotation table object")), U2EntityRef());
+
+    return obj->getEntityRef();
+}
+
+void BedtoolsIntersectWorker::storeMessages(IntegralBus *bus, QList<Message> &store) {
+    while (bus->hasMessage()) {
+        store << getMessageAndSetupScriptValues(bus);
+    }
+}
+
+void BedtoolsIntersectWorkerFactory::init() {
+    QList<PortDescriptor*> portDescs;
+    {
+        Descriptor inDescA( IN_PORT_A_ID, BedtoolsIntersectWorker::tr("Annotations A"), BedtoolsIntersectWorker::tr("Annotations A"));
+        QMap<Descriptor, DataTypePtr> inM_A;
+        inM_A[inDescA] = BaseTypes::ANNOTATION_TABLE_TYPE();
+        portDescs << new PortDescriptor( inDescA, DataTypePtr(new MapDataType("in.anns.a", inM_A)), /*input*/ true);
+
+        Descriptor inDescB( IN_PORT_B_ID, BedtoolsIntersectWorker::tr("Annotations B"), BedtoolsIntersectWorker::tr("Annotations B"));
+        QMap<Descriptor, DataTypePtr> inM_B;
+        inM_B[inDescB] = BaseTypes::ANNOTATION_TABLE_TYPE();
+        portDescs << new PortDescriptor( inDescB, DataTypePtr(new MapDataType("in.anns.b", inM_B)), /*input*/ true);
+
+        Descriptor outDesc( OUT_PORT_ID, BedtoolsIntersectWorker::tr("Intersection of annotations"), BedtoolsIntersectWorker::tr("Intersection of annotations"));
+        QMap<Descriptor, DataTypePtr> outM;
+        outM[outDesc] = BaseTypes::ANNOTATION_TABLE_TYPE();
+        portDescs << new PortDescriptor( outDesc, DataTypePtr(new MapDataType("out.anns", outM)), /*intput*/ false);
+    }
+
+    QList<Attribute*> attribs;
+    {
+        Descriptor minOverlapDesc( MIN_OVERLAP,
+                                   BedtoolsIntersectWorker::tr( "Minimum overlap"),
+                                   BedtoolsIntersectWorker::tr( "Minimum overlap required as a fraction of A.") );
+        Descriptor reportAbsenceDesc( REPORT_ABSENCE,
+                                  BedtoolsIntersectWorker::tr("Report the absence of annotations"),
+                                  BedtoolsIntersectWorker::tr("Only report those entries in A that have no overlap in B.") );
+        Descriptor returnAnnotations ( REPORT_FEATURES,
+                                       BedtoolsIntersectWorker::tr("Report"),
+                                       BedtoolsIntersectWorker::tr("An interval between the two overlapping annotations or the annotation itself."));
+
+        attribs << new Attribute( reportAbsenceDesc, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(false) );
+
+        Attribute* minOverlapAttr = new Attribute( minOverlapDesc, BaseTypes::NUM_TYPE(), /*required*/ false, QVariant(BedtoolsIntersectSettings::DEFAULT_MIN_OVERLAP * 100) );
+        minOverlapAttr->addRelation(new VisibilityRelation(REPORT_ABSENCE, QVariant(false)));
+        attribs << minOverlapAttr;
+
+        Attribute* reportAttr = new Attribute( returnAnnotations, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(true));
+        reportAttr->addRelation(new VisibilityRelation(REPORT_ABSENCE, QVariant(false)));
+        attribs << reportAttr;
+    }
+
+    QMap<QString, PropertyDelegate*> delegates;
+    {
+        QVariantMap spinMap;
+        spinMap["minimum"] = QVariant(BedtoolsIntersectSettings::DEFAULT_MIN_OVERLAP * 100);
+        spinMap["maximum"] = QVariant(100);
+        spinMap["suffix"] = QVariant("%");
+        spinMap["decimals"] = 7;
+        delegates[MIN_OVERLAP] = new DoubleSpinBoxDelegate(spinMap);
+
+        delegates[REPORT_ABSENCE] = new ComboBoxWithBoolsDelegate();
+
+        QVariantMap comboMap;
+        comboMap["Shared interval between the two overlapping annotations"] = false;
+        comboMap["Initital A annotations, that overlap B annotations"] = true;
+        delegates[REPORT_FEATURES] = new ComboBoxDelegate(comboMap);
+    }
+
+    Descriptor desc( BedtoolsIntersectWorkerFactory::ACTOR_ID,
+                     BedtoolsIntersectWorker::tr("Intersect Annotations"),
+                     BedtoolsIntersectWorker::tr("Intersects two sets of annotations denoted as A and B.") );
+    ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
+    proto->setPrompter( new BedtoolsIntersectPrompter() );
+    proto->setEditor(new DelegateEditor(delegates));
+    proto->addExternalTool(ET_BEDTOOLS);
+
+    WorkflowEnv::getProtoRegistry()->registerProto( BaseActorCategories::CATEGORY_BASIC(), proto );
+    DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById( LocalDomainFactory::ID );
+    localDomain->registerEntry( new BedtoolsIntersectWorkerFactory() );
+}
+
+QString BedtoolsIntersectPrompter::composeRichDoc() {
+    QString a = getProducersOrUnset(IN_PORT_A_ID, IN_PORT_A_ID);
+    QString b = getProducersOrUnset(IN_PORT_B_ID, IN_PORT_B_ID);
+
+    QString res = QString(tr("Intersect annotations from <u>%1</u><b>(A)</b> with annotations from <u>%2</u><b>(B)</b>. Report ")
+                          .arg(a)
+                          .arg(b));
+
+    bool reportAbsence = target->getParameter(REPORT_ABSENCE)->getAttributePureValue().toBool();
+    bool reportFeature = target->getParameter(REPORT_FEATURES)->getAttributePureValue().toBool();
+
+    if (reportAbsence) {
+        res.append( getHyperlink(REPORT_ABSENCE," <u>annotations from A set that have <b>no overlap</b> in B set</u>."));
+    } else {
+        if (!reportFeature) {
+            res.append(getHyperlink(REPORT_ABSENCE, " <u><b>shared intervals</b></u>."));
+        } else {
+            res.append(getHyperlink(REPORT_FEATURES, "<u>annotations from <b>A</b> that overlap annotations from <b>B</b></u>."));
+        }
+    }
+
+    return res;
+}
 
 } //LocalWorkflow
 } //U2

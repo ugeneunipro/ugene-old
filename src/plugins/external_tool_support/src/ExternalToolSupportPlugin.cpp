@@ -635,6 +635,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     LocalWorkflow::SnpEffFactory::init();
     LocalWorkflow::FastQCFactory::init();
     LocalWorkflow::CutAdaptFastqWorkerFactory::init();
+    LocalWorkflow::BedtoolsIntersectWorkerFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service
