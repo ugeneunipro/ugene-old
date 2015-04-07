@@ -36,6 +36,7 @@
 #include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsPhyTree.h"
+#include "GTUtilsPrimerLibrary.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
@@ -81,6 +82,7 @@
 #include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h"
 #include "runnables/ugene/plugins/orf_marker/OrfDialogFiller.h"
+#include "runnables/ugene/plugins/pcr/ExportPrimersDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
@@ -964,6 +966,51 @@ GUI_TEST_CLASS_DEFINITION(test_4118){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4121) {
+//    1. Open the Primer Library.
+//    2. Select two primes.
+//    3. Click "Export primer(s)".
+//    4. There is no 'Raw' format available(raw format is valid only for one primer export)
+
+    class test_4121 : public CustomScenario {
+    public:
+        test_4121(bool isRawPresent)
+            : isRawPresent(isRawPresent) {}
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "dialog not found");
+
+            QComboBox* cbFormat = dialog->findChild<QComboBox*>("cbFormat");
+            CHECK_SET_ERR(cbFormat != NULL, "cbFormat not found");
+
+            if (isRawPresent) {
+                CHECK_SET_ERR(cbFormat->findText("raw") != -1, "raw format is present");
+            } else {
+                CHECK_SET_ERR(cbFormat->findText("raw") == -1, "raw format is present");
+            }
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    private:
+        bool isRawPresent;
+
+    };
+
+    GTUtilsPrimerLibrary::openLibrary(os);
+    GTUtilsPrimerLibrary::addPrimer(os, "primer1", "ACGTA");
+    GTUtilsPrimerLibrary::addPrimer(os, "primer2", "GTACG");
+
+    GTUtilsPrimerLibrary::selectPrimers(os, QList<int>() << 0 << 1);
+
+    GTUtilsDialog::waitForDialog(os, new ExportPrimersDialogFiller(os, new test_4121(false)));
+    GTUtilsPrimerLibrary::clickButton(os, GTUtilsPrimerLibrary::Export);
+
+    GTUtilsPrimerLibrary::selectPrimers(os, QList<int>() << 0);
+
+    GTUtilsDialog::waitForDialog(os, new ExportPrimersDialogFiller(os, new test_4121(true)));
+    GTUtilsPrimerLibrary::clickButton(os, GTUtilsPrimerLibrary::Export);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4122) {
 /* 1. Open "data/samples/Genbank/murine.gb".
  * 2. Search any existing pattern.
@@ -1032,9 +1079,9 @@ GUI_TEST_CLASS_DEFINITION(test_4134){
             CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
 
             GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
-            
+
             QString trimBothValue = GTUtilsWizard::getParameter(os, "Trim both ends").toString();
-            
+
             CHECK_SET_ERR(trimBothValue == "True", "unexpected 'Trim both ends value' : " + trimBothValue);
 
             GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
