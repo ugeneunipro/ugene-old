@@ -231,6 +231,7 @@ BlastPlusSupportContext::BlastPlusSupportContext(QObject* p) : GObjectViewWindow
     lastDBPath="";
 
     fetchSequenceByIdAction = new QAction(tr("Fetch sequences by 'id'"), this);
+    fetchSequenceByIdAction->setObjectName("fetchSequenceById");
     connect(fetchSequenceByIdAction, SIGNAL(triggered()), SLOT(sl_fetchSequenceById()));
 
 }
@@ -271,16 +272,12 @@ void BlastPlusSupportContext::buildMenu(GObjectView* view, QMenu* m) {
     if(!dnaView->getAnnotationsSelection()->getSelection().isEmpty()) {
         name = dnaView->getAnnotationsSelection()->getSelection().first().annotation.getName();
     }
+    selectedId = ADVSelectionUtils::getSequenceIdsFromSelection(dnaView->getAnnotationsSelection()->getSelection(), true);
+    isShowId = !selectedId.isEmpty();
 
     foreach(const AnnotationSelectionData &sel, dnaView->getAnnotationsSelection()->getSelection()) {
         if(name != sel.annotation.getName()) {
             name = "";
-        }
-
-        QString id = sel.annotation.findFirstQualifierValue("id");
-        if(!id.isEmpty()) {
-            isShowId = true;
-            selectedId = id;
         }
 
         isBlastResult = name == BLAST_ANNOTATION_NAME;
@@ -289,6 +286,7 @@ void BlastPlusSupportContext::buildMenu(GObjectView* view, QMenu* m) {
     if(isShowId && isBlastResult ) {
         name = name.isEmpty() ? "" : "from '" + name + "'";
         QMenu *fetchMenu = new QMenu(tr("Fetch sequences from local BLAST database"));
+        fetchMenu->menuAction()->setObjectName("fetchMenu");
         QMenu* exportMenu = GUIUtils::findSubMenu(m, ADV_MENU_EXPORT);
         SAFE_POINT(exportMenu != NULL, "exportMenu", );
         m->insertMenu(exportMenu->menuAction(), fetchMenu);

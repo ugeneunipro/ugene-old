@@ -64,6 +64,7 @@
 
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVUtils.h>
 #include <U2View/AnnotatedDNAView.h>
 
 #include "ExportBlastResultDialog.h"
@@ -717,20 +718,7 @@ void ADVExportContext::sl_getSequenceByAccession() {
 }
 
 void ADVExportContext::sl_getSequenceById() {
-    const QList<AnnotationSelectionData>& selection = view->getAnnotationsSelection()->getSelection();
-
-    QStringList genbankID ;
-    foreach(const AnnotationSelectionData &sel, selection) {
-        const Annotation ann = sel.annotation;
-        const QString tmp = ann.findFirstQualifierValue("id");
-        if(!tmp.isEmpty()) {
-            int off = tmp.indexOf("|");
-            int off1 = tmp.indexOf("|", off + 1);
-            genbankID  << tmp.mid(off + 1, off1 - off - 1);
-        }
-    }
-    QString listId = genbankID.join(",");
-    fetchSequencesFromRemoteDB(listId);
+    fetchSequencesFromRemoteDB(ADVSelectionUtils::getSequenceIdsFromSelection(view->getAnnotationsSelection()->getSelection()));
 }
 
 void ADVExportContext::fetchSequencesFromRemoteDB(const QString & listId) {

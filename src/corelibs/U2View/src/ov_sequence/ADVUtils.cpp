@@ -55,4 +55,24 @@ void ADVGlobalAction::updateState() {
     setEnabled(enabled);
 }
 
+
+QString ADVSelectionUtils::getSequenceIdsFromSelection(const QList<AnnotationSelectionData> &selection, bool localBase) {
+    QStringList genbankID ;
+    foreach (const AnnotationSelectionData &sel, selection) {
+        const Annotation &ann = sel.annotation;
+        QString tmp = ann.findFirstQualifierValue("id");
+        if (!tmp.isEmpty()) {
+            if (!localBase) {
+                int off = tmp.indexOf("|");
+                int off1 = tmp.indexOf("|", off + 1);
+                tmp = tmp.mid(off + 1, off1 - off - 1);
+            }
+            if (!genbankID.contains(tmp)) {
+                genbankID.append(tmp);
+            }
+        }
+    }
+    return genbankID.join(",");
+}
+
 } //namespace

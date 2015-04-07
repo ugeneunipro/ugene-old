@@ -33,6 +33,7 @@ namespace U2 {
 
 class ADVSequenceWidget;
 class AnnotatedDNAView;
+class AnnotationSelectionData;
 
 enum ADVGlobalActionFlag {
     ADVGlobalActionFlag_AddToToolbar        = 1 << 1,
@@ -50,7 +51,7 @@ public:
                                     | ADVGlobalActionFlag_AddToAnalyseMenu
                                     | ADVGlobalActionFlag_SingleSequenceOnly);
 
-    void addAlphabetFilter(DNAAlphabetType t) {alphabetFilter.insert(t); updateState();};
+    void addAlphabetFilter(DNAAlphabetType t) {alphabetFilter.insert(t); updateState();}
 
     ADVGlobalActionFlags getFlags() const {return flags;}
 
@@ -65,6 +66,11 @@ private:
     QSet<DNAAlphabetType>   alphabetFilter;
     int                     pos;
     ADVGlobalActionFlags    flags;
+};
+
+class U2VIEW_EXPORT ADVSelectionUtils {
+public:
+    static QString getSequenceIdsFromSelection(const QList<AnnotationSelectionData> &selection, bool localBase = false);
 };
 
 } //namespace
