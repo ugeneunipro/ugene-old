@@ -4840,7 +4840,7 @@ GUI_TEST_CLASS_DEFINITION(test_2770) {
     GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature  (0, 2)");
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature  (0, 2)");
     CHECK_SET_ERR(NULL != annotationGroup, "Annotations have not been found");
 }
 
