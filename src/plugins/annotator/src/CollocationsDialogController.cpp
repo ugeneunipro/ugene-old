@@ -239,12 +239,12 @@ void CollocationsDialogController::sl_saveClicked() {
     if (rc != QDialog::Accepted) {
         return;
     }
-    QList<AnnotationData> list;
+    QList<SharedAnnotationData> list;
     for (int i=0, n = resultsList->count(); i<n; ++i) {
         CDCResultItem* item = static_cast<CDCResultItem*>(resultsList->item(i));
-        AnnotationData data = m.data;
-        data.location->regions.append(item->r);
-        data.setStrand(U2Strand::Direct);
+        SharedAnnotationData data = m.data;
+        data->location->regions.append(item->r);
+        data->setStrand(U2Strand::Direct);
         list.append(data);
     }
 
@@ -317,8 +317,8 @@ CDCResultItem::CDCResultItem(const U2Region& _r) : r(_r) {
 //////////////////////////////////////////////////////////////////////////
 // task
 CollocationSearchTask::CollocationSearchTask(const QList<AnnotationTableObject*> &table, const QSet<QString>& names,
-                                             const CollocationsAlgorithmSettings& cfg)
-: Task(tr("Search for annotated regions"), TaskFlag_None), cfg(cfg), lock(QMutex::Recursive), keepSourceAnns(false)
+    const CollocationsAlgorithmSettings& cfg)
+    : Task(tr("Search for annotated regions"), TaskFlag_None), cfg(cfg), lock(QMutex::Recursive), keepSourceAnns(false)
 {
     GCOUNTER(cvar, tvar, "CollocationSearchTask");
     assert(cfg.distance >= 0);
@@ -327,16 +327,16 @@ CollocationSearchTask::CollocationSearchTask(const QList<AnnotationTableObject*>
         getItem(name);
     }
     foreach(AnnotationTableObject* ao, table) {
-        foreach(const Annotation &a, ao->getAnnotations()) {
-            const QString& name = a.getName();
-            if((a.getStrand().isDirect() && cfg.strand == StrandOption_ComplementOnly) ||
-                (a.getStrand().isCompementary() && cfg.strand == StrandOption_DirectOnly)){
+        foreach(Annotation *a, ao->getAnnotations()) {
+            const QString& name = a->getName();
+            if((a->getStrand().isDirect() && cfg.strand == StrandOption_ComplementOnly) ||
+                (a->getStrand().isCompementary() && cfg.strand == StrandOption_DirectOnly)){
                     items.remove(name);
                     continue;
             }
             if (names.contains(name)) {
                 CollocationsAlgorithmItem& item = getItem(name);
-                foreach(const U2Region& r, a.getRegions()) {
+                foreach(const U2Region& r, a->getRegions()) {
                     if (cfg.searchRegion.intersects(r)) {
                         item.regions.append(r);
                     }
@@ -346,26 +346,27 @@ CollocationSearchTask::CollocationSearchTask(const QList<AnnotationTableObject*>
     }
 }
 
-CollocationSearchTask::CollocationSearchTask(const QList<AnnotationData> &table, const QSet<QString>& names,
-                      const CollocationsAlgorithmSettings& cfg, bool _keepSourceAnns)
-: Task(tr("Search for annotated regions"), TaskFlag_None), cfg(cfg), lock(QMutex::Recursive), keepSourceAnns(_keepSourceAnns)
+CollocationSearchTask::CollocationSearchTask(const QList<SharedAnnotationData> &table, const QSet<QString>& names, const CollocationsAlgorithmSettings& cfg,
+    bool _keepSourceAnns)
+    : Task(tr("Search for annotated regions"), TaskFlag_None), cfg(cfg), lock(QMutex::Recursive), keepSourceAnns(_keepSourceAnns)
 {
     assert(cfg.distance >= 0);
     assert(!names.isEmpty());
     foreach(const QString& name, names) {
         getItem(name);
     }
-    foreach( const AnnotationData &a, table ) {
-        const QString& name = a.name;
-        if((a.getStrand().isDirect() && cfg.strand == StrandOption_ComplementOnly) ||
-           (a.getStrand().isCompementary() && cfg.strand == StrandOption_DirectOnly)){
+    foreach (const SharedAnnotationData &a, table) {
+        const QString& name = a->name;
+        if ((a->getStrand().isDirect() && cfg.strand == StrandOption_ComplementOnly) ||
+           (a->getStrand().isCompementary() && cfg.strand == StrandOption_DirectOnly))
+        {
                items.remove(name);
                continue;
         }
         if (names.contains(name)) {
             CollocationsAlgorithmItem& item = getItem(name);
             bool hasRegions = false;
-            foreach ( const U2Region &r, a.location->regions ) {
+            foreach (const U2Region &r, a->location->regions) {
                 if (cfg.searchRegion.intersects(r)) {
                     hasRegions = true;
                     item.regions.append(r);
@@ -385,12 +386,9 @@ CollocationsAlgorithmItem& CollocationSearchTask::getItem(const QString& name) {
     return items[name];
 }
 
-
-
 void CollocationSearchTask::run() {
     CollocationsAlgorithm::find(items.values(), stateInfo, this, cfg);
 }
-
 
 void CollocationSearchTask::onResult(const U2Region& r) {
     QMutexLocker locker(&lock);
@@ -404,35 +402,35 @@ QVector<U2Region> CollocationSearchTask::popResults() {
     return tmp;
 }
 
-QList<AnnotationData> CollocationSearchTask::popResultAnnotations() {
+QList<SharedAnnotationData> CollocationSearchTask::popResultAnnotations() {
     QMutexLocker locker(&lock);
     QVector<U2Region> res = this->popResults();
 
-    QList<AnnotationData> result;
+    QList<SharedAnnotationData> result;
     if (keepSourceAnns) {
-        for ( int i = 0; i < sourceAnns.size( ); ++i ) {
-            AnnotationData &a = sourceAnns[i];
+        for (int i = 0; i < sourceAnns.size(); ++i) {
+            SharedAnnotationData &a = sourceAnns[i];
             QVector<U2Region> resRegs;
-            foreach ( const U2Region &r, a.location->regions ) {
+            foreach (const U2Region &r, a->location->regions) {
                 if (isSuitableRegion(r, res)) {
                     resRegs << r;
                 }
             }
-            if ( !resRegs.isEmpty( ) ) {
-                a.location->regions = resRegs;
+            if (!resRegs.isEmpty()) {
+                a->location->regions = resRegs;
                 result << a;
             }
         }
     } else {
         foreach(const U2Region &r, res) {
-            AnnotationData data;
+            SharedAnnotationData data(new AnnotationData);
             if (cfg.includeBoundaries) {
-                data.location->regions.append(r);
+                data->location->regions.append(r);
             } else {
-                data.location->regions.append(cutResult(r));
+                data->location->regions.append(cutResult(r));
             }
-            data.setStrand(U2Strand::Direct);
-            data.name = cfg.resultAnnotationsName;
+            data->setStrand(U2Strand::Direct);
+            data->name = cfg.resultAnnotationsName;
             result.append(data);
         }
     }

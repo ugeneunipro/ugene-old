@@ -1282,8 +1282,8 @@ GUI_TEST_CLASS_DEFINITION(test_3220){
 
     AVAnnotationItem *annotation = dynamic_cast<AVAnnotationItem *>(generalItem);
     CHECK_SET_ERR(annotation != NULL, "Annotation is not found");
-    CHECK_SET_ERR("val\"" == annotation->annotation.findFirstQualifierValue("newqualifier"), "Qualifier is not found");
-    CHECK_SET_ERR("val\"2" == annotation->annotation.findFirstQualifierValue("newqualifier2"), "Qualifier 2 is not found");
+    CHECK_SET_ERR("val\"" == annotation->annotation->findFirstQualifierValue("newqualifier"), "Qualifier is not found");
+    CHECK_SET_ERR("val\"2" == annotation->annotation->findFirstQualifierValue("newqualifier2"), "Qualifier 2 is not found");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3221) {
@@ -2133,7 +2133,7 @@ GUI_TEST_CLASS_DEFINITION(test_3348) {
 
     AVAnnotationItem *annotation = dynamic_cast<AVAnnotationItem *>(generalItem);
     CHECK_SET_ERR(NULL != annotation, "Annotation tree item not found");
-    CHECK_SET_ERR("76" == annotation->annotation.findFirstQualifierValue("repeat_homology(%)"), "Annotation qualifier not found");
+    CHECK_SET_ERR("76" == annotation->annotation->findFirstQualifierValue("repeat_homology(%)"), "Annotation qualifier not found");
 
     GTUtilsMdi::click(os, GTGlobals::Close);
     GTMouseDriver::click(os);

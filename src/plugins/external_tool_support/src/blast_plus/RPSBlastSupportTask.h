@@ -39,8 +39,8 @@ public:
 class LocalCDSearch : public CDSearchResultListener {
 public:
     LocalCDSearch(const CDSearchSettings& settings);
-    virtual Task* getTask() const { return task; }
-    virtual QList<AnnotationData> getCDSResults() const;
+    virtual Task * getTask() const { return task; }
+    virtual QList<SharedAnnotationData> getCDSResults() const;
 private:
     RPSBlastSupportTask* task;
 };

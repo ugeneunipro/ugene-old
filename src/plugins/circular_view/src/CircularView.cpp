@@ -68,7 +68,7 @@ CircularView::CircularView(QWidget* p, ADVSequenceObjectContext* ctx, CircularVi
 : GSequenceLineViewAnnotated(p, ctx), clockwise(true), holdSelection(false), settings(settings)
 {
     QSet<AnnotationTableObject*> anns = ctx->getAnnotationObjects(true);
-    foreach(AnnotationTableObject* obj, anns ) {
+    foreach(AnnotationTableObject* obj, anns) {
         registerAnnotations(obj->getAnnotations());
     }
 
@@ -92,7 +92,7 @@ void CircularView::pack() {
 
 void CircularView::updateMinSize() {
     int min = (ra->regionY.count() - 1)*ra->ellipseDelta + MIN_OUTER_SIZE;
-    setMinimumSize( min, min);
+    setMinimumSize(min, min);
 }
 
 
@@ -124,7 +124,7 @@ CircularView::Direction CircularView::getDirection(float a, float b) const {
     a/=graduation;
     b/=graduation;
 
-    bool cl = ( (a-b>=180) || ((b-a <=180) && (b-a >=0)) );
+    bool cl = ((a-b>=180) || ((b-a <=180) && (b-a >=0)));
 
     if (cl) {
         return CW;
@@ -134,7 +134,7 @@ CircularView::Direction CircularView::getDirection(float a, float b) const {
     }
 }
 
-void CircularView::mouseMoveEvent( QMouseEvent * e )
+void CircularView::mouseMoveEvent(QMouseEvent * e)
 {
     QWidget::mouseMoveEvent(e);
 
@@ -207,7 +207,7 @@ void CircularView::mouseMoveEvent( QMouseEvent * e )
         lastMouseY = point.y();
 
         if (twoParts) {
-            if (e->modifiers() & Qt::ControlModifier ) {
+            if (e->modifiers() & Qt::ControlModifier) {
                 setInverseSelection(U2Region(0, selEnd), U2Region(selStart, seqLen - selStart));
             } else {
                 setSelection(U2Region(0, selEnd));
@@ -236,33 +236,28 @@ void CircularView::setAngle(int angle) {
     renderArea->update();
 }
 
-void CircularView::sl_onAnnotationSelectionChanged(AnnotationSelection* selection,
-    const QList<Annotation>& added, const QList<Annotation>& removed)
-{
+void CircularView::sl_onAnnotationSelectionChanged(AnnotationSelection *selection, const QList<Annotation *> &added, const QList<Annotation *> &removed) {
     GSequenceLineViewAnnotated::sl_onAnnotationSelectionChanged(selection, added, removed);
     renderArea->update();
 }
 
-void CircularView::sl_onDNASelectionChanged( LRegionsSelection* thiz, const QVector<U2Region>& added, const QVector<U2Region>& removed )
-{
+void CircularView::sl_onDNASelectionChanged(LRegionsSelection *thiz, const QVector<U2Region> &added, const QVector<U2Region> &removed) {
     GSequenceLineViewAnnotated::sl_onDNASelectionChanged(thiz, added, removed);
     renderArea->update();
 }
 
-QList<AnnotationSelectionData> CircularView::selectAnnotationByCoord( const QPoint& coord ) const
-{
+QList<AnnotationSelectionData> CircularView::selectAnnotationByCoord(const QPoint& coord) const {
     QList<AnnotationSelectionData> res;
     CircularViewRenderArea* renderArea = qobject_cast<CircularViewRenderArea*>(this->renderArea);
     QPoint cp(coord - QPoint(width()/2, renderArea->getCenterY()));
-    foreach(CircularAnnotationItem* item, renderArea->circItems) {
-
+    foreach (CircularAnnotationItem* item, renderArea->circItems) {
         CircularAnnotationRegionItem* regItem = item->getContainingRegion(cp);
         int region = item->containsRegion(cp);
         if(region != -1) {
             QList<int> indx;
             indx << region;
             if (regItem != NULL && regItem->hasJoinedRegion()) {
-                indx << item->getAnnotation().getRegions().indexOf(regItem->getJoinedRegion());
+                indx << item->getAnnotation()->getRegions().indexOf(regItem->getJoinedRegion());
             }
 
             res.append(AnnotationSelectionData(item->getAnnotation(), indx));
@@ -277,10 +272,9 @@ QList<AnnotationSelectionData> CircularView::selectAnnotationByCoord( const QPoi
                 QList <int> indx;
                 indx << r->getNumber();
                 if (r->hasJoinedRegion()) {
-                    indx << item->getAnnotation().getRegions().indexOf(r->getJoinedRegion());
+                    indx << item->getAnnotation()->getRegions().indexOf(r->getJoinedRegion());
                 }
-                res.append(AnnotationSelectionData(item->getAnnotation(),
-                                                   indx));
+                res.append(AnnotationSelectionData(item->getAnnotation(), indx));
                 return res;
             }
         }
@@ -292,7 +286,7 @@ QSize CircularView::sizeHint() const {
     return ra->size();
 }
 
-const QMap<Annotation,CircularAnnotationItem*>& CircularView::getCircularItems() const {
+const QMap<Annotation *,CircularAnnotationItem *> & CircularView::getCircularItems() const {
     return ra->circItems;
 }
 
@@ -331,7 +325,7 @@ void CircularView::keyReleaseEvent(QKeyEvent *e) {
 }
 
 
-void CircularView::resizeEvent( QResizeEvent* e ) {
+void CircularView::resizeEvent(QResizeEvent* e) {
     if (ra->currentScale == 0) {
         sl_fitInView();
     }
@@ -395,21 +389,21 @@ void CircularView::updateZoomActions() {
 void CircularView::setInverseSelection(const U2Region &r) {
     U2Region part1(0, r.startPos);
     setSelection(part1);
-    addSelection(U2Region( r.endPos(), ctx->getSequenceLength() - r.endPos() ));
+    addSelection(U2Region(r.endPos(), ctx->getSequenceLength() - r.endPos()));
 }
 
 void CircularView::setInverseSelection(const U2Region &startSeqRegion, const U2Region &endSeqRegion) {
-    SAFE_POINT(startSeqRegion.startPos == 0 && endSeqRegion.endPos() == ctx->getSequenceLength(), "Invalid regions selection", );
+    SAFE_POINT(startSeqRegion.startPos == 0 && endSeqRegion.endPos() == ctx->getSequenceLength(), "Invalid regions selection",);
     setSelection(U2Region(startSeqRegion.endPos(), endSeqRegion.startPos - startSeqRegion.endPos()));
 }
 
 void CircularView::invertCurrentSelection() {
     DNASequenceSelection* selection = ctx->getSequenceSelection();
-    SAFE_POINT(selection != NULL, "Sequence selection is NULL", );
-    CHECK(!selection->isEmpty(), );
+    SAFE_POINT(selection != NULL, "Sequence selection is NULL",);
+    CHECK(!selection->isEmpty(),);
 
     QVector<U2Region> selRegions = selection->getSelectedRegions();
-    CHECK(selRegions.size() < 3, );
+    CHECK(selRegions.size() < 3,);
     if (selRegions.size() == 1) {
         setInverseSelection(selRegions.first());
     } else {
@@ -493,9 +487,9 @@ CircularViewRenderArea::CircularViewRenderArea(CircularView* d)
       mouseAngle(0),
       oldYlevel(0)
 {
-    SAFE_POINT(d != NULL, tr("CircularView is NULL"), );
+    SAFE_POINT(d != NULL, tr("CircularView is NULL"),);
     settings = d->getSettings();
-    SAFE_POINT(settings != NULL, tr("Circular view settings are NULL"), );
+    SAFE_POINT(settings != NULL, tr("Circular view settings are NULL"),);
     settingsWereChanged = false;
 
     setMouseTracking(true);
@@ -505,9 +499,9 @@ CircularViewRenderArea::CircularViewRenderArea(CircularView* d)
     //build annotation items to get number of region levels for proper resize
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
     QSet<AnnotationTableObject *> anns = ctx->getAnnotationObjects(true);
-    foreach ( AnnotationTableObject *ao, anns) {
-        foreach ( const Annotation &a, ao->getAnnotations( ) ) {
-            AnnotationSettings* as = asr->getAnnotationSettings(a.getName());
+    foreach (AnnotationTableObject *ao, anns) {
+        foreach (Annotation *a, ao->getAnnotations()) {
+            AnnotationSettings *as = asr->getAnnotationSettings(a->getName());
             buildAnnotationItem(DrawAnnotationPass_DrawFill, a, false, as);
         }
     }
@@ -522,7 +516,7 @@ void CircularViewRenderArea::adaptNumberOfLabels(int h) {
     maxDisplayingLabels = int(h/lblHeight);
 }
 
-void CircularViewRenderArea::paintContent( QPainter& p, bool paintSelection, bool paintMarker) {
+void CircularViewRenderArea::paintContent(QPainter& p, bool paintSelection, bool paintMarker) {
     int viewSize = qMin(circularView->height(), circularView->width());
     uiLog.details(tr("circular view size %1 %2").arg(circularView->width()).arg(circularView->height()));
     verticalOffset = parentWidget()->height()/2;
@@ -558,7 +552,7 @@ void CircularViewRenderArea::paintContent(QPainter &p, int w, int h, bool paintS
         p.translate(0, (h - scaleCoeff*height()) / 2);
     } else {
         scaleCoeff = (qreal)h / height();
-        p.translate( (w - scaleCoeff*width())/ 2, 0);
+        p.translate((w - scaleCoeff*width())/ 2, 0);
     }
     p.save();
     p.scale(scaleCoeff, scaleCoeff);
@@ -629,16 +623,16 @@ void CircularViewRenderArea::drawAnnotationsSelection(QPainter& p) {
         item->setSelected(false);
     }
     foreach(const AnnotationSelectionData& asd, ctx->getAnnotationsSelection()->getSelection()) {
-        AnnotationTableObject *o = asd.annotation.getGObject();
+        AnnotationTableObject *o = asd.annotation->getGObject();
         if (ctx->getAnnotationObjects(true).contains(o)) {
             if(circItems.contains(asd.annotation)) {
                 CircularAnnotationItem* item = circItems[asd.annotation];
                 item->setSelected(true);
                 item->paint(&p, NULL, this);
                 foreach(const CircularAnnotationRegionItem* r, item->getRegions()) {
-                    SAFE_POINT(r != NULL, "NULL annotataion region item is CV!", );
+                    SAFE_POINT(r != NULL, "NULL annotataion region item is CV!",);
                     CircularAnnotationLabel* lbl = r->getLabel();
-                    SAFE_POINT(lbl != NULL, "NULL annotataion label item is CV!", );
+                    SAFE_POINT(lbl != NULL, "NULL annotataion label item is CV!",);
                     if(lbl->isVisible()) {
                         lbl->paint(&p, NULL, this);
                     }
@@ -654,7 +648,7 @@ void CircularViewRenderArea::drawSequenceName(QPainter& p) {
     boldPen.setWidth(3);
     ADVSequenceObjectContext* ctx = view->getSequenceContext();
 
-    assert( ctx->getSequenceGObject() != NULL );
+    assert(ctx->getSequenceGObject() != NULL);
 
     QString docName = ctx->getSequenceGObject()->getGObjectName();
     QString seqLen = QString::number(ctx->getSequenceLength()) + " bp";
@@ -699,7 +693,7 @@ void CircularViewRenderArea::drawSequenceName(QPainter& p) {
     }
 }
 
-void CircularViewRenderArea::drawSequenceSelection( QPainter& p ) {
+void CircularViewRenderArea::drawSequenceSelection(QPainter& p) {
     ADVSequenceObjectContext* ctx = view->getSequenceContext();
     int seqLen = ctx->getSequenceLength();
     const QVector<U2Region>& selection = view->getSequenceContext()->getSequenceSelection()->getSelectedRegions();
@@ -764,7 +758,7 @@ void CircularViewRenderArea::drawRulerNotches(QPainter& p, int start, int span, 
     int N = QString::number(start+span).length()*cw*3/2.0 + 0.5f;
     int rulerLen = span / (float)seqLen * PI * rulerEllipseSize;
     int chunk = GraphUtils::findChunk(rulerLen, span, N);
-    CHECK(chunk != 0, );
+    CHECK(chunk != 0,);
     start-=start%chunk;
     float halfChar = 180 / (float)seqLen;
     for (int currentNotch=start+chunk; currentNotch < start + span + chunk; currentNotch+=chunk) {
@@ -774,7 +768,7 @@ void CircularViewRenderArea::drawRulerNotches(QPainter& p, int start, int span, 
         qreal d = currentNotch / (float)seqLen * 360 + rotationDegree - halfChar;
         d*=PI/180.0;
         d = 2*PI - d;
-        QPoint point1 ( rulerEllipseSize * cos(d) / 2.0 + 0.5f, - rulerEllipseSize * sin(d) / 2.0 - 0.5f);
+        QPoint point1 (rulerEllipseSize * cos(d) / 2.0 + 0.5f, - rulerEllipseSize * sin(d) / 2.0 - 0.5f);
         point1-=QPoint(0,0);
         QPoint point2 = point1 - QPoint(notchSize*cos(d), -notchSize*sin(d));
         QPoint point3 = point2 - QPoint(3*cos(d), 0);
@@ -834,7 +828,7 @@ QPair<int,int> CircularViewRenderArea::getVisibleRange() const {
     return qMakePair<int,int>(start, span);
 }
 
-void CircularViewRenderArea::drawRuler( QPainter& p ) {
+void CircularViewRenderArea::drawRuler(QPainter& p) {
     p.save();
     normalizeAngle(rotationDegree);
 
@@ -879,25 +873,25 @@ void CircularViewRenderArea::drawRulerCoordinates(QPainter &p, int startPos, int
     }
 }
 
-void CircularViewRenderArea::drawAnnotations( QPainter &p ) {
-    ADVSequenceObjectContext *ctx = view->getSequenceContext( );
+void CircularViewRenderArea::drawAnnotations(QPainter &p) {
+    ADVSequenceObjectContext *ctx = view->getSequenceContext();
 
-    foreach ( CircularAnnotationItem *item, circItems ) {
+    foreach (CircularAnnotationItem *item, circItems) {
         delete item;
     }
-    circItems.clear( );
-    labelList.clear( );
-    annotationYLevel.clear( );
-    regionY.clear( );
+    circItems.clear();
+    labelList.clear();
+    annotationYLevel.clear();
+    regionY.clear();
 
-    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
+    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
     //TODO: there need const order of annotation tables
-    QSet<AnnotationTableObject *> anns = ctx->getAnnotationObjects( true );
+    QSet<AnnotationTableObject *> anns = ctx->getAnnotationObjects(true);
     QSet<AnnotationTableObject *> autoAnns = ctx->getAutoAnnotationObjects();
-    foreach ( AnnotationTableObject *ao, anns ) {
+    foreach (AnnotationTableObject *ao, anns) {
         bool isAutoAnnotation = autoAnns.contains(ao);
-        foreach ( const Annotation &a, ao->getAnnotations( ) ) {
-            AnnotationSettings *as = asr->getAnnotationSettings(a.getData());
+        foreach (Annotation *a, ao->getAnnotations()) {
+            AnnotationSettings *as = asr->getAnnotationSettings(a->getData());
             buildAnnotationItem(DrawAnnotationPass_DrawFill, a, false, as);
             QFont font = p.font();
             font.setPointSize(settings->labelFontSize);
@@ -908,14 +902,14 @@ void CircularViewRenderArea::drawAnnotations( QPainter &p ) {
     CircularAnnotationLabel::prepareLabels(labelList);
     evaluateLabelPositions();
 
-    foreach(CircularAnnotationItem* item, circItems) {
+    foreach (CircularAnnotationItem* item, circItems) {
         item->paint(&p, NULL, this);
     }
 
     if (settings->labelMode == CircularViewSettings::None) {
         return;
     }
-    foreach(CircularAnnotationLabel* label, labelList) {
+    foreach (CircularAnnotationLabel* label, labelList) {
         label->setLabelPosition();
         label->paint(&p, NULL, this);
     }
@@ -926,15 +920,15 @@ void CircularViewRenderArea::redraw() {
     repaint();
 }
 
-bool isGreater(U2Region r1, U2Region r2) {
+bool isGreater(const U2Region &r1, const U2Region &r2) {
     return r1.startPos > r2.startPos;
 };
 
 #define REGION_MIN_LEN 3
-void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const Annotation &a,
-    bool selected /* = false */, const AnnotationSettings* as /* = NULL */)
+void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, Annotation *a, bool selected /* = false */,
+    const AnnotationSettings* as /* = NULL */)
 {
-    const AnnotationData aData = a.getData( );
+    const SharedAnnotationData &aData = a->getData();
     if (!as->visible && (pass == DrawAnnotationPass_DrawFill || !selected)) {
         return;
     }
@@ -943,8 +937,8 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
     SAFE_POINT(ctx != NULL, "Sequence object context is NULL", );
     int seqLen = ctx->getSequenceLength();
 
-    QVector<U2Region> aDataLocation = aData.getRegions();
-    QVector<U2Region> location = aData.getRegions();
+    QVector<U2Region> aDataLocation = aData->getRegions();
+    QVector<U2Region> location = aData->getRegions();
     removeRegionsOutOfRange(location, seqLen);
 
     qStableSort(location.begin(), location.end(), isGreater);
@@ -956,14 +950,14 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
     foreach(const U2Region& r, location) {
         int idx = aDataLocation.indexOf(r);
         bool addJoinedRegion = false;
-        if (location.size() != aDataLocation.size() && !aDataLocation.contains(r)
-                && (!mergedRegions.first.isEmpty() && !mergedRegions.second.isEmpty())) {
+        if (location.size() != aDataLocation.size() && !aDataLocation.contains(r) && (!mergedRegions.first.isEmpty() && !mergedRegions.second.isEmpty()))
+        {
             idx = aDataLocation.indexOf(mergedRegions.first);
             addJoinedRegion = true;
         }
         CircularAnnotationRegionItem* regItem = createAnnotationRegionItem(r, seqLen, yLevel, aData, idx);
         if (regItem != NULL) {
-            regions.append( regItem );
+            regions.append(regItem);
             if (addJoinedRegion) {
                 regItem->setJoinedRegion(mergedRegions.second);
             }
@@ -974,8 +968,7 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
     circItems[a] = item;
 }
 
-int CircularViewRenderArea::findOrbit(const QVector<U2Region> &location,
-                                      const Annotation &a) {
+int CircularViewRenderArea::findOrbit(const QVector<U2Region> &location, Annotation *a) {
     int yLevel = 0;
     bool yFind = false;
     for(; yLevel < regionY.count(); yLevel++) {
@@ -1004,10 +997,9 @@ int CircularViewRenderArea::findOrbit(const QVector<U2Region> &location,
     return yLevel;
 }
 
-CircularAnnotationRegionItem* CircularViewRenderArea::createAnnotationRegionItem(const U2Region &r, int seqLen,
-                                                                                 int yLevel,
-                                                                                 const AnnotationData &aData,
-                                                                                 int index) {
+CircularAnnotationRegionItem* CircularViewRenderArea::createAnnotationRegionItem(const U2Region &r, int seqLen, int yLevel,
+    const SharedAnnotationData &aData, int index)
+{
     int totalLen = r.length;
     float startAngle = (float)r.startPos / (float)seqLen * 360;
     float spanAngle = (float)totalLen / (float)seqLen * 360;
@@ -1031,9 +1023,7 @@ CircularAnnotationRegionItem* CircularViewRenderArea::createAnnotationRegionItem
         spanAngle = (float)REGION_MIN_LEN / (PI*outerRect.height()) * 360;
     }
 
-    QPainterPath path = createAnnotationArrowPath(startAngle, spanAngle, dAlpha,
-                                     outerRect, innerRect, middleRect,
-                                     aData.getStrand().isCompementary(), isShort);
+    QPainterPath path = createAnnotationArrowPath(startAngle, spanAngle, dAlpha, outerRect, innerRect, middleRect, aData->getStrand().isCompementary(), isShort);
     CHECK(path.length() != 0, NULL);
     qreal centerPercent = 0;
     if (!isShort) {
@@ -1048,9 +1038,9 @@ CircularAnnotationRegionItem* CircularViewRenderArea::createAnnotationRegionItem
     return regItem;
 }
 
-QPainterPath CircularViewRenderArea::createAnnotationArrowPath(float startAngle, float spanAngle, float dAlpha,
-                                                               const QRect &outerRect, const QRect &innerRect, const QRect &middleRect,
-                                                               bool complementary, bool isShort) const {
+QPainterPath CircularViewRenderArea::createAnnotationArrowPath(float startAngle, float spanAngle, float dAlpha, const QRect &outerRect,
+    const QRect &innerRect, const QRect &middleRect, bool complementary, bool isShort) const
+{
     bool moreThan360 = spanAngle > 360;
     QPainterPath path;
     if(isShort) {
@@ -1114,46 +1104,40 @@ QPainterPath CircularViewRenderArea::createAnnotationArrowPath(float startAngle,
     return path;
 }
 
-
-void CircularViewRenderArea::buildAnnotationLabel( const QFont &font, const Annotation &a,
-                                                   const AnnotationSettings *as, bool isAutoAnnotation) {
-    const AnnotationData aData = a.getData( );
-    if ( !as->visible ) {
+void CircularViewRenderArea::buildAnnotationLabel(const QFont &font, Annotation *a, const AnnotationSettings *as, bool isAutoAnnotation) {
+    const SharedAnnotationData &aData = a->getData();
+    if (!as->visible) {
         return;
     }
 
-    if( !circItems.contains( a ) ) {
+    if(!circItems.contains(a)) {
         return;
     }
 
-    ADVSequenceObjectContext *ctx = view->getSequenceContext( );
-    U2Region seqReg( 0, ctx->getSequenceLength( ) );
+    ADVSequenceObjectContext *ctx = view->getSequenceContext();
+    U2Region seqReg(0, ctx->getSequenceLength());
 
     int seqLen = seqReg.length;
-    QVector<U2Region> location = aData.getRegions( );
+    QVector<U2Region> location = aData->getRegions();
     removeRegionsOutOfRange(location, seqLen);
 
     qStableSort(location.begin(), location.end(), isGreater);
     mergeCircularJunctoinRegion(location, seqLen);
 
-    for( int r = 0; r < location.count( ); r++ ) {
-        CircularAnnotationLabel *label = new CircularAnnotationLabel( a, location,
-                                                                      isAutoAnnotation, r,
-                                                                      seqLen, font, this );
-        labelList.append( label );
-        CircularAnnotationRegionItem *ri = circItems[a]->getRegions( )[r];
+    for(int r = 0; r < location.count(); r++) {
+        CircularAnnotationLabel *label = new CircularAnnotationLabel(a, location, isAutoAnnotation, r, seqLen, font, this);
+        labelList.append(label);
+        CircularAnnotationRegionItem *ri = circItems[a]->getRegions()[r];
         label->setAnnRegion(ri);
-        ri->setLabel( label );
+        ri->setLabel(label);
     }
 }
 
-U2Region CircularViewRenderArea::getAnnotationYRange( const Annotation &, int,
-    const AnnotationSettings * ) const
-{
+U2Region CircularViewRenderArea::getAnnotationYRange(Annotation *, int, const AnnotationSettings *) const {
     return U2Region(0,0);
 }
 
-void CircularViewRenderArea::resizeEvent( QResizeEvent *e ) {
+void CircularViewRenderArea::resizeEvent(QResizeEvent *e) {
     view->addUpdateFlags(GSLV_UF_ViewResized);
     QWidget::resizeEvent(e);
 }

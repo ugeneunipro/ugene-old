@@ -35,8 +35,9 @@
 
 namespace U2{
 
-SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController( GSequenceGraphDrawer *_d, GSequenceGraphData *_gd, QWidget *parent, ADVSequenceObjectContext* _ctx )
-:QDialog(parent), ctx(_ctx), d(_d), gd(_gd) {
+SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController(GSequenceGraphDrawer *_d, GSequenceGraphData *_gd, QWidget *parent, ADVSequenceObjectContext* _ctx)
+    :QDialog(parent), ctx(_ctx), d(_d), gd(_gd)
+{
     setupUi(this);
     new HelpButton(this, buttonBox, "16122209");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Save"));
@@ -44,7 +45,7 @@ SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController( GSequenceGra
 
     CreateAnnotationModel m;
     m.hideLocation = true;
-    m.data.name = QString("graph_cutoffs");
+    m.data->name = QString("graph_cutoffs");
     m.sequenceObjectRef = ctx->getSequenceObject();
     m.useUnloadedObjects = false;
     m.useAminoAnnotationTypes = ctx->getAlphabet()->isAmino();
@@ -122,15 +123,15 @@ void SaveGraphCutoffsDialogController::accept(){
         curPos += step;
     }
 
-    QList<AnnotationData> data;
-    foreach ( const U2Region &r, resultRegions ) {
-        AnnotationData d;
-        d.location->regions.append(r);
-        d.type = mm.data.type;
-        d.name = mm.data.name;
+    QList<SharedAnnotationData> data;
+    foreach (const U2Region &r, resultRegions) {
+        SharedAnnotationData d(new AnnotationData);
+        d->location->regions.append(r);
+        d->type = mm.data->type;
+        d->name = mm.data->name;
         data.append(d);
     }
-    AnnotationTableObject *aobj = mm.getAnnotationObject( );
+    AnnotationTableObject *aobj = mm.getAnnotationObject();
     Task *t  = new CreateAnnotationsTask(aobj, data, mm.groupName);
     AppContext::getTaskScheduler()->registerTopLevelTask(t) ;
     QDialog::accept();

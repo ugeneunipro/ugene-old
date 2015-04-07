@@ -443,24 +443,22 @@ bool ExpertDiscoveryLoadPosNegMrkTask::loadAnnotationFromUgeneDocument(MarkingBa
            Marking mrk;
            try {
                mrk = base.getMarking(objN);
-           }catch(...){}
+           } catch (...) { }
 
-            QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj,
-                GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence,
+            QList<GObject *> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj, GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence,
                 allSeqAnnotations, UOF_LoadedOnly);
 
-            foreach(GObject* ao, annotations) {
+            foreach (GObject* ao, annotations) {
                 AnnotationTableObject *atobj = qobject_cast<AnnotationTableObject *>(ao);
-                if(atobj){
-                    const QList<Annotation> annotations =  atobj->getAnnotations();
-                    foreach ( const Annotation &a, annotations ) {
-                       const QVector<U2Region>& regions = a.getRegions();
-                       foreach ( const U2Region &reg, regions ) {
-                           if (reg.endPos() >= reg.startPos && reg.startPos >= 0) {
-                               mrk.set(a.getName().toStdString(), "UGENE Annotation",
-                                   DDisc::Interval(reg.startPos, reg.endPos()));
-                           }
-                       }
+                if (atobj) {
+                    const QList<Annotation *> annotations =  atobj->getAnnotations();
+                    foreach (Annotation *a, annotations) {
+                        const QVector<U2Region>& regions = a->getRegions();
+                        foreach (const U2Region &reg, regions ) {
+                            if (reg.endPos() >= reg.startPos && reg.startPos >= 0) {
+                                mrk.set(a->getName().toStdString(), "UGENE Annotation", DDisc::Interval(reg.startPos, reg.endPos()));
+                            }
+                        }
                     }
                 }
              }
@@ -877,7 +875,7 @@ Task::ReportResult ExpertDiscoveryToAnnotationTask::report(){
         return ReportResult_Finished;
     }
 
-    aObj->addAnnotations(resultList, stateInfo, "ExpertDiscover Signals");
+    aObj->addAnnotations(resultList, "ExpertDiscover Signals");
 
     return ReportResult_Finished;
 }
@@ -905,28 +903,28 @@ void ExpertDiscoveryToAnnotationTask::csToAnnotation(int seqNumber, unsigned int
     unsigned int j = 0;
     QString first_data = "";
     QString second_data = "";
-    while(i < seqLen){
+    while (i < seqLen) {
         first_data = "";
-        if(set.is_set(i)){
+        if (set.is_set(i)) {
             first_data = QString::fromStdString(set.association(i));
         }
 
         j = i+1;
-        while(j < seqLen){
+        while (j < seqLen) {
             second_data = "";
-            if(set.is_set(j)){
+            if (set.is_set(j)) {
                 second_data = QString::fromStdString(set.association(i));
             }
-            if(first_data != second_data || second_data.isEmpty()){
+            if (first_data != second_data || second_data.isEmpty()) {
                 break;
             }
             j++;
         }
-        if(!first_data.isEmpty()){
-            AnnotationData data;
-            data.name = "signal";
-            data.location->regions << U2Region(i,j-i);
-            data.qualifiers.append(U2Qualifier("name", first_data));
+        if (!first_data.isEmpty()) {
+            SharedAnnotationData data(new AnnotationData);
+            data->name = "signal";
+            data->location->regions << U2Region(i,j-i);
+            data->qualifiers.append(U2Qualifier("name", first_data));
             resultList.append(data);
         }
 
@@ -962,27 +960,23 @@ void ExpertDiscoveryToAnnotationTask::recDataToAnnotation( ) {
             j++;
         }
         if(first_rec_data!=0){
-            AnnotationData data;
-            data.name = "rec.data";
-            data.location->regions << U2Region(i,j-i);
-            data.qualifiers.append(U2Qualifier("criteria", QString::number(first_rec_data)));
+            SharedAnnotationData data(new AnnotationData);
+            data->name = "rec.data";
+            data->location->regions << U2Region(i,j-i);
+            data->qualifiers.append(U2Qualifier("criteria", QString::number(first_rec_data)));
             resultList.append(data);
         }
         i = j;
     }
 }
 
-
 ExpertDiscoveryUpdateSelectionTask::ExpertDiscoveryUpdateSelectionTask(ExpertDiscoveryView* currentView, QTreeWidgetItem* tItem)
-:Task("Update selection task", TaskFlag_None)
-,view(currentView)
-,curretItem(tItem)
+    : Task("Update selection task", TaskFlag_None), view(currentView), curretItem(tItem)
 {
     currentAdv = view->getCurrentAdv();
     curPS = view->getCurrentProcessedSignals();
     updatePS = true;
     pItem = NULL;
-
 }
 
 void ExpertDiscoveryUpdateSelectionTask::run(){

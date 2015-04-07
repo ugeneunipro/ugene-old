@@ -48,8 +48,8 @@ namespace U2{
 
 RemovePartFromSequenceDialogController::RemovePartFromSequenceDialogController(U2Region _toDelete, 
                                                                                U2Region _source, 
-                                                                               const QString & docUrl, QWidget *p )
-:QDialog(p), filter(""), toDelete(_toDelete), source(_source)
+                                                                               const QString & docUrl, QWidget *p)
+    :QDialog(p), filter(""), toDelete(_toDelete), source(_source)
 {
     ui = new Ui_RemovePartFromSequenceDialog;
     ui->setupUi(this);
@@ -62,9 +62,9 @@ RemovePartFromSequenceDialogController::RemovePartFromSequenceDialogController(U
     ui->filepathEdit->setText(fi.absoluteDir().absolutePath() + "/" + fi.baseName() + "_new" + "." + fi.completeSuffix());
     
     connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
-    AnnotationData ad;
-    ad.location->regions << toDelete;
-    ui->removeLocationEdit->setText(Genbank::LocationParser::buildLocationString(&ad));
+    SharedAnnotationData ad(new AnnotationData);
+    ad->location->regions << toDelete;
+    ui->removeLocationEdit->setText(Genbank::LocationParser::buildLocationString(ad));
 
     connect(ui->formatBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_indexChanged(int)));
 
@@ -72,10 +72,9 @@ RemovePartFromSequenceDialogController::RemovePartFromSequenceDialogController(U
     ui->formatBox->addItem("Genbank", BaseDocumentFormats::PLAIN_GENBANK);
     connect(ui->mergeAnnotationsBox, SIGNAL(toggled(bool)), this, SLOT(sl_mergeAnnotationsToggled(bool)));
     sl_indexChanged(0);
-
 }
 
-void RemovePartFromSequenceDialogController::accept(){
+void RemovePartFromSequenceDialogController::accept() {
     QString genbankRegion = ui->removeLocationEdit->text();
     U2Location location;
     Genbank::LocationParser::parseLocation(genbankRegion.toLatin1().constData(), genbankRegion.length(), location);

@@ -22,8 +22,6 @@
 #ifndef _U2_ANNOT_HIGHLIGHT_WIDGET_H_
 #define _U2_ANNOT_HIGHLIGHT_WIDGET_H_
 
-#include <U2Core/Annotation.h>
-
 #include "AnnotHighlightSettings.h"
 #include "AnnotHighlightTree.h"
 
@@ -32,8 +30,11 @@ namespace U2 {
 class ADVSequenceObjectContext;
 class ADVSequenceWidget;
 class AnnotatedDNAView;
+class Annotation;
+class AnnotationModification;
 class AnnotationTableObject;
 class AnnotatedRegion;
+class U2Region;
 
 /** Label that can be pressed with two states: show all types or types for sequence only */
 class ShowAllAnnotTypesLabel : public QLabel
@@ -59,19 +60,19 @@ class AnnotHighlightWidget : public QWidget
 {
     Q_OBJECT
 public:
-    AnnotHighlightWidget(AnnotatedDNAView*);
+    AnnotHighlightWidget(AnnotatedDNAView *);
 
 private slots:
     void sl_onShowAllStateChanged();
-    void sl_onSelectedItemChanged(const QString& annotName);
-    void sl_storeNewColor(const QString& annotName, const QColor& newColor);
-    void sl_storeNewSettings(AnnotationSettings* annotSettings);
-    void sl_onSequenceModified(ADVSequenceObjectContext*);
-    void sl_onAnnotationsAdded( const QList<Annotation> & );
-    void sl_onAnnotationsRemoved( const QList<Annotation> & );
-    void sl_onAnnotationModified( const AnnotationModification &annotModifs );
-    void sl_onAnnotationObjectAdded( AnnotationTableObject * );
-    void sl_onAnnotationObjectRemoved( AnnotationTableObject * );
+    void sl_onSelectedItemChanged(const QString &annotName);
+    void sl_storeNewColor(const QString &annotName, const QColor &newColor);
+    void sl_storeNewSettings(AnnotationSettings *annotSettings);
+    void sl_onSequenceModified(ADVSequenceObjectContext *);
+    void sl_onAnnotationsAdded(const QList<Annotation *> &);
+    void sl_onAnnotationsRemoved(const QList<Annotation *> &);
+    void sl_onAnnotationModified(const AnnotationModification &annotModifs);
+    void sl_onAnnotationObjectAdded(AnnotationTableObject *);
+    void sl_onAnnotationObjectRemoved(AnnotationTableObject *);
     void sl_onNextAnnotationClick();
     void sl_onPrevAnnotationClick();
     void sl_onAnnotationSelectionChanged();
@@ -94,8 +95,8 @@ private:
     void setNoAnnotTypesLabelValue();
 
     void connectSlots();
-    void connectSlotsForAnnotTableObj( const AnnotationTableObject *annotTableObj );
-    void disconnectSlotsForAnnotTableObj( const AnnotationTableObject *annotTableObj );
+    void connectSlotsForAnnotTableObj(const AnnotationTableObject *annotTableObj);
+    void disconnectSlotsForAnnotTableObj(const AnnotationTableObject *annotTableObj);
 
     /**
      * Depending on the showAllLabel loads either annotations
@@ -126,7 +127,7 @@ private:
      *  - the first one in case @fromTheBeginning is true,
      *  - the last one in case @fromTheBeginning is false.
      */
-    bool isFirstAnnotatedRegion(Annotation annotation, const U2Region& region, bool fromTheBeginning = true) const;
+    bool isFirstAnnotatedRegion(Annotation *annotation, const U2Region& region, bool fromTheBeginning = true) const;
 
     bool noAnnotatedRegions() const;
 
@@ -138,7 +139,7 @@ private:
 
     QList<AnnotatedRegion> getAllAnnotatedRegionsByStartPos(qint64 startPos) const;
 
-    void updateAnnotationNames( );
+    void updateAnnotationNames();
 
     AnnotatedDNAView* annotatedDnaView;
 

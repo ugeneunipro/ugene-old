@@ -176,9 +176,9 @@ const QMap<int, QColor> ChainsColorScheme::getChainColors(const BioStruct3DObjec
             AnnotationTableObject* ao = qobject_cast<AnnotationTableObject *>(obj);
             SAFE_POINT(NULL != ao, "Invalid annotation table!", colorMap);
 
-            foreach (const Annotation &a, ao->getAnnotationsByName(BioStruct3D::MoleculeAnnotationTag)) {
+            foreach (Annotation *a, ao->getAnnotationsByName(BioStruct3D::MoleculeAnnotationTag)) {
                 bool ok = false;
-                const int chainId = a.findFirstQualifierValue(BioStruct3D::ChainIdQualifierName).toInt(&ok);
+                const int chainId = a->findFirstQualifierValue(BioStruct3D::ChainIdQualifierName).toInt(&ok);
                 SAFE_POINT(ok && chainId != 0, "Invalid type conversion", colorMap);
                 const QColor color = FeatureColors::genLightColor(QString("chain_%1").arg(chainId));
                 colorMap.insert(chainId, color);
@@ -225,8 +225,8 @@ const QMap<QString, QColor> SecStructColorScheme::getSecStructAnnotationColors(c
             AnnotationTableObject *ao = qobject_cast<AnnotationTableObject *>(obj);
             SAFE_POINT(NULL != ao, "Invalid annotation table!", colors);
 
-            foreach (const Annotation &a, ao->getAnnotationsByName(BioStruct3D::SecStructAnnotationTag)) {
-                QString ssName = a.getQualifiers().first().value;
+            foreach (Annotation *a, ao->getAnnotationsByName(BioStruct3D::SecStructAnnotationTag)) {
+                QString ssName = a->getQualifiers().first().value;
                 AnnotationSettings* as = asr->getAnnotationSettings(ssName);
                 colors.insert(ssName, as->color);
             }
@@ -237,7 +237,7 @@ const QMap<QString, QColor> SecStructColorScheme::getSecStructAnnotationColors(c
 }
 
 SecStructColorScheme::SecStructColorScheme(const BioStruct3DObject *biostruct)
-        : BioStruct3DColorScheme(biostruct)
+    : BioStruct3DColorScheme(biostruct)
 {
     defaultAtomColor = Color4f(0.5f,0.9f,0.9f);
     const QMap<QString, QColor> secStrucColors = getSecStructAnnotationColors(biostruct);

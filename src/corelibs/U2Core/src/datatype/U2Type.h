@@ -162,18 +162,18 @@ public:
 */
 class U2CORE_EXPORT U2Entity {
 public:
-                    U2Entity( U2DataId id = U2DataId( ) );
-                    U2Entity( const U2Entity &other );
+                    U2Entity(const U2DataId &id = U2DataId());
+                    U2Entity(const U2Entity &other);
 
-    virtual         ~U2Entity( );
+    virtual         ~U2Entity();
 
     bool            hasValidId() const;
 
-    U2Entity        operator =( const U2Entity &other );
+    U2Entity        operator =(const U2Entity &other);
 
-    bool            operator ==( const U2Entity &other ) const;
-    bool            operator !=( const U2Entity &other ) const;
-    bool            operator <( const U2Entity &other ) const;
+    bool            operator ==(const U2Entity &other) const;
+    bool            operator !=(const U2Entity &other) const;
+    bool            operator <(const U2Entity &other) const;
 
     U2DataId        id;
 };
@@ -247,20 +247,20 @@ public:
         Complementary = -1
     };
 
-    U2Strand( ) : value( Direct ) { }
-    U2Strand( Direction val ) : value( val ) { }
+    U2Strand() : value(Direct) { }
+    U2Strand(Direction val) : value(val) { }
 
-    bool isDirect( ) const { return value == Direct; }
+    bool isDirect() const { return value == Direct; }
 
-    bool isCompementary( ) const { return value == Complementary; }
+    bool isCompementary() const { return value == Complementary; }
 
-    bool operator==( const U2Strand &s ) const { return value == s.value; }
+    bool operator==(const U2Strand &s) const { return value == s.value; }
 
-    bool operator!=( const U2Strand &s ) const { return value != s.value; }
+    bool operator!=(const U2Strand &s) const { return value != s.value; }
 
-    Direction getDirection( ) const { return static_cast<U2Strand::Direction>( value ); }
+    Direction getDirection() const { return static_cast<U2Strand::Direction>(value); }
 
-    int getDirectionValue( ) const { return value; }
+    int getDirectionValue() const { return value; }
 
 private:
     int value;

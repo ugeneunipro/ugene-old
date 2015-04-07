@@ -124,12 +124,9 @@ static DNASequence getSequence(QScriptContext *ctx, QScriptEngine *engine, int a
     return seqObj->getWholeSequence();
 }
 
-static QList<AnnotationData> getAnnotationTable( QScriptContext *ctx, QScriptEngine *engine,
-    int argNum )
-{
-    WorkflowScriptEngine *wse = ScriptEngineUtils::workflowEngine( engine );
-    QList<AnnotationData> result = StorageUtils::getAnnotationTable(
-        wse->getWorkflowContext( )->getDataStorage( ), ctx->argument( argNum ).toVariant( ) );
+static QList<SharedAnnotationData> getAnnotationTable(QScriptContext *ctx, QScriptEngine *engine, int argNum) {
+    WorkflowScriptEngine *wse = ScriptEngineUtils::workflowEngine(engine);
+    QList<SharedAnnotationData> result = StorageUtils::getAnnotationTable(wse->getWorkflowContext()->getDataStorage(), ctx->argument(argNum).toVariant());
     return result;
 }
 
@@ -153,7 +150,7 @@ static QScriptValue putSequence(QScriptEngine *engine, const DNASequence &seq) {
     return ScriptEngineUtils::getSequenceClass(engine)->newInstance(id);
 }
 
-static QScriptValue putAnnotationTable(QScriptEngine *engine, const QList<AnnotationData> &anns) {
+static QScriptValue putAnnotationTable(QScriptEngine *engine, const QList<SharedAnnotationData> &anns) {
     WorkflowScriptEngine *wse = ScriptEngineUtils::workflowEngine(engine);
     CHECK(NULL != wse, QScriptValue::NullValue);
     WorkflowContext *ctx = wse->getWorkflowContext();
@@ -241,7 +238,7 @@ QScriptValue WorkflowScriptLibrary::complement(QScriptContext *ctx, QScriptEngin
     if(dna.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
-    if( !dna.alphabet->isNucleic() ) {
+    if(!dna.alphabet->isNucleic()) {
         return ctx->throwError(QObject::tr("Alphabet must be nucleotide"));
     }
 
@@ -276,7 +273,7 @@ QScriptValue WorkflowScriptLibrary::translate(QScriptContext *ctx, QScriptEngine
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
     bool aminoSeq = seq.alphabet->isAmino();
-    if( aminoSeq ) {
+    if(aminoSeq) {
         return ctx->throwError(QObject::tr("Alphabet must be nucleotide"));
     }
     int offset = 0;
@@ -290,8 +287,8 @@ QScriptValue WorkflowScriptLibrary::translate(QScriptContext *ctx, QScriptEngine
     }
 
     DNATranslationType dnaTranslType = (seq.alphabet->getType() == DNAAlphabet_NUCL) ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
-    QList<DNATranslation*> aminoTTs = AppContext::getDNATranslationRegistry()->lookupTranslation( seq.alphabet, dnaTranslType );
-    if( aminoTTs.isEmpty() ) {
+    QList<DNATranslation*> aminoTTs = AppContext::getDNATranslationRegistry()->lookupTranslation(seq.alphabet, dnaTranslType);
+    if(aminoTTs.isEmpty()) {
         return ctx->throwError(QObject::tr("Translation table is empty"));
     }
     DNATranslation *aminoT;
@@ -731,21 +728,21 @@ QScriptValue WorkflowScriptLibrary::getAnnotationRegion(QScriptContext *ctx, QSc
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
 
-    const QList<AnnotationData> anns = getAnnotationTable( ctx, engine, 1 );
-    if(anns.isEmpty()) {
+    const QList<SharedAnnotationData> anns = getAnnotationTable(ctx, engine, 1);
+    if (anns.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid annotations"));
     }
     QString name = ctx->argument(2).toString();
-    if(name.isEmpty()) {
+    if (name.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty name"));
     }
     QList<QScriptValue> result;
 
-    foreach ( const AnnotationData &ann, anns) {
-        if(ann.name == name) {
+    foreach (const SharedAnnotationData &ann, anns) {
+        if (ann->name == name) {
             DNASequence resultedSeq;
             const QByteArray & sequence = seq.seq;
-            QVector<U2Region> location = ann.getRegions();
+            QVector<U2Region> location = ann->getRegions();
             QByteArray & res = resultedSeq.seq;
             QVector<U2Region> extendedRegions;
 
@@ -756,7 +753,7 @@ QScriptValue WorkflowScriptLibrary::getAnnotationRegion(QScriptContext *ctx, QSc
                 extendedRegions << ir;
             }
 
-            for( int i = 0, end = extendedRegions.size(); i < end; ++i ) {
+            for(int i = 0, end = extendedRegions.size(); i < end; ++i) {
                 U2Region reg = extendedRegions.at(i);
                 QByteArray partSeq(sequence.constData() + reg.startPos, reg.length);
                 res.append(partSeq);
@@ -782,7 +779,7 @@ QScriptValue WorkflowScriptLibrary::filterByQualifier(QScriptContext *ctx, QScri
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    const QList<AnnotationData> anns = getAnnotationTable( ctx, engine, 0 );
+    const QList<SharedAnnotationData> anns = getAnnotationTable(ctx, engine, 0);
     if(anns.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid annotations"));
     }
@@ -795,9 +792,9 @@ QScriptValue WorkflowScriptLibrary::filterByQualifier(QScriptContext *ctx, QScri
         return ctx->throwError(QObject::tr("Empty qualifier value"));
     }
 
-    QList<AnnotationData> res;
-    foreach(const AnnotationData &ann, anns) {
-        if(ann.qualifiers.contains(U2Qualifier(qual, val))) {
+    QList<SharedAnnotationData> res;
+    foreach (const SharedAnnotationData &ann, anns) {
+        if (ann->qualifiers.contains(U2Qualifier(qual, val))) {
             res << ann;
         }
     }
@@ -812,7 +809,7 @@ QScriptValue WorkflowScriptLibrary::addQualifier(QScriptContext *ctx, QScriptEng
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    QList<AnnotationData> anns = getAnnotationTable( ctx, engine, 0 );
+    QList<SharedAnnotationData> anns = getAnnotationTable(ctx, engine, 0);
     if(anns.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid annotations"));
     }
@@ -825,19 +822,19 @@ QScriptValue WorkflowScriptLibrary::addQualifier(QScriptContext *ctx, QScriptEng
         return ctx->throwError(QObject::tr("Empty qualifier value"));
     }
 
-    if ( ctx->argumentCount( ) == 4) {
+    if (ctx->argumentCount() == 4) {
         QString name = ctx->argument(3).toString();
         if(name.isEmpty()) {
             return ctx->throwError(QObject::tr("forth argument must be a string"));
         }
-        for ( int i = 0; i < anns.size( ); i++ ) {
-            if ( anns[i].name == name ) {
-                anns[i].qualifiers.append(U2Qualifier(qual,val));
+        for (int i = 0; i < anns.size(); i++) {
+            if (anns[i]->name == name) {
+                anns[i]->qualifiers.append(U2Qualifier(qual,val));
             }
         }
     } else {
-        for ( int i = 0; i < anns.size( ); i++ ) {
-            anns[i].qualifiers.append(U2Qualifier(qual,val));
+        for (int i = 0; i < anns.size(); i++) {
+            anns[i]->qualifiers.append(U2Qualifier(qual, val));
         }
     }
 
@@ -851,8 +848,8 @@ QScriptValue WorkflowScriptLibrary::getLocation(QScriptContext *ctx, QScriptEngi
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    const QList<AnnotationData> anns = getAnnotationTable( ctx, engine, 0 );
-    if(anns.isEmpty()) {
+    const QList<SharedAnnotationData> anns = getAnnotationTable(ctx, engine, 0);
+    if (anns.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid annotations"));
     }
     QVariant var = ctx->argument(1).toVariant();
@@ -865,30 +862,30 @@ QScriptValue WorkflowScriptLibrary::getLocation(QScriptContext *ctx, QScriptEngi
     if(num < 0 || num > anns.size()) {
         return ctx->throwError(QObject::tr("Index is out of range"));
     }
-    QVector<U2Region> loc = anns[num].getRegions();
+    QVector<U2Region> loc = anns[num]->getRegions();
 
     QScriptValue calee = ctx->callee();
     calee.setProperty("res", engine->newVariant(QVariant::fromValue<QVector<U2Region> >(loc)));
     return calee.property("res");
 }
 
-QScriptValue WorkflowScriptLibrary::hasAnnotationName(QScriptContext *ctx, QScriptEngine *engine ){
+QScriptValue WorkflowScriptLibrary::hasAnnotationName(QScriptContext *ctx, QScriptEngine *engine){
     if(ctx->argumentCount()!= 2) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    const QList<AnnotationData> anns = getAnnotationTable( ctx, engine, 0 );
-    if(anns.isEmpty()) {
+    const QList<SharedAnnotationData> anns = getAnnotationTable(ctx, engine, 0);
+    if (anns.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid annotations"));
     }
     QString annName = ctx->argument(1).toString();
-    if(annName.isEmpty()) {
+    if (annName.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty annotation name"));
     }
 
     bool hasAnnotation = false;
-    foreach ( const AnnotationData &ann, anns ) {
-        if ( ann.name == annName ){
+    foreach (const SharedAnnotationData &ann, anns) {
+        if (ann->name == annName) {
             hasAnnotation = true;
             break;
         }

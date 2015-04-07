@@ -35,33 +35,29 @@ namespace U2 {
 
 const int CHUNK_SIZE = 1024*256;
 
-ReverseComplementSequenceTask::ReverseComplementSequenceTask(U2SequenceObject *dObj,
-                                                             const QList<AnnotationTableObject *> &annotations,
-                                                             DNASequenceSelection *s,
-                                                             DNATranslation *transl )
-    : Task( tr("Reverse Complement Sequence Task"), TaskFlags_NR_FOSE_COSC ),
+ReverseComplementSequenceTask::ReverseComplementSequenceTask(U2SequenceObject *dObj, const QList<AnnotationTableObject *> &annotations,
+    DNASequenceSelection *s, DNATranslation *transl)
+    : Task(tr("Reverse Complement Sequence Task"), TaskFlags_NR_FOSE_COSC),
       seqObj(dObj),
       aObjs(annotations),
       selection(s),
       complTT(transl)
 {
-    SAFE_POINT_EXT(seqObj != NULL, setError(L10N::nullPointerError("sequence object")), );
+    SAFE_POINT_EXT(seqObj != NULL, setError(L10N::nullPointerError("sequence object")),);
     addSubTask(new ReverseSequenceTask(seqObj, aObjs, selection));
     addSubTask(new ComplementSequenceTask(seqObj, aObjs, selection, complTT));
 }
 
-ReverseSequenceTask::ReverseSequenceTask(U2SequenceObject *seqObj,
-                                         const QList<AnnotationTableObject *> &annotations,
-                                         DNASequenceSelection *selection)
-    : Task( tr("Reverse Sequence Task"), TaskFlags_NR_FOSE_COSC),
+ReverseSequenceTask::ReverseSequenceTask(U2SequenceObject *seqObj, const QList<AnnotationTableObject *> &annotations, DNASequenceSelection *selection)
+    : Task(tr("Reverse Sequence Task"), TaskFlags_NR_FOSE_COSC),
       seqObj(seqObj),
       aObjs(annotations),
       selection(selection)
 {
-    SAFE_POINT_EXT(seqObj != NULL, setError(L10N::nullPointerError("sequence object")), );
+    SAFE_POINT_EXT(seqObj != NULL, setError(L10N::nullPointerError("sequence object")),);
 }
 
-Task::ReportResult ReverseSequenceTask::report( ) {
+Task::ReportResult ReverseSequenceTask::report() {
     if (seqObj->getSequenceLength() == 0) {
         return ReportResult_Finished;
     }
@@ -119,20 +115,20 @@ Task::ReportResult ReverseSequenceTask::report( ) {
 
     const int len = seqObj->getSequenceLength();
     // mirror selection
-    if ( NULL != selection ) {
-        QVector<U2Region> regions = selection->getSelectedRegions( );
-        U2Region::mirror( len, regions );
-        U2Region::reverse( regions );
-        selection->setSelectedRegions( regions );
+    if (NULL != selection) {
+        QVector<U2Region> regions = selection->getSelectedRegions();
+        U2Region::mirror(len, regions);
+        U2Region::reverse(regions);
+        selection->setSelectedRegions(regions);
     }
 
     // fix annotation locations
-    foreach ( AnnotationTableObject *aObj, aObjs ) {
-        foreach ( Annotation a, aObj->getAnnotations( ) ) {
-            U2Location location = a.getLocation( );
-            U2Region::mirror( len, location->regions );
-            U2Region::reverse( location->regions );
-            a.setLocation( location );
+    foreach (AnnotationTableObject *aObj, aObjs) {
+        foreach (Annotation *a, aObj->getAnnotations()) {
+            U2Location location = a->getLocation();
+            U2Region::mirror(len, location->regions);
+            U2Region::reverse(location->regions);
+            a->setLocation(location);
         }
     }
 
@@ -143,15 +139,15 @@ ComplementSequenceTask::ComplementSequenceTask(U2SequenceObject *seqObj,
                                                const QList<AnnotationTableObject *> &annotations,
                                                DNASequenceSelection *selection,
                                                DNATranslation *complTT)
-    : Task( tr("Complement Sequence Task"), TaskFlags_NR_FOSE_COSC),
+    : Task(tr("Complement Sequence Task"), TaskFlags_NR_FOSE_COSC),
       seqObj(seqObj),
       aObjs(annotations),
       selection(selection),
       complTT(complTT)
 {
-    SAFE_POINT_EXT(seqObj != NULL, setError(L10N::nullPointerError("sequence object")), );
+    SAFE_POINT_EXT(seqObj != NULL, setError(L10N::nullPointerError("sequence object")),);
     SAFE_POINT_EXT(complTT != NULL,
-                   setError(L10N::nullPointerError("DNA translation table")), );
+                   setError(L10N::nullPointerError("DNA translation table")),);
 }
 
 Task::ReportResult ComplementSequenceTask::report() {
@@ -159,8 +155,7 @@ Task::ReportResult ComplementSequenceTask::report() {
         return ReportResult_Finished;
     }
 
-    QVector<U2Region> regions = SequenceWalkerTask::splitRange(U2Region(0, seqObj->getSequenceLength()),
-                                                               CHUNK_SIZE, 0, 0, false);
+    QVector<U2Region> regions = SequenceWalkerTask::splitRange(U2Region(0, seqObj->getSequenceLength()), CHUNK_SIZE, 0, 0, false);
     U2OpStatusImpl os;
     foreach(const U2Region& r, regions) {
         QByteArray chunk = seqObj->getSequenceData(r);
@@ -173,11 +168,10 @@ Task::ReportResult ComplementSequenceTask::report() {
     }
 
     // fix annotation locations
-    foreach ( AnnotationTableObject *aObj, aObjs ) {
-        foreach ( Annotation a, aObj->getAnnotations( ) ) {
-            U2Strand strand = a.getStrand( );
-            a.setStrand( strand == U2Strand::Direct
-                         ? U2Strand::Complementary : U2Strand::Direct );
+    foreach (AnnotationTableObject *aObj, aObjs) {
+        foreach (Annotation *a, aObj->getAnnotations()) {
+            U2Strand strand = a->getStrand();
+            a->setStrand(strand == U2Strand::Direct ? U2Strand::Complementary : U2Strand::Direct);
         }
     }
 

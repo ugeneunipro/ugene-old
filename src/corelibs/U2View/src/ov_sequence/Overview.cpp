@@ -64,22 +64,16 @@ Overview::Overview(ADVSingleSequenceWidget *p, ADVSequenceObjectContext *ctx)
     connect(panView, SIGNAL(si_visibleRangeChanged()), SLOT(sl_visibleRangeChanged()));
     connect(detView, SIGNAL(si_visibleRangeChanged()), SLOT(sl_visibleRangeChanged()));
     connect(tb, SIGNAL(pressed()), SLOT(sl_tbToggled()));
-    connect(ctx, SIGNAL(si_annotationObjectAdded(AnnotationTableObject*)),
-        SLOT(sl_annotationObjectAdded(AnnotationTableObject*)));
-    connect(ctx, SIGNAL(si_annotationObjectRemoved(AnnotationTableObject*)),
-        SLOT(sl_annotationObjectRemoved(AnnotationTableObject*)));
-    foreach ( AnnotationTableObject *at, ctx->getAnnotationObjects( true ) ) {
-        connect(at, SIGNAL(si_onAnnotationsAdded(const QList<Annotation> &)),
-            SLOT(sl_annotationsAdded(const QList<Annotation> &)));
-        connect(at, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation> &)),
-            SLOT(sl_annotationsRemoved(const QList<Annotation> &)));
-        connect(at, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation> &, const AnnotationGroup &)),
-            SLOT(sl_onAnnotationsInGroupRemoved(const QList<Annotation> &, const AnnotationGroup &)));
-        connect(at, SIGNAL(si_onAnnotationModified(const AnnotationModification &)),
-            SLOT(sl_annotationModified(const AnnotationModification &)));
-        connect(AppContext::getAnnotationsSettingsRegistry(),
-            SIGNAL(si_annotationSettingsChanged(const QStringList&)),
-            SLOT(sl_onAnnotationSettingsChanged(const QStringList&)));
+    connect(ctx, SIGNAL(si_annotationObjectAdded(AnnotationTableObject *)), SLOT(sl_annotationObjectAdded(AnnotationTableObject *)));
+    connect(ctx, SIGNAL(si_annotationObjectRemoved(AnnotationTableObject *)), SLOT(sl_annotationObjectRemoved(AnnotationTableObject *)));
+    foreach (AnnotationTableObject *at, ctx->getAnnotationObjects(true)) {
+        connect(at, SIGNAL(si_onAnnotationsAdded(const QList<Annotation *> &)), SLOT(sl_annotationsAdded(const QList<Annotation *> &)));
+        connect(at, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation *> &)), SLOT(sl_annotationsRemoved(const QList<Annotation *> &)));
+        connect(at, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation *> &, AnnotationGroup *)),
+            SLOT(sl_onAnnotationsInGroupRemoved(const QList<Annotation *> &, AnnotationGroup *)));
+        connect(at, SIGNAL(si_onAnnotationModified(const AnnotationModification &)), SLOT(sl_annotationModified(const AnnotationModification &)));
+        connect(AppContext::getAnnotationsSettingsRegistry(), SIGNAL(si_annotationSettingsChanged(const QStringList &)),
+            SLOT(sl_onAnnotationSettingsChanged(const QStringList &)));
     }
     sl_visibleRangeChanged();
 
@@ -87,50 +81,47 @@ Overview::Overview(ADVSingleSequenceWidget *p, ADVSequenceObjectContext *ctx)
 }
 
 void Overview::sl_annotationObjectAdded(AnnotationTableObject *obj) {
-    connect(obj, SIGNAL(si_onAnnotationsAdded(const QList<Annotation> &)),
-        SLOT(sl_annotationsAdded(const QList<Annotation> &)));
-    connect(obj, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation> &)),
-        SLOT(sl_annotationsRemoved(const QList<Annotation> &)));
-    connect(obj, SIGNAL(si_onAnnotationModified(const AnnotationModification &)),
-        SLOT(sl_annotationModified(const AnnotationModification &)));
+    connect(obj, SIGNAL(si_onAnnotationsAdded(const QList<Annotation *> &)), SLOT(sl_annotationsAdded(const QList<Annotation *> &)));
+    connect(obj, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation *> &)), SLOT(sl_annotationsRemoved(const QList<Annotation *> &)));
+    connect(obj, SIGNAL(si_onAnnotationModified(const AnnotationModification &)), SLOT(sl_annotationModified(const AnnotationModification &)));
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
 
-void Overview::sl_annotationObjectRemoved( AnnotationTableObject *obj ) {
+void Overview::sl_annotationObjectRemoved(AnnotationTableObject *obj) {
     Q_UNUSED(obj);
 
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
 
-void Overview::sl_annotationsAdded(const QList<Annotation> &a) {
+void Overview::sl_annotationsAdded(const QList<Annotation *> &a) {
     Q_UNUSED(a);
 
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
 
-void Overview::sl_annotationsRemoved(const QList<Annotation> &a) {
+void Overview::sl_annotationsRemoved(const QList<Annotation *> &a) {
     Q_UNUSED(a);
 
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
 
-void Overview::sl_onAnnotationsInGroupRemoved(const QList<Annotation> &, const AnnotationGroup & ) {
+void Overview::sl_onAnnotationsInGroupRemoved(const QList<Annotation *> &, AnnotationGroup *) {
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
 
-void Overview::sl_annotationModified( const AnnotationModification &md ) {
+void Overview::sl_annotationModified(const AnnotationModification &md) {
     if (md.type==AnnotationModification_LocationChanged) {
         addUpdateFlags(GSLV_UF_AnnotationsChanged);
         update();
     }
 }
 
-void Overview::sl_onAnnotationSettingsChanged(const QStringList& changedSettings) {
+void Overview::sl_onAnnotationSettingsChanged(const QStringList &changedSettings) {
     Q_UNUSED(changedSettings);
 
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
@@ -409,9 +400,9 @@ OverviewRenderArea::OverviewRenderArea(Overview *p)  : GSequenceLineViewRenderAr
     QLinearGradient gradient(0, 0, 0, 1); //vertical
     gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
     gradient.setColorAt(0.00, QColor(255, 255, 255, 120));
-    gradient.setColorAt(0.50, QColor(  0,   0,   0,   0));
-    gradient.setColorAt(0.70, QColor(  0,   0,   0,   0));
-    gradient.setColorAt(1.00, QColor(  0,   0,   0,  70));
+    gradient.setColorAt(0.50, QColor( 0,   0,   0,   0));
+    gradient.setColorAt(0.70, QColor( 0,   0,   0,   0));
+    gradient.setColorAt(1.00, QColor( 0,   0,   0,  70));
     gradientMaskBrush = QBrush(gradient);
     showGraph=false;
 }
@@ -432,24 +423,24 @@ int OverviewRenderArea::getAnnotationDensity (int pos) const {
     return annotationsOnPos.at(pos-1);
 }
 
-void OverviewRenderArea::setAnnotationsOnPos( ) {
-    annotationsOnPos.clear( );
-    const ADVSequenceObjectContext *ctx = view->getSequenceContext( );
-    const qint64 len = ctx->getSequenceLength( );
-    annotationsOnPos.resize( len );
+void OverviewRenderArea::setAnnotationsOnPos() {
+    annotationsOnPos.clear();
+    const ADVSequenceObjectContext *ctx = view->getSequenceContext();
+    const qint64 len = ctx->getSequenceLength();
+    annotationsOnPos.resize(len);
 
-    const U2Region sequenceRange( 0, ctx->getSequenceObject( )->getSequenceLength( ) );
-    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
-    const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects( true );
+    const U2Region sequenceRange(0, ctx->getSequenceObject()->getSequenceLength());
+    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
+    const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects(true);
 
-    foreach ( AnnotationTableObject *at, aObjs ) {
-        foreach ( const Annotation &a, at->getAnnotations( ) ) {
-            const AnnotationData &ad = a.getData( );
-            const AnnotationSettings *as = asr->getAnnotationSettings( ad );
-            if ( as->visible ) {
-                foreach ( const U2Region &r, ad.getRegions( ) ) {
-                    const U2Region innerRegion = r.intersect( sequenceRange );
-                    for ( qint64 i = innerRegion.startPos; i < innerRegion.endPos( ); i++ ) {
+    foreach (AnnotationTableObject *at, aObjs) {
+        foreach (Annotation *a, at->getAnnotations()) {
+            const SharedAnnotationData &ad = a->getData();
+            const AnnotationSettings *as = asr->getAnnotationSettings(ad);
+            if (as->visible) {
+                foreach (const U2Region &r, ad->getRegions()) {
+                    const U2Region innerRegion = r.intersect(sequenceRange);
+                    for (qint64 i = innerRegion.startPos; i < innerRegion.endPos(); i++) {
                         annotationsOnPos[i]++;
                     }
                 }
@@ -494,9 +485,9 @@ void OverviewRenderArea::drawAll(QPaintDevice *pd) {
 
     //don't show arrow when det view collapsed
     Overview* overview = qobject_cast<Overview*>(view);
-    SAFE_POINT(overview != NULL, tr("Overview is NULL"), );
+    SAFE_POINT(overview != NULL, tr("Overview is NULL"),);
     ADVSingleSequenceWidget* ssw = overview->seqWidget;
-    SAFE_POINT(ssw != NULL, tr("ADVSingleSequenceWidget is NULL"), );
+    SAFE_POINT(ssw != NULL, tr("ADVSingleSequenceWidget is NULL"),);
     if(!ssw->isPanViewCollapsed()) {
         drawSlider(p, panSlider, QColor(230, 230, 230));
     }

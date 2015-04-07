@@ -81,8 +81,6 @@ Document* EMBLGenbankAbstractDocument::loadDocument(IOAdapter* io, const U2DbiRe
     return doc;
 }
 
-
-
 const QString EMBLGenbankAbstractDocument::UGENE_MARK("UNIMARK");
 const QString EMBLGenbankAbstractDocument::DEFAULT_OBJ_NAME("unnamed");
 const QString EMBLGenbankAbstractDocument::LOCUS_TAG_CIRCULAR("circular");
@@ -98,7 +96,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     int gapSize = qBound(-1, DocumentFormatUtils::getMergeGap(fs), 1000*1000);
     bool merge = gapSize!=-1;
 
-    QScopedPointer<AnnotationTableObject> mergedAnnotations( NULL );
+    QScopedPointer<AnnotationTableObject> mergedAnnotations(NULL);
     QStringList contigs;
     QVector<U2Region> mergedMapping;
 
@@ -137,7 +135,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 
         if (num_sequence == 0 || merge == false){
             seqImporter.startSequence(dbiRef, folder, "default sequence name", false, os); //change name and circularity after finalize method
-            CHECK_OP(os,);
+            CHECK_OP(os, );
         }
 
         sequenceSize = 0;
@@ -174,9 +172,10 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
             if (Q_UNLIKELY(merge && NULL == mergedAnnotations)) {
                 mergedAnnotations.reset(new AnnotationTableObject(annotationName, dbiRef, hints));
             }
-            annotationsObject = merge ? mergedAnnotations.data( ) : new AnnotationTableObject( annotationName, dbiRef, hints );
+            annotationsObject = merge ? mergedAnnotations.data() : new AnnotationTableObject(annotationName, dbiRef, hints);
 
             QStringList groupNames;
+            QMap<QString, QList<SharedAnnotationData> > groupName2Annotations;
             for (int i = 0, n = data.features.size(); i < n; ++i) {
                 SharedAnnotationData &d = data.features[i];
                 if (!d->location->regions.isEmpty()) {
@@ -190,12 +189,16 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
                 groupNames.clear();
                 d->removeAllQualifiers(GBFeatureUtils::QUALIFIER_GROUP, groupNames);
                 if (groupNames.isEmpty()) {
-                    annotationsObject->addAnnotation(*d);
+                    groupName2Annotations[""].append(d);
                 } else {
-                    foreach(const QString& gName, groupNames) {
-                        annotationsObject->addAnnotation(*d, gName);
+                    foreach(const QString &gName, groupNames) {
+                        groupName2Annotations[gName].append(d);
                     }
                 }
+                CHECK_OP(os, );
+            }
+            foreach (const QString &groupName, groupName2Annotations.keys()) {
+                annotationsObject->addAnnotations(groupName2Annotations[groupName], groupName);
             }
 
             createCommentAnnotation(data.tags.value(DNAInfo::COMMENT).toStringList(), sequenceSize, annotationsObject);

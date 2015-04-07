@@ -111,7 +111,7 @@ Task::ReportResult GTest_AddPartToSequenceTask::report(){
             .arg(expectedSequence.length()));
         return ReportResult_Finished;
     }
-    if (QString::compare( dnaso->getWholeSequenceData(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
+    if (QString::compare(dnaso->getWholeSequenceData(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
     {
         stateInfo.setError(GTest::tr("Sequence is incorrect. Expected:%1, but Actual:%2")
             .arg((QString)(dnaso->getWholeSequenceData()))
@@ -125,14 +125,15 @@ Task::ReportResult GTest_AddPartToSequenceTask::report(){
             QList<GObject*> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
             foreach(GObject *table, annotationTablesList){
                 AnnotationTableObject *ato = dynamic_cast<AnnotationTableObject *>(table);
-                foreach ( const Annotation &curentAnnotation, ato->getAnnotations( ) ){
-                    if ( curentAnnotation.getName( ) == annotationName ) {
-                        int i=0;
-                        if ( curentAnnotation.getRegions().size() != expectedRegions.size()) {
-                            stateInfo.setError(GTest::tr("Regions is incorrect. Expected size:%1 Actual size:%2").arg(expectedRegions.size()).arg(curentAnnotation.getRegions().size()));
+                foreach (Annotation *curentAnnotation, ato->getAnnotations()) {
+                    if (curentAnnotation->getName() == annotationName) {
+                        int i = 0;
+                        if (curentAnnotation->getRegions().size() != expectedRegions.size()) {
+                            stateInfo.setError(GTest::tr("Regions is incorrect. Expected size:%1 Actual size:%2")
+                                .arg(expectedRegions.size()).arg(curentAnnotation->getRegions().size()));
                         }
-                        foreach ( const U2Region &curRegion, curentAnnotation.getRegions( ) ) {
-                            if (curRegion!=expectedRegions.at(i)) {
+                        foreach (const U2Region &curRegion, curentAnnotation->getRegions()) {
+                            if (curRegion != expectedRegions.at(i)) {
                                 stateInfo.setError(GTest::tr("Regions is incorrect. Expected:%3,%4, but Actual:%1,%2")
                                     .arg(curRegion.startPos).arg(curRegion.endPos())
                                     .arg(expectedRegions.at(i).startPos).arg(expectedRegions.at(i).endPos()));
@@ -143,14 +144,14 @@ Task::ReportResult GTest_AddPartToSequenceTask::report(){
                     }
                 }
             }
-        }else{
-            Document* loadedDocument = getContext<Document>(this, docName);
-            QList<GObject*> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-            foreach(GObject *table, annotationTablesList){
-                AnnotationTableObject *ato = dynamic_cast<AnnotationTableObject *>( table );
-                foreach ( const Annotation &curentAnnotation, ato->getAnnotations( ) ) {
-                    if (curentAnnotation.getName( ) == annotationName){
-                        foreach ( const U2Region &curRegion, curentAnnotation.getRegions( ) ) {
+        } else {
+            Document *loadedDocument = getContext<Document>(this, docName);
+            QList<GObject *> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+            foreach (GObject *table, annotationTablesList) {
+                AnnotationTableObject *ato = dynamic_cast<AnnotationTableObject *>(table);
+                foreach (Annotation *curentAnnotation, ato->getAnnotations()) {
+                    if (curentAnnotation->getName() == annotationName){
+                        foreach (const U2Region &curRegion, curentAnnotation->getRegions()) {
                             if (!expectedRegions.contains(curRegion)) {
                                 stateInfo.setError(GTest::tr("Regions is incorrect. actual region didn't found in expected region list"));
                             }
@@ -241,30 +242,29 @@ Task::ReportResult GTest_RemovePartFromSequenceTask::report(){
             .arg(expectedSequence.length()));
         return ReportResult_Finished;
     }
-    if (QString::compare ( dnaso->getWholeSequenceData(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
+    if (QString::compare (dnaso->getWholeSequenceData(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
     {
         stateInfo.setError(GTest::tr("Sequence is incorrect. Expected:%1, but Actual:%2")
             .arg((QString)(dnaso->getWholeSequenceData()))
             .arg(expectedSequence));
         return ReportResult_Finished;
     }
-    if (annotationName.length()!=0)
-    {
+    if (annotationName.length() != 0) {
         Document* loadedDocument = getContext<Document>(this, docName);
         QList<GObject*> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
         foreach(GObject *table, annotationTablesList){
-            AnnotationTableObject *ato = dynamic_cast<AnnotationTableObject *>( table );
-            foreach ( const Annotation &curentAnnotation, ato->getAnnotations( ) ) {
-                if ( curentAnnotation.getName( ) == annotationName ) {
-                    int i=0;
-                    if ( curentAnnotation.getRegions( ).size( ) != expectedRegions.size( ) ){
-                        stateInfo.setError(GTest::tr("Regions is incorrect. Expected size:%1 Actual size:%2").arg(expectedRegions.size()).arg(curentAnnotation.getRegions().size()));
+            AnnotationTableObject *ato = dynamic_cast<AnnotationTableObject *>(table);
+            foreach (Annotation *curentAnnotation, ato->getAnnotations()) {
+                if (curentAnnotation->getName() == annotationName) {
+                    int i = 0;
+                    if (curentAnnotation->getRegions().size() != expectedRegions.size()){
+                        stateInfo.setError(GTest::tr("Regions is incorrect. Expected size:%1 Actual size:%2")
+                            .arg(expectedRegions.size()).arg(curentAnnotation->getRegions().size()));
                     }
-                    foreach ( const U2Region &curRegion, curentAnnotation.getRegions()){
-                        if (curRegion!=expectedRegions.at(i)) {
+                    foreach (const U2Region &curRegion, curentAnnotation->getRegions()){
+                        if (curRegion != expectedRegions.at(i)) {
                             stateInfo.setError(GTest::tr("Regions is incorrect. Expected:%3,%4, but Actual:%1,%2")
-                                .arg(curRegion.startPos).arg(curRegion.endPos())
-                                .arg(expectedRegions.at(i).startPos).arg(expectedRegions.at(i).endPos()));
+                                .arg(curRegion.startPos).arg(curRegion.endPos()).arg(expectedRegions.at(i).startPos).arg(expectedRegions.at(i).endPos()));
                             return ReportResult_Finished;
                         }
                         i++;
@@ -273,7 +273,7 @@ Task::ReportResult GTest_RemovePartFromSequenceTask::report(){
                 }
             }
         }
-        if(expectedRegions.size() != 0){
+        if (expectedRegions.size() != 0) {
             stateInfo.setError(GTest::tr("Regions is incorrect. Expected size:%1 Actual size:%2").arg(expectedRegions.size()).arg(0));
             return ReportResult_Finished;
         }
@@ -366,7 +366,7 @@ Task::ReportResult GTest_ReplacePartOfSequenceTask::report(){
             .arg(expectedSequence.length()));
         return ReportResult_Finished;
     }
-    if (QString::compare ( dnaso->getWholeSequenceData(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
+    if (QString::compare (dnaso->getWholeSequenceData(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
     {
         stateInfo.setError(GTest::tr("Sequence is incorrect. Actual:%1, but expected:%2")
             .arg((QString)(dnaso->getWholeSequenceData()))
@@ -377,16 +377,17 @@ Task::ReportResult GTest_ReplacePartOfSequenceTask::report(){
         Document* loadedDocument = getContext<Document>(this, docName);
         QList<GObject*> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
         foreach(GObject *table, annotationTablesList){
-            AnnotationTableObject *ato = dynamic_cast<AnnotationTableObject *>( table );
-            foreach ( const Annotation &curentAnnotation, ato->getAnnotations( ) ) {
-                if (curentAnnotation.getName() == annotationName ) {
-                    int i=0;
-                    if(curentAnnotation.getRegions().size() != expectedRegions.size()){
-                        stateInfo.setError(GTest::tr("Regions is incorrect. Expected size:%1 Actual size:%2").arg(expectedRegions.size()).arg(curentAnnotation.getRegions().size()));
+            AnnotationTableObject *ato = dynamic_cast<AnnotationTableObject *>(table);
+            foreach (Annotation *curentAnnotation, ato->getAnnotations()) {
+                if (curentAnnotation->getName() == annotationName) {
+                    int i = 0;
+                    if (curentAnnotation->getRegions().size() != expectedRegions.size()) {
+                        stateInfo.setError(GTest::tr("Regions is incorrect. Expected size:%1 Actual size:%2")
+                            .arg(expectedRegions.size()).arg(curentAnnotation->getRegions().size()));
                         break;
                     }
-                    foreach ( const U2Region& curRegion, curentAnnotation.getRegions()){
-                        if (curRegion!=expectedRegions.at(i)) {
+                    foreach (const U2Region& curRegion, curentAnnotation->getRegions()) {
+                        if (curRegion != expectedRegions.at(i)) {
                             stateInfo.setError(GTest::tr("Regions is incorrect. Expected:%3,%4, but Actual:%1,%2")
                                 .arg(curRegion.startPos).arg(curRegion.endPos())
                                 .arg(expectedRegions.at(i).startPos).arg(expectedRegions.at(i).endPos()));
@@ -409,9 +410,9 @@ Task::ReportResult GTest_ReplacePartOfSequenceTask::report(){
 QList< XMLTestFactory* > EditSequenceTests::createTestFactories()
 {
     QList< XMLTestFactory* > res;
-    res.append( GTest_AddPartToSequenceTask::createFactory() );
-    res.append( GTest_RemovePartFromSequenceTask::createFactory() );
-    res.append( GTest_ReplacePartOfSequenceTask::createFactory() );
+    res.append(GTest_AddPartToSequenceTask::createFactory());
+    res.append(GTest_RemovePartFromSequenceTask::createFactory());
+    res.append(GTest_ReplacePartOfSequenceTask::createFactory());
     return res;
 }
 

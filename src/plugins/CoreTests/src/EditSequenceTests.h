@@ -73,8 +73,8 @@ private:
     QString             insertedSequence;
     QString             annotationName;
     QString             expectedSequence;
-    QVector<U2Region>      expectedRegions;
-    U2SequenceObject*  dnaso;
+    QVector<U2Region>   expectedRegions;
+    U2SequenceObject *  dnaso;
 };
 
 class GTest_ReplacePartOfSequenceTask : GTest {
@@ -94,8 +94,8 @@ private:
     QString             insertedSequence;
     QString             annotationName;
     QString             expectedSequence;
-    QVector<U2Region>      expectedRegions;
-    U2SequenceObject*  dnaso;
+    QVector<U2Region>   expectedRegions;
+    U2SequenceObject *  dnaso;
 };
 
 

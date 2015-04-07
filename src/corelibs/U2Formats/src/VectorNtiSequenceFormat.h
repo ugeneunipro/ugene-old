@@ -22,11 +22,13 @@
 #ifndef _U2_VECTOR_NTI_SEQUENCE_FORMAT_H_
 #define _U2_VECTOR_NTI_SEQUENCE_FORMAT_H_
 
-#include <U2Core/AnnotationGroup.h>
+#include <U2Core/AnnotationData.h>
 
 #include "GenbankPlainTextFormat.h"
 
 namespace U2 {
+
+class AnnotationGroup;
 
 class U2FORMATS_EXPORT VectorNtiSequenceFormat : public GenbankPlainTextFormat {
     Q_OBJECT
@@ -35,7 +37,7 @@ public:
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
-    virtual void storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os);
+    virtual void storeEntry(IOAdapter *io, const QMap<GObjectType, QList<GObject *> > &objectsMap, U2OpStatus &os);
 
 private:
     QList<StrPair> processCommentKeys(QMultiMap<QString, QVariant> &tags);
@@ -45,9 +47,9 @@ private:
     QString getFeatureTypeString(U2FeatureType featureType, bool isAmino) const;
     QStrStrMap parseComments(const QStringList &comments) const;
     static QString parseDate(int date);
-    QList<AnnotationData> prepareAnnotations(const QList<GObject *> &tablesList, bool isAmino, U2OpStatus &os) const;
+    QList<SharedAnnotationData> prepareAnnotations(const QList<GObject *> &tablesList, bool isAmino, U2OpStatus &os) const;
     void writeAnnotations(IOAdapter *io, const QList<GObject *> &aos, bool isAmino, U2OpStatus &os);
-    void prepareQualifiersToWrite(QMap<AnnotationGroup, QList<AnnotationData> > &annotationsByGroups, bool isAmino) const;
+    void prepareQualifiersToWrite(QMap<AnnotationGroup *, QList<SharedAnnotationData> > &annotationsByGroups, bool isAmino) const;
 
     enum VntiDnaFeatureTypes {
         DnaAttenuator          = 0,

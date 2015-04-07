@@ -19,11 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include "GenbankLocationParser.h"
-
-#include <U2Core/AnnotationData.h>
 #include <U2Core/Log.h>
 #include <U2Core/TextUtils.h>
+
+#include "GenbankLocationParser.h"
 
 namespace U2 {
 
@@ -596,7 +595,7 @@ QString LocationParser::parseLocation( const char* _str, int _len, U2Location& l
     return errorReport;
 }
 
-QString LocationParser::buildLocationString(const AnnotationData* d) {
+QString LocationParser::buildLocationString(const SharedAnnotationData &d) {
     QVector<U2Region> location = d->getRegions();
     bool complement = d->getStrand().isCompementary();
     bool multi = location.size() > 1;
@@ -633,4 +632,6 @@ QString LocationParser::buildLocationString( const QVector<U2Region>& regions )
     return locationStr;
 }
 
-}}//namespace
+}
+
+}//namespace

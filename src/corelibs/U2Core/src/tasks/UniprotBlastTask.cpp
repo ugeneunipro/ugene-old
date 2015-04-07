@@ -76,7 +76,7 @@ void ReplyHandler::sendRequest() {
 
 void ReplyHandler::sl_replyFinished() {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-    CHECK_EXT(!os->isCoR(), emit si_finish(), );
+    CHECK_EXT(!os->isCoR(), emit si_finish(),);
 
     timer.stop();
 
@@ -174,7 +174,7 @@ void ReplyHandler::sl_onError(QNetworkReply::NetworkError error) {
 
 void ReplyHandler::sl_onReadyRead() {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-    CHECK(NULL != reply, );
+    CHECK(NULL != reply,);
     readData(reply);
 }
 
@@ -280,32 +280,32 @@ void XmlUniprotParser::parse(const QByteArray &data) {
     pDoc.setContent(data);
 
     QDomElement docElement = pDoc.documentElement();
-    CHECK_EXT(!docElement.childNodes().isEmpty(), setError("There is no any child nodes"), );
+    CHECK_EXT(!docElement.childNodes().isEmpty(), setError("There is no any child nodes"),);
 
     QDomElement sequenceSimilaritySearchResultElement = docElement.firstChildElement(SEQUENCE_SIMILARITY_SEARCH_RESULT);
-    CHECK_EXT(!sequenceSimilaritySearchResultElement.isNull(), setError(QString("%1 element is NULL").arg(SEQUENCE_SIMILARITY_SEARCH_RESULT)), );
+    CHECK_EXT(!sequenceSimilaritySearchResultElement.isNull(), setError(QString("%1 element is NULL").arg(SEQUENCE_SIMILARITY_SEARCH_RESULT)),);
 
     QDomElement hitsElement = sequenceSimilaritySearchResultElement.firstChildElement(HITS);
-    CHECK_EXT(!hitsElement.isNull(), setError(QString("%1 element is NULL").arg(HITS)), );
+    CHECK_EXT(!hitsElement.isNull(), setError(QString("%1 element is NULL").arg(HITS)),);
 
     buf = hitsElement.attribute(HITS_TOTAL);
     int hitsTotal = buf.toInt(&ok);
-    CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(HITS + HITS_TOTAL).arg(buf), );
+    CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(HITS + HITS_TOTAL).arg(buf),);
 
     // Parse all hits
     QDomElement hitElement = hitsElement.firstChildElement(HIT);
-    CHECK_EXT(!hitElement.isNull() || hitsTotal == 0, setError(QString("%1 element is NULL").arg(HIT)), );
+    CHECK_EXT(!hitElement.isNull() || hitsTotal == 0, setError(QString("%1 element is NULL").arg(HIT)),);
 
     for (int hit = 0;
          hit < hitsTotal;
          hit++, hitElement = hitElement.nextSiblingElement(HIT)) {
         UniprotResult result;
 
-        CHECK_EXT(!hitElement.isNull(), setError(QString("%1 element is NULL").arg(HIT)), );
+        CHECK_EXT(!hitElement.isNull(), setError(QString("%1 element is NULL").arg(HIT)),);
 
         buf = hitElement.attribute(HIT_NUMBER);
         result.hitNumber = buf.toInt(&ok);
-        CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(HIT + HIT_NUMBER).arg(buf), );
+        CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(HIT + HIT_NUMBER).arg(buf),);
 
         result.database = hitElement.attribute(HIT_DATABASE);
         result.id = hitElement.attribute(HIT_ID);
@@ -316,97 +316,97 @@ void XmlUniprotParser::parse(const QByteArray &data) {
 
         buf = hitElement.attribute(HIT_LENGTH);
         result.length = buf.toInt(&ok);
-        CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(HIT + HIT_LENGTH).arg(buf), );
+        CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(HIT + HIT_LENGTH).arg(buf),);
 
         result.description = hitElement.attribute(HIT_DESCRIPTION);
 
         QDomElement alignmentsElement = hitElement.firstChildElement(ALIGNMENTS);
-        CHECK_EXT(!alignmentsElement.isNull(), setError(QString("%1 element is NULL").arg(ALIGNMENTS)), );
+        CHECK_EXT(!alignmentsElement.isNull(), setError(QString("%1 element is NULL").arg(ALIGNMENTS)),);
 
         buf = alignmentsElement.attribute(ALIGNMENTS_TOTAL);
         result.alignmentsTotal = buf.toInt(&ok);
-        CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(ALIGNMENTS + ALIGNMENTS_TOTAL).arg(buf), );
+        CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(ALIGNMENTS + ALIGNMENTS_TOTAL).arg(buf),);
 
         // Parse all alignments of the current hit
         QDomElement alignmentElement = alignmentsElement.firstChildElement(ALIGNMENT);
-        CHECK_EXT(!alignmentElement.isNull() || result.alignmentsTotal == 0, setError(QString("%1 element is NULL").arg(ALIGNMENT)), );
+        CHECK_EXT(!alignmentElement.isNull() || result.alignmentsTotal == 0, setError(QString("%1 element is NULL").arg(ALIGNMENT)),);
 
         for (int alignemnt = 0;
              alignemnt < result.alignmentsTotal;
              alignemnt++, alignmentElement = alignmentElement.nextSiblingElement(ALIGNMENT)) {
-            CHECK_EXT(!alignmentElement.isNull(), setError(QString("%1 element is NULL").arg(ALIGNMENT)), );
+            CHECK_EXT(!alignmentElement.isNull(), setError(QString("%1 element is NULL").arg(ALIGNMENT)),);
 
             buf = hitElement.attribute(ALIGNMENT_NUMBER);
             result.alignmentsNumber = buf.toInt(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(ALIGNMENT + ALIGNMENT_NUMBER).arg(buf), );
+            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(ALIGNMENT + ALIGNMENT_NUMBER).arg(buf),);
 
             QDomElement scoreElement = alignmentElement.firstChildElement(SCORE);
-            CHECK_EXT(!scoreElement.isNull(), setError(QString("%1 element is NULL").arg(SCORE)), );
+            CHECK_EXT(!scoreElement.isNull(), setError(QString("%1 element is NULL").arg(SCORE)),);
             buf = scoreElement.text();
             result.score = buf.toInt(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(SCORE).arg(buf), );
+            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(SCORE).arg(buf),);
 
             QDomElement bitsElement = alignmentElement.firstChildElement(BITS);
-            CHECK_EXT(!bitsElement.isNull(), setError(QString("%1 element is NULL").arg(BITS)), );
+            CHECK_EXT(!bitsElement.isNull(), setError(QString("%1 element is NULL").arg(BITS)),);
             buf = bitsElement.text();
             result.bits = buf.toDouble(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(BITS).arg(buf), );
+            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(BITS).arg(buf),);
 
             QDomElement expectationElement = alignmentElement.firstChildElement(EXPECTATION);
-            CHECK_EXT(!expectationElement.isNull(), setError(QString("%1 element is NULL").arg(EXPECTATION)), );
+            CHECK_EXT(!expectationElement.isNull(), setError(QString("%1 element is NULL").arg(EXPECTATION)),);
             buf = expectationElement.text();
             result.expectation = buf.toDouble(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(EXPECTATION).arg(buf), );
+            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(EXPECTATION).arg(buf),);
 
             QDomElement identityElement = alignmentElement.firstChildElement(IDENTITY);
-            CHECK_EXT(!identityElement.isNull(), setError(QString("%1 element is NULL").arg(IDENTITY)), );
+            CHECK_EXT(!identityElement.isNull(), setError(QString("%1 element is NULL").arg(IDENTITY)),);
             buf = identityElement.text();
             result.identity = buf.toDouble(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(IDENTITY).arg(buf), );
+            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(IDENTITY).arg(buf),);
 
             QDomElement positivesElement = alignmentElement.firstChildElement(POSITIVES);
-            CHECK_EXT(!positivesElement.isNull(), setError(QString("%1 element is NULL").arg(POSITIVES)), );
+            CHECK_EXT(!positivesElement.isNull(), setError(QString("%1 element is NULL").arg(POSITIVES)),);
             buf = positivesElement.text();
             result.positives = buf.toDouble(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(POSITIVES).arg(buf), );
+            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(POSITIVES).arg(buf),);
 
             QDomElement gapsElement = alignmentElement.firstChildElement(GAPS);
-            CHECK_EXT(!gapsElement.isNull(), setError(QString("%1 element is NULL").arg(GAPS)), );
+            CHECK_EXT(!gapsElement.isNull(), setError(QString("%1 element is NULL").arg(GAPS)),);
             buf = gapsElement.text();
             result.gaps = buf.toInt(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(GAPS).arg(buf), );
+            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(GAPS).arg(buf),);
 
             QDomElement strandElement = alignmentElement.firstChildElement(STRAND);
-            CHECK_EXT(!strandElement.isNull(), setError(QString("%1 element is NULL").arg(STRAND)), );
+            CHECK_EXT(!strandElement.isNull(), setError(QString("%1 element is NULL").arg(STRAND)),);
             result.strand = strandElement.text();
 
             QDomElement querySeqElement = alignmentElement.firstChildElement(QUERY_SEQ);
-            CHECK_EXT(!querySeqElement.isNull(), setError(QString("%1 element is NULL").arg(QUERY_SEQ)), );
+            CHECK_EXT(!querySeqElement.isNull(), setError(QString("%1 element is NULL").arg(QUERY_SEQ)),);
             result.querySeq = querySeqElement.text();
 
             buf = querySeqElement.attribute(QUERY_SEQ_START);
             result.querySeqStart = buf.toInt(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(QUERY_SEQ + QUERY_SEQ_START).arg(buf), );
+            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(QUERY_SEQ + QUERY_SEQ_START).arg(buf),);
 
             buf = querySeqElement.attribute(QUERY_SEQ_END);
             result.querySeqEnd = buf.toInt(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(QUERY_SEQ + QUERY_SEQ_END).arg(buf), );
+            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(QUERY_SEQ + QUERY_SEQ_END).arg(buf),);
 
             QDomElement patternElement = alignmentElement.firstChildElement(PATTERN);
-            CHECK_EXT(!patternElement.isNull(), setError(QString("%1 element is NULL").arg(PATTERN)), );
+            CHECK_EXT(!patternElement.isNull(), setError(QString("%1 element is NULL").arg(PATTERN)),);
             result.pattern = patternElement.text();
 
             QDomElement matchSeqElement = alignmentElement.firstChildElement(MATCH_SEQ);
-            CHECK_EXT(!matchSeqElement.isNull(), setError(QString("%1 element is NULL").arg(MATCH_SEQ)), );
+            CHECK_EXT(!matchSeqElement.isNull(), setError(QString("%1 element is NULL").arg(MATCH_SEQ)),);
             result.matchSeq = matchSeqElement.text();
 
             buf = matchSeqElement.attribute(MATCH_SEQ_START);
             result.matchSeqStart = buf.toInt(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(MATCH_SEQ + MATCH_SEQ_START).arg(buf), );
+            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(MATCH_SEQ + MATCH_SEQ_START).arg(buf),);
 
             buf = matchSeqElement.attribute(MATCH_SEQ_END);
             result.matchSeqEnd = buf.toInt(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(MATCH_SEQ + MATCH_SEQ_END).arg(buf), );
+            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(MATCH_SEQ + MATCH_SEQ_END).arg(buf),);
         }
 
         results << result;
@@ -513,8 +513,8 @@ UniprotBlastTask::~UniprotBlastTask() {
 }
 
 void UniprotBlastTask::run() {
-    CHECK(isCanceled() == false, );
-    CHECK(hasError() == false, );
+    CHECK(isCanceled() == false,);
+    CHECK(hasError() == false,);
 
     loop = new QEventLoop;
     stateInfo.progress = 0;
@@ -556,7 +556,7 @@ void UniprotBlastTask::run() {
 }
 
 void UniprotBlastTask::sl_exitLoop() {
-    SAFE_POINT(loop != NULL, "Main task loop is NULL", );
+    SAFE_POINT(loop != NULL, "Main task loop is NULL",);
     loop->exit();
 }
 
@@ -598,58 +598,58 @@ QString UniprotBlastTask::generateUrl() {
 //////////////////////////////////////////////////////////////////////////
 //UniprotBlastAndLoadDASAnnotations
 UniprotBlastAndLoadDASAnnotations::UniprotBlastAndLoadDASAnnotations(
-    const DASAnnotationsSettings &_settings )
-    : Task( tr( "BLAST IDs and DAS annotations" ), TaskFlags(TaskFlag_CancelOnSubtaskCancel) | TaskFlag_NoRun ),
-    settings(_settings), blastTask( NULL ),
-    dasData( _settings.sequence.length( ), _settings.identityThreshold )
+    const DASAnnotationsSettings &_settings)
+    : Task(tr("BLAST IDs and DAS annotations"), TaskFlags(TaskFlag_CancelOnSubtaskCancel) | TaskFlag_NoRun),
+    settings(_settings), blastTask(NULL),
+    dasData(_settings.sequence.length(), _settings.identityThreshold)
 {
 
 }
 
-void UniprotBlastAndLoadDASAnnotations::prepare( ) {
-    blastTask = new UniprotBlastTask( settings.sequence, settings.blastSettings );
-    addSubTask( blastTask );
+void UniprotBlastAndLoadDASAnnotations::prepare() {
+    blastTask = new UniprotBlastTask(settings.sequence, settings.blastSettings);
+    addSubTask(blastTask);
 }
 
-static bool identityLessThan( const UniprotResult &a, const UniprotResult &b ) {
+static bool identityLessThan(const UniprotResult &a, const UniprotResult &b) {
     return a.identity > b.identity;
 }
 
-QList<Task *> UniprotBlastAndLoadDASAnnotations::onSubTaskFinished( Task *subTask ){
+QList<Task *> UniprotBlastAndLoadDASAnnotations::onSubTaskFinished(Task *subTask){
     QList<Task *> subtasks;
 
-    if ( isCanceled( ) ) {
+    if (isCanceled()) {
         return subtasks;
     }
 
-    if ( subTask == blastTask ) {
+    if (subTask == blastTask) {
         if (subTask->hasError()) {
             setError(subTask->getError());
         }
 
-        QList<UniprotResult> uniprotResults = blastTask->getResults( );
+        QList<UniprotResult> uniprotResults = blastTask->getResults();
         //take first results with the highest identity
-        qSort( uniprotResults.begin( ), uniprotResults.end( ), identityLessThan );
-        for ( int i = 0; dasTasks.size( ) < settings.maxResults && i < uniprotResults.size( );
-            i++ )
+        qSort(uniprotResults.begin(), uniprotResults.end(), identityLessThan);
+        for (int i = 0; dasTasks.size() < settings.maxResults && i < uniprotResults.size();
+            i++)
         {
-            const UniprotResult &uniprotRes = uniprotResults.at( i );
-            if ( uniprotRes.identity >= settings.identityThreshold ) {
-                if ( uniprotRes.accession.isEmpty( ) ) {
+            const UniprotResult &uniprotRes = uniprotResults.at(i);
+            if (uniprotRes.identity >= settings.identityThreshold) {
+                if (uniprotRes.accession.isEmpty()) {
                     continue;
                 }
 
-                foreach ( const DASSource &featureSource, settings.featureSources ) {
+                foreach (const DASSource &featureSource, settings.featureSources) {
                     LoadDasObjectTask *loadAnnotationsTask
-                        = new LoadDasObjectTask( uniprotRes.accession, featureSource, DASFeatures );
+                        = new LoadDasObjectTask(uniprotRes.accession, featureSource, DASFeatures);
                     dasTasks << loadAnnotationsTask;
                 }
             }
         }
         subtasks = dasTasks;
-    }else if ( dasTasks.contains(subTask ) ) {
-        LoadDasObjectTask *loadDasObjectTask = qobject_cast<LoadDasObjectTask *>( subTask );
-        if ( !loadDasObjectTask ) {
+    }else if (dasTasks.contains(subTask)) {
+        LoadDasObjectTask *loadDasObjectTask = qobject_cast<LoadDasObjectTask *>(subTask);
+        if (!loadDasObjectTask) {
             return subtasks;
         }
 
@@ -657,15 +657,15 @@ QList<Task *> UniprotBlastAndLoadDASAnnotations::onSubTaskFinished( Task *subTas
             problems.append(tr("Server \"%1\" is not available!").arg(loadDasObjectTask->getSource().getName()));
         }
 
-        dasTasks.removeAll( loadDasObjectTask );
+        dasTasks.removeAll(loadDasObjectTask);
 
-        dasData.addDasGroup( loadDasObjectTask->getAccession( ), loadDasObjectTask->getAnnotationData( ) );
+        dasData.addDasGroup(loadDasObjectTask->getAccession(), loadDasObjectTask->getAnnotationData());
     }
     return subtasks;
 }
 
-QList<AnnotationData> UniprotBlastAndLoadDASAnnotations::prepareResults( ) {
-    return dasData.prepareResults( );
+QList<SharedAnnotationData> UniprotBlastAndLoadDASAnnotations::prepareResults() {
+    return dasData.prepareResults();
 }
 
 
@@ -679,7 +679,7 @@ QStringList DASAnnotationData::getAccessionNumbers(){
     return result;
 }
 
-DASGroup DASAnnotationData::getDasGroup( const QString& accNumber ){
+DASGroup DASAnnotationData::getDasGroup(const QString& accNumber){
     DASGroup dasGroup;
 
     if (contains(accNumber)){
@@ -689,56 +689,56 @@ DASGroup DASAnnotationData::getDasGroup( const QString& accNumber ){
     return dasGroup;
 }
 
-void DASAnnotationData::addDasGroup( const QString &accNumber, const DASGroup &dasGroup ) {
-    if ( !contains(accNumber ) ) {
-        dasData.insert( accNumber, dasGroup );
+void DASAnnotationData::addDasGroup(const QString &accNumber, const DASGroup &dasGroup) {
+    if (!contains(accNumber)) {
+        dasData.insert(accNumber, dasGroup);
     } else {
         DASGroup &curData = dasData[accNumber];
-        const QStringList &keys =  dasGroup.keys( );
+        const QStringList &keys =  dasGroup.keys();
         foreach(const QString& key, keys){
-            if ( curData.contains( key ) ) {
-                const QList<AnnotationData> &curList = curData[key];
-                const QList<AnnotationData> &tomergeList = dasGroup[key];
-                foreach ( const AnnotationData &d, tomergeList ) {
-                    if ( !curList.contains(d ) ) {
-                        curData[key].append( d );
+            if (curData.contains(key)) {
+                const QList<SharedAnnotationData> &curList = curData[key];
+                const QList<SharedAnnotationData> &tomergeList = dasGroup[key];
+                foreach (const SharedAnnotationData &d, tomergeList) {
+                    if (!curList.contains(d)) {
+                        curData[key].append(d);
                     }
                 }
             } else {
-                curData.insert( key, dasGroup[key] );
+                curData.insert(key, dasGroup[key]);
             }
         }
     }
 }
 
-bool DASAnnotationData::contains( const QString& accessionNumber ){
+bool DASAnnotationData::contains(const QString& accessionNumber){
     return dasData.contains(accessionNumber);
 }
 
-QList<AnnotationData> DASAnnotationData::prepareResults( ) {
-    QList<AnnotationData> res;
+QList<SharedAnnotationData> DASAnnotationData::prepareResults() {
+    QList<SharedAnnotationData> res;
 
-    QStringList accessionNumbers = dasData.keys( );
-    foreach ( const QString &key, accessionNumbers ) {
-        const DASGroup &dasGroup = dasData.value( key );
-        QStringList groupNames = dasGroup.keys( );
-        foreach ( const QString &groupKey, groupNames ) {
-            const QList<AnnotationData> &sdata = dasGroup.value( groupKey );
-            foreach ( AnnotationData d, sdata ) {
-                const U2Location &location = d.location;
-                if ( location->isSingleRegion( ) && U2_REGION_MAX == location->regions.first( ) ) {
+    QStringList accessionNumbers = dasData.keys();
+    foreach (const QString &key, accessionNumbers) {
+        const DASGroup &dasGroup = dasData.value(key);
+        QStringList groupNames = dasGroup.keys();
+        foreach (const QString &groupKey, groupNames) {
+            const QList<SharedAnnotationData> &sdata = dasGroup.value(groupKey);
+            foreach (SharedAnnotationData d, sdata) {
+                const U2Location &location = d->location;
+                if (location->isSingleRegion() && U2_REGION_MAX == location->regions.first()) {
                     //setRegion for full region sequence
                     U2Location newLoc = location;
-                    newLoc->regions.clear( );
-                    newLoc->regions.append( U2Region( 0, seqLen ) );
-                    d.location = location;
+                    newLoc->regions.clear();
+                    newLoc->regions.append(U2Region(0, seqLen));
+                    d->location = location;
                 } else {
                     //cut annotations with the start position out of the current sequence
-                    if ( location->regions.size( ) > 0 && location->regions.first( ).startPos >= seqLen ) {
+                    if (location->regions.size() > 0 && location->regions.first().startPos >= seqLen) {
                         continue;
                     }
                 }
-                res.append( d );
+                res.append(d);
             }
         }
     }

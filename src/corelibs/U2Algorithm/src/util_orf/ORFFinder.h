@@ -49,19 +49,19 @@ public:
         return region == o.region && frame == o.frame;
     }
 
-    AnnotationData toAnnotation(const QString& name) const {
-        AnnotationData data;
-        data.name = name;
-        data.location->regions << region;
+    SharedAnnotationData toAnnotation(const QString &name) const {
+        SharedAnnotationData data(new AnnotationData);
+        data->name = name;
+        data->location->regions << region;
         int regLen = region.length;
         if(isJoined){
-            data.location->regions << joinedRegion;
+            data->location->regions << joinedRegion;
             regLen += joinedRegion.length;
         }
-        data.setStrand(frame < 0 ? U2Strand::Complementary : U2Strand::Direct);
-        data.qualifiers.append(U2Qualifier("dna_len", QString::number(regLen)));
+        data->setStrand(frame < 0 ? U2Strand::Complementary : U2Strand::Direct);
+        data->qualifiers.append(U2Qualifier("dna_len", QString::number(regLen)));
         if (regLen >= 6) { // 3 bp - end codon
-            data.qualifiers.append(U2Qualifier("protein_len", QString::number(regLen/3)));
+            data->qualifiers.append(U2Qualifier("protein_len", QString::number(regLen/3)));
         }
         return data;
     }
@@ -71,10 +71,10 @@ public:
     int frame;
     bool isJoined;
 
-    static QList<AnnotationData> toTable(const QList<ORFFindResult>& res, const QString& name) {
-        QList<AnnotationData> list;
-        foreach ( const ORFFindResult &f, res ) {
-            list << f.toAnnotation( name );
+    static QList<SharedAnnotationData> toTable(const QList<ORFFindResult>& res, const QString& name) {
+        QList<SharedAnnotationData> list;
+        foreach (const ORFFindResult &f, res) {
+            list << f.toAnnotation(name);
         }
         return list;
     }

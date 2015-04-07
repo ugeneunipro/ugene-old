@@ -48,7 +48,7 @@
 namespace U2 {
 
 SecStructPredictViewAction::SecStructPredictViewAction(AnnotatedDNAView* v) :
-    ADVGlobalAction(v, QIcon(":core//images//ssp_logo.png"),  tr("Predict secondary structure...") )
+    ADVGlobalAction(v, QIcon(":core//images//ssp_logo.png"),  tr("Predict secondary structure..."))
 {
     connect(this, SIGNAL(triggered()), SLOT(sl_execute()));
     setObjectName("Predict secondary structure");
@@ -60,13 +60,13 @@ SecStructPredictViewAction::SecStructPredictViewAction(AnnotatedDNAView* v) :
 void SecStructPredictViewAction::sl_execute() {
     QAction *a = dynamic_cast<QAction*>(sender());
     GObjectViewAction *viewAction = dynamic_cast<GObjectViewAction*>(a);
-    SAFE_POINT(NULL != viewAction, "NULL action", );
+    SAFE_POINT(NULL != viewAction, "NULL action",);
 
     AnnotatedDNAView *av = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
-    SAFE_POINT(NULL != av, "NULL dna view", );
+    SAFE_POINT(NULL != av, "NULL dna view",);
 
     SecStructPredictAlgRegistry *sspar = AppContext::getSecStructPredictAlgRegistry();
-    SAFE_POINT(NULL != sspar, "NULL SecStructPredictAlgRegistry", );
+    SAFE_POINT(NULL != sspar, "NULL SecStructPredictAlgRegistry",);
 
     if (sspar->getAlgNameList().isEmpty()) {
         QMessageBox::information(av->getWidget(),
@@ -76,15 +76,15 @@ void SecStructPredictViewAction::sl_execute() {
     }
 
     ADVSequenceObjectContext *seqCtx = av->getSequenceInFocus();
-    SAFE_POINT(NULL != seqCtx, "NULL sequence context", );
-    SAFE_POINT(NULL != seqCtx->getAlphabet(), "NULL alphabet", );
-    SAFE_POINT(seqCtx->getAlphabet()->isAmino(), "Wrong alphabet", );
+    SAFE_POINT(NULL != seqCtx, "NULL sequence context",);
+    SAFE_POINT(NULL != seqCtx->getAlphabet(), "NULL alphabet",);
+    SAFE_POINT(seqCtx->getAlphabet()->isAmino(), "Wrong alphabet",);
 
     SecStructDialog secStructDialog(seqCtx, av->getWidget());
     secStructDialog.exec();
 }
 
-ADVGlobalAction* SecStructPredictViewAction::createAction( AnnotatedDNAView* av )
+ADVGlobalAction* SecStructPredictViewAction::createAction(AnnotatedDNAView* av)
 {
     ADVGlobalAction* action = new SecStructPredictViewAction(av);
 
@@ -98,7 +98,7 @@ SecStructPredictViewAction::~SecStructPredictViewAction()
 }
 
 
-QString SecStructPredictUtils::getStructNameForCharTag( char tag )
+QString SecStructPredictUtils::getStructNameForCharTag(char tag)
 {
     SecondaryStructure::Type type = SecondaryStructure::Type_None;
     switch(tag) {
@@ -130,23 +130,23 @@ QString SecStructPredictUtils::getStructNameForCharTag( char tag )
     return BioStruct3D::getSecStructTypeName(type);
 }
 
-QList<AnnotationData> SecStructPredictUtils::saveAlgorithmResultsAsAnnotations( const QByteArray& predicted, const QString& annotationName )
+QList<SharedAnnotationData> SecStructPredictUtils::saveAlgorithmResultsAsAnnotations(const QByteArray& predicted, const QString& annotationName)
 {
     char emptyCoil = 'C';
 
     int numAcronyms = predicted.length();
-    QList<AnnotationData> predictedStructures;
+    QList<SharedAnnotationData> predictedStructures;
     char prevChar = predicted.at(0);
     int lastRecordedPos = 0;
     for (int i = 1; i < numAcronyms; ++i) {
         char curChar = predicted.at(i);
-        if ( (curChar != prevChar) || (i == numAcronyms - 1)) {
-            if ( prevChar != emptyCoil ) {
-                AnnotationData sd;
-                sd.type = U2FeatureTypes::SeconadaryStructure;
-                sd.name = annotationName;
-                sd.location->regions.append(U2Region(lastRecordedPos, i - lastRecordedPos));
-                sd.qualifiers.append(U2Qualifier(BioStruct3D::SecStructTypeQualifierName, getStructNameForCharTag(prevChar)));
+        if ((curChar != prevChar) || (i == numAcronyms - 1)) {
+            if (prevChar != emptyCoil) {
+                SharedAnnotationData sd(new AnnotationData);
+                sd->type = U2FeatureTypes::SeconadaryStructure;
+                sd->name = annotationName;
+                sd->location->regions.append(U2Region(lastRecordedPos, i - lastRecordedPos));
+                sd->qualifiers.append(U2Qualifier(BioStruct3D::SecStructTypeQualifierName, getStructNameForCharTag(prevChar)));
                 predictedStructures.append(sd);
             }
             lastRecordedPos = i;

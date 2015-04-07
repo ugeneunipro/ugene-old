@@ -57,17 +57,17 @@ void ExportPrimersToDatabaseTask::run() {
         dbiSequences.objects << sequenceId;
         CHECK_OP(stateInfo, );
 
-        AnnotationData annotation;
-        annotation.name = GBFeatureUtils::getKeyInfo(GBFeatureKey_primer_bind).text;
-        annotation.location->regions << U2Region(0, primer.sequence.length());
-        annotation.qualifiers << U2Qualifier("sequence", primer.sequence);
-        annotation.qualifiers.append(U2Qualifier("tm", QString::number(primer.tm)));
-        annotation.qualifiers.append(U2Qualifier("gc%", QString::number(primer.gc)));
+        SharedAnnotationData annotation(new AnnotationData);
+        annotation->name = GBFeatureUtils::getKeyInfo(GBFeatureKey_primer_bind).text;
+        annotation->location->regions << U2Region(0, primer.sequence.length());
+        annotation->qualifiers << U2Qualifier("sequence", primer.sequence);
+        annotation->qualifiers.append(U2Qualifier("tm", QString::number(primer.tm)));
+        annotation->qualifiers.append(U2Qualifier("gc%", QString::number(primer.gc)));
 
         QVariantMap hints;
         hints[DocumentFormat::DBI_FOLDER_HINT] = folder;
         AnnotationTableObject annotationTable(primer.name + " features", dbiRef, hints);
-        annotationTable.addAnnotation(annotation);
+        annotationTable.addAnnotations(QList<SharedAnnotationData>() << annotation);
         dbiAnnotations.objects << annotationTable.getEntityRef().entityId;
 
         const GObjectReference sequenceRef(U2DbiUtils::ref2Url(dbiRef), primer.name, GObjectTypes::SEQUENCE, U2EntityRef(dbiRef, sequenceId));

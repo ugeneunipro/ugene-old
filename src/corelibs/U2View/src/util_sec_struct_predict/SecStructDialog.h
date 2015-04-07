@@ -32,9 +32,8 @@ class SecStructPredictTask;
 class SecStructPredictAlgRegistry;
 class Task;
 
-class U2VIEW_EXPORT SecStructDialog : public QDialog, private Ui::SecStructDialog    {
+class U2VIEW_EXPORT SecStructDialog : public QDialog, private Ui::SecStructDialog {
     Q_OBJECT
-
 public:
     SecStructDialog(ADVSequenceObjectContext* ctx, QWidget *p = NULL);
 
@@ -48,13 +47,13 @@ private slots:
 private:
     int rangeStart;
     int rangeEnd;
-    QList<AnnotationData> results;
-    ADVSequenceObjectContext* ctx;
-    SecStructPredictTask* task;
-    SecStructPredictAlgRegistry* sspr;
-    QPushButton* saveAnnotationButton;
-    QPushButton* startButton;
-    QPushButton* cancelButton;
+    QList<SharedAnnotationData> results;
+    ADVSequenceObjectContext *ctx;
+    SecStructPredictTask *task;
+    SecStructPredictAlgRegistry *sspr;
+    QPushButton *saveAnnotationButton;
+    QPushButton *startButton;
+    QPushButton *cancelButton;
     void connectGUI();
     void updateState();
     void showResults();

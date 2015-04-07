@@ -58,7 +58,7 @@ class GTest_FindAnnotationByNum : public GTest {
 
     ReportResult report();
 
-    AnnotationData getAnnotation() const {return result;}
+    Annotation * getAnnotation() const {return result;}
 
     void cleanup();
 
@@ -66,7 +66,7 @@ private:
     QString     objContextName;
     QString     annotationContextName;
     int         number;
-    AnnotationData result;
+    Annotation *result;
 };
 
 class GTest_FindAnnotationByName : public GTest {
@@ -75,7 +75,7 @@ class GTest_FindAnnotationByName : public GTest {
 
     ReportResult report();
 
-    AnnotationData getAnnotation() const {return result;}
+    Annotation * getAnnotation() const {return result;}
 
     void cleanup();
 
@@ -84,7 +84,7 @@ private:
     QString     annotationContextName;
     QString     aName;
     int         number;
-    AnnotationData  result;
+    Annotation *result;
 };
 
 class GTest_FindAnnotationByLocation : public GTest {
@@ -93,7 +93,7 @@ class GTest_FindAnnotationByLocation : public GTest {
 
     ReportResult report();
 
-    AnnotationData getAnnotation() const {return result;}
+    Annotation * getAnnotation() const {return result;}
 
     void cleanup();
 
@@ -102,7 +102,7 @@ private:
     QString     annotationContextName;
     U2Region    location;
     U2Strand    strand;
-    AnnotationData  result;
+    Annotation *result;
 };
 
 class GTest_CheckAnnotationLocation : public GTest {

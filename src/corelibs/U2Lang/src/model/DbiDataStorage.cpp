@@ -59,7 +59,6 @@ DbiDataStorage::DbiDataStorage()
 DbiDataStorage::~DbiDataStorage() {
     foreach (const U2DbiId &id, connections.keys()) {
         DbiConnection *connection = connections[id];
-        U2FeatureUtils::cleanupAnnotationCache(connection->dbi->getDbiRef());
         delete connection;
     }
     foreach (const U2DbiId &dbiId, dbiList.keys()) {
@@ -168,21 +167,20 @@ SharedDbiDataHandler DbiDataStorage::putAlignment(const MAlignment &al) {
     return handler;
 }
 
-SharedDbiDataHandler DbiDataStorage::putAnnotationTable( const QList<AnnotationData> &anns ) {
-    SAFE_POINT( NULL != dbiHandle, "Invalid DBI handle!", SharedDbiDataHandler( ) );
+SharedDbiDataHandler DbiDataStorage::putAnnotationTable(const QList<SharedAnnotationData> &anns) {
+    SAFE_POINT(NULL != dbiHandle, "Invalid DBI handle!", SharedDbiDataHandler());
 
-    AnnotationTableObject obj( "Annotations", dbiHandle->getDbiRef( ) );
+    AnnotationTableObject obj("Annotations", dbiHandle->getDbiRef());
     U2OpStatusImpl os;
-    obj.addAnnotations( anns, os );
-    obj.ref( );
+    obj.addAnnotations(anns);
+    SAFE_POINT_OP(os, SharedDbiDataHandler());
 
-    U2EntityRef ent = obj.getEntityRef( );
+    U2EntityRef ent = obj.getEntityRef();
 
-    DbiConnection *connection = this->getConnection( dbiHandle->getDbiRef( ), os );
-    SAFE_POINT_OP( os, SharedDbiDataHandler( ) );
+    DbiConnection *connection = this->getConnection(dbiHandle->getDbiRef(), os);
+    SAFE_POINT_OP(os, SharedDbiDataHandler());
 
-    SharedDbiDataHandler handler( new DbiDataHandler( ent, connection->dbi->getObjectDbi( ),
-        true ) );
+    SharedDbiDataHandler handler(new DbiDataHandler(ent, connection->dbi->getObjectDbi(), true));
 
     return handler;
 }
@@ -195,11 +193,9 @@ SharedDbiDataHandler DbiDataStorage::putAnnotationTable(AnnotationTableObject *a
 
     U2EntityRef entityRef = annTable->getEntityRef();
     if (annTable->getEntityRef().dbiRef != dbiHandle->getDbiRef()) {
-        AnnotationTableObject *clonedTable = qobject_cast<AnnotationTableObject *>(annTable->clone(dbiHandle->getDbiRef(), os));
+        QScopedPointer<AnnotationTableObject> clonedTable(qobject_cast<AnnotationTableObject *>(annTable->clone(dbiHandle->getDbiRef(), os)));
         SAFE_POINT_OP(os, SharedDbiDataHandler());
-        clonedTable->ref();
         entityRef = clonedTable->getEntityRef();
-        delete clonedTable;
     }
 
     DbiConnection *connection = getConnection(dbiHandle->getDbiRef(), os);
@@ -267,7 +263,7 @@ U2DbiRef DbiDataStorage::createTmpDbi(U2OpStatus &os) {
 
 void DbiDataStorage::openDbi(const U2DbiRef &dbiRef, U2OpStatus &os) {
     QScopedPointer<DbiConnection> con(new DbiConnection(dbiRef, false, os));
-    CHECK_OP(os, );
+    CHECK_OP(os,);
 
     dbiList[dbiRef.dbiId] = false;
     connections[dbiRef.dbiId] = con.take();
@@ -352,12 +348,12 @@ QList<AnnotationTableObject *> StorageUtils::getAnnotationTableObjects(DbiDataSt
     return getAnnotationTableObjects(storage, handlers);
 }
 
-QList<AnnotationData> StorageUtils::getAnnotationTable(DbiDataStorage *storage, const QVariant &annObjList) {
-    QList<AnnotationData> result;
+QList<SharedAnnotationData> StorageUtils::getAnnotationTable(DbiDataStorage *storage, const QVariant &annObjList) {
+    QList<SharedAnnotationData> result;
     const QList<SharedDbiDataHandler> handlers = getAnnotationTableHandlers(annObjList);
 
     foreach (const SharedDbiDataHandler &annTableId, handlers) {
-        //U2Object *dbObject = storage->getObject( annTableId, U2Type::AnnotationTable );
+        //U2Object *dbObject = storage->getObject(annTableId, U2Type::AnnotationTable);
         U2Object *dbObject = storage->getObject(annTableId, 10);
         QScopedPointer<U2AnnotationTable> table(dynamic_cast<U2AnnotationTable *>(dbObject));
         SAFE_POINT(NULL != table, "Invalid annotation table object referenced!", result);
@@ -366,8 +362,8 @@ QList<AnnotationData> StorageUtils::getAnnotationTable(DbiDataStorage *storage, 
         QString objName = table->visualName;
 
         AnnotationTableObject annTableObj(objName, tableRef);
-        foreach (const Annotation &a, annTableObj.getAnnotations()) {
-            result << a.getData();
+        foreach (Annotation *a, annTableObj.getAnnotations()) {
+            result << a->getData();
         }
     }
     return result;

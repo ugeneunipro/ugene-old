@@ -63,7 +63,7 @@ class SiteconResultItem : public QTreeWidgetItem {
 public:
     SiteconResultItem(const SiteconSearchResult& r);
     SiteconSearchResult res;
-    virtual bool operator< ( const QTreeWidgetItem & other ) const {
+    virtual bool operator< (const QTreeWidgetItem & other) const {
         const SiteconResultItem* o = (const SiteconResultItem*)&other;
         int n = treeWidget()->sortColumn();
         switch (n) {
@@ -257,11 +257,11 @@ void SiteconSearchDialogController::sl_onSaveAnnotations() {
     if (rc != QDialog::Accepted) {
         return;
     }
-    const QString& name = m.data.name;
-    QList<AnnotationData> list;
+    const QString& name = m.data->name;
+    QList<SharedAnnotationData> list;
     for (int i=0, n = resultsTree->topLevelItemCount(); i<n; ++i) {
         SiteconResultItem* item = static_cast<SiteconResultItem* >(resultsTree->topLevelItem(i));
-        list.append( item->res.toAnnotation( name ) );
+        list.append(item->res.toAnnotation(name));
     }
 
     CreateAnnotationsTask* t = new CreateAnnotationsTask(m.getAnnotationObject(), list, m.groupName);

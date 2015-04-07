@@ -173,7 +173,7 @@ public:
     Task::ReportResult report();
 
 private:
-    AnnotationData oligoToAnnotation(const QString& title, const Primer &primer, int productSize, U2Strand strand);
+    SharedAnnotationData oligoToAnnotation(const QString& title, const Primer &primer, int productSize, U2Strand strand);
 
     Primer3TaskSettings settings;
 

@@ -76,7 +76,7 @@ class CustomPatternAnnotationTask :  public Task
     Q_OBJECT
 public:
     CustomPatternAnnotationTask(AnnotationTableObject* aobj, const U2EntityRef& entityRef, const SharedFeatureStore& store,
-        const QStringList& filteredFeatures = QStringList() );
+        const QStringList& filteredFeatures = QStringList());
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task* subTask);
@@ -91,7 +91,7 @@ public:
 private:
     QSharedPointer<SArrayIndex> index;
     QMap<Task*, PatternInfo> taskFeatureNames;
-    QList<AnnotationData> annotations;
+    QList<SharedAnnotationData> annotations;
     U2SequenceObject dnaObj;
     AnnotationTableObject* aTableObj;
     QByteArray sequence;

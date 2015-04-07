@@ -307,7 +307,7 @@ void QDDialog::addAnnotationsWidget() {
     acm.hideAnnotationType = true;
     acm.hideAnnotationName = true;
     acm.hideLocation = true;
-    acm.data.name = "Query_results";
+    acm.data->name = "Query_results";
     acm.useUnloadedObjects = true;
     acm.sequenceLen = dnaso->getSequenceLength();
     cawc = new CreateAnnotationWidgetController(acm, this);

@@ -148,9 +148,9 @@ bool GenericDocReader::isDone() {
 
 void GenericDocReader::sl_taskFinished() {
     NoFailTaskWrapper *wrapper = qobject_cast<NoFailTaskWrapper*>(sender());
-    SAFE_POINT(NULL != wrapper, "NULL wrapper task", );
+    SAFE_POINT(NULL != wrapper, "NULL wrapper task",);
     Task *t = wrapper->originalTask();
-    CHECK(t->isFinished(), );
+    CHECK(t->isFinished(),);
     if (t->hasError()) {
         monitor()->addTaskError(wrapper, t->getError());
         return;
@@ -220,7 +220,7 @@ void LoadMSATask::prepare() {
 void LoadMSATask::run() {
     QFileInfo fi(url);
     if(!fi.exists()){
-        stateInfo.setError(  tr("File '%1' not exists").arg(url) );
+        stateInfo.setError( tr("File '%1' not exists").arg(url));
         return;
     }
     DocumentFormat* format = NULL;
@@ -240,7 +240,7 @@ void LoadMSATask::run() {
         }
     }
     if (format == NULL) {
-        stateInfo.setError( tr("Unsupported document format: %1").arg(url) );
+        stateInfo.setError(tr("Unsupported document format: %1").arg(url));
         return;
     }
     ioLog.info(tr("Reading MSA from %1 [%2]").arg(url).arg(format->getFormatName()));
@@ -249,7 +249,7 @@ void LoadMSATask::run() {
     cfg[DocumentFormat::DBI_REF_HINT] = qVariantFromValue(storage->getDbiRef());
     cfg[DocumentReadingMode_DontMakeUniqueNames] = true;
     QScopedPointer<Document> doc(format->loadDocument(iof, url, cfg, stateInfo));
-    CHECK_OP(stateInfo, );
+    CHECK_OP(stateInfo,);
     doc->setDocumentOwnsDbiResources(false);
 
     if (!doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT).isEmpty()) {
@@ -262,7 +262,7 @@ void LoadMSATask::run() {
         MAlignment ma = MSAUtils::seq2ma(doc->findGObjectByType(GObjectTypes::SEQUENCE), stateInfo);
 
         U2EntityRef msaRef = MAlignmentImporter::createAlignment(storage->getDbiRef(), ma, stateInfo);
-        CHECK_OP(stateInfo, );
+        CHECK_OP(stateInfo,);
 
         SharedDbiDataHandler handler = storage->getDataHandler(msaRef);
         QVariant res = qVariantFromValue<SharedDbiDataHandler>(handler);
@@ -343,13 +343,13 @@ void LoadSeqTask::prepare() {
 }
 
 void LoadSeqTask::run() {
-    CHECK(NULL != format, );
+    CHECK(NULL != format,);
     ioLog.info(tr("Reading sequences from %1 [%2]").arg(url).arg(format->getFormatName()));
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     cfg[DocumentFormat::DBI_REF_HINT] = qVariantFromValue(storage->getDbiRef());
     cfg[DocumentReadingMode_DontMakeUniqueNames] = true;
     QScopedPointer<Document> doc(format->loadDocument(iof, url, cfg, stateInfo));
-    CHECK_OP(stateInfo, );
+    CHECK_OP(stateInfo,);
     doc->setDocumentOwnsDbiResources(false);
 
     DbiOperationsBlock opBlock(storage->getDbiRef(), stateInfo);
@@ -358,49 +358,48 @@ void LoadSeqTask::run() {
         QList<GObject*> seqObjs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
         QList<GObject*> annObjs = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
         QList<GObject*> allLoadedAnnotations = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-        foreach ( GObject *go, seqObjs ) {
-            SAFE_POINT( NULL != go, "Invalid object encountered!", );
-            if ( !selector->objectMatches( static_cast<U2SequenceObject *>( go ) ) ) {
+        foreach (GObject *go, seqObjs) {
+            SAFE_POINT(NULL != go, "Invalid object encountered!",);
+            if (!selector->objectMatches(static_cast<U2SequenceObject *>(go))) {
                 continue;
             }
             QVariantMap m;
-            m[BaseSlots::URL_SLOT( ).getId( )] = url;
-            m[BaseSlots::DATASET_SLOT( ).getId( )] = cfg.value( BaseSlots::DATASET_SLOT( ).getId( ), "" );
-            SharedDbiDataHandler handler = storage->getDataHandler( go->getEntityRef( ) );
-            m[BaseSlots::DNA_SEQUENCE_SLOT( ).getId( )] = qVariantFromValue<SharedDbiDataHandler>( handler );
-            QList<GObject *> annotations = GObjectUtils::findObjectsRelatedToObjectByRole( go,
-                GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence,
-                allLoadedAnnotations, UOF_LoadedOnly );
-            if ( !annotations.isEmpty( ) ) {
-                QList<AnnotationData> l;
-                foreach (GObject *annGObj, annotations ) {
-                    AnnotationTableObject *att = qobject_cast<AnnotationTableObject *>( annGObj );
-                    foreach ( const Annotation &a, att->getAnnotations( ) ) {
-                        l << a.getData( );
+            m[BaseSlots::URL_SLOT().getId()] = url;
+            m[BaseSlots::DATASET_SLOT().getId()] = cfg.value(BaseSlots::DATASET_SLOT().getId(), "");
+            SharedDbiDataHandler handler = storage->getDataHandler(go->getEntityRef());
+            m[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(handler);
+            QList<GObject *> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(go, GObjectTypes::ANNOTATION_TABLE,
+                ObjectRole_Sequence, allLoadedAnnotations, UOF_LoadedOnly);
+            if (!annotations.isEmpty()) {
+                QList<SharedAnnotationData> l;
+                foreach (GObject *annGObj, annotations) {
+                    AnnotationTableObject *att = qobject_cast<AnnotationTableObject *>(annGObj);
+                    foreach (Annotation *a, att->getAnnotations()) {
+                        l << a->getData();
                     }
-                    annObjs.removeAll( annGObj );
+                    annObjs.removeAll(annGObj);
                 }
-                const SharedDbiDataHandler tableId = storage->putAnnotationTable( l );
-                m.insert( BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ), qVariantFromValue<SharedDbiDataHandler>( tableId ) );
+                const SharedDbiDataHandler tableId = storage->putAnnotationTable(l);
+                m.insert(BaseSlots::ANNOTATION_TABLE_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(tableId));
             }
-            results.append( m );
+            results.append(m);
         }
 
         // if there are annotations that are not connected to a sequence -> put them  independently
-        foreach ( GObject *annObj, annObjs ) {
-            AnnotationTableObject *att = qobject_cast<AnnotationTableObject *>( annObj );
-            if ( att->findRelatedObjectsByRole( ObjectRole_Sequence ).isEmpty( ) ) {
-                SAFE_POINT( NULL != att, "Invalid annotation table object encountered!", );
+        foreach (GObject *annObj, annObjs) {
+            AnnotationTableObject *att = qobject_cast<AnnotationTableObject *>(annObj);
+            if (att->findRelatedObjectsByRole(ObjectRole_Sequence).isEmpty()) {
+                SAFE_POINT(NULL != att, "Invalid annotation table object encountered!",);
                 QVariantMap m;
-                m.insert( BaseSlots::URL_SLOT( ).getId( ), url );
+                m.insert(BaseSlots::URL_SLOT().getId(), url);
 
-                QList<AnnotationData> l;
-                foreach ( const Annotation &a, att->getAnnotations( ) ) {
-                    l << a.getData( );
+                QList<SharedAnnotationData> l;
+                foreach (Annotation *a, att->getAnnotations()) {
+                    l << a->getData();
                 }
-                const SharedDbiDataHandler tableId = storage->putAnnotationTable( l );
-                m.insert( BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ), qVariantFromValue<SharedDbiDataHandler>( tableId ) );
-                results.append( m );
+                const SharedDbiDataHandler tableId = storage->putAnnotationTable(l);
+                m.insert(BaseSlots::ANNOTATION_TABLE_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(tableId));
+                results.append(m);
             }
         }
     } else {
@@ -416,7 +415,7 @@ void LoadSeqTask::run() {
                 }
                 QVariantMap m;
                 U2EntityRef seqRef = U2SequenceUtils::import(storage->getDbiRef(), s, os);
-                CHECK_OP(os, );
+                CHECK_OP(os,);
                 m[BaseSlots::URL_SLOT().getId()] = url;
                 m[BaseSlots::DATASET_SLOT().getId()] = cfg.value(BaseSlots::DATASET_SLOT().getId(), "");
                 SharedDbiDataHandler handler = storage->getDataHandler(seqRef);
@@ -430,7 +429,7 @@ void LoadSeqTask::run() {
 /**************************
  * DNASelector
  **************************/
-bool DNASelector::matches( const DNASequence& dna) {
+bool DNASelector::matches(const DNASequence& dna) {
     if (accExpr.isEmpty()) {
         return true;
     }
@@ -440,7 +439,7 @@ bool DNASelector::matches( const DNASequence& dna) {
     return dna.getName().contains(QRegExp(accExpr));
 }
 
-bool DNASelector::objectMatches( const U2SequenceObject *dna) {
+bool DNASelector::objectMatches(const U2SequenceObject *dna) {
     if (accExpr.isEmpty()) {
         return true;
     }

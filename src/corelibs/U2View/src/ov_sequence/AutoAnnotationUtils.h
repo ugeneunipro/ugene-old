@@ -22,15 +22,15 @@
 #ifndef _U2_AUTO_ANNOTATION_UTILS_H_
 #define _U2_AUTO_ANNOTATION_UTILS_H_
 
-#include <U2Core/AnnotationGroup.h>
 #include <U2Core/GObjectReference.h>
 #include "ADVSingleSequenceWidget.h"
 
 namespace U2 {
 
-class MWMDIWindow;
+class AnnotationGroup;
 class AutoAnnotationObject;
 class AutoAnnotationsUpdater;
+class MWMDIWindow;
 
 class AutoAnnotationsADVAction : public ADVSequenceWidgetAction {
     Q_OBJECT
@@ -51,6 +51,7 @@ private slots:
     void sl_autoAnnotationUpdateFinished();
     void sl_onSelectAll();
     void sl_onDeselectAll();
+
 private:
     void updateMenu();
     AutoAnnotationObject* aaObj;
@@ -63,12 +64,12 @@ class ADVCreateAnnotationsTask;
 
 class ExportAutoAnnotationsGroupTask : public Task {
 public:
-    ExportAutoAnnotationsGroupTask( const AnnotationGroup &ag, GObjectReference& aRef,
-        ADVSequenceObjectContext* seqCtx);
-    virtual void prepare();
-    virtual QList<Task*> onSubTaskFinished(Task* subTask);
+    ExportAutoAnnotationsGroupTask(AnnotationGroup *ag, GObjectReference &aRef, ADVSequenceObjectContext *seqCtx);
+    void prepare();
+    QList<Task *> onSubTaskFinished(Task *subTask);
+
 private:
-    AnnotationGroup aGroup;
+    AnnotationGroup *aGroup;
     GObjectReference aRef;
     ADVSequenceObjectContext* seqCtx;
     ADVCreateAnnotationsTask* createTask;

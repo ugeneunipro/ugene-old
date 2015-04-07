@@ -92,15 +92,15 @@ void ReadAnnotationsWorker::onTaskFinished(Task *task) {
 }
 
 void ReadAnnotationsWorker::sl_datasetEnded() {
-    CHECK(datasetData.size() > 0, );
+    CHECK(datasetData.size() > 0,);
     QList<SharedDbiDataHandler> annTableIds;
-    QList<AnnotationData> anns;
+    QList<SharedAnnotationData> anns;
     foreach (const QVariantMap &m, datasetData) {
         const QVariant annsVar = m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        anns << StorageUtils::getAnnotationTable( context->getDataStorage( ), annsVar );
+        anns << StorageUtils::getAnnotationTable(context->getDataStorage(), annsVar);
     }
 
-    const SharedDbiDataHandler resultTableId = context->getDataStorage( )->putAnnotationTable( anns );
+    const SharedDbiDataHandler resultTableId = context->getDataStorage()->putAnnotationTable(anns);
 
     QVariantMap m;
     m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(resultTableId);
@@ -186,12 +186,12 @@ Worker * ReadAnnotationsWorkerFactory::createWorker(Actor *a) {
 /************************************************************************/
 /* Task */
 /************************************************************************/
-ReadAnnotationsTask::ReadAnnotationsTask( const QString &_url, const QString &_datasetName,
-    WorkflowContext *_context, bool _mergeAnnotations )
-    : Task( tr( "Read annotations from %1" ).arg( _url ), TaskFlag_None ), url( _url ),
-    datasetName( _datasetName ), mergeAnnotations( _mergeAnnotations ), context( _context )
+ReadAnnotationsTask::ReadAnnotationsTask(const QString &_url, const QString &_datasetName,
+    WorkflowContext *_context, bool _mergeAnnotations)
+    : Task(tr("Read annotations from %1").arg(_url), TaskFlag_None), url(_url),
+    datasetName(_datasetName), mergeAnnotations(_mergeAnnotations), context(_context)
 {
-    SAFE_POINT( NULL != context, "Invalid workflow context encountered!", );
+    SAFE_POINT(NULL != context, "Invalid workflow context encountered!",);
 }
 
 const QString & ReadAnnotationsTask::getDatasetName() const {
@@ -215,62 +215,56 @@ void ReadAnnotationsTask::prepare() {
     }
 }
 
-void ReadAnnotationsTask::run( ) {
-    QFileInfo fi( url );
-    CHECK_EXT( fi.exists( ), stateInfo.setError( tr( "File '%1' does not exist" ).arg( url ) ), );
+void ReadAnnotationsTask::run() {
+    QFileInfo fi(url);
+    CHECK_EXT(fi.exists(), stateInfo.setError(tr("File '%1' does not exist").arg(url)),);
 
     DocumentFormat *format = NULL;
-    QList<DocumentFormat *> fs = DocumentUtils::toFormats( DocumentUtils::detectFormat( url ) );
-    foreach ( DocumentFormat *f, fs ) {
-        if ( f->getSupportedObjectTypes( ).contains( GObjectTypes::ANNOTATION_TABLE ) ) {
+    QList<DocumentFormat *> fs = DocumentUtils::toFormats(DocumentUtils::detectFormat(url));
+    foreach (DocumentFormat *f, fs) {
+        if (f->getSupportedObjectTypes().contains(GObjectTypes::ANNOTATION_TABLE)) {
             format = f;
             break;
         }
     }
-    CHECK_EXT( NULL != format, stateInfo.setError( tr( "Unsupported document format: %1" )
-        .arg( url ) ), );
+    CHECK_EXT(NULL != format, stateInfo.setError(tr("Unsupported document format: %1").arg(url)),);
 
-    ioLog.info( tr( "Reading annotations from %1 [%2]" ).arg( url ).arg( format->getFormatName( ) ) );
-    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry( )->
-        getIOAdapterFactoryById( IOAdapterUtils::url2io( url ) );
-    QScopedPointer<Document> doc(format->loadDocument( iof, url, QVariantMap( ), stateInfo ) );
-    CHECK_OP( stateInfo, );
+    ioLog.info(tr("Reading annotations from %1 [%2]").arg(url).arg(format->getFormatName()));
+    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
+    QScopedPointer<Document> doc(format->loadDocument(iof, url, QVariantMap(), stateInfo));
+    CHECK_OP(stateInfo,);
 
-    QList<GObject *> annsObjList = doc->findGObjectByType( GObjectTypes::ANNOTATION_TABLE );
+    QList<GObject *> annsObjList = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
 
     QVariantMap m;
-    m[BaseSlots::URL_SLOT( ).getId( )] = url;
-    m[BaseSlots::DATASET_SLOT( ).getId( )] = datasetName;
+    m[BaseSlots::URL_SLOT().getId()] = url;
+    m[BaseSlots::DATASET_SLOT().getId()] = datasetName;
 
-    QList<AnnotationData> dataList;
+    QList<SharedAnnotationData> dataList;
 
-    foreach ( GObject *go, annsObjList ) {
-        AnnotationTableObject *annsObj = dynamic_cast<AnnotationTableObject *>( go );
-        CHECK_EXT( NULL != annsObj, stateInfo.setError( "NULL annotations object" ), );
+    foreach (GObject *go, annsObjList) {
+        AnnotationTableObject *annsObj = dynamic_cast<AnnotationTableObject *>(go);
+        CHECK_EXT(NULL != annsObj, stateInfo.setError("NULL annotations object"),);
 
-        if ( !mergeAnnotations ) {
-            dataList.clear( );
-            foreach ( const Annotation &a, annsObj->getAnnotations( ) ) {
-                dataList << a.getData( );
+        if (!mergeAnnotations) {
+            dataList.clear();
+            foreach (Annotation *a, annsObj->getAnnotations()) {
+                dataList << a->getData();
             }
-            const SharedDbiDataHandler tableId
-                = context->getDataStorage( )->putAnnotationTable( dataList );
-            m[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )]
-                = qVariantFromValue<SharedDbiDataHandler>( tableId );
-            results.append( m );
+            const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(dataList);
+            m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(tableId);
+            results.append(m);
         } else {
-            foreach ( const Annotation &a, annsObj->getAnnotations( ) ) {
-                dataList << a.getData( );
+            foreach (Annotation *a, annsObj->getAnnotations()) {
+                dataList << a->getData();
             }
         }
     }
 
-    if ( mergeAnnotations && !annsObjList.isEmpty( ) ) {
-        const SharedDbiDataHandler tableId
-            = context->getDataStorage( )->putAnnotationTable( dataList );
-        m[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )]
-            = qVariantFromValue<SharedDbiDataHandler>( tableId );
-        results.append( m );
+    if (mergeAnnotations && !annsObjList.isEmpty()) {
+        const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(dataList);
+        m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(tableId);
+        results.append(m);
     }
 }
 

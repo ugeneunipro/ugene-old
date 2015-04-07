@@ -374,20 +374,18 @@ void GObjectUtils::updateRelationsURL(GObject* o, const QString& fromURL, const 
     }
 }
 
-void GObjectUtils::replaceAnnotationQualfier( AnnotationData &a, const QString &name,
-    const QString &newVal, bool create )
-{
+void GObjectUtils::replaceAnnotationQualfier(SharedAnnotationData &a, const QString &name, const QString &newVal, bool create) {
     QVector<U2Qualifier> quals;
-    a.findQualifiers( name, quals );
-    QList<U2Qualifier> qualifiersList = a.qualifiers.toList();
+    a->findQualifiers(name, quals);
+    QList<U2Qualifier> qualifiersList = a->qualifiers.toList();
 
-    foreach ( const U2Qualifier &q, quals ) {
+    foreach (const U2Qualifier &q, quals) {
         qualifiersList.removeAll(q);
     }
-    a.qualifiers = qualifiersList.toVector();
+    a->qualifiers = qualifiersList.toVector();
 
-    if ( create || !quals.isEmpty( ) ) {
-        a.qualifiers << U2Qualifier( name, newVal );
+    if (create || !quals.isEmpty()) {
+        a->qualifiers << U2Qualifier(name, newVal);
     }
 }
 

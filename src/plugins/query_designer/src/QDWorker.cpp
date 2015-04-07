@@ -158,7 +158,7 @@ Task* QDWorker::tick() {
 
     QFileInfo fi(schemaUri);
     if (!fi.exists()) {
-        QString defaultDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + QUERY_SAMPLES_PATH;
+        QString defaultDir = QDir::searchPaths(PATH_PREFIX_DATA).first() + QUERY_SAMPLES_PATH;
         QDir dir(defaultDir);
         QStringList names(QString("*.%1").arg(QUERY_SCHEME_EXTENSION));
         foreach(const QFileInfo& fi, dir.entryInfoList(names, QDir::Files|QDir::NoSymLinks)) {
@@ -200,14 +200,14 @@ Task* QDWorker::tick() {
         QVariantMap map = inputMessage.getData().toMap();
         SharedDbiDataHandler seqId = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
         QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-        if ( seqObj.isNull( ) ) {
+        if (seqObj.isNull()) {
             return NULL;
         }
         DNASequence seq = seqObj->getWholeSequence();
 
         QDRunSettings settings;
-        settings.annotationsObj = new AnnotationTableObject( GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name,
-            context->getDataStorage( )->getDbiRef( ) );
+        settings.annotationsObj = new AnnotationTableObject(GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name,
+            context->getDataStorage()->getDbiRef());
         settings.scheme = scheme;
         settings.dnaSequence = seq;
         settings.region = U2Region(0, seq.length());
@@ -234,24 +234,24 @@ Task* QDWorker::tick() {
 void QDWorker::cleanup() {
 }
 
-void annObjToAnnDataList( AnnotationTableObject *annObj, QList<SharedAnnotationData> &result ) {
-    foreach ( Annotation a, annObj->getAnnotations( ) ) {
-        a.addQualifier( U2Qualifier( GBFeatureUtils::QUALIFIER_GROUP, a.getGroup( ).getName( ) ) );
-        result.append( SharedAnnotationData( new AnnotationData( a.getData( ) ) ) );
+void annObjToAnnDataList(AnnotationTableObject *annObj, QList<SharedAnnotationData> &result) {
+    foreach (Annotation *a, annObj->getAnnotations()) {
+        a->addQualifier(U2Qualifier(GBFeatureUtils::QUALIFIER_GROUP, a->getGroup()->getName()));
+        result.append(a->getData());
     }
 }
 
 void QDWorker::sl_taskFinished(Task* t) {
     delete scheme;
-    SAFE_POINT( NULL != t, "Invalid task is encountered", );
-    if ( t->isCanceled( ) ) {
+    SAFE_POINT(NULL != t, "Invalid task is encountered",);
+    if (t->isCanceled()) {
         return;
     }
     if (output) {
         QDScheduler* sched = qobject_cast<QDScheduler*>(t);
         QList<SharedAnnotationData> res;
-        AnnotationTableObject *ao = sched->getSettings( ).annotationsObj;
-        annObjToAnnDataList( ao, res );
+        AnnotationTableObject *ao = sched->getSettings().annotationsObj;
+        annObjToAnnDataList(ao, res);
         QVariant v = qVariantFromValue< QList<SharedAnnotationData> >(res);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
     }

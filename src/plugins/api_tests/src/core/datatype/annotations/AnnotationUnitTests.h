@@ -28,28 +28,28 @@
 
 namespace U2 {
 
-DECLARE_TEST( AnnotationUnitTest, get_IdObjectData );
-DECLARE_TEST( AnnotationUnitTest, getSet_Name );
-DECLARE_TEST( AnnotationUnitTest, getSet_LocationOperator );
-DECLARE_TEST( AnnotationUnitTest, getSet_Strand );
-DECLARE_TEST( AnnotationUnitTest, getSet_Location );
-DECLARE_TEST( AnnotationUnitTest, getSet_Regions );
-DECLARE_TEST( AnnotationUnitTest, getSet_Qualifiers );
-DECLARE_TEST( AnnotationUnitTest, find_Qualifiers );
-DECLARE_TEST( AnnotationUnitTest, get_Group );
-DECLARE_TEST( AnnotationUnitTest, getSet_Case );
+DECLARE_TEST(AnnotationUnitTest, get_IdObjectData);
+DECLARE_TEST(AnnotationUnitTest, getSet_Name);
+DECLARE_TEST(AnnotationUnitTest, getSet_LocationOperator);
+DECLARE_TEST(AnnotationUnitTest, getSet_Strand);
+DECLARE_TEST(AnnotationUnitTest, getSet_Location);
+DECLARE_TEST(AnnotationUnitTest, getSet_Regions);
+DECLARE_TEST(AnnotationUnitTest, getSet_Qualifiers);
+DECLARE_TEST(AnnotationUnitTest, find_Qualifiers);
+DECLARE_TEST(AnnotationUnitTest, get_Group);
+DECLARE_TEST(AnnotationUnitTest, getSet_Case);
 
 } //namespace U2
 
-DECLARE_METATYPE( AnnotationUnitTest, get_IdObjectData )
-DECLARE_METATYPE( AnnotationUnitTest, getSet_Name )
-DECLARE_METATYPE( AnnotationUnitTest, getSet_LocationOperator )
-DECLARE_METATYPE( AnnotationUnitTest, getSet_Strand )
-DECLARE_METATYPE( AnnotationUnitTest, getSet_Location )
-DECLARE_METATYPE( AnnotationUnitTest, getSet_Regions )
-DECLARE_METATYPE( AnnotationUnitTest, getSet_Qualifiers )
-DECLARE_METATYPE( AnnotationUnitTest, find_Qualifiers )
-DECLARE_METATYPE( AnnotationUnitTest, get_Group )
-DECLARE_METATYPE( AnnotationUnitTest, getSet_Case )
+DECLARE_METATYPE(AnnotationUnitTest, get_IdObjectData)
+DECLARE_METATYPE(AnnotationUnitTest, getSet_Name)
+DECLARE_METATYPE(AnnotationUnitTest, getSet_LocationOperator)
+DECLARE_METATYPE(AnnotationUnitTest, getSet_Strand)
+DECLARE_METATYPE(AnnotationUnitTest, getSet_Location)
+DECLARE_METATYPE(AnnotationUnitTest, getSet_Regions)
+DECLARE_METATYPE(AnnotationUnitTest, getSet_Qualifiers)
+DECLARE_METATYPE(AnnotationUnitTest, find_Qualifiers)
+DECLARE_METATYPE(AnnotationUnitTest, get_Group)
+DECLARE_METATYPE(AnnotationUnitTest, getSet_Case)
 
 #endif //_U2_ANNOTATION_TESTS_H_

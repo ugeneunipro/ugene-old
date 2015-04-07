@@ -37,8 +37,17 @@ class GObject;
 
 struct DNAFragmentTerm {
     DNAFragmentTerm(const QString& eId, const QByteArray& seq, bool directStrand)
-        : enzymeId(eId.toLatin1()), overhang(seq), isDirect(directStrand) {}
-    DNAFragmentTerm() : isDirect(true) {}
+        : enzymeId(eId.toLatin1()), overhang(seq), isDirect(directStrand)
+    {
+    
+    }
+
+    DNAFragmentTerm()
+        : isDirect(true)
+    {
+    
+    }
+
     QByteArray enzymeId;
     QByteArray overhang;
     QByteArray type;
@@ -48,9 +57,9 @@ struct DNAFragmentTerm {
 class DNAFragment {
 private:
     // Contains fragment region and cuts info
-    AnnotationData annotatedFragment;
+    SharedAnnotationData annotatedFragment;
     // Parent sequence of the fragment
-    U2SequenceObject* dnaObj;
+    U2SequenceObject *dnaObj;
     // Annotations associated with parent sequence
     // When ligate or export fragments they must be saved
     QList<AnnotationTableObject *> relatedAnnotations;
@@ -65,11 +74,11 @@ private:
     DNAFragmentTerm leftTerm, rightTerm;
 
 public:
-    DNAFragment( ) : dnaObj(NULL), reverseCompl(false) {}
-    DNAFragment( const AnnotationData &fragment, U2SequenceObject* sObj, const QList<AnnotationTableObject *> relatedAnns);
-    DNAFragment( const DNAFragment& other );
+    DNAFragment() : annotatedFragment(NULL), dnaObj(NULL), reverseCompl(false) {}
+    DNAFragment(const SharedAnnotationData &fragment, U2SequenceObject* sObj, const QList<AnnotationTableObject *> relatedAnns);
+    DNAFragment(const DNAFragment& other);
     DNAFragment& operator=(const DNAFragment& other);
-    bool isEmpty() const { return annotatedFragment == AnnotationData( ) || dnaObj == NULL; }
+    bool isEmpty() const { return annotatedFragment.data() == NULL || dnaObj == NULL; }
     QString getName() const;
     QString getSequenceName() const;
     QString getSequenceDocName() const;
@@ -82,11 +91,11 @@ public:
     const DNAFragmentTerm& getLeftTerminus() const;
     const DNAFragmentTerm& getRightTerminus() const;
     void setInverted(bool inverted = true);
-    void setRightTermType( const QByteArray& termType );
-    void setLeftTermType( const QByteArray& termType );
-    void setLeftOverhang( const QByteArray& overhang );
-    void setRightOverhang( const QByteArray& overhang );
-    void setLeftOverhangStrand( bool direct);
+    void setRightTermType(const QByteArray& termType);
+    void setLeftTermType(const QByteArray& termType);
+    void setLeftOverhang(const QByteArray& overhang);
+    void setRightOverhang(const QByteArray& overhang);
+    void setLeftOverhangStrand(bool direct);
     void setRightOverhangStrand(bool direct);
 
     const QList<AnnotationTableObject *> & getRelatedAnnotations() const { return relatedAnnotations; }

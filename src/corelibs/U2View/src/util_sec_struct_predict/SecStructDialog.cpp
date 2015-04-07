@@ -174,27 +174,24 @@ void SecStructDialog::sl_onTaskFinished(Task* t) {
     results = task->getResults();
 
     //shifting results according to startPos
-    for ( QMutableListIterator<AnnotationData> it_ad(results); it_ad.hasNext(); ) {
-        AnnotationData &ad = it_ad.next();
-        U2Region::shift(rangeStart, ad.location->regions);
+    for (QMutableListIterator<SharedAnnotationData> it_ad(results); it_ad.hasNext(); ) {
+        SharedAnnotationData &ad = it_ad.next();
+        U2Region::shift(rangeStart, ad->location->regions);
     }
     task = NULL;
     rangeStart = 0;
     rangeEnd = 0;
     updateState();
-
 }
 
-void SecStructDialog::showResults()
-{
+void SecStructDialog::showResults() {
     int rowIndex = 0;
     resultsTable->setRowCount(results.size());
-    foreach( const AnnotationData &data, results) {
-        U2Region annRegion = data.getRegions().first();
-        QTableWidgetItem *locItem = new QTableWidgetItem( QString("[%1..%2]").arg(annRegion.startPos).
-            arg(annRegion.endPos()) );
+    foreach(const SharedAnnotationData &data, results) {
+        U2Region annRegion = data->getRegions().first();
+        QTableWidgetItem *locItem = new QTableWidgetItem(QString("[%1..%2]").arg(annRegion.startPos).arg(annRegion.endPos()));
         resultsTable->setItem(rowIndex, 0, locItem);
-        QTableWidgetItem* nameItem = new QTableWidgetItem( QString(data.name));
+        QTableWidgetItem *nameItem = new QTableWidgetItem(QString(data->name));
         resultsTable->setItem(rowIndex, 1, nameItem);
         ++rowIndex;
     }
@@ -202,14 +199,13 @@ void SecStructDialog::showResults()
 
 #define SEC_STRUCT_ANNOTATION_GROUP_NAME "predicted"
 
-void SecStructDialog::sl_onSaveAnnotations()
-{
+void SecStructDialog::sl_onSaveAnnotations() {
     CreateAnnotationModel m;
     m.sequenceObjectRef = ctx->getSequenceObject();
     m.hideLocation = true;
     m.hideAnnotationType = true;
     m.hideAnnotationName = true;
-    m.data.name = SEC_STRUCT_ANNOTATION_GROUP_NAME;
+    m.data->name = SEC_STRUCT_ANNOTATION_GROUP_NAME;
     m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
     CreateAnnotationDialog d(this, m);
     int rc = d.exec();

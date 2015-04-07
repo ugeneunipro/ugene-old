@@ -35,107 +35,101 @@
 
 namespace U2 {
 
-ExportAnnotations2CSVTask::ExportAnnotations2CSVTask( const QList<Annotation> &annotations,
-    const QByteArray &sequence, const QString &_seqName,
-    const DNATranslation *complementTranslation, bool exportSequence, bool _exportSeqName,
-    const QString &url, bool apnd, const QString &sep )
-    : Task( tr( "Export annotations to CSV format" ), TaskFlag_None ), annotations( annotations ),
-    sequence( sequence ), seqName( _seqName ), complementTranslation( complementTranslation ),
-    exportSequence( exportSequence ), exportSequenceName( _exportSeqName ), url( url ),
-    append( apnd ), separator( sep )
+ExportAnnotations2CSVTask::ExportAnnotations2CSVTask(const QList<Annotation *> &annotations, const QByteArray &sequence, const QString &_seqName,
+    const DNATranslation *complementTranslation, bool exportSequence, bool _exportSeqName, const QString &url, bool apnd, const QString &sep)
+    : Task(tr("Export annotations to CSV format"), TaskFlag_None), annotations(annotations), sequence(sequence), seqName(_seqName),
+    complementTranslation(complementTranslation), exportSequence(exportSequence), exportSequenceName(_exportSeqName), url(url),
+    append(apnd), separator(sep)
 {
-    GCOUNTER( cvar, tvar, "ExportAnnotattions2CSVTask" );
+    GCOUNTER(cvar, tvar, "ExportAnnotattions2CSVTask");
 }
 
-static void writeCSVLine( const QStringList &container, IOAdapter *ioAdapter,
-    const QString &separator, U2OpStatus &os )
-{
+static void writeCSVLine(const QStringList &container, IOAdapter *ioAdapter, const QString &separator, U2OpStatus &os) {
     bool first = true;
-    foreach ( const QString &value, container ) {
-        if ( !first ) {
-            if ( 0 == ioAdapter->writeBlock( separator.toLatin1( ) ) ) {
-                os.setError( L10N::errorWritingFile( ioAdapter->getURL( ) ) );
+    foreach (const QString &value, container) {
+        if (!first) {
+            if (0 == ioAdapter->writeBlock(separator.toLatin1())) {
+                os.setError(L10N::errorWritingFile(ioAdapter->getURL()));
                 return;
             }
         }
         QString preparedStr = value;
-        preparedStr.replace( "\"", "\"\"" );
+        preparedStr.replace("\"", "\"\"");
         preparedStr = "\"" + preparedStr + "\"";
 
-        if ( 0 == ioAdapter->writeBlock( preparedStr.toLocal8Bit( ) ) ) {
-            os.setError( L10N::errorWritingFile( ioAdapter->getURL( ) ) );
+        if (0 == ioAdapter->writeBlock(preparedStr.toLocal8Bit())) {
+            os.setError(L10N::errorWritingFile(ioAdapter->getURL()));
             return;
         }
         first = false;
     }
-    if ( 0 == ioAdapter->writeBlock( "\n" ) ) {
-        os.setError( L10N::errorWritingFile( ioAdapter->getURL( ) ) );
+    if (0 == ioAdapter->writeBlock("\n")) {
+        os.setError(L10N::errorWritingFile(ioAdapter->getURL()));
         return;
     }
 }
 
-void ExportAnnotations2CSVTask::run( ) {
+void ExportAnnotations2CSVTask::run() {
     QScopedPointer<IOAdapter> ioAdapter;
 
-    IOAdapterId ioAdapterId = IOAdapterUtils::url2io( url );
-    IOAdapterRegistry *ioRegistry = AppContext::getIOAdapterRegistry( );
-    CHECK_EXT( NULL != ioRegistry,
-        stateInfo.setError( tr( "Invalid I/O environment!" ).arg( url ) ), );
-    IOAdapterFactory *ioAdapterFactory = ioRegistry->getIOAdapterFactoryById( ioAdapterId );
-    CHECK_EXT( NULL != ioAdapterFactory,
-        stateInfo.setError( tr( "No IO adapter found for URL: %1" ).arg( url ) ), );
-    ioAdapter.reset( ioAdapterFactory->createIOAdapter( ) );
+    IOAdapterId ioAdapterId = IOAdapterUtils::url2io(url);
+    IOAdapterRegistry *ioRegistry = AppContext::getIOAdapterRegistry();
+    CHECK_EXT(NULL != ioRegistry,
+        stateInfo.setError(tr("Invalid I/O environment!").arg(url)),);
+    IOAdapterFactory *ioAdapterFactory = ioRegistry->getIOAdapterFactoryById(ioAdapterId);
+    CHECK_EXT(NULL != ioAdapterFactory,
+        stateInfo.setError(tr("No IO adapter found for URL: %1").arg(url)),);
+    ioAdapter.reset(ioAdapterFactory->createIOAdapter());
 
-    if ( !ioAdapter->open( url, append ? IOAdapterMode_Append : IOAdapterMode_Write ) ) {
-        stateInfo.setError( L10N::errorOpeningFileWrite( url ) );
+    if (!ioAdapter->open(url, append ? IOAdapterMode_Append : IOAdapterMode_Write)) {
+        stateInfo.setError(L10N::errorOpeningFileWrite(url));
         return;
     }
 
     QHash<QString, int> columnIndices;
     QStringList columnNames;
-    columnNames << tr( "Group" ) << tr( "Name" ) << tr("Start") 
-<<  tr( "End" ) << tr( "Length" ) << tr( "Complementary" );
-    if ( exportSequenceName ) {
-        columnNames << tr( "Sequence name" );
+    columnNames << tr("Group") << tr("Name") << tr("Start") <<  tr("End") << tr("Length") << tr("Complementary");
+    if (exportSequenceName) {
+        columnNames << tr("Sequence name");
     }
-    if ( exportSequence ) {
-        columnNames << tr( "Sequence" );
+    if (exportSequence) {
+        columnNames << tr("Sequence");
     }
 
-    foreach ( const Annotation &annotation, annotations ) {
-        foreach ( const U2Qualifier &qualifier, annotation.getQualifiers( ) ) {
+    foreach (Annotation *annotation, annotations) {
+        foreach(const U2Qualifier &qualifier, annotation->getQualifiers()) {
             const QString &qName = qualifier.name;
-            if ( !columnIndices.contains( qName ) ) {
-                columnIndices.insert( qName, columnNames.size( ) );
-                columnNames.append( qName );
+            if (!columnIndices.contains(qName)) {
+                columnIndices.insert(qName, columnNames.size());
+                columnNames.append(qName);
             }
         }
     }
-    writeCSVLine( columnNames, ioAdapter.data( ), separator, stateInfo );
-    CHECK_OP( stateInfo, );
+    writeCSVLine(columnNames, ioAdapter.data(), separator, stateInfo);
+    CHECK_OP(stateInfo,);
 
     bool noComplementarySequence = false;
-    foreach ( const Annotation &annotation, annotations ) {
-        foreach( const U2Region &region, annotation.getRegions( ) ) {
+    foreach (Annotation *annotation, annotations) {
+        foreach(const U2Region &region, annotation->getRegions()) {
             QStringList values;
-            values << annotation.getGroup( ).getGroupPath( );
-            values << annotation.getName( );
-            values << QString::number( region.startPos + 1 );
-            values << QString::number( region.startPos + region.length );
-            values << QString::number( region.length );
+            values << annotation->getGroup()->getGroupPath();
+            values << annotation->getName();
+            values << QString::number(region.startPos + 1);
+            values << QString::number(region.startPos + region.length);
+            values << QString::number(region.length);
 
-            const bool isComplementary = annotation.getStrand( ).isCompementary( );
-            values << ( ( isComplementary ) ? tr( "yes" ) : tr( "no" ) );
+            const bool isComplementary = annotation->getStrand().isCompementary();
+            values << ((isComplementary) ? tr("yes") : tr("no"));
 
-            if ( exportSequenceName ) {
-                values << seqName.toLatin1( );
+            if (exportSequenceName) {
+                values << seqName.toLatin1();
             }
-            if ( exportSequence ) {
-                QByteArray sequencePart = sequence.mid( region.startPos, region.length );
-                if ( isComplementary ) {
-                    if ( complementTranslation != NULL ) {
-                        complementTranslation->translate( sequencePart.data( ), sequencePart.size( ) );
-                        TextUtils::reverse( sequencePart.data( ), sequencePart.size( ) );
+            if (exportSequence) {
+                QByteArray sequencePart = sequence.mid(region.startPos, region.length);
+                if (isComplementary) {
+                    if (complementTranslation != NULL) {
+                        complementTranslation->translate(sequencePart.data(), sequencePart.size());
+                        TextUtils::reverse(sequencePart.data(), sequencePart.size());
                     } else {
                         noComplementarySequence = true;
                         sequencePart.clear();
@@ -149,13 +143,13 @@ void ExportAnnotations2CSVTask::run( ) {
                 values << QString();
             }
 
-            foreach ( const U2Qualifier& qualifier, annotation.getQualifiers( ) ) {
+            foreach (const U2Qualifier& qualifier, annotation->getQualifiers()) {
                 int qualifiedIndex = columnIndices[qualifier.name];
-                SAFE_POINT( qualifiedIndex > 0 && qualifiedIndex < values.length( ), "Invalid qualifier index", );
+                SAFE_POINT(qualifiedIndex > 0 && qualifiedIndex < values.length(), "Invalid qualifier index",);
                 values[qualifiedIndex] = qualifier.value;
             }
-            writeCSVLine( values, ioAdapter.data( ), separator, stateInfo );
-            CHECK_OP( stateInfo, );
+            writeCSVLine(values, ioAdapter.data(), separator, stateInfo);
+            CHECK_OP(stateInfo,);
         }
     }
     if (noComplementarySequence) {

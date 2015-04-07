@@ -93,9 +93,8 @@ public:
 
     DetView* getDetView() const {return static_cast<DetView*>(view);}
 
-    virtual U2Region getAnnotationYRange( const Annotation &a, int region,
-        const AnnotationSettings *as ) const;
-    virtual U2Region getMirroredYRange( const U2Strand &mirroredStrand) const;
+    virtual U2Region getAnnotationYRange(Annotation *a, int region, const AnnotationSettings *as) const;
+    virtual U2Region getMirroredYRange(const U2Strand &mirroredStrand) const;
 
     void updateSize();
 
@@ -118,8 +117,7 @@ private:
 
     int posToComplTransLine(int p) const;
     int posToDirectTransLine(int p) const;
-    bool deriveTranslationCharColor(qint64 pos, const U2Strand &strand,
-        const QList<AnnotationData> &annotationsInRange, QColor &result);
+    bool deriveTranslationCharColor(qint64 pos, const U2Strand &strand, const QList<SharedAnnotationData> &annotationsInRange, QColor &result);
 
     int numLines;
     int rulerLine;

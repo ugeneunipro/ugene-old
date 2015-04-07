@@ -186,8 +186,8 @@ void AutoAnnotationObject::handleUpdate(const QList<AutoAnnotationsUpdater *> &u
         const bool deferredLaunch = cancelRunningUpdateTasks(updater);
 
         // cleanup
-        AnnotationGroup root = aobj->getRootGroup();
-        AnnotationGroup sub = root.getSubgroup(updater->getGroupName(), false);
+        AnnotationGroup *root = aobj->getRootGroup();
+        AnnotationGroup *sub = root->getSubgroup(updater->getGroupName(), false);
         if (sub != root) {
             Task *t = new RemoveAnnotationsTask(aobj, updater->getGroupName());
             if (deferredLaunch) {

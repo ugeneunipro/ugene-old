@@ -25,7 +25,6 @@
 #include <U2Core/AnnotationData.h>
 #include <U2Core/DASSource.h>
 #include <U2Core/LoadRemoteDocumentTask.h>
-//#include <U2Core/global.h>
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -59,15 +58,15 @@ public:
     QString getError() const { return error; }
     void setError( const QString &val ) { error = val; }
 
-    QMap<QString, QList<AnnotationData> > getAnnotationData( ) { return annotationData; }
+    QMap<QString, QList<SharedAnnotationData> > getAnnotationData() { return annotationData; }
 private:
     QString error;
 
-    QMap<QString, QList<AnnotationData> > annotationData;
+    QMap<QString, QList<SharedAnnotationData> > annotationData;
 
 };
 
-class U2CORE_EXPORT LoadDasObjectTask : public Task{
+class U2CORE_EXPORT LoadDasObjectTask : public Task {
     Q_OBJECT
     Q_DISABLE_COPY(LoadDasObjectTask)
 public:
@@ -79,7 +78,7 @@ public:
     DNASequence*                                    getSequence();
     const QString&                                  getAccession() const;
     const DASSource&                                getSource() const;
-    const QMap<QString, QList<AnnotationData> >&    getAnnotationData( ) const;
+    const QMap<QString, QList<SharedAnnotationData> > & getAnnotationData( ) const;
 
 public slots:
     void sl_replyFinished(QNetworkReply* reply);
@@ -103,7 +102,7 @@ private:
 
     DNASequence*            seq;
 
-    QMap<QString, QList<AnnotationData> > annotationData;
+    QMap<QString, QList<SharedAnnotationData> > annotationData;
 };
 
 class U2CORE_EXPORT LoadDasFeaturesTask : public Task{
@@ -113,7 +112,7 @@ public:
     LoadDasFeaturesTask(const QStringList& accId, const QList<DASSource>& source);
     LoadDasFeaturesTask();
 
-    const QMap<QString, QList<AnnotationData> >& getAnnotationData( ) const;
+    const QMap<QString, QList<SharedAnnotationData> > & getAnnotationData( ) const;
 
     QString generateReport() const;
 
@@ -123,8 +122,9 @@ protected:
     QList<Task*> onSubTaskFinished(Task* subTask);
 
 private:
-    void mergeFeatures(const QMap<QString, QList<AnnotationData> >& newAnnotations);
-    QMap<QString, QList<AnnotationData> > annotationData;
+    void mergeFeatures(const QMap<QString, QList<SharedAnnotationData> > & newAnnotations);
+
+    QMap<QString, QList<SharedAnnotationData> > annotationData;
 
     QList<DASSource>          featureSources;
     QStringList               accessionNumbers;
@@ -149,20 +149,20 @@ protected:
     bool isAllDataLoaded();
 
 private:
-    void mergeFeatures(const QMap<QString, QList<AnnotationData> >& newAnnotations);
+    void mergeFeatures(const QMap<QString, QList<SharedAnnotationData> >& newAnnotations);
 
 private:
-    QString                 accNumber;
-    QList<DASSource>        featureSources;
-    DASSource               referenceSource;
+    QString                                     accNumber;
+    QList<DASSource>                            featureSources;
+    DASSource                                   referenceSource;
 
-    LoadDasObjectTask*             loadSequenceTask;
-    QList<LoadDasObjectTask*>      loadFeaturesTasks;
+    LoadDasObjectTask*                          loadSequenceTask;
+    QList<LoadDasObjectTask*>                   loadFeaturesTasks;
 
-    SaveDocumentTask*               saveDocumentTask;
+    SaveDocumentTask*                           saveDocumentTask;
 
-    DNASequence*                   seq;
-    QMap<QString, QList<AnnotationData> > annotationData;
+    DNASequence*                                seq;
+    QMap<QString, QList<SharedAnnotationData> > annotationData;
 };
 
 class U2CORE_EXPORT ConvertIdAndLoadDasFeaturesTask : public Task {
@@ -173,7 +173,7 @@ public:
     virtual void prepare();
     virtual QList<Task*> onSubTaskFinished(Task *subTask);
 
-    const QMap<QString, QList<AnnotationData> >& getAnnotationData() const;
+    const QMap<QString, QList<SharedAnnotationData> > & getAnnotationData() const;
 
 private:
     MultiTask *             convertDasIdTasks;

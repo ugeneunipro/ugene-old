@@ -218,21 +218,20 @@ Task* HMMSearchWorker::tick() {
     return NULL;
 }
  
-void HMMSearchWorker::sl_taskFinished( Task *t ) {
-    SAFE_POINT( NULL != t, "Invalid task is encountered", );
-    if ( t->isCanceled( ) ) {
+void HMMSearchWorker::sl_taskFinished(Task *t) {
+    SAFE_POINT(NULL != t, "Invalid task is encountered",);
+    if (t->isCanceled()) {
         return;
     }
-    if ( NULL != output ) {
-        QList<AnnotationData> list;
-        foreach( Task *sub, t->getSubtasks( ) ) {
-            HMMSearchTask *hst = qobject_cast<HMMSearchTask *>( sub );
+    if (NULL != output) {
+        QList<SharedAnnotationData> list;
+        foreach (Task *sub, t->getSubtasks()) {
+            HMMSearchTask *hst = qobject_cast<HMMSearchTask *>(sub);
             list += hst->getResultsAsAnnotations(U2FeatureTypes::MiscSignal, resultName);
         }
 
-        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( list );
-        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
-            qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
+        const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(list);
+        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), qVariantFromValue<SharedDbiDataHandler>(tableId)));
         algoLog.info(tr("Found %1 HMM signals").arg(list.size()));
     }
 }

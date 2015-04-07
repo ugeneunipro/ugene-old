@@ -44,7 +44,7 @@ public:
     Task::ReportResult report();
     virtual QString generateReport() const;
 
-    QList<AnnotationData>       getResultedAnnotations() const;
+    QList<SharedAnnotationData> getResultedAnnotations() const;
     BlastTaskSettings           getSettings() const;
 
     virtual ExternalToolRunTask* createBlastPlusTask() = 0;
@@ -55,12 +55,13 @@ protected:
     BlastTaskSettings               settings;
     ExternalToolLogParser*          logParser;
     QString                         url;
+
 private:
     SaveDocumentTask*               saveTemporaryDocumentTask;
     ExternalToolRunTask*            blastPlusTask;
     U2SequenceObject*               sequenceObject;
     Document*                       tmpDoc;
-    QList<AnnotationData>           result;
+    QList<SharedAnnotationData>     result;
     U2PseudoCircularization*        circularization;
 
     void parseTabularResult();

@@ -942,7 +942,7 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
     int index = 0;
     foreach(const PrimerPair& pair, bestPairs)
     {
-        QList<AnnotationData> annotations;
+        QList<SharedAnnotationData> annotations;
         if(NULL != pair.getLeftPrimer())
         {
             annotations.append(oligoToAnnotation(annName, *pair.getLeftPrimer(), pair.getProductSize(), U2Strand::Direct));
@@ -961,10 +961,10 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
 
     if (settings.getTask() == pick_left_only || settings.getTask() == pick_right_only) {
         const QList<Primer> singlePrimers = searchTask->getSinglePrimers();
-        QList<AnnotationData> annotations;
+        QList<SharedAnnotationData> annotations;
         U2Strand s = settings.getTask() == pick_left_only ? U2Strand::Direct : U2Strand::Complementary;
-        foreach ( const Primer &p, singlePrimers ) {
-            annotations.append( oligoToAnnotation( annName, p, 0, s ) );
+        foreach (const Primer &p, singlePrimers) {
+            annotations.append(oligoToAnnotation(annName, p, 0, s));
         }
 
         if ( !annotations.isEmpty( ) ) {
@@ -977,33 +977,33 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
     return ReportResult_Finished;
 }
 
-AnnotationData Primer3ToAnnotationsTask::oligoToAnnotation(const QString& title, const Primer &primer, int productSize, U2Strand strand)
+SharedAnnotationData Primer3ToAnnotationsTask::oligoToAnnotation(const QString& title, const Primer &primer, int productSize, U2Strand strand)
 {
-    AnnotationData annotationData;
-    annotationData.name = title;
-    annotationData.type = U2FeatureTypes::Primer;
+    SharedAnnotationData annotationData(new AnnotationData);
+    annotationData->name = title;
+    annotationData->type = U2FeatureTypes::Primer;
     qint64 seqLen = seqObj->getSequenceLength();
     // primer can be found on circular extension of the sequence
     int start = primer.getStart() + (primer.getStart() > seqLen ?  (- seqLen) : 0);
     int length = primer.getLength();
     if (start + length <= seqLen) {
-        annotationData.location->regions << U2Region(start, length);
+        annotationData->location->regions << U2Region(start, length);
     } else {
         // primer covers circular junction
-        annotationData.location->regions << U2Region(start, seqLen - start) << U2Region(0, start + length - seqLen);
-        annotationData.location.data()->op = U2LocationOperator_Join;
+        annotationData->location->regions << U2Region(start, seqLen - start) << U2Region(0, start + length - seqLen);
+        annotationData->location.data()->op = U2LocationOperator_Join;
     }
 
     if (strand == U2Strand::Complementary) {
         start -= length - 1;
     }
-    annotationData.setStrand(strand);
+    annotationData->setStrand(strand);
 
-    annotationData.qualifiers.append(U2Qualifier("tm", QString::number(primer.getMeltingTemperature())));
-    annotationData.qualifiers.append(U2Qualifier("gc%", QString::number(primer.getGcContent())));
-    annotationData.qualifiers.append(U2Qualifier("any", QString::number(0.01*primer.getSelfAny())));
-    annotationData.qualifiers.append(U2Qualifier("3'", QString::number(0.01*primer.getSelfEnd())));
-    annotationData.qualifiers.append(U2Qualifier("product_size", QString::number(productSize)));
+    annotationData->qualifiers.append(U2Qualifier("tm", QString::number(primer.getMeltingTemperature())));
+    annotationData->qualifiers.append(U2Qualifier("gc%", QString::number(primer.getGcContent())));
+    annotationData->qualifiers.append(U2Qualifier("any", QString::number(0.01*primer.getSelfAny())));
+    annotationData->qualifiers.append(U2Qualifier("3'", QString::number(0.01*primer.getSelfEnd())));
+    annotationData->qualifiers.append(U2Qualifier("product_size", QString::number(productSize)));
 
     return annotationData;
 }

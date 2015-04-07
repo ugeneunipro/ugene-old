@@ -37,22 +37,22 @@ class U2VIEW_EXPORT FindPatternTask : public Task
     Q_OBJECT
 
 public:
-    FindPatternTask(const FindAlgorithmTaskSettings& settings, bool removeOverlaps);
+    FindPatternTask(const FindAlgorithmTaskSettings &settings, bool removeOverlaps);
 
-    QList<Task*> onSubTaskFinished(Task* subTask);
+    QList<Task *> onSubTaskFinished(Task *subTask);
     bool hasNoResults() { return noResults; }
-    const QList<AnnotationData>& getResults() const;
+    const QList<SharedAnnotationData> & getResults() const;
 
     void prepare();
 
 private:
-    void removeOverlappedResults(QList<FindAlgorithmResult>& results);
+    void removeOverlappedResults(QList<FindAlgorithmResult> &results);
 
     FindAlgorithmTaskSettings           settings;
     bool                                removeOverlaps;
-    FindAlgorithmTask*                  findAlgorithmTask;
+    FindAlgorithmTask *                 findAlgorithmTask;
     bool                                noResults;
-    QList<AnnotationData>               results;
+    QList<SharedAnnotationData>         results;
 
     static const float MAX_OVERLAP_K;
 };
@@ -62,26 +62,23 @@ typedef QPair<QString, QString> NamePattern;
 class U2VIEW_EXPORT FindPatternListTask : public Task {
     Q_OBJECT
 public:
-    FindPatternListTask(const FindAlgorithmTaskSettings& settings,
-                        const QList<NamePattern>& patterns,
-                        bool removeOverlaps,
-                        int match);
-    QList<Task*> onSubTaskFinished(Task* subTask);
-    const QList<AnnotationData>& getResults() const;
+    FindPatternListTask(const FindAlgorithmTaskSettings &settings, const QList<NamePattern> &patterns, bool removeOverlaps, int match);
+    QList<Task *> onSubTaskFinished(Task *subTask);
+    const QList<SharedAnnotationData> & getResults() const;
     bool hasNoResults() const;
     void prepare();
 
 private:
-    FindAlgorithmTaskSettings settings;
-    bool                      removeOverlaps;
-    int                       match;
-    bool                      noResults;
-    QList<AnnotationData>     results;
-    const QList<NamePattern>  patterns;
+    FindAlgorithmTaskSettings   settings;
+    bool                        removeOverlaps;
+    int                         match;
+    bool                        noResults;
+    QList<SharedAnnotationData> results;
+    const QList<NamePattern>    patterns;
 
     static const float MAX_OVERLAP_K;
 
-    int getMaxError(const QString& pattern) const;
+    int getMaxError(const QString &pattern) const;
 };
 
 } // namespace

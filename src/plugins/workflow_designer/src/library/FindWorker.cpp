@@ -61,7 +61,7 @@ static const QString ERR_ATTR("max-mismatches-num");
 static const QString ALGO_ATTR("allow-ins-del");
 static const QString AMINO_ATTR("amino");
 static const QString AMBIGUOUS_ATTR("ambiguous");
-static const QString PATTERN_NAME_QUAL_ATTR( "pattern-name-qual" );
+static const QString PATTERN_NAME_QUAL_ATTR("pattern-name-qual");
 
 const QString FindWorkerFactory::ACTOR_ID("search");
 
@@ -179,7 +179,7 @@ void FindWorkerFactory::init() {
         a << new Attribute(ald, BaseTypes::BOOL_TYPE(), false, false);
         a << new Attribute(ambigd, BaseTypes::BOOL_TYPE(), false, false);
         a << new Attribute(amd, BaseTypes::BOOL_TYPE(), false, false);
-        a << new Attribute(patternNameQualifier, BaseTypes::STRING_TYPE( ), false, "pattern_name");
+        a << new Attribute(patternNameQualifier, BaseTypes::STRING_TYPE(), false, "pattern_name");
     }
 
     Descriptor desc(ACTOR_ID,
@@ -204,7 +204,7 @@ void FindWorkerFactory::init() {
     }
     proto->setEditor(new DelegateEditor(delegates));
 
-    proto->setIconPath( ":core/images/find_dialog.png" );
+    proto->setIconPath(":core/images/find_dialog.png");
     proto->setPrompter(new FindPrompter());
     proto->setValidator(new FindPatternsValidator());
     QList<Descriptor> reqSlots; reqSlots << BaseSlots::DNA_SEQUENCE_SLOT();
@@ -447,83 +447,79 @@ Task* FindWorker::tick() {
     return NULL;
 }
 
-void FindWorker::sl_taskFinished( Task *t ) {
-    MultiTask *multiFind = qobject_cast<MultiTask *>( t );
-    SAFE_POINT( NULL != multiFind, "Invalid task encountered!", );
-    QList<Task *> subs = multiFind->getTasks( );
-    SAFE_POINT( !subs.isEmpty( ), "No subtasks found!", );
+void FindWorker::sl_taskFinished(Task *t) {
+    MultiTask *multiFind = qobject_cast<MultiTask *>(t);
+    SAFE_POINT(NULL != multiFind, "Invalid task encountered!",);
+    QList<Task *> subs = multiFind->getTasks();
+    SAFE_POINT(!subs.isEmpty(), "No subtasks found!",);
     QStringList ptrns;
     QList<FindAlgorithmResult> annData;
-    QList<AnnotationData> result;
+    QList<SharedAnnotationData> result;
     bool isCircular = false;
     int seqLen = -1;
-    foreach ( Task *sub, subs ) {
-        FindAlgorithmTask *findTask = qobject_cast<FindAlgorithmTask *>( sub );
-        if ( NULL != findTask ) {
-            if ( findTask->isCanceled( ) || findTask->hasError( ) ) {
+    foreach (Task *sub, subs) {
+        FindAlgorithmTask *findTask = qobject_cast<FindAlgorithmTask *>(sub);
+        if (NULL != findTask) {
+            if (findTask->isCanceled() || findTask->hasError()) {
                 return;
             }
             isCircular = findTask->getSettings().searchIsCircular;
             seqLen = findTask->getSettings().sequence.length();
             //parameters pattern
-            if ( !filePatterns.contains( sub ) ) {
-                annData << findTask->popResults( );
-                ptrns << patterns.value( findTask );
+            if (!filePatterns.contains(sub)) {
+                annData << findTask->popResults();
+                ptrns << patterns.value(findTask);
             } else { //file pattern
-                const QString patternNameQualName = actor->getParameter( PATTERN_NAME_QUAL_ATTR )
-                    ->getAttributeValue<QString>( context );
+                const QString patternNameQualName = actor->getParameter(PATTERN_NAME_QUAL_ATTR)
+                    ->getAttributeValue<QString>(context);
 
-                QString patternName = filePatterns.value( findTask ).first;
-                if ( !patternName.isEmpty( ) ) {
-                    if ( !Annotation::isValidAnnotationName( patternName ) ) {
+                QString patternName = filePatterns.value(findTask).first;
+                if (!patternName.isEmpty()) {
+                    if (!Annotation::isValidAnnotationName(patternName)) {
                         patternName = resultName;
                     }
                 }
-                const QList<AnnotationData> tmpResult = FindAlgorithmResult::toTable(
-                    findTask->popResults( ), useNames ? patternName : resultName );
-                foreach ( AnnotationData annotation, tmpResult ) {
-                    if ( !patternName.isEmpty( ) ) {
-                        const U2Qualifier patternNameQual( patternNameQualName, patternName );
-                        annotation.qualifiers.push_back( patternNameQual );
+                const QList<SharedAnnotationData> tmpResult = FindAlgorithmResult::toTable(findTask->popResults(), useNames ? patternName : resultName);
+                foreach (SharedAnnotationData annotation, tmpResult) {
+                    if (!patternName.isEmpty()) {
+                        const U2Qualifier patternNameQual(patternNameQualName, patternName);
+                        annotation->qualifiers.push_back(patternNameQual);
                     }
                     result << annotation;
                 }
-                foreach ( AnnotationData annotation, result ) {
-                    foreach ( U2Qualifier qual, annotation.qualifiers ) {
-                        qDebug( ) << annotation.name << "---" << qual.name << " : " << qual.value;
+                foreach (const SharedAnnotationData &annotation, result) {
+                    foreach (const U2Qualifier &qual, annotation->qualifiers) {
+                        qDebug() << annotation->name << "---" << qual.name << " : " << qual.value;
                     }
                 }
-                if ( NULL != output ) {
-                    algoLog.info( tr( "Found %1 matches of pattern '%2'" ).arg( result.size( ) )
-                        .arg( QString( filePatterns.value( findTask ).second ) ) );
+                if (NULL != output) {
+                    algoLog.info(tr("Found %1 matches of pattern '%2'").arg(result.size()).arg(QString(filePatterns.value(findTask).second)));
                 }
             }
 
         } else {
-            LoadPatternsFileTask *loadTask = qobject_cast<LoadPatternsFileTask *>( sub );
-            if ( NULL != loadTask ) {
-                namesPatterns = loadTask->getNamesPatterns( );
+            LoadPatternsFileTask *loadTask = qobject_cast<LoadPatternsFileTask *>(sub);
+            if (NULL != loadTask) {
+                namesPatterns = loadTask->getNamesPatterns();
             }
             return;
         }
     }
-    if ( NULL != output ) {
-        if ( result.isEmpty( ) ) {
-            result << FindAlgorithmResult::toTable( annData, resultName, isCircular, seqLen );
+    if (NULL != output) {
+        if (result.isEmpty()) {
+            result << FindAlgorithmResult::toTable(annData, resultName, isCircular, seqLen);
         }
 
-        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( result );
-        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
-            qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
+        const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(result);
+        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), qVariantFromValue<SharedDbiDataHandler>(tableId)));
 
-        if ( !ptrns.isEmpty( ) ) {
-            algoLog.info( tr( "Found %1 matches of pattern '%2'" ).arg( result.size( ) )
-                .arg( ptrns.join( PATTERN_DELIMITER ) ) );
+        if (!ptrns.isEmpty()) {
+            algoLog.info(tr("Found %1 matches of pattern '%2'").arg(result.size()).arg(ptrns.join(PATTERN_DELIMITER)));
         }
     }
 }
 
-void FindWorker::cleanup( ) {
+void FindWorker::cleanup() {
 
 }
 

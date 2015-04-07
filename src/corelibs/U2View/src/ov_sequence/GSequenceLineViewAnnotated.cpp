@@ -65,82 +65,75 @@ static const int MAX_VIRTUAL_RANGE = 10000;
 
 namespace U2 {
 
-GSequenceLineViewAnnotated::DrawSettings::DrawSettings( )
-    : drawAnnotationNames( false ), drawAnnotationArrows( false ), drawCutSites( true )
+GSequenceLineViewAnnotated::DrawSettings::DrawSettings()
+    : drawAnnotationNames(false), drawAnnotationArrows(false), drawCutSites(true)
 {
 
 }
 
 GSequenceLineViewAnnotated::GSequenceLineViewAnnotated(QWidget* p, ADVSequenceObjectContext* ctx)
-: GSequenceLineView(p, ctx)
+    : GSequenceLineView(p, ctx)
 {
     const QSet<AnnotationTableObject*> aObjs = ctx->getAnnotationObjects(true);
-    foreach ( const AnnotationTableObject *ao, aObjs ) {
-        connectAnnotationObject( ao );
+    foreach (const AnnotationTableObject *ao, aObjs) {
+        connectAnnotationObject(ao);
     }
     connect(ctx->getAnnotationsSelection(),
-        SIGNAL(si_selectionChanged(AnnotationSelection*, const QList<Annotation>&, const QList<Annotation>& )),
-        SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation>&, const QList<Annotation>&)));
+        SIGNAL(si_selectionChanged(AnnotationSelection*, const QList<Annotation *> &, const QList<Annotation *> &)),
+        SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection *, const QList<Annotation *> &, const QList<Annotation *> &)));
 
-    connect( ctx, SIGNAL( si_annotationObjectAdded( AnnotationTableObject * ) ),
-        SLOT( sl_onAnnotationObjectAdded( AnnotationTableObject * ) ) );
-    connect( ctx, SIGNAL( si_annotationObjectRemoved( AnnotationTableObject * ) ),
-        SLOT( sl_onAnnotationObjectRemoved( AnnotationTableObject * ) ) );
+    connect(ctx, SIGNAL(si_annotationObjectAdded(AnnotationTableObject *)), SLOT(sl_onAnnotationObjectAdded(AnnotationTableObject *)));
+    connect(ctx, SIGNAL(si_annotationObjectRemoved(AnnotationTableObject *)), SLOT(sl_onAnnotationObjectRemoved(AnnotationTableObject *)));
 
-    connect(AppContext::getAnnotationsSettingsRegistry(),
-        SIGNAL(si_annotationSettingsChanged(const QStringList&)),
-        SLOT(sl_onAnnotationSettingsChanged(const QStringList&)));
+    connect(AppContext::getAnnotationsSettingsRegistry(), SIGNAL(si_annotationSettingsChanged(const QStringList &)),
+        SLOT(sl_onAnnotationSettingsChanged(const QStringList &)));
 
 }
 
-void GSequenceLineViewAnnotated::connectAnnotationObject( const AnnotationTableObject *ao ) {
-    connect( ao, SIGNAL(si_onAnnotationsAdded( const QList<Annotation> & ) ),
-        SLOT( sl_onAnnotationsAdded( const QList<Annotation> & ) ) );
-    connect( ao, SIGNAL( si_onAnnotationsRemoved( const QList<Annotation> & ) ),
-        SLOT( sl_onAnnotationsRemoved( const QList<Annotation> & ) ) );
-    connect( ao, SIGNAL( si_onAnnotationsInGroupRemoved( const QList<Annotation> &, const AnnotationGroup & ) ),
-        SLOT( sl_onAnnotationsInGroupRemoved( const QList<Annotation> &, const AnnotationGroup & ) ) );
-    connect( ao, SIGNAL( si_onAnnotationModified( const AnnotationModification & ) ),
-        SLOT( sl_onAnnotationsModified( const AnnotationModification & ) ) );
+void GSequenceLineViewAnnotated::connectAnnotationObject(const AnnotationTableObject *ao) {
+    connect(ao, SIGNAL(si_onAnnotationsAdded(const QList<Annotation *> &)), SLOT(sl_onAnnotationsAdded(const QList<Annotation *> &)));
+    connect(ao, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation *> &)), SLOT(sl_onAnnotationsRemoved(const QList<Annotation *> &)));
+    connect(ao, SIGNAL(si_onAnnotationsInGroupRemoved(const QList<Annotation *> &, AnnotationGroup *)),
+        SLOT(sl_onAnnotationsInGroupRemoved(const QList<Annotation *> &, AnnotationGroup *)));
+    connect(ao, SIGNAL(si_onAnnotationModified(const AnnotationModification &)), SLOT(sl_onAnnotationsModified(const AnnotationModification &)));
 }
 
-void GSequenceLineViewAnnotated::sl_onAnnotationSettingsChanged(const QStringList&) {
+void GSequenceLineViewAnnotated::sl_onAnnotationSettingsChanged(const QStringList &) {
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
 
-void GSequenceLineViewAnnotated::sl_onAnnotationObjectAdded( AnnotationTableObject *o ) {
+void GSequenceLineViewAnnotated::sl_onAnnotationObjectAdded(AnnotationTableObject *o) {
     connectAnnotationObject(o);
     sl_onAnnotationsAdded(o->getAnnotations());
 }
 
-void GSequenceLineViewAnnotated::sl_onAnnotationObjectRemoved( AnnotationTableObject *o ) {
+void GSequenceLineViewAnnotated::sl_onAnnotationObjectRemoved(AnnotationTableObject *o) {
     o->disconnect(this);
     sl_onAnnotationsRemoved(o->getAnnotations());
 }
 
-void GSequenceLineViewAnnotated::sl_onAnnotationsAdded(const QList<Annotation> &l) {
+void GSequenceLineViewAnnotated::sl_onAnnotationsAdded(const QList<Annotation *> &l) {
     GTIMER(c2,t2,"GSequenceLineViewAnnotated::sl_onAnnotationsAdded");
     registerAnnotations(l);
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
 
-void GSequenceLineViewAnnotated::sl_onAnnotationsRemoved(const QList<Annotation> &l) {
+void GSequenceLineViewAnnotated::sl_onAnnotationsRemoved(const QList<Annotation *> &l) {
     unregisterAnnotations(l);
     addUpdateFlags(GSLV_UF_AnnotationsChanged);
     update();
 }
 
-void GSequenceLineViewAnnotated::sl_onAnnotationsInGroupRemoved(const QList<Annotation> &l, const AnnotationGroup & ) {
+void GSequenceLineViewAnnotated::sl_onAnnotationsInGroupRemoved(const QList<Annotation *> &l, AnnotationGroup *) {
     AnnotationTableObject *aobj = static_cast<AnnotationTableObject *>(sender());
     ClearAnnotationsTask *task = new ClearAnnotationsTask(l, aobj, this);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 }
 
-ClearAnnotationsTask::ClearAnnotationsTask( const QList<Annotation> &_list,
-    AnnotationTableObject *_aobj, GSequenceLineViewAnnotated *_view)
-    : Task( "Clear annotations", TaskFlag_None ), l( _list ), aobj( _aobj ), view( _view )
+ClearAnnotationsTask::ClearAnnotationsTask(const QList<Annotation *> &list, AnnotationTableObject *aobj, GSequenceLineViewAnnotated *view)
+    : Task("Clear annotations", TaskFlag_None), l(list), aobj(aobj), view(view)
 {
 
 }
@@ -155,37 +148,37 @@ Task::ReportResult ClearAnnotationsTask::report() {
     return ReportResult_Finished;
 }
 
-void GSequenceLineViewAnnotated::sl_onAnnotationSelectionChanged( AnnotationSelection* as,
-    const QList<Annotation> &_added, const QList<Annotation> &_removed )
+void GSequenceLineViewAnnotated::sl_onAnnotationSelectionChanged(AnnotationSelection *as, const QList<Annotation *> &_added,
+    const QList<Annotation *> &_removed)
 {
-    const QSet<AnnotationTableObject *> aos = ctx->getAnnotationObjects( true );
+    const QSet<AnnotationTableObject *> aos = ctx->getAnnotationObjects(true);
 
     bool changed = false;
-    const QList<Annotation> added = ctx->selectRelatedAnnotations( _added );
-    const QList<Annotation> removed = ctx->selectRelatedAnnotations( _removed );
+    const QList<Annotation *> added = ctx->selectRelatedAnnotations(_added);
+    const QList<Annotation *> removed = ctx->selectRelatedAnnotations(_removed);
 
-    if ( 1 == added.size( ) ) {
-        const Annotation &a = added.first( );
-        if ( aos.contains( a.getGObject( ) ) ) {
-            const AnnotationSelectionData *asd = as->getAnnotationData( a );
-            SAFE_POINT(asd != NULL, "AnnotationSelectionData is NULL", );
+    if (1 == added.size()) {
+        Annotation *a = added.first();
+        if (aos.contains(a->getGObject())) {
+            const AnnotationSelectionData *asd = as->getAnnotationData(a);
+            SAFE_POINT(asd != NULL, "AnnotationSelectionData is NULL",);
             foreach (int loc, asd->locationIdxList) {
-                ensureVisible( a.getData(), loc);
+                ensureVisible(a->getData(), loc);
             }
             changed = true;
         }
     }
 
-    if ( !changed ) {
-        foreach( const Annotation &a, added ) {
-            if ( aos.contains( a.getGObject( ) ) && isAnnotationVisible( a ) ) {
+    if (!changed) {
+        foreach (Annotation *a, added) {
+            if (aos.contains(a->getGObject()) && isAnnotationVisible(a)) {
                 changed = true;
                 break;
             }
         }
-        if ( !changed ) {
-            foreach( const Annotation &a, removed ) {
-                if ( aos.contains( a.getGObject( ) ) && isAnnotationVisible( a ) ) {
+        if (!changed) {
+            foreach (Annotation *a, removed) {
+                if (aos.contains(a->getGObject()) && isAnnotationVisible(a)) {
                     changed = true;
                     break;
                 }
@@ -193,14 +186,14 @@ void GSequenceLineViewAnnotated::sl_onAnnotationSelectionChanged( AnnotationSele
         }
     }
 
-    if ( changed ) {
-        addUpdateFlags( GSLV_UF_SelectionChanged );
-        update( );
+    if (changed) {
+        addUpdateFlags(GSLV_UF_SelectionChanged);
+        update();
     }
 }
 
-bool GSequenceLineViewAnnotated::isAnnotationVisible( const Annotation &a) const  {
-    foreach (const U2Region &r, a.getRegions()) {
+bool GSequenceLineViewAnnotated::isAnnotationVisible(Annotation *a) const  {
+    foreach (const U2Region &r, a->getRegions()) {
         if (visibleRange.intersects(r)) {
             return true;
         }
@@ -208,47 +201,42 @@ bool GSequenceLineViewAnnotated::isAnnotationVisible( const Annotation &a) const
     return false;
 }
 
-const GSequenceLineViewAnnotated::DrawSettings & GSequenceLineViewAnnotated::getDrawSettings( )
-    const
-{
+const GSequenceLineViewAnnotated::DrawSettings & GSequenceLineViewAnnotated::getDrawSettings() const {
     return drawSettings;
 }
 
-QList<AnnotationSelectionData> GSequenceLineViewAnnotated::selectAnnotationByCoord(
-    const QPoint &p ) const
-{
+QList<AnnotationSelectionData> GSequenceLineViewAnnotated::selectAnnotationByCoord(const QPoint &p) const {
     QList<AnnotationSelectionData> res;
-    GSequenceLineViewAnnotatedRenderArea *ra
-        = static_cast<GSequenceLineViewAnnotatedRenderArea *>( renderArea );
-    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
-    const qint64 pos = ra->coordToPos( p.x( ) );
+    GSequenceLineViewAnnotatedRenderArea *ra = static_cast<GSequenceLineViewAnnotatedRenderArea *>(renderArea);
+    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
+    const qint64 pos = ra->coordToPos(p.x());
     qint64 dPos = 0;
-    if ( visibleRange.length > renderArea->width( ) ) {
-        float scale = renderArea->getCurrentScale( );
-        dPos = static_cast<qint64>( ( 1 / scale ) );
-        SAFE_POINT( dPos < seqLen, "Invalid render region end position!", res );
+    if (visibleRange.length > renderArea->width()) {
+        float scale = renderArea->getCurrentScale();
+        dPos = static_cast<qint64>((1 / scale));
+        SAFE_POINT(dPos < seqLen, "Invalid render region end position!", res);
     }
-    U2Region reg( pos - dPos, 1 + 2 * dPos );
-    const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects( true );
-    foreach ( AnnotationTableObject *ao, aObjs ) {
-        foreach ( const Annotation &a, ao->getAnnotationsByRegion( reg ) ) {
-            const AnnotationData aData = a.getData( );
-            QVector<U2Region> location = aData.getRegions( );
-            for ( int i = 0, n = location.size( ); i < n; i++ ) {
+    U2Region reg(pos - dPos, 1 + 2 * dPos);
+    const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects(true);
+    foreach (AnnotationTableObject *ao, aObjs) {
+        foreach (Annotation *a, ao->getAnnotationsByRegion(reg)) {
+            const SharedAnnotationData &aData = a->getData();
+            const QVector<U2Region> location = aData->getRegions();
+            for (int i = 0, n = location.size(); i < n; i++) {
                 const U2Region &l = location[i];
-                if ( l.intersects( reg ) || l.endPos( ) == reg.startPos ) {
+                if (l.intersects(reg) || l.endPos() == reg.startPos) {
                     bool ok = true;
-                    if ( l.endPos( ) == pos || pos == l.startPos ) { //now check pixel precise coords for boundaries
-                        int x1 = ra->posToCoord( l.startPos, true );
-                        int x2 = ra->posToCoord( l.endPos( ), true );
-                        ok = p.x( ) <= x2 && p.x( ) >= x1;
+                    if (l.endPos() == pos || pos == l.startPos) { //now check pixel precise coords for boundaries
+                        int x1 = ra->posToCoord(l.startPos, true);
+                        int x2 = ra->posToCoord(l.endPos(), true);
+                        ok = p.x() <= x2 && p.x() >= x1;
                     }
-                    if ( ok ) {
-                        AnnotationSettings *as = asr->getAnnotationSettings( aData );
-                        if ( as->visible ) {
-                            U2Region ry = ra->getAnnotationYRange( a, i, as );
-                            if ( ry.contains( p.y( ) ) ) {
-                                res.append( AnnotationSelectionData( a, i ) );
+                    if (ok) {
+                        AnnotationSettings *as = asr->getAnnotationSettings(aData);
+                        if (as->visible) {
+                            U2Region ry = ra->getAnnotationYRange(a, i, as);
+                            if (ry.contains(p.y())) {
+                                res.append(AnnotationSelectionData(a, i));
                             }
                         }
                     }
@@ -279,26 +267,26 @@ void GSequenceLineViewAnnotated::mousePressEvent(QMouseEvent *me) {
                 AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
                 QMenu popup;
                 foreach (const AnnotationSelectionData &as, selected) {
-                    const AnnotationData aData = as.annotation.getData();
-                    SAFE_POINT(as.getSelectedRegions().size() == 1, "Invalid selection: only one region is possible!", );
+                    const SharedAnnotationData &aData = as.annotation->getData();
+                    SAFE_POINT(as.getSelectedRegions().size() == 1, "Invalid selection: only one region is possible!",);
                     const U2Region r = as.getSelectedRegions().first();
-                    const QString text = aData.name + QString(" [%1, %2]").arg(r.startPos + 1).arg(r.endPos());
+                    const QString text = aData->name + QString(" [%1, %2]").arg(r.startPos + 1).arg(r.endPos());
                     AnnotationSettings *asettings = asr->getAnnotationSettings(aData);
                     const QIcon icon = GUIUtils::createSquareIcon(asettings->color, 10);
                     popup.addAction(icon, text);
                 }
                 QAction *a = popup.exec(QCursor::pos());
-                if ( NULL == a ) {
+                if (NULL == a) {
                     asd = NULL;
                 } else {
                     int idx = popup.actions().indexOf(a);
                     asd = &selected[idx];
                 }
             }
-            if ( NULL != asd ) { //add to annotation selection
+            if (NULL != asd) { //add to annotation selection
                 AnnotationSelection *asel = ctx->getAnnotationsSelection();
                     foreach (int loc, asd->locationIdxList) {
-                        if (asel->contains( asd->annotation, loc)) {
+                        if (asel->contains(asd->annotation, loc)) {
                             asel->removeFromSelection(asd->annotation, loc);
                         } else {
                             asel->addToSelection(asd->annotation, loc);
@@ -309,7 +297,7 @@ void GSequenceLineViewAnnotated::mousePressEvent(QMouseEvent *me) {
                 if (expandAnnotationSelectionToSequence) {
                     QVector<U2Region> regionsToSelect;
                     foreach (const AnnotationSelectionData &asd, asel->getSelection()) {
-                        AnnotationTableObject *aobj = asd.annotation.getGObject();
+                        AnnotationTableObject *aobj = asd.annotation->getGObject();
                         const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects(true);
                         if (!aObjs.contains(aobj)) {
                             continue;
@@ -317,7 +305,7 @@ void GSequenceLineViewAnnotated::mousePressEvent(QMouseEvent *me) {
                         regionsToSelect << asd.getSelectedRegions();
                     }
                     if (!ctx->getSequenceObject()->isCircular()) {
-                        ctx->getSequenceSelection( )->setRegion( U2Region::containingRegion(regionsToSelect));
+                        ctx->getSequenceSelection()->setRegion(U2Region::containingRegion(regionsToSelect));
                     } else {
                         QVector<U2Region> regSelection = U2Region::circularContainingRegion(regionsToSelect, ctx->getSequenceLength());
                         foreach (const U2Region reg, regSelection) {
@@ -334,28 +322,27 @@ void GSequenceLineViewAnnotated::mousePressEvent(QMouseEvent *me) {
     ignoreMouseSelectionEvents = false;
 }
 
-QString GSequenceLineViewAnnotated::prepareAnnotationText( const AnnotationData &a, const AnnotationSettings *as ) {
-    if ( !as->showNameQuals || as->nameQuals.isEmpty( ) ) {
-        return a.name;
+QString GSequenceLineViewAnnotated::prepareAnnotationText(const SharedAnnotationData &a, const AnnotationSettings *as) {
+    if (!as->showNameQuals || as->nameQuals.isEmpty()) {
+        return a->name;
     }
     QVector<U2Qualifier> qs;
-    foreach ( const QString &qn, as->nameQuals ) {
-        qs.clear( );
-        a.findQualifiers( qn, qs );
-        if ( !qs.isEmpty( ) ) {
+    foreach (const QString &qn, as->nameQuals) {
+        qs.clear();
+        a->findQualifiers(qn, qs);
+        if (!qs.isEmpty()) {
             QString res = qs[0].value;
             return res;
         }
     }
-    return a.name;
+    return a->name;
 }
 
-QList<Annotation> GSequenceLineViewAnnotated::findAnnotationsInRange(const U2Region &range) const
-{
-    QList<Annotation> result;
-    const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects( true );
-    foreach ( AnnotationTableObject *ao, aObjs) {
-        result << ao->getAnnotationsByRegion( range );
+QList<Annotation *> GSequenceLineViewAnnotated::findAnnotationsInRange(const U2Region &range) const {
+    QList<Annotation *> result;
+    const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects(true);
+    foreach (AnnotationTableObject *ao, aObjs) {
+        result << ao->getAnnotationsByRegion(range);
     }
     return result;
 }
@@ -363,7 +350,8 @@ QList<Annotation> GSequenceLineViewAnnotated::findAnnotationsInRange(const U2Reg
 //////////////////////////////////////////////////////////////////////////
 /// Renderer
 
-GSequenceLineViewAnnotatedRenderArea::GSequenceLineViewAnnotatedRenderArea(GSequenceLineViewAnnotated* d, bool overlap) : GSequenceLineViewRenderArea(d)
+GSequenceLineViewAnnotatedRenderArea::GSequenceLineViewAnnotatedRenderArea(GSequenceLineViewAnnotated* d, bool overlap)
+    : GSequenceLineViewRenderArea(d)
 {
     annotationsCanOverlap = overlap;
     afNormal = new QFont("Courier", 10);
@@ -378,9 +366,9 @@ GSequenceLineViewAnnotatedRenderArea::GSequenceLineViewAnnotatedRenderArea(GSequ
     QLinearGradient gradient(0, 0, 0, 1); //vertical
     gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
     gradient.setColorAt(0.00, QColor(255, 255, 255, 120));
-    gradient.setColorAt(0.50, QColor(  0,   0,   0,   0));
-    gradient.setColorAt(0.70, QColor(  0,   0,   0,   0));
-    gradient.setColorAt(1.00, QColor(  0,   0,   0,  70));
+    gradient.setColorAt(0.50, QColor( 0,   0,   0,   0));
+    gradient.setColorAt(0.70, QColor( 0,   0,   0,   0));
+    gradient.setColorAt(1.00, QColor( 0,   0,   0,  70));
     gradientMaskBrush = QBrush(gradient);
 }
 
@@ -391,19 +379,19 @@ GSequenceLineViewAnnotatedRenderArea::~GSequenceLineViewAnnotatedRenderArea() {
     delete afSmall;
 }
 
-void GSequenceLineViewAnnotatedRenderArea::drawAnnotations( QPainter& p ) {
-    GTIMER( c2, t2, "GSequenceLineViewAnnotatedRenderArea::drawAnnotations" );
-    ADVSequenceObjectContext *ctx = view->getSequenceContext( );
+void GSequenceLineViewAnnotatedRenderArea::drawAnnotations(QPainter& p) {
+    GTIMER(c2, t2, "GSequenceLineViewAnnotatedRenderArea::drawAnnotations");
+    ADVSequenceObjectContext *ctx = view->getSequenceContext();
 
-    QPen pen1( Qt::SolidLine );
-    pen1.setWidth( 1 );
+    QPen pen1(Qt::SolidLine);
+    pen1.setWidth(1);
 
-    foreach ( const AnnotationTableObject *ao, ctx->getAnnotationObjects( true ) ) {
-        foreach ( const Annotation &a, ao->getAnnotationsByRegion( view->getVisibleRange( ) ) ) {
-            AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
-            AnnotationSettings *as = asr->getAnnotationSettings( a.getData( ) );
-            drawAnnotation( p, DrawAnnotationPass_DrawFill, a, pen1, false, as );
-            drawAnnotation( p, DrawAnnotationPass_DrawBorder, a, pen1, false, as );
+    foreach (const AnnotationTableObject *ao, ctx->getAnnotationObjects(true)) {
+        foreach (Annotation *a, ao->getAnnotationsByRegion(view->getVisibleRange())) {
+            AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
+            AnnotationSettings *as = asr->getAnnotationSettings(a->getData());
+            drawAnnotation(p, DrawAnnotationPass_DrawFill, a, pen1, false, as);
+            drawAnnotation(p, DrawAnnotationPass_DrawBorder, a, pen1, false, as);
         }
     }
 }
@@ -430,188 +418,181 @@ void static addArrowPath(QPainterPath& path, const QRect& rect, bool leftArrow) 
     path = path.united(arrowPath);
 }
 
-GSequenceLineViewAnnotated * GSequenceLineViewAnnotatedRenderArea::getGSequenceLineViewAnnotated( ) const
-{
-    return static_cast<GSequenceLineViewAnnotated *>( view );
+GSequenceLineViewAnnotated * GSequenceLineViewAnnotatedRenderArea::getGSequenceLineViewAnnotated() const {
+    return static_cast<GSequenceLineViewAnnotated *>(view);
 }
 
-void GSequenceLineViewAnnotatedRenderArea::drawAnnotation( QPainter &p, DrawAnnotationPass pass,
-    const Annotation &a, const QPen &borderPen, bool selected, const AnnotationSettings *as,
-    U2Region predefinedy )
+void GSequenceLineViewAnnotatedRenderArea::drawAnnotation(QPainter &p, DrawAnnotationPass pass, Annotation *a, const QPen &borderPen,
+    bool selected, const AnnotationSettings *as, U2Region predefinedy)
 {
-    const AnnotationData aData = a.getData( );
-    if ( NULL == as ) {
-        AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
-        as = asr->getAnnotationSettings( aData );
+    const SharedAnnotationData &aData = a->getData();
+    if (NULL == as) {
+        AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
+        as = asr->getAnnotationSettings(aData);
     }
-    if ( !as->visible && ( DrawAnnotationPass_DrawFill == pass || !selected ) ) {
+    if (!as->visible && (DrawAnnotationPass_DrawFill == pass || !selected)) {
         return;
     }
-    const GSequenceLineViewAnnotated::DrawSettings &drawSettings
-        = getGSequenceLineViewAnnotated( )->getDrawSettings( );
-    const U2Region &vr = view->getVisibleRange( );
+    const GSequenceLineViewAnnotated::DrawSettings &drawSettings = getGSequenceLineViewAnnotated()->getDrawSettings();
+    const U2Region &vr = view->getVisibleRange();
 
-    QVector<U2Region> location = aData.getRegions();
-    bool simple = location.size( ) == 1;
-    for ( int ri = 0, ln = location.size( ); ri < ln; ri++ ) {
-        const U2Region &r = location.at( ri );
-        if ( !r.intersects( vr ) || predefinedy.startPos < 0 ) {
+    QVector<U2Region> location = aData->getRegions();
+    bool simple = location.size() == 1;
+    for (int ri = 0, ln = location.size(); ri < ln; ri++) {
+        const U2Region &r = location.at(ri);
+        if (!r.intersects(vr) || predefinedy.startPos < 0) {
             continue;
         }
-        const U2Region visibleLocation = r.intersect( vr );
-        const U2Region y = predefinedy.isEmpty( ) ? getAnnotationYRange( a, ri, as ) : predefinedy;
-        if ( y.startPos < 0 ) {
+        const U2Region visibleLocation = r.intersect(vr);
+        const U2Region y = predefinedy.isEmpty() ? getAnnotationYRange(a, ri, as) : predefinedy;
+        if (y.startPos < 0) {
             continue;
         }
-        const float x1f = posToCoordF( visibleLocation.startPos );
-        const float x2f = posToCoordF( visibleLocation.endPos( ) );
-        assert( x2f >= x1f );
+        const float x1f = posToCoordF(visibleLocation.startPos);
+        const float x2f = posToCoordF(visibleLocation.endPos());
+        assert(x2f >= x1f);
 
-        const int rw = qMax( selected ? MIN_SELECTED_ANNOTATION_WIDTH : MIN_ANNOTATION_WIDTH,
-            qRound( x2f - x1f ) );
-        const int x1 = qRound( x1f );
+        const int rw = qMax(selected ? MIN_SELECTED_ANNOTATION_WIDTH : MIN_ANNOTATION_WIDTH,
+            qRound(x2f - x1f));
+        const int x1 = qRound(x1f);
 
-        const QRect annotationRect( x1, y.startPos, rw, y.length );
+        const QRect annotationRect(x1, y.startPos, rw, y.length);
         QPainterPath rectPath;
-        rectPath.addRect( x1, y.startPos, rw, y.length );
+        rectPath.addRect(x1, y.startPos, rw, y.length);
         const bool leftTrim  = visibleLocation.startPos != r.startPos;
-        const bool rightTrim = visibleLocation.endPos( ) != r.endPos( );
-        const bool drawArrow = aData.getStrand( ).isCompementary( ) ? !leftTrim : !rightTrim;
-        if ( drawSettings.drawAnnotationArrows && drawArrow ) {
+        const bool rightTrim = visibleLocation.endPos() != r.endPos();
+        const bool drawArrow = aData->getStrand().isCompementary() ? !leftTrim : !rightTrim;
+        if (drawSettings.drawAnnotationArrows && drawArrow) {
             bool isLeft = false;
-            if ( 1 == ri && aData.findFirstQualifierValue( "rpt_type" ) == "inverted" ) { //temporary solution for drawing inverted repeats correct
+            if (1 == ri && aData->findFirstQualifierValue("rpt_type") == "inverted") { //temporary solution for drawing inverted repeats correct
                 isLeft = true;
             } else {
-                isLeft = aData.getStrand( ).isCompementary( );
+                isLeft = aData->getStrand().isCompementary();
             }
-            addArrowPath( rectPath, annotationRect, isLeft );
+            addArrowPath(rectPath, annotationRect, isLeft);
         }
 
-        if ( DrawAnnotationPass_DrawFill == pass ) {
-            rectPath.setFillRule( Qt::WindingFill );
-            p.fillPath( rectPath, as->color );
-            p.fillPath( rectPath, gradientMaskBrush );
+        if (DrawAnnotationPass_DrawFill == pass) {
+            rectPath.setFillRule(Qt::WindingFill);
+            p.fillPath(rectPath, as->color);
+            p.fillPath(rectPath, gradientMaskBrush);
         } else {
-            SAFE_POINT( pass == DrawAnnotationPass_DrawBorder, "Invalid annotation painter!", );
-            p.setPen( borderPen );
-            if ( rw > MIN_ANNOTATION_WIDTH ) {
-                p.drawPath( rectPath );
-                if ( drawSettings.drawAnnotationNames
-                    && annotationRect.width( ) >= MIN_ANNOTATION_TEXT_WIDTH )
+            SAFE_POINT(pass == DrawAnnotationPass_DrawBorder, "Invalid annotation painter!",);
+            p.setPen(borderPen);
+            if (rw > MIN_ANNOTATION_WIDTH) {
+                p.drawPath(rectPath);
+                if (drawSettings.drawAnnotationNames
+                    && annotationRect.width() >= MIN_ANNOTATION_TEXT_WIDTH)
                 {
-                    const QString aText = GSequenceLineViewAnnotated::prepareAnnotationText( aData, as );
-                    drawBoundedText( p, annotationRect, aText );
+                    const QString aText = GSequenceLineViewAnnotated::prepareAnnotationText(aData, as);
+                    drawBoundedText(p, annotationRect, aText);
                 }
-                if ( simple && annotationRect.width( ) > MIN_WIDTH_TO_DRAW_EXTRA_FEATURES ) {
-                    if ( drawSettings.drawCutSites ) {
-                        const QString cutStr
-                            = aData.findFirstQualifierValue( GBFeatureUtils::QUALIFIER_CUT );
+                if (simple && annotationRect.width() > MIN_WIDTH_TO_DRAW_EXTRA_FEATURES) {
+                    if (drawSettings.drawCutSites) {
+                        const QString cutStr = aData->findFirstQualifierValue(GBFeatureUtils::QUALIFIER_CUT);
                         bool hasD = false;
                         bool hasC = false;
                         int cutD = 0;
                         int cutC = 0;
-                        if ( !cutStr.isEmpty( ) ) {
-                            int complSplit = cutStr.indexOf( '/' );
-                            if ( -1 != complSplit ) {
-                                cutD = cutStr.left( complSplit ).toInt( &hasD );
-                                cutC = cutStr.mid( qMin( cutStr.length( ), complSplit + 1 ) )
-                                    .toInt( &hasC );
+                        if (!cutStr.isEmpty()) {
+                            int complSplit = cutStr.indexOf('/');
+                            if (-1 != complSplit) {
+                                cutD = cutStr.left(complSplit).toInt(&hasD);
+                                cutC = cutStr.mid(qMin(cutStr.length(), complSplit + 1))
+                                    .toInt(&hasC);
                             } else {
-                                cutD = cutStr.toInt( &hasD );
+                                cutD = cutStr.toInt(&hasD);
                                 cutC = cutD;
                                 hasC = hasD;
                             }
                         }
 
-                        U2Region y = aData.getStrand().isDirect() ? getMirroredYRange(U2Strand(U2Strand::Complementary))
+                        U2Region y = aData->getStrand().isDirect() ? getMirroredYRange(U2Strand(U2Strand::Complementary))
                             : getMirroredYRange(U2Strand(U2Strand::Direct));
                         QRect mirroredAnnotationRect = annotationRect;
                         mirroredAnnotationRect.setY(y.startPos);
                         mirroredAnnotationRect.setHeight(y.length);
                         CutSiteDrawData toInsert;
                         toInsert.color = as->color;
-                        if ( hasD ) {
+                        if (hasD) {
                             toInsert.direct = true;
-                            toInsert.pos = aData.getStrand( ).isDirect( ) ? r.startPos + cutD
+                            toInsert.pos = aData->getStrand().isDirect() ? r.startPos + cutD
                                 : r.startPos + cutC;
-                            aData.getStrand().isDirect() ? toInsert.r = annotationRect : toInsert.r = mirroredAnnotationRect;
+                            aData->getStrand().isDirect() ? toInsert.r = annotationRect : toInsert.r = mirroredAnnotationRect;
                             cutsiteDataList.append(toInsert);
                         }
-                        if ( hasC ) {
+                        if (hasC) {
                             toInsert.direct = false;
-                            toInsert.pos = aData.getStrand( ).isDirect( ) ? r.endPos( ) - cutC
-                                : r.endPos( ) - cutD;
-                            aData.getStrand().isCompementary() ? toInsert.r = annotationRect : toInsert.r = mirroredAnnotationRect;
+                            toInsert.pos = aData->getStrand().isDirect() ? r.endPos() - cutC : r.endPos() - cutD;
+                            aData->getStrand().isCompementary() ? toInsert.r = annotationRect : toInsert.r = mirroredAnnotationRect;
                             cutsiteDataList.append(toInsert);
                         }
                     }
                 }
             }
-            drawAnnotationConnections( p, a, as, predefinedy.isEmpty( ) ? U2Region() : predefinedy);
+            drawAnnotationConnections(p, a, as, predefinedy.isEmpty() ? U2Region() : predefinedy);
         }
     }
 }
 
-void GSequenceLineViewAnnotatedRenderArea::drawCutSites( QPainter &p ){
-    foreach(const CutSiteDrawData &data, cutsiteDataList) {
+void GSequenceLineViewAnnotatedRenderArea::drawCutSites(QPainter &p) {
+    foreach (const CutSiteDrawData &data, cutsiteDataList) {
         drawCutSite(p, data.r, data.color, data.pos, data.direct);
     }
     cutsiteDataList.clear();
 }
 
-void GSequenceLineViewAnnotatedRenderArea::drawAnnotationsSelection( QPainter &p ) {
-    ADVSequenceObjectContext *ctx = view->getSequenceContext( );
+void GSequenceLineViewAnnotatedRenderArea::drawAnnotationsSelection(QPainter &p) {
+    ADVSequenceObjectContext *ctx = view->getSequenceContext();
 
-    QPen pen1( Qt::SolidLine );
-    pen1.setWidth( 1 );
+    QPen pen1(Qt::SolidLine);
+    pen1.setWidth(1);
 
-    QPen pen2( Qt::SolidLine );
-    pen2.setWidth( 2 );
+    QPen pen2(Qt::SolidLine);
+    pen2.setWidth(2);
 
-    const AnnotationSelection *annSelection = ctx->getAnnotationsSelection( );
-    foreach ( const AnnotationSelectionData &asd, annSelection->getSelection( ) ) {
-        AnnotationTableObject *o = asd.annotation.getGObject( );
-        if ( ctx->getAnnotationObjects( true ).contains( o ) ) {
-            if ( annotationsCanOverlap ) {
-                drawAnnotation( p, DrawAnnotationPass_DrawFill, asd.annotation, pen1, true );
+    const AnnotationSelection *annSelection = ctx->getAnnotationsSelection();
+    foreach (const AnnotationSelectionData &asd, annSelection->getSelection()) {
+        AnnotationTableObject *o = asd.annotation->getGObject();
+        if (ctx->getAnnotationObjects(true).contains(o)) {
+            if (annotationsCanOverlap) {
+                drawAnnotation(p, DrawAnnotationPass_DrawFill, asd.annotation, pen1, true);
             }
-            drawAnnotation( p, DrawAnnotationPass_DrawBorder, asd.annotation, pen2, true );
+            drawAnnotation(p, DrawAnnotationPass_DrawBorder, asd.annotation, pen2, true);
         }
     }
 }
 
-void GSequenceLineViewAnnotatedRenderArea::drawBoundedText( QPainter &p, const QRect &r,
-    const QString &text) const
-{
-    if ( afSmallCharWidth > r.width( ) ) {
+void GSequenceLineViewAnnotatedRenderArea::drawBoundedText(QPainter &p, const QRect &r, const QString &text) const {
+    if (afSmallCharWidth > r.width()) {
         return;
     }
     const QFont *font = afNormal;
     const QFontMetrics* fm = afmNormal;
-    if ( fm->width( text ) > r.width( ) ) {
+    if (fm->width(text) > r.width()) {
         font = afSmall;
         fm = afmSmall;
     }
-    p.setFont( *font );
+    p.setFont(*font);
 
-    const int len = text.length( );
+    const int len = text.length();
     int textWidth = 0;
     int prefixLen = 0;
     do {
-        int cw = fm->width( text[prefixLen] );
-        if ( textWidth + cw > r.width( ) ) {
+        int cw = fm->width(text[prefixLen]);
+        if (textWidth + cw > r.width()) {
             break;
         }
         textWidth += cw;
-    } while ( ++prefixLen < len );
+    } while (++prefixLen < len);
 
-    if ( 0 == prefixLen ) {
+    if (0 == prefixLen) {
         return;
     }
-    p.drawText( r, Qt::TextSingleLine | Qt::AlignCenter, text.left( prefixLen ) );
+    p.drawText(r, Qt::TextSingleLine | Qt::AlignCenter, text.left(prefixLen));
 }
 
-void GSequenceLineViewAnnotatedRenderArea::drawCutSite(QPainter& p, const QRect& rect, const QColor& color, int pos, bool direct ) {
+void GSequenceLineViewAnnotatedRenderArea::drawCutSite(QPainter& p, const QRect& rect, const QColor& color, int pos, bool direct) {
     int xCenter = posToCoord(pos, true);
 
     int xLeft = xCenter - CUT_SITE_HALF_WIDTH;
@@ -630,87 +611,84 @@ void GSequenceLineViewAnnotatedRenderArea::drawCutSite(QPainter& p, const QRect&
 
 }
 
-void GSequenceLineViewAnnotatedRenderArea::drawAnnotationConnections(QPainter &p,
-    const Annotation &a, const AnnotationSettings *as, U2Region yRange)
-{
-    const AnnotationData aData = a.getData( );
-    if ( aData.location->isSingleRegion( ) ) {
+void GSequenceLineViewAnnotatedRenderArea::drawAnnotationConnections(QPainter &p, Annotation *a, const AnnotationSettings *as, U2Region yRange) {
+    const SharedAnnotationData &aData = a->getData();
+    if (aData->location->isSingleRegion()) {
         return;
     }
 
-    const GSequenceLineViewAnnotated *sequenceLineView = getGSequenceLineViewAnnotated( );
-    const U2SequenceObject *seqObject = sequenceLineView->getSequenceObject( );
-    SAFE_POINT( NULL != seqObject, "Invalid sequence object occured!", );
-    const qint64 seqLength = seqObject->getSequenceLength( );
-    U2Region sRange( 0, seqLength );
-    if ( U1AnnotationUtils::isSplitted( aData.location, sRange ) ) {
+    const GSequenceLineViewAnnotated *sequenceLineView = getGSequenceLineViewAnnotated();
+    const U2SequenceObject *seqObject = sequenceLineView->getSequenceObject();
+    SAFE_POINT(NULL != seqObject, "Invalid sequence object occured!",);
+    const qint64 seqLength = seqObject->getSequenceLength();
+    U2Region sRange(0, seqLength);
+    if (U1AnnotationUtils::isSplitted(aData->location, sRange)) {
         return;
     }
 
-    const GSequenceLineViewAnnotated::DrawSettings &drawSettings
-        = sequenceLineView->getDrawSettings( );
-    const U2Region &visibleRange = view->getVisibleRange( );
+    const GSequenceLineViewAnnotated::DrawSettings &drawSettings = sequenceLineView->getDrawSettings();
+    const U2Region &visibleRange = view->getVisibleRange();
     int dx1 = 0;
     int dx2 = 0;
-    if ( drawSettings.drawAnnotationArrows ) {
-        if ( aData.getStrand().isCompementary( ) ) {
+    if (drawSettings.drawAnnotationArrows) {
+        if (aData->getStrand().isCompementary()) {
             dx2 = - FEATURE_ARROW_HLEN;
         } else {
             dx1 = FEATURE_ARROW_HLEN;
         }
     }
-    QVector<U2Region> location = aData.getRegions( );
-    for ( int ri = 0, ln = location.size( ); ri < ln; ri++ ) {
-        const U2Region &r = location.at( ri );
-        if ( ri > 0 ) {
-            U2Region prev = location.at( ri - 1 );
-            const int prevPos = prev.endPos( );
+    QVector<U2Region> location = aData->getRegions();
+    for (int ri = 0, ln = location.size(); ri < ln; ri++) {
+        const U2Region &r = location.at(ri);
+        if (ri > 0) {
+            U2Region prev = location.at(ri - 1);
+            const int prevPos = prev.endPos();
             const int pos = r.startPos;
-            const int min = qMin( prevPos, pos );
-            const int max = qMax( prevPos, pos );
-            if ( visibleRange.intersects( U2Region( min, max - min ) ) ) {
-                int x1 = posToCoord( prevPos, true ) + dx1;
-                int x2 = posToCoord( pos, true ) + dx2;
-                if ( qAbs( x2 - x1 ) > 1 ) {
-                    x1 = qBound( -MAX_VIRTUAL_RANGE, x1, MAX_VIRTUAL_RANGE ); //qt4.4 crashes in line clipping alg for extremely large X values
-                    x2 = qBound( -MAX_VIRTUAL_RANGE, x2, MAX_VIRTUAL_RANGE );
-                    const int midX = ( x1 + x2 ) / 2;
-                    const U2Region pyr = yRange.isEmpty() ? getAnnotationYRange( a, ri - 1, as ) : yRange;
-                    const U2Region yr = yRange.isEmpty() ? getAnnotationYRange( a, ri, as ) : yRange;
+            const int min = qMin(prevPos, pos);
+            const int max = qMax(prevPos, pos);
+            if (visibleRange.intersects(U2Region(min, max - min))) {
+                int x1 = posToCoord(prevPos, true) + dx1;
+                int x2 = posToCoord(pos, true) + dx2;
+                if (qAbs(x2 - x1) > 1) {
+                    x1 = qBound(-MAX_VIRTUAL_RANGE, x1, MAX_VIRTUAL_RANGE); //qt4.4 crashes in line clipping alg for extremely large X values
+                    x2 = qBound(-MAX_VIRTUAL_RANGE, x2, MAX_VIRTUAL_RANGE);
+                    const int midX = (x1 + x2) / 2;
+                    const U2Region pyr = yRange.isEmpty() ? getAnnotationYRange(a, ri - 1, as) : yRange;
+                    const U2Region yr = yRange.isEmpty() ? getAnnotationYRange(a, ri, as) : yRange;
                     const int y1 = pyr.startPos;
                     const int dy1 = pyr.length / 2;
                     const int y2 = yr.startPos;
                     const int dy2 = yr.length / 2;
-                    const int midY = qMin( y1, y2 );
-                    p.drawLine( x1, y1 + dy1, midX, midY );
-                    p.drawLine( midX, midY, x2, y2 + dy2 );
+                    const int midY = qMin(y1, y2);
+                    p.drawLine(x1, y1 + dy1, midX, midY);
+                    p.drawLine(midX, midY, x2, y2 + dy2);
                 }
             }
         }
     }
 }
 
-void GSequenceLineViewAnnotated::registerAnnotations( const QList<Annotation> & ) {
+void GSequenceLineViewAnnotated::registerAnnotations(const QList<Annotation *> &) {
 
 }
-void GSequenceLineViewAnnotated::unregisterAnnotations( const QList<Annotation> & ) {
+void GSequenceLineViewAnnotated::unregisterAnnotations(const QList<Annotation *> &) {
 
 }
 
-void GSequenceLineViewAnnotated::ensureVisible( const AnnotationData &a, int locationIdx ) {
-    QVector<U2Region> location = a.getRegions( );
-    SAFE_POINT( locationIdx < location.size( ), "Invalid annotation location on the widget!", );
-    if ( -1 == locationIdx ) {
-        foreach (  const U2Region &r, location ) {
-            if ( visibleRange.intersects( r ) ) {
+void GSequenceLineViewAnnotated::ensureVisible(const SharedAnnotationData &a, int locationIdx) {
+    QVector<U2Region> location = a->getRegions();
+    SAFE_POINT(locationIdx < location.size(), "Invalid annotation location on the widget!",);
+    if (-1 == locationIdx) {
+        foreach ( const U2Region &r, location) {
+            if (visibleRange.intersects(r)) {
                 return;
             }
         }
     }
-    const U2Region &region = location[qMax( 0, locationIdx )];
-    if ( !visibleRange.intersects( region ) ) {
-        const qint64 pos = a.getStrand( ).isCompementary( ) ? region.endPos( ) : region.startPos;
-        setCenterPos( qBound( qint64( 0 ), pos, seqLen - 1 ) );
+    const U2Region &region = location[qMax(0, locationIdx)];
+    if (!visibleRange.intersects(region)) {
+        const qint64 pos = a->getStrand().isCompementary() ? region.endPos() : region.startPos;
+        setCenterPos(qBound(qint64(0), pos, seqLen - 1));
     }
 }
 
@@ -726,60 +704,56 @@ bool GSequenceLineViewAnnotated::event(QEvent *e) {
     return GSequenceLineView::event(e);
 }
 
-QString GSequenceLineViewAnnotated::createToolTip( QHelpEvent *e ) {
+QString GSequenceLineViewAnnotated::createToolTip(QHelpEvent *e) {
     const int ROWS_LIMIT = 25;
-    QList<AnnotationSelectionData> la = selectAnnotationByCoord( e->pos( ) );
-    QList<AnnotationData> annotationList;
-    if ( la.isEmpty( ) ) {
-        return QString( );
+    QList<AnnotationSelectionData> la = selectAnnotationByCoord(e->pos());
+    QList<SharedAnnotationData> annotationList;
+    if (la.isEmpty()) {
+        return QString();
     } else {
         // fetch annotation data before further processing in order to improve performance
-        foreach ( const AnnotationSelectionData &ad, la ) {
-            annotationList << ad.annotation.getData( );
+        foreach (const AnnotationSelectionData &ad, la) {
+            annotationList << ad.annotation->getData();
         }
     }
     QString tip = "<table>";
     int rows = 0;
-    if ( annotationList.size( ) > 1 ) {
-        foreach ( const AnnotationData &ad, annotationList ) {
-            rows += ad.qualifiers.size( ) + 1;
+    if (annotationList.size() > 1) {
+        foreach (const SharedAnnotationData &ad, annotationList) {
+            rows += ad->qualifiers.size() + 1;
         }
     }
 
-    const bool skipDetails = ( rows > ROWS_LIMIT );
+    const bool skipDetails = (rows > ROWS_LIMIT);
     rows = 0;
-    foreach ( const AnnotationData &ad, annotationList ) {
-        if ( ++rows > ROWS_LIMIT ) {
+    foreach (const SharedAnnotationData &ad, annotationList) {
+        if (++rows > ROWS_LIMIT) {
             break;
         }
-        AnnotationSettingsRegistry *registry = AppContext::getAnnotationsSettingsRegistry( );
-        const QColor acl = registry->getAnnotationSettings( ad.name )->color;
-        tip += "<tr><td bgcolor=" + acl.name( ) + " bordercolor=black width=15></td><td><big>"
-            + ad.name + "</big></td></tr>";
+        AnnotationSettingsRegistry *registry = AppContext::getAnnotationsSettingsRegistry();
+        const QColor acl = registry->getAnnotationSettings(ad->name)->color;
+        tip += "<tr><td bgcolor=" + acl.name() + " bordercolor=black width=15></td><td><big>" + ad->name + "</big></td></tr>";
 
-        if ( skipDetails ) {
+        if (skipDetails) {
             tip += "<tr><td/><td>...</td>";
             rows++;
         } else {
-            tip += "<tr><td></td><td><b>Location</b> = "
-                + Genbank::LocationParser::buildLocationString( &ad ) + "</td></tr>";
+            tip += "<tr><td></td><td><b>Location</b> = " + Genbank::LocationParser::buildLocationString(ad) + "</td></tr>";
             tip += "<tr><td/><td>";
-            tip += Annotation::getQualifiersTip( ad, ROWS_LIMIT - rows, getSequenceObject( ),
-                ctx->getComplementTT( ), ctx->getAminoTT( ) );
+            tip += Annotation::getQualifiersTip(ad, ROWS_LIMIT - rows, getSequenceObject(), ctx->getComplementTT(), ctx->getAminoTT());
             tip += "</td></tr>";
-            rows += ad.qualifiers.size( );
+            rows += ad->qualifiers.size();
         }
     }
     tip += "</table>";
-    if ( rows > ROWS_LIMIT ) {
-        tip += "<hr> <div align=center>" + tr( "etc ..." ) + "</div>";
+    if (rows > ROWS_LIMIT) {
+        tip += "<hr> <div align=center>" + tr("etc ...") + "</div>";
     }
     return tip;
 }
 
-void GSequenceLineViewAnnotated::sl_onAnnotationsModified( const AnnotationModification& md )
-{
-    if (md.type == AnnotationModification_LocationChanged || md.type == AnnotationModification_NameChanged ) {
+void GSequenceLineViewAnnotated::sl_onAnnotationsModified(const AnnotationModification& md) {
+    if (md.type == AnnotationModification_LocationChanged || md.type == AnnotationModification_NameChanged) {
         addUpdateFlags(GSLV_UF_AnnotationsChanged);
         update();
     }
@@ -788,7 +762,7 @@ bool GSequenceLineViewAnnotatedRenderArea::isAnnotationSelectionInVisibleRange()
     const QSet<AnnotationTableObject*> aos = view->getSequenceContext()->getAnnotationObjects(true);
     AnnotationSelection* as = view->getSequenceContext()->getAnnotationsSelection();
     foreach(const AnnotationSelectionData& asd, as->getSelection()) {
-        if (!aos.contains(asd.annotation.getGObject())) {
+        if (!aos.contains(asd.annotation->getGObject())) {
             continue;
         }
         if (getGSequenceLineViewAnnotated()->isAnnotationVisible(asd.annotation)) {

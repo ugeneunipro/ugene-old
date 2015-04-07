@@ -152,16 +152,6 @@ U2AnnotationTable SQLiteFeatureDbi::getAnnotationTableObject( const U2DataId &ta
     return result;
 }
 
-void SQLiteFeatureDbi::renameAnnotationTableObject( const U2DataId &tableId,
-    const QString &name, U2OpStatus &os )
-{
-    U2Object tableObj;
-    dbi->getSQLiteObjectDbi( )->getObject( tableObj, tableId, os );
-    CHECK_OP( os, );
-
-    SQLiteObjectDbiUtils::renameObject( dbi, tableObj, name, os );
-}
-
 void SQLiteFeatureDbi::removeAnnotationTableData( const U2DataId &tableId, U2OpStatus &os ) {
     DBI_TYPE_CHECK( tableId, U2Type::AnnotationTable, os, );
     static const QString rootQueryStr = "(SELECT rootId FROM AnnotationTable WHERE object = ?1)";
@@ -511,7 +501,7 @@ void SQLiteFeatureDbi::removeAllKeys(const U2DataId& featureId, const QString& k
     q.execute();
 }
 
-void SQLiteFeatureDbi::removeAllKeys(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os) {
+void SQLiteFeatureDbi::removeKey(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os) {
     DBI_TYPE_CHECK(featureId, U2Type::Feature, os, );
 
     SQLiteQuery q("DELETE FROM FeatureKey WHERE feature = ?1 AND name = ?2 AND value = ?3" , db, os);

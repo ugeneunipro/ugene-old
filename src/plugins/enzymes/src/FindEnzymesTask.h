@@ -78,7 +78,7 @@ public:
 private:
     U2EntityRef                         dnaSeqRef;
     QList<SEnzymeData>                  enzymes;
-    QMap<QString, AnnotationData>       resultMap;
+    QMap<QString, SharedAnnotationData> resultMap;
     U2Region                            seqRange;
     QPointer<AnnotationTableObject>     aObj;
     FindEnzymesTaskConfig               cfg;
@@ -96,7 +96,7 @@ public:
 
     ReportResult report();
 
-    QList<AnnotationData> getResultsAsAnnotations(const QString& enzymeId = QString()) const;
+    QList<SharedAnnotationData> getResultsAsAnnotations(const QString& enzymeId = QString()) const;
 
     void cleanup();
 

@@ -134,7 +134,7 @@ void RepeatWorkerFactory::init() {
 
     Descriptor desc(ACTOR_ID, RepeatWorker::tr("Find Repeats"),
         RepeatWorker::tr("Finds repeats in each supplied sequence, stores found regions as annotations.")
-        );
+       );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     QMap<QString, PropertyDelegate*> delegates;
     delegates[USE_MIN_DISTANCE_ATTR] = new ComboBoxWithBoolsDelegate();
@@ -276,17 +276,17 @@ Task* RepeatWorker::tick() {
     return NULL;
 }
 
-void RepeatWorker::sl_taskFinished( ) {
-    FindRepeatsToAnnotationsTask *t = qobject_cast<FindRepeatsToAnnotationsTask *>( sender( ) );
-    if ( t->getState( ) != Task::State_Finished || t->hasError( ) || t->isCanceled( ) ) {
+void RepeatWorker::sl_taskFinished() {
+    FindRepeatsToAnnotationsTask *t = qobject_cast<FindRepeatsToAnnotationsTask *>(sender());
+    if (t->getState() != Task::State_Finished || t->hasError() || t->isCanceled()) {
         return;
     }
-    if ( NULL != output ) {
-        const QList<AnnotationData> res = t->importAnnotations( );
-        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( res );
-        const QVariant v = qVariantFromValue<SharedDbiDataHandler>( tableId );
-        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ), v ) );
-        algoLog.info( tr( "Found %1 repeats" ).arg( res.size( ) ) );
+    if (NULL != output) {
+        const QList<SharedAnnotationData> res = t->importAnnotations();
+        const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(res);
+        const QVariant v = qVariantFromValue<SharedDbiDataHandler>(tableId);
+        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
+        algoLog.info(tr("Found %1 repeats").arg(res.size()));
     }
 }
 

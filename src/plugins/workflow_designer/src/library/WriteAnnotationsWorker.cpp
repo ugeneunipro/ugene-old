@@ -214,27 +214,28 @@ void WriteAnnotationsWorker::fetchIncomingAnnotations(const QVariantMap &incomin
     bool isWriteNames = getValue<bool>(WRITE_NAMES);
     if (isWriteNames && !seqObjName.isEmpty()) {
         foreach (AnnotationTableObject *annTable, annTables) {
-            foreach (Annotation annotation, annTable->getAnnotations()) {
+            foreach (Annotation *annotation, annTable->getAnnotations()) {
                 U2Qualifier seqNameQual;
                 seqNameQual.name = "Sequence Name";
                 seqNameQual.value = seqObjName;
-                annotation.addQualifier(seqNameQual);
+                annotation->addQualifier(seqNameQual);
             }
         }
     }
 }
 
 bool WriteAnnotationsWorker::shouldAnnotationTablesBeMerged() const {
-    return actor->isAttributeVisible(actor->getParameter(ANNOTATIONS_NAME))
-        || actor->isAttributeVisible(actor->getParameter(ANN_OBJ_NAME));
+    return actor->isAttributeVisible(actor->getParameter(ANNOTATIONS_NAME)) || actor->isAttributeVisible(actor->getParameter(ANN_OBJ_NAME));
 }
 
 AnnotationTableObject * WriteAnnotationsWorker::mergeAnnotationTables(const QList<AnnotationTableObject *> &annTables, const QString &mergedTableName) const {
     AnnotationTableObject *mergedTable = new AnnotationTableObject(mergedTableName, context->getDataStorage()->getDbiRef());
     foreach (AnnotationTableObject *annTable, annTables) {
-        foreach (const Annotation &annotation, annTable->getAnnotations()) {
-            mergedTable->addAnnotation(annotation.getData());
+        QList<SharedAnnotationData> anns;
+        foreach (Annotation *annotation, annTable->getAnnotations()) {
+            anns.append(annotation->getData());
         }
+        mergedTable->addAnnotations(anns);
     }
     return mergedTable;
 }
@@ -275,7 +276,7 @@ Task * WriteAnnotationsWorker::getSaveDocTask(const QString &formatId, SaveDocFl
                 return new FailTask(ti.getError());
             }
 
-            QList<Annotation> annotations;
+            QList<Annotation *> annotations;
             foreach (AnnotationTableObject *annTable, annTables) {
                 annotations << annTable->getAnnotations();
             }

@@ -49,7 +49,7 @@ public:
 private:
     IntegralBus *inChannel;
     QStringList outFiles;
-    QMap<QString, QPair<DNASequence, QList<AnnotationData> > > geneData;
+    QMap<QString, QPair<DNASequence, QList<SharedAnnotationData> > > geneData;
 
 private slots:
     void sl_taskFinished();

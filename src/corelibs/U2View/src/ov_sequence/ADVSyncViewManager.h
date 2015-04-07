@@ -22,20 +22,12 @@
 #ifndef _U2_ADV_SYNC_VIEW_MANAGER_H_
 #define _U2_ADV_SYNC_VIEW_MANAGER_H_
 
-#include <U2Core/global.h>
-#include <U2Core/U2Region.h>
+#include <QAction>
+#include <QMenu>
+#include <QToolBar>
+#include <QToolButton>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QMenu>
-#include <QtGui/QToolBar>
-#include <QtGui/QToolButton>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QToolButton>
-#endif
+#include <U2Core/U2Region.h>
 
 namespace U2 {
 

@@ -28,20 +28,20 @@
 
 namespace U2 {
 
-DECLARE_TEST( AnnotationGroupUnitTest, get_IdObject );
-DECLARE_TEST( AnnotationGroupUnitTest, getSet_Name );
-DECLARE_TEST( AnnotationGroupUnitTest, groupHierarchy );
-DECLARE_TEST( AnnotationGroupUnitTest, getSet_Annotations );
-DECLARE_TEST( AnnotationGroupUnitTest, findAnnotationsInSubtree );
-DECLARE_TEST( AnnotationGroupUnitTest, getSet_Subgroups );
+DECLARE_TEST(AnnotationGroupUnitTest, get_IdObject);
+DECLARE_TEST(AnnotationGroupUnitTest, getSet_Name);
+DECLARE_TEST(AnnotationGroupUnitTest, groupHierarchy);
+DECLARE_TEST(AnnotationGroupUnitTest, getSet_Annotations);
+DECLARE_TEST(AnnotationGroupUnitTest, findAnnotationsInSubtree);
+DECLARE_TEST(AnnotationGroupUnitTest, getSet_Subgroups);
 
 } //namespace U2
 
-DECLARE_METATYPE( AnnotationGroupUnitTest, get_IdObject )
-DECLARE_METATYPE( AnnotationGroupUnitTest, getSet_Name )
-DECLARE_METATYPE( AnnotationGroupUnitTest, groupHierarchy )
-DECLARE_METATYPE( AnnotationGroupUnitTest, getSet_Annotations )
-DECLARE_METATYPE( AnnotationGroupUnitTest, findAnnotationsInSubtree )
-DECLARE_METATYPE( AnnotationGroupUnitTest, getSet_Subgroups )
+DECLARE_METATYPE(AnnotationGroupUnitTest, get_IdObject)
+DECLARE_METATYPE(AnnotationGroupUnitTest, getSet_Name)
+DECLARE_METATYPE(AnnotationGroupUnitTest, groupHierarchy)
+DECLARE_METATYPE(AnnotationGroupUnitTest, getSet_Annotations)
+DECLARE_METATYPE(AnnotationGroupUnitTest, findAnnotationsInSubtree)
+DECLARE_METATYPE(AnnotationGroupUnitTest, getSet_Subgroups)
 
 #endif //_U2_ANNOTATION_GROUP_TESTS_H_

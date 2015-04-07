@@ -84,15 +84,15 @@ ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, U2Sequen
     }
 }
 
-void ADVSequenceObjectContext::guessAminoTT( const AnnotationTableObject *ao ) {
+void ADVSequenceObjectContext::guessAminoTT(const AnnotationTableObject *ao) {
     const DNAAlphabet *al  = getAlphabet();
-    SAFE_POINT( al->isNucleic( ), "Unexpected DNA alphabet detected!", );
-    DNATranslation* res = NULL;
-    DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
+    SAFE_POINT(al->isNucleic(), "Unexpected DNA alphabet detected!",);
+    DNATranslation *res = NULL;
+    DNATranslationRegistry *tr = AppContext::getDNATranslationRegistry();
     // try to guess relevant translation from a CDS feature (if any)
-    foreach ( const Annotation &ann, ao->getAnnotationsByName( "CDS" ) ) {
+    foreach (Annotation *ann, ao->getAnnotationsByName("CDS")) {
         QList<U2Qualifier> ql;
-        ann.findQualifiers( "transl_table", ql );
+        ann->findQualifiers("transl_table", ql);
         if (ql.size() > 0) {
             QString guess = "NCBI-GenBank #"+ql.first().value;
             res = tr->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO, guess);
@@ -124,10 +124,10 @@ U2EntityRef ADVSequenceObjectContext::getSequenceRef() const {
     return seqObj->getSequenceRef();
 }
 
-QList<GObject *> ADVSequenceObjectContext::getAnnotationGObjects( ) const {
+QList<GObject *> ADVSequenceObjectContext::getAnnotationGObjects() const {
     QList<GObject *> res;
-    foreach ( AnnotationTableObject *ao, annotations ) {
-        res.append( ao );
+    foreach (AnnotationTableObject *ao, annotations) {
+        res.append(ao);
     }
     return res;
 }
@@ -198,8 +198,8 @@ void ADVSequenceObjectContext::sl_showShowAll(){
 }
 
 void ADVSequenceObjectContext::sl_onAnnotationRelationChange() {
-    AnnotationTableObject* obj = qobject_cast<AnnotationTableObject*>( sender() );
-    SAFE_POINT(obj != NULL, tr("Incorrect signal sender!"), );
+    AnnotationTableObject* obj = qobject_cast<AnnotationTableObject*>(sender());
+    SAFE_POINT(obj != NULL, tr("Incorrect signal sender!"),);
 
     if (!obj->hasObjectRelation(seqObj, ObjectRole_Sequence)) {
         disconnect(obj, SIGNAL(si_relationChanged()), this, SLOT(sl_onAnnotationRelationChange()));
@@ -224,7 +224,7 @@ QMenu* ADVSequenceObjectContext::createTranslationsMenu() {
         connect(frames->addAction(QString("Show all")), SIGNAL(triggered()), SLOT(sl_showShowAll()));
 
         if(view != NULL){
-            m->addAction( view->getShowCodonTableAction() );
+            m->addAction(view->getShowCodonTableAction());
         }
         m->addMenu(frames);
         m->addSeparator();
@@ -277,50 +277,48 @@ void ADVSequenceObjectContext::addSequenceWidget(ADVSequenceWidget* w) {
     seqWidgets.append(w);
 }
 
-void ADVSequenceObjectContext::addAnnotationObject( AnnotationTableObject *obj ) {
-    SAFE_POINT( !annotations.contains( obj ), "Unexpected annotation table!", );
-    SAFE_POINT( obj->hasObjectRelation( seqObj, ObjectRole_Sequence ), "Annotation table relates to unexpected sequence!", );
-    connect( obj, SIGNAL(si_relationChanged()), SLOT(sl_onAnnotationRelationChange()));
-    annotations.insert( obj );
-    emit si_annotationObjectAdded( obj );
-    if ( clarifyAminoTT ) {
-        guessAminoTT( obj );
+void ADVSequenceObjectContext::addAnnotationObject(AnnotationTableObject *obj) {
+    SAFE_POINT(!annotations.contains(obj), "Unexpected annotation table!",);
+    SAFE_POINT(obj->hasObjectRelation(seqObj, ObjectRole_Sequence), "Annotation table relates to unexpected sequence!",);
+    connect(obj, SIGNAL(si_relationChanged()), SLOT(sl_onAnnotationRelationChange()));
+    annotations.insert(obj);
+    emit si_annotationObjectAdded(obj);
+    if (clarifyAminoTT) {
+        guessAminoTT(obj);
     }
 }
 
-void ADVSequenceObjectContext::removeAnnotationObject( AnnotationTableObject *obj ) {
-    SAFE_POINT( annotations.contains( obj ), "Unexpected annotation table!", );
-    annotations.remove( obj );
-    emit si_annotationObjectRemoved( obj );
+void ADVSequenceObjectContext::removeAnnotationObject(AnnotationTableObject *obj) {
+    SAFE_POINT(annotations.contains(obj), "Unexpected annotation table!",);
+    annotations.remove(obj);
+    emit si_annotationObjectRemoved(obj);
 }
 
-QList<Annotation> ADVSequenceObjectContext::selectRelatedAnnotations(
-    const QList<Annotation> &alist) const
-{
-    QList<Annotation> res;
-    foreach ( const Annotation &a, alist) {
-        AnnotationTableObject* o = a.getGObject( );
-        if ( annotations.contains( o ) || autoAnnotations.contains( o ) ) {
-            res.append( a );
+QList<Annotation *> ADVSequenceObjectContext::selectRelatedAnnotations(const QList<Annotation *> &alist) const {
+    QList<Annotation *> res;
+    foreach (Annotation *a, alist) {
+        AnnotationTableObject* o = a->getGObject();
+        if (annotations.contains(o) || autoAnnotations.contains(o)) {
+            res.append(a);
         }
     }
     return res;
 }
 
-GObject * ADVSequenceObjectContext::getSequenceGObject( ) const {
+GObject * ADVSequenceObjectContext::getSequenceGObject() const {
     return seqObj;
 }
 
-void ADVSequenceObjectContext::addAutoAnnotationObject( AnnotationTableObject *obj ) {
-    autoAnnotations.insert( obj );
-    emit si_annotationObjectAdded( obj );
+void ADVSequenceObjectContext::addAutoAnnotationObject(AnnotationTableObject *obj) {
+    autoAnnotations.insert(obj);
+    emit si_annotationObjectAdded(obj);
 }
 
 QSet<AnnotationTableObject *> ADVSequenceObjectContext::getAnnotationObjects(
-    bool includeAutoAnnotations ) const
+    bool includeAutoAnnotations) const
 {
     QSet<AnnotationTableObject *> result = annotations;
-    if ( includeAutoAnnotations ) {
+    if (includeAutoAnnotations) {
         result += autoAnnotations;
     }
 

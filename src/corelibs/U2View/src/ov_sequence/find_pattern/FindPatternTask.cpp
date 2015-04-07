@@ -32,16 +32,14 @@ namespace U2 {
 
 const float FindPatternTask::MAX_OVERLAP_K = 0.5F;
 
-FindPatternTask::FindPatternTask(const FindAlgorithmTaskSettings& _settings,
-    bool _removeOverlaps)
-    : Task(tr("Searching a pattern in sequence task"), TaskFlags_NR_FOSE_COSC),
-      settings(_settings),
-      removeOverlaps(_removeOverlaps),
-      noResults(false){}
-
-QList<Task*> FindPatternTask::onSubTaskFinished(Task* subTask)
+FindPatternTask::FindPatternTask(const FindAlgorithmTaskSettings &settings, bool removeOverlaps)
+    : Task(tr("Searching a pattern in sequence task"), TaskFlags_NR_FOSE_COSC), settings(settings), removeOverlaps(removeOverlaps), noResults(false)
 {
-    QList<Task*> res;
+
+}
+
+QList<Task *> FindPatternTask::onSubTaskFinished(Task *subTask) {
+    QList<Task *> res;
 
     if (subTask->hasError() && subTask == findAlgorithmTask) {
         stateInfo.setError(subTask->getError());
@@ -49,8 +47,8 @@ QList<Task*> FindPatternTask::onSubTaskFinished(Task* subTask)
     }
 
     if (subTask == findAlgorithmTask) {
-        FindAlgorithmTask* task = qobject_cast<FindAlgorithmTask*>(findAlgorithmTask);
-        SAFE_POINT(task, "Failed to cast FindAlgorithTask!", QList<Task*>());
+        FindAlgorithmTask *task = qobject_cast<FindAlgorithmTask *>(findAlgorithmTask);
+        SAFE_POINT(task, "Failed to cast FindAlgorithTask!", QList<Task *>());
 
         QList<FindAlgorithmResult> resultz = task->popResults();
         if (settings.patternSettings == FindAlgorithmPatternSettings_RegExp) { //Other algos always return sorted results
@@ -60,19 +58,18 @@ QList<Task*> FindPatternTask::onSubTaskFinished(Task* subTask)
             removeOverlappedResults(resultz);
         }
 
-        results.append(FindAlgorithmResult::toTable(resultz, settings.name,
-                        settings.searchIsCircular, settings.sequence.size()));
+        results.append(FindAlgorithmResult::toTable(resultz, settings.name, settings.searchIsCircular, settings.sequence.size()));
     }
 
     return res;
 }
 
-void FindPatternTask::removeOverlappedResults(QList<FindAlgorithmResult>& results) {
+void FindPatternTask::removeOverlappedResults(QList<FindAlgorithmResult> &results) {
     int numberBefore = results.count();
 
     for (int i = 0, n = results.count(); i < n; ++i) {
         for (int j = i + 1; j < n; ++j) {
-            if(stateInfo.isCoR()){
+            if (stateInfo.isCoR()) {
                 return;
             }
             SAFE_POINT(results.at(j).region.startPos >= results.at(i).region.startPos,
@@ -112,33 +109,27 @@ void FindPatternTask::removeOverlappedResults(QList<FindAlgorithmResult>& result
     coreLog.info(tr("Removed %1 overlapped results.").arg(removed));
 }
 
-const QList<AnnotationData>& FindPatternTask::getResults() const {
+const QList<SharedAnnotationData> & FindPatternTask::getResults() const {
     return results;
 }
 
-void FindPatternTask::prepare(){
+void FindPatternTask::prepare() {
     // Note that even if the subtask has been canceled, the already calculated results are
     // saved anyway. This mechanism is used to limit the number of results.
     addSubTask(findAlgorithmTask = new FindAlgorithmTask(settings));
 }
 
-FindPatternListTask::FindPatternListTask(const FindAlgorithmTaskSettings &_settings,
-                                         const QList<NamePattern> &_patterns,
-                                         bool _removeOverlaps,
-                                         int _match)
-: Task( tr( "Searching patterns in sequence task" ), TaskFlags_NR_FOSE_COSC),
-    settings(_settings),
-    removeOverlaps(_removeOverlaps),
-    match(_match),
-    noResults(true),
-    patterns(_patterns)
-{}
+FindPatternListTask::FindPatternListTask(const FindAlgorithmTaskSettings &settings, const QList<NamePattern> &patterns, bool removeOverlaps, int match)
+    : Task( tr( "Searching patterns in sequence task" ), TaskFlags_NR_FOSE_COSC), settings(settings), removeOverlaps(removeOverlaps),
+    match(match), noResults(true), patterns(patterns)
+{
 
+}
 
-QList<Task*> FindPatternListTask::onSubTaskFinished(Task *subTask) {
-    QList<Task*> res;
-    FindPatternTask* task = qobject_cast<FindPatternTask*>(subTask);
-    SAFE_POINT(NULL != task, "Failed to cast FindPatternTask!", QList<Task*>());
+QList<Task *> FindPatternListTask::onSubTaskFinished(Task *subTask) {
+    QList<Task *> res;
+    FindPatternTask *task = qobject_cast<FindPatternTask *>(subTask);
+    SAFE_POINT(NULL != task, "Failed to cast FindPatternTask!", QList<Task *>());
     if (!task->hasNoResults()) {
         noResults = false;
     }
@@ -146,14 +137,14 @@ QList<Task*> FindPatternListTask::onSubTaskFinished(Task *subTask) {
     return res;
 }
 
-int FindPatternListTask::getMaxError( const QString& pattern ) const {
+int FindPatternListTask::getMaxError(const QString &pattern) const {
     if (settings.patternSettings == FindAlgorithmPatternSettings_Exact) {
         return 0;
     }
     return int((float)(1 - float(match) / 100) * pattern.length());
 }
 
-const QList<AnnotationData> &FindPatternListTask::getResults() const {
+const QList<SharedAnnotationData> & FindPatternListTask::getResults() const {
     return results;
 }
 
@@ -161,8 +152,8 @@ bool FindPatternListTask::hasNoResults() const {
     return noResults;
 }
 
-void FindPatternListTask::prepare(){
-    foreach (const NamePattern& pattern, patterns) {
+void FindPatternListTask::prepare() {
+    foreach (const NamePattern &pattern, patterns) {
         if (pattern.second.isEmpty()) {
             uiLog.error(tr("Empty pattern"));
             continue;
@@ -172,7 +163,7 @@ void FindPatternListTask::prepare(){
         subTaskSettings.maxErr = getMaxError( subTaskSettings.pattern );
         subTaskSettings.name = pattern.first;
         subTaskSettings.countTask = false;
-        FindPatternTask* task = new FindPatternTask(subTaskSettings, removeOverlaps);
+        FindPatternTask *task = new FindPatternTask(subTaskSettings, removeOverlaps);
         addSubTask(task);
     }
 }

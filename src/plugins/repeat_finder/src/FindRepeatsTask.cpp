@@ -68,7 +68,7 @@ FindRepeatsTask::FindRepeatsTask(const FindRepeatsTaskSettings& s, const DNASequ
 : Task(tr("Find repeats in a single sequence"), TaskFlags_FOSCOE), settings(s),
 seq1(seq), seq2(seq2), tandemTask1(NULL), tandemTask2(NULL)
 {
-    GCOUNTER( cvar, tvar, "FindRepeatsTask" );
+    GCOUNTER(cvar, tvar, "FindRepeatsTask");
     if (settings.seqRegion.length == 0) {
         settings.seqRegion= U2Region(0, seq1.length());
     }
@@ -462,9 +462,9 @@ QList<Task*> FindRepeatsToAnnotationsTask::onSubTaskFinished(Task* subTask) {
     }
 
     if (subTask == findTask && annObjRef.isValid()) {
-        QList<AnnotationData> annotations = importAnnotations();
+        QList<SharedAnnotationData> annotations = importAnnotations();
         if (!annotations.isEmpty()) {
-            algoLog.info( tr( "Found %1 repeat regions" ).arg( annotations.size( ) ) );
+            algoLog.info(tr("Found %1 repeat regions").arg(annotations.size()));
             Task* createTask = new CreateAnnotationsTask(annObjRef, annotations, annGroup);
             createTask->setSubtaskProgressWeight(0);
             res.append(createTask);
@@ -473,26 +473,26 @@ QList<Task*> FindRepeatsToAnnotationsTask::onSubTaskFinished(Task* subTask) {
     return res;
 }
 
-QList<AnnotationData> FindRepeatsToAnnotationsTask::importAnnotations( ) {
-    QList<AnnotationData> res;
-    foreach ( const RFResult &r, findTask->getResults( ) ) {
-        AnnotationData ad;
-        ad.type = U2FeatureTypes::RepeatRegion;
-        ad.name = annName;
+QList<SharedAnnotationData> FindRepeatsToAnnotationsTask::importAnnotations() {
+    QList<SharedAnnotationData> res;
+    foreach (const RFResult &r, findTask->getResults()) {
+        SharedAnnotationData ad(new AnnotationData);
+        ad->type = U2FeatureTypes::RepeatRegion;
+        ad->name = annName;
         U2Region l1(r.x + settings.reportSeqShift, r.l);
         U2Region l2(r.y + settings.reportSeq2Shift, r.l);
         if (l1.startPos <= l2.startPos) {
-            ad.location->regions << l1 << l2;
+            ad->location->regions << l1 << l2;
         } else {
-            ad.location->regions << l2 << l1;
+            ad->location->regions << l2 << l1;
         }
         int dist = qAbs(r.x - r.y) - r.l;
         if (findTask->getSettings().inverted) {
-            ad.qualifiers.append(U2Qualifier("rpt_type", "inverted"));
+            ad->qualifiers.append(U2Qualifier("rpt_type", "inverted"));
         }
-        ad.qualifiers.append(U2Qualifier("repeat_len", QString::number(r.l)));
-            ad.qualifiers.append(U2Qualifier("repeat_dist", QString::number(dist)));
-            ad.qualifiers.append(U2Qualifier("repeat_homology(%)", QString::number(settings.getIdentity(r.l - r.c, r.l)) ));
+        ad->qualifiers.append(U2Qualifier("repeat_len", QString::number(r.l)));
+        ad->qualifiers.append(U2Qualifier("repeat_dist", QString::number(dist)));
+        ad->qualifiers.append(U2Qualifier("repeat_homology(%)", QString::number(settings.getIdentity(r.l - r.c, r.l))));
 
         res.append(ad);
     }

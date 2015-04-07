@@ -316,14 +316,15 @@ bool GenbankPlainTextFormat::isNcbiLikeFormat() const {
 
 void GenbankPlainTextFormat::createCommentAnnotation(const QStringList &comments, int sequenceLength, AnnotationTableObject *annTable) const {
     CHECK(!comments.isEmpty(), );
-    AnnotationData f;
-    f.type = U2FeatureTypes::Comment;
-    f.name = "comment";
-    f.location->regions.append(U2Region(0, sequenceLength));
+    SharedAnnotationData f(new AnnotationData);
+    f->type = U2FeatureTypes::Comment;
+    f->name = "comment";
+    f->location->regions.append(U2Region(0, sequenceLength));
     for (int i = 0, digitsCount = QString::number(comments.size()).size(); i < comments.size(); ++i) {
-        f.qualifiers.append(U2Qualifier(QString("%1").arg(i + 1, digitsCount, 10, QChar('0')), comments[i]));
+        f->qualifiers.append(U2Qualifier(QString("%1").arg(i + 1, digitsCount, 10, QChar('0')), comments[i]));
     }
-    annTable->addAnnotation(f, "comment");
+
+    annTable->addAnnotations(QList<SharedAnnotationData>() << f, "comment");
 }
 
 U2FeatureType GenbankPlainTextFormat::getFeatureType(const QString &typeString) const {
@@ -770,23 +771,21 @@ void GenbankPlainTextFormat::writeAnnotations(IOAdapter* io, const QList<GObject
     const QByteArray& nameQ = GBFeatureUtils::QUALIFIER_NAME;
     const QByteArray& groupQ = GBFeatureUtils::QUALIFIER_GROUP;
 
-    QList<Annotation> sortedAnnotations;
-    foreach ( GObject* o, aos ) {
-        AnnotationTableObject *ao = qobject_cast<AnnotationTableObject *>( o );
-        CHECK_EXT( NULL != ao, si.setError( "Invalid annotation table!" ), );
-        sortedAnnotations += ao->getAnnotations( );
+    QList<Annotation *> sortedAnnotations;
+    foreach (GObject *o, aos) {
+        AnnotationTableObject *ao = qobject_cast<AnnotationTableObject *>(o);
+        CHECK_EXT(NULL != ao, si.setError(tr("Invalid annotation table!")), );
+        sortedAnnotations += ao->getAnnotations();
     }
 
-    qStableSort( sortedAnnotations.begin( ), sortedAnnotations.end( ),
-        Annotation::annotationLessThanByRegion );
+    qStableSort(sortedAnnotations.begin(), sortedAnnotations.end(), Annotation::annotationLessThanByRegion);
 
-    for(int i = 0; i < sortedAnnotations.size(); ++i) {
-        const Annotation &a = sortedAnnotations.at( i );
-        QString aName = a.getName( );
+    for (int i = 0; i < sortedAnnotations.size(); ++i) {
+        Annotation *a = sortedAnnotations.at(i);
+        QString aName = a->getName();
 
-        if (aName == U1AnnotationUtils::lowerCaseAnnotationName
-            || aName == U1AnnotationUtils::upperCaseAnnotationName || aName == "comment") {
-                continue;
+        if (aName == U1AnnotationUtils::lowerCaseAnnotationName || aName == U1AnnotationUtils::upperCaseAnnotationName || aName == "comment") {
+            continue;
         }
 
         //write name of the feature
@@ -796,7 +795,7 @@ void GenbankPlainTextFormat::writeAnnotations(IOAdapter* io, const QList<GObject
             return;
         }
 
-        const QString keyStr = getFeatureTypeString(a.getType(), false);
+        const QString keyStr = getFeatureTypeString(a->getType(), false);
         len = io->writeBlock(keyStr.toLocal8Bit());
         if (len!=keyStr.length()) {
             si.setError(GenbankPlainTextFormat::tr("Error writing document"));
@@ -811,8 +810,8 @@ void GenbankPlainTextFormat::writeAnnotations(IOAdapter* io, const QList<GObject
         }
 
         //write location
-        const AnnotationData ad = a.getData( );
-        QString multiLineLocation = Genbank::LocationParser::buildLocationString( &ad );
+        const SharedAnnotationData &ad = a->getData();
+        QString multiLineLocation = Genbank::LocationParser::buildLocationString(ad);
         prepareMultiline(multiLineLocation, 21);
         len = io->writeBlock(multiLineLocation.toLocal8Bit());
         if (len != multiLineLocation.size()) {
@@ -821,7 +820,7 @@ void GenbankPlainTextFormat::writeAnnotations(IOAdapter* io, const QList<GObject
         }
 
         //write qualifiers
-        foreach ( const U2Qualifier &q, a.getQualifiers( ) ) {
+        foreach (const U2Qualifier &q, a->getQualifiers()) {
             writeQualifier(q.name, q.value, io, si, spaceLine);
             if (si.hasError()) {
                 return;
@@ -840,11 +839,11 @@ void GenbankPlainTextFormat::writeAnnotations(IOAdapter* io, const QList<GObject
         //}
 
         //write group
-        const AnnotationGroup ag = a.getGroup( );
-        const bool storeGroups = !ag.isTopLevelGroup( ) || ag.getName( ) != aName;
+        AnnotationGroup *ag = a->getGroup();
+        const bool storeGroups = !ag->isTopLevelGroup() || ag->getName() != aName;
 
         if (storeGroups) {
-            writeQualifier( groupQ, ag.getGroupPath( ), io, si, spaceLine );
+            writeQualifier(groupQ, ag->getGroupPath( ), io, si, spaceLine);
         }
     }
 }

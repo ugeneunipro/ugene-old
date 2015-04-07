@@ -95,12 +95,10 @@ namespace {
             return NULL;
         }
         const QVariant annotationsData = data[slot];
-        const QList<AnnotationData> annList = StorageUtils::getAnnotationTable(
-            context->getDataStorage( ), annotationsData );
+        const QList<SharedAnnotationData> annList = StorageUtils::getAnnotationTable(context->getDataStorage(), annotationsData);
 
-        AnnotationTableObject *annsObj = new AnnotationTableObject( "Annotations",
-            context->getDataStorage( )->getDbiRef( ) );
-        annsObj->addAnnotations( annList, os );
+        AnnotationTableObject *annsObj = new AnnotationTableObject("Annotations", context->getDataStorage()->getDbiRef());
+        annsObj->addAnnotations(annList);
 
         return annsObj;
     }
@@ -177,22 +175,22 @@ namespace {
     static void addObjects(Document *d, WorkflowContext *context, const DataConfig &dataCfg, const QVariantMap &data, U2OpStatus &os) {
         if (dataCfg.isSequence()) {
             U2SequenceObject *seqObj = toSequence(data, context, os);
-            CHECK_OP(os, );
+            CHECK_OP(os,);
             d->addObject(seqObj);
         } else if (dataCfg.isAnnotations()) {
             AnnotationTableObject *annsObj = toAnotations(data, context, os);
-            CHECK_OP(os, );
+            CHECK_OP(os,);
             d->addObject(annsObj);
         } else if (dataCfg.isAlignment()) {
             MAlignmentObject *msaObj = toAlignment(data, context, os);
-            CHECK_OP(os, );
+            CHECK_OP(os,);
             d->addObject(msaObj);
         } else if (dataCfg.isAnnotatedSequence()) {
             U2SequenceObject *seqObj = toSequence(data, context, os);
-            CHECK_OP(os, );
+            CHECK_OP(os,);
             d->addObject(seqObj);
             AnnotationTableObject *annsObj = toAnotations(data, context, os);
-            CHECK_OP(os, );
+            CHECK_OP(os,);
             d->addObject(annsObj);
 
             QList<GObjectRelation> rel;
@@ -200,7 +198,7 @@ namespace {
             annsObj->setObjectRelations(rel);
         } else if (dataCfg.isText()) {
             TextObject *textObj = toText(data, context, os);
-            CHECK_OP(os, );
+            CHECK_OP(os,);
             d->addObject(textObj);
         }
     }
@@ -316,24 +314,24 @@ static SharedDbiDataHandler getAlignment(Document *d, WorkflowContext *context, 
     return context->getDataStorage()->getDataHandler(msaObj->getEntityRef());
 }
 
-static SharedDbiDataHandler getAnnotations( Document *d, WorkflowContext *context, U2OpStatus &os )
+static SharedDbiDataHandler getAnnotations(Document *d, WorkflowContext *context, U2OpStatus &os)
 {
-    GObject *obj = getObject( d, GObjectTypes::ANNOTATION_TABLE, os );
-    CHECK_OP( os, SharedDbiDataHandler( ) );
+    GObject *obj = getObject(d, GObjectTypes::ANNOTATION_TABLE, os);
+    CHECK_OP(os, SharedDbiDataHandler());
 
-    AnnotationTableObject *annsObj = static_cast<AnnotationTableObject *>( obj );
-    if ( NULL == annsObj ) {
-        os.setError( QObject::tr( "Error with annotations object" ) );
-        return SharedDbiDataHandler( );
+    AnnotationTableObject *annsObj = static_cast<AnnotationTableObject *>(obj);
+    if (NULL == annsObj) {
+        os.setError(QObject::tr("Error with annotations object"));
+        return SharedDbiDataHandler();
     }
-    return context->getDataStorage( )->getDataHandler( annsObj->getEntityRef( ) );
+    return context->getDataStorage()->getDataHandler(annsObj->getEntityRef());
 }
 
 } // namespace
 
 void ExternalProcessWorker::sl_onTaskFinishied() {
     LaunchExternalToolTask *t = static_cast<LaunchExternalToolTask*>(sender());
-    CHECK(output && t->isFinished() && !t->hasError(), );
+    CHECK(output && t->isFinished() && !t->hasError(),);
 
     /* This variable and corresponded code parts with it
      * are temporary created for merging sequences.
@@ -359,7 +357,7 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
         } else {
             U2OpStatusImpl os;
             QScopedPointer<Document> d(loadDocument(url, cfg, context, os));
-            CHECK_OP_EXT(os, reportError(os.getError()), );
+            CHECK_OP_EXT(os, reportError(os.getError()),);
             d->setDocumentOwnsDbiResources(false);
 
             if (cfg.isSequence()){
@@ -379,12 +377,12 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                 }
             } else if (cfg.isAlignment()) {
                 SharedDbiDataHandler msaId = getAlignment(d.data(), context, os);
-                CHECK_OP_EXT(os, reportError(os.getError()), );
+                CHECK_OP_EXT(os, reportError(os.getError()),);
                 DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
                 v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue<SharedDbiDataHandler>(msaId);
             } else if (cfg.isAnnotations()) {
                 const SharedDbiDataHandler annTableId = getAnnotations(d.data(), context, os);
-                CHECK_OP_EXT(os, reportError(os.getError()), );
+                CHECK_OP_EXT(os, reportError(os.getError()),);
                 DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
                 v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue<SharedDbiDataHandler>(annTableId);
             } else if (cfg.isAnnotatedSequence()) {
@@ -449,7 +447,7 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
             SharedDbiDataHandler id = context->getDataStorage()->getDataHandler(eRef);
             v[slotId] = qVariantFromValue<SharedDbiDataHandler>(id);
         }
-        CHECK_OP(os, );
+        CHECK_OP(os,);
         output->put(Message(dataType, v));
     }
 }

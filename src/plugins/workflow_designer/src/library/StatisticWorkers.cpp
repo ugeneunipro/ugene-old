@@ -117,40 +117,40 @@ Task* DNAStatWorker::tick() {
             return new FailTask(tr("Sequence must be nucleotide"));
         }
 
-        QList<AnnotationData> res;
-        AnnotationData gcAnn;
-        gcAnn.name = "statistics";
-        gcAnn.location->regions << U2Region( 0, dna.seq.size());
+        QList<SharedAnnotationData> res;
+        SharedAnnotationData gcAnn(new AnnotationData);
+        gcAnn->name = "statistics";
+        gcAnn->location->regions << U2Region( 0, dna.seq.size());
 
-        if(actor->getParameter(GCCONTENT)->getAttributeValue<bool>(context)) {
+        if (actor->getParameter(GCCONTENT)->getAttributeValue<bool>(context)) {
             float gcContent = calcGCContent(dna.seq);
-            gcAnn.qualifiers.push_back(U2Qualifier("gc-content", QString::number(gcContent*100) + "%"));
+            gcAnn->qualifiers.push_back(U2Qualifier("gc-content", QString::number(gcContent*100) + "%"));
         }
 
-        if(actor->getParameter(GC1CONTENT)->getAttributeValue<bool>(context)) {
+        if (actor->getParameter(GC1CONTENT)->getAttributeValue<bool>(context)) {
             float gc1Content = calcGC1Content(dna.seq);
-            gcAnn.qualifiers.push_back(U2Qualifier("gc1-content", QString::number(gc1Content*100) + "%"));
+            gcAnn->qualifiers.push_back(U2Qualifier("gc1-content", QString::number(gc1Content*100) + "%"));
         }
 
-        if(actor->getParameter(GC2CONTENT)->getAttributeValue<bool>(context)) {
+        if (actor->getParameter(GC2CONTENT)->getAttributeValue<bool>(context)) {
             float gc2Content = calcGC2Content(dna.seq);
-            gcAnn.qualifiers.push_back(U2Qualifier("gc2-content", QString::number(gc2Content*100) + "%"));
+            gcAnn->qualifiers.push_back(U2Qualifier("gc2-content", QString::number(gc2Content*100) + "%"));
         }
 
-        if(actor->getParameter(GC3CONTENT)->getAttributeValue<bool>(context)) {
+        if (actor->getParameter(GC3CONTENT)->getAttributeValue<bool>(context)) {
             float gc3Content = calcGC3Content(dna.seq);
-            gcAnn.qualifiers.push_back(U2Qualifier("gc3-content", QString::number(gc3Content*100) + "%"));
+            gcAnn->qualifiers.push_back(U2Qualifier("gc3-content", QString::number(gc3Content*100) + "%"));
         }
 
-        if(gcAnn.qualifiers.isEmpty()) {
+        if (gcAnn->qualifiers.isEmpty()) {
             return new FailTask(tr("No statistics was selected"));
         }
 
         res << gcAnn;
 
-        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( res );
-        const QVariant v = qVariantFromValue<SharedDbiDataHandler>( tableId );
-        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ), v ) );
+        const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(res);
+        const QVariant v = qVariantFromValue<SharedDbiDataHandler>(tableId);
+        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
     }
     if (input->isEnded()) {
         setDone();

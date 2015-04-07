@@ -22,14 +22,9 @@
 #ifndef _U2_ANNOTATED_DNA_VIEW_H_
 #define _U2_ANNOTATED_DNA_VIEW_H_
 
-#include <QtCore/QPointer>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTextEdit>
-#include <QtGui/QSplitter>
-#else
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QSplitter>
-#endif
+#include <QPointer>
+#include <QTextEdit>
+#include <QSplitter>
 
 #include <U2Core/Annotation.h>
 #include <U2Core/Task.h>
@@ -71,7 +66,7 @@ class CodonTableAction;
 class U2VIEW_EXPORT AnnotatedDNAView : public GObjectView {
     Q_OBJECT
 public:
-    AnnotatedDNAView(const QString& viewName, const QList<U2SequenceObject*>& dnaObjects);
+    AnnotatedDNAView(const QString &viewName, const QList<U2SequenceObject *> &dnaObjects);
     ~AnnotatedDNAView();
 
     virtual void buildStaticToolbar(QToolBar* tb);
@@ -93,11 +88,11 @@ public:
 
     QList<AnnotationTableObject *> getAnnotationObjects( bool includeAutoAnnotations = false) const;
 
-    AnnotationSelection*        getAnnotationsSelection() const {return annotationSelection;}
+    AnnotationSelection * getAnnotationsSelection() const {return annotationSelection;}
 
-    AnnotationGroupSelection*   getAnnotationsGroupSelection() const {return annotationGroupSelection;}
+    AnnotationGroupSelection * getAnnotationsGroupSelection() const {return annotationGroupSelection;}
 
-    const QList<ADVSequenceWidget*> getSequenceWidgets() const {return seqViews;}
+    const QList<ADVSequenceWidget *> getSequenceWidgets() const {return seqViews;}
 
     virtual bool canAddObject(GObject* obj);
 
@@ -150,7 +145,7 @@ public:
      * Returns "true" in case of an error.
      * Otherwise, returns "false", i.e. the method returns "false", even if an annotation intersects a sequence only partially.
      */
-    bool areAnnotationsInRange(const QList<Annotation> &toCheck);
+    bool areAnnotationsInRange(const QList<Annotation *> &toCheck);
 
     /**
      * Tries to add object to the view. Uses GUI functions to ask user if some data if needed

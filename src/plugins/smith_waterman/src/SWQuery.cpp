@@ -212,18 +212,18 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
 }
 
 void QDSWActor::sl_onAlgorithmTaskFinished(Task*) {
-    QList<AnnotationData> res;
+    QList<SharedAnnotationData> res;
     QMapIterator<Task*, SmithWatermanReportCallbackAnnotImpl*> iter(callbacks);
     while (iter.hasNext()) {
         iter.next();
         res << iter.value()->getAnotations();
     }
 
-    foreach ( const AnnotationData &ad, res ) {
+    foreach (const SharedAnnotationData &ad, res) {
         QDResultUnit ru(new QDResultUnitData);
-        ru->strand = ad.getStrand();
-        ru->quals = ad.qualifiers;
-        ru->region = ad.location->regions.first();
+        ru->strand = ad->getStrand();
+        ru->quals = ad->qualifiers;
+        ru->region = ad->location->regions.first();
         ru->owner = units.value("sw");
         QDResultGroup::buildGroupFromSingleResult(ru, results);
     }

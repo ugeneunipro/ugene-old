@@ -257,29 +257,30 @@ Task* QDRepeatActor::getAlgorithmTask(const QVector<U2Region>& location) {
 }
 
 void QDRepeatActor::sl_onAlgorithmTaskFinished() {
-    QList<AnnotationData> res;
-    foreach(FindRepeatsToAnnotationsTask* frt, repTasks) {
+    QList<SharedAnnotationData> res;
+    foreach (FindRepeatsToAnnotationsTask *frt, repTasks) {
         res = frt->importAnnotations();
     }
     repTasks.clear();
-    foreach(const AnnotationData& ad, res) {
-        if (ad.location->regions[0].length > getMaxResultLen()) {
+    foreach(const SharedAnnotationData &ad, res) {
+        if (ad->location->regions[0].length > getMaxResultLen()) {
             continue;
         }
 
         //////////////////////////////////////////////////////////////////////////
         QDResultUnit ru1(new QDResultUnitData);
         QDResultUnit ru2(new QDResultUnitData);
-        ru1->quals = ad.qualifiers;
-        ru2->quals = ad.qualifiers;
-        ru1->region = ad.location->regions[0];
-        ru2->region = ad.location->regions[1];
+        ru1->quals = ad->qualifiers;
+        ru2->quals = ad->qualifiers;
+        ru1->region = ad->location->regions[0];
+        ru2->region = ad->location->regions[1];
         ru1->owner = units.value("left");
         ru2->owner = units.value("right");
         ru1->strand = U2Strand::Direct;
         ru2->strand = U2Strand::Direct;
         QDResultGroup* g = new QDResultGroup(QDStrand_Both);
-        g->add(ru1); g->add(ru2);
+        g->add(ru1);
+        g->add(ru2);
         results.append(g);
     }
 }

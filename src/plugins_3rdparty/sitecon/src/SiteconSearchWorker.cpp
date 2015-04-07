@@ -101,7 +101,7 @@ void SiteconSearchWorker::registerProto() {
     Descriptor desc(ACTOR_ID, tr("Search for TFBS with SITECON"), 
         tr("Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles."
         " In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.")
-        );
+       );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     QMap<QString, PropertyDelegate*> delegates;
 
@@ -261,21 +261,20 @@ Task* SiteconSearchWorker::tick() {
     return NULL;
 }
 
-void SiteconSearchWorker::sl_taskFinished( Task *t ) {
-    QList<AnnotationData> res;
-    SAFE_POINT( NULL != t, "Invalid task is encountered", );
-    if ( t->isCanceled( ) ) {
+void SiteconSearchWorker::sl_taskFinished(Task *t) {
+    QList<SharedAnnotationData> res;
+    SAFE_POINT(NULL != t, "Invalid task is encountered",);
+    if (t->isCanceled()) {
         return;
     }
-    foreach ( Task* sub, t->getSubtasks( ) ) {
-        SiteconSearchTask *sst = qobject_cast<SiteconSearchTask *>( sub );
-        res += SiteconSearchResult::toTable( sst->takeResults( ), resultName );
-        sst->cleanup( );
+    foreach (Task* sub, t->getSubtasks()) {
+        SiteconSearchTask *sst = qobject_cast<SiteconSearchTask *>(sub);
+        res += SiteconSearchResult::toTable(sst->takeResults(), resultName);
+        sst->cleanup();
     }
 
-    const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( res );
-    output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
-        qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
+    const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(res);
+    output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), qVariantFromValue<SharedDbiDataHandler>(tableId)));
 
     algoLog.info(tr("Found %1 TFBS").arg(res.size())); //TODO set task description for report
 }

@@ -69,10 +69,8 @@ const QChar DEFAULT_SHORTHANDS_SEPARATOR = '_';
 
 namespace U2 {
 
-SmithWatermanDialog::SmithWatermanDialog(QWidget* w,
-                                         ADVSequenceObjectContext* ctx,
-                                         SWDialogConfig* _dialogConfig):
-    QDialog(w), substMatrixRegistry(0), swTaskFactoryRegistry(0)
+SmithWatermanDialog::SmithWatermanDialog(QWidget* w, ADVSequenceObjectContext* ctx, SWDialogConfig* _dialogConfig)
+    : QDialog(w), substMatrixRegistry(0), swTaskFactoryRegistry(0)
 {
     ctxSeq = ctx;
     dialogConfig = _dialogConfig;
@@ -491,14 +489,14 @@ void SmithWatermanDialog::sl_bttnRun()
             }
             const CreateAnnotationModel& m = annotationController->getModel();
             AnnotationTableObject *obj = m.getAnnotationObject();
-            U2FeatureType annotationType = m.data.type;
-            QString annotationName = m.data.name;
+            U2FeatureType annotationType = m.data->type;
+            QString annotationName = m.data->name;
             QString annotationGroup = m.groupName;
 
             config.resultCallback = new SmithWatermanReportCallbackAnnotImpl(obj, annotationType, annotationName,
                 annotationGroup, addPatternContentQualifier->isChecked());
-            config.includePatternContent = addPatternContentQualifier->isChecked( );
-        } else if (SmithWatermanSettings::MULTIPLE_ALIGNMENT == config.resultView){
+            config.includePatternContent = addPatternContentQualifier->isChecked();
+        } else if (SmithWatermanSettings::MULTIPLE_ALIGNMENT == config.resultView) {
             const U2SequenceObject * sequence = ctxSeq->getSequenceObject();
             config.resultCallback = new SmithWatermanReportCallbackMAImpl(alignmentFilesPath->text(), mObjectNameTmpl->text(),
                                                                         refSubseqNameTmpl->text(), patternSubseqNameTmpl->text(),
@@ -512,8 +510,9 @@ void SmithWatermanDialog::sl_bttnRun()
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
         saveDialogConfig();
         QDialog::accept();
-    } else
+    } else {
         clearAll();
+    }
 }
 
 bool SmithWatermanDialog::readParameters()

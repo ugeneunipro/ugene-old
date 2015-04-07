@@ -51,7 +51,7 @@ public:
         return region == o.region && err == o.err && strand == o.strand && translation == o.translation;
     }
 
-    AnnotationData toAnnotation(const QString& name, bool splitCircular = false, int seqLen = -1) const;
+    SharedAnnotationData toAnnotation(const QString &name, bool splitCircular = false, int seqLen = -1) const;
 
     static bool lessByRegionStartPos(const FindAlgorithmResult &r1, const FindAlgorithmResult &r2);
 
@@ -60,8 +60,7 @@ public:
     U2Strand    strand;
     int         err;
 
-    static QList<AnnotationData> toTable(const QList<FindAlgorithmResult>& res, const QString& name,
-                                         bool splitCircular = false, int seqLen = -1);
+    static QList<SharedAnnotationData> toTable(const QList<FindAlgorithmResult> &res, const QString &name, bool splitCircular = false, int seqLen = -1);
 };
 
 class DNATranslation;

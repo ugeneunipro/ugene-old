@@ -50,13 +50,13 @@ ModifySequenceContentTask::ModifySequenceContentTask(const DocumentFormatId& _df
                                                      const DNASequence& seq2Insert,
                                                      U1AnnotationUtils::AnnotationStrategyForResize _str,
                                                      const GUrl& _url,
-                                                     bool _mergeAnnotations )
+                                                     bool _mergeAnnotations)
 
 :Task(tr("Modify sequence task"), TaskFlag_NoRun), resultFormatId(_dfId), mergeAnnotations(_mergeAnnotations),
 curDoc(_seqObj->getDocument()), newDoc(NULL), url(_url), strat(_str), seqObj(_seqObj),
 regionToReplace(_regionTodelete), sequence2Insert(seq2Insert)
 {
-    GCOUNTER( cvar, tvar, "Modify sequence task" );
+    GCOUNTER(cvar, tvar, "Modify sequence task");
     inplaceMod = url == curDoc->getURL() || url.isEmpty();
 }
 
@@ -104,26 +104,25 @@ Task::ReportResult ModifySequenceContentTask::report(){
 }
 
 
-void ModifySequenceContentTask::fixAnnotations( ) {
-    foreach ( Document *d, docs ) {
-        QList<GObject *> annotationTablesList = d->findGObjectByType( GObjectTypes::ANNOTATION_TABLE );
-        foreach ( GObject *table, annotationTablesList ) {
-            AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>( table );
-            if ( ato->hasObjectRelation( seqObj, ObjectRole_Sequence ) ){
-                foreach ( Annotation an, ato->getAnnotations( ) ) {
-                    QList<QVector<U2Region> > newRegions
-                        = U1AnnotationUtils::fixLocationsForReplacedRegion( regionToReplace,
-                        sequence2Insert.seq.length( ), an.getRegions( ), strat );
+void ModifySequenceContentTask::fixAnnotations() {
+    foreach (Document *d, docs) {
+        QList<GObject *> annotationTablesList = d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+        foreach (GObject *table, annotationTablesList) {
+            AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>(table);
+            if (ato->hasObjectRelation(seqObj, ObjectRole_Sequence)){
+                foreach (Annotation *an, ato->getAnnotations()) {
+                    QList<QVector<U2Region> > newRegions = U1AnnotationUtils::fixLocationsForReplacedRegion(regionToReplace,
+                        sequence2Insert.seq.length(), an->getRegions(), strat);
 
-                    if ( newRegions[0].isEmpty( ) ) {
-                        ato->removeAnnotation( an );
+                    if (newRegions[0].isEmpty()) {
+                        ato->removeAnnotations(QList<Annotation *>() << an);
                     } else{
-                        an.updateRegions( newRegions[0] );
-                        for ( int i = 1; i < newRegions.size( ); i++ ) {
-                            AnnotationData splittedAnnotation = an.getData( );
-                            const QString groupName = an.getGroup( ).getGroupPath( );
-                            splittedAnnotation.location->regions = newRegions[i];
-                            ato->addAnnotation( splittedAnnotation, groupName );
+                        an->updateRegions(newRegions[0]);
+                        for (int i = 1; i < newRegions.size(); i++) {
+                            SharedAnnotationData splittedAnnotation = an->getData();
+                            const QString groupName = an->getGroup()->getGroupPath();
+                            splittedAnnotation->location->regions = newRegions[i];
+                            ato->addAnnotations(QList<SharedAnnotationData>() << splittedAnnotation, groupName);
                         }
                     }
                 }
@@ -133,63 +132,58 @@ void ModifySequenceContentTask::fixAnnotations( ) {
 }
 
 
-void ModifySequenceContentTask::cloneSequenceAndAnnotations( ) {
-    IOAdapterRegistry *ioReg = AppContext::getIOAdapterRegistry( );
-    IOAdapterFactory* iof = ioReg->getIOAdapterFactoryById( IOAdapterUtils::url2io( url ) );
-    CHECK( NULL != iof, );
-    DocumentFormatRegistry *dfReg = AppContext::getDocumentFormatRegistry( );
-    DocumentFormat *df = dfReg->getFormatById( resultFormatId );
-    SAFE_POINT( NULL != df, "Invalid document format!", );
+void ModifySequenceContentTask::cloneSequenceAndAnnotations() {
+    IOAdapterRegistry *ioReg = AppContext::getIOAdapterRegistry();
+    IOAdapterFactory* iof = ioReg->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
+    CHECK(NULL != iof,);
+    DocumentFormatRegistry *dfReg = AppContext::getDocumentFormatRegistry();
+    DocumentFormat *df = dfReg->getFormatById(resultFormatId);
+    SAFE_POINT(NULL != df, "Invalid document format!",);
 
     U2SequenceObject *oldSeqObj = seqObj;
     U2OpStatus2Log os;
-    newDoc = df->createNewLoadedDocument( iof, url, os, curDoc->getGHintsMap( ) );
-    SAFE_POINT_EXT( df->isObjectOpSupported( newDoc, DocumentFormat::DocObjectOp_Add,
-        GObjectTypes::SEQUENCE ), stateInfo.setError( "Failed to add sequence object to document!" ), );
-    U2Sequence clonedSeq = U2SequenceUtils::copySequence( oldSeqObj->getSequenceRef( ),
-        newDoc->getDbiRef( ), U2ObjectDbi::ROOT_FOLDER, stateInfo );
-    CHECK_OP( stateInfo, );
-    seqObj = new U2SequenceObject( oldSeqObj->getGObjectName( ),
-        U2EntityRef( newDoc->getDbiRef( ), clonedSeq.id ), oldSeqObj->getGHintsMap( ) );
-    newDoc->addObject( seqObj );
+    newDoc = df->createNewLoadedDocument(iof, url, os, curDoc->getGHintsMap());
+    SAFE_POINT_EXT(df->isObjectOpSupported(newDoc, DocumentFormat::DocObjectOp_Add, GObjectTypes::SEQUENCE),
+        stateInfo.setError("Failed to add sequence object to document!"),);
+    U2Sequence clonedSeq = U2SequenceUtils::copySequence(oldSeqObj->getSequenceRef(), newDoc->getDbiRef(), U2ObjectDbi::ROOT_FOLDER, stateInfo);
+    CHECK_OP(stateInfo,);
+    seqObj = new U2SequenceObject(oldSeqObj->getGObjectName(), U2EntityRef(newDoc->getDbiRef(), clonedSeq.id), oldSeqObj->getGHintsMap());
+    newDoc->addObject(seqObj);
 
-    if ( df->isObjectOpSupported( newDoc, DocumentFormat::DocObjectOp_Add,
-        GObjectTypes::ANNOTATION_TABLE ) )
-    {
-        if ( mergeAnnotations ) {
-            AnnotationTableObject *newDocAto = new AnnotationTableObject( "Annotations",
-                newDoc->getDbiRef( ) );
-            newDocAto->addObjectRelation( seqObj, ObjectRole_Sequence );
+    if (df->isObjectOpSupported(newDoc, DocumentFormat::DocObjectOp_Add, GObjectTypes::ANNOTATION_TABLE)) {
+        if (mergeAnnotations) {
+            AnnotationTableObject *newDocAto = new AnnotationTableObject("Annotations",
+                newDoc->getDbiRef());
+            newDocAto->addObjectRelation(seqObj, ObjectRole_Sequence);
 
-            foreach ( Document *d, docs ) {
-                QList<GObject *> annotationTablesList
-                    = d->findGObjectByType( GObjectTypes::ANNOTATION_TABLE );
-                foreach ( GObject *table, annotationTablesList ) {
-                    AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>( table );
-                    if ( ato->hasObjectRelation( oldSeqObj, ObjectRole_Sequence ) ) {
-                        foreach ( const Annotation &ann, ato->getAnnotations( ) ) {
-                            newDocAto->addAnnotation( ann.getData( ), ann.getGroup( ).getName( ) );
+            foreach (Document *d, docs) {
+                QList<GObject *> annotationTablesList = d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+                foreach (GObject *table, annotationTablesList) {
+                    AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>(table);
+                    if (ato->hasObjectRelation(oldSeqObj, ObjectRole_Sequence)) {
+                        foreach (Annotation *ann, ato->getAnnotations()) {
+                            newDocAto->addAnnotations(QList<SharedAnnotationData>() << ann->getData(), ann->getGroup()->getName());
                         }
                     }
                 }
             }
-            newDoc->addObject( newDocAto );
+            newDoc->addObject(newDocAto);
 
         } else {
             // use only sequence-doc annotations
-            foreach ( GObject *o, curDoc->getObjects( ) ){
-                AnnotationTableObject* aObj = qobject_cast<AnnotationTableObject *>( o );
-                if ( NULL == aObj ) {
+            foreach (GObject *o, curDoc->getObjects()){
+                AnnotationTableObject* aObj = qobject_cast<AnnotationTableObject *>(o);
+                if (NULL == aObj) {
                     continue;
                 }
                 U2OpStatus2Log os;
-                GObject *cl = aObj->clone( newDoc->getDbiRef( ), os );
-                newDoc->addObject( cl );
-                GObjectUtils::updateRelationsURL( cl, curDoc->getURL( ), newDoc->getURL( ) );
+                GObject *cl = aObj->clone(newDoc->getDbiRef(), os);
+                newDoc->addObject(cl);
+                GObjectUtils::updateRelationsURL(cl, curDoc->getURL(), newDoc->getURL());
             }
         }
     }
-    docs.append( newDoc );
+    docs.append(newDoc);
 }
 
 

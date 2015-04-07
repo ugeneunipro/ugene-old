@@ -37,16 +37,15 @@
 
 namespace U2 {
 
-EditAnnotationDialogController::EditAnnotationDialogController( const AnnotationData &a, U2Region _seqRange, QWidget* p)
-    : QDialog(p), seqRange(_seqRange)
+EditAnnotationDialogController::EditAnnotationDialogController(const SharedAnnotationData &a, const U2Region &seqRange, QWidget *p)
+    : QDialog(p), seqRange(seqRange)
 {
-
     setupUi(this);
     new HelpButton(this, buttonBox, "16122171");
 
-    nameEdit->setText(a.name);
-    locationEdit->setText(Genbank::LocationParser::buildLocationString(&a));
-    location = a.location;
+    nameEdit->setText(a->name);
+    locationEdit->setText(Genbank::LocationParser::buildLocationString(a));
+    location = a->location;
 
     QMenu* menu = EditAnnotationDialogController::createAnnotationNamesMenu(this, this);
     showNameGroupsButton->setMenu(menu);
@@ -72,12 +71,12 @@ void EditAnnotationDialogController::sl_onTextChanged(const QString& changedText
     }
 }
 
-void EditAnnotationDialogController::accept(){
+void EditAnnotationDialogController::accept() {
     QByteArray locEditText = locationEdit->text().toLatin1();
     Genbank::LocationParser::parseLocation(locEditText.constData(), locationEdit->text().length(), location);
 
-    if ( location->isEmpty()) {
-        QMessageBox::critical( this, tr( "Error!" ), tr( "Annotation location empty or invalid!" ) );
+    if (location->isEmpty()) {
+        QMessageBox::critical(this, tr("Error!"), tr("Annotation location empty or invalid!"));
         QDialog::reject();
         return;
     }
@@ -86,10 +85,10 @@ void EditAnnotationDialogController::accept(){
     bool validRegions = seqRange.contains(cRegion);
 
     if (!Annotation::isValidAnnotationName(nameEdit->text())) {
-        QMessageBox::critical( this, tr( "Error!" ), tr( "Wrong annotation name!" ) );
+        QMessageBox::critical(this, tr("Error!"), tr("Wrong annotation name!"));
         QDialog::reject();
     }else if (!validRegions){
-        QMessageBox::critical( this, tr( "Error!" ), tr( "New annotation locations is out of sequence bounds!" ) );
+        QMessageBox::critical(this, tr("Error!"), tr("New annotation locations is out of sequence bounds!"));
         QDialog::reject();
     }else{
         currentName = nameEdit->text();
@@ -101,8 +100,7 @@ static bool caseInsensitiveLessThan(const QString &s1, const QString &s2) {
     return s1.toLower() < s2.toLower();
 }
 
-QMenu* EditAnnotationDialogController::createAnnotationNamesMenu( QWidget* p, QObject* receiver )
-{
+QMenu* EditAnnotationDialogController::createAnnotationNamesMenu(QWidget* p, QObject* receiver) {
     assert(p!=NULL && receiver!=NULL);
 
     QMenu* m = new QMenu(p);

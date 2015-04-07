@@ -84,7 +84,7 @@ public:
     void addSequenceWidget(ADVSequenceWidget* w);
     void removeSequenceWidget(ADVSequenceWidget* w);
 
-    QList<Annotation> selectRelatedAnnotations(const QList<Annotation> &alist) const;
+    QList<Annotation *> selectRelatedAnnotations(const QList<Annotation *> &alist) const;
     QVector<bool> getTranslationRowsVisibleStatus();
     void setTranslationsVisible(bool enable);
 

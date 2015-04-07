@@ -826,19 +826,19 @@ GUI_TEST_CLASS_DEFINITION(test_4100) {
     CHECK_SET_ERR(annTables.size() == 1, "Number of annotation tables is incorrect");
 
     CHECK_SET_ERR(annTables.values().first() != NULL, "AnnotationTable is NULL");
-    QList<Annotation> annInitial = annTables.values().first()->getAnnotations();
+    QList<Annotation *> annInitial = annTables.values().first()->getAnnotations();
     CHECK_SET_ERR(annTablesDB.values().first() != NULL, "AnnotationTable is NULL");
-    QList<Annotation> annImported = annTablesDB.values().first()->getAnnotations();
+    QList<Annotation *> annImported = annTablesDB.values().first()->getAnnotations();
 
-    foreach (const Annotation& ann, annInitial) {
+    foreach (Annotation *ann, annInitial) {
         bool found = false;
-        foreach (const Annotation& aImported, annImported) {
-            if (ann.getData() == aImported.getData()) {
+        foreach (Annotation *aImported, annImported) {
+            if (*ann->getData() == *aImported->getData()) {
                 found = true;
                 break;
             }
         }
-        CHECK_SET_ERR(found == true, QString("Annotation '%1' was not imported").arg(ann.getName()));
+        CHECK_SET_ERR(found == true, QString("Annotation '%1' was not imported").arg(ann->getName()));
     }
 
     GTUtilsSharedDatabaseDocument::doubleClickItem(os, databaseDoc, "JQ040024.1");

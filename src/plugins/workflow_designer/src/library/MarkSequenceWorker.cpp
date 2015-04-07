@@ -80,12 +80,12 @@ Task *MarkSequenceWorker::tick() {
         }
         DNASequence seq = seqObj->getWholeSequence();
 
-        const QList<AnnotationData> inputAnns = StorageUtils::getAnnotationTable(
-            context->getDataStorage( ), data[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )] );
+        const QList<SharedAnnotationData> inputAnns = StorageUtils::getAnnotationTable(context->getDataStorage(),
+            data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()]);
 
         QVariantList anns;
-        foreach ( const AnnotationData &ad, inputAnns ) {
-            anns << QVariant::fromValue( ad );
+        foreach (const SharedAnnotationData &ad, inputAnns) {
+            anns << QVariant::fromValue(ad);
         }
 
         MarkerAttribute *attr = dynamic_cast<MarkerAttribute*>(actor->getParameter(MARKER_ATTR_ID));

@@ -131,7 +131,7 @@ public:
                                 const QString& annName, const QString& groupName, const GObjectReference& annObjRef);
 
     QList<Task*> onSubTaskFinished(Task* subTask);
-    QList<AnnotationData> importAnnotations();
+    QList<SharedAnnotationData> importAnnotations();
 
 private:
     QString                 annName;

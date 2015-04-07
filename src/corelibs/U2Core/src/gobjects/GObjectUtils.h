@@ -22,12 +22,12 @@
 #ifndef _U2_GOBJECT_UTILS_H_
 #define _U2_GOBJECT_UTILS_H_
 
-#include "GObjectTypes.h"
+#include <U2Core/AnnotationData.h>
 #include <U2Core/GObject.h>
+#include <U2Core/GObjectTypes.h>
 
 namespace U2 {
 
-class AnnotationData;
 class U2SequenceObject;
 class DNATranslation;
 class DNASequence;
@@ -87,8 +87,7 @@ public:
 
     static void             updateRelationsURL(GObject* o, const GUrl& fromURL, const GUrl& toURL);
 
-    static void             replaceAnnotationQualfier( AnnotationData &a, const QString &name,
-                                const QString &newVal, bool create = false );
+    static void             replaceAnnotationQualfier(SharedAnnotationData &a, const QString &name, const QString &newVal, bool create = false);
 
     static GObject *        createObject(const U2DbiRef &ref, const U2DataId &id, const QString &name);
 };

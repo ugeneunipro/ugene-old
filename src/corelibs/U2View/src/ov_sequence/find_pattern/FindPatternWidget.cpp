@@ -1056,7 +1056,7 @@ QList <QPair<QString, QString> > FindPatternWidget::getPatternsFromTextPatternFi
         annotController->validate();
         const CreateAnnotationModel& model = annotController->getModel();
         for(int i = 0; i < result.size(); i++){
-            result[i].first = model.data.name;
+            result[i].first = model.data->name;
         }
     }
 
@@ -1206,7 +1206,7 @@ void FindPatternWidget::sl_loadPatternTaskStateChanged() {
 }
 
 void FindPatternWidget::sl_findPatrernTaskStateChanged() {
-    FindPatternListTask* findTask = qobject_cast<FindPatternListTask*>(sender());
+    FindPatternListTask *findTask = qobject_cast<FindPatternListTask *>(sender());
     CHECK(NULL != findTask, );
     if (findTask != searchTask){
         return;
@@ -1412,44 +1412,43 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
         SAFE_POINT(objectPrepared, "Cannot create an annotation object. Please check settings", );
         annotModelPrepared = true;
     }
-    QString v = annotController->validate();
+    const QString v = annotController->validate();
     SAFE_POINT(v.isEmpty(), "Annotation names are invalid", );
 
-    const CreateAnnotationModel& annotModel = annotController->getModel();
+    const CreateAnnotationModel &annotModel = annotController->getModel();
     QString group = annotModel.groupName;
 
     AnnotationTableObject *aTableObj = annotModel.getAnnotationObject();
     SAFE_POINT(aTableObj != NULL, "Invalid annotation table detected!", );
 
-    QList<AnnotationData> annotationsToCreate = findPatternResults;
+    QList<SharedAnnotationData> annotationsToCreate = findPatternResults;
 
     for(int i = 0; i < findPatternResults.size(); i++){
         if(usePatternNames) {
             bool ok = false;
-            int index = findPatternResults[i].name.toInt(&ok);
+            int index = findPatternResults[i]->name.toInt(&ok);
             if (Q_UNLIKELY(!ok)) {
                 coreLog.details(tr("Warning: can not get valid pattern name, annotation will be named 'misc_feature'"));
                 Q_ASSERT(false);
-                if (annotationsToCreate[i].name.isEmpty()) {
-                    annotationsToCreate[i].name = "misc_feature";
+                if (annotationsToCreate[i]->name.isEmpty()) {
+                    annotationsToCreate[i]->name = "misc_feature";
                 }
             } else {
                 SAFE_POINT(ok, "Failed conversion to integer", );
                 SAFE_POINT(nameList.size() > index, "Out of boundaries in names list", );
                 SAFE_POINT(index >= 0, "Out of boundaries in names list", );
                 QString name = nameList[index];
-                annotationsToCreate[i].name = Annotation::isValidAnnotationName(name) ?
-                    name : Annotation::produceValidAnnotationName(name);
+                annotationsToCreate[i]->name = Annotation::isValidAnnotationName(name) ? name : Annotation::produceValidAnnotationName(name);
             }
         } else {
-            annotationsToCreate[i].name = Annotation::isValidAnnotationName(annotModel.data.name) ?
-                annotModel.data.name : Annotation::produceValidAnnotationName(annotModel.data.name);
+            annotationsToCreate[i]->name = Annotation::isValidAnnotationName(annotModel.data->name) ?
+                annotModel.data->name : Annotation::produceValidAnnotationName(annotModel.data->name);
         }
 
-        annotationsToCreate[i].type = annotModel.data.type;
+        annotationsToCreate[i]->type = annotModel.data->type;
     }
     GCOUNTER(cvar, tvar, "FindAlgorithmTask");
-    if (annotModel.data.name == annotModel.groupName && usePatternNames) {
+    if (annotModel.data->name == annotModel.groupName && usePatternNames) {
         group.clear();
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(new CreateAnnotationsTask(aTableObj, annotationsToCreate, group));
@@ -1481,9 +1480,9 @@ void FindPatternWidget::sl_nextButtonClicked() {
 void FindPatternWidget::showCurrentResult() const {
     resultLabel->setText(tr("Results: %1/%2").arg(QString::number(iterPos)).arg(QString::number(findPatternResults.size())));
     CHECK(findPatternResults.size() >= iterPos, );
-    const AnnotationData &ad = findPatternResults.at(iterPos - 1);
+    const SharedAnnotationData &ad = findPatternResults.at(iterPos - 1);
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
-    const QVector<U2Region> regions = ad.getRegions();
+    const QVector<U2Region> regions = ad->getRegions();
     CHECK(activeContext->getSequenceSelection() != NULL, );
     CHECK(!regions.isEmpty(), );
     activeContext->getSequenceSelection()->setRegion(regions.first());

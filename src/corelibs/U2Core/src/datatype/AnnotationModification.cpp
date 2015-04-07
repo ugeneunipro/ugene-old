@@ -23,23 +23,20 @@
 
 namespace U2 {
 
-AnnotationModification::AnnotationModification( AnnotationModificationType _type,
-    const Annotation &a )
-    : type( _type ), annotation( a )
+AnnotationModification::AnnotationModification(AnnotationModificationType type, Annotation *a)
+    : type(type), annotation(a)
 {
 
 }
 
-QualifierModification::QualifierModification( AnnotationModificationType t, const Annotation &a,
-    const U2Qualifier &q )
-    : AnnotationModification( t, a ), qualifier( q )
+QualifierModification::QualifierModification(AnnotationModificationType t, Annotation *a, const U2Qualifier &q)
+    : AnnotationModification(t, a), qualifier(q)
 {
 
 }
 
-AnnotationGroupModification::AnnotationGroupModification( AnnotationModificationType t,
-    const Annotation &a, const AnnotationGroup &g )
-    : AnnotationModification( t, a ), group( g )
+AnnotationGroupModification::AnnotationGroupModification(AnnotationModificationType t, Annotation *a, AnnotationGroup *g)
+    : AnnotationModification(t, a), group(g)
 {
 
 }

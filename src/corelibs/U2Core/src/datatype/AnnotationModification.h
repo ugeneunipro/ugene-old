@@ -37,27 +37,24 @@ enum AnnotationModificationType {
 
 class U2CORE_EXPORT AnnotationModification {
 public:
-                                    AnnotationModification( AnnotationModificationType type,
-                                        const Annotation &a );
+                                    AnnotationModification(AnnotationModificationType type, Annotation *a);
 
     AnnotationModificationType      type;
-    Annotation                    annotation;
+    Annotation *                    annotation;
 };
 
 class  U2CORE_EXPORT QualifierModification : public AnnotationModification {
 public:
-                                    QualifierModification( AnnotationModificationType type,
-                                        const Annotation &a, const U2Qualifier &q );
+                                    QualifierModification(AnnotationModificationType type, Annotation *a, const U2Qualifier &q);
 
     U2Qualifier                     qualifier;
 };
 
 class  U2CORE_EXPORT AnnotationGroupModification : public AnnotationModification {
 public:
-                                    AnnotationGroupModification( AnnotationModificationType type,
-                                        const Annotation &a, const AnnotationGroup &g );
+                                    AnnotationGroupModification(AnnotationModificationType type, Annotation *a, AnnotationGroup *g);
 
-    AnnotationGroup               group;
+    AnnotationGroup *               group;
 };
 
 } // namespace U2

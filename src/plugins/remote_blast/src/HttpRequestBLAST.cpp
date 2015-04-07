@@ -28,9 +28,9 @@ namespace U2 {
 const QString HttpRequestBLAST::host = "http://blast.ncbi.nlm.nih.gov/Blast.cgi?";
 
 QString HttpRequestBLAST::runHttpRequest(QString request){
-    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::HTTP_FILE );
+    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::HTTP_FILE);
     IOAdapter * io = iof->createIOAdapter();
-    if(!io->open( request, IOAdapterMode_Read )) {
+    if(!io->open(request, IOAdapterMode_Read)) {
         connectionError = true;
         error = QObject::tr("Cannot open the IO adapter");
         return "";
@@ -38,16 +38,16 @@ QString HttpRequestBLAST::runHttpRequest(QString request){
     int offs = 0;
     int read = 0;
     int CHUNK_SIZE = 1024;
-    QByteArray response( CHUNK_SIZE, 0 );
+    QByteArray response(CHUNK_SIZE, 0);
     do {
         if(task->isCanceled()) {
             io->close();
             return "";
         }
-        read = io->readBlock( response.data() + offs, CHUNK_SIZE );
+        read = io->readBlock(response.data() + offs, CHUNK_SIZE);
         offs += read;
-        response.resize( offs + read );
-    } while( read == CHUNK_SIZE );
+        response.resize(offs + read);
+    } while(read == CHUNK_SIZE);
     io->close();
     if(read<0) {
         connectionError = true;
@@ -208,23 +208,23 @@ void HttpRequestBLAST::parseHit(const QDomNode &xml) {
 
 void HttpRequestBLAST::parseHsp(const QDomNode &xml,const QString &id, const QString &def,
                                 const QString &accession, const QString &hitLen) {
-    AnnotationData ad;
+    SharedAnnotationData ad(new AnnotationData);
     bool isOk;
     int from = -1,to = -1,align_len = -1,gaps = -1,identities = -1;
 
     QDomElement elem = xml.lastChildElement("Hsp_bit-score");
     if(!elem.isNull()) {
-        ad.qualifiers.push_back(U2Qualifier("bit-score", elem.text()));
+        ad->qualifiers.push_back(U2Qualifier("bit-score", elem.text()));
     }
 
     elem = xml.lastChildElement("Hsp_score");
     if(!elem.isNull()) {
-        ad.qualifiers.push_back(U2Qualifier("score", elem.text()));
+        ad->qualifiers.push_back(U2Qualifier("score", elem.text()));
     }
 
     elem = xml.lastChildElement("Hsp_evalue");
     if(!elem.isNull()) {
-        ad.qualifiers.push_back(U2Qualifier("E-value", elem.text()));
+        ad->qualifiers.push_back(U2Qualifier("E-value", elem.text()));
     }
 
     elem = xml.lastChildElement("Hsp_query-from");
@@ -246,12 +246,12 @@ void HttpRequestBLAST::parseHsp(const QDomNode &xml,const QString &id, const QSt
 
     elem = xml.lastChildElement("Hsp_hit-from");
     if(!elem.isNull()) {
-        ad.qualifiers.push_back(U2Qualifier("hit-from", elem.text()));
+        ad->qualifiers.push_back(U2Qualifier("hit-from", elem.text()));
     }
 
     elem = xml.lastChildElement("Hsp_hit-to");
     if(!elem.isNull()) {
-        ad.qualifiers.push_back(U2Qualifier("hit-to", elem.text()));
+        ad->qualifiers.push_back(U2Qualifier("hit-to", elem.text()));
     }
 
     elem = xml.lastChildElement("Hsp_hit-frame");
@@ -262,8 +262,8 @@ void HttpRequestBLAST::parseHsp(const QDomNode &xml,const QString &id, const QSt
         return;
     }
     QString frame_txt = (frame < 0) ? "complement" : "direct";
-    ad.qualifiers.push_back(U2Qualifier( "source_frame", frame_txt ));
-    ad.setStrand(frame < 0 ? U2Strand::Complementary : U2Strand::Direct);
+    ad->qualifiers.push_back(U2Qualifier("source_frame", frame_txt));
+    ad->setStrand(frame < 0 ? U2Strand::Complementary : U2Strand::Direct);
 
     elem = xml.lastChildElement("Hsp_identity");
     identities = elem.text().toInt(&isOk);
@@ -289,13 +289,13 @@ void HttpRequestBLAST::parseHsp(const QDomNode &xml,const QString &id, const QSt
         return;
     }
 
-    if( from != -1 && to != -1 ) {
+    if(from != -1 && to != -1) {
         if (to > from){ //direct
-            ad.location->regions << U2Region( from-1, to - from + 1);
-            ad.setStrand(U2Strand::Direct);
+            ad->location->regions << U2Region(from-1, to - from + 1);
+            ad->setStrand(U2Strand::Direct);
         } else { //complement
-            ad.location->regions << U2Region( to-1, from - to + 1);
-            ad.setStrand(U2Strand::Complementary);
+            ad->location->regions << U2Region(to-1, from - to + 1);
+            ad->setStrand(U2Strand::Complementary);
         }
     } else {
         connectionError = true;
@@ -303,24 +303,24 @@ void HttpRequestBLAST::parseHsp(const QDomNode &xml,const QString &id, const QSt
         return;
     }
 
-    if( align_len != -1 ) {
-        if( gaps != -1 ) {
+    if(align_len != -1) {
+        if(gaps != -1) {
             float percent = (float)gaps / (float)align_len * 100.;
             QString str = QString::number(gaps) + "/" + QString::number(align_len) + " (" + QString::number(percent,'g',4) + "%)";
-            ad.qualifiers.push_back(U2Qualifier( "gaps", str ));
+            ad->qualifiers.push_back(U2Qualifier("gaps", str));
         }
-        if( identities != -1 ) {
+        if(identities != -1) {
             float percent = (float)identities / (float)align_len * 100.;
             QString str = QString::number(identities) + '/' + QString::number(align_len) + " (" + QString::number(percent,'g',4) + "%)";
-            ad.qualifiers.push_back(U2Qualifier( "identities", str ));
+            ad->qualifiers.push_back(U2Qualifier("identities", str));
         }
     }
 
-    ad.qualifiers.push_back(U2Qualifier("id",id));
-    ad.qualifiers.push_back(U2Qualifier("def",def));
-    ad.qualifiers.push_back(U2Qualifier("accession",accession));
-    ad.qualifiers.push_back(U2Qualifier("hit_len",hitLen));
-    ad.name = "blast result";
+    ad->qualifiers.push_back(U2Qualifier("id",id));
+    ad->qualifiers.push_back(U2Qualifier("def",def));
+    ad->qualifiers.push_back(U2Qualifier("accession",accession));
+    ad->qualifiers.push_back(U2Qualifier("hit_len",hitLen));
+    ad->name = "blast result";
     result.append(ad);
 }
 

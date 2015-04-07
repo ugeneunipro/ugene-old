@@ -22,15 +22,12 @@
 #ifndef _U2_ADVANNOTATION_CREATION_H_
 #define _U2_ADVANNOTATION_CREATION_H_
 
-#include <U2Core/Task.h>
-#include <U2Core/AnnotationData.h>
+#include <QPointer>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#else
-#include <QtWidgets/QAction>
-#endif
-#include <QtCore/QPointer>
+#include <U2Core/AnnotationData.h>
+#include <U2Core/Task.h>
+
+class QAction;
 
 namespace U2 {
 
@@ -55,11 +52,10 @@ private:
 };
 
 
-class U2VIEW_EXPORT  ADVCreateAnnotationsTask : public Task {
+class U2VIEW_EXPORT ADVCreateAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    ADVCreateAnnotationsTask(AnnotatedDNAView* _ctx, const GObjectReference& aobjRef,
-                            const QString& group, const QList<AnnotationData> &data);
+    ADVCreateAnnotationsTask(AnnotatedDNAView *ctx, const GObjectReference &aobjRef, const QString &group, const QList<SharedAnnotationData> &data);
 
     ReportResult report();
 

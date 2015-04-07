@@ -39,8 +39,8 @@
 
 namespace U2 {
 
-VectorNtiSequenceFormat::VectorNtiSequenceFormat(QObject* parent) :
-    GenbankPlainTextFormat(parent)
+VectorNtiSequenceFormat::VectorNtiSequenceFormat(QObject* parent)
+    : GenbankPlainTextFormat(parent)
 {
     id = BaseDocumentFormats::VECTOR_NTI_SEQUENCE;
     formatName = tr("Vector NTI sequence");
@@ -70,7 +70,8 @@ FormatCheckResult VectorNtiSequenceFormat::checkRawData(const QByteArray &rawDat
 
     res.properties[RawDataCheckResult_Sequence] = rawData.contains(seqStartPattern1) || rawData.contains(seqStartPattern2);
 
-    bool multi = (rawData.indexOf(seqStartPattern1) != rawData.lastIndexOf(seqStartPattern1)) || (rawData.indexOf(seqStartPattern2) != rawData.lastIndexOf(seqStartPattern2));
+    bool multi = (rawData.indexOf(seqStartPattern1) != rawData.lastIndexOf(seqStartPattern1))
+        || (rawData.indexOf(seqStartPattern2) != rawData.lastIndexOf(seqStartPattern2));
     res.properties[RawDataCheckResult_MultipleSequences] = multi;
     return res;
 }
@@ -183,14 +184,15 @@ void VectorNtiSequenceFormat::createCommentAnnotation(const QStringList &comment
     const QStrStrMap parsedComments = parseComments(comments);
     CHECK(!parsedComments.isEmpty(), );
 
-    AnnotationData f;
-    f.type = U2FeatureTypes::Comment;
-    f.name = "comment";
-    f.location->regions.append(U2Region(0, sequenceLength));
+    SharedAnnotationData f(new AnnotationData);
+    f->type = U2FeatureTypes::Comment;
+    f->name = "comment";
+    f->location->regions.append(U2Region(0, sequenceLength));
     foreach (const QString &qualName, parsedComments.keys()) {
-        f.qualifiers.append(U2Qualifier(qualName, parsedComments[qualName]));
+        f->qualifiers.append(U2Qualifier(qualName, parsedComments[qualName]));
     }
-    annTable->addAnnotation(f, "comment");
+
+    annTable->addAnnotations(QList<SharedAnnotationData>() << f, "comment");
 }
 
 U2Qualifier VectorNtiSequenceFormat::createQualifier(const QString &qualifierName, const QString &qualifierValue, bool containsDoubleQuotes) const {
@@ -266,21 +268,21 @@ QString VectorNtiSequenceFormat::parseDate(int date) {
     return time.toString();
 }
 
-QList<AnnotationData> VectorNtiSequenceFormat::prepareAnnotations(const QList<GObject *> &tablesList, bool isAmino, U2OpStatus &os) const {
-    QMap<AnnotationGroup, QList<AnnotationData> > annotationsByGroups;
+QList<SharedAnnotationData> VectorNtiSequenceFormat::prepareAnnotations(const QList<GObject *> &tablesList, bool isAmino, U2OpStatus &os) const {
+    QMap<AnnotationGroup *, QList<SharedAnnotationData> > annotationsByGroups;
     foreach (GObject *object, tablesList) {
         AnnotationTableObject *atObject = qobject_cast<AnnotationTableObject *>(object);
-        CHECK_EXT(NULL != atObject, os.setError("Invalid annotation table"), QList<AnnotationData>());
-        foreach (const Annotation &annotation, atObject->getAnnotations()) {
-            annotationsByGroups[annotation.getGroup()] << annotation.getData();
+        CHECK_EXT(NULL != atObject, os.setError("Invalid annotation table"), QList<SharedAnnotationData>());
+        foreach (Annotation *annotation, atObject->getAnnotations()) {
+            annotationsByGroups[annotation->getGroup()] << annotation->getData();
         }
     }
-    CHECK(!annotationsByGroups.isEmpty(), QList<AnnotationData>());
+    CHECK(!annotationsByGroups.isEmpty(), QList<SharedAnnotationData>());
 
     prepareQualifiersToWrite(annotationsByGroups, isAmino);
 
-    QList<AnnotationData> sortedAnnotations;
-    foreach (const AnnotationGroup &group, annotationsByGroups.keys()) {
+    QList<SharedAnnotationData> sortedAnnotations;
+    foreach (AnnotationGroup *group, annotationsByGroups.keys()) {
         sortedAnnotations += annotationsByGroups[group];
     }
     qStableSort(sortedAnnotations.begin(), sortedAnnotations.end());
@@ -298,15 +300,13 @@ void VectorNtiSequenceFormat::writeAnnotations(IOAdapter *io, const QList<GObjec
 
     //write every feature
     const char *spaceLine = TextUtils::SPACE_LINE.data();
-    QList<AnnotationData> sortedAnnotations = prepareAnnotations(aos, isAmino, os);
+    QList<SharedAnnotationData> sortedAnnotations = prepareAnnotations(aos, isAmino, os);
     CHECK_OP(os, );
 
     for (int i = 0; i < sortedAnnotations.size(); ++i) {
-        const AnnotationData &a = sortedAnnotations.at(i);
+        const SharedAnnotationData &a = sortedAnnotations.at(i);
 
-        if (a.name == U1AnnotationUtils::lowerCaseAnnotationName
-                || a.name == U1AnnotationUtils::upperCaseAnnotationName
-                || a.name == "comment") {
+        if (a->name == U1AnnotationUtils::lowerCaseAnnotationName || a->name == U1AnnotationUtils::upperCaseAnnotationName || a->name == "comment") {
             continue;
         }
 
@@ -314,7 +314,7 @@ void VectorNtiSequenceFormat::writeAnnotations(IOAdapter *io, const QList<GObjec
         len = io->writeBlock(spaceLine, 5);
         CHECK_EXT(len == 5, os.setError(tr("Error writing document")), );
 
-        const QString keyStr = getFeatureTypeString(a.type, isAmino);
+        const QString keyStr = getFeatureTypeString(a->type, isAmino);
         len = io->writeBlock(keyStr.toLocal8Bit());
         CHECK_EXT(len == keyStr.length(), os.setError(tr("Error writing document")), );
 
@@ -324,32 +324,32 @@ void VectorNtiSequenceFormat::writeAnnotations(IOAdapter *io, const QList<GObjec
         CHECK_EXT(len == nspaces, os.setError(tr("Error writing document")), );
 
         //write location
-        QString multiLineLocation = Genbank::LocationParser::buildLocationString(&a);
+        QString multiLineLocation = Genbank::LocationParser::buildLocationString(a);
         prepareMultiline(multiLineLocation, 21);
         len = io->writeBlock(multiLineLocation.toLocal8Bit());
         CHECK_EXT(len == multiLineLocation.size(), os.setError(tr("Error writing document")), );
 
         //write qualifiers
-        foreach (const U2Qualifier &q, a.qualifiers) {
+        foreach(const U2Qualifier &q, a->qualifiers) {
             writeQualifier(q.name, q.value, io, os, spaceLine);
             CHECK_OP(os, );
         }
     }
 }
 
-void VectorNtiSequenceFormat::prepareQualifiersToWrite(QMap<AnnotationGroup, QList<AnnotationData> > &annotationsByGroups, bool isAmino) const {
-    foreach (const AnnotationGroup &group, annotationsByGroups.keys()) {
-        QList<AnnotationData> &annotations = annotationsByGroups[group];
+void VectorNtiSequenceFormat::prepareQualifiersToWrite(QMap<AnnotationGroup *, QList<SharedAnnotationData> > &annotationsByGroups, bool isAmino) const {
+    foreach (AnnotationGroup *group, annotationsByGroups.keys()) {
+        QList<SharedAnnotationData> &annotations = annotationsByGroups[group];
         for (int i = 0; i < annotations.size(); i++) {
-            AnnotationData &annotation = annotations[i];
+            SharedAnnotationData &annotation = annotations[i];
 
             bool labelExists = false;
             QVector<U2Qualifier> qualifiers;
 
-            foreach (const U2Qualifier &qualifier, annotation.qualifiers) {
-                if (VNTIFKEY_QUALIFIER_NAME == qualifier.name
-                        || GBFeatureUtils::QUALIFIER_NAME == qualifier.name
-                        || GBFeatureUtils::QUALIFIER_GROUP == qualifier.name) {
+            foreach(const U2Qualifier &qualifier, annotation->qualifiers) {
+                if (VNTIFKEY_QUALIFIER_NAME == qualifier.name || GBFeatureUtils::QUALIFIER_NAME == qualifier.name
+                    || GBFeatureUtils::QUALIFIER_GROUP == qualifier.name)
+                {
                     continue;
                 }
 
@@ -367,24 +367,24 @@ void VectorNtiSequenceFormat::prepareQualifiersToWrite(QMap<AnnotationGroup, QLi
             }
 
             if (!labelExists) {
-                qualifiers << U2Qualifier(QUALIFIER_LABEL, annotation.name);
+                qualifiers << U2Qualifier(QUALIFIER_LABEL, annotation->name);
             }
 
             if (isAmino) {
-                qualifiers << U2Qualifier(VNTIFKEY_QUALIFIER_NAME, QString::number(proteinFeatureTypesMap.value(annotation.type)));
+                qualifiers << U2Qualifier(VNTIFKEY_QUALIFIER_NAME, QString::number(proteinFeatureTypesMap.value(annotation->type)));
             } else {
-                qualifiers << U2Qualifier(VNTIFKEY_QUALIFIER_NAME, QString::number(dnaFeatureTypesMap.value(annotation.type)));
+                qualifiers << U2Qualifier(VNTIFKEY_QUALIFIER_NAME, QString::number(dnaFeatureTypesMap.value(annotation->type)));
             }
 
-            if (annotation.name != getFeatureTypeString(annotation.type, isAmino)) {
-                qualifiers << U2Qualifier(GBFeatureUtils::QUALIFIER_NAME, annotation.name);
+            if (annotation->name != getFeatureTypeString(annotation->type, isAmino)) {
+                qualifiers << U2Qualifier(GBFeatureUtils::QUALIFIER_NAME, annotation->name);
             }
 
-            if (annotation.name != group.getName()) {
-                qualifiers << U2Qualifier(GBFeatureUtils::QUALIFIER_GROUP, group.getGroupPath());
+            if (annotation->name != group->getName()) {
+                qualifiers << U2Qualifier(GBFeatureUtils::QUALIFIER_GROUP, group->getGroupPath());
             }
 
-            annotation.qualifiers = qualifiers;
+            annotation->qualifiers = qualifiers;
         }
     }
 }
@@ -392,11 +392,16 @@ void VectorNtiSequenceFormat::prepareQualifiersToWrite(QMap<AnnotationGroup, QLi
 const QString VectorNtiSequenceFormat::vntiCreationDateKey = "VNTDATE";
 const QString VectorNtiSequenceFormat::vntiModificationDateKey = "VNTDBDATE";
 const QStrStrMap VectorNtiSequenceFormat::vntiMetaKeys = VectorNtiSequenceFormat::initVntiMetaKeys();
-const QMap<U2FeatureType, VectorNtiSequenceFormat::VntiDnaFeatureTypes> VectorNtiSequenceFormat::dnaFeatureTypesMap = VectorNtiSequenceFormat::initDnaFeatureTypesMap();
-const QMap<U2FeatureType, VectorNtiSequenceFormat::VntiProteinFeatureTypes> VectorNtiSequenceFormat::proteinFeatureTypesMap = VectorNtiSequenceFormat::initProteinFeatureTypesMap();
-const QMap<VectorNtiSequenceFormat::VntiDnaFeatureTypes, QString> VectorNtiSequenceFormat::dnaFeatureType2StringMap = VectorNtiSequenceFormat::initDnaFeatureType2StringMap();
-const QMap<VectorNtiSequenceFormat::VntiProteinFeatureTypes, QString> VectorNtiSequenceFormat::proteinFeatureType2StringMap = VectorNtiSequenceFormat::initProteinFeatureType2StringMap();
-const QString VectorNtiSequenceFormat::DEFAULT_FEATURE_TYPE_NAME = VectorNtiSequenceFormat::dnaFeatureType2StringMap[VectorNtiSequenceFormat::DnaMiscFeature];
+const QMap<U2FeatureType, VectorNtiSequenceFormat::VntiDnaFeatureTypes> VectorNtiSequenceFormat::dnaFeatureTypesMap
+    = VectorNtiSequenceFormat::initDnaFeatureTypesMap();
+const QMap<U2FeatureType, VectorNtiSequenceFormat::VntiProteinFeatureTypes> VectorNtiSequenceFormat::proteinFeatureTypesMap
+    = VectorNtiSequenceFormat::initProteinFeatureTypesMap();
+const QMap<VectorNtiSequenceFormat::VntiDnaFeatureTypes, QString> VectorNtiSequenceFormat::dnaFeatureType2StringMap
+    = VectorNtiSequenceFormat::initDnaFeatureType2StringMap();
+const QMap<VectorNtiSequenceFormat::VntiProteinFeatureTypes, QString> VectorNtiSequenceFormat::proteinFeatureType2StringMap
+    = VectorNtiSequenceFormat::initProteinFeatureType2StringMap();
+const QString VectorNtiSequenceFormat::DEFAULT_FEATURE_TYPE_NAME
+    = VectorNtiSequenceFormat::dnaFeatureType2StringMap[VectorNtiSequenceFormat::DnaMiscFeature];
 const QString VectorNtiSequenceFormat::QUALIFIER_LABEL = "label";
 const QString VectorNtiSequenceFormat::VNTIFKEY_QUALIFIER_NAME = "vntifkey";
 

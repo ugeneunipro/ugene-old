@@ -87,7 +87,7 @@ Task *GeneByGeneReportWorker::tick() {
         if (data.contains(ANNOT_SLOT_ID)){
             annVar = data[ANNOT_SLOT_ID];
         }
-        const QList<AnnotationData> annData = StorageUtils::getAnnotationTable(context->getDataStorage(), annVar);
+        const QList<SharedAnnotationData> annData = StorageUtils::getAnnotationTable(context->getDataStorage(), annVar);
 
         SharedDbiDataHandler seqId = data.value(SEQ_SLOT_ID).value<SharedDbiDataHandler>();
         QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));

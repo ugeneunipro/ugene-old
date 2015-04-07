@@ -224,8 +224,7 @@ Task* CollocationWorker::tick() {
         QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
         CHECK(NULL != seqObj.data(), NULL);
 
-        const QList<AnnotationData> atl = StorageUtils::getAnnotationTable(
-            context->getDataStorage(), qm.value(FEATURE_TABLE_SLOT));
+        const QList<SharedAnnotationData> atl = StorageUtils::getAnnotationTable(context->getDataStorage(), qm.value(FEATURE_TABLE_SLOT));
 
         qint64 seqLength = seqObj->getSequenceLength();
         if ((0 != seqLength) && !atl.isEmpty()) {
@@ -249,16 +248,16 @@ Task* CollocationWorker::tick() {
     return NULL;
 }
 
-void CollocationWorker::sl_taskFinished( ) {
-    CollocationSearchTask *t = qobject_cast<CollocationSearchTask *>( sender( ) );
-    if ( t->getState( ) != Task::State_Finished || t->isCanceled( ) || t->hasError( ) ){
+void CollocationWorker::sl_taskFinished() {
+    CollocationSearchTask *t = qobject_cast<CollocationSearchTask *>(sender());
+    if (t->getState() != Task::State_Finished || t->isCanceled() || t->hasError()){
         return;
     }
-    QList<AnnotationData> list = t->popResultAnnotations( );
-    if ( NULL != output ) {
-        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( list );
-        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
-            qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
+    QList<SharedAnnotationData> list = t->popResultAnnotations();
+    if (NULL != output) {
+        const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(list);
+        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(),
+            qVariantFromValue<SharedDbiDataHandler>(tableId)));
     }
 }
 

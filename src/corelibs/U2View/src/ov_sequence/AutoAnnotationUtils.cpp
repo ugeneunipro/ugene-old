@@ -92,7 +92,7 @@ void AutoAnnotationsADVAction::updateMenu()
     }
 
     QList<AutoAnnotationsUpdater*> updaters = AppContext::getAutoAnnotationsSupport()->getAutoAnnotationUpdaters();
-    if (updaters.count() == 0 ) {
+    if (updaters.count() == 0) {
         setEnabled(false);
         return;
     }
@@ -106,14 +106,14 @@ void AutoAnnotationsADVAction::updateMenu()
         bool checked = updater->isCheckedByDefault() && !largeSequence;
         toggleAction->setChecked(checked);
         aaObj->setGroupEnabled(updater->getGroupName(), checked);
-        connect( toggleAction, SIGNAL(toggled(bool)), SLOT(sl_toggle(bool)) );
+        connect(toggleAction, SIGNAL(toggled(bool)), SLOT(sl_toggle(bool)));
         menu->addAction(toggleAction);
     }
 
     menu->update();
 }
 
-void AutoAnnotationsADVAction::sl_toggle( bool toggled )
+void AutoAnnotationsADVAction::sl_toggle(bool toggled)
 {
     QAction* action = qobject_cast<QAction*>(sender());
     if (action == NULL) {
@@ -159,7 +159,7 @@ QList<QAction*> AutoAnnotationsADVAction::getToggleActions()
     return menu->actions();
 }
 
-QAction* AutoAnnotationsADVAction::findToggleAction( const QString& groupName )
+QAction* AutoAnnotationsADVAction::findToggleAction(const QString& groupName)
 {
     QList<QAction*> toggleActions = menu->actions();
     foreach(QAction* tAction, toggleActions) {
@@ -187,7 +187,7 @@ void AutoAnnotationsADVAction::addUpdaterToMenu(AutoAnnotationsUpdater* updater)
     bool checked = updater->isCheckedByDefault();
     toggleAction->setChecked(checked);
     aaObj->setGroupEnabled(updater->getGroupName(), checked);
-    connect( toggleAction, SIGNAL(toggled(bool)), SLOT(sl_toggle(bool)) );
+    connect(toggleAction, SIGNAL(toggled(bool)), SLOT(sl_toggle(bool)));
     menu->addAction(toggleAction);
 
     menu->update();
@@ -209,7 +209,7 @@ void AutoAnnotationsADVAction::sl_autoAnnotationUpdateFinished()
 
 //////////////////////////////////////////////////////////////////////////
 
-QAction* AutoAnnotationUtils::findAutoAnnotationsToggleAction( ADVSequenceObjectContext* ctx, const QString& groupName )
+QAction* AutoAnnotationUtils::findAutoAnnotationsToggleAction(ADVSequenceObjectContext* ctx, const QString& groupName)
 {
     foreach(ADVSequenceWidget* w, ctx->getSequenceWidgets()) {
          ADVSequenceWidgetAction* advAction = w->getADVSequenceWidgetAction(AutoAnnotationsADVAction::ACTION_NAME);
@@ -230,9 +230,9 @@ QAction* AutoAnnotationUtils::findAutoAnnotationsToggleAction( ADVSequenceObject
 
 }
 
-void AutoAnnotationUtils::triggerAutoAnnotationsUpdate( ADVSequenceObjectContext* ctx, const QString& aaGroupName )
+void AutoAnnotationUtils::triggerAutoAnnotationsUpdate(ADVSequenceObjectContext* ctx, const QString& aaGroupName)
 {
-    AutoAnnotationsADVAction* aaAction = findAutoAnnotationADVAction( ctx );
+    AutoAnnotationsADVAction* aaAction = findAutoAnnotationADVAction(ctx);
 
     if (aaAction != NULL && !aaAction->isEnabled()) {
         return;
@@ -259,7 +259,7 @@ void AutoAnnotationUtils::triggerAutoAnnotationsUpdate( ADVSequenceObjectContext
     }
 }
 
-AutoAnnotationsADVAction* AutoAnnotationUtils::findAutoAnnotationADVAction( ADVSequenceObjectContext* ctx )
+AutoAnnotationsADVAction* AutoAnnotationUtils::findAutoAnnotationADVAction(ADVSequenceObjectContext* ctx)
 {
     foreach(ADVSequenceWidget* w, ctx->getSequenceWidgets()) {
         ADVSequenceWidgetAction* advAction = w->getADVSequenceWidgetAction(AutoAnnotationsADVAction::ACTION_NAME);
@@ -273,7 +273,7 @@ AutoAnnotationsADVAction* AutoAnnotationUtils::findAutoAnnotationADVAction( ADVS
     return NULL;
 }
 
-QList<QAction*> AutoAnnotationUtils::getAutoAnnotationToggleActions( ADVSequenceObjectContext* ctx )
+QList<QAction*> AutoAnnotationUtils::getAutoAnnotationToggleActions(ADVSequenceObjectContext* ctx)
 {
     QList<QAction*> res;
 
@@ -306,38 +306,36 @@ QList<QAction*> AutoAnnotationUtils::getAutoAnnotationToggleActions( ADVSequence
 
 //////////////////////////////////////////////////////////////////////////
 
-ExportAutoAnnotationsGroupTask::ExportAutoAnnotationsGroupTask( const AnnotationGroup &ag,
-    GObjectReference& ref, ADVSequenceObjectContext* ctx)
+ExportAutoAnnotationsGroupTask::ExportAutoAnnotationsGroupTask(AnnotationGroup *ag, GObjectReference &ref, ADVSequenceObjectContext *ctx)
     : Task("ExportAutoAnnotationsGroupTask", TaskFlags_NR_FOSCOE), aGroup(ag), aRef(ref), seqCtx(ctx), createTask(NULL)
 {
-
+    SAFE_POINT_EXT(NULL != ag, stateInfo.setError(tr("Invalid annotation group provided")), );
 }
 
 void ExportAutoAnnotationsGroupTask::prepare() {
-    QList<Annotation> annsToExport;
-    aGroup.findAllAnnotationsInGroupSubTree(annsToExport);
+    QList<Annotation *> annsToExport;
+    aGroup->findAllAnnotationsInGroupSubTree(annsToExport);
 
-    QList<AnnotationData> aData;
-    foreach ( const Annotation &a, annsToExport ) {
-        aData.append( a.getData( ) );
+    QList<SharedAnnotationData> aData;
+    foreach (Annotation *a, annsToExport) {
+        aData.append(a->getData());
     }
 
-    SAFE_POINT(!aData.isEmpty( ), "No auto-annotations to export!", );
+    SAFE_POINT(!aData.isEmpty(), "No auto-annotations to export!", );
 
-    createTask =  new ADVCreateAnnotationsTask(seqCtx->getAnnotatedDNAView(), aRef, aGroup.getName(), aData );
-
+    createTask = new ADVCreateAnnotationsTask(seqCtx->getAnnotatedDNAView(), aRef, aGroup->getName(), aData);
     addSubTask(createTask);
 }
 
-QList<Task*> ExportAutoAnnotationsGroupTask::onSubTaskFinished( Task* subTask ) {
-    QList<Task*> res;
+QList<Task *> ExportAutoAnnotationsGroupTask::onSubTaskFinished(Task *subTask) {
+    QList<Task *> res;
 
     if (!subTask->isFinished() || subTask->hasError() || subTask->isCanceled()) {
         return res;
     }
 
     if (subTask == createTask) {
-        QAction* toggleAction =  AutoAnnotationUtils::findAutoAnnotationsToggleAction(seqCtx, aGroup.getName());
+        QAction *toggleAction = AutoAnnotationUtils::findAutoAnnotationsToggleAction(seqCtx, aGroup->getName());
         if (toggleAction != NULL && toggleAction->isChecked()) {
             toggleAction->trigger();
         }

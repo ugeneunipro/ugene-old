@@ -76,7 +76,7 @@ static const QString FILTER_ATTR("filter-strategy");
 static const QString GAPOPEN_ATTR("gap-open-score");
 static const QString GAPEXT_ATTR("gap-ext-score");
 static const QString USE_PATTERN_NAME_ATTR("use-pattern-names");
-static const QString PATTERN_NAME_QUAL_ATTR( "pattern-name-qual" );
+static const QString PATTERN_NAME_QUAL_ATTR("pattern-name-qual");
 
 const QString SWWorkerFactory::ACTOR_ID("ssearch");
 
@@ -408,7 +408,7 @@ Task* SWWorker::tick() {
 
         if(mtrx.toLower() != "auto") {
             QByteArray alphChars = seq.alphabet->getAlphabetChars();
-            if(!cfg.pSm.getAlphabet()->containsAll(alphChars.constData(), alphChars.length()) ) {
+            if(!cfg.pSm.getAlphabet()->containsAll(alphChars.constData(), alphChars.length())) {
                 return new FailTask(tr("Wrong matrix selected. Alphabets do not match"));
             }
         }
@@ -513,27 +513,26 @@ Task* SWWorker::tick() {
 }
 
 void SWWorker::sl_taskFinished(Task* t) {
-    QList<AnnotationData> annData;
+    QList<SharedAnnotationData> annData;
     MultiTask * multiSw = qobject_cast<MultiTask*>(t);
-    SAFE_POINT( NULL != t, "Invalid task is encountered", );
+    SAFE_POINT(NULL != t, "Invalid task is encountered",);
     QList<Task*> subs = multiSw->getTasks();
-    SAFE_POINT( !subs.isEmpty(), "Invalid task is encountered", );
+    SAFE_POINT(!subs.isEmpty(), "Invalid task is encountered",);
     QStringList ptrns;
     foreach(Task * sub, subs) {
-        SAFE_POINT( NULL != sub, "Invalid task is encountered", );
-        if ( sub->isCanceled( ) ) {
+        SAFE_POINT(NULL != sub, "Invalid task is encountered",);
+        if (sub->isCanceled()) {
             return;
         }
         SmithWatermanReportCallbackAnnotImpl* rcb = callbacks.take(sub);
         assert(rcb != NULL);
         if(rcb) {
             // crop long names
-            const QString qualifierName = actor->getParameter(PATTERN_NAME_QUAL_ATTR)
-                ->getAttributeValue<QString>(context);
-            foreach ( AnnotationData a, rcb->getAnotations( ) ) {
+            const QString qualifierName = actor->getParameter(PATTERN_NAME_QUAL_ATTR)->getAttributeValue<QString>(context);
+            foreach(SharedAnnotationData a, rcb->getAnotations()) {
                 QString pattern = patterns.value(sub);
                 if(!patternNames[pattern].isEmpty()) {
-                    a.qualifiers.push_back(U2Qualifier(qualifierName, patternNames[pattern]));
+                    a->qualifiers.push_back(U2Qualifier(qualifierName, patternNames[pattern]));
                 }
                 annData << a;
             }
@@ -542,12 +541,11 @@ void SWWorker::sl_taskFinished(Task* t) {
     }
 
     assert(output != NULL);
-    if ( NULL != output ) {
-        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( annData );
-        const QVariant v = qVariantFromValue<SharedDbiDataHandler>( tableId );
-        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ), v ) );
-        algoLog.info( tr( "Found %1 matches of pattern '%2'" )
-            .arg( annData.size( ) ).arg( ptrns.join( PATTERN_DELIMITER ) ) );
+    if (NULL != output) {
+        const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(annData);
+        const QVariant v = qVariantFromValue<SharedDbiDataHandler>(tableId);
+        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
+        algoLog.info(tr("Found %1 matches of pattern '%2'").arg(annData.size()).arg(ptrns.join(PATTERN_DELIMITER)));
     }
 }
 

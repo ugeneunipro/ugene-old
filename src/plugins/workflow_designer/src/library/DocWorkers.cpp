@@ -516,8 +516,7 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
 
     if (data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId())) {
         const QVariant &annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        const QList<AnnotationData> atl = StorageUtils::getAnnotationTable(
-            context->getDataStorage( ), annsVar );
+        const QList<SharedAnnotationData> atl = StorageUtils::getAnnotationTable(context->getDataStorage(), annsVar);
 
         if (!atl.isEmpty()) {
             AnnotationTableObject *att = NULL;
@@ -533,17 +532,14 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
                 }
                 att = qobject_cast<AnnotationTableObject *>(doc->findGObjectByName(annotationName));
                 if (NULL == att) {
-                    doc->addObject( att = new AnnotationTableObject( annotationName,
-                        context->getDataStorage( )->getDbiRef( ) ) );
+                    doc->addObject( att = new AnnotationTableObject(annotationName, context->getDataStorage()->getDbiRef()));
                     if (dna) {
                         att->addObjectRelation(dna, ObjectRole_Sequence);
                     }
                 }
                 algoLog.trace(QString("Adding features [%1] to GB doc %2").arg(annotationName).arg(doc->getURLString()));
             }
-            foreach ( const AnnotationData &sad, atl ) {
-                att->addAnnotation( sad, QString( ) );
-            }
+            att->addAnnotations(atl);
         }
     }
 }
@@ -575,23 +571,19 @@ void GenbankWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, c
     QList<GObject*> anObjList;
     if (data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId())) {
         const QVariant &annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        const QList<AnnotationData> atl = StorageUtils::getAnnotationTable(
-            context->getDataStorage( ), annsVar );
+        const QList<SharedAnnotationData> atl = StorageUtils::getAnnotationTable(context->getDataStorage(), annsVar);
 
         if (!atl.isEmpty()) {
             if (annotationName.isEmpty()) {
                 annotationName = QString("unknown features %1").arg(entryNum);
             }
-            AnnotationTableObject* att = new AnnotationTableObject( annotationName,
-                context->getDataStorage( )->getDbiRef( ) );
+            AnnotationTableObject* att = new AnnotationTableObject(annotationName, context->getDataStorage()->getDbiRef());
             anObjList << att;
-            foreach ( const AnnotationData &ad, atl ) {
-                att->addAnnotation( ad, QString( ) );
-            }
+            att->addAnnotations(atl);
         }
     }
 
-    QMap< GObjectType, QList<GObject*> > objectsMap;
+    QMap<GObjectType, QList<GObject *> > objectsMap;
     {
         if (NULL != seqObj.data()) {
             QList<GObject*> seqs; seqs << seqObj.data();
@@ -650,33 +642,30 @@ void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowCo
 
     if (data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId())) {
         const QVariant &annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        const QList<AnnotationData> atl = StorageUtils::getAnnotationTable(
-            context->getDataStorage( ), annsVar );
+        const QList<SharedAnnotationData> atl = StorageUtils::getAnnotationTable(context->getDataStorage(), annsVar);
 
         if (!atl.isEmpty()) {
             AnnotationTableObject *att = NULL;
-            if (dna) {
-                QList<GObject*> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dna, GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence, doc->getObjects(), UOF_LoadedOnly);
+            if (NULL != dna) {
+                QList<GObject*> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dna, GObjectTypes::ANNOTATION_TABLE,
+                    ObjectRole_Sequence, doc->getObjects(), UOF_LoadedOnly);
                 att = relAnns.isEmpty() ? NULL : qobject_cast<AnnotationTableObject *>(relAnns.first());
             }
-            if (!att) {
+            if (NULL == att) {
                 if (annotationName.isEmpty()) {
                     int featuresNum = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE).size();
                     annotationName = QString("unknown features %1").arg(featuresNum);
                 }
                 att = qobject_cast<AnnotationTableObject *>(doc->findGObjectByName(annotationName));
                 if (NULL == att) {
-                    doc->addObject( att = new AnnotationTableObject( annotationName,
-                        context->getDataStorage( )->getDbiRef( ) ) );
-                    if (dna) {
+                    doc->addObject(att = new AnnotationTableObject(annotationName, context->getDataStorage()->getDbiRef()));
+                    if (NULL != dna) {
                         att->addObjectRelation(dna, ObjectRole_Sequence);
                     }
                 }
                 algoLog.trace(QString("Adding features [%1] to GFF doc %2").arg(annotationName).arg(doc->getURLString()));
             }
-            foreach( const AnnotationData &ad, atl ) {
-                att->addAnnotation( ad, QString( ) );
-            }
+            att->addAnnotations(atl);
         }
     }
 }
@@ -749,7 +738,7 @@ GObject * SeqWriter::getSeqObject(const QVariantMap &data, WorkflowContext *cont
 }
 
 GObject * SeqWriter::getAnnObject(const QVariantMap &data, WorkflowContext *context) {
-    const QList<AnnotationData> anns = StorageUtils::getAnnotationTable(context->getDataStorage(), data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()]);
+    const QList<SharedAnnotationData> anns = StorageUtils::getAnnotationTable(context->getDataStorage(), data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()]);
     CHECK(!anns.isEmpty(), NULL);
     QScopedPointer<U2SequenceObject> seqObj(qobject_cast<U2SequenceObject *>(getSeqObject(data, context)));
     QString seqName = "Unknown";
@@ -757,9 +746,7 @@ GObject * SeqWriter::getAnnObject(const QVariantMap &data, WorkflowContext *cont
         seqName = seqObj->getSequenceName();
     }
     AnnotationTableObject *annObj = new AnnotationTableObject(seqName + " features", context->getDataStorage()->getDbiRef());
-    U2OpStatus2Log os;
-    annObj->addAnnotations(anns, os);
-    CHECK_OP(os, NULL);
+    annObj->addAnnotations(anns);
     return annObj;
 }
 

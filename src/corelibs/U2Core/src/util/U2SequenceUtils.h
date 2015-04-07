@@ -84,7 +84,7 @@ public:
 
     void setCaseAnnotationsMode(CaseAnnotationsMode mode);
     bool isCaseAnnotationsModeOn() const;
-    QList<AnnotationData> & getCaseAnnotations( );
+    QList<SharedAnnotationData> & getCaseAnnotations();
 
     virtual qint64 getCurrentLength() const;
 
@@ -102,7 +102,7 @@ protected:
 
     // for lower case annotations
     qint64                  currentLength;
-    QList<AnnotationData>   annList;
+    QList<SharedAnnotationData> annList;
     bool                    isUnfinishedRegion;
     U2Region                unfinishedRegion;
     CaseAnnotationsMode     caseAnnsMode;
@@ -133,7 +133,7 @@ private:
     U2Sequence finalizeSequence(U2OpStatus& os);
     void setCaseAnnotationsMode(CaseAnnotationsMode mode);
     bool isCaseAnnotationsModeOn() const;
-    QList<AnnotationData> & getCaseAnnotations();
+    QList<SharedAnnotationData> & getCaseAnnotations();
 
     QByteArray &sequenceData;
 };

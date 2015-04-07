@@ -372,27 +372,27 @@ Task::ReportResult DotPlotFilterTask::report(){
     return ReportResult_Finished;
 }
 
-void DotPlotFilterTask::createSuperRegionsList(ADVSequenceObjectContext* seq, FilterIntersectionParameter currentIntersParam){
+void DotPlotFilterTask::createSuperRegionsList(ADVSequenceObjectContext* seq, FilterIntersectionParameter currentIntersParam) {
     superRegions.clear();
-    if(isCanceled()){
+    if (isCanceled()) {
         return;
     }
 
     QSet<AnnotationTableObject*> aTableSet = seq->getAnnotationObjects(true);
-    QList<Annotation> selectedAnnotations;
+    QList<Annotation *> selectedAnnotations;
     QStringList cursequenceAnnotationNames = annotationNames.values(currentIntersParam);
-    if(cursequenceAnnotationNames.isEmpty()){
+    if (cursequenceAnnotationNames.isEmpty()) {
         return;
     }
 
-    foreach(const QString aName, cursequenceAnnotationNames){
-        foreach(AnnotationTableObject* at, aTableSet){
-            selectedAnnotations << at->getAnnotationsByName( aName );
+    foreach (const QString &aName, cursequenceAnnotationNames) {
+        foreach (AnnotationTableObject* at, aTableSet) {
+            selectedAnnotations << at->getAnnotationsByName(aName);
         }
     }
 
-    foreach ( const Annotation &a, selectedAnnotations ) {
-            superRegions += a.getRegions();
+    foreach (Annotation *a, selectedAnnotations) {
+        superRegions += a->getRegions();
     }
 
     superRegions = U2Region::join(superRegions);

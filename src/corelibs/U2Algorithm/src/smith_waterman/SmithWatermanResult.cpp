@@ -23,4 +23,50 @@
 
 namespace U2 {
 
+//////////////////////////////////////////////////////////////////////////
+/// SmithWatermanResult
+//////////////////////////////////////////////////////////////////////////
+
+SharedAnnotationData SmithWatermanResult::toAnnotation(const QString &name) const {
+    SharedAnnotationData data(new AnnotationData);
+    data->name = name;
+    data->location->regions << refSubseq;
+    if (isJoined) {
+        data->location->regions << refJoinedSubseq;
+    }
+    data->setStrand(strand);
+    data->qualifiers.append(U2Qualifier("score", QString::number(score)));
+    return data;
+}
+
+bool SmithWatermanResult::operator <(const SmithWatermanResult &op1) const {
+    return score < op1.score;
+}
+
+//////////////////////////////////////////////////////////////////////////
+/// SmithWatermanResultListener
+//////////////////////////////////////////////////////////////////////////
+
+SmithWatermanResultListener::~SmithWatermanResultListener() {
+
+}
+
+void SmithWatermanResultListener::pushResult(const SmithWatermanResult& r) {
+    result.append(r);
+}
+
+void SmithWatermanResultListener::pushResult(const QList<SmithWatermanResult>& r) {
+    result.append(r);
+}
+
+QList<SmithWatermanResult> SmithWatermanResultListener::popResults() {
+    QList<SmithWatermanResult> res = result;
+    result.clear();
+    return res;
+}
+
+QList<SmithWatermanResult> SmithWatermanResultListener::getResults() const {
+    return result;
+}
+
 } // namespace

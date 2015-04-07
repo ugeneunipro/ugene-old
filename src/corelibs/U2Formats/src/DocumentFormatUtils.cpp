@@ -87,23 +87,25 @@ AnnotationTableObject * DocumentFormatUtils::addAnnotationsForMergedU2Sequence(c
 {
     QVariantMap objectHints;
     objectHints.insert(DocumentFormat::DBI_FOLDER_HINT, hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
-    AnnotationTableObject *ao = new AnnotationTableObject( "Contigs", dbiRef, objectHints );
+    AnnotationTableObject *ao = new AnnotationTableObject("Contigs", dbiRef, objectHints);
 
     // save relation if mergedSequenceRef is valid
     if (mergedSequenceRef.isValid()) {
-        ao->addObjectRelation( GObjectRelation( mergedSequenceRef, ObjectRole_Sequence ) );
+        ao->addObjectRelation(GObjectRelation(mergedSequenceRef, ObjectRole_Sequence));
     }
 
     //save mapping info as annotations
-    QStringList::const_iterator it = contigNames.begin( );
-    for ( int i = 0; it != contigNames.end( ); i++, it++ ) {
-        AnnotationData d;
-        d.name = QString( "contig" );
-        d.location->regions << mergedMapping[i];
-        d.qualifiers << U2Qualifier( "name", *it );
-        d.qualifiers << U2Qualifier( "number", QString( "%1" ).arg( i ) );
-        ao->addAnnotation( d );
+    QStringList::const_iterator it = contigNames.begin();
+    QList<SharedAnnotationData> resultData;
+    for (int i = 0; it != contigNames.end(); i++, it++) {
+        SharedAnnotationData d(new AnnotationData);
+        d->name = QString("contig");
+        d->location->regions << mergedMapping[i];
+        d->qualifiers << U2Qualifier("name", *it);
+        d->qualifiers << U2Qualifier("number", QString("%1").arg(i));
+        resultData.append(d);
     }
+    ao->addAnnotations(resultData);
     return ao;
 }
 
@@ -162,7 +164,7 @@ QList<DNASequence> DocumentFormatUtils::toSequences(const GObject* obj) {
         return res;
     }
     const MAlignmentObject* maObj = qobject_cast<const MAlignmentObject*>(obj);
-    CHECK(maObj != NULL, res ); //MAlignmentObject is NULL
+    CHECK(maObj != NULL, res); //MAlignmentObject is NULL
     const DNAAlphabet* al = maObj->getAlphabet();
     U2OpStatus2Log os;
     qint64 alLen = maObj->getMAlignment().getLength();
@@ -265,7 +267,7 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
     if (contigNames.size() == 1) {
         const DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(mergedSequence);
         const QString& name = contigNames.first();
-        DNASequence seq(name, mergedSequence, al );
+        DNASequence seq(name, mergedSequence, al);
         return DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, folder, name, objects, seq, os);
     }
 
@@ -292,21 +294,24 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
 
     QVariantMap hints;
     hints.insert(DocumentFormat::DBI_FOLDER_HINT, folder);
-    AnnotationTableObject *ao = new AnnotationTableObject( "Annotations", dbiRef, hints );
+    AnnotationTableObject *ao = new AnnotationTableObject("Annotations", dbiRef, hints);
 
     //save relation if docUrl is not empty
-    if ( !docUrl.isEmpty( ) ) {
-        GObjectReference r( docUrl.getURLString( ), so->getGObjectName( ), GObjectTypes::SEQUENCE );
-        ao->addObjectRelation( GObjectRelation( r, ObjectRole_Sequence ) );
+    if (!docUrl.isEmpty()) {
+        GObjectReference r(docUrl.getURLString(), so->getGObjectName(), GObjectTypes::SEQUENCE);
+        ao->addObjectRelation(GObjectRelation(r, ObjectRole_Sequence));
     }
 
+    QList<SharedAnnotationData> annList;
     //save mapping info as annotations
-    for ( int i = 0; i < contigNames.size( ); i++ ) {
-        AnnotationData d;
-        d.name = "contig";
-        d.location->regions << mergedMapping[i];
-        ao->addAnnotation( d );
+    for (int i = 0; i < contigNames.size(); i++) {
+        SharedAnnotationData d(new AnnotationData);
+        d->name = "contig";
+        d->location->regions << mergedMapping[i];
+        annList.append(d);
     }
+    ao->addAnnotations(annList);
+
     objects.append(ao);
     return so;
 }

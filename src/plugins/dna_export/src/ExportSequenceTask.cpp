@@ -399,11 +399,7 @@ void saveExportItems2Doc(const QList<ExportSequenceItem> &items, const QString &
             const QString aName = ExportUtils::genUniqueName(usedNames, name + " annotations");
             AnnotationTableObject *annObj = new AnnotationTableObject(aName, doc->getDbiRef());
             usedNames.insert(aName);
-            QList<AnnotationData> annotations;
-            foreach (const SharedAnnotationData &ad, ri.annotations) {
-                annotations.append(*ad);
-            }
-            annObj->addAnnotations(annotations, os);
+            annObj->addAnnotations(ri.annotations);
             annObj->addObjectRelation(seqObj, ObjectRole_Sequence);
             annObj->setModified(false);
             doc->addObject(annObj);

@@ -108,7 +108,7 @@ void DASAnnotationWorkerFactory::init() {
         "<p>Using IDs of sequences found loads annotation for DAS sources."
         "<p>Nucleotide sequences are skipped if any supplied to input."
         "</p>")
-        );
+       );
     QMap<QString, PropertyDelegate*> delegates;
 
     {
@@ -147,10 +147,10 @@ void DASAnnotationWorkerFactory::init() {
     }
     {
         DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
-        SAFE_POINT (dasRegistry, DASAnnotationWorker::tr("No DAS registry"), );
+        SAFE_POINT (dasRegistry, DASAnnotationWorker::tr("No DAS registry"),);
 
         const QList<DASSource>& featureSources = dasRegistry->getFeatureSources();
-        SAFE_POINT (featureSources.size() != 0, DASAnnotationWorker::tr("No DAS feature sources"), );
+        SAFE_POINT (featureSources.size() != 0, DASAnnotationWorker::tr("No DAS feature sources"),);
 
 
         QString defaultFeatures = "";
@@ -339,32 +339,31 @@ Task* DASAnnotationWorker::tick() {
     return NULL;
 }
 
-void DASAnnotationWorker::sl_taskFinished( ) {
-     UniprotBlastAndLoadDASAnnotations *t = qobject_cast<UniprotBlastAndLoadDASAnnotations *>( sender( ) );
-     if ( !t->isFinished( ) || t->isCanceled( ) ) {
+void DASAnnotationWorker::sl_taskFinished() {
+     UniprotBlastAndLoadDASAnnotations *t = qobject_cast<UniprotBlastAndLoadDASAnnotations *>(sender());
+     if (!t->isFinished() || t->isCanceled()) {
          return;
      }
-     if ( NULL != output ) {
-         const QList<AnnotationData> results = t->prepareResults( );
-         const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( results );
-         output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
-             qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
+     if (NULL != output) {
+         const QList<SharedAnnotationData> results = t->prepareResults();
+         const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(results);
+         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), qVariantFromValue<SharedDbiDataHandler>(tableId)));
 
          WorkflowMonitor* workflowMonitor = monitor();
          if (NULL != workflowMonitor) {
-             foreach(const QString& message, t->getProblems()) {
+             foreach (const QString &message, t->getProblems()) {
                  workflowMonitor->addError(message, actor->getId(), Problem::U2_WARNING);
              }
          }
 
-         const QStringList ids = t->getAccessionNumbers( );
-         const int countOfAccessions = ids.size( );
-         const QString idsString = ( 0 != countOfAccessions ) ? tr( " IDs: " ).arg( ids.join(",") ) : "";
-         algoLog.trace( tr( "Number of similar sequences: %1." ).arg( countOfAccessions ) + idsString );
+         const QStringList ids = t->getAccessionNumbers();
+         const int countOfAccessions = ids.size();
+         const QString idsString = (0 != countOfAccessions) ? tr(" IDs: ").arg(ids.join(",")) : "";
+         algoLog.trace(tr("Number of similar sequences: %1.").arg(countOfAccessions) + idsString);
      }
 }
 
-void DASAnnotationWorker::cleanup( ) {
+void DASAnnotationWorker::cleanup() {
 
 }
 

@@ -22,14 +22,9 @@
 #ifndef _U2_ANNOTATED_DNA_VIEW_CLIPBOARD_H_
 #define _U2_ANNOTATED_DNA_VIEW_CLIPBOARD_H_
 
-#include <U2Core/global.h>
-#include <U2Core/U2Region.h>
+#include <QAction>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#else
-#include <QtWidgets/QAction>
-#endif
+#include <U2Core/U2Region.h>
 
 namespace U2 {
 
@@ -58,8 +53,8 @@ public:
 public slots:
 
     void sl_onDNASelectionChanged(LRegionsSelection* s, const QVector<U2Region>& added, const QVector<U2Region>& removed);
-    void sl_onAnnotationSelectionChanged( AnnotationSelection *s, const QList<Annotation> &added, const QList<Annotation> &removed );
-    void sl_onFocusedSequenceWidgetChanged(ADVSequenceWidget*, ADVSequenceWidget*);
+    void sl_onAnnotationSelectionChanged( AnnotationSelection *s, const QList<Annotation *> &added, const QList<Annotation *> &removed);
+    void sl_onFocusedSequenceWidgetChanged(ADVSequenceWidget *, ADVSequenceWidget *);
 
     void sl_copySequence();
     void sl_copyTranslation();

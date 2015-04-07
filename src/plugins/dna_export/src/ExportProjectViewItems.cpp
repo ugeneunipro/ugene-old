@@ -254,11 +254,9 @@ QList<SharedAnnotationData> getAllRelatedAnnotations(const U2SequenceObject *so,
     QList<SharedAnnotationData> anns;
     foreach (GObject *aObj, relatedAnnotationTables) {
         AnnotationTableObject *annObj = qobject_cast<AnnotationTableObject *>(aObj);
-        annObj->ref(); // fetch all annotations to cache to prevent their one-by-one fetching
-        foreach(const Annotation &ann, annObj->getAnnotations()) {
-            anns.append(SharedAnnotationData(new AnnotationData(ann.getData())));
+        foreach (Annotation *ann, annObj->getAnnotations()) {
+            anns.append(ann->getData());
         }
-        annObj->deref();
     }
     return anns;
 }
@@ -526,7 +524,7 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations() {
     GObject* obj = set.first();
     AnnotationTableObject *aObj = qobject_cast<AnnotationTableObject *>(obj);
     SAFE_POINT(NULL != aObj, "Invalid annotation table detected!", );
-    QList<Annotation> annotations = aObj->getAnnotations();
+    QList<Annotation *> annotations = aObj->getAnnotations();
     if (!annotations.isEmpty()) {
         SAFE_POINT(NULL != aObj->getDocument(), "Invalid document detected!", );
         ExportObjectUtils::exportAnnotations(annotations, aObj->getDocument()->getURL());

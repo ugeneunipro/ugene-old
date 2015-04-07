@@ -205,11 +205,11 @@ void DASFetcherWorker::sl_taskFinished() {
                                                                                      allLoadedAnnotations,
                                                                                      UOF_LoadedOnly);
 
-        QList<AnnotationData> ads;
+        QList<SharedAnnotationData> ads;
         if (!annotations.isEmpty()) {
             AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>(annotations.first());
-            foreach ( const Annotation &a, ato->getAnnotations( ) ) {
-                ads << a.getData( );
+            foreach (Annotation *a, ato->getAnnotations()) {
+                ads << a->getData();
             }
         }
 

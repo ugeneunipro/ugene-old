@@ -52,7 +52,7 @@ public:
 
     Task::ReportResult report();
 
-    QList<AnnotationData>       getResultedAnnotations() const;
+    QList<SharedAnnotationData> getResultedAnnotations() const;
     BlastTaskSettings           getSettings() const;
 private:
     ExternalToolLogParser*      logParser;
@@ -66,7 +66,7 @@ private:
     U2SequenceObject*           sequenceObject;
     Document*                   tmpDoc;
 
-    QList<AnnotationData>       result;
+    QList<SharedAnnotationData> result;
 
     void parseTabularResult();
     void parseTabularLine(const QByteArray &line);

@@ -19,42 +19,39 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/DocumentModel.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/Timer.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "RemoveAnnotationsTask.h"
 
 namespace U2 {
 
-RemoveAnnotationsTask::RemoveAnnotationsTask( AnnotationTableObject *ao, const QString &gName )
-    : Task( "Remove Annotations Task",TaskFlag_NoRun ), aobj( ao ), groupName( gName )
+RemoveAnnotationsTask::RemoveAnnotationsTask(AnnotationTableObject *ao, const QString &gName)
+    : Task("Remove Annotations Task",TaskFlag_NoRun), aobj(ao), groupName(gName)
 {
-    SAFE_POINT( !aobj.isNull( ), "Invalid annotation table detected!", );
+    SAFE_POINT(!aobj.isNull(), "Invalid annotation table detected!", );
 }
 
-Task::ReportResult RemoveAnnotationsTask::report( ) {
-    AnnotationGroup rootGroup = aobj->getRootGroup( );
-    AnnotationGroup subGroup = rootGroup.getSubgroup( groupName, false );
-    if ( subGroup == rootGroup ) { // subgroup having @groupName does not exist
+Task::ReportResult RemoveAnnotationsTask::report() {
+    AnnotationGroup *rootGroup = aobj->getRootGroup();
+    AnnotationGroup *subGroup = rootGroup->getSubgroup(groupName, false);
+    if (subGroup == NULL) { // subgroup having @groupName does not exist
         return ReportResult_Finished;
     }
 
-    if ( hasError( ) || isCanceled( ) ) {
+    if (hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
 
-    if ( aobj->isStateLocked( ) ) {
-        stateInfo.setDescription( tr( "Waiting for object lock released" ) );
+    if (aobj->isStateLocked()) {
+        stateInfo.setDescription(tr("Waiting for object lock released"));
         return ReportResult_Finished;
     }
 
-    if ( subGroup.getAnnotations( true ).isEmpty( ) ) {
+    if (subGroup->getAnnotations(true).isEmpty()) {
         return ReportResult_Finished;
     }
 
-    rootGroup.removeSubgroup( subGroup );
+    rootGroup->removeSubgroup(subGroup);
 
     return ReportResult_Finished;
 }

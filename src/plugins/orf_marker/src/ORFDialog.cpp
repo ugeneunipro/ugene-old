@@ -442,7 +442,7 @@ void ORFDialog::createAnnotationWidget()
     acm.hideAnnotationName = true;
     acm.hideLocation = true;
     acm.hideAutoAnnotationsOption = false;
-    acm.data.name = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
+    acm.data->name = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
     acm.sequenceLen = seqObj->getSequenceLength();
     ac = new CreateAnnotationWidgetController(acm, this);
     QWidget* caw = ac->getWidget();

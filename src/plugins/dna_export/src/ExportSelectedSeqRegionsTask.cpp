@@ -93,8 +93,8 @@ QList<SharedAnnotationData> CreateExportItemsFromSeqRegionsTask::findAnnotations
             stateInfo.setError(tr("Invalid annotation table detected"));
             return result;
         }
-        foreach (const Annotation &a, aobj->getAnnotationsByRegion(region)) {
-            result.append(SharedAnnotationData(new AnnotationData(a.getData())));
+        foreach (Annotation *a, aobj->getAnnotationsByRegion(region)) {
+            result.append(a->getData());
         }
     }
     return result;

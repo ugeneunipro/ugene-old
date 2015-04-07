@@ -34,7 +34,6 @@
 
 #include <U2Algorithm/EnzymeModel.h>
 
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2Region.h>
 
 #include <U2Gui/MainWindow.h>
@@ -44,6 +43,7 @@
 
 namespace U2 {
 
+class AnnotationTableObject;
 class ADVSequenceObjectContext;
 class U2SequenceObject;
 class CreateAnnotationWidgetController;

@@ -103,22 +103,21 @@ DotPlotFilterDialog::DotPlotFilterDialog(QWidget *parent, ADVSequenceObjectConte
     }
 }
 
-QSet<QString> DotPlotFilterDialog::getUniqueAnnotationNames(ADVSequenceObjectContext *seq){
+QSet<QString> DotPlotFilterDialog::getUniqueAnnotationNames(ADVSequenceObjectContext *seq) {
     QSet<QString> uniqueAnnotationNames;
-    CHECK ( seq!=NULL, uniqueAnnotationNames );
+    CHECK(seq != NULL, uniqueAnnotationNames);
 
     QSet<AnnotationTableObject *> annotationObjects = seq->getAnnotationObjects(true);
-    foreach ( AnnotationTableObject *atObj, annotationObjects ) {
-        QList<Annotation> annotations = atObj->getAnnotations();
-        foreach ( const Annotation &a, annotations ) {
-            uniqueAnnotationNames.insert( a.getName( ) );
+    foreach (AnnotationTableObject *atObj, annotationObjects) {
+        QList<Annotation *> annotations = atObj->getAnnotations();
+        foreach (Annotation *a, annotations) {
+            uniqueAnnotationNames.insert(a->getName());
         }
     }
     return uniqueAnnotationNames;
 }
 
 void DotPlotFilterDialog::accept() {
-
     QMultiMap<FilterIntersectionParameter, QString> selectedItems;
     bool sIempty = true;
 

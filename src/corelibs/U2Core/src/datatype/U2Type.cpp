@@ -27,8 +27,8 @@ namespace U2 {
 /// U2Entity implementation
 //////////////////////////////////////////////////////////////////////////
 
-U2Entity::U2Entity( U2DataId id )
-    : id( id )
+U2Entity::U2Entity(const U2DataId &id)
+    : id(id)
 {
 
 }

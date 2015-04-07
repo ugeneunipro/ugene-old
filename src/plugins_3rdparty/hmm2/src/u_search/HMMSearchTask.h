@@ -45,9 +45,9 @@ public:
 
     Task::ReportResult report();
 
-    QList<AnnotationData> getResultsAsAnnotations(U2FeatureType type, const QString &name) const;
+    QList<SharedAnnotationData> getResultsAsAnnotations(U2FeatureType type, const QString &name) const;
 
-    QList< Task* > onSubTaskFinished( Task* subTask );
+    QList<Task *> onSubTaskFinished(Task *subTask);
 
 private:
     bool checkAlphabets(int hmmAl, const DNAAlphabet* seqAl, DNATranslation*& complTrans, DNATranslation*& aminoTrans);

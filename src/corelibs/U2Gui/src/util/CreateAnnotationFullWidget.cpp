@@ -274,10 +274,10 @@ void CreateAnnotationFullWidget::sl_regionChanged() {
     location->regions << U2Region(startPos - 1, endPos - startPos + 1);
     location->strand = U2Strand(U2Strand(chbComplement->isChecked() ? U2Strand::Complementary : U2Strand::Direct));
 
-    AnnotationData annotationData;
-    annotationData.location = location;
+    SharedAnnotationData annotationData(new AnnotationData);
+    annotationData->location = location;
 
-    leLocation->setText(Genbank::LocationParser::buildLocationString(&annotationData));
+    leLocation->setText(Genbank::LocationParser::buildLocationString(annotationData));
 }
 
 void CreateAnnotationFullWidget::sl_locationChanged() {

@@ -270,7 +270,7 @@ QVariant InSilicoPcrWorker::createProductSequence(const QString &sequenceName, c
 }
 
 QVariant InSilicoPcrWorker::createBindAnnotations(const InSilicoPcrProduct &product) {
-    QList<AnnotationData> anns;
+    QList<SharedAnnotationData> anns;
     anns << ExtractProductTask::getPrimerAnnotation(product.forwardPrimer, product.forwardPrimerMatchLength, U2Strand::Direct, product.region.length);
     anns << ExtractProductTask::getPrimerAnnotation(product.reversePrimer, product.reversePrimerMatchLength, U2Strand::Complementary, product.region.length);
     SharedDbiDataHandler annsId = context->getDataStorage()->putAnnotationTable(anns);

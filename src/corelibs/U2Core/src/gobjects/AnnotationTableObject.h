@@ -38,46 +38,35 @@ public:
      * This constructor is intended for interaction with Document. It encapsulates creation of
      * annotation table entity in DB.
      */
-                            AnnotationTableObject( const QString &objectName, const U2DbiRef &dbiRef,
-                                const QVariantMap &hintsMap = QVariantMap( ) );
+                            AnnotationTableObject(const QString &objectName, const U2DbiRef &dbiRef,
+                                const QVariantMap &hintsMap = QVariantMap());
     /**
      * This constructor works with existed annotation table entity available via @tableRef.
      */
-                            AnnotationTableObject( const QString &objectName,
-                                const U2EntityRef &tableRef,
-                                const QVariantMap &hintsMap = QVariantMap( ) );
+                            AnnotationTableObject(const QString &objectName, const U2EntityRef &tableRef,
+                                const QVariantMap &hintsMap = QVariantMap());
 
                             ~AnnotationTableObject();
     /**
      * Converts all the features stored in DB to annotations and returns the result
      */
-    QList<Annotation>       getAnnotations( ) const;
+    QList<Annotation *>     getAnnotations() const;
     /**
      * Returning value specifies if at least a single annotation belongs to the object
      */
-    bool                    hasAnnotations( ) const;
+    bool                    hasAnnotations() const;
     /**
      * Returns root group
      */
-    AnnotationGroup         getRootGroup( );
-    /**
-     * Adds to DB a set of features based on @a
-     */
-    void                    addAnnotation( const AnnotationData &a,
-                                const QString &groupName = QString( ) );
+    AnnotationGroup *       getRootGroup();
     /**
      * Adds to DB a set of features based on @annotations
      */
-    void                    addAnnotations( const QList<AnnotationData> &annotations, U2OpStatus &os,
-                                const QString &groupName = QString( ) );
-    /**
-     * Removes features corresponding to @a from DB
-     */
-    void                    removeAnnotation( const Annotation &a );
+    QList<Annotation *>     addAnnotations(const QList<SharedAnnotationData> &annotations, const QString &groupName = QString());
     /**
      * Removes features corresponding to @annotations from DB
      */
-    void                    removeAnnotations( const QList<Annotation> &annotations );
+    void                    removeAnnotations(const QList<Annotation *> &annotations);
     /**
      * Reimplemented from GObject
      */
@@ -85,63 +74,48 @@ public:
     /**
      * Returns list of annotations having @name
      */
-    QList<Annotation>       getAnnotationsByName( const QString &name ) const;
+    QList<Annotation *>     getAnnotationsByName(const QString &name) const;
     /**
      * Returns list of annotations having belonging to the @region. @contains specifies
      * whether the result set should include only annotations that has no region or its part
      * beyond the @region or each annotation that intersects it.
      */
-    QList<Annotation>       getAnnotationsByRegion( const U2Region &region,
-                                bool contains = false ) const;
+    QList<Annotation *>     getAnnotationsByRegion(const U2Region &region, bool contains = false) const;
     /**
      * Reimplemented from GObject
      */
-    bool                    checkConstraints( const GObjectConstraints *c ) const;
-    void                    setGObjectName( const QString &newName );
-
-    //////////////////////////////////////////////////////////////////////////
-    // Direct features interface (without sync with annotations) /////////////
+    bool                    checkConstraints(const GObjectConstraints *c) const;
+    void                    setGObjectName(const QString &newName);
     /**
      * Returns the root feature
      */
-    U2DataId               getRootFeatureId( ) const;
-    /**
-     * Increases reference count for this object
-     */
-    void                    ref( ) const;
-    void                    deref( ) const;
+    U2DataId               getRootFeatureId() const;
 
     //////////////////////////////////////////////////////////////////////////
     // Access to signals that drive GUI //////////////////////////////////////
 
-    void                    emit_onAnnotationsAdded( const QList<Annotation> &l );
-    void                    emit_onAnnotationModified( const AnnotationModification &md );
-    void                    emit_onGroupCreated( const AnnotationGroup &g );
-    void                    emit_onGroupRemoved( const AnnotationGroup &p,
-                                const AnnotationGroup &g );
-    void                    emit_onGroupRenamed( const AnnotationGroup &g );
-    void                    emit_onAnnotationsInGroupRemoved( const QList<Annotation> &l,
-                                const AnnotationGroup &gr );
+    void                    emit_onAnnotationsAdded(const QList<Annotation *> &l);
+    void                    emit_onAnnotationModified(const AnnotationModification &md);
+    void                    emit_onAnnotationsRemoved(const QList<Annotation *> &a);
+    void                    emit_onGroupCreated(AnnotationGroup *g);
+    void                    emit_onGroupRemoved(AnnotationGroup *p, AnnotationGroup *g);
+    void                    emit_onGroupRenamed(AnnotationGroup *g);
+    void                    emit_onAnnotationsInGroupRemoved(const QList<Annotation *> &l, AnnotationGroup *gr);
 
 signals:
-    void                    si_onAnnotationsAdded( const QList<Annotation> &a );
-    void                    si_onAnnotationsRemoved( const QList<Annotation> &a );
-    void                    si_onAnnotationsInGroupRemoved( const QList<Annotation> &,
-                                const AnnotationGroup & );
-    void                    si_onAnnotationModified( const AnnotationModification &md );
-    void                    si_onGroupCreated( const AnnotationGroup & );
-    void                    si_onGroupRemoved( const AnnotationGroup &p,
-                                const AnnotationGroup &removed );
-    void                    si_onGroupRenamed( const AnnotationGroup & );
+    void                    si_onAnnotationsAdded(const QList<Annotation *> &a);
+    void                    si_onAnnotationsRemoved(const QList<Annotation *> &a);
+    void                    si_onAnnotationsInGroupRemoved(const QList<Annotation *> &l, AnnotationGroup *g);
+    void                    si_onAnnotationModified(const AnnotationModification &md);
+    void                    si_onGroupCreated(AnnotationGroup *g);
+    void                    si_onGroupRemoved(AnnotationGroup *p, AnnotationGroup *removed);
+    void                    si_onGroupRenamed(AnnotationGroup *g);
 
 protected:
-    void                    loadDataCore( U2OpStatus &os );
+    void                    loadDataCore(U2OpStatus &os);
 
 private:
-    void                    removeAnnotationFromDb( const Annotation &a );
-    QList<Annotation>       convertFeaturesToAnnotations( const QList<U2Feature> &features ) const;
-
-    U2DataId                rootFeatureId;
+    AnnotationGroup *       rootGroup;
 };
 
 } // namespace U2

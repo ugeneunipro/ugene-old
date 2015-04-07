@@ -50,7 +50,7 @@ public:
     virtual U2Object *getObject(const SharedDbiDataHandler &handler, const U2DataType &type);
     virtual SharedDbiDataHandler putSequence(const DNASequence &sequence);
     virtual SharedDbiDataHandler putAlignment(const MAlignment &al);
-    virtual SharedDbiDataHandler putAnnotationTable(const QList<AnnotationData> &anns);
+    virtual SharedDbiDataHandler putAnnotationTable(const QList<SharedAnnotationData> &anns);
     virtual SharedDbiDataHandler putAnnotationTable(AnnotationTableObject *annTable);
 
     // returns QVariant with QVariantList inside, which have SharedDbiDataHandler in each QVariant
@@ -88,7 +88,7 @@ public:
     static AnnotationTableObject *getAnnotationTableObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
     static QList<AnnotationTableObject *> getAnnotationTableObjects(DbiDataStorage *storage, const QList<SharedDbiDataHandler> &handlers);
     static QList<AnnotationTableObject *> getAnnotationTableObjects(DbiDataStorage *storage, const QVariant &packedHandlers);
-    static QList<AnnotationData> getAnnotationTable(DbiDataStorage *storage, const QVariant &annObjList);
+    static QList<SharedAnnotationData> getAnnotationTable(DbiDataStorage *storage, const QVariant &annObjList);
     static QList<SharedDbiDataHandler> getAnnotationTableHandlers(const QVariant &annObjList);
 
     static QString getText(DbiDataStorage *storage, const QVariant &data);

@@ -117,9 +117,9 @@ void AnnotatorViewContext::sl_showCollocationDialog() {
 
     QSet<QString> allNames;
 
-    foreach ( AnnotationTableObject *ao, av->getAnnotationObjects()) {
-        foreach ( const Annotation &a, ao->getAnnotations( ) ) {
-            allNames.insert( a.getName( ) );
+    foreach (AnnotationTableObject *ao, av->getAnnotationObjects()) {
+        foreach (Annotation *a, ao->getAnnotations()) {
+            allNames.insert(a->getName());
         }
     }
     if (allNames.isEmpty()) {

@@ -67,12 +67,12 @@ QList<Task *> FindEnzymesToAnnotationsTask::onSubTaskFinished(Task *subTask) {
     bool useSubgroups = enzymes.size() > 1 || cfg.groupName.isEmpty();
     bool useWholeSequenceRange = cfg.excludedRegions.isEmpty();
     foreach (const SEnzymeData &ed, enzymes) {
-        QList<AnnotationData> anns = fTask->getResultsAsAnnotations(ed->id);
+        QList<SharedAnnotationData> anns = fTask->getResultsAsAnnotations(ed->id);
         bool inRegion = false;
         if (!useWholeSequenceRange) {
             // filter
-            foreach (const AnnotationData &data, anns) {
-                const U2Region &annRegion = data.location->regions.first();
+            foreach (const SharedAnnotationData &data, anns) {
+                const U2Region &annRegion = data->location->regions.first();
                 if (annRegion.findOverlappingRegion(cfg.excludedRegions) != -1) {
                     inRegion = true;
                     break;
@@ -83,9 +83,9 @@ QList<Task *> FindEnzymesToAnnotationsTask::onSubTaskFinished(Task *subTask) {
             }
         }
 
-        if(anns.size() >= cfg.minHitCount && anns.size() <= cfg.maxHitCount){
+        if (anns.size() >= cfg.minHitCount && anns.size() <= cfg.maxHitCount) {
             QString group = useSubgroups ? cfg.groupName + "/" + ed->id : cfg.groupName;
-            foreach (const AnnotationData &ad, anns) {
+            foreach (const SharedAnnotationData &ad, anns) {
                 resultMap.insertMulti(group, ad);
             }
         }
@@ -150,13 +150,13 @@ void FindEnzymesTask::onResult(int pos, const SEnzymeData& enzyme, const U2Stran
     results.append(FindEnzymesAlgResult(enzyme, pos, strand));
 }
 
-QList<AnnotationData> FindEnzymesTask::getResultsAsAnnotations(const QString& enzymeId) const {
-    QList<AnnotationData> res;
+QList<SharedAnnotationData> FindEnzymesTask::getResultsAsAnnotations(const QString& enzymeId) const {
+    QList<SharedAnnotationData> res;
 
     QString cutStr;
     QString dbxrefStr;
     bool found = true;
-    foreach(const FindEnzymesAlgResult& r, results) {
+    foreach (const FindEnzymesAlgResult &r, results) {
         if (r.enzyme->id != enzymeId) {
             continue;
         }
@@ -173,7 +173,7 @@ QList<AnnotationData> FindEnzymesTask::getResultsAsAnnotations(const QString& en
         if (r.enzyme->cutDirect != ENZYME_CUT_UNKNOWN) {
             cutStr = QString::number(r.enzyme->cutDirect);
             if (r.enzyme->cutComplement != ENZYME_CUT_UNKNOWN  && r.enzyme->cutComplement!=r.enzyme->cutDirect) {
-                cutStr+="/"+QString::number(r.enzyme->cutComplement);
+                cutStr += "/" + QString::number(r.enzyme->cutComplement);
             }
         }
         break;
@@ -182,36 +182,36 @@ QList<AnnotationData> FindEnzymesTask::getResultsAsAnnotations(const QString& en
         return res;
     }
 
-    foreach(const FindEnzymesAlgResult& r, results) {
+    foreach (const FindEnzymesAlgResult &r, results) {
         if (r.enzyme->id == enzymeId) {
             if (circular && r.pos + r.enzyme->seq.size() > seqlen) {
                 if (seqlen < r.pos) {
                     continue;
                 }
-                AnnotationData ad;
-                ad.name = r.enzyme->id;
-                ad.location->regions << U2Region(r.pos, seqlen - r.pos);
-                ad.location->regions << U2Region(0, r.enzyme->seq.size() - (seqlen - r.pos));
-                ad.setStrand(r.strand);
+                SharedAnnotationData ad(new AnnotationData);
+                ad->name = r.enzyme->id;
+                ad->location->regions << U2Region(r.pos, seqlen - r.pos);
+                ad->location->regions << U2Region(0, r.enzyme->seq.size() - (seqlen - r.pos));
+                ad->setStrand(r.strand);
                 if (!dbxrefStr.isEmpty()) {
-                    ad.qualifiers.append(U2Qualifier("db_xref", dbxrefStr));
+                    ad->qualifiers.append(U2Qualifier("db_xref", dbxrefStr));
                 }
                 if (!cutStr.isEmpty()) {
-                    ad.qualifiers.append(U2Qualifier(GBFeatureUtils::QUALIFIER_CUT, cutStr));
+                    ad->qualifiers.append(U2Qualifier(GBFeatureUtils::QUALIFIER_CUT, cutStr));
                 }
-                res.append( ad );
+                res.append(ad);
             } else {
-                AnnotationData ad;
-                ad.name = r.enzyme->id;
-                ad.location->regions << U2Region(r.pos, r.enzyme->seq.size());
-                ad.setStrand(r.strand);
+                SharedAnnotationData ad(new AnnotationData);
+                ad->name = r.enzyme->id;
+                ad->location->regions << U2Region(r.pos, r.enzyme->seq.size());
+                ad->setStrand(r.strand);
                 if (!dbxrefStr.isEmpty()) {
-                    ad.qualifiers.append(U2Qualifier("db_xref", dbxrefStr));
+                    ad->qualifiers.append(U2Qualifier("db_xref", dbxrefStr));
                 }
                 if (!cutStr.isEmpty()) {
-                    ad.qualifiers.append(U2Qualifier(GBFeatureUtils::QUALIFIER_CUT, cutStr));
+                    ad->qualifiers.append(U2Qualifier(GBFeatureUtils::QUALIFIER_CUT, cutStr));
                 }
-                res.append( ad );
+                res.append(ad);
             }
         }
     }

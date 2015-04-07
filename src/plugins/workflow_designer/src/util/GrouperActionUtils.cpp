@@ -159,7 +159,7 @@ void GrouperActionUtils::applyActions(WorkflowContext *context, QList<GrouperOut
         if (mData.keys().contains(key)) {
             if (!perfs.contains(slot.getOutSlotId())) {
                 ActionPerformer *p = getActionPerformer(slot, context, perfs);
-                SAFE_POINT(NULL != p, "GrouperActionUtils::applyActions - performer is NULL", );
+                SAFE_POINT(NULL != p, "GrouperActionUtils::applyActions - performer is NULL",);
 
                 perfs[slot.getOutSlotId()] = p;
             }
@@ -397,34 +397,33 @@ MergeAnnotationPerformer::MergeAnnotationPerformer(const QString &outSlot, const
     started = true;
 }
 
-static void shiftAnns( QList<AnnotationData> &newAnns, qint64 offset ) {
-    QList<AnnotationData> res;
-    foreach (AnnotationData d, newAnns ) {
-        U2Region::shift(offset, d.location->regions);
+static void shiftAnns(QList<SharedAnnotationData> &newAnns, qint64 offset) {
+    QList<SharedAnnotationData> res;
+    foreach (SharedAnnotationData d, newAnns) {
+        U2Region::shift(offset, d->location->regions);
         res << d;
     }
     newAnns = res;
 }
 
-bool MergeAnnotationPerformer::applyAction( const QVariant &newData ) {
-    QList<AnnotationData> newAnns = StorageUtils::getAnnotationTable( context->getDataStorage( ),
-        newData );
+bool MergeAnnotationPerformer::applyAction(const QVariant &newData) {
+    QList<SharedAnnotationData> newAnns = StorageUtils::getAnnotationTable(context->getDataStorage(), newData);
 
     bool unique = false;
-    if ( action.hasParameter( ActionParameters::UNIQUE ) ) {
-        unique = action.getParameterValue( ActionParameters::UNIQUE ).toBool( );
+    if (action.hasParameter(ActionParameters::UNIQUE)) {
+        unique = action.getParameterValue(ActionParameters::UNIQUE).toBool();
     }
 
-    if ( offset > 0 ) {
-        shiftAnns( newAnns, offset );
+    if (offset > 0) {
+        shiftAnns(newAnns, offset);
         offset = 0;
     }
 
-    if ( unique ) {
-        foreach ( AnnotationData newD, newAnns ) {
+    if (unique) {
+        foreach (SharedAnnotationData newD, newAnns) {
             bool found = false;
-            foreach ( AnnotationData d, result ) {
-                if ( newD == d ) {
+            foreach (const SharedAnnotationData &d, result) {
+                if (*newD == *d) {
                     found = true;
                     break;
                 }
@@ -441,8 +440,8 @@ bool MergeAnnotationPerformer::applyAction( const QVariant &newData ) {
 }
 
 QVariant MergeAnnotationPerformer::finishAction(U2OpStatus &) {
-    const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( result );
-    return qVariantFromValue<SharedDbiDataHandler>( tableId );
+    const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(result);
+    return qVariantFromValue<SharedDbiDataHandler>(tableId);
 }
 
 QString MergeAnnotationPerformer::PARENT_SEQUENCE_SLOT = QString("parent-seq-slot");

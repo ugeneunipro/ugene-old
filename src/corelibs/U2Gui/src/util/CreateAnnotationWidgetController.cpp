@@ -68,8 +68,8 @@
 namespace U2 {
 /* TRANSLATOR U2::CreateAnnotationWidgetController */
 
-CreateAnnotationModel::CreateAnnotationModel() :
-    defaultIsNewDoc(false),
+CreateAnnotationModel::CreateAnnotationModel()
+    : defaultIsNewDoc(false),
     hideLocation(false),
     hideAnnotationType(false),
     hideAnnotationName(false),
@@ -77,15 +77,17 @@ CreateAnnotationModel::CreateAnnotationModel() :
     hideUsePatternNames(true),
     useUnloadedObjects(false),
     useAminoAnnotationTypes(false),
+    data(new AnnotationData),
     hideAutoAnnotationsOption(true),
     hideAnnotationParameters(false)
 {
+
 }
 
-AnnotationTableObject * CreateAnnotationModel::getAnnotationObject( ) const {
-    GObject *res = GObjectUtils::selectObjectByReference( annotationObjectRef, UOF_LoadedOnly );
-    AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>( res );
-    SAFE_POINT( NULL != aobj, "Invalid annotation table detected!", NULL );
+AnnotationTableObject * CreateAnnotationModel::getAnnotationObject() const {
+    GObject *res = GObjectUtils::selectObjectByReference(annotationObjectRef, UOF_LoadedOnly);
+    AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>(res);
+    SAFE_POINT(NULL != aobj, "Invalid annotation table detected!", NULL);
     return aobj;
 }
 
@@ -163,7 +165,7 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
             }
         }
     }
-    dir+="/";
+    dir += "/";
     QString baseName = "MyDocument";
     QString ext = ".gb";
     QString url = dir + baseName + ext;
@@ -178,12 +180,11 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
 
     //default field values
 
-
-    w->setAnnotationName(model.data.name);
+    w->setAnnotationName(model.data->name);
     w->setGroupName(model.groupName.isEmpty() ? GROUP_NAME_AUTO : model.groupName);
 
-    if ( !model.data.location->isEmpty( ) ) {
-        w->setLocation(model.data.location);
+    if (!model.data->location->isEmpty()) {
+        w->setLocation(model.data->location);
     }
 
     if (model.defaultIsNewDoc || w->isExistingTablesListEmpty()) {
@@ -205,8 +206,8 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
     w->setUsePatternNamesVisible(!model.hideUsePatternNames);
 
     w->useAminoAnnotationTypes(model.useAminoAnnotationTypes);
-    if (U2FeatureTypes::Invalid != model.data.type) {
-        w->setAnnotationType(model.data.type);
+    if (U2FeatureTypes::Invalid != model.data->type) {
+        w->setAnnotationType(model.data->type);
     }
 }
 
@@ -231,8 +232,7 @@ public:
         if (obj->isUnloaded()) {
             return !allowUnloaded;
         }
-        SAFE_POINT( NULL != qobject_cast<AnnotationTableObject *>( obj ),
-            "Invalid annotation table object!", false );
+        SAFE_POINT(NULL != qobject_cast<AnnotationTableObject *>(obj), "Invalid annotation table object!", false);
         return obj->isStateLocked();
     }
     bool allowUnloaded;
@@ -271,7 +271,7 @@ QString CreateAnnotationWidgetController::validate() {
         }
     }
 
-    if (!w->isUsePatternNamesChecked() && !model.hideAnnotationName && model.data.name.isEmpty()) {
+    if (!w->isUsePatternNamesChecked() && !model.hideAnnotationName && model.data->name.isEmpty()) {
         return tr("Illegal annotation name");
     }
 
@@ -282,13 +282,13 @@ QString CreateAnnotationWidgetController::validate() {
     
     static const QString INVALID_LOCATION = tr("Invalid location! Location must be in GenBank format.\nSimple examples:\n1..10\njoin(1..10,15..45)\ncomplement(5..15)");
     
-    if (!model.hideLocation && model.data.location->isEmpty()) {
+    if (!model.hideLocation && model.data->location->isEmpty()) {
         w->focusLocation();
         return INVALID_LOCATION;
     }
     if (!model.hideLocation){
-        foreach (const U2Region &reg, model.data.getRegions()) {
-            if( reg.endPos() > model.sequenceLen || reg.startPos < 0 || reg.endPos() < reg.startPos) {
+        foreach (const U2Region &reg, model.data->getRegions()) {
+            if (reg.endPos() > model.sequenceLen || reg.startPos < 0 || reg.endPos() < reg.startPos) {
                 return INVALID_LOCATION;
             }
         }
@@ -298,31 +298,31 @@ QString CreateAnnotationWidgetController::validate() {
 }
 
 void CreateAnnotationWidgetController::updateModel(bool forValidation) {
-    model.data.type = U2FeatureTypes::getTypeByName(w->getAnnotationTypeString());
+    model.data->type = U2FeatureTypes::getTypeByName(w->getAnnotationTypeString());
 
-    model.data.name = w->getAnnotationName();
-    if (model.data.name.isEmpty()) {
-        model.data.name = U2FeatureTypes::getVisualName(model.data.type);
+    model.data->name = w->getAnnotationName();
+    if (model.data->name.isEmpty()) {
+        model.data->name = U2FeatureTypes::getVisualName(model.data->type);
     }
 
     model.groupName = w->getGroupName();
     if (model.groupName == GROUP_NAME_AUTO || model.groupName.isEmpty()) {
-        model.groupName = model.data.name;
+        model.groupName = model.data->name;
     }
 
-    model.data.location->reset();
+    model.data->location->reset();
     
     if (!model.hideLocation) {
         QByteArray locEditText = w->getLocationString().toLatin1();
         Genbank::LocationParser::parseLocation(locEditText.constData(),
-            locEditText.length(), model.data.location, model.sequenceLen);
+            locEditText.length(), model.data->location, model.sequenceLen);
     }
 
     model.description = w->getDescription();
     if (forValidation) {
-        model.data.qualifiers.clear();
+        model.data->qualifiers.clear();
         if (!model.description.isEmpty()) {
-            model.data.qualifiers << U2Qualifier(DESCRIPTION_QUALIFIER_KEY, model.description);
+            model.data->qualifiers << U2Qualifier(DESCRIPTION_QUALIFIER_KEY, model.description);
         }
     }
 
@@ -350,7 +350,7 @@ void CreateAnnotationWidgetController::createWidget(CreateAnnotationWidgetContro
         break;
     default:
         w = NULL;
-        FAIL("Unexpected widget type", );
+        FAIL("Unexpected widget type",);
     }
 }
 
@@ -366,9 +366,9 @@ bool CreateAnnotationWidgetController::prepareAnnotationObject() {
         U2OpStatus2Log os;
         Document* d = df->createNewLoadedDocument(iof, model.newDocUrl, os);
         CHECK_OP(os, false);
-        const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
-        SAFE_POINT_OP( os, false );
-        AnnotationTableObject *aobj = new AnnotationTableObject( "Annotations", dbiRef );
+        const U2DbiRef dbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
+        SAFE_POINT_OP(os, false);
+        AnnotationTableObject *aobj = new AnnotationTableObject("Annotations", dbiRef);
         aobj->addObjectRelation(GObjectRelation(model.sequenceObjectRef, ObjectRole_Sequence));
         d->addObject(aobj);
         AppContext::getProject()->addDocument(d);
@@ -378,15 +378,15 @@ bool CreateAnnotationWidgetController::prepareAnnotationObject() {
     return true;
 }
 
-void CreateAnnotationWidgetController::sl_groupName( ) {
-    GObject* obj = occ->getSelectedObject( );
+void CreateAnnotationWidgetController::sl_groupName() {
+    GObject* obj = occ->getSelectedObject();
     QStringList groupNames; 
     groupNames << GROUP_NAME_AUTO;
-    if ( NULL != obj && !obj->isUnloaded( ) ) {
-        AnnotationTableObject* ao = qobject_cast<AnnotationTableObject *>( obj );
-        ao->getRootGroup( ).getSubgroupPaths( groupNames );
+    if (NULL != obj && !obj->isUnloaded()) {
+        AnnotationTableObject* ao = qobject_cast<AnnotationTableObject *>(obj);
+        ao->getRootGroup()->getSubgroupPaths(groupNames);
     }
-    SAFE_POINT( !groupNames.isEmpty( ), "Unable to find annotation groups!", );
+    SAFE_POINT(!groupNames.isEmpty(), "Unable to find annotation groups!",);
     if (groupNames.size() == 1) {
         w->setGroupName(groupNames.first());
         return;
@@ -394,7 +394,7 @@ void CreateAnnotationWidgetController::sl_groupName( ) {
     qSort(groupNames);
 
     QMenu menu(w);
-    foreach(const QString& str, groupNames) {
+    foreach (const QString &str, groupNames) {
         QAction* a = new QAction(str, &menu);
         connect(a, SIGNAL(triggered()), SLOT(sl_setPredefinedGroupName()));
         menu.addAction(a);

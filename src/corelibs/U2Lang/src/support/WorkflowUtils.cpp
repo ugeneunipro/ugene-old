@@ -84,13 +84,13 @@ QStringList WorkflowUtils::initExtensions() {
 
 QString WorkflowUtils::getRichDoc(const Descriptor& d) {
     if(d.getDisplayName().isEmpty()) {
-        if( d.getDocumentation().isEmpty() ) {
+        if(d.getDocumentation().isEmpty()) {
             return QString();
         } else {
             return QString("%1").arg(d.getDocumentation());
         }
     } else {
-        if( d.getDocumentation().isEmpty() ) {
+        if(d.getDocumentation().isEmpty()) {
             return QString("<b>%1</b>").arg(d.getDisplayName());
         } else {
             return QString("<b>%1</b> : %2").arg(d.getDisplayName()).arg(d.getDocumentation());
@@ -221,30 +221,30 @@ bool validatePorts(Actor *a, ProblemList &infoList) {
     return good;
 }
 
-bool graphDepthFirstSearch( Actor *vertex, QList<Actor *> &visitedVertices ) {
-    visitedVertices.append( vertex );
-    const QList<Port *> outputPorts = vertex->getOutputPorts( );
+bool graphDepthFirstSearch(Actor *vertex, QList<Actor *> &visitedVertices) {
+    visitedVertices.append(vertex);
+    const QList<Port *> outputPorts = vertex->getOutputPorts();
     QList<Actor *> receivingVertices;
-    foreach ( Port *outputPort, outputPorts ) {
-        foreach ( Port *receivingPort, outputPort->getLinks( ).keys( ) ) {
-            receivingVertices.append( receivingPort->owner( ) );
+    foreach (Port *outputPort, outputPorts) {
+        foreach (Port *receivingPort, outputPort->getLinks().keys()) {
+            receivingVertices.append(receivingPort->owner());
         }
     }
-    foreach ( Actor *receivingVertex, receivingVertices ) {
-        if ( visitedVertices.contains( receivingVertex ) ) {
+    foreach (Actor *receivingVertex, receivingVertices) {
+        if (visitedVertices.contains(receivingVertex)) {
             return false;
         } else {
-            return graphDepthFirstSearch( receivingVertex, visitedVertices );
+            return graphDepthFirstSearch(receivingVertex, visitedVertices);
         }
     }
     return true;
 }
 
 // the returning values signals about cycles existence in the scheme
-bool hasSchemeCycles( const Schema &scheme ) {
-    foreach ( Actor *vertex, scheme.getProcesses( ) ) {
+bool hasSchemeCycles(const Schema &scheme) {
+    foreach (Actor *vertex, scheme.getProcesses()) {
         QList<Actor *> visitedVertices;
-        if ( !graphDepthFirstSearch( vertex, visitedVertices ) ) {
+        if (!graphDepthFirstSearch(vertex, visitedVertices)) {
             return false;
         }
     }
@@ -286,9 +286,9 @@ bool WorkflowUtils::validate(const Schema &schema, ProblemList &problemList) {
         }
         good &= validateExternalTools(a, problemList);
     }
-    if ( !hasSchemeCycles( schema ) ) {
+    if (!hasSchemeCycles(schema)) {
         good = false;
-        problemList << Problem(QObject::tr( "The workflow contains a cycle" ));
+        problemList << Problem(QObject::tr("The workflow contains a cycle"));
     }
 
     good &= validateParameters(schema, problemList);
@@ -304,7 +304,7 @@ bool WorkflowUtils::validate(const Schema &schema, QList<QListWidgetItem*> &info
     foreach (const Problem &problem, problems) {
         QListWidgetItem *item = NULL;
         if (problem.actor.isEmpty()) {
-            item = new QListWidgetItem( problem.type + ": " + problem.message);
+            item = new QListWidgetItem(problem.type + ": " + problem.message);
         } else {
             Actor *a = schema.actorById(problem.actor);
             item = new QListWidgetItem(QString("%1: %2").arg(a->getLabel()).arg(problem.message));
@@ -335,7 +335,7 @@ bool WorkflowUtils::validate(const Workflow::Schema &schema, QStringList &errs) 
     bool good = validate(schema, problems);
 
     foreach (const Problem &problem, problems) {
-        QString res = QString( );
+        QString res = QString();
         if (problem.actor.isEmpty()) {
             res = problem.message;
         } else {
@@ -446,29 +446,29 @@ DataTypePtr WorkflowUtils::getFromDatatypeForBusport(IntegralBusPort * p, DataTy
 
 QString WorkflowUtils::findPathToSchemaFile(const QString & name) {
     // full path given
-    if( QFile::exists( name ) ) {
+    if(QFile::exists(name)) {
         return name;
     }
     // search schema in data dir
-    QString filenameWithDataPrefix = QString( PATH_PREFIX_DATA ) + ":" + "cmdline/" + name;
-    if( QFile::exists( filenameWithDataPrefix ) ) {
+    QString filenameWithDataPrefix = QString(PATH_PREFIX_DATA) + ":" + "cmdline/" + name;
+    if(QFile::exists(filenameWithDataPrefix)) {
         return filenameWithDataPrefix;
     }
     foreach(const QString & ext, WorkflowUtils::WD_FILE_EXTENSIONS) {
-        QString filenameWithDataPrefixAndExt = QString( PATH_PREFIX_DATA ) + ":" + "cmdline/" + name + "." + ext;
-        if( QFile::exists( filenameWithDataPrefixAndExt ) ) {
+        QString filenameWithDataPrefixAndExt = QString(PATH_PREFIX_DATA) + ":" + "cmdline/" + name + "." + ext;
+        if(QFile::exists(filenameWithDataPrefixAndExt)) {
             return filenameWithDataPrefixAndExt;
         }
     }
 
     // if no such file found -> search name in settings. user saved schemas
     Settings * settings = AppContext::getSettings();
-    assert( settings != NULL );
+    assert(settings != NULL);
 
     // FIXME: same as WorkflowSceneIOTasks::SCHEMA_PATHS_SETTINGS_TAG
-    QVariantMap pathsMap = settings->getValue( "workflow_settings/schema_paths" ).toMap();
-    QString path = pathsMap.value( name ).toString();
-    if( QFile::exists( path ) ) {
+    QVariantMap pathsMap = settings->getValue("workflow_settings/schema_paths").toMap();
+    QString path = pathsMap.value(name).toString();
+    if(QFile::exists(path)) {
         return path;
     }
     return QString();
@@ -476,7 +476,7 @@ QString WorkflowUtils::findPathToSchemaFile(const QString & name) {
 
 void WorkflowUtils::getLinkedActorsId(Actor *a, QList<QString> &linkedActors) {
     if(!linkedActors.contains(a->getId())) {
-        linkedActors.append( a->getId() );
+        linkedActors.append(a->getId());
         foreach(Port *p, a->getPorts()) {
             foreach(Port *pp, p->getLinks().keys()) {
                 getLinkedActorsId(pp->owner(), linkedActors);
@@ -488,24 +488,24 @@ void WorkflowUtils::getLinkedActorsId(Actor *a, QList<QString> &linkedActors) {
 }
 
 bool WorkflowUtils::isPathExist(const Port *src, const Port *dest) {
-    SAFE_POINT( ( src->isInput( ) ^ dest->isInput( ) ), "The ports have the same direction",
-        true );
-    if ( !src->isOutput( ) && !dest->isInput( ) ) {
+    SAFE_POINT((src->isInput() ^ dest->isInput()), "The ports have the same direction",
+        true);
+    if (!src->isOutput() && !dest->isInput()) {
         const Port *tmp = dest;
         dest = src;
         src = tmp;
     }
-    const Actor *destElement = dest->owner( );
+    const Actor *destElement = dest->owner();
 
-    foreach ( const Port *port, src->owner( )->getPorts( ) ) {
-        if ( src == port ) {
+    foreach (const Port *port, src->owner()->getPorts()) {
+        if (src == port) {
             continue;
         }
-        foreach ( const Port *p, port->getLinks( ).keys( ) ) {
-            if ( destElement == p->owner( ) ) {
+        foreach (const Port *p, port->getLinks().keys()) {
+            if (destElement == p->owner()) {
                 return true;
             }
-            if ( isPathExist( p, dest ) ) {
+            if (isPathExist(p, dest)) {
                 return true;
             }
         }
@@ -557,7 +557,7 @@ QString WorkflowUtils::getStringForParameterDisplayRole(const QVariant & value) 
 Actor * WorkflowUtils::findActorByParamAlias(const QList<Actor*> & procs, const QString & alias, QString & attrName, bool writeLog) {
     QList<Actor*> actors;
     foreach(Actor * actor, procs) {
-        assert( actor != NULL );
+        assert(actor != NULL);
         if(actor->getParamAliases().values().contains(alias)) {
             actors << actor;
         }
@@ -565,18 +565,18 @@ Actor * WorkflowUtils::findActorByParamAlias(const QList<Actor*> & procs, const 
 
     if (actors.isEmpty()) {
         return NULL;
-    } else if( actors.size() > 1 ) {
+    } else if(actors.size() > 1) {
         if(writeLog) {
             coreLog.error(WorkflowUtils::tr("%1 actors in workflow have '%2' alias").arg(actors.size()).arg(alias));
         }
     }
 
     Actor * ret = actors.first();
-    attrName = ret->getParamAliases().key( alias );
+    attrName = ret->getParamAliases().key(alias);
     return ret;
 }
 
-QString WorkflowUtils::getParamIdFromHref( const QString& href ) {
+QString WorkflowUtils::getParamIdFromHref(const QString& href) {
     QStringList args = href.split('&');
     const QString& prefix = QString("%1:").arg(HREF_PARAM_ID);
     QString id;
@@ -614,28 +614,21 @@ static void data2text(WorkflowContext *context, DocumentFormatId formatId, GObje
 
 void WorkflowUtils::print(const QString &slotString, const QVariant &data, DataTypePtr type, WorkflowContext *context) {
     QString text = slotString + ":\n";
-    Workflow::DbiDataStorage *storage = context->getDataStorage( );
-    if ("string" == type->getId()
-        || BaseTypes::STRING_LIST_TYPE() == type) {
+    Workflow::DbiDataStorage *storage = context->getDataStorage();
+    if ("string" == type->getId() || BaseTypes::STRING_LIST_TYPE() == type) {
         text += data.toString();
     } else if (BaseTypes::DNA_SEQUENCE_TYPE() == type) {
-        QScopedPointer<U2SequenceObject> obj( StorageUtils::getSequenceObject( storage,
-            data.value<SharedDbiDataHandler>( ) ) );
-        CHECK(NULL != obj.data( ), );
-        data2text( context, BaseDocumentFormats::FASTA, obj.data( ), text );
+        QScopedPointer<U2SequenceObject> obj(StorageUtils::getSequenceObject(storage, data.value<SharedDbiDataHandler>()));
+        CHECK(NULL != obj.data(),);
+        data2text(context, BaseDocumentFormats::FASTA, obj.data(), text);
     } else if (BaseTypes::MULTIPLE_ALIGNMENT_TYPE() == type) {
-        QScopedPointer<MAlignmentObject> obj( StorageUtils::getMsaObject( storage,
-            data.value<SharedDbiDataHandler>( ) ) );
-        CHECK(NULL != obj.data( ), );
-        data2text( context, BaseDocumentFormats::CLUSTAL_ALN, obj.data( ), text );
-    } else if ( BaseTypes::ANNOTATION_TABLE_TYPE() == type
-        || BaseTypes::ANNOTATION_TABLE_LIST_TYPE() == type )
-    {
-        QList<AnnotationData> annotationList = StorageUtils::getAnnotationTable( storage, data );
-        AnnotationTableObject obj( "Annotations", storage->getDbiRef( ) );
-        foreach ( const AnnotationData &ad, annotationList ) {
-            obj.addAnnotation( ad );
-        }
+        QScopedPointer<MAlignmentObject> obj(StorageUtils::getMsaObject(storage, data.value<SharedDbiDataHandler>()));
+        CHECK(NULL != obj.data(),);
+        data2text(context, BaseDocumentFormats::CLUSTAL_ALN, obj.data(), text);
+    } else if (BaseTypes::ANNOTATION_TABLE_TYPE() == type || BaseTypes::ANNOTATION_TABLE_LIST_TYPE() == type) {
+        QList<SharedAnnotationData> annotationList = StorageUtils::getAnnotationTable(storage, data);
+        AnnotationTableObject obj("Annotations", storage->getDbiRef());
+        obj.addAnnotations(annotationList);
         data2text(context, BaseDocumentFormats::PLAIN_GENBANK, &obj, text);
     } else {
         text += "Can not print data of this type: " + type->getDisplayName();
@@ -1183,7 +1176,7 @@ static bool canWriteToPath(QString dirAbsPath) {
         // Get upper directory
         QString dirPath = existenDir.path();
         QString dirName = existenDir.dirName();
-        dirPath.remove( // remove dir name and slash (if any) from the path
+        dirPath.remove(// remove dir name and slash (if any) from the path
             dirPath.length() - dirName.length() - 1,
             dirName.length() + 1);
         if (dirPath.isEmpty()) {
@@ -1356,15 +1349,15 @@ QString PrompterBaseImpl::getURL(const QString& id, bool * empty, const QString 
     } else {
         url = getParameter(id).toString();
     }
-    if( empty != NULL ) { *empty = false; }
-    if( !target->getParameter(id)->getAttributeScript().isEmpty() ) {
+    if(empty != NULL) { *empty = false; }
+    if(!target->getParameter(id)->getAttributeScript().isEmpty()) {
         url = "got from user script";
     } else if (url.isEmpty()) {
         if (!onEmpty.isEmpty()) {
             return onEmpty;
         }
         url = "<font color='red'>"+tr("unset")+"</font>";
-        if( empty != NULL ) { *empty = true; }
+        if(empty != NULL) { *empty = true; }
     } else if (url.indexOf(";") != -1) {
         url = tr("the list of files");
     } else if (SharedDbUrlUtils::isDbObjectUrl(url)) {
@@ -1391,22 +1384,22 @@ QString PrompterBaseImpl::getRequiredParam(const QString& id) {
 QString PrompterBaseImpl::getScreenedURL(IntegralBusPort* input, const QString& id, const QString& slot, const QString &onEmpty) {
     bool empty = false;
     QString attrUrl = QString("<u>%1</u>").arg(getURL(id, &empty, onEmpty));
-    if( !empty ) {
+    if(!empty) {
         return attrUrl;
     }
 
-    Actor * origin = input->getProducer( slot );
+    Actor * origin = input->getProducer(slot);
     QString slotUrl;
-    if( origin != NULL ) {
+    if(origin != NULL) {
         slotUrl = tr("file(s) alongside of input sources of <u>%1</u>").arg(origin->getLabel());
         return slotUrl;
     }
 
-    assert( !attrUrl.isEmpty() );
+    assert(!attrUrl.isEmpty());
     return attrUrl;
 }
 
-QString PrompterBaseImpl::getProducers( const QString& port, const QString& slot )
+QString PrompterBaseImpl::getProducers(const QString& port, const QString& slot)
 {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(port));
     CHECK(NULL != input, "");

@@ -48,7 +48,8 @@
 
 namespace U2 {
 
-LoadDasDocumentTask::LoadDasDocumentTask( const QString& accId, const QString& _fullPath, const DASSource& _referenceSource, const QList<DASSource>& _featureSources )
+LoadDasDocumentTask::LoadDasDocumentTask(const QString& accId, const QString& _fullPath, const DASSource& _referenceSource,
+    const QList<DASSource>& _featureSources)
 : BaseLoadRemoteDocumentTask(_fullPath, QVariantMap(), TaskFlags(TaskFlag_NoRun | TaskFlag_MinimizeSubtaskErrorText))
 ,accNumber(accId)
 ,featureSources(_featureSources)
@@ -76,7 +77,7 @@ void LoadDasDocumentTask::prepare(){
     }
 }
 
-QString LoadDasDocumentTask::getFileFormat( const QString & dbid ){
+QString LoadDasDocumentTask::getFileFormat(const QString & dbid){
     Q_UNUSED(dbid);
     return GENBANK_FORMAT;
 }
@@ -89,7 +90,7 @@ QString LoadDasDocumentTask::getFileName(){
     format = getFileFormat("");
     accNumber.replace(";",",");
     QStringList accIds = accNumber.split(",");
-    if (accIds.size() == 1 ) {
+    if (accIds.size() == 1) {
         return accNumber + "_das" +"." + format;
     } else if (accIds.size() > 1) {
         return accIds.first() + "_das_misc." + format;
@@ -98,114 +99,112 @@ QString LoadDasDocumentTask::getFileName(){
     return "";
 }
 
-QList<Task*> LoadDasDocumentTask::onSubTaskFinished( Task *subTask ){
+QList<Task*> LoadDasDocumentTask::onSubTaskFinished(Task *subTask) {
     QList<Task *> subTasks;
-    if ( isCanceled() || hasError() ) {
+    if (isCanceled() || hasError()) {
         return subTasks;
     }
 
-    if ( subTask == loadDocumentTask ) {
-        if ( subTask->hasError( ) ) {
-            setError( tr( "Cannot load cached document: %1" ).arg( accNumber ) );
+    if (subTask == loadDocumentTask) {
+        if (subTask->hasError()) {
+            setError(tr("Cannot load cached document: %1").arg(accNumber));
             return subTasks;
         }
-        resultDocument = loadDocumentTask->takeDocument( );
-    } else if ( subTask == saveDocumentTask ) {
-        if ( saveDocumentTask->hasError( ) ) {
-            setError( tr( "Cannot save document: %1" ).arg( accNumber ) );
+        resultDocument = loadDocumentTask->takeDocument();
+    } else if (subTask == saveDocumentTask) {
+        if (saveDocumentTask->hasError()) {
+            setError(tr("Cannot save document: %1").arg(accNumber));
             return subTasks;
         }
-        if ( !subTask->isCanceled( ) ) {
-            RecentlyDownloadedCache * cache = AppContext::getRecentlyDownloadedCache( );
-            if ( NULL != cache ) {
-                cache->append( fullPath );
+        if (!subTask->isCanceled()) {
+            RecentlyDownloadedCache * cache = AppContext::getRecentlyDownloadedCache();
+            if (NULL != cache) {
+                cache->append(fullPath);
             }
         }
     } else {
-        if ( subTask == loadSequenceTask ) {
-            if ( loadSequenceTask->hasError( ) ) {
-                setError( tr( "Cannot find DAS reference sequence: %1" ).arg( accNumber ) );
+        if (subTask == loadSequenceTask) {
+            if (loadSequenceTask->hasError()) {
+                setError(tr("Cannot find DAS reference sequence: %1").arg(accNumber));
                 return subTasks;
             }
-            if ( !isCanceled( ) ) {
-                seq = loadSequenceTask->getSequence( );
+            if (!isCanceled()) {
+                seq = loadSequenceTask->getSequence();
             }
 
             loadSequenceTask = NULL;
         } else {
-            LoadDasObjectTask *ftask = qobject_cast<LoadDasObjectTask *>( subTask );
-            if ( NULL != ftask && loadFeaturesTasks.contains( ftask ) ) {
-                const int idx = loadFeaturesTasks.indexOf( ftask );
-                if ( idx == -1 ) {
+            LoadDasObjectTask *ftask = qobject_cast<LoadDasObjectTask *>(subTask);
+            if (NULL != ftask && loadFeaturesTasks.contains(ftask)) {
+                const int idx = loadFeaturesTasks.indexOf(ftask);
+                if (idx == -1) {
                     return subTasks;
                 }
 
-                loadFeaturesTasks.removeAt( idx );
+                loadFeaturesTasks.removeAt(idx);
 
-                if ( ftask->hasError( ) ) {
-                    ioLog.info( tr( "Cannot find DAS features for '%1' on %2" ).arg( accNumber ).arg( ftask->getSource( ).getName( ) ) );
+                if (ftask->hasError()) {
+                    ioLog.info(tr("Cannot find DAS features for '%1' on %2").arg(accNumber).arg(ftask->getSource().getName()));
                 } else {
                     //merge features
-                    if ( !isCanceled( ) ) {
-                        mergeFeatures( ftask->getAnnotationData( ) );
+                    if (!isCanceled()) {
+                        mergeFeatures(ftask->getAnnotationData());
                     }
                 }
             }
         }
 
-        if ( isAllDataLoaded( ) ) {
+        if (isAllDataLoaded()) {
             AnnotationTableObject *annotationTableObject = NULL;
-            if ( !annotationData.isEmpty( ) ) {
+            if (!annotationData.isEmpty()) {
                 U2DbiRegistry *dbiReg = AppContext::getDbiRegistry();
                 SAFE_POINT_EXT(NULL != dbiReg, setError("NULL DBI registry"), subTasks);
 
                 U2DbiRef dbiRef = dbiReg->getSessionTmpDbiRef(stateInfo);
                 CHECK_OP(stateInfo, subTasks);
 
-                annotationTableObject = new AnnotationTableObject( "das_annotations", dbiRef );
+                annotationTableObject = new AnnotationTableObject("das_annotations", dbiRef);
 
-                foreach ( const QString &grname, annotationData.keys( ) ) {
-                    const QList<AnnotationData> sdata = annotationData[grname];
-                    if ( !sdata.isEmpty( ) ) {
-                        foreach ( AnnotationData d, sdata ) {
+                foreach (const QString &grname, annotationData.keys()) {
+                    const QList<SharedAnnotationData> sdata = annotationData[grname];
+                    if (!sdata.isEmpty()) {
+                        foreach (SharedAnnotationData d, sdata) {
                             //setRegion
-                            if ( NULL != seq ) {
-                                if ( d.location->isSingleRegion( )
-                                    && d.location->regions.first() == U2_REGION_MAX)
-                                {
-                                    U2Location newLoc = d.location;
-                                    newLoc->regions.clear( );
-                                    newLoc->regions.append( U2Region( 0, seq->length( ) ) );
-                                    d.location = newLoc;
+                            if (NULL != seq) {
+                                if (d->location->isSingleRegion() && d->location->regions.first() == U2_REGION_MAX) {
+                                    U2Location newLoc = d->location;
+                                    newLoc->regions.clear();
+                                    newLoc->regions.append(U2Region(0, seq->length()));
+                                    d->location = newLoc;
                                 }
                             }
-                            annotationTableObject->addAnnotation( d, grname );
+                            annotationTableObject->addAnnotations(QList<SharedAnnotationData>() << d, grname);
                         }
                     }
                 }
             }
-            if ( NULL != seq ) {
-                createLoadedDocument( );
-                if ( NULL == resultDocument ) {
+            if (NULL != seq) {
+                createLoadedDocument();
+                if (NULL == resultDocument) {
                     return subTasks;
                 }
 
-                U2EntityRef seqRef = U2SequenceUtils::import( resultDocument->getDbiRef( ), *seq, stateInfo );
-                if ( stateInfo.isCoR( ) ) {
+                U2EntityRef seqRef = U2SequenceUtils::import(resultDocument->getDbiRef(), *seq, stateInfo);
+                if (stateInfo.isCoR()) {
                     return subTasks;
                 }
-                U2SequenceObject *danseqob = new U2SequenceObject( seq->getName( ), seqRef );
-                resultDocument->addObject( danseqob );
+                U2SequenceObject *danseqob = new U2SequenceObject(seq->getName(), seqRef);
+                resultDocument->addObject(danseqob);
 
-                if ( NULL != annotationTableObject ) {
-                    annotationTableObject->addObjectRelation( GObjectRelation( danseqob,
-                        ObjectRole_Sequence ) );
-                    resultDocument->addObject( annotationTableObject );
+                if (NULL != annotationTableObject) {
+                    annotationTableObject->addObjectRelation(GObjectRelation(danseqob,
+                        ObjectRole_Sequence));
+                    resultDocument->addObject(annotationTableObject);
 
                 }
 
-                saveDocumentTask = new SaveDocumentTask( resultDocument );
-                subTasks.append( saveDocumentTask );
+                saveDocumentTask = new SaveDocumentTask(resultDocument);
+                subTasks.append(saveDocumentTask);
             }
          }
     }
@@ -213,23 +212,23 @@ QList<Task*> LoadDasDocumentTask::onSubTaskFinished( Task *subTask ){
 
 }
 
-bool LoadDasDocumentTask::isAllDataLoaded( ) {
-    return ( NULL == loadSequenceTask && loadFeaturesTasks.isEmpty( ) );
+bool LoadDasDocumentTask::isAllDataLoaded() {
+    return (NULL == loadSequenceTask && loadFeaturesTasks.isEmpty());
 }
 
-void LoadDasDocumentTask::mergeFeatures( const QMap<QString, QList<AnnotationData> > &newAnnotations ) {
-    const QStringList &keys =  newAnnotations.keys( );
-    foreach ( const QString &key, keys ) {
-        if ( annotationData.contains(key ) ) {
-            const QList<AnnotationData> &curList = annotationData[key];
-            const QList<AnnotationData> &tomergeList = newAnnotations[key];
-            foreach ( const AnnotationData &d, tomergeList ) {
-                if ( !curList.contains(d ) ) {
-                    annotationData[key].append( d );
+void LoadDasDocumentTask::mergeFeatures(const QMap<QString, QList<SharedAnnotationData> > &newAnnotations) {
+    const QStringList &keys =  newAnnotations.keys();
+    foreach (const QString &key, keys) {
+        if (annotationData.contains(key)) {
+            const QList<SharedAnnotationData> &curList = annotationData[key];
+            const QList<SharedAnnotationData> &tomergeList = newAnnotations[key];
+            foreach (const SharedAnnotationData &d, tomergeList) {
+                if (!curList.contains(d)) {
+                    annotationData[key].append(d);
                 }
             }
         } else {
-            annotationData.insert( key, newAnnotations[key] );
+            annotationData.insert(key, newAnnotations[key]);
         }
     }
 
@@ -239,7 +238,7 @@ void LoadDasDocumentTask::mergeFeatures( const QMap<QString, QList<AnnotationDat
 
 //////////////////////////////////////////////////////////////////////////
 //LoadDASObjectTask
-LoadDasObjectTask::LoadDasObjectTask( const QString& accId, const DASSource& _source, DASObjectType objType)
+LoadDasObjectTask::LoadDasObjectTask(const QString& accId, const DASSource& _source, DASObjectType objType)
     :Task(tr("Load DAS data for '%1' from %2").arg(accId).arg(_source.getName()), TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText)
 ,accNumber(accId)
 ,source(_source)
@@ -257,8 +256,8 @@ LoadDasObjectTask::~LoadDasObjectTask(){
     delete networkManager;
 }
 
-void LoadDasObjectTask::run(){
-    if (stateInfo.isCanceled()){
+void LoadDasObjectTask::run() {
+    if (stateInfo.isCanceled()) {
         return;
     }
     stateInfo.progress = 0;
@@ -268,7 +267,8 @@ void LoadDasObjectTask::run(){
 
     networkManager = new QNetworkAccessManager();
     connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(sl_replyFinished(QNetworkReply*)));
-    connect(networkManager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
+    connect(networkManager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), this,
+        SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
     NetworkConfiguration* nc = AppContext::getAppSettings()->getNetworkConfiguration();
 
     ioLog.trace("Downloading xml file...");
@@ -282,8 +282,8 @@ void LoadDasObjectTask::run(){
     downloadReply = networkManager->get(QNetworkRequest(requestUrl));
     connect(downloadReply, SIGNAL(error(QNetworkReply::NetworkError)),
         this, SLOT(sl_onError(QNetworkReply::NetworkError)));
-    connect( downloadReply, SIGNAL(uploadProgress( qint64, qint64 )),
-        this, SLOT(sl_uploadProgress(qint64,qint64)) );
+    connect(downloadReply, SIGNAL(uploadProgress(qint64, qint64)),
+        this, SLOT(sl_uploadProgress(qint64,qint64)));
 
     QTimer::singleShot(100, this, SLOT(sl_cancelCheck()));
     QTimer::singleShot(60000, this, SLOT(sl_timeout()));
@@ -297,7 +297,7 @@ void LoadDasObjectTask::run(){
     ioLog.trace("Download finished.");
 
     QByteArray result = downloadReply->readAll();
-    if ( ( result.size() < 100 ) && result.contains("Nothing has been found")) {
+    if ((result.size() < 100) && result.contains("Nothing has been found")) {
         setError(tr("Sequence with ID=%1 is not found.").arg(accNumber));
         return;
     }
@@ -335,16 +335,16 @@ const DASSource& LoadDasObjectTask::getSource() const {
     return source;
 }
 
-const QMap<QString, QList<AnnotationData> >& LoadDasObjectTask::getAnnotationData( ) const {
+const QMap<QString, QList<SharedAnnotationData> >& LoadDasObjectTask::getAnnotationData() const {
     return annotationData;
 }
 
-void LoadDasObjectTask::sl_replyFinished( QNetworkReply* reply ) {
+void LoadDasObjectTask::sl_replyFinished(QNetworkReply* reply) {
     Q_UNUSED(reply);
     loop->exit();
 }
 
-void LoadDasObjectTask::sl_onError( QNetworkReply::NetworkError error ){
+void LoadDasObjectTask::sl_onError(QNetworkReply::NetworkError error){
     QNetworkReply *netReply = qobject_cast<QNetworkReply *>(sender());
     QString errorText;
     if (Q_LIKELY(NULL != netReply)) {
@@ -356,7 +356,7 @@ void LoadDasObjectTask::sl_onError( QNetworkReply::NetworkError error ){
     loop->exit();
 }
 
-void LoadDasObjectTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal ){
+void LoadDasObjectTask::sl_uploadProgress(qint64 bytesSent, qint64 bytesTotal){
     stateInfo.progress = bytesSent/ bytesTotal * 100;
 }
 
@@ -388,10 +388,13 @@ void LoadDasObjectTask::onProxyAuthenticationRequired(const QNetworkProxy &proxy
 //////////////////////////////////////////////////////////////////////////
 //LoadDasFeaturesTask
 LoadDasFeaturesTask::LoadDasFeaturesTask(const QStringList& accId, const QList<DASSource>& source)
-: Task(tr("Load DAS annotations for current sequence"), TaskFlags(TaskFlag_NoRun) | TaskFlag_CancelOnSubtaskCancel | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ), featureSources(source), accessionNumbers(accId) {
+    : Task(tr("Load DAS annotations for current sequence"), TaskFlags(TaskFlag_NoRun) | TaskFlag_CancelOnSubtaskCancel
+    | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), featureSources(source), accessionNumbers(accId)
+{
+
 }
 
-const QMap<QString, QList<AnnotationData> >& LoadDasFeaturesTask::getAnnotationData( ) const {
+const QMap<QString, QList<SharedAnnotationData> > & LoadDasFeaturesTask::getAnnotationData() const {
     return annotationData;
 }
 
@@ -413,24 +416,25 @@ QList<Task*> LoadDasFeaturesTask::onSubTaskFinished(Task* subTask) {
         reports += tr("Can not receive response from the server \"") + loadDasObjectTask->getSource().getName() + "\"</font><br>";
     }
     else {
-        QMap<QString, QList<AnnotationData> > data = loadDasObjectTask->getAnnotationData();
+        const QMap<QString, QList<SharedAnnotationData> > &data = loadDasObjectTask->getAnnotationData();
         int annotationsNumber = 0;
         foreach(const QString& key, data.keys()) {
             annotationsNumber += data[key].size();
         }
-        reports += tr("<font size=\"5\" color=\"green\">Received %1 annotations from the server \"%2\"</font><br>").arg(annotationsNumber).arg(loadDasObjectTask->getSource().getName());
+        reports += tr("<font size=\"5\" color=\"green\">Received %1 annotations from the server \"%2\"</font><br>")
+            .arg(annotationsNumber).arg(loadDasObjectTask->getSource().getName());
         mergeFeatures(loadDasObjectTask->getAnnotationData());
     }
     return res;
 }
 
-void LoadDasFeaturesTask::mergeFeatures(const QMap<QString, QList<AnnotationData> >& newAnnotations) {
-    const QStringList& keys =  newAnnotations.keys();
+void LoadDasFeaturesTask::mergeFeatures(const QMap<QString, QList<SharedAnnotationData> >& newAnnotations) {
+    const QStringList& keys = newAnnotations.keys();
     foreach (const QString& key, keys) {
         if (annotationData.contains(key)) {
-            const QList<AnnotationData>& curList = annotationData[key];
-            const QList<AnnotationData>& tomergeList = newAnnotations[key];
-            foreach ( const AnnotationData &d, tomergeList ) {
+            const QList<SharedAnnotationData>& curList = annotationData[key];
+            const QList<SharedAnnotationData>& tomergeList = newAnnotations[key];
+            foreach (const SharedAnnotationData &d, tomergeList) {
                 if (!curList.contains(d)) {
                     annotationData[key].append(d);
                 }
@@ -513,7 +517,7 @@ XMLDASSequenceParser::XMLDASSequenceParser(){
 #define DAS_SEQ_DASSEQUENCE "DASSEQUENCE"
 #define DAS_SEQ_SEQUENCE "SEQUENCE"
 #define DAS_SEQ_ID "id"
-void XMLDASSequenceParser::parse( const QByteArray& data ){
+void XMLDASSequenceParser::parse(const QByteArray& data){
     //http://www.biodas.org/documents/spec-1.6.html
     QDomDocument pDoc;
     pDoc.setContent(data);
@@ -547,7 +551,7 @@ void XMLDASSequenceParser::parse( const QByteArray& data ){
 
 //////////////////////////////////////////////////////////////////////////
 //XMLDASFeaturesParser
-XMLDASFeaturesParser::XMLDASFeaturesParser( ) {
+XMLDASFeaturesParser::XMLDASFeaturesParser() {
 
 }
 
@@ -574,7 +578,7 @@ XMLDASFeaturesParser::XMLDASFeaturesParser( ) {
 #define DAS_FEATURE_PARENT "PARENT"
 #define DAS_FEATURE_PART "PART"
 
-void XMLDASFeaturesParser::parse( const QByteArray& data ){
+void XMLDASFeaturesParser::parse(const QByteArray& data){
     //http://www.biodas.org/documents/spec-1.6.html
     QDomDocument pDoc;
     pDoc.setContent(data);
@@ -701,13 +705,13 @@ void XMLDASFeaturesParser::parse( const QByteArray& data ){
 
                 featureSegment = featureSegment.nextSibling();
 
-                AnnotationData data;
-                data.name = featureId.simplified( );
+                SharedAnnotationData data(new AnnotationData);
+                data->name = featureId.simplified();
                 U2Region reg; //1-based start
 
 
                 if (startPos == -1 || endPos == -1){//non-positional
-                    data.qualifiers.append(U2Qualifier("non-positional", "yes"));
+                    data->qualifiers.append(U2Qualifier("non-positional", "yes"));
                     if ((start == 0 && stop == 0) || (start > stop)){
                         reg = U2_REGION_MAX;
                     }else{
@@ -720,46 +724,46 @@ void XMLDASFeaturesParser::parse( const QByteArray& data ){
                         reg = U2Region(startPos - 1, endPos - startPos + 1);
                     }
                 }
-                data.location->regions << reg;
-                data.setStrand(complemented ? U2Strand::Complementary : U2Strand::Direct);
+                data->location->regions << reg;
+                data->setStrand(complemented ? U2Strand::Complementary : U2Strand::Direct);
 
                 if (!methodQual.isEmpty()){
-                    data.qualifiers.append(U2Qualifier("method", methodQual.simplified()));
+                    data->qualifiers.append(U2Qualifier("method", methodQual.simplified()));
                 }
 
                 if (score != -1.0f){
-                    data.qualifiers.append(U2Qualifier("score", QString::number(score)));
+                    data->qualifiers.append(U2Qualifier("score", QString::number(score)));
                 }
 
                 if (!note.isEmpty()){
-                    data.qualifiers.append(U2Qualifier("note", note.simplified()));
+                    data->qualifiers.append(U2Qualifier("note", note.simplified()));
                 }
 
                 if (!link.isEmpty()){
-                    data.qualifiers.append(U2Qualifier("link", link.simplified()));
+                    data->qualifiers.append(U2Qualifier("link", link.simplified()));
                 }
 
                 if (!target.isEmpty()){
-                    data.qualifiers.append(U2Qualifier("target", target.simplified()));
+                    data->qualifiers.append(U2Qualifier("target", target.simplified()));
                 }
 
                 if (!sequenceId.isEmpty()){
-                    data.qualifiers.append(U2Qualifier("seq_id", sequenceId.simplified()));
+                    data->qualifiers.append(U2Qualifier("seq_id", sequenceId.simplified()));
                 }
 
                 if (groupName.isEmpty()){
                     groupName = "das_features";
                 }
 
-                data.qualifiers.append(U2Qualifier("type", groupName.simplified()));
+                data->qualifiers.append(U2Qualifier("type", groupName.simplified()));
 
                 if (!groupId.isEmpty()){
-                    data.qualifiers.append(U2Qualifier("type_id", groupId.simplified()));
+                    data->qualifiers.append(U2Qualifier("type_id", groupId.simplified()));
                 }
 
-                data.qualifiers.append(U2Qualifier("feature_id", featureId.simplified()));
+                data->qualifiers.append(U2Qualifier("feature_id", featureId.simplified()));
                 if (!featureLabel.isEmpty()){
-                    data.qualifiers.append(U2Qualifier("feature_label", featureLabel.simplified()));
+                    data->qualifiers.append(U2Qualifier("feature_label", featureLabel.simplified()));
                 }
 
                 annotationData[groupName].append(data);
@@ -829,7 +833,7 @@ QList<Task *> ConvertIdAndLoadDasFeaturesTask::onSubTaskFinished(Task *subTask) 
     return subTasks;
 }
 
-const QMap<QString, QList<AnnotationData> > &ConvertIdAndLoadDasFeaturesTask::getAnnotationData() const {
+const QMap<QString, QList<SharedAnnotationData> > & ConvertIdAndLoadDasFeaturesTask::getAnnotationData() const {
     return loadDasFeaturesTask->getAnnotationData();
 }
 

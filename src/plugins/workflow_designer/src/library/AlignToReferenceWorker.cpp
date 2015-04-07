@@ -340,18 +340,20 @@ void ComposeResultSubTask::createAnnotations(const MAlignment &alignment) {
     const MAlignmentRow &referenceRow = alignment.getRow(0);
     QScopedPointer<AnnotationTableObject> annsObject(new AnnotationTableObject(referenceRow.getName() + " features", storage->getDbiRef()));
 
+    QList<SharedAnnotationData> anns;
     for (int i=1; i<alignment.getNumRows(); i++) {
         const MAlignmentRow &readRow = alignment.getRow(i);
         U2Region region = getReadRegion(readRow, referenceRow);
         PairwiseAlignmentTask *task = getPATask(i - 1);
         CHECK_OP(stateInfo, );
 
-        AnnotationData ann;
-        ann.location = getLocation(region, task->isComplement());
-        ann.name = GBFeatureUtils::getKeyInfo(GBFeatureKey_misc_feature).text;
-        ann.qualifiers << U2Qualifier("label", task->getInitialReadName());
-        annsObject->addAnnotation(ann);
+        SharedAnnotationData ann(new AnnotationData);
+        ann->location = getLocation(region, task->isComplement());
+        ann->name = GBFeatureUtils::getKeyInfo(GBFeatureKey_misc_feature).text;
+        ann->qualifiers << U2Qualifier("label", task->getInitialReadName());
+        anns.append(ann);
     }
+    annsObject->addAnnotations(anns);
 
     annotations = storage->getDataHandler(annsObject->getEntityRef());
 }

@@ -82,7 +82,7 @@ SearchQualifierDialog::SearchQualifierDialog(QWidget* p, AnnotationsTreeView * _
                  break;
              }
      }
-     QString groupName = groupToSearchIn->getAnnotationGroup().getName();
+     QString groupName = groupToSearchIn->getAnnotationGroup()->getName();
      if (groupName == AnnotationGroup::ROOT_GROUP_NAME) {
          AnnotationTableObject *aObj = groupToSearchIn->getAnnotationTableObject();
          groupName = aObj->getGObjectName();

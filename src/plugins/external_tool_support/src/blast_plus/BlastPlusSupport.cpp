@@ -247,13 +247,14 @@ void BlastPlusSupportContext::initViewContext(GObjectView* view) {
     addViewAction(queryAction);
     connect(queryAction, SIGNAL(triggered()), SLOT(sl_showDialog()));
 }
+
 static void setActionFontItalic(QAction* action, bool italic) {
     QFont font = action->font();
     font.setItalic(italic);
     action->setFont(font);
 }
-void BlastPlusSupportContext::buildMenu(GObjectView* view, QMenu* m) {
 
+void BlastPlusSupportContext::buildMenu(GObjectView* view, QMenu* m) {
     QList<GObjectViewAction *> actions = getViewActions(view);
     QMenu* analyseMenu = GUIUtils::findSubMenu(m, ADV_MENU_ANALYSE);
     SAFE_POINT(analyseMenu != NULL, "analyseMenu", );
@@ -261,7 +262,7 @@ void BlastPlusSupportContext::buildMenu(GObjectView* view, QMenu* m) {
         a->addToMenuWithOrder(analyseMenu);
     }
 
-    AnnotatedDNAView* dnaView = qobject_cast<AnnotatedDNAView*>( view );
+    AnnotatedDNAView* dnaView = qobject_cast<AnnotatedDNAView*>(view);
     if (!dnaView) {
         return;
     }
@@ -269,21 +270,20 @@ void BlastPlusSupportContext::buildMenu(GObjectView* view, QMenu* m) {
     bool isBlastResult = false, isShowId = false;
 
     QString name;
-    if(!dnaView->getAnnotationsSelection()->getSelection().isEmpty()) {
-        name = dnaView->getAnnotationsSelection()->getSelection().first().annotation.getName();
+    if (!dnaView->getAnnotationsSelection()->getSelection().isEmpty()) {
+        name = dnaView->getAnnotationsSelection()->getSelection().first().annotation->getName();
     }
     selectedId = ADVSelectionUtils::getSequenceIdsFromSelection(dnaView->getAnnotationsSelection()->getSelection(), true);
     isShowId = !selectedId.isEmpty();
 
     foreach(const AnnotationSelectionData &sel, dnaView->getAnnotationsSelection()->getSelection()) {
-        if(name != sel.annotation.getName()) {
+        if(name != sel.annotation->getName()) {
             name = "";
         }
-
         isBlastResult = name == BLAST_ANNOTATION_NAME;
     }
 
-    if(isShowId && isBlastResult ) {
+    if (isShowId && isBlastResult) {
         name = name.isEmpty() ? "" : "from '" + name + "'";
         QMenu *fetchMenu = new QMenu(tr("Fetch sequences from local BLAST database"));
         fetchMenu->menuAction()->setObjectName("fetchMenu");
@@ -295,7 +295,6 @@ void BlastPlusSupportContext::buildMenu(GObjectView* view, QMenu* m) {
         setActionFontItalic(fetchSequenceByIdAction, emptyToolPath);
         fetchMenu->addAction(fetchSequenceByIdAction);
     }
-
 }
 
 void BlastPlusSupportContext::sl_showDialog() {

@@ -247,11 +247,11 @@ void PWMSearchDialogController::sl_onSaveAnnotations() {
     if (rc != QDialog::Accepted) {
         return;
     }
-    const QString& name = m.data.name;
-    QList<AnnotationData> list;
-    for (int i=0, n = resultsTree->topLevelItemCount(); i<n; ++i) {
+    const QString& name = m.data->name;
+    QList<SharedAnnotationData> list;
+    for (int i = 0, n = resultsTree->topLevelItemCount(); i<n; ++i) {
         WeightMatrixResultItem* item = static_cast<WeightMatrixResultItem* >(resultsTree->topLevelItem(i));
-        list.append(item->res.toAnnotation(m.data.type, name));
+        list.append(item->res.toAnnotation(m.data->type, name));
     }
 
     CreateAnnotationsTask* t = new CreateAnnotationsTask(m.getAnnotationObject(), list, m.groupName);

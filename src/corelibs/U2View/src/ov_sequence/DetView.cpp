@@ -56,7 +56,7 @@
 namespace U2 {
 
 DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
-: GSequenceLineViewAnnotated(p, ctx)
+    : GSequenceLineViewAnnotated(p, ctx)
 {
     showComplementAction = new QAction(tr("Show complement strand"), this);
     showComplementAction->setIcon(QIcon(":core/images/show_compl.png"));
@@ -125,10 +125,10 @@ void DetView::resizeEvent(QResizeEvent *e) {
 
 void DetView::updateActions() {
     bool hasComplement = ctx->getComplementTT()!=NULL;
-    showComplementAction->setEnabled(hasComplement );
+    showComplementAction->setEnabled(hasComplement);
 
     bool hasAmino = ctx->getAminoTT()!=NULL;
-    showTranslationAction->setEnabled(hasAmino );
+    showTranslationAction->setEnabled(hasAmino);
 }
 
 void DetView::showEvent(QShowEvent * e) {
@@ -249,7 +249,7 @@ void DetView::sl_translationRowsChanged(){
     completeUpdate();
 }
 
-void DetView::sl_showTranslationToggle( bool v ){
+void DetView::sl_showTranslationToggle(bool v){
     showTranslationAction->setChecked(v);
     getSequenceContext()->setTranslationsVisible(v);
     updateSize();
@@ -284,7 +284,7 @@ void DetViewRenderArea::updateLines() {
         numLines = 9;
         QVector<bool> v = detView->getSequenceContext()->getTranslationRowsVisibleStatus();
 
-        for(int i = 0; i<6; i++ ){
+        for(int i = 0; i<6; i++){
             if(!v[i]){
                 if(i<3){
                     baseLine--;
@@ -309,7 +309,7 @@ void DetViewRenderArea::updateLines() {
         numLines = 5;
         QVector<bool> v = detView->getSequenceContext()->getTranslationRowsVisibleStatus();
 
-        for(int i = 0; i<3; i++ ){
+        for(int i = 0; i<3; i++){
             if(!v[i]){
                     baseLine--;
                     rulerLine--;
@@ -320,29 +320,26 @@ void DetViewRenderArea::updateLines() {
     assert(numLines > 0);
 }
 
-U2Region DetViewRenderArea::getAnnotationYRange( const Annotation &a, int region,
-    const AnnotationSettings *as ) const
-{
-    const AnnotationData aData = a.getData( );
-    const U2Strand strand = aData.getStrand( );
-    const bool complement = strand.isCompementary( ) && getDetView( )->hasComplementaryStrand( );
+U2Region DetViewRenderArea::getAnnotationYRange(Annotation *a, int region, const AnnotationSettings *as) const {
+    const SharedAnnotationData aData = a->getData();
+    const U2Strand strand = aData->getStrand();
+    const bool complement = strand.isCompementary() && getDetView()->hasComplementaryStrand();
     const TriState aminoState = as->amino ? TriState_Yes : TriState_No;
-    const bool transl = getDetView( )->hasTranslations( ) && ( aminoState == TriState_Yes );
-    const int frame = U1AnnotationUtils::getRegionFrame( view->getSequenceLength( ), strand,
-        aData.isOrder( ), region, aData.getRegions( ) );
+    const bool transl = getDetView()->hasTranslations() && (aminoState == TriState_Yes);
+    const int frame = U1AnnotationUtils::getRegionFrame(view->getSequenceLength(), strand, aData->isOrder(), region, aData->getRegions());
     int line = -1;
     if (complement) {
         line = transl ? firstComplTransLine + frame : complementLine;
     } else {
         line = transl ? firstDirectTransLine + frame : baseLine;
     }
-    SAFE_POINT( -1 != line, "Unable to calculate annotation vertical position!", U2Region( ) );
-    int y = getLineY( line );
+    SAFE_POINT(-1 != line, "Unable to calculate annotation vertical position!", U2Region());
+    int y = getLineY(line);
     int minH = numLines * lineHeight + 5;
-    return U2Region( y + (height() - minH) / 2, lineHeight);
+    return U2Region(y + (height() - minH) / 2, lineHeight);
 }
 
-U2Region DetViewRenderArea::getMirroredYRange( const U2Strand &mirroredStrand) const {
+U2Region DetViewRenderArea::getMirroredYRange(const U2Strand &mirroredStrand) const {
     int line = mirroredStrand.isDirect() ? baseLine : complementLine;
     int y = getLineY(line);
     return U2Region(y, lineHeight);
@@ -422,7 +419,7 @@ void DetViewRenderArea::drawDirect(QPainter& p) {
     p.setPen(Qt::black);
 
     const U2Region visibleRange = view->getVisibleRange();
-    SAFE_POINT(visibleRange.length * charWidth <= width(), "Illegal visible range value!", );
+    SAFE_POINT(visibleRange.length * charWidth <= width(), "Illegal visible range value!",);
 
     QByteArray sequence = view->getSequenceContext()->getSequenceData(visibleRange);
     const char* seq = sequence.constData();
@@ -463,7 +460,7 @@ static QByteArray translate(DNATranslation* t, const char* seq, qint64 seqLen) {
     return res;
 }
 
-static int correctLine( QVector<bool> visibleRows, int line){
+static int correctLine(QVector<bool> visibleRows, int line){
     int retLine = line;
     assert(visibleRows.size() == 6);
     for(int i = 0; i < line; i++){
@@ -508,9 +505,9 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
     QFont fontIS = sequenceFontSmall;
     fontIS.setItalic(true);
 
-    QList<AnnotationData> annotationsInRange;
-    foreach( const Annotation &a, detView->findAnnotationsInRange( visibleRange ) ) {
-        annotationsInRange << a.getData( );
+    QList<SharedAnnotationData> annotationsInRange;
+    foreach (Annotation *a, detView->findAnnotationsInRange(visibleRange)) {
+        annotationsInRange << a->getData();
     }
 
     {//direct translations
@@ -616,8 +613,8 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
     p.setFont(sequenceFont);
 }
 
-bool DetViewRenderArea::deriveTranslationCharColor( qint64 pos, const U2Strand &strand,
-    const QList<AnnotationData> &annotationsInRange, QColor &result )
+bool DetViewRenderArea::deriveTranslationCharColor(qint64 pos, const U2Strand &strand,
+    const QList<SharedAnnotationData> &annotationsInRange, QColor &result)
 {
     // logic:
     // no annotations found -> grey
@@ -626,55 +623,53 @@ bool DetViewRenderArea::deriveTranslationCharColor( qint64 pos, const U2Strand &
     // 2+ annotations found on nucleic -> black
 
     int nAnnotations = 0;
-    const U2Region tripletRange = strand.isCompementary( ) ? U2Region( pos - 2, 2 )
-        : U2Region( pos, 2 );
+    const U2Region tripletRange = strand.isCompementary() ? U2Region(pos - 2, 2) : U2Region(pos, 2);
     AnnotationSettings *as = NULL;
-    AnnotationSettingsRegistry *registry = AppContext::getAnnotationsSettingsRegistry( );
-    const int sequenceLen = view->getSequenceLength( );
-    foreach ( const AnnotationData &aData, annotationsInRange ) {
-        if ( aData.getStrand( ) != strand ) {
+    AnnotationSettingsRegistry *registry = AppContext::getAnnotationsSettingsRegistry();
+    const int sequenceLen = view->getSequenceLength();
+    foreach (const SharedAnnotationData &aData, annotationsInRange) {
+        if (aData->getStrand() != strand) {
             continue;
         }
         bool annotationOk = false;
         AnnotationSettings *tas = NULL;
-        const bool order = aData.isOrder( );
-        const QVector<U2Region> &location = aData.getRegions( );
-        for ( int i = 0, n = location.size( ); i < n; i++ ) {
-            const U2Region &r = location.at( i );
-            if ( !r.contains(tripletRange ) ) {
+        const bool order = aData->isOrder();
+        const QVector<U2Region> &location = aData->getRegions();
+        for (int i = 0, n = location.size(); i < n; i++) {
+            const U2Region &r = location.at(i);
+            if (!r.contains(tripletRange)) {
                 continue;
             }
-            const int regionFrame = U1AnnotationUtils::getRegionFrame( sequenceLen, strand, order,
-                i, location );
-            const int posFrame = strand.isCompementary( ) ? ( sequenceLen - pos ) % 3 : pos % 3;
-            if ( regionFrame ==  posFrame ) {
-                tas = registry->getAnnotationSettings( aData );
-                if ( tas->visible ) {
+            const int regionFrame = U1AnnotationUtils::getRegionFrame(sequenceLen, strand, order, i, location);
+            const int posFrame = strand.isCompementary() ? (sequenceLen - pos) % 3 : pos % 3;
+            if (regionFrame ==  posFrame) {
+                tas = registry->getAnnotationSettings(aData);
+                if (tas->visible) {
                     annotationOk = true;
                     break;
                 }
             }
         }
-        if ( annotationOk ) {
+        if (annotationOk) {
             nAnnotations++;
             as = tas;
-            if ( nAnnotations > 1 ) {
+            if (nAnnotations > 1) {
                 break;
             }
         }
     }
-    if ( 0 == nAnnotations ) {
+    if (0 == nAnnotations) {
         result = Qt::gray;
         return false;
     }
 
-    if ( nAnnotations > 1 ) {
+    if (nAnnotations > 1) {
         result == Qt::black;
         return true;
     }
     const TriState aminoState = as->amino ? TriState_Yes : TriState_No;
-    const bool aminoOverlap = ( aminoState == TriState_Yes ); // annotation is drawn on amino strand -> use black color for letters
-    result = aminoOverlap ? Qt::black : as->color.darker( 300 );
+    const bool aminoOverlap = (aminoState == TriState_Yes); // annotation is drawn on amino strand -> use black color for letters
+    result = aminoOverlap ? Qt::black : as->color.darker(300);
 
     return true;
 }

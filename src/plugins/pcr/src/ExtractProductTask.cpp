@@ -90,19 +90,19 @@ DNASequence ExtractProductTask::getProductSequence() {
     return result;
 }
 
-AnnotationData ExtractProductTask::getPrimerAnnotation(const QByteArray &primer, int matchLengh, U2Strand::Direction strand, int sequenceLength) {
-    AnnotationData result;
+SharedAnnotationData ExtractProductTask::getPrimerAnnotation(const QByteArray &primer, int matchLengh, U2Strand::Direction strand, int sequenceLength) {
+    SharedAnnotationData result(new AnnotationData);
     U2Region region;
     if (U2Strand::Direct == strand) {
         region = U2Region(0, matchLengh);
     } else {
         region = U2Region(sequenceLength - matchLengh, matchLengh);
     }
-    result.location->regions << region;
-    result.location->strand = U2Strand(strand);
+    result->location->regions << region;
+    result->location->strand = U2Strand(strand);
 
-    result.name = GBFeatureUtils::getKeyInfo(GBFeatureKey_primer_bind).text;
-    result.qualifiers << U2Qualifier("sequence", primer);
+    result->name = GBFeatureUtils::getKeyInfo(GBFeatureKey_primer_bind).text;
+    result->qualifiers << U2Qualifier("sequence", primer);
     return result;
 }
 
@@ -126,8 +126,10 @@ void ExtractProductTask::run() {
     U2SequenceObject *sequenceObject = new U2SequenceObject(productSequence.getName(), productRef);
     doc->addObject(sequenceObject);
     AnnotationTableObject *annotations = new AnnotationTableObject(productSequence.getName() + " features", dbiRef);
-    annotations->addAnnotation(getPrimerAnnotation(product.forwardPrimer, product.forwardPrimerMatchLength, U2Strand::Direct, productSequence.length()));
-    annotations->addAnnotation(getPrimerAnnotation(product.reversePrimer, product.reversePrimerMatchLength, U2Strand::Complementary, productSequence.length()));
+    annotations->addAnnotations(QList<SharedAnnotationData>() << getPrimerAnnotation(product.forwardPrimer, product.forwardPrimerMatchLength,
+        U2Strand::Direct, productSequence.length()));
+    annotations->addAnnotations(QList<SharedAnnotationData>() << getPrimerAnnotation(product.reversePrimer, product.reversePrimerMatchLength,
+        U2Strand::Complementary, productSequence.length()));
     annotations->addObjectRelation(GObjectRelation(GObjectReference(sequenceObject), ObjectRole_Sequence));
     doc->addObject(annotations);
 

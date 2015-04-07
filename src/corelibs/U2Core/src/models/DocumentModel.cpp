@@ -59,8 +59,8 @@ const QString DocumentMimeData::MIME_TYPE("application/x-ugene-document-mime");
 Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const GUrl& url,
     U2OpStatus& os, const QVariantMap& hints)
 {
-    const U2DbiRef tmpDbiRef = fetchDbiRef( hints, os );
-    CHECK_OP( os, NULL );
+    const U2DbiRef tmpDbiRef = fetchDbiRef(hints, os);
+    CHECK_OP(os, NULL);
 
     Document* doc = new Document(this, iof, url, tmpDbiRef, QList<UnloadedObjectInfo>(),
         hints, QString());
@@ -89,10 +89,10 @@ Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, c
 
     Document* res = NULL;
 
-    const U2DbiRef dbiRef = fetchDbiRef( hints, os );
-    CHECK_OP( os, NULL );
+    const U2DbiRef dbiRef = fetchDbiRef(hints, os);
+    CHECK_OP(os, NULL);
 
-    if ( dbiRef.isValid( ) ) {
+    if (dbiRef.isValid()) {
         DbiConnection con(dbiRef, os);
         CHECK_OP(os, NULL);
         Q_UNUSED(con);
@@ -105,11 +105,11 @@ Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, c
     return res;
 }
 
-U2DbiRef DocumentFormat::fetchDbiRef( const QVariantMap &hints, U2OpStatus &os ) const {
-    if ( hints.contains( DBI_REF_HINT ) ) {
-        return hints.value( DBI_REF_HINT ).value<U2DbiRef>( );
+U2DbiRef DocumentFormat::fetchDbiRef(const QVariantMap &hints, U2OpStatus &os) const {
+    if (hints.contains(DBI_REF_HINT)) {
+        return hints.value(DBI_REF_HINT).value<U2DbiRef>();
     } else {
-        return AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
+        return AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
     }
 }
 
@@ -118,14 +118,14 @@ DNASequence* DocumentFormat::loadSequence(IOAdapter*, U2OpStatus& os) {
     return NULL;
 }
 
-void DocumentFormat::storeDocument( Document* , IOAdapter* , U2OpStatus& os) {
+void DocumentFormat::storeDocument(Document* , IOAdapter* , U2OpStatus& os) {
     assert(0);
     os.setError(tr("Writing is not supported for this format (%1). Feel free to send a feature request though.").arg(getFormatName()));
 }
 
 void DocumentFormat::storeDocument(Document* doc, U2OpStatus& os, IOAdapterFactory* iof, const GUrl& newDocURL) {
     SAFE_POINT_EXT(formatFlags.testFlag(DocumentFormatFlag_SupportWriting),
-        os.setError(tr("Writing is not supported for this format (%1). Feel free to send a feature request though.").arg(getFormatName())), );
+        os.setError(tr("Writing is not supported for this format (%1). Feel free to send a feature request though.").arg(getFormatName())),);
 
     assert(doc->getDocumentModLock(DocumentModLock_FORMAT_AS_INSTANCE) == NULL);
     if (iof == NULL) {
@@ -137,7 +137,7 @@ void DocumentFormat::storeDocument(Document* doc, U2OpStatus& os, IOAdapterFacto
     if (url.isLocalFile()) {
         QString error;
         QString res = GUrlUtils::prepareFileLocation(url.getURLString(), os);
-        CHECK_OP(os, );
+        CHECK_OP(os,);
         Q_UNUSED(res);
         assert(res == url.getURLString()); //ensure that GUrls are always canonical
     }
@@ -287,11 +287,11 @@ void Document::setObjectsInUse(const QSet<U2DataId> &objs) {
 }
 
 void Document::addObject(GObject* obj){
-    SAFE_POINT(obj != NULL, "Object is NULL", );
-    SAFE_POINT(obj->getDocument() == NULL, "Object already belongs to some document", );
-    SAFE_POINT(df->isObjectOpSupported(this, DocumentFormat::DocObjectOp_Add, obj->getGObjectType()), "Document format doesn't support new objects adding", );
-    SAFE_POINT(isLoaded(), "The destination document is not loaded", );
-    SAFE_POINT(obj->getGObjectType() !=GObjectTypes::UNLOADED, "Object is not loaded", );
+    SAFE_POINT(obj != NULL, "Object is NULL",);
+    SAFE_POINT(obj->getDocument() == NULL, "Object already belongs to some document",);
+    SAFE_POINT(df->isObjectOpSupported(this, DocumentFormat::DocObjectOp_Add, obj->getGObjectType()), "Document format doesn't support new objects adding",);
+    SAFE_POINT(isLoaded(), "The destination document is not loaded",);
+    SAFE_POINT(obj->getGObjectType() !=GObjectTypes::UNLOADED, "Object is not loaded",);
 
     _addObject(obj);
 }
@@ -458,7 +458,7 @@ private:
 };
 
 void Document::loadFrom(Document* sourceDoc) {
-    SAFE_POINT(!isLoaded(), QString("Document is already loaded: ").arg(getURLString()), )
+    SAFE_POINT(!isLoaded(), QString("Document is already loaded: ").arg(getURLString()),)
 
     DocumentChildEventsHelper eventsHelper(this);
     Q_UNUSED(eventsHelper);
@@ -692,7 +692,7 @@ bool Document::isDatabaseConnection() const {
 }
 
 void Document::setModified(bool modified, const QString& modType) {
-    CHECK(!df->checkFlags(DocumentFormatFlag_DirectWriteOperations), );
+    CHECK(!df->checkFlags(DocumentFormatFlag_DirectWriteOperations),);
     if (loadStateChangeMode && modified && modType == StateLockModType_AddChild) { //ignore modification events during loading/unloading
         return;
     }
@@ -767,12 +767,12 @@ void Document::removeObjectsDataFromDbi(QList<GObject *> objects) {
     } else {
         U2OpStatus2Log os;
         DbiOperationsBlock opBlock(dbiRef, os);
-        CHECK_OP(os, );
+        CHECK_OP(os,);
         Q_UNUSED(opBlock);
 
         DbiConnection con(dbiRef, os);
-        CHECK_OP(os, );
-        CHECK(con.dbi->getFeatures().contains(U2DbiFeature_RemoveObjects), );
+        CHECK_OP(os,);
+        CHECK(con.dbi->getFeatures().contains(U2DbiFeature_RemoveObjects),);
 
         foreach (GObject* object, objects) {
             U2OpStatus2Log osLog;
@@ -800,7 +800,7 @@ void Document::propagateModLocks(Document* doc)  const {
     }
 }
 
-DocumentMimeData::DocumentMimeData( Document* obj )
+DocumentMimeData::DocumentMimeData(Document* obj)
     : objPtr(obj){
     setUrls(QList<QUrl>() << QUrl(GUrlUtils::gUrl2qUrl(obj->getURL())));
 }

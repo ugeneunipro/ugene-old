@@ -35,33 +35,29 @@ namespace U2 {
 
 using namespace Workflow;
 
-AnnotationsMessageTranslator::AnnotationsMessageTranslator( const QVariant &atomicMessage,
-    WorkflowContext *initContext )
-    : BaseMessageTranslator( atomicMessage, initContext )
+AnnotationsMessageTranslator::AnnotationsMessageTranslator(const QVariant &atomicMessage, WorkflowContext *initContext)
+    : BaseMessageTranslator(atomicMessage, initContext)
 {
-    annTable = StorageUtils::getAnnotationTable( context->getDataStorage( ), source );
+    annTable = StorageUtils::getAnnotationTable(context->getDataStorage(), source);
 }
 
-QString AnnotationsMessageTranslator::getTranslation( ) const {
-    QString result = QObject::tr( ANNOTATIONS_COUNT_LABEL ) + QString::number( annTable.size( ) )
-        + INFO_TAGS_SEPARATOR + NEW_LINE_SYMBOL;
+QString AnnotationsMessageTranslator::getTranslation() const {
+    QString result = QObject::tr(ANNOTATIONS_COUNT_LABEL) + QString::number(annTable.size()) + INFO_TAGS_SEPARATOR + NEW_LINE_SYMBOL;
     quint32 annotationsCounter = 1;
-    foreach( const AnnotationData &data, annTable ) {
-        result += " " + QString::number( annotationsCounter ) + ". "
-            + QObject::tr( ANNOTATION_NAME_LABEL ) + "'" + data.name + "'"
-            + INFO_FEATURES_SEPARATOR;
-        QVector<U2Region> annotatedRegions = data.getRegions( );
-        if ( !annotatedRegions.isEmpty( ) ) {
-            result += QObject::tr( REGION_LIST_LABEL );
-            foreach ( const U2Region &region, annotatedRegions ) {
-                result += region.toString( ) + INFO_FEATURES_SEPARATOR;
+    foreach (const SharedAnnotationData &data, annTable) {
+        result += " " + QString::number(annotationsCounter) + ". " + QObject::tr(ANNOTATION_NAME_LABEL) + "'" + data->name + "'" + INFO_FEATURES_SEPARATOR;
+        QVector<U2Region> annotatedRegions = data->getRegions();
+        if (!annotatedRegions.isEmpty()) {
+            result += QObject::tr(REGION_LIST_LABEL);
+            foreach (const U2Region &region, annotatedRegions) {
+                result += region.toString() + INFO_FEATURES_SEPARATOR;
             }
-            result = result.left( result.size( ) - INFO_FEATURES_SEPARATOR.size( ) );
+            result = result.left(result.size() - INFO_FEATURES_SEPARATOR.size());
         }
         result += INFO_TAGS_SEPARATOR + NEW_LINE_SYMBOL;
         ++annotationsCounter;
     }
-    result = result.left( result.size( ) - INFO_TAGS_SEPARATOR.size( ) - NEW_LINE_SYMBOL.size( ) );
+    result = result.left(result.size() - INFO_TAGS_SEPARATOR.size() - NEW_LINE_SYMBOL.size());
     return result;
 }
 

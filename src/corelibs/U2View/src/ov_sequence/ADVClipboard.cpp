@@ -63,7 +63,6 @@ ADVClipboard::ADVClipboard(AnnotatedDNAView* c) : QObject(c) {
         connectSequence(sCtx);
     }
 
-
     copySequenceAction = new QAction(QIcon(":/core/images/copy_sequence.png"), tr("Copy sequence"), this);
     copySequenceAction->setObjectName("Copy sequence");
     copySequenceAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_C));
@@ -95,24 +94,22 @@ ADVClipboard::ADVClipboard(AnnotatedDNAView* c) : QObject(c) {
     updateActions();
 }
 
-void ADVClipboard::connectSequence(ADVSequenceObjectContext* sCtx) {
+void ADVClipboard::connectSequence(ADVSequenceObjectContext *sCtx) {
     connect(sCtx->getSequenceSelection(),
-      SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)),
-      SLOT(sl_onDNASelectionChanged(LRegionsSelection*, const QVector<U2Region>& , const QVector<U2Region>&)));
+      SIGNAL(si_selectionChanged(LRegionsSelection *, const QVector<U2Region> &, const QVector<U2Region> &)),
+      SLOT(sl_onDNASelectionChanged(LRegionsSelection *, const QVector<U2Region> &, const QVector<U2Region> &)));
 
-    connect( sCtx->getAnnotatedDNAView( )->getAnnotationsSelection( ),
-      SIGNAL( si_selectionChanged( AnnotationSelection *, const QList<Annotation> &, const QList<Annotation> & ) ),
-      SLOT( sl_onAnnotationSelectionChanged( AnnotationSelection *, const QList<Annotation> &, const QList<Annotation> & ) ) );
+    connect(sCtx->getAnnotatedDNAView()->getAnnotationsSelection(),
+      SIGNAL(si_selectionChanged(AnnotationSelection *, const QList<Annotation *> &, const QList<Annotation *> &)),
+      SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection *, const QList<Annotation *> &, const QList<Annotation *> &)));
 }
 
-void ADVClipboard::sl_onDNASelectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&) {
+void ADVClipboard::sl_onDNASelectionChanged(LRegionsSelection *, const QVector<U2Region> &, const QVector<U2Region> &) {
     updateActions();
 }
 
-void ADVClipboard::sl_onAnnotationSelectionChanged( AnnotationSelection *,
-    const QList<Annotation> &, const QList<Annotation> & )
-{
-    updateActions( );
+void ADVClipboard::sl_onAnnotationSelectionChanged(AnnotationSelection *, const QList<Annotation *> &, const QList<Annotation *> &) {
+    updateActions();
 }
 
 void ADVClipboard::copySequenceSelection(bool complement, bool amino) {
@@ -162,15 +159,15 @@ void ADVClipboard::sl_copyAnnotationSequence() {
         if (i!=0) {
             res.append('\n');
         }
-        ADVSequenceObjectContext* seqCtx = ctx->getSequenceContext(sd.annotation.getGObject());
+        ADVSequenceObjectContext* seqCtx = ctx->getSequenceContext(sd.annotation->getGObject());
         if (seqCtx == NULL) {
             res.append(gapSym);//?? generate sequence with len == region-len using default sym?
             continue;
         }
-        DNATranslation* complTT = sd.annotation.getStrand().isCompementary() ? seqCtx->getComplementTT() : NULL;
+        DNATranslation* complTT = sd.annotation->getStrand().isCompementary() ? seqCtx->getComplementTT() : NULL;
         U2OpStatus2Log os;
         AnnotationSelection::getAnnotationSequence(res, sd, gapSym, seqCtx->getSequenceRef(), complTT, NULL, os);
-        CHECK_OP(os, );
+        CHECK_OP(os,);
     }
     QApplication::clipboard()->setText(res);
 }
@@ -188,20 +185,20 @@ void ADVClipboard::sl_copyAnnotationSequenceTranslation() {
         if (i!=0) {
             res.append('\n');
         }
-        ADVSequenceObjectContext* seqCtx = ctx->getSequenceContext(sd.annotation.getGObject());
+        ADVSequenceObjectContext* seqCtx = ctx->getSequenceContext(sd.annotation->getGObject());
         if (seqCtx == NULL) {
             res.append(gapSym);//?? generate sequence with len == region-len using default sym?
             continue;
         }
-        DNATranslation* complTT = sd.annotation.getStrand().isCompementary() ? seqCtx->getComplementTT() : NULL;
-        DNATranslation* aminoTT = seqCtx->getAminoTT();
+        DNATranslation *complTT = sd.annotation->getStrand().isCompementary() ? seqCtx->getComplementTT() : NULL;
+        DNATranslation *aminoTT = seqCtx->getAminoTT();
         if (aminoTT == NULL) {
             continue;
         }
         U2OpStatus2Log os;
-        QList<QByteArray> parts = U2SequenceUtils::extractRegions(seqCtx->getSequenceRef(),
-            sd.annotation.getRegions(), complTT, aminoTT, sd.annotation.isJoin(), os);
-        CHECK_OP(os, );
+        QList<QByteArray> parts = U2SequenceUtils::extractRegions(seqCtx->getSequenceRef(), sd.annotation->getRegions(), complTT,
+            aminoTT, sd.annotation->isJoin(), os);
+        CHECK_OP(os,);
         res = U1SequenceUtils::joinRegions(parts);
     }
     QApplication::clipboard()->setText(res);
@@ -226,7 +223,7 @@ void ADVClipboard::updateActions() {
     if (hasAnnotationSelection) {
         const QList<AnnotationSelectionData>& as = ctx->getAnnotationsSelection()->getSelection();
         foreach(const AnnotationSelectionData& sd, as) {
-            ADVSequenceObjectContext* asCtx = ctx->getSequenceContext(sd.annotation.getGObject());
+            ADVSequenceObjectContext* asCtx = ctx->getSequenceContext(sd.annotation->getGObject());
             if (asCtx == NULL) {
                 continue;
             }

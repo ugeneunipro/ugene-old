@@ -44,8 +44,8 @@ namespace U2 {
 /* CircularAnnotationItem                                               */
 /************************************************************************/
 
-CircularAnnotationItem::CircularAnnotationItem( const Annotation &ann, CircularAnnotationRegionItem* region, CircularViewRenderArea* _ra)
-    : annotation( ann ), ra(_ra)
+CircularAnnotationItem::CircularAnnotationItem(Annotation *ann, CircularAnnotationRegionItem* region, CircularViewRenderArea* _ra)
+    : annotation(ann), ra(_ra)
 {
     assert(region->parent == NULL);
     region->parent = this;
@@ -54,8 +54,8 @@ CircularAnnotationItem::CircularAnnotationItem( const Annotation &ann, CircularA
     isSelected = false;
 }
 
-CircularAnnotationItem::CircularAnnotationItem( const Annotation &ann, QList<CircularAnnotationRegionItem*>& _regions, CircularViewRenderArea* _ra)
-    : annotation( ann ), regions(_regions), ra(_ra)
+CircularAnnotationItem::CircularAnnotationItem(Annotation *ann, QList<CircularAnnotationRegionItem*>& _regions, CircularViewRenderArea* _ra)
+    : annotation(ann), regions(_regions), ra(_ra)
 {
     isSelected = false;
     QPainterPath path;
@@ -77,13 +77,13 @@ CircularAnnotationItem::~CircularAnnotationItem()
     regions.clear();
 }
 
-void CircularAnnotationItem::paint( QPainter *p,const QStyleOptionGraphicsItem *item, QWidget *widget ) {
-    Q_UNUSED( item );
-    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
-    AnnotationSettings *as = asr->getAnnotationSettings( annotation.getData( ) );
+void CircularAnnotationItem::paint(QPainter *p,const QStyleOptionGraphicsItem *item, QWidget *widget) {
+    Q_UNUSED(item);
+    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
+    AnnotationSettings *as = asr->getAnnotationSettings(annotation->getData());
     this->color = as->color;
-    foreach ( CircularAnnotationRegionItem *item, regions ) {
-        item->paint( p, NULL, widget );
+    foreach (CircularAnnotationRegionItem *item, regions) {
+        item->paint(p, NULL, widget);
     }
 }
 
@@ -91,7 +91,7 @@ QRectF CircularAnnotationItem::boundingRect() const {
     return _boundingRect;
 }
 
-Annotation CircularAnnotationItem::getAnnotation() const {
+Annotation * CircularAnnotationItem::getAnnotation() const {
     return annotation;
 }
 
@@ -121,7 +121,7 @@ CircularAnnotationRegionItem* CircularAnnotationItem::getContainingRegion(const 
     return NULL;
 }
 
-void CircularAnnotationItem::setSelected( bool isSelected ) {
+void CircularAnnotationItem::setSelected(bool isSelected) {
     this->isSelected = isSelected;
 }
 
@@ -133,7 +133,7 @@ const QList<CircularAnnotationRegionItem*>& CircularAnnotationItem::getRegions()
 /* CircularAnnotationRegionItem                                        */
 /************************************************************************/
 
-CircularAnnotationRegionItem::CircularAnnotationRegionItem(const QPainterPath& path, bool _isShort, int _number )
+CircularAnnotationRegionItem::CircularAnnotationRegionItem(const QPainterPath& path, bool _isShort, int _number)
     : QGraphicsPathItem(path),
       parent(NULL),
       label(NULL),
@@ -142,7 +142,7 @@ CircularAnnotationRegionItem::CircularAnnotationRegionItem(const QPainterPath& p
       arrowCenterPercentage(0)
 {}
 
-void CircularAnnotationRegionItem::paint( QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *widget /* = 0 */ ) {
+void CircularAnnotationRegionItem::paint(QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *widget /* = 0 */) {
     Q_UNUSED(widget);
     Q_UNUSED(option);
     assert(parent!=NULL);
@@ -160,7 +160,7 @@ void CircularAnnotationRegionItem::paint( QPainter *p, const QStyleOptionGraphic
     int innerRadius = renderArea->innerEllipseSize/2 + yLevel * renderArea->ellipseDelta/2;
     int outerRadius = renderArea->outerEllipseSize/2 + yLevel * renderArea->ellipseDelta/2;
     QColor &color(parent->color);
-    QRadialGradient radialGrad(QPointF(0, 0), outerRadius );
+    QRadialGradient radialGrad(QPointF(0, 0), outerRadius);
     radialGrad.setColorAt(1, color);
     radialGrad.setColorAt((float)innerRadius / (float)outerRadius, QColor(color.red()*0.7,color.green()*0.7,color.blue()*0.7));
     radialGrad.setColorAt(0, Qt::black);
@@ -176,7 +176,7 @@ CircularAnnotationLabel* CircularAnnotationRegionItem::getLabel() const {
     return label;
 }
 
-void CircularAnnotationRegionItem::setLabel( CircularAnnotationLabel* label ) {
+void CircularAnnotationRegionItem::setLabel(CircularAnnotationLabel* label) {
     this->label = label;
 }
 
@@ -185,68 +185,63 @@ void CircularAnnotationRegionItem::setLabel( CircularAnnotationLabel* label ) {
 /************************************************************************/
 
 static bool labelLengthLessThan(CircularAnnotationLabel* l1, CircularAnnotationLabel* l2) {
-    int length1 =  l1->getAnnotation().getRegions()[l1->getRegion()].length;
-    int length2 =  l2->getAnnotation().getRegions()[l2->getRegion()].length;
+    int length1 = l1->getAnnotation()->getRegions()[l1->getRegion()].length;
+    int length2 =  l2->getAnnotation()->getRegions()[l2->getRegion()].length;
     return length1 < length2;
 }
 
-CircularAnnotationLabel::CircularAnnotationLabel( const Annotation &ann,
-                                                  const QVector<U2Region> &annLocation,
-                                                  bool isAutoAnnotation,
-                                                  int _region,
-                                                  int sequenceLength,
-                                                  const QFont &font,
-                                                  CircularViewRenderArea *renderArea )
-    : annotation( ann ),
+CircularAnnotationLabel::CircularAnnotationLabel(Annotation *ann, const QVector<U2Region> &annLocation, bool isAutoAnnotation,
+    int _region, int sequenceLength, const QFont &font, CircularViewRenderArea *renderArea)
+    : annotation(ann),
       location(annLocation),
       isAutoAnnotation(isAutoAnnotation),
-      labelFont( font ),
-      region( _region ),
-      ra( renderArea ),
+      labelFont(font),
+      region(_region),
+      ra(renderArea),
       regionItem(NULL),
-      hasPosition( false ),
-      inner( false ),
-      seqLen( sequenceLength )
+      hasPosition(false),
+      inner(false),
+      seqLen(sequenceLength)
 {
-    const AnnotationData aData = annotation.getData( );
+    const SharedAnnotationData &aData = annotation->getData();
     SAFE_POINT(0 <= region && region < location.size(), "Invalid location index", );
     const U2Region &r = location[region];
     const qreal startAngle = renderArea->rotationDegree + (float)r.startPos / (float)sequenceLength * 360;
-    const qreal spanAngle = ( float ) r.length / ( float ) sequenceLength * 360;
+    const qreal spanAngle = (float) r.length / (float) sequenceLength * 360;
 
-    const float middleAngle = 360 - ( startAngle + spanAngle / 2.0 );
+    const float middleAngle = 360 - (startAngle + spanAngle / 2.0);
     annotationAngle = middleAngle;
-    if ( annotationAngle < 0 ) {
+    if (annotationAngle < 0) {
         annotationAngle += 360;
     }
 
     startA = startAngle * PI / 180;
     endA = spanAngle * PI / 180 + startA;
     spanA = spanAngle * PI / 180;
-    if (  startA > 2 * PI ) {
+    if ( startA > 2 * PI) {
         startA -= 2 * PI;
     }
-    else if ( startA < 0 ) {
+    else if (startA < 0) {
         startA += 2 * PI;
     }
-    if ( endA > 2 * PI ) {
+    if (endA > 2 * PI) {
         endA -= 2 * PI;
     }
-    else if ( endA < 0 ) {
+    else if (endA < 0) {
         endA += 2 * PI;
     }
 
     const int yLevel = renderArea->annotationYLevel[annotation];
 
-    midRect = QRectF( -renderArea->middleEllipseSize / 2 - yLevel * renderArea->ellipseDelta / 2,
+    midRect = QRectF(-renderArea->middleEllipseSize / 2 - yLevel * renderArea->ellipseDelta / 2,
         -renderArea->middleEllipseSize / 2 - yLevel * renderArea->ellipseDelta / 2,
         renderArea->middleEllipseSize + yLevel * renderArea->ellipseDelta,
-        renderArea->middleEllipseSize + yLevel * renderArea->ellipseDelta );
-    setVisible( false );
+        renderArea->middleEllipseSize + yLevel * renderArea->ellipseDelta);
+    setVisible(false);
 
-    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
-    AnnotationSettings *as = asr->getAnnotationSettings( aData );
-    labelText = GSequenceLineViewAnnotated::prepareAnnotationText( aData, as );
+    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
+    AnnotationSettings *as = asr->getAnnotationSettings(aData);
+    labelText = GSequenceLineViewAnnotated::prepareAnnotationText(aData, as);
 }
 
 void CircularAnnotationLabel::setAnnRegion(CircularAnnotationRegionItem *region) {
@@ -261,8 +256,8 @@ bool CircularAnnotationLabel::canFitToTheRegion() const {
     qreal labelTextPixSize = metrics.width(labelText);
     // (can fit in width) && (can fit in height)
     if ((regionItem->getArrowCenterPercentage() * path.length() > labelTextPixSize / 2)
-        && (metrics.height() + ra->FREE_SPACE_HEIGHT_FOR_INTERNAL_LABELS
-            < ra->circularView->CV_REGION_ITEM_WIDTH)) {
+        && (metrics.height() + ra->FREE_SPACE_HEIGHT_FOR_INTERNAL_LABELS < ra->circularView->CV_REGION_ITEM_WIDTH))
+    {
         return true;
     }
     return false;
@@ -270,7 +265,7 @@ bool CircularAnnotationLabel::canFitToTheRegion() const {
 
 void CircularAnnotationLabel::drawLabelInsideRegion(QPainter *p, bool canFit) {
     QPainterPath path = regionItem->path();
-    SAFE_POINT( path.length() != 0, "Region path has zero length", );
+    SAFE_POINT(path.length() != 0, "Region path has zero length",);
     QFontMetrics metrics(labelFont,ra);
 
     if (metrics.height() + ra->FREE_SPACE_HEIGHT_FOR_INTERNAL_LABELS
@@ -293,8 +288,8 @@ void CircularAnnotationLabel::drawLabelInsideRegion(QPainter *p, bool canFit) {
     qreal percentIncreaseSgn = -1;
     qreal arrowWidthPercentage = (ra->outerEllipseSize - ra->innerEllipseSize + 5) / (2 * path.length());
 
-    AnnotationData aData = annotation.getData();
-    bool isDirect = aData.getStrand().isDirect();
+    const SharedAnnotationData &aData = annotation->getData();
+    bool isDirect = aData->getStrand().isDirect();
     // percent of annotation arrow path where label start position is located
     if (isDirect) {
         qreal a = path.angleAtPercent(labelCenter);
@@ -318,7 +313,7 @@ void CircularAnnotationLabel::drawLabelInsideRegion(QPainter *p, bool canFit) {
     }
 
 
-    for ( int i = 0; i < labelText.size(); i++ ) {
+    for (int i = 0; i < labelText.size(); i++) {
         QPointF point = path.pointAtPercent(percent);
         qreal angle = path.angleAtPercent(percent);   // Clockwise is negative
 
@@ -330,7 +325,7 @@ void CircularAnnotationLabel::drawLabelInsideRegion(QPainter *p, bool canFit) {
         p->rotate(-angle + isDirect*180);
         // Draw a line width above the origin to move the text above the line
         // and let Qt do the transformations
-        p->drawText(QPoint( 0, - p->pen().width()), QString(labelText[i]));
+        p->drawText(QPoint(0, - p->pen().width()), QString(labelText[i]));
         p->restore();
 
         percent += percentIncreaseSgn * metrics.width(labelText[i]) / path.length();
@@ -488,8 +483,7 @@ void CircularAnnotationLabel::getConnectionPoint() {
     }
 }
 
-void CircularAnnotationLabel::paint( QPainter *p,const QStyleOptionGraphicsItem *item,QWidget *widget )
-{
+void CircularAnnotationLabel::paint(QPainter *p,const QStyleOptionGraphicsItem *item,QWidget *widget) {
     Q_UNUSED(item);
     Q_UNUSED(widget);
 
@@ -512,9 +506,10 @@ void CircularAnnotationLabel::paint( QPainter *p,const QStyleOptionGraphicsItem 
 
     bool canFit = canFitToTheRegion();
 
-    SAFE_POINT(ra->settings != NULL, "Circular view settings is NULL", );
-    if (ra->settings->labelMode == CircularViewSettings::Inside ||
-            (ra->settings->labelMode == CircularViewSettings::Mixed && canFit && !isAutoAnnotation)) {
+    SAFE_POINT(ra->settings != NULL, "Circular view settings is NULL",);
+    if (ra->settings->labelMode == CircularViewSettings::Inside
+        || (ra->settings->labelMode == CircularViewSettings::Mixed && canFit && !isAutoAnnotation))
+    {
         drawLabelInsideRegion(p, canFit);
     }
     if (hasPosition && (ra->settings->labelMode == CircularViewSettings::Outside ||
@@ -524,7 +519,7 @@ void CircularAnnotationLabel::paint( QPainter *p,const QStyleOptionGraphicsItem 
     p->restore();
 }
 
-Annotation CircularAnnotationLabel::getAnnotation() const {
+Annotation * CircularAnnotationLabel::getAnnotation() const {
     return annotation;
 }
 
@@ -562,7 +557,7 @@ QRectF CircularAnnotationLabel::boundingRect() const {
     return bound;
 }
 
-bool CircularAnnotationLabel::contains( const QPointF &point ) {
+bool CircularAnnotationLabel::contains(const QPointF &point) {
     return boundingRect().contains(point) || QGraphicsLineItem(QLine(labelPos, connectionPoint)).contains(point);
 }
 

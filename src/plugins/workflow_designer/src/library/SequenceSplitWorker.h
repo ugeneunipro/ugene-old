@@ -36,7 +36,7 @@ namespace LocalWorkflow {
 class SequenceSplitPromter : public PrompterBase<SequenceSplitPromter> {
     Q_OBJECT
 public:
-    SequenceSplitPromter( Actor * p = 0 ) : PrompterBase<SequenceSplitPromter>(p) {};
+    SequenceSplitPromter(Actor *p = 0) : PrompterBase<SequenceSplitPromter>(p) {};
 protected:
     QString composeRichDoc();
 };
@@ -44,8 +44,11 @@ protected:
 class SequenceSplitWorker : public BaseWorker {
     Q_OBJECT
 public:
-    SequenceSplitWorker( Actor * p ) : BaseWorker(p),
-        seqPort(NULL), outPort(NULL), useAcceptedOrFiltered(false) {};
+    SequenceSplitWorker(Actor *p)
+        : BaseWorker(p), seqPort(NULL), outPort(NULL), useAcceptedOrFiltered(false)
+    {
+    
+    }
 
     virtual void init();
     virtual Task * tick();
@@ -57,22 +60,22 @@ protected:
 
 private:
     QList<Task *> ssTasks;
-    QList<AnnotationData> inputAnns;
+    QList<SharedAnnotationData> inputAnns;
 
     QStringList acceptedNames;
     QStringList filteredNames;
     bool useAcceptedOrFiltered;
     ExtractAnnotatedRegionTaskSettings cfg;
 private slots:
-    void sl_onTaskFinished( Task * t );
+    void sl_onTaskFinished(Task *t);
 };
 
 class SequenceSplitWorkerFactory : public DomainFactory {
 public:
     const static QString ACTOR;
-    SequenceSplitWorkerFactory() : DomainFactory( ACTOR ) {};
+    SequenceSplitWorkerFactory() : DomainFactory(ACTOR) {};
     static void init();
-    virtual Worker * createWorker( Actor * a );
+    virtual Worker * createWorker(Actor *a);
 };
 
 } //ns LocalWorkflow

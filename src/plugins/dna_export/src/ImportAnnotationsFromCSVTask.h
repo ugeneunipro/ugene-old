@@ -74,9 +74,9 @@ public:
     QList<Task*> onSubTaskFinished(Task* subTask);
 
 private:
-    QMap< QString, QList<AnnotationData> > prepareAnnotations() const;
+    QMap<QString, QList<SharedAnnotationData> > prepareAnnotations() const;
 
-    Document* prepareNewDocument(const QMap< QString, QList<AnnotationData> > &annotations);
+    Document * prepareNewDocument(const QMap<QString, QList<SharedAnnotationData> > &annotations);
 
     ImportAnnotationsFromCSVTaskConfig  config;
     ReadCSVAsAnnotationsTask*           readTask;
@@ -92,7 +92,7 @@ public:
 
     void run();
 
-    QMap<QString, QList<AnnotationData> > getResult() const {return result;}
+    QMap<QString, QList<SharedAnnotationData> > getResult() const { return result; }
 
     static QList<QStringList> parseLinesIntoTokens(const QString& text, const CSVParsingConfig& config, int& maxColumns, TaskStateInfo& ti);
 
@@ -109,7 +109,7 @@ private:
     QString                         file;
     CSVParsingConfig                config;
     // Group name <-> annotations
-    QMap< QString, QList<AnnotationData> > result;
+    QMap<QString, QList<SharedAnnotationData> > result;
 };
 
 } // namespace U2

@@ -42,30 +42,29 @@ void FindAlgorithmResult::clear() {
     err = 0;
 }
 
-AnnotationData FindAlgorithmResult::toAnnotation(const QString &name, bool splitCircular, int seqLen) const {
-    SAFE_POINT( !splitCircular || (seqLen != -1), "Sequence length is not set!", AnnotationData());
-    AnnotationData data;
-    data.name = name;
+SharedAnnotationData FindAlgorithmResult::toAnnotation(const QString &name, bool splitCircular, int seqLen) const {
+    SAFE_POINT(!splitCircular || (seqLen != -1), "Sequence length is not set!", SharedAnnotationData());
+    SharedAnnotationData data(new AnnotationData);
+    data->name = name;
     if (splitCircular && (region.endPos() > seqLen) ) {
         if (region.startPos >= seqLen) {
-            data.location->regions << U2Region(region.startPos - seqLen, region.length);
+            data->location->regions << U2Region(region.startPos - seqLen, region.length);
         } else {
-            SAFE_POINT(region.startPos < seqLen, "Region is not correct", AnnotationData());
-            data.location->regions << U2Region(region.startPos, seqLen - region.startPos);
-            data.location->regions << U2Region(0, region.length - (seqLen - region.startPos));
+            SAFE_POINT(region.startPos < seqLen, "Region is not correct", SharedAnnotationData());
+            data->location->regions << U2Region(region.startPos, seqLen - region.startPos);
+            data->location->regions << U2Region(0, region.length - (seqLen - region.startPos));
         }
     } else {
-        data.location->regions << region;
+        data->location->regions << region;
     }
-    data.setStrand(strand);
-    data.qualifiers.append(U2Qualifier("mismatches", QString::number(err)));
+    data->setStrand(strand);
+    data->qualifiers.append(U2Qualifier("mismatches", QString::number(err)));
     return data;
 }
 
-QList<AnnotationData> FindAlgorithmResult::toTable(const QList<FindAlgorithmResult> &res,
-                                                   const QString &name, bool splitCircular, int seqLen) {
-    QList<AnnotationData> list;
-    foreach (const FindAlgorithmResult& f, res) {
+QList<SharedAnnotationData> FindAlgorithmResult::toTable(const QList<FindAlgorithmResult> &res, const QString &name, bool splitCircular, int seqLen) {
+    QList<SharedAnnotationData> list;
+    foreach (const FindAlgorithmResult &f, res) {
         list.append(f.toAnnotation(name, splitCircular, seqLen));
     }
     return list;

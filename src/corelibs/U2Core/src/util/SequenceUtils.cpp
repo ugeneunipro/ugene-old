@@ -31,6 +31,7 @@
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2SequenceUtils.h>
@@ -171,19 +172,19 @@ static U2SequenceObject* storeSequenceUseGenbankHeader(const QVariantMap& hints,
 
 //TODO move to AnnotationUtils ?
 static void shiftAnnotations(AnnotationTableObject *newAnnObj, QList<AnnotationTableObject *> annObjects, const U2Region &contigReg) {
-    AnnotationData ad;
-    ad.name = "contig";
-    ad.location->regions << contigReg;
-    newAnnObj->addAnnotation(ad);
+    SharedAnnotationData ad(new AnnotationData);
+    ad->name = "contig";
+    ad->location->regions << contigReg;
+    newAnnObj->addAnnotations(QList<SharedAnnotationData>() << ad);
 
     foreach (AnnotationTableObject *annObj, annObjects) {
-        foreach (const Annotation &a, annObj->getAnnotations()) {
-            AnnotationData newAnnotation = a.getData();
-            U2Location newLocation = newAnnotation.location;
+        foreach (Annotation *a, annObj->getAnnotations()) {
+            SharedAnnotationData newAnnotation = a->getData();
+            U2Location newLocation = newAnnotation->location;
             U2Region::shift(contigReg.startPos, newLocation->regions);
-            newAnnotation.location = newLocation;
+            newAnnotation->location = newLocation;
 
-            newAnnObj->addAnnotation(newAnnotation, a.getGroup().getName());
+            newAnnObj->addAnnotations(QList<SharedAnnotationData>() << newAnnotation, a->getGroup()->getName());
         }
     }
 }

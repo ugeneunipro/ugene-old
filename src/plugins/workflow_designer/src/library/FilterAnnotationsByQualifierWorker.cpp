@@ -41,9 +41,9 @@ namespace LocalWorkflow {
 
 const QString FilterAnnotationsByQualifierWorkerFactory::ACTOR_ID("filter-annotations-by-qualifier");
 
-const static QString QUALIFER_NAME_ATTR( "qualifier-name" );
-const static QString QUALIFER_VALUE_ATTR( "qualifier-value" );
-const static QString WHICH_FILTER_ATTR( "accept-or-filter" );
+const static QString QUALIFER_NAME_ATTR("qualifier-name");
+const static QString QUALIFER_VALUE_ATTR("qualifier-value");
+const static QString WHICH_FILTER_ATTR("accept-or-filter");
 
 QString FilterAnnotationsByQualifierPrompter::composeRichDoc() {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
@@ -67,14 +67,14 @@ Task* FilterAnnotationsByQualifierWorker::tick() {
 
         QVariantMap qm = inputMessage.getData().toMap();
         const QVariant annsVar = qm[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        inputAnns = StorageUtils::getAnnotationTable( context->getDataStorage( ), annsVar );
+        inputAnns = StorageUtils::getAnnotationTable(context->getDataStorage(), annsVar);
 
-        bool accept = actor->getParameter( WHICH_FILTER_ATTR )->getAttributeValue<bool>(context);
-        QString qualName = actor->getParameter( QUALIFER_NAME_ATTR )->getAttributeValue<QString>(context);
-        QString qualValue = actor->getParameter( QUALIFER_VALUE_ATTR )->getAttributeValue<QString>(context);
+        bool accept = actor->getParameter(WHICH_FILTER_ATTR)->getAttributeValue<bool>(context);
+        QString qualName = actor->getParameter(QUALIFER_NAME_ATTR)->getAttributeValue<QString>(context);
+        QString qualValue = actor->getParameter(QUALIFER_VALUE_ATTR)->getAttributeValue<QString>(context);
 
-        Task* t = new FilterAnnotationsByQualifierTask(inputAnns, qualName, qualValue, accept);
-        connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
+        Task *t = new FilterAnnotationsByQualifierTask(inputAnns, qualName, qualValue, accept);
+        connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task *)), SLOT(sl_taskFinished(Task *)));
         return t;
     } else if (input->isEnded()) {
         setDone();
@@ -87,9 +87,9 @@ void FilterAnnotationsByQualifierWorker::sl_taskFinished(Task *t) {
     if(t->isCanceled() || t->hasError() || t->hasError()){
         return;
     }
-    const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( inputAnns );
-    output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
-        qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
+    const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(inputAnns);
+    output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(),
+        qVariantFromValue<SharedDbiDataHandler>(tableId)));
 }
 
 void FilterAnnotationsByQualifierWorker::cleanup() {
@@ -105,56 +105,56 @@ void FilterAnnotationsByQualifierWorkerFactory::init() {
     inputMap[ BaseSlots::ANNOTATION_TABLE_SLOT() ] = BaseTypes::ANNOTATION_TABLE_TYPE();
 
     { //Create input port descriptors
-        Descriptor inDesc( BasePorts::IN_ANNOTATIONS_PORT_ID(), FilterAnnotationsByQualifierWorker::tr("Input annotations"),
-            FilterAnnotationsByQualifierWorker::tr("Annotations to be filtered by name.") );
-        Descriptor outDesc( BasePorts::OUT_ANNOTATIONS_PORT_ID(), FilterAnnotationsByQualifierWorker::tr("Result annotations"),
-            FilterAnnotationsByQualifierWorker::tr("Resulted annotations, filtered by name.") );
+        Descriptor inDesc(BasePorts::IN_ANNOTATIONS_PORT_ID(), FilterAnnotationsByQualifierWorker::tr("Input annotations"),
+            FilterAnnotationsByQualifierWorker::tr("Annotations to be filtered by name."));
+        Descriptor outDesc(BasePorts::OUT_ANNOTATIONS_PORT_ID(), FilterAnnotationsByQualifierWorker::tr("Result annotations"),
+            FilterAnnotationsByQualifierWorker::tr("Resulted annotations, filtered by name."));
 
-        portDescs << new PortDescriptor( inDesc, DataTypePtr(new MapDataType("filter.anns", inputMap)), /*input*/ true );
-        portDescs << new PortDescriptor( outDesc, DataTypePtr(new MapDataType("filter.anns", inputMap)), /*input*/false, /*multi*/true );
+        portDescs << new PortDescriptor(inDesc, DataTypePtr(new MapDataType("filter.anns", inputMap)), /*input*/ true);
+        portDescs << new PortDescriptor(outDesc, DataTypePtr(new MapDataType("filter.anns", inputMap)), /*input*/false, /*multi*/true);
     }
 
     { //Create attributes descriptors
-        Descriptor qualifierNameDesc( QUALIFER_NAME_ATTR,
+        Descriptor qualifierNameDesc(QUALIFER_NAME_ATTR,
             FilterAnnotationsByQualifierWorker::tr("Qualifier name"),
-            FilterAnnotationsByQualifierWorker::tr("Name of the qualifier to use for filtering.") );
-        Descriptor qualifierValDesc( QUALIFER_VALUE_ATTR,
+            FilterAnnotationsByQualifierWorker::tr("Name of the qualifier to use for filtering."));
+        Descriptor qualifierValDesc(QUALIFER_VALUE_ATTR,
             FilterAnnotationsByQualifierWorker::tr("Qualifier value"),
-            FilterAnnotationsByQualifierWorker::tr("Text value of the qualifier to apply as filtering criteria") );
-        Descriptor whichFilterDesc( WHICH_FILTER_ATTR,
+            FilterAnnotationsByQualifierWorker::tr("Text value of the qualifier to apply as filtering criteria"));
+        Descriptor whichFilterDesc(WHICH_FILTER_ATTR,
             FilterAnnotationsByQualifierWorker::tr("Accept or filter"),
-            FilterAnnotationsByQualifierWorker::tr("Selects the name filter: accept specified names or accept all except specified.") );
+            FilterAnnotationsByQualifierWorker::tr("Selects the name filter: accept specified names or accept all except specified."));
 
-        attribs << new Attribute( qualifierNameDesc, BaseTypes::STRING_TYPE(), /*required*/true );
-        attribs << new Attribute( qualifierValDesc, BaseTypes::STRING_TYPE(), /*required*/true );
-        attribs << new Attribute( whichFilterDesc, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(true) );
+        attribs << new Attribute(qualifierNameDesc, BaseTypes::STRING_TYPE(), /*required*/true);
+        attribs << new Attribute(qualifierValDesc, BaseTypes::STRING_TYPE(), /*required*/true);
+        attribs << new Attribute(whichFilterDesc, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(true));
     }
 
-    Descriptor desc( FilterAnnotationsByQualifierWorkerFactory::ACTOR_ID,
+    Descriptor desc(FilterAnnotationsByQualifierWorkerFactory::ACTOR_ID,
         FilterAnnotationsByQualifierWorker::tr("Filter Annotations by Qualifier"),
-        FilterAnnotationsByQualifierWorker::tr("Filters annotations by Qualifier.") );
-    ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
+        FilterAnnotationsByQualifierWorker::tr("Filters annotations by Qualifier."));
+    ActorPrototype * proto = new IntegralBusActorPrototype(desc, portDescs, attribs);
 
-    proto->setPrompter( new FilterAnnotationsByQualifierPrompter() );
+    proto->setPrompter(new FilterAnnotationsByQualifierPrompter());
 
-    WorkflowEnv::getProtoRegistry()->registerProto( BaseActorCategories::CATEGORY_BASIC(), proto );
-    DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById( LocalDomainFactory::ID );
-    localDomain->registerEntry( new FilterAnnotationsByQualifierWorkerFactory() );
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_BASIC(), proto);
+    DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
+    localDomain->registerEntry(new FilterAnnotationsByQualifierWorkerFactory());
 }
 
 void FilterAnnotationsByQualifierTask::run() {
 
     //TODO: add reg exp option and tests!
 
-    QMutableListIterator<AnnotationData> i(anns);
+    QMutableListIterator<SharedAnnotationData> i(anns);
 
     while (i.hasNext()) {
-        AnnotationData ad = i.next();
+        SharedAnnotationData &ad = i.next();
         QVector<U2Qualifier> quals;
-        ad.findQualifiers(qualName, quals);
+        ad->findQualifiers(qualName, quals);
 
         bool matchFound = false;
-        foreach (const U2Qualifier& qual, quals) {
+        foreach (const U2Qualifier &qual, quals) {
             if (qual.value == qualFilterVal) {
                 matchFound = true;
                 break;

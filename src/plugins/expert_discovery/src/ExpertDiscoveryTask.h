@@ -218,9 +218,9 @@ private:
     const DNASequence&                      dna;
     ExpertDiscoveryData*                    edData;
     const EDProcessedSignal*                curPS;
-    QList<AnnotationData>                   resultList;
+    QList<SharedAnnotationData>             resultList;
     U2Region                                seqRange;
-    QPointer<AnnotationTableObject>           aObj;
+    QPointer<AnnotationTableObject>         aObj;
     RecognizationData                       recData;
     bool                                    hasRecData;
     bool                                    isControl;
@@ -316,12 +316,12 @@ class ExpertDiscoverySearchResult {
 public:
     ExpertDiscoverySearchResult() : strand(U2Strand::Direct), score(0){}
 
-    AnnotationData toAnnotation(const QString& name) const {
-        AnnotationData data;
-        data.name = name;
-        data.location->regions << region;
-        data.setStrand(strand);
-        data.qualifiers.append(U2Qualifier("score", QString::number(score)));
+    SharedAnnotationData toAnnotation(const QString &name) const {
+        SharedAnnotationData data(new AnnotationData);
+        data->name = name;
+        data->location->regions << region;
+        data->setStrand(strand);
+        data->qualifiers.append(U2Qualifier("score", QString::number(score)));
         return data;
     }
 

@@ -71,7 +71,7 @@ FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
     CreateAnnotationModel m;
     m.hideAnnotationType = true;
     m.hideLocation = true;
-    m.data.name = GBFeatureUtils::getKeyInfo(GBFeatureKey_repeat_unit).text;
+    m.data->name = GBFeatureUtils::getKeyInfo(GBFeatureKey_repeat_unit).text;
     m.sequenceObjectRef = sc->getSequenceObject();
     m.useUnloadedObjects = true;
     m.sequenceLen = sc->getSequenceObject()->getSequenceLength();
@@ -107,9 +107,9 @@ QStringList FindTandemsDialog::getAvailableAnnotationNames() const {
     QStringList res;
     const QSet<AnnotationTableObject *> objs = sc->getAnnotationObjects();
     QSet<QString> names;
-    foreach ( const AnnotationTableObject *o, objs ) {
-        foreach ( const Annotation &a, o->getAnnotations( ) ) {
-            names.insert( a.getName( ) );
+    foreach (const AnnotationTableObject *o, objs) {
+        foreach (Annotation *a, o->getAnnotations()) {
+            names.insert(a->getName());
         }
     }
     res = names.toList();
@@ -161,10 +161,10 @@ bool FindTandemsDialog::getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Regio
     }
     QSet<QString> aNames = names.split(',', QString::SkipEmptyParts).toSet();
     const QSet<AnnotationTableObject *> aObjs = sc->getAnnotationObjects();
-    foreach ( AnnotationTableObject *obj, aObjs ) {
-        foreach ( const Annotation &a, obj->getAnnotations( ) ) {
-            if ( aNames.contains( a.getName( ) ) ) {
-                res << a.getRegions( );
+    foreach (AnnotationTableObject *obj, aObjs) {
+        foreach (Annotation *a, obj->getAnnotations()) {
+            if (aNames.contains(a->getName())) {
+                res << a->getRegions();
             }
         }
     }
@@ -220,7 +220,7 @@ void FindTandemsDialog::accept() {
     settings.seqRegion = U2Region(0, seq.length());
     settings.reportSeqShift = range.startPos;
 
-    FindTandemsToAnnotationsTask* t = new FindTandemsToAnnotationsTask(settings, seq, cam.data.name, cam.groupName, cam.annotationObjectRef);
+    FindTandemsToAnnotationsTask* t = new FindTandemsToAnnotationsTask(settings, seq, cam.data->name, cam.groupName, cam.annotationObjectRef);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 
     QDialog::accept();

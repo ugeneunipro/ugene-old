@@ -33,89 +33,85 @@
 
 namespace U2 {
 
-extern Logger log( "Span Exon/Intron Regions" );
+extern Logger log("Span Exon/Intron Regions");
 
-FindExonRegionsTask::FindExonRegionsTask( U2SequenceObject *dObj, const QString &annName )
-    : Task( "FindExonRegionsTask", TaskFlags_NR_FOSCOE ), dnaObj( dObj ), exonAnnName(annName)
+FindExonRegionsTask::FindExonRegionsTask(U2SequenceObject *dObj, const QString &annName)
+    : Task("FindExonRegionsTask", TaskFlags_NR_FOSCOE), dnaObj(dObj), exonAnnName(annName)
 {
 
 
 }
 
-void FindExonRegionsTask::prepare( ) {
+void FindExonRegionsTask::prepare() {
 
 }
 
 QList<Task *> FindExonRegionsTask::onSubTaskFinished(Task *subTask) {
     QList<Task *> res;
 
-    if ( !subTask->isFinished( ) ) {
+    if (!subTask->isFinished()) {
         return res;
     }
 
     // K.O.(14.05.2014):
     // This code is not required anymore, but it's a nice example on how to call SplicedAlignment
 
-    /*if ( subTask == loadDocumentTask ) {
-        Document *doc = loadDocumentTask->getDocument( );
-        QList<GObject *> objects = doc->findGObjectByType( GObjectTypes::SEQUENCE );
-        if ( objects.isEmpty( ) ) {
+    /*if (subTask == loadDocumentTask) {
+        Document *doc = loadDocumentTask->getDocument();
+        QList<GObject *> objects = doc->findGObjectByType(GObjectTypes::SEQUENCE);
+        if (objects.isEmpty()) {
             setError(tr("Failed to load RNA sequence from %2").arg(doc->getName()));
             return res;
         }
 
-        U2SequenceObject *rnaSeqObj = qobject_cast<U2SequenceObject *>( objects.first( ) );
-        SAFE_POINT( NULL != rnaSeqObj, tr( "Failed to load RNA sequence" ), res );
+        U2SequenceObject *rnaSeqObj = qobject_cast<U2SequenceObject *>(objects.first());
+        SAFE_POINT(NULL != rnaSeqObj, tr("Failed to load RNA sequence"), res);
 
-        SplicedAlignmentTaskConfig cfg( rnaSeqObj, dnaObj );
+        SplicedAlignmentTaskConfig cfg(rnaSeqObj, dnaObj);
 
-        SplicedAlignmentTaskRegistry *sr = AppContext::getSplicedAlignmentTaskRegistry( );
-        QStringList algList = sr->getAlgNameList( );
+        SplicedAlignmentTaskRegistry *sr = AppContext::getSplicedAlignmentTaskRegistry();
+        QStringList algList = sr->getAlgNameList();
 
-        if ( algList.isEmpty( ) ) {
-            log.trace( tr( "No algorithm found to align cDNA sequence" ) );
+        if (algList.isEmpty()) {
+            log.trace(tr("No algorithm found to align cDNA sequence"));
             return res;
         }
 
-        alignmentTask = sr->getAlgorithm( algList.first( ) )->createTaskInstance( cfg ) ;
-        res.append( alignmentTask );
+        alignmentTask = sr->getAlgorithm(algList.first())->createTaskInstance(cfg) ;
+        res.append(alignmentTask);
         loadDocumentTask = NULL;
     } else if (subTask == alignmentTask) {
-        QList<AnnotationData> results = alignmentTask->getAlignmentResult( );
-        foreach ( const AnnotationData &ann, results ) {
-            exonRegions.append( ann.location->regions.toList( ) );
+        QList<AnnotationData> results = alignmentTask->getAlignmentResult();
+        foreach (const AnnotationData &ann, results) {
+            exonRegions.append(ann.location->regions.toList());
         }
     }*/
 
     return res;
 }
 
-Task::ReportResult FindExonRegionsTask::report( ) {
-    QList<GObject *> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole( dnaObj, GObjectTypes::ANNOTATION_TABLE,
-        ObjectRole_Sequence, dnaObj->getDocument( )->getObjects( ), UOF_LoadedOnly );
+Task::ReportResult FindExonRegionsTask::report() {
+    QList<GObject *> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dnaObj, GObjectTypes::ANNOTATION_TABLE,
+        ObjectRole_Sequence, dnaObj->getDocument()->getObjects(), UOF_LoadedOnly);
 
-    AnnotationTableObject *att = relAnns.isEmpty( )
-        ? NULL
-        : qobject_cast<AnnotationTableObject *>( relAnns.first( ) );
+    AnnotationTableObject *att = relAnns.isEmpty() ? NULL : qobject_cast<AnnotationTableObject *>(relAnns.first());
 
-    if ( NULL == att ) {
-        setError( tr( "Failed to search for exon annotations. "
-                      "The sequence %1 doesn't have any related annotations." )
-                  .arg( dnaObj->getSequenceName( ) ) );
+    if (NULL == att) {
+        setError(tr("Failed to search for exon annotations. The sequence %1 doesn't have any related annotations.").arg(dnaObj->getSequenceName()));
         return ReportResult_Finished;
     }
 
-    const QList<Annotation> anns = att->getAnnotations( );
+    const QList<Annotation *> anns = att->getAnnotations();
 
-    foreach ( const Annotation &ann, anns ) {
-        if ( ann.getName( ) == exonAnnName ) {
-            foreach ( const U2Region &r, ann.getRegions( ) ) {
-                exonRegions.append( r );
+    foreach (Annotation *ann, anns) {
+        if (ann->getName() == exonAnnName) {
+            foreach (const U2Region &r, ann->getRegions()) {
+                exonRegions.append(r);
             }
         }
     }
 
-    qSort( exonRegions );
+    qSort(exonRegions);
     return ReportResult_Finished;
 }
 

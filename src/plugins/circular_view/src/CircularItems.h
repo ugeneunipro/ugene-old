@@ -48,11 +48,11 @@ class CircularAnnotationItem : public QGraphicsItem {
 friend class CircularAnnotationRegionItem;
 friend class CircularAnnotationLabel;
 public:
-    CircularAnnotationItem( const Annotation &ann, CircularAnnotationRegionItem* region, CircularViewRenderArea* _ra);
-    CircularAnnotationItem( const Annotation &ann, QList<CircularAnnotationRegionItem*>& regions, CircularViewRenderArea* _ra);
+    CircularAnnotationItem(Annotation *ann, CircularAnnotationRegionItem* region, CircularViewRenderArea* _ra);
+    CircularAnnotationItem(Annotation *ann, QList<CircularAnnotationRegionItem*>& regions, CircularViewRenderArea* _ra);
     ~CircularAnnotationItem();
     virtual void paint(QPainter *p,const QStyleOptionGraphicsItem *item,QWidget *widget);
-    Annotation getAnnotation() const;
+    Annotation * getAnnotation() const;
     virtual QRectF boundingRect() const;
     virtual bool contains(const QPointF &point);
     int containsRegion(const QPointF &point);
@@ -63,7 +63,7 @@ public:
 protected:
     bool isSelected;
     QColor color;
-    Annotation annotation;
+    Annotation *annotation;
     QList<CircularAnnotationRegionItem*> regions;
     QRectF _boundingRect;
     CircularViewRenderArea* ra;
@@ -103,13 +103,10 @@ protected:
 /************************************************************************/
 class CircularAnnotationLabel : public QGraphicsItem {
 public:
-    CircularAnnotationLabel( const Annotation &ann,
-                             const QVector<U2Region> &annLocation,
-                             bool isAutoAnnotation,
-                             int _region, int sequenceLength,
-                             const QFont& font, CircularViewRenderArea* renderArea );
+    CircularAnnotationLabel(Annotation *ann, const QVector<U2Region> &annLocation, bool isAutoAnnotation, int _region, int sequenceLength,
+        const QFont& font, CircularViewRenderArea* renderArea);
     virtual void paint(QPainter *p,const QStyleOptionGraphicsItem *item,QWidget *widget);
-    Annotation getAnnotation() const;
+    Annotation * getAnnotation() const;
     virtual QRectF boundingRect() const;
     virtual bool contains(const QPointF &point);
     int getRegion() const;
@@ -130,7 +127,7 @@ private:
     void getVacantInnerPositions(const QVector<QRect>& rects, QVector<int>& result);
     void getConnectionPoint();
 
-    Annotation annotation;
+    Annotation *annotation;
     QVector<U2Region> location;
     bool isAutoAnnotation;
     float annotationAngle;

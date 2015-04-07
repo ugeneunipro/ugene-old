@@ -234,27 +234,26 @@ Task* HMM3SearchWorker::tick() {
     return NULL;
 }
  
-void HMM3SearchWorker::sl_taskFinished( Task *t ) {
-    SAFE_POINT( NULL != t, "Invalid task is encountered", );
-    if ( t->isCanceled( ) ) {
+void HMM3SearchWorker::sl_taskFinished(Task *t) {
+    SAFE_POINT(NULL != t, "Invalid task is encountered",);
+    if (t->isCanceled()) {
         return;
     }
-    if ( NULL != output ) {
-        QList<AnnotationData> list;
+    if (NULL != output) {
+        QList<SharedAnnotationData> list;
 
-        foreach( Task *sub, t->getSubtasks( ) ) {
-            UHMM3SWSearchTask *hst = qobject_cast<UHMM3SWSearchTask *>( sub );
+        foreach(Task *sub, t->getSubtasks()) {
+            UHMM3SWSearchTask *hst = qobject_cast<UHMM3SWSearchTask *>(sub);
             if (hst == NULL){
                 continue;
             }
-            foreach (const SharedAnnotationData &data, hst->getResultsAsAnnotations(U2FeatureTypes::MiscSignal, resultName)) {
-                list << *data;
-            }
+            list.append(hst->getResultsAsAnnotations(U2FeatureTypes::MiscSignal, resultName));
         }
 
-        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( list );
-        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
-            qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
+        CHECK(!list.isEmpty(), );
+
+        const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(list);
+        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), qVariantFromValue<SharedDbiDataHandler>(tableId)));
         algoLog.info(tr("Found %1 HMM3 signals").arg(list.size()));
     }
 }

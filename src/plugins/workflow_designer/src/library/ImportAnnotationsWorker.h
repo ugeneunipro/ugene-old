@@ -43,7 +43,7 @@ private slots:
 private:
     IntegralBus * inPort;
     IntegralBus * outPort;
-    QMap<Task *, QList<AnnotationData> > annsMap;
+    QMap<Task *, QList<SharedAnnotationData> > annsMap;
 
 private:
     void addTaskAnnotations(const QVariant &data, Task *t);

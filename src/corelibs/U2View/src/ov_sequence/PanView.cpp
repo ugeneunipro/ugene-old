@@ -182,8 +182,8 @@ PanView::PanView(ADVSingleSequenceWidget* p, ADVSequenceObjectContext* ctx)
     syncOffset = 0;
 
     //can't move to the GSequenceLineViewAnnotated -> virtual calls does not work in  constructor
-    foreach( AnnotationTableObject *obj, ctx->getAnnotationObjects( true ) ) {
-        registerAnnotations( obj->getAnnotations( ) );
+    foreach(AnnotationTableObject *obj, ctx->getAnnotationObjects(true)) {
+        registerAnnotations(obj->getAnnotations());
     }
 
     connect(this, SIGNAL(si_updateRows()), SLOT(sl_updateRows()));
@@ -211,28 +211,27 @@ PanView::~PanView() {
     delete rowsManager;
 }
 
-void PanView::registerAnnotations( const QList<Annotation> &l ) {
-    GTIMER( c1, t1, "PanView::registerAnnotations" );
-    AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry( );
-    foreach ( const Annotation &a, l ) {
-        const AnnotationData aData = a.getData( );
-        AnnotationSettings* as = asr->getAnnotationSettings( aData );
-        if ( as->visible ) {
-            rowsManager->addAnnotation( a, aData );
+void PanView::registerAnnotations(const QList<Annotation *> &l) {
+    GTIMER(c1, t1, "PanView::registerAnnotations");
+    AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
+    foreach (Annotation *a, l) {
+        AnnotationSettings *as = asr->getAnnotationSettings(a->getData());
+        if (as->visible) {
+            rowsManager->addAnnotation(a);
         }
     }
-    updateRows( );
+    updateRows();
 }
 
-void PanView::unregisterAnnotations( const QList<Annotation> &l ) {
-    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
-    foreach ( const Annotation &a, l ) {
-        AnnotationSettings *as = asr->getAnnotationSettings( a.getData( ) );
-        if ( as->visible ) {
-            rowsManager->removeAnnotation( a );
+void PanView::unregisterAnnotations(const QList<Annotation *> &l) {
+    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
+    foreach (Annotation *a, l) {
+        AnnotationSettings *as = asr->getAnnotationSettings(a->getData());
+        if (as->visible) {
+            rowsManager->removeAnnotation(a);
         }
     }
-    emit si_updateRows( );
+    emit si_updateRows();
 }
 
 void PanView::updateRows() {
@@ -291,7 +290,7 @@ void PanView::sl_onRowBarMoved(int v) {
 }
 
 void PanView::sl_onAnnotationsModified(const AnnotationModification& md) {
-    QList<Annotation> modified;
+    QList<Annotation *> modified;
     modified << md.annotation;
     unregisterAnnotations(modified);
     registerAnnotations(modified);
@@ -302,23 +301,23 @@ void PanView::sl_onAnnotationsModified(const AnnotationModification& md) {
 }
 
 void PanView::sl_onAnnotationSettingsChanged(const QStringList& changedSettings) {
-    AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    foreach (const QString& name, changedSettings) {
-        AnnotationSettings* as = asr->getAnnotationSettings(name);
+    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
+    foreach (const QString &name, changedSettings) {
+        AnnotationSettings *as = asr->getAnnotationSettings(name);
         bool hasRow = rowsManager->contains(name);
         if (as->visible == hasRow) {
             continue;
         }
-        QList<Annotation> changed;
-        foreach ( AnnotationTableObject *ao, ctx->getAnnotationObjects( true ) ) {
-            changed << ao->getAnnotationsByName( name );
+        QList<Annotation *> changed;
+        foreach (AnnotationTableObject *ao, ctx->getAnnotationObjects(true)) {
+            changed << ao->getAnnotationsByName(name);
         }
         if (changed.isEmpty()) {
             continue;
         }
-        foreach ( const Annotation &a, changed ) {
+        foreach (Annotation *a, changed) {
             if (as->visible) {
-                rowsManager->addAnnotation(a, a.getData());
+                rowsManager->addAnnotation(a);
             } else  {
                 rowsManager->removeAnnotation(a);
             }
@@ -442,7 +441,7 @@ void PanView::sl_zoomToSelection() {
     if (visibleRange==selRegion) {
         return;
     }
-    SAFE_POINT(U2Region(0, ctx->getSequenceObject()->getSequenceLength()).contains(selRegion), "Invalid selection region", );
+    SAFE_POINT(U2Region(0, ctx->getSequenceObject()->getSequenceLength()).contains(selRegion), "Invalid selection region",);
     visibleRange = selRegion;
     onVisibleRangeChanged();
 }
@@ -464,18 +463,18 @@ void PanView::setVisibleRange(const U2Region& newRange, bool signal) {
 }
 
 
-void PanView::ensureVisible( const Annotation &a, int locationIdx ) {
-    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
-    const AnnotationData aData = a.getData( );
-    const AnnotationSettings *as = asr->getAnnotationSettings( aData );
-    if ( as->visible ) {
-        const int row = rowsManager->getAnnotationRowIdx( a );
-        const PanViewRenderArea *pr = getRenderArea( );
-        if ( !pr->isRowVisible( row ) ) {
-            centerRow( row );
+void PanView::ensureVisible(Annotation *a, int locationIdx) {
+    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
+    const SharedAnnotationData &aData = a->getData();
+    const AnnotationSettings *as = asr->getAnnotationSettings(aData);
+    if (as->visible) {
+        const int row = rowsManager->getAnnotationRowIdx(a);
+        const PanViewRenderArea *pr = getRenderArea();
+        if (!pr->isRowVisible(row)) {
+            centerRow(row);
         }
     }
-    GSequenceLineViewAnnotated::ensureVisible( aData, locationIdx );
+    GSequenceLineViewAnnotated::ensureVisible(aData, locationIdx);
 }
 
 void PanView::centerRow(int row) {
@@ -594,7 +593,7 @@ void PanView::sl_sequenceChanged(){
     updateActions();
 }
 
-void PanView::hideEvent( QHideEvent *ev ){
+void PanView::hideEvent(QHideEvent *ev){
     zoomInAction->setDisabled(true);
     zoomOutAction->setDisabled(true);
     zoomToSelectionAction->setDisabled(true);
@@ -603,7 +602,7 @@ void PanView::hideEvent( QHideEvent *ev ){
     QWidget::hideEvent(ev);
 }
 
-void PanView::showEvent( QShowEvent *ev ){
+void PanView::showEvent(QShowEvent *ev){
     QWidget::showEvent(ev);
     updateActions();
 }
@@ -751,63 +750,61 @@ void PanViewRenderArea::drawCustomRulers(GraphUtils::RulerConfig c,  QPainter& p
     }
 }
 
-U2Region PanViewRenderArea::getAnnotationYRange( const Annotation &a, int,
-    const AnnotationSettings *as ) const
-{
-    if ( !as->visible ) {
-        return U2Region( -1, 0 );
+U2Region PanViewRenderArea::getAnnotationYRange(Annotation *a, int, const AnnotationSettings *as) const {
+    if (!as->visible) {
+        return U2Region(-1, 0);
     }
-    const int row = getPanView( )->getRowsManager( )->getAnnotationRowIdx( a );
-    const int line = getRowLine( row );
+    const int row = getPanView()->getRowsManager()->getAnnotationRowIdx(a);
+    const int line = getRowLine(row);
 
-    return U2Region( getLineY( line ) + 2 - (height() - numLines * lineHeight) / 2, lineHeight - 4 );
+    return U2Region(getLineY(line) + 2 - (height() - numLines * lineHeight) / 2, lineHeight - 4);
 }
 
-void PanViewRenderArea::drawAnnotations( QPainter &p ) {
-    GTIMER( c2, t2, "PanViewRenderArea::drawAnnotations" );
-    const QPen dotty( Qt::lightGray, 1, Qt::DotLine );
-    p.setPen( dotty );
-    p.setFont( *afSmall );
-    const int cachedViewWidth = cachedView->width( );
+void PanViewRenderArea::drawAnnotations(QPainter &p) {
+    GTIMER(c2, t2, "PanViewRenderArea::drawAnnotations");
+    const QPen dotty(Qt::lightGray, 1, Qt::DotLine);
+    p.setPen(dotty);
+    p.setFont(*afSmall);
+    const int cachedViewWidth = cachedView->width();
 
     //draw row names
-    PVRowsManager *rm = getPanView( )->getRowsManager( );
-    const int maxVisibleRows = getNumVisibleRows( );
-    for ( int i = 0; i < maxVisibleRows; i++ ) {
+    PVRowsManager *rm = getPanView()->getRowsManager();
+    const int maxVisibleRows = getNumVisibleRows();
+    for (int i = 0; i < maxVisibleRows; i++) {
         const int row = i + rowLinesOffset;
         const int rowLine = getRowLine(row);
         const int lineY = getLineY(rowLine);
-        p.drawLine( 0, lineY, cachedViewWidth, lineY );
+        p.drawLine(0, lineY, cachedViewWidth, lineY);
 
-        const PVRowData *rData = rm->getRow( row );
-        const QString text = ( NULL == rData )
-            ? U2::PanView::tr( "empty" )
-            : rData->key + " (" + QString::number( rData->annotations.size( ) ) + ")";
+        const PVRowData *rData = rm->getRow(row);
+        const QString text = (NULL == rData)
+            ? U2::PanView::tr("empty")
+            : rData->key + " (" + QString::number(rData->annotations.size()) + ")";
 
-        const QRect textRect( LINE_TEXT_OFFSET, lineY + 1, width( ), lineHeight - 2 );
-        p.drawText( textRect, text );
+        const QRect textRect(LINE_TEXT_OFFSET, lineY + 1, width(), lineHeight - 2);
+        p.drawText(textRect, text);
 
-        if ( NULL != rData ) {
-            AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
-            AnnotationSettings *as = asr->getAnnotationSettings( rData->key );
-            if ( as->visible ) {
-                QPen pen1( Qt::SolidLine );
-                pen1.setWidth( 1 );
-                U2Region yr( lineY + 2, lineHeight - 4 );
-                foreach ( const Annotation &a, rData->annotations ) {
-                    drawAnnotation( p, DrawAnnotationPass_DrawFill, a, pen1, false, as, yr );
-                    drawAnnotation( p, DrawAnnotationPass_DrawBorder, a, pen1, false, as, yr );
+        if (NULL != rData) {
+            AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
+            AnnotationSettings *as = asr->getAnnotationSettings(rData->key);
+            if (as->visible) {
+                QPen pen1(Qt::SolidLine);
+                pen1.setWidth(1);
+                U2Region yr(lineY + 2, lineHeight - 4);
+                foreach (Annotation *a, rData->annotations) {
+                    drawAnnotation(p, DrawAnnotationPass_DrawFill, a, pen1, false, as, yr);
+                    drawAnnotation(p, DrawAnnotationPass_DrawBorder, a, pen1, false, as, yr);
                 }
                 //restore pen
-                p.setPen( dotty );
-                p.setFont( *afSmall );
+                p.setPen(dotty);
+                p.setFont(*afSmall);
             }
         }
     }
 
-    const int firstRowLine = getRowLine( 0 );
-    const int lineY = getLineY( firstRowLine ) + lineHeight;
-    p.drawLine( 0, lineY, cachedViewWidth, lineY );
+    const int firstRowLine = getRowLine(0);
+    const int lineY = getLineY(firstRowLine) + lineHeight;
+    p.drawLine(0, lineY, cachedViewWidth, lineY);
 }
 
 bool PanViewRenderArea::isSequenceCharsVisible() const {

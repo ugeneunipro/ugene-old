@@ -169,13 +169,13 @@ void GTest_RemoteBLAST::init(XMLTestFormat *tf, const QDomElement& el) {
         bool isOk;
         maxLength = el.attribute(MAX_LEN_ATTR).toInt(&isOk);
         if (!isOk) {
-            stateInfo.setError(  QString("value not set %1, or unable to convert to integer ").arg(MAX_LEN_ATTR) );
+            stateInfo.setError( QString("value not set %1, or unable to convert to integer ").arg(MAX_LEN_ATTR));
             return;
         }
 
         minLength = el.attribute(MIN_LEN_ATTR).toInt(&isOk);
         if (!isOk) {
-            stateInfo.setError(  QString("value not set %1, or unable to convert to integer ").arg(MIN_LEN_ATTR) );
+            stateInfo.setError( QString("value not set %1, or unable to convert to integer ").arg(MIN_LEN_ATTR));
             return;
         }
     }
@@ -198,9 +198,9 @@ void GTest_RemoteBLAST::init(XMLTestFormat *tf, const QDomElement& el) {
 
 void GTest_RemoteBLAST::prepare() {
     QByteArray query(sequence.toLatin1());
-    const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( stateInfo );
-    SAFE_POINT_OP( stateInfo, );
-    ao = new AnnotationTableObject( "aaa", dbiRef );
+    const U2DbiRef dbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(stateInfo);
+    SAFE_POINT_OP(stateInfo,);
+    ao = new AnnotationTableObject("aaa", dbiRef);
     RemoteBLASTTaskSettings cfg;
     cfg.dbChoosen = algoritm;
     cfg.aminoT = NULL;
@@ -221,9 +221,9 @@ Task::ReportResult GTest_RemoteBLAST::report() {
         return ReportResult_Finished;
     }
     if (ao != NULL){
-        QList<Annotation> alist(ao->getAnnotations());
-        foreach ( const Annotation &an, alist ) {
-            foreach ( const U2Qualifier q, an.getQualifiers( ) ) {
+        QList<Annotation *> alist(ao->getAnnotations());
+        foreach (Annotation *an, alist) {
+            foreach (const U2Qualifier &q, an->getQualifiers()) {
                 if (q.name == "accession") {
                     if(!result.contains(q.value)) //Don't count different hsp
                         result.append(q.value);
@@ -232,30 +232,30 @@ Task::ReportResult GTest_RemoteBLAST::report() {
         }
     }
 
-    if(simple){
-        if ( result.isEmpty( ) ) {
-            stateInfo.setError( QString( "Simplified test retuns empty result" ) );
+    if (simple) {
+        if (result.isEmpty()) {
+            stateInfo.setError(QString("Simplified test retuns empty result"));
         }
         return ReportResult_Finished;
     }
 
     if(result.size() != expectedResults.size()){
-        stateInfo.setError(  QString("Expected and Actual sizes of lists of regions are different: %1 %2").arg(expectedResults.size()).arg(result.size()) );
+        stateInfo.setError( QString("Expected and Actual sizes of lists of regions are different: %1 %2").arg(expectedResults.size()).arg(result.size()));
         return ReportResult_Finished;
     }
     result.sort(); expectedResults.sort();
     QStringListIterator e(expectedResults), a(result);
-    for(; e.hasNext();){
+    for (; e.hasNext();) {
         QString exp = e.next(), act =  a.next();
     }
-    if(result != expectedResults) {
-        //stateInfo.setError(  QString("Expected and actual id's not equal") );
+    if (result != expectedResults) {
+        //stateInfo.setError( QString("Expected and actual id's not equal"));
         QString res = "";
         foreach(const QString &str, result) {
             res.append(str);
             res.append("  ");
         }
-        stateInfo.setError(  QString("Expected and actual id's not equal: %1").arg(res) );
+        stateInfo.setError( QString("Expected and actual id's not equal: %1").arg(res));
         return ReportResult_Finished;
     }
     return ReportResult_Finished;

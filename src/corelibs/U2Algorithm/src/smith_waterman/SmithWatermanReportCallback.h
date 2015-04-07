@@ -25,7 +25,6 @@
 #include <U2Algorithm/SmithWatermanResult.h>
 #include <U2Core/DNAAlphabet.h>
 
-#include <QObject>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2Msa.h>
 #include <U2Core/U2DbiUtils.h>
@@ -34,9 +33,9 @@ namespace U2 {
 
 class U2ALGORITHM_EXPORT SmithWatermanReportCallback {
 public:
-    virtual                 ~SmithWatermanReportCallback( ) { }
+    virtual                 ~SmithWatermanReportCallback();
 
-    virtual QString         report( const QList<SmithWatermanResult> & ) = 0;
+    virtual QString         report(const QList<SmithWatermanResult> &) = 0;
 };
 
 class U2ALGORITHM_EXPORT SmithWatermanReportCallbackAnnotImpl : public QObject,
@@ -49,17 +48,17 @@ public:
                                             U2FeatureType annotationType,
                                             const QString &_annotationName,
                                             const QString &_annotationGroup,
-                                            bool _addPatternSubseqToQual, QObject *pOwn = 0 );
+                                            bool _addPatternSubseqToQual, QObject *pOwn = NULL);
 
-    virtual QString                     report( const QList<SmithWatermanResult> &result );
-    const QList<AnnotationData> &       getAnotations( ) const { return anns; }
+    QString                             report(const QList<SmithWatermanResult> &result);
+    const QList<SharedAnnotationData> & getAnotations() const;
 
 private:
     U2FeatureType                       annotationType;
     QString                             annotationName;
     QString                             annotationGroup;
-    QPointer<AnnotationTableObject>       aObj;
-    QList<AnnotationData>               anns;
+    QPointer<AnnotationTableObject>     aObj;
+    QList<SharedAnnotationData>         anns;
     bool                                autoReport;
     bool                                addPatternSubseqToQual;
 };
@@ -79,9 +78,9 @@ public:
     };
 
     struct TagExpansionPossibleData {
-                                TagExpansionPossibleData( );
-                                TagExpansionPossibleData( const QString &_refSequenceName,
-                                    const QString &_patternName );
+                                TagExpansionPossibleData();
+                                TagExpansionPossibleData(const QString &_refSequenceName,
+                                    const QString &_patternName);
 
         const QString           refSequenceName;
         const QString           patternName;
@@ -89,47 +88,47 @@ public:
     };
 
                                 //Smith-Waterman search in sequence viewer
-                                SmithWatermanReportCallbackMAImpl( const QString &resultDirPath,
+                                SmithWatermanReportCallbackMAImpl(const QString &resultDirPath,
                                     const QString &mobjectNamesTemplate,
                                     const QString &refSubseqTemplate,
                                     const QString &ptrnSubseqTemplate,
                                     const QByteArray &refSequence,
                                     const QByteArray &pattern, const QString &refSeqName,
                                     const QString &patternName, const DNAAlphabet *alphabet,
-                                    WhatDoYouWantFromMe plan = SequenceView_Search );
+                                    WhatDoYouWantFromMe plan = SequenceView_Search);
 
                                 //Smith-Waterman alignment in MSA Editor (in new window)
-                                SmithWatermanReportCallbackMAImpl( const QString &resultDirPath,
+                                SmithWatermanReportCallbackMAImpl(const QString &resultDirPath,
                                     const QString &mobjectName,
                                     const U2EntityRef &firstSequenceRef,
                                     const U2EntityRef &secondSequenceRef,
                                     const U2EntityRef &sourceMsaRef,
-                                    WhatDoYouWantFromMe plan = MSA_Alignment_InNewWindow );
+                                    WhatDoYouWantFromMe plan = MSA_Alignment_InNewWindow);
 
                                 //Smith-Waterman alignment in MSA Editor (in current window)
                                 SmithWatermanReportCallbackMAImpl(
                                     const U2EntityRef &firstSequenceRef,
                                     const U2EntityRef &secondSequenceRef,
                                     const U2EntityRef &sourceMsaRef,
-                                    WhatDoYouWantFromMe plan = MSA_Alignment_InCurrentWindow );
+                                    WhatDoYouWantFromMe plan = MSA_Alignment_InCurrentWindow);
 
-    virtual QString             report( const QList<SmithWatermanResult> &results );
-    static void                 alignSequences( QByteArray &refSequenceData,
+    virtual QString             report(const QList<SmithWatermanResult> &results);
+    static void                 alignSequences(QByteArray &refSequenceData,
                                     QByteArray &ptrnSequence,
-                                    const QByteArray &pairwiseAlignment );
-    static void                 alignSequences( QList<U2MsaGap> &refSequenceGapModel,
+                                    const QByteArray &pairwiseAlignment);
+    static void                 alignSequences(QList<U2MsaGap> &refSequenceGapModel,
                                     QList<U2MsaGap> &ptrnSequenceGapModel,
-                                    const QByteArray &pairwiseAlignment );
-    static void                 changeGivenUrlIfDocumentExists( QString &givenUrl,
-                                    const Project *curProject );
+                                    const QByteArray &pairwiseAlignment);
+    static void                 changeGivenUrlIfDocumentExists(QString &givenUrl,
+                                    const Project *curProject);
 
 private:
     QString                     planFor_SequenceView_Search(
                                     const QList<SmithWatermanResult> &results);
     QString                     planFor_MSA_Alignment_InNewWindow(
-                                    const QList<SmithWatermanResult> &results );
+                                    const QList<SmithWatermanResult> &results);
     QString                     planFor_MSA_Alignment_InCurrentWindow(
-                                    const QList<SmithWatermanResult> &results );
+                                    const QList<SmithWatermanResult> &results);
 
 private:
     WhatDoYouWantFromMe         plan;       //determine actions to be perfomed

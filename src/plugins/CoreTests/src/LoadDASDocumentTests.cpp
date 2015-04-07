@@ -137,13 +137,12 @@ Task::ReportResult GTest_LoadDASDocumentTask::report(){
             QList<GObject*> annlist_act = actDoc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
 
             QList<AnnotationTableObject *> actualAnnotations;
-            foreach(GObject* at, annlist_act){
+            foreach (GObject *at, annlist_act) {
                 AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>(at);
-                if (aobj){
+                if (aobj) {
                     actualAnnotations.append(aobj);
                 }
             }
-
 
             //compare sequences
             if (actualSequence->getWholeSequenceData() != expectedSequence->getWholeSequenceData()){
@@ -152,26 +151,26 @@ Task::ReportResult GTest_LoadDASDocumentTask::report(){
             }
 
             //compare annotations
-            foreach ( const AnnotationTableObject *expObj, expectedAnnotations ) {
-                const QList<Annotation> &expAnnoations = expObj->getAnnotations( );
-                foreach ( const Annotation &expA, expAnnoations ) {
+            foreach (const AnnotationTableObject *expObj, expectedAnnotations) {
+                const QList<Annotation *> &expAnnoations = expObj->getAnnotations();
+                foreach (Annotation *expA, expAnnoations) {
                     bool found = false;
-                    foreach ( const AnnotationTableObject *actObj, actualAnnotations ) {
-                        if (found){
+                    foreach (const AnnotationTableObject *actObj, actualAnnotations) {
+                        if (found) {
                             break;
                         }
-                        const QList<Annotation> actAnnoations = actObj->getAnnotations( );
-                        foreach ( const Annotation &actA, actAnnoations ) {
-                            if (actA.getName( ) == expA.getName( ) ){
+                        const QList<Annotation *> actAnnoations = actObj->getAnnotations();
+                        foreach (Annotation *actA, actAnnoations) {
+                            if (actA->getName() == expA->getName()){
                                 found = true;
                                 break;
                             }
                         }
                     }
-                    if (!found){
+                    if (!found) {
                         stateInfo.setError(GTest::tr("Expected annotation %1 has not been found in the actual annotations. "
                             "If the test fails, please, load the sequence %2 with annotation from DAS, manually compare the annotations and update the test. "
-                            "There might be updates in the DAS databases.").arg(expA.getName()).arg(expectedSequence->getSequenceName()));
+                            "There might be updates in the DAS databases.").arg(expA->getName()).arg(expectedSequence->getSequenceName()));
                         return ReportResult_Finished;
                     }
                 }

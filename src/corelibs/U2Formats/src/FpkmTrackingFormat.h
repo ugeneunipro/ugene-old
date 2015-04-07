@@ -120,7 +120,7 @@ public:
 protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints, U2OpStatus& os);
 
-    QList<AnnotationData> parseDocument(IOAdapter* io, QString& seqName, QString annotName, U2OpStatus& os);
+    QList<SharedAnnotationData> parseDocument(IOAdapter* io, QString& seqName, QString annotName, U2OpStatus& os);
 
     void load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, const QVariantMap& hints, U2OpStatus& os);
 
@@ -160,7 +160,7 @@ private:
     */
     QStringList writeHeader(QList<GObject*> annotTables, Document* doc, IOAdapter* io, U2OpStatus& os);
 
-    void addQualifierIfValuePresent( AnnotationData &annotData, QString name, QString val );
+    void addQualifierIfValuePresent(SharedAnnotationData &annotData, const QString &name, const QString &val);
 };
 
 

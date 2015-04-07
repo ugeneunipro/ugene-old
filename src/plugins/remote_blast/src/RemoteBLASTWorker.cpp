@@ -102,7 +102,7 @@ void RemoteBLASTWorkerFactory::init() {
     a << toolNameAttr;
 
     const int defaultDatabaseNumber = 2;
-    SAFE_POINT(defaultDatabaseNumber < ParametersLists::blastn_dataBase.size(), QObject::tr("Incorrect list of Blastn databases"), );
+    SAFE_POINT(defaultDatabaseNumber < ParametersLists::blastn_dataBase.size(), QObject::tr("Incorrect list of Blastn databases"),);
     a << new Attribute(databaseDescriptor,BaseTypes::STRING_TYPE(),true, ParametersLists::blastn_dataBase.at(defaultDatabaseNumber));
 
     a << new Attribute(evalueDescriptor,BaseTypes::STRING_TYPE(),false,10);
@@ -139,7 +139,7 @@ void RemoteBLASTWorkerFactory::init() {
 
     Descriptor desc(ACTOR_ID, RemoteBLASTWorker::tr("Remote BLAST"),
         RemoteBLASTWorker::tr("Finds annotations for DNA sequence in remote database.")
-        );
+       );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     QMap<QString, PropertyDelegate*> delegates;
 
@@ -236,7 +236,7 @@ Task* RemoteBLASTWorker::tick() {
         int maxHits = getValue<int>(HITS_ATTR);
         bool shortSeq = getValue<bool>(SHORTSEQ_ATTR);
 
-        if(evalue <= 0 ){
+        if(evalue <= 0){
             algoLog.error(tr("Incorrect value for the 'e-value' parameter, default value passed to the workflow"));
             evalue = 10;
         }
@@ -336,9 +336,9 @@ void RemoteBLASTWorker::sl_taskFinished() {
         if(getValue<QString>(ALG_ATTR) != "ncbi-cdd") {
             QString url = getValue<QString>(ORIGINAL_OUT);
             if(!url.isEmpty()) {
-                IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::LOCAL_FILE );
+                IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
                 IOAdapter * io = iof->createIOAdapter();
-                if(io->open( url, IOAdapterMode_Write )) {
+                if(io->open(url, IOAdapterMode_Write)) {
                     QByteArray output = t->getOutputFile();
                     io->writeBlock(output);
                     io->close();
@@ -346,16 +346,16 @@ void RemoteBLASTWorker::sl_taskFinished() {
             }
         }
 
-        QList<AnnotationData> res = t->getResultedAnnotations( );
+        QList<SharedAnnotationData> res = t->getResultedAnnotations();
         const QString annName = getValue<QString>(ANNOTATION_NAME);
-        if ( !annName.isEmpty( ) ) {
-            for ( int i = 0; i < res.count( ); i++ ) {
-                res[i].name = annName;
+        if (!annName.isEmpty()) {
+            for (int i = 0; i < res.count(); i++) {
+                res[i]->name = annName;
             }
         }
-        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( res );
-        const QVariant v = qVariantFromValue<SharedDbiDataHandler>( tableId );
-        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ), v ) );
+        const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(res);
+        const QVariant v = qVariantFromValue<SharedDbiDataHandler>(tableId);
+        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
     }
 }
 

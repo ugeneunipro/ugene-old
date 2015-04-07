@@ -221,7 +221,7 @@ private:
     static const QString SEARCH_IN_SETTINGS;
     static const QString OTHER_SETTINGS;
 
-    QList<AnnotationData> findPatternResults;
+    QList<SharedAnnotationData> findPatternResults;
     int iterPos;
     Task *searchTask;
     QString previousPatternString;

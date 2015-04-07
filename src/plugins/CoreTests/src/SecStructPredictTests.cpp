@@ -66,7 +66,7 @@ void GTest_SecStructPredictAlgorithm::prepare() {
 
     SecStructPredictAlgRegistry* sspr = AppContext::getSecStructPredictAlgRegistry();
     if (!sspr->hadRegistered(algName)) {
-        stateInfo.setError(  QString(tr("Algorithm named %1 not found")).arg(algName) );
+        stateInfo.setError( QString(tr("Algorithm named %1 not found")).arg(algName));
         return;
     }
     SecStructPredictTaskFactory* factory = sspr->getAlgorithm(algName);
@@ -81,7 +81,7 @@ Task::ReportResult GTest_SecStructPredictAlgorithm::report() {
     const QByteArray& output = task->getSSFormatResults();
 
     if (output != outputSeq) {
-        stateInfo.setError(tr("Output sec struct sequence is incorrect") );
+        stateInfo.setError(tr("Output sec struct sequence is incorrect"));
         return ReportResult_Finished;
     }
 
@@ -116,12 +116,12 @@ void GTest_SecStructPredictTask::prepare()
 {
     U2SequenceObject * mySequence = getContext<U2SequenceObject>(this, seqName);
     if(mySequence==NULL){
-        stateInfo.setError(  QString("error can't cast to sequence from GObject") );
+        stateInfo.setError( QString("error can't cast to sequence from GObject"));
         return;
     }
     SecStructPredictAlgRegistry* sspr = AppContext::getSecStructPredictAlgRegistry();
     if (!sspr->hadRegistered(algName)) {
-        stateInfo.setError(  QString(tr("Algorithm named %1 not found")).arg(algName) );
+        stateInfo.setError( QString(tr("Algorithm named %1 not found")).arg(algName));
         return;
     }
     SecStructPredictTaskFactory* factory = sspr->getAlgorithm(algName);
@@ -132,16 +132,14 @@ void GTest_SecStructPredictTask::prepare()
 Task::ReportResult GTest_SecStructPredictTask::report()
 {
     if (task!=NULL && task->hasError()) {
-        stateInfo.setError( task->getError());
+        stateInfo.setError(task->getError());
     } else if (!resultsTableContextName.isEmpty()) {
-        QList<AnnotationData> results = task->getResults();
+        QList<SharedAnnotationData> results = task->getResults();
         U2OpStatusImpl os;
-        const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
-        SAFE_POINT_OP( os, ReportResult_Finished );
-        aObj = new AnnotationTableObject( resultsTableContextName, dbiRef );
-        foreach ( const AnnotationData &d, results) {
-            aObj->addAnnotation( d );
-        }
+        const U2DbiRef dbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
+        SAFE_POINT_OP(os, ReportResult_Finished);
+        aObj = new AnnotationTableObject(resultsTableContextName, dbiRef);
+        aObj->addAnnotations(results);
         addContext(resultsTableContextName, aObj);
         contextAdded = true;
     }

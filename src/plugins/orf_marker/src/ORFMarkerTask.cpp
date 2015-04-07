@@ -102,8 +102,8 @@ QList<Task *> FindORFsToAnnotationsTask::onSubTaskFinished(Task *subTask) {
     CHECK(subTask == fTask, QList<Task *>());
 
     const QList<ORFFindResult> results = fTask->popResults();
-    QList<AnnotationData> annotationList;
-    foreach(const ORFFindResult &res, results) {
+    QList<SharedAnnotationData> annotationList;
+    foreach (const ORFFindResult &res, results) {
         CHECK_OP(stateInfo, QList<Task *>());
         annotationList << res.toAnnotation(ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
     }

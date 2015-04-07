@@ -22,8 +22,6 @@
 #ifndef _U2_REMOVE_ANNOTATIONS_TASK_H_
 #define _U2_REMOVE_ANNOTATIONS_TASK_H_
 
-#include <U2Core/Annotation.h>
-#include <U2Core/AnnotationGroup.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/Task.h>
 
@@ -34,14 +32,13 @@ class U2CORE_EXPORT RemoveAnnotationsTask : public Task {
 public:
     // Removes annotations of specified group, handles multiple annotations ( > 10 000).
     // Also handles situations with locked objects.
-                                    RemoveAnnotationsTask( AnnotationTableObject *ao,
-                                        const QString &groupName );
+                                    RemoveAnnotationsTask(AnnotationTableObject *ao, const QString &groupName);
 
-    ReportResult                    report( );
+    ReportResult                    report();
 
 private:
     QPointer<AnnotationTableObject>   aobj;
-    QString                         groupName;
+    QString                           groupName;
 };
 
 }//namespace

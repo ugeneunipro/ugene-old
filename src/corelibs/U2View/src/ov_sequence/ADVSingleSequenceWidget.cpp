@@ -86,9 +86,9 @@ ADVSingleSequenceWidget::ADVSingleSequenceWidget(ADVSequenceObjectContext* seqCt
     toggleOverviewAction = new QAction(this);
     connect(toggleOverviewAction, SIGNAL(triggered()), SLOT(sl_toggleOverview()));
 
-    connect( seqCtx->getAnnotatedDNAView( )->getAnnotationsSelection( ),
-        SIGNAL( si_selectionChanged( AnnotationSelection *, const QList<Annotation> &, const QList<Annotation> & ) ),
-        SLOT( sl_onAnnotationSelectionChanged( AnnotationSelection *, const QList<Annotation> &, const QList<Annotation> & ) ) );
+    connect(seqCtx->getAnnotatedDNAView()->getAnnotationsSelection(),
+        SIGNAL(si_selectionChanged(AnnotationSelection *, const QList<Annotation *> &, const QList<Annotation *> &)),
+        SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection *, const QList<Annotation *> &, const QList<Annotation *> &)));
 
     selectRangeAction1 = new QAction(QIcon(":/core/images/select_region.png"), tr("Select sequence region..."), this);
     selectRangeAction1->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_A));
@@ -635,8 +635,8 @@ QVector<U2Region> ADVSingleSequenceWidget::getSelectedAnnotationRegions(int max)
     const QSet<AnnotationTableObject *> myAnns = seqCtx->getAnnotationObjects(true);
 
     QVector<U2Region> res;
-    foreach(const AnnotationSelectionData& sd, selection) {
-        AnnotationTableObject *aObj = sd.annotation.getGObject();
+    foreach (const AnnotationSelectionData& sd, selection) {
+        AnnotationTableObject *aObj = sd.annotation->getGObject();
         if (myAnns.contains(aObj)) {
             res << sd.getSelectedRegions();
             if (max > 0 && res.size() >= max) {
@@ -827,28 +827,28 @@ void ADVSingleSequenceWidget::closeView() {
 
 void ADVSingleSequenceWidget::sl_createCustomRuler() {
     QSet<QString> namesToFilter;
-    foreach(const RulerInfo& ri, panView->getCustomRulers()) {
+    foreach (const RulerInfo &ri, panView->getCustomRulers()) {
         namesToFilter.insert(ri.name);
     }
 
     int offset = panView->getVisibleRange().center();
 
-    AnnotationSelection * annSelection = getDetGSLView()->getSequenceContext()->getAnnotationsSelection();
-    U2SequenceObject * seqObj = getSequenceObject();
+    AnnotationSelection *annSelection = getDetGSLView()->getSequenceContext()->getAnnotationsSelection();
+    U2SequenceObject *seqObj = getSequenceObject();
     int annOffset = INT_MAX;
-    foreach(const AnnotationSelectionData & selectionData, annSelection->getSelection()) {
-        const Annotation &ann = selectionData.annotation;
-        AnnotationTableObject *annObj = ann.getGObject();
-        if( !annObj->hasObjectRelation(seqObj, ObjectRole_Sequence) ) {
+    foreach (const AnnotationSelectionData &selectionData, annSelection->getSelection()) {
+        Annotation *ann = selectionData.annotation;
+        AnnotationTableObject *annObj = ann->getGObject();
+        if(!annObj->hasObjectRelation(seqObj, ObjectRole_Sequence)) {
             continue;
         }
 
         // find minimum of start positions of selected annotations
-        foreach( const U2Region & region, selectionData.getSelectedRegions() ) {
+        foreach (const U2Region &region, selectionData.getSelectedRegions()) {
             annOffset = annOffset > region.startPos ? region.startPos : annOffset;
         }
     }
-    if( annOffset != INT_MAX ) {
+    if (annOffset != INT_MAX) {
         offset = annOffset;
     }
 
@@ -871,7 +871,7 @@ void ADVSingleSequenceWidget::sl_removeCustomRuler() {
     panView->removeCustomRuler(rulerName);
 }
 
-void ADVSingleSequenceWidget::sl_onAnnotationSelectionChanged(AnnotationSelection *s, const QList<Annotation> &, const QList<Annotation> &) {
+void ADVSingleSequenceWidget::sl_onAnnotationSelectionChanged(AnnotationSelection *s, const QList<Annotation *> &, const QList<Annotation *> &) {
     // make sequence selection to match external annotation bounds
     const QSet<AnnotationTableObject *> objs = getSequenceContext()->getAnnotationObjects(true);
     QVector<U2Region> annotatedRegions = s->getSelectedLocations(objs);
@@ -889,7 +889,7 @@ void ADVSingleSequenceWidget::updateSelectionActions() {
     selectOutAnnotationRangeAction->setEnabled(!selRegs.isEmpty());
 }
 
-void ADVSingleSequenceWidget::addStateActions( QMenu& m ) {
+void ADVSingleSequenceWidget::addStateActions(QMenu &m) {
     toggleViewAction->setText(isViewCollapsed() ? tr("Show all views") : tr("Hide all views"));
     toggleViewAction->setObjectName("show_hide_all_views");
     togglePanViewAction->setText(isPanViewCollapsed() ? tr("Show zoom view") : tr("Hide zoom view"));

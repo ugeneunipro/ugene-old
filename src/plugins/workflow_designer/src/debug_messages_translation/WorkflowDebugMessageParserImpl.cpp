@@ -54,153 +54,143 @@ namespace U2 {
 
 using namespace Workflow;
 
-void WorkflowDebugMessageParserImpl::initParsedInfo( ) {
-    if ( Q_LIKELY( !messageTypes.isEmpty( ) ) ) {
-        foreach ( const QString &typeName, messageTypes ) {
-            parsedInfo[typeName] = QQueue<QString>( );
+void WorkflowDebugMessageParserImpl::initParsedInfo() {
+    if (Q_LIKELY(!messageTypes.isEmpty())) {
+        foreach (const QString &typeName, messageTypes) {
+            parsedInfo[typeName] = QQueue<QString>();
         }
     }
 }
 
-QString WorkflowDebugMessageParserImpl::convertToString( const QString &contentIdentifier,
-    const QVariant &content ) const
+QString WorkflowDebugMessageParserImpl::convertToString(const QString &contentIdentifier,
+    const QVariant &content) const
 {
-    QScopedPointer<BaseMessageTranslator> messageTranslator( createMessageTranslator(
-        getMessageTypeFromIdentifier( contentIdentifier ), content ) );
-    SAFE_POINT( !messageTranslator.isNull( ), "Invalid message translator detected!", QString( ) );
-    const QString result = messageTranslator->getTranslation( );
+    QScopedPointer<BaseMessageTranslator> messageTranslator(createMessageTranslator(
+        getMessageTypeFromIdentifier(contentIdentifier), content));
+    SAFE_POINT(!messageTranslator.isNull(), "Invalid message translator detected!", QString());
+    const QString result = messageTranslator->getTranslation();
     return result;
 }
 
 QString WorkflowDebugMessageParserImpl::getMessageTypeFromIdentifier(
-    const QString &messageIdentifier ) const
+    const QString &messageIdentifier) const
 {
-    return messageIdentifier.right( messageIdentifier.size( ) - messageIdentifier.lastIndexOf(
-        PRODUCING_ACTOR_AND_DATA_TYPE_SEPARATOR ) - 1 );
+    return messageIdentifier.right(messageIdentifier.size() - messageIdentifier.lastIndexOf(
+        PRODUCING_ACTOR_AND_DATA_TYPE_SEPARATOR) - 1);
 }
 
-WorkflowInvestigationData WorkflowDebugMessageParserImpl::getAllMessageValues( ) {
-    if ( !sourceMessages.isEmpty( ) ) {
-        foreach ( const QString &key, sourceMessages.head( ).keys( ) ) {
-            const QString messageType = getMessageTypeFromIdentifier( key );
-            if ( Q_UNLIKELY( !possibleMessageTypes.contains( messageType ) ) ) {
-                coreLog.info( QObject::tr( "Messages in requested queue include info of the '%1' "
+WorkflowInvestigationData WorkflowDebugMessageParserImpl::getAllMessageValues() {
+    if (!sourceMessages.isEmpty()) {
+        foreach (const QString &key, sourceMessages.head().keys()) {
+            const QString messageType = getMessageTypeFromIdentifier(key);
+            if (Q_UNLIKELY(!possibleMessageTypes.contains(messageType))) {
+                coreLog.info(QObject::tr("Messages in requested queue include info of the '%1' "
                     "data type that is currently unsupported for view. "
-                    "No intermediate data will be displayed" ).arg( messageType ) );
+                    "No intermediate data will be displayed").arg(messageType));
                 return parsedInfo;
             }
-            if( Q_UNLIKELY( !messageTypes.contains( key ) ) ) {
+            if(Q_UNLIKELY(!messageTypes.contains(key))) {
                 messageTypes << key;
             }
         }
-        initParsedInfo( );
-        foreach ( const QVariantMap &messageContent, sourceMessages ) {
-            foreach ( const QString &key, messageContent.keys( ) ) {
-                SAFE_POINT( messageTypes.contains( key ), "Unexpected message type encountered!",
-                    parsedInfo );
-                parsedInfo[key].enqueue( convertToString( key, messageContent[key] ) );
+        initParsedInfo();
+        foreach (const QVariantMap &messageContent, sourceMessages) {
+            foreach (const QString &key, messageContent.keys()) {
+                SAFE_POINT(messageTypes.contains(key), "Unexpected message type encountered!",
+                    parsedInfo);
+                parsedInfo[key].enqueue(convertToString(key, messageContent[key]));
             }
         }
     }
     return parsedInfo;
 }
 
-void WorkflowDebugMessageParserImpl::convertMessagesToDocuments( const QString &convertedType,
-    const QString &schemeName, quint32 messageNumber )
-{
-    SAFE_POINT( !convertedType.isEmpty( ), "Invalid message type detected!", );
-    const AppSettings *appSettings = AppContext::getAppSettings( );
-    SAFE_POINT( NULL != appSettings, "Invalid application settings' storage!", );
-    const UserAppsSettings *userSettings = appSettings->getUserAppsSettings( );
-    SAFE_POINT( NULL != userSettings, "Invalid user application settings' storage!", );
-    QString tmpFolderUrl = ( userSettings->getCurrentProcessTemporaryDirPath( ) );
-    tmpFolderUrl.replace( "//", "/" );
+void WorkflowDebugMessageParserImpl::convertMessagesToDocuments(const QString &convertedType, const QString &schemeName, quint32 messageNumber) {
+    SAFE_POINT(!convertedType.isEmpty(), "Invalid message type detected!",);
+    const AppSettings *appSettings = AppContext::getAppSettings();
+    SAFE_POINT(NULL != appSettings, "Invalid application settings' storage!",);
+    const UserAppsSettings *userSettings = appSettings->getUserAppsSettings();
+    SAFE_POINT(NULL != userSettings, "Invalid user application settings' storage!",);
+    QString tmpFolderUrl = (userSettings->getCurrentProcessTemporaryDirPath());
+    tmpFolderUrl.replace("//", "/");
 
     quint32 messageCounter = ++messageNumber;
-    foreach( const QVariantMap &mapData, sourceMessages ) {
-        SAFE_POINT( mapData.keys( ).contains( convertedType ), "Invalid message type detected!", );
-        const QString messageType = getMessageTypeFromIdentifier( convertedType );
-        const QString baseFileUrl = tmpFolderUrl + "/" + schemeName
-            + FILE_NAME_WORDS_SEPARATOR + messageType + FILE_NAME_WORDS_SEPARATOR
-            + "m" + QString::number( messageCounter );
-        if ( BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ) == messageType ) {
+    foreach(const QVariantMap &mapData, sourceMessages) {
+        SAFE_POINT(mapData.keys().contains(convertedType), "Invalid message type detected!",);
+        const QString messageType = getMessageTypeFromIdentifier(convertedType);
+        const QString baseFileUrl = tmpFolderUrl + "/" + schemeName + FILE_NAME_WORDS_SEPARATOR + messageType + FILE_NAME_WORDS_SEPARATOR
+            + "m" + QString::number(messageCounter);
+        if (BaseSlots::ANNOTATION_TABLE_SLOT().getId() == messageType) {
             const QVariant annotationsData = mapData[convertedType];
-            const QList<AnnotationData> annList = StorageUtils::getAnnotationTable(
-                context->getDataStorage( ), annotationsData );
+            const QList<SharedAnnotationData> annList = StorageUtils::getAnnotationTable(context->getDataStorage(), annotationsData);
 
-            AnnotationTableObject *annsObj = new AnnotationTableObject( "Annotations",
-                context->getDataStorage( )->getDbiRef( ) );
-            U2OpStatusImpl os;
-            annsObj->addAnnotations( annList, os );
+            AnnotationTableObject *annsObj = new AnnotationTableObject("Annotations", context->getDataStorage()->getDbiRef());
+            annsObj->addAnnotations(annList);
 
-            ExportObjectUtils::exportAnnotations( annsObj->getAnnotations( ), baseFileUrl );
+            ExportObjectUtils::exportAnnotations(annsObj->getAnnotations(), baseFileUrl);
         } else {
-            GObject *objectToWrite = fetchObjectFromMessage( messageType, mapData[convertedType] );
-            if( Q_LIKELY( NULL != objectToWrite ) ) {
-                ExportObjectUtils::exportObject2Document( objectToWrite, baseFileUrl, false );
+            GObject *objectToWrite = fetchObjectFromMessage(messageType, mapData[convertedType]);
+            if(Q_LIKELY(NULL != objectToWrite)) {
+                ExportObjectUtils::exportObject2Document(objectToWrite, baseFileUrl, false);
                 ++messageCounter;
             }
         }
     }
 }
 
-BaseMessageTranslator *WorkflowDebugMessageParserImpl::createMessageTranslator(
-    const QString &messageType, const QVariant &messageData ) const
-{
+BaseMessageTranslator *WorkflowDebugMessageParserImpl::createMessageTranslator(const QString &messageType, const QVariant &messageData) const {
     BaseMessageTranslator *result = NULL;
-    if ( BaseSlots::DNA_SEQUENCE_SLOT( ).getId( ) == messageType ) {
-        result = new SequenceMessageTranslator( messageData, context );
-    } else if ( BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ) == messageType ) {
-        result = new AnnotationsMessageTranslator( messageData, context );
-    } else if ( BaseSlots::MULTIPLE_ALIGNMENT_SLOT( ).getId( ) == messageType ) {
-        result = new MultipleAlignmentMessageTranslator( messageData, context );
-    } else if ( BaseSlots::ASSEMBLY_SLOT( ).getId( ) == messageType ) {
-        result = new AssemblyMessageTranslator( messageData, context );
-    } else if ( BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) == messageType ) {
-        result = new VariationTrackMessageTranslator( messageData, context );
-    } else if ( BaseSlots::TEXT_SLOT( ).getId( ) == messageType || BaseSlots::URL_SLOT( ).getId( )
-        == messageType || BaseSlots::DATASET_SLOT( ).getId( ) == messageType
-        || BaseSlots::FASTA_HEADER_SLOT( ).getId( ) == messageType )
+    if (BaseSlots::DNA_SEQUENCE_SLOT().getId() == messageType) {
+        result = new SequenceMessageTranslator(messageData, context);
+    } else if (BaseSlots::ANNOTATION_TABLE_SLOT().getId() == messageType) {
+        result = new AnnotationsMessageTranslator(messageData, context);
+    } else if (BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId() == messageType) {
+        result = new MultipleAlignmentMessageTranslator(messageData, context);
+    } else if (BaseSlots::ASSEMBLY_SLOT().getId() == messageType) {
+        result = new AssemblyMessageTranslator(messageData, context);
+    } else if (BaseSlots::VARIATION_TRACK_SLOT().getId() == messageType) {
+        result = new VariationTrackMessageTranslator(messageData, context);
+    } else if (BaseSlots::TEXT_SLOT().getId() == messageType || BaseSlots::URL_SLOT().getId()
+        == messageType || BaseSlots::DATASET_SLOT().getId() == messageType
+        || BaseSlots::FASTA_HEADER_SLOT().getId() == messageType)
     {
-        result = new BaseMessageTranslator( messageData, context );
+        result = new BaseMessageTranslator(messageData, context);
     } else {
-        FAIL( "Unable to determine message type", result );
+        FAIL("Unable to determine message type", result);
     }
     return result;
 }
 
-GObject *WorkflowDebugMessageParserImpl::fetchObjectFromMessage( const QString &messageType,
-    const QVariant &messageData ) const
-{
+GObject *WorkflowDebugMessageParserImpl::fetchObjectFromMessage(const QString &messageType, const QVariant &messageData) const {
     GObject *result = NULL;
-    if ( BaseSlots::TEXT_SLOT( ).getId( ) == messageType ) {
-        SAFE_POINT( messageData.canConvert<QString>( ), "Supplied message doesn't contain text data",
-            NULL );
-        const QString documentText = messageData.value<QString>( );
+    if (BaseSlots::TEXT_SLOT().getId() == messageType) {
+        SAFE_POINT(messageData.canConvert<QString>(), "Supplied message doesn't contain text data",
+            NULL);
+        const QString documentText = messageData.value<QString>();
         U2OpStatus2Log os;
-        result = TextObject::createInstance( documentText, "wd_investigation_tmp_text_object", context->getDataStorage()->getDbiRef(), os );
+        result = TextObject::createInstance(documentText, "wd_investigation_tmp_text_object", context->getDataStorage()->getDbiRef(), os);
         return result;
-    } else if ( BaseSlots::URL_SLOT( ).getId( ) == messageType
-        || BaseSlots::DATASET_SLOT( ).getId( ) == messageType
-        || BaseSlots::FASTA_HEADER_SLOT( ).getId( ) == messageType
-        || BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ) == messageType )
+    } else if (BaseSlots::URL_SLOT().getId() == messageType
+        || BaseSlots::DATASET_SLOT().getId() == messageType
+        || BaseSlots::FASTA_HEADER_SLOT().getId() == messageType
+        || BaseSlots::ANNOTATION_TABLE_SLOT().getId() == messageType)
     {
         return result;
     }
-    SAFE_POINT( messageData.canConvert<SharedDbiDataHandler>( ),
-        "Supplied message doesn't contain DB reference", NULL );
-    SharedDbiDataHandler objectId = messageData.value<SharedDbiDataHandler>( );
+    SAFE_POINT(messageData.canConvert<SharedDbiDataHandler>(),
+        "Supplied message doesn't contain DB reference", NULL);
+    SharedDbiDataHandler objectId = messageData.value<SharedDbiDataHandler>();
 
-    if ( BaseSlots::DNA_SEQUENCE_SLOT( ).getId( ) == messageType ) {
-        result = StorageUtils::getSequenceObject( context->getDataStorage( ), objectId );
-    } else if ( BaseSlots::MULTIPLE_ALIGNMENT_SLOT( ).getId( ) == messageType ) {
-        result = StorageUtils::getMsaObject( context->getDataStorage( ), objectId );
-    } else if( BaseSlots::ASSEMBLY_SLOT( ).getId( ) == messageType ) {
-        result = StorageUtils::getAssemblyObject( context->getDataStorage( ), objectId );
-    } else if ( BaseSlots::VARIATION_TRACK_SLOT( ).getId( ) == messageType ) {
-        result = StorageUtils::getVariantTrackObject( context->getDataStorage( ), objectId );
+    if (BaseSlots::DNA_SEQUENCE_SLOT().getId() == messageType) {
+        result = StorageUtils::getSequenceObject(context->getDataStorage(), objectId);
+    } else if (BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId() == messageType) {
+        result = StorageUtils::getMsaObject(context->getDataStorage(), objectId);
+    } else if(BaseSlots::ASSEMBLY_SLOT().getId() == messageType) {
+        result = StorageUtils::getAssemblyObject(context->getDataStorage(), objectId);
+    } else if (BaseSlots::VARIATION_TRACK_SLOT().getId() == messageType) {
+        result = StorageUtils::getVariantTrackObject(context->getDataStorage(), objectId);
     }
-    SAFE_POINT( NULL != result, "Could not obtain object from dbi", NULL );
+    SAFE_POINT(NULL != result, "Could not obtain object from dbi", NULL);
     return result;
 }
 

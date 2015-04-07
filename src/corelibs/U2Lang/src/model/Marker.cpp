@@ -342,32 +342,31 @@ Marker *SequenceMarker::clone() {
 /************************************************************************/
 /* QualifierMarker */
 /************************************************************************/
-QString QualifierMarker::getMarkingResult( const QVariant &object ) {
+QString QualifierMarker::getMarkingResult(const QVariant &object) {
     const QString rest = values.value(MarkerUtils::REST_OPERATION);
 
-    QList<AnnotationData> anns;
-    foreach ( const QVariant &ann, object.toList( ) ) {
-        SAFE_POINT( ann.canConvert<AnnotationData>( ), "Invalid annotation data encountered!",
-            QString( ) );
-        anns << ann.value<AnnotationData>( );
+    QList<SharedAnnotationData> anns;
+    foreach (const QVariant &ann, object.toList()) {
+        SAFE_POINT(ann.canConvert<SharedAnnotationData>(), "Invalid annotation data encountered!", QString());
+        anns << ann.value<SharedAnnotationData>();
     }
 
-    foreach ( const AnnotationData &ann, anns ) {
-        foreach ( const U2Qualifier &qual, ann.qualifiers ) {
-            if ( qual.name == qualName ) {
+    foreach (const SharedAnnotationData &ann, anns) {
+        foreach (const U2Qualifier &qual, ann->qualifiers) {
+            if (qual.name == qualName) {
                 bool ok = false;
                 QVariant value;
-                if ( MarkerTypes::QUAL_INT_VALUE_MARKER_ID == type ) {
-                    value = qVariantFromValue( qual.value.toInt( &ok ) );
-                } else if ( MarkerTypes::QUAL_FLOAT_VALUE_MARKER_ID == type ) {
-                    value = qVariantFromValue( qual.value.toFloat( &ok ) );
-                } else if ( MarkerTypes::QUAL_TEXT_VALUE_MARKER_ID == type ) {
-                    value = qVariantFromValue( qual.value );
+                if (MarkerTypes::QUAL_INT_VALUE_MARKER_ID == type) {
+                    value = qVariantFromValue(qual.value.toInt(&ok));
+                } else if (MarkerTypes::QUAL_FLOAT_VALUE_MARKER_ID == type) {
+                    value = qVariantFromValue(qual.value.toFloat(&ok));
+                } else if (MarkerTypes::QUAL_TEXT_VALUE_MARKER_ID == type) {
+                    value = qVariantFromValue(qual.value);
                     ok = true;
                 } else {
-                    FAIL( "Unexpected marker type!", rest );
+                    FAIL("Unexpected marker type!", rest);
                 }
-                SAFE_POINT( ok, "Variant conversion error!", QString( ) );
+                SAFE_POINT(ok, "Variant conversion error!", QString());
                 QString mark = Marker::getMarkingResult(value);
                 if (rest != mark) {
                     return mark;
@@ -375,7 +374,6 @@ QString QualifierMarker::getMarkingResult( const QVariant &object ) {
             }
         }
     }
-
     return rest;
 }
 
@@ -411,11 +409,10 @@ QString QualifierMarker::getAdditionalParameterName() {
 /* AnnotationMarker */
 /************************************************************************/
 QString AnnotationMarker::getMarkingResult(const QVariant &object) {
-    QList<AnnotationData> anns;
-    foreach ( const QVariant &ann, object.toList( ) ) {
-        SAFE_POINT( ann.canConvert<AnnotationData>( ), "Invalid annotation data encountered!",
-            QString( ) );
-        anns << ann.value<AnnotationData>( );
+    QList<SharedAnnotationData> anns;
+    foreach (const QVariant &ann, object.toList()) {
+        SAFE_POINT(ann.canConvert<SharedAnnotationData>(), "Invalid annotation data encountered!", QString());
+        anns << ann.value<SharedAnnotationData>();
     }
 
     if (MarkerTypes::ANNOTATION_COUNT_MARKER_ID == type) {
@@ -423,8 +420,8 @@ QString AnnotationMarker::getMarkingResult(const QVariant &object) {
         if (annName.isEmpty()) {
             count = anns.size();
         } else {
-            foreach ( const AnnotationData &ann, anns ) {
-                if (ann.name == annName) {
+            foreach (const SharedAnnotationData &ann, anns) {
+                if (ann->name == annName) {
                     count++;
                 }
             }

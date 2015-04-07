@@ -91,7 +91,7 @@ DasBlastSettingsWidget::DasBlastSettingsWidget(QWidget* parent) : QWidget(parent
     hitsComboBox->setCurrentIndex(hitsComboBox->findText(UniprotBlastSettings::DEFAULT_HITS));
 }
 
-U2::UniprotBlastSettings DasBlastSettingsWidget::getSettings( const QString& db )
+U2::UniprotBlastSettings DasBlastSettingsWidget::getSettings(const QString& db)
 {
     UniprotBlastSettings settings;
     settings.insert(UniprotBlastSettings::DATABASE, db);
@@ -131,7 +131,7 @@ void DasOptionsPanelWidget::sl_searchIdsClicked() {
         return;
     }
 
-    SAFE_POINT (NULL != blastSettingsWidget, "BLAST settings widget is null", );
+    SAFE_POINT (NULL != blastSettingsWidget, "BLAST settings widget is null",);
 
     if (getIdsTask == NULL || getIdsTask->isCanceled() || getIdsTask->isFinished()){
         QString db = databaseComboBox->itemData(databaseComboBox->currentIndex()).toString();
@@ -168,7 +168,7 @@ void DasOptionsPanelWidget::sl_loadAnnotations() {
     annotationData.clear();
     QList<DASSource> featureSources = getFeatureSources();
 
-    SAFE_POINT(!accessionNumbers.isEmpty(), "An accession numbers list is unexpectedly empty", );
+    SAFE_POINT(!accessionNumbers.isEmpty(), "An accession numbers list is unexpectedly empty",);
     loadDasFeaturesTask = new ConvertIdAndLoadDasFeaturesTask(accessionNumbers, featureSources, !isAccessionsUniprotLike(accessionNumbers.first()));
     TaskSignalMapper *taskMapper = new TaskSignalMapper(loadDasFeaturesTask);
     connect(taskMapper, SIGNAL(si_taskFinished(Task*)), this, SLOT(sl_onLoadAnnotationsFinish()));
@@ -178,7 +178,7 @@ void DasOptionsPanelWidget::sl_loadAnnotations() {
 
 void DasOptionsPanelWidget::sl_blastSearchFinish() {
     UniprotBlastTask* blastTask = qobject_cast<UniprotBlastTask*>(sender());
-    SAFE_POINT(blastTask, "Sender is not defined", );
+    SAFE_POINT(blastTask, "Sender is not defined",);
 
     if (blastTask != getIdsTask){
         //context was switched while fetching IDs. I caused deleting of the widget
@@ -225,7 +225,7 @@ void DasOptionsPanelWidget::sl_blastSearchFinish() {
 }
 
 void DasOptionsPanelWidget::sl_onLoadAnnotationsFinish() {
-    if(NULL != loadDasFeaturesTask) {
+    if (NULL != loadDasFeaturesTask) {
         annotationData = loadDasFeaturesTask->getAnnotationData();
         addAnnotations();
         loadDasFeaturesTask = NULL;
@@ -268,20 +268,20 @@ void DasOptionsPanelWidget::sl_openInNewView() {
     if (dir.isEmpty()) {
         dir = LoadRemoteDocumentTask::getDefaultDownloadDirectory();
     }
-    SAFE_POINT(!dir.isEmpty(), "Default download dir is empty", );
+    SAFE_POINT(!dir.isEmpty(), "Default download dir is empty",);
 
     U2OpStatus2Log os;
     dir = GUrlUtils::prepareDirLocation(dir, os);
-    SAFE_POINT(!dir.isEmpty(), "Prepared default download dir is empty", );
+    SAFE_POINT(!dir.isEmpty(), "Prepared default download dir is empty",);
 
     QString accessionNumber = idList->item(idList->currentRow(), 0)->text();
 
     DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
-    SAFE_POINT(NULL != dasRegistry, "DAS registry is NULL", );
+    SAFE_POINT(NULL != dasRegistry, "DAS registry is NULL",);
 
     QList<DASSource> featureSources = getFeatureSources();
     DASSource refSource = getSequenceSource();
-    SAFE_POINT(refSource.isValid(), "Reference source is invalid", );
+    SAFE_POINT(refSource.isValid(), "Reference source is invalid",);
 
     AppContext::getTaskScheduler()->registerTopLevelTask(new LoadDASDocumentsAndOpenViewTask(accessionNumber, dir, refSource, featureSources, !isAccessionsUniprotLike(accessionNumber)));
 }
@@ -292,7 +292,7 @@ void DasOptionsPanelWidget::sl_showLessClicked(const QString& link) {
 }
 
 void DasOptionsPanelWidget::initialize() {
-    SAFE_POINT(NULL != ctx, "Active sequence context is NULL.", );
+    SAFE_POINT(NULL != ctx, "Active sequence context is NULL.",);
 
     selection = ctx->getSequenceSelection();
 
@@ -336,7 +336,7 @@ void DasOptionsPanelWidget::initialize() {
     sourcesContainerLayout->addWidget(new ShowHideSubgroupWidget(SOURCES, SOURCES, dasFeaturesListWidget, false));
 
     DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
-    SAFE_POINT(dasRegistry, "DAS registry is NULL", );
+    SAFE_POINT(dasRegistry, "DAS registry is NULL",);
     const DASSource& dasSource = dasRegistry->findById(DAS_UNIPROT);
     if (dasSource.isValid()){
         dasFeaturesListWidget->clear();
@@ -353,7 +353,7 @@ void DasOptionsPanelWidget::initialize() {
     // Annotations widget
     CreateAnnotationModel cm;
     cm.hideLocation = true;
-    cm.sequenceObjectRef = ctx->getSequenceObject( );
+    cm.sequenceObjectRef = ctx->getSequenceObject();
     cm.sequenceLen = ctx->getSequenceLength();
     cm.hideAnnotationParameters = true;
     annotationsWidgetController = new CreateAnnotationWidgetController(cm, this, CreateAnnotationWidgetController::OptionsPanel);
@@ -403,17 +403,17 @@ void DasOptionsPanelWidget::connectSignals() {
             SLOT(sl_showLessClicked(const QString&)));
      connect(regionSelector ,
             SIGNAL(si_regionChanged(const U2Region&)),
-            SLOT(sl_onRegionChanged(const U2Region& )));
+            SLOT(sl_onRegionChanged(const U2Region&)));
      connect(idList,
-            SIGNAL( doubleClicked ( const QModelIndex &  ) ),
-            SLOT( sl_idDoubleClicked (const QModelIndex & ) ));
+            SIGNAL(doubleClicked (const QModelIndex & )),
+            SLOT(sl_idDoubleClicked (const QModelIndex &)));
 }
 
 void DasOptionsPanelWidget::checkState() {
-    SAFE_POINT(ctx, "Active sequence context is NULL.", );
+    SAFE_POINT(ctx, "Active sequence context is NULL.",);
 
     const DNAAlphabet* alphabet = ctx->getAlphabet();
-    SAFE_POINT(alphabet != NULL, "DasOptionsPanelWidget::checkState", )
+    SAFE_POINT(alphabet != NULL, "DasOptionsPanelWidget::checkState",)
 
     bool ok = regionIsOk() && alphabet->isAmino();
     searchIdsButton->setEnabled(ok);
@@ -486,33 +486,35 @@ void DasOptionsPanelWidget::addAnnotations() {
         return;
     }
 
-    SAFE_POINT(ctx, "Current sequence context is NULL", );
+    SAFE_POINT(ctx, "Current sequence context is NULL",);
     qint64 seqLength = ctx->getSequenceLength();
 
     bool annObjectIsOk = annotationsWidgetController->prepareAnnotationObject();
-    SAFE_POINT(annObjectIsOk, "Cannot create an annotation object. Please check settings", );
+    SAFE_POINT(annObjectIsOk, "Cannot create an annotation object. Please check settings",);
 
     const CreateAnnotationModel& cm = annotationsWidgetController->getModel();
     AnnotationTableObject *annotationTableObject = cm.getAnnotationObject();
 
-    foreach (const QString& grname, annotationData.keys()) {
-        const QList<AnnotationData> sdata = annotationData[grname];
+    foreach (const QString &grname, annotationData.keys()) {
+        const QList<SharedAnnotationData> sdata = annotationData[grname];
         if (!sdata.isEmpty()) {
-            foreach ( AnnotationData d, sdata ) {
-                if ( d.location->isSingleRegion( ) && d.location->regions.first( ) == U2_REGION_MAX ) {
+            QList<SharedAnnotationData> editedAnnData;
+            foreach (SharedAnnotationData d, sdata) {
+                if (d->location->isSingleRegion() && d->location->regions.first() == U2_REGION_MAX) {
                     //setRegion for full region sequence
-                    U2Location newLoc = d.location;
-                    newLoc->regions.clear( );
-                    newLoc->regions.append( U2Region( 0, ctx->getSequenceLength( ) ) );
-                    d.location = newLoc;
+                    U2Location newLoc = d->location;
+                    newLoc->regions.clear();
+                    newLoc->regions.append(U2Region(0, ctx->getSequenceLength()));
+                    d->location = newLoc;
                 } else {
                     //cut annotations with the start position out of the current sequence
-                    if ( !d.location->regions.isEmpty( ) && d.location->regions.first().startPos >= seqLength){
+                    if (!d->location->regions.isEmpty() && d->location->regions.first().startPos >= seqLength){
                         continue;
                     }
                 }
-                annotationTableObject->getRootGroup().getSubgroup(grname, true).addAnnotation( d );
+                editedAnnData.append(d);
             }
+            annotationTableObject->getRootGroup()->getSubgroup(grname, true)->addAnnotations(editedAnnData);
         }
     }
 
@@ -606,7 +608,7 @@ void DasOptionsPanelWidget::clear() {
     annotationData.clear();
 }
 
-void DasOptionsPanelWidget::sl_onRegionChanged( const U2Region& r){
+void DasOptionsPanelWidget::sl_onRegionChanged(const U2Region& r){
     clear();
 
     if (r.length < MIN_SEQ_LENGTH){
@@ -622,7 +624,7 @@ void DasOptionsPanelWidget::sl_onRegionChanged( const U2Region& r){
     checkState();
 }
 
-void DasOptionsPanelWidget::sl_idDoubleClicked( const QModelIndex & ){
+void DasOptionsPanelWidget::sl_idDoubleClicked(const QModelIndex &){
     sl_loadAnnotations();
 }
 

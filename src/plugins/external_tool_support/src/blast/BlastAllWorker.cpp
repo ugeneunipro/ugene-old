@@ -393,7 +393,7 @@ Task* BlastAllWorker::tick() {
         }
         DNASequence seq = seqObj->getWholeSequence();
 
-        if( seq.length() < 1) {
+        if(seq.length() < 1) {
             return new FailTask(tr("Empty sequence supplied to BLAST"));
         }
         cfg.querySequence=seq.seq;
@@ -461,27 +461,27 @@ Task* BlastAllWorker::tick() {
     return NULL;
 }
 
-void BlastAllWorker::sl_taskFinished( ) {
-    BlastAllSupportTask *t = qobject_cast<BlastAllSupportTask *>( sender( ) );
-    if ( t->getState( ) != Task::State_Finished || t->isCanceled( ) || t->hasError( ) ) {
+void BlastAllWorker::sl_taskFinished() {
+    BlastAllSupportTask *t = qobject_cast<BlastAllSupportTask *>(sender());
+    if (t->getState() != Task::State_Finished || t->isCanceled() || t->hasError()) {
         return;
     }
 
-    if ( NULL != output ) {
-        QList<AnnotationData> res = t->getResultedAnnotations( );
-        QString annName = actor->getParameter( BLASTALL_GROUP_NAME )->getAttributeValue<QString>( context );
-        if ( !annName.isEmpty( ) ) {
-            for ( int i = 0; i < res.count( ); i++ ) {
-                res[i].name = annName;
+    if (NULL != output) {
+        QList<SharedAnnotationData> res = t->getResultedAnnotations();
+        QString annName = actor->getParameter(BLASTALL_GROUP_NAME)->getAttributeValue<QString>(context);
+        if (!annName.isEmpty()) {
+            for (int i = 0; i < res.count(); i++) {
+                res[i]->name = annName;
             }
         }
-        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( res );
-        const QVariant v = qVariantFromValue<SharedDbiDataHandler>( tableId );
-        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ), v ) );
+        const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(res);
+        const QVariant v = qVariantFromValue<SharedDbiDataHandler>(tableId);
+        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
     }
 }
 
-void BlastAllWorker::cleanup( ) {
+void BlastAllWorker::cleanup() {
 
 }
 

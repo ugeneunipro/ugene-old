@@ -39,7 +39,6 @@
 
 namespace U2 {
 
-
 DNAFlexDialog::DNAFlexDialog(ADVSequenceObjectContext* _ctx)
   : QDialog(_ctx->getAnnotatedDNAView()->getWidget())
 {
@@ -57,7 +56,7 @@ DNAFlexDialog::DNAFlexDialog(ADVSequenceObjectContext* _ctx)
     CreateAnnotationModel annotModel;
     annotModel.hideAnnotationType = true;
     annotModel.hideLocation = true;  // hides location field and does not check it in validate()
-    annotModel.data.name = "dna_flex";
+    annotModel.data->name = "dna_flex";
     annotModel.sequenceObjectRef = ctx->getSequenceObject();
     annotModel.sequenceLen = sequenceLength;
 
@@ -89,7 +88,6 @@ DNAFlexDialog::DNAFlexDialog(ADVSequenceObjectContext* _ctx)
 
 }
 
-
 void DNAFlexDialog::accept()
 {
     // Verifying and passing the settings
@@ -107,16 +105,11 @@ void DNAFlexDialog::accept()
         return;
     }
     const CreateAnnotationModel& annotModel = annotController->getModel();
-    QString annotName = annotModel.data.name;
+    QString annotName = annotModel.data->name;
     QString annotGroup = annotModel.groupName;
 
     // Creating the task
-    DNAFlexTask* task = new DNAFlexTask(
-        settings,
-        annotModel.getAnnotationObject(),
-        annotName,
-        annotGroup,
-        ctx->getSequenceObject()->getWholeSequence());
+    DNAFlexTask* task = new DNAFlexTask(settings, annotModel.getAnnotationObject(), annotName, annotGroup, ctx->getSequenceObject()->getWholeSequence());
 
     // Registering the task
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
@@ -125,30 +118,25 @@ void DNAFlexDialog::accept()
     QDialog::accept();
 }
 
-
 void DNAFlexDialog::sl_spinWindowSizeChanged(int newValue)
 {
     settings.windowSize = newValue;
 }
-
 
 void DNAFlexDialog::sl_spinWindowStepChanged(int newValue)
 {
     settings.windowStep = newValue;
 }
 
-
 void DNAFlexDialog::sl_spinThresholdChanged(double newValue)
 {
     settings.threshold = newValue;
 }
 
-
 void DNAFlexDialog::sl_rememberSettings()
 {
     settings.rememberSettings();
 }
-
 
 void DNAFlexDialog::sl_defaultSettings()
 {
@@ -156,14 +144,12 @@ void DNAFlexDialog::sl_defaultSettings()
     updateHighFlexValues();
 }
 
-
 void DNAFlexDialog::updateHighFlexValues()
 {
     spinBoxWindowSize->setValue(settings.windowSize);
     spinBoxWindowStep->setValue(settings.windowStep);
     doubleSpinBoxThreshold->setValue(settings.threshold);
 }
-
 
 } // namespace
 

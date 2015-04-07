@@ -101,13 +101,13 @@ private:
     QDStep* currentStep;
     bool needInit;
     QList<QDResultGroup*> candidates;
-    QMap< QDResultUnit, AnnotationData > result2annotation;
+    QMap<QDResultUnit, SharedAnnotationData> result2annotation;
 
-    QList<QDResultGroup*> currentResults;
-    QMap< QDActor*, QList<QDResultGroup*> > currentGroupResults;
+    QList<QDResultGroup *> currentResults;
+    QMap<QDActor *, QList<QDResultGroup *> > currentGroupResults;
 
 
-    QMap< QString, QList<AnnotationData> > annotations;
+    QMap<QString, QList<SharedAnnotationData> > annotations;
 };
 
 class QDFindLocationTask : public Task {

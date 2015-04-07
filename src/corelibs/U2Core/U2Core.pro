@@ -7,7 +7,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/cmdline/CMDLineUtils.h \
            src/datatype/Annotation.h \
            src/datatype/AnnotationData.h \
-           src/datatype/AnnotationDataCache.h \
            src/datatype/AnnotationGroup.h \
            src/datatype/AnnotationModification.h \
            src/datatype/AnnotationSettings.h \
@@ -218,7 +217,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/MsaDbiUtils.h \
            src/util/MsaRowUtils.h \
            src/util/MSAUtils.h \
-           src/util/U2ObjectTypeUtils.h \
            src/util/PMatrixSerializeUtils.h \
            src/util/QVariantUtils.h \
            src/util/SequenceUtils.h \
@@ -231,6 +229,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/U2Bits.h \
            src/util/U2DbiUpgrader.h \
            src/util/U2FeatureUtils.h \
+           src/util/U2ObjectTypeUtils.h \
            src/util/U2OpStatusUtils.h \
            src/util/U2SequenceUtils.h \
            src/util/U2VariationUtils.h \
@@ -240,7 +239,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/cmdline/CMDLineUtils.cpp \
            src/datatype/Annotation.cpp \
            src/datatype/AnnotationData.cpp \
-           src/datatype/AnnotationDataCache.cpp \
            src/datatype/AnnotationGroup.cpp \
            src/datatype/AnnotationModification.cpp \
            src/datatype/AnnotationSettings.cpp \
@@ -412,7 +410,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/MsaDbiUtils.cpp \
            src/util/MsaRowUtils.cpp \
            src/util/MSAUtils.cpp \
-           src/util/U2ObjectTypeUtils.cpp \
            src/util/QVariantUtils.cpp \
            src/util/SequenceUtils.cpp \
            src/util/TextUtils.cpp \
@@ -424,6 +421,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/U2Bits.cpp \
            src/util/U2DbiUpgrader.cpp \
            src/util/U2FeatureUtils.cpp \
+           src/util/U2ObjectTypeUtils.cpp \
            src/util/U2SequenceUtils.cpp \
            src/util/U2VariationUtils.cpp
 TRANSLATIONS += transl/chinese.ts \

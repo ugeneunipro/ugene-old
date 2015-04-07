@@ -41,58 +41,48 @@ class U2VIEW_EXPORT GSequenceLineViewAnnotated : public GSequenceLineView {
 public:
     class DrawSettings {
     public:
-                DrawSettings( );
+                DrawSettings();
 
         bool    drawAnnotationNames;
         bool    drawAnnotationArrows;
         bool    drawCutSites;
     };
 
-                                            GSequenceLineViewAnnotated( QWidget *p,
-                                                ADVSequenceObjectContext *ctx );
+                                            GSequenceLineViewAnnotated(QWidget *p, ADVSequenceObjectContext *ctx);
 
-    bool                                    isAnnotationVisible( const Annotation &a ) const;
-    const DrawSettings &                    getDrawSettings( ) const;
+    bool                                    isAnnotationVisible(Annotation *a) const;
+    const DrawSettings &                    getDrawSettings() const;
 
-    virtual QList<AnnotationSelectionData>  selectAnnotationByCoord( const QPoint &coord ) const;
+    virtual QList<AnnotationSelectionData>  selectAnnotationByCoord(const QPoint &coord) const;
 
-    static QString                          prepareAnnotationText( const AnnotationData &a,
-                                                const AnnotationSettings *as );
+    static QString                          prepareAnnotationText(const SharedAnnotationData &a, const AnnotationSettings *as);
 
-    QList<Annotation>                       findAnnotationsInRange( const U2Region &range ) const;
+    QList<Annotation *>                       findAnnotationsInRange(const U2Region &range) const;
 
 protected:
-    void                                    mousePressEvent( QMouseEvent *e );
+    void                                    mousePressEvent(QMouseEvent *e);
 
-    virtual bool                            event( QEvent *e );
-    virtual QString                         createToolTip( QHelpEvent *e );
+    virtual bool                            event(QEvent *e);
+    virtual QString                         createToolTip(QHelpEvent *e);
 
-    virtual void                            registerAnnotations( const QList<Annotation> &l );
-    virtual void                            unregisterAnnotations( const QList<Annotation> &l );
-    virtual void                            ensureVisible( const AnnotationData &a,
-                                                int locationIdx );
+    virtual void                            registerAnnotations(const QList<Annotation *> &l);
+    virtual void                            unregisterAnnotations(const QList<Annotation *> &l);
+    virtual void                            ensureVisible(const SharedAnnotationData &a, int locationIdx);
 
 protected slots:
-    virtual void                            sl_onAnnotationSettingsChanged(
-                                                const QStringList &changedSettings );
+    virtual void                            sl_onAnnotationSettingsChanged(const QStringList &changedSettings);
 
-    void                                    sl_onAnnotationObjectAdded( AnnotationTableObject * );
-    void                                    sl_onAnnotationObjectRemoved(
-                                                AnnotationTableObject * );
-    void                                    sl_onAnnotationsInGroupRemoved(
-                                                const QList<Annotation> &,
-                                                const AnnotationGroup & );
-    void                                    sl_onAnnotationsAdded( const QList<Annotation> & );
-    void                                    sl_onAnnotationsRemoved( const QList<Annotation> & );
-    virtual void                            sl_onAnnotationsModified(
-                                                const AnnotationModification &md );
-    virtual void                            sl_onAnnotationSelectionChanged( AnnotationSelection *,
-                                                const QList<Annotation> &added,
-                                                const QList<Annotation> &removed );
+    void                                    sl_onAnnotationObjectAdded(AnnotationTableObject *);
+    void                                    sl_onAnnotationObjectRemoved(AnnotationTableObject *);
+    void                                    sl_onAnnotationsInGroupRemoved(const QList<Annotation *> &, AnnotationGroup *);
+    void                                    sl_onAnnotationsAdded(const QList<Annotation *> &);
+    void                                    sl_onAnnotationsRemoved(const QList<Annotation *> &);
+    virtual void                            sl_onAnnotationsModified(const AnnotationModification &md);
+    virtual void                            sl_onAnnotationSelectionChanged(AnnotationSelection *, const QList<Annotation *> &added,
+                                                const QList<Annotation *> &removed);
 
 private:
-    void                                    connectAnnotationObject(
-                                                const AnnotationTableObject *ao );
+    void                                    connectAnnotationObject(const AnnotationTableObject *ao);
 
 protected:
     DrawSettings    drawSettings;
@@ -103,15 +93,12 @@ protected:
 
 class U2VIEW_EXPORT GSequenceLineViewAnnotatedRenderArea : public GSequenceLineViewRenderArea {
 public:
-                                    GSequenceLineViewAnnotatedRenderArea(
-                                        GSequenceLineViewAnnotated *d,
-                                        bool annotationsCanOverlap );
-                                    ~GSequenceLineViewAnnotatedRenderArea( );
+                                    GSequenceLineViewAnnotatedRenderArea(GSequenceLineViewAnnotated *d, bool annotationsCanOverlap);
+                                    ~GSequenceLineViewAnnotatedRenderArea();
 
-    virtual U2Region                getAnnotationYRange( const Annotation &a, int region,
-                                        const AnnotationSettings *as ) const = 0;
-    virtual U2Region                getMirroredYRange( const U2Strand &mirroredStrand) const = 0;
-    GSequenceLineViewAnnotated *    getGSequenceLineViewAnnotated( ) const;
+    virtual U2Region                getAnnotationYRange(Annotation *a, int region, const AnnotationSettings *as) const = 0;
+    virtual U2Region                getMirroredYRange(const U2Strand &mirroredStrand) const = 0;
+    GSequenceLineViewAnnotated *    getGSequenceLineViewAnnotated() const;
 
 protected:
     struct CutSiteDrawData {
@@ -121,27 +108,23 @@ protected:
         bool direct;
         int pos;
     };
-    virtual void                    drawAnnotations( QPainter &p );
-    virtual void                    drawBoundedText( QPainter &p, const QRect &r,
-                                        const QString &text ) const;
-    virtual void                    drawAnnotationConnections(QPainter &p, const Annotation &a, const AnnotationSettings *as,
-                                                              U2Region yRange);
-    virtual void                    drawAnnotationsSelection( QPainter &p );
-    void                            drawCutSites(QPainter &p);
-    virtual void                    drawCutSite( QPainter &p, const QRect &r, const QColor &color,
-                                        int pos, bool direct );
 
-    bool                            isAnnotationSelectionInVisibleRange( ) const;
+    virtual void                    drawAnnotations(QPainter &p);
+    virtual void                    drawBoundedText(QPainter &p, const QRect &r, const QString &text) const;
+    virtual void                    drawAnnotationConnections(QPainter &p, Annotation *a, const AnnotationSettings *as, U2Region yRange);
+    virtual void                    drawAnnotationsSelection(QPainter &p);
+    void                            drawCutSites(QPainter &p);
+    virtual void                    drawCutSite(QPainter &p, const QRect &r, const QColor &color, int pos, bool direct);
+
+    bool                            isAnnotationSelectionInVisibleRange() const;
 
     enum DrawAnnotationPass {
         DrawAnnotationPass_DrawFill,
         DrawAnnotationPass_DrawBorder
     };
 
-    void                            drawAnnotation( QPainter &p, DrawAnnotationPass pass,
-                                        const Annotation &a, const QPen &borderPen,
-                                        bool selected = false, const AnnotationSettings *as = NULL,
-                                        U2Region y = U2Region( ) );
+    void                            drawAnnotation(QPainter &p, DrawAnnotationPass pass, Annotation *a, const QPen &borderPen,
+                                        bool selected = false, const AnnotationSettings *as = NULL, U2Region y = U2Region());
 
     bool annotationsCanOverlap;
 
@@ -161,15 +144,15 @@ protected:
 
 class ClearAnnotationsTask : public Task {
 public:
-                                    ClearAnnotationsTask( const QList<Annotation> &     list,
+                                    ClearAnnotationsTask(const QList<Annotation *> &    list,
                                                           AnnotationTableObject *       aobj,
-                                                          GSequenceLineViewAnnotated *  view );
+                                                          GSequenceLineViewAnnotated *  view);
 
-    void                            run( );
-    Task::ReportResult              report( );
+    void                            run();
+    Task::ReportResult              report();
 
 private:
-    QList<Annotation>               l;
+    QList<Annotation *>             l;
     AnnotationTableObject *         aobj;
     GSequenceLineViewAnnotated *    view;
 };

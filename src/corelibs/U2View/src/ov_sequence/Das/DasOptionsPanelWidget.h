@@ -113,7 +113,7 @@ private:
 
     Task* getIdsTask;
 
-    QMap<QString, QList<AnnotationData> > annotationData;
+    QMap<QString, QList<SharedAnnotationData> > annotationData;
 
     DasOptionsPanelSavableTab savableWidget;
 

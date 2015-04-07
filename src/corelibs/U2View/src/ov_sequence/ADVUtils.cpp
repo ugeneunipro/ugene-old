@@ -59,8 +59,8 @@ void ADVGlobalAction::updateState() {
 QString ADVSelectionUtils::getSequenceIdsFromSelection(const QList<AnnotationSelectionData> &selection, bool localBase) {
     QStringList genbankID ;
     foreach (const AnnotationSelectionData &sel, selection) {
-        const Annotation &ann = sel.annotation;
-        QString tmp = ann.findFirstQualifierValue("id");
+        const Annotation *ann = sel.annotation;
+        QString tmp = ann->findFirstQualifierValue("id");
         if (!tmp.isEmpty()) {
             if (!localBase) {
                 int off = tmp.indexOf("|");

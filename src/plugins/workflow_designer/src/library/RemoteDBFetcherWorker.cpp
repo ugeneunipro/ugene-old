@@ -178,13 +178,13 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
     }
 
     Document *doc = loadTask->getDocument();
-    SAFE_POINT(NULL != doc, "NULL document", );
+    SAFE_POINT(NULL != doc, "NULL document",);
     doc->setDocumentOwnsDbiResources(false);
     monitor()->addOutputFile(doc->getURLString(), getActorId());
 
     foreach(GObject *gobj, doc->findGObjectByType(GObjectTypes::SEQUENCE)) {
         U2SequenceObject *dnao = qobject_cast<U2SequenceObject*>(gobj);
-        SAFE_POINT(NULL != dnao, "NULL sequence", );
+        SAFE_POINT(NULL != dnao, "NULL sequence",);
 
         QList<GObject*> allLoadedAnnotations = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
         QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(gobj,
@@ -193,19 +193,19 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
                                                                                      allLoadedAnnotations,
                                                                                      UOF_LoadedOnly);
 
-        QList<AnnotationData> ads;
+        QList<SharedAnnotationData> ads;
         if (!annotations.isEmpty()) {
             AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>(annotations.first());
-            foreach ( const Annotation &a, ato->getAnnotations( ) ) {
-                ads << a.getData( );
+            foreach (Annotation *a, ato->getAnnotations()) {
+                ads << a->getData();
             }
         }
 
         QVariantMap messageData;
         SharedDbiDataHandler seqId = context->getDataStorage()->getDataHandler(dnao->getEntityRef());
-        messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(seqId);
+        messageData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(seqId);
         SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(ads);
-        messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(tableId);
+        messageData[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(tableId);
 
         DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById(TYPE);
 
@@ -293,7 +293,7 @@ void RemoteDBFetcherFactory::init()
     outMap[ BaseSlots::DNA_SEQUENCE_SLOT() ] = BaseTypes::DNA_SEQUENCE_TYPE();
     outMap[ BaseSlots::ANNOTATION_TABLE_SLOT() ] = BaseTypes::ANNOTATION_TABLE_TYPE();
 
-    DataTypePtr outType( new MapDataType(Descriptor(TYPE), outMap) );
+    DataTypePtr outType(new MapDataType(Descriptor(TYPE), outMap));
     DataTypeRegistry  *dr = WorkflowEnv::getDataTypeRegistry();
     assert(dr);
     dr->registerEntry(outType);
@@ -423,14 +423,14 @@ Task* FetchSequenceByIdFromAnnotationWorker::tick() {
             return NULL;
         }
         QVariantMap qm = inputMessage.getData().toMap();
-        const QList<AnnotationData> inputAnns = StorageUtils::getAnnotationTable(
-            context->getDataStorage( ), qm[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )] );
+        const QList<SharedAnnotationData> inputAnns = StorageUtils::getAnnotationTable(context->getDataStorage(),
+            qm[BaseSlots::ANNOTATION_TABLE_SLOT().getId()]);
 
         QStringList accIds;
 
-        foreach (const AnnotationData& ann, inputAnns) {
-            QString accId  = ann.findFirstQualifierValue("accession");
-            if(!accId.isEmpty()) {
+        foreach (const SharedAnnotationData& ann, inputAnns) {
+            QString accId = ann->findFirstQualifierValue("accession");
+            if (!accId.isEmpty()) {
                 accIds << accId;
             }
         }
@@ -472,14 +472,14 @@ void FetchSequenceByIdFromAnnotationWorker::sl_taskFinished() {
     }
 
     Document *doc = loadTask->getDocument();
-    SAFE_POINT(NULL != doc, "NULL document", );
+    SAFE_POINT(NULL != doc, "NULL document",);
     doc->setDocumentOwnsDbiResources(false);
     monitor()->addOutputFile(doc->getURLString(), getActorId());
 
     foreach(GObject *gobj, doc->findGObjectByType(GObjectTypes::SEQUENCE))
     {
         U2SequenceObject *dnao = qobject_cast<U2SequenceObject*>(gobj);
-        SAFE_POINT(NULL != dnao, "NULL sequence", );
+        SAFE_POINT(NULL != dnao, "NULL sequence",);
 
         QList<GObject*> allLoadedAnnotations = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
         QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(gobj,
@@ -488,19 +488,19 @@ void FetchSequenceByIdFromAnnotationWorker::sl_taskFinished() {
                                                                                      allLoadedAnnotations,
                                                                                      UOF_LoadedOnly);
 
-        QList<AnnotationData> ads;
+        QList<SharedAnnotationData> ads;
         if (!annotations.isEmpty()) {
-            AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>( annotations.first( ) );
-            foreach ( const Annotation &a, ato->getAnnotations( ) ) {
-                ads << a.getData( );
+            AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>(annotations.first());
+            foreach (Annotation *a, ato->getAnnotations()) {
+                ads << a->getData();
             }
         }
 
         QVariantMap messageData;
         SharedDbiDataHandler seqId = context->getDataStorage()->getDataHandler(dnao->getEntityRef());
-        messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(seqId);
+        messageData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(seqId);
         SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(ads);
-        messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(tableId);
+        messageData[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(tableId);
 
         DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById(TYPE);
 
@@ -535,10 +535,10 @@ void FetchSequenceByIdFromAnnotationFactory::init()
 
     QList<PortDescriptor*> pds;
     { //Create input port descriptors
-        Descriptor inDesc( BasePorts::IN_ANNOTATIONS_PORT_ID(),FetchSequenceByIdFromAnnotationWorker::tr("Input annotations"),
-            FetchSequenceByIdFromAnnotationWorker::tr("The annotations are scanned for accesion ids.") );
+        Descriptor inDesc(BasePorts::IN_ANNOTATIONS_PORT_ID(),FetchSequenceByIdFromAnnotationWorker::tr("Input annotations"),
+            FetchSequenceByIdFromAnnotationWorker::tr("The annotations are scanned for accesion ids."));
 
-           pds << new PortDescriptor( inDesc, DataTypePtr(new MapDataType("input.anns", inputMap)), /*input*/ true );
+           pds << new PortDescriptor(inDesc, DataTypePtr(new MapDataType("input.anns", inputMap)), /*input*/ true);
     }
 
     {
@@ -572,7 +572,7 @@ void FetchSequenceByIdFromAnnotationFactory::init()
         dbIds.append(GENBANK_PROTEIN_ID);
 
         QVariantMap dbValues;
-        foreach( const QString& id, dbIds) {
+        foreach(const QString& id, dbIds) {
             dbValues[id] = id;
         }
 

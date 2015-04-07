@@ -175,7 +175,7 @@ void BlastPlusWorkerFactory::init() {
     }
     {
         QVariantMap m;
-        m["D or d: default (equivalent to 2 )"] = "D";
+        m["D or d: default (equivalent to 2)"] = "D";
         m["0 or F or f: No composition-based statistics"] = "0";
         m["1: Composition-based statistics as in NAR 29:2994-3005, 2001"] = "1";
         m["2 or T or t : Composition-based score adjustment as in Bioinformatics 21:902-911, 2005"] = "2";
@@ -316,7 +316,7 @@ Task* BlastPlusWorker::tick() {
         }
         DNASequence seq = seqObj->getWholeSequence();
 
-        if( seq.length() < 1) {
+        if(seq.length() < 1) {
             return new FailTask(tr("Empty sequence supplied to BLAST"));
         }
         cfg.querySequence=seq.seq;
@@ -394,27 +394,27 @@ Task* BlastPlusWorker::tick() {
     return NULL;
 }
 
-void BlastPlusWorker::sl_taskFinished( ) {
-    BlastPlusSupportCommonTask *t = qobject_cast<BlastPlusSupportCommonTask *>( sender( ) );
-    if ( t->getState( ) != Task::State_Finished || t->isCanceled( ) || t->hasError( ) ) {
+void BlastPlusWorker::sl_taskFinished() {
+    BlastPlusSupportCommonTask *t = qobject_cast<BlastPlusSupportCommonTask *>(sender());
+    if (t->getState() != Task::State_Finished || t->isCanceled() || t->hasError()) {
         return;
     }
 
-    if ( NULL != output ) {
-        QList<AnnotationData> res = t->getResultedAnnotations( );
-        QString annName = actor->getParameter( BLASTPLUS_GROUP_NAME )->getAttributeValue<QString>( context );
-        if ( !annName.isEmpty( ) ) {
-            for ( int i = 0; i < res.count( ); i++ ) {
-                res[i].name = annName;
+    if (NULL != output) {
+        QList<SharedAnnotationData> res = t->getResultedAnnotations();
+        QString annName = actor->getParameter(BLASTPLUS_GROUP_NAME)->getAttributeValue<QString>(context);
+        if (!annName.isEmpty()) {
+            for (int i = 0; i < res.count(); i++) {
+                res[i]->name = annName;
             }
         }
-        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( res );
-        const QVariant v = qVariantFromValue<SharedDbiDataHandler>( tableId );
-        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ), v ) );
+        const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(res);
+        const QVariant v = qVariantFromValue<SharedDbiDataHandler>(tableId);
+        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
     }
 }
 
-void BlastPlusWorker::cleanup( ) {
+void BlastPlusWorker::cleanup() {
 
 }
 

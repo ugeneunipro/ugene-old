@@ -42,7 +42,7 @@ static int PROCESSING_PROGRESS_WEIGHT(80);
 
 QDScheduler::QDScheduler(const QDRunSettings& _settings)
 : Task(tr("QDScheduler"), TaskFlags_NR_FOSCOE), settings(_settings) {
-    GCOUNTER( cvar, tvar, "QueryDesignerScheduler" );
+    GCOUNTER(cvar, tvar, "QueryDesignerScheduler");
     loadTask = NULL;
     createAnnsTask = NULL;
     linker = new QDResultLinker(this);
@@ -109,12 +109,12 @@ QList<Task*> QDScheduler::onSubTaskFinished(Task* subTask) {
     return subs;
 }
 
-#define PUSH_WEIGTH ( 1.0f - PROCESSING_PROGRESS_WEIGHT / 100.0f )
+#define PUSH_WEIGTH (1.0f - PROCESSING_PROGRESS_WEIGHT / 100.0f)
 void QDScheduler::sl_updateProgress() {
     Task* sub = qobject_cast<Task*>(sender());
     int numProcessed = currentStep->getLinkedActors().size();
     if (numProcessed < settings.scheme->getActors().size()) {
-        stateInfo.progress = progressDelta * ( numProcessed + sub->getProgress()/100.0f );
+        stateInfo.progress = progressDelta * (numProcessed + sub->getProgress()/100.0f);
     } else {
         stateInfo.progress = PROCESSING_PROGRESS_WEIGHT + PUSH_WEIGTH * sub->getProgress();
     }
@@ -403,7 +403,7 @@ void QDResultLinker::updateCandidates(int& progress) {
             bool matches = false;
             //define for what schema strand result is
             QDStrandOption resStrand = findResultStrand(actorRes);
-            if ( resStrand!=QDStrand_Both && candidate->strand!=QDStrand_Both && resStrand!=candidate->strand ) {
+            if (resStrand!=QDStrand_Both && candidate->strand!=QDStrand_Both && resStrand!=candidate->strand) {
                 continue;
             }
             //
@@ -479,7 +479,7 @@ bool QDResultLinker::canAdd(QDResultGroup* actorResult, QDResultGroup* candidate
     return true;
 }
 
-QList<QDResultUnit> QDResultLinker::prepareComplResults( QDResultGroup* src ) const {
+QList<QDResultUnit> QDResultLinker::prepareComplResults(QDResultGroup* src) const {
     QList<QDResultUnit> res = src->getResultsList();
     QList<QDActor*> simActors;
     foreach (QDResultUnit ru, res) {
@@ -512,7 +512,7 @@ void QDResultLinker::prepareAnnotations() {
     perfLog.details(QString("%1 groups").arg(candidates.size()));
     start = GTimer::currentTimeMicros();
 
-    if (sched->getSettings().outputType == QDRunSettings::Single ) {
+    if (sched->getSettings().outputType == QDRunSettings::Single) {
         createMergedAnnotations(RESULT_PREFIX);
     } else {
         createAnnotations(RESULT_PREFIX);
@@ -532,16 +532,16 @@ void QDResultLinker::createAnnotations(const QString& groupPrefix) {
             .arg(groupPrefix)
             .arg(QString::number(++counter));
 
-        QList<AnnotationData> groupAnns;
+        QList<SharedAnnotationData> groupAnns;
 
         foreach(const QDResultUnit& res, candidate->getResultsList()) {
-            AnnotationData a = result2annotation.value( res, AnnotationData( ) );
-            if ( a == AnnotationData( ) ) {
-                AnnotationData ad;
-                ad.name = prepareAnnotationName(res);
-                ad.setStrand(res->strand);
-                ad.location->regions.append(res->region);
-                ad.qualifiers = res->quals;
+            SharedAnnotationData a = result2annotation.value(res, SharedAnnotationData());
+            if (a == SharedAnnotationData()) {
+                SharedAnnotationData ad(new AnnotationData);
+                ad->name = prepareAnnotationName(res);
+                ad->setStrand(res->strand);
+                ad->location->regions.append(res->region);
+                ad->qualifiers = res->quals;
                 a = ad;
                 result2annotation[res] = a;
             }
@@ -553,19 +553,19 @@ void QDResultLinker::createAnnotations(const QString& groupPrefix) {
     candidates.clear();
 }
 
-void QDResultLinker::createMergedAnnotations(const QString& groupPrefix) {
-    const QDRunSettings& settings = sched->getSettings();
+void QDResultLinker::createMergedAnnotations(const QString &groupPrefix) {
+    const QDRunSettings &settings = sched->getSettings();
     int offset = settings.offset;
     U2Region seqRange(0, scheme->getSequence().length());
-    QList<AnnotationData> anns;
-    foreach(QDResultGroup* candidate, candidates) {
+    QList<SharedAnnotationData> anns;
+    foreach (QDResultGroup *candidate, candidates) {
         if (sched->isCanceled()) {
             return;
         }
 
         qint64 startPos = candidate->getResultsList().first()->region.startPos;
         qint64 endPos = candidate->getResultsList().first()->region.endPos();
-        foreach(QDResultUnit ru, candidate->getResultsList()) {
+        foreach (const QDResultUnit &ru, candidate->getResultsList()) {
             startPos = qMin(startPos, ru->region.startPos);
             endPos = qMax(endPos, ru->region.endPos());
         }
@@ -573,10 +573,10 @@ void QDResultLinker::createMergedAnnotations(const QString& groupPrefix) {
         endPos = qMin(seqRange.endPos(), endPos + offset);
         U2Region r(startPos, endPos-startPos);
 
-        AnnotationData ad;
-        ad.name = groupPrefix;
-        ad.location->regions.append( r );
-        anns.append( ad );
+        SharedAnnotationData ad;
+        ad->name = groupPrefix;
+        ad->location->regions.append(r);
+        anns.append(ad);
         delete candidate;
     }
     candidates.clear();
@@ -584,25 +584,23 @@ void QDResultLinker::createMergedAnnotations(const QString& groupPrefix) {
 }
 
 void QDResultLinker::pushToTable() {
-    const QDRunSettings& settings = sched->getSettings();
-    AnnotationTableObject* ao = settings.annotationsObj;
-    SAFE_POINT( NULL != ao, "Invalid annotation table detected!", );
+    const QDRunSettings &settings = sched->getSettings();
+    AnnotationTableObject *ao = settings.annotationsObj;
+    SAFE_POINT(NULL != ao, "Invalid annotation table detected!",);
 
-    AnnotationGroup root = ao->getRootGroup( );
+    AnnotationGroup *root = ao->getRootGroup();
     if (!settings.groupName.isEmpty()) {
-        root = root.getSubgroup(settings.groupName, true);
+        root = root->getSubgroup(settings.groupName, true);
     }
 
-    QMapIterator< QString, QList<AnnotationData> > iter(annotations);
-    while ( iter.hasNext( ) ) {
+    QMapIterator<QString, QList<SharedAnnotationData> > iter(annotations);
+    while (iter.hasNext()) {
         iter.next();
-        AnnotationGroup ag = root;
-        if ( !iter.key( ).isEmpty( ) ) {
-            ag = root.getSubgroup( iter.key( ), true );
+        AnnotationGroup *ag = root;
+        if (!iter.key().isEmpty()) {
+            ag = root->getSubgroup(iter.key(), true);
         }
-        foreach( const AnnotationData &a, iter.value( ) ) {
-            ag.addAnnotation( a );
-        }
+        ag->addAnnotations(iter.value());
     }
 }
 

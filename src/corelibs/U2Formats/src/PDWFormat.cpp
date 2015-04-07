@@ -77,7 +77,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
                      U2SequenceObject*& seqObj, AnnotationTableObject*& annObj)
 {
     DbiOperationsBlock opBlock(dbiRef, os);
-    CHECK_OP(os, );
+    CHECK_OP(os,);
     Q_UNUSED(opBlock);
 
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
@@ -87,7 +87,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
     bool lineOk = false;
     bool isCircular = false;
     QString seqName(docUrl.baseFileName());
-    QList<AnnotationData> annotations;
+    QList<SharedAnnotationData> annotations;
 
     U2SequenceImporter seqImporter(fs, true);
     const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
@@ -139,48 +139,45 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
                 isCircular = true;
             }
         } else if (readBuff.startsWith(PDW_ANNOTATION_TAG)) {
-            AnnotationData a = parseAnnotation( io, os );
+            SharedAnnotationData a = parseAnnotation(io, os);
             annotations.append(a);
         }
     }
 
-    if ( !annotations.isEmpty( ) ) {
+    if (!annotations.isEmpty()) {
         QVariantMap hints;
         hints.insert(DBI_FOLDER_HINT, fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
-        annObj = new AnnotationTableObject( QString("%1 annotations").arg(seqName), dbiRef, hints );
-        annObj->addAnnotations( annotations, os );
-        objects.append( annObj );
+        annObj = new AnnotationTableObject(QString("%1 annotations").arg(seqName), dbiRef, hints);
+        annObj->addAnnotations(annotations);
+        objects.append(annObj);
     }
 
-    CHECK_OP(os, );
-    CHECK_EXT(!objects.isEmpty(), os.setError(Document::tr("Document is empty.")), );
+    CHECK_OP(os,);
+    CHECK_EXT(!objects.isEmpty(), os.setError(Document::tr("Document is empty.")),);
 }
 
-
-Document * PDWFormat::loadDocument( IOAdapter *io, const U2DbiRef &dbiRef, const QVariantMap &fs,
-    U2OpStatus &os )
-{
+Document * PDWFormat::loadDocument(IOAdapter *io, const U2DbiRef &dbiRef, const QVariantMap &fs, U2OpStatus &os) {
     U2SequenceObject* seqObj = NULL;
     AnnotationTableObject *annObj = NULL;
-    CHECK_EXT( NULL != io && io->isOpen( ), os.setError( L10N::badArgument( "IO adapter" ) ),
-        NULL );
+    CHECK_EXT(NULL != io && io->isOpen(), os.setError(L10N::badArgument("IO adapter")),
+        NULL);
     QList<GObject *> objects;
 
-    load( io, dbiRef, fs, io->getURL( ), objects, os, seqObj, annObj );
+    load(io, dbiRef, fs, io->getURL(), objects, os, seqObj, annObj);
 
-    CHECK_OP_EXT( os, qDeleteAll( objects ), NULL );
+    CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
 
-    QString lockReason( DocumentFormat::CREATED_NOT_BY_UGENE );
-    Document *doc = new Document( this, io->getFactory( ), io->getURL( ), dbiRef, objects, fs,
-        lockReason );
+    QString lockReason(DocumentFormat::CREATED_NOT_BY_UGENE);
+    Document *doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs,
+        lockReason);
 
-    if ( NULL != seqObj && NULL != annObj ) {
+    if (NULL != seqObj && NULL != annObj) {
         annObj->addObjectRelation(seqObj, ObjectRole_Sequence);
     }
     return doc;
 }
 
-QByteArray PDWFormat::parseSequence( IOAdapter* io, U2OpStatus& ti ) {
+QByteArray PDWFormat::parseSequence(IOAdapter* io, U2OpStatus& ti) {
     QByteArray result;
 
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
@@ -208,7 +205,7 @@ QByteArray PDWFormat::parseSequence( IOAdapter* io, U2OpStatus& ti ) {
     return result;
 }
 
-QByteArray PDWFormat::readPdwValue( const QByteArray& readBuf, const QByteArray& valueName )
+QByteArray PDWFormat::readPdwValue(const QByteArray& readBuf, const QByteArray& valueName)
 {
     int startPos = valueName.length();
     int endPos = readBuf.indexOf('\n');
@@ -221,8 +218,8 @@ QByteArray PDWFormat::readPdwValue( const QByteArray& readBuf, const QByteArray&
 #define PDW_ANNOTATION_END      "Annotation_End"
 #define PDW_ANNOTATION_ORIENT   "Annotation_Orientation"
 
-AnnotationData PDWFormat::parseAnnotation( IOAdapter *io, U2OpStatus &ti ) {
-    QByteArray readBuf( READ_BUFF_SIZE + 1, 0 );
+SharedAnnotationData PDWFormat::parseAnnotation(IOAdapter *io, U2OpStatus &ti) {
+    QByteArray readBuf(READ_BUFF_SIZE + 1, 0);
 
     int startPos = -1, endPos = -1;
     QByteArray aName;
@@ -237,26 +234,26 @@ AnnotationData PDWFormat::parseAnnotation( IOAdapter *io, U2OpStatus &ti ) {
         } else if (readBuf.startsWith(PDW_ANNOTATION_NUMBER)) {
             io->skip(-len);
             break;
-        } else if (readBuf.startsWith(PDW_ANNOTATION_NAME) ) {
+        } else if (readBuf.startsWith(PDW_ANNOTATION_NAME)) {
             aName = readPdwValue(readBuf, PDW_ANNOTATION_NAME);
             if (aName.endsWith('\"')) {
                 aName = aName.left(aName.length() - 1).trimmed();
             }
-        } else if (readBuf.startsWith(PDW_ANNOTATION_START) ) {
+        } else if (readBuf.startsWith(PDW_ANNOTATION_START)) {
             startPos = readPdwValue(readBuf, PDW_ANNOTATION_START).toInt();
-        } else if (readBuf.startsWith(PDW_ANNOTATION_END) ) {
+        } else if (readBuf.startsWith(PDW_ANNOTATION_END)) {
             endPos = readPdwValue(readBuf, PDW_ANNOTATION_END).toInt();
-        }else if (readBuf.startsWith(PDW_ANNOTATION_ORIENT) ) {
+        } else if (readBuf.startsWith(PDW_ANNOTATION_ORIENT)) {
             int orientVal = readPdwValue(readBuf, PDW_ANNOTATION_ORIENT).toInt();
             cmpl = orientVal == 0 ? true : false;
         }
 
     }
 
-    AnnotationData sd;
-    sd.name = aName;
-    sd.location->regions << U2Region( startPos - 1, endPos - startPos + 1 );
-    sd.setStrand( cmpl ? U2Strand::Complementary : U2Strand::Direct );
+    SharedAnnotationData sd(new AnnotationData);
+    sd->name = aName;
+    sd->location->regions << U2Region(startPos - 1, endPos - startPos + 1);
+    sd->setStrand(cmpl ? U2Strand::Complementary : U2Strand::Direct);
 
     return sd;
 }

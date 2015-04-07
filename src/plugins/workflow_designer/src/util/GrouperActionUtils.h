@@ -127,7 +127,7 @@ public:
 
     static QString PARENT_SEQUENCE_SLOT;
 private:
-    QList<AnnotationData> result;
+    QList<SharedAnnotationData> result;
     qint64 offset;
 };
 

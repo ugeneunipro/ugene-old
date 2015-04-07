@@ -56,7 +56,7 @@ public:
     bool                    useAminoAnnotationTypes;
 
     QString                 groupName;          // default groupname. If empty -> <auto> value is used (annotationObject->name value).
-    AnnotationData          data;               // holds name, location and preferred type of the annotation
+    SharedAnnotationData    data;               // holds name, location and preferred type of the annotation
     QString                 description;        // some info that will be saved as qualifier /note
 
     GObjectReference        annotationObjectRef; // the object to be loaded

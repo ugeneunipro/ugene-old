@@ -36,11 +36,11 @@ class U2SequenceObject;
 class U2CORE_EXPORT AnnotatedRegion {
 public:
     AnnotatedRegion();
-    AnnotatedRegion(const Annotation &annotation, int regionIdx);
+    AnnotatedRegion(Annotation *annotation, int regionIdx);
     AnnotatedRegion(const AnnotatedRegion &annRegion);
 public:
-    Annotation  annotation;
-    int         regionIdx;
+    Annotation * annotation;
+    int          regionIdx;
 };
 
 /**
@@ -61,44 +61,39 @@ public:
      * The returned list contains set of regions. Each set is per 1 annotation.
      * If specified strategy is 'remove', removes all locations which intersect the modified region or fall inside it.
      */
-    static QList<QVector<U2Region> > fixLocationsForReplacedRegion( const U2Region &region2Remove,
-        qint64 region2InsertLength, const QVector<U2Region> &originalLoc, AnnotationStrategyForResize s );
+    static QList<QVector<U2Region> > fixLocationsForReplacedRegion(const U2Region &region2Remove, qint64 region2InsertLength,
+        const QVector<U2Region> &originalLoc, AnnotationStrategyForResize s);
     /**
      * Returns translation frame[0,1,2] the region is placed on
      */
-    static int getRegionFrame( int sequenceLen, const U2Strand &strand, bool order, int region,
-        const QVector<U2Region> &location );
+    static int getRegionFrame(int sequenceLen, const U2Strand &strand, bool order, int region, const QVector<U2Region> &location);
     /**
      * Returns true if annotation location is splitted by sequence "edges".
      * For example, location JOIN(N..SeqSize - 1, 0..M) is splitted.
      */
-    static bool isSplitted( const U2Location &location, const U2Region &seqRange );
+    static bool isSplitted(const U2Location &location, const U2Region &seqRange);
     /**
      * Return a list of lower/upper case annotations for @data sequence
      * If an annotation is placed from some symbol till the end of the sequence
      * then @isUnfinishedRegion == true and @unfinishedRegion keep this unfinished region
      */
-    static QList<AnnotationData> getCaseAnnotations( const char *data, int dataLen, int globalOffset,
-        bool &isUnfinishedRegion, U2Region &unfinishedRegion, bool isLowerCaseSearching );
+    static QList<SharedAnnotationData> getCaseAnnotations(const char *data, int dataLen, int globalOffset, bool &isUnfinishedRegion,
+        U2Region &unfinishedRegion, bool isLowerCaseSearching);
 
-    static QList<AnnotationData> finalizeUnfinishedRegion( bool isUnfinishedRegion,
-        U2Region &unfinishedRegion, bool isLowerCaseSearching );
+    static QList<SharedAnnotationData> finalizeUnfinishedRegion(bool isUnfinishedRegion, U2Region &unfinishedRegion, bool isLowerCaseSearching);
     /**
      * If @annotationsObject is NULL then it creates a new annotation object
      */
-    static void addAnnotations(QList<GObject *> &objects, const QList<AnnotationData> &annList,
-        const GObjectReference &sequenceRef, AnnotationTableObject *annotationsObject , const QVariantMap &hints);
+    static void addAnnotations(QList<GObject *> &objects, const QList<SharedAnnotationData> &annList, const GObjectReference &sequenceRef,
+        AnnotationTableObject *annotationsObject , const QVariantMap &hints);
 
-    static QList<U2Region> getRelatedLowerCaseRegions( const U2SequenceObject *so,
-        const QList<GObject *> &anns );
+    static QList<U2Region> getRelatedLowerCaseRegions(const U2SequenceObject *so, const QList<GObject *> &anns);
 
-    static char * applyLowerCaseRegions( char *seq, qint64 first, qint64 len, qint64 globalOffset,
-        const QList<U2Region> &regs );
+    static char * applyLowerCaseRegions(char *seq, qint64 first, qint64 len, qint64 globalOffset, const QList<U2Region> &regs);
 
-    static QString guessAminoTranslation( AnnotationTableObject *ao, const DNAAlphabet *al );
+    static QString guessAminoTranslation(AnnotationTableObject *ao, const DNAAlphabet *al);
 
-    static QList<AnnotatedRegion>  getAnnotatedRegionsByStartPos(QList<AnnotationTableObject*> annotationObjects,
-                                                                 qint64 startPos );
+    static QList<AnnotatedRegion> getAnnotatedRegionsByStartPos(QList<AnnotationTableObject*> annotationObjects, qint64 startPos);
 
     static QString lowerCaseAnnotationName;
     static QString upperCaseAnnotationName;

@@ -249,18 +249,18 @@ public:
     qint64 maxResults;
 };
 
-typedef QMap<QString, QList<AnnotationData> > DASGroup;
+typedef QMap<QString, QList<SharedAnnotationData> > DASGroup;
 
 class U2CORE_EXPORT DASAnnotationData {
 public:
-    DASAnnotationData( qint64 _seqLen, qint64 _identityThreshold )
-        : seqLen( _seqLen ), identityThreshold( _identityThreshold ) { }
+    DASAnnotationData(qint64 _seqLen, qint64 _identityThreshold)
+        : seqLen(_seqLen), identityThreshold(_identityThreshold) { }
 
-    QStringList getAccessionNumbers( );
-    DASGroup getDasGroup( const QString &accNumber );
-    void addDasGroup( const QString &accNumber, const DASGroup &dasGroup );
-    bool contains ( const QString &accessionNumber );
-    QList<AnnotationData> prepareResults( );
+    QStringList getAccessionNumbers();
+    DASGroup getDasGroup(const QString &accNumber);
+    void addDasGroup(const QString &accNumber, const DASGroup &dasGroup);
+    bool contains (const QString &accessionNumber);
+    QList<SharedAnnotationData> prepareResults();
 
 private:
     QMap<QString, DASGroup> dasData;
@@ -268,15 +268,15 @@ private:
     qint64 identityThreshold;
 };
 
-class U2CORE_EXPORT UniprotBlastAndLoadDASAnnotations : public Task{
+class U2CORE_EXPORT UniprotBlastAndLoadDASAnnotations : public Task {
      Q_OBJECT
 public:
-    UniprotBlastAndLoadDASAnnotations( const DASAnnotationsSettings &_settings );
+    UniprotBlastAndLoadDASAnnotations(const DASAnnotationsSettings &_settings);
 
-    void prepare( );
-    QList<Task *> onSubTaskFinished( Task *subTask );
-    QList<AnnotationData> prepareResults( );
-    QStringList getAccessionNumbers( ) { return dasData.getAccessionNumbers( ); }
+    void prepare();
+    QList<Task *> onSubTaskFinished(Task *subTask);
+    QList<SharedAnnotationData> prepareResults();
+    QStringList getAccessionNumbers() { return dasData.getAccessionNumbers(); }
     QStringList getProblems() {return problems;}
 
 private:

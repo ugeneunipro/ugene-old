@@ -22,6 +22,8 @@
 #include <QMainWindow>
 #include <QTreeWidget>
 
+#include <U2Core/Annotation.h>
+#include <U2Core/AnnotationGroup.h>
 #include <U2Core/ProjectModel.h>
 
 #include <U2Gui/MainWindow.h>
@@ -73,8 +75,8 @@ QString GTUtilsAnnotationsTreeView::getAVItemName(U2OpStatus &os, AVItem* avItem
                 AVAnnotationItem* avAnnotationItem = (AVAnnotationItem*)avItem;
                 GT_CHECK_RESULT(avAnnotationItem != NULL, "avAnnotationItem is NULL", "");
 
-                const Annotation annotation = avAnnotationItem->annotation;
-                return annotation.getName();
+                Annotation *annotation = avAnnotationItem->annotation;
+                return annotation->getName();
             }
             break;
 
@@ -83,8 +85,8 @@ QString GTUtilsAnnotationsTreeView::getAVItemName(U2OpStatus &os, AVItem* avItem
                 AVGroupItem* avGroupItem = (AVGroupItem*)avItem;
                 GT_CHECK_RESULT(avGroupItem!= NULL, "avAnnotationItem is NULL", "");
 
-                const AnnotationGroup group= avGroupItem->group;
-                return group.getName();
+                AnnotationGroup *group= avGroupItem->group;
+                return group->getName();
             }
             break;
 
@@ -137,8 +139,8 @@ QList<U2Region> GTUtilsAnnotationsTreeView::getAnnotatedRegions(U2OpStatus &os) 
         AVAnnotationItem* annotationItem = dynamic_cast<AVAnnotationItem*>(item);
         CHECK_OPERATION(annotationItem != NULL, continue);
 
-        const Annotation ann = annotationItem->annotation;
-        res.append( ann.getRegions().toList() );
+        Annotation *ann = annotationItem->annotation;
+        res.append(ann->getRegions().toList());
     }
     return res;
 }
@@ -291,7 +293,7 @@ QList<U2Region> GTUtilsAnnotationsTreeView::getAnnotatedRegionsOfGroup(U2OpStatu
         GT_CHECK_RESULT(NULL != avItem, "Cannot convert QTreeWidgetItem to AVItem", QList<U2Region>());
         AVAnnotationItem* item = (AVAnnotationItem*)avItem;
         GT_CHECK_RESULT(item != NULL, "sdf", regions);
-        regions << item->annotation.getRegions().toList();
+        regions << item->annotation->getRegions().toList();
     }
     return regions;
 }
@@ -313,7 +315,7 @@ QList<U2Region> GTUtilsAnnotationsTreeView::getAnnotatedRegionsOfGroup(U2OpStatu
                 GT_CHECK_RESULT(NULL != avItem, "Cannot convert QTreeWidgetItem to AVItem", QList<U2Region>());
                 AVAnnotationItem* item = (AVAnnotationItem*)avItem;
                 GT_CHECK_RESULT(item != NULL, "sdf", regions);
-                regions << item->annotation.getRegions().toList();
+                regions << item->annotation->getRegions().toList();
             }
         }
     }
@@ -323,15 +325,14 @@ QList<U2Region> GTUtilsAnnotationsTreeView::getAnnotatedRegionsOfGroup(U2OpStatu
 
 #define GT_METHOD_NAME "findRegion"
 bool GTUtilsAnnotationsTreeView::findRegion(U2OpStatus &os, const QString &itemName, const U2Region& r) {
-
     AVAnnotationItem* item = (AVAnnotationItem*)GTUtilsAnnotationsTreeView::findItem(os, itemName);
     CHECK_SET_ERR_RESULT(item != NULL, "Item " + itemName + " not found", false);
-    const Annotation ann = item->annotation;
+    Annotation *ann = item->annotation;
 
-    U2Region neededRegion(r.startPos-1, r.length-r.startPos+1);
+    U2Region neededRegion(r.startPos - 1, r.length - r.startPos + 1);
 
     bool found = false;
-    QVector<U2Region> regions = ann.getRegions();
+    QVector<U2Region> regions = ann->getRegions();
     foreach (const U2Region& r, regions) {
         if (r.contains(neededRegion)) {
             found = true;

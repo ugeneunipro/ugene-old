@@ -89,55 +89,53 @@ Task * ImportAnnotationsWorker::tick() {
     return NULL;
 }
 
-void ImportAnnotationsWorker::addTaskAnnotations( const QVariant &data, Task *t ) {
-    QVariantMap dataMap = data.toMap( );
-    if ( dataMap.contains( BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ) ) ) {
-        const QList<AnnotationData> result = StorageUtils::getAnnotationTable(
-            context->getDataStorage( ), dataMap[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )] );
-
+void ImportAnnotationsWorker::addTaskAnnotations(const QVariant &data, Task *t) {
+    QVariantMap dataMap = data.toMap();
+    if (dataMap.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId())) {
+        const QList<SharedAnnotationData> result = StorageUtils::getAnnotationTable(context->getDataStorage(),
+            dataMap[BaseSlots::ANNOTATION_TABLE_SLOT().getId()]);
         annsMap[t] = result;
     }
 }
 
-static QList<AnnotationData> getAnnsFromDoc( Document *doc ) {
-    QList<AnnotationData> ret;
-    if ( NULL == doc ) {
+static QList<SharedAnnotationData> getAnnsFromDoc(Document *doc) {
+    QList<SharedAnnotationData> ret;
+    if (NULL == doc) {
         return ret;
     }
-    QList<GObject *> objs = doc->findGObjectByType( GObjectTypes::ANNOTATION_TABLE );
-    foreach ( GObject *obj, objs ) {
-        AnnotationTableObject *annObj = qobject_cast<AnnotationTableObject *>( obj );
-        if ( NULL == annObj ) {
+    QList<GObject *> objs = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+    foreach (GObject *obj, objs) {
+        AnnotationTableObject *annObj = qobject_cast<AnnotationTableObject *>(obj);
+        if (NULL == annObj) {
             continue;
         }
-        foreach ( const Annotation &a, annObj->getAnnotations( ) ) {
-            ret << a.getData( );
+        foreach (Annotation *a, annObj->getAnnotations()) {
+            ret << a->getData();
         }
     }
     return ret;
 }
 
-void ImportAnnotationsWorker::sl_docsLoaded( Task *ta ) {
-    MultiTask *t = qobject_cast<MultiTask *>( ta );
-    if ( NULL == t || t->hasError( ) ) {
+void ImportAnnotationsWorker::sl_docsLoaded(Task *ta) {
+    MultiTask *t = qobject_cast<MultiTask *>(ta);
+    if (NULL == t || t->hasError()) {
         return;
     }
 
-    QList<AnnotationData> anns = annsMap.value( t );
-    QList<Task *> loadSubs = t->getTasks( );
-    foreach ( Task *s, loadSubs ) {
-        LoadDocumentTask *sub = qobject_cast<LoadDocumentTask *>( s );
-        if ( NULL == sub || sub->hasError( ) ) {
+    QList<SharedAnnotationData> anns = annsMap.value(t);
+    QList<Task *> loadSubs = t->getTasks();
+    foreach (Task *s, loadSubs) {
+        LoadDocumentTask *sub = qobject_cast<LoadDocumentTask *>(s);
+        if (NULL == sub || sub->hasError()) {
             continue;
         }
-        anns.append( getAnnsFromDoc( sub->getDocument( ) ) );
+        anns.append(getAnnsFromDoc(sub->getDocument()));
     }
-    const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( anns );
-    outPort->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
-        qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
+    const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(anns);
+    outPort->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), qVariantFromValue<SharedDbiDataHandler>(tableId)));
 }
 
-void ImportAnnotationsWorker::cleanup( ) {
+void ImportAnnotationsWorker::cleanup() {
 
 }
 
@@ -177,7 +175,7 @@ void ImportAnnotationsWorkerFactory::init() {
     QMap<QString, PropertyDelegate*> delegates;
     {
         delegates[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(
-            DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::ANNOTATION_TABLE, true), QString(), true, false, false );
+            DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::ANNOTATION_TABLE, true), QString(), true, false, false);
     }
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new ReadDocPrompter(ImportAnnotationsWorker::tr("Merge input annotations with annotations from <u>%1</u>.")));

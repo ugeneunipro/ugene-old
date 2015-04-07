@@ -86,7 +86,7 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     CreateAnnotationModel m;
     m.hideAnnotationType = true;
     m.hideLocation = true;
-    m.data.name = GBFeatureUtils::getKeyInfo(GBFeatureKey_repeat_unit).text;
+    m.data->name = GBFeatureUtils::getKeyInfo(GBFeatureKey_repeat_unit).text;
     m.sequenceObjectRef = sc->getSequenceObject();
     m.useUnloadedObjects = true;
     m.sequenceLen = sc->getSequenceObject()->getSequenceLength();
@@ -127,7 +127,7 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
 
     rs=new RegionSelector(this, seqLen, false, sc->getSequenceSelection());
     rangeSelectorLayout->addWidget(rs);
-    connect(rs,SIGNAL(si_regionChanged(const U2Region&)),SLOT(sl_onRegionChanged(const U2Region& )));
+    connect(rs,SIGNAL(si_regionChanged(const U2Region&)),SLOT(sl_onRegionChanged(const U2Region&)));
 
     QStringList annotationNames = getAvailableAnnotationNames();
     bool haveAnnotations = !annotationNames.isEmpty();
@@ -168,9 +168,9 @@ QStringList FindRepeatsDialog::getAvailableAnnotationNames() const {
     QStringList res;
     const QSet<AnnotationTableObject *>& objs = sc->getAnnotationObjects();
     QSet<QString> names;
-    foreach ( AnnotationTableObject *o, objs ) {
-        foreach ( const Annotation &a, o->getAnnotations( ) ) {
-            names.insert( a.getName( ) );
+    foreach (AnnotationTableObject *o, objs) {
+        foreach (Annotation *a, o->getAnnotations()) {
+            names.insert(a->getName());
         }
     }
     res = names.toList();
@@ -210,10 +210,10 @@ bool FindRepeatsDialog::getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Regio
     }
     QSet<QString> aNames = names.split(',', QString::SkipEmptyParts).toSet();
     const QSet<AnnotationTableObject *> aObjs = sc->getAnnotationObjects();
-    foreach ( AnnotationTableObject *obj, aObjs ) {
-        foreach ( const Annotation &a, obj->getAnnotations( ) ) {
-            if ( aNames.contains( a.getName( ) ) ) {
-                res << a.getRegions( );
+    foreach (AnnotationTableObject *obj, aObjs) {
+        foreach (Annotation *a, obj->getAnnotations()) {
+            if (aNames.contains(a->getName())) {
+                res << a->getRegions();
             }
         }
     }
@@ -296,7 +296,7 @@ void FindRepeatsDialog::accept() {
     }
 
     FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, seqPart,
-        cam.data.name, cam.groupName, cam.annotationObjectRef);
+        cam.data->name, cam.groupName, cam.annotationObjectRef);
 
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 

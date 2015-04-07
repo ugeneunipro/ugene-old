@@ -429,10 +429,7 @@ QList<Task *> UHMM3PhmmerToAnnotationsTask::onSubTaskFinished(Task *subTask) {
     }
 
     if (phmmerTask == subTask) {
-        QList<AnnotationData> annotations;
-        foreach (const SharedAnnotationData &data, phmmerTask->getResultsAsAnnotations(annType, annName)) {
-            annotations << *data;
-        }
+        QList<SharedAnnotationData> annotations = phmmerTask->getResultsAsAnnotations(annType, annName);
 
         if (annotations.isEmpty()) {
             return res;

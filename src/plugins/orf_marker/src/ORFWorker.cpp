@@ -115,7 +115,7 @@ void ORFWorkerFactory::init() {
         " and usually give a good indication of the presence of a gene in the surrounding sequence.</dfn></p>"
         "<p>In the sequence, ORFs are located between a start-code sequence (initiation codon) and a stop-code sequence (termination codon),"
         " defined by the selected genetic code.</p>")
-        );
+       );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     QMap<QString, PropertyDelegate*> delegates;
 
@@ -293,23 +293,22 @@ Task* ORFWorker::tick() {
     return NULL;
 }
 
-void ORFWorker::sl_taskFinished( ) {
-    ORFFindTask *t = qobject_cast<ORFFindTask *>( sender( ) );
-    if ( t->getState( ) != Task::State_Finished || t->isCanceled( ) || t->hasError( ) ) {
+void ORFWorker::sl_taskFinished() {
+    ORFFindTask *t = qobject_cast<ORFFindTask *>(sender());
+    if (t->getState() != Task::State_Finished || t->isCanceled() || t->hasError()) {
         return;
     }
-    QList<ORFFindResult> res = t->popResults( );
-    if ( NULL != output ) {
-        const QList<AnnotationData> annsList = ORFFindResult::toTable( res, resultName );
+    QList<ORFFindResult> res = t->popResults();
+    if (NULL != output) {
+        const QList<SharedAnnotationData> annsList = ORFFindResult::toTable(res, resultName);
 
-        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( annsList );
-        output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
-            qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
-        algoLog.info( tr( "Found %1 ORFs" ).arg( res.size( ) ) );
+        const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(annsList);
+        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), qVariantFromValue<SharedDbiDataHandler>(tableId)));
+        algoLog.info(tr("Found %1 ORFs").arg(res.size()));
     }
 }
 
-void ORFWorker::cleanup( ) {
+void ORFWorker::cleanup() {
 
 }
 

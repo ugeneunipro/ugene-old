@@ -22,13 +22,14 @@
 #ifndef _U2_FEATURE_UTILS_H_
 #define _U2_FEATURE_UTILS_H_
 
-#include <U2Core/Annotation.h>
-#include <U2Core/AnnotationDataCache.h>
-#include <U2Core/U2Location.h>
+#include <U2Core/AnnotationData.h>
+#include <U2Core/U2Feature.h>
 
 namespace U2 {
 
-class U2FeatureDbi;
+class AnnotationGroup;
+class AnnotationTableObject;
+class U2Location;
 class U2OpStatus;
 
 enum ParentFeatureStatus {
@@ -36,43 +37,83 @@ enum ParentFeatureStatus {
     Nonroot
 };
 
+enum OperationScope {
+    Recursive,
+    Nonrecursive
+};
+
 class U2CORE_EXPORT U2FeatureUtils {
 public:
     /**
      * Creates DB representation of AnnotationTableObject
      */
-    static U2AnnotationTable        createAnnotationTable(const QString &tableName, const U2DbiRef &dbiRef,
-                                        const QString &folder, U2OpStatus &os);
-    /**
-     * Sets @name as a name of DB representation of AnnotationTableObject.
-     * Sets error to @os if @name is an empty string
-     */
-    static void                     renameAnnotationTable(const U2EntityRef &tableRef, const QString &name, U2OpStatus &os);
+    static U2AnnotationTable        createAnnotationTable(const QString &tableName, const U2DbiRef &dbiRef, const QString &folder, U2OpStatus &os);
     /**
      * Returns DB representation of AnnotationTableObject associated with @tableRef
      */
     static U2AnnotationTable        getAnnotationTable(const U2EntityRef &tableRef, U2OpStatus &os);
     /**
-     * Returns feature based on the DB content corresponding to the given @id
-     */
-    static U2Feature                getFeatureById(const U2DataId &id, U2Feature::FeatureClass featureClass, const U2DbiRef &dbiRef, U2OpStatus &op);
-    /**
      * In case of multiple regions, feature contains all the names and qualifiers
      * and subfeatures contain only regions, in case of single regions features
      * contains all the information from the annotation
      */
-    static U2Feature                exportAnnotationDataToFeatures(const AnnotationData &a, const U2DataId &rootFeatureId,
-                                        const U2DataId &parentFeatureId, const U2DbiRef &dbiRef, U2OpStatus &op);
+    static U2Feature                exportAnnotationDataToFeatures(const SharedAnnotationData &a, const U2DataId &rootFeatureId,
+                                        const U2DataId &parentFeatureId, const U2DbiRef &dbiRef, U2OpStatus &os);
     /**
      * Creates a feature having @name and @parentId without location
      */
     static U2Feature                exportAnnotationGroupToFeature(const QString &name, const U2DataId &rootFeatureId,
-                                        const U2DataId &parentFeatureId, const U2DbiRef &dbiRef, U2OpStatus &op);
+                                        const U2DataId &parentFeatureId, const U2DbiRef &dbiRef, U2OpStatus &os);
+    /**
+     * Removes feature, its children from db
+     */
+    static void                     removeFeature(const U2DataId &featureId, U2Feature::FeatureClass featureClass, const U2DbiRef &dbiRef, U2OpStatus &os);
+    /**
+     * Replaces parent feature reference with @newParentId for the feature having @featureId
+     */
+    static void                     updateFeatureParent(const U2DataId &featureId, const U2DataId &newParentId, const U2DbiRef &dbiRef, U2OpStatus &os);
+    /**
+     * For the feature having @featureId the method replaces its type with @newType
+     */
+    static void                     updateFeatureType(const U2DataId &featureId, U2Feature::FeatureClass featureClass, U2FeatureType newType,
+                                        const U2DbiRef &dbiRef, U2OpStatus &os);
+    /**
+     * For the feature having @featureId the method replaces its name with @newName
+     */
+    static void                     updateFeatureName(const U2DataId &featureId, U2Feature::FeatureClass featureClass, const QString &newName,
+                                        const U2DbiRef &dbiRef, U2OpStatus &os);
+    /**
+     * Sets @location for a feature having @featureId.
+     * The feature is to represent an annotation
+     */
+    static void                     updateFeatureLocation(const U2DataId &featureId, const U2DataId &rootFeatureId, const U2Location &location,
+                                        const U2DbiRef &dbiRef, U2OpStatus &os);
+    /**
+     * Adds the @key to DB for the feature having @featureId
+     */
+    static void                     addFeatureKey(const U2DataId &featureId, const U2FeatureKey& key, const U2DbiRef &dbiRef, U2OpStatus &os);
+    /**
+     * Removes the @key of the feature having @featureId from DB
+     */
+    static void                     removeFeatureKey(const U2DataId &featureId, const U2FeatureKey& key, const U2DbiRef &dbiRef, U2OpStatus &os);
+    /**
+     * Fetches all annotations according to passed @rootId, builds annotation group tree and returns the rooot group
+     */
+    static AnnotationGroup *        loadAnnotationTable(const U2DataId &rootFeatureId, const U2DbiRef &dbiRef,
+                                        AnnotationTableObject *parentObj, U2OpStatus &os);
+
+    //////////////////////////////////////////////////////////////////////////
+    // Functions that are used for testing
+    //////////////////////////////////////////////////////////////////////////
     /**
      * Imports feature to annotation. If feature's location region is empty then child features are
      * treated as subregions
      */
-    static AnnotationData           getAnnotationDataFromFeature(const U2DataId &featureId, const U2DbiRef &dbiRef, U2OpStatus &op);
+    static SharedAnnotationData     getAnnotationDataFromFeature(const U2DataId &featureId, const U2DbiRef &dbiRef, U2OpStatus &op);
+    /**
+     * Returns feature based on the DB content corresponding to the given @id
+     */
+    static U2Feature                getFeatureById(const U2DataId &id, U2Feature::FeatureClass featureClass, const U2DbiRef &dbiRef, U2OpStatus &op);
     /**
      * Returns list of all child features representing annotations for parent feature with given id.
      * Parent is to represent annotation group.
@@ -90,125 +131,24 @@ public:
      */
     static QList<U2Feature>         getSubGroups(const U2DataId &parentFeatureId, const U2DbiRef &dbiRef, U2OpStatus &os,
                                         OperationScope scope = Recursive, ParentFeatureStatus parent = Nonroot);
-    /**
-     * Counts children of the specified class which are one level below the parentFeature if parent is non-root.
-     * Otherwise all subfeatures of the given class are taken into account.
-     */
-    static qint64                   countOfChildren(const U2DataId &parentFeatureId, ParentFeatureStatus parentIs, const U2DbiRef &dbiRef,
-                                        const U2Feature::FeatureClass &childrenClass, U2OpStatus &os);
-    /**
-     * Removes feature, its children from db
-     */
-    static void                     removeFeature(const U2DataId &featureId, U2Feature::FeatureClass featureClass, const U2DbiRef &dbiRef, U2OpStatus &op);
-    /**
-     * Removes root feature and its children from db
-     */
-    static void                     removeFeaturesByRoot(const U2DataId &rootId, const U2DbiRef &dbiRef, U2OpStatus &op);
+
+private:
+    static QList<U2Feature>         getFeaturesByParent(const U2DataId &parentFeatureId, const U2DbiRef &dbiRef, U2OpStatus &os,
+                                        OperationScope scope = Recursive, const FeatureFlags &featureClass = U2Feature::Annotation,
+                                        SubfeatureSelectionMode mode = NotSelectParentFeature);
+    static QList<U2Feature>         getFeaturesByRoot(const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus &os,
+                                        OperationScope scope = Recursive, const FeatureFlags &featureClass = U2Feature::Annotation);
     /**
      * Adds a set of subfeatures to the feature having @parentFeatureId
      * and representing an annotation. Each new subfeature corresponds an item from @regions.
      * The parent feature has to represent an annotation.
      */
     static void                    addSubFeatures(const QVector<U2Region> &regions, const U2Strand &strand, const U2DataId &parentFeatureId,
-                                        const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus &op);
-    /**
-     * Returns list containing all the keys belonging to the feature with @featureId.
-     */
-    static QList<U2FeatureKey>      getFeatureKeys(const U2DataId &featureId, const U2DbiRef &dbiRef, U2OpStatus &os);
-    /**
-     * Fetches features belonging to the @featureClass by @name and given @parentFeatureId
-     */
-    static QList<U2Feature>         getFeaturesByName(const U2DataId &rootFeatureId, const QString &name, U2Feature::FeatureClass featureClass,
-                                        const U2DbiRef &dbiRef, U2OpStatus &os);
-    /**
-     * Returns true if the feature with @childFeatureId has the feature with @parentFeatureId
-     * as a node in hierarchy above
-     */
-    static bool                     isChild(const U2DataId &childFeatureId, const U2DataId &parentFeatureId,
-                                        const U2DbiRef &dbiRef, U2OpStatus &os);
-    /**
-     * Get feature IDs by @range and given @rootFeatureId.
-     */
-    static QList<U2Feature>         getAnnotatingFeaturesByRegion(const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, const U2Region &range,
-                                        U2OpStatus &os, bool contains = false);
-    /**
-     * Returning value specifies whether the annotation represented by the feature cased or not
-     */
-    static bool                     isCaseAnnotation(const U2DataId &featureId, const U2DbiRef &dbiRef, U2OpStatus &os);
-    /**
-     * Replaces parent feature reference with @newParentId for the feature having @featureId
-     */
-    static void                     updateFeatureParent(const U2DataId &featureId, const U2DataId &newParentId,
-                                        const U2DbiRef &dbiRef, U2OpStatus &os);
-    /**
-     * Replaces sequence feature reference with @newSeqId for the feature having @featureId
-     */
-    static void                     updateFeatureSequence(const U2DataId &featureId, const U2DataId &newSeqId,
-                                        const U2DbiRef &dbiRef, U2OpStatus &os);
-    /**
-     * For the feature having @featureId the method replaces its type with @newType
-     */
-    static void                     updateFeatureType(const U2DataId &featureId, U2Feature::FeatureClass featureClass, U2FeatureType newType,
-                                                      const U2DbiRef &dbiRef, U2OpStatus &os);
+                                        const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus &os);
 
-    /**
-     * For the feature having @featureId the method replaces its name with @newName
-     */
-    static void                     updateFeatureName(const U2DataId &featureId, U2Feature::FeatureClass featureClass, const QString &newName,
-                                        const U2DbiRef &dbiRef, U2OpStatus &os);
-    /**
-     * Sets @location for a feature having @featureId.
-     * The feature is to represent an annotation
-     */
-    static void                     updateFeatureLocation(const U2DataId &featureId, const U2DataId &rootFeatureId, const U2Location &location,
-                                        const U2DbiRef &dbiRef, U2OpStatus &op);
-    /**
-     * Adds the @key to DB for the feature having @featureId
-     */
-    static void                     addFeatureKey(const U2DataId &featureId, const U2FeatureKey& key, const U2DbiRef &dbiRef, U2OpStatus &op);
-    /**
-     * Removes the @key of the feature having @featureId from DB
-     */
-    static void                     removeFeatureKey(const U2DataId &featureId, const U2FeatureKey& key, const U2DbiRef &dbiRef, U2OpStatus &op);
-    /**
-     * Increments reference count for an annotation table object
-     */
-    static void                     refAnnotationTable(const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus &op);
-    /**
-     * Decrements reference count for an annotation table object
-     */
-    static void                     derefAnnotationTable(const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus &op);
-    /**
-     * Releases annotation cache associated with the database identified by @dbiRef
-     */
-    static void                     cleanupAnnotationCache(const U2DbiRef &dbiRef);
-
-private:
-    /**
-     * Returns list of all child features of parent feature with given id.
-     * If @scope == Recursive the list contains all the children of child features and so on
-     */
-    static QList<U2Feature>         getFeaturesByParent(const U2DataId &parentFeatureId, const U2DbiRef &dbiRef, U2OpStatus &os,
-                                        OperationScope scope = Recursive, const FeatureFlags &featureClass = U2Feature::Annotation,
-                                        SubfeatureSelectionMode mode = NotSelectParentFeature);
-    static QList<U2Feature>         getFeaturesByRoot(const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus &os,
-                                        OperationScope scope = Recursive, const FeatureFlags &featureClass = U2Feature::Annotation);
-
-    static void                     createFeatureEntityFromAnnotationData(const AnnotationData &annotation, const U2DataId &rootFeatureId,
+    static void                     createFeatureEntityFromAnnotationData(const SharedAnnotationData &annotation, const U2DataId &rootFeatureId,
                                         const U2DataId &parentFeatureId, U2Feature &resFeature, QList<U2FeatureKey> &resFeatureKeys);
-
     static U2FeatureKey             createFeatureKeyLocationOperator(U2LocationOperator value);
-
-    static bool                     keyExists(const U2DataId &featureId, const QString &keyName, const U2DbiRef &dbiRef, U2OpStatus &os);
-    /**
-     * Fetches all annotations according to passed @rootId and puts them into cache
-     */
-    static void                     loadAnnotationTable(const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus &op);
-
-    static bool                     cacheContainsAnnotation(const U2DataId &featureId, U2Feature::FeatureClass featureClass, const U2DbiRef &dbiRef);
-    static bool                     cacheContainsGroup(const U2DataId &featureId, U2Feature::FeatureClass featureClass, const U2DbiRef &dbiRef);
-
-    static DbiAnnotationCache       dbiAnnotationCache;
 };
 
 } // namespace U2
