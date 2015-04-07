@@ -4182,14 +4182,14 @@ GUI_TEST_CLASS_DEFINITION( test_2612 ) {
     // Expected state: the annotation with pattern created and shown in sequence view.
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     GTGlobals::sleep(1000);
-    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
     // 3. Delete annotation from annotation editor.
     GTMouseDriver::click(os);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     // Expected state: there is no annotation in sequence view.
     GTGlobals::sleep(100);
-    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", GTGlobals::FindOptions(false))==NULL, "Annotations document not deleted");
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature", GTGlobals::FindOptions(false))==NULL, "Annotations document not deleted");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2619) {
