@@ -185,6 +185,9 @@ void ExportPrimersDialog::init() {
     constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
     constr.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     constr.addFlagToExclude(DocumentFormatFlag_Hidden);
+    if (primers.size() > 1) {
+        constr.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
+    }
 
     const QList<DocumentFormatId> formatIds = AppContext::getDocumentFormatRegistry()->selectFormats(constr);
     foreach (const DocumentFormatId &formatId, formatIds) {
