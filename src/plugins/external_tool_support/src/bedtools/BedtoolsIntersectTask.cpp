@@ -43,6 +43,8 @@
 
 namespace U2 {
 
+double const BedtoolsIntersectSettings::DEFAULT_MIN_OVERLAP=1E-9;
+
 //////////////////////////////////////////////////////////////////////////
 //BedtoolIntersectTask
 BedtoolsIntersectLogParser::BedtoolsIntersectLogParser(const QString &resultFile)

@@ -32,7 +32,7 @@ namespace U2 {
 // BedtoolIntersectSettings
 class BedtoolsIntersectSettings {
 public:
-    static const double DEFAULT_MIN_OVERLAP=1E-9;
+    static const double DEFAULT_MIN_OVERLAP;
 
     BedtoolsIntersectSettings(double minOverlap = DEFAULT_MIN_OVERLAP, bool reportAbsence = false, bool reportFeatures = false)
         : minOverlap(minOverlap),
