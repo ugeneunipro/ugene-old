@@ -84,11 +84,11 @@ QWidget* MapDatatypeEditor::createGUI(DataTypePtr from, DataTypePtr to) {
 
     bool infoMode = (to == from);
     if (infoMode) {
-        table = new QTableWidget(0,1);
-        //table->setHorizontalHeaderLabels((QStringList() << tr("Data on the bus")));
+        table = new QTableWidget(0, 1);
+        table->horizontalHeader()->hide();
     } else {
-        table = new QTableWidget(0,2);
-        //table->setHorizontalHeaderLabels((QStringList() << tr("Accepted inputs") << tr("Data from bus") ));
+        table = new QTableWidget(0, 2);
+        table->setHorizontalHeaderLabels((QStringList() << tr("Slots") << tr("Data source") ));
         table->setItemDelegateForColumn(VALUE_COLUMN, new DescriptorListEditorDelegate(this));
     }
 
@@ -100,7 +100,6 @@ QWidget* MapDatatypeEditor::createGUI(DataTypePtr from, DataTypePtr to) {
 
     table->horizontalHeader()->setStretchLastSection(true);
     table->verticalHeader()->hide();
-    table->horizontalHeader()->hide();
     QSizePolicy sizePolicy5(QSizePolicy::Expanding, QSizePolicy::Expanding);
     sizePolicy5.setHorizontalStretch(0);
     sizePolicy5.setVerticalStretch(2);
@@ -112,7 +111,6 @@ QWidget* MapDatatypeEditor::createGUI(DataTypePtr from, DataTypePtr to) {
     table->setSelectionMode(QAbstractItemView::SingleSelection);
     table->setTextElideMode(Qt::ElideMiddle);
     table->setShowGrid(false);
-    //table->setWordWrap(false);
     table->setCornerButtonEnabled(false);
 
     int height = QFontMetrics(QFont()).height() + 6;
