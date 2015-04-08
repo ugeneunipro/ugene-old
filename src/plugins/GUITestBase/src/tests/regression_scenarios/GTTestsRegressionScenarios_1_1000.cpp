@@ -332,6 +332,47 @@ GUI_TEST_CLASS_DEFINITION(test_0567) {
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0587){
+    class CheckBowtie2Filler : public Filler {
+    public:
+        CheckBowtie2Filler(U2OpStatus &os)
+            : Filler (os, "BuildIndexFromRefDialog") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QComboBox* methodNamesBox = dialog->findChild<QComboBox*>("methodNamesBox");
+            for(int i=0; i < methodNamesBox->count();i++){
+                if(methodNamesBox->itemText(i) == "UGENE Genome Aligner"){
+                    GTComboBox::setCurrentIndex(os, methodNamesBox, i);
+                }
+            }
+
+            GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/genbank/", "NC_014267.1_cut.gb");
+            GTUtilsDialog::waitForDialog(os, ob);
+            GTWidget::click(os, GTWidget::findWidget(os, "addRefButton",dialog));
+
+            GTGlobals::sleep();
+            ob = new GTFileDialogUtils(os, sandBoxDir,  "587_NC_014267.1_cut", GTFileDialogUtils::Save);
+            GTUtilsDialog::waitForDialog(os, ob);
+            GTWidget::click(os, GTWidget::findWidget(os, "setIndexFileNameButton",dialog));
+
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+
+            QPushButton* okButton = box->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(okButton !=NULL, "ok button is NULL");
+            GTWidget::click(os, okButton);
+        }
+    };
+
+
+    GTLogTracer lt;
+    GTUtilsDialog::waitForDialog(os, new CheckBowtie2Filler(os));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_INDEX);
+    CHECK_SET_ERR(!lt.hasError(), "error messages in the log");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0627) {
 //    1. Open _common_data/fasta/fa1.fa.
 //    Expected state: the file opens in the sequence viewer.
