@@ -130,6 +130,9 @@ bool WelcomePageWidget::eventFilter(QObject *watched, QEvent *event) {
         case QEvent::Drop:
             dropEvent(dynamic_cast<QDropEvent*>(event));
             return true;
+        case QEvent::FocusIn:
+            setFocus();
+            return true;
         default:
             return false;
     }
