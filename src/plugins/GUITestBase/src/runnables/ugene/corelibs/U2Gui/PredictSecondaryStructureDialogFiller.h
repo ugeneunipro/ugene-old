@@ -28,9 +28,11 @@ namespace U2 {
 
 class PredictSecondaryStructureDialogFiller : public Filler {
 public:
-    PredictSecondaryStructureDialogFiller(U2OpStatus &os, int startPos, int endPos, bool onlyPressOk = false):
-        Filler(os, "SecStructDialog"), startPos(startPos), endPos(endPos), onlyPressOk(onlyPressOk) {}
-    virtual void run();
+    PredictSecondaryStructureDialogFiller(U2OpStatus &os, int startPos, int endPos, bool onlyPressOk = false);
+    PredictSecondaryStructureDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+
+    virtual void commonScenario();
+
 private:
     int startPos;
     int endPos;

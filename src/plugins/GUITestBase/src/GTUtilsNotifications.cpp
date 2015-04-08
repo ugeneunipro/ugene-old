@@ -53,9 +53,9 @@ NotificationChecker::~NotificationChecker(){
 }
 
 #define GT_METHOD_NAME "sl_checkNotification"
-void NotificationChecker::sl_checkNotification(){
-
-QList<QWidget*> list = QApplication::allWidgets();
+void NotificationChecker::sl_checkNotification() {
+    CHECK(NULL == QApplication::activeModalWidget(), );
+    QList<QWidget*> list = QApplication::allWidgets();
     foreach(QWidget* wid, list){
         Notification* notif = qobject_cast<Notification*>(wid);
         if(notif!=NULL && notif->isVisible()){

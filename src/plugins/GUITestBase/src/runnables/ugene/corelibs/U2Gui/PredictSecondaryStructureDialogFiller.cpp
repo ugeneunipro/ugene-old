@@ -39,9 +39,27 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::PredictSecondaryStructureDialogFiller"
-#define GT_METHOD_NAME "run"
-void PredictSecondaryStructureDialogFiller::run() {
 
+PredictSecondaryStructureDialogFiller::PredictSecondaryStructureDialogFiller(U2OpStatus &os, int startPos, int endPos, bool onlyPressOk) :
+    Filler(os, "SecStructDialog"),
+    startPos(startPos),
+    endPos(endPos),
+    onlyPressOk(onlyPressOk)
+{
+
+}
+
+PredictSecondaryStructureDialogFiller::PredictSecondaryStructureDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+    Filler(os, "SecStructDialog", scenario),
+    startPos(0),
+    endPos(0),
+    onlyPressOk(0)
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void PredictSecondaryStructureDialogFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

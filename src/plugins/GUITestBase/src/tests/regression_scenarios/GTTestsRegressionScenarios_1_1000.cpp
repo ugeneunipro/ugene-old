@@ -2272,6 +2272,61 @@ GUI_TEST_CLASS_DEFINITION(test_0994) {
     GTGlobals::sleep(1000);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1000) {
+//    1. Open "data/samples/3INS.PDB".
+    GTFileDialog::openFile(os, "data/samples/PDB/3INS.PDB");
+
+//    2. In the context menu of the first sequence in sequence view choose {Analize -> Predict secondary structure...}.
+//    Expected state: "Secondary structure prediction" dialog is opened.
+
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(const QString &algorithm) :
+            CustomScenario(),
+            algorithm(algorithm)
+        {
+
+        }
+
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "algorithmComboBox", dialog), algorithm);
+
+//    3. Fill fields "Range start" and "Range end" with values "1" and "2" respectively.
+            GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "rangeStartSpinBox", dialog), 1, GTGlobals::UseKeyBoard);
+            GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "rangeEndSpinBox", dialog), 2, GTGlobals::UseKeyBoard);
+
+//    4. Press "Start prediction".
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+
+            GTUtilsTaskTreeView::waitTaskFinished(os);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+
+    private:
+        const QString algorithm;
+    };
+
+//    Expected state: Error notification appears.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Analyze" << "Predict secondary structure..."));
+    GTUtilsDialog::waitForDialog(os, new PredictSecondaryStructureDialogFiller(os, new Scenario("GORIV")));
+    GTUtilsNotifications::waitForNotification(os, true, "'Secondary structure predict' task failed: The size of sequence is less then minimal allowed size (5 residues).");
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+
+    GTGlobals::sleep();
+
+//    5. Repeat steps 2, 3, then choose another algorithm in dialog.
+//    6. Press "Start prediction".
+//    Expected state: Error notification appears.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Analyze" << "Predict secondary structure..."));
+    GTUtilsDialog::waitForDialog(os, new PredictSecondaryStructureDialogFiller(os, new Scenario("PsiPred")));
+    GTUtilsNotifications::waitForNotification(os, true, "'Secondary structure predict' task failed: The size of sequence is less then minimal allowed size (5 residues).");
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+}
+
 }
 
 }
