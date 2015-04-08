@@ -572,6 +572,31 @@ GUI_TEST_CLASS_DEFINITION(test_0700) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/assembly/example-alignment.bam");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0733) {
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    //1. Drop "Write sequence" element on the scheme
+    //Expected state: workflow designer opens, one empty write sequence element is presented.
+    WorkflowProcessItem *writer = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+
+    //2. Select this element.
+    GTUtilsWorkflowDesigner::click(os, writer);
+
+    //Expected state: Property editor appears, {parameters->Document format} is "fasta"
+    QString format = GTUtilsWorkflowDesigner::getParameter(os, "Document format");
+    CHECK_SET_ERR("fasta" == format, "Wrong format");
+
+    //3. Change {Parameters->Output file} to "result.gb".
+    //Expected state: {Parameters->Output file} is "%some_path%/result.gb", {Parameters->Document format} is "fasta".
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", "result.gb", GTUtilsWorkflowDesigner::textValue);
+
+    //4. Change {Parameters->Document Format} to "genbank" and press Enter.
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", "genbank", GTUtilsWorkflowDesigner::comboValue);
+
+    //Expected state: {Parameters->Output file} changes to "%some_path%/result.gb".
+    QString url = GTUtilsWorkflowDesigner::getParameter(os, "utput file");
+    CHECK_SET_ERR("result.gb" == url, "Wrong url");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0734) {
     //1. Open "_common_data/fasta/test.TXT".
     GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/test.TXT");
