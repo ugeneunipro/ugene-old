@@ -157,7 +157,7 @@ QList<SharedAnnotationData> DifferentialFormat::parseAnnotations(const ColumnDat
 
         ColumnDataParser::Iterator values = parser.parseLine(line, os);
         CHECK_OP(os, anns);
-        SharedAnnotationData data;
+        SharedAnnotationData data(new AnnotationData);
         bool locusFound = false;
         while (values.isEnded()) {
             QString value = values.look();
