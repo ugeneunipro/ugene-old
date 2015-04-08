@@ -781,7 +781,7 @@ U2DbiIterator<U2Feature> * MysqlFeatureDbi::getFeaturesByName(const U2DataId &ro
 
 QList<FeatureAndKey> MysqlFeatureDbi::getFeatureTable(const U2DataId &rootFeatureId, U2OpStatus &os) {
     static const QString queryStringk("SELECT " + getFeatureFields() + ", fk.name, fk.value FROM Feature AS f "
-        "LEFT OUTER JOIN FeatureKey AS fk ON f.id = fk.feature WHERE f.root = :root ORDER BY f.start");
+        "LEFT OUTER JOIN FeatureKey AS fk ON f.id = fk.feature WHERE f.root = :root ORDER BY f.class DESC, f.start, f.len");
     U2SqlQuery q(queryStringk, db, os);
 
     q.bindDataId(":root", rootFeatureId);

@@ -53,7 +53,7 @@ public:
 
     QList<Annotation *>     addAnnotations(const QList<SharedAnnotationData> &anns);
 
-    void                    addShallowAnnotations(const QList<Annotation *> &anns);
+    void                    addShallowAnnotations(const QList<Annotation *> &anns, bool newAnnotations);
 
     void                    removeAnnotations(const QList<Annotation *> &anns);
 

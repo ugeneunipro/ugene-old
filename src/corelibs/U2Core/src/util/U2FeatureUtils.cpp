@@ -219,7 +219,7 @@ AnnotationGroup * U2FeatureUtils::loadAnnotationTable(const U2DataId &rootFeatur
 
             AnnotationGroup *parentGroup = rootGroup->findSubgroupById(fnk.feature.parentFeatureId);
             SAFE_POINT(NULL != parentGroup, L10N::nullPointerError("annotation group"), NULL);
-            parentGroup->addShallowAnnotations(QList<Annotation *>() << new Annotation(fnk.feature.id, aData, parentGroup, parentObj));
+            parentGroup->addShallowAnnotations(QList<Annotation *>() << new Annotation(fnk.feature.id, aData, parentGroup, parentObj), false);
         }
     }
     return rootGroup;

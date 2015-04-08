@@ -130,7 +130,7 @@ QList<Annotation *> AnnotationGroup::addAnnotations(const QList<SharedAnnotation
     return result;
 }
 
-void AnnotationGroup::addShallowAnnotations(const QList<Annotation *> &anns) {
+void AnnotationGroup::addShallowAnnotations(const QList<Annotation *> &anns, bool newAnnotations) {
 #ifdef _DEBUG
     foreach (Annotation *a, anns) {
         SAFE_POINT(a->getGroup() == this, "Unexpected annotation group", );
@@ -139,8 +139,10 @@ void AnnotationGroup::addShallowAnnotations(const QList<Annotation *> &anns) {
 
     annotations.append(anns);
 
-    parentObject->setModified(true);
-    parentObject->emit_onAnnotationsAdded(anns);
+    if (newAnnotations) {
+        parentObject->setModified(true);
+        parentObject->emit_onAnnotationsAdded(anns);
+    }
 }
 
 void AnnotationGroup::removeAnnotations(const QList<Annotation *> &anns) {

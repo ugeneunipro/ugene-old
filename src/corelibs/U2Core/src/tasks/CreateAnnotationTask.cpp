@@ -93,7 +93,7 @@ Task::ReportResult CreateAnnotationsTask::report() {
     GTIMER(c2, t2, "CreateAnnotationsTask::report [addAnnotations]");
 
     foreach (AnnotationGroup *group, group2Annotations.keys()) {
-        group->addShallowAnnotations(group2Annotations[group]);
+        group->addShallowAnnotations(group2Annotations[group], true);
         resultAnnotations.append(group2Annotations[group]);
     }
 
