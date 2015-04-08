@@ -109,7 +109,7 @@ ExportSequenceOfSelectedAnnotationsFiller::ExportSequenceOfSelectedAnnotationsFi
     path = __path;
 
     comboBoxItems[Fasta] = "FASTA";
-    comboBoxItems[Fastaq] = "FASTAQ";
+    comboBoxItems[Fastq] = "FASTQ";
     comboBoxItems[Gff] = "GFF";
     comboBoxItems[Genbank] = "Genbank";
 

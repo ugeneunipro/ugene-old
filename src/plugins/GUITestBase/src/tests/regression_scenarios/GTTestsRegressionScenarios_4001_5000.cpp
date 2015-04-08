@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QListWidget>
 #include <QPlainTextEdit>
 #include <QWebElement>
 
@@ -1250,6 +1251,19 @@ GUI_TEST_CLASS_DEFINITION(test_4150) {
     annotationsInFile = GTTreeWidget::getItems(GTUtilsAnnotationsTreeView::getTreeWidget(os)->invisibleRootItem());
     num = annotationsInFile.size();
     CHECK_SET_ERR(num == 14, QString("unexpected annotations number: %1").arg(num));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4151) {
+    //1. Open samples / Genbank / murine.gb.
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+    //2. Green arrow->Hide all views.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Hide all views"));
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_NC_001363"));
+
+    //Expected state: Vertical scroll bar isn't shown.
+    QScrollArea *advScrollArea = dynamic_cast<QScrollArea *>(GTWidget::findWidget(os, "annotated_DNA_scrollarea"));
+    CHECK_SET_ERR(!advScrollArea->verticalScrollBar()->isVisible(), "Scrollbar is unexpectedly visible");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4153) {

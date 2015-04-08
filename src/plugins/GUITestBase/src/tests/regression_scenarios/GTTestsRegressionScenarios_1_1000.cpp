@@ -574,6 +574,54 @@ GUI_TEST_CLASS_DEFINITION(test_0700) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/assembly/example-alignment.bam");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0702) {
+    //1. open _common_data / fasta / DNA.fa in merge mode.
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/DNA.fa");
+
+    //2. Select first contig(1..743) region.
+    GTUtilsAnnotationsTreeView::selectItems(os, QStringList() << "contig");
+
+    //3. Do context menu{ Export->export sequence of selected annotations).
+    //4. Fill next fields in appeared dialog, and execute it :
+    //{export to file} -D : / test / _common_data / fasta / DNA_annotation.fastq
+    //{ file format to use } -FASTQ
+    //{ Save document to the project } -checked
+    //{ Save as separare sequences } -checked.
+    //Expected state : UGENE not crashed
+    GTUtilsDialog::waitForDialog(os, new ExportSequenceOfSelectedAnnotationsFiller(os, sandBoxDir + "1.fa",
+        ExportSequenceOfSelectedAnnotationsFiller::Fastq, ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Export sequence of selected annotations..."));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0703) {
+    GTFile::copy(os, dataDir + "samples/Assembly/chrM.fa", sandBoxDir + "1.fa");
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "1.ugenedb"));
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly/chrM.sorted.bam");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTFileDialog::openFile(os, sandBoxDir + "1.fa");
+
+    GTUtilsMdi::activateWindow(os, "1 [as] chrM");
+
+    GTUtilsProjectTreeView::dragAndDrop(os, GTUtilsProjectTreeView::findIndex(os, "chrM", GTUtilsProjectTreeView::findIndex(os, "1.fa")),
+        GTUtilsMdi::activeWindow(os));
+
+    GTUtilsDocument::removeDocument(os, "1.fa");
+    GTUtilsDocument::removeDocument(os, "1.ugenedb");
+
+    GTFile::removeDir(sandBoxDir + "1.fa");
+
+    //1) Opened a BAM file that had a reference sequence associated with it, but there shouldn't be such sequence anymore.
+    GTFileDialog::openFile(os, sandBoxDir + "1.ugenedb");
+
+    //Expected state : UGENE not crashes
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0733) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     //1. Drop "Write sequence" element on the scheme

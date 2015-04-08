@@ -43,7 +43,7 @@ namespace U2 {
 
     class ExportSequenceOfSelectedAnnotationsFiller : public Filler {
     public:
-        enum FormatToUse {Fasta, Fastaq, Gff, Genbank};
+        enum FormatToUse {Fasta, Fastq, Gff, Genbank};
         enum MergeOptions {SaveAsSeparate, Merge};
         ExportSequenceOfSelectedAnnotationsFiller(U2OpStatus &_os, const QString &_path, FormatToUse _format, MergeOptions _options, int _gapLength = 0,
                                                   bool _addDocToProject = true, bool _exportWithAnnotations = false, GTGlobals::UseMethod method = GTGlobals::UseMouse);
