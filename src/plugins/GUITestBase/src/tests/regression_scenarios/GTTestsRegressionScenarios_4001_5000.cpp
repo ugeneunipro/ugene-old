@@ -55,6 +55,7 @@
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTListWidget.h"
 #include "api/GTRadioButton.h"
 #include "api/GTSlider.h"
 #include "api/GTTabWidget.h"
@@ -83,6 +84,7 @@
 #include "runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h"
 #include "runnables/ugene/plugins/orf_marker/OrfDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/ExportPrimersDialogFiller.h"
+#include "runnables/ugene/plugins/pcr/ImportPrimersDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
@@ -930,6 +932,56 @@ GUI_TEST_CLASS_DEFINITION(test_4111){
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4116) {
+//    1. Open the Primer Library.
+    GTUtilsPrimerLibrary::openLibrary(os);
+
+//    2. Click "Import primer(s)".
+
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+//    Expected: the dialog is modal, the "OK" button is disabled.
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            QWidget *okButton = GTWidget::findButtonByText(os, "OK");
+            CHECK_SET_ERR(NULL != okButton, "OK button is NULL");
+            CHECK_SET_ERR(!okButton->isEnabled(), "OK button is unexpectedly enabled");
+
+//    3. Add human_T1.fa.
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/FASTA/human_T1.fa"));
+            GTWidget::click(os, GTWidget::findButtonByText(os, "Add file(s)", dialog));
+
+//    4. Click the added item.
+            const QString filePath = QDir::cleanPath(QFileInfo(dataDir + "samples/FASTA/human_T1.fa").absoluteFilePath());
+            GTListWidget::click(os, GTWidget::findExactWidget<QListWidget *>(os, "lwFiles", dialog), filePath);
+
+//    Expected: the "Remove" button is enabled.
+            QWidget *removeButton = GTWidget::findWidget(os, "pbRemoveFile", dialog);
+            CHECK_SET_ERR(NULL != removeButton, "Remove button is NULL");
+            CHECK_SET_ERR(removeButton->isEnabled(), "Remove button is unexpectedly disabled");
+
+//    5. Choose "Shared database" in the combobox.
+            GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "cbSource", dialog), "Shared database");
+
+//    Expected: the "OK" button is disabled.
+            CHECK_SET_ERR(!okButton->isEnabled(), "OK button is unexpectedly enabled");
+
+//    6. Choose "Local file(s)" in the combobox.
+            GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "cbSource", dialog), "Local file(s)");
+
+//    Expected: the "OK" button is enabled.
+            CHECK_SET_ERR(okButton->isEnabled(), "OK button is unexpectedly disabled");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ImportPrimersDialogFiller(os, new Scenario));
+    GTUtilsPrimerLibrary::clickButton(os, GTUtilsPrimerLibrary::Import);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4117){
