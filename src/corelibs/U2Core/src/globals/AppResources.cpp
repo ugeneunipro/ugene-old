@@ -162,8 +162,7 @@ size_t AppResourcePool::getCurrentAppMemory() {
     return result ? memCounter.WorkingSetSize : -1;
 #elif defined(Q_OS_LINUX)
     struct proc_t usage;
-    memset(&usage, 0, sizeof(usage));
-    //look_up_our_self(&usage);
+    look_up_our_self(&usage);
     return usage.vsize;
 #elif defined(Q_OS_FREEBSD)
      QProcess p;

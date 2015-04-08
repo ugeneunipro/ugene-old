@@ -48,6 +48,7 @@ win32 {
 unix {
     target.path = $$UGENE_INSTALL_DIR/$$UGENE_RELATIVE_DESTDIR
     INSTALLS += target
+    LIBS += -lprocps
 }
 
 HEADERS += ../../include/U2Core/U2*.h
