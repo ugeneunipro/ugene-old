@@ -460,6 +460,29 @@ GUI_TEST_CLASS_DEFINITION(test_0627) {
     GTUtilsDialog::waitForDialog(os, new ToolTipsChecker(os));
     GTWidget::click(os, primer3);
 }
+GUI_TEST_CLASS_DEFINITION(test_0666) {
+/* Crash on removing some annotations from Primer3 result
+ * 1. Open samples\FASTA\human_T1.fa
+ * 2. Search about 50 primers
+ * 3. Try delete 10 or more results annotations
+ *   Expected state: UGENE not crashes
+*/
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QAbstractButton* primer3 = GTAction::button(os, "primer3_action");
+    CHECK_SET_ERR(primer3 != NULL, "primer3_action not found");
+    Primer3DialogFiller::Primer3Settings settings;
+    settings.resultsCount = 50;
+    GTUtilsDialog::waitForDialog(os, new Primer3DialogFiller(os, settings));
+    GTWidget::click(os, primer3);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsAnnotationsTreeView::selectItems(os, QStringList() << "pair 1  (0, 2)" << "pair 10  (0, 2)" << "pair 11  (0, 2)" << "pair 12  (0, 2)" << "pair 13  (0, 2)" << "pair 14  (0, 2)"
+                                                              << "pair 15  (0, 2)" << "pair 16  (0, 2)" << "pair 17  (0, 2)" << "pair 18  (0, 2)" << "pair 19  (0, 2)");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0677) {
     // 1. Open the file bamExample.bam.
