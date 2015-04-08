@@ -80,6 +80,7 @@ public:
     QDScheduler* getScheduler() const { return sched; }
     int getCandidatesNumber() const { return candidates.size(); }
     bool isCancelled() const { return cancelled; }
+    const QString& getCancelMessage() const { return cancelMeassage; }
     void prepareAnnotations();
     void createAnnotations(const QString& groupPrefix);
     void createMergedAnnotations(const QString& groupPrefix);
@@ -89,25 +90,25 @@ private:
     void processNewResults(int& progress);
     void initCandidates(int& progress);
     void updateCandidates(int& progress);
+    void cleanupCandidates();
     bool canAdd(QDResultGroup* actorResult, QDResultGroup* candidate, bool complement) const;
     QDStrandOption findResultStrand(QDResultGroup* actorRes);
     //inverts repeat pair if any for complement search
     QList<QDResultUnit> prepareComplResults(QDResultGroup* src) const;
     static QString prepareAnnotationName(const QDResultUnit& res);
 private:
-    QDScheme* scheme;
-    QDScheduler* sched;
-    bool cancelled;
-    QDStep* currentStep;
-    bool needInit;
-    QList<QDResultGroup*> candidates;
-    QMap<QDResultUnit, SharedAnnotationData> result2annotation;
-
-    QList<QDResultGroup *> currentResults;
-    QMap<QDActor *, QList<QDResultGroup *> > currentGroupResults;
-
-
+    QDScheme*                                   scheme;
+    QDScheduler*                                sched;
+    bool                                        cancelled;
+    QString                                     cancelMeassage;
+    QDStep*                                     currentStep;
+    bool                                        needInit;
+    QList<QDResultGroup*>                       candidates;
+    QMap<QDResultUnit, SharedAnnotationData>    result2annotation;
+    QList<QDResultGroup*>                       currentResults;
+    QMap< QDActor*, QList<QDResultGroup*> >     currentGroupResults;
     QMap<QString, QList<SharedAnnotationData> > annotations;
+    int                                         maxMemorySizeInMB;
 };
 
 class QDFindLocationTask : public Task {

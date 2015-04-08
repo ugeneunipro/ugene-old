@@ -31,6 +31,8 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/AppResources.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2SafePoints.h>
@@ -84,7 +86,11 @@ QList<Task*> QDScheduler::onSubTaskFinished(Task* subTask) {
     QList<Task*> subs;
     propagateSubtaskError();
     CHECK_OP(stateInfo, subs);
-    if (linker->isCancelled() || subTask == createAnnsTask) {
+    if (linker->isCancelled()){
+        setError(linker->getCancelMessage());
+        return subs;
+    }
+    if (subTask == createAnnsTask) {
         return subs;
     }
 
@@ -140,7 +146,14 @@ Task::ReportResult QDScheduler::report() {
 //////////////////////////////////////////////////////////////////////////
 QDResultLinker::QDResultLinker(QDScheduler* _sched)
 : scheme(_sched->getSettings().scheme), sched(_sched), cancelled(false), currentStep(NULL),
-needInit(true) {}
+needInit(true), maxMemorySizeInMB(-1) {
+    const AppSettings* appSettings = AppContext::getAppSettings();
+    SAFE_POINT_EXT(NULL != appSettings, taskLog.error(QDScheduler::tr("Invalid applications settings detected")), );
+
+    AppResourcePool* appResourcePool = appSettings->getAppResourcePool();
+    SAFE_POINT_EXT(NULL != appResourcePool, taskLog.error(QDScheduler::tr("Invalid users applications settings detected")), );
+    maxMemorySizeInMB=AppContext::getAppSettings()->getAppResourcePool()->getMaxMemorySizeInMB();
+}
 
 QString QDResultLinker::prepareAnnotationName(const QDResultUnit& res) {
     QString aname = res->owner->getActor()->annotateAs();
@@ -185,7 +198,7 @@ QVector<U2Region> joinRegions(QVector<U2Region>& regions) {
 
 QVector<U2Region> QDResultLinker::findLocation(QDStep* step) {
     QVector<U2Region> res;
-    if (candidates.isEmpty()) {
+    if (candidates.isEmpty() || cancelled) {
         res << U2Region(0, scheme->getSequence().length());
         return res;
     }
@@ -322,7 +335,10 @@ void QDResultLinker::formGroupResults() {
     }
     currentGroupResults.clear();
 }
-
+void QDResultLinker::cleanupCandidates(){
+    qDeleteAll(candidates);
+    candidates.clear();
+}
 void QDResultLinker::processNewResults(int& progress) {
     if(needInit) {
         initCandidates(progress);
@@ -338,8 +354,13 @@ void QDResultLinker::processNewResults(int& progress) {
         end = GTimer::currentTimeMicros();
         perfLog.details(QString("Updating groups finished in %1 ms").arg(GTimer::millisBetween(start,end)));
     }
-    if (candidates.isEmpty()) {
+
+    if (candidates.isEmpty() && !cancelled) {
+        cancelMeassage = QDScheduler::tr("No results have been found for this scheme");
         cancelled = true;
+    }
+    if (!candidates.isEmpty() && cancelled) {
+        cleanupCandidates();
     }
 }
 
@@ -397,6 +418,9 @@ void QDResultLinker::updateCandidates(int& progress) {
     foreach(QDResultGroup* candidate, candidates) {
         foreach(QDResultGroup* actorRes, currentResults) {
             if (sched->isCanceled()) {
+                cleanupCandidates();
+                qDeleteAll(newCandidates);
+                newCandidates.clear();
                 return;
             }
 
@@ -448,8 +472,17 @@ void QDResultLinker::updateCandidates(int& progress) {
                     newCandidate->strand = complement ? QDStrand_ComplementOnly : QDStrand_DirectOnly;
                 }
                 newCandidates.append(newCandidate);
+                if (maxMemorySizeInMB <= (candidates.size()+newCandidates.size())*0.00025){ //0.0002 is empirically calculated coefficient
+                    cancelMeassage = QDScheduler::tr("Too many results have been found for this scheme. Try to set stricter search conditions.").arg(newCandidates.size());
+                    taskLog.error(cancelMeassage);
+                    qDeleteAll(newCandidates);
+                    newCandidates.clear();
+                    cancelled = true;
+                    return;
+                }
             }
         }
+        candidates.replace(candidates.indexOf(candidate), NULL);
         delete candidate;
         progress = 100 * ++i / candidates.size();
     }
@@ -526,6 +559,7 @@ void QDResultLinker::createAnnotations(const QString& groupPrefix) {
     int counter = 0;
     foreach(QDResultGroup* candidate, candidates) {
         if (sched->isCanceled()) {
+            cleanupCandidates();
             return;
         }
         const QString& grpName = QString("%1 %2")
@@ -548,6 +582,7 @@ void QDResultLinker::createAnnotations(const QString& groupPrefix) {
             groupAnns.append(a);
         }
         annotations[grpName] = groupAnns;
+        candidates.replace(candidates.indexOf(candidate), NULL);
         delete candidate;
     }
     candidates.clear();
@@ -560,6 +595,7 @@ void QDResultLinker::createMergedAnnotations(const QString &groupPrefix) {
     QList<SharedAnnotationData> anns;
     foreach (QDResultGroup *candidate, candidates) {
         if (sched->isCanceled()) {
+            cleanupCandidates();
             return;
         }
 
@@ -577,6 +613,7 @@ void QDResultLinker::createMergedAnnotations(const QString &groupPrefix) {
         ad->name = groupPrefix;
         ad->location->regions.append(r);
         anns.append(ad);
+        candidates.replace(candidates.indexOf(candidate), NULL);
         delete candidate;
     }
     candidates.clear();

@@ -103,7 +103,7 @@ bool QDConstraintController::match(QDConstraint* c, const QDResultUnit& r1, cons
     const U2Region& reg1 = r1->region;
     const U2Region& reg2 = r2->region;
 
-    QDDistanceType dist = dc->distanceType();
+    const QDDistanceType& dist = dc->distanceType();
 
     int min = dc->getMin();
     int max = dc->getMax();
@@ -126,7 +126,7 @@ bool QDConstraintController::match(QDConstraint* c, const QDResultUnit& r1, cons
 
 bool QDConstraintController::match(const U2Region& srcReg,
                                    const U2Region& dstReg,
-                                   QDDistanceType type,
+                                   const QDDistanceType& type,
                                    int min,
                                    int max)
 {
