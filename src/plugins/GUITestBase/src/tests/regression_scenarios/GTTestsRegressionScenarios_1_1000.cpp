@@ -804,6 +804,83 @@ GUI_TEST_CLASS_DEFINITION(test_0801) {
     GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editEnd")), "5");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0807) {
+    QFile::copy(testDir + "_common_data/scenarios/workflow designer/somename.etc", testDir + "_tmp/807.etc");
+
+    //1. Open Workflow Designer.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    //2. Import the CMDLine element: _common_data/scenarios/workflow designer/somename.etc.
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_tmp", "807.etc"));
+    GTWidget::click(os, GTAction::button(os, "AddElementWithCommandLineTool"));
+
+    //Expected: the element appears on the scene.
+    //3. Select this element on the scene and call its context menu.
+    //Expected state: {Edit configuration...} menu item is presented.
+    //4. Click this menu item.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit configuration"));
+
+    //Expected state: the last page of the "Create Element with Command Line Tool" dialog appeared.
+    class Scenario1 : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QLineEdit *templateEdit = dynamic_cast<QLineEdit*>(GTWidget::findWidget(os, "templateLineEdit"));
+            GTLineEdit::setText(os, templateEdit, "testtest $in");
+
+            //5. Type anything in the {Execution string} and {Parameterized description} fields. Press {OK} button. If message box with question about unused parameters apeeares, click {Continue} button.
+            GTWidget::click(os, GTWidget::findButtonByText(os, "Finish"));
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new CreateElementWithCommandLineToolFiller(os, new Scenario1()));
+    GTUtilsWorkflowDesigner::click(os, "somename", QPoint(0, 0), Qt::RightButton);
+
+    //Expected state: element wasn't dissapear from the scene.
+    //6. Select {Edit configuration...} menu item again. Change something in previous pages of the dialog. Then return to the last page and click {Finish} button. If message box about unused parameters appeares, click {Continue} button.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit configuration"));
+    class Scenario2 : public CustomScenario {
+        bool reset;
+    public:
+        Scenario2(bool reset) : reset(reset) {}
+        void run(U2OpStatus &os) {
+            GTWidget::click(os, GTWidget::findWidget(os, "__qt__passive_wizardbutton0"));
+
+            QWidget *addButton = GTWidget::findWidget(os, "addAttributeButton");
+            GTWidget::click(os, addButton);
+
+            QTableView *table = qobject_cast<QTableView*>(GTWidget::findWidget(os, "attributesTableView"));
+            GTMouseDriver::moveTo(os, GTTableView::getCellPosition(os, table, 0, table->model()->rowCount() - 1));
+            GTMouseDriver::click(os);
+
+            GTKeyboardDriver::keySequence(os, "attr");
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+
+            GTWidget::click(os, GTWidget::findWidget(os, "__qt__passive_wizardbutton1"));
+            QLineEdit *templateEdit = dynamic_cast<QLineEdit*>(GTWidget::findWidget(os, "templateLineEdit"));
+            GTLineEdit::setText(os, templateEdit, "testtest $in $attr");
+
+            //Expected state: message box with notification about structure changes appears. Thre buttons presented: {Reset}, {No}, {Yes}.
+            //7. Click {Reset} button.
+            //Expected state: "Create Element with Command Line Tool" dialog not closed. Changes from point 7 are reset.
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, reset ? QMessageBox::Reset : QMessageBox::Yes));
+            GTWidget::click(os, GTWidget::findButtonByText(os, "Finish"));
+            if (reset) {
+                GTWidget::click(os, GTWidget::findButtonByText(os, "Finish"));
+            }
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new CreateElementWithCommandLineToolFiller(os, new Scenario2(true)));
+    GTUtilsWorkflowDesigner::click(os, "somename", QPoint(0, 0), Qt::RightButton);
+
+    //8. Repeat actions from point 7.
+    //Expected state: the same as in point 7.
+    //9. Click {Yes} button.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit configuration"));
+    GTUtilsDialog::waitForDialog(os, new CreateElementWithCommandLineToolFiller(os, new Scenario2(false)));
+    GTUtilsWorkflowDesigner::click(os, "somename", QPoint(0, 0), Qt::RightButton);
+
+    //Expected state: element dissapeared from the scene.
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::getWorkers(os).isEmpty(), "The worker is not deleted");
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0812) {
     // 1. Create a "seq.txt" file in <some_path> location.

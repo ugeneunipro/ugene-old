@@ -85,7 +85,8 @@ public:
 public:
     CreateElementWithCommandLineToolFiller(U2OpStatus& os,
                                            const ElementWithCommandLineSettings& settings);
-    virtual void run();
+    CreateElementWithCommandLineToolFiller(U2OpStatus &os, CustomScenario *scenario);
+    void commonScenario();
 private:
     QString dataTypeToString(const InOutType &type) const;
     QString dataTypeToString(const ParameterType &type) const;

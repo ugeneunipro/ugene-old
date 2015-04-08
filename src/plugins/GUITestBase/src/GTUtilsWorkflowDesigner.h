@@ -85,8 +85,8 @@ public:
 
     static void removeItem(U2OpStatus &os,QString itemName);
 
-    static void click(U2OpStatus &os, QString itemName,  QPoint p = QPoint(0,0));
-    static void click(U2OpStatus &os, QGraphicsItem *item,  QPoint p = QPoint(0,0));
+    static void click(U2OpStatus &os, QString itemName,  QPoint p = QPoint(0,0), Qt::MouseButton button = Qt::LeftButton);
+    static void click(U2OpStatus &os, QGraphicsItem *item,  QPoint p = QPoint(0,0), Qt::MouseButton button = Qt::LeftButton);
 
     //returs worker placed on workflow scene which contains item name
     static WorkflowProcessItem* getWorker(U2OpStatus &os, QString itemName,const GTGlobals::FindOptions &options = GTGlobals::FindOptions());

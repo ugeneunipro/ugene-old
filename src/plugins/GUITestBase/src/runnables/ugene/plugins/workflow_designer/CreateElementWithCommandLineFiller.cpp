@@ -33,8 +33,14 @@ CreateElementWithCommandLineToolFiller::CreateElementWithCommandLineToolFiller(U
       settings(settings)
 {}
 
+CreateElementWithCommandLineToolFiller::CreateElementWithCommandLineToolFiller(U2OpStatus &os, CustomScenario *scenario)
+: Filler(os, "CreateExternalProcessWorkerDialog", scenario)
+{
+
+}
+
 #define GT_METHOD_NAME "run"
-void CreateElementWithCommandLineToolFiller::run() {
+void CreateElementWithCommandLineToolFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
