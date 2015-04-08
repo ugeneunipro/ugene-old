@@ -53,8 +53,8 @@ private:
     static QPoint mousePos;
     static Qt::MouseButtons bp;
 
-    static void moveToP(U2::U2OpStatus &os, const int x, const int y); // platform-depended realization of moveTo
-    static void selectArea(U2::U2OpStatus &os, const int x, const int y);
+    static void moveToP(U2OpStatus &os, const int x, const int y); // platform-depended realization of moveTo
+    static void selectArea(U2OpStatus &os, const int x, const int y);
 };
 
 class GTDragger: public QObject{

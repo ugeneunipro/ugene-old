@@ -68,7 +68,7 @@ void FindQualifierFiller::run()
     if (settings.nextQualifier && settings.nextCount > 0) {
         QPushButton* nextButton = box->button(QDialogButtonBox::Ok);
         GT_CHECK(nextButton != NULL, "\"Next\" button is NULL");
-        for (int i = 0; i < settings.nextCount; i++) {
+        for (unsigned int i = 0; i < settings.nextCount; i++) {
             GTWidget::click(os, nextButton);
         }
     }

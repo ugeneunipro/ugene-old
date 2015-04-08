@@ -29,12 +29,14 @@
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTGlobals.h"
+#include "api/GTGroupBox.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTLineEdit.h"
 #include "api/GTListWidget.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
+#include "api/GTPlainTextEdit.h"
 #include "api/GTSequenceReadingModeDialog.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "api/GTSlider.h"
@@ -2270,6 +2272,72 @@ GUI_TEST_CLASS_DEFINITION(test_0994) {
     GTGlobals::sleep(1000);
     GTMouseDriver::moveTo(os,GTUtilsAnnotationsTreeView::getItemCenter(os,"106-c1_38ftp"));
     GTGlobals::sleep(1000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0999_1) {
+//    1. Do menu {File->New document from text...}
+//    Expected state: Create Document dialog has appear
+
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+//    2. Fill next fields in this dialog
+//        {Paste sequence here} - AAAAAD
+//        {Custom settings} - checked
+//        {Replace unknown symbols with} - z
+            GTPlainTextEdit::setPlainText(os, GTWidget::findExactWidget<QPlainTextEdit *>(os, "sequenceEdit", dialog), "AAAAAD");
+            GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, "groupBox", dialog), true);
+            GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton *>(os, "replaceRB", dialog));
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "symbolToReplaceEdit", dialog), "z");
+
+//    3. Press Create button
+//    Expected state: error message appears "Replace symbol belongs to selected alphabet"
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Replace symbol is not belongs to selected alphabet"));
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new CreateDocumentFiller(os, new Scenario));
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, GTMenu::FILE), QStringList() << "New document from text");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0999_2) {
+//    1. Do menu {File->New document from text...}
+//    Expected state: Create Document dialog has appear
+
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+//    2. Fill next fields in this dialog
+//        {Paste sequence here} - AAAZZZZZZAAA
+//        {Custom settings} - checked
+//        {Replace unknown symbols with} - T
+//        {Document Location} - %any valid filepath%
+            GTPlainTextEdit::setPlainText(os, GTWidget::findExactWidget<QPlainTextEdit *>(os, "sequenceEdit", dialog), "AAAZZZZZZAAA");
+            GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, "groupBox", dialog), true);
+            GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton *>(os, "replaceRB", dialog));
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "symbolToReplaceEdit", dialog), "T");
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "filepathEdit", dialog), sandBoxDir + "test_0999_2.fa");
+
+//    3. Press Create button
+//    Expected state: sequence view with sequence "AAATTTTTTAAA" has opened
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new CreateDocumentFiller(os, new Scenario));
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, GTMenu::FILE), QStringList() << "New document from text");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsMdi::findWindow(os, "test_0999_2 [s] test_0999_2");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1000) {

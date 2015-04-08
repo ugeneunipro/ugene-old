@@ -61,17 +61,18 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h \
 #   Runnables / UGENE / corelibs / U2View
-            src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_assembly/ExportConsensusDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_assembly/ExportCoverageDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/ExportHighlightedDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h \
-            src/runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.h \
-            src/runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h \
-            src/runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h \
-            src/runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h \
+            src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
             src/runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.h \
@@ -232,38 +233,38 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTSequenceReadingModeDialogUtils.h \
             src/api/GTBaseCompleter.h \
 #   Qt primitives
-            src/api/GTClipboard.h \
+            src/api/GTAction.h \
             src/api/GTCheckBox.h \
+            src/api/GTClipboard.h \
             src/api/GTComboBox.h \
-            src/api/GTTabWidget.h \
-            src/api/GTTabBar.h \
-            src/api/GTSpinBox.h \
-            src/api/GTRadioButton.h \
-            src/api/GTFileDialog.h \
+            src/api/GTDoubleSpinBox.h \
             src/api/GTFile.h \
+            src/api/GTFileDialog.h \
             src/api/GTGlobals.h \
+            src/api/GTGraphicsItem.h \
+            src/api/GTGroupBox.h \
             src/api/GTKeyboardDriver.h \
             src/api/GTKeyboardUtils.h \
             src/api/GTLineEdit.h \
+            src/api/GTListWidget.h \
             src/api/GTMenu.h \
             src/api/GTMenuBar.h \
             src/api/GTMouse.h \
             src/api/GTMouseDriver.h \
-            src/api/GTTextEdit.h \
             src/api/GTPlainTextEdit.h \
+            src/api/GTRadioButton.h \
             src/api/GTScrollBar.h \
-            src/api/GTSystem.h \
-            src/api/GTTreeWidget.h \
-            src/api/GTToolbar.h \
-            src/api/GTWidget.h \
-            src/api/GTAction.h \
-            src/api/GTDoubleSpinBox.h \
-            src/api/GTTableView.h  \
-            src/api/GTGraphicsItem.h \
-            src/api/GTTreeView.h \
-            src/api/GTListWidget.h \
             src/api/GTSlider.h \
-    src/runnables/ugene/corelibs/U2View/ov_assembly/ExportConsensusDialogFiller.h
+            src/api/GTSpinBox.h \
+            src/api/GTSystem.h \
+            src/api/GTTabBar.h \
+            src/api/GTTabWidget.h \
+            src/api/GTTableView.h  \
+            src/api/GTTextEdit.h \
+            src/api/GTToolbar.h \
+            src/api/GTTreeView.h \
+            src/api/GTTreeWidget.h \
+            src/api/GTWidget.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -325,16 +326,17 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.cpp \
 #   Runnables / UGENE / corelibs / U2View
-            src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
+            src/runnables/ugene/corelibs/U2View/ov_assembly/ExportConsensusDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_assembly/ExportCoverageDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/ExportHighlightedDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
             src/runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.cpp \
@@ -495,22 +497,23 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTSequenceReadingModeDialogUtils.cpp \
             src/api/GTBaseCompleter.cpp \
 #   Qt primitives
-            src/api/GTClipboard.cpp \
+            src/api/GTAction.cpp \
             src/api/GTCheckBox.cpp \
+            src/api/GTClipboard.cpp
             src/api/GTComboBox.cpp \
-            src/api/GTTabWidget.cpp \
-            src/api/GTTabBar.cpp \
-            src/api/GTSpinBox.cpp \
-            src/api/GTRadioButton.cpp \
-            src/api/GTFileDialog.cpp \
+            src/api/GTDoubleSpinBox.cpp \
             src/api/GTFile.cpp \
+            src/api/GTFileDialog.cpp \
             src/api/GTGlobals.cpp \
+            src/api/GTGraphicsItem.cpp \
+            src/api/GTGroupBox.cpp \
             src/api/GTKeyboardDriver.cpp \
             src/api/GTKeyboardDriverLinux.cpp \
             src/api/GTKeyboardDriverMac.cpp \
             src/api/GTKeyboardDriverWindows.cpp \
             src/api/GTKeyboardUtils.cpp \
             src/api/GTLineEdit.cpp \
+            src/api/GTListWidget.cpp \
             src/api/GTMenu.cpp \
             src/api/GTMenuBar.cpp \
             src/api/GTMouse.cpp \
@@ -518,18 +521,17 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTMouseDriverLinux.cpp \
             src/api/GTMouseDriverMac.cpp \
             src/api/GTMouseDriverWindows.cpp \
-            src/api/GTTextEdit.cpp \
             src/api/GTPlainTextEdit.cpp \
+            src/api/GTRadioButton.cpp \
             src/api/GTScrollBar.cpp \
-            src/api/GTSystem.cpp \
-            src/api/GTToolbar.cpp \
-            src/api/GTTreeWidget.cpp \
-            src/api/GTWidget.cpp \
-            src/api/GTAction.cpp \
-            src/api/GTDoubleSpinBox.cpp \
-            src/api/GTTableView.cpp \
-            src/api/GTGraphicsItem.cpp \
-            src/api/GTTreeView.cpp \
-            src/api/GTListWidget.cpp \
             src/api/GTSlider.cpp \
-    src/runnables/ugene/corelibs/U2View/ov_assembly/ExportConsensusDialogFiller.cpp
+            src/api/GTSpinBox.cpp \
+            src/api/GTSystem.cpp \
+            src/api/GTTabBar.cpp \
+            src/api/GTTabWidget.cpp \
+            src/api/GTTableView.cpp \
+            src/api/GTTextEdit.cpp \
+            src/api/GTToolbar.cpp \
+            src/api/GTTreeView.cpp \
+            src/api/GTTreeWidget.cpp \
+            src/api/GTWidget.cpp
