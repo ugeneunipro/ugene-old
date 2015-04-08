@@ -53,7 +53,7 @@ namespace{
 //////////////////////////////////////////////////////////////////////////
 //ConvertFileTask
 ConvertFileTask::ConvertFileTask(const GUrl &sourceURL, const QString &detectedFormat, const QString &targetFormat, const QString &workingDir)
-: Task(DocumentFormatUtils::tr("Conversion file from %1 to %2").arg(detectedFormat).arg(targetFormat), TaskFlags_FOSCOE),
+: Task(DocumentFormatUtils::tr("Conversion file from %1 to %2").arg(detectedFormat).arg(targetFormat), TaskFlags_FOSE_COSC),
     sourceURL(sourceURL), detectedFormat(detectedFormat), targetFormat(targetFormat), workingDir(workingDir)
 {
     if (!workingDir.endsWith("/") && !workingDir.endsWith("\\")) {
@@ -93,8 +93,8 @@ void DefaultConvertFileTask::prepare() {
 
 QList<Task*> DefaultConvertFileTask::onSubTaskFinished(Task *subTask) {
     QList<Task*> result;
-    CHECK(!subTask->hasError(), result);
-    CHECK(!hasError(), result);
+    CHECK(!subTask->hasError() && !subTask->isCanceled(), result);
+    CHECK(!hasError() && !isCanceled(), result);
 
     if (saveTask == subTask) {
         return result;

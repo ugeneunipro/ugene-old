@@ -63,6 +63,10 @@ void GenomeAlignerFindTask::prepare() {
     }
 }
 
+#define GA_WAIT(condition, mutex) \
+    condition.wait(&mutex);
+
+
 void GenomeAlignerFindTask::run() {
 
     // TODO: this is a fastfix of reopened https://ugene.unipro.ru/tracker/browse/UGENE-1190
@@ -81,25 +85,22 @@ void GenomeAlignerFindTask::run() {
         alignContext->readShortReadsWait.wait(&(alignContext->readingStatusMutex));
     }
 
-    alignContext->indexLock.lockForRead();
+    QReadLocker locker(&alignContext->indexLock);
     alignContext->needIndex = false;
     alignContext->loadIndexTaskWait.wakeOne();
-    alignContext->indexLock.unlock();
 }
 
 void LoadIndexTask::run() {
-
-    alignContext->indexLock.lockForWrite();
+    QWriteLocker locker(&alignContext->indexLock);
     while (true) {
-        CHECK_EXT(!isCanceled(), alignContext->indexLock.unlock(), );
+        CHECK(!isCanceled(), );
         if (!alignContext->needIndex) {
             alignContext->loadIndexTaskWait.wait(&alignContext->indexLock);
         }
-        CHECK_EXT(alignContext->needIndex, alignContext->indexLock.unlock(), );
+        CHECK(alignContext->needIndex, );
 
         taskLog.trace(QString("Going to load index part %1").arg(part + 1));
         if (!index->loadPart(part)) {
-            alignContext->indexLock.unlock();
             setError("Incorrect index file. Please, try to create a new index file.");
             return;
         }
@@ -110,24 +111,23 @@ void LoadIndexTask::run() {
         part = part >= index->getPartCount()-1 ? 0 : part+1;
         alignContext->requireIndexWait.wakeAll();
     }
-    alignContext->indexLock.unlock();
 }
 
 void GenomeAlignerFindTask::requirePartForAligning(int part) {
-    waitMutex.lock();
-    waiterCount++;
-    if (waiterCount != alignerTaskCount) {
-        waiter.wait(&waitMutex);
-    } else {
-        waiterCount = 0;
+    {
+        QMutexLocker locker(&waitMutex);
+        waiterCount++;
+        if (waiterCount != alignerTaskCount) {
+            waiter.wait(&waitMutex);
+        } else {
+            waiterCount = 0;
+        }
+        waiter.wakeOne();
     }
-    waiter.wakeOne();
-    waitMutex.unlock();
 
     QMutexLocker lock(&loadPartMutex);
-    alignContext->indexLock.lockForRead();
+    QReadLocker locker(&alignContext->indexLock);
     if (alignContext->indexLoaded == part) {
-        alignContext->indexLock.unlock();
         return;
     }
 
@@ -136,7 +136,6 @@ void GenomeAlignerFindTask::requirePartForAligning(int part) {
     alignContext->requireIndexWait.wait(&alignContext->indexLock);
 
     nextElementToGive = 0;
-    alignContext->indexLock.unlock();
 }
 
 DataBunch* GenomeAlignerFindTask::waitForDataBunch() {
@@ -208,6 +207,7 @@ void ShortReadAlignerCPU::run() {
             CHECK_OP(stateInfo, );
             DataBunch *dataBunch = parent->waitForDataBunch();
             GA_CHECK_BREAK(dataBunch);
+            CHECK_OP(stateInfo, );
             algoLog.trace(QString("[%1] Got for aligning").arg(taskNo));
 
             quint64 t0=0, fullStart = GTimer::currentTimeMicros();

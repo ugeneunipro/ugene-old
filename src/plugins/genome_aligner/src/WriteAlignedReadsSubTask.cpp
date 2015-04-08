@@ -41,13 +41,13 @@ void WriteAlignedReadsSubTask::setReadWritten(SearchQuery *read, SearchQuery *re
 
 void WriteAlignedReadsSubTask::run() {
     // ReadShortReadsSubTask can add new data what can lead to realloc. Noone can touch these vectors without sync
-    listM.lockForRead();
+    QReadLocker locker(&listM);
 
     stateInfo.setProgress(0);
 
     foreach(DataBunch* d, data) {
 
-        SAFE_POINT_EXT(NULL != d, listM.unlock(),);
+        SAFE_POINT(NULL != d, "NULL data bunch", );
 
         QVector<SearchQuery*> &queries = d->queries;
 
@@ -85,8 +85,6 @@ void WriteAlignedReadsSubTask::run() {
             setError(exeptionMessage);
         }
     }
-
-    listM.unlock();
 }
 
 } // U2
