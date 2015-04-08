@@ -783,8 +783,7 @@ const static QString IN_PORT_B_ID("input-annotations-b");
 const static QString OUT_PORT_ID("output-intersect-annotations");
 
 const static QString MIN_OVERLAP("minimum-overlap");
-const static QString REPORT_ABSENCE("report-absence");
-const static QString REPORT_FEATURES("return-features");
+const static QString REPORT("report");
 
 BedtoolsIntersectWorker::BedtoolsIntersectWorker(Actor *a)
     : BaseWorker(a, false),
@@ -853,8 +852,7 @@ Task* BedtoolsIntersectWorker::createTask() {
     BedtoolsIntersectByEntityRefSettings settings;
 
     settings.minOverlap = actor->getParameter(MIN_OVERLAP)->getAttributeValue<double>(context) / 100;
-    settings.reportAbsence = actor->getParameter(REPORT_ABSENCE)->getAttributeValue<bool>(context);
-    settings.reportFeatures = actor->getParameter(REPORT_FEATURES)->getAttributeValue<bool>(context);
+    settings.report = (BedtoolsIntersectSettings::Report) (actor->getParameter(REPORT)->getAttributeValue<int>(context));
 
     settings.entitiesA = getAnnotationsEntityRefFromMessages(storeA, IN_PORT_A_ID);
     settings.entitiesB = getAnnotationsEntityRefFromMessages(storeB, IN_PORT_B_ID);
@@ -917,22 +915,19 @@ void BedtoolsIntersectWorkerFactory::init() {
         Descriptor minOverlapDesc( MIN_OVERLAP,
                                    BedtoolsIntersectWorker::tr( "Minimum overlap"),
                                    BedtoolsIntersectWorker::tr( "Minimum overlap required as a fraction of A.") );
-        Descriptor reportAbsenceDesc( REPORT_ABSENCE,
-                                  BedtoolsIntersectWorker::tr("Report the absence of annotations"),
-                                  BedtoolsIntersectWorker::tr("Only report those entries in A that have no overlap in B.") );
-        Descriptor returnAnnotations ( REPORT_FEATURES,
-                                       BedtoolsIntersectWorker::tr("Report"),
-                                       BedtoolsIntersectWorker::tr("An interval between the two overlapping annotations or the annotation itself."));
 
-        attribs << new Attribute( reportAbsenceDesc, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(false) );
+        Descriptor reportDesc ( REPORT,
+                                BedtoolsIntersectWorker::tr("Report"),
+                                BedtoolsIntersectWorker::tr("Initital A annotations, that overlap B annotations, "
+                                                            "the intervals between the two overlapping annotations "
+                                                            "or report only those entries in A that have no overlap in B."));
+
+        attribs << new Attribute( reportDesc, BaseTypes::NUM_TYPE(), /*required*/ false, QVariant(BedtoolsIntersectSettings::Report_OverlapedA));
 
         Attribute* minOverlapAttr = new Attribute( minOverlapDesc, BaseTypes::NUM_TYPE(), /*required*/ false, QVariant(BedtoolsIntersectSettings::DEFAULT_MIN_OVERLAP * 100) );
-        minOverlapAttr->addRelation(new VisibilityRelation(REPORT_ABSENCE, QVariant(false)));
+        minOverlapAttr->addRelation(new VisibilityRelation(REPORT, QVariantList() << BedtoolsIntersectSettings::Report_Intervals
+                                                           << BedtoolsIntersectSettings::Report_OverlapedA));
         attribs << minOverlapAttr;
-
-        Attribute* reportAttr = new Attribute( returnAnnotations, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(true));
-        reportAttr->addRelation(new VisibilityRelation(REPORT_ABSENCE, QVariant(false)));
-        attribs << reportAttr;
     }
 
     QMap<QString, PropertyDelegate*> delegates;
@@ -944,12 +939,11 @@ void BedtoolsIntersectWorkerFactory::init() {
         spinMap["decimals"] = 7;
         delegates[MIN_OVERLAP] = new DoubleSpinBoxDelegate(spinMap);
 
-        delegates[REPORT_ABSENCE] = new ComboBoxWithBoolsDelegate();
-
         QVariantMap comboMap;
-        comboMap["Shared interval between the two overlapping annotations"] = false;
-        comboMap["Initital A annotations, that overlap B annotations"] = true;
-        delegates[REPORT_FEATURES] = new ComboBoxDelegate(comboMap);
+        comboMap["Shared interval between the two overlapping annotations"] = BedtoolsIntersectSettings::Report_Intervals;
+        comboMap["Initital A annotations, that overlap B annotations"] = BedtoolsIntersectSettings::Report_OverlapedA;
+        comboMap["Initital A annotations, that DO NOT overlap B annotations"] = BedtoolsIntersectSettings::Report_NonOverlappedA;
+        delegates[REPORT] = new ComboBoxDelegate(comboMap);
     }
 
     Descriptor desc( BedtoolsIntersectWorkerFactory::ACTOR_ID,
@@ -973,19 +967,20 @@ QString BedtoolsIntersectPrompter::composeRichDoc() {
                           .arg(a)
                           .arg(b));
 
-    bool reportAbsence = target->getParameter(REPORT_ABSENCE)->getAttributePureValue().toBool();
-    bool reportFeature = target->getParameter(REPORT_FEATURES)->getAttributePureValue().toBool();
-
-    if (reportAbsence) {
-        res.append( getHyperlink(REPORT_ABSENCE," <u>annotations from A set that have <b>no overlap</b> in B set</u>."));
-    } else {
-        if (!reportFeature) {
-            res.append(getHyperlink(REPORT_ABSENCE, " <u><b>shared intervals</b></u>."));
-        } else {
-            res.append(getHyperlink(REPORT_FEATURES, "<u>annotations from <b>A</b> that overlap annotations from <b>B</b></u>."));
-        }
+    BedtoolsIntersectSettings::Report r = (BedtoolsIntersectSettings::Report)target->getParameter(REPORT)->getAttributePureValue().toInt();
+    QString reportHyperlinkText;
+    switch (r) {
+    case BedtoolsIntersectSettings::Report_Intervals:
+        reportHyperlinkText = "shared intervals";
+        break;
+    case BedtoolsIntersectSettings::Report_OverlapedA:
+        reportHyperlinkText = "annotations from <b>A</b> that overlap annotations from <b>B</b>";
+        break;
+    case BedtoolsIntersectSettings::Report_NonOverlappedA:
+        reportHyperlinkText = "annotations from A set that have <b>no overlap</b> in B set.";
     }
 
+    res.append(getHyperlink(REPORT, "<u>" + reportHyperlinkText +"</u>"));
     return res;
 }
 

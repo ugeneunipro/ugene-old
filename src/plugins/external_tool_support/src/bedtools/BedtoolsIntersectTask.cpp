@@ -91,15 +91,17 @@ const QStringList BedtoolsIntersectTask::getParameters() const {
     res << "-a" << QFileInfo(settings.inputA).absoluteFilePath();
     res << "-b" << settings.inputB;
 
-    if (settings.reportAbsence) {
-        res << "-v";
-    } else {
+    switch (settings.report) {
+    case BedtoolsIntersectSettings::Report_OverlapedA:
         res << "-f" << QString::number(settings.minOverlap, 'g', 9);
-        if (settings.reportFeatures) {
-            res << "-wa";
-        }
+        res << "-wa";
+        break;
+    case BedtoolsIntersectSettings::Report_NonOverlappedA:
+        res << "-v";
+        break;
+    case BedtoolsIntersectSettings::Report_Intervals:
+        res << "-f" << QString::number(settings.minOverlap, 'g', 9);
     }
-
     return res;
 }
 
@@ -157,8 +159,7 @@ QList<Task*> BedtoolsIntersectAnnotationsByEntityTask::onSubTaskFinished(Task *s
 
         BedtoolsIntersectFilesSettings stngs(tmpUrlA, QStringList() << tmpUrlB, tmpUrlResult,
                                              settings.minOverlap,
-                                             settings.reportAbsence,
-                                             settings.reportFeatures);
+                                             settings.report);
         intersectTask = new BedtoolsIntersectTask(stngs);
         res << intersectTask;
     }

@@ -34,15 +34,19 @@ class BedtoolsIntersectSettings {
 public:
     static const double DEFAULT_MIN_OVERLAP;
 
-    BedtoolsIntersectSettings(double minOverlap = DEFAULT_MIN_OVERLAP, bool reportAbsence = false, bool reportFeatures = false)
+    enum Report {
+        Report_OverlapedA = 0,      // -wa
+        Report_NonOverlappedA = 1,  // -v
+        Report_Intervals = 2
+    };
+
+    BedtoolsIntersectSettings(double minOverlap = DEFAULT_MIN_OVERLAP, Report r = Report_OverlapedA)
         : minOverlap(minOverlap),
-          reportAbsence(reportAbsence),
-          reportFeatures(reportFeatures)
+          report(r)
     {}
 
-    double  minOverlap;     // -f, (0..1]
-    bool    reportAbsence;  // -v
-    bool    reportFeatures; // -wa
+    double  minOverlap;     // -f (0..1]
+    Report report;
 };
 
 class AnnotationTableObject;
@@ -53,8 +57,8 @@ public:
         : BedtoolsIntersectSettings() {}
 
     BedtoolsIntersectByEntityRefSettings(const QList<U2EntityRef>& entityA, const QList<U2EntityRef>& entityB,
-                                         double minOverlap = DEFAULT_MIN_OVERLAP, bool reportAbsence = false, bool reportFeatures = false)
-        : BedtoolsIntersectSettings(minOverlap, reportAbsence, reportFeatures),
+                                         double minOverlap = DEFAULT_MIN_OVERLAP, Report r = Report_OverlapedA)
+        : BedtoolsIntersectSettings(minOverlap, r),
           entitiesA(entityA),
           entitiesB(entityB) {}
 
@@ -65,8 +69,8 @@ public:
 class BedtoolsIntersectFilesSettings : public BedtoolsIntersectSettings {
 public:
     BedtoolsIntersectFilesSettings(const QString &inputA, const QStringList &inputB, const QString &output,
-                              double minOverlap = DEFAULT_MIN_OVERLAP, bool reportAbsence = false, bool reportFeatures = false)
-        : BedtoolsIntersectSettings(minOverlap, reportAbsence, reportFeatures),
+                              double minOverlap = DEFAULT_MIN_OVERLAP, Report r = Report_OverlapedA)
+        : BedtoolsIntersectSettings(minOverlap, r),
           inputA(inputA),
           inputB(inputB),
           out(output) {}
