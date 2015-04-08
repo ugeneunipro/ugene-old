@@ -76,6 +76,9 @@ void GenomeAlignerFindTask::run() {
 
     // Wait while ReadShortReadsSubTask finished reading.
     while (true) {
+        if (isCanceled()) {
+            break;
+        }
         QMutexLocker(&(alignContext->readingStatusMutex));
         bool isReadingStarted = alignContext->isReadingStarted;
         bool isReadingFinished = alignContext->isReadingFinished;
