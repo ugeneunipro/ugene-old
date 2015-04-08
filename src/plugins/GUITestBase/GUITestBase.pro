@@ -499,7 +499,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Qt primitives
             src/api/GTAction.cpp \
             src/api/GTCheckBox.cpp \
-            src/api/GTClipboard.cpp
+            src/api/GTClipboard.cpp \
             src/api/GTComboBox.cpp \
             src/api/GTDoubleSpinBox.cpp \
             src/api/GTFile.cpp \
