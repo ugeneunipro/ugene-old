@@ -86,7 +86,7 @@ void MysqlUpgraderFrom_1_15_To_1_16::upgradeFeatureDbi(U2OpStatus &os, MysqlDbRe
             guessedFeatureType = GBFeatureUtils::getKeyInfo(GBFeatureUtils::getKey(feature.name)).type;
         }
 
-        U2FeatureUtils::updateFeatureType(feature.id, U2Feature::Annotation, guessedFeatureType, dbi->getDbiRef(), os);
+        U2FeatureUtils::updateFeatureType(feature.id, guessedFeatureType, dbi->getDbiRef(), os);
         CHECK_OP(os, );
     }
 

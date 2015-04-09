@@ -67,7 +67,7 @@ public:
     /**
      * Removes feature, its children from db
      */
-    static void                     removeFeature(const U2DataId &featureId, U2Feature::FeatureClass featureClass, const U2DbiRef &dbiRef, U2OpStatus &os);
+    static void                     removeFeature(const U2DataId &featureId, const U2DbiRef &dbiRef, U2OpStatus &os);
     /**
      * Replaces parent feature reference with @newParentId for the feature having @featureId
      */
@@ -75,13 +75,11 @@ public:
     /**
      * For the feature having @featureId the method replaces its type with @newType
      */
-    static void                     updateFeatureType(const U2DataId &featureId, U2Feature::FeatureClass featureClass, U2FeatureType newType,
-                                        const U2DbiRef &dbiRef, U2OpStatus &os);
+    static void                     updateFeatureType(const U2DataId &featureId, U2FeatureType newType, const U2DbiRef &dbiRef, U2OpStatus &os);
     /**
      * For the feature having @featureId the method replaces its name with @newName
      */
-    static void                     updateFeatureName(const U2DataId &featureId, U2Feature::FeatureClass featureClass, const QString &newName,
-                                        const U2DbiRef &dbiRef, U2OpStatus &os);
+    static void                     updateFeatureName(const U2DataId &featureId, const QString &newName, const U2DbiRef &dbiRef, U2OpStatus &os);
     /**
      * Sets @location for a feature having @featureId.
      * The feature is to represent an annotation
@@ -113,7 +111,7 @@ public:
     /**
      * Returns feature based on the DB content corresponding to the given @id
      */
-    static U2Feature                getFeatureById(const U2DataId &id, U2Feature::FeatureClass featureClass, const U2DbiRef &dbiRef, U2OpStatus &op);
+    static U2Feature                getFeatureById(const U2DataId &id, const U2DbiRef &dbiRef, U2OpStatus &op);
     /**
      * Returns list of all child features representing annotations for parent feature with given id.
      * Parent is to represent annotation group.

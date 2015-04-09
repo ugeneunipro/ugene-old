@@ -1190,12 +1190,11 @@ GUI_TEST_CLASS_DEFINITION(test_0835) {
 
     //2. Open the sequence objects in one Sequence View.
     //= > Both sequences are shown in one Sequence View.
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363"));
-    GTMouseDriver::press(os);
-    GTGlobals::sleep(100);
-    QWidget *seqView = GTUtilsSequenceView::getSeqWidgetByNumber(os);
-    GTMouseDriver::moveTo(os, seqView->mapToGlobal(seqView->rect().center()));
-    GTMouseDriver::release(os);
+    QModelIndex idx = GTUtilsProjectTreeView::findIndex(os, "NC_001363");
+    QWidget* seqView = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(seqView != NULL, "Sequence widget not found");
+
+    GTUtilsProjectTreeView::dragAndDrop(os, idx, seqView);
 
     //3. Enable Circular View for one of the sequences(for example, "murine.gb").
     //= > The Circular View with the Restriction Site Map is shown.
@@ -2390,7 +2389,7 @@ GUI_TEST_CLASS_DEFINITION(test_0999_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_1000) {
 //    1. Open "data/samples/3INS.PDB".
-    GTFileDialog::openFile(os, "data/samples/PDB/3INS.PDB");
+    GTFileDialog::openFile(os, dataDir + "samples/PDB/3INS.PDB");
 
 //    2. In the context menu of the first sequence in sequence view choose {Analize -> Predict secondary structure...}.
 //    Expected state: "Secondary structure prediction" dialog is opened.

@@ -168,7 +168,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_0779);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_0801);
-    REGISTER_TEST(GUITest_regression_scenarios::test_0807);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_0807, "https://local.ugene.unipro.ru/tracker/browse/UGENE-4229");
     REGISTER_TEST(GUITest_regression_scenarios::test_0812);
     REGISTER_TEST(GUITest_regression_scenarios::test_0814);
     REGISTER_TEST(GUITest_regression_scenarios::test_0818);
@@ -1096,7 +1096,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0006);
-    REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0007);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_edit::test_0007, "https://local.ugene.unipro.ru/tracker/browse/UGENE-4230");
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0009);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0010);

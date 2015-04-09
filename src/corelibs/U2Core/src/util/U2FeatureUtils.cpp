@@ -141,7 +141,7 @@ void addFeatureKeyToAnnotation(const U2FeatureKey &key, SharedAnnotationData &aD
 
 }
 
-void U2FeatureUtils::removeFeature(const U2DataId &featureId, U2Feature::FeatureClass featureClass, const U2DbiRef &dbiRef, U2OpStatus &os) {
+void U2FeatureUtils::removeFeature(const U2DataId &featureId, const U2DbiRef &dbiRef, U2OpStatus &os) {
     SAFE_POINT(!featureId.isEmpty(), "Invalid feature detected!", );
     SAFE_POINT(dbiRef.isValid(), "Invalid DBI reference detected!", );
 
@@ -238,9 +238,7 @@ void U2FeatureUtils::updateFeatureParent(const U2DataId &featureId, const U2Data
     CHECK_OP(os, );
 }
 
-void U2FeatureUtils::updateFeatureType(const U2DataId &featureId, U2Feature::FeatureClass featureClass,
-    U2FeatureType newType, const U2DbiRef &dbiRef, U2OpStatus &os)
-{
+void U2FeatureUtils::updateFeatureType(const U2DataId &featureId, U2FeatureType newType, const U2DbiRef &dbiRef, U2OpStatus &os) {
     SAFE_POINT(!featureId.isEmpty(), "Invalid feature ID detected!", );
 
     DbiConnection connection(dbiRef, os);
@@ -251,9 +249,7 @@ void U2FeatureUtils::updateFeatureType(const U2DataId &featureId, U2Feature::Fea
     fDbi->updateType(featureId, newType, os);
 }
 
-void U2FeatureUtils::updateFeatureName(const U2DataId &featureId, U2Feature::FeatureClass featureClass, const QString &newName,
-    const U2DbiRef &dbiRef, U2OpStatus &os)
-{
+void U2FeatureUtils::updateFeatureName(const U2DataId &featureId, const QString &newName, const U2DbiRef &dbiRef, U2OpStatus &os) {
     SAFE_POINT(!featureId.isEmpty(), "Invalid feature ID detected!", );
     SAFE_POINT(!newName.isEmpty(), "Attempting to set an empty name for a feature!", );
 
@@ -460,7 +456,7 @@ QList<U2Feature> U2FeatureUtils::getFeaturesByRoot(const U2DataId &rootFeatureId
     return result;
 }
 
-U2Feature U2FeatureUtils::getFeatureById(const U2DataId &id, U2Feature::FeatureClass featureClass, const U2DbiRef &dbiRef, U2OpStatus &op) {
+U2Feature U2FeatureUtils::getFeatureById(const U2DataId &id, const U2DbiRef &dbiRef, U2OpStatus &op) {
     U2Feature result;
     SAFE_POINT(!id.isEmpty(), "Invalid feature ID detected!", result);
     SAFE_POINT(dbiRef.isValid(), "Invalid DBI reference detected!", result);

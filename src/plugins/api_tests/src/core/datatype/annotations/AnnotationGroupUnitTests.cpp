@@ -68,7 +68,7 @@ IMPLEMENT_TEST(AnnotationGroupUnitTest, get_IdObject) {
     foreach (AnnotationGroup *subgroup, subgroups) {
         CHECK_TRUE(&ft == subgroup->getGObject(), "Unexpected parent object");
         U2OpStatusImpl os;
-        const U2Feature f = U2FeatureUtils::getFeatureById(subgroup->id, U2Feature::Group, dbiRef, os);
+        const U2Feature f = U2FeatureUtils::getFeatureById(subgroup->id, dbiRef, os);
         CHECK_NO_ERROR(os);
         if ("subgroup1" == f.name) {
             groupMatches.setBit(0, true);
@@ -141,7 +141,7 @@ IMPLEMENT_TEST(AnnotationGroupUnitTest, groupHierarchy) {
         CHECK_EQUAL(2, subgroup->getGroupDepth(), "Subgroup's depth");
 
         U2OpStatusImpl os;
-        const U2Feature f = U2FeatureUtils::getFeatureById(subgroup->id, U2Feature::Group, dbiRef, os);
+        const U2Feature f = U2FeatureUtils::getFeatureById(subgroup->id, dbiRef, os);
         CHECK_NO_ERROR(os);
         AnnotationGroup *secondLevelSubgroup = subgroup;
         if ("subgroup1" == f.name) {

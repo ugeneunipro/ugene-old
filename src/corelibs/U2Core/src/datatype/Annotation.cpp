@@ -73,7 +73,7 @@ void Annotation::setName(const QString &name) {
     CHECK(name != data->name, );
 
     U2OpStatusImpl os;
-    U2FeatureUtils::updateFeatureName(id, U2Feature::Annotation, name, parentObject->getEntityRef().dbiRef, os);
+    U2FeatureUtils::updateFeatureName(id, name, parentObject->getEntityRef().dbiRef, os);
     SAFE_POINT_OP(os,);
 
     data->name = name;

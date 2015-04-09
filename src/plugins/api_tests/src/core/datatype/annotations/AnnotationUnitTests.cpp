@@ -76,7 +76,7 @@ IMPLEMENT_TEST(AnnotationUnitTest, get_IdObjectData) {
     CHECK_TRUE(&ft == annotation->getGObject(), "Unexpected value of annotation's parent object");
 
     U2OpStatusImpl os;
-    const U2Feature feature = U2FeatureUtils::getFeatureById(annotation->id, U2Feature::Annotation, dbiRef, os);
+    const U2Feature feature = U2FeatureUtils::getFeatureById(annotation->id, dbiRef, os);
     CHECK_EQUAL(U2Region(), feature.location.region, "Annotation's region");
     CHECK_TRUE(feature.location.strand.isDirect(), "Annotation has to belong to direct strand");
 

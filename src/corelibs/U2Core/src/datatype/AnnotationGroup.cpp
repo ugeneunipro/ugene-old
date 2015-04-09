@@ -151,7 +151,7 @@ void AnnotationGroup::removeAnnotations(const QList<Annotation *> &anns) {
         SAFE_POINT(NULL != a && a->getGroup() == this, "Unexpected annotation group", );
 
         U2OpStatusImpl os;
-        U2FeatureUtils::removeFeature(a->id, U2Feature::Annotation, parentObject->getEntityRef().dbiRef, os);
+        U2FeatureUtils::removeFeature(a->id, parentObject->getEntityRef().dbiRef, os);
         SAFE_POINT_OP(os, );
         annotations.removeOne(a);
         delete a;
@@ -172,7 +172,7 @@ void AnnotationGroup::removeSubgroup(AnnotationGroup *g) {
     g->clear();
 
     U2OpStatusImpl os;
-    U2FeatureUtils::removeFeature(g->id, U2Feature::Group, parentObject->getEntityRef().dbiRef, os);
+    U2FeatureUtils::removeFeature(g->id, parentObject->getEntityRef().dbiRef, os);
     SAFE_POINT_OP(os, );
 
     subgroups.removeOne(g);
@@ -190,7 +190,7 @@ void AnnotationGroup::setName(const QString &newName) {
     CHECK(name != newName, );
 
     U2OpStatusImpl os;
-    U2FeatureUtils::updateFeatureName(id, U2Feature::Group, newName, parentObject->getEntityRef().dbiRef, os);
+    U2FeatureUtils::updateFeatureName(id, newName, parentObject->getEntityRef().dbiRef, os);
     SAFE_POINT_OP(os, );
 
     name = newName;
