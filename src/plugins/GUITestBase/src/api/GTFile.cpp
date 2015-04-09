@@ -395,6 +395,17 @@ void GTFile::create(U2OpStatus &os, const QString &filePath) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "readAll"
+QByteArray GTFile::readAll(U2OpStatus &os, const QString &filePath) {
+    Q_UNUSED(os);
+    QFile file(filePath);
+    const bool opened = file.open(QFile::ReadOnly);
+    GT_CHECK_RESULT(opened, "Can't open file for read", "");
+
+    return file.readAll();
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 } //namespace

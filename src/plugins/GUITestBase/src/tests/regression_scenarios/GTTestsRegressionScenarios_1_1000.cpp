@@ -1337,6 +1337,29 @@ GUI_TEST_CLASS_DEFINITION(test_0844) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0846) {
+//    1. Open "samples/human_t1".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+
+//    2. Add any annotations;
+    GTUtilsAnnotationsTreeView::createAnnotation(os, "", "", "1..100");
+
+//    3. Use popup menu {Export->Export annotations}
+//    4. Chose "csv" in combobox "File format"
+//    5. Click checkbox "Save sequence names"
+//    6. Click "OK"
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Export annotations...", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ExportAnnotationsFiller(os, sandBoxDir + "test_0846.csv", ExportAnnotationsFiller::csv));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: Annotations with sequence names were saved
+    const QString data = GTFile::readAll(os, sandBoxDir + "test_0846.csv");
+    const QString expectedSubstring = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
+    CHECK_SET_ERR(data.contains(expectedSubstring), "Sequence name not found in the result file");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0854) {
 /* 1. Open samples/genbank/PBR322.gb.
  * 2. Export the sequence into alignment using context menu in project tab.
@@ -1596,38 +1619,6 @@ GUI_TEST_CLASS_DEFINITION(test_0886) {
 
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0908) {
-    //1) Open WD
-    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-
-    //2) Click "Create element with command line tool"
-    //3) input name "test"
-    //4) input data : "in1" and "in2" of FASTA
-    //5) output data : "out1" of FASTA
-    //6) Execution string : "cmd /c copy $in1 $out1 | copy $in2 $out1"
-    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/908/test.etc"));
-    GTWidget::click(os, GTAction::button(os, "AddElementWithCommandLineTool"));
-
-    //7) Add input and output readers of FASTA
-    GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
-    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta", "AMINO.fa");
-
-    GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
-    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta", "alphabet.fa");
-
-    WorkflowProcessItem* writer = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
-
-    WorkflowProcessItem *cmdlineWorker = GTUtilsWorkflowDesigner::getWorker(os, "test");
-
-    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), cmdlineWorker);
-    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence 1"), cmdlineWorker);
-    GTUtilsWorkflowDesigner::connect(os, cmdlineWorker, writer);
-
-    //8) Run schema
-    //Expected state : UGENE not crashed
-    GTUtilsWorkflowDesigner::runWorkflow(os);
-}
-
 GUI_TEST_CLASS_DEFINITION(test_0888) {
 //    1. Open WD sampel scheme "Convert seq/qual pair to Fastq"
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
@@ -1795,6 +1786,38 @@ GUI_TEST_CLASS_DEFINITION(test_0899){
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export consensus..."));
     GTWidget::click(os, GTWidget::findWidget(os, "Consensus area"), Qt::RightButton);
     GTUtilsProjectTreeView::checkItem(os, "chrM_consensus.gb");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0908) {
+    //1) Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    //2) Click "Create element with command line tool"
+    //3) input name "test"
+    //4) input data : "in1" and "in2" of FASTA
+    //5) output data : "out1" of FASTA
+    //6) Execution string : "cmd /c copy $in1 $out1 | copy $in2 $out1"
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/908/test.etc"));
+    GTWidget::click(os, GTAction::button(os, "AddElementWithCommandLineTool"));
+
+    //7) Add input and output readers of FASTA
+    GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta", "AMINO.fa");
+
+    GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta", "alphabet.fa");
+
+    WorkflowProcessItem* writer = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+
+    WorkflowProcessItem *cmdlineWorker = GTUtilsWorkflowDesigner::getWorker(os, "test");
+
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), cmdlineWorker);
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence 1"), cmdlineWorker);
+    GTUtilsWorkflowDesigner::connect(os, cmdlineWorker, writer);
+
+    //8) Run schema
+    //Expected state : UGENE not crashed
+    GTUtilsWorkflowDesigner::runWorkflow(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0910) {

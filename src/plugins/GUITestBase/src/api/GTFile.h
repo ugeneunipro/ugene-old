@@ -75,6 +75,8 @@ public:
     // creates a new empty file, rewrite the file if it already exists
     static void create(U2OpStatus &os, const QString &filePath);
 
+    static QByteArray readAll(U2OpStatus &os, const QString &filePath);
+
     static const QString backupPostfix;
 };
 
