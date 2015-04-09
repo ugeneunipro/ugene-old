@@ -287,7 +287,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
@@ -296,9 +296,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep();
 
-    GTGlobals::sleep();
-
-    QTreeWidgetItem *qual1 = GTUtilsAnnotationsTreeView::findItem(os, "qual1", false);
+    QTreeWidgetItem *qual1 = GTUtilsAnnotationsTreeView::findItem(os, "qual1", GTGlobals::FindOptions(false));
     CHECK_SET_ERR(qual1 == NULL, "There is annotation qual1, expected state there is no annotation qual1");
 
 }
@@ -307,7 +305,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
@@ -318,7 +316,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
 
     GTGlobals::sleep();
 
-    QTreeWidgetItem *qual = GTUtilsAnnotationsTreeView::findItem(os, "qual", false);
+    QTreeWidgetItem *qual = GTUtilsAnnotationsTreeView::findItem(os, "qual", GTGlobals::FindOptions(false));
     CHECK_SET_ERR(qual == NULL, "There is annotation qual1, expected state there is no annotation qual");
 
 }

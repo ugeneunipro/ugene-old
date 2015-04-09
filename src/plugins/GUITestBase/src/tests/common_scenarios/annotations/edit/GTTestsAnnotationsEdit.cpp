@@ -527,7 +527,6 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTGlobals::sleep();
     //4. CHECK if new gb-format document is loaded into the annotation editor
     //4.1 CHECK if it contains group "group" with annotation "misc_feature" in it
-    //TODO: 4.2 CHECK if "group" subgroups/annotations counter displays (0,1)
     GTGlobals::sleep();
     GTUtilsAnnotationsTreeView::findItem(os, "group  (0, 1)");
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
@@ -538,8 +537,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Delete"]);
     GTGlobals::sleep();
     //6. CHECK if misc_feature annotation is removed
-    //TODO: 6.1 CHECK if "group" subgroups/annotations counter displays (0,0)
-    GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", false);
+    GTUtilsAnnotationsTreeView::findItem(os, "group  (0, 0)");
+    GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", GTGlobals::FindOptions(false));
     GTGlobals::sleep();
 
 }
@@ -648,8 +647,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
 
     //6. CHECK if misc_feature annotation is removed
     //TODO: 6.1 CHECK if "group" subgroups/annotations counter displays (0,0)
-    GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", false);
-    GTUtilsAnnotationsTreeView::findItem(os, "misc_feature_1", false);
+    GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", GTGlobals::FindOptions(false));
+    GTUtilsAnnotationsTreeView::findItem(os, "misc_feature_1", GTGlobals::FindOptions(false));
     GTGlobals::sleep();
 
 }

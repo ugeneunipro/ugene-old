@@ -1175,6 +1175,7 @@ GUI_TEST_CLASS_DEFINITION(test_1065_2) {
     GTGlobals::sleep();
 
     GTUtilsLog::check(os, l);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1065_3) {

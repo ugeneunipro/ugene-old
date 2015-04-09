@@ -726,6 +726,36 @@ GUI_TEST_CLASS_DEFINITION( test_2049 ){
     CHECK_SET_ERR(ititHeight != finalHeight, "codone table not changed");
     }
 
+GUI_TEST_CLASS_DEFINITION( test_2053 ){
+//    1. Remove UGENE .ini file
+//    2. Run UGENE
+//    3. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    4. Run some scheme
+    WorkflowProcessItem * read = GTUtilsWorkflowDesigner::addElement(os, "Read Alignment");
+    WorkflowProcessItem * write = GTUtilsWorkflowDesigner::addElement(os, "Write Alignment");
+    GTUtilsWorkflowDesigner::connect(os, read, write);
+    GTUtilsWorkflowDesigner::click(os, "Read Alignment");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+//    Expected state: after scheme finish there is the hint on the dashboard -
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+    QWebElement button = GTUtilsDashboard::findElement(os, "OK, got it!", "BUTTON");
+//    "You can always open the original workflow for your results by clicking on this button."
+    GTUtilsDashboard::click(os, button);
+    GTUtilsDashboard::traceAllWebElements(os);
+//    5. Press the "OK, got it!" button
+
+//    6. Close UGENE then reopen it
+
+//    7. Open WD
+
+//    8. Press the "Go to Dashboard" button
+
+//    Expected state: dashboard view has opened, no hint has appeared
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2070 ){
     GTLogTracer lt;
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "Q9IGQ6", 7));
@@ -781,8 +811,8 @@ GUI_TEST_CLASS_DEFINITION( test_2078 ){
     //    1. Go to the WD samples. Double click on the Chip-Seq WD sample.
         GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     //    Expexted: setup dialog appears.
-        GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Pipeline", QStringList()<<
-                                                                       "Treatment tags only"));
+        GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Workflow", QStringList()<<
+                                                                       "Only treatment tags"));
 
         class customWizard : public CustomScenario {
         public:
@@ -792,6 +822,7 @@ GUI_TEST_CLASS_DEFINITION( test_2078 ){
                 QWizard* wizard = qobject_cast<QWizard*>(dialog);
                 CHECK_SET_ERR(wizard, "activeModalWidget is not wizard");
 
+                GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
                 GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
                 GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
                 GTUtilsWizard::clickButton(os, GTUtilsWizard::Next);
@@ -4650,7 +4681,7 @@ GUI_TEST_CLASS_DEFINITION(test_2721){
             GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
         }
     };
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Pipeline", new custom()));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Workflow", new custom()));
     GTUtilsWorkflowDesigner::addSample(os, "Cistrome");
 }
 

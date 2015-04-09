@@ -126,8 +126,10 @@ QString GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, int number) {
 
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os));
     GTKeyboardUtils::selectAll(os);
-    GTKeyboardUtils::copy(os);
-    return GTClipboard::text(os);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY << "Copy sequence"));
+    GTWidget::click(os, getSeqWidgetByNumber(os, number), Qt::RightButton);
+    QString result = GTClipboard::text(os);
+    return result;
 }
 #undef GT_METHOD_NAME
 
