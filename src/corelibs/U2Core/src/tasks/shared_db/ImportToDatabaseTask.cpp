@@ -34,6 +34,7 @@ namespace U2 {
 ImportToDatabaseTask::ImportToDatabaseTask(QList<U2::Task *> tasks, int maxParallelSubtasks) :
     MultiTask(tr("Import to the database"), tasks, false, TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled | TaskFlag_PropagateSubtaskDesc)
 {
+    GCOUNTER(cvar, tvar, "ImportToDatabaseTask");
     setMaxParallelSubtasks(maxParallelSubtasks);
     startTime = GTimer::currentTimeMicros();
 }

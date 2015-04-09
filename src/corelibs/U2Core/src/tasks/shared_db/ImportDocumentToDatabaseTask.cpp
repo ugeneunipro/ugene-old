@@ -37,6 +37,7 @@ ImportDocumentToDatabaseTask::ImportDocumentToDatabaseTask(Document* document, c
     dstFolder(dstFolder),
     options(options)
 {
+    GCOUNTER(cvar, tvar, "ImportDocumentToDatabaseTask");
     CHECK_EXT(NULL != document, setError(tr("Invalid document to import")), );
     CHECK_EXT(dstDbiRef.isValid(), setError(tr("Invalid database reference")), );
 

@@ -37,6 +37,7 @@ ImportObjectToDatabaseTask::ImportObjectToDatabaseTask(GObject* object, const U2
     dstFolder(dstFolder),
     dstObject(NULL)
 {
+    GCOUNTER(cvar, tvar, "ImportObjectToDatabaseTask");
     CHECK_EXT(NULL != object, setError(tr("Invalid object to import")), );
     CHECK_EXT(dstDbiRef.isValid(), setError(tr("Invalid database reference")), );
     tpm = Progress_Manual;

@@ -38,6 +38,7 @@ ImportDirToDatabaseTask::ImportDirToDatabaseTask(const QString &srcUrl, const U2
     dstFolder(dstFolder),
     options(options)
 {
+    GCOUNTER(cvar, tvar, "ImportDirToDatabaseTask");
     CHECK_EXT(QFileInfo(srcUrl).isDir(), setError(tr("It is not a directory: ") + srcUrl), );
     CHECK_EXT(dstDbiRef.isValid(), setError(tr("Invalid database reference")), );
 
