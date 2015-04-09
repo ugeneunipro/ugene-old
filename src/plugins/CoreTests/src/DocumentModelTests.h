@@ -206,7 +206,6 @@ class GTest_CompareFiles : public GTest {
     ReportResult report();
 
 private:
-    void replacePrefix(QString &path);
     void compareMixed();
     QByteArray getLine(IOAdapter* io);
     IOAdapter* createIoAdapter(const QString& filePath);

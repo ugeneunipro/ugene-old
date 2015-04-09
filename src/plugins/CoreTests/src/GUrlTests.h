@@ -114,6 +114,31 @@ private:
     bool exists;
 };
 
+class GTest_CheckCreationTime : public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckCreationTime, "check-creation-time");
+
+    ReportResult report();
+
+private:
+    QString url;
+    int lessThen;
+    int moreThen;
+};
+
+class GTest_CheckFilesNum : public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckFilesNum, "check-files-num");
+
+    ReportResult report();
+
+private:
+    QString folder;
+    int expectedNum;
+};
+
 class GUrlTests {
 public:
     static QList<XMLTestFactory*> createTestFactories();

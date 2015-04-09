@@ -213,6 +213,116 @@ bool GTest_CheckStorageFile::findRecursive(const QString& currentDirUrl) {
     return false;
 }
 
+/************************************************************************/
+/* GTest_CheckCreationTime */
+/************************************************************************/
+#define URL_ATTR "url"
+#define LESS_ATTR "lessThen"
+#define MORE_ATTR "moreThen"
+void GTest_CheckCreationTime::init(XMLTestFormat *tf, const QDomElement &el){
+    Q_UNUSED(tf)
+    url = el.attribute(URL_ATTR);
+    XMLTestUtils::replacePrefix(env, url);
+
+    QString lessThen_string = el.attribute(LESS_ATTR);
+    QString moreThen_string = el.attribute(MORE_ATTR);
+    if(lessThen_string.isEmpty() && moreThen_string.isEmpty()){
+        setError("lessThen or moreThen tag should be set, but neither was set");
+        return;
+    }
+    if(!lessThen_string.isEmpty() && !moreThen_string.isEmpty()){
+        setError("lessThen or moreThen tag should be set, but both were set");
+        return;
+    }
+
+    int lessThen_int = -1;
+    int moreThen_int = -1;
+    if(!lessThen_string.isEmpty()){
+        bool ok;
+        lessThen_int = lessThen_string.toInt(&ok);
+        if(!ok){
+            setError("lessThen tag is not a number");
+            return;
+        }
+    }
+    if(!moreThen_string.isEmpty()){
+        bool ok;
+        moreThen_int = moreThen_string.toInt(&ok);
+        if(!ok){
+            setError("moreThen tag is not a number");
+            return;
+        }
+    }
+    lessThen = lessThen_int;
+    moreThen = moreThen_int;
+}
+
+Task::ReportResult GTest_CheckCreationTime::report(){
+
+    QFile f(url);
+    if(!f.exists()){
+        setError("file " + url + " not found");
+        return Task::ReportResult_Finished;
+    }
+
+    QFileInfo info(f);
+    QDateTime created = info.created();
+    QDateTime now = QDateTime::currentDateTime();
+    int seconds = created.secsTo(now);
+
+    if(lessThen != -1){
+        if(seconds>lessThen){
+            setError(QString("time is more then expected: %1").arg(seconds));
+            return Task::ReportResult_Finished;
+        }
+    }
+    if(moreThen != -1){
+        if(seconds<moreThen){
+            setError(QString("time is less then expected: %1").arg(seconds));
+            return Task::ReportResult_Finished;
+        }
+    }
+    return Task::ReportResult_Finished;
+}
+
+/************************************************************************/
+/* GTest_CheckFilesNum */
+/************************************************************************/
+#define FOLDER_ATTR "folder"
+#define EXP_NUM "expected"
+void GTest_CheckFilesNum::init(XMLTestFormat *tf, const QDomElement &el){
+    Q_UNUSED(tf)
+    folder = el.attribute(FOLDER_ATTR);
+    QString num_string = el.attribute(EXP_NUM);
+    if(num_string.isEmpty()){
+        setError("<expected> tag should be set");
+        return;
+    }
+    bool ok;
+    expectedNum = num_string.toInt(&ok);
+    if(!ok){
+        setError("<expected> tab sould be integer");
+    }
+
+}
+
+Task::ReportResult GTest_CheckFilesNum::report(){
+    XMLTestUtils::replacePrefix(env, folder);
+    QDir d(folder);
+    if(!d.exists()){
+        setError("file " + d.absolutePath());
+        return Task::ReportResult_Finished;
+    }
+
+    QFileInfoList list = d.entryInfoList();
+    int actualNum = list.size();
+    if(actualNum != expectedNum){
+        setError(QString("Unexpected files number: %1").arg(actualNum));
+        return Task::ReportResult_Finished;
+    }
+    return Task::ReportResult_Finished;
+}
+
 /*******************************
 * GUrlTests
 *******************************/
@@ -225,6 +335,8 @@ QList<XMLTestFactory*> GUrlTests::createTestFactories() {
     res.append(GTest_CreateTmpFile::createFactory());
     res.append(GTest_CheckTmpFile::createFactory());
     res.append(GTest_CheckStorageFile::createFactory());
+    res.append(GTest_CheckCreationTime::createFactory());
+    res.append(GTest_CheckFilesNum::createFactory());
     return res;
 }
 

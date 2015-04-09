@@ -38,8 +38,8 @@ const QString GTest_CopyFile::TO_URL_ATTR ="to";
 void GTest_CopyFile::init(XMLTestFormat *, const QDomElement &el) {
     fromUrl = el.attribute(FROM_URL_ATTR);
     toUrl = el.attribute(TO_URL_ATTR);
-    replacePrefix(fromUrl);
-    replacePrefix(toUrl);
+    XMLTestUtils::replacePrefix(env, fromUrl);
+    XMLTestUtils::replacePrefix(env, toUrl);
 }
 
 Task::ReportResult GTest_CopyFile::report() {
@@ -48,48 +48,6 @@ Task::ReportResult GTest_CopyFile::report() {
         stateInfo.setError(tr("Can't copy file '%1' to '%2'.").arg(fromUrl).arg(toUrl));
     }
     return ReportResult_Finished;
-}
-
-void GTest_CopyFile::replacePrefix(QString &path) {
-    QString result;
-
-    const QString EXPECTED_OUTPUT_DIR_PREFIX = "!expected!";
-    const QString TMP_DATA_DIR_PREFIX = "!tmp_data_dir!";
-    const QString COMMON_DATA_DIR_PREFIX = "!common_data_dir!";
-
-    // Determine which environment variable is required
-    QString envVarName;
-    QString prefix;
-    if (path.startsWith(EXPECTED_OUTPUT_DIR_PREFIX)) {
-        envVarName = "EXPECTED_OUTPUT_DIR";
-        prefix = EXPECTED_OUTPUT_DIR_PREFIX;
-    }
-    else if (path.startsWith(TMP_DATA_DIR_PREFIX)) {
-        envVarName = "TEMP_DATA_DIR";
-        prefix = TMP_DATA_DIR_PREFIX;
-    }
-    else if (path.startsWith(COMMON_DATA_DIR_PREFIX)) {
-        envVarName = "COMMON_DATA_DIR";
-        prefix = COMMON_DATA_DIR_PREFIX;
-    }
-    else {
-        FAIL(QString("Unexpected 'prefix' value in the path: '%1'!").arg(path), );
-    }
-
-    // Replace with the correct value
-    QString prefixPath = env->getVar(envVarName);
-    SAFE_POINT(!prefixPath.isEmpty(), QString("No value for environment variable '%1'!").arg(envVarName), );
-    prefixPath += "/";
-
-    int prefixSize = prefix.size();
-    QStringList relativePaths = path.mid(prefixSize).split(";");
-
-    foreach (const QString &path, relativePaths) {
-        QString fullPath = prefixPath + path;
-        result += fullPath + ";";
-    }
-
-    path = result.mid(0, result.size() - 1); // without the last ';'
 }
 
 /************************************************************************/

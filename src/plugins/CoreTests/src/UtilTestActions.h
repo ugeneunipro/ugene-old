@@ -35,8 +35,6 @@ public:
     ReportResult report();
 
 private:
-    void replacePrefix(QString &path);
-
     QString             fromUrl;
     QString             toUrl;
 

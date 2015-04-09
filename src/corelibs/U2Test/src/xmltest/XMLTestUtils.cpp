@@ -22,6 +22,7 @@
 #include "XMLTestUtils.h"
 
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -34,6 +35,48 @@ QList<XMLTestFactory*>  XMLTestUtils::createTestFactories() {
     res.append(GTest_CreateTmpFolder::createFactory());
 
     return res;
+}
+
+void XMLTestUtils::replacePrefix(const GTestEnvironment *env, QString &path){
+    QString result;
+
+    const QString EXPECTED_OUTPUT_DIR_PREFIX = "!expected!";
+    const QString TMP_DATA_DIR_PREFIX = "!tmp_data_dir!";
+    const QString COMMON_DATA_DIR_PREFIX = "!common_data_dir!";
+
+    // Determine which environment variable is required
+    QString envVarName;
+    QString prefix;
+    if (path.startsWith(EXPECTED_OUTPUT_DIR_PREFIX)) {
+        envVarName = "EXPECTED_OUTPUT_DIR";
+        prefix = EXPECTED_OUTPUT_DIR_PREFIX;
+    }
+    else if (path.startsWith(TMP_DATA_DIR_PREFIX)) {
+        envVarName = "TEMP_DATA_DIR";
+        prefix = TMP_DATA_DIR_PREFIX;
+    }
+    else if (path.startsWith(COMMON_DATA_DIR_PREFIX)) {
+        envVarName = "COMMON_DATA_DIR";
+        prefix = COMMON_DATA_DIR_PREFIX;
+    }
+    else {
+        FAIL(QString("Unexpected 'prefix' value in the path: '%1'!").arg(path), );
+    }
+
+    // Replace with the correct value
+    QString prefixPath = env->getVar(envVarName);
+    SAFE_POINT(!prefixPath.isEmpty(), QString("No value for environment variable '%1'!").arg(envVarName), );
+    prefixPath += "/";
+
+    int prefixSize = prefix.size();
+    QStringList relativePaths = path.mid(prefixSize).split(";");
+
+    foreach (const QString &path, relativePaths) {
+        QString fullPath = prefixPath + path;
+        result += fullPath + ";";
+    }
+
+    path = result.mid(0, result.size() - 1); // without the last ';'
 }
 
 void XMLMultiTest::init(XMLTestFormat *tf, const QDomElement& el) {
