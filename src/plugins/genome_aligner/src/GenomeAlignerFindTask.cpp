@@ -194,10 +194,13 @@ void ShortReadAlignerCPU::run() {
 
     SAFE_POINT_EXT (NULL != index, setError("Aligner index error"),);
     for (int part = 0; part < index->getPartCount(); part++) {
+        if (isCanceled()) {
+            break;
+        }
         stateInfo.setProgress(100*part/index->getPartCount());
         parent->requirePartForAligning(part);
         if (parent->hasError()) {
-            return;
+            break;
         }
 
         stateInfo.setProgress(stateInfo.getProgress() + 25/index->getPartCount());
@@ -207,7 +210,9 @@ void ShortReadAlignerCPU::run() {
         }
 
         do {
-            CHECK_OP(stateInfo, );
+            if (isCanceled()) {
+                break;
+            }
             DataBunch *dataBunch = parent->waitForDataBunch();
             GA_CHECK_BREAK(dataBunch);
             CHECK_OP(stateInfo, );
@@ -261,6 +266,10 @@ void ShortReadAlignerCPU::run() {
             algoLog.trace(QString("[%1] Searching (%2) and aligning (%3) took %4 ms").arg(taskNo).arg(length).arg(binaryFound).arg(msec / double(1000), 0, 'f', 3));
         } while(true);
     }
+    if (isCanceled() || hasError()) {
+        QReadLocker locker(&alignContext->indexLock);
+        alignContext->loadIndexTaskWait.wakeAll();
+    }
 }
 
 
@@ -279,12 +288,15 @@ void ShortReadAlignerOpenCL::run() {
 
     SAFE_POINT_EXT (NULL != index, setError("Aligner index error"),);
     for (int part = 0; part < index->getPartCount(); part++) {
+        if (isCanceled()) {
+            break;
+        }
         quint64 t0 = GTimer::currentTimeMicros();
 
         stateInfo.setProgress(100 * part / index->getPartCount());
         parent->requirePartForAligning(part);
         if (parent->hasError()) {
-            return;
+            break;
         }
 
         algoLog.trace(QString("Index part %1 loaded in %2 sec.").arg(part + 1).arg((GTimer::currentTimeMicros() - t0) / double(1000000), 0, 'f', 3));
@@ -296,6 +308,9 @@ void ShortReadAlignerOpenCL::run() {
         }
 
         do {
+            if (isCanceled()) {
+                break;
+            }
             DataBunch *dataBunch = parent->waitForDataBunch();
             GA_CHECK_BREAK(dataBunch);
             algoLog.trace(QString("[%1] Got for aligning").arg(taskNo));
@@ -335,6 +350,10 @@ void ShortReadAlignerOpenCL::run() {
             algoLog.trace(QString("[%1] Skipped: %2, tried to align %3 in %4 ms").arg(taskNo).arg(skipped).arg(length - skipped).arg((GTimer::currentTimeMicros() - t0) / double(1000), 0, 'f', 3));
             delete[] binarySearchResults; binarySearchResults = NULL;
         } while(true);
+    }
+    if (isCanceled() || hasError()) {
+        QReadLocker locker(&alignContext->indexLock);
+        alignContext->loadIndexTaskWait.wakeAll();
     }
 
 #endif
