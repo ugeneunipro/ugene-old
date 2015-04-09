@@ -1942,6 +1942,7 @@ REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0058);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0059);
+    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0060);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer/Workflow parameters validation

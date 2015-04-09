@@ -46,6 +46,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
+#include "GTUtilsWizard.h"
 #include "GTUtilsWorkflowDesigner.h"
 
 #include <U2Core/AppContext.h>
@@ -542,7 +543,7 @@ GUI_TEST_CLASS_DEFINITION(test_0058){
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "New workflow");
     */
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-    
+
     QWidget *wdView = GTUtilsMdi::activeWindow(os);
     CHECK_OP(os, );
     QString windowName = wdView->objectName();
@@ -581,6 +582,51 @@ GUI_TEST_CLASS_DEFINITION(test_0059){
 
     CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "NC_004718 1..29751 source"), "Sequence not found" );
     CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "NC_004718 27638..27772 gene"), "Sequence not found" );
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0060){
+//    UGENE-3703
+//    1. Open "Intersect annotations" sample
+//    2. Input data: "_common_data/bedtools/introns.bed" (A), "_common_data/bedtool/mutations.gff" (B)
+//    3. Run workflow
+//    4. Open result file
+//    Expected state: sample works as it stated (the result of default run(format should be BED) on that data is "_common_data/bedtools/out17.bed"
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "Intersect annotations");
+
+    class wd_test_0060 : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QMap<QString, QVariant> parameters;
+            parameters["Output file"] = QDir(sandBoxDir).absolutePath() + "/wd_test_0060";
+            //! The following code will not work because of UGENE-4234
+//            parameters["Annotations A"] = QDir(testDir).absolutePath() + "/_common_data/bedtools/introns.bed";
+//            parameters["Annotations B"] = QDir(testDir).absolutePath() + "/_common_data/bedtools/mutation.gff";
+            GTUtilsWizard::setAllParameters(os, parameters);
+
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Apply);
+        }
+    };
+
+
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Intersect Annotations Wizard", new wd_test_0060()));
+    GTWidget::click(os, GTAction::button(os, "Show wizard"));
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::click(os, "Read Annotations A");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "/_common_data/bedtools/", "introns.bed");
+
+    GTUtilsWorkflowDesigner::click(os, "Read Annotations B");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "/_common_data/bedtools/", "mutation.gff");
+
+    GTUtilsWorkflowDesigner::click(os, "Write Annotations");
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", "bed", GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    CHECK_SET_ERR(GTFile::equals(os, QDir(sandBoxDir).absolutePath() + "/wd_test_0060", QDir(testDir).absolutePath() + "/_common_data/bedtools/out17.bed"), "Output is incorrect");
 }
 
 } // namespace GUITest_common_scenarios_workflow_designer
