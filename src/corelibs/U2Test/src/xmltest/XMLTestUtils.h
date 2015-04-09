@@ -61,7 +61,7 @@ public:\
 
 
 
-class XMLTestUtils {
+class U2TEST_EXPORT XMLTestUtils {
 public:
     static QList<XMLTestFactory*> createTestFactories();
     static void replacePrefix(const GTestEnvironment* env, QString &path);
