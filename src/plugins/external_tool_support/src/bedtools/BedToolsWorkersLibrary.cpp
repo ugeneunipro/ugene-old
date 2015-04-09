@@ -904,7 +904,7 @@ void BedtoolsIntersectWorkerFactory::init() {
         inM_B[inDescB] = BaseTypes::ANNOTATION_TABLE_TYPE();
         portDescs << new PortDescriptor( inDescB, DataTypePtr(new MapDataType("in.anns.b", inM_B)), /*input*/ true);
 
-        Descriptor outDesc( OUT_PORT_ID, BedtoolsIntersectWorker::tr("Intersection of annotations"), BedtoolsIntersectWorker::tr("Intersection of annotations"));
+        Descriptor outDesc( OUT_PORT_ID, BedtoolsIntersectWorker::tr("Annotations"), BedtoolsIntersectWorker::tr("Result annotations"));
         QMap<Descriptor, DataTypePtr> outM;
         outM[outDesc] = BaseTypes::ANNOTATION_TABLE_TYPE();
         portDescs << new PortDescriptor( outDesc, DataTypePtr(new MapDataType("out.anns", outM)), /*intput*/ false);
@@ -914,13 +914,24 @@ void BedtoolsIntersectWorkerFactory::init() {
     {
         Descriptor minOverlapDesc( MIN_OVERLAP,
                                    BedtoolsIntersectWorker::tr( "Minimum overlap"),
-                                   BedtoolsIntersectWorker::tr( "Minimum overlap required as a fraction of A.") );
+                                   BedtoolsIntersectWorker::tr( "Minimum overlap required as a fraction of an annotation from set A."
+                                                                "<br/>By default, even 1 bp overlap between annotations from set A and set B is taken into account."
+                                                                " Yet sometimes you may want to restrict reported overlaps to cases where the annotations in B overlaps"
+                                                                " at least X% (e.g. 50%) of the A annotation. ") );
 
         Descriptor reportDesc ( REPORT,
-                                BedtoolsIntersectWorker::tr("Report"),
-                                BedtoolsIntersectWorker::tr("Initital A annotations, that overlap B annotations, "
-                                                            "the intervals between the two overlapping annotations "
-                                                            "or report only those entries in A that have no overlap in B."));
+                                BedtoolsIntersectWorker::tr("Result annotations"),
+                                BedtoolsIntersectWorker::tr("Select one of the following:"
+                                                            "<ul>"
+                                                            "<li><i>Shared interval</i> to report intervals shared"
+                                                            " between overlapped annotations from set A and set B."
+                                                            "</li>"
+                                                            "<li><i>Overlapped annotations from A</i> to report annotations"
+                                                            " from set A that have an overlap with annotations from set B."
+                                                            "</li>"
+                                                            "<li><i>Non-overlapped annotations from A</i> to report annotations"
+                                                            " from set A that have NO overlap with annotations from set B."
+                                                            "</li></ul>"));
 
         attribs << new Attribute( reportDesc, BaseTypes::NUM_TYPE(), /*required*/ false, QVariant(BedtoolsIntersectSettings::Report_OverlapedA));
 
@@ -940,9 +951,9 @@ void BedtoolsIntersectWorkerFactory::init() {
         delegates[MIN_OVERLAP] = new DoubleSpinBoxDelegate(spinMap);
 
         QVariantMap comboMap;
-        comboMap["Shared interval between the two overlapping annotations"] = BedtoolsIntersectSettings::Report_Intervals;
-        comboMap["Initital A annotations, that overlap B annotations"] = BedtoolsIntersectSettings::Report_OverlapedA;
-        comboMap["Initital A annotations, that DO NOT overlap B annotations"] = BedtoolsIntersectSettings::Report_NonOverlappedA;
+        comboMap["Shared interval"] = BedtoolsIntersectSettings::Report_Intervals;
+        comboMap["Overlapped annotations from A"] = BedtoolsIntersectSettings::Report_OverlapedA;
+        comboMap["Non-overlapped annotations from A"] = BedtoolsIntersectSettings::Report_NonOverlappedA;
         delegates[REPORT] = new ComboBoxDelegate(comboMap);
     }
 
@@ -963,7 +974,7 @@ QString BedtoolsIntersectPrompter::composeRichDoc() {
     QString a = getProducersOrUnset(IN_PORT_A_ID, IN_PORT_A_ID);
     QString b = getProducersOrUnset(IN_PORT_B_ID, IN_PORT_B_ID);
 
-    QString res = QString(tr("Intersect annotations from <u>%1</u><b>(A)</b> with annotations from <u>%2</u><b>(B)</b>. Report ")
+    QString res = QString(tr("Intersect annotations from <u>%1</u> (<b>set A</b>) with annotations from <u>%2</u> (<b>set B</b>). Report ")
                           .arg(a)
                           .arg(b));
 
@@ -971,13 +982,13 @@ QString BedtoolsIntersectPrompter::composeRichDoc() {
     QString reportHyperlinkText;
     switch (r) {
     case BedtoolsIntersectSettings::Report_Intervals:
-        reportHyperlinkText = "shared intervals";
+        reportHyperlinkText = "intervals shared between annotations from <b>set A</b> and <b>set B</b>.";
         break;
     case BedtoolsIntersectSettings::Report_OverlapedA:
-        reportHyperlinkText = "annotations from <b>A</b> that overlap annotations from <b>B</b>";
+        reportHyperlinkText = "overlapped annotations from <b>set A</b>.";
         break;
     case BedtoolsIntersectSettings::Report_NonOverlappedA:
-        reportHyperlinkText = "annotations from A set that have <b>no overlap</b> in B set.";
+        reportHyperlinkText = "non-overlapped annotations from <b>set A</b>.";
     }
 
     res.append(getHyperlink(REPORT, "<u>" + reportHyperlinkText +"</u>"));

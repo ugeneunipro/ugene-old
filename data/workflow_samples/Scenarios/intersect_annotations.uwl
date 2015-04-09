@@ -1,10 +1,14 @@
 #@UGENE_WORKFLOW
-# The most common question asked of two sets of annotations(A and B) is whether or not any of the annotations in the two sets “overlap” with one another. This is known as annotations intersection.
+# The workflow takes two sets of annotations as input (denoted as A and B).
+# It intersects the sets and outputs the result annotations.
 #
-# This sample can produce one of the following results:
-# 1. Annotations of A set that intersect the annotations from B set
-# 2. Annotations of A that DO NOT intersect with B
-# 3. Shared interval betwen two sets of annotations
+#There are three options for the output:
+#   - Shared intervals between overlapped annotations from A and B;
+#   - Annotations from A that overlap annotations from B;
+#   - Annotations from A that DO NOT overlap annotations from B.
+#
+#It is also possible to tweak the percentage of the minimum overlap between A and B annotations.
+
 
 
 workflow "Intersect annotations"{
@@ -30,12 +34,13 @@ workflow "Intersect annotations"{
     write-annotations {
         type:write-annotations;
         name:"Write Annotations";
+        url-out:intersect.gb;
     }
 
     .actor-bindings {
-        read-annotations-1.out-annotations->intersect-annotations.input-annotations-b
         read-annotations.out-annotations->intersect-annotations.input-annotations-a
         intersect-annotations.output-intersect-annotations->write-annotations.in-annotations
+        read-annotations-1.out-annotations->intersect-annotations.input-annotations-b
     }
 
     read-annotations.annotations->intersect-annotations.input-annotations-a.input-annotations-a
@@ -67,31 +72,31 @@ workflow "Intersect annotations"{
         }
         visual {
             intersect-annotations {
-                pos:"-506 -585";
+                pos:"-477 -583";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"207 74 41 64";
                 input-annotations-a.angle:150;
                 input-annotations-b.angle:210;
                 output-intersect-annotations.angle:360;
             }
             read-annotations {
-                pos:"-807 -652";
+                pos:"-810 -693";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"0 141 212 64";
                 bounds:"-30 -30 148.875 87";
                 out-annotations.angle:360;
             }
             read-annotations-1 {
-                pos:"-813 -505";
+                pos:"-813 -485";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"0 141 212 64";
                 bounds:"-30 -30 157.5 82";
                 out-annotations.angle:360;
             }
             write-annotations {
-                pos:"-242 -581";
+                pos:"-122 -583";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"117 86 175 64";
                 in-annotations.angle:180;
             }
             intersect-annotations.output-intersect-annotations->write-annotations.in-annotations {
@@ -104,39 +109,35 @@ workflow "Intersect annotations"{
                 text-pos:"-44.9609 -28";
             }
         }
-		wizard {
-			name:"Intersect annotations Wizard";
-			help-page-id:16122700;
-			page {
-				id:1;
-				title:"Intersect annotations parameters";
-				parameters-area {
-					group {
-						title:"Input data";
-						label-size:120;
-						read-annotations.url-in {
-							label:"Annotations A";
-						}
-						read-annotations-1.url-in {
-							label:"Annotations B";
-						}
-					}
-					group {
-						title:"Output data";
-						label-size:120;
-						write-annotations.url-out {
-							label:"Output file";
-						}
-						write-annotations.document-format {
-							label:"Output file format";
-						}
-						intersect-annotations.report {
-							label:"Output content";
-						}
-					}
-				}
-			}
-		}
+        wizard {
+            name:"Intersect Annotations Wizard";
+            page {
+                id:1;
+                title:"Intersect annotations parameters";
+                parameters-area {
+                    group {
+                        title:"Input data";
+                        label-size:120;
+                        read-annotations.url-in {
+                            label:"Annotations A";
+                        }
+                        read-annotations-1.url-in {
+                            label:"Annotations B";
+                        }
+                    }
+                    group {
+                        title:"Output data";
+                        label-size:120;
+                        intersect-annotations.report {
+                            label:Report;
+                        }
+                        write-annotations.url-out {
+                            label:"Output file";
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
