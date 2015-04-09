@@ -21,6 +21,7 @@
 
 #include <QtCore/QCoreApplication>
 
+#include <U2Core/Counter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiUtils.h>

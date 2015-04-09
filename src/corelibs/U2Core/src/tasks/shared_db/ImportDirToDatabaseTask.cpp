@@ -22,6 +22,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 
+#include <U2Core/Counter.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SafePoints.h>

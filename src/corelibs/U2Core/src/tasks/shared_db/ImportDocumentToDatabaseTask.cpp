@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/Counter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Folder.h>
 #include <U2Core/U2DbiUtils.h>
