@@ -54,8 +54,9 @@ public:
     //opens WorkflowDesigner
     static void openWorkflowDesigner(U2OpStatus &os);
 
-    //opens a workflow from a file
     static void loadWorkflow(U2OpStatus &os, const QString &fileUrl);
+    static void saveWorkflow(U2OpStatus &os);
+    static void saveWorkflowAs(U2OpStatus &os, const QString &fileUrl, const QString &workflowName);
 
     static void runWorkflow(U2OpStatus &os);
     static void returnToWorkflow(U2OpStatus &os);

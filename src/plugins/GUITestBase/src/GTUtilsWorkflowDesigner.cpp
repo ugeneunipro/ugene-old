@@ -57,6 +57,7 @@
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 
 #include <U2Gui/ToolsMenu.h>
 
@@ -100,6 +101,19 @@ void GTUtilsWorkflowDesigner::loadWorkflow(U2OpStatus &os, const QString &fileUr
     GT_CHECK(loadButton, "Load button is not found");
     GTWidget::click(os, loadButton);
     GTGlobals::sleep();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "saveWorkflow"
+void GTUtilsWorkflowDesigner::saveWorkflow(U2OpStatus &os) {
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Save workflow");
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "saveWorkflowAs"
+void GTUtilsWorkflowDesigner::saveWorkflowAs(U2OpStatus &os, const QString &fileUrl, const QString &workflowName) {
+    GTUtilsDialog::waitForDialog(os, new WorkflowMetaDialogFiller(os, fileUrl, workflowName));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Save workflow as");
 }
 #undef GT_METHOD_NAME
 

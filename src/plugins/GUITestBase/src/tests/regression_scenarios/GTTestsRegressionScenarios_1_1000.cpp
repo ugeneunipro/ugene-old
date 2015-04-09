@@ -1628,6 +1628,38 @@ GUI_TEST_CLASS_DEFINITION(test_0908) {
     GTUtilsWorkflowDesigner::runWorkflow(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0888) {
+//    1. Open WD sampel scheme "Convert seq/qual pair to Fastq"
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "Convert seq/qual pair to FASTQ");
+
+//    2. Press "save as" and save it to the valid location
+    GTUtilsWorkflowDesigner::saveWorkflowAs(os, sandBoxDir + "test_0888.uwl", "test_0888");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    3. Press "save schema" 3 times
+    for (int i = 0; i < 3; i++) {
+        GTUtilsWorkflowDesigner::saveWorkflow(os);
+    }
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    4. Open saved schema in text editor
+//    Expected state: only 8 first lines starts with '#'
+    QFile file(sandBoxDir + "test_0888.uwl");
+    file.open(QFile::ReadOnly);
+    const QList<QByteArray> data = file.readAll().split('\n');
+
+    int count = 0;
+    foreach (const QByteArray &line, data) {
+        if (line.startsWith("#")) {
+            count++;
+        }
+    }
+
+    CHECK_SET_ERR(8 == count, QString("Unexpected count of '#' symbols: expet %1, got %2")
+                  .arg(8).arg(count));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0889) {
 //  1) Open RNA.fa
 //  2) Use context menu on sequence {Align->Align sequence to mRNA}
