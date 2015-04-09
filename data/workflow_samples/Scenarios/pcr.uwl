@@ -1,0 +1,146 @@
+#@UGENE_WORKFLOW
+#This workflow simulates the PCR process. The input data are:
+#1) The file(s) with DNA sequences.
+#2) The file with DNA sequences of primers pairs. The pairs must be ordered one by one:
+#    a. The first sequence of the first pair.
+#    b. The second sequence of the first pair.
+#    c. The first sequence of the second pair.
+#    d. The second sequence of the second pair.
+#    e. etc.
+#
+#The output data are:
+#1) The files with the amplified PCR products.
+#2) The file with the HTML report about the In silico PCR:
+#    a. Products count table.
+#    b. Pairs details.
+
+
+
+workflow "In silico PCR"{
+
+    in-silico-pcr {
+        type:in-silico-pcr;
+        name:"In Silico PCR";
+        primers-url:"";
+    }
+    read-sequence {
+        type:read-sequence;
+        name:"Read Sequence";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write Sequence";
+        accumulate:false;
+        document-format:genbank;
+    }
+
+    .actor-bindings {
+        read-sequence.out-sequence->in-silico-pcr.in-sequence
+        in-silico-pcr.out->write-sequence.in-sequence
+    }
+
+    read-sequence.sequence->in-silico-pcr.in-sequence.sequence
+    in-silico-pcr.annotations->write-sequence.in-sequence.annotations
+    read-sequence.annotations->write-sequence.in-sequence.annotations
+    in-silico-pcr.sequence->write-sequence.in-sequence.sequence
+
+    .meta {
+        parameter-aliases {
+            in-silico-pcr.primers-url {
+                alias:primers;
+            }
+            in-silico-pcr.report-url {
+                alias:report;
+            }
+            read-sequence.url-in {
+                alias:in;
+            }
+            write-sequence.url-out {
+                alias:out;
+            }
+        }
+        visual {
+            in-silico-pcr {
+                pos:"-465 -390";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out.angle:360;
+            }
+            read-sequence {
+                pos:"-705 -390";
+                style:ext;
+                bg-color-ext:"24 102 175 64";
+                out-sequence.angle:360;
+            }
+            write-sequence {
+                pos:"-180 -390";
+                style:ext;
+                bg-color-ext:"64 26 96 64";
+                in-sequence.angle:180;
+            }
+            in-silico-pcr.out->write-sequence.in-sequence {
+                text-pos:"-34 -24";
+            }
+            read-sequence.out-sequence->in-silico-pcr.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+        }
+        wizard {
+            name:"In Silico PCR";
+            auto-run:true;
+            page {
+                id:1;
+                next:2;
+                title:"Input DNA Sequences";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Primers and Parameters";
+                parameters-area {
+                    group {
+                        title:Primers;
+                        label-size:120;
+                        in-silico-pcr.primers-url {
+                        }
+                    }
+                    group {
+                        title:"In silico PCR";
+                        label-size:120;
+                        in-silico-pcr.mismatches {
+                        }
+                        in-silico-pcr.perfect-match {
+                        }
+                        in-silico-pcr.max-product {
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                title:"Results";
+                parameters-area {
+                    group {
+                        title:"Output Files";
+                        label-size:120;
+                        in-silico-pcr.report-url {
+                        }
+                        write-sequence.url-out {
+                            label:"Products URL";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
