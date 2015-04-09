@@ -21,7 +21,6 @@
 
 #include "GTTestsRegressionScenarios_1_1000.h"
 
-#include "api/GTRadioButton.h"
 #include "api/GTAction.h"
 #include "api/GTCheckBox.h"
 #include "api/GTClipboard.h"
@@ -37,6 +36,7 @@
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTPlainTextEdit.h"
+#include "api/GTRadioButton.h"
 #include "api/GTSequenceReadingModeDialog.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "api/GTSlider.h"
@@ -48,8 +48,8 @@
 #include "api/GTWidget.h"
 
 #include "GTDatabaseConfig.h"
-#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsAnnotationsHighlightingTreeView.h"
+#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsCircularView.h"
@@ -63,8 +63,8 @@
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsNotifications.h"
 #include "GTUtilsOptionPanelMSA.h"
-#include "GTUtilsOptionsPanel.h"
 #include "GTUtilsOptionPanelSequenceView.h"
+#include "GTUtilsOptionsPanel.h"
 #include "GTUtilsPhyTree.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
@@ -1852,6 +1852,29 @@ GUI_TEST_CLASS_DEFINITION(test_0930){
 //    Expected state: the "Import BAM File" dialog appeared.
 }
 
+
+GUI_TEST_CLASS_DEFINITION(test_0934) {
+//    1. Open file: _common_data\regression\934\trim_fa.fa
+    GTUtilsProject::openMultiSequenceFileAsMalignment(os, testDir + "_common_data/regression/934/trim_fa.fa");
+
+//    2. Open "Export sequences into alignment" dialog
+//    3. Select CLUSTALW format. Expected state: warning that na,es will be cut is shown
+//    4. Select MSF format and export
+    // Steps 2 - 4 are deprecated
+
+//    5. Align sequences with CLUSTALW. Excpected state: after alignment names are the same as before
+    const QStringList originalNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Align" << "Align with ClustalW...", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ClustalWDialogFiller(os));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    const QStringList resultNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(originalNames == resultNames, QString("Unexpected sequence names: expect '%1', got '%2'")
+                  .arg(originalNames.join(", ")).arg(resultNames.join(", ")));
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0935){
 //    1. Start the Workflow Designer.

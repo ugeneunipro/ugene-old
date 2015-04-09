@@ -205,9 +205,15 @@ void GTUtilsProject::openMultiSequenceFileAsSequences(U2OpStatus &os, const QStr
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "openMultiSequenceFileAsMalignment"
-void GTUtilsProject::openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &path, const QString &fileName) {
+void GTUtilsProject::openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &dirPath, const QString &fileName) {
+    openMultiSequenceFileAsMalignment(os, dirPath + "/" + fileName);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "openMultiSequenceFileAsMalignment"
+void GTUtilsProject::openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &filePath) {
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
-    GTFileDialog::openFile(os, path, fileName);
+    GTFileDialog::openFile(os, filePath);
 }
 #undef GT_METHOD_NAME
 
