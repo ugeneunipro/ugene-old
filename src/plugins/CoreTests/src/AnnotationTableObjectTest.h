@@ -100,6 +100,7 @@ class GTest_FindAnnotationByLocation : public GTest {
 private:
     QString     objContextName;
     QString     annotationContextName;
+    QString     annotationName;
     U2Region    location;
     U2Strand    strand;
     Annotation *result;

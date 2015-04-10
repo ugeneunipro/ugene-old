@@ -977,6 +977,8 @@ void GTest_FindAnnotationByLocation::init(XMLTestFormat *tf, const QDomElement& 
         return;
     }
 
+    annotationName = el.attribute(NAME_ATTR);
+
     QString complStr = el.attribute(COMPLEMENT_ATTR);
     if (complStr == "true") {
         strand = U2Strand::Complementary;
@@ -1011,7 +1013,7 @@ Task::ReportResult GTest_FindAnnotationByLocation::report() {
             continue;
         }
         foreach (const U2Region &r, a->getRegions()) {
-            if (r == location) {
+            if (r == location && (annotationName.isEmpty() || !annotationName.isEmpty() && a->getName() == annotationName)) {
                 result = a;
                 break;
             }
