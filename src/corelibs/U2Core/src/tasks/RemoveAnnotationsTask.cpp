@@ -47,7 +47,7 @@ Task::ReportResult RemoveAnnotationsTask::report() {
         return ReportResult_Finished;
     }
 
-    if (subGroup->getAnnotations(true).isEmpty()) {
+    if (subGroup->hasAnnotations()) {
         return ReportResult_Finished;
     }
 
