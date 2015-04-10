@@ -100,6 +100,9 @@ TreeViewer::TreeViewer(const QString& viewName, GObject* obj, GraphicsRectangula
     printAction(NULL),
     captureTreeAction(NULL),
     exportAction(NULL),
+    collapseAction(NULL),
+    rerootAction(NULL),
+    swapAction(NULL),
     root(_root),
     scale(s),
     ui(NULL)
@@ -178,6 +181,13 @@ void TreeViewer::createActions() {
     // Branch Settings
     branchesSettingsAction = new QAction(QIcon(":core/images/color_wheel.png"), tr("Branch Settings..."), ui);
     branchesSettingsAction->setObjectName("Branch Settings");
+    collapseAction = new QAction(QIcon(":/core/images/collapse_tree.png"), tr("Collapse"), ui);
+    collapseAction->setObjectName("Collapse");
+    rerootAction = new QAction(QIcon(":/core/images/reroot.png"), tr("Reroot tree"), ui);
+    rerootAction->setObjectName("Reroot tree");
+    swapAction = new QAction(QIcon(":core/images/swap.png"), tr("Swap Siblings"), ui);
+    swapAction->setObjectName("Swap Siblings");
+
     // Show Labels
     nameLabelsAction = new QAction(tr("Show Names"), ui);
     nameLabelsAction->setCheckable(true);
@@ -252,6 +262,9 @@ void TreeViewer::buildStaticToolbar(QToolBar* tb)
 
     // Branch Settings
     tb->addAction(branchesSettingsAction);
+    tb->addAction(collapseAction);
+    tb->addAction(rerootAction);
+    tb->addAction(swapAction);
 
     // Labels and Text Settings
     tb->addSeparator();
@@ -307,6 +320,9 @@ void TreeViewer::buildStaticMenu(QMenu* m)
 
     // Branch Settings
     m->addAction(branchesSettingsAction);
+    m->addAction(collapseAction);
+    m->addAction(rerootAction);
+    m->addAction(swapAction);
 
     // Labels and Text Settings
     m->addSeparator();
@@ -383,15 +399,15 @@ const int TreeViewerUI::MARGIN = 10;
 const qreal TreeViewerUI::SIZE_COEF = 0.1;
 
 
-TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): 
-    phyObject(treeViewer->getPhyObject()), 
-    root(treeViewer->getRoot()), 
+TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer):
+    phyObject(treeViewer->getPhyObject()),
+    root(treeViewer->getRoot()),
     maxNameWidth(0.0),
     verticalScale(1.0),
     horizontalScale(1.0),
-    curTreeViewer(treeViewer), 
-    updatingFromOP(false), 
-    rectRoot(treeViewer->getRoot()) 
+    curTreeViewer(treeViewer),
+    updatingFromOP(false),
+    rectRoot(treeViewer->getRoot())
 {
     setWindowIcon(GObjectTypes::getTypeInfo(GObjectTypes::PHYLOGENETIC_TREE).icon);
 
@@ -422,6 +438,9 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer):
     connect(treeViewer->getZoomOutAction(), SIGNAL(triggered()), SLOT(sl_zoomOut()));
     connect(treeViewer->getZoomToAllAction(), SIGNAL(triggered()), SLOT(sl_zoomToAll()));
     connect(treeViewer->getBranchesSettingsAction(), SIGNAL (triggered()), SLOT(sl_setSettingsTriggered()));
+    connect(treeViewer->getCollapseAction(), SIGNAL(triggered()), SLOT(sl_collapseTriggered()));
+    connect(treeViewer->getRerootAction(), SIGNAL(triggered()), SLOT(sl_rerootTriggered()));
+    connect(treeViewer->getSwapAction(), SIGNAL(triggered()), SLOT(sl_swapTriggered()));
 
     zoomToAction = treeViewer->getZoomToSelAction();
     zoomOutAction = treeViewer->getZoomOutAction();
@@ -429,25 +448,23 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer):
     setColorAction = treeViewer->getBranchesSettingsAction();
     captureAction = treeViewer->getCaptureTreeAction();
     exportAction = treeViewer->getExportAction();
+    collapseAction = treeViewer->getCollapseAction();
+    rerootAction = treeViewer->getRerootAction();
+    swapAction = treeViewer->getSwapAction();
+
     buttonPopup = new QMenu(this);
 
     //chrootAction->setEnabled(false); //not implemented yet
 
-    swapAction = buttonPopup->addAction(QObject::tr("Swap Siblings"));
-    connect(swapAction, SIGNAL(triggered()), SLOT(sl_swapTriggered()));
-    swapAction->setObjectName("Swap Siblings");
+    buttonPopup->addAction(swapAction);
     swapAction->setEnabled(false);
 
-    rerootAction = buttonPopup->addAction(QObject::tr("Reroot tree"));
-    connect(rerootAction, SIGNAL(triggered()), SLOT(sl_rerootTriggered()));
-    rerootAction->setObjectName("Reroot tree");
+    buttonPopup->addAction(rerootAction);
     rerootAction->setEnabled(false);
 
     buttonPopup->addAction(zoomToAction);
 
-    collapseAction = buttonPopup->addAction(QObject::tr("Collapse"));
-    connect(collapseAction, SIGNAL(triggered(bool)), SLOT(sl_collapseTriggered()));
-    collapseAction->setObjectName("Collapse");
+    buttonPopup->addAction(collapseAction);
 
     buttonPopup->addAction(setColorAction);
 
@@ -954,7 +971,6 @@ void TreeViewerUI::mousePressEvent(QMouseEvent *e) {
     }
 
     if (e->button() == Qt::RightButton) {
-        updateActionsState();
 
         buttonPopup->popup(e->globalPos());
 
@@ -966,6 +982,7 @@ void TreeViewerUI::mousePressEvent(QMouseEvent *e) {
     if (leftButton && !shiftPressed) {
         updateBrachSettings();
     }
+    updateActionsState();
 }
 
 void TreeViewerUI::mouseReleaseEvent(QMouseEvent *e) {

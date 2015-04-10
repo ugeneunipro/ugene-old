@@ -163,5 +163,8 @@
         <file>images/clean_full_bin.png</file>
         <file>images/consensus.png</file>
         <file>images/warning_notification.png</file>
+        <file>images/collapse_tree.png</file>
+        <file>images/reroot.png</file>
+        <file>images/swap.png</file>
     </qresource>
 </RCC>

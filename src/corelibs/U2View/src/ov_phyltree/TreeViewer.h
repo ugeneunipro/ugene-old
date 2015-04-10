@@ -84,6 +84,10 @@ public:
     QAction* getZoomToSelAction() const { return zoomToSelAction; }
     QAction* getZoomOutAction() const { return zoomOutAction; }
     QAction* getZoomToAllAction() const { return zoomToAllAction; }
+    QAction* getCollapseAction() const { return collapseAction; }
+    QAction* getRerootAction() const { return rerootAction; }
+    QAction* getSwapAction() const { return swapAction; }
+
 
     PhyTreeObject* getPhyObject() const { return phyObject; }
     GraphicsRectangularBranchItem* getRoot() const { return root; }
@@ -134,6 +138,10 @@ private:
     QAction*            printAction;
     QAction*            captureTreeAction;
     QAction*            exportAction;
+
+    QAction*            collapseAction;
+    QAction*            rerootAction;
+    QAction*            swapAction;
 
     QByteArray          state;
     PhyTreeObject*      phyObject;
