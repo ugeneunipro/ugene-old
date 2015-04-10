@@ -19,36 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#include "CreateExternalProcessDialog.h"
-
-#include "../util/WorkerNameValidator.h"
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QMessageBox>
+#include <QWizardPage>
 
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/AppContext.h>
 
-#include <U2Lang/WorkflowEnv.h>
-#include <U2Lang/BaseTypes.h>
-#include <U2Lang/ExternalToolCfg.h>
-
-#include <U2Lang/HRSchemaSerializer.h>
-#include <U2Lang/WorkflowSettings.h>
-#include <U2Lang/ConfigurationEditor.h>
-#include <U2Lang/WorkflowEnv.h>
-#include <U2Lang/ActorPrototypeRegistry.h>
+#include <U2Designer/DelegateEditors.h>
 
 #include <U2Gui/HelpButton.h>
 
-#include <U2Designer/DelegateEditors.h>
+#include <U2Lang/ActorPrototypeRegistry.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/ConfigurationEditor.h>
+#include <U2Lang/ExternalToolCfg.h>
+#include <U2Lang/HRSchemaSerializer.h>
+#include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowSettings.h>
 
 #include "CfgExternalToolModel.h"
+#include "CreateExternalProcessDialog.h"
 #include "WorkflowEditorDelegates.h"
+#include "../util/WorkerNameValidator.h"
 
 namespace U2 {
 
@@ -265,6 +258,8 @@ CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/
 
     ui.templateLineEdit->setValidator(new ExecStringValidator(this));
     ui.nameLineEdit->setValidator(new WorkerNameValidator(this));
+
+    setBestSize();
 }
 
 CreateExternalProcessDialog::~CreateExternalProcessDialog() {
@@ -278,6 +273,26 @@ void CreateExternalProcessDialog::showEvent(QShowEvent *event) {
             next();
         }
     }
+}
+
+void CreateExternalProcessDialog::setBestSize() {
+    QList<QSize> pageSizes;
+    ui.wizardPage1->adjustSize();
+    pageSizes << size();
+    ui.wizardPage_2->adjustSize();
+    pageSizes << size();
+    ui.wizardPage2->adjustSize();
+    pageSizes << size();
+    ui.wizardPage->adjustSize();
+    pageSizes << size();
+
+    QSize bestSize;
+    foreach (const QSize &size, pageSizes) {
+        bestSize.setWidth(qMax(size.width(), bestSize.width()));
+        bestSize.setHeight(qMax(size.height(), bestSize.height()));
+    }
+
+    setFixedSize(bestSize);
 }
 
 void CreateExternalProcessDialog::accept() {

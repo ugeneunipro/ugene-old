@@ -67,6 +67,8 @@ protected:
     virtual void showEvent(QShowEvent *event);
 
 private:
+    void setBestSize();
+
     Ui::CreateExternalProcessWorkerDialog ui;
     ExternalProcessConfig *initialCfg;
     ExternalProcessConfig *cfg;
