@@ -59,6 +59,7 @@ class U2OpStatus;
 #define ProjectLoaderHint_MultipleFilesMode_RealDocumentFormat  "multiple-files-mode-real-document-format"
 #define ProjectLoaderHint_MergeMode_DifferentAlphabets "merge-sequences-different-alphabets"
 #define ProjectLoaderHint_DontCheckForExistence "dont-check-for-existence"
+#define ProjectLoaderHint_OpenBySystemIfFormatDetectionFailed "open-by-system-if-format-detection-failed"
 
 /// Service responsible for project loading / unloading
 class U2CORE_EXPORT ProjectLoader  : public QObject {

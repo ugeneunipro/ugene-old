@@ -369,7 +369,9 @@ JavascriptAgent::JavascriptAgent(Dashboard *_dashboard)
 
 void JavascriptAgent::openUrl(const QString &relative) {
     QString url = absolute(relative);
-    Task *t = AppContext::getProjectLoader()->openWithProjectTask(url);
+    QVariantMap hints;
+    hints[ProjectLoaderHint_OpenBySystemIfFormatDetectionFailed] = true;
+    Task *t = AppContext::getProjectLoader()->openWithProjectTask(url, hints);
     if (t) {
         AppContext::getTaskScheduler()->registerTopLevelTask(t);
     }
