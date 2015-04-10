@@ -545,6 +545,7 @@ void WorkflowPaletteElements::editElement() {
 
 bool WorkflowPaletteElements::removeElement() {
     QMessageBox msg(this);
+    msg.setObjectName("Remove element");
     msg.setWindowTitle("Remove element");
     msg.setText("Remove this element?");
     msg.addButton(QMessageBox::Ok);

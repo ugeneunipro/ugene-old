@@ -48,7 +48,9 @@ public:
     static QList<QTreeWidgetItem*> getItems(U2OpStatus &os, QTreeWidget *treeWidget);
     static QStringList getItemNames(U2OpStatus &os, QTreeWidget *treeWidget);
 
-    static QTreeWidgetItem* findItem(U2OpStatus &os, QTreeWidget* tree, const QString& text, QTreeWidgetItem* parent = NULL, int column = 0, Qt::MatchFlags flags = Qt::MatchExactly);
+    static QTreeWidgetItem * findItem(U2OpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent = NULL, int column = 0, const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
+    static QList<QTreeWidgetItem *> findItems(U2OpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent = NULL, int column = 0, const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
+
     static void click(U2OpStatus &os, QTreeWidgetItem* item, int column = -1);  //  column == -1 - item center
 
     // Returns item level, 0 - top level item

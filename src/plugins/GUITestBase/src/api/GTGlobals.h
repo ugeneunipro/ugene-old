@@ -95,6 +95,7 @@ public:
 
         int depth;
         bool failIfNull;
+        Qt::MatchFlags matchPolicy;
 
         static const int INFINITE_DEPTH = 0;
     };

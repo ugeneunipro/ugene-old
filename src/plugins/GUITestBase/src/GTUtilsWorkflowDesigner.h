@@ -61,25 +61,29 @@ public:
     static void runWorkflow(U2OpStatus &os);
     static void returnToWorkflow(U2OpStatus &os);
 
-    //reterns item from samples or algorithms tab
+    //returns item from samples or algorithms tab
     static QTreeWidgetItem* findTreeItem(U2OpStatus &os, QString itemName, tab t, bool exactMatch = false);
 
-    //returns item form samples tab
+    //returns item from samples tab
     static QTreeWidgetItem* findSamplesTreeItem(U2OpStatus &os, QString itemName);
 
-    //reterns item from samples or algorithms tab
+    //returns item from samples or algorithms tab
     static QList<QTreeWidgetItem*> getVisibleSamples(U2OpStatus &os);
-
-    //adds alogritm with worker with name algName to workflow scene
-    static void addAlgorithm(U2OpStatus &os, QString algName, bool exactMatch = false);
-
-    static WorkflowProcessItem * addElement(U2OpStatus &os, const QString &algName, bool exactMatch = false);
-
-    //adds sample scheme with name sampName to workflow scene
-    static void addSample(U2OpStatus &os, QString sampName);
 
     //expands samples/Elements tabwidget if collapsed
     static void expandTabs(U2OpStatus &os);
+
+    static void clickOnPalette(U2OpStatus &os, const QString &itemName, Qt::MouseButton mouseButton = Qt::LeftButton);
+
+    static QTreeWidgetItem * getPaletteGroup(U2OpStatus &os, const QString &groupName);
+    static QList<QTreeWidgetItem *> getPaletteGroups(U2OpStatus &os);
+    static QList<QTreeWidgetItem *> getPaletteGroupEntries(U2OpStatus &os, QTreeWidgetItem *groupItem);
+    static QList<QTreeWidgetItem *> getPaletteGroupEntries(U2OpStatus &os, const QString &groupName);
+
+    //add to scene
+    static void addSample(U2OpStatus &os, QString sampName);
+    static void addAlgorithm(U2OpStatus &os, QString algName, bool exactMatch = false);
+    static WorkflowProcessItem * addElement(U2OpStatus &os, const QString &algName, bool exactMatch = false);
 
     //returns center of worker on workflow scene in global coordinates
     static QPoint getItemCenter(U2OpStatus &os,QString itemName);
@@ -132,7 +136,6 @@ public:
     static void setCellValue(U2OpStatus& os, QWidget* parent, QVariant value, valueType type, GTGlobals::UseMethod method);
     static QStringList getAllParameters(U2OpStatus& os);
 
-
     static QTableWidget* getInputPortsTable(U2OpStatus &os, int index);
 
     //gets oneparameter worker parameter
@@ -163,6 +166,8 @@ private:
     static void selectAlgorithm(U2OpStatus &os, QTreeWidgetItem *algorithm);
     static void selectSample(U2OpStatus &os, QTreeWidgetItem *sample);
     static QRect getItemRect(U2OpStatus &os,QString itemName);
+    static QTreeWidget * getCurrentTabTreeWidget(U2OpStatus &os);
+
     static const int verticalShift;
 };
 

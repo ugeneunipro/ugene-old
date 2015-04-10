@@ -1304,6 +1304,40 @@ GUI_TEST_CLASS_DEFINITION(test_0840) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0842) {
+//    1) Create some custom cmdline worker with some name ("test", for example).
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    CreateElementWithCommandLineToolFiller::ElementWithCommandLineSettings settings;
+    settings.elementName = "test";
+    settings.input << CreateElementWithCommandLineToolFiller::InOutData("in", CreateElementWithCommandLineToolFiller::InOutDataType(CreateElementWithCommandLineToolFiller::Sequence, "FASTA"));
+    settings.executionString = "<My tool> $in";
+    GTUtilsDialog::waitForDialog(os, new CreateElementWithCommandLineToolFiller(os, settings));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Create element with command line tool");
+
+//    2) Right click at this worker on the palette -> Edit.
+//    3) Set a new name for the worker ("test1", for example).
+//    4) Next -> Next -> Next -> Finish.
+//    5) "Remove this element?" -> Cancel.
+    settings.elementName = "test1";
+    settings.input.clear();
+    GTUtilsDialog::waitForDialog(os, new CreateElementWithCommandLineToolFiller(os, settings));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes, "You have changed the structure of the element"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Cancel, "Remove this element?", "Remove element"));
+    GTUtilsWorkflowDesigner::clickOnPalette(os, "test", Qt::RightButton);
+
+//    Expected state: There are two custom workers on the palette now (test and test1).
+    const QList<QTreeWidgetItem *> customElements = GTUtilsWorkflowDesigner::getPaletteGroupEntries(os, "Custom Elements with CMD Tools");
+    CHECK_SET_ERR(2 == customElements.size(), QString("Unexpected custom elements count: expect %1, got %2")
+                  .arg(2).arg(customElements.size()));
+
+//    6) Click at the test worker on the palette
+//    Expected state: UGENE not crashes.
+    GTUtilsWorkflowDesigner::clickOnPalette(os, "test");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0844) {
 /* 1. Open "samples/human_t1".
  * 2. In advanced settings of Tandem Finder choose "Suffix array" (unoptimized algorithm)

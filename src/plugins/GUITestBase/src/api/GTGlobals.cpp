@@ -78,7 +78,8 @@ void GTGlobals::takeScreenShot(QString path) {
 
 GTGlobals::FindOptions::FindOptions(bool fail) :
     depth(INFINITE_DEPTH),
-    failIfNull(fail)
+    failIfNull(fail),
+    matchPolicy(Qt::MatchExactly)
 {
 }
 

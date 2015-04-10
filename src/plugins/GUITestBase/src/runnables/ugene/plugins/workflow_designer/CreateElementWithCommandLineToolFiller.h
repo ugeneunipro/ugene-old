@@ -62,7 +62,7 @@ public:
         SetOfAnnotations,
         DataString
     };
-    typedef QPair<InOutType, QString> InOutDataType;
+    typedef QPair<InOutType, QString> InOutDataType;        // type / read as
     typedef Data<InOutDataType> InOutData;
 
     enum ParameterType {

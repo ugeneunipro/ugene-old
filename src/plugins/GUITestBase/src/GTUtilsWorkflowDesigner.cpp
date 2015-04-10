@@ -309,6 +309,65 @@ void GTUtilsWorkflowDesigner::expandTabs(U2OpStatus &os){
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "clickOnPalette"
+void GTUtilsWorkflowDesigner::clickOnPalette(U2OpStatus &os, const QString &itemName, Qt::MouseButton mouseButton) {
+    selectAlgorithm(os, findTreeItem(os, itemName, algoriths, true));
+    GTMouseDriver::click(os, mouseButton);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getPaletteGroup"
+QTreeWidgetItem * GTUtilsWorkflowDesigner::getPaletteGroup(U2OpStatus &os, const QString &groupName) {
+
+    QTreeWidget *tree = getCurrentTabTreeWidget(os);
+    GT_CHECK_RESULT(NULL != tree, "WorkflowPaletteElements is NULL", NULL);
+
+    GTGlobals::FindOptions options;
+    options.depth = 1;
+    options.matchPolicy = Qt::MatchExactly;
+
+    return GTTreeWidget::findItem(os, tree, groupName, NULL, 0, options);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getPaletteGroups"
+QList<QTreeWidgetItem *> GTUtilsWorkflowDesigner::getPaletteGroups(U2OpStatus &os) {
+    QList<QTreeWidgetItem *> groupItems;
+
+    QTreeWidget *tree = getCurrentTabTreeWidget(os);
+    GT_CHECK_RESULT(NULL != tree, "WorkflowPaletteElements is NULL", groupItems);
+
+    GTGlobals::FindOptions options;
+    options.depth = 1;
+    options.matchPolicy = Qt::MatchContains;
+
+    return GTTreeWidget::findItems(os, tree, "", NULL, 0, options);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getPaletteGroupEntries"
+QList<QTreeWidgetItem *> GTUtilsWorkflowDesigner::getPaletteGroupEntries(U2OpStatus &os, QTreeWidgetItem *groupItem) {
+    QList<QTreeWidgetItem *> items;
+
+    GT_CHECK_RESULT(NULL != groupItem, "Group item is NULL", items);
+
+    QTreeWidget *tree = getCurrentTabTreeWidget(os);
+    GT_CHECK_RESULT(NULL != tree, "WorkflowPaletteElements is NULL", items);
+
+    GTGlobals::FindOptions options;
+    options.depth = 0;
+    options.matchPolicy = Qt::MatchContains;
+
+    return GTTreeWidget::findItems(os, tree, "", groupItem, 0, options);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getPaletteGroupEntries"
+QList<QTreeWidgetItem *> GTUtilsWorkflowDesigner::getPaletteGroupEntries(U2OpStatus &os, const QString &groupName) {
+    return getPaletteGroupEntries(os, getPaletteGroup(os, groupName));
+}
+#undef GT_METHOD_NAME
+
 QPoint GTUtilsWorkflowDesigner::getItemCenter(U2OpStatus &os,QString itemName){
     QRect r = getItemRect(os, itemName);
     QPoint p = r.center();
@@ -472,6 +531,20 @@ QRect GTUtilsWorkflowDesigner::getItemRect(U2OpStatus &os,QString itemName){
     QRect result = GTGraphicsItem::getGraphicsItemRect(os, w);
     result.setTop(result.top() + verticalShift);
     return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getCurrentTabTreeWidget"
+QTreeWidget *GTUtilsWorkflowDesigner::getCurrentTabTreeWidget(U2OpStatus &os) {
+    switch (currentTab(os)) {
+    case algoriths:
+        return GTWidget::findExactWidget<QTreeWidget *>(os, "WorkflowPaletteElements");
+    case samples:
+        return GTWidget::findExactWidget<QTreeWidget *>(os, "samples");
+    default:
+        os.setError("An unexpected current tab");
+        return NULL;
+    }
 }
 #undef GT_METHOD_NAME
 

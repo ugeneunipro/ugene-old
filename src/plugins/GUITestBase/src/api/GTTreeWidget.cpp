@@ -160,25 +160,74 @@ QStringList GTTreeWidget::getItemNames(U2OpStatus &os, QTreeWidget *treeWidget) 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findItem"
-QTreeWidgetItem* GTTreeWidget::findItem(U2OpStatus &os, QTreeWidget *tree, const QString& text, QTreeWidgetItem *parent, int column, Qt::MatchFlags flags) {
+QTreeWidgetItem * GTTreeWidget::findItem(U2OpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
     Q_UNUSED(os);
-    GT_CHECK_RESULT(tree != NULL, "tree widget is null", NULL);
+    GT_CHECK_RESULT(tree != NULL, "tree widget is NULL", NULL);
 
     if (parent == NULL) {
         parent = tree->invisibleRootItem();
     }
 
-    QList<QTreeWidgetItem *> list = getItems(parent);
+    GTGlobals::FindOptions innerOptions(options);
+    if (options.depth != GTGlobals::FindOptions::INFINITE_DEPTH) {
+        innerOptions.depth--;
+    }
+
+    const QList<QTreeWidgetItem *> list = getItems(parent);
     foreach (QTreeWidgetItem *item, list){
         const QString itemText = item->text(column);
-        if (flags.testFlag(Qt::MatchExactly) && itemText == text) {
+        if (options.matchPolicy.testFlag(Qt::MatchExactly) && itemText == text) {
             return item;
-        } else if (flags.testFlag(Qt::MatchContains) && itemText.contains(text)) {
+        } else if (options.matchPolicy.testFlag(Qt::MatchContains) && itemText.contains(text)) {
             return item;
+        }
+
+        if (options.depth == GTGlobals::FindOptions::INFINITE_DEPTH ||
+                innerOptions.depth > 0) {
+            QTreeWidgetItem * childItem = findItem(os, tree, text, item, column, innerOptions);
+            if (NULL != childItem) {
+                return childItem;
+            }
         }
     }
 
+    CHECK_SET_ERR_RESULT(!options.failIfNull, QString("Item '%1' not found").arg(text), NULL);
+
     return NULL;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findItems"
+QList<QTreeWidgetItem *> GTTreeWidget::findItems(U2OpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
+    QList<QTreeWidgetItem *> items;
+
+    GT_CHECK_RESULT(tree != NULL, "tree widget is NULL", items);
+
+    if (parent == NULL) {
+        parent = tree->invisibleRootItem();
+    }
+
+    GTGlobals::FindOptions innerOptions(options);
+    if (options.depth != GTGlobals::FindOptions::INFINITE_DEPTH) {
+        innerOptions.depth--;
+    }
+
+    const QList<QTreeWidgetItem *> list = getItems(parent);
+    foreach (QTreeWidgetItem *item, list) {
+        const QString itemText = item->text(column);
+        if (options.matchPolicy.testFlag(Qt::MatchExactly) && itemText == text) {
+            items << item;
+        } else if (options.matchPolicy.testFlag(Qt::MatchContains) && itemText.contains(text)) {
+            items << item;
+        }
+
+        if (options.depth == GTGlobals::FindOptions::INFINITE_DEPTH ||
+                innerOptions.depth > 0) {
+            items << findItems(os, tree, text, item, column, innerOptions);
+        }
+    }
+
+    return items;
 }
 #undef GT_METHOD_NAME
 
