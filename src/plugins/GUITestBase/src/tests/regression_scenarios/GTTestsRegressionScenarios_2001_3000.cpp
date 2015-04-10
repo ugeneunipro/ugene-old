@@ -1718,6 +1718,45 @@ GUI_TEST_CLASS_DEFINITION( test_2187 ) {
     GTMouseDriver::click(os);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2192 ){
+//    1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Open Call Variants sample.
+    GTUtilsWorkflowDesigner::addSample(os, "call variants");
+//    3. Set valid input data.
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Assembly (BAM/SAM)"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Call_variants/input_data/chrM", "chrM.sorted.bam");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Call_variants/input_data/chrM", "chrM.fa");
+//    4. Start the scheme.
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    5. Open External Tools tab.
+    GTUtilsDashboard::openTab(os, GTUtilsDashboard::ExternalTools);
+//    6. Right-click on any tree element.
+//       Expected state: context menu with 2 options appeared.
+//                        "Copy selected text" option is not available if there is no selected text.
+    GTUtilsDashboard::click(os, GTUtilsDashboard::findTreeElement(os, "Call Variants"), Qt::RightButton);
+    GTUtilsDashboard::click(os, GTUtilsDashboard::findContextMenuElement(os, "Copy element content"));
+    QString text = GTClipboard::text(os);
+    CHECK_SET_ERR(text=="Call Variants", "copy content works wrong\n" + text);
+//    7. Choose "Copy element content" on any tree element and paste the data to any editor.
+//       Expected state: correct data was copied.
+//    8. Select some amount of text on a tree and click on "Copy selected text" which is now should be available.
+    GTUtilsDashboard::click(os, GTUtilsDashboard::findTreeElement(os, "SAMtools run 1"));
+    QWebElement el = GTUtilsDashboard::findElement(os, "samtools-0.1.19/samtools", "SPAN");
+    GTUtilsDashboard::selectElementText(os, el);
+    GTUtilsDashboard::click(os, el, Qt::RightButton);
+    GTUtilsDashboard::click(os, GTUtilsDashboard::findContextMenuElement(os, "Copy selected text"));
+//       Paste the data in any editor.
+    text = GTClipboard::text(os);
+    CHECK_SET_ERR(text.contains("samtools-0.1.19/samtools"), "copy text works wrong\n" + text);
+//       Expected state: selected data was copied.
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2202 )
 {
 //    1. Open Workflow Designer first time (e.g. remove UGENE.ini before it).
@@ -2688,6 +2727,22 @@ GUI_TEST_CLASS_DEFINITION(test_2373) {
     GTMouseDriver::click(os);
 
     GTUtilsLog::check(os, logTracer);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2374){
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Create scheme read alignment->write alignment
+    WorkflowProcessItem *read = GTUtilsWorkflowDesigner::addElement(os, "Read Alignment");
+    WorkflowProcessItem *write = GTUtilsWorkflowDesigner::addElement(os, "Write Alignment");
+    GTUtilsWorkflowDesigner::connect(os, read, write);
+//    3. Set COI.aln as input, run scheme
+    GTUtilsWorkflowDesigner::click(os, read);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: there is no "External Tools" page on the WD dashboards
+    GTUtilsDashboard::checkElement(os, "External Tools", "A", false );
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2375 ) {
@@ -3967,6 +4022,35 @@ GUI_TEST_CLASS_DEFINITION( test_2568 ){
 
     GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Call Variants Wizard", new customWizard()));
     GTWidget::click(os, GTAction::button(os, "Show wizard"));
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2569 ){
+//    1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Add the Call Variants sample.
+    GTUtilsWorkflowDesigner::addSample(os, "call variants");
+//    3. Set valid input data.
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Assembly (BAM/SAM)"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Call_variants/input_data/chrM", "chrM.sorted.bam");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Call_variants/input_data/chrM", "chrM.fa");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    4. Click "External Tools" on the appeared Dashboard.
+    GTUtilsDashboard::openTab(os, GTUtilsDashboard::ExternalTools);
+//    5. Expand "SAMtools run 1"
+    GTUtilsDashboard::click(os, GTUtilsDashboard::findTreeElement(os, "SAMtools run 1"));
+//    6. Right click on the child element of the "Arguments" element.
+    GTUtilsDashboard::click(os, GTUtilsDashboard::findTreeElement(os, "Arguments"), Qt::RightButton);
+//    7. Click "Copy element content".
+    GTUtilsDashboard::click(os, GTUtilsDashboard::findContextMenuElement(os, "Copy element content"));
+//    8. Check the clipboard.
+    QString clipboardText = GTClipboard::text(os);
+//    Expected state: the clipboard content is the same to the element content.
+    CHECK_SET_ERR(clipboardText == "Arguments", "copy element content works wrong " + clipboardText);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2570 ) {

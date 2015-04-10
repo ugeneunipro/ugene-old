@@ -91,12 +91,29 @@ void GTUtilsDashboard::checkElement(U2OpStatus &os, QString text, QString tag, b
 }
 #undef GT_METHOD_NAME
 
+QWebElement GTUtilsDashboard::findTreeElement(U2OpStatus &os, QString text){
+    return findElement(os, text, "SPAN");
+}
+
+QWebElement GTUtilsDashboard::findContextMenuElement(U2OpStatus &os, QString text){
+    return findElement(os, text, "LI");
+}
+
 void GTUtilsDashboard::click(U2OpStatus &os, QWebElement el, Qt::MouseButton button){
     QWebView* dashboard = getDashboard(os);
 
     GTMouseDriver::moveTo(os, dashboard->mapToGlobal(el.geometry().center()));
     GTMouseDriver::click(os, button);
 }
+
+void GTUtilsDashboard::selectElementText(U2OpStatus &os, QWebElement el){
+    QWebView* dashboard = getDashboard(os);
+    GTMouseDriver::moveTo(os, dashboard->mapToGlobal(el.geometry().topLeft()) + QPoint(5,5));
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, dashboard->mapToGlobal(el.geometry().bottomRight()) - QPoint(5,5));
+    GTMouseDriver::release(os);
+}
+
 #define GT_METHOD_NAME "openTab"
 void GTUtilsDashboard::openTab(U2OpStatus &os, Tabs tab){
     QWebElement el = findElement(os, tabMap.key(tab), "A");
