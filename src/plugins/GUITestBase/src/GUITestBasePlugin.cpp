@@ -239,6 +239,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1001_3);
     REGISTER_TEST(GUITest_regression_scenarios::test_1001_4);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1003, "too long test");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1011);
     REGISTER_TEST(GUITest_regression_scenarios::test_1013);
     REGISTER_TEST(GUITest_regression_scenarios::test_1015);
     REGISTER_TEST(GUITest_regression_scenarios::test_1015_1);

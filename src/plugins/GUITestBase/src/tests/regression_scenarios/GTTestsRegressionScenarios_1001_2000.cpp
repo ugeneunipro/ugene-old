@@ -298,6 +298,18 @@ GUI_TEST_CLASS_DEFINITION(test_1003) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1011) {
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    QWidget *pw = GTWidget::findWidget(os, "pan_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    CHECK_SET_ERR(pw != NULL, "cant get panview idget");
+    QList<QScrollBar*> widgetList =  pw->findChildren<QScrollBar*>();
+    CHECK_SET_ERR(widgetList.size() == 2, "scroll bars count should be 2");
+    foreach(QScrollBar *sbar, widgetList) {
+        CHECK_SET_ERR(sbar->maximum() == 0, "maximum is not 0");
+        CHECK_SET_ERR(sbar->minimum() == 0, "minimum is not 0");
+    }
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1013) {
 
     // 1) Open any MSA (data\samples\MSF\HMA.msf)
