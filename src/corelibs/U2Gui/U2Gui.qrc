@@ -166,5 +166,6 @@
         <file>images/collapse_tree.png</file>
         <file>images/reroot.png</file>
         <file>images/swap.png</file>
+        <file>images/expand_tree.png</file>
     </qresource>
 </RCC>

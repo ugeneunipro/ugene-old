@@ -249,6 +249,9 @@ void TreeViewer::buildStaticToolbar(QToolBar* tb)
 {
     // Tree Settings
     tb->addAction(treeSettingsAction);
+    tb->addAction(collapseAction);
+    tb->addAction(rerootAction);
+    tb->addAction(swapAction);
 
     // Layout
     QToolButton* layoutButton = new QToolButton(tb);
@@ -262,9 +265,6 @@ void TreeViewer::buildStaticToolbar(QToolBar* tb)
 
     // Branch Settings
     tb->addAction(branchesSettingsAction);
-    tb->addAction(collapseAction);
-    tb->addAction(rerootAction);
-    tb->addAction(swapAction);
 
     // Labels and Text Settings
     tb->addSeparator();
@@ -1478,8 +1478,10 @@ void TreeViewerUI::updateActionsState(){
 
     if(isSelectedCollapsed()){
         collapseAction->setText(QObject::tr("Expand"));
+        collapseAction->setIcon(QIcon(":/core/images/expand_tree.png"));
     }else{
         collapseAction->setText(QObject::tr("Collapse"));
+        collapseAction->setIcon(QIcon(":/core/images/collapse_tree.png"));
     }
 
     QList<QGraphicsItem*> updatingItems = scene()->selectedItems();
