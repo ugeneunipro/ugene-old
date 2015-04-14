@@ -239,7 +239,7 @@ QString PrimersPairStatistics::getFirstError() const {
 }
 
 #define CREATE_COLUMN(name, width, center) \
-    result += QString("<th width=\"%1%\"/><p %2><strong>%3</strong></p></th>").arg(width).arg(center ? "align=\"center\"" : "").arg(name);
+    result += QString("<th width=\"%1%\"/><p %2><strong>%3</strong></p></th>").arg(width).arg(center ? "align=\"center\"" : "align=\"left\"").arg(name);
 
 #define CREATE_CELL(value, good, center) \
     result += QString("<td %1 %2>%3</td>").arg(good ? "" : " style=\"color: red;\"").arg(center ? " align=\"center\"" : "").arg(value);

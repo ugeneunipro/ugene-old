@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="pcr/" >
+        <file>html/report.html</file>
+    </qresource>
+</RCC>

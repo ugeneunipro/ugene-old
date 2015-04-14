@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+    .chapter-content {
+        margin-left: 50px;
+    }
+    .hidden {
+        display: none;
+    }
+    .red {
+        background-color: #FF9999;
+    }
+    .green {
+        background-color: #CCFFCC;
+    }
+</style>
+<script type="text/javascript">
+    function showContent(obj) {
+        var inner = obj.parentNode.getElementsByTagName("div")[0];
+        if (inner.style.display == "block") {
+            inner.style.display = "none";
+        } else {
+            inner.style.display = "block";
+        }
+    }
+</script></head>
+<body>
+</body>
+</html>

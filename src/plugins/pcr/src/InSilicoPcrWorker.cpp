@@ -343,29 +343,19 @@ void InSilicoPcrReportTask::run() {
 }
 
 QByteArray InSilicoPcrReportTask::createReport() const {
-    QByteArray report;
-    report += "<!DOCTYPE html>\n";
-    report += "<html>";
-    report += "<body>";
+    QString html = readHtml();
+    QStringList tokens = html.split("<body>");
+    SAFE_POINT(2 == tokens.size(), "Wrong HTML base", "");
+    QByteArray report = tokens[0].toLocal8Bit() + "<body>\n";
 
     report += productsTable();
-    for (int i=0; i<primers.size(); i++) {
-        QPair<Primer, Primer> pair = primers[i];
-        PrimersPairStatistics calc(pair.first.sequence.toLocal8Bit(), pair.second.sequence.toLocal8Bit());
-
-        report += getChapter(pair.first.name + " / " + pair.second.name);
-        report += calc.generateReport().toLocal8Bit();
-        report += "<hr/>";
-    }
-
-    report += "</body>";
-    report += "</html>";
+    report += primerDetails();
+    report += tokens[1];
     return report;
 }
 
 QByteArray InSilicoPcrReportTask::productsTable() const {
     QByteArray result;
-    result += getChapter(tr("Products count table"));
     result += "<table bordercolor=\"gray\" border=\"1\">";
     result += "<tr>";
     result += PrimerGrouperTask::createColumn(tr("Sequence name"));
@@ -377,16 +367,62 @@ QByteArray InSilicoPcrReportTask::productsTable() const {
         result += "<tr>";
         result += PrimerGrouperTask::createCell(tableRow.sequenceName);
         for (int i=0; i<primers.size(); i++) {
-            result += PrimerGrouperTask::createCell(QString::number(tableRow.productsNumber[i]));
+            QString elemClass = (tableRow.productsNumber[i] == 0) ? "red" : "green";
+            QString classDef = QString ("class=\"%1\"").arg(elemClass);
+            result += PrimerGrouperTask::createCell(QString::number(tableRow.productsNumber[i]), true, classDef);
         }
         result += "</tr>";
     }
-    result += "</table>";
+    result += "</table>\n";
+    return chapterName(tr("Products count table")) + chapterContent(result);
+}
+
+QByteArray InSilicoPcrReportTask::primerDetails() const {
+    QByteArray result;
+    for (int i=0; i<primers.size(); i++) {
+        QPair<Primer, Primer> pair = primers[i];
+        PrimersPairStatistics calc(pair.first.sequence.toLocal8Bit(), pair.second.sequence.toLocal8Bit());
+        result += chapter(
+                chapterName(pair.first.name + " / " + pair.second.name),
+                calc.generateReport().toLocal8Bit()
+            );
+    }
+    return chapterName(tr("Primer pair details")) + chapterContent(result);
+}
+
+QByteArray InSilicoPcrReportTask::chapterName(const QString &name) const {
+    return "<h3>" + name.toLocal8Bit() + "</h3>\n";
+}
+
+QByteArray InSilicoPcrReportTask::chapterContent(const QByteArray &content) const {
+    return "<div class=\"chapter-content\">\n" + content + "</div>\n";
+}
+
+QByteArray InSilicoPcrReportTask::chapter(const QByteArray &name, const QByteArray &content) const {
+    QByteArray result;
+    result += "<div>\n";
+    result += "<a href=\"#\" onclick=\"showContent(this);\">" + name + "</a>\n";
+    result += "<div class=\"hidden\">\n";
+    result += content;
+    result += "</div>\n";
+    result += "</div>\n";
     return result;
 }
 
-QByteArray InSilicoPcrReportTask::getChapter(const QString &name) const {
-    return "<h3>" + name.toLocal8Bit() + "</h3>";
+QString InSilicoPcrReportTask::readHtml() const {
+    static const QString htmlUrl = ":pcr/html/report.html";
+    QFile file(htmlUrl);
+    bool opened = file.open(QIODevice::ReadOnly);
+    if (!opened) {
+        coreLog.error("Can not load " + htmlUrl);
+        return "";
+    }
+
+    QTextStream stream(&file);
+    stream.setCodec("UTF-8");
+    QString result = stream.readAll();
+    file.close();
+    return result;
 }
 
 } // LocalWorkflow

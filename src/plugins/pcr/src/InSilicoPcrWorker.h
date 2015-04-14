@@ -62,9 +62,13 @@ public:
     void run();
 
 private:
-    QByteArray getChapter(const QString &name) const;
+    QByteArray chapterName(const QString &name) const;
     QByteArray createReport() const;
     QByteArray productsTable() const;
+    QByteArray primerDetails() const;
+    QByteArray chapterContent(const QByteArray &content) const;
+    QByteArray chapter(const QByteArray &name, const QByteArray &content) const;
+    QString readHtml() const;
 
 private:
     QList<TableRow> table;

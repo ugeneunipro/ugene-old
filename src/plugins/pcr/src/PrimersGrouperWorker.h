@@ -78,7 +78,7 @@ public:
     void run();
     QString getReport() const { return report; }
 
-    static QString createCell(const QString& value);
+    static QString createCell(const QString& value, bool center = false, const QString &attrs = "");
     static QString createColumn(const QString& name);
 private:
     void generateReport(const QList<QList<int> >& groups);

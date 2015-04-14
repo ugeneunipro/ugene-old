@@ -76,3 +76,5 @@ SOURCES += src/EditPrimerDialog.cpp \
 TRANSLATIONS += transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
+
+RESOURCES += pcr.qrc

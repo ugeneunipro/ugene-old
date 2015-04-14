@@ -309,8 +309,9 @@ QString PrimerGrouperTask::createRow(const QString& groupName, const QString& fo
     return newRow;
 }
 
-QString PrimerGrouperTask::createCell(const QString& value) {
-    return QString("<td align=\"left\">%1</td>").arg(value);
+QString PrimerGrouperTask::createCell(const QString& value, bool center, const QString &attrs) {
+    QString align = center ? "center" : "left";
+    return QString("<td align=\"%1\" %2>%3</td>").arg(align).arg(attrs).arg(value);
 }
 
 QString PrimerGrouperTask::createColumn(const QString& name) {
