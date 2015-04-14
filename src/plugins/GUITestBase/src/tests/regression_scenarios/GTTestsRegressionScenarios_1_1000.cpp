@@ -723,6 +723,35 @@ GUI_TEST_CLASS_DEFINITION(test_0762) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0768) {
+    //    1. Open WD. Press toolbar button "Create script object".
+    //    Expected state: Create element with script dialog appears.
+
+    //    2. Fill the next field in dialog:
+    //        {Name} 123
+
+    //    3. Click OK button.
+
+    //    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTGlobals::sleep(500);
+
+    GTUtilsDialog::waitForDialog(os, new CreateElementWithScriptDialogFiller(os, "123"));
+    GTWidget::click(os, GTAction::button(os, "createScriptAction"));
+
+    //    4. Select created worker. Press toolbar button "Edit script text".
+    //    Expected state: Script editor dialog appears.
+
+    //    5. Paste "xyz" at the script text area. Click "Check syntax" button
+    //    Expected state: messagebox "Syntax is OK!" appears.
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "123"));
+    GTMouseDriver::click(os);
+
+    GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogSyntaxChecker(os, "xyz", "Syntax is OK!"));
+    GTWidget::click(os, GTAction::button(os, "editScriptAction"));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0774) {
 //    1. Create new scheme in Workflow Designer: "Read sequence" > "Write sequence".
 //    2. Input two files in the "Input files" parameter of the "Read sequence" element.
