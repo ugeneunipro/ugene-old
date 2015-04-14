@@ -246,7 +246,12 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
             memoryLocker.tryAcquire(800);
             CHECK_OP_BREAK(os);
             U2Sequence seq = seqImporter.finalizeSequenceAndValidate(os);
-            CHECK_OP_BREAK(os);
+            if (os.hasError() && os.getError() == U2SequenceImporter::EMPTY_SEQUENCE_ERROR) {
+                // show warning message and ignore the error
+                ioLog.error(FastaFormat::tr("There is an empty sequence: %1").arg(headerLine));
+                os.setError("");
+                continue;
+            }
             sequenceRef.entityRef = U2EntityRef(dbiRef, seq.id);
 
             //TODO parse header

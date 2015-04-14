@@ -578,7 +578,7 @@ GUI_TEST_CLASS_DEFINITION(test_0681) {
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 9));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTMouseDriver::click(os, Qt::RightButton);
-    
+
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY << ADV_COPY_TRANSLATION_ACTION, GTGlobals::UseKey));
     GTMenu::showContextMenu(os, mdiWindow);
     GTGlobals::sleep(1000);
@@ -1726,10 +1726,24 @@ GUI_TEST_CLASS_DEFINITION(test_0882) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0886) {
-    // 1. Open file "_common_data/fasta/Gene.fa" in UGENE.
+    // 1. Open file "_common_data/fasta/Gene.fa" in UGENE as separate sequence or as multiple alignment
     // Expected result: UGENE doesn't crash
-    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "Gene.fa");
 
+    GTLogTracer l1;
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "Gene.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    CHECK_SET_ERR(l1.hasError(), "There is no errors in the log");
+
+    GTUtilsProjectTreeView::click(os, "Gene.fa");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    GTLogTracer l2;
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "Gene.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    CHECK_SET_ERR(l2.hasError(), "There is no errors in the log");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0888) {

@@ -271,6 +271,7 @@ static CaseAnnotationsMode getCaseAnnotationsModeHint(const QVariantMap& fs)
     return NO_CASE_ANNS;
 }
 
+const QString U2SequenceImporter::EMPTY_SEQUENCE_ERROR = U2SequenceUtils::tr("Sequence was not imported. Probably, this is because the sequence is empty.");
 
 U2SequenceImporter::U2SequenceImporter(const QVariantMap& fs, bool lazyMode, bool singleThread)
 : lazyMode(lazyMode), singleThread(singleThread), sequenceCreated(false)
@@ -483,7 +484,7 @@ U2Sequence U2SequenceImporter::finalizeSequenceAndValidate(U2OpStatus &os) {
     U2Sequence result = finalizeSequence(os);
     CHECK_OP(os, result);
     if (!result.hasValidId()) {
-        os.setError(U2SequenceUtils::tr("Sequence was not imported. Probably, this is because the sequence is empty."));
+        os.setError(EMPTY_SEQUENCE_ERROR);
     }
     return result;
 }

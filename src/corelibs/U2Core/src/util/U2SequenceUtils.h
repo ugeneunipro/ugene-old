@@ -68,6 +68,7 @@ public:
 /** Class used to efficiently import sequence into DBI */
 class U2CORE_EXPORT U2SequenceImporter {
 public:
+    static const QString EMPTY_SEQUENCE_ERROR;
     U2SequenceImporter(const QVariantMap& fs = QVariantMap(), bool lazyMode = false, bool singleThread = true);
     U2SequenceImporter(qint64 _insertBlockSize, const QVariantMap& fs = QVariantMap(),
         bool lazyMode = false, bool singleThread = true);
