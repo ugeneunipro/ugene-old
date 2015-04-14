@@ -199,6 +199,8 @@ public:
     virtual U2Region getAnnotationYRange(Annotation *a, int region, const AnnotationSettings *as) const;
     virtual U2Region getMirroredYRange( const U2Strand &mirroredStrand) const {Q_UNUSED(mirroredStrand); return U2Region(-1,0);}
 
+    // returns the height
+    int setNumVisibleRows(int rowNum);
     bool updateNumVisibleRows();
     bool isAllLinesShown();
 
@@ -224,6 +226,7 @@ private:
     }
 
     int getFirstRowLine()const {return numLines - 2 - (showMainRuler ? 1 : 0) - (showCustomRulers ? customRulers.count() : 0 );}
+    int getAdditionalLines() const { return 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0); }
 
     bool isSequenceCharsVisible() const;
 

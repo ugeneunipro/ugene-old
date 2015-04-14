@@ -57,6 +57,7 @@ namespace U2 {
 
 #define RULER_NOTCH_SIZE 2
 #define MAX_VISIBLE_ROWS 20
+#define MAX_VISIBLE_ROWS_ON_START 10
 
 PanView::ZoomUseObject::ZoomUseObject()
 : usingZoom(false), panView(NULL) {}
@@ -159,6 +160,8 @@ PanView::PanView(ADVSingleSequenceWidget* p, ADVSequenceObjectContext* ctx)
     updateActions();
     updateRowBar();
 
+    resize(width(), getRenderArea()->setNumVisibleRows(MAX_VISIBLE_ROWS_ON_START));
+
     pack();
 }
 
@@ -171,8 +174,6 @@ void PanView::pack() {
     layout->addWidget(rowBar, 0, 1, 2, 1);
     layout->addWidget(scrollBar, 1, 0, 1, 1);
     setLayout(layout);
-
-    setMinimumHeight(layout->minimumSize().height());
 }
 
 PanView::~PanView() {
@@ -925,9 +926,17 @@ void PanViewRenderArea::setRowLinesOffset(int r) {
     }
 }
 
+int PanViewRenderArea::setNumVisibleRows(int rowNum) {
+    numLines = qMin( rowNum, getPanView()->getRowsManager()->getNumRows() + getAdditionalLines());
+
+    view->addUpdateFlags(GSLV_UF_ViewResized);
+    view->update();
+
+    return numLines * lineHeight;
+}
+
 bool PanViewRenderArea::updateNumVisibleRows() {
-    int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
-    numLines = qMin( height() / lineHeight, getPanView()->getRowsManager()->getNumRows() + additionalLines );
+    numLines = qMin( height() / lineHeight, getPanView()->getRowsManager()->getNumRows() + getAdditionalLines() );
 
     view->addUpdateFlags(GSLV_UF_ViewResized);
     view->update();
@@ -935,8 +944,7 @@ bool PanViewRenderArea::updateNumVisibleRows() {
 }
 
 bool PanViewRenderArea::isAllLinesShown() {
-    int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
-    return numLines == (getPanView()->getRowsManager()->getNumRows() + additionalLines);
+    return numLines == (getPanView()->getRowsManager()->getNumRows() + getAdditionalLines());
 }
 
 } //namespace
