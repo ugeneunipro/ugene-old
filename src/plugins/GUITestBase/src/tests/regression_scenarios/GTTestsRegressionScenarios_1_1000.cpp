@@ -269,6 +269,37 @@ GUI_TEST_CLASS_DEFINITION(test_0057_5) {
         CHECK_SET_ERR(item->type == AVItemType_Group, "There are items selected");
     }
 }
+GUI_TEST_CLASS_DEFINITION(test_0073_1) {
+/* 1) Open "Find substrings in sequences" WD sample
+ * 2) Click on "Find substrings" element
+ *   Expected state: "Qualifier name for pattern name" element parameter presents
+*/
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::addSample(os, "Find substrings in sequences");
+
+    GTUtilsWorkflowDesigner::click(os, "Find Substrings");
+
+    QString patternName = GTUtilsWorkflowDesigner::getParameter(os, "Qualifier name for pattern name");//pattern_name
+
+    CHECK_SET_ERR( patternName == QString("pattern_name"), "Parameter 'Qualifier name for pattern name' has wrong default value" );
+}
+GUI_TEST_CLASS_DEFINITION(test_0073_2) {
+/* 1) Open "Find patterns" WD sample
+ * 2) Click on "Find Pattern" element
+ *   Expected state: "Qualifier name for pattern name" element parameter presents
+*/
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::addSample(os, "Find patterns");
+
+    GTUtilsWorkflowDesigner::click(os, "Find Pattern");
+
+    QString patternName = GTUtilsWorkflowDesigner::getParameter(os, "Qualifier name for pattern name");//pattern_name
+
+    CHECK_SET_ERR( patternName == QString("pattern_name"), "Parameter 'Qualifier name for pattern name' has wrong default value" );
+
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0407) {
     // 1. Open _common_data/scenarios/_regression/407/trail.fas
