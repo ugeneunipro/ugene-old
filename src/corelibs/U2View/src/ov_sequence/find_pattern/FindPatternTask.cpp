@@ -21,10 +21,9 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/Log.h>
 #include <U2Core/U2SafePoints.h>
-
-#include <U2Formats/GenbankFeatures.h>
 
 #include "FindPatternTask.h"
 

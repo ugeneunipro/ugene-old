@@ -129,7 +129,6 @@ SendSelectionDialog::SendSelectionDialog(const U2SequenceObject* dnaso, bool _is
     : QDialog(p), translateToAmino(false), isAminoSeq(_isAminoSeq), extImported(false)
 {
     CreateAnnotationModel ca_m;
-    ca_m.data->name = "misc_feature";
     ca_m.hideAnnotationType = true;
     ca_m.hideAnnotationName = true;
     ca_m.hideLocation = true;
@@ -190,6 +189,10 @@ void SendSelectionDialog::sl_megablastChecked(int state) {
 
 QString SendSelectionDialog::getGroupName() const {
     return ca_c->getModel().groupName;
+}
+
+const QString &SendSelectionDialog::getAnnotationDescription() const {
+    return ca_c->getModel().description;
 }
 
 const CreateAnnotationModel *SendSelectionDialog::getModel() const {

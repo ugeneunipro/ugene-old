@@ -108,8 +108,15 @@ void DNAFlexDialog::accept()
     QString annotName = annotModel.data->name;
     QString annotGroup = annotModel.groupName;
 
+
     // Creating the task
-    DNAFlexTask* task = new DNAFlexTask(settings, annotModel.getAnnotationObject(), annotName, annotGroup, ctx->getSequenceObject()->getWholeSequence());
+    DNAFlexTask* task = new DNAFlexTask(
+        settings,
+        annotModel.getAnnotationObject(),
+        annotName,
+        annotGroup,
+        annotModel.description,
+        ctx->getSequenceObject()->getWholeSequence());
 
     // Registering the task
     AppContext::getTaskScheduler()->registerTopLevelTask(task);

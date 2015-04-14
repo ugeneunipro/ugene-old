@@ -233,7 +233,7 @@ void GTest_uHMMERSearch::prepare() {
     AnnotationTableObject *ao = new AnnotationTableObject( "Annotations", aDoc->getDbiRef( ) );
     aDoc->addObject(ao);
     DNASequence dnaSequence = mySequence->getWholeSequence();
-    searchTask = new HMMSearchToAnnotationsTask(env->getVar("COMMON_DATA_DIR")+"/"+hmmFileName, dnaSequence, ao, annotationName, U2FeatureTypes::MiscSignal, annotationName, s);
+    searchTask = new HMMSearchToAnnotationsTask(env->getVar("COMMON_DATA_DIR")+"/"+hmmFileName, dnaSequence, ao, annotationName, "", U2FeatureTypes::MiscSignal, annotationName, s);
     addSubTask(searchTask);
 }
 

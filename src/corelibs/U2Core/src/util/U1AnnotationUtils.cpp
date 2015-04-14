@@ -26,6 +26,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiRegistry.h>
@@ -404,6 +405,26 @@ QList <AnnotatedRegion> U1AnnotationUtils::getAnnotatedRegionsByStartPos(QList<A
         }
     }
     return result;
+}
+
+void U1AnnotationUtils::addDescriptionQualifier(QList<SharedAnnotationData> &annotations, const QString &description) {
+    for (int i = 0; i < annotations.size(); i++) {
+        addDescriptionQualifier(annotations[i], description);
+    }
+}
+
+void U1AnnotationUtils::addDescriptionQualifier(SharedAnnotationData &annotationData, const QString &description) {
+    CHECK(!description.isEmpty(), );
+
+    for (int i = 0; i < annotationData->qualifiers.size(); i++) {
+        U2Qualifier &qualifier = annotationData->qualifiers[i];
+        if (GBFeatureUtils::QUALIFIER_NOTE == qualifier.name) {
+            qualifier.value = description;
+            return;
+        }
+    }
+
+    annotationData->qualifiers << U2Qualifier(GBFeatureUtils::QUALIFIER_NOTE, description);
 }
 
 } //namespace

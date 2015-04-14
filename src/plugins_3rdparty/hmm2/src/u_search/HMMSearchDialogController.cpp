@@ -19,16 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000)//Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#include <QtGui/QVBoxLayout>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QVBoxLayout>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
@@ -37,6 +30,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/HelpButton.h>
@@ -152,7 +146,7 @@ void HMMSearchDialogController::sl_okClicked(){
     
     const CreateAnnotationModel& cm = createController->getModel();
     QString annotationName = cm.data->name;
-    searchTask = new HMMSearchToAnnotationsTask(hmmFile, dnaSequence, cm.getAnnotationObject(), cm.groupName, cm.data->type, annotationName, s);
+    searchTask = new HMMSearchToAnnotationsTask(hmmFile, dnaSequence, cm.getAnnotationObject(), cm.groupName, cm.description, cm.data->type, annotationName, s);
     searchTask->setReportingEnabled(true);
     connect(searchTask, SIGNAL(si_stateChanged()), SLOT(sl_onStateChanged()));
     connect(searchTask, SIGNAL(si_progressChanged()), SLOT(sl_onProgressChanged()));
@@ -194,11 +188,16 @@ void HMMSearchDialogController::sl_onProgressChanged(){
 //////////////////////////////////////////////////////////////////////////
 // TASKS
 
-HMMSearchToAnnotationsTask::HMMSearchToAnnotationsTask(const QString& _hmmFile, const DNASequence& s,
-                                                       AnnotationTableObject *ao, const QString& _agroup, U2FeatureType aType, const QString& _aname,
+HMMSearchToAnnotationsTask::HMMSearchToAnnotationsTask(const QString& _hmmFile,
+                                                       const DNASequence& s,
+                                                       AnnotationTableObject *ao,
+                                                       const QString& _agroup,
+                                                       const QString &annDescription,
+                                                       U2FeatureType aType,
+                                                       const QString& _aname,
                                                        const UHMMSearchSettings& _settings)
 : Task("", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported), 
-hmmFile(_hmmFile), dnaSequence(s), agroup(_agroup), aType(aType), aname(_aname), settings(_settings),
+hmmFile(_hmmFile), dnaSequence(s), agroup(_agroup), annDescription(annDescription), aType(aType), aname(_aname), settings(_settings),
 readHMMTask(NULL), searchTask(NULL), createAnnotationsTask(NULL), aobj(ao)
 {
     setVerboseLogMode(true);
@@ -238,7 +237,8 @@ QList<Task*> HMMSearchToAnnotationsTask::onSubTaskFinished(Task* subTask){
     } else if (createAnnotationsTask == NULL){
         assert(searchTask->isFinished()&& !searchTask->hasError());
         QList<SharedAnnotationData> annotations = searchTask->getResultsAsAnnotations(aType, aname);
-        if (!annotations.isEmpty()){
+        U1AnnotationUtils::addDescriptionQualifier(annotations, annDescription);
+        if (!annotations.isEmpty()) {
             createAnnotationsTask = new CreateAnnotationsTask(aobj, annotations, agroup);
             createAnnotationsTask->setSubtaskProgressWeight(0);
             res.append(createAnnotationsTask);

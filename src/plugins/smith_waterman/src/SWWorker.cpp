@@ -19,46 +19,46 @@
 * MA 02110-1301, USA.
 */
 
-#include "SWWorker.h"
+#include <U2Algorithm/SWResultFilterRegistry.h>
+#include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
+#include <U2Algorithm/SubstMatrixRegistry.h>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNAInfo.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNATranslation.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/AppContext.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/FailTask.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GenbankFeatures.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
-#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/MSAUtils.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/PluginModel.h>
-#include <U2Core/FailTask.h>
-#include <U2Core/TaskSignalMapper.h>
 #include <U2Core/SequenceWalkerTask.h>
-#include <U2Core/DNAInfo.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/MSAUtils.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/TaskSignalMapper.h>
 #include <U2Core/U2OpStatusUtils.h>
-#include <U2Formats/GenbankFeatures.h>
-
-#include <U2Lang/IntegralBusModel.h>
-#include <U2Lang/WorkflowEnv.h>
-#include <U2Lang/ActorPrototypeRegistry.h>
-#include <U2Lang/BaseTypes.h>
-#include <U2Lang/BaseSlots.h>
-#include <U2Lang/BasePorts.h>
-#include <U2Lang/BaseActorCategories.h>
-#include <U2Lang/BaseAttributes.h>
-
-#include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
-#include <U2Algorithm/SubstMatrixRegistry.h>
-#include <U2Algorithm/SWResultFilterRegistry.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Designer/DelegateEditors.h>
 
 #include <U2Gui/DialogUtils.h>
+
+#include <U2Lang/ActorPrototypeRegistry.h>
+#include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/BaseAttributes.h>
+#include <U2Lang/BasePorts.h>
+#include <U2Lang/BaseSlots.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/IntegralBusModel.h>
+#include <U2Lang/WorkflowEnv.h>
+
+#include "SWWorker.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -491,7 +491,7 @@ Task* SWWorker::tick() {
                 ->getAttributeValue<bool>(context) ? patternNames.value(p, defaultName)
                 : defaultName;
             SmithWatermanReportCallbackAnnotImpl* rcb = new SmithWatermanReportCallbackAnnotImpl(
-                NULL, U2FeatureTypes::MiscFeature, resultName, QString(), false);
+                NULL, U2FeatureTypes::MiscFeature, resultName, QString(), "", false);
             config.resultCallback = rcb;
             config.resultListener = new SmithWatermanResultListener();
 

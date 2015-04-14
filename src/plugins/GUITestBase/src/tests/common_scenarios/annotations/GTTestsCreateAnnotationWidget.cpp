@@ -27,6 +27,7 @@
 #include "GTTestsCreateAnnotationWidget.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsDialog.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
@@ -3087,7 +3088,303 @@ GUI_TEST_CLASS_DEFINITION(test_0039) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0040) {
+//    Test common options panel widget behavior.
 
+//    1. Open "data/samples/FASTA/human_T1.fa".
+    openFileOpenSearchTabAndSetPattern(os, dataDir + "samples/FASTA/human_T1.fa", "");
+
+//    2. Open "Search in Sequence" options panel tab. Open "Save annotation(s) to" group.
+    GTUtilsOptionPanelSequenceView::openSaveAnnotationToShowHideWidget(os);
+
+//    3. Check if destination table widgets are enabled or disabled.
+//    Expected state:
+//        Existing table radio button - disabled
+//        Existing table combobox - disabled
+//        Existing table browse button - disabled
+//        New table radio button - enabled
+//        New table lineedit - enabled
+//        New table browse button - enabled
+//        Auto table radio button - invisible
+    QRadioButton *rbExistingTable = GTWidget::findExactWidget<QRadioButton *>(os, "rbExistingTable");
+    CHECK_SET_ERR(NULL != rbExistingTable, "rbExistingTable is NULL");
+    CHECK_SET_ERR(!rbExistingTable->isEnabled(), "rbExistingTable is unexpectedly enabled");
+
+    QComboBox *cbExistingTable = GTWidget::findExactWidget<QComboBox *>(os, "cbExistingTable");
+    CHECK_SET_ERR(NULL != cbExistingTable, "cbExistingTable is NULL");
+    CHECK_SET_ERR(!cbExistingTable->isEnabled(), "cbExistingTable is unexpectedly enabled");
+
+    QToolButton *tbBrowseExistingTable = GTWidget::findExactWidget<QToolButton *>(os, "tbBrowseExistingTable");
+    CHECK_SET_ERR(NULL != tbBrowseExistingTable, "tbBrowseExistingTable is NULL");
+    CHECK_SET_ERR(!tbBrowseExistingTable->isEnabled(), "tbBrowseExistingTable is unexpectedly enabled");
+
+    QRadioButton *rbCreateNewTable = GTWidget::findExactWidget<QRadioButton *>(os, "rbCreateNewTable");
+    CHECK_SET_ERR(NULL != rbCreateNewTable, "rbCreateNewTable is NULL");
+    CHECK_SET_ERR(rbCreateNewTable->isEnabled(), "rbCreateNewTable is unexpectedly disabled");
+
+    QLineEdit *leNewTablePath = GTWidget::findExactWidget<QLineEdit *>(os, "leNewTablePath");
+    CHECK_SET_ERR(NULL != leNewTablePath, "leNewTablePath is NULL");
+    CHECK_SET_ERR(leNewTablePath->isEnabled(), "leNewTablePath is unexpectedly disabled");
+
+    QToolButton *tbBrowseNewTable = GTWidget::findExactWidget<QToolButton *>(os, "tbBrowseNewTable");
+    CHECK_SET_ERR(NULL != tbBrowseNewTable, "tbBrowseNewTable is NULL");
+    CHECK_SET_ERR(tbBrowseNewTable->isEnabled(), "tbBrowseNewTable is unexpectedly disabled");
+
+    QRadioButton *rbUseAutoTable = GTWidget::findExactWidget<QRadioButton *>(os, "rbUseAutoTable");
+    CHECK_SET_ERR(NULL != rbUseAutoTable, "rbUseAutoTable is NULL");
+    CHECK_SET_ERR(!rbUseAutoTable->isVisible(), "rbUseAutoTable is unexpectedly visible");
+
+//    4. Open "Annotation parameters" group. Check "Use pattern name" checkbox state.
+    GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os);
+
+//    Expected state: it is visible and enabled.
+    QCheckBox *chbUsePatternNames = GTWidget::findExactWidget<QCheckBox *>(os, "chbUsePatternNames");
+    CHECK_SET_ERR(NULL != chbUsePatternNames, "chbUsePatternNames is NULL");
+    CHECK_SET_ERR(chbUsePatternNames->isVisible(), "chbUsePatternNames is unexpectedly invisible");
+    CHECK_SET_ERR(chbUsePatternNames->isEnabled(), "chbUsePatternNames is unexpectedly disabled");
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
+
+//    5. Open "data/samples/Genbank/murine.gb".
+    openFileOpenSearchTabAndSetPattern(os, dataDir + "samples/Genbank/murine.gb", "");
+
+//    6. Open "Search in Sequence" options panel tab. Open "Save annotation(s) to" group.
+    GTUtilsOptionPanelSequenceView::openSaveAnnotationToShowHideWidget(os);
+
+//    7. Check if destination table widgets are enabled or disabled.
+//    Expected state:
+//        Existing table radio button - enabled
+//        Existing table combobox - enabled
+//        Existing table browse button - enabled
+//        New table radio button - enabled
+//        New table lineedit - disabled
+//        New table browse button - disabled
+//        Auto table radio button - invisible
+    rbExistingTable = GTWidget::findExactWidget<QRadioButton *>(os, "rbExistingTable");
+    CHECK_SET_ERR(NULL != rbExistingTable, "rbExistingTable is NULL");
+    CHECK_SET_ERR(rbExistingTable->isEnabled(), "rbExistingTable is unexpectedly disabled");
+
+    cbExistingTable = GTWidget::findExactWidget<QComboBox *>(os, "cbExistingTable");
+    CHECK_SET_ERR(NULL != cbExistingTable, "cbExistingTable is NULL");
+    CHECK_SET_ERR(cbExistingTable->isEnabled(), "cbExistingTable is unexpectedly disabled");
+
+    tbBrowseExistingTable = GTWidget::findExactWidget<QToolButton *>(os, "tbBrowseExistingTable");
+    CHECK_SET_ERR(NULL != tbBrowseExistingTable, "tbBrowseExistingTable is NULL");
+    CHECK_SET_ERR(tbBrowseExistingTable->isEnabled(), "tbBrowseExistingTable is unexpectedly disabled");
+
+    rbCreateNewTable = GTWidget::findExactWidget<QRadioButton *>(os, "rbCreateNewTable");
+    CHECK_SET_ERR(NULL != rbCreateNewTable, "rbCreateNewTable is NULL");
+    CHECK_SET_ERR(rbCreateNewTable->isEnabled(), "rbCreateNewTable is unexpectedly disabled");
+
+    leNewTablePath = GTWidget::findExactWidget<QLineEdit *>(os, "leNewTablePath");
+    CHECK_SET_ERR(NULL != leNewTablePath, "leNewTablePath is NULL");
+    CHECK_SET_ERR(!leNewTablePath->isEnabled(), "leNewTablePath is unexpectedly enabled");
+
+    tbBrowseNewTable = GTWidget::findExactWidget<QToolButton *>(os, "tbBrowseNewTable");
+    CHECK_SET_ERR(NULL != tbBrowseNewTable, "tbBrowseNewTable is NULL");
+    CHECK_SET_ERR(!tbBrowseNewTable->isEnabled(), "tbBrowseNewTable is unexpectedly enabled");
+
+    rbUseAutoTable = GTWidget::findExactWidget<QRadioButton *>(os, "rbUseAutoTable");
+    CHECK_SET_ERR(NULL != rbUseAutoTable, "rbUseAutoTable is NULL");
+    CHECK_SET_ERR(!rbUseAutoTable->isVisible(), "rbUseAutoTable is unexpectedly visible");
+
+//    8. Select "Create new table" option. Check if destination table widgets are enabled or disabled.
+    GTWidget::click(os, GTWidget::findWidget(os, "rbCreateNewTable"));
+
+//    Expected state:
+//        Existing table radio button - enabled
+//        Existing table combobox - disabled
+//        Existing table browse button - disabled
+//        New table radio button - enabled
+//        New table lineedit - enabled
+//        New table browse button - enabled
+//        Auto table radio button - invisible
+    CHECK_SET_ERR(rbExistingTable->isEnabled(), "rbExistingTable is unexpectedly disabled");
+    CHECK_SET_ERR(!cbExistingTable->isEnabled(), "cbExistingTable is unexpectedly enabled");
+    CHECK_SET_ERR(!tbBrowseExistingTable->isEnabled(), "tbBrowseExistingTable is unexpectedly enabled");
+    CHECK_SET_ERR(rbCreateNewTable->isEnabled(), "rbCreateNewTable is unexpectedly disabled");
+    CHECK_SET_ERR(leNewTablePath->isEnabled(), "leNewTablePath is unexpectedly disabled");
+    CHECK_SET_ERR(tbBrowseNewTable->isEnabled(), "tbBrowseNewTable is unexpectedly disabled");
+    CHECK_SET_ERR(!rbUseAutoTable->isVisible(), "rbUseAutoTable is unexpectedly visible");
+
+//    9. Select "Existing table" option. Check if destination table widgets are enabled or disabled.
+    GTWidget::click(os, GTWidget::findWidget(os, "rbExistingTable"));
+
+//    Expected state:
+//        Existing table radio button - enabled
+//        Existing table combobox - enabled
+//        Existing table browse button - enabled
+//        New table radio button - enabled
+//        New table lineedit - disabled
+//        New table browse button - disabled
+//        Auto table radio button - invisible
+    CHECK_SET_ERR(rbExistingTable->isEnabled(), "rbExistingTable is unexpectedly disabled");
+    CHECK_SET_ERR(cbExistingTable->isEnabled(), "cbExistingTable is unexpectedly disabled");
+    CHECK_SET_ERR(tbBrowseExistingTable->isEnabled(), "tbBrowseExistingTable is unexpectedly disabled");
+    CHECK_SET_ERR(rbCreateNewTable->isEnabled(), "rbCreateNewTable is unexpectedly disabled");
+    CHECK_SET_ERR(!leNewTablePath->isEnabled(), "leNewTablePath is unexpectedly enabled");
+    CHECK_SET_ERR(!tbBrowseNewTable->isEnabled(), "tbBrowseNewTable is unexpectedly enabled");
+    CHECK_SET_ERR(!rbUseAutoTable->isVisible(), "rbUseAutoTable is unexpectedly visible");
+
+//    10. Open "Annotation parameters" group. Check "Use pattern name" checkbox state.
+    GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os);
+
+//    Expected state: it is visible and enabled.
+    chbUsePatternNames = GTWidget::findExactWidget<QCheckBox *>(os, "chbUsePatternNames");
+    CHECK_SET_ERR(NULL != chbUsePatternNames, "chbUsePatternNames is NULL");
+    CHECK_SET_ERR(chbUsePatternNames->isVisible(), "chbUsePatternNames is unexpectedly invisible");
+    CHECK_SET_ERR(chbUsePatternNames->isEnabled(), "chbUsePatternNames is unexpectedly disabled");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0041) {
+//    Test annotation description field on full widget
+
+//    1. Open "data/samples/FASTA/human_T1.fa".
+//    2. Call "Create new annotation" dialog.
+//    3. Create an annotation without a description.
+
+    class Scenario1 : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            setAnnotationName(os, "test_0041_1", dialog);
+            setGenbankLocation(os, "1..100", dialog);
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leDescription", dialog), "");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, new Scenario1));
+    openFileAndCallCreateAnnotationDialog(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: a new annotation appears, it hasn't qualifier "note".
+    GTUtilsAnnotationsTreeView::selectItems(os, QStringList() << "test_0041_1");
+    QTreeWidgetItem *descriptionItem = GTUtilsAnnotationsTreeView::findItem(os, "note", GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(NULL == descriptionItem, "There is an unexpected note qualifier");
+
+//    4. Call "Create new annotation" dialog.
+//    5. Create an annotation with some description.
+    class Scenario2 : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            setAnnotationName(os, "test_0041_2", dialog);
+            setGenbankLocation(os, "100..200", dialog);
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leDescription", dialog), "test_0041_2 description");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, new Scenario2));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "New annotation");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: a new annotation appears, it has a qualifier "note" with description.
+    const QString description = GTUtilsAnnotationsTreeView::getQualifierValue(os, "note", "test_0041_2");
+    CHECK_SET_ERR("test_0041_2 description" == description,
+                  QString("An unexpected annotation description: expect '%1', got '%2'")
+                  .arg("test_0041_2 description").arg(description));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0042) {
+//    Test annotation description field in an embedded widget
+
+//    1. Open "data/samples/FASTA/human_T1.fa".
+//    2. Call "Smith-Waterman" dialog. Set any pattern. Open "Input and output" tab.
+
+    class Scenario1 : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            setSmithWatermanPatternAndOpenLastTab(os, dialog);
+
+//    3. Ensure that description field is empty. Accept the dialog.
+            setAnnotationName(os, "test_0042_1", dialog);
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leDescription", dialog), "");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SmithWatermanDialogFiller(os, new Scenario1));
+    openFileAndCallSmithWatermanDialog(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: a new annotation appears, it hasn't qualifier "note".
+    GTUtilsAnnotationsTreeView::selectItems(os, QStringList() << "test_0042_1");
+    QTreeWidgetItem *descriptionItem = GTUtilsAnnotationsTreeView::findItem(os, "note", GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(NULL == descriptionItem, "There is an unexpected note qualifier");
+
+//    4. Call "Smith-Waterman" dialog. Set any pattern. Open "Input and output" tab.
+
+    class Scenario2 : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            setSmithWatermanPatternAndOpenLastTab(os, dialog);
+
+//    5. Enter any description. Accept the dialog.
+            setAnnotationName(os, "test_0042_2", dialog);
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leDescription", dialog), "test_0042_2 description");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SmithWatermanDialogFiller(os, new Scenario2));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Find pattern [Smith-Waterman]");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: a new annotation appears, it has a qualifier "note" with description.
+    const QString description = GTUtilsAnnotationsTreeView::getQualifierValue(os, "note", "test_0042_2");
+    CHECK_SET_ERR("test_0042_2 description" == description,
+                  QString("An unexpected annotation description: expect '%1', got '%2'")
+                  .arg("test_0042_2 description").arg(description));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0043) {
+//    Test annotation description field in options panel widget
+
+//    1. Open "data/samples/FASTA/human_T1.fa".
+    openFileOpenSearchTabAndSetPattern(os, dataDir + "samples/FASTA/human_T1.fa");
+
+//    2. Open "Search in Sequence" options panel tab. Set any pattern. Open "Annotation parameters" group.
+    GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os);
+
+//    3. Ensure that description field is empty. Click "Create annotations" button.
+    setAnnotationName(os, "test_0043_1");
+    GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leDescription"), "");
+
+    GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: a new annotation appears, it hasn't qualifier "note".
+    GTUtilsAnnotationsTreeView::selectItems(os, QStringList() << "test_0043_1");
+    QTreeWidgetItem *descriptionItem = GTUtilsAnnotationsTreeView::findItem(os, "note", GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(NULL == descriptionItem, "There is an unexpected note qualifier");
+
+//    4. Set any description. Click "Create annotations" button.
+    setAnnotationName(os, "test_0043_2");
+    GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leDescription"), "test_0043_2 description");
+
+    GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: a new annotation appears, it has a qualifier "note" with description.
+    const QString description = GTUtilsAnnotationsTreeView::getQualifierValue(os, "note", "test_0043_2");
+    CHECK_SET_ERR("test_0043_2 description" == description,
+                  QString("An unexpected annotation description: expect '%1', got '%2'")
+                  .arg("test_0043_2 description").arg(description));
 }
 
 }   // namespace GUITest_common_scenarios_create_annotation_widget

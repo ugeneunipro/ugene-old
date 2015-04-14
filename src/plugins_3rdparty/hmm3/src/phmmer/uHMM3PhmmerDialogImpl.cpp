@@ -183,7 +183,7 @@ void UHMM3PhmmerDialogImpl::sl_okButtonClicked() {
     }
     const CreateAnnotationModel & annModel = annotationsWidgetController->getModel();
     UHMM3PhmmerToAnnotationsTask * phmmerTask = new UHMM3PhmmerToAnnotationsTask(model.queryfile, model.dbSequence,
-        annModel.getAnnotationObject(), annModel.groupName, annModel.data->type, annModel.data->name, model.phmmerSettings);
+        annModel.getAnnotationObject(), annModel.groupName, annModel.description, annModel.data->type, annModel.data->name, model.phmmerSettings);
     AppContext::getTaskScheduler()->registerTopLevelTask(phmmerTask);
     
     QDialog::accept();

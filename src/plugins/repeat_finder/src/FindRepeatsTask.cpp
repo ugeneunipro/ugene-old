@@ -19,23 +19,22 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
+#include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/Log.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/Timer.h>
+#include <U2Core/U1AnnotationUtils.h>
+
 #include "FindRepeatsTask.h"
 #include "RFBase.h"
-#include "RFDiagonal.h"
 #include "RFConstants.h"
+#include "RFDiagonal.h"
 #include "RF_SArray_TandemFinder.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/Log.h>
-#include <U2Core/Timer.h>
-#include <U2Core/Counter.h>
-
-#include <U2Core/GObjectUtils.h>
-
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/CreateAnnotationTask.h>
-#include <U2Core/TextUtils.h>
 
 namespace U2 {
 
@@ -443,8 +442,8 @@ bool FindRepeatsTask::isFilteredByRegions(const RFResult& r) {
 }
 
 FindRepeatsToAnnotationsTask::FindRepeatsToAnnotationsTask(const FindRepeatsTaskSettings& s, const DNASequence& seq,
-                             const QString& _an, const QString& _gn, const GObjectReference& _aor)
-: Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), annName(_an), annGroup(_gn), annObjRef(_aor), findTask(NULL), settings(s)
+                             const QString& _an, const QString& _gn, const QString &annDescription, const GObjectReference& _aor)
+: Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), annName(_an), annGroup(_gn), annDescription(annDescription), annObjRef(_aor), findTask(NULL), settings(s)
 {
     setVerboseLogMode(true);
     if (annObjRef.isValid()) {
@@ -493,6 +492,7 @@ QList<SharedAnnotationData> FindRepeatsToAnnotationsTask::importAnnotations() {
         ad->qualifiers.append(U2Qualifier("repeat_len", QString::number(r.l)));
         ad->qualifiers.append(U2Qualifier("repeat_dist", QString::number(dist)));
         ad->qualifiers.append(U2Qualifier("repeat_homology(%)", QString::number(settings.getIdentity(r.l - r.c, r.l))));
+        U1AnnotationUtils::addDescriptionQualifier(ad, annDescription);
 
         res.append(ad);
     }

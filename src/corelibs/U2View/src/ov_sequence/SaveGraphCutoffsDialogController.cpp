@@ -26,6 +26,7 @@
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 #include <U2Gui/HelpButton.h>
 
@@ -129,6 +130,7 @@ void SaveGraphCutoffsDialogController::accept(){
         d->location->regions.append(r);
         d->type = mm.data->type;
         d->name = mm.data->name;
+        U1AnnotationUtils::addDescriptionQualifier(d, mm.description);
         data.append(d);
     }
     AnnotationTableObject *aobj = mm.getAnnotationObject();

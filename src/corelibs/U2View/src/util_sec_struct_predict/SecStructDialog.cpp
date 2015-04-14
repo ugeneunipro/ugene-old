@@ -19,35 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#include "SecStructDialog.h"
-
-#include <U2Core/U2Region.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/CreateAnnotationTask.h>
-#include <U2Core/DNASequenceSelection.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/PluginModel.h>
+#include <QHeaderView>
+#include <QMutableListIterator>
+#include <QPushButton>
 
 #include <U2Algorithm/SecStructPredictAlgRegistry.h>
 #include <U2Algorithm/SecStructPredictTask.h>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/PluginModel.h>
+#include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2Region.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/HelpButton.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/LicenseDialog.h>
 
-#include <QtCore/QMutableListIterator>
-#include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QHeaderView>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QHeaderView>
-#endif
-
+#include "SecStructDialog.h"
 
 namespace U2 {
 
@@ -212,6 +207,9 @@ void SecStructDialog::sl_onSaveAnnotations() {
     if (rc != QDialog::Accepted) {
         return;
     }
+
+    U1AnnotationUtils::addDescriptionQualifier(results, m.description);
+
     CreateAnnotationsTask* t = new CreateAnnotationsTask(m.getAnnotationObject(), results, m.groupName);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 

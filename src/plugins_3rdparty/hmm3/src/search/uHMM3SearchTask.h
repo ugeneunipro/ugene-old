@@ -173,10 +173,10 @@ class UHMM3SWSearchToAnnotationsTask : public Task {
     Q_OBJECT
 public:
     UHMM3SWSearchToAnnotationsTask(const QString & hmmfile, const DNASequence & seq, AnnotationTableObject *obj,
-        const QString & group, U2FeatureType aType, const QString & aname, const UHMM3SearchTaskSettings & settings);
+        const QString & group, const QString &annDescription, U2FeatureType aType, const QString & aname, const UHMM3SearchTaskSettings & settings);
     
     UHMM3SWSearchToAnnotationsTask(const QString & hmmfile, const QString & seqFile, AnnotationTableObject *obj,
-        const QString & group, U2FeatureType aType, const QString & aname, const UHMM3SearchTaskSettings & settings);
+        const QString & group, const QString &annDescription, U2FeatureType aType, const QString & aname, const UHMM3SearchTaskSettings & settings);
     
     QList< Task* > onSubTaskFinished(Task * subTask);
     
@@ -190,6 +190,7 @@ private:
     QString                             hmmfile;
     DNASequence                         sequence;
     QString                             agroup;
+    const QString                       annDescription;
     U2FeatureType                       aType;
     QString                             aname;
     UHMM3SearchTaskSettings             searchSettings;

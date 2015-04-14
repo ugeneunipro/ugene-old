@@ -1865,7 +1865,7 @@ void AnnotationsTreeView::sl_exportAutoAnnotationsGroup() {
     CreateAnnotationDialog dlg(this, m);
     dlg.setWindowTitle(tr("Create Permanent Annotation"));
     if (dlg.exec() == QDialog::Accepted) {
-        ExportAutoAnnotationsGroupTask *task = new ExportAutoAnnotationsGroupTask(ag, m.annotationObjectRef, seqCtx);
+        ExportAutoAnnotationsGroupTask *task = new ExportAutoAnnotationsGroupTask(ag, m.annotationObjectRef, seqCtx, m.description);
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
     }
 }

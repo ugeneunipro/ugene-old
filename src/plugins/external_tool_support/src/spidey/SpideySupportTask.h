@@ -61,14 +61,17 @@ private:
 class SpideyAlignmentTask : public SplicedAlignmentTask {
     Q_OBJECT
 public:
-                                SpideyAlignmentTask(const SplicedAlignmentTaskConfig &config);
+                                SpideyAlignmentTask(const SplicedAlignmentTaskConfig &config, const QString &annDescription);
     void                        prepare();
     QList<SharedAnnotationData> getAlignmentResult() { return resultAnnotations; }
     Task::ReportResult          report();
     QList<Task *>               onSubTaskFinished(Task* subTask);
+
 private:
     QList<SharedAnnotationData> resultAnnotations;
-    QString                     tmpDirUrl, tmpOutputUrl;
+    QString                     tmpDirUrl;
+    QString                     tmpOutputUrl;
+    const QString               annDescription;
     PrepareInputForSpideyTask*  prepareDataForSpideyTask;
     ExternalToolRunTask*        spideyTask;
     SpideyLogParser*            logParser;
@@ -76,7 +79,7 @@ private:
 
 class SpideyAlignmentTaskFactory : public SplicedAlignmentTaskFactory {
     virtual SplicedAlignmentTask * createTaskInstance(const SplicedAlignmentTaskConfig &config) {
-        return new SpideyAlignmentTask(config);
+        return new SpideyAlignmentTask(config, "");
     }
 };
 
@@ -91,12 +94,12 @@ class SpideySupportTask : public Task {
     Q_OBJECT
 public:
                                 SpideySupportTask(const SplicedAlignmentTaskConfig &cfg,
-                                    AnnotationTableObject *aobj);
+                                    AnnotationTableObject *aobj, const QString &annDescription);
     void                        prepare();
     QList<Task *>               onSubTaskFinished(Task *subTask);
 private:
     SpideyAlignmentTask *       spideyAlignmentTask;
-    AnnotationTableObject *       aObj;
+    AnnotationTableObject *     aObj;
 };
 
 }//namespace

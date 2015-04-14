@@ -94,7 +94,7 @@ void QDTandemActor::sl_onAlgorithmTaskFinished() {
     QList<SharedAnnotationData> annotations;
     {
         const DNASequence& dnaSeq = scheme->getSequence();
-        FindTandemsToAnnotationsTask helperTask(settings, dnaSeq, "repeat unit", QString(), GObjectReference());
+        FindTandemsToAnnotationsTask helperTask(settings, dnaSeq, "repeat unit", QString(), "", GObjectReference());
         foreach(TandemFinder *task, subTasks) {
             annotations.append(helperTask.importTandemAnnotations(task->getResults(), task->getSettings().seqRegion.startPos, task->getSettings().showOverlappedTandems));
         }

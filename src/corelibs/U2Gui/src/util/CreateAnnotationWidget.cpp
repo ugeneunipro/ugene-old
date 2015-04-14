@@ -21,11 +21,11 @@
 
 #include <QMenu>
 
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2FeatureType.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Formats/GenbankFeatures.h>
 #include <U2Formats/GenbankLocationParser.h>
 
 #include "CreateAnnotationWidget.h"

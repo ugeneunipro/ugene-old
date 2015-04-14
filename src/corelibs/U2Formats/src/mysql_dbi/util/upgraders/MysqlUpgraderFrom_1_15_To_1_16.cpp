@@ -22,13 +22,12 @@
 #include <QCryptographicHash>
 
 #include <U2Core/Folder.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2FeatureUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/Version.h>
-
-#include <U2Formats/GenbankFeatures.h>
 
 #include <U2Gui/ProjectUtils.h>
 

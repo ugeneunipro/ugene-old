@@ -19,23 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#include "RF_SArray_TandemFinder.h"
-#include "RFConstants.h"
+#include <QMutexLocker>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Log.h>
 #include <U2Core/Timer.h>
-#include <QMutexLocker>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/U1AnnotationUtils.h>
+
+#include "RFConstants.h"
+#include "RF_SArray_TandemFinder.h"
 
 namespace U2 {
 
 const int FindTandemsTaskSettings::DEFAULT_MIN_REPEAT_COUNT = 0;
 const int FindTandemsTaskSettings::DEFAULT_MIN_TANDEM_SIZE = 9;
 
-FindTandemsToAnnotationsTask::FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq, const QString& _an, const QString& _gn, const GObjectReference& _aor):
-Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), saveAnns(true), mainSeq(seq), annName(_an), annGroup(_gn), annObjRef(_aor), s(s)
+FindTandemsToAnnotationsTask::FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq, const QString& _an, const QString& _gn, const QString &annDescription, const GObjectReference& _aor):
+Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), saveAnns(true), mainSeq(seq), annName(_an), annGroup(_gn), annDescription(annDescription), annObjRef(_aor), s(s)
 {
     GCOUNTER(cvar, tvar, "FindTandemsToAnnotationsTask");
     setVerboseLogMode(true);
@@ -100,6 +103,7 @@ QList<SharedAnnotationData> FindTandemsToAnnotationsTask::importTandemAnnotation
             }
             ad->qualifiers.append(U2Qualifier("repeat_len", QString::number(tan.repeatLen)));
             ad->qualifiers.append(U2Qualifier("tandem_size", QString::number(tan.size)));
+            U1AnnotationUtils::addDescriptionQualifier(ad, annDescription);
             res.append(ad);
             offset++;
         }while(showOverlapped && offset<=maxOffset);

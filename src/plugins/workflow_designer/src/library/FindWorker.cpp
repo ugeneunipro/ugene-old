@@ -19,34 +19,36 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QScopedPointer>
+#include <QScopedPointer>
 
-#include <U2Lang/IntegralBusModel.h>
-#include <U2Lang/WorkflowEnv.h>
-#include <U2Lang/ActorPrototypeRegistry.h>
-#include <U2Lang/BaseTypes.h>
-#include <U2Lang/BaseSlots.h>
-#include <U2Lang/BasePorts.h>
-#include <U2Lang/BaseActorCategories.h>
-#include <U2Lang/BaseAttributes.h>
+#include <U2Algorithm/FindAlgorithmTask.h>
+
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNATranslation.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/AppContext.h>
+#include <U2Core/FailTask.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/MultiTask.h>
-#include <U2Core/FailTask.h>
 #include <U2Core/TaskSignalMapper.h>
-#include <U2Algorithm/FindAlgorithmTask.h>
+
 #include <U2Designer/DelegateEditors.h>
-#include <U2Formats/GenbankFeatures.h>
-#include <U2Core/AnnotationTableObject.h>
+
+#include <U2Lang/ActorPrototypeRegistry.h>
+#include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/BaseAttributes.h>
+#include <U2Lang/BasePorts.h>
+#include <U2Lang/BaseSlots.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/IntegralBusModel.h>
+#include <U2Lang/WorkflowEnv.h>
 
 #include "CoreLib.h"
-#include "util/RequiredSlotsValidator.h"
-
 #include "FindWorker.h"
+#include "util/RequiredSlotsValidator.h"
 
 /* TRANSLATOR U2::LocalWorkflow::FindWorker */
 

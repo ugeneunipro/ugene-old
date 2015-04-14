@@ -43,6 +43,7 @@ const QByteArray GBFeatureUtils::QUALIFIER_GROUP("ugene_group");
 const QString GBFeatureUtils::DEFAULT_KEY = GBFeatureUtils::getKeyInfo(GBFeatureKey_misc_feature).text;
 
 const QString GBFeatureUtils::QUALIFIER_CUT = "cut";
+const QString GBFeatureUtils::QUALIFIER_NOTE = "note";
 
 static QColor cl(const QString& txt) {
     QColor res;

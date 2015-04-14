@@ -210,7 +210,7 @@ void GTest_RemoteBLAST::prepare() {
     cfg.filterResult = 0;
     cfg.useEval = 0;
     cfg.params = request;
-    task = new RemoteBLASTToAnnotationsTask(cfg, 0, ao, "",QString("result"));
+    task = new RemoteBLASTToAnnotationsTask(cfg, 0, ao, "", QString("result"), "");
     addSubTask(task);
 }
 

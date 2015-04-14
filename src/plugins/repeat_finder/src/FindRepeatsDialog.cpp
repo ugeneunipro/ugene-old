@@ -25,14 +25,13 @@
 #include <QPushButton>
 
 #include <U2Core/Annotation.h>
-#include <U2Core/AppContext.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
-#include <U2Core/Settings.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/L10n.h>
-
-#include <U2Formats/GenbankFeatures.h>
+#include <U2Core/Settings.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/HelpButton.h>
@@ -296,7 +295,7 @@ void FindRepeatsDialog::accept() {
     }
 
     FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, seqPart,
-        cam.data->name, cam.groupName, cam.annotationObjectRef);
+        cam.data->name, cam.groupName, cam.description, cam.annotationObjectRef);
 
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 

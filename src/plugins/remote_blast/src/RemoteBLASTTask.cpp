@@ -19,22 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#include "RemoteBLASTTask.h"
-#include <U2Core/CreateAnnotationTask.h>
-#include <U2Core/Counter.h>
-#include <U2Core/TextUtils.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/Timer.h>
-#include <U2Core/LoadRemoteDocumentTask.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/Counter.h>
+#include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/LoadRemoteDocumentTask.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/Timer.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/UserApplicationsSettings.h>
+
 #include <U2Formats/GenbankPlainTextFormat.h>
 
-#include <U2Core/BaseDocumentFormats.h>
+#include "RemoteBLASTTask.h"
 
 namespace U2 {
 
@@ -42,8 +44,8 @@ class BaseIOAdapters;
 class BaseDocumentFormats;
 
 RemoteBLASTToAnnotationsTask::RemoteBLASTToAnnotationsTask(const RemoteBLASTTaskSettings & _cfg, int _qoffs,
-                                AnnotationTableObject* _ao, const QString &_url,const QString & _group):
-Task(tr("RemoteBLASTTask"), TaskFlags_NR_FOSCOE), offsInGlobalSeq(_qoffs), aobj(_ao), group(_group), url(_url) {
+                                AnnotationTableObject* _ao, const QString &_url, const QString & _group, const QString &annDescription):
+Task(tr("RemoteBLASTTask"), TaskFlags_NR_FOSCOE), offsInGlobalSeq(_qoffs), aobj(_ao), group(_group), annDescription(annDescription), url(_url) {
     GCOUNTER(cvar, tvar, "RemoteBLASTToAnnotationsTask");
 
     queryTask = new RemoteBLASTTask(_cfg);
@@ -95,6 +97,7 @@ QList<Task*> RemoteBLASTToAnnotationsTask::onSubTaskFinished(Task* subTask) {
                 U2Region::shift(offsInGlobalSeq, ad->location->regions);
                 annotations << ad;
             }
+            U1AnnotationUtils::addDescriptionQualifier(annotations, annDescription);
 
             res.append(new CreateAnnotationsTask(aobj, annotations, group));
         }

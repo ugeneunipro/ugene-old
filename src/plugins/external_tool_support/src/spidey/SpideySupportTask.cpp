@@ -21,23 +21,25 @@
 
 #include <QTextStream>
 
-#include "SpideySupportTask.h"
-#include "SpideySupport.h"
-
 #include <U2Core/AppContext.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
+#include "SpideySupport.h"
+#include "SpideySupportTask.h"
 
 namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////
 ////SpideySupportTask
 
-SpideyAlignmentTask::SpideyAlignmentTask(const SplicedAlignmentTaskConfig &settings)
-    : SplicedAlignmentTask("SpideySupportTask", TaskFlags_NR_FOSCOE, settings)
+SpideyAlignmentTask::SpideyAlignmentTask(const SplicedAlignmentTaskConfig &settings, const QString &annDescription)
+    : SplicedAlignmentTask("SpideySupportTask", TaskFlags_NR_FOSCOE, settings),
+    annDescription(annDescription)
 {
     GCOUNTER(cvar, tvar, "SpideySupportTask");
     setMaxParallelSubtasks(1);
@@ -140,6 +142,7 @@ QList<Task *> SpideyAlignmentTask::onSubTaskFinished(Task *subTask) {
             data->setStrand(U2Strand(strandDirect ? U2Strand::Direct : U2Strand::Complementary));
             data->type = U2FeatureTypes::Exon;
             data->name = "exon";
+            U1AnnotationUtils::addDescriptionQualifier(data, annDescription);
             resultAnnotations.append(data);
         }
     }
@@ -223,9 +226,9 @@ void PrepareInputForSpideyTask::run() {
 ////SpideySupportTask
 
 SpideySupportTask::SpideySupportTask(const SplicedAlignmentTaskConfig &cfg,
-    AnnotationTableObject *ao)
+    AnnotationTableObject *ao, const QString &annDescription)
     : Task("SpideySupportTask", TaskFlags_NR_FOSCOE),
-    spideyAlignmentTask(new SpideyAlignmentTask(cfg)), aObj(ao)
+    spideyAlignmentTask(new SpideyAlignmentTask(cfg, annDescription)), aObj(ao)
 {
 
 }

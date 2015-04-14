@@ -33,6 +33,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Log.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "uhmm3phmmer.h"
@@ -342,19 +343,20 @@ QList<TaskResourceUsage> UHMM3SWPhmmerTask::getResources(SequenceWalkerSubtask *
 }
 
 QList<SharedAnnotationData>
-UHMM3SWPhmmerTask::getResultsAsAnnotations(U2FeatureType type, const QString &name) const {
+UHMM3SWPhmmerTask::getResultsAsAnnotations(U2FeatureType type, const QString &name, const QString &annDescription) const {
     QList<SharedAnnotationData> annotations;
     SAFE_POINT(!name.isEmpty(), "An annotation name is empty", annotations);
 
     foreach(const UHMM3SWSearchTaskDomainResult &res, results) {
-        AnnotationData *annData = new AnnotationData();
+        SharedAnnotationData annData(new AnnotationData());
         annData->type = type;
         annData->name = name;
         annData->setStrand(res.onCompl ? U2Strand::Complementary : U2Strand::Direct);
         annData->location->regions << res.generalResult.seqRegion;
         annData->qualifiers << U2Qualifier("Query_sequence", querySeq.getName());
+        U1AnnotationUtils::addDescriptionQualifier(annData, annDescription);
         res.generalResult.writeQualifiersToAnnotation(annData);
-        annotations << SharedAnnotationData(annData);
+        annotations << annData;
     }
 
     return annotations;
@@ -398,6 +400,7 @@ UHMM3PhmmerToAnnotationsTask::UHMM3PhmmerToAnnotationsTask(const QString &qfile,
                                                            const DNASequence &db,
                                                            AnnotationTableObject *o,
                                                            const QString &gr,
+                                                           const QString &annDescription,
                                                            U2FeatureType type,
                                                            const QString &name,
                                                            const UHMM3PhmmerSettings &set) :
@@ -406,6 +409,7 @@ UHMM3PhmmerToAnnotationsTask::UHMM3PhmmerToAnnotationsTask(const QString &qfile,
     dbSeq(db),
     annotationObj(o),
     annGroup(gr),
+    annDescription(annDescription),
     annType(type),
     annName(name),
     settings(set),
@@ -429,7 +433,7 @@ QList<Task *> UHMM3PhmmerToAnnotationsTask::onSubTaskFinished(Task *subTask) {
     }
 
     if (phmmerTask == subTask) {
-        QList<SharedAnnotationData> annotations = phmmerTask->getResultsAsAnnotations(annType, annName);
+        QList<SharedAnnotationData> annotations = phmmerTask->getResultsAsAnnotations(annType, annName, annDescription);
 
         if (annotations.isEmpty()) {
             return res;

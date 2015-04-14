@@ -64,7 +64,7 @@ class ADVCreateAnnotationsTask;
 
 class ExportAutoAnnotationsGroupTask : public Task {
 public:
-    ExportAutoAnnotationsGroupTask(AnnotationGroup *ag, GObjectReference &aRef, ADVSequenceObjectContext *seqCtx);
+    ExportAutoAnnotationsGroupTask(AnnotationGroup *ag, GObjectReference &aRef, ADVSequenceObjectContext *seqCtx, const QString &annDescription = "");
     void prepare();
     QList<Task *> onSubTaskFinished(Task *subTask);
 
@@ -73,6 +73,7 @@ private:
     GObjectReference aRef;
     ADVSequenceObjectContext* seqCtx;
     ADVCreateAnnotationsTask* createTask;
+    const QString annDescription;
 };
 
 class U2VIEW_EXPORT AutoAnnotationUtils {

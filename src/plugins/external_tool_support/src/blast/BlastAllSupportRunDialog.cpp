@@ -61,7 +61,6 @@ BlastAllSupportRunDialog::BlastAllSupportRunDialog(U2SequenceObject *dnaso, QStr
 : BlastRunCommonDialog(parent, BlastAll, false, QStringList()), dnaso(dnaso), lastDBPath(lastDBPath), lastDBName(lastDBName)
 {
     CreateAnnotationModel ca_m;
-    ca_m.data->name = "misc_feature";
     ca_m.hideAnnotationType = true;
     ca_m.hideAnnotationName = true;
     ca_m.hideLocation = true;
@@ -131,12 +130,13 @@ void BlastAllSupportRunDialog::sl_runQuery(){
         }
         settings.aobj = ca_c->getModel().getAnnotationObject();
     }
-    settings.groupName=ca_c->getModel().groupName;
-    settings.alphabet=dnaso->getAlphabet();
+    settings.groupName = ca_c->getModel().groupName;
+    settings.annDescription = ca_c->getModel().description;
+    settings.alphabet = dnaso->getAlphabet();
     getSettings(settings);
-    lastDBPath=databasePathLineEdit->text();
-    lastDBName=baseNameLineEdit->text();
-    settings.outputType=7;//By default set output file format to xml
+    lastDBPath = databasePathLineEdit->text();
+    lastDBName = baseNameLineEdit->text();
+    settings.outputType = 7;//By default set output file format to xml
     accept();
 }
 ////////////////////////////////////////
@@ -296,7 +296,6 @@ void BlastAllWithExtFileSpecifySupportRunDialog::tryApplyDoc(Document *doc) {
     }
 
     CreateAnnotationModel ca_m;
-    ca_m.data->name = "misc_feature";
     ca_m.hideAnnotationType = true;
     ca_m.hideAnnotationName = true;
     ca_m.hideLocation = true;

@@ -248,7 +248,7 @@ Task* QDRepeatActor::getAlgorithmTask(const QVector<U2Region>& location) {
         FindRepeatsTaskSettings stngs(settings);
         stngs.seqRegion = r;
         FindRepeatsToAnnotationsTask* st = new FindRepeatsToAnnotationsTask(stngs, dnaSeq,
-                                                            "repeat unit", QString(), GObjectReference());
+                                                            "repeat unit", QString(), "", GObjectReference());
         t->addSubTask(st);
         repTasks.append(st);
     }

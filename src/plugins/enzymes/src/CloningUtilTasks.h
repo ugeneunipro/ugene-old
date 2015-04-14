@@ -47,6 +47,7 @@ struct DigestSequenceTaskConfig {
     QList<SEnzymeData> enzymeData;
     bool searchForRestrictionSites;
     bool forceCircular;
+    QString annDescription;
 };
 
 struct GenomicPosition {

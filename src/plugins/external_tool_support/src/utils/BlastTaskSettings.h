@@ -139,6 +139,7 @@ public:
     bool                    needCreateAnnotations;
     AnnotationTableObject *   aobj;
     QString                 groupName;
+    QString                 annDescription;
     int                     offsInGlobalSeq;
     TriState                directStrand;
 

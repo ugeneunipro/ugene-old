@@ -22,9 +22,8 @@
 #ifndef _U2_FEATURE_KEY_FILTER_TASK_H_
 #define _U2_FEATURE_KEY_FILTER_TASK_H_
 
-#include <U2Formats/GenbankFeatures.h>
-
 #include <U2Core/AbstractProjectFilterTask.h>
+#include <U2Core/GenbankFeatures.h>
 
 namespace U2 {
 

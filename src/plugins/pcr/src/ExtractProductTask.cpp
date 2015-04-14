@@ -30,6 +30,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/SaveDocumentTask.h>
@@ -37,8 +38,6 @@
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/UserApplicationsSettings.h>
-
-#include <U2Formats/GenbankFeatures.h>
 
 #include "ExtractProductTask.h"
 

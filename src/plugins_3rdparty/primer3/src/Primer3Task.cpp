@@ -27,10 +27,11 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/SequenceWalkerTask.h>
+#include <U2Core/U1AnnotationUtils.h>
 
-#include "primer3_main.h"
-#include "boulder_input.h"
 #include "Primer3Task.h"
+#include "boulder_input.h"
+#include "primer3_main.h"
 
 namespace U2 {
 
@@ -797,10 +798,10 @@ void Primer3SWTask::relocatePrimerOverMedian(Primer *primer) {
 ////Primer3ToAnnotationsTask
 
 Primer3ToAnnotationsTask::Primer3ToAnnotationsTask(const Primer3TaskSettings &settings, U2SequenceObject* so_,
-AnnotationTableObject *aobj_, const QString & groupName_, const QString & annName_ ) :
+AnnotationTableObject *aobj_, const QString & groupName_, const QString & annName_ , const QString &annDescription) :
 Task(tr("Search primers to annotations"), /*TaskFlags_NR_FOSCOE*/TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled | TaskFlag_FailOnSubtaskError),
     settings(settings), seqObj(so_), aobj(aobj_),
-    groupName(groupName_), annName(annName_), searchTask(NULL), findExonsTask(NULL)
+    groupName(groupName_), annName(annName_), annDescription(annDescription), searchTask(NULL), findExonsTask(NULL)
 {
 }
 
@@ -966,6 +967,7 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
         foreach (const Primer &p, singlePrimers) {
             annotations.append(oligoToAnnotation(annName, p, 0, s));
         }
+        U1AnnotationUtils::addDescriptionQualifier(annotations, annDescription);
 
         if ( !annotations.isEmpty( ) ) {
             createAnnotationTasks << new CreateAnnotationsTask(aobj, annotations, groupName);

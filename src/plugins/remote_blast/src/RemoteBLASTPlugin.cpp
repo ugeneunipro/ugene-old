@@ -140,7 +140,7 @@ void RemoteBLASTViewContext::sl_showDialog() {
             if (aobject == NULL){
                 return;
             }
-            Task * t = new RemoteBLASTToAnnotationsTask(cfg, r.startPos, aobject, dlg.getUrl(),dlg.getGroupName());
+            Task * t = new RemoteBLASTToAnnotationsTask(cfg, r.startPos, aobject, dlg.getUrl(), dlg.getGroupName(), dlg.getAnnotationDescription());
             AppContext::getTaskScheduler()->registerTopLevelTask( t );
         }
     }

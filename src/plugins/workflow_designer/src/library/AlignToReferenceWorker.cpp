@@ -28,6 +28,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNATranslation.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/L10n.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MAlignmentImporter.h>
@@ -37,8 +38,6 @@
 #include <U2Core/U2SequenceUtils.h>
 
 #include <U2Designer/DelegateEditors.h>
-
-#include <U2Formats/GenbankFeatures.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>

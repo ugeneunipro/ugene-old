@@ -74,7 +74,7 @@ class FindTandemsToAnnotationsTask : public Task {
     Q_OBJECT
 public:
     FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq,
-        const QString& annName, const QString& groupName, const GObjectReference& annObjRef);
+        const QString& annName, const QString& groupName, const QString &annDescription, const GObjectReference& annObjRef);
     FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq);
 
     QList<Task*> onSubTaskFinished(Task* subTask);
@@ -87,6 +87,7 @@ private:
     DNASequence         mainSeq;
     QString             annName;
     QString             annGroup;
+    const QString       annDescription;
     GObjectReference    annObjRef;
 
     QList<SharedAnnotationData> result;

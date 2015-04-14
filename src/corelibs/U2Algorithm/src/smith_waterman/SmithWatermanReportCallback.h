@@ -43,12 +43,13 @@ class U2ALGORITHM_EXPORT SmithWatermanReportCallbackAnnotImpl : public QObject,
 {
     Q_OBJECT
 public:
-                                        SmithWatermanReportCallbackAnnotImpl(
-                                            AnnotationTableObject *_aobj,
-                                            U2FeatureType annotationType,
-                                            const QString &_annotationName,
-                                            const QString &_annotationGroup,
-                                            bool _addPatternSubseqToQual, QObject *pOwn = NULL);
+    SmithWatermanReportCallbackAnnotImpl(AnnotationTableObject *aobj,
+                                         U2FeatureType annotationType,
+                                         const QString &annotationName,
+                                         const QString &annotationGroup,
+                                         const QString &annDescription,
+                                         bool addPatternSubseqToQual,
+                                         QObject *pOwn = NULL);
 
     QString                             report(const QList<SmithWatermanResult> &result);
     const QList<SharedAnnotationData> & getAnotations() const;
@@ -57,6 +58,7 @@ private:
     U2FeatureType                       annotationType;
     QString                             annotationName;
     QString                             annotationGroup;
+    const QString                       annDescription;
     QPointer<AnnotationTableObject>     aObj;
     QList<SharedAnnotationData>         anns;
     bool                                autoReport;

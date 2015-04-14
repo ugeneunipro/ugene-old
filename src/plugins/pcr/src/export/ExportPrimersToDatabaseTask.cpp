@@ -22,12 +22,11 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectReference.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
-
-#include <U2Formats/GenbankFeatures.h>
 
 #include "ExportPrimersToDatabaseTask.h"
 

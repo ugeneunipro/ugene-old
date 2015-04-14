@@ -25,14 +25,14 @@
 #include <U2Core/DNAInfo.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/QVariantUtils.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/QVariantUtils.h>
 
 #include "DocumentFormatUtils.h"
-#include "GenbankFeatures.h"
 #include "GenbankLocationParser.h"
 #include "SwissProtPlainTextFormat.h"
 

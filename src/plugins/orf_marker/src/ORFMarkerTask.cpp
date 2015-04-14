@@ -19,7 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/CreateAnnotationTask.h>
@@ -27,6 +26,7 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/Settings.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2FeatureUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -86,8 +86,14 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
 // find ORFS and save 2 annotations task
 
 FindORFsToAnnotationsTask::FindORFsToAnnotationsTask( AnnotationTableObject* aobj,const U2EntityRef& _entityRef,
-                                                     const ORFAlgorithmSettings& settings, const QString& gName )
-    : Task(tr("Find ORFs and save to annotations"), TaskFlags_NR_FOSCOE), aObj(aobj), cfg(settings), groupName(gName), entityRef(_entityRef)
+                                                     const ORFAlgorithmSettings& settings, const QString& gName,
+                                                      const QString &annDescription)
+    : Task(tr("Find ORFs and save to annotations"), TaskFlags_NR_FOSCOE),
+      aObj(aobj),
+      cfg(settings),
+      groupName(gName),
+      annDescription(annDescription),
+      entityRef(_entityRef)
 {
     SAFE_POINT_EXT( aobj != NULL, setError(tr("Annotation table object is NULL!")), );
     if (groupName.isEmpty()) {
@@ -107,6 +113,8 @@ QList<Task *> FindORFsToAnnotationsTask::onSubTaskFinished(Task *subTask) {
         CHECK_OP(stateInfo, QList<Task *>());
         annotationList << res.toAnnotation(ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
     }
+
+    U1AnnotationUtils::addDescriptionQualifier(annotationList, annDescription);
 
     return QList<Task *>() << new CreateAnnotationsTask(aObj, annotationList, groupName);
 }

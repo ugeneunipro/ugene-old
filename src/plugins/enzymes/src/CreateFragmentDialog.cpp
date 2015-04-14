@@ -19,21 +19,19 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
-#include <QtCore/QDir>
+#include <QDir>
+#include <QMessageBox>
 
-#include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
-#include <U2Core/DNASequenceSelection.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/GObjectRelationRoles.h>
+#include <U2Algorithm/EnzymeModel.h>
+
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
@@ -42,7 +40,6 @@
 
 #include <U2View/ADVSequenceObjectContext.h>
 
-#include <U2Algorithm/EnzymeModel.h>
 #include "CreateFragmentDialog.h"
 
 namespace U2 {
@@ -146,6 +143,9 @@ void CreateFragmentDialog::accept()
     ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TERM, QString()));
     ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_OVERHANG, leftOverhang));
     ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_OVERHANG, rightOverhang));
+
+    U1AnnotationUtils::addDescriptionQualifier(ad, m.description);
+
     QString leftOverhangStrand = OVERHANG_STRAND_DIRECT;
     if (lComplButton->isChecked() && !leftOverhang.isEmpty()) {
         leftOverhangStrand = OVERHANG_STRAND_COMPL;

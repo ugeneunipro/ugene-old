@@ -19,29 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/DocumentModel.h>
+#include <U2Algorithm/SWMulAlignResultNamesTagsRegistry.h>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/ProjectModel.h>
 #include <U2Core/MAlignment.h>
-#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentExporter.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Core/SaveDocumentTask.h>
-#include <U2Core/U2DbiRegistry.h>
-#include <U2Core/U2Dbi.h>
-#include <U2Core/U2MsaDbi.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2Msa.h>
-#include <U2Core/U2SequenceDbi.h>
-#include <U2Core/U2AlphabetUtils.h>
-#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/MsaDbiUtils.h>
-
-#include <U2Algorithm/SWMulAlignResultNamesTagsRegistry.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2Dbi.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2Msa.h>
+#include <U2Core/U2MsaDbi.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceDbi.h>
 
 #include "SmithWatermanReportCallback.h"
 
@@ -54,9 +55,9 @@ SmithWatermanReportCallback::~SmithWatermanReportCallback() {
 // SmithWatermanReportCallbackAnnotImpl realization //////////////////////////////////////////////////////////////////////////
 
 SmithWatermanReportCallbackAnnotImpl::SmithWatermanReportCallbackAnnotImpl(AnnotationTableObject *_aobj, U2FeatureType annotationType,
-    const QString &_annotationName, const QString &_annotationGroup, bool _addPatternSubseqToQual, QObject *pOwn)
+    const QString &_annotationName, const QString &_annotationGroup, const QString &annDescription, bool _addPatternSubseqToQual, QObject *pOwn)
     : QObject(pOwn), annotationType(annotationType), annotationName(_annotationName), annotationGroup(_annotationGroup),
-    aObj(_aobj), autoReport(_aobj != NULL), addPatternSubseqToQual(_addPatternSubseqToQual)
+    annDescription(annDescription), aObj(_aobj), autoReport(_aobj != NULL), addPatternSubseqToQual(_addPatternSubseqToQual)
 {
 
 }
@@ -77,12 +78,14 @@ QString SmithWatermanReportCallbackAnnotImpl::report(const QList<SmithWatermanRe
             annotation->qualifiers.append(U2Qualifier("pattern_match_start", QString::number(res.ptrnSubseq.startPos)));
             annotation->qualifiers.append(U2Qualifier("pattern_match_len", QString::number(res.ptrnSubseq.length)));
         }
+        U1AnnotationUtils::addDescriptionQualifier(annotation, annDescription);
         anns.append(annotation);
     }
 
     if (autoReport) {
         aObj->addAnnotations(anns, annotationGroup);
     }
+
     return QString();
 }
 

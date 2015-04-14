@@ -26,13 +26,12 @@
 #include <QPushButton>
 #include <QToolButton>
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/Settings.h>
-
-#include <U2Formats/GenbankFeatures.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/HelpButton.h>
@@ -220,7 +219,7 @@ void FindTandemsDialog::accept() {
     settings.seqRegion = U2Region(0, seq.length());
     settings.reportSeqShift = range.startPos;
 
-    FindTandemsToAnnotationsTask* t = new FindTandemsToAnnotationsTask(settings, seq, cam.data->name, cam.groupName, cam.annotationObjectRef);
+    FindTandemsToAnnotationsTask* t = new FindTandemsToAnnotationsTask(settings, seq, cam.data->name, cam.groupName, cam.description, cam.annotationObjectRef);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 
     QDialog::accept();

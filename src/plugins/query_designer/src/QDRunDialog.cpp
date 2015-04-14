@@ -421,6 +421,7 @@ void QDDialog::sl_okBtnClicked() {
     settings.annotationsObj = qobject_cast<AnnotationTableObject *>(ao);
     settings.annotationsObjRef = m.annotationObjectRef;
     settings.groupName = m.groupName;
+    settings.annDescription = m.description;
     settings.scheme = scheme;
     settings.dnaSequence = sequence;
     settings.viewName = ctx->getAnnotatedDNAView()->getName();

@@ -19,38 +19,32 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExpertDiscoverySearchDialogController.h"
+#include <QFileInfo>
+#include <QListWidgetItem>
+#include <QMessageBox>
 
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/TextUtils.h>
-#include <U2Core/CreateAnnotationTask.h>
-#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/U1AnnotationUtils.h>
 
-#include <U2Gui/GUIUtils.h>
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
-#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/GUIUtils.h>
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
-#include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/AnnotatedDNAView.h>
 
-#include <assert.h>
-
-#include <QtCore/QFileInfo>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QListWidgetItem>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QListWidgetItem>
-#endif
+#include "ExpertDiscoverySearchDialogController.h"
 
 namespace U2 {
 
@@ -177,7 +171,9 @@ void ExpertDiscoverySearchDialogController::sl_onSaveAnnotations() {
     QList<SharedAnnotationData> list;
     for (int i = 0, n = resultsTree->topLevelItemCount(); i < n; ++i) {
         ExpertDiscoveryResultItem *item = static_cast<ExpertDiscoveryResultItem *>(resultsTree->topLevelItem(i));
-        list.append(item->res.toAnnotation(name));
+        SharedAnnotationData annotationData = item->res.toAnnotation(name);
+        U1AnnotationUtils::addDescriptionQualifier(annotationData, m.description);
+        list.append(annotationData);
     }
 
     CreateAnnotationsTask* t = new CreateAnnotationsTask(m.getAnnotationObject(), list, m.groupName);

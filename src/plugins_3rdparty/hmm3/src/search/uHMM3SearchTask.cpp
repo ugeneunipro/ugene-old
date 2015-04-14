@@ -19,29 +19,29 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QByteArray>
 #include <QtCore/QFileInfo>
 
-#include <QtCore/QByteArray>
-
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/DNATranslation.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
+#include <U2Core/Counter.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNATranslation.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/Counter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Log.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
 
-#include <gobject/uHMMObject.h>
 #include <format/uHMMFormat.h>
+#include <gobject/uHMMObject.h>
 #include <task_local_storage/uHMMSearchTaskLocalStorage.h>
-
 #include <util/uhmm3Utilities.h>
+
 #include "uHMM3SearchTask.h"
 
 #define UHMM3_SEARCH_LOG_CAT "hmm3_search_log_category"
@@ -421,7 +421,7 @@ UHMM3SWSearchTask::getResultsAsAnnotations(const QList<UHMM3SWSearchTaskDomainRe
     QList< SharedAnnotationData > annotations;
 
     foreach(const UHMM3SWSearchTaskDomainResult & res, results) {
-        AnnotationData * annData = new AnnotationData();
+        SharedAnnotationData annData(new AnnotationData());
         annData->type = type;
         annData->name = name;
         annData->setStrand(res.onCompl ? U2Strand::Complementary : U2Strand::Direct);
@@ -439,7 +439,7 @@ UHMM3SWSearchTask::getResultsAsAnnotations(const QList<UHMM3SWSearchTaskDomainRe
         annData->qualifiers << U2Qualifier("HMM_model", hmmInfo);
         res.generalResult.writeQualifiersToAnnotation(annData);
 
-        annotations << SharedAnnotationData(annData);
+        annotations << annData;
     }
 
     return annotations;
@@ -571,11 +571,16 @@ void UHMM3SWSearchToAnnotationsTask::checkArgs() {
     }
 }
 
-UHMM3SWSearchToAnnotationsTask::UHMM3SWSearchToAnnotationsTask(const QString & hmmf, const DNASequence & s,
-                                                                AnnotationTableObject *o, const QString & gr,
-                                                                U2FeatureType aType, const QString & name, const UHMM3SearchTaskSettings & set)
+UHMM3SWSearchToAnnotationsTask::UHMM3SWSearchToAnnotationsTask(const QString & hmmf,
+                                                               const DNASequence & s,
+                                                               AnnotationTableObject *o,
+                                                               const QString & gr,
+                                                               const QString &annDescription,
+                                                               U2FeatureType aType,
+                                                               const QString & name,
+                                                               const UHMM3SearchTaskSettings & set)
 : Task("", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled),
-hmmfile(hmmf), sequence(s), annotationObj(o), agroup(gr), aType(aType), aname(name), searchSettings(set),
+hmmfile(hmmf), sequence(s), annotationObj(o), agroup(gr), annDescription(annDescription), aType(aType), aname(name), searchSettings(set),
 loadSequenceTask(NULL), searchTask(NULL), createAnnotationsTask(NULL) {
 
     setTaskName(tr("HMMER3 search task"));
@@ -592,12 +597,16 @@ loadSequenceTask(NULL), searchTask(NULL), createAnnotationsTask(NULL) {
     addSubTask(searchTask);
 }
 
-UHMM3SWSearchToAnnotationsTask::UHMM3SWSearchToAnnotationsTask(const QString & hmmf, const QString & seqFile,
-                                                                AnnotationTableObject *obj, const QString & gr,
-                                                                U2FeatureType aType, const QString & name,
-                                                                const UHMM3SearchTaskSettings & set)
+UHMM3SWSearchToAnnotationsTask::UHMM3SWSearchToAnnotationsTask(const QString & hmmf,
+                                                               const QString & seqFile,
+                                                               AnnotationTableObject *obj,
+                                                               const QString & gr,
+                                                               const QString &annDescription,
+                                                               U2FeatureType aType,
+                                                               const QString & name,
+                                                               const UHMM3SearchTaskSettings & set)
 : Task("", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled),
-hmmfile(hmmf), annotationObj(obj), agroup(gr), aType(aType), aname(name), searchSettings(set),
+hmmfile(hmmf), annotationObj(obj), agroup(gr), annDescription(annDescription), aType(aType), aname(name), searchSettings(set),
 loadSequenceTask(NULL), searchTask(NULL), createAnnotationsTask(NULL) {
 
     setTaskName(tr("HMMER3 search task"));
@@ -686,6 +695,7 @@ QList< Task* > UHMM3SWSearchToAnnotationsTask::onSubTaskFinished(Task * subTask)
         res << searchTask;
     } else if(searchTask == subTask) {
         QList<SharedAnnotationData> annotations = searchTask->getResultsAsAnnotations(aType, aname);
+        U1AnnotationUtils::addDescriptionQualifier(annotations, annDescription);
         if(annotations.isEmpty()) {
             return res;
         }

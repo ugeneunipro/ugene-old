@@ -127,8 +127,12 @@ protected:
 class FindRepeatsToAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    FindRepeatsToAnnotationsTask(const FindRepeatsTaskSettings& s, const DNASequence& seq,
-                                const QString& annName, const QString& groupName, const GObjectReference& annObjRef);
+    FindRepeatsToAnnotationsTask(const FindRepeatsTaskSettings& s,
+                                 const DNASequence& seq,
+                                 const QString& annName,
+                                 const QString& groupName,
+                                 const QString &annDescription,
+                                 const GObjectReference& annObjRef);
 
     QList<Task*> onSubTaskFinished(Task* subTask);
     QList<SharedAnnotationData> importAnnotations();
@@ -136,6 +140,7 @@ public:
 private:
     QString                 annName;
     QString                 annGroup;
+    const QString           annDescription;
     GObjectReference        annObjRef;
     FindRepeatsTask*        findTask;
     FindRepeatsTaskSettings settings;

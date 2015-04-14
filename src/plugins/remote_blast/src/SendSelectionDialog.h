@@ -47,6 +47,7 @@ class SendSelectionDialog: public QDialog, Ui_RemoteBLASTDialog {
 public:
     SendSelectionDialog( const U2SequenceObject* dnaso, bool _isAminoSeq, QWidget *p = NULL );
     QString getGroupName() const;
+    const QString &getAnnotationDescription() const;
     AnnotationTableObject * getAnnotationObject() const;
     const CreateAnnotationModel *getModel() const;
     QString getUrl() const;

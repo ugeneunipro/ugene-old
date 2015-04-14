@@ -494,7 +494,7 @@ void SmithWatermanDialog::sl_bttnRun()
             QString annotationGroup = m.groupName;
 
             config.resultCallback = new SmithWatermanReportCallbackAnnotImpl(obj, annotationType, annotationName,
-                annotationGroup, addPatternContentQualifier->isChecked());
+                annotationGroup, m.description, addPatternContentQualifier->isChecked());
             config.includePatternContent = addPatternContentQualifier->isChecked();
         } else if (SmithWatermanSettings::MULTIPLE_ALIGNMENT == config.resultView) {
             const U2SequenceObject * sequence = ctxSeq->getSequenceObject();

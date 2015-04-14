@@ -65,7 +65,7 @@ struct RemoteBLASTTaskSettings {
 class RemoteBLASTToAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    RemoteBLASTToAnnotationsTask( const RemoteBLASTTaskSettings &cfg, int qoffs, AnnotationTableObject *ao, const QString &url, const QString & group );
+    RemoteBLASTToAnnotationsTask( const RemoteBLASTTaskSettings &cfg, int qoffs, AnnotationTableObject *ao, const QString &url, const QString & group, const QString &annDescription);
 
     QList<Task*> onSubTaskFinished(Task* subTask);
 
@@ -73,6 +73,7 @@ private:
     int                 offsInGlobalSeq;
     QPointer<AnnotationTableObject>  aobj;
     QString             group;
+    const QString       annDescription;
     Task*               queryTask;
     QString             url;
 };

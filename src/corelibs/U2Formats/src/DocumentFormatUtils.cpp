@@ -29,8 +29,9 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/TextUtils.h>
@@ -40,8 +41,6 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
-
-#include <U2Formats/GenbankFeatures.h>
 
 namespace U2 {
 

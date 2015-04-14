@@ -24,14 +24,14 @@
 
 #include <U2Core/Annotation.h>
 #include <U2Core/AnnotationData.h>
+#include <U2Core/GenbankFeatures.h>
 
 #include <U2Formats/GenbankLocationParser.h>
-#include <U2Formats/GenbankFeatures.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/HelpButton.h>
 
 #include "EditAnnotationDialogController.h"
-#include <U2Gui/HelpButton.h>
 
 /* TRANSLATOR U2::EditAnnotationDialogController */
 

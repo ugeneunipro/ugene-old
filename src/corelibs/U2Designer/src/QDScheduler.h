@@ -43,6 +43,7 @@ public:
     AnnotationTableObject *   annotationsObj;
     GObjectReference        annotationsObjRef;
     QString                 groupName;
+    QString                 annDescription;
     U2Region                region;
     QDScheme*               scheme;
     QString                 viewName;

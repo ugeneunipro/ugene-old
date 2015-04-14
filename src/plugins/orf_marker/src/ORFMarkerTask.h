@@ -57,7 +57,7 @@ class FindORFsToAnnotationsTask :      public Task
     Q_OBJECT
 public:
                                         FindORFsToAnnotationsTask(AnnotationTableObject *aobj, const U2EntityRef &entityRef,
-                                            const ORFAlgorithmSettings &settings, const QString &groupName = QString());
+                                            const ORFAlgorithmSettings &settings, const QString &groupName = QString(), const QString &annDescription = "");
 
     QList<Task *>                       onSubTaskFinished(Task *subTask);
 
@@ -66,6 +66,7 @@ private:
     ORFFindTask *                       fTask;
     ORFAlgorithmSettings                cfg;
     QString                             groupName;
+    const QString                       annDescription;
     U2EntityRef                         entityRef;
 };
 

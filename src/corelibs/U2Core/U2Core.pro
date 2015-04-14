@@ -208,6 +208,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/FileStorageUtils.h \
            src/util/FormatUtils.h \
            src/util/GAutoDeleteList.h \
+           src/util/GenbankFeatures.h \
            src/util/GUrlUtils.h \
            src/util/ImportToDatabaseOptions.h \
            src/util/IOAdapterUtils.h \
@@ -401,6 +402,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/FileStorageUtils.cpp \
            src/util/FormatUtils.cpp \
            src/util/GAutoDeleteList.cpp \
+           src/util/GenbankFeatures.cpp \
            src/util/GUrlUtils.cpp \
            src/util/ImportToDatabaseOptions.cpp \
            src/util/IOAdapterUtils.cpp \

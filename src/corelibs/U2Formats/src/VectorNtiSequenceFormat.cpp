@@ -22,8 +22,9 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/IOAdapter.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/GenbankFeatures.h>
+#include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/TextUtils.h>
@@ -33,7 +34,6 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include "GenbankFeatures.h"
 #include "GenbankLocationParser.h"
 #include "VectorNtiSequenceFormat.h"
 

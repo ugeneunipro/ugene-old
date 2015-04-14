@@ -117,7 +117,7 @@ enum GBFeatureKey {
     GBFeatureKey_UNKNOWN = GBFeatureKey_NUM_KEYS
 };
 
-class U2FORMATS_EXPORT GBFeatureKeyInfo {
+class U2CORE_EXPORT GBFeatureKeyInfo {
 public:
     GBFeatureKeyInfo() : id (GBFeatureKey_UNKNOWN), showOnaminoFrame(false) {}
     GBFeatureKeyInfo(GBFeatureKey _id, U2FeatureType type, const QString& _text, const QColor& _color, bool _aminoFrame, QString _desc)
@@ -132,7 +132,7 @@ public:
     QStringList namingQuals;
 };
 
-class U2FORMATS_EXPORT GBFeatureUtils : public QObject {
+class U2CORE_EXPORT GBFeatureUtils : public QObject {
     Q_OBJECT
 public:
     static QMutex allKeys_mutex;
@@ -160,6 +160,7 @@ public:
     static const QString DEFAULT_KEY;
 
     static const QString QUALIFIER_CUT;
+    static const QString QUALIFIER_NOTE;
 };
 
 }//namespace

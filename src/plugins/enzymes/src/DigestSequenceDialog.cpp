@@ -155,6 +155,7 @@ void DigestSequenceDialog::accept()
     DigestSequenceTaskConfig cfg;
     cfg.enzymeData = resultEnzymes;
     cfg.forceCircular = circularBox->isChecked();
+    cfg.annDescription = m.description;
 
     int itemCount = conservedAnnsWidget->count();
     for (int row = 0; row < itemCount; ++row) {
@@ -203,7 +204,7 @@ void DigestSequenceDialog::searchForAnnotatedEnzymes(ADVSequenceObjectContext* c
 
     foreach (AnnotationTableObject *a, relatedAnns) {
         AnnotationGroup *grp = a->getRootGroup()->getSubgroup(ANNOTATION_GROUP_ENZYME, false);
-        if (grp == a->getRootGroup()) {
+        if (NULL == grp) {
             continue;
         }
         sourceObj = a;

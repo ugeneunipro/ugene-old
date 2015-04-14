@@ -19,51 +19,45 @@
  * MA 02110-1301, USA.
  */
 
-#include "PWMSearchDialogController.h"
-#include "PWMBuildDialogController.h"
-#include "PWMJASPARDialogController.h"
-#include "ViewMatrixDialogController.h"
-#include "SetParametersDialogController.h"
-#include "WeightMatrixSearchTask.h"
-#include "WeightMatrixAlgorithm.h"
-#include "WeightMatrixIO.h"
+#include <assert.h>
 
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVSequenceObjectContext.h>
+#include <QFileInfo>
+#include <QListWidgetItem>
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Algorithm/PWMConversionAlgorithmRegistry.h>
 
-#include <U2Gui/CreateAnnotationDialog.h>
-#include <U2Gui/CreateAnnotationWidgetController.h>
-#include <U2Gui/LastUsedDirHelper.h>
-
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectUtils.h>
-
-#include <U2Core/DNATranslation.h>
-#include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U1AnnotationUtils.h>
+
+#include <U2Gui/CreateAnnotationDialog.h>
+#include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/HelpButton.h>
-#include <U2Core/TextUtils.h>
-#include <U2Core/CreateAnnotationTask.h>
-#include <U2Core/DNASequenceSelection.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
-#include <assert.h>
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/AnnotatedDNAView.h>
 
-#include <QtCore/QFileInfo>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
-#include <QtGui/QListWidgetItem>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QListWidgetItem>
-#endif
+#include "PWMBuildDialogController.h"
+#include "PWMJASPARDialogController.h"
+#include "PWMSearchDialogController.h"
+#include "SetParametersDialogController.h"
+#include "ViewMatrixDialogController.h"
+#include "WeightMatrixAlgorithm.h"
+#include "WeightMatrixIO.h"
+#include "WeightMatrixSearchTask.h"
 
 namespace U2 {
 
@@ -251,7 +245,9 @@ void PWMSearchDialogController::sl_onSaveAnnotations() {
     QList<SharedAnnotationData> list;
     for (int i = 0, n = resultsTree->topLevelItemCount(); i<n; ++i) {
         WeightMatrixResultItem* item = static_cast<WeightMatrixResultItem* >(resultsTree->topLevelItem(i));
-        list.append(item->res.toAnnotation(m.data->type, name));
+        SharedAnnotationData data = item->res.toAnnotation(m.data->type, name);
+        U1AnnotationUtils::addDescriptionQualifier(data, m.description);
+        list.append(data);
     }
 
     CreateAnnotationsTask* t = new CreateAnnotationsTask(m.getAnnotationObject(), list, m.groupName);

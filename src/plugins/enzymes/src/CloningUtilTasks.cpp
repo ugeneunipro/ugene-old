@@ -34,6 +34,7 @@
 #include <U2Core/MultiTask.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/SaveDocumentTask.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
@@ -104,6 +105,8 @@ SharedAnnotationData DigestSequenceTask::createFragment(int pos1, const DNAFragm
     ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TYPE, rightOverhangType));
 
     ad->qualifiers.append(U2Qualifier(QUALIFIER_SOURCE, dnaObj->getGObjectName()));
+
+    U1AnnotationUtils::addDescriptionQualifier(ad, cfg.annDescription);
 
     return ad;
 }

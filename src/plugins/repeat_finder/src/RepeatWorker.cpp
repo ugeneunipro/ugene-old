@@ -266,7 +266,7 @@ Task* RepeatWorker::tick() {
             QString err = tr("Sequence alphabet is not nucleic!");
             return new FailTask(err);
         }
-        Task* t = new FindRepeatsToAnnotationsTask(cfg, seq, resultName, QString(), GObjectReference());
+        Task* t = new FindRepeatsToAnnotationsTask(cfg, seq, resultName, QString(), "", GObjectReference());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {

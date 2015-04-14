@@ -164,7 +164,7 @@ class Primer3ToAnnotationsTask : public Task {
     Q_OBJECT
 public:
     Primer3ToAnnotationsTask( const Primer3TaskSettings &settings,
-        U2SequenceObject* seqObj_, AnnotationTableObject* aobj_, const QString & groupName_, const QString & annName_ );
+        U2SequenceObject* seqObj_, AnnotationTableObject* aobj_, const QString & groupName_, const QString & annName_, const QString &annDescription);
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task *subTask);
@@ -181,6 +181,7 @@ private:
     U2SequenceObject* seqObj;
     QString groupName;
     QString annName;
+    const QString annDescription;
 
     Primer3SWTask *searchTask;
     FindExonRegionsTask *findExonsTask;

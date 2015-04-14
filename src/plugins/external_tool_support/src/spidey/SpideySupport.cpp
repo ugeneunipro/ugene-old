@@ -187,7 +187,7 @@ void SpideySupportContext::sl_align_with_Spidey() {
         }
 
         SplicedAlignmentTaskConfig cfg(rnaObj,dnaObj);
-        SpideySupportTask* spideyTask = new SpideySupportTask(cfg,m.getAnnotationObject());
+        SpideySupportTask* spideyTask = new SpideySupportTask(cfg, m.getAnnotationObject(), m.description);
         AppContext::getTaskScheduler()->registerTopLevelTask(spideyTask);
 
     }

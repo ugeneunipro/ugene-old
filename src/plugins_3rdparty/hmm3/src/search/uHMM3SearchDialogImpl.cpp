@@ -185,7 +185,7 @@ void UHMM3SearchDialogImpl::sl_okButtonClicked() {
     }
     const CreateAnnotationModel & annModel = annotationsWidgetController->getModel();
     UHMM3SWSearchToAnnotationsTask * searchTask = new UHMM3SWSearchToAnnotationsTask(model.hmmfile, model.sequence,
-        annModel.getAnnotationObject(), annModel.groupName, annModel.data->type, annModel.data->name, model.searchSettings);
+        annModel.getAnnotationObject(), annModel.groupName, annModel.description, annModel.data->type, annModel.data->name, model.searchSettings);
     AppContext::getTaskScheduler()->registerTopLevelTask(searchTask);
     
     QDialog::accept();

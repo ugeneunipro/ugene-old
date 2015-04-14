@@ -34,17 +34,18 @@
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/FastaFormat.h>
-#include <U2Formats/GenbankFeatures.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/DialogUtils.h>
@@ -1446,6 +1447,7 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
         }
 
         annotationsToCreate[i]->type = annotModel.data->type;
+        U1AnnotationUtils::addDescriptionQualifier(annotationsToCreate[i], annotModel.description);
     }
     GCOUNTER(cvar, tvar, "FindAlgorithmTask");
     if (annotModel.data->name == annotModel.groupName && usePatternNames) {

@@ -19,38 +19,37 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QScopedPointer>
-
-#include "QDWorker.h"
-#include "QDSceneIOTasks.h"
-#include "QueryDesignerPlugin.h"
+#include <QScopedPointer>
 
 #include <U2Core/AnnotationData.h>
-#include <U2Core/L10n.h>
-#include <U2Core/TaskSignalMapper.h>
-#include <U2Core/MultiTask.h>
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/GObjectTypes.h>
-
-#include <U2Lang/IntegralBusModel.h>
-#include <U2Lang/WorkflowEnv.h>
-#include <U2Lang/ActorPrototypeRegistry.h>
-#include <U2Lang/CoreLibConstants.h>
-#include <U2Lang/BaseSlots.h>
-#include <U2Lang/BaseTypes.h>
-#include <U2Lang/BasePorts.h>
-#include <U2Lang/BaseAttributes.h>
-#include <U2Lang/BaseActorCategories.h>
-#include <U2Lang/QDScheme.h>
+#include <U2Core/GenbankFeatures.h>
+#include <U2Core/L10n.h>
+#include <U2Core/MultiTask.h>
+#include <U2Core/TaskSignalMapper.h>
 
 #include <U2Designer/DelegateEditors.h>
 #include <U2Designer/QDScheduler.h>
 
 #include <U2Gui/DialogUtils.h>
 
-#include <U2Formats/GenbankFeatures.h>
+#include <U2Lang/ActorPrototypeRegistry.h>
+#include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/BaseAttributes.h>
+#include <U2Lang/BasePorts.h>
+#include <U2Lang/BaseSlots.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/IntegralBusModel.h>
+#include <U2Lang/QDScheme.h>
+#include <U2Lang/WorkflowEnv.h>
+
+#include "QDSceneIOTasks.h"
+#include "QDWorker.h"
+#include "QueryDesignerPlugin.h"
 
 namespace U2 {
 namespace LocalWorkflow {

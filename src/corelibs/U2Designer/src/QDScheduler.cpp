@@ -19,23 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#include "QDScheduler.h"
-
-#include <U2Lang/QDConstraint.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/AppResources.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/Log.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/Timer.h>
+#include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ObjectViewModel.h>
 
-#include <U2Core/Log.h>
-#include <U2Core/Timer.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
-#include <U2Core/AppResources.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Lang/QDConstraint.h>
+
+#include "QDScheduler.h"
 
 namespace U2 {
 //QDScheduler
@@ -637,7 +638,9 @@ void QDResultLinker::pushToTable() {
         if (!iter.key().isEmpty()) {
             ag = root->getSubgroup(iter.key(), true);
         }
-        ag->addAnnotations(iter.value());
+        QList<SharedAnnotationData> data = iter.value();
+        U1AnnotationUtils::addDescriptionQualifier(data, settings.annDescription);
+        ag->addAnnotations(data);
     }
 }
 

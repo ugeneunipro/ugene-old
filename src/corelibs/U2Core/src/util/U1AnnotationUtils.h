@@ -95,6 +95,12 @@ public:
 
     static QList<AnnotatedRegion> getAnnotatedRegionsByStartPos(QList<AnnotationTableObject*> annotationObjects, qint64 startPos);
 
+    /**
+     * Adds or replaces "/note" qualifier if description is not empty.
+     */
+    static void addDescriptionQualifier(QList<SharedAnnotationData> &annotations, const QString &description);
+    static void addDescriptionQualifier(SharedAnnotationData &annotationData, const QString &description);
+
     static QString lowerCaseAnnotationName;
     static QString upperCaseAnnotationName;
 };

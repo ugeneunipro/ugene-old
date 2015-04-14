@@ -31,6 +31,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/CreateAnnotationDialog.h>
@@ -245,6 +246,7 @@ void CollocationsDialogController::sl_saveClicked() {
         SharedAnnotationData data = m.data;
         data->location->regions.append(item->r);
         data->setStrand(U2Strand::Direct);
+        U1AnnotationUtils::addDescriptionQualifier(data, m.description);
         list.append(data);
     }
 

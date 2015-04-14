@@ -36,6 +36,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/SaveDocumentTask.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/UserApplicationsSettings.h>
@@ -528,6 +529,7 @@ void BlastPlusSupportCommonTask::parseXMLHsp(const QDomNode &xml,const QString &
     ad->qualifiers.push_back(U2Qualifier("id",id));
     ad->qualifiers.push_back(U2Qualifier("def",def));
     ad->qualifiers.push_back(U2Qualifier("accession",accession));
+    U1AnnotationUtils::addDescriptionQualifier(ad, settings.annDescription);
     ad->name = "blast result";
     result.append(ad);
 }

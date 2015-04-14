@@ -35,6 +35,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectTypes.h>
@@ -43,12 +44,12 @@
 #include <U2Core/Task.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/Settings.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Formats/GenbankFeatures.h>
 #include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Gui/DialogUtils.h>
@@ -73,7 +74,7 @@ CreateAnnotationModel::CreateAnnotationModel()
     hideLocation(false),
     hideAnnotationType(false),
     hideAnnotationName(false),
-    hideDescription(true),
+    hideDescription(false),
     hideUsePatternNames(true),
     useUnloadedObjects(false),
     useAminoAnnotationTypes(false),
@@ -320,10 +321,7 @@ void CreateAnnotationWidgetController::updateModel(bool forValidation) {
 
     model.description = w->getDescription();
     if (forValidation) {
-        model.data->qualifiers.clear();
-        if (!model.description.isEmpty()) {
-            model.data->qualifiers << U2Qualifier(DESCRIPTION_QUALIFIER_KEY, model.description);
-        }
+        U1AnnotationUtils::addDescriptionQualifier(model.data, model.description);
     }
 
     if (w->isExistingTableOptionSelected()) {

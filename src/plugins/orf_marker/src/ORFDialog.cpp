@@ -374,7 +374,7 @@ void ORFDialog::accept()
 
         const CreateAnnotationModel &m = ac->getModel();
         AnnotationTableObject *aObj = m.getAnnotationObject();
-        FindORFsToAnnotationsTask *orfTask = new FindORFsToAnnotationsTask(aObj, ctx->getSequenceObject()->getEntityRef(), s, m.groupName);
+        FindORFsToAnnotationsTask *orfTask = new FindORFsToAnnotationsTask(aObj, ctx->getSequenceObject()->getEntityRef(), s, m.groupName, m.description);
         AppContext::getTaskScheduler()->registerTopLevelTask(orfTask);
     }
 

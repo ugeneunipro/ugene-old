@@ -24,7 +24,7 @@
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Formats/GenbankFeatures.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Settings.h>

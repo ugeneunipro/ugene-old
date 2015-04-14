@@ -19,17 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QPainterPath>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QMenu>
-#include <QtGui/QToolTip>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QToolTip>
-#endif
-
+#include <QApplication>
+#include <QMenu>
+#include <QPainterPath>
+#include <QToolTip>
 
 #include <U2Core/AnnotationData.h>
 #include <U2Core/AnnotationModification.h>
@@ -38,14 +31,14 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/GenbankFeatures.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Gui/GUIUtils.h>
-
-#include <U2Formats/GenbankFeatures.h>
 #include <U2Formats/GenbankLocationParser.h>
+
+#include <U2Gui/GUIUtils.h>
 
 #include "ADVSequenceObjectContext.h"
 #include "GSequenceLineViewAnnotated.h"

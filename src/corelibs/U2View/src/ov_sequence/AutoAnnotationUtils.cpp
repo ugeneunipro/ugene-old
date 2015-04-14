@@ -19,13 +19,16 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AutoAnnotationsSupport.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2SafePoints.h>
+
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ObjectViewModel.h>
+
 #include <U2View/ADVAnnotationCreation.h>
 
 #include "ADVSequenceObjectContext.h"
@@ -306,8 +309,14 @@ QList<QAction*> AutoAnnotationUtils::getAutoAnnotationToggleActions(ADVSequenceO
 
 //////////////////////////////////////////////////////////////////////////
 
-ExportAutoAnnotationsGroupTask::ExportAutoAnnotationsGroupTask(AnnotationGroup *ag, GObjectReference &ref, ADVSequenceObjectContext *ctx)
-    : Task("ExportAutoAnnotationsGroupTask", TaskFlags_NR_FOSCOE), aGroup(ag), aRef(ref), seqCtx(ctx), createTask(NULL)
+ExportAutoAnnotationsGroupTask::ExportAutoAnnotationsGroupTask(AnnotationGroup *ag,
+    GObjectReference& ref, ADVSequenceObjectContext* ctx, const QString &annDescription)
+    : Task("ExportAutoAnnotationsGroupTask", TaskFlags_NR_FOSCOE),
+      aGroup(ag),
+      aRef(ref),
+      seqCtx(ctx),
+      createTask(NULL),
+      annDescription(annDescription)
 {
     SAFE_POINT_EXT(NULL != ag, stateInfo.setError(tr("Invalid annotation group provided")), );
 }
@@ -318,7 +327,9 @@ void ExportAutoAnnotationsGroupTask::prepare() {
 
     QList<SharedAnnotationData> aData;
     foreach (Annotation *a, annsToExport) {
-        aData.append(a->getData());
+        SharedAnnotationData data(new AnnotationData(*(a->getData())));
+        U1AnnotationUtils::addDescriptionQualifier(data, annDescription);
+        aData.append(data);
     }
 
     SAFE_POINT(!aData.isEmpty(), "No auto-annotations to export!", );

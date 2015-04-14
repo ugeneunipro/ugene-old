@@ -49,6 +49,7 @@ public:
         AnnotationTableObject *annotObject,
         const QString& annotName,
         const QString& annotGroup,
+        const QString &annDescription,
         const DNASequence& sequence);
 
     QList<Task*> onSubTaskFinished(Task* subTask);
@@ -60,6 +61,7 @@ private:
     U2FeatureType                       annotType;
     QString                             annotName;
     QString                             annotGroup;
+    const QString                       annDescription;
     DNASequence                         sequence;
     FindHighFlexRegions*                findHighFlexTask;
 };
