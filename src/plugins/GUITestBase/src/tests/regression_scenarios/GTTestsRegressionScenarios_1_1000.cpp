@@ -407,6 +407,50 @@ GUI_TEST_CLASS_DEFINITION(test_0587){
     CHECK_SET_ERR(!lt.hasError(), "error messages in the log");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0597) {
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTGlobals::sleep();
+
+    QWidget *sequenceWidget2 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0", NULL, false);
+    CHECK_SET_ERR(sequenceWidget2 != NULL, "sequenceWidget is not present");
+    QWidget *circularViewSe2 = GTWidget::findWidget(os, "GraphMenuAction", sequenceWidget2, false);
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << "GC Content (%)");
+    GTUtilsDialog::waitForDialog(os, chooser2);
+    GTWidget::click(os, circularViewSe2);
+    GTGlobals::sleep();
+
+    class SaveGraphCutoffsDialogFiller : public Filler {
+    public:
+        SaveGraphCutoffsDialogFiller(U2OpStatus &os)
+            : Filler (os, "SaveGraphCutoffsDialog") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QLineEdit *newTablePath = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "leNewTablePath", dialog));
+            GTLineEdit::setText(os, newTablePath, sandBoxDir + "test_0597" );
+
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+
+            QPushButton* okButton = box->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(okButton !=NULL, "ok button is NULL");
+            GTWidget::click(os, okButton);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SaveGraphCutoffsDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Graph" << "save_cutoffs_as_annotation"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "GSequenceGraphViewRenderArea"));
+    //GTMenu::clickMenuItemByName(os, menu, QStringList() << "Graph" << "save_cutoffs_as_annotation", GTGlobals::UseKey);
+    
+    GTGlobals::sleep();
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "graph_cutoffs  (0, 3)");
+    CHECK_SET_ERR(annotationGroup != NULL, "annotation group not found");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0627) {
 //    1. Open _common_data/fasta/fa1.fa.
 //    Expected state: the file opens in the sequence viewer.
