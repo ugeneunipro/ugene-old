@@ -159,8 +159,8 @@ QStringList GTTreeWidget::getItemNames(U2OpStatus &os, QTreeWidget *treeWidget) 
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "findItem"
-QTreeWidgetItem * GTTreeWidget::findItem(U2OpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
+#define GT_METHOD_NAME "findItemPrivate"
+QTreeWidgetItem * GTTreeWidget::findItemPrivate(U2OpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(tree != NULL, "tree widget is NULL", NULL);
 
@@ -184,16 +184,23 @@ QTreeWidgetItem * GTTreeWidget::findItem(U2OpStatus &os, QTreeWidget *tree, cons
 
         if (options.depth == GTGlobals::FindOptions::INFINITE_DEPTH ||
                 innerOptions.depth > 0) {
-            QTreeWidgetItem * childItem = findItem(os, tree, text, item, column, innerOptions);
+            QTreeWidgetItem * childItem = findItemPrivate(os, tree, text, item, column, innerOptions);
             if (NULL != childItem) {
                 return childItem;
             }
         }
     }
-
-    CHECK_SET_ERR_RESULT(!options.failIfNull, QString("Item '%1' not found").arg(text), NULL);
-
     return NULL;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findItem"
+QTreeWidgetItem * GTTreeWidget::findItem(U2OpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
+    QTreeWidgetItem* result = findItemPrivate(os, tree, text, parent, column, options);
+    if(options.failIfNull){
+        CHECK_SET_ERR_RESULT(result != NULL, QString("Item '%1' not found").arg(text), NULL);
+    }
+    return result;
 }
 #undef GT_METHOD_NAME
 
