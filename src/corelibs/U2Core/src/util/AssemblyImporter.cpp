@@ -63,6 +63,8 @@ void AssemblyImporter::createAssembly(const U2DbiRef &dbiRef, const QString &fol
 
     DbiConnection connection(dbiRef, true, os);
     SAFE_POINT_OP(os, );
+    CHECK(!os.isCanceled(), );
+    SAFE_POINT(connection.isOpen(), "Connection is closed", );
     U2AssemblyDbi *assemblyDbi = connection.dbi->getAssemblyDbi();
     SAFE_POINT(NULL != assemblyDbi, L10N::nullPointerError("assembly dbi"), );
 
@@ -79,6 +81,8 @@ void AssemblyImporter::addReads(U2DbiIterator<U2AssemblyRead> *readsIterator) {
 
     DbiConnection connection(dbiRef, os);
     SAFE_POINT_OP(os, );
+    CHECK(!os.isCanceled(), );
+    SAFE_POINT(connection.isOpen(), "Connection is closed", );
     U2AssemblyDbi *assemblyDbi = connection.dbi->getAssemblyDbi();
     SAFE_POINT(NULL != assemblyDbi, L10N::nullPointerError("assembly dbi"), );
 
@@ -94,6 +98,8 @@ void AssemblyImporter::packReads(U2AssemblyReadsImportInfo &importInfo) {
 
     DbiConnection connection(dbiRef, os);
     SAFE_POINT_OP(os, );
+    CHECK(!os.isCanceled(), );
+    SAFE_POINT(connection.isOpen(), "Connection is closed", );
     U2AssemblyDbi *assemblyDbi = connection.dbi->getAssemblyDbi();
     SAFE_POINT(NULL != assemblyDbi, L10N::nullPointerError("assembly dbi"), );
 
