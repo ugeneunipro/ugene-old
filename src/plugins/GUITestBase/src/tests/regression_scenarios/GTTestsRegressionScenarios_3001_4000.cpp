@@ -1370,6 +1370,30 @@ GUI_TEST_CLASS_DEFINITION(test_3226) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3229){
+//    1. Create the "read sequence -> write sequence" workflow.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+    GTUtilsWorkflowDesigner::connect(os, read, write);
+//    2. Set input a single file human_T1
+    GTUtilsWorkflowDesigner::click(os, read);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+//    3. Set the output path: ../test.fa or ./test.fa Output file
+    GTUtilsWorkflowDesigner::click(os, write);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", "./test.fa", GTUtilsWorkflowDesigner::textValue);
+//    4. Run the workflow.
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: there is a single result file on the WD dashboard.
+    //QString text = "test.fa\"
+    QWebElement table = GTUtilsDashboard::findElement(os, "test.fa", "TABLE");
+    QString s = table.toInnerXml();
+    int i = s.count("test.fa");
+
+    CHECK_SET_ERR( i==4, "unexpected table content: " + s);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3245) {
     // 1. Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
@@ -2403,6 +2427,38 @@ GUI_TEST_CLASS_DEFINITION(test_3402){
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep(500);
 //    Current state: UGENE not crashes.
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3414){
+//check time on dashboard
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Select "tuxedo" sample
+//    3. Set proper input data(_common_data/NIAID_pipelines/tuxedo).
+    QMap<QString, QVariant> map;
+    map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/index"));
+    map.insert("Bowtie index basename", "chr6");
+    map.insert("Bowtie version", "Bowtie1");
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", QList<QStringList>()<<(QStringList()<<
+                                                     testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/lymph_aln.fastq"),
+                                                      map));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Single-sample"<<"Single-end"));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::click(os, "Assemble Transcripts with Cufflinks");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    //    Launch pipeline
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTGlobals::sleep(1000);
+    QWebElement initEl = GTUtilsDashboard::findElement(os, "00:00:0", "SPAN");
+    QString s = initEl.toPlainText();
+    GTGlobals::sleep(5000);
+    QWebElement finalEl = GTUtilsDashboard::findElement(os, "00:00:0", "SPAN");
+    QString s1 = finalEl.toPlainText();
+    CHECK_SET_ERR(s!=s1, "timer not changed");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3428){

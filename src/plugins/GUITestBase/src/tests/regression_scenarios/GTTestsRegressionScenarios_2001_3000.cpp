@@ -74,6 +74,7 @@
 #include "GTUtilsWizard.h"
 #include "GTUtilsWorkflowDesigner.h"
 
+#include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/EscapeClicker.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
@@ -4416,6 +4417,87 @@ GUI_TEST_CLASS_DEFINITION(test_2632){
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2638){
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Select "tuxedo" sample
+//    3. Set proper input data(_common_data/NIAID_pipelines/tuxedo).
+    QMap<QString, QVariant> map;
+    map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/index"));
+    map.insert("Bowtie index basename", "chr6");
+    map.insert("Bowtie version", "Bowtie1");
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", QList<QStringList>()<<(QStringList()<<
+                                                     testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/lymph_aln.fastq"),
+                                                      map));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Single-sample"<<"Single-end"));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::click(os, "Assemble Transcripts with Cufflinks");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    //    Launch pipeline
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    4. Open "input" tab on dashboard
+    QString initTitle = GTUtilsMdi::activeWindowTitle(os);
+    GTUtilsDashboard::openTab(os, GTUtilsDashboard::Input);
+    GTUtilsDashboard::traceAllWebElements(os);
+    GTUtilsDashboard::click(os, GTUtilsDashboard::findElement(os, "Find Splice Junctions with TopHat", "LI"));
+    GTUtilsDashboard::click(os, GTUtilsDashboard::findElement(os, "index", "BUTTON"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: "Bowtie index directory" parameter's value is folder, it is not tried to be opened bu UGENE when clicking
+    QString finalTitle = GTUtilsMdi::activeWindowTitle(os);
+    CHECK_SET_ERR(initTitle == finalTitle, "New window was opened unexpectidly: " + finalTitle);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2640){
+//    0. Set CPU optimisation in settings dialog
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "dialog is NULL");
+
+            AppSettingsDialogFiller::openTab(os, AppSettingsDialogFiller::Resourses);
+            QSpinBox* cpuBox = GTWidget::findExactWidget<QSpinBox*>(os, "cpuBox", dialog);
+            GTSpinBox::setValue(os, cpuBox, 94, GTGlobals::UseKeyBoard);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new custom));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Select "tuxedo" sample
+//    3. Set proper input data(_common_data/NIAID_pipelines/tuxedo).
+    GTLogTracer l("tophat-2.0.8b/tophat -p 94 --output-dir");
+    QMap<QString, QVariant> map;
+    map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/index"));
+    map.insert("Bowtie index basename", "chr6");
+    map.insert("Bowtie version", "Bowtie1");
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "Tuxedo Wizard", QList<QStringList>()<<(QStringList()<<
+                                                     testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/lymph_aln.fastq"),
+                                                      map));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
+                                                                   "Single-sample"<<"Single-end"));
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::click(os, "Assemble Transcripts with Cufflinks");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    //    Launch pipeline
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    // Expected state: tophat launched with argument -p
+    GTUtilsLog::checkContainsMessage(os, l);
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2651) {
     // 1. File->Search NCBI Genbank...
     // 2. In the search field paste
@@ -4515,6 +4597,30 @@ GUI_TEST_CLASS_DEFINITION( test_2656 ) {
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
 
     CHECK_SET_ERR( l.hasError(), "An error should be in the log");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2662 ){
+//    1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Open Call Variants sample.
+    GTUtilsWorkflowDesigner::addSample(os, "call variants");
+//    3. Set valid input data.
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Assembly (BAM/SAM)"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Call_variants/input_data/chrM", "chrM.sorted.bam");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Call_variants/input_data/chrM", "chrM.fa");
+//    4. Start the scheme.
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    5. Open External Tools tab.
+    GTUtilsDashboard::openTab(os, GTUtilsDashboard::ExternalTools);
+//    Expected state: vcfTools executible file is /usr/bin/perl path/to/vcfutils.pl
+//    Actual: vcfTools executible file is /usr/bin/perl
+    GTUtilsDashboard::click(os, GTUtilsDashboard::findElement(os, "vcfutils run 1", "*", true));
+    GTUtilsDashboard::findElement(os, "samtools-0.1.19/vcfutils.pl", "SPAN");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2667 ) {

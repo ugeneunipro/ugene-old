@@ -136,6 +136,15 @@ QWidget* GTUtilsMdi::activeWindow(U2OpStatus &os, const GTGlobals::FindOptions& 
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "activeWindowTitle"
+QString GTUtilsMdi::activeWindowTitle(U2OpStatus &os){
+    QWidget* w = activeWindow(os);
+    MWMDIWindow* mdi = qobject_cast<MWMDIWindow*>(w);
+    GT_CHECK_RESULT(mdi, "unexpected object type", QString());
+    return mdi->windowTitle();
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "activateWindow"
 void GTUtilsMdi::activateWindow(U2OpStatus &os, const QString &windowName){
     MainWindow* mw = AppContext::getMainWindow();
