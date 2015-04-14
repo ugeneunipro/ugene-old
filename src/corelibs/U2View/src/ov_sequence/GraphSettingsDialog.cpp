@@ -100,6 +100,7 @@ GraphSettingsDialog::GraphSettingsDialog( GSequenceGraphDrawer* d, const U2Regio
     connect(okButton, SIGNAL(clicked()), SLOT(sl_onOkClicked()));
 
     okButton->setDefault(true);
+    setObjectName("GraphSettingsDialog");
 }
 
 void GraphSettingsDialog::sl_onPickColorButtonClicked()

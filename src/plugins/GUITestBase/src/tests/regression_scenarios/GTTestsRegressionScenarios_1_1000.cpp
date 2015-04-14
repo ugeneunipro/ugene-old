@@ -76,6 +76,7 @@
 #include "GTUtilsWizard.h"
 #include "GTUtilsWorkflowDesigner.h"
 
+#include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/EscapeClicker.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
@@ -919,6 +920,41 @@ GUI_TEST_CLASS_DEFINITION(test_0779) {
     GTGlobals::sleep(500);
     GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), GTUtilsWorkflowDesigner::getWorker(os, "Write Annotations"));
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0782){
+//    1. Open file data/samples/FASTA/human_T1.fa in sequence view.
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+//    2. Build graph - {Graphs -> GC content (%)}.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"GC Content (%)"));
+    GTWidget::click(os, GTWidget::findWidget(os, "GraphMenuAction"));
+//    3. Press right mouse button in the graph area, choose {Graph -> Graph settings...}.
+    QWidget* graphView = GTWidget::findWidget(os, "GSequenceGraphViewRenderArea");
+    GTWidget::click(os, graphView);
+    QImage init = QPixmap::grabWidget(graphView).toImage();
+    init.save("/home/vmalin/init", "BMP");
+    class custom: public CustomScenario{
+    public:
+        void run(U2::U2OpStatus &os){
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "dialog not found");
+            GTWidget::click(os, GTWidget::findButtonByText(os, "Cancel", dialog));
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "GraphSettingsDialog", QDialogButtonBox::Cancel, new custom));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Graph"<<"visual_properties_action"));
+    GTWidget::click(os, graphView, Qt::RightButton);
+//    4. In "Graph Settings" dialog change graph's color, then press "Cancel".
+
+//    Expected result: Graph's color didn't change.
+    QImage final = QPixmap::grabWidget(graphView).toImage();
+    final.save("/home/vmalin/final", "BMP");
+    CHECK_SET_ERR(final == init, "graph view changed");
+//    5. Repeat the third step, then check "Cutoff for minimum and maximum values".
+
+//    6. Try to apply dialog with different values, in fields "Minimum" and "Maximum".
+
+//    Expected result: Cutoff graph is drawn correctly.
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0786) {

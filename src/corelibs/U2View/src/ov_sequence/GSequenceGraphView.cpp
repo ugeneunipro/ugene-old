@@ -233,6 +233,7 @@ void GSequenceGraphView::buildPopupMenu(QMenu& menu)
     // Creating the Graphs menu
     QMenu* graphMenu = new QMenu(tr("Graph"));
     graphMenu->setIcon(QIcon(":core/images/graphs.png"));
+    graphMenu->menuAction()->setObjectName("Graph");
 
     addActionsToGraphMenu(graphMenu);
 
