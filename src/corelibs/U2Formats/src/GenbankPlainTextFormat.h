@@ -22,8 +22,9 @@
 #ifndef _U2_GENBANK_PLAIN_TEXT_FORMAT_H_
 #define _U2_GENBANK_PLAIN_TEXT_FORMAT_H_
 
+#include <U2Core/GenbankFeatures.h>
+
 #include "EMBLGenbankAbstractDocument.h"
-#include "GenbankFeatures.h"
 
 namespace U2 {
 

@@ -21,35 +21,32 @@
 
 #include <limits.h>
 
-#include <QtCore/QBuffer>
-#include <QtCore/QScopedPointer>
+#include <QBuffer>
+#include <QScopedPointer>
 
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/AnnotationTableObject.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/U2OpStatus.h>
 #include <U2Core/DNAAlphabet.h>
-#include <U2Core/L10n.h>
-#include <U2Core/U2DbiUtils.h>
 #include <U2Core/DNAInfo.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/GenbankFeatures.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2SequenceUtils.h>
-#include <U2Core/U2SequenceDbi.h>
-#include <U2Core/U2ObjectDbi.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceDbi.h>
+#include <U2Core/U2SequenceUtils.h>
 
-#include <U2Formats/GenbankFeatures.h>
-
-#include "GenbankLocationParser.h"
-#include "GenbankFeatures.h"
 #include "DocumentFormatUtils.h"
-
 #include "EMBLGenbankAbstractDocument.h"
+#include "GenbankLocationParser.h"
 
 namespace U2 {
 

@@ -19,31 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#include "GenbankPlainTextFormat.h"
-#include "GenbankLocationParser.h"
-#include "GenbankFeatures.h"
-#include "DocumentFormatUtils.h"
-
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/L10n.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/DNAInfo.h>
-
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNAInfo.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
+#include <U2Core/QVariantUtils.h>
+#include <U2Core/TextUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2AttributeUtils.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
-#include <U2Core/TextUtils.h>
-#include <U2Core/QVariantUtils.h>
-
-#include <U2Core/AppContext.h>
+#include "DocumentFormatUtils.h"
+#include "GenbankLocationParser.h"
+#include "GenbankPlainTextFormat.h"
 
 namespace U2 {
 
