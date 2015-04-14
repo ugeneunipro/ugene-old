@@ -91,7 +91,7 @@ void InSilicoPcrWorkerFactory::init() {
         Descriptor primersDesc(PRIMERS_ATTR_ID, InSilicoPcrWorker::tr("Primers URL"), InSilicoPcrWorker::tr("A URL to the input file with primer pairs."));
         Descriptor reportDesc(REPORT_ATTR_ID, InSilicoPcrWorker::tr("Report URL"), InSilicoPcrWorker::tr("A URL to the output file with the PCR report."));
         Descriptor mismatchesDesc(MISMATCHES_ATTR_ID, InSilicoPcrWorker::tr("Mismatches"), InSilicoPcrWorker::tr("Number of allowed mismatches."));
-        Descriptor perfectDesc(PERFECT_ATTR_ID, InSilicoPcrWorker::tr("Perfect match"), InSilicoPcrWorker::tr("Number of bases that match exactly on 3' end of primers."));
+        Descriptor perfectDesc(PERFECT_ATTR_ID, InSilicoPcrWorker::tr("Min perfect match"), InSilicoPcrWorker::tr("Number of bases that match exactly on 3' end of primers."));
         Descriptor maxProductDesc(MAX_PRODUCT_ATTR_ID, InSilicoPcrWorker::tr("Max product size"), InSilicoPcrWorker::tr("Maximum size of amplified region."));
 
         attributes << new Attribute(primersDesc, BaseTypes::STRING_TYPE(), true);

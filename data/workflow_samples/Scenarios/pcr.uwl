@@ -1,19 +1,18 @@
 #@UGENE_WORKFLOW
-#This workflow simulates the PCR process. The input data are:
-#1) The file(s) with DNA sequences.
-#2) The file with DNA sequences of primers pairs. The pairs must be ordered one by one:
+#This workflow simulates the PCR process. You are required to input:
+#1) File(s) with DNA sequences.
+#2) A file with DNA sequences of primers pairs. The pairs must be ordered as follows:
 #    a. The first sequence of the first pair.
 #    b. The second sequence of the first pair.
 #    c. The first sequence of the second pair.
 #    d. The second sequence of the second pair.
 #    e. etc.
 #
-#The output data are:
-#1) The files with the amplified PCR products.
-#2) The file with the HTML report about the In silico PCR:
+#As the output data you will get:
+#1) A file with the HTML report about the in silico PCR:
 #    a. Products count table.
 #    b. Pairs details.
-
+#2) Files with the amplified PCR products.
 
 
 workflow "In silico PCR"{
@@ -95,7 +94,7 @@ workflow "In silico PCR"{
             page {
                 id:1;
                 next:2;
-                title:"Input DNA Sequences";
+                title:"Input DNA sequences";
                 parameters-area {
                     read-sequence.url-in {
                         type:datasets;
@@ -105,7 +104,7 @@ workflow "In silico PCR"{
             page {
                 id:2;
                 next:3;
-                title:"Primers and Parameters";
+                title:"Primers and parameters";
                 parameters-area {
                     group {
                         title:Primers;
@@ -127,16 +126,11 @@ workflow "In silico PCR"{
             }
             page {
                 id:3;
-                title:"Results";
+                title:"Output data";
                 parameters-area {
-                    group {
-                        title:"Output Files";
-                        label-size:120;
-                        in-silico-pcr.report-url {
-                        }
-                        write-sequence.url-out {
-                            label:"Products URL";
-                        }
+                    label {
+                        text:"The workflow output consists of the HTML report and the found amplified PCR products. File names of the products are based on the DNA sequence name and the primer names.";
+                        background-color:"rgb(203,222,228)";
                     }
                 }
             }
