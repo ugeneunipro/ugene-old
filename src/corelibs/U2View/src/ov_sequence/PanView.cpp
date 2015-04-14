@@ -131,38 +131,6 @@ PanView::PanView(ADVSingleSequenceWidget* p, ADVSequenceObjectContext* ctx)
     zoomToSequenceAction->setObjectName("action_zoom_to_sequence_" + ctx->getSequenceObject()->getGObjectName());
     connect(zoomToSequenceAction, SIGNAL(triggered()), SLOT(sl_zoomToSequence()));
 
-    panViewAction = new QAction(QIcon(":/core/images/zoom_rows.png"), tr("Manage Rows in Zoom View"), this);
-    panViewAction->setObjectName("ManageRowsAction");
-
-    QMenu *menu = new QMenu();
-    showAllAnnotations = new QAction(tr("Show All Rows"), menu);
-    showAllAnnotations->setCheckable(true);
-    connect(showAllAnnotations, SIGNAL(triggered(bool)), renderArea, SLOT(sl_maxLines(bool)));
-
-    increasePanViewHeight = new QAction(tr("+1 Row"), menu);
-    connect(increasePanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_increaseLines()));
-
-    decreasePanViewHeight = new QAction(tr("-1 Row"), menu);
-    connect(decreasePanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_decreaseLines()));
-
-    increase5PanViewHeight = new QAction(tr("+5 Rows"), menu);
-    connect(increase5PanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_increase5Lines()));
-
-    decrease5PanViewHeight = new QAction(tr("-5 Rows"), menu);
-    connect(decrease5PanViewHeight, SIGNAL(triggered()), renderArea, SLOT(sl_decrease5Lines()));
-
-    resetAnnotations = new QAction(tr("Reset Rows Number"), menu);
-    connect(resetAnnotations, SIGNAL(triggered()), renderArea, SLOT(sl_resetToDefault()));
-
-    menu->addAction(showAllAnnotations);
-    menu->addAction(increase5PanViewHeight);
-    menu->addAction(increasePanViewHeight);
-    menu->addAction(decreasePanViewHeight);
-    menu->addAction(decrease5PanViewHeight);
-    menu->addAction(resetAnnotations);
-
-    panViewAction->setMenu(menu);
-
     toggleMainRulerAction = new QAction(tr("Show Main Ruler"), this);
     toggleMainRulerAction->setObjectName("Show Main Ruler");
     toggleMainRulerAction->setCheckable(true);
@@ -235,25 +203,11 @@ void PanView::unregisterAnnotations(const QList<Annotation *> &l) {
 }
 
 void PanView::updateRows() {
-    updateRAHeight();
-
     int maxSteps = calculateNumRowBarSteps();
     if (qAbs(rowBar->maximum() - rowBar->minimum())!=maxSteps) {
         updateRowBar();
     }
     updateActions();
-}
-
-void PanView::updateRAHeight() {
-    PanViewRenderArea* ra = getRenderArea();
-
-    bool heightChanged = ra->updateNumVisibleRows();
-    if (heightChanged) {
-        QLayout* lt = layout();
-        if (lt != NULL) {
-            setMinimumHeight(lt->minimumSize().height());
-        }
-    }
 }
 
 int  PanView::calculateNumRowBarSteps() const {
@@ -270,6 +224,7 @@ void PanView::updateRowBar() {
     PanViewRenderArea* ra = getRenderArea();
     int visibleRows = ra->getNumVisibleRows();
     int maxSteps = calculateNumRowBarSteps();
+
     rowBar->setMinimum(-maxSteps); //inverted appearance
     rowBar->setMaximum(0);
     rowBar->setSingleStep(1);
@@ -375,24 +330,6 @@ void PanView::updateActions() {
     }
     zoomToSequenceAction->setEnabled(visibleRange.startPos != 0 || visibleRange.endPos() != seqLen);
 
-    PanViewRenderArea* panViewRenderArea = static_cast<PanViewRenderArea*>(renderArea);
-
-    increasePanViewHeight->setEnabled(panViewRenderArea->canIncreaseLines());
-    decreasePanViewHeight->setEnabled(panViewRenderArea->canDecreaseLines());
-    increase5PanViewHeight->setEnabled(panViewRenderArea ->canIncreaseLines());
-    decrease5PanViewHeight->setEnabled(panViewRenderArea ->canDecreaseLines());
-    if(!panViewRenderArea->isDefaultSize()){
-        if(getRowsManager()->getNumRows()<MAX_VISIBLE_ROWS && panViewRenderArea->isAllLinesShown()){
-            resetAnnotations->setEnabled(false);
-        }else{
-            resetAnnotations->setEnabled(true);
-        }
-    }else{
-        resetAnnotations->setEnabled(false);
-    }
-    //showAllAnnotations->setEnabled(!((PanViewRenderArea*)renderArea)->isAllLinesShown());
-    panViewAction->setEnabled(isVisible() && (increasePanViewHeight->isEnabled() || decreasePanViewHeight->isEnabled() ||
-        increase5PanViewHeight->isEnabled() || decrease5PanViewHeight->isEnabled() || resetAnnotations->isEnabled()));
 }
 
 void PanView::sl_zoomInAction() {
@@ -515,8 +452,6 @@ void PanView::addCustomRuler(const RulerInfo& r) {
     PanViewRenderArea* ra = getRenderArea();
     ra->customRulers.append(r);
     if (ra->showCustomRulers) {
-        updateRAHeight();
-
         addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
         update();
     }
@@ -533,8 +468,6 @@ void PanView::removeCustomRuler(const QString& name) {
     }
     toggleCustomRulersAction->setEnabled(!ra->customRulers.isEmpty());
     if (ra->showCustomRulers) {
-        updateRAHeight();
-
         addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
         update();
     }
@@ -544,7 +477,6 @@ void PanView::removeAllCustomRulers() {
     toggleCustomRulersAction->setEnabled(false);
     if (!getRenderArea()->customRulers.isEmpty()) {
         getRenderArea()->customRulers.clear();
-        updateRAHeight();
 
         addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
         update();
@@ -553,7 +485,6 @@ void PanView::removeAllCustomRulers() {
 
 void PanView::sl_toggleMainRulerVisibility(bool visible) {
     getRenderArea()->showMainRuler = visible;
-    updateRAHeight();
 
     addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
     update();
@@ -561,7 +492,6 @@ void PanView::sl_toggleMainRulerVisibility(bool visible) {
 
 void PanView::sl_toggleCustomRulersVisibility(bool visible) {
     getRenderArea()->showCustomRulers = visible;
-    updateRAHeight();
 
     addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
     update();
@@ -598,7 +528,6 @@ void PanView::hideEvent(QHideEvent *ev){
     zoomOutAction->setDisabled(true);
     zoomToSelectionAction->setDisabled(true);
     zoomToSequenceAction->setDisabled(true);
-    panViewAction->setDisabled(true);
     QWidget::hideEvent(ev);
 }
 
@@ -617,8 +546,6 @@ PanViewRenderArea::PanViewRenderArea(PanView* d) : GSequenceLineViewAnnotatedRen
     showMainRuler = true;
     showCustomRulers = true;
     fromActions = false;
-    showAllLines = false;
-    defaultRows = true;
     numLines = 0;
 
     rowLinesOffset = 0;
@@ -839,6 +766,12 @@ void PanViewRenderArea::drawSequence(QPainter& p) {
 
 void PanViewRenderArea::resizeEvent(QResizeEvent *e) {
     view->addUpdateFlags(GSLV_UF_ViewResized);
+
+    updateNumVisibleRows();
+
+    SAFE_POINT(getPanView() != NULL, "Panview is NULL", );
+    getPanView()->updateRowBar();
+
     QWidget::resizeEvent(e);
 }
 
@@ -983,7 +916,9 @@ int PanViewRenderArea::getRowLine(int i) const {
 void PanViewRenderArea::setRowLinesOffset(int r) {
     int maxRows = getPanView()->getRowsManager()->getNumRows();
     int visibleRows = getNumVisibleRows();
-    assert(r <= maxRows - (visibleRows - MIN_VISIBLE_ROWS)) ; Q_UNUSED(maxRows); Q_UNUSED(visibleRows);
+    assert(r <= maxRows - (visibleRows - MIN_VISIBLE_ROWS)) ;
+    Q_UNUSED(maxRows);
+    Q_UNUSED(visibleRows);
     if (r!=rowLinesOffset) {
         rowLinesOffset = r;
         update();
@@ -991,105 +926,12 @@ void PanViewRenderArea::setRowLinesOffset(int r) {
 }
 
 bool PanViewRenderArea::updateNumVisibleRows() {
-    if(showAllLines) {
-        int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
-        numLines =  getPanView()->getRowsManager()->getNumRows() + additionalLines;
-    } else if(defaultRows) {
-        int annotationRows = getPanView()->getRowsManager()->getNumRows();
-        int expectedRowsToShow = annotationRows + EXTRA_EMPTY_ROWS;
-        int actualAnnotationsRowsToShow = qBound(MIN_VISIBLE_ROWS, expectedRowsToShow, MAX_VISIBLE_ROWS);
-        int newNumLines = actualAnnotationsRowsToShow + 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
-        if (newNumLines == numLines) {
-            return false; //height was not changed
-        }
-        numLines = newNumLines;
-    } else {
-        fromActions = false;
-    }
-    setMinimumHeight(numLines * lineHeight);
+    int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
+    numLines = qMin( height() / lineHeight, getPanView()->getRowsManager()->getNumRows() + additionalLines );
+
     view->addUpdateFlags(GSLV_UF_ViewResized);
     view->update();
     return true;
-}
-
-void PanViewRenderArea::sl_increaseLines(){
-    int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
-    if(numLines < getPanView()->getRowsManager()->getNumRows() + additionalLines) {
-        numLines++;
-        fromActions = true;
-        defaultRows = false;
-        panView->updateRows();
-    }
-}
-
-void PanViewRenderArea::sl_decreaseLines(){
-    int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
-    if(numLines > 1 + additionalLines) {
-        numLines--;
-        panView->showAllAnnotations->setChecked(false);
-        showAllLines = false;
-        fromActions = true;
-        defaultRows = false;
-        panView->updateRows();
-    }
-}
-
-void PanViewRenderArea::sl_increase5Lines(){
-    int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
-    if(numLines < getPanView()->getRowsManager()->getNumRows() + additionalLines) {
-        numLines += qMin(5, getPanView()->getRowsManager()->getNumRows() + additionalLines - numLines);
-        fromActions = true;
-        defaultRows = false;
-        panView->updateRows();
-    }
-}
-
-void PanViewRenderArea::sl_decrease5Lines(){
-    int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
-    if(numLines > 1 + additionalLines) {
-        numLines -= 5;
-        if(numLines < 1 + additionalLines) {
-            numLines = 1 + additionalLines;
-        }
-        panView->showAllAnnotations->setChecked(false);
-        showAllLines = false;
-        fromActions = true;
-        defaultRows = false;
-        panView->updateRows();
-    }
-}
-
-void PanViewRenderArea::sl_maxLines(bool checked){
-    if(checked) {
-        showAllLines = true;
-        int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
-        numLines =  getPanView()->getRowsManager()->getNumRows() + additionalLines;
-        fromActions = true;
-        defaultRows = false;
-        panView->updateRows();
-    } else {
-        showAllLines = false;
-    }
-}
-
-void PanViewRenderArea::sl_resetToDefault() {
-    int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
-    numLines = qMin(MAX_VISIBLE_ROWS + additionalLines, getPanView()->getRowsManager()->getNumRows() + additionalLines);
-    panView->showAllAnnotations->setChecked(false);
-    showAllLines = false;
-    fromActions = true;
-    defaultRows = false;
-    panView->updateRows();
-}
-
-bool PanViewRenderArea::canIncreaseLines() {
-    int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
-    return numLines < (getPanView()->getRowsManager()->getNumRows() + additionalLines);
-}
-
-bool PanViewRenderArea::canDecreaseLines() {
-    int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
-    return numLines > (1 +additionalLines);
 }
 
 bool PanViewRenderArea::isAllLinesShown() {
@@ -1097,9 +939,5 @@ bool PanViewRenderArea::isAllLinesShown() {
     return numLines == (getPanView()->getRowsManager()->getNumRows() + additionalLines);
 }
 
-bool PanViewRenderArea::isDefaultSize() {
-    int additionalLines = 1 + (showMainRuler ? 1 : 0) + (showCustomRulers ? customRulers.size() : 0);
-    return numLines == (MAX_VISIBLE_ROWS + additionalLines);
-}
-}//namespace
+} //namespace
 

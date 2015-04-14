@@ -224,11 +224,6 @@ void ADVSingleSequenceWidget::init() {
     addButtonWithActionToToolbar(panView->getZoomToSequenceAction(), hBar);
     buttonTabOrederedNames->append(panView->getZoomToSequenceAction()->objectName());
 
-    QToolButton* panViewToolButton = addButtonWithActionToToolbar(panView->getPanViewActions(), hBar);
-    SAFE_POINT(panViewToolButton, "Pan view tool button is NULL", );
-    panViewToolButton->setPopupMode(QToolButton::InstantPopup);
-    buttonTabOrederedNames->append(panView->getPanViewActions()->objectName());
-
     widgetStateMenuAction = new QAction(QIcon(":core/images/adv_widget_menu.png"), tr("Toggle view"), this);
     widgetStateMenuAction->setObjectName("toggle_view_button_" + getSequenceObject()->getGObjectName());
     widgetStateMenuAction->setToolTip(tr("Toggle view"));

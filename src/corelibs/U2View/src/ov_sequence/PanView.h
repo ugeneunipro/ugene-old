@@ -90,8 +90,6 @@ public:
 
     virtual QAction* getZoomToSequenceAction() const {return zoomToSequenceAction;}
 
-    QAction* getPanViewActions() const {return panViewAction;}
-
     // [0..seqLen)
     virtual void setVisibleRange(const U2Region& reg, bool signal = true);
 
@@ -160,7 +158,6 @@ public:
     void updateActions();
     void updateRows();
     void updateRowBar();
-    void updateRAHeight();
 
     void useZoom();
     void releaseZoom();
@@ -176,13 +173,6 @@ public:
     QAction*            zoomToSequenceAction;
     QAction*            toggleMainRulerAction;
     QAction*            toggleCustomRulersAction;
-    QAction*            increasePanViewHeight;
-    QAction*            decreasePanViewHeight;
-    QAction*            increase5PanViewHeight;
-    QAction*            decrease5PanViewHeight;
-    QAction*            resetAnnotations;
-    QAction*            showAllAnnotations;
-    QAction*            panViewAction;
 
     PVRowsManager*      rowsManager;
     QScrollBar*         rowBar;
@@ -210,10 +200,7 @@ public:
     virtual U2Region getMirroredYRange( const U2Strand &mirroredStrand) const {Q_UNUSED(mirroredStrand); return U2Region(-1,0);}
 
     bool updateNumVisibleRows();
-    bool canIncreaseLines();
-    bool canDecreaseLines();
     bool isAllLinesShown();
-    bool isDefaultSize();
 
 protected:
     virtual void drawAll(QPaintDevice* pd);
@@ -221,14 +208,6 @@ protected:
     virtual void drawSequence(QPainter& p);
 
     void resizeEvent(QResizeEvent *e);
-
-private slots:
-    void sl_increaseLines();
-    void sl_decreaseLines();
-    void sl_increase5Lines();
-    void sl_decrease5Lines();
-    void sl_resetToDefault();
-    void sl_maxLines(bool);
 
 private:
     int getSelectionLine() const {return numLines - 1;}
@@ -261,12 +240,10 @@ private:
     PanView*            panView;
     int                 numLines;       // number of visible lines
     int                 rowLinesOffset; // row number on the first row line
-    bool                showAllLines;
 
     bool                showMainRuler;
     bool                showCustomRulers;
     bool                fromActions;
-    bool                defaultRows;
     QList<RulerInfo>    customRulers;
 };
 
