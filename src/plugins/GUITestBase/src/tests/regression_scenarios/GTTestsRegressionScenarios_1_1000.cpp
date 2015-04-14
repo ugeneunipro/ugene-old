@@ -920,6 +920,29 @@ GUI_TEST_CLASS_DEFINITION(test_0779) {
     GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), GTUtilsWorkflowDesigner::getWorker(os, "Write Annotations"));
 
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0786) {
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Sequence");
+
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence"));
+
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsWorkflowDesigner::setParameter(os, "Accession filter", "NC_001363", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::click(os, "Write Sequence");
+    QFile outputFile(sandBoxDir + "786_out.fa");
+    const QString outputFilePath = QFileInfo(outputFile).absoluteFilePath();
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", outputFilePath, GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    
+    CHECK_SET_ERR(!outputFile.exists(outputFilePath), "File should not exist");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0801) {
     // 1. Open human_T1.fa sequence
     // 2. Open find pattern tab on options panel {Ctrl+f}. Fill fields with next data:
