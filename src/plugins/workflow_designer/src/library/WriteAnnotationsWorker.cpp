@@ -260,6 +260,26 @@ Task * WriteAnnotationsWorker::getSaveObjTask(const U2DbiRef &dstDbiRef) const {
     return createWriteMultitask(taskList);
 }
 
+namespace {
+    QString rollName(const QString &name, const QSet<QString> &usedNames) {
+        QString result = name;
+        int counter = 1;
+        while (usedNames.contains(result)) {
+            result = name + QString(" %1").arg(counter);
+            counter++;
+        }
+        return result;
+    }
+
+    void updateAnnotationsName(AnnotationTableObject *object, QSet<QString> &usedNames) {
+        QString newName = rollName(object->getGObjectName(), usedNames);
+        usedNames << newName;
+        if (object->getGObjectName() != newName) {
+            object->setGObjectName(newName);
+        }
+    }
+}
+
 Task * WriteAnnotationsWorker::getSaveDocTask(const QString &formatId, SaveDocFlags &fl) {
     SAFE_POINT(!formatId.isEmpty(), "Invalid format ID", NULL);
 
@@ -295,7 +315,9 @@ Task * WriteAnnotationsWorker::getSaveDocTask(const QString &formatId, SaveDocFl
             Document * doc = df->createNewLoadedDocument(iof, filepath, os, hints);
             CHECK_OP(os, new FailTask(os.getError()));
 
+            QSet<QString> usedNames;
             foreach (AnnotationTableObject *annTable, annTables) {
+                updateAnnotationsName(annTable, usedNames);
                 annTable->setModified(false);
                 doc->addObject(annTable); // savedoc task will delete doc -> doc will delete att
             }
