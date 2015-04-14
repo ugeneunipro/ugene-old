@@ -90,7 +90,6 @@ workflow "In silico PCR"{
         }
         wizard {
             name:"In Silico PCR";
-            auto-run:true;
             page {
                 id:1;
                 next:2;
