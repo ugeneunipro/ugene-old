@@ -462,6 +462,25 @@ GUI_TEST_CLASS_DEFINITION(test_0627) {
     GTUtilsDialog::waitForDialog(os, new ToolTipsChecker(os));
     GTWidget::click(os, primer3);
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0652) {
+    //1) Open /data/samples/fasta/human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+
+    //2) Open /data/samples/gff/5prime_utr_intron_A20.gff
+    GTFileDialog::openFile(os, dataDir + "samples/GFF/5prime_utr_intron_A20.gff");
+
+    //3) Drag and drop first annotation from gff file to sequence view of human_T1
+    //4) On question "Found annotations that are out of sequence range, continue?" answer "Yes"
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTUtilsAnnotationsTreeView::addAnnotationsTableFromProject(os, "Ca20Chr1 features");
+
+    //5) In annotations tree view open added annotation and put the mouse cursor over this annotation.
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "5_prime_UTR_intron"));
+    GTGlobals::sleep();
+    //UGENE isn't chrashed showing tooltip.
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0666) {
 /* Crash on removing some annotations from Primer3 result
  * 1. Open samples\FASTA\human_T1.fa
