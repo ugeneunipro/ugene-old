@@ -136,12 +136,15 @@ QMap<QString,QVariant> BwaSettingsWidget::getDnaAssemblyCustomSettings() const {
         QString algorithm;
         switch(indexAlgorithmComboBox->currentIndex()) {
         case 0:
-            algorithm = "bwtsw";
+            algorithm = "autodetect";
             break;
         case 1:
-            algorithm = "div";
+            algorithm = "bwtsw";
             break;
         case 2:
+            algorithm = "div";
+            break;
+        case 3:
             algorithm = "is";
             break;
         default:
