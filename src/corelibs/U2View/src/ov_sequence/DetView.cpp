@@ -335,14 +335,13 @@ U2Region DetViewRenderArea::getAnnotationYRange(Annotation *a, int region, const
     }
     SAFE_POINT(-1 != line, "Unable to calculate annotation vertical position!", U2Region());
     int y = getLineY(line);
-    int minH = numLines * lineHeight + 5;
-    return U2Region(y + (height() - minH) / 2, lineHeight);
+    return U2Region(y + getHalfOfUnusedHeight(), lineHeight);
 }
 
 U2Region DetViewRenderArea::getMirroredYRange(const U2Strand &mirroredStrand) const {
     int line = mirroredStrand.isDirect() ? baseLine : complementLine;
     int y = getLineY(line);
-    return U2Region(y, lineHeight);
+    return U2Region(y + getHalfOfUnusedHeight(), lineHeight);
 }
 
 bool DetViewRenderArea::isOnTranslationsLine(int y) const {
@@ -367,9 +366,7 @@ void DetViewRenderArea::drawAll(QPaintDevice* pd) {
                           uf.testFlag(GSLV_UF_VisibleRangeChanged) || uf.testFlag(GSLV_UF_AnnotationsChanged);
 
     bool hasSelectedAnnotationInRange = isAnnotationSelectionInVisibleRange();
-
-    int minH = numLines * lineHeight + 5;
-    int hCenter = (height() - minH) / 2;
+    int hCenter = getHalfOfUnusedHeight();
 
     if (completeRedraw) {
         cutsiteDataList.clear();
@@ -772,6 +769,11 @@ void DetViewRenderArea::updateSize()  {
     int h = numLines * lineHeight + 5;
     setMinimumHeight(h);
     repaint();
+}
+
+int DetViewRenderArea::getHalfOfUnusedHeight() const {
+    int minH = numLines * lineHeight + 5;
+    return (height() - minH) / 2;
 }
 
 } // namespace U2

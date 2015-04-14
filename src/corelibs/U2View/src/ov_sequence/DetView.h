@@ -95,6 +95,7 @@ public:
 
     virtual U2Region getAnnotationYRange(Annotation *a, int region, const AnnotationSettings *as) const;
     virtual U2Region getMirroredYRange(const U2Strand &mirroredStrand) const;
+    virtual int getHalfOfUnusedHeight() const;
 
     void updateSize();
 

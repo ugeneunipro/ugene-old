@@ -507,11 +507,11 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotation(QPainter &p, DrawAnnot
                             }
                         }
 
-                        U2Region y = aData->getStrand().isDirect() ? getMirroredYRange(U2Strand(U2Strand::Complementary))
+                        U2Region cutSiteY = aData->getStrand().isDirect() ? getMirroredYRange(U2Strand(U2Strand::Complementary))
                             : getMirroredYRange(U2Strand(U2Strand::Direct));
                         QRect mirroredAnnotationRect = annotationRect;
-                        mirroredAnnotationRect.setY(y.startPos);
-                        mirroredAnnotationRect.setHeight(y.length);
+                        mirroredAnnotationRect.setY(cutSiteY.startPos);
+                        mirroredAnnotationRect.setHeight(cutSiteY.length);
                         CutSiteDrawData toInsert;
                         toInsert.color = as->color;
                         if (hasD) {
@@ -597,8 +597,8 @@ void GSequenceLineViewAnnotatedRenderArea::drawCutSite(QPainter& p, const QRect&
 
     int xLeft = xCenter - CUT_SITE_HALF_WIDTH;
     int xRight= xCenter + CUT_SITE_HALF_WIDTH;
-    int yFlat = direct ? rect.top() - CUT_SITE_HALF_HEIGHT : rect.bottom() + CUT_SITE_HALF_HEIGHT;
-    int yPeak = direct ? rect.top() + CUT_SITE_HALF_HEIGHT : rect.bottom() - CUT_SITE_HALF_HEIGHT;
+    int yFlat = (direct ? rect.top() - CUT_SITE_HALF_HEIGHT : rect.bottom() + CUT_SITE_HALF_HEIGHT) - getHalfOfUnusedHeight();
+    int yPeak = (direct ? rect.top() + CUT_SITE_HALF_HEIGHT : rect.bottom() - CUT_SITE_HALF_HEIGHT) - getHalfOfUnusedHeight();
 
     QPolygon triangle;
     triangle << QPoint(xLeft, yFlat) << QPoint(xCenter, yPeak) << QPoint(xRight,yFlat) << QPoint(xLeft,yFlat);
