@@ -59,6 +59,7 @@
 #include "api/GTListWidget.h"
 #include "api/GTRadioButton.h"
 #include "api/GTSlider.h"
+#include "api/GTSpinBox.h"
 #include "api/GTTabWidget.h"
 #include "api/GTTextEdit.h"
 #include "api/GTTreeWidget.h"
@@ -1297,6 +1298,66 @@ GUI_TEST_CLASS_DEFINITION(test_4153) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     QColor newColor = GTWidget::getColor(os, simpleOverview, rightBottom);
     CHECK_SET_ERR(curColor != newColor, "Color is not changed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4156) {
+//    1. Open _common_data/query/crash_4156.uql
+//    2. Run the scheme with the human_T1.
+//    Extected state: erro message appeared
+
+    class scenario_4156 : public CustomScenario {
+    public:
+        virtual void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            AppSettingsDialogFiller::openTab(os, AppSettingsDialogFiller::Resourses);
+
+            QSpinBox* memBox = dialog->findChild<QSpinBox*>("memBox");
+            CHECK_SET_ERR(memBox != NULL, "memBox not found");
+            GTSpinBox::setValue(os, memBox, 256, GTGlobals::UseKeyBoard);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    class filler_4156 : public Filler {
+    public:
+        filler_4156(U2OpStatus& os)
+            : Filler(os, "RunQueryDlg") {}
+        virtual void run() {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "/samples/FASTA/human_T1.fa"));
+            GTWidget::click(os, dialog->findChild<QToolButton*>("tbInFile"));
+
+            QLineEdit* out = dialog->findChild<QLineEdit*>("outFileEdit");
+            CHECK_SET_ERR(out != NULL, "outFileEdit not found");
+            GTLineEdit::setText(os, out, sandBoxDir + "/test_4156.out");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new scenario_4156()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+    GTGlobals::sleep();
+
+    GTFileDialog::openFile(os, testDir + "_common_data/query/crash_4156.uql");
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new filler_4156(os));
+    QAction* runAction = GTAction::findActionByText(os, "Run Schema...");
+    CHECK_SET_ERR(runAction != NULL, "Run action not found");
+    GTWidget::click(os, GTAction::button(os, runAction));
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    CHECK_SET_ERR(l.hasError(), "There is no error in the log");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4164){
