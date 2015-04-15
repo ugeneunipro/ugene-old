@@ -2021,6 +2021,7 @@ REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011_2);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0012);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0024);
+    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0025);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Repeat Finder

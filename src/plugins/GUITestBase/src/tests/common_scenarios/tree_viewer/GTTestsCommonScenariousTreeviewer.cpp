@@ -1049,7 +1049,6 @@ GUI_TEST_CLASS_DEFINITION( test_0024 ) {
     }
     // GTWidget::getAllWidgetsInfo(os);
 
-;
     //GTGlobals::sleep(2000);
     //6. Check the "Show names" checkbox twice
     QCheckBox *showNamesButton = dynamic_cast<QCheckBox *>(
@@ -1066,6 +1065,72 @@ GUI_TEST_CLASS_DEFINITION( test_0024 ) {
         CHECK_SET_ERR( initialLocations[item] == item->boundingRect( ),
             "Graphics item's position has changed!" );
     }
+}
+
+GUI_TEST_CLASS_DEFINITION( test_0025 ) {
+//     for UGENE-4089
+//     1. Open or build the tree
+//     Expected state: nothing is selected, collapse, swap and reroot actino are disabled
+//     2. Select the root item
+//     Expected state: only swap action is available
+//     3. Select the other node in the middle of the tree
+//     Expected state: all three actions are enabled
+//     4. Click "Collapse"
+//     Expected state: subtree is collapsed, collapse button transformed into expand button
+//     5. Select the other node
+//     Expected state: "expand" button is "collapse" button now, because the subtree of the selected node is not collapsed
+//     6. Select the collapsed node and expand the subtree
+//     Expected state: again "expand" button is available
+
+    GTFileDialog::openFile(os, dataDir + "/samples/Newick/COI.nwk");
+    GTGlobals::sleep();
+
+    QAbstractButton* collapse = GTWidget::findButtonByText(os, "Collapse"); //GTAction::button(os, "Collapse");
+    QAbstractButton* swap = GTWidget::findButtonByText(os, "Swap Sibling");//GTAction::button(os, "Swap Siblings");
+    QAbstractButton* reroot = GTWidget::findButtonByText(os, "Reroot");// GTAction::button(os, "Reroot tree");
+
+    CHECK_SET_ERR( collapse != NULL, "collapse action button not found");
+    CHECK_SET_ERR( swap != NULL, "swap action button not found");
+    CHECK_SET_ERR( reroot != NULL, "reroot action button not found");
+
+    CHECK_SET_ERR( !collapse->isEnabled(), "Collapse action is unexpectedly enabled");
+    CHECK_SET_ERR( !swap->isEnabled(), "Swap action is unexpectedly enabled");
+    CHECK_SET_ERR( !reroot->isEnabled(), "Reroot action is unexpectedly enabled");
+
+    QList<QGraphicsItem*> nodes = GTUtilsPhyTree::getNodes(os);
+    CHECK_SET_ERR( !nodes.isEmpty(), "No nodes found");
+
+    QPoint p = GTUtilsPhyTree::getGlobalCoord(os, nodes.first());
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::click(os);
+
+    CHECK_SET_ERR( !collapse->isEnabled(), "Collapse action is unexpectedly enabled");
+    CHECK_SET_ERR( swap->isEnabled(), "Swap action is unexpectedly disnabled");
+    CHECK_SET_ERR( !reroot->isEnabled(), "Reroot action is unexpectedly enabled");
+
+    p = GTUtilsPhyTree::getGlobalCoord(os, nodes[5]);
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::click(os);
+
+    CHECK_SET_ERR( collapse->isEnabled(), "Collapse action is unexpectedly disabled");
+    CHECK_SET_ERR( swap->isEnabled(), "Swap action is unexpectedly disabled");
+    CHECK_SET_ERR( reroot->isEnabled(), "Reroot action is unexpectedly disabled");
+
+    GTWidget::click(os, collapse);
+    CHECK_SET_ERR( collapse->text() == "Expand", "No Expand action");
+
+    p = GTUtilsPhyTree::getGlobalCoord(os, nodes[3]);
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::click(os);
+    CHECK_SET_ERR( collapse->text() == "Collapse", "No Collapse action");
+
+    p = GTUtilsPhyTree::getGlobalCoord(os, nodes[5]);
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::click(os);
+    CHECK_SET_ERR( collapse->text() == "Expand", "No Expand action");
+
+    GTWidget::click(os, collapse);
+    CHECK_SET_ERR( collapse->text() == "Collapse", "No Collapse action");
 }
 
 } // namespace GUITest_common_scenarios_tree_viewer
