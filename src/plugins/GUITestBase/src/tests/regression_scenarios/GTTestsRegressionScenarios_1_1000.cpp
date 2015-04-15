@@ -864,6 +864,26 @@ GUI_TEST_CLASS_DEFINITION(test_0774) {
     CHECK_SET_ERR( GTUtilsSequenceView::getSeqWidgetsNumber(os) == 2, "Incorrect count of sequences");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0775){
+//    1. Open human_T1.fa sequence
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, "1..2,5..10,15..20"));
+    //GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 10, 20));
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+//    2. Open "Region selection" dialog {Ctrl+a} fill it with next data:
+//        {Multiple range selection} checked
+//        {Multi region:} 1..2,5..10,15..20
+
+//    3. Press 'Go' button
+//    Expected state: this regions are selected on the view
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_COPY<<"Copy sequence"));
+    GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
+    GTGlobals::sleep(500);
+    QString text = GTClipboard::text(os);
+    CHECK_SET_ERR(text == "TTCAGATTAAAGTT", "unexpected selection: " + text);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0776) {
 /* 1. Open WD.
  * 2. Create a scheme with the "Search for TFBS with weight matrix" element.

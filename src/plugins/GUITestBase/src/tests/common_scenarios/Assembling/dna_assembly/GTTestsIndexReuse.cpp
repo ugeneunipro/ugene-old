@@ -335,7 +335,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
 GUI_TEST_CLASS_DEFINITION(test_0007){
 //    File will be copied to the sandbox
 //    1. {Tools -> Align to reference -> Align short reads}
-    GTLogTracer l("bwa index -a bwtsw -p");
+    GTLogTracer l("bwa index -p");
     const QString refName = "lambda_virus";
     GTFile::copy(os, testDir + "_common_data/bowtie2/lambda_virus.fa", testDir + "_common_data/scenarios/sandbox/lambda_virus.fa");
 
@@ -358,7 +358,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
     GTUtilsLog::checkContainsMessage(os, l);
 
 //    2. Repeat step 1.
-    GTLogTracer l1("bwa index -a bwtsw -p");
+    GTLogTracer l1("bwa index -p");
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "AssemblyToRefDialog"));
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
@@ -383,7 +383,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
     QFile::rename(sandBoxDir + refName + ".fa.pac", sandBoxDir + refName + ".pac");
     QFile::rename(sandBoxDir + refName + ".fa.sa", sandBoxDir + refName + ".sa");
 
-    GTLogTracer l2("bwa index -a bwtsw -p");
+    GTLogTracer l2("bwa index -p");
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "AssemblyToRefDialog"));
 
     GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "Import BAM File", QDialogButtonBox::Cancel));
@@ -402,7 +402,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
     CHECK_SET_ERR(fListRenamed.size() == 14, s1 + QString("2: unexpected files number: %1").arg(fListRenamed.size()));
 
 //    4.  An index file is set as a reference sequence
-    GTLogTracer l3("bwa index -a bwtsw -p");
+    GTLogTracer l3("bwa index -p");
     AlignShortReadsFiller::Parameters ParametersIndex(testDir + "_common_data/scenarios/sandbox/", refName + ".ann",
                                                                testDir + "_common_data/bowtie2/", "reads_1.fq", AlignShortReadsFiller::Parameters::Bwa);
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &ParametersIndex));
