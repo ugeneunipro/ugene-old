@@ -179,7 +179,7 @@ static void shiftAnnotations(AnnotationTableObject *newAnnObj, QList<AnnotationT
 
     foreach (AnnotationTableObject *annObj, annObjects) {
         foreach (Annotation *a, annObj->getAnnotations()) {
-            SharedAnnotationData newAnnotation = a->getData();
+            SharedAnnotationData newAnnotation(new AnnotationData(*a->getData()));
             U2Location newLocation = newAnnotation->location;
             U2Region::shift(contigReg.startPos, newLocation->regions);
             newAnnotation->location = newLocation;

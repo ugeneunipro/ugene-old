@@ -111,9 +111,13 @@ bool AnnotationGroup::hasAnnotations() const {
 }
 
 QList<Annotation *> AnnotationGroup::addAnnotations(const QList<SharedAnnotationData> &anns) {
-    U2OpStatusImpl os;
     QList<Annotation *> result;
     CHECK(!anns.isEmpty(), result);
+
+    U2OpStatusImpl os;
+    DbiOperationsBlock opBlock(parentObject->getEntityRef().dbiRef, os);
+    Q_UNUSED(opBlock);
+    CHECK_OP(os, result);
 
     foreach (const SharedAnnotationData &d, anns) {
         const U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures(d, parentObject->getRootFeatureId(), id,

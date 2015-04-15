@@ -435,7 +435,9 @@ QList<U2FeatureKey> SQLiteFeatureDbi::getFeatureKeys(const U2DataId& featureId, 
     return result;
 }
 
-static void addKeyCommon(SQLiteQuery& qk, const U2DataId& featureId, const U2FeatureKey& key) {
+namespace {
+
+void addKeyCommon(SQLiteQuery& qk, const U2DataId& featureId, const U2FeatureKey& key) {
     qk.reset();
     qk.bindDataId(1, featureId);
     qk.bindString(2, key.name);
@@ -443,15 +445,73 @@ static void addKeyCommon(SQLiteQuery& qk, const U2DataId& featureId, const U2Fea
     qk.insert();
 }
 
+QString getFeatureKeyInsertQuery(int keyCount) {
+    SAFE_POINT(keyCount > 0, "Unexpected feature keys number", QString());
+
+    QString queryStringk("INSERT INTO FeatureKey(feature, name, value) VALUES");
+    for (int i = 1, n = 3 * keyCount; i <= n; i += 3) {
+        queryStringk += QString("(?%1, ?%2, ?%3),").arg(i).arg(i + 1).arg(i + 2);
+    }
+    queryStringk.chop(1); //remove last comma
+    return queryStringk;
+}
+
+void addFeatureKeys(const QList<U2FeatureKey> &keys, const U2DataId &featureId, DbRef *db, U2OpStatus& os) {
+    SQLiteTransaction t(db, os);
+    Q_UNUSED(t);
+
+    const int keyCount = keys.count();
+    CHECK(keyCount > 0, );
+
+    const int maximumBoundKeysNumber = SQLiteDbi::BIND_PARAMETERS_LIMIT / 3;
+    const int residualBindQueryCount = keyCount % maximumBoundKeysNumber; // 3 is the number of FeatureKey table attributes
+    const int fullBindQueryCount = keyCount / maximumBoundKeysNumber;
+    const bool fullQueryPresents = fullBindQueryCount > 0;
+
+    const QString fullQueryStr = fullQueryPresents ? getFeatureKeyInsertQuery(maximumBoundKeysNumber) : QString();
+    const QString residualQueryStr = getFeatureKeyInsertQuery(residualBindQueryCount);
+
+    QSharedPointer<SQLiteQuery> residualQuery(t.getPreparedQuery(residualQueryStr, db, os));
+    QSharedPointer<SQLiteQuery> fullQuery;
+    if (fullQueryPresents) {
+        fullQuery = t.getPreparedQuery(fullQueryStr, db, os);
+    }
+
+    for (int i = 1; i <= 3 * residualBindQueryCount; i += 3) {
+        const U2FeatureKey &key = keys[(i - 1) / 3];
+        residualQuery->bindDataId(i, featureId);
+        residualQuery->bindString(i + 1, key.name);
+        residualQuery->bindString(i + 2, key.value);
+    }
+    residualQuery->insert();
+    CHECK_OP(os, );
+
+    if (fullQueryPresents) {
+        SAFE_POINT(NULL != fullQuery.data(), "Invalid database query detected", );
+        for (int currentFullQuery = 0; currentFullQuery < fullBindQueryCount && !os.isCoR(); ++currentFullQuery) {
+            const int firstBindingPos = residualBindQueryCount + currentFullQuery * maximumBoundKeysNumber;
+            const int lastBindingPos = residualBindQueryCount + (currentFullQuery + 1) * maximumBoundKeysNumber;
+            for (int keyNum = firstBindingPos, paramNum = 1; keyNum < lastBindingPos; ++keyNum, paramNum += 3) {
+                const U2FeatureKey &key = keys[keyNum];
+                fullQuery->bindDataId(paramNum, featureId);
+                fullQuery->bindString(paramNum + 1, key.name);
+                fullQuery->bindString(paramNum + 2, key.value);
+            }
+            fullQuery->insert();
+            CHECK_OP(os, );
+            fullQuery->reset();
+        }
+    }
+}
+
+}
+
 void SQLiteFeatureDbi::createFeature(U2Feature& feature, const QList<U2FeatureKey>& keys, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
 
     static const QString queryStringf("INSERT INTO Feature(class, type, parent, root, name, sequence, strand, start, len, nameHash) "
                                                    "VALUES(?1,    ?2,   ?3,     ?4,   ?5,   ?6,       ?7,     ?8,    ?9,   ?10)");
-    QSharedPointer<SQLiteQuery>qf = t.getPreparedQuery(queryStringf, db, os);
-
-    static const QString queryStringk("INSERT INTO FeatureKey(feature, name, value) VALUES(?1, ?2, ?3)");
-    SQLiteQuery qk(queryStringk, db, os);
+    QSharedPointer<SQLiteQuery> qf = t.getPreparedQuery(queryStringf, db, os);
 
     static const QString queryStringr("INSERT INTO FeatureLocationRTreeIndex(id, start, end) VALUES(?1, ?2, ?3)");
     QSharedPointer<SQLiteQuery> qr = t.getPreparedQuery(queryStringr, db, os);
@@ -468,17 +528,15 @@ void SQLiteFeatureDbi::createFeature(U2Feature& feature, const QList<U2FeatureKe
     qf->bindInt64(9, feature.location.region.length);
     qf->bindInt32(10, qHash(feature.name));
     feature.id = qf->insert(U2Type::Feature);
-    CHECK_OP(os,);
-
-    foreach (const U2FeatureKey& key, keys) {
-        addKeyCommon(qk, feature.id, key);
-        CHECK_OP(os,);
-    }
+    CHECK_OP(os, );
 
     qr->bindDataId(1, feature.id);
     qr->bindInt64(2, feature.location.region.startPos);
     qr->bindInt64(3, feature.location.region.endPos());
     qr->execute();
+    CHECK_OP(os, );
+
+    addFeatureKeys(keys, feature.id, db, os);
 }
 
 void SQLiteFeatureDbi::addKey(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os) {

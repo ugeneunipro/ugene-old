@@ -118,6 +118,10 @@ Document* BedFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
 }
 
 void BedFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, U2OpStatus& os, const QVariantMap& fs) {
+    DbiOperationsBlock opBlock(dbiRef, os);
+    CHECK_OP(os, );
+    Q_UNUSED(opBlock);
+
     QString defaultAnnotName = "misc_feature";
     const QHash<QString, QList<SharedAnnotationData> >& annotationsHash = parseDocument(io, defaultAnnotName, os);
     const int objectsCountLimit = fs.contains(DocumentReadingMode_MaxObjectsInDoc) ? fs[DocumentReadingMode_MaxObjectsInDoc].toInt() : -1;

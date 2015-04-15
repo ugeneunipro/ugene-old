@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNATranslation.h>
@@ -271,7 +273,8 @@ static CaseAnnotationsMode getCaseAnnotationsModeHint(const QVariantMap& fs)
     return NO_CASE_ANNS;
 }
 
-const QString U2SequenceImporter::EMPTY_SEQUENCE_ERROR = U2SequenceUtils::tr("Sequence was not imported. Probably, this is because the sequence is empty.");
+const QString U2SequenceImporter::EMPTY_SEQUENCE_ERROR = QApplication::translate("U2SequenceImporter",
+    "Sequence was not imported. Probably, this is because the sequence is empty.");
 
 U2SequenceImporter::U2SequenceImporter(const QVariantMap& fs, bool lazyMode, bool singleThread)
 : lazyMode(lazyMode), singleThread(singleThread), sequenceCreated(false)

@@ -268,6 +268,10 @@ QMap<QString, QList<SharedAnnotationData> > GTFFormat::parseDocument(IOAdapter *
 
 
 void GTFFormat::load(IOAdapter *io, QList<GObject *> &objects, const U2DbiRef &dbiRef, const QVariantMap& hints, U2OpStatus &os) {
+    DbiOperationsBlock opBlock(dbiRef, os);
+    CHECK_OP(os, );
+    Q_UNUSED(opBlock);
+
     QMultiMap<QString, QList<SharedAnnotationData> > annotationsMap = parseDocument(io, os);
 
     QMultiMap<QString, QList<SharedAnnotationData> >::const_iterator iter = annotationsMap.constBegin();

@@ -479,7 +479,37 @@ void addKeyCommon(U2SqlQuery& qk, const U2DataId& featureId, const U2FeatureKey&
     qk.insert();
 }
 
-}   // unnamed namespace
+QString getFeatureKeyInsertQuery(int keyCount) {
+    SAFE_POINT(keyCount > 0, "Unexpected feature keys number", QString());
+
+    QString queryStringk("INSERT INTO FeatureKey(feature, name, value) VALUES");
+    for (int i = 1, n = 3 * keyCount; i <= n; i += 3) {
+        queryStringk += QString("(:%1, :%2, :%3),").arg(i).arg(i + 1).arg(i + 2);
+    }
+    queryStringk.chop(1); //remove last comma
+    return queryStringk;
+}
+
+void addFeatureKeys(const QList<U2FeatureKey> &keys, const U2DataId &featureId, MysqlDbRef *db, U2OpStatus& os) {
+    CHECK(!keys.isEmpty(), );
+
+    MysqlTransaction t(db, os);
+    Q_UNUSED(t);
+
+    const QString insertQueryStr = getFeatureKeyInsertQuery(keys.size());
+
+    U2SqlQuery query(insertQueryStr, db, os);
+
+    for (int i = 1, n = 3 * keys.size(); i <= n && !os.isCoR(); i += 3) {
+        const U2FeatureKey &key = keys[(i - 1) / 3];
+        query.bindDataId(QString(":%1").arg(i), featureId);
+        query.bindString(QString(":%1").arg(i + 1), key.name);
+        query.bindString(QString(":%1").arg(i + 2), key.value);
+    }
+    query.insert();
+}
+
+} // unnamed namespace
 
 void MysqlFeatureDbi::createFeature(U2Feature& feature, const QList<U2FeatureKey>& keys, U2OpStatus& os) {
     MysqlTransaction t(db, os);
@@ -502,13 +532,7 @@ void MysqlFeatureDbi::createFeature(U2Feature& feature, const QList<U2FeatureKey
     feature.id = qf.insert(U2Type::Feature);
     CHECK_OP(os,);
 
-    static const QString queryStringk("INSERT INTO FeatureKey(feature, name, value) VALUES(:feature, :name, :value)");
-    U2SqlQuery qk(queryStringk, db, os);
-
-    foreach (const U2FeatureKey& key, keys) {
-        addKeyCommon(qk, feature.id, key);
-        CHECK_OP(os,);
-    }
+    addFeatureKeys(keys, feature.id, db, os);
 }
 
 void MysqlFeatureDbi::addKey(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os) {

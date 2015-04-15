@@ -761,7 +761,7 @@ void AnnotatedDNAView::sl_onContextMenuRequested(const QPoint &scrollAreaPos) {
 
     if (annotationSelection->getSelection().size() == 1) {
         Annotation *a = annotationSelection->getSelection().first().annotation;
-        SharedAnnotationData aData = a->getData();
+        const SharedAnnotationData &aData = a->getData();
         AnnotationSettingsRegistry *registry = AppContext::getAnnotationsSettingsRegistry();
         AnnotationSettings *as = registry->getAnnotationSettings(aData);
         if (as->visible) {

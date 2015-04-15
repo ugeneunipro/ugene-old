@@ -22,6 +22,7 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -185,6 +186,10 @@ QList<SharedAnnotationData> DifferentialFormat::parseAnnotations(const ColumnDat
 }
 
 Document * DifferentialFormat::loadDocument(IOAdapter *io, const U2DbiRef &targetDb, const QVariantMap &hints, U2OpStatus &os) {
+    DbiOperationsBlock opBlock(targetDb, os);
+    CHECK_OP(os, NULL);
+    Q_UNUSED(opBlock);
+
     QList<SharedAnnotationData> anns = parseAnnotations(io, os);
     CHECK_OP(os, NULL);
 

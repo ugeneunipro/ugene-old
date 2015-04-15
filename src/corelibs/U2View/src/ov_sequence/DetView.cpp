@@ -321,7 +321,7 @@ void DetViewRenderArea::updateLines() {
 }
 
 U2Region DetViewRenderArea::getAnnotationYRange(Annotation *a, int region, const AnnotationSettings *as) const {
-    const SharedAnnotationData aData = a->getData();
+    const SharedAnnotationData &aData = a->getData();
     const U2Strand strand = aData->getStrand();
     const bool complement = strand.isCompementary() && getDetView()->hasComplementaryStrand();
     const TriState aminoState = as->amino ? TriState_Yes : TriState_No;

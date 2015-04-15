@@ -24,9 +24,9 @@
 #include "LoadDocumentTask.h"
 
 #include <U2Core/DocumentModel.h>
-#include <U2Core/Timer.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2FeatureUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -57,6 +57,10 @@ void CreateAnnotationsTask::run() {
     AnnotationTableObject *parentObject = getGObject();
     CHECK_EXT(NULL != parentObject, setError(tr("Annotation table has been removed unexpectedly")),);
 
+    DbiOperationsBlock opBlock(parentObject->getEntityRef().dbiRef, stateInfo);
+    Q_UNUSED(opBlock);
+    CHECK_OP(stateInfo, );
+
     const U2DataId rootFeatureId = parentObject->getRootFeatureId();
     const U2DbiRef dbiRef = parentObject->getEntityRef().dbiRef;
 
@@ -80,7 +84,6 @@ void CreateAnnotationsTask::run() {
 }
 
 Task::ReportResult CreateAnnotationsTask::report() {
-    GTIMER(c1, t1, "CreateAnnotationsTask::report");
     if (hasError() || isCanceled() || group2Annotations.isEmpty()) {
         return ReportResult_Finished;
     }
@@ -89,8 +92,6 @@ Task::ReportResult CreateAnnotationsTask::report() {
         setError(tr("Annotation object '%1' not found in active project: %2").arg(aRef.objName).arg(aRef.docUrl));
         return ReportResult_Finished;
     }
-
-    GTIMER(c2, t2, "CreateAnnotationsTask::report [addAnnotations]");
 
     foreach (AnnotationGroup *group, group2Annotations.keys()) {
         group->addShallowAnnotations(group2Annotations[group], true);

@@ -119,7 +119,7 @@ void ModifySequenceContentTask::fixAnnotations() {
                     } else{
                         an->updateRegions(newRegions[0]);
                         for (int i = 1; i < newRegions.size(); i++) {
-                            SharedAnnotationData splittedAnnotation = an->getData();
+                            SharedAnnotationData splittedAnnotation(new AnnotationData(*an->getData()));
                             const QString groupName = an->getGroup()->getGroupPath();
                             splittedAnnotation->location->regions = newRegions[i];
                             ato->addAnnotations(QList<SharedAnnotationData>() << splittedAnnotation, groupName);
