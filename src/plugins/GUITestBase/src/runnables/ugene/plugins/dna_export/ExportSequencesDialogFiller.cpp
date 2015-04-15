@@ -43,8 +43,10 @@ namespace U2 {
 QString ExportSelectedRegionFiller::defaultExportPath = "";
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportSelectedRegionFiller"
-ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method, bool translate, const QString& seqName)
-    : Filler(_os, "U2__ExportSequencesDialog"), name(_name), seqName(seqName), translate(translate), useMethod(method)
+ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method,
+    bool translate, const QString& seqName, bool saveAllAminoFrames)
+    : Filler(_os, "U2__ExportSequencesDialog"), name(_name), seqName(seqName), translate(translate),
+    saveAllAminoFrames(saveAllAminoFrames), useMethod(method)
 {
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (__path.at(__path.count() - 1) != '/') {
@@ -85,6 +87,11 @@ void ExportSelectedRegionFiller::commonScenario()
     CHECK_SET_ERR(translateButton != NULL, "translateButton not found!");
     GTCheckBox::setChecked(os, translateButton, translate);
 
+    if (translate) {
+        QCheckBox *allTFramesButton = qobject_cast<QCheckBox *>(GTWidget::findWidget(os, "allTFramesButton"));
+        GTCheckBox::setChecked(os, allTFramesButton, saveAllAminoFrames);
+    }
+
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
     GT_CHECK(box != NULL, "buttonBox is NULL");
     QPushButton* button = box->button(QDialogButtonBox::Ok);
@@ -95,10 +102,10 @@ void ExportSelectedRegionFiller::commonScenario()
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller"
-ExportSequenceOfSelectedAnnotationsFiller::ExportSequenceOfSelectedAnnotationsFiller(U2OpStatus &_os, const QString &_path, FormatToUse _format, MergeOptions _options, int _gapLength,
-    bool _addDocToProject, bool _exportWithAnnotations, GTGlobals::UseMethod method):
-    Filler(_os, "U2__ExportSequencesDialog"), gapLength(_gapLength), format(_format), addToProject(_addDocToProject), exportWithAnnotations(false),
-    options(_options), useMethod(method)
+ExportSequenceOfSelectedAnnotationsFiller::ExportSequenceOfSelectedAnnotationsFiller(U2OpStatus &_os, const QString &_path, FormatToUse _format,
+    MergeOptions _options, int _gapLength, bool _addDocToProject, bool _exportWithAnnotations, GTGlobals::UseMethod method)
+    : Filler(_os, "U2__ExportSequencesDialog"), gapLength(_gapLength), format(_format), addToProject(_addDocToProject),
+    exportWithAnnotations(false), options(_options), useMethod(method)
 {
     exportWithAnnotations = _exportWithAnnotations;
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
