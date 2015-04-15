@@ -1360,6 +1360,21 @@ GUI_TEST_CLASS_DEFINITION(test_4156) {
     CHECK_SET_ERR(l.hasError(), "There is no error in the log");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4160) {
+    QString pattern("TTGTCAGATTCACCA");
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
+    GTGlobals::sleep(500);
+
+    GTKeyboardDriver::keySequence(os, pattern);
+    GTGlobals::sleep(1000);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4164){
     GTLogTracer l;
     QDir().mkpath(testDir + "_common_data/scenarios/sandbox/space dir");
