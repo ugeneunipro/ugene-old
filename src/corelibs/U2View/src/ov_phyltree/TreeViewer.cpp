@@ -249,9 +249,6 @@ void TreeViewer::buildStaticToolbar(QToolBar* tb)
 {
     // Tree Settings
     tb->addAction(treeSettingsAction);
-    tb->addAction(collapseAction);
-    tb->addAction(rerootAction);
-    tb->addAction(swapAction);
 
     // Layout
     QToolButton* layoutButton = new QToolButton(tb);
@@ -265,6 +262,11 @@ void TreeViewer::buildStaticToolbar(QToolBar* tb)
 
     // Branch Settings
     tb->addAction(branchesSettingsAction);
+
+    tb->addSeparator();
+    tb->addAction(collapseAction);
+    tb->addAction(rerootAction);
+    tb->addAction(swapAction);
 
     // Labels and Text Settings
     tb->addSeparator();
@@ -456,15 +458,17 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer):
 
     //chrootAction->setEnabled(false); //not implemented yet
 
+    buttonPopup->addAction(zoomToAction);
+    buttonPopup->addSeparator();
+
     buttonPopup->addAction(swapAction);
     swapAction->setEnabled(false);
 
     buttonPopup->addAction(rerootAction);
     rerootAction->setEnabled(false);
 
-    buttonPopup->addAction(zoomToAction);
-
     buttonPopup->addAction(collapseAction);
+    buttonPopup->addSeparator();
 
     buttonPopup->addAction(setColorAction);
 
