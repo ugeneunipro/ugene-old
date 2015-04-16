@@ -43,7 +43,6 @@ workflow "In silico PCR"{
 
     read-sequence.sequence->in-silico-pcr.in-sequence.sequence
     in-silico-pcr.annotations->write-sequence.in-sequence.annotations
-    read-sequence.annotations->write-sequence.in-sequence.annotations
     in-silico-pcr.sequence->write-sequence.in-sequence.sequence
 
     .meta {
