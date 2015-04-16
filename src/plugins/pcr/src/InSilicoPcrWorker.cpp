@@ -384,7 +384,7 @@ QByteArray InSilicoPcrReportTask::primerDetails() const {
         PrimersPairStatistics calc(pair.first.sequence.toLocal8Bit(), pair.second.sequence.toLocal8Bit());
         result += chapter(
                 chapterName(pair.first.name + " / " + pair.second.name),
-                calc.generateReport().toLocal8Bit()
+                chapterContent(calc.generateReport().toLocal8Bit())
             );
     }
     return chapterName(tr("Primer pair details")) + chapterContent(result);
