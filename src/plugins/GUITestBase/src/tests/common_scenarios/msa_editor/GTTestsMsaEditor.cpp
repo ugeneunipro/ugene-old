@@ -3834,6 +3834,27 @@ GUI_TEST_CLASS_DEFINITION(test_0050){
                        "Export is incorrect");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0051){
+/* 1. Open samples/CLUSTALW/ty3.aln.gz
+ * 2. Open context menu, open "View" and choose "Sort sequences by name"
+ *   Expected state: Sequences sorted case insensitive by name
+*/
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma_unsorted.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(200);
+
+    QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    CHECK_SET_ERR( names.length() == 4, "Count of sequences in MSA incorrect");
+    CHECK_SET_ERR( names.at(0) == "a", "At positoin 0 not showed 'a' name");
+    CHECK_SET_ERR( names.at(1) == "C", "At positoin 1 not showed 'C' name");
+    CHECK_SET_ERR( names.at(2) == "D", "At positoin 2 not showed 'D' name");
+    CHECK_SET_ERR( names.at(3) == "d", "At positoin 3 not showed 'd' name");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_fake) {
     Q_UNUSED(os);
 }

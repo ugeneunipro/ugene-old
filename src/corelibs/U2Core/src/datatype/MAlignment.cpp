@@ -1238,7 +1238,7 @@ class CompareMARowsByName {
 public:
     CompareMARowsByName(bool _asc = true) : asc(_asc){}
     bool operator()(const MAlignmentRow& row1, const MAlignmentRow& row2) const {
-        bool res = row1.getName() > row2.getName();
+        bool res = QString::compare(row1.getName(), row2.getName(), Qt::CaseInsensitive) > 0;
         return asc ? !res : res;
     }
 
