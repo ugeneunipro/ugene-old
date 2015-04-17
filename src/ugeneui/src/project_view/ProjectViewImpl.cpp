@@ -186,6 +186,8 @@ bool DocumentUpdater::makeDecision(Document *doc, QListIterator<Document*> &iter
 
     // don't try to save dbi format files, just delete from project
     if (qobject_cast<DbiDocumentFormat*>(doc->getDocumentFormat())) {
+        QMessageBox::warning(dynamic_cast<QWidget *>(AppContext::getMainWindow()), U2_APP_TITLE,
+            tr("The document '%1' was removed from its original directory. It will be removed from the current project.").arg(doc->getName()));
         btn = QMessageBox::No;
     }
 
@@ -193,8 +195,8 @@ bool DocumentUpdater::makeDecision(Document *doc, QListIterator<Document*> &iter
         btn = QMessageBox::question(
             dynamic_cast<QWidget *>(AppContext::getMainWindow()),
             U2_APP_TITLE,
-            tr("Document '%1' was removed from its original directory. Do you wish to save it? "
-            "Otherwise it will be removed from current project.").arg(doc->getName()),
+            tr("The document '%1' was removed from its original directory. Do you wish to save it? "
+            "Otherwise, it will be removed from the current project.").arg(doc->getName()),
             QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll);
     }
 

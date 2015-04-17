@@ -2259,7 +2259,7 @@ GUI_TEST_CLASS_DEFINITION( test_2293 ){
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_INDEX);
 }
 
-GUI_TEST_CLASS_DEFINITION( test_2282 ) {
+GUI_TEST_CLASS_DEFINITION(test_2282) {
     // 1. Open "chrM.sorted.bam" file using {File->Open} menu in UGENE.
     //    Expected state: "Import BAM file" dialog has appeared.
     // 2. Press "Enter".
@@ -2270,21 +2270,22 @@ GUI_TEST_CLASS_DEFINITION( test_2282 ) {
     QString assDocName = "test_2282.chrM.sorted.ugenedb";
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, assFileName));
     GTFileDialog::openFile(os, testDir + "_common_data/bam", "chrM.sorted.bam");
-    GTGlobals::sleep(5000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    //      3) The Project View with document "chrM.sorted.bam.ugenedb" has been opened.
+    // 3) The Project View with document "chrM.sorted.bam.ugenedb" has been opened.
     GTUtilsProjectTreeView::findIndex(os, assDocName);
 
-    // 3. Delete "chrM.sorted.bam.ugenedb" from the file system (i.e. not from UGENE).
-    bool deleteResult = QFile::remove(assFileName);
-    CHECK(true == deleteResult, );
-    GTGlobals::sleep();
+    GTUtilsMdi::closeWindow(os, GTUtilsMdi::activeWindowTitle(os));
+    GTGlobals::sleep(100);
 
-    // Expected state: the project has been removed.
-    GTUtilsProject::checkProject(os, GTUtilsProject::NotExists);
+    // 3. Delete "chrM.sorted.bam.ugenedb" from the file system (i.e. not from UGENE).
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    bool deleteResult = QFile::remove(QFileInfo(assFileName).absoluteFilePath());
+    CHECK_SET_ERR(deleteResult, "Unable to remove assembly file");
+    GTGlobals::sleep(5000);
 }
 
-GUI_TEST_CLASS_DEFINITION( test_2284 ){
+GUI_TEST_CLASS_DEFINITION(test_2284) {
     //1. Open COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
