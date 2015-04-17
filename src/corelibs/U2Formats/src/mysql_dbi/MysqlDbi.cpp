@@ -480,8 +480,6 @@ void MysqlDbi::setupTransactions(U2OpStatus &os) {
     U2SqlQuery("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED", db, os).execute();
     CHECK_OP(os, );
     U2SqlQuery("SET autocommit = 0", db, os).execute();
-
-    U2SqlQuery("SET GLOBAL max_allowed_packet=1073741824", db, os).execute(); // max packet size is 1 Gb
 }
 
 void MysqlDbi::setupStoredFunctions(U2OpStatus &os) {
