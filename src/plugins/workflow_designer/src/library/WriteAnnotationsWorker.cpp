@@ -65,7 +65,7 @@ static const QString WRITE_ANNOTATIONS_IN_TYPE_ID("write-annotations-in-type");
 static const QString CSV_FORMAT_ID("csv");
 static const QString ANNOTATIONS_NAME("annotations-name");
 static const QString ANN_OBJ_NAME("ann-obj-name");
-static const QString ANNOTATIONS_NAME_DEF_VAL("unknown features");
+static const QString ANNOTATIONS_NAME_DEF_VAL("Unknown features");
 static const QString SEPARATOR("separator");
 static const QString SEPARATOR_DEFAULT_VALUE (",");
 static const QString WRITE_NAMES("write_names");
