@@ -30,7 +30,7 @@
    <item row="0" column="0">
     <widget class="QCheckBox" name="checkShowHideAnnots">
      <property name="text">
-      <string>Show all annotations</string>
+      <string>Show annotations</string>
      </property>
     </widget>
    </item>
