@@ -139,6 +139,12 @@ void AlignShortReadsFiller::setAdditionalParameters(QWidget* dialog) {
         setBwaSwAdditionalParameters(bwaSwParameters, dialog);
         return;
     }
+
+    BwaParameters *bwaParameters = dynamic_cast<BwaParameters *>(parameters);
+    if (NULL != bwaParameters) {
+        setBwaAdditionalParameters(bwaParameters, dialog);
+        return;
+    }
 }
 #undef GT_METHOD_NAME
 
@@ -273,6 +279,12 @@ void AlignShortReadsFiller::setUgaAdditionalParameters(UgeneGenomeAlignerParams 
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setBwaAdditionalParameters"
+void AlignShortReadsFiller::setBwaAdditionalParameters(AlignShortReadsFiller::BwaParameters *bwaParameters, QWidget *dialog) {
+    GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "indexAlgorithmComboBox", dialog), bwaParameters->getIndexAlgorithmString());
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "setAdditionalParameters"
 void AlignShortReadsFiller::setBwaSwAdditionalParameters(AlignShortReadsFiller::BwaSwParameters *bwaSwParameters, QWidget *dialog) {
     GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox *>(os, "matchScoreSpinbox", dialog), bwaSwParameters->matchScore);
@@ -357,6 +369,39 @@ QMap<AlignShortReadsFiller::Parameters::Library, QString> AlignShortReadsFiller:
     QMap<Library, QString> result;
     result.insert(SingleEnd, "Single-end");
     result.insert(PairedEnd, "Paired-end");
+    return result;
+}
+
+AlignShortReadsFiller::BwaParameters::BwaParameters(const QString &referenceFile,
+                                                    const QStringList &readsFiles) :
+    Parameters(referenceFile, readsFiles, Bwa),
+    indexAlgorithm(Autodetect)
+{
+
+}
+
+AlignShortReadsFiller::BwaParameters::BwaParameters(const QString &referenceFile, const QString &readsFile) :
+    Parameters(referenceFile, QStringList() << readsFile, Bwa),
+    indexAlgorithm(Autodetect)
+{
+
+}
+
+QString AlignShortReadsFiller::BwaParameters::getIndexAlgorithmString() const {
+    return indexAlgorithmMap[indexAlgorithm];
+}
+
+const QMap<AlignShortReadsFiller::BwaParameters::IndexAlgorithm, QString> AlignShortReadsFiller::BwaParameters::indexAlgorithmMap =
+        AlignShortReadsFiller::BwaParameters::initIndexAlgorithmMap();
+
+QMap<AlignShortReadsFiller::BwaParameters::IndexAlgorithm, QString> AlignShortReadsFiller::BwaParameters::initIndexAlgorithmMap() {
+    QMap<IndexAlgorithm, QString> result;
+
+    result.insert(Autodetect, "autodetect");
+    result.insert(Bwtsw, "bwtsw");
+    result.insert(Div, "div");
+    result.insert(Is, "is");
+
     return result;
 }
 

@@ -1455,6 +1455,32 @@ GUI_TEST_CLASS_DEFINITION(test_4179) {
     CHECK_SET_ERR(qualifier.indexOf("The reference") > 0, "Expected string is not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4221) {
+//    1. Use main menu
+//    {tools->NGS data analysis->Map reads to reference}
+//    2.Fill the dialog:
+//    Alignment method: BWA
+//    Index algorithm: is
+//    Select any valid input data
+//    Press start
+//    Expected state: UGENE doesn't crash.
+    GTLogTracer logTracer;
+
+    AlignShortReadsFiller::BwaParameters parameters(testDir + "_common_data/reads/eas.fa", testDir + "_common_data/reads/eas.fastq");
+    parameters.useDefaultResultPath = false;
+    parameters.resultDir = sandBoxDir;
+    parameters.resultFileName = "test_4221.sam";
+    parameters.indexAlgorithm = AlignShortReadsFiller::BwaParameters::Is;
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_4221.ugenedb"));
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "NGS data analysis" << "Map reads to reference...");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsDocument::checkDocument(os, "test_4221.ugenedb");
+
+    GTUtilsLog::check(os, logTracer);
+}
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2

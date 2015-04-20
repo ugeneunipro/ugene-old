@@ -173,6 +173,30 @@ public:
         bool preferHardClippingInSam;
     };
 
+    class BwaParameters : public Parameters {
+    public:
+        enum IndexAlgorithm {
+            Autodetect,
+            Bwtsw,
+            Div,
+            Is
+        };
+
+        BwaParameters(const QString &referenceFile,
+                      const QStringList &readsFiles);
+        BwaParameters(const QString &referenceFile,
+                      const QString &readsFile);
+
+
+        QString getIndexAlgorithmString() const;
+
+        IndexAlgorithm indexAlgorithm;
+
+    private:
+        static QMap<IndexAlgorithm, QString> initIndexAlgorithmMap();
+        static const QMap<IndexAlgorithm, QString> indexAlgorithmMap;
+    };
+
     AlignShortReadsFiller(U2OpStatus &os, Parameters* parameters) :
         Filler(os, "AssemblyToRefDialog"),
         parameters(parameters) {
@@ -187,6 +211,7 @@ private:
     void setAdditionalParameters(QWidget* dialog);
     void setBowtie2AdditionalParameters(Bowtie2Parameters* bowtie2Parameters, QWidget* dialog);
     void setUgaAdditionalParameters(UgeneGenomeAlignerParams *ugaParameters, QWidget* dialog);
+    void setBwaAdditionalParameters(BwaParameters *bwaParameters, QWidget* dialog);
     void setBwaSwAdditionalParameters(BwaSwParameters *bwaSwParameters, QWidget* dialog);
 
     Parameters* parameters;
