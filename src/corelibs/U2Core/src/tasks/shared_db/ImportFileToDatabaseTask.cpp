@@ -68,10 +68,6 @@ void ImportFileToDatabaseTask::prepare() {
 void ImportFileToDatabaseTask::run() {
     CHECK(NULL != format, );
 
-    DbiOperationsBlock opBlock(dstDbiRef, stateInfo);
-    CHECK_OP(stateInfo, );
-    Q_UNUSED(opBlock);
-
     const QVariantMap hints = prepareHints();
 
     IOAdapterFactory* ioFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(GUrl(srcUrl)));
