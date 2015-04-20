@@ -64,8 +64,8 @@ public:
 
     // Find pattern options panel tab
     static void enterPattern(U2OpStatus &os, QString pattern, bool useCopyPaste = false);
-
     static void enterPatternFromFile(U2OpStatus &os, QString filepath, QString filename);
+
     static bool checkResultsText(U2OpStatus &os, QString expectedText);
 
     static void setSearchWithAmbiguousBases(U2OpStatus &os, bool searchWithAmbiguousBases = true);
@@ -77,10 +77,12 @@ public:
     static void setSetMaxResults(U2OpStatus &os, int maxResults);
     static void setAlgorithm(U2OpStatus &os, QString algorithm);
     static void setMatchPercentage(U2OpStatus &os, int percentage);
+    static void setUsePatternName(U2OpStatus &os, bool setChecked = true);
 
     static int getMatchPercentage(U2OpStatus &os);
     static QString getRegionType(U2OpStatus &os);
     static QPair<int, int> getRegion(U2OpStatus &os);
+    static const QString getHintText(U2OpStatus &os);
 
     static void enterFilepathForSavingAnnotations(U2OpStatus &os, QString filepath);
 

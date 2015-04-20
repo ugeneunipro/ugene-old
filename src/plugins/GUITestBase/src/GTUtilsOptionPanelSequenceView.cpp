@@ -422,12 +422,28 @@ QPair<int, int> GTUtilsOptionPanelSequenceView::getRegion(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getHintText"
+const QString GTUtilsOptionPanelSequenceView::getHintText(U2OpStatus &os) {
+    QLabel *lblHint = GTWidget::findExactWidget<QLabel *>(os, "lblErrorMessage");
+    GT_CHECK_RESULT(NULL != lblHint, "Hintlabel is NULL", "");
+    CHECK(lblHint->isVisible(), "");
+    return lblHint->text();
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "setMatchPercentage"
 void GTUtilsOptionPanelSequenceView::setMatchPercentage( U2OpStatus &os, int percentage ){
     QSpinBox *spinMatchBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "spinBoxMatch"));
 
     GTSpinBox::setValue(os, spinMatchBox, percentage);
     GTGlobals::sleep(2500);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setUsePatternName"
+void GTUtilsOptionPanelSequenceView::setUsePatternName(U2OpStatus &os, bool setChecked) {
+    openAnnotationParametersShowHideWidget(os);
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "chbUsePatternNames"), setChecked);
 }
 #undef GT_METHOD_NAME
 

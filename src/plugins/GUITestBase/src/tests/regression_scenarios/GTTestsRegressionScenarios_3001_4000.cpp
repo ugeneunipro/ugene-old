@@ -1603,6 +1603,66 @@ GUI_TEST_CLASS_DEFINITION(test_3266){
     GTUtilsSharedDatabaseDocument::ensureItemExists(os, doc, "/Recycle bin/regression_3266_2");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3270) {
+//    1. Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+
+//    2. Open "Search in Sequence" options panel tab.
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+
+//    3. Open "Annotation parameters" group and check "Use pattern name" option.
+    GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os);
+    GTUtilsOptionPanelSequenceView::setUsePatternName(os);
+
+//    4. Set next patterns:
+//    > pattern1
+//    TGGGGGCCAATA
+
+//    > pattern2
+//    GGCAGAAACC
+    QString pattern = "> pattern1"
+                      "\n"
+                      "TGGGGGCCAATA"
+                      "\n\n"
+                      "> pattern2"
+                      "\n"
+                      "GGCAGAAACC";
+    GTUtilsOptionPanelSequenceView::enterPattern(os, pattern, true);
+
+//    Expected state: there is a warning: "annotation names are invalid...".
+    QString warning = GTUtilsOptionPanelSequenceView::getHintText(os);
+    CHECK_SET_ERR(warning.contains("annotation names are invalid"), QString("An incorrect warning: '%1'").arg(warning));
+
+//    5. Click "Create annotations" button.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
+
+//    Expected state: there are two annotations with names "pattern1" and "pattern2".
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsAnnotationsTreeView::findItem(os, "pattern1");
+    GTUtilsAnnotationsTreeView::findItem(os, "pattern2");
+
+//    6. Set next pattern:
+//    >gi|92133205|dbj|BD295338.1| A method for providing and controling the rice fertility, and discerning the presence of the rice restorer gene by using the rice restorer gene to the rice BT type cytoplasmic male sterility
+//    TGGGGATTCT
+    pattern = ">gi|92133205|dbj|BD295338.1| A method for providing and controling the rice fertility, and discerning the presence of the rice restorer gene by using the rice restorer gene to the rice BT type cytoplasmic male sterility"
+              "\n"
+              "TGGGGATTCT";
+    GTUtilsOptionPanelSequenceView::enterPattern(os, pattern, true);
+
+//    Expected state: there are no warnings.
+    warning = GTUtilsOptionPanelSequenceView::getHintText(os);
+    CHECK_SET_ERR(warning.isEmpty(), QString("An unexpected warning: '%1'").arg(warning));
+
+//    6. Click "Create annotations" button.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
+
+//    Expected state: there is an additional annotation with name "gi|92133205|dbj|BD295338.1| A method for providing and controling the rice fertility, and discerning the presence of the rice restorer gene by using the rice restorer gene to the rice BT type cytoplasmic male sterility".
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsAnnotationsTreeView::findItem(os, "gi|92133205|dbj|BD295338.1| A method for providing and controling the rice fertility, and discerning the presence of the rice restorer gene by using the rice restorer gene to the rice BT type cytoplasmic male sterility");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3274) {
     QStringList expectedNames;
     QList<ADVSingleSequenceWidget*> seqWidgets;

@@ -750,7 +750,7 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
                     if (!text.isEmpty()) {
                         text += "\n";
                     }
-                    text += QString(tr("Warning: annotation name are invalid. "));
+                    text += QString(tr("Warning: annotation names are invalid. "));
                     if (!additionalMsg.isEmpty()){
                         text += QString(tr("Reason: "));
                         text += additionalMsg;
