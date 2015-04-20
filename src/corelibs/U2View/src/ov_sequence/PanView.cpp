@@ -204,6 +204,9 @@ void PanView::unregisterAnnotations(const QList<Annotation *> &l) {
 }
 
 void PanView::updateRows() {
+    PanViewRenderArea* ra = getRenderArea();
+    SAFE_POINT(ra != NULL, "PanViewRenderArea is NULL", );
+    ra->updateNumVisibleRows();
     int maxSteps = calculateNumRowBarSteps();
     if (qAbs(rowBar->maximum() - rowBar->minimum())!=maxSteps) {
         updateRowBar();
