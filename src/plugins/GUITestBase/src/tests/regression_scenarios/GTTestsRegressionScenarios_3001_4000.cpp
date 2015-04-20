@@ -1929,6 +1929,26 @@ GUI_TEST_CLASS_DEFINITION(test_3318) {
     CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::isSequenceHightighted(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)"), "Unexpected reference sequence");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3321){
+//    Open sequence
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+//    Open Circular View
+    QWidget* parent = GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
+    QWidget* CircularViewAction = GTWidget::findWidget(os, "CircularViewAction", parent);
+    GTWidget::click(os, CircularViewAction);
+//    Select region that contains zero position
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, "1..10,5823..5833"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region"));
+    GTWidget::click(os, GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_0"), Qt::RightButton);
+    GTGlobals::sleep();
+//    Press "Ctrl+C"
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+//    Make sure that buffer contains right region
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "AAATGAAAGAGGTCTTTCATT", "unecpected text in clipboard: " + clipboardText);
+    GTGlobals::sleep(500);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3328) {
     class TestBody_3328 : public QRunnable {
     public:

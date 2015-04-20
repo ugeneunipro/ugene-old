@@ -102,6 +102,7 @@ selectSequenceRegionDialogFiller::selectSequenceRegionDialogFiller(U2OpStatus &_
 #define GT_METHOD_NAME "run"
 void selectSequenceRegionDialogFiller::run()
 {
+    GTGlobals::sleep(500);
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 

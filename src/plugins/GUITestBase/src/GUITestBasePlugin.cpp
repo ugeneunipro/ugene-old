@@ -804,6 +804,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3312);
     REGISTER_TEST(GUITest_regression_scenarios::test_3313);
     REGISTER_TEST(GUITest_regression_scenarios::test_3318);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3321);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3328, "Test crashes: it must work in another thread");
     REGISTER_TEST(GUITest_regression_scenarios::test_3332);
     REGISTER_TEST_LINUX(GUITest_regression_scenarios::test_3333, "drag and drop");
