@@ -79,6 +79,8 @@ public:
     void showSelectGroupMenu(QMenu &menu);
     GObjectComboBoxController * createGObjectComboBoxController(const GObjectComboBoxControllerConstraints &constraints);
 
+    void countDescriptionUsage() const;
+
 private:
     void initLayout();
     void init();

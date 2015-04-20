@@ -88,6 +88,8 @@ public:
     QPair<QWidget*, QWidget*> getTabOrderEntryAndExitPoints() const;
     virtual GObjectComboBoxController * createGObjectComboBoxController(const GObjectComboBoxControllerConstraints &constraints) = 0;
 
+    virtual void countDescriptionUsage() const = 0;
+
 signals:
     void si_selectExistingTableRequest();
     void si_selectNewTableRequest();

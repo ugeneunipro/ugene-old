@@ -1453,6 +1453,7 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
     if (annotModel.data->name == annotModel.groupName && usePatternNames) {
         group.clear();
     }
+    annotController->countDescriptionUsage();
     AppContext::getTaskScheduler()->registerTopLevelTask(new CreateAnnotationsTask(aTableObj, annotationsToCreate, group));
 
     annotModelPrepared = false;

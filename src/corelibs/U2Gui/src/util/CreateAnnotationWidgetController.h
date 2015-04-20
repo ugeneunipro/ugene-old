@@ -115,6 +115,8 @@ public:
 
     QPair<QWidget*, QWidget*> getTaborderEntryAndExitPoints() const;
 
+    void countDescriptionUsage() const;
+
 signals:
     void si_annotationNamesEdited();
     void si_usePatternNamesStateChanged();

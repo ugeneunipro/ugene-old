@@ -31,6 +31,7 @@ class CreateAnnotationFullWidget : public CreateAnnotationWidget, private Ui::Cr
     Q_OBJECT
 public:
     CreateAnnotationFullWidget(QWidget *parent = NULL);
+    ~CreateAnnotationFullWidget();
 
     void setLocationVisible(bool visible);
     void setAnnotationParametersVisible(bool visible);
@@ -76,6 +77,8 @@ public:
 
     void showSelectGroupMenu(QMenu &menu);
     GObjectComboBoxController * createGObjectComboBoxController(const GObjectComboBoxControllerConstraints &constraints);
+
+    void countDescriptionUsage() const;
 
 private slots:
     void sl_regionChanged();

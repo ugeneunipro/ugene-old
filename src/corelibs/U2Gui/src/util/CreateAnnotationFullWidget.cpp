@@ -21,6 +21,7 @@
 
 #include <QMenu>
 
+#include <U2Core/Counter.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/GenbankLocationParser.h>
@@ -40,6 +41,10 @@ CreateAnnotationFullWidget::CreateAnnotationFullWidget(QWidget *parent) :
     initLayout();
     init();
     connectSignals();
+}
+
+CreateAnnotationFullWidget::~CreateAnnotationFullWidget() {
+    countDescriptionUsage();
 }
 
 void CreateAnnotationFullWidget::setLocationVisible(bool visible) {
@@ -310,6 +315,12 @@ void CreateAnnotationFullWidget::connectSignals() {
 
 GObjectComboBoxController * CreateAnnotationFullWidget::createGObjectComboBoxController(const GObjectComboBoxControllerConstraints &constraints) {
     return new GObjectComboBoxController(this, constraints, cbExistingTable);
+}
+
+void CreateAnnotationFullWidget::countDescriptionUsage() const {
+    if (!leDescription->text().isEmpty()) {
+        GCOUNTER(cvar, tvar, "CreateAnnotationFullWidget: description is used");
+    }
 }
 
 }   // namespace U2

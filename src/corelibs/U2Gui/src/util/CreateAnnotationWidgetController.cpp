@@ -127,7 +127,6 @@ CreateAnnotationWidgetController::CreateAnnotationWidgetController(const CreateA
     connect(occ, SIGNAL(si_comboBoxChanged()), SLOT(sl_documentsComboUpdated()));
 }
 
-
 void CreateAnnotationWidgetController::updateWidgetForAnnotationModel(const CreateAnnotationModel& newModel)
 {
     SAFE_POINT(newModel.sequenceObjectRef.isValid(),
@@ -448,6 +447,10 @@ QWidget *CreateAnnotationWidgetController::getWidget() const {
 
 QPair<QWidget*, QWidget*> CreateAnnotationWidgetController::getTaborderEntryAndExitPoints() const {
     return w->getTabOrderEntryAndExitPoints();
+}
+
+void CreateAnnotationWidgetController::countDescriptionUsage() const {
+    w->countDescriptionUsage();
 }
 
 } // namespace

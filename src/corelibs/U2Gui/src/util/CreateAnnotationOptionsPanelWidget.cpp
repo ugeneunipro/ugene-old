@@ -21,6 +21,8 @@
 
 #include <QMenu>
 
+#include <U2Core/Counter.h>
+
 #include <U2Gui/GObjectComboBoxController.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
 
@@ -188,6 +190,12 @@ void CreateAnnotationOptionsPanelWidget::showSelectGroupMenu(QMenu &menu) {
 
 GObjectComboBoxController * CreateAnnotationOptionsPanelWidget::createGObjectComboBoxController(const GObjectComboBoxControllerConstraints &constraints) {
     return new GObjectComboBoxController(this, constraints, cbExistingTable);
+}
+
+void CreateAnnotationOptionsPanelWidget::countDescriptionUsage() const {
+    if (!leDescription->text().isEmpty()) {
+        GCOUNTER(cvar, tvar, "CreateAnnotationOptionsPanelWidget: description is used");
+    }
 }
 
 void CreateAnnotationOptionsPanelWidget::initLayout() {
