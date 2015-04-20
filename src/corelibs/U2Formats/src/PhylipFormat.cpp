@@ -120,7 +120,7 @@ const QBitArray& LINE_BREAKS = TextUtils::LINE_BREAKS;
 // PhylipSequentialFormat
 PhylipSequentialFormat::PhylipSequentialFormat(QObject *p)
     : PhylipFormat(p) {
-    formatName = tr("PHYLIP Sequantial");
+    formatName = tr("PHYLIP Sequential");
 }
 
 void PhylipSequentialFormat::storeEntry(IOAdapter *io, const QMap<GObjectType, QList<GObject *> > &objectsMap, U2OpStatus &os) {
