@@ -42,12 +42,12 @@ const QString UHMMFormat::WRITE_FAILED = QObject::tr("Writing HMM profile file f
 
 static void loadOne( IOAdapter* io, QList< GObject* >& objects, U2OpStatus& os) {
     CHECK_OP(os, );
-    
+
     UHMMFormatReader reader( io, os);
     P7_HMM * hmm = reader.getNextHmm();
-    
+
     CHECK_OP(os, );
-    
+
     assert(hmm  != NULL);
     QString objName( hmm->name );
     UHMMObject* obj = new UHMMObject( hmm, objName );
@@ -56,7 +56,7 @@ static void loadOne( IOAdapter* io, QList< GObject* >& objects, U2OpStatus& os) 
 
 static void loadAll( IOAdapter* io, QList< GObject* >& objects, U2OpStatus& os) {
     assert( NULL != io && io->isOpen() );
-    
+
     while( !io->isEof() && !os.isCoR()) {
         loadOne( io, objects, os);
         os.setProgress(io->getProgress());
@@ -110,12 +110,12 @@ static void writeHMMMultiLine( IOAdapter *io, const char *pfx, char *s ) {
     char *end   = NULL;
     int   n     = 0;
     int   nline = 1;
-    
+
     do {
         end = strchr(sptr, '\n');
         if (end != NULL) { 		             /* if there's no \n left, end == NULL */
             n = end - sptr;	                     /* n chars exclusive of \n */
-            
+
             res = QString().sprintf( "%s [%d] ", pfx, nline++ );
             writeHMMASCIIStr( io, res.toLatin1() );
             writeHMMASCIIStr( io, sptr, n );
@@ -147,15 +147,15 @@ static void saveOne( IOAdapter* io, const P7_HMM* hmm, U2OpStatus& os) {
     assert( NULL != hmm );
     assert( NULL != io && io->isOpen() );
     assert( !os.hasError() );
-    
+
     try {
         int k = 0;
         int x = 0;
         QString res;
-        
+
         writeHMMHeaderASCII( io );
         writeHMMASCIIStr( io, "NAME  ", hmm->name );
-        
+
         if (hmm->flags & p7H_ACC) {
             writeHMMASCIIStr( io, "ACC   ", hmm->acc );
         }
@@ -167,7 +167,7 @@ static void saveOne( IOAdapter* io, const P7_HMM* hmm, U2OpStatus& os) {
         writeHMMASCIIStr( io, "RF    ", ( hmm->flags & p7H_RF )? "yes" : "no" );
         writeHMMASCIIStr( io, "CS    ", ( hmm->flags & p7H_CS )? "yes" : "no" );
         writeHMMASCIIStr( io, "MAP   ", ( hmm->flags & p7H_MAP )? "yes" : "no" );
-        
+
         if (hmm->ctime    != NULL) {
             writeHMMASCIIStr( io, "DATE  ", hmm->ctime );
         }
@@ -184,7 +184,7 @@ static void saveOne( IOAdapter* io, const P7_HMM* hmm, U2OpStatus& os) {
         if (hmm->flags & p7H_CHKSUM) {
             writeHMMASCIIStr( io, "CKSUM ", QString::number( hmm->checksum ) );
         }
-        
+
         if (hmm->flags & p7H_GA) {
             res = QString().sprintf( "GA    %.2f %.2f\n", hmm->cutoff[p7_GA1], hmm->cutoff[p7_GA2] );
             writeHMMASCIIStr( io, res.toLatin1() );
@@ -197,7 +197,7 @@ static void saveOne( IOAdapter* io, const P7_HMM* hmm, U2OpStatus& os) {
             res = QString().sprintf( "NC    %.2f %.2f\n", hmm->cutoff[p7_NC1], hmm->cutoff[p7_NC2] );
             writeHMMASCIIStr( io, res.toLatin1() );
         }
-        
+
         if (hmm->flags & p7H_STATS) {
             res = QString().sprintf( "STATS LOCAL MSV      %8.4f %8.5f\n", hmm->evparam[p7_MMU],  hmm->evparam[p7_MLAMBDA] );
             writeHMMASCIIStr( io, res.toLatin1() );
@@ -207,7 +207,7 @@ static void saveOne( IOAdapter* io, const P7_HMM* hmm, U2OpStatus& os) {
             writeHMMASCIIStr( io, res.toLatin1() );
         }
         writeHMMASCIIStr( io, QByteArray( "HMM     " ) );
-        
+
         for (x = 0; x < hmm->abc->K; x++) {
             res = QString().sprintf( "     %c   ", hmm->abc->sym[x] );
             writeHMMASCIIStr( io, res.toLatin1() );
@@ -215,7 +215,7 @@ static void saveOne( IOAdapter* io, const P7_HMM* hmm, U2OpStatus& os) {
         writeHMMASCIIStr( io, QByteArray( "\n" ) );
         res = QString().sprintf( "        %8s %8s %8s %8s %8s %8s %8s\n", "m->m", "m->i", "m->d", "i->m", "i->i", "d->m", "d->d" );
         writeHMMASCIIStr( io, res.toLatin1() );
-        
+
         if (hmm->flags & p7H_COMPO) {
             writeHMMASCIIStr( io, QByteArray( "  COMPO " ) );
 
@@ -224,26 +224,26 @@ static void saveOne( IOAdapter* io, const P7_HMM* hmm, U2OpStatus& os) {
             }
             writeHMMASCIIStr( io, QByteArray( "\n" ) );
         }
-        
+
         /* node 0 is special: insert emissions, and B-> transitions */
         writeHMMASCIIStr( io, QByteArray( "        " ) );
-        
+
         for (x = 0; x < hmm->abc->K; x++) {
             writeHMMProb( io, 8, hmm->ins[0][x] );
         }
         writeHMMASCIIStr( io, QByteArray( "\n" ) );
         writeHMMASCIIStr( io, QByteArray( "        " ) );
-        
+
         for (x = 0; x < p7H_NTRANSITIONS; x++) {
             writeHMMProb( io, 8, hmm->t[0][x] );
         }
         writeHMMASCIIStr( io, QByteArray( "\n" ) );
-        
+
         for (k = 1; k <= hmm->M; k++) {
-            /* Line 1: k; match emissions; optional map, RF, CS */ 
+            /* Line 1: k; match emissions; optional map, RF, CS */
             res = QString().sprintf( " %6d ",  k );
             writeHMMASCIIStr( io, res.toLatin1() );
-            
+
             for (x = 0; x < hmm->abc->K; x++) {
                 writeHMMProb( io, 8, hmm->mat[k][x] );
             }
@@ -258,13 +258,13 @@ static void saveOne( IOAdapter* io, const P7_HMM* hmm, U2OpStatus& os) {
             writeHMMASCIIStr( io, res.toLatin1() );
             res = QString().sprintf( " %c\n", (hmm->flags & p7H_CS) ? hmm->cs[k] : '-' );
             writeHMMASCIIStr( io, res.toLatin1() );
-            
+
             /* Line 2:   insert emissions */
             writeHMMASCIIStr( io, QByteArray( "        " ) );
             for (x = 0; x < hmm->abc->K; x++) {
                 writeHMMProb( io, 8, hmm->ins[k][x] );
             }
-            
+
             /* Line 3:   transitions */
             writeHMMASCIIStr( io, QByteArray( "\n        " ) );
             for (x = 0; x < p7H_NTRANSITIONS; x++) {
@@ -283,13 +283,13 @@ static void saveOne( IOAdapter* io, const P7_HMM* hmm, U2OpStatus& os) {
 static void saveAll( IOAdapter* io, const QList< GObject* >& objects, U2OpStatus& os ) {
     assert( NULL != io && io->isOpen() );
     QList< const P7_HMM* > hmms;
-    
+
     foreach( const GObject* obj, objects ) {
         const UHMMObject* hmmObj = qobject_cast< const UHMMObject* >(obj);
         CHECK_EXT(hmmObj != NULL, os.setError(L10N::badArgument("Objects in document")), );
         hmms.append( hmmObj->getHMM() );
     }
-    
+
     foreach( const P7_HMM* hmm, hmms ) {
         saveOne(io, hmm, os);
         CHECK_OP(os, );
@@ -303,8 +303,8 @@ const QString           UHMMFormat::WRITE_LOCK_REASON = QObject::tr("HMM files a
 
 UHMMFormat::UHMMFormat( QObject* obj ) : DocumentFormat( obj, DocumentFormatFlags_SW, QStringList("hmm")) {
     formatName = tr( "Profile HMM format" );
-	formatDescription = tr("hmm is a format for storing hmm profiles");
-	supportedObjectTypes+=UHMMObject::UHMM_OT;
+    formatDescription = tr("hmm is a format for storing hmm profiles");
+    supportedObjectTypes+=UHMMObject::UHMM_OT;
 }
 
 DocumentFormatId UHMMFormat::getFormatId() const {
@@ -315,11 +315,11 @@ const QString& UHMMFormat::getFormatName() const {
     return formatName;
 }
 
-Document* UHMMFormat::loadDocument(IOAdapter* io, const U2DbiRef& targetDb, const QVariantMap& hints, U2OpStatus& os) {
+Document* UHMMFormat::loadDocument(IOAdapter* io, const U2DbiRef& /*targetDb*/, const QVariantMap& hints, U2OpStatus& os) {
     QList< GObject* > objects;
     loadAll( io, objects, os );
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
-    return new Document( this, io->getFactory(), io->getURL(), targetDb, objects, hints, WRITE_LOCK_REASON );
+    return new Document( this, io->getFactory(), io->getURL(), U2DbiRef(), objects, hints, WRITE_LOCK_REASON );
 }
 
 
@@ -328,9 +328,9 @@ void UHMMFormat::storeDocument( Document* doc, IOAdapter* io, U2OpStatus& os) {
 }
 
 FormatCheckResult UHMMFormat::checkRawData( const QByteArray& data, const GUrl&) const {
-    bool result =  data.startsWith( UHMMFormatReader::HMMER2_VERSION_HEADER.toLatin1() ) 
+    bool result =  data.startsWith( UHMMFormatReader::HMMER2_VERSION_HEADER.toLatin1() )
                 || data.startsWith( UHMMFormatReader::HMMER3_VERSION_HEADER.toLatin1() );
-    
+
     return result ? FormatDetection_Matched : FormatDetection_NotMatched;
 }
 
