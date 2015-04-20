@@ -38,9 +38,9 @@ workflow "Intersect annotations"{
     }
 
     .actor-bindings {
-        read-annotations.out-annotations->intersect-annotations.input-annotations-a
         intersect-annotations.output-intersect-annotations->write-annotations.in-annotations
         read-annotations-1.out-annotations->intersect-annotations.input-annotations-b
+        read-annotations.out-annotations->intersect-annotations.input-annotations-a
     }
 
     read-annotations.annotations->intersect-annotations.input-annotations-a.input-annotations-a
@@ -56,6 +56,9 @@ workflow "Intersect annotations"{
             }
             intersect-annotations.report {
                 alias:report;
+            }
+            intersect-annotations.unique {
+                alias:unique;
             }
             read-annotations.url-in {
                 alias:in-A;

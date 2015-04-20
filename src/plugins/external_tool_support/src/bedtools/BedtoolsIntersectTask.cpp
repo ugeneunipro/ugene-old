@@ -93,7 +93,11 @@ const QStringList BedtoolsIntersectTask::getParameters() const {
 
     switch (settings.report) {
     case BedtoolsIntersectSettings::Report_OverlapedA:
-        res << "-f" << QString::number(settings.minOverlap, 'g', 9);
+        if (settings.unique) {
+            res << "-u";
+        } else {
+            res << "-f" << QString::number(settings.minOverlap, 'g', 9);
+        }
         res << "-wa";
         break;
     case BedtoolsIntersectSettings::Report_NonOverlappedA:
@@ -159,6 +163,7 @@ QList<Task*> BedtoolsIntersectAnnotationsByEntityTask::onSubTaskFinished(Task *s
 
         BedtoolsIntersectFilesSettings stngs(tmpUrlA, QStringList() << tmpUrlB, tmpUrlResult,
                                              settings.minOverlap,
+                                             settings.unique,
                                              settings.report);
         intersectTask = new BedtoolsIntersectTask(stngs);
         res << intersectTask;

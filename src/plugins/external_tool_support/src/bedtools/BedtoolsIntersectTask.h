@@ -40,12 +40,14 @@ public:
         Report_Intervals = 2
     };
 
-    BedtoolsIntersectSettings(double minOverlap = DEFAULT_MIN_OVERLAP, Report r = Report_OverlapedA)
+    BedtoolsIntersectSettings(double minOverlap = DEFAULT_MIN_OVERLAP, bool unique = true, Report r = Report_OverlapedA)
         : minOverlap(minOverlap),
+          unique(unique),
           report(r)
     {}
 
     double  minOverlap;     // -f (0..1]
+    bool    unique;         // -u
     Report report;
 };
 
@@ -57,8 +59,8 @@ public:
         : BedtoolsIntersectSettings() {}
 
     BedtoolsIntersectByEntityRefSettings(const QList<U2EntityRef>& entityA, const QList<U2EntityRef>& entityB,
-                                         double minOverlap = DEFAULT_MIN_OVERLAP, Report r = Report_OverlapedA)
-        : BedtoolsIntersectSettings(minOverlap, r),
+                                         double minOverlap = DEFAULT_MIN_OVERLAP, bool unique = true, Report r = Report_OverlapedA)
+        : BedtoolsIntersectSettings(minOverlap, unique, r),
           entitiesA(entityA),
           entitiesB(entityB) {}
 
@@ -69,8 +71,8 @@ public:
 class BedtoolsIntersectFilesSettings : public BedtoolsIntersectSettings {
 public:
     BedtoolsIntersectFilesSettings(const QString &inputA, const QStringList &inputB, const QString &output,
-                              double minOverlap = DEFAULT_MIN_OVERLAP, Report r = Report_OverlapedA)
-        : BedtoolsIntersectSettings(minOverlap, r),
+                              double minOverlap = DEFAULT_MIN_OVERLAP, bool unique = true, Report r = Report_OverlapedA)
+        : BedtoolsIntersectSettings(minOverlap, unique, r),
           inputA(inputA),
           inputB(inputB),
           out(output) {}

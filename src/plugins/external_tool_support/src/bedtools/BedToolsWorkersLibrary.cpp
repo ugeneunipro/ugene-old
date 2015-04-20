@@ -784,6 +784,7 @@ const static QString OUT_PORT_ID("output-intersect-annotations");
 
 const static QString MIN_OVERLAP("minimum-overlap");
 const static QString REPORT("report");
+const static QString UNIQUE("unique");
 
 BedtoolsIntersectWorker::BedtoolsIntersectWorker(Actor *a)
     : BaseWorker(a, false),
@@ -853,6 +854,7 @@ Task* BedtoolsIntersectWorker::createTask() {
 
     settings.minOverlap = actor->getParameter(MIN_OVERLAP)->getAttributeValue<double>(context) / 100;
     settings.report = (BedtoolsIntersectSettings::Report) (actor->getParameter(REPORT)->getAttributeValue<int>(context));
+    settings.unique = actor->getParameter(UNIQUE)->getAttributeValue<bool>(context);
 
     settings.entitiesA = getAnnotationsEntityRefFromMessages(storeA, IN_PORT_A_ID);
     settings.entitiesB = getAnnotationsEntityRefFromMessages(storeB, IN_PORT_B_ID);
@@ -932,12 +934,21 @@ void BedtoolsIntersectWorkerFactory::init() {
                                                             "<li><i>Non-overlapped annotations from A</i> to report annotations"
                                                             " from set A that have NO overlap with annotations from set B."
                                                             "</li></ul>"));
+        Descriptor uniqueDesc ( UNIQUE,
+                                BedtoolsIntersectWorker::tr( "Unique overlaps"),
+                                BedtoolsIntersectWorker::tr( "Report the mere presence of any overlapping features. If an one or more overlaps exists, the A annotation is reported.<br/><br/>"
+                                                             "If attribute value is \'False\', the A annotation is reported for every overlap found."));
 
         attribs << new Attribute( reportDesc, BaseTypes::NUM_TYPE(), /*required*/ false, QVariant(BedtoolsIntersectSettings::Report_OverlapedA));
+
+        Attribute* uniqueAttr = new Attribute( uniqueDesc, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(true));
+        uniqueAttr->addRelation(new VisibilityRelation(REPORT, QVariantList() << BedtoolsIntersectSettings::Report_OverlapedA));
+        attribs << uniqueAttr;
 
         Attribute* minOverlapAttr = new Attribute( minOverlapDesc, BaseTypes::NUM_TYPE(), /*required*/ false, QVariant(BedtoolsIntersectSettings::DEFAULT_MIN_OVERLAP * 100) );
         minOverlapAttr->addRelation(new VisibilityRelation(REPORT, QVariantList() << BedtoolsIntersectSettings::Report_Intervals
                                                            << BedtoolsIntersectSettings::Report_OverlapedA));
+        minOverlapAttr->addRelation(new VisibilityRelation(UNIQUE, QVariantList() << false));
         attribs << minOverlapAttr;
     }
 
@@ -955,6 +966,8 @@ void BedtoolsIntersectWorkerFactory::init() {
         comboMap["Overlapped annotations from A"] = BedtoolsIntersectSettings::Report_OverlapedA;
         comboMap["Non-overlapped annotations from A"] = BedtoolsIntersectSettings::Report_NonOverlappedA;
         delegates[REPORT] = new ComboBoxDelegate(comboMap);
+
+        delegates[UNIQUE] = new ComboBoxWithBoolsDelegate();
     }
 
     Descriptor desc( BedtoolsIntersectWorkerFactory::ACTOR_ID,
@@ -992,6 +1005,9 @@ QString BedtoolsIntersectPrompter::composeRichDoc() {
     }
 
     res.append(getHyperlink(REPORT, "<u>" + reportHyperlinkText +"</u>"));
+    if (!target->getParameter(UNIQUE)->getAttributePureValue().toBool() && r == BedtoolsIntersectSettings::Report_OverlapedA) {
+        res.append(" Annotation is taken into account for every overlap with set B.");
+    }
     return res;
 }
 
