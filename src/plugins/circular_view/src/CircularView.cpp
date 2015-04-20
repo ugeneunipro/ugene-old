@@ -569,8 +569,9 @@ void CircularViewRenderArea::drawAll(QPaintDevice* pd) {
 
     int viewSize = qMin(circularView->height(), circularView->width());
     verticalOffset = parentWidget()->height()/2;
+
     if (outerEllipseSize + (regionY.count()-1)*ellipseDelta + VIEW_MARGIN > viewSize) {
-        verticalOffset += (outerEllipseSize + (regionY.count()-1)*ellipseDelta + VIEW_MARGIN  - viewSize)/2;
+        verticalOffset += (outerEllipseSize + (regionY.count()-1)*ellipseDelta + VIEW_MARGIN - viewSize)/2;
         // distance from the ruler to the end of annotation layers
         int topSpace = ((regionY.count()-1)*ellipseDelta + VIEW_MARGIN) / 2;
         if (innerEllipseSize > pd->width()) { // the ruller cannot fit in view
@@ -580,6 +581,10 @@ void CircularViewRenderArea::drawAll(QPaintDevice* pd) {
             int ledge = innerEllipseSize/2 + topSpace - pd->height();
             verticalOffset += (x - ledge)/2;
         }
+    }
+
+    if (verticalOffset < (outerEllipseSize + (regionY.count()-1)*ellipseDelta + VIEW_MARGIN)/2 ) {
+        verticalOffset += ((outerEllipseSize + (regionY.count()-1)*ellipseDelta + VIEW_MARGIN )/ 2 - verticalOffset);
     }
 
     if (completeRedraw) {
@@ -884,6 +889,9 @@ void CircularViewRenderArea::drawAnnotations(QPainter &p) {
     annotationYLevel.clear();
     regionY.clear();
 
+    QFont font = p.font();
+    font.setPointSize(settings->labelFontSize);
+
     AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
     //TODO: there need const order of annotation tables
     QSet<AnnotationTableObject *> anns = ctx->getAnnotationObjects(true);
@@ -893,14 +901,12 @@ void CircularViewRenderArea::drawAnnotations(QPainter &p) {
         foreach (Annotation *a, ao->getAnnotations()) {
             AnnotationSettings *as = asr->getAnnotationSettings(a->getData());
             buildAnnotationItem(DrawAnnotationPass_DrawFill, a, false, as);
-            QFont font = p.font();
-            font.setPointSize(settings->labelFontSize);
             buildAnnotationLabel(font, a, as, isAutoAnnotation);
         }
     }
 
     CircularAnnotationLabel::prepareLabels(labelList);
-    evaluateLabelPositions();
+    evaluateLabelPositions(font);
 
     foreach (CircularAnnotationItem* item, circItems) {
         item->paint(&p, NULL, this);
@@ -1178,10 +1184,9 @@ void CircularViewRenderArea::drawMarker(QPainter& p) {
 }
 
 #define LABEL_PAD 30
-void CircularViewRenderArea::evaluateLabelPositions() {
+void CircularViewRenderArea::evaluateLabelPositions(QFont f) {
     labelEmptyPositions.clear();
 
-    QFont f;
     QFontMetrics fm(f,this);
     int labelHeight = fm.height();
     int lvlsNum = regionY.count();
@@ -1189,16 +1194,16 @@ void CircularViewRenderArea::evaluateLabelPositions() {
 
     int areaHeight = height();
 
-    int z0 = -areaHeight/2 + labelHeight;
+    int z0 = - verticalOffset + VIEW_MARGIN + labelHeight;
     int z1 = areaHeight/2 - labelHeight;
     if (currentScale != 0) {
         int wH = parentWidget()->height();
         if (verticalOffset>wH) {
-            z0 = -outerRadius;
             z1 = -outerRadius*cos(getVisibleAngle());
         }
     }
-    for(int zPos=z0; zPos<z1; zPos+=labelHeight) {
+
+    for(int zPos = z0; zPos < z1; zPos += labelHeight) {
         int x = sqrt(float(outerRadius*outerRadius - zPos*zPos));
         if(width()/2-x>0) {
             QRect l_rect(-x - LABEL_PAD, zPos, width()/2-(x+LABEL_PAD), labelHeight);

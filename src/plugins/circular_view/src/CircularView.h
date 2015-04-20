@@ -178,7 +178,7 @@ protected:
     void drawAnnotationsSelection(QPainter& p);
     void drawSequenceSelection(QPainter& p);
     void drawMarker(QPainter& p);
-    void evaluateLabelPositions();
+    void evaluateLabelPositions(QFont f);
     qreal getVisibleAngle() const;
     QPair<int,int> getVisibleRange() const;
 
