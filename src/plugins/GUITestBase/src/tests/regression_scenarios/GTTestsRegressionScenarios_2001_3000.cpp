@@ -5772,9 +5772,13 @@ GUI_TEST_CLASS_DEFINITION(test_2910) {
 
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, "10000..15000"));
     GTKeyboardDriver::keyClick(os, 'A', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(500);
+    GTGlobals::sleep();
 
-    // TODO: Expected state: the region is selected, there is a label "[5001 bp]" on the pan view.
+    // Expected state: the region is selected, there is a label "[5001 bp]" on the pan view.
+    QVector<U2Region> reg = GTUtilsSequenceView::getSelection(os);
+    CHECK_SET_ERR(reg.size() == 1, QString("unexpected number of selected regions: ").arg(reg.size()));
+    CHECK_SET_ERR(reg.first().length == 5001, QString("unexpected selection length: ").arg(reg.first().length));
+    CHECK_SET_ERR(reg.first().startPos == 9999, QString("unexpected selection start pos: ").arg(reg.first().startPos));
 }
 GUI_TEST_CLASS_DEFINITION(test_2910_1) {
     // 1. Open {data/samples/FASTA/human_T1.fa}.
@@ -5788,7 +5792,14 @@ GUI_TEST_CLASS_DEFINITION(test_2910_1) {
     GTKeyboardDriver::keyClick(os, 'A', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
 
-    // TODO: Expected state: the region is selected, there is a label "[3001 bp]" and "[10001 bp]" on the pan view.
+    // Expected state: the region is selected, there is a label "[3001 bp]" and "[10001 bp]" on the pan view.
+    QVector<U2Region> reg = GTUtilsSequenceView::getSelection(os);
+    CHECK_SET_ERR(reg.size() == 2, QString("unexpected number of selected regions: ").arg(reg.size()));
+    CHECK_SET_ERR(reg.first().length == 3001, QString("unexpected selection length: ").arg(reg.first().length));
+    CHECK_SET_ERR(reg.first().startPos == 1999, QString("unexpected selection start pos: ").arg(reg.first().startPos));
+
+    CHECK_SET_ERR(reg.at(1).length == 10001, QString("unexpected selection length: ").arg(reg.at(1).length));
+    CHECK_SET_ERR(reg.at(1).startPos == 99999, QString("unexpected selection start pos: ").arg(reg.at(1).startPos));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2910_2) {

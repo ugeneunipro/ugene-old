@@ -36,12 +36,14 @@
 #endif
 
 #include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceSelection.h>
 
 #include <U2Gui/MainWindow.h>
 
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/DetView.h>
+#include <U2View/ADVSequenceObjectContext.h>
 
 #include "GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
@@ -293,12 +295,36 @@ ADVSingleSequenceWidget* GTUtilsSequenceView::getSeqWidgetByNumber(U2OpStatus &o
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getPanViewByNumber"
+PanView* GTUtilsSequenceView::getPanViewByNumber(U2OpStatus &os, int number, const GTGlobals::FindOptions &options){
+    ADVSingleSequenceWidget* seq = getSeqWidgetByNumber(os, number, options);
+    if(options.failIfNull){
+        GT_CHECK_RESULT(seq != NULL, QString("sequence view with num %1 not found").arg(number), NULL);
+    }else {
+        return NULL;
+    }
+
+    PanView* result = seq->findChild<PanView*>();
+    if(options.failIfNull){
+        GT_CHECK_RESULT(seq != NULL, QString("pan view with number %1 not fount").arg(number), NULL)
+    }
+
+    return result;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getSeqWidgetsNumber"
 int GTUtilsSequenceView::getSeqWidgetsNumber(U2OpStatus &os) {
     QList<ADVSingleSequenceWidget*> seqWidgets = GTUtilsMdi::activeWindow(os)->findChildren<ADVSingleSequenceWidget*>();
     return seqWidgets.size();
 }
 #undef GT_METHOD_NAME
+
+QVector<U2Region> GTUtilsSequenceView::getSelection(U2OpStatus &os, int number){
+    PanView* panView = getPanViewByNumber(os, number);
+    QVector<U2Region> result = panView->getSequenceContext()->getSequenceSelection()->getSelectedRegions();
+    return result;
+}
 
 #define GT_METHOD_NAME "getSeqName"
 QString GTUtilsSequenceView::getSeqName(U2OpStatus &os, int number) {

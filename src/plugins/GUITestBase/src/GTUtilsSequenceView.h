@@ -29,6 +29,8 @@ namespace U2 {
 
 class U2OpStatus;
 class ADVSingleSequenceWidget;
+class PanView;
+class U2Region;
 
 class GTUtilsSequenceView {
 public:
@@ -46,7 +48,9 @@ public:
     static void goToPosition(U2OpStatus &os, int position);
 
     static ADVSingleSequenceWidget * getSeqWidgetByNumber(U2OpStatus &os, int number = 0, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static PanView * getPanViewByNumber(U2OpStatus &os, int number = 0, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
     static int getSeqWidgetsNumber(U2OpStatus &os);
+    static QVector<U2Region> getSelection(U2OpStatus &os, int number = 0);
     static QString getSeqName(U2OpStatus &os, int number = 0);
     static QString getSeqName(U2OpStatus &os, ADVSingleSequenceWidget *seqWidget);
 };
