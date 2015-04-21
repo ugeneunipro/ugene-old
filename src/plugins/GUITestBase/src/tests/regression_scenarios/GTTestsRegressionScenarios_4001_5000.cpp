@@ -936,6 +936,25 @@ GUI_TEST_CLASS_DEFINITION(test_4111){
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4113){
+//    1. Connect to a shared DB.
+//    2. Import the folder "data/samples/Assembly" to it
+//    3. Import ugenedb file
+//    Expected state: import is completed successfully
+
+    GTLogTracer l;
+
+    Document* doc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    GTUtilsSharedDatabaseDocument::importDirs(os, doc, "/test_4113", QStringList() << dataDir + "/samples/Assembly/");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsSharedDatabaseDocument::importFiles(os, doc, "/test_4113", QStringList() << testDir + "/_common_data/ugenedb/scerevisiae.bam.ugenedb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4116) {
 //    1. Open the Primer Library.
     GTUtilsPrimerLibrary::openLibrary(os);
