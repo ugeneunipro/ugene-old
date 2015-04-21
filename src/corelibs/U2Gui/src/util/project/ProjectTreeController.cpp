@@ -31,6 +31,7 @@
 #include <QTreeView>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/AddObjectsToDocumentTask.h>
 #include <U2Core/DeleteObjectsTask.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/L10n.h>
@@ -483,16 +484,7 @@ void ProjectTreeController::sl_onAddObjectToSelectedDocument() {
     QList<GObject*> objects = ProjectTreeItemSelectorDialog::selectObjects(settings, tree);
     CHECK(!objects.isEmpty(), );
 
-    foreach(GObject *obj, objects) {
-        if (obj->isUnloaded()) {
-            continue;
-        }
-
-        U2OpStatus2Log os;
-        GObject *newObj = obj->clone(doc->getDbiRef(), os);
-        CHECK_OP(os, );
-        doc->addObject(newObj);
-    }
+    AppContext::getTaskScheduler()->registerTopLevelTask(new AddObjectsToDocumentTask(objects, doc));
 }
 
 void ProjectTreeController::sl_onLoadSelectedDocuments() {

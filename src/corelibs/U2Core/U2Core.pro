@@ -164,6 +164,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/AbstractProjectFilterTask.h \
            src/tasks/AddDocumentTask.h \
            src/tasks/AddSequencesToAlignmentTask.h \
+           src/tasks/AddObjectsToDocumentTask.h \
            src/tasks/BackgroundTaskRunner.h \
            src/tasks/CleanupFileStorageTask.h \
            src/tasks/CloneObjectTask.h \
@@ -359,6 +360,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/AbstractProjectFilterTask.cpp \
            src/tasks/AddDocumentTask.cpp \
            src/tasks/AddSequencesToAlignmentTask.cpp \
+           src/tasks/AddObjectsToDocumentTask.cpp \
            src/tasks/BackgroundTaskRunner.cpp \
            src/tasks/CleanupFileStorageTask.cpp \
            src/tasks/CloneObjectTask.cpp \
