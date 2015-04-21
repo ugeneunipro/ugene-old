@@ -1,3 +1,24 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2015 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
 #include "MSACollapsibleModel.h"
 #include "MSAEditor.h"
 
@@ -9,7 +30,30 @@
 
 namespace U2 {
 
-MSACollapsibleItemModel::MSACollapsibleItemModel(MSAEditorUI* p) : QObject(p), ui(p) {
+//////////////////////////////////////////////////////////////////////////
+/// MSACollapsableItem
+//////////////////////////////////////////////////////////////////////////
+
+MSACollapsableItem::MSACollapsableItem()
+    : row(-1), numRows(-1), isCollapsed(false)
+{
+
+}
+
+MSACollapsableItem::MSACollapsableItem(int startPos, int length)
+    : row(startPos), numRows(length), isCollapsed(false)
+{
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+/// MSACollapsibleItemModel
+//////////////////////////////////////////////////////////////////////////
+
+MSACollapsibleItemModel::MSACollapsibleItemModel(MSAEditorUI *p)
+    : QObject(p), ui(p)
+{
+
 }
 
 void MSACollapsibleItemModel::reset(const QVector<U2Region>& itemRegions) {
@@ -257,15 +301,21 @@ int MSACollapsibleItemModel::itemAt(int pos) const {
     }
 }
 
-int MSACollapsibleItemModel::displayedRowsCount(){
-    MSAEditor* ed = ui->getEditor();
-    MAlignmentObject* o = ed->getMSAObject();
+int MSACollapsibleItemModel::getItemPos(int index) const {
+    return positions.at(index);
+}
+
+MSACollapsableItem MSACollapsibleItemModel::getItem(int index) const {
+    return items.at(index);
+}
+
+int MSACollapsibleItemModel::displayedRowsCount() const {
+    MSAEditor *ed = ui->getEditor();
+    MAlignmentObject *o = ed->getMSAObject();
     int size = o->getNumRows();
-    if (!items.isEmpty()) {
-        foreach(const MSACollapsableItem item, items){
-            if(item.isCollapsed){
-                size -= item.numRows - 1;
-            }
+    foreach (const MSACollapsableItem &item, items) {
+        if (item.isCollapsed) {
+            size -= item.numRows - 1;
         }
     }
     return size;
@@ -287,4 +337,8 @@ void MSACollapsibleItemModel::removeCollapsedForPosition(int index) {
     }
 }
 
-} //namespace
+bool MSACollapsibleItemModel::isEmpty() const {
+    return items.isEmpty();
+}
+
+} // namespace U2

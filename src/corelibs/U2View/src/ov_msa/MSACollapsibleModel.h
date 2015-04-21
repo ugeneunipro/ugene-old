@@ -1,3 +1,24 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2015 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
 #ifndef _U2_MSA_COLLAPSIBLE_MODEL_H_
 #define _U2_MSA_COLLAPSIBLE_MODEL_H_
 
@@ -13,8 +34,8 @@ namespace U2 {
 
 class MSACollapsableItem {
 public:
-    MSACollapsableItem() : row(-1), numRows(-1), isCollapsed(false) {}
-    MSACollapsableItem(int startPos, int length) : row(startPos), numRows(length), isCollapsed(false) {}
+    MSACollapsableItem();
+    MSACollapsableItem(int startPos, int length);
 
     int row;
     int numRows;
@@ -29,11 +50,11 @@ class MAlignmentModInfo;
 class U2VIEW_EXPORT MSACollapsibleItemModel : public QObject {
     Q_OBJECT
 public:
-    MSACollapsibleItemModel(MSAEditorUI* p);
+    MSACollapsibleItemModel(MSAEditorUI *p);
 
     // creates model with every item collapsed
     // 'itemRegions' has to be sorted list of non-intersecting regions
-    void reset(const QVector<U2Region>& itemRegions);
+    void reset(const QVector<U2Region> &itemRegions);
 
     void reset();
 
@@ -45,7 +66,7 @@ public:
 
     U2Region mapToRows(int pos) const;
 
-    U2Region mapSelectionRegionToRows(const U2Region& selectionRegion) const;
+    U2Region mapSelectionRegionToRows(const U2Region &selectionRegion) const;
 
     /**
     * The method converts the row position in the whole msa into its "visible" position (i.e.
@@ -54,7 +75,7 @@ public:
     */
     int rowToMap(int row, bool failIfNotVisible = false) const;
 
-    void getVisibleRows(int startPos, int endPos, QVector<U2Region>& rows) const;
+    void getVisibleRows(int startPos, int endPos, QVector<U2Region> &rows) const;
 
     bool isTopLevel(int pos) const;
 
@@ -62,16 +83,16 @@ public:
 
     int itemAt(int pos) const;
 
-    int getItemPos(int index) const { return positions.at(index); }
+    int getItemPos(int index) const;
 
-    MSACollapsableItem getItem(int index) const { return items.at(index); }
+    MSACollapsableItem getItem(int index) const;
 
-    int displayedRowsCount();
+    int displayedRowsCount() const;
 
     /** If there is a collapsible item at 'pos' position, it is removed. */
     void removeCollapsedForPosition(int pos);
 
-    bool isEmpty() const { return 0 == items.size(); }
+    bool isEmpty() const;
 
 signals:
     void toggled();

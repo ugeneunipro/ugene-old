@@ -102,7 +102,7 @@ protected:
 
 public:
     void drawContent(QPainter& p);
-    qint64 sequenceIdAtPos(QPoint p);
+    qint64 sequenceIdAtPos(const QPoint &p);
     void clearGroupsSelections();
 
 signals:

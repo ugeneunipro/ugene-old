@@ -140,9 +140,7 @@ public:
         return selArea == other.selArea;
     }
 
-    MSAEditorSelection translated (int dx, int dy) const;
-
-    MSAEditorSelection intersected (const MSAEditorSelection& selection) const {
+    MSAEditorSelection intersected(const MSAEditorSelection& selection) const {
         QRect r = selArea.intersected(selection.selArea);
         return MSAEditorSelection(r);
     }
@@ -191,7 +189,7 @@ public:
      * Returns count of sequences that are drawn on the widget by taking into account
      * collapsed rows.
      */
-    int getNumDisplayedSequences( ) const;
+    int getNumDisplayedSequences() const;
 
     U2Region getSequenceYRange(int seqNum, bool useVirtualCoords) const;
 
@@ -206,9 +204,9 @@ public:
 
     bool isSeqInRange(int s) const;
 
-    bool isInRange(const QPoint& p) const {return isPosInRange(p.x()) && isSeqInRange(p.y());}
+    bool isInRange(const QPoint& p) const;
 
-    bool isVisible(const QPoint& p, bool countClipped) const {return isPosVisible(p.x(), countClipped) && isSeqVisible(p.y(), countClipped);}
+    bool isVisible(const QPoint& p, bool countClipped) const;
 
     bool isPosVisible(int pos, bool countClipped) const;
 
@@ -223,7 +221,7 @@ public:
     QPoint coordToAbsolutePos(const QPoint& coord) const;
     QPoint coordToAbsolutePosOutOfRange(const QPoint& coord) const;
 
-    const MSAEditorSelection& getSelection() const { assert(checkState()); return selection; }
+    const MSAEditorSelection& getSelection() const;
 
     void updateSelection(const QPoint& newMousePos);
 
@@ -245,13 +243,13 @@ public:
 
     void cancelSelection();
 
-    void setSelectionHighlighting( bool highlight = true );
+    void setSelectionHighlighting(bool highlight = true);
 
     void deleteCurrentSelection();
 
-    void addRowToSelection(int rowNumber) {selectedRows.append(rowNumber);}
-    void deleteRowFromSelection(int rowNumber) {selectedRows.removeAll(rowNumber);}
-    void clearSelection() {selectedRows.clear();}
+    void addRowToSelection(int rowNumber);
+    void deleteRowFromSelection(int rowNumber);
+    void clearSelection();
 
     U2Region getSelectedRows() const;
 
@@ -275,14 +273,13 @@ private:
 
     void setCursorPos(const QPoint& p);
 
-    void setCursorPos(int x, int y) { setCursorPos(QPoint(x, y)); }
+    void setCursorPos(int x, int y);
 
-    void setCursorPos(int pos) { setCursorPos(QPoint(pos, cursorPos.y())); }
+    void setCursorPos(int pos);
 
     void moveCursor(int dx, int dy);
 
-    void highlightCurrentCursorPos()  { highlightSelection = true; update();}
-
+    void highlightCurrentCursorPos();
 
 public:
     void centerPos(const QPoint& pos);
@@ -305,9 +302,9 @@ public:
 
     QString exportHighligtning(int startPos, int endPos, int startingIndex, bool keepGaps, bool dots, bool transpose);
 
-    MSAColorScheme* getCurrentColorScheme(){return colorScheme;}
-    MSAHighlightingScheme* getCurrentHighlightingScheme(){return highlightingScheme;}
-    bool getUseDotsCheckedState(){return useDotsAction->isChecked();}
+    MSAColorScheme * getCurrentColorScheme() const;
+    MSAHighlightingScheme * getCurrentHighlightingScheme() const;
+    bool getUseDotsCheckedState() const;
 
     void onVisibleRangeChanged();
 
