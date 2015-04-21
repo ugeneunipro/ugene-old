@@ -936,8 +936,10 @@ void BedtoolsIntersectWorkerFactory::init() {
                                                             "</li></ul>"));
         Descriptor uniqueDesc ( UNIQUE,
                                 BedtoolsIntersectWorker::tr( "Unique overlaps"),
-                                BedtoolsIntersectWorker::tr( "Report the mere presence of any overlapping features. If an one or more overlaps exists, the A annotation is reported.<br/><br/>"
-                                                             "If attribute value is \'False\', the A annotation is reported for every overlap found."));
+                                BedtoolsIntersectWorker::tr( "If the parameter value is \"True\", write original A entry once if any overlaps found in B."
+                                                             " In other words, just report the fact at least one overlap was found in B.<br/>"
+                                                             "The minimum overlap number is ignored in this case.<br/><br/>"
+                                                             "If the parameter value is \"False\", the A annotation is reported for every overlap found."));
 
         attribs << new Attribute( reportDesc, BaseTypes::NUM_TYPE(), /*required*/ false, QVariant(BedtoolsIntersectSettings::Report_OverlapedA));
 
@@ -1004,10 +1006,11 @@ QString BedtoolsIntersectPrompter::composeRichDoc() {
         reportHyperlinkText = "non-overlapped annotations from <b>set A</b>.";
     }
 
-    res.append(getHyperlink(REPORT, "<u>" + reportHyperlinkText +"</u>"));
-    if (!target->getParameter(UNIQUE)->getAttributePureValue().toBool() && r == BedtoolsIntersectSettings::Report_OverlapedA) {
-        res.append(" Annotation is taken into account for every overlap with set B.");
+    if (target->getParameter(UNIQUE)->getAttributePureValue().toBool() && r == BedtoolsIntersectSettings::Report_OverlapedA) {
+        res.append(getHyperlink(UNIQUE, "<u>unique</u> "));
     }
+
+    res.append(getHyperlink(REPORT, "<u>" + reportHyperlinkText +"</u>"));
     return res;
 }
 
