@@ -1481,6 +1481,29 @@ GUI_TEST_CLASS_DEFINITION(test_4221) {
     GTUtilsLog::check(os, logTracer);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4272){
+//    Open any sequence
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    QWidget* mainTb = GTWidget::findWidget(os, "mwtoolbar_activemdi");
+    QWidget* qt_toolbar_ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button", mainTb, GTGlobals::FindOptions(false));
+    if(qt_toolbar_ext_button != NULL && qt_toolbar_ext_button->isVisible()){
+        GTWidget::click(os, qt_toolbar_ext_button);
+    }
+//    Turn on auto-annotations (e.g. find ORFs)
+     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
+     GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
+     GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: annotations are displayed in zoom, details and annotations views
+     GTUtilsAnnotationsTreeView::findItem(os, "orf  (0, 837)");
+//    Turn auto-annotations OFF
+     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
+     GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
+     GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: no annotations are displayed
+     QTreeWidgetItem* item = GTUtilsAnnotationsTreeView::findItem(os, "orf  (0, 837)", GTGlobals::FindOptions(false));
+     CHECK_SET_ERR(item == NULL, "orfs are unexpectidly shown");
+}
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2
