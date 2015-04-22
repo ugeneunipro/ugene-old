@@ -199,6 +199,80 @@ namespace U2 {
 
 namespace GUITest_regression_scenarios {
 
+GUI_TEST_CLASS_DEFINITION(test_0057_1) {
+    //Crash on a number of multisequence files opening in the merge mode
+    //1. Open samples/Genbank/sars.gb.
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+
+    //2. Click the right mouse button on NC_001363 annotations tree view and select menu item "Find qualifier"
+    //Expected state : Opened "Find Qualifier" dialog.
+    //3. Enter to Name field 'db_xref' and click "Next" button
+    FindQualifierFiller::FindQualifierFillerSettings settings("db_xref", QString(), false, true, 1, false, false);
+    GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, settings));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Find qualifier..."));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "NC_004718 features [sars.gb]"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    //Expected state : Found first qualifier with name db_xref and value GI:30124074
+    QList<QTreeWidgetItem *> selectedItems = GTUtilsAnnotationsTreeView::getAllSelectedItems(os);
+    CHECK_SET_ERR(2 == selectedItems.size(), "Unexpected number of selected items");
+    const QString qualifierName = selectedItems[1]->data(0, Qt::DisplayRole).toString();
+    CHECK_SET_ERR("db_xref" == qualifierName, "Unexpected qualifier name");
+    const QString qualifierType = selectedItems[1]->data(1, Qt::DisplayRole).toString();
+    CHECK_SET_ERR(qualifierType.isEmpty(), "Qualifier unexpectedly has a type");
+    const QString qualifierValue = selectedItems[1]->data(2, Qt::DisplayRole).toString();
+    CHECK_SET_ERR("GI:30124074" == qualifierValue, "Unexpected qualifier value");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0057_2) {
+    //Crash on a number of multisequence files opening in the merge mode
+    //1. Open samples/Genbank/sars.gb.
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+
+    //2. Click on right mouse button on NC_001363 annotations tree view and select menu item "Find qualifier"
+    //Expected state : Opened "Find Qualifier" dialog.
+    //3. Enter to Name field 'db_xref' and click "Select All" button
+    FindQualifierFiller::FindQualifierFillerSettings settings("db_xref", QString(), false, true);
+    GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, settings));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Find qualifier..."));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "NC_004718 features [sars.gb]"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    //Expected state : Selected 7 qualifiers with name db_xref
+    QList<QTreeWidgetItem *> selectedItems = GTUtilsAnnotationsTreeView::getAllSelectedItems(os);
+    CHECK_SET_ERR(14 == selectedItems.size(), "Unexpected number of selected items");
+
+    for (int i = 1; i < 14; i += 2) {
+        const QString qualifierName = selectedItems[i]->data(0, Qt::DisplayRole).toString();
+        CHECK_SET_ERR("db_xref" == qualifierName, "Unexpected qualifier name");
+    }
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0057_3) {
+    //Crash on a number of multisequence files opening in the merge mode
+    //1. Open samples / Genbank / murine.gb.
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+    //2. Click on right mouse button on NC_001363 annotations tree view and select menu item "Find qualifier"
+    //Expected state : Opened "Find Qualifier" dialog.
+    //3. Enter to Value field 'pol polyprotein fragment' and click "Next" button
+    FindQualifierFiller::FindQualifierFillerSettings settings(QString(), "pol polyprotein fragment", false, true, 1, false, false);
+    GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, settings));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Find qualifier..."));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "NC_001363 features [murine.gb]"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    //Expected state : Founded first qualifier with name 'product' and value 'pol polyprotein fragment'
+    QList<QTreeWidgetItem *> selectedItems = GTUtilsAnnotationsTreeView::getAllSelectedItems(os);
+    CHECK_SET_ERR(2 == selectedItems.size(), "Unexpected number of selected items");
+    const QString qualifierName = selectedItems[1]->data(0, Qt::DisplayRole).toString();
+    CHECK_SET_ERR("product" == qualifierName, "Unexpected qualifier name");
+    const QString qualifierType = selectedItems[1]->data(1, Qt::DisplayRole).toString();
+    CHECK_SET_ERR(qualifierType.isEmpty(), "Qualifier unexpectedly has a type");
+    const QString qualifierValue = selectedItems[1]->data(2, Qt::DisplayRole).toString();
+    CHECK_SET_ERR("pol polyprotein fragment" == qualifierValue, "Unexpected qualifier value");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0057_4) {
 //    Crash on a number of multisequence files opening in the merge mode
 //    1. Open samples/Genbank/murine.gb.
