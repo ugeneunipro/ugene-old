@@ -220,7 +220,7 @@ void SnpEffFactory::init() {
     proto->addExternalTool(ET_JAVA);
     proto->addExternalTool(ET_SNPEFF);
 
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CALL_VARIATIONS(), proto);
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_VARIATION_ANALYSIS(), proto);
     DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
     localDomain->registerEntry(new SnpEffFactory());
 }
@@ -263,8 +263,12 @@ Task * SnpEffWorker::tick() {
         setting.motif = getValue<bool>(MOTIF);
 
         SnpEffTask *t = new SnpEffTask (setting);
-        t->addListeners(createLogListeners());
         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
+
+        QList<ExternalToolListener *> listeners = createLogListeners();
+        listeners[0]->setLogProcessor(new SnpEffLogProcessor(monitor(), getActorId()));
+        t->addListeners(listeners);
+
         return t;
     }
 
@@ -326,6 +330,84 @@ QString SnpEffWorker::takeUrl() {
 void SnpEffWorker::sendResult(const QString &url) {
     const Message message(BaseTypes::STRING_TYPE(), url);
     outputUrlPort->put(message);
+}
+
+const QStrStrMap SnpEffLogProcessor::wellKnownMessages = SnpEffLogProcessor::initWellKnownMessages();
+const QMap<QString, QRegExp> SnpEffLogProcessor::messageCatchers = SnpEffLogProcessor::initWellKnownCatchers();
+
+SnpEffLogProcessor::SnpEffLogProcessor(WorkflowMonitor *monitor, const QString &actor) :
+    ExternalToolLogProcessor(),
+    monitor(monitor),
+    actor(actor)
+{
+
+}
+
+void SnpEffLogProcessor::processLogMessage(const QString &message) {
+    foreach (const QRegExp &catcher, messageCatchers.values()) {
+        if (-1 != catcher.indexIn(message)) {
+            addNotification(messageCatchers.key(catcher), catcher.cap(1).toInt());
+        }
+    }
+}
+
+void SnpEffLogProcessor::addNotification(const QString &key, int count) {
+    SAFE_POINT(wellKnownMessages.contains(key), "An unknown snpEff internal error: " + key, );
+    const QString warningMessage = key + ": " + wellKnownMessages[key] + " (count: " + QString::number(count) + ")";
+    monitor->addError(warningMessage, actor, Problem::U2_WARNING);
+}
+
+QStrStrMap SnpEffLogProcessor::initWellKnownMessages() {
+    QStrStrMap result;
+
+    result["ERROR_CHROMOSOME_NOT_FOUND"] = "Chromosome does not exists in reference genome database. "
+                                                      "Typically indicates a mismatch between the chromosome names "
+                                                      "in the input file and the chromosome names used in the reference genome";
+
+    result["ERROR_OUT_OF_CHROMOSOME_RANGE"] = "The variant’s genomic coordinate "
+                                                         "is greater than chromosome's length";
+
+    result["E1"] = result["ERROR_CHROMOSOME_NOT_FOUND"];
+    result["E2"] = result["ERROR_OUT_OF_CHROMOSOME_RANGE"];
+
+    result["WARNING_REF_DOES_NOT_MATCH_GENOME"] = "This means that the ‘REF’ field "
+                                                               "in the input VCF file does not match the reference genome. This warning may indicate "
+                                                               "a conflict between input data and data from reference genome "
+                                                                "(for instance is the input VCF was aligned to a different reference genome)";
+
+    result["WARNING_SEQUENCE_NOT_AVAILABLE"] = "Reference sequence is not available, "
+                                                            "thus no inference could be performed";
+
+    result["WARNING_TRANSCRIPT_INCOMPLETE"] = "A protein coding transcript having "
+                                                           "a non-multiple of 3 length. It indicates that the reference "
+                                                           "genome has missing information about this particular transcript";
+
+    result["WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS"] = "A protein coding transcript has "
+                                                                     "two or more STOP codons in the middle of the coding sequence (CDS). "
+                                                                     "This should not happen and it usually means the reference genome "
+                                                                     "may have an error in this transcript";
+
+    result["WARNING_TRANSCRIPT_NO_START_CODON"] = "A protein coding transcript does not have "
+                                                               "a proper START codon. It is rare that a real transcript does not have a START codon, "
+                                                               "so this probably indicates an error or missing information in the reference genome";
+
+    result["W1"] = result["WARNING_REF_DOES_NOT_MATCH_GENOME"];
+    result["W2"] = result["WARNING_SEQUENCE_NOT_AVAILABLE"];
+    result["W3"] = result["WARNING_TRANSCRIPT_INCOMPLETE"];
+    result["W4"] = result["WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS"];
+    result["W5"] = result["WARNING_TRANSCRIPT_NO_START_CODON"];
+
+    return result;
+}
+
+QMap<QString, QRegExp> SnpEffLogProcessor::initWellKnownCatchers() {
+    QMap<QString, QRegExp> result;
+
+    foreach (const QString &message, wellKnownMessages.keys()) {
+        result[message] = QRegExp(message + "\\t(\\d+)");
+    }
+
+    return result;
 }
 
 } //LocalWorkflow

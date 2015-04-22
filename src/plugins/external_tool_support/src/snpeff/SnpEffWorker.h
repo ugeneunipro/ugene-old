@@ -86,6 +86,25 @@ public:
     Worker* createWorker(Actor* a) { return new SnpEffWorker(a); }
 }; //RmdupBamWorkerFactory
 
+
+class SnpEffLogProcessor : public ExternalToolLogProcessor {
+public:
+    SnpEffLogProcessor(WorkflowMonitor *monitor, const QString &actor);
+
+    void processLogMessage(const QString &message);
+
+private:
+    void addNotification(const QString &key, int count);
+    static QStrStrMap initWellKnownMessages();
+    static QMap<QString, QRegExp> initWellKnownCatchers();
+
+    WorkflowMonitor *monitor;
+    const QString actor;
+
+    static const QStrStrMap wellKnownMessages;
+    static const QMap<QString, QRegExp> messageCatchers;
+};
+
 } //LocalWorkflow
 } //U2
 

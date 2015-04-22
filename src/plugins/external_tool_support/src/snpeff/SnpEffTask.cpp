@@ -40,6 +40,9 @@ namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////
 //SnpEffParser
+
+const QStringList SnpEffParser::stringsToIgnore = SnpEffParser::initStringsToIgnore();
+
 SnpEffParser::SnpEffParser()
     :ExternalToolLogParser() {
 
@@ -49,15 +52,37 @@ void SnpEffParser::parseOutput( const QString& partOfLog ){
     ExternalToolLogParser::parseOutput(partOfLog);
 }
 
-void SnpEffParser::parseErrOutput( const QString& partOfLog ){
-    lastPartOfLog=partOfLog.split(QRegExp("(\n|\r)"));
-    lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
-    lastErrLine=lastPartOfLog.takeLast();
-    foreach(const QString& buf, lastPartOfLog){
-        if(buf.contains("ERROR", Qt::CaseInsensitive)){
-            coreLog.error("SnpEff: " + buf);
+void SnpEffParser::parseErrOutput( const QString& partOfLog ) {
+    lastPartOfLog = partOfLog.split(QRegExp("(\n|\r)"));
+    lastPartOfLog.first() = lastErrLine+lastPartOfLog.first();
+    lastErrLine = lastPartOfLog.takeLast();
+
+    foreach (const QString &buf, lastPartOfLog) {
+        if (stringsToIgnore.contains(buf)) {
+            continue;
+        }
+
+        if (buf.contains("ERROR", Qt::CaseInsensitive)) {
+            if (buf.startsWith("#")) {
+                coreLog.details("SnpEff notificates about genome database error: " + buf);
+            } else {
+                coreLog.error("SnpEff: " + buf);
+            }
+        } else if (buf.contains("warning", Qt::CaseInsensitive) && buf.startsWith("#")) {
+            coreLog.details("SnpEff notificates about genome database error: " + buf);
         }
     }
+}
+
+QStringList SnpEffParser::initStringsToIgnore() {
+    QStringList result;
+
+    result << "WARNINGS: Some warning were detected";
+    result << "Warning type\tNumber of warnings";
+    result << "ERRORS: Some errors were detected";
+    result << "Error type\tNumber of errors";
+
+    return result;
 }
 
 

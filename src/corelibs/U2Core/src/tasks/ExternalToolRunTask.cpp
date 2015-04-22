@@ -539,4 +539,31 @@ QVariantMap ExternalToolSupportUtils::getScoresGapDependencyMap() {
     return map;
 }
 
+ExternalToolLogProcessor::~ExternalToolLogProcessor() {
+
+}
+
+ExternalToolListener::ExternalToolListener(ExternalToolLogProcessor *logProcessor) :
+    logProcessor(logProcessor)
+{
+
+}
+
+ExternalToolListener::~ExternalToolListener() {
+    delete logProcessor;
+}
+
+void ExternalToolListener::setToolName(const QString &_toolName) {
+    toolName = _toolName;
+}
+
+void ExternalToolListener::setLogProcessor(ExternalToolLogProcessor *newLogProcessor) {
+    delete logProcessor;
+    logProcessor = newLogProcessor;
+}
+
+const QString &ExternalToolListener::getToolName() const {
+    return toolName;
+}
+
 }//namespace

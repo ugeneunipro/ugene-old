@@ -165,15 +165,33 @@ protected:
     QStringList lastPartOfLog;
 };
 
+/**
+ * @brief The ExternalToolLogProcessor class
+ * Log processor is supposed to do some additional action
+ * on every new output line.
+ */
+
+class U2CORE_EXPORT ExternalToolLogProcessor {
+public:
+    virtual ~ExternalToolLogProcessor();
+
+    virtual void processLogMessage(const QString& message) = 0;
+};
+
 class U2CORE_EXPORT ExternalToolListener {
 public:
-    ExternalToolListener() {}
-    virtual ~ExternalToolListener(){}
+    ExternalToolListener(ExternalToolLogProcessor *logProcessor = NULL);
+    virtual ~ExternalToolListener();
 
     virtual void addNewLogMessage(const QString& message, int messageType) = 0;
 
-    void setToolName(const QString& _toolName){toolName = _toolName;}
-    QString getToolName() const{ return toolName;}
+    void setToolName(const QString& toolName);
+    void setLogProcessor(ExternalToolLogProcessor *logProcessor);
+    const QString &getToolName() const;
+
+protected:
+    ExternalToolLogProcessor *logProcessor;
+
 private:
     QString toolName;
 };

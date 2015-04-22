@@ -162,7 +162,7 @@ void VcfConsensusWorkerFactory::init() {
 
 
     SAFE_POINT(WorkflowEnv::getProtoRegistry() != NULL, "Workflow proto registry is NULL", );
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CALL_VARIATIONS(), proto);
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_VARIATION_ANALYSIS(), proto);
 
     SAFE_POINT(WorkflowEnv::getDomainRegistry() != NULL, "Workflow domain registry is NULL", );
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);

@@ -133,7 +133,7 @@ public slots:
 signals:
     void si_firstProblem();
     void si_newOutputFile(const U2::Workflow::Monitor::FileInfo &info);
-    void si_newProblem(const U2::Problem &info);
+    void si_newProblem(const Problem &info);
     void si_workerInfoChanged(const QString &actor, const U2::Workflow::Monitor::WorkerInfo &info);
     void si_progressChanged(int progress);
     void si_runStateChanged(bool paused);
@@ -196,6 +196,7 @@ private:
 } // Workflow
 } // U2
 
+Q_DECLARE_METATYPE( U2::Workflow::Monitor::TaskState )
 Q_DECLARE_METATYPE( U2::Workflow::Monitor::FileInfo )
 Q_DECLARE_METATYPE( U2::Workflow::Monitor::WorkerInfo )
 Q_DECLARE_METATYPE( U2::Workflow::Monitor::LogEntry )

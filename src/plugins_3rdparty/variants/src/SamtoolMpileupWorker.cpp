@@ -642,7 +642,7 @@ void CallVariantsWorkerFactory::init() {
     proto->addExternalTool("perl");
     proto->addExternalTool("vcfutils");
 
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CALL_VARIATIONS(), proto);
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_VARIATION_ANALYSIS(), proto);
 
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
     localDomain->registerEntry(new CallVariantsWorkerFactory());

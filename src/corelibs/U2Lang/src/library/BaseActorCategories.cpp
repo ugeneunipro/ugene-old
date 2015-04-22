@@ -67,8 +67,8 @@ const Descriptor BaseActorCategories::CATEGORY_RNA_SEQ() {
     return Descriptor("rna", tr("NGS: RNA-Seq Analysis"), "");
 }
 
-const Descriptor BaseActorCategories::CATEGORY_CALL_VARIATIONS() {
-    return Descriptor("var", tr("NGS: Variant Calling"), "");
+const Descriptor BaseActorCategories::CATEGORY_VARIATION_ANALYSIS() {
+    return Descriptor("var", tr("NGS: Variant Analysis"), "");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_TRANSCRIPTION() {

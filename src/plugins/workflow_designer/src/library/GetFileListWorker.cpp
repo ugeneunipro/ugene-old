@@ -93,21 +93,21 @@ void GetFileListWorkerFactory::init() {
         outTypeMap[BaseSlots::DATASET_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr outTypeSet(new MapDataType(BasePorts::OUT_TEXT_PORT_ID(), outTypeMap));
 
-        portDescs << new PortDescriptor(Descriptor(OUT_PORT_ID, GetFileListWorker::tr("Output urls"), GetFileListWorker::tr("Paths read by the element.")), outTypeSet, false, true);
+        portDescs << new PortDescriptor(Descriptor(OUT_PORT_ID, GetFileListWorker::tr("Output URL"), GetFileListWorker::tr("Paths read by the element.")), outTypeSet, false, true);
     }
 
     QList<Attribute*> attrs;
     {
         Descriptor inUrl(URL_ATTR,
-            GetFileListWorker::tr("Input urls"),
-            GetFileListWorker::tr("Input urls"));
+            GetFileListWorker::tr("Input URL"),
+            GetFileListWorker::tr("Input URL"));
 
         attrs << new URLAttribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::URL_DATASETS_TYPE(), true);
     }
 
     Descriptor protoDesc(GetFileListWorkerFactory::ACTOR_ID,
         GetFileListWorker::tr("File List"),
-        GetFileListWorker::tr("Produces ulrs to files from specified directories."));
+        GetFileListWorker::tr("Produces URL(s) to files from specified directories."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setEditor(new DelegateEditor(QMap<QString, PropertyDelegate*>()));

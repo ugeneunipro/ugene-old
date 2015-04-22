@@ -898,7 +898,7 @@ bowtie index file</translation>
     <message>
         <location filename="../src/wizard/WizardController.cpp" line="882"/>
         <source> parameters</source>
-        <translation>parameters</translation>
+        <translation> parameters</translation>
     </message>
 </context>
 <context>

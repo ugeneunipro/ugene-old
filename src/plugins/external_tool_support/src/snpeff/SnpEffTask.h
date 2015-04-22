@@ -75,7 +75,11 @@ public:
     void parseErrOutput(const QString& partOfLog);
 
 private:
+    static QStringList initStringsToIgnore();
+
     QString lastErrLine;
+
+    static const QStringList stringsToIgnore;
 };
 
 }//namespace

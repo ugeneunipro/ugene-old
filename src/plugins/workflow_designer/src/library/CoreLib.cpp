@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtXml/qdom.h>
+#include <qdom.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -89,15 +89,13 @@
 #include "library/ReadAssemblyWorker.h"
 #include "library/ReadVariationWorker.h"
 #include "library/RemoteDBFetcherWorker.h"
+#include "library/RenameChromosomeInVariationWorker.h"
 #include "library/RmdupBamWorker.h"
 #include "library/SortBamWorker.h"
 #include "library/WriteAnnotationsWorker.h"
 #include "library/WriteAssemblyWorkers.h"
 #include "library/WriteVariationWorker.h"
 #include "util/WriteSequenceValidator.h"
-
-
-/* TRANSLATOR U2::Workflow::CoreLib */
 
 namespace U2 {
 using namespace LocalWorkflow;
@@ -319,6 +317,7 @@ void CoreLib::init() {
     ReadAnnotationsWorkerFactory::init();
     ReadAssemblyWorkerFactory::init();
     ReadVariationWorkerFactory::init();
+    RenameChomosomeInVariationWorkerFactory::init();
     RemoteDBFetcherFactory::init();
     RmdupBamWorkerFactory::init();
     SequenceSplitWorkerFactory::init();

@@ -77,6 +77,7 @@ HEADERS += src/ActorCfgFilterProxyModel.h \
            src/library/ReadAssemblyWorker.h \
            src/library/ReadVariationWorker.h \
            src/library/RemoteDBFetcherWorker.h \
+           src/library/RenameChromosomeInVariationWorker.h \
            src/library/ReverseComplementWorker.h \
            src/library/RmdupBamWorker.h \
            src/library/SchemaWorker.h \
@@ -90,6 +91,7 @@ HEADERS += src/ActorCfgFilterProxyModel.h \
            src/library/WriteAssemblyWorkers.h \
            src/library/WriteVariationWorker.h \
            src/tasks/ReadAssemblyTask.h \
+           src/tasks/RenameChromosomeInVariationTask.h \
            src/util/DatasetsCountValidator.h \
            src/util/DatasetValidator.h \
            src/util/GrouperActionUtils.h \
@@ -186,6 +188,7 @@ SOURCES += src/ActorCfgFilterProxyModel.cpp \
            src/library/ReadAssemblyWorker.cpp \
            src/library/ReadVariationWorker.cpp \
            src/library/RemoteDBFetcherWorker.cpp \
+           src/library/RenameChromosomeInVariationWorker.cpp \
            src/library/ReverseComplementWorker.cpp \
            src/library/RmdupBamWorker.cpp \
            src/library/SchemaWorker.cpp \
@@ -199,6 +202,7 @@ SOURCES += src/ActorCfgFilterProxyModel.cpp \
            src/library/WriteAssemblyWorkers.cpp \
            src/library/WriteVariationWorker.cpp \
            src/tasks/ReadAssemblyTask.cpp \
+           src/tasks/RenameChromosomeInVariationTask.cpp \
            src/util/DatasetsCountValidator.cpp \
            src/util/DatasetValidator.cpp \
            src/util/GrouperActionUtils.cpp \

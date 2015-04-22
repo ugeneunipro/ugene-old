@@ -215,11 +215,13 @@ bool WorkflowMonitor::containsOutputFile(const QString &url) const {
 }
 
 void WorkflowMonitor::addProblem(const Problem &problem) {
-    if (problems.isEmpty()) {
+    const bool firstProblem = problems.isEmpty();
+    problems << problem;
+
+    if (firstProblem) {
         emit si_firstProblem();
         emit si_taskStateChanged(RUNNING_WITH_PROBLEMS);
     }
-    problems << problem;
     emit si_newProblem(problem);
 }
 
@@ -319,10 +321,23 @@ QString MonitorUtils::toSlashedUrl(const QString &url) {
     return result;
 }
 
+namespace {
+
+static bool registerMeta() {
+    qRegisterMetaType<Monitor::TaskState>("Monitor::TaskState");
+    return true;
+}
+static const bool isMetaRegistered = registerMeta();
+
+}
+
 /************************************************************************/
 /* WDListener */
 /************************************************************************/
 void WDListener::addNewLogMessage(const QString& message, int messageType) {
+    if (NULL != logProcessor) {
+        logProcessor->processLogMessage(message);
+    }
     monitor->onLogChanged(this, messageType, message);
 }
 

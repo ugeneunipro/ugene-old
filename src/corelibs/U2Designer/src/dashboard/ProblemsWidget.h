@@ -40,7 +40,7 @@ public:
     static QString problemImage(const Problem &info);
 
 private slots:
-    void sl_newProblem(const U2::Problem &info);
+    void sl_newProblem(const Problem &info);
 
 protected:
     QString createRow(const QStringList &d);
