@@ -3604,7 +3604,7 @@ GUI_TEST_CLASS_DEFINITION(test_1348) {
     QTreeWidgetItem* treeItem = GTUtilsWorkflowDesigner::findTreeItem(os, settings.elementName, GTUtilsWorkflowDesigner::algoriths);
     CHECK_SET_ERR(treeItem != NULL, "Element not found");
 
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "", "Remove element"));
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove"));
     GTTreeWidget::click(os, treeItem);
     GTMouseDriver::click(os, Qt::RightButton);
@@ -4665,7 +4665,14 @@ GUI_TEST_CLASS_DEFINITION(test_1499) {
     const QStringList msaSequences1 = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(msaSequences1 != msaSequences0, "MSA is not changed");
 
-    GTWidget::click(os, GTAction::button(os, "Sort Alignment"));
+    QWidget* qt_toolbar_ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button",
+                                                          GTWidget::findWidget(os, "COI [m] COI"), GTGlobals::FindOptions(false));
+    if(qt_toolbar_ext_button != NULL && qt_toolbar_ext_button->isVisible()){
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Sort Alignment"));
+        GTWidget::click(os, qt_toolbar_ext_button);
+    }else{
+        GTWidget::click(os, GTAction::button(os, "Sort Alignment"));
+    }
 
     const QStringList msaSequences2 = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(msaSequences0 == msaSequences2, "MSA is not synchronized with tree");
