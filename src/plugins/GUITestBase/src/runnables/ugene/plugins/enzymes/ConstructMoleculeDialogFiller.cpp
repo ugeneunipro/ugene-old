@@ -37,8 +37,13 @@ ConstructMoleculeDialogFiller::ConstructMoleculeDialogFiller(U2OpStatus &os, con
 {
 }
 
-#define GT_METHOD_NAME "run"
-void ConstructMoleculeDialogFiller::run() {
+ConstructMoleculeDialogFiller::ConstructMoleculeDialogFiller(U2OpStatus &os, CustomScenario *scenario)
+: Filler(os, "ConstructMoleculeDialog", scenario), dialog(NULL)
+{
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void ConstructMoleculeDialogFiller::commonScenario() {
     dialog = QApplication::activeModalWidget();
     GT_CHECK(NULL != dialog, "activeModalWidget is NULL");
 

@@ -127,7 +127,9 @@
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/ConstructMoleculeDialogFiller.h"
+#include "runnables/ugene/plugins/enzymes/CreateFragmentDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/DigestSequenceDialogFiller.h"
+#include "runnables/ugene/plugins/enzymes/EditFragmentDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/BlastAllSupportDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/ClustalOSupportRunDialogFiller.h"
@@ -364,6 +366,59 @@ GUI_TEST_CLASS_DEFINITION(test_0567) {
 
     GTUtilsDialog::waitForDialog(os, new Test_0567(os));
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0574) {
+    //1. Open murine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+    //2. Select in menu Actions->Cloning->Create fragment...
+    //3. Set any region, don`t include overhangs, click OK
+    GTUtilsDialog::waitForDialog(os, new CreateFragmentDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Cloning" << "Create Fragment..."));
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //4. Select newly created fragment
+    GTUtilsAnnotationsTreeView::selectItems(os, QStringList() << "Fragment (1-5833)");
+
+    //5. Select in menu Actions->Cloning->Construct molecule...
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            //6. In dialog select your fragment in "Available fragments", click Add
+            GTWidget::click(os, GTWidget::findWidget(os, "takeAllButton"));
+
+            //7. Select your fragment in "New molecule contents", click Edit
+            QTreeWidget *tree = dynamic_cast<QTreeWidget*>(GTWidget::findWidget(os, "molConstructWidget"));
+            GTTreeWidget::click(os, GTTreeWidget::findItem(os, tree, "Blunt"));
+
+            //8. For the left end: select Overhang, check Custom Overhang, select 5'-3', write "AA" (without the quotes) to the 5'-3' edit
+            //9. For the right end: select Overhang, check Custom Overhang, select 3'-5', write "CC" (without the quotes) to the 3'-5' edit
+            EditFragmentDialogFiller::Parameters p;
+            p.lSticky = true;
+            p.lCustom = true;
+            p.lDirect = true;
+            p.lDirectText = "AA";
+            p.rSticky = true;
+            p.rCustom = true;
+            p.rDirect = false;
+            p.rComplText = "CC";
+            GTUtilsDialog::waitForDialog(os, new EditFragmentDialogFiller(os, p));
+            GTWidget::click(os, GTWidget::findWidget(os, "editFragmentButton"));
+
+            //10. Click OK, open edit dialog for this fragment again.
+            //Expected state: 3'-5' edit for the right end contains "CC" (bug: it contains "GG")
+            p.checkRComplText = true;
+            GTUtilsDialog::waitForDialog(os, new EditFragmentDialogFiller(os, p));
+            GTTreeWidget::click(os, GTTreeWidget::findItem(os, tree, "AA (Fwd)"));
+            GTWidget::click(os, GTWidget::findWidget(os, "editFragmentButton"));
+
+            GTUtilsDialog::clickButtonBox(os, QApplication::activeModalWidget(), QDialogButtonBox::Cancel);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new ConstructMoleculeDialogFiller(os, new Scenario()));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::CLONING_MENU << ToolsMenu::CLONING_CONSTRUCT);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0587){

@@ -103,7 +103,9 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h \
 #   Runnables / UGENE / plugins / enzymes
             src/runnables/ugene/plugins/enzymes/ConstructMoleculeDialogFiller.h \
+            src/runnables/ugene/plugins/enzymes/CreateFragmentDialogFiller.h \
             src/runnables/ugene/plugins/enzymes/DigestSequenceDialogFiller.h \
+            src/runnables/ugene/plugins/enzymes/EditFragmentDialogFiller.h \
             src/runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h \
 #   Runnables / UGENE / plugins / external_tools
             src/runnables/ugene/plugins/external_tools/BlastAllSupportDialogFiller.h \
@@ -367,7 +369,9 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromAlignmentDialogFiller.cpp \
 #   Runnables / UGENE / plugins / enzymes
             src/runnables/ugene/plugins/enzymes/ConstructMoleculeDialogFiller.cpp \
+            src/runnables/ugene/plugins/enzymes/CreateFragmentDialogFiller.cpp \
             src/runnables/ugene/plugins/enzymes/DigestSequenceDialogFiller.cpp \
+            src/runnables/ugene/plugins/enzymes/EditFragmentDialogFiller.cpp \
             src/runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.cpp \
 #   Runnables / UGENE / plugins / external_tools
             src/runnables/ugene/plugins/external_tools/BlastAllSupportDialogFiller.cpp \

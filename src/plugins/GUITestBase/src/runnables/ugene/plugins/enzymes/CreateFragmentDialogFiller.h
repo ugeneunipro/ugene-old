@@ -19,36 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CONSTRUCT_MOLECULE_DIALOG_FILLER_H_
-#define _U2_CONSTRUCT_MOLECULE_DIALOG_FILLER_H_
+#ifndef _U2_CREATE_FRAGMENT_DIALOG_FILLER_H_
+#define _U2_CREATE_FRAGMENT_DIALOG_FILLER_H_
 
 #include "GTUtilsDialog.h"
 
 namespace U2 {
 
-class ConstructMoleculeDialogFiller : public Filler {
+class CreateFragmentDialogFiller : public Filler {
 public:
-    enum ActionType {           // an appropriate action data
-        AddAllFragments,        // ignored
-        InvertAddedFragment,    // QString with a part of the fragment name, if several fragments match this part, the first one will be inverted
-        ClickCancel             // ignored
-    };
-    typedef QPair<ActionType, QVariant> Action;
-
-    ConstructMoleculeDialogFiller(U2OpStatus &os, const QList<Action> &actions);
-    ConstructMoleculeDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+    CreateFragmentDialogFiller(U2OpStatus &os);
 
     void commonScenario();
-
-private:
-    void addAllFragments();
-    void invertAddedFragment(const QVariant &actionData);
-    void clickCancel();
-
-    QWidget *dialog;
-    const QList<Action> actions;
 };
 
-}   // namespace U2
+} // U2
 
-#endif // _U2_CONSTRUCT_MOLECULE_DIALOG_FILLER_H_
+#endif // _U2_CREATE_FRAGMENT_DIALOG_FILLER_H_
