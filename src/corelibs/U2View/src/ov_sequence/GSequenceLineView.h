@@ -76,6 +76,8 @@ public:
 
     ADVSequenceObjectContext* getSequenceContext() const {return ctx;}
 
+    GSequenceLineViewRenderArea* getRenderArea() const {return renderArea;}
+
     qint64 getLastPressPos() const { return lastPressPos; }
 
     virtual void setStartPos(qint64 pos);

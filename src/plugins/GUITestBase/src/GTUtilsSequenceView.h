@@ -53,6 +53,9 @@ public:
     static QVector<U2Region> getSelection(U2OpStatus &os, int number = 0);
     static QString getSeqName(U2OpStatus &os, int number = 0);
     static QString getSeqName(U2OpStatus &os, ADVSingleSequenceWidget *seqWidget);
+
+    //clicks on simple annotation on sequence view
+    static void clickAnnotation(U2OpStatus &os, QString name, int startpos, int number = 0, Qt::MouseButton button = Qt::LeftButton);
 };
 
 } // namespace U2

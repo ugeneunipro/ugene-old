@@ -35,6 +35,8 @@
 #include <QtWidgets/QMainWindow>
 #endif
 
+#include <U2Core/AnnotationSettings.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceSelection.h>
 
@@ -44,6 +46,7 @@
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/DetView.h>
 #include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/GSequenceLineViewAnnotated.h>
 
 #include "GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
@@ -343,6 +346,64 @@ QString GTUtilsSequenceView::getSeqName(U2OpStatus &os, ADVSingleSequenceWidget*
     return result;
 }
 #undef GT_METHOD_NAME
+
+#define MIN_ANNOTATION_WIDTH 5
+
+#define GT_METHOD_NAME "clickAnnotation"
+void GTUtilsSequenceView::clickAnnotation(U2OpStatus &os, QString name, int startpos, int number, Qt::MouseButton button){
+    ADVSingleSequenceWidget* seq = getSeqWidgetByNumber(os, number);
+    GSequenceLineViewRenderArea* area = seq->getDetView()->getRenderArea();
+    DetViewRenderArea* det = dynamic_cast<DetViewRenderArea*>(area);
+    GT_CHECK(det != NULL, "det view render area not found");
+
+    ADVSequenceObjectContext* context = seq->getSequenceContext();
+    context->getAnnotationObjects(true);
+
+    QList<Annotation*> anns;
+    foreach (const AnnotationTableObject *ao, context->getAnnotationObjects(true)) {
+        foreach (Annotation *a, ao->getAnnotations()) {
+            if(a->getLocation().data()->regions.first().startPos == startpos-1 && a->getName() == name){
+                anns<<a;
+            }
+        }
+    }
+    GT_CHECK(anns.size() != 0, QString("Annotation with name %1 and startPos %2").arg(name).arg(startpos));
+    GT_CHECK(anns.size() == 1, QString("Several annotation with name %1 and startPos %2. Number is: %3").arg(name).arg(startpos).arg(anns.size()));
+
+    Annotation* a = anns.first();
+    int center = a->getLocation().data()->regions.first().center();
+    goToPosition(os, center);
+    GTGlobals::sleep();
+
+    const SharedAnnotationData &aData = a->getData();
+    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
+    AnnotationSettings* as = asr->getAnnotationSettings(aData);
+
+
+    const U2Region &vr = seq->getDetView()->getVisibleRange();
+    const U2Region &r = a->getLocation().data()->regions.first();
+
+    const U2Region visibleLocation = r.intersect(vr);
+
+    U2Region y;
+    y = det->getAnnotationYRange(a, 0, as);
+
+    float start = visibleLocation.startPos;
+    float end = visibleLocation.endPos();
+    float x1f = (float)(start - vr.startPos) * det->getCharWidth();
+    float x2f = (float)(end - vr.startPos) * det->getCharWidth();
+
+    int rw = qMax(MIN_ANNOTATION_WIDTH, qRound(x2f - x1f));
+    int x1 = qRound(x1f);
+
+    const QRect annotationRect(x1, y.startPos, rw, y.length);
+    GTMouseDriver::moveTo(os, det->mapToGlobal(annotationRect.center()));
+    GTMouseDriver::click(os, button);
+
+    GTGlobals::sleep(50000);
+}
+#undef GT_METHOD_NAME
+#undef MIN_ANNOTATION_WIDTH
 
 #undef GT_CLASS_NAME
 
