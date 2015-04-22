@@ -22,26 +22,21 @@
 #ifndef _U2_MSA_EDITOR_CONSENSUS_AREA_H_
 #define _U2_MSA_EDITOR_CONSENSUS_AREA_H_
 
-#include "MSAEditorConsensusCache.h"
+#include <QWidget>
 
-#include <U2Core/global.h>
 #include <U2Core/U2Region.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QWidget>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QMenu>
-#endif
-#include <QtGui/QHelpEvent>
+#include "MSAEditorConsensusCache.h"
+
+class QHelpEvent;
+class QMenu;
+class QPainter;
 
 namespace U2 {
 
 class MSAEditor;
 class MSAEditorUI;
 class GObjectView;
-class MSAEditorConsensusCache;
 class MAlignment;
 class MAlignmentModInfo;
 class MSAEditorSelection;
@@ -68,14 +63,14 @@ public:
 
     MSAConsensusAlgorithm* getConsensusAlgorithm() const;
 
-    QSharedPointer <MSAEditorConsensusCache> getConsensusCache();
+    QSharedPointer<MSAEditorConsensusCache> getConsensusCache();
 
     void paintFullConsensusToPixmap(QPixmap &pixmap);
     void paintParsialConsenusToPixmap(QPixmap & pixmap, const U2Region &region, const QList<qint64> &seqIdx);
     void paintPartOfARuler(QPixmap &pixmap, const U2Region &region);
 
 protected:
-    virtual bool event(QEvent* e);
+    bool event(QEvent* e);
     void paintEvent(QPaintEvent*);
     void resizeEvent(QResizeEvent*);
     void mousePressEvent(QMouseEvent *e);
