@@ -4666,6 +4666,21 @@ GUI_TEST_CLASS_DEFINITION(test_3772) {
     }
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3773) {
+/* An easier way to reproduce an error:
+ * 1. Open HMM profile
+ * 2. Remove it from the project
+ *   Expected state: Log not have errors
+*/
+    GTLogTracer logTracer;
+    GTFileDialog::openFile(os, dataDir + "samples/HMM", "aligment15900.hmm");
+    GTGlobals::sleep(200);
+    GTUtilsProjectTreeView::click(os, "aligment15900.hmm");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(200);
+    GTUtilsLog::check(os, logTracer);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3776) {
 //    1. Open file "data/samples/CLUSTALW/HIV-1.aln"
 //    2. Type "CCCCTCCCATCA" to the search field
