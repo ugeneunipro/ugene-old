@@ -612,8 +612,8 @@ void CircularViewRenderArea::drawAll(QPaintDevice* pd) {
         oldYlevel = regionY.count();
         if (verticalOffset<=parentWidget()->height()/2) {
             circularView->sl_fitInView();
-            paintEvent(new QPaintEvent(rect()));
         }
+        paintEvent(new QPaintEvent(rect()));
     }
 }
 
