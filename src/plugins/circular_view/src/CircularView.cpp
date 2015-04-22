@@ -610,8 +610,11 @@ void CircularViewRenderArea::drawAll(QPaintDevice* pd) {
 
     if (oldYlevel!=regionY.count()) {
         oldYlevel = regionY.count();
-        if (verticalOffset<=parentWidget()->height()/2) {
+        if (verticalOffset <= parentWidget()->height()/2) {
             circularView->sl_fitInView();
+        }
+        if ((regionY.count()-1)*ellipseDelta + VIEW_MARGIN > parentWidget()->height()) {
+            circularView->sl_zoomOut();
         }
         paintEvent(new QPaintEvent(rect()));
     }
