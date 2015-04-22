@@ -126,8 +126,8 @@ void BedtoolsIntersectAnnotationsByEntityTask::prepare() {
     QDir().mkpath(tmpDir);
 
     {
-        QTemporaryFile *a = new QTemporaryFile(tmpDir + "A-XXXXXX.bed", this);
-        QTemporaryFile *b = new QTemporaryFile(tmpDir + "B-XXXXXX.bed", this);
+        QTemporaryFile *a = new QTemporaryFile(tmpDir + "A-XXXXXX.gff", this);
+        QTemporaryFile *b = new QTemporaryFile(tmpDir + "B-XXXXXX.gff", this);
 
         a->open();
         tmpUrlA = a->fileName();
@@ -156,7 +156,7 @@ QList<Task*> BedtoolsIntersectAnnotationsByEntityTask::onSubTaskFinished(Task *s
     const QString tmpDir = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("intersect_annotations") + QDir::separator();
 
     if (subTask == saveAnnotationsTask) {
-        QTemporaryFile* outputFile = new QTemporaryFile(tmpDir + "Intersect-XXXXXX.bed", this);
+        QTemporaryFile* outputFile = new QTemporaryFile(tmpDir + "Intersect-XXXXXX.gff", this);
         outputFile->open();
         tmpUrlResult = outputFile->fileName();
         outputFile->close();
@@ -173,7 +173,7 @@ QList<Task*> BedtoolsIntersectAnnotationsByEntityTask::onSubTaskFinished(Task *s
         IOAdapterFactory* ioFactory = IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE);
         CHECK_EXT(ioFactory != NULL, setError(tr("Failed to get IOAdapterFactory")), res);
 
-        loadResultTask = new LoadDocumentTask(BaseDocumentFormats::BED, GUrl(tmpUrlResult), ioFactory);
+        loadResultTask = new LoadDocumentTask(BaseDocumentFormats::GFF, GUrl(tmpUrlResult), ioFactory);
         res << loadResultTask;
     }
     if (subTask == loadResultTask) {
@@ -187,15 +187,16 @@ QList<Task*> BedtoolsIntersectAnnotationsByEntityTask::onSubTaskFinished(Task *s
 Document* BedtoolsIntersectAnnotationsByEntityTask::createAnnotationsDocument(const QString &url, const QList<U2EntityRef> &entities) {
     CHECK(!entities.isEmpty(), NULL);
 
-    DocumentFormat* bed = BaseDocumentFormats::get(BaseDocumentFormats::BED);
+    DocumentFormat* bed = BaseDocumentFormats::get(BaseDocumentFormats::GFF);
     CHECK_EXT(bed != NULL, setError(tr("Failed to get BED format")), NULL);
 
     IOAdapterFactory* ioFactory = IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE);
     CHECK_EXT(ioFactory != NULL, setError(tr("Failed to get IOAdapterFactory")), NULL);
 
-    Document* doc = new Document(bed, ioFactory, GUrl(url), entities.first().dbiRef);
-
     U2OpStatusImpl os;
+    Document* doc = new Document(bed, ioFactory, GUrl(url), AppContext::getDbiRegistry()->getSessionTmpDbiRef(os));
+    CHECK_OP(os, NULL);
+
     foreach (const U2EntityRef& enRef, entities) {
         U2AnnotationTable t = U2FeatureUtils::getAnnotationTable(enRef, os);
         AnnotationTableObject* table = new AnnotationTableObject(t.visualName, enRef);
