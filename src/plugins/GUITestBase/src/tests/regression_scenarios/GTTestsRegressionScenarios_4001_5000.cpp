@@ -77,6 +77,7 @@
 #include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
@@ -650,6 +651,41 @@ GUI_TEST_CLASS_DEFINITION(test_4084) {
 
     QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "group  (0, 1)");
     CHECK_SET_ERR(NULL != annotationGroup, "Wrong annotations number");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4091) {
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/NC_014267.1.gb");
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/PBR322.gb");
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/CVU55762.gb");
+
+    QSet<GObjectType> acceptableTypes;
+    acceptableTypes << GObjectTypes::SEQUENCE << GObjectTypes::ANNOTATION_TABLE;
+    QMap<QString, QStringList> doc2Objects;
+    doc2Objects["human_T1.fa"] << "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
+    doc2Objects["NC_014267.1.gb"] << "NC_014267" << "NC_014267 features";
+    doc2Objects["PBR322.gb"] << "SYNPBR322" << "SYNPBR322 features";
+    doc2Objects["sars.gb"] << "NC_004718" << "NC_004718 features";
+
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, doc2Objects, acceptableTypes,
+        ProjectTreeItemSelectorDialogFiller::Separate));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__ADD_MENU << ACTION_PROJECT__ADD_OBJECT));
+    GTUtilsProjectTreeView::click(os, "CVU55762.gb", Qt::RightButton);
+
+    GTUtilsTaskTreeView::checkTask(os, "Add objects to document");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    const QModelIndex docIndex = GTUtilsProjectTreeView::findIndex(os, "CVU55762.gb");
+    GTUtilsProjectTreeView::checkItem(os, "CVU55762", docIndex);
+    GTUtilsProjectTreeView::checkItem(os, "CVU55762 features", docIndex);
+    GTUtilsProjectTreeView::checkItem(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)", docIndex);
+    GTUtilsProjectTreeView::checkItem(os, "NC_014267", docIndex);
+    GTUtilsProjectTreeView::checkItem(os, "NC_014267 features", docIndex);
+    GTUtilsProjectTreeView::checkItem(os, "SYNPBR322", docIndex);
+    GTUtilsProjectTreeView::checkItem(os, "SYNPBR322 features", docIndex);
+    GTUtilsProjectTreeView::checkItem(os, "NC_004718", docIndex);
+    GTUtilsProjectTreeView::checkItem(os, "NC_004718 features", docIndex);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4093) {
