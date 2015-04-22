@@ -185,6 +185,8 @@ QList<Task*> BedtoolsIntersectAnnotationsByEntityTask::onSubTaskFinished(Task *s
 }
 
 Document* BedtoolsIntersectAnnotationsByEntityTask::createAnnotationsDocument(const QString &url, const QList<U2EntityRef> &entities) {
+    CHECK(!entities.isEmpty(), NULL);
+
     DocumentFormat* bed = BaseDocumentFormats::get(BaseDocumentFormats::BED);
     CHECK_EXT(bed != NULL, setError(tr("Failed to get BED format")), NULL);
 
