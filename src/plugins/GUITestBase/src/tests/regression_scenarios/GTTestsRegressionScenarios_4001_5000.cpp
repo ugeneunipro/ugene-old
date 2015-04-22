@@ -925,7 +925,7 @@ GUI_TEST_CLASS_DEFINITION(test_4106){
  * 4. Click "down" key twice.
  *   Expected state: three sequences are selected, the msa is not scrolled down.
  * 5. Click "down" again.
- *   Expected state: four sequences are selected, the msa is scrolled down for one line.
+ *   Expected state: four sequences are selected
  *   Current state: the state is not changed.
 */
     GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW", "ty3.aln.gz" );
@@ -953,7 +953,6 @@ GUI_TEST_CLASS_DEFINITION(test_4106){
     GTKeyboardDriver::keyRelease(os,GTKeyboardDriver::key["shift"]);
     GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, endPos-1, 1234, 4 ) );
 
-    CHECK_SET_ERR(msaEdistorSequenceAres->getFirstVisibleSequence() == 1, "MSA not scrolled");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4110){
@@ -1596,6 +1595,45 @@ GUI_TEST_CLASS_DEFINITION(test_4272){
      QTreeWidgetItem* item = GTUtilsAnnotationsTreeView::findItem(os, "orf  (0, 837)", GTGlobals::FindOptions(false));
      CHECK_SET_ERR(item == NULL, "orfs are unexpectidly shown");
 }
+
+GUI_TEST_CLASS_DEFINITION(test_4284){
+/* 1. Open "data/samples/CLUSTALW/ty3.aln.gz".
+ * 2. Select a sequence that is two sequences above the last visible sequence in the name list area.
+ * 3. Press and hold "shift" key.
+ * 4. Click "down" key twice.
+ *   Expected state: three sequences are selected, the msa is not scrolled down.
+ * 5. Click "down" again.
+ *   Expected state: four sequences are selected, the msa is scrolled down for one line.
+ *   Current state: the state is not changed.
+*/
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW", "ty3.aln.gz" );
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    MSAEditorSequenceArea* msaEdistorSequenceAres = GTUtilsMSAEditorSequenceArea::getSequenceArea(os);
+
+    int endPos = msaEdistorSequenceAres->getLastVisibleSequence(false);
+
+    GTUtilsMSAEditorSequenceArea::click( os, QPoint( -5, endPos-1 ) );
+    GTGlobals::sleep(200);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, endPos-1, 1234, 1 ) );
+
+    GTKeyboardDriver::keyPress(os,GTKeyboardDriver::key["shift"]);
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["down"] );
+    GTGlobals::sleep(50);
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["down"] );
+    GTGlobals::sleep(50);
+    GTKeyboardDriver::keyRelease(os,GTKeyboardDriver::key["shift"]);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, endPos-1, 1234, 3 ) );
+
+    GTKeyboardDriver::keyPress(os,GTKeyboardDriver::key["shift"]);
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["down"] );
+    GTGlobals::sleep(50);
+    GTKeyboardDriver::keyRelease(os,GTKeyboardDriver::key["shift"]);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, endPos-1, 1234, 4 ) );
+
+    CHECK_SET_ERR(msaEdistorSequenceAres->getFirstVisibleSequence() == 1, "MSA not scrolled");
+}
+
 
 } // namespace GUITest_regression_scenarios
 
