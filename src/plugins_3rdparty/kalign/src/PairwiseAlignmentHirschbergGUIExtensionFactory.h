@@ -24,7 +24,7 @@
 
 #include "ui/ui_PairwiseAlignmentHirschbergOptionsPanelMainWidget.h"
 
-#include <U2View/PairwiseAlignmentGUIExtension.h>
+#include <U2View/AlignmentAlgorithmGUIExtension.h>
 
 #include <QtCore/QObject>
 #include <QtCore/QVariantMap>

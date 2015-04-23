@@ -56,7 +56,7 @@
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorNameList.h>
 #include <U2View/MSAEditorSequenceArea.h>
-#include <U2View/PairwiseAlignmentGUIExtension.h>
+#include <U2View/AlignmentAlgorithmGUIExtension.h>
 
 #include "PairAlign.h"
 #include "../SequenceSelectorWidgetController.h"

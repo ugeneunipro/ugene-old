@@ -21,7 +21,7 @@
 
 #include "AlignmentAlgorithmsRegistry.h"
 
-#include "U2View/PairwiseAlignmentGUIExtension.h"
+#include "U2View/AlignmentAlgorithmGUIExtension.h"
 #include "../msa_alignment/SimpleAddingToAlignment.h"
 
 #include <QtCore/QMutexLocker>

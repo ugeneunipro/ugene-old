@@ -25,7 +25,7 @@
 #include "SWAlgorithmTask.h"
 #include "ui/ui_PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.h"
 
-#include <U2View/PairwiseAlignmentGUIExtension.h>
+#include <U2View/AlignmentAlgorithmGUIExtension.h>
 
 #include <QtCore/QVariantMap>
 
