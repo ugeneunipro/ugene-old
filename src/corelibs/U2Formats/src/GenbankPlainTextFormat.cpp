@@ -338,6 +338,17 @@ QString GenbankPlainTextFormat::getFeatureTypeString(U2FeatureType featureType, 
     }
 }
 
+bool GenbankPlainTextFormat::breakQualifierOnSpaceOnly(const QString &qualifierName) const {
+    QRegExp spacelessQualifierCatcher = QRegExp("^/?(" +
+                                                GBFeatureUtils::QUALIFIER_TRANSLATION +
+                                                "|" +
+                                                GBFeatureUtils::QUALIFIER_NAME +
+                                                "|" +
+                                                GBFeatureUtils::QUALIFIER_GROUP +
+                                                ")");
+    return -1 == spacelessQualifierCatcher.indexIn(qualifierName);
+}
+
 const QMap<U2FeatureType, GBFeatureKey> GenbankPlainTextFormat::additionalFeatureTypes = GenbankPlainTextFormat::initAdditionalFeatureTypes();
 
 QMap<U2FeatureType, GBFeatureKey> GenbankPlainTextFormat::initAdditionalFeatureTypes() {
@@ -613,28 +624,38 @@ void GenbankPlainTextFormat::writeQualifier(const QString& name, const QString& 
         si.setError(GenbankPlainTextFormat::tr("Error writing document"));
         return;
     }
-    QString qstr;
-    bool num;
-    val.toInt(&num);
-    if (num) {
-        qstr = "/"+name+ "="+val;
-    } else {
-        QString modifiedVal = val;
-        modifiedVal.replace("\"", "\"\"");
-        if (GBFeatureUtils::isFeatureHasNoValue(name))
-        {
-            qstr = "/" + name;
-        }
-        else
-        {
-            qstr = "/" + name + "=\"" + modifiedVal + "\"";
-        }
-    }
-    prepareMultiline(qstr, 21, !qstr.startsWith("/translation")); // (qualifier name != translation) --> break line only on space
-    len = io->writeBlock(qstr.toLocal8Bit());
-    if (len != qstr.length()) {
+
+    QString qstr = prepareQualifierSingleString(name, val);
+    CHECK_EXT(!qstr.isEmpty(), si.setError(tr("Error writing document")), );
+
+    prepareMultiline(qstr, 21, breakQualifierOnSpaceOnly(name));
+    const QByteArray dataToWrite = qstr.toLocal8Bit();
+    len = io->writeBlock(dataToWrite);
+    if (len != dataToWrite.length()) {
         si.setError(GenbankPlainTextFormat::tr("Error writing document"));
     }
+}
+
+QString GenbankPlainTextFormat::prepareQualifierSingleString(const QString &qualifierName, const QString &qualifierValue) const {
+    bool isNum = false;
+    qualifierValue.toInt(&isNum);
+    if (isNum) {
+        return "/" + qualifierName + "=" + qualifierValue;
+    } else {
+        if (GBFeatureUtils::isFeatureHasNoValue(qualifierName)) {
+            return "/" + qualifierName;
+        }
+
+        QString preparedValue = qualifierValue;
+        preparedValue.replace("\"", "\"\"");
+
+        if (!breakQualifierOnSpaceOnly(qualifierName)) {
+            preparedValue.replace(" ", "\\ ");
+        }
+
+        return "/" + qualifierName + "=\"" + preparedValue + "\"";
+    }
+    return "";
 }
 
 QList<GenbankPlainTextFormat::StrPair> GenbankPlainTextFormat::formatKeywords(const QVariantMap &varMap, bool withLocus) {

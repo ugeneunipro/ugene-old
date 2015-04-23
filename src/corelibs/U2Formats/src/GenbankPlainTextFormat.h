@@ -56,6 +56,7 @@ protected:
     void writeSequence(IOAdapter* io, U2SequenceObject* ao, const QList<U2Region> &lowerCaseRegs, U2OpStatus& si);
     void prepareMultiline(QString& line, int spacesOnLineStart, bool lineBreakOnlyOnSpace = true, bool newLineAtTheEnd = true, int maxLineLen = 79);
     void writeQualifier(const QString& name, const QString& val, IOAdapter* io, U2OpStatus& si, const char* spaceLine);
+    QString prepareQualifierSingleString(const QString &qualifierName, const QString &qualifierValue) const;
     QList<StrPair> formatKeywords(const QVariantMap &varMap, bool withLocus = false);
     virtual QList<StrPair> processCommentKeys(QMultiMap<QString, QVariant> &tags);
 
@@ -63,6 +64,7 @@ protected:
     void createCommentAnnotation(const QStringList &comments, int sequenceLength, AnnotationTableObject *annTable) const;
     U2FeatureType getFeatureType(const QString &typeString) const;
     QString getFeatureTypeString(U2FeatureType featureType, bool isAmino) const;
+    bool breakQualifierOnSpaceOnly(const QString &qualifierName) const;
 
     static const int VAL_OFF = 12;
 

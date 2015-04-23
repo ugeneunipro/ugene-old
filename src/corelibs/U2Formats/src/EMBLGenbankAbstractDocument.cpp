@@ -409,7 +409,7 @@ int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbu
     int numQuotes = 0;
     numQuotes += numQuotesInLine(cbuff,lenFirstLine);
 
-    cbuff+= lenFirstLine;
+    cbuff += lenFirstLine;
 
     bool breakWords = !_prevLineHasMaxSize; //todo: create a parameter and make it depends on annotation name.
     do {
@@ -449,7 +449,7 @@ int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbu
             numQuotes += numQuotesInLine(lineBuf,lineLen);
         }
 
-        if (!QString(cbuff).startsWith("/translation") && breakWords && lineLen - A_COL > 0) { //add space to separate words
+        if (breakQualifierOnSpaceOnly(cbuff) && breakWords && lineLen - A_COL > 0) { //add space to separate words
             cbuff[len] = ' ';
             len++;
         }
@@ -557,10 +557,6 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
     }
 
     const QBitArray& LINE_BREAKS = TextUtils::LINE_BREAKS;
-    const QByteArray& aminoQ = GBFeatureUtils::QUALIFIER_AMINO_STRAND;
-    //const QByteArray& aminoQYes = GBFeatureUtils::QUALIFIER_AMINO_STRAND_YES;
-    //const QByteArray& aminoQNo = GBFeatureUtils::QUALIFIER_AMINO_STRAND_NO;
-    const QByteArray& nameQ = GBFeatureUtils::QUALIFIER_NAME;
 
     //here we have valid key and location;
     //reading qualifiers
@@ -603,14 +599,17 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
             qval++;
             qvalLen-=2;
         }
-        if (qnameLen == aminoQ.length() && TextUtils::equals(qname, aminoQ.constData(), qnameLen)) {
-            //a->aminoFrame = qvalLen == aminoQYes.length() && TextUtils::equals(qval, aminoQYes.constData(), qvalLen) ? TriState_Yes
-            //             :  (qvalLen == aminoQNo.length()  && TextUtils::equals(qval, aminoQNo.constData(), qvalLen) ? TriState_No : TriState_Unknown);
-        } else if (qnameLen == nameQ.length() && TextUtils::equals(qname, nameQ.constData(), qnameLen)) {
-            a->name = QString::fromLocal8Bit(qval, qvalLen);
+
+        QString nameQStr = QString::fromLocal8Bit(qname, qnameLen);
+        QString valQStr = QString::fromLocal8Bit(qval, qvalLen);
+
+        if (!breakQualifierOnSpaceOnly(QString::fromLocal8Bit(qname, qnameLen))) {
+            valQStr.replace("\\ ", " ");
+        }
+
+        if (nameQStr == GBFeatureUtils::QUALIFIER_NAME) {
+            a->name = valQStr;
         } else {
-            QString nameQStr = QString::fromLocal8Bit(qname, qnameLen);
-            QString valQStr = QString::fromLocal8Bit(qval, qvalLen);
             a->qualifiers << createQualifier(nameQStr, valQStr, containsDoubleQuotes);
         }
     }
@@ -752,6 +751,10 @@ U2Qualifier EMBLGenbankAbstractDocument::createQualifier(const QString &qualifie
         parsedQualifierValue = parsedQualifierValue.replace("\"\"", "\"");
     }
     return U2Qualifier(qualifierName, parsedQualifierValue);
+}
+
+bool EMBLGenbankAbstractDocument::breakQualifierOnSpaceOnly(const QString & /*qualifierName*/) const {
+    return true;
 }
 
 bool ParserState::hasKey( const char* key, int slen ) const {

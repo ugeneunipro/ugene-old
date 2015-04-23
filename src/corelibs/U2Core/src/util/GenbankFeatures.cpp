@@ -44,6 +44,7 @@ const QString GBFeatureUtils::DEFAULT_KEY = GBFeatureUtils::getKeyInfo(GBFeature
 
 const QString GBFeatureUtils::QUALIFIER_CUT = "cut";
 const QString GBFeatureUtils::QUALIFIER_NOTE = "note";
+const QString GBFeatureUtils::QUALIFIER_TRANSLATION = "translation";
 
 static QColor cl(const QString& txt) {
     QColor res;

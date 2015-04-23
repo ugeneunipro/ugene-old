@@ -161,6 +161,7 @@ public:
 
     static const QString QUALIFIER_CUT;
     static const QString QUALIFIER_NOTE;
+    static const QString QUALIFIER_TRANSLATION;
 };
 
 }//namespace
