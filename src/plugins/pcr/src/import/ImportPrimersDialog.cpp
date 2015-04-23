@@ -47,6 +47,8 @@ ImportPrimersDialog::ImportPrimersDialog(QWidget *parent) :
     waitForConnection(false)
 {
     setupUi(this);
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Import"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     init();
     connectSignals();
     sl_updateState();
