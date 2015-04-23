@@ -22,13 +22,13 @@
 namespace U2 {
 
 PairwiseAlignmentHirschbergMainWidget::PairwiseAlignmentHirschbergMainWidget(QWidget *parent, QVariantMap *s) :
-    PairwiseAlignmentMainWidget(parent, s) {
+    AlignmentAlgorithmMainWidget(parent, s) {
     setupUi(this);
     initParameters();
 }
 
 PairwiseAlignmentHirschbergMainWidget::~PairwiseAlignmentHirschbergMainWidget() {
-    getPairwiseAlignmentCustomSettings(true);
+    getAlignmentAlgorithmCustomSettings(true);
 }
 
 void PairwiseAlignmentHirschbergMainWidget::initParameters() {
@@ -51,7 +51,7 @@ void PairwiseAlignmentHirschbergMainWidget::initParameters() {
 
     DNAAlphabetRegistry* alphabetReg = AppContext::getDNAAlphabetRegistry();
     SAFE_POINT(NULL != alphabetReg, "DNAAlphabetRegistry is NULL.", );
-    QString alphabetId = externSettings->value(PairwiseAlignmentTaskSettings::PA_ALPHABET, "").toString();
+    QString alphabetId = externSettings->value(PairwiseAlignmentTaskSettings::ALPHABET, "").toString();
     const DNAAlphabet* alphabet = alphabetReg->findById(alphabetId);
     SAFE_POINT(NULL != alphabet, QString("Alphabet %1 not found").arg(alphabetId), );
 
@@ -102,13 +102,13 @@ void PairwiseAlignmentHirschbergMainWidget::initParameters() {
     fillInnerSettings();
 }
 
-QMap<QString, QVariant> PairwiseAlignmentHirschbergMainWidget::getPairwiseAlignmentCustomSettings(bool append) {
+QMap<QString, QVariant> PairwiseAlignmentHirschbergMainWidget::getAlignmentAlgorithmCustomSettings(bool append) {
     fillInnerSettings();
-    return PairwiseAlignmentMainWidget::getPairwiseAlignmentCustomSettings(append);
+    return AlignmentAlgorithmMainWidget::getAlignmentAlgorithmCustomSettings(append);
 }
 
 void PairwiseAlignmentHirschbergMainWidget::fillInnerSettings() {
-    innerSettings.insert(PairwiseAlignmentTaskSettings::PA_REALIZATION_NAME, "KAlign");
+    innerSettings.insert(PairwiseAlignmentTaskSettings::REALIZATION_NAME, "KAlign");
     innerSettings.insert(PairwiseAlignmentHirschbergTaskSettings::PA_H_REALIZATION_NAME, "KAlign");
     innerSettings.insert(PairwiseAlignmentHirschbergTaskSettings::PA_H_GAP_OPEN, gapOpen->value());
     innerSettings.insert(PairwiseAlignmentHirschbergTaskSettings::PA_H_GAP_EXTD, gapExtd->value());
@@ -118,13 +118,13 @@ void PairwiseAlignmentHirschbergMainWidget::fillInnerSettings() {
 
 
 PairwiseAlignmentHirschbergGUIExtensionFactory::PairwiseAlignmentHirschbergGUIExtensionFactory() :
-    PairwiseAlignmentGUIExtensionFactory() {
+    AlignmentAlgorithmGUIExtensionFactory() {
 }
 
 PairwiseAlignmentHirschbergGUIExtensionFactory::~PairwiseAlignmentHirschbergGUIExtensionFactory() {
 }
 
-PairwiseAlignmentMainWidget* PairwiseAlignmentHirschbergGUIExtensionFactory::createMainWidget(QWidget *parent, QVariantMap *s) {
+AlignmentAlgorithmMainWidget* PairwiseAlignmentHirschbergGUIExtensionFactory::createMainWidget(QWidget *parent, QVariantMap *s) {
     if (mainWidgets.contains(parent)) {
         return mainWidgets.value(parent, NULL);
     }

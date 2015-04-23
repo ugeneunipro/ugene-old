@@ -26,7 +26,7 @@
 #include <U2Lang/WorkflowUtils.h>
 
 namespace U2 {
-class PairwiseAlignmentTaskFactory;
+class AbstractAlignmentTaskFactory;
 class PairwiseAlignmentTaskSettings;
 namespace LocalWorkflow {
 
@@ -42,7 +42,7 @@ public:
     U2Region getCoreRegion() const;
 
     static PairwiseAlignmentTaskSettings * createSettings(DbiDataStorage *storage, const SharedDbiDataHandler &msa, U2OpStatus &os);
-    static PairwiseAlignmentTaskFactory * getPairwiseAlignmentTaskFactory(const QString &algoId, const QString &implId, U2OpStatus &os);
+    static AbstractAlignmentTaskFactory * getAbstractAlignmentTaskFactory(const QString &algoId, const QString &implId, U2OpStatus &os);
 
 private:
     void createAlignment();

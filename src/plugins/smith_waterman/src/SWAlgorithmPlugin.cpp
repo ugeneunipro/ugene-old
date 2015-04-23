@@ -38,7 +38,7 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequence.h>
 #include <U2Algorithm/SubstMatrixRegistry.h>
-#include <U2Algorithm/PairwiseAlignmentRegistry.h>
+#include <U2Algorithm/AlignmentAlgorithmsRegistry.h>
 
 #include <U2Test/XMLTestFormat.h>
 #include <U2Test/GTest.h>
@@ -101,7 +101,7 @@ SWAlgorithmPlugin::SWAlgorithmPlugin()
         assert(res);
     }
 
-    PairwiseAlignmentRegistry* par = AppContext::getPairwiseAlignmentRegistry();
+    AlignmentAlgorithmsRegistry* par = AppContext::getAlignmentAlgorithmsRegistry();
     SmithWatermanTaskFactoryRegistry* swar = AppContext::getSmithWatermanTaskFactoryRegistry();
 
     coreLog.trace("Registering classic SW implementation");
@@ -130,7 +130,7 @@ QList<XMLTestFactory*> SWAlgorithmTests::createTestFactories() {
 //SLOT
 void SWAlgorithmPlugin::regDependedIMPLFromOtherPlugins() {
     SmithWatermanTaskFactoryRegistry* swar = AppContext::getSmithWatermanTaskFactoryRegistry();
-    PairwiseAlignmentRegistry* par = AppContext::getPairwiseAlignmentRegistry();
+    AlignmentAlgorithmsRegistry* par = AppContext::getAlignmentAlgorithmsRegistry();
     Q_UNUSED( swar );
 
 #ifdef SW2_BUILD_WITH_CUDA
@@ -185,14 +185,14 @@ void SWAlgorithmADVContext::sl_search() {
 }
 
 SWPairwiseAlignmentAlgorithm::SWPairwiseAlignmentAlgorithm()
-    : PairwiseAlignmentAlgorithm("Smith-Waterman",
+    : AlignmentAlgorithm(PairwiseAlignment, "Smith-Waterman",
                                  new PairwiseAlignmentSmithWatermanTaskFactory(SW_classic),
                                  new PairwiseAlignmentSmithWatermanGUIExtensionFactory(SW_classic),
                                  "SW_classic")
 {
 }
 
-bool SWPairwiseAlignmentAlgorithm::checkAlphabet(const DNAAlphabet *alphabet) {
+bool SWPairwiseAlignmentAlgorithm::checkAlphabet(const DNAAlphabet *alphabet) const {
     SAFE_POINT(NULL != alphabet, "Alphabet is NULL.", false);
     SubstMatrixRegistry* matrixReg = AppContext::getSubstMatrixRegistry();
     SAFE_POINT(matrixReg, "SubstMatrixRegistry is NULL.", false);

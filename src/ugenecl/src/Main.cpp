@@ -67,7 +67,7 @@
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
 #include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
-#include <U2Algorithm/PairwiseAlignmentRegistry.h>
+#include <U2Algorithm/AlignmentAlgorithmsRegistry.h>
 
 #include <U2Formats/ConvertFileTask.h>
 #include <U2Formats/DocumentFormatUtils.h>
@@ -401,8 +401,8 @@ int main(int argc, char **argv)
     CudaGpuRegistry * cgr = new CudaGpuRegistry();
     appContext->setCudaGpuRegistry( cgr );
 
-    PairwiseAlignmentRegistry *pwr = new PairwiseAlignmentRegistry();
-    appContext->setPairwiseAlignmentRegistry(pwr);
+    AlignmentAlgorithmsRegistry *pwr = new AlignmentAlgorithmsRegistry();
+    appContext->setAlignmentAlgorithmsRegistry(pwr);
 
 #ifdef OPENCL_SUPPORT
     OpenCLGpuRegistry * oclgr = new OpenCLGpuRegistry();
@@ -647,7 +647,7 @@ int main(int argc, char **argv)
     appContext->setSplicedAlignmentTaskRegistry(NULL);
 
     delete pwr;
-    appContext->setPairwiseAlignmentRegistry(NULL);
+    appContext->setAlignmentAlgorithmsRegistry(NULL);
 
     return rc;
 }

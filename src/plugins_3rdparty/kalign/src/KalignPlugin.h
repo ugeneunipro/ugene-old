@@ -25,7 +25,7 @@
 #include <U2Core/PluginModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Gui/ObjectViewModel.h>
-#include <U2Algorithm/PairwiseAlignmentRegistry.h>
+#include <U2Algorithm/AlignmentAlgorithmsRegistry.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
@@ -78,10 +78,10 @@ private slots:
     void sl_updateState();
 };
 
-class KalignPairwiseAligmnentAlgorithm : public PairwiseAlignmentAlgorithm {
+class KalignPairwiseAligmnentAlgorithm : public AlignmentAlgorithm {
 public:
     KalignPairwiseAligmnentAlgorithm();
-    bool checkAlphabet(const DNAAlphabet *alphabet);
+    bool checkAlphabet(const DNAAlphabet *alphabet) const;
 };
 
 } //namespace

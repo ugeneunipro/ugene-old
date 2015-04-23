@@ -19,23 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#include "PairwiseAlignmentGUIExtension.h"
+#include "AlignmentAlgorithmGUIExtension.h"
 
 namespace U2 {
 
-PairwiseAlignmentMainWidget::PairwiseAlignmentMainWidget(QWidget* parent, QVariantMap* s) :
+AlignmentAlgorithmMainWidget::AlignmentAlgorithmMainWidget(QWidget* parent, QVariantMap* s) :
     QWidget(parent), externSettings(s), externSettingsExists(s != NULL) {
 }
 
-PairwiseAlignmentMainWidget::~PairwiseAlignmentMainWidget() {
-    getPairwiseAlignmentCustomSettings(true);
+AlignmentAlgorithmMainWidget::~AlignmentAlgorithmMainWidget() {
+    getAlignmentAlgorithmCustomSettings(true);
 }
 
-void PairwiseAlignmentMainWidget::sl_externSettingsInvalide() {
+void AlignmentAlgorithmMainWidget::sl_externSettingsInvalide() {
     externSettingsExists = false;
 }
 
-QMap<QString, QVariant> PairwiseAlignmentMainWidget::getPairwiseAlignmentCustomSettings(bool append = false) {
+QMap<QString, QVariant> AlignmentAlgorithmMainWidget::getAlignmentAlgorithmCustomSettings(bool append = false) {
     if (append == true && externSettingsExists == true) {
         foreach (QString key, innerSettings.keys()) {
             externSettings->insert(key, innerSettings.value(key));
@@ -44,15 +44,15 @@ QMap<QString, QVariant> PairwiseAlignmentMainWidget::getPairwiseAlignmentCustomS
     return innerSettings;
 }
 
-void PairwiseAlignmentMainWidget::fillInnerSettings() {
+void AlignmentAlgorithmMainWidget::fillInnerSettings() {
 }
 
-bool PairwiseAlignmentGUIExtensionFactory::hasMainWidget(const QWidget* parent) {
+bool AlignmentAlgorithmGUIExtensionFactory::hasMainWidget(const QWidget* parent) {
     return mainWidgets.contains(parent);
 }
 
-void PairwiseAlignmentGUIExtensionFactory::sl_widgetDestroyed(QObject * obj) {
-    foreach (PairwiseAlignmentMainWidget* mainWidget, mainWidgets.values()) {
+void AlignmentAlgorithmGUIExtensionFactory::sl_widgetDestroyed(QObject * obj) {
+    foreach (AlignmentAlgorithmMainWidget* mainWidget, mainWidgets.values()) {
         if (obj == mainWidget) {
             mainWidgets.remove(mainWidgets.key(mainWidget));
         }

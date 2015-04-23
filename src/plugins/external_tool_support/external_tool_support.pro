@@ -95,6 +95,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/macs/MACSSupport.h \
            src/macs/MACSTask.h \
            src/macs/MACSWorker.h \
+           src/mafft/MafftAddToAlignmentTask.h \
            src/mafft/MAFFTSupport.h \
            src/mafft/MAFFTSupportRunDialog.h \
            src/mafft/MAFFTSupportTask.h \
@@ -265,6 +266,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/macs/MACSSupport.cpp \
            src/macs/MACSTask.cpp \
            src/macs/MACSWorker.cpp \
+           src/mafft/MafftAddToAlignmentTask.cpp \
            src/mafft/MAFFTSupport.cpp \
            src/mafft/MAFFTSupportRunDialog.cpp \
            src/mafft/MAFFTSupportTask.cpp \

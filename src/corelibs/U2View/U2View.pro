@@ -67,7 +67,8 @@ HEADERS += src/LicenseDialog.h \
            src/ov_msa/MSAEditorUndoFramework.h \
            src/ov_msa/MsaOpSavableTab.h \
            src/ov_msa/MSASelectSubalignmentDialog.h \
-           src/ov_msa/MsaEditorUserModStepController.h \
+           src/ov_msa/MsaEditorUserModStepController.h \                     
+           src/ov_msa/AlignSequencesToAlignment/AlignSequencesToAlignmentTask.h \
            src/ov_msa/Overview/MSAGraphCalculationTask.h \
            src/ov_msa/Overview/MSAGraphOverview.h \
            src/ov_msa/Overview/MSAOverview.h \
@@ -166,7 +167,7 @@ HEADERS += src/LicenseDialog.h \
            src/util_dna_assembly/DnaAssemblyGUIExtension.h \
            src/util_dna_assembly/DnaAssemblyUtils.h \
            src/util_dna_assembly/GenomeAssemblyDialog.h \
-           src/util_msa_align/PairwiseAlignmentGUIExtension.h \
+           src/util_msa_align/AlignmentAlgorithmGUIExtension.h \
            src/util_sec_struct_predict/SecStructDialog.h \
            src/util_sec_struct_predict/SecStructPredictUtils.h \
            src/util_smith_waterman/SmithWatermanDialog.h \
@@ -277,6 +278,7 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_msa/MsaEditorUserModStepController.cpp \
            src/ov_msa/ExportConsensus/MSAExportConsensusTab.cpp \
            src/ov_msa/ExportConsensus/MSAExportConsensusTabFactory.cpp \
+           src/ov_msa/AlignSequencesToAlignment/AlignSequencesToAlignmentTask.cpp \
            src/ov_msa/Overview/MSAGraphCalculationTask.cpp \
            src/ov_msa/Overview/MSAGraphOverview.cpp \
            src/ov_msa/Overview/MSAOverview.cpp \
@@ -372,7 +374,7 @@ SOURCES += src/LicenseDialog.cpp \
            src/util_dna_assembly/DnaAssemblyGUIExtension.cpp \
            src/util_dna_assembly/DnaAssemblyUtils.cpp \
            src/util_dna_assembly/GenomeAssemblyDialog.cpp \
-           src/util_msa_align/PairwiseAlignmentGUIExtension.cpp \
+           src/util_msa_align/AlignmentAlgorithmGUIExtension.cpp \
            src/util_sec_struct_predict/SecStructDialog.cpp \
            src/util_sec_struct_predict/SecStructPredictUtils.cpp \
            src/util_smith_waterman/SmithWatermanDialog.cpp \

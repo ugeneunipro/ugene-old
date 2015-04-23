@@ -67,10 +67,10 @@ private:
     SWDialogConfig dialogConfig;
 };
 
-class SWPairwiseAlignmentAlgorithm : public PairwiseAlignmentAlgorithm {
+class SWPairwiseAlignmentAlgorithm : public AlignmentAlgorithm {
 public:
     SWPairwiseAlignmentAlgorithm();
-    bool checkAlphabet(const DNAAlphabet *alphabet);
+    bool checkAlphabet(const DNAAlphabet *alphabet) const;
 };
 
 } //namespace

@@ -47,6 +47,7 @@
 #include "MAFFTSupport.h"
 #include "MAFFTSupportRunDialog.h"
 #include "MAFFTSupportTask.h"
+#include "MafftAddToAlignmentTask.h"
 #include "utils/AlignMsaAction.h"
 
 namespace U2 {
@@ -66,6 +67,8 @@ MAFFTSupport::MAFFTSupport(const QString& name, const QString& path) : ExternalT
     description=tr("<i>MAFFT</i> is a multiple sequence alignment program for unix-like operating systems. ");
     versionRegExp=QRegExp("MAFFT v(\\d+\\.\\d+\\w)");
     toolKitName="MAFFT";
+
+    AppContext::getAlignmentAlgorithmsRegistry()->registerAlgorithm(new MafftAddToAligmnentAlgorithm());
 }
 
 void MAFFTSupport::sl_runWithExtFileSpecify(){

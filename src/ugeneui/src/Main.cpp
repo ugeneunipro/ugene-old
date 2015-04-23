@@ -71,7 +71,7 @@
 #include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
-#include <U2Algorithm/PairwiseAlignmentRegistry.h>
+#include <U2Algorithm/AlignmentAlgorithmsRegistry.h>
 #include <U2Algorithm/SequenceContentFilterTask.h>
 
 #include <U2Gui/CredentialsAskerGui.h>
@@ -633,8 +633,8 @@ int main(int argc, char **argv)
     WorkflowScriptRegistry* workflowScriptRegistry = new WorkflowScriptRegistry();
     appContext->setWorkflowScriptRegistry(workflowScriptRegistry);
 
-    PairwiseAlignmentRegistry* pairwiseAlignmentRegistry = new PairwiseAlignmentRegistry();
-    appContext->setPairwiseAlignmentRegistry(pairwiseAlignmentRegistry);
+    AlignmentAlgorithmsRegistry* alignmentAlgorithmsRegistry = new AlignmentAlgorithmsRegistry();
+    appContext->setAlignmentAlgorithmsRegistry(alignmentAlgorithmsRegistry);
 
     U2DataPathRegistry* dpr = new U2DataPathRegistry();
     appContext->setDataPathRegistry(dpr);
@@ -800,8 +800,8 @@ int main(int argc, char **argv)
     appContext->setDataPathRegistry( NULL );
     delete dpr;
 
-    appContext->setPairwiseAlignmentRegistry(NULL);
-    delete pairwiseAlignmentRegistry;
+    appContext->setAlignmentAlgorithmsRegistry(NULL);
+    delete alignmentAlgorithmsRegistry;
 
     appContext->setWorkflowScriptRegistry(NULL);
     delete workflowScriptRegistry;

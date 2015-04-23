@@ -41,14 +41,14 @@
 
 namespace U2 {
 
-class PairwiseAlignmentSmithWatermanMainWidget : public PairwiseAlignmentMainWidget,
+class PairwiseAlignmentSmithWatermanMainWidget : public AlignmentAlgorithmMainWidget,
         public Ui_PairwiseAlignmentSmithWatermanOptionsPanelMainWidget {
     Q_OBJECT
 
 public:
     PairwiseAlignmentSmithWatermanMainWidget(QWidget* parent, QVariantMap* s);
     virtual ~PairwiseAlignmentSmithWatermanMainWidget();
-    virtual QVariantMap getPairwiseAlignmentCustomSettings(bool append);
+    virtual QVariantMap getAlignmentAlgorithmCustomSettings(bool append);
     virtual void updateWidget();
 
 private:
@@ -65,12 +65,12 @@ protected:
     static const qint64 SW_DEFAULT_GAP_EXTD     = 1;        //http://www.ebi.ac.uk - default value is 0.5
 };
 
-class PairwiseAlignmentSmithWatermanGUIExtensionFactory : public PairwiseAlignmentGUIExtensionFactory {
+class PairwiseAlignmentSmithWatermanGUIExtensionFactory : public AlignmentAlgorithmGUIExtensionFactory {
     Q_OBJECT
 
 public:
     PairwiseAlignmentSmithWatermanGUIExtensionFactory(SW_AlgType _algType);
-    virtual PairwiseAlignmentMainWidget* createMainWidget(QWidget* parent, QVariantMap* s);
+    virtual AlignmentAlgorithmMainWidget* createMainWidget(QWidget* parent, QVariantMap* s);
 
 private:
     SW_AlgType algType;

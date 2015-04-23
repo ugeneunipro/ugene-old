@@ -41,7 +41,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DNAAlphabet.h>
 
-#include <U2Algorithm/PairwiseAlignmentRegistry.h>
+#include <U2Algorithm/AlignmentAlgorithmsRegistry.h>
 
 #include <U2Lang/WorkflowSettings.h>
 
@@ -106,7 +106,7 @@ KalignPlugin::KalignPlugin()
         assert(res);
     }
 
-    AppContext::getPairwiseAlignmentRegistry()->registerAlgorithm(new KalignPairwiseAligmnentAlgorithm());
+    AppContext::getAlignmentAlgorithmsRegistry()->registerAlgorithm(new KalignPairwiseAligmnentAlgorithm());
 }
 
 void KalignPlugin::sl_runWithExtFileSpecify() {
@@ -205,14 +205,14 @@ void KalignMSAEditorContext::sl_align() {
 }
 
 KalignPairwiseAligmnentAlgorithm::KalignPairwiseAligmnentAlgorithm()
-    : PairwiseAlignmentAlgorithm("Hirschberg (KAlign)",
+    : AlignmentAlgorithm(PairwiseAlignment, "Hirschberg (KAlign)",
                                  new PairwiseAlignmentHirschbergTaskFactory(),
                                  new PairwiseAlignmentHirschbergGUIExtensionFactory(),
                                  "KAlign")
 {
 }
 
-bool KalignPairwiseAligmnentAlgorithm::checkAlphabet(const DNAAlphabet *al) {
+bool KalignPairwiseAligmnentAlgorithm::checkAlphabet(const DNAAlphabet *al) const {
     return !(al->isRaw() || (al->isAmino() && al->isExtended()));
 }
 

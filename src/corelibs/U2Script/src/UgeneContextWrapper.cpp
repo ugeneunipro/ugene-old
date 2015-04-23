@@ -71,7 +71,7 @@
 #include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
-#include <U2Algorithm/PairwiseAlignmentRegistry.h>
+#include <U2Algorithm/AlignmentAlgorithmsRegistry.h>
 
 #include <U2Lang/WorkflowEnvImpl.h>
 #include <U2Lang/LocalDomain.h>
@@ -252,8 +252,8 @@ UgeneContextWrapper::UgeneContextWrapper( const QString &workingDirectoryPath )
     cgr = new CudaGpuRegistry( );
     appContext->setCudaGpuRegistry( cgr );
 
-    pwr = new PairwiseAlignmentRegistry( );
-    appContext->setPairwiseAlignmentRegistry( pwr );
+    alignmentAlgorithmRegistry = new AlignmentAlgorithmsRegistry( );
+    appContext->setAlignmentAlgorithmsRegistry(alignmentAlgorithmRegistry);
 
 #ifdef OPENCL_SUPPORT
     oclgr = new OpenCLGpuRegistry( );
@@ -435,8 +435,8 @@ UgeneContextWrapper::~UgeneContextWrapper( ) {
     delete splicedAlignmentTaskRegistry;
     appContext->setSplicedAlignmentTaskRegistry( NULL );
 
-    delete pwr;
-    appContext->setPairwiseAlignmentRegistry( NULL );
+    appContext->setAlignmentAlgorithmsRegistry( NULL );
+    delete alignmentAlgorithmRegistry;
 }
 
 int UgeneContextWrapper::processTask(Task *task) {

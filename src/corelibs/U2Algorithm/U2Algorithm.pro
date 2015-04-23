@@ -20,16 +20,23 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/molecular_geometry/MolecularSurface.h \
            src/molecular_geometry/MolecularSurfaceFactoryRegistry.h \
            src/molecular_geometry/VanDerWaalsSurface.h \
+           src/msa_alignment/AbstractAlignmentTask.h \ 
+           src/msa_alignment/AlignSequencesToAlignmentTaskSettings.h \   
+           src/msa_alignment/BaseAlignmentAlgorithmIds.h \       
+           src/msa_alignment/SimpleAddingToAlignment.h \
            src/pairwise_alignment/NWAligner.h \
            src/pairwise_alignment/PairwiseAligner.h \
+           src/pairwise_alignment/PairwiseAlignmentTask.h \
            src/phyltree/CreatePhyTreeSettings.h \
            src/phyltree/PhyTreeGenerator.h \
            src/phyltree/PhyTreeGeneratorRegistry.h \
            src/phyltree/PhyTreeGeneratorTask.h \
+           src/registry/AlignmentAlgorithmsRegistry.h \
            src/registry/CDSearchTaskFactoryRegistry.h \
            src/registry/CudaGpuRegistry.h \
            src/registry/DnaAssemblyAlgRegistry.h \
            src/registry/DnaAssemblyTask.h \
+           src/registry/GenomeAssemblyRegistry.h \
            src/registry/OpenCLGpuRegistry.h \
            src/registry/RepeatFinderTaskFactoryRegistry.h \
            src/registry/SecStructPredictAlgRegistry.h \
@@ -88,10 +95,7 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/util_weight_matrix/PWMConversionAlgorithmNLG.h \
            src/util_weight_matrix/PWMConversionAlgorithmRegistry.h \
            src/util_gpu/opencl/OpenCLHelper.h \
-           src/util_gpu/opencl/OpenCLUtils.h \
-           src/registry/PairwiseAlignmentRegistry.h \
-           src/registry/PairwiseAlignmentTask.h \
-           src/registry/GenomeAssemblyRegistry.h
+           src/util_gpu/opencl/OpenCLUtils.h 
 SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/misc/BitsTable.cpp \
            src/misc/DnaAssemblyMultiTask.cpp \
@@ -104,15 +108,22 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/molecular_geometry/MolecularSurface.cpp \
            src/molecular_geometry/MolecularSurfaceFactoryRegistry.cpp \
            src/molecular_geometry/VanDerWaalsSurface.cpp \
+           src/msa_alignment/AbstractAlignmentTask.cpp \           
+           src/msa_alignment/AlignSequencesToAlignmentTaskSettings.cpp \
+           src/msa_alignment/BaseAlignmentAlgorithmIds.cpp \
+           src/msa_alignment/SimpleAddingToAlignment.cpp \
            src/pairwise_alignment/NWAligner.cpp \
            src/pairwise_alignment/PairwiseAligner.cpp \
+           src/pairwise_alignment/PairwiseAlignmentTask.cpp \
            src/phyltree/CreatePhyTreeSettings.cpp \
            src/phyltree/PhyTreeGeneratorRegistry.cpp \
            src/phyltree/PhyTreeGeneratorTask.cpp \
+           src/registry/AlignmentAlgorithmsRegistry.cpp \
            src/registry/CudaGpuRegistry.cpp \
            src/registry/DnaAssemblyAlgRegistry.cpp \
            src/registry/DnaAssemblyTask.cpp \
-           src/registry/OpenCLGpuRegistry.cpp \
+           src/registry/GenomeAssemblyRegistry.cpp \
+           src/registry/OpenCLGpuRegistry.cpp \       
            src/registry/RepeatFinderTaskFactoryRegistry.cpp \
            src/registry/SecStructPredictAlgRegistry.cpp \
            src/registry/SecStructPredictTask.cpp \
@@ -167,10 +178,7 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/util_weight_matrix/PWMConversionAlgorithmNLG.cpp \
            src/util_weight_matrix/PWMConversionAlgorithmRegistry.cpp \
            src/util_gpu/opencl/OpenCLHelper.cpp \
-           src/util_gpu/opencl/OpenCLUtils.cpp \
-           src/registry/PairwiseAlignmentRegistry.cpp \
-           src/registry/PairwiseAlignmentTask.cpp \
-           src/registry/GenomeAssemblyRegistry.cpp
+           src/util_gpu/opencl/OpenCLUtils.cpp 
 RESOURCES += U2Algorithm.qrc
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
 

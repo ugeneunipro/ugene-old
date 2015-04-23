@@ -50,12 +50,12 @@ private:
 
 };
 
-class PairwiseAlignmentSmithWatermanTaskFactory : public PairwiseAlignmentTaskFactory {           //for pairwise alignment only
+class PairwiseAlignmentSmithWatermanTaskFactory : public AbstractAlignmentTaskFactory {           //for pairwise alignment only
 public:
     PairwiseAlignmentSmithWatermanTaskFactory(SW_AlgType _algType);
     virtual ~PairwiseAlignmentSmithWatermanTaskFactory();
 
-    virtual PairwiseAlignmentTask* getTaskInstance(PairwiseAlignmentTaskSettings* settings) const;
+    virtual AbstractAlignmentTask* getTaskInstance(AbstractAlignmentTaskSettings* settings) const;
 
 private:
     SW_AlgType algType;

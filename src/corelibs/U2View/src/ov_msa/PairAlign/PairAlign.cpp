@@ -30,7 +30,7 @@
 #include <U2Algorithm/BuiltInDistanceAlgorithms.h>
 #include <U2Algorithm/MSADistanceAlgorithm.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
-#include <U2Algorithm/PairwiseAlignmentRegistry.h>
+#include <U2Algorithm/AlignmentAlgorithmsRegistry.h>
 #include <U2Algorithm/PairwiseAlignmentTask.h>
 
 #include <U2Core/AppContext.h>
@@ -132,9 +132,9 @@ void PairAlign::initParameters() {
 
     canDoAlign = false;
 
-    PairwiseAlignmentRegistry* par = AppContext::getPairwiseAlignmentRegistry();
-    SAFE_POINT(par != NULL, "PairwiseAlignmentRegistry is NULL.", );
-    QStringList algList = par->getRegisteredAlgorithmIds();
+    AlignmentAlgorithmsRegistry* par = AppContext::getAlignmentAlgorithmsRegistry();
+    SAFE_POINT(par != NULL, "AlignmentAlgorithmsRegistry is NULL.", );
+    QStringList algList = par->getAvailableAlgorithmIds(PairwiseAlignment);
     algorithmListComboBox->addItems(algList);
     int index = algorithmListComboBox->findText(pairwiseAlignmentWidgetsSettings->algorithmName);
     if (index != -1) {
@@ -173,11 +173,11 @@ void PairAlign::sl_checkState(){
 void PairAlign::sl_alignmentChanged() {
     const DNAAlphabet* dnaAlphabet = msa->getMSAObject()->getAlphabet();
     SAFE_POINT(NULL != dnaAlphabet, "Alignment alphabet is not defined.", );
-    if(dnaAlphabet->getId() != pairwiseAlignmentWidgetsSettings->customSettings.value(PairwiseAlignmentTaskSettings::PA_ALPHABET, "").toString()) {
+    if(dnaAlphabet->getId() != pairwiseAlignmentWidgetsSettings->customSettings.value(PairwiseAlignmentTaskSettings::ALPHABET, "").toString()) {
         pairwiseAlignmentWidgetsSettings->customSettings.insert("alphabet", dnaAlphabet->getId());
 
         QString curAlgorithmId = pairwiseAlignmentWidgetsSettings->algorithmName;
-        PairwiseAlignmentAlgorithm* alg = getAlgorithmById(curAlgorithmId);
+        AlignmentAlgorithm* alg = getAlgorithmById(curAlgorithmId);
         SAFE_POINT(NULL != alg, QString("Algorithm %1 not found.").arg(curAlgorithmId), );
         alphabetIsOk = alg->checkAlphabet(dnaAlphabet);
 
@@ -258,9 +258,9 @@ bool PairAlign::checkSequenceNames( ) {
         && rowIds.contains( secondSeqSelectorWC->sequenceId( ) ) );
 }
 
-PairwiseAlignmentAlgorithm* PairAlign::getAlgorithmById(const QString& algorithmId) {
-    PairwiseAlignmentRegistry* par = AppContext::getPairwiseAlignmentRegistry();
-    SAFE_POINT(NULL != par, "PairwiseAlignmentRegistry is NULL.", NULL);
+AlignmentAlgorithm* PairAlign::getAlgorithmById(const QString& algorithmId) {
+    AlignmentAlgorithmsRegistry* par = AppContext::getAlignmentAlgorithmsRegistry();
+    SAFE_POINT(NULL != par, "AlignmentAlgorithmsRegistry is NULL.", NULL);
     return par->getAlgorithm(algorithmId);
 }
 
@@ -270,12 +270,12 @@ void PairAlign::sl_algorithmSelected(const QString& algorithmName) {
         settingsWidget = NULL;
     }
 
-    PairwiseAlignmentAlgorithm* alg = getAlgorithmById(algorithmName);
+    AlignmentAlgorithm* alg = getAlgorithmById(algorithmName);
     SAFE_POINT(NULL != alg, QString("Algorithm %1 not found.").arg(algorithmName), );
     QString firstAlgorithmRealization = alg->getRealizationsList().first();
     alphabetIsOk = alg->checkAlphabet(msa->getMSAObject()->getAlphabet());
 
-    PairwiseAlignmentGUIExtensionFactory* algGUIFactory = alg->getGUIExtFactory(firstAlgorithmRealization);
+    AlignmentAlgorithmGUIExtensionFactory* algGUIFactory = alg->getGUIExtFactory(firstAlgorithmRealization);
     SAFE_POINT(NULL != algGUIFactory, QString("Algorithm %1 GUI factory not found.").arg(firstAlgorithmRealization), );
     settingsWidget = algGUIFactory->createMainWidget(this, &pairwiseAlignmentWidgetsSettings->customSettings);
     connect(msa, SIGNAL(destroyed()), settingsWidget, SLOT(sl_externSettingsInvalide()));
@@ -338,7 +338,7 @@ void PairAlign::sl_alignButtonPressed() {
         settings.resultFileName = GUrl(outputFileLineEdit->text());
     } else {
         settings.resultFileName = GUrl(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath() +
-                                       "/" + PairwiseAlignmentTaskSettings::PA_DEFAULT_NAME);
+                                       "/" + PairwiseAlignmentTaskSettings::DEFAULT_NAME);
     }
     GUrlUtils::validateLocalFileUrl(settings.resultFileName, os);
     if (os.hasError()) {
@@ -352,7 +352,7 @@ void PairAlign::sl_alignButtonPressed() {
     settings.alphabet = U2AlphabetId(msa->getMSAObject()->getAlphabet()->getId());
     settings.firstSequenceRef = firstSequenceRef;
     settings.secondSequenceRef = secondSequenceRef;
-    settingsWidget->getPairwiseAlignmentCustomSettings(true);
+    settingsWidget->getAlignmentAlgorithmCustomSettings(true);
     settings.appendCustomSettings(pairwiseAlignmentWidgetsSettings->customSettings);
     settings.convertCustomSettings();
 
@@ -362,12 +362,12 @@ void PairAlign::sl_alignButtonPressed() {
         pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask = NULL;
     }
 
-    PairwiseAlignmentRegistry* par = AppContext::getPairwiseAlignmentRegistry();
-    SAFE_POINT(NULL != par, "PairwiseAlignmentRegistry is NULL.", );
-    PairwiseAlignmentTaskFactory* factory = par->getAlgorithm(settings.algorithmName)->getFactory(settings.realizationName);
+    AlignmentAlgorithmsRegistry* par = AppContext::getAlignmentAlgorithmsRegistry();
+    SAFE_POINT(NULL != par, "AlignmentAlgorithmsRegistry is NULL.", );
+    AbstractAlignmentTaskFactory* factory = par->getAlgorithm(settings.algorithmName)->getFactory(settings.realizationName);
     SAFE_POINT(NULL != factory, QString("Task factory for algorithm %1, realization %2 not found.").arg(settings.algorithmName, settings.realizationName), );
 
-    PairwiseAlignmentTask* task = factory->getTaskInstance(&settings);
+    PairwiseAlignmentTask* task = qobject_cast<PairwiseAlignmentTask*>(factory->getTaskInstance(&settings));
     SAFE_POINT(NULL != task, "Task is null!", );
     connect(task, SIGNAL(si_stateChanged()), SLOT(sl_alignComplete()));
     pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask = task;
@@ -380,7 +380,7 @@ void PairAlign::sl_alignButtonPressed() {
 void PairAlign::sl_outputFileChanged(const QString& newText) {
     if (newText.isEmpty()) {
         outputFileLineEdit->setText(QDir::toNativeSeparators(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath()
-            + QDir::separator() + PairwiseAlignmentTaskSettings::PA_DEFAULT_NAME));
+            + QDir::separator() + PairwiseAlignmentTaskSettings::DEFAULT_NAME));
     }
 }
 

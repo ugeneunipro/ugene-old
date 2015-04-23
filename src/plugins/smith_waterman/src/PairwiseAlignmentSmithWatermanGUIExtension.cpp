@@ -27,7 +27,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Algorithm/SubstMatrixRegistry.h>
-#include <U2Algorithm/PairwiseAlignmentRegistry.h>
+#include <U2Algorithm/AlignmentAlgorithmsRegistry.h>
 #include <U2Algorithm/PairwiseAlignmentTask.h>
 
 #include <QtCore/QStringList>
@@ -48,13 +48,13 @@
 namespace U2 {
 
 PairwiseAlignmentSmithWatermanMainWidget::PairwiseAlignmentSmithWatermanMainWidget(QWidget* parent, QVariantMap* s) :
-    PairwiseAlignmentMainWidget(parent, s) {
+    AlignmentAlgorithmMainWidget(parent, s) {
     setupUi(this);
     initParameters();
 }
 
 PairwiseAlignmentSmithWatermanMainWidget::~PairwiseAlignmentSmithWatermanMainWidget() {
-    getPairwiseAlignmentCustomSettings(true);
+    getAlignmentAlgorithmCustomSettings(true);
 }
 
 void PairwiseAlignmentSmithWatermanMainWidget::initParameters() {
@@ -66,7 +66,7 @@ void PairwiseAlignmentSmithWatermanMainWidget::initParameters() {
 
     addScoredMatrixes();
 
-    QStringList alg_lst = AppContext::getPairwiseAlignmentRegistry()->getAlgorithm("Smith-Waterman")->getRealizationsList();
+    QStringList alg_lst = AppContext::getAlignmentAlgorithmsRegistry()->getAlgorithm("Smith-Waterman")->getRealizationsList();
     algorithmVersion->addItems(alg_lst);
     if (externSettings->contains(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_REALIZATION_NAME)) {
         algorithmVersion->setCurrentIndex(algorithmVersion->findText(externSettings->value(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_REALIZATION_NAME, QString()).toString()));
@@ -92,7 +92,7 @@ void PairwiseAlignmentSmithWatermanMainWidget::initParameters() {
 }
 
 void PairwiseAlignmentSmithWatermanMainWidget::addScoredMatrixes() {
-    const DNAAlphabet* al = U2AlphabetUtils::getById(externSettings->value(PairwiseAlignmentTaskSettings::PA_ALPHABET, "").toString());
+    const DNAAlphabet* al = U2AlphabetUtils::getById(externSettings->value(PairwiseAlignmentTaskSettings::ALPHABET, "").toString());
     SAFE_POINT(NULL != al, "Alphabet not found.", );
     SubstMatrixRegistry* matrixReg = AppContext::getSubstMatrixRegistry();
     SAFE_POINT(matrixReg, "SubstMatrixRegistry is NULL.", );
@@ -103,9 +103,9 @@ void PairwiseAlignmentSmithWatermanMainWidget::addScoredMatrixes() {
     }
 }
 
-QMap<QString, QVariant> PairwiseAlignmentSmithWatermanMainWidget::getPairwiseAlignmentCustomSettings(bool append = false) {
+QMap<QString, QVariant> PairwiseAlignmentSmithWatermanMainWidget::getAlignmentAlgorithmCustomSettings(bool append = false) {
     fillInnerSettings();
-    return PairwiseAlignmentMainWidget::getPairwiseAlignmentCustomSettings(append);
+    return AlignmentAlgorithmMainWidget::getAlignmentAlgorithmCustomSettings(append);
 }
 
 void PairwiseAlignmentSmithWatermanMainWidget::updateWidget() {
@@ -115,7 +115,7 @@ void PairwiseAlignmentSmithWatermanMainWidget::updateWidget() {
 }
 
 void PairwiseAlignmentSmithWatermanMainWidget::fillInnerSettings() {
-    innerSettings.insert(PairwiseAlignmentTaskSettings::PA_REALIZATION_NAME, algorithmVersion->currentText());
+    innerSettings.insert(PairwiseAlignmentTaskSettings::REALIZATION_NAME, algorithmVersion->currentText());
     innerSettings.insert(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_GAP_OPEN, -gapOpen->value());
     innerSettings.insert(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_GAP_EXTD, -gapExtd->value());
     innerSettings.insert(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_REALIZATION_NAME, algorithmVersion->currentText());
@@ -123,10 +123,10 @@ void PairwiseAlignmentSmithWatermanMainWidget::fillInnerSettings() {
 }
 
 PairwiseAlignmentSmithWatermanGUIExtensionFactory::PairwiseAlignmentSmithWatermanGUIExtensionFactory(SW_AlgType _algType) :
-    PairwiseAlignmentGUIExtensionFactory(), algType(_algType) {
+    AlignmentAlgorithmGUIExtensionFactory(), algType(_algType) {
 }
 
-PairwiseAlignmentMainWidget* PairwiseAlignmentSmithWatermanGUIExtensionFactory::createMainWidget(QWidget* parent, QVariantMap* s) {
+AlignmentAlgorithmMainWidget* PairwiseAlignmentSmithWatermanGUIExtensionFactory::createMainWidget(QWidget* parent, QVariantMap* s) {
     if (mainWidgets.contains(parent)) {
         return mainWidgets.value(parent, NULL);
     }

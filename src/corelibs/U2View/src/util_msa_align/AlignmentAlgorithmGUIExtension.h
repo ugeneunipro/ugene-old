@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_PAIRWISE_ALIGNMENT_GUI_EXTENSION_H_
-#define _U2_PAIRWISE_ALIGNMENT_GUI_EXTENSION_H_
+#ifndef _U2_ALIGNMENT_ALGORITHM_GUI_EXTENSION_H_
+#define _U2_ALIGNMENT_ALGORITHM_GUI_EXTENSION_H_
 
 #include <U2Core/global.h>
 
@@ -40,20 +40,20 @@
 
 namespace U2 {
 
-class PairwiseAlignmentTaskSettings;
+class AbstractAlignmentTaskSettings;
 
-// These classes are intended for extending pairwise alignment GUIs
+// These classes are intended for extending alignment GUIs
 // with options specific to the align algorithm
 
-class U2VIEW_EXPORT PairwiseAlignmentMainWidget : public QWidget
+class U2VIEW_EXPORT AlignmentAlgorithmMainWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    PairwiseAlignmentMainWidget(QWidget* parent, QVariantMap* s);
-    virtual ~PairwiseAlignmentMainWidget();
+    AlignmentAlgorithmMainWidget(QWidget* parent, QVariantMap* s);
+    virtual ~AlignmentAlgorithmMainWidget();
 
-    virtual QVariantMap getPairwiseAlignmentCustomSettings(bool append);
+    virtual QVariantMap getAlignmentAlgorithmCustomSettings(bool append);
 
     virtual void updateWidget(){}
 
@@ -69,20 +69,20 @@ protected:
     bool externSettingsExists;                  //msa editor is alive, pointer externSettings is valid
 };
 
-class U2VIEW_EXPORT PairwiseAlignmentGUIExtensionFactory : public QObject {
+class U2VIEW_EXPORT AlignmentAlgorithmGUIExtensionFactory : public QObject {
     Q_OBJECT
 
 public:
-    virtual PairwiseAlignmentMainWidget* createMainWidget(QWidget* parent, QVariantMap* s) = 0;
+    virtual AlignmentAlgorithmMainWidget* createMainWidget(QWidget* parent, QVariantMap* s) = 0;
     virtual bool hasMainWidget(const QWidget* parent);
 
 protected slots:
     virtual void sl_widgetDestroyed(QObject * obj);
 
 protected:
-    QMap<const QWidget*, PairwiseAlignmentMainWidget*> mainWidgets;
+    QMap<const QWidget*, AlignmentAlgorithmMainWidget*> mainWidgets;
 };
 
 }   //namespace
 
-#endif  //_U2_PAIRWISE_ALIGNMENT_GUI_EXTENSION_H_
+#endif  //_U2_ALIGNMENT_ALGORITHM_GUI_EXTENSION_H_

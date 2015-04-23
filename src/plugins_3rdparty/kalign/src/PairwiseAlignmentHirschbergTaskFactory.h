@@ -26,13 +26,13 @@
 
 namespace U2 {
 
-class PairwiseAlignmentHirschbergTaskFactory : public PairwiseAlignmentTaskFactory
+class PairwiseAlignmentHirschbergTaskFactory : public AbstractAlignmentTaskFactory
 {
 public:
     PairwiseAlignmentHirschbergTaskFactory();
     virtual ~PairwiseAlignmentHirschbergTaskFactory();
 
-    virtual PairwiseAlignmentTask* getTaskInstance(PairwiseAlignmentTaskSettings *_settings) const;
+    virtual AbstractAlignmentTask* getTaskInstance(AbstractAlignmentTaskSettings *_settings) const;
 };
 
 }   //namespace

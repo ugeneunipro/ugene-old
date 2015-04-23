@@ -167,5 +167,6 @@
         <file>images/reroot.png</file>
         <file>images/swap.png</file>
         <file>images/expand_tree.png</file>
+        <file>images/add_to_alignment.png</file>
     </qresource>
 </RCC>

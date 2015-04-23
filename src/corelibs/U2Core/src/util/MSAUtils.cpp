@@ -60,6 +60,25 @@ bool MSAUtils::equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QB
     return true;
 }
 
+int MSAUtils::getPatternSimilarityIgnoreGaps(const MAlignmentRow& row, int startPos, const QByteArray& pat, int &alternateLen) {
+    int sLen = row.getCoreEnd();
+    int pLen = pat.size();
+    int i = startPos;
+    int similarity = 0;
+    for (int j = 0; i  < sLen && j < pLen; i++, j++) {
+        char c1 = row.charAt(i);
+        char c2 = pat[j];
+        while(c1 == MAlignment_GapChar && ++i < sLen) {
+            c1 = row.charAt(i);
+        }
+        if (c1 == c2) {
+            similarity++;
+        }
+    }
+    alternateLen = i - startPos;
+    return similarity;
+}
+
 MAlignment MSAUtils::seq2ma(const QList<DNASequence>& list, U2OpStatus& os) {
     MAlignment ma(MA_OBJECT_NAME);
     foreach(const DNASequence& seq, list) {

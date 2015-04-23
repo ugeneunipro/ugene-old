@@ -59,7 +59,7 @@ class MolecularSurfaceFactoryRegistry;
 class SWResultFilterRegistry;
 class SecStructPredictAlgRegistry;
 class CudaGpuRegistry;
-class PairwiseAlignmentRegistry;
+class AlignmentAlgorithmsRegistry;
 #ifdef OPENCL_SUPPORT
 class OpenCLGpuRegistry;
 #endif
@@ -125,7 +125,7 @@ private:
     SWResultFilterRegistry *                swrfr;
     SecStructPredictAlgRegistry *           sspar;
     CudaGpuRegistry *                       cgr;
-    PairwiseAlignmentRegistry *             pwr;
+    AlignmentAlgorithmsRegistry *           alignmentAlgorithmRegistry;
 #ifdef OPENCL_SUPPORT
     OpenCLGpuRegistry *                     oclgr;
 #endif

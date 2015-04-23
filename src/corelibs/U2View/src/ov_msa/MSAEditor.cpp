@@ -35,6 +35,7 @@
 
 #include "ov_phyltree/TreeViewerTasks.h"
 
+#include <U2Core/DocumentSelection.h>
 #include <U2Core/MsaDbiUtils.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequenceObject.h>
@@ -54,6 +55,7 @@
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectSelection.h>
 #include <U2Core/MSAUtils.h>
 
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
@@ -64,11 +66,13 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/U2FileDialog.h>
 #include <U2Gui/GroupHeaderImageWidget.h>
 #include <U2Gui/GroupOptionsWidget.h>
 #include <U2Gui/OptionsPanel.h>
 #include <U2Gui/OptionsPanelWidget.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
+#include <U2Gui/ProjectView.h>
 #include <U2Gui/ExportDocumentDialogController.h>
 #include <U2Gui/ExportObjectUtils.h>
 
@@ -96,6 +100,7 @@
 #include <QtSvg/QSvgGenerator>
 
 
+#include "AlignSequencesToAlignment/AlignSequencesToAlignmentTask.h"
 #include "Export/MSAImageExportTask.h"
 #include "phyltree/CreatePhyTreeDialogController.h"
 #include "ov_phyltree/TreeViewer.h"
@@ -130,7 +135,7 @@ namespace U2 {
 const float MSAEditor::zoomMult = 1.25;
 
 MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
-: GObjectView(MSAEditorFactory::ID, viewName), ui(NULL), treeManager(this) {
+: GObjectView(MSAEditorFactory::ID, viewName), ui(NULL), alignSequencesToAlignmentAction(NULL), treeManager(this) {
 
     msaObject = qobject_cast<MAlignmentObject*>(obj);
 
@@ -179,6 +184,8 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     connect(msaObject, SIGNAL(si_alignmentBecomesEmpty(bool)), buildTreeAction, SLOT(setDisabled(bool)));
     connect(msaObject, SIGNAL(si_rowsRemoved(const QList<qint64> &)), SLOT(sl_rowsRemoved(const QList<qint64> &)));
     connect(buildTreeAction, SIGNAL(triggered()), SLOT(sl_buildTree()));
+
+    connect(msaObject, SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
 
     Settings* s = AppContext::getSettings();
     zoomFactor = DEFAULT_ZOOM_FACTOR;
@@ -421,6 +428,7 @@ void MSAEditor::buildStaticToolbar(QToolBar* tb) {
     tb->addAction(buildTreeAction);
     tb->addAction(saveScreenshotAction);
     tb->addAction(alignAction);
+    tb->addAction(alignSequencesToAlignmentAction);
 
     toolbar = tb;
 
@@ -534,6 +542,10 @@ QWidget* MSAEditor::createWidget() {
     alignAction->setObjectName("Align");
     connect(alignAction, SIGNAL(triggered()), this, SLOT(sl_align()));
 
+    alignSequencesToAlignmentAction = new QAction(QIcon(":/core/images/add_to_alignment.png"), tr("Align sequence to this alignment"), this);
+    alignSequencesToAlignmentAction->setObjectName("Align sequence to this alignment");
+    connect(alignSequencesToAlignmentAction, SIGNAL(triggered()), this, SLOT(sl_addToAlignment()));
+
     setAsReferenceSequenceAction = new QAction(tr("Set this sequence as reference"), this);
     setAsReferenceSequenceAction->setObjectName("set_seq_as_reference");
     connect(setAsReferenceSequenceAction, SIGNAL(triggered()), SLOT(sl_setSeqAsReference()));
@@ -638,6 +650,9 @@ void MSAEditor::updateActions() {
     zoomOutAction->setEnabled( getColumnWidth() > MIN_COLUMN_WIDTH );
     zoomToSelectionAction->setEnabled( font.pointSize() < MAX_FONT_SIZE);
     changeFontAction->setEnabled( resizeMode == ResizeMode_FontAndContent);
+    if(alignSequencesToAlignmentAction != NULL) {
+        alignSequencesToAlignmentAction->setEnabled(!msaObject->isStateLocked());
+    }
 }
 
 void MSAEditor::calcFontPixelToPointSizeCoef() {
@@ -761,6 +776,64 @@ void MSAEditor::sl_align(){
     mm->exec(QCursor::pos());
 }
 
+void MSAEditor::sl_addToAlignment() {
+    MAlignmentObject* msaObject = getMSAObject();
+    if (msaObject->isStateLocked()) {
+        return;
+    }
+
+    ProjectView* pv = AppContext::getProjectView();
+    SAFE_POINT(pv != NULL, "Project view is null",);
+
+    const GObjectSelection* selection = pv->getGObjectSelection();
+    SAFE_POINT(selection  != NULL, "GObjectSelection is null",);
+
+    QList<GObject*> objects = selection->getSelectedObjects();
+    bool selectFromProject = !objects.isEmpty();
+
+    foreach(GObject* object, objects) {
+        if(object == getMSAObject() || (object->getGObjectType() != GObjectTypes::MULTIPLE_ALIGNMENT && object->getGObjectType() != GObjectTypes::SEQUENCE)) {
+            selectFromProject = false;
+            break;
+        }
+    }
+    if(selectFromProject ) {
+        alignSequencesFromObjectsToAlignment(objects);
+    } else {
+        alignSequencesFromFilesToAlignment();
+    }
+}
+
+void MSAEditor::alignSequencesFromObjectsToAlignment(const QList<GObject*>& objects) {
+    SequenceObjectsExtractor extractor;
+    extractor.extractSequencesFromObjects(objects);
+
+    if(!extractor.getSequenceRefs().isEmpty()) {
+        AlignSequencesToAlignmentTask* task = new AlignSequencesToAlignmentTask(msaObject, extractor.getSequenceRefs(), extractor.getSequenceNames(), 
+            extractor.getMaxSequencesLength());
+        AppContext::getTaskScheduler()->registerTopLevelTask(task);
+    }
+}
+
+void MSAEditor::alignSequencesFromFilesToAlignment() {
+    QString filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
+
+    LastUsedDirHelper lod;
+    QStringList urls;
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        urls = U2FileDialog::getOpenFileNames(ui, tr("Open file with sequences"), lod.dir, filter, 0, QFileDialog::DontUseNativeDialog );
+    } else
+#endif
+        urls = U2FileDialog::getOpenFileNames(ui, tr("Open file with sequences"), lod.dir, filter);
+
+    if (!urls.isEmpty()) {
+        lod.url = urls.first();
+        LoadSequencesAndAlignToAlignmentTask * task = new LoadSequencesAndAlignToAlignmentTask(msaObject, urls);
+        AppContext::getTaskScheduler()->registerTopLevelTask(task);
+    }
+}
+
 void MSAEditor::createDistanceColumn(MSADistanceMatrix* algo) {
     ui->createDistanceColumn(algo);
 }
@@ -836,6 +909,10 @@ void MSAEditor::sl_exportHighlighted(){
     if (d.result() == QDialog::Accepted){
         AppContext::getTaskScheduler()->registerTopLevelTask(new ExportHighligtningTask(&d, ui->getSequenceArea()));
     }
+}
+
+void MSAEditor::sl_lockedStateChanged() {
+    updateActions();
 }
 
 QVariantMap MSAEditor::getHighlightingSettings(const QString &highlightingFactoryId) const {

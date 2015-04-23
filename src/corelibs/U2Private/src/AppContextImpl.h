@@ -90,7 +90,7 @@ public:
         guiMode = false;
         activeWindow = "";
         tb = NULL;
-        pairwiseAlignmentRegistry = NULL;
+        alignmentAlgorithmsRegistry = NULL;
         dpr = NULL;
         workingDirectoryPath = "";
         dsr = NULL;
@@ -303,9 +303,9 @@ public:
         appFileStorage = afs;
     }
 
-    void setPairwiseAlignmentRegistry(PairwiseAlignmentRegistry* par) {
-        assert(pairwiseAlignmentRegistry == NULL || par == NULL);
-        pairwiseAlignmentRegistry = par;
+    void setAlignmentAlgorithmsRegistry(AlignmentAlgorithmsRegistry* _alignmentAlgorithmsRegistry) {
+        assert(alignmentAlgorithmsRegistry == NULL || _alignmentAlgorithmsRegistry == NULL);
+        alignmentAlgorithmsRegistry = _alignmentAlgorithmsRegistry;
     }
 
     void setConvertFactoryRegistry(ConvertFactoryRegistry* _cfr) {
@@ -403,7 +403,7 @@ protected:
     virtual OPWidgetFactoryRegistry*        _getOPWidgetFactoryRegistry() const { return opWidgetFactoryRegistry; }
     virtual WorkflowScriptRegistry*         _getWorkflowScriptRegistry() const { return workflowScriptRegistry; }
     virtual AppFileStorage*                 _getAppFileStorage() const { return appFileStorage; }
-    virtual PairwiseAlignmentRegistry*      _getPairwiseAlignmentRegistry() const { return pairwiseAlignmentRegistry; }
+    virtual AlignmentAlgorithmsRegistry*      _getAlignmentAlgorithmsRegistry() const { return alignmentAlgorithmsRegistry; }
     virtual U2DataPathRegistry*             _getDataPathRegistry() const { return dpr; }
     virtual DASSourceRegistry*              _getDASSourceRegistry() const { return dsr; }
     virtual ScriptingToolRegistry*          _getScriptingToolRegistry() const { return str; }
@@ -481,7 +481,7 @@ private:
     OPWidgetFactoryRegistry* opWidgetFactoryRegistry;
     WorkflowScriptRegistry* workflowScriptRegistry;
     AppFileStorage *appFileStorage;
-    PairwiseAlignmentRegistry* pairwiseAlignmentRegistry;
+    AlignmentAlgorithmsRegistry* alignmentAlgorithmsRegistry;
     U2DataPathRegistry *dpr;
     DASSourceRegistry *dsr;
     ScriptingToolRegistry *str;

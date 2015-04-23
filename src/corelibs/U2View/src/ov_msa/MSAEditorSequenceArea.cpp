@@ -73,6 +73,7 @@
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 
+#include "AlignSequencesToAlignment/AlignSequencesToAlignmentTask.h"
 #include "ColorSchemaSettingsController.h"
 #include "CreateSubalignmentDialogController.h"
 #include "Highlighting/MSAHighlightingTabFactory.h"
@@ -2136,7 +2137,7 @@ void MSAEditorSequenceArea::sl_saveSequence(){
         Document *loadedDoc=p->findDocumentByURL(url);
         if (loadedDoc) {
             coreLog.details("The document already in the project");
-            QMessageBox::warning(this, tr("warning"), tr("The document already in the project"));
+            QMessageBox::warning(ui, tr("warning"), tr("The document already in the project"));
             return;
         }
         p->addDocument(doc);

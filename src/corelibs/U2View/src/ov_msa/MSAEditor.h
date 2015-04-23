@@ -204,9 +204,11 @@ protected slots:
     void sl_resetZoom();
     void sl_buildTree();
     void sl_align();
+    void sl_addToAlignment();
     void sl_setSeqAsReference();
     void sl_unsetReferenceSeq();
     void sl_exportHighlighted();
+    void sl_lockedStateChanged();
 
     void sl_onSeqOrderChanged(const QStringList& order);
     void sl_showTreeOP();
@@ -236,6 +238,8 @@ private:
     void setFirstVisibleBase(int firstPos);
     void setZoomFactor(float newZoomFactor) {zoomFactor = newZoomFactor;}
     void initDragAndDropSupport();
+    void alignSequencesFromObjectsToAlignment(const QList<GObject*>& objects);
+    void alignSequencesFromFilesToAlignment();
 
     MAlignmentObject* msaObject;
     MSAEditorUI*      ui;
@@ -256,6 +260,7 @@ private:
     QAction*          saveScreenshotAction;
     QAction*          saveSvgAction;
     QAction*          alignAction;
+    QAction*          alignSequencesToAlignmentAction;
     QAction*          setAsReferenceSequenceAction;
     QAction *         unsetReferenceSequenceAction;
     QAction*          exportHighlightedAction;

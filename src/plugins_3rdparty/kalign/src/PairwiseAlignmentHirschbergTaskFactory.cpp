@@ -14,8 +14,11 @@ PairwiseAlignmentHirschbergTaskFactory::PairwiseAlignmentHirschbergTaskFactory()
 PairwiseAlignmentHirschbergTaskFactory::~PairwiseAlignmentHirschbergTaskFactory() {
 }
 
-PairwiseAlignmentTask* PairwiseAlignmentHirschbergTaskFactory::getTaskInstance(PairwiseAlignmentTaskSettings *_settings) const {
-    PairwiseAlignmentHirschbergTaskSettings* settings = new PairwiseAlignmentHirschbergTaskSettings(*_settings);
+AbstractAlignmentTask* PairwiseAlignmentHirschbergTaskFactory::getTaskInstance(AbstractAlignmentTaskSettings *_settings) const {
+    PairwiseAlignmentTaskSettings* pairwiseSettings = dynamic_cast<PairwiseAlignmentTaskSettings*>(_settings);
+    SAFE_POINT(pairwiseSettings != NULL,
+        "Pairwise alignment: incorrect settings", NULL);
+    PairwiseAlignmentHirschbergTaskSettings* settings = new PairwiseAlignmentHirschbergTaskSettings(*pairwiseSettings);
     SAFE_POINT(false == settings->inNewWindow || false == settings->resultFileName.isEmpty(),
                "Pairwise alignment: incorrect settings, empty output file name", NULL);
     return new PairwiseAlignmentHirschbergTask(settings);

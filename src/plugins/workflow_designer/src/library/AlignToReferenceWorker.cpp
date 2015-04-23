@@ -19,7 +19,7 @@
 * MA 02110-1301, USA.
 */
 
-#include <U2Algorithm/PairwiseAlignmentRegistry.h>
+#include <U2Algorithm/AlignmentAlgorithmsRegistry.h>
 #include <U2Algorithm/PairwiseAlignmentTask.h>
 
 #include <U2Core/AnnotationTableObject.h>
@@ -512,7 +512,7 @@ void KAlignSubTask::prepare() {
     createAlignment();
     CHECK_OP(stateInfo, );
 
-    PairwiseAlignmentTaskFactory *factory = getPairwiseAlignmentTaskFactory("Hirschberg (KAlign)", "KAlign", stateInfo);
+    AbstractAlignmentTaskFactory *factory = getAbstractAlignmentTaskFactory("Hirschberg (KAlign)", "KAlign", stateInfo);
     CHECK_OP(stateInfo, );
 
     QScopedPointer<PairwiseAlignmentTaskSettings> settings(createSettings(storage, msa, stateInfo));
@@ -593,8 +593,8 @@ void KAlignSubTask::extendCoreRegion(const QList<U2Region> &regions) {
     coreRegion.length += (leftSize + rightSize) * EXTENSION_COEF;
 }
 
-PairwiseAlignmentTaskFactory * KAlignSubTask::getPairwiseAlignmentTaskFactory(const QString &algoId, const QString &implId, U2OpStatus &os) {
-    PairwiseAlignmentAlgorithm *algo = AppContext::getPairwiseAlignmentRegistry()->getAlgorithm(algoId);
+AbstractAlignmentTaskFactory * KAlignSubTask::getAbstractAlignmentTaskFactory(const QString &algoId, const QString &implId, U2OpStatus &os) {
+    AlignmentAlgorithm *algo = AppContext::getAlignmentAlgorithmsRegistry()->getAlgorithm(algoId);
     CHECK_EXT(NULL != algo, os.setError(tr("The %1 algorithm is not found. Add the %1 plugin.").arg(algoId)), NULL);
 
     AlgorithmRealization *algoImpl = algo->getAlgorithmRealization(implId);
@@ -672,7 +672,7 @@ QList<Task*> PairwiseAlignmentTask::onSubTaskFinished(Task *subTask) {
 
     createSWAlignment(initRc());
 
-    PairwiseAlignmentTaskFactory *factory = KAlignSubTask::getPairwiseAlignmentTaskFactory("Smith-Waterman", "SW_classic", stateInfo);
+    AbstractAlignmentTaskFactory *factory = KAlignSubTask::getAbstractAlignmentTaskFactory("Smith-Waterman", "SW_classic", stateInfo);
     CHECK_OP(stateInfo, result);
 
     QScopedPointer<PairwiseAlignmentTaskSettings> settings(KAlignSubTask::createSettings(storage, msa, stateInfo));

@@ -60,8 +60,8 @@ class MAlignment;
 class MAlignmentModInfo;
 class MSADistanceAlgorithm;
 class MSAEditor;
-class PairwiseAlignmentAlgorithm;
-class PairwiseAlignmentMainWidget;
+class AlignmentAlgorithm;
+class AlignmentAlgorithmMainWidget;
 class PairwiseAlignmentTaskSettings;
 class ShowHideSubgroupWidget;
 
@@ -79,7 +79,7 @@ private:
     void checkState();
     void updatePercentOfSimilarity();
     bool checkSequenceNames();
-    PairwiseAlignmentAlgorithm* getAlgorithmById(const QString& algorithmId);
+    AlignmentAlgorithm* getAlgorithmById(const QString& algorithmId);
 
 private slots:
     void sl_algorithmSelected(const QString& algorithmName);
@@ -100,7 +100,7 @@ private:
     PairwiseAlignmentWidgetsSettings * pairwiseAlignmentWidgetsSettings;
     MSADistanceAlgorithm* distanceCalcTask;
 
-    PairwiseAlignmentMainWidget* settingsWidget;       //created by factories on demand
+    AlignmentAlgorithmMainWidget* settingsWidget;       //created by factories on demand
 
     ShowHideSubgroupWidget* showHideSequenceWidget;
     ShowHideSubgroupWidget* showHideSettingsWidget;

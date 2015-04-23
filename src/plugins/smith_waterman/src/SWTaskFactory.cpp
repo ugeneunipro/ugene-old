@@ -51,14 +51,17 @@ bool SWTaskFactory::isValidParameters(const SmithWatermanSettings& sWatermanConf
 }
 
 PairwiseAlignmentSmithWatermanTaskFactory::PairwiseAlignmentSmithWatermanTaskFactory(SW_AlgType _algType) :
-    PairwiseAlignmentTaskFactory(), algType(_algType) {
+    AbstractAlignmentTaskFactory(), algType(_algType) {
 }
 
 PairwiseAlignmentSmithWatermanTaskFactory::~PairwiseAlignmentSmithWatermanTaskFactory() {
 }
 
-PairwiseAlignmentTask* PairwiseAlignmentSmithWatermanTaskFactory::getTaskInstance(PairwiseAlignmentTaskSettings* _settings) const {
-    PairwiseAlignmentSmithWatermanTaskSettings* settings = new PairwiseAlignmentSmithWatermanTaskSettings(*_settings);
+AbstractAlignmentTask* PairwiseAlignmentSmithWatermanTaskFactory::getTaskInstance(AbstractAlignmentTaskSettings* _settings) const {
+    PairwiseAlignmentTaskSettings* pairwiseSettings = dynamic_cast<PairwiseAlignmentTaskSettings*>(_settings);
+    SAFE_POINT(pairwiseSettings != NULL,
+        "Pairwise alignment: incorrect settings", NULL);
+    PairwiseAlignmentSmithWatermanTaskSettings* settings = new PairwiseAlignmentSmithWatermanTaskSettings(*pairwiseSettings);
     SAFE_POINT(false == settings->inNewWindow || false == settings->resultFileName.isEmpty(),
                "Pairwise alignment: incorrect settings, empty output file name", NULL);
     if (settings->inNewWindow == true) {

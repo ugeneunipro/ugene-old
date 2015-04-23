@@ -88,7 +88,7 @@ class OPWidgetFactoryRegistry;
 class WorkflowScriptRegistry;
 class AppFileStorage;
 class U2DataPathRegistry;
-class PairwiseAlignmentRegistry;
+class AlignmentAlgorithmsRegistry;
 class DASSourceRegistry;
 class ScriptingToolRegistry;
 class CredentialsAsker;
@@ -240,7 +240,7 @@ public:
 
     static AppFileStorage *getAppFileStorage() {return getInstance()->_getAppFileStorage();}
 
-    static PairwiseAlignmentRegistry* getPairwiseAlignmentRegistry() { return getInstance()->_getPairwiseAlignmentRegistry(); }
+    static AlignmentAlgorithmsRegistry* getAlignmentAlgorithmsRegistry() { return getInstance()->_getAlignmentAlgorithmsRegistry(); }
 
     static DASSourceRegistry* getDASSourceRegistry() { return getInstance()->_getDASSourceRegistry(); }
 
@@ -321,7 +321,7 @@ protected:
     virtual OPWidgetFactoryRegistry* _getOPWidgetFactoryRegistry() const = 0;
     virtual WorkflowScriptRegistry* _getWorkflowScriptRegistry() const = 0;
     virtual AppFileStorage *_getAppFileStorage() const = 0;
-    virtual PairwiseAlignmentRegistry* _getPairwiseAlignmentRegistry() const = 0;
+    virtual AlignmentAlgorithmsRegistry* _getAlignmentAlgorithmsRegistry() const = 0;
     virtual U2DataPathRegistry* _getDataPathRegistry() const = 0;
     virtual DASSourceRegistry* _getDASSourceRegistry() const = 0;
     virtual ScriptingToolRegistry* _getScriptingToolRegistry() const = 0;
