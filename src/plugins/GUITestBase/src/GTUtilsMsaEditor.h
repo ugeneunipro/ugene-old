@@ -55,7 +55,6 @@ public:
 
     static void undo(U2OpStatus &os);
     static void redo(U2OpStatus &os);
-
 };
 
 }   // namespace U2

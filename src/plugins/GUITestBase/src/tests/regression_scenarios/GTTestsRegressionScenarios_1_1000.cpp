@@ -580,6 +580,30 @@ GUI_TEST_CLASS_DEFINITION(test_0597) {
     CHECK_SET_ERR(annotationGroup != NULL, "annotation group not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0610) {
+    GTLogTracer logTracer;
+
+//    1. Open any MSA, i.e. samples/ClustalW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+//    2. Click on any letter (it will be selected with dash rectangle)
+    GTUtilsMSAEditorSequenceArea::clickToPosition(os, QPoint(1, 1));
+
+//    3. Click on white area below sequences (there will be no selection)
+    // this step is depreceated: it will cause selecting a symbol in the last row.
+    GTUtilsMSAEditorSequenceArea::cancelSelection(os);
+
+//    4.  Modify MSA: aligh with any algorithm
+//    Expected state: UGENE not crased
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Align" << "Align with KAlign...", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsLog::check(os, logTracer);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0627) {
 //    1. Open _common_data/fasta/fa1.fa.
 //    Expected state: the file opens in the sequence viewer.

@@ -114,6 +114,12 @@ void GTUtilsMSAEditorSequenceArea::selectArea(U2OpStatus &os, QPoint p1, QPoint 
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "cancelSelection"
+void GTUtilsMSAEditorSequenceArea::cancelSelection(U2OpStatus &os) {
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "click"
 void GTUtilsMSAEditorSequenceArea::click(U2OpStatus &os, QPoint p) {
     selectArea(os, p, p);
