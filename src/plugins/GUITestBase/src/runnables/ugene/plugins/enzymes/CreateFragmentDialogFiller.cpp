@@ -31,6 +31,12 @@ CreateFragmentDialogFiller::CreateFragmentDialogFiller(U2OpStatus &os)
 
 }
 
+CreateFragmentDialogFiller::CreateFragmentDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+    Filler(os, "CreateFragmentDialog", scenario)
+{
+
+}
+
 #define GT_CLASS_NAME "GTUtilsDialog::CreateFragmentDialogFiller"
 #define GT_METHOD_NAME "commonScenario"
 void CreateFragmentDialogFiller::commonScenario() {

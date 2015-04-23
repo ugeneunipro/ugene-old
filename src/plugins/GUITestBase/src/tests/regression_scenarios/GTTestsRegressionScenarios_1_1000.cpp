@@ -841,6 +841,83 @@ GUI_TEST_CLASS_DEFINITION(test_0681) {
     CHECK_SET_ERR(text == "TRC", "Sequcence part translated to <" + text + ">, expected TRC");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0684) {
+//    1. Open samples/Genbank/sars
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+
+//    2. Select region 2000-9000
+    GTUtilsSequenceView::selectSequenceRegion(os, 2000, 9000);
+
+//    3. Activate "Clonning->Create fragment"
+
+    class CreateFragmentScenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal dialog is NULL");
+
+//    The opened dialog should have the selected region by default.
+            GTComboBox::checkCurrentValue(os, GTWidget::findExactWidget<QComboBox *>(os, "region_type_combo", dialog), "Selected region");
+            GTLineEdit::checkText(os, GTWidget::findExactWidget<QLineEdit *>(os, "start_edit_line", dialog), "2000");
+            GTLineEdit::checkText(os, GTWidget::findExactWidget<QLineEdit *>(os, "end_edit_line", dialog), "9000");
+
+//    4. Set left overhang "AATT", forward
+            GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, "leftEndBox", dialog));
+            GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton *>(os, "lDirectButton", dialog));
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "lCustomOverhangEdit", dialog), "AATT");
+
+//       Set right overhang "AATT", reverse-complement
+            GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, "rightEndBox", dialog));
+            GTRadioButton::click(os, GTWidget::findExactWidget<QRadioButton *>(os, "rComplButton", dialog));
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "rCustomOverhangEdit", dialog), "AATT");
+
+//       Click OK
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Cloning" << "Create Fragment..."));
+    GTUtilsDialog::waitForDialog(os, new CreateFragmentDialogFiller(os, new CreateFragmentScenario));
+    GTMenu::showMainMenu(os, GTMenu::ACTIONS);
+
+//    5. Activate "Cloning->Construct molecule"
+
+    class ConstructMoleculeScenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal dialog is NULL");
+
+//       Add created fragment.
+            GTListWidget::click(os, GTWidget::findExactWidget<QListWidget *>(os, "fragmentListWidget", dialog), "NC_004718 (sars.gb) Fragment (2000-9000) [7001 bp]");
+            GTWidget::click(os, GTWidget::findWidget(os, "takeButton", dialog));
+
+//       Set "Make circular" option selected
+            GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "makeCircularBox", dialog));
+
+//       The overhangs should be highlighted in green
+            QTreeWidgetItem *item = GTTreeWidget::findItem(os, GTWidget::findExactWidget<QTreeWidget *>(os, "molConstructWidget", dialog),
+                                                            "NC_004718 (sars.gb) Fragment (2000-9000) [7001 bp]", NULL, 1);
+            CHECK_SET_ERR(NULL != item, "Item is NULL");
+
+            const QColor color1 = item->textColor(0);
+            const QColor color2 = item->textColor(2);
+            const QColor expectedColor = Qt::green;
+
+            CHECK_SET_ERR(expectedColor == color1, QString("An unexpected item text color in column 0: expect '%1', got '%2'")
+                          .arg(expectedColor.name()).arg(color1.name()));
+            CHECK_SET_ERR(expectedColor == color2, QString("An unexpected item text color in column 2: expect '%1', got '%2'")
+                          .arg(expectedColor.name()).arg(color2.name()));
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Cloning" << "Construct molecule..."));
+    GTUtilsDialog::waitForDialog(os, new ConstructMoleculeDialogFiller(os, new ConstructMoleculeScenario));
+    GTMenu::showMainMenu(os, GTMenu::ACTIONS);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0685) {
     // 1. Do menu tools->Blast+ Search (ext. tools must be configured)
     // 2. Set next parameters:

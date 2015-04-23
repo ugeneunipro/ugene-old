@@ -29,6 +29,7 @@ namespace U2 {
 class CreateFragmentDialogFiller : public Filler {
 public:
     CreateFragmentDialogFiller(U2OpStatus &os);
+    CreateFragmentDialogFiller(U2OpStatus &os, CustomScenario *scenario);
 
     void commonScenario();
 };

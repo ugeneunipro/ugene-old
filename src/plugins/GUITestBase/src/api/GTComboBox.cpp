@@ -155,10 +155,21 @@ void GTComboBox::checkValues(U2OpStatus& os, QComboBox *comboBox, const QStringL
 #define GT_METHOD_NAME "checkValuesPresence"
 void GTComboBox::checkValuesPresence(U2OpStatus &os, QComboBox *comboBox, const QStringList &values){
     Q_UNUSED(os)
-    foreach (QString s, values) {
+    GT_CHECK(NULL != comboBox, "ComboBox is NULL");
+
+    foreach (const QString &s, values) {
         int index = comboBox->findText(s);
         GT_CHECK(index != -1, "text not found " + s);
     }
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkCurrentValue"
+void GTComboBox::checkCurrentValue(U2OpStatus &os, QComboBox *comboBox, const QString &expectedValue) {
+    Q_UNUSED(os);
+    GT_CHECK(NULL != comboBox, "ComboBox is NULL");
+    GT_CHECK(expectedValue == comboBox->currentText(), QString("An unexpected value: expect '%1', got '%2'")
+             .arg(expectedValue).arg(comboBox->currentText()));
 }
 #undef GT_METHOD_NAME
 

@@ -44,6 +44,7 @@ public:
     static void checkValues(U2OpStatus& os, QComboBox *comboBox, const QStringList &values);
 
     static void checkValuesPresence(U2OpStatus& os, QComboBox *comboBox, const QStringList &values);
+    static void checkCurrentValue(U2OpStatus &os, QComboBox *comboBox, const QString &expectedValue);
 };
 
 }
