@@ -53,7 +53,7 @@
 namespace U2 {
 namespace GUITest_common_scenarios_align_sequences_to_msa{
 
-void checkAlignedRegion(U2OpStatus& os, QRect& selectionRect, const QString& expectedContent) {
+void checkAlignedRegion(U2OpStatus& os, QRect selectionRect, const QString& expectedContent) {
     GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, selectionRect.center().x()));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_go_to_position"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
