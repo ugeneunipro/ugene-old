@@ -440,7 +440,6 @@ QVariantMap SQLiteDbi::shutdown(U2OpStatus& os) {
 }
 
 bool SQLiteDbi::flush(U2OpStatus& ) {
-    //todo:
     return true;
 }
 
