@@ -124,6 +124,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h \
 #   Runnables / UGENE / plugins / weight_matrix
             src/runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.h \
+            src/runnables/ugene/plugins/weight_matrix/PwmSearchDialogFiller.h \
 #   Runnables / UGENE / plugins / workflow_designer
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.h \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h \
@@ -391,6 +392,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.cpp \
 #   Runnables / UGENE / plugins / weight_matrix
             src/runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.cpp \
+            src/runnables/ugene/plugins/weight_matrix/PwmSearchDialogFiller.cpp \
 #   Runnables / UGENE / plugins / workflow_designer
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.cpp \
@@ -540,4 +542,4 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTToolbar.cpp \
             src/api/GTTreeView.cpp \
             src/api/GTTreeWidget.cpp \
-            src/api/GTWidget.cpp
+            src/api/GTWidget.cpp \

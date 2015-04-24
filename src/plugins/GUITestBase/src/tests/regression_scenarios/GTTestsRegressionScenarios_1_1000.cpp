@@ -138,6 +138,7 @@
 #include "runnables/ugene/plugins/external_tools/SpadesGenomeAssemblyDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
 #include "runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.h"
+#include "runnables/ugene/plugins/weight_matrix/PwmSearchDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/CreateElementWithCommandLineToolFiller.h"
@@ -934,6 +935,37 @@ GUI_TEST_CLASS_DEFINITION(test_0685) {
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::BLAST_MENU << ToolsMenu::BLAST_SEARCHP);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0688) {
+//    1. Open any sequence
+    GTFileDialog::openFile(os, dataDir+ "samples/FASTA/human_T1.fa");
+
+//    2. do context menu {Analyzq->Search TBFS with matrices}
+
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+//    3. In opened dialog, select any matrix and press Search button
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "position_weight_matrix/JASPAR/fungi/MA0265.1.pfm"));
+            GTWidget::click(os, GTWidget::findWidget(os, "pbSelectModelFile", dialog));
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+            GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: selected matrix still shown
+            const QString expectedPath = QFileInfo(dataDir + "position_weight_matrix/JASPAR/fungi/MA0265.1.pfm").canonicalFilePath();
+            GTLineEdit::checkText(os, GTWidget::findExactWidget<QLineEdit *>(os, "modelFileEdit", dialog), expectedPath);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new PwmSearchDialogFiller(os, new Scenario));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Search TFBS with matrices");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0700) {
