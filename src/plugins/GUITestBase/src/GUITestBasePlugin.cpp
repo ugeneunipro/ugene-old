@@ -43,6 +43,7 @@
 #include "tests/common_scenarios/project/anonymous_project/GTTestsProjectAnonymousProject.h"
 #include "tests/common_scenarios/project/project_filtering/GTTestsProjectFiltering.h"
 #include "tests/common_scenarios/msa_editor/GTTestsMsaEditor.h"
+#include "tests/common_scenarios/msa_editor/align/GTTestsAlignSequenceToMsa.h"
 #include "tests/common_scenarios/msa_editor/colors/GTTestsMSAEditorColors.h"
 #include "tests/common_scenarios/msa_editor/consensus/GTTestsMSAEditorConsensus.h"
 #include "tests/common_scenarios/msa_editor/edit/GTTestsMSAEditorEdit.h"
@@ -1424,6 +1425,18 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0051);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_fake);
+/////////////////////////////////////////////////////////////////////////
+// Common align sequences to an alignment
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_align_sequences_to_msa::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_align_sequences_to_msa::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_align_sequences_to_msa::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_align_sequences_to_msa::test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_align_sequences_to_msa::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_align_sequences_to_msa::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_align_sequences_to_msa::test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_align_sequences_to_msa::test_0008);
+    REGISTER_TEST(GUITest_common_scenarios_align_sequences_to_msa::test_0009);
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/msa_editor/colors
 /////////////////////////////////////////////////////////////////////////
