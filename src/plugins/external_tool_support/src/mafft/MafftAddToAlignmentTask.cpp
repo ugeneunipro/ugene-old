@@ -58,7 +58,14 @@ namespace U2 {
 /* MafftAddToAlignmentTask */
 /************************************************************************/
 MafftAddToAlignmentTask::MafftAddToAlignmentTask(const AlignSequencesToAlignmentTaskSettings& settings)
-: AbstractAlignmentTask(tr("Align sequences to alignment task"), TaskFlag_NoRun), settings(settings) {
+  : AbstractAlignmentTask(tr("Align sequences to alignment task"), TaskFlag_NoRun),
+    settings(settings),
+    logParser(NULL),
+    saveSequencesDocumentTask(NULL),
+    saveAlignmentDocumentTask(NULL),
+    mafftTask(NULL),
+    loadTmpDocumentTask(NULL)
+{
     GCOUNTER(cvar, tvar, "MafftAddToAlignmentTask" );
 
     SAFE_POINT_EXT(settings.isValid(), setError("Incorrect settings were passed into MafftAddToAlignmentTask"), );
