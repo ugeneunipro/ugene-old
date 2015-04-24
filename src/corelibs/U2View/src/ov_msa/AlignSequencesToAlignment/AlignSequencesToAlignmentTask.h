@@ -54,13 +54,13 @@ public:
 
     const DNAAlphabet* getAlphabet() const;
 
-    bool extractedFromMsa() const; 
-
     const QList<U2EntityRef>& getSequenceRefs() const;
 
     const QStringList& getSequenceNames() const;
 
     qint64 getMaxSequencesLength() const;
+
+    const QList<Document*>& getUsedDocuments() const;
 
 private:
     void checkAlphabet(const DNAAlphabet* alphabet, const QString& objectName);
@@ -71,6 +71,7 @@ private:
     bool extractFromMsa;
     QStringList sequenceNames;
     qint64 sequencesMaxLength;
+    QList<Document*> usedDocuments;
 };
 
 class LoadSequencesTask : public Task {
@@ -83,11 +84,7 @@ public:
 
     ReportResult report();
 
-    bool extractedFromMsa() const;
-
-    const QList<U2EntityRef>& getSequenceRefs() const;
-    const QStringList& getSequencesNames() const;
-    qint64 getMaxSequencesLength() const;
+    const SequenceObjectsExtractor& getExtractor() const;
 
 private:
     const DNAAlphabet* msaAlphabet;
@@ -103,7 +100,7 @@ private:
 class AlignSequencesToAlignmentTask : public Task {
     Q_OBJECT
 public:
-    AlignSequencesToAlignmentTask(MAlignmentObject* obj, const QList<U2EntityRef>& sequenceRefs, const QStringList& seqNames, qint64 sequencesMaxLength);
+    AlignSequencesToAlignmentTask(MAlignmentObject* obj, const SequenceObjectsExtractor& extractor);
     void prepare();
     ReportResult report();
 private:
@@ -115,6 +112,7 @@ private:
     StateLock*                  docStateLock;
     qint64 sequencesMaxLength;
     AlignSequencesToAlignmentTaskSettings settings;
+    QList<Document*> usedDocuments;
 };
 
 class LoadSequencesAndAlignToAlignmentTask : public Task {

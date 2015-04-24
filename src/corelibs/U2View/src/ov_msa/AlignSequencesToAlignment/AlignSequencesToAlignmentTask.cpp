@@ -70,6 +70,13 @@ void SequenceObjectsExtractor::extractSequencesFromDocument(Document* doc) {
 
 void SequenceObjectsExtractor::extractSequencesFromObjects(const QList<GObject*>& objects) {
     foreach(GObject* object, objects) {
+        Document* doc = object->getDocument();
+        if(doc != NULL) {
+            if(!usedDocuments.contains(doc)){
+                usedDocuments << doc;
+            }
+        }
+
         if(object->getGObjectType() == GObjectTypes::MULTIPLE_ALIGNMENT) {
             extractFromMsa = true;
             MAlignmentObject* curObj = qobject_cast<MAlignmentObject*>(object);
@@ -116,10 +123,6 @@ const DNAAlphabet* SequenceObjectsExtractor::getAlphabet() const {
     return seqsAlphabet;
 }
 
-bool SequenceObjectsExtractor::extractedFromMsa() const {
-    return extractFromMsa;
-}
-
 const QList<U2EntityRef>& SequenceObjectsExtractor::getSequenceRefs() const {
     return sequenceRefs;
 }
@@ -129,6 +132,10 @@ const QStringList& SequenceObjectsExtractor::getSequenceNames() const {
 }
 qint64 SequenceObjectsExtractor::getMaxSequencesLength() const {
     return sequencesMaxLength;
+}
+
+const QList<Document*>& SequenceObjectsExtractor::getUsedDocuments() const {
+    return usedDocuments;
 }
 
 /************************************************************************/
@@ -195,30 +202,22 @@ Task::ReportResult LoadSequencesTask::report() {
     return ReportResult_Finished;
 }
 
-bool LoadSequencesTask::extractedFromMsa() const {
-    return extractor.extractedFromMsa();
+const SequenceObjectsExtractor& LoadSequencesTask::getExtractor() const {
+    return extractor;
 }
 
-const QList<U2EntityRef>& LoadSequencesTask::getSequenceRefs() const {
-    return extractor.getSequenceRefs();
-}
-const QStringList& LoadSequencesTask::getSequencesNames() const {
-    return extractor.getSequenceNames();
-}
-qint64 LoadSequencesTask::getMaxSequencesLength() const {
-    return extractor.getMaxSequencesLength();
-}
 
 
 /************************************************************************/
 /* AlignSequencesToAlignmentTask */
 /************************************************************************/
-AlignSequencesToAlignmentTask::AlignSequencesToAlignmentTask( MAlignmentObject* obj, const QList<U2EntityRef>& sequenceRefs, const QStringList& seqNames, qint64 sequencesMaxLength)
-: Task(tr("Align sequences to alignment task"), TaskFlag_NoRun), maObj(obj), stateLock(NULL), docStateLock(NULL), sequencesMaxLength(sequencesMaxLength)
+AlignSequencesToAlignmentTask::AlignSequencesToAlignmentTask(MAlignmentObject* obj, const SequenceObjectsExtractor& extractor)
+: Task(tr("Align sequences to alignment task"), TaskFlag_NoRun), maObj(obj), stateLock(NULL), docStateLock(NULL), sequencesMaxLength(extractor.getMaxSequencesLength())
 {
     fillSettingsByDefault();
-    settings.addedSequencesRefs = sequenceRefs;
-    settings.addedSequencesNames = seqNames;
+    settings.addedSequencesRefs = extractor.getSequenceRefs();
+    settings.addedSequencesNames = extractor.getSequenceNames();
+    usedDocuments = extractor.getUsedDocuments();
 }
 
 void AlignSequencesToAlignmentTask::prepare()
@@ -236,6 +235,9 @@ void AlignSequencesToAlignmentTask::prepare()
     SAFE_POINT(NULL != document, "MSA object is NULL.", );
     docStateLock = new StateLock("Lock MSA for align sequences to alignment", StateLockFlag_LiveLock);
     document->lockState(docStateLock);
+    foreach(Document* curDoc, usedDocuments) {
+        curDoc->lockState(docStateLock);
+    }
 
     stateLock = new StateLock("Align sequences to alignment", StateLockFlag_LiveLock);
     maObj->lockState(stateLock);
@@ -270,6 +272,11 @@ Task::ReportResult AlignSequencesToAlignmentTask::report() {
     if(docStateLock != NULL) {
         Document* document =  maObj->getDocument();
         document->unlockState(docStateLock);
+
+        foreach(Document* curDoc, usedDocuments) {
+            curDoc->unlockState(docStateLock);
+        }
+
         delete docStateLock;
     }
 
@@ -293,7 +300,7 @@ LoadSequencesAndAlignToAlignmentTask::LoadSequencesAndAlignToAlignmentTask(MAlig
 QList<Task*> LoadSequencesAndAlignToAlignmentTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> subTasks;
     if(subTask == loadSequencesTask && !loadSequencesTask->hasError() && !loadSequencesTask->isCanceled()) {
-        AlignSequencesToAlignmentTask* alignSequencesToAlignmentTask = new AlignSequencesToAlignmentTask(maObj, loadSequencesTask->getSequenceRefs(), loadSequencesTask->getSequencesNames(), loadSequencesTask->getMaxSequencesLength());
+        AlignSequencesToAlignmentTask* alignSequencesToAlignmentTask = new AlignSequencesToAlignmentTask(maObj, loadSequencesTask->getExtractor());
         subTasks << alignSequencesToAlignmentTask;
     }
     return subTasks;

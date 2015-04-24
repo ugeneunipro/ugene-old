@@ -809,8 +809,7 @@ void MSAEditor::alignSequencesFromObjectsToAlignment(const QList<GObject*>& obje
     extractor.extractSequencesFromObjects(objects);
 
     if(!extractor.getSequenceRefs().isEmpty()) {
-        AlignSequencesToAlignmentTask* task = new AlignSequencesToAlignmentTask(msaObject, extractor.getSequenceRefs(), extractor.getSequenceNames(), 
-            extractor.getMaxSequencesLength());
+        AlignSequencesToAlignmentTask* task = new AlignSequencesToAlignmentTask(msaObject, extractor);
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
     }
 }
