@@ -144,23 +144,19 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     GTWidget::click( os, align);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    CHECK_SET_ERR(GTUtilsMsaEditor::getSequencesCount(os) == 135, "Incorrect sequences count");
+    CHECK_SET_ERR(GTUtilsMsaEditor::getSequencesCount(os) == 152, "Incorrect sequences count");
 
     const bool hasMessage = logTracer.checkMessage("--addfragments");
     CHECK_SET_ERR(hasMessage, "The expected message is not found in the log");
 
-    checkAlignedRegion(os, QRect(QPoint(50,17), QPoint(85,27)),
-    QString("GGTGATAGTCAAATCTATAATGTAATTGTAACCTCT\n"
-            "------------------------------------\n"
-            "------------------------------------\n"
-            "------------------------------------\n"
-            "------------------------------------\n"
-            "------------------------------------\n"
-            "------------------------------------\n"
-            "----------------GTCTTGTAGTTGCCGTCGTC\n"
-            "------------------------------------\n"
-            "------------------------------------\n"
-            "GGTGGTAATGCCATGTAATATG--------------"));
+    checkAlignedRegion(os, QRect(QPoint(86,17), QPoint(114,23)),
+        QString("CATGCCTTTGTAATAATCTTCTTTATAGT\n"
+                "-----------------------------\n"
+                "-----------------------------\n"
+                "CTATCCTTCGCAAGACCCTTC--------\n"
+                "-----------------------------\n"
+                "-----------------------------\n"
+                "---------ATAATACCGCGCCACATAGC"));
 }
 
 
@@ -180,17 +176,12 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
     GTWidget::click( os, align);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    CHECK_SET_ERR(GTUtilsMsaEditor::getSequencesCount(os) == 135, "Incorrect sequences count");
+    CHECK_SET_ERR(GTUtilsMsaEditor::getSequencesCount(os) == 152, "Incorrect sequences count");
 
-    checkAlignedRegion(os, QRect(QPoint(36, 17), QPoint(55,24)),
-        QString("GCTGTACTTTTATTGGTGAT\n"
-        "--------------------\n"
-        "--------------------\n"
-        "--------------------\n"
-        "--------------------\n"
-        "--------------------\n"
-        "--------------------\n"
-        "GTCTTGTAGTTGCCGTCGTC"));
+    checkAlignedRegion(os, QRect(QPoint(51, 17), QPoint(71, 19)),
+        QString("GTGATAGTCAAATCTATAATG\n"
+                "---------------------\n"
+                "GACTGGTTCCAATTGACAAGC"));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005){
