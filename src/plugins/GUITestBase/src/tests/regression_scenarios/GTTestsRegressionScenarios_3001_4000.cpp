@@ -5463,7 +5463,7 @@ GUI_TEST_CLASS_DEFINITION(test_3938) {
     GTLogTracer lt;
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addSample(os, "Variation annotation with SnpEff");
-    GTUtilsWorkflowDesigner::addInputFile(os, "File(s) with variations", testDir + "_common_data/vcf/valid.vcf");
+    GTUtilsWorkflowDesigner::addInputFile(os, "Input Variations File", testDir + "_common_data/vcf/valid.vcf");
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
     QString error = lt.getError();
