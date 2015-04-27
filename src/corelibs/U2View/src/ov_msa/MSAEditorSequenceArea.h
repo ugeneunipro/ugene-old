@@ -228,7 +228,7 @@ public:
     // update selection when collapsible model changed
     void updateSelection();
 
-    void setSelection(const MSAEditorSelection& sel);
+    void setSelection(const MSAEditorSelection& sel, bool newHighlightSelection = false);
 
     void moveSelection(int dx, int dy, bool allowSelectionResize = false);
 
@@ -242,8 +242,6 @@ public:
     bool shiftSelectedRegion(int shift);
 
     void cancelSelection();
-
-    void setSelectionHighlighting(bool highlight = true);
 
     void deleteCurrentSelection();
 

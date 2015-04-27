@@ -190,8 +190,7 @@ void MSAEditorStatusWidget::sl_findNext( ) {
             if ( MAlignment_GapChar != c && MSAUtils::equalsIgnoreGaps(row, p, pat, selLength) ) {
                 // select the result now
                 MSAEditorSelection sel( p, s, selLength, 1 );
-                seqArea->setSelection( sel );
-                seqArea->setSelectionHighlighting( );
+                seqArea->setSelection( sel, true );
                 seqArea->centerPos( sel.topLeft( ) );
                 lastSearchPos = seqArea->getSelection( ).topLeft( );
                 return;
@@ -231,8 +230,7 @@ void MSAEditorStatusWidget::sl_findPrev( ) {
             {
                 // select the result now
                 MSAEditorSelection sel( p, s, selectionLength, 1 );
-                seqArea->setSelection( sel );
-                seqArea->setSelectionHighlighting( );
+                seqArea->setSelection( sel, true );
                 seqArea->centerPos( sel.topLeft( ) );
                 lastSearchPos = seqArea->getSelection( ).topLeft( );
                 return;

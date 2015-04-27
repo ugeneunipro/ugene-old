@@ -392,7 +392,6 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
     if ((e->button() == Qt::LeftButton)) {
         emit si_startMsaChanging();
 
-        seqArea->setSelectionHighlighting(false);
         if(Qt::ShiftModifier == e->modifiers()) {
             QWidget::mousePressEvent(e);
             scribbling = true;

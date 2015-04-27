@@ -1580,8 +1580,12 @@ QPoint MSAEditorSequenceArea::coordToPos(const QPoint& coord) const {
     return res;
 }
 
-void MSAEditorSequenceArea::setSelection(const MSAEditorSelection& s) {
+void MSAEditorSequenceArea::setSelection(const MSAEditorSelection& s, bool newHighlightSelection) {
     // TODO: assert(isInRange(s));
+    if (highlightSelection != newHighlightSelection) {
+        highlightSelection = newHighlightSelection;
+        update();
+    }
     if (s == selection) {
         return;
     }
@@ -2164,13 +2168,6 @@ void MSAEditorSequenceArea::cancelSelection()
 {
     MSAEditorSelection emptySelection;
     setSelection(emptySelection);
-}
-
-void MSAEditorSequenceArea::setSelectionHighlighting(bool highlight) {
-    if (highlightSelection != highlight) {
-        highlightSelection = highlight;
-        update();
-    }
 }
 
 void MSAEditorSequenceArea::updateHBarPosition(int base) {
