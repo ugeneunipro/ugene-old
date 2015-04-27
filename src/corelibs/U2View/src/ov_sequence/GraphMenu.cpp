@@ -66,8 +66,8 @@ void GraphAction::sl_handleGraphAction() {
         graphAction->view =
             new GSequenceGraphViewWithFactory(sequenceWidget, graphAction->factory);
         graphAction->view->setGraphDrawer(graphAction->factory->getDrawer(graphAction->view));
-        QList<GSequenceGraphData*> graphs = graphAction->factory->createGraphs(graphAction->view);
-        foreach(GSequenceGraphData* graph, graphs) {
+        QList<QSharedPointer<GSequenceGraphData> > graphs = graphAction->factory->createGraphs(graphAction->view);
+        foreach(const QSharedPointer<GSequenceGraphData>& graph, graphs) {
             graphAction->view->addGraphData(graph);
         }
         sequenceWidget->addSequenceView(graphAction->view);

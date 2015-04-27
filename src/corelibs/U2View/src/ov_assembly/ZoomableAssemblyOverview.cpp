@@ -120,7 +120,7 @@ void ZoomableAssemblyOverview::initSelectionRedraw() {
 void ZoomableAssemblyOverview::drawAll() {
     if(!model->isEmpty()) {
         //no coverage -> draw nothing
-        if(!coverageTaskRunner.isFinished()) {
+        if(!coverageTaskRunner.isIdle()) {
             cachedBackground = QPixmap(size());
             QPainter p(&cachedBackground);
             p.fillRect(cachedBackground.rect(), Qt::gray);

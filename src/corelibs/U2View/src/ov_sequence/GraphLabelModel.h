@@ -96,13 +96,13 @@ public:
     void setValue(float val) {value = val;}
     float getValue() const {return value;}
 
-    void setHintText(const QString &_hintText) {text.setText(_hintText);}
-    QString getHintText() const { return text.text();}
+    void setHintText(const QString &_hintText);
+    QString getHintText() const;
 
-    TextLabel& getTextLabel() {return text;}
+    TextLabel& getTextLabel();
 
     void setHintRect(const QRect &_hintRect);
-    QRect getHintRect() {return text.geometry();}
+    QRect getHintRect();
 
     void setParent(QWidget *parent);
 
@@ -116,15 +116,15 @@ public:
     void unmark();
 
     void setColor(QColor color, QColor markingColor);
-    QColor getFillingColor() {return image.getFillingColor();}
+    QColor getFillingColor();
 
     GraphLabel *attachedLabel;
 signals:
     void si_onHintDeleted(GraphLabel *label);
 private:
     bool eventFilter(QObject *target, QEvent* e);
-    TextLabel text;
-    RoundHint image;
+    TextLabel *text;
+    RoundHint *image;
     float position;
     float value;
     QPoint coord;
@@ -155,12 +155,12 @@ public:
 
     Labels& getLabels() {return labels;}
 
-    GraphLabel& getMovingLabel() {return movingLabel;}
+    GraphLabel& getMovingLabel(); 
 
 private:
     Q_DISABLE_COPY(MultiLabel);
     Labels labels;
-    GraphLabel movingLabel;
+    GraphLabel *movingLabel;
 private slots:
     void sl_deleteLabel(GraphLabel *label);
 };

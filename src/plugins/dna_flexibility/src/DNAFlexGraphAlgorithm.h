@@ -42,7 +42,8 @@ public:
        QVector<float>&,
        U2SequenceObject*,
        const U2Region&,
-       const GSequenceGraphWindowData*);
+       const GSequenceGraphWindowData*,
+       U2OpStatus &os);
 };
 
 

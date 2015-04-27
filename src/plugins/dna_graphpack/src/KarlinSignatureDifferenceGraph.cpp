@@ -49,11 +49,11 @@ bool KarlinGraphFactory::isEnabled(const U2SequenceObject* o) const {
     return al->isNucleic();
 }
 
-QList<GSequenceGraphData*> KarlinGraphFactory::createGraphs(GSequenceGraphView* v) {
+QList<QSharedPointer<GSequenceGraphData> > KarlinGraphFactory::createGraphs(GSequenceGraphView* v) {
     Q_UNUSED(v);
-    QList<GSequenceGraphData*> res;
+    QList<QSharedPointer<GSequenceGraphData> > res;
     assert(isEnabled(v->getSequenceObject()));
-    GSequenceGraphData* d = new GSequenceGraphData(getGraphName());
+    QSharedPointer<GSequenceGraphData> d = QSharedPointer<GSequenceGraphData>(new GSequenceGraphData(getGraphName()));
     d->ga = new KarlinGraphAlgorithm();
     res.append(d);
     return res;
@@ -87,7 +87,7 @@ KarlinGraphAlgorithm::~KarlinGraphAlgorithm()
     delete[] global_relative_abundance_values;
 }
 
-void KarlinGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
+void KarlinGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d, U2OpStatus &os) {
     assert(d!=NULL);
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
@@ -107,23 +107,25 @@ void KarlinGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, c
     const char* seqc = seq.constData();
     if (global_relative_abundance_values == NULL) {
         global_relative_abundance_values = new float[16];
-        calculateRelativeAbundance(seqc, seqLen, global_relative_abundance_values);
+        calculateRelativeAbundance(seqc, seqLen, global_relative_abundance_values, os);
     }
     //check!!
     for (int i = 0; i < nSteps; i++) {
+        CHECK_OP(os, );
         int start = vr.startPos + i * d->step;
         int end = start + d->window;
-        float val = getValue(start, end, seq);
+        float val = getValue(start, end, seq, os);
         res.append(val);
     }
 }
 
-float KarlinGraphAlgorithm::getValue (int start, int end, const QByteArray& s) {
+float KarlinGraphAlgorithm::getValue (int start, int end, const QByteArray& s, U2OpStatus &os) {
     float relative_abundance_values[16];
-    calculateRelativeAbundance (s.constData()+start, end - start, relative_abundance_values);
+    calculateRelativeAbundance (s.constData()+start, end - start, relative_abundance_values, os);
     float signature_difference = 0;
     for (int first_base = 0 ; first_base < 4 ; ++first_base) {
         for (int second_base = 0 ; second_base < 4 ; ++second_base) {
+            CHECK_OP(os, 0);
             int idx = IDX(first_base,  second_base);
             float global_value = global_relative_abundance_values[idx];
             float local_value = relative_abundance_values[idx];
@@ -134,7 +136,7 @@ float KarlinGraphAlgorithm::getValue (int start, int end, const QByteArray& s) {
     return res;
 }
 
-void KarlinGraphAlgorithm::calculateRelativeAbundance (const char* seq, int length, float* results) {
+void KarlinGraphAlgorithm::calculateRelativeAbundance (const char* seq, int length, float* results, U2OpStatus &os) {
     QByteArray tmp;
     tmp.resize(length);
 
@@ -151,6 +153,7 @@ void KarlinGraphAlgorithm::calculateRelativeAbundance (const char* seq, int leng
     int next_r_base_index = 0;
 
     for (int i = 0 ; i < length - 1; ++i) {
+        CHECK_OP(os, );
         this_f_base = seq[i];
         next_f_base = seq[i + 1];
 

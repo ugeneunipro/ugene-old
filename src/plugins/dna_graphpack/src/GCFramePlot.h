@@ -42,7 +42,7 @@ class GCFramePlotFactory : public GSequenceGraphFactory {
     Q_OBJECT
 public:
     GCFramePlotFactory(QObject* p);
-    virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView* v);
+    virtual QList<QSharedPointer<GSequenceGraphData> > createGraphs(GSequenceGraphView* v);
     virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView* v);
     virtual bool isEnabled(const U2SequenceObject* o) const;
 };
@@ -52,10 +52,10 @@ public:
     GCFramePlotAlgorithm(int offset);
     virtual ~GCFramePlotAlgorithm() {}
 
-    virtual void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d);
+    virtual void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d, U2OpStatus &os);
 
 private:
-    void windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seq, int startPos, const GSequenceGraphWindowData* d, int nSteps);
+    void windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seq, int startPos, const GSequenceGraphWindowData* d, int nSteps, U2OpStatus &os);
     QBitArray map;
     int offset;
 };

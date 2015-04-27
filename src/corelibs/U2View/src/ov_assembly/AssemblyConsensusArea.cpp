@@ -144,7 +144,7 @@ void AssemblyConsensusArea::sl_zoomPerformed() {
 void AssemblyConsensusArea::drawSequence(QPainter &p) {
     if(areCellsVisible()) {
         U2Region visibleRegion = getVisibleRegion();
-        if(! consensusTaskRunner.isFinished() || canceled) {
+        if(! consensusTaskRunner.isIdle() || canceled) {
             if(!cache.region.isEmpty() && cache.region.intersects(visibleRegion)) {
                 // Draw a known part while others are still being calculated
                 // To do it, temporarily substitute lastResult with values from cache, then return it back
@@ -154,7 +154,7 @@ void AssemblyConsensusArea::drawSequence(QPainter &p) {
                 p.fillRect(rect(), QColor(0xff, 0xff, 0xff, 0x7f));
                 lastResult = storedLastResult;
             }
-            QString message = consensusTaskRunner.isFinished() ? tr("Consensus calculation canceled") : tr("Calculating consensus...");
+            QString message = consensusTaskRunner.isIdle() ? tr("Consensus calculation canceled") : tr("Calculating consensus...");
             p.drawText(rect(), Qt::AlignCenter, message);
         } else if(lastResult.region == visibleRegion && lastResult.algorithmId == consensusAlgorithm->getId()) {
             AssemblySequenceArea::drawSequence(p);
@@ -224,7 +224,7 @@ void AssemblyConsensusArea::mousePressEvent(QMouseEvent *e) {
 }
 
 void AssemblyConsensusArea::sl_consensusReady() {
-    if(consensusTaskRunner.isFinished()) {
+    if(consensusTaskRunner.isIdle()) {
         if(consensusTaskRunner.isSuccessful()) {
             cache = lastResult = consensusTaskRunner.getResult();
             canceled = false;

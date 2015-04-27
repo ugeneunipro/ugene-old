@@ -43,6 +43,7 @@ class U2VIEW_EXPORT GSequenceGraphView : public GSequenceLineView {
     Q_OBJECT
 public:
     GSequenceGraphView(QWidget* p, ADVSequenceObjectContext* ctx, GSequenceLineView* baseView, const QString& vName);
+
     ~GSequenceGraphView();
 
     const QString& getGraphViewName() const {return vName;}
@@ -51,11 +52,11 @@ public:
 
     void createLabelsOnPositions(const QList<QVariant>& positions);
 
-    void addGraphData(GSequenceGraphData* g);
+    void addGraphData(const QSharedPointer<GSequenceGraphData> &g);
 
     void setGraphDrawer(GSequenceGraphDrawer* gd);
 
-    const QList<GSequenceGraphData*>& getGraphs() const {return graphs;}
+    const QList<QSharedPointer<GSequenceGraphData> >& getGraphs() const {return graphs;}
 
     GSequenceGraphDrawer* getGSequenceGraphDrawer() const {return graphDrawer;}
 
@@ -75,10 +76,10 @@ protected:
     void onVisibleRangeChanged(bool signal = true);
 
 signals:
-    void si_labelAdded(GSequenceGraphData*, GraphLabel*, const QRect&);
-    void si_labelMoved(GSequenceGraphData*, GraphLabel*, const QRect&);
-    void si_frameRangeChanged(GSequenceGraphData*, const QRect&);
-    void si_labelsColorChange(GSequenceGraphData*);
+    void si_labelAdded(const QSharedPointer<GSequenceGraphData>& , GraphLabel*, const QRect&);
+    void si_labelMoved(const QSharedPointer<GSequenceGraphData>&, GraphLabel*, const QRect&);
+    void si_frameRangeChanged(const QSharedPointer<GSequenceGraphData>&, const QRect&);
+    void si_labelsColorChange(const QSharedPointer<GSequenceGraphData>&);
 private slots:
     void sl_onShowVisualProperties(bool);
     void sl_onSelectExtremumPoints();
@@ -89,7 +90,7 @@ private slots:
 private:
     GSequenceLineView*          baseView;
     QString                     vName;
-    QList<GSequenceGraphData*>  graphs;
+    QList<QSharedPointer<GSequenceGraphData> >  graphs;
     GSequenceGraphDrawer*       graphDrawer;
     QAction*                    visualPropertiesAction;
     QAction*                    saveGraphCutoffsAction;
@@ -115,6 +116,8 @@ protected:
     void drawSelection(QPainter& p);
 signals:
     void si_graphRectChanged(const QRect&);
+private slots:
+    void sl_graphDataUpdated();
 private:
 
     QFont *headerFont;

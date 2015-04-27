@@ -63,12 +63,12 @@ bool DNAFlexGraphFactory::isEnabled(const U2SequenceObject* sequenceObject) cons
 /**
  * Initializes graph data
  */
-QList<GSequenceGraphData*> DNAFlexGraphFactory::createGraphs(GSequenceGraphView* view)
+QList<QSharedPointer<GSequenceGraphData> > DNAFlexGraphFactory::createGraphs(GSequenceGraphView* view)
 {
     Q_UNUSED(view);
-    QList<GSequenceGraphData*> res;
+    QList<QSharedPointer<GSequenceGraphData> > res;
     assert(isEnabled(view->getSequenceObject()));
-    GSequenceGraphData* data = new GSequenceGraphData(getGraphName());
+    QSharedPointer<GSequenceGraphData> data = QSharedPointer<GSequenceGraphData>(new GSequenceGraphData(getGraphName()));
     data->ga = new DNAFlexGraphAlgorithm();
     res.append(data);
     return res;

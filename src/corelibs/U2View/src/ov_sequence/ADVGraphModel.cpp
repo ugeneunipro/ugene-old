@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/AppContext.h>
 
 #include "ADVGraphModel.h"
 #include "GSequenceGraphView.h"
@@ -48,11 +49,12 @@ GSequenceGraphData::~GSequenceGraphData() {
     delete ga;
 }
 
-void GSequenceGraphUtils::calculateMinMax(const QVector<float>& data, float& min, float& max)  {
+void GSequenceGraphUtils::calculateMinMax(const QVector<float>& data, float& min, float& max, U2OpStatus &os)  {
     assert(data.size() > 0);
     min = max = data.first();
     const float* d = data.constData();
     for (int i=1, n = data.size() ; i<n ; i++) {
+        CHECK_OP(os, );
         float val = d[i];
         if (min > val) {
             min = val;
@@ -156,32 +158,31 @@ GSequenceGraphDrawer::GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenc
                                            QMap<QString,QColor> colors)
 : QObject(v), view(v), lineColors(colors), globalMin(0), globalMax(0), wdata(wd)
 {
-    connect(v, SIGNAL(si_frameRangeChanged(GSequenceGraphData*, const QRect&)),
-            this, SLOT(sl_frameRangeChanged(GSequenceGraphData*, const QRect&)));
-    connect(v, SIGNAL(si_visibleRangeChanged()),
-            this, SLOT(sl_labelAdded()));
-    connect(v, SIGNAL(si_labelAdded(GSequenceGraphData*, GraphLabel*, const QRect&)),
-            this, SLOT(sl_labelAdded(GSequenceGraphData*, GraphLabel*, const QRect&)));
-    connect(v, SIGNAL(si_labelMoved(GSequenceGraphData*, GraphLabel*, const QRect&)),
-            this, SLOT(sl_labelMoved(GSequenceGraphData*, GraphLabel*, const QRect&)));
-    connect(v, SIGNAL(si_labelsColorChange(GSequenceGraphData*)),
-            this, SLOT(sl_labelsColorChange(GSequenceGraphData*)));
+    connect(v, SIGNAL(si_frameRangeChanged(const QSharedPointer<GSequenceGraphData>&, const QRect&)),
+            this, SLOT(sl_frameRangeChanged(const QSharedPointer<GSequenceGraphData>&, const QRect&)));
+    connect(v, SIGNAL(si_labelAdded(const QSharedPointer<GSequenceGraphData>&, GraphLabel*, const QRect&)),
+            this, SLOT(sl_labelAdded(const QSharedPointer<GSequenceGraphData>&, GraphLabel*, const QRect&)));
+    connect(v, SIGNAL(si_labelMoved(const QSharedPointer<GSequenceGraphData>&, GraphLabel*, const QRect&)),
+            this, SLOT(sl_labelMoved(const QSharedPointer<GSequenceGraphData>&, GraphLabel*, const QRect&)));
+    connect(v, SIGNAL(si_labelsColorChange(const QSharedPointer<GSequenceGraphData>&)),
+            this, SLOT(sl_labelsColorChange(const QSharedPointer<GSequenceGraphData>&)));
     defFont = new QFont("Arial", 8);
     if (colors.isEmpty()) {
         lineColors.insert(DEFAULT_COLOR, Qt::black);
     }
+    connect(&calculationTaskRunner, SIGNAL(si_finished()), SIGNAL(si_graphDataUpdated()));
 }
 
 GSequenceGraphDrawer::~GSequenceGraphDrawer() {
     delete defFont;
 }
 
-void GSequenceGraphDrawer::draw(QPainter& p, QList<GSequenceGraphData*> graphs, const QRect& rect) {
+void GSequenceGraphDrawer::draw(QPainter& p, const QList<QSharedPointer<GSequenceGraphData> > &graphs, const QRect& rect) {
 
     globalMin = 0;
     globalMax = 0;
 
-    foreach (GSequenceGraphData* graph, graphs) {
+    foreach (const QSharedPointer<GSequenceGraphData>& graph, graphs) {
         drawGraph(p, graph, rect);
     }
 
@@ -203,7 +204,7 @@ void GSequenceGraphDrawer::draw(QPainter& p, QList<GSequenceGraphData*> graphs, 
          p.drawText(minTextRect, Qt::AlignRight, QString::number((double) globalMin, 'g', 4));
      }
 }
-void GSequenceGraphDrawer::sl_frameRangeChanged(GSequenceGraphData *graph, const QRect &rect) {
+void GSequenceGraphDrawer::sl_frameRangeChanged(const QSharedPointer<GSequenceGraphData>& graph, const QRect &rect) {
     foreach(GraphLabel *label, graph->graphLabels.getLabels()) {
         int res = updateStaticLabels(graph, label, rect);
         if (res == 0) {
@@ -211,15 +212,15 @@ void GSequenceGraphDrawer::sl_frameRangeChanged(GSequenceGraphData *graph, const
         }
     }
 }
-void GSequenceGraphDrawer::sl_labelAdded(GSequenceGraphData *graph, GraphLabel *label, const QRect &rect) {
+void GSequenceGraphDrawer::sl_labelAdded(const QSharedPointer<GSequenceGraphData>& graph, GraphLabel *label, const QRect &rect) {
     updateStaticLabels(graph, label, rect);
 }
 
-void  GSequenceGraphDrawer::sl_labelMoved(GSequenceGraphData *graph, GraphLabel *label, const QRect &rect) {
+void  GSequenceGraphDrawer::sl_labelMoved(const QSharedPointer<GSequenceGraphData>& graph, GraphLabel *label, const QRect &rect) {
     updateMovingLabels(graph, label, rect);
 }
 
-void  GSequenceGraphDrawer::sl_labelsColorChange(GSequenceGraphData *graph) {
+void  GSequenceGraphDrawer::sl_labelsColorChange(const QSharedPointer<GSequenceGraphData>& graph) {
     QColor color;
 
     if  (lineColors.contains(graph->graphName)) {
@@ -236,184 +237,186 @@ void  GSequenceGraphDrawer::sl_labelsColorChange(GSequenceGraphData *graph) {
 }
 
 
-void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const QRect& rect ) {
+void GSequenceGraphDrawer::drawGraph(QPainter& p, const QSharedPointer<GSequenceGraphData>& d, const QRect& rect) {
     float min=0;
     float max=0;
     PairVector points;
     int nPoints = rect.width();
     calculatePoints(d, points, min, max, nPoints);
 
-    assert(points.firstPoints.size() == nPoints);
+    if (!points.isEmpty()) {
+        assert(points.firstPoints.size() == nPoints);
 
-    double comin = commdata.min, comax = commdata.max;
-    if (commdata.enableCuttoff){
-        min = comin;
-        max = comax;
-    }
-
-    globalMin = min;
-    globalMax = max;
-
-    QPen graphPen(Qt::SolidLine);
-    if (lineColors.contains(d->graphName)) {
-        graphPen.setColor(lineColors.value(d->graphName));
-    } else {
-        graphPen.setColor(lineColors.value(DEFAULT_COLOR));
-    }
-
-    graphPen.setWidth(1);
-    p.setPen(graphPen);
-
-
-    int graphHeight = rect.bottom() - rect.top() - 2;
-    float kh = (min == max) ? 1 : graphHeight / (max - min);
-
-    int prevY = -1;
-    int prevX = -1;
-
-    if (!commdata.enableCuttoff) {
-        ////////cutoff off
-        for (int i = 0, n = nPoints; i < n; i++) {
-            float fy1 = points.firstPoints[i];
-            if (isUnknownValue(fy1)) {
-                continue;
-            }
-            int dy1 = qRound((fy1 - min) * kh);
-            assert(dy1 <= graphHeight);
-            int y1 = rect.bottom() - 1 - dy1;
-            int x = rect.left() + i;
-            assert(y1 > rect.top() && y1 < rect.bottom());
-            if (prevX != -1) {
-                p.drawLine(prevX, prevY , x, y1);
-            }
-            prevY = y1;
-            prevX = x;
-            if (points.useIntervals) {
-                float fy2 = points.secondPoints[i];
-                if (isUnknownValue(fy2)) {
-                    continue;
-                }
-                int dy2 = qRound((fy2 - min) * kh);
-                assert(dy2 <= graphHeight);
-                int y2 = rect.bottom() - 1 - dy2;
-                assert(y2 > rect.top() && y2 < rect.bottom());
-                if (prevX != -1){
-                    p.drawLine(prevX, prevY , x, y2);
-                }
-                prevY = y2;
-                prevX = x;
-            }
+        double comin = commdata.min, comax = commdata.max;
+        if (commdata.enableCuttoff){
+            min = comin;
+            max = comax;
         }
-    } else    {
-        ////////cutoff on
 
-        float fymin = comin;
-        float fymax = comax;
-        float fymid = (comin + comax)/2;
-        float fy, fy2;
-        int prevFY = -1;
-        bool rp = false, lp = false;
-        if(!points.useIntervals){
-            for (int i=0, n = points.firstPoints.size(); i < n; i++) {
-                fy = points.firstPoints[i];
-                rp = false;
-                lp = false;
-                if (isUnknownValue(fy)) {
-                    continue;
-                }
-                if (fy >= fymax) {
-                    fy = fymax;
-                    if (prevFY == int(fymid)) lp=true;
-                }else if(fy < fymax && fy > fymin){
-                    fy = fymid;
-                    if (prevFY == int(fymax)) rp=true;
-                    if (prevFY == int(fymin)) lp=true;
-                }else{
-                    fy = fymin;
-                    if (prevFY == int(fymid)) lp=true;
-                }
+        globalMin = min;
+        globalMax = max;
 
-                int dy = qRound((fy - min) * kh);
-                assert(dy <= graphHeight);
-                int y = rect.bottom() - 1 - dy;
-                int x = rect.left() + i;
-
-                assert(y > rect.top() && y < rect.bottom());
-                if (prevX!=-1){
-                    p.drawLine(prevX, prevY , x, prevY);
-                }
-
-                if (prevY != y && prevX != -1){ // common case for cutoffs
-                    p.drawLine(x, prevY , x, y);
-                }
-                prevY = y;
-                prevX = x;
-                prevFY = (int) fy;
-            }
+        QPen graphPen(Qt::SolidLine);
+        if (lineColors.contains(d->graphName)) {
+            graphPen.setColor(lineColors.value(d->graphName));
         } else {
-            for (int i=0, n = points.firstPoints.size(); i < n; i++) {
-                assert(points.firstPoints.size() == points.secondPoints.size());
-                fy = points.firstPoints[i], fy2 = points.secondPoints[i];
-                rp = false;
-                lp = false;
-                if (isUnknownValue(fy)) {
+            graphPen.setColor(lineColors.value(DEFAULT_COLOR));
+        }
+
+        graphPen.setWidth(1);
+        p.setPen(graphPen);
+
+
+        int graphHeight = rect.bottom() - rect.top() - 2;
+        float kh = (min == max) ? 1 : graphHeight / (max - min);
+
+        int prevY = -1;
+        int prevX = -1;
+
+        if (!commdata.enableCuttoff) {
+            ////////cutoff off
+            for (int i = 0, n = nPoints; i < n; i++) {
+                float fy1 = points.firstPoints[i];
+                if (isUnknownValue(fy1)) {
                     continue;
                 }
-
-                assert(!isUnknownValue(fy2));
-
-                if (fy2 >= fymax) {
-                    fy2 = fymax;
-                }else if(fy2 < fymax && fy2 > fymin){
-                    fy2 = fymid;
-                }else{
-                    fy2 = fymin;
-                }
-
-                if (fy >= fymax) {
-                    fy = fymax;
-                    if (prevFY == int(fymid)) lp=true;
-                }else if(fy < fymax && fy > fymin){
-                    fy = fymid;
-                    if (prevFY == int(fymax)) rp=true;
-                    if (prevFY == int(fymin)) lp=true;
-                }else{
-                    fy = fymin;
-                    if (prevFY == int(fymid)) lp=true;
-                }
-
-                int dy = qRound((fy - min) * kh);
-                assert(dy <= graphHeight);
-                int y = rect.bottom() - 1 - dy;
+                int dy1 = qRound((fy1 - min) * kh);
+                assert(dy1 <= graphHeight);
+                int y1 = rect.bottom() - 1 - dy1;
                 int x = rect.left() + i;
-                if (lp) {
-                    p.drawLine(prevX, prevY, x, prevY);
+                assert(y1 > rect.top() && y1 < rect.bottom());
+                if (prevX != -1) {
+                    p.drawLine(prevX, prevY , x, y1);
+                }
+                prevY = y1;
+                prevX = x;
+                if (points.useIntervals) {
+                    float fy2 = points.secondPoints[i];
+                    if (isUnknownValue(fy2)) {
+                        continue;
+                    }
+                    int dy2 = qRound((fy2 - min) * kh);
+                    assert(dy2 <= graphHeight);
+                    int y2 = rect.bottom() - 1 - dy2;
+                    assert(y2 > rect.top() && y2 < rect.bottom());
+                    if (prevX != -1){
+                        p.drawLine(prevX, prevY , x, y2);
+                    }
+                    prevY = y2;
                     prevX = x;
                 }
-                if (rp) {
-                    p.drawLine(prevX,prevY,prevX,y);
-                    prevY = y;
-                }
-                assert(y > rect.top() && y < rect.bottom());
-                if (prevX!=-1){
-                    p.drawLine(prevX, prevY , x, y);
-                }
-                if(fy != fy2){
-                    int dy2 = qRound((fy2 - min) * kh);
-                    int y2 = rect.bottom() - 1 - dy2;
-                    p.drawLine(x,y, x, y2);
-                }
-                prevY = y;
-                prevX = x;
-                prevFY = (int) fy;
             }
+        } else    {
+            ////////cutoff on
 
+            float fymin = comin;
+            float fymax = comax;
+            float fymid = (comin + comax)/2;
+            float fy, fy2;
+            int prevFY = -1;
+            bool rp = false, lp = false;
+            if(!points.useIntervals){
+                for (int i=0, n = points.firstPoints.size(); i < n; i++) {
+                    fy = points.firstPoints[i];
+                    rp = false;
+                    lp = false;
+                    if (isUnknownValue(fy)) {
+                        continue;
+                    }
+                    if (fy >= fymax) {
+                        fy = fymax;
+                        if (prevFY == int(fymid)) lp=true;
+                    }else if(fy < fymax && fy > fymin){
+                        fy = fymid;
+                        if (prevFY == int(fymax)) rp=true;
+                        if (prevFY == int(fymin)) lp=true;
+                    }else{
+                        fy = fymin;
+                        if (prevFY == int(fymid)) lp=true;
+                    }
+
+                    int dy = qRound((fy - min) * kh);
+                    assert(dy <= graphHeight);
+                    int y = rect.bottom() - 1 - dy;
+                    int x = rect.left() + i;
+
+                    assert(y > rect.top() && y < rect.bottom());
+                    if (prevX!=-1){
+                        p.drawLine(prevX, prevY , x, prevY);
+                    }
+
+                    if (prevY != y && prevX != -1){ // common case for cutoffs
+                        p.drawLine(x, prevY , x, y);
+                    }
+                    prevY = y;
+                    prevX = x;
+                    prevFY = (int) fy;
+                }
+            } else {
+                for (int i=0, n = points.firstPoints.size(); i < n; i++) {
+                    assert(points.firstPoints.size() == points.secondPoints.size());
+                    fy = points.firstPoints[i], fy2 = points.secondPoints[i];
+                    rp = false;
+                    lp = false;
+                    if (isUnknownValue(fy)) {
+                        continue;
+                    }
+
+                    assert(!isUnknownValue(fy2));
+
+                    if (fy2 >= fymax) {
+                        fy2 = fymax;
+                    }else if(fy2 < fymax && fy2 > fymin){
+                        fy2 = fymid;
+                    }else{
+                        fy2 = fymin;
+                    }
+
+                    if (fy >= fymax) {
+                        fy = fymax;
+                        if (prevFY == int(fymid)) lp=true;
+                    }else if(fy < fymax && fy > fymin){
+                        fy = fymid;
+                        if (prevFY == int(fymax)) rp=true;
+                        if (prevFY == int(fymin)) lp=true;
+                    }else{
+                        fy = fymin;
+                        if (prevFY == int(fymid)) lp=true;
+                    }
+
+                    int dy = qRound((fy - min) * kh);
+                    assert(dy <= graphHeight);
+                    int y = rect.bottom() - 1 - dy;
+                    int x = rect.left() + i;
+                    if (lp) {
+                        p.drawLine(prevX, prevY, x, prevY);
+                        prevX = x;
+                    }
+                    if (rp) {
+                        p.drawLine(prevX,prevY,prevX,y);
+                        prevY = y;
+                    }
+                    assert(y > rect.top() && y < rect.bottom());
+                    if (prevX!=-1){
+                        p.drawLine(prevX, prevY , x, y);
+                    }
+                    if(fy != fy2){
+                        int dy2 = qRound((fy2 - min) * kh);
+                        int y2 = rect.bottom() - 1 - dy2;
+                        p.drawLine(x,y, x, y2);
+                    }
+                    prevY = y;
+                    prevX = x;
+                    prevFY = (int) fy;
+                }
+
+            }
         }
     }
 }
 const int mLabelCoordY = 20;
 
-void GSequenceGraphDrawer::selectExtremumPoints(GSequenceGraphData *graph, const QRect &graphRect, int windowSize, const U2Region &visibleRange)
+void GSequenceGraphDrawer::selectExtremumPoints(const QSharedPointer<GSequenceGraphData>& graph, const QRect &graphRect, int windowSize, const U2Region &visibleRange)
 {
     qint64 sequenceLength = view->getSequenceLength();
     int startPos = visibleRange.startPos;
@@ -459,7 +462,7 @@ void GSequenceGraphDrawer::selectExtremumPoints(GSequenceGraphData *graph, const
         updateStaticLabels(graph, minLabel, graphRect);
     }
 }
-int GSequenceGraphDrawer::updateStaticLabels(GSequenceGraphData *graph, GraphLabel *label, const QRect &rect)
+int GSequenceGraphDrawer::updateStaticLabels(const QSharedPointer<GSequenceGraphData>& graph, GraphLabel *label, const QRect &rect)
 {
     int nPoints = rect.width();
     PairVector points;
@@ -541,7 +544,7 @@ void GSequenceGraphDrawer::calculatePositionOfLabel(GraphLabel *label, int nPoin
     }
 }
 
-void GSequenceGraphDrawer::updateMovingLabels(GSequenceGraphData *graph, GraphLabel *label, const QRect &rect)
+void GSequenceGraphDrawer::updateMovingLabels(const QSharedPointer<GSequenceGraphData>& graph, GraphLabel *label, const QRect &rect)
 {
     int errorCode = updateStaticLabels(graph, label, rect);
     if (errorCode != 0) {
@@ -726,10 +729,7 @@ static void align(int start, int end, int win, int step, int seqLen, int& aligne
     assert(alignedLast < end);
 }
 
-
-
-
-void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& points, float& min, float& max, int numPoints) {
+void GSequenceGraphDrawer::calculatePoints(const QSharedPointer<GSequenceGraphData>& d, PairVector& points, float& min, float& max, int numPoints) {
     const U2Region& vr = view->getVisibleRange();
 
     int step = wdata.step;
@@ -754,9 +754,13 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
     bool winStepNotChanged = win == d->cachedW && step == d->cachedS ;
     bool numPointsNotChanged = numPoints == d->cachedData.firstPoints.size();
 
-    bool useCached = vr.length == d->cachedLen && vr.startPos == d->cachedFrom
-        && winStepNotChanged && numPointsNotChanged;
+    bool isCacheValid = vr.length == d->cachedLen && vr.startPos == d->cachedFrom && winStepNotChanged;
+    bool useCached = isCacheValid && numPointsNotChanged;
 
+    if (!calculationTaskRunner.isIdle() && isCacheValid && d->cachedData.firstPoints.size() == 0) { //first time calculation condition
+        return;
+    }
+    CalculatePointsTask *calculationTask = NULL;
     if (useCached) {
         points = d->cachedData;
     } else if (nSteps > numPoints) {
@@ -772,15 +776,25 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
             useCached = true;
             points = d->cachedData;
         } else {
-            calculateWithFit(d, points, alignedFirst, alignedLast);
-            calculateCutoffPoints(d, points, alignedFirst, alignedLast);
+            calculationTask = new CalculatePointsTask(d, this, points, alignedFirst, alignedLast, false, wdata, view->getSequenceObject(), vr);
         }
     } else {
         points.useIntervals = false;
         if(vr.startPos + win2 <= seqLen){
-            calculateWithExpand(d, points, alignedFirst, alignedLast);
-            calculateCutoffPoints(d, points, alignedFirst, alignedLast);
+            calculationTask = new CalculatePointsTask(d, this, points, alignedFirst, alignedLast, true, wdata, view->getSequenceObject(), vr);
         }
+    }
+
+    if (calculationTask != NULL) {
+        calculationTaskRunner.run(calculationTask);
+        d->cachedData = PairVector();
+        d->cachedFrom = vr.startPos;
+        d->cachedLen = vr.length;
+        d->cachedW = win;
+        d->cachedS = step;
+        d->alignedFC = alignedFirst;
+        d->alignedLC = alignedLast;
+        return;
     }
 
     // Calculate min-max values, ignore unknown values
@@ -823,114 +837,6 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
     d->alignedLC = alignedLast;
 }
 
-void GSequenceGraphDrawer::calculateCutoffPoints(GSequenceGraphData* d, PairVector& points, int alignedFirst, int alignedLast){
-    Q_UNUSED(alignedFirst);
-    Q_UNUSED(alignedLast);
-    points.cutoffPoints.clear();
-
-    int win = wdata.window;
-    U2SequenceObject* o = view->getSequenceObject();
-
-    U2Region r(alignedFirst, alignedLast - alignedFirst + win);
-    if( r.startPos + win > o->getSequenceLength() ){
-        return;
-    }
-
-    d->ga->calculate(points.cutoffPoints, view->getSequenceObject(), r, &wdata);
-}
-
-void GSequenceGraphDrawer::calculateWithFit(GSequenceGraphData* d, PairVector& points, int alignedFirst, int alignedLast) {
-    int nPoints = points.firstPoints.size();
-    float basesPerPoint = (alignedLast - alignedFirst) / float(nPoints);
-    assert(int(basesPerPoint) >= wdata.step); //ensure that every point is associated with some step data
-    QVector<float> pointData;
-    U2SequenceObject* o = view->getSequenceObject();
-    qint64 len = qMax(qint64(basesPerPoint), wdata.window);
-#ifdef DEBUG
-    int lastBase = alignedLast + wdata.window;
-#endif // DEBUG
-    for (int i = 0; i < nPoints; i++) {
-        pointData.clear();
-        qint64 startPos = alignedFirst + qint64(i * basesPerPoint);
-        U2Region r(startPos, len);
-#ifdef DEBUG
-        assert(r.endPos() <= lastBase);
-#endif
-        d->ga->calculate(pointData, o, r, &wdata);
-        float min, max;
-        GSequenceGraphUtils::calculateMinMax(pointData, min, max);
-
-        points.firstPoints[i] = max; //BUG:422: support interval based graph!!!
-        points.secondPoints[i] = min;
-    }
-}
-
-void GSequenceGraphDrawer::calculateWithExpand(GSequenceGraphData* d, PairVector& points, int alignedFirst, int alignedLast) {
-    int win = wdata.window;
-    int win2 = (win+1)/2;
-    int step = wdata.step;
-    assert((alignedLast - alignedFirst) % step == 0);
-
-    U2Region r(alignedFirst, alignedLast - alignedFirst + win);
-    U2SequenceObject* o = view->getSequenceObject();
-    QVector<float> res;
-
-    if( r.startPos + win > o->getSequenceLength() ){
-        return;
-    }
-
-    d->ga->calculate(res, o, r, &wdata);
-    const U2Region& vr = view->getVisibleRange();
-
-    assert(alignedFirst + win2 + step >= vr.startPos); //0 or 1 step is before the visible range
-    assert(alignedLast + win2 - step <= vr.endPos()); //0 or 1 step is after the the visible range
-
-    bool hasBeforeStep = alignedFirst + win2 < vr.startPos;
-    bool hasAfterStep  = alignedLast + win2 >= vr.endPos();
-
-    int firstBaseOffset = hasBeforeStep ?
-        (step - (vr.startPos - (alignedFirst + win2)))
-        : (alignedFirst + win2 - vr.startPos);
-    int lastBaseOffset = hasAfterStep ?
-        (step - (alignedLast + win2 - vr.endPos()))  //extra step on the right is available
-        : (vr.endPos() - (alignedLast + win2)); // no extra step available -> end of the sequence
-
-    assert(firstBaseOffset >= 0 && lastBaseOffset >= 0);
-    assert(hasBeforeStep ? (firstBaseOffset < step && firstBaseOffset!=0): firstBaseOffset <= win2);
-    assert(hasAfterStep ? (lastBaseOffset <= step && lastBaseOffset !=0) : lastBaseOffset < win2 + step);
-
-    float base2point = points.firstPoints.size() / (float)vr.length;
-
-    int ri = hasBeforeStep ? 1 : 0;
-    int rn = hasAfterStep ? res.size()-1 : res.size();
-    for (int i=0;  ri < rn; ri++, i++) {
-        int b = firstBaseOffset + i * step;
-        int px = int(b * base2point);
-        assert(px < points.firstPoints.size());
-        points.firstPoints[px] = res[ri];
-    }
-
-    //restore boundary points if possible
-    if(res.size() < 2){
-        return;
-    }
-
-    if (hasBeforeStep && !isUnknownValue(res[0]) && !isUnknownValue(res[1])) {
-        assert(firstBaseOffset > 0);
-        float k = firstBaseOffset / (float)step;
-        float val = res[1] + (res[0]-res[1])*k;
-        points.firstPoints[0] = val;
-    }
-
-    if (hasAfterStep && !isUnknownValue(res[rn-1]) &&  !isUnknownValue(res[rn])) {
-        assert(lastBaseOffset > 0);
-        float k = lastBaseOffset / (float)step;
-        float val = res[rn-1] + (res[rn]-res[rn-1])*k;
-        points.firstPoints[points.firstPoints.size()-1] = val;
-    }
-}
-
-
 void GSequenceGraphDrawer::showSettingsDialog() {
 
     GraphSettingsDialog dlg(this, U2Region(1, view->getSequenceLength()-1), view);
@@ -946,4 +852,134 @@ void GSequenceGraphDrawer::showSettingsDialog() {
         view->changeLabelsColor();
     }
 }
+
+bool PairVector::isEmpty()const {
+    return  firstPoints.isEmpty() &&  secondPoints.isEmpty() && cutoffPoints.isEmpty();
+}
+
+CalculatePointsTask::CalculatePointsTask(const QSharedPointer<GSequenceGraphData>& d, GSequenceGraphDrawer *drawer, PairVector &points, int alignedFirst, int alignedLast, bool expandMode, const GSequenceGraphWindowData &wdata, U2SequenceObject* o, const U2Region &visibleRange) 
+: BackgroundTask(tr("Calculate graph points"), TaskFlag_None), d(d), drawer(drawer), result(points), alignedFirst(alignedFirst), alignedLast(alignedLast), expandMode(expandMode), wdata(wdata), o(o), visibleRange(visibleRange) {}
+
+void CalculatePointsTask::run() {
+    if(o.isNull()){
+        return;
+    }
+    calculateCutoffPoints(d, result, alignedFirst, alignedLast, stateInfo);
+    if (expandMode) {
+        calculateWithExpand(d, result, alignedFirst, alignedLast, stateInfo);
+    } else {
+        calculateWithFit(d, result, alignedFirst, alignedLast, stateInfo);
+    }
+    if (isCanceled()) {
+        return;
+    }
+    d->cachedData = result;
+}
+
+void CalculatePointsTask::calculateCutoffPoints(const QSharedPointer<GSequenceGraphData>& d, PairVector& points, int alignedFirst, int alignedLast, U2OpStatus &os){
+    Q_UNUSED(alignedFirst);
+    Q_UNUSED(alignedLast);
+    points.cutoffPoints.clear();
+
+    int win = wdata.window;
+    U2Region r(alignedFirst, alignedLast - alignedFirst + win);
+    if( r.startPos + win > o->getSequenceLength() ){
+        return;
+    }
+
+    d->ga->calculate(points.cutoffPoints, o, r, &wdata, os);
+}
+
+void CalculatePointsTask::calculateWithFit(const QSharedPointer<GSequenceGraphData>&, PairVector& points, int alignedFirst, int alignedLast, U2OpStatus &os) {
+    int nPoints = points.firstPoints.size();
+    float basesPerPoint = (alignedLast - alignedFirst) / float(nPoints);
+    CHECK(int(basesPerPoint) >= wdata.step, ); //ensure that every point is associated with some step data
+    QVector<float> pointData;
+    qint64 len = qMax(qint64(basesPerPoint), wdata.window);
+
+    int lastBase = alignedLast + wdata.window;
+
+    for (int i = 0; i < nPoints; i++) {
+        CHECK_OP(os, );
+        pointData.clear();
+        qint64 startPos = alignedFirst + qint64(i * basesPerPoint);
+        U2Region r(startPos, len);
+
+        CHECK(r.endPos() <= lastBase, );
+
+        d->ga->calculate(pointData, o, r, &wdata, os);
+        float min, max;
+        GSequenceGraphUtils::calculateMinMax(pointData, min, max, os);
+
+        points.firstPoints[i] = max; //BUG:422: support interval based graph!!!
+        points.secondPoints[i] = min;
+    }
+}
+
+void CalculatePointsTask::calculateWithExpand(const QSharedPointer<GSequenceGraphData>& d, PairVector& points, int alignedFirst, int alignedLast, U2OpStatus &os) {
+    int win = wdata.window;
+    int win2 = (win+1)/2;
+    int step = wdata.step;
+    assert((alignedLast - alignedFirst) % step == 0);
+
+    U2Region r(alignedFirst, alignedLast - alignedFirst + win);
+    QVector<float> res;
+
+    if( r.startPos + win > o->getSequenceLength() ){
+        return;
+    }
+
+    d->ga->calculate(res, o, r, &wdata, os);
+
+    assert(alignedFirst + win2 + step >= visibleRange.startPos); //0 or 1 step is before the visible range
+    assert(alignedLast + win2 - step <= visibleRange.endPos()); //0 or 1 step is after the the visible range
+
+    bool hasBeforeStep = alignedFirst + win2 < visibleRange.startPos;
+    bool hasAfterStep  = alignedLast + win2 >= visibleRange.endPos();
+
+    int firstBaseOffset = hasBeforeStep ?
+        (step - (visibleRange.startPos - (alignedFirst + win2)))
+        : (alignedFirst + win2 - visibleRange.startPos);
+    int lastBaseOffset = hasAfterStep ?
+        (step - (alignedLast + win2 - visibleRange.endPos()))  //extra step on the right is available
+        : (visibleRange.endPos() - (alignedLast + win2)); // no extra step available -> end of the sequence
+
+    assert(firstBaseOffset >= 0 && lastBaseOffset >= 0);
+    assert(hasBeforeStep ? (firstBaseOffset < step && firstBaseOffset!=0): firstBaseOffset <= win2);
+    assert(hasAfterStep ? (lastBaseOffset <= step && lastBaseOffset !=0) : lastBaseOffset < win2 + step);
+
+    float base2point = points.firstPoints.size() / (float)visibleRange.length;
+
+    int ri = hasBeforeStep ? 1 : 0;
+    int rn = hasAfterStep ? res.size()-1 : res.size();
+    for (int i=0;  ri < rn; ri++, i++) {
+        CHECK_OP(os, );
+        int b = firstBaseOffset + i * step;
+        int px = int(b * base2point);
+        assert(px < points.firstPoints.size());
+        points.firstPoints[px] = res[ri];
+    }
+
+    //restore boundary points if possible
+    if(res.size() < 2){
+        return;
+    }
+
+    if (hasBeforeStep && !GSequenceGraphDrawer::isUnknownValue(res[0]) && !GSequenceGraphDrawer::isUnknownValue(res[1])) {
+        assert(firstBaseOffset > 0);
+        float k = firstBaseOffset / (float)step;
+        float val = res[1] + (res[0]-res[1])*k;
+        points.firstPoints[0] = val;
+    }
+
+    if (hasAfterStep && !GSequenceGraphDrawer::isUnknownValue(res[rn-1]) &&  !GSequenceGraphDrawer::isUnknownValue(res[rn])) {
+        assert(lastBaseOffset > 0);
+        float k = lastBaseOffset / (float)step;
+        float val = res[rn-1] + (res[rn]-res[rn-1])*k;
+        points.firstPoints[points.firstPoints.size()-1] = val;
+    }
+}
+
+PairVector::PairVector():useIntervals(false) {}
+
 } // namespace

@@ -55,7 +55,8 @@ void ExpertDiscoveryScoreGraphAlgorithm::calculate(
     QVector<float>& result,
     U2SequenceObject* sequenceObject,
     const U2Region& region,
-    const GSequenceGraphWindowData* windowData)
+    const GSequenceGraphWindowData* windowData,
+    U2OpStatus &os)
 {
     assert(windowData !=NULL);
 
@@ -82,6 +83,7 @@ void ExpertDiscoveryScoreGraphAlgorithm::calculate(
         windowThreshold = 0;
         for (int j = windowLeft; j < windowLeft + windowSize - 1; ++j)
         {
+            CHECK_OP(os, );
             if(j < recData.size()){
                 windowThreshold+=recData[j];
             }
@@ -131,13 +133,13 @@ bool ExpertDiscoveryScoreGraphFactory::isEnabled(const U2SequenceObject* sequenc
 /**
  * Initializes graph data
  */
-QList<GSequenceGraphData*> ExpertDiscoveryScoreGraphFactory::createGraphs(GSequenceGraphView* view)
+QList<QSharedPointer<GSequenceGraphData>> ExpertDiscoveryScoreGraphFactory::createGraphs(GSequenceGraphView* view)
 {
     Q_UNUSED(view);
-    QList<GSequenceGraphData*> res;
+    QList<QSharedPointer<GSequenceGraphData>> res;
     assert(isEnabled(view->getSequenceObject()));
     assert(edSeqType!=UNKNOWN_SEQUENCE);
-    GSequenceGraphData* data = new GSequenceGraphData(getGraphName());
+    QSharedPointer<GSequenceGraphData> data = QSharedPointer<GSequenceGraphData>(new GSequenceGraphData(getGraphName()));
     data->ga = new ExpertDiscoveryScoreGraphAlgorithm(edData, edSeqNumber, edSeqType);
     res.append(data);
     return res;
@@ -200,7 +202,7 @@ void ExpertDiscoveryRecognitionErrorGraphWidget::drawAll(){
         pixmap.fill(Qt::transparent);
         QPainter p(&pixmap);
 
-        if(errorsTask.isFinished()){
+        if(errorsTask.isIdle()){
             QPixmap graphPixmap = QPixmap(w, h);
             graphPixmap.fill(Qt::white);
             QPainter grP(&graphPixmap);

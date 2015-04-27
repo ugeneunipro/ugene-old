@@ -43,7 +43,8 @@ public:
        QVector<float>&,
        U2SequenceObject*,
        const U2Region&,
-       const GSequenceGraphWindowData*);
+       const GSequenceGraphWindowData*,
+       U2OpStatus &os);
 private:
     int edSeqNumber;
     ExpertDiscoveryData& edData;
@@ -61,7 +62,7 @@ class ExpertDiscoveryScoreGraphFactory : public GSequenceGraphFactory
     Q_OBJECT
 public:
     ExpertDiscoveryScoreGraphFactory(QObject*, ExpertDiscoveryData& data, int _edSeqNumber, SequenceType sType);
-    virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView*);
+    virtual QList<QSharedPointer<GSequenceGraphData> > createGraphs(GSequenceGraphView*);
     virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView*);
     virtual bool isEnabled(const U2SequenceObject*) const;
 

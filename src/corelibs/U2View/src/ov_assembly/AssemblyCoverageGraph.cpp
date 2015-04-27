@@ -55,12 +55,12 @@ void AssemblyCoverageGraph::drawAll() {
 
             if(browser->areCellsVisible()) {
                 U2Region visibleRegion = browser->getVisibleBasesRegion();
-                if(!coverageTaskRunner.isFinished() || canceled) {
+                if(!coverageTaskRunner.isIdle() || canceled) {
                     if(browser->intersectsLocalCoverageCache(visibleRegion)) {
                         CoverageInfo ci = browser->extractFromLocalCoverageCache(visibleRegion);
                         drawGraph(p, ci, 128);
                     }
-                    QString message = coverageTaskRunner.isFinished() ? tr("Coverage calculation canceled") : tr("Calculating coverage...");
+                    QString message = coverageTaskRunner.isIdle() ? tr("Coverage calculation canceled") : tr("Calculating coverage...");
                     p.drawText(cachedView.rect(), Qt::AlignCenter, message);
                 } else if(lastResult.region == visibleRegion) {
                     drawGraph(p, lastResult);
@@ -136,7 +136,7 @@ void AssemblyCoverageGraph::sl_launchCoverageCalculation()
 }
 
 void AssemblyCoverageGraph::sl_coverageReady() {
-    if(coverageTaskRunner.isFinished()) {
+    if(coverageTaskRunner.isIdle()) {
         if(coverageTaskRunner.isSuccessful()) {
             browser->setLocalCoverageCache(coverageTaskRunner.getResult());
             lastResult = coverageTaskRunner.getResult();

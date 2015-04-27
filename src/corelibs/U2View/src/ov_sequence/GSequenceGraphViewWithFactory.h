@@ -42,7 +42,7 @@ public:
     GSequenceGraphFactory(const QString& _name, QObject* p)
         : QObject(p), graphName(_name){}
 
-    virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView* v) = 0;
+    virtual QList<QSharedPointer<GSequenceGraphData> > createGraphs(GSequenceGraphView* v) = 0;
 
     virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView* v);
 

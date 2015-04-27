@@ -28,6 +28,7 @@
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/Counter.h>
 #include <U2Core/AppContext.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
@@ -54,6 +55,7 @@ namespace U2 {
 GSequenceGraphView::GSequenceGraphView(QWidget* p, ADVSequenceObjectContext* ctx, GSequenceLineView* _baseView, const QString& _vName)
 : GSequenceLineView(p, ctx), baseView(_baseView), vName(_vName), graphDrawer(NULL)
 {
+    GCOUNTER(cvar, tvar, "GSequenceGraphView");
     assert(baseView);
 
 
@@ -130,7 +132,7 @@ void GSequenceGraphView::leaveEvent(QEvent * /*le*/) {
 }
 
 void GSequenceGraphView::addLabel(float xPos) {
-    foreach (GSequenceGraphData* graph, graphs) {
+    foreach (const QSharedPointer<GSequenceGraphData> graph, graphs) {
         if(NULL != graph->graphLabels.findLabelByPosition(xPos))
             continue;
         GraphLabel* newLabel = new GraphLabel(xPos, this);
@@ -153,7 +155,7 @@ void GSequenceGraphView::createLabelsOnPositions(const QList<QVariant>& position
 }
 void GSequenceGraphView::moveLabel(float xPos) {
     GraphLabel* prevLabel = NULL;
-    foreach (GSequenceGraphData *graph, graphs) {
+    foreach (const QSharedPointer<GSequenceGraphData> graph, graphs) {
         GraphLabel& label = graph->graphLabels.getMovingLabel();
         label.setPosition(xPos);
         label.show();
@@ -166,13 +168,13 @@ void GSequenceGraphView::moveLabel(float xPos) {
     }
 }
 void GSequenceGraphView::changeLabelsColor() {
-    foreach (GSequenceGraphData *graph, graphs) {
+    foreach (const QSharedPointer<GSequenceGraphData> graph, graphs) {
         graph->graphLabels.getMovingLabel().hide();
         emit si_labelsColorChange(graph);
     }
 }
 void GSequenceGraphView::hideLabel() {
-    foreach (GSequenceGraphData *graph, graphs)
+    foreach (const QSharedPointer<GSequenceGraphData> graph, graphs)
         graph->graphLabels.getMovingLabel().hide();
 }
 
@@ -200,12 +202,7 @@ void GSequenceGraphView::pack() {
     setMinimumHeight(140);
 }
 
-GSequenceGraphView::~GSequenceGraphView() {
-    foreach(GSequenceGraphData* g, graphs) {
-        delete g;
-    }
-}
-void GSequenceGraphView::addGraphData(GSequenceGraphData* g) {
+void GSequenceGraphView::addGraphData(const QSharedPointer<GSequenceGraphData> &g) {
     assert(!graphs.contains(g));
     g->graphLabels.getMovingLabel().setParent(this);
     graphs.append(g);
@@ -262,7 +259,7 @@ void GSequenceGraphView::sl_onShowVisualProperties(bool) {
 }
 
 void GSequenceGraphView::sl_onDeleteAllLabels() {
-    foreach (GSequenceGraphData* graph, graphs) {
+    foreach (const QSharedPointer<GSequenceGraphData> graph, graphs) {
         graph->graphLabels.deleteAllLabels();
     }
 }
@@ -274,7 +271,7 @@ void GSequenceGraphView::sl_onSelectExtremumPoints() {
         int windowSize = dlg.getWindowSize();
         bool usingIntervals = dlg.isUsedIntervals();
         const QVector<U2Region>& selection = getSequenceContext()->getSequenceSelection()->getSelectedRegions();
-        foreach (GSequenceGraphData* graph, graphs) {
+        foreach (const QSharedPointer<GSequenceGraphData> graph, graphs) {
             if(true == usingIntervals) {
                 foreach(const U2Region& selectedRegion, selection) {
                     graphDrawer->selectExtremumPoints(graph, graphRect, windowSize, selectedRegion);
@@ -293,14 +290,14 @@ void GSequenceGraphView::sl_onSaveGraphCutoffs( bool ){
 }
 
 void GSequenceGraphView::sl_graphRectChanged(const QRect& rect) {
-    foreach (GSequenceGraphData* graph, graphs) {
+    foreach (const QSharedPointer<GSequenceGraphData> graph, graphs) {
         emit si_frameRangeChanged(graph, rect);
     }
 }
 
 void GSequenceGraphView::onVisibleRangeChanged(bool signal) {
     if(signal) {
-        foreach (GSequenceGraphData* graph, graphs) {
+        foreach (const QSharedPointer<GSequenceGraphData> graph, graphs) {
             emit si_frameRangeChanged(graph, static_cast<GSequenceGraphViewRA*>(renderArea)->getGraphRect());
             float pos = static_cast<double>(graph->graphLabels.getMovingLabel().getCoord().x()) / renderArea->getCurrentScale() + getVisibleRange().startPos;
             graph->graphLabels.getMovingLabel().setPosition(pos);
@@ -342,10 +339,11 @@ void GSequenceGraphViewRA::drawAll(QPaintDevice* pd) {
 
     gd = getGraphView()->getGSequenceGraphDrawer();
     assert(gd!=NULL);
+    connect(gd, SIGNAL(si_graphDataUpdated()), SLOT(sl_graphDataUpdated()), Qt::UniqueConnection);
 
     drawHeader(p);
 
-    const QList<GSequenceGraphData*>& graphs = getGraphView()->getGraphs();
+    const QList<QSharedPointer<GSequenceGraphData> >& graphs = getGraphView()->getGraphs();
     gd->draw(p, graphs, graphRect);
 
     drawFrame(p);
@@ -390,6 +388,16 @@ void GSequenceGraphViewRA::drawSelection(QPainter& p) {
         if (visibleRange.contains(r.endPos())) {
             p.drawLine(x2, graphRect.top(), x2, graphRect.bottom());
         }
+    }
+}
+
+void GSequenceGraphViewRA::sl_graphDataUpdated() {
+    update();
+}
+
+GSequenceGraphView::~GSequenceGraphView() {
+    foreach (const QSharedPointer<GSequenceGraphData>& gsdata, graphs) {
+        gsdata->graphLabels.deleteAllLabels();
     }
 }
 

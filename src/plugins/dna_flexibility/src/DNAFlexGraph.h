@@ -38,7 +38,7 @@ class DNAFlexGraphFactory : public GSequenceGraphFactory
     Q_OBJECT
 public:
     DNAFlexGraphFactory(QObject*);
-    virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView*);
+    virtual QList<QSharedPointer<GSequenceGraphData> > createGraphs(GSequenceGraphView*);
     virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView*);
     virtual bool isEnabled(const U2SequenceObject*) const;
 

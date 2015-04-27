@@ -57,11 +57,11 @@ bool EntropyGraphFactory::isEnabled(const U2SequenceObject* o) const {
     return al->isNucleic() && al->getAlphabetChars().size() <= MAX_CHARS_IN_ALPHABET;
 }
 
-QList<GSequenceGraphData*> EntropyGraphFactory::createGraphs(GSequenceGraphView* v) {
+QList<QSharedPointer<GSequenceGraphData> > EntropyGraphFactory::createGraphs(GSequenceGraphView* v) {
     Q_UNUSED(v);
-    QList<GSequenceGraphData*> res;
+    QList<QSharedPointer<GSequenceGraphData> > res;
     assert(isEnabled(v->getSequenceObject()));
-    GSequenceGraphData* d = new GSequenceGraphData(getGraphName());
+    QSharedPointer<GSequenceGraphData> d = QSharedPointer<GSequenceGraphData>(new GSequenceGraphData(getGraphName()));
     d->ga = new EntropyGraphAlgorithm;
     res.append(d);
     return res;
@@ -75,7 +75,7 @@ EntropyGraphAlgorithm::EntropyGraphAlgorithm()
 {
 }
 
-void EntropyGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
+void EntropyGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d, U2OpStatus &os) {
     assert(d!=NULL);
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
@@ -102,6 +102,7 @@ void EntropyGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, 
         float total = end-start-2;
         float ent = 0;
         for (int j = 0; j < indexSize; j++) {
+            CHECK_OP(os, );
             int ifreq = mapData[j];
             if (ifreq == 0) {
                 continue;

@@ -56,11 +56,11 @@ bool DeviationGraphFactory::isEnabled(const U2SequenceObject* o) const {
     return al->isNucleic();
 }
 
-QList<GSequenceGraphData*> DeviationGraphFactory::createGraphs(GSequenceGraphView* v) {
+QList<QSharedPointer<GSequenceGraphData> > DeviationGraphFactory::createGraphs(GSequenceGraphView* v) {
     Q_UNUSED(v);
-    QList<GSequenceGraphData*> res;
+    QList<QSharedPointer<GSequenceGraphData> > res;
     assert(isEnabled(v->getSequenceObject()));
-    GSequenceGraphData* d = new GSequenceGraphData(getGraphName());
+    QSharedPointer<GSequenceGraphData> d = QSharedPointer<GSequenceGraphData>(new GSequenceGraphData(getGraphName()));
     d->ga = new DeviationGraphAlgorithm(devPair);
     res.append(d);
     return res;
@@ -73,7 +73,7 @@ QList<GSequenceGraphData*> DeviationGraphFactory::createGraphs(GSequenceGraphVie
 DeviationGraphAlgorithm::DeviationGraphAlgorithm(const QPair<char, char>& _p)  :  p(_p)
 {
 }
-void DeviationGraphAlgorithm::windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seqArr, int startPos, const GSequenceGraphWindowData* d, int nSteps)
+void DeviationGraphAlgorithm::windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seqArr, int startPos, const GSequenceGraphWindowData* d, int nSteps, U2OpStatus &os)
 {
     assert(startPos>=0);
     const char* seq = seqArr.constData();
@@ -85,6 +85,7 @@ void DeviationGraphAlgorithm::windowStrategyWithoutMemorize(QVector<float>& res,
         int first = 0;
         int second = 0;
         for (int x = start; x < end; x++) {
+            CHECK_OP(os, );
             char c = seq[x];
             if (c == p.first) {
                 first++; continue;
@@ -114,7 +115,7 @@ QPair<int, int> DeviationGraphAlgorithm::matchOnStep(const QByteArray& seqArr, i
     }
     return res;
 }
-void DeviationGraphAlgorithm::sequenceStrategyWithMemorize(QVector<float>& res, const QByteArray& seq, const U2Region& vr, const GSequenceGraphWindowData* d)
+void DeviationGraphAlgorithm::sequenceStrategyWithMemorize(QVector<float>& res, const QByteArray& seq, const U2Region& vr, const GSequenceGraphWindowData* d, U2OpStatus &os)
 {
     int rsize = d->window / d->step;
     RollingArray<int> raF(rsize);
@@ -125,6 +126,7 @@ void DeviationGraphAlgorithm::sequenceStrategyWithMemorize(QVector<float>& res, 
     int nextI = 0;
     int firstValue = vr.startPos + d->window - d->step;
     for (int i = vr.startPos; i < endPos; i = nextI)    {
+        CHECK_OP(os, );
         nextI = i + d->step;
         QPair<int, int> result = matchOnStep(seq, i, nextI);
         globalCountF += result.first;
@@ -141,7 +143,7 @@ void DeviationGraphAlgorithm::sequenceStrategyWithMemorize(QVector<float>& res, 
     }
 }
 
-void DeviationGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
+void DeviationGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d, U2OpStatus &os) {
     assert(d!=NULL);
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
@@ -149,9 +151,9 @@ void DeviationGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o
     const QByteArray& seq = getSequenceData(o);
     int startPos = vr.startPos;
     if (d->window % d->step != 0) {
-        windowStrategyWithoutMemorize(res, seq, startPos, d, nSteps);
+        windowStrategyWithoutMemorize(res, seq, startPos, d, nSteps, os);
     } else {
-        sequenceStrategyWithMemorize(res, seq, vr, d);
+        sequenceStrategyWithMemorize(res, seq, vr, d, os);
     }
 }
 

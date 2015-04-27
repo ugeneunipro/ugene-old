@@ -40,7 +40,7 @@ class KarlinGraphFactory : public GSequenceGraphFactory {
     Q_OBJECT
 public:
     KarlinGraphFactory(QObject* p);
-    virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView* v);
+    virtual QList<QSharedPointer<GSequenceGraphData> > createGraphs(GSequenceGraphView* v);
     virtual bool isEnabled(const U2SequenceObject* o) const;
 };
 
@@ -49,10 +49,10 @@ public:
     KarlinGraphAlgorithm();
     virtual ~KarlinGraphAlgorithm();
 
-    virtual void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d);
+    virtual void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d, U2OpStatus &os);
 private:
-    float getValue (int start, int end, const QByteArray& s);
-    void calculateRelativeAbundance (const char* seq, int length, float* results);
+    float getValue (int start, int end, const QByteArray& s, U2OpStatus &os);
+    void calculateRelativeAbundance (const char* seq, int length, float* results, U2OpStatus &os);
 
 
     float* global_relative_abundance_values;

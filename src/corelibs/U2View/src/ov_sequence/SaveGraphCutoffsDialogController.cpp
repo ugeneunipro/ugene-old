@@ -36,7 +36,7 @@
 
 namespace U2{
 
-SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController(GSequenceGraphDrawer *_d, GSequenceGraphData *_gd, QWidget *parent, ADVSequenceObjectContext* _ctx)
+SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController(GSequenceGraphDrawer *_d, QSharedPointer<GSequenceGraphData>& _gd, QWidget *parent, ADVSequenceObjectContext* _ctx)
     :QDialog(parent), ctx(_ctx), d(_d), gd(_gd)
 {
     setupUi(this);

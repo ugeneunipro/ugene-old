@@ -102,7 +102,7 @@ void MSAGraphOverview::paintEvent(QPaintEvent *e) {
         return;
     }
 
-    if (!graphCalculationTaskRunner.isFinished()) {
+    if (!graphCalculationTaskRunner.isIdle()) {
         cachedConsensus = QPixmap(size());
         QPainter pConsensus(&cachedConsensus);
         pConsensus.fillRect(cachedConsensus.rect(), Qt::gray);

@@ -34,7 +34,7 @@ namespace U2 {
 class SaveGraphCutoffsDialogController : public QDialog, Ui_SaveGraphCutoffsDialog {
     Q_OBJECT
 public:
-    SaveGraphCutoffsDialogController(GSequenceGraphDrawer *_d, GSequenceGraphData *_gd, QWidget *parent, ADVSequenceObjectContext* _ctx);
+    SaveGraphCutoffsDialogController(GSequenceGraphDrawer *_d, QSharedPointer<GSequenceGraphData>& _gd, QWidget *parent, ADVSequenceObjectContext* _ctx);
 
     virtual void accept();
 private:
@@ -44,7 +44,7 @@ private:
     CreateAnnotationWidgetController*   ac;
     ADVSequenceObjectContext*           ctx;
     GSequenceGraphDrawer*               d;
-    GSequenceGraphData*                 gd;
+    QSharedPointer<GSequenceGraphData> gd;
     QList<U2Region>                     resultRegions;
 };
 

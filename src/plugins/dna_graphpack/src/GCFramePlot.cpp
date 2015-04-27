@@ -44,22 +44,22 @@ bool GCFramePlotFactory::isEnabled(const U2SequenceObject* o) const {
     return al->isNucleic();
 }
 
-QList<GSequenceGraphData*> GCFramePlotFactory::createGraphs(GSequenceGraphView* v) {
+QList<QSharedPointer<GSequenceGraphData> > GCFramePlotFactory::createGraphs(GSequenceGraphView* v) {
     Q_UNUSED(v);
 
     //TODO: All points should be calculated during one loop over the window.
 
-    QList<GSequenceGraphData*> res;
+    QList<QSharedPointer<GSequenceGraphData> > res;
     assert(isEnabled(v->getSequenceObject()));
-    GSequenceGraphData* d = new GSequenceGraphData(OFFSET_NULL);
+    QSharedPointer<GSequenceGraphData> d = QSharedPointer<GSequenceGraphData>(new GSequenceGraphData(OFFSET_NULL));
     d->ga = new GCFramePlotAlgorithm(0);
     res.append(d);
 
-    GSequenceGraphData* d2 = new GSequenceGraphData(OFFSET_ONE);
+    QSharedPointer<GSequenceGraphData> d2 = QSharedPointer<GSequenceGraphData>(new GSequenceGraphData(OFFSET_ONE));
     d2->ga = new GCFramePlotAlgorithm(1);
     res.append(d2);
 
-    GSequenceGraphData* d3 = new GSequenceGraphData(OFFSET_TWO);
+    QSharedPointer<GSequenceGraphData> d3 = QSharedPointer<GSequenceGraphData>(new GSequenceGraphData(OFFSET_TWO));
     d3->ga = new GCFramePlotAlgorithm(2);
     res.append(d3);
 
@@ -88,7 +88,7 @@ GCFramePlotAlgorithm::GCFramePlotAlgorithm( int _offset )
     map['G'] = map['C'] = true;
 }
 
-void GCFramePlotAlgorithm::windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seq, int startPos, const GSequenceGraphWindowData* d, int nSteps)
+void GCFramePlotAlgorithm::windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seq, int startPos, const GSequenceGraphWindowData* d, int nSteps, U2OpStatus &os)
 {
     for (int i = 0; i < nSteps; i++) {
         int start = startPos + i * d->step;
@@ -100,6 +100,7 @@ void GCFramePlotAlgorithm::windowStrategyWithoutMemorize(QVector<float>& res, co
         }
 
         for (int x = start; x < end; x += 3) {
+            CHECK_OP(os, );
             char c = seq[x];
             if (map[(uchar)c]) {
                 base_count++;
@@ -111,13 +112,13 @@ void GCFramePlotAlgorithm::windowStrategyWithoutMemorize(QVector<float>& res, co
 
 
 
-void GCFramePlotAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
+void GCFramePlotAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d, U2OpStatus &os) {
     assert(d!=NULL);
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
     const QByteArray& seq = getSequenceData(o);
     int startPos = vr.startPos;
-    windowStrategyWithoutMemorize(res, seq, startPos, d, nSteps);
+    windowStrategyWithoutMemorize(res, seq, startPos, d, nSteps, os);
 }
 
 } // namespace

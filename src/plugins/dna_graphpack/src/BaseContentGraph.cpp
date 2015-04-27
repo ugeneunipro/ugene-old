@@ -54,11 +54,11 @@ bool BaseContentGraphFactory::isEnabled(const U2SequenceObject* o) const {
     return al->isNucleic();
 }
 
-QList<GSequenceGraphData*> BaseContentGraphFactory::createGraphs(GSequenceGraphView* v) {
+QList<QSharedPointer<GSequenceGraphData> > BaseContentGraphFactory::createGraphs(GSequenceGraphView* v) {
     Q_UNUSED(v);
-    QList<GSequenceGraphData*> res;
+    QList<QSharedPointer<GSequenceGraphData> > res;
     assert(isEnabled(v->getSequenceObject()));
-    GSequenceGraphData* d = new GSequenceGraphData(getGraphName());
+    QSharedPointer<GSequenceGraphData> d = QSharedPointer<GSequenceGraphData>(new GSequenceGraphData(getGraphName()));
     d->ga = new BaseContentGraphAlgorithm(map);
     res.append(d);
     return res;
@@ -72,13 +72,14 @@ BaseContentGraphAlgorithm::BaseContentGraphAlgorithm(const QBitArray& _map)  :  
 {
 }
 
-void BaseContentGraphAlgorithm::windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seq, int startPos, const GSequenceGraphWindowData* d, int nSteps)
+void BaseContentGraphAlgorithm::windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seq, int startPos, const GSequenceGraphWindowData* d, int nSteps, U2OpStatus &os)
 {
     for (int i = 0; i < nSteps; i++) {
         int start = startPos + i * d->step;
         int end = start + d->window;
         int base_count = 0;
         for (int x = start; x < end; x++) {
+            CHECK_OP(os, );
             char c = seq[x];
             if (map[(uchar)c]) {
                 base_count++;
@@ -88,50 +89,13 @@ void BaseContentGraphAlgorithm::windowStrategyWithoutMemorize(QVector<float>& re
     }
 }
 
-int BaseContentGraphAlgorithm::matchOnStep(const QByteArray& seq, int begin, int end)
-{
-    int res = 0;
-    for (int j = begin; j < end; ++j) {
-        char c = seq[j];
-        if (map[(uchar)c]) {
-            ++res;
-        }
-    }
-    return res;
-}
-void BaseContentGraphAlgorithm::sequenceStrategyWithMemorize(QVector<float>& res, const QByteArray& seq, const U2Region& vr, const GSequenceGraphWindowData* d)
-{
-    int rsize = d->window / d->step;
-    RollingArray<int> ra(rsize);
-    int endPos = vr.endPos();
-    int globalCount = 0;
-    int nextI;
-    int firstValue = vr.startPos + d->window - d->step;
-    for (int i = vr.startPos; i < endPos; i = nextI) {
-        nextI = i + d->step;
-        int result = matchOnStep(seq, i, nextI);
-        globalCount += result;
-        ra.push_back_pop_front(result);
-        if (i >= firstValue)    {
-            int v = ra.get(0);
-            res.append(globalCount / (float)(d->window)*100);
-            globalCount -= v;
-        }
-    }
-}
-
-void BaseContentGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d) {
+void BaseContentGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d, U2OpStatus &os) {
     assert(d!=NULL);
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
     const QByteArray& seq = getSequenceData(o);
     int startPos = vr.startPos;
-
-
-//    if (d->window % d->step != 0)
-        windowStrategyWithoutMemorize(res, seq, startPos, d, nSteps);
-//    else
-//        sequenceStrategyWithMemorize(res, seq, vr, d);
+    windowStrategyWithoutMemorize(res, seq, startPos, d, nSteps, os);
 }
 
 } // namespace
