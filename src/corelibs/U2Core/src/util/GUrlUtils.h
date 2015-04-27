@@ -131,6 +131,12 @@ public:
 
     // Check that @url is the path to the local file. Creates the path if it does not exist
     static void validateLocalFileUrl(const GUrl &url, U2OpStatus &os, const QString &urlName = tr("Output URL"));
+
+    /**
+    * Replaces from the filename all symbols except 0-9, a-z, A-Z, '.', '_', and '-' with '_' symbol,
+    * so file name will both POSIX-compatible and Windows-compatible.
+    */
+    static QString fixFileName(const QString &fileName);
 };
 
 } //namespace

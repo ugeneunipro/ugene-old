@@ -267,7 +267,8 @@ void ExportImageDialog::init() {
     ui->widthSpinBox->setValue(exportTaskFactory->getImageWidth());
     ui->heightSpinBox->setValue(exportTaskFactory->getImageHeight());
 
-    filename = lod.dir + "/" + origFilename + "."  + ui->formatsBox->currentText();
+    QString fixedName = GUrlUtils::fixFileName(origFilename);
+    filename = lod.dir + "/" + fixedName + "."  + ui->formatsBox->currentText();
     filename = GUrlUtils::rollFileName(filename, "_copy", QSet<QString>());
     ui->fileNameEdit->setText(QDir::cleanPath(QDir::toNativeSeparators(filename)));
 

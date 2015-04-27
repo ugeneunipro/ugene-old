@@ -418,16 +418,6 @@ namespace {
 
         return "." + results.first();
     }
-
-    /**
-     * Replaces from the filename all symbols except 0-9, a-z, A-Z, '.', '_', and '-' with '_' symbol,
-     * so file name will both POSIX-compatible and Windows-compatible.
-     */
-    QString fixFileName(const QString &fileName) {
-        QString result = fileName;
-        result.replace(QRegExp("[^0-9a-zA-Z._\\-]"), "_");
-        return result.replace(QRegExp("_+"), "_");
-    }
 }
 
 void GUrlUtils::getLocalPathFromUrl(const GUrl &url, const QString &defaultBaseFileName, QString &dirPath, QString &baseFileName) {
@@ -477,6 +467,12 @@ void GUrlUtils::validateLocalFileUrl(const GUrl &url, U2OpStatus &os, const QStr
         os.setError(tr("%1 is a directory [%2].").arg(urlName).arg(urlStr));
         return;
     }
+}
+
+QString GUrlUtils::fixFileName(const QString &fileName) {
+    QString result = fileName;
+    result.replace(QRegExp("[^0-9a-zA-Z._\\-]"), "_");
+    return result.replace(QRegExp("_+"), "_");
 }
 
 }//namespace
