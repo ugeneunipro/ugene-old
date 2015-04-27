@@ -43,9 +43,6 @@ public:
 
     static const QString PA_FIRST_SEQUENCE_REF;
     static const QString PA_SECOND_SEQUENCE_REF;
-
-protected:
-    QVariantMap customSettings;
 };
 
 class U2ALGORITHM_EXPORT PairwiseAlignmentTask : public AbstractAlignmentTask {
