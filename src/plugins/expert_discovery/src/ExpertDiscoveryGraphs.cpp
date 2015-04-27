@@ -133,10 +133,10 @@ bool ExpertDiscoveryScoreGraphFactory::isEnabled(const U2SequenceObject* sequenc
 /**
  * Initializes graph data
  */
-QList<QSharedPointer<GSequenceGraphData>> ExpertDiscoveryScoreGraphFactory::createGraphs(GSequenceGraphView* view)
+QList<QSharedPointer<GSequenceGraphData> > ExpertDiscoveryScoreGraphFactory::createGraphs(GSequenceGraphView* view)
 {
     Q_UNUSED(view);
-    QList<QSharedPointer<GSequenceGraphData>> res;
+    QList<QSharedPointer<GSequenceGraphData> > res;
     assert(isEnabled(view->getSequenceObject()));
     assert(edSeqType!=UNKNOWN_SEQUENCE);
     QSharedPointer<GSequenceGraphData> data = QSharedPointer<GSequenceGraphData>(new GSequenceGraphData(getGraphName()));
