@@ -1211,6 +1211,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0014_1);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0014_2);
 
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0015);
+
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/

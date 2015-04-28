@@ -1416,5 +1416,57 @@ GUI_TEST_CLASS_DEFINITION(test_0014_2)
     GTGlobals::sleep();
     //  TODO: Expected state: position indicator (Grey dotted line rectangle)  has disappered from graph view for both sequences
     }
+
+GUI_TEST_CLASS_DEFINITION(test_0015) {
+    // 1. Use menu {File->Open}. Open file _common_data/genome_aligner/chrY.fa
+    GTUtilsProject::openFiles(os, testDir + "_common_data/genome_aligner/chrY.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    //  2. Open graph view {Graphs->CG% content}
+    GTGlobals::sleep();
+    QWidget *sequenceWidget1 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0", NULL, false);
+    CHECK_SET_ERR(sequenceWidget1 != NULL, "sequenceWidget is not present");
+    QWidget *circularViewSe1 = GTWidget::findWidget(os, "GraphMenuAction", sequenceWidget1, false);
+    Runnable *chooser = new PopupChooser(os, QStringList() << "GC Content (%)");
+    GTUtilsDialog::waitForDialog(os, chooser);
+    GTWidget::click(os, circularViewSe1);
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsTaskTreeView::countTasks(os, "Calculate graph points") == 1, "Calculation task didn't cancelled");
+    GTGlobals::sleep();
+
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << "GC Content (%)");
+    GTUtilsDialog::waitForDialog(os, chooser2);
+    GTWidget::click(os, circularViewSe1);
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsTaskTreeView::countTasks(os, "Calculate graph points") == 0, "Calculation task didn't cancelled");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0016) {
+    // 1. Use menu {File->Open}. Open file _common_data/genome_aligner/chrY.fa
+    GTUtilsProject::openFiles(os, testDir + "_common_data/genome_aligner/chrY.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    //  2. Open graph view {Graphs->CG% content}
+    GTGlobals::sleep();
+    QWidget *sequenceWidget1 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0", NULL, false);
+    CHECK_SET_ERR(sequenceWidget1 != NULL, "sequenceWidget is not present");
+    QWidget *circularViewSe1 = GTWidget::findWidget(os, "GraphMenuAction", sequenceWidget1, false);
+    Runnable *chooser = new PopupChooser(os, QStringList() << "GC Content (%)");
+    GTUtilsDialog::waitForDialog(os, chooser);
+    GTWidget::click(os, circularViewSe1);
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsTaskTreeView::countTasks(os, "Calculate graph points") == 1, "Calculation task didn't cancelled");
+    GTGlobals::sleep();
+/*
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << "GC Content (%)");
+    GTUtilsDialog::waitForDialog(os, chooser2);
+    GTWidget::click(os, circularViewSe1);
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsTaskTreeView::countTasks(os, "Calculate graph points") == 0, "Calculation task didn't cancelled");
+*/
+}
+
 } // namespace
 } // namespace U2
