@@ -77,7 +77,10 @@ namespace U2 {
 //TODO: avoid multiple load tasks when opening view for unloaded doc!
 
 LoadUnloadedDocumentTask::LoadUnloadedDocumentTask(Document* d, const LoadDocumentTaskConfig& _config)
-: DocumentProviderTask ("", TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), loadTask(NULL), unloadedDoc(d), config(_config)
+    : DocumentProviderTask ("", TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText | TaskFlag_CollectChildrenWarnings),
+      loadTask(NULL),
+      unloadedDoc(d),
+      config(_config)
 {
     assert(config.checkObjRef.objType != GObjectTypes::UNLOADED);
     assert(unloadedDoc != NULL);
@@ -214,7 +217,12 @@ Document* LoadUnloadedDocumentTask::getDocument(bool ) {
 
 LoadDocumentTask::LoadDocumentTask(DocumentFormatId f, const GUrl& u,
                                    IOAdapterFactory* i, const QVariantMap& map, const LoadDocumentTaskConfig& _config)
-: DocumentProviderTask("", TaskFlag_None), format(NULL), url(u), iof(i), hints(map), config(_config)
+    : DocumentProviderTask("", TaskFlag_None),
+      format(NULL),
+      url(u),
+      iof(i),
+      hints(map),
+      config(_config)
 {
     setTaskName(tr("Read document: '%1'").arg(u.fileName()));
     documentDescription = u.getURLString();
@@ -224,7 +232,12 @@ LoadDocumentTask::LoadDocumentTask(DocumentFormatId f, const GUrl& u,
 
 LoadDocumentTask::LoadDocumentTask(DocumentFormat* f, const GUrl& u,
                                    IOAdapterFactory* i, const QVariantMap& map, const LoadDocumentTaskConfig& _config)
-                                   : DocumentProviderTask("", TaskFlag_None), format(NULL), url(u), iof(i), hints(map), config(_config)
+    : DocumentProviderTask("", TaskFlag_None),
+      format(NULL),
+      url(u),
+      iof(i),
+      hints(map),
+      config(_config)
 {
     setTaskName(tr("Read document: '%1'").arg(u.fileName()));
     documentDescription = u.getURLString();
@@ -479,7 +492,6 @@ Task::ReportResult LoadDocumentTask::report() {
     resultDocument->setLastUpdateTime();
     return ReportResult_Finished;
 }
-
 
 void LoadDocumentTask::processObjRef() {
     assert(config.checkObjRef.isValid());

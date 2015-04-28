@@ -141,6 +141,10 @@ void TaskScheduler::addSubTask(Task* t, Task* sub) {
     SAFE_POINT(sub != NULL, "When adding subtask to TaskScheduler, the subtask is NULL",);
     SAFE_POINT(sub->getParentTask() == NULL, "Task already has a parent!",);
 
+    if (t->hasFlags(TaskFlag_CollectChildrenWarnings)) {
+        sub->setCollectChildrensWarningsFlag(true);
+    }
+
     sub->parentTask = t;
     t->subtasks.append(sub);
     emit t->si_subtaskAdded(sub);

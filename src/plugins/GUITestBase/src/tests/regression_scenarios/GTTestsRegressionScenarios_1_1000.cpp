@@ -573,7 +573,7 @@ GUI_TEST_CLASS_DEFINITION(test_0597) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Graph" << "save_cutoffs_as_annotation"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "GSequenceGraphViewRenderArea"));
     //GTMenu::clickMenuItemByName(os, menu, QStringList() << "Graph" << "save_cutoffs_as_annotation", GTGlobals::UseKey);
-    
+
     GTGlobals::sleep();
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -1357,7 +1357,7 @@ GUI_TEST_CLASS_DEFINITION(test_0786) {
 
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    
+
     CHECK_SET_ERR(!outputFile.exists(outputFilePath), "File should not exist");
 }
 
@@ -2168,23 +2168,25 @@ GUI_TEST_CLASS_DEFINITION(test_0882) {
 
 GUI_TEST_CLASS_DEFINITION(test_0886) {
     // 1. Open file "_common_data/fasta/Gene.fa" in UGENE as separate sequence or as multiple alignment
-    // Expected result: UGENE doesn't crash
+    // Expected result: UGENE doesn't crash, there is a warning report about unimported sequences
 
     GTLogTracer l1;
 
+    GTUtilsNotifications::waitForNotification(os);
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "Gene.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    CHECK_SET_ERR(l1.hasError(), "There is no errors in the log");
+    GTUtilsLog::check(os, l1);
 
     GTUtilsProjectTreeView::click(os, "Gene.fa");
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
     GTLogTracer l2;
+    GTUtilsNotifications::waitForNotification(os);
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "Gene.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    CHECK_SET_ERR(l2.hasError(), "There is no errors in the log");
+    GTUtilsLog::check(os, l2);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0888) {

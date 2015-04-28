@@ -38,6 +38,9 @@ public:
 
     Task * originalTask() const;
 
+    virtual bool hasWarning() const;
+    virtual QStringList getWarnings() const;
+
 private:
     Task *subTask;
 };

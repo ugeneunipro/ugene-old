@@ -82,10 +82,16 @@ public:
     virtual QString getDescription() const {QReadLocker r(&lock); return desc;}
     virtual void setDescription(const QString& _desc) {QWriteLocker w(&lock); desc = _desc;}
 
+    virtual bool hasWarnings() const {QReadLocker r(&lock); return !warnings.isEmpty(); }
+    virtual QStringList getWarnings() const {QReadLocker r(&lock); return warnings; }
+    virtual void addWarning(const QString& _warning) {QWriteLocker w(&lock); warnings << _warning; }
+    virtual void addWarnings(const QStringList &wList) { QWriteLocker w(&lock);  warnings << wList; }
+
 private:
     bool hasErr;
     QString desc;
     QString error;
+    QStringList warnings;
 
 private:
     mutable QReadWriteLock lock; //the lock is used because error & stateDesc can be assigned from any thread
@@ -145,7 +151,9 @@ enum TaskFlag {
 
     TaskFlag_VerboseOnTaskCancel = 1 << 25, // when a task is cancelled, it is dumped to the log ('info' category)
 
-    TaskFlag_OnlyNotificationReport = 1 << 26 // task is asked to generate report
+    TaskFlag_OnlyNotificationReport = 1 << 26, // task is asked to generate report
+
+    TaskFlag_CollectChildrenWarnings = 1 << 27
 
 };
 
@@ -232,6 +240,10 @@ public:
 
     QString getError() const {return stateInfo.getError();}
 
+    virtual bool hasWarning() const { return stateInfo.hasWarnings(); }
+
+    virtual QStringList getWarnings() const { return stateInfo.getWarnings(); }
+
     bool isFinished() const {return state == Task::State_Finished;}
 
     bool isRunning() const {return state == Task::State_Running;}
@@ -270,6 +282,8 @@ public:
     virtual void setReportingEnabled(bool v) {assert(isReportingSupported()); setFlag(TaskFlag_ReportingIsEnabled, v);}
 
     virtual void setNotificationReport(bool v) {assert(isReportingSupported()); setFlag(TaskFlag_ReportingIsEnabled, v);}
+
+    virtual void setCollectChildrensWarningsFlag(bool v) { setFlag(TaskFlag_CollectChildrenWarnings, v);}
 
     virtual void setNoAutoDelete( bool v ) { setFlag( TaskFlag_NoAutoDelete, v ); }
 

@@ -63,11 +63,18 @@ public:
     virtual QString getDescription() const {return statusDesc;}
     virtual void setDescription(const QString& desc)  {statusDesc = desc;}
 
+    virtual bool hasWarnings() const { return !warnings.isEmpty(); }
+    virtual void addWarning(const QString &w) { warnings << w; }
+    virtual QStringList getWarnings() const { return warnings; }
+    virtual void addWarnings(const QStringList &wList) { warnings << wList; }
+
 protected:
     /** Keeps error message if operation failed */
     QString error;
     /** Keeps current operation state description */
     QString statusDesc;
+    /** Keeps warning message */
+    QStringList warnings;
     /** Indicates if operation is canceled or not. If yes - processing must be stopped */
     int     cancelFlag;
     /** Current operation progress. -1 - unknown */

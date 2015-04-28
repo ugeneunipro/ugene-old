@@ -50,6 +50,12 @@ public:
 
     virtual QString getDescription() const = 0;
     virtual void setDescription(const QString& desc)  = 0;
+
+    virtual bool hasWarnings() const = 0;
+    virtual QStringList getWarnings() const = 0;
+    virtual void addWarning(const QString& w) = 0;
+    virtual void addWarnings(const QStringList& wList) = 0;
+
 };
 
 } //namespace

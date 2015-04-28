@@ -119,6 +119,18 @@ void WorkflowMonitor::addTaskError(Task *task, const QString &message) {
     errorTasks << task;
 }
 
+void WorkflowMonitor::addTaskWarning(Task *task, const QString &message) {
+    SAFE_POINT(taskMap.contains(task), "Unregistered task", );
+    ActorId id = taskMap[task]->getId();
+    if (!message.isEmpty()) {
+        addError(message, id, Problem::U2_WARNING);
+    } else {
+        foreach (const QString& warning, task->getWarnings()) {
+            addError(warning, id, Problem::U2_WARNING);
+        }
+    }
+}
+
 void WorkflowMonitor::addTime(qint64 timeMks, const QString &actor) {
     WorkerInfo &info = workers[actor];
     info.timeMks += timeMks;

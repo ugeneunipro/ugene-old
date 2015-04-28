@@ -107,6 +107,7 @@ public:
     void addError(const QString &message, const QString &actor ,const QString &type = Problem::U2_ERROR);
     /** Can be called only one time for the task */
     void addTaskError(Task *task, const QString &message = "");
+    void addTaskWarning(Task *task, const QString &message = "");
     void addTime(qint64 timeMks, const QString &actor);
     void addTick(qint64 timeMks, const QString &actor);
     void start();

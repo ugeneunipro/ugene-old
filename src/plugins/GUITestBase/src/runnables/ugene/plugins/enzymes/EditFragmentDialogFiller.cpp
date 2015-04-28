@@ -28,9 +28,9 @@
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
 #include "api/GTRadioButton.h"
-#include <QtGui/QApplication>
-#include <QtGui/QGroupBox>
-#include <QtGui/QComboBox>
+#include <QApplication>
+#include <QGroupBox>
+#include <QComboBox>
 
 namespace U2 {
 

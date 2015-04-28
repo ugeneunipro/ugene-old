@@ -1573,6 +1573,29 @@ GUI_TEST_CLASS_DEFINITION(test_4221) {
     GTUtilsLog::check(os, logTracer);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4266){
+//    1. Create the workflow: Read Seqeunce --> Write Sequence
+//    2. Input data: "_common_data/fasta/Gene.fa"
+//    3. Run the workflow
+//    Expected state: there is a warning about empty sequences on the dashboard
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    CHECK_SET_ERR( read != NULL, "Failed to add an element");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta/", "Gene.fa");
+
+    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+    CHECK_SET_ERR( write != NULL, "Failed to add an element");
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", QDir(sandBoxDir).absolutePath() + "/test_4266.fa", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::connect(os, read, write);
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDashboard::findElement(os, "Loaded sequences: 139.");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4272){
 //    Open any sequence
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");

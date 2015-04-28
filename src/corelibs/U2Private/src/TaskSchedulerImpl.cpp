@@ -135,6 +135,13 @@ void TaskSchedulerImpl::propagateStateToParent(Task* task) {
             tsi.setError( tr("Subtask {%1} is failed: %2").arg(task->getTaskName()).arg(task->getError()));
         }
     }
+
+    if (task->isFinished() && parentTask->hasFlags(TaskFlag_CollectChildrenWarnings)) {
+        if (task->hasWarning()) {
+            TaskStateInfo& tsi = getTaskStateInfo(parentTask);
+            tsi.addWarnings( task->getWarnings() );
+        }
+    }
 }
 
 bool TaskSchedulerImpl::processFinishedTasks() {

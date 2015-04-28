@@ -71,7 +71,7 @@ TaskViewDockWidget::TaskViewDockWidget() {
     tree = new QTreeWidget(this);
     tree->setObjectName(DOCK_TASK_TREE_VIEW);
     l->addWidget(tree);
-    
+
     buildTree();
     tree->setColumnWidth(0, 400); //TODO: save geometry!
     tree->setColumnWidth(1, 250);
@@ -145,7 +145,7 @@ void TaskViewDockWidget::buildTree() {
     tree->setUniformRowHeights(true);
     QByteArray headerState = AppContext::getSettings()->getValue(SETTINGS_ROOT + "tree_header", QByteArray()).toByteArray();
     if (!headerState.isEmpty()) {
-        tree->header()->restoreState(headerState);	
+        tree->header()->restoreState(headerState);
     }
 
     const QList<Task*>& topLevelTasks = AppContext::getTaskScheduler()->getTopLevelTasks();
@@ -179,11 +179,11 @@ void TaskViewDockWidget::addTopLevelTask(Task* t) {
 
 TVTreeItem* TaskViewDockWidget::createTaskItem(Task* task) {
     TVTreeItem* ti = new TVTreeItem(this, task);
-    
+
     connect(task, SIGNAL(si_subtaskAdded(Task*)), SLOT(sl_onSubtaskAdded(Task*)));
     connect(task, SIGNAL(si_progressChanged()), SLOT(sl_onTaskProgress()));
     connect(task, SIGNAL(si_descriptionChanged()), SLOT(sl_onTaskDescription()));
-    
+
     return ti;
 }
 
@@ -205,9 +205,9 @@ void TaskViewDockWidget::sl_cancelTaskByButton() {
 }
 
 TVTreeItem* TaskViewDockWidget::findItem(Task* t, bool topLevelOnly) const {
-	if (!t) {
-		return NULL;
-	}
+    if (!t) {
+        return NULL;
+    }
 
     for (int i=0, n = tree->topLevelItemCount(); i<n; i++) {
         QTreeWidgetItem* item = tree->topLevelItem(i);
@@ -253,14 +253,14 @@ void TaskViewDockWidget::sl_onTopLevelTaskUnregistered(Task* t) {
 
     /*if (t->isReportingEnabled()) {
         log.info(tr("New report available from task: %1").arg(t->getTaskName()));
-        
+
         ti->detachFromTask();
         ti->reportButton = new TVButton(ti);
         ti->reportButton->setFlat(true);
         ti->reportButton->setIcon(viewReportAction->icon());
         ti->reportButton->setFixedSize(QSize(20, 20));
         connect(ti->reportButton, SIGNAL(clicked()), SLOT(sl_activateReportByButton()));
-        
+
         QWidget*  w = tree->itemWidget(ti, TVColumns_Actions);
         QHBoxLayout* l = (QHBoxLayout*)w->layout();
         l->insertWidget(1, ti->reportButton);
@@ -318,7 +318,7 @@ void TaskViewDockWidget::activateReport(TVTreeItem* ti) {
     if (w != NULL) {
         mdi->activateWindow(w);
         return;
-    } 
+    }
     w = new TVReportWindow(ti->taskName, ti->taskId, ti->taskReport);
     mdi->addMDIWindow(w);
     ti->reportWindowId =  w->getId();
@@ -326,7 +326,7 @@ void TaskViewDockWidget::activateReport(TVTreeItem* ti) {
 
 void TaskViewDockWidget::sl_onSubtaskAdded(Task* sub) {
     Task* parent = qobject_cast<Task*>(sender());
-    TVTreeItem* ti = findItem(parent, false);    
+    TVTreeItem* ti = findItem(parent, false);
     if (ti == NULL) {
         return;
     }
@@ -339,11 +339,11 @@ void TaskViewDockWidget::sl_onSubtaskAdded(Task* sub) {
 
 void TaskViewDockWidget::sl_onTaskProgress()  {
     Task* t = qobject_cast<Task*>(sender());
-    TVTreeItem* ti = findItem(t, false);    
+    TVTreeItem* ti = findItem(t, false);
     if (ti==NULL) {
-		if (t!=NULL){
-			assert(!t->isTopLevelTask());
-		}
+        if (t!=NULL){
+            assert(!t->isTopLevelTask());
+        }
         return;
     }
     ti->updateVisual();
@@ -351,7 +351,7 @@ void TaskViewDockWidget::sl_onTaskProgress()  {
 
 void TaskViewDockWidget::sl_onTaskDescription()  {
     Task* t = qobject_cast<Task*>(sender());
-    TVTreeItem* ti = findItem(t, false);    
+    TVTreeItem* ti = findItem(t, false);
     if (ti==NULL) {
         assert(!t->isTopLevelTask());
         return;
@@ -433,7 +433,7 @@ void TaskViewDockWidget::selectTask(Task* t) {
 
 }
 
-TVReportWindow::TVReportWindow(const QString& taskName, qint64 tid, const QString& report) 
+TVReportWindow::TVReportWindow(const QString& taskName, qint64 tid, const QString& report)
 : MWMDIWindow(genWindowName(taskName)), taskId(tid)
 {
     QVBoxLayout* l = new QVBoxLayout();
@@ -444,7 +444,7 @@ TVReportWindow::TVReportWindow(const QString& taskName, qint64 tid, const QStrin
     textEdit->setAcceptRichText(true);
     textEdit->setReadOnly(true);
     textEdit->setText(report);
-    
+
     l->addWidget(textEdit);
     textEdit->viewport()->installEventFilter(this);
     textEdit->viewport()->setMouseTracking(true);
@@ -580,7 +580,7 @@ TVTreeItem::TVTreeItem(TaskViewDockWidget* _w, Task* t) : task(t), w(_w) {
 
 void TVTreeItem::updateVisual() {
     setText(TVColumns_Name, taskName);
-    
+
     if (task == NULL || task->isFinished()) {
         setIcon(TVColumns_Name, wasError ? w->wasErrorIcon : w->finishedIcon);
     } else {

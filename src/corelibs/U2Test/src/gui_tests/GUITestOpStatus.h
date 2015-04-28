@@ -43,6 +43,12 @@ public:
 
     virtual QString getDescription() const {return "";}
     virtual void setDescription(const QString& desc) {Q_UNUSED(desc);}
+
+    virtual bool hasWarnings() const { return false; }
+    virtual void addWarning(const QString &w) { Q_UNUSED(w) }
+    virtual void addWarnings(const QStringList &wList) { Q_UNUSED(wList) }
+    virtual QStringList getWarnings() const { return QStringList(); }
+
 private:
     QString error;
 };

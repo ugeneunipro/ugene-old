@@ -136,7 +136,10 @@ public:
 
 
     DocumentFormat(QObject* p, DocumentFormatFlags _flags, const QStringList& fileExts = QStringList())
-        : QObject(p), formatFlags(_flags),  fileExtensions(fileExts) {}
+        : QObject(p),
+          formatFlags(_flags),
+          fileExtensions(fileExts)
+    {}
 
     /* returns unique document format id */
     virtual DocumentFormatId getFormatId() const = 0;

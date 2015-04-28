@@ -121,6 +121,15 @@ void TaskStatusBar::sl_newReport(Task* task) {
         Notification *t = new Notification(tr("'%1' task failed: %2").arg(task->getTaskName()).arg(task->getError()), Error_Not);
         nStack->addNotification(t);
     }
+
+    if (task->getStateInfo().hasWarnings()) {
+        QStringList warnings = task->getWarnings();
+        Notification *t = new Notification(tr("There %1:\n")
+                                           .arg(warnings.size() == 1
+                                                ? "was 1 warning"
+                                                : QString("were %1 warnings").arg(warnings.size())) + warnings.join("\n"), Warning_Not);
+        nStack->addNotification(t);
+    }
 }
 
 void TaskStatusBar::sl_reportsCountChanged() {

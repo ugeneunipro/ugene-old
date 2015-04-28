@@ -335,6 +335,9 @@ QList<Task*> WorkflowIterationRunTask::onSubTaskFinished(Task* subTask) {
     if (subTask->hasError()) {
         getMonitor()->addTaskError(subTask);
     }
+    if (subTask->hasWarning()) {
+        getMonitor()->addTaskWarning(subTask);
+    }
     while(scheduler->isReady() && !isCanceled()) {
         Task* t = scheduler->tick();
         if (t) {

@@ -162,6 +162,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     int sequenceNumber = 0;
     DbiConnection con(dbiRef, os);
     bool headerReaded = false;
+    QStringList emptySeqNames;
 
     const int objectsCountLimit = fs.contains(DocumentReadingMode_MaxObjectsInDoc) ? fs[DocumentReadingMode_MaxObjectsInDoc].toInt() : -1;
     const bool settingsMakeUniqueName = !fs.value(DocumentReadingMode_DontMakeUniqueNames, false).toBool();
@@ -247,9 +248,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
             CHECK_OP_BREAK(os);
             U2Sequence seq = seqImporter.finalizeSequenceAndValidate(os);
             if (os.hasError() && os.getError() == U2SequenceImporter::EMPTY_SEQUENCE_ERROR) {
-                // show warning message and ignore the error
-                ioLog.error(FastaFormat::tr("There is an empty sequence: %1").arg(headerLine));
                 os.setError("");
+                emptySeqNames << headerLine;
                 continue;
             }
             sequenceRef.entityRef = U2EntityRef(dbiRef, seq.id);
@@ -273,6 +273,14 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     CHECK_EXT(!objects.isEmpty() || merge, os.setError(Document::tr("Document is empty.")), );
     SAFE_POINT(headers.size() == mergedMapping.size(), "headers <-> regions mapping failed!", );
     ioLog.trace("All sequences are processed");
+
+    if (!emptySeqNames.isEmpty()) {
+        QString warningMessage;
+        warningMessage.append(FastaFormat::tr("Loaded sequences: %1.\n").arg(sequenceNumber));
+        warningMessage.append(FastaFormat::tr("Skipped sequences: %1.\nThe following sequences are empty:\n").arg(emptySeqNames.size()));
+        warningMessage.append(emptySeqNames.join(",\n"));
+        os.addWarning(warningMessage);
+    }
 
     if (!merge) {
         return;
