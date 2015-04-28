@@ -3783,7 +3783,7 @@ GUI_TEST_CLASS_DEFINITION(test_3619) {
     GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Regular expression");
     GTUtilsOptionPanelSequenceView::enterPattern(os, ".");
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    CHECK_SET_ERR(progressLabel->isHidden() && resultLabel->isVisible(), "Wrong hide, show conditions 2");    
+    CHECK_SET_ERR(progressLabel->isHidden() && resultLabel->isVisible(), "Wrong hide, show conditions 2");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3622) {
@@ -5301,7 +5301,7 @@ GUI_TEST_CLASS_DEFINITION(test_3901) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3902) {
-    // Open "data/samples/Genbank/murine.gb" and 
+    // Open "data/samples/Genbank/murine.gb" and
     // "data/samples/Genbank/sars.gb" as separate sequences (in different views).
     // Select these two documents in the project view and unload them. Agree to close views.
     // Expected state: both documents are unloaded, there are no errors in the log.
@@ -5512,7 +5512,8 @@ GUI_TEST_CLASS_DEFINITION(test_3950) {
     GTGlobals::sleep();
 
     GTUtilsWorkflowDesigner::click(os, "File List");
-    GTUtilsWorkflowDesigner::setDatasetInputFolder(os, testDir + "_common_data/bwa/");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/bwa/", "nrsf-chr21.fastq");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/bwa/", "control-chr21.fastq");
 
     GTUtilsWorkflowDesigner::click(os, "Align reads with BWA MEM");
     GTUtilsWorkflowDesigner::setParameter(os, "Reference genome", sandBoxDir + "test_3950.fa", GTUtilsWorkflowDesigner::textValue);

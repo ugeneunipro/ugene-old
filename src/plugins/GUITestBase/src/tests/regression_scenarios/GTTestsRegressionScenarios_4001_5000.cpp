@@ -1040,10 +1040,11 @@ GUI_TEST_CLASS_DEFINITION(test_4116) {
 //    Expected: the dialog is modal, the "OK" button is disabled.
             QWidget *dialog = QApplication::activeModalWidget();
             CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+            CHECK_SET_ERR(GTUtilsDialog::buttonBox(os, dialog) != NULL, "ButtonBox is NULL");
 
-            QWidget *okButton = GTWidget::findButtonByText(os, "OK");
-            CHECK_SET_ERR(NULL != okButton, "OK button is NULL");
-            CHECK_SET_ERR(!okButton->isEnabled(), "OK button is unexpectedly enabled");
+            QWidget *okButton = GTUtilsDialog::buttonBox(os, dialog)->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(NULL != okButton, "Export button is NULL");
+            CHECK_SET_ERR(!okButton->isEnabled(), "Export button is unexpectedly enabled");
 
 //    3. Add human_T1.fa.
             GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/FASTA/human_T1.fa"));
