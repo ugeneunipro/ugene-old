@@ -44,8 +44,8 @@ namespace U2 {
 #define M_PI 3.14159265358979323846
 #endif
 
-GraphicsCircularBranchItem::GraphicsCircularBranchItem(QGraphicsItem* parent, qreal h, GraphicsRectangularBranchItem* from)
-: GraphicsBranchItem(true), height(h), direction(from->getDirection()), visible(true) {
+GraphicsCircularBranchItem::GraphicsCircularBranchItem(QGraphicsItem* parent, qreal h, GraphicsRectangularBranchItem* from, double nodeValue)
+: GraphicsBranchItem(true, nodeValue), height(h), direction(from->getDirection()), visible(true) {
     setParentItem(parent);
     settings = from->getSettings();
     qreal w = from->getWidth();

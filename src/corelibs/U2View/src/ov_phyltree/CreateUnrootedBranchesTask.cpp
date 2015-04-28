@@ -32,7 +32,7 @@ namespace U2 {
 CreateUnrootedBranchesTask::CreateUnrootedBranchesTask(GraphicsRectangularBranchItem *r): root1(r) {}
 
 GraphicsUnrootedBranchItem* CreateUnrootedBranchesTask::getBranch(GraphicsRectangularBranchItem *from, GraphicsUnrootedBranchItem* parent) {
-    GraphicsUnrootedBranchItem* res = new GraphicsUnrootedBranchItem(parent, coef * from->getHeight(), from);
+    GraphicsUnrootedBranchItem* res = new GraphicsUnrootedBranchItem(parent, coef * from->getHeight(), from, from->getNodeLabel());
     foreach (QGraphicsItem* item, from->childItems()) {
         GraphicsRectangularBranchItem* ri = dynamic_cast<GraphicsRectangularBranchItem*>(item);
         if (ri != NULL) {

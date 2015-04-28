@@ -36,7 +36,7 @@ const qreal CreateCircularBranchesTask::SCALE = 6.0;
 CreateCircularBranchesTask::CreateCircularBranchesTask(GraphicsRectangularBranchItem *r, bool _degeneratedCase): root1(r), degeneratedCase(_degeneratedCase) {}
 
 GraphicsCircularBranchItem* CreateCircularBranchesTask::getBranch(GraphicsRectangularBranchItem *from, GraphicsCircularBranchItem* parent) {
-    GraphicsCircularBranchItem* res = new GraphicsCircularBranchItem(parent, coef * from->getHeight(), from);
+    GraphicsCircularBranchItem* res = new GraphicsCircularBranchItem(parent, coef * from->getHeight(), from, from->getNodeLabel());
     foreach (QGraphicsItem* item, from->childItems()) {
         GraphicsRectangularBranchItem* ri = dynamic_cast<GraphicsRectangularBranchItem*>(item);
         if (ri != NULL) {

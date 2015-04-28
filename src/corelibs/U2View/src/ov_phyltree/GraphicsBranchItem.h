@@ -56,15 +56,16 @@ protected:
     OptionsMap settings;
 
     GraphicsBranchItem(const QString& name);
-    GraphicsBranchItem(qreal d, bool withButton = true, double nodeValue = 0);
-    virtual void paint(QPainter * painter,const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
+    GraphicsBranchItem(qreal d, bool withButton = true, double nodeValue = -1.0);
+    virtual void paint(QPainter * painter,const QStyleOptionGraphicsItem* option, QWidget* widget = NULL);
 
     virtual void setLabelPositions();
 
 public:
-    GraphicsBranchItem(bool withButton = true, double nodeValue = 0);
+    GraphicsBranchItem(bool withButton = true, double nodeValue = -1.0);
 
     GraphicsButtonItem* getButton() const { return buttonItem; }
+    qreal getNodeLabel() const;
     QGraphicsSimpleTextItem* getDistanceText() const { return distanceText; }
     QGraphicsSimpleTextItem* getNameText() const { return nameText; }
     qreal getWidth() const { return width; }

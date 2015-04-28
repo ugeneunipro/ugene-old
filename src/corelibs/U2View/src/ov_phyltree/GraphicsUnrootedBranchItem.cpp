@@ -40,7 +40,8 @@
 
 namespace U2 {
 
-GraphicsUnrootedBranchItem::GraphicsUnrootedBranchItem(QGraphicsItem* parent, qreal angle, GraphicsRectangularBranchItem* from): GraphicsBranchItem(true) {
+GraphicsUnrootedBranchItem::GraphicsUnrootedBranchItem(QGraphicsItem* parent, qreal angle, GraphicsRectangularBranchItem* from, double nodeValue)
+: GraphicsBranchItem(true, nodeValue) {
     setParentItem(parent);
     qreal w = from->getWidth();
     settings = from->getSettings();

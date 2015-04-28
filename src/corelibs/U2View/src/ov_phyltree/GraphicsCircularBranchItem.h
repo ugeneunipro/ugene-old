@@ -39,7 +39,7 @@ class GraphicsCircularBranchItem: public GraphicsBranchItem {
     bool visible;
 
 public:
-    GraphicsCircularBranchItem(QGraphicsItem* parent, qreal height, GraphicsRectangularBranchItem* from);
+    GraphicsCircularBranchItem(QGraphicsItem* parent, qreal height, GraphicsRectangularBranchItem* from, double nodeValue = -1.0);
 
     QRectF boundingRect() const;
     QPainterPath shape() const;

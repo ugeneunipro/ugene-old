@@ -35,7 +35,7 @@ class GraphicsRectangularBranchItem;
 
 class GraphicsUnrootedBranchItem: public GraphicsBranchItem {
 public:
-    GraphicsUnrootedBranchItem(QGraphicsItem* parent, qreal angle, GraphicsRectangularBranchItem* from);
+    GraphicsUnrootedBranchItem(QGraphicsItem* parent, qreal angle, GraphicsRectangularBranchItem* from, double nodeValue = -1.0);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

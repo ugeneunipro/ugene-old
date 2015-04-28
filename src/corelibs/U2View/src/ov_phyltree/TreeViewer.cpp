@@ -1275,6 +1275,8 @@ void TreeViewerUI::sl_layoutRecomputed() {
     bool showNames = getOptionValue(SHOW_LABELS).toBool();
     bool showDistances = getOptionValue(SHOW_DISTANCES).toBool();
 
+    changeNodeValuesDisplay();
+
     if (!showNames || !showDistances) {
         LabelTypes lt;
         if (!showDistances) {

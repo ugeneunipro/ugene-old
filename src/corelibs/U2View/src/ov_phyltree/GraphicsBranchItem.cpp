@@ -273,6 +273,15 @@ GraphicsBranchItem::GraphicsBranchItem(qreal d, bool withButton, double nodeValu
     setBrush(branchColor);
 }
 
+qreal GraphicsBranchItem::getNodeLabel() const {
+    if(buttonItem != NULL) {
+        return buttonItem->getNodeValue();
+    } else {
+        return -1;
+    }
+}
+
+
 void GraphicsBranchItem::setLabelPositions() {
     if(nameText != NULL) {
         QRectF rect = nameText->boundingRect();
@@ -280,7 +289,7 @@ void GraphicsBranchItem::setLabelPositions() {
     }
     if(distanceText != NULL) {
         QRectF rect = distanceText->boundingRect();
-        distanceText->setPos(-rect.width(), 0);
+        distanceText->setPos(-rect.width() - 20, 0);
     }
 }
 

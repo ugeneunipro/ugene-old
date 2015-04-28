@@ -43,7 +43,7 @@ const QBrush GraphicsButtonItem::ordinaryBrush = QBrush(Qt::gray);
 
 
 GraphicsButtonItem::GraphicsButtonItem(double nodeValue)
-    : QGraphicsEllipseItem(QRectF(-radiusMin, -radiusMin, 2 * radiusMin, 2 * radiusMin)), isSelected(false), nameText(NULL), scaleFactor(1.0) {
+    : QGraphicsEllipseItem(QRectF(-radiusMin, -radiusMin, 2 * radiusMin, 2 * radiusMin)), isSelected(false), nodeLabel(NULL), scaleFactor(1.0), nodeValue(nodeValue) {
     setPen(QColor(0, 0, 0));
     setBrush(ordinaryBrush);
     setAcceptHoverEvents(true);
@@ -53,14 +53,14 @@ GraphicsButtonItem::GraphicsButtonItem(double nodeValue)
     setToolTip(QObject::tr("Left click to select the branch\nDouble-click to collapse the branch"));
 
     if(nodeValue >= 0) {
-        nameText = new QGraphicsSimpleTextItem(QString::number(nodeValue), this);
-        nameText->setFont(TreeViewerUtils::getFont());
-        nameText->setBrush(Qt::darkGray);
-        QRectF rect = nameText->boundingRect();
-        nameText->setPos(GraphicsBranchItem::TextSpace, -rect.height() / 2);
-        nameText->setParentItem(this);
-        nameText->setFlag(QGraphicsItem::ItemIgnoresTransformations,false);
-        nameText->setZValue(1);
+        nodeLabel = new QGraphicsSimpleTextItem(QString::number(nodeValue), this);
+        nodeLabel->setFont(TreeViewerUtils::getFont());
+        nodeLabel->setBrush(Qt::darkGray);
+        QRectF rect = nodeLabel->boundingRect();
+        nodeLabel->setPos(GraphicsBranchItem::TextSpace, -rect.height() / 2);
+        nodeLabel->setParentItem(this);
+        nodeLabel->setFlag(QGraphicsItem::ItemIgnoresTransformations,false);
+        nodeLabel->setZValue(1);
     }
 }
 
@@ -82,7 +82,7 @@ QRectF GraphicsButtonItem::boundingRect() {
 }
 
 const QGraphicsSimpleTextItem* GraphicsButtonItem::getLabel() const{
-    return nameText;
+    return nodeLabel;
 }
 
 
@@ -231,13 +231,13 @@ void GraphicsButtonItem::rerootTree(PhyTreeObject* treeObject) {
 }
 
 void GraphicsButtonItem::updateSettings(const OptionsMap& settings) {
-    CHECK(NULL != nameText,);
+    CHECK(NULL != nodeLabel,);
     QFont newFont = qvariant_cast<QFont>(settings[LABEL_FONT]);
-    nameText->setFont(newFont);
+    nodeLabel->setFont(newFont);
     QColor labelsColor = qvariant_cast<QColor>(settings[LABEL_COLOR]);
-    nameText->setBrush(labelsColor);
+    nodeLabel->setBrush(labelsColor);
     bool showNodeLabels = settings[SHOW_NODE_LABELS].toBool();
-    nameText->setVisible(showNodeLabels);
+    nodeLabel->setVisible(showNodeLabels);
 }
 
 }//namespace

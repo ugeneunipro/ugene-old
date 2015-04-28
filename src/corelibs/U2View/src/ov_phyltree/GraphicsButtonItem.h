@@ -59,6 +59,8 @@ public:
 
     virtual QRectF boundingRect();
 
+    qreal getNodeValue() {return nodeValue;}
+
 private:
     void setHighlighting(bool enabled);
 
@@ -67,8 +69,9 @@ private:
     static const QBrush highlightingBrush;
     static const QBrush ordinaryBrush;
     bool isSelected;
-    QGraphicsSimpleTextItem* nameText;
+    QGraphicsSimpleTextItem* nodeLabel;
     qreal scaleFactor;
+    qreal nodeValue;
 };
 
 }//namespace;
