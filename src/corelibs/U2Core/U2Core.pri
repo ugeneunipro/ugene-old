@@ -51,7 +51,7 @@ unix {
 }
 
 unix_not_mac(){
-    LIBS += -lproc
+    LIBS += -lprocps
 }
 
 HEADERS += ../../include/U2Core/U2*.h
