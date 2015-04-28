@@ -40,13 +40,14 @@ class U2GUI_EXPORT RemovePartFromSequenceDialogController : public QDialog {
 public:
     RemovePartFromSequenceDialogController(U2Region _toDelete, U2Region _source, const QString & docUrl, QWidget *p = NULL);
     ~RemovePartFromSequenceDialogController();
-    virtual void accept();
+    void accept();
 
     bool modifyCurrentDocument() const;
     QString getNewDocumentPath() const;
     U1AnnotationUtils::AnnotationStrategyForResize getStrategy();
-    U2Region getRegionToDelete() const {return toDelete;};
+    U2Region getRegionToDelete() const;
     bool mergeAnnotations() const;
+    bool recalculateQualifiers() const;
     DocumentFormatId getDocumentFormatId() const;
 
 private slots:

@@ -22,23 +22,23 @@
 #ifndef _U2_GENBANK_LOCATION_PARSER_H
 #define _U2_GENBANK_LOCATION_PARSER_H
 
-#include <U2Core/AnnotationData.h>
+#include <U2Core/global.h>
 
 namespace U2 {
+
+class U2Location;
 
 namespace Genbank {
 
 class U2FORMATS_EXPORT LocationParser : public QObject {
     Q_OBJECT
 public:
-    /**/
     static QString parseLocation(const char* str, int len, U2Location& location, qint64 seqlenForCircular = -1);
-
-    static QString buildLocationString(const SharedAnnotationData &a);
-
-    static QString buildLocationString(const QVector<U2Region> &regions);
 };
 
 
-}}//namespace
+}
+
+}//namespace
+
 #endif

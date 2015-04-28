@@ -19,43 +19,46 @@
  * MA 02110-1301, USA.
  */
 
-#include "RemovePartFromSequenceDialogFiller.h"
-#include "api/GTWidget.h"
-#include "api/GTLineEdit.h"
-#include "api/GTComboBox.h"
-#include "api/GTRadioButton.h"
+#include <QApplication>
+#include <QDialogButtonBox>
+#include <QDir>
+#include <QGroupBox>
+#include <QPushButton>
+#include <QRadioButton>
 
-#include <QtCore/QDir>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QRadioButton>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QGroupBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QGroupBox>
-#endif
+#include "api/GTCheckBox.h"
+#include "api/GTComboBox.h"
+#include "api/GTLineEdit.h"
+#include "api/GTRadioButton.h"
+#include "api/GTWidget.h"
+
+#include "RemovePartFromSequenceDialogFiller.h"
 
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::RemovePartFromSequenceDialogFiller"
-RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(U2OpStatus &_os, QString _range):
-    Filler(_os, "RemovePartFromSequenceDialog"), range(_range), removeType(Resize), format(FASTA), saveNew(false) {}
+RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(U2OpStatus &_os, QString _range, bool recalculateQuals)
+    : Filler(_os, "RemovePartFromSequenceDialog"), range(_range), removeType(Resize), format(FASTA), saveNew(false),
+    recalculateQuals(recalculateQuals)
+{
 
-RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(U2OpStatus &_os,RemoveType _removeType, bool _saveNew, const QString &_saveToFile, FormatToUse _format):
-Filler(_os, "RemovePartFromSequenceDialog"), removeType(_removeType), format(_format), saveNew(_saveNew) {
+}
+
+RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(U2OpStatus &_os,RemoveType _removeType, bool _saveNew,
+    const QString &_saveToFile, FormatToUse _format)
+    : Filler(_os, "RemovePartFromSequenceDialog"), removeType(_removeType), format(_format), saveNew(_saveNew), recalculateQuals(false)
+{
     QString __saveToFile = QDir::cleanPath(QDir::currentPath() + "/" + _saveToFile);
     saveToFile = __saveToFile;
     comboBoxItems[FASTA] = "FASTA";
     comboBoxItems[Genbank] = "Genbank";
 }
 
-RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(U2OpStatus &_os, RemoveType _removeType):
-Filler(_os, "RemovePartFromSequenceDialog"), removeType(_removeType), format(FASTA){}
+RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(U2OpStatus &_os, RemoveType _removeType)
+    : Filler(_os, "RemovePartFromSequenceDialog"), removeType(_removeType), format(FASTA), recalculateQuals(false)
+{
+
+}
 
 #define GT_METHOD_NAME "run"
 void RemovePartFromSequenceDialogFiller::run()
@@ -72,12 +75,13 @@ void RemovePartFromSequenceDialogFiller::run()
         QRadioButton *resizeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("resizeRB"));
         GT_CHECK(resizeRB != NULL, "radio button not found");
         GTRadioButton::click(os, resizeRB);
-    }
-    else {
+    } else {
         QRadioButton *removeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("removeRB"));
         GT_CHECK(removeRB != NULL, "radio button not found");
         GTRadioButton::click(os, removeRB);
     }
+
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "recalculateQualsCheckBox"), recalculateQuals);
 
     GTGlobals::sleep(1000);
     if (saveNew) {

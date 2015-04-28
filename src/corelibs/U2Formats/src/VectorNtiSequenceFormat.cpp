@@ -324,7 +324,7 @@ void VectorNtiSequenceFormat::writeAnnotations(IOAdapter *io, const QList<GObjec
         CHECK_EXT(len == nspaces, os.setError(tr("Error writing document")), );
 
         //write location
-        QString multiLineLocation = Genbank::LocationParser::buildLocationString(a);
+        QString multiLineLocation = U1AnnotationUtils::buildLocationString(a);
         prepareMultiline(multiLineLocation, 21);
         len = io->writeBlock(multiLineLocation.toLocal8Bit());
         CHECK_EXT(len == multiLineLocation.size(), os.setError(tr("Error writing document")), );

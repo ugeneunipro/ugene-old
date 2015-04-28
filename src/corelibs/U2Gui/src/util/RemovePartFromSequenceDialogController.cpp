@@ -19,19 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QDir>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QDir>
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/AnnotationData.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/ModifySequenceObjectTask.h>
 
 #include <U2Formats/GenbankLocationParser.h>
@@ -64,7 +59,7 @@ RemovePartFromSequenceDialogController::RemovePartFromSequenceDialogController(U
     connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
     SharedAnnotationData ad(new AnnotationData);
     ad->location->regions << toDelete;
-    ui->removeLocationEdit->setText(Genbank::LocationParser::buildLocationString(ad));
+    ui->removeLocationEdit->setText(U1AnnotationUtils::buildLocationString(ad));
 
     connect(ui->formatBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_indexChanged(int)));
 
@@ -117,6 +112,14 @@ U1AnnotationUtils::AnnotationStrategyForResize RemovePartFromSequenceDialogContr
         assert(ui->resizeRB->isChecked());
         return U1AnnotationUtils::AnnotationStrategyForResize_Resize;
     }
+}
+
+U2Region RemovePartFromSequenceDialogController::getRegionToDelete() const {
+    return toDelete;
+}
+
+bool RemovePartFromSequenceDialogController::recalculateQualifiers() const {
+    return ui->recalculateQualsCheckBox->isChecked();
 }
 
 void RemovePartFromSequenceDialogController::sl_indexChanged( int index){

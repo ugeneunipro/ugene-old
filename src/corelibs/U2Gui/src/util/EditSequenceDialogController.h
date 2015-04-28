@@ -22,21 +22,17 @@
 #ifndef _U2_EDIT_SEQUENCE_CONTROLLER_H_
 #define _U2_EDIT_SEQUENCE_CONTROLLER_H_
 
+#include <QDialog>
+
 #include <U2Core/U2Region.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/GUrl.h>
 #include <U2Gui/SeqPasterWidgetController.h>
 #include <U2Gui/DialogUtils.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
-
 class Ui_EditSequenceDialog;
 
-namespace U2{
+namespace U2 {
 
 enum EditSequenceDialogMode {
     EditSequenceMode_Replace,
@@ -72,16 +68,18 @@ struct U2GUI_EXPORT EditSequencDialogConfig {
 class U2GUI_EXPORT EditSequenceDialogController : public QDialog {
     Q_OBJECT
 public:
-    EditSequenceDialogController(EditSequencDialogConfig cfg, QWidget *p = NULL);
+    EditSequenceDialogController(const EditSequencDialogConfig &cfg, QWidget *p = NULL);
     ~EditSequenceDialogController();
-    virtual void accept();
+    void accept();
 
-    DNASequence getNewSequence(){return w->getSequence();};
-    GUrl getDocumentPath(); 
-    int getPosToInsert(){return pos;};
-    U1AnnotationUtils::AnnotationStrategyForResize getAnnotationStrategy();
-    bool mergeAnnotations();
-    DocumentFormatId getDocumentFormatId();
+    DNASequence getNewSequence() const;
+    GUrl getDocumentPath() const;
+    int getPosToInsert() const;
+    U1AnnotationUtils::AnnotationStrategyForResize getAnnotationStrategy() const;
+    bool mergeAnnotations() const;
+    bool recalculateQualifiers() const;
+    DocumentFormatId getDocumentFormatId() const;
+
 private slots:
     void sl_browseButtonClicked();
     void sl_indexChanged(int);
@@ -94,9 +92,7 @@ private slots:
 
 private:
     void addSeqpasterWidget();
-    bool modifyCurrentDocument();
-
-
+    bool modifyCurrentDocument() const;
 
     QString filter;
     int pos;

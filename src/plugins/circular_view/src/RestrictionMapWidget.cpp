@@ -21,16 +21,17 @@
 
 #include <QVBoxLayout>
 
+#include <U2Algorithm/EnzymeModel.h>
+
+#include <U2View/ADVSequenceObjectContext.h>
 #include <U2Core/Annotation.h>
 #include <U2Core/AnnotationGroup.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Core/AnnotationSelection.h>
-#include <U2View/ADVSequenceObjectContext.h>
-#include <U2Algorithm/EnzymeModel.h>
-#include <U2Formats/GenbankLocationParser.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/AutoAnnotationsSupport.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 #include "RestrictionMapWidget.h"
 
@@ -61,7 +62,7 @@ EnzymeFolderItem::EnzymeFolderItem(const QString& name)
 void EnzymeFolderItem::addEnzymeItem(Annotation *enzAnn)
 {
     const SharedAnnotationData &data = enzAnn->getData();
-    QString location = Genbank::LocationParser::buildLocationString(data);
+    QString location = U1AnnotationUtils::buildLocationString(data);
     addChild(new EnzymeItem(location, enzAnn));
     setIcon(0, QIcon(":circular_view/images/folder.png"));
     int count = childCount();

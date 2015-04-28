@@ -828,7 +828,7 @@ void GenbankPlainTextFormat::writeAnnotations(IOAdapter* io, const QList<GObject
 
         //write location
         const SharedAnnotationData &ad = a->getData();
-        QString multiLineLocation = Genbank::LocationParser::buildLocationString(ad);
+        QString multiLineLocation = U1AnnotationUtils::buildLocationString(ad);
         prepareMultiline(multiLineLocation, 21);
         len = io->writeBlock(multiLineLocation.toLocal8Bit());
         if (len != multiLineLocation.size()) {

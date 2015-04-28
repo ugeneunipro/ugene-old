@@ -22,11 +22,8 @@
 #ifndef _U2_DNA_SEQUENCE_H_
 #define _U2_DNA_SEQUENCE_H_
 
-#include <U2Core/global.h>
 #include "DNAInfo.h"
 #include "DNAQuality.h"
-
-#include <QtCore/QByteArray>
 
 namespace U2 {
 

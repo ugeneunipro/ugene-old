@@ -107,8 +107,7 @@ QList<QVector<U2Region> > U1AnnotationUtils::fixLocationsForReplacedRegion(const
                     r.length -= (r.endPos() - region2Remove.startPos);
                 }
                 updated << r;
-            }
-            else if (r.contains(U2Region(region2Remove.endPos(),0))) {
+            } else if (r.contains(U2Region(region2Remove.endPos(), 0))) {
                 if (dLen < 0) {
                     int diff = region2Remove.endPos() - r.startPos;
                     r.startPos += diff + dLen;
@@ -118,16 +117,13 @@ QList<QVector<U2Region> > U1AnnotationUtils::fixLocationsForReplacedRegion(const
             }
             continue;
         }
-        SAFE_POINT(AnnotationStrategyForResize_Split_To_Joined == s
-            || AnnotationStrategyForResize_Split_To_Separate == s,
+        SAFE_POINT(AnnotationStrategyForResize_Split_To_Joined == s || AnnotationStrategyForResize_Split_To_Separate == s,
             "Unexpected resize strategy detected!", res);
         //leave left part in original(updated) locations and push right into new one
         const bool join = (AnnotationStrategyForResize_Split_To_Joined == s);
         const U2Region interR = r.intersect(region2Remove);
-        const U2Region leftR = r.startPos < interR.startPos
-            ? U2Region(r.startPos, interR.startPos - r.startPos) : U2Region();
-        const U2Region rightR = (r.endPos() > interR.endPos())
-            ? U2Region(interR.endPos() + dLen, r.endPos() - interR.endPos()) : U2Region();
+        const U2Region leftR = r.startPos < interR.startPos ? U2Region(r.startPos, interR.startPos - r.startPos) : U2Region();
+        const U2Region rightR = (r.endPos() > interR.endPos()) ? U2Region(interR.endPos() + dLen, r.endPos() - interR.endPos()) : U2Region();
         if (leftR.isEmpty()) {
             if (!rightR.isEmpty()) {
                 updated << rightR;
@@ -425,6 +421,44 @@ void U1AnnotationUtils::addDescriptionQualifier(SharedAnnotationData &annotation
     }
 
     annotationData->qualifiers << U2Qualifier(GBFeatureUtils::QUALIFIER_NOTE, description);
+}
+
+QString U1AnnotationUtils::buildLocationString(const U2LocationData &location) {
+    bool complement = location.strand.isCompementary();
+    bool multi = location.regions.size() > 1;
+    QString locationStr = complement ? "complement(" : "";
+    if (!location.regions.empty()) {
+        if (multi) {
+            locationStr += location.isOrder() ? "order(" : (location.isBond() ? "bond(" : "join(");
+        }
+        locationStr += buildLocationString(location.regions);
+    }
+    if (multi) {
+        locationStr += ")";
+    }
+    if (complement) {
+        locationStr.append(")");
+    }
+    return locationStr;
+}
+
+QString U1AnnotationUtils::buildLocationString(const SharedAnnotationData &d) {
+    return buildLocationString(*d->location);
+}
+
+QString U1AnnotationUtils::buildLocationString(const QVector<U2Region> &regions) {
+    QString locationStr;
+    bool first = true;
+
+    foreach (const U2Region &r, regions) {
+        if (!first) {
+            locationStr += ",";
+        } else {
+            first = false;
+        }
+        locationStr.append(QString::number(r.startPos + 1).append("..").append(QString::number(r.endPos())));
+    }
+    return locationStr;
 }
 
 } //namespace

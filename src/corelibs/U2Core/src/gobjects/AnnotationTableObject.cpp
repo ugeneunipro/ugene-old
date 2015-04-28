@@ -105,6 +105,8 @@ QList<Annotation *> AnnotationTableObject::addAnnotations(const QList<SharedAnno
 }
 
 void AnnotationTableObject::removeAnnotations(const QList<Annotation *> &annotations) {
+    CHECK(!annotations.isEmpty(), );
+
     QMap<AnnotationGroup *, QList<Annotation *> > group2Annotations;
     foreach (Annotation *ann, annotations) {
         SAFE_POINT(ann->getGObject() == this, "Unexpected annotation detected", );

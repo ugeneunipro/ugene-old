@@ -19,11 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include "EditSequenceTests.h"
-
-#include <U2Core/U2AlphabetUtils.h>
-#include <U2Core/AppContext.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/U2AlphabetUtils.h>
+
+#include "EditSequenceTests.h"
 
 namespace U2{
 #define DOC_NAME_ATTR "doc_name"

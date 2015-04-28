@@ -19,6 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+#include <QClipboard>
+#include <QTreeWidgetItem>
+
 #include "api/GTClipboard.h"
 #include "GTTestsSequenceEdit.h"
 #include "api/GTGlobals.h"
@@ -48,13 +52,6 @@
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
 #include <U2View/ADVConstants.h>
-#include <QClipboard>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#else
-#include <QtWidgets/QApplication>
-#endif
 
 namespace U2{
 
@@ -357,6 +354,125 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 
     bool found = GTUtilsAnnotationsTreeView::findRegion(os, "DUMMY_1", U2Region(2, 5));
     CHECK_SET_ERR(found == true, "There is no {2..5} region in annotation");
+}
+
+namespace {
+
+QMap<QString, QString> getReferenceQualifiers() {
+    static QMap<QString, QString> qualifiers;
+    if (qualifiers.isEmpty()) {
+        qualifiers["new_qualifier"] = "adsdas 50..60 asdk 70..80 ljsad";
+        qualifiers["new_qualifier1"] = "sdfsdfsdf join(20..30,90..100) dfdfdsf";
+        qualifiers["new_qualifier2"] = "asdas order(230..250,270..300) a dsd";
+        qualifiers["new_qualifier3"] = "sdfsdfk complement(order(450..470, 490..500)) dfdsf";
+        qualifiers["new_qualifier4"] = "sdfsdfk complement(join(370..400,420..440)) dfdsf";
+        qualifiers["new_qualifier5"] = "sdfsdfk complement(320..350) df complement(355..365) dsf";
+    }
+    return qualifiers;
+}
+
+QString shiftQualifierRegions(const QString &value, int delta) {
+    QString result = value;
+    QRegExp digitMatcher("\\d+");
+    int lastFoundPos = 0;
+    int lastReplacementPos = 0;
+
+    while ((lastFoundPos = digitMatcher.indexIn(value, lastFoundPos)) != -1) {
+        const QString number = digitMatcher.cap();
+        const QString newNumber = QString::number(number.toLongLong() + delta);
+        const int replacementStart = result.indexOf(number, lastReplacementPos);
+        result.replace(replacementStart, number.length(), newNumber);
+        lastReplacementPos = replacementStart + newNumber.length();
+        lastFoundPos += digitMatcher.matchedLength();
+    }
+    return result;
+}
+
+void checkQualifierValue(U2OpStatus &os, const QString &qualName, int regionShift) {
+    QTreeWidgetItem *qual = GTUtilsAnnotationsTreeView::findItem(os, qualName);
+    const QString qualValue = qual->data(2, Qt::DisplayRole).toString();
+    const QString expectedVal = shiftQualifierRegions(getReferenceQualifiers()[qualName], regionShift);
+    CHECK_SET_ERR(qualValue == expectedVal, QString("Qualifier value has changed unexpectedly. Expected: '%1'. Actual: '%2'")
+        .arg(expectedVal).arg(qualValue));
+}
+
+void checkQualifierRegionsShift(U2OpStatus &os, int shift) {
+    foreach(const QString &qualName, getReferenceQualifiers().keys()) {
+        checkQualifierValue(os, qualName, shift);
+    }
+}
+
+void doMagic(U2OpStatus &os) {
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "Misc. Feature  (0, 2)");
+    GTTreeWidget::getItemCenter(os, annotationGroup);
+    for (int i = 0; i < annotationGroup->childCount(); ++i) {
+        GTTreeWidget::getItemCenter(os, annotationGroup->child(i));
+    }
+}
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013_1) {
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/qulifier_rebuilding.gb");
+    doMagic(os); // for some reason annotation qualifiers are not found without actions done by this function
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1..10", false));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    checkQualifierRegionsShift(os, 0);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1..10", true));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    checkQualifierRegionsShift(os, -10);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013_1_neg) {
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/qulifier_rebuilding.gb");
+    doMagic(os); // for some reason annotation qualifiers are not found without actions done by this function
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1000..1100", true));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    checkQualifierRegionsShift(os, 0);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013_2) {
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1040..1042", true));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "CDS  (0, 4)");
+    GTTreeWidget::getItemCenter(os, annotationGroup);
+    GTTreeWidget::getItemCenter(os, annotationGroup->child(0));
+    QTreeWidgetItem *qualItem = annotationGroup->child(0)->child(5);
+    CHECK_SET_ERR("translation" == qualItem->text(0), "Unexpected qualifier found");
+    CHECK_SET_ERR(qualItem->text(2).startsWith("WARLLPLP*V*P*"), "Unexpected 'translation' qualifier value");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013_2_neg) {
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "996..1000", true));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "CDS  (0, 4)");
+    GTTreeWidget::getItemCenter(os, annotationGroup);
+    GTTreeWidget::getItemCenter(os, annotationGroup->child(0));
+    QTreeWidgetItem *qualItem = annotationGroup->child(0)->child(5);
+    CHECK_SET_ERR("translation" == qualItem->text(0), "Unexpected qualifier found");
+    CHECK_SET_ERR(qualItem->text(2).startsWith("MGQTVTTPLSLTLDHWKD"), "Unexpected 'translation' qualifier value");
 }
 
 } // namespace

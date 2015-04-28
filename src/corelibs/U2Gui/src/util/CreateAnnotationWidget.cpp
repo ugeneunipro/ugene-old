@@ -23,6 +23,7 @@
 
 #include <U2Core/GenbankFeatures.h>
 #include <U2Core/L10n.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2FeatureType.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -90,7 +91,7 @@ void CreateAnnotationWidget::sl_complementLocation() {
 }
 
 QString CreateAnnotationWidget::getGenbankLocationString(const U2Location &location) {
-    QString locationString = Genbank::LocationParser::buildLocationString(location->regions);
+    QString locationString = U1AnnotationUtils::buildLocationString(location->regions);
     if (location->strand.isCompementary()) {
         locationString = "complement(" + locationString + ")";
     }

@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QDialogButtonBox>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QDialogButtonBox>
-#endif
+#include <QMessageBox>
+#include <QDialogButtonBox>
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/Log.h>
@@ -38,10 +32,14 @@
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/Settings.h>
-#include <U2View/ADVSequenceObjectContext.h>
+#include <U2Core/U1AnnotationUtils.h>
+
+#include <U2Formats/GenbankLocationParser.h>
+
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/HelpButton.h>
-#include <U2Formats/GenbankLocationParser.h>
+
+#include <U2View/ADVSequenceObjectContext.h>
 
 #include "EnzymesIO.h"
 #include "EnzymesQuery.h"
@@ -355,7 +353,7 @@ void DigestSequenceDialog::sl_addAnnBtnClicked()
         QList<Annotation *> anns = aObj->getAnnotations();
         foreach (Annotation *a, anns) {
             const SharedAnnotationData &d = a->getData();
-            listWidget->addItem(QString("%1 %2").arg(d->name).arg(Genbank::LocationParser::buildLocationString(d)));
+            listWidget->addItem(QString("%1 %2").arg(d->name).arg(U1AnnotationUtils::buildLocationString(d)));
         }
     }
     listWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);

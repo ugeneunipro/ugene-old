@@ -101,6 +101,10 @@ public:
     static void addDescriptionQualifier(QList<SharedAnnotationData> &annotations, const QString &description);
     static void addDescriptionQualifier(SharedAnnotationData &annotationData, const QString &description);
 
+    static QString buildLocationString(const SharedAnnotationData &a);
+    static QString buildLocationString(const U2LocationData &location);
+    static QString buildLocationString(const QVector<U2Region> &regions);
+
     static QString lowerCaseAnnotationName;
     static QString upperCaseAnnotationName;
 };

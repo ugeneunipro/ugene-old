@@ -47,15 +47,14 @@
 #include <U2Core/DBXRefRegistry.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Core/AnnotationModification.h>
+#include <U2Core/AnnotationSelection.h>
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/AnnotationTableObject.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationSelection.h>
-#include <U2Core/AnnotationModification.h>
 #include <U2Core/AutoAnnotationsSupport.h>
-
-#include <U2Formats/GenbankLocationParser.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
@@ -2084,7 +2083,7 @@ void AVAnnotationItem::updateVisual(ATVAnnUpdateFlags f) {
 
         setIcon(AnnotationsTreeView::COLUMN_NAME, icon);
         setText(AnnotationsTreeView::COLUMN_NAME, aData->name);
-        locationString = Genbank::LocationParser::buildLocationString(aData);
+        locationString = U1AnnotationUtils::buildLocationString(aData);
         setText(AnnotationsTreeView::COLUMN_TYPE, U2FeatureTypes::getVisualName(aData->type));
         setText(AnnotationsTreeView::COLUMN_VALUE, locationString);
     }
@@ -2123,7 +2122,7 @@ QVariant AVAnnotationItem::data(int col, int role) const {
     if (col == AnnotationsTreeView::COLUMN_VALUE && role == Qt::DisplayRole) {
         if (locationString.isEmpty()) {
             const SharedAnnotationData &data = annotation->getData();
-            locationString = Genbank::LocationParser::buildLocationString(data);
+            locationString = U1AnnotationUtils::buildLocationString(data);
         }
         return locationString;
     }

@@ -22,42 +22,48 @@
 #ifndef _U2_MODIFY_SEQUENCE_OBJECT_TASK_H_
 #define _U2_MODIFY_SEQUENCE_OBJECT_TASK_H_
 
+#include <U2Core/DNASequence.h>
+#include <U2Core/GUrl.h>
 #include <U2Core/Task.h>
-#include <U2Core/DocumentModel.h>
 #include <U2Core/U1AnnotationUtils.h>
 
 namespace U2 {
 
-class U2SequenceObject;
+class Document;
 
 class U2CORE_EXPORT ModifySequenceContentTask : public Task {
     Q_OBJECT
 public:
-    ModifySequenceContentTask(const DocumentFormatId& _dfId,
-                              U2SequenceObject *_seqObj,
-                              const U2Region& _regionToReplace,
-                              const DNASequence& sequence2Insert,
-                              U1AnnotationUtils::AnnotationStrategyForResize _str = U1AnnotationUtils::AnnotationStrategyForResize_Resize,
-                              const GUrl& _url = GUrl(),
-                              bool _mergeAnnotations = false);
+    ModifySequenceContentTask(const DocumentFormatId &dfId, U2SequenceObject *seqObj, const U2Region &regionToReplace, const DNASequence &sequence2Insert,
+        bool recalculateQualifiers = false, U1AnnotationUtils::AnnotationStrategyForResize _str = U1AnnotationUtils::AnnotationStrategyForResize_Resize,
+        const GUrl &url = GUrl(), bool mergeAnnotations = false);
 
-    virtual Task::ReportResult report();
+    Task::ReportResult report();
+    QString generateReport() const;
 
 private:
     void fixAnnotations();
+    QMap<QString, QList<SharedAnnotationData> > fixAnnotation(Annotation *an, bool &annIsRemoved);
+    void fixAnnotationQualifiers(Annotation *an);
+    void fixTranslationQualifier(SharedAnnotationData &ad);
+    void fixTranslationQualifier(Annotation *an);
+    U2Qualifier getFixedTranslationQualifier(const SharedAnnotationData &ad);
     void cloneSequenceAndAnnotations();
+    bool isRegionValid(const U2Region &region) const;
 
-    DocumentFormatId    resultFormatId;
-    bool                mergeAnnotations;
-    Document*           curDoc;
-    Document*           newDoc;
-    bool                inplaceMod;
-    GUrl                url;
-    U1AnnotationUtils::AnnotationStrategyForResize strat;
-    QList<Document*>    docs;
-    U2SequenceObject*   seqObj;
-    U2Region            regionToReplace;
-    DNASequence         sequence2Insert;
+    DocumentFormatId                                        resultFormatId;
+    bool                                                    mergeAnnotations;
+    bool                                                    recalculateQualifiers;
+    Document *                                              curDoc;
+    Document *                                              newDoc;
+    bool                                                    inplaceMod;
+    GUrl                                                    url;
+    U1AnnotationUtils::AnnotationStrategyForResize          strat;
+    QList<Document *>                                       docs;
+    U2SequenceObject *                                      seqObj;
+    U2Region                                                regionToReplace;
+    DNASequence                                             sequence2Insert;
+    QMap<Annotation *, QList<QPair<QString, QString> > >    annotationForReport;
 };
 
 }//ns

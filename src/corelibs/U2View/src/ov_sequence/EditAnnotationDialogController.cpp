@@ -25,6 +25,7 @@
 #include <U2Core/Annotation.h>
 #include <U2Core/AnnotationData.h>
 #include <U2Core/GenbankFeatures.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 #include <U2Formats/GenbankLocationParser.h>
 
@@ -44,7 +45,7 @@ EditAnnotationDialogController::EditAnnotationDialogController(const SharedAnnot
     new HelpButton(this, buttonBox, "16122171");
 
     nameEdit->setText(a->name);
-    locationEdit->setText(Genbank::LocationParser::buildLocationString(a));
+    locationEdit->setText(U1AnnotationUtils::buildLocationString(a));
     location = a->location;
 
     QMenu* menu = EditAnnotationDialogController::createAnnotationNamesMenu(this, this);

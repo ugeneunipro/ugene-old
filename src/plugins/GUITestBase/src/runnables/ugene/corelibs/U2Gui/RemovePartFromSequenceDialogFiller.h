@@ -26,24 +26,26 @@
 
 namespace U2 {
 
-    class RemovePartFromSequenceDialogFiller : public Filler {
-    public:
-        enum RemoveType {Remove, Resize};
-        enum FormatToUse {FASTA, Genbank};
+class RemovePartFromSequenceDialogFiller : public Filler {
+public:
+    enum RemoveType {Remove, Resize};
+    enum FormatToUse {FASTA, Genbank};
 
-        RemovePartFromSequenceDialogFiller(U2OpStatus &_os, QString _range);
-        RemovePartFromSequenceDialogFiller(U2OpStatus &_os,RemoveType _removeType, bool _saveNew, const QString &_saveToFile, FormatToUse _format);
-        RemovePartFromSequenceDialogFiller(U2OpStatus &_os, RemoveType _removeType);
+    RemovePartFromSequenceDialogFiller(U2OpStatus &_os, QString _range, bool recalculateQuals = false);
+    RemovePartFromSequenceDialogFiller(U2OpStatus &_os,RemoveType _removeType, bool _saveNew, const QString &_saveToFile, FormatToUse _format);
+    RemovePartFromSequenceDialogFiller(U2OpStatus &_os, RemoveType _removeType);
 
-        virtual void run();
-    private:
-        QString range;
-        RemoveType removeType;
-        FormatToUse format;
-        bool saveNew;
-        QString saveToFile;
-        QMap<FormatToUse, QString> comboBoxItems;
-    };
+    void run();
+
+private:
+    QString range;
+    RemoveType removeType;
+    FormatToUse format;
+    bool saveNew;
+    QString saveToFile;
+    QMap<FormatToUse, QString> comboBoxItems;
+    bool recalculateQuals;
+};
 
 }
 

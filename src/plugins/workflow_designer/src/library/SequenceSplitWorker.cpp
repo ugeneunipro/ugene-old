@@ -19,34 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QScopedPointer>
-
-#include "SequenceSplitWorker.h"
-#include "GenericReadActor.h"
-
-#include <U2Core/AppContext.h>
+#include <QScopedPointer>
 
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
 #include <U2Core/DNASequence.h>
-
-#include <U2Core/TaskSignalMapper.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/MultiTask.h>
-
+#include <U2Core/TaskSignalMapper.h>
 #include <U2Core/TextUtils.h>
-
-#include <U2Formats/GenbankLocationParser.h>
-
-#include <U2Lang/ConfigurationEditor.h>
-#include <U2Lang/WorkflowEnv.h>
-#include <U2Lang/ActorPrototypeRegistry.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 #include <U2Designer/DelegateEditors.h>
-#include <U2Lang/CoreLibConstants.h>
-#include <U2Lang/BaseSlots.h>
-#include <U2Lang/BaseTypes.h>
-#include <U2Lang/BasePorts.h>
+
+#include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/BasePorts.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/BaseSlots.h>
+#include <U2Lang/ConfigurationEditor.h>
+#include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/WorkflowEnv.h>
+
+#include "GenericReadActor.h"
+
+#include "SequenceSplitWorker.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -189,7 +186,7 @@ void SequenceSplitWorker::sl_onTaskFinished(Task *) {
         QList<DNASequence>::Iterator iter(sequences.begin());
         for(;iter != sequences.end(); iter++){
             DNASequence &resSeq = *iter;
-            QString name = resSeq.getName() + " " + Genbank::LocationParser::buildLocationString(ssT->getInputAnnotation()->getRegions())
+            QString name = resSeq.getName() + " " + U1AnnotationUtils::buildLocationString(ssT->getInputAnnotation()->getRegions())
                 + " " + ssT->getInputAnnotation()->name;
             if (sequences.size() > 1) {
                 name += " " + QString::number(seqCount++);

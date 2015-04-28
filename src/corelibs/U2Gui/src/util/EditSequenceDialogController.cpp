@@ -65,8 +65,9 @@ SeqPasterEventFilter::SeqPasterEventFilter( QObject* parent )
 
 //////////////////////////////////////////////////////////////////////////
 //EditSequenceDialogController
-    EditSequenceDialogController::EditSequenceDialogController( EditSequencDialogConfig cfg, QWidget* p)
-: QDialog(p), filter(""), pos(1), config(cfg) {
+EditSequenceDialogController::EditSequenceDialogController(const EditSequencDialogConfig &cfg, QWidget *p)
+    : QDialog(p), filter(""), pos(1), config(cfg)
+{
     ui = new Ui_EditSequenceDialog;
     ui->setupUi(this);
     new HelpButton(this, ui->buttonBox, "16122161");
@@ -79,7 +80,7 @@ SeqPasterEventFilter::SeqPasterEventFilter( QObject* parent )
     //selection
     ui->selectionGroupBox->setEnabled(false);
     if (!cfg.selectionRegions.isEmpty()){
-        ui->selectionLineEdit->setText(Genbank::LocationParser::buildLocationString(cfg.selectionRegions));
+        ui->selectionLineEdit->setText(U1AnnotationUtils::buildLocationString(cfg.selectionRegions));
     }
     connect(ui->beforeSelectionToolButton, SIGNAL(clicked()), this, SLOT(sl_beforeSlectionClicked()));
     connect(ui->afterSelectionToolButton, SIGNAL(clicked()), this, SLOT(sl_afterSlectionClicked()));
@@ -95,7 +96,7 @@ SeqPasterEventFilter::SeqPasterEventFilter( QObject* parent )
 
     if (cfg.mode == EditSequenceMode_Insert) {
         setWindowTitle(tr("Insert Sequence"));
-        if (!cfg.selectionRegions.isEmpty()){
+        if (!cfg.selectionRegions.isEmpty()) {
             ui->selectionGroupBox->setEnabled(true);
             sl_beforeSlectionClicked();
         }
@@ -122,8 +123,6 @@ SeqPasterEventFilter::SeqPasterEventFilter( QObject* parent )
     SeqPasterEventFilter* evFilter= new SeqPasterEventFilter(this);
     w->setEventFilter(evFilter);
     connect(evFilter, SIGNAL(si_enterPressed()), this, SLOT(sl_enterPressed()));
-
-
 }
 
 void EditSequenceDialogController::accept(){
@@ -173,14 +172,18 @@ void EditSequenceDialogController::sl_browseButtonClicked(){
     sl_indexChanged(ui->formatBox->currentIndex());
 }
 
-U1AnnotationUtils::AnnotationStrategyForResize EditSequenceDialogController::getAnnotationStrategy() {
-    if(ui->resizeRB->isChecked()){
+int EditSequenceDialogController::getPosToInsert() const {
+    return pos;
+}
+
+U1AnnotationUtils::AnnotationStrategyForResize EditSequenceDialogController::getAnnotationStrategy() const {
+    if (ui->resizeRB->isChecked()) {
         return U1AnnotationUtils::AnnotationStrategyForResize_Resize;
-    }else if(ui->splitRB->isChecked()){
+    } else if(ui->splitRB->isChecked()) {
         return U1AnnotationUtils::AnnotationStrategyForResize_Split_To_Joined;
-    }else if(ui->split_separateRB->isChecked()){
+    } else if(ui->split_separateRB->isChecked()) {
         return U1AnnotationUtils::AnnotationStrategyForResize_Split_To_Separate;
-    }else{
+    } else {
         assert(ui->removeRB->isChecked());
         return U1AnnotationUtils::AnnotationStrategyForResize_Remove;
     }
@@ -209,8 +212,11 @@ void EditSequenceDialogController::sl_mergeAnnotationsToggled( bool state){
     sl_indexChanged(ui->formatBox->findText("Genbank"));
 }
 
-GUrl EditSequenceDialogController::getDocumentPath()
-{
+DNASequence EditSequenceDialogController::getNewSequence() const {
+    return w->getSequence();
+}
+
+GUrl EditSequenceDialogController::getDocumentPath() const {
     if (modifyCurrentDocument()) {
         return GUrl();
     } else {
@@ -223,18 +229,19 @@ EditSequenceDialogController::~EditSequenceDialogController()
     delete ui;
 }
 
-bool EditSequenceDialogController::mergeAnnotations()
-{
+bool EditSequenceDialogController::mergeAnnotations() const {
     return (ui->mergeAnnotationsBox->isChecked() && !modifyCurrentDocument());
 }
 
-U2::DocumentFormatId EditSequenceDialogController::getDocumentFormatId()
-{
+bool EditSequenceDialogController::recalculateQualifiers() const {
+    return ui->recalculateQualsCheckBox->isChecked();
+}
+
+U2::DocumentFormatId EditSequenceDialogController::getDocumentFormatId() const {
     return ui->formatBox->itemData(ui->formatBox->currentIndex()).toString();
 }
 
-bool EditSequenceDialogController::modifyCurrentDocument()
-{
+bool EditSequenceDialogController::modifyCurrentDocument() const {
     return !ui->saveToAnotherBox->isChecked();
 }
 

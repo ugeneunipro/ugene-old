@@ -22,7 +22,6 @@
 #ifndef _U2_GENBANK_FEATURES_H_
 #define _U2_GENBANK_FEATURES_H_
 
-#include <U2Core/global.h>
 #include <U2Core/U2FeatureType.h>
 
 #include <QtCore/QMultiMap>

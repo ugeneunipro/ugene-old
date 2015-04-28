@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>539</width>
-    <height>331</height>
+    <height>309</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,37 +21,47 @@
        <property name="title">
         <string>Annotations region resolving mode</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
+         <widget class="QRadioButton" name="resizeRB">
+          <property name="text">
+           <string>Expand affected annotation</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QRadioButton" name="removeRB">
+          <property name="text">
+           <string>Remove affected annotation</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QRadioButton" name="splitRB">
+          <property name="text">
+           <string>Split (join annotation parts)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QRadioButton" name="split_separateRB">
+          <property name="text">
+           <string>Split (separate annotations parts)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
          <layout class="QVBoxLayout" name="verticalLayout">
+          <property name="topMargin">
+           <number>7</number>
+          </property>
           <item>
-           <widget class="QRadioButton" name="resizeRB">
+           <widget class="QCheckBox" name="recalculateQualsCheckBox">
             <property name="text">
-             <string>Expand affected annotation</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="removeRB">
-            <property name="text">
-             <string>Remove affected annotation</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="splitRB">
-            <property name="text">
-             <string>Split (join annotation parts)</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="split_separateRB">
-            <property name="text">
-             <string>Split (separate annotations parts)</string>
+             <string>Recalculate values of qualifiers</string>
             </property>
            </widget>
           </item>
@@ -165,7 +175,7 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="2" column="0">
+      <item row="3" column="0">
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
          <widget class="QLabel" name="label">

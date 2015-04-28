@@ -26,9 +26,11 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/QVariantUtils.h>
-#include <U2Formats/GenbankLocationParser.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 #include <U2Designer/DelegateEditors.h>
+
+#include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Gui/DialogUtils.h>
 
@@ -434,7 +436,8 @@ void MACSWorkerFactory::init() {
         //attrs << new Attribute(qvalueDesc, BaseTypes::NUM_TYPE(), false, QVariant(0.1));    //(MACS 2)
         attrs << new Attribute(useModelDesc, BaseTypes::BOOL_TYPE(), false, QVariant(true));
 
-        Attribute* foldAttr = new Attribute(modelFoldDesc, BaseTypes::STRING_TYPE(), false, QVariant(Genbank::LocationParser::buildLocationString(QVector<U2Region>()<<U2Region(9, 21))));
+        Attribute* foldAttr = new Attribute(modelFoldDesc, BaseTypes::STRING_TYPE(), false,
+            QVariant(U1AnnotationUtils::buildLocationString(QVector<U2Region>()<<U2Region(9, 21))));
         foldAttr ->addRelation(new VisibilityRelation(USE_MODEL_ATTR_ID, QVariant(true)));
         attrs << foldAttr;
 

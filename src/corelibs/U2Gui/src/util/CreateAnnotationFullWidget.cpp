@@ -22,9 +22,8 @@
 #include <QMenu>
 
 #include <U2Core/Counter.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2SafePoints.h>
-
-#include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Gui/GObjectComboBoxController.h>
 #include <U2Gui/U2LongLongValidator.h>
@@ -282,7 +281,7 @@ void CreateAnnotationFullWidget::sl_regionChanged() {
     SharedAnnotationData annotationData(new AnnotationData);
     annotationData->location = location;
 
-    leLocation->setText(Genbank::LocationParser::buildLocationString(annotationData));
+    leLocation->setText(U1AnnotationUtils::buildLocationString(annotationData));
 }
 
 void CreateAnnotationFullWidget::sl_locationChanged() {

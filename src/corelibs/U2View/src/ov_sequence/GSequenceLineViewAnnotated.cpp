@@ -731,7 +731,7 @@ QString GSequenceLineViewAnnotated::createToolTip(QHelpEvent *e) {
             tip += "<tr><td/><td>...</td>";
             rows++;
         } else {
-            tip += "<tr><td></td><td><b>Location</b> = " + Genbank::LocationParser::buildLocationString(ad) + "</td></tr>";
+            tip += "<tr><td></td><td><b>Location</b> = " + U1AnnotationUtils::buildLocationString(ad) + "</td></tr>";
             tip += "<tr><td/><td>";
             tip += Annotation::getQualifiersTip(ad, ROWS_LIMIT - rows, getSequenceObject(), ctx->getComplementTT(), ctx->getAminoTT());
             tip += "</td></tr>";

@@ -1,9 +1,32 @@
-#include "LocationParserUnitTests.h"
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2015 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
 
 #include <U2Core/AnnotationData.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2Region.h>
+#include <U2Core/U1AnnotationUtils.h>
+
 #include <U2Formats/GenbankLocationParser.h>
+
+#include "LocationParserUnitTests.h"
 
 namespace U2 {
 
@@ -35,7 +58,7 @@ IMPLEMENT_TEST(LocationParserTestData, locationParserCompare) {
     Genbank::LocationParser::parseLocation(qPrintable(original),original.length(), location);
     QVector<U2Region> regions = location->regions;
     CHECK_EQUAL(regions.size(), 1, "regions size should be 1");
-    QString expected = Genbank::LocationParser::buildLocationString(regions);
+    QString expected = U1AnnotationUtils::buildLocationString(regions);
     CHECK_TRUE(original == expected, "regions should be the same");
 }
 
@@ -78,7 +101,7 @@ IMPLEMENT_TEST(LocationParserTestData, hugeLocationParser) {
 
     SharedAnnotationData ad;
     ad->location->regions = regions;
-    QString expectedStr = Genbank::LocationParser::buildLocationString(ad);
+    QString expectedStr = U1AnnotationUtils::buildLocationString(ad);
     CHECK_TRUE(expectedStr.length() > 0, "regions string should not be empty");
     QStringList expected = expectedStr.split(",");
     CHECK_EQUAL(expected.size(), ad->location->regions.size(), "incorrect expected regions size");
@@ -118,7 +141,7 @@ IMPLEMENT_TEST(LocationParserTestData, buildLocationString) {
     for (int i = 0; i < 1000; i++){
         ad->location->regions << U2Region((region_length - 1) * i, region_length);
     }
-    QString regionStr = Genbank::LocationParser::buildLocationString(ad);
+    QString regionStr = U1AnnotationUtils::buildLocationString(ad);
     CHECK_TRUE(regionStr.length() > 0, "regions string should not be empty");
 
     QStringList regions = regionStr.split(",");
@@ -136,7 +159,7 @@ IMPLEMENT_TEST(LocationParserTestData, buildLocationStringDuplicate) {
     for (int i = 0; i < 10; i++){
         ad->location->regions << U2Region(1, region_length);
     }
-    QString regionStr = Genbank::LocationParser::buildLocationString(ad);
+    QString regionStr = U1AnnotationUtils::buildLocationString(ad);
     CHECK_TRUE(regionStr.length() > 0, "regions string should not be empty");
 
     QStringList regions = regionStr.split(",");
@@ -154,7 +177,7 @@ IMPLEMENT_TEST(LocationParserTestData, buildLocationStringInvalid) {
     for (int i = 0; i < 10; i++){
         ad->location->regions << U2Region(-region_length * i, -region_length);
     }
-    QString regionStr = Genbank::LocationParser::buildLocationString(ad);
+    QString regionStr = U1AnnotationUtils::buildLocationString(ad);
     QStringList regions = regionStr.split(",");
 
     U2Location location;
@@ -171,7 +194,7 @@ IMPLEMENT_TEST(LocationParserTestData, locationOperatorJoin) {
     for (int i = 0; i < 10; i++){
         ad->location->regions << U2Region((region_length -1) * i, region_length);
     }
-    QString regionStr = Genbank::LocationParser::buildLocationString(ad);
+    QString regionStr = U1AnnotationUtils::buildLocationString(ad);
     CHECK_TRUE(regionStr.length() > 0, "regions string should not be empty");
     CHECK_TRUE(regionStr.startsWith("join"), "regions join string must start with <join>");
 }
@@ -193,7 +216,7 @@ IMPLEMENT_TEST(LocationParserTestData, locationOperatorOrder) {
     for (int i = 0; i < 10; i++){
         ad->location->regions << U2Region((region_length -1) * i, region_length);
     }
-    QString regionStr = Genbank::LocationParser::buildLocationString(ad);
+    QString regionStr = U1AnnotationUtils::buildLocationString(ad);
     CHECK_TRUE(regionStr.length() > 0, "regions string should not be empty");
     CHECK_TRUE(regionStr.startsWith("order"), "regions join string must start with order");
 }
@@ -295,7 +318,7 @@ IMPLEMENT_TEST(LocationParserTestData, locationParserNumberInvalid) {
     QVector<U2Region> regions = location->regions;
     SharedAnnotationData ad(new AnnotationData);
     ad->location->regions << location->regions;
-    QString regionStr = Genbank::LocationParser::buildLocationString(ad);
+    QString regionStr = U1AnnotationUtils::buildLocationString(ad);
     U2Location newLocation;
     Genbank::LocationParser::parseLocation(qPrintable(regionStr),regionStr.length(), newLocation);
 
@@ -305,7 +328,7 @@ IMPLEMENT_TEST(LocationParserTestData, locationParserNumberInvalid) {
 IMPLEMENT_TEST(LocationParserTestData, locationBuildStringNumberInvalid) {
     SharedAnnotationData ad(new AnnotationData);
     ad->location->regions << U2Region(Q_INT64_C(9223372036854775807), 90);
-    QString regionStr = Genbank::LocationParser::buildLocationString(ad);
+    QString regionStr = U1AnnotationUtils::buildLocationString(ad);
     U2Location location;
     Genbank::LocationParser::parseLocation(qPrintable(regionStr),regionStr.length(), location);
     CHECK_EQUAL(ad->location->regions.size(), location->regions.size(), "incorrect expected regions size");

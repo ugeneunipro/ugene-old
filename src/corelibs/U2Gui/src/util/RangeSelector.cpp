@@ -19,29 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "RangeSelector.h"
-#include "GenbankLocationValidator.h"
-#include "ui/ui_RangeSelectionDialog.h"
+#include <math.h>
+
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QIntValidator>
+#include <QLabel>
+#include <QPushButton>
+#include <QToolButton>
+
+#include <U2Core/U1AnnotationUtils.h>
 
 #include <U2Formats/GenbankLocationParser.h>
 
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QToolButton>
-#else
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QToolButton>
-#endif
-#include <QtGui/QIntValidator>
 #include <U2Gui/HelpButton.h>
-#include <math.h>
+
+#include "GenbankLocationValidator.h"
+
+#include "ui/ui_RangeSelectionDialog.h"
+#include "RangeSelector.h"
 
 namespace U2 {
 
@@ -270,10 +266,10 @@ MultipleRangeSelector::MultipleRangeSelector(QWidget* _parent, const QVector<U2R
 
     {
         QString loc;
-        if(selectedRanges.isEmpty()){
+        if (selectedRanges.isEmpty()) {
             loc = QString("1..%1").arg(seqLen);
-        }else{
-            loc = Genbank::LocationParser::buildLocationString(selectedRanges);
+        } else {
+            loc = U1AnnotationUtils::buildLocationString(selectedRanges);
         } 
         ui->multipleRegionEdit->setText(loc);
     }
@@ -313,12 +309,12 @@ void MultipleRangeSelector::accept(){
     }else{
         QByteArray locEditText = ui->multipleRegionEdit->text().toLatin1();
         U2Location currentLocation;
-        if (isCircular){
-            Genbank::LocationParser::parseLocation(	locEditText.constData(), ui->multipleRegionEdit->text().length(), currentLocation, seqLen);
-        }else{
-            Genbank::LocationParser::parseLocation(	locEditText.constData(), ui->multipleRegionEdit->text().length(), currentLocation, -1);
+        if (isCircular) {
+            Genbank::LocationParser::parseLocation(locEditText.constData(), ui->multipleRegionEdit->text().length(), currentLocation, seqLen);
+        } else {
+            Genbank::LocationParser::parseLocation(locEditText.constData(), ui->multipleRegionEdit->text().length(), currentLocation, -1);
         }
-        if(currentLocation->isEmpty()){
+        if (currentLocation->isEmpty()) {
             return;
         }
         QDialog::accept();        
