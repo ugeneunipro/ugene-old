@@ -19,24 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_EXPORT_BLAST_RESULT_DIALOG_FILLER_H_
-#define _U2_EXPORT_BLAST_RESULT_DIALOG_FILLER_H_
+#ifndef _U2_DASHBOARDS_MANAGER_DIALOG_FILLER_H_
+#define _U2_DASHBOARDS_MANAGER_DIALOG_FILLER_H_
 
 #include "GTUtilsDialog.h"
 
 namespace U2 {
 
-class ExportBlastResultDialogFiller : public Filler {
+class DashboardsManagerDialogFiller: public Filler
+{
 public:
-    ExportBlastResultDialogFiller(U2OpStatus &os, const QString &filePath, bool _addRefBoxChecked = false);
+    DashboardsManagerDialogFiller(U2OpStatus &os, CustomScenario* _c = NULL):
+        Filler(os, "DashboardsManagerDialog", _c){}
+    virtual void commonScenario();
+    static void selectDashboards(U2OpStatus &os, QStringList names);
+    static bool isDashboardPresent(U2OpStatus &os, QString name);
 
-    void commonScenario();
-
-private:
-    const QString filePath;
-    bool addRefBoxChecked;
 };
 
-}
+}//namespace U2
 
-#endif // _U2_EXPORT_BLAST_RESULT_DIALOG_FILLER_H_
+#endif // DASHBOARDSMANAGERDIALOGFILLER_H

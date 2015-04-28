@@ -50,8 +50,9 @@ public:
     typedef QPair<ActionType, QVariant> Action;
 
     DownloadRemoteFileDialogFiller(U2OpStatus &os, const QList<Action> &actions);
+    DownloadRemoteFileDialogFiller(U2OpStatus &os, CustomScenario* c);
 
-    void run();
+    void commonScenario();
 
 private:
     void setResourceIds(const QVariant &actionData);
@@ -88,7 +89,7 @@ public:
           saveDirPath(_saveDirPath),
           useMethod(_useMethod),
           outFormatVal(_outFormatVal){}
-    virtual void run();
+    virtual void commonScenario();
 private:
     QString resID;
     int DBItemNum;

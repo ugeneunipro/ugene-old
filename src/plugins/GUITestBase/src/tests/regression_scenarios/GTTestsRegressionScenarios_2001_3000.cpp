@@ -115,6 +115,7 @@
 #include "runnables/ugene/plugins/biostruct3d_view/StructuralAlignmentDialogFiller.h"
 #include "runnables/ugene/plugins/cap3/CAP3SupportDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportBlastResultDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromAlignmentDialogFiller.h"
@@ -137,6 +138,7 @@
 #include "runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/CreateElementWithCommandLineToolFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/DashboardsManagerDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
@@ -770,6 +772,51 @@ GUI_TEST_CLASS_DEFINITION( test_2070 ){
 
     GTUtilsLog::check(os, lt);
 }
+
+GUI_TEST_CLASS_DEFINITION( test_2076 ){
+//    1) Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2) Run any scheme
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Alignment");
+    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::addElement(os, "Write Alignment");
+    GTUtilsWorkflowDesigner::connect(os, read, write);
+    GTUtilsWorkflowDesigner::click(os, read);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsWorkflowDesigner::saveWorkflowAs(os, sandBoxDir + "test_2076.uwl", "test_2076");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTGlobals::sleep();
+//    Expected state: workflow monitor appeared
+
+//    3) Click on the 'Dashboards manager' tool button
+    QWidget* dmButton = GTAction::button(os, GTAction::findAction(os, "Dashboards manager"));
+    GTWidget::click(os, dmButton);
+//    Expected state: 'Dashboards manager' dialog appeared
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            //    4) Select some dashboards in the dialog
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            //    5) Click on the 'Remove selected' button
+            DashboardsManagerDialogFiller::selectDashboards(os, QStringList()<<"test_2076 1");
+            //    Expected state: 'Removing dashboards' dialog appeared
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Confirm"));
+            //    6) Click on the 'Confirm' button
+            GTWidget::click(os, GTWidget::findWidget(os, "removeButton", dialog));
+
+            //    Expected state: selected dashboards were removed
+            bool pres = DashboardsManagerDialogFiller::isDashboardPresent(os, "test_2076 1");
+            CHECK_SET_ERR(!pres, "dashboard unexpectidly present")
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new DashboardsManagerDialogFiller(os, new custom()));
+    GTGlobals::sleep();
+
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2077 ){
     // 1) Open WD
 
@@ -2044,6 +2091,25 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
     }
 
     GTUtilsLog::check(os, lt);
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2314 ){
+//    1. Open 'COI.aln'
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Scroll sequence area to the last columns
+    GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 604));
+    GTKeyboardDriver::keyClick(os, 'g', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+//    3. Move to the right last column with mouse
+    QWidget* consArea = GTWidget::findWidget(os, "consArea");
+    QWidget* offset = GTWidget::findWidget(os, "msa_editor_offsets_view_widget_right");
+    int w = offset->geometry().width();
+    GTWidget::click(os, consArea, Qt::LeftButton, QPoint(consArea->geometry().right() - w - 10, consArea->geometry().height()/2));
+    GTGlobals::sleep(500);
+//    Unexpected state: the column remains in the same place
+//    4. Move to the right any other region, that is close to the end of alignment
+//    Unexpected state: the region stands on the same place if mouse
+//    go beyond the right border of the alignment
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2316 ) {
@@ -4314,6 +4380,36 @@ GUI_TEST_CLASS_DEFINITION(test_2581_5) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2583){
+//    1. Open file data/samples/EMBL/AL000263.emb
+    GTFileDialog::openFile(os, dataDir + "samples/EMBL/AL000263.emb");
+//    2. Open file test/_common_data/regression/2583/My_Document_2.gb
+    GTFileDialog::openFile(os, testDir + "_common_data/regression/2583/MyDocument_2.gb");
+//    3. Drag "AB000263 standart annotations" AL000263.emb sequence view
+    QModelIndex idx = GTUtilsProjectTreeView::findIndex(os, "AB000263 standard annotations");
+    QWidget* sequence = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+    CHECK_SET_ERR(sequence != NULL, "Sequence widget not found");
+
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    GTUtilsProjectTreeView::dragAndDrop(os, idx, sequence);
+//    "Edit objct relations" dialog appeared. Click "OK"
+//    4. Select all "blast result" tree items in annotation tree view
+    QList<QTreeWidgetItem *> blastResultItems = GTUtilsAnnotationsTreeView::findItems(os, "blast result");
+    GTUtilsAnnotationsTreeView::selectItems(os, blastResultItems);
+//    5. Use context menu: "Export"->"Export BLAST result to alignment"
+
+    GTUtilsDialog::waitForDialog(os, new ExportBlastResultDialogFiller(os, sandBoxDir + "test_2583/test_2583.aln", true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "export_BLAST_result_to_alignment"));
+    GTMouseDriver::click(os, Qt::RightButton);
+//    "Export BLAST result to alignment" dialog appeared. Set some output file.
+//    check "add reference to alignment" checkBox
+//    Click "Export"
+//    Expected state: aligned parts are different with same parts in ref sequence.//Kirill can give more comments
+    GTUtilsProjectTreeView::openView(os);
+    GTUtilsProjectTreeView::toggleView(os);
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(30, 1), QPoint(41, 1), "TGCGGCTGCTCT");
+    GTGlobals::sleep(500);
+}
 
 GUI_TEST_CLASS_DEFINITION( test_2605 ) {
     GTLogTracer logTracer;

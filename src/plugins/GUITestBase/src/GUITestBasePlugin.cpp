@@ -452,6 +452,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1643);
     REGISTER_TEST(GUITest_regression_scenarios::test_1644);
     REGISTER_TEST(GUITest_regression_scenarios::test_1645);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1651);
     REGISTER_TEST(GUITest_regression_scenarios::test_1653);
     REGISTER_TEST(GUITest_regression_scenarios::test_1654);
     REGISTER_TEST(GUITest_regression_scenarios::test_1660);
@@ -469,6 +470,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_1681_1);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_1681_2);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_1681_3);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1686);
     REGISTER_TEST(GUITest_regression_scenarios::test_1687);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1688, "big data");
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_1693);//no tuxedo for windows
@@ -543,6 +545,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2049);
     REGISTER_TEST(GUITest_regression_scenarios::test_2053);
     REGISTER_TEST(GUITest_regression_scenarios::test_2070);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2076);
     REGISTER_TEST(GUITest_regression_scenarios::test_2077);
     REGISTER_TEST(GUITest_regression_scenarios::test_2078);
     REGISTER_TEST_ONLY_WINDOWS(GUITest_regression_scenarios::test_2089);//, "no forbidden folder characters on linux and mac");
@@ -599,6 +602,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2293);
     REGISTER_TEST(GUITest_regression_scenarios::test_2306);
     REGISTER_TEST(GUITest_regression_scenarios::test_2309);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2314);
     REGISTER_TEST(GUITest_regression_scenarios::test_2316);
     REGISTER_TEST(GUITest_regression_scenarios::test_2318);
     REGISTER_TEST(GUITest_regression_scenarios::test_2342);
@@ -668,6 +672,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2581_3);
     REGISTER_TEST(GUITest_regression_scenarios::test_2581_4);
     REGISTER_TEST(GUITest_regression_scenarios::test_2581_5);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2583);
     REGISTER_TEST(GUITest_regression_scenarios::test_2605);
     REGISTER_TEST(GUITest_regression_scenarios::test_2612);
     REGISTER_TEST(GUITest_regression_scenarios::test_2619);
@@ -740,6 +745,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2991);
     REGISTER_TEST(GUITest_regression_scenarios::test_2998);
 
+    REGISTER_TEST(GUITest_regression_scenarios::test_3006);
     REGISTER_TEST(GUITest_regression_scenarios::test_3014);
     REGISTER_TEST(GUITest_regression_scenarios::test_3017);
     REGISTER_TEST(GUITest_regression_scenarios::test_3031);

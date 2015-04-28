@@ -640,6 +640,7 @@ void WorkflowView::createActions() {
     connect(runAction, SIGNAL(triggered()), debugInfo, SLOT(sl_resumeTriggerActivated()));
 
     stopAction = new QAction(tr("S&top workflow"), this);
+    stopAction->setObjectName("Stop workflow");
     stopAction->setIcon(QIcon(":workflow_designer/images/stopTask.png"));
     stopAction->setEnabled(false);
     connect(stopAction, SIGNAL(triggered()), debugInfo, SLOT(sl_executionFinished()));
@@ -738,6 +739,7 @@ void WorkflowView::createActions() {
 
     dmAction = new QAction(tr("Dashboards manager"), this);
     dmAction->setIcon(QIcon(":workflow_designer/images/settings.png"));
+    dmAction->setObjectName("Dashboards manager");
     new DashboardManagerHelper(dmAction, this);
 
     { // Delete shortcut

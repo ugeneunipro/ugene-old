@@ -53,6 +53,8 @@ public:
     //this method writes info about all widgets to opStatus
     static void getAllWidgetsInfo(U2OpStatus &os, QWidget* parent=NULL);
 
+    static void clickLabelLink(U2OpStatus &os, QWidget* label, int step = 10);
+
     #define GT_CLASS_NAME "GTWidget"
     #define GT_METHOD_NAME "findWidget"
     template<class T>

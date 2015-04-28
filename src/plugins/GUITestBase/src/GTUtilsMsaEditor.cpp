@@ -127,6 +127,16 @@ void GTUtilsMsaEditor::toggleCollapsingMode(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "isSequenceCollapsed"
+bool GTUtilsMsaEditor::isSequenceCollapsed(U2OpStatus &os, const QString &seqName){
+    QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    GT_CHECK_RESULT(names.contains(seqName), "sequence " + seqName + " not found in name list", false);
+    QStringList visiablenames = GTUtilsMSAEditorSequenceArea::getVisibaleNames(os);
+
+    return !visiablenames.contains(seqName);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "toggleCollapsingMode"
 void GTUtilsMsaEditor::toggleCollapsingGroup(U2OpStatus &os, const QString &groupName) {
     Q_UNUSED(os);

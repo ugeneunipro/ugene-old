@@ -50,6 +50,7 @@ public:
 
     static void toggleCollapsingMode(U2OpStatus &os);
     static void toggleCollapsingGroup(U2OpStatus &os, const QString &groupName);
+    static bool isSequenceCollapsed(U2OpStatus &os, const QString &seqName);
 
     static int getSequencesCount(U2OpStatus &os);
 

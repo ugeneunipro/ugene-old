@@ -194,6 +194,26 @@ namespace U2 {
 
 namespace GUITest_regression_scenarios {
 
+GUI_TEST_CLASS_DEFINITION(test_3006){
+//    1. Open the data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Click on the Switch on/off collapsing button
+    GTUtilsMsaEditor::toggleCollapsingMode(os);
+//    Expected state: Mecopoda_elongata_IshigakiJ and Mecopoda_elongataSumatra will be collapsed
+    CHECK_SET_ERR(GTUtilsMsaEditor::isSequenceCollapsed(os, "Mecopoda_elongata__Sumatra_"),
+                  "1 Mecopoda_elongata__Sumatra_ is not collapsed");
+//    3. Click on the View->Sort sequences by name context menu item
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_VIEW<< "action_sort_by_name"));
+    GTWidget::click(os, GTUtilsMsaEditor::getNameListArea(os), Qt::RightButton);
+//    Expected state: the sequence list should be sorted, collapsing should be updated
+    CHECK_SET_ERR(GTUtilsMsaEditor::isSequenceCollapsed(os, "Mecopoda_elongata__Sumatra_"),
+                  "2 Mecopoda_elongata__Sumatra_ is not collapsed");
+    GTUtilsMSAEditorSequenceArea::clickCollapceTriangle(os, "Mecopoda_elongata__Ishigaki__J");
+    CHECK_SET_ERR(!GTUtilsMsaEditor::isSequenceCollapsed(os, "Mecopoda_elongata__Sumatra_"),
+                  "3 Mecopoda_elongata__Sumatra_ is unexpectidly collapsed");
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3014) {
     //1. Open the _common_data/scenarios/_regression/3014/pdb2q41.ent.gz
     GTLogTracer l;

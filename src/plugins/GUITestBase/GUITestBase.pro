@@ -268,7 +268,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTToolbar.h \
             src/api/GTTreeView.h \
             src/api/GTTreeWidget.h \
-            src/api/GTWidget.h
+            src/api/GTWidget.h \
+    src/runnables/ugene/plugins/workflow_designer/DashboardsManagerDialogFiller.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -543,3 +544,4 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTTreeView.cpp \
             src/api/GTTreeWidget.cpp \
             src/api/GTWidget.cpp \
+    src/runnables/ugene/plugins/workflow_designer/DashboardsManagerDialogFiller.cpp

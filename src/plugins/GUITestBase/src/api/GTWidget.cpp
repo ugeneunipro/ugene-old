@@ -154,6 +154,29 @@ QColor GTWidget::getColor(U2OpStatus &os, QWidget *w, const QPoint &p) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "clickLabelLink"
+void GTWidget::clickLabelLink(U2OpStatus &os, QWidget *label, int step){
+
+    QRect r = label->rect();
+
+    int left = r.left();
+    int right = r.right();
+    int top = r.top();
+    int bottom = r.bottom();
+    for(int i = left; i < right; i+=step){
+        for(int j = top; j < bottom; j+=step){
+            GTMouseDriver::moveTo(os, label->mapToGlobal(QPoint(i,j)));
+            if(label->cursor().shape() == Qt::PointingHandCursor){
+                GTGlobals::sleep(500);
+                GTMouseDriver::click(os);
+                return;
+            }
+        }
+    }
+    GT_CHECK(false, "label does not contain link");
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 } //namespace

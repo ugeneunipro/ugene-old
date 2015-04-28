@@ -54,8 +54,11 @@ DownloadRemoteFileDialogFiller::DownloadRemoteFileDialogFiller(U2OpStatus &os, c
 {
 }
 
-#define GT_METHOD_NAME "run"
-void DownloadRemoteFileDialogFiller::run() {
+DownloadRemoteFileDialogFiller::DownloadRemoteFileDialogFiller(U2OpStatus &os, CustomScenario *c):
+    Filler(os, "DownloadRemoteFileDialog", c){}
+
+#define GT_METHOD_NAME "commonScenario"
+void DownloadRemoteFileDialogFiller::commonScenario() {
     dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -267,8 +270,8 @@ void DownloadRemoteFileDialogFiller::clickCancel() {
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::RemoteDBDialogFillerDeprecated"
-#define GT_METHOD_NAME "run"
-void RemoteDBDialogFillerDeprecated::run() {
+#define GT_METHOD_NAME "commonScenario"
+void RemoteDBDialogFillerDeprecated::commonScenario() {
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");

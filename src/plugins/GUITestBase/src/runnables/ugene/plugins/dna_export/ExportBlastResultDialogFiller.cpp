@@ -22,6 +22,7 @@
 #include <QApplication>
 
 #include "ExportBlastResultDialogFiller.h"
+#include "api/GTCheckBox.h"
 #include "api/GTLineEdit.h"
 #include "api/GTWidget.h"
 
@@ -29,9 +30,10 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportAnnotationsFiller"
 
-ExportBlastResultDialogFiller::ExportBlastResultDialogFiller(U2OpStatus &os, const QString &filePath) :
+ExportBlastResultDialogFiller::ExportBlastResultDialogFiller(U2OpStatus &os, const QString &filePath, bool _addRefBoxChecked) :
     Filler(os, "ExportBlastResultDialog"),
-    filePath(filePath)
+    filePath(filePath),
+    addRefBoxChecked(_addRefBoxChecked)
 {
 
 }
@@ -42,6 +44,8 @@ void ExportBlastResultDialogFiller::commonScenario() {
     GT_CHECK(NULL != dialog, "Active modal widget is NULL");
 
     GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "fileNameEdit", dialog), filePath);
+
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox*>(os, "addRefBox", dialog), addRefBoxChecked);
 
     GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }

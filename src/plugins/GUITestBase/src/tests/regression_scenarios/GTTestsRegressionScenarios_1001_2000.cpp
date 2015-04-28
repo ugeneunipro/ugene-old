@@ -5676,6 +5676,31 @@ GUI_TEST_CLASS_DEFINITION(test_1645) {
     CHECK_SET_ERR(!GTUtilsDocument::isDocumentLoaded(os, "base_ext_nucl_all_symb.fa"), "Document should't be loaded");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1651 ){
+//    1. Open the "Access remote database" dialog.
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            GTGlobals::sleep();
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QLabel* hintLabel = GTWidget::findExactWidget<QLabel*>(os, "hintLabel", dialog);
+            //    2. There are sample IDs in the hints
+            GTWidget::clickLabelLink(os, hintLabel, 20);
+
+            //    3. Clicking on a sample ID must out in in the LineEdit automatically
+            QLineEdit* idLineEdit = GTWidget::findExactWidget<QLineEdit*>(os, "idLineEdit", dialog);
+            CHECK_SET_ERR(idLineEdit->text() == "NC_001363", "Unexpected lineEdit text: " + idLineEdit->text());
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new DownloadRemoteFileDialogFiller(os, new custom()));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1653 ) {
 /*  1. Open some sequence
     2. Open find pattern option panel
@@ -6210,6 +6235,32 @@ GUI_TEST_CLASS_DEFINITION(test_1681_3) {
 //    Expected state: Pipeline executed without errors
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1686){
+//    1. Select { Tools -> Build dotplot... } in the main menu.
+    QMenu *menu;
+    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 8, 80,false,false));
+    Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa", testDir + "_common_data/scenarios/dp_view/dp2.fa");
+    GTUtilsDialog::waitForDialog(os, filler2);
+
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);
+    GTGlobals::sleep(1000);
+//    2. Set the "_common_data/scenarios/dp_view/dpm1.fa" as the first sequence,
+//    the "_common_data/scenarios/dp_view/dpm2.fa" as the second sequence.
+//    Make sure that the "Join all sequences found in the file" checkboxes are checked. Click the "Next" button.
+
+//    Expected state: sequences are loaded into sequence view. "Dotplot" dialog has appeared.
+
+//    3. Set the {Minimum repeat length} : 200, {Repeats identity} : 50%. Click the "OK" button.
+
+//    Expected state: dotplot view has appeared.
+
+//    4. Zoom in to the maximum and move the dotplot screen to the right bottom corner of the dotplot with the minimap.
+
+//    Expected state: Coords of the right bottom corner is (200, 200).
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1687) {
     // 1. open samples / clustalW / COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
@@ -6714,18 +6765,20 @@ GUI_TEST_CLASS_DEFINITION(test_1738){
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Assembly (BAM/SAM)"));
     GTMouseDriver::click(os);
-    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "bam/", "Mycobacterium.sorted.bam");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/bam/", "Mycobacterium.sorted.bam");
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
     GTMouseDriver::click(os);
-    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "fasta/", "Mycobacterium.fa");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta/", "Mycobacterium.fna");
 
     GTWidget::click(os,GTAction::button(os,"Run workflow"));
     GTGlobals::sleep(5000);
 
-    GTWidget::click(os,GTAction::button(os,"Run workflow"));
-    GTGlobals::sleep(5000);
+    GTWidget::click(os,GTAction::button(os,"Stop workflow"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
+    QWebElement initEl = GTUtilsDashboard::findElement(os, "00:00:0", "SPAN");
+    GTGlobals::sleep(500);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1751){
