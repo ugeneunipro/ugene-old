@@ -291,8 +291,21 @@ void ModifySequenceContentTask::fixAnnotationQualifiers(Annotation *an) {
 }
 
 void ModifySequenceContentTask::fixAnnotations() {
-    const QList<GObject *> annotationTablesList = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj, GObjectTypes::ANNOTATION_TABLE,
-        ObjectRole_Sequence, GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::ANNOTATION_TABLE), UOF_LoadedOnly);
+    QList<GObject *> annotationTablesList;
+    if (AppContext::getProject() != NULL) {
+        QList<GObject *> annotationTablesList = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj, GObjectTypes::ANNOTATION_TABLE,
+            ObjectRole_Sequence, GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::ANNOTATION_TABLE), UOF_LoadedOnly);
+    } else {
+        foreach(Document *d, docs) {
+            QList<GObject *> allAnnotationTables = d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+            foreach(GObject *table, allAnnotationTables) {
+                if (table->hasObjectRelation(seqObj, ObjectRole_Sequence)) {
+                    annotationTablesList.append(table);
+                }
+            }
+        }
+    }
+
     foreach (GObject *table, annotationTablesList) {
         AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>(table);
         if (NULL != ato) {

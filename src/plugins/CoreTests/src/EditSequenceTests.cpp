@@ -100,7 +100,7 @@ void GTest_AddPartToSequenceTask::prepare(){
         QList<Document*> docList;
         docList.append(loadedDocument);
         DNASequence seqToIns("test", insertedSequence.toLatin1(), U2AlphabetUtils::findBestAlphabet(insertedSequence.toLatin1()));
-        Task* t = new ModifySequenceContentTask(loadedDocument->getDocumentFormatId(), dnaso, U2Region(startPos, 0), seqToIns, strat);
+        Task* t = new ModifySequenceContentTask(loadedDocument->getDocumentFormatId(), dnaso, U2Region(startPos, 0), seqToIns, false, strat);
         addSubTask(t);
     }
 }
@@ -132,6 +132,7 @@ Task::ReportResult GTest_AddPartToSequenceTask::report(){
                         if (curentAnnotation->getRegions().size() != expectedRegions.size()) {
                             stateInfo.setError(GTest::tr("Regions is incorrect. Expected size:%1 Actual size:%2")
                                 .arg(expectedRegions.size()).arg(curentAnnotation->getRegions().size()));
+                            break;
                         }
                         foreach (const U2Region &curRegion, curentAnnotation->getRegions()) {
                             if (curRegion != expectedRegions.at(i)) {
@@ -232,7 +233,7 @@ void GTest_RemovePartFromSequenceTask::prepare(){
     }else{
         QList<Document*> docList;
         docList.append(loadedDocument);
-        addSubTask(new ModifySequenceContentTask(loadedDocument->getDocumentFormatId(), dnaso, U2Region(startPos, length), DNASequence(), strat));
+        addSubTask(new ModifySequenceContentTask(loadedDocument->getDocumentFormatId(), dnaso, U2Region(startPos, length), DNASequence(), false, strat));
     }
 }
 
@@ -261,6 +262,7 @@ Task::ReportResult GTest_RemovePartFromSequenceTask::report(){
                     if (curentAnnotation->getRegions().size() != expectedRegions.size()){
                         stateInfo.setError(GTest::tr("Regions is incorrect. Expected size:%1 Actual size:%2")
                             .arg(expectedRegions.size()).arg(curentAnnotation->getRegions().size()));
+                        break;
                     }
                     foreach (const U2Region &curRegion, curentAnnotation->getRegions()){
                         if (curRegion != expectedRegions.at(i)) {
@@ -355,7 +357,7 @@ void GTest_ReplacePartOfSequenceTask::prepare(){
         QList<Document*> docList;
         docList.append(loadedDocument);
         DNASequence dna("Inserted DNA", insertedSequence.toLatin1());
-        addSubTask(new ModifySequenceContentTask(loadedDocument->getDocumentFormatId(), dnaso, U2Region(startPos, length), dna, strat));
+        addSubTask(new ModifySequenceContentTask(loadedDocument->getDocumentFormatId(), dnaso, U2Region(startPos, length), dna, false, strat));
     }
 }
 
