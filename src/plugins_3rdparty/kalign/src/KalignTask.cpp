@@ -80,7 +80,8 @@ KalignTask::KalignTask(const MAlignment& ma, const KalignTaskSettings& _config)
     resultSubMA.setName(inputMAName);
     tpm = Task::Progress_Manual;
     quint64 mem = inputMA.getNumRows() * sizeof(float);
-    addTaskResource(TaskResourceUsage(RESOURCE_MEMORY,  (mem * mem + 3 * mem) / (1024 * 1024)));
+    quint64 profileMem = (ma.getLength() + 2)*22*sizeof(float); // the size of profile that is built during kalign
+    addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, (profileMem + (mem * mem + 3 * mem)) / (1024 * 1024)));
 }
 
 void KalignTask::_run() {

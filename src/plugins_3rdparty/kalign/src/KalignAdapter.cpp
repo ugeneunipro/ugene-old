@@ -344,7 +344,8 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
     //}else if (byg_start("fast",param->alignment_type) != -1){
     //	map =  default_alignment(aln,tree,submatrix, map);
     if(param->dna == 1){
-        map =  dna_alignment(aln,tree,submatrix, map,param->gap_inc);
+            map =  dna_alignment(aln,tree,submatrix, map,param->gap_inc);
+
     //	/*}else if (byg_start("test",param->alignment_type) != -1){
     //	map =  test_alignment(aln,tree,submatrix, map,param->internal_gap_weight,param->smooth_window,param->gap_inc);
     //	}else if (param->aa){
@@ -359,6 +360,9 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
     //	map =  advanced_hirschberg_alignment(aln,tree,submatrix, map,param->smooth_window,param->gap_inc,param->internal_gap_weight);
     }else{
         map =  hirschberg_alignment(aln,tree,submatrix, map,param->smooth_window,param->gap_inc);
+    }
+    if (map == NULL) {
+        throw KalignException("Failed to build an alignment.");
     }
     if(check_task_canceled(ctx)) {
         free_param(param);

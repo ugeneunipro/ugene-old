@@ -667,6 +667,7 @@ void PairwiseAlignmentTask::prepare() {
 
 QList<Task*> PairwiseAlignmentTask::onSubTaskFinished(Task *subTask) {
     QList<Task*> result;
+    CHECK_OP(stateInfo, result);
     CHECK((kalign == subTask) || (rKalign == subTask) || (cKalign == subTask) || (rcKalign == subTask), result);
     CHECK(kalign->isFinished() && rKalign->isFinished() && cKalign->isFinished() && rcKalign->isFinished(), result);
 
@@ -686,6 +687,7 @@ QList<Task*> PairwiseAlignmentTask::onSubTaskFinished(Task *subTask) {
 }
 
 void PairwiseAlignmentTask::run() {
+    CHECK_OP(stateInfo, );
     QScopedPointer<MAlignmentObject> msaObject(StorageUtils::getMsaObject(storage, msa));
     CHECK_EXT(!msaObject.isNull(), setError(L10N::nullPointerError("MSA object")), );
     int rowCount = msaObject->getNumRows();
