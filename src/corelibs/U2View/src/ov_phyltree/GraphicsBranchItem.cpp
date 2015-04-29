@@ -289,7 +289,7 @@ void GraphicsBranchItem::setLabelPositions() {
     }
     if(distanceText != NULL) {
         QRectF rect = distanceText->boundingRect();
-        distanceText->setPos(-rect.width() - 20, 0);
+        distanceText->setPos(-rect.width() / 2 - width / 2, 0);
     }
 }
 
@@ -305,11 +305,11 @@ void GraphicsBranchItem::setWidth(qreal w) {
     }
 
     setPos(pos().x() - width + w, pos().y());
+    setLabelPositions();
     if (getDistanceText() != NULL) {
         QPointF pos = getDistanceText()->pos();
         getDistanceText()->setPos(pos.x() + (width - w) * 0.5, pos.y());
     }
-    setLabelPositions();
 
     prepareGeometryChange();
     width = w;

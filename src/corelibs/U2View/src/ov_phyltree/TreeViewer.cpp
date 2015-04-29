@@ -630,7 +630,7 @@ void TreeViewerUI::initializeSettings() {
     setOptionValue(LABEL_FONT,  TreeViewerUtils::getFont());
 
     setOptionValue(SHOW_LABELS, true);
-    setOptionValue(SHOW_DISTANCES,  true);
+    setOptionValue(SHOW_DISTANCES,  !phyObject->haveNodeLabels());
     setOptionValue(SHOW_NODE_LABELS,  phyObject->haveNodeLabels());
     setOptionValue(ALIGN_LABELS, false);
 
@@ -794,6 +794,8 @@ void TreeViewerUI::updateTreeSettings(bool setDefautZoom){
     updateRect();
     scene()->update();
 
+    showLabels(LabelType_Distance);
+    showLabels(LabelType_SequnceName);
     bool alignLabels = getOptionValue(ALIGN_LABELS).toBool();
     if(alignLabels){
         updateLabelsAlignment();
