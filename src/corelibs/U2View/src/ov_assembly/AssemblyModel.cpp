@@ -662,4 +662,8 @@ U2EntityRef AssemblyModel::getRefereneceEntityRef(){
     return U2EntityRef();
 }
 
+U2SequenceObject* AssemblyModel::getRefObj() const {
+    return refObj;
+}
+
 } // U2

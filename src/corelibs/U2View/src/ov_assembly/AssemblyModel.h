@@ -69,6 +69,7 @@ public:
 
     void setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm);
     U2Assembly getAssembly() { return assembly; }
+    U2SequenceObject* getRefObj() const;
 
     bool hasReference() const;
     bool referenceAssociated()const;

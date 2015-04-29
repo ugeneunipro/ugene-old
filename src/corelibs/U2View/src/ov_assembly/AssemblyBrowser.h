@@ -146,7 +146,6 @@ protected:
     virtual void onObjectRenamed(GObject* obj, const QString& oldName);
 
 private slots:
-    void sl_assemblyLoaded();
     void sl_onPosChangeRequest(int);
     void sl_changeOverviewType();
     void sl_onShowCoordsOnRulerChanged(bool checked);
@@ -157,6 +156,7 @@ private slots:
     void sl_exportToSam();
     void sl_exportCoverage();
     void sl_unassociateReference();
+    void sl_referenceChanged();
 
 private:
     void initFont();
@@ -172,6 +172,8 @@ private:
     int zoomOutFromSize(int oldCellSize);
     void zoomToSize(int reqCellSize);
     void updateZoomingActions();
+    void removeReferenceSequence();
+    void assemblyLoaded();
 
 private:
     AssemblyBrowserUi * ui;

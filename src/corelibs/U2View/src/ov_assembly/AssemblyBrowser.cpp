@@ -113,10 +113,33 @@ showInfoAction(0), exportToSamAction(0)
         requiredObjects.append(o);
         const U2EntityRef& ref= gobject->getEntityRef();
         model = QSharedPointer<AssemblyModel>(new AssemblyModel(DbiConnection(ref.dbiRef, dbiOpStatus)));
-        sl_assemblyLoaded();
+        connect(model.data(), SIGNAL(si_referenceChanged()), SLOT(sl_referenceChanged()));
+        assemblyLoaded();
         CHECK_OP(dbiOpStatus, );
     }
     onObjectAdded(gobject);
+}
+
+void AssemblyBrowser::removeReferenceSequence(){
+    //Only one sequence object can be in assembly browser, it is a reference
+    foreach (GObject *o, objects){
+        if (o->getGObjectType() == GObjectTypes::SEQUENCE) {
+            objects.removeAll(o);
+            emit si_objectRemoved(this, o);
+            return;
+        }
+    }
+}
+
+void AssemblyBrowser::sl_referenceChanged() {
+    removeReferenceSequence();
+
+    U2SequenceObject *so = model->getRefObj();
+    if (so != NULL) {
+        objects.append(so);
+        onObjectAdded(so);
+        emit si_objectAdded(this, so);
+    }
 }
 
 bool AssemblyBrowser::checkValid(U2OpStatus &os) {
@@ -263,6 +286,8 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
                 crossDbi->createCrossReference(crossDbRef, folder, os);
                 LOG_OP(os);
                 refId = crossDbRef.id;
+                objects.append(obj);
+                emit si_objectAdded(this, obj);
             }
             model->associateWithReference(refId);
         }
@@ -601,25 +626,6 @@ void AssemblyBrowser::setFocusToPosSelector() {
     posSelector->getPosEdit()->setFocus();
 }
 
-void AssemblyBrowser::sl_assemblyLoaded() {
-    assert(model);
-    GTIMER(c1, t1, "AssemblyBrowser::sl_assemblyLoaded");
-    LOG_OP(dbiOpStatus);
-    U2Dbi * dbi = model->getDbiConnection().dbi;
-    CHECK(NULL != dbi, );
-
-    assert(U2DbiState_Ready == dbi->getState());
-
-    U2AssemblyDbi * assmDbi = dbi->getAssemblyDbi();
-
-    U2DataId objectId = gobject->getEntityRef().entityId;
-    U2Assembly assm = dbi->getAssemblyDbi()->getAssemblyObject(objectId, dbiOpStatus);
-    LOG_OP(dbiOpStatus);
-
-    model->setAssembly(assmDbi, assm);
-}
-
-
 void AssemblyBrowser::navigateToRegion(const U2Region & region) {
     int requiredCellSize = qMax(1, qRound((double)ui->getReadsArea()->width()/region.length));
     zoomToSize(requiredCellSize);
@@ -947,6 +953,23 @@ void AssemblyBrowser::sl_coveredRegionClicked(const QString link) {
         ui->getOverview()->checkedSetVisibleRange(cr.region);
         navigateToRegion(cr.region);
     }
+}
+
+void AssemblyBrowser::assemblyLoaded() {
+    GTIMER(c1, t1, "AssemblyBrowser::assemblyLoaded");
+    LOG_OP(dbiOpStatus);
+    U2Dbi * dbi = model->getDbiConnection().dbi;
+    CHECK(NULL != dbi, );
+
+    assert(U2DbiState_Ready == dbi->getState());
+
+    U2AssemblyDbi * assmDbi = dbi->getAssemblyDbi();
+
+    U2DataId objectId = gobject->getEntityRef().entityId;
+    U2Assembly assm = dbi->getAssemblyDbi()->getAssemblyObject(objectId, dbiOpStatus);
+    LOG_OP(dbiOpStatus);
+
+    model->setAssembly(assmDbi, assm);
 }
 
 //==============================================================================
