@@ -858,7 +858,7 @@ bool PairVector::isEmpty()const {
 }
 
 CalculatePointsTask::CalculatePointsTask(const QSharedPointer<GSequenceGraphData>& d, GSequenceGraphDrawer *drawer, PairVector &points, int alignedFirst, int alignedLast, bool expandMode, const GSequenceGraphWindowData &wdata, U2SequenceObject* o, const U2Region &visibleRange) 
-: BackgroundTask(tr("Calculate graph points"), TaskFlag_None), d(d), drawer(drawer), result(points), alignedFirst(alignedFirst), alignedLast(alignedLast), expandMode(expandMode), wdata(wdata), o(o), visibleRange(visibleRange) {}
+: BackgroundTask<PairVector>(tr("Calculate graph points"), TaskFlag_None), d(d), drawer(drawer), result(points), alignedFirst(alignedFirst), alignedLast(alignedLast), expandMode(expandMode), wdata(wdata), o(o), visibleRange(visibleRange) {}
 
 void CalculatePointsTask::run() {
     if(o.isNull()){
