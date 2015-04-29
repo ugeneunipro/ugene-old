@@ -293,7 +293,7 @@ void ModifySequenceContentTask::fixAnnotationQualifiers(Annotation *an) {
 void ModifySequenceContentTask::fixAnnotations() {
     QList<GObject *> annotationTablesList;
     if (AppContext::getProject() != NULL) {
-        QList<GObject *> annotationTablesList = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj, GObjectTypes::ANNOTATION_TABLE,
+        annotationTablesList = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj, GObjectTypes::ANNOTATION_TABLE,
             ObjectRole_Sequence, GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::ANNOTATION_TABLE), UOF_LoadedOnly);
     } else {
         foreach(Document *d, docs) {
