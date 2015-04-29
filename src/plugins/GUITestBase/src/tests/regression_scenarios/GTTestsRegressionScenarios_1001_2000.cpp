@@ -941,6 +941,16 @@ GUI_TEST_CLASS_DEFINITION(test_1052){
     CHECK_SET_ERR(title == "Start Page", "unexpected title: " + title);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1058) {
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/1058/", "file.gff"));
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "GFF"));
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__OPEN_AS);
+    GTGlobals::sleep();
+    CHECK_SET_ERR(l.hasError(), "No error about opening the file");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1059) {
     //1. Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);

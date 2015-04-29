@@ -362,6 +362,16 @@ GUI_TEST_CLASS_DEFINITION(test_3052_1) {
 
     GTUtilsLog::check(os, l);
 }
+GUI_TEST_CLASS_DEFINITION(test_3072) {
+    GTLogTracer l;
+
+    // 1. Connect to shared database(eg.ugene_gui_test_win);
+    Document *dbDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    // 2. Add folder;
+    GTUtilsSharedDatabaseDocument::createFolder(os, dbDoc, "/", "regression_test_3072");
+    CHECK_SET_ERR(!l.hasError(), "log contains errors");
+}
 
 GUI_TEST_CLASS_DEFINITION(test_3073) {
 //    1. Open "human_T1.fa";
