@@ -26,17 +26,17 @@ namespace U2 {
 /************************************************************************/
 /* AlignSequencesToAlignmentTaskSettings */
 /************************************************************************/
-AlignSequencesToAlignmentTaskSettings::AlignSequencesToAlignmentTaskSettings() : addAsFragments(false), reorderSequences(false), referenceRowId(-1) {}
+AlignSequencesToAlignmentTaskSettings::AlignSequencesToAlignmentTaskSettings() : addAsFragments(false), reorderSequences(false), referenceRowId(-1), maxSequenceLength(0) {}
 
 AlignSequencesToAlignmentTaskSettings::AlignSequencesToAlignmentTaskSettings(const U2EntityRef& _msaRef, const U2AlphabetId& newAlphabet, bool addAsFragments) 
-: addAsFragments(addAsFragments), reorderSequences(false), referenceRowId(-1) {
+: addAsFragments(addAsFragments), reorderSequences(false), referenceRowId(-1), maxSequenceLength(0) {
     msaRef = _msaRef;
     alphabet = newAlphabet;
 }
 
 AlignSequencesToAlignmentTaskSettings::AlignSequencesToAlignmentTaskSettings(const AlignSequencesToAlignmentTaskSettings &s)
 : AbstractAlignmentTaskSettings(s), addedSequencesRefs(s.addedSequencesRefs), addedSequencesNames(s.addedSequencesNames), addAsFragments(s.addAsFragments),
-reorderSequences(s.reorderSequences), referenceRowId(s.referenceRowId){
+reorderSequences(s.reorderSequences), referenceRowId(s.referenceRowId), maxSequenceLength(s.maxSequenceLength){
 }
 
 bool AlignSequencesToAlignmentTaskSettings::isValid() const {

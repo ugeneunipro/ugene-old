@@ -217,6 +217,7 @@ AlignSequencesToAlignmentTask::AlignSequencesToAlignmentTask(MAlignmentObject* o
     fillSettingsByDefault();
     settings.addedSequencesRefs = extractor.getSequenceRefs();
     settings.addedSequencesNames = extractor.getSequenceNames();
+    settings.maxSequenceLength = extractor.getMaxSequencesLength();
     usedDocuments = extractor.getUsedDocuments();
 }
 

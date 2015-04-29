@@ -27,6 +27,7 @@
 #include "MafftAddToAlignmentTask.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/AppResources.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/Counter.h>
 #include <U2Core/UserApplicationsSettings.h>
@@ -121,6 +122,9 @@ QList<Task*> MafftAddToAlignmentTask::onSubTaskFinished(Task* subTask) {
             arguments << "--add";
         }
         arguments << saveSequencesDocumentTask->getURL().getURLString();
+        if(useMemsaveOption()) {
+            arguments << "--memsave";
+        }
         if(settings.reorderSequences) {
             arguments << "--reorder";
         }
@@ -190,6 +194,13 @@ Task::ReportResult MafftAddToAlignmentTask::report() {
     ExternalToolSupportUtils::removeTmpDir(tmpDirUrl, stateInfo);
 
     return ReportResult_Finished;
+}
+
+bool MafftAddToAlignmentTask::useMemsaveOption() const {
+    qint64 maxLength = qMax(qint64(inputMsa.getLength()), settings.maxSequenceLength);
+    qint64 memoryInMB = 10 * maxLength * maxLength / 1024 / 1024;
+    AppResourcePool* pool = AppContext::getAppSettings()->getAppResourcePool();
+    return memoryInMB > qMin(pool->getMaxMemorySizeInMB(), pool->getTotalPhysicalMemory() / 2);
 }
 
 AbstractAlignmentTask* MafftAddToAlignmentTaskFactory::getTaskInstance(AbstractAlignmentTaskSettings *_settings) const {

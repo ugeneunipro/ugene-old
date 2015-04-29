@@ -39,6 +39,7 @@ public:
     bool addAsFragments;
     bool reorderSequences;
     int referenceRowId;
+    qint64 maxSequenceLength;
 };
 }   //namespace
 

@@ -45,6 +45,8 @@ public:
 
     ReportResult report();
 private:
+    bool useMemsaveOption() const;
+
     AlignSequencesToAlignmentTaskSettings settings;
 
     MAlignment                  inputMsa;
