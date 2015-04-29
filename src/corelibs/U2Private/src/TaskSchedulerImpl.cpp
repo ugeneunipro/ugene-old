@@ -235,17 +235,17 @@ bool TaskSchedulerImpl::processFinishedTasks() {
             } else {
                 newSubTasks = onSubTaskFinished(parentTask, task);
             }
-            if (!newSubTasks.isEmpty() || !pti->newSubtasks.isEmpty()) {
-                if (!tasksWithNewSubtasks.contains(pti)) {
-                    tasksWithNewSubtasks.append(pti);
-                }
-            }
             foreach(Task* newSub, newSubTasks) {
                 if(newSub != NULL) {
                     pti->newSubtasks.append(newSub);
                     addSubTask(parentTask, newSub);
                 } else {
                     taskLog.error(QString("Calling onSubTaskFinished from task {%1} with subtask {%2} returned list containing NULL, skipping").arg(parentTask->getTaskName()).arg(task->getTaskName()));
+                }
+            }
+            if (!pti->newSubtasks.isEmpty()) {
+                if (!tasksWithNewSubtasks.contains(pti)) {
+                    tasksWithNewSubtasks.append(pti);
                 }
             }
         }

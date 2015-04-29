@@ -133,6 +133,15 @@ void Task::addTaskResource(const TaskResourceUsage& r) {
     taskResources.append(r);
 }
 
+void Task::setCollectChildrensWarningsFlag(bool v) {
+    setFlag(TaskFlag_CollectChildrenWarnings, v);
+    if (v) {
+        foreach (Task* sub, subtasks) {
+            sub->setCollectChildrensWarningsFlag(v);
+        }
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 // task scheduler
 

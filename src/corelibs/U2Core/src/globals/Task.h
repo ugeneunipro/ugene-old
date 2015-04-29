@@ -283,7 +283,7 @@ public:
 
     virtual void setNotificationReport(bool v) {assert(isReportingSupported()); setFlag(TaskFlag_ReportingIsEnabled, v);}
 
-    virtual void setCollectChildrensWarningsFlag(bool v) { setFlag(TaskFlag_CollectChildrenWarnings, v);}
+    virtual void setCollectChildrensWarningsFlag(bool v);
 
     virtual void setNoAutoDelete( bool v ) { setFlag( TaskFlag_NoAutoDelete, v ); }
 
