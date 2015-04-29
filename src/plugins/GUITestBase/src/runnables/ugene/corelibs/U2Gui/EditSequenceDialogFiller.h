@@ -26,29 +26,30 @@
 
 namespace U2 {
 
-    class InsertSequenceFiller : public Filler {
-    public:
-        enum documentFormat {FASTA, Genbank};
-        enum RegionResolvingMode {Resize, Remove, SplitJoin, SplitSeparate};
+class InsertSequenceFiller : public Filler {
+public:
+    enum documentFormat {FASTA, Genbank};
+    enum RegionResolvingMode {Resize, Remove, SplitJoin, SplitSeparate};
 
-        InsertSequenceFiller(U2OpStatus &_os, const QString &_pasteDataHere, RegionResolvingMode _regionResolvingMode = Resize, int _insertPosition = 1,
-                             const QString &_documentLocation = "", 
-                             documentFormat _format = FASTA, bool _saveToNewFile = false, bool _mergeAnnotations = false,
-                             GTGlobals::UseMethod method = GTGlobals::UseMouse, bool _wrongInput = false);
-        virtual void run();
-    private:
-        QString pasteDataHere;
-        RegionResolvingMode regionResolvingMode;
-        int insertPosition;
-        QString documentLocation;
-        documentFormat format;
-        bool saveToNewFile;
-        bool mergeAnnotations;
-        GTGlobals::UseMethod useMethod;
-        bool wrongInput;
+    InsertSequenceFiller(U2OpStatus &_os, const QString &_pasteDataHere, RegionResolvingMode _regionResolvingMode = Resize, int _insertPosition = 1,
+        const QString &_documentLocation = "",  documentFormat _format = FASTA, bool _saveToNewFile = false, bool _mergeAnnotations = false,
+        GTGlobals::UseMethod method = GTGlobals::UseMouse, bool _wrongInput = false, bool recalculateQuals = false);
+    void run();
 
-        QMap<documentFormat, QString> comboBoxItems;
-    };
+private:
+    QString pasteDataHere;
+    RegionResolvingMode regionResolvingMode;
+    int insertPosition;
+    QString documentLocation;
+    documentFormat format;
+    bool saveToNewFile;
+    bool mergeAnnotations;
+    GTGlobals::UseMethod useMethod;
+    bool wrongInput;
+    bool recalculateQuals;
+
+    QMap<documentFormat, QString> comboBoxItems;
+};
 
 }
 

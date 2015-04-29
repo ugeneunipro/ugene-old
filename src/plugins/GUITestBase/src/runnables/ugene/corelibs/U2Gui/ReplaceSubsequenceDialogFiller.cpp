@@ -34,12 +34,13 @@
 #include <QtWidgets/QGroupBox>
 #endif
 
-#include "api/GTWidget.h"
-#include "api/GTLineEdit.h"
+#include "api/GTCheckBox.h"
 #include "api/GTComboBox.h"
 #include "api/GTKeyboardDriver.h"
-#include "api/GTRadioButton.h"
+#include "api/GTLineEdit.h"
 #include "api/GTPlainTextEdit.h"
+#include "api/GTRadioButton.h"
+#include "api/GTWidget.h"
 
 #include "runnables/qt/MessageBoxFiller.h"
 
@@ -48,33 +49,37 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::replaceSubsequenceDialogFiller"
-    ReplaceSubsequenceDialogFiller::ReplaceSubsequenceDialogFiller(U2OpStatus &_os, const QString &_pasteDataHere):
-    Filler(_os, "EditSequenceDialog"), pasteDataHere(_pasteDataHere)
-    {
-    }
+ReplaceSubsequenceDialogFiller::ReplaceSubsequenceDialogFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool recalculateQuals)
+    : Filler(_os, "EditSequenceDialog"), pasteDataHere(_pasteDataHere), recalculateQuals(recalculateQuals)
+{
+
+}
 
 #define GT_METHOD_NAME "run"
-    void ReplaceSubsequenceDialogFiller::run()
-    {
-        QWidget *dialog = QApplication::activeModalWidget();
-        GT_CHECK(dialog != NULL, "dialog not found");
+void ReplaceSubsequenceDialogFiller::run()
+{
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
 
-        QPlainTextEdit *plainText = dialog->findChild<QPlainTextEdit*>("sequenceEdit");
-        GT_CHECK(plainText != NULL, "plain text not found");
-        //GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["a"], GTKeyboardDriver::key["ctrl"]);
-        //GTGlobals::sleep();
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
-        GTGlobals::sleep();
-        GTPlainTextEdit::setPlainText(os, plainText, pasteDataHere);
+    QPlainTextEdit *plainText = dialog->findChild<QPlainTextEdit*>("sequenceEdit");
+    GT_CHECK(plainText != NULL, "plain text not found");
+    //GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["a"], GTKeyboardDriver::key["ctrl"]);
+    //GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+    GTPlainTextEdit::setPlainText(os, plainText, pasteDataHere);
 
-        QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
-        GT_CHECK(box != NULL, "buttonBox is NULL");
-        QPushButton* button = box->button(QDialogButtonBox::Ok);
-        GT_CHECK(button !=NULL, "cancel button is NULL");
-        GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
-        GTWidget::click(os, button);
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "recalculateQualsCheckBox"), recalculateQuals);
 
-    }
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTWidget::click(os, button);
+
+}
+
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 

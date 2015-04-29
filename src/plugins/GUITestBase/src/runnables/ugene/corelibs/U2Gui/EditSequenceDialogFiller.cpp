@@ -42,12 +42,11 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::insertSequenceFiller"
 InsertSequenceFiller::InsertSequenceFiller(U2OpStatus &_os, const QString &_pasteDataHere, RegionResolvingMode _regionResolvingMode, int _insertPosition,
-    const QString &_documentLocation,
-    documentFormat _format, bool _saveToNewFile, bool _mergeAnnotations,
-    GTGlobals::UseMethod method, bool _wrongInput):
-Filler(_os, "EditSequenceDialog"), pasteDataHere(_pasteDataHere), regionResolvingMode(_regionResolvingMode), insertPosition(_insertPosition),
-documentLocation(_documentLocation), format(_format), saveToNewFile(_saveToNewFile), mergeAnnotations(_mergeAnnotations),
-useMethod(method), wrongInput(_wrongInput)
+    const QString &_documentLocation, documentFormat _format, bool _saveToNewFile, bool _mergeAnnotations, GTGlobals::UseMethod method,
+    bool _wrongInput, bool recalculateQuals)
+    : Filler(_os, "EditSequenceDialog"), pasteDataHere(_pasteDataHere), regionResolvingMode(_regionResolvingMode), insertPosition(_insertPosition),
+    documentLocation(_documentLocation), format(_format), saveToNewFile(_saveToNewFile), mergeAnnotations(_mergeAnnotations),
+    useMethod(method), wrongInput(_wrongInput), recalculateQuals(recalculateQuals)
 {
     if (!documentLocation.isEmpty()) {
         documentLocation = QDir::cleanPath(QDir::currentPath() + "/" + documentLocation);
@@ -72,33 +71,31 @@ void InsertSequenceFiller::run()
         case Resize:
             radioButtonName = "resizeRB";
             break;
-
         case Remove:
             radioButtonName = "removeRB";
             break;
-
         case SplitJoin:
             radioButtonName = "splitRB";
             break;
-
-        default:
         case SplitSeparate:
             radioButtonName = "split_separateRB";
             break;
     }
+
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "recalculateQualsCheckBox"), recalculateQuals);
+
     QRadioButton *regionResolvingMode = dialog->findChild<QRadioButton*>(radioButtonName);//"regionResolvingMode");
     GT_CHECK(regionResolvingMode != NULL, "regionResolvingMode not found");
     GTRadioButton::click(os, regionResolvingMode);
 
     QSpinBox *insertPositionSpin = dialog->findChild<QSpinBox*>("insertPositionSpin");
     GT_CHECK(insertPositionSpin != NULL, "insertPositionSpin not found");
-    GTSpinBox::setValue(os, insertPositionSpin, insertPosition);
+    GTSpinBox::setValue(os, insertPositionSpin, insertPosition, GTGlobals::UseKey);
 
     QGroupBox *checkButton = dialog->findChild<QGroupBox*>(QString::fromUtf8("saveToAnotherBox"));
     GT_CHECK(checkButton != NULL, "Check box not found");
 
-    if ((saveToNewFile && !checkButton->isChecked()) ||
-       (!saveToNewFile && checkButton->isChecked())) {
+    if ((saveToNewFile && !checkButton->isChecked()) || (!saveToNewFile && checkButton->isChecked())) {
         QPoint checkPos;
         switch(useMethod) {
         case GTGlobals::UseMouse:

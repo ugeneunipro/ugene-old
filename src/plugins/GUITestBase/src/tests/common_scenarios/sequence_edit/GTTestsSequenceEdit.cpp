@@ -44,9 +44,10 @@
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsMdi.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ReplaceSubsequenceDialogFiller.h"
 
 #include <U2Core/DocumentModel.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
@@ -475,5 +476,155 @@ GUI_TEST_CLASS_DEFINITION(test_0013_2_neg) {
     CHECK_SET_ERR(qualItem->text(2).startsWith("MGQTVTTPLSLTLDHWKD"), "Unexpected 'translation' qualifier value");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0014_1) {
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/qulifier_rebuilding.gb");
+    doMagic(os); // for some reason annotation qualifiers are not found without actions done by this function
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 1, 1);
+
+    GTUtilsDialog::waitForDialog(os, new InsertSequenceFiller(os, "AAAAAAAAAA", InsertSequenceFiller::Resize, 1, "",
+        InsertSequenceFiller::FASTA, false, false, GTGlobals::UseKey, false, false));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS),
+        QStringList() << ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseMouse);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    checkQualifierRegionsShift(os, 0);
+
+    GTUtilsDialog::waitForDialog(os, new InsertSequenceFiller(os, "AAAAAAAAAA", InsertSequenceFiller::Resize, 1, "",
+        InsertSequenceFiller::FASTA, false, false, GTGlobals::UseKey, false, true));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS),
+        QStringList() << ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseMouse);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    checkQualifierRegionsShift(os, 10);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0014_1_neg) {
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/qulifier_rebuilding.gb");
+    doMagic(os); // for some reason annotation qualifiers are not found without actions done by this function
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 100000, 100000);
+
+    GTUtilsDialog::waitForDialog(os, new InsertSequenceFiller(os, "AAAAAAAAAA", InsertSequenceFiller::Resize, 100000, "",
+        InsertSequenceFiller::FASTA, false, false, GTGlobals::UseKey, false, true));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS),
+        QStringList() << ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseMouse);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    checkQualifierRegionsShift(os, 0);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0014_2) {
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 1050, 1050);
+
+    GTUtilsDialog::waitForDialog(os, new InsertSequenceFiller(os, "A", InsertSequenceFiller::Resize, 1050, "",
+        InsertSequenceFiller::FASTA, false, false, GTGlobals::UseKey, false, true));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS),
+        QStringList() << ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseMouse);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "CDS  (0, 4)");
+    GTTreeWidget::getItemCenter(os, annotationGroup);
+    GTTreeWidget::getItemCenter(os, annotationGroup->child(0));
+    QTreeWidgetItem *qualItem = annotationGroup->child(0)->child(5);
+    CHECK_SET_ERR("translation" == qualItem->text(0), "Unexpected qualifier found");
+    CHECK_SET_ERR(qualItem->text(2).startsWith("MGQDCYHSLKFDLRSLER"), "Unexpected 'translation' qualifier value");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0014_2_neg) {
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 1, 1);
+
+    GTUtilsDialog::waitForDialog(os, new InsertSequenceFiller(os, "A", InsertSequenceFiller::Resize, 1, "",
+        InsertSequenceFiller::FASTA, false, false, GTGlobals::UseKey, false, true));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS),
+        QStringList() << ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseMouse);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "CDS  (0, 4)");
+    GTTreeWidget::getItemCenter(os, annotationGroup);
+    GTTreeWidget::getItemCenter(os, annotationGroup->child(0));
+    QTreeWidgetItem *qualItem = annotationGroup->child(0)->child(5);
+    CHECK_SET_ERR("translation" == qualItem->text(0), "Unexpected qualifier found");
+    CHECK_SET_ERR(qualItem->text(2).startsWith("MGQTVTTPLSLTLDHWKD"), "Unexpected 'translation' qualifier value");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0015_1) {
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/qulifier_rebuilding.gb");
+    doMagic(os); // for some reason annotation qualifiers are not found without actions done by this function
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 1, 10);
+
+    GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os, "AAAAA", false));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Replace subsequence...", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    checkQualifierRegionsShift(os, 0);
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 1, 10);
+
+    GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os, "AAAAA", true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Replace subsequence...", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    checkQualifierRegionsShift(os, -5);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0015_1_neg) {
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/qulifier_rebuilding.gb");
+    doMagic(os); // for some reason annotation qualifiers are not found without actions done by this function
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 1000, 1010);
+
+    GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os, "AAAAA", true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Replace subsequence...", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    checkQualifierRegionsShift(os, 0);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0015_2) {
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 1050, 1050);
+
+    GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os, "AAA", true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Replace subsequence...", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "CDS  (0, 4)");
+    GTTreeWidget::getItemCenter(os, annotationGroup);
+    GTTreeWidget::getItemCenter(os, annotationGroup->child(0));
+    QTreeWidgetItem *qualItem = annotationGroup->child(0)->child(5);
+    CHECK_SET_ERR("translation" == qualItem->text(0), "Unexpected qualifier found");
+    CHECK_SET_ERR(qualItem->text(2).startsWith("MGQKLLPLP*V*P*ITGKMS"), "Unexpected 'translation' qualifier value");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0015_2_neg) {
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 996, 1000);
+
+    GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os, "AA", true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Replace subsequence...", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "CDS  (0, 4)");
+    GTTreeWidget::getItemCenter(os, annotationGroup);
+    GTTreeWidget::getItemCenter(os, annotationGroup->child(0));
+    QTreeWidgetItem *qualItem = annotationGroup->child(0)->child(5);
+    CHECK_SET_ERR("translation" == qualItem->text(0), "Unexpected qualifier found");
+    CHECK_SET_ERR(qualItem->text(2).startsWith("MGQTVTTPLSLTLDHWKD"), "Unexpected 'translation' qualifier value");
+}
+
 } // namespace
+
 } // namespace U2

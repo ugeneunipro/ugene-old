@@ -26,14 +26,15 @@
 
 namespace U2 {
 
-    class ReplaceSubsequenceDialogFiller : public Filler {
-    public:
+class ReplaceSubsequenceDialogFiller : public Filler {
+public:
+    ReplaceSubsequenceDialogFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool recalculateQuals = false);
+    void run();
 
-        ReplaceSubsequenceDialogFiller(U2OpStatus &_os, const QString &_pasteDataHere);
-        virtual void run();
-    private:
-        QString pasteDataHere;
-    };
+private:
+    QString pasteDataHere;
+    bool recalculateQuals;
+};
 
 }
 #endif
