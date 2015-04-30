@@ -74,6 +74,7 @@
 #include "GTUtilsWizard.h"
 #include "GTUtilsWorkflowDesigner.h"
 
+#include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/EscapeClicker.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
@@ -5721,6 +5722,21 @@ GUI_TEST_CLASS_DEFINITION(test_3994){
     QColor after = GTUtilsMSAEditorSequenceArea::getColor(os, QPoint(1,0));
     //check color change
     CHECK_SET_ERR(before != after, "colors not changed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3995){
+//    1. Open "human_T1.fa"
+    GTFileDialog::openFile( os, dataDir + "samples/FASTA", "human_T1.fa" );
+//    2. Open circular view
+    GTWidget::click(os, GTWidget::findWidget(os, "CircularViewAction"));
+//    3. Use context menu for exporting view as image
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EXPORT << "Save circular view as image"));
+    GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "ImageExportForm"));
+    GTWidget::click(os, GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_0"), Qt::RightButton);
+//    Expected state: "Export Image" dialog appeared
+//    4. Press "Export" button
+    GTGlobals::sleep();
+//    Bug state: Error message appears: "File path contains illegal characters or too long"
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3996) {

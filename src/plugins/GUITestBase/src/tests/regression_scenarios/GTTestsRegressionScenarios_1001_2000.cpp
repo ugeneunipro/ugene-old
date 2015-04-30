@@ -4801,6 +4801,22 @@ GUI_TEST_CLASS_DEFINITION(test_1511) {
     CHECK_SET_ERR(numSelectedSequences == 0, "There is selection in MSA, but not expected(check #2)");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1515){
+//    Open COI.aln
+    GTFileDialog::openFile(os,dataDir + "samples/CLUSTALW/", "COI.aln");
+//    Press {build tree} button. Call tree file COI.nwk
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+//    Press {build tree} again. Call tree COI.nwk
+    GTUtilsProjectTreeView::doubleClickItem(os, "COI.aln");
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
+    tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(5000);
+//    UGENE crashes
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1527) {
     //1. Open COI2.aln as an alignment
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
@@ -4878,6 +4894,23 @@ GUI_TEST_CLASS_DEFINITION(test_1531) {
     GTUtilsOptionPanelMsa::toggleTab(os, GTUtilsOptionPanelMsa::Statistics);
     warningMessage = GTWidget::findWidget(os, "refSeqWarning");
     CHECK_SET_ERR(warningMessage->isVisible(), QString("Reference sequence warning must be visible"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1533){
+//    1. Open an alignment in ClustalW format (e.g. "test.aln")
+    GTFile::copy(os, dataDir+"samples/CLUSTALW/COI.aln", testDir + "_common_data/scenarios/sandbox/COI.aln");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/COI.aln");
+//    2. Outside UGENE create a FASTA file with the same name as the alignment file (e.g. "test.aln", even if it is FASTA)
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::YesAll));
+//    3. Copy the second file to replace the first one outside UGENE
+    QFile f(testDir + "_common_data/scenarios/sandbox/COI.aln");
+    f.remove();
+    //CHECK_SET_ERR(f.remove(), "file not removed");
+    GTFile::copy(os, dataDir+"samples/FASTA/human_T1.fa", testDir + "_common_data/scenarios/sandbox/COI.aln");
+    GTGlobals::sleep(5000);
+//    4. Confirm to reload the file in UGENE
+//    => Unloaded file is shown, "Alignment is empty" error occurs when it is opened. This error doesn't appear if the file is just opened in UGENE.
+    GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1548) {
@@ -5323,6 +5356,42 @@ GUI_TEST_CLASS_DEFINITION(test_1588) {
 //    GTMouseDriver::moveTo(os,dashboard->mapToGlobal(result.geometry().center()));
 //    GTMouseDriver::click(os);
     GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1594 ) {
+//    1. Create a WD scheme: Read Annotations -> MACS.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Annotations");
+    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::addElement(os, "Find Peaks with MACS");
+    GTUtilsWorkflowDesigner::connect(os, read, write);
+//    2. Set the input annotations file: "_common_data/bed/valid_input/Treatment_tags.bed".
+    GTUtilsWorkflowDesigner::click(os, read);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Chip-seq/input_data", "chr4.bed");
+//    3. Set the correct output directory for the MACS element.
+    GTUtilsWorkflowDesigner::click(os, write);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output directory", QDir().absoluteFilePath(sandBoxDir + "test_1594"), GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setTableValue(os, "Treatment features", 3, GTUtilsWorkflowDesigner::comboValue,
+                                           GTUtilsWorkflowDesigner::getInputPortsTable(os, 0));
+    GTUtilsWorkflowDesigner::click(os, read);
+//    4. Run the scheme.
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+//    Expected: the progress of the workflow process changes correctly (from 0% up to 100%).
+    QProgressBar* taskProgressBar = GTWidget::findExactWidget<QProgressBar*>(os, "taskProgressBar");
+    for(int i = 0; i<180; i++){
+        if(GTUtilsTask::getTaskByName(os, "Execute workflow", GTGlobals::FindOptions(false)) == NULL){
+            break;
+        }
+        QString text = taskProgressBar->text();
+        text = text.left(text.length() - 1);
+        bool isNumber = false;
+        int progress = text.toInt(&isNumber);
+        CHECK_SET_ERR(isNumber, QString("The progress must be a number: %1").arg(text));
+        CHECK_SET_ERR(progress >= 0 && progress <= 100, QString("Incorrect progress: %1").arg(progress));
+        GTGlobals::sleep(1000);
+    }
+    if(GTUtilsTask::getTaskByName(os, "Execute workflow", GTGlobals::FindOptions(false)) != NULL){
+        GTUtilsTaskTreeView::cancelTask(os, "Execute workflow");
+    }
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1597 ) {
@@ -6251,7 +6320,7 @@ GUI_TEST_CLASS_DEFINITION(test_1686){
     menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
 
     GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 8, 80,false,false));
-    Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa", testDir + "_common_data/scenarios/dp_view/dp2.fa");
+    Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dpm1.fa", testDir + "_common_data/scenarios/dp_view/dpm2.fa");
     GTUtilsDialog::waitForDialog(os, filler2);
 
     GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::DOTPLOT);

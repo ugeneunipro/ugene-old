@@ -1477,7 +1477,7 @@ GUI_TEST_CLASS_DEFINITION(test_4164){
 //2. Add sample: snpEff
     GTUtilsWorkflowDesigner::addSample(os, "SnpEff");
 //3. Set input file which contains spaces in path
-    GTUtilsWorkflowDesigner::click(os, "File(s) with variations");
+    GTUtilsWorkflowDesigner::click(os, "Input Variations File");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/scenarios/sandbox/space dir", "valid.vcf");
 //4. Run workflow
     GTUtilsWorkflowDesigner::runWorkflow(os);
