@@ -295,6 +295,7 @@ LoadSequencesAndAlignToAlignmentTask::LoadSequencesAndAlignToAlignmentTask(MAlig
 : Task(tr("Load sequences and add to alignment task"), TaskFlag_NoRun), urls(urls), maObj(obj), loadSequencesTask(NULL) {
     SAFE_POINT_EXT(obj != NULL, setError("MAlignmentObject is null"), );
     loadSequencesTask = new LoadSequencesTask(obj->getAlphabet(), urls);
+    loadSequencesTask->setSubtaskProgressWeight(5);
     addSubTask(loadSequencesTask);
 }
 
@@ -302,6 +303,7 @@ QList<Task*> LoadSequencesAndAlignToAlignmentTask::onSubTaskFinished(Task* subTa
     QList<Task*> subTasks;
     if(subTask == loadSequencesTask && !loadSequencesTask->hasError() && !loadSequencesTask->isCanceled()) {
         AlignSequencesToAlignmentTask* alignSequencesToAlignmentTask = new AlignSequencesToAlignmentTask(maObj, loadSequencesTask->getExtractor());
+        alignSequencesToAlignmentTask->setSubtaskProgressWeight(95);
         subTasks << alignSequencesToAlignmentTask;
     }
     return subTasks;

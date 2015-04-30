@@ -59,13 +59,14 @@ namespace U2 {
 /* MafftAddToAlignmentTask */
 /************************************************************************/
 MafftAddToAlignmentTask::MafftAddToAlignmentTask(const AlignSequencesToAlignmentTaskSettings& settings)
-  : AbstractAlignmentTask(tr("Align sequences to alignment task"), TaskFlag_NoRun),
+  : AbstractAlignmentTask(tr("Align sequences to alignment task"), TaskFlag_None),
     settings(settings),
     logParser(NULL),
     saveSequencesDocumentTask(NULL),
     saveAlignmentDocumentTask(NULL),
     mafftTask(NULL),
-    loadTmpDocumentTask(NULL)
+    loadTmpDocumentTask(NULL),
+    modStep(NULL)
 {
     GCOUNTER(cvar, tvar, "MafftAddToAlignmentTask" );
 
@@ -135,7 +136,7 @@ QList<Task*> MafftAddToAlignmentTask::onSubTaskFinished(Task* subTask) {
         connect(logParser, SIGNAL(si_progressUndefined()), SLOT(sl_progressUndefined()));
         mafftTask = new ExternalToolRunTask(ET_MAFFT, arguments, logParser);
         mafftTask->setStandartOutputFile(resultFilePath);
-        mafftTask->setSubtaskProgressWeight(95);
+        mafftTask->setSubtaskProgressWeight(65);
         subTasks.append(mafftTask);
     } else if (subTask == mafftTask) {
         SAFE_POINT(logParser != NULL, "logParser is null", subTasks);
@@ -156,42 +157,50 @@ QList<Task*> MafftAddToAlignmentTask::onSubTaskFinished(Task* subTask) {
         loadTmpDocumentTask = new LoadDocumentTask(BaseDocumentFormats::FASTA, resultFilePath, iof);
         loadTmpDocumentTask->setSubtaskProgressWeight(5);
         subTasks.append(loadTmpDocumentTask);
-    } else if (subTask == loadTmpDocumentTask) {
-        tmpDoc = QSharedPointer<Document>(loadTmpDocumentTask->takeDocument());
-        SAFE_POINT(tmpDoc != NULL, QString("output document '%1' not loaded").arg(tmpDoc->getURLString()), subTasks);
-        SAFE_POINT(tmpDoc->getObjects().length()!=0, QString("no objects in output document '%1'").arg(tmpDoc->getURLString()), subTasks);
-
-
-        U2UseCommonUserModStep modStep(settings.msaRef, stateInfo);
-        CHECK_OP(stateInfo, subTasks);
-        U2MsaDbi *dbi = modStep.getDbi()->getMsaDbi();
-
-        QStringList rowNames = inputMsa.getRowNames();
-
-        QList<U2MsaRow> rows = dbi->getRows(settings.msaRef.entityId, stateInfo);
-
-        int posInMsa = 0;
-        foreach(GObject* object, tmpDoc->getObjects()) {
-            U2SequenceObject* sequenceObject = qobject_cast<U2SequenceObject*>(object);
-            if(!rowNames.contains(sequenceObject->getSequenceName())) {
-                SAFE_POINT(sequenceObject != NULL, "U2SequenceObject is null", subTasks);
-                U2MsaRow row = MSAUtils::copyRowFromSequence(sequenceObject, settings.msaRef.dbiRef, stateInfo);
-                dbi->addRow(settings.msaRef.entityId, posInMsa, row, stateInfo);
-            }
-            posInMsa++;
-        }
-
-         if (hasError()) {
-            return subTasks;
-        }
-        algoLog.info(tr("MAFFT alignment successfully finished"));
+    } else if(subTask == loadTmpDocumentTask) {
+        modStep = new U2UseCommonUserModStep(settings.msaRef, stateInfo);
     }
 
     return subTasks;
 }
 
+void MafftAddToAlignmentTask::run() {
+    CHECK_OP(stateInfo, );
+    tpm = Progress_Manual;
+    SAFE_POINT(loadTmpDocumentTask != NULL, QString("Load task is NULL"), );
+    tmpDoc = QSharedPointer<Document>(loadTmpDocumentTask->takeDocument());
+    SAFE_POINT(tmpDoc != NULL, QString("output document '%1' not loaded").arg(tmpDoc->getURLString()), );
+    SAFE_POINT(tmpDoc->getObjects().length()!=0, QString("no objects in output document '%1'").arg(tmpDoc->getURLString()), );
+
+    U2MsaDbi *dbi = modStep->getDbi()->getMsaDbi();
+
+    QStringList rowNames = inputMsa.getRowNames();
+
+    int posInMsa = 0;
+    int objectsCount = tmpDoc->getObjects().count();
+    foreach(GObject* object, tmpDoc->getObjects()) {
+        if (hasError() || isCanceled()) {
+            return;
+        }
+        stateInfo.setProgress(70 + 30 * posInMsa / objectsCount);
+        U2SequenceObject* sequenceObject = qobject_cast<U2SequenceObject*>(object);
+        if(!rowNames.contains(sequenceObject->getSequenceName())) {
+            SAFE_POINT(sequenceObject != NULL, "U2SequenceObject is null", );
+            U2MsaRow row = MSAUtils::copyRowFromSequence(sequenceObject, settings.msaRef.dbiRef, stateInfo);
+            dbi->addRow(settings.msaRef.entityId, posInMsa, row, stateInfo);
+        }
+        posInMsa++;
+    }
+
+    if (hasError()) {
+        return;
+    }
+    algoLog.info(tr("MAFFT alignment successfully finished"));
+}
+
 Task::ReportResult MafftAddToAlignmentTask::report() {
     ExternalToolSupportUtils::removeTmpDir(tmpDirUrl, stateInfo);
+    delete modStep;
 
     return ReportResult_Finished;
 }

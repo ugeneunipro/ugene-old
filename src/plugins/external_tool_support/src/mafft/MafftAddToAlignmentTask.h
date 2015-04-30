@@ -33,6 +33,7 @@
 
 namespace U2 {
 
+class U2UseCommonUserModStep;
 
 class MafftAddToAlignmentTask : public AbstractAlignmentTask{
     Q_OBJECT
@@ -41,6 +42,7 @@ public:
     ~MafftAddToAlignmentTask();
 
     void prepare();
+    void run();
     QList<Task*> onSubTaskFinished(Task* subTask);
 
     ReportResult report();
@@ -59,6 +61,7 @@ private:
     SaveMSA2SequencesTask*      saveAlignmentDocumentTask;
     ExternalToolRunTask*        mafftTask;
     LoadDocumentTask*           loadTmpDocumentTask;
+    U2UseCommonUserModStep*     modStep;
 
     QString tmpDirUrl;
     QString resultFilePath;
