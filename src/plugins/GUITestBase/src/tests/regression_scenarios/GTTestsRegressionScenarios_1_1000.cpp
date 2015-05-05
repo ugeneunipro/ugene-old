@@ -1452,6 +1452,27 @@ GUI_TEST_CLASS_DEFINITION(test_0807) {
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::getWorkers(os).isEmpty(), "The worker is not deleted");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0808) {
+    //1. Create a scheme with the "Read sequence" element and the "Write sequence" element, human_t1.da as an input sequence
+    //2. Set the "Split sequence" option of the "Write sequence" element to 2
+    //3. Run the scheme
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Sequence");
+
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence"));
+
+    GTUtilsWorkflowDesigner::click(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsWorkflowDesigner::click(os, "Write Sequence");
+    GTUtilsWorkflowDesigner::setParameter(os, "Split sequence", "2", GTUtilsWorkflowDesigner::spinValue);
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0812) {
     // 1. Create a "seq.txt" file in <some_path> location.
     // 2. Click "Create element with command line tool".
