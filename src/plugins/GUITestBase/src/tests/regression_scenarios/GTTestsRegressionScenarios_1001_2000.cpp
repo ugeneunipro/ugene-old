@@ -4292,6 +4292,31 @@ GUI_TEST_CLASS_DEFINITION(test_1446){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1455) {
+    GTLogTracer logTracer;
+    //1. Create the following scheme in WD:
+    //"Read Sequence" -> "Dump Sequence Info" -> "Write Plain Text"
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Dump Sequence Info");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Plain Text");
+
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), GTUtilsWorkflowDesigner::getWorker(os, "Dump Sequence Info"));
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Dump Sequence Info"), GTUtilsWorkflowDesigner::getWorker(os, "Write Plain Text"));
+
+    //2. Save it somewhere using the "Save as..." action
+    GTUtilsWorkflowDesigner::saveWorkflowAs(os, sandBoxDir + "dump_sequence.uwl", "Dump sequence info");
+
+    //3. Close WD
+    GTUtilsMdi::click( os, GTGlobals::Close );
+    GTMouseDriver::click( os );
+    //4. Reopen the scheme's file
+    //   Expected result: scheme is loaded completely without any error messages in log
+    GTFileDialog::openFile(os, sandBoxDir + "dump_sequence.uwl");
+    CHECK_SET_ERR(!logTracer.hasError(), QString("There is error in the log: %1").arg(logTracer.getError()));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1457){
 //    1. Open "_common_data/ugenedb/example-alignment.ugenedb".
 //    Expected state: assymbly viewer had opened.
