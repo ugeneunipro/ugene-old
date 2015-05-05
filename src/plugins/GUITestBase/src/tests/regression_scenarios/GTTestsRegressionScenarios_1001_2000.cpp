@@ -2288,6 +2288,32 @@ GUI_TEST_CLASS_DEFINITION(test_1204){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1209) {
+    //    1. Open workflow sample "Call variants with SAMtools"
+    //    2. Substitute "Read assembly (BAM/SAM)" element with "Read Sequence" element
+    //    3. Set any input sequences for "Read sequence" elements.
+    //    4. Select "Call Variants" element with mouse
+    //    5. Set "Source URL (by Read Sequence 1)" as "Source URL" in "Input data" area in workflow editor
+    //    6. Run the scheme
+    //    Expected state: Error notification appears, UGENE doesn't crash
+    GTLogTracer l;
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "Call variants");
+
+
+    GTUtilsWorkflowDesigner::click(os, "Call Variants");
+    GTGlobals::sleep(500);
+
+    QTableWidget* table1 = GTUtilsWorkflowDesigner::getInputPortsTable(os, 0);
+    GTUtilsWorkflowDesigner::setTableValue(os, "Source URL", "<empty>", GTUtilsWorkflowDesigner::comboValue, table1);
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTWidget::click( os,GTAction::button(os, "Validate workflow"));
+    GTGlobals::sleep();
+    GTUtilsWorkflowDesigner::checkErrorList(os, "Empty input slot");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1210){
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
