@@ -246,12 +246,8 @@ void ReadAnnotationsTask::run() {
         AnnotationTableObject *annsObj = dynamic_cast<AnnotationTableObject *>(go);
         CHECK_EXT(NULL != annsObj, stateInfo.setError("NULL annotations object"),);
 
-        if (!mergeAnnotations) {
-            dataList.clear();
-            foreach (Annotation *a, annsObj->getAnnotations()) {
-                dataList << a->getData();
-            }
-            const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(dataList);
+        if (!mergeAnnotations || annsObjList.size() == 1) {
+            const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(annsObj);
             m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(tableId);
             results.append(m);
         } else {
@@ -261,7 +257,7 @@ void ReadAnnotationsTask::run() {
         }
     }
 
-    if (mergeAnnotations && !annsObjList.isEmpty()) {
+    if (mergeAnnotations && annsObjList.size() > 1) {
         const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(dataList);
         m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(tableId);
         results.append(m);

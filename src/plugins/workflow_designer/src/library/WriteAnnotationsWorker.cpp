@@ -201,7 +201,7 @@ void WriteAnnotationsWorker::fetchIncomingAnnotations(const QVariantMap &incomin
     const QVariant annVar = incomingData[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
     QList<AnnotationTableObject *> annTables = StorageUtils::getAnnotationTableObjects(context->getDataStorage(), annVar);
 
-    if (shouldAnnotationTablesBeMerged()) {
+    if (shouldAnnotationTablesBeMerged() && annTables.size() > 1) {
         AnnotationTableObject *mergedTable = mergeAnnotationTables(annTables, getAnnotationName());
         qDeleteAll(annTables);
         annTables.clear();
