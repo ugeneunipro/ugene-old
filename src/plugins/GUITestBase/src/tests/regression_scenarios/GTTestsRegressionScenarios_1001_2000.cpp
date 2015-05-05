@@ -4094,6 +4094,43 @@ GUI_TEST_CLASS_DEFINITION(test_1420) {
     CHECK_SET_ERR(expectedReads == assemblyReads, QString("An unexpected assembly reads count: expect  %1, got %2").arg(expectedReads).arg(assemblyReads));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1424) {
+    //1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    //2. Edit sequence area(insert gap or something else)
+    //3. Delete any sequence(or several sequences)
+    //4. Press {undo} button
+    //Expected state: Sequence deletion undone
+    //5. Press {undo} button
+    //6. delete sequence again.
+    //7. And again.
+    //8. press undo button twice.
+    //Expected state: UGENE not crashes
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 13, 10 ) );
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["space"] );
+    GTGlobals::sleep(200);
+
+    GTUtilsMsaEditor::clickSequenceName(os, "Conocephalus_sp.");
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["delete"]);
+    GTUtilsMsaEditor::undo(os);
+
+    GTUtilsMsaEditor::clickSequenceName(os, "Conocephalus_sp.");
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["delete"]);
+
+
+    GTUtilsMsaEditor::clickSequenceName(os, "Deracantha_deracantoides_EF540");
+    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["delete"]);
+    GTUtilsMsaEditor::undo(os);
+    GTUtilsMsaEditor::undo(os);
+    GTUtilsMsaEditor::undo(os);
+
+    CHECK_SET_ERR( GTUtilsMsaEditor::getSequencesCount(os) == 18,
+        "Incorrect sequences number");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1427) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1427/", "text");
     GTUtilsProjectTreeView::checkItem(os, "text");
