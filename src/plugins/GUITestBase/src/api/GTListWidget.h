@@ -32,7 +32,7 @@ namespace U2{
 class GTListWidget
 {
 public:
-    static void click(U2OpStatus &os, QListWidget *listWidget, const QString &text);
+    static void click(U2OpStatus &os, QListWidget *listWidget, const QString &text, Qt::MouseButton button = Qt::LeftButton);
     static bool isItemChecked(U2OpStatus &os, QListWidget *listWidget, const QString &text);
     static void checkItem(U2OpStatus &os, QListWidget *listWidget, const QString &text, bool newState);
     static void checkAllItems(U2OpStatus &os, QListWidget *listWidget, bool newState);

@@ -1035,6 +1035,29 @@ GUI_TEST_CLASS_DEFINITION(test_0703) {
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0729){
+//    1) Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2) Put "Read Sequence" worker on the scheme
+    WorkflowProcessItem* item = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+//    3) Click on "unset"
+    GTUtilsWorkflowDesigner::click(os, item);
+//    Expected state: Dataset view opened
+    GTUtilsWorkflowDesigner::setDatasetInputFolder(os, dataDir + "samples/FASTA");
+//    4) Click "Add directory", select data/samples/Genbank
+    QListWidget* itemsArea = GTWidget::findExactWidget<QListWidget*>(os, "itemsArea");
+    GTListWidget::click(os, itemsArea, "FASTA", Qt::RightButton);
+//    5) Click on appeared item in the file list
+//    Expected state:
+//        the following widgets appears:
+//            Include mask, Exclude mask lineedits;
+//            Recursive checkbox
+    GTWidget::findWidget(os, "includeMaskEdit");
+    GTWidget::findWidget(os, "excludeMaskEdit");
+    GTWidget::findWidget(os, "recursiveBox");
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0733) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     //1. Drop "Write sequence" element on the scheme
@@ -1101,6 +1124,35 @@ GUI_TEST_CLASS_DEFINITION(test_0746) {
     GTGlobals::sleep();
     QAbstractButton* complement = GTAction::button(os, "complement_action");
     CHECK_SET_ERR(complement -> isEnabled() == true, "button is not enabled");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0750) {
+//    1. Open the Workflow Designer.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Enable the scripting mode (select "Actions > Scripting mode > Show scripting options").
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show scripting options"));
+    GTWidget::click(os, GTAction::button(os, GTAction::findActionByText(os, "Scripting mode")));
+//    3. Drag the "Read from remote database" element to the Scene.
+    WorkflowProcessItem* item = GTUtilsWorkflowDesigner::addElement(os, "Read from Remote Database");
+//    4. Press the "..." button of the "Resource IDs" value cell.
+
+    class Custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            GTWidget::click(os, GTWidget::findButtonByText(os, "Cancel", dialog));
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "",QDialogButtonBox::Ok, new Custom()));
+    QTableView* table = GTWidget::findExactWidget<QTableView*>(os, "table");
+    GTMouseDriver::moveTo(os, GTTableView::getCellPoint(os, table, 2, 1));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findButtonByText(os, "...", table));
+//    5. Close the appeared dialog.
+    CHECK_SET_ERR(!table->selectionModel()->hasSelection(), "Selection unexpectidly presents");
+//    Expected state: script cell didn't selected
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0762) {

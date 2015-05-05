@@ -399,8 +399,6 @@ void GTUtilsSequenceView::clickAnnotation(U2OpStatus &os, QString name, int star
     const QRect annotationRect(x1, y.startPos, rw, y.length);
     GTMouseDriver::moveTo(os, det->mapToGlobal(annotationRect.center()));
     GTMouseDriver::click(os, button);
-
-    GTGlobals::sleep(50000);
 }
 #undef GT_METHOD_NAME
 #undef MIN_ANNOTATION_WIDTH

@@ -35,7 +35,7 @@ namespace U2{
 #define GT_CLASS_NAME "GTListWidget"
 
 #define GT_METHOD_NAME "click"
-void GTListWidget::click(U2OpStatus &os, QListWidget *listWidget, const QString &text){
+void GTListWidget::click(U2OpStatus &os, QListWidget *listWidget, const QString &text, Qt::MouseButton button){
     QList<QListWidgetItem*> list = listWidget->findItems(text, Qt::MatchExactly);
     GT_CHECK(!list.isEmpty(), QString("item %1 not found").arg(text));
 
@@ -46,7 +46,7 @@ void GTListWidget::click(U2OpStatus &os, QListWidget *listWidget, const QString 
     QPoint p = QPoint(r.left() + 30, r.center().y());
     QPoint global = listWidget->viewport()->mapToGlobal(p);
     GTMouseDriver::moveTo(os, global);
-    GTMouseDriver::click(os);
+    GTMouseDriver::click(os, button);
     GTGlobals::sleep();
     GT_CHECK(true, "click method completed");
 }

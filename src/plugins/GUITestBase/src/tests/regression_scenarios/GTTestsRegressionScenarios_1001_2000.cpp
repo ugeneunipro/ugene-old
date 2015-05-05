@@ -834,6 +834,25 @@ GUI_TEST_CLASS_DEFINITION(test_1044) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1047){
+//    1. Open \samples\Assembly\chrM in Assembly Browser
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_1047.ugenedb", dataDir + "samples/Assembly", "chrM.fa"));
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly/chrM.sam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    2. Choose a color scheme in options panel of assembly browser. Try zooming with mouse wheel.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_SETTINGS"));
+    QComboBox* colorBox = GTWidget::findExactWidget<QComboBox*>(os, "READS_HIGHLIGHTNING_COMBO");
+    GTComboBox::setIndexWithText(os, colorBox, "Strand direction");
+//    Bug state: Zoom and color scheme changing simultaneously.
+    QWidget* assembly_reads_area = GTWidget::findWidget(os, "assembly_reads_area");
+    QPoint p = assembly_reads_area->mapToGlobal(assembly_reads_area->rect().center());
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::scroll(os, 10);
+//    Expected state: only zoom is changed
+    QString currText = colorBox->currentText();
+    CHECK_SET_ERR(currText == "Strand direction", "Color scheme unexpectidly changed");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1048){
 //    Open a few assembly views.
     GTFile::copy(os, testDir + "_common_data/bam/chrM.sorted.bam", testDir + "_common_data/scenarios/sandbox/1.bam");
@@ -3381,6 +3400,68 @@ GUI_TEST_CLASS_DEFINITION(test_1315_2) {
     GTUtilsAnnotationsTreeView::findItem(os, "top_primers  (0, 5)");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1319){
+//    1) Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2) Add "Read sequence" on the scene.
+    WorkflowProcessItem* item = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+//    3) Click the element.
+    GTUtilsWorkflowDesigner::click(os, item);
+//    Expected state: bottom datasets panel is visible.
+//    4) Add one input file.
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+//    Expected state: the element's doc has the blue link to this file.
+//    6) Right click on the link.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Open document(s)"));
+    GTUtilsWorkflowDesigner::clickLink(os, "Read Sequence", Qt::RightButton);
+//    Expected state: a context menu with one action "Open document(s)" must appear.
+//    7) Click on "Open document(s)" menu item.
+    GTGlobals::sleep(500);
+//    Expected state: Input file should open in Project View.
+    GTUtilsProjectTreeView::checkItem(os, "human_T1.fa");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1319_1){
+//    1) Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2) Add "Read sequence" on the scene.
+    WorkflowProcessItem* item = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+//    3) Click the element.
+    GTUtilsWorkflowDesigner::click(os, item);
+//    Expected state: bottom datasets panel is visible.
+//    4) Add directory as input files.
+    GTUtilsWorkflowDesigner::setDatasetInputFolder(os, dataDir + "samples/FASTA");
+//    Expected state: the element's doc has the blue link to this directory.
+//    6) Right click on the link.
+    GTUtilsWorkflowDesigner::clickLink(os, "Read Sequence", Qt::RightButton);
+//    Expected state: a context menu not showed.
+    GTGlobals::sleep(500);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1319_2){
+//    1) Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2) Add "Read sequence" on the scene.
+    WorkflowProcessItem* item = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+//    3) Click the element.
+    GTUtilsWorkflowDesigner::click(os, item);
+//    Expected state: bottom datasets panel is visible.
+//    4) Add two input files.
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Genbank", "murine.gb");
+//    Expected state: the element's doc has the blue link to this files.
+//    6) Right click on the link.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Open document(s)"));
+    GTUtilsDialog::waitForDialog(os, new GTSequenceReadingModeDialogUtils(os));
+    GTUtilsWorkflowDesigner::clickLink(os, "Read Sequence", Qt::RightButton);
+//    Expected state: a context menu with one action "Open document(s)" must appear.
+//    7) Click on "Open document(s)" menu item.
+    GTGlobals::sleep(1000);
+//    Expected state: All files should open in Project View.
+    GTUtilsProjectTreeView::checkItem(os, "human_T1.fa");
+    GTUtilsProjectTreeView::checkItem(os, "murine.gb");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1321_1) {
 //    This scenario is about crash found during fixing current bug
 //    1. Open file _common_data/scenarios/_regression/2187/seq.fa
@@ -4048,6 +4129,22 @@ GUI_TEST_CLASS_DEFINITION(test_1408){
 //    Expected state: "Select the role of the column" dialog is appeared
 
 //    6) Check that there is role "Annotation group"
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1409){
+//    1. Open "_common_data/genbank/murine_sarcoma.gb".
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/murine_sarcoma.gb");
+//    Expected state: sequence viewer had opened.
+
+//    2. Click on some annotation in the sequence view (not in the annotation tree).
+    GTUtilsSequenceView::clickAnnotation(os, "CDS", 1042);
+//    Expected state: the clicked annotation is selected.
+
+//    3. Press F2 on the keyboard.
+    GTUtilsDialog::waitForDialog(os, new EditAnnotationFiller(os, "CDS", "1042..2658"));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["f2"]);
+    GTGlobals::sleep();
+//    Expected state: the "edit annotation" dialog had opened.
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1419) {
@@ -4920,6 +5017,66 @@ GUI_TEST_CLASS_DEFINITION(test_1511) {
     GTGlobals::sleep(200);
     numSelectedSequences = GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os);
     CHECK_SET_ERR(numSelectedSequences == 0, "There is selection in MSA, but not expected(check #2)");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1514){
+//    1. Open "COI.aln".
+    GTFileDialog::openFile(os,dataDir + "samples/CLUSTALW/", "COI.aln");
+//    Expected state: the MSA Editor opens.
+
+//    2. Build a new tree or append the existing tree to this alignment.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk", 0, 0, true));
+    GTWidget::click(os,GTAction::button(os,"Build Tree"));
+    GTGlobals::sleep();
+//    Expected state: there are the MSA Editor with the Tree view inside it.
+
+//    3. Zoom out the tree to its minimum size.
+    QWidget* treeView = GTWidget::findWidget(os, "treeView");
+    QAbstractButton* zoomOut = GTAction::button(os, "Zoom Out");
+    QAbstractButton* zoomIn = GTAction::button(os, "Zoom In");
+    QAbstractButton* resetZoom = GTAction::button(os, "Reset Zoom");
+//    Expected state: The tree and the alignment are zoomed out, the "Zoom out" button on the toolbar still active.
+
+//    4. Click the "Zoom out" button on the toolbar several times.
+//    Expected state: the tree doesn't change its size, alignmnet height doesn't change, alignmnet width decreases.
+    int i = 0;
+    bool equalStepFound = false;
+    QPixmap pixmap = QPixmap::grabWidget(treeView, treeView->rect());
+    QImage initImg = pixmap.toImage();
+    while(zoomOut->isEnabled()){
+        QPixmap pixmap = QPixmap::grabWidget(treeView, treeView->rect());
+        QImage initImg = pixmap.toImage();
+        GTWidget::click(os, zoomOut);
+        pixmap = QPixmap::grabWidget(treeView, treeView->rect());
+        QImage finalImg = pixmap.toImage();
+        uiLog.trace(QString("Easy to find. are images equal: %1 at step %2").arg(initImg==finalImg).arg(i));
+        if(i==0){
+            CHECK_SET_ERR(!(initImg==finalImg), "images are unexpectidly equal at first step")
+        }else{
+            equalStepFound = (initImg==finalImg);
+        }
+        i++;
+    }
+    CHECK_SET_ERR(equalStepFound, "tree changed it's size up to the end");
+//    5. Click the "Reset zoom" button on the toolbar.
+    GTWidget::click(os, resetZoom);
+    GTGlobals::sleep(1000);
+    pixmap = QPixmap::grabWidget(treeView, treeView->rect());
+    QImage finalImg = pixmap.toImage();
+//    Expected state: sizes of the tree and alignment reset.
+    CHECK_SET_ERR(initImg==finalImg, "reset zoom action workes wrong")
+//    6. Click the "Zoom in" button in the toolbar until alignment and tree sizes stop change.
+    while(zoomIn->isEnabled()){
+        QPixmap pixmap = QPixmap::grabWidget(treeView, treeView->rect());
+        QImage initImg = pixmap.toImage();
+        GTWidget::click(os, zoomIn);
+        pixmap = QPixmap::grabWidget(treeView, treeView->rect());
+        QImage finalImg = pixmap.toImage();
+        uiLog.trace(QString("Easy to find. are images equal: %1 at step %2").arg(initImg==finalImg).arg(i));
+        CHECK_SET_ERR(!(initImg==finalImg), "images are unexpectidly equal at first step")
+        i++;
+    }
+//    Expected state: the tree and alignment are zoomed in, the "zoom in" button on the toolbar is inactive.
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1515){
