@@ -116,23 +116,33 @@ void ChromaViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
 
 void ChromaViewContext::sl_showChromatogram() {
     ChromaViewAction* a = qobject_cast<ChromaViewAction*>(sender());
-    assert(a!=NULL);
+    CHECK(a!=NULL, );
+    ADVSingleSequenceWidget* sw = qobject_cast<ADVSingleSequenceWidget*>(a->seqWidget);
+    DNAChromatogramObject* chromaObj = findChromaObj(sw);
+    CHECK(sw->getSequenceContext(), );
+    AnnotatedDNAView *adv = sw->getSequenceContext()->getAnnotatedDNAView();
+    CHECK(adv, );    
     if (a->isChecked()) {
-        assert(a->view == NULL);
-        ADVSingleSequenceWidget* sw = qobject_cast<ADVSingleSequenceWidget*>(a->seqWidget);
-        DNAChromatogramObject* chromaObj = findChromaObj(sw);
-        assert(chromaObj!=NULL);
+        CHECK(a->view == NULL, );
+        CHECK(chromaObj!=NULL, );
+        adv->addObject(chromaObj);
         a->view = new ChromatogramView(sw, sw->getSequenceContext(), sw->getPanGSLView(), chromaObj->getChromatogram());
         sw->addSequenceView(a->view);
     } else {
-        assert(a->view!=NULL);
+        CHECK(a->view!=NULL, );
         GObject* editSeq = a->view->getEditedSequence();
         if (editSeq!=NULL) {
             a->view->getSequenceContext()->getAnnotatedDNAView()->removeObject(editSeq);
         }
+        adv->removeObject(chromaObj);
         delete a->view;
         a->view = NULL;
     }
+}
+
+bool ChromaViewContext::canHandle(GObjectView* v, GObject* o) {
+    Q_UNUSED(v);
+    return qobject_cast<DNAChromatogramObject*>(o) != NULL;
 }
 
 ChromaViewAction::ChromaViewAction() : ADVSequenceWidgetAction(CHROMA_ACTION_NAME, tr("Show chromatogram")), view(NULL) 

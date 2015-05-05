@@ -52,6 +52,8 @@ class ChromaViewContext: public GObjectViewWindowContext {
     Q_OBJECT
 public:
     ChromaViewContext(QObject* p);
+
+    bool canHandle(GObjectView* v, GObject* o);
 protected slots:
     void sl_showChromatogram();
     void sl_sequenceWidgetAdded(ADVSequenceWidget*);
