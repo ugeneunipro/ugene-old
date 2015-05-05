@@ -4131,6 +4131,39 @@ GUI_TEST_CLASS_DEFINITION(test_1424) {
         "Incorrect sequences number");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1426) {
+    //1. Open WD.
+
+    //2. Add "Read HMM profile" element to the scene.
+
+    //3. Specify the input file name in property editor.
+    //Expected result: "add" button appears in property editor.
+
+    //4. Delete the element from the scene.
+
+    //5. Add the element of the same type to the scene again.
+    //Expected state: there is no "add" button in property editor.
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read HMM profile");
+
+    CHECK_SET_ERR(GTWidget::findWidget(os, "addButton", NULL, GTGlobals::FindOptions(false)) == NULL, "addButton is shown");
+
+    GTUtilsWorkflowDesigner::click(os, "Read HMM Profile");
+    GTUtilsWorkflowDesigner::setParameter(os, "Input file(s)", dataDir + "samples/FASTA/HMM/aligment15900.hmm", GTUtilsWorkflowDesigner::textValue);
+
+    CHECK_SET_ERR(GTWidget::findWidget(os, "addButton") != NULL, "addButton is hiden");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Discard));
+    GTUtilsMdi::click(os, GTGlobals::Close);
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read HMM Profile");
+    GTUtilsWorkflowDesigner::click(os, "Read HMM Profile");
+
+    CHECK_SET_ERR(GTWidget::findWidget(os, "addButton", NULL, GTGlobals::FindOptions(false)) == NULL, "addButton is shown");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1427) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1427/", "text");
     GTUtilsProjectTreeView::checkItem(os, "text");
