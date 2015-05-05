@@ -19,17 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef  _U2_PAN_VIEW_ROWS_H_
-#define  _U2_PAN_VIEW_ROWS_H_
+#ifndef _U2_PAN_VIEW_ROWS_H_
+#define _U2_PAN_VIEW_ROWS_H_
 
-#include <QtCore/QString>
-#include <QtCore/QMap>
-#include <QtCore/QList>
-
-#include <U2Core/Annotation.h>
 #include <U2Core/U2Region.h>
 
 namespace U2 {
+
+class Annotation;
 
 class PVRowData {
 public:
@@ -47,7 +44,6 @@ class PVRowsManager {
 public:
                                         PVRowsManager();
                                         ~PVRowsManager();
-    void                                clear();
 
     void                                addAnnotation(Annotation *a);
     void                                removeAnnotation(Annotation *f);
@@ -66,7 +62,8 @@ public:
 
 private:
     QList<PVRowData *>                  rows;
-    QMap<Annotation *, PVRowData *>       rowByAnnotation;
+    QHash<QString, QList<PVRowData *> > rowByName; // rows may have same names
+    QHash<Annotation *, PVRowData *>    rowByAnnotation;
 };
 
 } // namespace

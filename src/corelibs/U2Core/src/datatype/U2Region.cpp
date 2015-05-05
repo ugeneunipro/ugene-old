@@ -19,10 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2Region.h>
+#include <QDataStream>
+
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/FormatUtils.h>
-#include <QDataStream>
+
+#include "U2Region.h"
 
 namespace U2 {
 
@@ -149,18 +151,6 @@ int U2Region::findOverlappingRegion(const QVector<U2Region>& rs) const {
     }
     return -1;
 }
-
-void U2Region::removeAll(QVector<U2Region>& regionsToProcess, const QVector<U2Region>& regionsToRemove) {
-    QVector<U2Region> result;
-    foreach(const U2Region& pr, regionsToProcess) {
-        if (regionsToRemove.indexOf(pr) == -1) {
-            result.append(pr);
-        }
-    }
-    regionsToProcess = result;
-}
-
-
 
 static bool _registerMeta() {
     qRegisterMetaType<U2Region>("U2Region");

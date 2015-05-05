@@ -22,15 +22,17 @@
 #ifndef _U2_REGION_H_
 #define _U2_REGION_H_
 
-#include <U2Core/global.h>
-
-#include <QtCore/QVector>
 //small hack, may be bad
 #ifndef LLONG_MAX
 #ifdef Q_OS_LINUX
 #include <limits.h>
 #endif
 #endif
+
+#include <QVector>
+
+#include <U2Core/global.h>
+
 namespace U2 {
 
 /** Predefined region - acts as hint for a function that all possible range must be processed */
@@ -156,9 +158,6 @@ public:
 
     /** shifts regions by offset pos: startPos = startPos + offset */
     static void shift(qint64 offset, QVector<U2Region>& regions);
-
-    /** Removes all items from 'regionsToRemove' from 'regionsToProcess'*/
-    static void removeAll(QVector<U2Region>& regionsToProcess, const QVector<U2Region>& regionsToRemove);
 
 private:
     static bool registerMeta;

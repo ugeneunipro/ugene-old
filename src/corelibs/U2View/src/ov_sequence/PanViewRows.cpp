@@ -19,22 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include "PanViewRows.h"
+#include <QtCore/QVarLengthArray>
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2SafePoints.h>
-#include <QtCore/QVarLengthArray>
+
+#include "PanViewRows.h"
 
 namespace U2 {
 
 PVRowsManager::~PVRowsManager() {
-    clear();
-}
-
-void PVRowsManager::clear() {
     qDeleteAll(rows);
-    rows.clear();
-    rowByAnnotation.clear();
 }
 
 typedef QVector<U2Region>::const_iterator LRIter;
@@ -61,11 +56,11 @@ bool PVRowData::fitToRow(const QVector<U2Region> &location) {
         }
     }
     //bad luck, full search required
-    QVarLengthArray<int,16> pos;
+    QVarLengthArray<int, 16> pos;
     LRIter zero = ranges.constBegin();
     LRIter end = ranges.constEnd();
     foreach (const U2Region &l, location) {
-        LRIter it = qLowerBound(ranges, l);
+        LRIter it = std::lower_bound(zero, end, l);
         if (it != end && (it->startPos <= l.endPos() || (it != zero && (it - 1)->endPos() >= l.startPos))) {
             //got intersection
             return false;
@@ -82,32 +77,51 @@ bool PVRowData::fitToRow(const QVector<U2Region> &location) {
 }
 
 inline bool compare_rows(PVRowData *x, PVRowData *y) {
-    return  x->key.compare(y->key) > 0;
+    return x->key.compare(y->key) > 0;
 }
 
 PVRowsManager::PVRowsManager() {
 
 }
 
-
 void PVRowsManager::addAnnotation(Annotation *a) {
     SAFE_POINT(!rowByAnnotation.contains(a), "Annotation has been already added",);
     const SharedAnnotationData &data = a->getData();
     const QVector<U2Region> location = data->getRegions();
-    foreach (PVRowData *row, rows) {
-        if (data->name == row->key && row->fitToRow(location)) {
-            row->annotations.append(a);
-            rowByAnnotation[a] = row;
-            return;
+
+    if (rowByName.contains(data->name)) {
+        foreach (PVRowData *row, rowByName[data->name]) {
+            if (row->fitToRow(location)) {
+                row->annotations.append(a);
+                rowByAnnotation[a] = row;
+                return;
+            }
         }
     }
+
     PVRowData *row = new PVRowData(data->name);
     row->ranges << location;
     row->annotations.append(a);
 
     rowByAnnotation[a] = row;
-    rows.push_back(row);
-    qStableSort(rows.begin(), rows.end(), compare_rows);
+
+    QList<PVRowData *>::iterator i = std::upper_bound(rows.begin(), rows.end(), row, compare_rows);
+    rows.insert(i, row);
+    rowByName[data->name].append(row);
+}
+
+namespace {
+
+void substractRegions(QVector<U2Region> &regionsToProcess, const QVector<U2Region> &regionsToRemove) {
+    QVector<U2Region> result;
+    foreach (const U2Region &pr, regionsToProcess) {
+        if (!regionsToRemove.contains(pr)) {
+            result.append(pr);
+        }
+    }
+    regionsToProcess = result;
+}
+
 }
 
 void PVRowsManager::removeAnnotation(Annotation *a) {
@@ -115,9 +129,14 @@ void PVRowsManager::removeAnnotation(Annotation *a) {
     CHECK(NULL != row,); // annotation may present in a DB, but has not been added to the panview yet
     rowByAnnotation.remove(a);
     row->annotations.removeOne(a);
-    U2Region::removeAll(row->ranges, a->getRegions());
-    if (row->annotations.empty()) {
+    substractRegions(row->ranges, a->getRegions());
+    if (row->annotations.isEmpty()) {
         rows.removeOne(row);
+        QList<PVRowData *> &rowsWithSameName = rowByName[row->key];
+        rowsWithSameName.removeOne(row);
+        if (rowsWithSameName.isEmpty()) {
+            rowByName.remove(row->key);
+        }
         delete row;
     }
 }
@@ -142,12 +161,7 @@ int PVRowsManager::getNumRows() const {
 }
 
 bool PVRowsManager::contains(const QString &key) const {
-    foreach (PVRowData *r, rows) {
-        if (key == r->key) {
-            return true;
-        }
-    }
-    return false;
+    return rowByName.contains(key);
 }
 
 PVRowData * PVRowsManager::getAnnotationRow(Annotation *a) const {

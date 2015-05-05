@@ -144,8 +144,8 @@ private:
     void moveDialogToItem(QTreeWidgetItem *item, QDialog &d);
 
     void adjustMenu(QMenu *m_) const;
-    AVGroupItem * buildGroupTree(AVGroupItem *parentGroup, AnnotationGroup *g);
-    AVAnnotationItem * buildAnnotationTree(AVGroupItem *parentGroup, Annotation *a);
+    AVGroupItem * buildGroupTree(AVGroupItem *parentGroup, AnnotationGroup *g, bool areAnnotationsNew = true);
+    AVAnnotationItem * buildAnnotationTree(AVGroupItem *parentGroup, Annotation *a, bool areAnnotationsNew = true);
     void populateAnnotationQualifiers(AVAnnotationItem *ai);
     void updateAllAnnotations(ATVAnnUpdateFlags flags);
     QMenu * getAutoAnnotationsHighligtingMenu(AnnotationTableObject *aObj);

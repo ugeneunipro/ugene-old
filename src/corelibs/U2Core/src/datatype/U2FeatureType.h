@@ -224,7 +224,7 @@ public:
     };
     Q_DECLARE_FLAGS(Alphabets, Alphabet)
 
-    static QList<U2FeatureType> getTypes(Alphabets alphabets);
+    static QList<U2FeatureType> getTypes(const Alphabets &alphabets);
     static QString getVisualName(U2FeatureType type);
     static U2FeatureType getTypeByName(const QString &visualName);
 
@@ -240,6 +240,7 @@ public:
 private:
     static QList<U2FeatureTypeInfo> initFeatureTypes();
     const static QList<U2FeatureTypeInfo> typeInfos;
+    static QHash<U2FeatureType, int> typeInfoIndexByType;
 };
 
 typedef U2FeatureTypes::U2FeatureType U2FeatureType;

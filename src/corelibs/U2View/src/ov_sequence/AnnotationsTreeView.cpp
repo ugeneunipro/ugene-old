@@ -40,21 +40,20 @@
 #include "AutoAnnotationUtils.h"
 #include "EditAnnotationDialogController.h"
 
-#include <U2Core/AppContext.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/L10n.h>
-#include <U2Core/Settings.h>
-#include <U2Core/DBXRefRegistry.h>
-#include <U2Core/U2SafePoints.h>
-
 #include <U2Core/AnnotationModification.h>
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
 #include <U2Core/AutoAnnotationsSupport.h>
+#include <U2Core/DBXRefRegistry.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/L10n.h>
+#include <U2Core/Settings.h>
 #include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
@@ -455,7 +454,7 @@ void AnnotationsTreeView::sl_onAnnotationObjectAdded(AnnotationTableObject *obj)
 
     SAFE_POINT(findGroupItem(obj->getRootGroup()) == NULL, "Invalid annotation group!",);
 
-    AVGroupItem *groupItem = buildGroupTree(NULL, obj->getRootGroup());
+    AVGroupItem *groupItem = buildGroupTree(NULL, obj->getRootGroup(), false);
     SAFE_POINT(NULL != groupItem, "creating AVGroupItem failed",);
     tree->addTopLevelItem(groupItem);
     connect(obj, SIGNAL(si_onAnnotationsAdded(const QList<Annotation *> &)), SLOT(sl_onAnnotationsAdded(const QList<Annotation *> &)));
@@ -677,7 +676,7 @@ void AnnotationsTreeView::sl_onGroupRenamed(AnnotationGroup *g) {
     gi->updateVisual();
 }
 
-AVGroupItem * AnnotationsTreeView::buildGroupTree(AVGroupItem *parentGroupItem, AnnotationGroup *g) {
+AVGroupItem * AnnotationsTreeView::buildGroupTree(AVGroupItem *parentGroupItem, AnnotationGroup *g, bool areAnnotationsNew) {
     AVGroupItem *groupItem = new AVGroupItem(this, parentGroupItem, g);
     const QList<AnnotationGroup *> subgroups = g->getSubgroups();
     foreach (AnnotationGroup *subgroup, subgroups) {
@@ -685,16 +684,19 @@ AVGroupItem * AnnotationsTreeView::buildGroupTree(AVGroupItem *parentGroupItem, 
     }
     const QList<Annotation *> annotations = g->getAnnotations();
     foreach (Annotation *a, annotations) {
-        buildAnnotationTree(groupItem, a);
+        buildAnnotationTree(groupItem, a, areAnnotationsNew);
     }
     groupItem->updateVisual();
     return groupItem;
 }
 
-AVAnnotationItem * AnnotationsTreeView::buildAnnotationTree(AVGroupItem *parentGroup, Annotation *a) {
-    AVAnnotationItem *annotationItem = findAnnotationItem(parentGroup, a);
-    CHECK(NULL == annotationItem, annotationItem);
-    annotationItem = new AVAnnotationItem(parentGroup, a);
+AVAnnotationItem * AnnotationsTreeView::buildAnnotationTree(AVGroupItem *parentGroup, Annotation *a, bool areAnnotationsNew) {
+    if (!areAnnotationsNew) {
+        AVAnnotationItem *annotationItem = findAnnotationItem(parentGroup, a);
+        CHECK(NULL == annotationItem, annotationItem);
+    }
+
+    AVAnnotationItem *annotationItem = new AVAnnotationItem(parentGroup, a);
     const QVector<U2Qualifier> qualifiers = a->getQualifiers();
     if (!qualifiers.isEmpty()) {
         annotationItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
@@ -904,8 +906,6 @@ void AnnotationsTreeView::sl_onAddAnnotationObjectToView() {
         ctx->tryAddObject(obj);
     }
 }
-
-
 
 static QList<AVGroupItem *> selectGroupItems(const QList<QTreeWidgetItem *> &items, TriState readOnly, TriState rootOnly) {
     QList<AVGroupItem *> res;

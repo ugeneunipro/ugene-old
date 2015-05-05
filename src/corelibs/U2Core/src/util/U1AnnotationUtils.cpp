@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QStringBuilder>
+
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
@@ -447,17 +449,13 @@ QString U1AnnotationUtils::buildLocationString(const SharedAnnotationData &d) {
 }
 
 QString U1AnnotationUtils::buildLocationString(const QVector<U2Region> &regions) {
-    QString locationStr;
-    bool first = true;
 
-    foreach (const U2Region &r, regions) {
-        if (!first) {
-            locationStr += ",";
-        } else {
-            first = false;
-        }
-        locationStr.append(QString::number(r.startPos + 1).append("..").append(QString::number(r.endPos())));
+    QString locationStr;
+    for (int i = 0, n = regions.size(); i < n; ++i) {
+        const U2Region &r = regions[i];
+        locationStr = locationStr % QString::number(r.startPos + 1) % ".." % QString::number(r.endPos()) % ",";
     }
+    locationStr.chop(1);
     return locationStr;
 }
 
