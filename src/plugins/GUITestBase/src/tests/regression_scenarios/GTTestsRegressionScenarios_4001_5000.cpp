@@ -1548,6 +1548,18 @@ GUI_TEST_CLASS_DEFINITION(test_4179) {
     CHECK_SET_ERR(qualifier.indexOf("The reference") > 0, "Expected string is not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4209) {
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/4209/", "crash.uwl");
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::click(os, "Align to Reference");
+    GTUtilsWorkflowDesigner::setParameter(os, "Reference URL",testDir + "_common_data/scenarios/_regression/4209/seq1.gb", GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", testDir + "_common_data/reads/e_coli_10000snp.fa");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4221) {
 //    1. Use main menu
 //    {tools->NGS data analysis->Map reads to reference}
