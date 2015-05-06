@@ -19,30 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#include "ShutdownTask.h"
-#include "MainWindowImpl.h"
+#include <QMessageBox>
 
+#include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Log.h>
-#include <U2Core/ServiceModel.h>
 #include <U2Core/PluginModel.h>
-#include <U2Core/AppContext.h>
 #include <U2Core/ProjectService.h>
+#include <U2Core/ServiceModel.h>
 #include <U2Core/Settings.h>
-#include <project_support/ProjectLoaderImpl.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include "MainWindowImpl.h"
+#include "ShutdownTask.h"
+#include "project_support/ProjectLoaderImpl.h"
 
 namespace U2 {
 
 ShutdownTask::ShutdownTask(MainWindowImpl* _mw)
     : Task(tr("shutdown_task_name"), TaskFlags(TaskFlag_NoRun)), mw(_mw), docsToRemoveAreFetched(false)
 {
-    mw->setShutDownInProcess(true);
+
 }
 
 static bool isReadyToBeDisabled(Service* s, ServiceRegistry* sr) {
@@ -127,7 +123,6 @@ public:
     }
 };
 
-
 class CancelAllTask : public Task {
 public:
     CancelAllTask() : Task(ShutdownTask::tr("Cancel active tasks"), TaskFlag_NoRun) {}
@@ -160,9 +155,9 @@ static void cancelProjectAutoLoad() {
     AppContext::getSettings()->setValue(SETTINGS_DIR + RECENT_PROJECTS_SETTINGS_NAME, recentFiles, true);
 }
 
-
 void ShutdownTask::prepare() {
     coreLog.info(tr("Starting shutdown process..."));
+    mw->setShutDownInProcess(true);
 
     Project* currProject = AppContext::getProject();
     if (currProject == NULL) {
@@ -192,7 +187,6 @@ void ShutdownTask::prepare() {
         // otherwise it may cancel tasks produced by closing windows (e.g. SaveWorkflowTask)
         ct->addSubTask(new CancelAllTask());
     }
-    mw->setDisabled(true);
 }
 
 QList<Task*> ShutdownTask::onSubTaskFinished(Task* subTask) {
@@ -229,7 +223,7 @@ QList<Task*> ShutdownTask::onSubTaskFinished(Task* subTask) {
 Task::ReportResult ShutdownTask::report() {
     if (propagateSubtaskError() || hasError() || isCanceled()) {
         setErrorNotificationSuppression(true);
-        mw->setDisabled(false);
+        mw->setShutDownInProcess(false);
         return Task::ReportResult_Finished;
     }
 
@@ -248,6 +242,4 @@ Task::ReportResult ShutdownTask::report() {
     return Task::ReportResult_Finished;
 }
 
-
-
-}//namespace
+}   // namespace U2

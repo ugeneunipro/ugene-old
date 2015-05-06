@@ -43,16 +43,16 @@ AppSettingsGUIImpl::AppSettingsGUIImpl(QObject* p) : AppSettingsGUI(p)
     registerBuiltinPages();
     QMenu* m = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_SETTINGS);
     
-    QAction* settingsdialogAction = new QAction(QIcon(":ugene/images/preferences.png"), tr("Preferences..."), this);
-    connect(settingsdialogAction, SIGNAL(triggered()), SLOT(sl_showSettingsDialog()));
-    settingsdialogAction->setObjectName("action__settings");
+    QAction* settingsDialogAction = new QAction(QIcon(":ugene/images/preferences.png"), tr("Preferences..."), this);
+    connect(settingsDialogAction, SIGNAL(triggered()), SLOT(sl_showSettingsDialog()));
+    settingsDialogAction->setObjectName("action__settings");
 #ifdef Q_OS_MAC
-    settingsdialogAction->setMenuRole(QAction::ApplicationSpecificRole);
-    settingsdialogAction->setShortcut(QKeySequence("Ctrl+,"));
-    settingsdialogAction->setShortcutContext(Qt::ApplicationShortcut);
+    settingsDialogAction->setMenuRole(QAction::ApplicationSpecificRole);
+    settingsDialogAction->setShortcut(QKeySequence("Ctrl+,"));
+    settingsDialogAction->setShortcutContext(Qt::ApplicationShortcut);
 #endif
-    m->addAction(settingsdialogAction);
-    //m->addAction(tr("app_settings"), this, SLOT(sl_showSettingsDialog()));
+    m->addAction(settingsDialogAction);
+    AppContext::getMainWindow()->registerAction(settingsDialogAction);
 }
 
 AppSettingsGUIImpl::~AppSettingsGUIImpl() {

@@ -47,6 +47,21 @@ QMenu* MWMenuManagerImpl::getTopLevelMenu(const QString& sysName) const {
     return NULL;
 }
 
+void MWMenuManagerImpl::setMenuBarEnabled(bool enable) {
+    foreach (QMenu *menu, toplevelMenus) {
+        menu->setEnabled(enable);
+    }
+
+    foreach (const QPointer<QAction> &action, additionalActions) {
+        if (NULL != action) {
+            action->setEnabled(enable);
+        }
+    }
+}
+
+void MWMenuManagerImpl::registerAction(QAction *action) {
+    additionalActions << QPointer<QAction>(action);
+}
 
 QMenu* MWMenuManagerImpl::createTopLevelMenu(const QString& sysName, const QString& title, const QString& afterSysName) {
     QMenu* qmenu = getTopLevelMenu(sysName);

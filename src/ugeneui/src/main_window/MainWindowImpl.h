@@ -79,13 +79,13 @@ public:
     virtual NotificationStack*		getNotificationStack() const {return nStack;}
 
     virtual void setWindowTitle(const QString& title);
+    void registerAction(QAction *action);
 
     void prepare();
     void close();
-    void setDisabled(bool disabled);
 
     void runClosingTask();
-    void setShutDownInProcess(bool flag) {shutDownInProcess = flag;}
+    void setShutDownInProcess(bool flag);
     void registerStartupChecks(QList<Task*> tasks);
     void addNotification(const QString& message, NotificationType type);
 signals:

@@ -219,18 +219,27 @@ void MainWindowImpl::close() {
     AppContext::getSettings()->setValue(SETTINGS_DIR + "maximized", mw->isMaximized());
     AppContext::getSettings()->setValue(SETTINGS_DIR + "geometry", mw->geometry());
 
-    delete dockManager;    dockManager = NULL;
-    delete menuManager;    menuManager = NULL;
-    delete toolbarManager; toolbarManager = NULL;
-    delete mdiManager;    mdiManager = NULL;
-    delete nStack; nStack = NULL;
-    delete mdi;    mdi = NULL;
-    mw->close();
-    delete mw;    mw = NULL;
-}
+    dockManager->deleteLater();
+    dockManager = NULL;
 
-void MainWindowImpl::setDisabled(bool disabled) {
-    mw->setDisabled(disabled);
+    menuManager->deleteLater();
+    menuManager = NULL;
+
+    toolbarManager->deleteLater();
+    toolbarManager = NULL;
+
+    mdiManager->deleteLater();
+    mdiManager = NULL;
+
+    nStack->deleteLater();
+    nStack = NULL;
+
+    mdi->deleteLater();
+    mdi = NULL;
+
+    mw->close();
+    mw->deleteLater();
+    mw = NULL;
 }
 
 void MainWindowImpl::createActions() {
@@ -302,6 +311,10 @@ void MainWindowImpl::setWindowTitle(const QString& title) {
     }
 }
 
+void MainWindowImpl::registerAction(QAction *action) {
+    menuManager->registerAction(action);
+}
+
 void MainWindowImpl::prepareGUI() {
     mw = new MWStub(this); //todo: parents?
     mw->setObjectName("main_window");
@@ -317,6 +330,7 @@ void MainWindowImpl::prepareGUI() {
     toolbarManager = new MWToolBarManagerImpl(mw);
 
     menuManager = new MWMenuManagerImpl(this, mw->menuBar());
+    menuManager->registerAction(aboutAction);
 
     exitAction->setObjectName(ACTION__EXIT);
     exitAction->setParent(mw);
@@ -346,7 +360,7 @@ void MainWindowImpl::prepareGUI() {
 void MainWindowImpl::runClosingTask() {
     if(!shutDownInProcess) {
         AppContext::getTaskScheduler()->registerTopLevelTask(new ShutdownTask(this));
-        shutDownInProcess = true;
+        setShutDownInProcess(true);
     } else {
         QMessageBox *msgBox = new QMessageBox(getQMainWindow());
         msgBox->setWindowTitle(U2_APP_TITLE);
@@ -361,6 +375,12 @@ void MainWindowImpl::runClosingTask() {
             }
         }
     }
+}
+
+void MainWindowImpl::setShutDownInProcess(bool flag) {
+    shutDownInProcess = flag;
+    mw->setEnabled(!flag);
+    menuManager->setMenuBarEnabled(!flag);
 }
 
 void MainWindowImpl::sl_visitWeb() {

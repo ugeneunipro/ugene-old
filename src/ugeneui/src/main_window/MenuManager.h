@@ -38,19 +38,23 @@ namespace U2 {
 class MWMenuManagerImpl: public QObject {
     Q_OBJECT
 public:
-	MWMenuManagerImpl(QObject* p, QMenuBar* mb);
+    MWMenuManagerImpl(QObject* p, QMenuBar* mb);
 
-	QMenu* getTopLevelMenu(const QString& sysName) const ;
+    QMenu* getTopLevelMenu(const QString& sysName) const;
+    void setMenuBarEnabled(bool enable);
+    void registerAction(QAction *action);
 
 protected:
-	bool eventFilter(QObject *obj, QEvent *event);
+    bool eventFilter(QObject *obj, QEvent *event);
+
 private:
-	void unlinkTopLevelMenu(QMenu*);
-	void linkTopLevelMenu(QMenu*);
-	QMenu* createTopLevelMenu(const QString& sysName, const QString& title, const QString& afterSysName = QString::null);
-	void updateTopLevelMenuVisibility(QMenu* m);
-	QMenuBar* menuBar;
-	QList<QMenu*> toplevelMenus;
+    void unlinkTopLevelMenu(QMenu*);
+    void linkTopLevelMenu(QMenu*);
+    QMenu* createTopLevelMenu(const QString& sysName, const QString& title, const QString& afterSysName = QString::null);
+    void updateTopLevelMenuVisibility(QMenu* m);
+    QMenuBar* menuBar;
+    QList<QMenu*> toplevelMenus;
+    QList<QPointer<QAction> > additionalActions;
 };
 
 }//namespace

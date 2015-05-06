@@ -146,10 +146,11 @@ public:
     virtual NotificationStack*      getNotificationStack() const = 0;
 
 
-
     virtual void setWindowTitle(const QString& title) = 0;
 
     virtual void addNotification(const QString& message, NotificationType type) = 0;
+
+    virtual void registerAction(QAction *action) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////

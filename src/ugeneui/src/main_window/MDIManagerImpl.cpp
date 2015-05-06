@@ -54,6 +54,7 @@ static QString getWindowName(MDIItem* mdiItem) {
 }
 
 MWMDIManagerImpl::~MWMDIManagerImpl() {
+
 }
 
 void MWMDIManagerImpl::prepareGUI() {

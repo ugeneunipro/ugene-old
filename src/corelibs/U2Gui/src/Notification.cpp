@@ -36,7 +36,8 @@
 
 namespace U2 {
 
-Notification::Notification(const QString &message, NotificationType _type, QAction *_action):QLabel(NULL),
+Notification::Notification(const QString &message, NotificationType _type, QAction *_action) :
+    QLabel(qobject_cast<QWidget *>(AppContext::getMainWindow())),
     action(_action), type(_type) {
     setMinimumWidth(TT_WIDTH);
     setMaximumWidth(TT_WIDTH);
@@ -58,8 +59,7 @@ Notification::Notification(const QString &message, NotificationType _type, QActi
     generateCSS(false);
     generateCSSforCloseButton(false);
 
-    //setWindowFlags (Qt::FramelessWindowHint);
-    setWindowFlags (Qt::ToolTip);
+    setWindowFlags(Qt::ToolTip);
     close->installEventFilter(this);
     h->addStretch();
     h->addWidget(close);
@@ -181,13 +181,20 @@ void Notification::mousePressEvent(QMouseEvent *ev) {
 
             dlg.setWindowTitle(tr("Detailed message"));
 
-            AppContext::getMainWindow()->getNotificationStack()->setFixed(true);
+            NotificationStack *notificationStack = AppContext::getMainWindow()->getNotificationStack();
+            if (NULL != notificationStack) {
+                notificationStack->setFixed(true);
+            }
+
             if(dlg.exec() == QDialog::Accepted) {
                 if(isDelete.isChecked()) {
                     emit si_delete();
                 }
             }
-            AppContext::getMainWindow()->getNotificationStack()->setFixed(false);
+
+            if (NULL != notificationStack) {
+                notificationStack->setFixed(false);
+            }
         }
     }
 }
