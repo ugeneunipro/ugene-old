@@ -254,29 +254,27 @@ void ModifySequenceContentTask::fixAnnotationQualifiers(Annotation *an) {
             const qint64 end = locationMatcher.cap(2).toLongLong() - 1;
 
             U2Region referencedRegion(start, end - start + 1);
-            if (!isRegionValid(referencedRegion)) {
-                continue;
-            }
+            if (isRegionValid(referencedRegion)) {
+                QList<QVector<U2Region> > newRegions = U1AnnotationUtils::fixLocationsForReplacedRegion(regionToReplace,
+                    sequence2Insert.seq.length(), QVector<U2Region>() << referencedRegion, U1AnnotationUtils::AnnotationStrategyForResize_Resize);
 
-            QList<QVector<U2Region> > newRegions = U1AnnotationUtils::fixLocationsForReplacedRegion(regionToReplace,
-                sequence2Insert.seq.length(), QVector<U2Region>() << referencedRegion, U1AnnotationUtils::AnnotationStrategyForResize_Resize);
+                if (!newRegions.isEmpty() && !newRegions[0].empty()) {
+                    QString newRegionsStr;
+                    foreach (const U2Region &region, newRegions[0]) {
+                        newRegionsStr += QString("%1..%2,").arg(region.startPos + 1).arg(region.endPos()); // position starts with 1
+                    }
+                    newRegionsStr.chop(1); // remove last comma
 
-            if (!newRegions.isEmpty() && !newRegions[0].empty()) {
-                QString newRegionsStr;
-                foreach (const U2Region &region, newRegions[0]) {
-                    newRegionsStr += QString("%1..%2,").arg(region.startPos + 1).arg(region.endPos()); // position starts with 1
-                }
-                newRegionsStr.chop(1); // remove last comma
+                    const int oldRegionPos = newQualifierValue.indexOf(matchedRegion, lastModifiedPos);
+                    SAFE_POINT(oldRegionPos != -1, "Unexpected region matched", );
 
-                const int oldRegionPos = newQualifierValue.indexOf(matchedRegion, lastModifiedPos);
-                SAFE_POINT(oldRegionPos != -1, "Unexpected region matched", );
-
-                newQualifierValue.replace(oldRegionPos, matchedRegion.length(), newRegionsStr);
-                lastModifiedPos = oldRegionPos + newRegionsStr.length();
-            } else {
-                annotationForReport[an].append(QStringPair(qual.name, matchedRegion));
-                if (!isReportingEnabled()) {
-                    setReportingEnabled(true);
+                    newQualifierValue.replace(oldRegionPos, matchedRegion.length(), newRegionsStr);
+                    lastModifiedPos = oldRegionPos + newRegionsStr.length();
+                } else {
+                    annotationForReport[an].append(QStringPair(qual.name, matchedRegion));
+                    if (!isReportingEnabled()) {
+                        setReportingEnabled(true);
+                    }
                 }
             }
 
