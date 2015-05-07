@@ -412,6 +412,9 @@ void GSequenceGraphDrawer::drawGraph(QPainter& p, const QSharedPointer<GSequence
 
             }
         }
+    } else {
+        p.fillRect(rect, Qt::gray);
+        p.drawText(rect, Qt::AlignCenter, tr("Graph is rendering..."));
     }
 }
 const int mLabelCoordY = 20;
@@ -854,7 +857,10 @@ void GSequenceGraphDrawer::showSettingsDialog() {
 }
 
 bool PairVector::isEmpty()const {
-    return  firstPoints.isEmpty() &&  secondPoints.isEmpty() && cutoffPoints.isEmpty();
+    QVector<float> emptyFp(firstPoints.size(), GSequenceGraphDrawer::UNKNOWN_VAL);
+    QVector<float> emptySp(secondPoints.size(), GSequenceGraphDrawer::UNKNOWN_VAL);
+    QVector<float> emptyCutoff(0);
+    return firstPoints == emptyFp && secondPoints == emptySp && cutoffPoints == emptyCutoff;
 }
 
 CalculatePointsTask::CalculatePointsTask(const QSharedPointer<GSequenceGraphData>& d, GSequenceGraphDrawer *drawer, PairVector &points, int alignedFirst, int alignedLast, bool expandMode, const GSequenceGraphWindowData &wdata, U2SequenceObject* o, const U2Region &visibleRange) 
