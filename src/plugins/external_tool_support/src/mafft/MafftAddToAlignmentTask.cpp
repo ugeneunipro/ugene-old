@@ -30,6 +30,7 @@
 #include <U2Core/AppResources.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/Counter.h>
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ExternalToolRegistry.h>
@@ -44,6 +45,7 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AddDocumentTask.h>
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2Mod.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -74,6 +76,10 @@ MafftAddToAlignmentTask::MafftAddToAlignmentTask(const AlignSequencesToAlignment
 
     MAlignmentExporter alnExporter;
     inputMsa = alnExporter.getAlignment(settings.msaRef.dbiRef, settings.msaRef.entityId, stateInfo);
+    int rowNumber = inputMsa.getNumRows();
+    for (int i = 0; i < rowNumber; i++) {
+        inputMsa.renameRow(i, QString::number(i));
+    }
 }
 
 MafftAddToAlignmentTask::~MafftAddToAlignmentTask() {
@@ -92,8 +98,15 @@ void MafftAddToAlignmentTask::prepare()
     Document* tempDocument = dfd->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(tmpAddedUrl), stateInfo);
 
     QListIterator<QString> namesIterator(settings.addedSequencesNames);
+    int currentRowNumber = inputMsa.getNumRows();
     foreach(const U2EntityRef& sequenceRef, settings.addedSequencesRefs) {
-        tempDocument->addObject(U2SequenceObject(namesIterator.next(), sequenceRef).clone(tempDocument->getDbiRef(), stateInfo));
+        uniqueIdsToNames[QString::number(currentRowNumber)] = namesIterator.next();
+        U2SequenceObject seqObject(QString::number(currentRowNumber), sequenceRef);
+        GObject* cloned = seqObject.clone(tempDocument->getDbiRef(), stateInfo);
+        CHECK_OP(stateInfo, );
+        cloned->setGObjectName(QString::number(currentRowNumber));
+        tempDocument->addObject(cloned);
+        currentRowNumber++;
     }
 
     saveSequencesDocumentTask = new SaveDocumentTask(tempDocument, tempDocument->getIOAdapterFactory(), tmpAddedUrl, SaveDocFlags(SaveDoc_Roll) | SaveDoc_DestroyAfter);
@@ -123,6 +136,11 @@ QList<Task*> MafftAddToAlignmentTask::onSubTaskFinished(Task* subTask) {
             arguments << "--add";
         }
         arguments << saveSequencesDocumentTask->getURL().getURLString();
+        const DNAAlphabet* alphabet = U2AlphabetUtils::getById(settings.alphabet);
+        SAFE_POINT_EXT(alphabet != NULL, setError("Albhabet is invalid."), subTasks);
+        if(alphabet->isRaw()) {
+            arguments << "--anysymbol";
+        }
         if(useMemsaveOption()) {
             arguments << "--memsave";
         }
@@ -178,6 +196,9 @@ void MafftAddToAlignmentTask::run() {
 
     int posInMsa = 0;
     int objectsCount = tmpDoc->getObjects().count();
+
+    dbi->updateMsaAlphabet(settings.msaRef.entityId, settings.alphabet, stateInfo);
+    CHECK_OP(stateInfo, );
     foreach(GObject* object, tmpDoc->getObjects()) {
         if (hasError() || isCanceled()) {
             return;
@@ -185,9 +206,11 @@ void MafftAddToAlignmentTask::run() {
         stateInfo.setProgress(70 + 30 * posInMsa / objectsCount);
         U2SequenceObject* sequenceObject = qobject_cast<U2SequenceObject*>(object);
         if(!rowNames.contains(sequenceObject->getSequenceName())) {
+            sequenceObject->setGObjectName(uniqueIdsToNames[sequenceObject->getGObjectName()]);
             SAFE_POINT(sequenceObject != NULL, "U2SequenceObject is null", );
             U2MsaRow row = MSAUtils::copyRowFromSequence(sequenceObject, settings.msaRef.dbiRef, stateInfo);
             dbi->addRow(settings.msaRef.entityId, posInMsa, row, stateInfo);
+            CHECK_OP(stateInfo, );
         }
         posInMsa++;
     }

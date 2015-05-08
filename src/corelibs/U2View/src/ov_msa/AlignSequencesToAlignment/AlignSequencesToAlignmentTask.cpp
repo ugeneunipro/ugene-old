@@ -56,7 +56,11 @@ const int LoadSequencesTask::maxErrorListSize = 5;
 /************************************************************************/
 /* SequencesExtractor */
 /************************************************************************/
-SequenceObjectsExtractor::SequenceObjectsExtractor() : seqsAlphabet(NULL), extractFromMsa(false), sequencesMaxLength(0) {}
+SequenceObjectsExtractor::SequenceObjectsExtractor() : extractFromMsa(false), sequencesMaxLength(0) {}
+
+void SequenceObjectsExtractor::setAlphabet(const DNAAlphabet* newAlphabet) {
+    seqsAlphabet = newAlphabet;
+}
 
 void SequenceObjectsExtractor::extractSequencesFromDocuments(const QList<Document*>& documentsList) {
     foreach(Document* curDocument, documentsList) {
@@ -142,9 +146,10 @@ const QList<Document*>& SequenceObjectsExtractor::getUsedDocuments() const {
 /* LoadSequencesTask */
 /************************************************************************/
 LoadSequencesTask::LoadSequencesTask(const DNAAlphabet* msaAlphabet, const QStringList& fileWithSequencesUrls)
-: Task(tr("Load sequences task"), TaskFlag_NoRun), msaAlphabet(msaAlphabet), urls(fileWithSequencesUrls)
+: Task(tr("Load sequences task"), TaskFlag_NoRun), msaAlphabet(msaAlphabet), urls(fileWithSequencesUrls), extractor()
 {
     assert(!fileWithSequencesUrls.isEmpty());
+    extractor.setAlphabet(msaAlphabet);
 }
 
 void LoadSequencesTask::prepare()
@@ -196,6 +201,11 @@ Task::ReportResult LoadSequencesTask::report() {
     if(!extractor.getErrorList().isEmpty()) {
         setupError();
     }
+    if(extractor.getSequenceRefs().isEmpty()) {
+        QString filesSeparator(", ");
+        setError(tr("There are no sequences to align in the document(s): %1").arg(urls.join(filesSeparator)));
+        return ReportResult_Finished;
+    }
     if(U2AlphabetUtils::deriveCommonAlphabet(extractor.getAlphabet(), msaAlphabet) == NULL) {
         setError(tr("Sequences have incompatible alphabets"));
     }
@@ -218,6 +228,7 @@ AlignSequencesToAlignmentTask::AlignSequencesToAlignmentTask(MAlignmentObject* o
     settings.addedSequencesRefs = extractor.getSequenceRefs();
     settings.addedSequencesNames = extractor.getSequenceNames();
     settings.maxSequenceLength = extractor.getMaxSequencesLength();
+    settings.alphabet = extractor.getAlphabet()->getId();
     usedDocuments = extractor.getUsedDocuments();
 }
 
@@ -261,7 +272,6 @@ void AlignSequencesToAlignmentTask::fillSettingsByDefault() {
     settings.addAsFragments = sequencesMaxLength < 100 && maObj->getLength() / sequencesMaxLength > 3;
     settings.msaRef = maObj->getEntityRef();
     settings.inNewWindow = false;
-    settings.alphabet = maObj->getAlphabet()->getId();
 }
 
 Task::ReportResult AlignSequencesToAlignmentTask::report() {
@@ -301,6 +311,7 @@ LoadSequencesAndAlignToAlignmentTask::LoadSequencesAndAlignToAlignmentTask(MAlig
 
 QList<Task*> LoadSequencesAndAlignToAlignmentTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> subTasks;
+    propagateSubtaskError();
     if(subTask == loadSequencesTask && !loadSequencesTask->hasError() && !loadSequencesTask->isCanceled()) {
         AlignSequencesToAlignmentTask* alignSequencesToAlignmentTask = new AlignSequencesToAlignmentTask(maObj, loadSequencesTask->getExtractor());
         alignSequencesToAlignmentTask->setSubtaskProgressWeight(95);

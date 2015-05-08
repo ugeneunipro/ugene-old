@@ -62,6 +62,7 @@ private:
     ExternalToolRunTask*        mafftTask;
     LoadDocumentTask*           loadTmpDocumentTask;
     U2UseCommonUserModStep*     modStep;
+    QMap<QString, QString>      uniqueIdsToNames;
 
     QString tmpDirUrl;
     QString resultFilePath;

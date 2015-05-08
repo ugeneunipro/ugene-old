@@ -44,6 +44,8 @@ class SequenceObjectsExtractor {
 public:
     SequenceObjectsExtractor();
 
+    void setAlphabet(const DNAAlphabet* newAlphabet);
+
     void extractSequencesFromDocuments(const QList<Document*>& documentsList);
 
     void extractSequencesFromDocument(Document* doc);
@@ -90,7 +92,7 @@ private:
     const DNAAlphabet* msaAlphabet;
     QStringList                 urls;
 
-    SequenceObjectsExtractor          extractor;
+    SequenceObjectsExtractor    extractor;
 
     static const int maxErrorListSize;
 private:

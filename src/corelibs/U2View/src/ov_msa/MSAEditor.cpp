@@ -806,6 +806,7 @@ void MSAEditor::sl_addToAlignment() {
 
 void MSAEditor::alignSequencesFromObjectsToAlignment(const QList<GObject*>& objects) {
     SequenceObjectsExtractor extractor;
+    extractor.setAlphabet(msaObject->getAlphabet());
     extractor.extractSequencesFromObjects(objects);
 
     if(!extractor.getSequenceRefs().isEmpty()) {

@@ -72,6 +72,9 @@ Task::ReportResult SimpleAddToAlignmentTask::report() {
     U2MsaDbi *dbi = modStep.getDbi()->getMsaDbi();
     int posInMsa = inputMsa.getNumRows();
 
+
+    dbi->updateMsaAlphabet(settings.msaRef.entityId, settings.alphabet, stateInfo);
+    CHECK_OP(stateInfo, ReportResult_Finished);
     QListIterator<QString> namesIterator(settings.addedSequencesNames);
     foreach(const U2EntityRef& sequence, settings.addedSequencesRefs) {
         QString seqName = namesIterator.peekNext();
