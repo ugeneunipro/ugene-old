@@ -132,6 +132,7 @@ QList<Task*> PhyMLSupportTask::onSubTaskFinished(Task* subTask){
         QStringList arguments;
         arguments << "-i";
         arguments << tmpPhylipFile;
+        arguments << "--no_memory_check";
         arguments << settings.extToolArguments;
         logParser = new PhyMLLogParser(this, sequencesNumber);
         phyMlTask = new ExternalToolRunTask(PhyMLSupport::PhyMlRegistryId, arguments, logParser);
