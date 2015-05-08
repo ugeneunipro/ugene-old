@@ -30,6 +30,7 @@ class ImportPrimersDialogFiller : public Filler {
 public:
     enum ImportSource {LocalFiles, SharedDb};
 
+    ImportPrimersDialogFiller(U2OpStatus &os, const QStringList &fileList);
     ImportPrimersDialogFiller(U2OpStatus &os, CustomScenario *scenario = NULL);
 
     void commonScenario();
@@ -40,6 +41,9 @@ public:
     static void addObjects(U2OpStatus &os, const QString &databaseName, const QStringList &objectNames);
     static void addObjects(U2OpStatus &os, const QMap<QString, QStringList> &databaseAndObjectNames);
     static QWidget * getDialog(U2OpStatus &os);
+
+private:
+    const QStringList fileList;
 };
 
 }   // namespace U2

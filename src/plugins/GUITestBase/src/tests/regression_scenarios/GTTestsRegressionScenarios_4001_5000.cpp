@@ -32,6 +32,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsNotifications.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsOptionsPanel.h"
 #include "GTUtilsOptionPanelMSA.h"
@@ -1112,6 +1113,24 @@ GUI_TEST_CLASS_DEFINITION(test_4118){
     GTUtilsTaskTreeView::waitTaskFinished(os, 60000);
     GTUtilsLog::check(os, l);
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4120) {
+//    1. Open primer library.
+    GTUtilsPrimerLibrary::openLibrary(os);
+    const int expectedCount = GTUtilsPrimerLibrary::librarySize(os);
+
+//    2. Import a file to the library: "_common_data/fasta/illumina.fa".
+//    Expected state: there are no additional primers in the library, task generates a report that notifies about an error: "there are no applicable sequences".
+    GTUtilsNotifications::waitForNotification(os, false, testDir + "_common_data/fasta/illumina.fa: error: there are no applicable sequences");
+
+    GTUtilsDialog::waitForDialog(os, new ImportPrimersDialogFiller(os, QStringList() << testDir + "_common_data/fasta/illumina.fa"));
+    GTUtilsPrimerLibrary::clickButton(os, GTUtilsPrimerLibrary::Import);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    const int count = GTUtilsPrimerLibrary::librarySize(os);
+    CHECK_SET_ERR(expectedCount == count, "Primer was unexpectedly imported");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4121) {

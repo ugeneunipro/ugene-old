@@ -37,14 +37,28 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ImportPrimersDialogFiller"
 
+ImportPrimersDialogFiller::ImportPrimersDialogFiller(U2OpStatus &os, const QStringList &fileList) :
+    Filler(os, "ImportPrimersDialog"),
+    fileList(fileList)
+{
+
+}
+
 ImportPrimersDialogFiller::ImportPrimersDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
     Filler(os, "ImportPrimersDialog", scenario)
 {
+
 }
 
 #define GT_METHOD_NAME "commonScenario"
 void ImportPrimersDialogFiller::commonScenario() {
-    GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
+    CHECK_EXT(!fileList.isEmpty(), GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel), );
+
+    foreach (const QString &file, fileList) {
+        addFile(os, file);
+    }
+
+    GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
 
