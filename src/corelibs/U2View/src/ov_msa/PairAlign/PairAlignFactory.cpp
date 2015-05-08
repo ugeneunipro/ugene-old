@@ -30,7 +30,7 @@ namespace U2 {
 const QString PairAlignFactory::GROUP_ID = "OP_PAIRALIGN";
 const QString PairAlignFactory::GROUP_ICON_STR = ":core/images/pairwise.png";
 const QString PairAlignFactory::GROUP_TITLE = QString(QObject::tr("Pairwise Alignment"));
-const QString PairAlignFactory::GROUP_DOC_PAGE = "7668023";
+const QString PairAlignFactory::GROUP_DOC_PAGE = "16122258";
 
 
 PairAlignFactory::PairAlignFactory() {

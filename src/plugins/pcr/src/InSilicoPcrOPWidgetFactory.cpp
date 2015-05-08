@@ -45,7 +45,7 @@ QWidget * InSilicoPcrOPWidgetFactory::createWidget(GObjectView *objView) {
 }
 
 OPGroupParameters InSilicoPcrOPWidgetFactory::getOPGroupParameters() {
-    return OPGroupParameters("OP_IN_SILICO_PCR", QPixmap(":/primer3/images/primer3.png"), tr("In Silico PCR"), "14059265");
+    return OPGroupParameters("OP_IN_SILICO_PCR", QPixmap(":/primer3/images/primer3.png"), tr("In Silico PCR"), "16122424");
 }
 
 bool InSilicoPcrOPWidgetFactory::passFiltration(OPFactoryFilterVisitorInterface *filter) {
