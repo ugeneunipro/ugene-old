@@ -75,6 +75,7 @@ out_sequence = null;
         }
         wizard {
             name:"Quality filter Wizard";
+            help-page-id:16122711;
             page {
                 id:1;
                 next:2;

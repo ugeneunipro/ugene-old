@@ -56,6 +56,7 @@ out_text=getName(in_sequence) + ": " + size(in_sequence);
         }
         wizard {
             name:"Dump sequence info Wizard";
+            help-page-id:16122709;
             page {
                 id:1;
                 next:2;

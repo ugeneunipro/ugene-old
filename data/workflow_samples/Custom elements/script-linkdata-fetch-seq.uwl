@@ -50,6 +50,7 @@ out_sequence = sequenceFromText(LinkData.getObjects(workId,filename,subject,prop
         }
         wizard {
             name:"LinkData fetch Wizard";
+            help-page-id:16122710;
             page {
                 id:1;
                 title:"LinkData Fetch";
