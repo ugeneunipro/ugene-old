@@ -288,6 +288,20 @@ GUI_TEST_CLASS_DEFINITION(test_3034) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3035){
+    QString conName = "test_3035_db";
+    GTDatabaseConfig::initTestConnectionInfo(conName, GTDatabaseConfig::database(), true, true);
+
+    {
+        QList<SharedConnectionsDialogFiller::Action> actions;
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, conName);
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, conName);
+        GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
+    }
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3052) {
 //    1. Open "_common_data/bam/chrM.sorted.bam".
 //    Expected state: an "Import BAM file" dialog appears.

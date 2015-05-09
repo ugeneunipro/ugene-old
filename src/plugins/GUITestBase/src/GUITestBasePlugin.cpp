@@ -726,7 +726,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2808);
     REGISTER_TEST(GUITest_regression_scenarios::test_2809);
     REGISTER_TEST(GUITest_regression_scenarios::test_2811);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2829);
+    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2829, "hotkeys on mac");
     REGISTER_TEST(GUITest_regression_scenarios::test_2853);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2866);
     REGISTER_TEST(GUITest_regression_scenarios::test_2884);
@@ -767,6 +767,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3017);
     REGISTER_TEST(GUITest_regression_scenarios::test_3031);
     REGISTER_TEST(GUITest_regression_scenarios::test_3034);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3035);
     REGISTER_TEST(GUITest_regression_scenarios::test_3052);
     REGISTER_TEST(GUITest_regression_scenarios::test_3052_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_3072);

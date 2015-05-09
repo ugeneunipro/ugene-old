@@ -44,7 +44,7 @@ const QString DATABASE_PREFIX_2 = "database-prefix-2";
 const QString DATABASE_UNINITED_PREFIX = "database-uninited-prefix";
 const QString DATABASE_VERSION = "database-version";
 const QString LOGIN = "login";
-const QString READ_ONLY_LOGIN = "login_ro";
+const QString READ_ONLY_LOGIN = "read_only_login";
 const QString PASSWORD = "password";
 
 QVariant getSetting(const QString &key) {

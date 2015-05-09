@@ -1133,7 +1133,7 @@ GUI_TEST_CLASS_DEFINITION(test_0750) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show scripting options"));
     GTWidget::click(os, GTAction::button(os, GTAction::findActionByText(os, "Scripting mode")));
 //    3. Drag the "Read from remote database" element to the Scene.
-    WorkflowProcessItem* item = GTUtilsWorkflowDesigner::addElement(os, "Read from Remote Database");
+    GTUtilsWorkflowDesigner::addElement(os, "Read from Remote Database");
 //    4. Press the "..." button of the "Resource IDs" value cell.
 
     class Custom : public CustomScenario {
