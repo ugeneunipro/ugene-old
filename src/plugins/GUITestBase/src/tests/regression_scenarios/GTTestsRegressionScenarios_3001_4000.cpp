@@ -4343,6 +4343,26 @@ GUI_TEST_CLASS_DEFINITION(test_3702){
     CHECK_SET_ERR(wgt->windowTitle() == "human_T1 [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)", "human_T1.fa should be opened!");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3710){
+//    1. Open "_common_data/scenarios/msa/ma2_gapped.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
+//    2. Open the Highlighting option panel tab.
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+//    3. Select "Phaneroptera_falcata" as the reference sequence.
+    GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+//    4. Click the Export button.
+    GTUtilsNotifications::waitForNotification(os, false);
+    GTUtilsDialog::waitForDialog(os, new ExportHighlightedDialogFiller(os, sandBoxDir + "export_test_3710"));
+
+    QComboBox* highlightingScheme = GTWidget::findExactWidget<QComboBox*>(os, "highlightingScheme");
+    GTComboBox::setIndexWithText(os, highlightingScheme, "Agreements");
+    GTWidget::click(os, GTWidget::findWidget(os, "exportHighlightning"));
+    GTGlobals::sleep();
+//    5. Export.
+//    Current: nothing happens.
+//    Solution: show the notification and report with the output file for the task.
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3715) {
     //1. Open WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
