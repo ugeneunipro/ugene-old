@@ -289,6 +289,7 @@ GUI_TEST_CLASS_DEFINITION(test_3034) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3035){
+    //check read only user
     QString conName = "test_3035_db";
     GTDatabaseConfig::initTestConnectionInfo(conName, GTDatabaseConfig::database(), true, true);
 
@@ -299,6 +300,37 @@ GUI_TEST_CLASS_DEFINITION(test_3035){
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     }
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    // import, remove, drag'n'drop, empty recycle bin, restore from recycle bin. is prohibited
+    GTUtilsProjectTreeView::click(os, "Recycle bin", Qt::RightButton);
+    CHECK_SET_ERR(QApplication::activePopupWidget()==NULL, "popup menu unexpectidly presents on recyble bin");
+    GTUtilsProjectTreeView::click(os, "export_tests", Qt::RightButton);
+    CHECK_SET_ERR(QApplication::activePopupWidget()==NULL, "popup menu unexpectidly presents on export_tests");
+
+    QModelIndex parent = GTUtilsProjectTreeView::findIndex(os, "export_tests");
+    QModelIndex index = GTUtilsProjectTreeView::findIndex(os, "et0001_sequence", parent);
+
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, index));
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<<"action_project__edit_menu", PopupChecker::NotExists));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<<"action_project__remove_selected_action", PopupChecker::NotExists));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "action_open_view"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    QString name = GTUtilsMdi::activeWindowTitle(os);
+    CHECK_SET_ERR(name == "[s] et0001_sequence", QString("unexpected window title: %1").arg(name));
+
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "test_3035.fa", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "action_open_view"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, index));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(500);
+
+    GTUtilsDialog::waitForDialog(os, new ExportSequenceAsAlignmentFiller(os, sandBoxDir, "test_3035_1.aln", ExportSequenceAsAlignmentFiller::Clustalw));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "export sequences as alignment"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, index));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
 
 }
 

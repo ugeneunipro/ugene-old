@@ -1295,16 +1295,14 @@ GUI_TEST_CLASS_DEFINITION(test_1078){ //Need to add the test
  * Expected state: Error message with format error
  * System: Ubuntu 12.04
 */
-    GTLogTracer l;
-
+    GTUtilsNotifications::waitForNotification(os, true, "Loaded sequences: 24.");
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/1078/", "HannaRescued.fa");
     GTUtilsDialog::waitForDialog(os, ob);
     GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "FASTA"));
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__OPEN_AS);
     GTUtilsTaskTreeView::waitTaskFinished(os);
-
-    CHECK_SET_ERR(l.hasError(), "Error in log expected");
+    GTGlobals::sleep(5000);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1079){
