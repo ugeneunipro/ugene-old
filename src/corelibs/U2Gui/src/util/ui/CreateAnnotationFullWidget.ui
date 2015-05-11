@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>627</width>
-    <height>467</height>
+    <width>614</width>
+    <height>473</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,7 +23,16 @@
    <property name="sizeConstraint">
     <enum>QLayout::SetMinAndMaxSize</enum>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -68,6 +77,9 @@
        </property>
        <item>
         <layout class="QVBoxLayout" name="parametersLayout">
+         <property name="spacing">
+          <number>20</number>
+         </property>
          <property name="sizeConstraint">
           <enum>QLayout::SetMinAndMaxSize</enum>
          </property>
