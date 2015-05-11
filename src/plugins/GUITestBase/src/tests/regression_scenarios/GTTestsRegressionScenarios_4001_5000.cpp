@@ -26,6 +26,7 @@
 #include "GTTestsRegressionScenarios_4001_5000.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsDashboard.h"
+#include "GTUtilsDialog.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsExternalTools.h"
 #include "GTUtilsLog.h"
@@ -33,20 +34,19 @@
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsNotifications.h"
-#include "GTUtilsProjectTreeView.h"
-#include "GTUtilsOptionsPanel.h"
 #include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsOptionPanelSequenceView.h"
+#include "GTUtilsOptionsPanel.h"
 #include "GTUtilsPhyTree.h"
 #include "GTUtilsPrimerLibrary.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsSharedDatabaseDocument.h"
+#include "GTUtilsTask.h"
 #include "GTUtilsTaskTreeView.h"
-#include "GTUtilsWorkflowDesigner.h"
-#include "GTUtilsDialog.h"
 #include "GTUtilsWizard.h"
+#include "GTUtilsWorkflowDesigner.h"
 
 #include "api/GTAction.h"
 #include "api/GTCheckBox.h"
@@ -54,36 +54,34 @@
 #include "api/GTComboBox.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTLineEdit.h"
+#include "api/GTListWidget.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTListWidget.h"
 #include "api/GTRadioButton.h"
 #include "api/GTSlider.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTabWidget.h"
 #include "api/GTTextEdit.h"
+#include "api/GTToolbar.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
-#include "api/GTLineEdit.h"
-#include "GTUtilsSharedDatabaseDocument.h"
 
 #include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
-#include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
-#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h"
 #include "runnables/ugene/plugins/orf_marker/OrfDialogFiller.h"
@@ -93,6 +91,8 @@
 #include "runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
+#include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 
 #include <U2Gui/ToolsMenu.h>
 
@@ -1706,6 +1706,98 @@ GUI_TEST_CLASS_DEFINITION(test_4284){
     GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, endPos-1, 1234, 4 ) );
 
     CHECK_SET_ERR(msaEdistorSequenceAres->getFirstVisibleSequence() == 1, "MSA not scrolled");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4323_1) {
+    GTLogTracer logTracer;
+
+//    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+//    2. Click "Align sequence to this alignment" and select "_common_data/database.ini".
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/database.ini"));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
+
+//    Expected state: load task fails, safe point doesn't trigger.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsLog::checkContainsError(os, logTracer, "Task {Load sequences and add to alignment task} finished with error: There are no sequences to align in the document(s)");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4323_2) {
+//    1. Open "samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+//    2. Click "Align sequence to this alignment" button on the toolbar, select "samples/PDB/1CF7.pdb".
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/PDB/1CF7.pdb"));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: four sequences are added to the alignment.
+    const int count = GTUtilsMsaEditor::getSequencesCount(os);
+    CHECK_SET_ERR(22 == count, QString("Unexpected sequences count: expect %1, got %2")
+                  .arg(22).arg(count));
+
+//    3. Open "Pairwise alignment" options panel tab.
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+
+//    Expected state: there is a message that the msa alphabet is no applicable.
+    QLabel *errorLabel = GTWidget::findExactWidget<QLabel *>(os, "lblMessage");
+    CHECK_SET_ERR(NULL != errorLabel, "Error label is NULL");
+    CHECK_SET_ERR(errorLabel->isVisible(), "Error label is invisible");
+    CHECK_SET_ERR(errorLabel->text().contains("Current alphabet does not correspond the requirements."),
+                  QString("An unexpected error message: '%1'").arg(errorLabel->text()));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4323_3) {
+//    1. Open "samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+//    2. Click "Align sequence to this alignment" button on the toolbar, select "samples/PDB/1CF7.pdb".
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/PDB/1CF7.pdb"));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: four sequences are added to the alignment.
+    const int count = GTUtilsMsaEditor::getSequencesCount(os);
+    CHECK_SET_ERR(22 == count, QString("Unexpected sequences count: expect %1, got %2")
+                  .arg(22).arg(count));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4323_4) {
+//    1. Open "samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+//    2. Rename the first two sequences to "1".
+    GTUtilsMSAEditorSequenceArea::renameSequence(os, "Phaneroptera_falcata", "1");
+    GTUtilsMSAEditorSequenceArea::renameSequence(os, "Isophya_altaica_EF540820", "1");
+
+//    3. Click "Align sequence to this alignment" button on the toolbar, select "samples/FASTQ/eas.fastq".
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/FASTQ/eas.fastq"));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    4. Do it again.
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/FASTQ/eas.fastq"));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: there are 24 sequences in the alignment; two of them are named "1", two - "EAS54_6_R1_2_1_413_324", two - "EAS54_6_R1_2_1_540_792", two - "EAS54_6_R1_2_1_443_348".
+    const QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(24 == names.count(), QString("Unexpected sequences count: expect %1, got %2")
+                  .arg(24).arg(names.count()));
+    CHECK_SET_ERR(2 == names.count("1"), QString("Unexpected sequences with name '1' count: expect %1, got %2")
+                  .arg(2).arg(names.count("1")));
+    CHECK_SET_ERR(2 == names.count("EAS54_6_R1_2_1_413_324"), QString("Unexpected sequences with name 'EAS54_6_R1_2_1_413_324' count: expect %1, got %2")
+                  .arg(2).arg(names.count("EAS54_6_R1_2_1_413_324")));
+    CHECK_SET_ERR(2 == names.count("EAS54_6_R1_2_1_540_792"), QString("Unexpected sequences with name 'EAS54_6_R1_2_1_540_792' count: expect %1, got %2")
+                  .arg(2).arg(names.count("EAS54_6_R1_2_1_540_792")));
+    CHECK_SET_ERR(2 == names.count("EAS54_6_R1_2_1_443_348"), QString("Unexpected sequences with name 'EAS54_6_R1_2_1_443_348' count: expect %1, got %2")
+                  .arg(2).arg(names.count("EAS54_6_R1_2_1_443_348")));
 }
 
 
