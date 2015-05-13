@@ -1825,6 +1825,37 @@ GUI_TEST_CLASS_DEFINITION(test_4323_4) {
                   .arg(2).arg(names.count("EAS54_6_R1_2_1_443_348")));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4325) {
+    // 1. Open In Silico PCR sample
+    // 2. Seqeunce: "data/samples/Genbank/CVU55762.gb"
+    //    Primers: "test/_common_data/cmdline/pcr/primers_CVU55762.fa"
+    // 3. Run workflow
+    // Expected state: the size of the product is 150, and the primers are annotated on both sides
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "In Silico PCR");
+
+    GTUtilsWorkflowDesigner::click(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "/samples/Genbank/", "CVU55762.gb");
+
+    GTUtilsWorkflowDesigner::click(os, "In Silico PCR");
+    GTUtilsWorkflowDesigner::setParameter(os, "Primers URL", QDir(testDir).absolutePath() + "/_common_data/cmdline/pcr/primers_CVU55762.fa", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::click(os, "Write Sequence");
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", QDir(sandBoxDir).absolutePath() + "/test_4325.gb", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTFileDialog::openFile(os, sandBoxDir, "test_4325.gb");
+
+    CHECK_SET_ERR(GTUtilsSequenceView::getLengthOfSequence(os) == 150, "Product size is incorrect");
+    QList<U2Region> regions = GTUtilsAnnotationsTreeView::getAnnotatedRegions(os);
+    CHECK_SET_ERR(regions.size() == 2, "Incorrect primers number");
+    CHECK_SET_ERR(regions.contains(U2Region(0, 40)), "There is no (1, 40) annotated primer region");
+    CHECK_SET_ERR(regions.contains(U2Region(110, 40)), "There is no (111, 150) annotated primer region");
+}
+
 
 } // namespace GUITest_regression_scenarios
 
