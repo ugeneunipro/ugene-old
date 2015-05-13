@@ -39,6 +39,9 @@ U2EntityRef MAlignmentImporter::createAlignment(const U2DbiRef& dbiRef, const MA
 
 U2EntityRef MAlignmentImporter::createAlignment(const U2DbiRef& dbiRef, const QString& folder, const MAlignment& al, U2OpStatus& os) {
     DbiConnection con(dbiRef, true, os);
+    if (os.isCanceled()) {
+        return U2EntityRef();
+    }
     SAFE_POINT_OP(os, U2EntityRef());
     SAFE_POINT(NULL != con.dbi, L10N::nullPointerError("dbi"), U2EntityRef());
 
