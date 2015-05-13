@@ -1237,7 +1237,32 @@ GUI_TEST_CLASS_DEFINITION(test_4127) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
-GUI_TEST_CLASS_DEFINITION(test_4134){
+GUI_TEST_CLASS_DEFINITION(test_4131) {
+    //1. Open "data/samples/FASTA/human_T1.fa".
+    QString pattern("ATCGTAC");
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    //2. Open "Search in Sequence" options panel tab.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
+
+    //3. Enter any valid pattern.
+    GTKeyboardDriver::keySequence(os, pattern);
+    GTGlobals::sleep(1000);
+
+    //4. Set output annotations name : -=_\,.<>;:[]#()$
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Annotation parameters"));
+    GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "leAnnotationName"), "-=_\\,.<>;:[]#()$");
+
+    //Create annotations from results.
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected state : annotations are created, they are named exactly as you set.
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "-=_\\,.<>;:[]#()$  (0, 3)");
+    CHECK_SET_ERR(3 == annotationGroup->childCount(), "Unexpected annotations count");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4134) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     class custom : public CustomScenario {
     public:
