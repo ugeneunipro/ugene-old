@@ -52,17 +52,17 @@
 <context>
     <name>FindAnnotationCollocationsDialog</name>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="49"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="58"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="54"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="63"/>
         <source>2</source>
         <translation>2</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="87"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="96"/>
         <source>Region size:</source>
         <translation>Region size:</translation>
     </message>
@@ -72,37 +72,37 @@
         <translation>Find Groups of Annotated Regions</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="146"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="158"/>
         <source>Save regions as annotations</source>
         <translation>Save regions as annotations</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="153"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="165"/>
         <source>Clear results</source>
         <translation>Clear results</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="164"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="176"/>
         <source>Result strand</source>
         <translation>Result strand</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="170"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="182"/>
         <source>Direct</source>
         <translation>Direct</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="177"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="189"/>
         <source>Complement</source>
         <translation>Complement</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="184"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="196"/>
         <source>Both</source>
         <translation>Both</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="207"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="219"/>
         <source>Annotation must fit into region</source>
         <translation>Annotation must fit into region</translation>
     </message>
@@ -133,12 +133,12 @@
         <translation>Annotate plasmid and custom features...</translation>
     </message>
     <message>
-        <location filename="../src/AnnotatorPlugin.cpp" line="125"/>
+        <location filename="../src/AnnotatorPlugin.cpp" line="126"/>
         <source>Warning</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../src/AnnotatorPlugin.cpp" line="125"/>
+        <location filename="../src/AnnotatorPlugin.cpp" line="126"/>
         <source>No annotations found</source>
         <translation>No annotations found</translation>
     </message>
@@ -146,8 +146,8 @@
 <context>
     <name>U2::CollocationSearchTask</name>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="326"/>
-        <location filename="../src/CollocationsDialogController.cpp" line="356"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="323"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="353"/>
         <source>Search for annotated regions</source>
         <translation>Search for annotated regions</translation>
     </message>
@@ -155,48 +155,48 @@
 <context>
     <name>U2::CollocationsDialogController</name>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="64"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="60"/>
         <source>Search</source>
         <translation>Search</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="65"/>
-        <location filename="../src/CollocationsDialogController.cpp" line="107"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="61"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="103"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="68"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="64"/>
         <source>&lt;&lt;click &apos;+&apos; button to add new annotation&gt;&gt;</source>
         <translation>&lt;&lt;click &apos;+&apos; button to add new annotation&gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="107"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="103"/>
         <source>Stop</source>
         <translation>Stop</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="113"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="109"/>
         <source>Searching... found %1 regions. Progress: %2%</source>
         <translation>Searching... found %1 regions. Progress: %2%</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="115"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="111"/>
         <source>Found %1 regions</source>
         <translation>Found %1 regions</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="117"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="113"/>
         <source>Ready</source>
         <translation>Ready</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="117"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="113"/>
         <source>Select annotation names to search</source>
         <translation>Select annotation names to search</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="136"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="132"/>
         <source>No annotations left</source>
         <translation>No annotations left</translation>
     </message>
@@ -220,40 +220,48 @@
 <context>
     <name>U2::CustomPatternAutoAnnotationUpdater</name>
     <message>
-        <location filename="../src/CustomPatternAnnotationTask.cpp" line="213"/>
+        <location filename="../src/CustomPatternAnnotationTask.cpp" line="209"/>
         <source>Plasmid features</source>
         <translation>Plasmid features</translation>
     </message>
 </context>
 <context>
+    <name>U2::GeneByGeneReportTask</name>
+    <message>
+        <location filename="../src/GeneByGeneReportTask.cpp" line="293"/>
+        <source>Generating gene-by-gene approach report</source>
+        <translation>Generating gene-by-gene approach report</translation>
+    </message>
+</context>
+<context>
     <name>U2::LocalWorkflow::CollocationPrompter</name>
     <message>
-        <location filename="../src/CollocationWorker.cpp" line="157"/>
+        <location filename="../src/CollocationWorker.cpp" line="158"/>
         <source> sequence from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation> sequence from &lt;u&gt;%1&lt;/u&gt;</translation>
     </message>
     <message>
-        <location filename="../src/CollocationWorker.cpp" line="160"/>
+        <location filename="../src/CollocationWorker.cpp" line="161"/>
         <source> set of annotations from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation> set of annotations from &lt;u&gt;%1&lt;/u&gt;</translation>
     </message>
     <message>
-        <location filename="../src/CollocationWorker.cpp" line="167"/>
+        <location filename="../src/CollocationWorker.cpp" line="168"/>
         <source>For each %1 and %2,</source>
         <translation>For each %1 and %2,</translation>
     </message>
     <message>
-        <location filename="../src/CollocationWorker.cpp" line="169"/>
+        <location filename="../src/CollocationWorker.cpp" line="170"/>
         <source>For each %1%2,</source>
         <translation>For each %1%2,</translation>
     </message>
     <message>
-        <location filename="../src/CollocationWorker.cpp" line="185"/>
+        <location filename="../src/CollocationWorker.cpp" line="186"/>
         <source> Annotations themselves may not span beyond the region.</source>
         <translation>Annotations themselves may not span beyond the region.</translation>
     </message>
     <message>
-        <location filename="../src/CollocationWorker.cpp" line="189"/>
+        <location filename="../src/CollocationWorker.cpp" line="190"/>
         <source>%1 look if &lt;u&gt;%2&lt;/u&gt; annotations appear collocated within same region of length &lt;u&gt;%3&lt;/u&gt;.%4&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%5&lt;/u&gt;.</source>
         <translation>%1 look if &lt;u&gt;%2&lt;/u&gt; annotations appear collocated within same region of length &lt;u&gt;%3&lt;/u&gt;.%4&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%5&lt;/u&gt;.</translation>
     </message>

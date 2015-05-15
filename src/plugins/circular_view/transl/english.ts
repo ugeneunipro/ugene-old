@@ -9,88 +9,92 @@
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="56"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="38"/>
         <source>Show title</source>
         <translation>Show title</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="66"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="48"/>
         <source>Show length</source>
         <translation>Show length</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="91"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="64"/>
         <source>Font</source>
         <translation>Font</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="111"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="84"/>
         <source>Size</source>
         <translation>Size</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="131"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="104"/>
         <source>Attribute</source>
         <translation>Attribute</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="177"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="150"/>
         <source>Bold</source>
         <translation>Bold</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="180"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="153"/>
         <source>B</source>
         <translation>B</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="226"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="193"/>
         <source>Inside</source>
         <translation>Inside</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="231"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="198"/>
         <source>Outside</source>
         <translation>Outside</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="236"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="203"/>
         <source>Inside/Outside</source>
         <translation>Inside/Outside</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="241"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="208"/>
         <source>None</source>
         <translation>None</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="255"/>
-        <source>Label position:</source>
-        <translation>Label position:</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="268"/>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="328"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="292"/>
         <source>Label font size</source>
         <translation>Label font size</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="306"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="270"/>
         <source>Show ruler line</source>
         <translation>Show ruler line</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="316"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="222"/>
+        <source>Font size</source>
+        <translation>Font size</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="254"/>
+        <source>Label position</source>
+        <translation>Label position</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="280"/>
         <source>Show coordinates</source>
         <translation>Show coordinates</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="374"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="329"/>
         <source>There are no displayed Circular Views, so settings are hidden.</source>
         <translation>There are no displayed Circular Views, so settings are hidden.</translation>
     </message>
     <message>
-        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="384"/>
+        <location filename="../src/ui/CircularViewSettingsWidget.ui" line="339"/>
         <source>Open Circular View(s)</source>
         <translation>Open Circular View(s)</translation>
     </message>
@@ -98,18 +102,18 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="130"/>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="144"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="123"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="137"/>
         <source>Circular view</source>
         <translation>Circular view</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="181"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="174"/>
         <source>Include position marker</source>
         <translation>Include position marker</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="182"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="175"/>
         <source>Include selection</source>
         <translation>Include selection</translation>
     </message>
@@ -140,7 +144,7 @@
 <context>
     <name>U2::CircularViewAction</name>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="378"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="365"/>
         <source>Show circular view</source>
         <translation>Show circular view</translation>
     </message>
@@ -148,27 +152,27 @@
 <context>
     <name>U2::CircularViewContext</name>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="105"/>
-        <source>Save circular view as image</source>
-        <translation>Save circular view as image</translation>
+        <location filename="../src/CircularViewPlugin.cpp" line="116"/>
+        <source>Save circular view as image...</source>
+        <translation>Save circular view as image...</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="109"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="121"/>
         <source>Set new sequence origin...</source>
         <translation>Set new sequence origin...</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="126"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="134"/>
         <source>Toggle circular views</source>
         <translation>Toggle circular views</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="300"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="289"/>
         <source>Remove circular view</source>
         <translation>Remove circular view</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="311"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="300"/>
         <source>Show circular view</source>
         <translation>Show circular view</translation>
     </message>
@@ -176,22 +180,22 @@
 <context>
     <name>U2::CircularViewImageExportTaskFactory</name>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="139"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="132"/>
         <source>List of Circular Views is empty!</source>
         <translation>List of Circular Views is empty!</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="160"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="153"/>
         <source>Sequence</source>
         <translation>Sequence</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="163"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="156"/>
         <source>Sequence context is NULL!</source>
         <translation>Sequence context is NULL!</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewImageExportTask.cpp" line="164"/>
+        <location filename="../src/CircularViewImageExportTask.cpp" line="157"/>
         <source>Sequece Gobject is NULL</source>
         <translation>Sequece Gobject is NULL</translation>
     </message>
@@ -199,17 +203,17 @@
 <context>
     <name>U2::CircularViewPlugin</name>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="85"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="88"/>
         <source>CircularView</source>
         <translation>CircularView</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="85"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="88"/>
         <source>Enables drawing of DNA sequences using circular representation</source>
         <translation>Enables drawing of DNA sequences using circular representation</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="90"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="93"/>
         <source>OPWidgetFactoryRegistry is NULL</source>
         <translation>OPWidgetFactoryRegistry is NULL</translation>
     </message>
@@ -217,17 +221,17 @@
 <context>
     <name>U2::CircularViewRenderArea</name>
     <message>
-        <location filename="../src/CircularView.cpp" line="483"/>
+        <location filename="../src/CircularView.cpp" line="490"/>
         <source>CircularView is NULL</source>
         <translation>CircularView is NULL</translation>
     </message>
     <message>
-        <location filename="../src/CircularView.cpp" line="485"/>
+        <location filename="../src/CircularView.cpp" line="492"/>
         <source>Circular view settings are NULL</source>
         <translation>Circular view settings are NULL</translation>
     </message>
     <message>
-        <location filename="../src/CircularView.cpp" line="514"/>
+        <location filename="../src/CircularView.cpp" line="521"/>
         <source>circular view size %1 %2</source>
         <translation>circular view size %1 %2</translation>
     </message>
@@ -316,27 +320,27 @@
         <translation>Show/hide restriction sites map</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="180"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="179"/>
         <source>Circular View is NULL</source>
         <translation>Circular View is NULL</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="182"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="181"/>
         <source>Circular View viewport is NULL</source>
         <translation>Circular View viewport is NULL</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="184"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="183"/>
         <source>Scroll area is NULL</source>
         <translation>Scroll area is NULL</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="231"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="230"/>
         <source>Sequence context is NULL</source>
         <translation>Sequence context is NULL</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="233"/>
+        <location filename="../src/CircularViewSplitter.cpp" line="232"/>
         <source>Sequence obejct is NULL</source>
         <translation>Sequence obejct is NULL</translation>
     </message>
@@ -344,19 +348,19 @@
 <context>
     <name>U2::RestrctionMapWidget</name>
     <message>
-        <location filename="../src/RestrictionMapWidget.cpp" line="72"/>
-        <location filename="../src/RestrictionMapWidget.cpp" line="83"/>
+        <location filename="../src/RestrictionMapWidget.cpp" line="69"/>
+        <location filename="../src/RestrictionMapWidget.cpp" line="80"/>
         <source>site</source>
         <translation>site</translation>
     </message>
     <message>
-        <location filename="../src/RestrictionMapWidget.cpp" line="72"/>
-        <location filename="../src/RestrictionMapWidget.cpp" line="83"/>
+        <location filename="../src/RestrictionMapWidget.cpp" line="69"/>
+        <location filename="../src/RestrictionMapWidget.cpp" line="80"/>
         <source>sites</source>
         <translation>sites</translation>
     </message>
     <message>
-        <location filename="../src/RestrictionMapWidget.cpp" line="105"/>
+        <location filename="../src/RestrictionMapWidget.cpp" line="103"/>
         <source>Restriction Sites Map</source>
         <translation>Restriction Sites Map</translation>
     </message>

@@ -51,7 +51,7 @@ namespace U2 {
 #define SETTINGS_DIR QString("project_loader/")
 
 ProjectServiceImpl::ProjectServiceImpl(Project* _pr) 
-: ProjectService(tr("project_sname"), tr("project_sdesc"))
+: ProjectService(tr("Project"), tr("Project service is available when opened a project file. Other services that depends on Project service will be automatically started after this service is enabled."))
 {
     saveAction = NULL;
     saveAsAction = NULL;
@@ -142,7 +142,7 @@ void ProjectServiceImpl::sl_exportProject(){
 /// Service tasks
 
 ProjectServiceEnableTask::ProjectServiceEnableTask(ProjectServiceImpl* _psi) 
-: Task(tr("project_enable_task"), TaskFlag_NoRun), psi(_psi)
+: Task(tr("Enable Project"), TaskFlag_NoRun), psi(_psi)
 {}
 
 Task::ReportResult ProjectServiceEnableTask::report() {
@@ -187,7 +187,7 @@ Task::ReportResult ProjectServiceEnableTask::report() {
 }
 
 ProjectServiceDisableTask::ProjectServiceDisableTask(ProjectServiceImpl* _psi) 
-    : Task(tr("project_disable_task"), TaskFlag_NoRun), psi(_psi)
+    : Task(tr("Disable Project"), TaskFlag_NoRun), psi(_psi)
 {
 
 }

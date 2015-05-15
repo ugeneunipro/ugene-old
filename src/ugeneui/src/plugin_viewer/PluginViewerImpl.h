@@ -36,7 +36,7 @@ class PluginViewerImpl : public PluginViewer {
     friend class DisablePluginViewerTask;
 	friend class EnablePluginViewerTask;
 public:
-    PluginViewerImpl() : PluginViewer(tr("plugin_viewer_sname"), tr("plugin_viewer_sdesc")) {viewer = NULL;}
+    PluginViewerImpl() : PluginViewer(tr("PluginViewer"), tr("Basic plugins and services visualization and manipulation tool")) {viewer = NULL;}
 
 protected:
 	virtual Task* createServiceEnablingTask();

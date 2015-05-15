@@ -75,23 +75,23 @@
 <context>
     <name>U2::DNAFlexDialog</name>
     <message>
-        <location filename="../src/DNAFlexDialog.cpp" line="48"/>
+        <location filename="../src/DNAFlexDialog.cpp" line="47"/>
         <source>Search</source>
         <translation>Искать</translation>
     </message>
     <message>
-        <location filename="../src/DNAFlexDialog.cpp" line="49"/>
+        <location filename="../src/DNAFlexDialog.cpp" line="48"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/DNAFlexDialog.cpp" line="100"/>
-        <location filename="../src/DNAFlexDialog.cpp" line="105"/>
+        <location filename="../src/DNAFlexDialog.cpp" line="99"/>
+        <location filename="../src/DNAFlexDialog.cpp" line="104"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/DNAFlexDialog.cpp" line="105"/>
+        <location filename="../src/DNAFlexDialog.cpp" line="104"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation>Невозможно создать аннотацию. Проверьте настройки</translation>
     </message>
@@ -120,12 +120,12 @@
 <context>
     <name>U2::DNAFlexTask</name>
     <message>
-        <location filename="../src/DNAFlexTask.cpp" line="42"/>
+        <location filename="../src/DNAFlexTask.cpp" line="44"/>
         <source>DNA Flexibility task</source>
         <translation>Задача анализа ДНК флексибильности</translation>
     </message>
     <message>
-        <location filename="../src/DNAFlexTask.cpp" line="66"/>
+        <location filename="../src/DNAFlexTask.cpp" line="67"/>
         <source>The annotations object is not available!</source>
         <translation>Недоступен объект аннотаций!</translation>
     </message>

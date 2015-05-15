@@ -65,7 +65,7 @@ PluginViewerController::~PluginViewerController() {
 void PluginViewerController::createWindow() {
     assert(mdiWindow == NULL);
 
-    mdiWindow = new MWMDIWindow(tr("plugin_view_window_title"));
+    mdiWindow = new MWMDIWindow(tr("Plugin Viewer"));
     ui.setupUi(mdiWindow);
     ui.treeWidget->setColumnWidth(1, 200); //todo: save geom
 
@@ -109,19 +109,19 @@ void PluginViewerController::connectStaticActions() {
     viewPluginsAction->setObjectName(ACTION__PLUGINS_VIEW);
     pluginsMenu->addAction(viewPluginsAction);
 
-    addPluginAction = new QAction(tr("add_plugin_label"), this);
+    addPluginAction = new QAction(tr("Add plugin"), this);
     connect(addPluginAction, SIGNAL(triggered()), SLOT(sl_addPlugin()));
 
-    enablePluginAction = new QAction(tr("enable_plugin_action"), this);
+    enablePluginAction = new QAction(tr("Enable plugin"), this);
     connect(enablePluginAction, SIGNAL(triggered()), SLOT(sl_enablePlugin()));
 
-    disablePluginAction = new QAction(tr("disable_plugin_action"), this);
+    disablePluginAction = new QAction(tr("Remove plugin"), this);
     connect(disablePluginAction, SIGNAL(triggered()), SLOT(sl_disablePlugin()));
 
-    enableServiceAction =  new QAction(tr("enable_service_label"), this);
+    enableServiceAction =  new QAction(tr("Enable service"), this);
     connect(enableServiceAction, SIGNAL(triggered()), SLOT(sl_enableService()));
 
-    disableServiceAction = new QAction(tr("disable_service_label"), this);
+    disableServiceAction = new QAction(tr("Disable service"), this);
     connect(disableServiceAction, SIGNAL(triggered()), SLOT(sl_disableService()));
 }
 
@@ -267,10 +267,10 @@ void PluginViewerController::sl_show() {
 }
 
 void PluginViewerController::sl_addPlugin() {
-    QString caption = tr("add_plugin_caption");
+    QString caption = tr("Select plugin file");
     QString lastDir = AppContext::getSettings()->getValue(PLUGIN_VIEW_SETTINGS + "addDir").toString();
     
-    QString ext=tr("genome_browser2_plugin_files")+" (*."+PLUGIN_FILE_EXT+")";
+    QString ext=tr("Plugin files")+" (*."+PLUGIN_FILE_EXT+")";
 
     QString pluginFilePath = U2FileDialog::getOpenFileName(ui.treeWidget, caption, lastDir, ext);
     if (pluginFilePath.isEmpty())  {
@@ -288,7 +288,7 @@ void PluginViewerController::sl_taskStateChanged() {
     Task* t = qobject_cast<Task*>(sender());
     assert(t!=NULL);
     if (t->isFinished() && t->hasError()) {
-        QMessageBox::critical(ui.treeWidget, tr("add_plugin_error_caption"), t->getError());
+        QMessageBox::critical(ui.treeWidget, tr("Error"), t->getError());
     }
 }
 
@@ -473,13 +473,13 @@ PlugViewPluginItem::PlugViewPluginItem(PlugViewTreeItem *parent, Plugin* p, bool
 }
 
 void PlugViewPluginItem::updateVisual() {
-    setData(0, Qt::DisplayRole, PluginViewerController::tr("item_type_plugin_label"));
+    setData(0, Qt::DisplayRole, PluginViewerController::tr("Plugin"));
     setData(1, Qt::DisplayRole, plugin->getName());
 
     bool toRemove = AppContext::getPluginSupport()->getRemoveFlag(plugin);
     QString state = toRemove ?
-        PluginViewerController::tr("removed_after_restart") 
-        : PluginViewerController::tr("item_state_on");
+        PluginViewerController::tr("to remove after restart") 
+        : PluginViewerController::tr("On");
 
     setData(2, Qt::DisplayRole, state);
     QString desc=QString(plugin->getDescription()).replace("\n"," ");
@@ -509,11 +509,11 @@ PlugViewServiceItem::PlugViewServiceItem(PlugViewPluginItem *parent, Service* s)
 }
 
 void PlugViewServiceItem::updateVisual() {
-    setData(0, Qt::DisplayRole, PluginViewerController::tr("item_type_service_label"));
+    setData(0, Qt::DisplayRole, PluginViewerController::tr("Service"));
     setData(1, Qt::DisplayRole, service->getName());
     setData(2, Qt::DisplayRole, service->isEnabled() 
-            ? PluginViewerController::tr("item_state_on") 
-            : PluginViewerController::tr("item_state_off"));
+            ? PluginViewerController::tr("On") 
+            : PluginViewerController::tr("Off"));
     setData(3, Qt::DisplayRole, service->getDescription());
     setIcon(0, QIcon(":ugene/images/service.png"));
 }

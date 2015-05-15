@@ -63,6 +63,7 @@ private:
 class ADVCreateAnnotationsTask;
 
 class ExportAutoAnnotationsGroupTask : public Task {
+    Q_OBJECT
 public:
     ExportAutoAnnotationsGroupTask(AnnotationGroup *ag, GObjectReference &aRef, ADVSequenceObjectContext *seqCtx, const QString &annDescription = "");
     void prepare();

@@ -93,16 +93,16 @@ TaskViewDockWidget::~TaskViewDockWidget() {
 }
 
 void TaskViewDockWidget::initActions() {
-    cancelTaskAction  = new QAction(tr("cancel_task_action"), this);
-    cancelTaskAction->setObjectName("cancel_task_action");
+    cancelTaskAction  = new QAction(tr("Cancel task"), this);
+    cancelTaskAction->setObjectName("Cancel task");
     cancelTaskAction->setIcon(QIcon(":ugene/images/cancel.png"));
     connect(cancelTaskAction, SIGNAL(triggered()), SLOT(sl_onCancelTask()));
 
-    viewReportAction = new QAction(tr("view_task_report_action"), this);
+    viewReportAction = new QAction(tr("View report"), this);
     viewReportAction->setIcon(QIcon(":ugene/images/task_report.png"));
     connect(viewReportAction, SIGNAL(triggered()), SLOT(sl_onViewTaskReport()));
 
-    removeReportAction = new QAction(tr("remove_task_report_action"), this);
+    removeReportAction = new QAction(tr("Remove report"), this);
     removeReportAction->setIcon(QIcon(":ugene/images/bin_empty.png"));
     connect(removeReportAction, SIGNAL(triggered()), SLOT(sl_onRemoveTaskReport()));
 
@@ -132,10 +132,10 @@ void TaskViewDockWidget::buildTree() {
     QStringList labels;
     for(int i=0;i < TVColumns_NumCols; i++) {
         switch((TVColumns)i) {
-            case TVColumns_Name:    labels<<tr("task_name_column");         break;
-            case TVColumns_Desc:    labels<<tr("task_current_desc_column"); break;
-            case TVColumns_Progress:labels<<tr("task_progress_column");     break;
-            case TVColumns_Actions: labels<<tr("task_actions_column");      break;
+            case TVColumns_Name:    labels<<tr("Task name");         break;
+            case TVColumns_Desc:    labels<<tr("Task state description"); break;
+            case TVColumns_Progress:labels<<tr("Task progress");     break;
+            case TVColumns_Actions: labels<<tr("Actions");      break;
             case TVColumns_NumCols:                                         break;
         }
     }
@@ -451,7 +451,7 @@ TVReportWindow::TVReportWindow(const QString& taskName, qint64 tid, const QStrin
 }
 
 QString TVReportWindow::genWindowName(const QString& taskName) {
-    return tr("report_for_%1").arg(taskName);
+    return tr("Task report [%1]").arg(taskName);
 }
 
 

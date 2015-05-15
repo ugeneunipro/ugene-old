@@ -396,135 +396,135 @@
         <translation>Select enzymes</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="33"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="36"/>
         <source>Filter by name:</source>
         <translation>Filter by name:</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="78"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="81"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="83"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="86"/>
         <source>Accession</source>
         <translation>Accession</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="88"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="91"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="93"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="96"/>
         <source>Sequence</source>
         <translation>Sequence</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="98"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="101"/>
         <source>Organizm / Details</source>
         <translation>Organizm / Details</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="107"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="110"/>
         <source>Selected enzymes:</source>
         <translation>Selected enzymes:</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="123"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="148"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="154"/>
         <source>Load enzymes database</source>
         <translation>Load enzymes database</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="151"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="157"/>
         <source>Open enzymes </source>
         <translation>Open enzymes </translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="161"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="167"/>
         <source>Export enzymes</source>
         <translation>Export enzymes</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="158"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="164"/>
         <source>Export current selection as new database</source>
         <translation>Export current selection as new database</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="175"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="181"/>
         <source>Select all enzymes in database</source>
         <translation>Select all enzymes in database</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="215"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="221"/>
         <source>Hint: selection file should contain enzymes&apos; names separtated by whitespaces or commas</source>
         <translation>Hint: selection file should contain enzymes&apos; names separtated by whitespaces or commas</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="225"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="231"/>
         <source>Save selected enzymes list to a text file</source>
         <translation>Save selected enzymes list to a text file</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="178"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="184"/>
         <source>Select All</source>
         <translation>Select All</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="185"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="126"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="191"/>
         <source>Empty selection</source>
         <translation>Empty selection</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="188"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="194"/>
         <source>Select None</source>
         <translation>Select None</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="195"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="201"/>
         <source>Select enzymes by length of recognition sequence</source>
         <translation>Select enzymes by length of recognition sequence</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="198"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="204"/>
         <source>Select by length</source>
         <translation>Select by length</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="205"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="211"/>
         <source>Invert current selection</source>
         <translation>Invert current selection</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="208"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="214"/>
         <source>Invert selection</source>
         <translation>Invert selection</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="218"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="224"/>
         <source>Load selection</source>
         <translation>Load selection</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="228"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="234"/>
         <source>Save selection</source>
         <translation>Save selection</translation>
     </message>
     <message>
-        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="242"/>
+        <location filename="../src/ui/EnzymesSelectorWidget.ui" line="248"/>
         <source>REBASE Info</source>
         <translation>REBASE Info</translation>
     </message>
@@ -575,12 +575,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="54"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="52"/>
         <source>The restrictions sites are being updated. Please wait</source>
         <translation>The restrictions sites are being updated. Please wait</translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="55"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="53"/>
         <source>Hint: there are no available enzymes. Use &quot;Analyze-&gt;Find Restrictions Sites&quot; feature to find them.</source>
         <translation>Hint: there are no available enzymes. Use &quot;Analyze-&gt;Find Restrictions Sites&quot; feature to find them.</translation>
     </message>
@@ -621,13 +621,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ConstructMoleculeDialog.cpp" line="225"/>
-        <source>5&apos;overhang</source>
-        <translation>5&apos;overhang</translation>
+        <source>Left end</source>
+        <translation>Left end</translation>
     </message>
     <message>
         <location filename="../src/ConstructMoleculeDialog.cpp" line="234"/>
-        <source>3&apos;overhang</source>
-        <translation>3&apos;overhang</translation>
+        <source>Right end</source>
+        <translation>Right end</translation>
     </message>
     <message>
         <location filename="../src/ConstructMoleculeDialog.cpp" line="236"/>
@@ -648,30 +648,30 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::CreateFragmentDialog</name>
     <message>
-        <location filename="../src/CreateFragmentDialog.cpp" line="103"/>
-        <source>5&apos;overhang contains unsupported symbols!</source>
-        <translation>5&apos;overhang contains unsupported symbols!</translation>
+        <location filename="../src/CreateFragmentDialog.cpp" line="100"/>
+        <source>Left end contains unsupported symbols!</source>
+        <translation>Left end contains unsupported symbols!</translation>
     </message>
     <message>
-        <location filename="../src/CreateFragmentDialog.cpp" line="113"/>
-        <source>3&apos;overhang contains unsupported symbols!</source>
-        <translation>3&apos;overhang contains unsupported symbols!</translation>
+        <location filename="../src/CreateFragmentDialog.cpp" line="110"/>
+        <source>Right end contains unsupported symbols!</source>
+        <translation>Right end contains unsupported symbols!</translation>
     </message>
     <message>
-        <location filename="../src/CreateFragmentDialog.cpp" line="124"/>
+        <location filename="../src/CreateFragmentDialog.cpp" line="121"/>
         <source>Invalid fragment region!
 Choose another region.</source>
         <translation>Invalid fragment region!
 Choose another region.</translation>
     </message>
     <message>
-        <location filename="../src/CreateFragmentDialog.cpp" line="129"/>
-        <location filename="../src/CreateFragmentDialog.cpp" line="134"/>
+        <location filename="../src/CreateFragmentDialog.cpp" line="126"/>
+        <location filename="../src/CreateFragmentDialog.cpp" line="131"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/CreateFragmentDialog.cpp" line="134"/>
+        <location filename="../src/CreateFragmentDialog.cpp" line="131"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation>Cannot create an annotation object. Please check settings</translation>
     </message>
@@ -679,22 +679,22 @@ Choose another region.</translation>
 <context>
     <name>U2::DigestSequenceDialog</name>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="124"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="122"/>
         <source>No enzymes are selected! Please select enzymes.</source>
         <translation>No enzymes are selected! Please select enzymes.</translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="130"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="128"/>
         <source>Cannot load enzymes library</source>
         <translation>Cannot load enzymes library</translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="148"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="146"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/DigestSequenceDialog.cpp" line="148"/>
+        <location filename="../src/DigestSequenceDialog.cpp" line="146"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation>Cannot create an annotation object. Please check settings</translation>
     </message>
@@ -717,42 +717,42 @@ Choose another region.</translation>
 <context>
     <name>U2::DigestSequenceTask</name>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="133"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="131"/>
         <source>Can&apos;t use restriction site %1 for digestion,  cleavage site is unknown </source>
         <translation>Can&apos;t use restriction site %1 for digestion,  cleavage site is unknown </translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="202"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="200"/>
         <source>Unable to digest into fragments: intersecting restriction sites %1 (%2..%3) and %4 (%5..%6)</source>
         <translation>Unable to digest into fragments: intersecting restriction sites %1 (%2..%3) and %4 (%5..%6)</translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="310"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="306"/>
         <source>circular</source>
         <translation>circular</translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="310"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="306"/>
         <source>linear</source>
         <translation>linear</translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="311"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="307"/>
         <source>&lt;h3&gt;&lt;br&gt;Digest into fragments %1 (%2)&lt;/h3&gt;</source>
         <translation>&lt;h3&gt;&lt;br&gt;Digest into fragments %1 (%2)&lt;/h3&gt;</translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="312"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="308"/>
         <source>&lt;br&gt;Generated %1 fragments.</source>
         <translation>&lt;br&gt;Generated %1 fragments.</translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="321"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="317"/>
         <source>&lt;br&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;%1:&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;From %3 (%2) To %5 (%4) - %6 bp </source>
         <translation>&lt;br&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;%1:&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;From %3 (%2) To %5 (%4) - %6 bp </translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="347"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="343"/>
         <source>Conserved annotation %1 (%2) is disrupted by the digestion. Try changing the restriction sites.</source>
         <translation>Conserved annotation %1 (%2) is disrupted by the digestion. Try changing the restriction sites.</translation>
     </message>
@@ -803,17 +803,17 @@ Choose another region.</translation>
 <context>
     <name>U2::EnzymesADVContext</name>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="208"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="202"/>
         <source>Find restriction sites...</source>
         <translation>Find restriction sites...</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="213"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="207"/>
         <source>Create PCR product...</source>
         <translation>Create PCR product...</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="241"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="235"/>
         <source>Cloning</source>
         <translation>Cloning</translation>
     </message>
@@ -874,53 +874,48 @@ Choose another region.</translation>
         <translation>Finds and annotates restriction sites on a DNA sequence.</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="106"/>
-        <source>Digest into Fragments...</source>
-        <translation>Digest into Fragments...</translation>
-    </message>
-    <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="108"/>
-        <source>Construct Molecule...</source>
-        <translation>Construct Molecule...</translation>
-    </message>
-    <message>
         <location filename="../src/EnzymesPlugin.cpp" line="110"/>
         <source>Create Fragment...</source>
         <translation>Create Fragment...</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="115"/>
-        <source>Cloning</source>
-        <translation>Cloning</translation>
+        <location filename="../src/EnzymesPlugin.cpp" line="106"/>
+        <source>Digest into fragments...</source>
+        <translation>Digest into fragments...</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="132"/>
-        <location filename="../src/EnzymesPlugin.cpp" line="139"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="108"/>
+        <source>Construct molecule...</source>
+        <translation>Construct molecule...</translation>
+    </message>
+    <message>
+        <location filename="../src/EnzymesPlugin.cpp" line="126"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="133"/>
         <source>There is no active sequence object.
 To start partition open sequence document.</source>
         <translation>There is no active sequence object.
 To start partition open sequence document.</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="146"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="140"/>
         <source>Can not digest into fragments non-nucleic sequence.</source>
         <translation>Can not digest into fragments non-nucleic sequence.</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="160"/>
-        <location filename="../src/EnzymesPlugin.cpp" line="167"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="154"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="161"/>
         <source>There is no active sequence object.
 To create fragment open sequence document.</source>
         <translation>There is no active sequence object.
 To create fragment open sequence document.</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="176"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="170"/>
         <source>The sequence doesn&apos;t have nucleic alphabet, it can not be used in cloning.</source>
         <translation>The sequence doesn&apos;t have nucleic alphabet, it can not be used in cloning.</translation>
     </message>
     <message>
-        <location filename="../src/EnzymesPlugin.cpp" line="188"/>
+        <location filename="../src/EnzymesPlugin.cpp" line="182"/>
         <source>There is no active project.
 To start ligation create a project or open an existing.</source>
         <translation>There is no active project.
@@ -1139,22 +1134,22 @@ To start ligation create a project or open an existing.</translation>
 <context>
     <name>U2::LigateFragmentsTask</name>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="369"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="365"/>
         <source>Fragments %1 and  %2 are inconsistent. Blunt and sticky ends incompatibility</source>
         <translation>Fragments %1 and  %2 are inconsistent. Blunt and sticky ends incompatibility</translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="379"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="375"/>
         <source>Right overhang from %1 and left overhang from %2 are inconsistent.</source>
         <translation>Right overhang from %1 and left overhang from %2 are inconsistent.</translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="425"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="421"/>
         <source>Unknown DNA alphabet in fragment %1 of %2</source>
         <translation>Unknown DNA alphabet in fragment %1 of %2</translation>
     </message>
     <message>
-        <location filename="../src/CloningUtilTasks.cpp" line="491"/>
+        <location filename="../src/CloningUtilTasks.cpp" line="487"/>
         <source>Add constructed molecule</source>
         <translation>Add constructed molecule</translation>
     </message>

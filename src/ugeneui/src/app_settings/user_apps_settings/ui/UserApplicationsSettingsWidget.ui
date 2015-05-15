@@ -95,7 +95,7 @@
       <item>
        <widget class="QCheckBox" name="autoOpenProjectBox">
         <property name="text">
-         <string>auto_open_project_at_startup</string>
+         <string>Open last project at startup</string>
         </property>
        </widget>
       </item>

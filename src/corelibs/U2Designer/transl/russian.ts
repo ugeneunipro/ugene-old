@@ -17,21 +17,8 @@
         <location filename="../src/ui/AnnsActionDialog.ui" line="53"/>
         <source>Shift annotations using
 this merge sequence slot:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Shift annotations &lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;using&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;this merge sequence slot&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Слот &lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;используемый&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;для сдвига аннотаций&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>Сдвинуть аннотации
+используя слот:</translation>
     </message>
     <message>
         <location filename="../src/ui/AnnsActionDialog.ui" line="64"/>
@@ -489,7 +476,7 @@ p, li { white-space: pre-wrap; }
         <translation>Выберите пример</translation>
     </message>
     <message>
-        <location filename="../src/WorkflowGUIUtils.cpp" line="149"/>
+        <location filename="../src/WorkflowGUIUtils.cpp" line="163"/>
         <source>Double click to load the sample</source>
         <translation>Двойной щелчок загрузит пример</translation>
     </message>
@@ -540,31 +527,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/wizard/SelectorActors.cpp" line="43"/>
-        <location filename="../src/wizard/WizardController.cpp" line="400"/>
+        <location filename="../src/wizard/WizardController.cpp" line="425"/>
         <source>Unknown actor id: %1</source>
         <translation>Неизвестный идентификатор: %1</translation>
     </message>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="350"/>
-        <location filename="../src/wizard/WizardController.cpp" line="356"/>
-        <location filename="../src/wizard/WizardController.cpp" line="362"/>
-        <location filename="../src/wizard/WizardController.cpp" line="379"/>
-        <location filename="../src/wizard/WizardController.cpp" line="434"/>
+        <location filename="../src/wizard/WizardController.cpp" line="375"/>
+        <location filename="../src/wizard/WizardController.cpp" line="381"/>
+        <location filename="../src/wizard/WizardController.cpp" line="387"/>
+        <location filename="../src/wizard/WizardController.cpp" line="404"/>
+        <location filename="../src/wizard/WizardController.cpp" line="459"/>
         <source>Undefined variable: %1</source>
         <translation>Неопределенная переменная: %1</translation>
     </message>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="387"/>
+        <location filename="../src/wizard/WizardController.cpp" line="412"/>
         <source>Actors selector is already defined: %1</source>
         <translation>Actors selector is already defined: %1</translation>
     </message>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="397"/>
+        <location filename="../src/wizard/WizardController.cpp" line="422"/>
         <source>Unknown actors selector: %1</source>
         <translation>Unknown actors selector: %1</translation>
     </message>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="402"/>
+        <location filename="../src/wizard/WizardController.cpp" line="427"/>
         <source>Unknown actors selector value id: %1</source>
         <translation>Unknown actors selector value id: %1</translation>
     </message>
@@ -671,7 +658,7 @@ bowtie index file</source>
 <context>
     <name>U2::ComboBoxWithDbUrlWidget</name>
     <message>
-        <location filename="../src/PropertyWidget.cpp" line="271"/>
+        <location filename="../src/PropertyWidget.cpp" line="344"/>
         <source>Add New Connection</source>
         <translation>Добавить новое соединение</translation>
     </message>
@@ -679,12 +666,12 @@ bowtie index file</source>
 <context>
     <name>U2::ComboBoxWithUrlWidget</name>
     <message>
-        <location filename="../src/PropertyWidget.cpp" line="246"/>
+        <location filename="../src/PropertyWidget.cpp" line="319"/>
         <source>Select a directory</source>
         <translation>Укажите директорию</translation>
     </message>
     <message>
-        <location filename="../src/PropertyWidget.cpp" line="251"/>
+        <location filename="../src/PropertyWidget.cpp" line="324"/>
         <source>Select a file</source>
         <translation>Выберите файл</translation>
     </message>
@@ -692,43 +679,43 @@ bowtie index file</source>
 <context>
     <name>U2::Dashboard</name>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="160"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="161"/>
         <source>Output Files</source>
         <translation>Выходные файлы</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="161"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="162"/>
         <source>Workflow Task</source>
         <translation>Задача схемы</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="162"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="163"/>
         <source>Common Statistics</source>
         <translation>Общая статистика</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="169"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="170"/>
         <source>Parameters</source>
         <translation>Параметры</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="246"/>
-        <location filename="../src/dashboard/Dashboard.cpp" line="254"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="247"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="255"/>
         <source>External Tools</source>
         <translation>Внешние инструменты</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="186"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="187"/>
         <source>Problems</source>
         <translation>Проблемы</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="196"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="197"/>
         <source>Can not create a directory: </source>
         <translation>Невозможно создать директорию: </translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="211"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="212"/>
         <source>Can not open a file for writing: </source>
         <translation>Невозможно открыть файл для записи: </translation>
     </message>
@@ -881,22 +868,22 @@ bowtie index file</source>
 <context>
     <name>U2::GroupBox</name>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="853"/>
+        <location filename="../src/wizard/WizardController.cpp" line="880"/>
         <source>Show</source>
         <translation>Показать</translation>
     </message>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="858"/>
+        <location filename="../src/wizard/WizardController.cpp" line="885"/>
         <source>Hide</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="878"/>
+        <location filename="../src/wizard/WizardController.cpp" line="905"/>
         <source>additional</source>
         <translation>дополнительно</translation>
     </message>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="882"/>
+        <location filename="../src/wizard/WizardController.cpp" line="909"/>
         <source> parameters</source>
         <translation> параметры</translation>
     </message>
@@ -940,12 +927,12 @@ bowtie index file</source>
 <context>
     <name>U2::JavascriptAgent</name>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="380"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="383"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="380"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="383"/>
         <source>The file does not exist</source>
         <translation>Файл не существует</translation>
     </message>
@@ -1034,17 +1021,17 @@ bowtie index file</source>
         <translation>Производитель</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/OutputFilesWidget.cpp" line="89"/>
+        <location filename="../src/dashboard/OutputFilesWidget.cpp" line="91"/>
         <source>Open containing directory</source>
         <translation>Открыть содержащую директорию</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/OutputFilesWidget.cpp" line="91"/>
+        <location filename="../src/dashboard/OutputFilesWidget.cpp" line="82"/>
         <source>Open by operating system</source>
         <translation>Открыть при помощи операционной системы</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/OutputFilesWidget.cpp" line="206"/>
+        <location filename="../src/dashboard/OutputFilesWidget.cpp" line="209"/>
         <source>files</source>
         <translation>файлы</translation>
     </message>
@@ -1062,17 +1049,17 @@ bowtie index file</source>
         <translation>Ожидание</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/ProblemsWidget.cpp" line="101"/>
+        <location filename="../src/dashboard/ProblemsWidget.cpp" line="115"/>
         <source>Element</source>
         <translation>Элемент</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/ProblemsWidget.cpp" line="101"/>
+        <location filename="../src/dashboard/ProblemsWidget.cpp" line="115"/>
         <source>Message</source>
         <translation>Сообщение</translation>
     </message>
     <message>
-        <location filename="../src/dashboard/ProblemsWidget.cpp" line="101"/>
+        <location filename="../src/dashboard/ProblemsWidget.cpp" line="115"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
@@ -1080,7 +1067,7 @@ bowtie index file</source>
 <context>
     <name>U2::QDCreateAnnotationsTask</name>
     <message>
-        <location filename="../src/QDScheduler.h" line="163"/>
+        <location filename="../src/QDScheduler.h" line="165"/>
         <source>Prepare annotations task</source>
         <translation>Подготовка задачи аннотирования</translation>
     </message>
@@ -1088,7 +1075,7 @@ bowtie index file</source>
 <context>
     <name>U2::QDFindLocationTask</name>
     <message>
-        <location filename="../src/QDScheduler.h" line="117"/>
+        <location filename="../src/QDScheduler.h" line="119"/>
         <source>Find resultLocation</source>
         <translation>Поиск resultLocation</translation>
     </message>
@@ -1096,7 +1083,7 @@ bowtie index file</source>
 <context>
     <name>U2::QDLinkResultsTask</name>
     <message>
-        <location filename="../src/QDScheduler.h" line="135"/>
+        <location filename="../src/QDScheduler.h" line="137"/>
         <source>Link results</source>
         <translation>Ссылка на результаты</translation>
     </message>
@@ -1104,25 +1091,45 @@ bowtie index file</source>
 <context>
     <name>U2::QDScheduler</name>
     <message>
-        <location filename="../src/QDScheduler.cpp" line="44"/>
+        <location filename="../src/QDScheduler.cpp" line="47"/>
         <source>QDScheduler</source>
         <translation>QDScheduler</translation>
     </message>
     <message>
-        <location filename="../src/QDScheduler.cpp" line="67"/>
+        <location filename="../src/QDScheduler.cpp" line="70"/>
         <source>Can&apos;t find annotation object: %1 in document: %2</source>
         <translation>Невозможно найти объект аннотация: %1 в документе: %2</translation>
     </message>
     <message>
-        <location filename="../src/QDScheduler.cpp" line="96"/>
+        <location filename="../src/QDScheduler.cpp" line="103"/>
         <source>Annotation object is not available</source>
         <translation>Объект аннотация недоступен</translation>
+    </message>
+    <message>
+        <location filename="../src/QDScheduler.cpp" line="152"/>
+        <source>Invalid applications settings detected</source>
+        <translation>Invalid applications settings detected</translation>
+    </message>
+    <message>
+        <location filename="../src/QDScheduler.cpp" line="155"/>
+        <source>Invalid users applications settings detected</source>
+        <translation>Invalid users applications settings detected</translation>
+    </message>
+    <message>
+        <location filename="../src/QDScheduler.cpp" line="360"/>
+        <source>No results have been found for this scheme</source>
+        <translation>Для этой схемы результатов не найдено</translation>
+    </message>
+    <message>
+        <location filename="../src/QDScheduler.cpp" line="477"/>
+        <source>Too many results have been found for this scheme. Try to set stricter search conditions.</source>
+        <translation>Было найдено очень много результатов для этой схемы. Попробуйте изменить условия поиска.</translation>
     </message>
 </context>
 <context>
     <name>U2::QDTask</name>
     <message>
-        <location filename="../src/QDScheduler.cpp" line="709"/>
+        <location filename="../src/QDScheduler.cpp" line="747"/>
         <source>Query task: %1</source>
         <translation>Запрос: %1</translation>
     </message>
@@ -1130,7 +1137,7 @@ bowtie index file</source>
 <context>
     <name>U2::RemoveDashboardsTask</name>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="455"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="458"/>
         <source>Remove dashboards</source>
         <translation>Удалить панель</translation>
     </message>
@@ -1176,7 +1183,7 @@ bowtie index file</source>
 <context>
     <name>U2::ScanDashboardsDirTask</name>
     <message>
-        <location filename="../src/dashboard/Dashboard.cpp" line="409"/>
+        <location filename="../src/dashboard/Dashboard.cpp" line="412"/>
         <source>Scan dashboards directory</source>
         <translation>Сканирование каталога панели</translation>
     </message>
@@ -1184,12 +1191,12 @@ bowtie index file</source>
 <context>
     <name>U2::SchemaRunModeDelegate</name>
     <message>
-        <location filename="../src/DelegateEditors.cpp" line="475"/>
+        <location filename="../src/DelegateEditors.cpp" line="551"/>
         <source>This computer</source>
         <translation>Данный компьютер</translation>
     </message>
     <message>
-        <location filename="../src/DelegateEditors.cpp" line="476"/>
+        <location filename="../src/DelegateEditors.cpp" line="552"/>
         <source>Remote computer</source>
         <translation>Удаленный компьютер</translation>
     </message>
@@ -1215,17 +1222,17 @@ bowtie index file</source>
 <context>
     <name>U2::StringListDelegate</name>
     <message>
-        <location filename="../src/DelegateEditors.cpp" line="605"/>
+        <location filename="../src/DelegateEditors.cpp" line="681"/>
         <source>Enter items</source>
         <translation>Введите элементы</translation>
     </message>
     <message>
-        <location filename="../src/DelegateEditors.cpp" line="607"/>
-        <source>Ok</source>
+        <location filename="../src/DelegateEditors.cpp" line="683"/>
+        <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/DelegateEditors.cpp" line="609"/>
+        <location filename="../src/DelegateEditors.cpp" line="685"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -1233,12 +1240,12 @@ bowtie index file</source>
 <context>
     <name>U2::TophatSamples</name>
     <message>
-        <location filename="../src/wizard/TophatSamplesWidgetController.cpp" line="292"/>
+        <location filename="../src/wizard/TophatSamplesWidgetController.cpp" line="293"/>
         <source>Divide the input datasets into samples for running Cuffdiff. There are must be at least 2 samples. It is not necessary to have the same number of datasets (replicates) for each sample. The samples names will be used by Cuffdiff as labels, which will be included in various output files produced by Cuffdiff.</source>
         <translation>Разделите входные наборы данных на образцы для запуска Cuffdiff. Должно быть не менее двух образцов. Необязательно иметь одинаковое число наборов данных для каждого образца. Имена образцов будут использоваться Cuffdiff в качестве меток, которые будут включены в различные выходные Cuffdiff файлы.</translation>
     </message>
     <message>
-        <location filename="../src/wizard/TophatSamplesWidgetController.cpp" line="369"/>
+        <location filename="../src/wizard/TophatSamplesWidgetController.cpp" line="371"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -1265,19 +1272,19 @@ bowtie index file</source>
 <context>
     <name>U2::URLLineEdit</name>
     <message>
-        <location filename="../src/support/URLLineEdit.cpp" line="155"/>
+        <location filename="../src/support/URLLineEdit.cpp" line="183"/>
         <source>Select a directory</source>
         <translation>Укажите директорию</translation>
     </message>
     <message>
-        <location filename="../src/support/URLLineEdit.cpp" line="173"/>
-        <location filename="../src/support/URLLineEdit.cpp" line="178"/>
-        <location filename="../src/support/URLLineEdit.cpp" line="181"/>
+        <location filename="../src/support/URLLineEdit.cpp" line="201"/>
+        <location filename="../src/support/URLLineEdit.cpp" line="206"/>
+        <location filename="../src/support/URLLineEdit.cpp" line="209"/>
         <source>Select a file</source>
         <translation>Выберите файл</translation>
     </message>
     <message>
-        <location filename="../src/support/URLLineEdit.cpp" line="158"/>
+        <location filename="../src/support/URLLineEdit.cpp" line="186"/>
         <source>Select file(s)</source>
         <translation>Выберите файл(ы)</translation>
     </message>
@@ -1285,7 +1292,7 @@ bowtie index file</source>
 <context>
     <name>U2::URLListController</name>
     <message>
-        <location filename="../src/DatasetsController.cpp" line="773"/>
+        <location filename="../src/DatasetsController.cpp" line="776"/>
         <source>This file or directory does not exist: %1</source>
         <translation>Этот файл или директория не существует: %1</translation>
     </message>
@@ -1293,18 +1300,18 @@ bowtie index file</source>
 <context>
     <name>U2::URLListWidget</name>
     <message>
-        <location filename="../src/DatasetWidget.cpp" line="115"/>
-        <location filename="../src/DatasetWidget.cpp" line="118"/>
+        <location filename="../src/DatasetWidget.cpp" line="116"/>
+        <location filename="../src/DatasetWidget.cpp" line="119"/>
         <source>Select file</source>
         <translation>Выберите файл</translation>
     </message>
     <message>
-        <location filename="../src/DatasetWidget.cpp" line="127"/>
+        <location filename="../src/DatasetWidget.cpp" line="128"/>
         <source>Select a directory</source>
         <translation>Укажите директорию</translation>
     </message>
     <message>
-        <location filename="../src/DatasetWidget.cpp" line="207"/>
+        <location filename="../src/DatasetWidget.cpp" line="194"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -1312,7 +1319,7 @@ bowtie index file</source>
 <context>
     <name>U2::URLWidget</name>
     <message>
-        <location filename="../src/PropertyWidget.cpp" line="427"/>
+        <location filename="../src/PropertyWidget.cpp" line="503"/>
         <source>add</source>
         <translation>добавить</translation>
     </message>
@@ -1320,22 +1327,22 @@ bowtie index file</source>
 <context>
     <name>U2::WizardController</name>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="99"/>
+        <location filename="../src/wizard/WizardController.cpp" line="100"/>
         <source>Apply</source>
         <translation>Принять</translation>
     </message>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="116"/>
+        <location filename="../src/wizard/WizardController.cpp" line="122"/>
         <source>Defaults</source>
         <translation>По умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="117"/>
+        <location filename="../src/wizard/WizardController.cpp" line="123"/>
         <source>Set page values by default</source>
         <translation>Установить значения по умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/wizard/WizardController.cpp" line="122"/>
+        <location filename="../src/wizard/WizardController.cpp" line="128"/>
         <source>Run</source>
         <translation>Запустить</translation>
     </message>
@@ -1356,17 +1363,17 @@ bowtie index file</source>
 <context>
     <name>U2::WorkflowUtils</name>
     <message>
-        <location filename="../src/DelegateEditors.cpp" line="465"/>
+        <location filename="../src/DelegateEditors.cpp" line="541"/>
         <source>Overwrite</source>
         <translation>Переписать</translation>
     </message>
     <message>
-        <location filename="../src/DelegateEditors.cpp" line="466"/>
+        <location filename="../src/DelegateEditors.cpp" line="542"/>
         <source>Rename</source>
         <translation>Переименовать</translation>
     </message>
     <message>
-        <location filename="../src/DelegateEditors.cpp" line="468"/>
+        <location filename="../src/DelegateEditors.cpp" line="544"/>
         <source>Append</source>
         <translation>Дописать</translation>
     </message>

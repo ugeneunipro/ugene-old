@@ -867,80 +867,80 @@ The default is instead to generate sequences with a variety of different lengths
 <context>
     <name>U2::HMMSearchDialogController</name>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="111"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="103"/>
         <source>Select file with HMM model</source>
         <translation>Выбор HMM профайла для калибровки</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="128"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="120"/>
         <source>HMM file not set!</source>
         <translation>Укажите файл с HMM профайлом!</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="145"/>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="151"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="137"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="143"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="151"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="143"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation>Невозможно создать аннотацию. Проверьте настройки</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="162"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="154"/>
         <source>Starting search process</source>
         <translation>Начинается поиск</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="165"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="157"/>
         <source>Hide</source>
         <translation>Скрыть</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="166"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="158"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="181"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="173"/>
         <source>HMM search finished with error: %1</source>
         <translation>Построение HMM профайла завершилось с ошибкой: %1</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="183"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="175"/>
         <source>HMM search finished successfuly!</source>
         <translation>HMM профайл успешно построен!</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="193"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="185"/>
         <source>Progress: %1%</source>
         <translation>Прогресс: %1%</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="76"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="70"/>
         <source>Cell BE optimized</source>
         <translation>Оптимизирован для Cell BE</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="60"/>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="185"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="54"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="177"/>
         <source>Search</source>
         <translation>Искать</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="61"/>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="186"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="55"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="178"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="79"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="73"/>
         <source>SSE optimized</source>
         <translation>Оптимизирован для SSE</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="81"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="75"/>
         <source>Conservative</source>
         <translation>Стандартный</translation>
     </message>
@@ -948,32 +948,32 @@ The default is instead to generate sequences with a variety of different lengths
 <context>
     <name>U2::HMMSearchTask</name>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="27"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="48"/>
         <source>HMM Search</source>
         <translation>Поиск HMM</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="245"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="266"/>
         <source>Invalid HMM alphabet!</source>
         <translation>Неправильный алфавит HMM профайла!</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="249"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="270"/>
         <source>Invalid sequence alphabet!</source>
         <translation>Неправильный алфавит последовательности!</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="277"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="298"/>
         <source>Amino translation is not available for the sequence alphabet!</source>
         <translation>Не найдена таблица аминокислотной трансляции для выбранной последовательности!</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="311"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="332"/>
         <source>Parallel HMM search</source>
         <translation>Параллельный поиск HMM сигналов</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="19"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="40"/>
         <source>HMM search with &apos;%1&apos;</source>
         <translation>Поиск с HMM профайлом &apos;%1&apos;</translation>
     </message>
@@ -981,47 +981,47 @@ The default is instead to generate sequences with a variety of different lengths
 <context>
     <name>U2::HMMSearchToAnnotationsTask</name>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="207"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="204"/>
         <source>HMM search, file &apos;%1&apos;</source>
         <translation>HMM поиск, файл &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="213"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="210"/>
         <source>RAW alphabet is not supported!</source>
         <translation>Неправильный алфавит последовательности!</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="229"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="226"/>
         <source>Annotation object was removed</source>
         <translation>Объект аннотаций был удалён</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="255"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="253"/>
         <source>HMM profile used</source>
         <translation>Использованный HMM профайл</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="258"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="256"/>
         <source>Task was not finished</source>
         <translation>Задача была не завершена</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="263"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="261"/>
         <source>Result annotation table</source>
         <translation>Таблица аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="264"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="262"/>
         <source>Result annotation group</source>
         <translation>Группа аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="265"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="263"/>
         <source>Result annotation name</source>
         <translation>Имя аннотаций результата</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="268"/>
+        <location filename="../src/u_search/HMMSearchDialogController.cpp" line="266"/>
         <source>Results count</source>
         <translation>Количество найденных регионов</translation>
     </message>
@@ -1275,8 +1275,8 @@ The default is instead to generate sequences with a variety of different lengths
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="132"/>
-        <source>%1 HMM signals. %3&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%4&lt;/u&gt;.</source>
-        <translation>%1 искать HMM сигналы. %3&lt;br&gt;Выдать список найденных регионов аннотированных как &lt;u&gt;%4&lt;/u&gt;.</translation>
+        <source>%1 HMM signals%2. %3&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%4&lt;/u&gt;.</source>
+        <translation>%1 HMM сигналы%2. %3&lt;br&gt;Выдать список найденных регионов аннотированных как &lt;u&gt;%4&lt;/u&gt;.</translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="127"/>
@@ -1292,7 +1292,7 @@ The default is instead to generate sequences with a variety of different lengths
         <translation>Некорректная последовательность: %1</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchWorker.cpp" line="236"/>
+        <location filename="../src/u_search/HMMSearchWorker.cpp" line="235"/>
         <source>Found %1 HMM signals</source>
         <translation>Найдено %1 сигналов HMM</translation>
     </message>

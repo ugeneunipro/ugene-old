@@ -113,83 +113,83 @@
     <message>
         <location filename="../src/util/MAlignmentWalker.cpp" line="77"/>
         <source>Unexpected gap start</source>
-        <translation type="unfinished"></translation>
+        <translation>Unexpected gap start</translation>
     </message>
     <message>
         <location filename="../src/util/MAlignmentWalker.cpp" line="86"/>
         <source>Unexpected gap start (too small)</source>
-        <translation type="unfinished"></translation>
+        <translation>Unexpected gap start (too small)</translation>
     </message>
     <message>
         <location filename="../src/util/MAlignmentWalker.cpp" line="87"/>
         <source>Unexpected gap start (too big)</source>
-        <translation type="unfinished"></translation>
+        <translation>Unexpected gap start (too big)</translation>
     </message>
     <message>
         <location filename="../src/util/MAlignmentWalker.cpp" line="101"/>
         <source> Incorrect gap splitting</source>
-        <translation type="unfinished"></translation>
+        <translation> Incorrect gap splitting</translation>
     </message>
     <message>
         <location filename="../src/util/MAlignmentWalker.cpp" line="136"/>
         <source> Alignment walker is ended</source>
-        <translation type="unfinished"></translation>
+        <translation> Alignment walker is ended</translation>
     </message>
     <message>
         <location filename="../src/util/MAlignmentWalker.cpp" line="137"/>
         <source> Alignment changed</source>
-        <translation type="unfinished"></translation>
+        <translation> Alignment changed</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="505"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="525"/>
         <source>This is not ESearch result!</source>
         <translation>Это не является результатом ESearch!</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="550"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="570"/>
         <source>This is not a ESummary result!</source>
         <translation>Это не является результатом ESummary!</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="633"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="653"/>
         <source>Use Ensembl ID. For example: %1 or %2</source>
         <translation>Используйте Ensembl ID. Например: %1 или %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="634"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="654"/>
         <source>Use Genbank DNA accession number. For example: %1 or %2</source>
         <translation>Используйте Genbank DNA Accession Number. Например: %1 или %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="635"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="655"/>
         <source>Use Genbank protein accession number. For example: %1</source>
         <translation>Используйте Genbank Protein Accession Number. Например: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="636"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="656"/>
         <source>Use PDB molecule four-letter identifier. For example: %1 or %2</source>
         <translation>Используйте 4-х символьный идентификатор PDB. Например: %1 или %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="637"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="657"/>
         <source>Use SWISS-PROT accession number. For example: %1 or %2</source>
         <translation>Используйте SWISS-PROT Accession Number. Например: %1 или %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="638"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="658"/>
         <source>Use UniProtKB/Swiss-Prot accession number. For example: %1</source>
         <translation>Используйте UniProtKB/Swiss-Prot Accession Number. Например: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="639"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="659"/>
         <source>Use UniProtKB/TrEMBL accession number. For example: %1</source>
         <translation>Используйте UniProtKB/TrEMBL Accession Number. Например: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="668"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="688"/>
         <source>Use %1 unique identifier.</source>
         <translation>Исплользуйте уникальный идентификатор %1.</translation>
     </message>
@@ -201,65 +201,504 @@
         <translation>Все файлы</translation>
     </message>
     <message>
-        <location filename="../src/util/SequenceUtils.cpp" line="281"/>
+        <location filename="../src/util/SequenceUtils.cpp" line="279"/>
         <source>Loaded sequences have different alphabets. That&apos;s why several sequence objects are created, each for specified alphabet. All sequences at one object have the same alphabet and sequences from different objects have different alphabets.</source>
         <translation>Загруженные последовательности имеют разные алфавиты. Поэтому создано несколько объектов типа последовательность для каждого алфавита. Все последовательности одного объекта имеют одинаковый афлфавит и последовательности из разных объектов имеют разные алфавиты.</translation>
     </message>
     <message>
-        <location filename="../src/datatype/Annotation.cpp" line="579"/>
-        <location filename="../src/datatype/Annotation.cpp" line="582"/>
+        <location filename="../src/datatype/Annotation.cpp" line="593"/>
+        <location filename="../src/datatype/Annotation.cpp" line="596"/>
         <source>Sequence</source>
         <translation>Последовательность</translation>
     </message>
     <message>
-        <location filename="../src/datatype/Annotation.cpp" line="590"/>
-        <location filename="../src/datatype/Annotation.cpp" line="593"/>
+        <location filename="../src/datatype/Annotation.cpp" line="604"/>
+        <location filename="../src/datatype/Annotation.cpp" line="607"/>
         <source>Translation</source>
         <translation>Трансляция</translation>
     </message>
     <message>
-        <location filename="../src/datatype/PhyTree.cpp" line="69"/>
+        <location filename="../src/datatype/PhyTree.cpp" line="73"/>
         <source>UGENE internal error</source>
         <translation>Внутренняя ошибка UGENE</translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="508"/>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="509"/>
         <source>Invalid database type: %1</source>
         <translation>Неверный тип базы: %1</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/GObjectUtils.cpp" line="417"/>
+        <location filename="../src/gobjects/GObjectUtils.cpp" line="427"/>
         <source>Unsupported object type: %1</source>
         <translation>Неподдерживаемый тип объекта: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="374"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="389"/>
         <source>Unable to detect sequence alphabet. Probably, this is because some of merged sequences are empty.</source>
         <translation>Невозможно определить алфавит последовательности. Возможно это вызвано тем, что некоторые из последовательностей являются пустыми.</translation>
     </message>
     <message>
-        <source>Sequence was not imported. Probably, this is because the sequence is empty.</source>
-        <translation type="obsolete">Последовательность не была импортирована. Возможно это произошло из-за того, что последовательность является пустой.</translation>
-    </message>
-    <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="529"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="544"/>
         <source>Invalid number of symbols: %1</source>
         <translation>Неверное число символов: %1</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="53"/>
+        <location filename="../src/models/DocumentModel.cpp" line="52"/>
         <source>The document is created not by UGENE</source>
         <translation>Документ создан не в UGENE</translation>
     </message>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="54"/>
+        <location filename="../src/models/DocumentModel.cpp" line="53"/>
         <source>Document sequences were merged</source>
         <translation>Последовательности из документа были соединены</translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2DbiUtils.cpp" line="41"/>
+        <location filename="../src/dbi/U2DbiUtils.cpp" line="43"/>
         <source>UGENE public database</source>
-        <translation type="unfinished"></translation>
+        <translation>Публичная база данных UGENE</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="76"/>
+        <source>Gap between two components of a genome or transcriptome assembly</source>
+        <translation>Gap between two components of a genome or transcriptome assembly</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="77"/>
+        <source>Sequence related to transcription termination</source>
+        <translation>Sequence related to transcription termination</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="78"/>
+        <source>Describes disulfide bonds (for protein files)</source>
+        <translation>Describes disulfide bonds (for protein files)</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="79"/>
+        <source>Span of the C immunological feature</source>
+        <translation>Span of the C immunological feature</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="80"/>
+        <source>`CAAT box&apos; in eukaryotic promoters</source>
+        <translation>`CAAT box&apos; in eukaryotic promoters</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="81"/>
+        <source>Sequence coding for amino acids in protein (includes stop codon)</source>
+        <translation>Sequence coding for amino acids in protein (includes stop codon)</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="83"/>
+        <source>Independent sequence determinations differ</source>
+        <translation>Independent sequence determinations differ</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="84"/>
+        <source>Region of biological interest identified as a centromere and which has been experimentally characterized</source>
+        <translation>Region of biological interest identified as a centromere and which has been experimentally characterized</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="85"/>
+        <source>Displacement loop</source>
+        <translation>Displacement loop</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="86"/>
+        <source>Span of the D immunological feature</source>
+        <translation>Span of the D immunological feature</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="87"/>
+        <source>Cis-acting enhancer of promoter function</source>
+        <translation>Cis-acting enhancer of promoter function</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="88"/>
+        <source>Region that codes for part of spliced mRNA</source>
+        <translation>Region that codes for part of spliced mRNA</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="89"/>
+        <source>Gap in the sequence</source>
+        <translation>Gap in the sequence</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="90"/>
+        <source>Region that defines a functional gene, possibly including upstream (promotor, enhancer, etc) and downstream control elements, and for which a name has been assigned.</source>
+        <translation>Region that defines a functional gene, possibly including upstream (promotor, enhancer, etc) and downstream control elements, and for which a name has been assigned.</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="92"/>
+        <source>`GC box&apos; in eukaryotic promoters</source>
+        <translation>`GC box&apos; in eukaryotic promoters</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="93"/>
+        <source>Intervening DNA eliminated by recombination</source>
+        <translation>Intervening DNA eliminated by recombination</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="94"/>
+        <source>Transcribed region excised by mRNA splicing</source>
+        <translation>Transcribed region excised by mRNA splicing</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="95"/>
+        <source>Span of the J immunological feature</source>
+        <translation>Span of the J immunological feature</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="96"/>
+        <source>Joining segment of immunoglobulin light and heavy chains, and T-cell receptor alpha, beta, and gamma chains</source>
+        <translation>Joining segment of immunoglobulin light and heavy chains, and T-cell receptor alpha, beta, and gamma chains</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="97"/>
+        <source>Long terminal repeat</source>
+        <translation>Long terminal repeat</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="98"/>
+        <source>Mature peptide coding region (does not include stop codon)</source>
+        <translation>Mature peptide coding region (does not include stop codon)</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="99"/>
+        <source>Miscellaneous binding site</source>
+        <translation>Miscellaneous binding site</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="100"/>
+        <source>Miscellaneous difference feature</source>
+        <translation>Miscellaneous difference feature</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="101"/>
+        <source>Region of biological significance that cannot be described by any other feature</source>
+        <translation>Region of biological significance that cannot be described by any other feature</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="103"/>
+        <source>Miscellaneous, recombination feature</source>
+        <translation>Miscellaneous, recombination feature</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="104"/>
+        <source>Miscellaneous transcript feature not defined by other RNA keys</source>
+        <translation>Miscellaneous transcript feature not defined by other RNA keys</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="105"/>
+        <source>Miscellaneous signal</source>
+        <translation>Miscellaneous signal</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="106"/>
+        <source>Miscellaneous DNA or RNA structure</source>
+        <translation>Miscellaneous DNA or RNA structure</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="107"/>
+        <source>Region of genome containing mobile elements</source>
+        <translation>Region of genome containing mobile elements</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="108"/>
+        <source>The indicated base is a modified nucleotide</source>
+        <translation>The indicated base is a modified nucleotide</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="109"/>
+        <source>Messenger RNA</source>
+        <translation>Messenger RNA</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="110"/>
+        <source>A non-protein-coding gene, other than ribosomal RNA and transfer RNA, the functional molecule of which is the RNA transcrip</source>
+        <translation>A non-protein-coding gene, other than ribosomal RNA and transfer RNA, the functional molecule of which is the RNA transcrip</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="111"/>
+        <source>Span of the N immunological feature</source>
+        <translation>Span of the N immunological feature</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="112"/>
+        <source>Presented sequence revises a previous version</source>
+        <translation>Presented sequence revises a previous version</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="113"/>
+        <source>Region containing polycistronic transcript including a cluster of genes that are under the control of the same regulatory sequences/promotor and in the same biological pathway</source>
+        <translation>Region containing polycistronic transcript including a cluster of genes that are under the control of the same regulatory sequences/promotor and in the same biological pathway</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="114"/>
+        <source>Origin of transfer; region of a DNA molecule where transfer is initiated during the process of conjugation or mobilization</source>
+        <translation>Origin of transfer; region of a DNA molecule where transfer is initiated during the process of conjugation or mobilization</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="115"/>
+        <source>Signal for cleavage &amp; polyadenylation</source>
+        <translation>Signal for cleavage &amp; polyadenylation</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="116"/>
+        <source>Site at which polyadenine is added to mRNA</source>
+        <translation>Site at which polyadenine is added to mRNA</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="117"/>
+        <source>Any RNA species that is not yet the mature RNA product</source>
+        <translation>Any RNA species that is not yet the mature RNA product</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="118"/>
+        <source>Primary (unprocessed) transcript</source>
+        <translation>Primary (unprocessed) transcript</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="119"/>
+        <source>Primer binding region used with PCR</source>
+        <translation>Primer binding region used with PCR</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="120"/>
+        <source>Non-covalent primer binding site</source>
+        <translation>Non-covalent primer binding site</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="121"/>
+        <source>A region involved in transcription initiation</source>
+        <translation>A region involved in transcription initiation</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="122"/>
+        <source>Non-covalent protein binding site on DNA or RNA</source>
+        <translation>Non-covalent protein binding site on DNA or RNA</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="123"/>
+        <source>Ribosome binding site</source>
+        <translation>Ribosome binding site</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="124"/>
+        <source>Replication origin for duplex DNA</source>
+        <translation>Replication origin for duplex DNA</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="125"/>
+        <source>Sequence containing repeated subsequences</source>
+        <translation>Sequence containing repeated subsequences</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="126"/>
+        <source>One repeated unit of a repeat_region</source>
+        <translation>One repeated unit of a repeat_region</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="127"/>
+        <source>Ribosomal RNA</source>
+        <translation>Ribosomal RNA</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="128"/>
+        <source>Span of the S immunological feature</source>
+        <translation>Span of the S immunological feature</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="129"/>
+        <source>Satellite repeated sequence</source>
+        <translation>Satellite repeated sequence</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="130"/>
+        <source>Small cytoplasmic RNA</source>
+        <translation>Small cytoplasmic RNA</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="131"/>
+        <source>Signal peptide coding region</source>
+        <translation>Signal peptide coding region</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="132"/>
+        <source>Small nuclear RNA</source>
+        <translation>Small nuclear RNA</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="133"/>
+        <source>Identifies the biological source of the specified span of the sequence</source>
+        <translation>Identifies the biological source of the specified span of the sequence</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="134"/>
+        <source>Hair-pin loop structure in DNA or RNA</source>
+        <translation>Hair-pin loop structure in DNA or RNA</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="135"/>
+        <source>Sequence Tagged Site; operationally unique sequence that identifies the combination of primer spans used in a PCR assay</source>
+        <translation>Sequence Tagged Site; operationally unique sequence that identifies the combination of primer spans used in a PCR assay</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="136"/>
+        <source>`TATA box&apos; in eukaryotic promoters</source>
+        <translation>`TATA box&apos; in eukaryotic promoters</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="137"/>
+        <source>Region of biological interest identified as a telomere and which has been experimentally characterized</source>
+        <translation>Region of biological interest identified as a telomere and which has been experimentally characterized</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="138"/>
+        <source>Sequence causing transcription termination</source>
+        <translation>Sequence causing transcription termination</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="139"/>
+        <source>Transfer messenger RNA; tmRNA acts as a tRNA first, and then as an mRNA that encodes a peptide tag; the ribosome translates this mRNA region of tmRNA and attaches the encoded peptide tag to the C-terminus of the unfinished protein; this attached tag targets the protein for destruction or proteolysis</source>
+        <translation>Transfer messenger RNA; tmRNA acts as a tRNA first, and then as an mRNA that encodes a peptide tag; the ribosome translates this mRNA region of tmRNA and attaches the encoded peptide tag to the C-terminus of the unfinished protein; this attached tag targets the protein for destruction or proteolysis</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="140"/>
+        <source>Transit peptide coding region</source>
+        <translation>Transit peptide coding region</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="141"/>
+        <source>Transposable element (TN)</source>
+        <translation>Transposable element (TN)</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="142"/>
+        <source>Transfer RNA</source>
+        <translation>Transfer RNA</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="143"/>
+        <source>Authors are unsure about the sequence in this region</source>
+        <translation>Authors are unsure about the sequence in this region</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="144"/>
+        <source>Span of the V immunological feature</source>
+        <translation>Span of the V immunological feature</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="145"/>
+        <source>Variable segment of immunoglobulin light and heavy chains, and T-cell receptor alpha, beta, and gamma chains; codes for most of the variable region (V_region) and the last few amino acids of the leader peptide</source>
+        <translation>Variable segment of immunoglobulin light and heavy chains, and T-cell receptor alpha, beta, and gamma chains; codes for most of the variable region (V_region) and the last few amino acids of the leader peptide</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="146"/>
+        <source>A related population contains stable mutation</source>
+        <translation>A related population contains stable mutation</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="147"/>
+        <source>`Pribnow box&apos; in prokaryotic promoters</source>
+        <translation>`Pribnow box&apos; in prokaryotic promoters</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="148"/>
+        <source>`-35 box&apos; in prokaryotic promoters</source>
+        <translation>`-35 box&apos; in prokaryotic promoters</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="149"/>
+        <source>3&apos;-most region of a precursor transcript removed in processing</source>
+        <translation>3&apos;-most region of a precursor transcript removed in processing</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="150"/>
+        <source>3&apos; untranslated region (trailer)</source>
+        <translation>3&apos; untranslated region (trailer)</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="151"/>
+        <source>5&apos;-most region of a precursor transcript removed in processing</source>
+        <translation>5&apos;-most region of a precursor transcript removed in processing</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="152"/>
+        <source>5&apos; untranslated region (leader)</source>
+        <translation>5&apos; untranslated region (leader)</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="153"/>
+        <source>&apos;Protein&apos; feature key</source>
+        <translation>&apos;Protein&apos; feature key</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="154"/>
+        <source>&apos;Region&apos; feature key</source>
+        <translation>&apos;Region&apos; feature key</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="155"/>
+        <source>&apos;Site&apos; feature key</source>
+        <translation>&apos;Site&apos; feature key</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="156"/>
+        <source>Any region of sequence that functions in the regulation of transcription or translation</source>
+        <translation>Any region of sequence that functions in the regulation of transcription or translation</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="175"/>
+        <source>Genes</source>
+        <translation>Гены</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="190"/>
+        <source>Signals</source>
+        <translation>Сигналы</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="211"/>
+        <source>Binding</source>
+        <translation>Связывание</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="217"/>
+        <source>Variation</source>
+        <translation>Вариация</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="226"/>
+        <source>Repeats</source>
+        <translation>Повторы</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="233"/>
+        <source>RNA</source>
+        <translation>РНК</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="243"/>
+        <source>Misc</source>
+        <translation>Разное</translation>
+    </message>
+    <message>
+        <location filename="../src/util/GenbankFeatures.cpp" line="263"/>
+        <source>Spans</source>
+        <translation>Диапазоны</translation>
+    </message>
+    <message>
+        <location filename="../src/util/U2FeatureUtils.cpp" line="133"/>
+        <source>Unexpected feature operator value detected.</source>
+        <translation>Unexpected feature operator value detected.</translation>
+    </message>
+</context>
+<context>
+    <name>U2::AbstractProjectFilterTask</name>
+    <message>
+        <location filename="../src/tasks/AbstractProjectFilterTask.cpp" line="37"/>
+        <source>Filtering project content by the &quot;%1&quot; criterion</source>
+        <translation>Filtering project content by the &quot;%1&quot; criterion</translation>
     </message>
 </context>
 <context>
@@ -287,24 +726,32 @@
     </message>
 </context>
 <context>
+    <name>U2::AddObjectsToDocumentTask</name>
+    <message>
+        <location filename="../src/tasks/AddObjectsToDocumentTask.cpp" line="35"/>
+        <source>Add objects to document</source>
+        <translation>Add objects to document</translation>
+    </message>
+</context>
+<context>
     <name>U2::AddSequencesToAlignmentTask</name>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="50"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="51"/>
         <source>Object is empty.</source>
         <translation>Объект пуст.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="55"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="56"/>
         <source>Object is locked for modifications.</source>
         <translation>Объект заблокирован для редактирования.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="162"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="168"/>
         <source>Some sequences have wrong alphabet: </source>
         <translation>Некоторые последовательности имеют неправильный алфавит: </translation>
     </message>
     <message>
-        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="165"/>
+        <location filename="../src/tasks/AddSequencesToAlignmentTask.cpp" line="171"/>
         <source> and others</source>
         <translation> и другие</translation>
     </message>
@@ -335,7 +782,7 @@
 <context>
     <name>U2::AutoAnnotationsSupport</name>
     <message>
-        <location filename="../src/globals/AutoAnnotationsSupport.cpp" line="105"/>
+        <location filename="../src/globals/AutoAnnotationsSupport.cpp" line="106"/>
         <source>Auto-annotations [%1 | %2]</source>
         <translation>Автоаннотации [%1 | %2]</translation>
     </message>
@@ -343,7 +790,7 @@
 <context>
     <name>U2::AutoAnnotationsUpdateTask</name>
     <message>
-        <location filename="../src/globals/AutoAnnotationsSupport.cpp" line="221"/>
+        <location filename="../src/globals/AutoAnnotationsSupport.cpp" line="283"/>
         <source>Empty auto-annotation object</source>
         <translation>Объект автоаннотации пуст</translation>
     </message>
@@ -453,19 +900,22 @@ The session database file is removed after closing of UGENE.</source>
         <translation>Неверное расположение референса базы</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CloneObjectTask.cpp" line="69"/>
+        <location filename="../src/tasks/CloneObjectTask.cpp" line="65"/>
         <source>Error! No DBI</source>
         <translation>Ошибка! Нет DBI</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CloneObjectTask.cpp" line="71"/>
-        <source>Error! No object DBI</source>
-        <translation>Ошибка! Нет объекта DBI</translation>
-    </message>
-    <message>
-        <location filename="../src/tasks/CloneObjectTask.cpp" line="76"/>
+        <location filename="../src/tasks/CloneObjectTask.cpp" line="70"/>
         <source>The object has been removed</source>
         <translation>Объект был удален</translation>
+    </message>
+</context>
+<context>
+    <name>U2::ComplementSequenceTask</name>
+    <message>
+        <location filename="../src/tasks/ReverseSequenceTask.cpp" line="142"/>
+        <source>Complement Sequence Task</source>
+        <translation>Complement Sequence Task</translation>
     </message>
 </context>
 <context>
@@ -507,14 +957,37 @@ The session database file is removed after closing of UGENE.</source>
 <context>
     <name>U2::ConvertDasIdTask</name>
     <message>
-        <location filename="../src/tasks/PicrApiTask.cpp" line="254"/>
+        <location filename="../src/tasks/PicrApiTask.cpp" line="279"/>
         <source>Convert resource id: %1</source>
         <translation>Способ конвертации: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/PicrApiTask.cpp" line="350"/>
+        <location filename="../src/tasks/PicrApiTask.cpp" line="361"/>
+        <source>undefined error (code %1)</source>
+        <translation>undefined error (code %1)</translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/PicrApiTask.cpp" line="383"/>
         <source>Remote server does not respond</source>
         <translation>Удаленный сервер не отвечает</translation>
+    </message>
+</context>
+<context>
+    <name>U2::ConvertIdAndLoadDasFeaturesTask</name>
+    <message>
+        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="783"/>
+        <source>Convert ID and load DAS features for: %1</source>
+        <translation>Convert ID and load DAS features for: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="799"/>
+        <source>Convert IDs task</source>
+        <translation>Convert IDs task</translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="819"/>
+        <source>&quot;%1&quot; was converted into &quot;%2&quot;</source>
+        <translation>&quot;%1&quot; was converted into &quot;%2&quot;</translation>
     </message>
 </context>
 <context>
@@ -539,20 +1012,20 @@ The session database file is removed after closing of UGENE.</source>
     <name>U2::CreateAnnotationsTask</name>
     <message>
         <location filename="../src/tasks/CreateAnnotationTask.cpp" line="37"/>
-        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="45"/>
-        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="53"/>
+        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="47"/>
         <source>Create annotations</source>
         <translation>Сохранение аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="83"/>
-        <source>Annotation object &apos;%1&apos; not found in active project: %2</source>
-        <translation>Таблица аннотаций &quot;%1&quot; не найдена в проекте: %2</translation>
+        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="40"/>
+        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="58"/>
+        <source>Annotation table has been removed unexpectedly</source>
+        <translation>Annotation table has been removed unexpectedly</translation>
     </message>
     <message>
-        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="87"/>
-        <source>Waiting for object lock released</source>
-        <translation>Ожидание снятия блокировки</translation>
+        <location filename="../src/tasks/CreateAnnotationTask.cpp" line="92"/>
+        <source>Annotation object &apos;%1&apos; not found in active project: %2</source>
+        <translation>Таблица аннотаций &quot;%1&quot; не найдена в проекте: %2</translation>
     </message>
 </context>
 <context>
@@ -670,70 +1143,6 @@ these match a protein, A between residue 3 and 125 and B between residue
 (т.е. если запись InterPro содержит 2 подписи, A и B, и они обе соотвествуют белку, 
 A между остатком 3 и 125 и B между остатком 5 and 127, 
 то суммарное совпадение этих подписей будет между 3 и 127).</translation>
-    </message>
-    <message>
-        <location filename="../src/datatype/DASSource.cpp" line="179"/>
-        <source>Ensembl Human Genes (DAS)</source>
-        <translation>Ensembl Human Genes (DAS)</translation>
-    </message>
-    <message>
-        <location filename="../src/datatype/DASSource.cpp" line="180"/>
-        <location filename="../src/datatype/DASSource.cpp" line="189"/>
-        <source>http://www.ebi.ac.uk/das-srv/genedas/das/Homo_sapiens.Gene_ID.reference/</source>
-        <translation>http://www.ebi.ac.uk/das-srv/genedas/das/Homo_sapiens.Gene_ID.reference/</translation>
-    </message>
-    <message>
-        <location filename="../src/datatype/DASSource.cpp" line="182"/>
-        <source>Use Ensemble Gene IDs. For example: %1</source>
-        <translation>Используйте Ensemble Gene IDs. Например: %1</translation>
-    </message>
-    <message>
-        <location filename="../src/datatype/DASSource.cpp" line="183"/>
-        <source>The Ensembl human Gene_ID reference source, serving sequences and non-location features.</source>
-        <translation>Референсный источник Ensembl human Gene_ID, обслуживающий последовательности и аннотации.</translation>
-    </message>
-    <message>
-        <location filename="../src/datatype/DASSource.cpp" line="188"/>
-        <source>Ensembl Human Gene Features</source>
-        <translation>Ensembl Human Gene Features</translation>
-    </message>
-    <message>
-        <location filename="../src/datatype/DASSource.cpp" line="191"/>
-        <source>The Ensembl human Gene_ID source.</source>
-        <translation>Источник Ensembl human Gene_ID.</translation>
-    </message>
-    <message>
-        <location filename="../src/datatype/DASSource.cpp" line="196"/>
-        <source>HGNC</source>
-        <translation>HGNC</translation>
-    </message>
-    <message>
-        <location filename="../src/datatype/DASSource.cpp" line="197"/>
-        <source>http://www.genenames.org/das/HGNC/</source>
-        <translation>http://www.genenames.org/das/HGNC/</translation>
-    </message>
-    <message>
-        <location filename="../src/datatype/DASSource.cpp" line="199"/>
-        <source>The HGNC (HUGO Gene Nomenclature Committee) DAS Reference Server serves up-to-date
-approved gene symbols and names for human genes from the latest HGNC dataset, mapped via Entrez Gene ID.</source>
-        <translation>HGNC (HUGO Gene Nomenclature Committee) DAS Reference Server поддерживает обновление 
-утвержденных генных символов и имен для генов человека до поледнего HGNC набора данных, 
-отображаемых при помощи Entrez Gene ID.</translation>
-    </message>
-    <message>
-        <location filename="../src/datatype/DASSource.cpp" line="205"/>
-        <source>GAD</source>
-        <translation>GAD</translation>
-    </message>
-    <message>
-        <location filename="../src/datatype/DASSource.cpp" line="206"/>
-        <source>http://www.ebi.ac.uk/das-srv/genedas/das/gad/</source>
-        <translation>http://www.ebi.ac.uk/das-srv/genedas/das/gad/</translation>
-    </message>
-    <message>
-        <location filename="../src/datatype/DASSource.cpp" line="208"/>
-        <source>Genetic Association Database (diseases).</source>
-        <translation>Genetic Association Database (заболевания).</translation>
     </message>
 </context>
 <context>
@@ -1010,38 +1419,38 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::DatatypeSerializers</name>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="301"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="309"/>
         <source>Unexpected weight: %1</source>
         <translation>Неожиданный вес: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="306"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="314"/>
         <source>Error parsing weight: %1</source>
         <translation>Ошибка парсинга веса: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="322"/>
-        <source>Unexpected weight start token: %1</source>
-        <translation>Неожиданный маркер начала веса: %1</translation>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="335"/>
+        <source>Error parsing nodeValue: %1</source>
+        <translation>Error parsing nodeValue: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="330"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="347"/>
         <source>Unexpected new sibling %1</source>
         <translation>Неожиданный новый родственник %1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="343"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="360"/>
         <source>Unexpected closing bracket :%1</source>
         <translation>Неожиданные закрывающие скобки: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="351"/>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="372"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="368"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="390"/>
         <source>Unexpected end of file</source>
         <translation>Неожиданный конец файла</translation>
     </message>
     <message>
-        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="383"/>
+        <location filename="../src/util/DatatypeSerializeUtils.cpp" line="402"/>
         <source>Empty file</source>
         <translation>Пустой файл</translation>
     </message>
@@ -1054,7 +1463,7 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
         <translation>ugenedb это внутренний формат файла базы данных UGENE</translation>
     </message>
     <message>
-        <location filename="../src/dbi/DbiDocumentFormat.cpp" line="128"/>
+        <location filename="../src/dbi/DbiDocumentFormat.cpp" line="129"/>
         <source>Invalid destination database reference</source>
         <translation>Неверное расположение референса базы</translation>
     </message>
@@ -1062,15 +1471,15 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::DeleteFoldersTask</name>
     <message>
-        <location filename="../src/tasks/DeleteObjectsTask.cpp" line="131"/>
-        <source>Delete objects</source>
-        <translation>Удаление объектов</translation>
+        <location filename="../src/tasks/DeleteObjectsTask.cpp" line="97"/>
+        <source>Delete folders</source>
+        <translation>Delete folders</translation>
     </message>
 </context>
 <context>
     <name>U2::DeleteObjectsTask</name>
     <message>
-        <location filename="../src/tasks/DeleteObjectsTask.cpp" line="67"/>
+        <location filename="../src/tasks/DeleteObjectsTask.cpp" line="64"/>
         <source>Delete objects</source>
         <translation>Удаление объектов</translation>
     </message>
@@ -1097,12 +1506,17 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
         <source>Locked by user</source>
         <translation>Заблокирован пользователем</translation>
     </message>
+    <message>
+        <location filename="../src/models/DocumentModel.cpp" line="653"/>
+        <source>Lock is NULL</source>
+        <translation>Lock is NULL</translation>
+    </message>
 </context>
 <context>
     <name>U2::DocumentFormat</name>
     <message>
-        <location filename="../src/models/DocumentModel.cpp" line="124"/>
-        <location filename="../src/models/DocumentModel.cpp" line="129"/>
+        <location filename="../src/models/DocumentModel.cpp" line="123"/>
+        <location filename="../src/models/DocumentModel.cpp" line="128"/>
         <source>Writing is not supported for this format (%1). Feel free to send a feature request though.</source>
         <translation>Запись в этот формат (%1) сейчас не поддерживается. Пожалуйста, сделайте запрос разработчикам.</translation>
     </message>
@@ -1131,27 +1545,27 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::ExternalToolRunTask</name>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="56"/>
-        <source>tool</source>
-        <translation>инструмент</translation>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="59"/>
+        <source> tool</source>
+        <translation> tool</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="107"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="111"/>
         <source>Can not run %1 tool.</source>
         <translation>Невозможно запустить %1 инструмент.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="109"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="113"/>
         <source>Can not run %1 tool. May be tool path &apos;%2&apos; not valid?</source>
         <translation>Невозможно запустить %1 инструмент. Возможно путь до инструмента &apos;%2&apos; указан неверно?</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="124"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="128"/>
         <source>%1 tool exited with code %2</source>
         <translation>%1 инструмент завершил работу с кодом %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="126"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="130"/>
         <source>Tool %1 finished successfully</source>
         <translation>Инструмент %1 завершил работу корректно</translation>
     </message>
@@ -1159,47 +1573,47 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::ExternalToolSupportUtils</name>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="316"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="324"/>
         <source>Can not remove temporary directory: path is empty.</source>
         <translation>Невозможно удалить временную директорию: пустой путь.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="322"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="330"/>
         <source>Can not remove files from temporary directory.</source>
         <translation>Невозможно удалить файлы из временной директории.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="327"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="335"/>
         <source>Can not remove directory for temporary files.</source>
         <translation>Невозможно удалить директорию для временных файлов.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="340"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="348"/>
         <source>Can not create directory for temporary files: %1</source>
         <translation>Невозможно создать директорию для временных файлов: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="391"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="379"/>
         <source>Can&apos;t run an executable file &quot;%1&quot; as it is. Try to run it as a cmd line command: &quot;%2&quot;</source>
         <translation>Невозможно запустить исполняемый файл &quot;%1&quot;. Попробуйте запустить его из командной строки: &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="407"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="395"/>
         <source>Undefined tool: &apos;%1&apos;</source>
         <translation>Неопределенный инструмент: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="411"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="399"/>
         <source>Path for &apos;%1&apos; tool not set</source>
         <translation>Путь до инструмента &apos;%1&apos; не установлен</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="448"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="440"/>
         <source>Working directory is &quot;%1&quot;</source>
         <translation>Рабочая директория &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="450"/>
+        <location filename="../src/tasks/ExternalToolRunTask.cpp" line="449"/>
         <source>Launching %1 tool: %2 %3</source>
         <translation>Запуск инструмента %1: %2 %3</translation>
     </message>
@@ -1207,7 +1621,7 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::ExtractAnnotatedRegionTask</name>
     <message>
-        <location filename="../src/tasks/ExtractAnnotatedRegionTask.cpp" line="33"/>
+        <location filename="../src/tasks/ExtractAnnotatedRegionTask.cpp" line="34"/>
         <source>Extract annotated regions</source>
         <translation>Разбиение последовательности на аннотированные регионы</translation>
     </message>
@@ -1223,62 +1637,62 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::GUrlUtils</name>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="73"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="142"/>
         <source>Renamed %1 to %2</source>
         <translation>Старый файл %1 переименован  в %2</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="77"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="146"/>
         <source>Failed to rename %1 to %2</source>
         <translation>Не удалось переименовать %1 в %2</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="221"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="290"/>
         <source>Directory is not specified</source>
         <translation>Директория не указана</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="226"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="295"/>
         <source>Directory can&apos;t be created: %1</source>
         <translation>Невозможно создать директорию: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="231"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="300"/>
         <source>Directory can&apos;t be read: %1</source>
         <translation>Файлы директории %1 невозможно открыть на чтение</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="273"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="342"/>
         <source>File path is not specified</source>
         <translation>Путь до файла не задан</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="276"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="345"/>
         <source>Directory path instead of file path</source>
         <translation>Путь до директории вместо пути до файла</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="326"/>
+        <location filename="../src/util/GUrlUtils.cpp" line="403"/>
         <source>Can not create a directory: %1</source>
         <translation>Невозможно создать директорию: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="386"/>
-        <source>%1 is not a local file [%2]</source>
-        <translation>%1 не является локальным файлом [%2]</translation>
+        <location filename="../src/util/GUrlUtils.cpp" line="453"/>
+        <source>%1 is not a local file [%2].</source>
+        <translation>%1 is not a local file [%2].</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="395"/>
-        <source>Can not create a directory [%1]</source>
-        <translation>Невозможно создать директорию [%1]</translation>
+        <location filename="../src/util/GUrlUtils.cpp" line="462"/>
+        <source>Can not create a directory [%1].</source>
+        <translation>Can not create a directory [%1].</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.cpp" line="400"/>
-        <source>%1 is a directory [%2]</source>
-        <translation>%1 это директория [%2]</translation>
+        <location filename="../src/util/GUrlUtils.cpp" line="467"/>
+        <source>%1 is a directory [%2].</source>
+        <translation>%1 is a directory [%2].</translation>
     </message>
     <message>
-        <location filename="../src/util/GUrlUtils.h" line="126"/>
+        <location filename="../src/util/GUrlUtils.h" line="133"/>
         <source>Output URL</source>
         <translation>Выходной путь</translation>
     </message>
@@ -1286,9 +1700,14 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::GetDasIdsBySequenceTask</name>
     <message>
-        <location filename="../src/tasks/PicrApiTask.cpp" line="378"/>
+        <location filename="../src/tasks/PicrApiTask.cpp" line="423"/>
         <source>Get an ID for the sequence</source>
         <translation>Получить идентификатор для последовательности</translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/PicrApiTask.cpp" line="494"/>
+        <source>undefined error (code %1)</source>
+        <translation>undefined error (code %1)</translation>
     </message>
 </context>
 <context>
@@ -1326,22 +1745,22 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::ImportDirToDatabaseTask</name>
     <message>
-        <location filename="../src/tasks/shared_db/ImportDirToDatabaseTask.cpp" line="35"/>
+        <location filename="../src/tasks/shared_db/ImportDirToDatabaseTask.cpp" line="36"/>
         <source>Import directory %1 to the database</source>
         <translation>Импорт директории %1 в базу данных</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportDirToDatabaseTask.cpp" line="41"/>
+        <location filename="../src/tasks/shared_db/ImportDirToDatabaseTask.cpp" line="43"/>
         <source>It is not a directory: </source>
         <translation>Это не является директорией: </translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportDirToDatabaseTask.cpp" line="42"/>
+        <location filename="../src/tasks/shared_db/ImportDirToDatabaseTask.cpp" line="44"/>
         <source>Invalid database reference</source>
         <translation>Неверный референс базы данных</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportDirToDatabaseTask.cpp" line="90"/>
+        <location filename="../src/tasks/shared_db/ImportDirToDatabaseTask.cpp" line="92"/>
         <source>Import was cancelled</source>
         <translation>Импорт был отменен</translation>
     </message>
@@ -1349,32 +1768,32 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::ImportDocumentToDatabaseTask</name>
     <message>
-        <location filename="../src/tasks/shared_db/ImportDocumentToDatabaseTask.cpp" line="34"/>
+        <location filename="../src/tasks/shared_db/ImportDocumentToDatabaseTask.cpp" line="35"/>
         <source>Import document %1 to the database</source>
         <translation>Импорт документа %1 в базу данных</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportDocumentToDatabaseTask.cpp" line="40"/>
+        <location filename="../src/tasks/shared_db/ImportDocumentToDatabaseTask.cpp" line="42"/>
         <source>Invalid document to import</source>
         <translation>Некорректный документ для импорта</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportDocumentToDatabaseTask.cpp" line="41"/>
+        <location filename="../src/tasks/shared_db/ImportDocumentToDatabaseTask.cpp" line="43"/>
         <source>Invalid database reference</source>
         <translation>Некорректный референс базы данных</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportDocumentToDatabaseTask.cpp" line="72"/>
+        <location filename="../src/tasks/shared_db/ImportDocumentToDatabaseTask.cpp" line="74"/>
         <source>Source document was removed, can&apos;t set object relations</source>
         <translation>Источник документа был удален, невозможно установить связи объекта</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportDocumentToDatabaseTask.cpp" line="148"/>
+        <location filename="../src/tasks/shared_db/ImportDocumentToDatabaseTask.cpp" line="163"/>
         <source>Can&apos;t set object relation: target object is not found in the source document (%1)</source>
         <translation>Невозможно установить связь объекта: контрольный объект не найден в исходном документе (%1)</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportDocumentToDatabaseTask.cpp" line="152"/>
+        <location filename="../src/tasks/shared_db/ImportDocumentToDatabaseTask.cpp" line="167"/>
         <source>Can&apos;t set object relation: target object is not imported (%1)</source>
         <translation>Невозможно установить связь объекта: контрольный объект не импортирован (%1)</translation>
     </message>
@@ -1382,28 +1801,28 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::ImportFileToDatabaseTask</name>
     <message>
-        <location filename="../src/tasks/shared_db/ImportFileToDatabaseTask.cpp" line="45"/>
+        <location filename="../src/tasks/shared_db/ImportFileToDatabaseTask.cpp" line="44"/>
         <source>Import file %1 to the database</source>
         <translation>Импорт файла %1 в базу данных</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportFileToDatabaseTask.cpp" line="53"/>
+        <location filename="../src/tasks/shared_db/ImportFileToDatabaseTask.cpp" line="52"/>
         <source>It is not a file: </source>
         <translation>Это не является файлом: </translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportFileToDatabaseTask.cpp" line="54"/>
+        <location filename="../src/tasks/shared_db/ImportFileToDatabaseTask.cpp" line="53"/>
         <source>Invalid database reference</source>
         <translation>Неверный референс базы данных</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportFileToDatabaseTask.cpp" line="59"/>
-        <location filename="../src/tasks/shared_db/ImportFileToDatabaseTask.cpp" line="106"/>
+        <location filename="../src/tasks/shared_db/ImportFileToDatabaseTask.cpp" line="58"/>
+        <location filename="../src/tasks/shared_db/ImportFileToDatabaseTask.cpp" line="101"/>
         <source>File format is not recognized</source>
         <translation>Формат файла не распознается</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportFileToDatabaseTask.cpp" line="79"/>
+        <location filename="../src/tasks/shared_db/ImportFileToDatabaseTask.cpp" line="74"/>
         <source>Unrecognized url: </source>
         <translation>Ссылка не распознается:</translation>
     </message>
@@ -1411,32 +1830,32 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::ImportObjectToDatabaseTask</name>
     <message>
-        <location filename="../src/tasks/shared_db/ImportObjectToDatabaseTask.cpp" line="34"/>
+        <location filename="../src/tasks/shared_db/ImportObjectToDatabaseTask.cpp" line="35"/>
         <source>Import object %1 to database</source>
         <translation>Импорт объекта %1 в базу данных</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportObjectToDatabaseTask.cpp" line="40"/>
+        <location filename="../src/tasks/shared_db/ImportObjectToDatabaseTask.cpp" line="42"/>
         <source>Invalid object to import</source>
         <translation>Некорректный объект для импорта</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportObjectToDatabaseTask.cpp" line="41"/>
+        <location filename="../src/tasks/shared_db/ImportObjectToDatabaseTask.cpp" line="43"/>
         <source>Invalid database reference</source>
         <translation>Неверный референс базы данных</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportObjectToDatabaseTask.cpp" line="52"/>
+        <location filename="../src/tasks/shared_db/ImportObjectToDatabaseTask.cpp" line="50"/>
         <source>Error! No DBI</source>
         <translation>Ошибка! Нет DBI</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportObjectToDatabaseTask.cpp" line="54"/>
+        <location filename="../src/tasks/shared_db/ImportObjectToDatabaseTask.cpp" line="52"/>
         <source>Error! No object DBI</source>
         <translation>Ошибка! Нет объекта DBI</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportObjectToDatabaseTask.cpp" line="56"/>
+        <location filename="../src/tasks/shared_db/ImportObjectToDatabaseTask.cpp" line="57"/>
         <source>The object has been removed</source>
         <translation>Объект был удален</translation>
     </message>
@@ -1449,59 +1868,59 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
         <translation>Импорт в базу данных</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="51"/>
+        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="52"/>
         <source>Import complete: %1 seconds</source>
         <translation>Импорт будет завершен: %1 секунд</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="78"/>
+        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="79"/>
         <source>The import task was cancelled.</source>
         <translation>Задача импорта была отменена.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="80"/>
+        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="81"/>
         <source>The import task has failed.</source>
         <translation>Задача импорта завершилась неудачно.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="82"/>
+        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="83"/>
         <source>The import task has finished.</source>
         <translation>Задача импорта была завершена.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="123"/>
+        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="124"/>
         <source>Successfully imported files:&lt;br&gt;&lt;br&gt;</source>
         <translation>Файлы удачно импортированы: &lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="160"/>
+        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="161"/>
         <source>Successfully imported objects:&lt;br&gt;&lt;br&gt;</source>
         <translation>Объекты удачно импортированы:&lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="177"/>
-        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="268"/>
+        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="178"/>
+        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="269"/>
         <source>Document </source>
         <translation>Документ </translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="204"/>
-        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="295"/>
+        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="205"/>
+        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="296"/>
         <source>Just objects without a document:</source>
         <translation>Только объекты без документа:</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="214"/>
+        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="215"/>
         <source>Not imported files:&lt;br&gt;&lt;br&gt;</source>
         <translation>Файлы не импортированы:&lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="235"/>
+        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="236"/>
         <source>Import was cancelled</source>
         <translation>Импорт был отменен</translation>
     </message>
     <message>
-        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="251"/>
+        <location filename="../src/tasks/shared_db/ImportToDatabaseTask.cpp" line="252"/>
         <source>Not imported objects:&lt;br&gt;&lt;br&gt;</source>
         <translation>Объекты не импортированы:&lt;br&gt;&lt;br&gt;</translation>
     </message>
@@ -1509,148 +1928,153 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::L10N</name>
     <message>
-        <location filename="../src/globals/L10n.h" line="35"/>
+        <location filename="../src/globals/L10n.h" line="37"/>
         <source>Error!</source>
         <translation>Ошибка!</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="36"/>
+        <location filename="../src/globals/L10n.h" line="38"/>
         <source>Warning!</source>
         <translation>Внимание!</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="38"/>
+        <location filename="../src/globals/L10n.h" line="40"/>
         <source>Out of memory!</source>
         <translation>Недостаточно памяти!</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="39"/>
+        <location filename="../src/globals/L10n.h" line="41"/>
         <source>Internal error!</source>
         <translation>Внутренняя ошибка!</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="44"/>
+        <location filename="../src/globals/L10n.h" line="48"/>
         <source>Write error: &apos;%1&apos;</source>
         <translation>Ошибка записи: %1</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="45"/>
+        <location filename="../src/globals/L10n.h" line="49"/>
         <source>Read error: %1</source>
         <translation>Ошибка чтения: %1</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="46"/>
+        <location filename="../src/globals/L10n.h" line="50"/>
         <source>File is too large: &apos;%1&apos;</source>
         <translation>Слишком большой размер файла: %1</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="42"/>
+        <location filename="../src/globals/L10n.h" line="46"/>
         <source>Error opening file for reading: &apos;%1&apos;</source>
         <translation>Ошибка открытия файла для чтения: &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/globals/L10n.h" line="43"/>
+        <source>Internal error! The object unexpectedly does not exist: </source>
+        <translation>Internal error! The object unexpectedly does not exist: </translation>
+    </message>
+    <message>
+        <location filename="../src/globals/L10n.h" line="47"/>
         <source>Error opening file for writing: &apos;%1&apos;</source>
         <translation>Ошибка открытия файла для записи: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="47"/>
+        <location filename="../src/globals/L10n.h" line="51"/>
         <source>File not found: &apos;%1&apos;</source>
         <translation>Файл не найден: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="48"/>
+        <location filename="../src/globals/L10n.h" line="52"/>
         <source>&apos;%1&apos; is not a file</source>
         <translation>&apos;%1&apos; это не файл</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="49"/>
+        <location filename="../src/globals/L10n.h" line="53"/>
         <source>Directory not found: &apos;%1&apos;</source>
         <translation>Директория не найдена: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="50"/>
+        <location filename="../src/globals/L10n.h" line="54"/>
         <source>Error opening directory: &apos;%1&apos;</source>
         <translation>Ошибка открытия директории: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="51"/>
+        <location filename="../src/globals/L10n.h" line="55"/>
         <source>&apos;%1&apos; is not a directory</source>
         <translation>&apos;%1&apos; это не директория</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="54"/>
+        <location filename="../src/globals/L10n.h" line="58"/>
         <source>&apos;%1&apos; does not match database object URL format</source>
         <translation>&apos;%1&apos; не соответствует формату пути объекта базы данных</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="55"/>
+        <location filename="../src/globals/L10n.h" line="59"/>
         <source>&apos;%1&apos; does not match database folder URL format</source>
         <translation>&apos;%1&apos; не соответствует формату пути папки базы данных</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="56"/>
+        <location filename="../src/globals/L10n.h" line="60"/>
         <source>Unable to connect to the database &apos;%1&apos;. Check your connection settings in File -&gt; Connect to shared database</source>
         <translation>Невозможно подключиться к базе данных &apos;%1&apos;. Проверьте настройки соединения в настройках Файл -&gt; Подключение к удаленной базе данных</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="58"/>
+        <location filename="../src/globals/L10n.h" line="62"/>
         <source>Unable to find the object &apos;%1&apos; in the database &apos;%2&apos;</source>
         <translation>Невозможно найти объект &apos;%1&apos; в базе данных &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="61"/>
+        <location filename="../src/globals/L10n.h" line="65"/>
         <source>Unable to find the folder &apos;%1&apos; with the specified path in the database &apos;%2&apos;</source>
         <translation>Невозможно найти папку &apos;%1&apos; по указанному пути в базе данных &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="63"/>
+        <location filename="../src/globals/L10n.h" line="67"/>
         <source>You do not have write permissions to the database &apos;%1&apos;</source>
         <translation>У вас нет прав на запись в базу данных &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="65"/>
+        <location filename="../src/globals/L10n.h" line="69"/>
         <source>Invalid file format. Expected file format: %1,  File: %2</source>
         <translation>Неверный формат файла. Ожидаемый формат: %1, Файл: %2</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="66"/>
+        <location filename="../src/globals/L10n.h" line="70"/>
         <source>Invalid file format! File: %1</source>
         <translation>Неверный формат файла: %1</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="70"/>
+        <location filename="../src/globals/L10n.h" line="74"/>
         <source>Can&apos;t save image to file %1, format %2</source>
         <translation>Не могу сохранить изображение в файл %1 формата %2</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="72"/>
+        <location filename="../src/globals/L10n.h" line="76"/>
         <source>Document not found: %1</source>
         <translation>Документ не найден: %1</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="73"/>
+        <location filename="../src/globals/L10n.h" line="77"/>
         <source> bp</source>
         <translatorcomment>пара остатков</translatorcomment>
         <translation> п.о</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="87"/>
+        <location filename="../src/globals/L10n.h" line="96"/>
         <source>Direct</source>
         <translation>Прямая</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="88"/>
+        <location filename="../src/globals/L10n.h" line="97"/>
         <source>Reverse-complementary</source>
         <translation>Обратно-комплементарная</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="90"/>
+        <location filename="../src/globals/L10n.h" line="99"/>
         <source>Required</source>
         <translation>Требуемый</translation>
     </message>
     <message>
-        <location filename="../src/globals/L10n.h" line="37"/>
+        <location filename="../src/globals/L10n.h" line="39"/>
         <source>Internal error, bad argument: %1</source>
         <translation>Внутренняя ошибка! Неверный аргумент: %1</translation>
     </message>
@@ -1658,22 +2082,22 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::LoadDasDocumentTask</name>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="101"/>
+        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="110"/>
         <source>Cannot load cached document: %1</source>
         <translation>Невозможно загрузить кэшированный документ: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="107"/>
+        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="116"/>
         <source>Cannot save document: %1</source>
         <translation>Невозможно сохранить документ: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="119"/>
+        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="128"/>
         <source>Cannot find DAS reference sequence: %1</source>
         <translation>Невозможно найти референсную последовательность DAS: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="138"/>
+        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="147"/>
         <source>Cannot find DAS features for &apos;%1&apos; on %2</source>
         <translation>Невозможно найти аннотации DAS для &apos;%1&apos; в %2</translation>
     </message>
@@ -1681,17 +2105,17 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::LoadDasFeaturesTask</name>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="376"/>
+        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="391"/>
         <source>Load DAS annotations for current sequence</source>
         <translation>Загрузка DAS аннотаций для текущей последовательности</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="398"/>
+        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="416"/>
         <source>Can not receive response from the server &quot;</source>
         <translation>Невозможно получить ответ от сервера</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="406"/>
+        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="424"/>
         <source>&lt;font size=&quot;5&quot; color=&quot;green&quot;&gt;Received %1 annotations from the server &quot;%2&quot;&lt;/font&gt;&lt;br&gt;</source>
         <translation>&lt;font size=&quot;5&quot; color=&quot;green&quot;&gt;Поступили %1 аннотации от сервера &quot;%2&quot;&lt;/font&gt;&lt;br&gt;</translation>
     </message>
@@ -1699,17 +2123,22 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::LoadDasObjectTask</name>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="235"/>
+        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="242"/>
         <source>Load DAS data for &apos;%1&apos; from %2</source>
         <translation>Загрузка данных DAS для &apos;%1&apos; из %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="293"/>
+        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="301"/>
         <source>Sequence with ID=%1 is not found.</source>
         <translation>Последовательность с идентификатором=%1 не найдена.</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="360"/>
+        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="353"/>
+        <source>undefined error (code %1)</source>
+        <translation>undefined error (code %1)</translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/LoadDASDocumentTask.cpp" line="375"/>
         <source>Remote server does not respond</source>
         <translation>Удаленный сервер не отвечает</translation>
     </message>
@@ -1717,7 +2146,7 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::LoadDataFromEntrezTask</name>
     <message>
-        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="414"/>
+        <location filename="../src/tasks/LoadRemoteDocumentTask.cpp" line="424"/>
         <source>Sequence with ID=%1 is not found.</source>
         <translation>Последовательность с идентификатором=%1 не найдена.</translation>
     </message>
@@ -1725,43 +2154,43 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::LoadDocumentTask</name>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="219"/>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="229"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="227"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="242"/>
         <source>Read document: &apos;%1&apos;</source>
         <translation>Чтение документа: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="250"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="263"/>
         <source>Document format is NULL!</source>
         <translation>Формат документа NULL!</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="251"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="264"/>
         <source>IO adapter factory is NULL!</source>
         <translation>IO адаптер NULL!</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="418"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="436"/>
         <source>Document not found %1</source>
         <translation>Документ не найден: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="438"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="456"/>
         <source>Not enough memory to load document %1</source>
         <translation>Недостаточно памяти для загрузки документа %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="454"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="472"/>
         <source>Maximum number of objects per document limit reached for %1. Try different options for opening the document!</source>
         <translation>Максимальное количество объектов в документе достигнуто для %1. Попробуйте другие способы для открытия документа!</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="485"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="502"/>
         <source>Object not found: %1</source>
         <translation>Объект не найден: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="492"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="509"/>
         <source>Can&apos;t add object. Document format constraints check failed: %1</source>
         <translation>Невозможно добавить объект. Проверка ограничений формата завершилась неудачно: %1</translation>
     </message>
@@ -1782,37 +2211,37 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::LoadUnloadedDocumentTask</name>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="127"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="130"/>
         <source>Document was removed</source>
         <translation>Документ был удалён</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="176"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="179"/>
         <source>Project Document:</source>
         <translation>Документ проекта:</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="160"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="163"/>
         <source>Document is locked</source>
         <translation>Документ заблокирован</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="86"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="89"/>
         <source>Load &apos;%1&apos;</source>
         <translation>Загрузка: %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="101"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="104"/>
         <source>Starting load document from %1, document format %2</source>
         <translation>Начата загрузка из &quot;%1&quot;, формат документа: %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="94"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="97"/>
         <source>Document not found</source>
         <translation>Документ не найден</translation>
     </message>
     <message>
-        <location filename="../src/tasks/LoadDocumentTask.cpp" line="194"/>
+        <location filename="../src/tasks/LoadDocumentTask.cpp" line="197"/>
         <source>Annotation object not found</source>
         <translation>Не найдена таблица аннотаций</translation>
     </message>
@@ -1828,28 +2257,28 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::MSAUtils</name>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="152"/>
+        <location filename="../src/util/MSAUtils.cpp" line="178"/>
         <source>Alphabets of the alignment and the sequence cannot be derived</source>
         <translation>Алфавиты выравнивания и последовательности не могут быть получены</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="160"/>
+        <location filename="../src/util/MSAUtils.cpp" line="186"/>
         <source>Sequences have different alphabets.</source>
         <translation>Алфавиты последовательностей не совпадают.</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="188"/>
-        <location filename="../src/util/MSAUtils.cpp" line="193"/>
+        <location filename="../src/util/MSAUtils.cpp" line="214"/>
+        <location filename="../src/util/MSAUtils.cpp" line="219"/>
         <source>Alignment is empty!</source>
         <translation>Выравнивание пусто!</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="200"/>
+        <location filename="../src/util/MSAUtils.cpp" line="226"/>
         <source>Sequences in alignment have different sizes!</source>
         <translation>Последовательности в выравнивании имеют разный размер!</translation>
     </message>
     <message>
-        <location filename="../src/util/MSAUtils.cpp" line="288"/>
+        <location filename="../src/util/MSAUtils.cpp" line="313"/>
         <source>Can&apos;t find a row in an alignment!</source>
         <translation>Невозможно найти строку в выравнивании!</translation>
     </message>
@@ -1857,46 +2286,76 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::ModifySequenceContentTask</name>
     <message>
-        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="55"/>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="54"/>
         <source>Modify sequence task</source>
         <translation>Задача изменения последовательности</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="65"/>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="64"/>
         <source>Document is locked</source>
         <translation>Документ заблокирован</translation>
     </message>
     <message>
-        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="69"/>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="68"/>
         <source>Region to delete is larger than the whole sequence</source>
         <translation>Регион для удаления больше чем вся последовательность</translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="125"/>
+        <source>Some annotations have qualifiers referring a sequence region that has been removed during the sequence editing. You might want to change the qualifiers manually. Find them in the table below</source>
+        <translation>Некоторые аннотации имеют квалификаторы, которые ссылаются на регионы последовательности, которые были удалены в процессе редактирования</translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="129"/>
+        <source>Annotation Name</source>
+        <translation>Имя аннотации</translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="131"/>
+        <source>Annotation Location</source>
+        <translation>Расположение аннотации</translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="133"/>
+        <source>Qualifier Name</source>
+        <translation>Имя квалификатора</translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="135"/>
+        <source>Referenced Region</source>
+        <translation>Регион</translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/ModifySequenceObjectTask.cpp" line="140"/>
+        <source>Unexpected qualifiers count</source>
+        <translation>Unexpected qualifiers count</translation>
     </message>
 </context>
 <context>
     <name>U2::MsaDbiUtils</name>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="766"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="783"/>
         <source>Can&apos;t rename an alignment to an empty name!</source>
         <translation>Невозможно переименовать выравнивание, т.к. имя пустое!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="795"/>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="802"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="812"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="819"/>
         <source>Failed to insert gaps into an alignment!</source>
         <translation>Не удалось вставить пробелы в выравнивание!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="935"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="956"/>
         <source>Failed to crop an alignment!</source>
         <translation>Не удалось обрезать выравнивание!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="1016"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="1060"/>
         <source>Failed to add a row to an alignment!</source>
         <translation>Не удалось добавить строку в выравнивание!</translation>
     </message>
     <message>
-        <location filename="../src/util/MsaDbiUtils.cpp" line="1046"/>
+        <location filename="../src/util/MsaDbiUtils.cpp" line="1090"/>
         <source>Can&apos;t rename a row to an empty name!</source>
         <translation>Не удалось переименовать строку, т.к. имя пустое!</translation>
     </message>
@@ -1904,22 +2363,22 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::RelocateDocumentTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="345"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="353"/>
         <source>Relocate document %1 -&gt; %2</source>
         <translation>Перемещение документа %1 -&gt; %2</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="352"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="360"/>
         <source>No active project found</source>
         <translation>Нет проекта</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="356"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="364"/>
         <source>Project is locked</source>
         <translation>Проект заблокирован</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="365"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="373"/>
         <source>Only unloaded objects can be relocated</source>
         <translation>Можно перемещать только выгруженные документы</translation>
     </message>
@@ -1927,7 +2386,7 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::RemoveAnnotationsTask</name>
     <message>
-        <location filename="../src/tasks/RemoveAnnotationsTask.cpp" line="50"/>
+        <location filename="../src/tasks/RemoveAnnotationsTask.cpp" line="46"/>
         <source>Waiting for object lock released</source>
         <translation>Ожидание снятия блокировки</translation>
     </message>
@@ -1948,22 +2407,27 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
 <context>
     <name>U2::ReplyHandler</name>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="89"/>
+        <location filename="../src/tasks/UniprotBlastTask.cpp" line="90"/>
         <source>Can&apos;t receive result from the server: nothing to download</source>
         <translation>Невозможно получить результат с сервера: ничего не скачано</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="136"/>
+        <location filename="../src/tasks/UniprotBlastTask.cpp" line="139"/>
         <source>Unexpected server response</source>
         <translation>Неожиданный ответ сервера</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="160"/>
-        <source>Network request error %1</source>
-        <translation>Ошибка запроса сети %1</translation>
+        <location filename="../src/tasks/UniprotBlastTask.cpp" line="169"/>
+        <source>undefined error (code %1)</source>
+        <translation>undefined error (code %1)</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="172"/>
+        <location filename="../src/tasks/UniprotBlastTask.cpp" line="171"/>
+        <source>Network error: %1</source>
+        <translation>Network error: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/tasks/UniprotBlastTask.cpp" line="189"/>
         <source>Remote server doesn&apos;t respond</source>
         <translation>Удаленный сервер не отвечает</translation>
     </message>
@@ -1982,24 +2446,40 @@ approved gene symbols and names for human genes from the latest HGNC dataset, ma
     </message>
 </context>
 <context>
+    <name>U2::ReverseComplementSequenceTask</name>
+    <message>
+        <location filename="../src/tasks/ReverseSequenceTask.cpp" line="40"/>
+        <source>Reverse Complement Sequence Task</source>
+        <translation>Reverse Complement Sequence Task</translation>
+    </message>
+</context>
+<context>
+    <name>U2::ReverseSequenceTask</name>
+    <message>
+        <location filename="../src/tasks/ReverseSequenceTask.cpp" line="52"/>
+        <source>Reverse Sequence Task</source>
+        <translation>Reverse Sequence Task</translation>
+    </message>
+</context>
+<context>
     <name>U2::SaveCopyAndAddToProjectTask</name>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="305"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="313"/>
         <source>Save a copy %1</source>
         <translation>Сохранение копии %1</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="323"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="331"/>
         <source>No active project found</source>
         <translation>Нет проекта</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="324"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="332"/>
         <source>Project is locked</source>
         <translation>Проект заблокирован</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="328"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="336"/>
         <source>Document is already added to the project %1</source>
         <translation>Документ уже добавлен в проект: %1</translation>
     </message>
@@ -2093,7 +2573,7 @@ UGENE содержит несохраненные изменения.</translati
         <translation>Хотите сохранить изменения в другой файл?</translation>
     </message>
     <message>
-        <location filename="../src/tasks/SaveDocumentTask.cpp" line="283"/>
+        <location filename="../src/tasks/SaveDocumentTask.cpp" line="291"/>
         <source>Save as</source>
         <translation>Сохранить как</translation>
     </message>
@@ -2261,18 +2741,18 @@ UGENE содержит несохраненные изменения.</translati
         <translation>Неверный тип базы: %1</translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="316"/>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="317"/>
         <source>Invalid database id</source>
         <translation>Неверный идентификатор базы данных</translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="351"/>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="367"/>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="352"/>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="368"/>
         <source>DbiPool: DBI not found! Dbi ID: %1</source>
         <translation>DbiPool: DBI не найден! Dbi ID: %1</translation>
     </message>
     <message>
-        <location filename="../src/dbi/U2DbiRegistry.cpp" line="516"/>
+        <location filename="../src/dbi/U2DbiRegistry.cpp" line="517"/>
         <source>Invalid dbi reference</source>
         <translation>Неверный референс dbi</translation>
     </message>
@@ -2288,7 +2768,7 @@ UGENE содержит несохраненные изменения.</translati
 <context>
     <name>U2::U2DbiUtils</name>
     <message>
-        <location filename="../src/dbi/U2DbiUtils.cpp" line="47"/>
+        <location filename="../src/dbi/U2DbiUtils.cpp" line="49"/>
         <source>Feature is not supported: %1, dbi: %2</source>
         <translation>Функция не поддерживается: %1, dbi: %2</translation>
     </message>
@@ -2296,12 +2776,12 @@ UGENE содержит несохраненные изменения.</translati
 <context>
     <name>U2::U2SequenceObject</name>
     <message>
-        <location filename="../src/gobjects/DNASequenceObject.cpp" line="195"/>
+        <location filename="../src/gobjects/DNASequenceObject.cpp" line="194"/>
         <source>Internal error, sequence alphabet id &apos;%1&apos; is invalid</source>
         <translation>Внутренняя ошибка, неверный алфавит последовательности &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/gobjects/DNASequenceObject.cpp" line="204"/>
+        <location filename="../src/gobjects/DNASequenceObject.cpp" line="203"/>
         <source>Modified sequence &amp; region have different alphabet</source>
         <translation>Измененная последовательность и регион имеют разные алфавиты</translation>
     </message>
@@ -2309,31 +2789,32 @@ UGENE содержит несохраненные изменения.</translati
 <context>
     <name>U2::U2SequenceUtils</name>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="53"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="54"/>
         <source>Alphabet is not found!</source>
         <translation>Алфавит не найден!</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="339"/>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="518"/>
-        <source>Failed to derive sequence alphabet!</source>
-        <translation>Не удалось распознать алфавит!</translation>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="97"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="110"/>
+        <source>Invalid sequence DBI</source>
+        <translation>Invalid sequence DBI</translation>
     </message>
     <message>
-        <location filename="../src/util/U2SequenceUtils.cpp" line="475"/>
-        <source>Sequence was not imported. Probably, this is because the sequence is empty.</source>
-        <translation>Последовательность не была импортирована. Возможно это произошло из-за того, что последовательность является пустой.</translation>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="354"/>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="533"/>
+        <source>Failed to derive sequence alphabet!</source>
+        <translation>Не удалось распознать алфавит!</translation>
     </message>
 </context>
 <context>
     <name>U2::UniprotBlastAndLoadDASAnnotations</name>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="546"/>
+        <location filename="../src/tasks/UniprotBlastTask.cpp" line="602"/>
         <source>BLAST IDs and DAS annotations</source>
         <translation>BLAST идентификаторы и DAS аннотации</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="601"/>
+        <location filename="../src/tasks/UniprotBlastTask.cpp" line="657"/>
         <source>Server &quot;%1&quot; is not available!</source>
         <translation>Сервер &quot;%1&quot; недоступен!</translation>
     </message>
@@ -2341,22 +2822,22 @@ UGENE содержит несохраненные изменения.</translati
 <context>
     <name>U2::UniprotBlastTask</name>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="448"/>
+        <location filename="../src/tasks/UniprotBlastTask.cpp" line="504"/>
         <source>Get an ID for the sequence</source>
         <translation>Получить идентификатор для последовательности</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="488"/>
+        <location filename="../src/tasks/UniprotBlastTask.cpp" line="544"/>
         <source>Reply from the BLAST server is empty. Similar sequences not found</source>
         <translation>Не поступило ответа от сервера BLAST. Похожие последовательности не найдены</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="530"/>
+        <location filename="../src/tasks/UniprotBlastTask.cpp" line="586"/>
         <source>An empty sequence is searched</source>
         <translation>Найдена пустая последовательность</translation>
     </message>
     <message>
-        <location filename="../src/tasks/UniprotBlastTask.cpp" line="531"/>
+        <location filename="../src/tasks/UniprotBlastTask.cpp" line="587"/>
         <source>Settings are invalid</source>
         <translation>Неверные настройки</translation>
     </message>
@@ -2375,6 +2856,14 @@ UGENE содержит несохраненные изменения.</translati
         <location filename="../src/io/VFSAdapter.cpp" line="32"/>
         <source>Memory buffer</source>
         <translation>Буфер в памяти</translation>
+    </message>
+</context>
+<context>
+    <name>U2SequenceImporter</name>
+    <message>
+        <location filename="../src/util/U2SequenceUtils.cpp" line="276"/>
+        <source>Sequence was not imported. Probably, this is because the sequence is empty.</source>
+        <translation>Последовательность не была импортирована. Возможно это произошло из-за того, что последовательность является пустой.</translation>
     </message>
 </context>
 </TS>

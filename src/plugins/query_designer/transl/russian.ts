@@ -187,7 +187,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::CompareAnnotationGroupsTask</name>
     <message>
-        <location filename="../src/QDTests.h" line="68"/>
+        <location filename="../src/QDTests.h" line="67"/>
         <source>Compare annotation tables task</source>
         <translation>Задача сравнения аннотаций</translation>
     </message>
@@ -229,17 +229,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::LocalWorkflow::QDPrompter</name>
     <message>
-        <location filename="../src/QDWorker.cpp" line="133"/>
+        <location filename="../src/QDWorker.cpp" line="132"/>
         <source>unset</source>
         <translation>не указан</translation>
     </message>
     <message>
-        <location filename="../src/QDWorker.cpp" line="134"/>
+        <location filename="../src/QDWorker.cpp" line="133"/>
         <source>from %1</source>
         <translation>из %1</translation>
     </message>
     <message>
-        <location filename="../src/QDWorker.cpp" line="137"/>
+        <location filename="../src/QDWorker.cpp" line="136"/>
         <source>Analyze each nucleotide sequence &lt;u&gt;%1&lt;/u&gt; with &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation>Анализ каждой нуклеотидной послдовательности &lt;u&gt;%1&lt;/u&gt; с &lt;u&gt;%2&lt;/u&gt;.</translation>
     </message>
@@ -247,67 +247,67 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::LocalWorkflow::QDWorker</name>
     <message>
-        <location filename="../src/QDWorker.cpp" line="73"/>
+        <location filename="../src/QDWorker.cpp" line="72"/>
         <source>Input sequences</source>
         <translation>Входные последовательности</translation>
     </message>
     <message>
-        <location filename="../src/QDWorker.cpp" line="74"/>
+        <location filename="../src/QDWorker.cpp" line="73"/>
         <source>A nucleotide sequence to analyze.</source>
         <translation>Последовательность для анализа.</translation>
     </message>
     <message>
-        <location filename="../src/QDWorker.cpp" line="77"/>
+        <location filename="../src/QDWorker.cpp" line="76"/>
         <source>Result annotations</source>
         <translation>Выходные аннотации</translation>
     </message>
     <message>
-        <location filename="../src/QDWorker.cpp" line="78"/>
+        <location filename="../src/QDWorker.cpp" line="77"/>
         <source>A set of annotations marking found results.</source>
         <translation>Найден набор аннотаций.</translation>
     </message>
     <message>
-        <location filename="../src/QDWorker.cpp" line="89"/>
+        <location filename="../src/QDWorker.cpp" line="88"/>
         <source>Schema</source>
         <translation>Схема</translation>
     </message>
     <message>
-        <location filename="../src/QDWorker.cpp" line="89"/>
+        <location filename="../src/QDWorker.cpp" line="88"/>
         <source>Schema file.</source>
         <translation>Файл схемы.</translation>
     </message>
     <message>
-        <location filename="../src/QDWorker.cpp" line="90"/>
+        <location filename="../src/QDWorker.cpp" line="89"/>
         <source>Offset</source>
         <translation>Смещение</translation>
     </message>
     <message>
-        <location filename="../src/QDWorker.cpp" line="91"/>
+        <location filename="../src/QDWorker.cpp" line="90"/>
         <source>Specifies left and right offsets for merged annotation (if &apos;Merge&apos; parameter is set to true).</source>
         <translation>Задает правый и левый сдвиги для соединяемых аннотаций (если установлен соответствующий параметр для соединения).</translation>
     </message>
     <message>
-        <location filename="../src/QDWorker.cpp" line="92"/>
+        <location filename="../src/QDWorker.cpp" line="91"/>
         <source>Merge</source>
         <translation>Соединить</translation>
     </message>
     <message>
-        <location filename="../src/QDWorker.cpp" line="93"/>
+        <location filename="../src/QDWorker.cpp" line="92"/>
         <source>Merges regions of each result into single annotation if true.</source>
         <translation>Соединяет регионы каждого результата в одну аннотацию.</translation>
     </message>
     <message>
-        <location filename="../src/QDWorker.cpp" line="100"/>
+        <location filename="../src/QDWorker.cpp" line="99"/>
         <source>Annotate with UQL</source>
         <translation>Аннотирование при помощи UQL</translation>
     </message>
     <message>
-        <location filename="../src/QDWorker.cpp" line="101"/>
+        <location filename="../src/QDWorker.cpp" line="100"/>
         <source>Analyzes a nucleotide sequence using different algorithms(Repeat finder, ORF finder, etc.) imposing constraints on the positional relationship of the results.</source>
         <translation>Анализирует нуклеотидную последовательность используя различные алгоритмы учитывая ограничения на взаимное расположение результатов.</translation>
     </message>
     <message>
-        <location filename="../src/QDWorker.cpp" line="109"/>
+        <location filename="../src/QDWorker.cpp" line="108"/>
         <source>Query schemes</source>
         <translation>Схемы запросов</translation>
     </message>
@@ -638,10 +638,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/QDGroupsEditor.cpp" line="60"/>
         <source>Set Required Number</source>
         <translation>Задать число элементов</translation>
-    </message>
-    <message>
-        <source>Query Designer</source>
-        <translation type="obsolete">Дизайнер запросов</translation>
     </message>
     <message>
         <location filename="../src/QDGroupsEditor.cpp" line="109"/>

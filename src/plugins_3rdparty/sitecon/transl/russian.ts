@@ -469,7 +469,7 @@
         <translation>Неправильная последовательность для SITECON поиска : %1</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchWorker.cpp" line="280"/>
+        <location filename="../src/SiteconSearchWorker.cpp" line="279"/>
         <source>Found %1 TFBS</source>
         <translation>Найдено %1 возможных сайтов связывания ТФ</translation>
     </message>
@@ -492,10 +492,6 @@
         <location filename="../src/SiteconSearchWorker.cpp" line="82"/>
         <source>Annotation name for marking found regions.</source>
         <translation>Имя аннотации для разметки найденных регионов.</translation>
-    </message>
-    <message>
-        <source>Which strands should be searched: direct, complement or both.</source>
-        <translation type="obsolete">В каких стрендах последовательности следует искать ССТФ: прямых, комплементарных или всех.</translation>
     </message>
     <message>
         <location filename="../src/SiteconSearchWorker.cpp" line="102"/>
@@ -795,10 +791,6 @@
         <source>Calibrating second type error</source>
         <translation>Расчёт ошибки ошибки 2-го рода</translation>
     </message>
-    <message>
-        <source>alignment_is_not_nucleic</source>
-        <translation type="obsolete">Поддерживаются только нуклеотидные выравнивания</translation>
-    </message>
 </context>
 <context>
     <name>U2::SiteconBuildToFileTask</name>
@@ -1017,71 +1009,71 @@
 <context>
     <name>U2::SiteconSearchDialogController</name>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="91"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="86"/>
         <source>Search</source>
         <translation>Искать</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="92"/>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="154"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="87"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="149"/>
         <source>Cancel</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="154"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="149"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="166"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="161"/>
         <source>Progress: %1% </source>
         <translation>Прогресс  %1%</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="168"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="163"/>
         <source>%1 results found</source>
         <translation>найдено %1</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="187"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="182"/>
         <source>Select file with SITECON model</source>
         <translation>Выбор модели SITECON</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="196"/>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="295"/>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="305"/>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="315"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="191"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="292"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="302"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="312"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="232"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="227"/>
         <source>%1%,  first type error %2,  second type error %3</source>
         <translation>%1% err1=%2	err2=%3</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="295"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="292"/>
         <source>No model selected</source>
         <translation>Укажите файл модели</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="305"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="302"/>
         <source>Range is too small</source>
         <translation>Слишком маленький регион для поиска</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="315"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="312"/>
         <source>Error parsing minumum score</source>
         <translation>Неразборчивая строка минимальной ошибки</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="379"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="376"/>
         <source>Complement strand</source>
         <translation>Только комплeментарные</translation>
     </message>
     <message>
-        <location filename="../src/SiteconSearchDialogController.cpp" line="379"/>
+        <location filename="../src/SiteconSearchDialogController.cpp" line="376"/>
         <source>Direct strand</source>
         <translation>Только прямые</translation>
     </message>

@@ -73,9 +73,9 @@ bool AppSettingsDialogController::checkCurrentState(bool saveStateInItem, bool s
     if (currentPage->pageState == NULL) {
         if (showError) {
             if (err.isEmpty()) {
-                err = tr("default_err");
+                err = tr("Error");
             }
-            QMessageBox::critical(this, tr("error"), err);
+            QMessageBox::critical(this, tr("Error"), err);
         }
         return false;
     }

@@ -4,7 +4,7 @@
 <context>
     <name>U2::ChromaViewAction</name>
     <message>
-        <location filename="../src/ChromaViewPlugin.cpp" line="138"/>
+        <location filename="../src/ChromaViewPlugin.cpp" line="148"/>
         <source>Show chromatogram</source>
         <translation>Показать хроматограмму</translation>
     </message>
@@ -75,12 +75,12 @@
 <context>
     <name>U2::ChromatogramViewRenderArea</name>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="511"/>
+        <location filename="../src/ChromatogramView.cpp" line="514"/>
         <source>Chromatogram view (zoom in to see base calls)</source>
         <translation>Хроматограмма (приближайте масштаб)</translation>
     </message>
     <message>
-        <location filename="../src/ChromatogramView.cpp" line="733"/>
+        <location filename="../src/ChromatogramView.cpp" line="737"/>
         <source>original sequence</source>
         <translation>Исходная последовательность</translation>
     </message>

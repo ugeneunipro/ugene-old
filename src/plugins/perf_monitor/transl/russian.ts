@@ -2,9 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru">
 <context>
-    <name>PerfMonitorPlugin</name>
-</context>
-<context>
     <name>U2::PerfMonitorPlugin</name>
     <message>
         <source>Performance Monitor</source>

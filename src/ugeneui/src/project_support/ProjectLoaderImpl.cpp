@@ -879,9 +879,9 @@ void ProjectDialogController::sl_projectNameEdited(const QString& text) {
 
 void ProjectDialogController::setupDefaults()
 {
-    projectNameEdit->setText(ProjectLoaderImpl::tr("new_project_default_name"));
+    projectNameEdit->setText(ProjectLoaderImpl::tr("New Project"));
     projectFolderEdit->setText(QDir::home().absolutePath());
-    projectFileEdit->setText(ProjectLoaderImpl::tr("new_project_default_file"));
+    projectFileEdit->setText(ProjectLoaderImpl::tr("project"));
 }
 
 void ProjectDialogController::accept()

@@ -375,7 +375,7 @@
         <translation>Smith waterman subtasks</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="549"/>
+        <location filename="../src/SWWorker.cpp" line="548"/>
         <source>Found %1 matches of pattern &apos;%2&apos;</source>
         <translation>Found %1 matches of pattern &apos;%2&apos;</translation>
     </message>

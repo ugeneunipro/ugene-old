@@ -295,13 +295,15 @@
         <location filename="../src/DotPlotFilesDialog.cpp" line="156"/>
         <source>Unable to detect file format %1.
 Select valid file to build dotplot</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно определить формат файла %1.
+Выберите корректный файл</translation>
     </message>
     <message>
         <location filename="../src/DotPlotFilesDialog.cpp" line="164"/>
         <source>Unable to detect format of given file %1.
 Select valid file to build dotplot</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно определить формат файла %1.
+Выберите корректный файл</translation>
     </message>
     <message>
         <location filename="../src/DotPlotFilesDialog.cpp" line="174"/>
@@ -312,12 +314,12 @@ Select valid file to build dotplot</source>
 <context>
     <name>U2::DotPlotFilterDialog</name>
     <message>
-        <location filename="../src/DotPlotFilterDialog.cpp" line="146"/>
+        <location filename="../src/DotPlotFilterDialog.cpp" line="145"/>
         <source>Feature names</source>
         <translation>Имена аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/DotPlotFilterDialog.cpp" line="146"/>
+        <location filename="../src/DotPlotFilterDialog.cpp" line="145"/>
         <source>No feature names have been selected. In that case dotplot will be empty. Note, If the feature names list is empty your sequences don&apos;t have annotations. Select some feature names or choose another filtration method</source>
         <translation>Имена аннотаций не были выбраны. В этом случае dotplot будет пустым. Если список аннотаций пустой, то ваши последовательности не содержат аннотации. Выберете несколько имен аннотаций или другой метод фильтрации</translation>
     </message>

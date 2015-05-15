@@ -288,7 +288,7 @@ QList<Task*> QDRunDialogTask::onSubTaskFinished(Task* subTask) {
 QDDialog::QDDialog(ADVSequenceObjectContext* _ctx)
 : QDialog(_ctx->getAnnotatedDNAView()->getWidget()), ctx(_ctx), scheme(NULL), txtDoc(NULL) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "16122393");
+    new HelpButton(this, buttonBox, "16122046");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

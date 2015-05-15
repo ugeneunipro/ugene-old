@@ -52,17 +52,17 @@
 <context>
     <name>FindAnnotationCollocationsDialog</name>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="49"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="58"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="54"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="63"/>
         <source>2</source>
         <translation>2</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="87"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="96"/>
         <source>Region size:</source>
         <translation>Размер региона:</translation>
     </message>
@@ -72,37 +72,37 @@
         <translation>Поиск сгруппированных аннотаций</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="146"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="158"/>
         <source>Save regions as annotations</source>
         <translation>Сохранить регионы как аннотации</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="153"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="165"/>
         <source>Clear results</source>
         <translation>Сбросить результаты</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="164"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="176"/>
         <source>Result strand</source>
         <translation>Расположение результатов</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="170"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="182"/>
         <source>Direct</source>
         <translation>Прямая</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="177"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="189"/>
         <source>Complement</source>
         <translation>Комплементарная</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="184"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="196"/>
         <source>Both</source>
         <translation>Обе</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="207"/>
+        <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="219"/>
         <source>Annotation must fit into region</source>
         <translation>Аннотация должна содержаться в регионе</translation>
     </message>
@@ -133,12 +133,12 @@
         <translation>Поиск плазмид и пользовательских аннотаций...</translation>
     </message>
     <message>
-        <location filename="../src/AnnotatorPlugin.cpp" line="125"/>
+        <location filename="../src/AnnotatorPlugin.cpp" line="126"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../src/AnnotatorPlugin.cpp" line="125"/>
+        <location filename="../src/AnnotatorPlugin.cpp" line="126"/>
         <source>No annotations found</source>
         <translation>Аннотаций не найдено</translation>
     </message>
@@ -146,8 +146,8 @@
 <context>
     <name>U2::CollocationSearchTask</name>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="326"/>
-        <location filename="../src/CollocationsDialogController.cpp" line="356"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="323"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="353"/>
         <source>Search for annotated regions</source>
         <translation>Поиск сгруппированных аннотаций</translation>
     </message>
@@ -155,48 +155,48 @@
 <context>
     <name>U2::CollocationsDialogController</name>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="64"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="60"/>
         <source>Search</source>
         <translation>Поиск</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="65"/>
-        <location filename="../src/CollocationsDialogController.cpp" line="107"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="61"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="103"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="68"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="64"/>
         <source>&lt;&lt;click &apos;+&apos; button to add new annotation&gt;&gt;</source>
         <translation>&lt;&lt; Кликните &apos;+&apos; чтобы добавить аннотацию &gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="107"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="103"/>
         <source>Stop</source>
         <translation>Остановить</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="113"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="109"/>
         <source>Searching... found %1 regions. Progress: %2%</source>
         <translation>Сканируется последовательность, прогресс %2. Найдено %1 регионов</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="115"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="111"/>
         <source>Found %1 regions</source>
         <translation>Найдено %1 регионов</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="117"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="113"/>
         <source>Ready</source>
         <translation>Готов к поиску</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="117"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="113"/>
         <source>Select annotation names to search</source>
         <translation>Выберите аннотации</translation>
     </message>
     <message>
-        <location filename="../src/CollocationsDialogController.cpp" line="136"/>
+        <location filename="../src/CollocationsDialogController.cpp" line="132"/>
         <source>No annotations left</source>
         <translation>Аннотаций больше нет</translation>
     </message>
@@ -220,40 +220,48 @@
 <context>
     <name>U2::CustomPatternAutoAnnotationUpdater</name>
     <message>
-        <location filename="../src/CustomPatternAnnotationTask.cpp" line="213"/>
+        <location filename="../src/CustomPatternAnnotationTask.cpp" line="209"/>
         <source>Plasmid features</source>
         <translation>Плазмиды</translation>
     </message>
 </context>
 <context>
+    <name>U2::GeneByGeneReportTask</name>
+    <message>
+        <location filename="../src/GeneByGeneReportTask.cpp" line="293"/>
+        <source>Generating gene-by-gene approach report</source>
+        <translation>Generating gene-by-gene approach report</translation>
+    </message>
+</context>
+<context>
     <name>U2::LocalWorkflow::CollocationPrompter</name>
     <message>
-        <location filename="../src/CollocationWorker.cpp" line="157"/>
+        <location filename="../src/CollocationWorker.cpp" line="158"/>
         <source> sequence from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation>последовательности из &lt;u&gt;%1&lt;/u&gt;</translation>
     </message>
     <message>
-        <location filename="../src/CollocationWorker.cpp" line="160"/>
+        <location filename="../src/CollocationWorker.cpp" line="161"/>
         <source> set of annotations from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation>набора аннотаций из &lt;u&gt;%1&lt;/u&gt;</translation>
     </message>
     <message>
-        <location filename="../src/CollocationWorker.cpp" line="167"/>
+        <location filename="../src/CollocationWorker.cpp" line="168"/>
         <source>For each %1 and %2,</source>
         <translation>Для каждых %1 и %2,</translation>
     </message>
     <message>
-        <location filename="../src/CollocationWorker.cpp" line="169"/>
+        <location filename="../src/CollocationWorker.cpp" line="170"/>
         <source>For each %1%2,</source>
         <translation>Для каждого %1%2,</translation>
     </message>
     <message>
-        <location filename="../src/CollocationWorker.cpp" line="185"/>
+        <location filename="../src/CollocationWorker.cpp" line="186"/>
         <source> Annotations themselves may not span beyond the region.</source>
         <translation>целиком.</translation>
     </message>
     <message>
-        <location filename="../src/CollocationWorker.cpp" line="189"/>
+        <location filename="../src/CollocationWorker.cpp" line="190"/>
         <source>%1 look if &lt;u&gt;%2&lt;/u&gt; annotations appear collocated within same region of length &lt;u&gt;%3&lt;/u&gt;.%4&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%5&lt;/u&gt;.</source>
         <translation>%1 искать группы аннотаций &lt;u&gt;%2&lt;/u&gt; расположенные &lt;u&gt;%4&lt;/u&gt; внутри регионов не длиннее &lt;u&gt;%3&lt;/u&gt;.&lt;br&gt;Выдать список найденных групп в виде аннотаций &quot;&lt;u&gt;%5&lt;/u&gt;&quot;.</translation>
     </message>

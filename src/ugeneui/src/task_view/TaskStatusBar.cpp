@@ -157,12 +157,12 @@ void TaskStatusBar::sl_showReport() {
 }
 
 void TaskStatusBar::updateState() {
-    QString reportsString = nReports == 0 ? QString("") : tr("num_reports_%1").arg(nReports);
+    QString reportsString = nReports == 0 ? QString("") : tr("Reports: %1").arg(nReports);
     if (taskToTrack ==  NULL) {
         taskInfoLabel->setText("");
         taskProgressBar->setVisible(false);
         if (nReports == 0) {
-            taskCountLabel->setText(tr("no_active_tasks"));
+            taskCountLabel->setText(tr("No active tasks"));
         } else {
             taskCountLabel->setText(reportsString);
         }
@@ -171,7 +171,7 @@ void TaskStatusBar::updateState() {
     }
 
     QString desc = taskToTrack->getStateInfo().getDescription();
-    QString text = tr("running_task_%1").arg(taskToTrack->getTaskName());
+    QString text = tr("Running task: %1").arg(taskToTrack->getTaskName());
     if (taskToTrack->isCanceled() && !taskToTrack->isFinished()) {
         QString cancelStr = tr("canceling...");
         if (!desc.isEmpty()) {
@@ -180,14 +180,14 @@ void TaskStatusBar::updateState() {
         desc+=cancelStr;
     }
     if (!desc.isEmpty()) {
-        text+=tr("_info_%1").arg(desc);
+        text+=tr(": %1").arg(desc);
     }
     taskInfoLabel->setText(text);
     int nTasks = AppContext::getTaskScheduler()->getTopLevelTasks().size();
     if (nReports > 0) {
-        taskCountLabel->setText(tr("num_tasks_%1_num_reports_%2").arg(nTasks).arg(nReports));
+        taskCountLabel->setText(tr("Tasks: %1, Reports %2").arg(nTasks).arg(nReports));
     } else {
-        taskCountLabel->setText(tr("num_tasks_%1").arg(nTasks));
+        taskCountLabel->setText(tr("Tasks: %1").arg(nTasks));
     }
 
     taskProgressBar->setVisible(true);

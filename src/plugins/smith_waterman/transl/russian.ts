@@ -147,10 +147,6 @@
         <translation>Входная последовательность</translation>
     </message>
     <message>
-        <source>An input sequence to search in.</source>
-        <translation type="obsolete">Последовательность, для которой применяется алгоритм.</translation>
-    </message>
-    <message>
         <location filename="../src/SWWorker.cpp" line="115"/>
         <source>Pattern Annotations</source>
         <translation>Найденные аннотации</translation>
@@ -379,7 +375,7 @@
         <translation>Smith waterman subtasks</translation>
     </message>
     <message>
-        <location filename="../src/SWWorker.cpp" line="549"/>
+        <location filename="../src/SWWorker.cpp" line="548"/>
         <source>Found %1 matches of pattern &apos;%2&apos;</source>
         <translation>Found %1 matches of pattern &apos;%2&apos;</translation>
     </message>
@@ -523,10 +519,6 @@
         <location filename="../src/SWQuery.cpp" line="248"/>
         <source>Translate a supplied nucleotide sequence to protein then search in the translated sequence.</source>
         <translation>Транслировать входную нуклеотидную последовательность в протеиновую, искать указанный паттерн в последней.</translation>
-    </message>
-    <message>
-        <source>Which strands should be searched: direct, complement or both.</source>
-        <translation type="obsolete"> В каких стрендах последовательности следует искать паттерн: прямых, комплементарных или всех.</translation>
     </message>
     <message>
         <location filename="../src/SWQuery.cpp" line="249"/>

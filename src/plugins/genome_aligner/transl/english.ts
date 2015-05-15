@@ -717,7 +717,7 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</trans
     <message>
         <location filename="../src/GenomeAlignerWorker.cpp" line="222"/>
         <source>The slot must be not empty: &apos;%1&apos;</source>
-        <translation type="unfinished">The slot must be not empty: &apos;%1&apos;</translation>
+        <translation>The slot must be not empty: &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/GenomeAlignerWorker.cpp" line="260"/>
@@ -883,7 +883,7 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</trans
 <context>
     <name>U2::ShortReadAlignerCPU</name>
     <message>
-        <location filename="../src/GenomeAlignerFindTask.cpp" line="203"/>
+        <location filename="../src/GenomeAlignerFindTask.cpp" line="208"/>
         <source>[%1] Index size for part %2/%3 is zero, skipping it.</source>
         <translation>[%1] Index size for part %2/%3 is zero, skipping it.</translation>
     </message>
@@ -891,7 +891,7 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</trans
 <context>
     <name>U2::ShortReadAlignerOpenCL</name>
     <message>
-        <location filename="../src/GenomeAlignerFindTask.cpp" line="291"/>
+        <location filename="../src/GenomeAlignerFindTask.cpp" line="306"/>
         <source>Index size for part %1/%2 is zero, skipping it.</source>
         <translation>Index size for part %1/%2 is zero, skipping it.</translation>
     </message>

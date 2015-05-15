@@ -91,22 +91,22 @@
        </property>
        <column>
         <property name="text">
-         <string>item_type_label</string>
+         <string>Type</string>
         </property>
        </column>
        <column>
         <property name="text">
-         <string>item_name_label</string>
+         <string>Name</string>
         </property>
        </column>
        <column>
         <property name="text">
-         <string>item_state_label</string>
+         <string>State</string>
         </property>
        </column>
        <column>
         <property name="text">
-         <string>item_desc_label</string>
+         <string>Description</string>
         </property>
        </column>
       </widget>

@@ -1782,7 +1782,7 @@ GUI_TEST_CLASS_DEFINITION(test_0835) {
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
 
     //2. Open the sequence objects in one Sequence View.
-    //= > Both sequences are shown in one Sequence View.
+    // = > Both sequences are shown in one Sequence View.
     QModelIndex idx = GTUtilsProjectTreeView::findIndex(os, "NC_001363");
     QWidget* seqView = GTUtilsMdi::activeWindow(os);
     CHECK_SET_ERR(seqView != NULL, "Sequence widget not found");
@@ -1790,7 +1790,7 @@ GUI_TEST_CLASS_DEFINITION(test_0835) {
     GTUtilsProjectTreeView::dragAndDrop(os, idx, seqView);
 
     //3. Enable Circular View for one of the sequences(for example, "murine.gb").
-    //= > The Circular View with the Restriction Site Map is shown.
+    // = > The Circular View with the Restriction Site Map is shown.
     GTWidget::click(os, GTWidget::findWidget(os, "CircularViewAction"));
 
     QWidget *restrictionMapTreeWidget = GTWidget::findWidget(os, "restrictionMapTreeWidget");
@@ -1798,7 +1798,7 @@ GUI_TEST_CLASS_DEFINITION(test_0835) {
         "Restriction map widget isn't visible unexpectedly");
 
     //4. Delete the sequence with the Circular View from the Project View.
-    //= > The sequence has been deleted, the Circular View is not shown.
+    // = > The sequence has been deleted, the Circular View is not shown.
     //!= > The Restriction Site Map is NOT still shown.
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "sars.gb"));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);

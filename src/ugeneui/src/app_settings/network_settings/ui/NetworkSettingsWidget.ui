@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>network_settings_title</string>
+   <string>Network settings</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="sizeConstraint">
@@ -184,7 +184,7 @@
       </size>
      </property>
      <property name="title">
-      <string>proxy_group_label</string>
+      <string>Proxy</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <property name="sizeConstraint">
@@ -195,21 +195,21 @@
         <item row="0" column="0">
          <widget class="QLabel" name="proxyTypeLabel">
           <property name="text">
-           <string>type_label</string>
+           <string>Type:</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
          <widget class="QLabel" name="proxyServerLabel">
           <property name="text">
-           <string>server_label</string>
+           <string>Server:</string>
           </property>
          </widget>
         </item>
         <item row="0" column="2">
          <widget class="QLabel" name="proxyPortLabel">
           <property name="text">
-           <string>port_l</string>
+           <string>Port:</string>
           </property>
          </widget>
         </item>
@@ -222,7 +222,7 @@
            </size>
           </property>
           <property name="text">
-           <string>http_l</string>
+           <string>HTTP</string>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -331,7 +331,7 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>exceptions_check_label</string>
+         <string>Do not use proxy on following addresses (separate line for each):</string>
         </property>
        </widget>
       </item>

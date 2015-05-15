@@ -66,13 +66,13 @@ namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////
 ///Close project
-CloseProjectTask::CloseProjectTask() : Task(tr("close_project_task_name"), TaskFlags(TaskFlag_NoRun) | TaskFlag_CancelOnSubtaskCancel)
+CloseProjectTask::CloseProjectTask() : Task(tr("Close project"), TaskFlags(TaskFlag_NoRun) | TaskFlag_CancelOnSubtaskCancel)
 {
 }
 
 void CloseProjectTask::prepare() {
     if (AppContext::getProject()==NULL) {
-        stateInfo.setError(  tr("error_no_active_project") );
+        stateInfo.setError(  tr("No active project found") );
         return;
     }
     /* TODO: this is done by project view. Need to cleanup this part! 
@@ -97,14 +97,14 @@ void CloseProjectTask::prepare() {
 //////////////////////////////////////////////////////////////////////////
 /// OpenProjectTask
 OpenProjectTask::OpenProjectTask(const QString& _url, const QString& _name) 
-    : Task(tr("open_project_task_name"), TaskFlags_NR_FOSCOE), url(_url), name(_name), loadProjectTask(NULL)
+    : Task(tr("Open project/document"), TaskFlags_NR_FOSCOE), url(_url), name(_name), loadProjectTask(NULL)
 {
 }
 
 void OpenProjectTask::prepare() {
     QFileInfo f(url);
     if (f.exists() && !(f.isFile() && f.isReadable())) {
-        stateInfo.setError(  tr("invalid_url%1").arg(url) );
+        stateInfo.setError(  tr("Not a readable file: %1").arg(url) );
         return;
     }
     if (AppContext::getProject() != NULL) {
@@ -133,7 +133,7 @@ QList<Task*> OpenProjectTask::onSubTaskFinished(Task* subTask) {
 //////////////////////////////////////////////////////////////////////////
 /// Save project
 SaveProjectTask::SaveProjectTask(SaveProjectTaskKind _k, Project* p, const QString& _url, bool silentSave_) 
-    : Task(tr("save_project_task_name"), TaskFlag_NoRun), k(_k), proj(p), url(_url), silentSave(silentSave_)
+    : Task(tr("Save project"), TaskFlag_NoRun), k(_k), proj(p), url(_url), silentSave(silentSave_)
 {
 }
 
@@ -296,7 +296,7 @@ Task::ReportResult SaveOnlyProjectTask::report(){
 //////////////////////////////////////////////////////////////////////////
 /// LoadProjectTask
 LoadProjectTask::LoadProjectTask(const QString& _url) 
-    : Task(tr("load_project_task_name"), TaskFlag_None), proj(NULL), url(_url)
+    : Task(tr("Load project"), TaskFlag_None), proj(NULL), url(_url)
 {
     xmlDoc = new QDomDocument();
 }

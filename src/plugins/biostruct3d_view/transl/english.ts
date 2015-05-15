@@ -37,7 +37,7 @@
         <translation>Model</translation>
     </message>
     <message>
-        <location filename="../src/WormsGLRenderer.cpp" line="33"/>
+        <location filename="../src/WormsGLRenderer.cpp" line="34"/>
         <source>Worms</source>
         <translation>Worms</translation>
     </message>

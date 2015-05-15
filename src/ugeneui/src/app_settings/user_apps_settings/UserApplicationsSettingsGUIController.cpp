@@ -162,7 +162,7 @@ AppSettingsGUIPageState* UserApplicationsSettingsPageWidget::getState(QString& /
 }
 
 void UserApplicationsSettingsPageWidget::sl_transFileClicked() {
-    QString file = U2FileDialog::getOpenFileName(this, tr("select_trans_file_title"), QString(), 0);
+    QString file = U2FileDialog::getOpenFileName(this, tr("Select translation file"), QString(), 0);
     if (!file.isEmpty()) {
         QFileInfo fi(file);
         int idx = langCombo->findData(fi.baseName());

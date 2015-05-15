@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>dialog_tittle</string>
+   <string>Primer Designer</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

@@ -32,6 +32,7 @@ class SaveDocumentTask;
 class U2VariantTrack;
 
 class RenameChromosomeInVariationTask : public Task {
+    Q_OBJECT
 public:
     RenameChromosomeInVariationTask(const QList<GObject *> &objects, const QStringList &prefixesToReplace, const QString &prefixReplaceWith);
 

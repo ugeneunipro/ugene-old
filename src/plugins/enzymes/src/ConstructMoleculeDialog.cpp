@@ -222,7 +222,7 @@ void ConstructMoleculeDialog::update()
             } else {
                 newItem->setText(0, BLUNT);
             }
-            newItem->setToolTip(0, tr("left_end_seq"));
+            newItem->setToolTip(0, tr("Left end"));
             newItem->setText(1, item->text());
             if (fragment.getRightTerminus().type == OVERHANG_TYPE_STICKY ) {
                 newItem->setText(2, QString("%1 (%2)")
@@ -231,7 +231,7 @@ void ConstructMoleculeDialog::update()
             } else {
                 newItem->setText(2, BLUNT);
             }
-            newItem->setToolTip(2, tr("right_seq_end"));
+            newItem->setToolTip(2, tr("Right end"));
             newItem->setCheckState(3, fragment.isInverted() ? Qt::Checked : Qt::Unchecked);
             newItem->setText(3, fragment.isInverted() ? tr("yes") : tr("no"));
             newItem->setToolTip(3, tr("Make fragment reverse complement"));

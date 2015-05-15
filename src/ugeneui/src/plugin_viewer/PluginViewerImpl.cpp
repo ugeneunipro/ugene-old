@@ -45,7 +45,7 @@ Task* PluginViewerImpl::createServiceDisablingTask() {
 // tasks
 
 EnablePluginViewerTask::EnablePluginViewerTask(PluginViewerImpl* _pv)
-: Task (tr("enable_plugin_viewer_task"), TaskFlag_NoRun), pv(_pv)
+: Task (tr("Enable PluginViewer"), TaskFlag_NoRun), pv(_pv)
 {
 }
 
@@ -57,7 +57,7 @@ Task::ReportResult EnablePluginViewerTask::report() {
 
 
 DisablePluginViewerTask::DisablePluginViewerTask(PluginViewerImpl* _pv)
-: Task (tr("disable_plugin_viewer_task"), TaskFlag_NoRun), pv(_pv)
+: Task (tr("Disable PluginViewer"), TaskFlag_NoRun), pv(_pv)
 {
 }
 

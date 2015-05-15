@@ -51,6 +51,7 @@ public:
 };
 
 class InSilicoPcrReportTask : public Task {
+    Q_OBJECT
 public:
     class TableRow {
     public:
@@ -77,6 +78,7 @@ private:
 };
 
 class InSilicoPcrWorker : public BaseThroughWorker {
+    Q_OBJECT
 public:
     InSilicoPcrWorker(Actor *a);
 

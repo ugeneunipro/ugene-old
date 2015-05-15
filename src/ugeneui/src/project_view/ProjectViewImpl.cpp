@@ -410,7 +410,7 @@ static void saveGroupMode(ProjectTreeGroupMode m) {
 //////////////////////////////////////////////////////////////////////////
 // ProjectViewImpl
 ProjectViewImpl::ProjectViewImpl()
-: ProjectView(tr("projectview_sname"), tr("projectview_sdesc"))
+: ProjectView(tr("ProjectView"), tr("ProjectView service provides basic project visualization and manipulation functionality"))
 {
     w = NULL;
     projectTreeController = NULL;
@@ -453,7 +453,7 @@ void ProjectViewImpl::enable() {
     SAFE_POINT(w == NULL, "Project widget is already initialized", );
     w = new ProjectViewWidget();
 
-    saveSelectedDocsAction = new QAction(QIcon(":ugene/images/save_selected_documents.png"), tr("save_selected_modified_docs_action"), w);
+    saveSelectedDocsAction = new QAction(QIcon(":ugene/images/save_selected_documents.png"), tr("Save selected documents"), w);
     saveSelectedDocsAction->setObjectName(ACTION_PROJECT__SAVE_DOCUMENT);
     connect(saveSelectedDocsAction, SIGNAL(triggered()), SLOT(sl_onSaveSelectedDocs()));
 
@@ -461,7 +461,7 @@ void ProjectViewImpl::enable() {
     toggleCircularAction->setCheckable(true);
     connect(toggleCircularAction, SIGNAL(triggered()), SLOT(sl_onToggleCircular()));
 
-    relocateDocumentAction = new QAction(tr("Relocate.."), w);
+    relocateDocumentAction = new QAction(tr("Relocate..."), w);
     relocateDocumentAction->setIcon(QIcon(":ugene/images/relocate.png"));
     connect(relocateDocumentAction, SIGNAL(triggered()), SLOT(sl_relocate()));
 
@@ -625,7 +625,7 @@ void ProjectViewImpl::updateMWTitle() {
     Project* p  = AppContext::getProject();
     QString title = p->getProjectName();
     if (title.isEmpty()) {
-        title = tr("unnamed_project_name");
+        title = tr("-");
     }
     if (p->isTreeItemModified()) {
         title+="*";
@@ -704,7 +704,7 @@ void ProjectViewImpl::sl_onActivated(GObject* o) {
     GObjectSelection os; os.addToSelection(o);
     MultiGSelection ms; ms.addSelection(&os);
 
-    QMenu activeViewsMenu(tr("active_views_menu"), NULL);
+    QMenu activeViewsMenu(tr("Active views"), NULL);
     QList<QAction*> openActions;
     QList<GObjectViewFactory*> fs = AppContext::getObjectViewFactoryRegistry()->getAllFactories();
     foreach(GObjectViewFactory* f, fs) {
@@ -746,7 +746,7 @@ void ProjectViewImpl::sl_onActivated( Document* d){
         ms.addSelection(&ds);
     }
 
-    QMenu activeViewsMenu(tr("active_views_menu"), NULL);
+    QMenu activeViewsMenu(tr("Active views"), NULL);
     QList<QAction*> openActions;
     QList<GObjectViewFactory*> fs = AppContext::getObjectViewFactoryRegistry()->getAllFactories();
     foreach(GObjectViewFactory* f, fs) {
@@ -813,7 +813,7 @@ QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, co
             if (!contains) {
                 continue;
             }
-            QAction* action = new QAction(tr("activate_view_action_%1").arg(ov->getViewName()), actionsParent);
+            QAction* action = new QAction(tr("Activate view: %1").arg(ov->getViewName()), actionsParent);
             OpenViewContext* c = new OpenViewContext(action, ov->getViewName());
             action->setData(QVariant::fromValue((void*)c));
             connect(action, SIGNAL(triggered()), SLOT(sl_activateView()));
@@ -827,7 +827,7 @@ QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, co
 
     //check if new view can be created
     if (f->canCreateView(ms)) {
-        QAction* action = new QAction(tr("open_view_action_%1").arg(f->getName()), actionsParent);
+        QAction* action = new QAction(tr("Open new view: %1").arg(f->getName()), actionsParent);
         action->setObjectName("Open New View");
         OpenViewContext* c = new OpenViewContext(action, ms, f);
         action->setData(QVariant::fromValue((void*)c));
@@ -842,7 +842,7 @@ QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, co
     //check saved state can be activated
     QList<GObjectViewState*> viewStates = GObjectViewUtils::selectStates(f, ms, AppContext::getProject()->getGObjectViewStates());
     foreach(GObjectViewState* s, viewStates) {
-        QAction* action = new QAction(tr("open_state_%1_%2").arg(s->getViewName()).arg(s->getStateName()), actionsParent);
+        QAction* action = new QAction(tr("Open saved view '%1' with a state '%2'").arg(s->getViewName()).arg(s->getStateName()), actionsParent);
         OpenViewContext* c = new OpenViewContext(action, s, f);
         action->setData(QVariant::fromValue((void*)c));
         connect(action, SIGNAL(triggered()), SLOT(sl_openStateView()));
@@ -890,7 +890,7 @@ void ProjectViewImpl::buildAddToViewMenu(const MultiGSelection& ms, QMenu* m) {
             return;
         }
     }
-    QAction* action = new QAction(tr("add_to_view_action_%1").arg(ow->getViewName()), m);
+    QAction* action = new QAction(tr("Add to view: %1").arg(ow->getViewName()), m);
     AddToViewContext* ac = new AddToViewContext(action, ow->getObjectView(), objects);
     action->setData(QVariant::fromValue((void*)ac));
     action->setObjectName("action_add_view");
@@ -936,8 +936,8 @@ void ProjectViewImpl::buildRelocateMenu(QMenu* m) {
 }
 
 void ProjectViewImpl::buildViewMenu(QMenu& m) {
-    QMenu* openViewMenu = new QMenu(tr("open_view_menu"), &m);
-    QMenu* addToViewMenu= new QMenu(tr("add_to_view_menu"), &m);
+    QMenu* openViewMenu = new QMenu(tr("Open view"), &m);
+    QMenu* addToViewMenu= new QMenu(tr("Add to view"), &m);
 
     const DocumentSelection* docsSelection = getDocumentSelection();
     const GObjectSelection* objsSelection = getGObjectSelection();
@@ -1057,7 +1057,7 @@ void ProjectViewImpl::sl_addToView() {
         if (o!=NULL) {
             QString err  = view->addObject(o);
             if (!err.isEmpty()) {
-                QMessageBox::critical(NULL, tr("error_adding_object_to_view_title"), err);
+                QMessageBox::critical(NULL, tr("Error"), err);
             }
         }
     }
@@ -1155,7 +1155,7 @@ void ProjectViewImpl::sl_onOpenContainingFolder() {
 //EnableProjectViewTask
 
 EnableProjectViewTask::EnableProjectViewTask(ProjectViewImpl* _pvi)
-: Task(tr("enable_project_view"), TaskFlag_NoRun), pvi(_pvi)
+: Task(tr("Enable ProjectView"), TaskFlag_NoRun), pvi(_pvi)
 {
 }
 
@@ -1167,7 +1167,7 @@ Task::ReportResult EnableProjectViewTask::report() {
 
 
 DisableProjectViewTask::DisableProjectViewTask(ProjectViewImpl* _pvi, bool saveProjectOnClose)
-: Task(tr("disable_project_view"), TaskFlags_NR_FOSCOE), pvi(_pvi), saveProject(saveProjectOnClose)
+: Task(tr("Disable project viewer"), TaskFlags_NR_FOSCOE), pvi(_pvi), saveProject(saveProjectOnClose)
 {
 }
 

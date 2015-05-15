@@ -36,7 +36,7 @@
 namespace U2 {
 
 ShutdownTask::ShutdownTask(MainWindowImpl* _mw)
-    : Task(tr("shutdown_task_name"), TaskFlags(TaskFlag_NoRun)), mw(_mw), docsToRemoveAreFetched(false)
+    : Task(tr("Shutdown"), TaskFlags(TaskFlag_NoRun)), mw(_mw), docsToRemoveAreFetched(false)
 {
 
 }

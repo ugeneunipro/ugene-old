@@ -147,12 +147,12 @@
 <context>
     <name>U2::KalignGObjectRunFromSchemaTask</name>
     <message>
-        <location filename="../src/KalignTask.cpp" line="254"/>
+        <location filename="../src/KalignTask.cpp" line="255"/>
         <source>Workflow wrapper &apos;%1&apos;</source>
         <translation>Workflow wrapper &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/KalignTask.cpp" line="264"/>
+        <location filename="../src/KalignTask.cpp" line="265"/>
         <source>KAlign align &apos;%1&apos;</source>
         <translation>Выравнивание Kalign &apos;%1&apos;</translation>
     </message>
@@ -160,7 +160,7 @@
 <context>
     <name>U2::KalignGObjectTask</name>
     <message>
-        <location filename="../src/KalignTask.cpp" line="145"/>
+        <location filename="../src/KalignTask.cpp" line="146"/>
         <source>KALIGN align &apos;%1&apos;</source>
         <translation>Выравнивание Kalign &apos;%1&apos;</translation>
     </message>
@@ -199,17 +199,17 @@
         <translation>Выравнивание KALIGN</translation>
     </message>
     <message>
-        <location filename="../src/KalignTask.cpp" line="90"/>
+        <location filename="../src/KalignTask.cpp" line="91"/>
         <source>Unsupported alphabet: %1</source>
         <translation>Неподдерживаемый алфавит: %1</translation>
     </message>
     <message>
-        <location filename="../src/KalignTask.cpp" line="93"/>
+        <location filename="../src/KalignTask.cpp" line="94"/>
         <source>Kalign alignment started</source>
         <translation>Kalign alignment started</translation>
     </message>
     <message>
-        <location filename="../src/KalignTask.cpp" line="98"/>
+        <location filename="../src/KalignTask.cpp" line="99"/>
         <source>Kalign alignment successfully finished</source>
         <translation>Kalign alignment successfully finished</translation>
     </message>
