@@ -82,6 +82,7 @@
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h"
 #include "runnables/ugene/plugins/orf_marker/OrfDialogFiller.h"
@@ -1647,6 +1648,63 @@ GUI_TEST_CLASS_DEFINITION(test_4221) {
     GTUtilsDocument::checkDocument(os, "test_4221.ugenedb");
 
     GTUtilsLog::check(os, logTracer);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4244){
+    //1. Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+    //GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+    class Scenario : public CustomScenario {
+        void run(U2::U2OpStatus &os) {
+            QString s;
+            for(int i = 0; i<32000; i++){
+                s.append("a");
+            }
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            QLineEdit* leDescription = GTWidget::findExactWidget<QLineEdit*>(os, "leDescription", dialog);
+            GTWidget::click(os, leDescription);
+            GTClipboard::setText(os, s);
+            GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+            GTGlobals::sleep();
+
+            QLineEdit* leAnnotationName = GTWidget::findExactWidget<QLineEdit*>(os, "leAnnotationName", dialog);
+            GTLineEdit::setText(os, leAnnotationName, "name");
+            QLineEdit* leRegionStart = GTWidget::findExactWidget<QLineEdit*>(os, "leRegionStart", dialog);
+            GTLineEdit::setText(os, leRegionStart, "10");
+            QLineEdit* leRegionEnd = GTWidget::findExactWidget<QLineEdit*>(os, "leRegionEnd", dialog);
+            GTLineEdit::setText(os, leRegionEnd, "20");
+
+
+            uiLog.trace(QString("easy to find %1").arg(leDescription->text().length()));
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, new Scenario()));
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(20000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EXPORT << "action_export_annotations"));
+    GTUtilsDialog::waitForDialog(os, new ExportAnnotationsFiller(sandBoxDir + "test_4244", ExportAnnotationsFiller::gff, os));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "name"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EXPORT << "action_export_annotations"));
+    GTUtilsDialog::waitForDialog(os, new ExportAnnotationsFiller(sandBoxDir + "test_4244.gb", ExportAnnotationsFiller::genbank, os));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "name"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTFileDialog::openFile(os, sandBoxDir + "test_4244.gb");
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<<"action_project__unload_selected_action",
+                                                      PopupChecker::IsEnabled));
+    GTUtilsProjectTreeView::click(os, "test_4244.gb", Qt::RightButton);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4266){

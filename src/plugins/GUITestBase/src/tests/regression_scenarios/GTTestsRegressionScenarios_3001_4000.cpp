@@ -318,16 +318,18 @@ GUI_TEST_CLASS_DEFINITION(test_3035){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "action_open_view"));
     GTMouseDriver::click(os, Qt::RightButton);
     QString name = GTUtilsMdi::activeWindowTitle(os);
-    CHECK_SET_ERR(name == "[s] et0001_sequence", QString("unexpected window title: %1").arg(name));
+    CHECK_SET_ERR(name == " [s] et0001_sequence", QString("unexpected window title:%1").arg(name));
 
     GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "test_3035.fa", GTGlobals::UseMouse));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "action_open_view"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__export_import_menu_action"
+                                                      << "export sequences"));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, index));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(500);
 
     GTUtilsDialog::waitForDialog(os, new ExportSequenceAsAlignmentFiller(os, sandBoxDir, "test_3035_1.aln", ExportSequenceAsAlignmentFiller::Clustalw));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "export sequences as alignment"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__export_import_menu_action"
+                                                      << "export sequences as alignment"));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, index));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
@@ -5255,6 +5257,13 @@ GUI_TEST_CLASS_DEFINITION(test_3868) {
     CHECK_SET_ERR(qualifiersEdit->text().contains("label"), "Label must be shown in annotation widget");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3869){
+    //check comments for vector-nti format
+    GTFileDialog::openFile(os, testDir + "_common_data/vector_nti_sequence/unrefined.gb");
+    QString name = GTUtilsAnnotationsTreeView::getQualifierValue(os, "Author name", "comment");
+    CHECK_SET_ERR(name == "Demo User", "unexpected qualifier value: " + name)
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3870) {
     //1. Open file "data/samples/CLUSTALW/COI.aln"
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
@@ -5528,6 +5537,13 @@ GUI_TEST_CLASS_DEFINITION(test_3920) {
                       r.endPos() >= 1000 && r.endPos() <= 4000), "Invalid annotated region!");
     }
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3924){
+    //check comments for vector-nti format
+    GTFileDialog::openFile(os, testDir + "_common_data/vector_nti_sequence/unrefined.gb");
+    QString name = GTUtilsAnnotationsTreeView::getQualifierValue(os, "vntifkey", "CDS");
+    CHECK_SET_ERR(name == "4", "unexpected qualifier value: " + name)
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3927) {
