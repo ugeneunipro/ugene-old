@@ -1801,7 +1801,11 @@ GUI_TEST_CLASS_DEFINITION( test_2192 ){
     GTUtilsDashboard::click(os, GTUtilsDashboard::findContextMenuElement(os, "Copy selected text"));
 //       Paste the data in any editor.
     text = GTClipboard::text(os);
+#ifdef Q_OS_WIN
+    CHECK_SET_ERR(text.contains("samtools-0.1.19\\samtools"), "copy text works wrong\n" + text);
+#else
     CHECK_SET_ERR(text.contains("samtools-0.1.19/samtools"), "copy text works wrong\n" + text);
+#endif
 //       Expected state: selected data was copied.
 }
 
@@ -4760,7 +4764,11 @@ GUI_TEST_CLASS_DEFINITION( test_2662 ){
 //    Expected state: vcfTools executible file is /usr/bin/perl path/to/vcfutils.pl
 //    Actual: vcfTools executible file is /usr/bin/perl
     GTUtilsDashboard::click(os, GTUtilsDashboard::findElement(os, "vcfutils run 1", "*", true));
+#ifdef Q_OS_WIN
+    GTUtilsDashboard::findElement(os, "samtools-0.1.19\\vcfutils.pl", "SPAN");
+#else
     GTUtilsDashboard::findElement(os, "samtools-0.1.19/vcfutils.pl", "SPAN");
+#endif
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2667 ) {

@@ -696,8 +696,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2622);
     REGISTER_TEST(GUITest_regression_scenarios::test_2622_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2632);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2638);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2640);
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2638);
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2640);
     REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2651, "this test seems to break mac testing");
     REGISTER_TEST(GUITest_regression_scenarios::test_2656);
     REGISTER_TEST(GUITest_regression_scenarios::test_2662);
@@ -857,7 +857,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3398_3);
     REGISTER_TEST(GUITest_regression_scenarios::test_3398_4);
     REGISTER_TEST(GUITest_regression_scenarios::test_3402);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3414);
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_3414);
     REGISTER_TEST(GUITest_regression_scenarios::test_3428);
     REGISTER_TEST(GUITest_regression_scenarios::test_3430);
     REGISTER_TEST(GUITest_regression_scenarios::test_3437);

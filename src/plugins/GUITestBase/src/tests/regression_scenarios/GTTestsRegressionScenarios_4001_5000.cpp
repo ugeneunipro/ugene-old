@@ -1812,7 +1812,7 @@ GUI_TEST_CLASS_DEFINITION(test_4323_2) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
 
 //    2. Click "Align sequence to this alignment" button on the toolbar, select "samples/PDB/1CF7.pdb".
-    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/PDB/1CF7.pdb"));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/PDB/1CF7.PDB"));
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -1838,7 +1838,7 @@ GUI_TEST_CLASS_DEFINITION(test_4323_3) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
 
 //    2. Click "Align sequence to this alignment" button on the toolbar, select "samples/PDB/1CF7.pdb".
-    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/PDB/1CF7.pdb"));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/PDB/1CF7.PDB"));
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
