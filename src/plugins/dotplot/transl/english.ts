@@ -156,7 +156,7 @@
     <message>
         <location filename="../src/ui/DotPlotFilterDialog.ui" line="45"/>
         <source>No Filtration</source>
-        <translation>м</translation>
+        <translation type="unfinished">No Filtration</translation>
     </message>
     <message>
         <location filename="../src/ui/DotPlotFilterDialog.ui" line="55"/>
