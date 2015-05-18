@@ -20,6 +20,7 @@
  */
 
 #include <QHeaderView>
+#include <QMessageBox>
 #include <QMutableListIterator>
 #include <QPushButton>
 
@@ -34,6 +35,8 @@
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/L10n.h>
 
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
@@ -154,7 +157,10 @@ void SecStructDialog::sl_onStartPredictionClicked() {
     SAFE_POINT(rangeStart >= 0 && rangeEnd <= ctx->getSequenceLength(), "Illegal region!", );
 
     U2Region r(rangeStart, rangeEnd - rangeStart);
-    QByteArray seqPart = ctx->getSequenceData(r);
+    U2OpStatusImpl os;
+    QByteArray seqPart = ctx->getSequenceData(r, os);
+    CHECK_OP_EXT(os, QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
+
     task = factory->createTaskInstance(seqPart);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     results.clear();

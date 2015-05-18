@@ -64,7 +64,9 @@ Task::ReportResult ShiftSequenceStartTask::report(){
     Document* curDoc = seqObj->getDocument();
     CHECK_EXT(!curDoc->isStateLocked(), setError(tr("Document is locked")), ReportResult_Finished);
 
-    DNASequence dna = seqObj->getWholeSequence();
+    DNASequence dna = seqObj->getWholeSequence(stateInfo);
+    CHECK_OP(stateInfo, ReportResult_Finished);
+
     dna.seq = dna.seq.mid(seqStart) + dna.seq.mid(0, seqStart);
     seqObj->setWholeSequence(dna);
 

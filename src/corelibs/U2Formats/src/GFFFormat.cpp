@@ -661,7 +661,8 @@ void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os) {
                 return;
             }
 
-            DNASequence wholeSeq = dnaso->getWholeSequence();
+            DNASequence wholeSeq = dnaso->getWholeSequence(os);
+            CHECK_OP(os, );
             const char* seq = U1AnnotationUtils::applyLowerCaseRegions(wholeSeq.seq.data(), 0, wholeSeq.length(), 0, lowerCaseRegs);
             int len = wholeSeq.length();
             for (int i = 0; i < len; i += SAVE_LINE_LEN) {

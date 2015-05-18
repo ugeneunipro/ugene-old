@@ -413,13 +413,17 @@ DNASequence ComposeResultSubTask::getReadSequence(int readNum) {
 
     QScopedPointer<U2SequenceObject> readObject(StorageUtils::getSequenceObject(storage, subTask->getRead()));
     CHECK_EXT(!readObject.isNull(), setError(L10N::nullPointerError("Read sequence")), DNASequence());
-    return readObject->getWholeSequence();
+    DNASequence seq = readObject->getWholeSequence(stateInfo);
+    CHECK_OP(stateInfo, DNASequence());
+    return seq;
 }
 
 DNASequence ComposeResultSubTask::getReferenceSequence() {
     QScopedPointer<U2SequenceObject> refObject(StorageUtils::getSequenceObject(storage, reference));
     CHECK_EXT(!refObject.isNull(), setError(L10N::nullPointerError("Reference sequence")), DNASequence());
-    return refObject->getWholeSequence();
+    DNASequence seq = refObject->getWholeSequence(stateInfo);
+    CHECK_OP(stateInfo, DNASequence());
+    return seq;
 }
 
 namespace {
@@ -610,9 +614,13 @@ void KAlignSubTask::createAlignment() {
     CHECK_EXT(!readObject.isNull(), setError(L10N::nullPointerError("Read sequence")), );
 
     MAlignment alignment("msa", refObject->getAlphabet());
-    alignment.addRow(refObject->getSequenceName(), refObject->getWholeSequenceData(), stateInfo);
+    QByteArray refData = refObject->getWholeSequenceData(stateInfo);
     CHECK_OP(stateInfo, );
-    alignment.addRow(readObject->getSequenceName(), readObject->getWholeSequenceData(), stateInfo);
+    alignment.addRow(refObject->getSequenceName(), refData, stateInfo);
+    CHECK_OP(stateInfo, );
+    QByteArray readData = readObject->getWholeSequenceData(stateInfo);
+    CHECK_OP(stateInfo, );
+    alignment.addRow(readObject->getSequenceName(), readData, stateInfo);
     CHECK_OP(stateInfo, );
 
     U2EntityRef msaRef = MAlignmentImporter::createAlignment(storage->getDbiRef(), alignment, stateInfo);
@@ -757,7 +765,8 @@ void PairwiseAlignmentTask::createRcReads() {
     QScopedPointer<U2SequenceObject> readObject(StorageUtils::getSequenceObject(storage, read));
     CHECK_EXT(!readObject.isNull(), setError(L10N::nullPointerError("Read sequence")), );
 
-    DNASequence seq = readObject->getWholeSequence();
+    DNASequence seq = readObject->getWholeSequence(stateInfo);
+    CHECK_OP(stateInfo, );
     QByteArray sequence = seq.seq;
     initialReadName = seq.getName();
 
@@ -827,7 +836,9 @@ void PairwiseAlignmentTask::createSWAlignment(KAlignSubTask *task) {
     MAlignment alignment("msa", refObject->getAlphabet());
     alignment.addRow(refObject->getSequenceName(), referenceData, stateInfo);
     CHECK_OP(stateInfo, );
-    alignment.addRow(readObject->getSequenceName(), readObject->getWholeSequenceData(), stateInfo);
+    QByteArray readData = readObject->getWholeSequenceData(stateInfo);
+    CHECK_OP(stateInfo, );
+    alignment.addRow(readObject->getSequenceName(), readData, stateInfo);
     CHECK_OP(stateInfo, );
 
     U2EntityRef msaRef = MAlignmentImporter::createAlignment(storage->getDbiRef(), alignment, stateInfo);

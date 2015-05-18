@@ -24,6 +24,7 @@
 
 #include <U2Core/Log.h>
 #include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/DNASequenceObject.h>
 
@@ -44,10 +45,18 @@ skipGap(_skipGap), gapOffset(_gapOffset), indexFileName(""), refFileName("")
 }
 
 CreateSArrayIndexTask::CreateSArrayIndexTask( const U2SequenceObject* obj, int windowSize, bool useBitMask, bool _prebuiltIdx, const QString &idxFN,const QString &refFN )
-:Task("Create SArray index", TaskFlag_None),
-index(NULL), seqArray(obj->getWholeSequenceData()), w(windowSize),
-unknownChar('\0'), skipGap(0), gapOffset(0), prebuiltIdx(_prebuiltIdx), indexFileName(idxFN), refFileName(refFN)
+    :Task("Create SArray index", TaskFlag_None),
+      index(NULL),
+      w(windowSize),
+      unknownChar('\0'),
+      skipGap(0),
+      gapOffset(0),
+      prebuiltIdx(_prebuiltIdx),
+      indexFileName(idxFN),
+      refFileName(refFN)
 {
+    seqArray = obj->getWholeSequenceData(stateInfo);
+    CHECK_OP(stateInfo, );
     size = seqArray.length();
     seq = seqArray.constData();
     DNAAlphabetType seqType = obj->getAlphabet()->getType();

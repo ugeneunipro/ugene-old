@@ -2578,9 +2578,9 @@ GUI_TEST_CLASS_DEFINITION(test_1234) {
     CHECK_SET_ERR(NULL != seq1, "Failed to find a sequence widget for seq1!");
     CHECK_SET_ERR(NULL != seq2, "Failed to find a sequence widget for seq2!");
 
-    CHECK_SET_ERR("DLSAETL" == QString(seq0->getSequenceObject()->getWholeSequenceData()), QString("Unexpected sequence. Expected %1, Actual %2").arg("DLSAETL").arg(QString(seq0->getSequenceObject()->getWholeSequenceData())));
-    CHECK_SET_ERR("ISRQKP" == QString(seq1->getSequenceObject()->getWholeSequenceData()), QString("Unexpected sequence. Expected %1, Actual %2").arg("ISRQKP").arg(QString(seq1->getSequenceObject()->getWholeSequenceData())));
-    CHECK_SET_ERR("SLGRNP" == QString(seq2->getSequenceObject()->getWholeSequenceData()), QString("Unexpected sequence. Expected %1, Actual %2").arg("SLGRNP").arg(QString(seq2->getSequenceObject()->getWholeSequenceData())));
+    CHECK_SET_ERR("DLSAETL" == QString(seq0->getSequenceObject()->getWholeSequenceData(os)), QString("Unexpected sequence. Expected %1, Actual %2").arg("DLSAETL").arg(QString(seq0->getSequenceObject()->getWholeSequenceData(os))));
+    CHECK_SET_ERR("ISRQKP" == QString(seq1->getSequenceObject()->getWholeSequenceData(os)), QString("Unexpected sequence. Expected %1, Actual %2").arg("ISRQKP").arg(QString(seq1->getSequenceObject()->getWholeSequenceData(os))));
+    CHECK_SET_ERR("SLGRNP" == QString(seq2->getSequenceObject()->getWholeSequenceData(os)), QString("Unexpected sequence. Expected %1, Actual %2").arg("SLGRNP").arg(QString(seq2->getSequenceObject()->getWholeSequenceData(os))));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1241) {

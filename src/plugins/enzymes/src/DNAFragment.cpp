@@ -29,6 +29,7 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Algorithm/EnzymeModel.h>
 #include "DNAFragment.h"
@@ -136,13 +137,14 @@ QString DNAFragment::getSequenceName() const
     return dnaObj->getGObjectName();
 }
 
-QByteArray DNAFragment::getSequence() const
+QByteArray DNAFragment::getSequence(U2OpStatus &os) const
 {
     assert(!isEmpty());
     QByteArray seq;
     const U2Location& location = annotatedFragment->location;
     foreach (const U2Region& region, location->regions) {
-        seq += dnaObj->getSequenceData(region);
+        seq += dnaObj->getSequenceData(region, os);
+        CHECK_OP(os, QByteArray());
     }
 
     assert(!seq.isEmpty());
@@ -252,9 +254,16 @@ int DNAFragment::getLength() const
     return len;
 }
 
-QByteArray DNAFragment::getSourceSequence() const {
+QByteArray DNAFragment::getSourceSequence(U2OpStatus &os) const {
     assert(!isEmpty());
-    return dnaObj->getWholeSequenceData();
+    QByteArray seq = dnaObj->getWholeSequenceData(os);
+    CHECK_OP(os, QByteArray());
+    return seq;
+}
+
+QByteArray DNAFragment::getSourceSequenceRegion(const U2Region region, U2OpStatus &os) const {
+    SAFE_POINT(!isEmpty(), "DNAFragment is empty", QByteArray());
+    return dnaObj->getSequenceData(region, os);
 }
 
 void DNAFragment::updateTerms() {

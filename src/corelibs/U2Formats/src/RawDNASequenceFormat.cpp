@@ -140,7 +140,9 @@ void RawDNASequenceFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus&
     GObject* obj = objects.first();
     U2SequenceObject* so = qobject_cast<U2SequenceObject*>(obj);
     SAFE_POINT(NULL != so, L10N::nullPointerError("Sequence object"), );
-    PlainTextFormat::storeRawData(so->getWholeSequenceData(), os, io);
+    QByteArray seqData = so->getWholeSequenceData(os);
+    SAFE_POINT_OP(os, );
+    PlainTextFormat::storeRawData(seqData, os, io);
 }
 
 void RawDNASequenceFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os) {
@@ -151,7 +153,9 @@ void RawDNASequenceFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QL
     U2SequenceObject *seq = dynamic_cast<U2SequenceObject*>(seqs.first());
     SAFE_POINT(NULL != seq, "Raw sequence entry storing: NULL sequence object", );
 
-    PlainTextFormat::storeRawData(seq->getWholeSequenceData(), os, io);
+    QByteArray seqData = seq->getWholeSequenceData(os);
+    SAFE_POINT_OP(os, );
+    PlainTextFormat::storeRawData(seqData, os, io);
     CHECK_OP(os, );
 
     io->writeBlock("\n", 1);

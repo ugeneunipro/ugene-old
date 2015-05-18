@@ -665,7 +665,8 @@ void UHMM3SWSearchToAnnotationsTask::setSequence() {
     U2SequenceObject * seqObj = qobject_cast< U2SequenceObject* >(objs.first());
     CHECK_EXT(seqObj != NULL, setError(tr("Unknown sequence type loaded")),)
 
-    sequence = seqObj->getWholeSequence();
+    sequence = seqObj->getWholeSequence(stateInfo);
+    CHECK_OP(stateInfo, );
     CHECK_EXT(sequence.length() > 0, setError(tr("Empty sequence loaded")), );
 }
 

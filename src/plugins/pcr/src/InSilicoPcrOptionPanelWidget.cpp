@@ -26,6 +26,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/U2WidgetStateStorage.h>
 
@@ -39,6 +40,8 @@
 #include "PrimersDetailsDialog.h"
 
 #include "InSilicoPcrOptionPanelWidget.h"
+
+#include <QMessageBox>
 
 namespace U2 {
 
@@ -143,7 +146,9 @@ void InSilicoPcrOptionPanelWidget::sl_findProduct() {
     settings.reverseMismatches = reversePrimerBox->getMismatches();
     settings.maxProductSize = uint(maxProduct);
     settings.perfectMatch = uint(perfectMatch);
-    settings.sequence = sequenceObject->getWholeSequenceData();
+    U2OpStatusImpl os;
+    settings.sequence = sequenceObject->getWholeSequenceData(os);
+    CHECK_OP_EXT(os, QMessageBox::critical(this, L10N::errorTitle(), os.getError()), );
     settings.sequenceObject = GObjectReference(sequenceObject);
     settings.isCircular = sequenceObject->isCircular();
 

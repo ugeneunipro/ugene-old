@@ -34,6 +34,9 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/L10n.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
@@ -212,7 +215,9 @@ void ExpertDiscoverySearchDialogController::runTask() {
         return;
     }
 
-    QByteArray seq = ctx->getSequenceData(reg);
+    U2OpStatusImpl os;
+    QByteArray seq = ctx->getSequenceData(reg, os);
+    CHECK_OP_EXT(os, QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
 
     ExpertDiscoverySearchCfg cfg;
     cfg.complTT = rbBoth->isChecked() || rbComplement->isChecked() ? ctx->getComplementTT() : NULL;

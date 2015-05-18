@@ -388,7 +388,8 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
             } else if (cfg.isAnnotatedSequence()) {
                 if(!d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).isEmpty()) {
                     U2SequenceObject *seqObj = static_cast<U2SequenceObject *>(d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).first());
-                    DNASequence seq = seqObj->getWholeSequence();
+                    DNASequence seq = seqObj->getWholeSequence(os);
+                    CHECK_OP_EXT(os, reportError(os.getError()),);
                     seq.alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::RAW());
                     SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(seq);
                     v[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(seqId);

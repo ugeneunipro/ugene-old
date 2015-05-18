@@ -19,9 +19,14 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/AppResources.h>
+#include <U2Core/AppSettings.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GHints.h>
+#include <U2Core/L10n.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2AttributeUtils.h>
@@ -45,6 +50,8 @@ U2SequenceObjectConstraints::U2SequenceObjectConstraints(QObject* p)
 
 //////////////////////////////////////////////////////////////////////////
 // U2SequenceObject
+const qint64 U2SequenceObject::MAX_SEQ_32 = 1024 * 1024 * 1024;
+const QString U2SequenceObject::MAX_SEQ_32_ERROR_MESSAGE = QApplication::translate("U2SequenceObject", "The requested operation cannot be completed because you are using 32-bit UGENE version that has a limit on the memory consumption.");
 U2SequenceObject::U2SequenceObject(const QString& name, const U2EntityRef& seqRef, const QVariantMap& hintsMap)
     : GObject(GObjectTypes::SEQUENCE, name, hintsMap), cachedAlphabet(NULL), cachedLength(-1), cachedCircular(TriState_Unknown)
 {
@@ -97,7 +104,7 @@ QString U2SequenceObject::getSequenceName() const  {
         seqGet = true; \
     }
 
-DNASequence U2SequenceObject::getSequence(const U2Region &region) const {
+DNASequence U2SequenceObject::getSequence(const U2Region &region, U2OpStatus& os) const {
     U2Sequence seq;
     bool seqGet = false;
 
@@ -111,7 +118,6 @@ DNASequence U2SequenceObject::getSequence(const U2Region &region) const {
         FETCH_SEQUENCE(seqGet, seq, entityRef);
         seqName = cachedName = seq.visualName;
     }
-    U2OpStatus2Log os;
     DNASequence res(seqName, getSequenceData(region, os), alpha);
     CHECK_OP(os, DNASequence());
 
@@ -126,12 +132,12 @@ DNASequence U2SequenceObject::getSequence(const U2Region &region) const {
     return res;
 }
 
-DNASequence U2SequenceObject::getWholeSequence() const {
-    return getSequence(U2_REGION_MAX);
+DNASequence U2SequenceObject::getWholeSequence(U2OpStatus& os) const {
+    return getSequence(U2_REGION_MAX, os);
 }
 
-QByteArray U2SequenceObject::getWholeSequenceData() const {
-    return getSequenceData(U2_REGION_MAX);
+QByteArray U2SequenceObject::getWholeSequenceData(U2OpStatus& os) const {
+    return getSequenceData(U2_REGION_MAX, os);
 }
 
 bool U2SequenceObject::isCircular() const {
@@ -176,8 +182,18 @@ QByteArray U2SequenceObject::getSequenceData(const U2Region& r, U2OpStatus& os) 
         DbiConnection con(entityRef.dbiRef, os);
         CHECK_OP(os, QByteArray());
         const qint64 requestedRegionLength = r.startPos + r.length < cachedLength - 1 ? r.length + 1 : r.length;
+
+#ifdef UGENE_X86
+        qint64 actualSeqLen = con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os).length;
+        CHECK_OP(os, QByteArray());
+        if (qMin(requestedRegionLength, actualSeqLen) > getMaxSeqLengthForX86Os()) {
+            os.setError(MAX_SEQ_32_ERROR_MESSAGE);
+            return QByteArray();
+        }
+#endif
         const U2Region requestingRegion(r.startPos, requestedRegionLength);
         const QByteArray res = con.dbi->getSequenceDbi()->getSequenceData(entityRef.entityId, requestingRegion, os);
+        CHECK_OP(os, QByteArray());
 
         cachedLastAccessedRegion.first = requestingRegion;
         cachedLastAccessedRegion.second = res;
@@ -456,6 +472,14 @@ void U2SequenceObject::setGObjectName(const QString &newName) {
 
     GObject::setGObjectName(newName);
     cachedName = GObject::getGObjectName();
+}
+
+qint64 U2SequenceObject::getMaxSeqLengthForX86Os() {
+    SAFE_POINT(AppContext::getAppSettings() != NULL,
+               L10N::nullPointerError("AppSettings"), MAX_SEQ_32);
+    SAFE_POINT(AppContext::getAppSettings()->getAppResourcePool() != NULL,
+               L10N::nullPointerError("AppResourcePool"), MAX_SEQ_32);
+    return qMin(MAX_SEQ_32, (qint64)AppContext::getAppSettings()->getAppResourcePool()->getMaxMemorySizeInMB() * 1024 * 1024);
 }
 
 } //namespace

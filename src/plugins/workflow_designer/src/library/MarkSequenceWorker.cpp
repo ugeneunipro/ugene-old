@@ -33,11 +33,13 @@
 #include <U2Lang/Marker.h>
 #include <U2Lang/MarkerAttribute.h>
 #include <U2Lang/WorkflowEnv.h>
-#include <U2Core/Log.h>
 
 #include <U2Core/AnnotationTableObject.h>
-#include <U2Core/QVariantUtils.h>
 #include <U2Core/DNASequence.h>
+#include <U2Core/FailTask.h>
+#include <U2Core/Log.h>
+#include <U2Core/QVariantUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include "MarkSequenceWorker.h"
 
@@ -78,7 +80,9 @@ Task *MarkSequenceWorker::tick() {
         if (NULL == seqObj.data()) {
             return NULL;
         }
-        DNASequence seq = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence seq = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         const QList<SharedAnnotationData> inputAnns = StorageUtils::getAnnotationTable(context->getDataStorage(),
             data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()]);

@@ -22,6 +22,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DataBaseRegistry.h>
+#include <U2Core/L10n.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Core/GAutoDeleteList.h>
 #include <U2View/AnnotatedDNAView.h>
@@ -123,8 +125,10 @@ void RemoteBLASTViewContext::sl_showDialog() {
         } else {
             regions =  s->getSelectedRegions();
         }
+        U2OpStatusImpl os;
         foreach(const U2Region& r, regions) {
-            QByteArray query = seqCtx->getSequenceData(r);
+            QByteArray query = seqCtx->getSequenceData(r, os);
+            CHECK_OP_EXT(os, QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
 
             DNATranslation * aminoT = (dlg.translateToAmino ? seqCtx->getAminoTT() : 0);
             DNATranslation * complT = (dlg.translateToAmino ? seqCtx->getComplementTT() : 0);

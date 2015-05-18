@@ -299,7 +299,8 @@ void FindSingleEnzymeTask::onRegion(SequenceDbiWalkerSubtask* t, TaskStateInfo& 
                                 || seqAlphabet->getId() == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED();
 
     U2Region chunkRegion = t->getGlobalRegion();
-    DNASequence dnaSeq = dnaSequenceObject.getSequence(chunkRegion);
+    DNASequence dnaSeq = dnaSequenceObject.getSequence(chunkRegion, ti);
+    CHECK_OP(ti, );
     // Note that enzymes algorithm filters N symbols in sequence by itself
     if (useExtendedComparator) {
         FindEnzymesAlgorithm<ExtendedDNAlphabetComparator> algo;

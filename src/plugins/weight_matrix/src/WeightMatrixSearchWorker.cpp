@@ -42,6 +42,7 @@
 #include <U2Core/MultiTask.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -199,7 +200,9 @@ Task* PWMatrixSearchWorker::tick() {
         if (seqObj.isNull()) {
             return NULL;
         }
-        DNASequence seq = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence seq = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         if (!seq.isNull() && seq.alphabet->getType() == DNAAlphabet_NUCL) {
             WeightMatrixSearchCfg config(cfg);

@@ -61,7 +61,7 @@ public:
 
     qint64 getSequenceLength() const;
     const DNAAlphabet* getAlphabet() const;
-    QByteArray getSequenceData(const U2Region& r) const;
+    QByteArray getSequenceData(const U2Region &r, U2OpStatus &os) const;
     U2EntityRef getSequenceRef() const;
     bool        isRowChoosed();
 

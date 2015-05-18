@@ -61,7 +61,8 @@ enum MessageFlag {
     AnnotationNotValidFastaParsedName,
     NoPatternToSearch,
     SearchRegionIncorrect,
-    PatternWrongRegExp
+    PatternWrongRegExp,
+    SequenceIsTooBig
 };
 
 

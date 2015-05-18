@@ -33,6 +33,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/GraphUtils.h>
 #include <U2Gui/GScrollBar.h>
@@ -418,7 +419,9 @@ void DetViewRenderArea::drawDirect(QPainter& p) {
     const U2Region visibleRange = view->getVisibleRange();
     SAFE_POINT(visibleRange.length * charWidth <= width(), "Illegal visible range value!",);
 
-    QByteArray sequence = view->getSequenceContext()->getSequenceData(visibleRange);
+    U2OpStatusImpl os;
+    QByteArray sequence = view->getSequenceContext()->getSequenceData(visibleRange, os);
+    SAFE_POINT_OP(os, );
     const char* seq = sequence.constData();
 
     /// draw base line;
@@ -436,7 +439,9 @@ void DetViewRenderArea::drawComplement(QPainter& p) {
     DetView* detView = getDetView();
     if (complementLine > 0) {
         const U2Region visibleRange = detView->getVisibleRange();
-        QByteArray visibleSequence = detView->getSequenceContext()->getSequenceData(visibleRange);
+        U2OpStatusImpl os;
+        QByteArray visibleSequence = detView->getSequenceContext()->getSequenceData(visibleRange, os);
+        SAFE_POINT_OP(os, );
         const char* seq = visibleSequence.constData();
 
         DNATranslation* complTrans = detView->getComplementTT();
@@ -484,7 +489,9 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
     qint64 minUsedPos = qMax(visibleRange.startPos - 1, qint64(0));
     qint64 maxUsedPos = qMin(visibleRange.endPos() + 1, wholeSeqLen);
     U2Region seqBlockRegion(minUsedPos, maxUsedPos - minUsedPos);
-    QByteArray seqBlockData = detView->getSequenceContext()->getSequenceData(seqBlockRegion);
+    U2OpStatusImpl os;
+    QByteArray seqBlockData = detView->getSequenceContext()->getSequenceData(seqBlockRegion, os);
+    SAFE_POINT_OP(os, );
     const char* seqBlock = seqBlockData.constData();
 
     QColor startC(0,0x99,0);

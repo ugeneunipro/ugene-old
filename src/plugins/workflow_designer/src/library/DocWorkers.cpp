@@ -296,7 +296,8 @@ void FastaWriter::data2document(Document* doc, const QVariantMap& data, Workflow
     SAFE_POINT_OP(os, );
 
     U2Region splitRegion = getSplitRegion(numSplitSequences, currentSplitSequence, seqObj->getSequenceLength());
-    QByteArray splitSequence = seqObj->getSequenceData(splitRegion);
+    QByteArray splitSequence = seqObj->getSequenceData(splitRegion, os);
+    CHECK_OP(os, );
 
     DNASequence seq(seqObj->getSequenceName() + ((numSplitSequences == 1) ? QString("%1..%2").arg(splitRegion.startPos + 1, splitRegion.length) : ""), splitSequence, seqObj->getAlphabet());
     seq.circular = seqObj->isCircular();
@@ -323,7 +324,8 @@ inline static U2SequenceObject * getCopiedSequenceObject(const QVariantMap &data
     SharedDbiDataHandler seqId = data[BaseSlots::DNA_SEQUENCE_SLOT().getId()].value<SharedDbiDataHandler>();
     int refCount = seqId.constData()->getReferenceCount();
     if (refCount > 2) { // need to copy because it is used by another worker
-        DNASequence seq = seqObj->getSequence(reg);
+        DNASequence seq = seqObj->getSequence(reg, os);
+        CHECK_OP(os, NULL);
         U2EntityRef seqRef = U2SequenceUtils::import(context->getDataStorage()->getDbiRef(), seq, os);
         CHECK_OP(os, NULL);
 
@@ -377,7 +379,9 @@ void FastQWriter::data2document(Document* doc, const QVariantMap& data, Workflow
     QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
     SAFE_POINT(NULL != seqObj.data(), tr("Fastq writer: NULL sequence object"), );
 
-    DNASequence seq = seqObj->getWholeSequence();
+    U2OpStatusImpl os;
+    DNASequence seq = seqObj->getWholeSequence(os);
+    SAFE_POINT_OP(os, );
 
     if (seq.getName().isEmpty()) {
         seq.setName(QString("unknown sequence %1").arg(doc->getObjects().size()));
@@ -430,7 +434,9 @@ void RawSeqWriter::data2document(Document* doc, const QVariantMap& data, Workflo
     QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
     SAFE_POINT(NULL != seqObj.data(), tr("Raw sequence writer: NULL sequence object"), );
 
-    DNASequence seq = seqObj->getWholeSequence();
+    U2OpStatusImpl os;
+    DNASequence seq = seqObj->getWholeSequence(os);
+    SAFE_POINT_OP(os, );
 
     if (seq.getName().isEmpty()) {
         seq.setName(QString("unknown sequence %1").arg(doc->getObjects().size()));
@@ -492,7 +498,9 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
         seqObj.reset(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
         SAFE_POINT(NULL != seqObj.data(), tr("Genbank writer: NULL sequence object"), );
 
-        DNASequence seq = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence seq = seqObj->getWholeSequence(os);
+        SAFE_POINT_OP(os, );
         QMapIterator<QString, QVariant> it(seq.info);
         while (it.hasNext()) {
             it.next();
@@ -626,7 +634,9 @@ void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowCo
         seqObj.reset(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
         SAFE_POINT(!seqObj.isNull(), tr("GFF writer: NULL sequence object"), );
 
-        DNASequence seq = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence seq = seqObj->getWholeSequence(os);
+        SAFE_POINT_OP(os, );
         if (seq.getName().isEmpty()) {
             int num = doc->findGObjectByType(GObjectTypes::SEQUENCE).size();
             seq.setName(QString("unknown sequence %1").arg(num));

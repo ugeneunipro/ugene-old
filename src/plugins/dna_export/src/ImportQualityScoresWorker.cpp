@@ -32,6 +32,8 @@
 #include <U2Core/Log.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/FailTask.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Gui/DialogUtils.h>
 
 #include "ImportQualityScoresWorker.h"
@@ -162,7 +164,9 @@ Task* ImportPhredQualityWorker::tick() {
         const QMap<QString,DNAQuality>& qualities = readTask->getResult();
 
         // It's OK to copy whole sequence because we do not to expect reads to be bigger than 1000 bp
-        DNASequence seq = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence seq = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         const QString& seqName = seq.getName();
         if (qualities.contains(seqName)) {

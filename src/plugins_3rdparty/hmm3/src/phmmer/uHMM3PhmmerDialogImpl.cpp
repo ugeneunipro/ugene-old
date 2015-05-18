@@ -32,6 +32,9 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/L10n.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
@@ -55,9 +58,11 @@ UHMM3PhmmerDialogImpl::UHMM3PhmmerDialogImpl(const U2SequenceObject * seqObj, QW
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
-    model.dbSequence = seqObj->getWholeSequence();
+    U2OpStatusImpl os;
+    model.dbSequence = seqObj->getWholeSequence(os);
+    SAFE_POINT_OP_EXT(os, QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
     setModelValues(); // default model here
-    
+
     // Annotations widget
     CreateAnnotationModel annModel;
     annModel.hideLocation = true;
@@ -72,7 +77,7 @@ UHMM3PhmmerDialogImpl::UHMM3PhmmerDialogImpl(const U2SequenceObject * seqObj, QW
     QVBoxLayout * curLayout = qobject_cast< QVBoxLayout* >(firstTab->layout());
     assert(NULL != curLayout);
     curLayout->insertWidget(ANNOTATIONS_WIDGET_LOCATION, annotationsWidgetController->getWidget());
-    
+
     QPushButton* okPushButton = buttonBox->button(QDialogButtonBox::Ok);
     QPushButton* cancelPushButton = buttonBox->button(QDialogButtonBox::Cancel);
 
@@ -122,7 +127,7 @@ void UHMM3PhmmerDialogImpl::sl_cancelButtonClicked() {
 
 void UHMM3PhmmerDialogImpl::getModelValues() {
     UHMM3PhmmerSettings & settings = model.phmmerSettings;
-    
+
     model.queryfile = queryLineEdit->text();
     if(useEvalTresholdsButton->isChecked()) {
         settings.domE = pow(10.0, domESpinBox->value());
@@ -132,17 +137,17 @@ void UHMM3PhmmerDialogImpl::getModelValues() {
     } else {
         assert(false);
     }
-    
+
     settings.popen = popenDoubleSpinBox->value();
     settings.pextend = pextendDoubleSpinBox->value();
-    
+
     settings.noBiasFilter = nobiasCheckBox->isChecked();
     settings.noNull2 = nonull2CheckBox->isChecked();
     settings.doMax = maxCheckBox->isChecked();
     settings.f1 = f1DoubleSpinBox->value();
     settings.f2 = f2DoubleSpinBox->value();
     settings.f3 = f3DoubleSpinBox->value();
-    
+
     settings.eml         = emlSpinBox->value();
     settings.emn         = emnSpinBox->value();
     settings.evl         = evlSpinBox->value();
@@ -165,7 +170,7 @@ QString UHMM3PhmmerDialogImpl::checkModel() {
         QMessageBox::critical(this, tr("Error: bad arguments!"), ret);
         return ret;
     }
-    
+
     return ret;
 }
 
@@ -185,7 +190,7 @@ void UHMM3PhmmerDialogImpl::sl_okButtonClicked() {
     UHMM3PhmmerToAnnotationsTask * phmmerTask = new UHMM3PhmmerToAnnotationsTask(model.queryfile, model.dbSequence,
         annModel.getAnnotationObject(), annModel.groupName, annModel.description, annModel.data->type, annModel.data->name, model.phmmerSettings);
     AppContext::getTaskScheduler()->registerTopLevelTask(phmmerTask);
-    
+
     QDialog::accept();
 }
 

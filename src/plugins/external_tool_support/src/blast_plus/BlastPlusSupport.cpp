@@ -41,6 +41,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AnnotationSelection.h>
+#include <U2Core/L10n.h>
 
 #include <U2Gui/MainWindow.h>
 
@@ -359,9 +360,8 @@ void BlastPlusSupportContext::sl_showDialog() {
             regions = s->getSelectedRegions();
         }
         foreach(const U2Region& r, regions) {
-            settings.querySequence = seqCtx->getSequenceData(r);
-//            DNATranslation * aminoT = (dlg.translateToAmino ? seqCtx->getAminoTT() : 0);
-//            DNATranslation * complT = (dlg.translateToAmino ? seqCtx->getComplementTT() : 0);
+            settings.querySequence = seqCtx->getSequenceData(r, os);
+            CHECK_OP_EXT(os, QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
             settings.offsInGlobalSeq=r.startPos;
             SAFE_POINT(seqCtx->getSequenceObject() != NULL, tr("Sequence object is NULL"), );
             settings.isSequenceCircular = seqCtx->getSequenceObject()->isCircular();

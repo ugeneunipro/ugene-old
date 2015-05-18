@@ -39,9 +39,11 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNATranslation.h>
+#include <U2Core/L10n.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportImageDialog.h>
@@ -740,8 +742,11 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
 
     QList<Task*> tasks;
 
-    seqXCache = sequenceX->getSequenceObject()->getWholeSequenceData();
-    seqYCache = sequenceY->getSequenceObject()->getWholeSequenceData();
+    U2OpStatusImpl os;
+    seqXCache = sequenceX->getSequenceObject()->getWholeSequenceData(os);
+    CHECK_OP_EXT(os, QMessageBox::critical(this, L10N::errorTitle(), os.getError()), false);
+    seqYCache = sequenceY->getSequenceObject()->getWholeSequenceData(os);
+    CHECK_OP_EXT(os, QMessageBox::critical(this, L10N::errorTitle(), os.getError()), false);
     if (d.isDirect()) {
         RepeatFinderSettings cDirect(
             dpDirectResultListener,

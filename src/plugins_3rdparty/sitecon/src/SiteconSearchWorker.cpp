@@ -43,6 +43,7 @@
 #include <U2Core/MultiTask.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 //#include <QtGui/QApplication>
 /* TRANSLATOR U2::LocalWorkflow::SiteconSearchWorker */
@@ -64,9 +65,9 @@ void SiteconSearchWorker::registerProto() {
     {
         Descriptor md(MODEL_PORT, SiteconSearchWorker::tr("Sitecon Model"), SiteconSearchWorker::tr("Profile data to search with."));
         Descriptor sd(BasePorts::IN_SEQ_PORT_ID(), SiteconSearchWorker::tr("Sequence"), SiteconSearchWorker::tr("Input nucleotide sequence to search in."));
-        Descriptor od(BasePorts::OUT_ANNOTATIONS_PORT_ID(), SiteconSearchWorker::tr("SITECON annotations"), 
+        Descriptor od(BasePorts::OUT_ANNOTATIONS_PORT_ID(), SiteconSearchWorker::tr("SITECON annotations"),
             SiteconSearchWorker::tr("Annotations marking found TFBS sites."));
-        
+
         QMap<Descriptor, DataTypePtr> modelM;
         modelM[SiteconWorkerFactory::SITECON_SLOT] = SiteconWorkerFactory::SITECON_MODEL_TYPE();
         p << new PortDescriptor(md, DataTypePtr(new MapDataType("sitecon.search.model", modelM)), true /*input*/, false, IntegralBusPort::BLIND_INPUT);
@@ -78,16 +79,16 @@ void SiteconSearchWorker::registerProto() {
         p << new PortDescriptor(od, DataTypePtr(new MapDataType("sitecon.search.out", outM)), false /*input*/, true /*multi*/);
     }
     {
-        Descriptor nd(NAME_ATTR, SiteconSearchWorker::tr("Result annotation"), 
+        Descriptor nd(NAME_ATTR, SiteconSearchWorker::tr("Result annotation"),
             SiteconSearchWorker::tr("Annotation name for marking found regions."));
         Descriptor scd(SCORE_ATTR, SiteconSearchWorker::tr("Min score"),
             SiteconSearchWorker::tr("Recognition quality percentage threshold."
             "<p><i>If you need to switch off this filter choose <b>the lowest</b> value</i></p>."));
-        Descriptor e1d(E1_ATTR, SiteconSearchWorker::tr("Min Err1"), 
+        Descriptor e1d(E1_ATTR, SiteconSearchWorker::tr("Min Err1"),
             SiteconSearchWorker::tr("Alternative setting for filtering results, minimal value of Error type I."
             "<br>Note that all thresholds (by score, by err1 and by err2) are applied when filtering results."
             "<p><i>If you need to switch off this filter choose <b>\"0\"</b> value</i></p>."));
-        Descriptor e2d(E2_ATTR, SiteconSearchWorker::tr("Max Err2"), 
+        Descriptor e2d(E2_ATTR, SiteconSearchWorker::tr("Max Err2"),
             SiteconSearchWorker::tr("Alternative setting for filtering results, max value of Error type II."
             "<br>Note that all thresholds (by score, by err1 and by err2) are applied when filtering results."
             "<p><i>If you need to switch off this filter choose <b>\"1\"</b> value</i></p>."));
@@ -98,7 +99,7 @@ void SiteconSearchWorker::registerProto() {
         a << new Attribute(e2d, BaseTypes::NUM_TYPE(), false, 0.001);
     }
 
-    Descriptor desc(ACTOR_ID, tr("Search for TFBS with SITECON"), 
+    Descriptor desc(ACTOR_ID, tr("Search for TFBS with SITECON"),
         tr("Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles."
         " In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.")
        );
@@ -231,8 +232,10 @@ Task* SiteconSearchWorker::tick() {
         if (seqObj.isNull()) {
             return NULL;
         }
-        DNASequence seq = seqObj->getWholeSequence();
-        
+        U2OpStatusImpl os;
+        DNASequence seq = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
+
         if (!seq.isNull() && seq.alphabet->getType() == DNAAlphabet_NUCL) {
             SiteconSearchCfg config(cfg);
             config.complOnly = (strand < 0);

@@ -31,7 +31,10 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/GenbankFeatures.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/HelpButton.h>
@@ -169,7 +172,7 @@ bool FindTandemsDialog::getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Regio
     }
     if (res.isEmpty()) {
         le->setFocus();
-        QMessageBox::critical(this, tr("Error"), tr("No annotations found: %1").arg(names));
+        QMessageBox::critical(this, L10N::errorTitle(), tr("No annotations found: %1").arg(names));
         return false;
     }
     return true;
@@ -192,18 +195,20 @@ void FindTandemsDialog::accept() {
     assert(range.length > 0);
     QString err = ac->validate();
     if (!err.isEmpty()) {
-        QMessageBox::critical(this, tr("Error"), err);
+        QMessageBox::critical(this, L10N::errorTitle(), err);
         return;
     }
 
-    DNASequence seq = sc->getSequenceObject()->getSequence(range);
+    U2OpStatusImpl os;
+    DNASequence seq = sc->getSequenceObject()->getSequence(range, os);
+    CHECK_OP_EXT(os, QMessageBox::critical(this, L10N::errorTitle(), os.getError()), );
     if (seq.isNull() || !seq.alphabet) {
-        QMessageBox::warning(this, tr("Error"), tr("Not enough memory error ocurred while preparing data. Try to set smaller region."));
+        QMessageBox::warning(this, L10N::errorTitle(), tr("Not enough memory error ocurred while preparing data. Try to set smaller region."));
         return;
     }
     bool objectPrepared = ac->prepareAnnotationObject();
     if (!objectPrepared){
-        QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+        QMessageBox::warning(this, L10N::errorTitle(), tr("Cannot create an annotation object. Please check settings"));
         return;
     }
 

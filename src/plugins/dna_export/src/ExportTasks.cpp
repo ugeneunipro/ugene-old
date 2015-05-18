@@ -235,7 +235,8 @@ void ExportDNAChromatogramTask::prepare() {
     assert(sObj != NULL);
 
     DNAChromatogram cd = cObj->getChromatogram();
-    QByteArray seq = sObj->getWholeSequenceData();
+    QByteArray seq = sObj->getWholeSequenceData(stateInfo);
+    CHECK_OP(stateInfo, );
 
     if (settings.reverse) {
         TextUtils::reverse(seq.data(), seq.length());

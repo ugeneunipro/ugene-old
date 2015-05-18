@@ -218,7 +218,8 @@ Primer InSilicoPcrWorker::createPrimer(GObject *object, bool &skipped, U2OpStatu
     }
 
     result.name = primerSeq->getSequenceName();
-    result.sequence = primerSeq->getWholeSequenceData();
+    result.sequence = primerSeq->getWholeSequenceData(os);
+    CHECK_OP(os, Primer());
     return result;
 }
 
@@ -248,6 +249,7 @@ QList<Message> InSilicoPcrWorker::fetchResult(Task *task, U2OpStatus &os) {
         foreach (const InSilicoPcrProduct &product, pcrTask->getResults()) {
             QVariantMap data;
             data[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = createProductSequence(settings, product.region, os);
+            CHECK_OP(os, result);
             data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = createBindAnnotations(product);
             int metadataId = createMetadata(settings, product.region, pairNumber);
             result << Message(output->getBusType(), data, metadataId);
@@ -260,7 +262,7 @@ QList<Message> InSilicoPcrWorker::fetchResult(Task *task, U2OpStatus &os) {
 QVariant InSilicoPcrWorker::createProductSequence(const InSilicoPcrTaskSettings &settings, const U2Region &productRegion, U2OpStatus &os) {
     const DNAAlphabet *alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     SAFE_POINT_EXT(NULL != alphabet, os.setError(L10N::nullPointerError("DNA Alphabet")), QVariant());
-    
+
     QString name = ExtractProductTask::getProductName(settings.sequenceName, settings.sequence.length(), productRegion);
     QByteArray sequence = settings.sequence.mid(productRegion.startPos, productRegion.length);
     if (sequence.length() < productRegion.length) {
@@ -310,7 +312,8 @@ Task * InSilicoPcrWorker::createTask(const Message &message, U2OpStatus &os) {
     }
 
     InSilicoPcrTaskSettings settings;
-    settings.sequence = seq->getWholeSequenceData();
+    settings.sequence = seq->getWholeSequenceData(os);
+    CHECK_OP(os, NULL);
     settings.isCircular = seq->isCircular();
     settings.forwardMismatches = getValue<int>(MISMATCHES_ATTR_ID);
     settings.reverseMismatches = settings.forwardMismatches;

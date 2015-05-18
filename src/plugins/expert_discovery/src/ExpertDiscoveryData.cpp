@@ -54,7 +54,9 @@ void ExpertDiscoveryData::setConBase(const QList<GObject*> & objects){
 
 inline Sequence ExpertDiscoveryData::prepareSequence( const GObject* obj ) const{
     U2SequenceObject* seq = (U2SequenceObject*)obj;
-    QByteArray seqArr =  seq->getWholeSequenceData();
+    U2OpStatusImpl os;
+    QByteArray seqArr =  seq->getWholeSequenceData(os);
+    CHECK_OP(os, Sequence());
     std::string seqStr = std::string(seqArr.data(),seqArr.length());
     Sequence seqReady = Sequence(obj->getGObjectName().toStdString(), seqStr);
 

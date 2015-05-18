@@ -26,17 +26,20 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/DNAAlphabet.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/L10n.h>
 #include <U2Core/TextUtils.h>
-#include <U2Core/CreateAnnotationTask.h>
-#include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
@@ -62,15 +65,15 @@ public:
         const SiteconResultItem* o = (const SiteconResultItem*)&other;
         int n = treeWidget()->sortColumn();
         switch (n) {
-            case 0 : 
+            case 0 :
                 return res.region.startPos < o->res.region.startPos;
-            case 1: 
+            case 1:
                 return res.strand != o->res.strand ? res.strand.isCompementary():  (res.region.startPos < o->res.region.startPos);
             case 2:
                 return res.psum < o->res.psum;
-            case 3: 
+            case 3:
                 return res.err1 < o->res.err1;
-            case 4: 
+            case 4:
                 return res.err2 < o->res.err2;
         }
         return false;
@@ -78,7 +81,7 @@ public:
 };
 
 
-/* TRANSLATOR U2::SiteconSearchDialogController */ 
+/* TRANSLATOR U2::SiteconSearchDialogController */
 
 SiteconSearchDialogController::SiteconSearchDialogController(ADVSequenceObjectContext* _ctx, QWidget *p):QDialog(p) {
     setupUi(this);
@@ -88,14 +91,14 @@ SiteconSearchDialogController::SiteconSearchDialogController(ADVSequenceObjectCo
 
     pbSearch = buttonBox->button(QDialogButtonBox::Ok);
     pbClose = buttonBox->button(QDialogButtonBox::Cancel);
-    
+
     model = NULL;
-    
+
     //props = _props;
-    
+
     ctx = _ctx;
     task = NULL;
-    
+
     initialSelection = ctx->getSequenceSelection()->isEmpty() ? U2Region() : ctx->getSequenceSelection()->getSelectedRegions().first();
     int seqLen = ctx->getSequenceLength();
     rs=new RegionSelector(this, seqLen, true, ctx->getSequenceSelection());
@@ -105,7 +108,7 @@ SiteconSearchDialogController::SiteconSearchDialogController(ADVSequenceObjectCo
 
     connectGUI();
     updateState();
-    
+
     pbSelectModelFile->setFocus();
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), SLOT(sl_onTimer()));
@@ -126,7 +129,7 @@ void SiteconSearchDialogController::connectGUI() {
     connect(pbClear, SIGNAL(clicked()), SLOT(sl_onClearList()));
     connect(pbSearch, SIGNAL(clicked()), SLOT(sl_onSearch()));
     connect(pbClose, SIGNAL(clicked()), SLOT(sl_onClose()));
-    
+
     //results list
     connect(resultsTree, SIGNAL(itemActivated(QTreeWidgetItem*, int)), SLOT(sl_onResultActivated(QTreeWidgetItem*, int)));
 
@@ -141,17 +144,17 @@ void SiteconSearchDialogController::updateState() {
 
     bool hasResults = resultsTree->topLevelItemCount() > 0;
     //bool hasModel = false;//TODO
-    
+
     pbSearch->setEnabled(!hasActiveTask);
-    
+
     pbSaveAnnotations->setEnabled(!hasActiveTask && hasResults);
     pbClear->setEnabled(!hasActiveTask && hasResults);
-    pbClose->setText(hasActiveTask ? tr("Cancel") : tr("Close"));  
+    pbClose->setText(hasActiveTask ? tr("Cancel") : tr("Close"));
 
     rbBoth->setEnabled(!hasActiveTask && hasCompl);
     rbDirect->setEnabled(!hasActiveTask);
     rbComplement->setEnabled(!hasActiveTask && hasCompl);
-    
+
     updateStatus();
 }
 
@@ -183,7 +186,7 @@ void SiteconSearchDialogController::sl_selectModelFile() {
     if (lod.url.isEmpty()) {
         return;
     }
-    
+
     TaskStateInfo si;
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(lod.url));
     SiteconModel m = SiteconIO::readModel(iof, lod.url, si);
@@ -191,7 +194,7 @@ void SiteconSearchDialogController::sl_selectModelFile() {
         QMessageBox::critical(this, tr("Error"), si.getError());
         return;
     }
-    assert(!m.modelName.isEmpty());    
+    assert(!m.modelName.isEmpty());
     assert(m.checkState());
     updateModel(m);
     QFileInfo fi(lod.url);
@@ -205,7 +208,7 @@ void SiteconSearchDialogController::updateModel(const SiteconModel& m) {
     }
     model = new SiteconModel();
     *model =  m;
-    
+
     errLevelBox->clear();
     descTextEdit->setText(model->description);
     int pStart = -1;
@@ -241,7 +244,7 @@ void SiteconSearchDialogController::sl_onSaveAnnotations() {
     if (resultsTree->topLevelItemCount() == 0) {
         return;
     }
-    
+
     CreateAnnotationModel m;
     m.sequenceObjectRef = ctx->getSequenceObject();
     m.hideLocation = true;
@@ -302,8 +305,10 @@ void SiteconSearchDialogController::runTask() {
         QMessageBox::critical(this, tr("Error"), tr("Range is too small"));
         return;
     }
-    QByteArray seq = ctx->getSequenceData(reg);
-    
+    U2OpStatusImpl os;
+    QByteArray seq = ctx->getSequenceData(reg, os);
+    CHECK_OP_EXT(os, QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
+
     SiteconSearchCfg cfg;
     cfg.complTT = rbBoth->isChecked() || rbComplement->isChecked() ? ctx->getComplementTT() : NULL;
     cfg.complOnly = rbComplement->isChecked();
@@ -340,14 +345,14 @@ void SiteconSearchDialogController::sl_onTimer() {
 
 void SiteconSearchDialogController::importResults() {
     resultsTree->setSortingEnabled(false);
-    
+
     QList<SiteconSearchResult> newResults = task->takeResults();
     foreach(const SiteconSearchResult& r, newResults) {
         SiteconResultItem* item  = new SiteconResultItem(r);
         resultsTree->addTopLevelItem(item);
     }
     updateStatus();
-    
+
     resultsTree->setSortingEnabled(true);
 }
 
@@ -363,7 +368,7 @@ void SiteconSearchDialogController::sl_onResultActivated(QTreeWidgetItem* i, int
 //////////////////////////////////////////////////////////////////////////
 /// tree
 
-SiteconResultItem::SiteconResultItem(const SiteconSearchResult& r) : res(r) 
+SiteconResultItem::SiteconResultItem(const SiteconSearchResult& r) : res(r)
 {
     QString range = QString("%1..%2").arg(r.region.startPos + 1).arg(r.region.endPos());
     setTextAlignment(0, Qt::AlignRight);

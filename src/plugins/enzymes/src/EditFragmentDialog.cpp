@@ -32,6 +32,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/Task.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Algorithm/EnzymeModel.h>
 #include "EnzymesIO.h"
@@ -55,7 +56,10 @@ EditFragmentDialog::EditFragmentDialog( DNAFragment& fragment, QWidget* p )
 
     static const int REGION_LEN = 10;
 
-    seq = dnaFragment.getSequence();
+    U2OpStatusImpl os;
+    seq = dnaFragment.getSequence(os);
+    SAFE_POINT_OP(os, );
+
     transl = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(dnaFragment.getAlphabet());
     QByteArray data(seq.toLatin1());
     transl->translate(data.data(), data.length());
@@ -243,7 +247,9 @@ void EditFragmentDialog::resetLeftOverhang() {
     int leftCutCompl = enz->seq.length() - enz->cutComplement;
     int cutPos = dnaFragment.getFragmentRegions().first().startPos - qMax(enz->cutDirect, leftCutCompl);
     int leftOverhangStart = cutPos + qMin(enz->cutDirect, leftCutCompl);
-    QByteArray overhang = dnaFragment.getSourceSequence().mid(leftOverhangStart, dnaFragment.getFragmentRegions().first().startPos - leftOverhangStart);
+    U2OpStatusImpl os;
+    QByteArray overhang = dnaFragment.getSourceSequenceRegion( U2Region( leftOverhangStart, dnaFragment.getFragmentRegions().first().startPos - leftOverhangStart), os );
+    SAFE_POINT_OP(os, );
     bool isDirect = enz->cutDirect < leftCutCompl;
 
     if (isDirect) {
@@ -272,7 +278,9 @@ void EditFragmentDialog::resetRightOverhang()
     int rightCutPos = dnaFragment.getFragmentRegions().last().endPos();
     int enzStart = rightCutPos - qMin(enz->cutDirect, rightCutCompl );
     int rightOverhangStart = enzStart + qMax(enz->cutDirect, rightCutCompl );
-    QByteArray overhang = dnaFragment.getSourceSequence().mid(rightCutPos, rightOverhangStart - rightCutPos);
+    U2OpStatusImpl os;
+    QByteArray overhang = dnaFragment.getSourceSequenceRegion( U2Region(rightCutPos, rightOverhangStart - rightCutPos), os );
+    SAFE_POINT_OP(os, );
     bool isDirect = enz->cutDirect > rightCutCompl;
 
     if (isDirect) {

@@ -18,6 +18,7 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/AnnotationData.h>
 #include <U2Core/QVariantUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 const QString OFFSET_DELIMITER(",");
 
@@ -91,7 +92,8 @@ void TranslateSequence2AminoTask::run(){
                 importer.addBlock(translatedSeq.constData(), translatedSeq.size(), stateInfo);
                 seq.clear();
                 translatedSeq.clear();
-                seq = seqObj->getSequenceData(U2Region(i, qMin(static_cast<qint64>(NUM_DB_READ), end  - i)));
+                seq = seqObj->getSequenceData(U2Region(i, qMin(static_cast<qint64>(NUM_DB_READ), end  - i)), stateInfo);
+                CHECK_OP(stateInfo, );
                 blockCounter = 0;
             }
             translatedSeq.append(aminoTT->translate3to1(seq[blockCounter], seq[blockCounter + 1], seq[blockCounter + 2]));
@@ -124,7 +126,8 @@ void TranslateSequence2AminoTask::run(){
                 complementarySeq.clear();
                 seq.clear();
                 translatedSeq.clear();
-                seq = seqObj->getSequenceData(U2Region(qMax(end + 1, static_cast<qint64>(i - NUM_DB_READ + 1)), qMin(static_cast<qint64>(NUM_DB_READ), i - end)));
+                seq = seqObj->getSequenceData(U2Region(qMax(end + 1, static_cast<qint64>(i - NUM_DB_READ + 1)), qMin(static_cast<qint64>(NUM_DB_READ), i - end)), stateInfo);
+                CHECK_OP(stateInfo, );
                 complementarySeq.reserve(seq.size());
                 complSeq = complementarySeq.data();
                 TextUtils::translate(complTT->getOne2OneMapper(), seq, seq.size(), complSeq);
@@ -374,7 +377,10 @@ void AminoTranslationWorker::sl_taskFinished(){
         QList<U2SequenceObject*> seqObjs = translate2AminoTask->popResults();
         foreach(U2SequenceObject* seqObj, seqObjs ){
             QVariantMap msgData;
-            SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(seqObj->getWholeSequence());
+            U2OpStatusImpl os;
+            DNASequence seqData = seqObj->getWholeSequence(os);
+            CHECK_OP_EXT(os, reportError(tr("Error on getting %1 sequence: ").arg(seqObj->getGObjectName()) +  os.getError()), );
+            SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(seqData);
             msgData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(seqId);
             output->setContext(channelContext, metadataId);
             output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), msgData));

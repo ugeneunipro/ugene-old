@@ -36,10 +36,13 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Settings.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/DialogUtils.h>
@@ -477,14 +480,14 @@ void SmithWatermanDialog::sl_bttnRun()
         err = validateResultDirPath();
 
     if (!err.isEmpty()) {
-        QMessageBox::critical(this, tr("Error!"), err);
+        QMessageBox::critical(this, L10N::errorTitle(), err);
         return;
     }
     if (readParameters()) {
         if(SmithWatermanSettings::ANNOTATIONS == config.resultView) {
             bool objectPrepared = annotationController->prepareAnnotationObject();
             if (!objectPrepared){
-                QMessageBox::critical(this, tr("Error!"), "Cannot create an annotation object. Please check settings");
+                QMessageBox::critical(this, L10N::errorTitle(), tr("Cannot create an annotation object. Please check settings."));
                 return;
             }
             const CreateAnnotationModel& m = annotationController->getModel();
@@ -498,9 +501,12 @@ void SmithWatermanDialog::sl_bttnRun()
             config.includePatternContent = addPatternContentQualifier->isChecked();
         } else if (SmithWatermanSettings::MULTIPLE_ALIGNMENT == config.resultView) {
             const U2SequenceObject * sequence = ctxSeq->getSequenceObject();
+            U2OpStatusImpl os;
+            QByteArray seqData = sequence->getWholeSequenceData(os);
+            CHECK_OP_EXT(os, QMessageBox::critical(this, L10N::errorTitle(), os.getError()), );
             config.resultCallback = new SmithWatermanReportCallbackMAImpl(alignmentFilesPath->text(), mObjectNameTmpl->text(),
                                                                         refSubseqNameTmpl->text(), patternSubseqNameTmpl->text(),
-                                                                        sequence->getWholeSequenceData(), config.ptrn,
+                                                                        seqData, config.ptrn,
                                                                         sequence->getSequenceName(), patternSequenceName->text(),
                                                                         sequence->getAlphabet());
         }
@@ -519,7 +525,9 @@ bool SmithWatermanDialog::readParameters()
 {
     clearAll();
 
-    config.sqnc = ctxSeq->getSequenceObject()->getWholeSequenceData();
+    U2OpStatusImpl os;
+    config.sqnc = ctxSeq->getSequenceObject()->getWholeSequenceData(os);
+    CHECK_OP_EXT(os, QMessageBox::critical(this, L10N::errorTitle(), os.getError()), false);
     config.searchCircular = ctxSeq->getSequenceObject()->isCircular();
 
     DNATranslation* aminoTT = 0;

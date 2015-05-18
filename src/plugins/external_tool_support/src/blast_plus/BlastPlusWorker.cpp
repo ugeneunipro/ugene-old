@@ -45,6 +45,7 @@
 #include <U2Core/FailTask.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -314,7 +315,9 @@ Task* BlastPlusWorker::tick() {
         if (seqObj.isNull()) {
             return NULL;
         }
-        DNASequence seq = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence seq = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         if(seq.length() < 1) {
             return new FailTask(tr("Empty sequence supplied to BLAST"));

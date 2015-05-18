@@ -32,6 +32,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -391,7 +392,9 @@ Task* BlastAllWorker::tick() {
         if (seqObj.isNull()) {
             return NULL;
         }
-        DNASequence seq = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence seq = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         if(seq.length() < 1) {
             return new FailTask(tr("Empty sequence supplied to BLAST"));

@@ -30,6 +30,7 @@
 #include <U2Algorithm/SArrayIndex.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/Settings.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "CustomPatternAnnotationTask.h"
 
@@ -56,7 +57,8 @@ CustomPatternAnnotationTask::CustomPatternAnnotationTask(AnnotationTableObject* 
 
 void CustomPatternAnnotationTask::prepare()
 {
-    sequence = dnaObj.getWholeSequenceData();
+    sequence = dnaObj.getWholeSequenceData(stateInfo);
+    CHECK_OP(stateInfo, );
 
     if (dnaObj.isCircular()) {
         sequence += sequence;

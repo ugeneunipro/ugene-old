@@ -61,7 +61,7 @@ class GObject;
 
 //**********uHMMER Search********************
 
-/* TRANSLATOR U2::GTest */    
+/* TRANSLATOR U2::GTest */
 
 void GTest_uHMMERSearch::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
@@ -83,14 +83,14 @@ void GTest_uHMMERSearch::init(XMLTestFormat *tf, const QDomElement& el) {
     if (seqDocCtxName.isEmpty()) {
         failMissingValue(SEQ_DB_DOC);
         return;
-    } 
+    }
     resultDocName = el.attribute(OUT_DOC_NAME_ATTR);
-    
+
     QString exp_opt_str = el.attribute(EXPERT_OPT_FLAG_ATTR);
     if (exp_opt_str.isEmpty()) {
         failMissingValue(EXPERT_OPT_FLAG_ATTR);
         return;
-    } 
+    }
     bool ok=false;
     expertOptions = exp_opt_str.toInt(&ok);
     if(!ok) {
@@ -107,7 +107,7 @@ void GTest_uHMMERSearch::init(XMLTestFormat *tf, const QDomElement& el) {
                 return;
             }
         }
-        
+
         QString num_of_seq_str = el.attribute(NUMBER_OF_SEQ_ATTR);
         if (!num_of_seq_str.isEmpty()) {
             ok=false;
@@ -117,7 +117,7 @@ void GTest_uHMMERSearch::init(XMLTestFormat *tf, const QDomElement& el) {
                 return;
             }
         }
-        
+
         QString domEvalueCutoff_str = el.attribute(DOM_E_VALUE_CUTOFF_ATTR);
         if (!domEvalueCutoff_str.isEmpty()) {
             ok=false;
@@ -130,7 +130,7 @@ void GTest_uHMMERSearch::init(XMLTestFormat *tf, const QDomElement& el) {
 
         QString minScoreCutoff_str = el.attribute(MIN_SCORE_CUTOFF_ATTR);
         if (!minScoreCutoff_str.isEmpty()) {
-            
+
             ok=false;
             minScoreCutoff = minScoreCutoff_str.toFloat(&ok);
             if(!ok) {
@@ -139,7 +139,7 @@ void GTest_uHMMERSearch::init(XMLTestFormat *tf, const QDomElement& el) {
             }
         }
     }
-        
+
     customHmmSearchChunk = false;
     QString hmmSearchChunk_str = el.attribute(HMMSEARCH_CHUNK_ATTR);
     if (!hmmSearchChunk_str.isEmpty()) {
@@ -163,7 +163,7 @@ void GTest_uHMMERSearch::init(XMLTestFormat *tf, const QDomElement& el) {
             return;
         }
     }
-    
+
     searchTask = NULL;
     saveTask = NULL;
     aDoc = NULL;
@@ -232,7 +232,8 @@ void GTest_uHMMERSearch::prepare() {
     CHECK_OP(stateInfo, );
     AnnotationTableObject *ao = new AnnotationTableObject( "Annotations", aDoc->getDbiRef( ) );
     aDoc->addObject(ao);
-    DNASequence dnaSequence = mySequence->getWholeSequence();
+    DNASequence dnaSequence = mySequence->getWholeSequence(stateInfo);
+    CHECK_OP(stateInfo, );
     searchTask = new HMMSearchToAnnotationsTask(env->getVar("COMMON_DATA_DIR")+"/"+hmmFileName, dnaSequence, ao, annotationName, "", U2FeatureTypes::MiscSignal, annotationName, s);
     addSubTask(searchTask);
 }
@@ -298,7 +299,7 @@ void GTest_uHMMERSearch::cleanup() {
 
 void GTest_uHMMERBuild::init(XMLTestFormat* tf, const QDomElement& el) {
     Q_UNUSED(tf);
-    
+
     QString inFile = el.attribute(IN_FILE_NAME_ATTR);
     if (inFile.isEmpty()) {
         failMissingValue(IN_FILE_NAME_ATTR);
@@ -329,7 +330,7 @@ void GTest_uHMMERBuild::init(XMLTestFormat* tf, const QDomElement& el) {
         return;
     }
 
-    UHMMBuildSettings s; 
+    UHMMBuildSettings s;
     s.name = hmmName;
     if(expOpt=="LS") s.strategy = P7_LS_CONFIG;
     else if(expOpt=="FS")  s.strategy = P7_FS_CONFIG;
@@ -369,7 +370,7 @@ void GTest_uHMMERBuild::cleanup(){
 
 void GTest_hmmCompare::init(XMLTestFormat* tf, const QDomElement& el) {
     Q_UNUSED(tf);
-    
+
     file1Name = el.attribute(IN_FILE1_NAME_ATTR);
     if (file1Name.isEmpty()) {
         failMissingValue(IN_FILE1_NAME_ATTR);
@@ -383,7 +384,7 @@ void GTest_hmmCompare::init(XMLTestFormat* tf, const QDomElement& el) {
 }
 
 Task::ReportResult GTest_hmmCompare::report() {
-    
+
     QFileInfo fi1(env->getVar("COMMON_DATA_DIR")+"/"+file1Name);
     QString url1 = fi1.absoluteFilePath();
     IOAdapterFactory* iof1 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url1));
@@ -405,7 +406,7 @@ Task::ReportResult GTest_hmmCompare::report() {
         stateInfo.setError(  QString("File opening error \"%1\", description: ").arg(url2) );//+file2.errorString() );
         return ReportResult_Finished;
     }
-    
+
     static int READ_BUFF_SIZE = 4096;
 
     qint64 len1, len2, line1 = 0, line2 = 0;
@@ -482,7 +483,7 @@ void GTest_uHMMERCalibrate::init(XMLTestFormat* tf, const QDomElement& el) {
     if (mu_str.isEmpty()) {
         failMissingValue(MU_ATTR);
         return;
-    } 
+    }
     bool ok=false;
     mu = mu_str.toFloat(&ok);
     if(!ok) {
@@ -493,7 +494,7 @@ void GTest_uHMMERCalibrate::init(XMLTestFormat* tf, const QDomElement& el) {
     if (lambda_str.isEmpty()) {
         failMissingValue(LAMBDA_ATTR);
         return;
-    } 
+    }
     ok=false;
     lambda = lambda_str.toFloat(&ok);
     if(!ok) {
@@ -504,7 +505,7 @@ void GTest_uHMMERCalibrate::init(XMLTestFormat* tf, const QDomElement& el) {
     if (nThreads_str.isEmpty()) {
         failMissingValue(NUMBER_OF_THREADS_ATTR);
         return;
-    } 
+    }
     ok=false;
     int nThreads = nThreads_str.toFloat(&ok);
     if(!ok) {
@@ -519,8 +520,8 @@ void GTest_uHMMERCalibrate::init(XMLTestFormat* tf, const QDomElement& el) {
         if(!ok) {
             failMissingValue(RUN_N_CALIBRATES);
             return;
-        }    
-    } 
+        }
+    }
     UHMMCalibrateSettings s;
 
     QString seed_str = el.attribute(SEED_ATTR);
@@ -533,9 +534,9 @@ void GTest_uHMMERCalibrate::init(XMLTestFormat* tf, const QDomElement& el) {
         }
         s.seed = seed;
     }
-    
+
     calibrateTask = new HMMCalibrateToFileTask*[nCalibrates];
-    
+
     s.nThreads = nThreads;
 
     //Run nCalibrates HMMCalibrate tasks simultaneously
@@ -565,7 +566,7 @@ Task::ReportResult GTest_uHMMERCalibrate::report() {
     return ReportResult_Finished;
 }
 
-GTest_uHMMERCalibrate::GTest_uHMMERCalibrateSubtask::GTest_uHMMERCalibrateSubtask(HMMCalibrateToFileTask **calibrateTask, int n) 
+GTest_uHMMERCalibrate::GTest_uHMMERCalibrateSubtask::GTest_uHMMERCalibrateSubtask(HMMCalibrateToFileTask **calibrateTask, int n)
 :Task(tr("uhmmer-calibrate-subtask"),TaskFlags_NR_FOSCOE)
 {
     assert(calibrateTask!=NULL);

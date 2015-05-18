@@ -112,13 +112,15 @@ Task::ReportResult GTest_AddPartToSequenceTask::report(){
             .arg(expectedSequence.length()));
         return ReportResult_Finished;
     }
-    if (QString::compare(dnaso->getWholeSequenceData(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
+    if (QString::compare(dnaso->getWholeSequenceData(stateInfo), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
     {
+        CHECK_OP(stateInfo, ReportResult_Finished);
         stateInfo.setError(GTest::tr("Sequence is incorrect. Expected:%1, but Actual:%2")
-            .arg((QString)(dnaso->getWholeSequenceData()))
+            .arg((QString)(dnaso->getWholeSequenceData(stateInfo)))
             .arg(expectedSequence));
         return ReportResult_Finished;
     }
+    CHECK_OP(stateInfo, ReportResult_Finished);
     if (annotationName.length()!=0)
     {
         if(strat != U1AnnotationUtils::AnnotationStrategyForResize_Split_To_Separate){
@@ -244,13 +246,15 @@ Task::ReportResult GTest_RemovePartFromSequenceTask::report(){
             .arg(expectedSequence.length()));
         return ReportResult_Finished;
     }
-    if (QString::compare (dnaso->getWholeSequenceData(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
+    if (QString::compare (dnaso->getWholeSequenceData(stateInfo), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
     {
+        CHECK_OP(stateInfo, ReportResult_Finished);
         stateInfo.setError(GTest::tr("Sequence is incorrect. Expected:%1, but Actual:%2")
-            .arg((QString)(dnaso->getWholeSequenceData()))
+            .arg((QString)(dnaso->getWholeSequenceData(stateInfo)))
             .arg(expectedSequence));
         return ReportResult_Finished;
     }
+    CHECK_OP(stateInfo, ReportResult_Finished);
     if (annotationName.length() != 0) {
         Document* loadedDocument = getContext<Document>(this, docName);
         QList<GObject*> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
@@ -369,13 +373,15 @@ Task::ReportResult GTest_ReplacePartOfSequenceTask::report(){
             .arg(expectedSequence.length()));
         return ReportResult_Finished;
     }
-    if (QString::compare (dnaso->getWholeSequenceData(), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
+    if (QString::compare (dnaso->getWholeSequenceData(stateInfo), expectedSequence, Qt::CaseInsensitive)!=0)//may be refactor this place
     {
+        CHECK_OP(stateInfo, ReportResult_Finished);
         stateInfo.setError(GTest::tr("Sequence is incorrect. Actual:%1, but expected:%2")
-            .arg((QString)(dnaso->getWholeSequenceData()))
+            .arg((QString)(dnaso->getWholeSequenceData(stateInfo)))
             .arg(expectedSequence));
         return ReportResult_Finished;
     }
+    CHECK_OP(stateInfo, ReportResult_Finished);
     if (!annotationName.isEmpty()) {
         Document* loadedDocument = getContext<Document>(this, docName);
         QList<GObject*> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);

@@ -29,23 +29,24 @@
 
 namespace U2 {
 
-class U2SequenceObject;
-class DNAAlphabet;
 class AnnotationTableObject;
 class Annotation;
+class DNAAlphabet;
 class GObject;
+class U2SequenceObject;
+class U2OpStatus;
 
 struct DNAFragmentTerm {
     DNAFragmentTerm(const QString& eId, const QByteArray& seq, bool directStrand)
         : enzymeId(eId.toLatin1()), overhang(seq), isDirect(directStrand)
     {
-    
+
     }
 
     DNAFragmentTerm()
         : isDirect(true)
     {
-    
+
     }
 
     QByteArray enzymeId;
@@ -83,11 +84,12 @@ public:
     QString getSequenceName() const;
     QString getSequenceDocName() const;
     QVector<U2Region> getFragmentRegions() const;
-    QByteArray getSequence() const;
+    QByteArray getSequence(U2OpStatus &os) const;
     int getLength() const;
     bool isInverted() const { return reverseCompl; }
     const DNAAlphabet* getAlphabet() const;
-    QByteArray getSourceSequence() const;
+    QByteArray getSourceSequence(U2OpStatus &os) const;
+    QByteArray getSourceSequenceRegion(const U2Region region, U2OpStatus& os) const;
     const DNAFragmentTerm& getLeftTerminus() const;
     const DNAFragmentTerm& getRightTerminus() const;
     void setInverted(bool inverted = true);

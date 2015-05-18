@@ -60,14 +60,14 @@ void GTest_CalculateACGTContent::init(XMLTestFormat *tf, const QDomElement& el) 
     if (docName.isEmpty()) {
         failMissingValue(DOC_ATTR);
         return;
-    } 
+    }
 
     QString expected = el.attribute(EXPECTED_RESULTS_ATTR);
     QStringList expectedList = expected.split(QRegExp("\\,")); //may be QRegExp("\\,")
     if (expectedList.size() != 4) {
         stateInfo.setError(  QString("here must be 4 items in %1").arg(EXPECTED_RESULTS_ATTR) );
         return;
-    } 
+    }
     int i = 0, sum = 0;
     foreach(QString str, expectedList) {
         bool isOk;
@@ -129,7 +129,7 @@ void GTest_CalculateDispersionAndAverage::init(XMLTestFormat *tf, const QDomElem
     QStringList propsList = el.attribute(PROPERTIES_INDEXES).split(QRegExp("\\,")),
                 diPosStrList = el.attribute(DINUCLEOTIDE_POSITIONS).split(QRegExp("\\,")),
                 expectedStrList = el.attribute(EXPECTED_RESULTS_ATTR).split(QRegExp("\\,"));
-    QStringList::Iterator expResIt; 
+    QStringList::Iterator expResIt;
     expResIt = expectedStrList.begin();
     foreach(QString posStr, diPosStrList) {
         bool isOk;
@@ -172,7 +172,7 @@ void GTest_CalculateDispersionAndAverage::init(XMLTestFormat *tf, const QDomElem
             expResIt++;
         }
     }
-    
+
     docName = el.attribute(DOC_ATTR);
     if (docName.isEmpty()) {
         failMissingValue(DOC_ATTR);
@@ -219,7 +219,7 @@ Task::ReportResult GTest_CalculateDispersionAndAverage::report() {
         int j = rv[1];
         PositionStats vec = result[i];
         DiStat stat = vec[j];
-        int sdev = qRound(stat.sdeviation * 10000), 
+        int sdev = qRound(stat.sdeviation * 10000),
             average = qRound(stat.average * 10000),
             expAve = rv[2],
             expSdev = rv[3];
@@ -419,7 +419,7 @@ void GTest_SiteconSearchTask::init(XMLTestFormat *tf, const QDomElement& el) {
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     QString url = env->getVar("COMMON_DATA_DIR") + "/" + modelPath;
     model = SiteconIO::readModel(iof, url, stateInfo);
-    
+
     QString strandStr = el.attribute(STRAND_ATTR);
     if (strandStr.isEmpty()) {
         failMissingValue(STRAND_ATTR);
@@ -453,7 +453,7 @@ void GTest_SiteconSearchTask::init(XMLTestFormat *tf, const QDomElement& el) {
 
     QString expected = el.attribute(EXPECTED_RESULTS_ATTR);
     if (!expected.isEmpty()) {
-        QStringList expectedList = expected.split(QRegExp("\\;")); 
+        QStringList expectedList = expected.split(QRegExp("\\;"));
         foreach(QString propsArray, expectedList) {
             QStringList props = propsArray.split(QRegExp("\\,"));
             QString middleStr = props[0], scoreStr = props[1], strStr = props[2];
@@ -480,7 +480,7 @@ void GTest_SiteconSearchTask::init(XMLTestFormat *tf, const QDomElement& el) {
                 stateInfo.setError(  QString("%1 has incorrect value").arg(STRAND_ATTR) );
                 return;
             }
-            float psum = scoreStr.toFloat(&isOk);      
+            float psum = scoreStr.toFloat(&isOk);
             if(!isOk){
                 stateInfo.setError(  QString("unable to convert %1 to float").arg(EXPECTED_RESULTS_ATTR) );
                 return;
@@ -497,14 +497,16 @@ void GTest_SiteconSearchTask::init(XMLTestFormat *tf, const QDomElement& el) {
 void GTest_SiteconSearchTask::prepare() {
     U2SequenceObject * mySequence = getContext<U2SequenceObject>(this, seqName);
     CHECK_EXT(mySequence != NULL, setError( QString("error can't cast to sequence from GObject")), );
-    
+
     SiteconSearchCfg cfg;
     cfg.complOnly = complOnly;
     cfg.minPSUM = tresh;
     if (isNeedCompliment){
         cfg.complTT = GObjectUtils::findComplementTT(mySequence->getAlphabet());
     }
-    task = new SiteconSearchTask(model, mySequence->getWholeSequenceData(), cfg, 0);    
+    QByteArray seqData = mySequence->getWholeSequenceData(stateInfo);
+    CHECK_OP(stateInfo, );
+    task = new SiteconSearchTask(model, seqData, cfg, 0);
     addSubTask(task);
 }
 

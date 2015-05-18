@@ -30,6 +30,7 @@
 #include <U2Core/LoadDASDocumentTask.h>
 #include <U2Core/DASSource.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -214,7 +215,10 @@ void DASFetcherWorker::sl_taskFinished() {
         }
 
         QVariantMap messageData;
-        SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(dnao->getWholeSequence());
+        U2OpStatusImpl os;
+        DNASequence seq  = dnao->getWholeSequence(os);
+        CHECK_OP(os, );
+        SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(seq);
         messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(seqId);
         SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(ads);
         messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(tableId);

@@ -94,7 +94,8 @@ Task *GeneByGeneReportWorker::tick() {
         if (NULL == seqObj.data()) {
             return NULL;
         }
-        DNASequence seq = seqObj->getWholeSequence();
+        DNASequence seq = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         geneData.insert(seqObj->getSequenceName(), qMakePair(seq, annData));
     }

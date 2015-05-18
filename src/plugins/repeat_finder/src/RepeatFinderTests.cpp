@@ -29,6 +29,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Algorithm/SArrayIndex.h>
 #include <U2Algorithm/SArrayBasedFindTask.h>
@@ -202,13 +203,16 @@ void GTest_FindSingleSequenceRepeatsTask::prepare() {
         s.filter = NoFiltering;
     }
 
+    U2OpStatusImpl os;
     foreach(RFAlgorithm algo, algos) {
         QString algName = getAlgName(algo);
         if (excludeList.contains(algName)) {
             continue;
         }
         s.algo = algo;
-        Task* sub = new FindRepeatsTask(s, seq1IObj->getWholeSequence(), seq1IObj->getWholeSequence());
+        QByteArray seqData = seq1IObj->getWholeSequenceData(os);
+        CHECK_OP_EXT(os, setError(os.getError()), );
+        Task* sub = new FindRepeatsTask(s, seqData, seqData);
         addSubTask(sub);
     }
 }
@@ -471,7 +475,10 @@ void GTest_FindRealTandemRepeatsTask::prepare() {
     s.seqRegion = region;
     s.nThreads = 1;//todo: add to settings
 
-    addSubTask( new TandemFinder(s, seqObj->getWholeSequence()) );
+    U2OpStatusImpl os;
+    DNASequence dna = seqObj->getWholeSequence(os);
+    CHECK_OP_EXT(os, setError(os.getError()), );
+    addSubTask( new TandemFinder(s, dna) );
 }
 
 void GTest_FindRealTandemRepeatsTask::run() {
@@ -614,7 +621,8 @@ void GTest_SArrayBasedFindTask::prepare() {
         prefixSize = prefixSize / (nMismatches + 1);
     }
 
-    wholeSeq = seqObj->getWholeSequenceData();
+    wholeSeq = seqObj->getWholeSequenceData(stateInfo);
+    CHECK_OP(stateInfo, );
     index = new SArrayIndex(wholeSeq.constData(), seqObj->getSequenceLength(), prefixSize, stateInfo, unknownChar, bitMask, bitCharLen);
 
     if (hasError()) {

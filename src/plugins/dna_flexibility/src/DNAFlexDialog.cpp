@@ -24,6 +24,10 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/L10n.h>
+
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/HelpButton.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -110,13 +114,16 @@ void DNAFlexDialog::accept()
 
 
     // Creating the task
+    U2OpStatusImpl os;
+    QByteArray seqData = ctx->getSequenceObject()->getWholeSequenceData(os);
+    CHECK_OP_EXT(os, QMessageBox::critical(this, L10N::errorTitle(), os.getError()), );
     DNAFlexTask* task = new DNAFlexTask(
         settings,
         annotModel.getAnnotationObject(),
         annotName,
         annotGroup,
         annotModel.description,
-        ctx->getSequenceObject()->getWholeSequence());
+        seqData);
 
     // Registering the task
     AppContext::getTaskScheduler()->registerTopLevelTask(task);

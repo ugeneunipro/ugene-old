@@ -125,7 +125,9 @@ void GTest_SecStructPredictTask::prepare()
         return;
     }
     SecStructPredictTaskFactory* factory = sspr->getAlgorithm(algName);
-    task = factory->createTaskInstance(mySequence->getWholeSequenceData());
+    QByteArray seqData = mySequence->getWholeSequenceData(stateInfo);
+    task = factory->createTaskInstance(seqData);
+    CHECK_OP(stateInfo, );
     addSubTask(task);
 }
 

@@ -107,7 +107,8 @@ BestPositionFindTask::BestPositionFindTask(const MAlignment& alignment, const U2
 }
 void BestPositionFindTask::run() {
     U2SequenceObject dnaSeq("sequence", sequenceRef);
-    QByteArray sequence = dnaSeq.getWholeSequenceData();
+    QByteArray sequence = dnaSeq.getWholeSequenceData(stateInfo);
+    CHECK_OP(stateInfo, );
 
     if(sequence.isEmpty()) {
         return;

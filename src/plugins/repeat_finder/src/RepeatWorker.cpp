@@ -41,6 +41,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 //#include <QtGui/QApplication>
 
@@ -255,7 +256,9 @@ Task* RepeatWorker::tick() {
         if (seqObj.isNull()) {
             return NULL;
         }
-        DNASequence seq = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence seq = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         if(cfg.minDist < 0){
             algoLog.error(tr("Incorrect value: minimal distance must be greater then zero"));

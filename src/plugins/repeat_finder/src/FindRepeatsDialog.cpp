@@ -32,6 +32,8 @@
 #include <U2Core/GenbankFeatures.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/HelpButton.h>
@@ -218,7 +220,7 @@ bool FindRepeatsDialog::getRegions(QCheckBox* cb, QLineEdit* le, QVector<U2Regio
     }
     if (res.isEmpty()) {
         le->setFocus();
-        QMessageBox::critical(this, tr("Error"), tr("No annotations found: %1").arg(names));
+        QMessageBox::critical(this, L10N::errorTitle(), tr("No annotations found: %1").arg(names));
         return false;
     }
     return true;
@@ -240,7 +242,7 @@ void FindRepeatsDialog::accept() {
     assert(minDist <= maxDist);
     QString err = ac->validate();
     if (!err.isEmpty()) {
-        QMessageBox::critical(this, tr("Error"), err);
+        QMessageBox::critical(this, L10N::errorTitle(), err);
         return;
     }
     QVector<U2Region> fitRegions, aroundRegions, filterRegions;
@@ -270,7 +272,9 @@ void FindRepeatsDialog::accept() {
     settings.reportReflected = false;
     settings.excludeTandems = excludeTandemsBox->isChecked();
 
-    DNASequence seqPart = sc->getSequenceObject()->getSequence(range);
+    U2OpStatusImpl os;
+    DNASequence seqPart = sc->getSequenceObject()->getSequence(range, os);
+    CHECK_OP_EXT(os, QMessageBox::critical(this, L10N::errorTitle(), os.getError()), );
     if (seqPart.isNull() || !seqPart.alphabet) {
         QMessageBox::warning(this, tr("Error"), tr("Not enough memory error ocurred while preparing data. Try to set smaller region."));
         return;

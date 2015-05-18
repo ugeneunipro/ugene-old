@@ -191,7 +191,8 @@ Task::ReportResult GTest_PFMCreateTest::report() {
                 stateInfo.setError(QString("Wrong sequence alphabet"));
                 return ReportResult_Finished;
             }
-            DNASequence* s = new DNASequence(QString("%1 sequence").arg(i + 1), seq->getWholeSequenceData(), seq->getAlphabet());
+            DNASequence* s = new DNASequence(QString("%1 sequence").arg(i + 1), seq->getWholeSequenceData(stateInfo), seq->getAlphabet());
+            CHECK_OP(stateInfo, ReportResult_Finished);
             data.push_back(s);
         }
         PFMatrix pfm(data, type);
@@ -355,7 +356,8 @@ Task::ReportResult GTest_PWMCreateTest::report() {
                 stateInfo.setError(GTest::tr("Wrong %1 sequence alphabet").arg(i));
                 return ReportResult_Finished;
             }
-            DNASequence* s = new DNASequence(QString("%1 sequence").arg(i), seq->getWholeSequenceData(), seq->getAlphabet());
+            DNASequence* s = new DNASequence(QString("%1 sequence").arg(i), seq->getWholeSequenceData(stateInfo), seq->getAlphabet());
+            CHECK_OP(stateInfo, ReportResult_Finished);
             data.push_back(s);
         }
 

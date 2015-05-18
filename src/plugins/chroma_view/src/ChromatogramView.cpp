@@ -28,6 +28,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/Task.h>
 #include <U2Core/GUrlUtils.h>
@@ -212,7 +213,7 @@ int ChromatogramView::getEditSeqIndex(int bcIndex) {
 
 void ChromatogramView::sl_onPopupMenuCkicked(QAction* a) {
     if (editDNASeq->isStateLocked()) {
-        QMessageBox::critical(this, tr("Error"), tr("Sequence is locked"));
+        QMessageBox::critical(this, L10N::errorTitle(), tr("The sequence is locked"));
         return;
     }
     char newBase = a->text().at(0).toLatin1();
@@ -239,7 +240,9 @@ void ChromatogramView::sl_onPopupMenuCkicked(QAction* a) {
         currentBaseCalls[selIndex] = newBase;
 
         indexOfChangedChars.insert(selIndex);
-        char refBase = ctx->getSequenceData(U2Region(selIndex, 1)).at(0);
+        QByteArray seqData = ctx->getSequenceData(U2Region(selIndex, 1), os);
+        SAFE_POINT_OP(os, );
+        char refBase = seqData.at(0);
         if (newBase == refBase) {
             indexOfChangedChars.remove(selIndex);
         }
@@ -276,7 +279,8 @@ void ChromatogramView::sl_addNewSequenceObject() {
     U2SequenceObject* so = ctx->getSequenceObject();
     editDNASeq = qobject_cast<U2SequenceObject*>(so->clone(doc->getDbiRef(), os));
     CHECK_OP(os, );
-    currentBaseCalls = editDNASeq->getWholeSequenceData();
+    currentBaseCalls = editDNASeq->getWholeSequenceData(os);
+    CHECK_OP(os, );
     doc->addObject(editDNASeq);
     ctx->getAnnotatedDNAView()->addObject(editDNASeq);
     indexOfChangedChars.clear();
@@ -343,12 +347,14 @@ void ChromatogramView::sl_clearEditableSequence() {
 
 void ChromatogramView::sl_removeChanges()   {
     if (editDNASeq->isStateLocked()) {
-        QMessageBox::critical(this, tr("Error"), tr("Sequence is locked"));
+        QMessageBox::critical(this, L10N::errorTitle(), tr("The sequence is locked"));
         return;
     }
 
     U2SequenceObject* seqObject = ctx->getSequenceObject();
-    QByteArray sequence = seqObject->getWholeSequenceData();
+    U2OpStatusImpl os;
+    QByteArray sequence = seqObject->getWholeSequenceData(os);
+    CHECK_OP(os, );
     for (QSet<int>::const_iterator it = indexOfChangedChars.constBegin(); it != indexOfChangedChars.constEnd(); ++it)  {
         currentBaseCalls[*it] = sequence[*it];
     }
@@ -488,7 +494,9 @@ void ChromatogramViewRenderArea::drawAll(QPaintDevice* pd) {
     assert(!visible.isEmpty());
 
     ADVSequenceObjectContext* seqCtx = view->getSequenceContext();
-    QByteArray seq = seqCtx->getSequenceObject()->getWholeSequenceData();
+    U2OpStatusImpl os;
+    QByteArray seq = seqCtx->getSequenceObject()->getWholeSequenceData(os);
+    SAFE_POINT_OP(os, );
 
     GSLV_UpdateFlags uf = view->getUpdateFlags();
     bool completeRedraw = uf.testFlag(GSLV_UF_NeedCompleteRedraw) || uf.testFlag(GSLV_UF_ViewResized) ||

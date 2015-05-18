@@ -116,8 +116,8 @@ const DNAAlphabet* ADVSequenceObjectContext::getAlphabet() const {
     return seqObj->getAlphabet();
 }
 
-QByteArray ADVSequenceObjectContext::getSequenceData(const U2Region& r) const {
-    return seqObj->getSequenceData(r);
+QByteArray ADVSequenceObjectContext::getSequenceData(const U2Region &r, U2OpStatus &os) const {
+    return seqObj->getSequenceData(r, os);
 }
 
 U2EntityRef ADVSequenceObjectContext::getSequenceRef() const {

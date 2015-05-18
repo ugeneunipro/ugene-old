@@ -27,6 +27,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/IntegralBusModel.h>
@@ -257,7 +258,6 @@ Task* RemoteBLASTWorker::tick() {
             QString usedDatabase = getValue<QString>(DATABASE_ATTR);
             addParametr(cfg.params,ReqParams::database,usedDatabase.split(" ").last());
             QString filter;
-            QString wordSize;
             if(shortSeq) {
                 evalue = 1000;
                 filter = "";
@@ -284,7 +284,9 @@ Task* RemoteBLASTWorker::tick() {
         if (seqObj.isNull()) {
             return NULL;
         }
-        DNASequence seq = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence seq = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         seq.info.clear();
         const DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(seq.seq);

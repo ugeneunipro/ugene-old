@@ -309,8 +309,10 @@ QList<Task*> MuscleAddSequencesToProfileTask::onSubTaskFinished(Task* subTask) {
             al = U2AlphabetUtils::deriveCommonAlphabet(al, objAl);
             CHECK_EXT(al != NULL, setError(tr("Sequences in file have different alphabets %1").arg(loadTask->getDocument()->getURLString())), res);
         }
-        U2OpStatus2Log os;
-        s.profile.addRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), os);
+        QByteArray seqData = dnaObj->getWholeSequenceData(stateInfo);
+        CHECK_OP(stateInfo, res);
+        s.profile.addRow(dnaObj->getSequenceName(), seqData, stateInfo);
+        CHECK_OP(stateInfo, res);
     }
     if(!seqObjects.isEmpty()) {
         s.profile.setAlphabet(al);

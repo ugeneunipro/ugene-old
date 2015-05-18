@@ -121,7 +121,10 @@ static DNASequence getSequence(QScriptContext *ctx, QScriptEngine *engine, int a
         SequenceScriptClass::CLASS_NAME);
     QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(wse->getWorkflowContext()->getDataStorage(), seqId));
     CHECK(!seqObj.isNull(), DNASequence());
-    return seqObj->getWholeSequence();
+    U2OpStatusImpl os;
+    DNASequence seq = seqObj->getWholeSequence(os);
+    CHECK_OP(os, DNASequence());
+    return seq;
 }
 
 static QList<SharedAnnotationData> getAnnotationTable(QScriptContext *ctx, QScriptEngine *engine, int argNum) {

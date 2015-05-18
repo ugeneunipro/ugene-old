@@ -34,6 +34,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -366,7 +367,9 @@ Task* FindWorker::tick() {
         if (NULL == seqObj.data()) {
             return NULL;
         }
-        DNASequence seq = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence seq = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
         if(seq.isNull()) {
             return new FailTask(tr("Null sequence supplied to FindWorker: %1").arg(seq.getName()));
         }

@@ -40,6 +40,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
@@ -478,7 +479,9 @@ void PWMSearchDialogController::runTask() {
 
     sl_onClearList();
 
-    QByteArray seq = ctx->getSequenceData(reg);
+    U2OpStatusImpl os;
+    QByteArray seq = ctx->getSequenceData(reg, os);
+    CHECK_OP_EXT(os, QMessageBox::warning(NULL, L10N::errorTitle(), os.getError()), );
 
     task = new WeightMatrixSearchTask(queue, seq, reg.startPos);
     connect(task, SIGNAL(si_stateChanged()), SLOT(sl_onTaskFinished()));

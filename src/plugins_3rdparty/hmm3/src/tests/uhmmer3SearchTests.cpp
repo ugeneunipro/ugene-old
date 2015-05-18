@@ -73,7 +73,7 @@ static void setDoubleOption( double& num, const QDomElement& el, const QString& 
     if( numStr.isEmpty() ) {
         return;
     }
-    
+
     bool ok = false;
     double ret = numStr.toDouble( &ok );
     if( !ok ) {
@@ -187,11 +187,11 @@ void GTest_UHMM3Search::init( XMLTestFormat *tf, const QDomElement& el ) {
 
     searchTaskToCtx     = NULL;
     hmm = NULL;
-    
+
     seqDocCtxName = el.attribute( SEQ_DOC_CTX_NAME_TAG );
     setSearchAlgoType( algo, el.attribute( ALGORITHM_TYPE_OPTION_TAG ) );
     setSearchTaskSettings( settings.inner, el, stateInfo );
-    
+
     swChunk = UHMM3SWSearchTask::DEFAULT_CHUNK_SIZE;
     QString chunkStr = el.attribute(SW_CHUNK_SIZE_OPTION_TAG);
     if( !chunkStr.isEmpty() ) {
@@ -201,10 +201,10 @@ void GTest_UHMM3Search::init( XMLTestFormat *tf, const QDomElement& el ) {
             swChunk = candidate;
         }
     }
-    
+
     cleanuped = false;
     ctxAdded = false;
-    
+
     machinePath = env->getVar( REMOTE_MACHINE_VAR );
     if( !machinePath.isEmpty() ) {
         algo = SEQUENCE_WALKER_SEARCH;
@@ -242,9 +242,10 @@ void GTest_UHMM3Search::setAndCheckArgs() {
     QList< GObject* > objsList = seqDoc->findGObjectByType( GObjectTypes::SEQUENCE );
     CHECK_EXT(!objsList.isEmpty(),setError("No sequence objects found!"), );
     U2SequenceObject* seqObj = qobject_cast< U2SequenceObject* >( objsList.first() );
-    sequence = seqObj->getWholeSequence();
+    sequence = seqObj->getWholeSequence(stateInfo);
+    CHECK_OP(stateInfo, );
     CHECK_EXT(sequence.length() > 0, setError(tr("Sequence is empty")), );
-    
+
     if( !machinePath.isEmpty() ) {
         machinePath = env->getVar( "COMMON_DATA_DIR" ) + "/" + machinePath;
     }
@@ -286,7 +287,7 @@ QList< Task* > GTest_UHMM3Search::onSubTaskFinished( Task * sub ) {
         setError( loadHmmTask->getError() );
         return res;
     }
-    
+
     hmm = takeHmmFromDoc( loadHmmTask->getDocument() );
     assert( NULL != hmm );
     return res;
@@ -296,7 +297,7 @@ Task::ReportResult GTest_UHMM3Search::report() {
     if( stateInfo.hasError() ) {
         return ReportResult_Finished;
     }
-    
+
     if(searchTaskToCtx != NULL && !searchTaskToCtx->hasError() && !searchTaskToCtx->isCanceled() ) {
         addContext( searchTaskCtxName, searchTaskToCtx );
         ctxAdded = true;
@@ -431,39 +432,39 @@ static bool compareNumbers( T f1, T f2 ) {
     if( !ret ) {
         qDebug() << "!!! compare numbers mismatch: " << f1 << " and " << f2 << " !!!\n";
     }
-    
+
     return ret;
 }
 
 void GTest_UHMM3SearchCompare::generalCompareResults( const UHMM3SearchResult& myRes, const UHMM3SearchResult& trueRes, TaskStateInfo& ti ) {
     const UHMM3SearchCompleteSeqResult& myFull = myRes.fullSeqResult;
     const UHMM3SearchCompleteSeqResult& trueFull = trueRes.fullSeqResult;
-    
+
     if( myFull.isReported != trueFull.isReported ) {
         ti.setError( QString( "reported_flag_not_matched: %1 and %2" ).arg( myFull.isReported ).arg( trueFull.isReported ) );
         return;
     }
-    
+
     if( myFull.isReported ) {
-        if( !compareNumbers<float>( myFull.bias, trueFull.bias )   ) { 
-            ti.setError( QString( "full_seq_bias_not_matched: %1 and %2" ).arg( myFull.bias ).arg( trueFull.bias ) );  return; 
+        if( !compareNumbers<float>( myFull.bias, trueFull.bias )   ) {
+            ti.setError( QString( "full_seq_bias_not_matched: %1 and %2" ).arg( myFull.bias ).arg( trueFull.bias ) );  return;
         }
         if( !compareNumbers<double>( myFull.eval, trueFull.eval )  ) {
-            ti.setError( QString( "full_seq_eval_not_matched: %1 and %2" ).arg( myFull.eval ).arg( trueFull.eval ) );  return; 
+            ti.setError( QString( "full_seq_eval_not_matched: %1 and %2" ).arg( myFull.eval ).arg( trueFull.eval ) );  return;
         }
         if( !compareNumbers<float>( myFull.score, trueFull.score ) ) {
-            ti.setError( QString( "full_seq_score_not_matched: %1 and %2" ).arg( myFull.score ).arg( trueFull.score ) ); return; 
+            ti.setError( QString( "full_seq_score_not_matched: %1 and %2" ).arg( myFull.score ).arg( trueFull.score ) ); return;
         }
         if( !compareNumbers<float>( myFull.expectedDomainsNum, trueFull.expectedDomainsNum ) ) {
-            ti.setError( QString( "full_seq_exp_not_matched: %1 and %2" ).arg( myFull.expectedDomainsNum ).arg( trueFull.expectedDomainsNum ) ); 
-            return; 
+            ti.setError( QString( "full_seq_exp_not_matched: %1 and %2" ).arg( myFull.expectedDomainsNum ).arg( trueFull.expectedDomainsNum ) );
+            return;
         }
-        if( myFull.reportedDomainsNum != trueFull.reportedDomainsNum ) { 
+        if( myFull.reportedDomainsNum != trueFull.reportedDomainsNum ) {
             ti.setError( QString( "full_seq_n_not_matched: %1 and %2" ).arg( myFull.reportedDomainsNum ).arg( trueFull.reportedDomainsNum ) );
-            return; 
+            return;
         }
     }
-    
+
     const QList< UHMM3SearchSeqDomainResult >& myDoms = myRes.domainResList;
     const QList< UHMM3SearchSeqDomainResult >& trueDoms = trueRes.domainResList;
     if( myDoms.size() != trueDoms.size() ) {
@@ -473,27 +474,27 @@ void GTest_UHMM3SearchCompare::generalCompareResults( const UHMM3SearchResult& m
     for( int i = 0; i < myDoms.size(); ++i ) {
         UHMM3SearchSeqDomainResult myCurDom = myDoms.at( i );
         UHMM3SearchSeqDomainResult trueCurDom = trueDoms.at( i );
-        if( !compareNumbers<double>( myCurDom.acc, trueCurDom.acc ) )   { 
-            ti.setError( QString( "dom_acc_not_matched: %1 and %2" ).arg( myCurDom.acc ).arg( trueCurDom.acc ) );   return; 
+        if( !compareNumbers<double>( myCurDom.acc, trueCurDom.acc ) )   {
+            ti.setError( QString( "dom_acc_not_matched: %1 and %2" ).arg( myCurDom.acc ).arg( trueCurDom.acc ) );   return;
         }
-        if( !compareNumbers<float>( myCurDom.bias, trueCurDom.bias ) )  { 
-            ti.setError( QString( "dom_bias_not_matched: %1 and %2" ).arg( myCurDom.bias ).arg( trueCurDom.bias ) );  return; 
+        if( !compareNumbers<float>( myCurDom.bias, trueCurDom.bias ) )  {
+            ti.setError( QString( "dom_bias_not_matched: %1 and %2" ).arg( myCurDom.bias ).arg( trueCurDom.bias ) );  return;
         }
-        if( !compareNumbers<double>( myCurDom.cval, trueCurDom.cval ) )  { 
-            ti.setError( QString( "dom_cval_not_matched: %1 and %2" ).arg( myCurDom.cval ).arg( trueCurDom.cval ) );  return; 
+        if( !compareNumbers<double>( myCurDom.cval, trueCurDom.cval ) )  {
+            ti.setError( QString( "dom_cval_not_matched: %1 and %2" ).arg( myCurDom.cval ).arg( trueCurDom.cval ) );  return;
         }
-        if( !compareNumbers<double>( myCurDom.ival, trueCurDom.ival ) )  { 
-            ti.setError( QString( "dom_ival_not_matched: %1 and %2" ).arg( myCurDom.ival ).arg( trueCurDom.ival ) );  return; 
+        if( !compareNumbers<double>( myCurDom.ival, trueCurDom.ival ) )  {
+            ti.setError( QString( "dom_ival_not_matched: %1 and %2" ).arg( myCurDom.ival ).arg( trueCurDom.ival ) );  return;
         }
-        if( !compareNumbers<float>( myCurDom.score, trueCurDom.score ) ) { 
-            ti.setError( QString( "dom_score_not_matched: %1 and %2" ).arg( myCurDom.score ).arg( trueCurDom.score ) ); return; 
+        if( !compareNumbers<float>( myCurDom.score, trueCurDom.score ) ) {
+            ti.setError( QString( "dom_score_not_matched: %1 and %2" ).arg( myCurDom.score ).arg( trueCurDom.score ) ); return;
         }
-        if( myCurDom.envRegion != trueCurDom.envRegion ) { 
+        if( myCurDom.envRegion != trueCurDom.envRegion ) {
             ti.setError( QString( "dom_env_region_not_matched: %1---%2 and %3---%4" ).
                 arg( myCurDom.envRegion.startPos ).arg( myCurDom.envRegion.length ).arg( trueCurDom.envRegion.startPos ).
                 arg( trueCurDom.envRegion.length ) ); return;
         }
-        if( myCurDom.queryRegion != trueCurDom.queryRegion ) { 
+        if( myCurDom.queryRegion != trueCurDom.queryRegion ) {
             ti.setError( QString( "dom_hmm_region_not_matched: %1---%2 and %3---%4" ).
                 arg( myCurDom.queryRegion.startPos ).arg( myCurDom.queryRegion.length ).arg( trueCurDom.queryRegion.startPos ).
                 arg( trueCurDom.queryRegion.length ) ); return;
@@ -503,9 +504,9 @@ void GTest_UHMM3SearchCompare::generalCompareResults( const UHMM3SearchResult& m
                 arg( myCurDom.seqRegion.startPos ).arg( myCurDom.seqRegion.length ).arg( trueCurDom.seqRegion.startPos ).
                 arg( trueCurDom.seqRegion.length ) ); return;
         }
-        if( myCurDom.isSignificant != trueCurDom.isSignificant ) { 
+        if( myCurDom.isSignificant != trueCurDom.isSignificant ) {
             ti.setError( QString( "dom_sign_not_matched: %1 and %2" ).arg( myCurDom.isSignificant ).arg( trueCurDom.isSignificant ) );
-            return; 
+            return;
         }
     }
 }
@@ -538,7 +539,7 @@ static QString seqDomainResult2String(const UHMM3SearchSeqDomainResult & r) {
 
 /* we compare here that every domain of trueResult is included in myResult */
 void
-GTest_UHMM3SearchCompare::swCompareResults( const QList<UHMM3SWSearchTaskDomainResult>& myR, const UHMM3SearchResult& trueR, 
+GTest_UHMM3SearchCompare::swCompareResults( const QList<UHMM3SWSearchTaskDomainResult>& myR, const UHMM3SearchResult& trueR,
                                             TaskStateInfo& ti, bool compareSeqRegion ) {
     int sz = trueR.domainResList.size();
     int i = 0;
@@ -601,10 +602,10 @@ void GTest_UHMM3SearchCompare::setAndCheckArgs() {
         stateInfo.setError( tr( "No search task in test context" ) );
         return;
     }
-    
+
     generalTask = qobject_cast< UHMM3LoadProfileAndSearchTask* >( searchTask );
     swTask      = qobject_cast< UHMM3SWSearchTask*  >( searchTask );
-    
+
     if( NULL != generalTask ) {
         algo = GENERAL_SEARCH;
     } else if (NULL != swTask) {
@@ -626,7 +627,7 @@ bool GTest_UHMM3SearchCompare::searchResultLessThan(const UHMM3SearchSeqDomainRe
 
 UHMM3SearchResult GTest_UHMM3SearchCompare::getOriginalSearchResult( const QString & filename ) {
     assert( !filename.isEmpty() );
-    
+
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( filename ) );
     QScopedPointer< IOAdapter > io( iof->createIOAdapter() );
     if (io.isNull()) {
@@ -635,7 +636,7 @@ UHMM3SearchResult GTest_UHMM3SearchCompare::getOriginalSearchResult( const QStri
     if( !io->open( filename, IOAdapterMode_Read ) ) {
         throw QString( "cannot_open_'%1'_file" ).arg( filename );
     }
-    
+
     UHMM3SearchResult res;
     QByteArray buf;
     QStringList tokens;
@@ -704,7 +705,7 @@ Task::ReportResult GTest_UHMM3SearchCompare::report() {
     if( hasError() ) {
         return ReportResult_Finished;
     }
-    
+
     UHMM3SearchResult trueRes;
     try {
         trueRes = getOriginalSearchResult( trueOutFilename );
@@ -744,7 +745,7 @@ Task::ReportResult GTest_UHMM3SearchCompare::report() {
     default:
         assert( 0 && "unknown_algo_type" );
     }
-    
+
     return ReportResult_Finished;
 }
 

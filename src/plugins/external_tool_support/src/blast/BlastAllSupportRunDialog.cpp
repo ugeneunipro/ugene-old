@@ -34,10 +34,12 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Core/L10n.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/ProjectService.h>
 #include <U2Core/U2OpStatusUtils.h>
+
 #include <U2Gui/HelpButton.h>
 
 #include <U2Gui/GUIUtils.h>
@@ -285,7 +287,9 @@ void BlastAllWithExtFileSpecifySupportRunDialog::tryApplyDoc(Document *doc) {
         SAFE_POINT(NULL != seq, "NULL sequence object", );
 
         BlastTaskSettings localSettings;
-        localSettings.querySequence = seq->getWholeSequenceData();
+        U2OpStatusImpl os;
+        localSettings.querySequence = seq->getWholeSequenceData(os);
+        CHECK_OP_EXT(os, QMessageBox::critical(this, L10N::errorTitle(), os.getError()), );
         localSettings.alphabet = seq->getAlphabet();
         if (localSettings.alphabet->getType() != DNAAlphabet_AMINO) {
             localSettings.isNucleotideSeq = true;

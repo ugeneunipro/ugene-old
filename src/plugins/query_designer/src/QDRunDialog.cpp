@@ -41,6 +41,7 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Designer/QDScheduler.h>
 
@@ -218,7 +219,8 @@ void QDRunDialogTask::setupQuery( ) {
     CHECK_EXT(!objs.isEmpty(), setError(tr("Sequence not found, document: %1").arg(docWithSequence->getURLString())), );
 
     U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(objs.first());
-    DNASequence sequence = seqObj->getWholeSequence();
+    DNASequence sequence = seqObj->getWholeSequence(stateInfo);
+    CHECK_OP(stateInfo, );
     scheme->setSequence(sequence);
     scheme->setEntityRef(seqObj->getEntityRef());
     QDRunSettings settings;
@@ -413,7 +415,9 @@ void QDDialog::sl_okBtnClicked() {
 
     U2SequenceObject *seqObj = ctx->getSequenceObject();
     SAFE_POINT(NULL != seqObj, "NULL sequence object", );
-    DNASequence sequence = seqObj->getWholeSequence();
+    U2OpStatusImpl os;
+    DNASequence sequence = seqObj->getWholeSequence(os);
+    CHECK_OP_EXT(os, QMessageBox::critical(this, L10N::errorTitle(), os.getError()), );
     scheme->setSequence(sequence);
     scheme->setEntityRef(seqObj->getSequenceRef());
     QDRunSettings settings;

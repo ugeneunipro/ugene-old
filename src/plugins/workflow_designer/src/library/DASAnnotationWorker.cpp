@@ -43,7 +43,7 @@
 #include <U2Core/FailTask.h>
 #include <U2Core/DASSource.h>
 #include <U2Core/UniprotBlastTask.h>
-//#include <QtGui/QApplication>
+#include <U2Core/U2OpStatusUtils.h>
 
 
 namespace U2 {
@@ -280,7 +280,6 @@ Task* DASAnnotationWorker::tick() {
         cfg.identityThreshold = actor->getParameter(IDENTITY)->getAttributeValue<int>(context);
         cfg.maxResults = actor->getParameter(IDS_NUMBER)->getAttributeValue<int>(context);
 
-        DASSource refSource;
         QList<DASSource> featureSources;
         DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
         if (!dasRegistry){
@@ -305,7 +304,9 @@ Task* DASAnnotationWorker::tick() {
             return NULL;
         }
 
-        cfg.sequence = seqObj->getWholeSequence().constSequence();
+        U2OpStatusImpl os;
+        cfg.sequence = seqObj->getWholeSequence(os).constSequence();
+        CHECK_OP(os, new FailTask(os.getError()));
 
         qint64 seqLen = cfg.sequence.length();
         if (seqLen < MIN_SEQ_LENGTH || seqLen >= MAX_SEQ_LENGTH){

@@ -106,8 +106,11 @@ bool GrouperActionUtils::equalData(const QString &groupOp, const QVariant &data1
             if (name1 != name2) {
                 return false;
             }
-            QByteArray seq1 = seqObj1->getWholeSequenceData();
-            QByteArray seq2 = seqObj2->getWholeSequenceData();
+            U2OpStatusImpl os;
+            QByteArray seq1 = seqObj1->getWholeSequenceData(os);
+            CHECK_OP(os, false);
+            QByteArray seq2 = seqObj2->getWholeSequenceData(os);
+            CHECK_OP(os, false);
 
             return seq1 == seq2;
         }
@@ -244,7 +247,9 @@ bool MergeSequencePerformer::applyAction(const QVariant &newData) {
         prevSeqLen = importer.getCurrentLength();
     }
 
-    importer.addBlock(seqObj->getWholeSequenceData().constData(), seqObj->getSequenceLength(), os);
+    QByteArray seqData = seqObj->getWholeSequenceData(os);
+    CHECK_OP(os, false);
+    importer.addBlock(seqData.constData(), seqObj->getSequenceLength(), os);
     CHECK_OP(os, false);
 
     return true;
@@ -281,7 +286,8 @@ bool Sequence2MSAPerformer::applyAction(const QVariant &newData) {
 
     U2OpStatus2Log os;
     QString rowName = seqObj->getGObjectName();
-    QByteArray bytes = seqObj->getWholeSequenceData();
+    QByteArray bytes = seqObj->getWholeSequenceData(os);
+    CHECK_OP(os, false);
 
     if (!started) {
         QString name;

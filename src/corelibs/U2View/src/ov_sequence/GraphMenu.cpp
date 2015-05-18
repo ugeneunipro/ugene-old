@@ -21,6 +21,8 @@
 
 #include "GraphMenu.h"
 
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/GUIUtils.h>
@@ -28,6 +30,9 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
+
+#include <QApplication>
+#include <QMessageBox>
 
 
 namespace U2 {
@@ -63,6 +68,16 @@ void GraphAction::sl_handleGraphAction() {
         // Creating graphs
         ADVSingleSequenceWidget* sequenceWidget =
             qobject_cast<ADVSingleSequenceWidget*>(menuAction->seqWidget);
+
+#ifdef UGENE_X86
+        if (sequenceWidget->getSequenceLength() > U2SequenceObject::getMaxSeqLengthForX86Os()) {
+            //do not allow to draw a graph
+            QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), U2SequenceObject::MAX_SEQ_32_ERROR_MESSAGE);
+            graphAction->setChecked(false);
+            return;
+        }
+#endif
+
         graphAction->view =
             new GSequenceGraphViewWithFactory(sequenceWidget, graphAction->factory);
         graphAction->view->setGraphDrawer(graphAction->factory->getDrawer(graphAction->view));

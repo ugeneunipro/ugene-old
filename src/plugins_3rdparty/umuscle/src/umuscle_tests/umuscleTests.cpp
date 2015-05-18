@@ -360,8 +360,10 @@ void GTest_uMuscleAddUnalignedSequenceToProfile::prepare() {
     unalignedMA.setAlphabet(aliObj->getAlphabet());
     foreach (GObject* obj, seqObjs) {
         U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
+        QByteArray seqData = dnaObj->getWholeSequenceData(stateInfo);
+        CHECK_OP(stateInfo, );
         U2OpStatus2Log os;
-        unalignedMA.addRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), os);
+        unalignedMA.addRow(dnaObj->getSequenceName(), seqData, os);
         CHECK_OP_EXT(os, stateInfo.setError("An error has occurred during adding a row"),);
     }
     if (unalignedMA.getNumRows()!=gapPositionsForSeqs.size()) {
@@ -514,8 +516,10 @@ MAlignment GTest_Muscle_Load_Align_QScore::dna_to_ma(QList<GObject*> dnaSeqs) {
             stateInfo.setError(  QString("Can't cast GObject to U2SequenceObject") );
             return ma;
         }
-        U2OpStatus2Log os;
-        ma.addRow(seq->getSequenceName(), seq->getWholeSequenceData(), os);
+        QByteArray seqData = seq->getWholeSequenceData(stateInfo);
+        SAFE_POINT_OP(stateInfo, MAlignment());
+        ma.addRow(seq->getSequenceName(), seqData, stateInfo);
+        SAFE_POINT_OP(stateInfo, MAlignment());
     }
     return ma;
 }
@@ -662,7 +666,10 @@ MAlignment Muscle_Load_Align_Compare_Task::dna_to_ma(QList<GObject*> dnaSeqs) {
             stateInfo.setError(  QString("Can't cast GObject to U2SequenceObject") );
             return ma;
         }
-        ma.addRow(seq->getSequenceName(), seq->getWholeSequenceData(), stateInfo);
+        QByteArray seqData = seq->getWholeSequenceData(stateInfo);
+        SAFE_POINT_OP(stateInfo, MAlignment());
+        ma.addRow(seq->getSequenceName(), seqData, stateInfo);
+        SAFE_POINT_OP(stateInfo, MAlignment());
     }
     return ma;
 }

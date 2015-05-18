@@ -30,6 +30,7 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Test/GTestFrameworkComponents.h>
 
 /* TRANSLATOR U2::GTest */
@@ -369,7 +370,7 @@ void GTest_GeneByGeneApproach::prepare() {
         annData << a->getData();
     }
 
-    result = GeneByGeneComparator::compareGeneAnnotation(mySequence->getWholeSequence(), annData, annName, identity);
+    result = GeneByGeneComparator::compareGeneAnnotation(mySequence->getWholeSequence(stateInfo), annData, annName, identity);
 }
 
 Task::ReportResult GTest_GeneByGeneApproach::report() {

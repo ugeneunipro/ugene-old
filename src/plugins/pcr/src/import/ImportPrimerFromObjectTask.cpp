@@ -49,7 +49,8 @@ ImportPrimerFromObjectTask::ImportPrimerFromObjectTask(GObject *object) :
 
 void ImportPrimerFromObjectTask::run() {
     primer.name = sequenceObject->getGObjectName();
-    primer.sequence = sequenceObject->getWholeSequenceData();
+    primer.sequence = sequenceObject->getWholeSequenceData(stateInfo);
+    CHECK_OP(stateInfo, );
 
     QRegExp regExp("[^ACGT]");
     if (primer.sequence.contains(regExp)) {

@@ -30,6 +30,9 @@
 
 
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/GAutoDeleteList.h>
+#include <U2Core/L10n.h>
+
 #include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
@@ -37,7 +40,6 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVUtils.h>
-#include <U2Core/GAutoDeleteList.h>
 #include <U2Lang/QueryDesignerRegistry.h>
 
 #include <U2Test/XMLTestFormat.h>
@@ -50,6 +52,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QMenu>
 #endif
+#include <QMessageBox>
 
 #include <cstdio>
 
@@ -112,6 +115,12 @@ void RepeatViewContext::sl_showDialog() {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
     ADVSequenceObjectContext* sctx = av->getSequenceInFocus();
     assert(sctx!=NULL && sctx->getAlphabet()->isNucleic());
+
+#ifdef UGENE_X86
+    CHECK_EXT( !(sctx->getSequenceLength() > U2SequenceObject::getMaxSeqLengthForX86Os()),
+               QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), U2SequenceObject::MAX_SEQ_32_ERROR_MESSAGE), );
+#endif
+
     FindRepeatsDialog d(sctx);
     d.exec();
 }
@@ -122,6 +131,12 @@ void RepeatViewContext::sl_showTandemDialog() {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
     ADVSequenceObjectContext* sctx = av->getSequenceInFocus();
     assert(sctx!=NULL && sctx->getAlphabet()->isNucleic());
+
+#ifdef UGENE_X86
+    CHECK_EXT( !(sctx->getSequenceLength() > U2SequenceObject::getMaxSeqLengthForX86Os()),
+               QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), U2SequenceObject::MAX_SEQ_32_ERROR_MESSAGE), );
+#endif
+
     FindTandemsDialog d(sctx);
     d.exec();
 }

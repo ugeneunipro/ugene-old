@@ -27,6 +27,9 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/L10n.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
@@ -49,7 +52,7 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl(const U2SequenceObject * seqObj, QW
     : QDialog(p)
 {
     assert(NULL != seqObj);
-    
+
     setupUi(this);
     new HelpButton(this, buttonBox, "16122369");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Run"));
@@ -60,10 +63,12 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl(const U2SequenceObject * seqObj, QW
     useScoreTresholdGroup.addButton(useNCTresholdsButton);
     useScoreTresholdGroup.addButton(useTCTresholdsButton);
     useExplicitScoreTresholdButton->setChecked(true);
-    
-    model.sequence = seqObj->getWholeSequence();
+
+    U2OpStatusImpl os;
+    model.sequence = seqObj->getWholeSequence(os);
+    SAFE_POINT_EXT(!os.hasError(), QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
     setModelValues(); // default settings here
-    
+
     // Annotations widget
     CreateAnnotationModel annModel;
     annModel.hideLocation = true;
@@ -116,7 +121,7 @@ void UHMM3SearchDialogImpl::sl_cancelButtonClicked() {
 
 void UHMM3SearchDialogImpl::getModelValues() {
     UHMM3SearchSettings & settings = model.searchSettings.inner;
-    
+
     if(useEvalTresholdsButton->isChecked()) {
         settings.domE =  pow(10.0, domESpinBox->value());
         settings.domT = OPTION_NOT_SET;
@@ -135,30 +140,30 @@ void UHMM3SearchDialogImpl::getModelValues() {
     } else {
         assert(false);
     }
-    
+
     if(domZCheckBox->isChecked()) {
         settings.domZ = domZDoubleSpinBox->value();
     } else {
         settings.domZ = OPTION_NOT_SET;
     }
-    
+
     settings.noBiasFilter = nobiasCheckBox->isChecked();
     settings.noNull2 = nonull2CheckBox->isChecked();
     settings.doMax = maxCheckBox->isChecked();
-    
+
     settings.f1 = f1DoubleSpinBox->value();
     settings.f2 = f2DoubleSpinBox->value();
     settings.f3 = f3DoubleSpinBox->value();
-    
+
     settings.seed = seedSpinBox->value();
-    
+
     model.hmmfile = queryHmmFileEdit->text();
 }
 
 QString UHMM3SearchDialogImpl::checkModel() {
     assert(checkUHMM3SearchSettings(&model.searchSettings.inner));
     QString ret;
-    
+
     if(model.hmmfile.isEmpty()) {
         ret = tr("HMM profile file path is empty");
         return ret;
@@ -167,7 +172,7 @@ QString UHMM3SearchDialogImpl::checkModel() {
     if(!ret.isEmpty()) {
         return ret;
     }
-    
+
     return ret;
 }
 
@@ -187,7 +192,7 @@ void UHMM3SearchDialogImpl::sl_okButtonClicked() {
     UHMM3SWSearchToAnnotationsTask * searchTask = new UHMM3SWSearchToAnnotationsTask(model.hmmfile, model.sequence,
         annModel.getAnnotationObject(), annModel.groupName, annModel.description, annModel.data->type, annModel.data->name, model.searchSettings);
     AppContext::getTaskScheduler()->registerTopLevelTask(searchTask);
-    
+
     QDialog::accept();
 }
 

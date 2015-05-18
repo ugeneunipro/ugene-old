@@ -30,7 +30,10 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
 #include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/HelpButton.h>
@@ -46,8 +49,12 @@
 namespace U2 {
 
 HMMSearchDialogController::HMMSearchDialogController(const U2SequenceObject* seqObj, QWidget* p)
-: QDialog(p), dnaSequence(seqObj->getWholeSequence())
+: QDialog(p)
 {
+    U2OpStatusImpl os;
+    dnaSequence = seqObj->getWholeSequence(os);
+    SAFE_POINT_EXT(!os.hasError(), QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
+
     searchTask = NULL;
     setupUi(this);
     new HelpButton(this, buttonBox, "16122366");
@@ -120,7 +127,7 @@ void HMMSearchDialogController::sl_okClicked(){
         errMsg = tr("HMM file not set!");
     }
 
-    
+
     UHMMSearchSettings s;
     if (expertOptionsBox->isChecked()&& errMsg.isEmpty()){
         s.domE = pow(10,(float)domEvalueCuttofBox->value());
@@ -143,7 +150,7 @@ void HMMSearchDialogController::sl_okClicked(){
         QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
         return;
     }
-    
+
     const CreateAnnotationModel& cm = createController->getModel();
     QString annotationName = cm.data->name;
     searchTask = new HMMSearchToAnnotationsTask(hmmFile, dnaSequence, cm.getAnnotationObject(), cm.groupName, cm.description, cm.data->type, annotationName, s);
@@ -196,16 +203,16 @@ HMMSearchToAnnotationsTask::HMMSearchToAnnotationsTask(const QString& _hmmFile,
                                                        U2FeatureType aType,
                                                        const QString& _aname,
                                                        const UHMMSearchSettings& _settings)
-: Task("", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported), 
+: Task("", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported),
 hmmFile(_hmmFile), dnaSequence(s), agroup(_agroup), annDescription(annDescription), aType(aType), aname(_aname), settings(_settings),
 readHMMTask(NULL), searchTask(NULL), createAnnotationsTask(NULL), aobj(ao)
 {
     setVerboseLogMode(true);
     setTaskName(tr("HMM search, file '%1'").arg(QFileInfo(hmmFile).fileName()));
-    
+
     readHMMTask = new HMMReadTask(hmmFile);
     readHMMTask->setSubtaskProgressWeight(0);
-    
+
     if (dnaSequence.alphabet->isRaw()) {
         stateInfo.setError(tr("RAW alphabet is not supported!"));
     } else {
@@ -221,7 +228,7 @@ QList<Task*> HMMSearchToAnnotationsTask::onSubTaskFinished(Task* subTask){
     if (hasError()|| isCanceled()){
         return res;
     }
-    
+
     if (aobj.isNull()) {
         stateInfo.setError(tr("Annotation object was removed"));
         return res;
@@ -257,7 +264,7 @@ QString HMMSearchToAnnotationsTask::generateReport()const {
         res+="</table>";
         return res;
     }
-    
+
     res+="<tr><td><b>" + tr("Result annotation table")+ "</b></td><td>" + aobj->getDocument()->getName()+ "</td></tr>";
     res+="<tr><td><b>" + tr("Result annotation group")+ "</b></td><td>" + agroup + "</td></tr>";
     res+="<tr><td><b>" + tr("Result annotation name")+  "</b></td><td>" + aname + "</td></tr>";

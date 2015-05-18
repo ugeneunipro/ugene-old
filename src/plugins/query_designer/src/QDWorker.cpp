@@ -30,6 +30,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Designer/DelegateEditors.h>
 #include <U2Designer/QDScheduler.h>
@@ -202,7 +203,9 @@ Task* QDWorker::tick() {
         if (seqObj.isNull()) {
             return NULL;
         }
-        DNASequence seq = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence seq = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         QDRunSettings settings;
         settings.annotationsObj = new AnnotationTableObject(GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name,

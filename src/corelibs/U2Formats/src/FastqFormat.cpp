@@ -459,8 +459,10 @@ void FastqFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObje
 
     //write header;
     QString sequenceName = seqObj->getGObjectName();
-    const DNASequence& seqData = seqObj->getWholeSequence();
+    const DNASequence& seqData = seqObj->getWholeSequence(os);
+    CHECK_OP(os, );
     writeEntry(sequenceName, seqData, io, errorMessage, os);
+    CHECK_OP(os, );
 }
 
 DNASequence *FastqFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {

@@ -20,6 +20,7 @@
  */
 
 #include <QListWidget>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
@@ -135,7 +136,10 @@ void DasOptionsPanelWidget::sl_searchIdsClicked() {
 
     if (getIdsTask == NULL || getIdsTask->isCanceled() || getIdsTask->isFinished()){
         QString db = databaseComboBox->itemData(databaseComboBox->currentIndex()).toString();
-        getIdsTask = new UniprotBlastTask(ctx->getSequenceData(getRegion()), blastSettingsWidget->getSettings(db));
+        U2OpStatusImpl os;
+        QByteArray seqData = ctx->getSequenceData(getRegion(), os);
+        CHECK_OP_EXT(os, QMessageBox::critical(this, L10N::errorTitle(), os.getError()), );
+        getIdsTask = new UniprotBlastTask(seqData, blastSettingsWidget->getSettings(db));
         connect(getIdsTask,
             SIGNAL(si_stateChanged()),
             SLOT(sl_blastSearchFinish()));

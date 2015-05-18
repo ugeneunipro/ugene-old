@@ -36,6 +36,7 @@
 #include <U2Core/SelectionModel.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/GraphUtils.h>
 #include <U2Gui/GScrollBar.h>
@@ -758,7 +759,9 @@ void PanViewRenderArea::drawSequence(QPainter& p) {
         halfCharByFont = smallCharWidth / 2.0f;
     }
     const U2Region& visibleRange = view->getVisibleRange();
-    QByteArray seq = view->getSequenceContext()->getSequenceData(visibleRange);
+    U2OpStatusImpl os;
+    QByteArray seq = view->getSequenceContext()->getSequenceData(visibleRange, os);
+    SAFE_POINT_OP(os, );
     int y = getLineY(getSelectionLine()) + lineHeight - yCharOffset;
     for (int i = 0; i < visibleRange.length; i++) {
         char c = seq[i];

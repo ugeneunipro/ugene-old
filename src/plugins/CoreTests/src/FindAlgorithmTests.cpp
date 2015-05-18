@@ -23,6 +23,7 @@
 
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 namespace U2 {
 
@@ -213,7 +214,9 @@ void GTest_FindAlgorithmTest::prepare(){
        }
     }
 
-    settings.sequence = se->getWholeSequenceData();
+    U2OpStatusImpl os;
+    settings.sequence = se->getWholeSequenceData(os);
+    SAFE_POINT_OP(os, );
     settings.searchIsCircular = se->isCircular();
     settings.complementTT = GObjectUtils::findComplementTT(se->getAlphabet());
     if(translatetoAmino){

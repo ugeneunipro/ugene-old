@@ -122,7 +122,8 @@ void GTest_QDSchedulerTest::prepare() {
     }
 
     QDRunSettings s;
-    schema->setSequence(seqObj->getWholeSequence());
+    schema->setSequence(seqObj->getWholeSequence(stateInfo));
+    CHECK_OP(stateInfo, );
     schema->setEntityRef(seqObj->getEntityRef());
     s.region = U2Region(0, seqObj->getSequenceLength());
     s.scheme = schema;

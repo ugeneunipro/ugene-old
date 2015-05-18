@@ -385,10 +385,12 @@ Task::ReportResult GTest_DNAcompareSequencesInTwoObjects::report() {
                 stateInfo.setError(QString("can't cast to sequence from: %1 in position %2").arg(obj2->getGObjectName()).arg(i));
                 return ReportResult_Finished;
             }
-            if(mySequence->getWholeSequenceData() != mySequence2->getWholeSequenceData()){
+            if(mySequence->getWholeSequenceData(stateInfo) != mySequence2->getWholeSequenceData(stateInfo)){
+                CHECK_OP(stateInfo, ReportResult_Finished);
                 stateInfo.setError(QString("Sequences of object in position %1 not matched").arg(i));
                 return ReportResult_Finished;
             }
+            CHECK_OP(stateInfo, ReportResult_Finished);
         }
 
     }

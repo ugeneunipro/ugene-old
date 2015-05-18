@@ -22,6 +22,7 @@
 #include <QFlags>
 #include <QKeyEvent>
 #include <QMovie>
+#include <QMessageBox>
 
 #include <U2Algorithm/FindAlgorithmTask.h>
 
@@ -260,6 +261,10 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView) :
         connectSlots();
 
         checkState();
+        if (lblErrorMessage->text().isEmpty()) {
+            showHideMessage(true, UseMultiplePatternsTip);
+        }
+
 
         FindPatternEventFilter *findPatternEventFilter = new FindPatternEventFilter(this);
         textPattern->installEventFilter(findPatternEventFilter);
@@ -267,7 +272,6 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView) :
         setFocusProxy(textPattern);
 
         currentSelection = NULL;
-        showHideMessage(true, UseMultiplePatternsTip);
 
         connect(findPatternEventFilter, SIGNAL(si_enterPressed()), SLOT(sl_onEnterPressed()));
         connect(findPatternEventFilter, SIGNAL(si_shiftEnterPressed()), SLOT(sl_onShiftEnterPressed()));
@@ -778,6 +782,11 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
                     text += QString(tr("Warning: invalid regexp. "));
                     highlightBackground(textPattern);
                     break;
+                case SequenceIsTooBig:
+                    text.clear(); // the search is blocked at all -- any other messages are meaningless
+                    text += QString(tr("Warning: current sequence is too long to search in."));
+                    changeColorOfMessageText(L10N::errorColorLabelStr());
+                    break;
                 default:
                     FAIL("Unexpected value of the error flag in show/hide error message for pattern!",);
             }
@@ -816,11 +825,14 @@ void FindPatternWidget::sl_onSearchPatternChanged()
     static QString patterns = "";
     if (patterns != textPattern->toPlainText()) {
         patterns = textPattern->toPlainText();
-        showHideMessage(patterns.isEmpty(), UseMultiplePatternsTip);
 
         setCorrectPatternsString();
 
         checkState();
+        if (lblErrorMessage->text().isEmpty()) {
+            showHideMessage(patterns.isEmpty(), UseMultiplePatternsTip);
+        }
+
         enableDisableMatchSpin();
 
         // Show a warning if the pattern alphabet doesn't match,
@@ -936,6 +948,28 @@ void FindPatternWidget::sl_onSequenceModified()
 
 void FindPatternWidget::checkState()
 {
+    // Currently find pattern needs whole sequence to search even in a small sequence
+#ifdef UGENE_X86
+    {
+        ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
+        SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus!",);
+        U2Region region = getCompleteSearchRegion(regionIsCorrect, activeContext->getSequenceLength());
+        if (region.length > U2SequenceObject::getMaxSeqLengthForX86Os()) {
+            showHideMessage(true, SequenceIsTooBig);
+
+            showHideMessage(false, AnnotationNotValidFastaParsedName);
+            showHideMessage(false, AnnotationNotValidName);
+            showHideMessage(false, PatternAlphabetDoNotMatch);
+            showHideMessage(false, PatternsWithBadRegionInFile);
+            showHideMessage(false, PatternsWithBadAlphabetInFile);
+            showHideMessage(false, NoPatternToSearch);
+            showHideMessage(false, SearchRegionIncorrect);
+            doNotHighlightBackground(textPattern);
+            return;
+        }
+    }
+#endif
+
     //validate annotation name
     QString v = annotController->validate();
     if(!v.isEmpty()){
@@ -994,6 +1028,7 @@ void FindPatternWidget::checkState()
     showHideMessage(false, PatternsWithBadAlphabetInFile);
     showHideMessage(false, NoPatternToSearch);
     showHideMessage(false, SearchRegionIncorrect);
+    showHideMessage(false, SequenceIsTooBig);
 }
 
 
@@ -1109,7 +1144,9 @@ void FindPatternWidget::initFindPatternTask(const QList<NamePattern> &patterns) 
     SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus!",);
 
     FindAlgorithmTaskSettings settings;
-    settings.sequence = activeContext->getSequenceObject()->getWholeSequenceData();
+    U2OpStatusImpl os;
+    settings.sequence = activeContext->getSequenceObject()->getWholeSequenceData(os);
+    CHECK_OP(os, );
     settings.searchIsCircular = activeContext->getSequenceObject()->isCircular();
 
     // Strand

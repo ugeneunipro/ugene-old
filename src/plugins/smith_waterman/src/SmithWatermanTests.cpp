@@ -30,6 +30,7 @@
 #include <U2Algorithm/SmithWatermanSettings.h>
 #include <U2Core/SequenceWalkerTask.h>
 #include <U2Core/SMatrix.h>
+#include <U2Core/U2SafePoints.h>
 
 
 #define FILE_SUBSTITUTION_MATRIX_ATTR "subst_f"
@@ -155,7 +156,8 @@ void GTest_SmithWatermnan::prepare() {
         stateInfo.setError(QString("error can't cast to sequence from GObject"));
         return;
     }
-    searchSeq = searchSeqObj->getWholeSequenceData();
+    searchSeq = searchSeqObj->getWholeSequenceData(stateInfo);
+    CHECK_OP(stateInfo, );
 
     //get pattern sequence
     U2SequenceObject * patternSeqObj = getContext<U2SequenceObject>(this, patternSeqDocName);
@@ -163,7 +165,8 @@ void GTest_SmithWatermnan::prepare() {
         stateInfo.setError(QString("error can't cast to sequence from GObject"));
         return;
     }
-    patternSeq = patternSeqObj->getWholeSequenceData();
+    patternSeq = patternSeqObj->getWholeSequenceData(stateInfo);
+    CHECK_OP(stateInfo, );
 
     //set subst matrix
 
@@ -344,7 +347,8 @@ void GTest_SmithWatermnanPerf::prepare() {
         stateInfo.setError(QString("error can't cast to sequence from GObject"));
         return;
     }
-    searchSeq = searchSeqObj->getWholeSequenceData();
+    searchSeq = searchSeqObj->getWholeSequenceData(stateInfo);
+    CHECK_OP(stateInfo, );
 
     //get pattern sequence
     U2SequenceObject * patternSeqObj = getContext<U2SequenceObject>(this, patternSeqDocName);
@@ -352,7 +356,8 @@ void GTest_SmithWatermnanPerf::prepare() {
         stateInfo.setError(QString("error can't cast to sequence from GObject"));
         return;
     }
-    patternSeq = patternSeqObj->getWholeSequenceData();
+    patternSeq = patternSeqObj->getWholeSequenceData(stateInfo);
+    CHECK_OP(stateInfo, );
 
     setTaskName(QString("Test seq size %1").arg(patternSeq.size()));
 

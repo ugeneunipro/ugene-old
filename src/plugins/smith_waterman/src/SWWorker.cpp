@@ -353,7 +353,9 @@ Task* SWWorker::tick() {
         if (NULL == ptrnObj.data()) {
             return NULL;
         }
-        DNASequence ptrn = ptrnObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence ptrn = ptrnObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         if(ptrn.isNull()) {
             return new FailTask(tr("Null pattern supplied to Smith-Waterman: %1").arg(ptrn.getName()));
@@ -379,7 +381,9 @@ Task* SWWorker::tick() {
         if (NULL == seqObj.data()) {
             return NULL;
         }
-        DNASequence seq = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence seq = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         if(seq.isNull()) {
             return new FailTask(tr("Null sequence supplied to Smith-Waterman: %1").arg(seq.getName()));

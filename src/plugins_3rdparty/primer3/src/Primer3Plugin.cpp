@@ -23,7 +23,6 @@
 #include "Primer3Dialog.h"
 #include "Primer3Query.h"
 
-#include <U2Core/GAutoDeleteList.h>
 #include <U2Gui/GUIUtils.h>
 
 #include <U2View/AnnotatedDNAView.h>
@@ -31,18 +30,15 @@
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVUtils.h>
 
-#include <QtCore/QMap>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QMessageBox>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QMenu>
-#endif
+#include <QAction>
+#include <QMap>
+#include <QMessageBox>
+#include <QMenu>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/GAutoDeleteList.h>
+#include <U2Core/L10n.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Test/XMLTestFormat.h>
 #include <U2Test/GTest.h>
@@ -131,7 +127,10 @@ void Primer3ADVContext::sl_showDialog() {
         if(QDialog::Accepted == dialog.exec())
         {
             Primer3TaskSettings settings = dialog.getSettings();
-            settings.setSequence(seqCtx->getSequenceObject()->getWholeSequenceData(),
+            U2OpStatusImpl os;
+            QByteArray seqData = seqCtx->getSequenceObject()->getWholeSequenceData(os);
+            CHECK_OP_EXT(os, QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
+            settings.setSequence(seqData,
                                  seqCtx->getSequenceObject()->isCircular());
             QString err = dialog.checkModel();
             if (!err.isEmpty()) {

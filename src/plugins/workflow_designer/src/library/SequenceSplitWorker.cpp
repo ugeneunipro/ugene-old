@@ -29,6 +29,7 @@
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -133,7 +134,9 @@ Task * SequenceSplitWorker::tick() {
         SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
         QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
         CHECK(NULL != seqObj.data(), NULL);
-        DNASequence inputSeq = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence inputSeq = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         inputAnns = StorageUtils::getAnnotationTable(context->getDataStorage(), qm[BaseSlots::ANNOTATION_TABLE_SLOT().getId()]);
 

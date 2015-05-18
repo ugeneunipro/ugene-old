@@ -133,7 +133,8 @@ DNASequence UHMM3PhmmerTask::getSequenceFromDocument(Document *doc, TaskStateInf
     U2SequenceObject *seqObj = qobject_cast<U2SequenceObject *>(objsList.first());
     CHECK_EXT(NULL != seqObj, ti.setError(tr("No dna sequence objects found in document")), ret);
 
-    ret = seqObj->getWholeSequence();
+    ret = seqObj->getWholeSequence(ti);
+    CHECK_OP(ti, ret);
     CHECK_EXT(0 < ret.length(), ti.setError(tr("Empty sequence loaded from document")), ret);
 
     return ret;

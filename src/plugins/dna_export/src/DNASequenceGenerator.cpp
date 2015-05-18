@@ -384,7 +384,7 @@ void EvaluateBaseContentTask::run() {
     if (_obj->getGObjectType() == GObjectTypes::SEQUENCE) {
         U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(_obj);
         alp = dnaObj->getAlphabet();
-        DNASequenceGenerator::evaluateBaseContent(dnaObj->getWholeSequence(), result);
+        DNASequenceGenerator::evaluateBaseContent(dnaObj->getWholeSequence(stateInfo), result);
     } else if (_obj->getGObjectType() == GObjectTypes::MULTIPLE_ALIGNMENT) {
         MAlignmentObject* maObj = qobject_cast<MAlignmentObject*>(_obj);
         alp = maObj->getAlphabet();

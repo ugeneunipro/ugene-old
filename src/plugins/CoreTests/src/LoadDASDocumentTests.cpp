@@ -26,6 +26,7 @@
 #include <U2Core/LoadDASDocumentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/U2SafePoints.h>
 
 #define DB_ATTR "database"
 #define DOC_ID_ATTR "document_id"
@@ -145,10 +146,12 @@ Task::ReportResult GTest_LoadDASDocumentTask::report(){
             }
 
             //compare sequences
-            if (actualSequence->getWholeSequenceData() != expectedSequence->getWholeSequenceData()){
+            if (actualSequence->getWholeSequenceData(stateInfo) != expectedSequence->getWholeSequenceData(stateInfo)){
+                CHECK_OP(stateInfo, ReportResult_Finished);
                 stateInfo.setError(GTest::tr("Actual sequence %1 does not match expected sequence %2").arg(actualSequence->getSequenceName()).arg(expectedSequence->getSequenceName()));
                 return ReportResult_Finished;
             }
+            CHECK_OP(stateInfo, ReportResult_Finished);
 
             //compare annotations
             foreach (const AnnotationTableObject *expObj, expectedAnnotations) {

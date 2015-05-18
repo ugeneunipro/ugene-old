@@ -44,6 +44,7 @@
 #include <U2Core/FailTask.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 //#include <QtGui/QApplication>
 /* TRANSLATOR U2::LocalWorkflow::HMM3SearchWorker */
@@ -64,15 +65,15 @@ static const QString SEED_ATTR("seed");
 const QString HMM3SearchWorkerFactory::ACTOR("hmm3-search");
 
 void HMM3SearchWorkerFactory::init() {
-    
+
     QList<PortDescriptor*> p; QList<Attribute*> a;
     {
         Descriptor hd(HMM3_PORT, HMM3SearchWorker::tr("HMM3 profile"), HMM3SearchWorker::tr("HMM3 profile(s) to search with."));
-        Descriptor sd(BasePorts::IN_SEQ_PORT_ID(), HMM3SearchWorker::tr("Input sequence"), 
+        Descriptor sd(BasePorts::IN_SEQ_PORT_ID(), HMM3SearchWorker::tr("Input sequence"),
             HMM3SearchWorker::tr("An input sequence (nucleotide or protein) to search in."));
-        Descriptor od(BasePorts::OUT_ANNOTATIONS_PORT_ID(), HMM3SearchWorker::tr("HMM3 annotations"), 
+        Descriptor od(BasePorts::OUT_ANNOTATIONS_PORT_ID(), HMM3SearchWorker::tr("HMM3 annotations"),
             HMM3SearchWorker::tr("Annotations marking found similar sequence regions."));
-        
+
         QMap<Descriptor, DataTypePtr> hmmM;
         hmmM[HMM3Lib::HMM3_SLOT] = HMM3Lib::HMM3_PROFILE_TYPE();
         p << new PortDescriptor(hd, DataTypePtr(new MapDataType("hmm.search.hmm", hmmM)), true /*input*/, false, IntegralBusPort::BLIND_INPUT);
@@ -83,7 +84,7 @@ void HMM3SearchWorkerFactory::init() {
         outM[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
         p << new PortDescriptor(od, DataTypePtr(new MapDataType("hmm.search.out", outM)), false /*input*/, true);
     }
-    
+
     {
         Descriptor nd(NAME_ATTR, HMM3SearchWorker::tr("Result annotation"), HMM3SearchWorker::tr("A name of the result annotations."));
         Descriptor nsd(SEED_ATTR, HMM3SearchWorker::tr("Seed"), HMM3SearchWorker::tr("Random generator seed. 0 - means that one-time arbitrary seed will be used."));
@@ -95,13 +96,13 @@ void HMM3SearchWorkerFactory::init() {
          a << new Attribute(ded, BaseTypes::NUM_TYPE(), false, QVariant(-1));
          a << new Attribute(dtd, BaseTypes::NUM_TYPE(), false, QVariant((double)0.0));
     }
- 
-    Descriptor desc(HMM3SearchWorkerFactory::ACTOR, HMM3SearchWorker::tr("HMM3 Search"), 
+
+    Descriptor desc(HMM3SearchWorkerFactory::ACTOR, HMM3SearchWorker::tr("HMM3 Search"),
         HMM3SearchWorker::tr("Searches each input sequence for significantly similar sequence matches to all specified HMM profiles."
         " In case several profiles were supplied, searches with all profiles one by one and outputs united set of annotations for each sequence."));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
-    QMap<QString, PropertyDelegate*> delegates;    
-    
+    QMap<QString, PropertyDelegate*> delegates;
+
     {
         QVariantMap eMap; eMap["prefix"]= ("1e"); eMap["minimum"] = (-99); eMap["maximum"] = (0);
         delegates[DOM_E_ATTR] = new SpinBoxDelegate(eMap);
@@ -115,12 +116,12 @@ void HMM3SearchWorkerFactory::init() {
         tMap["singleStep"] = (0.1);
         delegates[DOM_T_ATTR] = new DoubleSpinBoxDelegate(tMap);
     }
- 
+
     proto->setEditor(new DelegateEditor(delegates));
     proto->setIconPath(":/hmm3/images/hmmer_16.png");
     proto->setPrompter(new HMM3SearchPrompter());
     WorkflowEnv::getProtoRegistry()->registerProto(HMM3Lib::HMM3_CATEGORY(), proto);
- 
+
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
     localDomain->registerEntry(new HMM3SearchWorkerFactory());
 }
@@ -151,7 +152,7 @@ QString HMM3SearchPrompter::composeRichDoc() {
  *******************************/
 HMM3SearchWorker::HMM3SearchWorker(Actor* a) : BaseWorker(a, false), hmmPort(NULL), seqPort(NULL), output(NULL) {
 }
- 
+
 void HMM3SearchWorker::init() {
     setDefaultUHMM3SearchSettings(&cfg);
 
@@ -168,7 +169,7 @@ void HMM3SearchWorker::init() {
         domENum = -1;
     }
     cfg.domE = pow(10, domENum);
-    
+
     cfg.domT = (float)actor->getParameter(DOM_T_ATTR)->getAttributeValue<double>(context);
     if(cfg.domT <= 0) {
         algoLog.details(tr("Score must be greater than zero. Using default value: 0.01"));
@@ -192,7 +193,7 @@ bool HMM3SearchWorker::isReady() {
     int hmmHasMes = hmmPort->hasMessage();
     return hmmHasMes || (hmmEnded && (seqHasMes || seqEnded));
 }
- 
+
 Task* HMM3SearchWorker::tick() {
     while (hmmPort->hasMessage()) {
         hmms << hmmPort->get().getData().toMap().value(HMM3Lib::HMM3_SLOT.getId()).value<const P7_HMM*>();
@@ -212,7 +213,9 @@ Task* HMM3SearchWorker::tick() {
         if (seqObj.isNull()) {
             return NULL;
         }
-        DNASequence dnaSequence = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence dnaSequence = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         if (dnaSequence.alphabet->getType() != DNAAlphabet_RAW) {
             QList<Task*> subtasks;
@@ -233,7 +236,7 @@ Task* HMM3SearchWorker::tick() {
     }
     return NULL;
 }
- 
+
 void HMM3SearchWorker::sl_taskFinished(Task *t) {
     SAFE_POINT(NULL != t, "Invalid task is encountered",);
     if (t->isCanceled()) {

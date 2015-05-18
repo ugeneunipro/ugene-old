@@ -465,7 +465,10 @@ void ADVExportContext::sl_saveSelectedAnnotations() {
     // run task
     Task * t = NULL;
     if (d.fileFormat() == ExportAnnotationsDialog::CSV_FORMAT_ID) {
-        t = new ExportAnnotations2CSVTask(annotationSet, sequenceContext->getSequenceObject()->getWholeSequenceData(),
+        U2OpStatusImpl os;
+        QByteArray seqData = sequenceContext->getSequenceObject()->getWholeSequenceData(os);
+        CHECK_OP_EXT(os, QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
+        t = new ExportAnnotations2CSVTask(annotationSet, seqData,
             sequenceContext->getSequenceObject()->getSequenceName(), sequenceContext->getComplementTT(),
             d.exportSequence(), d.exportSequenceNames(), d.filePath());
     } else {
@@ -529,7 +532,8 @@ void ADVExportContext::prepareMAFromBlastAnnotations(MAlignment& ma, const QStri
     }
 
     if (includeRef) {
-        QByteArray rowSequence = commonSeq->getSequenceObject()->getWholeSequenceData();
+        QByteArray rowSequence = commonSeq->getSequenceObject()->getWholeSequenceData(os);
+        CHECK_OP(os,);
         ma.addRow(commonSeq->getSequenceGObject()->getGObjectName(), rowSequence, 0, os);
         CHECK_OP(os,);
     }
@@ -626,7 +630,8 @@ void ADVExportContext::prepareMAFromSequences(MAlignment& ma, bool translate, U2
         foreach(const U2Region& r, seqCtx->getSequenceSelection()->getSelectedRegions()) {
             maxLen = qMax(maxLen, r.length);
             CHECK_EXT(maxLen * ma.getNumRows() <= MAX_ALI_MODEL, os.setError(tr("Alignment is too large")),);
-            QByteArray seq = seqCtx->getSequenceData(r);
+            QByteArray seq = seqCtx->getSequenceData(r, os);
+            CHECK_OP(os, );
             if (aminoTT!=NULL) {
                 int len = aminoTT->translate(seq.data(), seq.size());
                 seq.resize(len);

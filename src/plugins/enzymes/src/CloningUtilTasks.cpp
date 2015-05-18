@@ -450,7 +450,8 @@ void LigateFragmentsTask::prepare()
         }
 
         resultSeq.append(overhangAddition);
-        resultSeq.append(dnaFragment.getSequence());
+        resultSeq.append(dnaFragment.getSequence(stateInfo));
+        CHECK_OP(stateInfo, );
     }
 
     if (cfg.makeCircular && cfg.checkOverhangs) {

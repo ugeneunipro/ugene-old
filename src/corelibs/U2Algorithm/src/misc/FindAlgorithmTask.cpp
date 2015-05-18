@@ -156,7 +156,8 @@ void LoadPatternsFileTask::run()
         foreach(GObject *object, objectsFromDoc) {
             U2SequenceObject *sequenceObject = qobject_cast<U2SequenceObject*>(object);
             assert(NULL != sequenceObject);
-            QByteArray sequence = sequenceObject->getWholeSequenceData();
+            QByteArray sequence = sequenceObject->getWholeSequenceData(stateInfo);
+            CHECK_OP(stateInfo, );
             QString seqName = sequenceObject->getSequenceName();
             if(annotationName.isEmpty()){
                 namesPatterns.append(qMakePair(seqName, QString(sequence)));

@@ -59,7 +59,9 @@ Task* SequencesToMSAWorker::tick() {
         if (seqObj.isNull()) {
             return NULL;
         }
-        DNASequence seq = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence seq = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
         data.append(seq);
     }
     if (!inPort->hasMessage() && inPort->isEnded()) {

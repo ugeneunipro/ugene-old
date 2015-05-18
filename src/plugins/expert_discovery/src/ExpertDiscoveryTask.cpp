@@ -36,6 +36,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/U2FileDialog.h>
@@ -168,7 +169,10 @@ QList<DNASequence> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList
     foreach(GObject* obj, objects){
         if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
             U2SequenceObject* seq = (U2SequenceObject*)obj;
-            calculateACGTContent(seq->getWholeSequence(),acgtContent);
+            U2OpStatusImpl os;
+            DNASequence dnaSequence = seq->getWholeSequence(os);
+            CHECK_OP(os, neg);
+            calculateACGTContent( dnaSequence, acgtContent);
             for (int i = 0; i < negPerPositive; i++){
                 QByteArray curArr = generateRandomSequence(acgtContent, seq->getSequenceLength());
                 QString name = seq->getGObjectName();
@@ -775,7 +779,9 @@ Task* ExpertDiscoverySignalsAutoAnnotationUpdater::createAutoAnnotationsUpdateTa
     }
 
     AnnotationTableObject *aObj = aa->getAnnotationObject();
-    const DNASequence& dna = aa->getSeqObject()->getWholeSequence();
+    U2OpStatusImpl os;
+    const DNASequence& dna = aa->getSeqObject()->getWholeSequence(os);
+    CHECK_OP(os, NULL);
     Task* task = new ExpertDiscoveryToAnnotationTask(aObj, dna, edData, curPS, *mutex);
     return task;
 }

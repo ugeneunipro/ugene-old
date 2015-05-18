@@ -23,20 +23,21 @@
 #include "BlastPlusSupport.h"
 #include "ExternalToolSupportSettingsController.h"
 
-#include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentUtils.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/GObjectReference.h>
+#include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/DNASequenceObject.h>
+#include <U2Core/L10n.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/ProjectModel.h>
 #include <U2Core/ProjectService.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -378,7 +379,9 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::tryApplyDoc(Document *doc) {
         SAFE_POINT(NULL != seq, "NULL sequence object", );
 
         BlastTaskSettings localSettings;
-        localSettings.querySequence = seq->getWholeSequenceData();
+        U2OpStatusImpl os;
+        localSettings.querySequence = seq->getWholeSequenceData(os);
+        CHECK_OP_EXT(os, QMessageBox::critical(this, L10N::errorTitle(), os.getError()), );
         localSettings.alphabet = seq->getAlphabet();
         if (localSettings.alphabet->getType() != DNAAlphabet_AMINO){
             localSettings.isNucleotideSeq = true;

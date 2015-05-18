@@ -63,7 +63,7 @@
 
 namespace U2 {
 
-PWMBuildDialogController::PWMBuildDialogController(QWidget* w) 
+PWMBuildDialogController::PWMBuildDialogController(QWidget* w)
 : QDialog(w), logoArea(NULL)
 {
     task = NULL;
@@ -96,7 +96,7 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
         return;
     }
 
-    
+
     QString inFile = QFileInfo(lod.url).absoluteFilePath();
     QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(inFile);
     if (formats.isEmpty()) {
@@ -109,7 +109,7 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
         if (i.format->getSupportedObjectTypes().contains(GObjectTypes::MULTIPLE_ALIGNMENT)) {
             format = i.format;
             break;
-        } 
+        }
     }
 
     if (format == NULL) {
@@ -152,7 +152,10 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
                 ti.setError(  tr("Wrong sequence alphabet") );
             }
             U2OpStatus2Log os;
-            ma.addRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), os);
+            QByteArray seqData = dnaObj->getWholeSequenceData(os);
+            CHECK_OP_EXT(os, reportError(os.getError()), );
+            ma.addRow(dnaObj->getSequenceName(), seqData, os);
+            CHECK_OP_EXT(os, reportError(os.getError()), );
         }
         replaceLogo(ma);
     }
@@ -171,7 +174,7 @@ void PWMBuildDialogController::replaceLogo(const MAlignment& ma) {
         logoWidget->show();
 
         if (logoArea != NULL) {
-            logoArea->replaceSettings(logoSettings);   
+            logoArea->replaceSettings(logoSettings);
         } else {
             logoArea = new AlignmentLogoRenderArea(logoSettings, logoWidget);
         }
@@ -312,7 +315,7 @@ void PWMBuildDialogController::reject() {
         task->cancel();
     }
     if (lastURL != "") {
-        QDialog::accept();    
+        QDialog::accept();
     } else {
         QDialog::reject();
     }
@@ -322,7 +325,7 @@ void PWMBuildDialogController::reject() {
 //////////////////////////////////////////////////////////////////////////
 // tasks
 
-PFMatrixBuildTask::PFMatrixBuildTask(const PMBuildSettings& s, const MAlignment& ma) 
+PFMatrixBuildTask::PFMatrixBuildTask(const PMBuildSettings& s, const MAlignment& ma)
 : Task (tr("Build Frequency Matrix"), TaskFlag_None), settings(s), ma(ma)
 {
     GCOUNTER( cvar, tvar, "PFMatrixBuildTask" );
@@ -355,11 +358,11 @@ void PFMatrixBuildTask::run() {
     return;
 }
 
-PFMatrixBuildToFileTask::PFMatrixBuildToFileTask(const QString& inFile, const QString& _outFile, const PMBuildSettings& s) 
+PFMatrixBuildToFileTask::PFMatrixBuildToFileTask(const QString& inFile, const QString& _outFile, const PMBuildSettings& s)
 : Task (tr("Build Weight Matrix"), TaskFlag_NoRun), loadTask(NULL), buildTask(NULL), outFile(_outFile), settings(s)
 {
     tpm = Task::Progress_SubTasksBased;
-    
+
     DocumentFormatConstraints c;
     c.checkRawData = true;
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
@@ -376,7 +379,7 @@ PFMatrixBuildToFileTask::PFMatrixBuildToFileTask(const QString& inFile, const QS
         if (i.format->getSupportedObjectTypes().contains(GObjectTypes::MULTIPLE_ALIGNMENT)) {
             format = i.format->getFormatId();
             break;
-        } 
+        }
     }
     if(format.isEmpty()) {
         foreach(const FormatDetectionResult& i, formats) {
@@ -427,7 +430,10 @@ QList<Task*> PFMatrixBuildToFileTask::onSubTaskFinished(Task* subTask) {
                     if (dnaObj->getAlphabet()->getType() != DNAAlphabet_NUCL) {
                         stateInfo.setError(  tr("Wrong sequence alphabet") );
                     }
-                    ma.addRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), stateInfo);
+                    QByteArray seqData = dnaObj->getWholeSequenceData(stateInfo);
+                    CHECK_OP(stateInfo, res);
+                    ma.addRow(dnaObj->getSequenceName(), seqData, stateInfo);
+                    CHECK_OP(stateInfo, res);
                 }
                 buildTask = new PFMatrixBuildTask(settings, ma);
                 res.append(buildTask);
@@ -443,14 +449,14 @@ QList<Task*> PFMatrixBuildToFileTask::onSubTaskFinished(Task* subTask) {
     return res;
 }
 
-PWMatrixBuildTask::PWMatrixBuildTask(const PMBuildSettings& s, const MAlignment& ma) 
+PWMatrixBuildTask::PWMatrixBuildTask(const PMBuildSettings& s, const MAlignment& ma)
 : Task (tr("Build Weight Matrix"), TaskFlag_None), settings(s), ma(ma)
 {
     GCOUNTER( cvar, tvar, "PWMatrixBuildTask" );
     tpm = Task::Progress_Manual;
 }
 
-PWMatrixBuildTask::PWMatrixBuildTask(const PMBuildSettings& s, const PFMatrix& ma) 
+PWMatrixBuildTask::PWMatrixBuildTask(const PMBuildSettings& s, const PFMatrix& ma)
 : Task (tr("Build Weight Matrix"), TaskFlag_None), settings(s), tempMatrix(ma)
 {
     GCOUNTER( cvar, tvar, "PWMatrixBuildTask" );
@@ -502,11 +508,11 @@ void PWMatrixBuildTask::run() {
     return;
 }
 
-PWMatrixBuildToFileTask::PWMatrixBuildToFileTask(const QString& inFile, const QString& _outFile, const PMBuildSettings& s) 
+PWMatrixBuildToFileTask::PWMatrixBuildToFileTask(const QString& inFile, const QString& _outFile, const PMBuildSettings& s)
 : Task (tr("Build Weight Matrix"), TaskFlag_NoRun), loadTask(NULL), buildTask(NULL), outFile(_outFile), settings(s)
 {
     tpm = Task::Progress_SubTasksBased;
-    
+
     DocumentFormatConstraints c;
     c.checkRawData = true;
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
@@ -556,10 +562,12 @@ QList<Task*> PWMatrixBuildToFileTask::onSubTaskFinished(Task* subTask) {
                     if (dnaObj->getAlphabet()->getType() != DNAAlphabet_NUCL) {
                         stateInfo.setError(  tr("Wrong sequence alphabet") );
                     }
-                    ma.addRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), stateInfo);
+                    QByteArray seqData = dnaObj->getWholeSequenceData(stateInfo);
+                    CHECK_OP(stateInfo, res);
+                    ma.addRow(dnaObj->getSequenceName(), seqData, stateInfo);
                     CHECK_OP(stateInfo, res);
                 }
-                
+
                 buildTask = new PWMatrixBuildTask(settings, ma);
                 res.append(buildTask);
             } else {

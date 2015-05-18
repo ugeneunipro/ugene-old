@@ -21,6 +21,7 @@
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include "ADVGraphModel.h"
 #include "GSequenceGraphView.h"
@@ -35,7 +36,9 @@ namespace U2 {
 const QByteArray& GSequenceGraphAlgorithm::getSequenceData(U2SequenceObject* seqObj) {
     if(seqObj != lastSeqObj) {
         lastSeqObj = seqObj;
-        lastSeqData = seqObj->getWholeSequenceData();
+        U2OpStatusImpl os;
+        lastSeqData = seqObj->getWholeSequenceData(os);
+        SAFE_POINT_OP(os, QByteArray());
     }
     return lastSeqData;
 }
@@ -863,7 +866,7 @@ bool PairVector::isEmpty()const {
     return firstPoints == emptyFp && secondPoints == emptySp && cutoffPoints == emptyCutoff;
 }
 
-CalculatePointsTask::CalculatePointsTask(const QSharedPointer<GSequenceGraphData>& d, GSequenceGraphDrawer *drawer, PairVector &points, int alignedFirst, int alignedLast, bool expandMode, const GSequenceGraphWindowData &wdata, U2SequenceObject* o, const U2Region &visibleRange) 
+CalculatePointsTask::CalculatePointsTask(const QSharedPointer<GSequenceGraphData>& d, GSequenceGraphDrawer *drawer, PairVector &points, int alignedFirst, int alignedLast, bool expandMode, const GSequenceGraphWindowData &wdata, U2SequenceObject* o, const U2Region &visibleRange)
 : BackgroundTask<PairVector>(tr("Calculate graph points"), TaskFlag_None), d(d), drawer(drawer), result(points), alignedFirst(alignedFirst), alignedLast(alignedLast), expandMode(expandMode), wdata(wdata), o(o), visibleRange(visibleRange) {}
 
 void CalculatePointsTask::run() {

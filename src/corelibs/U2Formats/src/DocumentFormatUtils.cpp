@@ -158,14 +158,15 @@ QList<DNASequence> DocumentFormatUtils::toSequences(const GObject* obj) {
     QList<DNASequence> res;
     SAFE_POINT(obj != NULL, "Gobject is NULL", res);
     const U2SequenceObject* seqObj = qobject_cast<const U2SequenceObject*>(obj);
+    U2OpStatus2Log os;
     if (seqObj != NULL) {
-        res << seqObj->getWholeSequence();
+        res << seqObj->getWholeSequence(os);
+        CHECK_OP_EXT(os, res.removeLast(), res);
         return res;
     }
     const MAlignmentObject* maObj = qobject_cast<const MAlignmentObject*>(obj);
     CHECK(maObj != NULL, res); //MAlignmentObject is NULL
     const DNAAlphabet* al = maObj->getAlphabet();
-    U2OpStatus2Log os;
     qint64 alLen = maObj->getMAlignment().getLength();
     foreach (const MAlignmentRow& row, maObj->getMAlignment().getRows()) {
         DNASequence seq;

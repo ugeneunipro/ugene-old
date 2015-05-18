@@ -34,6 +34,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AnnotationData.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include "StatisticWorkers.h"
 
@@ -111,7 +112,9 @@ Task* DNAStatWorker::tick() {
         if (NULL == seqObj.data()) {
             return NULL;
         }
-        DNASequence dna = seqObj->getWholeSequence();
+        U2OpStatusImpl os;
+        DNASequence dna = seqObj->getWholeSequence(os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         if(!dna.alphabet->isNucleic()) {
             return new FailTask(tr("Sequence must be nucleotide"));
