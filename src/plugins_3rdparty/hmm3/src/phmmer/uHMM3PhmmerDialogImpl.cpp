@@ -60,7 +60,7 @@ UHMM3PhmmerDialogImpl::UHMM3PhmmerDialogImpl(const U2SequenceObject * seqObj, QW
 
     U2OpStatusImpl os;
     model.dbSequence = seqObj->getWholeSequence(os);
-    SAFE_POINT_OP_EXT(os, QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
+    SAFE_POINT_EXT(!os.hasError(), QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
     setModelValues(); // default model here
 
     // Annotations widget
