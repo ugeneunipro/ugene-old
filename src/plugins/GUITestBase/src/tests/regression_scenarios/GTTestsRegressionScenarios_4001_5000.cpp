@@ -1607,6 +1607,7 @@ GUI_TEST_CLASS_DEFINITION(test_4209) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4218) {
+    // Check that "Write Annotations" worker takes into account object names of incoming annotation tables
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/regression/4218/test.uwl");
     GTGlobals::sleep();
@@ -1622,6 +1623,24 @@ GUI_TEST_CLASS_DEFINITION(test_4218) {
 
     GTFileDialog::openFile(os, sandBoxDir + "out.bed");
     GTUtilsProjectTreeView::checkItem(os, "chr2 features");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4218_1) {
+    // Check that an output annotation object has a default name if incoming annotation objects have different names
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/regression/4218/test.uwl");
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Annotations", testDir + "_common_data/regression/4218/test.bed");
+    GTUtilsWorkflowDesigner::click(os, "Write Annotations");
+    const QString outputFilePath = QDir(sandBoxDir).absolutePath() + "/out.bed";
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", outputFilePath, GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTFileDialog::openFile(os, sandBoxDir + "out.bed");
+    GTUtilsProjectTreeView::checkItem(os, "Annotations features");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4221) {
