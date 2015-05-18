@@ -5863,6 +5863,32 @@ GUI_TEST_CLASS_DEFINITION(test_1626) {
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1627) {
+    GTLogTracer logTracer;
+
+//    1. Select {Tools->Build dotplot...} in the main menu.
+//    Expected state: the Build dotplot from the sequences" dialog appeared.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Build dotplot...", GTGlobals::UseMouse));
+
+//    2. Fill next fields of the dialog and click the "Next" button:
+//        {File with first sequence:} _common_data/scenarios/dp_view/dpm1.fa
+//        {File with second sequence:} _common_data/scenarios/dp_view/dpm2.fa
+//    Expected state: the dotplot settings dialog appeared.
+    GTUtilsDialog::waitForDialog(os, new BuildDotPlotFiller(os,
+                                                            testDir + "_common_data/scenarios/dp_view/dpm1.fa",
+                                                            testDir + "_common_data/scenarios/dp_view/dpm2.fa"));
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    3. Set next fields of the "Dotplot" dilog and click the "OK" button:
+//        {Minimum repeat length} 8bp
+//        {Repeats identity} 80%
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 8, 80));
+
+//    Expected state: dotplot appeared, there is not any errors in the log window.
+    GTMenu::showMainMenu(os, GTMenu::TOOLS);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1628 ) {
     //CORRECT DISPLAYUNG OF RUSSIAN LATTERS CAN NOT BE TESTED
 
