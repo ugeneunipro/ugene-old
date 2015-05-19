@@ -37,6 +37,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
 
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ProjectUtils.h>
@@ -58,6 +59,8 @@ ExportPrimersDialog::ExportPrimersDialog(const QList<Primer> &primers) :
     primers(primers)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "16122426");
+
     init();
     connectSignals();
     sl_updateState();

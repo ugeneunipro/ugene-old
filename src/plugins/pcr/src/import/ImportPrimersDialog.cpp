@@ -30,6 +30,7 @@
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/ProjectUtils.h>
 #include <U2Gui/U2FileDialog.h>
+#include <U2Gui/HelpButton.h>
 
 #include "ImportPrimerFromObjectTask.h"
 #include "ImportPrimersDialog.h"
@@ -47,6 +48,7 @@ ImportPrimersDialog::ImportPrimersDialog(QWidget *parent) :
     waitForConnection(false)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "16122426");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Import"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     init();
