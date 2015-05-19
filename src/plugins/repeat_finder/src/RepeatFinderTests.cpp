@@ -210,7 +210,7 @@ void GTest_FindSingleSequenceRepeatsTask::prepare() {
             continue;
         }
         s.algo = algo;
-        QByteArray seqData = seq1IObj->getWholeSequenceData(os);
+        DNASequence seqData = seq1IObj->getWholeSequence(os);
         CHECK_OP_EXT(os, setError(os.getError()), );
         Task* sub = new FindRepeatsTask(s, seqData, seqData);
         addSubTask(sub);
