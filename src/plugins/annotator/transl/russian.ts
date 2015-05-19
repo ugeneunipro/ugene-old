@@ -222,7 +222,7 @@
     <message>
         <location filename="../src/CustomPatternAnnotationTask.cpp" line="209"/>
         <source>Plasmid features</source>
-        <translation>Плазмиды</translation>
+        <translation>Аннотирование плазмид</translation>
     </message>
 </context>
 <context>
