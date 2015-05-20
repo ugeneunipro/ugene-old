@@ -166,12 +166,15 @@ void CreateDocumentFromTextDialogController::acceptWithExistingProject() {
     doc = df->createNewLoadedDocument(iof, fullPath, os);
     CHECK_OP_EXT(os, delete doc, );
     
-    DNASequence seq = w->getSequence();
-    seq.setName(ui->nameEdit->text());
-    QList<GObject*> objs;
-    U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), U2ObjectDbi::ROOT_FOLDER, seq.getName(), objs, seq, os);
-    CHECK_OP_EXT(os, delete doc, );
-    doc->addObject( seqObj );
+    foreach (DNASequence sequence, w->getSequences()) {
+        QList<GObject*> objs;
+        if (sequence.getName().isEmpty()) {
+            sequence.setName(ui->nameEdit->text());
+        }
+        U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), U2ObjectDbi::ROOT_FOLDER, sequence.getName(), objs, sequence, os);
+        CHECK_OP_EXT(os, delete doc, );
+        doc->addObject(seqObj);
+    }
 
     p->addDocument(doc);
     if(ui->saveImmediatelyBox->isChecked()){
@@ -180,7 +183,7 @@ void CreateDocumentFromTextDialogController::acceptWithExistingProject() {
     
     // Open view for created document
     DocumentSelection ds;
-    ds.setSelection(QList<Document*>() <<doc);
+    ds.setSelection(QList<Document*>() << doc);
     MultiGSelection ms;
     ms.addSelection(&ds);
     foreach(GObjectViewFactory *f, AppContext::getObjectViewFactoryRegistry()->getAllFactories()) {
@@ -202,6 +205,7 @@ void CreateDocumentFromTextDialogController::reject(){
 
 void CreateDocumentFromTextDialogController::addSeqPasterWidget(){
     w = new SeqPasterWidgetController(this);
+    w->allowFastaFormat(true);
     ui->verticalLayout->insertWidget(0, w);
 }
 

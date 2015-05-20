@@ -22,14 +22,9 @@
 #ifndef _U2_SEQ_PASTER_WIDGET_CONTROLLER_H_
 #define _U2_SEQ_PASTER_WIDGET_CONTROLLER_H_
 
-#include <U2Core/global.h>
-#include <U2Core/DNASequence.h>
+#include <QWidget>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QWidget>
-#else
-#include <QtWidgets/QWidget>
-#endif
+#include <U2Core/DNASequence.h>
 
 class Ui_SeqPasterWidget;
 
@@ -43,21 +38,27 @@ public:
     ~SeqPasterWidgetController();
 
     QString validate(); 
-    DNASequence getSequence() const {return resultSeq;}
+    QList<DNASequence> getSequences() const;
     void disableCustomSettings();
     void setPreferredAlphabet(const DNAAlphabet *alp);
     void selectText();
     void setEventFilter(QObject* evFilter);
+    void allowFastaFormat(bool allow);
 
     static QByteArray getNormSequence(const DNAAlphabet * alph, const QByteArray & seq, bool replace, QChar replaceChar);
     
 private slots:
-    void sl_currentindexChanged(const QString&);
+    void sl_currentIndexChanged(const QString &newText);
+
 private:
+    QString addSequence(const QString &name, QString data);
+    static bool isFastaFormat(const QString &data);
+
     const DNAAlphabet *preferred;
-    DNASequence resultSeq;
+    QList<DNASequence> resultSequences;
     Ui_SeqPasterWidget* ui;
     bool additionalWarning;
+    bool allowFastaFormatMode;
 };
 
 }//ns

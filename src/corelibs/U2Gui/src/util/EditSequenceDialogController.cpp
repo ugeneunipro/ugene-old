@@ -132,7 +132,8 @@ void EditSequenceDialogController::accept(){
         return;
     }
 
-    if (w->getSequence().seq == config.initialText && config.mode == EditSequenceMode_Replace ) {
+    if ((w->getSequences().isEmpty() || w->getSequences().first().seq == config.initialText)
+            && config.mode == EditSequenceMode_Replace ) {
         QDialog::reject();
         return;
     }
@@ -213,7 +214,7 @@ void EditSequenceDialogController::sl_mergeAnnotationsToggled( bool state){
 }
 
 DNASequence EditSequenceDialogController::getNewSequence() const {
-    return w->getSequence();
+    return w->getSequences().isEmpty() ? DNASequence() : w->getSequences().first();
 }
 
 GUrl EditSequenceDialogController::getDocumentPath() const {
