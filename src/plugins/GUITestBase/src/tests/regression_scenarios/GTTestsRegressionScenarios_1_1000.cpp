@@ -1757,6 +1757,9 @@ GUI_TEST_CLASS_DEFINITION(test_0830) {
     //        _common_data/scenarios/CAP3/region4.fa
     //    Run
     QString outUrl = sandBoxDir + "830.ace";
+    QFile(outUrl).remove();
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandBoxDir + "830.ugenedb"));
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
     GTUtilsDialog::waitForDialog(os, new CAP3SupportDialogFiller(os, QStringList()
         << testDir + "_common_data/scenarios/CAP3/region2.fa"
         << testDir + "_common_data/scenarios/CAP3/region4.fa",
@@ -1764,9 +1767,9 @@ GUI_TEST_CLASS_DEFINITION(test_0830) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ToolsMenu::SANGER_MENU << ToolsMenu::SANGER_DENOVO));
     GTMenu::showMainMenu(os, "mwmenu_tools");
 
-    //3) wait for task error, ensure that no output files are created
+    //3) wait for task error, ensure that no output files are in the project
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    CHECK_SET_ERR(!QFile::exists(outUrl), "The output file is created");
+    CHECK_SET_ERR(!GTUtilsProjectTreeView::checkItem(os, "830.ugenedb"), "The output file is in a project");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0834) {
