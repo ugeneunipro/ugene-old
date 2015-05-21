@@ -135,6 +135,9 @@ struct alignment* aln_alloc(struct alignment* aln)
 		aln->sip[i] = malloc(sizeof(int)*1);
 		aln->nsip[i] = 1;
 		aln->sip[i][0] = i;
+        aln->s[i] = 0;
+        aln->seq[i] = 0;
+        aln->sn[i] = 0;
 	}
 	return aln;
 }

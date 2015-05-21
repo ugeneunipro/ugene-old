@@ -49,7 +49,7 @@ void KalignAdapter::align(const MAlignment& ma, MAlignment& res, TaskStateInfo& 
     }
     try {
         alignUnsafe(ma, res, ti);
-    } catch (KalignException e) {
+    } catch (const KalignException &e) {
         if (!ti.cancelFlag) {
             ti.setError(tr("Internal Kalign error: %1").arg(e.str));
         }
@@ -138,10 +138,18 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
         aln->lsn[i] = row.getName().length();
     }
 
-    for (quint32 i = 0; i < numseq;i++){
-        aln->s[i] = (int*) malloc(sizeof(int)*(aln->sl[i]+1));
-        aln->seq[i] = (char*)malloc(sizeof(char)*(aln->sl[i]+1));
-        aln->sn[i] = (char*)malloc(sizeof(char)*(aln->lsn[i]+1));
+    for (quint32 i = 0; i < numseq;i++) {
+        try {
+            aln->s[i] = (int*) malloc(sizeof(int)*(aln->sl[i]+1));
+            checkAllocatedMemory(aln->s[i]);
+            aln->seq[i] = (char*)malloc(sizeof(char)*(aln->sl[i]+1));
+            checkAllocatedMemory(aln->seq[i]);
+            aln->sn[i] = (char*)malloc(sizeof(char)*(aln->lsn[i]+1));
+            checkAllocatedMemory(aln->sn[i]);
+        } catch (...) {
+            cleanupMemory(NULL, numseq, NULL, aln, param);
+            throw;
+        }
     }
 
     int aacode[26] = {0,1,2,3,4,5,6,7,8,-1,9,10,11,12,23,13,14,15,16,17,17,18,19,20,21,22};
@@ -362,7 +370,7 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
         map =  hirschberg_alignment(aln,tree,submatrix, map,param->smooth_window,param->gap_inc);
     }
     if (map == NULL) {
-        throw KalignException("Failed to build an alignment.");
+        throw KalignException("Failed to build alignment.");
     }
     if(check_task_canceled(ctx)) {
         free_param(param);

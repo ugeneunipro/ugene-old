@@ -29,6 +29,7 @@
 #include "kalign2_context.h"
 
 extern void throwKalignException(char *message);
+extern void checkAllocatedMemory(void *ptr);
 
 #define INFTY FLT_MAX
 #define FLOATINFTY FLT_MAX

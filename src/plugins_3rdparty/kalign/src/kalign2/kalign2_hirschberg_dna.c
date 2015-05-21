@@ -46,12 +46,12 @@ int** dna_alignment(struct alignment* aln,int* tree,float**submatrix, int** map,
     numprofiles = ctx->numprofiles;
 
     profile = malloc(sizeof(float*)*numprofiles);
-    for ( i = 0;i< numprofiles;i++){
+    for (i = 0; i< numprofiles; i++) {
         profile[i] = 0;
     }
 
     map = malloc(sizeof(int*)*numprofiles);
-    for ( i = 0;i < numprofiles;i++){
+    for (i = 0; i < numprofiles; i++){
         map[i] = 0;
     }
 
@@ -73,6 +73,15 @@ int** dna_alignment(struct alignment* aln,int* tree,float**submatrix, int** map,
 
         g = (len_a > len_b)? len_a:len_b;
         map[c] = malloc(sizeof(int) * (g+2));
+        if (NULL == map[c]) {
+            for (int pos = 0; pos < numprofiles; pos++){
+                free(map[pos]);
+                free(profile[pos]);
+            }
+            free(map);
+            free(profile);
+            checkAllocatedMemory(NULL);
+        }
         if(g > hm->size){
             hm = hirsch_mem_realloc(hm,g);
         }
