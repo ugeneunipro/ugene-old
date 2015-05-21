@@ -34,6 +34,8 @@ class GTUtilsPcr {
 public:
     static void setPrimer(U2OpStatus &os, U2Strand::Direction direction, const QByteArray &primer);
     static void setMismatches(U2OpStatus &os, U2Strand::Direction direction, int mismatches);
+    static void setPerfectMatch(U2OpStatus &os, int number);
+    static void setMaxProductSize(U2OpStatus &os, int number);
     static QWidget * browseButton(U2OpStatus &os, U2Strand::Direction direction);
     static int productsCount(U2OpStatus &os);
     static QString getResultRegion(U2OpStatus &os, int number);

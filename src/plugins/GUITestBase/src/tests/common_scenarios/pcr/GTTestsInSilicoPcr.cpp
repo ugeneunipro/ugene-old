@@ -204,6 +204,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTUtilsPcr::setPrimer(os, U2Strand::Direct, "CGCGCGTTTCGGTGA");
     GTUtilsPcr::setPrimer(os, U2Strand::Complementary, "CGGCATCCGCTTACAGAC");
     GTUtilsPcr::setMismatches(os, U2Strand::Complementary, 6);
+    GTUtilsPcr::setPerfectMatch(os, 0);
 
     //4. Click the find button.
     GTWidget::click(os, GTWidget::findWidget(os, "findProductButton"));
@@ -305,6 +306,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 
     //5. Set the reverse mismatches: 6. Click the find button.
     GTUtilsPcr::setMismatches(os, U2Strand::Complementary, 6);
+    GTUtilsPcr::setPerfectMatch(os, 0);
     GTWidget::click(os, GTWidget::findWidget(os, "findProductButton"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
@@ -312,8 +314,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     CHECK_SET_ERR(3 == GTUtilsPcr::productsCount(os), "Wrong results count");
 
     //6. Set the maximum product size: 3773. Click the find button.
-    QSpinBox *productSizeSpinBox = dynamic_cast<QSpinBox*>(GTWidget::findWidget(os, "productSizeSpinBox"));
-    GTSpinBox::setValue(os, productSizeSpinBox, 3773, GTGlobals::UseKeyBoard);
+    GTUtilsPcr::setMaxProductSize(os, 3773);
     GTWidget::click(os, GTWidget::findWidget(os, "findProductButton"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
 

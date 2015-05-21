@@ -45,6 +45,16 @@ void GTUtilsPcr::setMismatches(U2OpStatus &os, U2Strand::Direction direction, in
     GTSpinBox::setValue(os, mismatchesSpinBox, mismatches);
 }
 
+void GTUtilsPcr::setPerfectMatch(U2OpStatus &os, int number) {
+    QSpinBox *spinBox = dynamic_cast<QSpinBox*>(GTWidget::findWidget(os, "perfectSpinBox"));
+    GTSpinBox::setValue(os, spinBox, number, GTGlobals::UseKeyBoard);
+}
+
+void GTUtilsPcr::setMaxProductSize(U2OpStatus &os, int number) {
+    QSpinBox *spinBox = dynamic_cast<QSpinBox*>(GTWidget::findWidget(os, "productSizeSpinBox"));
+    GTSpinBox::setValue(os, spinBox, number, GTGlobals::UseKeyBoard);
+}
+
 QWidget * GTUtilsPcr::browseButton(U2OpStatus &os, U2Strand::Direction direction) {
     return GTWidget::findWidget(os, "browseButton", primerBox(os, direction));
 }
