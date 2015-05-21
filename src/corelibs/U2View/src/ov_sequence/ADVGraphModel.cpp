@@ -38,7 +38,7 @@ const QByteArray& GSequenceGraphAlgorithm::getSequenceData(U2SequenceObject* seq
         lastSeqObj = seqObj;
         U2OpStatusImpl os;
         lastSeqData = seqObj->getWholeSequenceData(os);
-        SAFE_POINT_OP(os, QByteArray());
+        SAFE_POINT_OP(os, lastSeqData);
     }
     return lastSeqData;
 }

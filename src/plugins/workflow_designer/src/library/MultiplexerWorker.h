@@ -55,7 +55,7 @@ public:
     MultiplexerWorker(Actor *p);
 
     virtual void init();
-    virtual bool isReady();
+    virtual bool isReady() const;
     virtual Task *tick();
     virtual void cleanup();
 

@@ -169,7 +169,7 @@ void PWMatrixSearchWorker::init() {
     resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
 }
 
-bool PWMatrixSearchWorker::isReady() {
+bool PWMatrixSearchWorker::isReady() const {
     if (isDone()) {
         return false;
     }
@@ -178,6 +178,10 @@ bool PWMatrixSearchWorker::isReady() {
     int dataHasMes = dataPort->hasMessage();
     int modelHasMes = modelPort->hasMessage();
     return modelHasMes || (modelEnded && (dataHasMes || dataEnded));
+}
+
+void PWMatrixSearchWorker::cleanup() {
+
 }
 
 Task* PWMatrixSearchWorker::tick() {

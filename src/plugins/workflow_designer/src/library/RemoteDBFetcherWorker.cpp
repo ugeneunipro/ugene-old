@@ -133,8 +133,7 @@ void RemoteDBFetcherWorker::init()
     }
 }
 
-bool RemoteDBFetcherWorker::isReady()
-{
+bool RemoteDBFetcherWorker::isReady() const {
     return !isDone();
 }
 
@@ -157,7 +156,7 @@ Task* RemoteDBFetcherWorker::tick() {
     return ret;
 }
 
-bool RemoteDBFetcherWorker::isDone() {
+bool RemoteDBFetcherWorker::isDone() const {
     return (!dbid.isEmpty() && seqids.isEmpty() && idsFilePaths.isEmpty());
 }
 

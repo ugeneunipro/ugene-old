@@ -47,7 +47,7 @@ public:
     CuffdiffWorker(Actor *actor);
 
     void init();
-    bool isReady();
+    bool isReady() const;
     Task * tick();
     void cleanup();
 

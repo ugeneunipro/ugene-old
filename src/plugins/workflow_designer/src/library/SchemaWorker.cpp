@@ -35,11 +35,11 @@ SchemaWorker::SchemaWorker(Actor *a)
 
 }
 
-bool SchemaWorker::isReady() {
+bool SchemaWorker::isReady() const {
     return true;
 }
 
-bool SchemaWorker::isDone() {
+bool SchemaWorker::isDone() const {
     return true;
 }
 

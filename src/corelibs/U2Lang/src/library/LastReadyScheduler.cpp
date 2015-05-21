@@ -56,7 +56,7 @@ void LastReadyScheduler::init() {
     topologicSortedGraph = schema->getActorBindingsGraph().getTopologicalSortedGraph(schema->getProcesses());
 }
 
-bool LastReadyScheduler::isReady() {
+bool LastReadyScheduler::isReady() const {
     foreach(Actor* a, schema->getProcesses()) {
         if (a->castPeer<BaseWorker>()->isReady()) {
             return true;
@@ -125,7 +125,7 @@ Task * LastReadyScheduler::replayLastWorkerTick() {
     return result;
 }
 
-bool LastReadyScheduler::isDone() {
+bool LastReadyScheduler::isDone() const {
     foreach(Actor* a, schema->getProcesses()) {
         if (!a->castPeer<BaseWorker>()->isDone()) {
             return false;

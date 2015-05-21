@@ -43,8 +43,8 @@ public:
     BaseShortReadsAlignerWorker(Actor *a, const QString& algName);
     void init();
     Task * tick();
-    void cleanup(){}
-    virtual bool isReady();
+    void cleanup();
+    bool isReady() const;
 
 protected:
     virtual QVariantMap getCustomParameters() const {return QVariantMap();}

@@ -189,7 +189,7 @@ void SiteconSearchWorker::init() {
     resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
 }
 
-bool SiteconSearchWorker::isReady() {
+bool SiteconSearchWorker::isReady() const {
     if (isDone()) {
         return false;
     }

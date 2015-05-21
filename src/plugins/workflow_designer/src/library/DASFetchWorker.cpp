@@ -118,8 +118,7 @@ void DASFetcherWorker::init()
     }
 }
 
-bool DASFetcherWorker::isReady()
-{
+bool DASFetcherWorker::isReady() const {
     return !isDone();
 }
 
@@ -167,11 +166,12 @@ Task* DASFetcherWorker::tick() {
     return ret;
 }
 
-bool DASFetcherWorker::isDone() {
+bool DASFetcherWorker::isDone() const {
     return (!dbid.isEmpty() && seqids.isEmpty());
 }
 
 void DASFetcherWorker::cleanup() {
+
 }
 
 void DASFetcherWorker::sl_taskFinished() {

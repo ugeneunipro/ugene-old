@@ -172,11 +172,11 @@ void BaseWorker::setDone() {
     processDone = true;
 }
 
-bool BaseWorker::isDone() {
+bool BaseWorker::isDone() const {
     return processDone;
 }
 
-bool BaseWorker::isReady() {
+bool BaseWorker::isReady() const {
     if (isDone()) {
         return false;
     }

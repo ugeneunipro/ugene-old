@@ -55,8 +55,8 @@ public:
     virtual void setDone();
 
     // reimplemented from Worker
-    virtual bool isDone();
-    virtual bool isReady();
+    virtual bool isDone() const;
+    virtual bool isReady() const;
 
     // reimplemented from CommunicationSubject
     virtual bool addCommunication(const QString& name, CommunicationChannel* _ch);

@@ -811,7 +811,7 @@ Task* BedtoolsIntersectWorker::tick() {
     return NULL;
 }
 
-bool BedtoolsIntersectWorker::isReady() {
+bool BedtoolsIntersectWorker::isReady() const {
     if (isDone()) {
         return false;
     }

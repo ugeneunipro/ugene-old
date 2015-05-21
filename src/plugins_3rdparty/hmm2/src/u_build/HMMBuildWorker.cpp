@@ -206,7 +206,7 @@ void HMMBuildWorker::init() {
     output = ports.value(OUT_HMM_PORT_ID);
 }
 
-bool HMMBuildWorker::isReady() {
+bool HMMBuildWorker::isReady() const {
     if (isDone()) {
         return false;
     }
@@ -303,7 +303,7 @@ void HMMBuildWorker::sl_taskFinished(Task* t) {
     }
 }
 
-bool HMMBuildWorker::isDone() {
+bool HMMBuildWorker::isDone() const {
     return BaseWorker::isDone() && !nextTick;
 }
 

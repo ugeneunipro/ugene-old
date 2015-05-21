@@ -121,7 +121,7 @@ public:
     virtual void init();
     virtual Task * tick();
     virtual void cleanup() {}
-    virtual bool isReady();
+    virtual bool isReady() const;
 private slots:
     void sl_taskFinished(Task *task);
 private:

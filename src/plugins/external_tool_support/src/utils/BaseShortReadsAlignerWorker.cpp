@@ -165,7 +165,11 @@ Task *BaseShortReadsAlignerWorker::tick() {
     return NULL;
 }
 
-bool BaseShortReadsAlignerWorker::isReady() {
+void BaseShortReadsAlignerWorker::cleanup() {
+
+}
+
+bool BaseShortReadsAlignerWorker::isReady() const {
     if (isDone()) {
         return false;
     }

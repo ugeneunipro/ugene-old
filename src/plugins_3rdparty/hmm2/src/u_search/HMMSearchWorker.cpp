@@ -169,7 +169,7 @@ void HMMSearchWorker::init() {
     }
 }
 
-bool HMMSearchWorker::isReady() {
+bool HMMSearchWorker::isReady() const {
     if (isDone()) {
         return false;
     }

@@ -697,7 +697,7 @@ void CallVariantsWorker::init() {
     initDatasetMode();
 }
 
-bool CallVariantsWorker::isReady(){
+bool CallVariantsWorker::isReady() const {
     if (isDone()) {
         return false;
     }

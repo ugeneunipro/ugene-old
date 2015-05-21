@@ -126,7 +126,7 @@ void HMM3BuildWorker::init() {
     setDefaultUHMM3BuildSettings(&cfg);
 }
 
-bool HMM3BuildWorker::isReady() {
+bool HMM3BuildWorker::isReady() const {
     if (isDone()) {
         return false;
     }
@@ -182,11 +182,8 @@ void HMM3BuildWorker::sl_taskFinished(Task* t) {
     algoLog.info(tr("Built HMM3 profile"));
 }
 
-bool HMM3BuildWorker::isDone() {
-    return BaseWorker::isDone();
-}
-
 void HMM3BuildWorker::cleanup() {
+
 }
 
 } //namespace LocalWorkflow

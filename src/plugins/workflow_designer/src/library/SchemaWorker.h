@@ -34,8 +34,8 @@ class SchemaWorker : public BaseWorker {
 public:
     SchemaWorker(Actor *a);
 
-    bool isReady();
-    bool isDone();
+    bool isReady() const;
+    bool isDone() const;
     Task *tick();
     void init();
     void cleanup();

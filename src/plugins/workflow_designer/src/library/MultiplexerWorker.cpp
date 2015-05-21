@@ -67,7 +67,7 @@ void MultiplexerWorker::init() {
     messagesInited = false;
 }
 
-bool MultiplexerWorker::isReady() {
+bool MultiplexerWorker::isReady() const {
     if (isDone()) {
         return false;
     }

@@ -335,7 +335,7 @@ void SWWorker::init() {
     output->addComplement(input);
 }
 
-bool SWWorker::isReady() {
+bool SWWorker::isReady() const {
     if (isDone()) {
         return false;
     }

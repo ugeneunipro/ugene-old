@@ -57,13 +57,13 @@ public:
     // initialize input and output ports
     virtual void init() = 0;
     // if data in the ports is ready
-    virtual bool isReady() = 0;
+    virtual bool isReady() const = 0;
     // get data from actor and return task
     // if you want your worker support scripting:
     // use BaseWorker::getMessageAndSetupScriptValues to take data from port
     virtual Task* tick() = 0;
     // nothing to do
-    virtual bool isDone() = 0;
+    virtual bool isDone() const = 0;
     // opened files, etc...
     virtual void cleanup() = 0;
 

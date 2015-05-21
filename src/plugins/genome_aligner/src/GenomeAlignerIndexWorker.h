@@ -46,10 +46,10 @@ class GenomeAlignerBuildWorker : public BaseWorker {
 public:
     GenomeAlignerBuildWorker(Actor* a) : BaseWorker(a), output(NULL), done(false) {}
     virtual void init();
-    virtual bool isReady();
+    virtual bool isReady() const;
     virtual Task* tick();
-    virtual bool isDone();
-    virtual void cleanup() {}
+    virtual bool isDone() const;
+    virtual void cleanup();
 private slots:
     void sl_taskFinished();
 
@@ -86,10 +86,10 @@ class GenomeAlignerIndexReaderWorker : public BaseWorker {
 public:
     GenomeAlignerIndexReaderWorker(Actor* a) : BaseWorker(a), output(NULL), done(false) {}
     virtual void init();
-    virtual bool isReady();
+    virtual bool isReady() const;
     virtual Task* tick();
-    virtual bool isDone();
-    virtual void cleanup() {}
+    virtual bool isDone() const;
+    virtual void cleanup();
 private slots:
     void sl_taskFinished();
 

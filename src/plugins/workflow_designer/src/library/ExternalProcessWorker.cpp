@@ -264,6 +264,8 @@ QString ExternalProcessWorker::prepareOutput(QString &execString, const DataConf
 }
 
 Task * ExternalProcessWorker::tick() {
+    CHECK(!finishWorkIfInputEnded(), NULL);
+
     QString execString = commandLine;
     applyAttributes(execString);
 
@@ -290,6 +292,21 @@ Task * ExternalProcessWorker::tick() {
     LaunchExternalToolTask *task = new LaunchExternalToolTask(execString, outputUrls);
     connect(task, SIGNAL(si_stateChanged()), SLOT(sl_onTaskFinishied()));
     return task;
+}
+
+bool ExternalProcessWorker::finishWorkIfInputEnded() {
+    bool hasMessages = true;
+    bool isEnded = true;
+    checkInputBusState(hasMessages, isEnded);
+    if (!hasMessages && isEnded) {
+        if (NULL != output) {
+            output->setEnded();
+        }
+        setDone();
+        return true;
+    } else {
+        return false;
+    }
 }
 
 namespace {
@@ -464,26 +481,26 @@ void ExternalProcessWorker::init() {
     }
 }
 
-bool ExternalProcessWorker::isReady() {
+void ExternalProcessWorker::checkInputBusState(bool &hasMessages, bool &isEnded) const {
+    hasMessages = true;
+    isEnded = false;
+    foreach(const CommunicationChannel *ch, inputs) {
+        if (NULL != ch) {
+            hasMessages &= static_cast<bool>(ch->hasMessage());
+            isEnded |= ch->isEnded();
+        }
+    }
+}
+
+bool ExternalProcessWorker::isReady() const {
     CHECK(!isDone(), false);
     if(inputs.isEmpty()) {
         return true;
     } else {
         bool hasMessages = true;
         bool isEnded = true;
-        foreach(const CommunicationChannel *ch, inputs) {
-            if(ch) {
-                hasMessages = hasMessages && ch->hasMessage();
-                isEnded = isEnded && ch->isEnded();
-            }
-        }
-        if (!hasMessages && isEnded) {
-            if (NULL != output) {
-                output->setEnded();
-            }
-            setDone();
-        }
-        return hasMessages;
+        checkInputBusState(hasMessages, isEnded);
+        return hasMessages || isEnded;
     }
 }
 

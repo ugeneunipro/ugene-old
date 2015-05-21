@@ -129,9 +129,10 @@ public:
     PWMatrixSearchWorker(Actor* a) : BaseWorker(a, false),
         modelPort(NULL), dataPort(NULL), output(NULL), strand(0) {}
     virtual void init();
-    virtual bool isReady();
+    virtual bool isReady() const;
     virtual Task* tick();
-    virtual void cleanup() {}
+    virtual void cleanup();
+
 private slots:
     void sl_taskFinished(Task*);
 

@@ -329,7 +329,7 @@ void CuffdiffWorker::init() {
     initSlotsState();
 }
 
-bool CuffdiffWorker::isReady() {
+bool CuffdiffWorker::isReady() const {
     if (isDone()) {
         return false;
     }

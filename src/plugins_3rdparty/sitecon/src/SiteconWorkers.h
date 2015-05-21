@@ -75,11 +75,12 @@ public:
     SiteconSearchWorker(Actor* a) : BaseWorker(a, false), //FIXME??
         modelPort(NULL), dataPort(NULL), output(NULL), strand(0) {}
     virtual void init() ;
-    virtual bool isReady();
+    virtual bool isReady() const;
     virtual Task* tick() ;
     virtual void cleanup() {}
-    private slots:
-        void sl_taskFinished(Task*);
+
+private slots:
+    void sl_taskFinished(Task*);
 
 protected:
     IntegralBus *modelPort, *dataPort, *output;

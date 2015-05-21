@@ -41,7 +41,7 @@ public:
         cfg = reg->getConfigByName(actor->getProto()->getId());
         commandLine = cfg->cmdLine;
     }
-    bool isReady();
+    bool isReady() const;
     Task* tick();
     void init();
     void cleanup();
@@ -53,6 +53,8 @@ private:
     void applyAttributes(QString &execString);
     QStringList applyInputMessage(QString &execString, const DataConfig &dataCfg, const QVariantMap &data, U2OpStatus &os);
     QString prepareOutput(QString &execString, const DataConfig &dataCfg, U2OpStatus &os);
+    void checkInputBusState(bool &hasMessages, bool &isEnded) const;
+    bool finishWorkIfInputEnded();
 
 private:
     IntegralBus *output;

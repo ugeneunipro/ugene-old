@@ -44,7 +44,7 @@ class HMM3SearchWorker : public BaseWorker {
 public:
     HMM3SearchWorker(Actor* a);
     virtual void init();
-    virtual bool isReady();
+    virtual bool isReady() const;
     virtual Task* tick();
     virtual void cleanup();
     

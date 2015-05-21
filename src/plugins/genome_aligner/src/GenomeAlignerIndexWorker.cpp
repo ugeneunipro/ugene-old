@@ -100,7 +100,7 @@ void GenomeAlignerBuildWorker::init() {
     settings.prebuiltIndex = false;
 }
 
-bool GenomeAlignerBuildWorker::isReady() {
+bool GenomeAlignerBuildWorker::isReady() const {
     return !isDone();
 }
 
@@ -136,8 +136,12 @@ void GenomeAlignerBuildWorker::sl_taskFinished() {
     algoLog.trace(tr("Genome aligner index building finished. Result name is %1").arg(t->getIndexPath()));
 }
 
-bool GenomeAlignerBuildWorker::isDone() {
+bool GenomeAlignerBuildWorker::isDone() const {
     return done;
+}
+
+void GenomeAlignerBuildWorker::cleanup() {
+
 }
 
 QString GenomeAlignerBuildPrompter::composeRichDoc() {
@@ -187,7 +191,7 @@ void GenomeAlignerIndexReaderWorker::init() {
     indexUrl = actor->getParameter(INDEX_URL_ATTR)->getAttributeValue<QString>(context);
 }
 
-bool GenomeAlignerIndexReaderWorker::isReady() {
+bool GenomeAlignerIndexReaderWorker::isReady() const {
     return !isDone();
 }
 
@@ -210,8 +214,12 @@ void GenomeAlignerIndexReaderWorker::sl_taskFinished() {
     algoLog.trace(tr("Reading genome aligner index finished. Result name is %1").arg(indexUrl.getURLString()));
 }
 
-bool GenomeAlignerIndexReaderWorker::isDone() {
+bool GenomeAlignerIndexReaderWorker::isDone() const {
     return done;
+}
+
+void GenomeAlignerIndexReaderWorker::cleanup() {
+
 }
 
 QString GenomeAlignerIndexReaderPrompter::composeRichDoc() {

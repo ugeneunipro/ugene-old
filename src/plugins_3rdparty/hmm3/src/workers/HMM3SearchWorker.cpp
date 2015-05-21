@@ -183,7 +183,7 @@ void HMM3SearchWorker::init() {
     }
 }
 
-bool HMM3SearchWorker::isReady() {
+bool HMM3SearchWorker::isReady() const {
     if (isDone()) {
         return false;
     }

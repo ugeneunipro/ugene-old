@@ -47,9 +47,9 @@ public:
     DASFetcherWorker (Actor *a);
 
     virtual void init();
-    virtual bool isReady();
+    virtual bool isReady() const;
     virtual Task* tick();
-    virtual bool isDone();
+    virtual bool isDone() const;
     virtual void cleanup();
 
 private slots:

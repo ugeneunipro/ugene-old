@@ -47,7 +47,7 @@ class CallVariantsWorker : public BaseWorker {
 public:
     CallVariantsWorker(Actor* a);
 
-    virtual bool isReady();
+    virtual bool isReady() const;
     virtual void init();
     virtual Task* tick();
     virtual void cleanup();
