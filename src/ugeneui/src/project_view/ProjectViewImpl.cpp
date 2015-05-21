@@ -32,6 +32,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/GObject.h>
 #include <U2Core/GUrl.h>
@@ -75,6 +76,7 @@ namespace U2 {
 /* TRANSLATOR U2::ProjectTreeController */
 
 const QString ProjectViewImpl::SETTINGS_ROOT("projecview/");
+const char *NOTIFICATION_TITLE = "File Modification Detected";
 
 #define UPDATER_TIMEOUT 3000
 
@@ -181,33 +183,35 @@ bool DocumentUpdater::isAnyDialogOpened() const
     return false;
 }
 
+namespace {
+
+void removeDocFromProject(Project *proj, Document *doc) {
+    SAFE_POINT(NULL != proj, L10N::nullPointerError("Project"), );
+    SAFE_POINT(NULL != doc, L10N::nullPointerError("Document"), );
+
+    proj->removeRelations(doc->getURLString());
+    proj->removeDocument(doc);
+}
+
+}
+
 bool DocumentUpdater::makeDecision(Document *doc, QListIterator<Document*> &iter) {
-    QMessageBox::StandardButton btn = QMessageBox::NoButton;
+    QMessageBox::StandardButton btn = QMessageBox::question(dynamic_cast<QWidget *>(AppContext::getMainWindow()),
+        tr(NOTIFICATION_TITLE), tr("The document '%1' was removed from its original directory. Do you wish to save it? "
+        "Otherwise, it will be removed from the current project.").arg(doc->getName()),
+        QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll);
 
-    // don't try to save dbi format files, just delete from project
-    if (qobject_cast<DbiDocumentFormat*>(doc->getDocumentFormat())) {
-        QMessageBox::warning(dynamic_cast<QWidget *>(AppContext::getMainWindow()), U2_APP_TITLE,
-            tr("The document '%1' was removed from its original directory. It will be removed from the current project.").arg(doc->getName()));
-        btn = QMessageBox::No;
-    }
-
-    if (QMessageBox::NoButton == btn) {
-        btn = QMessageBox::question(
-            dynamic_cast<QWidget *>(AppContext::getMainWindow()),
-            U2_APP_TITLE,
-            tr("The document '%1' was removed from its original directory. Do you wish to save it? "
-            "Otherwise, it will be removed from the current project.").arg(doc->getName()),
-            QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll);
-    }
+    Project *activeProject = AppContext::getProject();
+    SAFE_POINT(NULL != activeProject, L10N::nullPointerError("Project"), false);
 
     switch (btn) {
     case QMessageBox::Yes: {
         QString saveFileFilter = doc->getDocumentFormat()->getSupportedDocumentFileExtensions().join(" *.").prepend("*.");
-        QString newFileUrl = U2FileDialog::getSaveFileName(dynamic_cast<QWidget*>(AppContext::getMainWindow()),
-            tr("Save as"), doc->getURLString(), saveFileFilter);
+        QString newFileUrl = U2FileDialog::getSaveFileName(dynamic_cast<QWidget*>(AppContext::getMainWindow()), tr("Save as"),
+            doc->getURLString(), saveFileFilter);
         CHECK(!newFileUrl.isEmpty(), false);
 
-        AppContext::getProject()->updateDocInRelations(doc->getURLString(), newFileUrl);
+        activeProject->updateDocInRelations(doc->getURLString(), newFileUrl);
 
         Task *saveDoc = new SaveDocumentTask(doc, doc->getIOAdapterFactory(), newFileUrl);
         AppContext::getTaskScheduler()->registerTopLevelTask(saveDoc);
@@ -215,33 +219,28 @@ bool DocumentUpdater::makeDecision(Document *doc, QListIterator<Document*> &iter
         doc->setURL(GUrl(newFileUrl));
         break;
     }
-
     case QMessageBox::No:
-        AppContext::getProject()->removeRelations(doc->getURLString());
-        AppContext::getProject()->removeDocument(doc);
+        removeDocFromProject(activeProject, doc);
         break;
-
     case QMessageBox::NoToAll:
-        AppContext::getProject()->removeRelations(doc->getURLString());
-        AppContext::getProject()->removeDocument(doc);
+        removeDocFromProject(activeProject, doc);
         while (iter.hasNext()) {
             doc = iter.next();
-            AppContext::getProject()->removeRelations(doc->getURLString());
-            AppContext::getProject()->removeDocument(doc);
+            removeDocFromProject(activeProject, doc);
         }
         break;
-
     default:
-        assert(0);
+        FAIL("Unexpected user response", false);
     }
     return true;
 }
 
-void DocumentUpdater::notifyUserAndProcessRemovedDocuments(const QList<Document*> &removedDocs)
-{
+void DocumentUpdater::notifyUserAndProcessRemovedDocuments(const QList<Document *> &removedDocs) {
     coreLog.trace(QString("Found %1 changed doc(s)!").arg(removedDocs.size()));
     if(isAnyDialogOpened())
         return;
+
+    QList<Document *> dbiDocs;
 
     // query user what documents he wants to reload
     // reloaded document modification time will be updated in load task
@@ -250,8 +249,43 @@ void DocumentUpdater::notifyUserAndProcessRemovedDocuments(const QList<Document*
         Document* doc = iter.next();
         bool decisionIsMade = false;
         do {
-            decisionIsMade = makeDecision(doc, iter);
+            // don't try to save dbi format files, just delete from project
+            if (qobject_cast<DbiDocumentFormat*>(doc->getDocumentFormat())) {
+                dbiDocs.append(doc);
+                decisionIsMade = true;
+            } else {
+                decisionIsMade = makeDecision(doc, iter);
+            }
         } while (!decisionIsMade);
+    }
+
+    if (!dbiDocs.isEmpty()) {
+        const bool severalDocRemoved = dbiDocs.size() > 1;
+        const QString warningMessageText = severalDocRemoved
+            ? tr("Several documents were removed from their original directories. Therefore, they will be deleted from the current project. "
+                "Find the full list below.")
+            : tr("The document '%1' was removed from its original directory. Therefore, it will be deleted from the current project.")
+                .arg(dbiDocs.first()->getName());
+
+        QMessageBox warningBox(dynamic_cast<QWidget *>(AppContext::getMainWindow()));
+        warningBox.setIcon(QMessageBox::Warning);
+        warningBox.setWindowTitle(tr(NOTIFICATION_TITLE));
+        warningBox.setText(warningMessageText);
+        if (severalDocRemoved) {
+            QString removedDocNameList;
+            foreach (Document *doc, dbiDocs) {
+                removedDocNameList += doc->getURLString() + '\n';
+            }
+            removedDocNameList.chop(1); // remove the last new line character
+            warningBox.setDetailedText(removedDocNameList);
+        }
+        warningBox.exec();
+
+        Project *activeProject = AppContext::getProject();
+        SAFE_POINT(NULL != activeProject, L10N::nullPointerError("Project"), );
+        foreach (Document *doc, dbiDocs) {
+            removeDocFromProject(activeProject, doc);
+        }
     }
 }
 
@@ -269,7 +303,7 @@ void DocumentUpdater::notifyUserAndReloadDocuments(const QList<Document*> & outd
         Document* doc = iter.next();
         QMessageBox::StandardButton btn = QMessageBox::question(
             dynamic_cast<QWidget *>(AppContext::getMainWindow()),
-            U2_APP_TITLE,
+            tr(NOTIFICATION_TITLE),
             tr("Document '%1' was modified. Do you want to reload it?\n"
             "Note that reloading may cause closing of some views associated with objects from the document.").arg(doc->getName()),
             QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll);
