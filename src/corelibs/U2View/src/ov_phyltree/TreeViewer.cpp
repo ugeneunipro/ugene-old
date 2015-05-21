@@ -1499,7 +1499,7 @@ void TreeViewerUI::updateActionsState(){
     collapseAction->setEnabled(thereIsSelection && !rootIsSelected);
 
     bool treeIsRooted = getTreeLayout() != UNROOTED_LAYOUT;
-    swapAction->setEnabled(thereIsSelection && treeIsRooted);
+    swapAction->setEnabled(thereIsSelection && treeIsRooted && !isOnlyLeafSelected());
     rerootAction->setEnabled(thereIsSelection && !rootIsSelected && treeIsRooted);
 }
 
@@ -1569,6 +1569,17 @@ void TreeViewerUI::updateLabelsAlignment()
         }
     }
     updateRect();
+}
+
+bool TreeViewerUI::isOnlyLeafSelected() const {
+    int selectedItems = 0;
+    foreach (QGraphicsItem *graphItem, items()) {
+        GraphicsButtonItem *buttonItem = dynamic_cast<GraphicsButtonItem*>(graphItem);
+        if (buttonItem && buttonItem->getIsSelected()) {
+            selectedItems++;
+        }
+    }
+    return selectedItems == 2;
 }
 
 }//namespace

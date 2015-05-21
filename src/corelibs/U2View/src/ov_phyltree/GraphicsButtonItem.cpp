@@ -240,4 +240,8 @@ void GraphicsButtonItem::updateSettings(const OptionsMap& settings) {
     nodeLabel->setVisible(showNodeLabels);
 }
 
+bool GraphicsButtonItem::getIsSelected() const {
+    return isSelected;
+}
+
 }//namespace

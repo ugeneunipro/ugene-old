@@ -43,6 +43,7 @@ public:
     GraphicsButtonItem(double nodeValue = 0);
 
     bool isSelectedTop();
+    bool getIsSelected() const;
     void collapse();
     void swapSiblings();
     bool isCollapsed();

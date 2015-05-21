@@ -190,6 +190,8 @@ public:
 
     void onPhyTreeChanged();
 
+    bool isOnlyLeafSelected() const;
+
 protected:
     virtual void wheelEvent(QWheelEvent *e);
     virtual void resizeEvent(QResizeEvent *e);
