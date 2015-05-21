@@ -33,7 +33,7 @@ MysqlUpgradeTask::MysqlUpgradeTask(const U2DbiRef &dbiRef) :
     Task(tr("Upgrade mysql database"), TaskFlag_None),
     dbiRef(dbiRef)
 {
-    SAFE_POINT_EXT(MYSQL_DBI_ID == dbiRef.dbiFactoryId, QString("Unexpected dbi factory id: expect '%1', got '%2'").arg(MYSQL_DBI_ID).arg(dbiRef.dbiFactoryId), );
+    SAFE_POINT_EXT(MYSQL_DBI_ID == dbiRef.dbiFactoryId, setError(QString("Unexpected dbi factory id: expect '%1', got '%2'").arg(MYSQL_DBI_ID).arg(dbiRef.dbiFactoryId)), );
 }
 
 void MysqlUpgradeTask::run() {

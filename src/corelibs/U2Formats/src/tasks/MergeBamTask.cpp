@@ -47,7 +47,7 @@ MergeBamTask::MergeBamTask(const QStringList& urls, const QString &dir, const QS
         this->workingDir += "/";
     }
     if(outputName.isEmpty()){
-        outputName == "merged.bam";
+        outputName = "merged.bam";
     }
 }
 

@@ -61,6 +61,8 @@ public:
 
 class U2ALGORITHM_EXPORT CDSearchFactory {
 public:
+    virtual ~CDSearchFactory() {}
+
     virtual CDSearchResultListener* createCDSearch(const CDSearchSettings& settings) const = 0;
 };
 

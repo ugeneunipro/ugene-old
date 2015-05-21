@@ -310,7 +310,6 @@ void Overview::mouseDoubleClickEvent(QMouseEvent* me) {
 
         //don't process detSlider when details view is collapsed
         if(!seqWidget->isDetViewCollapsed()) {
-            QRectF detSlider(ra->getDetSlider());
             qint64 detVisLen = detView->getVisibleRange().length;
             qint64 detPos = ra->coordToPos(renderAreaPos.x());
             detPos = qBound(qint64(0), qint64(detPos), seqLen - detVisLen);

@@ -43,7 +43,6 @@
 
 namespace U2 {
 
-static const int CROSS_SIZE = 9;
 #define CHILDREN_OFFSET 8
 
 MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar)

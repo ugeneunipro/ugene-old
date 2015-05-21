@@ -58,7 +58,7 @@ DataTypePtr ActionTypes::getDataTypeByAction(const QString &actionType) {
     } else if (MERGE_ANNS == actionType) {
         return BaseTypes::ANNOTATION_TABLE_TYPE();
     } else {
-        assert(NULL);
+        assert(false);
         return DataTypePtr();
     }
 }
@@ -88,7 +88,7 @@ ActionParameters::ParameterType ActionParameters::getType(const QString &paramet
         return STRING;
     }
 
-    assert(NULL);
+    assert(false);
     return STRING;
 }
 

@@ -81,6 +81,8 @@ public:
 /** Structural alignment algorithm abstract interface */
 class U2ALGORITHM_EXPORT StructuralAlignmentAlgorithm {
 public:
+    virtual ~StructuralAlignmentAlgorithm() {}
+
     /** Test settings for algorithm specific constraints.
       * @returns "" on ok and error descripton on fail
       */

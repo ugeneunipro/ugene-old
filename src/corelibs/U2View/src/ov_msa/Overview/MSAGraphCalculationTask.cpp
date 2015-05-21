@@ -239,8 +239,8 @@ bool MSAHighlightingOverviewCalculationTask::isCellHighlighted(MAlignmentObject 
     QString schemeId = highlightingScheme->getFactory()->getId();
 
     if (seq == refSeq || isEmptyScheme(schemeId) ||
-            ((refSeq == MAlignmentRow::invalidRowId()) && !isGapScheme(schemeId)) &&
-            !highlightingScheme->getFactory()->isRefFree()) {
+            ((refSeq == MAlignmentRow::invalidRowId()) && !isGapScheme(schemeId) &&
+            !highlightingScheme->getFactory()->isRefFree())) {
         if (colorScheme->getColor(seq, pos, msa->charAt(seq, pos)) != QColor()) {
             return true;
         }

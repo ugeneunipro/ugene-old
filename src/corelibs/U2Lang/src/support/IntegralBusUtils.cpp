@@ -182,6 +182,10 @@ protected:
 /************************************************************************/
 /* CandidatesSplitter */
 /************************************************************************/
+CandidatesSplitter::~CandidatesSplitter() {
+
+}
+
 IntegralBusUtils::SplitResult CandidatesSplitter::splitCandidates(const QList<Descriptor> &candidates) {
     IntegralBusUtils::SplitResult r;
     foreach (const Descriptor &c, candidates) {

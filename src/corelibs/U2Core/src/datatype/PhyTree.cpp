@@ -25,10 +25,10 @@
 
 namespace U2 {
 
-PhyTreeData::PhyTreeData() : rootNode(NULL), haveNodeLabels(NULL)  {
+PhyTreeData::PhyTreeData() : rootNode(NULL), haveNodeLabels(false) {
 }
 
-PhyTreeData::PhyTreeData(const PhyTreeData& other) : QSharedData(other), haveNodeLabels(NULL) {
+PhyTreeData::PhyTreeData(const PhyTreeData& other) : QSharedData(other), haveNodeLabels(false) {
     rootNode = other.rootNode == NULL ? NULL : other.rootNode->clone();
 }
 

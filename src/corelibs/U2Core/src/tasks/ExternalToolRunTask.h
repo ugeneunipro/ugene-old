@@ -84,7 +84,7 @@ private:
 class U2CORE_EXPORT ExternalToolSupportTask: public Task{
 public:
     ExternalToolSupportTask(const QString& _name, TaskFlags f)
-        : Task(_name, f), listenersCounter(0){}
+        : Task(_name, f) {}
     virtual ~ExternalToolSupportTask(){}
 
     void addListeners(const QList<ExternalToolListener*>& _listeners){listeners.append(_listeners);}
@@ -96,7 +96,6 @@ protected:
     virtual void setListenerForHelper(ExternalToolRunTaskHelper* helper, int listenerNumber = 0);
 private:
     QList<ExternalToolListener*> listeners;
-    int listenersCounter;
 };
 
 /** Part of ExternalToolRunTask that belongs to task run  thread -> get signals from that thread directly */

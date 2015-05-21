@@ -50,9 +50,6 @@
 
 namespace U2 {
 
-static const int ITEMS_SPACING = 10;
-static const int TITLE_SPACING = 5;
-
 const static QString SHOW_FONT_OPTIONS_LINK("show_font_options_link");
 const static QString SHOW_PEN_OPTIONS_LINK("show_pen_options_link");
 

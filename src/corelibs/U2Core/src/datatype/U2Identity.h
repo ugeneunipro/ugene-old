@@ -30,6 +30,7 @@ namespace U2 {
 template <class T> class AbstractId {
 protected:
     AbstractId(const T& _id) : id(_id) {}
+    virtual ~AbstractId() {}
 
 public:
     virtual bool isValid() const  = 0;

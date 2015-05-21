@@ -64,7 +64,7 @@ DocumentFoldersUpdate::DocumentFoldersUpdate(const U2DbiRef &dbiRef, U2OpStatus 
 }
 
 DocumentFolders::DocumentFolders()
-    : doc(doc)
+    : doc(NULL)
 {
 
 }

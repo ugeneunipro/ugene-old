@@ -36,6 +36,8 @@ class WorkflowScriptEngine;
 
 class U2LANG_EXPORT WorkflowScriptFactory {
 public:
+    virtual ~WorkflowScriptFactory();
+
     virtual void createScript(WorkflowScriptEngine *engine) = 0;
 };
 

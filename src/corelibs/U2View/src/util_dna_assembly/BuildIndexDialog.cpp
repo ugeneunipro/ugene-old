@@ -201,7 +201,7 @@ void BuildIndexDialog::accept()
                 return;
                 break;
             default:
-                assert(NULL);
+                assert(false);
                 break;
             }
             if(AppContext::getExternalToolRegistry()->getByName(externalToolName)->getPath().isEmpty()) {

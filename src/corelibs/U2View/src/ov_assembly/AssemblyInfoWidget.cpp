@@ -36,8 +36,6 @@
 namespace U2 {
 
 namespace {
-    const int MAX_FIELD_LEN = 12;
-
     QFormLayout * buildFormLayout(QWidget * w) {
         QFormLayout * layout = new QFormLayout;
         layout->setSpacing(0);

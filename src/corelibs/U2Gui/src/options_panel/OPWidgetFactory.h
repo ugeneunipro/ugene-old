@@ -50,6 +50,7 @@ private:
 class U2GUI_EXPORT OPFactoryFilterVisitorInterface{
 public:
     OPFactoryFilterVisitorInterface(){}
+    virtual ~OPFactoryFilterVisitorInterface();
 
     virtual bool typePass(ObjectViewType factoryViewType) = 0;
     virtual bool alphabetPass(DNAAlphabetType factoryAlphabetType) = 0;

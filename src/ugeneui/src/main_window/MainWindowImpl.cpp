@@ -484,7 +484,7 @@ void MainWindowImpl::openManual(const QString& name){
                    return;
                    break;
                default:
-                   assert(NULL);
+                   assert(false);
                    break;
              }
         }

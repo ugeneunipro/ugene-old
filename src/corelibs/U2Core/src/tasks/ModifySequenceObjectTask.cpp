@@ -142,8 +142,6 @@ QString ModifySequenceContentTask::generateReport() const {
             continue;
         }
 
-        const bool severalQualifiers = annotationForReport[an].size() > 1;
-
         report += QString("<tr><td>%1</td><td>%2</td>").arg(an->getName()).arg(U1AnnotationUtils::buildLocationString(*an->getLocation()));
 
         report += QString("<td>%1</td>").arg(formatPairList(annotationForReport[an], true));

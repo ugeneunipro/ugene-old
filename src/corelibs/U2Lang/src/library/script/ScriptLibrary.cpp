@@ -1039,4 +1039,8 @@ QScriptValue WorkflowScriptLibrary::debugOut(QScriptContext *ctx, QScriptEngine 
     return 0;
 }
 
+WorkflowScriptFactory::~WorkflowScriptFactory() {
+
+}
+
 } // U2

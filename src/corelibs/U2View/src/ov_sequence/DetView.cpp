@@ -668,7 +668,7 @@ bool DetViewRenderArea::deriveTranslationCharColor(qint64 pos, const U2Strand &s
     }
 
     if (nAnnotations > 1) {
-        result == Qt::black;
+        result = Qt::black;
         return true;
     }
     const TriState aminoState = as->amino ? TriState_Yes : TriState_No;

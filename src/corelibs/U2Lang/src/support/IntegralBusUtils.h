@@ -43,6 +43,8 @@ public:
 
 class CandidatesSplitter {
 public:
+    virtual ~CandidatesSplitter();
+
     virtual bool canSplit(const Descriptor &toDesc, DataTypePtr toDatatype) = 0;
     virtual IntegralBusUtils::SplitResult splitCandidates(const QList<Descriptor> &candidates);
 

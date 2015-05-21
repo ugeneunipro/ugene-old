@@ -99,7 +99,6 @@ public:
         ParseState curState;
         QByteArray curElementName, curElementValue;
         AsnElementKind curElementKind;
-        bool validFile;
         bool haveErrors;
         bool insideRoot;
         bool fileAtEnd;
@@ -124,7 +123,7 @@ public:
     public:
         AsnParser(IOAdapter* _io, U2OpStatus& _ts) :
           io(_io), ts(_ts), prev(' '), curElementKind(ASN_NO_KIND),
-          validFile(false), haveErrors(false), insideRoot(false), fileAtEnd(false) {}
+          haveErrors(false), insideRoot(false), fileAtEnd(false) {}
         ~AsnParser() {}
         AsnNode* loadAsnTree();
 

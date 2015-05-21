@@ -31,6 +31,10 @@ U2DbiUpgrader::U2DbiUpgrader(const Version &versionFrom, const Version &versionT
 {
 }
 
+U2DbiUpgrader::~U2DbiUpgrader() {
+
+}
+
 bool U2DbiUpgrader::isAppliable(const Version &dbVersion) const {
     return versionFrom == dbVersion;
 }

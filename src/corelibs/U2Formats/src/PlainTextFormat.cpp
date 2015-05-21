@@ -25,7 +25,6 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectDbi.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "PlainTextFormat.h"
@@ -41,8 +40,7 @@ PlainTextFormat::PlainTextFormat(QObject* p) : DocumentFormat(p, DocumentFormatF
 }
 
 
-Document* PlainTextFormat::createNewLoadedDocument(IOAdapterFactory* io, const QString& url, const QVariantMap& fs) {
-    U2OpStatus2Log os;
+Document* PlainTextFormat::createNewLoadedDocument(IOAdapterFactory* io, const QString& url, U2OpStatus& os, const QVariantMap& fs) {
     Document* d = DocumentFormat::createNewLoadedDocument(io, url, os, fs);
     CHECK_OP(os, NULL);
     GObject* o = TextObject::createInstance("", "Text", d->getDbiRef(), os);

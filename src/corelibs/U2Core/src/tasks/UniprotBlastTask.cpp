@@ -290,7 +290,7 @@ void XmlUniprotParser::parse(const QByteArray &data) {
 
     buf = hitsElement.attribute(HITS_TOTAL);
     int hitsTotal = buf.toInt(&ok);
-    CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(HITS + HITS_TOTAL).arg(buf),);
+    CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(HITS + HITS_TOTAL).arg(buf)),);
 
     // Parse all hits
     QDomElement hitElement = hitsElement.firstChildElement(HIT);
@@ -305,7 +305,7 @@ void XmlUniprotParser::parse(const QByteArray &data) {
 
         buf = hitElement.attribute(HIT_NUMBER);
         result.hitNumber = buf.toInt(&ok);
-        CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(HIT + HIT_NUMBER).arg(buf),);
+        CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(HIT + HIT_NUMBER).arg(buf)),);
 
         result.database = hitElement.attribute(HIT_DATABASE);
         result.id = hitElement.attribute(HIT_ID);
@@ -316,7 +316,7 @@ void XmlUniprotParser::parse(const QByteArray &data) {
 
         buf = hitElement.attribute(HIT_LENGTH);
         result.length = buf.toInt(&ok);
-        CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(HIT + HIT_LENGTH).arg(buf),);
+        CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(HIT + HIT_LENGTH).arg(buf)),);
 
         result.description = hitElement.attribute(HIT_DESCRIPTION);
 
@@ -325,7 +325,7 @@ void XmlUniprotParser::parse(const QByteArray &data) {
 
         buf = alignmentsElement.attribute(ALIGNMENTS_TOTAL);
         result.alignmentsTotal = buf.toInt(&ok);
-        CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(ALIGNMENTS + ALIGNMENTS_TOTAL).arg(buf),);
+        CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(ALIGNMENTS + ALIGNMENTS_TOTAL).arg(buf)),);
 
         // Parse all alignments of the current hit
         QDomElement alignmentElement = alignmentsElement.firstChildElement(ALIGNMENT);
@@ -338,43 +338,43 @@ void XmlUniprotParser::parse(const QByteArray &data) {
 
             buf = hitElement.attribute(ALIGNMENT_NUMBER);
             result.alignmentsNumber = buf.toInt(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(ALIGNMENT + ALIGNMENT_NUMBER).arg(buf),);
+            CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(ALIGNMENT + ALIGNMENT_NUMBER).arg(buf)),);
 
             QDomElement scoreElement = alignmentElement.firstChildElement(SCORE);
             CHECK_EXT(!scoreElement.isNull(), setError(QString("%1 element is NULL").arg(SCORE)),);
             buf = scoreElement.text();
             result.score = buf.toInt(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(SCORE).arg(buf),);
+            CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(SCORE).arg(buf)),);
 
             QDomElement bitsElement = alignmentElement.firstChildElement(BITS);
             CHECK_EXT(!bitsElement.isNull(), setError(QString("%1 element is NULL").arg(BITS)),);
             buf = bitsElement.text();
             result.bits = buf.toDouble(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(BITS).arg(buf),);
+            CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(BITS).arg(buf)),);
 
             QDomElement expectationElement = alignmentElement.firstChildElement(EXPECTATION);
             CHECK_EXT(!expectationElement.isNull(), setError(QString("%1 element is NULL").arg(EXPECTATION)),);
             buf = expectationElement.text();
             result.expectation = buf.toDouble(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(EXPECTATION).arg(buf),);
+            CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(EXPECTATION).arg(buf)),);
 
             QDomElement identityElement = alignmentElement.firstChildElement(IDENTITY);
             CHECK_EXT(!identityElement.isNull(), setError(QString("%1 element is NULL").arg(IDENTITY)),);
             buf = identityElement.text();
             result.identity = buf.toDouble(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(IDENTITY).arg(buf),);
+            CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(IDENTITY).arg(buf)),);
 
             QDomElement positivesElement = alignmentElement.firstChildElement(POSITIVES);
             CHECK_EXT(!positivesElement.isNull(), setError(QString("%1 element is NULL").arg(POSITIVES)),);
             buf = positivesElement.text();
             result.positives = buf.toDouble(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(POSITIVES).arg(buf),);
+            CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(POSITIVES).arg(buf)),);
 
             QDomElement gapsElement = alignmentElement.firstChildElement(GAPS);
             CHECK_EXT(!gapsElement.isNull(), setError(QString("%1 element is NULL").arg(GAPS)),);
             buf = gapsElement.text();
             result.gaps = buf.toInt(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(GAPS).arg(buf),);
+            CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(GAPS).arg(buf)),);
 
             QDomElement strandElement = alignmentElement.firstChildElement(STRAND);
             CHECK_EXT(!strandElement.isNull(), setError(QString("%1 element is NULL").arg(STRAND)),);
@@ -386,11 +386,11 @@ void XmlUniprotParser::parse(const QByteArray &data) {
 
             buf = querySeqElement.attribute(QUERY_SEQ_START);
             result.querySeqStart = buf.toInt(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(QUERY_SEQ + QUERY_SEQ_START).arg(buf),);
+            CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(QUERY_SEQ + QUERY_SEQ_START).arg(buf)),);
 
             buf = querySeqElement.attribute(QUERY_SEQ_END);
             result.querySeqEnd = buf.toInt(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(QUERY_SEQ + QUERY_SEQ_END).arg(buf),);
+            CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(QUERY_SEQ + QUERY_SEQ_END).arg(buf)),);
 
             QDomElement patternElement = alignmentElement.firstChildElement(PATTERN);
             CHECK_EXT(!patternElement.isNull(), setError(QString("%1 element is NULL").arg(PATTERN)),);
@@ -402,11 +402,11 @@ void XmlUniprotParser::parse(const QByteArray &data) {
 
             buf = matchSeqElement.attribute(MATCH_SEQ_START);
             result.matchSeqStart = buf.toInt(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(MATCH_SEQ + MATCH_SEQ_START).arg(buf),);
+            CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(MATCH_SEQ + MATCH_SEQ_START).arg(buf)),);
 
             buf = matchSeqElement.attribute(MATCH_SEQ_END);
             result.matchSeqEnd = buf.toInt(&ok);
-            CHECK_EXT(ok, QString("Can't parse the \'%1\'' value: \'%2\'").arg(MATCH_SEQ + MATCH_SEQ_END).arg(buf),);
+            CHECK_EXT(ok, setError(QString("Can't parse the \'%1\'' value: \'%2\'").arg(MATCH_SEQ + MATCH_SEQ_END).arg(buf)),);
         }
 
         results << result;
@@ -601,7 +601,7 @@ UniprotBlastAndLoadDASAnnotations::UniprotBlastAndLoadDASAnnotations(
     const DASAnnotationsSettings &_settings)
     : Task(tr("BLAST IDs and DAS annotations"), TaskFlags(TaskFlag_CancelOnSubtaskCancel) | TaskFlag_NoRun),
     settings(_settings), blastTask(NULL),
-    dasData(_settings.sequence.length(), _settings.identityThreshold)
+    dasData(_settings.sequence.length())
 {
 
 }

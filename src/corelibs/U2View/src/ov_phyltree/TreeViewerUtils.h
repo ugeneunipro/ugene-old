@@ -20,7 +20,7 @@
  */
 
 #ifndef _TREE_VIEWER_UTILS_H_
-#define _TREE_VIEWER_UTILS_H
+#define _TREE_VIEWER_UTILS_H_
 
 #include <QtGui/QFont>
 
@@ -36,4 +36,4 @@ public:
 
 }
 
-#endif
+#endif // _TREE_VIEWER_UTILS_H_

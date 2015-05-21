@@ -555,7 +555,7 @@ bool ABIFormat::loadABIObjects(SeekableBuf* fp, DNASequence &dna, DNAChromatogra
             getABIIndexEntryLW(fp, indexO, DataEntryLabel,
             DataCount[3], 5,
             dataxO[baseIndex((char)(fwo_&255))]))) {
-                return NULL;
+                return false;
         }
     }
 
@@ -566,19 +566,19 @@ bool ABIFormat::loadABIObjects(SeekableBuf* fp, DNASequence &dna, DNAChromatogra
 
     if (sections & READ_SAMPLES) {
         /* Read in the C trace */
-        if (SeekBuf(fp, dataCO, 0) == -1) return NULL;
+        if (SeekBuf(fp, dataCO, 0) == -1) return false;
         getABIint2(fp, 0, 0, 0, cd.C.data(), numPoints);
 
         /* Read in the A trace */
-        if (SeekBuf(fp, dataAO, 0) == -1) return NULL;
+        if (SeekBuf(fp, dataAO, 0) == -1) return false;
         getABIint2(fp, 0, 0, 0, cd.A.data(), numPoints);
 
         /* Read in the G trace */
-        if (SeekBuf(fp, dataGO, 0) == -1) return NULL;
+        if (SeekBuf(fp, dataGO, 0) == -1) return false;
         getABIint2(fp, 0, 0, 0, cd.G.data(), numPoints);
 
         /* Read in the T trace */
-        if (SeekBuf(fp, dataTO, 0) == -1) return NULL;
+        if (SeekBuf(fp, dataTO, 0) == -1) return false;
         getABIint2(fp, 0, 0, 0, cd.T.data(), numPoints);
 
         /* Compute highest trace peak */

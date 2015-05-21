@@ -1117,7 +1117,7 @@ bool SCFFormat::loadSCFObjects( IOAdapter* io, DNASequence& dna, DNAChromatogram
                 err= read_scf_samples31(fp, samples.data(), h.samples);
             }
             if (-1 == err) {
-                return NULL;
+                return false;
             }
             for (uint i = 0; i < h.samples; i++) {
                 cd.A[i] = samples[i].sample_A;
@@ -1134,7 +1134,7 @@ bool SCFFormat::loadSCFObjects( IOAdapter* io, DNASequence& dna, DNAChromatogram
                 err= read_scf_samples32(fp, samples.data(), h.samples);
             }
             if (-1 == err) {
-                return NULL;
+                return false;
             }
             for (uint i = 0; i < h.samples; i++) {
                 cd.A[i] = samples[i].sample_A;

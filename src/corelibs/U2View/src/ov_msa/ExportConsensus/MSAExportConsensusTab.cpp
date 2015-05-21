@@ -45,9 +45,6 @@
 
 namespace U2 {
 
-static const int ITEMS_SPACING = 6;
-static const int TITLE_SPACING = 1;
-
 MSAExportConsensusTab::MSAExportConsensusTab(MSAEditor* msa_)
     : msa(msa_), savableWidget(this, GObjectViewUtils::findViewByName(msa_->getName()))
 {

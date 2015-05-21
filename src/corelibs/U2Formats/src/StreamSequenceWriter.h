@@ -70,9 +70,8 @@ class U2FORMATS_EXPORT StreamShortReadWriter
     FastaFormat* fastaFormat;
     IOAdapter* io;
     GUrl ouputPath;
-    bool writeQuality;
 public:
-    StreamShortReadWriter( bool writeQualityExplicitly = false);
+    StreamShortReadWriter();
     bool init(const GUrl& url);
     bool writeNextSequence(const DNASequence& seq);
     bool writeNextSequence(const U2SequenceObject *seq);

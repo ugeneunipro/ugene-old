@@ -35,9 +35,6 @@ class SequenceDbiWalkerSubtask;
 class U2CORE_EXPORT SequenceDbiWalkerConfig : public SequenceWalkerConfig {
 public:
     U2EntityRef     seqRef;
-private:
-    const char*     seq;
-    quint64         seqSize;        //  size of the sequence to split
 };
 
 class U2CORE_EXPORT SequenceDbiWalkerCallback {

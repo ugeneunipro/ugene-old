@@ -67,4 +67,8 @@ OPCommonWidgetFactory::OPCommonWidgetFactory(QList<QString> _groupIds)
 OPCommonWidgetFactory::~OPCommonWidgetFactory() {
 }
 
+OPFactoryFilterVisitorInterface::~OPFactoryFilterVisitorInterface() {
+
+}
+
 } // namespace

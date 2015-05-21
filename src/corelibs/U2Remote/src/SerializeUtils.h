@@ -51,6 +51,8 @@ public:
 
     template<typename T> static bool deserializeValue( const QVariant & data, T * val ) {
         FAIL("Obsolete! Not implemented!", false);
+        Q_UNUSED(data);
+        Q_UNUSED(val);
 
         //if( NULL == val ) {
         //    return false;
@@ -64,6 +66,8 @@ public:
 
     template<typename T> static QVariant serializeArray( T * arr, int sz ) {
         FAIL("Obsolete! Not implemented!", false);
+        Q_UNUSED(arr);
+        Q_UNUSED(sz);
 
         //if( NULL == arr ) {
         //    return 0;
@@ -79,6 +83,9 @@ public:
     /* the arr array must be allocated by caller */
     template<typename T> static bool deserializeArray( const QVariant & data, T * arr, int sz ) {
         FAIL("Obsolete! Not implemented!", false);
+        Q_UNUSED(data);
+        Q_UNUSED(arr);
+        Q_UNUSED(sz);
 
         //if( data.canConvert( QVariant::Int ) && 0 == data.toInt() ) {
         //    return true;

@@ -49,6 +49,7 @@ private:
 class U2ALGORITHM_EXPORT AssemblyConsensusAlgorithm {
 public:
     AssemblyConsensusAlgorithm(AssemblyConsensusAlgorithmFactory* factory_) : factory(factory_) {}
+    virtual ~AssemblyConsensusAlgorithm();
 
     AssemblyConsensusAlgorithmFactory* getFactory() { return factory; }
 

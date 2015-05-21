@@ -66,8 +66,6 @@ namespace U2 {
 static const QString OUTPUT_PROGRESS_OPTION("ugene-output-progress-state");
 static const QString OUTPUT_ERROR_OPTION("ugene-output-error");
 static const int UPDATE_PROGRESS_INTERVAL = 500;
-static const int TICK_UPDATE_INTERVAL = 1000;
-static const quint32 PAUSE_CHECK_REFRESH_PERIOD = 500;
 static const QString OUTPUT_PROGRESS_TAG("task-progress=");
 static const QString ERROR_KEYWORD("#%*ugene-finished-with-error#%*");
 static const QString STATE_KEYWORD("#%&state#%&");

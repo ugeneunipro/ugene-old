@@ -253,8 +253,8 @@ typedef QMap<QString, QList<SharedAnnotationData> > DASGroup;
 
 class U2CORE_EXPORT DASAnnotationData {
 public:
-    DASAnnotationData(qint64 _seqLen, qint64 _identityThreshold)
-        : seqLen(_seqLen), identityThreshold(_identityThreshold) { }
+    DASAnnotationData(qint64 _seqLen)
+        : seqLen(_seqLen) { }
 
     QStringList getAccessionNumbers();
     DASGroup getDasGroup(const QString &accNumber);
@@ -265,7 +265,6 @@ public:
 private:
     QMap<QString, DASGroup> dasData;
     qint64 seqLen;
-    qint64 identityThreshold;
 };
 
 class U2CORE_EXPORT UniprotBlastAndLoadDASAnnotations : public Task {
