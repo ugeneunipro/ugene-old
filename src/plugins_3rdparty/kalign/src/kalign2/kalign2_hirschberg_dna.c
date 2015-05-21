@@ -34,7 +34,7 @@
 int** dna_alignment(struct alignment* aln,int* tree,float**submatrix, int** map,float strength)
 {
     struct hirsch_mem* hm = 0;
-    int i,j,g,a,b,c;
+    int i,j,g,a,b,c,pos;
     int len_a;
     int len_b;
     float** profile = 0;
@@ -70,11 +70,10 @@ int** dna_alignment(struct alignment* aln,int* tree,float**submatrix, int** map,
         len_a = aln->sl[a];
         len_b = aln->sl[b];
 
-
         g = (len_a > len_b)? len_a:len_b;
         map[c] = malloc(sizeof(int) * (g+2));
         if (NULL == map[c]) {
-            for (int pos = 0; pos < numprofiles; pos++){
+            for (pos = 0; pos < numprofiles; pos++){
                 free(map[pos]);
                 free(profile[pos]);
             }
