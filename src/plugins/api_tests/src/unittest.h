@@ -17,7 +17,6 @@
 #define DECLARE_TEST(suite, name) \
     class TEST_CLASS(suite, name) : public UnitTest { \
     public: \
-        virtual ~TEST_CLASS() {} \
         virtual void Test(); \
     }
 
