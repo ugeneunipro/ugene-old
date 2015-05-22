@@ -89,6 +89,7 @@ workflow "In silico PCR"{
         }
         wizard {
             name:"In Silico PCR";
+            help-page-id:16123482;
             page {
                 id:1;
                 next:2;
