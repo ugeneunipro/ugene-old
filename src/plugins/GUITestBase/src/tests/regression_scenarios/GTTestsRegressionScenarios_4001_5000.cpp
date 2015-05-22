@@ -1809,6 +1809,70 @@ GUI_TEST_CLASS_DEFINITION(test_4284){
 
     CHECK_SET_ERR(msaEdistorSequenceAres->getFirstVisibleSequence() == 1, "MSA not scrolled");
 }
+GUI_TEST_CLASS_DEFINITION(test_4295) {
+/* 1. Open Workflow Designer
+ * 2. Add elements Read File List and Write Plain Text
+ * 3. Set as input file human_T1.fa
+ * 3. Add "Element with CMD" _common_data/scenarios/_regression/4295/test_4295.etc
+ * 4. Connect elements Read File List > Element with CMD > Write Plain Text
+ * 5. Run workflow
+ * Expected state: no errors in log
+ */
+    GTLogTracer logTracer;
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::addElement(os, "File List");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTGlobals::sleep(200);
+
+    GTUtilsWorkflowDesigner::addElement(os, "Write Plain Text");
+    GTGlobals::sleep(200);
+
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/4295", "test_4295.etc");
+    GTUtilsDialog::waitForDialog(os, ob);
+
+    QAbstractButton* button = GTAction::button(os, "AddElementWithCommandLineTool");
+    GTWidget::click(os, button);
+    GTGlobals::sleep(200);
+    WorkflowProcessItem *cmdlineWorker = GTUtilsWorkflowDesigner::getWorker(os, "test_4295");
+
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "File List"), cmdlineWorker);
+    GTGlobals::sleep(200);
+    GTUtilsWorkflowDesigner::connect(os, cmdlineWorker, GTUtilsWorkflowDesigner::getWorker(os, "Write Plain Text"));
+    GTGlobals::sleep(200);
+    GTUtilsWorkflowDesigner::click(os, "test_4295");
+    GTGlobals::sleep(200);
+    QTableWidget* table = GTUtilsWorkflowDesigner::getInputPortsTable(os, 0);
+    GTUtilsWorkflowDesigner::setTableValue(os, "Plain text", "Source URL (by File List)", GTUtilsWorkflowDesigner::comboValue, table);
+    GTUtilsWorkflowDesigner::click(os, "test_4295");
+
+    class OkClicker : public Filler {
+    public:
+        OkClicker(U2OpStatus& _os) : Filler(_os, "CreateExternalProcessWorkerDialog"){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+
+            QLineEdit *ed = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "templateLineEdit", w));
+            GTLineEdit::setText(os, ed, testDir + "_common_data/scenarios/_regression/4295/4295.py  $in $out");
+
+            QAbstractButton *button = GTWidget::findButtonByText(os, "Finish");
+            CHECK(NULL != button, );
+            GTWidget::click(os, button);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "editConfiguration"));
+    GTUtilsWorkflowDesigner::click(os, "test_4295",QPoint(0,0),Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsLog::check(os, logTracer);
+
+}
 
 GUI_TEST_CLASS_DEFINITION(test_4323_1) {
     GTLogTracer logTracer;
