@@ -32,8 +32,10 @@
 
 #if defined(Q_OS_LINUX) || defined(Q_OS_FREEBSD)
 #include <stdio.h>
-#include <proc/readproc.h>
 #include <unistd.h> //for sysconf(3)
+#endif
+#if defined(Q_OS_LINUX)
+#include <proc/readproc.h>
 #endif
 
 #ifdef Q_OS_WIN

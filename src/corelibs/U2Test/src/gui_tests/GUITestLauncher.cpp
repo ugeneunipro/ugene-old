@@ -36,7 +36,7 @@
 
 #define TIMEOUT 480000
 
-#ifdef Q_OS_LINUX
+#ifdef Q_OS_UNIX
 #define NUMBER_OF_TESTS_IN_SUTIE 500
 #endif
 #ifdef Q_OS_MAC
@@ -45,6 +45,7 @@
 #ifdef Q_OS_WIN
 #define NUMBER_OF_TESTS_IN_SUTIE 950
 #endif
+
 #define GUITESTING_REPORT_PREFIX "GUITesting"
 
 namespace U2 {

@@ -1,4 +1,4 @@
-﻿EN English|transl_en
+EN English|transl_en
 RU Русский|transl_ru
 CS Český|transl_cs
 ZH 中文（简体）|transl_zh

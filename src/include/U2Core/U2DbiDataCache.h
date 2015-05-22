@@ -1,1 +1,1 @@
-﻿#include "../../corelibs/U2Core/src/dbi/U2DbiDataCache.h"
+#include "../../corelibs/U2Core/src/dbi/U2DbiDataCache.h"
