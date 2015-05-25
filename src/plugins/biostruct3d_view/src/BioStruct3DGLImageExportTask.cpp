@@ -64,11 +64,11 @@ void BioStruct3DImageExportToBitmapTask::run() {
                setError(EXPORT_FAIL_MESSAGE.arg(settings.fileName)), );
 }
 
-int BioStruct3DImageExportTaskFactory::getImageWidth() const {
+int BioStruct3DImageExportController::getImageWidth() const {
     return glWidget->width();
 }
 
-int BioStruct3DImageExportTaskFactory::getImageHeight() const {
+int BioStruct3DImageExportController::getImageHeight() const {
     return glWidget->height();
 }
 

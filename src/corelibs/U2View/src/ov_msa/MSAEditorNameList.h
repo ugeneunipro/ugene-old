@@ -56,7 +56,8 @@ public:
     MSAEditorNameList(MSAEditorUI* ui, QScrollBar* nhBar);
     virtual ~MSAEditorNameList();
 
-    QPixmap drawNames(const QList<qint64>& seqIdx, bool drawSelection = false);
+    void drawNames( QPixmap &p, const QList<qint64>& seqIdx, bool drawSelection = false);
+    void drawNames(QPainter& p, const QList<qint64>& seqIdx, bool drawSelection = false);
 
 private slots:
     virtual void sl_buildStaticMenu(GObjectView* v, QMenu* m);

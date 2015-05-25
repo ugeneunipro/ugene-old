@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>522</width>
-    <height>258</height>
+    <height>261</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -360,17 +360,17 @@
         </item>
        </layout>
       </item>
+      <item>
+       <widget class="QLabel" name="hintLabel">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>Hint</string>
+        </property>
+       </widget>
+      </item>
      </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="hintLabel">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="text">
-      <string>Hint</string>
-     </property>
     </widget>
    </item>
    <item>

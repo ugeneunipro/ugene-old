@@ -115,8 +115,8 @@ void CircularViewImageExportToBitmapTask::run() {
     CHECK_EXT( im->save(settings.fileName, qPrintable(settings.format), settings.imageQuality), setError(EXPORT_FAIL_MESSAGE.arg(settings.fileName)), );
 }
 
-CircularViewImageExportTaskFactory::CircularViewImageExportTaskFactory(CircularView *cv)
-    : ImageExportTaskFactory(),
+CircularViewImageExportController::CircularViewImageExportController(CircularView *cv)
+    : ImageExportController(ExportImageFormatPolicy_SupportAll),
       cvWidget(cv)
 {
     SAFE_POINT( cv != NULL, "Circular View is NULL!", );
@@ -124,9 +124,9 @@ CircularViewImageExportTaskFactory::CircularViewImageExportTaskFactory(CircularV
     initSettingsWidget();
 }
 
-CircularViewImageExportTaskFactory::CircularViewImageExportTaskFactory(const QList<CircularView *> &list,
+CircularViewImageExportController::CircularViewImageExportController(const QList<CircularView *> &list,
                                                                        CircularView* defaultCV)
-    : ImageExportTaskFactory(),
+    : ImageExportController(ExportImageFormatPolicy_SupportAll),
       cvWidget(defaultCV),
       cvList(list) {
     SAFE_POINT( !list.isEmpty(), tr("List of Circular Views is empty!"), );
@@ -138,15 +138,15 @@ CircularViewImageExportTaskFactory::CircularViewImageExportTaskFactory(const QLi
     initSettingsWidget();
 }
 
-int CircularViewImageExportTaskFactory::getImageWidth() const {
+int CircularViewImageExportController::getImageWidth() const {
     return cvWidget->width();
 }
 
-int CircularViewImageExportTaskFactory::getImageHeight() const {
+int CircularViewImageExportController::getImageHeight() const {
     return cvWidget->height();
 }
 
-void CircularViewImageExportTaskFactory::initSettingsWidget() {
+void CircularViewImageExportController::initSettingsWidget() {
     QVBoxLayout* layout = new QVBoxLayout();
 
     if (cvList.size() > 1) {
@@ -184,26 +184,26 @@ void CircularViewImageExportTaskFactory::initSettingsWidget() {
     settingsWidget->setLayout(layout);
 }
 
-Task* CircularViewImageExportTaskFactory::getExportToSVGTask(const ImageExportTaskSettings &settings) const {
+Task* CircularViewImageExportController::getExportToSVGTask(const ImageExportTaskSettings &settings) const {
     CircularViewImageExportSettings cvSettings(includeMarkerCheckbox->isChecked(),
                                                includeSelectionCheckbox->isChecked());
     updateCvWidget();
     return new CircularViewImageExportToSVGTask(cvWidget, cvSettings, settings);
 }
-Task* CircularViewImageExportTaskFactory::getExportToPDFTask(const ImageExportTaskSettings &settings) const {
+Task* CircularViewImageExportController::getExportToPDFTask(const ImageExportTaskSettings &settings) const {
     CircularViewImageExportSettings cvSettings(includeMarkerCheckbox->isChecked(),
                                                includeSelectionCheckbox->isChecked());
     updateCvWidget();
     return new CircularViewImageExportToPDFTask(cvWidget, cvSettings, settings);
 }
-Task* CircularViewImageExportTaskFactory::getExportToBitmapTask(const ImageExportTaskSettings &settings) const {
+Task* CircularViewImageExportController::getExportToBitmapTask(const ImageExportTaskSettings &settings) const {
     CircularViewImageExportSettings cvSettings(includeMarkerCheckbox->isChecked(),
                                                includeSelectionCheckbox->isChecked());
     updateCvWidget();
     return new CircularViewImageExportToBitmapTask(cvWidget, cvSettings, settings);
 }
 
-void CircularViewImageExportTaskFactory::updateCvWidget() const {
+void CircularViewImageExportController::updateCvWidget() const {
     if (cvList.size() > 1) {
         SAFE_POINT(sequenceComboBox != NULL, "Sequence combo box is NULL", );
         cvWidget = cvList[ sequenceComboBox->currentIndex() ];

@@ -74,7 +74,7 @@ void MSAOverviewContextMenu::connectSlots() {
 }
 
 void MSAOverviewContextMenu::sl_exportAsImageTriggered() {
-    MSAOverviewImageExportTaskFactory factory(simpleOverview, graphOverview);
+    MSAOverviewImageExportController factory(simpleOverview, graphOverview);
     ExportImageDialog dialog(&factory, ExportImageDialog::MSA);
     dialog.exec();
 }

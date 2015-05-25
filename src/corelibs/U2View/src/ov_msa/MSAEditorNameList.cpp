@@ -104,33 +104,35 @@ MSAEditorNameList::~MSAEditorNameList() {
     delete cachedView;
 }
 
-QPixmap MSAEditorNameList::drawNames(const QList<qint64> &seqIdx, bool drawSelection) {
-    CHECK(!seqIdx.isEmpty(), QPixmap());
+void MSAEditorNameList::drawNames(QPixmap &p, const QList<qint64> &seqIdx, bool drawSelection) {
+    CHECK(!seqIdx.isEmpty(), );
 
-    SAFE_POINT(NULL != ui, tr("MSA Editor UI is NULL"), QPixmap());
+    SAFE_POINT(NULL != ui, tr("MSA Editor UI is NULL"), );
     MSAEditorSequenceArea* seqArea = ui->getSequenceArea();
-    SAFE_POINT(NULL != seqArea, tr("MSA Editor sequence area is NULL"), QPixmap());
-    CHECK(!seqArea->isAlignmentEmpty(), QPixmap());
+    SAFE_POINT(NULL != seqArea, tr("MSA Editor sequence area is NULL"), );
+    CHECK(!seqArea->isAlignmentEmpty(), );
 
-    CHECK(ui->editor->getRowHeight() * seqIdx.size() < 32768, QPixmap());
+    CHECK(ui->editor->getRowHeight() * seqIdx.size() < 32768, );
 
-    QPixmap pixmap(width(), ui->editor->getRowHeight() * seqIdx.size());
+    p = QPixmap(width(), ui->editor->getRowHeight() * seqIdx.size());
 
-    QPainter p(&pixmap);
-    p.fillRect(pixmap.rect(), Qt::white);
+    QPainter painter(&p);
+    drawNames(painter, seqIdx, drawSelection);
+}
+
+void MSAEditorNameList::drawNames(QPainter &p, const QList<qint64> &seqIdx, bool drawSelection) {
+    p.fillRect(QRect(0, 0, width(), ui->editor->getRowHeight() * seqIdx.size()), Qt::white);
 
     MAlignmentObject* msaObj = editor->getMSAObject();
-    SAFE_POINT(NULL != msaObj, tr("MSA Object is NULL"), QPixmap());
+    SAFE_POINT(NULL != msaObj, tr("MSA Object is NULL"), );
     const MAlignment &al = msaObj->getMAlignment();
 
     QStringList seqNames = al.getRowNames();
     for (qint64 i = 0; i < seqIdx.size(); i++) {
-        SAFE_POINT(seqIdx[i] < seqNames.size(), tr("Invalid sequence index"), QPixmap());
+        SAFE_POINT(seqIdx[i] < seqNames.size(), tr("Invalid sequence index"), );
         bool isSelected = drawSelection && isRowInSelection(seqIdx[i]);
         drawSequenceItem(p, i, getTextForRow(seqIdx[i]), isSelected);
     }
-
-    return pixmap;
 }
 
 void MSAEditorNameList::updateActions() {

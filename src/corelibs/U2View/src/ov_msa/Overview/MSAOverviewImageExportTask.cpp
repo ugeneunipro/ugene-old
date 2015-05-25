@@ -72,9 +72,9 @@ void MSAOverviewImageExportToBitmapTask::run() {
     CHECK_EXT( pixmap.save(settings.fileName, qPrintable(settings.format), settings.imageQuality), setError(tr("FAIL")), );
 }
 
-MSAOverviewImageExportTaskFactory::MSAOverviewImageExportTaskFactory(MSASimpleOverview *simpleOverview,
+MSAOverviewImageExportController::MSAOverviewImageExportController(MSASimpleOverview *simpleOverview,
                                                                      MSAGraphOverview *graphOverview)
-    : ImageExportTaskFactory(),
+    : ImageExportController(),
       simpleOverview(simpleOverview),
       graphOverview(graphOverview)
 {
@@ -84,11 +84,11 @@ MSAOverviewImageExportTaskFactory::MSAOverviewImageExportTaskFactory(MSASimpleOv
     initSettingsWidget();
 }
 
-int MSAOverviewImageExportTaskFactory::getImageWidth() const {
+int MSAOverviewImageExportController::getImageWidth() const {
     return graphOverview->width();
 }
 
-int MSAOverviewImageExportTaskFactory::getImageHeight() const {
+int MSAOverviewImageExportController::getImageHeight() const {
     int h = 0;
     if (exportSimpleOverview->isChecked()) {
         h += simpleOverview->height();
@@ -99,7 +99,7 @@ int MSAOverviewImageExportTaskFactory::getImageHeight() const {
     return h;
 }
 
-Task* MSAOverviewImageExportTaskFactory::getExportToBitmapTask(const ImageExportTaskSettings &settings) const {
+Task* MSAOverviewImageExportController::getExportToBitmapTask(const ImageExportTaskSettings &settings) const {
     MSAOverviewImageExportSettings overviewSettings(exportSimpleOverview->isChecked(),
                                                     exportGraphOverview->isChecked());
     // overview has fixed size
@@ -109,7 +109,7 @@ Task* MSAOverviewImageExportTaskFactory::getExportToBitmapTask(const ImageExport
                                                   overviewSettings, copySettings);
 }
 
-void MSAOverviewImageExportTaskFactory::initSettingsWidget() {
+void MSAOverviewImageExportController::initSettingsWidget() {
     settingsWidget = new QWidget();
     exportSimpleOverview = new QCheckBox(QObject::tr("Export simple overview"), settingsWidget);
     exportGraphOverview = new QCheckBox(QObject::tr("Export graph overview"), settingsWidget);

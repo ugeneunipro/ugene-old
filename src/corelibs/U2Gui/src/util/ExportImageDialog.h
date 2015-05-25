@@ -39,29 +39,24 @@ class QButtonGroup;
 
 namespace U2 {
 
+
 class U2GUI_EXPORT ExportImageDialog : public QDialog {
     Q_OBJECT
 public:
     enum InvokedFrom{ WD, CircularView, MSA, SequenceView, AssemblyView, PHYTreeView, DotPlot, MolView};
     enum ImageScalingPolicy {
-        Constant,
-        Resizable
-    };
-    enum FormatPolicy {
-        SupportVectorFormats,
-        IgnoreVectorFormats
+        NoScaling,
+        SupportScaling
     };
 
     ExportImageDialog(QWidget* screenShotWidget,
                       InvokedFrom invoSource,
-                      ImageScalingPolicy scalingPolicy = Constant,
-                      FormatPolicy formatPolicy = IgnoreVectorFormats,
+                      ImageScalingPolicy scalingPolicy = NoScaling,
                       QWidget* parent = NULL, const QString& file = QString("untitled"));
 
-    ExportImageDialog(ImageExportTaskFactory *factory,
+    ExportImageDialog(ImageExportController *factory,
                       InvokedFrom invoSource,
-                      ImageScalingPolicy scalingPolicy = Constant,
-                      FormatPolicy formatPolicy = IgnoreVectorFormats,
+                      ImageScalingPolicy scalingPolicy = NoScaling,
                       QWidget* parent = NULL, const QString& file = QString("untitled"));
 
     ~ExportImageDialog();
@@ -81,20 +76,23 @@ private slots:
     void sl_onBrowseButtonClick();
     void sl_onFormatsBoxItemChanged(const QString& text);
 
-    void sl_hintMessageChanged(const QString& message);
+    void sl_showMessage(const QString& message);
+    void sl_disableExport(bool disable);
 
 private:
     void init();
     void setSizeControlsEnabled(bool enabled);
-    void setVectorFormats();
+    void setFormats();
+    void setRasterFormats();
+    void setSvgAndPdfFormats();
+    void removeOutputFileNameExtention(const QString& ext);
 
     static bool isVectorGraphicFormat(const QString &formatName);
     static bool isLossyFormat(const QString &formatName);
 
 private:
-    ImageExportTaskFactory* exportTaskFactory;
+    ImageExportController*  exportController;
     ImageScalingPolicy      scalingPolicy;
-    FormatPolicy            formatPolicy;
 
     QList<QString>      supportedFormats;
     QString filename;

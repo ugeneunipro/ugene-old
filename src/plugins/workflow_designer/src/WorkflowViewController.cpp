@@ -2085,7 +2085,7 @@ void WorkflowView::sl_onSelectionChanged() {
 
 void WorkflowView::sl_exportScene() {
     propertyEditor->commit();
-    ExportImageDialog dialog(sceneView->viewport(), ExportImageDialog::WD, ExportImageDialog::Resizable, ExportImageDialog::SupportVectorFormats, sceneView->viewport());
+    ExportImageDialog dialog(sceneView->viewport(), ExportImageDialog::WD, ExportImageDialog::SupportScaling, sceneView->viewport());
     dialog.exec();
 }
 

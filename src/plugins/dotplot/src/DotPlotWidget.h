@@ -56,7 +56,7 @@ class DotPlotWidget : public ADVSplitWidget {
     Q_OBJECT
 
     friend class DotPlotImageExportToBitmapTask;
-    friend class DotPlotImageExportTaskFactory;
+    friend class DotPlotImageExportController;
 public:
     DotPlotWidget(AnnotatedDNAView* dnaView);
     ~DotPlotWidget();

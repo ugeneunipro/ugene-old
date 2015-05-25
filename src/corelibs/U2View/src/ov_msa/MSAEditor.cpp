@@ -467,7 +467,6 @@ void MSAEditor::addExportMenu(QMenu* m) {
     QMenu* em = m->addMenu(tr("Export"));
     em->menuAction()->setObjectName(MSAE_MENU_EXPORT);
     em->addAction(saveScreenshotAction);
-    em->addAction(saveSvgAction);
     em->addAction(exportHighlightedAction);
     if(!ui->getSequenceArea()->getCurrentHighlightingScheme()->getFactory()->isRefFree() &&
                 getReferenceRowId() != MAlignmentRow::invalidRowId()){
@@ -533,10 +532,6 @@ QWidget* MSAEditor::createWidget() {
     saveScreenshotAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export as image"), this);
     saveScreenshotAction->setObjectName("Export as image");
     connect(saveScreenshotAction, SIGNAL(triggered()), ui, SLOT(sl_saveScreenshot()));
-
-    saveSvgAction = new QAction(tr("Export as SVG"), this);
-    saveSvgAction->setObjectName("Export as SVG");
-    connect(saveSvgAction, SIGNAL(triggered()), ui, SLOT(sl_saveSvgImage()));
 
     alignAction = new QAction(QIcon(":core/images/align.png"), tr("Align"), this);
     alignAction->setObjectName("Align");
@@ -1046,35 +1041,11 @@ QAction* MSAEditorUI::getRedoAction() const {
 }
 
 void MSAEditorUI::sl_saveScreenshot(){
-    MSAImageExportTaskFactory factory(this);
-    ExportImageDialog dlg(&factory, ExportImageDialog::MSA);
+    MSAImageExportController controller(this);
+    ExportImageDialog dlg(&controller, ExportImageDialog::MSA, ExportImageDialog::NoScaling);
     dlg.exec();
 }
 
-void MSAEditorUI::sl_saveSvgImage() {
-
-    LastUsedDirHelper lod;
-    lod.url = U2FileDialog::getSaveFileName(this, tr("Save SVG"),
-        lod.dir, tr("SVG files (*.svg)"));
-
-    QSvgGenerator generator;
-    generator.setFileName(lod.url);
-    generator.setSize(QSize(width(), height()));
-    generator.setViewBox(QRect(0, 0, width(), height()));
-    generator.setTitle(tr("SVG %1").arg(editor->getMSAObject()->getGObjectName()));
-    generator.setDescription(tr("An SVG image of multiple alignment created by Unipro UGENE"));
-
-    QPainter painter;
-    painter.begin(&generator);
-    painter.translate(nameList->width(), 0);
-    consArea->drawContent(painter);
-    painter.translate(-nameList->width(), consArea->height());
-    nameList->drawContent(painter);
-    painter.translate(nameList->width(), 0);
-    seqArea->drawContent(painter);
-    painter.end();
-
-}
 void MSAEditorUI::sl_onTabsCountChanged(int curTabsNumber) {
     if(curTabsNumber < 1) {
         view.removeObject(multiTreeViewer);

@@ -985,10 +985,9 @@ void BioStruct3DGLWidget::sl_settings()
 
 void BioStruct3DGLWidget::sl_exportImage()
 {
-    BioStruct3DImageExportTaskFactory factory(this);
+    BioStruct3DImageExportController factory(this);
     ExportImageDialog dialog(&factory, ExportImageDialog::MolView,
-                             ExportImageDialog::Resizable,
-                             ExportImageDialog::SupportVectorFormats);
+                             ExportImageDialog::SupportScaling);
     dialog.exec();
 }
 

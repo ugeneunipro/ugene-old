@@ -1113,7 +1113,7 @@ void TreeViewerUI::sl_captureTreeTriggered() {
     const GUrl& url = doc->getURL();
     const QString& fileName = url.baseFileName();
 
-    ExportImageDialog dialog(viewport(), ExportImageDialog::PHYTreeView, ExportImageDialog::Constant, ExportImageDialog::SupportVectorFormats, this, fileName);
+    ExportImageDialog dialog(viewport(), ExportImageDialog::PHYTreeView, ExportImageDialog::NoScaling, this, fileName);
     dialog.exec();
 }
 

@@ -263,9 +263,6 @@ public:
 
     bool hasAminoAlphabet();
 
-    bool paintAllToPixmap(QPixmap& pixmap);
-    bool paintToPixmap(QPixmap& pixmap, const U2Region& region, const QList<qint64>& seqIdx);
-
 private:
     // emulating cursor mode with
 
@@ -294,9 +291,13 @@ public:
 
     void updateVBarPosition(int seq);
 
-    void drawContent(QPainter& p);
-    void drawContent(QPainter &p, const QRect &area);
-    void drawContent(QPainter &p, const U2Region& region, const QList<qint64> &seqIdx);
+    void drawVisibleContent(QPainter& p);
+    bool drawContent(QPainter &p, const QRect &area);
+    bool drawContent(QPainter &p, const U2Region& region, const QList<qint64> &seqIdx);
+
+    bool drawContent(QPainter& p);
+    bool drawContent(QPixmap& pixmap);
+    bool drawContent(QPixmap& pixmap, const U2Region& region, const QList<qint64>& seqIdx);
 
     QString exportHighligtning(int startPos, int endPos, int startingIndex, bool keepGaps, bool dots, bool transpose);
 

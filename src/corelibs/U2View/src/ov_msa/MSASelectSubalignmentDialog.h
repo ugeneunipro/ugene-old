@@ -34,7 +34,7 @@ class MSAEditorUI;
 class SelectSubalignmentDialog : public QDialog, Ui_SelectSubalignmentDialog {
     Q_OBJECT
 public:
-    SelectSubalignmentDialog( MSAEditorUI *ui, QWidget *p = NULL );
+    SelectSubalignmentDialog( MSAEditorUI *ui, const U2Region& region = U2Region(), const QList<qint64>& selectedIndexes = QList<qint64>(), QWidget *p = NULL);
 
     void accept();
 
@@ -49,6 +49,8 @@ public slots:
     void sl_invertButtonClicked();
 
 private:
+    void init();
+
     MSAEditorUI *ui;
 
     U2Region window;

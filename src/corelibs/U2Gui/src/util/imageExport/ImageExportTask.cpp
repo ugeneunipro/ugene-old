@@ -69,22 +69,27 @@ Task::ReportResult ImageExportTask::report() {
     return Task::ReportResult_Finished;
 }
 
-ImageExportTaskFactory::ImageExportTaskFactory()
-    : settingsWidget(NULL)
+ImageExportController::ImageExportController(const ExportImageFormatPolicy& fPolicy)
+    : settingsWidget(NULL),
+      formatPolicy(fPolicy)
 {
+
 }
 
-Task * ImageExportTaskFactory::getTaskInstance(const ImageExportTaskSettings &settings) const {
+Task * ImageExportController::getTaskInstance(const ImageExportTaskSettings &settings) const {
     if (settings.isSVGFormat()) {
+        SAFE_POINT(isSvgSupported(), tr("SVG format is not supported"), NULL);
         return getExportToSVGTask(settings);
     }
     if (settings.isPDFFormat()) {
+        SAFE_POINT(isPdfSupported(), tr("PS/PDF format is not supported"), NULL);
         return getExportToPDFTask(settings);
     }
+    SAFE_POINT(isRasterFormatsEnabled(), tr("Raster formats are disabled"), NULL);
     return getExportToBitmapTask(settings);
 }
 
-QWidget * ImageExportTaskFactory::getSettingsWidget() {
+QWidget * ImageExportController::getSettingsWidget() {
     if (settingsWidget == NULL) {
         initSettingsWidget();
     }

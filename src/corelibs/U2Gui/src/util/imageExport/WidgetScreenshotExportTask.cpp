@@ -108,28 +108,28 @@ void WidgetScreenshotExportToBitmapTask::run() {
                      setError(EXPORT_FAIL_MESSAGE.arg(settings.fileName)));
 }
 
-WidgetScreenshotImageExportTaskFactory::WidgetScreenshotImageExportTaskFactory(QWidget *widget)
-    : ImageExportTaskFactory(),
+WidgetScreenshotImageExportController::WidgetScreenshotImageExportController(QWidget *widget)
+    : ImageExportController(ExportImageFormatPolicy_SupportAll),
       widget(widget)
 {
     shortDescription = tr("Screenshot");
 }
 
-int WidgetScreenshotImageExportTaskFactory::getImageWidth() const {
+int WidgetScreenshotImageExportController::getImageWidth() const {
     return widget->width();
 }
 
-int WidgetScreenshotImageExportTaskFactory::getImageHeight() const {
+int WidgetScreenshotImageExportController::getImageHeight() const {
     return widget->height();
 }
 
-Task* WidgetScreenshotImageExportTaskFactory::getExportToSVGTask(const ImageExportTaskSettings &settings) const {
+Task* WidgetScreenshotImageExportController::getExportToSVGTask(const ImageExportTaskSettings &settings) const {
     return new WidgetScreenshotExportToSvgTask(widget, settings);
 }
-Task* WidgetScreenshotImageExportTaskFactory::getExportToPDFTask(const ImageExportTaskSettings &settings) const {
+Task* WidgetScreenshotImageExportController::getExportToPDFTask(const ImageExportTaskSettings &settings) const {
     return new WidgetScreenshotExportToPdfTask(widget, settings);
 }
-Task* WidgetScreenshotImageExportTaskFactory::getExportToBitmapTask(const ImageExportTaskSettings &settings) const {
+Task* WidgetScreenshotImageExportController::getExportToBitmapTask(const ImageExportTaskSettings &settings) const {
     return new WidgetScreenshotExportToBitmapTask(widget, settings);
 }
 

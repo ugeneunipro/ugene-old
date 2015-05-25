@@ -258,7 +258,6 @@ private:
     QAction*          resetFontAction;
     QAction*          buildTreeAction;
     QAction*          saveScreenshotAction;
-    QAction*          saveSvgAction;
     QAction*          alignAction;
     QAction*          alignSequencesToAlignmentAction;
     QAction*          setAsReferenceSequenceAction;
@@ -343,7 +342,6 @@ public:
 
 public slots:
     void sl_saveScreenshot();
-    void sl_saveSvgImage();
 private slots:
     void sl_onTabsCountChanged(int tabsCount);
 signals:

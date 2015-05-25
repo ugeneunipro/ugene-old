@@ -19,88 +19,50 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QCheckBox>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QCheckBox>
+#include <QMessageBox>
 
 #include "MSASelectSubalignmentDialog.h"
 #include "MSAEditor.h"
+
 #include <U2Gui/HelpButton.h>
+
+#include <U2Core/L10n.h>
 
 namespace U2 {
 
-SelectSubalignmentDialog::SelectSubalignmentDialog(MSAEditorUI *ui, QWidget *p)
+
+SelectSubalignmentDialog::SelectSubalignmentDialog(MSAEditorUI *ui, const U2Region &region, const QList<qint64> &_selectedIndexes, QWidget *p)
     : QDialog(p),
-      ui(ui)
-{
-    SAFE_POINT(ui != NULL, tr("MSA Editor UI is NULL"), );
-    SAFE_POINT(ui->getEditor() != NULL, tr("MSA Editor is NULL"), );
+      ui(ui),
+      window(region),
+      selectedIndexes(_selectedIndexes) {
+    SAFE_POINT(ui != NULL, L10N::nullPointerError("MSA Editor UI"), );
+    SAFE_POINT(ui->getEditor() != NULL, L10N::nullPointerError("MSA Editor"), );
 
-    setupUi(this);
-    new HelpButton(this, buttonBox, "16122255");
-    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Select"));
-
-    connect(allButton, SIGNAL(clicked()), SLOT(sl_allButtonClicked()));
-    connect(noneButton, SIGNAL(clicked()), SLOT(sl_noneButtonClicked()));
-    connect(invertButton, SIGNAL(clicked()), SLOT(sl_invertButtonClicked()));
-
-    MAlignmentObject *mobj = ui->getEditor()->getMSAObject();
-    SAFE_POINT(mobj != NULL, tr("MSA Object is NULL"), );
-
-    int rowNumber = mobj->getNumRows();
-    int alignLength = mobj->getLength();
-
-    sequencesTableWidget->clearContents();
-    sequencesTableWidget->setRowCount(rowNumber);
-    sequencesTableWidget->setColumnCount(1);
-    sequencesTableWidget->verticalHeader()->setHidden( true );
-    sequencesTableWidget->horizontalHeader()->setHidden( true );
-    sequencesTableWidget->setShowGrid(false);
-#if (QT_VERSION < 0x050000) //Qt 5
-    sequencesTableWidget->horizontalHeader()->setResizeMode( 0, QHeaderView::Stretch );
-#else
-    sequencesTableWidget->horizontalHeader()->setSectionResizeMode( 0, QHeaderView::Stretch );
-#endif
-
-
-    int startSeq = -1;
-    int endSeq = -1;
-    int startPos = -1;
-    int endPos = -1;
-    QRect selection = ui->getEditor()->getCurrentSelection();
-    if (selection.isNull()) {
-        startPos = 1;
-        endPos = alignLength;
-        startSeq = 0;
-        endSeq = rowNumber -1;
-     } else {
-        startSeq = selection.y();
-        endSeq = selection.y() + selection.height() - 1;
-        startPos = selection.x() + 1;
-        endPos = selection.x() + selection.width();
-    }
-
-    startPosBox->setMaximum(alignLength);
-    endPosBox->setMaximum(alignLength);
-
-    startPosBox->setValue(startPos);
-    endPosBox->setValue(endPos);
-
-    for (int i = 0; i < rowNumber; i++) {
-        QCheckBox *cb = new QCheckBox(mobj->getMAlignment().getRow(i).getName(), this);
-        cb->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-        if ( (i >= startSeq) && (i <= endSeq)) {
-            cb->setChecked(true);
+    if (region.isEmpty() && selectedIndexes.isEmpty()) {
+        int startSeq = -1;
+        int endSeq = -1;
+        int startPos = -1;
+        int endPos = -1;
+        QRect selection = ui->getEditor()->getCurrentSelection();
+        if (selection.isNull()) {
+            startPos = 0;
+            endPos = ui->getEditor()->getAlignmentLen();
+            startSeq = 0;
+            endSeq = ui->getEditor()->getNumSequences();
+        } else {
+            startSeq = selection.y();
+            endSeq = selection.y() + selection.height();
+            startPos = selection.x();
+            endPos = selection.x() + selection.width();
         }
-        sequencesTableWidget->setCellWidget(i, 0, cb);
-        sequencesTableWidget->setRowHeight(i, 15);
+        window = U2Region(startPos, endPos - startPos);
+        for (int i = startSeq; i <= endSeq; i++) {
+            selectedIndexes << i;
+        }
     }
-
+    init();
 }
 
 void SelectSubalignmentDialog::accept() {
@@ -150,6 +112,54 @@ void SelectSubalignmentDialog::sl_noneButtonClicked(){
     for (int i=0; i<sequencesTableWidget->rowCount(); i++) {
         QCheckBox *cb = qobject_cast<QCheckBox*>(sequencesTableWidget->cellWidget(i, 0));
         cb->setChecked(false);
+    }
+}
+
+void SelectSubalignmentDialog::init() {
+    SAFE_POINT(ui != NULL, tr("MSA Editor UI is NULL"), );
+    SAFE_POINT(ui->getEditor() != NULL, tr("MSA Editor is NULL"), );
+
+    setupUi(this);
+    new HelpButton(this, buttonBox, "16122255");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Select"));
+
+    connect(allButton, SIGNAL(clicked()), SLOT(sl_allButtonClicked()));
+    connect(noneButton, SIGNAL(clicked()), SLOT(sl_noneButtonClicked()));
+    connect(invertButton, SIGNAL(clicked()), SLOT(sl_invertButtonClicked()));
+
+    MAlignmentObject *mobj = ui->getEditor()->getMSAObject();
+    SAFE_POINT(mobj != NULL, tr("MSA Object is NULL"), );
+
+    int rowNumber = mobj->getNumRows();
+    int alignLength = mobj->getLength();
+
+    sequencesTableWidget->clearContents();
+    sequencesTableWidget->setRowCount(rowNumber);
+    sequencesTableWidget->setColumnCount(1);
+    sequencesTableWidget->verticalHeader()->setHidden( true );
+    sequencesTableWidget->horizontalHeader()->setHidden( true );
+    sequencesTableWidget->setShowGrid(false);
+#if (QT_VERSION < 0x050000) //Qt 5
+    sequencesTableWidget->horizontalHeader()->setResizeMode( 0, QHeaderView::Stretch );
+#else
+    sequencesTableWidget->horizontalHeader()->setSectionResizeMode( 0, QHeaderView::Stretch );
+#endif
+
+
+    startPosBox->setMaximum(alignLength);
+    endPosBox->setMaximum(alignLength);
+
+    startPosBox->setValue(window.startPos + 1);
+    endPosBox->setValue(window.endPos());
+
+    for (int i = 0; i < rowNumber; i++) {
+        QCheckBox *cb = new QCheckBox(mobj->getMAlignment().getRow(i).getName(), this);
+        cb->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+        if (selectedIndexes.contains(i)) {
+            cb->setChecked(true);
+        }
+        sequencesTableWidget->setCellWidget(i, 0, cb);
+        sequencesTableWidget->setRowHeight(i, 15);
     }
 }
 

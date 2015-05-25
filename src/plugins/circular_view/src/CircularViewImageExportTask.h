@@ -81,12 +81,12 @@ public:
     void run();
 };
 
-class CircularViewImageExportTaskFactory : public ImageExportTaskFactory {
+class CircularViewImageExportController : public ImageExportController {
     Q_OBJECT
 public:
-    CircularViewImageExportTaskFactory(CircularView *cv);
+    CircularViewImageExportController(CircularView *cv);
 
-    CircularViewImageExportTaskFactory(const QList<CircularView*> &list,
+    CircularViewImageExportController(const QList<CircularView*> &list,
                                        CircularView* defaultCV = NULL);
 
     int getImageWidth() const;

@@ -57,10 +57,10 @@ private:
 };
 
 
-class MSAOverviewImageExportTaskFactory : public ImageExportTaskFactory {
+class MSAOverviewImageExportController : public ImageExportController {
     Q_OBJECT
 public:
-    MSAOverviewImageExportTaskFactory(MSASimpleOverview *simpleOverview, MSAGraphOverview *graphOverview);
+    MSAOverviewImageExportController(MSASimpleOverview *simpleOverview, MSAGraphOverview *graphOverview);
 
     int getImageWidth() const;
     int getImageHeight() const;

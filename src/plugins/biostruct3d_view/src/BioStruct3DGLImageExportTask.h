@@ -59,10 +59,10 @@ public:
     void run();
 };
 
-class BioStruct3DImageExportTaskFactory : public ImageExportTaskFactory {
+class BioStruct3DImageExportController : public ImageExportController {
 public:
-    BioStruct3DImageExportTaskFactory(BioStruct3DGLWidget* widget)
-        : ImageExportTaskFactory(),
+    BioStruct3DImageExportController(BioStruct3DGLWidget* widget)
+        : ImageExportController(ExportImageFormatPolicy_SupportAll),
           glWidget(widget) {}
 
     int getImageWidth() const;

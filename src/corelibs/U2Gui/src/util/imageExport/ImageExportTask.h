@@ -67,18 +67,39 @@ protected:
     static const QString EXPORT_FAIL_MESSAGE;
 };
 
+enum ExportImageFormatFlag {
+    EnableRasterFormats = 1,
+    SupportSvg = 2,
+    SupportPsAndPdf = 4
+};
 
-class U2GUI_EXPORT ImageExportTaskFactory : public QObject {
+typedef QFlags<ExportImageFormatFlag> ExportImageFormatPolicy;
+
+#define ExportImageFormatPolicy_SupportAll ExportImageFormatPolicy(EnableRasterFormats | SupportSvg | SupportPsAndPdf)
+
+class U2GUI_EXPORT ImageExportController : public QObject {
+    Q_OBJECT
 public:
-    ImageExportTaskFactory();
+    ImageExportController(const ExportImageFormatPolicy& fPolicy = ExportImageFormatPolicy(EnableRasterFormats));
 
     Task*   getTaskInstance(const ImageExportTaskSettings &settings) const;
 
-    const QString& getExportDescription() const { return shortDescription; }
-    QWidget* getSettingsWidget();
+    const QString&  getExportDescription() const { return shortDescription; }
+    QWidget*    getSettingsWidget();
 
     virtual int getImageWidth() const { return 0; }
     virtual int getImageHeight() const { return 0; }
+
+    bool    isRasterFormatsEnabled() const { return formatPolicy.testFlag(EnableRasterFormats); }
+    bool    isSvgSupported() const { return formatPolicy.testFlag(SupportSvg); }
+    bool    isPdfSupported() const { return formatPolicy.testFlag(SupportPsAndPdf); }
+
+    bool    isExportDisabled() const { return !disableMessage.isEmpty(); }
+    QString getDisableMessage() const { return disableMessage; }
+
+signals:
+    void si_disableExport(bool);
+    void si_showMessage(const QString& );
 
 protected:
     virtual void initSettingsWidget() = 0;
@@ -87,8 +108,10 @@ protected:
     virtual Task* getExportToPDFTask(const ImageExportTaskSettings &) const { return NULL; }
     virtual Task* getExportToBitmapTask(const ImageExportTaskSettings &) const { return NULL; }
 
-    QWidget*    settingsWidget;
-    QString     shortDescription;
+    QWidget*        settingsWidget;
+    QString         shortDescription;
+    QString         disableMessage;
+    ExportImageFormatPolicy    formatPolicy;
 };
 
 } // namespace

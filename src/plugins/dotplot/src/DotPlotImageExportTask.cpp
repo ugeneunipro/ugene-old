@@ -53,8 +53,8 @@ void DotPlotImageExportToBitmapTask::run() {
     SAFE_POINT_EXT( settings.isBitmapFormat(), setError(WRONG_FORMAT_MESSAGE.arg(settings.format).arg("CircularViewImageExportToBitmapTask")), );
 }
 
-DotPlotImageExportTaskFactory::DotPlotImageExportTaskFactory(DotPlotWidget *wgt)
-    : ImageExportTaskFactory(),
+DotPlotImageExportController::DotPlotImageExportController(DotPlotWidget *wgt)
+    : ImageExportController(),
       dotplotWidget(wgt)
 {
     SAFE_POINT( dotplotWidget != NULL, tr("Dotplot widget is NULL"), );
@@ -62,15 +62,15 @@ DotPlotImageExportTaskFactory::DotPlotImageExportTaskFactory(DotPlotWidget *wgt)
     initSettingsWidget();
 }
 
-int DotPlotImageExportTaskFactory::getImageWidth() const {
+int DotPlotImageExportController::getImageWidth() const {
     return dotplotWidget->width();
 }
 
-int DotPlotImageExportTaskFactory::getImageHeight() const {
+int DotPlotImageExportController::getImageHeight() const {
     return dotplotWidget->height();
 }
 
-void DotPlotImageExportTaskFactory::initSettingsWidget() {
+void DotPlotImageExportController::initSettingsWidget() {
     QVBoxLayout* layout = new QVBoxLayout();
 
     includeAreaSelection = new QCheckBox(tr("Include area selection"));
@@ -92,7 +92,7 @@ void DotPlotImageExportTaskFactory::initSettingsWidget() {
     settingsWidget->setLayout(layout);
 }
 
-Task* DotPlotImageExportTaskFactory::getExportToBitmapTask(const ImageExportTaskSettings &settings) const {
+Task* DotPlotImageExportController::getExportToBitmapTask(const ImageExportTaskSettings &settings) const {
     DotPlotImageExportSettings dpSettings(includeAreaSelection->isChecked(),
                                           includeRepeatSelection->isChecked());
     return new DotPlotImageExportToBitmapTask(dotplotWidget, dpSettings, settings);

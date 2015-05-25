@@ -231,11 +231,10 @@ void CircularViewSplitter::sl_export() {
     U2SequenceObject* seqObj = cvInFocus->getSequenceContext()->getSequenceObject();
     SAFE_POINT(seqObj != NULL, tr("Sequence obejct is NULL"), );
 
-    CircularViewImageExportTaskFactory factory(circularViewList, cvInFocus);
+    CircularViewImageExportController factory(circularViewList, cvInFocus);
 
     ExportImageDialog dialog(&factory, ExportImageDialog::CircularView,
-                             ExportImageDialog::Resizable,
-                             ExportImageDialog::SupportVectorFormats,
+                             ExportImageDialog::SupportScaling,
                              NULL,
                              "circular_" + seqObj->getSequenceName());
     dialog.exec();

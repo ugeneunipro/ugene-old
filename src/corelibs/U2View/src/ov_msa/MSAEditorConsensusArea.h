@@ -65,9 +65,14 @@ public:
 
     QSharedPointer<MSAEditorConsensusCache> getConsensusCache();
 
-    void paintFullConsensusToPixmap(QPixmap &pixmap);
-    void paintParsialConsenusToPixmap(QPixmap & pixmap, const U2Region &region, const QList<qint64> &seqIdx);
-    void paintPartOfARuler(QPixmap &pixmap, const U2Region &region);
+    void paintFullConsensus(QPixmap &pixmap);
+    void paintFullConsensus(QPainter& p);
+
+    void paintConsenusPart(QPixmap & pixmap, const U2Region &region, const QList<qint64> &seqIdx);
+    void paintConsenusPart(QPainter& p, const U2Region &region, const QList<qint64> &seqIdx);
+
+    void paintRulerPart(QPixmap &pixmap, const U2Region &region);
+    void paintRulerPart(QPainter &p, const U2Region &region);
 
 protected:
     bool event(QEvent* e);

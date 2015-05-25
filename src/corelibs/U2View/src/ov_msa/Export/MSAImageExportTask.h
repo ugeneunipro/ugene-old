@@ -23,7 +23,14 @@
 #define _U2_MSA_IMAGE_EXPORT_TASK_H_
 
 #include <U2Gui/ImageExportTask.h>
+
 #include <U2Core/U2Region.h>
+
+#include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorNameList.h>
+#include <U2View/MSAEditorConsensusArea.h>
+#include <U2View/MSAEditorSequenceArea.h>
+
 #include <QtGui/QPixmap>
 
 class Ui_MSAExportSettings;
@@ -65,7 +72,69 @@ public:
     bool includeRuler;
 };
 
-class MSAImageExportToBitmapTask : public ImageExportTask {
+class MSAImageExportTask : public ImageExportTask {
+    Q_OBJECT
+public:
+    MSAImageExportTask(MSAEditorUI *ui,
+                       const MSAImageExportSettings &msaSettings,
+                       const ImageExportTaskSettings &settings);
+    virtual void run() = 0;
+protected:
+    // P - QPainter or QPixmap
+    template<class P>
+    void paintSeqNames(P& p) {
+        if (msaSettings.includeSeqNames) {
+            MSAEditorNameList* namesArea = ui->getEditorNameList();
+            SAFE_POINT_EXT( ui->getEditor() != NULL, setError(tr("MSA Editor is NULL")), );
+            if (msaSettings.exportAll && msaSettings.seqIdx.size() != ui->getEditor()->getNumSequences()) {
+                msaSettings.seqIdx.clear();
+                for (qint64 i = 0; i < ui->getEditor()->getNumSequences(); i++) {
+                    msaSettings.seqIdx.append(i);
+                }
+            }
+            namesArea->drawNames(p, msaSettings.seqIdx);
+        }
+    }
+
+    template<class P>
+    void paintConsensus(P& p) {
+        CHECK( msaSettings.includeConsensus, );
+        MSAEditorConsensusArea* consArea = ui->getConsensusArea();
+        SAFE_POINT_EXT( consArea != NULL, setError(tr("MSA Consensus area is NULL")), );
+        if (msaSettings.exportAll) {
+            consArea->paintFullConsensus(p);
+            return;
+        }
+        consArea->paintConsenusPart(p, msaSettings.region, msaSettings.seqIdx);
+    }
+
+    template<class P>
+    void paintRuler(P& p) {
+        if (msaSettings.includeRuler) {
+            MSAEditorConsensusArea* consArea = ui->getConsensusArea();
+            if (msaSettings.exportAll) {
+                SAFE_POINT_EXT( ui->getEditor() != NULL, setError(tr("MSA Editor is NULL")), );
+                msaSettings.region = U2Region( 0, ui->getEditor()->getAlignmentLen() - 1);
+            }
+            consArea->paintRulerPart(p, msaSettings.region);
+        }
+    }
+
+    template<class P>
+    bool paintContent(P& p) {
+        MSAEditorSequenceArea* seqArea = ui->getSequenceArea();
+        if (msaSettings.exportAll) {
+            return seqArea->drawContent(p);
+        } else {
+            return seqArea->drawContent(p, msaSettings.region, msaSettings.seqIdx);
+        }
+    }
+
+    MSAEditorUI* ui;
+    MSAImageExportSettings  msaSettings;
+};
+
+class MSAImageExportToBitmapTask : public MSAImageExportTask {
     Q_OBJECT
 public:
     MSAImageExportToBitmapTask(MSAEditorUI *ui,
@@ -74,24 +143,24 @@ public:
     void run();
 
 private:
-    void paintSeqNames(QPixmap& pixmap);
-    void paintConsensus(QPixmap& pixmap);
-    void paintRuler(QPixmap& pixmap);
-    bool paintContent(QPixmap& pixmap);
-
     QPixmap mergePixmaps(const QPixmap& seqPix, const QPixmap& namesPix,
                          const QPixmap& consPix, const QPixmap& rulerPix);
-
-private:
-    MSAEditorUI* ui;
-    MSAImageExportSettings  msaSettings;
 };
 
-class MSAImageExportTaskFactory : public ImageExportTaskFactory {
+class MSAImageExportToSvgTask : public MSAImageExportTask {
     Q_OBJECT
 public:
-    MSAImageExportTaskFactory(MSAEditorUI *ui);
-    ~MSAImageExportTaskFactory();
+    MSAImageExportToSvgTask(MSAEditorUI *ui,
+                            const MSAImageExportSettings& msaSettings,
+                            const ImageExportTaskSettings &settings);
+    void run();
+};
+
+class MSAImageExportController : public ImageExportController {
+    Q_OBJECT
+public:
+    MSAImageExportController(MSAEditorUI *ui);
+    ~MSAImageExportController();
 
 public slots:
     void sl_showSelectRegionDialog();
@@ -101,8 +170,12 @@ protected:
     void initSettingsWidget();
 
     Task* getExportToBitmapTask(const ImageExportTaskSettings &settings) const;
+    Task* getExportToSVGTask(const ImageExportTaskSettings &) const;
 
 private:
+    void checkRegionToExport();
+    bool fitsInLimits() const;
+
     MSAEditorUI* ui;
     Ui_MSAExportSettings    *settingsUi;
     mutable MSAImageExportSettings      msaSettings;

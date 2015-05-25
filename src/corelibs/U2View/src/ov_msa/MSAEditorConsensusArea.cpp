@@ -120,25 +120,36 @@ QSharedPointer<MSAEditorConsensusCache> MSAEditorConsensusArea::getConsensusCach
     return consensusCache;
 }
 
-void MSAEditorConsensusArea::paintFullConsensusToPixmap(QPixmap &pixmap) {
+void MSAEditorConsensusArea::paintFullConsensus(QPixmap &pixmap) {
     pixmap = QPixmap(ui->seqArea->getXByColumnNum(ui->editor->getAlignmentLen()), getYRange(MSAEditorConsElement_RULER).startPos);
-    pixmap.fill(Qt::white);
     QPainter p(&pixmap);
-    drawConsensus(p, 0, ui->editor->getAlignmentLen() - 1, true);
-    drawHistogram(p, 0, ui->editor->getAlignmentLen() - 1);
-    p.end();
+    paintFullConsensus(p);
 }
 
-void MSAEditorConsensusArea::paintParsialConsenusToPixmap(QPixmap &pixmap, const U2Region &region, const QList<qint64> &seqIdx) {
+void MSAEditorConsensusArea::paintFullConsensus(QPainter &p) {
+    p.fillRect(QRect(0, 0, ui->seqArea->getXByColumnNum(ui->editor->getAlignmentLen()), getYRange(MSAEditorConsElement_RULER).startPos), Qt::white);
+    drawConsensus(p, 0, ui->editor->getAlignmentLen() - 1, true);
+    drawHistogram(p, 0, ui->editor->getAlignmentLen() - 1);
+}
+
+void MSAEditorConsensusArea::paintConsenusPart(QPixmap &pixmap, const U2Region &region, const QList<qint64> &seqIdx) {
     CHECK(!region.isEmpty(), );
     CHECK(!seqIdx.isEmpty(), );
     CHECK(!ui->seqArea->isAlignmentEmpty(), );
 
     CHECK(editor->getColumnWidth() * region.length < 32768, );
     pixmap = QPixmap( editor->getColumnWidth() * region.length, getYRange(MSAEditorConsElement_RULER).startPos);
-    pixmap.fill(Qt::white);
 
     QPainter p(&pixmap);
+    paintConsenusPart(p, region, seqIdx);
+}
+
+void MSAEditorConsensusArea::paintConsenusPart(QPainter &p, const U2Region &region, const QList<qint64> &seqIdx) {
+    CHECK(!region.isEmpty(), );
+    CHECK(!seqIdx.isEmpty(), );
+    CHECK(!ui->seqArea->isAlignmentEmpty(), );
+
+    p.fillRect(QRect(0, 0, editor->getColumnWidth() * region.length, getYRange(MSAEditorConsElement_RULER).startPos), Qt::white);
     p.translate(-editor->getColumnWidth() * region.startPos, 0);
 
     //draw consensus
@@ -175,14 +186,21 @@ void MSAEditorConsensusArea::paintParsialConsenusToPixmap(QPixmap &pixmap, const
     }
 }
 
-void MSAEditorConsensusArea::paintPartOfARuler(QPixmap &pixmap, const U2Region &region) {
+void MSAEditorConsensusArea::paintRulerPart(QPixmap &pixmap, const U2Region &region) {
     CHECK( editor->getColumnWidth() * region.length < 32768, );
     CHECK( getYRange(MSAEditorConsElement_RULER).length < 32768, );
     pixmap = QPixmap(editor->getColumnWidth() * region.length, getYRange(MSAEditorConsElement_RULER).length);
     pixmap.fill(Qt::white);
     QPainter p(&pixmap);
+    paintRulerPart(p, region);
+}
+
+void MSAEditorConsensusArea::paintRulerPart(QPainter &p, const U2Region &region) {
+    p.fillRect( QRect( 0, 0, editor->getColumnWidth() * region.length, getYRange(MSAEditorConsElement_RULER).length), Qt::white);
     p.translate(-ui->seqArea->getBaseXRange(region.startPos, true).startPos, -getYRange(MSAEditorConsElement_RULER).startPos);
     drawRuler(p, region.startPos, region.endPos(), true);
+    // return back to (0, 0)
+    p.translate(ui->seqArea->getBaseXRange(region.startPos, true).startPos, getYRange(MSAEditorConsElement_RULER).startPos);
 }
 
 bool MSAEditorConsensusArea::event(QEvent* e) {
@@ -528,6 +546,10 @@ QString MSAEditorConsensusArea::getLastUsedAlgoSettingsKey() const {
 
 QString MSAEditorConsensusArea::getThresholdSettingsKey(const QString& factoryId) const {
     return getLastUsedAlgoSettingsKey() + "_" + factoryId + "_threshold";
+}
+
+U2Region MSAEditorConsensusArea::getRullerLineYRange() const {
+    return getYRange(MSAEditorConsElement_RULER);
 }
 
 void MSAEditorConsensusArea::setConsensusAlgorithm(MSAConsensusAlgorithmFactory* algoFactory) {

@@ -343,7 +343,11 @@ bool MSAEditorSequenceArea::hasAminoAlphabet() {
     return DNAAlphabet_AMINO == alphabet->getType();
 }
 
-bool MSAEditorSequenceArea::paintAllToPixmap(QPixmap &pixmap) {
+bool MSAEditorSequenceArea::drawContent(QPainter &p) {
+    drawContent(p, QRect(0, 0, editor->getAlignmentLen(), editor->getNumSequences()));
+}
+
+bool MSAEditorSequenceArea::drawContent(QPixmap &pixmap) {
     CHECK(editor->getColumnWidth() * editor->getAlignmentLen() < 32768 &&
            editor->getRowHeight() * editor->getNumSequences() < 32768, false);
 
@@ -354,7 +358,7 @@ bool MSAEditorSequenceArea::paintAllToPixmap(QPixmap &pixmap) {
     return true;
 }
 
-bool MSAEditorSequenceArea::paintToPixmap(QPixmap &pixmap,
+bool MSAEditorSequenceArea::drawContent(QPixmap &pixmap,
                                           const U2Region &region,
                                           const QList<qint64> &seqIdx) {
     CHECK(!region.isEmpty(), false);
@@ -533,7 +537,7 @@ void MSAEditorSequenceArea::drawAll() {
     }
     if (completeRedraw) {
         QPainter pCached(cachedView);
-        drawContent(pCached);
+        drawVisibleContent(pCached);
         completeRedraw = false;
     }
     QPainter p(this);
@@ -543,11 +547,11 @@ void MSAEditorSequenceArea::drawAll() {
     drawFocus(p);
 }
 
-void MSAEditorSequenceArea::drawContent(QPainter& p) {
+void MSAEditorSequenceArea::drawVisibleContent(QPainter& p) {
     drawContent(p, QRect(startPos, getFirstVisibleSequence(), getNumVisibleBases(false), getNumVisibleSequences(true)));
 }
 
-void MSAEditorSequenceArea::drawContent(QPainter &p, const QRect &area) {
+bool MSAEditorSequenceArea::drawContent(QPainter &p, const QRect &area) {
     QVector<U2Region> range;
     if (ui->isCollapsibleMode()) {
         ui->getCollapseModel()->getVisibleRows(area.y(), area.bottom(), range);
@@ -564,11 +568,13 @@ void MSAEditorSequenceArea::drawContent(QPainter &p, const QRect &area) {
     p.fillRect(cachedView->rect(), Qt::white);
     drawContent(p, U2Region(area.x(), area.width()), seqIdx);
     emit si_visibleRangeChanged();
+
+    return true;
 }
 
-void MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, const QList<qint64> &seqIdx) {
-    CHECK(!region.isEmpty(), );
-    CHECK(!seqIdx.isEmpty(), );
+bool MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, const QList<qint64> &seqIdx) {
+    CHECK(!region.isEmpty(), false);
+    CHECK(!seqIdx.isEmpty(), false);
 
     p.fillRect(QRect(0, 0, editor->getColumnWidth() * region.length,
                       editor->getRowHeight() * seqIdx.size()),
@@ -576,7 +582,7 @@ void MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, con
     p.setFont(editor->getFont());
 
     MAlignmentObject* maObj = editor->getMSAObject();
-    SAFE_POINT(maObj != NULL, tr("Alignment object is NULL"), );
+    SAFE_POINT(maObj != NULL, tr("Alignment object is NULL"), false);
     const MAlignment &msa = maObj->getMAlignment();
 
     U2OpStatusImpl os;
@@ -643,6 +649,8 @@ void MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, con
         }
         baseYRange.startPos += editor->getRowHeight();
     }
+
+    return true;
 }
 
 void MSAEditorSequenceArea::drawSelection(QPainter &p) {

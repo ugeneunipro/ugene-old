@@ -19,42 +19,44 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QCheckBox>
-#else
-#include <QtWidgets/QCheckBox>
-#endif
+#include <QCheckBox>
+#include <QSvgGenerator>
+
+#include <U2Core/L10n.h>
 
 #include "MSAImageExportTask.h"
 #include "../MSASelectSubalignmentDialog.h"
 
-#include <U2View/MSAEditor.h>
-#include <U2View/MSAEditorNameList.h>
-#include <U2View/MSAEditorConsensusArea.h>
-#include <U2View/MSAEditorSequenceArea.h>
-
 #include "ui_MSAExportSettings.h"
+
+#define IMAGE_SIZE_LIMIT 32768
 
 namespace U2 {
 
-MSAImageExportToBitmapTask::MSAImageExportToBitmapTask(MSAEditorUI *ui,
-                                                       const MSAImageExportSettings &msaSettings,
-                                                       const ImageExportTaskSettings &settings)
+MSAImageExportTask::MSAImageExportTask(MSAEditorUI *ui,
+                                       const MSAImageExportSettings &msaSettings,
+                                       const ImageExportTaskSettings &settings)
     : ImageExportTask(settings),
       ui(ui),
-      msaSettings(msaSettings)
-{
+      msaSettings(msaSettings) {
     SAFE_POINT_EXT(ui != NULL, setError(tr("MSA Editor UI is NULL")), );
+}
+
+MSAImageExportToBitmapTask::MSAImageExportToBitmapTask(MSAEditorUI *ui,
+                                                       const MSAImageExportSettings& msaSettings,
+                                                       const ImageExportTaskSettings &settings)
+    : MSAImageExportTask(ui,
+                         msaSettings,
+                         settings) {
 }
 
 void MSAImageExportToBitmapTask::run() {
     SAFE_POINT_EXT(settings.isBitmapFormat(),
                    setError(WRONG_FORMAT_MESSAGE.arg(settings.format).arg("MSAImageExportToBitmapTask")), );
 
-    SAFE_POINT_EXT( ui->getEditor() != NULL, setError(tr("MSA Editor is NULL")), );
+    SAFE_POINT_EXT( ui->getEditor() != NULL, setError(L10N::nullPointerError("MSAEditor")), );
     MAlignmentObject *mObj =  ui->getEditor()->getMSAObject();
-    SAFE_POINT_EXT( mObj != NULL, setError(tr("Alignment object is NULL")), );
+    SAFE_POINT_EXT( mObj != NULL, setError(L10N::nullPointerError("MAlignmentObject")), );
     StateLock *lock = new StateLock();
     mObj->lockState(lock);
 
@@ -80,54 +82,9 @@ void MSAImageExportToBitmapTask::run() {
 
     QPixmap pixmap = mergePixmaps(seqPixmap, namesPix, consPix, rulerPix);
     CHECK_EXT( !pixmap.isNull(),
-               setError(EXPORT_FAIL_MESSAGE.arg(settings.fileName)), );
+               setError(tr("Alignment is too big. ") + EXPORT_FAIL_MESSAGE.arg(settings.fileName)), );
     CHECK_EXT( pixmap.save(settings.fileName, qPrintable(settings.format), settings.imageQuality),
-               setError(EXPORT_FAIL_MESSAGE.arg(settings.fileName)), );
-}
-
-void MSAImageExportToBitmapTask::paintSeqNames(QPixmap &pixmap) {
-    if (msaSettings.includeSeqNames) {
-        MSAEditorNameList* namesArea = ui->getEditorNameList();
-        SAFE_POINT_EXT( ui->getEditor() != NULL, setError(tr("MSA Editor is NULL")), );
-        if (msaSettings.exportAll && msaSettings.seqIdx.size() != ui->getEditor()->getNumSequences()) {
-            msaSettings.seqIdx.clear();
-            for (qint64 i = 0; i < ui->getEditor()->getNumSequences(); i++) {
-                msaSettings.seqIdx.append(i);
-            }
-        }
-        pixmap = namesArea->drawNames(msaSettings.seqIdx);
-    }
-}
-
-void MSAImageExportToBitmapTask::paintConsensus(QPixmap &pixmap) {
-    CHECK( msaSettings.includeConsensus, );
-    MSAEditorConsensusArea* consArea = ui->getConsensusArea();
-    SAFE_POINT_EXT( consArea != NULL, setError(tr("MSA Consensus area is NULL")), );
-    if (msaSettings.exportAll) {
-        consArea->paintFullConsensusToPixmap(pixmap);
-        return;
-    }
-    consArea->paintParsialConsenusToPixmap(pixmap, msaSettings.region, msaSettings.seqIdx);
-}
-
-void MSAImageExportToBitmapTask::paintRuler(QPixmap &pixmap) {
-    if (msaSettings.includeRuler) {
-        MSAEditorConsensusArea* consArea = ui->getConsensusArea();
-        if (msaSettings.exportAll) {
-            SAFE_POINT_EXT( ui->getEditor() != NULL, setError(tr("MSA Editor is NULL")), );
-            msaSettings.region = U2Region( 0, ui->getEditor()->getAlignmentLen() - 1);
-        }
-        consArea->paintPartOfARuler(pixmap, msaSettings.region);
-    }
-}
-
-bool MSAImageExportToBitmapTask::paintContent(QPixmap &pixmap) {
-    MSAEditorSequenceArea* seqArea = ui->getSequenceArea();
-    if (msaSettings.exportAll) {
-        return seqArea->paintAllToPixmap(pixmap);
-    } else {
-        return seqArea->paintToPixmap(pixmap, msaSettings.region, msaSettings.seqIdx);
-    }
+               setError(tr("Cannot save the file. ") + EXPORT_FAIL_MESSAGE.arg(settings.fileName)), );
 }
 
 QPixmap MSAImageExportToBitmapTask::mergePixmaps(const QPixmap &seqPix,
@@ -135,8 +92,8 @@ QPixmap MSAImageExportToBitmapTask::mergePixmaps(const QPixmap &seqPix,
                                               const QPixmap &consPix,
                                               const QPixmap &rulerPix)
 {
-    CHECK( namesPix.width() + seqPix.width() < 32768 &&
-           consPix.height() + rulerPix.height() + seqPix.height() < 32768, QPixmap());
+    CHECK( namesPix.width() + seqPix.width() < IMAGE_SIZE_LIMIT &&
+           consPix.height() + rulerPix.height() + seqPix.height() < IMAGE_SIZE_LIMIT, QPixmap());
     QPixmap pixmap = QPixmap(namesPix.width() + seqPix.width(),
                              consPix.height() + rulerPix.height() + seqPix.height());
 
@@ -156,22 +113,88 @@ QPixmap MSAImageExportToBitmapTask::mergePixmaps(const QPixmap &seqPix,
     return pixmap;
 }
 
-
-MSAImageExportTaskFactory::MSAImageExportTaskFactory(MSAEditorUI *ui)
-    : ImageExportTaskFactory(),
-      ui(ui)
-{
-    SAFE_POINT(ui != NULL, tr("MSA editor is NULL"), );
-    shortDescription = tr("Alignment");
-    initSettingsWidget();
+MSAImageExportToSvgTask::MSAImageExportToSvgTask(MSAEditorUI *ui,
+                                                 const MSAImageExportSettings& msaSettings,
+                                                 const ImageExportTaskSettings &settings)
+    : MSAImageExportTask(ui,
+                         msaSettings,
+                         settings) {
 }
 
-MSAImageExportTaskFactory::~MSAImageExportTaskFactory() {
+void MSAImageExportToSvgTask::run() {
+    SAFE_POINT_EXT(settings.isSVGFormat(),
+                   setError(WRONG_FORMAT_MESSAGE.arg(settings.format).arg("MSAImageExportToSvgTask")), );
+
+    MSAEditor* editor = ui->getEditor();
+    SAFE_POINT_EXT( editor != NULL, setError(L10N::nullPointerError("MSAEditor")), );
+    MAlignmentObject *mObj =  editor->getMSAObject();
+    SAFE_POINT_EXT( mObj != NULL, setError(L10N::nullPointerError("MAlignmentObject")), );
+    StateLock *lock = new StateLock();
+    mObj->lockState(lock);
+
+    int ok = msaSettings.exportAll || (!msaSettings.region.isEmpty() && !msaSettings.seqIdx.isEmpty());
+    CHECK_OPERATION( ok, mObj->unlockState(lock));
+    SAFE_POINT_EXT( ok, setError(tr("Nothing to export")), );
+
+    QSvgGenerator generator;
+    generator.setFileName(settings.fileName);
+
+    MSAEditorNameList* nameListArea = ui->getEditorNameList();
+    SAFE_POINT_EXT(nameListArea != NULL, setError(L10N::nullPointerError("MSAEditorNameList")), );
+    MSAEditorConsensusArea* consArea = ui->getConsensusArea();
+    SAFE_POINT_EXT(consArea != NULL, setError(L10N::nullPointerError("MSAEditorConsensusArea")), );
+
+    int namesWidth = nameListArea->width();
+    int consHeight = consArea->getRullerLineYRange().startPos;
+    int rulerHeight = consArea->getRullerLineYRange().length;
+
+    int w = msaSettings.includeSeqNames * namesWidth +
+            editor->getColumnWidth() * (msaSettings.exportAll ? editor->getAlignmentLen() : msaSettings.region.length);
+    int h = msaSettings.includeConsensus * consHeight +
+            msaSettings.includeRuler * rulerHeight +
+            editor->getRowHeight() * (msaSettings.exportAll ? editor->getNumSequences() : msaSettings.seqIdx.size());
+    SAFE_POINT_EXT(qMax(w, h) < IMAGE_SIZE_LIMIT, setError(tr("The image size is too big.") + EXPORT_FAIL_MESSAGE.arg(settings.fileName)), );
+
+    generator.setSize(QSize(w, h));
+    generator.setViewBox(QRect(0, 0, w, h));
+    generator.setTitle(tr("SVG %1").arg(mObj->getGObjectName()));
+    generator.setDescription(tr("SVG image of multiple alignment created by Unipro UGENE"));
+
+    QPainter p;
+    p.begin(&generator);
+
+    if ((msaSettings.includeConsensus || msaSettings.includeRuler) && (msaSettings.includeSeqNames)) {
+        // fill an empty space in top left corner with white color
+        p.fillRect(QRect(0, 0, namesWidth, msaSettings.includeConsensus * consHeight + msaSettings.includeRuler * rulerHeight), Qt::white);
+    }
+    p.translate( msaSettings.includeSeqNames * namesWidth, 0);
+    paintConsensus(p);
+    p.translate( 0, msaSettings.includeConsensus * consHeight );
+    paintRuler(p);
+    p.translate( - msaSettings.includeSeqNames * namesWidth, msaSettings.includeRuler * rulerHeight);
+    paintSeqNames(p);
+    p.translate( msaSettings.includeSeqNames * namesWidth, 0);
+    paintContent(p);
+    p.end();
+}
+
+
+MSAImageExportController::MSAImageExportController(MSAEditorUI *ui)
+    : ImageExportController( ExportImageFormatPolicy( EnableRasterFormats | SupportSvg) ),
+      ui(ui)
+{
+    SAFE_POINT(ui != NULL, L10N::nullPointerError("MSAEditorUI"), );
+    shortDescription = tr("Alignment");
+    initSettingsWidget();
+    checkRegionToExport();
+}
+
+MSAImageExportController::~MSAImageExportController() {
     delete settingsUi;
 }
 
-void MSAImageExportTaskFactory::sl_showSelectRegionDialog() {
-    SelectSubalignmentDialog dialog(ui);
+void MSAImageExportController::sl_showSelectRegionDialog() {
+    SelectSubalignmentDialog dialog(ui, msaSettings.region, msaSettings.seqIdx);
     dialog.exec();
 
     if (dialog.result() == QDialog::Accepted) {
@@ -187,17 +210,20 @@ void MSAImageExportTaskFactory::sl_showSelectRegionDialog() {
             msaSettings.exportAll = true;
         }
     }
+    checkRegionToExport();
 }
 
-void MSAImageExportTaskFactory::sl_regionChanged() {
+void MSAImageExportController::sl_regionChanged() {
     bool customRegionIsSelected = (settingsUi->comboBox->currentIndex() == 1);
     msaSettings.exportAll = !customRegionIsSelected;
     if (customRegionIsSelected && msaSettings.region.isEmpty()) {
             sl_showSelectRegionDialog();
+    } else {
+        checkRegionToExport();
     }
 }
 
-void MSAImageExportTaskFactory::initSettingsWidget() {
+void MSAImageExportController::initSettingsWidget() {
     settingsUi = new Ui_MSAExportSettings;
     settingsWidget = new QWidget();
     settingsUi->setupUi(settingsWidget);
@@ -215,12 +241,38 @@ void MSAImageExportTaskFactory::initSettingsWidget() {
     }
 }
 
-Task* MSAImageExportTaskFactory::getExportToBitmapTask(const ImageExportTaskSettings &settings) const {
+Task* MSAImageExportController::getExportToBitmapTask(const ImageExportTaskSettings &settings) const {
     msaSettings.includeConsensus = settingsUi->exportConsensus->isChecked();
     msaSettings.includeRuler = settingsUi->exportRuler->isChecked();
     msaSettings.includeSeqNames = settingsUi->exportSeqNames->isChecked();
 
     return new MSAImageExportToBitmapTask(ui, msaSettings, settings);
+}
+
+Task* MSAImageExportController::getExportToSVGTask(const ImageExportTaskSettings &settings) const {
+    msaSettings.includeConsensus = settingsUi->exportConsensus->isChecked();
+    msaSettings.includeRuler = settingsUi->exportRuler->isChecked();
+    msaSettings.includeSeqNames = settingsUi->exportSeqNames->isChecked();
+
+    return new MSAImageExportToSvgTask(ui, msaSettings, settings);
+}
+
+void MSAImageExportController::checkRegionToExport() {
+    bool isRegionOk = fitsInLimits();
+    disableMessage = isRegionOk ? "" : tr("Warning: selected region is too big to be exported.\nPlease, select the less subalignment.");
+
+    emit si_disableExport( !isRegionOk );
+    emit si_showMessage( disableMessage );
+}
+
+bool MSAImageExportController::fitsInLimits() const {
+    MSAEditor* editor = ui->getEditor();
+    SAFE_POINT(editor != NULL, L10N::nullPointerError("MSAEditor"), false);
+    if ((msaSettings.exportAll ? editor->getAlignmentLen() : msaSettings.region.length) * editor->getColumnWidth() > IMAGE_SIZE_LIMIT
+            || (msaSettings.exportAll ? editor->getNumSequences() : msaSettings.seqIdx.size()) * editor->getRowHeight() > IMAGE_SIZE_LIMIT) {
+        return false;
+    }
+    return true;
 }
 
 } // namespace

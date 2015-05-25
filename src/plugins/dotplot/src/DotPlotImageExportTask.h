@@ -55,10 +55,10 @@ protected:
     DotPlotImageExportSettings  dpExportSettings;
 };
 
-class DotPlotImageExportTaskFactory : public ImageExportTaskFactory {
+class DotPlotImageExportController : public ImageExportController {
     Q_OBJECT
 public:
-    DotPlotImageExportTaskFactory(DotPlotWidget *wgt);
+    DotPlotImageExportController(DotPlotWidget *wgt);
 
     int getImageWidth() const;
     int getImageHeight() const;

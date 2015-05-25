@@ -61,10 +61,10 @@ public:
     void run();
 };
 
-class WidgetScreenshotImageExportTaskFactory : public ImageExportTaskFactory {
+class WidgetScreenshotImageExportController : public ImageExportController {
     Q_OBJECT
 public:
-    WidgetScreenshotImageExportTaskFactory(QWidget *widget);
+    WidgetScreenshotImageExportController(QWidget *widget);
 
     int getImageWidth() const;
     int getImageHeight() const;
