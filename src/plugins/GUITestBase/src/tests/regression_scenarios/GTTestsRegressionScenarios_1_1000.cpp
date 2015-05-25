@@ -1179,6 +1179,8 @@ GUI_TEST_CLASS_DEFINITION(test_0768) {
     //    3. Click OK button.
 
     //    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    QFile f(dataDir + "workflow_samples/users/123.usa");
+    bool b = f.remove();
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTGlobals::sleep(500);
 

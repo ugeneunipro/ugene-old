@@ -5555,7 +5555,7 @@ GUI_TEST_CLASS_DEFINITION(test_2829) {
     GTGlobals::sleep(500);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "remove_sequence"));
 
-    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggle_view_button_NC_001363");
+    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggle_view_button_NC_001363", GTUtilsMdi::activeWindow(os));
     const QPoint clickPos = toggleViewButton->mapToGlobal(toggleViewButton->rect().center());
     GTMouseDriver::moveTo(os, clickPos);
     GTMouseDriver::click(os);

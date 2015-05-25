@@ -3592,8 +3592,7 @@ public:
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
     };
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addSample(os, "call variants");
 
     GTUtilsDialog::waitForDialog(os, new CallVariantsWizardFiller(os));
