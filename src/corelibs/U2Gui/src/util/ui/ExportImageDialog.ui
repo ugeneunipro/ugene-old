@@ -29,7 +29,7 @@
    <item>
     <widget class="QGroupBox" name="settingsGroupBox">
      <property name="title">
-      <string> export settings</string>
+      <string notr="true"> export settings</string>
      </property>
      <layout class="QVBoxLayout" name="settingsLayout">
       <property name="leftMargin">

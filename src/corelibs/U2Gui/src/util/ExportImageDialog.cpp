@@ -286,7 +286,7 @@ void ExportImageDialog::init() {
     if (settingsWidget == NULL) {
         ui->settingsGroupBox->hide();
     } else {
-        ui->settingsGroupBox->setTitle( ui->settingsGroupBox->title().prepend(exportController->getExportDescription()) );
+        ui->settingsGroupBox->setTitle( tr( ui->settingsGroupBox->title().prepend(exportController->getExportDescription()).toLatin1().data() ) );
         ui->settingsLayout->addWidget(settingsWidget);
     }
 
