@@ -237,14 +237,17 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007) {
+    // 1. Open file "test/_common_data/edit_sequence/test.gb"
     GTUtilsProject::openFiles(os, testDir + "_common_data/edit_sequence/test.gb");
 
+    // 2. Select "Remove subsequence" in the context menu.
+    // 3. Insert region "2..2" into the "Region to remove" field.
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
-
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "2..2"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep(1000);
 
+    // Expected result: the sequence is started from "AAT", the sequence length is 29, DUMMY_1 annotation is [2..5].
     QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 3);
     CHECK_SET_ERR(sequenceBegin == "AAT", "Sequence starts with " + sequenceBegin + ", expected AAT");
 
