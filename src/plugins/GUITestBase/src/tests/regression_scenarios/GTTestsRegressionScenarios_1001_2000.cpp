@@ -1813,7 +1813,7 @@ GUI_TEST_CLASS_DEFINITION(test_1156) {
             GTMouseDriver::moveTo(os, enzymePosition);
             GTMouseDriver::click(os);
 
-            GTWidget::click(os, GTWidget::findWidget(os, "addButton"));
+            GTWidget::click(os, GTWidget::findWidget(os, "addAllButton"));
 
             GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "circularBox"));
 

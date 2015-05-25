@@ -1208,7 +1208,6 @@ GUI_TEST_CLASS_DEFINITION(test_3209_2) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     bool found = GTUtilsAnnotationsTreeView::findRegion(os, "blast result", U2Region(5061, 291));
-    GTGlobals::sleep(50000);
     CHECK_OP(os, );
     CHECK_SET_ERR(found, "Can not find the blast result");
 }
