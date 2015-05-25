@@ -344,7 +344,7 @@ bool MSAEditorSequenceArea::hasAminoAlphabet() {
 }
 
 bool MSAEditorSequenceArea::drawContent(QPainter &p) {
-    drawContent(p, QRect(0, 0, editor->getAlignmentLen(), editor->getNumSequences()));
+    return drawContent(p, QRect(0, 0, editor->getAlignmentLen(), editor->getNumSequences()));
 }
 
 bool MSAEditorSequenceArea::drawContent(QPixmap &pixmap) {
@@ -354,8 +354,7 @@ bool MSAEditorSequenceArea::drawContent(QPixmap &pixmap) {
     pixmap = QPixmap(editor->getColumnWidth() * editor->getAlignmentLen(),
                       editor->getRowHeight() * editor->getNumSequences());
     QPainter p(&pixmap);
-    drawContent(p, QRect(0, 0, editor->getAlignmentLen(), editor->getNumSequences()));
-    return true;
+    return drawContent(p, QRect(0, 0, editor->getAlignmentLen(), editor->getNumSequences()));
 }
 
 bool MSAEditorSequenceArea::drawContent(QPixmap &pixmap,
@@ -369,8 +368,7 @@ bool MSAEditorSequenceArea::drawContent(QPixmap &pixmap,
     pixmap = QPixmap(editor->getColumnWidth() * region.length,
                      editor->getRowHeight() * seqIdx.size());
     QPainter p(&pixmap);
-    drawContent(p, region, seqIdx);
-    return true;
+    return drawContent(p, region, seqIdx);
 }
 
 void MSAEditorSequenceArea::sl_customColorSettingsChanged(){
@@ -566,10 +564,10 @@ bool MSAEditorSequenceArea::drawContent(QPainter &p, const QRect &area) {
         }
     }
     p.fillRect(cachedView->rect(), Qt::white);
-    drawContent(p, U2Region(area.x(), area.width()), seqIdx);
+    bool ok = drawContent(p, U2Region(area.x(), area.width()), seqIdx);
     emit si_visibleRangeChanged();
 
-    return true;
+    return ok;
 }
 
 bool MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, const QList<qint64> &seqIdx) {
