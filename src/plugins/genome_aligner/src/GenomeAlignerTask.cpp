@@ -53,8 +53,6 @@
 namespace U2 {
 
 const QString GenomeAlignerTask::taskName(QObject::tr("UGENE Genome Aligner"));
-const QString GenomeAlignerTask::OPTION_READS_READER("rreader");
-const QString GenomeAlignerTask::OPTION_READS_WRITER("rwriter");
 const QString GenomeAlignerTask::OPTION_ALIGN_REVERSED("align_reversed");
 const QString GenomeAlignerTask::OPTION_OPENCL("use_gpu_optimization");
 const QString GenomeAlignerTask::OPTION_IF_ABS_MISMATCHES("if_absolute_mismatches_value");
@@ -145,6 +143,8 @@ GenomeAlignerTask::GenomeAlignerTask( const DnaAssemblyToRefTaskSettings& _setti
 }
 
 GenomeAlignerTask::~GenomeAlignerTask() {
+    delete seqReader;
+    delete seqWriter;
     qDeleteAll(alignContext.data);
     delete index;
 }
@@ -198,12 +198,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     assert(createIndexTask != NULL);
     qint64 time=(subTask->getTimeInfo().finishTime - subTask->getTimeInfo().startTime);
     if (subTask == createIndexTask) {
-        seqReader = settings.getCustomValue(OPTION_READS_READER, qVariantFromValue(GenomeAlignerReaderContainer()))
-            .value<GenomeAlignerReaderContainer>().reader;
-        if (NULL == seqReader) {
-            QList<GUrl> urls = settings.getShortReadUrls();
-            seqReader = new GenomeAlignerUrlReader(urls);
-        }
+        seqReader = new GenomeAlignerUrlReader(settings.getShortReadUrls());
 
         if (seqReader->isEnd()) {
             if (!hasError()){
@@ -215,21 +210,17 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
             return subTasks;
         }
 
-        seqWriter = settings.getCustomValue(OPTION_READS_WRITER, qVariantFromValue(GenomeAlignerWriterContainer()))
-            .value<GenomeAlignerWriterContainer>().writer;
-        if (NULL == seqWriter) {
-            if (settings.samOutput) {
-                seqWriter = new GenomeAlignerUrlWriter(settings.resultFileName, index->getSeqName(), index->getSeqLength());
-            } else {
-                try {
-                    seqWriter = new GenomeAlignerDbiWriter(settings.resultFileName.getURLString(), index->getSeqName(), index->getSeqLength());
-                } catch (QString exeptionMessage) {
-                    setError(exeptionMessage);
-                    if (NULL != pWriteTask) {
-                        pWriteTask->setFinished();
-                    }
-                    return subTasks;
+        if (settings.samOutput) {
+            seqWriter = new GenomeAlignerUrlWriter(settings.resultFileName, index->getSeqName(), index->getSeqLength());
+        } else {
+            try {
+                seqWriter = new GenomeAlignerDbiWriter(settings.resultFileName.getURLString(), index->getSeqName(), index->getSeqLength());
+            } catch (QString exeptionMessage) {
+                setError(exeptionMessage);
+                if (NULL != pWriteTask) {
+                    pWriteTask->setFinished();
                 }
+                return subTasks;
             }
         }
         seqWriter->setReferenceName(index->getSeqName());

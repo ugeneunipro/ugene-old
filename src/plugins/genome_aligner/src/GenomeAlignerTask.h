@@ -54,8 +54,6 @@ public:
     virtual ReportResult report();
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
     QString getIndexPath();
-    static const QString OPTION_READS_READER;
-    static const QString OPTION_READS_WRITER;
     static const QString OPTION_ALIGN_REVERSED;
     static const QString OPTION_OPENCL;
     static const QString OPTION_IF_ABS_MISMATCHES;
