@@ -5002,8 +5002,8 @@ GUI_TEST_CLASS_DEFINITION(test_3813) {
     public:
         void run(U2OpStatus &os) {
             //3. Press "Select by length"
-            //4. Input "13" and press "Ok"
-            GTUtilsDialog::waitForDialog(os, new InputIntFiller(os, 13));
+            //4. Input "7" and press "Ok"
+            GTUtilsDialog::waitForDialog(os, new InputIntFiller(os, 7));
             GTWidget::click(os, GTWidget::findWidget(os, "selectByLengthButton"));
 
             //5. Run search
@@ -5012,9 +5012,16 @@ GUI_TEST_CLASS_DEFINITION(test_3813) {
     };
     GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList(), new Scenario()));
     GTWidget::click(os, GTWidget::findWidget(os, "Find restriction sites_widget"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //6. Press toolbutton "Global automatic annotation updating"
     //7. Select all types of annotating
+    QWidget* qt_toolbar_ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button",
+                                                          GTWidget::findWidget(os, "mwtoolbar_activemdi"), GTGlobals::FindOptions(false));
+    if(qt_toolbar_ext_button != NULL && qt_toolbar_ext_button->isVisible()){
+        GTWidget::click(os, qt_toolbar_ext_button);
+    }
+
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
     GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Plasmid features"));
