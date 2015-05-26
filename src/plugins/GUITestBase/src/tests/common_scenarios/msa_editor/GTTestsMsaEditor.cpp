@@ -2797,39 +2797,30 @@ GUI_TEST_CLASS_DEFINITION(test_0027_1){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0028_linux){
-//    1. open document samples/CLUSTALW/COI.aln
-    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
-//    2. press "export as SVG" on toolbar
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Export as SVG"));
-    GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/sandbox/", "test.svg", GTFileDialogUtils::Save);
-    GTUtilsDialog::waitForDialog(os,ob);
+//    1. Open document "samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
+//    2. Context menu -- "Export as image"
+    GTUtilsDialog::waitForDialog(os,new ExportMsaImage(os, testDir + "_common_data/scenarios/sandbox/test.svg", QString("svg")));
+    GTUtilsDialog::waitForDialog( os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Export as image"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-//    Expected state: save file appeared
 
-//    3. fill dialog:
-//    file name: test/_common_data/scenarios/sandbox/image.bmp
-//    press Save
+//    3. Fill dialog: svg format, output file
     qint64 fileSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/test.svg");
-    CHECK_SET_ERR(fileSize==651903, "Expected size: 651903, Current size: " + QString().setNum(fileSize));
+    CHECK_SET_ERR(fileSize == 7974576, "Expected size: 7974576, Current size: " + QString().setNum(fileSize));
 //    Expected state:  SVG is exported
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0028_windows){
-//    1. open document samples/CLUSTALW/COI.aln
-    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
-//    2. press "export as SVG" on toolbar
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Export as SVG"));
-    GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/sandbox/", "test.svg", GTFileDialogUtils::Save);
-    GTUtilsDialog::waitForDialog(os,ob);
+//    1. Open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
+//    2. Context menu -- "Export as image"
+    GTUtilsDialog::waitForDialog(os,new ExportMsaImage(os, testDir + "_common_data/scenarios/sandbox/test.svg", QString("svg")));
+    GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList() << MSAE_MENU_EXPORT << "Export as image"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-//    Expected state: save file appeared
 
-//    3. fill dialog:
-//    file name: test/_common_data/scenarios/sandbox/image.bmp
-//    press Save
+//    3. Fill dialog: svg format, output file
     qint64 fileSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/test.svg");
     CHECK_SET_ERR(fileSize > 740000 && fileSize < 980000, "Current size: " + QString().setNum(fileSize));
 //    Expected state:  SVG is exported
@@ -3763,16 +3754,40 @@ GUI_TEST_CLASS_DEFINITION(test_0047) {
 
 GUI_TEST_CLASS_DEFINITION(test_0048) {
     // fail to export big alignment
-    GTLogTracer l;
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "big.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
+    class CustomFiller_0048 : public Filler {
+    public:
+        CustomFiller_0048(U2OpStatus &os)
+            : Filler(os, "ImageExportForm") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "activeModalWidget is NULL");
+
+            QComboBox* exportType = dialog->findChild<QComboBox*>("comboBox");
+            CHECK_SET_ERR( exportType != NULL, "Cannot find comboBox");
+            CHECK_SET_ERR( exportType->currentText() == "Whole alignment", "Wrong combo box text!");
+
+            QLabel* hintLabel = dialog->findChild<QLabel*>("hintLabel");
+            CHECK_SET_ERR( hintLabel != NULL, "Cannot find hintLabel");
+            CHECK_SET_ERR( hintLabel->isVisible(), "Warning message is hidden!");
+
+            QDialogButtonBox* buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
+            CHECK_SET_ERR(buttonBox != NULL, "Cannot find buttonBox");
+            QPushButton* exportButton = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR( exportButton != NULL, "Cannot find Export button");
+            CHECK_SET_ERR( !exportButton->isEnabled(), "Export button is enabled");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< MSAE_MENU_EXPORT << "Export as image"));
-    GTUtilsDialog::waitForDialog(os, new ExportMsaImage(os, testDir + "_common_data/scenarios/sandbox/test_0043.png"));
+    GTUtilsDialog::waitForDialog(os, new CustomFiller_0048(os));
 
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
-
-    CHECK_SET_ERR(l.hasError(), "There is no error in the log!");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0049){
@@ -3853,6 +3868,99 @@ GUI_TEST_CLASS_DEFINITION(test_0051){
     CHECK_SET_ERR( names.at(1) == "C", "At positoin 1 not showed 'C' name");
     CHECK_SET_ERR( names.at(2) == "D", "At positoin 2 not showed 'D' name");
     CHECK_SET_ERR( names.at(3) == "d", "At positoin 3 not showed 'd' name");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0052){
+//    1. Open "_common_data/clustal/3000_sequences.aln"
+//    2. Context menu -- Export as ImageExport
+//    Expected state: export dialog appeared, there is a warning message and Export button is disabled
+//    3. Select smalle region
+//    Expected state: warning is gone, export is enabled
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/3000_sequences.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    class SelectSubalignmentChecker : public Filler {
+    public:
+        SelectSubalignmentChecker(U2OpStatus &os)
+            : Filler(os, "SelectSubalignmentDialog") {}
+
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "activeModalWidget is NULL");
+            QDialogButtonBox* box = dialog->findChild<QDialogButtonBox*>("buttonBox");
+            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+            QPushButton* ok = box->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(ok !=NULL, "ok button is NULL");
+
+            QSpinBox* startPosBox = dialog->findChild<QSpinBox*>("startPosBox");
+            CHECK_SET_ERR(startPosBox != NULL, "startPosBox is NULL");
+            GTSpinBox::setValue(os, startPosBox, 10, GTGlobals::UseKeyBoard);
+
+            QSpinBox* endPosBox = dialog->findChild<QSpinBox*>("endPosBox");
+            CHECK_SET_ERR(endPosBox != NULL, "endPoxBox is NULL");
+            GTSpinBox::setValue(os, endPosBox, 5, GTGlobals::UseKeyBoard);
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+            GTWidget::click(os, ok);
+
+            GTSpinBox::setValue(os, endPosBox, 15);
+
+            QWidget *noneButton = dialog->findChild<QWidget*>("noneButton");
+            CHECK_SET_ERR(noneButton != NULL, "noneButton is NULL");
+            GTWidget::click(os, noneButton);
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+            GTWidget::click(os, ok);
+
+            GTGlobals::sleep();
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    class CustomFiller_0052 : public Filler {
+    public:
+        CustomFiller_0052(U2OpStatus &os)
+            : Filler(os, "ImageExportForm") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "activeModalWidget is NULL");
+
+            QComboBox* exportType = dialog->findChild<QComboBox*>("comboBox");
+            CHECK_SET_ERR( exportType != NULL, "Cannot find comboBox");
+            CHECK_SET_ERR( exportType->currentText() == "Whole alignment", "Wrong combo box text!");
+
+            QLabel* hintLabel = dialog->findChild<QLabel*>("hintLabel");
+            CHECK_SET_ERR( hintLabel != NULL, "Cannot find hintLabel");
+            CHECK_SET_ERR( hintLabel->isVisible(), "Warning message is hidden!");
+
+            QDialogButtonBox* buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
+            CHECK_SET_ERR(buttonBox != NULL, "Cannot find buttonBox");
+            QPushButton* exportButton = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR( exportButton != NULL, "Cannot find Export button");
+            CHECK_SET_ERR( !exportButton->isEnabled(), "Export button is enabled");
+
+            GTUtilsDialog::waitForDialog(os,
+                                         new SelectSubalignmentFiller(os,
+                                                                      RegionMsa(U2Region(1, 593),
+                                                                                QStringList() << "Sequence__1"
+                                                                                << "Sequence__2" << "Sequnce__3" << "Sequence__4")));
+
+            QPushButton* select = dialog->findChild<QPushButton*>("selectRegionButton");
+            GTWidget::click(os, select);
+
+            GTGlobals::sleep();
+            CHECK_SET_ERR(exportType->currentText() == "Custom region", "Wrong combo box text!");
+
+            CHECK_SET_ERR( !hintLabel->isVisible(), "Warning is visible");
+            CHECK_SET_ERR( exportButton->isEnabled(), "Export button is disabled");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new CustomFiller_0052(os));
+    GTUtilsDialog::waitForDialog( os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Export as image"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_fake) {

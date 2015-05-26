@@ -246,7 +246,7 @@ void ExportImageDialog::init() {
 
     ui->dpiWidget->setVisible(source == DotPlot);
     // set tip color
-    QString style = "QLabel { color: " + L10N::errorColorLabelStr() + "; }";
+    QString style = "QLabel { color: " + L10N::errorColorLabelStr() + "; font: bold;}";
     ui->hintLabel->setStyleSheet(style);
     ui->hintLabel->hide();
 

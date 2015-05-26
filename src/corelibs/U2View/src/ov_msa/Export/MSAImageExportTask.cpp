@@ -259,7 +259,7 @@ Task* MSAImageExportController::getExportToSVGTask(const ImageExportTaskSettings
 
 void MSAImageExportController::checkRegionToExport() {
     bool isRegionOk = fitsInLimits();
-    disableMessage = isRegionOk ? "" : tr("Warning: selected region is too big to be exported.\nPlease, select the less subalignment.");
+    disableMessage = isRegionOk ? "" : tr("Warning: selected region is too big to be exported. You can try to zoom out the alignment or select another region.");
 
     emit si_disableExport( !isRegionOk );
     emit si_showMessage( disableMessage );
