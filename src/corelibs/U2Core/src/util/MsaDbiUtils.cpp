@@ -799,12 +799,12 @@ void MsaDbiUtils::insertGaps(const U2EntityRef& msaRef, const QList<qint64>& row
     DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
-    U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
+    U2MsaDbi *msaDbi = con.dbi->getMsaDbi();
     SAFE_POINT(NULL != msaDbi, "NULL Msa Dbi!",);
 
     // Get the MSA properties
-    U2Msa msaObj = msaDbi->getMsaObject(msaRef.entityId, os);
-    qint64 alLength = msaObj.length;
+    const U2Msa msaObj = msaDbi->getMsaObject(msaRef.entityId, os);
+    const qint64 alLength = msaObj.length;
 
     // Validate the position
     if (pos < 0 || pos > alLength) {
@@ -823,7 +823,7 @@ void MsaDbiUtils::insertGaps(const U2EntityRef& msaRef, const QList<qint64>& row
     // Insert gaps into rows
     QList<U2MsaRow> rows;
     foreach (qint64 rowId, rowIds) {
-        U2MsaRow row = msaDbi->getRow(msaRef.entityId, rowId, os);
+        const U2MsaRow row = msaDbi->getRow(msaRef.entityId, rowId, os);
         CHECK_OP(os, );
 
         rows.append(row);
@@ -849,6 +849,7 @@ void MsaDbiUtils::insertGaps(const U2EntityRef& msaRef, const QList<qint64>& row
         msaDbi->updateGapModel(msaRef.entityId, row.rowId, row.gaps, os);
         CHECK_OP(os, );
     }
+    msaDbi->updateMsaLength(msaRef.entityId, msaObj.length + count, os);
 }
 
 static DbiConnection * getCheckedConnection(const U2DbiRef &dbiRef, U2OpStatus &os) {
