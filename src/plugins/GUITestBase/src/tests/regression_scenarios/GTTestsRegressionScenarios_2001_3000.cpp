@@ -1035,26 +1035,22 @@ GUI_TEST_CLASS_DEFINITION(test_2093_1) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     // Simple scheme: read file list.
-    GTUtilsWorkflowDesigner::addAlgorithm(os, "File list");
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "File list"));
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "File List");
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "File List"));
     GTMouseDriver::click(os);
     QString dirPath = dataDir + "samples/FASTA/";
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, dirPath, "human_T1.fa");
 
-    QToolBar* wdToolbar = GTToolbar::getToolbar(os, "mwtoolbar_activemdi");
-    CHECK_SET_ERR(wdToolbar, "Toolbar not found");
-    GTToolbar::getWidgetForActionName(os, wdToolbar, "Run workflow");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
 
     GTGlobals::sleep();
 
 //    2. Select "Load schema" button on the dashboard menu line.
+    GTUtilsDashboard::traceAllWebElements(os);
+
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Discard));
 
-    // We must click to the "Load schema" button on dashboard's toolbar.
-    // The follow code is incorrect, it should be fixed.
-    QWidget* loadSchemaButton = GTWidget::findWidget(os, "Load work");
-    CHECK_SET_ERR(loadSchemaButton, "Load schema button not found");
-    GTWidget::click(os, loadSchemaButton);
+    GTUtilsDashboard::click(os, GTUtilsDashboard::findElement(os, "", "BUTTON", true));
 
     GTGlobals::sleep();
 
@@ -4966,9 +4962,11 @@ GUI_TEST_CLASS_DEFINITION(test_2713) {
 //    1. Open file {data/samples/Genbank/murine.gb}
     QDir().mkpath(sandBoxDir + "test_2713");
     GTFile::copy(os, dataDir + "samples/Genbank/murine.gb", sandBoxDir + "test_2713/murine.gb");
+    GTUtilsMdi::click(os, GTGlobals::Close);
     GTFileDialog::openFile(os, sandBoxDir + "test_2713", "murine.gb");
 
 //    2. Open file {data/samples/FASTA/human_T1.fa}
+
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
 //    3. Drag and drop annotation object "NC_001363 features" from project view to sequence view
@@ -4995,7 +4993,7 @@ GUI_TEST_CLASS_DEFINITION(test_2713) {
 //    7. Open "human_T1" sequence view
 //    Expected state: annotations from "murine.gb" present on the sequence view
     GTUtilsProjectTreeView::doubleClickItem(os, "human_T1.fa");
-       GTGlobals::sleep(15000);
+       GTGlobals::sleep(5000);
     GTUtilsAnnotationsTreeView::findFirstAnnotation(os);
 }
 

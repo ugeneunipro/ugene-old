@@ -567,7 +567,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2077);
     REGISTER_TEST(GUITest_regression_scenarios::test_2078);
     REGISTER_TEST_ONLY_WINDOWS(GUITest_regression_scenarios::test_2089);//, "no forbidden folder characters on linux and mac");
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2093_1,"dashboards");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2093_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2091);
     REGISTER_TEST(GUITest_regression_scenarios::test_2093_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_1);
@@ -708,7 +708,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2701);
     REGISTER_TEST(GUITest_regression_scenarios::test_2709);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2711);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2713, "https://local.ugene.unipro.ru/tracker/browse/UGENE-3706");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2713);
     REGISTER_TEST(GUITest_regression_scenarios::test_2721);
     REGISTER_TEST(GUITest_regression_scenarios::test_2726);
     REGISTER_TEST(GUITest_regression_scenarios::test_2729);
@@ -742,8 +742,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2900);
     REGISTER_TEST(GUITest_regression_scenarios::test_2903);
     REGISTER_TEST(GUITest_regression_scenarios::test_2907);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2910, "https://local.ugene.unipro.ru/tracker/browse/UGENE-3659");
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2910_1, "https://local.ugene.unipro.ru/tracker/browse/UGENE-3659");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2910);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2910_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2910_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2910_3);
     REGISTER_TEST(GUITest_regression_scenarios::test_2923);
@@ -892,7 +892,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3563_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_3571_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_3571_2);
-    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_3585, "UGENE-3890");
+    REGISTER_TEST(GUITest_regression_scenarios::test_3585);
 
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3603, "UGENE-3830");
     REGISTER_TEST(GUITest_regression_scenarios::test_3609_1);

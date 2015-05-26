@@ -5397,9 +5397,10 @@ GUI_TEST_CLASS_DEFINITION(test_3901) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTGlobals::sleep();
+    //GTGlobals::sleep(500000);
 
     //4. Click to the arrow (80..90).
+    GTUtilsSequenceView::clickAnnotation(os, "feature", 80);
 
     //Expected state: the arrow's region is selected.
     ADVSingleSequenceWidget *w=(ADVSingleSequenceWidget*)GTWidget::findWidget(os,"ADV_single_sequence_widget_0");
