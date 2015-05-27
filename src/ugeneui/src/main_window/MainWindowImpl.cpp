@@ -47,7 +47,7 @@
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ObjectViewModel.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "AboutDialogController.h"
 #include "CheckUpdatesTask.h"
