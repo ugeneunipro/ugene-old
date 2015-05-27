@@ -40,6 +40,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "RegionSelector.h"
 
@@ -170,34 +171,37 @@ void RegionSelector::reset() {
 }
 
 void RegionSelector::showErrorMessage() {
-    QMessageBox msgBox(QMessageBox::NoIcon, L10N::errorTitle(), tr("Invalid sequence region!"), QMessageBox::Ok);
+    QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox(QMessageBox::NoIcon, L10N::errorTitle(), tr("Invalid sequence region!"), QMessageBox::Ok);
 
     //set focus to error field
     bool ok = false;
     qint64 v1 = startEdit->text().toLongLong(&ok) - 1;
     if (!ok || v1 <= 0 || v1 > maxLen) {
-        msgBox.setInformativeText(tr("Invalid Start position of region"));
-        msgBox.exec();
+        msgBox->setInformativeText(tr("Invalid Start position of region"));
+        msgBox->exec();
+        CHECK(!msgBox.isNull(), );
         startEdit->setFocus();
         return;
     }
 
     int v2 = endEdit->text().toLongLong(&ok);
     if (!ok || v2 <= 0 || v2 > maxLen) {
-        msgBox.setInformativeText(tr("Invalid End position of region"));
-        msgBox.exec();
+        msgBox->setInformativeText(tr("Invalid End position of region"));
+        msgBox->exec();
+        CHECK(!msgBox.isNull(), );
         endEdit->setFocus();
         return;
     }
 
-    if ( v1 > v2 && !isCircularSelectionAvailable) { // start > end
-        msgBox.setInformativeText(tr("Start position is greater than End position"));
-        msgBox.exec();
+    if (v1 > v2 && !isCircularSelectionAvailable) { // start > end
+        msgBox->setInformativeText(tr("Start position is greater than End position"));
+        msgBox->exec();
+        CHECK(!msgBox.isNull(), );
         startEdit->setFocus();
         return;
     }
 
-    msgBox.exec();
+    msgBox->exec();
 }
 
 void RegionSelector::sl_onComboBoxIndexChanged(int index) {

@@ -19,34 +19,33 @@
  * MA 02110-1301, USA.
  */
 
-#include "SiteconPlugin.h"
-#include "SiteconBuildDialogController.h"
-#include "SiteconSearchDialogController.h"
-#include "SiteconWorkers.h"
-#include "SiteconAlgorithmTests.h"
-#include "DIPropertiesTests.h"
-#include "SiteconIO.h"
-#include "SiteconQuery.h"
-
+#include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
-
 #include <U2Core/GAutoDeleteList.h>
-
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVSequenceObjectContext.h>
-#include <U2View/ADVConstants.h>
-#include <U2View/ADVUtils.h>
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ToolsMenu.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#include <U2Test/XMLTestFormat.h>
 #include <U2Test/GTest.h>
 #include <U2Test/GTestFrameworkComponents.h>
+#include <U2Test/XMLTestFormat.h>
 
-#include <U2Core/AppContext.h>
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVUtils.h>
+#include <U2View/AnnotatedDNAView.h>
+
+#include "DIPropertiesTests.h"
+#include "SiteconAlgorithmTests.h"
+#include "SiteconBuildDialogController.h"
+#include "SiteconIO.h"
+#include "SiteconPlugin.h"
+#include "SiteconQuery.h"
+#include "SiteconSearchDialogController.h"
+#include "SiteconWorkers.h"
 
 namespace U2 {
 
@@ -101,8 +100,8 @@ SiteconPlugin::~SiteconPlugin() {
 
 void SiteconPlugin::sl_build() {
     QWidget *p = (QWidget*)(AppContext::getMainWindow()->getQMainWindow());
-    SiteconBuildDialogController d(this, p);
-    d.exec();
+    QObjectScopedPointer<SiteconBuildDialogController> d = new SiteconBuildDialogController(this, p);
+    d->exec();
 }
 
 void SiteconPlugin::sl_search() {
@@ -130,8 +129,8 @@ void SiteconADVContext::sl_search() {
 
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
     assert(seqCtx->getAlphabet()->isNucleic());
-    SiteconSearchDialogController d(seqCtx, av->getWidget());
-    d.exec();
+    QObjectScopedPointer<SiteconSearchDialogController> d = new SiteconSearchDialogController(seqCtx, av->getWidget());
+    d->exec();
 }
 
 QList<XMLTestFactory*> SiteconAlgorithmTests::createTestFactories() {

@@ -19,15 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QMouseEvent>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QToolTip>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QToolTip>
-#endif
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QToolTip>
 
 #include <U2Algorithm/RepeatFinderSettings.h>
 #include <U2Algorithm/RepeatFinderTaskFactory.h>
@@ -42,12 +36,13 @@
 #include <U2Core/L10n.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/TextUtils.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Gui/GraphUtils.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
@@ -57,9 +52,9 @@
 
 #include "DotPlotDialog.h"
 #include "DotPlotFilterDialog.h"
+#include "DotPlotImageExportTask.h"
 #include "DotPlotTasks.h"
 #include "DotPlotWidget.h"
-#include "DotPlotImageExportTask.h"
 
 namespace U2 {
 
@@ -522,10 +517,11 @@ void DotPlotWidget::sl_showSaveImageDialog() {
     exitButton->hide();
 
     DotPlotImageExportController factory(this);
-    ExportImageDialog dialog(&factory,
-                             ExportImageDialog::DotPlot,
-                             ExportImageDialog::SupportScaling);
-    dialog.exec();
+    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(&factory,
+                                                                      ExportImageDialog::DotPlot,
+                                                                      ExportImageDialog::SupportScaling);
+    dialog->exec();
+    CHECK(!dialog.isNull(), );
 
     exitButton->show();
 }
@@ -659,8 +655,11 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
 
     SAFE_POINT(dnaView, "dnaView is NULL", false);
 
-    DotPlotDialog d(this, dnaView, minLen, identity, sequenceX, sequenceY, direct, inverted, dotPlotDirectColor, dotPlotInvertedColor, disableLoad);
-    if (d.exec() != QDialog::Accepted) {
+    QObjectScopedPointer<DotPlotDialog> d = new DotPlotDialog(this, dnaView, minLen, identity, sequenceX, sequenceY, direct, inverted, dotPlotDirectColor, dotPlotInvertedColor, disableLoad);
+    d->exec();
+    CHECK(!d.isNull(), false);
+
+    if (d->result() != QDialog::Accepted) {
         return false;
     }
     setMinimumHeight(200);
@@ -669,30 +668,30 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
     nearestInverted = false;
 
     bool res = false;
-    if ((sequenceX != d.getXSeq()) || (sequenceY != d.getYSeq())) {
+    if ((sequenceX != d->getXSeq()) || (sequenceY != d->getYSeq())) {
         res = true;
     }
 
-    sequenceX = d.getXSeq();
-    sequenceY = d.getYSeq();
+    sequenceX = d->getXSeq();
+    sequenceY = d->getYSeq();
 
     if (res){
         resetZooming();
     }
 
-    direct = d.isDirect();
-    inverted = d.isInverted();
+    direct = d->isDirect();
+    inverted = d->isInverted();
 
     SAFE_POINT(direct || inverted, "direct || inverted is false", false);
 
-    dotPlotDirectColor = d.getDirectColor();
-    dotPlotInvertedColor = d.getInvertedColor();
+    dotPlotDirectColor = d->getDirectColor();
+    dotPlotInvertedColor = d->getInvertedColor();
 
-    SAFE_POINT(d.minLenBox, "d.minLenBox is NULL", false);
-    SAFE_POINT(d.identityBox, "d.identityBox is NULL", false);
+    SAFE_POINT(d->minLenBox, "d.minLenBox is NULL", false);
+    SAFE_POINT(d->identityBox, "d.identityBox is NULL", false);
 
-    minLen = d.minLenBox->value();
-    identity = d.identityBox->value();
+    minLen = d->minLenBox->value();
+    identity = d->identityBox->value();
 
     connectSequenceSelectionSignals();
 
@@ -729,7 +728,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
 
 
     const DNAAlphabet *al = sequenceX->getAlphabet();
-    RFAlgorithm alg = d.getAlgo();
+    RFAlgorithm alg = d->getAlgo();
     if ((al->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()) || (al->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT())) {
         al = sequenceY->getAlphabet();
     }else{
@@ -747,7 +746,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
     CHECK_OP_EXT(os, QMessageBox::critical(this, L10N::errorTitle(), os.getError()), false);
     seqYCache = sequenceY->getSequenceObject()->getWholeSequenceData(os);
     CHECK_OP_EXT(os, QMessageBox::critical(this, L10N::errorTitle(), os.getError()), false);
-    if (d.isDirect()) {
+    if (d->isDirect()) {
         RepeatFinderSettings cDirect(
             dpDirectResultListener,
             seqXCache.constData(),
@@ -756,7 +755,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
             seqYCache.constData(),
             seqYCache.length(),
             al,
-            d.getMinLen(), d.getMismatches(),
+            d->getMinLen(), d->getMismatches(),
             alg
             );
 
@@ -766,7 +765,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
         tasks << dotPlotDirectTask;
     }
 
-    if (d.isInverted()) {
+    if (d->isInverted()) {
         RepeatFinderSettings cInverse(
             dpRevComplResultsListener,
             seqXCache.constData(),
@@ -775,7 +774,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
             seqYCache.constData(),
             seqYCache.length(),
             al,
-            d.getMinLen(), d.getMismatches(),
+            d->getMinLen(), d->getMismatches(),
             alg
             );
 
@@ -1918,9 +1917,11 @@ void DotPlotWidget::setSequences(U2SequenceObject* seqX, U2SequenceObject* seqY)
 }
 
 void DotPlotWidget::sl_filter(){
+    QObjectScopedPointer<DotPlotFilterDialog> d = new DotPlotFilterDialog(QApplication::activeWindow(), sequenceX, sequenceY);
+    d->exec();
+    CHECK(!d.isNull(), );
 
-    DotPlotFilterDialog d(QApplication::activeWindow(), sequenceX, sequenceY);
-    if(d.exec()){
+    if (QDialog::Accepted == d->result()) {
         SAFE_POINT(dpDirectResultListener, "dpDirectResultListener is NULL", );
         SAFE_POINT(sequenceX, "sequenceX is NULL", );
         SAFE_POINT(sequenceY, "sequenceY is NULL", );
@@ -1929,20 +1930,20 @@ void DotPlotWidget::sl_filter(){
 
         Task* directT = new DotPlotFilterTask(sequenceX,
             sequenceY,
-            d.getFeatureNames(),
+            d->getFeatureNames(),
             dpDirectResultListener->dotPlotList,
             dpFilteredResults,
-            d.getFilterType());
+            d->getFilterType());
         tasks << directT;
 
         //inverted
         if(inverted){
             Task* recComplT = new DotPlotFilterTask(sequenceX,
                 sequenceY,
-                d.getFeatureNames(),
+                d->getFeatureNames(),
                 dpRevComplResultsListener->dotPlotList,
                 dpFilteredResultsRevCompl,
-                d.getFilterType());
+                d->getFilterType());
             tasks << recComplT;
         }
 

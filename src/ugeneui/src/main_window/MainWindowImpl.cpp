@@ -19,63 +19,52 @@
  * MA 02110-1301, USA.
  */
 
-#include "MainWindowImpl.h"
-#include "DockManagerImpl.h"
-#include "MDIManagerImpl.h"
-#include "ShutdownTask.h"
-#include "MenuManager.h"
-#include "ToolBarManager.h"
-
-#include "TmpDirChangeDialogController.h"
-#include "AboutDialogController.h"
-#include "CheckUpdatesTask.h"
-#include "shtirlitz/Shtirlitz.h"
-
-
-#include <U2Core/TmpDirChecker.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Gui/ObjectViewModel.h>
-
-#include <U2Core/Settings.h>
-#include <U2Core/AppSettings.h>
-#include <U2Core/UserApplicationsSettings.h>
-#include <U2Core/Task.h>
-#include <U2Core/ProjectModel.h>
-
-#include <U2Core/DocumentSelection.h>
-#include <U2Core/L10n.h>
-#include <U2Core/U2SafePoints.h>
-
-#include <U2Gui/GUIUtils.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QToolBar>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QToolBar>
-#endif
-#include <QtGui/QPainter>
-#include <QtGui/QFont>
-#include <QtGui/QPixmap>
-
-#include <algorithm>
-
+#include <qglobal.h>
 #ifdef Q_WS_MACX
 #include <Security/Authorization.h>
 #include <errno.h>
 #endif
+#include <algorithm>
 
+#include <QAction>
+#include <QFont>
+#include <QPainter>
+#include <QPixmap>
+#include <QToolBar>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentSelection.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/L10n.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/Settings.h>
+#include <U2Core/Task.h>
+#include <U2Core/TmpDirChecker.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/UserApplicationsSettings.h>
+
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
+#include "AboutDialogController.h"
+#include "CheckUpdatesTask.h"
+#include "DockManagerImpl.h"
+#include "MDIManagerImpl.h"
+#include "MainWindowImpl.h"
+#include "MenuManager.h"
+#include "ShutdownTask.h"
+#include "TmpDirChangeDialogController.h"
+#include "ToolBarManager.h"
+#include "shtirlitz/Shtirlitz.h"
 
 namespace U2 {
 
 #define USER_MANUAL_FILE_NAME "UniproUGENE_UserManual.pdf"
 #define WD_USER_MANUAL_FILE_NAME "WorkflowDesigner_UserManual.pdf"
 #define QD_USER_MANUAL_FILE_NAME "QueryDesigner_UserManual.pdf"
-
-/* TRANSLATOR U2::MainWindowImpl */
 
 #define SETTINGS_DIR QString("main_window/")
 
@@ -293,8 +282,8 @@ void MainWindowImpl::sl_exitAction() {
 
 void MainWindowImpl::sl_aboutAction() {
     QWidget *p = qobject_cast<QWidget*>(getQMainWindow());
-    AboutDialogController d(visitWebAction, p);
-    d.exec();
+    QObjectScopedPointer<AboutDialogController> d = new AboutDialogController(visitWebAction, p);
+    d->exec();
 }
 
 
@@ -362,12 +351,14 @@ void MainWindowImpl::runClosingTask() {
         AppContext::getTaskScheduler()->registerTopLevelTask(new ShutdownTask(this));
         setShutDownInProcess(true);
     } else {
-        QMessageBox *msgBox = new QMessageBox(getQMainWindow());
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox(getQMainWindow());
         msgBox->setWindowTitle(U2_APP_TITLE);
         msgBox->setText(tr("Shutdown already in process. Close UGENE immediately?"));
         QPushButton *closeButton = msgBox->addButton(tr("Close"), QMessageBox::ActionRole);
         /*QPushButton *waitButton =*/ msgBox->addButton(tr("Wait"), QMessageBox::ActionRole);
         msgBox->exec();
+        CHECK_EXT(!msgBox.isNull(), exit(0), );
+
         if(getQMainWindow()) {
             if(msgBox->clickedButton() == closeButton) {
                 //QCoreApplication::exit();
@@ -379,7 +370,7 @@ void MainWindowImpl::runClosingTask() {
 
 void MainWindowImpl::setShutDownInProcess(bool flag) {
     shutDownInProcess = flag;
-    mw->setEnabled(!flag);
+//    mw->setEnabled(!flag);
     menuManager->setMenuBarEnabled(!flag);
 }
 
@@ -403,10 +394,12 @@ void MainWindowImpl::sl_openQDManualAction()
     openManual(QD_USER_MANUAL_FILE_NAME);
 }
 void MainWindowImpl::sl_tempDirPathCheckFailed(QString path) {
-    TmpDirChangeDialogController tmpDirChangeDialogController(path, mw);
-    tmpDirChangeDialogController.exec();
-    if (tmpDirChangeDialogController.result() == QDialog::Accepted) {
-        AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(tmpDirChangeDialogController.getTmpDirPath());
+    QObjectScopedPointer<TmpDirChangeDialogController> tmpDirChangeDialogController = new TmpDirChangeDialogController(path, mw);
+    tmpDirChangeDialogController->exec();
+    CHECK(!tmpDirChangeDialogController.isNull(), );
+
+    if (tmpDirChangeDialogController->result() == QDialog::Accepted) {
+        AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(tmpDirChangeDialogController->getTmpDirPath());
     }
     else {
         AppContext::getTaskScheduler()->cancelAllTasks();
@@ -469,13 +462,15 @@ void MainWindowImpl::openManual(const QString& name){
         GUIUtils::runWebBrowser(QString("http://ugene.unipro.ru/downloads/") + name);
     }else{
         if(!QDesktopServices::openUrl(QUrl("file:///"+fileInfo.absoluteFilePath()))){
-            QMessageBox msgBox;
-            msgBox.setWindowTitle(L10N::warningTitle());
-            msgBox.setText(tr("Can not open %1 file. ").arg(name));
-            msgBox.setInformativeText(tr("You can try open it manualy from here: %1 \nor view online documentation.\n\nDo you want view online documentation?").arg(fileInfo.absolutePath()));
-            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            msgBox.setDefaultButton(QMessageBox::Yes);
-            int ret = msgBox.exec();
+            QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
+            msgBox->setWindowTitle(L10N::warningTitle());
+            msgBox->setText(tr("Can not open %1 file. ").arg(name));
+            msgBox->setInformativeText(tr("You can try open it manualy from here: %1 \nor view online documentation.\n\nDo you want view online documentation?").arg(fileInfo.absolutePath()));
+            msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox->setDefaultButton(QMessageBox::Yes);
+            int ret = msgBox->exec();
+            CHECK(!msgBox.isNull(), );
+
             switch (ret) {
                case QMessageBox::Yes:
                    GUIUtils::runWebBrowser("http://ugene.unipro.ru/documentation.html");
@@ -490,6 +485,7 @@ void MainWindowImpl::openManual(const QString& name){
         }
     }
 }
+
 QMenu* MainWindowImpl::getTopLevelMenu( const QString& sysName ) const
 {
     return menuManager->getTopLevelMenu(sysName);

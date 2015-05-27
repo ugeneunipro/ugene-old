@@ -19,34 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QSysInfo>
-#include <QtCore/QDate>
-#include <QtCore/QBuffer>
-#include <QtCore/QProcess>
-#include <QtCore/QUrl>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMessageBox>
-#endif
-
-#include <QtNetwork/QNetworkReply>
+#include <QApplication>
+#include <QBuffer>
+#include <QDate>
+#include <QMessageBox>
+#include <QNetworkReply>
+#include <QProcess>
+#include <QSysInfo>
+#include <QUrl>
 
 #include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
-#include <U2Core/Version.h>
-#include <U2Core/Log.h>
-#include <U2Core/NetworkConfiguration.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/Counter.h>
+#include <U2Core/Log.h>
+#include <U2Core/NetworkConfiguration.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/Version.h>
+
 #include <U2Gui/MainWindow.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2Remote/SynchHttp.h>
 
-#include <U2Core/UserApplicationsSettings.h>
 #include "Shtirlitz.h"
 #include "StatisticalReportController.h"
 
@@ -111,9 +107,11 @@ QList<Task*> Shtirlitz::wakeup() {
     // and user did not enabled stats before -> ask to enable
     // Do not ask to enable it twice for different versions!
     if(minorVersionFirstLaunch) {
-        StatisticalReportController dialog(":ugene/html/version_news.html");
-        dialog.exec();
-        if( !dialog.isInfoSharingAccepted() ) {
+        QObjectScopedPointer<StatisticalReportController> dialog = new StatisticalReportController(":ugene/html/version_news.html");
+        dialog->exec();
+        CHECK(!dialog.isNull(), result);
+
+        if (!dialog->isInfoSharingAccepted()) {
             AppContext::getAppSettings()->getUserAppsSettings()->setEnableCollectingStatistics( false );
             return result;
         }

@@ -19,13 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QDir>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#else
-#include <QtWidgets/QMainWindow>
-#endif
+#include <QDir>
+#include <QMainWindow>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -39,6 +34,7 @@
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
@@ -110,21 +106,22 @@ void MSAExportContext::sl_exportNucleicMsaToAmino() {
     GUrl msaUrl = editor->getMSAObject()->getDocument()->getURL();
     QString defaultUrl = GUrlUtils::getNewLocalUrlByFormat(msaUrl, editor->getMSAObject()->getGObjectName(), BaseDocumentFormats::CLUSTAL_ALN, "_transl");
 
-    ExportMSA2MSADialog d(defaultUrl, BaseDocumentFormats::CLUSTAL_ALN, editor->getCurrentSelection().height() < 1, AppContext::getMainWindow()->getQMainWindow());
+    QObjectScopedPointer<ExportMSA2MSADialog> d = new ExportMSA2MSADialog(defaultUrl, BaseDocumentFormats::CLUSTAL_ALN, editor->getCurrentSelection().height() < 1, AppContext::getMainWindow()->getQMainWindow());
+    d->setWindowTitle(tr("Export Amino Translation"));
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
 
-    d.setWindowTitle(tr("Export Amino Translation"));
-    int rc = d.exec();
     if (rc == QDialog::Rejected) {
         return;
     }
 
     QList<DNATranslation*> trans;
-    trans << AppContext::getDNATranslationRegistry()->lookupTranslation(d.translationTable);
+    trans << AppContext::getDNATranslationRegistry()->lookupTranslation(d->translationTable);
 
-    int offset = d.exportWholeAlignment ? 0 : editor->getCurrentSelection().top();
-    int len = d.exportWholeAlignment ? ma.getNumRows() : editor->getCurrentSelection().height();
+    int offset = d->exportWholeAlignment ? 0 : editor->getCurrentSelection().top();
+    int len = d->exportWholeAlignment ? ma.getNumRows() : editor->getCurrentSelection().height();
 
-    Task* t = ExportUtils::wrapExportTask(new ExportMSA2MSATask(ma, offset, len, d.file, trans, d.formatId), d.addToProjectFlag);
+    Task* t = ExportUtils::wrapExportTask(new ExportMSA2MSATask(ma, offset, len, d->file, trans, d->formatId), d->addToProjectFlag);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 

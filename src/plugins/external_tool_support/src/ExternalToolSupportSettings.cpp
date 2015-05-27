@@ -19,30 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExternalToolSupportSettings.h"
+#include <QApplication>
+#include <QFile>
+#include <QMessageBox>
+#include <QSettings>
+#include <QStyle>
+#include <QStyleFactory>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/UserApplicationsSettings.h>
-#include <U2Core/Settings.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/Settings.h>
 #include <U2Core/U2OpStatus.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Gui/AppSettingsGUI.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#include <QtCore/QSettings>
-#include <QtCore/QFile>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QStyle>
-#include <QtGui/QStyleFactory>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QStyle>
-#include <QtWidgets/QStyleFactory>
-#include <QtWidgets/QMessageBox>
-#endif
+#include "ExternalToolSupportSettings.h"
 
 namespace U2 {
 
@@ -123,14 +118,16 @@ void ExternalToolSupportSettings::setExternalTools() {
 
 void ExternalToolSupportSettings::checkTemporaryDir(U2OpStatus& os){
     if (AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath().isEmpty()){
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(QObject::tr("Path for temporary files"));
-        msgBox.setText(QObject::tr("Path for temporary files not selected."));
-        msgBox.setInformativeText(QObject::tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
-        if (ret ==  QMessageBox::Yes) {
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
+        msgBox->setWindowTitle(QObject::tr("Path for temporary files"));
+        msgBox->setText(QObject::tr("Path for temporary files not selected."));
+        msgBox->setInformativeText(QObject::tr("Do you want to select it now?"));
+        msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox->setDefaultButton(QMessageBox::Yes);
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), );
+
+        if (ret == QMessageBox::Yes) {
             AppContext::getAppSettingsGUI()->showSettingsDialog(APP_SETTINGS_USER_APPS);
         }
     }

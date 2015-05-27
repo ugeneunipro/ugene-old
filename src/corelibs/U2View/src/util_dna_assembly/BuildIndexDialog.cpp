@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 
@@ -39,6 +33,7 @@
 #include <U2Gui/AppSettingsGUI.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "BuildIndexDialog.h"
@@ -186,13 +181,15 @@ void BuildIndexDialog::accept()
             externalToolName = "Bowtie build indexer";
         }
         if(AppContext::getExternalToolRegistry()->getByName(externalToolName)->getPath().isEmpty()) {
-            QMessageBox msgBox;
-            msgBox.setWindowTitle(tr("DNA Assembly"));
-            msgBox.setInformativeText(tr("Do you want to select it now?"));
-            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            msgBox.setDefaultButton(QMessageBox::Yes);
-            msgBox.setText(tr(QString("Path for <i>" + externalToolName + "</i> tool is not selected.").toLatin1().data()));
-            int ret = msgBox.exec();
+            QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox(this);
+            msgBox->setWindowTitle(tr("DNA Assembly"));
+            msgBox->setInformativeText(tr("Do you want to select it now?"));
+            msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox->setDefaultButton(QMessageBox::Yes);
+            msgBox->setText(tr(QString("Path for <i>" + externalToolName + "</i> tool is not selected.").toLatin1().data()));
+            const int ret = msgBox->exec();
+            CHECK(!msgBox.isNull(), );
+
             switch (ret) {
             case QMessageBox::Yes:
                 AppContext::getAppSettingsGUI()->showSettingsDialog(APP_SETTINGS_EXTERNAL_TOOLS);

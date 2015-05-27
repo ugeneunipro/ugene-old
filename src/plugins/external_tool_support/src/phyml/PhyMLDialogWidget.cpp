@@ -19,12 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QMessageBox>
 
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DNAAlphabet.h>
@@ -33,12 +28,13 @@
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
+#include "ExternalToolSupportSettings.h"
+#include "ExternalToolSupportSettingsController.h"
 #include "PhyMLDialogWidget.h"
 #include "PhyMLSupport.h"
-#include "ExternalToolSupportSettingsController.h"
-#include "ExternalToolSupportSettings.h"
 
 namespace U2 {
 
@@ -220,13 +216,15 @@ bool PhyMlWidget::checkSettings(QString& , const CreatePhyTreeSettings& ){
     const QString& path = phyml->getPath();
     const QString& name = phyml->getName();
     if (path.isEmpty()){
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(name);
-        msgBox.setText(tr("Path for %1 tool not selected.").arg(name));
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
+        msgBox->setWindowTitle(name);
+        msgBox->setText(tr("Path for %1 tool not selected.").arg(name));
+        msgBox->setInformativeText(tr("Do you want to select it now?"));
+        msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox->setDefaultButton(QMessageBox::Yes);
+        int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), false);
+
         switch (ret) {
            case QMessageBox::Yes:
                AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);

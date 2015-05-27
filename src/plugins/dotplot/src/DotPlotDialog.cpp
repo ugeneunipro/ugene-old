@@ -35,6 +35,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
@@ -205,10 +206,12 @@ void DotPlotDialog::sl_directInvertedCheckBox() {
 static const QString COLOR_STYLE("QPushButton { background-color: %1 }");
 
 void DotPlotDialog::sl_directColorButton() {
-    QColorDialog d(directColor, this);
+    QObjectScopedPointer<QColorDialog> d = new QColorDialog(directColor, this);
+    d->exec();
+    CHECK(!d.isNull(), );
 
-    if (d.exec()) {
-        directColor = d.selectedColor();
+    if (QDialog::Accepted == d->result()) {
+        directColor = d->selectedColor();
         directCheckBox->setChecked(true);
     }
 
@@ -216,10 +219,12 @@ void DotPlotDialog::sl_directColorButton() {
 }
 
 void DotPlotDialog::sl_invertedColorButton() {
-    QColorDialog d(invertedColor, this);
+    QObjectScopedPointer<QColorDialog> d = new QColorDialog(invertedColor, this);
+    d->exec();
+    CHECK(!d.isNull(), );
 
-    if (d.exec()) {
-        invertedColor = d.selectedColor();
+    if (QDialog::Accepted == d->result()) {
+        invertedColor = d->selectedColor();
         invertedCheckBox->setChecked(true);
     }
 

@@ -19,16 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDesktopWidget>
-#include <QtGui/QMessageBox>
-#include <QtGui/QTextEdit>
-#else
-#include <QtWidgets/QDesktopWidget>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QTextEdit>
-#endif
+#include <QDesktopWidget>
+#include <QMessageBox>
+#include <QTextEdit>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentUtils.h>
@@ -43,6 +36,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "BAMDbiPlugin.h"
@@ -151,9 +145,9 @@ void ConvertToSQLiteDialog::sl_inverseSelection() {
 
 void ConvertToSQLiteDialog::sl_bamInfoButtonClicked() {
     const Header& header = bamInfo.getHeader();
-    QDialog dialog(this);
-    dialog.setWindowTitle(BAMDbiPlugin::tr("%1 file info").arg(sourceUrl.getURLString()));
-    dialog.setLayout(new QVBoxLayout());
+    QObjectScopedPointer<QDialog> dialog = new QDialog(this);
+    dialog->setWindowTitle(BAMDbiPlugin::tr("%1 file info").arg(sourceUrl.getURLString()));
+    dialog->setLayout(new QVBoxLayout());
 
     {
         QTableWidget* table = new QTableWidget();
@@ -187,7 +181,7 @@ void ConvertToSQLiteDialog::sl_bamInfoButtonClicked() {
                 table->setItem(i, 1, item);
             }
         }
-        dialog.layout()->addWidget(table);
+        dialog->layout()->addWidget(table);
     }
 
     {
@@ -212,8 +206,8 @@ void ConvertToSQLiteDialog::sl_bamInfoButtonClicked() {
             }
             i++;
         }
-        dialog.layout()->addWidget(new QLabel(BAMDbiPlugin::tr("Read groups:")));
-        dialog.layout()->addWidget(table);
+        dialog->layout()->addWidget(new QLabel(BAMDbiPlugin::tr("Read groups:")));
+        dialog->layout()->addWidget(table);
     }
 
     {
@@ -235,11 +229,11 @@ void ConvertToSQLiteDialog::sl_bamInfoButtonClicked() {
             }
             i++;
         }
-        dialog.layout()->addWidget(new QLabel(BAMDbiPlugin::tr("Programs:")));
-        dialog.layout()->addWidget(table);
+        dialog->layout()->addWidget(new QLabel(BAMDbiPlugin::tr("Programs:")));
+        dialog->layout()->addWidget(table);
     }
-    dialog.resize(qMin(600, QApplication::desktop()->screenGeometry().width()), dialog.sizeHint().height());
-    dialog.exec();
+    dialog->resize(qMin(600, QApplication::desktop()->screenGeometry().width()), dialog->sizeHint().height());
+    dialog->exec();
 }
 
 void ConvertToSQLiteDialog::sl_refUrlButtonClicked() {

@@ -19,17 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QTime>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QStatusBar>
-#include <QtGui/QTextBrowser>
-#else
-#include <QtWidgets/QStatusBar>
-#include <QtWidgets/QTextBrowser>
-#endif
+#include <QStatusBar>
+#include <QTextBrowser>
+#include <QTime>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "MainWindow.h"
 #include "Notification.h"
@@ -155,8 +152,8 @@ void Notification::mousePressEvent(QMouseEvent *ev) {
         if(action) {
             action->trigger();
         } else if(!timer.isActive()){
-            QDialog dlg(AppContext::getMainWindow()->getQMainWindow());
-            dlg.setObjectName("NotificationDialog");
+            QObjectScopedPointer<QDialog> dlg = new QDialog(AppContext::getMainWindow()->getQMainWindow());
+            dlg->setObjectName("NotificationDialog");
             QVBoxLayout vLayout;
             QHBoxLayout hLayout;
             QPushButton ok;
@@ -165,28 +162,31 @@ void Notification::mousePressEvent(QMouseEvent *ev) {
             ok.setText(tr("OK"));
             isDelete.setText(tr("Remove notification after closing"));
             isDelete.setChecked(true);
-            connect(&ok, SIGNAL(clicked()), &dlg, SLOT(accept()));
+            connect(&ok, SIGNAL(clicked()), dlg.data(), SLOT(accept()));
             hLayout.addWidget(&isDelete);
             hLayout.addWidget(&ok);
 
-            dlg.setLayout(&vLayout);
+            dlg->setLayout(&vLayout);
             QTextBrowser txtEdit;
             txtEdit.setOpenExternalLinks(true);
             txtEdit.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            dlg.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            dlg->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             txtEdit.setReadOnly(true);
             txtEdit.setText(text);
             vLayout.addWidget(&txtEdit);
             vLayout.addLayout(&hLayout);
 
-            dlg.setWindowTitle(tr("Detailed message"));
+            dlg->setWindowTitle(tr("Detailed message"));
 
             NotificationStack *notificationStack = AppContext::getMainWindow()->getNotificationStack();
             if (NULL != notificationStack) {
                 notificationStack->setFixed(true);
             }
 
-            if(dlg.exec() == QDialog::Accepted) {
+            const int dialogResult = dlg->exec();
+            CHECK(!dlg.isNull(), );
+
+            if (QDialog::Accepted == dialogResult) {
                 if(isDelete.isChecked()) {
                     emit si_delete();
                 }

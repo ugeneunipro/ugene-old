@@ -34,16 +34,16 @@
 
 namespace U2 {
 
-void ExportUtils::loadDNAExportSettingsFromDlg(ExportSequenceTaskSettings& s, const ExportSequencesDialog& d)  {
-    s.fileName = d.file;
-    s.merge = d.merge;
-    s.mergeGap = d.mergeGap;
-    s.allAminoFrames = d.translateAllFrames;
-    s.strand = d.strand;
-    s.formatId = d.formatId;
-    s.mostProbable = d.mostProbable;
-    s.saveAnnotations = d.withAnnotations;
-    s.sequenceName = d.sequenceName;
+void ExportUtils::loadDNAExportSettingsFromDlg(ExportSequenceTaskSettings& s, ExportSequencesDialog *d)  {
+    s.fileName = d->file;
+    s.merge = d->merge;
+    s.mergeGap = d->mergeGap;
+    s.allAminoFrames = d->translateAllFrames;
+    s.strand = d->strand;
+    s.formatId = d->formatId;
+    s.mostProbable = d->mostProbable;
+    s.saveAnnotations = d->withAnnotations;
+    s.sequenceName = d->sequenceName;
 }
 
 Task* ExportUtils::wrapExportTask(DocumentProviderTask* t, bool addToProject) {

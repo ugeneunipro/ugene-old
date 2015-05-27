@@ -19,49 +19,45 @@
  * MA 02110-1301, USA.
  */
 
-#include "KalignPlugin.h"
-#include "KalignTask.h"
-#include "KalignConstants.h"
-#include "KalignDialogController.h"
-#include "KalignWorker.h"
-#include "PairwiseAlignmentHirschbergTask.h"
-#include "PairwiseAlignmentHirschbergTaskFactory.h"
-#include "PairwiseAlignmentHirschbergGUIExtensionFactory.h"
-#include "kalign_tests/KalignTests.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Core/Task.h>
-#include <U2Core/TaskSignalMapper.h>
-#include <U2Core/GAutoDeleteList.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/DNAAlphabet.h>
+#include <QDialog>
+#include <QMainWindow>
 
 #include <U2Algorithm/AlignmentAlgorithmsRegistry.h>
 
-#include <U2Lang/WorkflowSettings.h>
-
-#include <U2View/MSAEditorFactory.h>
-#include <U2View/MSAEditor.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/GAutoDeleteList.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/Task.h>
+#include <U2Core/TaskSignalMapper.h>
 
 #include <U2Gui/GUIUtils.h>
-#include <U2Gui/Notification.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/Notification.h>
 #include <U2Gui/ToolsMenu.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
+#include <U2Lang/WorkflowSettings.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#include <QtGui/QMainWindow>
-#else
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QMainWindow>
-#endif
+#include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorFactory.h>
+
+#include "KalignConstants.h"
+#include "KalignDialogController.h"
+#include "KalignPlugin.h"
+#include "KalignTask.h"
+#include "KalignWorker.h"
+#include "PairwiseAlignmentHirschbergGUIExtensionFactory.h"
+#include "PairwiseAlignmentHirschbergTask.h"
+#include "PairwiseAlignmentHirschbergTaskFactory.h"
+#include "kalign_tests/KalignTests.h"
 
 namespace U2 {
 
@@ -110,17 +106,18 @@ KalignPlugin::KalignPlugin()
 }
 
 void KalignPlugin::sl_runWithExtFileSpecify() {
-
     //Call select input file and setup settings dialog
 
     KalignTaskSettings settings;
-    KalignAlignWithExtFileSpecifyDialogController kalignRunDialog(AppContext::getMainWindow()->getQMainWindow(), settings);
-    if(kalignRunDialog.exec() != QDialog::Accepted){
+    QObjectScopedPointer<KalignAlignWithExtFileSpecifyDialogController> kalignRunDialog = new KalignAlignWithExtFileSpecifyDialogController(AppContext::getMainWindow()->getQMainWindow(), settings);
+    kalignRunDialog->exec();
+    CHECK(!kalignRunDialog.isNull(), );
+
+    if(kalignRunDialog->result() != QDialog::Accepted){
         return;
-        }
+    }
     KalignWithExtFileSpecifySupportTask* kalignTask=new KalignWithExtFileSpecifySupportTask(settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(kalignTask);
-
 }
 
 KalignPlugin::~KalignPlugin() {
@@ -181,9 +178,10 @@ void KalignMSAEditorContext::sl_align() {
     MAlignmentObject* obj = ed->getMSAObject();
 
     KalignTaskSettings s;
-    KalignDialogController dlg(ed->getWidget(), obj->getMAlignment(), s);
+    QObjectScopedPointer<KalignDialogController> dlg = new KalignDialogController(ed->getWidget(), obj->getMAlignment(), s);
+    const int rc = dlg->exec();
+    CHECK(!dlg.isNull(), );
 
-    int rc = dlg.exec();
     if (rc != QDialog::Accepted) {
         return;
     }
@@ -191,8 +189,8 @@ void KalignMSAEditorContext::sl_align() {
     AlignGObjectTask * kalignTask = new KalignGObjectRunFromSchemaTask(obj, s);
     Task *alignTask = NULL;
 
-    if (dlg.translateToAmino()) {
-        alignTask = new AlignInAminoFormTask(obj, kalignTask, dlg.getTranslationId());
+    if (dlg->translateToAmino()) {
+        alignTask = new AlignInAminoFormTask(obj, kalignTask, dlg->getTranslationId());
     } else {
         alignTask = kalignTask;
     }

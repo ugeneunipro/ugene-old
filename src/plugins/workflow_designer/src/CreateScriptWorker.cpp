@@ -19,20 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QAbstractItemModel>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#include <QtGui/QHeaderView>
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#include <QtGui/QTableView>
-#else
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QTableView>
-#endif
+#include <QAbstractItemModel>
+#include <QFileDialog>
+#include <QHeaderView>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QTableView>
 
 #include <U2Core/Log.h>
 
@@ -43,11 +35,10 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowSettings.h>
 
+#include "CreateScriptWorker.h"
+#include "WorkflowEditorDelegates.h"
 #include "library/ScriptWorker.h"
 #include "util/WorkerNameValidator.h"
-#include "WorkflowEditorDelegates.h"
-
-#include "CreateScriptWorker.h"
 
 namespace U2 {
 

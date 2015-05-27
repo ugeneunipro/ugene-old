@@ -67,7 +67,6 @@ protected:
     virtual void buildMenu(GObjectView* v, QMenu* m);
 };
 
-
 class HMMADVContext: public GObjectViewWindowContext {
     Q_OBJECT
 public:

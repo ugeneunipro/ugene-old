@@ -19,31 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#include "WeightMatrixPlugin.h"
-#include "WeightMatrixIO.h"
-#include "WeightMatrixWorkers.h"
-#include "PWMBuildDialogController.h"
-#include "PWMSearchDialogController.h"
-#include "WMQuery.h"
-#include "PMatrixFormat.h"
-
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVSequenceObjectContext.h>
-#include <U2View/ADVConstants.h>
-#include <U2View/ADVUtils.h>
-
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/GUIUtils.h>
+#include <QDir>
 
 #include <U2Algorithm/PWMConversionAlgorithm.h>
 
 #include <U2Core/AppContext.h>
 
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ToolsMenu.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2Lang/QueryDesignerRegistry.h>
 
-#include <QtCore/QDir>
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVUtils.h>
+#include <U2View/AnnotatedDNAView.h>
+
+#include "PMatrixFormat.h"
+#include "PWMBuildDialogController.h"
+#include "PWMSearchDialogController.h"
+#include "WMQuery.h"
+#include "WeightMatrixIO.h"
+#include "WeightMatrixPlugin.h"
+#include "WeightMatrixWorkers.h"
 
 namespace U2 {
 
@@ -94,8 +94,8 @@ WeightMatrixPlugin::~WeightMatrixPlugin() {
 
 void WeightMatrixPlugin::sl_build() {
     QWidget *p = (QWidget*)(AppContext::getMainWindow()->getQMainWindow());
-    PWMBuildDialogController d(p);
-    d.exec();
+    QObjectScopedPointer<PWMBuildDialogController> d = new PWMBuildDialogController(p);
+    d->exec();
 }
 
 WeightMatrixADVContext::WeightMatrixADVContext(QObject* p) : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID)
@@ -115,9 +115,8 @@ void WeightMatrixADVContext::sl_search() {
 
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
     assert(seqCtx->getAlphabet()->isNucleic());
-    PWMSearchDialogController d(seqCtx, av->getWidget());
-    d.exec();
+    QObjectScopedPointer<PWMSearchDialogController> d = new PWMSearchDialogController(seqCtx, av->getWidget());
+    d->exec();
 }
 
 }//namespace
-

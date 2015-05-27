@@ -19,17 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/DNASequenceObject.h>
+#include <math.h>
+
 #include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "ADVGraphModel.h"
 #include "GSequenceGraphView.h"
 #include "GraphSettingsDialog.h"
-#include "WindowStepSelectorWidget.h"
 #include "SaveGraphCutoffsDialogController.h"
-
-#include <math.h>
+#include "WindowStepSelectorWidget.h"
 
 namespace U2 {
 
@@ -844,16 +847,17 @@ void GSequenceGraphDrawer::calculatePoints(const QSharedPointer<GSequenceGraphDa
 }
 
 void GSequenceGraphDrawer::showSettingsDialog() {
+    QObjectScopedPointer<GraphSettingsDialog> dlg = new GraphSettingsDialog(this, U2Region(1, view->getSequenceLength()-1), view);
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
 
-    GraphSettingsDialog dlg(this, U2Region(1, view->getSequenceLength()-1), view);
-
-    if (dlg.exec() == QDialog::Accepted) {
-        wdata.window = dlg.getWindowSelector()->getWindow();
-        wdata.step = dlg.getWindowSelector()->getStep();
-        commdata.enableCuttoff = dlg.getMinMaxSelector()->getState();
-        commdata.min = dlg.getMinMaxSelector()->getMin();
-        commdata.max = dlg.getMinMaxSelector()->getMax();
-        lineColors = dlg.getColors();
+    if (dlg->result() == QDialog::Accepted) {
+        wdata.window = dlg->getWindowSelector()->getWindow();
+        wdata.step = dlg->getWindowSelector()->getStep();
+        commdata.enableCuttoff = dlg->getMinMaxSelector()->getState();
+        commdata.min = dlg->getMinMaxSelector()->getMin();
+        commdata.max = dlg->getMinMaxSelector()->getMax();
+        lineColors = dlg->getColors();
         view->update();
         view->changeLabelsColor();
     }

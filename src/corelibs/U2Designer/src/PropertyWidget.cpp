@@ -19,15 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QFileDialog>
 #include <QLayout>
-#else
-#include <QtWidgets/QLayout>
-#include <QtWidgets/QListView>
-#endif
+#include <QListView>
 
 #include <U2Core/L10n.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -35,6 +28,7 @@
 
 #include <U2Gui/EditConnectionDialog.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2Lang/SchemaConfig.h>
@@ -340,13 +334,17 @@ ComboBoxWithDbUrlWidget::ComboBoxWithDbUrlWidget(QWidget *parent)
 }
 
 void ComboBoxWithDbUrlWidget::sl_browse() {
-    EditConnectionDialog editDialog(this);
-    editDialog.setWindowTitle(tr("Add New Connection"));
-    if (QDialog::Accepted == editDialog.exec()) {
-        const QString dbUrlWithoutProvider = editDialog.getFullDbiUrl();
+    QObjectScopedPointer<EditConnectionDialog> editDialog = new EditConnectionDialog(this);
+    editDialog->setWindowTitle(tr("Add New Connection"));
+
+    const int dialogResult = editDialog->exec();
+    CHECK(!editDialog.isNull(), );
+
+    if (QDialog::Accepted == dialogResult) {
+        const QString dbUrlWithoutProvider = editDialog->getFullDbiUrl();
         U2DbiRef dbiRef(MYSQL_DBI_ID, dbUrlWithoutProvider); // TODO: fix this hardcoded value when other shared DB providers appear
         const QString dbUrl = SharedDbUrlUtils::createDbUrl(dbiRef);
-        SharedDbUrlUtils::saveNewDbConnection(editDialog.getName(), dbUrlWithoutProvider);
+        SharedDbUrlUtils::saveNewDbConnection(editDialog->getName(), dbUrlWithoutProvider);
         updateComboValues();
         setValue(dbUrl);
     }
@@ -555,10 +553,13 @@ void URLWidget::sl_browse() {
     if (NULL == rfs) {
         urlLine->sl_onBrowse();
     } else {
-        OutputFileDialog d(rfs, urlLine->isPath, urlLine->getCompletionFillerInstance(), this);
-        if (d.exec()) {
-            urlLine->setText(d.getResult());
-        } else if (d.isSaveToFileSystem()) {
+        QObjectScopedPointer<OutputFileDialog> d = new OutputFileDialog(rfs, urlLine->isPath, urlLine->getCompletionFillerInstance(), this);
+        const int dialogResult = d->exec();
+        CHECK(!d.isNull(), );
+
+        if (QDialog::Accepted == dialogResult) {
+            urlLine->setText(d->getResult());
+        } else if (d->isSaveToFileSystem()) {
             urlLine->sl_onBrowse();
         }
         urlLine->setFocus();

@@ -19,21 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QTextStream>
-
-#include <QtGui/QClipboard>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QPainter>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QApplication>
+#include <QClipboard>
+#include <QDialog>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QTextStream>
 
 #include <U2Algorithm/CreateSubalignmentTask.h>
 
@@ -48,8 +40,8 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Core/MsaDbiUtils.h>
 #include <U2Core/MSAUtils.h>
+#include <U2Core/MsaDbiUtils.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/Settings.h>
@@ -60,8 +52,6 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
-#include <U2Gui/OptionsPanel.h>
-#include <U2Gui/OPWidgetFactory.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
@@ -69,9 +59,12 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/OPWidgetFactory.h>
+#include <U2Gui/OptionsPanel.h>
 #include <U2Gui/PositionSelector.h>
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "AlignSequencesToAlignment/AlignSequencesToAlignmentTask.h"
 #include "ColorSchemaSettingsController.h"
@@ -82,10 +75,7 @@
 #include "MSAEditorNameList.h"
 #include "MSAEditorSequenceArea.h"
 
-
 namespace U2 {
-
-/* TRANSLATOR U2::MSAEditor */
 
 #define SETTINGS_ROOT QString("msaeditor/")
 #define SETTINGS_COLOR_NUCL     "color_nucl"
@@ -1896,15 +1886,17 @@ void MSAEditorSequenceArea::sl_fontChanged(QFont font) {
 }
 
 void MSAEditorSequenceArea::sl_delCol() {
-    DeleteGapsDialog dlg(this, editor->getMSAObject()->getNumRows());
+    QObjectScopedPointer<DeleteGapsDialog> dlg = new DeleteGapsDialog(this, editor->getMSAObject()->getNumRows());
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
 
-    if(dlg.exec() == QDialog::Accepted) {
+    if (dlg->result() == QDialog::Accepted) {
         MSACollapsibleItemModel *collapsibleModel = ui->getCollapseModel();
         SAFE_POINT(NULL != collapsibleModel, tr("NULL collapsible model!"), );
         collapsibleModel->reset();
 
-        DeleteMode deleteMode = dlg.getDeleteMode();
-        int value = dlg.getValue();
+        DeleteMode deleteMode = dlg->getDeleteMode();
+        int value = dlg->getValue();
 
         // if this method was invoked during a region shifting
         // then shifting should be canceled
@@ -1952,14 +1944,13 @@ void MSAEditorSequenceArea::sl_fillCurrentSelectionWithGaps() {
 }
 
 void MSAEditorSequenceArea::sl_goto() {
-    QDialog dlg(this);
-    dlg.setModal(true);
-    dlg.setWindowTitle(tr("Go To"));
+    QObjectScopedPointer<QDialog> dlg = new QDialog(this);
+    dlg->setModal(true);
+    dlg->setWindowTitle(tr("Go To"));
     int aliLen = editor->getAlignmentLen();
-    PositionSelector* ps = new PositionSelector(&dlg, 1, aliLen, true);
+    PositionSelector *ps = new PositionSelector(dlg.data(), 1, aliLen, true);
     connect(ps, SIGNAL(si_positionChanged(int)), SLOT(sl_onPosChangeRequest(int)));
-    dlg.exec();
-    delete ps;
+    dlg->exec();
 }
 
 void MSAEditorSequenceArea::sl_onPosChangeRequest(int pos) {
@@ -2090,15 +2081,17 @@ void MSAEditorSequenceArea::sl_referenceSeqChanged(qint64){
 }
 
 void MSAEditorSequenceArea::sl_createSubaligniment(){
-    CreateSubalignmentDialogController dialog(editor->getMSAObject(), selection.getRect(), this);
-    dialog.exec();
-    if(dialog.result() == QDialog::Accepted){
-        U2Region window = dialog.getRegion();
-        bool addToProject = dialog.getAddToProjFlag();
-        QString path = dialog.getSavePath();
-        QStringList seqNames = dialog.getSelectedSeqNames();
+    QObjectScopedPointer<CreateSubalignmentDialogController> dialog = new CreateSubalignmentDialogController(editor->getMSAObject(), selection.getRect(), this);
+    dialog->exec();
+    CHECK(!dialog.isNull(), );
+
+    if (dialog->result() == QDialog::Accepted){
+        U2Region window = dialog->getRegion();
+        bool addToProject = dialog->getAddToProjFlag();
+        QString path = dialog->getSavePath();
+        QStringList seqNames = dialog->getSelectedSeqNames();
         Task* csTask = new CreateSubalignmentAndOpenViewTask(editor->getMSAObject(),
-            CreateSubalignmentSettings(window, seqNames, path, true, addToProject, dialog.getFormatId()));
+            CreateSubalignmentSettings(window, seqNames, path, true, addToProject, dialog->getFormatId()));
         AppContext::getTaskScheduler()->registerTopLevelTask(csTask);
     }
 }
@@ -2112,14 +2105,16 @@ void MSAEditorSequenceArea::sl_saveSequence(){
     }
 
     QString seqName = editor->getMSAObject()->getMAlignment().getRow(seqIndex).getName();
-    SaveSelectedSequenceFromMSADialogController d((QWidget*)AppContext::getMainWindow()->getQMainWindow());
-    int rc = d.exec();
+    QObjectScopedPointer<SaveSelectedSequenceFromMSADialogController> d = new SaveSelectedSequenceFromMSADialogController((QWidget*)AppContext::getMainWindow()->getQMainWindow());
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc == QDialog::Rejected) {
         return;
     }
     //TODO: OPTIMIZATION code below can be wrapped to task
     DNASequence seq;
-    foreach(DNASequence s,  MSAUtils::ma2seq(editor->getMSAObject()->getMAlignment(), d.trimGapsFlag)){
+    foreach(DNASequence s,  MSAUtils::ma2seq(editor->getMSAObject()->getMAlignment(), d->trimGapsFlag)){
         if (s.getName() == seqName){
             seq = s;
             break;
@@ -2127,12 +2122,12 @@ void MSAEditorSequenceArea::sl_saveSequence(){
     }
 
     U2OpStatus2Log  os;
-    QString fullPath = GUrlUtils::prepareFileLocation(d.url, os);
+    QString fullPath = GUrlUtils::prepareFileLocation(d->url, os);
     CHECK_OP(os, );
     GUrl url(fullPath);
 
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(d.url));
-    DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(d.format);
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(d->url));
+    DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(d->format);
     Document *doc;
     QList<GObject*> objs;
     doc = df->createNewLoadedDocument(iof, fullPath, os);
@@ -2142,7 +2137,7 @@ void MSAEditorSequenceArea::sl_saveSequence(){
     doc->addObject(seqObj);
     SaveDocumentTask *t = new SaveDocumentTask(doc, doc->getIOAdapterFactory(), doc->getURL());
 
-    if (d.addToProjectFlag){
+    if (d->addToProjectFlag){
         Project *p = AppContext::getProject();
         Document *loadedDoc=p->findDocumentByURL(url);
         if (loadedDoc) {

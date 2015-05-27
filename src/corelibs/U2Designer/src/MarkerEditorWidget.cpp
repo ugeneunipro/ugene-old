@@ -22,9 +22,10 @@
 #include <U2Designer/EditMarkerGroupDialog.h>
 #include <U2Designer/MarkerEditor.h>
 
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include <U2Lang/Marker.h>
 #include <U2Lang/MarkerUtils.h>
-
 
 #include "MarkerEditorWidget.h"
 
@@ -62,10 +63,12 @@ MarkerEditorWidget::MarkerEditorWidget(QAbstractTableModel *markerModel, QWidget
 
 void MarkerEditorWidget::sl_onAddButtonClicked() {
     Workflow::MarkerGroupListCfgModel *model = dynamic_cast<Workflow::MarkerGroupListCfgModel*>(markerTable->model());
-    EditMarkerGroupDialog dlg(true, NULL, model, this);
+    QObjectScopedPointer<EditMarkerGroupDialog> dlg = new EditMarkerGroupDialog(true, NULL, model, this);
+    const int dialogResult = dlg->exec();
+    CHECK(!dlg.isNull(), );
 
-    if (dlg.exec()) {
-        Marker *newMarker = dlg.getMarker();
+    if (QDialog::Accepted == dialogResult) {
+        Marker *newMarker = dlg->getMarker();
         model->addMarker(newMarker);
     }
 }
@@ -78,10 +81,12 @@ void MarkerEditorWidget::sl_onEditButtonClicked() {
     }
 
     Workflow::MarkerGroupListCfgModel *model = dynamic_cast<Workflow::MarkerGroupListCfgModel*>(markerTable->model());
-    EditMarkerGroupDialog dlg(false, model->getMarker(selected.first().row()), model, this);
+    QObjectScopedPointer<EditMarkerGroupDialog> dlg = new EditMarkerGroupDialog(false, model->getMarker(selected.first().row()), model, this);
+    const int dialogResult = dlg->exec();
+    CHECK(!dlg.isNull(), );
 
-    if (dlg.exec()) {
-        Marker *newMarker = dlg.getMarker();
+    if (QDialog::Accepted == dialogResult) {
+        Marker *newMarker = dlg->getMarker();
         model->replaceMarker(selected.first().row(), newMarker);
     }
 }

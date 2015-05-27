@@ -64,6 +64,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/ProjectDocumentComboBoxController.h \
            src/util/ProjectTreeItemSelectorDialog.h \
            src/util/ProjectTreeItemSelectorDialogImpl.h \
+           src/util/QObjectScopedPointer.h \
            src/util/RangeSelector.h \
            src/util/RegionSelector.h \
            src/util/RemovePartFromSequenceDialogController.h \

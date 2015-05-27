@@ -18,65 +18,59 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 * MA 02110-1301, USA.
 */
-#include "TreeViewer.h"
-#include "TreeViewerFactory.h"
-#include "GraphicsBranchItem.h"
-#include "GraphicsButtonItem.h"
-#include "TreeViewerUtils.h"
+
+#include <QGraphicsLineItem>
+#include <QGraphicsSimpleTextItem>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPrintDialog>
+#include <QPrinter>
+#include <QQueue>
+#include <QSplitter>
+#include <QStack>
+#include <QSvgGenerator>
+#include <QVBoxLayout>
+#include <QtXml/QtXml>
+
+#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/Counter.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
+#include <U2Core/PhyTree.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2Region.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/ExportImageDialog.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/HBar.h>
+#include <U2Gui/OPWidgetFactoryRegistry.h>
+#include <U2Gui/OptionsPanel.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include "CreateBranchesTask.h"
 #include "CreateCircularBranchesTask.h"
 #include "CreateRectangularBranchesTask.h"
 #include "CreateUnrootedBranchesTask.h"
-#include "CreateRectangularBranchesTask.h"
+#include "GraphicsBranchItem.h"
+#include "GraphicsButtonItem.h"
 #include "GraphicsRectangularBranchItem.h"
-
-#include "TreeViewerTasks.h"
+#include "TreeViewer.h"
+#include "TreeViewerFactory.h"
 #include "TreeViewerState.h"
-
-
-#include <U2Core/AppContext.h>
-
-#include <U2Core/DocumentModel.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/L10n.h>
-#include <U2Core/U2Region.h>
-#include <U2Core/PhyTree.h>
-#include <U2Core/Counter.h>
-#include <U2Core/TaskSignalMapper.h>
-
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/ExportImageDialog.h>
-
-#include <U2Gui/HBar.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Gui/OptionsPanel.h>
-#include <U2Gui/OPWidgetFactoryRegistry.h>
-#include "phyltree/CreatePhyTreeDialogController.h"
-
+#include "TreeViewerTasks.h"
+#include "TreeViewerUtils.h"
 #include "phyltree/BranchSettingsDialog.h"
+#include "phyltree/CreatePhyTreeDialogController.h"
 #include "phyltree/TextSettingsDialog.h"
 #include "phyltree/TreeSettingsDialog.h"
-
-#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
-
-#include <QtCore/QStack>
-#include <QtCore/QQueue>
-
-#include <QVBoxLayout>
-#include <QMessageBox>
-#include <QSplitter>
-#include <QPrinter>
-#include <QPrintDialog>
-#include <QGraphicsSimpleTextItem>
-#include <QGraphicsLineItem>
-
-#include <QtGui/QMouseEvent>
-
-#include <QtGui/QPainter>
-#include <QtXml/QtXml>
-#include <QtSvg/QSvgGenerator>
 
 namespace U2 {
 
@@ -613,9 +607,12 @@ void TreeViewerUI::sl_setSettingsTriggered() {
 }
 
 void TreeViewerUI::sl_branchSettings() {
-    BranchSettingsDialog dialog(this, getSettings());
-    if(dialog.exec()) {
-        updateSettings(dialog.getSettings());
+    QObjectScopedPointer<BranchSettingsDialog> dialog = new BranchSettingsDialog(this, getSettings());
+    dialog->exec();
+    CHECK(!dialog.isNull(), );
+
+    if (QDialog::Accepted == dialog->result()) {
+        updateSettings(dialog->getSettings());
     }
 }
 
@@ -1113,8 +1110,8 @@ void TreeViewerUI::sl_captureTreeTriggered() {
     const GUrl& url = doc->getURL();
     const QString& fileName = url.baseFileName();
 
-    ExportImageDialog dialog(viewport(), ExportImageDialog::PHYTreeView, ExportImageDialog::NoScaling, this, fileName);
-    dialog.exec();
+    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(viewport(), ExportImageDialog::PHYTreeView, ExportImageDialog::NoScaling, this, fileName);
+    dialog->exec();
 }
 
 void TreeViewerUI::sl_exportTriggered() {
@@ -1354,8 +1351,11 @@ void TreeViewerUI::sl_showDistanceLabelsTriggered(bool on) {
 
 void TreeViewerUI::sl_printTriggered() {
     QPrinter printer;
-    QPrintDialog dialog(&printer, this);
-    if (dialog.exec() != QDialog::Accepted)
+    QObjectScopedPointer<QPrintDialog> dialog = new QPrintDialog(&printer, this);
+    dialog->exec();
+    CHECK(!dialog.isNull(), );
+
+    if (dialog->result() != QDialog::Accepted)
         return;
 
     QPainter painter(&printer);
@@ -1363,9 +1363,12 @@ void TreeViewerUI::sl_printTriggered() {
 }
 
 void TreeViewerUI::sl_textSettingsTriggered(){
-    TextSettingsDialog dialog(this, getSettings());
-    if(dialog.exec()){
-         updateSettings( dialog.getSettings() );
+    QObjectScopedPointer<TextSettingsDialog> dialog = new TextSettingsDialog(this, getSettings());
+    dialog->exec();
+    CHECK(!dialog.isNull(), );
+
+    if (QDialog::Accepted == dialog->result()) {
+         updateSettings(dialog->getSettings());
          if(getOptionValue(ALIGN_LABELS).toBool()){
              QStack<GraphicsBranchItem*> stack;
              stack.push(root);
@@ -1392,9 +1395,12 @@ void TreeViewerUI::sl_textSettingsTriggered(){
 }
 
 void TreeViewerUI::sl_treeSettingsTriggered(){
-    TreeSettingsDialog dialog(this, getSettings(), getTreeLayout() == RECTANGULAR_LAYOUT);
-    if(dialog.exec()){
-        updateSettings(dialog.getSettings());
+    QObjectScopedPointer<TreeSettingsDialog> dialog = new TreeSettingsDialog(this, getSettings(), getTreeLayout() == RECTANGULAR_LAYOUT);
+    dialog->exec();
+    CHECK(!dialog.isNull(), );
+
+    if (QDialog::Accepted == dialog->result()) {
+        updateSettings(dialog->getSettings());
     }
 }
 

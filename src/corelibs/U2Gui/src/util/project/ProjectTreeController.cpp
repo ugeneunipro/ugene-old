@@ -19,19 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#include <QItemSelectionModel>
-#include <QTimer>
-
-#include <QKeyEvent>
 #include <QAction>
 #include <QApplication>
+#include <QItemSelectionModel>
+#include <QKeyEvent>
 #include <QMainWindow>
 #include <QMenu>
 #include <QMessageBox>
+#include <QTimer>
 #include <QTreeView>
 
-#include <U2Core/AppContext.h>
 #include <U2Core/AddObjectsToDocumentTask.h>
+#include <U2Core/AppContext.h>
 #include <U2Core/DeleteObjectsTask.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/L10n.h>
@@ -50,16 +49,16 @@
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/ProjectViewModel.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/UnloadDocumentTask.h>
 
 #include "FilteredProjectItemDelegate.h"
 #include "FolderNameDialog.h"
 #include "ProjectFilterProxyModel.h"
-#include "ProjectViewFilterModel.h"
+#include "ProjectTreeController.h"
 #include "ProjectUpdater.h"
 #include "ProjectUtils.h"
-
-#include "ProjectTreeController.h"
+#include "ProjectViewFilterModel.h"
 
 namespace U2 {
 
@@ -768,9 +767,12 @@ void ProjectTreeController::sl_onCreateFolder() {
     const QString folderPath = folder.getFolderPath();
     CHECK(!ProjectUtils::isFolderInRecycleBinSubtree(folderPath), );
 
-    FolderNameDialog d("", tree);
-    if (QDialog::Accepted == d.exec()) {
-        QString path = Folder::createPath(folderPath, d.getResult());
+    QObjectScopedPointer<FolderNameDialog> d = new FolderNameDialog("", tree);
+    const int dialogResult = d->exec();
+    CHECK(!d.isNull(), );
+
+    if (QDialog::Accepted == dialogResult) {
+        QString path = Folder::createPath(folderPath, d->getResult());
         Document *doc = folder.getDocument();
         model->createFolder(doc, path);
         updater->invalidate(doc);
@@ -815,8 +817,8 @@ void ProjectTreeController::sl_onImportToDatabase() {
     SAFE_POINT(doc != NULL, tr("Select a database to import anything"), );
 
     QWidget* mainWindow = qobject_cast<QWidget*>(AppContext::getMainWindow()->getQMainWindow());
-    ImportToDatabaseDialog importDialog(doc, selectedFolders.first().getFolderPath(), mainWindow);
-    importDialog.exec();
+    QObjectScopedPointer<ImportToDatabaseDialog> importDialog = new ImportToDatabaseDialog(doc, selectedFolders.first().getFolderPath(), mainWindow);
+    importDialog->exec();
 }
 
 void ProjectTreeController::sl_windowActivated(MWMDIWindow *w) {

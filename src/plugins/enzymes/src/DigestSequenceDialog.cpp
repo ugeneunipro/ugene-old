@@ -19,33 +19,34 @@
  * MA 02110-1301, USA.
  */
 
-#include <QMessageBox>
 #include <QDialogButtonBox>
+#include <QMessageBox>
 
 #include <U2Core/AnnotationTableObject.h>
-#include <U2Core/Log.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/L10n.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/Log.h>
 #include <U2Core/Settings.h>
 #include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 
+#include "CloningUtilTasks.h"
+#include "DigestSequenceDialog.h"
 #include "EnzymesIO.h"
 #include "EnzymesQuery.h"
-#include "CloningUtilTasks.h"
 #include "FindEnzymesDialog.h"
-#include "DigestSequenceDialog.h"
 
 namespace U2 {
 
@@ -344,10 +345,10 @@ void DigestSequenceDialog::setUiEnabled(bool enabled)
 
 void DigestSequenceDialog::sl_addAnnBtnClicked()
 {
-    QDialog dlg;
-    dlg.setWindowTitle(tr("Select annotations"));
-    QVBoxLayout* layout = new QVBoxLayout(&dlg);
-    QListWidget* listWidget(new QListWidget(&dlg));
+    QObjectScopedPointer<QDialog> dlg = new QDialog(this);
+    dlg->setWindowTitle(tr("Select annotations"));
+    QVBoxLayout* layout = new QVBoxLayout(dlg.data());
+    QListWidget* listWidget(new QListWidget(dlg.data()));
     QSet<AnnotationTableObject *> aObjs = seqCtx->getAnnotationObjects(false);
     foreach (AnnotationTableObject *aObj, aObjs) {
         QList<Annotation *> anns = aObj->getAnnotations();
@@ -358,13 +359,16 @@ void DigestSequenceDialog::sl_addAnnBtnClicked()
     }
     listWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
     layout->addWidget(listWidget);
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &dlg);
-    connect(buttonBox, SIGNAL(accepted()), &dlg, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), &dlg, SLOT(reject()));
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, dlg.data());
+    connect(buttonBox, SIGNAL(accepted()), dlg.data(), SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), dlg.data(), SLOT(reject()));
     layout->addWidget(buttonBox);
-    dlg.setLayout(layout);
+    dlg->setLayout(layout);
 
-    if (dlg.exec() == QDialog::Accepted) {
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (dlg->result() == QDialog::Accepted) {
         QList<QListWidgetItem*> items = listWidget->selectedItems();
         foreach(QListWidgetItem* item, items) {
             const QString& itemText = item->text();

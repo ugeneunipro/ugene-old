@@ -24,6 +24,9 @@
 
 #include <U2Core/U2OpStatus.h>
 
+#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Gui/SharedConnectionsDialog.h>
+
 #include "UrlItem.h"
 
 #include "ui_DatasetWidget.h"
@@ -33,7 +36,6 @@ class QVBoxLayout;
 namespace U2 {
 
 class OptionsPopup;
-class SharedConnectionsDialog;
 class URLListController;
 
 class URLListWidget : public QWidget, public Ui::DatasetWidget {
@@ -66,7 +68,7 @@ private:
 private:
     URLListController *ctrl;
     OptionsPopup *popup;
-    SharedConnectionsDialog *connectToDbDialog;
+    QObjectScopedPointer<SharedConnectionsDialog> connectToDbDialog;
     bool waitingForDbToConnect;
 };
 

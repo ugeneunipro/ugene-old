@@ -19,26 +19,23 @@
  * MA 02110-1301, USA.
  */
 
+#include <QPushButton>
+#include <QMessageBox>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include "AddNewDocumentDialogImpl.h"
 #include "DocumentFormatComboboxController.h"
-
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Core/L10n.h>
-#include <U2Core/Settings.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/AppContext.h>
-
-#include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#endif
-
 
 namespace U2 {
 
@@ -81,9 +78,11 @@ void AddNewDocumentDialogController::run(QWidget* p, AddNewDocumentDialogModel& 
         return;
     }
 
-    AddNewDocumentDialogImpl d(p, m, c);
-    d.exec();
-    m = d.model;
+    QObjectScopedPointer<AddNewDocumentDialogImpl> d = new AddNewDocumentDialogImpl(p, m, c);
+    d->exec();
+    CHECK(!d.isNull(), );
+
+    m = d->model;
     assert(proj->findDocumentByURL(m.url) == NULL);
 }
 

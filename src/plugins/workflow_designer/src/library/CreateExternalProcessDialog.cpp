@@ -22,13 +22,14 @@
 #include <QMessageBox>
 #include <QWizardPage>
 
-#include <U2Core/DocumentModel.h>
-#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentModel.h>
 
 #include <U2Designer/DelegateEditors.h>
 
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseTypes.h>
@@ -429,13 +430,14 @@ bool CreateExternalProcessDialog::validate() {
 
     foreach(const QString &str, nameList) {
         if(!cfg->cmdLine.contains("$" + str)) {
-            QMessageBox msgBox(this);
-            msgBox.setWindowTitle(title);
-            msgBox.setText(tr("You don't use parameter %1 in template string. Continue?").arg(str));
-            msgBox.addButton(tr("Continue"), QMessageBox::ActionRole);
-            QPushButton *cancel = msgBox.addButton(tr("Abort"), QMessageBox::ActionRole);
-            msgBox.exec();
-            if(msgBox.clickedButton() == cancel) {
+            QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox(this);
+            msgBox->setWindowTitle(title);
+            msgBox->setText(tr("You don't use parameter %1 in template string. Continue?").arg(str));
+            msgBox->addButton(tr("Continue"), QMessageBox::ActionRole);
+            QPushButton *cancel = msgBox->addButton(tr("Abort"), QMessageBox::ActionRole);
+            msgBox->exec();
+            CHECK(!msgBox.isNull(), false);
+            if(msgBox->clickedButton() == cancel) {
                 return false;
             }
         }

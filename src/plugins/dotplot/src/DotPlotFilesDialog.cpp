@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GObjectTypes.h>
@@ -35,6 +29,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "DotPlotFilesDialog.h"
@@ -153,17 +148,17 @@ void DotPlotFilesDialog::accept() {
     FormatDetectionConfig conf;
     QList<FormatDetectionResult> results = DocumentUtils::detectFormat(firstFileName, conf);
     if (results.isEmpty()){
-        QMessageBox mb(QMessageBox::Critical, tr("Select files"), tr("Unable to detect file format %1.\r\nSelect valid file to build dotplot").arg(firstFileEdit->text()));
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Select files"), tr("Unable to detect file format %1.\r\nSelect valid file to build dotplot").arg(firstFileEdit->text()));
         firstFileEdit->setText("");
-        mb.exec();
+        mb->exec();
         return;
     }
 
     results = DocumentUtils::detectFormat(secondFileName, conf);
     if (results.isEmpty()){
-        QMessageBox mb(QMessageBox::Critical, tr("Select files"), tr("Unable to detect format of given file %1.\r\nSelect valid file to build dotplot").arg(secondFileEdit->text()));
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Select files"), tr("Unable to detect format of given file %1.\r\nSelect valid file to build dotplot").arg(secondFileEdit->text()));
         firstFileEdit->setText("");
-        mb.exec();
+        mb->exec();
         return;
     }
 
@@ -171,8 +166,8 @@ void DotPlotFilesDialog::accept() {
         QDialog::accept();
     }
     else {
-        QMessageBox mb(QMessageBox::Critical, tr("Select files"), tr("Select files first to build dotplot"));
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Select files"), tr("Select files first to build dotplot"));
+        mb->exec();
     }
 }
 

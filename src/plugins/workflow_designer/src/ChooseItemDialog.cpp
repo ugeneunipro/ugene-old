@@ -19,11 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include "ChooseItemDialog.h"
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2Lang/WorkflowUtils.h>
-#include <U2Gui/HelpButton.h>
 
+#include "ChooseItemDialog.h"
 
 namespace U2 {
 

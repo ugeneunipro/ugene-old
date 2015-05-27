@@ -19,21 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#else
-#include <QtWidgets/QMainWindow>
-#endif
+#include <QMainWindow>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/MainWindow.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#include "CredentialsAskerGui.h"
 #include "AuthenticationDialog.h"
+#include "CredentialsAskerGui.h"
 
 namespace U2 {
 
@@ -45,15 +41,18 @@ bool CredentialsAskerGui::askWithFixedLogin(const QString &resourceUrl) const {
     QString userName;
     const QString shortDbiUrl = U2DbiUtils::full2shortDbiUrl(resourceUrl, userName);
 
-    AuthenticationDialog authDialog(QObject::tr("Connect to the ") + shortDbiUrl, mainWindow);
-    authDialog.setLogin(userName);
-    authDialog.disableLogin();
+    QObjectScopedPointer<AuthenticationDialog> authDialog = new AuthenticationDialog(QObject::tr("Connect to the ") + shortDbiUrl, mainWindow);
+    authDialog->setLogin(userName);
+    authDialog->disableLogin();
 
-    if (QDialog::Accepted != authDialog.exec()) {
+    const int dialogResult = authDialog->exec();
+    CHECK(!authDialog.isNull(), false);
+
+    if (QDialog::Accepted != dialogResult) {
         return false;
     }
 
-    saveCredentials(resourceUrl, authDialog.getPassword(), authDialog.isRemembered());
+    saveCredentials(resourceUrl, authDialog->getPassword(), authDialog->isRemembered());
 
     return true;
 }
@@ -66,15 +65,18 @@ bool CredentialsAskerGui::askWithModifiableLogin(QString &resourceUrl) const {
     QString userName;
     const QString shortDbiUrl = U2DbiUtils::full2shortDbiUrl(resourceUrl, userName);
 
-    AuthenticationDialog authDialog(QObject::tr("Connect to the ") + shortDbiUrl, mainWindow);
-    authDialog.setLogin(userName);
+    QObjectScopedPointer<AuthenticationDialog> authDialog = new AuthenticationDialog(QObject::tr("Connect to the ") + shortDbiUrl, mainWindow);
+    authDialog->setLogin(userName);
 
-    if (QDialog::Accepted != authDialog.exec()) {
+    const int dialogResult = authDialog->exec();
+    CHECK(!authDialog.isNull(), false);
+
+    if (QDialog::Accepted != dialogResult) {
         return false;
     }
 
-    resourceUrl = U2DbiUtils::createFullDbiUrl(authDialog.getLogin(), shortDbiUrl);
-    saveCredentials(resourceUrl, authDialog.getPassword(), authDialog.isRemembered());
+    resourceUrl = U2DbiUtils::createFullDbiUrl(authDialog->getLogin(), shortDbiUrl);
+    saveCredentials(resourceUrl, authDialog->getPassword(), authDialog->isRemembered());
 
     return true;
 }

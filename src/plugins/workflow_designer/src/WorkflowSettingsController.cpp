@@ -19,22 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#include "WorkflowSettingsController.h"
-#include "WorkflowViewController.h"
-#include "WorkflowViewItems.h"
+#include <QColorDialog>
+#include <QFileDialog>
+#include <QMouseEvent>
 
-#include <U2Lang/WorkflowSettings.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Version.h>
 
-#include <QtGui/QMouseEvent>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#include <QtGui/QColorDialog>
-#else
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QColorDialog>
-#endif
+#include <U2Lang/WorkflowSettings.h>
+
+#include "WorkflowSettingsController.h"
+#include "WorkflowViewController.h"
+#include "WorkflowViewItems.h"
 
 namespace U2 {
 

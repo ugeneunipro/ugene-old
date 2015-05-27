@@ -19,13 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
-
+#include <QMessageBox>
 
 #include <U2Algorithm/SecStructPredictAlgRegistry.h>
 
@@ -35,15 +29,15 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVUtils.h>
+#include <U2View/AnnotatedDNAView.h>
 
 #include "SecStructDialog.h"
 #include "SecStructPredictUtils.h"
-
 
 namespace U2 {
 
@@ -80,8 +74,8 @@ void SecStructPredictViewAction::sl_execute() {
     SAFE_POINT(NULL != seqCtx->getAlphabet(), "NULL alphabet",);
     SAFE_POINT(seqCtx->getAlphabet()->isAmino(), "Wrong alphabet",);
 
-    SecStructDialog secStructDialog(seqCtx, av->getWidget());
-    secStructDialog.exec();
+    QObjectScopedPointer<SecStructDialog> secStructDialog = new SecStructDialog(seqCtx, av->getWidget());
+    secStructDialog->exec();
 }
 
 ADVGlobalAction* SecStructPredictViewAction::createAction(AnnotatedDNAView* av)
@@ -89,14 +83,12 @@ ADVGlobalAction* SecStructPredictViewAction::createAction(AnnotatedDNAView* av)
     ADVGlobalAction* action = new SecStructPredictViewAction(av);
 
     return action;
-
 }
 
 SecStructPredictViewAction::~SecStructPredictViewAction()
 {
 
 }
-
 
 QString SecStructPredictUtils::getStructNameForCharTag(char tag)
 {

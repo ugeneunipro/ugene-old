@@ -19,99 +19,85 @@
  * MA 02110-1301, USA.
  */
 
-#include "MSAEditor.h"
-#include "MSAEditorTasks.h"
-#include "MSAEditorFactory.h"
-#include "MSAEditorState.h"
-#include "MSAEditorConsensusArea.h"
-#include "MSAEditorOffsetsView.h"
-#include "MSAEditorOverviewArea.h"
-#include "MSAEditorSequenceArea.h"
-#include "MSAEditorNameList.h"
-#include "MSAEditorStatusBar.h"
-#include "MSAEditorUndoFramework.h"
-#include "MSAEditorDataList.h"
-#include "ExportHighlightedDialogController.h"
+#include <QEvent>
+#include <QFontDialog>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QMessageBox>
+#include <QPainter>
+#include <QResizeEvent>
+#include <QSvgGenerator>
+#include <QToolBar>
+#include <QVBoxLayout>
 
-#include "ov_phyltree/TreeViewerTasks.h"
-
-#include <U2Core/DocumentSelection.h>
-#include <U2Core/MsaDbiUtils.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/U2AlphabetUtils.h>
-#include <U2Core/PhyTreeObject.h>
-#include <U2Core/Counter.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/Settings.h>
-#include <U2Core/SaveDocumentTask.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/U2SequenceUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/GObjectSelection.h>
-#include <U2Core/MSAUtils.h>
-
-#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 #include <U2Algorithm/MSADistanceAlgorithm.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 #include <U2Algorithm/PairwiseAlignmentTask.h>
+#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/ExportImageDialog.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/Counter.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentSelection.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectSelection.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/MSAUtils.h>
+#include <U2Core/MsaDbiUtils.h>
+#include <U2Core/PhyTreeObject.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
+
 #include <U2Gui/DialogUtils.h>
-#include <U2Gui/U2FileDialog.h>
+#include <U2Gui/ExportDocumentDialogController.h>
+#include <U2Gui/ExportImageDialog.h>
+#include <U2Gui/ExportObjectUtils.h>
+#include <U2Gui/GScrollBar.h>
+#include <U2Gui/GUIUtils.h>
 #include <U2Gui/GroupHeaderImageWidget.h>
 #include <U2Gui/GroupOptionsWidget.h>
+#include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/OptionsPanel.h>
 #include <U2Gui/OptionsPanelWidget.h>
-#include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/ProjectView.h>
-#include <U2Gui/ExportDocumentDialogController.h>
-#include <U2Gui/ExportObjectUtils.h>
+#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Gui/U2FileDialog.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLabel>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QGridLayout>
-#include <QtGui/QToolBar>
-#include <QtGui/QMessageBox>
-#include <QtGui/QFontDialog>
-#else
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFontDialog>
-#endif
+#include <U2View/MSAColorScheme.h>
+#include <U2View/UndoRedoFramework.h>
 
-#include <QtGui/QPainter>
-#include <QtGui/QResizeEvent>
-#include <U2Gui/GScrollBar.h>
-#include <QtSvg/QSvgGenerator>
-
-
-#include "AlignSequencesToAlignment/AlignSequencesToAlignmentTask.h"
-#include "Export/MSAImageExportTask.h"
-#include "phyltree/CreatePhyTreeDialogController.h"
-#include "ov_phyltree/TreeViewer.h"
+#include "ExportHighlightedDialogController.h"
+#include "MSAEditor.h"
+#include "MSAEditorConsensusArea.h"
+#include "MSAEditorDataList.h"
+#include "MSAEditorFactory.h"
+#include "MSAEditorNameList.h"
+#include "MSAEditorOffsetsView.h"
+#include "MSAEditorOverviewArea.h"
+#include "MSAEditorSequenceArea.h"
+#include "MSAEditorState.h"
+#include "MSAEditorStatusBar.h"
+#include "MSAEditorTasks.h"
+#include "MSAEditorUndoFramework.h"
 #include "PhyTrees/MSAEditorMultiTreeViewer.h"
 #include "PhyTrees/MSAEditorTreeViewer.h"
+#include "AlignSequencesToAlignment/AlignSequencesToAlignmentTask.h"
+#include "Export/MSAImageExportTask.h"
 #include "ov_msa/TreeOptions//TreeOptionsWidgetFactory.h"
-#include <U2View/UndoRedoFramework.h>
-#include <U2View/MSAColorScheme.h>
-
-#include <QtCore/QEvent>
-
+#include "ov_phyltree/TreeViewer.h"
+#include "ov_phyltree/TreeViewerTasks.h"
+#include "phyltree/CreatePhyTreeDialogController.h"
 
 namespace U2 {
 
@@ -244,9 +230,9 @@ void MSAEditor::sl_saveAlignmentAs(){
         return;
     }
 
-    ExportDocumentDialogController dialog(srcDoc, ui);
-    dialog.setAddToProjectFlag(true);
-    dialog.setWindowTitle(tr("Save alignment"));
+    QObjectScopedPointer<ExportDocumentDialogController> dialog = new ExportDocumentDialogController(srcDoc, ui);
+    dialog->setAddToProjectFlag(true);
+    dialog->setWindowTitle(tr("Save alignment"));
     ExportObjectUtils::export2Document(dialog);
 }
 
@@ -897,12 +883,12 @@ void MSAEditor::resetCollapsibleModel() {
 }
 
 void MSAEditor::sl_exportHighlighted(){
-    ExportHighligtningDialogController d(ui, (QWidget*)AppContext::getMainWindow()->getQMainWindow());
-    MSAHighlightingScheme *scheme = ui->getSequenceArea()->getCurrentHighlightingScheme();
-    QString cname = scheme->metaObject()->className();
-    d.exec();
-    if (d.result() == QDialog::Accepted){
-        AppContext::getTaskScheduler()->registerTopLevelTask(new ExportHighligtningTask(&d, ui->getSequenceArea()));
+    QObjectScopedPointer<ExportHighligtningDialogController> d = new ExportHighligtningDialogController(ui, (QWidget*)AppContext::getMainWindow()->getQMainWindow());
+    d->exec();
+    CHECK(!d.isNull(), );
+
+    if (d->result() == QDialog::Accepted){
+        AppContext::getTaskScheduler()->registerTopLevelTask(new ExportHighligtningTask(d.data(), ui->getSequenceArea()));
     }
 }
 
@@ -1042,8 +1028,8 @@ QAction* MSAEditorUI::getRedoAction() const {
 
 void MSAEditorUI::sl_saveScreenshot(){
     MSAImageExportController controller(this);
-    ExportImageDialog dlg(&controller, ExportImageDialog::MSA, ExportImageDialog::NoScaling);
-    dlg.exec();
+    QObjectScopedPointer<ExportImageDialog> dlg = new ExportImageDialog(&controller, ExportImageDialog::MSA, ExportImageDialog::NoScaling);
+    dlg->exec();
 }
 
 void MSAEditorUI::sl_onTabsCountChanged(int curTabsNumber) {

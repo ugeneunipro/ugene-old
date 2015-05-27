@@ -19,42 +19,38 @@
  * MA 02110-1301, USA.
  */
 
-#include "EnzymesPlugin.h"
-#include "FindEnzymesTask.h"
-#include "FindEnzymesDialog.h"
-#include "ConstructMoleculeDialog.h"
-#include "DigestSequenceDialog.h"
-#include "CreateFragmentDialog.h"
-#include "EnzymesTests.h"
-#include "EnzymesQuery.h"
+#include <QDir>
+#include <QMenu>
+#include <QMessageBox>
 
+#include <U2Core/AnnotationSelection.h>
 #include <U2Core/AppContext.h>
-#include <U2Gui/MainWindow.h>
+#include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/GAutoDeleteList.h>
-#include <U2Core/AutoAnnotationsSupport.h>
-#include <U2Core/AnnotationSelection.h>
+#include <U2Gui/MainWindow.h>
 
-#include <U2Gui/GUIUtils.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
 #include <U2Gui/ToolsMenu.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/ADVConstants.h>
-#include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVSequenceWidget.h>
 #include <U2View/ADVUtils.h>
+#include <U2View/AnnotatedDNAView.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 
-#include <QtCore/QDir>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMessageBox>
-#endif
+#include "ConstructMoleculeDialog.h"
+#include "CreateFragmentDialog.h"
+#include "DigestSequenceDialog.h"
+#include "EnzymesPlugin.h"
+#include "EnzymesQuery.h"
+#include "EnzymesTests.h"
+#include "FindEnzymesDialog.h"
+#include "FindEnzymesTask.h"
 
 const QString CREATE_PCR_PRODUCT_ACTION_NAME = "Create PCR product";
 
@@ -142,8 +138,8 @@ void EnzymesPlugin::sl_onOpenDigestSequenceDialog() {
 
     }
 
-    DigestSequenceDialog dlg(view->getSequenceInFocus(), QApplication::activeWindow());
-    dlg.exec();
+    QObjectScopedPointer<DigestSequenceDialog> dlg = new DigestSequenceDialog(view->getSequenceInFocus(), QApplication::activeWindow());
+    dlg->exec();
 }
 
 void EnzymesPlugin::sl_onOpenCreateFragmentDialog() {
@@ -171,8 +167,8 @@ void EnzymesPlugin::sl_onOpenCreateFragmentDialog() {
         return;
     }
 
-    CreateFragmentDialog dlg(view->getSequenceInFocus(), QApplication::activeWindow());
-    dlg.exec();
+    QObjectScopedPointer<CreateFragmentDialog> dlg = new CreateFragmentDialog(view->getSequenceInFocus(), QApplication::activeWindow());
+    dlg->exec();
 }
 
 void EnzymesPlugin::sl_onOpenConstructMoleculeDialog() {
@@ -185,8 +181,8 @@ void EnzymesPlugin::sl_onOpenConstructMoleculeDialog() {
 
     QList<DNAFragment> fragments = DNAFragment::findAvailableFragments();
 
-    ConstructMoleculeDialog dlg(fragments, QApplication::activeWindow());
-    dlg.exec();
+    QObjectScopedPointer<ConstructMoleculeDialog> dlg = new ConstructMoleculeDialog(fragments, QApplication::activeWindow());
+    dlg->exec();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -218,8 +214,8 @@ void EnzymesADVContext::sl_search() {
 
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
     assert(seqCtx->getAlphabet()->isNucleic());
-    FindEnzymesDialog d(seqCtx);
-    d.exec();
+    QObjectScopedPointer<FindEnzymesDialog> d = new FindEnzymesDialog(seqCtx);
+    d->exec();
 }
 
 // TODO: move definitions to core
@@ -272,9 +268,9 @@ void EnzymesADVContext::sl_createPCRProduct() {
 
         U2SequenceObject *seqObj = av->getSequenceInFocus()->getSequenceObject();
         U2Region region(startPos, endPos - startPos);
-        CreateFragmentDialog dlg(seqObj, region, av->getSequenceWidgetInFocus());
-        dlg.setWindowTitle("Create PCR product");
-        dlg.exec();
+        QObjectScopedPointer<CreateFragmentDialog> dlg = new CreateFragmentDialog(seqObj, region, av->getSequenceWidgetInFocus());
+        dlg->setWindowTitle("Create PCR product");
+        dlg->exec();
     }
 }
 

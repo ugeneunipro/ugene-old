@@ -19,33 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#include "DistributedComputingUtil.h"
+#include <cassert>
+
+#include <QCheckBox>
+#include <QFile>
+#include <QMenu>
+#include <QString>
+#include <QUrl>
 
 #include <AppContextImpl.h>
 
-#include <U2Gui/MainWindow.h>
-#include <QtCore/QString>
-#include <QtCore/QUrl>
-#include <QtCore/QFile>
-
-#include <U2Core/NetworkConfiguration.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/Log.h>
-#include <U2Remote/SynchHttp.h>
+#include <U2Core/NetworkConfiguration.h>
+
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include <U2Remote/PingTask.h>
-#include <U2Remote/SerializeUtils.h>
 #include <U2Remote/RemoteWorkflowRunTask.h>
+#include <U2Remote/SerializeUtils.h>
+#include <U2Remote/SynchHttp.h>
+
+#include "DistributedComputingUtil.h"
 #include "RemoteMachineMonitorDialogImpl.h"
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMenu>
-#include <QtGui/QCheckBox>
-#else
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QCheckBox>
-#endif
-
-#include <cassert>
 
 namespace U2 {
 
@@ -75,9 +72,11 @@ DistributedComputingUtil::~DistributedComputingUtil() {
 }
 
 void DistributedComputingUtil::sl_showRemoteMachinesMonitor() {
-    RemoteMachineMonitorDialogImpl dlg( QApplication::activeWindow(), rmm );
-    int ret = dlg.exec();
-    if( QDialog::Rejected == ret ) {
+    QObjectScopedPointer<RemoteMachineMonitorDialogImpl> dlg = new RemoteMachineMonitorDialogImpl(QApplication::activeWindow(), rmm);
+    const int ret = dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (QDialog::Rejected == ret) {
         return;
     }
     assert( QDialog::Accepted == ret );

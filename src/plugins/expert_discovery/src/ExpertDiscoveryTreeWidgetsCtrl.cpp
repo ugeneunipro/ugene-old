@@ -1,11 +1,34 @@
-#include "ExpertDiscoveryTreeWidgetsCtrl.h"
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2015 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
 
-#include "ExpertDiscoveryTask.h"
-
+#include <QMouseEvent>
 #include <QStandardItemModel>
 #include <QMessageBox>
-#include <QtGui/QMouseEvent>
 
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/QObjectScopedPointer.h>
+
+#include "ExpertDiscoveryTreeWidgetsCtrl.h"
+#include "ExpertDiscoveryTask.h"
 
 namespace U2 {
 
@@ -204,8 +227,8 @@ void EDProjectTree::sl_propChanged(EDProjectItem* item, const EDPIProperty* prop
                 const CSFolder* pParentFolder = pFolder->getParentFolder();
                 int nIndex = pParentFolder->getFolderIndexByName(newVal);
                 if (nIndex>=0) {
-                    QMessageBox mb(QMessageBox::Critical, tr("Rename error"), tr("Folder already exist"));
-                    mb.exec();
+                    QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Rename error"), tr("Folder already exist"));
+                    mb->exec();
                     return;
                 }
                 pFolder->setName(newVal);
@@ -231,8 +254,11 @@ void EDProjectTree::sl_propChanged(EDProjectItem* item, const EDPIProperty* prop
                 CSFolder* pFolder = findFolder(pParent);
                 int nIndex = pFolder->getSignalIndexByName(newVal);
                 if (nIndex >= 0) {
-                    QMessageBox mb(QMessageBox::Question, tr("Signal rename"), tr("Signal with the same name already exist. Replace?"), QMessageBox::Ok|QMessageBox::Cancel);
-                    if(mb.exec()==QMessageBox::Ok)
+                    QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Question, tr("Signal rename"), tr("Signal with the same name already exist. Replace?"), QMessageBox::Ok|QMessageBox::Cancel);
+                    mb->exec();
+                    CHECK(!mb.isNull(), );
+
+                    if (mb->result() == QMessageBox::Ok)
                         pFolder->deleteSignal(nIndex);
                     else
                         return;
@@ -600,8 +626,9 @@ void EDProjectTree::onDistancePropertyChanged(EDProjectItem* pItem, const EDPIPr
             pOp->setDistance(iDist);
         }
         else{
-            QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
-            mb.exec();
+            QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
+            mb->exec();
+            CHECK(!mb.isNull(), );
         }
     }
     else
@@ -612,8 +639,9 @@ void EDProjectTree::onDistancePropertyChanged(EDProjectItem* pItem, const EDPIPr
             bool bError = false;
             if (nId < 0) {
                 if (bError = !parse(strNewValue.toStdString().c_str(),"%d", &nValue) || nValue<0) {
-                    QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
-                    mb.exec();
+                    QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
+                    mb->exec();
+                    CHECK(!mb.isNull(), );
                 }
             }
             else
@@ -624,8 +652,9 @@ void EDProjectTree::onDistancePropertyChanged(EDProjectItem* pItem, const EDPIPr
                     pOp->setDistance(iDist);
                 }
                 else{
-                    QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("The value must be grater than the lower bound"));
-                    mb.exec();
+                    QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("The value must be grater than the lower bound"));
+                    mb->exec();
+                    CHECK(!mb.isNull(), );
                 }
             }
         } else
@@ -646,6 +675,7 @@ void EDProjectTree::onDistancePropertyChanged(EDProjectItem* pItem, const EDPIPr
                 updateTree(ED_UPDATE_CHILDREN, qobject_cast<EDProjectItem *>(pIt));
                 updateTree(ED_CURRENT_ITEM_CHANGED, pDist);
 }
+
 void EDProjectTree::onRepetitionPropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue){
     EDPICSNRepetition* pDist = dynamic_cast<EDPICSNRepetition*>(pItem);
     OpReiteration* pOp = dynamic_cast<OpReiteration*>(pDist->getOperation());
@@ -664,8 +694,9 @@ void EDProjectTree::onRepetitionPropertyChanged(EDProjectItem* pItem, const EDPI
             pOp->setDistance(iDist);
         }
         else{
-            QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
-            mb.exec();
+            QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
+            mb->exec();
+            CHECK(!mb.isNull(), );
         }
     }
     else
@@ -676,8 +707,9 @@ void EDProjectTree::onRepetitionPropertyChanged(EDProjectItem* pItem, const EDPI
             bool bError = false;
             if (nId < 0) {
                 if (bError = !parse(strNewValue.toStdString().c_str(),"%d", &nValue)) {
-                    QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
-                    mb.exec();
+                    QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
+                    mb->exec();
+                    CHECK(!mb.isNull(), );
                 }
             }
             else
@@ -688,8 +720,9 @@ void EDProjectTree::onRepetitionPropertyChanged(EDProjectItem* pItem, const EDPI
                     pOp->setDistance(iDist);
                 }
                 else{
-                    QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("The value must be grater than the lower bound"));
-                    mb.exec();
+                    QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("The value must be grater than the lower bound"));
+                    mb->exec();
+                    CHECK(!mb.isNull(), );
                 }
             }
         } else
@@ -701,8 +734,9 @@ void EDProjectTree::onRepetitionPropertyChanged(EDProjectItem* pItem, const EDPI
                     pOp->setCount(iCount);
                 }
                 else {
-                    QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
-                    mb.exec();
+                    QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
+                    mb->exec();
+                    CHECK(!mb.isNull(), );
                 }
             }
             else
@@ -710,8 +744,9 @@ void EDProjectTree::onRepetitionPropertyChanged(EDProjectItem* pItem, const EDPI
                     DDisc::Interval iCount = pOp->getCount();
                     int nValue =0;
                     if (!parse(strNewValue.toStdString().c_str(),"%d", &nValue)) {
-                        QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
-                        mb.exec();
+                        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
+                        mb->exec();
+                        CHECK(!mb.isNull(), );
                     }
                     else {
                         if (nValue >= iCount.getFrom()) {
@@ -719,8 +754,9 @@ void EDProjectTree::onRepetitionPropertyChanged(EDProjectItem* pItem, const EDPI
                             pOp->setCount(iCount);
                         }
                         else{
-                            QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("The value must be grater than the lower bound"));
-                            mb.exec();
+                            QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("The value must be grater than the lower bound"));
+                            mb->exec();
+                            CHECK(!mb.isNull(), );
                         }
                     }
                 } else
@@ -734,6 +770,7 @@ void EDProjectTree::onRepetitionPropertyChanged(EDProjectItem* pItem, const EDPI
                     updateTree(ED_UPDATE_CHILDREN, qobject_cast<EDProjectItem *>(pIt));
                     updateTree(ED_CURRENT_ITEM_CHANGED, pDist);
 }
+
 void EDProjectTree::onIntervalPropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue){
     EDPICSNInterval* pInt = dynamic_cast<EDPICSNInterval*>(pItem);
     OpInterval* pOp = dynamic_cast<OpInterval*>(pInt->getOperation());
@@ -748,8 +785,9 @@ void EDProjectTree::onIntervalPropertyChanged(EDProjectItem* pItem, const EDPIPr
             pOp->setInt(iInt);
         }
         else{
-            QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
-            mb.exec();
+            QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
+            mb->exec();
+            CHECK(!mb.isNull(), );
         }
     }
     else
@@ -760,8 +798,9 @@ void EDProjectTree::onIntervalPropertyChanged(EDProjectItem* pItem, const EDPIPr
             bool bError = false;
             if (nId < 0) {
                 if (bError = !parse(strNewValue.toStdString().c_str(),"%d", &nValue)) {
-                    QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
-                    mb.exec();
+                    QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("The value must be positive integer which is less than the higher bound"));
+                    mb->exec();
+                    CHECK(!mb.isNull(), );
                 }
             }
             else
@@ -772,8 +811,9 @@ void EDProjectTree::onIntervalPropertyChanged(EDProjectItem* pItem, const EDPIPr
                     pOp->setInt(iInt);
                 }
                 else{
-                    QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("The value must be grater than the lower bound"));
-                    mb.exec();
+                    QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("The value must be grater than the lower bound"));
+                    mb->exec();
+                    CHECK(!mb.isNull(), );
                 }
             }
         }
@@ -783,6 +823,7 @@ void EDProjectTree::onIntervalPropertyChanged(EDProjectItem* pItem, const EDPIPr
         updateTree(ED_UPDATE_CHILDREN, qobject_cast<EDProjectItem *>(pIt));
         updateTree(ED_CURRENT_ITEM_CHANGED, pInt);
 }
+
 void EDProjectTree::onWordPropertyChanged(EDProjectItem* pItem, const EDPIProperty* pProperty, QString strNewValue){
     EDPICSNTSWord* pPITS = dynamic_cast<EDPICSNTSWord*>(pItem);
     TS* pOp = dynamic_cast<TS*>(pPITS->getOperation());
@@ -792,8 +833,8 @@ void EDProjectTree::onWordPropertyChanged(EDProjectItem* pItem, const EDPIProper
         if (isValidWord15(strNewValue.toStdString().c_str()))
             pOp->setWord(strNewValue.toUpper().toStdString());
         else {
-            QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("The word must be in 15-character code"));
-            mb.exec();
+            QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("The word must be in 15-character code"));
+            mb->exec();
             return;
         }
 

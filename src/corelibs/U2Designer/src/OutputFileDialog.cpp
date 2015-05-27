@@ -19,23 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QMenu>
-#include <QtGui/QWidgetAction>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QWidgetAction>
-#endif
-#include <U2Gui/HelpButton.h>
+#include <QPushButton>
+#include <QMenu>
+#include <QWidgetAction>
 
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Designer/OutputDirectoryWidget.h>
 
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/SuggestCompleter.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2Lang/RunFileSystem.h>
 
@@ -135,8 +129,11 @@ void OutputFileDialog::sl_textChanged() {
 }
 
 void OutputFileDialog::sl_addDir() {
-    CreateDirectoryDialog d(rfs, selectedPath(), this);
-    if (d.exec()) {
+    QObjectScopedPointer<CreateDirectoryDialog> d = new CreateDirectoryDialog(rfs, selectedPath(), this);
+    const int dialogResult = d->exec();
+    CHECK(!d.isNull(), );
+
+    if (QDialog::Accepted == dialogResult) {
         QModelIndexList idxs = selectionModel->selectedIndexes();
         CHECK(!idxs.isEmpty(), );
         QModelIndex index = idxs.first();
@@ -146,7 +143,7 @@ void OutputFileDialog::sl_addDir() {
         if (!item->isDir()) {
             index = index.parent();
         }
-        QModelIndex child = model->addDir(index, d.getResult());
+        QModelIndex child = model->addDir(index, d->getResult());
         treeView->setExpanded(index, true);
         selectionModel->select(child, QItemSelectionModel::ClearAndSelect);
     }

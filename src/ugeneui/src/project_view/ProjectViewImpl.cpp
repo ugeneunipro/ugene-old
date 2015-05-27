@@ -19,53 +19,53 @@
  * MA 02110-1301, USA.
  */
 
-#include <QMessageBox>
 #include <QDesktopServices>
+#include <QMessageBox>
 #include <QTimer>
 #include <QUrl>
 
 #include <AppContextImpl.h>
 
+#include <U2Core/AddDocumentTask.h>
+#include <U2Core/CopyDataTask.h>
 #include <U2Core/CopyDocumentTask.h>
-#include <U2Core/ProjectService.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/Settings.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DbiDocumentFormat.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GObject.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/GUrl.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
-#include <U2Core/Log.h>
-#include <U2Core/GObject.h>
-#include <U2Core/GUrl.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/DbiDocumentFormat.h>
-#include <U2Core/SaveDocumentTask.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/Log.h>
 #include <U2Core/MultiTask.h>
-#include <U2Core/CopyDataTask.h>
-#include <U2Core/AddDocumentTask.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/ProjectService.h>
+#include <U2Core/RemoveDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/SelectionUtils.h>
+#include <U2Core/Settings.h>
 #include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/RemoveDocumentTask.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2SafePoints.h>
 
-#include <U2Gui/OpenViewTask.h>
-#include <U2Gui/UnloadDocumentTask.h>
-#include <U2Gui/ObjectViewModel.h>
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportDocumentDialogController.h>
 #include <U2Gui/ExportObjectUtils.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/OpenViewTask.h>
 #include <U2Gui/ProjectUtils.h>
+#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Gui/UnloadDocumentTask.h>
 
-#include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceWidget.h>
 #include <U2View/ADVSingleSequenceWidget.h>
+#include <U2View/AnnotatedDNAView.h>
 
 #include "ProjectViewImpl.h"
 
@@ -267,19 +267,20 @@ void DocumentUpdater::notifyUserAndProcessRemovedDocuments(const QList<Document 
             : tr("The document '%1' was removed from its original directory. Therefore, it will be deleted from the current project.")
                 .arg(dbiDocs.first()->getName());
 
-        QMessageBox warningBox(dynamic_cast<QWidget *>(AppContext::getMainWindow()));
-        warningBox.setIcon(QMessageBox::Warning);
-        warningBox.setWindowTitle(tr(NOTIFICATION_TITLE));
-        warningBox.setText(warningMessageText);
+        QObjectScopedPointer<QMessageBox> warningBox = new QMessageBox(dynamic_cast<QWidget *>(AppContext::getMainWindow()));
+        warningBox->setIcon(QMessageBox::Warning);
+        warningBox->setWindowTitle(tr(NOTIFICATION_TITLE));
+        warningBox->setText(warningMessageText);
         if (severalDocRemoved) {
             QString removedDocNameList;
             foreach (Document *doc, dbiDocs) {
                 removedDocNameList += doc->getURLString() + '\n';
             }
             removedDocNameList.chop(1); // remove the last new line character
-            warningBox.setDetailedText(removedDocNameList);
+            warningBox->setDetailedText(removedDocNameList);
         }
-        warningBox.exec();
+        warningBox->exec();
+        CHECK(!warningBox.isNull(), );
 
         Project *activeProject = AppContext::getProject();
         SAFE_POINT(NULL != activeProject, L10N::nullPointerError("Project"), );
@@ -1149,7 +1150,7 @@ void ProjectViewImpl::sl_exportDocument() {
     if (!srcDoc->isLoaded()) {
         return;
     }
-    ExportDocumentDialogController dialog(srcDoc, w);
+    QObjectScopedPointer<ExportDocumentDialogController> dialog = new ExportDocumentDialogController(srcDoc, w);
     ExportObjectUtils::export2Document(dialog);
 }
 

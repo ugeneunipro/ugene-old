@@ -19,33 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QGroupBox>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QToolBar>
-#include <QtGui/QCheckBox>
-#include <QtGui/QMenu>
-#include <QtGui/QGraphicsScene>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QGraphicsScene>
-#endif
+#include <QAction>
+#include <QCheckBox>
+#include <QGraphicsScene>
+#include <QGroupBox>
+#include <QMenu>
+#include <QToolBar>
+#include <QTreeWidget>
+#include <QVBoxLayout>
+
+#include <U2Designer/BreakpointHitCountDialog.h>
+#include <U2Designer/DelegateEditors.h>
+#include <U2Designer/EditBreakpointLabelsDialog.h>
+#include <U2Designer/NewBreakpointDialog.h>
+
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2Lang/WorkflowDebugStatus.h>
 #include <U2Lang/WorkflowSettings.h>
-#include <U2Designer/DelegateEditors.h>
-#include <U2Designer/EditBreakpointLabelsDialog.h>
-#include <U2Designer/BreakpointHitCountDialog.h>
-#include <U2Designer/NewBreakpointDialog.h>
 
 #include "BreakpointManagerView.h"
 #include "WorkflowViewItems.h"
@@ -291,10 +282,11 @@ void BreakpointManagerView::sl_newBreakpoint() {
             actorsLabels << actor->getLabel();
         }
 
-        NewBreakpointDialog dialog(actorsLabels, this);
+        QObjectScopedPointer<NewBreakpointDialog> dialog = new NewBreakpointDialog(actorsLabels, this);
 
-        connect(&dialog, SIGNAL(si_newBreakpointCreated(const QString &)), SLOT(sl_addBreakpoint(const QString &)));
-        dialog.exec();
+        connect(dialog.data(), SIGNAL(si_newBreakpointCreated(const QString &)), SLOT(sl_addBreakpoint(const QString &)));
+        dialog->exec();
+        CHECK(!dialog.isNull(), );
     }
 }
 
@@ -468,27 +460,27 @@ void BreakpointManagerView::sl_hitCount() {
         = getNamesOfHitCounters();
     const BreakpointHitCounterDump hitCounterInfo
         = debugInfo->getHitCounterDumpForActor(actorConnections[item]);
-    BreakpointHitCountDialog hitCountDialog(QStringList(hitCountersNames.values()),
+    QObjectScopedPointer<BreakpointHitCountDialog> hitCountDialog = new BreakpointHitCountDialog(QStringList(hitCountersNames.values()),
         hitCountersNames[hitCounterInfo.typeOfCondition], hitCounterInfo.hitCounterParameter,
         hitCounterInfo.hitCount, QStringList(hitCountersNames[ALWAYS]), this);
 
-    connect(&hitCountDialog, SIGNAL(si_resetHitCount()), SLOT(sl_resetHitCount()));
-    connect(&hitCountDialog, SIGNAL(si_hitCounterAssigned(const QString &, quint32)),
+    connect(hitCountDialog.data(), SIGNAL(si_resetHitCount()), SLOT(sl_resetHitCount()));
+    connect(hitCountDialog.data(), SIGNAL(si_hitCounterAssigned(const QString &, quint32)),
         SLOT(sl_hitCounterAssigned(const QString &, quint32)));
 
-    hitCountDialog.exec();
+    hitCountDialog->exec();
 }
 
 void BreakpointManagerView::sl_editLabels() {
     QTreeWidgetItem *item = breakpointsList->currentItem();
-    EditBreakpointLabelsDialog labelsDialog(debugInfo->getAvailableBreakpointLabels(),
+    QObjectScopedPointer<EditBreakpointLabelsDialog> labelsDialog = new EditBreakpointLabelsDialog(debugInfo->getAvailableBreakpointLabels(),
         debugInfo->getBreakpointLabels(actorConnections[item]), this);
 
-    connect(&labelsDialog, SIGNAL(si_labelsCreated(QStringList)), SLOT(sl_labelsCreated(QStringList)));
-    connect(&labelsDialog, SIGNAL(si_labelAddedToCallingBreakpoint(QStringList)),
+    connect(labelsDialog.data(), SIGNAL(si_labelsCreated(QStringList)), SLOT(sl_labelsCreated(QStringList)));
+    connect(labelsDialog.data(), SIGNAL(si_labelAddedToCallingBreakpoint(QStringList)),
         SLOT(sl_labelAddedToCurrentBreakpoint(QStringList)));
 
-    labelsDialog.exec();
+    labelsDialog->exec();
 }
 
 void BreakpointManagerView::sl_setCondition() {
@@ -498,19 +490,19 @@ void BreakpointManagerView::sl_setCondition() {
     HitCondition conditionParameter
         = conditionParametertranslations[conditionInfo.conditionParameter];
 
-    BreakpointConditionEditDialog conditionDialog(this,
+    QObjectScopedPointer<BreakpointConditionEditDialog> conditionDialog = new BreakpointConditionEditDialog(this,
         AttributeScriptDelegate::createScriptHeader(*(scheme->actorById(actorId)->getCondition())),
         (conditionInfo.isEnabled | conditionInfo.condition.isEmpty()), conditionInfo.condition,
         conditionParameter);
 
-    connect(&conditionDialog, SIGNAL(si_conditionTextChanged(const QString &)),
+    connect(conditionDialog.data(), SIGNAL(si_conditionTextChanged(const QString &)),
         SLOT(sl_conditionTextChanged(const QString &)));
-    connect(&conditionDialog, SIGNAL(si_conditionParameterChanged(HitCondition)),
+    connect(conditionDialog.data(), SIGNAL(si_conditionParameterChanged(HitCondition)),
         SLOT(sl_conditionParameterChanged(HitCondition)));
-    connect(&conditionDialog, SIGNAL(si_conditionSwitched(bool)),
+    connect(conditionDialog.data(), SIGNAL(si_conditionSwitched(bool)),
         SLOT(sl_conditionSwitched(bool)));
 
-    conditionDialog.exec();
+    conditionDialog->exec();
 }
 
 void BreakpointManagerView::sl_conditionTextChanged(const QString &text) {

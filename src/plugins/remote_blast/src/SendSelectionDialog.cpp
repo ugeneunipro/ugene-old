@@ -32,6 +32,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "SendSelectionDialog.h"
 
@@ -395,13 +396,16 @@ void SendSelectionDialog::sl_OK() {
     }
 
     if(translateToAmino) {
-        QMessageBox msg(this);
-        msg.setText(tr("You chose to search nucleotide sequence in protein database. This sequence will be converted into 6 sequences(3 translations for both strands)."
+        QObjectScopedPointer<QMessageBox> msg = new QMessageBox(this);
+        msg->setText(tr("You chose to search nucleotide sequence in protein database. This sequence will be converted into 6 sequences(3 translations for both strands)."
             "Therefore this search may take some time. Continue?"));
-        msg.setWindowTitle(windowTitle());
-        msg.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-        msg.setDefaultButton(QMessageBox::Yes);
-        if(msg.exec() == QMessageBox::Cancel) {
+        msg->setWindowTitle(windowTitle());
+        msg->setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+        msg->setDefaultButton(QMessageBox::Yes);
+        msg->exec();
+        CHECK(!msg.isNull(), );
+
+        if (msg->result() == QMessageBox::Cancel) {
             return;
         }
     }

@@ -19,27 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "DNAStatPlugin.h"
-#include "DNAStatMSAProfileDialog.h"
-#include "DistanceMatrixMSAProfileDialog.h"
-#include "DNAStatsWindow.h"
+#include <QAction>
+#include <QMap>
+#include <QMenu>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/U2SafePoints.h>
+
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
 
-#include <QtCore/QMap>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QMenu>
-#endif
+#include "DNAStatMSAProfileDialog.h"
+#include "DNAStatPlugin.h"
+#include "DNAStatsWindow.h"
+#include "DistanceMatrixMSAProfileDialog.h"
 
 namespace U2 {
 
@@ -97,8 +95,8 @@ void DNAStatMSAEditorContext::buildMenu(GObjectView* v, QMenu* m) {
 void DNAStatMSAEditorContext::sl_showMSAProfileDialog() {
     GObjectViewAction* viewAction = qobject_cast<GObjectViewAction*>(sender());
     MSAEditor* msaEd = qobject_cast<MSAEditor*>(viewAction->getObjectView());
-    DNAStatMSAProfileDialog d(msaEd->getWidget(), msaEd);
-    d.exec();
+    QObjectScopedPointer<DNAStatMSAProfileDialog> d = new DNAStatMSAProfileDialog(msaEd->getWidget(), msaEd);
+    d->exec();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -133,8 +131,8 @@ void DistanceMatrixMSAEditorContext::buildMenu(GObjectView* v, QMenu* m) {
 void DistanceMatrixMSAEditorContext::sl_showDistanceMatrixDialog() {
     GObjectViewAction* viewAction = qobject_cast<GObjectViewAction*>(sender());
     MSAEditor* msaEd = qobject_cast<MSAEditor*>(viewAction->getObjectView());
-    DistanceMatrixMSAProfileDialog d(msaEd->getWidget(), msaEd);
-    d.exec();
+    QObjectScopedPointer<DistanceMatrixMSAProfileDialog> d = new DistanceMatrixMSAProfileDialog(msaEd->getWidget(), msaEd);
+    d->exec();
 }
 
 

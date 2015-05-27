@@ -19,39 +19,34 @@
  * MA 02110-1301, USA.
  */
 
-#include "MusclePlugin.h"
-#include "MuscleTask.h"
-#include "MuscleWorker.h"
-#include "MuscleAlignDialogController.h"
-#include "ProfileToProfileWorker.h"
+#include <QDialog>
+#include <QMainWindow>
 
 #include <U2Core/AppContext.h>
-#include <U2Core/Task.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/GObjectTypes.h>
 #include <U2Core/GAutoDeleteList.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/Task.h>
+
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/ToolsMenu.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2Lang/WorkflowSettings.h>
 
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/ToolsMenu.h>
-#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Test/GTestFrameworkComponents.h>
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
 
-#include <U2Test/GTestFrameworkComponents.h>
-
+#include "MuscleAlignDialogController.h"
+#include "MusclePlugin.h"
+#include "MuscleTask.h"
+#include "MuscleWorker.h"
+#include "ProfileToProfileWorker.h"
 #include "umuscle_tests/umuscleTests.h"
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#include <QtGui/QMainWindow>
-#else
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QMainWindow>
-#endif
 
 namespace U2 {
 
@@ -98,8 +93,11 @@ MusclePlugin::MusclePlugin()
 void MusclePlugin::sl_runWithExtFileSpecify(){
     //Call select input file and setup settings dialog
     MuscleTaskSettings settings;
-    MuscleAlignWithExtFileSpecifyDialogController muscleRunDialog(AppContext::getMainWindow()->getQMainWindow(), settings);
-    if(muscleRunDialog.exec() != QDialog::Accepted){
+    QObjectScopedPointer<MuscleAlignWithExtFileSpecifyDialogController> muscleRunDialog = new MuscleAlignWithExtFileSpecifyDialogController(AppContext::getMainWindow()->getQMainWindow(), settings);
+    muscleRunDialog->exec();
+    CHECK(!muscleRunDialog.isNull(), );
+
+    if (muscleRunDialog->result() != QDialog::Accepted){
         return;
     }
     assert(!settings.inputFilePath.isEmpty());
@@ -194,9 +192,10 @@ void MuscleMSAEditorContext::sl_align() {
         }
     }
 
-    MuscleAlignDialogController dlg(ed->getWidget(), obj->getMAlignment(), s);
+    QObjectScopedPointer<MuscleAlignDialogController> dlg = new MuscleAlignDialogController(ed->getWidget(), obj->getMAlignment(), s);
+    const int rc = dlg->exec();
+    CHECK(!dlg.isNull(), );
     
-    int rc = dlg.exec();
     if (rc != QDialog::Accepted) {
         return;
     }
@@ -205,8 +204,8 @@ void MuscleMSAEditorContext::sl_align() {
     AlignGObjectTask* muscleTask = new MuscleGObjectRunFromSchemaTask(obj, s);
     Task *alignTask = NULL;
 
-    if (dlg.translateToAmino()) {
-        QString trId = dlg.getTranslationId();
+    if (dlg->translateToAmino()) {
+        QString trId = dlg->getTranslationId();
         alignTask = new AlignInAminoFormTask(obj, muscleTask, trId);
     } else {
         alignTask = muscleTask;

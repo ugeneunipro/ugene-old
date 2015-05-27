@@ -25,12 +25,13 @@
 #include <U2Core/Task.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/SharedConnectionsDialog.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/ProjectUtils.h>
+#include <U2Gui/SharedConnectionsDialog.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
-#include <U2Gui/HelpButton.h>
 
 #include "ImportPrimerFromObjectTask.h"
 #include "ImportPrimersDialog.h"
@@ -68,7 +69,8 @@ void ImportPrimersDialog::sl_updateState() {
 }
 
 void ImportPrimersDialog::sl_connectClicked() {
-    SharedConnectionsDialog(this).exec();
+    QObjectScopedPointer<SharedConnectionsDialog> connectionDialog = new SharedConnectionsDialog(this);
+    connectionDialog->exec();
 }
 
 void ImportPrimersDialog::sl_addFileClicked() {
@@ -109,8 +111,8 @@ void ImportPrimersDialog::sl_addObjectClicked() {
     CHECK(!waitForConnection, );
     if (!ProjectUtils::areSharedDatabasesAvailable()) {
         waitForConnection = true;
-        SharedConnectionsDialog *connectDialog = new SharedConnectionsDialog(this);
-        connect(connectDialog, SIGNAL(si_connectionCompleted()), SLOT(sl_connectionComplete()));
+        QPointer<SharedConnectionsDialog> connectDialog = new SharedConnectionsDialog(this);
+        connect(connectDialog.data(), SIGNAL(si_connectionCompleted()), SLOT(sl_connectionComplete()));
         connectDialog->exec();
         return;
     }

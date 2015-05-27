@@ -19,42 +19,38 @@
  * MA 02110-1301, USA.
  */
 
+#include <QCoreApplication>
+#include <QDir>
+#include <QDirIterator>
+#include <QMessageBox>
+#include <QMenu>
+
+#include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DataBaseRegistry.h>
+#include <U2Core/GAutoDeleteList.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2OpStatusUtils.h>
 
-#include <U2Core/GAutoDeleteList.h>
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVSequenceObjectContext.h>
-#include <U2View/ADVConstants.h>
-#include <U2View/ADVUtils.h>
-
-#include <U2Core/DNASequenceSelection.h>
-#include <U2Core/DNASequenceObject.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#include <U2Test/XMLTestFormat.h>
 #include <U2Test/GTest.h>
 #include <U2Test/GTestFrameworkComponents.h>
+#include <U2Test/XMLTestFormat.h>
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDir>
-#include <QtCore/QDirIterator>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QMenu>
-#endif
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVUtils.h>
+#include <U2View/AnnotatedDNAView.h>
 
-#include "RemoteBLASTPlugin.h"
 #include "BlastQuery.h"
+#include "RemoteBLASTPlugin.h"
 #include "RemoteBLASTTask.h"
-#include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
-
 
 namespace U2 {
 
@@ -115,8 +111,11 @@ void RemoteBLASTViewContext::sl_showDialog() {
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
 
     bool isAminoSeq = seqCtx->getAlphabet()->isAmino();
-    SendSelectionDialog dlg( seqCtx->getSequenceObject(), isAminoSeq, av->getWidget() );
-    if( QDialog::Accepted == dlg.exec() ) {
+    QObjectScopedPointer<SendSelectionDialog> dlg = new SendSelectionDialog(seqCtx->getSequenceObject(), isAminoSeq, av->getWidget());
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (QDialog::Accepted == dlg->result()) {
         //prepare query
         DNASequenceSelection* s = seqCtx->getSequenceSelection();
         QVector<U2Region> regions;
@@ -130,21 +129,21 @@ void RemoteBLASTViewContext::sl_showDialog() {
             QByteArray query = seqCtx->getSequenceData(r, os);
             CHECK_OP_EXT(os, QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
 
-            DNATranslation * aminoT = (dlg.translateToAmino ? seqCtx->getAminoTT() : 0);
-            DNATranslation * complT = (dlg.translateToAmino ? seqCtx->getComplementTT() : 0);
+            DNATranslation * aminoT = (dlg->translateToAmino ? seqCtx->getAminoTT() : 0);
+            DNATranslation * complT = (dlg->translateToAmino ? seqCtx->getComplementTT() : 0);
 
-            RemoteBLASTTaskSettings cfg = dlg.cfg;
+            RemoteBLASTTaskSettings cfg = dlg->cfg;
             cfg.query = query;
             SAFE_POINT(seqCtx->getSequenceObject() != NULL, tr("Sequence objects is NULL"), );
             cfg.isCircular = seqCtx->getSequenceObject()->isCircular();
             cfg.aminoT = aminoT;
             cfg.complT = complT;
 
-            AnnotationTableObject *aobject = dlg.getAnnotationObject();
+            AnnotationTableObject *aobject = dlg->getAnnotationObject();
             if (aobject == NULL){
                 return;
             }
-            Task * t = new RemoteBLASTToAnnotationsTask(cfg, r.startPos, aobject, dlg.getUrl(), dlg.getGroupName(), dlg.getAnnotationDescription());
+            Task * t = new RemoteBLASTToAnnotationsTask(cfg, r.startPos, aobject, dlg->getUrl(), dlg->getGroupName(), dlg->getAnnotationDescription());
             AppContext::getTaskScheduler()->registerTopLevelTask( t );
         }
     }

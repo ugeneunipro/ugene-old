@@ -19,42 +19,40 @@
  * MA 02110-1301, USA.
  */
 
-#include "RepeatFinderPlugin.h"
-#include "RepeatFinderTests.h"
-#include "RepeatWorker.h"
-#include "FindRepeatsDialog.h"
-#include "FindTandemsDialog.h"
-#include "RepeatQuery.h"
-#include "TandemQuery.h"
-#include "RFTaskFactory.h"
+#include <cstdio>
 
+#include <QAction>
+#include <QMenu>
+#include <QMessageBox>
+
+#include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Core/L10n.h>
 
-#include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 #include <U2Gui/GUIUtils.h>
-#include <U2View/AnnotatedDNAViewFactory.h>
-#include <U2View/AnnotatedDNAView.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
+#include <U2Lang/QueryDesignerRegistry.h>
+
+#include <U2Test/GTestFrameworkComponents.h>
+#include <U2Test/XMLTestFormat.h>
+
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVUtils.h>
-#include <U2Lang/QueryDesignerRegistry.h>
+#include <U2View/AnnotatedDNAView.h>
+#include <U2View/AnnotatedDNAViewFactory.h>
 
-#include <U2Test/XMLTestFormat.h>
-#include <U2Test/GTestFrameworkComponents.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QMenu>
-#endif
-#include <QMessageBox>
-
-#include <cstdio>
+#include "FindRepeatsDialog.h"
+#include "FindTandemsDialog.h"
+#include "RFTaskFactory.h"
+#include "RepeatFinderPlugin.h"
+#include "RepeatFinderTests.h"
+#include "RepeatQuery.h"
+#include "RepeatWorker.h"
+#include "TandemQuery.h"
 
 namespace U2 {
 
@@ -121,8 +119,8 @@ void RepeatViewContext::sl_showDialog() {
                QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), U2SequenceObject::MAX_SEQ_32_ERROR_MESSAGE), );
 #endif
 
-    FindRepeatsDialog d(sctx);
-    d.exec();
+    QObjectScopedPointer<FindRepeatsDialog> d = new FindRepeatsDialog(sctx);
+    d->exec();
 }
 
 void RepeatViewContext::sl_showTandemDialog() {
@@ -137,8 +135,8 @@ void RepeatViewContext::sl_showTandemDialog() {
                QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), U2SequenceObject::MAX_SEQ_32_ERROR_MESSAGE), );
 #endif
 
-    FindTandemsDialog d(sctx);
-    d.exec();
+    QObjectScopedPointer<FindTandemsDialog> d = new FindTandemsDialog(sctx);
+    d->exec();
 }
 
 }//namespace

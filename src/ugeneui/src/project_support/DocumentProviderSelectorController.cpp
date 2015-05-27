@@ -32,6 +32,7 @@
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/AssemblyBrowserFactory.h>
 #include <U2View/MSAEditorFactory.h>
@@ -46,12 +47,12 @@ int DocumentProviderSelectorController::selectResult(const GUrl& url, const QLis
         return 0;
     }
 
-    DocumentProviderSelectorController d(results, QApplication::activeModalWidget());
-    d.gbFormats->setTitle(tr("Open '%1' as").arg(url.fileName()));
-    d.buttonBox->button(QDialogButtonBox::Cancel)->setAutoDefault(false);
-    d.buttonBox->button(QDialogButtonBox::Cancel)->setDefault(false);
-    d.buttonBox->button(QDialogButtonBox::Ok)->setAutoDefault(true);
-    d.buttonBox->button(QDialogButtonBox::Ok)->setDefault(true);
+    QObjectScopedPointer<DocumentProviderSelectorController> d = new DocumentProviderSelectorController(results, QApplication::activeModalWidget());
+    d->gbFormats->setTitle(tr("Open '%1' as").arg(url.fileName()));
+    d->buttonBox->button(QDialogButtonBox::Cancel)->setAutoDefault(false);
+    d->buttonBox->button(QDialogButtonBox::Cancel)->setDefault(false);
+    d->buttonBox->button(QDialogButtonBox::Ok)->setAutoDefault(true);
+    d->buttonBox->button(QDialogButtonBox::Ok)->setDefault(true);
 
     for (int i = 0; i < results.size(); i++) {
         const FormatDetectionResult &result = results[i];
@@ -74,21 +75,23 @@ int DocumentProviderSelectorController::selectResult(const GUrl& url, const QLis
         QRadioButton *rbFormat = new QRadioButton(text);
         rbFormat->setObjectName(text + "_radio");
         rbFormat->setChecked(i == 0);
-        d.formatsRadioButtons << rbFormat;
+        d->formatsRadioButtons << rbFormat;
 
-        d.formatsLayout->addWidget(rbFormat);
+        d->formatsLayout->addWidget(rbFormat);
     }
-    d.adjustSize();
+    d->adjustSize();
 
-    CHECK(!d.formatsRadioButtons.isEmpty(), -1);
-    d.formatsRadioButtons[0]->setFocus();
+    CHECK(!d->formatsRadioButtons.isEmpty(), -1);
+    d->formatsRadioButtons[0]->setFocus();
 
-    int rc = d.exec();
+    const int rc = d->exec();
+    CHECK(!d.isNull(), -1);
+
     if (rc == QDialog::Rejected) {
         return -1;
     }
 
-    return d.getSelectedFormatIdx();
+    return d->getSelectedFormatIdx();
 }
 
 DocumentProviderSelectorController::DocumentProviderSelectorController(const QList<FormatDetectionResult> &formatDetectionResults, QWidget *parent) :

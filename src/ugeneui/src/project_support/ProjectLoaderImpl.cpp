@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QAction>
+#include <QPushButton>
 
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/AppContext.h>
@@ -55,6 +49,7 @@
 #include <U2Gui/ProjectView.h>
 #include <U2Gui/SearchGenbankSequenceDialogController.h>
 #include <U2Gui/SharedConnectionsDialog.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2View/DnaAssemblyGUIExtension.h>
@@ -69,8 +64,6 @@
 #include "project_view/ProjectViewImpl.h"
 
 namespace U2 {
-
-/* TRANSLATOR U2::ProjectLoaderImpl */
 
 //////////////////////////////////////////////////////////////////////////
 /// ProjectLoaderImpl
@@ -180,16 +173,17 @@ void ProjectLoaderImpl::updateState() {
 
 void ProjectLoaderImpl::sl_newProject() {
     QWidget *p = (QWidget*)AppContext::getMainWindow()->getQMainWindow();
-    ProjectDialogController d(ProjectDialogController::New_Project,p);
-    int rc = d.exec();
-    AppContext::getSettings()->setValue(SETTINGS_DIR + "last_dir",d.projectFolderEdit->text(), true);
+    QObjectScopedPointer<ProjectDialogController> d = new ProjectDialogController(ProjectDialogController::New_Project,p);
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+    AppContext::getSettings()->setValue(SETTINGS_DIR + "last_dir", d->projectFolderEdit->text(), true);
 
     if (rc == QDialog::Rejected) {
         updateState();
         return;
     }
 
-    QString fileName = d.projectFolderEdit->text() + "/" + d.projectFileEdit->text();
+    QString fileName = d->projectFolderEdit->text() + "/" + d->projectFileEdit->text();
     if (!fileName.endsWith(PROJECTFILE_EXT)) {
         fileName.append(PROJECTFILE_EXT);
     }
@@ -198,7 +192,7 @@ void ProjectLoaderImpl::sl_newProject() {
         QFile::remove(fileName);
     }
 
-    QString projectName = d.projectNameEdit->text();
+    QString projectName = d->projectNameEdit->text();
     AppContext::getTaskScheduler()->registerTopLevelTask(new OpenProjectTask(fileName, projectName));
 }
 
@@ -592,17 +586,18 @@ Task* ProjectLoaderImpl::createProjectLoadingTask(const GUrl& url, const QVarian
         QMessageBox::critical(AppContext::getMainWindow()->getQMainWindow(),"UGENE", message);
         return NULL;
     }
-    QMessageBox msgBox(AppContext::getMainWindow()->getQMainWindow());
-    msgBox.setWindowTitle(U2_APP_TITLE);
-    msgBox.setText(tr("New project can either be opened in a new window or replace the project in the existing. How would you like to open the project?"));
-    QPushButton *newWindow = msgBox.addButton(tr("New Window"), QMessageBox::ActionRole);
+    QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox(AppContext::getMainWindow()->getQMainWindow());
+    msgBox->setWindowTitle(U2_APP_TITLE);
+    msgBox->setText(tr("New project can either be opened in a new window or replace the project in the existing. How would you like to open the project?"));
+    QPushButton *newWindow = msgBox->addButton(tr("New Window"), QMessageBox::ActionRole);
     newWindow->setObjectName("New Window");
-    QPushButton *oldWindow = msgBox.addButton(tr("This Window"), QMessageBox::ActionRole);
+    QPushButton *oldWindow = msgBox->addButton(tr("This Window"), QMessageBox::ActionRole);
     oldWindow->setObjectName("This Window");
-    msgBox.addButton(QMessageBox::Abort);
-    msgBox.exec();
+    msgBox->addButton(QMessageBox::Abort);
+    msgBox->exec();
+    CHECK(!msgBox.isNull(), NULL);
 
-    if (msgBox.clickedButton() == newWindow) {
+    if (msgBox->clickedButton() == newWindow) {
         QStringList params =  CMDLineRegistryUtils::getPureValues(0);
         params.append("--" + CMDLineCoreOptions::INI_FILE + "=" + AppContext::getSettings()->fileName());
         bool b = QProcess::startDetached(params.first(), QStringList() << url.getURLString() << params[1]);
@@ -610,7 +605,7 @@ Task* ProjectLoaderImpl::createProjectLoadingTask(const GUrl& url, const QVarian
             coreLog.error(tr("Failed to open new instance of UGENE"));
         }
         return NULL;
-    } else if (msgBox.clickedButton() == oldWindow) {
+    } else if (msgBox->clickedButton() == oldWindow) {
         bool closeActiveProject = hints.value(ProjectLoaderHint_CloseActiveProject, QVariant::fromValue(false)).toBool();
         if (!closeActiveProject) {
             coreLog.error(tr("Stopped loading project: %1. Reason: active project found").arg(url.getURLString()));
@@ -722,32 +717,29 @@ void ProjectLoaderImpl::sl_documentStateChanged() {
 
 void ProjectLoaderImpl::sl_newDocumentFromText(){
     QWidget *p = (QWidget*)AppContext::getMainWindow()->getQMainWindow();
-    CreateDocumentFromTextDialogController *dialog = new CreateDocumentFromTextDialogController(p);
+    QObjectScopedPointer<CreateDocumentFromTextDialogController> dialog = new CreateDocumentFromTextDialogController(p);
     dialog->exec();
-    delete dialog;
 }
 
 void ProjectLoaderImpl::sl_downloadRemoteFile()
 {
     QWidget *p = (QWidget*)(AppContext::getMainWindow()->getQMainWindow());
-    DownloadRemoteFileDialog dlg(p);
-    dlg.exec();
+    QObjectScopedPointer<DownloadRemoteFileDialog> dlg = new DownloadRemoteFileDialog(p);
+    dlg->exec();
 }
 
 void ProjectLoaderImpl::sl_accessSharedDatabase()
 {
     QWidget *p = (QWidget*)(AppContext::getMainWindow()->getQMainWindow());
-    SharedConnectionsDialog dlg(p);
-    dlg.exec();
+    QObjectScopedPointer<SharedConnectionsDialog> dlg = new SharedConnectionsDialog(p);
+    dlg->exec();
 }
 
 void ProjectLoaderImpl::sl_searchGenbankEntry()
 {
     QWidget *p = (QWidget*)(AppContext::getMainWindow()->getQMainWindow());
-    SearchGenbankSequenceDialogController dlg(p);
-    dlg.exec();
-
-
+    QObjectScopedPointer<SearchGenbankSequenceDialogController> dlg = new SearchGenbankSequenceDialogController(p);
+    dlg->exec();
 }
 
 //////////////////////////////////////////////////////////////////////////

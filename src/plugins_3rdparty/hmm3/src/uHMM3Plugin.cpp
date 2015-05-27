@@ -19,17 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMessageBox>
-#endif
-
+#include <QAction>
+#include <QMenu>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/GAutoDeleteList.h>
@@ -41,28 +33,26 @@
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/ProjectView.h>
 #include <U2Gui/ToolsMenu.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVConstants.h>
+#include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVUtils.h>
+#include <U2View/AnnotatedDNAView.h>
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 #include <U2Test/XMLTestFormat.h>
 
-#include <tests/uhmmer3Tests.h>
-#include <format/uHMMFormat.h>
-
-#include <build/uHMM3BuildDialogImpl.h>
-#include <search/uhmm3QDActor.h>
-#include <search/uHMM3SearchDialogImpl.h>
-#include <phmmer/uHMM3PhmmerDialogImpl.h>
-
-#include <workers/HMM3IOWorker.h>
-
 #include "uHMM3Plugin.h"
+#include "build/uHMM3BuildDialogImpl.h"
+#include "format/uHMMFormat.h"
+#include "phmmer/uHMM3PhmmerDialogImpl.h"
+#include "search/uHMM3SearchDialogImpl.h"
+#include "search/uhmm3QDActor.h"
+#include "tests/uhmmer3Tests.h"
+#include "workers/HMM3IOWorker.h"
 
 Q_DECLARE_METATYPE(QMenu*);
 
@@ -148,8 +138,8 @@ void UHMM3Plugin::sl_buildProfile() {
     }
     QWidget *p = (QWidget*)AppContext::getMainWindow()->getQMainWindow();
     
-    UHMM3BuildDialogImpl buildDlg( ma, p );
-    buildDlg.exec();
+    QObjectScopedPointer<UHMM3BuildDialogImpl> buildDlg = new UHMM3BuildDialogImpl( ma, p );
+    buildDlg->exec();
 }
 
 /* TODO: same as in function sl_search in uHMMPlugin.cpp */
@@ -178,8 +168,8 @@ void UHMM3Plugin::sl_searchHMMSignals() {
         return;
     }
     QWidget *p = (QWidget*)AppContext::getMainWindow()->getQMainWindow();
-    UHMM3SearchDialogImpl searchDlg( seqObj, p );
-    searchDlg.exec();
+    QObjectScopedPointer<UHMM3SearchDialogImpl> searchDlg = new UHMM3SearchDialogImpl( seqObj, p );
+    searchDlg->exec();
 }
 
 void UHMM3Plugin::sl_phmmerSearch() {
@@ -189,8 +179,8 @@ void UHMM3Plugin::sl_phmmerSearch() {
         return;
     }
     QWidget *p = (QWidget*)AppContext::getMainWindow()->getQMainWindow();
-    UHMM3PhmmerDialogImpl phmmerDlg( seqObj, p );
-    phmmerDlg.exec();
+    QObjectScopedPointer<UHMM3PhmmerDialogImpl> phmmerDlg = new UHMM3PhmmerDialogImpl( seqObj, p );
+    phmmerDlg->exec();
 }
 
 UHMM3Plugin::~UHMM3Plugin() {
@@ -236,8 +226,9 @@ void UHMM3MSAEditorContext::sl_build() {
     assert( NULL != ed );
     MAlignmentObject * obj = ed->getMSAObject(); 
     if (obj != NULL) {
-        UHMM3BuildDialogImpl buildDlg( obj->getMAlignment() );
-        buildDlg.exec();
+        QObjectScopedPointer<UHMM3BuildDialogImpl> buildDlg = new UHMM3BuildDialogImpl( obj->getMAlignment() );
+        buildDlg->exec();
+        CHECK(!buildDlg.isNull(), );
     }
 }
 
@@ -267,8 +258,8 @@ void UHMM3ADVContext::sl_search() {
         return;
     }
     
-    UHMM3SearchDialogImpl searchDlg( seqObj, parent );
-    searchDlg.exec();
+    QObjectScopedPointer<UHMM3SearchDialogImpl> searchDlg = new UHMM3SearchDialogImpl( seqObj, parent );
+    searchDlg->exec();
 }
 
 QWidget * UHMM3ADVContext::getParentWidget( QObject * sender ) {

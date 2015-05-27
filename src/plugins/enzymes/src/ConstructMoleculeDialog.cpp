@@ -19,23 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QScopedPointer>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QMessageBox>
+#include <QScopedPointer>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "ConstructMoleculeDialog.h"
@@ -306,16 +303,16 @@ void ConstructMoleculeDialog::sl_onEditFragmentButtonClicked()
     int idx = molConstructWidget->indexOfTopLevelItem(item);
     DNAFragment& fragment = fragments[ selected[idx] ];
 
-    EditFragmentDialog dlg(fragment, this);
-    if (dlg.exec() == -1 ) {
+    QObjectScopedPointer<EditFragmentDialog> dlg = new EditFragmentDialog(fragment, this);
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (dlg->result() == QDialog::Rejected) {
         return;
     }
 
     update();
-
 }
-
-
 
 bool ConstructMoleculeDialog::eventFilter( QObject* obj , QEvent* event )
 {
@@ -359,9 +356,12 @@ void ConstructMoleculeDialog::sl_onAddFromProjectButtonClicked()
             U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
 
             if (seqObj) {
-                CreateFragmentDialog dlg(seqObj, U2Region(0, seqObj->getSequenceLength()), this);
-                if (dlg.exec() == QDialog::Accepted) {
-                    DNAFragment frag = dlg.getFragment();
+                QObjectScopedPointer<CreateFragmentDialog> dlg = new CreateFragmentDialog(seqObj, U2Region(0, seqObj->getSequenceLength()), this);
+                dlg->exec();
+                CHECK(!dlg.isNull(), );
+
+                if (dlg->result() == QDialog::Accepted) {
+                    DNAFragment frag = dlg->getFragment();
                         QString fragItem = QString("%1 (%2) %3").arg(frag.getSequenceName())
                         .arg(frag.getSequenceDocName())
                         .arg(frag.getName());

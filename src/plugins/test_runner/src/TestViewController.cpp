@@ -19,27 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QMap>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QFormLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLineEdit>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#include <QtGui/QToolBar>
-#include <QtGui/QVBoxLayout>
-#else
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QFormLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QVBoxLayout>
-#endif
+#include <QDialogButtonBox>
+#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QLineEdit>
+#include <QMap>
+#include <QMenu>
+#include <QMessageBox>
+#include <QToolBar>
+#include <QVBoxLayout>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/CMDLineCoreOptions.h>
@@ -48,6 +36,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2Test/GTest.h>
@@ -58,8 +47,6 @@
 #include "TestRunnerPlugin.h"
 #include "TestViewController.h"
 #include "TestViewReporter.h"
-
-/* TRANSLATOR U2::TestViewController */
 
 //todo: remember splitter geom
 
@@ -745,12 +732,14 @@ void TestViewController::setExcludedState(TVItem* sItem,bool allSelected, bool n
 }
 void TestViewController::setExcludedState(TVItem* sItem, bool allSelected, QString reason){
     if(allSelected && reason == NO_REASON){
-        ExcludeReasonDialog dlg;
-        int rc = dlg.exec();
+        QObjectScopedPointer<ExcludeReasonDialog> dlg = new ExcludeReasonDialog;
+        const int rc = dlg->exec();
+        CHECK(!dlg.isNull(), );
+
         if(rc != QDialog::Accepted){
             return;
         }
-        reason = dlg.getReason();
+        reason = dlg->getReason();
     }
 
     for(int j = 0, m = sItem->childCount(); j<m; j++) {
@@ -761,12 +750,14 @@ void TestViewController::setExcludedState(TVItem* sItem, bool allSelected, QStri
                 tItem->excludedTests=!tItem->excludedTests;
                 if(tItem->excludedTests){
                     if(!allSelected && reason == NO_REASON){
-                        ExcludeReasonDialog dlg;
-                        int rc = dlg.exec();
+                        QObjectScopedPointer<ExcludeReasonDialog> dlg = new ExcludeReasonDialog;
+                        const int rc = dlg->exec();
+                        CHECK(!dlg.isNull(), );
+
                         if(rc != QDialog::Accepted){
                             return;
                         }
-                        reason = dlg.getReason();
+                        reason = dlg->getReason();
                     }
                     tItem->excludeReason = reason;
                 }
@@ -951,12 +942,11 @@ void TestViewController::sl_setEnvAction() {
     }
 
     //todo: create custom utility class for properties like this
-    QDialog d(this);
-    //d.setObjectName("SetEnvironmentVariablesDialog");
-    d.setMinimumWidth(400);
-    d.setWindowTitle(tr("env_mb_title"));
+    QObjectScopedPointer<QDialog> d = new QDialog(this);
+    d->setMinimumWidth(400);
+    d->setWindowTitle(tr("env_mb_title"));
     QVBoxLayout* vl = new QVBoxLayout();
-    d.setLayout(vl);
+    d->setLayout(vl);
 
     QFormLayout* fl = new QFormLayout();
     vl->addLayout(fl);
@@ -964,7 +954,7 @@ void TestViewController::sl_setEnvAction() {
     QMap<QString, QLineEdit*> valsByName;
     foreach(const QString& name, vars.keys()) {
         QString val = vars.value(name);
-        QLineEdit* le = new QLineEdit(val, &d);
+        QLineEdit* le = new QLineEdit(val, d.data());
         le->setObjectName(name+"_EditBox");
         QLabel* la = new QLabel(name + ":");
         la->setObjectName(name+"_Label");
@@ -976,10 +966,12 @@ void TestViewController::sl_setEnvAction() {
     QHBoxLayout* hl = new QHBoxLayout();
     vl->addLayout(hl);
     QDialogButtonBox* dbb = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    d.connect(dbb, SIGNAL(accepted()), SLOT(accept()));
-    d.connect(dbb, SIGNAL(rejected()), SLOT(reject()));
+    d->connect(dbb, SIGNAL(accepted()), SLOT(accept()));
+    d->connect(dbb, SIGNAL(rejected()), SLOT(reject()));
     vl->addWidget(dbb);
-    int rc = d.exec();
+    int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc != QDialog::Accepted) {
         return;
     }

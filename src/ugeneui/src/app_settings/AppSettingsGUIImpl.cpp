@@ -19,25 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#include "AppSettingsGUIImpl.h"
-#include "AppSettingsDialogController.h"
-
-#include "format_settings/FormatSettingsGUIController.h"
-#include "network_settings/NetworkSettingsGUIController.h"
-#include "user_apps_settings/UserApplicationsSettingsGUIController.h"
-#include "resource_settings/ResourceSettingsGUIController.h"
-#include "directories_settings/DirectoriesSettingsGUIController.h"
+#include <QMenu>
 
 #include <U2Core/AppContext.h>
-#include <U2Gui/MainWindow.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QMenu>
-#endif
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
+#include "AppSettingsDialogController.h"
+#include "AppSettingsGUIImpl.h"
+#include "directories_settings/DirectoriesSettingsGUIController.h"
+#include "format_settings/FormatSettingsGUIController.h"
+#include "network_settings/NetworkSettingsGUIController.h"
+#include "resource_settings/ResourceSettingsGUIController.h"
+#include "user_apps_settings/UserApplicationsSettingsGUIController.h"
 
 namespace U2 {
+
 AppSettingsGUIImpl::AppSettingsGUIImpl(QObject* p) : AppSettingsGUI(p)
 {
     registerBuiltinPages();
@@ -89,8 +87,8 @@ bool AppSettingsGUIImpl::unregisterPage(AppSettingsGUIPageController* page) {
 
 void AppSettingsGUIImpl::showSettingsDialog(const QString& pageId) const {
     QWidget *p = (QWidget*)(AppContext::getMainWindow()->getQMainWindow());
-    AppSettingsDialogController c(pageId,p);
-    c.exec();
+    QObjectScopedPointer<AppSettingsDialogController> c = new AppSettingsDialogController(pageId,p);
+    c->exec();
 }
 
 AppSettingsGUIPageController* AppSettingsGUIImpl::findPageById(const QString& pageId) const {

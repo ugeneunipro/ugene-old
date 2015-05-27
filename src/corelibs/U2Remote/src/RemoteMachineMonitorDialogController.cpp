@@ -19,31 +19,30 @@
  * MA 02110-1301, USA.
  */
 
+#include <QMessageBox>
+
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include "RemoteMachineMonitorDialogController.h"
 #include "RemoteMachineMonitorDialogImpl.h"
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
-
-/* TRANSLATOR U2::RemoteMachineMonitorDialogImpl */
 
 namespace U2 {
 
 RemoteMachineSettingsPtr RemoteMachineMonitorDialogController::selectRemoteMachine(
     RemoteMachineMonitor* monitor, bool runTaskMode /* = false */ )
 {
-    RemoteMachineMonitorDialogImpl dlg( QApplication::activeWindow(), monitor, runTaskMode);
+    QObjectScopedPointer<RemoteMachineMonitorDialogImpl> dlg = new RemoteMachineMonitorDialogImpl(QApplication::activeWindow(), monitor, runTaskMode);
+    const int ret = dlg->exec();
+    CHECK(!dlg.isNull(), RemoteMachineSettingsPtr());
 
-    int ret = dlg.exec();
     if(ret == QDialog::Rejected) {
         return RemoteMachineSettingsPtr();
     }
     assert(ret == QDialog::Accepted);
 
-    RemoteMachineSettingsPtr rms = dlg.getSelectedMachine();
+    RemoteMachineSettingsPtr rms = dlg->getSelectedMachine();
     if (runTaskMode && !rms) {
         QMessageBox::critical(QApplication::activeWindow(),
             RemoteMachineMonitorDialogImpl::tr("Selecting machines error!"),

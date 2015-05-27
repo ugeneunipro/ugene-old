@@ -23,33 +23,35 @@
 #include <QDir>
 #include <QMessageBox>
 
-#include <qglobal.h>
+#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+#include <U2Algorithm/DnaAssemblyMultiTask.h>
+#include <U2Algorithm/GenomeAssemblyMultiTask.h>
+#include <U2Algorithm/GenomeAssemblyRegistry.h>
 
+#include <U2Core/AddDocumentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentUtils.h>
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/MultiTask.h>
 #include <U2Core/ProjectModel.h>
-#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
-#include <U2Algorithm/GenomeAssemblyRegistry.h>
-#include <U2Algorithm/GenomeAssemblyMultiTask.h>
-#include <U2Algorithm/DnaAssemblyMultiTask.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Formats/ConvertAssemblyToSamTask.h>
 #include <U2Formats/ConvertFileTask.h>
+
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/ToolsMenu.h>
-#include <U2Core/AddDocumentTask.h>
-#include <U2Core/MultiTask.h>
-#include <U2Core/DocumentUtils.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#include "DnaAssemblyUtils.h"
-#include "DnaAssemblyDialog.h"
-#include "GenomeAssemblyDialog.h"
 #include "BuildIndexDialog.h"
 #include "ConvertAssemblyToSamDialog.h"
-
+#include "DnaAssemblyDialog.h"
+#include "DnaAssemblyUtils.h"
+#include "GenomeAssemblyDialog.h"
 
 namespace U2 {
 
@@ -89,22 +91,24 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
         return;
     }
 
-    DnaAssemblyDialog dlg(QApplication::activeWindow());
-    if (dlg.exec()) {
+    QObjectScopedPointer<DnaAssemblyDialog> dlg = new DnaAssemblyDialog(QApplication::activeWindow());
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (QDialog::Accepted == dlg->result()) {
         DnaAssemblyToRefTaskSettings s;
-        s.samOutput = dlg.isSamOutput();
-        s.refSeqUrl = dlg.getRefSeqUrl();
-        s.algName = dlg.getAlgorithmName();
-        s.resultFileName = dlg.getResultFileName();
-        s.setCustomSettings( dlg.getCustomSettings() );
-        s.shortReadSets = dlg.getShortReadSets();
-        s.pairedReads = dlg.isPaired();
+        s.samOutput = dlg->isSamOutput();
+        s.refSeqUrl = dlg->getRefSeqUrl();
+        s.algName = dlg->getAlgorithmName();
+        s.resultFileName = dlg->getResultFileName();
+        s.setCustomSettings(dlg->getCustomSettings());
+        s.shortReadSets = dlg->getShortReadSets();
+        s.pairedReads = dlg->isPaired();
         s.openView = true;
-        s.prebuiltIndex = dlg.isPrebuiltIndex();
+        s.prebuiltIndex = dlg->isPrebuiltIndex();
         Task* assemblyTask = new DnaAssemblyTaskWithConversions(s, true);
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
     }
-
 }
 
 void DnaAssemblySupport::sl_showGenomeAssemblyDialog() {
@@ -115,20 +119,21 @@ void DnaAssemblySupport::sl_showGenomeAssemblyDialog() {
         return;
     }
 
-    GenomeAssemblyDialog dlg(QApplication::activeWindow());
-    if (dlg.exec()) {
+    QObjectScopedPointer<GenomeAssemblyDialog> dlg = new GenomeAssemblyDialog(QApplication::activeWindow());
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (QDialog::Accepted == dlg->result()) {
         GenomeAssemblyTaskSettings s;
-        s.algName = dlg.getAlgorithmName();
-        s.outDir = dlg.getOutDir();
-        s.setCustomSettings( dlg.getCustomSettings() );
-        s.reads = dlg.getReads();
+        s.algName = dlg->getAlgorithmName();
+        s.outDir = dlg->getOutDir();
+        s.setCustomSettings(dlg->getCustomSettings());
+        s.reads = dlg->getReads();
         s.openView = true;
         Task* assemblyTask = new GenomeAssemblyMultiTask(s);
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
     }
-
 }
-
 
 void DnaAssemblySupport::sl_showBuildIndexDialog()
 {
@@ -139,14 +144,17 @@ void DnaAssemblySupport::sl_showBuildIndexDialog()
         return;
     }
 
-    BuildIndexDialog dlg(registry, QApplication::activeWindow());
-    if (dlg.exec()) {
+    QObjectScopedPointer<BuildIndexDialog> dlg = new BuildIndexDialog(registry, QApplication::activeWindow());
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (QDialog::Accepted == dlg->result()) {
         DnaAssemblyToRefTaskSettings s;
-        s.refSeqUrl = dlg.getRefSeqUrl();
-        s.algName = dlg.getAlgorithmName();
-        s.resultFileName = dlg.getIndexFileName();
-        s.indexFileName = dlg.getIndexFileName();
-        s.setCustomSettings( dlg.getCustomSettings() );
+        s.refSeqUrl = dlg->getRefSeqUrl();
+        s.algName = dlg->getAlgorithmName();
+        s.resultFileName = dlg->getIndexFileName();
+        s.indexFileName = dlg->getIndexFileName();
+        s.setCustomSettings(dlg->getCustomSettings());
         s.openView = false;
         s.prebuiltIndex = false;
         s.pairedReads = false;
@@ -156,12 +164,16 @@ void DnaAssemblySupport::sl_showBuildIndexDialog()
 }
 
 void DnaAssemblySupport::sl_showConvertToSamDialog() {
-    ConvertAssemblyToSamDialog dlg(QApplication::activeWindow());
-    if (dlg.exec()) {
-        Task *convertTask = new ConvertAssemblyToSamTask(dlg.getDbFileUrl(), dlg.getSamFileUrl());
+    QObjectScopedPointer<ConvertAssemblyToSamDialog> dlg = new ConvertAssemblyToSamDialog(QApplication::activeWindow());
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (QDialog::Accepted == dlg->result()) {
+        Task *convertTask = new ConvertAssemblyToSamTask(dlg->getDbFileUrl(), dlg->getSamFileUrl());
         AppContext::getTaskScheduler()->registerTopLevelTask(convertTask);
     }
 }
+
 namespace {
 enum Result {
     UNKNOWN,

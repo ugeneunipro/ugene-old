@@ -19,20 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "ExpertDiscoveryPosNegDialog.h"
@@ -72,14 +68,16 @@ void ExpertDiscoveryPosNegDialog::accept(){
 
     if (!firstFileName.isEmpty() && !secondFileName.isEmpty()) {
         if(secondFileName == firstFileName && !generateNeg){
-            QMessageBox mb(QMessageBox::Critical, tr("Select files"), tr("Positive and negative sequences can't be in the one file. Select another file for one of them"));
-            mb.exec();
+            QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Select files"), tr("Positive and negative sequences can't be in the one file. Select another file for one of them"));
+            mb->exec();
+            CHECK(!mb.isNull(), );
         }else{
             QDialog::accept();
         }
     }else {
-        QMessageBox mb(QMessageBox::Critical, tr("Select files"), tr("Select files for ExpertDiscovery"));
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Select files"), tr("Select files for ExpertDiscovery"));
+        mb->exec();
+        CHECK(!mb.isNull(), );
     }
 }
 

@@ -55,15 +55,16 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectView.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "ExportChromatogramDialog.h"
-#include "ExportMSA2SequencesDialog.h"
 #include "ExportMSA2MSADialog.h"
+#include "ExportMSA2SequencesDialog.h"
 #include "ExportProjectViewItems.h"
 #include "ExportQualityScoresTask.h"
+#include "ExportSequenceTask.h"
 #include "ExportSequences2MSADialog.h"
 #include "ExportSequencesDialog.h"
-#include "ExportSequenceTask.h"
 #include "ExportTasks.h"
 #include "ExportUtils.h"
 #include "ImportAnnotationsFromCSVDialog.h"
@@ -261,7 +262,7 @@ QList<SharedAnnotationData> getAllRelatedAnnotations(const U2SequenceObject *so,
     return anns;
 }
 
-void addExportItemsToSettings(const ExportSequencesDialog &d, const QList<GObject *> seqObjs, ExportSequenceTaskSettings &s) {
+void addExportItemsToSettings(ExportSequencesDialog *d, const QList<GObject *> seqObjs, ExportSequenceTaskSettings &s) {
     QList<GObject *> allAnnotationTables;
     if (s.saveAnnotations) {
         allAnnotationTables = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::ANNOTATION_TABLE);
@@ -277,8 +278,8 @@ void addExportItemsToSettings(const ExportSequencesDialog &d, const QList<GObjec
         ei.setSequenceInfo(so);
         ei.annotations = anns;
         ei.complTT = GObjectUtils::findComplementTT(so->getAlphabet());
-        ei.aminoTT = d.translate ? GObjectUtils::findAminoTT(so, false, d.useSpecificTable ? d.translationTable : NULL) : NULL;
-        ei.backTT = d.backTranslate ? GObjectUtils::findBackTranslationTT(so, d.translationTable) : NULL;
+        ei.aminoTT = d->translate ? GObjectUtils::findAminoTT(so, false, d->useSpecificTable ? d->translationTable : NULL) : NULL;
+        ei.backTT = d->backTranslate ? GObjectUtils::findBackTranslationTT(so, d->translationTable) : NULL;
         s.items.append(ei);
     }
 }
@@ -344,20 +345,22 @@ void ExportProjectViewItemsContoller::exportSequences(const QList<GObject *> &se
         defaultFileNameDir, fileBaseName);
 
     QString defaultFileName = defaultFileNameDir + QDir::separator() + fileBaseName + "_new.fa";
-    ExportSequencesDialog d(allowMerge, allowComplement, allowTranslate, allowBackTranslate, defaultFileName, fileBaseName,
+    QObjectScopedPointer<ExportSequencesDialog> d = new ExportSequencesDialog(allowMerge, allowComplement, allowTranslate, allowBackTranslate, defaultFileName, fileBaseName,
         BaseDocumentFormats::FASTA, AppContext::getMainWindow()->getQMainWindow());
 
-    int rc = d.exec();
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc == QDialog::Rejected) {
         return;
     }
-    SAFE_POINT(!d.file.isEmpty(), "Invalid file name detected", );
+    SAFE_POINT(!d->file.isEmpty(), "Invalid file name detected", );
 
     ExportSequenceTaskSettings s;
-    ExportUtils::loadDNAExportSettingsFromDlg(s, d);
-    addExportItemsToSettings(d, seqs, s);
+    ExportUtils::loadDNAExportSettingsFromDlg(s, d.data());
+    addExportItemsToSettings(d.data(), seqs, s);
 
-    Task* t = ExportUtils::wrapExportTask(new ExportSequenceTask(s), d.addToProject);
+    Task* t = ExportUtils::wrapExportTask(new ExportSequenceTask(s), d->addToProject);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
@@ -375,9 +378,10 @@ void ExportProjectViewItemsContoller::sl_saveSequencesAsAlignment() {
     GUrl seqUrl = sequenceObjects.first()->getDocument()->getURL();
     QString defaultUrl = GUrlUtils::getNewLocalUrlByFormat(seqUrl, sequenceObjects.first()->getGObjectName(), BaseDocumentFormats::CLUSTAL_ALN, "");
 
-    ExportSequences2MSADialog d(AppContext::getMainWindow()->getQMainWindow(), defaultUrl);
+    QObjectScopedPointer<ExportSequences2MSADialog> d = new ExportSequences2MSADialog(AppContext::getMainWindow()->getQMainWindow(), defaultUrl);
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
 
-    int rc = d.exec();
     if (rc != QDialog::Accepted) {
         return;
     }
@@ -398,14 +402,14 @@ void ExportProjectViewItemsContoller::sl_saveSequencesAsAlignment() {
         return;
     }
 
-    MAlignment ma = MSAUtils::seq2ma(sequenceObjects, os, d.useGenbankHeader);
+    MAlignment ma = MSAUtils::seq2ma(sequenceObjects, os, d->useGenbankHeader);
     if (os.hasError()) {
         QMessageBox::critical(NULL, L10N::errorTitle(), os.getError());
         return;
     }
-    QString objName = GUrl(d.url).baseFileName();
+    QString objName = GUrl(d->url).baseFileName();
     ma.setName(objName);
-    Task* t = ExportUtils::wrapExportTask(new ExportAlignmentTask(ma, d.url, d.format), d.addToProjectFlag);
+    Task* t = ExportUtils::wrapExportTask(new ExportAlignmentTask(ma, d->url, d->format), d->addToProjectFlag);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
@@ -422,13 +426,15 @@ void ExportProjectViewItemsContoller::sl_saveAlignmentAsSequences() {
     GObject* obj = set.first();
     MAlignmentObject* maObject = qobject_cast<MAlignmentObject*>(obj);
     const MAlignment& ma = maObject->getMAlignment();
-    ExportMSA2SequencesDialog d(AppContext::getMainWindow()->getQMainWindow());
 
-    int rc = d.exec();
+    QObjectScopedPointer<ExportMSA2SequencesDialog> d = new ExportMSA2SequencesDialog(AppContext::getMainWindow()->getQMainWindow());
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc == QDialog::Rejected) {
         return;
     }
-    Task* t = ExportUtils::wrapExportTask(new ExportMSA2SequencesTask(ma, d.url, d.trimGapsFlag, d.format), d.addToProjectFlag);
+    Task* t = ExportUtils::wrapExportTask(new ExportMSA2SequencesTask(ma, d->url, d->trimGapsFlag, d->format), d->addToProjectFlag);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
@@ -450,28 +456,31 @@ void ExportProjectViewItemsContoller::sl_exportNucleicAlignmentToAmino() {
     Document* doc = firstObject->getDocument();
     QString defaultUrl = GUrlUtils::getNewLocalUrlByFormat(doc->getURL(), ma.getName(), BaseDocumentFormats::CLUSTAL_ALN, "_transl");
 
-    ExportMSA2MSADialog d(defaultUrl, BaseDocumentFormats::CLUSTAL_ALN, true, AppContext::getMainWindow()->getQMainWindow());
+    QObjectScopedPointer<ExportMSA2MSADialog> d = new ExportMSA2MSADialog(defaultUrl, BaseDocumentFormats::CLUSTAL_ALN, true, AppContext::getMainWindow()->getQMainWindow());
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
 
-    int rc = d.exec();
     if (rc == QDialog::Rejected) {
         return;
     }
 
     QList<DNATranslation*> trans;
-    trans << AppContext::getDNATranslationRegistry()->lookupTranslation(d.translationTable);
+    trans << AppContext::getDNATranslationRegistry()->lookupTranslation(d->translationTable);
 
-    Task* t = ExportUtils::wrapExportTask(new ExportMSA2MSATask(ma, 0, ma.getNumRows(), d.file, trans, d.formatId), d.addToProjectFlag);
+    Task* t = ExportUtils::wrapExportTask(new ExportMSA2MSATask(ma, 0, ma.getNumRows(), d->file, trans, d->formatId), d->addToProjectFlag);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
 void ExportProjectViewItemsContoller::sl_importAnnotationsFromCSV() {
-    ImportAnnotationsFromCSVDialog d(AppContext::getMainWindow()->getQMainWindow());
-    int rc = d.exec();
+    QObjectScopedPointer<ImportAnnotationsFromCSVDialog> d = new ImportAnnotationsFromCSVDialog(AppContext::getMainWindow()->getQMainWindow());
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc != QDialog::Accepted) {
         return;
     }
     ImportAnnotationsFromCSVTaskConfig taskConfig;
-    d.toTaskConfig(taskConfig);
+    d->toTaskConfig(taskConfig);
     ImportAnnotationsFromCSVTask* task = new ImportAnnotationsFromCSVTask(taskConfig);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 }
@@ -490,19 +499,21 @@ void ExportProjectViewItemsContoller::sl_exportChromatogramToSCF() {
     DNAChromatogramObject* chromaObj = qobject_cast<DNAChromatogramObject*>(obj);
     assert(chromaObj != NULL);
 
-    ExportChromatogramDialog d(QApplication::activeWindow(), chromaObj->getDocument()->getURL());
-    int rc = d.exec();
+    QObjectScopedPointer<ExportChromatogramDialog> d = new ExportChromatogramDialog(QApplication::activeWindow(), chromaObj->getDocument()->getURL());
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc == QDialog::Rejected) {
         return;
     }
 
     ExportChromatogramTaskSettings settings;
-    settings.url = d.url;
-    settings.complement = d.complemented;
-    settings.reverse = d.reversed;
-    settings.loadDocument = d.addToProjectFlag;
+    settings.url = d->url;
+    settings.complement = d->complemented;
+    settings.reverse = d->reversed;
+    settings.loadDocument = d->addToProjectFlag;
 
-    Task* task = ExportUtils::wrapExportTask(new ExportDNAChromatogramTask(chromaObj, settings), d.addToProjectFlag);
+    Task* task = ExportUtils::wrapExportTask(new ExportDNAChromatogramTask(chromaObj, settings), d->addToProjectFlag);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 }
 

@@ -46,6 +46,7 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
@@ -250,8 +251,11 @@ void SiteconSearchDialogController::sl_onSaveAnnotations() {
     m.hideLocation = true;
     m.useAminoAnnotationTypes = ctx->getAlphabet()->isAmino();
     m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
-    CreateAnnotationDialog d(this, m);
-    int rc = d.exec();
+
+    QObjectScopedPointer<CreateAnnotationDialog> d = new CreateAnnotationDialog(this, m);
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc != QDialog::Accepted) {
         return;
     }

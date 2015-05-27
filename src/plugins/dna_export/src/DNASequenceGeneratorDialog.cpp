@@ -19,14 +19,8 @@
 * MA 02110-1301, USA.
 */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -37,10 +31,11 @@
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
-#include "DNASequenceGeneratorDialog.h"
 #include "DNASequenceGenerator.h"
+#include "DNASequenceGeneratorDialog.h"
 
 namespace U2 {
 
@@ -110,8 +105,8 @@ void DNASequenceGeneratorDialog::sl_browseReference() {
 }
 
 void DNASequenceGeneratorDialog::sl_configureContent() {
-    BaseContentDialog bcDlg(content, this);
-    bcDlg.exec();
+    QObjectScopedPointer<BaseContentDialog> bcDlg = new BaseContentDialog(content, this);
+    bcDlg->exec();
 }
 
 void DNASequenceGeneratorDialog::sl_generate() {

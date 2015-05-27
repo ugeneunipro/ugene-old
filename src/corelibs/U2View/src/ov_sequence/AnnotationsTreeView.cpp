@@ -19,26 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#include <QFileInfo>
-
-#include <QPainter>
 #include <QClipboard>
-
 #include <QDrag>
+#include <QFileInfo>
 #include <QHeaderView>
 #include <QLineEdit>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPainter>
 #include <QToolTip>
 #include <QVBoxLayout>
-
-#include "AnnotationsTreeView.h"
-
-#include "AnnotatedDNAView.h"
-#include "ADVConstants.h"
-#include "ADVSequenceObjectContext.h"
-#include "AutoAnnotationUtils.h"
-#include "EditAnnotationDialogController.h"
 
 #include <U2Core/AnnotationModification.h>
 #include <U2Core/AnnotationSelection.h>
@@ -55,17 +45,22 @@
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Gui/ProjectTreeController.h>
-#include <U2Gui/ProjectTreeItemSelectorDialog.h>
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/EditQualifierDialog.h>
-#include <U2Gui/OpenViewTask.h>
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
-
+#include <U2Gui/EditQualifierDialog.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/OpenViewTask.h>
+#include <U2Gui/ProjectTreeController.h>
+#include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/TreeWidgetUtils.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-/* TRANSLATOR U2::AnnotationsTreeView */
+#include "ADVConstants.h"
+#include "ADVSequenceObjectContext.h"
+#include "AnnotatedDNAView.h"
+#include "AnnotationsTreeView.h"
+#include "AutoAnnotationUtils.h"
+#include "EditAnnotationDialogController.h"
 
 namespace U2 {
 
@@ -1589,8 +1584,8 @@ void AnnotationsTreeView::sl_onRemoveColumnByHeaderClick() {
 }
 
 void AnnotationsTreeView::sl_searchQualifier() {
-    SearchQualifierDialog d(this, this);
-    d.exec();
+    QObjectScopedPointer<SearchQualifierDialog> d = new SearchQualifierDialog(this, this);
+    d->exec();
 }
 
 void AnnotationsTreeView::sl_invertSelection(){
@@ -1707,16 +1702,16 @@ void AnnotationsTreeView::editItem(AVItem *item) {
     }
 }
 
-void AnnotationsTreeView::moveDialogToItem(QTreeWidgetItem *item, QDialog &d) {
+void AnnotationsTreeView::moveDialogToItem(QTreeWidgetItem *item, QDialog *d) {
     if (item == NULL) {
         return;
     }
     tree->scrollToItem(item);
 
     //try place dialog right below or right above the item
-    d.layout()->update();
+    d->layout()->update();
     QRect itemRect = tree->visualItemRect(item).translated(tree->viewport()->mapToGlobal(QPoint(0, 0)));
-    QSize dialogSize = d.layout()->minimumSize();
+    QSize dialogSize = d->layout()->minimumSize();
     QRect dialogRect(0, 0, dialogSize.width(), dialogSize.height() + 35); //+35 -> estimation for a title bar
     QRect widgetRect = rect().translated(mapToGlobal(QPoint(0, 0)));
     QRect finalDialogRect = dialogRect.translated(itemRect.bottomLeft());
@@ -1724,25 +1719,27 @@ void AnnotationsTreeView::moveDialogToItem(QTreeWidgetItem *item, QDialog &d) {
         finalDialogRect = dialogRect.translated(itemRect.topLeft()).translated(QPoint(0, -dialogRect.height()));
     }
     if (widgetRect.contains(finalDialogRect)) {
-        d.move(finalDialogRect.topLeft());
+        d->move(finalDialogRect.topLeft());
     }
 }
 
 QString AnnotationsTreeView::renameDialogHelper(AVItem *i, const QString &defText, const QString &title) {
-    QDialog d(this);
-    d.setWindowTitle(title);
+    QObjectScopedPointer<QDialog> d = new QDialog(this);
+    d->setWindowTitle(title);
     QVBoxLayout* l = new QVBoxLayout();
-    d.setLayout(l);
+    d->setLayout(l);
 
-    QLineEdit *edit = new QLineEdit(&d);
+    QLineEdit *edit = new QLineEdit(d.data());
     edit->setText(defText);
     edit->setSelection(0, defText.length());
-    connect(edit, SIGNAL(returnPressed()), &d, SLOT(accept()));
+    connect(edit, SIGNAL(returnPressed()), d.data(), SLOT(accept()));
     l->addWidget(edit);
 
-    moveDialogToItem(i, d);
+    moveDialogToItem(i, d.data());
 
-    int rc = d.exec();
+    const int rc = d->exec();
+    CHECK(!d.isNull(), "");
+
     if (rc == QDialog::Rejected) {
         return defText;
     }
@@ -1750,10 +1747,11 @@ QString AnnotationsTreeView::renameDialogHelper(AVItem *i, const QString &defTex
 }
 
 bool AnnotationsTreeView::editQualifierDialogHelper(AVQualifierItem *i, bool ro, U2Qualifier &q) {
-    EditQualifierDialog d(this, U2Qualifier(i == NULL ? "new_qualifier" : i->qName , i == NULL ? "" : i->qValue), ro, i != NULL);
-    moveDialogToItem(i == NULL ? tree->currentItem() : i, d);
-    int rc = d.exec();
-    q = d.getModifiedQualifier();
+    QObjectScopedPointer<EditQualifierDialog> d = new EditQualifierDialog(this, U2Qualifier(i == NULL ? "new_qualifier" : i->qName , i == NULL ? "" : i->qValue), ro, i != NULL);
+    moveDialogToItem(i == NULL ? tree->currentItem() : i, d.data());
+    const int rc = d->exec();
+    CHECK(!d.isNull(), false);
+    q = d->getModifiedQualifier();
     return rc == QDialog::Accepted;
 }
 
@@ -1779,11 +1777,14 @@ void AnnotationsTreeView::renameItem(AVItem *item) {
         SAFE_POINT(1 == soList.size(), "Invalid sequence context count!", );
         ADVSequenceObjectContext *so = soList.first();
         U2Region seqRange(0, so->getSequenceObject()->getSequenceLength());
-        EditAnnotationDialogController dialog(ai->annotation->getData(), seqRange, this);
-        moveDialogToItem(ai, dialog);
-        int result = dialog.exec();
+
+        QObjectScopedPointer<EditAnnotationDialogController> dialog = new EditAnnotationDialogController(ai->annotation->getData(), seqRange, this);
+        moveDialogToItem(ai, dialog.data());
+        const int result = dialog->exec();
+        CHECK(!dialog.isNull(), );
+
         if (result == QDialog::Accepted) {
-            QString newName = dialog.getName();
+            QString newName = dialog->getName();
             if (newName != ai->annotation->getName()) {
                 ai->annotation->setName(newName);
                 QList<AVAnnotationItem *> ais = findAnnotationItems(ai->annotation);
@@ -1791,7 +1792,7 @@ void AnnotationsTreeView::renameItem(AVItem *item) {
                     a->updateVisual(ATVAnnUpdateFlag_BaseColumns);
                 }
             }
-            U2Location location = dialog.getLocation();
+            U2Location location = dialog->getLocation();
             if(!location->regions.isEmpty() && l != location->regions){
                 ai->annotation->updateRegions(location->regions);
             }
@@ -1861,9 +1862,12 @@ void AnnotationsTreeView::sl_exportAutoAnnotationsGroup() {
     m.groupName = ag->getName();
     m.sequenceObjectRef = GObjectReference(seqCtx->getSequenceObject());
 
-    CreateAnnotationDialog dlg(this, m);
-    dlg.setWindowTitle(tr("Create Permanent Annotation"));
-    if (dlg.exec() == QDialog::Accepted) {
+    QObjectScopedPointer<CreateAnnotationDialog> dlg = new CreateAnnotationDialog(this, m);
+    dlg->setWindowTitle(tr("Create Permanent Annotation"));
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (dlg->result() == QDialog::Accepted) {
         ExportAutoAnnotationsGroupTask *task = new ExportAutoAnnotationsGroupTask(ag, m.annotationObjectRef, seqCtx, m.description);
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
     }

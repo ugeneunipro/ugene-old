@@ -43,7 +43,6 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/ProjectUtils.h>
-#include <U2Gui/SharedConnectionsDialog.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2Lang/SharedDbUrlUtils.h>
@@ -79,7 +78,7 @@ URLListWidget::URLListWidget(URLListController *_ctrl)
     connect(downButton, SIGNAL(clicked()), SLOT(sl_downButton()));
     connect(upButton, SIGNAL(clicked()), SLOT(sl_upButton()));
     connect(deleteButton, SIGNAL(clicked()), SLOT(sl_deleteButton()));
-    connect(connectToDbDialog, SIGNAL(si_connectionCompleted()), SLOT(sl_sharedDbConnected()));
+    connect(connectToDbDialog.data(), SIGNAL(si_connectionCompleted()), SLOT(sl_sharedDbConnected()));
 
     connect(itemsArea, SIGNAL(itemSelectionChanged()), SLOT(sl_itemChecked()));
 
@@ -161,10 +160,12 @@ void URLListWidget::sl_sharedDbConnected() {
 void URLListWidget::sl_addFromDbButton() {
     CHECK(!waitingForDbToConnect, );
     if (!ProjectUtils::areSharedDatabasesAvailable()) {
-         if (QDialog::Accepted == connectToDbDialog->exec()) {
-             waitingForDbToConnect = true;
-         }
-         return;
+        const int dialogResult = connectToDbDialog->exec();
+        CHECK(!connectToDbDialog.isNull(), );
+        if (QDialog::Accepted == dialogResult) {
+            waitingForDbToConnect = true;
+        }
+        return;
      } else {
         waitingForDbToConnect = false;
      }

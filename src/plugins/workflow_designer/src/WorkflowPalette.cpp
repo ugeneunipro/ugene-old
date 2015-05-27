@@ -19,55 +19,39 @@
  * MA 02110-1301, USA.
  */
 
-#include "WorkflowPalette.h"
+#include <QAbstractItemModel>
+#include <QAction>
+#include <QApplication>
+#include <QButtonGroup>
+#include <QContextMenuEvent>
+#include <QDir>
+#include <QHeaderView>
+#include <QItemDelegate>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPainter>
+#include <QStyle>
+#include <QToolBox>
+#include <QToolButton>
+#include <QTreeView>
 
-#include "CreateScriptWorker.h"
-#include "WorkflowSamples.h"
-#include "library/ScriptWorker.h"
-#include "library/ExternalProcessWorker.h"
-#include "library/CreateExternalProcessDialog.h"
+#include <U2Core/AppContext.h>
+#include <U2Core/Log.h>
+#include <U2Core/Settings.h>
+
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/WorkflowEnv.h>
-
 #include <U2Lang/WorkflowSettings.h>
 
-#include <U2Core/Log.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QAction>
-#include <QtGui/QStyle>
-#include <QtGui/QMenu>
-#include <QtGui/QToolBox>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QToolButton>
-#include <QtGui/QHeaderView>
-#include <QtGui/QTreeView>
-#include <QtGui/QMessageBox>
-#include <QtGui/QItemDelegate>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QAction>
-#include <QtWidgets/QStyle>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QToolBox>
-#include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QTreeView>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QItemDelegate>
-#endif
-#include <QtCore/QAbstractItemModel>
-#include <QtGui/QPainter>
-#include <QtGui/QContextMenuEvent>
-
-#include <QtCore/QDir>
-
+#include "CreateScriptWorker.h"
+#include "WorkflowPalette.h"
+#include "WorkflowSamples.h"
+#include "library/CreateExternalProcessDialog.h"
+#include "library/ExternalProcessWorker.h"
+#include "library/ScriptWorker.h"
 
 namespace U2 {
 
@@ -495,16 +479,19 @@ void WorkflowPaletteElements::editElement() {
     QMap<Descriptor, QList<ActorPrototype*> > categories = reg->getProtos();
 
     if(categories.value(BaseActorCategories::CATEGORY_SCRIPT()).contains(proto)) {
-        CreateScriptElementDialog dlg(this, proto);
-        if(dlg.exec() == QDialog::Accepted) {
+        QObjectScopedPointer<CreateScriptElementDialog> dlg = new CreateScriptElementDialog(this, proto);
+        dlg->exec();
+        CHECK(!dlg.isNull(), );
+
+        if (dlg->result() == QDialog::Accepted) {
             ActorPrototypeRegistry *reg = WorkflowEnv::getProtoRegistry();
             assert(reg);
 
-            QList<DataTypePtr > input = dlg.getInput();
-            QList<DataTypePtr > output = dlg.getOutput();
-            QList<Attribute*> attrs = dlg.getAttributes();
-            QString name = dlg.getName();
-            QString desc = dlg.getDescription();
+            QList<DataTypePtr > input = dlg->getInput();
+            QList<DataTypePtr > output = dlg->getOutput();
+            QList<Attribute*> attrs = dlg->getAttributes();
+            QString name = dlg->getName();
+            QString desc = dlg->getDescription();
 
             if(oldName != name) {
                 removeElement();
@@ -513,14 +500,17 @@ void WorkflowPaletteElements::editElement() {
                 emit si_protoDeleted(id);
                 reg->unregisterProto(proto->getId());
             }
-            LocalWorkflow::ScriptWorkerFactory::init(input, output, attrs, name, desc, dlg.getActorFilePath());
+            LocalWorkflow::ScriptWorkerFactory::init(input, output, attrs, name, desc, dlg->getActorFilePath());
         }
     } else { //External process category
         ExternalProcessConfig *oldCfg = WorkflowEnv::getExternalCfgRegistry()->getConfigByName(proto->getId());
         ExternalProcessConfig *cfg = new ExternalProcessConfig(*oldCfg);
-        CreateExternalProcessDialog dlg(this, cfg, false);
-        if(dlg.exec() == QDialog::Accepted) {
-            cfg = dlg.config();
+        QObjectScopedPointer<CreateExternalProcessDialog> dlg = new CreateExternalProcessDialog(this, cfg, false);
+        dlg->exec();
+        CHECK(!dlg.isNull(), );
+
+        if (dlg->result() == QDialog::Accepted) {
+            cfg = dlg->config();
 
             bool deleted = true;
             if (!(*oldCfg == *cfg)) {
@@ -544,13 +534,16 @@ void WorkflowPaletteElements::editElement() {
 }
 
 bool WorkflowPaletteElements::removeElement() {
-    QMessageBox msg(this);
-    msg.setObjectName("Remove element");
-    msg.setWindowTitle("Remove element");
-    msg.setText("Remove this element?");
-    msg.addButton(QMessageBox::Ok);
-    msg.addButton(QMessageBox::Cancel);
-    if(msg.exec() == QMessageBox::Cancel) {
+    QObjectScopedPointer<QMessageBox> msg = new QMessageBox(this);
+    msg->setObjectName("Remove element");
+    msg->setWindowTitle("Remove element");
+    msg->setText("Remove this element?");
+    msg->addButton(QMessageBox::Ok);
+    msg->addButton(QMessageBox::Cancel);
+    msg->exec();
+    CHECK(!msg.isNull(), false);
+
+    if(msg->result() == QMessageBox::Cancel) {
         return false;
     }
 

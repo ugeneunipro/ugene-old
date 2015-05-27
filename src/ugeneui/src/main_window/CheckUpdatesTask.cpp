@@ -19,30 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#include "CheckUpdatesTask.h"
+#include <QMainWindow>
+#include <QMessageBox>
+#include <QNetworkReply>
+#include <QPushButton>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/Settings.h>
 #include <U2Core/NetworkConfiguration.h>
+#include <U2Core/Settings.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Gui/MainWindow.h>
+
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include <U2Remote/SynchHttp.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
-#include <QtGui/QMainWindow>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QMainWindow>
-#endif
-#include <QtNetwork/QNetworkReply>
+#include "CheckUpdatesTask.h"
 
 namespace U2 {
-
 
 CheckUpdatesTask::CheckUpdatesTask(bool startUp) 
 :Task(tr("Check for updates"), TaskFlag_None)
@@ -99,17 +95,18 @@ Task::ReportResult CheckUpdatesTask::report() {
     if(runOnStartup) {
         if (siteVersion > thisVersion) {
             QString message = tr("Newer version available. You can download it from our site.");
-            QMessageBox box(QMessageBox::Information, tr("Version information"), message, QMessageBox::NoButton, 
+            QObjectScopedPointer<QMessageBox> box = new QMessageBox(QMessageBox::Information, tr("Version information"), message, QMessageBox::NoButton,
                 AppContext::getMainWindow()->getQMainWindow());
-            box.addButton(QMessageBox::Cancel);
-            QPushButton *siteButton = box.addButton(tr("Visit web site"), QMessageBox::ActionRole);
-            QPushButton *dontAsk = box.addButton(tr("Don't ask again"), QMessageBox::ActionRole);
+            box->addButton(QMessageBox::Cancel);
+            QPushButton *siteButton = box->addButton(tr("Visit web site"), QMessageBox::ActionRole);
+            QPushButton *dontAsk = box->addButton(tr("Don't ask again"), QMessageBox::ActionRole);
 
-            box.exec();
+            box->exec();
+            CHECK(!box.isNull(), ReportResult_Finished);
 
-            if (box.clickedButton() == siteButton) {
+            if (box->clickedButton() == siteButton) {
                 GUIUtils::runWebBrowser("http://ugene.unipro.ru/download.html");
-            } else if(box.clickedButton() == dontAsk) {
+            } else if(box->clickedButton() == dontAsk) {
                 AppContext::getSettings()->setValue(ASK_VESRION_SETTING, false);
             }
         }
@@ -122,16 +119,17 @@ Task::ReportResult CheckUpdatesTask::report() {
         }
         
         QWidget *p = (QWidget*)(AppContext::getMainWindow()->getQMainWindow());
-        QMessageBox box(QMessageBox::Information, tr("Version information"), message, QMessageBox::NoButton, p);
-        box.addButton(QMessageBox::Ok);
+        QObjectScopedPointer<QMessageBox> box = new QMessageBox(QMessageBox::Information, tr("Version information"), message, QMessageBox::NoButton, p);
+        box->addButton(QMessageBox::Ok);
         QAbstractButton* updateButton = NULL;
         
         if (needUpdate) {
-            updateButton = box.addButton(tr("Visit web site"), QMessageBox::ActionRole);
+            updateButton = box->addButton(tr("Visit web site"), QMessageBox::ActionRole);
         }
-        box.exec();
+        box->exec();
+        CHECK(!box.isNull(), ReportResult_Finished);
 
-        if (box.clickedButton() == updateButton) {
+        if (box->clickedButton() == updateButton) {
             GUIUtils::runWebBrowser("http://ugene.unipro.ru/download.html");
         }
     }
@@ -141,6 +139,5 @@ Task::ReportResult CheckUpdatesTask::report() {
 void CheckUpdatesTask::sl_registerInTaskScheduler(){
     AppContext::getTaskScheduler()->registerTopLevelTask(this);
 }
-
 
 } //namespace

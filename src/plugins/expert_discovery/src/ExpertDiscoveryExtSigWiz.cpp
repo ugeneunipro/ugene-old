@@ -1,14 +1,33 @@
-#include "ExpertDiscoveryExtSigWiz.h"
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2015 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#include <QMessageBox>
+
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "ExpertDiscoveryAdvSetDialog.h"
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
-#include <U2Gui/HelpButton.h>
-
+#include "ExpertDiscoveryExtSigWiz.h"
 
 namespace U2 {
 
@@ -86,7 +105,7 @@ ExpertDiscoveryExtSigWiz::~ExpertDiscoveryExtSigWiz(){
 }
 
 void ExpertDiscoveryExtSigWiz::sl_advButton(){
-    ExpertDiscoveryAdvSetDialog adv (this,
+    QObjectScopedPointer<ExpertDiscoveryAdvSetDialog> adv = new ExpertDiscoveryAdvSetDialog(this,
         state.dIntProbability,
         state.dIntFisher,
         state.nMinComplexity,
@@ -96,10 +115,7 @@ void ExpertDiscoveryExtSigWiz::sl_advButton(){
         state.dMinNegCorrelation,
         state.dMaxNegCorrelation,
         state.bCorrelationImportant);
-    if(adv.exec()){
-
-    }
-
+    adv->exec();
 }
 
 void ExpertDiscoveryExtSigWiz::sl_distButton(){
@@ -167,9 +183,9 @@ void ExpertDiscoveryExtSigWiz::sl_idChanged(int id){
 
             if(minCom>maxCom || minCom<0){
                 back();
-                QMessageBox mb(QMessageBox::Critical, tr("Wrong parameters"), tr("Minimal complexity must not be grater then maximal complexity and positive"));
-                mb.exec();
-                break;
+                QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Wrong parameters"), tr("Minimal complexity must not be grater then maximal complexity and positive"));
+                mb->exec();
+                return;
             }else{
                 if(!(checkD(condProbLevEdit) && checkD(coverBoundEdit)
                     && checkD(fishCritEdit) && checkD(levelBoundEdit)
@@ -183,8 +199,9 @@ void ExpertDiscoveryExtSigWiz::sl_idChanged(int id){
             sl_selectionChanged(predicatesTree->currentItem(), predicatesTree->currentItem());
             if((intervItem->childCount() == 0 ) && (repetItem->childCount() == 0 ) && (distItem->childCount() == 0 ) && !alignedCheck->isChecked()){
                 back();
-                QMessageBox mb(QMessageBox::Critical, tr("No predicates"), tr("Create a predicate to perform signal generation"));
-                mb.exec();
+                QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("No predicates"), tr("Create a predicate to perform signal generation"));
+                mb->exec();
+                return;
             }
     }
 }
@@ -193,8 +210,9 @@ void ExpertDiscoveryExtSigWiz::sl_createSubfolder(){
     QString folderName = folderNameEdit->text();
 
     if(folderName.isEmpty()){
-        QMessageBox mb(QMessageBox::Critical, tr("Specify folder name"), tr("Please specify a name for your folder"));
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Specify folder name"), tr("Please specify a name for your folder"));
+        mb->exec();
+        CHECK(!mb.isNull(), );
         folderNameEdit->setFocus();
         return;
     }
@@ -212,8 +230,9 @@ void ExpertDiscoveryExtSigWiz::sl_createSubfolder(){
     }
 
     if(!isUniqueName){
-        QMessageBox mb(QMessageBox::Critical, tr("Specify folder name"), tr("Item with the same name already exist. Please enter another name"));
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Specify folder name"), tr("Item with the same name already exist. Please enter another name"));
+        mb->exec();
+        CHECK(!mb.isNull(), );
         folderNameEdit->setFocus();
         return;
     }
@@ -290,8 +309,9 @@ void ExpertDiscoveryExtSigWiz::accept(){
     }
 
     if(predicates.empty()){
-        QMessageBox mb(QMessageBox::Critical, tr("No predicates"), tr("Create a predicate to perform signal generation"));
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("No predicates"), tr("Create a predicate to perform signal generation"));
+        mb->exec();
+        CHECK(!mb.isNull(), );
     }else{
         //page 1
         state.dProbability = condProbLevEdit->text().toDouble();
@@ -340,8 +360,8 @@ bool ExpertDiscoveryExtSigWiz::checkD(const QLineEdit* lineE) const{
         QString textValue=lineE->text();
         if(validator->validate(textValue,pos)!=QValidator::Acceptable){
         QString msg = QString("Entered value must be from %1 to %2").arg(validator->bottom()).arg(validator->top());
-        QMessageBox mb(QMessageBox::Critical, tr("Wrong parameters"), tr(msg.toStdString().c_str()));
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Wrong parameters"), tr(msg.toStdString().c_str()));
+        mb->exec();
         return false;
     }
     return true;
@@ -503,8 +523,8 @@ bool DistanceSet::isReadyToClose(){
     updateData();
     if (isMaxUNL) to = PINF;
     if ( from > to ) {
-        QMessageBox mb(QMessageBox::Critical, tr("Wrong parameters"), tr("Higher bound must be grater then lower bound"));
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Wrong parameters"), tr("Higher bound must be grater then lower bound"));
+        mb->exec();
         return false;
     }
     else return true;
@@ -585,8 +605,8 @@ bool IntervalSet::isReadyToClose(){
     updateData();
     if (isMaxUNL) to = PINF;
     if ( from > to ) {
-        QMessageBox mb(QMessageBox::Critical, tr("Wrong parameters"), tr("Higher bound must be grater then lower bound"));
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Wrong parameters"), tr("Higher bound must be grater then lower bound"));
+        mb->exec();
         return false;
     }
     else return true;
@@ -680,14 +700,14 @@ bool RepetitionSet::isReadyToClose(){
     updateData();
     if ( isMaxUNL ) max = PINF;
     if ( min > max ) {
-        QMessageBox mb(QMessageBox::Critical, tr("Wrong parameters"), tr("Higher bound must be grater then lower bound"));
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Wrong parameters"), tr("Higher bound must be grater then lower bound"));
+        mb->exec();
         return false;
     }
     else
     if ( nmin > nmax ) {
-        QMessageBox mb(QMessageBox::Critical, tr("Wrong parameters"), tr("Higher bound must be grater then lower bound"));
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Wrong parameters"), tr("Higher bound must be grater then lower bound"));
+        mb->exec();
         return false;
     }
     else return true;

@@ -38,6 +38,7 @@
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/ADVAnnotationCreation.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -235,8 +236,11 @@ void CollocationsDialogController::sl_saveClicked() {
     m.hideLocation = true;
     m.useAminoAnnotationTypes = ctx->getAlphabet()->isAmino();
     m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
-    CreateAnnotationDialog d(this, m);
-    int rc = d.exec();
+
+    QObjectScopedPointer<CreateAnnotationDialog> d = new CreateAnnotationDialog(this, m);
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc != QDialog::Accepted) {
         return;
     }

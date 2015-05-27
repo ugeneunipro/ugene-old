@@ -34,6 +34,8 @@ class GObject;
 class ProjectTreeItemSelectorDialogImpl: public QDialog, public Ui::ProjectTreeItemSelectorDialogBase {
     Q_OBJECT
 public:
+    ~ProjectTreeItemSelectorDialogImpl();
+
     bool acceptByDoubleClick;
 
 private slots:
@@ -42,7 +44,6 @@ private slots:
 private:
     friend class ProjectTreeItemSelectorDialog;
     ProjectTreeItemSelectorDialogImpl(QWidget* p, const ProjectTreeControllerModeSettings& s);
-    ~ProjectTreeItemSelectorDialogImpl();
     ProjectTreeController* controller;
 };
 

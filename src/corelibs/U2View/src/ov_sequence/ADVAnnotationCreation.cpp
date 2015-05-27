@@ -36,6 +36,7 @@
 
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "ADVAnnotationCreation.h"
 #include "ADVSequenceObjectContext.h"
@@ -115,8 +116,10 @@ void ADVAnnotationCreation::sl_createAnnotation() {
         }
     }
 
-    CreateAnnotationDialog d(ctx->getWidget(), m);
-    int rc = d.exec();
+    QObjectScopedPointer<CreateAnnotationDialog> d = new CreateAnnotationDialog(ctx->getWidget(), m);
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (QDialog::Accepted != rc) {
         return;
     }

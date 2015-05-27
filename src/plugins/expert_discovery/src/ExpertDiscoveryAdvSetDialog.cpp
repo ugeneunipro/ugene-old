@@ -1,13 +1,34 @@
-#include "ExpertDiscoveryAdvSetDialog.h"
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2015 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
-#include <QValidator>
 #include <QDoubleValidator>
+#include <QMessageBox>
+#include <QValidator>
+
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
+#include "ExpertDiscoveryAdvSetDialog.h"
 
 namespace U2 {
 
@@ -72,9 +93,9 @@ void ExpertDiscoveryAdvSetDialog::accept(){
     maxCom = maxComplEdit->text().toInt();
 
     if(minCom>maxCom || minCom<0){
-        QMessageBox mb(QMessageBox::Critical, tr("Wrong parameters"), tr("Minimal complexity must not be grater then maximal complexity and positive"));
-        mb.exec();
-
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Wrong parameters"), tr("Minimal complexity must not be grater then maximal complexity and positive"));
+        mb->exec();
+        CHECK(!mb.isNull(), );
     }else{
         if(check(condProbEdit) && check(fishCritEdit) &&
             check(minCorPosEdit) && check(maxCorPosEdit)
@@ -108,8 +129,8 @@ bool ExpertDiscoveryAdvSetDialog::check(const QLineEdit* lineE){
         QString textValue=lineE->text();
         if(validator->validate(textValue,pos)!=QValidator::Acceptable){
         QString msg = QString("Entered value must be from %1 to %2").arg(validator->bottom()).arg(validator->top());
-        QMessageBox mb(QMessageBox::Critical, tr("Wrong parameters"), tr(msg.toStdString().c_str()));
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Wrong parameters"), tr(msg.toStdString().c_str()));
+        mb->exec();
         return false;
     }
     return true;

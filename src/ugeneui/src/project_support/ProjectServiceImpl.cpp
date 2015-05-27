@@ -19,32 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#include "ProjectServiceImpl.h"
-
-#include "ProjectImpl.h"
-#include "ProjectLoaderImpl.h"
-#include "ProjectTasksGui.h"
-
-#include <project_support/ExportProjectDialogController.h>
+#include <QMenu>
+#include <QToolBar>
 
 #include <AppContextImpl.h>
 
-#include <U2Core/L10n.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/L10n.h>
+#include <U2Core/Settings.h>
 #include <U2Core/U2OpStatusUtils.h>
 
-#include <U2Gui/MainWindow.h>
-#include <U2Core/Settings.h>
-#include <U2Gui/GUIUtils.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMenu>
-#include <QtGui/QToolBar>
-#else
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QToolBar>
-#endif
+#include "ExportProjectDialogController.h"
+#include "ProjectImpl.h"
+#include "ProjectLoaderImpl.h"
+#include "ProjectServiceImpl.h"
+#include "ProjectTasksGui.h"
 
 namespace U2 {
 
@@ -98,16 +92,16 @@ void ProjectServiceImpl::sl_save() {
 
 void ProjectServiceImpl::sl_saveAs() {
     QWidget *p = qobject_cast<QWidget*>(AppContext::getMainWindow()->getQMainWindow());
-    ProjectDialogController d(ProjectDialogController::Save_Project, p);
-    int rc = d.exec();
+    QObjectScopedPointer<ProjectDialogController> d = new ProjectDialogController(ProjectDialogController::Save_Project, p);
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc == QDialog::Rejected) {
         return;
     }
 
-    QDir dir(d.projectFolderEdit->text());
-
     U2OpStatus2Log os;
-    QString fullPath = GUrlUtils::prepareDirLocation(d.projectFolderEdit->text(), os);
+    QString fullPath = GUrlUtils::prepareDirLocation(d->projectFolderEdit->text(), os);
 
     if (fullPath.isEmpty()) {
         QMessageBox::critical(0, L10N::errorTitle(), os.getError());
@@ -116,9 +110,9 @@ void ProjectServiceImpl::sl_saveAs() {
 
     AppContext::getSettings()->setValue(SETTINGS_DIR + "last_dir", fullPath, true);
     
-    AppContext::getProject()->setProjectName(d.projectNameEdit->text());
+    AppContext::getProject()->setProjectName(d->projectNameEdit->text());
     
-    QString fileName = fullPath + "/" + d.projectFileEdit->text();
+    QString fileName = fullPath + "/" + d->projectFileEdit->text();
     if (!fileName.endsWith(PROJECTFILE_EXT)) {
         fileName.append(PROJECTFILE_EXT);
     }
@@ -131,13 +125,16 @@ void ProjectServiceImpl::sl_exportProject(){
     Project* p = getProject();
     QString pUrl = p->getProjectURL();
     QString projectFileName = pUrl.isEmpty() ? QString() : QFileInfo(pUrl).fileName();
-    ExportProjectDialogController dialog(AppContext::getMainWindow()->getQMainWindow(), projectFileName);
-    dialog.exec();
-    if (dialog.result() == QDialog::Accepted){
-        Task *t = new ExportProjectTask(dialog.getDirToSave(), dialog.getProjectFile(), dialog.useCompression());
+    QObjectScopedPointer<ExportProjectDialogController> dialog = new ExportProjectDialogController(AppContext::getMainWindow()->getQMainWindow(), projectFileName);
+    dialog->exec();
+    CHECK(!dialog.isNull(), );
+
+    if (dialog->result() == QDialog::Accepted){
+        Task *t = new ExportProjectTask(dialog->getDirToSave(), dialog->getProjectFile(), dialog->useCompression());
         AppContext::getTaskScheduler()->registerTopLevelTask(t);
     }
 }
+
 //////////////////////////////////////////////////////////////////////////
 /// Service tasks
 
@@ -163,7 +160,7 @@ Task::ReportResult ProjectServiceEnableTask::report() {
 
     psi->closeProjectAction = new QAction(tr("&Close project"), psi);
     psi->closeProjectAction->setObjectName(ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
-    psi->closeProjectAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q));
+//    psi->closeProjectAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q));
     psi->closeProjectAction->setShortcutContext(Qt::WindowShortcut);
     connect(psi->closeProjectAction, SIGNAL(triggered()), psi, SLOT(sl_closeProject()));
 

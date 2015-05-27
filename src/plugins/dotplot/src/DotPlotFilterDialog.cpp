@@ -19,22 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#include "DotPlotFilterDialog.h"
+#include <QMessageBox>
 
-#include <U2View/ADVSequenceObjectContext.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/GObject.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AnnotationSettings.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/GObject.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2View/ADVSequenceObjectContext.h>
+
+#include "DotPlotFilterDialog.h"
 
 namespace U2 {
 
@@ -142,8 +141,9 @@ void DotPlotFilterDialog::accept() {
     }
 
     if(sIempty && getFilterType() == Features){
-        QMessageBox mb(QMessageBox::Warning, tr("Feature names"), tr("No feature names have been selected. In that case dotplot will be empty. Note, If the feature names list is empty your sequences don't have annotations. Select some feature names or choose another filtration method"));
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Warning, tr("Feature names"), tr("No feature names have been selected. In that case dotplot will be empty. Note, If the feature names list is empty your sequences don't have annotations. Select some feature names or choose another filtration method"));
+        mb->exec();
+        CHECK(!mb.isNull(), );
     }else{
         featureNames = selectedItems;
         QDialog::accept();

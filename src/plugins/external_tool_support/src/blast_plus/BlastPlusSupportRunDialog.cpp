@@ -19,14 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include "BlastPlusSupportRunDialog.h"
-#include "BlastPlusSupport.h"
-#include "ExternalToolSupportSettingsController.h"
+#include <QMainWindow>
+#include <QMessageBox>
+#include <QToolButton>
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
 #include <U2Core/AppResources.h>
+#include <U2Core/AppSettings.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentUtils.h>
@@ -43,20 +43,15 @@
 #include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/AppSettingsGUI.h>
-#include <U2Gui/DialogUtils.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/OpenViewTask.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#include <QtGui/QToolButton>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QToolButton>
-#endif
+#include "BlastPlusSupport.h"
+#include "BlastPlusSupportRunDialog.h"
+#include "ExternalToolSupportSettingsController.h"
 
 namespace U2 {
 
@@ -120,15 +115,15 @@ void BlastPlusSupportRunDialog::sl_lineEditChanged(){
     bool hasSpacesInDBPath = pathWarning || nameWarning;
     okButton->setEnabled(isFilledBaseNameLineEdit && isFilledDatabasePathLineEdit && !hasSpacesInDBPath);
 }
-bool BlastPlusSupportRunDialog::checkToolPath(){
 
+bool BlastPlusSupportRunDialog::checkToolPath(){
     bool needSetToolPath=false;
     QString toolName;
-    QMessageBox msgBox;
-    msgBox.setWindowTitle("BLAST+ Search");
-    msgBox.setInformativeText(tr("Do you want to select it now?"));
-    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    msgBox.setDefaultButton(QMessageBox::Yes);
+    QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
+    msgBox->setWindowTitle("BLAST+ Search");
+    msgBox->setInformativeText(tr("Do you want to select it now?"));
+    msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox->setDefaultButton(QMessageBox::Yes);
     if((programName->currentText() == "blastn") &&
        (AppContext::getExternalToolRegistry()->getByName(ET_BLASTN)->getPath().isEmpty())){
         needSetToolPath=true;
@@ -161,8 +156,10 @@ bool BlastPlusSupportRunDialog::checkToolPath(){
         toolName=ET_TBLASTX;
     }
     if(needSetToolPath){
-        msgBox.setText(tr("Path for <i>BLAST+ %1</i> tool not selected.").arg(toolName));
-        int ret = msgBox.exec();
+        msgBox->setText(tr("Path for <i>BLAST+ %1</i> tool not selected.").arg(toolName));
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), false);
+
         switch (ret) {
            case QMessageBox::Yes:
                AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
@@ -415,11 +412,11 @@ bool BlastPlusWithExtFileSpecifySupportRunDialog::checkToolPath(){
 
     bool needSetToolPath=false;
     QString toolName;
-    QMessageBox msgBox;
-    msgBox.setWindowTitle("BLAST+ Search");
-    msgBox.setInformativeText(tr("Do you want to select it now?"));
-    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    msgBox.setDefaultButton(QMessageBox::Yes);
+    QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
+    msgBox->setWindowTitle("BLAST+ Search");
+    msgBox->setInformativeText(tr("Do you want to select it now?"));
+    msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox->setDefaultButton(QMessageBox::Yes);
     if((programName->currentText() == "blastn") &&
        (AppContext::getExternalToolRegistry()->getByName(ET_BLASTN)->getPath().isEmpty())){
         needSetToolPath=true;
@@ -452,8 +449,10 @@ bool BlastPlusWithExtFileSpecifySupportRunDialog::checkToolPath(){
         toolName=ET_TBLASTX;
     }
     if(needSetToolPath){
-        msgBox.setText(tr("Path for <i>BLAST+ %1</i> tool not selected.").arg(toolName));
-        int ret = msgBox.exec();
+        msgBox->setText(tr("Path for <i>BLAST+ %1</i> tool not selected.").arg(toolName));
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), false);
+
         switch (ret) {
            case QMessageBox::Yes:
                AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);

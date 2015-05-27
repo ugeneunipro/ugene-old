@@ -19,38 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#include "GSequenceGraphView.h"
+#include <QMessageBox>
+#include <QVBoxLayout>
 
-#include "ADVSequenceObjectContext.h"
-#include "ADVSingleSequenceWidget.h"
-#include "SaveGraphCutoffsDialogController.h"
-
+#include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
+#include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/CreateAnnotationTask.h>
-#include <U2Core/Counter.h>
-#include <U2Core/AppContext.h>
 
-#include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/CreateAnnotationDialog.h>
+#include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/GScrollBar.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/ADVAnnotationCreation.h>
 
-#include <U2Gui/GScrollBar.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QMessageBox>
-#endif
-
+#include "ADVSequenceObjectContext.h"
+#include "ADVSingleSequenceWidget.h"
+#include "GSequenceGraphView.h"
 #include "GraphLabelsSelectDialog.h"
-
+#include "SaveGraphCutoffsDialogController.h"
 
 namespace U2 {
-/* TRANSLATOR U2::GSequenceGraphView */
 
 GSequenceGraphView::GSequenceGraphView(QWidget* p, ADVSequenceObjectContext* ctx, GSequenceLineView* _baseView, const QString& _vName)
 : GSequenceLineView(p, ctx), baseView(_baseView), vName(_vName), graphDrawer(NULL)
@@ -266,10 +257,13 @@ void GSequenceGraphView::sl_onDeleteAllLabels() {
 
 void GSequenceGraphView::sl_onSelectExtremumPoints() {
     const QRect &graphRect = static_cast<GSequenceGraphViewRA*>(renderArea)->getGraphRect();
-    GraphLabelsSelectDialog dlg(getSequenceLength(), this);
-    if(dlg.exec() == QDialog::Accepted) {
-        int windowSize = dlg.getWindowSize();
-        bool usingIntervals = dlg.isUsedIntervals();
+    QObjectScopedPointer<GraphLabelsSelectDialog> dlg = new GraphLabelsSelectDialog(getSequenceLength(), this);
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (dlg->result() == QDialog::Accepted) {
+        int windowSize = dlg->getWindowSize();
+        bool usingIntervals = dlg->isUsedIntervals();
         const QVector<U2Region>& selection = getSequenceContext()->getSequenceSelection()->getSelectedRegions();
         foreach (const QSharedPointer<GSequenceGraphData> graph, graphs) {
             if(true == usingIntervals) {
@@ -285,8 +279,8 @@ void GSequenceGraphView::sl_onSelectExtremumPoints() {
 
 
 void GSequenceGraphView::sl_onSaveGraphCutoffs( bool ){
-    SaveGraphCutoffsDialogController d(graphDrawer, graphs.first(), this, ctx);
-    d.exec();
+    QObjectScopedPointer<SaveGraphCutoffsDialogController> d = new SaveGraphCutoffsDialogController(graphDrawer, graphs.first(), this, ctx);
+    d->exec();
 }
 
 void GSequenceGraphView::sl_graphRectChanged(const QRect& rect) {

@@ -19,37 +19,34 @@
  * MA 02110-1301, USA.
  */
 
-#include "ORFMarkerPlugin.h"
-#include "ORFDialog.h"
-#include "ORFWorker.h"
-#include "ORFQuery.h"
-#include "ORFMarkerTask.h"
-
-#include <U2Core/GAutoDeleteList.h>
-#include <U2Gui/GUIUtils.h>
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVConstants.h>
-#include <U2View/ADVSequenceObjectContext.h>
-#include <U2View/ADVUtils.h>
-#include <U2Lang/QueryDesignerRegistry.h>
-
-#include <QtCore/QMap>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QMenu>
-#endif
-
-#include "ORFMarkerTests.h"
-
-#include <U2Test/XMLTestFormat.h>
-#include <U2Test/GTest.h>
-#include <U2Test/GTestFrameworkComponents.h>
+#include <QAction>
+#include <QMap>
+#include <QMenu>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AutoAnnotationsSupport.h>
+#include <U2Core/GAutoDeleteList.h>
+
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
+#include <U2Lang/QueryDesignerRegistry.h>
+
+#include <U2Test/GTest.h>
+#include <U2Test/GTestFrameworkComponents.h>
+#include <U2Test/XMLTestFormat.h>
+
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVUtils.h>
+#include <U2View/AnnotatedDNAView.h>
+
+#include "ORFDialog.h"
+#include "ORFMarkerPlugin.h"
+#include "ORFMarkerTask.h"
+#include "ORFMarkerTests.h"
+#include "ORFQuery.h"
+#include "ORFWorker.h"
 
 namespace U2 {
 
@@ -110,8 +107,8 @@ void ORFViewContext::sl_showDialog() {
 
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
     assert(seqCtx->getAlphabet()->isNucleic());
-    ORFDialog d(seqCtx);
-    d.exec();
+    QObjectScopedPointer<ORFDialog> d = new ORFDialog(seqCtx);
+    d->exec();
 }
 
 QList<XMLTestFactory*> ORFMarkerTests::createTestFactories() {

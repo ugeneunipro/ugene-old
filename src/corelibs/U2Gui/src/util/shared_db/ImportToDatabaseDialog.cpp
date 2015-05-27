@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QListView>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QListView>
-#include <QtWidgets/QMenu>
-#endif
+#include <QListView>
+#include <QMenu>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/CloneObjectTask.h>
@@ -46,6 +40,7 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "CommonImportOptionsDialog.h"
@@ -146,11 +141,14 @@ void ImportToDatabaseDialog::sl_addObjectClicked() {
 }
 
 void ImportToDatabaseDialog::sl_optionsClicked() {
-    CommonImportOptionsDialog optionsDialog(baseFolder, commonOptions, this);
-    if (QDialog::Accepted == optionsDialog.exec()) {
+    QObjectScopedPointer<CommonImportOptionsDialog> optionsDialog = new CommonImportOptionsDialog(baseFolder, commonOptions, this);
+    const int dialogResult = optionsDialog->exec();
+    CHECK(!optionsDialog.isNull(), );
+
+    if (QDialog::Accepted == dialogResult) {
         const ImportToDatabaseOptions oldOptions = commonOptions;
-        commonOptions = optionsDialog.getOptions();
-        baseFolder = optionsDialog.getBaseFolder();
+        commonOptions = optionsDialog->getOptions();
+        baseFolder = optionsDialog->getBaseFolder();
         updateItemsState(oldOptions, commonOptions);
     }
 }
@@ -160,12 +158,15 @@ void ImportToDatabaseDialog::sl_editOptions() {
     CHECK(NULL != item, );
 
     ImportToDatabaseOptions currentOptions = privateOptions.value(item, commonOptions);
-    ItemToImportEditDialog editDialog(item->text(COLUMN_ITEM_TEXT), item->text(COLUMN_FOLDER), currentOptions, this);
-    if (QDialog::Accepted == editDialog.exec()) {
-        ImportToDatabaseOptions newOptions = editDialog.getOptions();
+    QObjectScopedPointer<ItemToImportEditDialog> editDialog = new ItemToImportEditDialog(item->text(COLUMN_ITEM_TEXT), item->text(COLUMN_FOLDER), currentOptions, this);
+    const int dialogResult = editDialog->exec();
+    CHECK(!editDialog.isNull(), );
+
+    if (QDialog::Accepted == dialogResult) {
+        ImportToDatabaseOptions newOptions = editDialog->getOptions();
         privateOptions.insert(item, newOptions);
 
-        item->setText(COLUMN_FOLDER, editDialog.getFolder());
+        item->setText(COLUMN_FOLDER, editDialog->getFolder());
         updateItemState(item, currentOptions, newOptions);
         markItem(item, true);
     }

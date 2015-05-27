@@ -19,23 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QListWidget>
-#include <QtGui/QListWidgetItem>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QListWidgetItem>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QListWidget>
+#include <QListWidgetItem>
+#include <QMessageBox>
 
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/PasswordStorage.h>
 #include <U2Core/ConnectSharedDatabaseTask.h>
 #include <U2Core/Counter.h>
 #include <U2Core/L10n.h>
+#include <U2Core/PasswordStorage.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Settings.h>
 #include <U2Core/TaskSignalMapper.h>
@@ -50,6 +43,7 @@
 
 #include <U2Gui/AuthenticationDialog.h>
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "EditConnectionDialog.h"
 #include "SharedConnectionsDialog.h"
@@ -161,21 +155,23 @@ void SharedConnectionsDialog::sl_editClicked() {
     const QString userName = ui->lwConnections->currentItem()->data(LoginRole).toString();
     const QString connectionName = ui->lwConnections->currentItem()->text();
 
-    EditConnectionDialog editDialog(this, dbiUrl, userName, connectionName);
-    editDialog.setReadOnly(U2DbiUtils::PUBLIC_DATABASE_URL == U2DbiUtils::createFullDbiUrl(userName, dbiUrl));
+    QObjectScopedPointer<EditConnectionDialog> editDialog = new EditConnectionDialog(this, dbiUrl, userName, connectionName);
+    editDialog->setReadOnly(U2DbiUtils::PUBLIC_DATABASE_URL == U2DbiUtils::createFullDbiUrl(userName, dbiUrl));
+    const int dialogResult = editDialog->exec();
+    CHECK(!editDialog.isNull(), );
 
-    if (QDialog::Accepted == editDialog.exec()) {
+    if (QDialog::Accepted == dialogResult) {
         QListWidgetItem* item = ui->lwConnections->currentItem();
-        const QString login = editDialog.getUserName();
-        const QString shortDbUrl = editDialog.getShortDbiUrl();
+        const QString login = editDialog->getUserName();
+        const QString shortDbUrl = editDialog->getShortDbiUrl();
 
         checkDbConnectionDuplicate(shortDbUrl, login, item->data(Qt::DisplayRole).toString());
 
-        if (connectionName != editDialog.getName()) {
+        if (connectionName != editDialog->getName()) {
             removeRecentConnection(item);
         }
 
-        item->setText(editDialog.getName());
+        item->setText(editDialog->getName());
         item->setData(UrlRole, shortDbUrl);
         item->setData(LoginRole, login);
 
@@ -199,11 +195,13 @@ void SharedConnectionsDialog::checkDbConnectionDuplicate(const QString &shortDbi
 }
 
 void SharedConnectionsDialog::sl_addClicked() {
-    EditConnectionDialog editDialog(this);
+    QObjectScopedPointer<EditConnectionDialog> editDialog = new EditConnectionDialog(this);
+    const int dialogResult = editDialog->exec();
+    CHECK(!editDialog.isNull(), );
 
-    if (QDialog::Accepted == editDialog.exec()) {
-        checkDbConnectionDuplicate(editDialog.getShortDbiUrl(), editDialog.getUserName());
-        QListWidgetItem* item = insertConnection(editDialog.getName(), editDialog.getShortDbiUrl(), editDialog.getUserName());
+    if (QDialog::Accepted == dialogResult) {
+        checkDbConnectionDuplicate(editDialog->getShortDbiUrl(), editDialog->getUserName());
+        QListWidgetItem* item = insertConnection(editDialog->getName(), editDialog->getShortDbiUrl(), editDialog->getUserName());
         CHECK(NULL != item, );
         ui->lwConnections->setCurrentItem(item);
         saveRecentConnection(item);
@@ -308,12 +306,14 @@ bool SharedConnectionsDialog::askCredentials(QString &fullDbiUrl) {
     QString userName;
     const QString shortDbiUrl = U2DbiUtils::full2shortDbiUrl(fullDbiUrl, userName);
 
-    AuthenticationDialog authenticationDialog(tr("Connect to the database %1").arg(shortDbiUrl), this);
-    authenticationDialog.setLogin(userName);
+    QObjectScopedPointer<AuthenticationDialog> authenticationDialog = new AuthenticationDialog(tr("Connect to the database %1").arg(shortDbiUrl), this);
+    authenticationDialog->setLogin(userName);
+    const int dialogResult = authenticationDialog->exec();
+    CHECK(!authenticationDialog.isNull(), false);
 
-    if (QDialog::Accepted == authenticationDialog.exec()) {
-        fullDbiUrl = U2DbiUtils::createFullDbiUrl(authenticationDialog.getLogin(), shortDbiUrl);
-        AppContext::getPasswordStorage()->addEntry(fullDbiUrl, authenticationDialog.getPassword(), authenticationDialog.isRemembered());
+    if (QDialog::Accepted == dialogResult) {
+        fullDbiUrl = U2DbiUtils::createFullDbiUrl(authenticationDialog->getLogin(), shortDbiUrl);
+        AppContext::getPasswordStorage()->addEntry(fullDbiUrl, authenticationDialog->getPassword(), authenticationDialog->isRemembered());
         return true;
     } else {
         return false;
@@ -504,11 +504,14 @@ bool SharedConnectionsDialog::checkDbShouldBeUpgraded(const U2DbiRef &ref) {
     CHECK_OP(os, false);
 
     if (upgradeDatabase) {
-        QMessageBox question(QMessageBox::Question, tr(DATABASE_UPGRADE_TITLE), tr(DATABASE_UPGRADE_TEXT), QMessageBox::Ok | QMessageBox::Cancel| QMessageBox::Help, this);
-        question.button(QMessageBox::Ok)->setText(tr("Upgrade"));
-        HelpButton(&question, question.button(QMessageBox::Help), "16122476");
-        question.setDefaultButton(QMessageBox::Cancel);
-        if (QMessageBox::Ok == question.exec()) {
+        QObjectScopedPointer<QMessageBox> question = new QMessageBox(QMessageBox::Question, tr(DATABASE_UPGRADE_TITLE), tr(DATABASE_UPGRADE_TEXT), QMessageBox::Ok | QMessageBox::Cancel| QMessageBox::Help, this);
+        question->button(QMessageBox::Ok)->setText(tr("Upgrade"));
+        HelpButton(question.data(), question->button(QMessageBox::Help), "16122476");
+        question->setDefaultButton(QMessageBox::Cancel);
+        const int dialogResult = question->exec();
+        CHECK(!question.isNull(), true);
+
+        if (QMessageBox::Ok == dialogResult) {
             MysqlUpgradeTask *upgradeTask = new MysqlUpgradeTask(ref);
             upgradeTasks.insert(ui->lwConnections->currentItem(), upgradeTask);
             connect(new TaskSignalMapper(upgradeTask), SIGNAL(si_taskFinished(Task *)), SLOT(sl_upgradeComplete(Task *)));

@@ -24,10 +24,11 @@
 
 #include <U2Core/L10n.h>
 
-#include "MSAImageExportTask.h"
-#include "../MSASelectSubalignmentDialog.h"
+#include <U2Gui/QObjectScopedPointer.h>
 
+#include "MSAImageExportTask.h"
 #include "ui_MSAExportSettings.h"
+#include "../MSASelectSubalignmentDialog.h"
 
 #define IMAGE_SIZE_LIMIT 32768
 
@@ -194,12 +195,13 @@ MSAImageExportController::~MSAImageExportController() {
 }
 
 void MSAImageExportController::sl_showSelectRegionDialog() {
-    SelectSubalignmentDialog dialog(ui, msaSettings.region, msaSettings.seqIdx);
-    dialog.exec();
+    QObjectScopedPointer<SelectSubalignmentDialog> dialog = new SelectSubalignmentDialog(ui, msaSettings.region, msaSettings.seqIdx);
+    dialog->exec();
+    CHECK(!dialog.isNull(), );
 
-    if (dialog.result() == QDialog::Accepted) {
-        msaSettings.region = dialog.getRegion();
-        msaSettings.seqIdx = dialog.getSelectedSeqIndexes();
+    if (dialog->result() == QDialog::Accepted) {
+        msaSettings.region = dialog->getRegion();
+        msaSettings.seqIdx = dialog->getSelectedSeqIndexes();
         if (settingsUi->comboBox->currentIndex() != 1/*customIndex*/) {
             settingsUi->comboBox->setCurrentIndex( 1/*customIndex*/);
             msaSettings.exportAll = false;

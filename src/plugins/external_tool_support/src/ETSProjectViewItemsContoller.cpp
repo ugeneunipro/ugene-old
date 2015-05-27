@@ -19,40 +19,35 @@
  * MA 02110-1301, USA.
  */
 
-#include "ETSProjectViewItemsContoller.h"
-#include "ExternalToolSupportSettingsController.h"
-#include "ExternalToolSupportSettings.h"
+#include <QMainWindow>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/UserApplicationsSettings.h>
-#include <U2Gui/MainWindow.h>
-#include <U2Gui/ProjectView.h>
-#include <U2Core/SelectionModel.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2SafePoints.h>
-
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNAAlphabet.h>
-
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentSelection.h>
 #include <U2Core/GObjectSelection.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/SelectionModel.h>
 #include <U2Core/SelectionUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/UserApplicationsSettings.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/ProjectView.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
+#include "ETSProjectViewItemsContoller.h"
+#include "ExternalToolSupportSettings.h"
+#include "ExternalToolSupportSettingsController.h"
 #include "blast/FormatDBSupport.h"
 #include "blast/FormatDBSupportRunDialog.h"
 #include "blast/FormatDBSupportTask.h"
 
 namespace U2 {
+
 ETSProjectViewItemsContoller::ETSProjectViewItemsContoller(QObject* p) : QObject(p) {
     formatDBOnSelectionAction=new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(ET_FORMATDB));
     makeBLASTDBOnSelectionAction=new ExternalToolSupportAction(tr("BLAST+ make DB..."), this, QStringList(ET_MAKEBLASTDB));
@@ -95,18 +90,20 @@ void ETSProjectViewItemsContoller::sl_runFormatDBOnSelection(){
     assert((s->getToolNames().contains(ET_FORMATDB))||(s->getToolNames().contains(ET_MAKEBLASTDB)));
     //Check that formatDB and temporary directory path defined
     if (AppContext::getExternalToolRegistry()->getByName(s->getToolNames().at(0))->getPath().isEmpty()){
-        QMessageBox msgBox;
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
         if(s->getToolNames().at(0) == ET_FORMATDB){
-            msgBox.setWindowTitle("BLAST "+s->getToolNames().at(0));
-            msgBox.setText(tr("Path for BLAST %1 tool not selected.").arg(s->getToolNames().at(0)));
+            msgBox->setWindowTitle("BLAST "+s->getToolNames().at(0));
+            msgBox->setText(tr("Path for BLAST %1 tool not selected.").arg(s->getToolNames().at(0)));
         }else{
-            msgBox.setWindowTitle("BLAST+ "+s->getToolNames().at(0));
-            msgBox.setText(tr("Path for BLAST+ %1 tool not selected.").arg(s->getToolNames().at(0)));
+            msgBox->setWindowTitle("BLAST+ "+s->getToolNames().at(0));
+            msgBox->setText(tr("Path for BLAST+ %1 tool not selected.").arg(s->getToolNames().at(0)));
         }
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
+        msgBox->setInformativeText(tr("Do you want to select it now?"));
+        msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox->setDefaultButton(QMessageBox::Yes);
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), );
+
         switch (ret) {
            case QMessageBox::Yes:
                AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
@@ -148,11 +145,15 @@ void ETSProjectViewItemsContoller::sl_runFormatDBOnSelection(){
             }
         }
     }
-    FormatDBSupportRunDialog formatDBRunDialog(s->getToolNames().at(0), settings, AppContext::getMainWindow()->getQMainWindow());
-    if(formatDBRunDialog.exec() != QDialog::Accepted){
+    QObjectScopedPointer<FormatDBSupportRunDialog> formatDBRunDialog = new FormatDBSupportRunDialog(s->getToolNames().at(0), settings, AppContext::getMainWindow()->getQMainWindow());
+    formatDBRunDialog->exec();
+    CHECK(!formatDBRunDialog.isNull(), );
+
+    if (formatDBRunDialog->result() != QDialog::Accepted){
         return;
     }
     FormatDBSupportTask* formatDBSupportTask=new FormatDBSupportTask(s->getToolNames().at(0), settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(formatDBSupportTask);
 }
+
 }//namespace

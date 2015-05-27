@@ -19,18 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QApplication>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
@@ -45,6 +37,8 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/TmpDirChecker.h>
 #include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "SaveDocumentTask.h"
 
@@ -264,19 +258,20 @@ GUrl SaveMultipleDocuments::chooseAnotherUrl(Document* doc) {
 
     GUrl url;
     do {
-        QMessageBox msgBox;
-        msgBox.setIcon(QMessageBox::Warning);
-        msgBox.setWindowTitle(U2_APP_TITLE);
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
+        msgBox->setIcon(QMessageBox::Warning);
+        msgBox->setWindowTitle(U2_APP_TITLE);
 
-        msgBox.setText(tr("You have no permission to write to '%1' file.\nUGENE contains unsaved modifications.").arg(doc->getURL().fileName()));
-        msgBox.setInformativeText(tr("Do you want to save changes to another file?"));
+        msgBox->setText(tr("You have no permission to write to '%1' file.\nUGENE contains unsaved modifications.").arg(doc->getURL().fileName()));
+        msgBox->setInformativeText(tr("Do you want to save changes to another file?"));
 
-        QPushButton *saveButton = msgBox.addButton( QMessageBox::Save );
-        msgBox.addButton( QMessageBox::Cancel );
-        msgBox.setDefaultButton(saveButton);
-        msgBox.exec();
+        QPushButton *saveButton = msgBox->addButton( QMessageBox::Save );
+        msgBox->addButton( QMessageBox::Cancel );
+        msgBox->setDefaultButton(saveButton);
+        msgBox->exec();
+        CHECK(!msgBox.isNull(), url);
 
-        if (msgBox.clickedButton() == saveButton) {
+        if (msgBox->clickedButton() == saveButton) {
             QString newFileUrl = GUrlUtils::rollFileName(doc->getURLString(), "_modified_", DocumentUtils::getNewDocFileNameExcludesHint( ) );
             QString saveFileFilter = doc->getDocumentFormat()->getSupportedDocumentFileExtensions().join(" *.").prepend("*.");
             QWidget *activeWindow = qobject_cast<QWidget*>(QApplication::activeWindow());

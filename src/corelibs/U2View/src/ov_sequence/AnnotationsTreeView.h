@@ -141,7 +141,7 @@ private:
 
     QString renameDialogHelper(AVItem *i, const QString &defText, const QString &title);
     bool editQualifierDialogHelper(AVQualifierItem *i, bool ro, U2Qualifier &res);
-    void moveDialogToItem(QTreeWidgetItem *item, QDialog &d);
+    void moveDialogToItem(QTreeWidgetItem *item, QDialog *d);
 
     void adjustMenu(QMenu *m_) const;
     AVGroupItem * buildGroupTree(AVGroupItem *parentGroup, AnnotationGroup *g, bool areAnnotationsNew = true);

@@ -1,33 +1,52 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2015 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#include <fstream>
+#include <iomanip>
+#include <set>
+
+#include <QDomDocument>
+#include <QFile>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QProgressDialog>
+#include <QTime>
+#include <qmath.h>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/MAlignment.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+
+#include <U2Gui/QObjectScopedPointer.h>
+
+#include <U2View/WebWindow.h>
+
 #include "ExpertDiscoveryData.h"
 #include "ExpertDiscoverySetupRecBoundDialog.h"
 #include "DDisc/Context.h"
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/MAlignment.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2View/WebWindow.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/TextUtils.h>
-
-#include <fstream>
-#include <set>
-#include <iomanip>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QFileDialog>
-#include <QProgressDialog>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QProgressDialog>
-#endif
-#include <QFile>
-#include <QTime>
-#include <QDomDocument>
-#include <QtCore/qmath.h>
 
 namespace U2 {
 
@@ -210,14 +229,18 @@ void ExpertDiscoveryData::setRecBound(){
     vector<double> vPosScore = posBase.getScores();
     vector<double> vNegScore = negBase.getScores();
 
-    ExpertDiscoverySetupRecBoundDialog dlg(recognizationBound, vPosScore, vNegScore);
-    if(dlg.exec()){
-        recognizationBound = dlg.getRecognizationBound();
+    QObjectScopedPointer<ExpertDiscoverySetupRecBoundDialog> dlg = new ExpertDiscoverySetupRecBoundDialog(recognizationBound, vPosScore, vNegScore);
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (QDialog::Accepted == dlg->result()) {
+        recognizationBound = dlg->getRecognizationBound();
         conBase.clearScores();
     }
 
     setModifed();
 }
+
 bool ExpertDiscoveryData::updateScores(){
 
     QProgressDialog pd(tr("Setting up recognition bound. Please wait"), tr("Cancel"), 0, 100);
@@ -421,7 +444,6 @@ RecognizationData ExpertDiscoveryData::getRecognitionData(int seqIndex, Sequence
 }
 
 bool ExpertDiscoveryData::loadMarkup(const QString& firstF, const QString& secondF, const QString& thirdF, bool generateDescr){
-
     clearScores();
     posAnn.clear();
     negAnn.clear();
@@ -442,8 +464,8 @@ bool ExpertDiscoveryData::loadMarkup(const QString& firstF, const QString& secon
         posAnn.clear();
         QString str = "Positive annotation: ";
         str += ex.what();
-        QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), str);
+        mb->exec();
         return false;
      }
 
@@ -463,8 +485,8 @@ bool ExpertDiscoveryData::loadMarkup(const QString& firstF, const QString& secon
         negAnn.clear();
         QString str = "Negative annotation: ";
         str += ex.what();
-        QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), str);
+        mb->exec();
         return false;
     }
 
@@ -484,8 +506,8 @@ bool ExpertDiscoveryData::loadMarkup(const QString& firstF, const QString& secon
         desc.clear();
         QString str = "Description: ";
         str += ex.what();
-        QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), str);
+        mb->exec();
         return false;
     }
 
@@ -621,8 +643,9 @@ bool ExpertDiscoveryData::generateDescription(bool clearDescr){
 void ExpertDiscoveryData::loadControlSequenceAnnotation(const QString& fileName){
     ifstream in(fileName.toStdString().c_str());
     if (!in.is_open()) {
-        QMessageBox mb(QMessageBox::Critical, tr("Error"), "Can't open file");
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), "Can't open file");
+        mb->exec();
+        CHECK(!mb.isNull(), );
     }
     try {
         conAnn.load(in);
@@ -631,11 +654,13 @@ void ExpertDiscoveryData::loadControlSequenceAnnotation(const QString& fileName)
     catch (exception& ) {
         conBase.clearMarking();
         conAnn.clear();
-        QMessageBox mb(QMessageBox::Critical, tr("Error"), "Error loading control markup");
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), "Error loading control markup");
+        mb->exec();
+        CHECK(!mb.isNull(), );
     }
-    if (isLettersMarkedUp() && conBase.getSize() != 0)
+    if (isLettersMarkedUp() && conBase.getSize() != 0) {
         markupLetters(conBase, conAnn);
+    }
 }
 
 void ExpertDiscoveryData::cleanup(){
@@ -690,8 +715,8 @@ void ExpertDiscoveryData::generateRecognitionReportFull(){
             return;
         }
         if(!out.is_open()){
-            QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
-            mb.exec();
+            QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
+            mb->exec();
             return;
         }
         QString resultText;
@@ -703,8 +728,8 @@ void ExpertDiscoveryData::generateRecognitionReportFull(){
            !generateRecognizationReportSignals(resultText) ||
            !generateRecognizationReportFooter(resultText))
         {
-            QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
-            mb.exec();
+            QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
+            mb->exec();
             return;
         }else{
             out<<resultText.toStdString();
@@ -918,8 +943,8 @@ void ExpertDiscoveryData::generateRecognizationReport(EDProjectItem* pItem){
             return;
         }
         if(!out.is_open()){
-            QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
-            mb.exec();
+            QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
+            mb->exec();
             return;
         }
 
@@ -928,8 +953,8 @@ void ExpertDiscoveryData::generateRecognizationReport(EDProjectItem* pItem){
             !generateRecognizationReport(pBase->getSequenceBase(), pBase->getName(), true, resultText) ||
             !generateRecognizationReportFooter(resultText))
         {
-            QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
-            mb.exec();
+            QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
+            mb->exec();
             return;
         }else{
             out<<resultText.toStdString();

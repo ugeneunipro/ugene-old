@@ -19,15 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QFileInfo>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#endif
+#include <QFileInfo>
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/Annotation.h>
 #include <U2Core/AppContext.h>
@@ -36,17 +30,19 @@
 #include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Gui/ScriptEditorDialog.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
+#include "CSVColumnConfigurationDialog.h"
 #include "ImportAnnotationsFromCSVDialog.h"
 #include "ImportAnnotationsFromCSVTask.h"
-#include "CSVColumnConfigurationDialog.h"
 
 //TODO: add complement token configuration
 //TODO: autodetect numeric columns, propose using them as start/end/length positions
@@ -255,21 +251,23 @@ void ImportAnnotationsFromCSVDialog::sl_scriptSeparatorClicked() {
     if (parsingScript.isEmpty()) {
         lastUsedSeparator = separatorEdit->text();
     }
-    ScriptEditorDialog d(this, scriptHeader);
+    QObjectScopedPointer<ScriptEditorDialog> d = new ScriptEditorDialog(this, scriptHeader);
     if (!parsingScript.isEmpty()) {
-        d.setScriptText(parsingScript);
+        d->setScriptText(parsingScript);
     } else { //set sample script
         QString l1 = "var firstColumn = ["+ReadCSVAsAnnotationsTask::LINE_NUM_VAR+"];\n";
         QString l2 = "var otherColumns = "+ReadCSVAsAnnotationsTask::LINE_VAR+".split(\" \");\n";
         QString l3 = "result =firstColumn.concat(otherColumns);";
-        d.setScriptText(l1 + l2 + l3);
+        d->setScriptText(l1 + l2 + l3);
     }
 
-    int rc = d.exec();
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc != QDialog::Accepted) {
         return;
     }
-    parsingScript = d.getScriptText();
+    parsingScript = d->getScriptText();
     separatorEdit->setText(lastUsedSeparator);
 }
 
@@ -536,11 +534,13 @@ void ImportAnnotationsFromCSVDialog::configureColumn(int column) {
     assert(column >= 0 && column < columnsConfig.size());
 
     const ColumnConfig& config = columnsConfig.at(column);
-    CSVColumnConfigurationDialog d(this, config);
-    int rc = d.exec(); // TODO: set dialog position close to the header item
+    QObjectScopedPointer<CSVColumnConfigurationDialog> d = new CSVColumnConfigurationDialog(this, config);
+    int rc = d->exec(); // TODO: set dialog position close to the header item
+    CHECK(!d.isNull(), );
     if (rc == QDialog::Accepted) {
-        columnsConfig[column] = d.config;
+        columnsConfig[column] = d->config;
     }
     previewTable->horizontalHeaderItem(column)->setText(getHeaderItemText(column));
 }
+
 } //namespace

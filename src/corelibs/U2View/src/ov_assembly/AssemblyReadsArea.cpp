@@ -19,23 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "AssemblyReadsArea.h"
-
 #include <assert.h>
 #include <math.h>
 
-#include <QtGui/QCursor>
-#include <QtGui/QPainter>
-#include <QtGui/QResizeEvent>
-#include <QtGui/QWheelEvent>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QVBoxLayout>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QVBoxLayout>
-#endif
+#include <QApplication>
+#include <QCursor>
+#include <QPainter>
+#include <QResizeEvent>
+#include <QVBoxLayout>
+#include <QWheelEvent>
 #include <QtGui/QClipboard>
 
 #include <U2Core/BaseDocumentFormats.h>
@@ -58,9 +50,11 @@
 #include <U2Formats/DocumentFormatUtils.h>
 
 #include <U2Gui/OpenViewTask.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "AssemblyBrowser.h"
 #include "AssemblyConsensusArea.h"
+#include "AssemblyReadsArea.h"
 #include "ExportReadsDialog.h"
 #include "ZoomableAssemblyOverview.h"
 
@@ -883,10 +877,12 @@ void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
     GCOUNTER( cvar, tvar, "AssemblyReadsArea:exportReads" );
 
     assert(!reads.isEmpty());
-    ExportReadsDialog dlg(this, QList<DocumentFormatId>() << BaseDocumentFormats::FASTA << BaseDocumentFormats::FASTQ);
-    int ret = dlg.exec();
+    QObjectScopedPointer<ExportReadsDialog> dlg = new ExportReadsDialog(this, QList<DocumentFormatId>() << BaseDocumentFormats::FASTA << BaseDocumentFormats::FASTQ);
+    const int ret = dlg->exec();
+    CHECK(!dlg.isNull(), );
+
     if(ret == QDialog::Accepted) {
-        ExportReadsDialogModel model = dlg.getModel();
+        ExportReadsDialogModel model = dlg->getModel();
         assert(!model.filepath.isEmpty());
         DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(model.format);
         if(df == NULL) {

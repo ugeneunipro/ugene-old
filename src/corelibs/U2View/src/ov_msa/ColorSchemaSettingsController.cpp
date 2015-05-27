@@ -19,9 +19,8 @@
 * MA 02110-1301, USA.
 */
 
-#include <QtCore/QDir>
-
-#include <QtGui/QColor>
+#include <QColor>
+#include <QDir>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -35,6 +34,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "ColorSchemaDialogController.h"
@@ -389,13 +389,16 @@ void ColorSchemaSettingsPageWidget::sl_onAddColorSchema(){
     }
     CustomColorSchema schema;
 
-    CreateColorSchemaDialog d(&schema, usedNames);
-    int r = d.createNewScheme();
+    QObjectScopedPointer<CreateColorSchemaDialog> d = new CreateColorSchemaDialog(&schema, usedNames);
+    const int r = d->createNewScheme();
+    CHECK(!d.isNull(), );
 
-    if(r == QDialog::Rejected){return;}
+    if (r == QDialog::Rejected) {
+        return;
+    }
+
     customSchemas.append(schema);
     colorSchemas->addItem(new QListWidgetItem(schema.name, colorSchemas));
-
 }
 
 void ColorSchemaSettingsPageWidget::sl_onChangeColorSchema(){
@@ -409,9 +412,13 @@ void ColorSchemaSettingsPageWidget::sl_onChangeColorSchema(){
         CustomColorSchema& customSchema = customSchemas[i];
         if(customSchema.name == schemaName){
             alpColors = customSchema.alpColors;
-            ColorSchemaDialogController controller(alpColors);
-            int r = controller.adjustAlphabetColors();
-            if(r == QDialog::Rejected){return;}
+            QObjectScopedPointer<ColorSchemaDialogController> controller = new ColorSchemaDialogController(alpColors);
+            const int r = controller->adjustAlphabetColors();
+            CHECK(!controller.isNull(), );
+
+            if (r == QDialog::Rejected) {
+                return;
+            }
 
             QMapIterator<char, QColor> it(alpColors);
             while(it.hasNext()){
@@ -563,9 +570,13 @@ void CreateColorSchemaDialog::sl_createSchema(){
 
     QMap<char, QColor> alpColors = getDefaultSchemaColors(type, defaultAlpType);
 
-    ColorSchemaDialogController controller(alpColors);
-    int r = controller.adjustAlphabetColors();
-    if(r == QDialog::Rejected){return;}
+    QObjectScopedPointer<ColorSchemaDialogController> controller = new ColorSchemaDialogController(alpColors);
+    const int r = controller->adjustAlphabetColors();
+    CHECK(!controller.isNull(), );
+
+    if (r == QDialog::Rejected) {
+        return;
+    }
 
     newSchema->name = schemeName->text();
     newSchema->type = type;

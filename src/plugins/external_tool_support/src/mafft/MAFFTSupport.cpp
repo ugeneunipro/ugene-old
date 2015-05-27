@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QMainWindow>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -38,6 +32,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/MainWindow.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
@@ -74,13 +69,15 @@ MAFFTSupport::MAFFTSupport(const QString& name, const QString& path) : ExternalT
 void MAFFTSupport::sl_runWithExtFileSpecify(){
     //Check that Clustal and tempory directory path defined
     if (path.isEmpty()){
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(name);
-        msgBox.setText(tr("Path for %1 tool not selected.").arg(name));
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
+        msgBox->setWindowTitle(name);
+        msgBox->setText(tr("Path for %1 tool not selected.").arg(name));
+        msgBox->setInformativeText(tr("Do you want to select it now?"));
+        msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox->setDefaultButton(QMessageBox::Yes);
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), );
+
         switch (ret) {
            case QMessageBox::Yes:
                AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
@@ -102,8 +99,11 @@ void MAFFTSupport::sl_runWithExtFileSpecify(){
 
     //Call select input file and setup settings dialog
     MAFFTSupportTaskSettings settings;
-    MAFFTWithExtFileSpecifySupportRunDialog mAFFTRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
-    if(mAFFTRunDialog.exec() != QDialog::Accepted){
+    QObjectScopedPointer<MAFFTWithExtFileSpecifySupportRunDialog> mAFFTRunDialog = new MAFFTWithExtFileSpecifySupportRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
+    mAFFTRunDialog->exec();
+    CHECK(!mAFFTRunDialog.isNull(), );
+
+    if(mAFFTRunDialog->result() != QDialog::Accepted){
         return;
     }
     assert(!settings.inputFilePath.isEmpty());
@@ -151,13 +151,15 @@ void MAFFTSupportContext::buildMenu(GObjectView* view, QMenu* m) {
 void MAFFTSupportContext::sl_align_with_MAFFT() {
     //Check that MAFFT and tempory directory path defined
     if (AppContext::getExternalToolRegistry()->getByName(ET_MAFFT)->getPath().isEmpty()){
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(ET_MAFFT);
-        msgBox.setText(tr("Path for %1 tool not selected.").arg(ET_MAFFT));
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
+        msgBox->setWindowTitle(ET_MAFFT);
+        msgBox->setText(tr("Path for %1 tool not selected.").arg(ET_MAFFT));
+        msgBox->setInformativeText(tr("Do you want to select it now?"));
+        msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox->setDefaultButton(QMessageBox::Yes);
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), );
+
         switch (ret) {
            case QMessageBox::Yes:
                AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
@@ -186,8 +188,11 @@ void MAFFTSupportContext::sl_align_with_MAFFT() {
     SAFE_POINT(!alignmentObject->isStateLocked(), "Alignment object is locked during aligning with MAFFT!",);
 
     MAFFTSupportTaskSettings settings;
-    MAFFTSupportRunDialog mAFFTRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
-    if(mAFFTRunDialog.exec() != QDialog::Accepted){
+    QObjectScopedPointer<MAFFTSupportRunDialog> mAFFTRunDialog = new MAFFTSupportRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
+    mAFFTRunDialog->exec();
+    CHECK(!mAFFTRunDialog.isNull(), );
+
+    if(mAFFTRunDialog->result() != QDialog::Accepted){
         return;
     }
 

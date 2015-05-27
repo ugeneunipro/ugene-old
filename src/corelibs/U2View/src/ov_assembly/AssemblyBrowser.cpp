@@ -19,31 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QEvent>
-
-#include <QtGui/QDropEvent>
-#include <QtGui/QPainter>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QDesktopWidget>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#include <QtGui/QScrollBar>
-#include <QtGui/QToolBar>
-#include <QtGui/QToolButton>
-#include <QtGui/QVBoxLayout>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDesktopWidget>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QScrollBar>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QVBoxLayout>
-#endif
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QDialogButtonBox>
+#include <QDropEvent>
+#include <QEvent>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPainter>
+#include <QScrollBar>
+#include <QToolBar>
+#include <QToolButton>
+#include <QVBoxLayout>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
@@ -70,6 +57,7 @@
 #include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/OptionsPanel.h>
 #include <U2Gui/PositionSelector.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/ConvertAssemblyToSamDialog.h>
 
@@ -686,9 +674,9 @@ void AssemblyBrowser::setupActions() {
 }
 
 void AssemblyBrowser::sl_showAssemblyInfo() {
-    QDialog dlg(ui, Qt::WindowTitleHint | Qt::WindowSystemMenuHint);
-    dlg.setWindowTitle(tr("Assembly '%1' Information").arg(gobject->getGObjectName()));
-    dlg.setLayout(new QVBoxLayout());
+    QObjectScopedPointer<QDialog> dlg = new QDialog(ui, Qt::WindowTitleHint | Qt::WindowSystemMenuHint);
+    dlg->setWindowTitle(tr("Assembly '%1' Information").arg(gobject->getGObjectName()));
+    dlg->setLayout(new QVBoxLayout());
     QLabel * infoLabel = new QLabel();
     {
         U2OpStatusImpl st;
@@ -712,44 +700,49 @@ void AssemblyBrowser::sl_showAssemblyInfo() {
         infoLabel->setText(text);
         infoLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     }
-    dlg.layout()->addWidget(infoLabel);
+    dlg->layout()->addWidget(infoLabel);
 
-    dlg.resize(300, dlg.sizeHint().height());
-    dlg.setMaximumHeight(dlg.layout()->minimumSize().height());
-    dlg.exec();
+    dlg->resize(300, dlg->sizeHint().height());
+    dlg->setMaximumHeight(dlg->layout()->minimumSize().height());
+    dlg->exec();
 }
 
 void AssemblyBrowser::sl_saveScreenshot() {
-    ExportImageDialog dialog(ui, ExportImageDialog::AssemblyView);
-    dialog.exec();
+    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(ui, ExportImageDialog::AssemblyView);
+    dialog->exec();
 }
 
 void AssemblyBrowser::sl_exportToSam() {
     U2OpStatusImpl os;
     QHash<QString, QString> metaInfo = model->getDbiConnection().dbi->getDbiMetaInfo(os);
 
-    ConvertAssemblyToSamDialog dialog(ui, metaInfo[U2DbiOptions::U2_DBI_OPTION_URL]);
+    QObjectScopedPointer<ConvertAssemblyToSamDialog> dialog = new ConvertAssemblyToSamDialog(ui, metaInfo[U2DbiOptions::U2_DBI_OPTION_URL]);
+    const int dialogResult = dialog->exec();
+    CHECK(!dialog.isNull(), );
 
-    if (dialog.exec()) {
-        ConvertAssemblyToSamTask *convertTask = new ConvertAssemblyToSamTask(&(model->getDbiConnection()), dialog.getSamFileUrl());
+    if (QDialog::Accepted == dialogResult) {
+        ConvertAssemblyToSamTask *convertTask = new ConvertAssemblyToSamTask(&(model->getDbiConnection()), dialog->getSamFileUrl());
         AppContext::getTaskScheduler()->registerTopLevelTask(convertTask);
     }
 }
 
 void AssemblyBrowser::sl_exportCoverage() {
     const U2Assembly assembly = getModel()->getAssembly();
-    ExportCoverageDialog d(assembly.visualName, ui);
-    if (QDialog::Accepted == d.exec()) {
+    QObjectScopedPointer<ExportCoverageDialog> d = new ExportCoverageDialog(assembly.visualName, ui);
+    const int dialogResult = d->exec();
+    CHECK(!d.isNull(), );
+
+    if (QDialog::Accepted == dialogResult) {
         Task *exportTask = NULL;
-        switch (d.getFormat()) {
+        switch (d->getFormat()) {
         case ExportCoverageSettings::Histogram:
-            exportTask = new ExportCoverageHistogramTask(getModel()->getDbiConnection().dbi->getDbiRef(), assembly.id, d.getSettings());
+            exportTask = new ExportCoverageHistogramTask(getModel()->getDbiConnection().dbi->getDbiRef(), assembly.id, d->getSettings());
             break;
         case ExportCoverageSettings::PerBase:
-            exportTask = new ExportCoveragePerBaseTask(getModel()->getDbiConnection().dbi->getDbiRef(), assembly.id, d.getSettings());
+            exportTask = new ExportCoveragePerBaseTask(getModel()->getDbiConnection().dbi->getDbiRef(), assembly.id, d->getSettings());
             break;
         case ExportCoverageSettings::Bedgraph:
-            exportTask = new ExportCoverageBedgraphTask(getModel()->getDbiConnection().dbi->getDbiRef(), assembly.id, d.getSettings());
+            exportTask = new ExportCoverageBedgraphTask(getModel()->getDbiConnection().dbi->getDbiRef(), assembly.id, d->getSettings());
             break;
         default:
             FAIL("Unexpected format", );

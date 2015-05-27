@@ -31,6 +31,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "DownloadRemoteFileDialog.h"
 #include "SearchGenbankSequenceDialogController.h"
@@ -224,8 +225,8 @@ void SearchGenbankSequenceDialogController::sl_downloadButtonClicked()
         ids.append(item->text(0));
     }
 
-    DownloadRemoteFileDialog dlg(ids.join(";"), ui->databaseBox->currentText(), this);
-    dlg.exec();
+    QObjectScopedPointer<DownloadRemoteFileDialog> dlg = new DownloadRemoteFileDialog(ids.join(";"), ui->databaseBox->currentText(), this);
+    dlg->exec();
 }
 
 void SearchGenbankSequenceDialogController::sl_itemSelectionChanged()

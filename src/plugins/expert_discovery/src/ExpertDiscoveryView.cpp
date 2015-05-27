@@ -19,12 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -40,10 +35,11 @@
 #include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
-#include <U2View/ADVUtils.h>
 #include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVUtils.h>
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/AutoAnnotationUtils.h>
@@ -267,8 +263,11 @@ bool ExpertDiscoveryView::askForSave(){
         return false;
     }
 
-    QMessageBox mb(QMessageBox::Question, tr("Save ExpertDiscovery document"), tr("Do you want to save current ExpertDiscovery document?"), QMessageBox::Yes|QMessageBox::No);
-    if(mb.exec()==QMessageBox::Yes)
+    QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Question, tr("Save ExpertDiscovery document"), tr("Do you want to save current ExpertDiscovery document?"), QMessageBox::Yes|QMessageBox::No);
+    mb->exec();
+    CHECK(!mb.isNull(), false);
+
+    if (mb->result()==QMessageBox::Yes)
         return true;
     else
         return false;
@@ -277,20 +276,23 @@ bool ExpertDiscoveryView::askForSave(){
 void ExpertDiscoveryView::sl_showExpertDiscoveryPosNegDialog(){
     Task *tasks = new Task("Loading positive and negative sequences", TaskFlag_NoRun);
 
-    ExpertDiscoveryPosNegDialog d(QApplication::activeWindow());
-    if (d.exec()) {
+    QObjectScopedPointer<ExpertDiscoveryPosNegDialog> d = new ExpertDiscoveryPosNegDialog(QApplication::activeWindow());
+    d->exec();
+    CHECK(!d.isNull(), );
+
+    if (QDialog::Accepted == d->result()) {
         if (!AppContext::getProject()) {
-            tasks->addSubTask( AppContext::getProjectLoader()->createNewProjectTask() );
+            tasks->addSubTask(AppContext::getProjectLoader()->createNewProjectTask());
         }
 
-        ExpertDiscoveryLoadPosNegTask *t = new ExpertDiscoveryLoadPosNegTask(d.getFirstFileName(), d.getSecondFileName(), d.isGenerateNegative(), d.getNegativePerPositive());
-        connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadPosNegTaskStateChanged() ) );
+        ExpertDiscoveryLoadPosNegTask *t = new ExpertDiscoveryLoadPosNegTask(d->getFirstFileName(), d->getSecondFileName(), d->isGenerateNegative(), d->getNegativePerPositive());
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_loadPosNegTaskStateChanged()));
         tasks->addSubTask(t);
     }
 
     AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
-
 }
+
 void ExpertDiscoveryView::sl_loadPosNegTaskStateChanged(){
     ExpertDiscoveryLoadPosNegTask *loadTask = qobject_cast<ExpertDiscoveryLoadPosNegTask*>(sender());
     if (!loadTask || !loadTask->isFinished()) {
@@ -361,16 +363,19 @@ void ExpertDiscoveryView::sl_loadPosNegTaskStateChanged(){
 void ExpertDiscoveryView::sl_showExpertDiscoveryPosNegMrkDialog(){
     Task *tasks = new Task("Loading positive and negative sequences markups", TaskFlag_NoRun);
 
-    ExpertDiscoveryPosNegMrkDialog dialog(QApplication::activeWindow());
-    if (dialog.exec()) {
+    QObjectScopedPointer<ExpertDiscoveryPosNegMrkDialog> dialog = new ExpertDiscoveryPosNegMrkDialog(QApplication::activeWindow());
+    dialog->exec();
+    CHECK(!dialog.isNull(), );
 
-        ExpertDiscoveryLoadPosNegMrkTask *t = new ExpertDiscoveryLoadPosNegMrkTask(dialog.getFirstFileName(), dialog.getSecondFileName(), dialog.getThirdFileName(), dialog.isGenerateDescr(), dialog.isAppendToCurrentMarkup(), dialog.isNucleotidesMarkup(), d );
-        connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadPosNegMrkTaskStateChanged() ) );
+    if (QDialog::Accepted == dialog->result()) {
+        ExpertDiscoveryLoadPosNegMrkTask *t = new ExpertDiscoveryLoadPosNegMrkTask(dialog->getFirstFileName(), dialog->getSecondFileName(), dialog->getThirdFileName(), dialog->isGenerateDescr(), dialog->isAppendToCurrentMarkup(), dialog->isNucleotidesMarkup(), d);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_loadPosNegMrkTaskStateChanged()));
         tasks->addSubTask(t);
     }
 
     AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
 }
+
 void ExpertDiscoveryView::sl_loadPosNegMrkTaskStateChanged(){
     ExpertDiscoveryLoadPosNegMrkTask *loadTask = qobject_cast<ExpertDiscoveryLoadPosNegMrkTask*>(sender());
     if (!loadTask || !loadTask->isFinished()) {
@@ -389,16 +394,19 @@ void ExpertDiscoveryView::sl_loadPosNegMrkTaskStateChanged(){
 void ExpertDiscoveryView::sl_showExpertDiscoveryControlMrkDialog(){
     Task *tasks = new Task("Loading control sequences markups", TaskFlag_NoRun);
 
-    ExpertDiscoveryControlMrkDialog dialog(QApplication::activeWindow());
-    if (dialog.exec()) {
+    QObjectScopedPointer<ExpertDiscoveryControlMrkDialog> dialog = new ExpertDiscoveryControlMrkDialog(QApplication::activeWindow());
+    dialog->exec();
+    CHECK(!dialog.isNull(), );
 
-        ExpertDiscoveryLoadControlMrkTask *t = new ExpertDiscoveryLoadControlMrkTask(dialog.getFirstFileName(), d );
-        connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadControlMrkTaskStateChanged() ) );
+    if (QDialog::Accepted == dialog->result()) {
+        ExpertDiscoveryLoadControlMrkTask *t = new ExpertDiscoveryLoadControlMrkTask(dialog->getFirstFileName(), d );
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_loadControlMrkTaskStateChanged()));
         tasks->addSubTask(t);
     }
 
     AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
 }
+
 void ExpertDiscoveryView::sl_loadControlMrkTaskStateChanged(){
     ExpertDiscoveryLoadControlMrkTask *loadTask = qobject_cast<ExpertDiscoveryLoadControlMrkTask*>(sender());
     if (!loadTask || !loadTask->isFinished()) {
@@ -545,9 +553,10 @@ void ExpertDiscoveryView::sl_search(){
 
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
     assert(seqCtx->getAlphabet()->isNucleic());
-    ExpertDiscoverySearchDialogController sdialog(seqCtx, d, av->getWidget());
-    sdialog.exec();
+    QObjectScopedPointer<ExpertDiscoverySearchDialogController> sdialog = new ExpertDiscoverySearchDialogController(seqCtx, d, av->getWidget());
+    sdialog->exec();
 }
+
 void ExpertDiscoveryView::sl_autoAnnotationUpdateFinished(){
     updatesCount--;
 
@@ -561,10 +570,13 @@ void ExpertDiscoveryView::sl_autoAnnotationUpdateFinished(){
 void ExpertDiscoveryView::sl_showExpertDiscoveryControlDialog(){
     Task *tasks = new Task("Loading control sequences", TaskFlag_NoRun);
 
-    ExpertDiscoveryControlDialog d(QApplication::activeWindow());
-    if (d.exec()) {
+    QObjectScopedPointer<ExpertDiscoveryControlDialog> d = new ExpertDiscoveryControlDialog(QApplication::activeWindow());
+    d->exec();
+    CHECK(!d.isNull(), );
+
+    if (QDialog::Accepted == d->result()) {
         Q_ASSERT(AppContext::getProject());
-        ExpertDiscoveryLoadControlTask *t = new ExpertDiscoveryLoadControlTask(d.getFirstFileName());
+        ExpertDiscoveryLoadControlTask *t = new ExpertDiscoveryLoadControlTask(d->getFirstFileName());
         connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadControlTaskStateChanged() ) );
         tasks->addSubTask(t);
     }
@@ -932,8 +944,9 @@ void ExpertDiscoveryView::sl_treeWidgetAddMarkup(){
 
 void ExpertDiscoveryView::sl_generateFullReport(){
     if(d.getSelectedSignalsContainer().GetSelectedSignals().size() == 0){
-        QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("No signals are selected to generate report"));
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("No signals are selected to generate report"));
+        mb->exec();
+        CHECK(!mb.isNull(), );
     }else{
         d.generateRecognitionReportFull();
     }
@@ -1095,8 +1108,8 @@ bool ExpertDiscoveryViewWindow::onCloseEvent(){
     assert(curEdView);
     Task* t = curEdView->getExtractTask();
     if(t && (t->isRunning())){
-        QMessageBox mb(QMessageBox::Critical, tr("Closing error"), tr("There are unfinished extracting tasks. Cancel them before closing"));
-        mb.exec();
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Closing error"), tr("There are unfinished extracting tasks. Cancel them before closing"));
+        mb->exec();
         return false;
     }
     if(curEdView->askForSave()){

@@ -19,15 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-
-#include <QtGui/QKeyEvent>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QKeyEvent>
+#include <QMessageBox>
 
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 
@@ -44,6 +37,7 @@
 #include <U2Gui/AppSettingsGUI.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2View/DnaAssemblyUtils.h>
@@ -470,9 +464,12 @@ DnaAssemblyToRefTaskSettings DnaAssemblyGUIUtils::getSettings(DnaAssemblyDialog 
 }
 
 void DnaAssemblyGUIUtils::runAssembly2ReferenceDialog(const QStringList& shortReadUrls, const QString& refSeqUrl) {
-    DnaAssemblyDialog dlg(QApplication::activeWindow(), shortReadUrls, refSeqUrl);
-    if (dlg.exec()) {
-        DnaAssemblyToRefTaskSettings s = getSettings(&dlg);
+    QObjectScopedPointer<DnaAssemblyDialog> dlg = new DnaAssemblyDialog(QApplication::activeWindow(), shortReadUrls, refSeqUrl);
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (QDialog::Accepted == dlg->result()) {
+        DnaAssemblyToRefTaskSettings s = getSettings(dlg.data());
         s.openView = true;
         Task* assemblyTask = new DnaAssemblyTaskWithConversions(s, true);
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);

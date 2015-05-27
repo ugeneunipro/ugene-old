@@ -19,33 +19,33 @@
  * MA 02110-1301, USA.
  */
 
-#include "Primer3Plugin.h"
-#include "Primer3Dialog.h"
-#include "Primer3Query.h"
-
-#include <U2Gui/GUIUtils.h>
-
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVConstants.h>
-#include <U2View/ADVSequenceObjectContext.h>
-#include <U2View/ADVUtils.h>
-
 #include <QAction>
 #include <QMap>
-#include <QMessageBox>
 #include <QMenu>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2OpStatusUtils.h>
 
-#include <U2Test/XMLTestFormat.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include <U2Test/GTest.h>
 #include <U2Test/GTestFrameworkComponents.h>
+#include <U2Test/XMLTestFormat.h>
+
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVUtils.h>
+#include <U2View/AnnotatedDNAView.h>
+
+#include "Primer3dialog.h"
+#include "Primer3Plugin.h"
+#include "Primer3Query.h"
 
 namespace U2 {
-
 
 extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     Primer3Plugin * plug = new Primer3Plugin();
@@ -123,29 +123,32 @@ void Primer3ADVContext::sl_showDialog() {
         defaultSettings.setIntProperty("PRIMER_LIBERAL_BASE",1);
         defaultSettings.setDoubleProperty("PRIMER_WT_POS_PENALTY",0.0);
         defaultSettings.setIntProperty("PRIMER_FIRST_BASE_INDEX",1);
-        Primer3Dialog dialog(defaultSettings, seqCtx);
-        if(QDialog::Accepted == dialog.exec())
+
+        QObjectScopedPointer<Primer3Dialog> dialog = new Primer3Dialog(defaultSettings, seqCtx);
+        dialog->exec();
+        CHECK(!dialog.isNull(), );
+
+        if(QDialog::Accepted == dialog->result())
         {
-            Primer3TaskSettings settings = dialog.getSettings();
+            Primer3TaskSettings settings = dialog->getSettings();
             U2OpStatusImpl os;
             QByteArray seqData = seqCtx->getSequenceObject()->getWholeSequenceData(os);
             CHECK_OP_EXT(os, QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
             settings.setSequence(seqData,
                                  seqCtx->getSequenceObject()->isCircular());
-            QString err = dialog.checkModel();
+            QString err = dialog->checkModel();
             if (!err.isEmpty()) {
-                QMessageBox::warning(QApplication::activeWindow(), dialog.windowTitle(), err);
+                QMessageBox::warning(QApplication::activeWindow(), dialog->windowTitle(), err);
                 return;
             }
-            bool objectPrepared = dialog.prepareAnnotationObject();
+            bool objectPrepared = dialog->prepareAnnotationObject();
             if (!objectPrepared){
                 QMessageBox::warning(QApplication::activeWindow(), tr("Error"), tr("Cannot create an annotation object. Please check settings"));
                 return;
             }
-            const CreateAnnotationModel &model = dialog.getCreateAnnotationModel();
+            const CreateAnnotationModel &model = dialog->getCreateAnnotationModel();
             AppContext::getTaskScheduler()->registerTopLevelTask(new Primer3ToAnnotationsTask(settings, seqCtx->getSequenceObject(),
                 model.getAnnotationObject(), model.groupName, model.data->name, model.description));
-
         }
     }
 }

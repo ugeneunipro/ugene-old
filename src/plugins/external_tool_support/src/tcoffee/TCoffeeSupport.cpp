@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QMainWindow>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -38,6 +32,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/MainWindow.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
@@ -76,13 +71,15 @@ TCoffeeSupport::TCoffeeSupport(const QString& name, const QString& path) : Exter
 void TCoffeeSupport::sl_runWithExtFileSpecify(){
     //Check that T-Coffee and tempory directory path defined
     if (path.isEmpty()){
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(name);
-        msgBox.setText(tr("Path for %1 tool not selected.").arg(name));
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
+        msgBox->setWindowTitle(name);
+        msgBox->setText(tr("Path for %1 tool not selected.").arg(name));
+        msgBox->setInformativeText(tr("Do you want to select it now?"));
+        msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox->setDefaultButton(QMessageBox::Yes);
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), );
+
         switch (ret) {
            case QMessageBox::Yes:
                AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
@@ -105,8 +102,11 @@ void TCoffeeSupport::sl_runWithExtFileSpecify(){
 
     //Call select input file and setup settings dialog
     TCoffeeSupportTaskSettings settings;
-    TCoffeeWithExtFileSpecifySupportRunDialog tCoffeeRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
-    if(tCoffeeRunDialog.exec() != QDialog::Accepted){
+    QObjectScopedPointer<TCoffeeWithExtFileSpecifySupportRunDialog> tCoffeeRunDialog = new TCoffeeWithExtFileSpecifySupportRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
+    tCoffeeRunDialog->exec();
+    CHECK(!tCoffeeRunDialog.isNull(), );
+
+    if(tCoffeeRunDialog->result() != QDialog::Accepted){
         return;
     }
     assert(!settings.inputFilePath.isEmpty());
@@ -154,13 +154,15 @@ void TCoffeeSupportContext::buildMenu(GObjectView* view, QMenu* m) {
 void TCoffeeSupportContext::sl_align_with_TCoffee() {
     //Check that T-Coffee and temporary directory path defined
     if (AppContext::getExternalToolRegistry()->getByName(ET_TCOFFEE)->getPath().isEmpty()){
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(ET_TCOFFEE);
-        msgBox.setText(tr("Path for %1 tool not selected.").arg(ET_TCOFFEE));
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
+        msgBox->setWindowTitle(ET_TCOFFEE);
+        msgBox->setText(tr("Path for %1 tool not selected.").arg(ET_TCOFFEE));
+        msgBox->setInformativeText(tr("Do you want to select it now?"));
+        msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox->setDefaultButton(QMessageBox::Yes);
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), );
+
         switch (ret) {
            case QMessageBox::Yes:
                AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
@@ -190,8 +192,11 @@ void TCoffeeSupportContext::sl_align_with_TCoffee() {
     assert(!obj->isStateLocked());
 
     TCoffeeSupportTaskSettings settings;
-    TCoffeeSupportRunDialog tCoffeeRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
-    if(tCoffeeRunDialog.exec() != QDialog::Accepted){
+    QObjectScopedPointer<TCoffeeSupportRunDialog> tCoffeeRunDialog = new TCoffeeSupportRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
+    tCoffeeRunDialog->exec();
+    CHECK(!tCoffeeRunDialog.isNull(), );
+
+    if(tCoffeeRunDialog->result() != QDialog::Accepted){
         return;
     }
 

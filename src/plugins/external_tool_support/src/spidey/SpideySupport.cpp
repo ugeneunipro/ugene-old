@@ -19,43 +19,39 @@
  * MA 02110-1301, USA.
  */
 
-#include "SpideySupport.h"
-#include "SpideySupportTask.h"
-#include "ExternalToolSupportSettingsController.h"
-#include "ExternalToolSupportSettings.h"
+#include <QMainWindow>
+#include <QMessageBox>
+
+#include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatusUtils.h>
-#include <U2Gui/AppSettingsGUI.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
-#include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
-#include <U2Gui/MainWindow.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
-#endif
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/AnnotatedDNAViewFactory.h>
-#include <U2View/ADVConstants.h>
-#include <U2View/ADVUtils.h>
-#include <U2View/ADVSequenceObjectContext.h>
 
-#include <U2Gui/ProjectTreeController.h>
-#include <U2Gui/ProjectTreeItemSelectorDialog.h>
-#include <U2Gui/GUIUtils.h>
-
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/AppSettingsGUI.h>
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/ProjectTreeController.h>
+#include <U2Gui/ProjectTreeItemSelectorDialog.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVUtils.h>
+#include <U2View/AnnotatedDNAView.h>
+#include <U2View/AnnotatedDNAViewFactory.h>
+
+#include "ExternalToolSupportSettings.h"
+#include "ExternalToolSupportSettingsController.h"
+#include "SpideySupport.h"
+#include "SpideySupportTask.h"
 
 namespace U2 {
-
 
 SpideySupport::SpideySupport(const QString& name, const QString& path) : ExternalTool(name, path)
 {
@@ -141,13 +137,15 @@ void SpideySupportContext::sl_align_with_Spidey() {
 
     //Check that Spidey and tempory directory path defined
     if (AppContext::getExternalToolRegistry()->getByName(ET_SPIDEY)->getPath().isEmpty()){
-        QMessageBox msgBox(parent);
-        msgBox.setWindowTitle(ET_SPIDEY);
-        msgBox.setText(tr("Path for %1 tool not selected.").arg(ET_SPIDEY));
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox(parent);
+        msgBox->setWindowTitle(ET_SPIDEY);
+        msgBox->setText(tr("Path for %1 tool not selected.").arg(ET_SPIDEY));
+        msgBox->setInformativeText(tr("Do you want to select it now?"));
+        msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox->setDefaultButton(QMessageBox::Yes);
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), );
+
         if (ret == QMessageBox::Yes ) {
             AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
         }
@@ -180,21 +178,19 @@ void SpideySupportContext::sl_align_with_Spidey() {
         m.hideAnnotationType = true;
         m.hideAnnotationName = true;
         m.groupName = "exon";
-        CreateAnnotationDialog dlg(parent,m);
-        dlg.setWindowTitle("Save result to annotation");
-        if (dlg.exec() != QDialog::Accepted) {
+        QObjectScopedPointer<CreateAnnotationDialog> dlg = new CreateAnnotationDialog(parent,m);
+        dlg->setWindowTitle("Save result to annotation");
+        dlg->exec();
+        CHECK(!dlg.isNull(), );
+
+        if (dlg->result() != QDialog::Accepted) {
             return;
         }
 
         SplicedAlignmentTaskConfig cfg(rnaObj,dnaObj);
         SpideySupportTask* spideyTask = new SpideySupportTask(cfg, m.getAnnotationObject(), m.description);
         AppContext::getTaskScheduler()->registerTopLevelTask(spideyTask);
-
     }
-
-
 }
-
-
 
 }//namespace

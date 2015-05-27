@@ -35,6 +35,8 @@
 
 #include <U2Formats/AceFormat.h>
 
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include "AceImporter.h"
 #include "CloneAssemblyWithReferenceToDbiTask.h"
 #include "ConvertAceToSqliteTask.h"
@@ -177,10 +179,11 @@ DocumentProviderTask* AceImporter::createImportTask(const FormatDetectionResult&
     settings.insert(SRC_URL, res.url.getURLString());
 
     if (showWizard && NULL != dialogFactory) {
-        ImportDialog* dialog = dialogFactory->getDialog(settings);
-        int result = dialog->exec();
+        QObjectScopedPointer<ImportDialog> dialog = dialogFactory->getDialog(settings);
+        const int result = dialog->exec();
+        CHECK(!dialog.isNull(), NULL);
+
         settings = dialog->getSettings();
-        delete dialog;
         task = new AceImporterTask(res.url, settings, hints);
         if (result == QDialog::Rejected) {
             task->cancel();

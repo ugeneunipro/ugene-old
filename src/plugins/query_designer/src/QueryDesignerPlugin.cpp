@@ -19,33 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#include "QueryDesignerPlugin.h"
-#include "QueryViewController.h"
-#include "QDSamples.h"
-#include "QDRunDialog.h"
-#include "QDDocumentFormat.h"
-#include "QDSceneIOTasks.h"
-#include "QDTests.h"
-#include "QDWorker.h"
-
-#include <library/QDFindActor.h>
-#include <library/QDFindPolyRegionsActor.h>
-#include <library/QDGcContentActor.h>
-
 #include <U2Core/AppContext.h>
-#include <U2Gui/ObjectViewModel.h>
-
-#include <U2View/ADVUtils.h>
-#include <U2View/ADVConstants.h>
-#include <U2View/AnnotatedDNAView.h>
+#include <U2Core/GAutoDeleteList.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/ToolsMenu.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 
-#include <U2Core/GAutoDeleteList.h>
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVUtils.h>
+#include <U2View/AnnotatedDNAView.h>
 
+#include "QDDocumentFormat.h"
+#include "QDRunDialog.h"
+#include "QDSamples.h"
+#include "QDSceneIOTasks.h"
+#include "QDTests.h"
+#include "QDWorker.h"
+#include "QueryDesignerPlugin.h"
+#include "QueryViewController.h"
+#include "library/QDFindActor.h"
+#include "library/QDFindPolyRegionsActor.h"
+#include "library/QDGcContentActor.h"
 
 namespace U2 {
 
@@ -113,8 +111,8 @@ void QueryDesignerViewContext::sl_showDialog() {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
     assert(av);
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
-    QDDialog d(seqCtx);
-    d.exec();
+    QObjectScopedPointer<QDDialog> d = new QDDialog(seqCtx);
+    d->exec();
 }
 
 class CloseDesignerTask : public Task {

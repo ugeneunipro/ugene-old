@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QApplication>
+#include <QMessageBox>
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
@@ -59,10 +53,13 @@ void ExportObjectUtils::exportAnnotations(const QList<Annotation *> &inputAnnota
     QString fileName = GUrlUtils::rollFileName(dstUrl.dirPath() + "/" + dstUrl.baseFileName()
         + "_annotations.csv", DocumentUtils::getNewDocFileNameExcludesHint());
 
-    ExportAnnotationsDialog d(fileName, QApplication::activeWindow());
-    d.setExportSequenceVisible(false);
+    QObjectScopedPointer<ExportAnnotationsDialog> d = new ExportAnnotationsDialog(fileName, QApplication::activeWindow());
+    d->setExportSequenceVisible(false);
 
-    if (QDialog::Accepted != d.exec()) {
+    const int dialogResult = d->exec();
+    CHECK(!d.isNull(), );
+
+    if (QDialog::Accepted != dialogResult) {
         return;
     }
 
@@ -72,11 +69,10 @@ void ExportObjectUtils::exportAnnotations(const QList<Annotation *> &inputAnnota
 
     // run task
     Task * t = NULL;
-    if (ExportAnnotationsDialog::CSV_FORMAT_ID == d.fileFormat()) {
-        t = new ExportAnnotations2CSVTask(annotations, QByteArray(), QString(), NULL, false,
-        false, d.filePath());
+    if (ExportAnnotationsDialog::CSV_FORMAT_ID == d->fileFormat()) {
+        t = new ExportAnnotations2CSVTask(annotations, QByteArray(), QString(), NULL, false, false, d->filePath());
     } else {
-        t = saveAnnotationsTask(d.filePath(), d.fileFormat(), annotations);
+        t = saveAnnotationsTask(d->filePath(), d->fileFormat(), annotations);
     }
     SAFE_POINT(NULL != t, "Invalid task detected!",);
 
@@ -89,21 +85,23 @@ void ExportObjectUtils::exportObject2Document(GObject *object, const QString &ur
     if (NULL == object || object->isUnloaded()) {
         return;
     }
-    ExportDocumentDialogController dialog(object, QApplication::activeWindow(), url);
-    export2Document(dialog, tracePath);
+    QObjectScopedPointer<ExportDocumentDialogController> dialog = new ExportDocumentDialogController(object, QApplication::activeWindow(), url);
+    export2Document(dialog.data(), tracePath);
 }
 
-void ExportObjectUtils::export2Document(ExportDocumentDialogController &dialog, bool tracePath) {
-    int result = dialog.exec();
+void ExportObjectUtils::export2Document(const QObjectScopedPointer<ExportDocumentDialogController> &dialog, bool tracePath) {
+    const int result = dialog->exec();
+    CHECK(!dialog.isNull(), );
+
     if (result != QDialog::Accepted) {
         return;
     }
 
     if (tracePath) {
         LastUsedDirHelper h;
-        h.url = dialog.getDocumentURL();
+        h.url = dialog->getDocumentURL();
     }
-    QString dstUrl = dialog.getDocumentURL();
+    QString dstUrl = dialog->getDocumentURL();
     if (dstUrl.isEmpty()) {
         return;
     }
@@ -115,7 +113,7 @@ void ExportObjectUtils::export2Document(ExportDocumentDialogController &dialog, 
             "Remove it from the project first."));
         return;
     }
-    bool addToProject = dialog.getAddToProjectFlag();
+    bool addToProject = dialog->getAddToProjectFlag();
 
     IOAdapterRegistry *ioar = AppContext::getIOAdapterRegistry();
     SAFE_POINT(NULL != ioar, "Invalid I/O environment!",);
@@ -123,17 +121,17 @@ void ExportObjectUtils::export2Document(ExportDocumentDialogController &dialog, 
     CHECK_EXT(NULL != iof,
         coreLog.error(QObject::tr("Unable to create I/O factory for ") + dstUrl),);
     DocumentFormatRegistry *dfr =  AppContext::getDocumentFormatRegistry();
-    DocumentFormatId formatId = dialog.getDocumentFormatId();
+    DocumentFormatId formatId = dialog->getDocumentFormatId();
     DocumentFormat *df = dfr->getFormatById(formatId);
     CHECK_EXT(NULL != df,
         coreLog.error(QObject::tr("Unknown document format I/O factory: ") + formatId),);
 
     U2OpStatusImpl os;
-    Document *srcDoc = dialog.getSourceDoc();
+    Document *srcDoc = dialog->getSourceDoc();
     Document *dstDoc = NULL;
     if (NULL == srcDoc) {
         dstDoc = df->createNewLoadedDocument(iof, dstUrl, os);
-        dstDoc->addObject(dialog.getSourceObject());
+        dstDoc->addObject(dialog->getSourceObject());
     } else {
         dstDoc = srcDoc->getSimpleCopy(df, iof, dstUrl);
     }

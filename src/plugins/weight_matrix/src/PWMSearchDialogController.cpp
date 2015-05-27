@@ -47,6 +47,7 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
@@ -237,8 +238,10 @@ void PWMSearchDialogController::sl_onSaveAnnotations() {
     m.hideLocation = true;
     m.useAminoAnnotationTypes = ctx->getAlphabet()->isAmino();
     m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
-    CreateAnnotationDialog d(this, m);
-    int rc = d.exec();
+    QObjectScopedPointer<CreateAnnotationDialog> d = new CreateAnnotationDialog(this, m);
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc != QDialog::Accepted) {
         return;
     }
@@ -311,9 +314,12 @@ void PWMSearchDialogController::sl_onSliderMoved(int value) {
 }
 
 void PWMSearchDialogController::sl_onBuildMatrix() {
-    PWMBuildDialogController bd(this);
-    if (bd.exec() == QDialog::Accepted) {
-        loadFile(bd.outputEdit->text());
+    QObjectScopedPointer<PWMBuildDialogController> bd = new PWMBuildDialogController(this);
+    bd->exec();
+    CHECK(!bd.isNull(), );
+
+    if (bd->result() == QDialog::Accepted) {
+        loadFile(bd->outputEdit->text());
     }
 }
 
@@ -330,21 +336,26 @@ void PWMSearchDialogController::sl_onAlgoChanged(QString newAlgo){
 }
 
 void PWMSearchDialogController::sl_onSearchJaspar() {
-    PWMJASPARDialogController jd(this);
-    if (jd.exec() == QDialog::Accepted) {
-        if (QFile::exists(jd.fileName)) {
-            loadFile(jd.fileName);
+    QObjectScopedPointer<PWMJASPARDialogController> jd = new PWMJASPARDialogController(this);
+    jd->exec();
+    CHECK(!jd.isNull(), );
+
+    if (jd->result() == QDialog::Accepted) {
+        if (QFile::exists(jd->fileName)) {
+            loadFile(jd->fileName);
         }
     }
 }
 
 void PWMSearchDialogController::sl_onViewMatrix() {
     if (intermediate.getLength() != 0) {
-        ViewMatrixDialogController vd(intermediate, this);
-        vd.exec();
+        QObjectScopedPointer<ViewMatrixDialogController> vd = new ViewMatrixDialogController(intermediate, this);
+        vd->exec();
+        CHECK(!vd.isNull(), );
     } else if (model.getLength() != 0) {
-        ViewMatrixDialogController vd(model, this);
-        vd.exec();
+        QObjectScopedPointer<ViewMatrixDialogController> vd = new ViewMatrixDialogController(model, this);
+        vd->exec();
+        CHECK(!vd.isNull(), );
     } else {
         QMessageBox::information(this, L10N::warningTitle(), tr("Model not selected"));
     }
@@ -433,10 +444,13 @@ void PWMSearchDialogController::sl_onLoadFolder() {
     filter << "*." + WeightMatrixIO::FREQUENCY_MATRIX_EXT + ".gz";
     QStringList filelist = dir.entryList(filter, QDir::Files);
     if (filelist.size() > 0) {
-        SetParametersDialogController spc;
-        if (spc.exec() == QDialog::Accepted) {
-            scoreSlider->setSliderPosition(spc.scoreSlider->sliderPosition());
-            int index = algorithmCombo->findText(spc.algorithmComboBox->currentText());
+        QObjectScopedPointer<SetParametersDialogController> spc = new SetParametersDialogController;
+        spc->exec();
+        CHECK(!spc.isNull(), );
+
+        if (spc->result() == QDialog::Accepted) {
+            scoreSlider->setSliderPosition(spc->scoreSlider->sliderPosition());
+            int index = algorithmCombo->findText(spc->algorithmComboBox->currentText());
             if (index == -1) index = 0;
             algorithmCombo->setCurrentIndex(index);
         }

@@ -19,19 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include "MSAOverviewContextMenu.h"
+#include <QColorDialog>
 
-#include "../MSAEditorOverviewArea.h"
-#include "MSASimpleOverview.h"
-#include "MSAOverviewImageExportTask.h"
 #include <U2Core/U2SafePoints.h>
-#include <U2Gui/ExportImageDialog.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QColorDialog>
-#else
-#include <QtWidgets/QColorDialog>
-#endif
+#include <U2Gui/ExportImageDialog.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
+#include "MSAOverviewContextMenu.h"
+#include "MSAOverviewImageExportTask.h"
+#include "MSASimpleOverview.h"
+#include "../MSAEditorOverviewArea.h"
 
 namespace U2 {
 
@@ -75,8 +73,8 @@ void MSAOverviewContextMenu::connectSlots() {
 
 void MSAOverviewContextMenu::sl_exportAsImageTriggered() {
     MSAOverviewImageExportController factory(simpleOverview, graphOverview);
-    ExportImageDialog dialog(&factory, ExportImageDialog::MSA);
-    dialog.exec();
+    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(&factory, ExportImageDialog::MSA);
+    dialog->exec();
 }
 
 void MSAOverviewContextMenu::sl_graphTypeActionTriggered(QAction *action) {
@@ -100,14 +98,18 @@ void MSAOverviewContextMenu::sl_graphOrientationActionTriggered(QAction *action)
 }
 
 void MSAOverviewContextMenu::sl_colorActionTriggered() {
-    QColorDialog colorDialog( graphOverview->getCurrentColor(), this);
+    QObjectScopedPointer<QColorDialog> colorDialog = new QColorDialog(graphOverview->getCurrentColor(), this);
 #ifdef Q_OS_MAC
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-        colorDialog.setOption(QColorDialog::DontUseNativeDialog);
+        colorDialog->setOption(QColorDialog::DontUseNativeDialog);
     }
 #endif
-    if ( colorDialog.exec() ) {
-        emit si_colorSelected( colorDialog.selectedColor() );
+
+    colorDialog->exec();
+    CHECK(!colorDialog.isNull(), );
+
+    if (QDialog::Accepted == colorDialog->result()) {
+        emit si_colorSelected(colorDialog->selectedColor());
     }
 }
 

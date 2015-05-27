@@ -19,44 +19,33 @@
  * MA 02110-1301, USA.
  */
 
-#include "CircularViewSplitter.h"
-#include "CircularView.h"
-#include "RestrictionMapWidget.h"
-#include "CircularViewImageExportTask.h"
+#include <QApplication>
+#include <QFileInfo>
+#include <QHBoxLayout>
+#include <QMessageBox>
+#include <QPainter>
+#include <QPixmap>
+#include <QPrinter>
+#include <QScrollArea>
+#include <QTreeWidget>
+#include <QVBoxLayout>
 
-#include <U2Core/L10n.h>
-#include <U2Core/GObject.h>
-#include <U2Core/Settings.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObject.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/L10n.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U2SafePoints.h>
 
-#include <U2Gui/HBar.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportImageDialog.h>
+#include <U2Gui/HBar.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#include <QtCore/QFileInfo>
-
-#include <QtGui/QPixmap>
-#include <QtGui/QPainter>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QPrinter>
-#include <QtGui/QMessageBox>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QScrollArea>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtPrintSupport/QPrinter>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QScrollArea>
-#endif
+#include "CircularView.h"
+#include "CircularViewImageExportTask.h"
+#include "CircularViewSplitter.h"
+#include "RestrictionMapWidget.h"
 
 namespace U2 {
 
@@ -233,11 +222,12 @@ void CircularViewSplitter::sl_export() {
 
     CircularViewImageExportController factory(circularViewList, cvInFocus);
 
-    ExportImageDialog dialog(&factory, ExportImageDialog::CircularView,
-                             ExportImageDialog::SupportScaling,
-                             NULL,
-                             "circular_" + seqObj->getSequenceName());
-    dialog.exec();
+    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(&factory, ExportImageDialog::CircularView,
+                                                                      ExportImageDialog::SupportScaling,
+                                                                      NULL,
+                                                                      "circular_" + seqObj->getSequenceName());
+    dialog->exec();
+    CHECK(!dialog.isNull(), );
 
     tbExport->setDown(false);
 }

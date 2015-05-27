@@ -19,15 +19,11 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QMessageBox>
+#include <QPushButton>
+
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "DashboardsManagerDialog.h"
 
@@ -173,21 +169,22 @@ bool DashboardsManagerDialog::confirmDashboardsRemoving( ) const {
             + SKIP_EXTENSION + "</pre>";
     }
 
-    QMessageBox questionBox;
-    questionBox.setIcon( QMessageBox::Question );
-    questionBox.setWindowTitle( REMOVE_DASHBOARDS_MESSAGE_BOX_TITLE );
-    questionBox.setText( warningMessageText );
+    QObjectScopedPointer<QMessageBox> questionBox = new QMessageBox;
+    questionBox->setIcon( QMessageBox::Question );
+    questionBox->setWindowTitle( REMOVE_DASHBOARDS_MESSAGE_BOX_TITLE );
+    questionBox->setText( warningMessageText );
     if ( tooManyDashboardsSelected ) {
-        questionBox.setDetailedText( fullDashboardNamesList );
+        questionBox->setDetailedText( fullDashboardNamesList );
     }
-    QPushButton *confirmButton = questionBox.addButton( tr( "Confirm" ), QMessageBox::ApplyRole );
-    const QPushButton *cancelButton = questionBox.addButton( tr( "Cancel" ),
+    QPushButton *confirmButton = questionBox->addButton( tr( "Confirm" ), QMessageBox::ApplyRole );
+    const QPushButton *cancelButton = questionBox->addButton( tr( "Cancel" ),
         QMessageBox::RejectRole );
-    questionBox.setDefaultButton( confirmButton );
-    questionBox.exec( );
+    questionBox->setDefaultButton( confirmButton );
+    questionBox->exec();
+    CHECK(!questionBox.isNull(), false);
 
     return ( dynamic_cast<const QAbstractButton *>( cancelButton )
-        != questionBox.clickedButton( ) );
+        != questionBox->clickedButton( ) );
 }
 
 } // U2

@@ -19,12 +19,7 @@
 * MA 02110-1301, USA.
 */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QMessageBox>
 
 #include <U2Algorithm/MSADistanceAlgorithm.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
@@ -51,6 +46,7 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/U2FileDialog.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorDataList.h>
@@ -117,10 +113,12 @@ void MSAEditorTreeManager::buildTreeWithDialog() {
             tr("No algorithms for building phylogenetic tree are available.") );
         return;
     }
-    CreatePhyTreeDialogController dlg(editor->getUI(), msaObject, settings);
 
-    int rc = dlg.exec();
+    QObjectScopedPointer<CreatePhyTreeDialogController> dlg = new CreatePhyTreeDialogController(editor->getUI(), msaObject, settings);
+    const int rc = dlg->exec();
+    CHECK(!dlg.isNull(), );
     CHECK(rc == QDialog::Accepted, );
+
     settings.rowsOrder = msaObject->getMAlignment().getRowNames();
     buildTree(settings);
 }

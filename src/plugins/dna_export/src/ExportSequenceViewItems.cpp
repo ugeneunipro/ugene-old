@@ -19,15 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QDir>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QMainWindow>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QMainWindow>
-#endif
+#include <QDir>
+#include <QMainWindow>
+#include <QMessageBox>
 
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/AnnotationTableObject.h>
@@ -61,6 +55,7 @@
 #include <U2Gui/ExportObjectUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/OpenViewTask.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -69,13 +64,12 @@
 
 #include "ExportBlastResultDialog.h"
 #include "ExportSelectedSeqRegionsTask.h"
+#include "ExportSequenceViewItems.h"
 #include "ExportSequences2MSADialog.h"
 #include "ExportSequencesDialog.h"
 #include "ExportTasks.h"
 #include "ExportUtils.h"
 #include "GetSequenceByIdDialog.h"
-
-#include "ExportSequenceViewItems.h"
 
 namespace U2 {
 
@@ -343,34 +337,36 @@ void ADVExportContext::sl_saveSelectedAnnotationsSequence() {
     GUrlUtils::getLocalPathFromUrl(seqUrl, view->getSequenceInFocus()->getSequenceGObject()->getGObjectName(), dirPath, fileBaseName);
     GUrl defaultUrl = GUrlUtils::rollFileName(dirPath + QDir::separator() + fileBaseName + "_annotation." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
 
-    ExportSequencesDialog d(true, allowComplement, allowTranslation, allowBackTranslation,
+    QObjectScopedPointer<ExportSequencesDialog> d = new ExportSequencesDialog(true, allowComplement, allowTranslation, allowBackTranslation,
         defaultUrl.getURLString(), fileBaseName, BaseDocumentFormats::FASTA,
         AppContext::getMainWindow()->getQMainWindow());
-    d.setWindowTitle("Export Sequence of Selected Annotations");
-    d.disableAllFramesOption(true); // only 1 frame is suitable
-    d.disableStrandOption(true);    // strand is already recorded in annotation
-    d.disableAnnotationsOption(true);   // here we do not export annotations for sequence under another annotations
-    int rc = d.exec();
+    d->setWindowTitle("Export Sequence of Selected Annotations");
+    d->disableAllFramesOption(true); // only 1 frame is suitable
+    d->disableStrandOption(true);    // strand is already recorded in annotation
+    d->disableAnnotationsOption(true);   // here we do not export annotations for sequence under another annotations
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc == QDialog::Rejected) {
         return;
     }
-    assert(d.file.length() > 0);
+    assert(d->file.length() > 0);
 
     ExportAnnotationSequenceTaskSettings s;
-    ExportUtils::loadDNAExportSettingsFromDlg(s.exportSequenceSettings,d);
+    ExportUtils::loadDNAExportSettingsFromDlg(s.exportSequenceSettings, d.data());
     foreach (const ADVSequenceObjectContext* seqCtx, annotationsPerSeq.keys()) {
         ExportSequenceAItem ei;
         ei.sequence = seqCtx->getSequenceObject();
         ei.complTT = seqCtx->getComplementTT();
-        ei.aminoTT = d.translate ? seqCtx->getAminoTT() : NULL;
-        if (d.useSpecificTable && ei.sequence->getAlphabet()->isNucleic()) {
+        ei.aminoTT = d->translate ? seqCtx->getAminoTT() : NULL;
+        if (d->useSpecificTable && ei.sequence->getAlphabet()->isNucleic()) {
             DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
-            ei.aminoTT = tr->lookupTranslation(ei.sequence->getAlphabet(), DNATranslationType_NUCL_2_AMINO, d.translationTable);
+            ei.aminoTT = tr->lookupTranslation(ei.sequence->getAlphabet(), DNATranslationType_NUCL_2_AMINO, d->translationTable);
         }
         ei.annotations = annotationsPerSeq.value(seqCtx);
         s.items.append(ei);
     }
-    Task* t = ExportUtils::wrapExportTask(new ExportAnnotationSequenceTask(s), d.addToProject);
+    Task* t = ExportUtils::wrapExportTask(new ExportAnnotationSequenceTask(s), d->addToProject);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
@@ -401,25 +397,25 @@ void ADVExportContext::sl_saveSelectedSequences() {
 
     GUrl defaultUrl = GUrlUtils::rollFileName(dirPath + QDir::separator() + fileBaseName + "_region." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
 
-    ExportSequencesDialog d(merge, complement, amino, nucleic, defaultUrl.getURLString(), fileBaseName, BaseDocumentFormats::FASTA,
+    QObjectScopedPointer<ExportSequencesDialog> d = new ExportSequencesDialog(merge, complement, amino, nucleic, defaultUrl.getURLString(), fileBaseName, BaseDocumentFormats::FASTA,
         AppContext::getMainWindow()->getQMainWindow());
-
-    d.setWindowTitle("Export Selected Sequence Region");
-    int rc = d.exec();
+    d->setWindowTitle("Export Selected Sequence Region");
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
     CHECK(rc != QDialog::Rejected,);
-    SAFE_POINT(!d.file.isEmpty(), "Invalid file path",);
+    SAFE_POINT(!d->file.isEmpty(), "Invalid file path",);
 
     ExportSequenceTaskSettings s;
-    ExportUtils::loadDNAExportSettingsFromDlg(s, d);
+    ExportUtils::loadDNAExportSettingsFromDlg(s, d.data());
 
     const DNATranslation *aminoTrans = NULL;
-    if (d.translate) {
-        aminoTrans = d.useSpecificTable ? GObjectUtils::findAminoTT(seqCtx->getSequenceObject(), false, d.translationTable) : seqCtx->getAminoTT();
+    if (d->translate) {
+        aminoTrans = d->useSpecificTable ? GObjectUtils::findAminoTT(seqCtx->getSequenceObject(), false, d->translationTable) : seqCtx->getAminoTT();
     }
-    const DNATranslation *backTrans = d.backTranslate ? GObjectUtils::findBackTranslationTT(seqCtx->getSequenceObject(), d.translationTable) : NULL;
+    const DNATranslation *backTrans = d->backTranslate ? GObjectUtils::findBackTranslationTT(seqCtx->getSequenceObject(), d->translationTable) : NULL;
     const DNATranslation *complTrans = seqCtx->getComplementTT();
     Task *t = ExportUtils::wrapExportTask(new ExportSelectedSeqRegionsTask(seqCtx->getSequenceObject(), seqCtx->getAnnotationObjects(true),
-        regions, s, aminoTrans, backTrans, complTrans), d.addToProject);
+        regions, s, aminoTrans, backTrans, complTrans), d->addToProject);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
@@ -453,9 +449,11 @@ void ADVExportContext::sl_saveSelectedAnnotations() {
     }
 
     QString fileName = GUrlUtils::getNewLocalUrlByExtention(url, "newfile", ".csv", "_annotations");
-    ExportAnnotationsDialog d(fileName, AppContext::getMainWindow()->getQMainWindow());
+    QObjectScopedPointer<ExportAnnotationsDialog> d = new ExportAnnotationsDialog(fileName, AppContext::getMainWindow()->getQMainWindow());
+    d->exec();
+    CHECK(!d.isNull(), );
 
-    if (QDialog::Accepted != d.exec()) {
+    if (QDialog::Accepted != d->result()) {
         return;
     }
 
@@ -464,15 +462,15 @@ void ADVExportContext::sl_saveSelectedAnnotations() {
 
     // run task
     Task * t = NULL;
-    if (d.fileFormat() == ExportAnnotationsDialog::CSV_FORMAT_ID) {
+    if (d->fileFormat() == ExportAnnotationsDialog::CSV_FORMAT_ID) {
         U2OpStatusImpl os;
         QByteArray seqData = sequenceContext->getSequenceObject()->getWholeSequenceData(os);
         CHECK_OP_EXT(os, QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
         t = new ExportAnnotations2CSVTask(annotationSet, seqData,
             sequenceContext->getSequenceObject()->getSequenceName(), sequenceContext->getComplementTT(),
-            d.exportSequence(), d.exportSequenceNames(), d.filePath());
+            d->exportSequence(), d->exportSequenceNames(), d->filePath());
     } else {
-        t = ExportObjectUtils::saveAnnotationsTask(d.filePath(), d.fileFormat(), annotationSet);
+        t = ExportObjectUtils::saveAnnotationsTask(d->filePath(), d->fileFormat(), annotationSet);
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
@@ -660,15 +658,17 @@ void ADVExportContext::selectionToAlignment(const QString& title, bool annotatio
     c.addFlagToSupport(DocumentFormatFlag_SupportWriting);
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
 
-    ExportSequences2MSADialog d(view->getWidget());
-    d.setWindowTitle(title);
-    d.setOkButtonText(tr("Create alignment"));
-    d.setFileLabelText(tr("Save alignment to file"));
-    int rc = d.exec();
+    QObjectScopedPointer<ExportSequences2MSADialog> d = new ExportSequences2MSADialog(view->getWidget());
+    d->setWindowTitle(title);
+    d->setOkButtonText(tr("Create alignment"));
+    d->setFileLabelText(tr("Save alignment to file"));
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc != QDialog::Accepted) {
         return;
     }
-    Task* t = ExportUtils::wrapExportTask(new ExportAlignmentTask(ma, d.url, d.format), d.addToProjectFlag);
+    Task* t = ExportUtils::wrapExportTask(new ExportAlignmentTask(ma, d->url, d->format), d->addToProjectFlag);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
@@ -748,11 +748,14 @@ void ADVExportContext::fetchSequencesFromRemoteDB(const QString & listId) {
         return;
     }
 
-    GetSequenceByIdDialog dlg(view->getWidget());
-    if(dlg.exec() == QDialog::Accepted) {
-        QString dir = dlg.getDirectory();
+    QObjectScopedPointer<GetSequenceByIdDialog> dlg = new GetSequenceByIdDialog(view->getWidget());
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (dlg->result() == QDialog::Accepted) {
+        QString dir = dlg->getDirectory();
         Task *t;
-        if(dlg.isAddToProject()) {
+        if(dlg->isAddToProject()) {
             t = new LoadRemoteDocumentAndOpenViewTask(listId, db, dir);
         } else {
             t = new LoadRemoteDocumentTask(listId, db, dir);
@@ -767,8 +770,9 @@ void ADVExportContext::sl_exportBlastResultToAlignment()
     c.addFlagToSupport(DocumentFormatFlag_SupportWriting);
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
 
-    ExportBlastResultDialog d(view->getWidget());
-    int rc = d.exec();
+    QObjectScopedPointer<ExportBlastResultDialog> d = new ExportBlastResultDialog(view->getWidget());
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
     if (rc != QDialog::Accepted) {
         return;
     }
@@ -776,14 +780,14 @@ void ADVExportContext::sl_exportBlastResultToAlignment()
     MAlignment ma(MA_OBJECT_NAME);
     U2OpStatusImpl os;
 
-    prepareMAFromBlastAnnotations(ma, d.qualiferId, d.addRefFlag, os);
+    prepareMAFromBlastAnnotations(ma, d->qualiferId, d->addRefFlag, os);
 
     if (os.hasError()) {
         QMessageBox::critical(NULL, L10N::errorTitle(), os.getError());
         return;
     }
 
-    Task* t = ExportUtils::wrapExportTask(new ExportAlignmentTask(ma, d.url, d.format), d.addToProjectFlag);
+    Task* t = ExportUtils::wrapExportTask(new ExportAlignmentTask(ma, d->url, d->format), d->addToProjectFlag);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 

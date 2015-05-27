@@ -31,16 +31,17 @@
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/L10n.h>
 #include <U2Core/PluginModel.h>
 #include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/L10n.h>
 
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/LicenseDialog.h>
@@ -139,8 +140,9 @@ void SecStructDialog::sl_onStartPredictionClicked() {
     foreach (Plugin* plugin, plugins){
         if(plugin->getName() == algorithm){
             if(!plugin->isFree() && !plugin->isLicenseAccepted()){
-                LicenseDialog licenseDialog(plugin);
-                int ret = licenseDialog.exec();
+                QObjectScopedPointer<LicenseDialog> licenseDialog = new LicenseDialog(plugin);
+                const int ret = licenseDialog->exec();
+                CHECK(!licenseDialog.isNull(), );
                 if(ret != QDialog::Accepted){
                     return;
                 }
@@ -208,8 +210,11 @@ void SecStructDialog::sl_onSaveAnnotations() {
     m.hideAnnotationName = true;
     m.data->name = SEC_STRUCT_ANNOTATION_GROUP_NAME;
     m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
-    CreateAnnotationDialog d(this, m);
-    int rc = d.exec();
+
+    QObjectScopedPointer<CreateAnnotationDialog> d = new CreateAnnotationDialog(this, m);
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc != QDialog::Accepted) {
         return;
     }

@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QApplication>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -43,6 +37,7 @@
 
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/OpenViewTask.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "UnloadDocumentTask.h"
 
@@ -160,9 +155,10 @@ QList<Task *> UnloadDocumentTask::runUnloadTaskHelper(const QList<Document*>& do
             text+=doc->getName()+" : " + err + "<br>";
             coreLog.error(tr("Failed to unload document: %1, error: %2").arg(doc->getName()).arg(err));
         }
-        QMessageBox warning(QMessageBox::Warning, tr("Warning"), text, QMessageBox::Ok, QApplication::activeWindow());
-        warning.setObjectName("UnloadWarning");
-        warning.exec();
+        QObjectScopedPointer<QMessageBox> warning = new QMessageBox(QMessageBox::Warning, tr("Warning"), text, QMessageBox::Ok, QApplication::activeWindow());
+        warning->setObjectName("UnloadWarning");
+        warning->exec();
+        CHECK(!warning.isNull(), result);
     }
     return result;
 }

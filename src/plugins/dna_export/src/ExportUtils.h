@@ -37,7 +37,7 @@ class ExportUtils: public QObject {
     Q_OBJECT
 public:
 
-    static void loadDNAExportSettingsFromDlg(ExportSequenceTaskSettings& s, const ExportSequencesDialog& d);
+    static void loadDNAExportSettingsFromDlg(ExportSequenceTaskSettings& s, U2::ExportSequencesDialog *d);
 
     static Task* wrapExportTask(DocumentProviderTask* t, bool addToProject);
 

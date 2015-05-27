@@ -19,9 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "DNAFlexDialog.h"
-#include "DNAFlexGraph.h"
-#include "DNAFlexPlugin.h"
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/L10n.h>
@@ -31,11 +29,13 @@
 #include <U2View/ADVUtils.h>
 #include <U2View/AnnotatedDNAView.h>
 
-#include <QMessageBox>
+#include <U2Gui/QObjectScopedPointer.h>
 
+#include "DNAFlexDialog.h"
+#include "DNAFlexGraph.h"
+#include "DNAFlexPlugin.h"
 
 namespace U2 {
-
 
 extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC()
 {
@@ -80,8 +80,9 @@ void DNAFlexViewContext::sl_showDNAFlexDialog()
 
     if (alphabet->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT())
     {
-        DNAFlexDialog dialog(seqCtx);
-        dialog.exec();
+        QObjectScopedPointer<DNAFlexDialog> dialog = new DNAFlexDialog(seqCtx);
+        dialog->exec();
+        CHECK(!dialog.isNull(), );
     }
     else
     {

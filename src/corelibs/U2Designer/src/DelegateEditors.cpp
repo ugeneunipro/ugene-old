@@ -26,16 +26,16 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/GUrlUtils.h>
 
-#include <U2Lang/IntegralBusModel.h>
-#include <U2Lang/WorkflowUtils.h>
-
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ScriptEditorDialog.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#include "PropertyWidget.h"
+#include <U2Lang/IntegralBusModel.h>
+#include <U2Lang/WorkflowUtils.h>
 
 #include "DelegateEditors.h"
+#include "PropertyWidget.h"
 
 namespace U2 {
 
@@ -606,14 +606,15 @@ void ScriptSelectionWidget::sl_comboActivated(int itemId) {
         }
     case USER_SCRIPT_ITEM_ID: {
         AttributeScript attrScript = combobox->property(SCRIPT_PROPERTY.toLatin1().constData()).value<AttributeScript>();
-        ScriptEditorDialog dlg(combobox, AttributeScriptDelegate::createScriptHeader(attrScript));
-        dlg.setScriptText(attrScript.getScriptText());
+        QObjectScopedPointer<ScriptEditorDialog> dlg = new ScriptEditorDialog(combobox, AttributeScriptDelegate::createScriptHeader(attrScript));
+        dlg->setScriptText(attrScript.getScriptText());
 
-        int rc = dlg.exec();
+        const int rc = dlg->exec();
+        CHECK(!dlg.isNull(), );
         if(rc != QDialog::Accepted) {
             combobox->setItemData(USER_SCRIPT_ITEM_ID, qVariantFromValue<AttributeScript>(attrScript), ConfigurationEditor::ItemValueRole);
         } else {
-            attrScript.setScriptText(dlg.getScriptText());
+            attrScript.setScriptText(dlg->getScriptText());
             combobox->setItemData(USER_SCRIPT_ITEM_ID, qVariantFromValue<AttributeScript>(attrScript), ConfigurationEditor::ItemValueRole);
         }
 
@@ -677,34 +678,35 @@ QString AttributeScriptDelegate::createScriptHeader(const AttributeScript &attrS
  ********************************/
 void StingListEdit::sl_onExpand()
 {
-    QDialog editor(0);
-    editor.setWindowTitle(StringListDelegate::tr("Enter items"));
+    QObjectScopedPointer<QDialog> editor = new QDialog(this);
+    editor->setWindowTitle(StringListDelegate::tr("Enter items"));
 
-    QPushButton *accept = new QPushButton(StringListDelegate::tr("OK"), &editor);
-    connect(accept, SIGNAL(clicked()), &editor, SLOT(accept()));
-    QPushButton *reject = new QPushButton(StringListDelegate::tr("Cancel"), &editor);
-    connect(reject, SIGNAL(clicked()), &editor, SLOT(reject()));
+    QPushButton *accept = new QPushButton(StringListDelegate::tr("OK"), editor.data());
+    connect(accept, SIGNAL(clicked()), editor.data(), SLOT(accept()));
+    QPushButton *reject = new QPushButton(StringListDelegate::tr("Cancel"), editor.data());
+    connect(reject, SIGNAL(clicked()), editor.data(), SLOT(reject()));
 
     QHBoxLayout *buttonsLayout = new QHBoxLayout(0);
     buttonsLayout->addStretch();
     buttonsLayout->addWidget(accept);
     buttonsLayout->addWidget(reject);
 
-    QTextEdit *edit = new QTextEdit("", &editor);
+    QTextEdit *edit = new QTextEdit("", editor.data());
 
     foreach (const QString &item, text().split(";", QString::SkipEmptyParts)) {
         edit->append(item.trimmed());
     }
 
-    QVBoxLayout *layout = new QVBoxLayout(&editor);
+    QVBoxLayout *layout = new QVBoxLayout(editor.data());
     layout->addWidget(edit);
     layout->addLayout(buttonsLayout);
 
-    editor.setLayout(layout);
+    editor->setLayout(layout);
 
-    editor.exec();
+    editor->exec();
+    CHECK(!editor.isNull(), );
 
-    if (editor.result() == QDialog::Accepted) {
+    if (editor->result() == QDialog::Accepted) {
         QString s = edit->toPlainText();
         s.replace("\n", "; ");
         setText(s);
@@ -817,12 +819,15 @@ void StringSelectorDelegate::sl_commit() {
 }
 
 void StringSelectorDelegate::sl_onClick() {
-    QDialog *dlg = f->createSelectorDialog(initValue);
-    if(dlg->exec() == QDialog::Accepted) {
-        valueEdit->setText(f->getSelectedString(dlg));
+    QObjectScopedPointer<QDialog> dlg = f->createSelectorDialog(initValue);
+
+    const int dialogResult = dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (QDialog::Accepted == dialogResult) {
+        valueEdit->setText(f->getSelectedString(dlg.data()));
         sl_commit();
     }
-    delete dlg;
 }
 
 void StringSelectorDelegate::setEditorData(QWidget *, const QModelIndex &index) const {

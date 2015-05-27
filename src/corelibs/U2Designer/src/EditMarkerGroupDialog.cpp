@@ -24,9 +24,11 @@
 #include <U2Designer/MarkerEditor.h>
 #include <U2Designer/MarkerEditorWidget.h>
 
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include <U2Lang/Marker.h>
 #include <U2Lang/MarkerUtils.h>
-#include <U2Gui/HelpButton.h>
 
 #include "EditMarkerGroupDialog.h"
 
@@ -131,13 +133,16 @@ void EditMarkerGroupDialog::sl_onItemSelected(const QModelIndex &) {
 }
 
 void EditMarkerGroupDialog::sl_onAddButtonClicked() {
-    EditMarkerDialog dlg(true, marker->getType(), "", QVariantList(), this);
+    QObjectScopedPointer<EditMarkerDialog> dlg = new EditMarkerDialog(true, marker->getType(), "", QVariantList(), this);
 
-    if (dlg.exec()) {
+    const int dialogResult = dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (QDialog::Accepted == dialogResult) {
         QString valueString;
-        QString name = dlg.getName();
+        QString name = dlg->getName();
 
-        MarkerUtils::valueToString(MarkerTypes::getDataTypeById(marker->getType()), dlg.getValues(), valueString);
+        MarkerUtils::valueToString(MarkerTypes::getDataTypeById(marker->getType()), dlg->getValues(), valueString);
         markerModel->addMarker(valueString, name);
     }
 }
@@ -153,13 +158,16 @@ void EditMarkerGroupDialog::sl_onEditButtonClicked() {
     i += selected.first().row();
     QVariantList values;
     MarkerUtils::stringToValue(MarkerTypes::getDataTypeById(marker->getType()),marker->getValues().key(*i), values);
-    EditMarkerDialog dlg(false, marker->getType(), *i, values, this);
+    QObjectScopedPointer<EditMarkerDialog> dlg = new EditMarkerDialog(false, marker->getType(), *i, values, this);
 
-    if (dlg.exec()) {
+    const int dialogResult = dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (QDialog::Accepted == dialogResult) {
         QString newValueString;
-        QString newName = dlg.getName();
+        QString newName = dlg->getName();
 
-        MarkerUtils::valueToString(MarkerTypes::getDataTypeById(marker->getType()), dlg.getValues(), newValueString);
+        MarkerUtils::valueToString(MarkerTypes::getDataTypeById(marker->getType()), dlg->getValues(), newValueString);
         markerModel->removeRows(selected.first().row(), 1, selected.first());
         markerModel->addMarker(newValueString, newName);
     }

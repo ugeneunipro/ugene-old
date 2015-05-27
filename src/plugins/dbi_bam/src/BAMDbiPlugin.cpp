@@ -19,20 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QDir>
-#include <QtCore/QTemporaryFile>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QAction>
+#include <QDir>
+#include <QMainWindow>
+#include <QMenu>
+#include <QMessageBox>
+#include <QTemporaryFile>
 
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/AppContext.h>
@@ -59,6 +51,7 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/OpenViewTask.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "BAMDbiPlugin.h"
 #include "BAMFormat.h"
@@ -246,12 +239,14 @@ void BAMImporterTask::initPrepareToImportTask() {
     QString refUrl;
     bool convert = true;
     if (useGui) {
-        ConvertToSQLiteDialog convertDialog(loadInfoTask->getSourceUrl(), loadInfoTask->getInfo(), loadInfoTask->isSam());
-        convertDialog.hideAddToProjectOption();
-        int rc = convertDialog.exec();
+        QObjectScopedPointer<ConvertToSQLiteDialog> convertDialog = new ConvertToSQLiteDialog(loadInfoTask->getSourceUrl(), loadInfoTask->getInfo(), loadInfoTask->isSam());
+        convertDialog->hideAddToProjectOption();
+        const int rc = convertDialog->exec();
+        CHECK_EXT(!convertDialog.isNull(), setError("NULL dialog"), );
+
         if (rc == QDialog::Accepted) {
-            localDbiRef = U2DbiRef(SQLITE_DBI_ID, convertDialog.getDestinationUrl().getURLString());
-            refUrl = convertDialog.getReferenceUrl();
+            localDbiRef = U2DbiRef(SQLITE_DBI_ID, convertDialog->getDestinationUrl().getURLString());
+            refUrl = convertDialog->getReferenceUrl();
 
         } else {
             convert = false;

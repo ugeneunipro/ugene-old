@@ -19,29 +19,29 @@
  * MA 02110-1301, USA.
  */
 
+#include <QMessageBox>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/L10n.h>
 #include <U2Core/MultiTask.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2WidgetStateStorage.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
 
 #include "ExtractProductTask.h"
+#include "InSilicoPcrOptionPanelWidget.h"
 #include "InSilicoPcrTask.h"
 #include "PrimerGroupBox.h"
 #include "PrimerStatistics.h"
 #include "PrimersDetailsDialog.h"
-
-#include "InSilicoPcrOptionPanelWidget.h"
-
-#include <QMessageBox>
 
 namespace U2 {
 
@@ -241,8 +241,8 @@ void InSilicoPcrOptionPanelWidget::sl_onProductDoubleClicked() {
 void InSilicoPcrOptionPanelWidget::sl_showDetails(const QString &link) {
     SAFE_POINT(DETAILS_LINK == link, "Incorrect link", );
     PrimersPairStatistics calc(forwardPrimerBox->getPrimer(), reversePrimerBox->getPrimer());
-    PrimersDetailsDialog dlg(this, calc.generateReport());
-    dlg.exec();
+    QObjectScopedPointer<PrimersDetailsDialog> dlg = new PrimersDetailsDialog(this, calc.generateReport());
+    dlg->exec();
 }
 
 } // U2

@@ -19,29 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#include "RemoteMachineScanDialogImpl.h"
-#include "RemoteMachineSettingsDialog.h"
-#include "RemoteMachineMonitorDialogImpl.h"
+#include <QLabel>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
 #include <U2Core/LogCache.h>
+#include <U2Core/U2SafePoints.h>
 
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/GUIUtils.h>
 #include <U2Gui/AuthenticationDialog.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/LogView.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#include <U2Remote/RemoteMachineTasks.h>
 #include <U2Remote/RemoteMachineMonitor.h>
+#include <U2Remote/RemoteMachineTasks.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLabel>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QMessageBox>
-#endif
+#include "RemoteMachineMonitorDialogImpl.h"
+#include "RemoteMachineScanDialogImpl.h"
+#include "RemoteMachineSettingsDialog.h"
 
 namespace U2 {
 
@@ -209,15 +206,16 @@ void RemoteMachineMonitorDialogImpl::sl_addPushButtonClicked() {
         return;
     }
 
-    RemoteMachineSettingsDialog settingsDlg(this);
+    QObjectScopedPointer<RemoteMachineSettingsDialog> settingsDlg = new RemoteMachineSettingsDialog(this);
+    const int rc = settingsDlg->exec();
+    CHECK(!settingsDlg.isNull(), );
 
-    int rc = settingsDlg.exec();
     if( QDialog::Rejected == rc ) {
         return;
     }
     assert( QDialog::Accepted == rc );
 
-    RemoteMachineSettingsPtr newMachine = settingsDlg.getMachineSettings();
+    RemoteMachineSettingsPtr newMachine = settingsDlg->getMachineSettings();
     if( NULL == newMachine ) {
         return;
     }
@@ -230,13 +228,15 @@ void RemoteMachineMonitorDialogImpl::sl_modifyPushButtonClicked() {
     int row = getSelectedTopLevelRow();
     assert( 0 <= row && row < machinesItemsByOrder.size() );
 
-    RemoteMachineSettingsDialog settingsDlg( this, machinesItemsByOrder.at( row ).settings );
-    int rc = settingsDlg.exec();
+    QObjectScopedPointer<RemoteMachineSettingsDialog> settingsDlg = new RemoteMachineSettingsDialog(this, machinesItemsByOrder.at(row).settings);
+    const int rc = settingsDlg->exec();
+    CHECK(!settingsDlg.isNull(), );
+
     if( QDialog::Rejected == rc ) {
         return;
     }
 
-    RemoteMachineSettingsPtr newMachine = settingsDlg.getMachineSettings();
+    RemoteMachineSettingsPtr newMachine = settingsDlg->getMachineSettings();
     if( NULL == newMachine ) {
         return;
     }
@@ -480,19 +480,22 @@ void RemoteMachineMonitorDialogImpl::sl_showUserTasksButtonClicked() {
         return;
     }
 
-    QScopedPointer<QDialog> dlg(pi->getProtocolUI()->createUserTasksDialog(settings, this));
+    QObjectScopedPointer<QDialog> dlg(pi->getProtocolUI()->createUserTasksDialog(settings, this));
+    CHECK(!dlg.isNull(), );
     dlg->exec();
 }
 
 bool RemoteMachineMonitorDialogImpl::checkCredentials( const RemoteMachineSettingsPtr& settings ) {
     const UserCredentials& credentials = settings->getUserCredentials();
     if (!credentials.valid) {
-        AuthenticationDialog dlg("", this);
-        int rc = dlg.exec();
+        QObjectScopedPointer<AuthenticationDialog> dlg = new AuthenticationDialog("", this);
+        const int rc = dlg->exec();
+        CHECK(!dlg.isNull(), false);
+
         if ( QDialog::Rejected == rc ) {
             return false;
         }
-        settings->setupCredentials(dlg.getLogin(), dlg.getPassword(), dlg.isRemembered());
+        settings->setupCredentials(dlg->getLogin(), dlg->getPassword(), dlg->isRemembered());
     }
     return true;
 }

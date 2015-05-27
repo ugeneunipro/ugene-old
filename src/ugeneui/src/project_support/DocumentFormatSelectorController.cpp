@@ -27,6 +27,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "DocumentFormatSelectorController.h"
 
@@ -68,13 +69,13 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
         return 0;
     }
 
-    DocumentFormatSelectorController d(results, QApplication::activeModalWidget());
-    d.optionsBox->setTitle(tr("Options for %1").arg(url.fileName()));
+    QObjectScopedPointer<DocumentFormatSelectorController> d = new DocumentFormatSelectorController(results, QApplication::activeModalWidget());
+    d->optionsBox->setTitle(tr("Options for %1").arg(url.fileName()));
     QByteArray safeData = rawData;
     if (TextUtils::contains(TextUtils::BINARY, safeData.constData(), safeData.size())) {
         TextUtils::replace(safeData.data(), safeData.length(), TextUtils::BINARY, '?');
     }
-    d.previewEdit->setPlainText(safeData);
+    d->previewEdit->setPlainText(safeData);
 
     QVBoxLayout *vbox = new QVBoxLayout();
     QList<DocumentFormatId> detectedIds;
@@ -108,15 +109,15 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
         QToolButton* moreButton = new QToolButton();
         moreButton->setText("more..");
         moreButton->setEnabled(!r.getFormatDescriptionText().isEmpty());
-        d.moreButtons << moreButton;
-        QObject::connect(moreButton, SIGNAL(clicked()), &d, SLOT(sl_moreFormatInfo()));
+        d->moreButtons << moreButton;
+        QObject::connect(moreButton, SIGNAL(clicked()), d.data(), SLOT(sl_moreFormatInfo()));
 
         hbox->addWidget(rb);
         hbox->addWidget(label);
         hbox->addStretch(2);
         hbox->addWidget(moreButton);
         vbox->addLayout(hbox);
-        d.radioButtons << rb;
+        d->radioButtons << rb;
     }
     //additional option: user selecting format
     {
@@ -130,35 +131,37 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
         label->setSizePolicy(QSizePolicy::Expanding, label->sizePolicy().verticalPolicy());
         label->installEventFilter(new LabelClickProvider(label, rb));
 
-        d.userSelectedFormat = new QComboBox();
-        d.userSelectedFormat->setObjectName("userSelectedFormat");
+        d->userSelectedFormat = new QComboBox();
+        d->userSelectedFormat->setObjectName("userSelectedFormat");
         const DocumentFormatRegistry *formatRegistry = AppContext::getDocumentFormatRegistry();
         SAFE_POINT(formatRegistry != NULL, "FormatRegistry is NULL!", -1);
         foreach ( const DocumentFormatId &id, formatRegistry->getRegisteredFormats()) {
             if (!detectedIds.contains(id)) {
                 const QString formatName = formatRegistry->getFormatById(id)->getFormatName();
-                d.userSelectedFormat->insertItem(0, formatName, id);
+                d->userSelectedFormat->insertItem(0, formatName, id);
             }
         }
 
         hbox->addWidget(rb);
         hbox->addWidget(label);
         hbox->addStretch(2);
-        hbox->addWidget(d.userSelectedFormat);
+        hbox->addWidget(d->userSelectedFormat);
         vbox->addLayout(hbox);
-        d.radioButtons << rb;
+        d->radioButtons << rb;
     }
     vbox->addStretch();
-    d.optionsBox->setLayout(vbox);
+    d->optionsBox->setLayout(vbox);
 
-    int rc = d.exec();
+    const int rc = d->exec();
+    CHECK(!d.isNull(), -1);
+
     if (rc == QDialog::Rejected) {
         return -1;
     }
-    int idx = d.getSelectedFormatIdx();
+    int idx = d->getSelectedFormatIdx();
     if(idx == results.size()){
         FormatDetectionResult *r = new FormatDetectionResult();
-        DocumentFormatId id = d.userSelectedFormat->itemData(d.userSelectedFormat->currentIndex()).toString();
+        DocumentFormatId id = d->userSelectedFormat->itemData(d->userSelectedFormat->currentIndex()).toString();
         r->format = AppContext::getDocumentFormatRegistry()->getFormatById(id);
         results.insert(idx, *r);
     }

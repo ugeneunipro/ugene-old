@@ -19,20 +19,11 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#include <QtGui/QSplitter>
-#include <QtGui/QTabWidget>
-#include <QtGui/QToolBar>
-#else
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QSplitter>
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QToolBar>
-#endif
+#include <QMenu>
+#include <QMessageBox>
+#include <QSplitter>
+#include <QTabWidget>
+#include <QToolBar>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
@@ -46,6 +37,7 @@
 #include <U2Gui/GlassView.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2Lang/QueryDesignerRegistry.h>
@@ -480,8 +472,9 @@ void QueryScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 
 void QueryScene::setupDistanceDialog(QDDistanceType kind) {
     if(dropCandidateLeft && dropCandidateRight) {
-        AddConstraintDialog dlg(this, kind, dropCandidateLeft, dropCandidateRight);
-        dlg.exec();
+        QObjectScopedPointer<AddConstraintDialog> dlg = new AddConstraintDialog(this, kind, dropCandidateLeft, dropCandidateRight);
+        dlg->exec();
+        CHECK(!dlg.isNull(), );
     }
 }
 
@@ -900,8 +893,9 @@ void QueryViewController::sl_run() {
     } else if (!scheme->isValid()) {
         QMessageBox::critical(this, L10N::errorTitle(), tr("The schema is invalid! Please see the log for details."));
     } else {
-        QDRunDialog runDlg(scene->getScheme(), this, inFile_, outFile_);
-        runDlg.exec();
+        QObjectScopedPointer<QDRunDialog> runDlg = new QDRunDialog(scene->getScheme(), this, inFile_, outFile_);
+        runDlg->exec();
+        CHECK(!runDlg.isNull(), );
     }
 }
 

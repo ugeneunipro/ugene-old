@@ -19,25 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#include "DNAExportPlugin.h"
-#include "DNAExportPluginTests.h"
-
-#include "ExportProjectViewItems.h"
-#include "ExportSequenceViewItems.h"
-#include "ExportAlignmentViewItems.h"
-#include "ImportQualityScoresWorker.h"
-#include "ExportQualityScoresWorker.h"
-#include "DNASequenceGeneratorDialog.h"
-#include "GenerateDNAWorker.h"
-
 #include <U2Core/AppContext.h>
 #include <U2Core/GAutoDeleteList.h>
 
 #include <U2Gui/ToolsMenu.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#include <U2Test/XMLTestFormat.h>
 #include <U2Test/GTestFrameworkComponents.h>
+#include <U2Test/XMLTestFormat.h>
 
+#include "DNAExportPlugin.h"
+#include "DNAExportPluginTests.h"
+#include "DNASequenceGeneratorDialog.h"
+#include "ExportAlignmentViewItems.h"
+#include "ExportProjectViewItems.h"
+#include "ExportQualityScoresWorker.h"
+#include "ExportSequenceViewItems.h"
+#include "GenerateDNAWorker.h"
+#include "ImportQualityScoresWorker.h"
 
 namespace U2 {
 
@@ -75,9 +74,9 @@ DNAExportPlugin::DNAExportPlugin() : Plugin(tr("DNA export"), tr("Export and imp
 }
 
 void DNAExportPlugin::sl_generateSequence() {
-    DNASequenceGeneratorDialog dlg(QApplication::activeWindow());
-    dlg.setWindowIcon(QIcon(":/core/images/add_sequence.png"));
-    dlg.exec();
+    QObjectScopedPointer<DNASequenceGeneratorDialog> dlg = new DNASequenceGeneratorDialog(QApplication::activeWindow());
+    dlg->setWindowIcon(QIcon(":/core/images/add_sequence.png"));
+    dlg->exec();
 }
 
 //////////////////////////////////////////////////////////////////////////

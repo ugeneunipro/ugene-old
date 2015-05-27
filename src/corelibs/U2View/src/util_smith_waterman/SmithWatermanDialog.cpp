@@ -19,16 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QRegExp>
-#include <QtCore/QStringList>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QCheckBox>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QCheckBox>
+#include <QMessageBox>
+#include <QRegExp>
+#include <QStringList>
 
 #include <U2Algorithm/SmithWatermanReportCallback.h>
 
@@ -47,14 +41,15 @@
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2Remote/RemoteMachineMonitorDialogController.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 
-#include "SubstMatrixDialog.h"
 #include "SmithWatermanDialogImpl.h"
+#include "SubstMatrixDialog.h"
 
 const QString SETTINGS_LASTDIR = "save_align_files/last_dir";
 
@@ -439,8 +434,8 @@ void SmithWatermanDialog::sl_bttnViewMatrix()
         QMessageBox::critical(this, windowTitle(), tr("Matrix not found."));
         return;
     }
-    SubstMatrixDialog smDialog(mtx, this);
-    smDialog.exec();
+    QObjectScopedPointer<SubstMatrixDialog> smDialog = new SubstMatrixDialog(mtx, this);
+    smDialog->exec();
 }
 
 void SmithWatermanDialog::sl_translationToggled(bool checked)
@@ -859,8 +854,8 @@ void SmithWatermanDialog::saveDialogConfig()
 
 void SmithWatermanDialogController::run(QWidget* p, ADVSequenceObjectContext* ctx, SWDialogConfig* dialogConfig)
 {
-    SmithWatermanDialog smv(p, ctx, dialogConfig);
-    smv.exec();
+    QObjectScopedPointer<SmithWatermanDialog> smv = new SmithWatermanDialog(p, ctx, dialogConfig);
+    smv->exec();
 }
 
 } // namespace

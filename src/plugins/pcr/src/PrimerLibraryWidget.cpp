@@ -29,6 +29,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "EditPrimerDialog.h"
 #include "PrimerLibrary.h"
@@ -77,15 +78,16 @@ PrimerLibraryWidget::PrimerLibraryWidget(QWidget *parent)
 }
 
 void PrimerLibraryWidget::sl_newPrimer() {
-    EditPrimerDialog dlg(this);
-    const int result = dlg.exec();
+    QObjectScopedPointer<EditPrimerDialog> dlg = new EditPrimerDialog(this);
+    const int result = dlg->exec();
+    CHECK(!dlg.isNull(), );
     CHECK(QDialog::Accepted == result, );
 
     U2OpStatusImpl os;
     PrimerLibrary *library = PrimerLibrary::getInstance(os);
     CHECK_OP_UI(os, );
 
-    Primer primer = dlg.getPrimer();
+    Primer primer = dlg->getPrimer();
     library->addRawPrimer(primer, os);
     CHECK_OP_UI(os, );
 }
@@ -94,15 +96,16 @@ void PrimerLibraryWidget::sl_editPrimer() {
     QList<Primer> selection = primerTable->getSelection();
     CHECK(1 == selection.size(), );
     Primer primerToEdit = selection.first();
-    EditPrimerDialog dlg(this, primerToEdit);
-    const int result = dlg.exec();
+    QObjectScopedPointer<EditPrimerDialog> dlg = new EditPrimerDialog(this, primerToEdit);
+    const int result = dlg->exec();
+    CHECK(dlg.isNull(), );
     CHECK(QDialog::Accepted == result, );
 
     U2OpStatusImpl os;
     PrimerLibrary *library = PrimerLibrary::getInstance(os);
     CHECK_OP_UI(os, );
 
-    Primer primer = dlg.getPrimer();
+    Primer primer = dlg->getPrimer();
     primer.id = primerToEdit.id;
     library->updateRawPrimer(primer, os);
     CHECK_OP_UI(os, );
@@ -122,14 +125,15 @@ void PrimerLibraryWidget::sl_removePrimers() {
 }
 
 void PrimerLibraryWidget::sl_importPrimers() {
-    ImportPrimersDialog importDialog(this);
-    importDialog.exec();
+    QObjectScopedPointer<ImportPrimersDialog> importDialog = new ImportPrimersDialog(this);
+    importDialog->exec();
 }
 
 void PrimerLibraryWidget::sl_exportPrimers() {
     const QList<Primer> selection = primerTable->getSelection();
     SAFE_POINT(!selection.isEmpty(), L10N::nullPointerError("Selection"), );
-    ExportPrimersDialog(selection).exec();
+    QObjectScopedPointer<ExportPrimersDialog> exportDialog = new ExportPrimersDialog(selection);
+    exportDialog->exec();
 }
 
 void PrimerLibraryWidget::sl_selectionChanged() {

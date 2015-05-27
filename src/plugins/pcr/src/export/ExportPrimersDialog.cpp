@@ -37,12 +37,13 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
 
-#include <U2Gui/HelpButton.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/ProjectUtils.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
+#include <U2Gui/ProjectUtils.h>
 #include <U2Gui/SharedConnectionsDialog.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "ExportPrimersDialog.h"
@@ -97,14 +98,15 @@ void ExportPrimersDialog::sl_fileBrowse() {
 
 void ExportPrimersDialog::sl_connect() {
     const bool projectExists = (NULL != AppContext::getProject());
-    SharedConnectionsDialog *connectionDialog = new SharedConnectionsDialog(this);
+    QPointer<SharedConnectionsDialog> connectionDialog = new SharedConnectionsDialog(this);
     if (projectExists) {
         connectProjectSignals();
     } else {
-        connect(connectionDialog, SIGNAL(si_connectionCompleted()), SLOT(sl_connectionCompleted()));
+        connect(connectionDialog.data(), SIGNAL(si_connectionCompleted()), SLOT(sl_connectionCompleted()));
     }
 
     connectionDialog->exec();
+    CHECK(!connectionDialog.isNull(), );
 
     if (projectExists) {
         delete connectionDialog;

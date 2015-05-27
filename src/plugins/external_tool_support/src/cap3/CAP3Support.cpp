@@ -19,37 +19,32 @@
  * MA 02110-1301, USA.
  */
 
-#include "CAP3Support.h"
-#include "CAP3SupportDialog.h"
-#include "CAP3SupportTask.h"
-#include "ExternalToolSupportSettingsController.h"
-#include "ExternalToolSupportSettings.h"
+#include <QMainWindow>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/MAlignmentObject.h>
 #include <U2Core/U2OpStatusUtils.h>
-#include <U2Gui/AppSettingsGUI.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
-#include <U2Gui/MainWindow.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2Gui/AppSettingsGUI.h>
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
 
-#include <U2Core/MAlignmentObject.h>
-
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/DialogUtils.h>
+#include "CAP3Support.h"
+#include "CAP3SupportDialog.h"
+#include "CAP3SupportTask.h"
+#include "ExternalToolSupportSettings.h"
+#include "ExternalToolSupportSettingsController.h"
 
 namespace U2 {
-
 
 CAP3Support::CAP3Support(const QString& name, const QString& path) : ExternalTool(name, path)
 {
@@ -80,13 +75,15 @@ CAP3Support::CAP3Support(const QString& name, const QString& path) : ExternalToo
 void CAP3Support::sl_runWithExtFileSpecify(){
     //Check that CAP3 and temporary directory path defined
     if (path.isEmpty()){
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(name);
-        msgBox.setText(tr("Path for %1 tool not selected.").arg(name));
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
+        msgBox->setWindowTitle(name);
+        msgBox->setText(tr("Path for %1 tool not selected.").arg(name));
+        msgBox->setInformativeText(tr("Do you want to select it now?"));
+        msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox->setDefaultButton(QMessageBox::Yes);
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), );
+
         switch (ret) {
            case QMessageBox::Yes:
                AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
@@ -108,9 +105,11 @@ void CAP3Support::sl_runWithExtFileSpecify(){
 
     //Call select input file and setup settings dialog
     CAP3SupportTaskSettings settings;
-    CAP3SupportDialog cap3Dialog(settings, QApplication::activeWindow());
+    QObjectScopedPointer<CAP3SupportDialog> cap3Dialog = new CAP3SupportDialog(settings, QApplication::activeWindow());
+    cap3Dialog->exec();
+    CHECK(!cap3Dialog.isNull(), );
 
-    if(cap3Dialog.exec() != QDialog::Accepted){
+    if(cap3Dialog->result() != QDialog::Accepted){
         return;
     }
 

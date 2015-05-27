@@ -19,14 +19,19 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Formats/DocumentFormatUtils.h>
+
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include "DocumentReadingModeSelectorController.h"
 #include "ui/ui_SequenceReadingModeSelectorDialog.h"
-
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Formats/DocumentFormatUtils.h>
-#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
-#include <U2Gui/HelpButton.h>
 
 namespace U2{
 
@@ -71,11 +76,11 @@ bool DocumentReadingModeSelectorController::adjustReadingMode(FormatDetectionRes
         }
     }
     Ui_SequenceReadingModeSelectorDialog ui;
-    QDialog d(QApplication::activeWindow());
-    d.setModal(true);
-    ui.setupUi(&d);
+    QObjectScopedPointer<QDialog> d = new QDialog(QApplication::activeWindow());
+    d->setModal(true);
+    ui.setupUi(d.data());
 
-    new HelpButton(&d, ui.buttonBox, "16122077");
+    new HelpButton(d.data(), ui.buttonBox, "16122077");
 
     bool canBeShortReads = minSequenceSize > 0 && maxSequenceSize < 2000;
     bool haveReadAligners = !AppContext::getDnaAssemblyAlgRegistry()->getRegisteredAlgorithmIds().isEmpty();
@@ -90,7 +95,8 @@ bool DocumentReadingModeSelectorController::adjustReadingMode(FormatDetectionRes
 
     ui.previewEdit->setPlainText(dr.rawData);
     
-    int rc = d.exec();
+    const int rc = d->exec();
+    CHECK(!d.isNull(), false);
     
     if (rc == QDialog::Rejected) {
         return false;

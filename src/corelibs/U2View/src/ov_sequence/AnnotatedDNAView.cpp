@@ -19,21 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include "ADVAnnotationCreation.h"
-#include "ADVClipboard.h"
-#include "ADVConstants.h"
-#include "ADVSequenceObjectContext.h"
-#include "ADVSingleSequenceWidget.h"
-#include "ADVSyncViewManager.h"
-#include "ADVSplitWidget.h"
-#include "ADVUtils.h"
-#include "AnnotatedDNAView.h"
-#include "AnnotatedDNAViewState.h"
-#include "AnnotatedDNAViewFactory.h"
-#include "AnnotatedDNAViewTasks.h"
-#include "AnnotationsTreeView.h"
-#include "AutoAnnotationUtils.h"
-#include "GraphMenu.h"
+#include <QtGui/QAction>
+#include <QtGui/QMenu>
+#include <QtGui/QMessageBox>
+#include <QtGui/QScrollArea>
+#include <QtGui/QToolBar>
+#include <QtGui/QVBoxLayout>
 
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/AnnotationSettings.h>
@@ -41,8 +32,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectTypes.h>
@@ -57,37 +48,38 @@
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/Task.h>
 #include <U2Core/Timer.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/CreateObjectRelationDialogController.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/EditSequenceDialogController.h>
 #include <U2Gui/GUIUtils.h>
-#include <U2Gui/OptionsPanel.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
+#include <U2Gui/OptionsPanel.h>
 #include <U2Gui/PositionSelector.h>
 #include <U2Gui/RemovePartFromSequenceDialogController.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
+#include <U2View/CodonTable.h>
 #include <U2View/FindPatternWidgetFactory.h>
 #include <U2View/SecStructPredictUtils.h>
-#include <U2View/CodonTable.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QAction>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#include <QtGui/QScrollArea>
-#include <QtGui/QToolBar>
-#include <QtGui/QVBoxLayout>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QScrollArea>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QVBoxLayout>
-#endif
+#include "ADVAnnotationCreation.h"
+#include "ADVClipboard.h"
+#include "ADVConstants.h"
+#include "ADVSequenceObjectContext.h"
+#include "ADVSingleSequenceWidget.h"
+#include "ADVSplitWidget.h"
+#include "ADVSyncViewManager.h"
+#include "ADVUtils.h"
+#include "AnnotatedDNAView.h"
+#include "AnnotatedDNAViewFactory.h"
+#include "AnnotatedDNAViewState.h"
+#include "AnnotatedDNAViewTasks.h"
+#include "AnnotationsTreeView.h"
+#include "AutoAnnotationUtils.h"
+#include "GraphMenu.h"
 
 namespace U2 {
 
@@ -819,10 +811,12 @@ QString AnnotatedDNAView::tryAddObject(GObject* o) {
         rCtx = findRelatedSequenceContexts(o);
         if (rCtx.isEmpty()) {
             //ask user if to create new association
-            CreateObjectRelationDialogController d(o, getSequenceGObjectsWithContexts(),
+            QObjectScopedPointer<CreateObjectRelationDialogController> d = new CreateObjectRelationDialogController(o, getSequenceGObjectsWithContexts(),
                 ObjectRole_Sequence, true,
                 tr("Select sequence to associate annotations with:"));
-            d.exec();
+            d->exec();
+            CHECK(!d.isNull(), "");
+
             rCtx = findRelatedSequenceContexts(o);
             if (rCtx.isEmpty()) {
                 return "";
@@ -903,12 +897,15 @@ void AnnotatedDNAView::sl_onPosChangeRequest(int pos) {
 void AnnotatedDNAView::sl_onShowPosSelectorRequest() {
     ADVSequenceObjectContext* seqCtx = getSequenceInFocus();
     assert(seqCtx!=NULL);
-    QDialog dlg(getWidget());
-    dlg.setModal(true);
-    dlg.setWindowTitle(tr("Go To"));
-    QScopedPointer<PositionSelector> ps(new PositionSelector(&dlg, 1, seqCtx->getSequenceLength(), true));
-    connect(ps.data(), SIGNAL(si_positionChanged(int)), SLOT(sl_onPosChangeRequest(int)));
-    dlg.exec();
+
+    QObjectScopedPointer<QDialog> dlg = new QDialog(getWidget());
+    dlg->setModal(true);
+    dlg->setWindowTitle(tr("Go To"));
+
+    PositionSelector *ps = new PositionSelector(dlg.data(), 1, seqCtx->getSequenceLength(), true);
+    connect(ps, SIGNAL(si_positionChanged(int)), SLOT(sl_onPosChangeRequest(int)));
+
+    dlg->exec();
 }
 
 void AnnotatedDNAView::insertWidgetIntoSplitter(ADVSplitWidget* splitWidget) {
@@ -1168,13 +1165,14 @@ void AnnotatedDNAView::sl_addSequencePart() {
     const QVector<U2Region> &selection = seqCtx->getSequenceSelection()->getSelectedRegions();
     cfg.selectionRegions = selection;
 
-    EditSequenceDialogController dialog(cfg, getSequenceWidgetInFocus());
-    int result = dialog.exec();
+    QObjectScopedPointer<EditSequenceDialogController> dialog = new EditSequenceDialogController(cfg, getSequenceWidgetInFocus());
+    const int result = dialog->exec();
+    CHECK(!dialog.isNull(), );
     CHECK(result == QDialog::Accepted, );
 
-    Task *t = new ModifySequenceContentTask(dialog.getDocumentFormatId(), seqObj, U2Region(dialog.getPosToInsert(), 0),
-        dialog.getNewSequence(), dialog.recalculateQualifiers(), dialog.getAnnotationStrategy(),
-        dialog.getDocumentPath(), dialog.mergeAnnotations());
+    Task *t = new ModifySequenceContentTask(dialog->getDocumentFormatId(), seqObj, U2Region(dialog->getPosToInsert(), 0),
+        dialog->getNewSequence(), dialog->recalculateQualifiers(), dialog->getAnnotationStrategy(),
+        dialog->getDocumentPath(), dialog->mergeAnnotations());
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_sequenceModifyTaskStateChanged()));
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 
@@ -1193,18 +1191,19 @@ void AnnotatedDNAView::sl_removeSequencePart() {
         selection = seqCtx->getSequenceSelection()->getSelectedRegions().first();
     }
 
-    RemovePartFromSequenceDialogController dialog(selection, source, curDoc->getURLString(), getSequenceWidgetInFocus());
-    int result = dialog.exec();
+    QObjectScopedPointer<RemovePartFromSequenceDialogController> dialog = new RemovePartFromSequenceDialogController(selection, source, curDoc->getURLString(), getSequenceWidgetInFocus());
+    const int result = dialog->exec();
+    CHECK(!dialog.isNull(), );
     CHECK(result == QDialog::Accepted, );
 
     Task *t = NULL;
-    if (dialog.modifyCurrentDocument()) {
-        t = new ModifySequenceContentTask(dialog.getDocumentFormatId(), seqObj, dialog.getRegionToDelete(), DNASequence(),
-            dialog.recalculateQualifiers(), dialog.getStrategy(), seqObj->getDocument()->getURL());
+    if (dialog->modifyCurrentDocument()) {
+        t = new ModifySequenceContentTask(dialog->getDocumentFormatId(), seqObj, dialog->getRegionToDelete(), DNASequence(),
+            dialog->recalculateQualifiers(), dialog->getStrategy(), seqObj->getDocument()->getURL());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_sequenceModifyTaskStateChanged()));
     } else {
-        t = new ModifySequenceContentTask(dialog.getDocumentFormatId(), seqObj, dialog.getRegionToDelete(), DNASequence(),
-            dialog.recalculateQualifiers(), dialog.getStrategy(), dialog.getNewDocumentPath(), dialog.mergeAnnotations());
+        t = new ModifySequenceContentTask(dialog->getDocumentFormatId(), seqObj, dialog->getRegionToDelete(), DNASequence(),
+            dialog->recalculateQualifiers(), dialog->getStrategy(), dialog->getNewDocumentPath(), dialog->mergeAnnotations());
     }
     SAFE_POINT(NULL != t, L10N::nullPointerError("Edit sequence task"), );
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
@@ -1231,13 +1230,14 @@ void AnnotatedDNAView::sl_replaceSequencePart() {
 
     cfg.selectionRegions.append(selection);
 
-    EditSequenceDialogController dlg(cfg, getSequenceWidgetInFocus());
-    int result = dlg.exec();
+    QObjectScopedPointer<EditSequenceDialogController> dlg = new EditSequenceDialogController(cfg, getSequenceWidgetInFocus());
+    const int result = dlg->exec();
+    CHECK(!dlg.isNull(), );
 
     CHECK(result == QDialog::Accepted, );
 
-    Task *t = new ModifySequenceContentTask(dlg.getDocumentFormatId(), seqObj, selection, dlg.getNewSequence(),
-        dlg.recalculateQualifiers(), dlg.getAnnotationStrategy(), dlg.getDocumentPath(), dlg.mergeAnnotations());
+    Task *t = new ModifySequenceContentTask(dlg->getDocumentFormatId(), seqObj, selection, dlg->getNewSequence(),
+        dlg->recalculateQualifiers(), dlg->getAnnotationStrategy(), dlg->getDocumentPath(), dlg->mergeAnnotations());
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_sequenceModifyTaskStateChanged()));
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     seqCtx->getSequenceSelection()->clear();

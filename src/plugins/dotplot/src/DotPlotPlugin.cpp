@@ -19,27 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#include "DotPlotPlugin.h"
-#include "DotPlotSplitter.h"
-#include "DotPlotWidget.h"
-#include "DotPlotFilesDialog.h"
-#include "DotPlotTasks.h"
-
-#include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 #include <U2Algorithm/RepeatFinderTaskFactory.h>
+#include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ToolsMenu.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include <U2View/ADVUtils.h>
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
+
+#include "DotPlotFilesDialog.h"
+#include "DotPlotPlugin.h"
+#include "DotPlotSplitter.h"
+#include "DotPlotTasks.h"
+#include "DotPlotWidget.h"
 
 namespace U2 {
 
@@ -121,13 +122,16 @@ void DotPlotViewContext::sl_showDotPlotDialog() {
 
     Task *tasks = new Task("Creating dotplot", TaskFlag_NoRun);
 
-    DotPlotFilesDialog d(QApplication::activeWindow());
-    if (d.exec()) {
+    QObjectScopedPointer<DotPlotFilesDialog> d = new DotPlotFilesDialog(QApplication::activeWindow());
+    d->exec();
+    CHECK(!d.isNull(), );
+
+    if (QDialog::Accepted == d->result()) {
         if (!AppContext::getProject()) {
-            tasks->addSubTask( AppContext::getProjectLoader()->createNewProjectTask() );
+            tasks->addSubTask(AppContext::getProjectLoader()->createNewProjectTask());
         }
 
-        DotPlotLoadDocumentsTask *t = new DotPlotLoadDocumentsTask(d.getFirstFileName(), d.getFirstGap(), d.getSecondFileName(), d.getSecondGap());
+        DotPlotLoadDocumentsTask *t = new DotPlotLoadDocumentsTask(d->getFirstFileName(), d->getFirstGap(), d->getSecondFileName(), d->getSecondGap());
         tasks->addSubTask(t);
     }
 

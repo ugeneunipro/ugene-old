@@ -19,37 +19,33 @@
  * MA 02110-1301, USA.
  */
 
-#include "ClustalOSupport.h"
-#include "ClustalOSupportRunDialog.h"
-#include "ClustalOSupportTask.h"
-#include "ExternalToolSupportSettingsController.h"
-#include "ExternalToolSupportSettings.h"
+#include <QMainWindow>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/DNAAlphabet.h>
-#include <U2Gui/AppSettingsGUI.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
+
+#include <U2Gui/AppSettingsGUI.h>
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
 #include <U2Gui/MainWindow.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
 
-#include <U2Core/MAlignmentObject.h>
-
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/DialogUtils.h>
+#include "ClustalOSupport.h"
+#include "ClustalOSupportRunDialog.h"
+#include "ClustalOSupportTask.h"
+#include "ExternalToolSupportSettings.h"
+#include "ExternalToolSupportSettingsController.h"
 
 namespace U2 {
-
 
 ClustalOSupport::ClustalOSupport(const QString& name, const QString& path) : ExternalTool(name, path)
 {
@@ -76,13 +72,15 @@ ClustalOSupport::ClustalOSupport(const QString& name, const QString& path) : Ext
 void ClustalOSupport::sl_runWithExtFileSpecify(){
     //Check that Clustal and tempory directory path defined
     if (path.isEmpty()){
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(name);
-        msgBox.setText(tr("Path for %1 tool not selected.").arg(name));
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
+        msgBox->setWindowTitle(name);
+        msgBox->setText(tr("Path for %1 tool not selected.").arg(name));
+        msgBox->setInformativeText(tr("Do you want to select it now?"));
+        msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox->setDefaultButton(QMessageBox::Yes);
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), );
+
         switch (ret) {
            case QMessageBox::Yes:
                AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
@@ -104,8 +102,11 @@ void ClustalOSupport::sl_runWithExtFileSpecify(){
 
     //Call select input file and setup settings dialog
     ClustalOSupportTaskSettings settings;
-    ClustalOWithExtFileSpecifySupportRunDialog clustalORunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
-    if(clustalORunDialog.exec() != QDialog::Accepted){
+    QObjectScopedPointer<ClustalOWithExtFileSpecifySupportRunDialog> clustalORunDialog = new ClustalOWithExtFileSpecifySupportRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
+    clustalORunDialog->exec();
+    CHECK(!clustalORunDialog.isNull(), );
+
+    if (clustalORunDialog->result() != QDialog::Accepted){
         return;
     }
     assert(!settings.inputFilePath.isEmpty());
@@ -151,13 +152,15 @@ void ClustalOSupportContext::buildMenu(GObjectView* view, QMenu* m) {
 void ClustalOSupportContext::sl_align_with_ClustalO() {
     //Check that Clustal and tempory directory path defined
     if (AppContext::getExternalToolRegistry()->getByName(ET_CLUSTALO)->getPath().isEmpty()){
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(ET_CLUSTALO);
-        msgBox.setText(tr("Path for %1 tool not selected.").arg(ET_CLUSTALO));
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
+        msgBox->setWindowTitle(ET_CLUSTALO);
+        msgBox->setText(tr("Path for %1 tool not selected.").arg(ET_CLUSTALO));
+        msgBox->setInformativeText(tr("Do you want to select it now?"));
+        msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox->setDefaultButton(QMessageBox::Yes);
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), );
+
         switch (ret) {
            case QMessageBox::Yes:
                AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
@@ -188,8 +191,11 @@ void ClustalOSupportContext::sl_align_with_ClustalO() {
     assert(!obj->isStateLocked());
 
     ClustalOSupportTaskSettings settings;
-    ClustalOSupportRunDialog ClustalORunDialog(obj->getMAlignment(), settings, AppContext::getMainWindow()->getQMainWindow());
-    if(ClustalORunDialog.exec() != QDialog::Accepted){
+    QObjectScopedPointer<ClustalOSupportRunDialog> clustalORunDialog = new ClustalOSupportRunDialog(obj->getMAlignment(), settings, AppContext::getMainWindow()->getQMainWindow());
+    clustalORunDialog->exec();
+    CHECK(!clustalORunDialog.isNull(), );
+
+    if(clustalORunDialog->result() != QDialog::Accepted){
         return;
     }
 

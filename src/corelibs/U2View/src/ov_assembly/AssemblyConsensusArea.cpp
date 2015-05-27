@@ -19,10 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QFileInfo>
+#include <QFileInfo>
+#include <QMouseEvent>
+#include <QPainter>
 
-#include <QtGui/QMouseEvent>
-#include <QtGui/QPainter>
+#include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
+#include <U2Algorithm/BuiltInAssemblyConsensusAlgorithms.h>
 
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
@@ -30,8 +32,7 @@
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
-#include <U2Algorithm/BuiltInAssemblyConsensusAlgorithms.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "AssemblyBrowser.h"
 #include "AssemblyConsensusArea.h"
@@ -252,9 +253,12 @@ void AssemblyConsensusArea::sl_exportConsensus() {
     GUrl url(U2DbiUtils::ref2Url(getModel()->getDbiConnection().dbi->getDbiRef()));
     settings.fileName = GUrlUtils::getNewLocalUrlByFormat(url, getModel()->getAssembly().visualName, settings.formatId, "_consensus");
 
-    ExportConsensusDialog dlg(this, settings, getVisibleRegion());
-    if(dlg.exec() == QDialog::Accepted) {
-        settings = dlg.getSettings();
+    QObjectScopedPointer<ExportConsensusDialog> dlg = new ExportConsensusDialog(this, settings, getVisibleRegion());
+    const int dialogResult = dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (QDialog::Accepted == dialogResult) {
+        settings = dlg->getSettings();
         AppContext::getTaskScheduler()->registerTopLevelTask(new ExportConsensusTask(settings));
     }
 }
@@ -276,9 +280,12 @@ void AssemblyConsensusArea::sl_exportConsensusVariations(){
     GUrl url(U2DbiUtils::ref2Url(getModel()->getDbiConnection().dbi->getDbiRef()));
     settings.fileName = GUrlUtils::getNewLocalUrlByFormat(url, getModel()->getAssembly().visualName, settings.formatId, "");
 
-    ExportConsensusVariationsDialog dlg(this, settings, getVisibleRegion());
-    if(dlg.exec() == QDialog::Accepted) {
-        settings = dlg.getSettings();
+    QObjectScopedPointer<ExportConsensusVariationsDialog> dlg = new ExportConsensusVariationsDialog(this, settings, getVisibleRegion());
+    const int dialogResult = dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if(QDialog::Accepted == dialogResult) {
+        settings = dlg->getSettings();
         AppContext::getTaskScheduler()->registerTopLevelTask(new ExportConsensusVariationsTask(settings));
     }
 }

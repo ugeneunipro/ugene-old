@@ -19,44 +19,38 @@
  * MA 02110-1301, USA.
  */
 
-#include "CircularViewPlugin.h"
+#include <limits>
+
+#include <QMessageBox>
+#include <QMenu>
+#include <QApplication>
+
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentSelection.h>
+#include <U2Core/GObject.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/OPWidgetFactoryRegistry.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVSingleSequenceWidget.h>
+#include <U2View/ADVUtils.h>
+#include <U2View/AnnotatedDNAView.h>
+
 #include "CircularView.h"
+#include "CircularViewPlugin.h"
 #include "CircularViewSettingsWidgetFactory.h"
 #include "CircularViewSplitter.h"
 #include "RestrictionMapWidget.h"
 #include "SetSequenceOriginDialog.h"
 #include "ShiftSequenceStartTask.h"
-
-#include <U2Core/GObject.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/DocumentSelection.h>
-#include <U2Core/U2SafePoints.h>
-
-#include <U2Gui/MainWindow.h>
-#include <U2Gui/OPWidgetFactoryRegistry.h>
-
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVSingleSequenceWidget.h>
-#include <U2View/ADVConstants.h>
-#include <U2View/ADVSequenceObjectContext.h>
-#include <U2View/ADVUtils.h>
-#include <U2Core/DNASequenceSelection.h>
-
-#include <U2Gui/GUIUtils.h>
-
-#include <QApplication>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QMenu>
-#endif
-
-#include <limits>
 
 const QString EXPORT_ACTION_NAME = "Save circular view as image";
 const QString NEW_SEQ_ORIGIN_ACTION_NAME = "Set new sequence origin";
@@ -335,11 +329,12 @@ void CircularViewContext::sl_setSequenceOrigin()
     U2SequenceObject *seqObj = seqCtx->getSequenceObject();
     CHECK(NULL != seqObj, );
 
-    SetSequenceOriginDialog dlg(av->getSequenceWidgetInFocus());
-    int res = dlg.exec();
+    QObjectScopedPointer<SetSequenceOriginDialog> dlg = new SetSequenceOriginDialog(av->getSequenceWidgetInFocus());
+    const int res = dlg->exec();
+    CHECK(!dlg.isNull(), );
 
     if (res == QDialog::Accepted) {
-        int newSeqStart = dlg.getSequenceShift();
+        int newSeqStart = dlg->getSequenceShift();
         if (newSeqStart != 1) {
             seqCtx->getSequenceSelection()->clear();
             Task *t = new ShiftSequenceStartTask(seqObj, newSeqStart - 1);

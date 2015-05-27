@@ -19,39 +19,34 @@
  * MA 02110-1301, USA.
  */
 
-#include "AnnotatorPlugin.h"
-#include "CollocationsDialogController.h"
-#include "CustomAutoAnnotationDialog.h"
+#include <QMenu>
+#include <QMessageBox>
 
-#include "AnnotatorTests.h"
-
-#include <U2Core/GAutoDeleteList.h>
-#include <U2Gui/GUIUtils.h>
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVConstants.h>
-#include <U2View/ADVUtils.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/GAutoDeleteList.h>
+#include <U2Core/U2SafePoints.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QMenu>
-#endif
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
-#include <U2Test/XMLTestFormat.h>
 #include <U2Test/GTest.h>
 #include <U2Test/GTestFrameworkComponents.h>
+#include <U2Test/XMLTestFormat.h>
 
-#include <U2Core/AppContext.h>
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVUtils.h>
+#include <U2View/AnnotatedDNAView.h>
 
+#include "AnnotatorPlugin.h"
+#include "AnnotatorTests.h"
 #include "CollocationWorker.h"
-#include "GeneByGeneReportWorker.h"
+#include "CollocationsDialogController.h"
+#include "CustomAutoAnnotationDialog.h"
 #include "CustomPatternAnnotationTask.h"
+#include "GeneByGeneReportWorker.h"
 
 namespace U2 {
-
 
 extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     AnnotatorPlugin * plug = new AnnotatorPlugin();
@@ -131,8 +126,9 @@ void AnnotatorViewContext::sl_showCollocationDialog() {
     if (seqCtx == NULL) {
         return;
     }
-    CollocationsDialogController d(allNames.toList(), seqCtx);
-    d.exec();
+
+    QObjectScopedPointer<CollocationsDialogController> d = new CollocationsDialogController(allNames.toList(), seqCtx);
+    d->exec();
 }
 
 
@@ -146,8 +142,9 @@ void AnnotatorViewContext::sl_showCustomAutoAnnotationDialog() {
     if (seqCtx == NULL) {
         return;
     }
-    CustomAutoAnnotationDialog dlg(seqCtx);
-    dlg.exec();
+
+    QObjectScopedPointer<CustomAutoAnnotationDialog> dlg = new CustomAutoAnnotationDialog(seqCtx);
+    dlg->exec();
 }
 
 QList<XMLTestFactory*> AnnotatorTests::createTestFactories() {

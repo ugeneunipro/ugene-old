@@ -19,33 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#include "FormatDBSupport.h"
-#include "FormatDBSupportRunDialog.h"
-#include "FormatDBSupportTask.h"
-#include "ExternalToolSupportSettingsController.h"
-#include "ExternalToolSupportSettings.h"
+#include <QMainWindow>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/UserApplicationsSettings.h>
 
-#include <U2Gui/MainWindow.h>
-
-#include <U2Gui/GUIUtils.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
-#endif
-
+#include "ExternalToolSupportSettings.h"
+#include "ExternalToolSupportSettingsController.h"
+#include "FormatDBSupport.h"
+#include "FormatDBSupportRunDialog.h"
+#include "FormatDBSupportTask.h"
 
 namespace U2 {
 
@@ -110,18 +105,20 @@ FormatDBSupport::FormatDBSupport(const QString& name, const QString& path) : Ext
 void FormatDBSupport::sl_runWithExtFileSpecify(){
     //Check that formatDB or makeblastdb and tempory directory path defined
     if (path.isEmpty()){
-        QMessageBox msgBox;
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
         if(name == ET_FORMATDB){
-            msgBox.setWindowTitle("BLAST "+name);
-            msgBox.setText(tr("Path for BLAST %1 tool not selected.").arg(name));
+            msgBox->setWindowTitle("BLAST "+name);
+            msgBox->setText(tr("Path for BLAST %1 tool not selected.").arg(name));
         }else{
-            msgBox.setWindowTitle("BLAST+ "+name);
-            msgBox.setText(tr("Path for BLAST+ %1 tool not selected.").arg(name));
+            msgBox->setWindowTitle("BLAST+ "+name);
+            msgBox->setText(tr("Path for BLAST+ %1 tool not selected.").arg(name));
         }
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
+        msgBox->setInformativeText(tr("Do you want to select it now?"));
+        msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox->setDefaultButton(QMessageBox::Yes);
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), );
+
         switch (ret) {
            case QMessageBox::Yes:
                AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
@@ -143,8 +140,11 @@ void FormatDBSupport::sl_runWithExtFileSpecify(){
 
     //Call select input file and setup settings dialog
     FormatDBSupportTaskSettings settings;
-    FormatDBSupportRunDialog formatDBRunDialog(name, settings, AppContext::getMainWindow()->getQMainWindow());
-    if(formatDBRunDialog.exec() != QDialog::Accepted){
+    QObjectScopedPointer<FormatDBSupportRunDialog> formatDBRunDialog = new FormatDBSupportRunDialog(name, settings, AppContext::getMainWindow()->getQMainWindow());
+    formatDBRunDialog->exec();
+    CHECK(!formatDBRunDialog.isNull(), );
+
+    if (formatDBRunDialog->result() != QDialog::Accepted){
         return;
     }
     //assert(!settings.inputFilePath.isEmpty());

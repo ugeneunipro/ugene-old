@@ -31,6 +31,8 @@
 #include <U2Core/DNASequence.h>
 #include <U2Core/AnnotationData.h>
 
+#include <QDebug>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
 #else
@@ -57,6 +59,7 @@ class HMMSearchDialogController : public QDialog, public Ui_HMMSearchDialog {
     Q_OBJECT
 public:
     HMMSearchDialogController(const U2SequenceObject* obj, QWidget* p = NULL);
+    ~HMMSearchDialogController();
 
 public slots:
     void reject();

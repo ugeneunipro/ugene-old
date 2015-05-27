@@ -19,36 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#include "BlastDBCmdSupport.h"
-#include "BlastDBCmdDialog.h"
-#include "BlastDBCmdSupportTask.h"
-#include "ExternalToolSupportSettingsController.h"
-#include "ExternalToolSupportSettings.h"
+#include <QMainWindow>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/UserApplicationsSettings.h>
 
-#include <U2Gui/MainWindow.h>
-
-#include <U2Gui/GUIUtils.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
-#endif
-
+#include "BlastDBCmdDialog.h"
+#include "BlastDBCmdSupport.h"
+#include "BlastDBCmdSupportTask.h"
+#include "ExternalToolSupportSettings.h"
+#include "ExternalToolSupportSettingsController.h"
 
 namespace U2 {
-
 
 BlastDbCmdSupport::BlastDbCmdSupport(const QString& path) : ExternalTool(ET_BLASTDBCMD, path)
 {
@@ -78,13 +72,15 @@ BlastDbCmdSupport::BlastDbCmdSupport(const QString& path) : ExternalTool(ET_BLAS
 void BlastDbCmdSupport::sl_runWithExtFileSpecify(){
     //Check that BlastDBCmd directory path defined
     if (path.isEmpty()){
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("BLAST+ " +name);
-        msgBox.setText(tr("Path for BLAST+ %1 tool not selected.").arg(ET_BLASTDBCMD));
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox;
+        msgBox->setWindowTitle("BLAST+ " +name);
+        msgBox->setText(tr("Path for BLAST+ %1 tool not selected.").arg(ET_BLASTDBCMD));
+        msgBox->setInformativeText(tr("Do you want to select it now?"));
+        msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox->setDefaultButton(QMessageBox::Yes);
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), );
+
         switch (ret) {
            case QMessageBox::Yes:
                AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
@@ -106,8 +102,11 @@ void BlastDbCmdSupport::sl_runWithExtFileSpecify(){
 
     //Call select input file and setup settings dialog
     BlastDBCmdSupportTaskSettings settings;
-    BlastDBCmdDialog blastDBCmdDialog(settings, AppContext::getMainWindow()->getQMainWindow());
-    if(blastDBCmdDialog.exec() != QDialog::Accepted){
+    QObjectScopedPointer<BlastDBCmdDialog> blastDBCmdDialog = new BlastDBCmdDialog(settings, AppContext::getMainWindow()->getQMainWindow());
+    blastDBCmdDialog->exec();
+    CHECK(!blastDBCmdDialog.isNull(), );
+
+    if(blastDBCmdDialog->result() != QDialog::Accepted){
         return;
     }
 

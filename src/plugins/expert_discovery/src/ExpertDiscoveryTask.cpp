@@ -1,16 +1,31 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2015 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
 #include <fstream>
 #include <limits>
 
-#include <QtCore/QList>
-#include <QtCore/QSet>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QList>
+#include <QMainWindow>
+#include <QMessageBox>
+#include <QSet>
 
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/AnnotationTableObject.h>
@@ -34,18 +49,19 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
-#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2View/AutoAnnotationUtils.h>
 
-#include "ExpertDiscoveryTask.h"
 #include "ExpertDiscoveryExtSigWiz.h"
 #include "ExpertDiscoveryPersistent.h"
+#include "ExpertDiscoveryTask.h"
 
 namespace U2 {
 
@@ -310,8 +326,6 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
         edData.getPosMarkBase().clear();
         QString str = "Positive annotation: ";
         str += ex.what();
-        QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
-        mb.exec();
         setError(str);
         return;
     }
@@ -348,8 +362,6 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
         edData.getNegMarkBase().clear();
         QString str = "Negative annotation: ";
         str += ex.what();
-        QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
-        mb.exec();
         setError(str);
         return;
     }
@@ -375,8 +387,6 @@ Task::ReportResult ExpertDiscoveryLoadPosNegMrkTask::report(){
             edData.getPosMarkBase().clear();
             QString str = "Positive annotation: ";
             str += ex.what();
-            QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
-            mb.exec();
             setError(str);
             return ReportResult_Finished;
         }
@@ -392,8 +402,6 @@ Task::ReportResult ExpertDiscoveryLoadPosNegMrkTask::report(){
                 edData.getNegMarkBase().clear();
                 QString str = "Negative annotation: ";
                 str += ex.what();
-                QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
-                mb.exec();
                 setError(str);
                 return ReportResult_Finished;
             }
@@ -415,8 +423,6 @@ Task::ReportResult ExpertDiscoveryLoadPosNegMrkTask::report(){
         edData.getDescriptionBaseNoConst().clear();
         QString str = "Description: ";
         str += ex.what();
-        QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
-        mb.exec();
         setError(str);
         return ReportResult_Finished;
     }
@@ -508,8 +514,6 @@ void ExpertDiscoveryLoadControlMrkTask::prepare(){
         edData.getConMarkBase().clear();
         QString str = "Control annotation: ";
         str += ex.what();
-        QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
-        mb.exec();
         setError(str);
         return;
     }
@@ -528,8 +532,6 @@ Task::ReportResult ExpertDiscoveryLoadControlMrkTask::report(){
             edData.getConMarkBase().clear();
             QString str = "Control annotation: ";
             str += ex.what();
-            QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
-            mb.exec();
             setError(str);
             return ReportResult_Finished;
         }
@@ -574,15 +576,13 @@ Document* ExpertDiscoveryLoadControlTask::loadFile(QString inFile){
 }
 
 void ExpertDiscoveryErrors::fileOpenError(const QString &filename) {
-
-    QMessageBox mb(QMessageBox::Critical, tr("File opening error"), tr("Error opening file %1").arg(filename));
-    mb.exec();
+    QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("File opening error"), tr("Error opening file %1").arg(filename));
+    mb->exec();
 }
 
 void ExpertDiscoveryErrors::markupLoadError() {
-
-    QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Error loading markups"));
-    mb.exec();
+    QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Critical, tr("Error"), tr("Error loading markups"));
+    mb->exec();
 }
 
 ExpertDiscoverySignalExtractorTask::ExpertDiscoverySignalExtractorTask(ExpertDiscoveryData* d) :
@@ -613,31 +613,34 @@ void ExpertDiscoverySignalExtractorTask::run(){
 }
 
 void ExpertDiscoverySignalExtractorTask::prepare(){
-    ExpertDiscoveryExtSigWiz w(QApplication::activeWindow(), &data->getRootFolder(), data->getMaxPosSequenceLen(), data->isLettersMarkedUp());
-    connect(&w, SIGNAL(si_newFolder(const QString&)), SLOT(sl_newFolder(const QString&)));
-    if(w.exec()){
+    QObjectScopedPointer<ExpertDiscoveryExtSigWiz> w = new ExpertDiscoveryExtSigWiz(QApplication::activeWindow(), &data->getRootFolder(), data->getMaxPosSequenceLen(), data->isLettersMarkedUp());
+    connect(w.data(), SIGNAL(si_newFolder(const QString&)), SLOT(sl_newFolder(const QString&)));
+    w->exec();
+    CHECK_EXT(!w.isNull(), setError("dialog is NULL"), );
+
+    if(QDialog::Accepted == w->result()){
         PredicatBase* predicatBase = new PredicatBase(data->getDescriptionBase());
-        predicatBase->create(w.getPredicates());
+        predicatBase->create(w->getPredicates());
 
         extractor = new Extractor(&data->getPosSeqBase(), &data->getNegSeqBase(), predicatBase);
-        extractor->setFisherBound ( w.getFisher());
-        extractor->setProbabilityBound ( w.getProbability());
-        extractor->setInterestFisher ( w.getIntFisher());
-        extractor->setInterestProbability ( w.getIntProbability());
-        extractor->setCoverageBound ( w.getCoverage());
-        extractor->setMaxComplexity ( w.getMaxComplexity());
-        extractor->setMinComplexity ( w.getMinComplexity());
-        extractor->setMinCorrelationOnPos ( w.getMinPosCorrelation());
-        extractor->setMaxCorrelationOnPos ( w.getMaxPosCorrelation());
-        extractor->setMinCorrelationOnNeg ( w.getMinNegCorrelation());
-        extractor->setMaxCorrelationOnNeg ( w.getMaxNegCorrelation());
-        extractor->setCorrelationImportant ( w.getCorrelationImportant());
-        extractor->setCheckFisherMinimization ( w.getCheckFisherMinimization());
-        extractor->setStoreOnlyDifferent ( w.getStoreOnlyDifferent());
-        extractor->setUmEnabled( w.getUmEnabled());
-        extractor->setUmSamplesBound( w.getUmSamplesBound());
-        extractor->setUmBound( w.getUmBound());
-        folder = w.getFolder();
+        extractor->setFisherBound ( w->getFisher());
+        extractor->setProbabilityBound ( w->getProbability());
+        extractor->setInterestFisher ( w->getIntFisher());
+        extractor->setInterestProbability ( w->getIntProbability());
+        extractor->setCoverageBound ( w->getCoverage());
+        extractor->setMaxComplexity ( w->getMaxComplexity());
+        extractor->setMinComplexity ( w->getMinComplexity());
+        extractor->setMinCorrelationOnPos ( w->getMinPosCorrelation());
+        extractor->setMaxCorrelationOnPos ( w->getMaxPosCorrelation());
+        extractor->setMinCorrelationOnNeg ( w->getMinNegCorrelation());
+        extractor->setMaxCorrelationOnNeg ( w->getMaxNegCorrelation());
+        extractor->setCorrelationImportant ( w->getCorrelationImportant());
+        extractor->setCheckFisherMinimization ( w->getCheckFisherMinimization());
+        extractor->setStoreOnlyDifferent ( w->getStoreOnlyDifferent());
+        extractor->setUmEnabled( w->getUmEnabled());
+        extractor->setUmSamplesBound( w->getUmSamplesBound());
+        extractor->setUmBound( w->getUmBound());
+        folder = w->getFolder();
     }
 }
 
@@ -1390,13 +1393,6 @@ void ExpertDiscoveryExportSequences::run() {
     }
 
     base.save(out);
-}
-
-Task::ReportResult ExpertDiscoveryExportSequences::report() {
-    if (hasError()) {
-        QMessageBox(QMessageBox::Critical, tr("Error"), stateInfo.getError()).exec();
-    }
-    return ReportResult_Finished;
 }
 
 }//namespace

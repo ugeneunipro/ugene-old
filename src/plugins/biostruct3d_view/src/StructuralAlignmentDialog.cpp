@@ -19,26 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#include "StructuralAlignmentDialog.h"
-#include "BioStruct3DSubsetEditor.h"
-
-#include <U2Core/GObject.h>
-#include <U2Core/BioStruct3DObject.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2DbiRegistry.h>
-#include <U2Gui/HelpButton.h>
+#include <QMessageBox>
 
 #include <U2Algorithm/StructuralAlignmentAlgorithm.h>
 #include <U2Algorithm/StructuralAlignmentAlgorithmFactory.h>
 #include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
 
-#include <QMessageBox>
+#include <U2Core/AppContext.h>
+#include <U2Core/BioStruct3DObject.h>
+#include <U2Core/GObject.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/HelpButton.h>
+
+#include "BioStruct3DSubsetEditor.h"
+#include "StructuralAlignmentDialog.h"
 
 namespace U2 {
-
-/* class StructuralAlignmentDialog : public QDialog, public Ui::StructuralAlignmentDialog */
 
 static QList<BioStruct3DObject*> findAvailableBioStructs() {
     QList<GObject*> objs = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::BIOSTRUCTURE_3D);

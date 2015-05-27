@@ -22,45 +22,25 @@
 #include <algorithm>
 #include <functional>
 
-#include <QtCore/QFileInfo>
-
-#include <QtGui/QClipboard>
-#include <QtGui/QCloseEvent>
-#include <QtGui/QPainter>
-#include <QtGui/QPixmap>
-
-#include <QtSvg/QSvgGenerator>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QBoxLayout>
-#include <QtGui/QComboBox>
-#include <QtGui/QGraphicsSceneMouseEvent>
-#include <QtGui/QGraphicsView>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#include <QtGui/QPrinter>
-#include <QtGui/QShortcut>
-#include <QtGui/QSplitter>
-#include <QtGui/QTableWidget>
-#include <QtGui/QToolBar>
-#include <QtGui/QToolButton>
-#else
-#include <QtPrintSupport/QPrinter>
-
-#include <QtWidgets/QBoxLayout>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QGraphicsSceneMouseEvent>
-#include <QtWidgets/QGraphicsView>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QShortcut>
-#include <QtWidgets/QSplitter>
-#include <QtWidgets/QTableWidget>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QToolButton>
-#endif
+#include <QBoxLayout>
+#include <QClipboard>
+#include <QCloseEvent>
+#include <QComboBox>
+#include <QFileInfo>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsView>
+#include <QMainWindow>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPainter>
+#include <QPixmap>
+#include <QPrinter>
+#include <QShortcut>
+#include <QSplitter>
+#include <QSvgGenerator>
+#include <QTableWidget>
+#include <QToolBar>
+#include <QToolButton>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
@@ -89,6 +69,7 @@
 #include <U2Gui/GlassView.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/MainWindow.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2Lang/ActorModel.h>
@@ -138,13 +119,10 @@
 #include "WorkflowTabView.h"
 #include "WorkflowViewController.h"
 #include "WorkflowViewItems.h"
-#include "WorkflowViewItems.h"
 #include "debug_messages_translation/WorkflowDebugMessageParserImpl.h"
 #include "library/CreateExternalProcessDialog.h"
 #include "library/ExternalProcessWorker.h"
 #include "library/ScriptWorker.h"
-
-/* TRANSLATOR U2::LocalWorkflow::WorkflowView*/
 
 namespace U2 {
 
@@ -315,8 +293,11 @@ WorkflowView * WorkflowView::openWD(WorkflowGObject *go) {
         return createInstance(go);
     }
 
-    StartupDialog d(AppContext::getMainWindow()->getQMainWindow());
-    if (QDialog::Accepted == d.exec()) {
+    QObjectScopedPointer<StartupDialog> d = new StartupDialog(AppContext::getMainWindow()->getQMainWindow());
+    d->exec();
+    CHECK(!d.isNull(), NULL);
+
+    if (QDialog::Accepted == d->result()) {
         return createInstance(go);
     }
     return NULL;
@@ -890,14 +871,17 @@ void WorkflowView::sl_findPrototype(){
 }
 
 void WorkflowView::sl_createScript() {
-    CreateScriptElementDialog dlg(this);
-    if(dlg.exec() == QDialog::Accepted) {
-        QList<DataTypePtr > input = dlg.getInput();
-        QList<DataTypePtr > output = dlg.getOutput();
-        QList<Attribute*> attrs = dlg.getAttributes();
-        QString name = dlg.getName();
-        QString desc = dlg.getDescription();
-        if(LocalWorkflow::ScriptWorkerFactory::init(input, output, attrs, name, desc, dlg.getActorFilePath())) {
+    QObjectScopedPointer<CreateScriptElementDialog> dlg = new CreateScriptElementDialog(this);
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (dlg->result() == QDialog::Accepted) {
+        QList<DataTypePtr > input = dlg->getInput();
+        QList<DataTypePtr > output = dlg->getOutput();
+        QList<Attribute*> attrs = dlg->getAttributes();
+        QString name = dlg->getName();
+        QString desc = dlg->getDescription();
+        if(LocalWorkflow::ScriptWorkerFactory::init(input, output, attrs, name, desc, dlg->getActorFilePath())) {
             ActorPrototype *proto = WorkflowEnv::getProtoRegistry()->getProto(LocalWorkflow::ScriptWorkerFactory::ACTOR_ID + name);
             QRectF rect = scene->sceneRect();
             addProcess(createActor(proto, QVariantMap()), rect.center());
@@ -906,9 +890,12 @@ void WorkflowView::sl_createScript() {
 }
 
 void WorkflowView::sl_externalAction() {
-    CreateExternalProcessDialog dlg(this);
-    if(dlg.exec() == QDialog::Accepted) {
-        ExternalProcessConfig *cfg = dlg.config();
+    QObjectScopedPointer<CreateExternalProcessDialog> dlg = new CreateExternalProcessDialog(this);
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (dlg->result() == QDialog::Accepted) {
+        ExternalProcessConfig *cfg = dlg->config();
         if(LocalWorkflow::ExternalProcessWorkerFactory::init(cfg)) {
             ActorPrototype *proto = WorkflowEnv::getProtoRegistry()->getProto(cfg->name);
             QRectF rect = scene->sceneRect();
@@ -983,9 +970,12 @@ void WorkflowView::sl_editScript() {
         Actor *scriptActor = selectedActors.first();
         AttributeScript *script = scriptActor->getScript();
         if(script!= NULL) {
-            ScriptEditorDialog scriptDlg(this,AttributeScriptDelegate::createScriptHeader(*script), script->getScriptText());
-            if(scriptDlg.exec() == QDialog::Accepted) {
-                script->setScriptText(scriptDlg.getScriptText());
+            QObjectScopedPointer<ScriptEditorDialog> scriptDlg = new ScriptEditorDialog(this, AttributeScriptDelegate::createScriptHeader(*script), script->getScriptText());
+            scriptDlg->exec();
+            CHECK(!scriptDlg.isNull(), );
+
+            if (scriptDlg->result() == QDialog::Accepted) {
+                script->setScriptText(scriptDlg->getScriptText());
                 scriptActor->setScript(script);
             }
         }
@@ -999,9 +989,12 @@ void WorkflowView::sl_editExternalTool() {
 
         ExternalProcessConfig *oldCfg = WorkflowEnv::getExternalCfgRegistry()->getConfigByName(proto->getId());
         ExternalProcessConfig *cfg = new ExternalProcessConfig(*oldCfg);
-        CreateExternalProcessDialog dlg(this, cfg, true);
-        if(dlg.exec() == QDialog::Accepted) {
-            cfg = dlg.config();
+        QObjectScopedPointer<CreateExternalProcessDialog> dlg = new CreateExternalProcessDialog(this, cfg, true);
+        dlg->exec();
+        CHECK(!dlg.isNull(), );
+
+        if(dlg->result() == QDialog::Accepted) {
+            cfg = dlg->config();
 
             if (!(*oldCfg == *cfg)) {
                 if (oldCfg->name != cfg->name) {
@@ -1717,12 +1710,13 @@ void WorkflowView::paintEvent(QPaintEvent *event) {
 }
 
 void WorkflowView::sl_configureParameterAliases() {
-    SchemaAliasesConfigurationDialogImpl dlg(*schema, this );
+    QObjectScopedPointer<SchemaAliasesConfigurationDialogImpl> dlg = new SchemaAliasesConfigurationDialogImpl(*schema, this );
     int ret = QDialog::Accepted;
     do {
-        ret = dlg.exec();
+        ret = dlg->exec();
+        CHECK(!dlg.isNull(), );
         if( ret == QDialog::Accepted ) {
-            if(!dlg.validateModel()) {
+            if(!dlg->validateModel()) {
                 QMessageBox::critical( this, tr("Bad input!"), tr("Aliases for workflow parameters should be different!") );
                 continue;
             }
@@ -1730,7 +1724,7 @@ void WorkflowView::sl_configureParameterAliases() {
             foreach (Actor * actor, schema->getProcesses()) {
                 actor->getParamAliases().clear();
             }
-            SchemaAliasesCfgDlgModel model = dlg.getModel();
+            SchemaAliasesCfgDlgModel model = dlg->getModel();
             foreach(const ActorId & id, model.aliases.keys()) {
                 foreach(const Descriptor & d, model.aliases.value(id).keys()) {
                     Actor * actor = schema->actorById(id);
@@ -1762,10 +1756,13 @@ void WorkflowView::sl_createGalaxyConfig() {
     if( meta.url.isEmpty() ) {
         return;
     }
-    GalaxyConfigConfigurationDialogImpl dlg( meta.url, this );
-    if ( QDialog::Accepted == dlg.exec() ) {
-        QList <QListWidgetItem*> schemeErrors;
-        bool created = dlg.createGalaxyConfigTask();
+
+    QObjectScopedPointer<GalaxyConfigConfigurationDialogImpl> dlg = new GalaxyConfigConfigurationDialogImpl( meta.url, this );
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if ( QDialog::Accepted == dlg->result() ) {
+        bool created = dlg->createGalaxyConfigTask();
         if( !created ) {
             QMessageBox::critical( this, tr("Internal error!"), tr("Can not create Galaxy config") );
             return;
@@ -1774,9 +1771,12 @@ void WorkflowView::sl_createGalaxyConfig() {
 }
 
 void WorkflowView::sl_configurePortAliases() {
-    PortAliasesConfigurationDialog dlg(*schema, this);
-    if (QDialog::Accepted == dlg.exec()) {
-        PortAliasesCfgDlgModel model = dlg.getModel();
+    QObjectScopedPointer<PortAliasesConfigurationDialog> dlg = new PortAliasesConfigurationDialog(*schema, this);
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (QDialog::Accepted == dlg->result()) {
+        PortAliasesCfgDlgModel model = dlg->getModel();
 
         QList<PortAlias> portAliases;
         foreach (Port *port, model.ports.keys()) {
@@ -1824,13 +1824,16 @@ void WorkflowView::sl_importSchemaToElement() {
             "UGENE doesn't support of wizards in the includes.");
         QMessageBox::critical(this, tr("Error"), error);
     } else if (WorkflowUtils::validateSchemaForIncluding(*schema, error)) {
-        ImportSchemaDialog d(this);
-        if (d.exec()) {
+        QObjectScopedPointer<ImportSchemaDialog> d = new ImportSchemaDialog(this);
+        d->exec();
+        CHECK(!d.isNull(), );
+
+        if (QDialog::Accepted == d->result()) {
             Schema *s = new Schema();
             U2OpStatusImpl os;
             HRSchemaSerializer::deepCopy(*schema, s, os);
             SAFE_POINT_OP(os, );
-            QString typeName = d.getTypeName();
+            QString typeName = d->getTypeName();
 
             s->setTypeName(typeName);
             QString text = HRSchemaSerializer::schema2String(*s, NULL);
@@ -2085,18 +2088,20 @@ void WorkflowView::sl_onSelectionChanged() {
 
 void WorkflowView::sl_exportScene() {
     propertyEditor->commit();
-    ExportImageDialog dialog(sceneView->viewport(), ExportImageDialog::WD, ExportImageDialog::SupportScaling, sceneView->viewport());
-    dialog.exec();
+    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(sceneView->viewport(), ExportImageDialog::WD, ExportImageDialog::SupportScaling, sceneView->viewport());
+    dialog->exec();
 }
 
 void WorkflowView::sl_saveScene() {
     if (meta.url.isEmpty()) {
-        WorkflowMetaDialog md(this, meta);
-        int rc = md.exec();
+        QObjectScopedPointer<WorkflowMetaDialog> md = new WorkflowMetaDialog(this, meta);
+        const int rc = md->exec();
+        CHECK(!md.isNull(), );
+
         if (rc != QDialog::Accepted) {
             return;
         }
-        meta = md.meta;
+        meta = md->meta;
         sl_updateTitle();
     }
     propertyEditor->commit();
@@ -2106,13 +2111,15 @@ void WorkflowView::sl_saveScene() {
 }
 
 void WorkflowView::sl_saveSceneAs() {
-    WorkflowMetaDialog md(this, meta);
-    int rc = md.exec();
+    QObjectScopedPointer<WorkflowMetaDialog> md = new WorkflowMetaDialog(this, meta);
+    const int rc = md->exec();
+    CHECK(!md.isNull(), );
+
     if (rc != QDialog::Accepted) {
         return;
     }
     propertyEditor->commit();
-    meta = md.meta;
+    meta = md->meta;
     Task* t = new SaveWorkflowSceneTask(getSchema(), getMeta());
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     sl_updateTitle();

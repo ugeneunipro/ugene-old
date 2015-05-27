@@ -19,15 +19,16 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Designer/GrouperEditor.h>
+
+#include <U2Gui/QObjectScopedPointer.h>
+
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/IntegralBusModel.h>
 
-#include <U2Designer/GrouperEditor.h>
-
-#include "NewGrouperSlotDialog.h"
-
 #include "GrouperEditorWidget.h"
+#include "NewGrouperSlotDialog.h"
 
 namespace U2 {
 
@@ -191,18 +192,22 @@ void GrouperEditorWidget::sl_onAddButtonClicked() {
         names.append(grouperModel->data(idx).toString());
     }
 
-    NewGrouperSlotDialog dlg(this, descs, names);
-    if (dlg.exec()) {
-        QString inSlotId = dlg.getInSlotId();
-        QString outSlotName = dlg.getOutSlotName();
+    QObjectScopedPointer<NewGrouperSlotDialog> dlg = new NewGrouperSlotDialog(this, descs, names);
+    const int dialogResult = dlg->exec();
+    CHECK(!dlg.isNull(), );
+
+    if (QDialog::Accepted == dialogResult) {
+        QString inSlotId = dlg->getInSlotId();
+        QString outSlotName = dlg->getOutSlotName();
         DataTypePtr type = busMap.value(inSlotId);
         inSlotId = GrouperOutSlot::busMap2readable(inSlotId);
 
-        ActionDialog *aDlg = ActionDialog::getActionDialog(this, NULL, type, grouperModel);
-        if (NULL == aDlg) {
-            return;
-        }
-        if (aDlg->exec()) {
+        QObjectScopedPointer<ActionDialog> aDlg = ActionDialog::getActionDialog(this, NULL, type, grouperModel);
+        CHECK(!aDlg.isNull(), );
+        const int dialogResult = aDlg->exec();
+        CHECK(!aDlg.isNull(), );
+
+        if (QDialog::Accepted == dialogResult) {
             GrouperSlotAction action = aDlg->getAction();
             GrouperOutSlot newSlot(outSlotName, inSlotId);
             newSlot.setAction(action);
@@ -234,11 +239,12 @@ void GrouperEditorWidget::sl_onEditButtonClicked() {
     QMap<Descriptor, DataTypePtr> busMap = getBusMap(inPort);
     DataTypePtr type = busMap.value(inSlotId);
 
-    ActionDialog *aDlg = ActionDialog::getActionDialog(this, action, type, model);
-    if (NULL == aDlg) {
-        return;
-    }
-    if (aDlg->exec()) {
+    QObjectScopedPointer<ActionDialog> aDlg = ActionDialog::getActionDialog(this, action, type, model);
+    CHECK(!aDlg.isNull(), );
+    const int dialogResult = aDlg->exec();
+    CHECK(!aDlg.isNull(), );
+
+    if (QDialog::Accepted == dialogResult) {
         GrouperSlotAction action = aDlg->getAction();
         model->setNewAction(outSlotName, action);
     }

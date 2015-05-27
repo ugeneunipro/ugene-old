@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
 #include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#endif
 
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 #include <U2Algorithm/SubstMatrixRegistry.h>
@@ -42,15 +36,17 @@
 #include <U2Core/Settings.h>
 #include <U2Core/TmpDirChecker.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2View/LicenseDialog.h>
 
-#include "CreatePhyTreeWidget.h"
 #include "CreatePhyTreeDialogController.h"
+#include "CreatePhyTreeWidget.h"
 #include "ui/ui_CreatePhyTreeDialog.h"
 
 namespace U2{
@@ -113,19 +109,19 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
 
 }
 
-void CreatePhyTreeDialogController::sl_okClicked(){
-
+void CreatePhyTreeDialogController::sl_okClicked() {
     settings.algorithmId = ui->algorithmBox->currentText();
 
     //Check license
-    if (settings.algorithmId == "PHYLIP Neighbor Joining"){//This bad hack :(
-        QList<Plugin*> plugins=AppContext::getPluginSupport()->getPlugins();
-        foreach (Plugin* plugin, plugins){
-            if(plugin->getName() == "PHYLIP"){
-                if(!plugin->isLicenseAccepted()){
-                    LicenseDialog licenseDialog(plugin);
-                    int ret = licenseDialog.exec();
-                    if(ret != QDialog::Accepted){
+    if (settings.algorithmId == "PHYLIP Neighbor Joining") { // This bad hack :(
+        QList<Plugin*> plugins = AppContext::getPluginSupport()->getPlugins();
+        foreach (Plugin* plugin, plugins) {
+            if (plugin->getName() == "PHYLIP"){
+                if (!plugin->isLicenseAccepted()) {
+                    QObjectScopedPointer<LicenseDialog> licenseDialog = new LicenseDialog(plugin);
+                    const int ret = licenseDialog->exec();
+                    CHECK(!licenseDialog.isNull(), );
+                    if (ret != QDialog::Accepted){
                         return;
                     }
                 }
@@ -177,8 +173,11 @@ void CreatePhyTreeDialogController::sl_okClicked(){
     }
 
     if(!memCheckOk){
-        QMessageBox mb(QMessageBox::Warning, tr("Warning"), msg, QMessageBox::Ok|QMessageBox::Cancel);
-        if(mb.exec() == QMessageBox::Ok){
+        QObjectScopedPointer<QMessageBox> mb = new QMessageBox(QMessageBox::Warning, tr("Warning"), msg, QMessageBox::Ok|QMessageBox::Cancel, this);
+        mb->exec();
+        CHECK(!mb.isNull(), );
+
+        if(mb->result() == QMessageBox::Ok){
             QDialog::accept();
         }
     }else{

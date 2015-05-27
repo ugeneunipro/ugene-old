@@ -51,6 +51,7 @@ namespace U2 {
 HMMSearchDialogController::HMMSearchDialogController(const U2SequenceObject* seqObj, QWidget* p)
 : QDialog(p)
 {
+    qDebug() << "HMMSearchDialogController was created";
     U2OpStatusImpl os;
     dnaSequence = seqObj->getWholeSequence(os);
     SAFE_POINT_EXT(!os.hasError(), QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
@@ -87,6 +88,10 @@ HMMSearchDialogController::HMMSearchDialogController(const U2SequenceObject* seq
     connect(hmmFileButton, SIGNAL(clicked()), SLOT(sl_hmmFileClicked()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_okClicked()));
     connect(domEvalueCuttofBox,SIGNAL(valueChanged(int)), SLOT(sl_expSpinBoxValueChanged(int)));
+}
+
+HMMSearchDialogController::~HMMSearchDialogController() {
+    qDebug() << "HMMSearchDialogController was destroyed";
 }
 
 void HMMSearchDialogController::sl_expSpinBoxValueChanged(int i){

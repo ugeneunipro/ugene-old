@@ -22,10 +22,11 @@
 #include <U2Core/DNASequenceUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include "PrimerLibrarySelector.h"
-#include "PrimerStatistics.h"
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "PrimerGroupBox.h"
+#include "PrimerLibrarySelector.h"
+#include "PrimerStatistics.h"
 
 namespace U2 {
 
@@ -66,9 +67,11 @@ void PrimerGroupBox::sl_translate() {
 }
 
 void PrimerGroupBox::sl_browse() {
-    PrimerLibrarySelector dlg(this);
-    CHECK(QDialog::Accepted == dlg.exec(), );
-    Primer result = dlg.getResult();
+    QObjectScopedPointer<PrimerLibrarySelector> dlg = new PrimerLibrarySelector(this);
+    dlg->exec();
+    CHECK(!dlg.isNull(), );
+    CHECK(QDialog::Accepted == dlg->result(), );
+    Primer result = dlg->getResult();
     primerEdit->setInvalidatedText(result.sequence);
 }
 

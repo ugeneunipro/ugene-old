@@ -19,28 +19,21 @@
  * MA 02110-1301, USA.
  */
 
+#include <QColorDialog>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+
 #include <U2Core/U2SafePoints.h>
-#include "ADVGraphModel.h"
-#include "WindowStepSelectorWidget.h"
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QColorDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QColorDialog>
-#include <QtWidgets/QMessageBox>
-#endif
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
+#include "ADVGraphModel.h"
 #include "GraphSettingsDialog.h"
+#include "WindowStepSelectorWidget.h"
 
 #define BACKGROUND_COLOR "QPushButton { background-color : %1;}"
 
@@ -111,10 +104,12 @@ void GraphSettingsDialog::sl_onPickColorButtonClicked()
     QString colorName = colorButton->objectName();
     QColor initial = colorMap.value(colorName);
 
-    QColorDialog CD(initial, this);
+    QObjectScopedPointer<QColorDialog> CD = new QColorDialog(initial, this);
+    CD->exec();
+    CHECK(!CD.isNull(), );
 
-    if (CD.exec() == QDialog::Accepted){
-        QColor newColor = CD.selectedColor();
+    if (CD->result() == QDialog::Accepted){
+        QColor newColor = CD->selectedColor();
         colorMap[colorName] = newColor;
         colorButton->setStyleSheet(QString(BACKGROUND_COLOR).arg(newColor.name()));
     }

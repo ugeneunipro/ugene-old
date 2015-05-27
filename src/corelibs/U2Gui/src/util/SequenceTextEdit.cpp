@@ -23,9 +23,11 @@
 #include <QMessageBox>
 #include <QMimeData>
 
-#include "SequenceTextEdit.h"
-
 #include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/QObjectScopedPointer.h>
+
+#include "SequenceTextEdit.h"
 
 namespace U2 {
 
@@ -58,9 +60,10 @@ void SequenceTextEdit::insertFromMimeData(const QMimeData *source) {
         delete mimeData;
     }
     catch (...) {
-        QMessageBox warning(QMessageBox::Warning, tr("Error on pasting large data"), tr("An error occurred on pasting large amount of data.\nText edit was cleared."), QMessageBox::Ok, QApplication::activeWindow());
-        warning.setObjectName("ExceptionWarning");
-        warning.exec();
+        QObjectScopedPointer<QMessageBox> warning = new QMessageBox(QMessageBox::Warning, tr("Error on pasting large data"), tr("An error occurred on pasting large amount of data.\nText edit was cleared."), QMessageBox::Ok, QApplication::activeWindow());
+        warning->setObjectName("ExceptionWarning");
+        warning->exec();
+        CHECK(!warning.isNull(), );
         clear();
     }
 }

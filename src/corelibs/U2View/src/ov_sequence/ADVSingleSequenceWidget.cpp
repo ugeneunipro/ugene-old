@@ -19,50 +19,42 @@
  * MA 02110-1301, USA.
  */
 
-#include "ADVSingleSequenceWidget.h"
-#include "ADVSequenceObjectContext.h"
-#include "AnnotatedDNAView.h"
+#include <QApplication>
+#include <QDialog>
+#include <QMessageBox>
+#include <QToolButton>
+#include <QWidgetAction>
+
+#include <U2Core/AnnotationSelection.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/GHints.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/L10n.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/ExportImageDialog.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/HBar.h>
+#include <U2Gui/PositionSelector.h>
+#include <U2Gui/RangeSelector.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "ADVConstants.h"
-#include "DetView.h"
-#include "Overview.h"
+#include "ADVSequenceObjectContext.h"
+#include "ADVSingleSequenceWidget.h"
+#include "AnnotatedDNAView.h"
 #include "CreateRulerDialogController.h"
-
-#include <U2Core/L10n.h>
-#include <U2Core/DocumentModel.h>
-
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/DNASequenceSelection.h>
-#include <U2Core/AnnotationSelection.h>
-#include <U2Core/GHints.h>
-#include <U2Core/DNAAlphabet.h>
-
-#include <U2Gui/RangeSelector.h>
-#include <U2Gui/PositionSelector.h>
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/ExportImageDialog.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Gui/HBar.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QToolButton>
-#include <QtGui/QWidgetAction>
-#include <QtGui/QDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QWidgetAction>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QMessageBox>
-#endif
-
+#include "DetView.h"
 #include "GSequenceGraphView.h"
+#include "Overview.h"
 
 namespace U2 {
+
 #define ADV_HEADER_HEIGHT 24
 #define IMAGE_DIR   "image"
 
@@ -598,15 +590,17 @@ void ADVSingleSequenceWidget::addADVSequenceWidgetAction(ADVSequenceWidgetAction
 }
 
 void ADVSingleSequenceWidget::sl_onSelectRange() {
-
     ADVSequenceObjectContext* ctx = getSequenceContext();
     DNASequenceSelection* selection = ctx->getSequenceSelection();
 
     const QVector<U2Region>& seqRegions = selection->getSelectedRegions();
-    MultipleRangeSelector mrs(this, seqRegions, ctx->getSequenceLength(), ctx->getSequenceObject()->isCircular());
 
-    if(mrs.exec() == QDialog::Accepted){
-        QVector<U2Region> curRegions = mrs.getSelectedRegions();
+    QObjectScopedPointer<MultipleRangeSelector> mrs = new MultipleRangeSelector(this, seqRegions, ctx->getSequenceLength(), ctx->getSequenceObject()->isCircular());
+    mrs->exec();
+    CHECK(!mrs.isNull(), );
+
+    if (mrs->result() == QDialog::Accepted){
+        QVector<U2Region> curRegions = mrs->getSelectedRegions();
         if(curRegions.isEmpty()){
             return;
         }
@@ -620,8 +614,6 @@ void ADVSingleSequenceWidget::sl_onSelectRange() {
             getSequenceContext()->getSequenceSelection()->setSelectedRegions(curRegions);
         }
     }
-
-
 }
 
 QVector<U2Region> ADVSingleSequenceWidget::getSelectedAnnotationRegions(int max) {
@@ -672,26 +664,29 @@ void ADVSingleSequenceWidget::setSelectedRegion(const U2Region& region)
 }
 
 void ADVSingleSequenceWidget::sl_zoomToRange() {
-    QDialog dlg(this);
-    dlg.setModal(true);
-    dlg.setWindowTitle(tr("Zoom to range"));
     DNASequenceSelection* sel = getSequenceSelection();
-    int start=getVisibleRange().startPos + 1, end=getVisibleRange().endPos();
+    int start = getVisibleRange().startPos + 1;
+    int end = getVisibleRange().endPos();
     if (!sel->isEmpty()) {
         const QVector<U2Region>& regions = sel->getSelectedRegions();
-        start=regions.first().startPos+1;
-        end=regions.first().endPos();
+        start = regions.first().startPos+1;
+        end = regions.first().endPos();
     }
 
-    RangeSelector* rs = new RangeSelector(&dlg, start, end, getSequenceLength(), true);
+    QObjectScopedPointer<QDialog> dlg = new QDialog(this);
+    dlg->setModal(true);
+    dlg->setWindowTitle(tr("Zoom to range"));
 
-    int rc = dlg.exec();
+    RangeSelector* rs = new RangeSelector(dlg.data(), start, end, getSequenceLength(), true);
+
+    const int rc = dlg->exec();
+    CHECK(!dlg.isNull(), );
+
     if (rc == QDialog::Accepted) {
         U2Region r(rs->getStart() - 1, rs->getEnd() - rs->getStart() + 1);
         panView->setVisibleRange(r);
         detView->setStartPos(r.startPos);
     }
-    delete rs;
 }
 
 #define SPLITTER_STATE_MAP_NAME "ADVSI_MAP"
@@ -810,8 +805,8 @@ void ADVSingleSequenceWidget::sl_saveScreenshot() {
     if (linesLayout->count() + linesSplitter->count() < 2) {
         return;
     }
-    ExportImageDialog dialog(this, ExportImageDialog::SequenceView);
-    dialog.exec();
+    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(this, ExportImageDialog::SequenceView);
+    dialog->exec();
 }
 
 void ADVSingleSequenceWidget::closeView() {
@@ -852,12 +847,14 @@ void ADVSingleSequenceWidget::sl_createCustomRuler() {
         offset = selection.first().startPos;
     }
 
-    CreateRulerDialogController d(namesToFilter, U2Region(0, getSequenceObject()->getSequenceLength()), offset);
-    int rc = d.exec();
+    QObjectScopedPointer<CreateRulerDialogController> d = new CreateRulerDialogController(namesToFilter, U2Region(0, getSequenceObject()->getSequenceLength()), offset);
+    const int rc = d->exec();
+    CHECK(!d.isNull(), );
+
     if (rc != QDialog::Accepted) {
         return;
     }
-    RulerInfo ri(d.name, d.offset, d.color);
+    RulerInfo ri(d->name, d->offset, d->color);
     panView->addCustomRuler(ri);
 }
 

@@ -24,8 +24,10 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/L10n.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/AppSettingsGUI.h>
+#include <U2Gui/QObjectScopedPointer.h>
 
 #include "DnaAssemblyGUIExtension.h"
 
@@ -86,11 +88,11 @@ bool DnaAssemblyAlgorithmMainWidget::requiredToolsAreOk() const {
     }
 
     if (!missedExtTools.isEmpty()) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("DNA Assembly"));
-        msgBox.setInformativeText(tr("Do you want to specify it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
+        QObjectScopedPointer<QMessageBox> msgBox = new QMessageBox();
+        msgBox->setWindowTitle(tr("DNA Assembly"));
+        msgBox->setInformativeText(tr("Do you want to specify it now?"));
+        msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox->setDefaultButton(QMessageBox::Yes);
 
         QString msgText(tr("Path for "));
         for (int i = 0, n = missedExtTools.size(); i < n; ++i) {
@@ -99,9 +101,11 @@ bool DnaAssemblyAlgorithmMainWidget::requiredToolsAreOk() const {
             msgText.append(QString("<i>%1</i>").arg(toolName));
         }
         msgText.append(tr(" is not set."));
-        msgBox.setText(msgText);
+        msgBox->setText(msgText);
 
-        int ret = msgBox.exec();
+        const int ret = msgBox->exec();
+        CHECK(!msgBox.isNull(), false);
+
         if (ret == QMessageBox::Yes) {
             AppContext::getAppSettingsGUI()->showSettingsDialog(APP_SETTINGS_EXTERNAL_TOOLS);
         }

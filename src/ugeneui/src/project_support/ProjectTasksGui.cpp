@@ -19,48 +19,42 @@
  * MA 02110-1301, USA.
  */
 
-#include "ProjectTasksGui.h"
-
-#include "ProjectServiceImpl.h"
-#include "ProjectImpl.h"
-#include "ProjectLoaderImpl.h"
-#include "ui/ui_SaveProjectDialog.h"
+#include <QDomDocument>
+#include <QMessageBox>
+#include <QMutex>
 
 #include <AppContextImpl.h>
 
-#include <U2Core/SaveDocumentTask.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/RemoveDocumentTask.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/DocumentModel.h>
+#include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/CMDLineUtils.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentUtils.h>
 #include <U2Core/GHints.h>
 #include <U2Core/GObject.h>
-#include <U2Core/AppSettings.h>
-#include <U2Core/L10n.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/Log.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/CMDLineUtils.h>
-#include <U2Core/UnloadedObject.h>
 #include <U2Core/GObjectUtils.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/Log.h>
+#include <U2Core/RemoveDocumentTask.h>
+#include <U2Core/SaveDocumentTask.h>
 #include <U2Core/Settings.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/UnloadedObject.h>
 #include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Gui/ObjectViewModel.h>
-#include <U2Gui/UnloadDocumentTask.h>
 #include <U2Gui/ProjectParsing.h>
+#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Gui/UnloadDocumentTask.h>
 
-#include <QtXml/QDomDocument>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
-
-
-#include <QtCore/QMutex>
+#include "ProjectImpl.h"
+#include "ProjectLoaderImpl.h"
+#include "ProjectServiceImpl.h"
+#include "ProjectTasksGui.h"
+#include "ui/ui_SaveProjectDialog.h"
 
 namespace U2 {
 
@@ -161,13 +155,15 @@ void SaveProjectTask::prepare() {
             code = savedSaveProjectState;
             if (QDialogButtonBox::NoButton == savedSaveProjectState) {
                 // QMessageBox::NoButton is a special invalid button state, represents that no saved choise was made
-                SaveProjectDialogController saveProjectDialog(mainWindow);
-                code = saveProjectDialog.exec();
+                QObjectScopedPointer<SaveProjectDialogController> saveProjectDialog = new SaveProjectDialogController(mainWindow);
+                code = saveProjectDialog->exec();
+                CHECK_EXT(!saveProjectDialog.isNull(), setError("dialog is NULL"), );
+
                 if (code == QDialog::Rejected) {
                     code = QDialogButtonBox::Cancel;
                 }
 
-                if (QDialogButtonBox::Cancel != code && true == saveProjectDialog.dontAskCheckBox->isChecked()) {
+                if (QDialogButtonBox::Cancel != code && true == saveProjectDialog->dontAskCheckBox->isChecked()) {
                     AppContext::getAppSettings()->getUserAppsSettings()->setAskToSaveProject(code);
                 }
             }
@@ -179,11 +175,13 @@ void SaveProjectTask::prepare() {
         }
 
         if (code == QDialogButtonBox::Yes) {
-            ProjectDialogController d(ProjectDialogController::Save_Project, mainWindow);
-            int rc = d.exec();
+            QObjectScopedPointer<ProjectDialogController> d = new ProjectDialogController(ProjectDialogController::Save_Project, mainWindow);
+            const int rc = d->exec();
+            CHECK_EXT(!d.isNull(), setError("dialog is NULL"), );
+
             if (rc == QDialog::Accepted) {
-                AppContext::getProject()->setProjectName(d.projectNameEdit->text());
-                url = d.projectFolderEdit->text() + "/" + d.projectFileEdit->text();
+                AppContext::getProject()->setProjectName(d->projectNameEdit->text());
+                url = d->projectFolderEdit->text() + "/" + d->projectFileEdit->text();
                 if (!url.endsWith(PROJECTFILE_EXT)) {
                     url.append(PROJECTFILE_EXT);
                 }
