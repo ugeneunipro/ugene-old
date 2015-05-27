@@ -42,7 +42,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Gui/GraphUtils.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2View/ADVSequenceObjectContext.h>

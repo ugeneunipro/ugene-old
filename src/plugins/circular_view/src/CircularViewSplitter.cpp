@@ -40,7 +40,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Gui/HBar.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "CircularView.h"
 #include "CircularViewImageExportTask.h"

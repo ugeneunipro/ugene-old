@@ -22,7 +22,7 @@
 #include <QMessageBox>
 
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "ExpertDiscoverySetupRecBoundDialog.h"
 

@@ -40,7 +40,7 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2View/WebWindow.h>
 

@@ -42,7 +42,7 @@
 #include <U2Gui/HBar.h>
 #include <U2Gui/PositionSelector.h>
 #include <U2Gui/RangeSelector.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "ADVConstants.h"
 #include "ADVSequenceObjectContext.h"

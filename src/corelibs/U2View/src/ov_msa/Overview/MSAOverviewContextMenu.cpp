@@ -24,7 +24,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ExportImageDialog.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "MSAOverviewContextMenu.h"
 #include "MSAOverviewImageExportTask.h"

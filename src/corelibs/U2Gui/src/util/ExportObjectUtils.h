@@ -24,7 +24,7 @@
 
 #include <U2Core/U2IdTypes.h>
 
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 namespace U2 {
 

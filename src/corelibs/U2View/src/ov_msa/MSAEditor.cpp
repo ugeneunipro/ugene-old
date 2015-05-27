@@ -71,7 +71,7 @@
 #include <U2Gui/OptionsPanel.h>
 #include <U2Gui/OptionsPanelWidget.h>
 #include <U2Gui/ProjectView.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2View/MSAColorScheme.h>

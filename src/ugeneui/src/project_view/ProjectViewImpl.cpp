@@ -60,7 +60,7 @@
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/ProjectUtils.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/UnloadDocumentTask.h>
 
 #include <U2View/ADVSequenceWidget.h>

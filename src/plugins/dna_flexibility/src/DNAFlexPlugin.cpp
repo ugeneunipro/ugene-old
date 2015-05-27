@@ -29,7 +29,7 @@
 #include <U2View/ADVUtils.h>
 #include <U2View/AnnotatedDNAView.h>
 
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "DNAFlexDialog.h"
 #include "DNAFlexGraph.h"

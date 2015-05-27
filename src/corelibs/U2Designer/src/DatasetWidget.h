@@ -24,7 +24,7 @@
 
 #include <U2Core/U2OpStatus.h>
 
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/SharedConnectionsDialog.h>
 
 #include "UrlItem.h"

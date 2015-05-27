@@ -49,7 +49,7 @@
 #include <U2Gui/ProjectView.h>
 #include <U2Gui/SearchGenbankSequenceDialogController.h>
 #include <U2Gui/SharedConnectionsDialog.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2View/DnaAssemblyGUIExtension.h>

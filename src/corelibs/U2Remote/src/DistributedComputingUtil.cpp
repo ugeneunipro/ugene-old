@@ -34,7 +34,7 @@
 #include <U2Core/NetworkConfiguration.h>
 
 #include <U2Gui/MainWindow.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2Remote/PingTask.h>
 #include <U2Remote/RemoteWorkflowRunTask.h>

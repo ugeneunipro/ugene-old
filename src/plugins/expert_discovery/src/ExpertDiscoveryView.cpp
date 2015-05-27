@@ -35,7 +35,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2View/ADVSequenceObjectContext.h>

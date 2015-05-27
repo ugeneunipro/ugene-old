@@ -43,7 +43,7 @@
 
 #include <U2Gui/AuthenticationDialog.h>
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "EditConnectionDialog.h"
 #include "SharedConnectionsDialog.h"

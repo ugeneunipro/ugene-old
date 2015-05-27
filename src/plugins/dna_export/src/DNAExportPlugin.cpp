@@ -23,7 +23,7 @@
 #include <U2Core/GAutoDeleteList.h>
 
 #include <U2Gui/ToolsMenu.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 #include <U2Test/XMLTestFormat.h>

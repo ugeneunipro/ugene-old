@@ -59,7 +59,7 @@
 #include <U2Gui/OptionsPanel.h>
 #include <U2Gui/PositionSelector.h>
 #include <U2Gui/RemovePartFromSequenceDialogController.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2View/CodonTable.h>
 #include <U2View/FindPatternWidgetFactory.h>

@@ -22,7 +22,7 @@
 #include <U2Core/DNASequenceUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "PrimerGroupBox.h"
 #include "PrimerLibrarySelector.h"

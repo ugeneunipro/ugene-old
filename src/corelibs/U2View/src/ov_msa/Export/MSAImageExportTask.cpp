@@ -24,7 +24,7 @@
 
 #include <U2Core/L10n.h>
 
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "MSAImageExportTask.h"
 #include "ui_MSAExportSettings.h"

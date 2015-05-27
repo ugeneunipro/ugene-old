@@ -40,7 +40,7 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/Notification.h>
 #include <U2Gui/ToolsMenu.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2Lang/WorkflowSettings.h>
 

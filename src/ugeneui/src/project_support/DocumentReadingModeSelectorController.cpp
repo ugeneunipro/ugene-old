@@ -28,7 +28,7 @@
 #include <U2Formats/DocumentFormatUtils.h>
 
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "DocumentReadingModeSelectorController.h"
 #include "ui/ui_SequenceReadingModeSelectorDialog.h"

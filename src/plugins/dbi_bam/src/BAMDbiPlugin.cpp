@@ -51,7 +51,7 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/OpenViewTask.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "BAMDbiPlugin.h"
 #include "BAMFormat.h"

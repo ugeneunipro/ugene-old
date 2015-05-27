@@ -35,7 +35,7 @@
 
 #include <U2Formats/AceFormat.h>
 
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "AceImporter.h"
 #include "CloneAssemblyWithReferenceToDbiTask.h"

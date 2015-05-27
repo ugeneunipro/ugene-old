@@ -41,7 +41,7 @@
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2Remote/RemoteMachineMonitorDialogController.h>

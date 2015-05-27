@@ -21,7 +21,7 @@
 
 #include <U2Designer/GrouperEditor.h>
 
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/CoreLibConstants.h>

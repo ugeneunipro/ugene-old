@@ -29,7 +29,7 @@
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/SuggestCompleter.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2Lang/RunFileSystem.h>
 

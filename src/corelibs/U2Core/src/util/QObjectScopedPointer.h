@@ -32,30 +32,30 @@ template <class T>
 class U2GUI_EXPORT QObjectScopedPointer {
 public:
     QObjectScopedPointer(T *dialog = NULL) :
-        dialogPointer(dialog)
+        pointer(dialog)
     {
 
     }
     ~QObjectScopedPointer() {
-        delete dialogPointer.data();
+        delete pointer.data();
     }
 
     bool isNull() const {
-        return dialogPointer.isNull();
+        return pointer.isNull();
     }
 
-    T * operator->() const {return dialogPointer.operator ->();}
-    T & operator*() const {return *dialogPointer.operator *();}
+    T * operator->() const {return pointer.operator ->();}
+    T & operator*() const {return *pointer.operator *();}
     T * data() const {
-        return dialogPointer.data();
+        return pointer.data();
     }
     QObjectScopedPointer<T> &operator=(T* p) {
-        dialogPointer = p;
+        pointer = p;
         return *this;
     }
 
 private:
-    QPointer<T> dialogPointer;
+    QPointer<T> pointer;
 };
 
 template <class T>

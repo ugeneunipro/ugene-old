@@ -41,7 +41,7 @@
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/LicenseDialog.h>

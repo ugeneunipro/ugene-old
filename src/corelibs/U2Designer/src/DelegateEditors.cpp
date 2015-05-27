@@ -29,7 +29,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ScriptEditorDialog.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowUtils.h>

@@ -38,7 +38,7 @@
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2View/ADVAnnotationCreation.h>
 #include <U2View/ADVSequenceObjectContext.h>

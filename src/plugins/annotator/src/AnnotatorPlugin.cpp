@@ -28,7 +28,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/GUIUtils.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2Test/GTest.h>
 #include <U2Test/GTestFrameworkComponents.h>

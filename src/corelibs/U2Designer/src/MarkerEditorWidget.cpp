@@ -22,7 +22,7 @@
 #include <U2Designer/EditMarkerGroupDialog.h>
 #include <U2Designer/MarkerEditor.h>
 
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2Lang/Marker.h>
 #include <U2Lang/MarkerUtils.h>

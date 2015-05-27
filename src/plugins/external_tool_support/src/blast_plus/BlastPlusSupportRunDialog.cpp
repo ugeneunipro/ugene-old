@@ -47,7 +47,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/OpenViewTask.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "BlastPlusSupport.h"
 #include "BlastPlusSupportRunDialog.h"

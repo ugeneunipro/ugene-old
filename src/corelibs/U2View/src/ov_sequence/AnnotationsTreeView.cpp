@@ -53,7 +53,7 @@
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/TreeWidgetUtils.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "ADVConstants.h"
 #include "ADVSequenceObjectContext.h"

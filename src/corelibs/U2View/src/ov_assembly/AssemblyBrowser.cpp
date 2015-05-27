@@ -57,7 +57,7 @@
 #include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/OptionsPanel.h>
 #include <U2Gui/PositionSelector.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2View/ConvertAssemblyToSamDialog.h>
 

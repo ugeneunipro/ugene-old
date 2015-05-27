@@ -55,7 +55,7 @@
 #include <U2Gui/ExportObjectUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/OpenViewTask.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>

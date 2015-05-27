@@ -23,7 +23,7 @@
 #include <QPushButton>
 
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "DashboardsManagerDialog.h"
 

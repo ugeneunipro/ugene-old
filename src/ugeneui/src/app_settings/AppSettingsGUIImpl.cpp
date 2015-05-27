@@ -24,7 +24,7 @@
 #include <U2Core/AppContext.h>
 
 #include <U2Gui/MainWindow.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "AppSettingsDialogController.h"
 #include "AppSettingsGUIImpl.h"

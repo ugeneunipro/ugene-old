@@ -55,7 +55,7 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectView.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "ExportChromatogramDialog.h"
 #include "ExportMSA2MSADialog.h"

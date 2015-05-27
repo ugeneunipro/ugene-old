@@ -49,7 +49,7 @@
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/ProjectViewModel.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/UnloadDocumentTask.h>
 
 #include "FilteredProjectItemDelegate.h"

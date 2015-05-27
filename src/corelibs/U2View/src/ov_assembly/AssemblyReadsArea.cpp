@@ -50,7 +50,7 @@
 #include <U2Formats/DocumentFormatUtils.h>
 
 #include <U2Gui/OpenViewTask.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "AssemblyBrowser.h"
 #include "AssemblyConsensusArea.h"

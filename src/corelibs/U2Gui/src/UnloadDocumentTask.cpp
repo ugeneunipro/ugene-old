@@ -37,7 +37,7 @@
 
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/OpenViewTask.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "UnloadDocumentTask.h"
 

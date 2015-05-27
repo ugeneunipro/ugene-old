@@ -37,7 +37,7 @@
 
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectView.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "ETSProjectViewItemsContoller.h"
 #include "ExternalToolSupportSettings.h"

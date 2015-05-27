@@ -53,7 +53,7 @@
 #include <U2Gui/HBar.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/OptionsPanel.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "CreateBranchesTask.h"
 #include "CreateCircularBranchesTask.h"

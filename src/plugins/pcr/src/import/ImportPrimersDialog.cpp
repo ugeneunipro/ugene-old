@@ -30,7 +30,7 @@
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/ProjectUtils.h>
 #include <U2Gui/SharedConnectionsDialog.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "ImportPrimerFromObjectTask.h"

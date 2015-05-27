@@ -29,7 +29,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/HelpButton.h>
-#include <U2Gui/QObjectScopedPointer.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include "ADVGraphModel.h"
 #include "GraphSettingsDialog.h"

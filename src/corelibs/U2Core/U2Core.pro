@@ -220,6 +220,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/MsaRowUtils.h \
            src/util/MSAUtils.h \
            src/util/PMatrixSerializeUtils.h \
+           src/util/QObjectScopedPointer.h \
            src/util/QVariantUtils.h \
            src/util/SequenceUtils.h \
            src/util/TextUtils.h \
