@@ -4964,6 +4964,10 @@ GUI_TEST_CLASS_DEFINITION(test_1510) {
     GTGlobals::sleep(500);
 
     WorkflowProcessItem* readSeq = GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence 1");
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence 1"));
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(0, -200));
+    GTMouseDriver::release(os);
     CHECK_SET_ERR(readSeq != NULL, "\'Read Sequence 1\' element not found");
     GTGlobals::sleep(500);
     GTUtilsWorkflowDesigner::connect(os, readSeq, toBam);

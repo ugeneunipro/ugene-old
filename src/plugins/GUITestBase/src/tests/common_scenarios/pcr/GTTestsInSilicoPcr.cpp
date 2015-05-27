@@ -270,6 +270,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
     //5. Click "Show details".
     //Expected: the details dialog is shown, the GC note of the forward primer is red.
+    GTGlobals::sleep();
     GTUtilsDialog::waitForDialog(os, new PrimersDetailsDialogFiller(os));
     GTMouseDriver::moveTo(os, GTUtilsPcr::getDetailsPoint(os));
     GTMouseDriver::click(os);

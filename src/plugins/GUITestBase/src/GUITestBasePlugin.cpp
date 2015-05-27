@@ -429,7 +429,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1506);
     REGISTER_TEST(GUITest_regression_scenarios::test_1508);
-    //REGISTER_TEST(GUITest_regression_scenarios::test_1510);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1510);
     REGISTER_TEST(GUITest_regression_scenarios::test_1511);
     REGISTER_TEST(GUITest_regression_scenarios::test_1514);
     REGISTER_TEST(GUITest_regression_scenarios::test_1515);
@@ -1075,7 +1075,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0012);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0013);
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_project::test_0014, "UGENE-3890");
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0014);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0016);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
@@ -1210,7 +1210,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/remote request/
 //////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_project_remote_request::test_0001, "UGENE-3890");
+    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0004);
@@ -2296,7 +2296,7 @@ REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0005);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_in_silico_pcr::test_0006, "UGENE-3854");
+    REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0009);
