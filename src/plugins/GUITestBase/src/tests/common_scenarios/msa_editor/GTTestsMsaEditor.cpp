@@ -3879,44 +3879,6 @@ GUI_TEST_CLASS_DEFINITION(test_0052){
     GTFileDialog::openFile(os, testDir + "_common_data/clustal/3000_sequences.aln");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    class SelectSubalignmentChecker : public Filler {
-    public:
-        SelectSubalignmentChecker(U2OpStatus &os)
-            : Filler(os, "SelectSubalignmentDialog") {}
-
-        virtual void run() {
-            QWidget* dialog = QApplication::activeModalWidget();
-            CHECK_SET_ERR(dialog != NULL, "activeModalWidget is NULL");
-            QDialogButtonBox* box = dialog->findChild<QDialogButtonBox*>("buttonBox");
-            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
-            QPushButton* ok = box->button(QDialogButtonBox::Ok);
-            CHECK_SET_ERR(ok !=NULL, "ok button is NULL");
-
-            QSpinBox* startPosBox = dialog->findChild<QSpinBox*>("startPosBox");
-            CHECK_SET_ERR(startPosBox != NULL, "startPosBox is NULL");
-            GTSpinBox::setValue(os, startPosBox, 10, GTGlobals::UseKeyBoard);
-
-            QSpinBox* endPosBox = dialog->findChild<QSpinBox*>("endPosBox");
-            CHECK_SET_ERR(endPosBox != NULL, "endPoxBox is NULL");
-            GTSpinBox::setValue(os, endPosBox, 5, GTGlobals::UseKeyBoard);
-
-            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
-            GTWidget::click(os, ok);
-
-            GTSpinBox::setValue(os, endPosBox, 15);
-
-            QWidget *noneButton = dialog->findChild<QWidget*>("noneButton");
-            CHECK_SET_ERR(noneButton != NULL, "noneButton is NULL");
-            GTWidget::click(os, noneButton);
-
-            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
-            GTWidget::click(os, ok);
-
-            GTGlobals::sleep();
-            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
-        }
-    };
-
     class CustomFiller_0052 : public Filler {
     public:
         CustomFiller_0052(U2OpStatus &os)

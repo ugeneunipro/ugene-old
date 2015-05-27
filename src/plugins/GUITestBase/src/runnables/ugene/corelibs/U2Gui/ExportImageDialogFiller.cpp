@@ -166,11 +166,11 @@ void SelectSubalignmentFiller::run() {
 
     QSpinBox* startPosBox = dialog->findChild<QSpinBox*>("startPosBox");
     GT_CHECK(startPosBox != NULL, "startPosBox is NULL");
-    GTSpinBox::setValue(os, startPosBox, msaRegion.region.startPos);
+    GTSpinBox::setValue(os, startPosBox, msaRegion.region.startPos, GTGlobals::UseKeyBoard);
 
     QSpinBox* endPosBox = dialog->findChild<QSpinBox*>("endPosBox");
     GT_CHECK(endPosBox != NULL, "endPoxBox is NULL");
-    GTSpinBox::setValue(os, endPosBox, msaRegion.region.endPos());
+    GTSpinBox::setValue(os, endPosBox, msaRegion.region.endPos(), GTGlobals::UseKeyBoard);
 
     QWidget *noneButton = dialog->findChild<QWidget*>("noneButton");
     GT_CHECK(noneButton!=NULL, "noneButton is NULL");
