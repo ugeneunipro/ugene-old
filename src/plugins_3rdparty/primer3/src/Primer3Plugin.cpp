@@ -41,7 +41,7 @@
 #include <U2View/ADVUtils.h>
 #include <U2View/AnnotatedDNAView.h>
 
-#include "Primer3dialog.h"
+#include "Primer3Dialog.h"
 #include "Primer3Plugin.h"
 #include "Primer3Query.h"
 
