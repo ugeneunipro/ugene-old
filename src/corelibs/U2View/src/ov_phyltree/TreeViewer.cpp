@@ -1505,7 +1505,8 @@ void TreeViewerUI::updateActionsState(){
     collapseAction->setEnabled(thereIsSelection && !rootIsSelected);
 
     bool treeIsRooted = getTreeLayout() != UNROOTED_LAYOUT;
-    swapAction->setEnabled(thereIsSelection && treeIsRooted && !isOnlyLeafSelected());
+    bool treeIsCircular = getTreeLayout() == CIRCULAR_LAYOUT;
+    swapAction->setEnabled(thereIsSelection && treeIsRooted && (!treeIsCircular || !isOnlyLeafSelected()));
     rerootAction->setEnabled(thereIsSelection && !rootIsSelected && treeIsRooted);
 }
 
