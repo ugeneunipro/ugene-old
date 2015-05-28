@@ -105,7 +105,6 @@ namespace U2 {
 
 namespace GUITest_regression_scenarios {
 
-
 GUI_TEST_CLASS_DEFINITION(test_4007) {
     GTLogTracer l;
     //    1. Open file {data/samples/Genbank/murine.gb}
@@ -1818,8 +1817,43 @@ GUI_TEST_CLASS_DEFINITION(test_4295) {
  * 5. Run workflow
  * Expected state: no errors in log
  */
-    GTLogTracer logTracer;
+    //clean up
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os,"tabs"));
+    CHECK_SET_ERR(tabs != NULL, "tabs widget not found");
+
+    GTTabWidget::setCurrentIndex(os,tabs,0);
+
+    QTreeWidget* w = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"WorkflowPaletteElements"));
+    CHECK_SET_ERR(w != NULL,"WorkflowPaletteElements is null");
+
+    QTreeWidgetItem* foundItem = NULL;
+    QList<QTreeWidgetItem*> outerList = w->findItems("",Qt::MatchContains);
+    for (int i=0;i<outerList.count();i++){
+        QList<QTreeWidgetItem*> innerList;
+
+        for(int j=0;j<outerList.value(i)->childCount();j++ ){
+           innerList.append(outerList.value(i)->child(j));
+        }
+
+        foreach(QTreeWidgetItem* item, innerList){
+            QString s = item->data(0,Qt::UserRole).value<QAction*>()->text();
+            if(s == "test_4295"){
+                foundItem = item;
+            }
+        }
+    }
+    if (foundItem != NULL){
+        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove"));
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "", "Remove element"));
+        //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Cancel, "Remove this element?", "Remove element"));
+        GTUtilsWorkflowDesigner::clickOnPalette(os, "test_4295", Qt::RightButton);
+    }
+
+    // start test
+    GTLogTracer logTracer;
+
 
     GTUtilsWorkflowDesigner::addElement(os, "File List");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
@@ -1854,7 +1888,7 @@ GUI_TEST_CLASS_DEFINITION(test_4295) {
             CHECK(NULL != w, );
 
             QLineEdit *ed = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "templateLineEdit", w));
-            GTLineEdit::setText(os, ed, testDir + "_common_data/scenarios/_regression/4295/4295.py  $in $out");
+            GTLineEdit::setText(os, ed, "python "+testDir + "_common_data/scenarios/_regression/4295/4295.py  $in $out");
 
             QAbstractButton *button = GTWidget::findButtonByText(os, "Finish");
             CHECK(NULL != button, );
