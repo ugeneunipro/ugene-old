@@ -1997,6 +1997,34 @@ GUI_TEST_CLASS_DEFINITION(test_4325) {
     CHECK_SET_ERR(regions.contains(U2Region(110, 40)), "There is no (111, 150) annotated primer region");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4383) {
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsMSAEditorSequenceArea::scrollToPosition(os, QPoint(603, 1));
+
+    QWidget* activeWindow = GTUtilsMdi::activeWindow(os);
+    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", activeWindow));
+    CHECK_SET_ERR(msaEditArea != NULL, "MsaEditorSequenceArea not found");
+    QWidget *msaOffsetRight = GTWidget::findWidget(os, "msa_editor_offsets_view_widget_right", activeWindow);
+    CHECK_SET_ERR(msaOffsetRight != NULL, "MsaOffset Left not found");
+
+    GTMouseDriver::moveTo(os, msaOffsetRight->mapToGlobal(QPoint(msaOffsetRight->rect().left() - 2, 7)));
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os,msaOffsetRight->mapToGlobal(QPoint(msaOffsetRight->rect().left() - 52, 50)));
+    GTMouseDriver::release(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+
+    GTGlobals::sleep();
+    activeWindow = GTUtilsMdi::activeWindow(os);
+    msaOffsetRight = GTWidget::findWidget(os, "msa_editor_offsets_view_widget_right", activeWindow);
+    GTMouseDriver::moveTo(os, msaOffsetRight->mapToGlobal(QPoint(msaOffsetRight->rect().left() - 2, 77)));
+    GTMouseDriver::press(os);
+    GTGlobals::sleep();
+    GTMouseDriver::moveTo(os,msaOffsetRight->mapToGlobal(QPoint(msaOffsetRight->rect().left() - 52, 120)));
+    GTMouseDriver::release(os);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+}
 
 } // namespace GUITest_regression_scenarios
 
