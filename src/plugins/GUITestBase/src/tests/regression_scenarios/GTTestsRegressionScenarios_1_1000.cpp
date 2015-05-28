@@ -612,6 +612,21 @@ GUI_TEST_CLASS_DEFINITION(test_0597) {
     CHECK_SET_ERR(annotationGroup != NULL, "annotation group not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0605) {
+//    Crash on a number of multisequence files opening in the merge mode
+
+//    1. Open _common_data/scenarios/dp_view/EF591300.gb.
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/dp_view/EF591300.gb");
+
+//    2. Open _common_data/scenarios/dp_view/dpm1.fa.
+//    3. Choose the "Merge sequences into single sequence to show in sequence viewer" option with any gap size in the "Sequence reading option" dialog.
+    GTUtilsProject::openMultiSequenceFileAsMergedSequence(os, testDir + "_common_data/scenarios/dp_view/dpm1.fa");
+
+//    4. Open _common_data/scenarios/dp_view/dpm2.fa.
+//    5. Choose the same option.
+    GTUtilsProject::openMultiSequenceFileAsMergedSequence(os, testDir + "_common_data/scenarios/dp_view/dpm2.fa");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0610) {
     GTLogTracer logTracer;
 
