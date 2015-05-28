@@ -3768,6 +3768,37 @@ GUI_TEST_CLASS_DEFINITION( test_2506_1 ) {
 
     CHECK_SET_ERR(l.hasError() == true, "There is no expected error message in log");
 }
+
+GUI_TEST_CLASS_DEFINITION( test_2513 ){
+//    Open COI.nwk.
+    GTFileDialog::openFile(os, dataDir + "/samples/Newick/", "COI.nwk");
+//    Switch to the circular layout on the tree view.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_TREES_WIDGET"));
+    QComboBox* layoutCombo = GTWidget::findExactWidget<QComboBox*>(os, "layoutCombo");
+    GTComboBox::setIndexWithText(os, layoutCombo, "Circular");
+    GTGlobals::sleep(1000);
+//    Select the last node, then call a context menu for it. It contains two menu items: "swap siblings" and "reroot".
+    //The first one should be always disabled (for the tree leafs), the second one should be always enabled.
+    QList<QGraphicsItem*> nodes = GTUtilsPhyTree::getNodes(os);
+    int num = nodes.count();
+    GTMouseDriver::moveTo(os, GTUtilsPhyTree::getGlobalCoord(os, nodes.last()));
+    GTMouseDriver::click(os);
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<<"Swap Siblings", PopupChecker::IsDisabled));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<<"Reroot tree", PopupChecker::IsEnabled));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(500);
+
+    GTMouseDriver::moveTo(os, GTUtilsPhyTree::getGlobalCoord(os, nodes.at(22)));
+    GTMouseDriver::click(os);
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<<"Swap Siblings", PopupChecker::IsEnabled));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<<"Reroot tree", PopupChecker::IsEnabled));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2519 ) {
     // 1. Open {data/samples/FASTA/human_T1.fa}.
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
