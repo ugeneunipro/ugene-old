@@ -379,6 +379,37 @@ GUI_TEST_CLASS_DEFINITION(test_0073_2) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0339) {
+//    UGENE-339, MacOs only
+
+//    1. Open UGENE on MacOs
+//    2. Open samples/FASTA/human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+
+//    3. Press Ctrl+Shift+F
+    // hotkey replaced with Cmd+Shift+F on Mac
+//    Expected: Smith-Waterman dialog appears
+//    4. Close the dialog
+    GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "SmithWatermanDialogBase", QDialogButtonBox::Cancel));
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["cmd"]);
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["shift"]);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
+
+//    5. Press Ctrl+N
+    // hotkey replaced with Cmd+N on Mac
+//    Expected: New annotation dialog appears
+//    6. Close the dialog
+    GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "CreateAnnotationDialog", QDialogButtonBox::Cancel));
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["cmd"]);
+
+//    7. Press Ctrl+F
+    // hotkey replaced with Cmd+F on Mac
+//    Expected: Search pattern panel appears
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["cmd"]);
+    const bool isTabOpened = GTUtilsOptionPanelSequenceView::isTabOpened(os, GTUtilsOptionPanelSequenceView::Search);
+    CHECK_SET_ERR(isTabOpened, "'Search in sequence' tab is not opened");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0407) {
     // 1. Open _common_data/scenarios/_regression/407/trail.fas
     // Expected state: a message box appears
