@@ -46,7 +46,7 @@ GraphSettingsDialog::GraphSettingsDialog( GSequenceGraphDrawer* d, const U2Regio
     const GSequenceGraphWindowData& windowData = d->getWindowData();
     const GSequenceGraphMinMaxCutOffData& cutOffData = d->getCutOffData();
     wss = new WindowStepSelectorWidget(this, range, windowData.window, windowData.step);
-    mms = new MinMaxSelectorWidget(this, cutOffData.min, cutOffData.max, cutOffData.enableCuttoff);
+    mms = new MinMaxSelectorWidget(this, cutOffData.minEdge, cutOffData.maxEdge, cutOffData.enableCuttoff);
     QVBoxLayout* l = new QVBoxLayout();
     QHBoxLayout* buttonsLayout = new QHBoxLayout();
     buttonsLayout->addStretch(10);

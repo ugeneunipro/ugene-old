@@ -253,7 +253,7 @@ void GSequenceGraphDrawer::drawGraph(QPainter& p, const QSharedPointer<GSequence
     if (!points.isEmpty()) {
         assert(points.firstPoints.size() == nPoints);
 
-        double comin = commdata.min, comax = commdata.max;
+        double comin = commdata.minEdge, comax = commdata.maxEdge;
         if (commdata.enableCuttoff){
             min = comin;
             max = comax;
@@ -855,8 +855,8 @@ void GSequenceGraphDrawer::showSettingsDialog() {
         wdata.window = dlg->getWindowSelector()->getWindow();
         wdata.step = dlg->getWindowSelector()->getStep();
         commdata.enableCuttoff = dlg->getMinMaxSelector()->getState();
-        commdata.min = dlg->getMinMaxSelector()->getMin();
-        commdata.max = dlg->getMinMaxSelector()->getMax();
+        commdata.minEdge = dlg->getMinMaxSelector()->getMin();
+        commdata.maxEdge = dlg->getMinMaxSelector()->getMax();
         lineColors = dlg->getColors();
         view->update();
         view->changeLabelsColor();

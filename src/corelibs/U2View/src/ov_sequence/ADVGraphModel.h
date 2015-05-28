@@ -67,13 +67,13 @@ public:
 
 class U2VIEW_EXPORT GSequenceGraphMinMaxCutOffData {
 public:
-    GSequenceGraphMinMaxCutOffData() : min(0.0), max(0.0), enableCuttoff(false) {}
-    GSequenceGraphMinMaxCutOffData(double _min, double _max, bool _enableCuttoff) : min(_min), max(_max), enableCuttoff(_enableCuttoff){}
+    GSequenceGraphMinMaxCutOffData() : minEdge(0.0), maxEdge(0.0), enableCuttoff(false) {}
+    GSequenceGraphMinMaxCutOffData(double _min, double _max, bool _enableCuttoff) : minEdge(_min), maxEdge(_max), enableCuttoff(_enableCuttoff){}
 
     virtual ~GSequenceGraphMinMaxCutOffData(){}
 
-    double min;
-    double max;
+    double minEdge;
+    double maxEdge;
     bool enableCuttoff;
 };
 
