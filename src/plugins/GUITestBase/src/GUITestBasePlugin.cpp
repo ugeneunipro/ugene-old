@@ -1664,6 +1664,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0015_1);
     REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0015_2);
 
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0016);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0017);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0018);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0019);
+
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Annotations import
 /////////////////////////////////////////////////////////////////////////

@@ -17,24 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-#include "runnables/qt/MessageBoxFiller.h"
+
 #include "GTTestsDocumentFromText.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTWidget.h"
-#include "api/GTFileDialog.h"
-#include "api/GTWidget.h"
-#include "api/GTPlainTextEdit.h"
-#include "api/GTLineEdit.h"
-#include "api/GTAction.h"
-#include "api/GTMenu.h"
+#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
-#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsSequenceView.h"
-//#include <QtGui/QApplication>
+#include "GTUtilsTaskTreeView.h"
+#include "api/GTAction.h"
+#include "api/GTFileDialog.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTLineEdit.h"
+#include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTPlainTextEdit.h"
+#include "api/GTWidget.h"
+#include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
@@ -1194,6 +1194,135 @@ GUI_TEST_CLASS_DEFINITION(test_0015_2) {
     CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
 
     }
+
+GUI_TEST_CLASS_DEFINITION(test_0016) {
+//    Create a sequence from text in FASTA format (UGENE-1564): single sequence, data starts with sequence header
+
+//    1. Select {File -> New document from text} in the main menu.
+//    2. Input a nucleotide sequence in the dialog appeared in FASTA format:
+//    >seq_name
+//    ACGT
+
+    GTUtilsDialog::waitForDialog(os, new CreateDocumentFiller(os, ">seq_name\nACGT", false, CreateDocumentFiller::ExtendedDNA,
+                                                              false, true, "-", sandBoxDir + "test_0016.fa",
+                                                              CreateDocumentFiller::FASTA, "test_0016", false));
+
+//    3. Specify a created document location and press the "Create" button in the dialog.
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, GTMenu::FILE), QStringList() << "New document from text");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: the sequence has been added to the Project View, view is opened. The sequence name is the same as specified in the input text, sequence data are correct.
+    GTUtilsProjectTreeView::findIndex(os, "seq_name");
+    const QString sequenceData = GTUtilsSequenceView::getSequenceAsString(os);
+    const QString expectedSequenceData = "ACGT";
+    CHECK_SET_ERR(expectedSequenceData == sequenceData, QString("Incorrect sequence data: expect '%1', got '%2'")
+                  .arg(expectedSequenceData).arg(sequenceData));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0017) {
+//    Create a sequence from text in FASTA format (UGENE-1564): single sequence, data starts with a comment
+
+//    1. Select {File -> New document from text} in the main menu.
+//    2. Input a nucleotide sequence in the dialog appeared in FASTA format:
+//    ;just a comment
+//    >seq_name
+//    ACGT
+
+    GTUtilsDialog::waitForDialog(os, new CreateDocumentFiller(os, ";just a comment\n>seq_name\nACGT", false, CreateDocumentFiller::ExtendedDNA,
+                                                                  false, true, "-", sandBoxDir + "test_0017.fa",
+                                                                  CreateDocumentFiller::FASTA, "test_0017", false));
+
+//    3. Specify a created document location and press the "Create" button in the dialog.
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, GTMenu::FILE), QStringList() << "New document from text");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: the sequence has been added to the Project View, view is opened. The sequence name is the same as specified in the input text, sequence data are correct.
+    GTUtilsProjectTreeView::findIndex(os, "seq_name");
+    const QString sequenceData = GTUtilsSequenceView::getSequenceAsString(os);
+    const QString expectedSequenceData = "ACGT";
+    CHECK_SET_ERR(expectedSequenceData == sequenceData, QString("Incorrect sequence data: expect '%1', got '%2'")
+                  .arg(expectedSequenceData).arg(sequenceData));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0018) {
+//    Create a sequence from text in FASTA format (UGENE-1564): several sequences
+
+//    1. Select {File -> New document from text} in the main menu.
+//    2. Input nucleotide sequences in the dialog appeared in FASTA format:
+//    >seq_name1
+//    ACGT
+//    >seq_name2
+//    CCCC
+//    >seq_name3
+//    TTTT
+
+    const QString data = ">seq_name1\nACGT\n>seq_name2\nCCCC\n>seq_name3\nTTTT";
+    GTUtilsDialog::waitForDialog(os, new CreateDocumentFiller(os, data, false, CreateDocumentFiller::ExtendedDNA,
+                                                                  false, true, "-", sandBoxDir + "test_0018.fa",
+                                                                  CreateDocumentFiller::FASTA, "test_0018", false));
+
+//    3. Specify a created document location and press the "Create" button in the dialog.
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, GTMenu::FILE), QStringList() << "New document from text");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: sequences have been added to the Project View, view is opened. Sequence names are the same as specified in the input text, sequences data are correct.
+    GTUtilsProjectTreeView::findIndex(os, "seq_name1");
+    GTUtilsProjectTreeView::findIndex(os, "seq_name2");
+    GTUtilsProjectTreeView::findIndex(os, "seq_name3");
+
+    const QString sequenceData1 = GTUtilsSequenceView::getSequenceAsString(os, 0);
+    const QString sequenceData2 = GTUtilsSequenceView::getSequenceAsString(os, 1);
+    const QString sequenceData3 = GTUtilsSequenceView::getSequenceAsString(os, 2);
+
+    const QString expectedSequenceData1 = "ACGT";
+    const QString expectedSequenceData2 = "CCCC";
+    const QString expectedSequenceData3 = "TTTT";
+
+    CHECK_SET_ERR(expectedSequenceData1 == sequenceData1, QString("Incorrect first sequence data: expect '%1', got '%2'")
+                  .arg(expectedSequenceData1).arg(sequenceData1));
+    CHECK_SET_ERR(expectedSequenceData2 == sequenceData2, QString("Incorrect sequence sequence data: expect '%1', got '%2'")
+                  .arg(expectedSequenceData2).arg(sequenceData2));
+    CHECK_SET_ERR(expectedSequenceData3 == sequenceData3, QString("Incorrect third sequence data: expect '%1', got '%2'")
+                  .arg(expectedSequenceData3).arg(sequenceData3));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0019) {
+//    Create a sequence from text in FASTA format (UGENE-1564): several sequences, one sequence is empty
+
+//    1. Select {File -> New document from text} in the main menu.
+
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "active modal widget is NULL");
+
+//    2. Input nucleotide sequences in the dialog appeared in FASTA format:
+//    >seq_name1
+//    >seq_name2
+//    CCCC
+//    >seq_name3
+//    TTTT
+            const QString data = ">seq_name1\n>seq_name2\nCCCC\n>seq_name3\nTTTT";
+            GTPlainTextEdit::setPlainText(os, GTWidget::findExactWidget<QPlainTextEdit *>(os, "sequenceEdit", dialog), data);
+
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "filepathEdit", dialog), sandBoxDir + "test_0018.fa");
+
+//    3. Specify a created document location and press the "Create" button in the dialog.
+//    Expected state: a message box appears, dialog is not accepted.
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Input sequence is empty"));
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new CreateDocumentFiller(os, new Scenario));
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, GTMenu::FILE), QStringList() << "New document from text");
+}
 
 } // namespace GUITest_common_scenarios_document_from_text
 } // namespace U2
