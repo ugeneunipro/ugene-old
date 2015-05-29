@@ -3141,8 +3141,7 @@ GUI_TEST_CLASS_DEFINITION(test_1299) {
  * 2) Click on "Find substrings", "Text" slot
  *  Expected state: Popup menu should appear, contains bold "Additional" item menu
  */
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << ToolsMenu::WORKFLOW_DESIGNER);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::addSample(os, "Find substrings in sequences");
 
     GTUtilsWorkflowDesigner::click(os, "Find Substrings");

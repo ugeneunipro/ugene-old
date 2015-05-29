@@ -1225,10 +1225,38 @@ GUI_TEST_CLASS_DEFINITION(test_0768) {
     //    3. Click OK button.
 
     //    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
-    QFile f(dataDir + "workflow_samples/users/123.usa");
-    bool b = f.remove();
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTGlobals::sleep(500);
+
+
+    QTreeWidget* w = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"WorkflowPaletteElements"));
+    CHECK_SET_ERR(w != NULL,"WorkflowPaletteElements is null");
+
+    QTreeWidgetItem* foundItem = NULL;
+    QList<QTreeWidgetItem*> outerList = w->findItems("",Qt::MatchContains);
+    for (int i=0;i<outerList.count();i++){
+        QList<QTreeWidgetItem*> innerList;
+
+        for(int j=0;j<outerList.value(i)->childCount();j++ ){
+           innerList.append(outerList.value(i)->child(j));
+        }
+
+        foreach(QTreeWidgetItem* item, innerList){
+            QString s = item->data(0,Qt::UserRole).value<QAction*>()->text();
+            if(s == "123"){
+                foundItem = item;
+            }
+        }
+    }
+    if (foundItem != NULL){
+        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove"));
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "", "Remove element"));
+        //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Cancel, "Remove this element?", "Remove element"));
+        GTUtilsWorkflowDesigner::clickOnPalette(os, "123", Qt::RightButton);
+        GTUtilsMdi::click(os, GTGlobals::Close);
+        GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+        GTGlobals::sleep();
+    }
 
     GTUtilsDialog::waitForDialog(os, new CreateElementWithScriptDialogFiller(os, "123"));
     GTWidget::click(os, GTAction::button(os, "createScriptAction"));
