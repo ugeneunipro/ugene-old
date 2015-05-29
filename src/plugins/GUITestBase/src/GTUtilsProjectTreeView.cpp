@@ -276,6 +276,10 @@ QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os,
             if (s.startsWith(unload)){
                 s = s.mid(unload.length());
             }
+            const QRegExp loading("^\\[loading \\d+\\%\\]");
+            if (-1 != loading.indexIn(s)) {
+                s = s.mid(loading.matchedLength());
+            }
         }
 
         if (!itemName.isEmpty()) {

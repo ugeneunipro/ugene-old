@@ -1957,6 +1957,24 @@ GUI_TEST_CLASS_DEFINITION(test_4295) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4308) {
+//    1. Open "_common_data/clustal/10000_sequences.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/10000_sequences.aln");
+    GTUtilsTask::waitTaskStart(os, "Loading documents");
+
+//    2. Remove the document while the file is opening.
+    const bool itemExistsBefore = GTUtilsProjectTreeView::checkItem(os, "10000_sequences.aln");
+    CHECK_SET_ERR(itemExistsBefore, "A loading item not found");
+
+    GTUtilsNotifications::waitForNotification(os, true, "Subtask {Load '10000_sequences.aln'} is canceled Document was removed");
+    GTUtilsDocument::removeDocument(os, "10000_sequences.aln");
+
+//    Expected state: the document is removed from the project, the loading task is canceled, a notification about the canceled task appears.
+    const bool itemExists = GTUtilsProjectTreeView::checkItem(os, "10000_sequences.aln");
+    CHECK_SET_ERR(!itemExists, "The document is not removed from the project");
+    GTUtilsTask::checkNoTask(os, "Loading documents");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4323_1) {
     GTLogTracer logTracer;
 
