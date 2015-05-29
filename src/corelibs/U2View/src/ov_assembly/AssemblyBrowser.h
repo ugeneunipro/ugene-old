@@ -157,6 +157,7 @@ private slots:
     void sl_exportCoverage();
     void sl_unassociateReference();
     void sl_referenceChanged();
+    void sl_trackRemoved(VariantTrackObject *obj);
 
 private:
     void initFont();
@@ -174,6 +175,9 @@ private:
     void updateZoomingActions();
     void removeReferenceSequence();
     void assemblyLoaded();
+
+    void addObjectToView(GObject *o);
+    void removeObjectFromView(GObject *o);
 
 private:
     AssemblyBrowserUi * ui;

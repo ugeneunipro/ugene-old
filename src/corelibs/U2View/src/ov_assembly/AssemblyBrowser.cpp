@@ -112,8 +112,7 @@ void AssemblyBrowser::removeReferenceSequence(){
     //Only one sequence object can be in assembly browser, it is a reference
     foreach (GObject *o, objects){
         if (o->getGObjectType() == GObjectTypes::SEQUENCE) {
-            objects.removeAll(o);
-            emit si_objectRemoved(this, o);
+            removeObjectFromView(o);
             return;
         }
     }
@@ -124,9 +123,7 @@ void AssemblyBrowser::sl_referenceChanged() {
 
     U2SequenceObject *so = model->getRefObj();
     if (so != NULL) {
-        objects.append(so);
-        onObjectAdded(so);
-        emit si_objectAdded(this, so);
+        addObjectToView(so);
     }
 }
 
@@ -274,8 +271,7 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
                 crossDbi->createCrossReference(crossDbRef, folder, os);
                 LOG_OP(os);
                 refId = crossDbRef.id;
-                objects.append(obj);
-                emit si_objectAdded(this, obj);
+                addObjectToView(obj);
             }
             model->associateWithReference(refId);
         }
@@ -284,6 +280,8 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
         CHECK(NULL != trackObj, tr("Internal error: broken variant track object"));
 
         model->addTrackObject(trackObj);
+        addObjectToView(obj);
+        connect(model.data(), SIGNAL(si_trackRemoved(VariantTrackObject *)), SLOT(sl_trackRemoved(VariantTrackObject *)));
     } else {
         return tr("Only sequence or variant track  objects can be added to assembly browser");
     }
@@ -963,6 +961,21 @@ void AssemblyBrowser::assemblyLoaded() {
     LOG_OP(dbiOpStatus);
 
     model->setAssembly(assmDbi, assm);
+}
+
+void AssemblyBrowser::addObjectToView(GObject *o) {
+    objects.append(o);
+    onObjectAdded(o);
+    emit si_objectAdded(this, o);
+}
+
+void AssemblyBrowser::removeObjectFromView(GObject *o) {
+    objects.removeAll(o);
+    emit si_objectRemoved(this, o);
+}
+
+void AssemblyBrowser::sl_trackRemoved(VariantTrackObject *obj) {
+    removeObjectFromView(obj);
 }
 
 //==============================================================================
