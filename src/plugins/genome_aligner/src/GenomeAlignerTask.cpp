@@ -146,6 +146,7 @@ GenomeAlignerTask::~GenomeAlignerTask() {
     delete seqReader;
     delete seqWriter;
     qDeleteAll(alignContext.data);
+    alignContext.data.clear();
     delete index;
 }
 
