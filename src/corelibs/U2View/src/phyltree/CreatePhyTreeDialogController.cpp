@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 #include <U2Algorithm/SubstMatrixRegistry.h>

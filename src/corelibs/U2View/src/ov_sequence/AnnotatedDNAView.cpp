@@ -19,12 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QAction>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#include <QtGui/QScrollArea>
-#include <QtGui/QToolBar>
-#include <QtGui/QVBoxLayout>
+#include <QAction>
+#include <QMenu>
+#include <QMessageBox>
+#include <QScrollArea>
+#include <QToolBar>
+#include <QVBoxLayout>
 
 #include <U2Core/AnnotationSelection.h>
 #include <U2Core/AnnotationSettings.h>
