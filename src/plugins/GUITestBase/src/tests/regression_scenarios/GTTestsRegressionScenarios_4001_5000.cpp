@@ -1203,6 +1203,56 @@ GUI_TEST_CLASS_DEFINITION(test_4122) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4124) {
+/* 1. Select {Tools -> NGS data analysis -> Map reads to reference...} menu item in the main menu.
+ * 2. Select UGENE genome aligner, use input data samples/FASTA/human_T1.fa, unset "use 'best'-mode" option. The output path should be default. Align reads.
+ *   Expected state: there is some result assembly.
+ * 3. Remove the result document from the project, remove the result file. Align reads with same parameters again.
+ *   Expected state: there is the same result assembly.
+ *   Current state: a message box appears: "Failed to detect file format..."
+*/
+
+    class Scenario_test_4124: public CustomScenario{
+    public:
+        virtual void run(U2OpStatus &os){
+            QWidget* dialog = QApplication::activeModalWidget();
+            QComboBox* methodNamesBox = GTWidget::findExactWidget<QComboBox*>(os, "methodNamesBox", dialog);
+            GTComboBox::setIndexWithText(os, methodNamesBox, "UGENE Genome Aligner");
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/FASTA/human_T1.fa"));
+            QWidget* addRefButton = GTWidget::findWidget(os, "addRefButton", dialog);
+            GTWidget::click(os, addRefButton);
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/FASTA/human_T1.fa"));
+            QWidget* addShortreadsButton = GTWidget::findWidget(os, "addShortreadsButton", dialog);
+            GTWidget::click(os, addShortreadsButton);
+
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils (os, sandBoxDir, "out.ugenedb", GTFileDialogUtils::Save));
+            GTWidget::click(os, GTWidget::findWidget(os, "setResultFileNameButton", dialog));
+
+            QCheckBox* check = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "firstMatchBox"));
+            CHECK_SET_ERR(check != NULL, "firstMatchBox not found!");
+            GTCheckBox::setChecked(os, check, 0);
+
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new Scenario_test_4124()));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(200);
+    GTUtilsProjectTreeView::click(os, "out.ugenedb");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    QFile::remove(sandBoxDir+"out.ugenedb");
+    GTGlobals::sleep();
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new Scenario_test_4124()));
+    GTUtilsDialog::waitForDialogWhichMustNotBeRunned(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::NGS_MENU << ToolsMenu::NGS_MAP);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4127) {
 /* 1. Open attached file _common_data/scenarios/_regression/4127/merged_document.gb
  * 2. Press "Find ORFs" tool button
@@ -1847,7 +1897,6 @@ GUI_TEST_CLASS_DEFINITION(test_4295) {
     if (foundItem != NULL){
         GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove"));
         GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "", "Remove element"));
-        //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Cancel, "Remove this element?", "Remove element"));
         GTUtilsWorkflowDesigner::clickOnPalette(os, "test_4295", Qt::RightButton);
     }
 
@@ -1888,7 +1937,7 @@ GUI_TEST_CLASS_DEFINITION(test_4295) {
             CHECK(NULL != w, );
 
             QLineEdit *ed = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "templateLineEdit", w));
-            GTLineEdit::setText(os, ed, "python "+testDir + "_common_data/scenarios/_regression/4295/4295.py  $in $out");
+            GTLineEdit::setText(os, ed, "echo $in > $out");
 
             QAbstractButton *button = GTWidget::findButtonByText(os, "Finish");
             CHECK(NULL != button, );
