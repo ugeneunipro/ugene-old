@@ -463,10 +463,8 @@ bool NEXUSParser::readDataContents(Context &ctx) {
                 return false;
             }
 
-            U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, folder, ma, ti);
+            MAlignmentObject* obj = MAlignmentImporter::createAlignment(dbiRef, folder, ma, ti);
             CHECK_OP(ti, false);
-
-            MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
             addObject(obj);
         } else if (cmd == END) {
             break;

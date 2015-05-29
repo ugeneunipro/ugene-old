@@ -84,6 +84,9 @@ public:
     /** Returns ID of the row sequence in the database. */
     U2MsaRow getRowDBInfo() const;
 
+    /** Sets database IDs for row and sequence */
+    void setRowDbInfo(const U2MsaRow &dbRow);
+
     /**
      * The length must be greater or equal to the row length.
      * When the specified length is greater, an appropriate number of
@@ -377,6 +380,7 @@ public:
     bool sortRowsBySimilarity(QVector<U2Region>& united);
 
     /** Returns row of the alignment */
+    inline MAlignmentRow& getRow(int row);
     inline const MAlignmentRow& getRow(int row) const;
 
     const MAlignmentRow& getRow(QString name) const;
@@ -562,16 +566,21 @@ private:
     static bool registerMeta;
 };
 
+inline MAlignmentRow& MAlignment::getRow(int rowIndex) {
+    static MAlignmentRow emptyRow;
+    int rowsCount = rows.count();
+    SAFE_POINT(0 != rowsCount, "No rows!", emptyRow);
+    SAFE_POINT(rowIndex >= 0 && (rowIndex < rowsCount), "Internal error: unexpected row index was passed to MAlignmnet::getRow!", emptyRow);
+    return rows[rowIndex];
+}
+
 inline const MAlignmentRow& MAlignment::getRow(int rowIndex) const {
     static MAlignmentRow emptyRow;
     int rowsCount = rows.count();
     SAFE_POINT(0 != rowsCount, "No rows!", emptyRow);
-    SAFE_POINT(rowIndex >= 0 && (rowIndex < rowsCount),
-        "Internal error: unexpected row index was passed to MAlignmnet::getRow!",
-        emptyRow);
+    SAFE_POINT(rowIndex >= 0 && (rowIndex < rowsCount), "Internal error: unexpected row index was passed to MAlignmnet::getRow!", emptyRow);
     return rows.at(rowIndex);
 }
-
 
 }//namespace
 

@@ -26,6 +26,8 @@
 
 namespace U2 {
 
+class U2Region;
+
 class U2CORE_EXPORT PackUtils {
 public:
     /** Pack utils version */

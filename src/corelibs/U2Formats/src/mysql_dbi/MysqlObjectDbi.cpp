@@ -759,6 +759,18 @@ U2DataId MysqlObjectDbi::createObject(U2Object& object, const QString& folder, U
     return res;
 }
 
+void MysqlObjectDbi::setObjectRank(const U2DataId &objectId, U2DbiObjectRank newRank, U2OpStatus& os) {
+    static const QString queryStr("UPDATE Object SET rank = :rank WHERE id = :id");
+    U2SqlQuery query(queryStr, db, os);
+    CHECK_OP(os, );
+    query.bindInt32(":rank", newRank);
+    query.bindDataId(":id", objectId);
+    const qint64 modifiedRowsNumber = query.update();
+    if (modifiedRowsNumber != 1) {
+        os.setError(QObject::tr("Unexpected number of modified objects. Expected: 1, actual: %1").arg(modifiedRowsNumber));
+    }
+}
+
 void MysqlObjectDbi::getObject(U2Object& object, const U2DataId& id, U2OpStatus& os) {
     static const QString queryString = "SELECT name, version, trackMod FROM Object WHERE id = :id";
     U2SqlQuery q(queryString, db, os);

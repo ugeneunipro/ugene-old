@@ -22,7 +22,8 @@
 #ifndef _U2_MSA_H_
 #define _U2_MSA_H_
 
-#include <U2Core/U2Sequence.h>
+#include <U2Core/U2Alphabet.h>
+#include <U2Core/U2Type.h>
 
 namespace U2 {
 /**

@@ -261,10 +261,10 @@ void LoadMSATask::run() {
     } else {
         MAlignment ma = MSAUtils::seq2ma(doc->findGObjectByType(GObjectTypes::SEQUENCE), stateInfo);
 
-        U2EntityRef msaRef = MAlignmentImporter::createAlignment(storage->getDbiRef(), ma, stateInfo);
+        QScopedPointer<MAlignmentObject> msaObj(MAlignmentImporter::createAlignment(storage->getDbiRef(), ma, stateInfo));
         CHECK_OP(stateInfo,);
 
-        SharedDbiDataHandler handler = storage->getDataHandler(msaRef);
+        SharedDbiDataHandler handler = storage->getDataHandler(msaObj->getEntityRef());
         QVariant res = qVariantFromValue<SharedDbiDataHandler>(handler);
         results.append(res);
     }

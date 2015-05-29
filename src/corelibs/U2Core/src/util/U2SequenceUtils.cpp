@@ -23,6 +23,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequence.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/GObject.h>
 #include <U2Core/SequenceUtils.h>
@@ -241,6 +242,21 @@ void U2SequenceUtils::setQuality(const U2EntityRef& entityRef, const DNAQuality&
     CHECK_OP(os, );
     con.dbi->getAttributeDbi()->createIntegerAttribute(qualityType,os);
     CHECK_OP(os, );
+}
+
+U2Sequence U2SequenceUtils::getSequenceDbInfo(U2SequenceObject *seqObj) {
+    U2Sequence seq;
+
+    seq.id = seqObj->getEntityRef().entityId;
+    seq.dbiId = seqObj->getEntityRef().dbiRef.dbiId;
+    if (NULL != seqObj->getAlphabet()) {
+        seq.alphabet.id = seqObj->getAlphabet()->getId();
+    }
+    seq.circular = seqObj->isCircular();
+    seq.length = seqObj->getSequenceLength();
+    seq.visualName = seqObj->getSequenceName();
+
+    return seq;
 }
 
 //////////////////////////////////////////////////////////////////////////

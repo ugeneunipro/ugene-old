@@ -51,17 +51,14 @@ public:
     // sets alphabet if no alignment alphabet was set; checks is the new alphabet equal old alphabet, otherwise sets error
     static void updateAlignmentAlphabet(MAlignment& ma, const DNAAlphabet* a, U2OpStatus& os);
 
-    // doesn't update alphabet, appends sequence data to a given row. If region is not set, using whole sequence data
-    static void appendSequenceToAlignmentRow(MAlignment& ma, int rowIndex, int afterPos, const U2SequenceObject& seq, U2OpStatus& os, U2Region region = U2Region());
-
     // Returns row index or -1 if name is not present
     static int getRowIndexByName(const MAlignment& ma, const QString& name);
 
     //checks that alignment is not empty and all packed sequence parts has equal length
     static bool checkPackedModelSymmetry(MAlignment& ali, U2OpStatus& ti);
 
-    static MAlignmentObject* seqDocs2msaObj(QList<Document*> doc, const QVariantMap& hints, U2OpStatus& os);
-    static MAlignmentObject* seqObjs2msaObj(const QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os);
+    static MAlignmentObject * seqDocs2msaObj(QList<Document*> doc, const QVariantMap& hints, U2OpStatus& os);
+    static MAlignmentObject * seqObjs2msaObj(const QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os, bool shallowCopy = false);
 
     /**
      * Compares rows in the 'origMsa' and 'newMsa' by names of the sequences.

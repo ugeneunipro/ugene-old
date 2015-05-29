@@ -218,10 +218,8 @@ QString SmithWatermanReportCallbackMAImpl::planFor_SequenceView_Search(const QLi
         msa.addRow(tagsRegistry->parseStringWithTags(ptrnSubseqTemplate, expansionInfo), curResultPtrnSubseq, stateInfo);
         CHECK_OP(stateInfo, tr("Failed to add a pattern subsequence row."));
 
-        U2EntityRef msaRef = MAlignmentImporter::createAlignment(alignmentDoc->getDbiRef(), msa, stateInfo);
+        MAlignmentObject *docObject = MAlignmentImporter::createAlignment(alignmentDoc->getDbiRef(), msa, stateInfo);
         CHECK_OP(stateInfo, tr("Failed to create an alignment."));
-
-        MAlignmentObject *docObject = new MAlignmentObject(msa.getName(), msaRef);
         alignmentDoc->addObject(docObject);
         currentProject->addDocument(alignmentDoc);
 
@@ -306,10 +304,8 @@ QString SmithWatermanReportCallbackMAImpl::planFor_MSA_Alignment_InNewWindow(
     msa.addRow(ptrnSequence->visualName, ptrnSequenceData, stateInfo);
     CHECK_OP(stateInfo, tr("Failed to add row to result msa."));
 
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(alignmentDoc->getDbiRef(), msa, stateInfo);
+    MAlignmentObject *docObject = MAlignmentImporter::createAlignment(alignmentDoc->getDbiRef(), msa, stateInfo);
     CHECK_OP(stateInfo, tr("Failed to create an alignment."));
-
-    MAlignmentObject *docObject = new MAlignmentObject(msa.getName(), msaRef);
     alignmentDoc->addObject(docObject);
 
     SaveDocFlags flags = SaveDoc_Overwrite;

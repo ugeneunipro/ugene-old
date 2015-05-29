@@ -548,6 +548,10 @@ void ObjectDbi::renameObject(const U2DataId & /*id*/, const QString & /*newName*
     os.setError("Not implemented!");
 }
 
+void ObjectDbi::setObjectRank(const U2DataId & /*objectId*/, U2DbiObjectRank /*newRank*/, U2OpStatus &os) {
+    os.setError("Not implemented!");
+}
+
 // AssemblyDbi
 AssemblyDbi::AssemblyDbi(Dbi &dbi, BamReader &reader, DbRef &dbRef, int assembliesCount, QList<qint64> maxReadLengths):
     U2SimpleAssemblyDbi(&dbi),

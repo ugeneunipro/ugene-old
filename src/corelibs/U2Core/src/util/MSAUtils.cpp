@@ -91,11 +91,14 @@ MAlignment MSAUtils::seq2ma(const QList<DNASequence>& list, U2OpStatus& os) {
 }
 
 namespace {
-MAlignmentObject* prepareSequenceHeadersList(const QList<GObject*>& list, bool useGenbankHeader, QList<U2SequenceObject*> &dnaList, QList<QString> &nameList) {
-    foreach(GObject* obj, list) {
-        U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
+
+MAlignmentObject * prepareSequenceHeadersList(const QList<GObject *> &list, bool useGenbankHeader, QList<U2SequenceObject *> &dnaList,
+    QList<QString> &nameList)
+{
+    foreach (GObject *obj, list) {
+        U2SequenceObject *dnaObj = qobject_cast<U2SequenceObject *>(obj);
         if (dnaObj == NULL) {
-            if (MAlignmentObject* maObj = qobject_cast<MAlignmentObject*>(obj)) {
+            if (MAlignmentObject *maObj = qobject_cast<MAlignmentObject *>(obj)) {
                 return maObj;
             }
             continue;
@@ -104,7 +107,7 @@ MAlignmentObject* prepareSequenceHeadersList(const QList<GObject*>& list, bool u
         QString rowName = dnaObj->getSequenceName();
         if (useGenbankHeader) {
             QString sourceName = dnaObj->getStringAttribute(DNAInfo::SOURCE);
-            if (false == sourceName.isEmpty()) {
+            if (!sourceName.isEmpty()) {
                 rowName = sourceName;
             }
         }
@@ -114,11 +117,27 @@ MAlignmentObject* prepareSequenceHeadersList(const QList<GObject*>& list, bool u
     }
     return NULL;
 }
+
+
+void appendSequenceToAlignmentRow(MAlignment &ma, int rowIndex, int afterPos, const U2SequenceObject &seq, U2OpStatus &os) {
+    U2Region seqRegion(0, seq.getSequenceLength());
+    const qint64 blockReadFromBD = 4194305; // 4 MB + 1
+
+    qint64 sequenceLength = seq.getSequenceLength();
+    for (qint64 startPosition = seqRegion.startPos; startPosition < seqRegion.length; startPosition += blockReadFromBD) {
+        U2Region readRegion(startPosition, qMin(blockReadFromBD, sequenceLength - startPosition));
+        QByteArray readedData = seq.getSequenceData(readRegion);
+        ma.appendChars(rowIndex, afterPos, readedData.constData(), readedData.size());
+        afterPos += readRegion.length;
+        CHECK_OP(os, );
+    }
+}
+
 } // unnamed namespace
 
-MAlignment MSAUtils::seq2ma(const QList<GObject*>& list, U2OpStatus& os, bool useGenbankHeader) {
-    QList<U2SequenceObject*> dnaList;
-    QList<QString> nameList;
+MAlignment MSAUtils::seq2ma(const QList<GObject *> &list, U2OpStatus &os, bool useGenbankHeader) {
+    QList<U2SequenceObject *> dnaList;
+    QStringList nameList;
 
     MAlignmentObject *obj = prepareSequenceHeadersList(list, useGenbankHeader, dnaList, nameList);
     if (NULL != obj) {
@@ -129,13 +148,13 @@ MAlignment MSAUtils::seq2ma(const QList<GObject*>& list, U2OpStatus& os, bool us
 
     int i = 0;
     SAFE_POINT(dnaList.size() == nameList.size(), "DNA list size differs from name list size", MAlignment());
-    QListIterator<U2SequenceObject*> listIterator(dnaList);
+    QListIterator<U2SequenceObject *> listIterator(dnaList);
     QListIterator<QString> nameIterator(nameList);
-    while (true == listIterator.hasNext()) {
-        const U2SequenceObject& seq = *(listIterator.next());
-        const QString& objName = nameIterator.next();
+    while (listIterator.hasNext()) {
+        const U2SequenceObject &seq = *(listIterator.next());
+        const QString &objName = nameIterator.next();
 
-        const DNAAlphabet* alphabet = seq.getAlphabet();
+        const DNAAlphabet *alphabet = seq.getAlphabet();
         updateAlignmentAlphabet(ma, alphabet, os);
         CHECK_OP(os, MAlignment());
 
@@ -149,22 +168,6 @@ MAlignment MSAUtils::seq2ma(const QList<GObject*>& list, U2OpStatus& os, bool us
     }
 
     return ma;
-}
-
-void MSAUtils::appendSequenceToAlignmentRow(MAlignment& ma, int rowIndex, int afterPos, const U2SequenceObject& seq, U2OpStatus& os, U2Region region) {
-    if (true == region.isEmpty()) {
-        region = U2Region(0, seq.getSequenceLength());
-    }
-    const qint64 blockReadFromBD = 128000;
-
-    qint64 sequenceLength = seq.getSequenceLength();
-    for (qint64 startPosition = region.startPos; startPosition<region.length; startPosition+=blockReadFromBD) {
-        U2Region readRegion(startPosition, qMin(blockReadFromBD, sequenceLength - startPosition));
-        QByteArray readedData = seq.getSequenceData(readRegion);
-        ma.appendChars(rowIndex, afterPos, readedData.constData(), readedData.size());
-        afterPos += readRegion.length;
-        CHECK_OP(os, );
-    }
 }
 
 void MSAUtils::updateAlignmentAlphabet(MAlignment& ma, const DNAAlphabet* alphabet, U2OpStatus& os) {
@@ -244,36 +247,61 @@ int MSAUtils::getRowIndexByName( const MAlignment& ma, const QString& name )
     return -1;
 }
 
-MAlignmentObject* MSAUtils::seqObjs2msaObj(const QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os){
-    if (objects.isEmpty()) {
-        return NULL;
+namespace {
+
+bool listContainsSeqObject(const QList<GObject *> &objs, int &firstSeqObjPos) {
+    int objectNumber = 0;
+    bool sequenceObjectsExist = false;
+    foreach (GObject *o, objs) {
+        if (o->getGObjectType() == GObjectTypes::SEQUENCE) {
+            firstSeqObjPos = objectNumber;
+            return true;
+        }
+        objectNumber++;
     }
+    return false;
+}
+
+QList<U2Sequence> getDbSequences(const QList<GObject *> &objects) {
+    Document *parentDoc = NULL;
+    QList<U2Sequence> sequencesInDb;
+    foreach(GObject *o, objects) {
+        if (o->getGObjectType() == GObjectTypes::SEQUENCE) {
+            if (NULL != (parentDoc = o->getDocument())) {
+                parentDoc->removeObject(o, DocumentObjectRemovalMode_Release);
+            }
+            QScopedPointer<U2SequenceObject> seqObj(qobject_cast<U2SequenceObject *>(o));
+            SAFE_POINT(!seqObj.isNull(), "Unexpected object type", QList<U2Sequence>());
+            sequencesInDb.append(U2SequenceUtils::getSequenceDbInfo(seqObj.data()));
+        }
+    }
+    return sequencesInDb;
+}
+
+}
+
+MAlignmentObject * MSAUtils::seqObjs2msaObj(const QList<GObject *> &objects, const QVariantMap &hints, U2OpStatus &os, bool shallowCopy) {
+    CHECK(!objects.isEmpty(), NULL);
+
+    int firstSeqObjPos = -1;
+    CHECK(listContainsSeqObject(objects, firstSeqObjPos), NULL);
+    SAFE_POINT(-1 != firstSeqObjPos, "Sequence object not found", NULL);
+
+    const U2DbiRef dbiRef = objects.at(firstSeqObjPos)->getEntityRef().dbiRef; // make a copy instead of referencing since objects will be deleted
+
+    DbiOperationsBlock opBlock(dbiRef, os);
+    CHECK_OP(os, NULL);
+    Q_UNUSED(opBlock);
 
     const bool useGenbankHeader = hints.value(ObjectConvertion_UseGenbankHeader, false).toBool();
     MAlignment ma = seq2ma(objects, os, useGenbankHeader);
 
-    if (ma.isEmpty()) {
-        return NULL;
-    }
+    CHECK(!ma.isEmpty(), NULL);
 
-    int pos = 0;
-    int sequenceObjectsNum = 0;
-    foreach(GObject *o, objects){
-        if(o->getGObjectType() == GObjectTypes::SEQUENCE){
-            sequenceObjectsNum++;
-            CHECK_BREAK(sequenceObjectsNum < 1);
-        }
-        pos++;
-    }
-    CHECK(sequenceObjectsNum >= 1, NULL);
-
-    const U2DbiRef& dbiRef = objects.at(pos)->getEntityRef().dbiRef;
+    const QList<U2Sequence> sequencesInDB = shallowCopy ? getDbSequences(objects) : QList<U2Sequence>();
 
     const QString dstFolder = hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, dstFolder, ma, os);
-    CHECK_OP(os, NULL);
-
-    return new MAlignmentObject(ma.getName(), msaRef);
+    return MAlignmentImporter::createAlignment(dbiRef, dstFolder, ma, os, sequencesInDB);
 }
 
 MAlignmentObject* MSAUtils::seqDocs2msaObj(QList<Document*> docs, const QVariantMap& hints, U2OpStatus& os){
@@ -293,10 +321,8 @@ QList<qint64> MSAUtils::compareRowsAfterAlignment(const MAlignment& origMsa, MAl
         QString rowName = newMsaRow.getName().replace(" ", "_");
 
         bool rowFound = false;
-        foreach (const MAlignmentRow& origMsaRow, origMsaRows) {
-            if (origMsaRow.getName().replace(" ", "_") == rowName
-                && origMsaRow.getSequence().seq == newMsaRow.getSequence().seq)
-            {
+        foreach (const MAlignmentRow &origMsaRow, origMsaRows) {
+            if (origMsaRow.getName().replace(" ", "_") == rowName && origMsaRow.getSequence().seq == newMsaRow.getSequence().seq) {
                 rowFound = true;
                 qint64 rowId = origMsaRow.getRowDBInfo().rowId;
                 newMsa.setRowId(i, rowId);

@@ -119,6 +119,9 @@ public:
     /** Specified whether modifications in object must be tracked or not */
     virtual void setTrackModType(const U2DataId& objectId, U2TrackModType trackModType, U2OpStatus& os) = 0;
 
+    /** Updates object rank, e.g. a top-level object can be transmuted into a child object */
+    virtual void setObjectRank(const U2DataId &objectId, U2DbiObjectRank newRank, U2OpStatus& os) = 0;
+
     /** Gets the trackMod value for the object */
     virtual U2TrackModType getTrackModType(const U2DataId& objectId, U2OpStatus& os) = 0;
 

@@ -857,10 +857,9 @@ void MSAWriter::data2document(Document* doc, const QVariantMap& data, WorkflowCo
     }
 
     U2OpStatus2Log os;
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(doc->getDbiRef(), ma, os);
+    MAlignmentObject* obj = MAlignmentImporter::createAlignment(doc->getDbiRef(), ma, os);
     CHECK_OP(os, );
 
-    MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
     doc->addObject(obj);
 }
 

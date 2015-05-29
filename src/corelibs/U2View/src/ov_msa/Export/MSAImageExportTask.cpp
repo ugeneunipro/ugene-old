@@ -172,7 +172,7 @@ void MSAImageExportToSvgTask::run() {
     paintConsensus(p);
     p.translate( 0, msaSettings.includeConsensus * consHeight );
     paintRuler(p);
-    p.translate( - msaSettings.includeSeqNames * namesWidth, msaSettings.includeRuler * rulerHeight);
+    p.translate( -1 * msaSettings.includeSeqNames * namesWidth, msaSettings.includeRuler * rulerHeight);
     paintSeqNames(p);
     p.translate( msaSettings.includeSeqNames * namesWidth, 0);
     paintContent(p);

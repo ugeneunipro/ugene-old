@@ -317,10 +317,9 @@ void DNASequenceGeneratorTask::addSequencesToMsaDoc( Document *source )
         msa.addRow( seqName, seqContent, sequenceNum, stateInfo );
         CHECK_OP( stateInfo, );
     }
-    const U2EntityRef msaRef = MAlignmentImporter::createAlignment( source->getDbiRef( ), msa,
-        stateInfo );
+    MAlignmentObject *alnObject = MAlignmentImporter::createAlignment( source->getDbiRef( ), msa, stateInfo );
     CHECK_OP( stateInfo, );
-    source->addObject( new MAlignmentObject( msa.getName( ), msaRef ) );
+    source->addObject( alnObject );
 }
 
 void DNASequenceGeneratorTask::addSequencesToSeqDoc( Document *source )

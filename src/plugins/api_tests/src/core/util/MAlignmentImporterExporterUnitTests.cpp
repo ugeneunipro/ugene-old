@@ -25,6 +25,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentExporter.h>
+#include <U2Core/MAlignmentObject.h>
 #include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/SQLiteDbi.h>
@@ -75,12 +76,12 @@ IMPLEMENT_TEST(MAlignmentImporterExporterUnitTests, importExportAlignment) {
     CHECK_NO_ERROR(os);
 
     // Import the alignment
-    U2EntityRef entityRef = MAlignmentImporter::createAlignment(dbiRef, al, os);
+    QScopedPointer<MAlignmentObject> msaObj(MAlignmentImporter::createAlignment(dbiRef, al, os));
     CHECK_NO_ERROR(os);
 
     // Export the alignment
     MAlignmentExporter alExporter;
-    MAlignment alActual = alExporter.getAlignment(dbiRef, entityRef.entityId, os);
+    MAlignment alActual = alExporter.getAlignment(dbiRef, msaObj->getEntityRef().entityId, os);
     CHECK_NO_ERROR(os);
 
     bool alsEqual = (al == alActual);

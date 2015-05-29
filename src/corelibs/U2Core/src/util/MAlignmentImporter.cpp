@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/L10n.h>
+#include <U2Core/MAlignmentObject.h>
 #include <U2Core/MsaDbiUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2AttributeDbi.h>
@@ -33,17 +34,21 @@
 
 namespace U2 {
 
-U2EntityRef MAlignmentImporter::createAlignment(const U2DbiRef& dbiRef, const MAlignment& al, U2OpStatus& os) {
+MAlignmentObject * MAlignmentImporter::createAlignment(const U2DbiRef& dbiRef, MAlignment& al, U2OpStatus& os) {
     return createAlignment(dbiRef, U2ObjectDbi::ROOT_FOLDER, al, os);
 }
 
-U2EntityRef MAlignmentImporter::createAlignment(const U2DbiRef& dbiRef, const QString& folder, const MAlignment& al, U2OpStatus& os) {
-    DbiConnection con(dbiRef, true, os);
-    if (os.isCanceled()) {
-        return U2EntityRef();
+MAlignmentObject * MAlignmentImporter::createAlignment(const U2DbiRef &dbiRef, const QString &folder, MAlignment &al,
+    U2OpStatus &os, const QList<U2Sequence> &alignedSeqs)
+{
+    if (!alignedSeqs.isEmpty() && alignedSeqs.size() != al.getNumRows()) {
+        os.setError(QObject::tr("Unexpected number of sequences in a multiple alignment"));
+        return NULL;
     }
-    SAFE_POINT_OP(os, U2EntityRef());
-    SAFE_POINT(NULL != con.dbi, L10N::nullPointerError("dbi"), U2EntityRef());
+    DbiConnection con(dbiRef, true, os);
+    CHECK(!os.isCanceled(), NULL);
+    SAFE_POINT_OP(os, NULL);
+    SAFE_POINT(NULL != con.dbi, L10N::nullPointerError("Destination database"), NULL);
 
     TmpDbiObjects objs(dbiRef, os); // remove the MSA object if opStatus is incorrect
 
@@ -51,19 +56,40 @@ U2EntityRef MAlignmentImporter::createAlignment(const U2DbiRef& dbiRef, const QS
     U2Msa msa = importMsaObject(con, folder, al, os);
     objs.objects << msa.id;
 
-    CHECK_OP(os, U2EntityRef());
+    CHECK_OP(os, NULL);
 
     importMsaInfo(con, msa.id, al, os);
-    CHECK_OP(os, U2EntityRef());
+    CHECK_OP(os, NULL);
 
     // MSA rows
-    QList<U2Sequence> sequences = importSequences(con, folder, al, os);
-    CHECK_OP(os, U2EntityRef());
+    if (!alignedSeqs.isEmpty()) {
+        setChildRankForSequences(con, alignedSeqs, os);
+        CHECK_OP(os, NULL);
+    }
 
-    importRows(con, al, msa, sequences, os);
-    CHECK_OP(os, U2EntityRef());
+    QList<U2Sequence> sequences = alignedSeqs.isEmpty() ? importSequences(con, folder, al, os) : alignedSeqs;
+    CHECK_OP(os, NULL);
 
-    return U2EntityRef(dbiRef, msa.id);
+    const QList<U2MsaRow> rows = importRows(con, al, msa, sequences, os);
+    CHECK_OP(os, NULL);
+    SAFE_POINT_EXT(rows.size() == al.getNumRows(), os.setError(QObject::tr("Unexpected error on MSA rows import")), NULL);
+
+    for (int i = 0, n = al.getNumRows(); i < n; ++i) {
+        al.getRow(i).setRowDbInfo(rows.at(i));
+    }
+
+    return new MAlignmentObject(al.getName(), U2EntityRef(dbiRef, msa.id), QVariantMap(), al);
+}
+
+void MAlignmentImporter::setChildRankForSequences(const DbiConnection &con, const QList<U2Sequence> &sequences, U2OpStatus &os) {
+    SAFE_POINT(NULL != con.dbi, L10N::nullPointerError("database connection"), );
+    U2ObjectDbi *objDbi = con.dbi->getObjectDbi();
+    SAFE_POINT(NULL != objDbi, L10N::nullPointerError("object storage"), );
+
+    foreach (const U2Sequence &seq, sequences) {
+        objDbi->setObjectRank(seq.id, U2DbiObjectRank_Child, os);
+        CHECK_OP(os, );
+    }
 }
 
 U2Msa MAlignmentImporter::importMsaObject(const DbiConnection& con, const QString& folder, const MAlignment& al, U2OpStatus& os) {
@@ -144,15 +170,17 @@ QList<U2Sequence> MAlignmentImporter::importSequences(const DbiConnection& con, 
 QList<U2MsaRow> MAlignmentImporter::importRows(const DbiConnection& con, const MAlignment& al, U2Msa& msa, const QList<U2Sequence> &sequences, U2OpStatus& os) {
     QList<U2MsaRow> rows;
     for (int i = 0; i < al.getNumRows(); ++i) {
-        U2MsaRow row = U2MsaRow();
         U2Sequence seq = sequences[i];
-        row.sequenceId = seq.id;
-        row.gstart = 0;
-        row.gend = seq.length;
-        row.gaps = al.getRow(i).getGapModel();
-        row.length = al.getRow(i).getRowLengthWithoutTrailing();
+        if (seq.length > 0) {
+            U2MsaRow row;
+            row.sequenceId = seq.id;
+            row.gstart = 0;
+            row.gend = seq.length;
+            row.gaps = al.getRow(i).getGapModel();
+            row.length = al.getRow(i).getRowLengthWithoutTrailing();
 
-        rows.append(row);
+            rows.append(row);
+        }
     }
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
@@ -160,15 +188,6 @@ QList<U2MsaRow> MAlignmentImporter::importRows(const DbiConnection& con, const M
 
     msaDbi->addRows(msa.id, rows, os);
     CHECK_OP(os, QList<U2MsaRow>());
-
-    QList<qint64> rowsIds = msaDbi->getRowsOrder(msa.id, os);
-    CHECK_OP(os, QList<U2MsaRow>());
-
-    U2EntityRef msaRef(con.dbi->getDbiRef(), msa.id);
-
-    MsaDbiUtils::removeEmptyRows(msaRef, rowsIds, os);
-    CHECK_OP(os, QList<U2MsaRow>());
-
     return rows;
 }
 

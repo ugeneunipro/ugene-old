@@ -56,6 +56,7 @@ public:
     virtual qint64 getFolderGlobalVersion(const QString &folder, U2OpStatus &os);
     virtual U2DbiIterator<U2DataId>* getObjectsByVisualName(const QString& visualName, U2DataType type, U2OpStatus& os);
     virtual void renameObject(const U2DataId &id, const QString &newName, U2OpStatus &os);
+    virtual void setObjectRank(const U2DataId &objectId, U2DbiObjectRank newRank, U2OpStatus &os);
 
 private:
     SamtoolsBasedDbi &dbi;

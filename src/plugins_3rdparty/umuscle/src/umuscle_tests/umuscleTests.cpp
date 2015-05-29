@@ -545,15 +545,13 @@ QList<Task*> GTest_Muscle_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
             return res;
         }
 
-        const MAlignment &malign = dna_to_ma(list);
+        MAlignment malign = dna_to_ma(list);
         if(hasError()) {
             return res;
         }
 
-        U2EntityRef msaRef = MAlignmentImporter::createAlignment(doc->getDbiRef(), malign, stateInfo);
+        ma1 = MAlignmentImporter::createAlignment(doc->getDbiRef(), malign, stateInfo);
         CHECK_OP(stateInfo, res);
-
-        ma1 = new MAlignmentObject(malign.getName(), msaRef);
 
         if(ma1 == NULL){
             stateInfo.setError(  QString("can't convert dna sequences to MAlignment") );
@@ -592,15 +590,13 @@ QList<Task*> GTest_Muscle_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
             return res;
         }
 
-        const MAlignment &malign = dna_to_ma(list);
+        MAlignment malign = dna_to_ma(list);
         if(hasError()) {
             return res;
         }
 
-        U2EntityRef msaRef = MAlignmentImporter::createAlignment(doc->getDbiRef(), malign, stateInfo);
+        ma2 = MAlignmentImporter::createAlignment(doc->getDbiRef(), malign, stateInfo);
         CHECK_OP(stateInfo, res);
-
-        ma2 = new MAlignmentObject(malign.getName(), msaRef);
 
         if(ma2 == NULL){
             stateInfo.setError(  QString("can't convert dna sequences to MAlignment") );
@@ -694,15 +690,13 @@ QList<Task*> Muscle_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
             return res;
         }
 
-        const MAlignment &malign = dna_to_ma(list);
+        MAlignment malign = dna_to_ma(list);
         if(hasError()) {
             return res;
         }
 
-        U2EntityRef msaRef = MAlignmentImporter::createAlignment(doc->getDbiRef(), malign, stateInfo);
+        ma1 = MAlignmentImporter::createAlignment(doc->getDbiRef(), malign, stateInfo);
         CHECK_OP(stateInfo, res);
-
-        ma1 = new MAlignmentObject(malign.getName(), msaRef);
 
         if(ma1 == NULL){
             stateInfo.setError(  QString("can't convert dna sequences to MAlignment") );
@@ -741,15 +735,13 @@ QList<Task*> Muscle_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
             return res;
         }
 
-        const MAlignment &malign = dna_to_ma(list);
+        MAlignment malign = dna_to_ma(list);
         if(hasError()) {
             return res;
         }
 
-        U2EntityRef msaRef = MAlignmentImporter::createAlignment(doc->getDbiRef(), malign, stateInfo);
+        ma2 = MAlignmentImporter::createAlignment(doc->getDbiRef(), malign, stateInfo);
         CHECK_OP(stateInfo, res);
-
-        ma2 = new MAlignmentObject(malign.getName(), msaRef);
 
         if(ma2 == NULL){
             stateInfo.setError(  QString("can't convert dna sequences to MAlignment") );

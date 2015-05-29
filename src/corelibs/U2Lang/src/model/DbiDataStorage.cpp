@@ -156,13 +156,14 @@ SharedDbiDataHandler DbiDataStorage::putAlignment(const MAlignment &al) {
     assert(NULL != dbiHandle);
 
     U2OpStatus2Log os;
-    U2EntityRef ent = MAlignmentImporter::createAlignment(dbiHandle->getDbiRef(), al, os);
+    MAlignment copiedAlignment = al;
+    QScopedPointer<MAlignmentObject> obj(MAlignmentImporter::createAlignment(dbiHandle->getDbiRef(), copiedAlignment, os));
     CHECK_OP(os, SharedDbiDataHandler());
 
     DbiConnection *connection = this->getConnection(dbiHandle->getDbiRef(), os);
     CHECK_OP(os, SharedDbiDataHandler());
 
-    SharedDbiDataHandler handler(new DbiDataHandler(ent, connection->dbi->getObjectDbi(), true));
+    SharedDbiDataHandler handler(new DbiDataHandler(obj->getEntityRef(), connection->dbi->getObjectDbi(), true));
 
     return handler;
 }

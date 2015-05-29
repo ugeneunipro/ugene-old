@@ -22,16 +22,18 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/GHints.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2Mod.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
 
 #include "MAlignmentUtilTasks.h"
@@ -108,7 +110,7 @@ void AlignInAminoFormTask::prepare() {
     CHECK_EXT(maObj->getAlphabet()->isNucleic(), setError(tr("AlignInAminoFormTask: Input alphabet is not nucleic!")), );
     CHECK_EXT(!maObj->getMAlignment().isEmpty(), setError(tr("AlignInAminoFormTask: Input alignment is empty!")), );
 
-    const MAlignment &msa = maObj->getMAlignment();
+    MAlignment msa = maObj->getMAlignment();
     const U2DbiRef& dbiRef = maObj->getEntityRef().dbiRef;
 
     //Create temporal document for the workflow run task
@@ -129,10 +131,9 @@ void AlignInAminoFormTask::prepare() {
     CHECK_OP(os, );
 
     //Create copy of multiple alignment object
-    const U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, msa, stateInfo);
+    clonedObj = MAlignmentImporter::createAlignment(dbiRef, msa, stateInfo);
     CHECK_OP(stateInfo, );
-
-    clonedObj = new MAlignmentObject(msa.getName(), msaRef, maObj->getGHintsMap());
+    clonedObj->setGHints(new GHintsDefaultImpl(maObj->getGHintsMap()));
 
     tmpDoc->addObject(clonedObj);
 

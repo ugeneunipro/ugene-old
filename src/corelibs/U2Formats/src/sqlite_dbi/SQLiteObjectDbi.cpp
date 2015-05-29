@@ -968,6 +968,16 @@ qint64 SQLiteObjectDbi::getFolderGlobalVersion(const QString& folder, U2OpStatus
     return q.selectInt64();
 }
 
+void SQLiteObjectDbi::setObjectRank(const U2DataId &objectId, U2DbiObjectRank newRank, U2OpStatus& os) {
+    SQLiteTransaction t(db, os);
+    static const QString queryStr("UPDATE Object SET rank = ?1 WHERE id = ?2");
+    QSharedPointer<SQLiteQuery> query = t.getPreparedQuery(queryStr, db, os);
+    CHECK_OP(os, );
+    query->bindInt32(1, newRank);
+    query->bindDataId(2, objectId);
+    query->update(1);
+}
+
 void SQLiteObjectDbi::onFolderUpdated(const QString& ) {
     //TODO: update local version of the given folder & global for all parents
 }

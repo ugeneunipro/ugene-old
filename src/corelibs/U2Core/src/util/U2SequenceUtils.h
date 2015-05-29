@@ -33,14 +33,13 @@ class Annotation;
 class DNASequence;
 class DNAQuality;
 class DNATranslation;
+class U2SequenceObject;
 
 /**
     U2Sequence and related structures utility functions
 */
 class U2CORE_EXPORT U2SequenceUtils : public QObject {
     Q_OBJECT
-private:
-    U2SequenceUtils(){}
 public:
 
     /** Extract sequence parts marked by the regions
@@ -63,6 +62,8 @@ public:
     static U2EntityRef import(const U2DbiRef& dbiRef, const QString &folder, const DNASequence& seq, U2OpStatus& os);
 
     static void setQuality(const U2EntityRef& entityRef, const DNAQuality& quality);
+
+    static U2Sequence getSequenceDbInfo(U2SequenceObject *seqObj);
 };
 
 /** Class used to efficiently import sequence into DBI */

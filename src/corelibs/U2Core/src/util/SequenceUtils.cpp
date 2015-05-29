@@ -305,28 +305,26 @@ static QList<GObject *> createNewObjects(
     return objects;
 }
 
-QList<GObject *> U1SequenceUtils::mergeSequences(const QList<Document *> docs, const U2DbiRef &ref,
-    const QString &newStringUrl, QVariantMap &hints, U2OpStatus &os)
+QList<GObject *> U1SequenceUtils::mergeSequences(const QList<Document *> docs, const U2DbiRef &ref, const QString &newStringUrl,
+    QVariantMap &hints, U2OpStatus &os)
 {
     // prepare  annotation object -> sequence object mapping first
     // and precompute resulted sequence size and alphabet
-    int mergeGap = hints[DocumentReadingMode_SequenceMergeGapSize].toInt( );
-    SAFE_POINT( mergeGap >= 0, "Invalid gap value", QList<GObject *>( ) );
+    int mergeGap = hints[DocumentReadingMode_SequenceMergeGapSize].toInt();
+    SAFE_POINT(mergeGap >= 0, "Invalid gap value", QList<GObject *>());
     QHash<U2SequenceObject *, QList<AnnotationTableObject *> > annotationsBySequenceObjectName;
-    GUrl newUrl( newStringUrl, GUrl_File );
+    GUrl newUrl(newStringUrl, GUrl_File);
 
     QMap<DNAAlphabetType, QList<U2SequenceObject *> > mapObjects2Alpabets;
 
-    foreach ( const Document *doc, docs ) {
-        QList<GObject *> objs = doc->getObjects( );
-        reorderingObjects( objs );
-        processOldObjects( objs, annotationsBySequenceObjectName, mapObjects2Alpabets,
-            doc->getURLString( ), doc->getURL( ).fileName( ), hints, os );
-        CHECK_OP( os, QList<GObject *>( ) );
+    foreach (const Document *doc, docs) {
+        QList<GObject *> objs = doc->getObjects();
+        reorderingObjects(objs);
+        processOldObjects(objs, annotationsBySequenceObjectName, mapObjects2Alpabets, doc->getURLString(), doc->getURL().fileName(), hints, os);
+        CHECK_OP(os, QList<GObject *>());
     }
-    CHECK_OP( os, QList<GObject *>( ) );
-    return createNewObjects( annotationsBySequenceObjectName, mapObjects2Alpabets, ref, newUrl,
-        hints, mergeGap, os);
+    CHECK_OP(os, QList<GObject *>());
+    return createNewObjects(annotationsBySequenceObjectName, mapObjects2Alpabets, ref, newUrl, hints, mergeGap, os);
 }
 
 QList<GObject*> U1SequenceUtils::mergeSequences(Document* doc, const U2DbiRef& ref, QVariantMap& hints, U2OpStatus& os){

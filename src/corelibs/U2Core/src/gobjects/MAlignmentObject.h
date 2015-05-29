@@ -69,7 +69,8 @@ class U2CORE_EXPORT MAlignmentObject : public GObject {
     Q_OBJECT
 
 public:
-    MAlignmentObject(const QString& name, const U2EntityRef& msaRef, const QVariantMap& hintsMap = QVariantMap());
+    MAlignmentObject(const QString& name, const U2EntityRef& msaRef, const QVariantMap& hintsMap = QVariantMap(),
+        const MAlignment &alnData = MAlignment());
     ~MAlignmentObject();
 
     /** Sets type of modifications tracking for the alignment */

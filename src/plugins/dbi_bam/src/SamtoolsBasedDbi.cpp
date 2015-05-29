@@ -355,6 +355,10 @@ void SamtoolsBasedObjectDbi::renameObject(const U2DataId & /*id*/, const QString
     os.setError("Not implemented!");
 }
 
+void SamtoolsBasedObjectDbi::setObjectRank(const U2DataId & /*objectId*/, U2DbiObjectRank /*newRank*/, U2OpStatus &os) {
+    os.setError("Not implemented!");
+}
+
 /************************************************************************/
 /* SamtoolsBasedReadsIterator */
 /************************************************************************/

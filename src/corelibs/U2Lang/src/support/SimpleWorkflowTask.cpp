@@ -136,11 +136,11 @@ SimpleMSAWorkflow4GObjectTask::SimpleMSAWorkflow4GObjectTask(const QString& task
 
     MAlignment al = MSAUtils::setUniqueRowNames( obj->getMAlignment() );
 
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(obj->getEntityRef().dbiRef, al, os);
+    MAlignmentObject *msaObject = MAlignmentImporter::createAlignment(obj->getEntityRef().dbiRef, al, os);
     SAFE_POINT_OP(os,);
 
     SimpleInOutWorkflowTaskConfig sioConf;
-    sioConf.objects << new MAlignmentObject(al.getName(), msaRef);
+    sioConf.objects << msaObject;
     sioConf.inFormat = BaseDocumentFormats::FASTA;
     sioConf.outFormat = BaseDocumentFormats::FASTA;
     sioConf.outDocHints = conf.resultDocHints;

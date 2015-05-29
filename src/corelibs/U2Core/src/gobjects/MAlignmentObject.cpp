@@ -46,10 +46,14 @@ void MSAMemento::setState(const MAlignment& state){
     lastState = state;
 }
 
-MAlignmentObject::MAlignmentObject(const QString& name, const U2EntityRef& msaRef, const QVariantMap& hintsMap)
-    : GObject(GObjectTypes::MULTIPLE_ALIGNMENT, name, hintsMap), cachedMAlignment(MAlignment()), memento(new MSAMemento)
+MAlignmentObject::MAlignmentObject(const QString& name, const U2EntityRef& msaRef, const QVariantMap& hintsMap, const MAlignment &alnData)
+    : GObject(GObjectTypes::MULTIPLE_ALIGNMENT, name, hintsMap), cachedMAlignment(alnData), memento(new MSAMemento)
 {
     entityRef = msaRef;
+
+    if (!cachedMAlignment.isEmpty()) {
+        dataLoaded = true;
+    }
 }
 
 MAlignmentObject::~MAlignmentObject(){
@@ -202,15 +206,15 @@ GObject* MAlignmentObject::clone(const U2DbiRef& dstDbiRef, U2OpStatus& os, cons
     Q_UNUSED(opBlock);
     CHECK_OP(os, NULL);
 
-    GHintsDefaultImpl gHints(getGHintsMap());
-    gHints.setAll(hints);
-    const QString dstFolder = gHints.get(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+    GHintsDefaultImpl *gHints = new GHintsDefaultImpl(getGHintsMap());
+    gHints->setAll(hints);
+    const QString dstFolder = gHints->get(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
 
-    const MAlignment &msa = getMAlignment();
-    U2EntityRef clonedMsaRef = MAlignmentImporter::createAlignment(dstDbiRef, dstFolder, msa, os);
-    CHECK_OP(os, NULL);
+    MAlignment msa = getMAlignment();
+    MAlignmentObject *clonedObj = MAlignmentImporter::createAlignment(dstDbiRef, dstFolder, msa, os);
+    CHECK_OP_EXT(os, delete gHints, NULL);
 
-    MAlignmentObject* clonedObj = new MAlignmentObject(msa.getName(), clonedMsaRef, gHints.getMap());
+    clonedObj->setGHints(gHints);
     clonedObj->setIndexInfo(getIndexInfo());
     return clonedObj;
 }

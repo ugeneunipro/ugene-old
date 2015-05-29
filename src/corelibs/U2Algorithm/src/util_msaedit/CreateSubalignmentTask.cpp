@@ -23,6 +23,7 @@
 
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/GHints.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
@@ -36,9 +37,9 @@
 
 namespace U2{
 
-CreateSubalignmentTask::CreateSubalignmentTask(MAlignmentObject* maObj, const CreateSubalignmentSettings& settings )
-:DocumentProviderTask(tr("Create sub-alignment: %1").arg(maObj->getDocument()->getName()), TaskFlags_NR_FOSCOE),
-origMAObj(maObj), cfg(settings)
+CreateSubalignmentTask::CreateSubalignmentTask(MAlignmentObject *maObj, const CreateSubalignmentSettings &settings)
+    : DocumentProviderTask(tr("Create sub-alignment: %1").arg(maObj->getDocument()->getName()), TaskFlags_NR_FOSCOE),
+    origMAObj(maObj), cfg(settings)
 {
     origDoc = maObj->getDocument();
     createCopy = cfg.url != origDoc->getURL() || cfg.url.isEmpty();
@@ -53,17 +54,16 @@ void CreateSubalignmentTask::prepare() {
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(cfg.url));
     if (createCopy) {
         QVariantMap hints = origDoc->getGHintsMap();
-        if(hints.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()){
+        if (hints.value(DocumentReadingMode_SequenceAsAlignmentHint, false).toBool()) {
             hints[DocumentReadingMode_SequenceAsAlignmentHint] = false;
         }
         resultDocument = dfd->createNewLoadedDocument(iof, cfg.url, stateInfo, hints);
         CHECK_OP(stateInfo, );
 
-        const MAlignment &msa = origMAObj->getMAlignment();
-        U2EntityRef msaRef = MAlignmentImporter::createAlignment(resultDocument->getDbiRef(), origMAObj->getMAlignment(), stateInfo);
+        MAlignment msa = origMAObj->getMAlignment();
+        resultMAObj = MAlignmentImporter::createAlignment(resultDocument->getDbiRef(), msa, stateInfo);
         CHECK_OP(stateInfo, );
-
-        resultMAObj = new MAlignmentObject(msa.getName(), msaRef, origMAObj->getGHintsMap());
+        resultMAObj->setGHints(new GHintsDefaultImpl(origMAObj->getGHintsMap()));
 
         resultDocument->addObject(resultMAObj);
         GObjectUtils::updateRelationsURL(resultMAObj, origDoc->getURL(), cfg.url);

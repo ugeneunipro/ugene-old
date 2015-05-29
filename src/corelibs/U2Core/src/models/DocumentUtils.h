@@ -121,7 +121,7 @@ public:
         For example: combines all sequences to alignment, merge sequences, etc
         Return NULL if no restructuring was made
         */
-    static Document* createCopyRestructuredWithHints(Document* doc, U2OpStatus& os);
+    static Document* createCopyRestructuredWithHints(Document* doc, U2OpStatus& os, bool shallowCopy = false);
 };
 
 }//namespace

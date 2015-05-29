@@ -163,10 +163,8 @@ void ExpertDiscoveryLoadPosNegTask::sl_generateNegativeSample(Task* task){
         MAlignment msa = MSAUtils::seq2ma(negObjects, stateInfo);
         CHECK_OP(stateInfo, );
 
-        U2EntityRef msaRef = MAlignmentImporter::createAlignment(negativeDoc->getDbiRef(), msa, stateInfo);
+        MAlignmentObject* obj = MAlignmentImporter::createAlignment(negativeDoc->getDbiRef(), msa, stateInfo);
         CHECK_OP(stateInfo, );
-
-        MAlignmentObject* obj = new MAlignmentObject(msa.getName(), msaRef);
 
         negativeDoc->addObject(obj);
     }

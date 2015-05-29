@@ -511,10 +511,8 @@ void ACEFormat::load(IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*> &obj
 
         const QString folder = hints.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
 
-        U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, folder, al, os);
+        MAlignmentObject* obj = MAlignmentImporter::createAlignment(dbiRef, folder, al, os);
         CHECK_OP(os, );
-
-        MAlignmentObject* obj = new MAlignmentObject(al.getName(), msaRef);
         objects.append(obj);
     }
 }

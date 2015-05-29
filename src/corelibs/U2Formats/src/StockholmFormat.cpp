@@ -593,10 +593,8 @@ static void load( IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& l, con
 
         U2OpStatus2Log os;
         const QString folder = fs.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
-        U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, folder, msa, os);
+        MAlignmentObject* obj = MAlignmentImporter::createAlignment(dbiRef, folder, msa, os);
         CHECK_OP(os, );
-
-        MAlignmentObject* obj = new MAlignmentObject(msa.getName(), msaRef);
         obj->setIndexInfo(annMap);
         l.append( obj );
     }

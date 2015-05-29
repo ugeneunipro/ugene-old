@@ -119,6 +119,7 @@ public:
 
     virtual void renameObject(const U2DataId &id, const QString &newName, U2OpStatus &os);
 
+    virtual void setObjectRank(const U2DataId &objectId, U2DbiObjectRank newRank, U2OpStatus &os);
 
 private:
     Dbi &dbi;

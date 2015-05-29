@@ -77,10 +77,8 @@ MAlignmentObject* PhylipFormat::load(IOAdapter *io, const U2DbiRef &dbiRef, cons
     CHECK_EXT(al.getAlphabet()!=NULL, os.setError( PhylipFormat::tr("Alphabet is unknown")), NULL);
 
     const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, folder, al, os);
+    MAlignmentObject* obj = MAlignmentImporter::createAlignment(dbiRef, folder, al, os);
     CHECK_OP(os, NULL);
-
-    MAlignmentObject* obj = new MAlignmentObject(al.getName(), msaRef);
     return obj;
 }
 

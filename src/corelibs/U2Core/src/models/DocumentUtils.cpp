@@ -237,7 +237,7 @@ QFile::Permissions DocumentUtils::getPermissions(Document *doc){
     return QFile(doc->getURLString()).permissions();
 }
 
-Document* DocumentUtils::createCopyRestructuredWithHints(Document* doc, U2OpStatus& os) {
+Document* DocumentUtils::createCopyRestructuredWithHints(Document* doc, U2OpStatus& os, bool shallowCopy) {
     Document *resultDoc = NULL;
     QVariantMap hints = doc->getGHintsMap();
 
@@ -246,7 +246,8 @@ Document* DocumentUtils::createCopyRestructuredWithHints(Document* doc, U2OpStat
     }
 
     if (hints.value(DocumentReadingMode_SequenceAsAlignmentHint, false).toBool()) {
-        MAlignmentObject* maObj = MSAUtils::seqObjs2msaObj(doc->getObjects(), hints, os);
+        MAlignmentObject* maObj = MSAUtils::seqObjs2msaObj(doc->getObjects(), hints, os, shallowCopy);
+        CHECK_OP(os, NULL);
         CHECK(maObj != NULL, resultDoc);
         QList<GObject*> objects;
         objects << maObj;

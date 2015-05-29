@@ -323,13 +323,11 @@ MAlignment ComposeResultSubTask::createAlignment() {
 
     result.trim(false);
 
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(storage->getDbiRef(), result, stateInfo);
+    QScopedPointer<MAlignmentObject> msaObject(MAlignmentImporter::createAlignment(storage->getDbiRef(), result, stateInfo));
     CHECK_OP(stateInfo, result);
-    msa = storage->getDataHandler(msaRef);
+    msa = storage->getDataHandler(msaObject->getEntityRef());
 
     // remove gap columns
-    QScopedPointer<MAlignmentObject> msaObject(StorageUtils::getMsaObject(storage, msa));
-    CHECK_EXT(!msaObject.isNull(), setError(L10N::nullPointerError("MSA object")), result);
     msaObject->deleteColumnWithGaps(GAP_COLUMN_ONLY, stateInfo);
 
     return msaObject->getMAlignment();
@@ -623,9 +621,9 @@ void KAlignSubTask::createAlignment() {
     alignment.addRow(readObject->getSequenceName(), readData, stateInfo);
     CHECK_OP(stateInfo, );
 
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(storage->getDbiRef(), alignment, stateInfo);
+    QScopedPointer<MAlignmentObject> msaObj(MAlignmentImporter::createAlignment(storage->getDbiRef(), alignment, stateInfo));
     CHECK_OP(stateInfo, );
-    msa = storage->getDataHandler(msaRef);
+    msa = storage->getDataHandler(msaObj->getEntityRef());
 }
 
 PairwiseAlignmentTaskSettings * KAlignSubTask::createSettings(DbiDataStorage *storage, const SharedDbiDataHandler &msa, U2OpStatus &os) {
@@ -841,9 +839,9 @@ void PairwiseAlignmentTask::createSWAlignment(KAlignSubTask *task) {
     alignment.addRow(readObject->getSequenceName(), readData, stateInfo);
     CHECK_OP(stateInfo, );
 
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(storage->getDbiRef(), alignment, stateInfo);
+    QScopedPointer<MAlignmentObject> msaObj(MAlignmentImporter::createAlignment(storage->getDbiRef(), alignment, stateInfo));
     CHECK_OP(stateInfo, );
-    msa = storage->getDataHandler(msaRef);
+    msa = storage->getDataHandler(msaObj->getEntityRef());
     offset = task->getCoreRegion().startPos;
 }
 

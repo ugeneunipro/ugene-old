@@ -129,6 +129,9 @@ public:
     */
     virtual bool removeFolder(const QString& folder, U2OpStatus& os);
 
+    /** Updates object rank, e.g. a top-level object can be transmuted into a child object */
+    void setObjectRank(const U2DataId &objectId, U2DbiObjectRank newRank, U2OpStatus& os);
+
     /** Adds objects to the specified folder.
         All objects must exist and have a top-level type.*/
     virtual void addObjectsToFolder(const QList<U2DataId>& objectIds, const QString& toFolder, U2OpStatus& os);

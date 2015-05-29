@@ -71,7 +71,7 @@ void SaveAlignmentTask::run() {
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(fileName));
     doc.reset(f->createNewLoadedDocument(iof, fileName, stateInfo));
 
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(doc->getDbiRef(), ma, stateInfo);
+    MAlignmentObject* obj = MAlignmentImporter::createAlignment(doc->getDbiRef(), ma, stateInfo);
     CHECK_OP(stateInfo, );
 
     GHints* docHints = doc->getGHints();
@@ -79,7 +79,6 @@ void SaveAlignmentTask::run() {
         docHints->set(key, hints[key]);
     }
 
-    MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
     doc->addObject(obj);
     f->storeDocument(doc.data(), stateInfo);
 }

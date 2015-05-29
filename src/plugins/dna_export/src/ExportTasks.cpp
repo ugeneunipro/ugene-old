@@ -105,10 +105,9 @@ void ExportAlignmentTask::run() {
     resultDocument = f->createNewLoadedDocument(iof, fileName, stateInfo);
     CHECK_OP(stateInfo, );
 
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(resultDocument->getDbiRef(), ma, stateInfo);
+    MAlignmentObject* obj = MAlignmentImporter::createAlignment(resultDocument->getDbiRef(), ma, stateInfo);
     CHECK_OP(stateInfo, );
 
-    MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
     resultDocument->addObject(obj);
     f->storeDocument(resultDocument, stateInfo);
 }
@@ -196,10 +195,9 @@ void ExportMSA2MSATask::run() {
     MAlignment ma = MSAUtils::seq2ma(seqList, stateInfo);
     CHECK_OP(stateInfo, );
 
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(resultDocument->getDbiRef(), ma, stateInfo);
+    MAlignmentObject* obj = MAlignmentImporter::createAlignment(resultDocument->getDbiRef(), ma, stateInfo);
     CHECK_OP(stateInfo, );
 
-    MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
     resultDocument->addObject(obj);
     f->storeDocument(resultDocument, stateInfo);
 }

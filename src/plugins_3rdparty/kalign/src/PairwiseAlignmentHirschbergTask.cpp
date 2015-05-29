@@ -127,10 +127,9 @@ QList<Task*> PairwiseAlignmentHirschbergTask::onSubTaskFinished(Task *subTask) {
 
             MAlignment resultMa = kalignSubTask->resultMA;
 
-            U2EntityRef msaRef = MAlignmentImporter::createAlignment(alignmentDoc->getDbiRef(), resultMa, localStateInfo);
+            MAlignmentObject * docObject = MAlignmentImporter::createAlignment(alignmentDoc->getDbiRef(), resultMa, localStateInfo);
             CHECK_OP(localStateInfo, res);
 
-            MAlignmentObject * docObject = new MAlignmentObject(resultMa.getName(), msaRef);
             alignmentDoc->addObject(docObject);
 
             SaveDocFlags flags = SaveDoc_Overwrite;

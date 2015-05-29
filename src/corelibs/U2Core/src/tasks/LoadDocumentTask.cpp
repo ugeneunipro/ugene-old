@@ -460,7 +460,7 @@ void LoadDocumentTask::run() {
         if (!renameList.isEmpty()) {
             renameObjects(resultDocument, renameList);
         }
-        Document* convertedDoc = DocumentUtils::createCopyRestructuredWithHints(resultDocument, stateInfo);
+        Document* convertedDoc = DocumentUtils::createCopyRestructuredWithHints(resultDocument, stateInfo, true);
         if (convertedDoc != NULL) {
             delete resultDocument;
             resultDocument = convertedDoc;

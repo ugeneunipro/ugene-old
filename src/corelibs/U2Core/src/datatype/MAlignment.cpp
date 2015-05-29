@@ -258,6 +258,10 @@ U2MsaRow MAlignmentRow::getRowDBInfo() const {
     return row;
 }
 
+void MAlignmentRow::setRowDbInfo(const U2MsaRow &dbRow) {
+    initialRowInDb = dbRow;
+}
+
 void MAlignmentRow::setRowContent(const QByteArray& bytes, int offset, U2OpStatus& /* os */) {
     QByteArray newSequenceBytes;
     QList<U2MsaGap> newGapsModel;
