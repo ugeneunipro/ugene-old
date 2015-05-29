@@ -26,7 +26,7 @@ QString getTestDir(){
     if ( ok && i>1){
         return QString("../../test%1/").arg(i-1);
     }else{
-        return QString("../../../ugene-git/test/");
+        return QString("../../test/");
     }
 #endif
 }
