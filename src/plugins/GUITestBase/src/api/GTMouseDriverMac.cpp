@@ -97,7 +97,7 @@ void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
 #define GT_METHOD_NAME "release"
 void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 {
-    bp ^= button;
+    bp &= (Qt::MouseButtonMask^button);
     QPoint mousePos = QCursor::pos();
     CGEventType eventType = button == Qt::LeftButton ? kCGEventLeftMouseUp :
                                 button == Qt::RightButton ? kCGEventRightMouseUp:
