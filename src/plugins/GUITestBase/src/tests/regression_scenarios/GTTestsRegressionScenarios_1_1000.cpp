@@ -2286,7 +2286,7 @@ GUI_TEST_CLASS_DEFINITION(test_0861_3) {
 GUI_TEST_CLASS_DEFINITION(test_0861_4) {
     // 1. Open human_t1.fa
     // 2. Open the "Annotations Highlighting" bar of the Options Panel
-    // TODO: Expected state: the message "The sequence doesn't have any annotations." is shown on the bar
+    // Expected state: the message "The sequence doesn't have any annotations." is shown on the bar
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::AnnotationsHighlighting);
@@ -2295,6 +2295,19 @@ GUI_TEST_CLASS_DEFINITION(test_0861_4) {
     CHECK_SET_ERR(noAnnotTypesLabel->isVisible(), "label is not visiable");
     CHECK_SET_ERR(noAnnotTypesLabel->text() == "The sequence doesn't have any annotations.",
                   "unexpected text: " + noAnnotTypesLabel->text());
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0861_5){
+//    1. Open sars.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+//    2. Open the "Annotations Highlighting" bar of the Options Panel
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::AnnotationsHighlighting);
+    QLineEdit* editQualifiers = GTWidget::findExactWidget<QLineEdit*>(os, "editQualifiers");
+    GTLineEdit::setText(os, editQualifiers, "aaaaaaaaaaaaaaaaaaaaaaa");
+    QString style = editQualifiers->styleSheet();
+    CHECK_SET_ERR(style == "background-color: rgb(255, 152, 142);", "unexpected styleSheet: " + style);
+//    3. Enter any character set longer then 20 symbols in the line editor of the bar
+//    Expected state: the line editor is highlighted in red background-color: rgb(255, 152, 142);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0866) {
