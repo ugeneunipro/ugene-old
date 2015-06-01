@@ -167,19 +167,31 @@ QList<U2Sequence> MAlignmentImporter::importSequences(const DbiConnection& con, 
     return sequences;
 }
 
-QList<U2MsaRow> MAlignmentImporter::importRows(const DbiConnection& con, const MAlignment& al, U2Msa& msa, const QList<U2Sequence> &sequences, U2OpStatus& os) {
+QList<U2MsaRow> MAlignmentImporter::importRows(const DbiConnection& con, MAlignment& al, U2Msa& msa, const QList<U2Sequence> &sequences, U2OpStatus& os) {
     QList<U2MsaRow> rows;
     for (int i = 0; i < al.getNumRows(); ++i) {
         U2Sequence seq = sequences[i];
         if (seq.length > 0) {
+            MAlignmentRow &alignmentRow = al.getRow(i);
+            const QList<U2MsaGap> gapModel = alignmentRow.getGapModel();
+            if (!gapModel.isEmpty() && (gapModel.last().offset + gapModel.last().gap) == MsaRowUtils::getRowLength(alignmentRow.getSequence().seq, gapModel)) {
+                // remove trailing gap if it exists
+                QList<U2MsaGap> newGapModel = gapModel;
+                newGapModel.removeLast();
+                alignmentRow.setGapModel(newGapModel);
+            }
+
             U2MsaRow row;
             row.sequenceId = seq.id;
             row.gstart = 0;
             row.gend = seq.length;
-            row.gaps = al.getRow(i).getGapModel();
-            row.length = al.getRow(i).getRowLengthWithoutTrailing();
+            row.gaps = alignmentRow.getGapModel();
+            row.length = alignmentRow.getRowLengthWithoutTrailing();
 
             rows.append(row);
+        } else {
+            al.removeRow(i, os);
+            --i;
         }
     }
 

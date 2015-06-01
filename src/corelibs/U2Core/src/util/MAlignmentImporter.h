@@ -49,7 +49,7 @@ private:
     static void importMsaInfo(const DbiConnection &con, const U2DataId &msaId, const MAlignment &al, U2OpStatus &os);
     static QList<U2Sequence> importSequences(const DbiConnection &con, const QString &folder, const MAlignment &al, U2OpStatus &os);
     static void setChildRankForSequences(const DbiConnection &con, const QList<U2Sequence> &sequences, U2OpStatus &os);
-    static QList<U2MsaRow> importRows(const DbiConnection &con, const MAlignment &al, U2Msa &msa, const QList<U2Sequence> &rows, U2OpStatus &os);
+    static QList<U2MsaRow> importRows(const DbiConnection &con, MAlignment &al, U2Msa &msa, const QList<U2Sequence> &rows, U2OpStatus &os);
 };
 
 } // namespace
