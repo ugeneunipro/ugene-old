@@ -286,7 +286,7 @@ void GTUtilsSequenceView::goToPosition(U2OpStatus &os, int position) {
 ADVSingleSequenceWidget* GTUtilsSequenceView::getSeqWidgetByNumber(U2OpStatus &os, int number, const GTGlobals::FindOptions &options){
     QWidget *widget = GTWidget::findWidget(os,
         QString("ADV_single_sequence_widget_%1").arg(number),
-        NULL, options);
+        GTUtilsMdi::activeWindow(os), options);
 
     ADVSingleSequenceWidget *seqWidget = qobject_cast<ADVSingleSequenceWidget*>(widget);
 

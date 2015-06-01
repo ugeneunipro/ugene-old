@@ -99,6 +99,12 @@ QWidget* GTWidget::findWidget(U2OpStatus &os, const QString &widgetName, QWidget
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getWidgetCenter"
+QPoint GTWidget::getWidgetCenter(U2OpStatus &os, QWidget *w){
+    return w->mapToGlobal(w->rect().center());
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "findButtonByText"
 QAbstractButton* GTWidget::findButtonByText(U2OpStatus &os, const QString &text, QWidget *parentWidget, const GTGlobals::FindOptions& options) {
 

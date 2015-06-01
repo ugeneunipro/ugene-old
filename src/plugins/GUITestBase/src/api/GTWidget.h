@@ -44,6 +44,7 @@ public:
 
     // finds widget with the given object name using given FindOptions. Parent widget is QMainWindow, if not set
     static QWidget *findWidget(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QPoint getWidgetCenter(U2OpStatus &os, QWidget* w);
 
     static QAbstractButton *findButtonByText(U2OpStatus &os, const QString &text, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 

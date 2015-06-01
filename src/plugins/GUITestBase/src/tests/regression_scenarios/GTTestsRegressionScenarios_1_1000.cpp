@@ -410,6 +410,31 @@ GUI_TEST_CLASS_DEFINITION(test_0339) {
     CHECK_SET_ERR(isTabOpened, "'Search in sequence' tab is not opened");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0394){
+//    1. Add to project sars.gb, murine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+//    2. Open sars.gb in sequence view.
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+//    3. Drag and drop murine.gb sequence NC_001363 to opened in previous step sequence view.
+    GTUtilsProjectTreeView::dragAndDrop(os, GTUtilsProjectTreeView::findIndex(os, "NC_001363"),
+                                        GTUtilsMdi::activeWindow(os)->findChild<ADVSingleSequenceWidget*>());
+//    Expected state: Two sequnces showed in sequence view and NC_001363 is active.
+    int num = GTUtilsSequenceView::getSeqWidgetsNumber(os);
+    CHECK_SET_ERR(num == 2, QString("Unexpected sequence number: %1").arg(num));
+//    Order of seaqences is:
+//        1) NC_004718 [dna]
+    QString first = GTUtilsSequenceView::getSeqName(os, 0);
+    CHECK_SET_ERR(first == "NC_004718", "Unexpected first sequence: " + first);
+//        2) NC_001363 [dna]
+    QString second = GTUtilsSequenceView::getSeqName(os, 1);
+    CHECK_SET_ERR(second == "NC_001363", "Unexpected second sequence: " + second);
+    //TODO: good drag and drop needed
+//    4. Drag sequence NC_001363 to up and drop.
+//        1) NC_001363 [dna]
+//        2) NC_004718 [dna]
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0407) {
     // 1. Open _common_data/scenarios/_regression/407/trail.fas
     // Expected state: a message box appears
@@ -755,6 +780,55 @@ GUI_TEST_CLASS_DEFINITION(test_0652) {
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "5_prime_UTR_intron"));
     GTGlobals::sleep();
     //UGENE isn't chrashed showing tooltip.
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0659){
+//    Write annotations worker is broken
+//    1. Open WD. Create simple scheme "read sequence"->"Write annotations"
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Set "genbank" as output document format for "Write annotations" worker.
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::addElement(os, "Write Annotations");
+    GTUtilsWorkflowDesigner::connect(os, read, write);
+
+//    3. Set up valid output input files for scheme, and run it (for example set input file samples/GENBANK/sars.gb)
+    GTUtilsWorkflowDesigner::click(os, read);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Genbank", "sars.gb");
+    GTUtilsWorkflowDesigner::click(os, write);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", QDir(sandBoxDir).absolutePath() + "/test_659", GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", "genbank", GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: annotations has been written in single file
+    QDir d(QDir(sandBoxDir).absolutePath());
+    QStringList list = d.entryList(QStringList()<<"test_659*");
+    CHECK_SET_ERR(list.count() == 1, QString("unexpected files number: %1").arg(list.count()));
+    CHECK_SET_ERR(list.first() == "test_659", "unexpected file name: " + list.first());
+
+
+    GTWidget::click(os, GTAction::button(os, "toggleDashboard"));
+// check csv format
+    GTUtilsWorkflowDesigner::click(os, write);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", QDir(sandBoxDir).absolutePath() +"/test_659_1", GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", "csv", GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: annotations has been written in single file
+    list = d.entryList(QStringList()<<"test_659*");
+    CHECK_SET_ERR(list.count() == 2, QString("unexpected files number: %1").arg(list.count()));
+    CHECK_SET_ERR(list.contains("test_659_1"), "unexpected file name csv: " + list[1]);
+
+    GTWidget::click(os, GTAction::button(os, "toggleDashboard"));
+// check gff format
+    GTUtilsWorkflowDesigner::click(os, write);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", QDir(sandBoxDir).absolutePath() +"/test_659_2", GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", "gff", GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: annotations has been written in single file
+    list = d.entryList(QStringList()<<"test_659*");
+    CHECK_SET_ERR(list.count() == 3, QString("unexpected files number: %1").arg(list.count()));
+    CHECK_SET_ERR(list.contains("test_659_2"), "unexpected file name csv: " + list[2]);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0663) {
