@@ -18,6 +18,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+
 #include "GTTestsDocumentFromText.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsApp.h"
