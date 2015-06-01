@@ -1563,6 +1563,28 @@ GUI_TEST_CLASS_DEFINITION(test_0786) {
     CHECK_SET_ERR(!outputFile.exists(outputFilePath), "File should not exist");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0792) {
+//    1) Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2) Put "Read Sequence" worker on the scheme
+    GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+//    Expected state: Dataset view opened
+
+//    3) Click "Add directory", select data/samples/Genbank
+    GTUtilsWorkflowDesigner::setDatasetInputFolder(os, dataDir + "samples/Genbank");
+//    4) Click on appeared item in the file list
+    QWidget* datasetWidget = GTWidget::findWidget(os, "DatasetWidget");
+    QListWidget* items = GTWidget::findExactWidget<QListWidget*>(os, "itemsArea", datasetWidget);
+    GTListWidget::click(os, items, "Genbank", Qt::RightButton);
+//    Expected state:
+//        the following widgets appears:
+    GTWidget::findExactWidget<QLineEdit*>(os, "includeMaskEdit");
+    GTWidget::findExactWidget<QLineEdit*>(os, "excludeMaskEdit");
+    GTWidget::findExactWidget<QCheckBox*>(os, "recursiveBox");
+//            Include mask, Exclude mask lineedits;
+//            Recursive checkbox
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0801) {
     // 1. Open human_T1.fa sequence
     // 2. Open find pattern tab on options panel {Ctrl+f}. Fill fields with next data:
