@@ -51,15 +51,15 @@ unix {
 }
 
 unix_not_mac(){
-#    exists( /usr/lib/libprocps* ) {
-      LIBS += -lprocps
-#    }else{
-#        exists( /usr/local/lib/libprocps* ){
-#          LIBS += -lprocps
-#        }else{
-#          LIBS += -lproc
-#        }
-#    }
+    exists( /usr/lib/libproc.so* ) {
+      LIBS += -lproc
+    }else{
+        exists( /usr/local/lib/libproc.so* ){
+          LIBS += -lproc
+        }else{
+          LIBS += -lprocps
+        }
+    }
 }
 
 HEADERS += ../../include/U2Core/U2*.h
