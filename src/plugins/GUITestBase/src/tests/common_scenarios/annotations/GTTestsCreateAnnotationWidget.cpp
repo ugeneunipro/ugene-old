@@ -506,7 +506,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 //    Expected state: "Telomere" type is selected. Cancel the dialog.
             const QString type = getTypeFromFullWidget(os, dialog);
             CHECK_SET_ERR("Telomere" == type,
-                          QString("An unexpected default type: expect '%1', got '%2'")
+                          QString("An unexpected feature type: expect '%1', got '%2'")
                           .arg("Telomere").arg(type));
 
             GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
@@ -530,11 +530,12 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
             GTWidget::click(os, GTWidget::findExactWidget<QComboBox *>(os, "cbAnnotationType", dialog));
             GTKeyboardDriver::keySequence(os, "tel");
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+            GTGlobals::sleep(100);
 
 //    Expected state: "Telomere" type is selected. Cancel the dialog.
             const QString type = getTypeFromNormalWidget(os, dialog);
             CHECK_SET_ERR("Telomere" == type,
-                          QString("An unexpected default type: expect '%1', got '%2'")
+                          QString("An unexpected feature type: expect '%1', got '%2'")
                           .arg("Telomere").arg(type));
 
             GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
@@ -553,10 +554,11 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTWidget::click(os, GTWidget::findExactWidget<QComboBox *>(os, "cbAnnotationType"));
     GTKeyboardDriver::keySequence(os, "tel");
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep(100);
 
     const QString type = getTypeFromOptionsPanelWidget(os);
     CHECK_SET_ERR("Telomere" == type,
-                  QString("An unexpected default type: expect '%1', got '%2'")
+                  QString("An unexpected feature type: expect '%1', got '%2'")
                   .arg("Telomere").arg(type));
 }
 
