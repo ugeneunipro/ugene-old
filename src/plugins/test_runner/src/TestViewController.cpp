@@ -74,6 +74,7 @@ TestViewController::TestViewController(TestRunnerService* s, bool _cmd) : MWMDIW
     tree->setContextMenuPolicy(Qt::CustomContextMenu);
     tree->setColumnWidth(0, AppContext::getSettings()->getValue(SETTINGS_ROOT + "treeColWidth", 400).toInt());
     tree->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    tree->sortByColumn(0, Qt::AscendingOrder);
 
     splitter->setStretchFactor(0, 10);
     splitter->setStretchFactor(1, 3);
