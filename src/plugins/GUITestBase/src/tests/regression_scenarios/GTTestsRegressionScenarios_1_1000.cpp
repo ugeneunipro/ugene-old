@@ -1585,6 +1585,24 @@ GUI_TEST_CLASS_DEFINITION(test_0792) {
 //            Recursive checkbox
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0798){
+//    1. File -> Open As.
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os,
+        SequenceReadingModeSelectorDialogFiller::Merge));
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "Genbank"));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/798", "1.gb"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECTSUPPORT__OPEN_AS));
+    GTMenu::showMainMenu(os, MWMENU_FILE);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    2. Choose the file "_common_data/scenarios/_regression/798/1.gb" as Genbank in merging mode with default parametes.
+    QList<QTreeWidgetItem*> list = GTUtilsAnnotationsTreeView::findItems(os, "source");
+    QString s1 = list.first()->text(2);
+    QString s2 = list.last()->text(2);
+    CHECK_SET_ERR(s1 == "1..117046", "unexpected coordinates1: " + s1);
+    CHECK_SET_ERR(s2 == "117057..143727", "unexpected coordinates2: " + s2);
+//    Expected state: there is 2 annotations named 'source' with coordinates 1..117046 and 117057..143727
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0801) {
     // 1. Open human_T1.fa sequence
     // 2. Open find pattern tab on options panel {Ctrl+f}. Fill fields with next data:
