@@ -1,6 +1,7 @@
 U_NAME=ugene
 U_VERSION=`cat ../../src/ugene_version.pri | grep UGENE_VERSION | awk -F'=' '{print $2}'`
 ##U_REVISION=`svn status -u | sed -n -e '/revision/p' | awk '{print $4}'`
+svn upgrade
 U_REVISION=`svn info|grep "Revision:"|cut -d " " -f2`
 DST_NAME=$U_NAME-$U_VERSION
 
