@@ -2112,6 +2112,8 @@ GUI_TEST_CLASS_DEFINITION(test_0842) {
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit"));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes, "You have changed the structure of the element"));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Cancel, "Remove this element?", "Remove element"));
+
+    GTUtilsWorkflowDesigner::setCurrentTab(os, GTUtilsWorkflowDesigner::algoriths);
     GTUtilsWorkflowDesigner::clickOnPalette(os, "test", Qt::RightButton);
 
 //    Expected state: There are two custom workers on the palette now (test and test1).
