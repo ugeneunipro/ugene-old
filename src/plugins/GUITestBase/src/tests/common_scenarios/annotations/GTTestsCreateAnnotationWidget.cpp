@@ -3079,13 +3079,13 @@ GUI_TEST_CLASS_DEFINITION(test_0039) {
 //    Expected state: it is invisible.
             QCheckBox *chbUsePatternNames = GTWidget::findExactWidget<QCheckBox *>(os, "chbUsePatternNames", dialog);
             CHECK_SET_ERR(NULL != chbUsePatternNames, "chbUsePatternNames is NULL");
-            CHECK_SET_ERR(chbUsePatternNames->isVisible(), "chbUsePatternNames is unexpectedly visible");
+            CHECK_SET_ERR(!chbUsePatternNames->isVisible(), "chbUsePatternNames is unexpectedly visible");
 
             GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
         }
     };
 
-    GTUtilsDialog::waitForDialog(os, new SmithWatermanDialogFiller(os, new Scenario1));
+    GTUtilsDialog::waitForDialog(os, new SmithWatermanDialogFiller(os, new Scenario2));
     openFileAndCallSmithWatermanDialog(os, dataDir + "samples/Genbank/murine.gb");
 }
 
