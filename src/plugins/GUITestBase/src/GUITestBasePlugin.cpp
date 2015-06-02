@@ -1064,6 +1064,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_4218);
     REGISTER_TEST(GUITest_regression_scenarios::test_4218_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_4221);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_4232, "Vladimir Malinovsky, please check this test");
+    REGISTER_TEST(GUITest_regression_scenarios::test_4232_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_4244);
     REGISTER_TEST(GUITest_regression_scenarios::test_4266);
     REGISTER_TEST(GUITest_regression_scenarios::test_4272);

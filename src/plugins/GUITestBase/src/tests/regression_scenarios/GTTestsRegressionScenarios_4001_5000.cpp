@@ -1718,6 +1718,68 @@ GUI_TEST_CLASS_DEFINITION(test_4221) {
     GTUtilsLog::check(os, logTracer);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4232) {
+    // 1. Open a file with variations
+    GTFileDialog::openFile(os, testDir + "_common_data/vcf/valid.vcf");
+    // 2. Open a file with a sequence
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/illumina.fa");
+    // 3. Open a file with an assembly
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb/scerevisiae.bam.ugenedb");
+
+    // 4. Drag&drop the sequence object from the project view on the assembly view
+    const QModelIndex sequenceDocIndex = GTUtilsProjectTreeView::findIndex(os, "illumina.fa");
+    const QModelIndex sequenceObjIndex = sequenceDocIndex.child(0, 0);
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTUtilsProjectTreeView::dragAndDrop(os, sequenceObjIndex, GTUtilsMdi::activeWindow(os));
+
+    // Expected state: sequence object and document are highlighted in the Project view
+    QFont itemFont = GTUtilsProjectTreeView::getFont(os, sequenceObjIndex);
+    CHECK_SET_ERR(itemFont.bold(), "Sequence object item isn't highlighted in Project view");
+    itemFont = GTUtilsProjectTreeView::getFont(os, sequenceDocIndex);
+    CHECK_SET_ERR(itemFont.bold(), "Sequence document item isn't highlighted in Project view");
+
+    // 4. Drag&drop the variations object from the project view on the assembly view
+    const QModelIndex variationsObjIndex = GTUtilsProjectTreeView::findIndex(os, "II");
+    GTUtilsProjectTreeView::dragAndDrop(os, variationsObjIndex, GTUtilsMdi::activeWindow(os));
+
+    // Expected state: variations object is highlighted in the Project view
+    itemFont = GTUtilsProjectTreeView::getFont(os, variationsObjIndex);
+    CHECK_SET_ERR(itemFont.bold(), "Variations object item isn't highlighted in Project view");
+
+    // 5. Remove the variations from the assembly view
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove track from the view"));
+    GTWidget::click(os, GTWidget::findWidget(os, "Variant row for II"), Qt::RightButton);
+
+    // Expected state: the variations object isn't highlighted in the Project view
+    itemFont = GTUtilsProjectTreeView::getFont(os, variationsObjIndex);
+    CHECK_SET_ERR(!itemFont.bold(), "Variations object item is unexpectedly highlighted in Project view");
+
+    // 6. Remove the sequence from the assembly view
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Unassociate"));
+    GTWidget::click(os, GTWidget::findWidget(os, "Assembly reference sequence area"), Qt::RightButton);
+
+    // Expected state: the sequence object and document aren't highlighted in the Project view
+    itemFont = GTUtilsProjectTreeView::getFont(os, sequenceObjIndex);
+    CHECK_SET_ERR(itemFont.bold(), "Sequence object item isn't highlighted in Project view");
+    itemFont = GTUtilsProjectTreeView::getFont(os, sequenceDocIndex);
+    CHECK_SET_ERR(itemFont.bold(), "Sequence document item isn't highlighted in Project view");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4232_1) {
+    // 1. Open file with a chromatogram
+    GTFileDialog::openFile(os, dataDir + "samples/ABIF/A01.abi");
+
+    // Expected state: a chromatogram object and a sequence object are highlighted in the Project view
+    const QModelIndex seqObjIndex = GTUtilsProjectTreeView::findIndex(os, "A1#berezikov");
+    QFont itemFont = GTUtilsProjectTreeView::getFont(os, seqObjIndex);
+    CHECK_SET_ERR(itemFont.bold(), "Sequence object item isn't highlighted in Project view");
+
+    const QModelIndex chromatogramObjIndex = GTUtilsProjectTreeView::findIndex(os, "Chromatogram");
+    itemFont = GTUtilsProjectTreeView::getFont(os, chromatogramObjIndex);
+    CHECK_SET_ERR(itemFont.bold(), "Chromatogram object item isn't highlighted in Project view");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4244){
     //1. Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");

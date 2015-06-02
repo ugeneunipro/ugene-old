@@ -63,6 +63,8 @@ AssemblyVariantRow::AssemblyVariantRow(QWidget *parent, VariantTrackObject *_tra
     QAction *removeTrackAction = contextMenu->addAction(tr("Remove track from the view"));
     connect(removeTrackAction, SIGNAL(triggered()), SIGNAL(si_removeRow()));
     connect(trackObj, SIGNAL(si_nameChanged(const QString &)), SLOT(sl_redraw()));
+
+    setObjectName("Variant row for " + _trackObj->getGObjectName());
 }
 
 VariantTrackObject *AssemblyVariantRow::getTrackObject() const {

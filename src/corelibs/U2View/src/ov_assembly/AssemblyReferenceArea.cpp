@@ -39,6 +39,8 @@ AssemblySequenceArea::AssemblySequenceArea(AssemblyBrowserUi * ui_, char skipCha
     setMouseTracking(true);
 
     setNormalCellRenderer();
+
+    setObjectName("Assembly reference sequence area");
 }
 
 void AssemblySequenceArea::connectSlots() {
