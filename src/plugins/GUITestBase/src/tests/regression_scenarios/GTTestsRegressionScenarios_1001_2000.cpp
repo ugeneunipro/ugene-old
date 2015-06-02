@@ -758,6 +758,29 @@ GUI_TEST_CLASS_DEFINITION(test_1029) {
     }
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1037){
+//    1) Open any Assembly file (*.bam, *.sam)
+    QString ugenedbFileName = testDir + "_common_data/scenarios/sandbox/test_1037.ugenedb";
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, ugenedbFileName));
+    GTFileDialog::openFile( os, testDir + "_common_data/bam", "chrM.sorted.bam" );
+//    2) Open two SNP files (*.snp, *.vcf)
+    GTFileDialog::openFile(os, testDir + "_common_data/snp/simple.snp");
+    GTFileDialog::openFile(os, testDir + "_common_data/snp/valid.snp");
+//    3) Drag-n-drop SNP object files to assembly browser
+    QModelIndex simple = GTUtilsProjectTreeView::findIndex(os, "simple.snp");
+    QModelIndex chr1 = GTUtilsProjectTreeView::findIndex(os, "chr1", simple);
+    GTUtilsProjectTreeView::dragAndDrop(os, chr1, GTWidget::findWidget(os, "assembly_reads_area"));
+    GTGlobals::sleep(500);
+    GTWidget::findWidget(os, "AssemblyVariantRow_chr1");
+
+    QModelIndex chr10 = GTUtilsProjectTreeView::findIndex(os, "chr10");
+    GTUtilsProjectTreeView::dragAndDrop(os, chr10, GTWidget::findWidget(os, "assembly_reads_area"));
+    GTGlobals::sleep(500);
+    GTWidget::findWidget(os, "AssemblyVariantRow_chr10");
+//    Expected state: snp visualization appears one after another under reference sequence visualization
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1038) {
 //    1. Open WD
 //    2. Create a scheme with the following elments: "Read assembly", "Write sequence", "Split assembly into sequences"

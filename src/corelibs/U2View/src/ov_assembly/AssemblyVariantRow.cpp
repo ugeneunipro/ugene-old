@@ -46,6 +46,7 @@ AssemblyVariantRow::AssemblyVariantRow(QWidget *parent, VariantTrackObject *_tra
     this->setMouseTracking(true);
     this->setFocusPolicy(Qt::StrongFocus);
     this->setToolTip(tr("Variation track: %1").arg(trackObj->getGObjectName()));
+    this->setObjectName("AssemblyVariantRow_" + trackObj->getGObjectName());
 
     AssemblyCellRendererFactoryRegistry *factories = browser->getCellRendererRegistry();
     AssemblyCellRendererFactory *f = factories->getFactoryById(AssemblyCellRendererFactory::ALL_NUCLEOTIDES);
