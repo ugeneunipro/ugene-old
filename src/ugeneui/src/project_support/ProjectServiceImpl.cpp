@@ -160,7 +160,7 @@ Task::ReportResult ProjectServiceEnableTask::report() {
 
     psi->closeProjectAction = new QAction(tr("&Close project"), psi);
     psi->closeProjectAction->setObjectName(ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
-//    psi->closeProjectAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q));
+    psi->closeProjectAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q));
     psi->closeProjectAction->setShortcutContext(Qt::WindowShortcut);
     connect(psi->closeProjectAction, SIGNAL(triggered()), psi, SLOT(sl_closeProject()));
 
