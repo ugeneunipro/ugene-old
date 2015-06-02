@@ -1274,6 +1274,17 @@ GUI_TEST_CLASS_DEFINITION(test_1065_3) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1068){
+//    1) Open _common_data/scenarios/regression/1068/Oppa.uwl
+    GTLogTracer l;
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/1068/Oppa.uwl"));
+    GTWidget::click(os, GTAction::button(os, "Load workflow"));
+    GTGlobals::sleep();
+//    Expected state: Workflow was not loaded. Error in log
+    CHECK_SET_ERR(l.hasError(), "no error in log");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1069) {
     //1. Open any sequence
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
