@@ -20,8 +20,15 @@
    <string>View Matrix</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
    <item>
-    <layout class="QVBoxLayout" name="MLLayout"/>
+    <layout class="QVBoxLayout" name="MLLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinAndMaxSize</enum>
+     </property>
+    </layout>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
