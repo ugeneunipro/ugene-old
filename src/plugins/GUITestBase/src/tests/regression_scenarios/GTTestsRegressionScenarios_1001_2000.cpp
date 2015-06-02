@@ -2864,6 +2864,27 @@ GUI_TEST_CLASS_DEFINITION(test_1252_real) {
     CHECK_SET_ERR(Qt::Checked == firstItem->checkState(), "Unexpected check state");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1253){
+//    1. Open Find Pattern on the Options Panel
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+//    2. Input any valid pattern
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "AAAAAAA", true);
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Annotation parameters"));
+//    3. Rename annotation and annotation group
+    QLineEdit* leGroupName = GTWidget::findExactWidget<QLineEdit*>(os, "leGroupName");
+    GTLineEdit::setText(os, leGroupName, "groupName");
+    QLineEdit* leAnnotationName = GTWidget::findExactWidget<QLineEdit*>(os, "leAnnotationName");
+    GTLineEdit::setText(os, leAnnotationName, "annName");
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    4. Run search
+//    Expected state: check annotations and group names in results
+    GTUtilsAnnotationsTreeView::findItem(os, "groupName  (0, 787)");
+    GTUtilsAnnotationsTreeView::findItem(os, "annName");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1257){
 
     // 1. Open Find Pattern on the Options Panel
