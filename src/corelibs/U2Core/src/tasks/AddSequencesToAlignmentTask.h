@@ -24,13 +24,14 @@
 
 #include <QPointer>
 
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/Task.h>
 #include <U2Core/MAlignmentObject.h>
 
 namespace U2 {
 
 class StateLock;
+class LoadDocumentTask;
+class U2SequenceObject;
 
 class U2CORE_EXPORT AddSequencesToAlignmentTask : public Task {
     Q_OBJECT
@@ -44,11 +45,13 @@ public:
     QPointer<MAlignmentObject>  maObj;
     QStringList                 urls;
     StateLock*                  stateLock;
-
+private slots:
+    void sl_onCancel();
 private:
     const DNAAlphabet *msaAlphabet;
     QList<U2SequenceObject*>    seqList;
     QStringList                 errorList;
+    LoadDocumentTask* loadTask;
 
     static const int maxErrorListSize;
 
@@ -57,6 +60,7 @@ private:
     qint64 createRows(QList<U2MsaRow>& rows);
     void addRows(QList<U2MsaRow> &rows, qint64 len);
     void setupError();
+    void releaseLock();
 };
 
 }// namespace

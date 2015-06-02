@@ -38,10 +38,11 @@ namespace U2 {
 const int AddSequencesToAlignmentTask::maxErrorListSize = 5;
 
 AddSequencesToAlignmentTask::AddSequencesToAlignmentTask( MAlignmentObject* obj, const QStringList& fileWithSequencesUrls )
-: Task("Add sequences to alignment task", TaskFlag_NoRun), maObj(obj), urls(fileWithSequencesUrls), stateLock(NULL)
+: Task("Add sequences to alignment task", TaskFlags_NR_FOSE_COSC), maObj(obj), urls(fileWithSequencesUrls), stateLock(NULL), loadTask(NULL)
 {
     assert(!fileWithSequencesUrls.isEmpty());
     msaAlphabet = maObj->getAlphabet();
+    connect(maObj, SIGNAL(si_invalidateAlignmentObject()), SLOT(sl_onCancel()));
 }
 
 void AddSequencesToAlignmentTask::prepare()
@@ -65,7 +66,7 @@ void AddSequencesToAlignmentTask::prepare()
         if (!detectedFormats.isEmpty()) {
             IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
             DocumentFormat* format = detectedFormats.first().format;
-            LoadDocumentTask* loadTask = new LoadDocumentTask(format->getFormatId(), fileWithSequencesUrl, factory);
+            loadTask = new LoadDocumentTask(format->getFormatId(), fileWithSequencesUrl, factory);
             addSubTask(loadTask);
         } else {
             setError("Unknown format");
@@ -102,11 +103,10 @@ QList<Task*> AddSequencesToAlignmentTask::onSubTaskFinished(Task* subTask) {
 }
 
 Task::ReportResult AddSequencesToAlignmentTask::report() {
-    if (stateLock) {
-        maObj->unlockState(stateLock);
-        delete stateLock;
+    if (isCanceled() || hasError()) {
+        return ReportResult_Finished;
     }
-
+    releaseLock();
     QList<U2MsaRow> rows;
     qint64 len = createRows(rows);
     CHECK_OP(stateInfo, ReportResult_Finished);
@@ -171,6 +171,23 @@ void AddSequencesToAlignmentTask::setupError() {
         error += tr(" and others");
     }
     setError(error);
+}
+
+void AddSequencesToAlignmentTask::sl_onCancel() {
+    if (loadTask != NULL && !loadTask->isFinished() && !loadTask->isCanceled()) {
+        loadTask->cancel();
+    }
+    releaseLock();
+}
+
+void AddSequencesToAlignmentTask::releaseLock(){
+    if (stateLock != NULL) {
+        if(maObj != NULL) {
+            maObj->unlockState(stateLock);
+        }
+        delete stateLock;
+        stateLock = NULL;
+    }
 }
 
 }
