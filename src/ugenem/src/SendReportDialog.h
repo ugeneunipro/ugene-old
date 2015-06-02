@@ -39,6 +39,7 @@ public:
     int getTotalPhysicalMemory();
     QString getCPUInfo();
     QString getUgeneBitCount() const;
+
 private slots:
     void sl_replyFinished(QNetworkReply*);
 
@@ -51,11 +52,12 @@ class SendReportDialog:public QDialog, public Ui_Dialog {
     Q_OBJECT
 public:
     SendReportDialog(const QString &report, QDialog *d = NULL);
+
 private:
     void openUgene() const;
-    QString getCommandForRunUgene() const;
-    QString getUgeneName() const;
+    QString getUgeneExecutablePath() const;
     QStringList getParameters() const;
+
 private slots:
     void sl_onOkClicked();
     void sl_onMaximumMessageSizeReached();

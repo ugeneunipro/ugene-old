@@ -173,7 +173,7 @@ SLOT(sl_onMaximumMessageSizeReached()));
     connect(sendButton, SIGNAL(clicked()), SLOT(sl_onOkClicked()));
     connect(cancelButton, SIGNAL(clicked()), SLOT(sl_onCancelClicked()));
 
-    QFile file(getUgeneName());
+    QFile file(getUgeneExecutablePath());
     if (!file.exists()) {
         checkBox->hide();
         checkBox->setChecked(false);
@@ -201,15 +201,7 @@ void SendReportDialog::sl_onMaximumMessageSizeReached() {
     }
 }
 
-QString SendReportDialog::getCommandForRunUgene() const {
-    QString command = getUgeneName();
-#if defined Q_OS_UNIX
-    command.prepend("./");
-#endif
-    return command;
-}
-
-QString SendReportDialog::getUgeneName() const {
+QString SendReportDialog::getUgeneExecutablePath() const {
     QString name;
     bool isWin = false;
     Q_UNUSED(isWin);
@@ -218,19 +210,19 @@ QString SendReportDialog::getUgeneName() const {
 #endif
 #ifdef Q_OS_WIN32
     isWin = true;
-    name = "ugene.exe";
+    name = "ugeneui.exe";
 #endif
 #ifdef Q_OS_MAC
     name = "ugeneui";
 #endif
 #ifdef QT_DEBUG
     if (isWin) {
-        name = "ugened.exe";
-    }else{
+        name = "ugeneuid.exe";
+    } else {
         name.append("d");
     }
 #endif
-    return name;
+    return QCoreApplication::applicationDirPath() + "/" + name;
 }
 
 QStringList SendReportDialog::getParameters() const {
@@ -245,7 +237,7 @@ QStringList SendReportDialog::getParameters() const {
 }
 
 void SendReportDialog::openUgene() const {
-    QString command = getCommandForRunUgene();
+    QString command = getUgeneExecutablePath();
     QStringList parameters = getParameters();
     QProcess::startDetached(command, parameters);
 }
