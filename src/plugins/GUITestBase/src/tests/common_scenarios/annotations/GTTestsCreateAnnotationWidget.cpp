@@ -529,8 +529,9 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 //    5. Click to the annotation type combobox. Enter "tel". Click "Enter".
             GTWidget::click(os, GTWidget::findExactWidget<QComboBox *>(os, "cbAnnotationType", dialog));
             GTKeyboardDriver::keySequence(os, "tel");
+            GTGlobals::sleep();
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-            GTGlobals::sleep(100);
+            GTGlobals::sleep();
 
 //    Expected state: "Telomere" type is selected. Cancel the dialog.
             const QString type = getTypeFromNormalWidget(os, dialog);
@@ -553,8 +554,9 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 //    Expected state: "Telomere" type is selected. Cancel the dialog.
     GTWidget::click(os, GTWidget::findExactWidget<QComboBox *>(os, "cbAnnotationType"));
     GTKeyboardDriver::keySequence(os, "tel");
+    GTGlobals::sleep();
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    GTGlobals::sleep(100);
+    GTGlobals::sleep();
 
     const QString type = getTypeFromOptionsPanelWidget(os);
     CHECK_SET_ERR("Telomere" == type,
