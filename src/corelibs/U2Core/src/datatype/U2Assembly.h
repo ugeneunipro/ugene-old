@@ -224,8 +224,7 @@ public:
 
     U2DataId        referenceId;
 
-    // implement U2Object
-    virtual U2DataType getType() { return U2Type::Assembly; }
+    U2DataType getType() const { return U2Type::Assembly; }
 };
 
 /** Statistics information collected during the reads packing algorithm */

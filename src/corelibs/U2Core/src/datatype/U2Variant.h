@@ -63,8 +63,7 @@ public:
     /** File header */
     QString     fileHeader;
 
-    // implement U2Object
-    virtual U2DataType getType() { return U2Type::VariantTrack; }
+    U2DataType getType() const { return U2Type::VariantTrack; }
 };
 
 /** Database representation of genomic variations such as snps, indels, etc.  */

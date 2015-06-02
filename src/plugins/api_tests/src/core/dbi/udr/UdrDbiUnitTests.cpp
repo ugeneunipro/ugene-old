@@ -43,7 +43,7 @@ namespace {
     public:
         SchemaObject3() : U2Object() {}
         SchemaObject3(U2DataId id, const U2DbiId &dbId) : U2Object(id, dbId, 0) {}
-        U2DataType getType() { return TEST_SCHEMA_TYPE_3; }
+        U2DataType getType() const { return TEST_SCHEMA_TYPE_3; }
     };
 
     QList<UdrValue> getData(qint64 iv, double dv, const QString &sv) {

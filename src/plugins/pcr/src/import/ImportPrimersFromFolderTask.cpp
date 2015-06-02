@@ -90,11 +90,11 @@ QList<GObject *> ImportPrimersFromFolderTask::getSubobjects() {
     SAFE_POINT_EXT(NULL != objectDbi, setError(L10N::nullPointerError("object DBI")), subobjects);
 
     const QString folderPath = folder.getFolderPath();
-    const QHash<U2Object, QString> objectFolders = objectDbi->getObjectFolders(stateInfo);
+    const QList<U2DataId> objectsIds = objectDbi->getObjects(folderPath, 0, U2DbiOptions::U2_DBI_NO_LIMIT, stateInfo);
     SAFE_POINT_OP(stateInfo, subobjects);
-    foreach (const U2Object &object, objectFolders.keys()) {
-        if (folderPath == objectFolders[object]) {
-            subobjects << document->getObjectById(object.id);
+    foreach (const U2DataId &objectId, objectsIds) {
+        if (U2DbiUtils::toType(objectId) == U2Type::Sequence) {
+            subobjects << document->getObjectById(objectId);
         }
     }
 

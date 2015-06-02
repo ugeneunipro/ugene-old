@@ -46,8 +46,7 @@ public:
     /** A flag to mark that sequence is circular */
     bool            circular;
 
-    // implement U2Object
-    virtual U2DataType getType() { return U2Type::Sequence; }
+    U2DataType getType() const { return U2Type::Sequence; }
 };
 
 } // namespace

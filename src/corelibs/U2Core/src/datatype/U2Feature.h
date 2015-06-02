@@ -47,8 +47,7 @@ public:
     /** Root feature's id */
     U2DataId    rootFeature;
 
-    // implement U2Object
-    U2DataType getType() { return U2Type::AnnotationTable; }
+    U2DataType getType() const { return U2Type::AnnotationTable; }
 };
 
 /** Feature location */

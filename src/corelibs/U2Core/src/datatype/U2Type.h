@@ -200,7 +200,7 @@ public:
     U2TrackModType  trackModType;
 
     /** The type of the object. Should be overridden in subclasses */
-    virtual U2DataType getType() { return U2Type::Unknown; }
+    virtual U2DataType getType() const { return U2Type::Unknown; }
 };
 
 inline uint qHash(const U2Object &obj) {
@@ -220,8 +220,7 @@ public:
     // remote data element id;
     U2EntityRef   dataRef;
 
-    // implement U2Object
-    virtual U2DataType getType() { return U2Type::CrossDatabaseReference; }
+    U2DataType getType() const { return U2Type::CrossDatabaseReference; }
 };
 
 

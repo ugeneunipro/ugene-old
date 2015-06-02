@@ -83,8 +83,7 @@ public:
     /** Length of the alignment */
     qint64          length;
 
-    // implement U2Object
-    virtual U2DataType getType() { return U2Type::Msa; }
+    U2DataType getType() const { return U2Type::Msa; }
 };
 
 
