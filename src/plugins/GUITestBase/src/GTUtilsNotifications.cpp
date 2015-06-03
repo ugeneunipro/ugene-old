@@ -35,6 +35,7 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/Notification.h>
 
+#include "GTUtilsMdi.h"
 #include "api/GTWidget.h"
 
 #include "GTUtilsNotifications.h"
@@ -90,7 +91,7 @@ void NotificationDialogFiller::run(){
 #define GT_CLASS_NAME "NotificationChecker"
 #define GT_METHOD_NAME "waitForNotification"
 void GTUtilsNotifications::waitForNotification(U2OpStatus &os, bool dialogExpected, const QString &message){
-    if(dialogExpected){
+    if (dialogExpected) {
         GTUtilsDialog::waitForDialog(os, new NotificationDialogFiller(os, message));
     }
     new NotificationChecker(os);

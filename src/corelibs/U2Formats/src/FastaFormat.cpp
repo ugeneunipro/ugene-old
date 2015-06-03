@@ -277,8 +277,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     if (!emptySeqNames.isEmpty()) {
         QString warningMessage;
         warningMessage.append(FastaFormat::tr("Loaded sequences: %1.\n").arg(sequenceNumber));
-        warningMessage.append(FastaFormat::tr("Skipped sequences: %1.\nThe following sequences are empty:\n").arg(emptySeqNames.size()));
-        warningMessage.append(emptySeqNames.join(",\n"));
+        warningMessage.append(FastaFormat::tr("Skipped sequences: %1.\n").arg(emptySeqNames.size()));
+        warningMessage.append(FastaFormat::tr("The following sequences are empty:\n%1").arg(emptySeqNames.join(",\n")));
         os.addWarning(warningMessage);
     }
 

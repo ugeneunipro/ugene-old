@@ -954,9 +954,19 @@ QList<Task*> AddDocumentsToProjectTask::onSubTaskFinished(Task* t) {
         loadTasksAdded = true;
     } else if (t->hasError()) {
         coreLog.error(t->getError());
+    } else if (t->hasWarning()) {
+        setReportingSupported(true);
+        setReportingEnabled(true);
     }
     return res;
-};
+}
+
+QString AddDocumentsToProjectTask::generateReport() const {
+    SAFE_POINT(stateInfo.hasWarnings(), L10N::internalError("No warnings to show"), "");
+    QString warnings = stateInfo.getWarnings().join("<br>");
+    warnings.replace("\n", "<br>");
+    return warnings;
+}
 
 QList<Task*> AddDocumentsToProjectTask::prepareLoadTasks() {
     QList<Task*> res;

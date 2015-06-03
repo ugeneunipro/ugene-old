@@ -441,6 +441,7 @@ TVReportWindow::TVReportWindow(const QString& taskName, qint64 tid, const QStrin
     setLayout(l);
 
     textEdit = new QTextEdit();
+    textEdit->setObjectName("reportTextEdit");
     textEdit->setAcceptRichText(true);
     textEdit->setReadOnly(true);
     textEdit->setText(report);

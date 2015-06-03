@@ -194,6 +194,7 @@ public:
     ~AddDocumentsToProjectTask();
 
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
+    virtual QString generateReport() const;
 private:
     QList<Task*> prepareLoadTasks();
 

@@ -1837,7 +1837,7 @@ GUI_TEST_CLASS_DEFINITION(test_4244){
     GTGlobals::sleep();
 }
 
-GUI_TEST_CLASS_DEFINITION(test_4266){
+GUI_TEST_CLASS_DEFINITION(test_4266) {
 //    1. Create the workflow: Read Seqeunce --> Write Sequence
 //    2. Input data: "_common_data/fasta/Gene.fa"
 //    3. Run the workflow
@@ -2158,6 +2158,23 @@ GUI_TEST_CLASS_DEFINITION(test_4325) {
     CHECK_SET_ERR(regions.size() == 2, "Incorrect primers number");
     CHECK_SET_ERR(regions.contains(U2Region(0, 40)), "There is no (1, 40) annotated primer region");
     CHECK_SET_ERR(regions.contains(U2Region(110, 40)), "There is no (111, 150) annotated primer region");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4377) {
+    // 1. Open "_common_data/fasta/Gene.fa".
+    // 2. Choose the separate reading mode.
+    // Expected: the warning notification is shown.
+    // 3. Click the notification.
+    // Expected: the report window is opened. There is the list of sequences with empty names.
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/Gene.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsNotifications::waitForNotification(os, false);
+    GTGlobals::sleep();
+    QTextEdit *textEdit = dynamic_cast<QTextEdit*>(GTWidget::findWidget(os, "reportTextEdit", GTUtilsMdi::activeWindow(os)));
+    CHECK_SET_ERR(textEdit->toPlainText().contains("The following sequences are empty:"), "Expected message is not found in the report text");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4383) {

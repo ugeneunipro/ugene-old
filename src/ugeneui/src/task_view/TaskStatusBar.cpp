@@ -104,10 +104,22 @@ TaskStatusBar::TaskStatusBar() {
     updateState();
 }
 
+namespace {
+    NotificationType getNotificationType(const U2OpStatus &os) {
+        if (os.hasError()) {
+            return Error_Not;
+        }
+        if (os.hasWarnings()) {
+            return Warning_Not;
+        }
+        return Report_Not;
+    }
+}
+
 void TaskStatusBar::sl_newReport(Task* task) {
-    if(task->isReportingEnabled()) {
-        NotificationType nType = task->hasError()? Error_Not : Report_Not;
-        Notification *t = NULL;
+    Notification *t = NULL;
+    if (task->isReportingEnabled()) {
+        NotificationType nType = getNotificationType(task->getStateInfo());
         if (task->isNotificationReport()) {
             t = new Notification(tr("The task '%1' has been finished").arg(task->getTaskName()), nType);
         } else {
@@ -116,18 +128,16 @@ void TaskStatusBar::sl_newReport(Task* task) {
             connect(action, SIGNAL(triggered()), SLOT(sl_showReport()));
             t = new Notification(tr("Report for task: '%1'").arg(task->getTaskName()), nType, action);
         }
-        nStack->addNotification(t);
     } else if (task->hasError() && !task->isErrorNotificationSuppressed()) {
-        Notification *t = new Notification(tr("'%1' task failed: %2").arg(task->getTaskName()).arg(task->getError()), Error_Not);
-        nStack->addNotification(t);
-    }
-
-    if (task->getStateInfo().hasWarnings()) {
+        t = new Notification(tr("'%1' task failed: %2").arg(task->getTaskName()).arg(task->getError()), Error_Not);
+    } else if (task->getStateInfo().hasWarnings()) {
         QStringList warnings = task->getWarnings();
-        Notification *t = new Notification(tr("There %1:\n")
+        t = new Notification(tr("There %1:\n")
                                            .arg(warnings.size() == 1
                                                 ? "was 1 warning"
                                                 : QString("were %1 warnings").arg(warnings.size())) + warnings.join("\n"), Warning_Not);
+    }
+    if (NULL != t) {
         nStack->addNotification(t);
     }
 }

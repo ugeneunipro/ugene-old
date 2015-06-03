@@ -279,6 +279,8 @@ public:
 
     virtual bool isNotificationReport() const {return flags.testFlag(TaskFlag_OnlyNotificationReport);}
 
+    virtual void setReportingSupported(bool v) { setFlag(TaskFlag_ReportingIsSupported, v); }
+
     virtual void setReportingEnabled(bool v) {assert(isReportingSupported()); setFlag(TaskFlag_ReportingIsEnabled, v);}
 
     virtual void setNotificationReport(bool v) {assert(isReportingSupported()); setFlag(TaskFlag_ReportingIsEnabled, v);}
