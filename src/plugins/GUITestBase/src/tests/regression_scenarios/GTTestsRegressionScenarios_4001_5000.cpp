@@ -1731,7 +1731,7 @@ GUI_TEST_CLASS_DEFINITION(test_4232) {
     const QModelIndex sequenceObjIndex = sequenceDocIndex.child(0, 0);
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
-    GTUtilsProjectTreeView::dragAndDrop(os, sequenceObjIndex, GTUtilsMdi::activeWindow(os));
+    GTUtilsProjectTreeView::dragAndDrop(os, sequenceObjIndex, GTWidget::findWidget(os, "assembly_reads_area"));
 
     // Expected state: sequence object and document are highlighted in the Project view
     QFont itemFont = GTUtilsProjectTreeView::getFont(os, sequenceObjIndex);
@@ -1741,7 +1741,7 @@ GUI_TEST_CLASS_DEFINITION(test_4232) {
 
     // 4. Drag&drop the variations object from the project view on the assembly view
     const QModelIndex variationsObjIndex = GTUtilsProjectTreeView::findIndex(os, "II");
-    GTUtilsProjectTreeView::dragAndDrop(os, variationsObjIndex, GTUtilsMdi::activeWindow(os));
+    GTUtilsProjectTreeView::dragAndDrop(os, variationsObjIndex, GTWidget::findWidget(os, "assembly_reads_area"));
 
     // Expected state: variations object is highlighted in the Project view
     itemFont = GTUtilsProjectTreeView::getFont(os, variationsObjIndex);
@@ -1761,9 +1761,9 @@ GUI_TEST_CLASS_DEFINITION(test_4232) {
 
     // Expected state: the sequence object and document aren't highlighted in the Project view
     itemFont = GTUtilsProjectTreeView::getFont(os, sequenceObjIndex);
-    CHECK_SET_ERR(itemFont.bold(), "Sequence object item isn't highlighted in Project view");
+    CHECK_SET_ERR(!itemFont.bold(), "Sequence object item is unexpectedly highlighted in Project view");
     itemFont = GTUtilsProjectTreeView::getFont(os, sequenceDocIndex);
-    CHECK_SET_ERR(itemFont.bold(), "Sequence document item isn't highlighted in Project view");
+    CHECK_SET_ERR(!itemFont.bold(), "Sequence document item is unexpectedly highlighted in Project view");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4232_1) {
