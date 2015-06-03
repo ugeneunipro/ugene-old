@@ -2245,6 +2245,7 @@ GUI_TEST_CLASS_DEFINITION(test_0033) {
 
     GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, new ProjectTreeItemsChecker));
     GTWidget::click(os, GTWidget::findWidget(os, "tbBrowseExistingTable"));
+    GTUtilsOptionPanelSequenceView::openSaveAnnotationToShowHideWidget(os, false);
 
 //    6. Click "Predefined group names" button.
 //    Expected state: a popup menu contains all groups from the "NC_001363 annotations" table.
@@ -2256,7 +2257,9 @@ GUI_TEST_CLASS_DEFINITION(test_0033) {
     clickSelectGroupButton(os);
 
 //    7. Close the popup menu. Set "NC_001363 features" in existing tables combobox.
+    GTUtilsOptionPanelSequenceView::openSaveAnnotationToShowHideWidget(os);
     setExistingTable(os, NULL, "NC_001363 features [2annot_1seq.gb]");
+    GTUtilsOptionPanelSequenceView::openSaveAnnotationToShowHideWidget(os, false);
 
 //    8. Click "Predefined group names" button.
 //    Expected state: a popup menu contains all groups from the "NC_001363 features" table.
@@ -2267,20 +2270,22 @@ GUI_TEST_CLASS_DEFINITION(test_0033) {
     clickSelectGroupButton(os);
 
 //    9. Close the popup menu. Set any group name. Create annotations.
-    setGroupName(os, "test_0032");
+    setGroupName(os, "test_0033");
+    GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(os, false);
+
     GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    Expected state: there is a new annotation in the new correctly named group in the "NC_001363 features" table.
     expectedGroups = QStringList() << "group  (0, 1)"
                                                << "just an annotation  (0, 1)"
-                                               << "test_0032  (0, 1)";
+                                               << "test_0033  (0, 1)";
     QStringList groups = GTUtilsAnnotationsTreeView::getGroupNames(os, "NC_001363 features [2annot_1seq.gb] *");
     CHECK_SET_ERR(expectedGroups.toSet() == groups.toSet(), QString("Unexpected group names: expect '%1', got '%2'")
                   .arg(expectedGroups.join(", ")).arg(groups.join(", ")));
 
     QStringList expectedAnnotations = QStringList() << "Misc. Feature";
-    QStringList annotations = GTUtilsAnnotationsTreeView::getAnnotationNamesOfGroup(os, "test_0032  (0, 1)");
+    QStringList annotations = GTUtilsAnnotationsTreeView::getAnnotationNamesOfGroup(os, "test_0033  (0, 1)");
     CHECK_SET_ERR(expectedAnnotations.toSet() == annotations.toSet(), QString("Unexpected annotation names: expect '%1', got '%2'")
                   .arg(expectedAnnotations.join(", ")).arg(annotations.join(", ")));
 }
