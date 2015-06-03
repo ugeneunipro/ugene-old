@@ -101,7 +101,6 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     highlightSelection = false;
     selecting = false;
     shifting = false;
-    shiftingWasPerformed = false;
 
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
 
@@ -1135,7 +1134,6 @@ void MSAEditorSequenceArea::mouseMoveEvent(QMouseEvent* e) {
 
         if (shifting) {
             shiftSelectedRegion(newCurPos.x() - cursorPos.x());
-            shiftingWasPerformed = true;
         } else if (selecting) {
             rubberBand->setGeometry(QRect(origin, e->pos()).normalized());
         }
@@ -1161,23 +1159,11 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e) {
 
     newCurPos.setY(yPosWithValidations);
 
-    if (shifting) {
-        const int shift = (!shiftingWasPerformed)
-            ? newCurPos.x() - ui->seqArea->getSelection().getRect().center().x()
-            : newCurPos.x() - cursorPos.x();
-        if (0 != shift && !isAlignmentLocked()) {
-            U2OpStatus2Log os;
-            U2UseCommonUserModStep userModStep(editor->getMSAObject()->getEntityRef(), os);
-            Q_UNUSED(userModStep);
-            shiftSelectedRegion(shift);
-        }
-        emit si_stopMSAChanging(true);
-    } else if (Qt::LeftButton == e->button() && Qt::LeftButton == prevPressedButton) {
+    if (!shifting && Qt::LeftButton == e->button() && Qt::LeftButton == prevPressedButton) {
         updateSelection(newCurPos);
     }
     shifting = false;
     selecting = false;
-    shiftingWasPerformed = false;
 
     shBar->setupRepeatAction(QAbstractSlider::SliderNoAction);
     svBar->setupRepeatAction(QAbstractSlider::SliderNoAction);
@@ -2785,7 +2771,6 @@ bool MSAEditorSequenceArea::getUseDotsCheckedState() const {
 void MSAEditorSequenceArea::cancelShiftTracking() {
     shifting = false;
     selecting = false;
-    shiftingWasPerformed = false;
     changeTracker.finishTracking();
     editor->getMSAObject()->releaseState();
 }
