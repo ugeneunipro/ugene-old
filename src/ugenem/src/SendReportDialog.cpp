@@ -192,8 +192,8 @@ void SendReportDialog::sl_onMaximumMessageSizeReached() {
         QMessageBox msgBox;
         msgBox.setWindowTitle(tr("Warning"));
         msgBox.setText(tr("The \"Additional information\" message is too long."));
-        msgBox.setInformativeText(tr("You can also send the description of the problem to UGENE team"
-                                     "by e-mail <ahref=\"mailto:ugene@unipro.ru\">ugene@unipro.ru</a>."));
+        msgBox.setInformativeText(tr("You can also send the description of the problem to UGENE team "
+                                     "by e-mail <a href=\"mailto:ugene@unipro.ru\">ugene@unipro.ru</a>."));
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.exec();
