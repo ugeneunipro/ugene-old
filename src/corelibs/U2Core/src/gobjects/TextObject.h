@@ -35,7 +35,7 @@ public:
     U2Text();
     U2Text(const U2DbiRef &dbiRef);
 
-    U2DataType getType();
+    U2DataType getType() const;
 };
 
 class U2CORE_EXPORT TextObject: public GObject {

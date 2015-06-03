@@ -33,7 +33,7 @@ public :
                     U2PFMatrix();
                     U2PFMatrix(const U2DbiRef &dbiRef);
 
-    U2DataType      getType();
+    U2DataType      getType() const;
 };
 
 class U2CORE_EXPORT PFMatrixObject : public GObject {

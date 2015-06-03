@@ -44,7 +44,7 @@ U2PhyTree::U2PhyTree(const U2DbiRef &dbiRef) : U2RawData(dbiRef) {
 
 }
 
-U2DataType U2PhyTree::getType() {
+U2DataType U2PhyTree::getType() const {
     return U2Type::PhyTree;
 }
 

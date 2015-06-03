@@ -34,7 +34,7 @@ public:
     U2BioStruct3D();
     U2BioStruct3D(const U2DbiRef &dbiRef);
 
-    U2DataType getType();
+    U2DataType getType() const;
 };
 
 class U2CORE_EXPORT BioStruct3DObject: public GObject {

@@ -724,7 +724,7 @@ void executeDeleteFeaturesByParentsQuery(const QList<U2DataId> &parentIds, Mysql
     idsList.chop(1);
     idsList += ")";
 
-    U2SqlQuery qf("DELETE FROM Feature WHERE parent IN " + idsList, db, os);
+    U2SqlQuery qf(QString("DELETE FROM Feature WHERE parent IN %1 OR id IN %1").arg(idsList), db, os);
     for (int i = 1, n = parentIds.count(); i <= n; i++) {
         qf.bindDataId(QString(":%1").arg(i), parentIds.at(i - 1));
     }

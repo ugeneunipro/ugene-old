@@ -690,7 +690,7 @@ void executeDeleteFeaturesByParentsQuery(const QList<U2DataId> &parentIds, DbRef
     idsList.chop(1); // remove last comma
     idsList += ")";
 
-    SQLiteQuery qf(("DELETE FROM Feature WHERE parent IN " + idsList), db, os);
+    SQLiteQuery qf(QString("DELETE FROM Feature WHERE parent IN %1 OR id IN %1").arg(idsList), db, os);
     for (int i = 1, n = parentIds.count(); i <= n; i++) {
         qf.bindDataId(i, parentIds.at(i - 1));
     }

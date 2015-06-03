@@ -43,7 +43,7 @@ U2BioStruct3D::U2BioStruct3D(const U2DbiRef &dbiRef) : U2RawData(dbiRef) {
 
 }
 
-U2DataType U2BioStruct3D::getType() {
+U2DataType U2BioStruct3D::getType() const {
     return U2Type::BioStruct3D;
 }
 

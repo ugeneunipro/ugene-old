@@ -42,7 +42,7 @@ U2Chromatogram::U2Chromatogram(const U2DbiRef &dbiRef) : U2RawData(dbiRef) {
 
 }
 
-U2DataType U2Chromatogram::getType() {
+U2DataType U2Chromatogram::getType() const {
     return U2Type::Chromatogram;
 }
 

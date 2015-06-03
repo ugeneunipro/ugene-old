@@ -44,7 +44,7 @@ U2PWMatrix::U2PWMatrix(const U2DbiRef &dbiRef) : U2RawData(dbiRef) {
 
 }
 
-U2DataType U2PWMatrix::getType() {
+U2DataType U2PWMatrix::getType() const {
     return U2Type::PWMatrix;
 }
 

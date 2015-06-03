@@ -33,7 +33,7 @@ public:
     U2PhyTree();
     U2PhyTree(const U2DbiRef &dbiRef);
 
-    U2DataType getType();
+    U2DataType getType() const;
 };
 
 class U2CORE_EXPORT PhyTreeObject : public GObject {

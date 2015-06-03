@@ -35,7 +35,7 @@ public:
                         U2Chromatogram();
                         U2Chromatogram(const U2DbiRef &dbiRef);
 
-    U2DataType          getType();
+    U2DataType          getType() const;
 };
 
 class  U2CORE_EXPORT DNAChromatogramObject: public GObject {

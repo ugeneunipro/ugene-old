@@ -33,7 +33,7 @@ public:
                     U2PWMatrix();
                     U2PWMatrix(const U2DbiRef &dbiRef);
 
-    U2DataType      getType();
+    U2DataType      getType() const;
 };
 
 class U2CORE_EXPORT PWMatrixObject : public GObject {

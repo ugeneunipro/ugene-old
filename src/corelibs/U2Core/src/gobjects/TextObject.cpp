@@ -41,7 +41,7 @@ U2Text::U2Text(const U2DbiRef &dbiRef) : U2RawData(dbiRef) {
 
 }
 
-U2DataType U2Text::getType() {
+U2DataType U2Text::getType() const {
     return U2Type::Text;
 }
 

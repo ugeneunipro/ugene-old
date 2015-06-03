@@ -44,7 +44,7 @@ U2PFMatrix::U2PFMatrix(const U2DbiRef &dbiRef) : U2RawData(dbiRef) {
 
 }
 
-U2DataType U2PFMatrix::getType() {
+U2DataType U2PFMatrix::getType() const {
     return U2Type::PFMatrix;
 }
 
