@@ -345,6 +345,17 @@ QList<QTreeWidgetItem *> GTUtilsWorkflowDesigner::getPaletteGroups(U2OpStatus &o
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getPaletteGroupNames"
+QStringList GTUtilsWorkflowDesigner::getPaletteGroupNames(U2OpStatus &os) {
+    QStringList groupNames;
+    const QList<QTreeWidgetItem *> groupItems = getPaletteGroups(os);
+    foreach (QTreeWidgetItem *groupItem, groupItems) {
+        groupNames << groupItem->text(0);
+    }
+    return groupNames;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getPaletteGroupEntries"
 QList<QTreeWidgetItem *> GTUtilsWorkflowDesigner::getPaletteGroupEntries(U2OpStatus &os, QTreeWidgetItem *groupItem) {
     QList<QTreeWidgetItem *> items;

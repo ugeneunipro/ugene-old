@@ -2094,6 +2094,11 @@ GUI_TEST_CLASS_DEFINITION(test_0842) {
 //    1) Create some custom cmdline worker with some name ("test", for example).
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
+    GTUtilsWorkflowDesigner::setCurrentTab(os, GTUtilsWorkflowDesigner::algoriths);
+    const QStringList groupNames = GTUtilsWorkflowDesigner::getPaletteGroupNames(os);
+    const int customElementsCount = groupNames.contains("Custom Elements with CMD Tools") ?
+                GTUtilsWorkflowDesigner::getPaletteGroupEntries(os, "Custom Elements with CMD Tools").size() : 0;
+
     CreateElementWithCommandLineToolFiller::ElementWithCommandLineSettings settings;
     settings.elementName = "test";
     settings.input << CreateElementWithCommandLineToolFiller::InOutData("in", CreateElementWithCommandLineToolFiller::InOutDataType(CreateElementWithCommandLineToolFiller::Sequence, "FASTA"));
@@ -2118,8 +2123,8 @@ GUI_TEST_CLASS_DEFINITION(test_0842) {
 
 //    Expected state: There are two custom workers on the palette now (test and test1).
     const QList<QTreeWidgetItem *> customElements = GTUtilsWorkflowDesigner::getPaletteGroupEntries(os, "Custom Elements with CMD Tools");
-    CHECK_SET_ERR(2 == customElements.size(), QString("Unexpected custom elements count: expect %1, got %2")
-                  .arg(2).arg(customElements.size()));
+    CHECK_SET_ERR(customElementsCount + 2 == customElements.size(), QString("Unexpected custom elements count: expect %1, got %2")
+                  .arg(customElementsCount + 2).arg(customElements.size()));
 
 //    6) Click at the test worker on the palette
 //    Expected state: UGENE not crashes.

@@ -77,6 +77,7 @@ public:
 
     static QTreeWidgetItem * getPaletteGroup(U2OpStatus &os, const QString &groupName);
     static QList<QTreeWidgetItem *> getPaletteGroups(U2OpStatus &os);
+    static QStringList getPaletteGroupNames(U2OpStatus &os);
     static QList<QTreeWidgetItem *> getPaletteGroupEntries(U2OpStatus &os, QTreeWidgetItem *groupItem);
     static QList<QTreeWidgetItem *> getPaletteGroupEntries(U2OpStatus &os, const QString &groupName);
 
