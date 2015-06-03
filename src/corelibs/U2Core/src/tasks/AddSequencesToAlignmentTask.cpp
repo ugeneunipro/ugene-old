@@ -103,10 +103,10 @@ QList<Task*> AddSequencesToAlignmentTask::onSubTaskFinished(Task* subTask) {
 }
 
 Task::ReportResult AddSequencesToAlignmentTask::report() {
+    releaseLock();
     if (isCanceled() || hasError()) {
         return ReportResult_Finished;
-    }
-    releaseLock();
+    }    
     QList<U2MsaRow> rows;
     qint64 len = createRows(rows);
     CHECK_OP(stateInfo, ReportResult_Finished);
