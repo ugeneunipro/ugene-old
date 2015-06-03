@@ -678,6 +678,45 @@ void SQLiteFeatureDbi::removeFeaturesByParent(const U2DataId &parentId, U2OpStat
     qf.execute();
 }
 
+namespace {
+
+void executeDeleteFeaturesByParentsQuery(const QList<U2DataId> &parentIds, DbRef *db, U2OpStatus &os) {
+    SAFE_POINT(NULL != db, "Invalid database handler", );
+
+    QString idsList = "(";
+    for (int i = 1, n = parentIds.count(); i <= n; i++) {
+        idsList += QString("?%1,").arg(i);
+    }
+    idsList.chop(1); // remove last comma
+    idsList += ")";
+
+    SQLiteQuery qf(("DELETE FROM Feature WHERE parent IN " + idsList), db, os);
+    for (int i = 1, n = parentIds.count(); i <= n; i++) {
+        qf.bindDataId(i, parentIds.at(i - 1));
+    }
+    qf.execute();
+}
+
+}
+
+void SQLiteFeatureDbi::removeFeaturesByParents(const QList<U2DataId> &parentIds, U2OpStatus &os) {
+    SQLiteTransaction t(db, os);
+    Q_UNUSED(t);
+
+    int parentsNumber = parentIds.count();
+    if (parentsNumber <= SQLiteDbi::BIND_PARAMETERS_LIMIT) {
+        executeDeleteFeaturesByParentsQuery(parentIds, db, os);
+    } else {
+        int deletedFeaturesNumber = 0;
+        while (parentsNumber - deletedFeaturesNumber > 0) {
+            int numDeletions = parentsNumber - deletedFeaturesNumber >= SQLiteDbi::BIND_PARAMETERS_LIMIT ? SQLiteDbi::BIND_PARAMETERS_LIMIT : -1;
+            const QList<U2DataId> copiedAnnotations = parentIds.mid(deletedFeaturesNumber, numDeletions);
+            executeDeleteFeaturesByParentsQuery(copiedAnnotations, db, os);
+            deletedFeaturesNumber += SQLiteDbi::BIND_PARAMETERS_LIMIT;
+        }
+    }
+}
+
 void SQLiteFeatureDbi::removeFeaturesByRoot(const U2DataId &rootId, U2OpStatus &os, SubfeatureSelectionMode mode) {
     DBI_TYPE_CHECK(rootId, U2Type::Feature, os,);
 

@@ -68,6 +68,8 @@ public:
      * Removes feature, its children from db
      */
     static void                     removeFeature(const U2DataId &featureId, const U2DbiRef &dbiRef, U2OpStatus &os);
+
+    static void                     removeFeatures(const QList<U2DataId> &featureIds, const U2DbiRef &dbiRef, U2OpStatus &os);
     /**
      * Replaces parent feature reference with @newParentId for the feature having @featureId
      */

@@ -231,6 +231,8 @@ public:
      */
     virtual void                        removeFeaturesByParent(const U2DataId &parentId, U2OpStatus &os,
                                             SubfeatureSelectionMode mode = SelectParentFeature) = 0;
+
+    virtual void                        removeFeaturesByParents(const QList<U2DataId> &parentIds, U2OpStatus &os) = 0;
     /**
      * Removes subfeatures along with their root feature from database
      * Requires: U2DbiFeature_WriteFeature feature support

@@ -153,6 +153,20 @@ void U2FeatureUtils::removeFeature(const U2DataId &featureId, const U2DbiRef &db
     dbi->removeFeaturesByParent(featureId, os, SelectParentFeature);
 }
 
+void U2FeatureUtils::removeFeatures(const QList<U2DataId> &featureIds, const U2DbiRef &dbiRef, U2OpStatus &os) {
+    foreach (const U2DataId &featureId, featureIds) {
+        SAFE_POINT(!featureId.isEmpty(), "Invalid feature detected!", );
+    }
+    SAFE_POINT(dbiRef.isValid(), "Invalid DBI reference detected!", );
+
+    DbiConnection connection(dbiRef, os);
+    CHECK_OP(os, );
+    U2FeatureDbi *dbi = connection.dbi->getFeatureDbi();
+    SAFE_POINT(NULL != dbi, "Invalid DBI pointer encountered!", );
+
+    dbi->removeFeaturesByParents(featureIds, os);
+}
+
 void U2FeatureUtils::addSubFeatures(const QVector<U2Region> &regions, const U2Strand &strand, const U2DataId &parentFeatureId,
     const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus &os)
 {

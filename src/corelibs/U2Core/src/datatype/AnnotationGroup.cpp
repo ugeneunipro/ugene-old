@@ -151,12 +151,17 @@ void AnnotationGroup::addShallowAnnotations(const QList<Annotation *> &anns, boo
 
 void AnnotationGroup::removeAnnotations(const QList<Annotation *> &anns) {
     parentObject->emit_onAnnotationsRemoved(anns);
+    U2OpStatusImpl os;
+
+    QList<U2DataId> annotationsIds;
     foreach (Annotation *a, anns) {
         SAFE_POINT(NULL != a && a->getGroup() == this, "Unexpected annotation group", );
+        annotationsIds.append(a->id);
+    }
+    U2FeatureUtils::removeFeatures(annotationsIds, parentObject->getEntityRef().dbiRef, os);
+    SAFE_POINT_OP(os, );
 
-        U2OpStatusImpl os;
-        U2FeatureUtils::removeFeature(a->id, parentObject->getEntityRef().dbiRef, os);
-        SAFE_POINT_OP(os, );
+    foreach (Annotation *a, anns) {
         annotations.removeOne(a);
         delete a;
     }

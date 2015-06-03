@@ -137,6 +137,11 @@ public:
      */
     void                            removeFeaturesByParent(const U2DataId &parentId, U2OpStatus &os, SubfeatureSelectionMode mode);
     /**
+     * Removes subfeatures along with their parent features from database
+     * Requires: U2DbiFeature_WriteFeature feature support
+     */
+    void                            removeFeaturesByParents(const QList<U2DataId> &parentIds, U2OpStatus &os);
+    /**
      * Removes subfeatures along with their root feature from database
      * Requires: U2DbiFeature_WriteFeature feature support
      */
