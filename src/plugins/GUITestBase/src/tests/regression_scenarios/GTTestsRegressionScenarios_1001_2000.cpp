@@ -127,6 +127,7 @@
 #include "runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
+#include "runnables/ugene/plugins/enzymes/CreateFragmentDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/ConstructMoleculeDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/DigestSequenceDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"
@@ -4710,6 +4711,69 @@ GUI_TEST_CLASS_DEFINITION(test_1442_2) {
     CHECK_SET_ERR(!logoWidget->isVisible(), "Logo widget is unexpectedly visible");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1442_3){
+//    1. Open file "data/position_weight_matrix/UniPROBE/NBT06/Cbf1.pwm"
+    GTFileDialog::openFile(os, dataDir + "position_weight_matrix/UniPROBE/NBT06/Cbf1.pwm");
+//    Expected state: Opened only window with position weight matrix.
+    GTWidget::findWidget(os, "MatrixAndLogoWidget");
+//    In Project View not added any items.
+    int num = GTUtilsProjectTreeView::getTreeView(os)->model()->rowCount();
+    CHECK_SET_ERR(num == 0, QString("%1 document(s) unexpectidly present in project view").arg(num))
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1443){
+//    1. Open the file human_T1.fa.
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+//    2. Use popup menu {Cloning->Construct molecule}
+
+    class InnerScenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QLineEdit* start_edit_line = GTWidget::findExactWidget<QLineEdit*>(os, "start_edit_line", dialog);
+            CHECK_SET_ERR(start_edit_line->text()=="1", "unexpected start text " + start_edit_line->text());
+            QLineEdit* end_edit_line = GTWidget::findExactWidget<QLineEdit*>(os, "end_edit_line", dialog);
+            CHECK_SET_ERR(end_edit_line->text()=="199950", "unexpected end text " + end_edit_line->text());
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            //    4. Select human_t1 sequence object
+            //    5. In the dialog "Create DNA Fragment" make sure the region is 1..199950 and click "Ok"
+            GTUtilsDialog::waitForDialog(os, new CreateFragmentDialogFiller(os, new InnerScenario()));
+            GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os,"human_T1.fa",
+                                                                                     "human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
+            //    3. Click "From Project" button
+            GTWidget::click(os, GTWidget::findWidget(os, "fromProjectButton"));
+            GTGlobals::sleep();
+
+            //    6. Select the only available fragment and click "Add"
+            QListWidget* fragmentListWidget = GTWidget::findExactWidget<QListWidget*>(os, "fragmentListWidget", dialog);
+            GTListWidget::click(os, fragmentListWidget, "human_T1 (UCSC April 2002 chr7:115977709-117855134) (human_T1.fa) Fragment (1-199950)");
+            GTWidget::click(os, GTWidget::findWidget(os, "takeButton", dialog));
+            //    7. Uncheck "Force blunt and omit all overhangs"
+            QCheckBox* makeBluntBox = GTWidget::findExactWidget<QCheckBox*>(os, "makeBluntBox", dialog);
+            GTCheckBox::setChecked(os, makeBluntBox, false);
+            //    8. Check "Make circular"
+            QCheckBox* makeCircularBox = GTWidget::findExactWidget<QCheckBox*>(os, "makeCircularBox", dialog);
+            GTCheckBox::setChecked(os, makeCircularBox, true);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new ConstructMoleculeDialogFiller(os, new Scenario()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Cloning" << "CLONING_CONSTRUCT"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep();
+//    Expected: Ugene not crashes
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1445) {
 /*  1. Open "data/samples/CLUSTALW/COI.aln"
     2. Choose last sequence (i.e. in bottom) with mouse in sequences area
@@ -5244,6 +5308,14 @@ GUI_TEST_CLASS_DEFINITION(test_1533){
 //    4. Confirm to reload the file in UGENE
 //    => Unloaded file is shown, "Alignment is empty" error occurs when it is opened. This error doesn't appear if the file is just opened in UGENE.
     GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1537){
+//    1. Open "_common_data/clustal/10000_sequences.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/PF07724_full_family.fa");
+//    2. Cancel the loading task.
+    GTUtilsTaskTreeView::cancelTask(os, "Loading documents");
+//    Expected: UGENE does not crash.
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1548) {
