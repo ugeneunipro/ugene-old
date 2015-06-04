@@ -1749,7 +1749,7 @@ GUI_TEST_CLASS_DEFINITION(test_4232) {
 
     // 5. Remove the variations from the assembly view
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove track from the view"));
-    GTWidget::click(os, GTWidget::findWidget(os, "Variant row for II"), Qt::RightButton);
+    GTWidget::click(os, GTWidget::findWidget(os, "AssemblyVariantRow_II"), Qt::RightButton);
 
     // Expected state: the variations object isn't highlighted in the Project view
     itemFont = GTUtilsProjectTreeView::getFont(os, variationsObjIndex);
