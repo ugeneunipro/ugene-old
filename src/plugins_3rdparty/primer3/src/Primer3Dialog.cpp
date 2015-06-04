@@ -51,6 +51,8 @@ Primer3Dialog::Primer3Dialog(const Primer3TaskSettings &defaultSettings, ADVSequ
     QPushButton* pbPick = ui.pickPrimersButton;
     QPushButton* pbReset = ui.resetButton;
 
+    pbPick->setDefault(true);
+
     connect(pbPick, SIGNAL(clicked()), SLOT(sl_pbPick_clicked()));
     connect(pbReset, SIGNAL(clicked()), SLOT(sl_pbReset_clicked()));
     connect(ui.saveSettingsButton, SIGNAL(clicked()), SLOT(sl_saveSettings()));
