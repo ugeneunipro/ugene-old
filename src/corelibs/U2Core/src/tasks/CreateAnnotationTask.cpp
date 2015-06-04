@@ -66,18 +66,18 @@ void CreateAnnotationsTask::run() {
 
     if (groupName.isEmpty()) {
         foreach (const SharedAnnotationData &a, aData) {
-            CHECK_OP(stateInfo, );
             AnnotationGroup *group = parentObject->getRootGroup()->getSubgroup(a->name, true);
             const U2DataId groupId = group->id;
             const U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures(a, rootFeatureId, groupId, dbiRef, stateInfo);
+            CHECK_OP(stateInfo, );
             group2Annotations[group] << new Annotation(feature.id, a, group, parentObject);
         }
     } else {
         AnnotationGroup *group = parentObject->getRootGroup()->getSubgroup(groupName, true);
         const U2DataId groupId = group->id;
         foreach (const SharedAnnotationData &a, aData) {
-            CHECK_OP(stateInfo, );
             const U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures(a, rootFeatureId, groupId, dbiRef, stateInfo);
+            CHECK_OP(stateInfo, );
             group2Annotations[group] << new Annotation(feature.id, a, group, parentObject);
         }
     }

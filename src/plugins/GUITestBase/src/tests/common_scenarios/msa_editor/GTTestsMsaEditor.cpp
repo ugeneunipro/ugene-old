@@ -3198,18 +3198,19 @@ GUI_TEST_CLASS_DEFINITION(test_0036_1){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
     GTGlobals::sleep(500);
 //2. Press "build tree" button on toolbar
+//Expected state: build tree dialog appeared
+    //3. Fill dialog:
+    //    Distanse matrix model: F84(Kimura/Jukes-Cantor/LogDet)
+    //    Press "Build"
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",1));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
-    GTGlobals::sleep(500);
-//Expected state: build tree dialog appeared
 
-//3. Fill dialog:
-//    Distanse matrix model: F84(Kimura/Jukes-Cantor/LogDet)
-//    Press "Build"
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//Expected state: tree appeared
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
-//Expected state: tree appeared
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0036_2){
@@ -3369,7 +3370,6 @@ GUI_TEST_CLASS_DEFINITION(test_0038_2){
 
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
-    GTGlobals::sleep(5000);//some time is needed to build tree
 //Expected state: build tree dialog appeared
 
 //3. Fill dialog:
@@ -3380,6 +3380,9 @@ GUI_TEST_CLASS_DEFINITION(test_0038_2){
 //    Seed: 5
 //    Consensus type: Majority Rule extended(Strict/Majority Rule/M1)
 //    Press "Build"
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
 //Expected state: tree appeared
@@ -3393,7 +3396,6 @@ GUI_TEST_CLASS_DEFINITION(test_0038_3){
                                                                5,BuildTreeDialogFiller::M1));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
-    GTGlobals::sleep(5000);//some time is needed to build tree
 //Expected state: build tree dialog appeared
 
 //3. Fill dialog:
@@ -3404,6 +3406,8 @@ GUI_TEST_CLASS_DEFINITION(test_0038_3){
 //    Seed: 5
 //    Consensus type: Majority Rule extended(Strict/Majority Rule/M1)
 //    Press "Build"
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
 //Expected state: tree appeared
@@ -3417,7 +3421,6 @@ GUI_TEST_CLASS_DEFINITION(test_0038_4){
                                                                5,BuildTreeDialogFiller::M1,1));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
-    GTGlobals::sleep(9000);//some time is needed to build tree
 //Expected state: build tree dialog appeared
 
 //3. Fill dialog:
@@ -3428,6 +3431,9 @@ GUI_TEST_CLASS_DEFINITION(test_0038_4){
 //    Seed: 5
 //    Consensus type: Majority Rule extended(Strict/Majority Rule/M1)
 //    Press "Build"
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
 //Expected state: tree appeared
