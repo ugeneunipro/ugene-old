@@ -5799,6 +5799,29 @@ GUI_TEST_CLASS_DEFINITION( test_1594 ) {
     }
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1595 ){
+//    The scenario is the following:
+//    1) Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2) Add "Read sequence" to the scene.
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+//    3) Click it.
+//    Expected: datasets widget appears.
+//    4) Add several files.
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Genbank", "sars.gb");
+//    5) Select some of the added items in the list.
+    QWidget* datasetWidget = GTWidget::findWidget(os, "DatasetWidget");
+    QListWidget* items = GTWidget::findExactWidget<QListWidget*>(os, "itemsArea", datasetWidget);
+    GTListWidget::click(os, items, "sars.gb");
+//    6) Press Delete button.
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(1000);
+//    Expected: the selected files has been removed from the list.
+    GTUtilsWorkflowDesigner::click(os, "Read Sequence");
+//    Actual: the element is removed from the scene.
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1597 ) {
 
     // 1. Open a sequence in UGENE.
