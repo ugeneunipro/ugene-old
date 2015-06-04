@@ -23,7 +23,6 @@
 
 namespace U2 {
 
-const QString AbstractAlignmentTaskSettings::DEFAULT_NAME("AbstractAlignmentResult.aln");
 const QString AbstractAlignmentTaskSettings::RESULT_FILE_NAME("resultFileName");
 const QString AbstractAlignmentTaskSettings::ALGORITHM_NAME("algorithmName");
 const QString AbstractAlignmentTaskSettings::REALIZATION_NAME("realizationName");

@@ -43,6 +43,7 @@ public:
 
     static const QString PA_FIRST_SEQUENCE_REF;
     static const QString PA_SECOND_SEQUENCE_REF;
+    static const QString DEFAULT_NAME;
 };
 
 class U2ALGORITHM_EXPORT PairwiseAlignmentTask : public AbstractAlignmentTask {

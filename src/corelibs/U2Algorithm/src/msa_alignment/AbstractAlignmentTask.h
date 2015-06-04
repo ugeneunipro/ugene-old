@@ -59,7 +59,6 @@ public:
     U2AlphabetId alphabet;                  //couldn't be in customSettings. Set manually.
     GUrl resultFileName;                    //could be in customSettings as a string only.
 
-    static const QString DEFAULT_NAME;
     static const QString RESULT_FILE_NAME;
     static const QString ALGORITHM_NAME;
     static const QString REALIZATION_NAME;

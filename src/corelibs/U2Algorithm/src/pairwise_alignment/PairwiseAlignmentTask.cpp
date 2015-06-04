@@ -25,6 +25,7 @@ namespace U2 {
 
 const QString PairwiseAlignmentTaskSettings::PA_FIRST_SEQUENCE_REF("firstSequenceRef");
 const QString PairwiseAlignmentTaskSettings::PA_SECOND_SEQUENCE_REF("secondSequenceRef");
+const QString PairwiseAlignmentTaskSettings::DEFAULT_NAME("PairwiseAlignmentResult.aln");
 
 PairwiseAlignmentTaskSettings::PairwiseAlignmentTaskSettings(){
 }
