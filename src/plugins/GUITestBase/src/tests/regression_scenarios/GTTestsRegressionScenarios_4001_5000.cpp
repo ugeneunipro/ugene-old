@@ -1883,6 +1883,29 @@ GUI_TEST_CLASS_DEFINITION(test_4272){
      CHECK_SET_ERR(item == NULL, "orfs are unexpectidly shown");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4276) {
+    //1. Open "COI.aln"
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    //2. Use context menu
+    //{Add->Sequence from file...}
+    //Expected: "Open file with sequences" dialog appeared
+    //3. Select file "_common_data/fasta/PF07724_full_family.fa"
+    //4. Press "Open"
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/fasta/PF07724_full_family.fa"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from file"));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+
+    //5. Delete the alignment object
+    GTUtilsProjectTreeView::click(os, "COI");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+
+    bool executed = GTUtilsTaskTreeView::checkTask(os, "Add sequences to alignment task");
+    CHECK_SET_ERR(false == executed, "The task is not cancelled");
+    //Current state: UGENE crashes
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4284){
 /* 1. Open "data/samples/CLUSTALW/ty3.aln.gz".
  * 2. Select a sequence that is two sequences above the last visible sequence in the name list area.
