@@ -58,7 +58,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     QRgb rgb = img.pixel(simple->rect().center());
     QColor c(rgb);
 
-    CHECK_SET_ERR(c.name()=="#ffffff","simple overview has wrong color. Expected: #ffffff, Found: " + c.name());
+    CHECK_SET_ERR(c.name()=="#ededed","simple overview has wrong color. Expected: #ededed, Found: " + c.name());
 
     simple = GTWidget::findWidget(os, "msa_overview_area_graph");
     pixmap = QPixmap::grabWidget(simple, simple->rect());
@@ -66,7 +66,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     rgb = img.pixel(simple->rect().center());
     c = QColor(rgb);
 
-    CHECK_SET_ERR(c.name()=="#ffffff","graph overview has wrong color. Expected: #ffffff, Found: " + c.name());
+    CHECK_SET_ERR(c.name()=="#ededed","graph overview has wrong color. Expected: #ededed, Found: " + c.name());
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002){

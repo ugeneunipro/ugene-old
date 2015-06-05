@@ -18,6 +18,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
+
+#include <QComboBox>
+#include <QSpinBox>
+#include <QApplication>
+#include <QCheckBox>
+#include <QTableWidget>
+
 #include "GTTestsMSAEditorEdit.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
@@ -42,20 +49,13 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
+
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
-#include <QComboBox>
-#include <QSpinBox>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#else
-#include <QtWidgets/QApplication>
-#endif
-#include <QCheckBox>
-#include <QTableWidget>
-namespace U2 {
-void test_1(U2OpStatus &os,int i, QString expectedSec, int j=0){
 
+namespace U2 {
+
+void test_1(U2OpStatus &os,int i, QString expectedSec, int j = 0) {
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(j,i));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
 
@@ -69,8 +69,8 @@ void test_1(U2OpStatus &os,int i, QString expectedSec, int j=0){
     QString clipboardTest = GTClipboard::text(os);
 
     CHECK_SET_ERR(clipboardTest==expectedSec,clipboardTest);
-
 }
+
 namespace GUITest_common_scenarios_msa_editor_edit {
 
 
@@ -93,7 +93,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1){
 GUI_TEST_CLASS_DEFINITION(test_0001_2){
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
 
-    test_1(os,6,"TAGCT-TATTAA--",5);
+    test_1(os,6,"TAGCT-TATTAA---",5);
 //DIFFERENCE:Select first symbol for Conocephalus_percaudata sequence. Press "space".
 //Expected state: Conocephalus_percaudata TAGCT-TATTAA--, sequence length 14, right offset 14
 }

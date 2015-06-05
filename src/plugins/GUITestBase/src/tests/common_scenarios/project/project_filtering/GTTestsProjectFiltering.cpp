@@ -161,8 +161,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTUtilsProjectTreeView::checkFilteredGroup(os, "Multiple alignment content", QStringList(),
         QStringList() << "HIV-1.aln" << "ugene_gui_test", QStringList() << "human_T1.fa");
 
-    // 5. Type to the project filter field "cacggatgatagcttcgcgacactagcttttcagctaaccgcaaat"
-    GTUtilsProjectTreeView::filterProject(os, "cacggatgatagcttcgcgacactagcttttcagctaaccgcaaat");
+    // 5. Type to the project filter field "gtagcctagtagaaaatggtgctggtactggttgaacggtttaccctccttta"
+    GTUtilsProjectTreeView::filterProject(os, "gtagcctagtagaaaatggtgctggtactggttgaacggtttaccctccttta");
 
     // Expected: There are items under the "Multiple alignment content" item. They contain "ugene_gui_test" and don't contain "human_T1.fa" or "HIV-1.aln"
     GTUtilsProjectTreeView::checkFilteredGroup(os, "Multiple alignment content", QStringList() << "ugene_gui_test",

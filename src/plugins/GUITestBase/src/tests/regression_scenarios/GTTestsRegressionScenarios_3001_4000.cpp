@@ -4001,8 +4001,8 @@ GUI_TEST_CLASS_DEFINITION(test_3645) {
     GTUtilsOptionPanelSequenceView::toggleInputFromFilePattern(os);
     GTUtilsOptionPanelSequenceView::enterPatternFromFile(os, testDir + "_common_data/FindAlgorithm/", "find_pattern_op_2.fa");
 
-    GTUtilsOptionPanelSequenceView::clickNext(os);
-    GTUtilsOptionPanelSequenceView::clickNext(os);
+    GTUtilsOptionPanelSequenceView::clickPrev(os);
+    GTUtilsOptionPanelSequenceView::clickPrev(os);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_COPY<< "Copy sequence",GTGlobals::UseMouse));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
     QString clipStr = GTClipboard::text(os);

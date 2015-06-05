@@ -8091,7 +8091,11 @@ GUI_TEST_CLASS_DEFINITION( test_1886_2 )
     const QPoint mouseDragPosition( 7, 7 );
     GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition );
     GTMouseDriver::press( os );
-    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition + QPoint( 3, 0 ) );
+    GTUtilsMSAEditorSequenceArea::moveTo( os, mouseDragPosition + QPoint( 1, 0 ) );
+    GTGlobals::sleep(500);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, mouseDragPosition + QPoint(2, 0));
+    GTGlobals::sleep(500);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, mouseDragPosition + QPoint(3, 0));
 
     // 4. Replace selected rows with reverse
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT

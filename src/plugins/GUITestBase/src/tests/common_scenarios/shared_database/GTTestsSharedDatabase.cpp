@@ -841,9 +841,9 @@ GUI_TEST_CLASS_DEFINITION(import_test_0001) {
 
 GUI_TEST_CLASS_DEFINITION(import_test_0002) {
 //    Document drag'n'drop
-//    1. Connect to the "ugene_gui_test" database.
-//    2. Create the folder "/import_test_0002".
-//    3. Open "samples/FASTA/human_T1.fa".
+//    1. Open "samples/FASTA/human_T1.fa".
+//    2. Connect to the "ugene_gui_test" database.
+//    3. Create the folder "/import_test_0002".
 //    4. Drag'n'drop the document to the folder "/import_test_0002".
 //    Expected: the document is imported.
 //    5. Double click the new object.
@@ -853,19 +853,20 @@ GUI_TEST_CLASS_DEFINITION(import_test_0002) {
 
     const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
     const QString newFolderName = "import_test_0002";
-    const QString newFolderPath = parentFolderPath + U2ObjectDbi::PATH_SEP + newFolderName;
+    const QString newFolderPath = parentFolderPath + newFolderName;
     const QString fileDocName = "human_T1.fa";
     const QString fileObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
     const QString fileObjectNameWidget = "[s] human_T1 (UCSC April 2002 chr7:115977709-117855134)";
     const QString importedDocFolderPath = newFolderPath + U2ObjectDbi::PATH_SEP + fileDocName;
     const QString importedObjectPath = importedDocFolderPath + U2ObjectDbi::PATH_SEP + fileObjectName;
 
+    GTFileDialog::openFile(os, dataDir + "/samples/FASTA/", "human_T1.fa");
+
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
 
     GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, parentFolderPath, newFolderName);
     const QModelIndex newFolderItemIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, newFolderPath);
 
-    GTFileDialog::openFile(os, dataDir + "/samples/FASTA/", "human_T1.fa");
     const QModelIndex fileDocIndex = GTUtilsProjectTreeView::findIndex(os, fileDocName);
 
     GTUtilsProjectTreeView::dragAndDrop(os, fileDocIndex, newFolderItemIndex);
