@@ -29,6 +29,7 @@
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
+#include "api/GTAction.h"
 #include "api/GTClipboard.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
@@ -296,6 +297,29 @@ void GTUtilsMSAEditorSequenceArea::clickCollapceTriangle(U2OpStatus &os, QString
     QPoint globalCoord = nameList->mapToGlobal(localCoord);
     GTMouseDriver::moveTo(os, globalCoord);
     GTMouseDriver::click(os);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isCollapsed"
+bool GTUtilsMSAEditorSequenceArea::isCollapsed(U2OpStatus &os, QString seqName){
+    QStringList names = getNameList(os);
+    QStringList visiable = getVisibaleNames(os);
+    GT_CHECK_RESULT(names.contains(seqName), "sequence " + seqName + " not found", false);
+    return !visiable.contains(seqName);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "collapsingMode"
+bool GTUtilsMSAEditorSequenceArea::collapsingMode(U2OpStatus &os){
+    QAbstractButton* collapce = GTAction::button(os, "Enable collapsing");
+    bool nameLists = getVisibaleNames(os)==getNameList(os);
+    if(nameLists && !collapce->isChecked()){
+        return false;
+    }else if (!nameLists && collapce->isChecked()) {
+        return true;
+    }else{
+        GT_CHECK_RESULT(false, "somithing wrong with collapsing mode", false);
+    }
 }
 #undef GT_METHOD_NAME
 

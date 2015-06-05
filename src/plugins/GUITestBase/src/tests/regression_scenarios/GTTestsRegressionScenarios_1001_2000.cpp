@@ -5845,6 +5845,196 @@ GUI_TEST_CLASS_DEFINITION( test_1597 ) {
     GTKeyboardDriver::keySequence(os, "ACGTCGTCGTCGTCAATGTATGCCTCTTGGTTTCTTCTATC");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1600_1 ){
+//    1. Open file "test/_common_data/scenarios/msa/ma2_gap_col.aln"
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma2_gap_col.aln");
+//    2. Turn the collapsing mode on by the "Switch on/off collapsing" button on the main toolbar
+    QAbstractButton* collapce = GTAction::button(os, "Enable collapsing");
+    GTWidget::click(os, collapce);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == true, "collapsing mode is unexpectidly off")
+    GTGlobals::sleep(500);
+//    3. Choose in MSA context menu { Edit -> Remove columns of gaps... }
+    GTUtilsDialog::waitForDialog(os, new RemoveGapColsDialogFiller(os, RemoveGapColsDialogFiller::Number, 3));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "remove_columns_of_gaps"));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+//    Expected state: The "Remove columns of gaps" dialog has appeared
+
+//    4. Check the "Remove columns with number of gaps" radio button and set "3" in the appropriate spinbox
+
+//    5. Press the "Remove" button
+    GTGlobals::sleep(500);
+//    Expected state: Four columns have been removed from alignment, collapsing mode has been switched off
+    QString seq = GTUtilsMSAEditorSequenceArea::getSequenceData(os, "Phaneroptera_falcata");
+    CHECK_SET_ERR(seq == "AAGCTTCTTT", "unexpected sequence: " + seq);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == false, "collapsing mode is unexpectidly on");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1600_2 ){
+//    1. Open file "test/_common_data/scenarios/msa/ma2_gap_col.aln"
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma2_gap_col.aln");
+//    2. Turn the collapsing mode on by the "Switch on/off collapsing" button on the main toolbar
+    QAbstractButton* collapce = GTAction::button(os, "Enable collapsing");
+    GTWidget::click(os, collapce);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == true, "collapsing mode is unexpectidly off")
+    GTGlobals::sleep(500);
+//    3. Choose in MSA context menu { Edit -> Remove columns of gaps... }
+    GTUtilsDialog::waitForDialog(os, new RemoveGapColsDialogFiller(os, RemoveGapColsDialogFiller::Percent, 30));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "remove_columns_of_gaps"));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+//    Expected state: The "Remove columns of gaps" dialog has appeared
+
+//    4. Check the "Remove columns with percentage of gaps" radio button and set "30" in the appropriate spinbox
+
+//    5. Press the "Remove" button
+    GTGlobals::sleep(500);
+//    Expected state: Four columns have been removed from alignment, collapsing mode has been switched off
+    QString seq = GTUtilsMSAEditorSequenceArea::getSequenceData(os, "Phaneroptera_falcata");
+    CHECK_SET_ERR(seq == "AAGCTTCTTT", "unexpected sequence: " + seq);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == false, "collapsing mode is unexpectidly on");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1600_3 ){
+//    1. Open file "test/_common_data/scenarios/msa/ma2_gap_col.aln"
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma2_gap_col.aln");
+//    2. Turn the collapsing mode on by the "Switch on/off collapsing" button on the main toolbar
+    QAbstractButton* collapce = GTAction::button(os, "Enable collapsing");
+    GTWidget::click(os, collapce);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == true, "collapsing mode is unexpectidly off");
+    GTGlobals::sleep(500);
+//    3. Choose in MSA context menu { Edit -> Remove columns of gaps... }
+    GTUtilsDialog::waitForDialog(os, new RemoveGapColsDialogFiller(os, RemoveGapColsDialogFiller::Column));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "remove_columns_of_gaps"));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+//    Expected state: The "Remove columns of gaps" dialog has appeared
+
+//    4. Check the "Remove all gap-only columns" radio button
+
+//    5. Press the "Remove" button
+    GTGlobals::sleep(500);
+//    Expected state: One column has been removed from alignment, collapsing mode has been switched off
+    QString seq = GTUtilsMSAEditorSequenceArea::getSequenceData(os, "Phaneroptera_falcata");
+    CHECK_SET_ERR(seq == "AAGCTTCTTTTAA", "unexpected sequence: " + seq);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == false, "collapsing mode is unexpectidly on");
+}
+
+
+GUI_TEST_CLASS_DEFINITION( test_1600_4 ){
+//    1. Open file "test/_common_data/scenarios/msa/ma2_gap_col.aln"
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma2_gap_col.aln");
+//    2. Turn the collapsing mode on by the "Switch on/off collapsing" button on the main toolbar
+    QAbstractButton* collapce = GTAction::button(os, "Enable collapsing");
+    GTWidget::click(os, collapce);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == true, "collapsing mode is unexpectidly off");
+    GTGlobals::sleep(500);
+//    Expected state: One collapsible item has appeared in MSA
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "Remove all gaps"));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+//    3. Choose in MSA context menu { Edit -> Remove all gaps }
+//    Expected state: All internal gaps have been removed from alignment, collapsing mode has been switched off
+    QString seq = GTUtilsMSAEditorSequenceArea::getSequenceData(os, "Isophya_altaica_EF540820");
+    CHECK_SET_ERR(seq == "AAGTTACTAA---", "unexpected sequence1: " + seq);
+    QString seq1 = GTUtilsMSAEditorSequenceArea::getSequenceData(os, "Podisma_sapporensis");
+    CHECK_SET_ERR(seq1 == "AAGAATAATTA--", "unexpected sequence2: " + seq);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == false, "collapsing mode is unexpectidly on");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1600_5 ){
+//    1. Open file "test/_common_data/scenarios/msa/ma2_gap_col.aln"
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma2_gap_col.aln");
+//    2. Turn the collapsing mode on by the "Switch on/off collapsing" button on the main toolbar
+    QAbstractButton* collapce = GTAction::button(os, "Enable collapsing");
+    GTWidget::click(os, collapce);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == true, "collapsing mode is unexpectidly off");
+    GTGlobals::sleep(500);
+//    Expected state: One collapsible item has appeared in MSA
+
+//    3. Choose some sequence by left mouse button
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-5, 1));
+//    4. Use the context menu in the name list area { Edit -> Remove current sequence }
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "Remove current sequence"));
+    GTMouseDriver::click(os, Qt::RightButton);
+//    Expected state: The chosen sequence has been removed from alignment, collapsing mode has been switched off
+    QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    int num = names.size();
+    CHECK_SET_ERR(num == 9, QString("unexpected sequence number: %1").arg(num));
+    CHECK_SET_ERR(!names.contains("Isophya_altaica_EF540820"), "Isophya_altaica_EF540820 was not removed");
+    CHECK_SET_ERR(!collapce->isChecked(), "collapce button unexpectidly checked");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1600_6 ){
+//    1. Open file "test/_common_data/scenarios/msa/ma2_gap_col.aln"
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma2_gap_col.aln");
+//    2. Turn the collapsing mode on by the "Switch on/off collapsing" button on the main toolbar
+    QAbstractButton* collapce = GTAction::button(os, "Enable collapsing");
+    GTWidget::click(os, collapce);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == true, "collapsing mode is unexpectidly off");
+    GTGlobals::sleep(500);
+//    Expected state: One collapsible item has appeared in MSA
+
+//    3. Choose in MSA context menu { Align -> Align with MUSCLE... }
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: The "Align with MUSCLE" dialog has been appeared
+
+//    4. Press the "Align" button
+
+//    Expected state: Alignment has been changed, collapsing mode has been switched off
+    QString seq = GTUtilsMSAEditorSequenceArea::getSequenceData(os, "Phaneroptera_falcata");
+    CHECK_SET_ERR(seq == "AAGCTTCTTTTAA", "unexpected sequence1: " + seq);
+    QString seq1 = GTUtilsMSAEditorSequenceArea::getSequenceData(os, "Isophya_altaica_EF540820");
+    CHECK_SET_ERR(seq1 == "AAG---TTACTAA", "unexpected sequence2: " + seq);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == false, "collapsing mode is unexpectidly on");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1600_7 ){
+//    1. Open file "test/_common_data/scenarios/msa/ma2_gap_col.aln"
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma2_gap_col.aln");
+//    2. Turn the collapsing mode on by the "Switch on/off collapsing" button on the main toolbar
+    QAbstractButton* collapce = GTAction::button(os, "Enable collapsing");
+    GTWidget::click(os, collapce);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == true, "collapsing mode is unexpectidly off");
+    GTGlobals::sleep(500);
+//    Expected state: One collapsible item has appeared in MSA
+
+//    3. Select some area in MSA by left mouse button and press "Space" button
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0,0));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+//    Expected state: New gaps have been added, collapsible item has retained
+    QString seq = GTUtilsMSAEditorSequenceArea::getSequenceData(os, "Phaneroptera_falcata");
+    CHECK_SET_ERR(seq == "-AAG-CTTCTTTTAA", "unexpected sequence1: " + seq);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == true, "collapsing mode is unexpectidly off 1");
+
+//    4. Select some area in MSA by left mouse button, then drag the area to the right by mouse
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0,1));
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,1), QPoint(1,1));
+//    Expected state: New gaps have been added, collapsible item has retained
+    seq = GTUtilsMSAEditorSequenceArea::getSequenceData(os, "Isophya_altaica_EF540820");
+    CHECK_SET_ERR(seq == "-AAG-TTACTAA----", "unexpected sequence1: " + seq);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == true, "collapsing mode is unexpectidly off 2");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1600_8 ){
+//    1. Open file "test/_common_data/scenarios/msa/ma2_gap_col.aln"
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/ma2_gap_col.aln");
+//    2. Turn the collapsing mode on by the "Switch on/off collapsing" button on the main toolbar
+    QAbstractButton* collapce = GTAction::button(os, "Enable collapsing");
+    GTWidget::click(os, collapce);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == true, "collapsing mode is unexpectidly off");
+    GTGlobals::sleep(500);
+//    Expected state: One collapsible item has appeared in MSA
+
+//    3. Select some area in MSA by left mouse button, then press "Del" button
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0,0));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+//    Expected state: Selected area has been removed, collapsible item has retained
+    QString seq = GTUtilsMSAEditorSequenceArea::getSequenceData(os, "Phaneroptera_falcata");
+    CHECK_SET_ERR(seq == "AG-CTTCTTTTAA-", "unexpected sequence1: " + seq);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::collapsingMode(os) == true, "collapsing mode is unexpectidly off 1");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1603 ) {
     // 1. Open "_data/samples/CLUSTALW/COI.aln"
     // 2. Add a tree to the alignment by creating a new one

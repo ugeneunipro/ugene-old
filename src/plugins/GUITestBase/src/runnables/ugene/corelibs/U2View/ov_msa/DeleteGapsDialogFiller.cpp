@@ -68,7 +68,7 @@ void DeleteGapsDialogFiller::run() {
 #define GT_CLASS_NAME "GTUtilsDialog::RemoveGapColsDialogFiller"
 #define GT_METHOD_NAME "run"
 void RemoveGapColsDialogFiller::run() {
-
+    GTGlobals::sleep(1000);
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
