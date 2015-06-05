@@ -560,6 +560,33 @@ QMdiSubWindow* FixedMdiArea::addSubWindow(QWidget* widget)
     return subWindow;
 }
 
+void FixedMdiArea::tileSubWindows() {
+    // A fix for https://local.ugene.unipro.ru/tracker/browse/UGENE-4361
+    // An appropriate Qt bug: https://bugreports.qt.io/browse/QTBUG-29758
+    // After Qt bug fixing just remove this method.
+
+#ifndef Q_OS_MAC
+    QMdiArea::tileSubWindows();
+    return;
+#endif
+
+    QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
+    SAFE_POINT_EXT(NULL != mainWindow, QMdiArea::tileSubWindows(), );
+
+    QPoint topLeft = mainWindow->mapToGlobal(QPoint(0,0));
+    static QPoint compensationOffset = QPoint(0, -22);      // I think, it is a menu bar. I'm not sure that it has constant height.
+
+    QMdiArea::tileSubWindows();
+
+    mainWindow->move(topLeft + compensationOffset);
+
+    QPoint topLeftResult = mainWindow->mapToGlobal(QPoint(0,0));
+    if (topLeft != topLeftResult) {
+        compensationOffset = topLeft + (topLeft - topLeftResult);
+        mainWindow->move(topLeft + compensationOffset);
+    }
+}
+
 void MainWindowImpl::sl_show(){
     if(qobject_cast<TaskScheduler*> (sender()) == qobject_cast<TaskScheduler*> (AppContext::getTaskScheduler())){
         QObject::disconnect(AppContext::getTaskScheduler(), SIGNAL(si_noTasksInScheduler()), this, SLOT(sl_show()));

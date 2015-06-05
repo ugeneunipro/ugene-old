@@ -58,6 +58,10 @@ public:
     FixedMdiArea(QWidget * parent = 0);
     void setViewMode(QMdiArea::ViewMode mode);
     QMdiSubWindow * addSubWindow( QWidget * widget);
+
+public slots:
+    void tileSubWindows();
+
 private slots:
     //Workaround for QTBUG-17428
     void sysContextMenuAction(QAction*);
