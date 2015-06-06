@@ -2925,7 +2925,8 @@ GUI_TEST_CLASS_DEFINITION(test_1259) {
     GTGlobals::sleep();
 
     QTextEdit* textEdit = qobject_cast<QTextEdit*>(GTWidget::findWidget(os, "textPattern"));
-    CHECK_SET_ERR( textEdit->toPlainText() == ">S\n", "Wrong pattern");
+    QString text = textEdit->toPlainText();
+    CHECK_SET_ERR( text == ">S\n", "Wrong pattern: " + text);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1260) {
@@ -4300,7 +4301,10 @@ GUI_TEST_CLASS_DEFINITION(test_1426) {
 
     GTUtilsWorkflowDesigner::click(os, "Read HMM Profile");
     GTUtilsWorkflowDesigner::setParameter(os, "Input file(s)", dataDir + "samples/FASTA/HMM/aligment15900.hmm", GTUtilsWorkflowDesigner::textValue);
-
+#ifdef Q_OS_MAC
+    GTGlobals::sleep();
+    GTMouseDriver::doubleClick(os);
+#endif
     CHECK_SET_ERR(GTWidget::findWidget(os, "addButton") != NULL, "addButton is hiden");
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Discard));

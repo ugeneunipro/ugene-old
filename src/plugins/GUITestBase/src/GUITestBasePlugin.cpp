@@ -225,7 +225,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_0882);
     REGISTER_TEST(GUITest_regression_scenarios::test_0886);
     REGISTER_TEST(GUITest_regression_scenarios::test_0888);
-    REGISTER_TEST(GUITest_regression_scenarios::test_0889);
+    REGISTER_TEST_NOT_FOR_MAC(GUITest_regression_scenarios::test_0889);//"Spidey tool is not avaluable on mac"
     REGISTER_TEST(GUITest_regression_scenarios::test_0896);
     REGISTER_TEST(GUITest_regression_scenarios::test_0898);
     REGISTER_TEST(GUITest_regression_scenarios::test_0899);

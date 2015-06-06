@@ -762,6 +762,7 @@ GUI_TEST_CLASS_DEFINITION(test_0627) {
 
     GTUtilsDialog::waitForDialog(os, new ToolTipsChecker(os));
     GTWidget::click(os, primer3);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0652) {
@@ -1841,6 +1842,7 @@ GUI_TEST_CLASS_DEFINITION(test_0818) {
     GTUtilsDialog::waitForDialog(os, new SpaceNameFiller(os));
     QAbstractButton *createElement = GTAction::button(os, "createElementWithCommandLineTool");
     GTWidget::click(os, createElement);
+    GTGlobals::sleep();
 }
 GUI_TEST_CLASS_DEFINITION(test_0821) {
     // 1. Open files samples/genbank/sars.gb and samples/genbank/murine.gb in merge mode
@@ -2583,8 +2585,9 @@ GUI_TEST_CLASS_DEFINITION(test_0896) {
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "/test_0896"));
-    GTFileDialog::openFile(os, sandBoxDir, "/test_0896out.bam");
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_0896"));
+    GTFileDialog::openFile(os, sandBoxDir, "test_0896out.bam");
+    GTGlobals::sleep();
 
 
 }
