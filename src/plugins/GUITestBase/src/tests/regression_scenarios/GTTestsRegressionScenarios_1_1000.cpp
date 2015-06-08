@@ -3353,9 +3353,6 @@ GUI_TEST_CLASS_DEFINITION(test_1000) {
 
 //    4. Press "Start prediction".
             GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
-
-            GTUtilsTaskTreeView::waitTaskFinished(os);
-
             GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
         }
 
