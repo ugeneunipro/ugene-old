@@ -745,10 +745,16 @@ void QueryViewController::createActions() {
     connect(saveAsAction, SIGNAL(triggered()), SLOT(sl_saveSceneAs()));
 
     deleteAction = new QAction(tr("Delete"), this);
-    deleteAction->setShortcut(QKeySequence::Delete);
-    deleteAction->setShortcutContext(Qt::WidgetShortcut);
     deleteAction->setIcon(QIcon(":query_designer/images/delete.png"));
     connect(deleteAction, SIGNAL(triggered()), SLOT(sl_deleteItem()));
+
+    { // Delete shortcut
+        QAction *deleteShortcut = new QAction(sceneView);
+        deleteShortcut->setShortcuts(QKeySequence::Delete);
+        deleteShortcut->setShortcutContext(Qt::WidgetShortcut);
+        connect(deleteShortcut, SIGNAL(triggered()), SLOT(sl_deleteItem()));
+        sceneView->addAction(deleteShortcut);
+    }
 
     showLabelAction = new QAction(tr("Show title"), this);
     showLabelAction->setCheckable(true);
