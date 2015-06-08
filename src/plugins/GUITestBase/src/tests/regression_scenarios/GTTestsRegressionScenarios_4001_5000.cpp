@@ -2182,6 +2182,31 @@ GUI_TEST_CLASS_DEFINITION(test_4325) {
     CHECK_SET_ERR(regions.contains(U2Region(0, 40)), "There is no (1, 40) annotated primer region");
     CHECK_SET_ERR(regions.contains(U2Region(110, 40)), "There is no (111, 150) annotated primer region");
 }
+GUI_TEST_CLASS_DEFINITION(test_4359) {
+/* 1. Open human_T1
+ * 2. Open Primer3 dialog
+ *   Expected state: the "Pick primers" button should be in focus
+ */
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    class EscClicker : public Filler {
+    public:
+        EscClicker(U2OpStatus& _os) : Filler(_os, "Primer3Dialog"){}
+        virtual void run() {
+            GTGlobals::sleep();
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+
+            QPushButton* button = qobject_cast<QPushButton*>(GTWidget::findWidget(os, "pickPrimersButton"));
+            CHECK(NULL != button, );
+            CHECK_SET_ERR(button->isDefault(), "Pick primers button doesn't default");
+
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new EscClicker(os));
+    GTWidget::click(os, GTWidget::findWidget(os, "primer3_action_widget"));
+}
 
 GUI_TEST_CLASS_DEFINITION(test_4377) {
     // 1. Open "_common_data/fasta/Gene.fa".
