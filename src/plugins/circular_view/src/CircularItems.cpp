@@ -525,7 +525,7 @@ Annotation * CircularAnnotationLabel::getAnnotation() const {
 
 QRectF CircularAnnotationLabel::boundingRect() const {
     QFontMetrics fm(labelFont);
-    QRectF bound = fm.boundingRect(labelText+' ');
+    QRectF bound = fm.boundingRect(" " + labelText);
     if(!inner) {
         if(labelPos.x()>0 && labelPos.y()>=0) {
             bound.moveTopLeft(labelPos);
