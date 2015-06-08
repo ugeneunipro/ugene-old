@@ -65,7 +65,7 @@ static void setMsaCutoffs( const QVariantMap& info, ESL_MSA* msa, MAlignmentInfo
 static bool convertMalignmentInfo( const QVariantMap& info, ESL_MSA* msa ) {
     assert( NULL != msa );
     bool ok = false;
-    
+
     if( !MAlignmentInfo::hasName( info ) ) {
         return false;
     }
@@ -75,7 +75,7 @@ static bool convertMalignmentInfo( const QVariantMap& info, ESL_MSA* msa ) {
     if( !ok ) {
         return false;
     }
-    
+
     if( MAlignmentInfo::hasAccession( info ) ) {
         QString acc = MAlignmentInfo::getAccession( info );
         assert( !acc.isEmpty() );
@@ -114,7 +114,7 @@ static bool convertMalignmentInfo( const QVariantMap& info, ESL_MSA* msa ) {
     setMsaCutoffs( info, msa, MAlignmentInfo::CUTOFF_NC2 );
     setMsaCutoffs( info, msa, MAlignmentInfo::CUTOFF_TC1 );
     setMsaCutoffs( info, msa, MAlignmentInfo::CUTOFF_TC2 );
-    
+
     return true;
 }
 
@@ -133,7 +133,7 @@ int UHMM3Utilities::convertAlphabetType( const DNAAlphabet * al ) {
     assert( NULL != al );
     DNAAlphabetType alType = al->getType();
     int ret = 0;
-    
+
     switch( alType ) {
     case DNAAlphabet_RAW:
         ret = eslNONSTANDARD;
@@ -157,7 +157,7 @@ int UHMM3Utilities::convertAlphabetType( const DNAAlphabet * al ) {
     default:
         ret = BAD_ALPHABET;
     }
-    
+
     return ret;
 }
 
@@ -167,32 +167,32 @@ ESL_MSA * UHMM3Utilities::convertMSA( const MAlignment & ma ) {
     bool ok = false;
     int nseq = ma.getNumRows();
     int alen = ma.getLength();
-    
+
     assert( 0 < nseq && 0 < alen );
-    
+
     msa = esl_msa_Create( nseq, alen );
     if( NULL == msa ) {
         return NULL;
     }
     msa->nseq = nseq;
     for (i = 0; i < nseq; i++) {
-		const MAlignmentRow& row = ma.getRow(i);
+        const MAlignmentRow& row = ma.getRow(i);
         ok = allocAndCopyData( row.getName().toLatin1(), &msa->sqname[i] );
         if( !ok ) {
             esl_msa_Destroy( msa );
             return NULL;
         }
         U2OpStatus2Log os;
-		QByteArray sequence = row.toByteArray(ma.getLength(), os);
+        QByteArray sequence = row.toByteArray(ma.getLength(), os);
         copyData(sequence, msa->aseq[i] );
     }
-    
+
     ok = convertMalignmentInfo( ma.getInfo(), msa );
     if( !ok ) {
         esl_msa_Destroy( msa );
         return NULL;
     }
-    
+
     return msa;
 }
 
@@ -233,7 +233,9 @@ Document * UHMM3Utilities::getSavingDocument( const QList<const  P7_HMM* >& hmms
     assert( NULL != iof );
 
     U2OpStatus2Log os;
-    Document* doc = hmmFrmt->createNewLoadedDocument(iof, outfile, os, QVariantMap());
+    QVariantMap hints;
+    hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(U2DbiRef()));
+    Document* doc = hmmFrmt->createNewLoadedDocument(iof, outfile, os, hints);
     CHECK_OP(os, NULL);
     foreach(GObject* obj, docObjects) {
         doc->addObject(obj);
