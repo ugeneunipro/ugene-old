@@ -152,7 +152,6 @@ private slots:
     void sl_onShowCoverageOnRulerChanged(bool checked);
     void sl_onReadHintEnabledChanged(bool checked);
     void sl_saveScreenshot();
-    void sl_showAssemblyInfo();
     void sl_exportToSam();
     void sl_exportCoverage();
     void sl_unassociateReference();
@@ -208,7 +207,6 @@ private:
     QAction * showCoverageOnRulerAction;
     QAction * readHintEnabledAction;
     QAction * saveScreenShotAction;
-    QAction * showInfoAction;
     QAction * exportToSamAction;
 
     const static int MAX_CELL_WIDTH = 300;

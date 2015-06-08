@@ -90,7 +90,7 @@ GObjectView(AssemblyBrowserFactory::ID, viewName), ui(0),
 gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), coverageReady(false),
 cellRendererRegistry(new AssemblyCellRendererFactoryRegistry(this)),
 zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoordsOnRulerAction(0), saveScreenShotAction(0),
-showInfoAction(0), exportToSamAction(0)
+exportToSamAction(0)
 {
     GCOUNTER( cvar, tvar, "AssemblyBrowser" );
     initFont();
@@ -331,7 +331,6 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
         tb->addSeparator();
 
         tb->addAction(saveScreenShotAction);
-        tb->addAction(showInfoAction);
 //        tb->addAction(exportToSamAction);
     }
     GObjectView::buildStaticToolbar(tb);
@@ -348,7 +347,6 @@ void AssemblyBrowser::buildStaticMenu(QMenu* m) {
         m->addAction(zoomInAction);
         m->addAction(zoomOutAction);
         m->addAction(saveScreenShotAction);
-        m->addAction(showInfoAction);
         m->addAction(exportToSamAction);
     }
     GObjectView::buildStaticMenu(m);
@@ -664,45 +662,8 @@ void AssemblyBrowser::setupActions() {
     saveScreenShotAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export as image"), this);
     connect(saveScreenShotAction, SIGNAL(triggered()), SLOT(sl_saveScreenshot()));
 
-    showInfoAction = new QAction(QIcon(":ugene/images/task_report.png"), tr("Show assembly information"), this);
-    connect(showInfoAction, SIGNAL(triggered()), SLOT(sl_showAssemblyInfo()));
-
     exportToSamAction = new QAction(QIcon(":/core/images/sam.png"), tr("Export assembly to SAM format"), this);
     connect(exportToSamAction, SIGNAL(triggered()), SLOT(sl_exportToSam()));
-}
-
-void AssemblyBrowser::sl_showAssemblyInfo() {
-    QObjectScopedPointer<QDialog> dlg = new QDialog(ui, Qt::WindowTitleHint | Qt::WindowSystemMenuHint);
-    dlg->setWindowTitle(tr("Assembly '%1' Information").arg(gobject->getGObjectName()));
-    dlg->setLayout(new QVBoxLayout());
-    QLabel * infoLabel = new QLabel();
-    {
-        U2OpStatusImpl st;
-        QString text = "<table>";
-        text += QString("<tr><td><b>Name:&nbsp;</b></td><td>%1</td></tr>").arg(gobject->getGObjectName());
-        text += QString("<tr><td><b>Length:&nbsp;</b></td><td>%1</td></tr>").arg(FormatUtils::insertSeparators(model->getModelLength(st)));
-        text += QString("<tr><td><b>Number of reads:&nbsp;</b></td><td>%1</td></tr>").arg(FormatUtils::insertSeparators(model->getReadsNumber(st)));
-        QByteArray md5 = model->getReferenceMd5(st);
-        if(!md5.isEmpty()) {
-            text += QString("<tr><td><b>MD5:&nbsp;</b></td><td>%1</td></tr>").arg(QString(md5));
-        }
-        QByteArray species = model->getReferenceSpecies(st);
-        if(!species.isEmpty()) {
-            text += QString("<tr><td><b>Species:&nbsp;</b></td><td>%1</td></tr>").arg(QString(species));
-        }
-        QString uri = model->getReferenceUri(st);
-        if(!uri.isEmpty()) {
-            text += QString("<tr><td><b>URI:&nbsp;</b></td><td>%1</td></tr>").arg(uri);
-        }
-        text += "</table>";
-        infoLabel->setText(text);
-        infoLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    }
-    dlg->layout()->addWidget(infoLabel);
-
-    dlg->resize(300, dlg->sizeHint().height());
-    dlg->setMaximumHeight(dlg->layout()->minimumSize().height());
-    dlg->exec();
 }
 
 void AssemblyBrowser::sl_saveScreenshot() {
