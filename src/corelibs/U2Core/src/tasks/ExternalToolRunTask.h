@@ -62,6 +62,7 @@ public:
     void setStandartInputFile(const QString& file) { inputFile = file; }
     void setStandartOutputFile(const QString& file) { outputFile = file; }
     void setAdditionalEnvVariables(const  QMap<QString, QString> &envVariable) {additionalEnvVariables = envVariable; }
+    void setCustomParser(ExternalToolLogParser *parser);
 
 private:
     void killProcess() const;

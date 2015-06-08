@@ -241,7 +241,7 @@ void CutAdaptFastqTask::prepareStep(){
             algoLog.error(tr("Can not copy the result file to: %1").arg(settings.outDir + settings.outName));
         }
     }else{
-        Task* etTask = getExternalToolTask(ET_CUTADAPT);
+        ExternalToolRunTask* etTask = getExternalToolTask(ET_CUTADAPT, new CutAdaptParser());
         CHECK(etTask != NULL, );
 
         addSubTask(etTask);
@@ -289,6 +289,35 @@ QStringList CutAdaptFastqTask::getParameters(U2OpStatus &/*os*/){
     res << GUrlUtils::getQuotedString(settings.inputUrl);
 
     return res;
+}
+
+const QStringList CutAdaptParser::stringsToIgnore = CutAdaptParser::initStringsToIgnore();
+
+void CutAdaptParser::parseErrOutput( const QString& partOfLog ) {
+    lastPartOfLog = partOfLog.split(QRegExp("(\n|\r)"));
+    lastPartOfLog.first() = lastErrLine + lastPartOfLog.first();
+    lastErrLine = lastPartOfLog.takeLast();
+
+    foreach (const QString &buf, lastPartOfLog) {
+        foreach(const QString &ignoredStr, stringsToIgnore) {
+            if (buf.startsWith(ignoredStr)) {
+                break;
+            }
+            if(buf.contains("ERROR", Qt::CaseInsensitive)){
+                setLastError("Cut adapter: " + buf);
+            }
+        }
+    }
+}
+
+QStringList CutAdaptParser::initStringsToIgnore() {
+    QStringList result;
+
+    result << "Maximum error rate:";
+    result << "No. of allowed errors:";
+    result << "length count expect max.err error counts";
+
+    return result;
 }
 
 } //LocalWorkflow

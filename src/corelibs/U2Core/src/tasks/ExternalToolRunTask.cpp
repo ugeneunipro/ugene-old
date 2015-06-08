@@ -193,6 +193,10 @@ void ExternalToolRunTask::addOutputListener(ExternalToolListener* outputListener
     listener = outputListener;
 }
 
+void ExternalToolRunTask::setCustomParser(ExternalToolLogParser *parser) {
+    logParser = parser;
+}
+
 ////////////////////////////////////////
 //ExternalToolSupportTask
 void ExternalToolSupportTask::setListenerForTask(ExternalToolRunTask* runTask, int listenerNumber) {

@@ -74,6 +74,17 @@ protected:
     QStringList getParameters(U2OpStatus& os);
 };
 
+class CutAdaptParser : public ExternalToolLogParser {
+public:
+    void parseErrOutput(const QString& partOfLog);
+
+private:
+    static QStringList initStringsToIgnore();
+
+    QString lastErrLine;
+
+    static const QStringList stringsToIgnore;
+};
 
 } //LocalWorkflow
 } //U2
