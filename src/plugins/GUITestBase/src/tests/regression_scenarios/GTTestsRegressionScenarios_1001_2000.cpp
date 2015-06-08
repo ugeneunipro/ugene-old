@@ -6755,6 +6755,19 @@ GUI_TEST_CLASS_DEFINITION(test_1673_4) {
     CHECK_SET_ERR(GTWidget::findWidget(os, "textPattern")->hasFocus(), "Find pattern field has no focus");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1673_5){
+//    1. Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+//    2. Open Sequence View, "Search in Sequence" tab, remove focus from the pattern field, press "Ctrl+F"
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+//    Expected result: "Search in Sequence" tab is still opened, the pattern field is in focus
+    QString name = QApplication::focusWidget()->objectName();
+    CHECK_SET_ERR(name == "textPattern", "unexpected focus widget: " + name);
+}
+
 namespace {
 class customFileDialog_1681: public GTFileDialogUtils{
 public:
