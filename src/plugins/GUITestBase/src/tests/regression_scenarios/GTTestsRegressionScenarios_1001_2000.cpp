@@ -6605,6 +6605,48 @@ GUI_TEST_CLASS_DEFINITION(test_1664){
 //    Bug state: UGENE crashes.
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1668){
+//    1) Open "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2) Activate the PWA tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    3) Click "Phaneroptera_falcata" sequence name on the MSA Editor and click the first ">" button
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+//    4) Click "Isophya_altaica_EF540820" sequence name on the MSA Editor and click the second ">" button
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+//    5) Deactivate the PWA tab
+    GTUtilsOptionPanelMsa::closeTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    6) Activate the PWA tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    Expected state: chosen sequences and their order are saved
+    QString name1 = GTUtilsOptionPanelMsa::getSeqFromPAlineEdit(os, 1);
+    QString name2 = GTUtilsOptionPanelMsa::getSeqFromPAlineEdit(os, 2);
+    CHECK_SET_ERR(name1 == "Phaneroptera_falcata", "unexpected first seq: " + name1);
+    CHECK_SET_ERR(name2 == "Isophya_altaica_EF540820", "unexpected second seq: " + name2);
+//    7) Deactivate the PWA tab
+    GTUtilsOptionPanelMsa::closeTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    8) Select some bunch of sequences (more than two) in the name list area
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5, 2), QPoint(-5, 6));
+//    9) Activate the PWA tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    Expected state: previosly chosen two sequences and their order are saved
+    name1 = GTUtilsOptionPanelMsa::getSeqFromPAlineEdit(os, 1);
+    name2 = GTUtilsOptionPanelMsa::getSeqFromPAlineEdit(os, 2);
+    CHECK_SET_ERR(name1 == "Phaneroptera_falcata", "unexpected first seq: " + name1);
+    CHECK_SET_ERR(name2 == "Isophya_altaica_EF540820", "unexpected second seq: " + name2);
+//    10) Deactivate the PWA tab
+    GTUtilsOptionPanelMsa::closeTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    11) Select exactly two sequences in the name list area
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-5, 7), QPoint(-5, 8));
+//    12) Activate the PWA tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    Expected state: last chosen two sequences has appeared on PWA tab
+    name1 = GTUtilsOptionPanelMsa::getSeqFromPAlineEdit(os, 1);
+    name2 = GTUtilsOptionPanelMsa::getSeqFromPAlineEdit(os, 2);
+    CHECK_SET_ERR(name1 == "Deracantha_deracantoides_EF540", "unexpected first seq: " + name1);
+    CHECK_SET_ERR(name2 == "Zychia_baranovi", "unexpected second seq: " + name2);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1672) {
     //1. Open "COI.aln".
     //2. Set the "Zychia_baranovi" sequence as reference.

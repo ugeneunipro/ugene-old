@@ -42,11 +42,13 @@ public:
 
     static void toggleTab(U2OpStatus &os, Tabs tab);
     static void openTab(U2OpStatus &os, Tabs tab);
+    static void closeTab(U2OpStatus &os, Tabs tab);
     static bool isTabOpened(U2OpStatus &os, Tabs tab);
 
     static void addReference(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
     static void addFirstSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
     static void addSecondSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
+    static QString getSeqFromPAlineEdit(U2OpStatus &os, int num);
     static void removeReference(U2OpStatus &os);
     static QString getReference(U2OpStatus &os);
     static int getLength(U2OpStatus &os);

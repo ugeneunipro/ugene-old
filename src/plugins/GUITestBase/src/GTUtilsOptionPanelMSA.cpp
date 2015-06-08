@@ -71,8 +71,15 @@ void GTUtilsOptionPanelMsa::toggleTab(U2OpStatus &os, GTUtilsOptionPanelMsa::Tab
 #define GT_METHOD_NAME "openTab"
 void GTUtilsOptionPanelMsa::openTab(U2OpStatus &os, Tabs tab) {
     if (!isTabOpened(os, tab)) {
-        GTWidget::click(os, GTWidget::findWidget(os, tabsNames[tab]));
-        GTGlobals::sleep(200);
+        toggleTab(os, tab);
+    }
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "closeTab"
+void GTUtilsOptionPanelMsa::closeTab(U2OpStatus &os, Tabs tab) {
+    if (isTabOpened(os, tab)) {
+        toggleTab(os, tab);
     }
 }
 #undef GT_METHOD_NAME
@@ -177,6 +184,11 @@ void GTUtilsOptionPanelMsa::addSecondSeqToPA(U2OpStatus &os, QString seqName, Ad
     addSeqToPA(os, seqName, method, 2);
 }
 #undef GT_METHOD_NAME
+
+QString GTUtilsOptionPanelMsa::getSeqFromPAlineEdit(U2OpStatus &os, int num){
+    QLineEdit* le = qobject_cast<QLineEdit*>(getWidget(os, "sequenceLineEdit", num));
+    return le->text();
+}
 
 #define GT_METHOD_NAME "addSeqToPA"
 void GTUtilsOptionPanelMsa::addSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method, int number){
