@@ -30,8 +30,10 @@
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/Task.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/MainWindow.h>
@@ -87,7 +89,7 @@ uHMMPlugin::uHMMPlugin() : Plugin(tr("HMM2"), tr("Based on HMMER 2.3.2 package. 
         calibrateAction->setObjectName(ToolsMenu::HMMER_CALIBRATE2);
         connect(calibrateAction, SIGNAL(triggered()), SLOT(sl_calibrate()));
         ToolsMenu::addAction(ToolsMenu::HMMER_MENU, calibrateAction);
-        
+
         QAction* searchAction = new QAction(tr("Search with HMM2..."), this);
         searchAction->setObjectName(ToolsMenu::HMMER_SEARCH2);
         connect(searchAction, SIGNAL(triggered()), SLOT(sl_search()));
@@ -112,7 +114,7 @@ uHMMPlugin::uHMMPlugin() : Plugin(tr("HMM2"), tr("Based on HMMER 2.3.2 package. 
     GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
     l->qlist = UHMMERTests::createTestFactories();
 
-    foreach(XMLTestFactory* f, l->qlist) { 
+    foreach(XMLTestFactory* f, l->qlist) {
         bool res = xmlTestFormat->registerTestFactory(f);
         assert(res);
         Q_UNUSED(res);
@@ -188,7 +190,11 @@ void uHMMPlugin::sl_search() {
         QMessageBox::critical(p, tr("Error"), tr("Error! Select sequence in Project view or open sequence view."));
         return;
     }
-    QObjectScopedPointer<HMMSearchDialogController> d = new HMMSearchDialogController(obj, p);
+
+    U2OpStatusImpl os;
+    DNASequence sequence = obj->getWholeSequence(os);
+    SAFE_POINT_EXT(!os.hasError(), QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
+    QObjectScopedPointer<HMMSearchDialogController> d = new HMMSearchDialogController(sequence, obj, p);
     d->exec();
 }
 
@@ -221,7 +227,7 @@ void HMMMSAEditorContext::buildMenu(GObjectView* v, QMenu* m) {
 
     QList<GObjectViewAction*> list = getViewActions(v);
     assert(list.size()==1);
-    GObjectViewAction* a = list.first();  
+    GObjectViewAction* a = list.first();
     QMenu* aMenu = GUIUtils::findSubMenu(m, MSAE_MENU_ADVANCED);
     SAFE_POINT(aMenu != NULL, "aMenu", );
     aMenu->addAction(a);
@@ -233,7 +239,7 @@ void HMMMSAEditorContext::sl_build() {
     assert(action!=NULL);
     MSAEditor* ed = qobject_cast<MSAEditor*>(action->getObjectView());
     assert(ed!=NULL);
-    MAlignmentObject* obj = ed->getMSAObject(); 
+    MAlignmentObject* obj = ed->getMSAObject();
     if (obj) {
         QString profileName = obj->getGObjectName() == MA_OBJECT_NAME ? obj->getDocument()->getName() : obj->getGObjectName();
         QObjectScopedPointer<HMMBuildDialogController> d = new HMMBuildDialogController(profileName, obj->getMAlignment());
@@ -268,7 +274,10 @@ void HMMADVContext::sl_search() {
         QMessageBox::critical(p, tr("Error"), tr("No sequences found"));
         return;
     }
-    QObjectScopedPointer<HMMSearchDialogController> d = new HMMSearchDialogController(seqCtx->getSequenceObject(), p);
+    U2OpStatusImpl os;
+    DNASequence sequence = seqCtx->getSequenceObject()->getWholeSequence(os);
+    SAFE_POINT_EXT(!os.hasError(), QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
+    QObjectScopedPointer<HMMSearchDialogController> d = new HMMSearchDialogController(sequence, seqCtx->getSequenceObject(), p);
     d->exec();
 }
 

@@ -48,13 +48,12 @@
 
 namespace U2 {
 
-HMMSearchDialogController::HMMSearchDialogController(const U2SequenceObject* seqObj, QWidget* p)
+HMMSearchDialogController::HMMSearchDialogController(const DNASequence& sequence, const U2SequenceObject* seqObj, QWidget* p)
 : QDialog(p)
 {
     qDebug() << "HMMSearchDialogController was created";
-    U2OpStatusImpl os;
-    dnaSequence = seqObj->getWholeSequence(os);
-    SAFE_POINT_EXT(!os.hasError(), QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
+
+    dnaSequence = sequence;
 
     searchTask = NULL;
     setupUi(this);

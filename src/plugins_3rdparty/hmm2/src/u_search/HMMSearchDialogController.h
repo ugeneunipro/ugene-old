@@ -58,17 +58,17 @@ class HMMReadTask;
 class HMMSearchDialogController : public QDialog, public Ui_HMMSearchDialog {
     Q_OBJECT
 public:
-    HMMSearchDialogController(const U2SequenceObject* obj, QWidget* p = NULL);
+    HMMSearchDialogController(const DNASequence& sequence, const U2SequenceObject* obj, QWidget* p = NULL);
     ~HMMSearchDialogController();
 
 public slots:
     void reject();
-    
+
 private slots:
     void sl_hmmFileClicked();
     void sl_okClicked();
 
-	void sl_expSpinBoxValueChanged(int); 
+    void sl_expSpinBoxValueChanged(int);
 
     void sl_onStateChanged();
     void sl_onProgressChanged();
@@ -103,7 +103,7 @@ private:
     U2FeatureType               aType;
     QString                     aname;
     UHMMSearchSettings          settings;
-    
+
     HMMReadTask*                readHMMTask;
     HMMSearchTask*              searchTask;
     CreateAnnotationsTask*      createAnnotationsTask;
