@@ -604,7 +604,6 @@ MysqlMtaSingleTableAdapter* MysqlMultiTableAssemblyAdapter::createAdapter(int ro
     sa->enableRangeTableMode(elenRange.startPos, elenRange.endPos());
 
     MysqlMtaSingleTableAdapter* ma = new MysqlMtaSingleTableAdapter(sa, rowPos, elenPos, idExtra);
-    ma->singleTableAdapter->createReadsTables(os);
 
     adapters << ma;
     idExtras << idExtra;

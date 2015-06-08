@@ -80,6 +80,7 @@ protected:
     int         minReadLength; // used in range mode
     int         maxReadLength; // used in range mode
     bool        rangeMode;     // flag to show that range mode is in use
+    bool        inited;        // is database table already created
 
     static const QString DEFAULT_RANGE_CONDITION_CHECK;
     static const QString RTM_RANGE_CONDITION_CHECK;

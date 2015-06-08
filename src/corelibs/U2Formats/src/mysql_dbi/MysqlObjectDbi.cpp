@@ -573,11 +573,7 @@ void MysqlObjectDbi::updateObjectAccessTime(const U2DataId &objectId, U2OpStatus
     static const QString queryString = "UPDATE ObjectAccessTrack SET lastAccessTime = NOW() WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
     q.bindDataId(":object", objectId);
-    const int affectedRows = q.update();
-    if (1 != affectedRows) {
-        os.setError(QString("Invalid affected rows count for the object access time update. Object ID: %1, affected rows: %2")
-            .arg(QString(objectId)).arg(affectedRows));
-    }
+    q.update();
 }
 
 //////////////////////////////////////////////////////////////////////////

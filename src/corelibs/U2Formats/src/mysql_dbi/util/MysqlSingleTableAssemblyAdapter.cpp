@@ -55,7 +55,8 @@ MysqlSingleTableAssemblyAdapter::MysqlSingleTableAssemblyAdapter(MysqlDbi* dbi,
     rangeConditionCheckForCount(DEFAULT_RANGE_CONDITION_CHECK),
     minReadLength(0),
     maxReadLength(0),
-    rangeMode(false)
+    rangeMode(false),
+    inited(false)
 {
 }
 
@@ -75,6 +76,8 @@ void MysqlSingleTableAssemblyAdapter::createReadsTables(U2OpStatus& os) {
         "gstart BIGINT NOT NULL, elen BIGINT NOT NULL, flags BIGINT NOT NULL, mq TINYINT UNSIGNED NOT NULL, data LONGBLOB NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
     U2SqlQuery(q.arg(readsTable), db, os).execute();
+    CHECK_OP(os, );
+    inited = true;
 }
 
 void MysqlSingleTableAssemblyAdapter::createReadsIndexes(U2OpStatus& os) {
@@ -152,6 +155,10 @@ U2DbiIterator<U2AssemblyRead>* MysqlSingleTableAssemblyAdapter::getReadsByName(c
 void MysqlSingleTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
+
+    if (!inited) {
+        createReadsTables(os);
+    }
 
     static const QString q = "INSERT INTO %1(name, prow, flags, gstart, elen, mq, data) VALUES (:name, :prow, :flags, :gstart, :elen, :mq, :data)";
 
