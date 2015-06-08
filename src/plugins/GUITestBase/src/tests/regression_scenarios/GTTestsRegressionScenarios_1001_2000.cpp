@@ -6482,6 +6482,36 @@ GUI_TEST_CLASS_DEFINITION( test_1654 ) {
     CHECK_SET_ERR(!createAnnotationsButton->isEnabled(), "Create annotations button is enabled!");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1658 ){
+//    1. Open file "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+//    2. Press the "Build Tree" button on the main toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI_1658.nwk", 0, 0, true));
+    QAbstractButton *tree = GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+//    3. Make sure that the "Display tree with alignment editor" button is checked
+//    4. Press the "Build" button
+//    Expected state: tree view appears, it's syncronized with MSA view
+
+//    5. Close alignment view
+    GTUtilsMdi::click(os, GTGlobals::Close);
+//    6. Delete the created file with tree "data/samples/CLUSTALW/COI.nwk"
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::NoToAll));
+    QFile(testDir + "_common_data/scenarios/sandbox/COI_1658.nwk").remove();
+    GTGlobals::sleep(5000);
+//    Expected state: Warning dialog appears
+
+//    7. Press "No to all" button or press "Yes" and save it in another directory
+
+//    8. Make double click on "COI.aln" item in project view
+    GTUtilsProjectTreeView::doubleClickItem(os, "COI.aln");
+    GTGlobals::sleep(500);
+//    Expected state: MSA view opens without tree view, no error messages in log appear
+
+    QWidget* treeWidget = GTWidget::findWidget(os, "treeView", NULL, GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(treeWidget==NULL, "tree view unexpectidly presents");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1660 ) {
     // 1. Open any sequence
     // 2. Open find pattern option panel
