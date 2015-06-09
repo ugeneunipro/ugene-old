@@ -63,6 +63,8 @@ GUI_TEST_CLASS_DECLARATION(run_workflow_gui_test_0004);
 GUI_TEST_CLASS_DECLARATION(run_workflow_gui_test_0005_1);
 GUI_TEST_CLASS_DECLARATION(run_workflow_gui_test_0005_2);
 GUI_TEST_CLASS_DECLARATION(run_workflow_gui_test_0006);
+
+GUI_TEST_CLASS_DECLARATION(test_3726);
 }
 
 } // U2

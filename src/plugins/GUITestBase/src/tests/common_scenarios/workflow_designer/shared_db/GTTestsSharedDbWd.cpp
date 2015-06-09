@@ -690,5 +690,32 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0006) {
     GTUtilsWorkflowDesigner::checkErrorList(os, "Unable to connect to the database");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3726) {
+//    1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+//    2. Add "Read Sequence" to the scene.
+    createTestConnection(os);
+//    3. Press "Add data from shared databases" on the property editor.
+//    Expected state: the "Shared Database Connections" dialog has appeared.
+//    4. Double mouse click on "UGENE public database" (or any other with sequences stored in it).
+//    Expected state: the dialog disappeared. In a few seconds DB has been connected and the "Select Item" dialog has appeared.
+    QSet<GObjectType> acceptableTypes;
+    acceptableTypes << GObjectTypes::SEQUENCE;
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "ugene_gui_test", "et0001_sequence", acceptableTypes));
+
+    QWidget *addFromDbButton = GTWidget::findWidget(os, "addFromDbButton");
+    GTWidget::click(os, addFromDbButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    5. Choose "chrI" in "UGENE public database/genomes/C. elegans (ce6)" and press "OK".
+//    Expected state: the "Read Sequence" worker has got the "chrI" blue link in its body.
+
+//    6. Right click on the link.
+    GTUtilsWorkflowDesigner::clickLink(os, "Read Sequence", Qt::RightButton);
+//    Current state: a context menu appears with the "Open document(s)" item. Two successive error message boxes appear if you click the item.
+//    Expected state: nothing happens.
+}
+
 } // GUITest_common_scenarios_shared_db_wd
 } // U2

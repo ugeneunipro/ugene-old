@@ -80,6 +80,7 @@ bool checkTreeRowCount(QTreeView *tree, int expectedDocCount) {
 
 #define GT_METHOD_NAME "commonScenario"
 void ProjectTreeItemSelectorDialogFiller::commonScenario(){
+    GTGlobals::sleep(1000);
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog was not found");
 
