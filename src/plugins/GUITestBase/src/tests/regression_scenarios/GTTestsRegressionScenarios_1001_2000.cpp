@@ -7666,6 +7666,74 @@ GUI_TEST_CLASS_DEFINITION(test_1759){
 //    4. Repeat 2nd and 3rd steps for all the versions of the Tuxedo pipeline
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1763_1){
+//    Improve dashboards: It should be possible to rename a run tab.
+
+//    1. Create Read->Write workflow.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+    GTUtilsWorkflowDesigner::connect(os, read, write);
+//    2. Set any input/output files
+    GTUtilsWorkflowDesigner::click(os, read);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+//    3. Start workflow
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: Workflow dasboard tab opened.
+    QTabWidget* tabView = GTWidget::findExactWidget<QTabWidget*>(os, "WorkflowTabView");
+//    4. On opened tab click right mouse button
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            //    5. Click on "Rename" action
+            //    Expected state: Showed "Rename Dashboard" dialog
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            QLineEdit* line = dialog->findChild<QLineEdit*>();
+            //    6. Change name and press "Ok" button
+            GTLineEdit::setText(os, line, "new_name");
+            GTWidget::click(os, GTWidget::findButtonByText(os, "Ok"));
+        }
+    };
+//    Expected state: Showed popup menu with action "Rename"
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Rename"));
+    GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "", QDialogButtonBox::Ok, new custom()));
+    GTTabWidget::clickTab(os, tabView, tabView->currentIndex(), Qt::RightButton);
+//    Expected state: Workflow dasboard tab renamed.
+    QString newName = GTTabWidget::getTabName(os, tabView, tabView->currentIndex());
+    CHECK_SET_ERR(newName == "new_name", "unexpected tab name: " + newName);
+    GTGlobals::sleep(500);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1763_2){
+//    Improve dashboards: If a workflow contains an element with an external tool, the log or parameters list of the tool run should be added to the dashboard.
+
+//    1. Create Read alignment->Align with ClustalO->Write alignment workflow.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Alignment");
+    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::addElement(os, "Write Alignment");
+    WorkflowProcessItem* align = GTUtilsWorkflowDesigner::addElement(os, "Align with ClustalO");
+    GTUtilsWorkflowDesigner::connect(os, read, align);
+    GTUtilsWorkflowDesigner::connect(os, align, write);
+//    2. Set COI.aln as input file
+    GTUtilsWorkflowDesigner::click(os, read);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    3. Start workflow
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+//    Expected state: Workflow dasboard opened and dashboard has External Tools tab
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    4. Click on External Tools tab
+    GTUtilsDashboard::openTab(os, GTUtilsDashboard::ExternalTools);
+//    Expected state: Showed tree "Align with ClustalO"
+    GTUtilsDashboard::click(os, GTUtilsDashboard::findTreeElement(os, "ClustalO run 1"));
+    GTGlobals::sleep(500);
+//    5. Click on "ClustalO run 1" item
+//    Expected state: Showed "Run info" and "Output log"
+    GTUtilsDashboard::findTreeElement(os, "Run info");
+    GTUtilsDashboard::findTreeElement(os, "Output log");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1764){
 //    1) Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);

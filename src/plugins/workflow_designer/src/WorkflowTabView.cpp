@@ -75,6 +75,7 @@ WorkflowTabView::WorkflowTabView(WorkflowView *_parent)
     tabBar()->installEventFilter(this);
 
     connect(this, SIGNAL(currentChanged(int)), SLOT(sl_showDashboard(int)));
+    setObjectName("WorkflowTabView");
 }
 
 void WorkflowTabView::sl_showDashboard(int idx) {

@@ -45,6 +45,49 @@ void GTTabWidget::setCurrentIndex(U2OpStatus& os, QTabWidget *tabWidget, int ind
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getTabBar"
+QTabBar* GTTabWidget::getTabBar(U2OpStatus &os, QTabWidget* tabWidget){
+    Q_UNUSED(os)
+    GT_CHECK_RESULT(tabWidget != NULL, "tabWidget is NULL", NULL);
+    QList<QTabBar*> tabBars= tabWidget->findChildren<QTabBar*>();
+    int numToCheck = tabBars.size();
+    GT_CHECK_RESULT(numToCheck < 2, QString("too many tab bars found: ").arg(numToCheck), NULL);
+    GT_CHECK_RESULT(numToCheck != 0, "tab bar not found", NULL);
+    return tabBars.first();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clickTab"
+void GTTabWidget::clickTab(U2OpStatus &os, QTabWidget* tabWidget, int idx, Qt::MouseButton button){
+    GT_CHECK(tabWidget != NULL, "tabWidget is NULL");
+    setCurrentIndex(os, tabWidget, idx);
+    QTabBar* tabBar = getTabBar(os, tabWidget);
+    QRect r = tabBar->tabRect(idx);
+    GTMouseDriver::moveTo(os, tabBar->mapToGlobal(r.center()));
+    GTMouseDriver::click(os, button);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clickTab"
+void GTTabWidget::clickTab(U2OpStatus &os, QTabWidget* tabWidget, QString tabName, Qt::MouseButton button){
+    GT_CHECK(tabWidget != NULL, "tabWidget is NULL");
+    QTabBar* tabBar = getTabBar(os, tabWidget);
+    int num = -1;
+    for(int i=0; i<tabBar->count(); i++){
+        QString text = tabBar->tabText(i);
+        if(text == tabName){
+            num = -1;
+        }
+    }
+    GT_CHECK(num != -1, "tab " + tabName + " not found");
+    clickTab(os, tabWidget, num, button);
+}
+#undef GT_METHOD_NAME
+
+QString GTTabWidget::getTabName(U2OpStatus &os, QTabWidget *tabWidget, int idx){
+    return getTabBar(os, tabWidget)->tabText(idx);
+}
+
 #undef GT_CLASS_NAME
 
 }

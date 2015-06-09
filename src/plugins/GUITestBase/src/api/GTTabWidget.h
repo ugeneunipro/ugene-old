@@ -37,6 +37,12 @@ public:
     // fails if the tabwidget is NULL, index is not in a tabwidget's range
     // or a tabwidget's index differs from a given index in the end of method's execution
     static void setCurrentIndex(U2OpStatus& os, QTabWidget *tabWidget, int index);
+    static QTabBar* getTabBar(U2OpStatus &os, QTabWidget* tabWidget);
+    static void clickTab(U2OpStatus &os, QTabWidget* tabWidget, int idx, Qt::MouseButton button = Qt::LeftButton);
+    static void clickTab(U2OpStatus &os, QTabWidget* tabWidget, QString tabName, Qt::MouseButton button = Qt::LeftButton);
+    static QString getTabName(U2OpStatus &os, QTabWidget* tabWidget, int idx);
+
+
 };
 
 }
