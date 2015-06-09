@@ -129,6 +129,10 @@ void MSAEditorSimilarityColumn::setSettings(const UpdatedWidgetSettings* _settin
     emit si_dataStateChanged(state);
 }
 
+QString MSAEditorSimilarityColumn::getHeaderText() const {
+    return curSettings.usePercents ? "%" : tr("score");
+}
+
 void MSAEditorSimilarityColumn::updateDistanceMatrix() {
     createDistanceMatrixTaskRunner.cancel();
 
@@ -231,6 +235,8 @@ void MSAEditorAlignmentDependentWidget::createWidgetUI() {
 
     mainLayout->addWidget(headerWidget);
     mainLayout->addWidget(contentWidget->getWidget());
+    nameWidget.setText(contentWidget->getHeaderText());
+
     this->setLayout(mainLayout);
 }
 void MSAEditorAlignmentDependentWidget::createHeaderWidget() {
@@ -238,7 +244,6 @@ void MSAEditorAlignmentDependentWidget::createHeaderWidget() {
     headerLayout->setMargin(0);
     headerLayout->setSpacing(0);
 
-    nameWidget.setText("%");
     nameWidget.setAlignment(Qt::AlignCenter);
     nameWidget.setFont(settings->ui->getEditor()->getFont());
     headerLayout->addWidget(&nameWidget);
@@ -252,15 +257,17 @@ void MSAEditorAlignmentDependentWidget::setSettings(const UpdatedWidgetSettings*
     settings = _settings;
     automaticUpdating = settings->autoUpdate;
     contentWidget->setSettings(settings);
+    nameWidget.setText(contentWidget->getHeaderText());
 }
-
 
 void MSAEditorAlignmentDependentWidget::sl_onAlignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo) {
     contentWidget->onAlignmentChanged(maBefore, modInfo);
 }
+
 void MSAEditorAlignmentDependentWidget::sl_onUpdateButonPressed() {
     contentWidget->updateWidget();
 }
+
 void MSAEditorAlignmentDependentWidget::sl_onDataStateChanged(DataState newState) {
     state = DataIsValid;
     switch(newState) {
@@ -278,7 +285,8 @@ void MSAEditorAlignmentDependentWidget::sl_onDataStateChanged(DataState newState
             break;
     }
 }
-void MSAEditorAlignmentDependentWidget::sl_onFontChanged( const QFont& font) {
+
+void MSAEditorAlignmentDependentWidget::sl_onFontChanged(const QFont& font) {
     nameWidget.setFont(font);
 }
 

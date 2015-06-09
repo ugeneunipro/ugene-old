@@ -71,6 +71,7 @@ public:
     virtual QWidget* getWidget() = 0;
     virtual const UpdatedWidgetSettings& getSettings() const = 0;
     virtual void updateWidget() = 0;
+    virtual QString getHeaderText() const = 0;
 };
 class SimilarityStatisticsSettings : public UpdatedWidgetSettings {
 public:
@@ -91,6 +92,7 @@ public:
     const UpdatedWidgetSettings& getSettings() const {return curSettings;}
     QWidget* getWidget(){return this;}
     void updateWidget(){updateDistanceMatrix();}
+    QString getHeaderText() const;
 
     DataState getState() {return state;}
 
