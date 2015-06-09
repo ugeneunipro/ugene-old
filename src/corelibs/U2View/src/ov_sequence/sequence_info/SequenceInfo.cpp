@@ -78,7 +78,6 @@ void SequenceInfo::initLayout()
     QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
-    mainLayout->setAlignment(Qt::AlignTop);
 
     setLayout(mainLayout);
 
@@ -86,8 +85,6 @@ void SequenceInfo::initLayout()
     statisticLabel = new QLabel(this);
     statsWidget = new ShowHideSubgroupWidget(STAT_GROUP_ID, tr("Common Statistics"), statisticLabel, true);
     statsWidget->setObjectName("Common Statistics");
-    SAFE_POINT(statsWidget->layout() != NULL, tr("No layout in ShowHideSubgroupWidget"),);
-    statsWidget->layout()->setContentsMargins(0, 0, 0, 0);
 
     mainLayout->addWidget(statsWidget);
 
