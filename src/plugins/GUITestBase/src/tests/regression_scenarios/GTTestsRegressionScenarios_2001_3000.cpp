@@ -5530,6 +5530,27 @@ GUI_TEST_CLASS_DEFINITION( test_2853 ){
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2863){
+//    1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Add "File list".
+    WorkflowProcessItem* fileList = GTUtilsWorkflowDesigner::addElement(os, "File List");
+//    3. Add "File Format Conversion".
+    WorkflowProcessItem* conversion = GTUtilsWorkflowDesigner::addElement(os, "File Format Conversion");
+//    4. Connect the elements.
+    GTUtilsWorkflowDesigner::connect(os, fileList, conversion);
+//    Expected: the converter's input slot "Source URL" is binded with the "Source URL" slot of the file list.
+    GTUtilsWorkflowDesigner::click(os, conversion);
+    QTableWidget* table = GTUtilsWorkflowDesigner::getInputPortsTable(os, 0);
+    QString s1 = table->item(0,0)->text();
+    QString s2 = table->item(0,1)->text();
+    CHECK_SET_ERR(s1 == "Source URL", "unexpected first value: " + s1);
+    CHECK_SET_ERR(s2 == "Source URL (by File List)", "unexpected second value: " + s2)
+
+    GTGlobals::sleep();
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2866) {
 //    1. Use main menu { Tools -> Align to reference -> Align short reads }
 //    Expected state: the "Align Sequencing Reads" dialog has appeared
