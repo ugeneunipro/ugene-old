@@ -126,7 +126,7 @@
    <item row="6" column="0" colspan="5">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Yes</set>
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Ok|QDialogButtonBox::Yes</set>
      </property>
     </widget>
    </item>
@@ -139,22 +139,6 @@
    <signal>rejected()</signal>
    <receiver>SearchQualifierDialog</receiver>
    <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>159</x>
-     <y>220</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>159</x>
-     <y>120</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>SearchQualifierDialog</receiver>
-   <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>159</x>

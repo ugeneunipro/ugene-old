@@ -22,16 +22,11 @@
 #ifndef _U2_SEARCH_QUALIFIER_DIALOG_H_
 #define _U2_SEARCH_QUALIFIER_DIALOG_H_
 
+#include <QDialog>
+
 #include <U2Core/global.h>
-#include <U2Core/Task.h>
 
 #include <U2View/AnnotationsTreeView.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
 
 class Ui_SearchQualifierDialog;
 
@@ -43,10 +38,8 @@ class AVItem;
 class U2VIEW_EXPORT SearchQualifierDialog: public QDialog {
     Q_OBJECT
 public:
-    SearchQualifierDialog(QWidget* p, AnnotationsTreeView * _treeView);
+    SearchQualifierDialog(QWidget* p, AnnotationsTreeView *treeView);
     ~SearchQualifierDialog();
-
-    virtual void accept();
 
 protected:
     bool eventFilter(QObject *obj, QEvent *e);
@@ -54,16 +47,19 @@ protected:
 
 protected slots:
     void sl_searchTaskStateChanged();
+    void sl_searchNext();
     void sl_searchAll();
+
 private:
     void search(bool searchAll = false);
+
     AnnotationsTreeView * treeView;
     Ui_SearchQualifierDialog* ui;
     AVItem* groupToSearchIn;
     AVItem * parentAnnotationofPrevResult;
     int indexOfPrevResult;
-
 };
 
-}//namespace
+}   // namespace U2
+
 #endif //_U2_SEARCH_QUALIFIER_DIALOG_H_

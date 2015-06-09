@@ -19,39 +19,34 @@
  * MA 02110-1301, USA.
  */
 
-#include "SearchQualifierDialog.h"
-#include <ui/ui_SearchQualifierDialog.h>
+#include <QKeyEvent>
+#include <QMessageBox>
+#include <QPushButton>
 
-#include <U2Core/AppContext.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
 
-#include <QtGui/QKeyEvent>
 #include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#endif
 
+#include "SearchQualifierDialog.h"
+#include "ui/ui_SearchQualifierDialog.h"
 
 namespace U2 {
 
-SearchQualifierDialog::SearchQualifierDialog(QWidget* p, AnnotationsTreeView * _treeView)
-:QDialog(p)
-,treeView(_treeView)
-,groupToSearchIn(NULL)
+SearchQualifierDialog::SearchQualifierDialog(QWidget* p, AnnotationsTreeView *treeView) :
+    QDialog(p),
+    treeView(treeView),
+    ui(new Ui_SearchQualifierDialog),
+    groupToSearchIn(NULL),
+    parentAnnotationofPrevResult(NULL),
+    indexOfPrevResult(-1)
 {
-     ui = new Ui_SearchQualifierDialog;
      ui->setupUi(this);
      new HelpButton(this, ui->buttonBox, "16122183");
      ui->buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Select all"));
      ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Next"));
-     ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
-
 
      ui->valueEdit->installEventFilter(this);
 
@@ -89,9 +84,8 @@ SearchQualifierDialog::SearchQualifierDialog(QWidget* p, AnnotationsTreeView * _
      }
      ui->groupLabel->setText(groupName);
 
-     QPushButton *selectAllButton = ui->buttonBox->button(QDialogButtonBox::Yes);
-     connect(selectAllButton, SIGNAL( clicked() ), SLOT( sl_searchAll() ));
-
+     connect(ui->buttonBox->button(QDialogButtonBox::Ok), SIGNAL(clicked()), SLOT(sl_searchNext()));
+     connect(ui->buttonBox->button(QDialogButtonBox::Yes), SIGNAL(clicked()), SLOT(sl_searchAll()));
 }
 
 bool SearchQualifierDialog::eventFilter(QObject *obj, QEvent *e) {
@@ -120,10 +114,6 @@ static QString simplify(const QString& s) {
     return res;
 }
 
-void SearchQualifierDialog::accept() {
-    search();
-}
-
 SearchQualifierDialog::~SearchQualifierDialog( ) {
     clearPrevResults();
     delete ui;
@@ -135,21 +125,27 @@ void SearchQualifierDialog::sl_searchTaskStateChanged( ) {
         return;
     }
 
-    if (task->isFound()){
-        //save results
+    if (task->isFound()) {
         parentAnnotationofPrevResult = task->getResultAnnotation();
         indexOfPrevResult = task->getIndexOfResult();
-    }
-    else{
-        //dialog
+    } else if (indexOfPrevResult != -1) {
         int result = QMessageBox::question(this,
-                                        tr("Search Complete"),
-                                        tr("The end of the annotation tree has been reached. Would you like to start the search from the beginning?"),
-                                        QMessageBox::Yes | QMessageBox::No);
-        if (result == QMessageBox::Yes){
+                                           tr("Search Complete"),
+                                           tr("The end of the annotation tree has been reached. Would you like to start the search from the beginning?"),
+                                           QMessageBox::Yes | QMessageBox::No);
+        if (result == QMessageBox::Yes) {
             clearPrevResults();
+            search();
         }
+    } else {
+        QMessageBox::information(this,
+                                 tr("Search Complete"),
+                                 tr("No results found"));
     }
+}
+
+void SearchQualifierDialog::sl_searchNext() {
+    search();
 }
 
 void SearchQualifierDialog::clearPrevResults(){
@@ -181,8 +177,8 @@ void SearchQualifierDialog::search( bool searchAll /* = false*/ ){
     s->registerTopLevelTask(findTask);
 }
 
-void SearchQualifierDialog::sl_searchAll(){
+void SearchQualifierDialog::sl_searchAll() {
     search(true);
 }
 
-}//namespace
+}   // namespace U2
