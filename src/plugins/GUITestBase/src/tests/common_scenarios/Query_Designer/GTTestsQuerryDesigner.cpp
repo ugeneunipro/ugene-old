@@ -90,6 +90,11 @@ void test1(U2OpStatus &os, QString s="") {
     }
     GTMouseDriver::click(os);
     GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(500);
+    //check no elements on scene
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    QList<QGraphicsItem *> items = sceneView->items();
+    CHECK_SET_ERR(items.size() == 2, "Delete shortcut is not working");//2 - is equal empty scene
     }
 //5. repeat from step 2 (do 5 iterations)
 //Expected state: UGENE not crashes.
