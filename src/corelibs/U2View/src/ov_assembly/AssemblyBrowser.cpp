@@ -331,7 +331,6 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
         tb->addSeparator();
 
         tb->addAction(saveScreenShotAction);
-//        tb->addAction(exportToSamAction);
     }
     GObjectView::buildStaticToolbar(tb);
 }

@@ -236,7 +236,8 @@ QStrStrMap VectorNtiSequenceFormat::parseComments(const QStringList &comments) c
         const QString vntiKey = comment.left(sepIndex);
 
         if (-1 < sepIndex && vntiMetaKeys.contains(vntiKey)) {
-            QString value = comment.mid(sepIndex + 1, comment.length() - vntiKey.length() - 2);
+            QString value = comment.mid(sepIndex + 1, comment.length() - vntiKey.length() - 1);
+            value = !value.isEmpty() && value[value.length() - 1] == '|' ? value.mid(0, value.length() - 1) : value;
             if (Q_UNLIKELY(vntiCreationDateKey == vntiKey || vntiModificationDateKey == vntiKey)) {
                 value = parseDate(value.toInt());
             }
@@ -420,6 +421,7 @@ QStrStrMap VectorNtiSequenceFormat::initVntiMetaKeys() {
     vntiMetaKeys["VNTAUTHORAD2"]            = "Author: additional info";
     vntiMetaKeys["VNTAUTHORAD3"]            = "Author: additional info";
     vntiMetaKeys["VNTAUTHORAD4"]            = "Author: additional info";
+    vntiMetaKeys["ORIGDB"]                  = "Original database";
 
     // Unknown keys:
 //    "VNTREPLTYPE" - possible values: "Plasmid", "Virus"
