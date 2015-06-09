@@ -96,8 +96,9 @@ QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const 
             res.append(data.constData() + copyStart, copyLength);
             pos += copyLength;
             regionLengthToRead -= copyLength;
-            SAFE_POINT(regionLengthToRead >= 0,
-                "An error occurred during reading sequence data from dbi.",
+
+            SAFE_POINT_EXT(regionLengthToRead >= 0,
+                os.setError("An error occurred during reading sequence data from dbi."),
                 QByteArray());
         }
         return res;

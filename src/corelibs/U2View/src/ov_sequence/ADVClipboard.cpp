@@ -29,6 +29,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/AnnotationSelection.h>
+#include <U2Core/L10n.h>
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/SequenceUtils.h>
 #include <U2Core/U2SequenceUtils.h>
@@ -115,7 +116,7 @@ void ADVClipboard::sl_onAnnotationSelectionChanged(AnnotationSelection *, const 
 void ADVClipboard::copySequenceSelection(bool complement, bool amino) {
     ADVSequenceObjectContext* seqCtx = getSequenceContext();
     if (seqCtx == NULL) {
-        QMessageBox::critical(NULL, tr("Error!"), "No sequence selected!");
+        QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), "No sequence selected!");
         return;
     }
 
@@ -127,10 +128,20 @@ void ADVClipboard::copySequenceSelection(bool complement, bool amino) {
         DNATranslation* aminoTT = amino ? seqCtx->getAminoTT() : NULL;
         U2OpStatus2Log os;
         QList<QByteArray> seqParts = U2SequenceUtils::extractRegions(seqObj->getSequenceRef(), regions, complTT, aminoTT, false, os);
+        if (os.hasError()) {
+            QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), tr("An error occurred during getting sequence data: %1").arg(os.getError()));
+            return;
+        }
         res = U1SequenceUtils::joinRegions(seqParts);
     }
-    QApplication::clipboard()->setText(res);
-}
+
+    try {
+        QApplication::clipboard()->setText(res);
+    } catch (...) {
+        QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), tr("Cannot put sequence data into the clipboard buffer.\n"
+                              "Probably the data is too big."));
+    }
+ }
 void ADVClipboard::sl_copySequence() {
     copySequenceSelection(false, false);
 }
