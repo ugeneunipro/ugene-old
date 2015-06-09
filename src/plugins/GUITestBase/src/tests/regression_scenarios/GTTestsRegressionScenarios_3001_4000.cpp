@@ -497,6 +497,19 @@ GUI_TEST_CLASS_DEFINITION(test_3074) {
     GTUtilsLog::check(os, logTracer);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3079){
+    GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+//    1. Remove any folder to the recycle bin
+    QModelIndex fol = GTUtilsProjectTreeView::findIndex(os, "test_3079_inner");
+    QModelIndex bin = GTUtilsProjectTreeView::findIndex(os, "Recycle bin");
+    GTUtilsProjectTreeView::dragAndDrop(os, fol, bin);
+//    2. Try to remove any folder or sequence from the database to the folder from the first step
+    fol = GTUtilsProjectTreeView::findIndex(os, "test_3079_inner");
+    QModelIndex seq = GTUtilsProjectTreeView::findIndex(os, "test_3079.fa");
+    GTUtilsProjectTreeView::dragAndDrop(os, seq, fol);
+//    Current state: UGENE crashes
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3085_1) {
     QFile(testDir + "_common_data/regression/3085/murine.gb").copy(sandBoxDir + "murine_3085_1.gb");
 
