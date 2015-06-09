@@ -4793,6 +4793,40 @@ GUI_TEST_CLASS_DEFINITION(test_3773) {
     GTUtilsLog::check(os, logTracer);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3773_1) {
+    class OkClicker : public Filler {
+    public:
+        OkClicker(U2OpStatus& _os) : Filler(_os, "UHMM3BuildDialog"){}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK(dialog, );
+
+            QLineEdit* outHmmfileEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "outHmmfileEdit", dialog));
+            CHECK(outHmmfileEdit, );
+
+            GTLineEdit::setText(os, outHmmfileEdit, "37773_1_out.hmm");
+            //GTWidget::click(os, GTWidget::findWidget(os, "outHmmfileToolButton"));
+            
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK(NULL != button, );
+            GTWidget::click(os, button);
+        }
+    };
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTLogTracer logTracer;
+    //QMenu* menu = GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    //GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build HMMER3 profile");
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Advanced" << "Build HMMER3 profile"));
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os, QPoint(5, 5));
+    GTUtilsLog::check(os, logTracer);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3776) {
 //    1. Open file "data/samples/CLUSTALW/HIV-1.aln"
 //    2. Type "CCCCTCCCATCA" to the search field
