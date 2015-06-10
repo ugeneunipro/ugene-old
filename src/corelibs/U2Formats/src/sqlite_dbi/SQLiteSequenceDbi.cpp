@@ -104,7 +104,7 @@ QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const 
         return res;
     }
     catch (...) {
-        os.setError("Exception was thrown");
+        os.setError("An exception was thrown during reading sequence data from dbi.");
         coreLog.error("An exception was thrown during reading sequence data from dbi.");
         return QByteArray();
     }
