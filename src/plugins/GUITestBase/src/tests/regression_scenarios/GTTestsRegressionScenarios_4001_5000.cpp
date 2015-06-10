@@ -2287,6 +2287,14 @@ GUI_TEST_CLASS_DEFINITION(test_4383) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4400) {
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/VectorNTI_CAN_READ.gb");
+
+    QTreeWidgetItem* commentItem = GTUtilsAnnotationsTreeView::findItem(os, "comment");
+    QString qualValue = GTUtilsAnnotationsTreeView::getQualifierValue(os, "Original database", commentItem);
+    CHECK_SET_ERR( qualValue == "GenBank", "ORIGDB comment was parced incorreclty");
+}
+
 } // namespace GUITest_regression_scenarios
 
 } // namespace U2
