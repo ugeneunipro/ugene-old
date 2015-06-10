@@ -985,7 +985,7 @@ GUI_TEST_CLASS_DEFINITION(test_0680) {
     //3. Set "Range Start" 1, "Range End": 2, set any prediction algorithm
     //4. Press "Start prediction" button
     //UGENE not crashes
-    GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.pdb");
+    GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
     GTUtilsDialog::waitForDialog(os, new PredictSecondaryStructureDialogFiller(os, 1, 2, true));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "Predict secondary structure"));
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
@@ -2142,6 +2142,22 @@ GUI_TEST_CLASS_DEFINITION(test_0842) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsWorkflowDesigner::setCurrentTab(os, GTUtilsWorkflowDesigner::algoriths);
+
+    QTreeWidgetItem* treeItem = GTUtilsWorkflowDesigner::findTreeItem(os, "test", GTUtilsWorkflowDesigner::algoriths, true, false);
+    if(treeItem != NULL){
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "", "Remove element"));
+        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove"));
+        GTTreeWidget::click(os, treeItem);
+        GTMouseDriver::click(os, Qt::RightButton);
+    }
+    QTreeWidgetItem* treeItem1 = GTUtilsWorkflowDesigner::findTreeItem(os, "test1", GTUtilsWorkflowDesigner::algoriths, true, false);
+    if(treeItem1 != NULL){
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "", "Remove element"));
+        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove"));
+        GTTreeWidget::click(os, treeItem1);
+        GTMouseDriver::click(os, Qt::RightButton);
+    }
+
     const QStringList groupNames = GTUtilsWorkflowDesigner::getPaletteGroupNames(os);
     const int customElementsCount = groupNames.contains("Custom Elements with CMD Tools") ?
                 GTUtilsWorkflowDesigner::getPaletteGroupEntries(os, "Custom Elements with CMD Tools").size() : 0;
@@ -2505,7 +2521,7 @@ GUI_TEST_CLASS_DEFINITION(test_0886) {
 
     GTLogTracer l1;
 
-    GTUtilsNotifications::waitForNotification(os);
+    GTUtilsNotifications::waitForNotification(os, false);
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "Gene.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -2515,7 +2531,7 @@ GUI_TEST_CLASS_DEFINITION(test_0886) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
     GTLogTracer l2;
-    GTUtilsNotifications::waitForNotification(os);
+    GTUtilsNotifications::waitForNotification(os, false);
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "Gene.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);

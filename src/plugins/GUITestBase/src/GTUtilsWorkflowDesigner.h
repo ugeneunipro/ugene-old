@@ -62,7 +62,7 @@ public:
     static void returnToWorkflow(U2OpStatus &os);
 
     //returns item from samples or algorithms tab
-    static QTreeWidgetItem* findTreeItem(U2OpStatus &os, QString itemName, tab t, bool exactMatch = false);
+    static QTreeWidgetItem* findTreeItem(U2OpStatus &os, QString itemName, tab t, bool exactMatch = false, bool failIfNULL = true);
 
     //returns item from samples tab
     static QTreeWidgetItem* findSamplesTreeItem(U2OpStatus &os, QString itemName);

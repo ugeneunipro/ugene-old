@@ -1220,9 +1220,11 @@ GUI_TEST_CLASS_DEFINITION(test_3209_2) {
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << ToolsMenu::BLAST_MENU << ToolsMenu::BLAST_SEARCH);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
+    GTGlobals::sleep(50000);
     bool found = GTUtilsAnnotationsTreeView::findRegion(os, "blast result", U2Region(5061, 291));
     CHECK_OP(os, );
     CHECK_SET_ERR(found, "Can not find the blast result");
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3211) {
@@ -3154,7 +3156,7 @@ GUI_TEST_CLASS_DEFINITION(test_3484_1) {
                                                                0, 0, true));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
-    GTGlobals::sleep(500);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     CHECK_SET_ERR(treeView != NULL,"TreeView not found");
 

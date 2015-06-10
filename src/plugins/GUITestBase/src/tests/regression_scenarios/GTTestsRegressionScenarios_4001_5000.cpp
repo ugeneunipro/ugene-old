@@ -2247,11 +2247,12 @@ GUI_TEST_CLASS_DEFINITION(test_4377) {
     // 3. Click the notification.
     // Expected: the report window is opened. There is the list of sequences with empty names.
 
+    GTUtilsNotifications::waitForNotification(os, false);
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/Gene.fa");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    GTUtilsNotifications::waitForNotification(os, false);
+
     GTGlobals::sleep();
     QTextEdit *textEdit = dynamic_cast<QTextEdit*>(GTWidget::findWidget(os, "reportTextEdit", GTUtilsMdi::activeWindow(os)));
     CHECK_SET_ERR(textEdit->toPlainText().contains("The following sequences are empty:"), "Expected message is not found in the report text");

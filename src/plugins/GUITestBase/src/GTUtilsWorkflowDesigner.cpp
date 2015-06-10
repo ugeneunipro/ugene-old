@@ -140,7 +140,7 @@ bool compare(QString s1, QString s2, bool exactMatch){
 }
 
 #define GT_METHOD_NAME "findTreeItem"
-QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString itemName, tab t, bool exactMatch){
+QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString itemName, tab t, bool exactMatch, bool failIfNULL){
 
     QTreeWidgetItem* foundItem=NULL;
     QTreeWidget *w;
@@ -178,8 +178,10 @@ QTreeWidgetItem* GTUtilsWorkflowDesigner::findTreeItem(U2OpStatus &os,QString it
             }
         }
     }
-    GT_CHECK_RESULT(foundItem!=NULL,"Item \"" + itemName + "\" not found in treeWidget",NULL);
-    return foundItem;//added to fix a warning
+    if(failIfNULL){
+        GT_CHECK_RESULT(foundItem!=NULL,"Item \"" + itemName + "\" not found in treeWidget",NULL);
+    }
+    return foundItem;
 }
 #undef GT_METHOD_NAME
 
