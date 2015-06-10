@@ -2207,7 +2207,39 @@ GUI_TEST_CLASS_DEFINITION(test_4359) {
     GTUtilsDialog::waitForDialog(os, new EscClicker(os));
     GTWidget::click(os, GTWidget::findWidget(os, "primer3_action_widget"));
 }
+GUI_TEST_CLASS_DEFINITION(test_4368) {
+/* 1. Open "data/samples/CLUSTALW/COI.aln".
+ * 2. Open "Statistics" options panel tab.
+ * 3. Set any reference sequence.
+ * 4. Set "Show distances column" option.
+ */
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
 
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_SEQ_STATISTICS_WIDGET"));
+
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-5, 5));
+    GTWidget::click(os, GTWidget::findWidget(os, "addSeq"));
+
+    QCheckBox* showDistancesColumnCheck = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "showDistancesColumnCheck"));
+    GTCheckBox::setChecked(os, showDistancesColumnCheck, true);
+    GTGlobals::sleep();
+
+    QGroupBox* groupBox = qobject_cast<QGroupBox*>(GTWidget::findWidget(os,"profileGroup"));
+    CHECK_SET_ERR(groupBox != NULL, "groupBox not found!");
+
+    QRadioButton* radio = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "percentsButton", groupBox));
+    CHECK_SET_ERR(radio != NULL, "percentsButton not found!");
+    GTRadioButton::click(os, radio);
+    QLabel* nameLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "Distance column name"));
+    CHECK_SET_ERR(nameLabel != NULL, "percentsButton not found!");
+    CHECK_SET_ERR(nameLabel->text() == "%", "percentsButton not found!");
+    GTGlobals::sleep();
+
+    QRadioButton* radio2 = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "countsButton", groupBox));
+    CHECK_SET_ERR(radio2 != NULL, "countsButton not found!");
+    GTRadioButton::click(os, radio2);
+    CHECK_SET_ERR(nameLabel->text() == "score", "percentsButton not found!");
+}
 GUI_TEST_CLASS_DEFINITION(test_4377) {
     // 1. Open "_common_data/fasta/Gene.fa".
     // 2. Choose the separate reading mode.

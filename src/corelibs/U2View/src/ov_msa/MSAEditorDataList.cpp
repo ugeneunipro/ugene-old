@@ -236,6 +236,7 @@ void MSAEditorAlignmentDependentWidget::createWidgetUI() {
     mainLayout->addWidget(headerWidget);
     mainLayout->addWidget(contentWidget->getWidget());
     nameWidget.setText(contentWidget->getHeaderText());
+    nameWidget.setObjectName("Distance column name");
 
     this->setLayout(mainLayout);
 }

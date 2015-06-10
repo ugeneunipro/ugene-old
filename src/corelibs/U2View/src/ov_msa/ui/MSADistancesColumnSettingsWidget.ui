@@ -89,7 +89,7 @@
           <widget class="QComboBox" name="algoComboBox"/>
          </item>
          <item>
-          <widget class="QGroupBox" name="profileGrope">
+          <widget class="QGroupBox" name="profileGroup">
            <property name="title">
             <string>Profile mode</string>
            </property>
