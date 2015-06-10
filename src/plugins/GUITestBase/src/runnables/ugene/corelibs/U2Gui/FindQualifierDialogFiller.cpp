@@ -62,7 +62,11 @@ void FindQualifierFiller::run()
     GT_CHECK(box != NULL, "buttonBox is NULL");
 
     if (settings.expectTheEndOfTree) {
-        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes, "The end of the annotation tree has been reached. Would you like to start the search from the beginning?"));
+    }
+
+    if (settings.expectNoResults) {
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "No results found"));
     }
 
     if (settings.nextQualifier && settings.nextCount > 0) {
@@ -80,9 +84,9 @@ void FindQualifierFiller::run()
     }
     GTGlobals::sleep();
 
-    QPushButton* cancelButton = box->button(QDialogButtonBox::Cancel);
-    GT_CHECK(cancelButton != NULL, "\"Cancel\" button is NULL");
-    GTWidget::click(os, cancelButton);
+    QPushButton* closeButton = box->button(QDialogButtonBox::Close);
+    GT_CHECK(closeButton != NULL, "'Close' button is NULL");
+    GTWidget::click(os, closeButton);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

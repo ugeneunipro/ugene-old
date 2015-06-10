@@ -35,6 +35,7 @@ namespace U2 {
                                         bool nextQualifier = true,
                                         unsigned int nextCount = 1,
                                         bool expectTheEndOfTree = false,
+                                        bool expectNoResults = false,
                                         bool selectAll = true)
                 : name(name),
                   value(value),
@@ -42,6 +43,7 @@ namespace U2 {
                   nextQualifier(nextQualifier),
                   nextCount(nextCount),
                   expectTheEndOfTree(expectTheEndOfTree),
+                  expectNoResults(expectNoResults),
                   selectAll(selectAll) {}
 
             QString name;
@@ -50,14 +52,14 @@ namespace U2 {
             bool nextQualifier;
             unsigned int nextCount;
             bool expectTheEndOfTree;
+            bool expectNoResults;
             bool selectAll;
         };
 
         FindQualifierFiller(U2OpStatus &os,
                             const FindQualifierFillerSettings& settings = FindQualifierFillerSettings())
             : Filler(os, "SearchQualifierDialog"),
-              settings(settings)
-        {}
+              settings(settings) {}
         virtual void run();
     private:
         FindQualifierFillerSettings settings;

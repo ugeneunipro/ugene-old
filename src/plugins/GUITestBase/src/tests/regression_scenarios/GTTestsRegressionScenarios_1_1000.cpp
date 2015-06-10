@@ -239,14 +239,22 @@ GUI_TEST_CLASS_DEFINITION(test_0057_2) {
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "NC_004718 features [sars.gb]"));
     GTMouseDriver::click(os, Qt::RightButton);
 
-    //Expected state : Selected 7 qualifiers with name db_xref
+    //Expected state : Selected 58 qualifiers with name db_xref
     QList<QTreeWidgetItem *> selectedItems = GTUtilsAnnotationsTreeView::getAllSelectedItems(os);
-    CHECK_SET_ERR(14 == selectedItems.size(), "Unexpected number of selected items");
+    int qualifiersCount = 0;
+    const QString expectedQualifierName = "db_xref";
 
-    for (int i = 1; i < 14; i += 2) {
-        const QString qualifierName = selectedItems[i]->data(0, Qt::DisplayRole).toString();
-        CHECK_SET_ERR("db_xref" == qualifierName, "Unexpected qualifier name");
+    foreach (QTreeWidgetItem *item, selectedItems) {
+        AVQualifierItem *qualifierItem = dynamic_cast<AVQualifierItem *>(item);
+        if (NULL != qualifierItem) {
+            qualifiersCount++;
+            const QString qualifierName = item->data(0, Qt::DisplayRole).toString();
+            CHECK_SET_ERR(expectedQualifierName == qualifierName, QString("Unexpected qualifier name: expect '%1', got '%2'")
+                          .arg(expectedQualifierName).arg(qualifierName));
+        }
     }
+
+    CHECK_SET_ERR(58 == qualifiersCount, "Unexpected number of selected items");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0057_3) {
@@ -312,7 +320,7 @@ GUI_TEST_CLASS_DEFINITION(test_0057_4) {
 
     CHECK_SET_ERR( qualValues.size() == 2, "Incorrect qualifiers count");
     CHECK_SET_ERR( qualValues.contains("NP_597742.2"), "NP_597742.2 qualifier was not selected");
-    CHECK_SET_ERR( qualValues.contains("NP_597742.1"), "NP_597742.1 qualifier was not selected");
+    CHECK_SET_ERR( qualValues.contains("NP_597744.1"), "NP_597744.1 qualifier was not selected");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0057_5) {
@@ -321,7 +329,7 @@ GUI_TEST_CLASS_DEFINITION(test_0057_5) {
 //    2. Click on right mouse button on NC_001363 annotations tree view and select menu item "Find qualifier"
 //    Expected state: Opened "Find Qualifier" dialog.
 //    3. Enter to Name and Value fields 'protein' and 'NP_5'. Also set checkbox to 'Exact match', then click "Next" button
-//    Expected state: Showed message box with information about end of annotation tree.
+//    Expected state: Showed message box with information about reaults are not found.
 
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
     GTGlobals::sleep();
@@ -333,8 +341,9 @@ GUI_TEST_CLASS_DEFINITION(test_0057_5) {
                                                               "NP_5",
                                                               true,
                                                               true, 1,
+                                                              false,
                                                               true,
-                                                              false);
+                                                              true);
     GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, settings));
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Find qualifier"));
     GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, featuresItem);
@@ -347,6 +356,42 @@ GUI_TEST_CLASS_DEFINITION(test_0057_5) {
         CHECK_SET_ERR(item->type == AVItemType_Group, "There are items selected");
     }
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0057_6) {
+    //    Crash on a number of multisequence files opening in the merge mode
+    //    1. Open samples/Genbank/murine.gb.
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/murine.gb");
+
+    //    2. Click on right mouse button on NC_001363 annotations tree view and select menu item "Find qualifier"
+    //    Expected state: Opened "Find Qualifier" dialog.
+    //    3. Enter to Name field 'source', Value field should be empty. Click "Next" button
+    //    Expected state: a result is found.
+    //    4. Click "Next" button again.
+    //    Expected state: Showed message box with information about the end of tree is reached.
+
+    QTreeWidgetItem* featuresItem = GTUtilsAnnotationsTreeView::findItem(os, "NC_001363 features [murine.gb]");
+    CHECK_SET_ERR(featuresItem != NULL, "\'NC_001363 features [murine.gb]\' item not found");
+
+    FindQualifierFiller::FindQualifierFillerSettings settings("organism",
+                                                              "",
+                                                              true,
+                                                              true, 2,
+                                                              true,
+                                                              false,
+                                                              true);
+    GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, settings));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Find qualifier"));
+    GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, featuresItem);
+    GTGlobals::sleep();
+
+    QList<QTreeWidgetItem*> items = GTUtilsAnnotationsTreeView::getAllSelectedItems(os);
+    bool qualifierIsSelected = false;
+    foreach (QTreeWidgetItem* item, items) {
+        qualifierIsSelected |= (NULL != dynamic_cast<AVQualifierItem *>(item));
+    }
+    CHECK_SET_ERR(qualifierIsSelected, "No qualifiers are selected");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0073_1) {
 /* 1) Open "Find substrings in sequences" WD sample
  * 2) Click on "Find substrings" element
