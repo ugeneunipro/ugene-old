@@ -36,6 +36,7 @@
 #include <U2Gui/ToolsMenu.h>
 
 #include <QGraphicsItem>
+#include <QGraphicsView>
 
 namespace U2 {
 
