@@ -861,7 +861,7 @@
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="41"/>
         <source>Search for:</source>
-        <translation>Искать для:</translation>
+        <translation>Искать:</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/ui/FindPatternForm.ui" line="299"/>
@@ -4580,7 +4580,7 @@ Please, check external tools in the settings.</source>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="327"/>
         <source>Regular expression</source>
-        <translation>Регулярное выражение</translation>
+        <translation>Регулярные выражения</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="331"/>
@@ -4635,7 +4635,7 @@ Please, check external tools in the settings.</source>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="430"/>
         <source>Results no longer than:</source>
-        <translation>Резуотаты не длиннее чем:</translation>
+        <translation>Результаты не длиннее чем:</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/find_pattern/FindPatternWidget.cpp" line="705"/>

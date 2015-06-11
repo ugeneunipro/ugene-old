@@ -321,7 +321,7 @@ this merge sequence slot:</source>
     <message>
         <location filename="../src/ui/EditStringMarkerWidget.ui" line="62"/>
         <source>Regular expression</source>
-        <translation>Регулярное выражение</translation>
+        <translation>Регулярные выражения</translation>
     </message>
 </context>
 <context>
