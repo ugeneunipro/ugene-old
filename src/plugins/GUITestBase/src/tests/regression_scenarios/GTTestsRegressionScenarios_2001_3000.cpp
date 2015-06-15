@@ -2557,21 +2557,22 @@ GUI_TEST_CLASS_DEFINITION( test_2351 ) {
     }
 }
 
-GUI_TEST_CLASS_DEFINITION( test_2342 ){
+GUI_TEST_CLASS_DEFINITION(test_2342) {
 //    1. Open WD, open Cistrome sample.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
 //    2. Select the SeqPos element on the scene. Properties of the SeqPos element are displayed the property widget.
-    GTUtilsDialog::waitForDialog(os, new EscapeClicker(os, "ChIP-seq Analysis Wizard"));
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Workflow", QStringList()<<
-                                                                   "Only treatment tags"));
-    GTUtilsWorkflowDesigner::addSample(os, "Cistrome");
+//    GTUtilsDialog::waitForDialog(os, new EscapeClicker(os, "ChIP-seq Analysis Wizard"));
 //    3. Open wizard, go to the SeqPos page.
-    QMap<QString, QVariant> map;
-    map.insert("Region width", QVariant(300));
-    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "ChIP-seq Analysis Wizard", QList<QStringList>(),map));
-    GTWidget::click(os, GTAction::button(os, "Show wizard"));
+//    GTWidget::click(os, GTAction::button(os, "Show wizard"));
 //    4. Change any parameter value(e.g. "Motif database").
 //    5. Apply wizard changes.
+    QVariantMap map;
+    map.insert("Region width", QVariant(300));
+    GTUtilsDialog::waitForDialog(os, new WizardFiller(os, "ChIP-seq Analysis Wizard", QList<QStringList>(), map));
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Workflow", QStringList() << "Only treatment tags"));
+    GTUtilsWorkflowDesigner::addSample(os, "Cistrome");
+
 //    Expected state: element on the scene is updated, property widget is updated.
     GTUtilsWorkflowDesigner::click(os, "Collect Motifs with SeqPos");
     QString par = GTUtilsWorkflowDesigner::getParameter(os, "Region width");
