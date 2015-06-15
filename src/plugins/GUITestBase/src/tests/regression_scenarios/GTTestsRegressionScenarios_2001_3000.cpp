@@ -2978,6 +2978,19 @@ GUI_TEST_CLASS_DEFINITION( test_2392 ) {
     CHECK_SET_ERR(2 == names.size(), "Wrong sequence count");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2400 ){
+//    1. Import samples/ACE/k26.ace to  ugenedb (via open file)
+    QString fileName = "2400.ugenedb";
+    QString ugenedb = sandBoxDir + fileName;
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller
+                                 (os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, ugenedb));
+    GTFileDialog::openFile(os, testDir + "_common_data/ace/", "ace_test_1.ace");
+//    Expected state: assembly view for Contig_1 opened with refrence sequence added to it
+    bool ref = GTUtilsAssemblyBrowser::hasReference(os, "2400 [as] 1");
+    CHECK_SET_ERR(ref, "no reference")
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2401 ) {
     // 1. Open the file "_common_data/ace/ace_test_1.ace".
     // 2. Set the ugenedb path for import: "_common_data/scenarios/sandbox/2401.ugenedb".
