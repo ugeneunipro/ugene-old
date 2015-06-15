@@ -215,7 +215,7 @@ void GTUtilsOptionPanelSequenceView::setReversePrimer(U2OpStatus &os, const QStr
 #define GT_METHOD_NAME "showPrimersDetails"
 void GTUtilsOptionPanelSequenceView::showPrimersDetails(U2OpStatus &os) {
     openTab(os, InSilicoPcr);
-    GTWidget::click(os, GTWidget::findWidget(os, "detailsLinkLabel"));
+    GTWidget::clickLabelLink(os, GTWidget::findWidget(os, "detailsLinkLabel"));
 }
 #undef GT_METHOD_NAME
 

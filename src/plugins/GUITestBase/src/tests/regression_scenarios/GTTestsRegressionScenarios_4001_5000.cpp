@@ -200,22 +200,6 @@ GUI_TEST_CLASS_DEFINITION(test_4009) {
     GTGlobals::sleep();
 }
 
-GUI_TEST_CLASS_DEFINITION(test_4011){
-    GTLogTracer l;
-//    1. Open WD
-    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-//    2. Open sample "Align sequences with MUSCLE"
-    GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
-//    3. Align attached file
-    GTUtilsWorkflowDesigner::click(os, "Read alignment");
-    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/regression/4011", "human_T1.aln");
-    GTUtilsWorkflowDesigner::runWorkflow(os);
-//    Current state:
-//    Runtime error occured(x86 version of UGENE)
-//    Windows hangs(x64 version)
-    l.checkMessage("Nothing to write");
-}
-
 GUI_TEST_CLASS_DEFINITION(test_4010) {
 //    1. Open "samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
@@ -243,6 +227,22 @@ GUI_TEST_CLASS_DEFINITION(test_4010) {
 
     GTUtilsDialog::waitForDialog(os, new PrimersDetailsDialogFiller(os, new Scenario));
     GTUtilsOptionPanelSequenceView::showPrimersDetails(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4011){
+    GTLogTracer l;
+//    1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Open sample "Align sequences with MUSCLE"
+    GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+//    3. Align attached file
+    GTUtilsWorkflowDesigner::click(os, "Read alignment");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/regression/4011", "human_T1.aln");
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+//    Current state:
+//    Runtime error occured(x86 version of UGENE)
+//    Windows hangs(x64 version)
+    l.checkMessage("Nothing to write");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4013) {
