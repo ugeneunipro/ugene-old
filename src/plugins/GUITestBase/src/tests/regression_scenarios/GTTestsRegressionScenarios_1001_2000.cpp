@@ -5396,6 +5396,21 @@ GUI_TEST_CLASS_DEFINITION(test_1554) {
     CHECK_SET_ERR(NULL == contextMenu, "There is an unexpected context menu");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1560 ){
+//    1. Open "test/_common_data/regression/1560/toy_ref.fa" in UGENE
+    GTFileDialog::openFile( os, testDir + "_common_data/regression/1560/toy_ref.fa" );
+//    2. Open "test/_common_data/regression/1560/toy1.bam" (convert to ugenedb)
+    QString ugenedbFileName = testDir + "_common_data/scenarios/sandbox/test_1560.ugenedb";
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, ugenedbFileName));
+    GTFileDialog::openFile( os, testDir + "_common_data/regression/1560/toy1.bam" );
+//    3. Add "toy_ref.fa" as a reference sequence to "toy1.bam"
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTUtilsAssemblyBrowser::addRefFromProject(os, "ref2");
+//    Current state: UGENE crashes
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1567 ){
 //    1. Start WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);

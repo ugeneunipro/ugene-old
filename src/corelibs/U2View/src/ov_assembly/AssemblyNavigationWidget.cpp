@@ -82,6 +82,7 @@ CoveredRegionsLabel::CoveredRegionsLabel(AssemblyBrowser * ab, QWidget *p)
     connect(browser, SIGNAL(si_coverageReady()), SLOT(sl_updateContent()));
     setAlignment(Qt::AlignTop);
     setContentsMargins(0, 0, 0, 0);
+    setObjectName("CoveredRegionsLabel");
     sl_updateContent();
 }
 

@@ -34,6 +34,7 @@
 #include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsOptionsPanel.h"
+#include "GTUtilsProjectTreeView.h"
 #include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTToolbar.h"
@@ -55,6 +56,12 @@ AssemblyBrowserUi *GTUtilsAssemblyBrowser::getView(U2OpStatus& os, const QString
     return view;
 }
 #undef GT_METHOD_NAME
+
+void GTUtilsAssemblyBrowser::addRefFromProject(U2OpStatus &os, QString docName){
+    QWidget* renderArea = GTWidget::findWidget(os, "assembly_reads_area");
+    QModelIndex ref = GTUtilsProjectTreeView::findIndex(os, docName);
+    GTUtilsProjectTreeView::dragAndDrop(os, ref, renderArea);
+}
 
 #define GT_METHOD_NAME "hasReference"
 bool GTUtilsAssemblyBrowser::hasReference(U2OpStatus& os, const QString &viewTitle) {

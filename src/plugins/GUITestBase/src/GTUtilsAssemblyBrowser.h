@@ -40,6 +40,8 @@ public:
 
     static AssemblyBrowserUi *getView(U2OpStatus &os, const QString& viewTitle);
 
+    static void addRefFromProject(U2OpStatus &os, QString docName);
+
     static bool hasReference(U2OpStatus &os, const QString &viewTitle);
     static bool hasReference(U2OpStatus &os, QWidget *view);
     static bool hasReference(U2OpStatus &os, AssemblyBrowserUi *assemblyBrowser);
