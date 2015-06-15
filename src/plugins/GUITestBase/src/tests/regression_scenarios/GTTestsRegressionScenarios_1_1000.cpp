@@ -208,7 +208,7 @@ GUI_TEST_CLASS_DEFINITION(test_0057_1) {
     //2. Click the right mouse button on NC_001363 annotations tree view and select menu item "Find qualifier"
     //Expected state : Opened "Find Qualifier" dialog.
     //3. Enter to Name field 'db_xref' and click "Next" button
-    FindQualifierFiller::FindQualifierFillerSettings settings("db_xref", QString(), false, true, 1, false, false);
+    FindQualifierFiller::FindQualifierFillerSettings settings("db_xref", QString(), false, true, 1, false, false, false);
     GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, settings));
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Find qualifier..."));
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "NC_004718 features [sars.gb]"));
@@ -343,7 +343,7 @@ GUI_TEST_CLASS_DEFINITION(test_0057_5) {
                                                               true, 1,
                                                               false,
                                                               true,
-                                                              true);
+                                                              false);
     GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, settings));
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Find qualifier"));
     GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, featuresItem);
