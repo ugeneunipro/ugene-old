@@ -160,6 +160,8 @@ void RestrctionMapWidget::sl_onAnnotationsRemoved(const QList<Annotation *> &ann
     foreach (Annotation *a, anns) {
         EnzymeFolderItem* folderItem = findEnzymeFolderByName(a->getName());
         if (folderItem) {
+            AnnotationSelection* sel = ctx->getAnnotationsSelection();
+            sel->removeFromSelection(a);
             folderItem->removeEnzymeItem(a);
         }
     }
@@ -223,6 +225,8 @@ void RestrctionMapWidget::sl_onAnnotationsInGroupRemoved(const QList<Annotation 
         foreach (Annotation *a, anns) {
             EnzymeFolderItem* folderItem = findEnzymeFolderByName(a->getName());
             if (folderItem) {
+                AnnotationSelection* sel = ctx->getAnnotationsSelection();
+                sel->removeFromSelection(a);
                 folderItem->removeEnzymeItem(a);
             }
         }
