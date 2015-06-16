@@ -120,6 +120,8 @@ static void qt2WinPermissions( QFile::Permissions p, DWORD &allowedPermissions, 
 
 namespace U2 {
 
+#define GT_CLASS_NAME "PermissionsSetter"
+
 PermissionsSetter::PermissionsSetter() {
 }
 
@@ -141,6 +143,25 @@ bool PermissionsSetter::setPermissions(const QString& path, QFile::Permissions p
     }
 }
 
+#define GT_METHOD_NAME "setReadWrite"
+void PermissionsSetter::setReadWrite(U2OpStatus &os, const QString &path){
+    QFile::Permissions p = QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner | QFile::ReadUser | QFile::WriteUser |
+            QFile::ExeUser | QFile::ReadGroup | QFile::WriteGroup | QFile::ExeGroup | QFile::ReadOther | QFile::ExeOther;
+    PermissionsSetter setter;
+    bool set = setter.setPermissions(path, p);
+    GT_CHECK(set, "read-only permission could not be set")
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setReadOnly"
+void PermissionsSetter::setReadOnly(U2OpStatus &os, const QString &path){
+    QFile::Permissions p = QFile::ReadOwner | QFile::ExeOwner | QFile::ReadUser |
+            QFile::ExeUser | QFile::ReadGroup | QFile::ExeGroup | QFile::ReadOther | QFile::ExeOther;
+    bool set = setPermissions(path, p);
+    GT_CHECK(set, "read-write permission could not be set")
+}
+#undef GT_METHOD_NAME
+
 bool PermissionsSetter::setRecursive(const QString& path, QFile::Permissions perm) {
     QFileInfo fileInfo(path);
     CHECK(fileInfo.exists(), false);
@@ -149,6 +170,7 @@ bool PermissionsSetter::setRecursive(const QString& path, QFile::Permissions per
     if (fileInfo.isDir()) {
         QDir dir(path);
         foreach (const QString& entryPath, dir.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks)) {
+            setOnce(path + "/" + entryPath, perm);
             bool res = setRecursive(path + "/" + entryPath, perm);
             CHECK(res, res);
         }
@@ -169,7 +191,7 @@ bool PermissionsSetter::setOnce( const QString &path, QFile::Permissions perm, b
     if ( savePreviousState ) {
         previousState.insert( path, p );
     }
-    p &= perm;
+    p = perm;
 
 #ifdef Q_OS_WIN
     if ( fileInfo.isRelative( ) && !fileInfo.makeAbsolute( ) ) {
@@ -199,6 +221,8 @@ bool PermissionsSetter::setOnce( const QString &path, QFile::Permissions perm, b
     return file.setPermissions( p );
 #endif
 }
+
+#undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTFile"
 
@@ -303,7 +327,7 @@ void GTFile::removeDir(QString dirName)
     QDir dir(dirName);
     coreLog.trace("removing dir: " + dirName);
 
-    foreach (QFileInfo fileInfo, dir.entryInfoList()) {
+    foreach (QFileInfo fileInfo, dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Hidden)) {
         QString fileName = fileInfo.fileName();
         QString filePath = fileInfo.filePath();
         if (fileName != "." && fileName != "..") {
@@ -315,11 +339,10 @@ void GTFile::removeDir(QString dirName)
                     continue;
                 else
                     removeDir(filePath);
-
             }
-
         }
-    }dir.rmdir(dir.absoluteFilePath(dirName));
+    }
+    dir.rmdir(dir.absoluteFilePath(dirName));
 
     coreLog.trace("directory removed: " + dirName);
 

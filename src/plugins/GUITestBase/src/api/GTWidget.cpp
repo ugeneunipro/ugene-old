@@ -101,6 +101,7 @@ QWidget* GTWidget::findWidget(U2OpStatus &os, const QString &widgetName, QWidget
 
 #define GT_METHOD_NAME "getWidgetCenter"
 QPoint GTWidget::getWidgetCenter(U2OpStatus &os, QWidget *w){
+    Q_UNUSED(os)
     return w->mapToGlobal(w->rect().center());
 }
 #undef GT_METHOD_NAME

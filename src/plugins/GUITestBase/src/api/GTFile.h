@@ -33,9 +33,13 @@ public:
     PermissionsSetter();
     ~PermissionsSetter();
 
-    bool setPermissions(const QString& path, QFile::Permissions perm, bool recursive = true);
+
+    static void setReadWrite(U2OpStatus &os, const QString& path);
+    void setReadOnly(U2OpStatus &os, const QString& path);
+
 
 private:
+    bool setPermissions(const QString& path, QFile::Permissions perm, bool recursive = true);
     bool setRecursive(const QString& path, QFile::Permissions perm);
     bool setOnce(const QString& path, QFile::Permissions perm, bool savePreviousState = true);
 

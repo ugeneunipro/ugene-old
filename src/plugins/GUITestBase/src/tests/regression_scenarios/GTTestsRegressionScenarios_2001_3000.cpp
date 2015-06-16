@@ -1981,6 +1981,7 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
 
     QDir toolDir = toolPath.dir();
     toolDir.cdUp();
+    QString s = toolDir.absolutePath();
     GTFile::copyDir(os, toolDir.absolutePath(), sandBoxDir + "GUITest_regression_scenarios_test_2268/");
 
     // Hack, it is better to set the tool path via the preferences dialog
@@ -1993,14 +1994,8 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
 
 //    1. Forbid write access to the t-coffee directory (chmod 555 %t-coffee-dir%).
     // Permissions will be returned to the original state, if UGENE won't crash.
-
-    PermissionsSetter permSetter;
-    QFile::Permissions p = QFile::WriteOwner |
-                           QFile::WriteUser |
-                           QFile::WriteGroup |
-                           QFile::WriteOther;
-    bool res = permSetter.setPermissions(toolDir.path(), ~p);
-    CHECK_SET_ERR(res, "Can't set permissions");
+    PermissionsSetter p;
+    p.setReadOnly(os, toolDir.path());
 
 //    2. Open "sample/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
@@ -3864,11 +3859,8 @@ GUI_TEST_CLASS_DEFINITION( test_2543 ) {
     const QString outputFilePath = testDir + "_common_data/scenarios/sandbox/gui_regr_2543";
     QDir sandboxDir( testDir + "_common_data/scenarios/sandbox" );
     sandboxDir.mkdir( "gui_regr_2543" );
-    PermissionsSetter permSetter;
-    const QFile::Permissions p = QFile::WriteOwner | QFile::WriteUser | QFile::WriteGroup
-        | QFile::WriteOther;
-    bool res = permSetter.setPermissions( outputFilePath, ~p );
-    CHECK_SET_ERR( res, "Can't set permissions" );
+    PermissionsSetter p;
+    p.setReadOnly(os, outputFilePath);
     GTGlobals::sleep( 2000 );
 
     GTUtilsDialog::waitForDialog( os, new BuildTreeDialogFiller_test_2543( os, outputFilePath + "/test.nwk") );

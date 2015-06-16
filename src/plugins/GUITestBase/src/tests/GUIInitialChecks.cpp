@@ -112,10 +112,15 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
     }
 }
 GUI_TEST_CLASS_DEFINITION(test_0005){
-    //GTUtilsTaskTreeView::waitTaskFinished(os);
+    PermissionsSetter::setReadWrite(os, sandBoxDir);
+    GTGlobals::sleep();
+    QDir sandBox = QDir(sandBoxDir);
+    foreach (QString path, sandBox.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Hidden)) {
+        GTFile::removeDir(sandBox.absolutePath() + "/" + path);
+    }
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0006) {
+GUI_TEST_CLASS_DEFINITION(test_0006){
     QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
     CHECK_SET_ERR(mw != NULL, "main window is NULL");
 #ifdef Q_OS_MAC
@@ -196,6 +201,13 @@ GUI_TEST_CLASS_DEFINITION(post_test_0003) {
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj4.uprj");
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj5.uprj");
     GTFile::restore(os, testDir + "_common_data/scenarios/assembly/example-alignment.ugenedb");
+
+    PermissionsSetter::setReadWrite(os, sandBoxDir);
+    GTGlobals::sleep();
+    QDir sandBox = QDir(sandBoxDir);
+    foreach (QString path, sandBox.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Hidden)) {
+        GTFile::removeDir(sandBox.absolutePath() + "/" + path);
+    }
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0004) {     //if this post test detect any problems, use test_0004 and post_test_0002 for backup and restore corrupted files

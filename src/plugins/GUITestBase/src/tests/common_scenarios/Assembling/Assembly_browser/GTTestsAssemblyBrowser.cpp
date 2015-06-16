@@ -284,9 +284,9 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
 
     QDir().mkpath(sandBoxDir + "common_assembly_browser/test_0012");
-    PermissionsSetter permSetter;
-    const bool permWereSet = permSetter.setPermissions(sandBoxDir + "common_assembly_browser/test_0012", QFile::ReadUser, true);
-    CHECK_SET_ERR(permWereSet, "Can't set folder permissons");
+
+    PermissionsSetter p;
+    p.setReadOnly(os, sandBoxDir + "common_assembly_browser/test_0012");
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, QDir::toNativeSeparators(sandBoxDir + "common_assembly_browser/test_0012/test_0012.txt"));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ExpectMessageBox, "");
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");

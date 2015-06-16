@@ -8108,11 +8108,8 @@ GUI_TEST_CLASS_DEFINITION( test_1859 ) {
     GTGlobals::sleep( );
 
     // 6) Block file for writing
-    PermissionsSetter permSetter;
-    QFile::Permissions p = QFile::WriteOwner | QFile::WriteUser | QFile::WriteGroup
-        | QFile::WriteOther;
-    bool res = permSetter.setPermissions( outputFilePath, ~p );
-    CHECK_SET_ERR( res, "Can't set permissions" );
+    PermissionsSetter p;
+    p.setReadOnly(os, outputFilePath);
 
     // 7) Run workflow again
     GTWidget::click( os,GTAction::button( os,"Run workflow" ) );
