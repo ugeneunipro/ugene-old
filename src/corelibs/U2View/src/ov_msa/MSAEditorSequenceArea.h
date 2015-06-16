@@ -263,6 +263,9 @@ public:
 
     bool hasAminoAlphabet();
 
+    QString getCopyFormatedAlgorithmId() const;
+    void setCopyFormatedAlgorithmId(const QString& algoId);
+
 private:
     // emulating cursor mode with
 
@@ -321,6 +324,7 @@ signals:
 public slots:
     void sl_changeColorSchemeOutside(const QString &name);
     void sl_doUseDots();
+    void sl_changeCopyFormat(const QString& alg);
 
 protected:
     void resizeEvent(QResizeEvent *);
@@ -347,6 +351,7 @@ private slots:
 
     void sl_delCurrentSelection();
     void sl_copyCurrentSelection();
+    void sl_copyFormattedSelection();
     void sl_fillCurrentSelectionWithGaps();
     void sl_delCol();
     void sl_goto();

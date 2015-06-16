@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>178</width>
-    <height>214</height>
+    <height>286</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -187,6 +187,22 @@
          </widget>
         </item>
        </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="copyTypeWidget" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QLabel" name="copyTypeLabel">
+        <property name="text">
+         <string>Copy formatted type:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="copyType"/>
       </item>
      </layout>
     </widget>

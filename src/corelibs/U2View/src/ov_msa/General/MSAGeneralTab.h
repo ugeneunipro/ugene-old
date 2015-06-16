@@ -40,6 +40,7 @@ public:
 signals:
     void si_algorithmChanged(const QString& algoId);
     void si_thresholdChanged(int val);
+    void si_copyFormatChanged(const QString& formatId);
 
 public slots:
     void sl_alignmentChanged(const MAlignment& al, const MAlignmentModInfo& modInfo);
@@ -49,6 +50,7 @@ public slots:
     void sl_thresholdSliderChanged(int value);
     void sl_thresholdSpinBoxChanged(int value);
     void sl_thresholdResetClicked(bool newState);
+    void sl_copyFormatSelectionChanged(int value);
 
 private:
     void connectSignals();

@@ -19,21 +19,34 @@
  * MA 02110-1301, USA.
  */
 
-#include "CreateSubalignmentTask.h"
+#include <QtGui/QClipboard>
 
-#include <U2Core/DocumentModel.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#endif
+
 #include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/GHints.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/LocalFileAdapter.h>
 #include <U2Core/Log.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/SaveDocumentTask.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/UserApplicationsSettings.h>
 
+
+#include "CreateSubalignmentTask.h"
 
 namespace U2{
 
@@ -88,6 +101,73 @@ void CreateSubalignmentTask::prepare() {
     if (cfg.saveImmediately) {
         addSubTask(new SaveDocumentTask(resultDocument, iof));
     }
- }
+}
+
+SubalignmentToClipboardTask::SubalignmentToClipboardTask(MAlignmentObject *_maObj, const QRect& selectionRect, const DocumentFormatId& formatId)
+    :Task(tr("Copy formatted alignment to the clipboard"), TaskFlags_NR_FOSE_COSC ), maObj(_maObj), selectionRect(selectionRect), formatId(formatId), createSubalignmentTask(NULL){
+}
+
+void SubalignmentToClipboardTask::prepare(){
+    CreateSubalignmentSettings settings = defineSettings(maObj, selectionRect, formatId, stateInfo);
+    CHECK_OP(stateInfo, )
+
+    createSubalignmentTask = new CreateSubalignmentTask(maObj, settings);
+    addSubTask(createSubalignmentTask);
+}
+
+#define READ_BUF_SIZE 4096
+QList<Task *> SubalignmentToClipboardTask::onSubTaskFinished(Task *subTask){
+    QList<Task*> subTasks;
+    if (subTask->hasError() || isCanceled()) {
+        return subTasks;
+    }
+
+    if(subTask == createSubalignmentTask){
+        Document* doc = createSubalignmentTask->getDocument();
+        SAFE_POINT_EXT(doc != NULL, setError(tr("No temporary document.")), subTasks);
+        QScopedPointer<LocalFileAdapterFactory> factory( new LocalFileAdapterFactory());
+        QScopedPointer<IOAdapter> io(factory->createIOAdapter());
+        if(!io->open(doc->getURL(), IOAdapterMode_Read)){
+            setError(tr("Cannot read the temporary file."));
+            return subTasks;
+        }
+
+        QString res;
+        QByteArray buf;
+        while(!io->isEof()){
+            buf.resize(READ_BUF_SIZE);
+            buf.fill(0);
+            int read = io->readLine(buf.data(), READ_BUF_SIZE);
+            buf.resize(read);
+            res.append(buf);
+            res.append('\n');
+        }
+        QApplication::clipboard()->setText(res);
+    }
+
+    return subTasks;
+}
+
+CreateSubalignmentSettings SubalignmentToClipboardTask::defineSettings(MAlignmentObject *_maObj, const QRect &selectionRect, const DocumentFormatId &formatId, U2OpStatus& os){
+    U2Region window(selectionRect.x(), selectionRect.width());
+
+    QStringList names;
+    int startSeq = selectionRect.y();
+    int endSeq = selectionRect.y() + selectionRect.height();
+    for (int i=startSeq; i < endSeq; i++) {
+        names.append(_maObj->getMAlignment().getRow(i).getName());
+    }
+
+    //Create temporal document for the workflow run task
+    const AppSettings* appSettings = AppContext::getAppSettings();
+    SAFE_POINT_EXT(NULL != appSettings, os.setError(tr("Invalid applications settings detected")), CreateSubalignmentSettings());
+
+    UserAppsSettings* usersSettings = appSettings->getUserAppsSettings();
+    SAFE_POINT_EXT(NULL != usersSettings, os.setError(tr("Invalid users applications settings detected")), CreateSubalignmentSettings());
+    const QString tmpDirPath = usersSettings->getCurrentProcessTemporaryDirPath();
+    GUrl path = GUrlUtils::prepareTmpFileLocation(tmpDirPath, "clipboard", "tmp", os);
+
+    return CreateSubalignmentSettings(window, names, path, true, false, formatId);
+}
 
 }

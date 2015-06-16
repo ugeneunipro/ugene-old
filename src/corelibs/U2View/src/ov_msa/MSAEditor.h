@@ -311,6 +311,7 @@ public:
     QAction* getUndoAction() const;
     QAction* getRedoAction() const;
     QAction* getCopySelectionAction() const {return copySelectionAction;}
+    QAction* getCopyFormattedSelectionAction() const {return copyFormattedSelectionAction;}
 
     bool isCollapsibleMode() const { return collapsibleMode; }
     void setCollapsibleMode(bool collapse) { collapsibleMode = collapse; }
@@ -376,6 +377,7 @@ private:
     MSAEditorTreeViewer*               treeViewer;
 
     QAction                         *copySelectionAction;
+    QAction                         *copyFormattedSelectionAction;
 };
 
 class MSAWidget : public QWidget {

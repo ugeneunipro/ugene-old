@@ -403,6 +403,7 @@ MSAEditor::~MSAEditor() {
 }
 
 void MSAEditor::buildStaticToolbar(QToolBar* tb) {
+    tb->addAction(ui->getCopyFormattedSelectionAction());
     tb->addAction(saveAlignmentAction);
     tb->addAction(saveAlignmentAsAction);
     tb->addAction(zoomInAction);
@@ -928,6 +929,15 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
         .arg(copySelectionAction->shortcut().toString()));
 
     addAction(copySelectionAction);
+
+    copyFormattedSelectionAction = new QAction(QIcon(":core/images/copy_sequence.png"), tr("Copy formatted"), this);
+    copyFormattedSelectionAction->setObjectName("copy_formatted");
+    copyFormattedSelectionAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_C));
+    copyFormattedSelectionAction->setShortcutContext(Qt::WidgetShortcut);
+    copyFormattedSelectionAction->setToolTip(QString("%1 (%2)").arg(copyFormattedSelectionAction->text())
+        .arg(copyFormattedSelectionAction->shortcut().toString()));
+
+    addAction(copyFormattedSelectionAction);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
     setMinimumSize(300, 200);

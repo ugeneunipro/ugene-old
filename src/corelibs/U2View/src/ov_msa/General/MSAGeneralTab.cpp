@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/AppContext.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/MAlignmentObject.h>
 
 #include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
@@ -29,6 +30,7 @@
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorConsensusArea.h>
+#include <U2View/MSAEditorSequenceArea.h>
 
 #include "MSAGeneralTab.h"
 
@@ -43,8 +45,10 @@ MSAGeneralTab::MSAGeneralTab(MSAEditor* _msa)
 
     ShowHideSubgroupWidget* alignmentInfo = new ShowHideSubgroupWidget("ALIGNMENT_INFO", tr("Alignment info"), alignmentInfoWidget, true);
     ShowHideSubgroupWidget* consensusMode = new ShowHideSubgroupWidget("CONSENSUS_MODE", tr("Consensus mode"), consensusModeWidget, true);
+    ShowHideSubgroupWidget* copyType = new ShowHideSubgroupWidget("COPY_TYPE", tr("Copy type"), copyTypeWidget, true);
     Ui_GeneralTabOptionsPanelWidget::layout->addWidget(alignmentInfo);
     Ui_GeneralTabOptionsPanelWidget::layout->addWidget(consensusMode);
+    Ui_GeneralTabOptionsPanelWidget::layout->addWidget(copyType);
 
     initializeParameters();
     connectSignals();
@@ -96,12 +100,18 @@ void MSAGeneralTab::sl_thresholdResetClicked(bool newState) {
     sl_thresholdChanged(factory->getDefaultThreshold());
 }
 
+void MSAGeneralTab::sl_copyFormatSelectionChanged(int index) {
+    QString selectedFormatId = copyType->itemData(index).toString();
+    emit si_copyFormatChanged(selectedFormatId);
+}
+
 void MSAGeneralTab::connectSignals() {
     // Inner signals
     connect(consensusType,          SIGNAL(currentIndexChanged(int)),   SLOT(sl_algorithmSelectionChanged(int)));
     connect(thresholdSlider,        SIGNAL(valueChanged(int)),          SLOT(sl_thresholdSliderChanged(int)));
     connect(thresholdSpinBox,       SIGNAL(valueChanged(int)),          SLOT(sl_thresholdSpinBoxChanged(int)));
     connect(thresholdResetButton,   SIGNAL(clicked(bool)),              SLOT(sl_thresholdResetClicked(bool)));
+    connect(copyType,               SIGNAL(currentIndexChanged(int)),   SLOT(sl_copyFormatSelectionChanged(int)));
 
     // Extern signals
     connect(msa->getMSAObject(),
@@ -113,6 +123,9 @@ void MSAGeneralTab::connectSignals() {
             msa->getUI()->getConsensusArea(), SLOT(sl_changeConsensusAlgorithm(QString)));
     connect(this, SIGNAL(si_thresholdChanged(int)),
             msa->getUI()->getConsensusArea(), SLOT(sl_changeConsensusThreshold(int)));
+
+    connect(this, SIGNAL(si_copyFormatChanged(QString)),
+            msa->getUI()->getSequenceArea(), SLOT(sl_changeCopyFormat(QString)));
 
         //in
     connect(msa->getUI()->getConsensusArea(),
@@ -135,7 +148,7 @@ void MSAGeneralTab::initializeParameters() {
     QList<MSAConsensusAlgorithmFactory*> algos = reg->getAlgorithmFactories(MSAConsensusAlgorithmFactory::getAphabetFlags(alphabet));
 
     foreach(const MSAConsensusAlgorithmFactory* algo, algos) {
-        consensusType->addItem(QIcon(), algo->getName(), algo->getId());
+        consensusType->addItem(algo->getName(), algo->getId());
     }
 
     QString currentAlgorithmName = msa->getUI()->getConsensusArea()->getConsensusAlgorithm()->getName();
@@ -143,6 +156,23 @@ void MSAGeneralTab::initializeParameters() {
 
     // Update state for the current algorithm
     updateState();
+
+    //Copy formatted
+    DocumentFormatConstraints constr;
+    constr.supportedObjectTypes.insert( GObjectTypes::MULTIPLE_ALIGNMENT );
+    constr.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
+    constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    DocumentFormatRegistry* freg = AppContext::getDocumentFormatRegistry();
+    QList<DocumentFormatId> supportedFormats = freg->selectFormats(constr);
+
+    foreach(const DocumentFormatId& fid, supportedFormats) {
+        DocumentFormat* f = freg->getFormatById(fid);
+        copyType->addItem(QIcon(), f->getFormatName(), f->getFormatId());
+    }
+
+    QString currentCopyFormattedID = msa->getUI()->getSequenceArea()->getCopyFormatedAlgorithmId();
+    copyType->setCurrentIndex(copyType->findData(currentCopyFormattedID));
+
 }
 
 void MSAGeneralTab::updateState() {

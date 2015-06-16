@@ -28,7 +28,6 @@
 #include <QTextStream>
 
 #include <U2Algorithm/CreateSubalignmentTask.h>
-
 #include <U2Core/AddSequencesToAlignmentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
@@ -43,7 +42,9 @@
 #include <U2Core/MSAUtils.h>
 #include <U2Core/MsaDbiUtils.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/SaveDocumentTask.h>
+#include <U2Core/Settings.h>
 #include <U2Core/Settings.h>
 #include <U2Core/Task.h>
 #include <U2Core/TextUtils.h>
@@ -52,19 +53,18 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
-
 #include <U2Formats/DocumentFormatUtils.h>
-
 #include <U2Gui/AppSettingsGUI.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/OPWidgetFactory.h>
+#include <U2Gui/OPWidgetFactory.h>
+#include <U2Gui/OptionsPanel.h>
 #include <U2Gui/OptionsPanel.h>
 #include <U2Gui/PositionSelector.h>
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
-#include <U2Core/QObjectScopedPointer.h>
 
 #include "AlignSequencesToAlignment/AlignSequencesToAlignmentTask.h"
 #include "ColorSchemaSettingsController.h"
@@ -82,6 +82,7 @@ namespace U2 {
 #define SETTINGS_COLOR_AMINO    "color_amino"
 #define SETTINGS_HIGHGHLIGHT_NUCL      "highghlight_nucl"
 #define SETTINGS_HIGHGHLIGHT_AMINO     "highghligh_amino"
+#define SETTINGS_COPY_FORMATTED "copyformatted"
 
 MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, GScrollBar* vb)
     : editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb), prevPressedButton(Qt::NoButton),
@@ -111,6 +112,9 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
 
     connect(ui->getCopySelectionAction(), SIGNAL(triggered()), SLOT(sl_copyCurrentSelection()));
     addAction(ui->getCopySelectionAction());
+
+    connect(ui->getCopyFormattedSelectionAction(), SIGNAL(triggered()), SLOT(sl_copyFormattedSelection()));
+    addAction(ui->getCopyFormattedSelectionAction());
 
     delColAction = new QAction(QIcon(":core/images/msaed_remove_columns_with_gaps.png"), tr("Remove columns of gaps..."), this);
     delColAction->setObjectName("remove_columns_of_gaps");
@@ -324,6 +328,14 @@ QStringList MSAEditorSequenceArea::getAvailableHighlightingSchemes() const{
     return allSchemas;
 }
 
+QString MSAEditorSequenceArea::getCopyFormatedAlgorithmId() const{
+    return AppContext::getSettings()->getValue(SETTINGS_ROOT + SETTINGS_COPY_FORMATTED, BaseDocumentFormats::CLUSTAL_ALN).toString();
+}
+
+void MSAEditorSequenceArea::setCopyFormatedAlgorithmId(const QString& algoId){
+    AppContext::getSettings()->setValue(SETTINGS_ROOT + SETTINGS_COPY_FORMATTED, algoId);
+}
+
 bool MSAEditorSequenceArea::hasAminoAlphabet() {
     MAlignmentObject* maObj = editor->getMSAObject();
     SAFE_POINT(NULL != maObj, tr("MAlignmentObject is null in MSAEditorSequenceArea::hasAminoAlphabet()"), false);
@@ -412,6 +424,10 @@ void MSAEditorSequenceArea::sl_useDots(){
     completeRedraw = true;
     update();
     emit si_highlightingChanged();
+}
+
+void MSAEditorSequenceArea::sl_changeCopyFormat(const QString& alg){
+    setCopyFormatedAlgorithmId(alg);
 }
 
 void MSAEditorSequenceArea::sl_changeColorScheme() {
@@ -1080,11 +1096,9 @@ void MSAEditorSequenceArea::updateSelection(const QPoint& newPos) {
     if (newPos.x()!=-1 && newPos.y()!=-1) {
         setSelection(s);
     }
-    if (selection.isNull()){
-        ui->getCopySelectionAction()->setDisabled(true);
-    }else{
-        ui->getCopySelectionAction()->setEnabled(true);
-    }
+    bool selectionExists = !selection.isNull();
+    ui->getCopySelectionAction()->setEnabled(selectionExists);
+    ui->getCopyFormattedSelectionAction()->setEnabled(selectionExists);
 }
 
 void MSAEditorSequenceArea::updateSelection() {
@@ -1581,11 +1595,9 @@ void MSAEditorSequenceArea::setSelection(const MSAEditorSelection& s, bool newHi
         selection = MSAEditorSelection(s.topLeft(), s.width() - ofRange - 1, s.height());
     }
 
-    if (selection.isNull()) {
-        ui->getCopySelectionAction()->setDisabled(true);
-    } else {
-        ui->getCopySelectionAction()->setEnabled(true);
-    }
+    bool selectionExists = !selection.isNull();
+    ui->getCopySelectionAction()->setEnabled(selectionExists);
+    ui->getCopyFormattedSelectionAction()->setEnabled(selectionExists);
 
     U2Region selectedRowsRegion = getSelectedRows();
     baseSelection = MSAEditorSelection(selection.topLeft().x(), getSelectedRows().startPos, selection.width(), selectedRowsRegion.length);
@@ -1789,6 +1801,7 @@ void MSAEditorSequenceArea::sl_buildContextMenu(GObjectView*, QMenu* m) {
     if (rect().contains(mapFromGlobal(QCursor::pos()))) {
         editMenu->addActions(actions);
         copyMenu->addAction(ui->getCopySelectionAction());
+        copyMenu->addAction(ui->getCopyFormattedSelectionAction());
     }
 
     m->setObjectName("msa sequence area context menu");
@@ -1822,6 +1835,8 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     SAFE_POINT(copyMenu != NULL, "copyMenu", );
     ui->getCopySelectionAction()->setDisabled(selection.isNull());
     copyMenu->addAction(ui->getCopySelectionAction());
+    ui->getCopyFormattedSelectionAction()->setDisabled(selection.isNull());
+    copyMenu->addAction(ui->getCopyFormattedSelectionAction());
 
     QMenu* viewMenu = GUIUtils::findSubMenu(m, MSAE_MENU_VIEW);
     SAFE_POINT(viewMenu != NULL, "viewMenu", );
@@ -2242,6 +2257,13 @@ void MSAEditorSequenceArea::sl_copyCurrentSelection()
     }
     QApplication::clipboard()->setText(selText);
 }
+
+void MSAEditorSequenceArea::sl_copyFormattedSelection(){
+    const DocumentFormatId& formatId = getCopyFormatedAlgorithmId();
+    Task* clipboardTask = new SubalignmentToClipboardTask(editor->getMSAObject(), selection.getRect(), formatId);
+    AppContext::getTaskScheduler()->registerTopLevelTask(clipboardTask);
+}
+
 
 bool MSAEditorSequenceArea::shiftSelectedRegion(int shift) {
     if (0 == shift) {

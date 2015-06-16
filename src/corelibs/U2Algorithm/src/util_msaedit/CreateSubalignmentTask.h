@@ -33,6 +33,7 @@ namespace U2{
 
 class U2ALGORITHM_EXPORT CreateSubalignmentSettings {
 public:
+    CreateSubalignmentSettings(){}
     CreateSubalignmentSettings(const U2Region& w, const QStringList& sNames, const GUrl& path, bool save, bool add, DocumentFormatId formatId)
         : window(w), seqNames(sNames), url(path), saveImmediately(save), addToProject(add), formatIdToSave(formatId) {}
 
@@ -61,6 +62,28 @@ private:
     CreateSubalignmentSettings  cfg;
     bool                        createCopy;
 };
+
+class U2ALGORITHM_EXPORT SubalignmentToClipboardTask : public Task {
+    Q_OBJECT
+public:
+    SubalignmentToClipboardTask(MAlignmentObject* _maObj, const QRect& selectionRect, const DocumentFormatId& formatId);
+    virtual void prepare();
+
+protected:
+    virtual QList<Task*> onSubTaskFinished(Task* subTask);
+
+private:
+    CreateSubalignmentSettings defineSettings(MAlignmentObject* _maObj, const QRect& selectionRect, const DocumentFormatId& formatId, U2OpStatus& os);
+
+private:
+    MAlignmentObject *       maObj;
+    QRect                    selectionRect;
+    DocumentFormatId         formatId;
+    CreateSubalignmentTask*  createSubalignmentTask;
+
+
+};
+
 
 }
 
