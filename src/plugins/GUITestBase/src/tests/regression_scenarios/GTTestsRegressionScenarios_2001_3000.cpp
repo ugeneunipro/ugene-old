@@ -3790,6 +3790,23 @@ GUI_TEST_CLASS_DEFINITION( test_2538 ){
     CHECK_SET_ERR(initImg.size() == finalImg.size(), "different images");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2540 ){
+//    1. Forbid to write to the dir with the source bam(sam) file.
+    QDir().mkpath(sandBoxDir + "test_2540");
+    GTFile::copy(os, testDir + "_common_data/bam/chrM.sorted.bam", sandBoxDir + "test_2540/chrM.sorted.bam");
+    PermissionsSetter p;
+    p.setReadOnly(os, sandBoxDir + "test_2540");
+//    2. Try to open this file with UGENE.
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "chrM.sorted.bam.ugenedb"));
+    GTFileDialog::openFile(os, sandBoxDir + "test_2540/chrM.sorted.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: an import dialog appeared.
+//    3. Set the destination location with enough permissions.
+//    4. Click "Import" button.
+//    Expected state: file is successfully imported.
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2542 ) {
     // 1. Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
