@@ -38,6 +38,7 @@
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsTaskTreeView.h"
+#include "GTUtilsOptionPanelMSA.h"
 #include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/qt/MessageBoxFiller.h"
@@ -3929,6 +3930,126 @@ GUI_TEST_CLASS_DEFINITION(test_0052){
     GTUtilsDialog::waitForDialog(os, new CustomFiller_0052(os));
     GTUtilsDialog::waitForDialog( os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Export as image"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0053){
+        //Copied formatted (context menu)
+        //1. Open amples\CLUSTALW\COI.aln
+        //2. Select the first three letters TAA
+        //3. Context menue {Copy-><<Copy formatted}
+        //Expected state: the buffer contatin the sequence in CLUSTALW format
+        GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+        GTGlobals::sleep();
+
+        GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(2, 0));
+
+        GTUtilsDialog::waitForDialog(os,new PopupChooser(os,QStringList()<<MSAE_MENU_COPY<<"copy_formatted"));
+        GTMouseDriver::click(os,Qt::RightButton);
+        GTGlobals::sleep(3000);
+
+        QString clipboardText = GTClipboard::text(os);
+
+        CHECK_SET_ERR(clipboardText.contains("TAA"), clipboardText);
+        GTGlobals::sleep(3000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0053_1){
+    //Copied formatted (context menu), the format is changable
+    //1. Open samples\CLUSTALW\COI.aln
+    //2. Select the first three letters TAA
+    //3. In the general tab of the options panel find the Copy Type combobox and select the Mega format
+    //4. Context menu {Copy->Copy formatted}
+    //Expected state: the buffer contatin the sequence in Mega format
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTGlobals::sleep();
+
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
+    GTGlobals::sleep(200);
+
+    QComboBox* copyType = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "copyType"));
+    CHECK_SET_ERR(copyType != NULL, "copy combobox not found");
+
+    GTComboBox::setIndexWithText(os, copyType, "Mega");
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(2, 0));
+
+    GTUtilsDialog::waitForDialog(os,new PopupChooser(os,QStringList()<<MSAE_MENU_COPY<<"copy_formatted"));
+    GTMouseDriver::click(os,Qt::RightButton);
+    GTGlobals::sleep(3000);
+
+    QString clipboardText = GTClipboard::text(os);
+
+    CHECK_SET_ERR(clipboardText.contains("mega"), clipboardText);
+    CHECK_SET_ERR(clipboardText.contains("TAA"), clipboardText);
+
+    GTGlobals::sleep(3000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0053_2){
+    //Copied formatted (toolbar), the format is changable
+    //1. Open samples\CLUSTALW\COI.aln
+    //2. Select the first three letters TAA
+    //3. In the general tab of the options panel find the Copy Type combobox and select the CLUSTALW format
+    //4. Toolbar {Copy->Copy formatted}
+    //Expected state: the buffer contatin the sequence in CLUSTALW format
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTGlobals::sleep();
+
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
+    GTGlobals::sleep(200);
+
+    QComboBox* copyType = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "copyType"));
+    CHECK_SET_ERR(copyType != NULL, "copy combobox not found");
+
+    GTComboBox::setIndexWithText(os, copyType, "CLUSTALW");
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(2, 0));
+
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "copy_formatted"));
+    GTGlobals::sleep(3000);
+
+    QString clipboardText = GTClipboard::text(os);
+
+    CHECK_SET_ERR(clipboardText.contains("CLUSTAL W 2.0 multiple sequence alignment"), clipboardText);
+    CHECK_SET_ERR(clipboardText.contains("TAA"), clipboardText);
+
+    GTGlobals::sleep(3000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0053_3){
+        //Copied formatted (context menu) for a big alignment
+        //1. Open _common_data/clustal/100_sequences.aln
+        //2. Select the whole alignment
+        //3. Context menue {Copy->Copy formatted}
+        //Expected state: the buffer contatin the sequences in CLUSTALW format
+        GTFileDialog::openFile(os, testDir + "_common_data/clustal/100_sequences.aln");
+        GTGlobals::sleep();
+
+        QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);
+        CHECK_SET_ERR(!names.isEmpty(), "the alignment is empty");
+        GTUtilsMSAEditorSequenceArea::selectSequence(os, names.first());
+
+        GTUtilsDialog::waitForDialog(os,new PopupChooser(os,QStringList()<<MSAE_MENU_COPY<<"copy_formatted"));
+        GTMouseDriver::click(os,Qt::RightButton);
+        GTGlobals::sleep(3000);
+
+        QString clipboardText = GTClipboard::text(os);
+
+        CHECK_SET_ERR(clipboardText.contains("ACCAGGCTTGGCAATGCGTATC"), clipboardText);
+        GTGlobals::sleep(3000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0053_4){
+        //Copied formatted (action is disabled when no selection
+        //1. Open samples\CLUSTALW\COI.aln
+        //2. Try context menue {Copy->Copy formatted}
+        //Expected state: the action is disabled
+        GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+        GTGlobals::sleep();
+
+        QWidget* w = GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "copy_formatted");
+        CHECK_SET_ERR(w!=NULL, "no copy action on the toolbar");
+        CHECK_SET_ERR(w->isEnabled() == true, "selection is empty but the action is enabled");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_fake) {
