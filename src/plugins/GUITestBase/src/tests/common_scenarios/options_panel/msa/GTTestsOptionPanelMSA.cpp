@@ -1818,7 +1818,7 @@ GUI_TEST_CLASS_DEFINITION(tree_settings_test_0008){
 
 //    4. change  line Weight
     QSpinBox* lineWeightSpinBox = GTWidget::findExactWidget<QSpinBox*>(os, "lineWeightSpinBox");
-    GTSpinBox::setValue(os, lineWeightSpinBox, 50, GTGlobals::UseKeyBoard);
+    GTSpinBox::setValue(os, lineWeightSpinBox, 30, GTGlobals::UseKeyBoard);
     double finalPercent = colorPercent(os, treeView, colorName);
     CHECK_SET_ERR(finalPercent > initPercent*10, "branches width changed not enough");
 }
