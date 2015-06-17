@@ -748,6 +748,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2737);
     REGISTER_TEST(GUITest_regression_scenarios::test_2737_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2754);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2761_1);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2761_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2762);
     REGISTER_TEST(GUITest_regression_scenarios::test_2770);
     REGISTER_TEST(GUITest_regression_scenarios::test_2773);

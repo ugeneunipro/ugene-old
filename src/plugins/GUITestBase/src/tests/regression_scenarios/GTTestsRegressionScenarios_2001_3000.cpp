@@ -5164,6 +5164,65 @@ GUI_TEST_CLASS_DEFINITION(test_2754) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2761_1) {
+//    1. Open "samples/CLUSTALW/COI.aln".
+    QDir().mkpath(sandBoxDir + "test_2761_1");
+    PermissionsSetter p;
+    p.setReadOnly(os, sandBoxDir + "test_2761_1");
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+//    2. Select some area in the MSA.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(2,2), QPoint(5,5));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Save subalignment"));
+//    3. Context menu of the area -> Export -> Save subalignment.
+
+    class customFiller: public ExtractSelectedAsMSADialogFiller{
+    public:
+        customFiller(U2OpStatus &os): ExtractSelectedAsMSADialogFiller(os,testDir + "_common_data/scenarios/sandbox/test_2761_1/2761.aln",
+                                                       QStringList() << "Bicolorana_bicolor_EF540830" << "Roeseliana_roeseli"){}
+        void run(){
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "No write permission to"));
+            ExtractSelectedAsMSADialogFiller::run();
+            GTGlobals::sleep(1000);
+            GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
+        }
+
+    };
+
+    GTUtilsDialog::waitForDialog(os,new customFiller(os));
+    GTMouseDriver::click(os, Qt::RightButton);
+//    4. Set the destination path to the dir without write permissions.
+//    5. Click "Extract".
+//    Expected: the message about write permissions to the dir appears. The extraction task is not run.
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2761_2) {
+    //    1. Open "samples/CLUSTALW/COI.aln".
+        GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    //    2. Select some area in the MSA.
+        GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(2,2), QPoint(5,5));
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Save subalignment"));
+    //    3. Context menu of the area -> Export -> Save subalignment.
+
+        class customFiller: public ExtractSelectedAsMSADialogFiller{
+        public:
+            customFiller(U2OpStatus &os): ExtractSelectedAsMSADialogFiller(os,testDir + "_common_data/scenarios/sandbox/test_2761_2/2761.aln",
+                                                           QStringList() << "Bicolorana_bicolor_EF540830" << "Roeseliana_roeseli"){}
+            void run(){
+                GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Directory to save does not exist"));
+                ExtractSelectedAsMSADialogFiller::run();
+                GTGlobals::sleep(1000);
+                GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Cancel);
+            }
+
+        };
+
+        GTUtilsDialog::waitForDialog(os,new customFiller(os));
+        GTMouseDriver::click(os, Qt::RightButton);
+    //    4. Set the destination path to the dir that does not exists
+    //    5. Click "Extract".
+    //    Expected: the message about write permissions to the dir appears. The extraction task is not run.
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2762) {
 /*  1. Open something, e.g. "human_T1.fa".
     2. Close the project.
