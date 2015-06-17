@@ -157,6 +157,9 @@ void TreeOptionsWidget::updateAllWidgets()
 }
 
 void TreeOptionsWidget::sl_onOptionChanged(TreeViewOption option, const QVariant& value) {
+    if(option == SHOW_LABELS) {
+        alignLabelsCheck->setEnabled(value.toBool());
+    }
     if(option == LABEL_COLOR || option == LABEL_FONT) {
         updateFormatSettings();
         return;
@@ -240,6 +243,9 @@ void TreeOptionsWidget::sl_valueChanged() {
     SAFE_POINT(NULL != inputWidget, "Null sender in slot",);
     QVariant newValue = savableTab.getChildValue(inputWidget->objectName());
     TreeViewOption option = optionsMap[inputWidget->objectName()];
+    if(option == SHOW_LABELS) {
+        alignLabelsCheck->setEnabled(newValue.toBool());
+    }
     updateRelations(option, newValue);
 
     CHECK(!isUpdating, );
