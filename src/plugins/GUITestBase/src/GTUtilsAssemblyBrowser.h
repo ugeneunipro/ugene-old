@@ -23,7 +23,7 @@
 #define _U2_GT_UTILS_ASSEMBLY_BROWSER_H_
 
 #include <QtGlobal>
-
+#include <QModelIndex>
 namespace U2 {
 
 class AssemblyBrowserUi;
@@ -40,7 +40,7 @@ public:
 
     static AssemblyBrowserUi *getView(U2OpStatus &os, const QString& viewTitle);
 
-    static void addRefFromProject(U2OpStatus &os, QString docName);
+    static void addRefFromProject(U2OpStatus &os, QString docName, QModelIndex parent = QModelIndex());
 
     static bool hasReference(U2OpStatus &os, const QString &viewTitle);
     static bool hasReference(U2OpStatus &os, QWidget *view);

@@ -5246,6 +5246,26 @@ GUI_TEST_CLASS_DEFINITION(test_1527_1) {
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1528){
+//    1. Open "Assembly\chrM.sorted.bam" in UGENE
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.fa");
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "chrM.sorted.bam.ugenedb"));
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sorted.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    2. Make the "chrM.sorted.bam.ugenedb" read-only
+    PermissionsSetter p;
+    p.setReadOnly(os, sandBoxDir + "chrM.sorted.bam.ugenedb");
+//    3. Open "chrM.fa" in UGENE
+
+//    4. Drag and drop "chrM.fa" sequence object to the assembly
+    QModelIndex parentIndex = GTUtilsProjectTreeView::findIndex(os, "chrM.fa");
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "This action requires changing file:"));
+    GTUtilsAssemblyBrowser::addRefFromProject(os, "chrM", parentIndex);
+    GTGlobals::sleep(1000);
+//    Expected state: This action requires changing file:
+//    Warning with following text has been appeared "This action requires changing file ..."
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1529) {
     // 1. Open "data/samples/CLUSTALW/COI.aln".
     QFile sourceFile(dataDir + "samples/CLUSTALW/COI.aln");

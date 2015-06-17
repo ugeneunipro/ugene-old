@@ -57,9 +57,9 @@ AssemblyBrowserUi *GTUtilsAssemblyBrowser::getView(U2OpStatus& os, const QString
 }
 #undef GT_METHOD_NAME
 
-void GTUtilsAssemblyBrowser::addRefFromProject(U2OpStatus &os, QString docName){
+void GTUtilsAssemblyBrowser::addRefFromProject(U2OpStatus &os, QString docName, QModelIndex parent){
     QWidget* renderArea = GTWidget::findWidget(os, "assembly_reads_area");
-    QModelIndex ref = GTUtilsProjectTreeView::findIndex(os, docName);
+    QModelIndex ref = GTUtilsProjectTreeView::findIndex(os, docName, parent);
     GTUtilsProjectTreeView::dragAndDrop(os, ref, renderArea);
 }
 
