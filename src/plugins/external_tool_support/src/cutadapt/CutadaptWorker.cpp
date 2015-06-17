@@ -217,7 +217,10 @@ QString CutAdaptFastqWorker::getDefaultFileName() const{
     return ".cutadapt.fastq";
 }
 
-Task *CutAdaptFastqWorker::getTask(const BaseNGSSetting &settings) const{
+Task *CutAdaptFastqWorker::getTask(const BaseNGSSetting &settings) {
+    if (settings.listeners[0] != NULL) {
+        settings.listeners[0]->setLogProcessor(new CutAdaptLogProcessor(monitor(), getActorId()));
+    }
     return new CutAdaptFastqTask(settings);
 }
 
@@ -297,17 +300,24 @@ void CutAdaptParser::parseErrOutput( const QString& partOfLog ) {
     lastPartOfLog = partOfLog.split(QRegExp("(\n|\r)"));
     lastPartOfLog.first() = lastErrLine + lastPartOfLog.first();
     lastErrLine = lastPartOfLog.takeLast();
+    QString error = parseTextForErrors(lastPartOfLog);
+    if (error.isEmpty()) {
+        setLastError(error);
+    }
+}
 
+QString CutAdaptParser::parseTextForErrors(const QStringList &lastPartOfLog) {
     foreach (const QString &buf, lastPartOfLog) {
         foreach(const QString &ignoredStr, stringsToIgnore) {
             if (buf.startsWith(ignoredStr)) {
                 break;
             }
             if(buf.contains("ERROR", Qt::CaseInsensitive)){
-                setLastError("Cut adapter: " + buf);
+                return "Cut adapter: " + buf;
             }
         }
     }
+    return QString();
 }
 
 QStringList CutAdaptParser::initStringsToIgnore() {
@@ -318,6 +328,20 @@ QStringList CutAdaptParser::initStringsToIgnore() {
     result << "length count expect max.err error counts";
 
     return result;
+}
+
+CutAdaptLogProcessor::CutAdaptLogProcessor(WorkflowMonitor *monitor, const QString &actor) :
+ExternalToolLogProcessor(),
+monitor(monitor),
+actor(actor) {
+
+}
+
+void CutAdaptLogProcessor::processLogMessage(const QString &message) {
+    QString error = CutAdaptParser::parseTextForErrors(QStringList() << message);
+    if (!error.isEmpty()) {
+        monitor->addError(error, actor, Problem::U2_ERROR);
+    }
 }
 
 } //LocalWorkflow

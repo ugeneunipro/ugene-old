@@ -49,7 +49,7 @@ public:
 protected:
     QVariantMap getCustomParameters() const;
     QString getDefaultFileName() const;
-    Task *getTask(const BaseNGSSetting &settings) const;
+    Task *getTask(const BaseNGSSetting &settings);
 
 }; //CASAVAFilterWorker
 
@@ -90,7 +90,7 @@ public:
 protected:
     QVariantMap getCustomParameters() const;
     QString getDefaultFileName() const;
-    Task *getTask(const BaseNGSSetting &settings) const;
+    Task *getTask(const BaseNGSSetting &settings);
 
 }; //QualityTrimWorker
 
@@ -132,7 +132,7 @@ public:
 protected:
     QVariantMap getCustomParameters() const;
     QString getDefaultFileName() const;
-    Task *getTask(const BaseNGSSetting &settings) const;
+    Task *getTask(const BaseNGSSetting &settings);
 
     QStringList inputUrls;
 

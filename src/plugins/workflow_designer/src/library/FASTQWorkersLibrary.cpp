@@ -153,7 +153,7 @@ QString CASAVAFilterWorker::getDefaultFileName() const{
     return ".filtered.fastq";
 }
 
-Task *CASAVAFilterWorker::getTask(const BaseNGSSetting &settings) const{
+Task *CASAVAFilterWorker::getTask(const BaseNGSSetting &settings) {
     return new CASAVAFilterTask(settings);
 }
 
@@ -324,7 +324,7 @@ QString QualityTrimWorker::getDefaultFileName() const{
     return ".trimmed.fastq";
 }
 
-Task *QualityTrimWorker::getTask(const BaseNGSSetting &settings) const{
+Task *QualityTrimWorker::getTask(const BaseNGSSetting &settings) {
     return new QualityTrimTask(settings);
 }
 
@@ -533,7 +533,7 @@ QString MergeFastqWorker::getDefaultFileName() const{
     return ".merged.fastq";
 }
 
-Task *MergeFastqWorker::getTask(const BaseNGSSetting &settings) const{
+Task *MergeFastqWorker::getTask(const BaseNGSSetting &settings) {
     return new MergeFastqTask(settings);
 }
 

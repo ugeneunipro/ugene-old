@@ -50,7 +50,7 @@ public:
 protected:
     QVariantMap getCustomParameters() const;
     QString getDefaultFileName() const;
-    Task *getTask(const BaseNGSSetting &settings) const;
+    Task *getTask(const BaseNGSSetting &settings);
 
     QStringList inputUrls;
 
@@ -64,11 +64,10 @@ public:
     Worker* createWorker(Actor* a) { return new CutAdaptFastqWorker(a); }
 }; //CutAdaptFastqWorkerFactory
 
-class CutAdaptFastqTask : public BaseNGSTask{
+class CutAdaptFastqTask : public BaseNGSTask {
     Q_OBJECT
 public:
     CutAdaptFastqTask (const BaseNGSSetting &settings);
-
 protected:
     void prepareStep();
     QStringList getParameters(U2OpStatus& os);
@@ -78,12 +77,25 @@ class CutAdaptParser : public ExternalToolLogParser {
 public:
     void parseErrOutput(const QString& partOfLog);
 
+    static QString parseTextForErrors(const QStringList &lastPartOfLog);
+
 private:
     static QStringList initStringsToIgnore();
 
     QString lastErrLine;
 
     static const QStringList stringsToIgnore;
+};
+
+class CutAdaptLogProcessor : public ExternalToolLogProcessor {
+public:
+    CutAdaptLogProcessor(WorkflowMonitor *monitor, const QString &actor);
+
+    void processLogMessage(const QString &message);
+
+private:
+    WorkflowMonitor *monitor;
+    const QString actor;
 };
 
 } //LocalWorkflow

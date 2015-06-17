@@ -58,7 +58,7 @@ public:
 protected:
     virtual QVariantMap getCustomParameters() const {return QVariantMap();}
     virtual QString getDefaultFileName() const = 0;
-    virtual Task* getTask(const BaseNGSSetting& settings) const = 0;
+    virtual Task* getTask(const BaseNGSSetting& settings) = 0;
 
     QString takeUrl();
     QString getTargetName(const QString& fileUrl, const QString& outDir);
