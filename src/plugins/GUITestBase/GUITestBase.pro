@@ -126,14 +126,16 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.h \
             src/runnables/ugene/plugins/weight_matrix/PwmSearchDialogFiller.h \
 #   Runnables / UGENE / plugins / workflow_designer
-            src/runnables/ugene/plugins/workflow_designer/WizardFiller.h \
-            src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h \
             src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h \
             src/runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h \
             src/runnables/ugene/plugins/workflow_designer/CreateElementWithCommandLineToolFiller.h \
             src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h \
-            src/runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h \
+            src/runnables/ugene/plugins/workflow_designer/DashboardsManagerDialogFiller.h \
             src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h \
+            src/runnables/ugene/plugins/workflow_designer/DefaultWizardFiller.h \
+            src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h \
+            src/runnables/ugene/plugins/workflow_designer/WizardFiller.h \
+            src/runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h \
 #   Utils classes
             src/GTDatabaseConfig.h \
             src/GTUtilsAnnotationsTreeView.h \
@@ -268,8 +270,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTToolbar.h \
             src/api/GTTreeView.h \
             src/api/GTTreeWidget.h \
-            src/api/GTWidget.h \
-    src/runnables/ugene/plugins/workflow_designer/DashboardsManagerDialogFiller.h
+            src/api/GTWidget.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -395,14 +396,16 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.cpp \
             src/runnables/ugene/plugins/weight_matrix/PwmSearchDialogFiller.cpp \
 #   Runnables / UGENE / plugins / workflow_designer
-            src/runnables/ugene/plugins/workflow_designer/WizardFiller.cpp \
-            src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.cpp \
-            src/runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/CreateElementWithCommandLineFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.cpp \
+            src/runnables/ugene/plugins/workflow_designer/DashboardsManagerDialogFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.cpp \
+            src/runnables/ugene/plugins/workflow_designer/DefaultWizardFiller.cpp \
+            src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.cpp \
+            src/runnables/ugene/plugins/workflow_designer/WizardFiller.cpp \
+            src/runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.cpp \
 #   Utils classes
             src/GTDatabaseConfig.cpp \
             src/GTUtilsAnnotationsTreeView.cpp \
@@ -543,5 +546,4 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTToolbar.cpp \
             src/api/GTTreeView.cpp \
             src/api/GTTreeWidget.cpp \
-            src/api/GTWidget.cpp \
-    src/runnables/ugene/plugins/workflow_designer/DashboardsManagerDialogFiller.cpp
+            src/api/GTWidget.cpp

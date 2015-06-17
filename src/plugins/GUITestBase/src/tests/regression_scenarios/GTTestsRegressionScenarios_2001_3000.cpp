@@ -139,6 +139,7 @@
 #include "runnables/ugene/plugins/workflow_designer/CreateElementWithCommandLineToolFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/DashboardsManagerDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/DefaultWizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
@@ -3570,19 +3571,9 @@ GUI_TEST_CLASS_DEFINITION( test_2475 ) {
     //4. Validate scheme.
     //Expected state: validation passed.
 
-
-    class EscClicker : public Filler {
-    public:
-        EscClicker(U2OpStatus& _os) : Filler(_os, "Tuxedo Wizard"){}
-        virtual void run(){
-            GTGlobals::sleep();
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
-        }
-    };
-
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
-    GTUtilsDialog::waitForDialog(os, new EscClicker(os));
+    GTUtilsDialog::waitForDialog(os, new DefaultWizardFiller(os, "Tuxedo Wizard"));
     GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Tuxedo Workflow", QStringList()<<
                                                                    "Single-sample"<<"Single-end"));
     GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
