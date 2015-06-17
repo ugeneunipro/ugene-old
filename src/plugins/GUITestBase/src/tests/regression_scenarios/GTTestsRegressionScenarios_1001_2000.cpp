@@ -1330,7 +1330,7 @@ GUI_TEST_CLASS_DEFINITION(test_1078){ //Need to add the test
  * Expected state: Error message with format error
  * System: Ubuntu 12.04
 */
-    GTUtilsNotifications::waitForNotification(os, true, "Loaded sequences: 24.");
+    GTUtilsNotifications::waitForNotification(os, false);
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, testDir + "_common_data/scenarios/_regression/1078/", "HannaRescued.fa");
     GTUtilsDialog::waitForDialog(os, ob);
     GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "FASTA"));
@@ -1338,6 +1338,9 @@ GUI_TEST_CLASS_DEFINITION(test_1078){ //Need to add the test
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__OPEN_AS);
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(5000);
+
+    QTextEdit *textEdit = dynamic_cast<QTextEdit*>(GTWidget::findWidget(os, "reportTextEdit", GTUtilsMdi::activeWindow(os)));
+    CHECK_SET_ERR(textEdit->toPlainText().contains("Loaded sequences: 24."), "Expected message is not found in the report text");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1079){
