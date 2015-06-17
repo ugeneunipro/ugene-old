@@ -268,6 +268,7 @@ GUrl SaveMultipleDocuments::chooseAnotherUrl(Document* doc) {
         QPushButton *saveButton = msgBox->addButton( QMessageBox::Save );
         msgBox->addButton( QMessageBox::Cancel );
         msgBox->setDefaultButton(saveButton);
+        msgBox->setObjectName("permissionBox");
         msgBox->exec();
         CHECK(!msgBox.isNull(), url);
 

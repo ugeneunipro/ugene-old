@@ -327,7 +327,7 @@ void GTFile::removeDir(QString dirName)
     QDir dir(dirName);
     coreLog.trace("removing dir: " + dirName);
 
-    foreach (QFileInfo fileInfo, dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Hidden)) {
+    foreach (QFileInfo fileInfo, dir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Hidden)) {
         QString fileName = fileInfo.fileName();
         QString filePath = fileInfo.filePath();
         if (fileName != "." && fileName != "..") {

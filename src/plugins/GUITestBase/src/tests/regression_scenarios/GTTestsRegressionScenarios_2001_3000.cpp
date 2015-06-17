@@ -3880,6 +3880,61 @@ GUI_TEST_CLASS_DEFINITION( test_2543 ) {
     GTGlobals::sleep( 2000 );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2544 ){
+//    1. Open "data/samples/FASTA/human_T1.fa"
+    GTFile::copy(os, dataDir + "samples/FASTA/human_T1.fa", sandBoxDir + "test_2544.fa");
+    GTFileDialog::openFile(os, sandBoxDir + "test_2544.fa");
+//    2. Use context menu { Edit sequence -> Remove subsequence... }
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << "action_edit_remove_sub_sequences"));
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "10..20"));
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+//    Expected state: "Remove subsequence" dialog has appeared
+
+//    3. Set string "10..20" to the "Region to remove" field, press the "Remove" button
+
+//    Expected state: the dialog has disappeared, subsequence has been removed
+
+//    4. Change permissions to the file to read-only
+    PermissionsSetter p;
+    p.setReadOnly(os, sandBoxDir + "test_2544.fa");
+//    5. Use context menu on the document item in project view { Save selected documents }
+
+    class innerMessageBoxFiller: public MessageBoxDialogFiller{
+    public:
+        innerMessageBoxFiller(U2OpStatus &os): MessageBoxDialogFiller(os, QMessageBox::Yes){}
+        void run(){
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Cancel, "", "permissionBox"));
+            MessageBoxDialogFiller::run();
+        }
+    };
+    class customSaver: public GTFileDialogUtils{
+    public:
+        customSaver(U2OpStatus &os): GTFileDialogUtils(os, sandBoxDir, "test_2544.fa", GTFileDialogUtils::Save){}
+        void commonScenario(){
+            GTUtilsDialog::waitForDialog(os, new innerMessageBoxFiller(os));
+            GTFileDialogUtils::commonScenario();
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"action_prpject__save_document"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Save, "", "permissionBox"));
+    GTUtilsDialog::waitForDialog(os, new customSaver(os));
+    GTUtilsProjectTreeView::click(os, "test_2544.fa", Qt::RightButton);
+//    Expected state: message box has appeared
+
+//    6. Press "Save" button
+
+//    Expected state: "Save as" dialog has appeared
+
+//    7. Choose the same file, press "Save"
+
+//    Expected state: message box has appeared
+
+//    8. Press "Yes"
+
+//    Expected state: message box same as after 5th step has appeared
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2545) {
     //1. Remove the "spidey" external tool, if it exists.
     GTUtilsExternalTools::removeTool(os, "Spidey");

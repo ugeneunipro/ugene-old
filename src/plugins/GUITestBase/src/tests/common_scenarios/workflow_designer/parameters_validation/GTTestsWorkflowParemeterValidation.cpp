@@ -20,6 +20,7 @@
  */
 
 #include "api/GTAction.h"
+#include "api/GTFile.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
@@ -133,6 +134,8 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
     GTWidget::click(os, activeWindow);
 
 //    5. Delete this directory
+    QString s = outputDir.absolutePath();
+    GTFile::removeDir(s);
     outputDir.rmpath(outputDir.absolutePath());
 
 //    6. In WD press the "Validate" button
