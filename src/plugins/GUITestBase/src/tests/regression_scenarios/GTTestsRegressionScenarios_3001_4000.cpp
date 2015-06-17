@@ -3475,7 +3475,7 @@ GUI_TEST_CLASS_DEFINITION(test_3557) {
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
 
     GTWidget::click(os, GTWidget::findWidget(os, "OP_PAIRALIGN"));
-    GTGlobals::sleep();
+    GTGlobals::sleep(10000);
 
     QLineEdit *firstEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "sequenceLineEdit", GTWidget::findWidget(os, "firstSeqSelectorWC")));
     QLineEdit *secondEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "sequenceLineEdit", GTWidget::findWidget(os, "secondSeqSelectorWC")));
