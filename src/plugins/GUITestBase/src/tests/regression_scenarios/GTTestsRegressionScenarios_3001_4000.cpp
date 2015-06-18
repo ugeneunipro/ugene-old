@@ -5013,7 +5013,7 @@ GUI_TEST_CLASS_DEFINITION(test_3805){
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
-    GTGlobals::sleep(200);
+    GTGlobals::sleep(500);
     const QString initialContent = GTClipboard::text( os );
 
     //3. Reverse sequence
@@ -5028,11 +5028,12 @@ GUI_TEST_CLASS_DEFINITION(test_3805){
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 51, 102));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-
+    GTGlobals::sleep(500);
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
-    GTGlobals::sleep(200);
+    GTGlobals::sleep(500);
+    const QString newContent = GTClipboard::text( os );
 
-    CHECK_SET_ERR(initialContent == GTClipboard::text(os), "Result of actions is incorrect");
+    CHECK_SET_ERR(initialContent == newContent, "Result of actions is incorrect");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3809){
