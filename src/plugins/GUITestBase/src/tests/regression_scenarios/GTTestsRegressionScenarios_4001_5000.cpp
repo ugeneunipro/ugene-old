@@ -401,7 +401,7 @@ GUI_TEST_CLASS_DEFINITION(test_4035) {
     GTGlobals::sleep(50000);
 
     int labelsCount = GTUtilsPhyTree::getDistances(os).count();
-    CHECK_SET_ERR(labelsCount == 50, QString("Number of distances is incorrect: %1").arg(labelsCount));
+    CHECK_SET_ERR(labelsCount == 49, QString("Number of distances is incorrect: %1").arg(labelsCount));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4036) {
