@@ -41,6 +41,7 @@
 #endif
 //#include <QtGui/QApplication>
 #include <QtGui/QtEvents>
+#include <QShortcut>
 
 namespace U2 {
 
@@ -90,8 +91,17 @@ void MWMDIManagerImpl::prepareGUI() {
     connect(cascadeAct, SIGNAL(triggered()), mdiArea, SLOT(cascadeSubWindows()));
 
 #ifdef Q_OS_MAC
-    QKeySequence nextActKeySequence(Qt::META + Qt::Key_Tab);
-    QKeySequence prevActKeySequence(Qt::META + Qt::SHIFT + Qt::Key_Tab);
+    QKeySequence nextActKeySequence(Qt::CTRL + (Qt::Key)'`');
+    QKeySequence nextActKeySequenceAdditional(Qt::META + Qt::Key_Tab);
+    QKeySequence prevActKeySequence(Qt::CTRL + Qt::SHIFT + (Qt::Key)'`');
+    QKeySequence prevActKeySequenceAdditional(Qt::META + Qt::SHIFT + Qt::Key_Tab);
+
+    QShortcut *additionalNextShortcut = new QShortcut(nextActKeySequenceAdditional, mdiArea);
+    connect(additionalNextShortcut, SIGNAL(activated()) ,mdiArea, SLOT(activateNextSubWindow()));
+
+    QShortcut *additionalPrevShortcut = new QShortcut(prevActKeySequenceAdditional, mdiArea);
+    connect(additionalPrevShortcut, SIGNAL(activated()) ,mdiArea, SLOT(activatePreviousSubWindow()));
+
 #else
     QKeySequence nextActKeySequence(Qt::CTRL + Qt::Key_Tab);
     QKeySequence prevActKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab);
