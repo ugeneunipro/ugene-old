@@ -398,7 +398,6 @@ GUI_TEST_CLASS_DEFINITION(test_4035) {
     GTWidget::click(os, GTAction::button(os, "Build Tree"));
     //3. Select the "PhyML" tool, set "Bootstrap" option to 10, build the tree
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTGlobals::sleep(50000);
 
     int labelsCount = GTUtilsPhyTree::getDistances(os).count();
     CHECK_SET_ERR(labelsCount == 49, QString("Number of distances is incorrect: %1").arg(labelsCount));
