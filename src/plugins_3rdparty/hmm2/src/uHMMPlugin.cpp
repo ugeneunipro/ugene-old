@@ -193,7 +193,7 @@ void uHMMPlugin::sl_search() {
 
     U2OpStatusImpl os;
     DNASequence sequence = obj->getWholeSequence(os);
-    SAFE_POINT_EXT(!os.hasError(), QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
+    CHECK_OP_EXT(os, QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
     QObjectScopedPointer<HMMSearchDialogController> d = new HMMSearchDialogController(sequence, obj, p);
     d->exec();
 }
@@ -276,7 +276,7 @@ void HMMADVContext::sl_search() {
     }
     U2OpStatusImpl os;
     DNASequence sequence = seqCtx->getSequenceObject()->getWholeSequence(os);
-    SAFE_POINT_EXT(!os.hasError(), QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
+    CHECK_OP_EXT(os, QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
     QObjectScopedPointer<HMMSearchDialogController> d = new HMMSearchDialogController(sequence, seqCtx->getSequenceObject(), p);
     d->exec();
 }
