@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-static void putIntoMacClipboard(const QString& data);
+void putIntoMacClipboard(const QString& data);
 
 } // namespace
 
