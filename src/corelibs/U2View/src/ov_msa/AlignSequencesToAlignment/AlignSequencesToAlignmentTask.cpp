@@ -222,7 +222,7 @@ const SequenceObjectsExtractor& LoadSequencesTask::getExtractor() const {
 /* AlignSequencesToAlignmentTask */
 /************************************************************************/
 AlignSequencesToAlignmentTask::AlignSequencesToAlignmentTask(MAlignmentObject* obj, const SequenceObjectsExtractor& extractor)
-: Task(tr("Align sequences to alignment task"), TaskFlag_NoRun), maObj(obj), stateLock(NULL), docStateLock(NULL), sequencesMaxLength(extractor.getMaxSequencesLength())
+: Task(tr("Align sequences to alignment task"), TaskFlags_NR_FOSE_COSC), maObj(obj), stateLock(NULL), docStateLock(NULL), sequencesMaxLength(extractor.getMaxSequencesLength())
 {
     fillSettingsByDefault();
     settings.addedSequencesRefs = extractor.getSequenceRefs();

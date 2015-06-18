@@ -21,6 +21,7 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
+#include <QTemporaryFile>
 
 #include "MAFFTSupport.h"
 #include "MAFFTSupportTask.h"
@@ -86,12 +87,26 @@ MafftAddToAlignmentTask::~MafftAddToAlignmentTask() {
     delete logParser;
 }
 
+static QString generateTmpFileUrl(const QString &filePathAndPattern) {
+    QTemporaryFile *generatedFile = new QTemporaryFile(filePathAndPattern);
+    QFileInfo generatedFileInfo(generatedFile->fileName());
+    while (generatedFile->exists() || generatedFileInfo.baseName().contains(" ") || !generatedFile->open()) {
+        delete generatedFile;
+        generatedFile = new QTemporaryFile(filePathAndPattern);
+    }
+    generatedFile->close();
+    QString result = generatedFile->fileName();
+    delete generatedFile;
+    return result;
+}
+
 void MafftAddToAlignmentTask::prepare()
 {
     algoLog.info(tr("Align sequences to an existing alignment by MAFFT started"));
 
     tmpDirUrl = ExternalToolSupportUtils::createTmpDir("add_to_alignment", stateInfo);
-    QString tmpAddedUrl = tmpDirUrl + QDir::separator() + inputMsa.getName() + "_add" + ".fa";
+    
+    QString tmpAddedUrl = generateTmpFileUrl(tmpDirUrl + QDir::separator() + "XXXXXXXXXXXXXXXX_add.fa");;
 
     DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
     DocumentFormat *dfd = dfr->getFormatById(BaseDocumentFormats::FASTA);
@@ -112,7 +127,8 @@ void MafftAddToAlignmentTask::prepare()
     saveSequencesDocumentTask = new SaveDocumentTask(tempDocument, tempDocument->getIOAdapterFactory(), tmpAddedUrl, SaveDocFlags(SaveDoc_Roll) | SaveDoc_DestroyAfter);
     addSubTask(saveSequencesDocumentTask);
 
-    QString tmpExistingAlignmentUrl = tmpDirUrl + QDir::separator() + inputMsa.getName() + ".fa";
+    QString tmpExistingAlignmentUrl = generateTmpFileUrl(tmpDirUrl + QDir::separator() + "XXXXXXXXXXXXXXXX.fa");
+    
     saveAlignmentDocumentTask = new SaveMSA2SequencesTask(inputMsa, tmpExistingAlignmentUrl, false, BaseDocumentFormats::FASTA);
     addSubTask(saveAlignmentDocumentTask);
 }
