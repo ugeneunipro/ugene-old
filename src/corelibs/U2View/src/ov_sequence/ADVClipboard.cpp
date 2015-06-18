@@ -25,6 +25,10 @@
 #include "ADVSequenceObjectContext.h"
 #include "ADVConstants.h"
 
+#ifdef Q_OS_MAC
+#include "util/ClipboardUtilsMac.h"
+#endif
+
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
@@ -39,16 +43,14 @@
 
 #include <U2Gui/GUIUtils.h>
 
-#include <QtCore/QTextStream>
-#include <QtGui/QClipboard>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMessageBox>
+#include <QTextStream>
+#include <QClipboard>
+#include <QApplication>
+#include <QMenu>
+#include <QMessageBox>
+
+#ifdef Q_OS_WIN
+#include <Windows.h>
 #endif
 
 namespace U2 {
@@ -132,16 +134,42 @@ void ADVClipboard::copySequenceSelection(bool complement, bool amino) {
             QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), tr("An error occurred during getting sequence data: %1").arg(os.getError()));
             return;
         }
+        if (seqParts.size() == 1) {
+            putIntoClipboard(seqParts.first());
+            return;
+        }
         res = U1SequenceUtils::joinRegions(seqParts);
     }
+    putIntoClipboard(res);
+}
 
+void ADVClipboard::putIntoClipboard(const QString& data) {
+    CHECK(!data.isEmpty(), );
     try {
-        QApplication::clipboard()->setText(res);
+#ifdef Q_OS_WIN
+        if (OpenClipboard(NULL)) {
+            HGLOBAL clipbuffer;
+            char * buffer = NULL;
+            EmptyClipboard();
+            clipbuffer = GlobalAlloc(GMEM_DDESHARE, data.size() + 1);
+            buffer = (char*)GlobalLock(clipbuffer);
+            strcpy(buffer, data.toLatin1().data());
+            GlobalUnlock(clipbuffer);
+            SetClipboardData(CF_TEXT, clipbuffer);
+        }
+#else
+#ifdef Q_OS_MAC
+        putIntoMacClipboard(data);
+#else
+        QApplication::clipboard()->setText(data);
+#endif
+#endif
     } catch (...) {
         QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), tr("Cannot put sequence data into the clipboard buffer.\n"
-                              "Probably the data is too big."));
+            "Probably the data is too big."));
     }
- }
+}
+
 void ADVClipboard::sl_copySequence() {
     copySequenceSelection(false, false);
 }
@@ -180,7 +208,7 @@ void ADVClipboard::sl_copyAnnotationSequence() {
         AnnotationSelection::getAnnotationSequence(res, sd, gapSym, seqCtx->getSequenceRef(), complTT, NULL, os);
         CHECK_OP(os,);
     }
-    QApplication::clipboard()->setText(res);
+    putIntoClipboard(res);
 }
 
 
@@ -212,7 +240,7 @@ void ADVClipboard::sl_copyAnnotationSequenceTranslation() {
         CHECK_OP(os,);
         res = U1SequenceUtils::joinRegions(parts);
     }
-    QApplication::clipboard()->setText(res);
+    putIntoClipboard(res);
 }
 
 void ADVClipboard::updateActions() {

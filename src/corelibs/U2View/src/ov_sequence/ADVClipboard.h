@@ -69,6 +69,7 @@ private:
     void connectSequence(ADVSequenceObjectContext* s);
     void updateActions();
     void copySequenceSelection(bool complement, bool amino);
+    void putIntoClipboard(const QString& data);
 
     AnnotatedDNAView* ctx;
     QAction* copySequenceAction;

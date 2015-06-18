@@ -383,3 +383,9 @@ TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
+
+mac {
+    HEADERS += src/ov_sequence/util/ClipboardUtilsMac.h
+    OBJECTIVE_SOURCES += src/ov_sequence/util/ClipboardUtilsMac.mm
+    LIBS += -framework AppKit
+}

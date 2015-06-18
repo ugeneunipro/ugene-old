@@ -145,11 +145,11 @@ static QList<QByteArray> _extractRegions(const U2EntityRef& seqRef, const QVecto
         const U2Region& oReg = safeLocation.at(i);
         if (complTT == NULL) {
             QByteArray part = seqDbi->getSequenceData(seq.id, U2Region(oReg.startPos, oReg.length) , os);
-            CHECK_OP(os, res);
+            CHECK_OP(os, QList<QByteArray>());
             res.append(part);
         } else {
             QByteArray arr = seqDbi->getSequenceData(seq.id, U2Region(oReg.startPos, oReg.length), os);
-            CHECK_OP(os, res);
+            CHECK_OP(os, QList<QByteArray>());
             TextUtils::reverse(arr.data(), arr.length());
             complTT->translate(arr.data(), arr.length());
             res.prepend(arr);
@@ -164,7 +164,7 @@ QList<QByteArray> U2SequenceUtils::extractRegions(const U2EntityRef& seqRef, con
     QList<QByteArray> res = _extractRegions(seqRef, origLocation, complTT, os);
     CHECK_OP(os, res)
 
-        DbiConnection con(seqRef.dbiRef, os);
+    DbiConnection con(seqRef.dbiRef, os);
     CHECK_OP(os, res);
 
     U2SequenceDbi* seqDbi = con.dbi->getSequenceDbi();
