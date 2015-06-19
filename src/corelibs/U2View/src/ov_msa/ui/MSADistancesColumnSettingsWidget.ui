@@ -57,11 +57,31 @@
        <number>5</number>
       </property>
       <item>
-       <widget class="QCheckBox" name="showDistancesColumnCheck">
-        <property name="text">
-         <string>Show distances column</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QCheckBox" name="showDistancesColumnCheck">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="showDistancesColumnCheckLabel">
+          <property name="text">
+           <string>Show distances column</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QWidget" name="optionsWidget" native="true">

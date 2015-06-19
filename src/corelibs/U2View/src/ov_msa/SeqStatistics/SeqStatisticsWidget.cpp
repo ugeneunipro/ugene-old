@@ -27,6 +27,7 @@
 
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 
+#include <U2Gui/LabelClickTransmitter.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
 #include <U2Gui/U2WidgetStateStorage.h>
 
@@ -39,7 +40,6 @@ static inline QVBoxLayout * initLayout(QWidget * w) {
     QVBoxLayout * layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(5);
-    layout->setAlignment(Qt::AlignTop);
 
     w->setLayout(layout);
     return layout;
@@ -58,6 +58,7 @@ SeqStatisticsWidget::SeqStatisticsWidget(MSAEditor* m)
 
     distancesStatisticsGroup = new QWidget(this);
     ui.setupUi(distancesStatisticsGroup);
+    new LabelClickTransmitter(ui.showDistancesColumnCheckLabel, ui.showDistancesColumnCheck);
 
     QWidget * similarityGroup = new ShowHideSubgroupWidget("REFERENCE", tr("Distances column"), distancesStatisticsGroup, true);
     updateWidgetsSettings();
