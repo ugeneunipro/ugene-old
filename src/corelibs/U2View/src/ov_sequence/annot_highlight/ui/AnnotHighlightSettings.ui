@@ -17,6 +17,12 @@
    <property name="sizeConstraint">
     <enum>QLayout::SetMinAndMaxSize</enum>
    </property>
+   <property name="leftMargin">
+    <number>5</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
    <item row="1" column="0">
     <widget class="QCheckBox" name="checkShowOnTranslation">
      <property name="text">
