@@ -65,6 +65,12 @@
          </item>
          <item row="0" column="1">
           <widget class="QSpinBox" name="perfectSpinBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="suffix">
             <string> bp</string>
            </property>
@@ -89,7 +95,7 @@
          <item row="1" column="1">
           <widget class="QSpinBox" name="productSizeSpinBox">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -158,8 +164,26 @@ font-weight: 600;</string>
         </property>
        </spacer>
       </item>
-      <item>
+      <item alignment="Qt::AlignHCenter">
        <widget class="QPushButton" name="findProductButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>198</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>198</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Find product(s)</string>
         </property>
@@ -262,10 +286,28 @@ font-weight: 600;</string>
         </column>
        </widget>
       </item>
-      <item>
+      <item alignment="Qt::AlignHCenter">
        <widget class="QPushButton" name="extractProductButton">
         <property name="enabled">
          <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>198</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>198</width>
+          <height>16777215</height>
+         </size>
         </property>
         <property name="text">
          <string>Extract product(s)</string>

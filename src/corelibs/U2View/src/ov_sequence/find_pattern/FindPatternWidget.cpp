@@ -341,6 +341,7 @@ void FindPatternWidget::initAlgorithmLayout()
     spinMatch->setSingleStep(1);
     spinMatch->setValue(100);
     spinMatch->setObjectName("spinBoxMatch");
+    spinMatch->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
     layoutMismatch->addWidget(lblMatch);
     layoutMismatch->addWidget(spinMatch);
