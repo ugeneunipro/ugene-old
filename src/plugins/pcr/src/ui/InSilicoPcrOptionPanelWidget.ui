@@ -61,6 +61,9 @@
            <property name="text">
             <string>3' perfect match</string>
            </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item row="0" column="1">
@@ -89,6 +92,9 @@
            </property>
            <property name="text">
             <string>Maximum product</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
