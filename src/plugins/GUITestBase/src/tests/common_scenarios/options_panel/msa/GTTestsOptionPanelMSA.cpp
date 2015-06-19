@@ -2334,8 +2334,10 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004_1){
     GTCheckBox::setChecked(os, showDistancesCheck, false);
     GTSlider::setValue(os, widthSlider, 50);
     GTSlider::setValue(os, heightSlider, 20);
+    QString initialColor;
 #ifndef Q_OS_MAC
     setBranchColor(os, 255, 0, 0);
+    initialColor = GTWidget::getColor(os, GTWidget::findWidget(os, "branchesColorButton"), QPoint(10,10)).name();
 #endif
     GTSpinBox::setValue(os, lineWeightSpinBox, 2);
 
@@ -2360,7 +2362,7 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004_1){
     CHECK_SET_ERR(lineWeightSpinBox->value() == 2, QString("unexpected line width: %1").arg(lineWeightSpinBox->value()));
 #ifndef Q_OS_MAC
     QString color = GTWidget::getColor(os, branchesColorButton, QPoint(10,10)).name();
-    CHECK_SET_ERR(color == "#ff0000", QString("unexpected color: %1").arg(color));
+    CHECK_SET_ERR(color == initialColor, QString("unexpected color: %1").arg(color));
 #endif
 }
 
