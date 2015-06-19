@@ -39,7 +39,7 @@ class GroupOptionsWidget;
 class OptionsScrollArea : public QScrollArea
 {
 public:
-    OptionsScrollArea();
+    OptionsScrollArea(QWidget *parent = NULL);
 
     /** Ensures that the scroll area would have an appropriate width */
     virtual QSize sizeHint() const;
@@ -91,12 +91,19 @@ public:
     /** Returns NULL if not found */
     GroupOptionsWidget* findOptionsWidgetByGroupId(const QString& groupId);
 
+    QWidget * getOptionsWidget() const;
+
+private:
+    void initOptionsLayout();
+    QWidget * initGroupsLayout();
+    void initMainLayout(QWidget *groupsWidget);
+
 private:
     /** Layouts */
-    QVBoxLayout* optionsLayout;
-    QVBoxLayout* groupsLayout;
+    QVBoxLayout *optionsLayout;
+    QVBoxLayout *groupsLayout;
 
-    OptionsScrollArea* optionsScrollArea;
+    OptionsScrollArea *optionsScrollArea;
 
     OPMainWidgetState opMainWidgetState;
 

@@ -53,7 +53,7 @@ public:
     void addGroup(OPWidgetFactory* factory);
 
     /** Returns the main Options Panel widget */
-    QWidget* getMainWidget();
+    OptionsPanelWidget * getMainWidget();
 
     /** Open a group with the specified group ID: only one at a time */
     void openGroupById(const QString& groupId);
@@ -65,7 +65,6 @@ public slots:
     /** Catches signals that a group header has been pressed
         and implements the behavior of groups selection (only one group at a time can be opened) */
     void sl_groupHeaderPressed(QString groupId);
-
 
 private:
     GObjectView* objView;

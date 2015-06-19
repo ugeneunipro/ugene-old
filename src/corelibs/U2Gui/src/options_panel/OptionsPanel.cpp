@@ -44,7 +44,7 @@ OptionsPanel::~OptionsPanel() {
     }
 }
 
-QWidget* OptionsPanel::getMainWidget() {
+OptionsPanelWidget * OptionsPanel::getMainWidget() {
     return widget;
 }
 

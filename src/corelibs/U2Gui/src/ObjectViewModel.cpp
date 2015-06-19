@@ -30,16 +30,12 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/OptionsPanel.h>
+#include <U2Gui/OptionsPanelWidget.h>
 
-#include <QtCore/QFileInfo>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QScrollArea>
-#else
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QScrollArea>
-#endif
-
+#include <QFileInfo>
+#include <QScrollArea>
+#include <QSplitter>
+#include <QVBoxLayout>
 
 //BUG:535 refactor closing interface.
 //Idea: make it QObject and call 'deleteLater' on it
@@ -288,20 +284,29 @@ GObjectViewWindow::GObjectViewWindow(GObjectView* v, const QString& _viewName, b
     windowLayout->setContentsMargins(0, 0, 0, 0);
     windowLayout->setSpacing(0);
 
-    OptionsPanel* optionsPanel = v->getOptionsPanel();
-
+    QWidget *objectWidget = new QWidget(this);
     // Initialize the layout of the object part only
-    QVBoxLayout *objectLayout = new QVBoxLayout();
+    QVBoxLayout *objectLayout = new QVBoxLayout(objectWidget);
     objectLayout->setContentsMargins(0, 0, 0, 0);
     objectLayout->setSpacing(0);
 
     // Add the widget to the layout and "parent" it
     objectLayout->addWidget(viewWidget);
 
-    // Set the layout of the whole window
-    windowLayout->addLayout(objectLayout);
-    if (optionsPanel != NULL) {
-        windowLayout->addWidget(optionsPanel->getMainWidget());
+    OptionsPanel *optionsPanel = v->getOptionsPanel();
+    if (NULL == optionsPanel) {
+        // Set the layout of the whole window
+        windowLayout->addWidget(objectWidget);
+    } else {
+        OptionsPanelWidget *optionsPanelWidget = optionsPanel->getMainWidget();
+        QSplitter *splitter = new QSplitter();
+        splitter->setOrientation(Qt::Horizontal);
+        splitter->setChildrenCollapsible(false);
+        splitter->addWidget(objectWidget);
+        splitter->addWidget(optionsPanelWidget->getOptionsWidget());
+
+        windowLayout->addWidget(splitter);
+        windowLayout->addWidget(optionsPanelWidget);
     }
 
     QScrollArea* windowScrollArea = new QScrollArea();

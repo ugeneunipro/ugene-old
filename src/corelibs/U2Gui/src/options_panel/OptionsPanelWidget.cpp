@@ -33,13 +33,16 @@
 
 namespace U2 {
 
-OptionsScrollArea::OptionsScrollArea() {
+OptionsScrollArea::OptionsScrollArea(QWidget *parent)
+: QScrollArea(parent)
+{
     setObjectName("OP_SCROLL_AREA");
     setWidgetResizable(true);
     setStyleSheet("QWidget#OP_SCROLL_AREA { "
         "border-style: none;"
         " }");
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
     hide();
 }
 
@@ -51,8 +54,6 @@ QSize OptionsScrollArea::sizeHint() const {
 OptionsPanelWidget::OptionsPanelWidget() {
     setObjectName("OP_MAIN_WIDGET");
 
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-
     setStyleSheet("QWidget#OP_MAIN_WIDGET { "
         "border-style: solid;"
         "border-color: palette(shadow);"
@@ -60,50 +61,29 @@ OptionsPanelWidget::OptionsPanelWidget() {
         "border-bottom-width: 1px;"
         " }");
 
-    // Initialize the layout of the whole widget
-    QHBoxLayout* mainLayout = new QHBoxLayout();
-    mainLayout->setContentsMargins(0, 0, 0, 0);
-    mainLayout->setSpacing(0);
+    initOptionsLayout();
+    QWidget *groupsWidget = initGroupsLayout();
+    initMainLayout(groupsWidget);
 
-    // Initialize the layout of the options panel
-    optionsLayout = new QVBoxLayout();
-    optionsLayout->setContentsMargins(0, 0, 0, 0);
-    optionsLayout->setSpacing(0);
+    // Init the state
+    opMainWidgetState = OPMainWidgetState_Closed;
+}
 
-    // Initialize the layout of the groups panel
-    // External groups layout is used to add a spacer below the image headers
+QWidget * OptionsPanelWidget::initGroupsLayout() {
     groupsLayout = new QVBoxLayout();
     groupsLayout->setContentsMargins(0, 60, 0, 0);
     groupsLayout->setSpacing(0);
 
-    QVBoxLayout* externalGroupsLayout = new QVBoxLayout();
+    // External groups layout is used to add a spacer below the image headers
+    QVBoxLayout *externalGroupsLayout = new QVBoxLayout();
     externalGroupsLayout->setContentsMargins(0, 0, 0, 0);
     externalGroupsLayout->setSpacing(0);
-
-    QSpacerItem* spacer = new QSpacerItem(0, 0,
-        QSizePolicy::Minimum, QSizePolicy::Expanding);
     externalGroupsLayout->addLayout(groupsLayout);
-    externalGroupsLayout->addItem(spacer);
-
-    // The widget used to add decoration and scroll to the options widgets
-    optionsScrollArea = new OptionsScrollArea();
-
-    QWidget* optionsWidget = new QWidget();
-    optionsWidget->setObjectName("OP_OPTIONS_WIDGET");
-    optionsWidget->setLayout(optionsLayout);
-
-    optionsWidget->setStyleSheet("QWidget#OP_OPTIONS_WIDGET { "
-        "background: palette(window);"
-        "border-style: none;"
-        "border-color: palette(shadow);"
-        " }");
-
-    optionsScrollArea->setWidget(optionsWidget);
+    externalGroupsLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     // The widget is used to add additional decoration to the groups panel
-    QWidget* groupsWidget = new QWidget();
+    QWidget *groupsWidget = new QWidget();
     groupsWidget->setLayout(externalGroupsLayout);
-
     groupsWidget->setStyleSheet(
         "background: palette(mid);"
         "border-style: solid;"
@@ -112,17 +92,39 @@ OptionsPanelWidget::OptionsPanelWidget() {
         "border-right-width: 1px;"
         "border-bottom-width: 0px;"
         "border-color: palette(shadow);");
+    return groupsWidget;
+}
 
-    // This prevents blinking when the options panel has been opened/closed
-    mainLayout->setAlignment(Qt::AlignRight);
+void OptionsPanelWidget::initOptionsLayout() {
+    optionsLayout = new QVBoxLayout();
+    optionsLayout->setContentsMargins(0, 0, 0, 0);
+    optionsLayout->setSpacing(0);
 
-    // Set the layout of the whole widget
-    mainLayout->addWidget(optionsScrollArea);
+    QWidget* optionsWidget = new QWidget();
+    optionsWidget->setObjectName("OP_OPTIONS_WIDGET");
+    optionsWidget->setLayout(optionsLayout);
+    optionsWidget->setStyleSheet("QWidget#OP_OPTIONS_WIDGET { "
+        "background: palette(window);"
+        "border-style: none;"
+        "border-color: palette(shadow);"
+        " }");
+
+    // The widget used to add decoration and scroll to the options widgets
+    optionsScrollArea = new OptionsScrollArea(this);
+    optionsScrollArea->setWidget(optionsWidget);
+}
+
+void OptionsPanelWidget::initMainLayout(QWidget *groupsWidget) {
+    QHBoxLayout* mainLayout = new QHBoxLayout();
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSpacing(0);
+    mainLayout->setAlignment(Qt::AlignRight); // prevents blinking when the options panel has been opened/closed
     mainLayout->addWidget(groupsWidget);
     setLayout(mainLayout);
+}
 
-    // Init the state
-    opMainWidgetState = OPMainWidgetState_Closed;
+QWidget * OptionsPanelWidget::getOptionsWidget() const {
+    return optionsScrollArea;
 }
 
 GroupHeaderImageWidget* OptionsPanelWidget::createHeaderImageWidget(const QString& groupId, const QPixmap& image) {
