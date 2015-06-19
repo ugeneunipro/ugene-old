@@ -40,7 +40,8 @@ public:
     GroupOptionsWidget(const QString& groupId, const QString& title, const QString& documentationPage, QWidget* widget);
 
     inline const QString& getGroupId() { return groupId; }
-    inline static int getWidgetWidth() { return WIDGET_WIDTH; }
+    inline static int getMinWidgetWidth() { return MIN_WIDGET_WIDTH; }
+    inline static int getMaxWidgetWidth() { return MAX_WIDGET_WIDTH; }
     inline const QString& getTitle() { return title; }
 
 private:
@@ -52,7 +53,8 @@ private:
     QVBoxLayout*        mainLayout;
 
     static const int TITLE_HEIGHT = 30;
-    static const int WIDGET_WIDTH = 200;
+    static const int MIN_WIDGET_WIDTH = 220;
+    static const int MAX_WIDGET_WIDTH = 500;
 };
 
 } // namespace

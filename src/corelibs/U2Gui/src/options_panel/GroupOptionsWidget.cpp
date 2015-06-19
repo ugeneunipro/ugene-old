@@ -40,7 +40,7 @@ GroupOptionsWidget::GroupOptionsWidget(const QString& _groupId, const QString& _
     titleWidget = new QLabel(title);
     titleWidget->setObjectName("titleWidget");
     titleWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    titleWidget->setMinimumWidth(WIDGET_WIDTH);
+    titleWidget->setMinimumWidth(MIN_WIDGET_WIDTH);
 
     titleWidget->setStyleSheet(
         "background: palette(midlight);"
@@ -62,7 +62,7 @@ GroupOptionsWidget::GroupOptionsWidget(const QString& _groupId, const QString& _
     QPushButton *helpButton = new QPushButton("Help", this);
     helpButton->setMaximumWidth(60);
     new HelpButton(this, helpButton, documentationPage);
-    QSpacerItem *spacer = new QSpacerItem(WIDGET_WIDTH, 0, QSizePolicy::Maximum, QSizePolicy::Expanding);
+    QSpacerItem *spacer = new QSpacerItem(MIN_WIDGET_WIDTH, 0, QSizePolicy::Maximum, QSizePolicy::Expanding);
     mainLayout->addSpacerItem(spacer);
 
     QHBoxLayout *helpLayout = new QHBoxLayout();

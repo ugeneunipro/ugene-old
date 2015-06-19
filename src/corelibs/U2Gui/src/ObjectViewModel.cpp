@@ -304,6 +304,8 @@ GObjectViewWindow::GObjectViewWindow(GObjectView* v, const QString& _viewName, b
         splitter->setChildrenCollapsible(false);
         splitter->addWidget(objectWidget);
         splitter->addWidget(optionsPanelWidget->getOptionsWidget());
+        splitter->setStretchFactor(0, 1);
+        splitter->setStretchFactor(1, 0);
 
         windowLayout->addWidget(splitter);
         windowLayout->addWidget(optionsPanelWidget);

@@ -43,12 +43,13 @@ OptionsScrollArea::OptionsScrollArea(QWidget *parent)
         " }");
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+    setMaximumWidth(GroupOptionsWidget::getMaxWidgetWidth());
     hide();
 }
 
 QSize OptionsScrollArea::sizeHint() const {
     int BORDERS_APPROX_SIZE = 15;
-    return QSize(GroupOptionsWidget::getWidgetWidth() + BORDERS_APPROX_SIZE, 0);
+    return QSize(GroupOptionsWidget::getMinWidgetWidth() + BORDERS_APPROX_SIZE, 0);
 }
 
 OptionsPanelWidget::OptionsPanelWidget() {
