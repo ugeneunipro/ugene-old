@@ -43,7 +43,6 @@ static inline QVBoxLayout * initLayout(QWidget * w) {
     QVBoxLayout * layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(5);
-    layout->setAlignment(Qt::AlignTop);
 
     w->setLayout(layout);
     return layout;
@@ -99,9 +98,11 @@ QWidget * AssemblySettingsWidget::createReadsSettings() {
             readsHighlightCombo->setCurrentIndex(readsHighlightCombo->count() - 1);
             AssemblyCellRendererFactory* factory = ui->getWindow()->getCellRendererRegistry()->getFactoryById(AssemblyCellRendererFactory::DIFF_NUCLEOTIDES);
             if (a->text() == factory->getName()){
-                hint->setText(tr("You should add refrence  first for correct dispalying of this highlighting"));
+                hint->setText(tr("You should add reference  first for correct displaying of this highlighting"));
+                hint->show();
             }else{
                 hint->setText("");
+                hint->hide();
             }
         }
     }
@@ -109,12 +110,9 @@ QWidget * AssemblySettingsWidget::createReadsSettings() {
     layout->addWidget(readsHighlightCombo);
     layout->addWidget(hint);
 
-    layout->addSpacing(ITEMS_SPACING);
-
-    QLabel * aboutScrolling = new QLabel(tr("Scrolling can be optimized by drawing only reads' positions without content while scrolling:"), group);
+    QLabel * aboutScrolling = new QLabel(tr("Scrolling can be optimized by drawing only reads' positions without content while scrolling:"));
     aboutScrolling->setWordWrap(true);
-    aboutScrolling->setFixedWidth(165);
-    aboutScrolling->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    aboutScrolling->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     layout->addWidget(aboutScrolling);
 
     QCheckBox * optimizeScroll = new QCheckBox(tr("Optimize scrolling"), group);
@@ -147,9 +145,11 @@ void AssemblySettingsWidget::sl_changeCellRenderer(int index) {
     selected->trigger();
     AssemblyCellRendererFactory* factory = ui->getWindow()->getCellRendererRegistry()->getFactoryById(AssemblyCellRendererFactory::DIFF_NUCLEOTIDES);
     if (selected->text() == factory->getName()){
-        hint->setText(tr("You should add a refrence first for correct displaying of selected highlighting"));
+        hint->setText(tr("You should add a reference first for correct displaying of selected highlighting"));
+        hint->show();
     }else{
         hint->setText("");
+        hint->hide();
     }
 }
 

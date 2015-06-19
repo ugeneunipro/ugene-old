@@ -234,6 +234,9 @@
      <property name="text">
       <string>IDs of similar sequences:</string>
      </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>

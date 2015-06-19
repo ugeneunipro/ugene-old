@@ -94,16 +94,7 @@
             <string>Profile mode</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
-            <property name="leftMargin">
-             <number>5</number>
-            </property>
-            <property name="topMargin">
-             <number>5</number>
-            </property>
-            <property name="rightMargin">
-             <number>5</number>
-            </property>
-            <property name="bottomMargin">
+            <property name="margin">
              <number>5</number>
             </property>
             <item>
@@ -170,6 +161,12 @@
          </item>
          <item>
           <widget class="QLabel" name="refSeqWarning">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>&lt;hint&gt;</string>
            </property>

@@ -2056,7 +2056,7 @@ Double-click to collapse the branch</source>
     <message>
         <location filename="../src/ov_msa/ui/TreeOptionsWidget.ui" line="58"/>
         <source>Tree layout</source>
-        <translation>Представление дерева</translation>
+        <translation>Представление</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/ui/TreeOptionsWidget.ui" line="75"/>
@@ -2555,12 +2555,12 @@ Double-click to collapse the branch</source>
     <message>
         <location filename="../src/ov_msa/TreeOptions/TreeOptionsWidget.cpp" line="381"/>
         <source>Open tree</source>
-        <translation>Открыть дерево</translation>
+        <translation>Открыть</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/TreeOptions/TreeOptionsWidget.cpp" line="389"/>
         <source>Build tree</source>
-        <translation>Построить дерево</translation>
+        <translation>Построить</translation>
     </message>
 </context>
 <context>
@@ -3426,7 +3426,7 @@ You don&apos;t have enough rights to change file</source>
     <message>
         <location filename="../src/ov_assembly/AssemblySettingsWidget.cpp" line="127"/>
         <source>Show pop-up hint</source>
-        <translation>Показывать вслывающую информацию</translation>
+        <translation>Всплывающая информация</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/AssemblySettingsWidget.cpp" line="150"/>
@@ -3441,17 +3441,17 @@ You don&apos;t have enough rights to change file</source>
     <message>
         <location filename="../src/ov_assembly/AssemblySettingsWidget.cpp" line="181"/>
         <source>Difference from reference</source>
-        <translation>Различия от референсной последовательности</translation>
+        <translation>SNPs</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/AssemblySettingsWidget.cpp" line="212"/>
         <source>Show coordinates</source>
-        <translation>Показать координаты</translation>
+        <translation>Координаты</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/AssemblySettingsWidget.cpp" line="219"/>
         <source>Show coverage under cursor</source>
-        <translation>Показывать покрытие под курсором</translation>
+        <translation>Покрытие под курсором</translation>
     </message>
 </context>
 <context>
@@ -6615,7 +6615,7 @@ Please, load the corresponding plugins.</source>
     <message>
         <location filename="../src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp" line="103"/>
         <source>Press button to update</source>
-        <translation>Нажмите кнопку, чтобы обновить</translation>
+        <translation>Нажмите, чтобы обновить</translation>
     </message>
 </context>
 <context>
@@ -6845,7 +6845,7 @@ Please, load the corresponding plugins.</source>
     <message>
         <location filename="../src/phyltree/TreeSettingsDialog.cpp" line="90"/>
         <source>Default</source>
-        <translation>Значение по умолчанию</translation>
+        <translation>По умолчанию</translation>
     </message>
     <message>
         <location filename="../src/phyltree/TreeSettingsDialog.cpp" line="93"/>

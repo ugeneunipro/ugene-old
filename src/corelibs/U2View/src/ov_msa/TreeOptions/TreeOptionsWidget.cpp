@@ -57,7 +57,6 @@ static inline QVBoxLayout * initLayout(QWidget * w) {
     QVBoxLayout * layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(5);
-    layout->setAlignment(Qt::AlignTop);
 
     w->setLayout(layout);
     return layout;
@@ -382,15 +381,16 @@ AddTreeWidget::AddTreeWidget(MSAEditor* msa)
     buttonLayout->setContentsMargins(0, 5, 0, 0);
 
     openTreeButton = new QPushButton(QIcon(":ugene/images/advanced_open.png"), tr("Open tree"), this);
-    openTreeButton->setMinimumWidth(20);
+    openTreeButton->setFixedWidth(102);
+    openTreeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     buttonLayout->addWidget(openTreeButton);
     openTreeButton->setObjectName( "OpenTreeButton" );
 
-    QSpacerItem* horizontalSpacer = new QSpacerItem(20, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+    QSpacerItem* horizontalSpacer = new QSpacerItem(50, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
     buttonLayout->addSpacerItem(horizontalSpacer);
 
     buildTreeButton = new QPushButton(QIcon(":core/images/phylip.png"), tr("Build tree"), this);
-    buildTreeButton->setMinimumWidth(20);
+    buildTreeButton->setFixedWidth(102);
     buttonLayout->addWidget(buildTreeButton);
     buildTreeButton->setObjectName( "BuildTreeButton" );
 

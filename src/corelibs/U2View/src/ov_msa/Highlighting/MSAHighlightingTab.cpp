@@ -38,7 +38,6 @@ static inline QVBoxLayout * initVBoxLayout(QWidget * w) {
     QVBoxLayout * layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(5);
-    layout->setAlignment(Qt::AlignTop);
 
     w->setLayout(layout);
     return layout;
@@ -47,7 +46,6 @@ static inline QVBoxLayout * initVBoxLayout(QWidget * w) {
 static inline QHBoxLayout * initHBoxLayout(QWidget * w) {
     QHBoxLayout * layout = new QHBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->setAlignment(Qt::AlignTop);
 
     w->setLayout(layout);
     return layout;
@@ -77,6 +75,7 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
 
     hint = new QLabel("");
     hint->setWordWrap(true);
+    hint->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
 
     useDots = new QCheckBox(tr("Use dots"));
     useDots->setObjectName("useDots");
