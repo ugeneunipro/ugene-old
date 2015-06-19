@@ -188,8 +188,26 @@
      </property>
     </spacer>
    </item>
-   <item>
+   <item alignment="Qt::AlignHCenter">
     <widget class="QPushButton" name="searchIdsButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>198</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>198</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="toolTip">
       <string>Send request to Uniprot BLAST to get IDs of similar sequences</string>
      </property>
@@ -294,8 +312,26 @@
      </property>
     </layout>
    </item>
-   <item>
+   <item alignment="Qt::AlignHCenter">
     <widget class="QPushButton" name="annotateButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>198</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>198</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="text">
       <string>Fetch annotations</string>
      </property>
