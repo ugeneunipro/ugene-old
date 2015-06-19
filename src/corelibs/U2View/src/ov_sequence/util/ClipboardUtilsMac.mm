@@ -21,7 +21,6 @@
 
 #import "ClipboardUtilsMac.h"
 #import <AppKit/NSPasteboard.h>
-#import <Foundation/NSException.h>
 
 namespace U2 {
 
@@ -33,7 +32,7 @@ bool putIntoMacClipboard(const QString &data) {
         [p declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
         [p setString:str forType:NSStringPboardType];
     }
-    @catch (NSException* e) {
+    @catch (...) {
         return false;
     }
     return true;

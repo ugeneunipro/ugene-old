@@ -157,15 +157,14 @@ void ADVClipboard::putIntoClipboard(const QString& data) {
             GlobalUnlock(clipbuffer);
             SetClipboardData(CF_TEXT, clipbuffer);
         }
-#else
-#ifdef Q_OS_MAC
+#elif defined(Q_OS_MAC)
         bool ok = putIntoMacClipboard(data);
         if (!ok) {
-            throw 1;
+            QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), tr("Cannot put sequence data into the clipboard buffer.\n"
+                "Probably the data is too big."));
         }
 #else
         QApplication::clipboard()->setText(data);
-#endif
 #endif
     } catch (...) {
         QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), tr("Cannot put sequence data into the clipboard buffer.\n"

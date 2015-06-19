@@ -387,5 +387,5 @@ TRANSLATIONS += transl/chinese.ts \
 mac {
     HEADERS += src/ov_sequence/util/ClipboardUtilsMac.h
     OBJECTIVE_SOURCES += src/ov_sequence/util/ClipboardUtilsMac.mm
-    LIBS += -framework AppKit -framework Foundation
+    LIBS += -framework AppKit
 }
