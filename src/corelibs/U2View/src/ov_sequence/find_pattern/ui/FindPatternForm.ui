@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>272</width>
+    <width>232</width>
     <height>800</height>
    </rect>
   </property>
@@ -274,7 +274,7 @@
       <item row="2" column="0" colspan="2">
        <layout class="QVBoxLayout" name="layoutAlgorithmSettings"/>
       </item>
-      <item row="1" column="0">
+      <item row="1" column="0" alignment="Qt::AlignLeft">
        <widget class="QLabel" name="label">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -297,7 +297,7 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>120</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
@@ -363,7 +363,7 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>120</width>
+            <width>0</width>
             <height>0</height>
            </size>
           </property>
@@ -388,7 +388,7 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>120</width>
+            <width>0</width>
             <height>0</height>
            </size>
           </property>
@@ -403,7 +403,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item row="1" column="0" alignment="Qt::AlignLeft">
          <widget class="QLabel" name="lblSeqTransl">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -416,7 +416,7 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
+        <item row="0" column="0" alignment="Qt::AlignLeft">
          <widget class="QLabel" name="lblStrand">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -429,7 +429,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
+        <item row="2" column="0" alignment="Qt::AlignLeft">
          <widget class="QLabel" name="lblRegion">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -452,7 +452,7 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>120</width>
+            <width>0</width>
             <height>0</height>
            </size>
           </property>
