@@ -159,7 +159,10 @@ void ADVClipboard::putIntoClipboard(const QString& data) {
         }
 #else
 #ifdef Q_OS_MAC
-        putIntoMacClipboard(data);
+        bool ok = putIntoMacClipboard(data);
+        if (!ok) {
+            throw 1;
+        }
 #else
         QApplication::clipboard()->setText(data);
 #endif

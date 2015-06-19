@@ -21,15 +21,22 @@
 
 #import "ClipboardUtilsMac.h"
 #import <AppKit/NSPasteboard.h>
+#import <Foundation/NSException.h>
 
 namespace U2 {
 
-void putIntoMacClipboard(const QString &data) {
-    NSPasteboard *p = [NSPasteboard generalPasteboard];
-    [p clearContents];
-    NSString *str = [NSString stringWithCString:data.toStdString().c_str() encoding:[NSString defaultCStringEncoding]];
-    [p declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
-    [p setString:str forType:NSStringPboardType];
+bool putIntoMacClipboard(const QString &data) {
+    @try {
+        NSPasteboard *p = [NSPasteboard generalPasteboard];
+        [p clearContents];
+        NSString *str = [NSString stringWithCString:data.toStdString().c_str() encoding:[NSString defaultCStringEncoding]];
+        [p declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+        [p setString:str forType:NSStringPboardType];
+    }
+    @catch (NSException* e) {
+        return false;
+    }
+    return true;
 }
 
 } // namespace
