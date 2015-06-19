@@ -4049,7 +4049,7 @@ GUI_TEST_CLASS_DEFINITION(test_0053_4){
 
         QWidget* w = GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "copy_formatted");
         CHECK_SET_ERR(w!=NULL, "no copy action on the toolbar");
-        CHECK_SET_ERR(w->isEnabled() == true, "selection is empty but the action is enabled");
+        CHECK_SET_ERR(w->isEnabled() == false, "selection is empty but the action is enabled");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_fake) {

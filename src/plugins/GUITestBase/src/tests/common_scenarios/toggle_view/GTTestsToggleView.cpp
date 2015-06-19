@@ -1431,15 +1431,14 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
     Runnable *chooser = new PopupChooser(os, QStringList() << "GC Content (%)");
     GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, circularViewSe1);
-    GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsTaskTreeView::countTasks(os, "Calculate graph points") == 1, "Calculation task didn't cancelled");
+    CHECK_SET_ERR(GTUtilsTaskTreeView::countTasks(os, "Calculate graph points") == 1, "Calculation task didn't start");
     GTGlobals::sleep();
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << "GC Content (%)");
     GTUtilsDialog::waitForDialog(os, chooser2);
     GTWidget::click(os, circularViewSe1);
     GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsTaskTreeView::countTasks(os, "Calculate graph points") == 0, "Calculation task didn't cancelled");
+    CHECK_SET_ERR(GTUtilsTaskTreeView::countTasks(os, "Calculate graph points") == 0, "Calculation task was not cancelled");
 }
 
 } // namespace

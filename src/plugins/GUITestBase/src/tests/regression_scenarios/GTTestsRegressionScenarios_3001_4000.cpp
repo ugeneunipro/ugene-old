@@ -1026,7 +1026,7 @@ public:
 
         GTWidget::click(os, button);
         GTGlobals::sleep(500);
-        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Save));
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Save, "", "permissionBox"));
     }
 };
 

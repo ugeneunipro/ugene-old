@@ -20,6 +20,7 @@
  */
 
 #include "GTUtilsQueryDesigner.h"
+#include "api/GTGraphicsItem.h"
 #include "api/GTWidget.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMouseDriver.h"
@@ -89,7 +90,7 @@ int GTUtilsQueryDesigner::getItemLeft(U2OpStatus &os, QString itemName){
 
 int GTUtilsQueryDesigner::getItemRight(U2OpStatus &os, QString itemName){
     QRect r = getItemRect(os, itemName);
-    int i = r.right();
+    int i = r.right() - 1;
     return i;
 }
 
@@ -117,14 +118,7 @@ QRect GTUtilsQueryDesigner::getItemRect(U2OpStatus &os,QString itemName){
         if (textItemO) {
             QString text = textItemO->toPlainText();
             if (text.contains(itemName)) {
-                QRectF r = it->parentItem()->boundingRect();
-                QRect sceneRect = it->parentItem()->mapRectToScene(r).toRect();
-
-                QPoint globalTopLeftPos = sceneView->mapToGlobal(sceneRect.topLeft());
-                QPoint globalBottomRightPos = sceneView->mapToGlobal(sceneRect.bottomRight());
-                QRect globalRect(globalTopLeftPos,globalBottomRightPos);
-
-                return globalRect;
+                return GTGraphicsItem::getGraphicsItemRect(os, it->parentItem());
             }
         }
     }
