@@ -140,6 +140,9 @@
      <property name="text">
       <string>Show more option...</string>
      </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>
