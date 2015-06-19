@@ -41,7 +41,6 @@ OptionsScrollArea::OptionsScrollArea(QWidget *parent)
     setStyleSheet("QWidget#OP_SCROLL_AREA { "
         "border-style: none;"
         " }");
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
     setMaximumWidth(GroupOptionsWidget::getMaxWidgetWidth());
     hide();
