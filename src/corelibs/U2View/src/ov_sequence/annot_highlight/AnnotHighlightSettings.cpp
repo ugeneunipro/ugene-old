@@ -24,8 +24,9 @@
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
-#include "AnnotHighlightSettings.h"
+#include <U2Gui/LabelClickTransmitter.h>
 
+#include "AnnotHighlightSettings.h"
 
 namespace U2 {
 
@@ -33,6 +34,10 @@ AnnotHighlightSettingsWidget::AnnotHighlightSettingsWidget(QWidget* parent)
 {
     Q_UNUSED(parent);
     setupUi(this);
+
+    new LabelClickTransmitter(checkShowHideAnnotsLabel, checkShowHideAnnots);
+    new LabelClickTransmitter(checkShowOnTranslationLabel, checkShowOnTranslation);
+    new LabelClickTransmitter(checkVisualQualifierLabel, checkVisualQualifier);
 
     connect(checkShowHideAnnots, SIGNAL(stateChanged(int)), SLOT(sl_onShowHideChanged(int)));
     connect(checkShowOnTranslation, SIGNAL(stateChanged(int)), SLOT(sl_onShowOnTranslationChanged(int)));

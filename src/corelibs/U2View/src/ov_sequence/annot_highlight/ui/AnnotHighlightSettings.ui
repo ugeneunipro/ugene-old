@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>251</width>
-    <height>135</height>
+    <height>113</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,29 +23,98 @@
    <property name="rightMargin">
     <number>0</number>
    </property>
-   <item row="1" column="0">
-    <widget class="QCheckBox" name="checkShowOnTranslation">
-     <property name="text">
-      <string>Show on translation</string>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QCheckBox" name="checkShowOnTranslation">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="checkShowOnTranslationLabel">
+       <property name="text">
+        <string>Show on translation</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QCheckBox" name="checkVisualQualifier">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="checkVisualQualifierLabel">
+       <property name="text">
+        <string>Show value of qualifier:</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="0">
     <widget class="QLineEdit" name="editQualifiers"/>
    </item>
-   <item row="0" column="0">
-    <widget class="QCheckBox" name="checkShowHideAnnots">
-     <property name="text">
-      <string>Show annotations</string>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="0">
-    <widget class="QCheckBox" name="checkVisualQualifier">
-     <property name="text">
-      <string>Show value of qualifier:</string>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="spacing">
+      <number>6</number>
      </property>
-    </widget>
+     <item>
+      <widget class="QCheckBox" name="checkShowHideAnnots">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="checkShowHideAnnotsLabel">
+       <property name="text">
+        <string>Show annotations</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

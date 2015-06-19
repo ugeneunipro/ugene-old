@@ -58,6 +58,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/HelpButton.h \
            src/util/ImportDialogsFactories.h \
            src/util/InputWidgetsControllers.h \
+           src/util/LabelClickTransmitter.h \
            src/util/LastUsedDirHelper.h \
            src/util/ObjectViewTreeController.h \
            src/util/PositionSelector.h \
@@ -194,6 +195,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/HelpButton.cpp \
            src/util/ImportDialogsFactories.cpp \
            src/util/InputWidgetsControllers.cpp \
+           src/util/LabelClickTransmitter.cpp \
            src/util/LastUsedDirHelper.cpp \
            src/util/ObjectViewTreeController.cpp \
            src/util/PositionSelector.cpp \
