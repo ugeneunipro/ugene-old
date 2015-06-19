@@ -19,8 +19,8 @@
 * MA 02110-1301, USA.
 */
 
-#ifndef _LABEL_CLICK_TRANSMITTER_H_
-#define _LABEL_CLICK_TRANSMITTER_H_
+#ifndef _U2_LABEL_CLICK_TRANSMITTER_H_
+#define _U2_LABEL_CLICK_TRANSMITTER_H_
 
 #include <U2Core/global.h>
 
@@ -42,4 +42,4 @@ private:
 
 } // U2
 
-#endif // _LABEL_CLICK_TRANSMITTER_H_
+#endif // _U2_LABEL_CLICK_TRANSMITTER_H_
