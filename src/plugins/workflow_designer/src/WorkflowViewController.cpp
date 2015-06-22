@@ -739,12 +739,12 @@ void WorkflowView::createActions() {
         sceneView->addAction(selectShortcut);
     }
 
-    configureParameterAliasesAction = new QAction(tr("Configure parameter aliases..."), this);
-    configureParameterAliasesAction->setObjectName("Configure parameter aliases");
+    configureParameterAliasesAction = new QAction(tr("Set parameter aliases..."), this);
+    configureParameterAliasesAction->setObjectName("Set parameter aliases");
     configureParameterAliasesAction->setIcon(QIcon(":workflow_designer/images/table_relationship.png"));
     connect(configureParameterAliasesAction, SIGNAL(triggered()), SLOT(sl_configureParameterAliases()));
 
-    configurePortAliasesAction = new QAction(tr("Configure port and slot aliases..."), this);
+    configurePortAliasesAction = new QAction(tr("Set port and slot aliases..."), this);
     configurePortAliasesAction->setIcon(QIcon(":workflow_designer/images/port_relationship.png"));
     connect(configurePortAliasesAction, SIGNAL(triggered()), SLOT(sl_configurePortAliases()));
 
