@@ -25,6 +25,7 @@
 
 #include "GTTestsRegressionScenarios_4001_5000.h"
 #include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsCircularView.h"
 #include "GTUtilsDashboard.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsDocument.h"
@@ -80,11 +81,13 @@
 #include "runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h"
+#include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"
 #include "runnables/ugene/plugins/orf_marker/OrfDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/ExportPrimersDialogFiller.h"
 #include "runnables/ugene/plugins/pcr/ImportPrimersDialogFiller.h"
@@ -2182,6 +2185,38 @@ GUI_TEST_CLASS_DEFINITION(test_4325) {
     CHECK_SET_ERR(regions.contains(U2Region(0, 40)), "There is no (1, 40) annotated primer region");
     CHECK_SET_ERR(regions.contains(U2Region(110, 40)), "There is no (111, 150) annotated primer region");
 }
+
+GUI_TEST_CLASS_DEFINITION(test_4352) {
+    //1. Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
+
+    //2. Toggle the Circular View for the sequence.
+    GTUtilsCv::commonCvBtn::click(os);
+
+    //3. Find some restriction sites.
+    GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList() << "AaaI"));
+    GTWidget::click(os, GTWidget::findWidget(os, "Find restriction sites_widget"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //4. Select any restriction site in the "Restriction Sites Map" widget.
+    QTreeWidget *tree = dynamic_cast<QTreeWidget*>(GTWidget::findWidget(os, "restrictionMapTreeWidget"));
+    QTreeWidgetItem *item = GTTreeWidget::findItem(os, tree, "89345..89350");
+    GTTreeWidget::click(os, item);
+
+    //5. Remove a part of the sequence that contains the selected site.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Remove subsequence..."));
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "89300..89400"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+
+    //6. Wait while restriction sites recalculates.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //7. Navigate to any restriction site in the restriction site map.
+    item = GTTreeWidget::findItem(os, tree, "89231..89236");
+    GTTreeWidget::click(os, item);
+    //Expected state: UGENE does not crash.
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4359) {
 /* 1. Open human_T1
  * 2. Open Primer3 dialog
