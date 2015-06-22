@@ -253,7 +253,7 @@ QString SlopbedWorker::getDefaultFileName() const{
     return ".sb.bed";
 }
 
-Task *SlopbedWorker::getTask(const BaseNGSSetting &settings) {
+Task *SlopbedWorker::getTask(const BaseNGSSetting &settings) const {
     return new SlopbedTask(settings);
 }
 
@@ -303,7 +303,7 @@ void SlopbedTask::finishStep(){
     }
 }
 
-QStringList SlopbedTask::getParameters(U2OpStatus &os){
+QStringList SlopbedTask::getParameters(U2OpStatus &os) {
     QStringList res;
     res << "slop";
     res << "-i";
@@ -675,7 +675,7 @@ QString GenomecovWorker::getDefaultFileName() const{
     return ".gc";
 }
 
-Task *GenomecovWorker::getTask(const BaseNGSSetting &settings) {
+Task *GenomecovWorker::getTask(const BaseNGSSetting &settings) const {
     return new GenomecovTask(settings);
 }
 

@@ -49,7 +49,7 @@ public:
 protected:
     QVariantMap getCustomParameters() const;
     QString getDefaultFileName() const;
-    Task *getTask(const BaseNGSSetting &settings);
+    Task *getTask(const BaseNGSSetting &settings) const;
 }; //SlopbedWorker
 
 class SlopbedWorkerFactory : public DomainFactory {
@@ -91,7 +91,7 @@ public:
 protected:
     QVariantMap getCustomParameters() const;
     QString getDefaultFileName() const;
-    Task *getTask(const BaseNGSSetting &settings);
+    Task *getTask(const BaseNGSSetting &settings) const;
 }; //GenomecovWorker
 
 class GenomecovWorkerFactory : public DomainFactory {

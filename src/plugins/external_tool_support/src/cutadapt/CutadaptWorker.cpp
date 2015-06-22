@@ -217,7 +217,7 @@ QString CutAdaptFastqWorker::getDefaultFileName() const{
     return ".cutadapt.fastq";
 }
 
-Task *CutAdaptFastqWorker::getTask(const BaseNGSSetting &settings) {
+Task *CutAdaptFastqWorker::getTask(const BaseNGSSetting &settings) const {
     if (settings.listeners[0] != NULL) {
         settings.listeners[0]->setLogProcessor(new CutAdaptLogProcessor(monitor(), getActorId()));
     }
@@ -251,7 +251,7 @@ void CutAdaptFastqTask::prepareStep(){
     }
 }
 
-QStringList CutAdaptFastqTask::getParameters(U2OpStatus &/*os*/){
+QStringList CutAdaptFastqTask::getParameters(U2OpStatus &/*os*/) {
     QStringList res;
 
     QString val = "";
@@ -309,7 +309,7 @@ void CutAdaptParser::parseErrOutput( const QString& partOfLog ) {
 QString CutAdaptParser::parseTextForErrors(const QStringList &lastPartOfLog) {
     foreach (const QString &buf, lastPartOfLog) {
         foreach(const QString &ignoredStr, stringsToIgnore) {
-            if (buf.startsWith(ignoredStr)) {
+            if (buf.contains(ignoredStr)) {
                 break;
             }
             if(buf.contains("ERROR", Qt::CaseInsensitive)){
