@@ -199,8 +199,14 @@ QList<ADVSingleSequenceWidget*> GTUtilsProject::openFileExpectSequences(U2OpStat
 
 #define GT_METHOD_NAME "openMultiSequenceFileAsSequences"
 void GTUtilsProject::openMultiSequenceFileAsSequences(U2OpStatus &os, const QString &path, const QString &fileName) {
+    openMultiSequenceFileAsSequences(os, path + "/" + fileName);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "openMultiSequenceFileAsSequences"
+void GTUtilsProject::openMultiSequenceFileAsSequences(U2OpStatus &os, const QString &filePath) {
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
-    GTFileDialog::openFile(os, path, fileName);
+    GTFileDialog::openFile(os, filePath);
 }
 #undef GT_METHOD_NAME
 

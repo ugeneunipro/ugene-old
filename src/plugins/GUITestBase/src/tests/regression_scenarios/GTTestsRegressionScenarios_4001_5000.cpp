@@ -92,6 +92,7 @@
 #include "runnables/ugene/plugins/workflow_designer/ConfigurationWizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
+#include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 
@@ -2284,6 +2285,53 @@ GUI_TEST_CLASS_DEFINITION(test_4383) {
     GTMouseDriver::release(os);
     GTGlobals::sleep();
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4386_1) {
+    //    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    //    2. Change this alignment by adding random gaps.
+    GTUtilsMSAEditorSequenceArea::clickToPosition(os, QPoint(5, 5));
+    GTKeyboardDriver::keyClick(os, ' ');
+
+    //    3. Align with Muscle (or other algorithm).
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Align" << "Align with MUSCLE..."));
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //    4. Select some sequences in project view and click "Align sequence to this alignment".
+    GTUtilsProject::openMultiSequenceFileAsSequences(os, dataDir + "samples/FASTQ/eas.fastq");
+    GTUtilsMdi::activateWindow(os, "COI [m] Multiple alignment");
+
+    GTUtilsProjectTreeView::click(os, "EAS54_6_R1_2_1_413_324");
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //    Expected state: sequences are aligned to alignment.
+    const int rowsCount = GTUtilsMsaEditor::getSequencesCount(os);
+    CHECK_SET_ERR(19 == rowsCount, QString("Unexpected rows count: expect %1, got %2").arg(19).arg(rowsCount));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4386_2) {
+//    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+//    2. Rename the alignment, a new name should contain spaces.
+    GTUtilsProjectTreeView::rename(os, "COI", "C O I");
+
+//    3. Click "Align sequence to this alignment" and select any file with sequence.
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/FASTQ/eas.fastq"));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: sequence is aligned to alignment.
+    const int rowsCount = GTUtilsMsaEditor::getSequencesCount(os);
+    CHECK_SET_ERR(21 == rowsCount, QString("Unexpected rows count: expect %1, got %2").arg(19).arg(rowsCount));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4400) {

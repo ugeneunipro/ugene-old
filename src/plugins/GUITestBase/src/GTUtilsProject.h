@@ -84,6 +84,7 @@ public:
         const QList<QString> &seqNames);
 
     static void openMultiSequenceFileAsSequences(U2OpStatus &os, const QString &path, const QString &fileName);
+    static void openMultiSequenceFileAsSequences(U2OpStatus &os, const QString &filePath);
     static void openMultiSequenceFileAsMergedSequence(U2OpStatus &os, const QString &filePath);
     static void openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &dirPath, const QString &fileName);
     static void openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &filePath);
