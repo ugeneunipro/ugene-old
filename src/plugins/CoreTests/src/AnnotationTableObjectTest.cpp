@@ -19,22 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#include "AnnotationTableObjectTest.h"
-#include <U2Core/MAlignmentObject.h>
-
 #include <U2Core/AppContext.h>
-#include <U2Core/IOAdapter.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObject.h>
+#include <U2Core/IOAdapter.h>
 #include <U2Core/Log.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-namespace U2 {
+#include "AnnotationTableObjectTest.h"
 
-/* TRANSLATOR U2::GTest */
+namespace U2 {
 
 #define VALUE_ATTR      "value"
 #define DOC_ATTR        "doc"
@@ -603,15 +602,21 @@ void GTest_CheckAnnotationsLocationsInTwoObjects::init(XMLTestFormat *tf, const 
 
 struct AnnotationsLess {
     bool operator() (Annotation *a1, Annotation *a2) const {
+        if (a1->getStrand() != a2->getStrand()) {
+            return a1->getStrand().getDirectionValue() < a2->getStrand().getDirectionValue();
+        }
+
         QVector<U2Region> a1Regions = a1->getLocation()->regions;
         QVector<U2Region> a2Regions = a2->getLocation()->regions;
         int a1Size = a1Regions.size();
         int a2Size = a2Regions.size();
         CHECK(a1Size != 0, true);
         CHECK(a2Size != 0, false);
+
         if (a1Size != a2Size) {
             return a1Size < a2Size;
         }
+
         qSort(a1Regions);
         qSort(a2Regions);
 
@@ -645,18 +650,18 @@ Task::ReportResult GTest_CheckAnnotationsLocationsInTwoObjects::report() {
         return ReportResult_Finished;
     }
 
-    const QList<GObject*>& objs = doc->getObjects();
-    const QList<GObject*>& objs2 = doc2->getObjects();
-    GObject*obj=NULL;
-    GObject*obj2=NULL;
-    AnnotationTableObject * myAnnotation;
-    AnnotationTableObject * myAnnotation2;
+    const QList<GObject *> &objs = doc->getObjects();
+    const QList<GObject *> &objs2 = doc2->getObjects();
+    GObject *obj = NULL;
+    GObject *obj2 = NULL;
+    AnnotationTableObject *myAnnotation = NULL;
+    AnnotationTableObject *myAnnotation2 = NULL;
 
-    for(int i=0;(i!=objs.size())&&(i!=objs2.size());i++){
+    for (int i = 0; (i != objs.size()) && (i != objs2.size()); i++) {
         obj = objs.at(i);
         obj2 = objs2.at(i);
 
-        if((obj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE)&&(obj2->getGObjectType() == GObjectTypes::ANNOTATION_TABLE)){
+        if ((obj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE)&&(obj2->getGObjectType() == GObjectTypes::ANNOTATION_TABLE)) {
             myAnnotation = qobject_cast<AnnotationTableObject*>(obj);
             if(myAnnotation == NULL){
                 stateInfo.setError(QString("can't cast to annotation from: %1 in position %2").arg(obj->getGObjectName()).arg(i));
@@ -679,10 +684,10 @@ Task::ReportResult GTest_CheckAnnotationsLocationsInTwoObjects::report() {
                 qSort(l1->regions);
                 qSort(l2->regions);
                 if (l1 != l2) {
-                    U2Region r1 = l1->regions.first();
-                    U2Region r2 = l2->regions.first();
-                    stateInfo.setError(QString("annotations locations not matched. A1 location is %1..%2, A2 location is %3..%4 ")
-                        .arg(r1.startPos).arg(r1.endPos()).arg(r2.startPos).arg(r2.endPos()));
+                    const QString locationString1 = U1AnnotationUtils::buildLocationString(*l1);
+                    const QString locationString2 = U1AnnotationUtils::buildLocationString(*l2);
+                    stateInfo.setError(QString("annotations locations not matched. A1 location is '%1', A2 location is '%2'")
+                        .arg(locationString1).arg(locationString2));
                     return ReportResult_Finished;
                 }
             }
