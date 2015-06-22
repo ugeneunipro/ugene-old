@@ -27,9 +27,9 @@ namespace U2 {
 bool putIntoMacClipboard(const QString &data) {
     @try {
         NSPasteboard *p = [NSPasteboard generalPasteboard];
-        [p clearContents];
-        NSString *str = [NSString stringWithCString:data.toStdString().c_str() encoding:[NSString defaultCStringEncoding]];
         [p declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+        [p setString:@"" forType:NSStringPboardType];
+        NSString *str = [NSString stringWithCString:data.toStdString().c_str() encoding:[NSString defaultCStringEncoding]];
         [p setString:str forType:NSStringPboardType];
     }
     @catch (...) {
