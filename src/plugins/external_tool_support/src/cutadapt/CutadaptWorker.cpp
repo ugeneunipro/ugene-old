@@ -308,13 +308,15 @@ void CutAdaptParser::parseErrOutput( const QString& partOfLog ) {
 
 QString CutAdaptParser::parseTextForErrors(const QStringList &lastPartOfLog) {
     foreach (const QString &buf, lastPartOfLog) {
+        bool ignoredStringFound = false;
         foreach(const QString &ignoredStr, stringsToIgnore) {
             if (buf.contains(ignoredStr)) {
+                ignoredStringFound = true;
                 break;
             }
-            if(buf.contains("ERROR", Qt::CaseInsensitive)){
-                return "Cut adapter: " + buf;
-            }
+        }
+        if(!ignoredStringFound && buf.contains("ERROR", Qt::CaseInsensitive)) {
+            return "Cut adapter: " + buf;
         }
     }
     return QString();
