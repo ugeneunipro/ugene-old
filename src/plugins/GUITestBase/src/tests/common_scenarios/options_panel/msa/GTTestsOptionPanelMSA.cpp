@@ -1350,13 +1350,13 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0009){
     setOutputPath(os, sandBoxDir,  fileName);
     align(os);
     GTGlobals::sleep(500);
-//    Expected state: error in log: Task {PairwiseAlignmentTask} finished with error: No permission to write to 'COI_transl.aln' file.
+//    Expected state: error in log: Task {Pairwise alignment task} finished with error: No permission to write to 'COI_transl.aln' file.
     QString error = l.getError();
     QString expected;
 #ifdef Q_OS_WIN
-    expected = "Task {PairwiseAlignmentTask} finished with error: Failed to rename";
+    expected = "Task {Pairwise alignment task} finished with error: Failed to rename";
 #else
-    expected = QString("Task {PairwiseAlignmentTask} finished with error: No permission to write to \'%1\' file.").arg(fileName);
+    expected = QString("Task {Pairwise alignment task} finished with error: No permission to write to \'%1\' file.").arg(fileName);
 #endif
     CHECK_SET_ERR(error.contains(expected), QString("enexpected error: %1").arg(error));
 }
@@ -1384,9 +1384,9 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0010){
     setOutputPath(os, sandBoxDir + dirName,  fileName);
     align(os);
     GTGlobals::sleep(500);
-//    Expected state: error in log: Task {PairwiseAlignmentTask} finished with error: No permission to write to 'COI_transl.aln' file.
+//    Expected state: error in log: Task {Pairwise alignment task} finished with error: No permission to write to 'COI_transl.aln' file.
     QString error = l.getError();
-    QString expected = QString("Task {PairwiseAlignmentTask} finished with error: No permission to write to \'%1\' file.").arg(fileName);
+    QString expected = QString("Task {Pairwise alignment task} finished with error: No permission to write to \'%1\' file.").arg(fileName);
     CHECK_SET_ERR(error == expected, QString("enexpected error: %1").arg(error));
 }
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0011){
@@ -1906,7 +1906,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0003){
 //    4. Press export button
     GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
     GTGlobals::sleep(300);
-//    Expected state: error in log: Task {PairwiseAlignmentTask} finished with error: No permission to write to 'COI_transl.aln' file.
+//    Expected state: error in log: Task {Pairwise Alignment Task} finished with error: No permission to write to 'COI_transl.aln' file.
     QString error = l.getError();
     QString expected = QString("Task {Export consensus to MSA} finished with error: Subtask {Save document} is failed: No permission to write to \'%1\' file.").arg(fileName);
     CHECK_SET_ERR(error == expected, QString("enexpected error: %1").arg(error));
