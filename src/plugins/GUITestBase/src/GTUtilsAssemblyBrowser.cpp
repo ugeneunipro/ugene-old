@@ -33,6 +33,7 @@
 
 #include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsDialog.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsOptionsPanel.h"
 #include "GTUtilsProjectTreeView.h"
 #include "api/GTGlobals.h"
@@ -99,16 +100,12 @@ bool GTUtilsAssemblyBrowser::hasReference(U2OpStatus &os, AssemblyBrowserUi *ass
 
 #define GT_METHOD_NAME "getLength"
 qint64 GTUtilsAssemblyBrowser::getLength(U2OpStatus &os, const QString& viewTitle) {
-    AssemblyBrowserUi* assemblyBrowser = getView(os, viewTitle);
-    GT_CHECK_RESULT(NULL != assemblyBrowser, "Assembly browser wasn't found", 0);
+    QWidget *mdi = GTUtilsMdi::activeWindow(os);
 
-    QWidget* optionsPanel = GTWidget::findWidget(os, "OP_MAIN_WIDGET", assemblyBrowser->parentWidget());
-    GT_CHECK_RESULT(NULL != optionsPanel, "Options panel wasn't found", 0);
-
-    QWidget* infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", optionsPanel);
+    QWidget* infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", mdi);
     if (!infoOptionsPanel->isVisible()) {
-        GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_INFO", assemblyBrowser->parentWidget()));
-        infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", optionsPanel);
+        GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_INFO", mdi));
+        infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", mdi);
     }
     GT_CHECK_RESULT(NULL != infoOptionsPanel, "Information options panel wasn't found", 0);
 
@@ -128,16 +125,12 @@ qint64 GTUtilsAssemblyBrowser::getLength(U2OpStatus &os, const QString& viewTitl
 
 #define GT_METHOD_NAME "getReadsCount"
 qint64 GTUtilsAssemblyBrowser::getReadsCount(U2OpStatus &os, const QString &viewTitle) {
-    AssemblyBrowserUi* assemblyBrowser = getView(os, viewTitle);
-    GT_CHECK_RESULT(NULL != assemblyBrowser, "Assembly browser wasn't found", 0);
+    QWidget *mdi = GTUtilsMdi::activeWindow(os);
 
-    QWidget* optionsPanel = GTWidget::findWidget(os, "OP_MAIN_WIDGET", assemblyBrowser->parentWidget());
-    GT_CHECK_RESULT(NULL != optionsPanel, "Options panel wasn't found", 0);
-
-    QWidget* infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", optionsPanel);
+    QWidget* infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", mdi);
     if (!infoOptionsPanel->isVisible()) {
-        GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_INFO", assemblyBrowser->parentWidget()));
-        infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", optionsPanel);
+        GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_INFO", mdi));
+        infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", mdi);
     }
     GT_CHECK_RESULT(NULL != infoOptionsPanel, "Information options panel wasn't found", 0);
 
