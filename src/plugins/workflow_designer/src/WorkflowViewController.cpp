@@ -2148,6 +2148,8 @@ void WorkflowView::runWizard(Wizard *w) {
         if (controller.isRunAfterApply()) {
             sl_launch();
         }
+    } else if (schema->getProcesses().isEmpty()) {
+        sl_newScene();
     }
 }
 
