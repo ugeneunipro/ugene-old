@@ -4080,7 +4080,7 @@ GUI_TEST_CLASS_DEFINITION(test_1396){
  * Expected state: empty alignment and UGENE not crashes
 */
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1396", "empty_rows.fa");
-    CHECK_SET_ERR(GTUtilsMsaEditor::getSequencesCount(os) == 0, "MSA is not empty");
+    CHECK_SET_ERR(GTUtilsMsaEditor::getSequencesCount(os) == 2, "Wrong rows number");
 }
 
 
