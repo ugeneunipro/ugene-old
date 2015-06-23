@@ -85,7 +85,7 @@ void WelcomePageWidget::updateRecent(const QStringList &recentProjects, const QS
 
 void WelcomePageWidget::updateRecentFilesContainer(const QString &id, const QStringList &files, const QString &message) {
     static const QString divTemplate = "<div id=\"%1\" class=\"recent_items_content\">%2</div>";
-    static const QString linkTemplate = "<a class=\"recentLink\" href=\"#\" onclick=\"ugene.openFile('%1')\">- %2</a>";
+    static const QString linkTemplate = "<a class=\"recentLink\" href=\"#\" onclick=\"ugene.openFile('%1')\" title=\"%1\">- %2</a>";
 
     QWebElement doc = webView->page()->mainFrame()->documentElement();
     QWebElement recentFilesDiv = doc.findFirst("#" + id);
@@ -101,7 +101,7 @@ void WelcomePageWidget::updateRecentFilesContainer(const QString &id, const QStr
     }
     QString result = message;
     if (!links.isEmpty()) {
-        result = links.join("<br>");
+        result = links.join("\n");
     }
     recentFilesDiv.setOuterXml(divTemplate.arg(id).arg(result));
 }
