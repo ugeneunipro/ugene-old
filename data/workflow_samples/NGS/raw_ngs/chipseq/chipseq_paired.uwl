@@ -132,25 +132,25 @@ workflow "Processing of raw ChIP-Seq paired-end reads"{
     }
 
     .actor-bindings {
-        CutAdaptFastq-1.out-file->QualityTrim-1.in-file
-        rmdup-bam.out-file->Sort-bam.in-file
+        QualityTrim.out-file->bwamem-id.in-data
+        QualityTrim.out-file->fastqc-2.in-file
+        bwamem-id.out-data->files-conversion.in-file
         QualityTrim-1.out-file->bwamem-id.in-data-paired
         QualityTrim-1.out-file->fastqc-2-1.in-file
         CutAdaptFastq.out-file->QualityTrim.in-file
-        Sort-bam.out-file->files-conversion-1.in-file
-        CASAVAFilter-1.out-file->CutAdaptFastq-1.in-file
+        CutAdaptFastq-1.out-file->QualityTrim-1.in-file
         merge-bam.out-file->filter-bam.in-file
-        files-conversion.out-file->merge-bam.in-file
-        bwamem-id.out-data->files-conversion.in-file
-        get-file-list.out-url->CASAVAFilter.in-file
-        get-file-list.out-url->fastqc.in-file
-        QualityTrim.out-file->bwamem-id.in-data
-        QualityTrim.out-file->fastqc-2.in-file
-        CASAVAFilter.out-file->CutAdaptFastq.in-file
-        Sort-bam-1.out-file->rmdup-bam.in-file
-        filter-bam.out-file->Sort-bam-1.in-file
         get-file-list-1.out-url->CASAVAFilter-1.in-file
         get-file-list-1.out-url->fastqc-1.in-file
+        CASAVAFilter-1.out-file->CutAdaptFastq-1.in-file
+        CASAVAFilter.out-file->CutAdaptFastq.in-file
+        Sort-bam.out-file->files-conversion-1.in-file
+        files-conversion.out-file->merge-bam.in-file
+        get-file-list.out-url->CASAVAFilter.in-file
+        get-file-list.out-url->fastqc.in-file
+        filter-bam.out-file->Sort-bam-1.in-file
+        Sort-bam-1.out-file->rmdup-bam.in-file
+        rmdup-bam.out-file->Sort-bam.in-file
     }
 
     get-file-list.url->CASAVAFilter.in-file.url
@@ -175,6 +175,18 @@ workflow "Processing of raw ChIP-Seq paired-end reads"{
 
     .meta {
         parameter-aliases {
+            CASAVAFilter.custom-dir {
+                alias:casava2_out_dir;
+            }
+            CASAVAFilter.out-mode {
+                alias:casava2_out_dir_type;
+            }
+            QualityTrim.custom-dir {
+                alias:trim_reads1_out_dir;
+            }
+            QualityTrim.out-mode {
+                alias:trim_reads1_out_dir_type;
+            }
             get-file-list.url-in {
                 alias:in;
             }
@@ -190,17 +202,53 @@ workflow "Processing of raw ChIP-Seq paired-end reads"{
             get-file-list-1.url-in {
                 alias:in_mate;
             }
+            CASAVAFilter-1.custom-dir {
+                alias:casava1_out_dir;
+            }
+            CASAVAFilter-1.out-mode {
+                alias:casava1_out_dir_type;
+            }
+            QualityTrim-1.custom-dir {
+                alias:trim_reads2_out_dir;
+            }
+            QualityTrim-1.out-mode {
+                alias:trim_reads2_out_dir_type;
+            }
+            fastqc.custom-dir {
+                alias:fasqc1_out_dir;
+            }
+            fastqc.out-mode {
+                alias:fasqc1_out_dir_type;
+            }
+            fastqc-1.custom-dir {
+                alias:fasqc2_out_dir;
+            }
+            fastqc-1.out-mode {
+                alias:fasqc2_out_dir_type;
+            }
+            fastqc-2.custom-dir {
+                alias:fasqc3_out_dir;
+            }
+            fastqc-2.out-mode {
+                alias:fasqc3_out_dir_type;
+            }
+            fastqc-2-1.custom-dir {
+                alias:fasqc4_out_dir;
+            }
+            fastqc-2-1.out-mode {
+                alias:fasqc4_out_dir_type;
+            }
         }
         visual {
             CASAVAFilter {
-                pos:"-865 -673";
+                pos:"-840 -645";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
                 in-file.angle:186.911;
                 out-file.angle:356.112;
             }
             CASAVAFilter-1 {
-                pos:"-865 -494";
+                pos:"-840 -465";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
                 bounds:"-30 -30 146.375 97";
@@ -208,7 +256,7 @@ workflow "Processing of raw ChIP-Seq paired-end reads"{
                 out-file.angle:356.112;
             }
             CutAdaptFastq {
-                pos:"-593 -664";
+                pos:"-570 -630";
                 style:ext;
                 bg-color-ext:"236 177 178 64";
                 bounds:"-30 -30 99.375 89";
@@ -216,7 +264,7 @@ workflow "Processing of raw ChIP-Seq paired-end reads"{
                 out-file.angle:360;
             }
             CutAdaptFastq-1 {
-                pos:"-598 -486";
+                pos:"-570 -450";
                 style:ext;
                 bg-color-ext:"236 177 178 64";
                 bounds:"-30 -30 96.5 92";
@@ -224,14 +272,14 @@ workflow "Processing of raw ChIP-Seq paired-end reads"{
                 out-file.angle:360;
             }
             QualityTrim {
-                pos:"-352 -668";
+                pos:"-330 -645";
                 style:ext;
                 bg-color-ext:"204 68 102 64";
                 in-file.angle:190.305;
                 out-file.angle:356.558;
             }
             QualityTrim-1 {
-                pos:"-355 -488";
+                pos:"-330 -465";
                 style:ext;
                 bg-color-ext:"204 68 102 64";
                 bounds:"-30 -30 149.375 87";
@@ -239,21 +287,21 @@ workflow "Processing of raw ChIP-Seq paired-end reads"{
                 out-file.angle:356.558;
             }
             Sort-bam {
-                pos:"-149 -67";
+                pos:"-120 -45";
                 style:simple;
                 bg-color-simple:"84 84 84 255";
                 in-file.angle:176.82;
                 out-file.angle:360;
             }
             Sort-bam-1 {
-                pos:"-595 -72";
+                pos:"-570 -45";
                 style:simple;
                 bg-color-simple:"84 84 84 255";
                 in-file.angle:88.5312;
                 out-file.angle:2.38594;
             }
             bwamem-id {
-                pos:"-54 -571";
+                pos:"-30 -540";
                 style:ext;
                 bg-color-ext:"0 128 0 64";
                 bounds:"-30 -30 105 92";
@@ -262,73 +310,73 @@ workflow "Processing of raw ChIP-Seq paired-end reads"{
                 out-data.angle:296.565;
             }
             fastqc {
-                pos:"-867 -855";
+                pos:"-840 -825";
                 style:simple;
                 bg-color-simple:"0 128 128 255";
                 in-file.angle:231.34;
             }
             fastqc-1 {
-                pos:"-864 -303";
+                pos:"-840 -270";
                 style:simple;
                 bg-color-simple:"0 128 128 255";
                 in-file.angle:147.529;
             }
             fastqc-2 {
-                pos:"-64 -782";
+                pos:"-30 -750";
                 style:simple;
                 bg-color-simple:"0 128 128 255";
                 in-file.angle:207.699;
             }
             fastqc-2-1 {
-                pos:"-107 -374";
+                pos:"-75 -345";
                 style:simple;
                 bg-color-simple:"0 128 128 255";
                 in-file.angle:149.621;
             }
             files-conversion {
-                pos:"-9 -292";
+                pos:"0 -270";
                 style:simple;
                 bg-color-simple:"84 84 84 255";
                 in-file.angle:88.2643;
                 out-file.angle:183.576;
             }
             files-conversion-1 {
-                pos:"53 -92";
+                pos:"60 -60";
                 style:ext;
                 bg-color-ext:"64 26 96 64";
                 in-file.angle:214.778;
                 out-file.angle:360;
             }
             filter-bam {
-                pos:"-628 -300";
+                pos:"-600 -270";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
                 in-file.angle:356.285;
                 out-file.angle:290.63;
             }
             get-file-list {
-                pos:"-1059 -677";
+                pos:"-1035 -645";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 74 94";
                 out-url.angle:354.447;
             }
             get-file-list-1 {
-                pos:"-1061 -496";
+                pos:"-1035 -465";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 75 94";
                 out-url.angle:354.447;
             }
             merge-bam {
-                pos:"-259 -288";
+                pos:"-225 -255";
                 style:simple;
                 bg-color-simple:"78 151 184 255";
                 in-file.angle:1.7357;
                 out-file.angle:175.486;
             }
             rmdup-bam {
-                pos:"-377 -72";
+                pos:"-345 -45";
                 style:simple;
                 bg-color-simple:"218 98 98 255";
                 in-file.angle:180;
@@ -394,7 +442,6 @@ workflow "Processing of raw ChIP-Seq paired-end reads"{
         }
         wizard {
             name:"Raw ChIP-Seq Data Processing Wizard";
-            help-page-id:16122725;
             page {
                 id:1;
                 next:2;

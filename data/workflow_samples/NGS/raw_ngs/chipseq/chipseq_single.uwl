@@ -97,19 +97,19 @@ workflow "Processing of raw ChIP-Seq single-end reads"{
     }
 
     .actor-bindings {
-        Sort-bam.out-file->files-conversion-1.in-file
-        Sort-bam-1.out-file->rmdup-bam.in-file
-        CutAdaptFastq.out-file->QualityTrim.in-file
+        bwamem-id.out-data->files-conversion.in-file
         CASAVAFilter.out-file->CutAdaptFastq.in-file
-        QualityTrim.out-file->bwamem-id.in-data
-        QualityTrim.out-file->fastqc-1.in-file
         get-file-list.out-url->CASAVAFilter.in-file
         get-file-list.out-url->fastqc.in-file
-        bwamem-id.out-data->files-conversion.in-file
-        files-conversion.out-file->merge-bam.in-file
+        Sort-bam.out-file->files-conversion-1.in-file
+        CutAdaptFastq.out-file->QualityTrim.in-file
+        QualityTrim.out-file->bwamem-id.in-data
+        QualityTrim.out-file->fastqc-1.in-file
+        Sort-bam-1.out-file->rmdup-bam.in-file
         merge-bam.out-file->filter-bam.in-file
-        filter-bam.out-file->Sort-bam-1.in-file
         rmdup-bam.out-file->Sort-bam.in-file
+        files-conversion.out-file->merge-bam.in-file
+        filter-bam.out-file->Sort-bam-1.in-file
     }
 
     get-file-list.url->CASAVAFilter.in-file.url
@@ -128,6 +128,18 @@ workflow "Processing of raw ChIP-Seq single-end reads"{
 
     .meta {
         parameter-aliases {
+            CASAVAFilter.custom-dir {
+                alias:casava1_out_dir;
+            }
+            CASAVAFilter.out-mode {
+                alias:casava1_out_dir_type;
+            }
+            QualityTrim.custom-dir {
+                alias:trim_reads1_out_dir;
+            }
+            QualityTrim.out-mode {
+                alias:trim_reads1_out_dir_type;
+            }
             get-file-list.url-in {
                 alias:in;
             }
@@ -140,17 +152,29 @@ workflow "Processing of raw ChIP-Seq single-end reads"{
             bwamem-id.threads {
                 alias:bwa_t;
             }
+            fastqc.custom-dir {
+                alias:fasqc1_out_dir;
+            }
+            fastqc.out-mode {
+                alias:fasqc1_out_dir_type;
+            }
+            fastqc-1.custom-dir {
+                alias:fasqc2_out_dir;
+            }
+            fastqc-1.out-mode {
+                alias:fasqc2_out_dir_type;
+            }
         }
         visual {
             CASAVAFilter {
-                pos:"-840 -536";
+                pos:"-825 -525";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
                 in-file.angle:192.529;
                 out-file.angle:356.112;
             }
             CutAdaptFastq {
-                pos:"-563 -526";
+                pos:"-555 -510";
                 style:ext;
                 bg-color-ext:"236 177 178 64";
                 bounds:"-30 -30 69.375 106";
@@ -158,28 +182,28 @@ workflow "Processing of raw ChIP-Seq single-end reads"{
                 out-file.angle:360;
             }
             QualityTrim {
-                pos:"-388 -532";
+                pos:"-375 -525";
                 style:ext;
                 bg-color-ext:"204 68 102 64";
                 in-file.angle:190.305;
                 out-file.angle:356.558;
             }
             Sort-bam {
-                pos:"-134 -117";
+                pos:"-120 -105";
                 style:simple;
                 bg-color-simple:"84 84 84 255";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             Sort-bam-1 {
-                pos:"-595 -117";
+                pos:"-585 -105";
                 style:simple;
                 bg-color-simple:"84 84 84 255";
                 in-file.angle:88.5312;
                 out-file.angle:2.38594;
             }
             bwamem-id {
-                pos:"-133 -530";
+                pos:"-120 -510";
                 style:ext;
                 bg-color-ext:"0 128 0 64";
                 bounds:"-30 -30 105 92";
@@ -188,54 +212,54 @@ workflow "Processing of raw ChIP-Seq single-end reads"{
                 out-data.angle:297.474;
             }
             fastqc {
-                pos:"-847 -733";
+                pos:"-840 -720";
                 style:simple;
                 bg-color-simple:"0 128 128 255";
                 in-file.angle:241.928;
             }
             fastqc-1 {
-                pos:"-136 -719";
+                pos:"-120 -705";
                 style:simple;
                 bg-color-simple:"0 128 128 255";
                 in-file.angle:235.561;
             }
             files-conversion {
-                pos:"-86 -304";
+                pos:"-75 -285";
                 style:simple;
                 bg-color-simple:"84 84 84 255";
                 in-file.angle:88.2643;
                 out-file.angle:183.576;
             }
             files-conversion-1 {
-                pos:"114 -140";
+                pos:"120 -120";
                 style:ext;
                 bg-color-ext:"64 26 96 64";
                 in-file.angle:214.778;
                 out-file.angle:360;
             }
             filter-bam {
-                pos:"-627 -338";
+                pos:"-615 -330";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
                 in-file.angle:346.95;
                 out-file.angle:290.63;
             }
             get-file-list {
-                pos:"-1053 -536";
+                pos:"-1035 -525";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 74 94";
                 out-url.angle:354.447;
             }
             merge-bam {
-                pos:"-280 -303";
+                pos:"-270 -285";
                 style:simple;
                 bg-color-simple:"78 151 184 255";
                 in-file.angle:0;
                 out-file.angle:180;
             }
             rmdup-bam {
-                pos:"-353 -120";
+                pos:"-345 -105";
                 style:simple;
                 bg-color-simple:"218 98 98 255";
                 in-file.angle:181.736;
@@ -283,7 +307,6 @@ workflow "Processing of raw ChIP-Seq single-end reads"{
         }
         wizard {
             name:"Raw ChIP-Seq Data Processing Wizard";
-            help-page-id:16122725;
             page {
                 id:1;
                 next:2;
