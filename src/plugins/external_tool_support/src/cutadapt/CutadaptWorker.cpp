@@ -310,7 +310,7 @@ QString CutAdaptParser::parseTextForErrors(const QStringList &lastPartOfLog) {
     foreach (const QString &buf, lastPartOfLog) {
         bool ignoredStringFound = false;
         foreach(const QString &ignoredStr, stringsToIgnore) {
-            if (buf.contains(ignoredStr)) {
+            if (buf.contains(ignoredStr, Qt::CaseInsensitive)) {
                 ignoredStringFound = true;
                 break;
             }
@@ -326,8 +326,11 @@ QStringList CutAdaptParser::initStringsToIgnore() {
     QStringList result;
 
     result << "Maximum error rate:";
-    result << "No. of allowed errors:";
-    result << "length count expect max.err error counts";
+    result << "No. of allowed error";
+    result << "max.err";
+
+    result << "Maximum\terror\trate:";
+    result << "No.\tof\tallowed\terror";
 
     return result;
 }
