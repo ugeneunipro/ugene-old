@@ -1390,10 +1390,9 @@ GUI_TEST_CLASS_DEFINITION( test_2160 )
     GTGlobals::sleep( 200 );
 
     // 6. Check that alignment has not changed
-    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( QPoint( 3, 0 ), QPoint( 14, 17 ) ) );
-    CHECK_SET_ERR( 15 == GTUtilsMSAEditorSequenceArea::getLength( os ),
+    CHECK_SET_ERR( 16 == GTUtilsMSAEditorSequenceArea::getLength( os ),
         "MSA length unexpectedly changed" );
-    CHECK_SET_ERR( 18 == GTUtilsMSAEditorSequenceArea::getNameList( os ).size( ),
+    CHECK_SET_ERR( 4 == GTUtilsMSAEditorSequenceArea::getNameList( os ).size( ),
         "MSA row count unexpectedly changed" );
 }
 
