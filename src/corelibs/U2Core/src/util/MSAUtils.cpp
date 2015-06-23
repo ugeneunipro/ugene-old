@@ -251,7 +251,6 @@ namespace {
 
 bool listContainsSeqObject(const QList<GObject *> &objs, int &firstSeqObjPos) {
     int objectNumber = 0;
-    bool sequenceObjectsExist = false;
     foreach (GObject *o, objs) {
         if (o->getGObjectType() == GObjectTypes::SEQUENCE) {
             firstSeqObjPos = objectNumber;

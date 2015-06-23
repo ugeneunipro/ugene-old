@@ -230,12 +230,12 @@ void PrimerGrouperTask::findCompatibleGroups() {
 
     if(!compatiblePrimersGroups.isEmpty()) {
         qSort(compatiblePrimersGroups.begin(), compatiblePrimersGroups.end(), groupsCompareFunction);
-        generateReport(compatiblePrimersGroups);
+        createReport(compatiblePrimersGroups);
         writeReportToFile();
     }
 }
 
-void PrimerGrouperTask::generateReport(const QList<QList<int> >& correctPrimersGroups) {
+void PrimerGrouperTask::createReport(const QList<QList<int> >& correctPrimersGroups) {
     CHECK(correctPrimersGroups.size() > 0, );
 
     report += "<!DOCTYPE html>\n";

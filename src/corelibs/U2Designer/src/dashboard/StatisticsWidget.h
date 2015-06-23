@@ -42,7 +42,7 @@ private slots:
     void sl_update();
 
 private:
-    QStringList createRow(const QString &actor, const Monitor::WorkerInfo &info);
+    QStringList createRowByWorker(const QString &actor, const Monitor::WorkerInfo &info);
 };
 
 } // U2

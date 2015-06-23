@@ -50,7 +50,7 @@ protected:
     bool readEntry(ParserState*, U2SequenceImporter&,int& seqSize,int& fullSeqSize,bool merge, int gapSize,U2OpStatus&);
     void readHeaderAttributes(QVariantMap& tags, DbiConnection& con, U2SequenceObject* so);
 
-    virtual void writeAnnotations(IOAdapter *io, const QList<GObject*> &aos, U2OpStatus &si);
+    void writeAnnotations(IOAdapter *io, const QList<GObject*> &aos, U2OpStatus &si);
     QString genLocusString(const QList<GObject*> &aos, U2SequenceObject* so, const QString &locusStrFromAttr);
     bool writeKeyword(IOAdapter* io, U2OpStatus& os, const QString& key, const QString& value, bool wrap = true /*TODO*/);
     void writeSequence(IOAdapter* io, U2SequenceObject* ao, const QList<U2Region> &lowerCaseRegs, U2OpStatus& si);

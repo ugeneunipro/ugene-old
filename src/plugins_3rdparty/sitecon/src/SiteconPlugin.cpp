@@ -105,10 +105,8 @@ void SiteconPlugin::sl_build() {
 }
 
 void SiteconPlugin::sl_search() {
-    assert(NULL);
+    assert(false);
 }
-
-
 
 SiteconADVContext::SiteconADVContext(QObject* p) : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID)
 {

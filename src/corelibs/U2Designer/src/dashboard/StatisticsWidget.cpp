@@ -40,7 +40,7 @@ StatisticsWidget::StatisticsWidget(const QWebElement &container, Dashboard *pare
 void StatisticsWidget::sl_workerInfoChanged(const QString &actor,
     const U2::Workflow::Monitor::WorkerInfo &info)
 {
-    updateRow(actor, createRow(actor, info));
+    updateRow(actor, createRowByWorker(actor, info));
 }
 
 void StatisticsWidget::sl_update() {
@@ -49,7 +49,7 @@ void StatisticsWidget::sl_update() {
 
     QMap<QString, WorkerInfo> infos = m->getWorkersInfo();
     foreach (const QString &actor, infos.keys()) {
-        updateRow(actor, createRow(actor, infos[actor]));
+        updateRow(actor, createRowByWorker(actor, infos[actor]));
     }
 }
 
@@ -74,13 +74,13 @@ QList<QStringList> StatisticsWidget::data() {
         WorkerInfo &info = infos[actorId];
         QStringList row;
         row << actorId; // id
-        row << createRow(actorId, info);
+        row << createRowByWorker(actorId, info);
         result << row;
     }
     return result;
 }
 
-QStringList StatisticsWidget::createRow(const QString &actor, const WorkerInfo &info) {
+QStringList StatisticsWidget::createRowByWorker(const QString &actor, const WorkerInfo &info) {
     QStringList result;
     const WorkflowMonitor *m = dashboard->monitor();
     CHECK(NULL != m, result);

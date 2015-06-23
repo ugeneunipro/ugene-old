@@ -78,7 +78,7 @@ public:
     QString getReport() const { return report; }
 
 private:
-    void generateReport();
+    void createReport();
     void writeReportToFile();
 
     QString createRow(const QString& forwardName, const QString& reverseName, double forwardTm, double reverseTm);

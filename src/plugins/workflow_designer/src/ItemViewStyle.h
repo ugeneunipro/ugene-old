@@ -142,7 +142,7 @@ class DescriptionItem : public QGraphicsTextItem {
     Q_OBJECT
 public:
     DescriptionItem(ExtendedProcStyle* p);
-    void mouseReleaseEvent(QEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 protected:
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

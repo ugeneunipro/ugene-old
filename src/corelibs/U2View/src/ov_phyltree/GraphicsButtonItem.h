@@ -58,7 +58,7 @@ public:
 
     const QGraphicsSimpleTextItem* getLabel() const;
 
-    virtual QRectF boundingRect();
+    virtual QRectF boundingRect() const;
 
     qreal getNodeValue() {return nodeValue;}
 

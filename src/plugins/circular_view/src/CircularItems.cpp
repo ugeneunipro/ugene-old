@@ -95,7 +95,7 @@ Annotation * CircularAnnotationItem::getAnnotation() const {
     return annotation;
 }
 
-bool CircularAnnotationItem::contains(const QPointF &point) {
+bool CircularAnnotationItem::contains(const QPointF &point) const {
     if(_boundingRect.contains(point)) {
         foreach(CircularAnnotationRegionItem* item, regions)
             if(item->contains(point)) {
@@ -557,7 +557,7 @@ QRectF CircularAnnotationLabel::boundingRect() const {
     return bound;
 }
 
-bool CircularAnnotationLabel::contains(const QPointF &point) {
+bool CircularAnnotationLabel::contains(const QPointF &point) const {
     return boundingRect().contains(point) || QGraphicsLineItem(QLine(labelPos, connectionPoint)).contains(point);
 }
 

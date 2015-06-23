@@ -51,7 +51,7 @@ void OutputFilesWidget::sl_newOutputFile(const U2::Workflow::Monitor::FileInfo &
     if (collapsed && rows.contains(id(info))) {
         addFileMenu(info);
     } else {
-        addRow(id(info), createRow(info));
+        addRow(id(info), createRowByFile(info));
     }
 }
 
@@ -70,7 +70,7 @@ QList<QStringList> OutputFilesWidget::data() {
     foreach (const Monitor::FileInfo &file, m->getOutputFiles()) {
         QStringList row;
         row << file.url; // id
-        row << createRow(file);
+        row << createRowByFile(file);
         result << row;
     }
     return result;
@@ -133,7 +133,7 @@ QString OutputFilesWidget::createFileSubMenu(const Monitor::FileInfo& info) cons
     .arg(createActionsSubMenu(info, false));
 }
 
-QStringList OutputFilesWidget::createRow(const Monitor::FileInfo &info) const {
+QStringList OutputFilesWidget::createRowByFile(const Monitor::FileInfo &info) const {
     QStringList result;
     const WorkflowMonitor *m = dashboard->monitor();
     CHECK(NULL != m, result);
@@ -173,7 +173,7 @@ void OutputFilesWidget::collapse() {
     foreach (const QString &actorId, actors) {
         QList<Monitor::FileInfo> files = filesMap[actorId];
         if (1 == files.size()) {
-            addRow(id(files.first()), createRow(files.first()));
+            addRow(id(files.first()), createRowByFile(files.first()));
         } else {
             createFilesButton(actorId, files);
         }

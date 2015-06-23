@@ -40,7 +40,7 @@ PlainTextFormat::PlainTextFormat(QObject* p) : DocumentFormat(p, DocumentFormatF
 }
 
 
-Document* PlainTextFormat::createNewLoadedDocument(IOAdapterFactory* io, const QString& url, U2OpStatus& os, const QVariantMap& fs) {
+Document* PlainTextFormat::createNewLoadedDocument(IOAdapterFactory* io, const GUrl &url, U2OpStatus& os, const QVariantMap& fs) {
     Document* d = DocumentFormat::createNewLoadedDocument(io, url, os, fs);
     CHECK_OP(os, NULL);
     GObject* o = TextObject::createInstance("", "Text", d->getDbiRef(), os);

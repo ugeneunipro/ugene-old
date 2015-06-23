@@ -142,7 +142,7 @@ QString GenericDocReader::getObjectName(const SharedDbiDataHandler &handler, con
     return object->visualName;
 }
 
-bool GenericDocReader::isDone() {
+bool GenericDocReader::isDone() const {
     return BaseWorker::isDone() && cache.isEmpty();
 }
 

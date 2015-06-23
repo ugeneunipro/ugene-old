@@ -86,14 +86,14 @@ private:
 
 class URLContainerUpdateHelper : public UrlItemVisitor {
 public:
-    URLContainerUpdateHelper(FileUrlContainer *url)
-        : fileUrl(url), dirUrl(NULL), dbObjUrl(NULL), dbFolderUrl(NULL) {}
+    URLContainerUpdateHelper(FileUrlContainer * /*url*/)
+        : dirUrl(NULL), dbFolderUrl(NULL) {}
     URLContainerUpdateHelper(DirUrlContainer *url)
-        : fileUrl(NULL), dirUrl(url), dbObjUrl(NULL), dbFolderUrl(NULL) {}
-    URLContainerUpdateHelper(DbObjUrlContainer *url)
-        : fileUrl(NULL), dirUrl(NULL), dbObjUrl(url), dbFolderUrl(NULL) {}
+        : dirUrl(url), dbFolderUrl(NULL) {}
+    URLContainerUpdateHelper(DbObjUrlContainer * /*url*/)
+        : dirUrl(NULL), dbFolderUrl(NULL) {}
     URLContainerUpdateHelper(DbFolderUrlContainer *url)
-        : fileUrl(NULL), dirUrl(NULL), dbObjUrl(NULL), dbFolderUrl(url) {}
+        : dirUrl(NULL), dbFolderUrl(url) {}
 
     virtual void visit(DirectoryItem *item) {
         SAFE_POINT(NULL != dirUrl, "NULL directory url", );
@@ -116,9 +116,7 @@ public:
     }
 
 private:
-    FileUrlContainer *fileUrl;
     DirUrlContainer *dirUrl;
-    DbObjUrlContainer *dbObjUrl;
     DbFolderUrlContainer *dbFolderUrl;
 };
 

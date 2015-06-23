@@ -74,7 +74,6 @@ private:
 
 private:
     QString outPortId;
-    URLDelegate *urlDelegate;
 };
 
 class ReadDocPrompter;

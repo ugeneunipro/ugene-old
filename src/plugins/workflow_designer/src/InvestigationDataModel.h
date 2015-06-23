@@ -47,7 +47,7 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole)
         const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
-    bool setData(int row, int column, const QVariant &value, int role = Qt::DisplayRole);
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::DisplayRole);
     bool setHeaderData(int section, Qt::Orientation orientation, const QVariant & value,
         int role = Qt::DisplayRole);
     bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());

@@ -43,7 +43,7 @@ public:
 
     virtual const QString& getFormatName() const {return formatName;}
 
-    virtual Document* createNewLoadedDocument(IOAdapterFactory* io, const QString& url, const QVariantMap& fs = QVariantMap());
+    virtual Document* createNewLoadedDocument(IOAdapterFactory* io, const GUrl& url, const QVariantMap& fs = QVariantMap());
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 

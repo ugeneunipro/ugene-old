@@ -47,7 +47,6 @@
 
 const QString PRODUCING_ACTOR_AND_DATA_TYPE_SEPARATOR = ":";
 const QString FILE_NAME_WORDS_SEPARATOR = "_";
-const quint8 MAXIMUM_COUNT_OF_LOADED_DOCUMENTS = 10;
 const QString INVESTIGATION_FILES_DIR_NAME = "investigation_files";
 
 namespace U2 {

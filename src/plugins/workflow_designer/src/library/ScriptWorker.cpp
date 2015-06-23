@@ -175,7 +175,7 @@ bool ScriptWorker::isNeedToBeDone() const {
         bool hasNotEnded = false;
         foreach (Port *port, actor->getInputPorts()) {
             IntegralBus *input = ports[port->getId()];
-            SAFE_POINT(NULL != input, "NULL input bus", NULL);
+            SAFE_POINT(NULL != input, "NULL input bus", false);
             if (!input->isEnded()) {
                 hasNotEnded = true;
                 break;
@@ -193,7 +193,7 @@ bool ScriptWorker::isNeedToBeRun() const {
     } else {
         foreach (Port *port, actor->getInputPorts()) {
             IntegralBus *input = ports[port->getId()];
-            SAFE_POINT(NULL != input, "NULL input bus", NULL);
+            SAFE_POINT(NULL != input, "NULL input bus", false);
             if (!input->hasMessage()) {
                 result = false;
                 break;

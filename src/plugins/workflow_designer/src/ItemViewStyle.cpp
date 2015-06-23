@@ -330,12 +330,12 @@ bool ExtendedProcStyle::sceneEventFilter( QGraphicsItem * watched, QEvent * even
     case QEvent::GraphicsSceneHoverEnter:
     case QEvent::GraphicsSceneHoverMove:
         {
-            QGraphicsSceneHoverEvent* he = static_cast<QGraphicsSceneHoverEvent*>(event);
+            QGraphicsSceneHoverEvent* he = dynamic_cast<QGraphicsSceneHoverEvent*>(event);
             ret = updateCursor(he->pos());
         }
         break;
     case QEvent::GraphicsSceneMouseRelease:
-        desc->mouseReleaseEvent(event);
+        desc->mouseReleaseEvent(dynamic_cast<QGraphicsSceneMouseEvent *>(event));
     case QEvent::GraphicsSceneHoverLeave:
         if (resizing) {
             owner->unsetCursor();
@@ -344,7 +344,7 @@ bool ExtendedProcStyle::sceneEventFilter( QGraphicsItem * watched, QEvent * even
         break;
     case QEvent::GraphicsSceneMouseMove:
         if (resizing && event->spontaneous()) {
-            QGraphicsSceneMouseEvent* me = (static_cast<QGraphicsSceneMouseEvent *>(event));
+            QGraphicsSceneMouseEvent* me = (dynamic_cast<QGraphicsSceneMouseEvent *>(event));
             WorkflowSettings::setSnap2Grid(false);
             QPointF newPos;
             if ((me->buttons() & Qt::LeftButton)) {
@@ -651,10 +651,9 @@ void DescriptionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     QGraphicsTextItem::paint(painter, &deselectedOption, widget);
 }
 
-void DescriptionItem::mouseReleaseEvent(QEvent *event) {
-    QGraphicsSceneMouseEvent* e = static_cast<QGraphicsSceneMouseEvent*>(event);
-    e->setPos(mapFromParent(e->pos()));
-    QGraphicsTextItem::mouseReleaseEvent(e);
+void DescriptionItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+    event->setPos(mapFromParent(event->pos()));
+    QGraphicsTextItem::mouseReleaseEvent(event);
 }
 
 bool DescriptionItem::sceneEvent(QEvent *event) {

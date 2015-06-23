@@ -140,6 +140,11 @@ public:
         return QHash<U2Object, QString>();
     }
 
+    virtual QStringList getObjectFolders(const U2DataId&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_RemoveObjects, getRootDbi(), os);
+        return QStringList();
+    }
+
     virtual bool removeObject(const U2DataId&, bool, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_RemoveObjects, getRootDbi(), os);
         return false;

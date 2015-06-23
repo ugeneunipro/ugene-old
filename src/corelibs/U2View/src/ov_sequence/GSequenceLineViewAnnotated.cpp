@@ -120,13 +120,12 @@ void GSequenceLineViewAnnotated::sl_onAnnotationsRemoved(const QList<Annotation 
 }
 
 void GSequenceLineViewAnnotated::sl_onAnnotationsInGroupRemoved(const QList<Annotation *> &l, AnnotationGroup *) {
-    AnnotationTableObject *aobj = static_cast<AnnotationTableObject *>(sender());
-    ClearAnnotationsTask *task = new ClearAnnotationsTask(l, aobj, this);
+    ClearAnnotationsTask *task = new ClearAnnotationsTask(l, this);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 }
 
-ClearAnnotationsTask::ClearAnnotationsTask(const QList<Annotation *> &list, AnnotationTableObject *aobj, GSequenceLineViewAnnotated *view)
-    : Task("Clear annotations", TaskFlag_None), l(list), aobj(aobj), view(view)
+ClearAnnotationsTask::ClearAnnotationsTask(const QList<Annotation *> &list, GSequenceLineViewAnnotated *view)
+    : Task("Clear annotations", TaskFlag_None), l(list), view(view)
 {
 
 }
@@ -156,7 +155,7 @@ void GSequenceLineViewAnnotated::sl_onAnnotationSelectionChanged(AnnotationSelec
             const AnnotationSelectionData *asd = as->getAnnotationData(a);
             SAFE_POINT(asd != NULL, "AnnotationSelectionData is NULL",);
             foreach (int loc, asd->locationIdxList) {
-                ensureVisible(a->getData(), loc);
+                ensureVisible(a, loc);
             }
             changed = true;
         }
@@ -668,7 +667,7 @@ void GSequenceLineViewAnnotated::unregisterAnnotations(const QList<Annotation *>
 
 }
 
-void GSequenceLineViewAnnotated::ensureVisible(const SharedAnnotationData &a, int locationIdx) {
+void GSequenceLineViewAnnotated::ensureVisible(Annotation *a, int locationIdx) {
     QVector<U2Region> location = a->getRegions();
     SAFE_POINT(locationIdx < location.size(), "Invalid annotation location on the widget!",);
     if (-1 == locationIdx) {

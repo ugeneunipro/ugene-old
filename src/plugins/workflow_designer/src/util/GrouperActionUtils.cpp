@@ -81,7 +81,7 @@ ActionPerformer *GrouperActionUtils::getActionPerformer(const GrouperOutSlot &sl
         }
         return map;
     }
-    assert(NULL);
+    assert(false);
     return NULL;
 }
 
@@ -120,10 +120,10 @@ bool GrouperActionUtils::equalData(const QString &groupOp, const QVariant &data1
         SharedDbiDataHandler alId2 = data2.value<SharedDbiDataHandler>();
 
         QScopedPointer<MAlignmentObject> alObj1(StorageUtils::getMsaObject(context->getDataStorage(), alId1));
-        SAFE_POINT(NULL != alObj1.data(), "NULL MSA Object!", NULL);
+        SAFE_POINT(NULL != alObj1.data(), "NULL MSA Object!", false);
 
         QScopedPointer<MAlignmentObject> alObj2(StorageUtils::getMsaObject(context->getDataStorage(), alId2));
-        SAFE_POINT(NULL != alObj2.data(), "NULL MSA Object!", NULL);
+        SAFE_POINT(NULL != alObj2.data(), "NULL MSA Object!", false);
 
 
         const MAlignment &al1 = alObj1->getMAlignment();

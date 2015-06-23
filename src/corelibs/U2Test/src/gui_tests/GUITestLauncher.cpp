@@ -36,14 +36,12 @@
 
 #define TIMEOUT 480000
 
-#ifdef Q_OS_UNIX
-#define NUMBER_OF_TESTS_IN_SUTIE 500
-#endif
 #ifdef Q_OS_MAC
-#define NUMBER_OF_TESTS_IN_SUTIE 600
-#endif
-#ifdef Q_OS_WIN
-#define NUMBER_OF_TESTS_IN_SUTIE 950
+#define NUMBER_OF_TESTS_IN_SUITE 600
+#elif defined(Q_OS_UNIX)
+#define NUMBER_OF_TESTS_IN_SUITE 500
+#elif defined(Q_OS_WIN)
+#define NUMBER_OF_TESTS_IN_SUITE 950
 #endif
 
 #define GUITESTING_REPORT_PREFIX "GUITesting"
@@ -132,8 +130,8 @@ bool GUITestLauncher::initGUITestBase() {
 
     QList<QList<GUITest *> > suiteList;
     if(suiteNumber){
-        for(int i=0; i<(list.length()/NUMBER_OF_TESTS_IN_SUTIE + 1);i++){
-            suiteList << list.mid(i*NUMBER_OF_TESTS_IN_SUTIE,NUMBER_OF_TESTS_IN_SUTIE);
+        for(int i=0; i<(list.length()/NUMBER_OF_TESTS_IN_SUITE + 1);i++){
+            suiteList << list.mid(i*NUMBER_OF_TESTS_IN_SUITE,NUMBER_OF_TESTS_IN_SUITE);
         }
         if(suiteNumber<0 || suiteNumber>suiteList.size()){
             setError(tr("Invalid suite number: %1. There are %2 suites").arg(suiteNumber).arg(suiteList.size()));

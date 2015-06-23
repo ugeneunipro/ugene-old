@@ -81,7 +81,7 @@ public:
     static QString createCell(const QString& value, bool center = false, const QString &attrs = "");
     static QString createColumn(const QString& name);
 private:
-    void generateReport(const QList<QList<int> >& groups);
+    void createReport(const QList<QList<int> >& groups);
     void fillReportTable(const QList<QList<int> >& groups);
     void writeReportToFile();
 

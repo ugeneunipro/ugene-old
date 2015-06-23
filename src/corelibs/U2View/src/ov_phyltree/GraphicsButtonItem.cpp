@@ -71,11 +71,9 @@ void GraphicsButtonItem::paint(QPainter* painter, const QStyleOptionGraphicsItem
     worldTransform.setMatrix(1.0, 0, 0, 0, 1.0, 0, worldTransform.m31(), worldTransform.m32(), worldTransform.m33());
     painter->setWorldTransform(worldTransform);
     QGraphicsEllipseItem::paint(painter, option, widget);
-
-    QRectF rect = boundingRect();
 }
 
-QRectF GraphicsButtonItem::boundingRect() {
+QRectF GraphicsButtonItem::boundingRect() const {
     QRectF resultRect = QGraphicsEllipseItem::boundingRect();
     qreal delta = (resultRect.width() / scaleFactor - resultRect.width()) / 2;
     return resultRect.adjusted(delta, delta, delta, delta);

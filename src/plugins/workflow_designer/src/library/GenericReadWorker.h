@@ -42,7 +42,7 @@ public:
 
     virtual void init();
     virtual Task *tick();
-    virtual bool isDone();
+    virtual bool isDone() const;
     virtual void cleanup() {}
 
 protected slots:

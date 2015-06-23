@@ -93,7 +93,7 @@ void Dbi::init(const QHash<QString, QString> &properties, const QVariantMap & /*
                     throw Exception(opStatus.getError());
                 }
             }
-            assemblyDbi.reset(new AssemblyDbi(*this, *reader, dbRef, assembliesCount, maxReadLengths));
+            assemblyDbi.reset(new AssemblyDbi(*this, *reader, dbRef, maxReadLengths));
         }
         initProperties = properties;
         features.insert(U2DbiFeature_ReadSequence);
@@ -553,12 +553,11 @@ void ObjectDbi::setObjectRank(const U2DataId & /*objectId*/, U2DbiObjectRank /*n
 }
 
 // AssemblyDbi
-AssemblyDbi::AssemblyDbi(Dbi &dbi, BamReader &reader, DbRef &dbRef, int assembliesCount, QList<qint64> maxReadLengths):
+AssemblyDbi::AssemblyDbi(Dbi &dbi, BamReader &reader, DbRef &dbRef, QList<qint64> maxReadLengths):
     U2SimpleAssemblyDbi(&dbi),
     dbi(dbi),
     reader(reader),
     dbRef(dbRef),
-    assembliesCount(assembliesCount),
     maxReadLengths(maxReadLengths)
 {
 }

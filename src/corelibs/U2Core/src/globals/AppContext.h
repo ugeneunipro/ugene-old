@@ -70,7 +70,6 @@ class PWMConversionAlgorithmRegistry;
 class VirtualFileSystemRegistry;
 class DnaAssemblyAlgRegistry;
 class GenomeAssemblyAlgRegistry;
-class MSAAlignAlgRegistry;
 class AppGlobalObject;
 class DataBaseRegistry;
 class ExternalToolRegistry;
@@ -305,7 +304,6 @@ protected:
     virtual VirtualFileSystemRegistry * _getVirtualFileSystemRegistry() const = 0;
     virtual DnaAssemblyAlgRegistry*     _getDnaAssemblyAlgRegistry() const = 0;
     virtual GenomeAssemblyAlgRegistry*     _getGenomeAssemblyAlgRegistry() const = 0;
-    virtual MSAAlignAlgRegistry*        _getMSAAlignAlgRegistry() const = 0;
     virtual DataBaseRegistry *          _getDataBaseRegistry() const = 0;
     virtual ExternalToolRegistry *          _getExternalToolRegistry() const = 0;
     virtual RepeatFinderTaskFactoryRegistry*  _getRepeatFinderTaskFactoryRegistry() const = 0;

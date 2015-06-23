@@ -46,7 +46,7 @@ private:
     void createFilesButton(const QString &actorId, const QList<Monitor::FileInfo> &files);
     QString createFileSubMenu(const Monitor::FileInfo& info) const;
     QString createActionsSubMenu(const Monitor::FileInfo& info, bool fullWidth) const;
-    QStringList createRow(const Monitor::FileInfo &info) const;
+    QStringList createRowByFile(const Monitor::FileInfo &info) const;
     void collapse();
     QString id(const QString &actorId) const;
     QString id(const Monitor::FileInfo &info) const;

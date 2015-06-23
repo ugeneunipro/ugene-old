@@ -86,7 +86,7 @@ WorkflowDocFormat::WorkflowDocFormat(QObject* p)
         "workflow with the text file");
 }
 
-Document* WorkflowDocFormat::createNewLoadedDocument(IOAdapterFactory* io, const QString& url, U2OpStatus& os, const QVariantMap& fs) {
+Document* WorkflowDocFormat::createNewLoadedDocument(IOAdapterFactory* io, const GUrl &url, U2OpStatus& os, const QVariantMap& fs) {
     Document* d = DocumentFormat::createNewLoadedDocument(io, url, os, fs);
     GObject* o = new WorkflowGObject(tr("Workflow"), "");
     d->addObject(o);

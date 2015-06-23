@@ -67,7 +67,7 @@ protected:
 
     virtual void                            registerAnnotations(const QList<Annotation *> &l);
     virtual void                            unregisterAnnotations(const QList<Annotation *> &l);
-    virtual void                            ensureVisible(const SharedAnnotationData &a, int locationIdx);
+    virtual void                            ensureVisible(Annotation *a, int locationIdx);
 
 protected slots:
     virtual void                            sl_onAnnotationSettingsChanged(const QStringList &changedSettings);
@@ -146,7 +146,6 @@ protected:
 class ClearAnnotationsTask : public Task {
 public:
                                     ClearAnnotationsTask(const QList<Annotation *> &    list,
-                                                          AnnotationTableObject *       aobj,
                                                           GSequenceLineViewAnnotated *  view);
 
     void                            run();
@@ -154,7 +153,6 @@ public:
 
 private:
     QList<Annotation *>             l;
-    AnnotationTableObject *         aobj;
     GSequenceLineViewAnnotated *    view;
 };
 

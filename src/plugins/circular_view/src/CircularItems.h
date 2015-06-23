@@ -54,7 +54,7 @@ public:
     virtual void paint(QPainter *p,const QStyleOptionGraphicsItem *item,QWidget *widget);
     Annotation * getAnnotation() const;
     virtual QRectF boundingRect() const;
-    virtual bool contains(const QPointF &point);
+    virtual bool contains(const QPointF &point) const;
     int containsRegion(const QPointF &point);
     CircularAnnotationRegionItem* getContainingRegion(const QPointF & point);
 
@@ -108,7 +108,7 @@ public:
     virtual void paint(QPainter *p,const QStyleOptionGraphicsItem *item,QWidget *widget);
     Annotation * getAnnotation() const;
     virtual QRectF boundingRect() const;
-    virtual bool contains(const QPointF &point);
+    virtual bool contains(const QPointF &point) const;
     int getRegion() const;
     void setLabelPosition();
     static void prepareLabels(QList<CircularAnnotationLabel*>& labelItems);

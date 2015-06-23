@@ -196,12 +196,12 @@ void FindPrimersTask::run() {
         }
     }
     if(!rows.isEmpty()) {
-        generateReport();
+        createReport();
         writeReportToFile();
     }
 }
 
-void FindPrimersTask::generateReport() {
+void FindPrimersTask::createReport() {
     CHECK(rows.size() > 0, );
 
     report += "<!DOCTYPE html>\n";

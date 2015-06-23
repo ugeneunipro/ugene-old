@@ -407,8 +407,7 @@ void PanView::setVisibleRange(const U2Region& newRange, bool signal) {
 
 void PanView::ensureVisible(Annotation *a, int locationIdx) {
     AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
-    const SharedAnnotationData &aData = a->getData();
-    const AnnotationSettings *as = asr->getAnnotationSettings(aData);
+    const AnnotationSettings *as = asr->getAnnotationSettings(a->getData());
     if (as->visible) {
         const int row = rowsManager->getAnnotationRowIdx(a);
         const PanViewRenderArea *pr = getRenderArea();
@@ -416,7 +415,7 @@ void PanView::ensureVisible(Annotation *a, int locationIdx) {
             centerRow(row);
         }
     }
-    GSequenceLineViewAnnotated::ensureVisible(aData, locationIdx);
+    GSequenceLineViewAnnotated::ensureVisible(a, locationIdx);
 }
 
 void PanView::centerRow(int row) {

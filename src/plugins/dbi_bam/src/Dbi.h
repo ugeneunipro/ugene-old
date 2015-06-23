@@ -129,7 +129,7 @@ private:
 
 class AssemblyDbi : public U2SimpleAssemblyDbi {
 public:
-    AssemblyDbi(Dbi &dbi, BamReader &reader, DbRef &dbRef, int assembliesCount, QList<qint64> maxReadLengths);
+    AssemblyDbi(Dbi &dbi, BamReader &reader, DbRef &dbRef, QList<qint64> maxReadLengths);
 
     virtual U2Assembly getAssemblyObject(const U2DataId& id, U2OpStatus &os);
 
@@ -158,7 +158,6 @@ private:
     Dbi &dbi;
     BamReader &reader;
     DbRef &dbRef;
-    int assembliesCount;
     QList<qint64> maxReadLengths;
 };
 

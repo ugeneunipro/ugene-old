@@ -60,10 +60,6 @@ public:
     SuperDelegate(WorkflowEditor *parent);
 
     virtual bool handlePropertyValueList(const QString& name, QVariant list) const;
-
-private:
-    WorkflowEditor* owner;
-
 }; // SuperDelegate
 
 } // U2

@@ -90,7 +90,7 @@ void ProxyDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, con
 /********************************
  * SuperDelegate
  ********************************/
-SuperDelegate::SuperDelegate(WorkflowEditor *parent) : ProxyDelegate(parent), owner(parent) {
+SuperDelegate::SuperDelegate(WorkflowEditor *parent) : ProxyDelegate(parent) {
 }
 
 bool SuperDelegate::handlePropertyValueList(const QString& /*name*/, QVariant /*list*/) const {

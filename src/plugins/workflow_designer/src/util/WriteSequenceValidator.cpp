@@ -40,7 +40,7 @@ WriteSequenceValidator::WriteSequenceValidator(const QString &attr, const QStrin
 
 bool WriteSequenceValidator::validate(const Configuration *cfg, ProblemList &problemList) const {
     const Actor *actor = dynamic_cast<const Actor*>(cfg);
-    SAFE_POINT(NULL != actor, "NULL actor", NULL);
+    SAFE_POINT(NULL != actor, "NULL actor", false);
     if (!isAnnotationsBinded(actor)) {
         return true;
     }

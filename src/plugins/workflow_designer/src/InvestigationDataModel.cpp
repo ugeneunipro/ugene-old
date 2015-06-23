@@ -187,14 +187,14 @@ bool InvestigationDataModel::removeRows(int position, int rows, const QModelInde
     return true;
 }
 
-bool InvestigationDataModel::setData(int row, int column, const QVariant &value, int role) {
-    if (0 <= row && 0 <= column && hiddenColumns.size() > column && countOfRows > row
+bool InvestigationDataModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+    if (index.isValid() && hiddenColumns.size() > index.column() && countOfRows > index.row()
         && value.isValid() && role == Qt::DisplayRole)
     {
         const QString data = value.toString();
-        cachedData[cachedData.keys()[column]].enqueue(data);
-        if(!hiddenColumns.testBit(column)) {
-            QModelIndex changedIndex(this->index(row, getVisibleNumberOfAbsoluteColumn(column)));
+        cachedData[cachedData.keys()[index.column()]].enqueue(data);
+        if(!hiddenColumns.testBit(index.column())) {
+            QModelIndex changedIndex(this->index(index.row(), getVisibleNumberOfAbsoluteColumn(index.column())));
             emit dataChanged(changedIndex, changedIndex);
         }
         return true;

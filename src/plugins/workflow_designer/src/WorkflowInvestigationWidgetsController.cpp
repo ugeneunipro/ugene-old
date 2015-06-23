@@ -239,7 +239,7 @@ void WorkflowInvestigationWidgetsController::sl_currentInvestigationUpdateRespon
             for(int rowNumber = rowInsertionStartPosition;
                 rowNumber < investigationInfo[key].size() + rowInsertionStartPosition; ++rowNumber)
             {
-                investigationModel->setData(rowNumber, columnNumber,
+                investigationModel->setData(investigationModel->index(rowNumber, columnNumber),
                     investigationInfo[key][rowNumber - rowInsertionStartPosition]);
             }
         }

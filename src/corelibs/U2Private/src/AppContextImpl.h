@@ -71,7 +71,6 @@ public:
         pwmConversionAlgoRegistry = NULL;
         dnaAssemblyAlgRegistry = NULL;
         genomeAssemblyAlgRegistry = NULL;
-        msaAlignAlgRegistry = NULL;
         virtualFileSystemRegistry = NULL;
         dataBaseRegistry = NULL;
         externalToolRegistry = NULL;
@@ -224,16 +223,16 @@ public:
         genomeAssemblyAlgRegistry = r;
     }
 
-    void setMSAAlignAlgRegistry( MSAAlignAlgRegistry * r ) {
-        assert( msaAlignAlgRegistry == NULL || r == NULL );
-        msaAlignAlgRegistry = r;
-    }
-
     void setDataBaseRegistry( DataBaseRegistry *dbr) {
         assert (dataBaseRegistry == NULL || dbr == NULL );
         dataBaseRegistry = dbr;
     }
-    void setExternalToolRegistry( ExternalToolRegistry * _etr) { assert( externalToolRegistry == NULL || _etr == NULL ); externalToolRegistry = _etr; }
+
+    void setExternalToolRegistry( ExternalToolRegistry * _etr) {
+        assert( externalToolRegistry == NULL || _etr == NULL );
+        externalToolRegistry = _etr;
+    }
+
     void setRepeatFinderTaskFactoryRegistry (RepeatFinderTaskFactoryRegistry* _rfr) {
         assert( rfr == NULL || _rfr == NULL ); rfr = _rfr;
     }
@@ -387,7 +386,6 @@ protected:
     virtual VirtualFileSystemRegistry *     _getVirtualFileSystemRegistry() const { return virtualFileSystemRegistry; }
     virtual DnaAssemblyAlgRegistry*         _getDnaAssemblyAlgRegistry() const {return dnaAssemblyAlgRegistry; }
     virtual GenomeAssemblyAlgRegistry*         _getGenomeAssemblyAlgRegistry() const {return genomeAssemblyAlgRegistry; }
-    virtual MSAAlignAlgRegistry*         _getMSAAlignAlgRegistry() const {return msaAlignAlgRegistry; }
     virtual DataBaseRegistry *              _getDataBaseRegistry() const {return dataBaseRegistry;}
     virtual ExternalToolRegistry *          _getExternalToolRegistry() const {return externalToolRegistry;}
     virtual RepeatFinderTaskFactoryRegistry*   _getRepeatFinderTaskFactoryRegistry() const {return rfr;}
@@ -465,7 +463,6 @@ private:
     VirtualFileSystemRegistry * virtualFileSystemRegistry;
     DnaAssemblyAlgRegistry* dnaAssemblyAlgRegistry;
     GenomeAssemblyAlgRegistry* genomeAssemblyAlgRegistry;
-    MSAAlignAlgRegistry* msaAlignAlgRegistry;
     DataBaseRegistry* dataBaseRegistry;
     ExternalToolRegistry * externalToolRegistry;
     RepeatFinderTaskFactoryRegistry* rfr;

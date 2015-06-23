@@ -42,7 +42,7 @@ public:
     enum GCumulativeSkewType { GC, AT };
     CumulativeSkewGraphFactory(GCumulativeSkewType t, QObject* p);
     virtual QList<QSharedPointer<GSequenceGraphData> > createGraphs(GSequenceGraphView* v);
-    virtual bool isEnabled(U2SequenceObject* o) const;
+    virtual bool isEnabled(const U2SequenceObject* o) const;
 private:
     QPair<char, char> cumPair;
 };

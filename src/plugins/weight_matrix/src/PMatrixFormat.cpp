@@ -51,7 +51,7 @@ PFMatrixFormat::PFMatrixFormat(QObject* p): DocumentFormat(p, DocumentFormatFlag
     formatDescription = tr("Position frequency matrix file.");
 }
 
-Document* PFMatrixFormat::createNewLoadedDocument( IOAdapterFactory* io, const QString& url, const QVariantMap& fs /* = QVariantMap()*/ ){
+Document* PFMatrixFormat::createNewLoadedDocument(IOAdapterFactory* io, const GUrl &url, const QVariantMap& fs /* = QVariantMap()*/ ){
     U2OpStatus2Log os;
     Document* d = DocumentFormat::createNewLoadedDocument(io, url, os, fs);
     return d;
