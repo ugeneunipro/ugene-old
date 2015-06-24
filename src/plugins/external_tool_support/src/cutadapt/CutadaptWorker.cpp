@@ -328,9 +328,7 @@ QStringList CutAdaptParser::initStringsToIgnore() {
     result << "Maximum error rate:";
     result << "No. of allowed error";
     result << "max.err";
-
-    result << "Maximum\terror\trate:";
-    result << "No.\tof\tallowed\terror";
+    result << "error counts";
 
     return result;
 }
