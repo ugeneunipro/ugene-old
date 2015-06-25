@@ -65,13 +65,13 @@ workflow "Processing of raw RNA-Seq single-end reads with mapping"{
     }
 
     .actor-bindings {
+        CutAdaptFastq.out-file->QualityTrim.in-file
+        get-file-list.out-url->CASAVAFilter.in-file
+        get-file-list.out-url->fastqc.in-file
+        CASAVAFilter.out-file->CutAdaptFastq.in-file
         MergeFastq.out-file->tophat.in-sequence
         MergeFastq.out-file->fastqc-1.in-file
         QualityTrim.out-file->MergeFastq.in-file
-        CutAdaptFastq.out-file->QualityTrim.in-file
-        CASAVAFilter.out-file->CutAdaptFastq.in-file
-        get-file-list.out-url->CASAVAFilter.in-file
-        get-file-list.out-url->fastqc.in-file
     }
 
     get-file-list.url->CASAVAFilter.in-file.url
@@ -87,6 +87,12 @@ workflow "Processing of raw RNA-Seq single-end reads with mapping"{
             CASAVAFilter.out-mode {
                 alias:out_mode;
             }
+            QualityTrim.custom-dir {
+                alias:trim_reads1_out_dir;
+            }
+            QualityTrim.out-mode {
+                alias:trim_reads1_out_dir_type;
+            }
             get-file-list.url-in {
                 alias:in;
             }
@@ -99,10 +105,22 @@ workflow "Processing of raw RNA-Seq single-end reads with mapping"{
             tophat.out-dir {
                 alias:out_dir;
             }
+            fastqc.custom-dir {
+                alias:fasqc2_out_dir;
+            }
+            fastqc.out-mode {
+                alias:fasqc2_out_dir_type;
+            }
+            fastqc-1.custom-dir {
+                alias:fasqc1_out_dir;
+            }
+            fastqc-1.out-mode {
+                alias:fasqc1_out_dir_type;
+            }
         }
         visual {
             CASAVAFilter {
-                pos:"-810 -528";
+                pos:"-795 -510";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
                 bounds:"-30 -30 181.875 92";
@@ -110,21 +128,21 @@ workflow "Processing of raw RNA-Seq single-end reads with mapping"{
                 out-file.angle:360;
             }
             CutAdaptFastq {
-                pos:"-452 -528";
+                pos:"-435 -510";
                 style:ext;
                 bg-color-ext:"236 177 178 64";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             MergeFastq {
-                pos:"-107 -290";
+                pos:"-90 -270";
                 style:simple;
                 bg-color-simple:"78 151 184 255";
                 in-file.angle:90;
                 out-file.angle:270;
             }
             QualityTrim {
-                pos:"-144 -527";
+                pos:"-135 -510";
                 style:ext;
                 bg-color-ext:"204 68 102 64";
                 bounds:"-30 -30 106 96";
@@ -132,26 +150,26 @@ workflow "Processing of raw RNA-Seq single-end reads with mapping"{
                 out-file.angle:290.925;
             }
             fastqc {
-                pos:"-976 -294";
+                pos:"-960 -285";
                 style:simple;
                 bg-color-simple:"0 128 128 255";
                 in-file.angle:90;
             }
             fastqc-1 {
-                pos:"-352 -254";
+                pos:"-345 -240";
                 style:simple;
                 bg-color-simple:"0 128 128 255";
                 in-file.angle:358.091;
             }
             get-file-list {
-                pos:"-1086 -528";
+                pos:"-1065 -510";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 102.25 92";
                 out-url.angle:360;
             }
             tophat {
-                pos:"-180 -119";
+                pos:"-165 -105";
                 style:ext;
                 bg-color-ext:"0 128 0 64";
                 in-sequence.angle:21.9745;
@@ -181,7 +199,6 @@ workflow "Processing of raw RNA-Seq single-end reads with mapping"{
         }
         wizard {
             name:"Raw RNA-Seq Data Processing Wizard";
-            help-page-id:16122727;
             page {
                 id:1;
                 next:2;
