@@ -177,7 +177,7 @@ Section "Build"
 
     !ifdef ExternalTools
     SetOutPath $INSTDIR\tools
-    File /r /x .svn "..\..\tools\*.*"
+    File /r /x .svn "..\..\src\_release\tools\*.*"
     !endif
 
     SetOutPath $INSTDIR\styles
