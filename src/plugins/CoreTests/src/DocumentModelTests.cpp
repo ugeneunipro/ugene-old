@@ -789,7 +789,7 @@ Task::ReportResult GTest_CompareFiles::report() {
         if(commentsStartWith.isEmpty()){
             if( bytes1 != bytes2 ) {
                 setError(QString("The files \'%1\' and \'%2\' are not equal at line %3."
-                    "The first file contains '%4'' and the second contains '%5'!").arg(f1.fileName()).arg(f2.fileName())
+                    "The first file contains '%4' and the second contains '%5'!").arg(f1.fileName()).arg(f2.fileName())
                     .arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
                 return ReportResult_Finished;
             }
@@ -798,14 +798,14 @@ Task::ReportResult GTest_CompareFiles::report() {
                 if(!bytes1.startsWith(commentStartWith.toLatin1()) && !bytes2.startsWith(commentStartWith.toLatin1())){
                     if( bytes1 != bytes2 ) {
                         setError(QString("The files %1 and %2 are not equal at line %3."
-                            "The first file contains '%4'' and the second contains '%5'!")
+                            "The first file contains '%4' and the second contains '%5'!")
                             .arg(f1.fileName()).arg(f2.fileName()).arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
                         return ReportResult_Finished;
                     }
                 }else
                 if(!(bytes1.startsWith(commentStartWith.toLatin1())&&bytes2.startsWith(commentStartWith.toLatin1()))){
                     setError(QString("The files have comments and are not equal at line %1."
-                        "The first file contains '%2'' and the second contains '%3'!")
+                        "The first file contains '%2 and the second contains '%3'!")
                         .arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
                     return ReportResult_Finished;
                 }
