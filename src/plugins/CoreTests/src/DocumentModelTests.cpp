@@ -805,7 +805,7 @@ Task::ReportResult GTest_CompareFiles::report() {
                 }else
                 if(!(bytes1.startsWith(commentStartWith.toLatin1())&&bytes2.startsWith(commentStartWith.toLatin1()))){
                     setError(QString("The files have comments and are not equal at line %1."
-                        "The first file contains '%2 and the second contains '%3'!")
+                        "The first file contains '%2' and the second contains '%3'!")
                         .arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
                     return ReportResult_Finished;
                 }
