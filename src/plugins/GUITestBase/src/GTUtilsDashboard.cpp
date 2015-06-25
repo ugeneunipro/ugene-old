@@ -70,24 +70,31 @@ QWebElement GTUtilsDashboard::findElement(U2OpStatus &os, QString text, QString 
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "findElement"
+#define GT_METHOD_NAME "checkElement"
 void GTUtilsDashboard::checkElement(U2OpStatus &os, QString text, QString tag, bool exists, bool exactMatch){
+    const bool found = doesElementExist(os, text, tag, exactMatch);
+    if (exists) {
+        GT_CHECK(found, "element with text " + text + " and tag " + tag + " not found");
+    } else {
+        GT_CHECK(!found, "element with text " + text + " and tag " + tag + " unexpectedly found");
+    }
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "doesElementExist"
+bool GTUtilsDashboard::doesElementExist(U2OpStatus &os, const QString &text, const QString &tag, bool exactMatch) {
     QWebView* dashboard = getDashboard(os);
     QWebFrame* frame = dashboard->page()->mainFrame();
-    bool found = false;
+
     foreach (QWebElement el, frame->findAllElements(tag)) {
         QString s = el.toPlainText();
         int width = el.geometry().width();
 
-        if (compare(s, text, exactMatch) && width != 0){
-            found = true;
+        if (compare(s, text, exactMatch) && width != 0) {
+            return true;
         }
     }
-    if(exists){
-        GT_CHECK(found, "element with text " + text + " and tag " + tag + " not found");
-    }else{
-        GT_CHECK(!found, "element with text " + text + " and tag " + tag + " unexpectidly found");
-    }
+    return false;
 }
 #undef GT_METHOD_NAME
 
@@ -97,6 +104,11 @@ QWebElement GTUtilsDashboard::findTreeElement(U2OpStatus &os, QString text){
 
 QWebElement GTUtilsDashboard::findContextMenuElement(U2OpStatus &os, QString text){
     return findElement(os, text, "LI");
+}
+
+bool GTUtilsDashboard::areThereProblems(U2OpStatus &os) {
+    openTab(os, Overview);
+    return doesElementExist(os, "Problems", "DIV", true);
 }
 
 void GTUtilsDashboard::click(U2OpStatus &os, QWebElement el, Qt::MouseButton button){

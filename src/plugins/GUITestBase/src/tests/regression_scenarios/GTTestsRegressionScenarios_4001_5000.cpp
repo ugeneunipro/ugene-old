@@ -2369,6 +2369,29 @@ GUI_TEST_CLASS_DEFINITION(test_4386_2) {
     CHECK_SET_ERR(21 == rowsCount, QString("Unexpected rows count: expect %1, got %2").arg(19).arg(rowsCount));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4391) {
+    GTLogTracer logTracer;
+
+//    1. Create workflow { File List -> Cut Adapter }.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    WorkflowProcessItem *fileList = GTUtilsWorkflowDesigner::addElement(os, "File List");
+    WorkflowProcessItem *cutAdapter = GTUtilsWorkflowDesigner::addElement(os, "Cut Adapter");
+    GTUtilsWorkflowDesigner::connect(os, fileList, cutAdapter);
+
+//    2. Set "_common_data/NIAID_pipelines/tuxedo_pipeline/data/lymph_aln.fastq" as input.
+    GTUtilsWorkflowDesigner::addInputFile(os, "File List", testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/lymph_aln.fastq");
+
+//    3. Run the workflow.
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    Expected state: there are no errors neither in log nor in dashboard.
+    const bool prolemsExist = GTUtilsDashboard::areThereProblems(os);
+    CHECK_SET_ERR(!prolemsExist, "There are problems on the dashboard");
+    GTUtilsLog::check(os, logTracer);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4400) {
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/VectorNTI_CAN_READ.gb");
 
