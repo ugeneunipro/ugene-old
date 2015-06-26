@@ -78,6 +78,9 @@ private:
     QAction* copyComplementTranslationAction;
     QAction* copyAnnotationSequenceAction;
     QAction* copyAnnotationSequenceTranslationAction;
+
+    static const QString COPY_FAILED_MESSAGE;
+    static const qint64 MAX_COPY_SIZE_FOR_X86;
 };
 
 }//namespace

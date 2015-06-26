@@ -67,7 +67,7 @@ HEADERS += src/LicenseDialog.h \
            src/ov_msa/MSAEditorUndoFramework.h \
            src/ov_msa/MsaOpSavableTab.h \
            src/ov_msa/MSASelectSubalignmentDialog.h \
-           src/ov_msa/MsaEditorUserModStepController.h \                     
+           src/ov_msa/MsaEditorUserModStepController.h \
            src/ov_msa/AlignSequencesToAlignment/AlignSequencesToAlignmentTask.h \
            src/ov_msa/Overview/MSAGraphCalculationTask.h \
            src/ov_msa/Overview/MSAGraphOverview.h \
@@ -383,9 +383,3 @@ TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
-
-mac {
-    HEADERS += src/ov_sequence/util/ClipboardUtilsMac.h
-    OBJECTIVE_SOURCES += src/ov_sequence/util/ClipboardUtilsMac.mm
-    LIBS += -framework AppKit
-}

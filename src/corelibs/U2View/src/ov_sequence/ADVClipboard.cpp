@@ -25,10 +25,6 @@
 #include "ADVSequenceObjectContext.h"
 #include "ADVConstants.h"
 
-#ifdef Q_OS_MAC
-#include "util/ClipboardUtilsMac.h"
-#endif
-
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
@@ -54,6 +50,10 @@
 #endif
 
 namespace U2 {
+
+const QString ADVClipboard::COPY_FAILED_MESSAGE = QApplication::translate("ADVClipboard", "Cannot put sequence data into the clipboard buffer.\n"
+                                                                        "Probably the data is too big.");
+const qint64 ADVClipboard::MAX_COPY_SIZE_FOR_X86 = 100 * 1024 * 1024;
 
 ADVClipboard::ADVClipboard(AnnotatedDNAView* c) : QObject(c) {
     ctx = c;
@@ -124,6 +124,17 @@ void ADVClipboard::copySequenceSelection(bool complement, bool amino) {
 
     QString res;
     QVector<U2Region> regions = seqCtx->getSequenceSelection()->getSelectedRegions();
+#ifdef UGENE_X86
+    int totalLen = 0;
+    foreach (const U2Region& r, regions) {
+        totalLen += r.length;
+    }
+    if (totalLen > MAX_COPY_SIZE_FOR_X86) {
+        QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), COPY_FAILED_MESSAGE);
+        return;
+    }
+ #endif
+
     if (!regions.isEmpty()) {
         U2SequenceObject* seqObj = seqCtx->getSequenceObject();
         DNATranslation* complTT = complement ? seqCtx->getComplementTT() : NULL;
@@ -145,30 +156,16 @@ void ADVClipboard::copySequenceSelection(bool complement, bool amino) {
 
 void ADVClipboard::putIntoClipboard(const QString& data) {
     CHECK(!data.isEmpty(), );
-    try {
-#ifdef Q_OS_WIN
-        if (OpenClipboard(NULL)) {
-            HGLOBAL clipbuffer;
-            char * buffer = NULL;
-            EmptyClipboard();
-            clipbuffer = GlobalAlloc(GMEM_DDESHARE, data.size() + 1);
-            buffer = (char*)GlobalLock(clipbuffer);
-            strcpy(buffer, data.toLatin1().data());
-            GlobalUnlock(clipbuffer);
-            SetClipboardData(CF_TEXT, clipbuffer);
-        }
-#elif defined(Q_OS_MAC)
-        bool ok = putIntoMacClipboard(data);
-        if (!ok) {
-            QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), tr("Cannot put sequence data into the clipboard buffer.\n"
-                "Probably the data is too big."));
-        }
-#else
-        QApplication::clipboard()->setText(data);
+#ifdef UGENE_X86
+    if (data.size() > MAX_COPY_SIZE_FOR_X86) {
+        QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), COPY_FAILED_MESSAGE);
+        return;
+    }
 #endif
+    try {
+        QApplication::clipboard()->setText(data);
     } catch (...) {
-        QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), tr("Cannot put sequence data into the clipboard buffer.\n"
-            "Probably the data is too big."));
+        QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), COPY_FAILED_MESSAGE);
     }
 }
 
@@ -192,6 +189,16 @@ void ADVClipboard::sl_copyComplementTranslation() {
 void ADVClipboard::sl_copyAnnotationSequence() {
     QByteArray res;
     const QList<AnnotationSelectionData>& as = ctx->getAnnotationsSelection()->getSelection();
+#ifdef UGENE_X86
+    int totalLen = 0;
+    foreach (const AnnotationSelectionData& data, as) {
+        totalLen += data.getSelectedRegionsLen();
+    }
+    if (totalLen > MAX_COPY_SIZE_FOR_X86) {
+        QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), COPY_FAILED_MESSAGE);
+        return;
+    }
+#endif
 
     //BUG528: add alphabet symbol role: insertion mark
     char gapSym = '-';
@@ -217,6 +224,17 @@ void ADVClipboard::sl_copyAnnotationSequence() {
 void ADVClipboard::sl_copyAnnotationSequenceTranslation() {
     QByteArray res;
     const QList<AnnotationSelectionData>& as = ctx->getAnnotationsSelection()->getSelection();
+
+#ifdef UGENE_X86
+    int totalLen = 0;
+    foreach (const AnnotationSelectionData& data, as) {
+        totalLen += data.getSelectedRegionsLen();
+    }
+    if (totalLen > MAX_COPY_SIZE_FOR_X86) {
+        QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), COPY_FAILED_MESSAGE);
+        return;
+    }
+#endif
 
     //BUG528: add alphabet symbol role: insertion mark
     //TODO: reuse AnnotationSelection utils
