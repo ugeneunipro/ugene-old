@@ -474,6 +474,24 @@ GUI_TEST_CLASS_DEFINITION(test_4046){
     CHECK_SET_ERR(ann->childCount() == 0, QString("Unexpected qualifier number: %1").arg(ann->childCount()));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4047){
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
+        }
+    };
+
+
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Raw DNA-Seq Data Processing", new custom()));
+    GTUtilsWorkflowDesigner::addSample(os, "Raw DNA-Seq data processing");
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(GTAction::button(os, "Show wizard")->isVisible() == false, "'Show wizard' button should not be at toolbar!");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4059) {
     GTLogTracer l;
     //1. Open "_common_data/text/text.txt".
@@ -2188,20 +2206,12 @@ GUI_TEST_CLASS_DEFINITION(test_4325) {
 
 GUI_TEST_CLASS_DEFINITION(test_4345) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-    
-    class custom : public CustomScenario {
-    public:
-        void run(U2OpStatus &os) {
-            GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
-        }
-    };
-
-
-    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Raw DNA-Seq Data Processing", new custom()));
-    GTUtilsWorkflowDesigner::addSample(os, "Raw DNA-Seq data processing");
-    GTGlobals::sleep();
-
-    CHECK_SET_ERR(GTAction::button(os, "Show wizard")->isVisible() == false, "'Show wizard' button should not be at toolbar!");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList()<<"Close active view", GTGlobals::UseKey);
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "sars.gb");
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "CVU55762.gb");
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "NC_014267.1.gb");
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "PBR322.gb");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4352) {
