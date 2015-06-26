@@ -2186,6 +2186,24 @@ GUI_TEST_CLASS_DEFINITION(test_4325) {
     CHECK_SET_ERR(regions.contains(U2Region(110, 40)), "There is no (111, 150) annotated primer region");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4345) {
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            GTUtilsWizard::clickButton(os, GTUtilsWizard::Cancel);
+        }
+    };
+
+
+    GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Raw DNA-Seq Data Processing", new custom()));
+    GTUtilsWorkflowDesigner::addSample(os, "Raw DNA-Seq data processing");
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(GTAction::button(os, "Show wizard")->isVisible() == false, "'Show wizard' button should not be at toolbar!");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4352) {
     //1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
