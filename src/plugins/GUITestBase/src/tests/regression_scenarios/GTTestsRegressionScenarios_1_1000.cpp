@@ -754,7 +754,7 @@ GUI_TEST_CLASS_DEFINITION(test_0627) {
         ToolTipsChecker(U2OpStatus &os)
             : Filler( os, "Primer3Dialog") {}
         virtual void run() {
-            QWidget *dialog = QApplication::activeModalWidget();
+            QDialog *dialog = qobject_cast<QDialog*>(QApplication::activeModalWidget());
             CHECK_SET_ERR(dialog != NULL, "dialog not found");
             GTGlobals::sleep();
 
@@ -784,8 +784,7 @@ GUI_TEST_CLASS_DEFINITION(test_0627) {
             foreach (const QString& name, objsWithoutTooltips) {
                 CHECK_SET_ERR( exceptions.contains(name), QString("The following field has no tool tip: %1").arg(name));
             }
-
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+                dialog->close();
         }
 
     private:
@@ -801,6 +800,7 @@ GUI_TEST_CLASS_DEFINITION(test_0627) {
 
 
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/fa1.fa");
+
 
     QAbstractButton* primer3 = GTAction::button(os, "primer3_action");
     CHECK_SET_ERR(primer3 != NULL, "primer3_action not found");
@@ -1880,9 +1880,10 @@ GUI_TEST_CLASS_DEFINITION(test_0818) {
             CHECK_SET_ERR(!nextButton->isEnabled(), "Next button is enabled");
             GTGlobals::sleep();
 
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+            GTWidget::click(os, GTWidget::findButtonByText(os, "Cancel"));
         }
     };
+
 
     GTUtilsDialog::waitForDialog(os, new SpaceNameFiller(os));
     QAbstractButton *createElement = GTAction::button(os, "createElementWithCommandLineTool");
