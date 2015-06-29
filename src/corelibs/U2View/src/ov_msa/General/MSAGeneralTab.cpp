@@ -45,7 +45,7 @@ MSAGeneralTab::MSAGeneralTab(MSAEditor* _msa)
 
     ShowHideSubgroupWidget* alignmentInfo = new ShowHideSubgroupWidget("ALIGNMENT_INFO", tr("Alignment info"), alignmentInfoWidget, true);
     ShowHideSubgroupWidget* consensusMode = new ShowHideSubgroupWidget("CONSENSUS_MODE", tr("Consensus mode"), consensusModeWidget, true);
-    ShowHideSubgroupWidget* copyType = new ShowHideSubgroupWidget("COPY_TYPE", tr("Copy type"), copyTypeWidget, true);
+    ShowHideSubgroupWidget* copyType = new ShowHideSubgroupWidget("COPY_TYPE", tr("Copy to clipboard"), copyTypeWidget, true);
     Ui_GeneralTabOptionsPanelWidget::layout->addWidget(alignmentInfo);
     Ui_GeneralTabOptionsPanelWidget::layout->addWidget(consensusMode);
     Ui_GeneralTabOptionsPanelWidget::layout->addWidget(copyType);
@@ -54,6 +54,13 @@ MSAGeneralTab::MSAGeneralTab(MSAEditor* _msa)
     connectSignals();
 
     U2WidgetStateStorage::restoreWidgetState(savableTab);
+
+#ifdef Q_OS_MAC
+    copyButton->setToolTip("Cmd+Shift+C");
+#else
+    copyButton->setToolTip("Ctrl+Shift+C");
+#endif
+
 }
 
 void MSAGeneralTab::sl_alignmentChanged(const MAlignment& al, const MAlignmentModInfo& modInfo) {
@@ -105,6 +112,14 @@ void MSAGeneralTab::sl_copyFormatSelectionChanged(int index) {
     emit si_copyFormatChanged(selectedFormatId);
 }
 
+void MSAGeneralTab::sl_copyFormatted(){
+    emit si_copyFormatted();
+}
+
+void MSAGeneralTab::sl_copyFormatStatusChanged(bool enabled){
+    copyButton->setEnabled(enabled);
+}
+
 void MSAGeneralTab::connectSignals() {
     // Inner signals
     connect(consensusType,          SIGNAL(currentIndexChanged(int)),   SLOT(sl_algorithmSelectionChanged(int)));
@@ -112,6 +127,7 @@ void MSAGeneralTab::connectSignals() {
     connect(thresholdSpinBox,       SIGNAL(valueChanged(int)),          SLOT(sl_thresholdSpinBoxChanged(int)));
     connect(thresholdResetButton,   SIGNAL(clicked(bool)),              SLOT(sl_thresholdResetClicked(bool)));
     connect(copyType,               SIGNAL(currentIndexChanged(int)),   SLOT(sl_copyFormatSelectionChanged(int)));
+    connect(copyButton,             SIGNAL(clicked()),                  SLOT(sl_copyFormatted()));
 
     // Extern signals
     connect(msa->getMSAObject(),
@@ -127,6 +143,9 @@ void MSAGeneralTab::connectSignals() {
     connect(this, SIGNAL(si_copyFormatChanged(QString)),
             msa->getUI()->getSequenceArea(), SLOT(sl_changeCopyFormat(QString)));
 
+    connect(this, SIGNAL(si_copyFormatted()),
+            msa->getUI()->getSequenceArea(), SLOT(sl_copyFormattedSelection()));
+
         //in
     connect(msa->getUI()->getConsensusArea(),
             SIGNAL(si_consensusAlgorithmChanged(QString)),
@@ -134,6 +153,9 @@ void MSAGeneralTab::connectSignals() {
     connect(msa->getUI()->getConsensusArea(),
             SIGNAL(si_consensusThresholdChanged(int)),
             SLOT(sl_thresholdChanged(int)));
+    connect(msa->getUI()->getSequenceArea(), SIGNAL(si_copyFormattedChanging(bool)),
+            SLOT(sl_copyFormatStatusChanged(bool)));
+
 }
 
 void MSAGeneralTab::initializeParameters() {
@@ -182,6 +204,8 @@ void MSAGeneralTab::updateState() {
                          algo->getMaxThreshold(),
                          algo->getThreshold());
     consensusType->setToolTip(algo->getDescription());
+
+    copyButton->setEnabled(!msa->getUI()->getSequenceArea()->getSelection().isNull());
 }
 
 void MSAGeneralTab::updateThresholdState(bool enable, int minVal, int maxVal, int value) {

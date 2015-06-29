@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>178</width>
-    <height>286</height>
+    <height>319</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,16 @@
    <property name="spacing">
     <number>5</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -191,12 +200,19 @@
       <item>
        <widget class="QLabel" name="copyTypeLabel">
         <property name="text">
-         <string>Copy formatted type:</string>
+         <string>Format:</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QComboBox" name="copyType"/>
+      </item>
+      <item>
+       <widget class="QToolButton" name="copyButton">
+        <property name="text">
+         <string>Copy</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

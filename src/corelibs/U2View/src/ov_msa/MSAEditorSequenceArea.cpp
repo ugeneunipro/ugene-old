@@ -1099,6 +1099,7 @@ void MSAEditorSequenceArea::updateSelection(const QPoint& newPos) {
     bool selectionExists = !selection.isNull();
     ui->getCopySelectionAction()->setEnabled(selectionExists);
     ui->getCopyFormattedSelectionAction()->setEnabled(selectionExists);
+    emit si_copyFormattedChanging(selectionExists);
 }
 
 void MSAEditorSequenceArea::updateSelection() {
@@ -1598,6 +1599,7 @@ void MSAEditorSequenceArea::setSelection(const MSAEditorSelection& s, bool newHi
     bool selectionExists = !selection.isNull();
     ui->getCopySelectionAction()->setEnabled(selectionExists);
     ui->getCopyFormattedSelectionAction()->setEnabled(selectionExists);
+    emit si_copyFormattedChanging(selectionExists);
 
     U2Region selectedRowsRegion = getSelectedRows();
     baseSelection = MSAEditorSelection(selection.topLeft().x(), getSelectedRows().startPos, selection.width(), selectedRowsRegion.length);
@@ -1834,6 +1836,7 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
     SAFE_POINT(copyMenu != NULL, "copyMenu", );
     ui->getCopySelectionAction()->setDisabled(selection.isNull());
+    emit si_copyFormattedChanging(!selection.isNull());
     copyMenu->addAction(ui->getCopySelectionAction());
     ui->getCopyFormattedSelectionAction()->setDisabled(selection.isNull());
     copyMenu->addAction(ui->getCopyFormattedSelectionAction());
