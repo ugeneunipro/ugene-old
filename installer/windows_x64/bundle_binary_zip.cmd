@@ -17,7 +17,7 @@ mkdir "%OUTPUT_DIR%\plugins"
 REM copy includes
 xcopy /E %INSTALL_DIR%\includes\* %OUTPUT_DIR%
 REM copy external tools if exists
-xcopy /E %U_ROOT%\tools\* %OUTPUT_DIR%\tools\
+xcopy /E %RELEASE_DIR%\tools\* %OUTPUT_DIR%\tools\
 if DEFINED UGENE_R_DIST_PATH (
     xcopy /E %UGENE_R_DIST_PATH% %OUTPUT_DIR%\tools\
 )
