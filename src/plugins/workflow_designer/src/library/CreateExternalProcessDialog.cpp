@@ -25,11 +25,12 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2Designer/DelegateEditors.h>
 
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
-#include <U2Core/QObjectScopedPointer.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseTypes.h>
@@ -112,6 +113,8 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     connect(ui.attributesTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateAttributeModel(const QModelIndex &, const QModelIndex &)));
     descr1 = ui.descr1TextEdit->toHtml();
     //validateNextPage();
+
+    DialogUtils::setWizardMinimumSize(this);
 }
 
 static void clearModel(QAbstractItemModel *model) {
@@ -260,7 +263,7 @@ CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/
     ui.templateLineEdit->setValidator(new ExecStringValidator(this));
     ui.nameLineEdit->setValidator(new WorkerNameValidator(this));
 
-    setBestSize();
+    DialogUtils::setWizardMinimumSize(this);
 }
 
 CreateExternalProcessDialog::~CreateExternalProcessDialog() {
@@ -274,26 +277,6 @@ void CreateExternalProcessDialog::showEvent(QShowEvent *event) {
             next();
         }
     }
-}
-
-void CreateExternalProcessDialog::setBestSize() {
-    QList<QSize> pageSizes;
-    ui.wizardPage1->adjustSize();
-    pageSizes << size();
-    ui.wizardPage_2->adjustSize();
-    pageSizes << size();
-    ui.wizardPage2->adjustSize();
-    pageSizes << size();
-    ui.wizardPage->adjustSize();
-    pageSizes << size();
-
-    QSize bestSize;
-    foreach (const QSize &size, pageSizes) {
-        bestSize.setWidth(qMax(size.width(), bestSize.width()));
-        bestSize.setHeight(qMax(size.height(), bestSize.height()));
-    }
-
-    setFixedSize(bestSize);
 }
 
 void CreateExternalProcessDialog::accept() {

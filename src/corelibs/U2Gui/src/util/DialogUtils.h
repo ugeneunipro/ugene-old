@@ -22,23 +22,18 @@
 #ifndef _U2_DIALOG_UTILS_H_
 #define _U2_DIALOG_UTILS_H_
 
+#include <QWidget>
+#include <QLineEdit>
+
 #include <U2Core/global.h>
 
-#include <QtCore/QObject>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QWidget>
-#include <QtGui/QLineEdit>
-#else
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QLineEdit>
-#endif
+class QWizard;
 
 namespace U2 {
 
 class DocumentFormatConstraints;
 class Logger;
 class TaskStateInfo;
-
 
 class U2GUI_EXPORT DialogUtils : public QObject {
     Q_OBJECT
@@ -57,8 +52,9 @@ public:
     static QString prepareDocumentsFileFilterByObjType(const GObjectType& t, bool any);
 
     static QPair<QString, QString> selectFileForScreenShot(QWidget * parent);
-};
 
+    static void setWizardMinimumSize(QWizard *wizard);
+};
 
 class U2GUI_EXPORT FileLineEdit : public QLineEdit {
     Q_OBJECT

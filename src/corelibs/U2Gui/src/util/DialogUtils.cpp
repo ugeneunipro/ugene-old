@@ -19,14 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDir>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include <QCoreApplication>
+#include <QDir>
+#include <QMessageBox>
+#include <QWizard>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentImport.h>
@@ -76,6 +72,16 @@ QPair<QString, QString> DialogUtils::selectFileForScreenShot(QWidget * parent) {
     QString selectedFilter;
     lod.url = U2FileDialog::getSaveFileName(parent, tr("Export alignment image"), lod.dir, QStringList(filters.keys()).join(";;"), &selectedFilter);
     return QPair<QString, QString>(lod.url, filters.value(selectedFilter));
+}
+
+void DialogUtils::setWizardMinimumSize(QWizard *wizard) {
+    QSize bestSize;
+    foreach (int pageId, wizard->pageIds()) {
+        QWizardPage *page = wizard->page(pageId);
+        page->adjustSize();
+        bestSize = bestSize.expandedTo(page->size());
+    }
+    wizard->setMinimumSize(bestSize);
 }
 
 
