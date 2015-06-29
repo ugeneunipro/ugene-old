@@ -39,16 +39,6 @@ PlainTextFormat::PlainTextFormat(QObject* p) : DocumentFormat(p, DocumentFormatF
     formatDescription = tr("A simple plain text file.");
 }
 
-
-Document* PlainTextFormat::createNewLoadedDocument(IOAdapterFactory* io, const GUrl &url, U2OpStatus& os, const QVariantMap& fs) {
-    Document* d = DocumentFormat::createNewLoadedDocument(io, url, os, fs);
-    CHECK_OP(os, NULL);
-    GObject* o = TextObject::createInstance("", "Text", d->getDbiRef(), os);
-    CHECK_OP(os, NULL);
-    d->addObject(o);
-    return d;
-}
-
 #define BUFF_SIZE 1024
 
 Document* PlainTextFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){

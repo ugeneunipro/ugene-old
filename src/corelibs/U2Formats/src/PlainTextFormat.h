@@ -36,8 +36,6 @@ public:
 
     virtual const QString& getFormatName() const {return formatName;}
 
-    virtual Document* createNewLoadedDocument(IOAdapterFactory* io, const GUrl& url, U2OpStatus& os, const QVariantMap& fs = QVariantMap());
-
     virtual void storeDocument(Document* d, IOAdapter* io, U2OpStatus& os);
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
