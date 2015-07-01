@@ -1174,7 +1174,9 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e) {
 
     newCurPos.setY(yPosWithValidations);
 
-    if (!shifting && Qt::LeftButton == e->button() && Qt::LeftButton == prevPressedButton) {
+    if (shifting) {
+        emit si_stopMSAChanging(true);
+    } else if (Qt::LeftButton == e->button() && Qt::LeftButton == prevPressedButton) {
         updateSelection(newCurPos);
     }
     shifting = false;
