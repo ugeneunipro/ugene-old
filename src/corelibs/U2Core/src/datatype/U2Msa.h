@@ -26,9 +26,16 @@
 #include <U2Core/U2Type.h>
 
 namespace U2 {
+
 /**
     Gap model for Msa: for every sequence it keeps gaps map
 */
+
+class U2MsaGap;
+
+typedef QList<U2MsaGap> U2MsaRowGapModel;
+typedef QList<U2MsaRowGapModel> U2MsaGapModel;
+
 class U2CORE_EXPORT U2MsaGap  {
 public:
     U2MsaGap() : offset(0), gap(0){}

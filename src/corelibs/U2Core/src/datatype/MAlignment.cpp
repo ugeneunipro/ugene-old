@@ -26,6 +26,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceUtils.h>
 #include <U2Core/Log.h>
+#include <U2Core/MsaDbiUtils.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 
@@ -106,47 +107,7 @@ QByteArray MAlignmentRow::getData() const {
 }
 
 void MAlignmentRow::splitBytesToCharsAndGaps(const QByteArray& input, QByteArray& seqBytes, QList<U2MsaGap>& gapsModel) {
-    bool previousCharIsGap = false;
-    int gapsCount = 0;
-    int gapsOffset = 0;
-
-    for (int i = 0; i < input.count(); ++i) {
-        // A char
-        if ((MAlignment_GapChar != input.at(i)))
-        {
-            if (previousCharIsGap) {
-                U2MsaGap gap(gapsOffset, gapsCount);
-                gapsModel.append(gap);
-                gapsCount = 0;
-            }
-            seqBytes.append(input.at(i));
-            previousCharIsGap = false;
-        }
-        // A gap
-        else {
-            gapsCount++;
-            // A gap before the end of the row
-            if (i < input.count() - 1) {
-                if (!previousCharIsGap) {
-                    gapsOffset = i;
-                }
-                previousCharIsGap = true;
-            }
-            // A gap at the end of the row
-            else {
-                // Correct the offset if there is one gap at the end of the row
-                if (1 == gapsCount) {
-                    gapsOffset = i;
-                }
-                SAFE_POINT(gapsOffset >= 0, "Negative gap offset!", );
-                SAFE_POINT(gapsCount > 0, "Non-positive gap length!", );
-                U2MsaGap gap(gapsOffset, gapsCount);
-                gapsModel.append(gap);
-            }
-        }
-    }
-
-    SAFE_POINT(-1 == seqBytes.indexOf(MAlignment_GapChar), "Row sequence contains gaps!", );
+    MsaDbiUtils::splitBytesToCharsAndGaps(input, seqBytes, gapsModel);
 }
 
 void MAlignmentRow::addOffsetToGapModel(QList<U2MsaGap>& gapModel, int offset) {
@@ -867,6 +828,13 @@ MAlignment MAlignment::mid(int start, int len) const {
     return res;
 }
 
+U2MsaGapModel MAlignment::getGapModel() const {
+    U2MsaGapModel gapModel;
+    foreach (const MAlignmentRow &row, rows) {
+        gapModel << row.getGapModel();
+    }
+    return gapModel;
+}
 
 MAlignment& MAlignment::operator+=(const MAlignment& ma) {
     MAStateCheck check(this);

@@ -451,6 +451,7 @@ public:
      */
     MAlignment mid(int start, int len) const;
 
+    U2MsaGapModel getGapModel() const;
 
     void setRowGapModel(int rowIndex, const QList<U2MsaGap>& gapModel);
 
