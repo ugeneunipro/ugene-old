@@ -31,6 +31,8 @@
 #include "../MSASelectSubalignmentDialog.h"
 
 #define IMAGE_SIZE_LIMIT 32768
+//400000 characters convert to 200 mb file in SVG format
+#define MAX_SVG_CHARACTERS 400000
 
 namespace U2 {
 
@@ -219,7 +221,7 @@ void MSAImageExportController::sl_regionChanged() {
     bool customRegionIsSelected = (settingsUi->comboBox->currentIndex() == 1);
     msaSettings.exportAll = !customRegionIsSelected;
     if (customRegionIsSelected && msaSettings.region.isEmpty()) {
-            sl_showSelectRegionDialog();
+        sl_showSelectRegionDialog();
     } else {
         checkRegionToExport();
     }
@@ -259,9 +261,19 @@ Task* MSAImageExportController::getExportToSVGTask(const ImageExportTaskSettings
     return new MSAImageExportToSvgTask(ui, msaSettings, settings);
 }
 
+void MSAImageExportController::sl_onFormatChanged(const QString& newFormat) {
+    format = newFormat;
+    checkRegionToExport();
+}
+
 void MSAImageExportController::checkRegionToExport() {
+    bool exportToSvg = format.contains("svg", Qt::CaseInsensitive);
     bool isRegionOk = fitsInLimits();
     disableMessage = isRegionOk ? "" : tr("Warning: selected region is too big to be exported. You can try to zoom out the alignment or select another region.");
+    if(isRegionOk && exportToSvg) {
+        isRegionOk = canExportToSvg();
+        disableMessage = isRegionOk ? "" : tr("Warning: selected region is too big to be exported. You can try to select another region.");
+    }
 
     emit si_disableExport( !isRegionOk );
     emit si_showMessage( disableMessage );
@@ -275,6 +287,13 @@ bool MSAImageExportController::fitsInLimits() const {
         return false;
     }
     return true;
+}
+
+bool MSAImageExportController::canExportToSvg() const {
+    MSAEditor* editor = ui->getEditor();
+    SAFE_POINT(editor != NULL, L10N::nullPointerError("MSAEditor"), false);
+    int charactersNumber = msaSettings.exportAll ? (editor->getNumSequences() * editor->getAlignmentLen()) : (msaSettings.region.length * msaSettings.seqIdx.size());
+    return charactersNumber < MAX_SVG_CHARACTERS;
 }
 
 } // namespace

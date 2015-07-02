@@ -97,6 +97,9 @@ public:
     bool    isExportDisabled() const { return !disableMessage.isEmpty(); }
     QString getDisableMessage() const { return disableMessage; }
 
+public slots:
+    virtual void onFormatChanged(const QString&) {}
+
 signals:
     void si_disableExport(bool);
     void si_showMessage(const QString& );

@@ -172,13 +172,17 @@ protected:
     Task* getExportToBitmapTask(const ImageExportTaskSettings &settings) const;
     Task* getExportToSVGTask(const ImageExportTaskSettings &) const;
 
+private slots:
+    void sl_onFormatChanged(const QString&);
 private:
     void checkRegionToExport();
     bool fitsInLimits() const;
+    bool canExportToSvg() const;
 
     MSAEditorUI* ui;
     Ui_MSAExportSettings    *settingsUi;
     mutable MSAImageExportSettings      msaSettings;
+    QString format;
 };
 
 } // namespace

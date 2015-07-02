@@ -59,6 +59,7 @@ ExportImageDialog::ExportImageDialog(QWidget *screenShotWidget,
 {
     exportController = new WidgetScreenshotImageExportController(screenShotWidget);
     init();
+    connect(ui->formatsBox, SIGNAL(currentIndexChanged(const QString&)), exportController, SLOT(onFormatChanged(const QString&)));
 }
 
 ExportImageDialog::ExportImageDialog(ImageExportController *factory,
@@ -75,6 +76,7 @@ ExportImageDialog::ExportImageDialog(ImageExportController *factory,
 {
     SAFE_POINT( exportController != NULL, tr("Image export task factory is NULL"), );
     init();
+    connect(ui->formatsBox, SIGNAL(currentIndexChanged(const QString&)), exportController, SLOT(sl_onFormatChanged(const QString&)));
 }
 
 ExportImageDialog::~ExportImageDialog() {
