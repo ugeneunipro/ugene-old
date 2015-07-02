@@ -125,6 +125,9 @@ MSADistanceMatrix::MSADistanceMatrix(const MSADistanceAlgorithm *algo, bool _use
 }
 
 int MSADistanceMatrix::getSimilarity(int refRow, int row) {
+    if (refRow >= distanceTable.size() || row >= distanceTable.size()) {
+        return -1;
+    }
     if(usePercents) {
         int refSeqLength = excludeGaps ? seqsUngappedLenghts.at(refRow) : alignmentLength;
         if(refRow > row) {

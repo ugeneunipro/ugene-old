@@ -322,7 +322,7 @@ public:
     MSAEditorConsensusArea* getConsensusArea() {return consArea;}
     MSAEditorOverviewArea*  getOverviewArea() {return overviewArea;}
 
-    void createDistanceColumn(MSADistanceMatrix* algo);
+    void createDistanceColumn(MSADistanceMatrix* matrix);
 
     void addTreeView(GObjectViewWindow* treeView);
 

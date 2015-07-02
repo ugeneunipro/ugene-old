@@ -1052,9 +1052,9 @@ void MSAEditorUI::sl_onTabsCountChanged(int curTabsNumber) {
     }
 }
 
-void MSAEditorUI::createDistanceColumn(MSADistanceMatrix* algo )
+void MSAEditorUI::createDistanceColumn(MSADistanceMatrix* matrix)
 {
-    dataList->setAlgorithm(algo);
+    dataList->setMatrix(matrix);
     dataList->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
     MSAEditorAlignmentDependentWidget* statisticsWidget = new MSAEditorAlignmentDependentWidget(dataList);
 

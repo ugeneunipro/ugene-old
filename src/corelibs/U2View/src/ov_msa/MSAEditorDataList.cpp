@@ -58,7 +58,7 @@ const QString MSAEditorAlignmentDependentWidget::DataIsBeingUpdatedMessage(QStri
 
 MSAEditorSimilarityColumn::MSAEditorSimilarityColumn(MSAEditorUI* ui, QScrollBar* nhBar, const SimilarityStatisticsSettings* _settings)
     : MSAEditorNameList(ui, nhBar),
-      algo(NULL),
+      matrix(NULL),
       autoUpdate(true)
 {
     newSettings = curSettings = *_settings;
@@ -67,12 +67,12 @@ MSAEditorSimilarityColumn::MSAEditorSimilarityColumn(MSAEditorUI* ui, QScrollBar
 }
 
 MSAEditorSimilarityColumn::~MSAEditorSimilarityColumn() {
-    CHECK(NULL != algo, );
-    delete algo;
+    CHECK(NULL != matrix, );
+    delete matrix;
 }
 
 QString MSAEditorSimilarityColumn::getTextForRow( int s ) {
-    if (NULL == algo || state == DataIsBeingUpdated) {
+    if (NULL == matrix || state == DataIsBeingUpdated) {
         return tr("-");
     }
 
@@ -86,9 +86,9 @@ QString MSAEditorSimilarityColumn::getTextForRow( int s ) {
     const int refSequenceIndex = ma.getRowIndexByRowId(referenceRowId, os);
     CHECK_OP(os, QString());
 
-    int sim = algo->getSimilarity(refSequenceIndex, s);
+    int sim = matrix->getSimilarity(refSequenceIndex, s);
     CHECK(-1 != sim, tr("-"));
-    const QString units = algo->areUsePercents() ? "%" : "";
+    const QString units = matrix->areUsePercents() ? "%" : "";
     return QString("%1").arg(sim) + units;
 }
 
@@ -114,8 +114,8 @@ void MSAEditorSimilarityColumn::setSettings(const UpdatedWidgetSettings* _settin
         state = DataIsOutdated;
     }
     if(curSettings.usePercents != set->usePercents) {
-        if(NULL != algo) {
-            algo->showSimilarityInPercents(set->usePercents);
+        if(NULL != matrix) {
+            matrix->showSimilarityInPercents(set->usePercents);
             updateContent();
         }
         curSettings.usePercents = set->usePercents;
@@ -157,12 +157,12 @@ void MSAEditorSimilarityColumn::onAlignmentChanged(const MAlignment&, const MAli
 void MSAEditorSimilarityColumn::sl_createMatrixTaskFinished(Task* t) {
     CreateDistanceMatrixTask* task = qobject_cast<CreateDistanceMatrixTask*> (t);
     if(NULL != task && !task->hasError() && !task->isCanceled()) {
-        if(NULL != algo) {
-            delete algo;
+        if(NULL != matrix) {
+            delete matrix;
         }
-        algo = task->getResult();
-        if(NULL != algo) {
-            algo->showSimilarityInPercents(newSettings.usePercents);
+        matrix = task->getResult();
+        if(NULL != matrix) {
+            matrix->showSimilarityInPercents(newSettings.usePercents);
         }
     }
     updateContent();
@@ -190,6 +190,7 @@ void CreateDistanceMatrixTask::prepare() {
     }
 
     MSADistanceAlgorithm* algo = factory->createAlgorithm(s.ma->getMAlignment());
+    //connect(s.ma, SIGNAL(si_rowsAdded()), algo, SLOT(sl_addEmptyDistanceRow()));
     CHECK(NULL != algo,);
     addSubTask(algo);
 }

@@ -96,7 +96,7 @@ public:
 
     DataState getState() {return state;}
 
-    void setAlgorithm(MSADistanceMatrix* _algo) {algo = _algo;}
+    void setMatrix(MSADistanceMatrix* _matrix) {matrix = _matrix;}
 
 protected:
     QString getTextForRow(int s);
@@ -114,7 +114,7 @@ private:
     void sl_buildContextMenu(GObjectView*, QMenu*) {}
     void updateDistanceMatrix();
 
-    MSADistanceMatrix* algo;
+    MSADistanceMatrix* matrix;
     SimilarityStatisticsSettings newSettings;
     SimilarityStatisticsSettings curSettings;
 
