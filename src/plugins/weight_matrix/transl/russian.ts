@@ -102,7 +102,7 @@
     </message>
     <message>
         <location filename="../src/ui/PWMSearchDialog.ui" line="52"/>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="240"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="246"/>
         <source>Minimal score</source>
         <translation>Минимальный скор</translation>
     </message>
@@ -127,22 +127,23 @@
         <translation>Просмотр матрицы</translation>
     </message>
     <message>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="200"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="203"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="206"/>
         <source>Reverse complement strand</source>
-        <translation>Только комплементарные</translation>
+        <translation>Только обратно комплементарные</translation>
     </message>
     <message>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="258"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="264"/>
         <source>Load list</source>
         <translation>Загрузить список</translation>
     </message>
     <message>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="265"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="271"/>
         <source>Save list</source>
         <translation>Сохранить список</translation>
     </message>
     <message>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="272"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="278"/>
         <source>Load folder</source>
         <translation>Загрузить папку</translation>
     </message>
@@ -168,58 +169,59 @@
     </message>
     <message>
         <location filename="../src/ui/PWMSearchDialog.ui" line="184"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="187"/>
         <source>Direct strand</source>
         <translation>Только прямые</translation>
     </message>
     <message>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="300"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="306"/>
         <source>Range</source>
         <translation>Регион</translation>
     </message>
     <message>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="235"/>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="305"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="241"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="311"/>
         <source>Matrix</source>
         <translation>Матрица</translation>
     </message>
     <message>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="245"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="251"/>
         <source>Algorithm</source>
         <translation>Алгоритм</translation>
     </message>
     <message>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="279"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="285"/>
         <source>Clear list</source>
         <translation>Очистить очередь</translation>
     </message>
     <message>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="310"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="316"/>
         <source>Strand</source>
         <translation>Стренд</translation>
     </message>
     <message>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="315"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="321"/>
         <source>Score</source>
         <translation>Скор</translation>
     </message>
     <message>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="325"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="331"/>
         <source>Clear results</source>
         <translation>Сбросить результаты</translation>
     </message>
     <message>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="332"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="338"/>
         <source>Save as annotations</source>
         <translation>Сохранить результаты</translation>
     </message>
     <message>
-        <location filename="../src/ui/PWMSearchDialog.ui" line="356"/>
+        <location filename="../src/ui/PWMSearchDialog.ui" line="362"/>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="84"/>
         <location filename="../src/WMQuery.cpp" line="188"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="85"/>
         <source>Minimum score to detect transcription factor binding site</source>
         <translation>Минимальный скор распознавания сайта связывания транскрипционного фактора</translation>
     </message>
@@ -517,22 +519,22 @@
 <context>
     <name>U2::LocalWorkflow::PWMatrixSearchPrompter</name>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="132"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="133"/>
         <source>unset</source>
         <translation>не указан</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="133"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="134"/>
         <source>For each sequence from &lt;u&gt;%1&lt;/u&gt;,</source>
         <translation>Для каждой последовательности из &lt;u&gt;%1&lt;/u&gt;,</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="134"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="135"/>
         <source>with all profiles provided by &lt;u&gt;%1&lt;/u&gt;,</source>
         <translation>со всеми матрицами, предоставленными &lt;u&gt;%1&lt;/u&gt;,</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="147"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="148"/>
         <source>%1 search transcription factor binding sites (TFBS) %2.&lt;br&gt;Recognize sites with &lt;u&gt;similarity %3%&lt;/u&gt;, process &lt;u&gt;%4&lt;/u&gt;.&lt;br&gt;Output the list of found regions annotated as &lt;u&gt;%5&lt;/u&gt;.</source>
         <translation>%1 ищет сайты свазывания транскрипционных факторов (ССТФ) %2. &lt;br&gt;Распознаёт сайты со &lt;u&gt;сходством %3%&lt;/u&gt;, производит &lt;u&gt;%4&lt;/u&gt;. &lt;br&gt;Выводит список найденных регионов в виде аннотаций &lt;u&gt;%5&lt;/u&gt;.</translation>
     </message>
@@ -540,87 +542,87 @@
 <context>
     <name>U2::LocalWorkflow::PWMatrixSearchWorker</name>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="65"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="66"/>
         <source>Weight matrix</source>
         <translation>Весовая матрица</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="65"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="66"/>
         <source>Profile data to search with.</source>
         <translation>Матрицы для поиска.</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="66"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="67"/>
         <source>Sequence</source>
         <translation>Последовательность</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="66"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="67"/>
         <source>Input nucleotide sequence to search in.</source>
         <translation>Входная нуклеотидная последовательность для поиска.</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="67"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="68"/>
         <source>Weight matrix annotations</source>
         <translation>Аннотации весовых матриц</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="68"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="69"/>
         <source>Annotations marking found TFBS sites.</source>
         <translation>Аннотации, отмечающие найденные ССТФ.</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="81"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="82"/>
         <source>Result annotation</source>
         <translation>Итоговая аннотация</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="82"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="83"/>
         <source>Annotation name for marking found regions.</source>
         <translation>Имя аннотации для обозначения найденных регионов.</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="83"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="84"/>
         <source>Min score</source>
         <translation>Мин. скор</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="91"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="92"/>
         <source>Search for TFBS with Weight Matrix</source>
         <translation>Весовые матрицы: искать сайты связывания ТФ</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="92"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="93"/>
         <source>Searches each input sequence for transcription factor binding sites significantly similar to specified weight matrices. In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.</source>
         <translation>Производит в каждой входной последовательности поиск сайтов связывания транскрипционных факторов, заданных весовыми матрицами. В случае, если предоставлено несколько матриц, проводится поиск по каждой матрице, результаты объединяются в набор аннотаций для каждой последовательности.</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="141"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="142"/>
         <source>both strands</source>
         <translation>все</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="142"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="143"/>
         <source>direct strand</source>
         <translation>только прямые</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="143"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="144"/>
         <source>complement strand</source>
         <translation>только комплементарные</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="218"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="225"/>
         <source>Search TFBS in %1</source>
         <translation>Поиск ССТФ в %1</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="222"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="229"/>
         <source>Bad sequence supplied to Weight Matrix Search: %1</source>
         <translation>Поиску по весовым матрицам предоставлена неверная последовательность: %1</translation>
     </message>
     <message>
-        <location filename="../src/WeightMatrixSearchWorker.cpp" line="244"/>
+        <location filename="../src/WeightMatrixSearchWorker.cpp" line="251"/>
         <source>Found %1 TFBS</source>
         <translation>Найдено %1 ССТФ</translation>
     </message>
@@ -658,27 +660,27 @@
 <context>
     <name>U2::PFMatrixBuildTask</name>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="326"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="329"/>
         <source>Build Frequency Matrix</source>
         <translation>Построить частотную матрицу</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="334"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="337"/>
         <source>Sequences in alignment have various lengths</source>
         <translation>Последовательности в выравнивании имеют разную длину</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="338"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="341"/>
         <source>Alignment is empty</source>
         <translation>Выравнивание пусто</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="342"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="345"/>
         <source>Alignment is not nucleic</source>
         <translation>Неправильный алфавит выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="345"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="348"/>
         <source>Calculating frequencies of nucleotids</source>
         <translation>Подсчёт частотной статистики</translation>
     </message>
@@ -686,27 +688,27 @@
 <context>
     <name>U2::PFMatrixBuildToFileTask</name>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="359"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="362"/>
         <source>Build Weight Matrix</source>
         <translation>Построить весовую матрицу</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="370"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="373"/>
         <source>Input format error</source>
         <translation>Неверный входной формат</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="395"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="398"/>
         <source>Loading alignment</source>
         <translation>Загрузка выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="428"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="431"/>
         <source>Wrong sequence alphabet</source>
         <translation>Неверный алфавит последовательности</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="435"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="441"/>
         <source>No alignments or sequences found</source>
         <translation>Не выбрано ни одного выравнивания или последовательности</translation>
     </message>
@@ -778,50 +780,50 @@ Maybe model data are not enough for selected algorithm</translation>
         <translation>Неверный алфавит последовательности</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="185"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="188"/>
         <source>Select file to save frequency matrix to...</source>
         <translation>Выберите файл для сохранения частотной матрицы...</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="187"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="190"/>
         <source>Select file to save weight matrix to...</source>
         <translation>Выберите файл для сохранения весовой матрицы...</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="214"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="217"/>
         <source>Overwrite existing file</source>
         <translation>Переписать существующий файл</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="215"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="218"/>
         <source>File with this name already exists.
 Do you want to write over this file?</source>
         <translation>Файл с таким именем уже существует.
 Вы хотите переписать его?</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="237"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="240"/>
         <source>Illegal input file name</source>
         <translation>Неправильное имя входного файла</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="244"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="247"/>
         <source>Illegal output file name</source>
         <translation>Неправильное имя выходного файла</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="274"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="277"/>
         <source>Counting frequency statistics</source>
         <translation>Подсчёт частотной статистики</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="277"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="280"/>
         <source>Hide</source>
         <translation>Скрыть</translation>
     </message>
     <message>
         <location filename="../src/PWMBuildDialogController.cpp" line="73"/>
-        <location filename="../src/PWMBuildDialogController.cpp" line="278"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="281"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -836,33 +838,33 @@ Do you want to write over this file?</source>
         <translation>В файле нет последовательностей.</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="291"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="294"/>
         <source>Build finished with errors: %1</source>
         <translation>Построение завершено с ошибками: %1</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="294"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="297"/>
         <source>Build canceled</source>
         <translation>Построение отменено</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="297"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="300"/>
         <source>Build finished successfuly</source>
         <translation>Построение завершено успешно</translation>
     </message>
     <message>
         <location filename="../src/PWMBuildDialogController.cpp" line="72"/>
-        <location filename="../src/PWMBuildDialogController.cpp" line="300"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="303"/>
         <source>Start</source>
         <translation>Старт</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="301"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="304"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="307"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="310"/>
         <source>Running state %1 progress %2%</source>
         <translation>Состояние выполнения %1 прогресс %2%</translation>
     </message>
@@ -883,98 +885,98 @@ Do you want to write over this file?</source>
 <context>
     <name>U2::PWMSearchDialogController</name>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="112"/>
-        <location filename="../src/PWMSearchDialogController.cpp" line="181"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="114"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="183"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="181"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="183"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="193"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="195"/>
         <source>Progress %1% </source>
         <translation>Прогресс %1% </translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="195"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="197"/>
         <source>Results found: %1.</source>
         <translation>Результатов найдено: %1.</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="214"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="216"/>
         <source>Select file with frequency or weight matrix</source>
         <translation>Выберите файл с весовой или частотной матрицей</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="287"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="291"/>
         <source>Same model with same parameters already in the search queue</source>
         <translation>Модель с такими же параметрами уже находится в очереди</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="325"/>
-        <location filename="../src/PWMSearchDialogController.cpp" line="547"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="332"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="564"/>
         <source>Zero length or corrupted model
 Maybe model data is not enough for selected algorithm</source>
         <translation>Zero length or corrupted model
 Maybe model data is not enough for selected algorithm</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="348"/>
-        <location filename="../src/PWMSearchDialogController.cpp" line="456"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="360"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="471"/>
         <source>Model not selected</source>
         <translation>Не выбрана матрица</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="354"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="366"/>
         <source>Load file with list of matrices</source>
         <translation>Загрузить файл со списком матриц</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="354"/>
-        <location filename="../src/PWMSearchDialogController.cpp" line="394"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="366"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="406"/>
         <source>CSV files (*.csv)</source>
         <translation>Файлы CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="394"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="406"/>
         <source>Save file with list of matrices</source>
         <translation>Сохранить файл со списком матриц</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="421"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="433"/>
         <source>Select directory with frequency or weight matrices</source>
         <translation>Выберите папку с частотными или весовыми матрицами</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="568"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="585"/>
         <source>Reverse complement strand</source>
         <translation>Только комплементарные</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="568"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="585"/>
         <source>Direct strand</source>
         <translation>Только прямые</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="272"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="276"/>
         <source>Zero length or corrupted model</source>
         <translation>Повреждённая матрица либо матрица нулевой длины</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="110"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="112"/>
         <source>Add to queue</source>
         <translation>Добавить в очередь</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="111"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="113"/>
         <source>Search</source>
         <translation>Искать</translation>
     </message>
     <message>
-        <location filename="../src/PWMSearchDialogController.cpp" line="466"/>
+        <location filename="../src/PWMSearchDialogController.cpp" line="481"/>
         <source>Range is too small</source>
         <translation>Регион слишком мал</translation>
     </message>
@@ -982,28 +984,28 @@ Maybe model data is not enough for selected algorithm</translation>
 <context>
     <name>U2::PWMatrixBuildTask</name>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="447"/>
-        <location filename="../src/PWMBuildDialogController.cpp" line="454"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="453"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="460"/>
         <source>Build Weight Matrix</source>
         <translation>Построить весовую матрицу</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="463"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="469"/>
         <source>Can&apos;t convert mononucleotide matrix to dinucleotide one</source>
         <translation>Невозможно преобразовать мононуклеотидную матрицу в динуклеотидную</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="475"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="481"/>
         <source>Sequences in alignment have various lengths</source>
         <translation>Последовательности в выравнивании имеют разную длину</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="479"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="485"/>
         <source>Alignment is empty</source>
         <translation>Выравнивание пусто</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="483"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="489"/>
         <source>Alignment is not nucleic</source>
         <translation>Неправильный алфавит выравнивания</translation>
     </message>
@@ -1011,27 +1013,27 @@ Maybe model data is not enough for selected algorithm</translation>
 <context>
     <name>U2::PWMatrixBuildToFileTask</name>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="506"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="512"/>
         <source>Build Weight Matrix</source>
         <translation>Построить весовую матрицу</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="517"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="523"/>
         <source>Input format error</source>
         <translation>Неверный входной формат</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="525"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="531"/>
         <source>Loading alignment</source>
         <translation>Загрузка выравнивания</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="557"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="563"/>
         <source>Wrong sequence alphabet</source>
         <translation>Неверный алфавит последовательности</translation>
     </message>
     <message>
-        <location filename="../src/PWMBuildDialogController.cpp" line="566"/>
+        <location filename="../src/PWMBuildDialogController.cpp" line="574"/>
         <source>No alignments or sequences found</source>
         <translation>Не выбрано ни одного выравнивания или последовательности</translation>
     </message>
