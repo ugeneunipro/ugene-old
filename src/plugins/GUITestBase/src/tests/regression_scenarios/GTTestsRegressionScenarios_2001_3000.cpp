@@ -2957,9 +2957,10 @@ GUI_TEST_CLASS_DEFINITION( test_2387 ) {
         }
     };
 
-    //GTSequenceReadingModeDialogUtils
+    //GTSequenceReadingModeDialogUtils "PBR322.gb" "sars.gb"
     GTUtilsDialog::waitForDialog(os, new  GTSequenceReadingModeDialogUtils(os, new SequenceReadingModeDialogUtils()));
     GTFileDialog::openFileList(os, sandbox, QStringList() << "PBR322.gb" << "sars.gb");
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2392 ) {

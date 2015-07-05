@@ -172,7 +172,7 @@ void GTFileDialogUtils_list::setNameList(U2OpStatus &os, const QStringList & nam
         str.append('\"' + name + "\" ");
     }
     QLineEdit* fileEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os,FILE_NAME_LINE_EDIT));
-    GTLineEdit::setText(os,fileEdit,str);
+    GTLineEdit::setText(os,fileEdit,str,false,false);
 }
 #undef GT_METHOD_NAME
 
