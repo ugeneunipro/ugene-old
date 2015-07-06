@@ -77,6 +77,7 @@
 #include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
@@ -2426,6 +2427,30 @@ GUI_TEST_CLASS_DEFINITION(test_4400) {
     QTreeWidgetItem* commentItem = GTUtilsAnnotationsTreeView::findItem(os, "comment");
     QString qualValue = GTUtilsAnnotationsTreeView::getQualifierValue(os, "Original database", commentItem);
     CHECK_SET_ERR( qualValue == "GenBank", "ORIGDB comment was parced incorreclty");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4524) {
+    // Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    // Remove the first sequence.
+    GTUtilsMSAEditorSequenceArea::selectSequence(os, "Phaneroptera_falcata");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    // Export the msa to SVG.
+    GTUtilsDialog::waitForDialog(os, new ExportMsaImage(os, sandBoxDir + "test_4524.svg", "svg", 0));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Export as image"));
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(10, 10));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTGlobals::sleep(5000);
+
+    const qint64 imageFileSize = GTFile::getSize(os, sandBoxDir + "test_4524.svg");
+    CHECK_SET_ERR(imageFileSize > 0, "Export MSA to image failed. Unexpected image file size");
+
+    // Current state : "undo" action becomes disabled.
+    QWidget *undoButton = GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "msa_action_undo");
+    CHECK_SET_ERR(undoButton->isEnabled(), "'Undo' button is disabled unexpectedly");
 }
 
 } // namespace GUITest_regression_scenarios

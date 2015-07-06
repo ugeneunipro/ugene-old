@@ -119,6 +119,8 @@ GUI_TEST_CLASS_DECLARATION(test_4391)
 
 GUI_TEST_CLASS_DECLARATION(test_4400)
 
+GUI_TEST_CLASS_DECLARATION(test_4524)
+
 #undef GUI_TEST_PREFIX
 
 }   // namespace GUITest_regression_scenarios
