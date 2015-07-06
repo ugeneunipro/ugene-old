@@ -19,7 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QDir>
+#include <QDataStream>
+#include <QDir>
 
 #include "GUrl.h"
 #include "U2SafePoints.h"

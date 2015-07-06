@@ -38,8 +38,8 @@ public:
     explicit Vector3D(double xi = 0.0, double yi = 0.0, double zi = 0.0);
     Vector3D(const Vector3D& v);
     Vector3D& operator = (const Vector3D& v);
-    bool operator == (const Vector3D& other);
-    bool operator != (const Vector3D& other);
+    bool operator == (const Vector3D& other) const;
+    bool operator != (const Vector3D& other) const;
     double& operator [] (unsigned int i);
     double operator [] (unsigned int i) const;
     Vector3D& operator += (const Vector3D& v);

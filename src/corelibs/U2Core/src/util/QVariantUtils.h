@@ -22,10 +22,11 @@
 #ifndef _U2_QVARUTILS_H_
 #define _U2_QVARUTILS_H_
 
-#include <QtCore/QList>
-#include <QtCore/QMap>
-#include <QtCore/QString>
-#include <QtCore/QVariant>
+#include <QDataStream>
+#include <QList>
+#include <QMap>
+#include <QString>
+#include <QVariant>
 
 #include <U2Core/U2SafePoints.h>
 

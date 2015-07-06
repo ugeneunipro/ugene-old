@@ -8,3 +8,7 @@ PLUGIN_VENDOR=Unipro
 PLUGIN_MODE=ui
 
 include( ../../ugene_plugin_common.pri )
+
+win32-msvc2013 {
+    LIBS += opengl32.lib
+}

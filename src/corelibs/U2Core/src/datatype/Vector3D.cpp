@@ -46,12 +46,12 @@ void Vector3D::set(double xs, double ys, double zs)
     x=xs; y=ys; z=zs;
 }
 
-bool Vector3D::operator == (const Vector3D& other)
+bool Vector3D::operator == (const Vector3D& other) const
 {
     return (x == other.x && y == other.y && z == other.z);
 }
 
-bool Vector3D::operator != (const Vector3D& other)
+bool Vector3D::operator != (const Vector3D& other) const
 {
     return !(*this == other);
 }
