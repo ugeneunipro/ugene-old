@@ -114,7 +114,7 @@ protected:
             MSAEditorConsensusArea* consArea = ui->getConsensusArea();
             if (msaSettings.exportAll) {
                 SAFE_POINT_EXT( ui->getEditor() != NULL, setError(tr("MSA Editor is NULL")), );
-                msaSettings.region = U2Region( 0, ui->getEditor()->getAlignmentLen() - 1);
+                msaSettings.region = U2Region(0, ui->getEditor()->getAlignmentLen());
             }
             consArea->paintRulerPart(p, msaSettings.region);
         }

@@ -138,7 +138,7 @@ void MSAEditorConsensusArea::paintConsenusPart(QPixmap &pixmap, const U2Region &
     CHECK(!ui->seqArea->isAlignmentEmpty(), );
 
     CHECK(editor->getColumnWidth() * region.length < 32768, );
-    pixmap = QPixmap( editor->getColumnWidth() * region.length, getYRange(MSAEditorConsElement_RULER).startPos);
+    pixmap = QPixmap(editor->getColumnWidth() * region.length, getYRange(MSAEditorConsElement_RULER).startPos);
 
     QPainter p(&pixmap);
     paintConsenusPart(p, region, seqIdx);
@@ -164,17 +164,19 @@ void MSAEditorConsensusArea::paintConsenusPart(QPainter &p, const U2Region &regi
     const MAlignment &msa = editor->getMSAObject()->getMAlignment();
     for (int pos = region.startPos; pos < region.endPos(); pos++) {
         char c = alg->getConsensusChar(msa, pos, seqIdx.toVector());
-        drawConsensusChar(p, pos, c, false, true);
+        drawConsensusChar(p, pos, 0, c, false, true);
     }
 
     QColor c("#255060");
     p.setPen(c);
+
     U2Region yr = getYRange(MSAEditorConsElement_HISTOGRAM);
     yr.startPos++;
-    yr.length-=2; //keep borders
+    yr.length -= 2; //keep borders
+
     QBrush brush(c, Qt::Dense4Pattern);
     for (int pos = region.startPos, lastPos = region.endPos() - 1; pos <= lastPos; pos++) {
-        U2Region xr = ui->seqArea->getBaseXRange(pos, true);
+        U2Region xr = ui->seqArea->getBaseXRange(pos, region.startPos, true);
         int percent;
         alg->getConsensusCharAndScore(msa, pos, percent, seqIdx.toVector());
         percent = qRound(percent * 100. / seqIdx.size() );
@@ -196,11 +198,11 @@ void MSAEditorConsensusArea::paintRulerPart(QPixmap &pixmap, const U2Region &reg
 }
 
 void MSAEditorConsensusArea::paintRulerPart(QPainter &p, const U2Region &region) {
-    p.fillRect( QRect( 0, 0, editor->getColumnWidth() * region.length, getYRange(MSAEditorConsElement_RULER).length), Qt::white);
-    p.translate(-ui->seqArea->getBaseXRange(region.startPos, true).startPos, -getYRange(MSAEditorConsElement_RULER).startPos);
+    p.fillRect(QRect(0, 0, editor->getColumnWidth() * region.length, getYRange(MSAEditorConsElement_RULER).length), Qt::white);
+    p.translate(-ui->seqArea->getBaseXRange(region.startPos, region.startPos, true).startPos, -getYRange(MSAEditorConsElement_RULER).startPos);
     drawRuler(p, region.startPos, region.endPos(), true);
     // return back to (0, 0)
-    p.translate(ui->seqArea->getBaseXRange(region.startPos, true).startPos, getYRange(MSAEditorConsElement_RULER).startPos);
+    p.translate(ui->seqArea->getBaseXRange(region.startPos, region.startPos, true).startPos, getYRange(MSAEditorConsElement_RULER).startPos);
 }
 
 bool MSAEditorConsensusArea::event(QEvent* e) {
@@ -293,8 +295,8 @@ void MSAEditorConsensusArea::drawSelection(QPainter& p) {
     int endPos = qMin(selection.x() + selection.width() - 1,
         ui->seqArea->getLastVisibleBase(true));
     SAFE_POINT(endPos < ui->editor->getAlignmentLen(), "Incorrect selection width!", );
-    for ( int pos = startPos; pos <= endPos; ++pos ) {
-        drawConsensusChar(p, pos, true);
+    for (int pos = startPos; pos <= endPos; ++pos) {
+        drawConsensusChar(p, pos, ui->seqArea->getFirstVisibleBase(), true);
     }
 }
 
@@ -321,13 +323,13 @@ void MSAEditorConsensusArea::drawConsensus(QPainter &p, int startPos, int lastPo
 
     childObject->setObjectName("");
     for (int pos = startPos; pos <= lastPos; pos++) {
-        drawConsensusChar(p, pos, false, useVirtualCoords);
+        drawConsensusChar(p, pos, startPos, false, useVirtualCoords);
     }
 }
 
-void MSAEditorConsensusArea::drawConsensusChar(QPainter& p, int pos, bool selected, bool useVirtualCoords) {
+void MSAEditorConsensusArea::drawConsensusChar(QPainter& p, int pos, int firstVisiblePos, bool selected, bool useVirtualCoords) {
     U2Region yRange = getYRange(MSAEditorConsElement_CONSENSUS_TEXT);
-    U2Region xRange= ui->seqArea->getBaseXRange(pos, useVirtualCoords);
+    U2Region xRange = ui->seqArea->getBaseXRange(pos, firstVisiblePos, useVirtualCoords);
     QRect cr(xRange.startPos, yRange.startPos, xRange.length + 1, yRange.length);
 
     if (selected) {
@@ -342,9 +344,9 @@ void MSAEditorConsensusArea::drawConsensusChar(QPainter& p, int pos, bool select
     }
 }
 
-void MSAEditorConsensusArea::drawConsensusChar(QPainter &p, int pos, char consChar, bool selected, bool useVirtualCoords) {
+void MSAEditorConsensusArea::drawConsensusChar(QPainter &p, int pos, int firstVisiblePos, char consChar, bool selected, bool useVirtualCoords) {
     U2Region yRange = getYRange(MSAEditorConsElement_CONSENSUS_TEXT);
-    U2Region xRange= ui->seqArea->getBaseXRange(pos, useVirtualCoords);
+    U2Region xRange = ui->seqArea->getBaseXRange(pos, firstVisiblePos, useVirtualCoords);
     QRect cr(xRange.startPos, yRange.startPos, xRange.length + 1, yRange.length);
 
     if (selected) {
@@ -377,10 +379,10 @@ void MSAEditorConsensusArea::drawRuler(QPainter& p, int start, int end, bool dra
     U2Region rr = getYRange(MSAEditorConsElement_RULER);
     U2Region rrP = getYRange(MSAEditorConsElement_CONSENSUS_TEXT);
     int dy = rr.startPos - rrP.endPos();
-    rr.length+=dy;
-    rr.startPos-=dy;
-    U2Region firstBaseXReg = ui->seqArea->getBaseXRange(startPos, drawFull);
-    U2Region lastBaseXReg = ui->seqArea->getBaseXRange(lastPos, drawFull);
+    rr.length += dy;
+    rr.startPos -= dy;
+    U2Region firstBaseXReg = ui->seqArea->getBaseXRange(startPos, startPos, drawFull);
+    U2Region lastBaseXReg = ui->seqArea->getBaseXRange(lastPos, startPos, drawFull);
     int firstLastLen = lastBaseXReg.startPos - firstBaseXReg.startPos;
     int firstXCenter = firstBaseXReg.startPos + firstBaseXReg.length / 2;
     QPoint startPoint(firstXCenter, rr.startPos);
@@ -420,13 +422,15 @@ void MSAEditorConsensusArea::drawHistogram(QPainter &p, int firstBase, int lastB
     QColor c("#255060");
     p.setPen(c);
     U2Region yr = getYRange(MSAEditorConsElement_HISTOGRAM);
-    yr.startPos++; yr.length-=2; //keep borders
+    yr.startPos++;
+    yr.length -= 2; //keep borders
+
     QBrush brush(c, Qt::Dense4Pattern);
     p.setBrush(brush);
     QVector<QRect> rects;
 
     for (int pos = firstBase, lastPos = lastBase; pos <= lastPos; pos++) {
-        U2Region xr = ui->seqArea->getBaseXRange(pos, true);
+        U2Region xr = ui->seqArea->getBaseXRange(pos, firstBase, true);
         int percent = consensusCache->getConsensusCharPercent(pos);
         assert(percent >= 0 && percent <= 100);
         int h = qRound(percent * yr.length / 100.0);

@@ -118,8 +118,8 @@ private:
     void drawConsensus(QPainter& p);
     void drawConsensus(QPainter& p, int startPos, int lastPos, bool useVirtualCoords = false);
 
-    void drawConsensusChar(QPainter& p, int pos, bool selected, bool useVirtualCoords = false);
-    void drawConsensusChar(QPainter& p, int pos, char consChar,
+    void drawConsensusChar(QPainter& p, int pos, int firstVisiblePos, bool selected, bool useVirtualCoords = false);
+    void drawConsensusChar(QPainter& p, int pos, int firstVisiblePos, char consChar,
                            bool selected, bool useVirtualCoords = false);
 
     void drawRuler(QPainter& p, int start = -1, int end = -1, bool drawFull = false);

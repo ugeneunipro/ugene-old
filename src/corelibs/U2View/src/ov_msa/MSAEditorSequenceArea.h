@@ -167,6 +167,7 @@ public:
     int getNumVisibleBases(bool countClipped, bool forOffset = false) const;
 
     U2Region getBaseXRange(int pos, bool useVirtualCoords) const;
+    U2Region getBaseXRange(int pos, int firstVisiblePos, bool useVirtualCoords) const;
 
     int getColumnNumByX(int x, bool selecting = false) const;
     int getXByColumnNum(int columnNum) const;
@@ -192,6 +193,7 @@ public:
     int getNumDisplayedSequences() const;
 
     U2Region getSequenceYRange(int seqNum, bool useVirtualCoords) const;
+    U2Region getSequenceYRange(int seqNum, int firstVisibleRow, bool useVirtualCoords) const;
 
     int getSequenceNumByY(int y) const;
     int getYBySequenceNum(int sequenceNum) const;

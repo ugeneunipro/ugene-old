@@ -1067,7 +1067,11 @@ int MSAEditorSequenceArea::getYBySequenceNum(int sequenceNum) const {
 }
 
 U2Region MSAEditorSequenceArea::getBaseXRange(int pos, bool useVirtualCoords) const {
-    U2Region res(editor->getColumnWidth() * (pos - startPos), editor->getColumnWidth());
+    return getBaseXRange(pos, startPos, useVirtualCoords);
+}
+
+U2Region MSAEditorSequenceArea::getBaseXRange(int pos, int firstVisiblePos, bool useVirtualCoords) const {
+    U2Region res(editor->getColumnWidth() * (pos - firstVisiblePos), editor->getColumnWidth());
     if (!useVirtualCoords) {
         int w = width();
         res = res.intersect(U2Region(0, w));
@@ -1075,8 +1079,12 @@ U2Region MSAEditorSequenceArea::getBaseXRange(int pos, bool useVirtualCoords) co
     return res;
 }
 
-U2Region MSAEditorSequenceArea::getSequenceYRange(int seq, bool useVirtualCoords) const {
-    U2Region res(editor->getRowHeight()* (seq - startSeq), editor->getRowHeight());
+U2Region MSAEditorSequenceArea::getSequenceYRange(int seqNum, bool useVirtualCoords) const {
+    return getSequenceYRange(seqNum, startSeq, useVirtualCoords);
+}
+
+U2Region MSAEditorSequenceArea::getSequenceYRange(int seq, int firstVisibleRow, bool useVirtualCoords) const {
+    U2Region res(editor->getRowHeight()* (seq - firstVisibleRow), editor->getRowHeight());
     if (!useVirtualCoords) {
         int h = height();
         res = res.intersect(U2Region(0, h));
