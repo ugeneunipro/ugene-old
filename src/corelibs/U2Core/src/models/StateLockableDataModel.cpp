@@ -19,12 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include "StateLockableDataModel.h"
+#include <QCoreApplication>
+#include <QThread>
 
+#include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <QtCore/QThread>
-#include <QtCore/QCoreApplication>
+#include "StateLockableDataModel.h"
 
 namespace U2 {
 
@@ -313,6 +314,19 @@ QList<StateLock*> StateLockableTreeItem::findLocks(StateLockableTreeItemBranchFl
     return res;
 }
 
+StateLocker::StateLocker(StateLockableItem *lockableItem, StateLock *lock) :
+    lockableItem(lockableItem),
+    lock(NULL == lock ? lock = new StateLock() : lock)
+{
+    SAFE_POINT(NULL != lockableItem, L10N::nullPointerError("StateLockableItem"), );
+    SAFE_POINT(NULL != lock, L10N::nullPointerError("StateLock"), );
+    lockableItem->lockState(lock);
+}
+
+StateLocker::~StateLocker() {
+    lockableItem->unlockState(lock);
+    delete lock;
+}
 
 }//namespace
 

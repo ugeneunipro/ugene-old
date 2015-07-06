@@ -22,12 +22,15 @@
 #ifndef _U2_STATE_LOCKS_H_
 #define _U2_STATE_LOCKS_H_
 
+#include <QPointer>
+#include <QSet>
+
 #include <U2Core/global.h>
 
-#include <QtCore/QPointer>
-#include <QtCore/QSet>
-
 namespace U2 {
+
+class StateLock;
+class StateLockableItem;
 
 #define StateLockModType_AddChild "state-lock-mod-add-child"
 
@@ -38,6 +41,19 @@ enum StateLockFlag {
 };
 
 typedef QFlags<StateLockFlag> StateLockFlags;
+
+/**
+ * StateLocker takes ownership over the StackLock object.
+ */
+class U2CORE_EXPORT StateLocker {
+public:
+    StateLocker(StateLockableItem *lockableItem, StateLock *lock = NULL);
+    ~StateLocker();
+
+private:
+    StateLockableItem *lockableItem;
+    StateLock *lock;
+};
 
 class U2CORE_EXPORT StateLock : public QObject {
     Q_OBJECT

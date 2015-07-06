@@ -132,11 +132,11 @@ void MSAImageExportToSvgTask::run() {
     SAFE_POINT_EXT( editor != NULL, setError(L10N::nullPointerError("MSAEditor")), );
     MAlignmentObject *mObj =  editor->getMSAObject();
     SAFE_POINT_EXT( mObj != NULL, setError(L10N::nullPointerError("MAlignmentObject")), );
-    StateLock *lock = new StateLock();
-    mObj->lockState(lock);
+
+    StateLocker stateLocker(mObj);
+    Q_UNUSED(stateLocker);
 
     int ok = msaSettings.exportAll || (!msaSettings.region.isEmpty() && !msaSettings.seqIdx.isEmpty());
-    CHECK_OPERATION( ok, mObj->unlockState(lock));
     SAFE_POINT_EXT( ok, setError(tr("Nothing to export")), );
 
     QSvgGenerator generator;
