@@ -78,6 +78,7 @@
 #include "tests/common_scenarios/shared_database/GTTestsSharedDatabase.h"
 #include "tests/common_scenarios/circular_view/GTTestsCvGeneral.h"
 #include "tests/common_scenarios/options_panel/sequence_view/GTTestsOptionPanelSequenceView.h"
+#include "tests/common_scenarios/start_page/GTTestsStartPage.h"
 #include "tests/crazy_user/GUICrazyUserTest.h"
 #include "tests/regression_scenarios/GTTestsRegressionScenarios_1_1000.h"
 #include "tests/regression_scenarios/GTTestsRegressionScenarios_1001_2000.h"
@@ -2383,6 +2384,15 @@ REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0012);
     REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0013);
+/////////////////////////////////////////////////////////////////////////
+// common_scenarios/start_page
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_start_page::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_start_page::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_start_page::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_start_page::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_start_page::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_start_page::test_0008);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

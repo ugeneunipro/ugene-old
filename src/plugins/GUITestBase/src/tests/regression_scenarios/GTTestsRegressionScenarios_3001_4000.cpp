@@ -1438,7 +1438,7 @@ GUI_TEST_CLASS_DEFINITION(test_3226) {
     QPoint p(1, 0);
     map[&p] = "in";
     GTUtilsDialog::waitForDialog(os, new AliasesDialogFiller(os, map));
-    GTWidget::click(os, GTAction::button(os, "Configure parameter aliases"));
+    GTWidget::click(os, GTAction::button(os, "Set parameter aliases"));
 
     ////3. Copy and paste the 'File list' element.
     GTUtilsWorkflowDesigner::click(os, "File List");

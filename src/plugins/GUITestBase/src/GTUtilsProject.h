@@ -89,6 +89,8 @@ public:
     static void openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &dirPath, const QString &fileName);
     static void openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &filePath);
 
+    static void closeProject(U2OpStatus &os);
+
 
 protected:
     static void openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls);

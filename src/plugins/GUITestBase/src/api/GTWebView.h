@@ -20,8 +20,9 @@
 */
 
 
-#ifndef GTUTILSDASHBOARD_H
-#define GTUTILSDASHBOARD_H
+
+#ifndef GTWEBVIEW_H
+#define GTWEBVIEW_H
 
 #include "api/GTGlobals.h"
 
@@ -30,24 +31,21 @@ class QWebElement;
 
 namespace U2 {
 
-class GTUtilsDashboard
-{
+class GTWebView{
 public:
-    enum Tabs{Overview, Input, ExternalTools};
-    static QWebView* getDashboard(U2OpStatus &os);
+    static QWebElement findElement(U2OpStatus &os, QWebView *view, QString text, QString tag = "*", bool exactMatch = false);
+    static void checkElement(U2OpStatus &os, QWebView *view, QString text, QString tag = "*", bool exists = true, bool exactMatch = false);
+    static bool doesElementExist(U2OpStatus &os, QWebView *view, const QString &text, const QString &tag = "*", bool exactMatch = false);
 
-    static QWebElement findElement(U2OpStatus &os, QString text, QString tag = "*", bool exactMatch = false);
-    static QWebElement findTreeElement(U2OpStatus &os, QString text);
-    static QWebElement findContextMenuElement(U2OpStatus &os, QString text);
-    static void click(U2OpStatus &os, QWebElement el, Qt::MouseButton button = Qt::LeftButton);
-    static bool areThereProblems(U2OpStatus &os);
-    static void openTab(U2OpStatus &os, Tabs tab);
+    static void click(U2OpStatus &os, QWebView *view, QWebElement el, Qt::MouseButton button = Qt::LeftButton);
+    static void selectElementText(U2OpStatus &os, QWebView *view, QWebElement el);
+    static QWebElement findTreeElement(U2OpStatus &os, QWebView *view, QString text);
+    static QWebElement findContextMenuElement(U2OpStatus &os, QWebView *view, QString text);
 
-private:
-    static QMap<QString, Tabs> initTabMap();
-    static const QMap<QString, Tabs> tabMap;
+    static void traceAllWebElements(U2OpStatus &os, QWebView *view);
+
 };
 
 }
 
-#endif // GTUTILSDASHBOARD_H
+#endif // GTWEBVIEW_H

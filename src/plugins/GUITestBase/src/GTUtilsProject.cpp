@@ -32,6 +32,7 @@
 #include "api/GTWidget.h"
 
 #include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 
 #include "GTUtilsAnnotationsTreeView.h"
@@ -51,6 +52,8 @@
 
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
+
+#include <QTreeView>
 
 
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -227,6 +230,16 @@ void GTUtilsProject::openMultiSequenceFileAsMalignment(U2OpStatus &os, const QSt
 void GTUtilsProject::openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &filePath) {
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
     GTFileDialog::openFile(os, filePath);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "closeProject"
+void GTUtilsProject::closeProject(U2OpStatus &os){
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new AppCloseMessageBoxDialogFiller(os));
+    GTGlobals::sleep(500);
+    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_FILE);
+    GTMenu::clickMenuItem(os, menu, ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
 }
 #undef GT_METHOD_NAME
 

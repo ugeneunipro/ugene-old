@@ -45,6 +45,7 @@
 #include "api/GTTextEdit.h"
 #include "api/GTToolbar.h"
 #include "api/GTTreeWidget.h"
+#include "api/GTWebView.h"
 #include "api/GTWidget.h"
 
 #include "GTDatabaseConfig.h"
@@ -6626,7 +6627,7 @@ GUI_TEST_CLASS_DEFINITION(test_1662){
     GTGlobals::sleep();
     GTUtilsDashboard::findElement(os, "TopHat run 1", "SPAN");
     GTUtilsDashboard::findElement(os, "TopHat run 2", "SPAN");
-    GTUtilsDashboard::checkElement(os, "TopHat run 3", "SPAN", false);
+    GTWebView::checkElement(os, GTUtilsDashboard::getDashboard(os), "TopHat run 3", "SPAN", false);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1664){
@@ -7790,7 +7791,7 @@ GUI_TEST_CLASS_DEFINITION(test_1764){
     QWebElement button = GTUtilsDashboard::findElement(os, "readed_fasta.fa", "BUTTON");
     GTUtilsDashboard::click(os, button);
     GTGlobals::sleep();
-    //GTUtilsDashboard::traceAllWebElements(os);
+    //GTWebView::traceAllWebElements(os, GTUtilsDashboard::getDashboard(os));
 //    Expected state: "readed_fasta.fa" is opened in UGENE
 //    5) Click "Return to workflow", repeat step 4
     GTUtilsMdi::activateWindow(os, "Workflow Designer - New workflow");

@@ -43,6 +43,7 @@
 #include "api/GTTableView.h"
 #include "api/GTToolbar.h"
 #include "api/GTTreeWidget.h"
+#include "api/GTWebView.h"
 #include "api/GTWidget.h"
 
 #include "GTDatabaseConfig.h"
@@ -748,7 +749,7 @@ GUI_TEST_CLASS_DEFINITION( test_2053 ){
     QWebElement button = GTUtilsDashboard::findElement(os, "OK, got it!", "BUTTON");
 //    "You can always open the original workflow for your results by clicking on this button."
     GTUtilsDashboard::click(os, button);
-    GTUtilsDashboard::traceAllWebElements(os);
+    GTWebView::traceAllWebElements(os, GTUtilsDashboard::getDashboard(os));
 //    5. Press the "OK, got it!" button
 
 //    6. Close UGENE then reopen it
@@ -1047,7 +1048,7 @@ GUI_TEST_CLASS_DEFINITION(test_2093_1) {
     GTGlobals::sleep();
 
 //    2. Select "Load schema" button on the dashboard menu line.
-    GTUtilsDashboard::traceAllWebElements(os);
+    GTWebView::traceAllWebElements(os, GTUtilsDashboard::getDashboard(os));
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Discard));
 
@@ -1792,7 +1793,7 @@ GUI_TEST_CLASS_DEFINITION( test_2192 ){
 //    8. Select some amount of text on a tree and click on "Copy selected text" which is now should be available.
     GTUtilsDashboard::click(os, GTUtilsDashboard::findTreeElement(os, "SAMtools run 1"));
     QWebElement el = GTUtilsDashboard::findElement(os, "samtools-0.1.19/samtools", "SPAN");
-    GTUtilsDashboard::selectElementText(os, el);
+    GTWebView::selectElementText(os, GTUtilsDashboard::getDashboard(os), el);
     GTUtilsDashboard::click(os, el, Qt::RightButton);
     GTUtilsDashboard::click(os, GTUtilsDashboard::findContextMenuElement(os, "Copy selected text"));
 //       Paste the data in any editor.
@@ -2736,7 +2737,7 @@ GUI_TEST_CLASS_DEFINITION(test_2374){
     GTUtilsWorkflowDesigner::runWorkflow(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //    Expected state: there is no "External Tools" page on the WD dashboards
-    GTUtilsDashboard::checkElement(os, "External Tools", "A", false );
+    GTWebView::checkElement(os, GTUtilsDashboard::getDashboard(os), "External Tools", "A", false );
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2375 ) {
@@ -4613,7 +4614,7 @@ GUI_TEST_CLASS_DEFINITION(test_2638){
 //    4. Open "input" tab on dashboard
     QString initTitle = GTUtilsMdi::activeWindowTitle(os);
     GTUtilsDashboard::openTab(os, GTUtilsDashboard::Input);
-    GTUtilsDashboard::traceAllWebElements(os);
+    GTWebView::traceAllWebElements(os, GTUtilsDashboard::getDashboard(os));
     GTUtilsDashboard::click(os, GTUtilsDashboard::findElement(os, "Find Splice Junctions with TopHat", "LI"));
     GTUtilsDashboard::click(os, GTUtilsDashboard::findElement(os, "index", "BUTTON"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
