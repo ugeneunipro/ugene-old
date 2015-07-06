@@ -150,7 +150,6 @@ void MSAEditorConsensusArea::paintConsenusPart(QPainter &p, const U2Region &regi
     CHECK(!ui->seqArea->isAlignmentEmpty(), );
 
     p.fillRect(QRect(0, 0, editor->getColumnWidth() * region.length, getYRange(MSAEditorConsElement_RULER).startPos), Qt::white);
-    p.translate(-editor->getColumnWidth() * region.startPos, 0);
 
     //draw consensus
     p.setPen(Qt::black);
@@ -177,7 +176,7 @@ void MSAEditorConsensusArea::paintConsenusPart(QPainter &p, const U2Region &regi
     QBrush brush(c, Qt::Dense4Pattern);
     for (int pos = region.startPos, lastPos = region.endPos() - 1; pos <= lastPos; pos++) {
         U2Region xr = ui->seqArea->getBaseXRange(pos, region.startPos, true);
-        int percent;
+        int percent = 0;
         alg->getConsensusCharAndScore(msa, pos, percent, seqIdx.toVector());
         percent = qRound(percent * 100. / seqIdx.size() );
         SAFE_POINT(percent >= 0 && percent <= 100, tr("Percent value is out of [0..100] interval"), );
