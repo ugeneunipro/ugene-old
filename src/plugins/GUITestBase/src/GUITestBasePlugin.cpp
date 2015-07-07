@@ -1154,6 +1154,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0037);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0038);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0038_1);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0039);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0040);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/bookmarks/

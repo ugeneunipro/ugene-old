@@ -496,8 +496,8 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
                     dr.rawDataCheckResult.properties.unite(hintsOverDocuments);
                     if (dr.format != NULL ) {
                         bool forceReadingOptions = hints.value(ProjectLoaderHint_ForceFormatOptions, false).toBool();
-                        bool optionsAlreadyChoosed = hints.value((ProjectLoaderHint_MultipleFilesMode_Flag), false).toBool();
-                        bool ok = DocumentReadingModeSelectorController::adjustReadingMode(dr, forceReadingOptions, optionsAlreadyChoosed);
+                        bool optionsAlreadyChoosen = hints.value((ProjectLoaderHint_MultipleFilesMode_Flag), false).toBool();
+                        bool ok = DocumentReadingModeSelectorController::adjustReadingMode(dr, forceReadingOptions, optionsAlreadyChoosen);
                         if (!ok) {
                             continue;
                         }
@@ -912,6 +912,39 @@ void ProjectLoaderImpl::sl_onAddExistingDocument(){
     Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(urls, hints);
     if (openTask != NULL) {
         AppContext::getTaskScheduler()->registerTopLevelTask(openTask);
+    }
+}
+
+DocumentFormat* ProjectLoaderImpl::detectFormatFromAdapter(IOAdapter* io, QVariantMap &hints, bool &canceled) {
+    GUrl url;
+    QList<FormatDetectionResult> formats;
+    FormatDetectionConfig conf;
+    FormatDetectionResult dr;
+    conf.bestMatchesOnly = false;
+    formats = DocumentUtils::detectFormat(io, conf);
+    canceled = !detectFormat(url, formats, hints, dr);
+    if (canceled) {
+        return NULL;
+    }
+    dr.rawDataCheckResult.properties.unite(hints);
+    if (dr.format != NULL ) {
+        bool forceReadingOptions = hints.value(ProjectLoaderHint_ForceFormatOptions, false).toBool();
+        bool optionsAlreadyChoosen = hints.value((ProjectLoaderHint_MultipleFilesMode_Flag), false).toBool();
+        canceled = !DocumentReadingModeSelectorController::adjustReadingMode(dr, forceReadingOptions, optionsAlreadyChoosen);
+        if (canceled) {
+            return NULL;
+        }
+        if (!processHints(dr)) {
+            hints = dr.rawDataCheckResult.properties;
+            if (!hints.contains(DocumentReadingMode_MaxObjectsInDoc)) {
+                hints[DocumentReadingMode_MaxObjectsInDoc] = MAX_OBJECT_PER_DOC;
+            }   
+        }
+    }
+    if (formats.isEmpty()) {
+        return NULL;
+    } else {
+        return formats[0].format;
     }
 }
 

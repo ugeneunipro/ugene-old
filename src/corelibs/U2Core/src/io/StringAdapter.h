@@ -48,6 +48,15 @@ protected:
     QString name;
 };
 
+class U2CORE_EXPORT StringAdapterFactoryWithStringData: public StringAdapterFactory {
+    Q_OBJECT
+public:
+    StringAdapterFactoryWithStringData(const QString &data);
+
+    virtual IOAdapter* createIOAdapter();
+private:
+    const QString data;
+};
 
 class U2CORE_EXPORT StringAdapter: public IOAdapter {
     Q_OBJECT
@@ -56,7 +65,7 @@ public:
     ~StringAdapter() {if (isOpen()) close();}
 
     /** Creates opened adapter */
-    StringAdapter(const QByteArray &data);
+    StringAdapter(const QByteArray &data, StringAdapterFactory* f = NULL);
 
     virtual bool open(const GUrl& url, IOAdapterMode m);
 
@@ -76,7 +85,7 @@ public:
 
     virtual qint64 bytesRead() const;
 
-    virtual GUrl getURL() const {return GUrl();}
+    virtual GUrl getURL() const;
 
     const QByteArray & getBuffer() {return buffer;}
 
@@ -86,6 +95,7 @@ private:
     bool opened;
     QByteArray buffer;
     int pos;
+    GUrl url;
 };
 
 

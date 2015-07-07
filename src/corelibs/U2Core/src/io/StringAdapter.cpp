@@ -37,17 +37,28 @@ StringAdapter::StringAdapter(StringAdapterFactory *f, QObject *o)
 
 }
 
-StringAdapter::StringAdapter(const QByteArray &data)
-: IOAdapter(NULL), buffer(data)
+StringAdapter::StringAdapter(const QByteArray &data, StringAdapterFactory* f)
+: IOAdapter(f), buffer(data)
 {
     opened = true;
     pos = 0;
 }
 
-bool StringAdapter::open(const GUrl &, IOAdapterMode) {
-    buffer.clear();
+bool StringAdapter::open(const GUrl &_url, IOAdapterMode m) {
+    url = _url;
+    switch (m) {
+        case IOAdapterMode_Write:
+            buffer.clear();
+            pos = 0;
+            break;
+        case IOAdapterMode_Read:
+            pos = 0;
+            break;
+        case IOAdapterMode_Append:
+            pos = buffer.length() - 1;
+            break;
+    }
     opened = true;
-    pos = 0;
 
     return true;
 }
@@ -77,7 +88,7 @@ bool StringAdapter::skip(qint64 nBytes) {
         pos += size;
     } else {
         qint64 size = qMin<qint64>(pos, -nBytes);
-        pos += size;
+        pos -= size;
     }
     return true;
 }
@@ -100,6 +111,16 @@ qint64 StringAdapter::bytesRead() const {
 
 QString StringAdapter::errorString() const {
     return "";
+}
+
+U2::GUrl StringAdapter::getURL() const {
+    return url;
+}
+
+StringAdapterFactoryWithStringData::StringAdapterFactoryWithStringData(const QString &data): StringAdapterFactory(), data(data){}
+
+IOAdapter* StringAdapterFactoryWithStringData::createIOAdapter() {
+    return new StringAdapter(data.toLatin1(), this);
 }
 
 } // U2

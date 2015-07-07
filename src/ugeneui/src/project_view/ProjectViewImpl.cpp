@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QClipboard>
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QTimer>
@@ -27,6 +28,8 @@
 #include <AppContextImpl.h>
 
 #include <U2Core/AddDocumentTask.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/CopyDataTask.h>
 #include <U2Core/CopyDocumentTask.h>
 #include <U2Core/DNAAlphabet.h>
@@ -37,6 +40,7 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GUrl.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
@@ -49,6 +53,7 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/Settings.h>
+#include <U2Core/StringAdapter.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -68,6 +73,7 @@
 #include <U2View/AnnotatedDNAView.h>
 
 #include "ProjectViewImpl.h"
+#include "project_support/ProjectLoaderImpl.h"
 
 namespace U2 {
 
@@ -429,6 +435,54 @@ ProjectViewWidget::ProjectViewWidget() {
     setWindowIcon(QIcon(":ugene/images/project.png"));
 
     updater = new DocumentUpdater(this);
+
+    pasteFileFromClipboard = new QAction(tr("Paste file from clipboard"), this);
+    pasteFileFromClipboard->setShortcut(QKeySequence::Paste);
+    pasteFileFromClipboard->setShortcutContext(Qt::ApplicationShortcut);
+    connect(pasteFileFromClipboard, SIGNAL(triggered()), SLOT(sl_pasteFileFromClipboard()));
+    addAction(pasteFileFromClipboard);
+}
+
+void showWarningAndWriteToLog(QString& message) {    
+    coreLog.error(message);
+    QMessageBox::critical(AppContext::getMainWindow()->getQMainWindow(), L10N::errorTitle(), message);
+}
+
+void ProjectViewWidget::sl_pasteFileFromClipboard() {
+    QClipboard *clipboard = QApplication::clipboard();
+    QString clipboardText = clipboard->text();
+    if (clipboardText.isEmpty()) {
+        return;
+    }
+    QDir tmpDir(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath());
+    if (!tmpDir.exists() && !tmpDir.mkdir(tmpDir.path())) {
+        showWarningAndWriteToLog(tr("Unable to create directory in temporary folder %1").arg(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath()));
+        return;
+    }
+    QString pastedFileUrl(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath() 
+        + "\user_pasted_data");
+    pastedFileUrl = GUrlUtils::rollFileName(pastedFileUrl, DocumentUtils::getNewDocFileNameExcludesHint());
+    QFile file(pastedFileUrl);
+    if (!file.open(QIODevice::WriteOnly)) {
+        showWarningAndWriteToLog(tr("Unable to write file in temporary folder %1").arg(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath()));
+        return;
+    }
+    file.close();
+
+    IOAdapterFactory *iof = new StringAdapterFactoryWithStringData(clipboardText);
+    QVariantMap hints;
+    bool userCancelled = true;
+    DocumentFormat *df = ProjectLoaderImpl::detectFormatFromAdapter(iof->createIOAdapter(), hints, userCancelled);
+    if (userCancelled) {
+        return;
+    }
+    if (df == NULL) {
+        showWarningAndWriteToLog(tr("Failed to detect clipboard data file format"));        
+        return;
+    }
+
+    DocumentProviderTask* loadDocumentTask = new LoadDocumentTask(df, GUrl(pastedFileUrl, GUrl_File), iof, hints);
+    AppContext::getTaskScheduler()->registerTopLevelTask(new AddDocumentAndOpenViewTask(loadDocumentTask));
 }
 
 static ProjectTreeGroupMode getLastGroupMode() {

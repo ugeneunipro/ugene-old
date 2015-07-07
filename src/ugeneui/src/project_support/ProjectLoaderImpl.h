@@ -61,6 +61,7 @@ public:
     virtual QAction* getAddExistingDocumentAction() { return addExistingDocumentAction; }
     
     static QString getLastProjectURL();
+    static DocumentFormat* detectFormatFromAdapter(IOAdapter* io, QVariantMap &hints, bool &canceled);
 
 signals:
     void si_recentListChanged();
@@ -76,7 +77,7 @@ private:
     void updateRecentItemsMenu();
     void prependToRecentItems(const QString& url);
     void rememberProjectURL();
-    bool processHints(FormatDetectionResult& dr);
+    static bool processHints(FormatDetectionResult& dr);
 
 private slots:
     void sl_newProject();

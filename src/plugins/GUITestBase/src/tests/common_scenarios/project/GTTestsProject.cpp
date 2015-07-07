@@ -35,6 +35,7 @@
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsToolTip.h"
+#include "api/GTClipboard.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTGlobals.h"
@@ -612,6 +613,31 @@ GUI_TEST_CLASS_DEFINITION(test_0038_1){
     title2 = GTUtilsMdi::activeWindowTitle(os);
     CHECK_SET_ERR(title2 == "test_3637_1 [as] Contig2", "unexpected title for doc2: " + title2);
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0039){
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    GTClipboard::setText(os, ">human_T1 (UCS\r\nACGT\r\nACG");
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+
+    GTUtilsProjectTreeView::findIndex(os, "human_T1 (UCS");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0040){
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    GTClipboard::setText(os, ">human_T1\r\nACGTACG\r\n>human_T2\r\nACCTGA");
+
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTUtilsProjectTreeView::findIndex(os, "human_T1");
+    GTUtilsProjectTreeView::findIndex(os, "human_T2");
 }
 
 }

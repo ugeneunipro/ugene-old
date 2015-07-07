@@ -67,9 +67,11 @@ class ProjectViewWidget : public QWidget, public Ui_ProjectViewWidget {
     Q_OBJECT
 public:
     ProjectViewWidget();
-
+private slots:
+    void sl_pasteFileFromClipboard();
 private:
     DocumentUpdater* updater;
+    QAction*         pasteFileFromClipboard;
 };
 
 class ProjectViewImpl: public ProjectView , public LoadDocumentTaskProvider {
