@@ -295,6 +295,8 @@ class AVQualifierItem: public AVItem {
 public:
     AVQualifierItem(AVAnnotationItem *parent, const U2Qualifier &q);
 
+    static QString simplifyText(const QString& origValue);
+
     //TODO: keep values in U2Qualifier struct
     const QString qName;
     QString qValue;

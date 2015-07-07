@@ -50,6 +50,9 @@ protected slots:
     void sl_searchNext();
     void sl_searchAll();
 
+private slots:
+    void sl_onSearchSettingsChanged();
+
 private:
     void search(bool searchAll = false);
 

@@ -1691,7 +1691,8 @@ void AnnotationsTreeView::editItem(AVItem *item) {
         U2Qualifier q;
         bool ro = qi->isReadonly();
         bool ok = editQualifierDialogHelper(qi, ro, q);
-        if (!ro && ok && (q.name !=qi->qName || q.value != qi->qValue)) {
+        QString simplifiedValue = AVQualifierItem::simplifyText(q.value);
+        if (!ro && ok && (q.name !=qi->qName || simplifiedValue != qi->qValue)) {
             Annotation *a = (static_cast<AVAnnotationItem*>(qi->parent()))->annotation;
             a->removeQualifier(U2Qualifier(qi->qName, qi->qValue));
             a->addQualifier(q);
@@ -2184,13 +2185,10 @@ double AVAnnotationItem::getNumericVal(int col) const {
 }
 
 void AVAnnotationItem::removeQualifier(const U2Qualifier& q) {
-    for(int i=0, n = childCount(); i < n; i++) {
-        AVQualifierItem* qi = static_cast<AVQualifierItem*>(child(i));
-        if (qi->qName == q.name && qi->qValue == q.value) {
-            delete qi;
-            break;
-        }
-    }
+    AVQualifierItem* qi = findQualifierItem(q.name, q.value);
+    CHECK(qi != NULL,);
+    delete qi;
+
     updateVisual(ATVAnnUpdateFlag_QualColumns);
 }
 
@@ -2201,9 +2199,10 @@ void AVAnnotationItem::addQualifier(const U2Qualifier& q) {
 
 
 AVQualifierItem* AVAnnotationItem::findQualifierItem(const QString& name, const QString& val) const {
+    QString simplifiedValue = AVQualifierItem::simplifyText(val);
     for(int i=0, n = childCount(); i < n; i++) {
         AVQualifierItem* qi = static_cast<AVQualifierItem*>(child(i));
-        if (qi->qName == name && qi->qValue == val) {
+        if (qi->qName == name && qi->qValue == simplifiedValue) {
             return qi;
         }
     }
@@ -2214,10 +2213,19 @@ AVQualifierItem::AVQualifierItem(AVAnnotationItem* parent, const U2Qualifier& q)
 : AVItem(parent, AVItemType_Qualifier), qName(q.name), qValue(q.value)
 {
     setText(AnnotationsTreeView::COLUMN_NAME, qName);
-    qValue = qValue.replace('\n'," ");
+    qValue = simplifyText(qValue);
     setText(AnnotationsTreeView::COLUMN_VALUE, qValue);
 
     processLinks(qName, qValue, AnnotationsTreeView::COLUMN_VALUE);
+}
+
+QString AVQualifierItem::simplifyText(const QString& origValue) {
+    QString res = origValue;
+    res.replace("\t", "    ");
+    res.replace("\r", "");
+    res.replace("\n", " ");
+    res.trimmed();
+    return res;
 }
 
 FindQualifierTask::FindQualifierTask(AnnotationsTreeView *treeView, const FindQualifierTaskSettings &settings)
@@ -2280,8 +2288,9 @@ void FindQualifierTask::findInAnnotation(AVItem *annotation, bool &found) {
     int startIdx = getStartIndexAnnotation(ai);
     for(int j = startIdx; j < qual_size  && !stateInfo.isCanceled(); j++){
         const U2Qualifier &qual = quals.at(j);
+        QString simplifiedValue = AVQualifierItem::simplifyText(qual.value);
         bool matchName = matchWords(qname, qual.name, isExactMatch);
-        bool matchValue = matchWords(qvalue, qual.value, isExactMatch);
+        bool matchValue = matchWords(qvalue, simplifiedValue, isExactMatch);
         bool match = matchName && matchValue;
         if (match) {
             //matched annotation is always first in the queue
@@ -2379,6 +2388,10 @@ Task::ReportResult FindQualifierTask::report() {
         if (foundResult && ai) {
             const U2Qualifier u2qual = ai->annotation->getQualifiers().at(p.second);
             qual = ai->findQualifierItem(u2qual.name, u2qual.value);
+            if (qual == NULL) {
+                continue;
+            }
+
             qual->setSelected(true);
             qual->parent()->setSelected(true);
         }

@@ -86,6 +86,9 @@ SearchQualifierDialog::SearchQualifierDialog(QWidget* p, AnnotationsTreeView *tr
 
      connect(ui->buttonBox->button(QDialogButtonBox::Ok), SIGNAL(clicked()), SLOT(sl_searchNext()));
      connect(ui->buttonBox->button(QDialogButtonBox::Yes), SIGNAL(clicked()), SLOT(sl_searchAll()));
+     connect(ui->valueEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_onSearchSettingsChanged()));
+     connect(ui->nameEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_onSearchSettingsChanged()));
+     sl_onSearchSettingsChanged();
 }
 
 bool SearchQualifierDialog::eventFilter(QObject *obj, QEvent *e) {
@@ -104,14 +107,6 @@ bool SearchQualifierDialog::eventFilter(QObject *obj, QEvent *e) {
         }
     }
     return false;
-}
-static QString simplify(const QString& s) {
-    QString res = s;
-    res = res.replace("\t", "    ");
-    res = res.replace("\r", "");
-    res = res.replace("\n", " ");
-    res = res.trimmed();
-    return res;
 }
 
 SearchQualifierDialog::~SearchQualifierDialog( ) {
@@ -154,8 +149,8 @@ void SearchQualifierDialog::clearPrevResults(){
 }
 
 void SearchQualifierDialog::search( bool searchAll /* = false*/ ){
-    QString name = simplify(ui->nameEdit->text());
-    QString val = simplify(ui->valueEdit->text());
+    QString name = AVQualifierItem::simplifyText(ui->nameEdit->text());
+    QString val = AVQualifierItem::simplifyText(ui->valueEdit->text());
     if (!(name.length() < 20 && TextUtils::fits(TextUtils::QUALIFIER_NAME_CHARS, name.toLatin1().data(), name.length()))) {
         QMessageBox::critical(this, tr("Error!"), tr("Illegal qualifier name"));
         return;
@@ -179,6 +174,12 @@ void SearchQualifierDialog::search( bool searchAll /* = false*/ ){
 
 void SearchQualifierDialog::sl_searchAll() {
     search(true);
+}
+
+void SearchQualifierDialog::sl_onSearchSettingsChanged() {
+    bool searchTextIsEmpty = ui->valueEdit->text().isEmpty() && ui->nameEdit->text().isEmpty();
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!searchTextIsEmpty);
+    ui->buttonBox->button(QDialogButtonBox::Yes)->setEnabled(!searchTextIsEmpty);
 }
 
 }   // namespace U2
