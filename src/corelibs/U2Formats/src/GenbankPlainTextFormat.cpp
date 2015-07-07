@@ -85,11 +85,16 @@ bool GenbankPlainTextFormat::isStreamingSupport() {
 bool GenbankPlainTextFormat::readIdLine(ParserState* st) {
     if (!st->hasKey("LOCUS")) {
         QByteArray rawData(st->buff);
-        const int locusStartPos = rawData.indexOf("\nLOCUS");
+        int locusStartPos = rawData.indexOf("\nLOCUS");
         if (-1 == locusStartPos) {
             st->si.setError(tr("LOCUS is not the first line"));
             return false;
         } else {
+            while(locusStartPos >= st->len) {
+                st->readNextLine();
+                rawData = QByteArray(st->buff);
+                locusStartPos = rawData.indexOf("\nLOCUS");
+            }
             st->buff = st->buff + locusStartPos;
         }
     }
@@ -598,7 +603,7 @@ QString GenbankPlainTextFormat::genLocusString(const QList<GObject*> &aos, U2Seq
         } else if (!locusStrFromAttr.isEmpty()){
 
             QStringList tokens = locusStrFromAttr.split(" ", QString::SkipEmptyParts);
-            assert(!tokens.isEmpty());
+            SAFE_POINT(tokens.size() >= 5, QString("Incorrect number of tokens for attribute %1").arg(locusStrFromAttr), loc);
             loc = padToLen(loc.append(tokens[2]), 43);
             loc = padToLen(loc.append( detectTopology(tokens[4], so) ), 52);
             loc = loc.append(tokens[3]);
