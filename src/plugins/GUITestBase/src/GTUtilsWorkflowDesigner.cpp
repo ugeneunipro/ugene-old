@@ -24,12 +24,12 @@
 #include <QGraphicsView>
 #include <QListWidget>
 #include <QMainWindow>
+#include <QMessageBox>
 #include <QSpinBox>
 #include <QTableView>
 #include <QTableWidget>
 #include <QToolButton>
 #include <QTreeWidget>
-#include <QtCore/qglobal.h>
 
 #include <U2Core/AppContext.h>
 
@@ -54,6 +54,8 @@
 #include "api/GTToolbar.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
@@ -623,6 +625,40 @@ QList<WorkflowBusItem*> GTUtilsWorkflowDesigner::getAllConnectionArrows(U2OpStat
     };
 
     return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "removeCmdlineWorkerFromPalette"
+void GTUtilsWorkflowDesigner::removeCmdlineWorkerFromPalette(U2OpStatus &os, const QString &workerName) {
+    QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os, "tabs"));
+    GT_CHECK(tabs != NULL, "tabs widget not found");
+
+    GTTabWidget::setCurrentIndex(os, tabs, 0);
+
+    QTreeWidget* w = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os, "WorkflowPaletteElements"));
+    GT_CHECK(w != NULL, "WorkflowPaletteElements is null");
+
+    QTreeWidgetItem* foundItem = NULL;
+    QList<QTreeWidgetItem*> outerList = w->findItems("", Qt::MatchContains);
+    for (int i = 0; i < outerList.count(); i++){
+        QList<QTreeWidgetItem*> innerList;
+
+        for (int j = 0; j < outerList.value(i)->childCount(); j++){
+            innerList.append(outerList.value(i)->child(j));
+        }
+
+        foreach (QTreeWidgetItem *item, innerList) {
+            const QString s = item->data(0, Qt::UserRole).value<QAction*>()->text();
+            if (s == workerName) {
+                foundItem = item;
+            }
+        }
+    }
+    if (foundItem != NULL) {
+        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove"));
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "", "Remove element"));
+        GTUtilsWorkflowDesigner::clickOnPalette(os, workerName, Qt::RightButton);
+    }
 }
 #undef GT_METHOD_NAME
 

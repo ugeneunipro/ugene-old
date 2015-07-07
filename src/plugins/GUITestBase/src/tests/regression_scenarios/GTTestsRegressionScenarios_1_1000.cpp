@@ -2713,6 +2713,8 @@ GUI_TEST_CLASS_DEFINITION(test_0908) {
     //1) Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
+    GTUtilsWorkflowDesigner::removeCmdlineWorkerFromPalette(os, "test");
+
     //2) Click "Create element with command line tool"
     //3) input name "test"
     //4) input data : "in1" and "in2" of FASTA

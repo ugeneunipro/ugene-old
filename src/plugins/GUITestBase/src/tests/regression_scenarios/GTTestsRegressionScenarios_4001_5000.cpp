@@ -1976,40 +1976,10 @@ GUI_TEST_CLASS_DEFINITION(test_4295) {
  */
     //clean up
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
-
-    QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os,"tabs"));
-    CHECK_SET_ERR(tabs != NULL, "tabs widget not found");
-
-    GTTabWidget::setCurrentIndex(os,tabs,0);
-
-    QTreeWidget* w = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os,"WorkflowPaletteElements"));
-    CHECK_SET_ERR(w != NULL,"WorkflowPaletteElements is null");
-
-    QTreeWidgetItem* foundItem = NULL;
-    QList<QTreeWidgetItem*> outerList = w->findItems("",Qt::MatchContains);
-    for (int i=0;i<outerList.count();i++){
-        QList<QTreeWidgetItem*> innerList;
-
-        for(int j=0;j<outerList.value(i)->childCount();j++ ){
-           innerList.append(outerList.value(i)->child(j));
-        }
-
-        foreach(QTreeWidgetItem* item, innerList){
-            QString s = item->data(0,Qt::UserRole).value<QAction*>()->text();
-            if(s == "test_4295"){
-                foundItem = item;
-            }
-        }
-    }
-    if (foundItem != NULL){
-        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove"));
-        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "", "Remove element"));
-        GTUtilsWorkflowDesigner::clickOnPalette(os, "test_4295", Qt::RightButton);
-    }
+    GTUtilsWorkflowDesigner::removeCmdlineWorkerFromPalette(os, "test_4295");
 
     // start test
     GTLogTracer logTracer;
-
 
     GTUtilsWorkflowDesigner::addElement(os, "File List");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/FASTA", "human_T1.fa");

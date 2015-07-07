@@ -163,6 +163,8 @@ public:
     static void setBreakpoint(U2OpStatus &os, const QString &itemName);
     static QStringList getBreakpointList(U2OpStatus &os);
 
+    static void removeCmdlineWorkerFromPalette(U2OpStatus &os, const QString &workerName);
+
 private:
     static void selectAlgorithm(U2OpStatus &os, QTreeWidgetItem *algorithm);
     static void selectSample(U2OpStatus &os, QTreeWidgetItem *sample);
