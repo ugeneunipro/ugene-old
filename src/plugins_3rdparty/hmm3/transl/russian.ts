@@ -419,7 +419,7 @@
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="256"/>
         <source>Search HMM signals with HMMER3...</source>
-        <translation>HMMER3: поиск сигналов хмм-модели...</translation>
+        <translation>HMMER3: поиск сигналов HMM модели...</translation>
     </message>
     <message>
         <location filename="../src/uHMM3Plugin.cpp" line="266"/>

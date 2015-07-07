@@ -260,7 +260,7 @@ void ADVExportContext::buildMenu(QMenu* m) {
     }
 
     if(isShowId || isShowAccession || isShowDBXref) {
-        name = name.isEmpty() ? "" : "from '" + name + "'";
+        name = name.isEmpty() ? "" : tr("from '") + name + "'";
         QMenu *fetchMenu = new QMenu(tr("Fetch sequences from remote database"));
         m->insertMenu(exportMenu->menuAction(),fetchMenu);
         if(isShowId) {

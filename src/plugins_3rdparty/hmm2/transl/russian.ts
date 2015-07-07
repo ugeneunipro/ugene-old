@@ -432,7 +432,7 @@ The default is instead to generate sequences with a variety of different lengths
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="260"/>
         <source>Search with HMM model...</source>
-        <translation>HMMER2: поиск сигналов хмм-модели...</translation>
+        <translation>HMMER2: поиск сигналов HMM модели...</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="277"/>
