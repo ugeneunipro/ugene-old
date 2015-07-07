@@ -17,6 +17,7 @@ contains(_UGENE_NGS, 1) : DEFINES += UGENE_NGS
 #win32 : CONFIG -= flat  #group the files within the source/header group depending on the directory they reside in file system
 win32 : QMAKE_CXXFLAGS += /MP # use parallel build with nmake
 win32 : DEFINES+= _WINDOWS
+win32-msvc2013 : DEFINES += _SCL_SECURE_NO_WARNINGS
 
 win32 : QMAKE_CFLAGS_RELEASE = -O2 -Oy- -MD
 win32 : QMAKE_CXXFLAGS_RELEASE = -O2 -Oy- -MD
