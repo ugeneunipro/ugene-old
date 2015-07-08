@@ -46,7 +46,7 @@ QAbstractButton* GTAction::button(U2OpStatus &os, const QString &actionName, QOb
         a = findAction(os, actionName);
     }
     if (options.failIfNull) {
-        GT_CHECK_RESULT(NULL != a, "Action is NULL!", NULL);
+        GT_CHECK_RESULT(NULL != a, "Action " + actionName + " is NULL!", NULL);
     } else if (NULL == a) {
             return NULL;
     }

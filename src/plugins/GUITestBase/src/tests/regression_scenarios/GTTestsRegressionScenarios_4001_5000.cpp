@@ -2399,6 +2399,26 @@ GUI_TEST_CLASS_DEFINITION(test_4400) {
     CHECK_SET_ERR( qualValue == "GenBank", "ORIGDB comment was parced incorreclty");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4505){
+//    1. Open "test/_common_data/scenarios/msa/Chikungunya_E1.fasta".
+    GTLogTracer l;
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/Chikungunya_E1.fasta");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    2. Delete any column
+    GTUtilsMSAEditorSequenceArea::selectColumnInConsensus(os, 1);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+//    3. Press "Undo"
+    GTUtilsMsaEditor::undo(os);
+    GTGlobals::sleep();
+//    Bug state: Error appeared in log: "[ERROR][19:02] Failed to create a multiple alignment row!"
+    GTUtilsLog::check(os, l);
+//    4. Click right button on MSA
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<<"Consensus mode"));
+    GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
+//    Bug state: UGENE crashes
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4524) {
     // Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");

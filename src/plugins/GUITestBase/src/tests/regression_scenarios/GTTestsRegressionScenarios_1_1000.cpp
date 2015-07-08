@@ -1369,9 +1369,9 @@ GUI_TEST_CLASS_DEFINITION(test_0768) {
         }
     }
     if (foundItem != NULL){
+        GTUtilsWorkflowDesigner::setCurrentTab(os, GTUtilsWorkflowDesigner::algoriths);
         GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Remove"));
         GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "", "Remove element"));
-        //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Cancel, "Remove this element?", "Remove element"));
         GTUtilsWorkflowDesigner::clickOnPalette(os, "123", Qt::RightButton);
         GTUtilsMdi::click(os, GTGlobals::Close);
         GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
