@@ -460,7 +460,7 @@ void ProjectViewWidget::sl_pasteFileFromClipboard() {
         return;
     }
     QString pastedFileUrl(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath() 
-        + "\user_pasted_data");
+        + "/user_pasted_data");
     pastedFileUrl = GUrlUtils::rollFileName(pastedFileUrl, DocumentUtils::getNewDocFileNameExcludesHint());
     QFile file(pastedFileUrl);
     if (!file.open(QIODevice::WriteOnly)) {
