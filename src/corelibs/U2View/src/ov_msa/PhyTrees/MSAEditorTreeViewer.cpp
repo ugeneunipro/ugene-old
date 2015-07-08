@@ -395,6 +395,9 @@ void MSAEditorTreeViewerUI::setTreeLayout(TreeLayout newLayout) {
 }
 
 void MSAEditorTreeViewerUI::onLayoutChanged(const TreeLayout& layout) {
+    if(layout == RECTANGULAR_LAYOUT && !curLayoutIsRectangular) {
+        setTransform(rectangularTransform);
+    }
     curLayoutIsRectangular = (RECTANGULAR_LAYOUT == layout);
     curMSATreeViewer->getSortSeqsAction()->setEnabled(false);
     if(curLayoutIsRectangular) {
@@ -520,6 +523,7 @@ void MSAEditorTreeViewerUI::highlightBranches() {
 void MSAEditorTreeViewerUI::resizeEvent(QResizeEvent *e) {
     CHECK(curLayoutIsRectangular && isSinchronized, );
 
+    rectangularTransform = transform();
     QGraphicsView::resizeEvent(e);
     e->accept();
 }

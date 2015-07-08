@@ -155,6 +155,8 @@ private:
     MSAEditorTreeViewer* curMSATreeViewer;
     SynchronizationMode syncMode;
 
+    QTransform rectangularTransform;
+
     bool hasMinSize;
     bool hasMaxSize;
 };
