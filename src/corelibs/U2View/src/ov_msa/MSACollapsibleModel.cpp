@@ -255,28 +255,6 @@ bool MSACollapsibleItemModel::isTopLevel(int pos) const {
     return true;
 }
 
-int MSACollapsibleItemModel::getLastPos() const {
-    MSAEditor* ed = ui->getEditor();
-    MAlignmentObject* o = ed->getMSAObject();
-    const MAlignment& ma = o->getMAlignment();
-
-    if (items.isEmpty()) {
-        return ma.getNumRows() - 1;
-    }
-
-    const MSACollapsableItem& lastItem = items.last();
-    int res = lastItem.row;
-    if (!lastItem.isCollapsed) {
-        res += lastItem.numRows - 1;
-    }
-    // determine if last collapsible item is last in MSA sequence list
-    int lastPos = lastItem.row + lastItem.numRows - 1;
-    if (lastPos < ma.getNumRows() - 1) {
-        res += ma.getNumRows() -1 - res;
-    }
-    return res;
-}
-
 int MSACollapsibleItemModel::itemAt(int pos) const {
     QVector<int>::ConstIterator i = qLowerBound(positions, pos);
 

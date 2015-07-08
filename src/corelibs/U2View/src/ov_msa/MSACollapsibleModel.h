@@ -79,8 +79,6 @@ public:
 
     bool isTopLevel(int pos) const;
 
-    int getLastPos() const;
-
     int itemAt(int pos) const;
 
     int getItemPos(int index) const;

@@ -717,7 +717,7 @@ bool MSAEditorSequenceArea::isVisible(const QPoint& p, bool countClipped) const 
 }
 
 bool MSAEditorSequenceArea::isPosVisible(int pos, bool countClipped) const {
-    if (pos < getFirstVisibleBase() || pos > getLastVisibleBase(countClipped)) {
+    if (pos != 0 && (pos < getFirstVisibleBase() || pos > getLastVisibleBase(countClipped))) {
         return false;
     }
     return true;
@@ -766,7 +766,7 @@ void MSAEditorSequenceArea::setFirstVisibleSequence(int seq) {
 
         QPoint prev(startPos, startSeq);
 
-        int nSeq = editor->getNumSequences();
+        int nSeq = getNumDisplayedSequences();
         int effectiveFirst = qMin(nSeq - countHeightForSequences(false), seq);
         startSeq = qMax(0, effectiveFirst);
 
@@ -1629,7 +1629,7 @@ void MSAEditorSequenceArea::setSelection(const MSAEditorSelection& s, bool newHi
                 setFirstVisibleBase(startPos + selection.x() - prevSelection.x());
             }
             if (selection.y() - prevSelection.y() != 0) {
-                setFirstVisibleSequence(getFirstVisibleSequence() + selection.y() - prevSelection.y());
+                setFirstVisibleSequence(qMin(getFirstVisibleSequence() + selection.y() - prevSelection.y(), getNumDisplayedSequences() - getNumVisibleSequences(true)));
             }
         } else {
             if (selection.x() - prevSelection.x() != 0) {
@@ -1720,7 +1720,7 @@ void MSAEditorSequenceArea::sl_alignmentChanged(const MAlignment&, const MAlignm
     int nSeq = editor->getNumSequences();
     int aliLen = editor->getAlignmentLen();
     if (ui->isCollapsibleMode()) {
-        nSeq = ui->getCollapseModel()->getLastPos() + 1;
+        nSeq = getNumDisplayedSequences();
         updateCollapsedGroups(modInfo);
     }
 
@@ -2073,7 +2073,7 @@ void MSAEditorSequenceArea::sl_modelChanged() {
         collapseModeUpdateAction->setEnabled(false);
     }
 
-    int startToLast = collapsibleModel->getLastPos() - getFirstVisibleSequence() + 1;
+    int startToLast = getNumDisplayedSequences() - getFirstVisibleSequence();
     int availableNum = countHeightForSequences(false);
     if (startToLast < availableNum) {
         int newStartSeq = qMax(0, startSeq - availableNum + startToLast);

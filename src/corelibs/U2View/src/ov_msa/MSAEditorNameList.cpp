@@ -319,10 +319,10 @@ void MSAEditorNameList::keyPressEvent(QKeyEvent *e) {
             updateSelection(newSeq);
         } else if (0 == (Qt::ShiftModifier & e->modifiers())) {
             ui->seqArea->moveSelection(0, 1);
-            if (editor->getNumSequences() > curSeq + 1) {
+            if (ui->seqArea->getNumDisplayedSequences() > curSeq + 1) {
                 curSeq++;
             }
-            if (editor->getNumSequences() > startSelectingSeq + 1) {
+            if (ui->seqArea->getNumDisplayedSequences() > startSelectingSeq + 1) {
                 startSelectingSeq++;
             }
         }
@@ -403,7 +403,7 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
         if (ui->isCollapsibleMode()) {
             MSACollapsibleItemModel* m = ui->getCollapseModel();
             if(curSeq >= m->displayedRowsCount()){
-                curSeq = m->getLastPos();
+                curSeq = m->displayedRowsCount() - 1;
             }
             if (m->isTopLevel(curSeq)) {
                 const U2Region& yRange = seqArea->getSequenceYRange(curSeq, true);
@@ -472,7 +472,7 @@ void MSAEditorNameList::mouseReleaseEvent(QMouseEvent *e) {
             if (e->y() < origin.y()) {
                 newSeq = 0;
             } else {
-                newSeq = ui->editor->getNumSequences() - 1;
+                newSeq = ui->seqArea->getNumDisplayedSequences() - 1;
             }
         }
         if (e->pos() == origin) {
@@ -482,7 +482,7 @@ void MSAEditorNameList::mouseReleaseEvent(QMouseEvent *e) {
         if (shifting) {
             assert(!ui->isCollapsibleMode());
             int shift = 0;
-            int numSeq = ui->editor->getNumSequences();
+            int numSeq = ui->seqArea->getNumDisplayedSequences();
             int selectionStart = ui->seqArea->getSelection().y();
             int selectionSize = ui->seqArea->getSelection().height();
             if (newSeq == 0) {
@@ -498,7 +498,7 @@ void MSAEditorNameList::mouseReleaseEvent(QMouseEvent *e) {
             emit si_stopMsaChanging(true);
         } else {
             int firstVisibleRow = ui->seqArea->getFirstVisibleSequence();
-            int lastVisibleRow = ui->seqArea->getNumDisplayedSequences() + firstVisibleRow - 1;
+            int lastVisibleRow = ui->seqArea->getNumVisibleSequences(true) + firstVisibleRow - 1;
             bool selectionContainsSeqs = (startSelectingSeq <= lastVisibleRow || newSeq <= lastVisibleRow);
 
             if (selectionContainsSeqs) {
@@ -526,7 +526,7 @@ void MSAEditorNameList::mouseReleaseEvent(QMouseEvent *e) {
 }
 
 void MSAEditorNameList::updateSelection(int newSeq) {
-    CHECK(newSeq != -1, );
+    CHECK(ui->seqArea->isSeqInRange(newSeq) || ui->seqArea->isSeqInRange(curSeq), );
 
     int startSeq = qMin(curSeq, newSeq);
     int width = editor->getAlignmentLen();
