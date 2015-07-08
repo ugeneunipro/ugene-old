@@ -443,7 +443,7 @@ ProjectViewWidget::ProjectViewWidget() {
     addAction(pasteFileFromClipboard);
 }
 
-void showWarningAndWriteToLog(QString& message) {    
+void showWarningAndWriteToLog(const QString& message) {    
     coreLog.error(message);
     QMessageBox::critical(AppContext::getMainWindow()->getQMainWindow(), L10N::errorTitle(), message);
 }
