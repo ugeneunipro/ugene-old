@@ -22,105 +22,106 @@
 #ifndef _U2_GT_RUNNABLES_EXPORT_IMAGE_DIALOG_FILLER_H_
 #define _U2_GT_RUNNABLES_EXPORT_IMAGE_DIALOG_FILLER_H_
 
-#include "GTUtilsDialog.h"
 #include <U2Core/U2Region.h>
 
+#include "GTUtilsDialog.h"
 
 namespace U2 {
 
-    class ExportImage : public Filler {
-    public:
-        ExportImage(U2OpStatus &_os, QString _filePath, QString _comboValue = "",int _spinValue=0) : Filler(_os, "ImageExportForm"),
-            filePath(_filePath),
-            comboValue(_comboValue),
-            spinValue(_spinValue){}
-        virtual void run();
-    protected:
-        QString filePath, comboValue;
-        int spinValue;
+class ExportImage : public Filler {
+public:
+    ExportImage(U2OpStatus &os, const QString &filePath, const QString &comboValue = "", int spinValue = 0);
+    ExportImage(U2OpStatus &os, CustomScenario *scenario);
+
+    void commonScenario();
+
+protected:
+    const QString filePath;
+    const QString comboValue;
+    int spinValue;
+};
+
+class CircularViewExportImage : public Filler {
+public:
+    CircularViewExportImage(U2OpStatus &_os, QString _filePath, QString _comboValue = "", QString exportedSequenceName = "", int _spinValue=0) : Filler(_os, "ImageExportForm"),
+        filePath(_filePath),
+        comboValue(_comboValue),
+        spinValue(_spinValue),
+        exportedSequenceName(exportedSequenceName)
+    {}
+    CircularViewExportImage(U2OpStatus &os, CustomScenario *scenario) : Filler(os, "ImageExportForm", scenario), spinValue(0) {}
+    void commonScenario();
+protected:
+    QString filePath, comboValue;
+    int spinValue;
+    QString exportedSequenceName;
+};
+
+struct RegionMsa {
+    RegionMsa(const U2Region &region = U2Region(),
+              const QStringList &seqList = QStringList())
+        : region(region),
+          sequences(seqList) {}
+    U2Region    region;
+    QStringList sequences;
+};
+
+class ExportMsaImage : public ExportImage {
+public:
+    struct Settings {
+        Settings(bool includeNames = false,
+                 bool includeConsensus = false,
+                 bool includeRuler = true)
+            : includeNames(includeNames),
+              includeConsensus(includeConsensus),
+              includeRuler(includeRuler) {}
+        bool includeNames;
+        bool includeConsensus;
+        bool includeRuler;
     };
 
-    class CircularViewExportImage : public Filler {
-    public:
-        CircularViewExportImage(U2OpStatus &_os, QString _filePath, QString _comboValue = "", QString exportedSequenceName = "", int _spinValue=0) : Filler(_os, "ImageExportForm"),
-            filePath(_filePath),
-            comboValue(_comboValue),
-            spinValue(_spinValue),
-            exportedSequenceName(exportedSequenceName)
-            {}
-        CircularViewExportImage(U2OpStatus &os, CustomScenario *scenario) : Filler(os, "ImageExportForm", scenario), spinValue(0) {}
-        void commonScenario();
-    protected:
-        QString filePath, comboValue;
-        int spinValue;
-        QString exportedSequenceName;
-    };
+    // default
+    ExportMsaImage(U2OpStatus &os, QString filePath,
+                   QString comboValue = "",int spinValue = 0)
+        : ExportImage(os, filePath, comboValue, spinValue),
+          exportWholeAlignment(true),
+          exportCurrentSelection(false)
+    {}
 
-    struct RegionMsa {
-        RegionMsa(const U2Region &region = U2Region(),
-                  const QStringList &seqList = QStringList())
-            : region(region),
-              sequences(seqList) {}
-        U2Region    region;
-        QStringList sequences;
-    };
+    //  exportWholeAlignment = false,   exportCurrentSelection = false  : export of specified msa region, there should be no any selection on msa
+    //  exportWholeAlignment = false,   exportCurrentSelection = true   : export of currently selected region, selection must be
+    //  exportWholeAlignment = true,    exportCurrentSelection = false  : whole selection export
+    //  exportWholeAlignment = true,    exportCurrentSelection = true   : error
+    ExportMsaImage(U2OpStatus &os, QString filePath,
+                   Settings settings,
+                   bool exportWholeAlignment = true,
+                   bool exportCurrentSelection = false,
+                   RegionMsa region = RegionMsa(),
+                   QString comboValue = "", int spinValue = 0)
+        : ExportImage(os, filePath, comboValue, spinValue),
+          settings(settings),
+          exportWholeAlignment(exportWholeAlignment),
+          exportCurrentSelection(exportCurrentSelection),
+          region(region) {}
 
-    class ExportMsaImage : public ExportImage {
-    public:
-        struct Settings {
-            Settings(bool includeNames = false,
-                     bool includeConsensus = false,
-                     bool includeRuler = true)
-                : includeNames(includeNames),
-                  includeConsensus(includeConsensus),
-                  includeRuler(includeRuler) {}
-            bool includeNames;
-            bool includeConsensus;
-            bool includeRuler;
-        };
+    virtual void run();
 
-        // default
-        ExportMsaImage(U2OpStatus &os, QString filePath,
-                       QString comboValue = "",int spinValue = 0)
-            : ExportImage(os, filePath, comboValue, spinValue),
-              exportWholeAlignment(true),
-              exportCurrentSelection(false)
-        {}
+private:
+    Settings    settings;
+    bool        exportWholeAlignment;
+    bool        exportCurrentSelection;
+    RegionMsa   region;
+};
 
-        //  exportWholeAlignment = false,   exportCurrentSelection = false  : export of specified msa region, there should be no any selection on msa
-        //  exportWholeAlignment = false,   exportCurrentSelection = true   : export of currently selected region, selection must be
-        //  exportWholeAlignment = true,    exportCurrentSelection = false  : whole selection export
-        //  exportWholeAlignment = true,    exportCurrentSelection = true   : error
-        ExportMsaImage(U2OpStatus &os, QString filePath,
-                       Settings settings,
-                       bool exportWholeAlignment = true,
-                       bool exportCurrentSelection = false,
-                       RegionMsa region = RegionMsa(),
-                       QString comboValue = "", int spinValue = 0)
-            : ExportImage(os, filePath, comboValue, spinValue),
-              settings(settings),
-              exportWholeAlignment(exportWholeAlignment),
-              exportCurrentSelection(exportCurrentSelection),
-              region(region) {}
-
-        virtual void run();
-
-    private:
-        Settings    settings;
-        bool        exportWholeAlignment;
-        bool        exportCurrentSelection;
-        RegionMsa   region;
-    };
-
-    class SelectSubalignmentFiller : public Filler {
-    public:
-        SelectSubalignmentFiller(U2OpStatus &_os, const RegionMsa &regionMsa)
-            : Filler(_os, "SelectSubalignmentDialog"),
-              msaRegion(regionMsa) {}
-        virtual void run();
-    private:
-        RegionMsa   msaRegion;
-    };
+class SelectSubalignmentFiller : public Filler {
+public:
+    SelectSubalignmentFiller(U2OpStatus &_os, const RegionMsa &regionMsa)
+        : Filler(_os, "SelectSubalignmentDialog"),
+          msaRegion(regionMsa) {}
+    virtual void run();
+private:
+    RegionMsa   msaRegion;
+};
 
 class ImageExportFormFiller : public Filler {
 public:

@@ -28,7 +28,11 @@
 
 namespace U2 {
 
+class MSAEditor;
+class MSAEditorUI;
+class MSAEditorConsensusArea;
 class MSAEditorNameList;
+class MSAEditorSequenceArea;
 class MSAEditorTreeViewerUI;
 class MSAGraphOverview;
 class U2OpStatus;
@@ -37,14 +41,24 @@ class U2OpStatus;
 class GTUtilsMsaEditor {
 public:
     static QColor getGraphOverviewPixelColor(U2OpStatus &os, const QPoint &point);
-    static MSAGraphOverview *getGraphOverview(U2OpStatus &os);
-    static MSAEditorTreeViewerUI *getTreeView(U2OpStatus &os);
 
-    static MSAEditorNameList *getNameListArea(U2OpStatus &os);
+    static MSAEditor * getEditor(U2OpStatus &os);
+    static MSAEditorUI * getEditorUi(U2OpStatus &os);
+    static MSAGraphOverview * getGraphOverview(U2OpStatus &os);
+    static MSAEditorTreeViewerUI * getTreeView(U2OpStatus &os);
+    static MSAEditorNameList * getNameListArea(U2OpStatus &os);
+    static MSAEditorConsensusArea * getConsensusArea(U2OpStatus &os);
+    static MSAEditorSequenceArea * getSequenceArea(U2OpStatus &os);
+
     static QRect getSequenceNameRect(U2OpStatus &os, const QString &sequenceName);
+    static QRect getColumnHeaderRect(U2OpStatus &os, int column);
+
     static void replaceSequence(U2OpStatus &os, const QString &sequenceToReplace, int targetPosition);
+    static void removeColumn(U2OpStatus &os, int column);
 
     static void clickSequenceName(U2OpStatus &os, const QString &sequenceName, Qt::MouseButton mouseButton = Qt::LeftButton);
+    static void clickColumn(U2OpStatus &os, int column, Qt::MouseButton mouseButton = Qt::LeftButton);
+
     static QString getReferenceSequenceName(U2OpStatus &os);
     static void setReference(U2OpStatus &os, const QString &sequenceName);
 

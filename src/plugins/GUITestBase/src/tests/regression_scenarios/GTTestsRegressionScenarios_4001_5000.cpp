@@ -2419,6 +2419,75 @@ GUI_TEST_CLASS_DEFINITION(test_4505){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4508) {
+    GTLogTracer logTracer;
+
+//    1. Open "_common_data/fasta/400000_symbols_msa.fasta".
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/400000_symbols_msa.fasta");
+
+//    2.  Click "Export as image" button on the toolbar.
+//    Expected state: an "Export Image" dialog appears.
+//    3. Set SVG format.
+//    Expected state: a warning appears, the dialog can't be accepted.
+
+    class Scenario1 : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "formatsBox", dialog), "svg", GTGlobals::UseMouse);
+
+            QLabel *hintLabel = GTWidget::findExactWidget<QLabel *>(os, "hintLabel", dialog);
+            CHECK_SET_ERR(NULL != hintLabel, "hintLabel is NULL");
+            CHECK_SET_ERR(hintLabel->isVisible(), "hintLabel is invisible");
+            const QString expectedSubstring = "selected region is too big";
+            CHECK_SET_ERR(hintLabel->text().contains(expectedSubstring), QString("An expected substing not found: substing - '%1', text - '%2'")
+                          .arg(expectedSubstring).arg(hintLabel->text()));
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os, new Scenario1));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Export as image");
+
+//    4. Cancel the dialog. Remove the first column. Call the dialog again and set SVG format.
+//    Expected state: there are no warnings, dialog can be accepted.
+//    5. Accept the dialog.
+
+    GTUtilsMsaEditor::removeColumn(os, 1);
+
+    class Scenario2 : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "formatsBox", dialog), "svg", GTGlobals::UseMouse);
+
+            QLabel *hintLabel = GTWidget::findExactWidget<QLabel *>(os, "hintLabel", dialog);
+            CHECK_SET_ERR(NULL != hintLabel, "hintLabel is NULL");
+            CHECK_SET_ERR(!hintLabel->isVisible(), "hintLabel is visible");
+
+            QDir().mkpath(sandBoxDir + "test_4508");
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "fileNameEdit", dialog), sandBoxDir + "test_4508/test_4508.svg");
+            GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "exportSeqNames", dialog));
+            GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "exportConsensus", dialog));
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os, new Scenario2));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Export as image");
+
+//    Expected state: the msa is successfully exported, there are no errors in the log.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    CHECK_SET_ERR(GTFile::check(os, sandBoxDir + "test_4508/test_4508.svg"), QString("File '%1' doesn't exist").arg(sandBoxDir + "test_4508/test_4508.svg"));
+    CHECK_SET_ERR(0 < GTFile::getSize(os, sandBoxDir + "test_4508/test_4508.svg"), QString("File '%1' has zero size").arg(sandBoxDir + "test_4508/test_4508.svg"));
+    GTUtilsLog::check(os, logTracer);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4524) {
     // Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");

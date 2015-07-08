@@ -19,39 +19,45 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportImageDialogFiller.h"
-#include "api/GTWidget.h"
-#include "api/GTSpinBox.h"
-#include "api/GTLineEdit.h"
-#include "api/GTComboBox.h"
-#include "api/GTRadioButton.h"
-#include "api/GTCheckBox.h"
-#include "api/GTMouseDriver.h"
+#include <QApplication>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QTableWidget>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QCheckBox>
-#include <QtGui/QComboBox>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QPushButton>
-#include <QtGui/QRadioButton>
-#include <QtGui/QTableWidget>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QTableWidget>
-#endif
+#include "ExportImageDialogFiller.h"
+#include "api/GTCheckBox.h"
+#include "api/GTComboBox.h"
+#include "api/GTLineEdit.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTRadioButton.h"
+#include "api/GTSpinBox.h"
+#include "api/GTWidget.h"
 
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportImage"
-#define GT_METHOD_NAME "run"
-void ExportImage::run() {
 
+ExportImage::ExportImage(U2OpStatus &os, const QString &filePath, const QString &comboValue, int spinValue) :
+    Filler(os, "ImageExportForm"),
+    filePath(filePath),
+    comboValue(comboValue),
+    spinValue(spinValue)
+{
+
+}
+
+ExportImage::ExportImage(U2OpStatus &os, CustomScenario *scenario) :
+    Filler(os, "ImageExportForm", scenario),
+    spinValue(0)
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void ExportImage::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -78,7 +84,7 @@ void ExportImage::run() {
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::CircularViewExportImage"
-#define GT_METHOD_NAME "run"
+#define GT_METHOD_NAME "commonScenario"
 void CircularViewExportImage::commonScenario() {
 
     QWidget* dialog = QApplication::activeModalWidget();
@@ -240,6 +246,7 @@ void ImageExportFormFiller::run() {
     GT_CHECK(ok !=NULL, "ok button is NULL");
     GTWidget::click(os, ok);
 }
+
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
