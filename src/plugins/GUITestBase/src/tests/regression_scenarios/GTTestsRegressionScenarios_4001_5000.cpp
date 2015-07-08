@@ -78,6 +78,7 @@
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/FindQualifierDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
@@ -2399,7 +2400,50 @@ GUI_TEST_CLASS_DEFINITION(test_4400) {
     CHECK_SET_ERR( qualValue == "GenBank", "ORIGDB comment was parced incorreclty");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_4505){
+GUI_TEST_CLASS_DEFINITION(test_4439) {
+//    1. Open "data/samples/Genbank/sars.gb".
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/sars.gb");
+
+//    2. Call context menu on "NC_004718 features [sars.gb]" item in the Annotations tree view, select "Find qualifier..." menu item.
+
+    class Scenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+//    Expected state: a "Find Qualifier" dialog appears, search buttons are disabled.
+            QDialogButtonBox *buttonBox = GTWidget::findExactWidget<QDialogButtonBox *>(os, "buttonBox", dialog);
+            CHECK_SET_ERR(NULL != buttonBox, "buttonBox is NULL");
+            QPushButton *nextButton = buttonBox->button(QDialogButtonBox::Ok);
+            QPushButton *allButton = buttonBox->button(QDialogButtonBox::Yes);
+            CHECK_SET_ERR(!nextButton->isEnabled(), "'Next' button is enabled");
+            CHECK_SET_ERR(!allButton->isEnabled(), "'Select all' button is enabled");
+
+//    3. Enter "1" as qualifier name. Click "Select all" button. Close the dialog.
+//    Expected state: search buttons are enabled, a comment annotation with its qualifier are selected.
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "nameEdit", dialog), "1");
+
+            CHECK_SET_ERR(nextButton->isEnabled(), "'Next' button is disabled");
+            CHECK_SET_ERR(allButton->isEnabled(), "'Select all' button is disabled");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Yes);
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Close);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Find qualifier..."));
+    GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, new Scenario));
+    GTUtilsAnnotationsTreeView::callContextMenuOnItem(os, "NC_004718 features [sars.gb]");
+
+    QList<QTreeWidgetItem *> selectedItems = GTUtilsAnnotationsTreeView::getAllSelectedItems(os);
+    CHECK_SET_ERR(2 == selectedItems.size(), QString("Unexpected count of selected items: expect 2, got %1").arg(selectedItems.size()));
+    CHECK_SET_ERR("comment" == selectedItems.first()->text(0), QString("Unexpected annotation name: expect '%1', got '%2'")
+                  .arg("comment").arg(selectedItems.first()->text(0)));
+    CHECK_SET_ERR("1" == selectedItems.last()->text(0), QString("Unexpected qualifier name: expect '%1', got '%2'")
+                  .arg("1").arg(selectedItems.first()->text(0)));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4505) {
 //    1. Open "test/_common_data/scenarios/msa/Chikungunya_E1.fasta".
     GTLogTracer l;
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/Chikungunya_E1.fasta");

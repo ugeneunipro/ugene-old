@@ -26,45 +26,45 @@
 
 namespace U2 {
 
-    class FindQualifierFiller : public Filler {
-    public:
-        struct FindQualifierFillerSettings {
-            FindQualifierFillerSettings(const QString& name = QString(),
-                                        const QString& value = QString(),
-                                        bool exactMatch = true,
-                                        bool nextQualifier = true,
-                                        unsigned int nextCount = 1,
-                                        bool expectTheEndOfTree = false,
-                                        bool expectNoResults = false,
-                                        bool selectAll = true)
-                : name(name),
-                  value(value),
-                  exactMatch(exactMatch),
-                  nextQualifier(nextQualifier),
-                  nextCount(nextCount),
-                  expectTheEndOfTree(expectTheEndOfTree),
-                  expectNoResults(expectNoResults),
-                  selectAll(selectAll) {}
+class FindQualifierFiller : public Filler {
+public:
+    struct FindQualifierFillerSettings {
+        FindQualifierFillerSettings(const QString& name = QString(),
+                                    const QString& value = QString(),
+                                    bool exactMatch = true,
+                                    bool nextQualifier = true,
+                                    unsigned int nextCount = 1,
+                                    bool expectTheEndOfTree = false,
+                                    bool expectNoResults = false,
+                                    bool selectAll = true)
+            : name(name),
+              value(value),
+              exactMatch(exactMatch),
+              nextQualifier(nextQualifier),
+              nextCount(nextCount),
+              expectTheEndOfTree(expectTheEndOfTree),
+              expectNoResults(expectNoResults),
+              selectAll(selectAll) {}
 
-            QString name;
-            QString value;
-            bool exactMatch;
-            bool nextQualifier;
-            unsigned int nextCount;
-            bool expectTheEndOfTree;
-            bool expectNoResults;
-            bool selectAll;
-        };
-
-        FindQualifierFiller(U2OpStatus &os,
-                            const FindQualifierFillerSettings& settings = FindQualifierFillerSettings())
-            : Filler(os, "SearchQualifierDialog"),
-              settings(settings) {}
-        virtual void run();
-    private:
-        FindQualifierFillerSettings settings;
+        QString name;
+        QString value;
+        bool exactMatch;
+        bool nextQualifier;
+        unsigned int nextCount;
+        bool expectTheEndOfTree;
+        bool expectNoResults;
+        bool selectAll;
     };
 
-}
+    FindQualifierFiller(U2OpStatus &os, const FindQualifierFillerSettings& settings = FindQualifierFillerSettings());
+    FindQualifierFiller(U2OpStatus &os, CustomScenario *scenario);
 
-#endif
+    void commonScenario();
+
+private:
+    FindQualifierFillerSettings settings;
+};
+
+}   // namespace U2
+
+#endif // _U2_GT_RUNNABLES_FIND_QUALIFIER_DIALOG_FILLER_H_

@@ -19,24 +19,35 @@
  * MA 02110-1301, USA.
  */
 
-#include "FindQualifierDialogFiller.h"
-
-#include "api/GTLineEdit.h"
-#include "api/GTWidget.h"
-#include "api/GTRadioButton.h"
-
-#include "runnables/qt/MessageBoxFiller.h"
-
 #include <QApplication>
 #include <QDialogButtonBox>
 #include <QPushButton>
 
+#include "FindQualifierDialogFiller.h"
+#include "api/GTLineEdit.h"
+#include "api/GTRadioButton.h"
+#include "api/GTWidget.h"
+#include "runnables/qt/MessageBoxFiller.h"
+
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::FindQualifierFiller"
-#define GT_METHOD_NAME "run"
-void FindQualifierFiller::run()
+
+FindQualifierFiller::FindQualifierFiller(U2OpStatus &os, const FindQualifierFiller::FindQualifierFillerSettings &settings) :
+    Filler(os, "SearchQualifierDialog"),
+    settings(settings)
 {
+
+}
+
+FindQualifierFiller::FindQualifierFiller(U2OpStatus &os, CustomScenario *scenario) :
+    Filler(os, "SearchQualifierDialog", scenario)
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void FindQualifierFiller::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
@@ -89,5 +100,7 @@ void FindQualifierFiller::run()
     GTWidget::click(os, closeButton);
 }
 #undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
-}
+
+}   // namespace U2
