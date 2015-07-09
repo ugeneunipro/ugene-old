@@ -366,7 +366,6 @@ int main(int argc, char **argv)
     QT_REQUIRE_VERSION( argc, argv, QT_VERSION_STR );
 
     GTIMER(c1, t1, "main()->QApp::exec");
-    ToolsMenu::init();
 
 #ifdef Q_OS_MACX
     fixMacFonts();
@@ -445,7 +444,9 @@ int main(int argc, char **argv)
 
     app.installTranslator(&translator);
     updateStaticTranslations();
-    
+
+    ToolsMenu::init();
+
     // 3 create functional components of ugene
     LogCacheExt logsCache;
     initLogsCache(logsCache, envList);
