@@ -2443,6 +2443,31 @@ GUI_TEST_CLASS_DEFINITION(test_4439) {
                   .arg("1").arg(selectedItems.first()->text(0)));
 }
 
+
+GUI_TEST_CLASS_DEFINITION(test_4463) {
+//    1. Open attached file in "Genbank" format
+//    2. Modify sequence
+//    3. Unload document
+//    Expected state: "Save document" dialog appeared
+//    4. Press "Yes"
+//    Expected state: UGENE does not crash
+
+    GTFile::copy(os, testDir + "_common_data/genbank/gbbct131.gb.gz", sandBoxDir + "/test_4463.gb.gz");
+
+    GTFileDialog::openFile(os, sandBoxDir, "test_4463.gb.gz");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "10..20"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Remove subsequence..."));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsMdi::closeWindow(os, "test_4463.gb.gz");
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Yes"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList("Unload selected document")));
+    GTUtilsProjectTreeView::click(os, "test_4463.gb.gz", Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4488) {
     //1. Open COI.aln.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
