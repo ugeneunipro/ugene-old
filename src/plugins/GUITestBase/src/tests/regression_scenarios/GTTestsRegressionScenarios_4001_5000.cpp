@@ -2443,6 +2443,33 @@ GUI_TEST_CLASS_DEFINITION(test_4439) {
                   .arg("1").arg(selectedItems.first()->text(0)));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4488) {
+    //1. Open COI.aln.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+    //2. Set a sequence as reference.
+    GTUtilsMsaEditor::setReference(os, "Phaneroptera_falcata");
+
+    //3. Open the "Statistics" OP tab.
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
+
+    //4. Check "Show distances column".
+    QCheckBox* showDistancesColumnCheck = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "showDistancesColumnCheck"));
+    GTCheckBox::setChecked(os, showDistancesColumnCheck, true);
+
+    //5. Switch off auto updating.
+    QCheckBox *autoUpdateCheck = GTWidget::findExactWidget<QCheckBox*>(os, "autoUpdateCheck");
+    GTCheckBox::setChecked(os, autoUpdateCheck, false);
+
+    //6. Alignment context menu -> Add -> Sequence from file.
+    //7. Select "data/samples/Assembly/chrM.fa".
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/Assembly/chrM.fa"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_LOAD_SEQ" << "Sequence from file"));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+
+    //UGENE crashes
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4505) {
 //    1. Open "test/_common_data/scenarios/msa/Chikungunya_E1.fasta".
     GTLogTracer l;
