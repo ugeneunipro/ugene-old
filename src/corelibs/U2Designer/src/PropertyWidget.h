@@ -247,6 +247,7 @@ protected:
 
 private:
     RunFileSystem * getRFS();
+    void validateFilePath(const QString& filePath);
 
 private:
     URLLineEdit *urlLine;
