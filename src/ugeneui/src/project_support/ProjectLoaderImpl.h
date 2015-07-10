@@ -61,7 +61,9 @@ public:
     virtual QAction* getAddExistingDocumentAction() { return addExistingDocumentAction; }
     
     static QString getLastProjectURL();
-    static DocumentFormat* detectFormatFromAdapter(IOAdapter* io, QVariantMap &hints, bool &canceled);
+    static const int maxObjectsInSingleDocument = 50000;
+    static bool detectFormat(const GUrl &url, QList<FormatDetectionResult> &formats, const QVariantMap &hints, FormatDetectionResult &selectedResult);
+    static bool processHints(FormatDetectionResult& dr);
 
 signals:
     void si_recentListChanged();
@@ -77,7 +79,6 @@ private:
     void updateRecentItemsMenu();
     void prependToRecentItems(const QString& url);
     void rememberProjectURL();
-    static bool processHints(FormatDetectionResult& dr);
 
 private slots:
     void sl_newProject();
@@ -96,7 +97,7 @@ private slots:
 
 // QT 4.5.0 bug workaround
     void sl_updateRecentItemsMenu();
-    
+
 private:
     QAction* addExistingDocumentAction;
     QAction* newProjectAction;

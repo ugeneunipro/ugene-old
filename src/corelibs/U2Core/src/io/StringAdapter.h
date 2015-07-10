@@ -51,7 +51,7 @@ protected:
 class U2CORE_EXPORT StringAdapterFactoryWithStringData: public StringAdapterFactory {
     Q_OBJECT
 public:
-    StringAdapterFactoryWithStringData(const QString &data);
+    StringAdapterFactoryWithStringData(const QString &data, QObject *parent = NULL);
 
     virtual IOAdapter* createIOAdapter();
 private:

@@ -60,6 +60,7 @@ class U2OpStatus;
 #define ProjectLoaderHint_MergeMode_DifferentAlphabets "merge-sequences-different-alphabets"
 #define ProjectLoaderHint_DontCheckForExistence "dont-check-for-existence"
 #define ProjectLoaderHint_OpenBySystemIfFormatDetectionFailed "open-by-system-if-format-detection-failed"
+#define ProjectLoaderHint_DoNotAddToRecentDocuments "do-not-add-to-recent-documents"
 
 /// Service responsible for project loading / unloading
 class U2CORE_EXPORT ProjectLoader  : public QObject {

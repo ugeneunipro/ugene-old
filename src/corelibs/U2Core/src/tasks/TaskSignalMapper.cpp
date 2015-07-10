@@ -54,4 +54,8 @@ void TaskSignalMapper::sl_taskStateChanged() {
     }
 }
 
+Task * TaskSignalMapper::getTask() const {
+    return task;
+}
+
 } //namespace U2

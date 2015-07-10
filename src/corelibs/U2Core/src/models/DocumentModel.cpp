@@ -800,6 +800,10 @@ void Document::propagateModLocks(Document* doc)  const {
     }
 }
 
+void Document::setIOAdapterFactory(IOAdapterFactory* iof) {
+    io = iof;
+}
+
 DocumentMimeData::DocumentMimeData(Document* obj)
     : objPtr(obj){
     setUrls(QList<QUrl>() << QUrl(GUrlUtils::gUrl2qUrl(obj->getURL())));

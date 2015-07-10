@@ -189,7 +189,7 @@ QString UserAppsSettings::getDefaultDataDirPath() const{
 #endif
     QDir d(dirpath);
     if(!d.exists(dirpath)){
-        d.mkdir(dirpath);
+        d.mkpath(dirpath);
     }
     return dirpath;
 }

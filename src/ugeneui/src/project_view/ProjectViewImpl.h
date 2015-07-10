@@ -69,7 +69,11 @@ public:
     ProjectViewWidget();
 private slots:
     void sl_pasteFileFromClipboard();
+    void sl_setLocaFilelAdapter();
 private:
+    static DocumentFormat* detectFormatFromAdapter(IOAdapter* io, QVariantMap &hints, bool &canceled);
+    static QSet<QString> excludedFilenames;
+
     DocumentUpdater* updater;
     QAction*         pasteFileFromClipboard;
 };

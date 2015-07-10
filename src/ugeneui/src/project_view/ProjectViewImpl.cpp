@@ -29,7 +29,6 @@
 
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/CopyDataTask.h>
 #include <U2Core/CopyDocumentTask.h>
 #include <U2Core/DNAAlphabet.h>
@@ -49,13 +48,16 @@
 #include <U2Core/MultiTask.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/ProjectService.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/RemoveDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/Settings.h>
 #include <U2Core/StringAdapter.h>
+#include <U2Core/TaskSignalMapper.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportDocumentDialogController.h>
@@ -65,7 +67,6 @@
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/ProjectUtils.h>
-#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/UnloadDocumentTask.h>
 
 #include <U2View/ADVSequenceWidget.h>
@@ -74,6 +75,8 @@
 
 #include "ProjectViewImpl.h"
 #include "project_support/ProjectLoaderImpl.h"
+#include "project_support/DocumentFormatSelectorController.h"
+#include "project_support/DocumentReadingModeSelectorController.h"
 
 namespace U2 {
 
@@ -428,6 +431,8 @@ void DocumentUpdater::reloadDocuments( QList<Document*> docs2Reload ){
 
 }
 
+QSet<QString> ProjectViewWidget::excludedFilenames = QSet<QString>();
+
 ProjectViewWidget::ProjectViewWidget() {
     setupUi(this);
     setObjectName(DOCK_PROJECT_VIEW);
@@ -437,52 +442,117 @@ ProjectViewWidget::ProjectViewWidget() {
     updater = new DocumentUpdater(this);
 
     pasteFileFromClipboard = new QAction(tr("Paste file from clipboard"), this);
-    pasteFileFromClipboard->setShortcut(QKeySequence::Paste);
+    pasteFileFromClipboard->setShortcuts(QKeySequence::Paste);
     pasteFileFromClipboard->setShortcutContext(Qt::ApplicationShortcut);
     connect(pasteFileFromClipboard, SIGNAL(triggered()), SLOT(sl_pasteFileFromClipboard()));
     addAction(pasteFileFromClipboard);
 }
 
-void showWarningAndWriteToLog(const QString& message) {    
+void showWarningAndWriteToLog(const QString& message) {
     coreLog.error(message);
     QMessageBox::critical(AppContext::getMainWindow()->getQMainWindow(), L10N::errorTitle(), message);
 }
 
 void ProjectViewWidget::sl_pasteFileFromClipboard() {
     QClipboard *clipboard = QApplication::clipboard();
-    QString clipboardText = clipboard->text();
+    QString clipboardText;
+    try {
+        clipboardText = clipboard->text();
+    }
+    catch (std::bad_alloc) {
+        showWarningAndWriteToLog(tr("Unable to handle so huge data in clipboard."));
+        return;
+    }
     if (clipboardText.isEmpty()) {
+        showWarningAndWriteToLog(tr("UGENE does not recognize current clipboard content as one of supported formats."));
         return;
     }
-    QDir tmpDir(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath());
-    if (!tmpDir.exists() && !tmpDir.mkdir(tmpDir.path())) {
-        showWarningAndWriteToLog(tr("Unable to create directory in temporary folder %1").arg(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath()));
-        return;
-    }
-    QString pastedFileUrl(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath() 
-        + "/user_pasted_data");
-    pastedFileUrl = GUrlUtils::rollFileName(pastedFileUrl, DocumentUtils::getNewDocFileNameExcludesHint());
-    QFile file(pastedFileUrl);
-    if (!file.open(QIODevice::WriteOnly)) {
-        showWarningAndWriteToLog(tr("Unable to write file in temporary folder %1").arg(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath()));
-        return;
-    }
-    file.close();
+    QString pastedFileUrl(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() 
+        + "/clipboard");
 
-    IOAdapterFactory *iof = new StringAdapterFactoryWithStringData(clipboardText);
+    QScopedPointer<IOAdapterFactory> iof(new StringAdapterFactoryWithStringData(clipboardText));
     QVariantMap hints;
-    bool userCancelled = true;
-    DocumentFormat *df = ProjectLoaderImpl::detectFormatFromAdapter(iof->createIOAdapter(), hints, userCancelled);
+    bool userCancelled = false;
+    DocumentFormat *df = detectFormatFromAdapter(iof->createIOAdapter(), hints, userCancelled);
     if (userCancelled) {
         return;
     }
     if (df == NULL) {
-        showWarningAndWriteToLog(tr("Failed to detect clipboard data file format"));        
+        showWarningAndWriteToLog(tr("UGENE does not recognize current clipboard content as one of supported formats."));
         return;
     }
+    pastedFileUrl = pastedFileUrl + "." + df->getSupportedDocumentFileExtensions().first();
+    pastedFileUrl = GUrlUtils::rollFileName(pastedFileUrl, 
+        DocumentUtils::getNewDocFileNameExcludesHint().unite(excludedFilenames));
+    excludedFilenames.insert(pastedFileUrl);
+    GUrl url(pastedFileUrl, GUrl_File);
+    if (df->checkFlags(DocumentFormatFlag_SupportWriting)) {
+        hints[ProjectLoaderHint_DontCheckForExistence] = true;
+        hints[ProjectLoaderHint_DoNotAddToRecentDocuments] = true;
+        IOAdapterFactory *factory = iof.take();
+        DocumentProviderTask* loadDocumentTask = new LoadDocumentTask(df, url, factory, hints);
+        factory->setParent(loadDocumentTask);
+        TaskSignalMapper* loadTaskSignalMapper = new TaskSignalMapper (loadDocumentTask);
+        connect(loadTaskSignalMapper, SIGNAL(si_taskFinished()), SLOT(sl_setLocaFilelAdapter()));
+        AppContext::getTaskScheduler()->registerTopLevelTask(new AddDocumentAndOpenViewTask(loadDocumentTask));
+    } else {
+        QFile outputFile(pastedFileUrl);
+        outputFile.open(QIODevice::WriteOnly);
+        outputFile.write(clipboardText.toLatin1());
+        outputFile.close();
+        QList<GUrl> urlList;
+        urlList << url;
+        AppContext::getTaskScheduler()->registerTopLevelTask(AppContext::getProjectLoader()->openWithProjectTask(urlList));
+    }
+}
 
-    DocumentProviderTask* loadDocumentTask = new LoadDocumentTask(df, GUrl(pastedFileUrl, GUrl_File), iof, hints);
-    AppContext::getTaskScheduler()->registerTopLevelTask(new AddDocumentAndOpenViewTask(loadDocumentTask));
+void ProjectViewWidget::sl_setLocaFilelAdapter() {
+    TaskSignalMapper* mapper = qobject_cast<TaskSignalMapper*>(sender());
+    CHECK(mapper != NULL, );
+    LoadDocumentTask *task =  qobject_cast<LoadDocumentTask*>(mapper->getTask());
+    Document *doc = task->getDocument();
+    if (doc != NULL) {
+        IOAdapterFactory *actualFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(doc->getURL()));
+        doc->setIOAdapterFactory(actualFactory);
+        excludedFilenames.remove(doc->getURLString());
+    }
+}
+
+DocumentFormat* ProjectViewWidget::detectFormatFromAdapter(IOAdapter* io, QVariantMap &hints, bool &canceled) {
+    canceled = false;
+    GUrl url;
+    QList<FormatDetectionResult> formats;
+    FormatDetectionConfig conf;
+    FormatDetectionResult dr;
+    conf.bestMatchesOnly = false;
+    formats = DocumentUtils::detectFormat(io, conf);
+    bool detectFormat = ProjectLoaderImpl::detectFormat(url, formats, hints, dr);
+    if (!detectFormat && formats.isEmpty()) {
+        return NULL;
+    }
+    dr.rawDataCheckResult.properties.unite(hints);
+    if (dr.format != NULL ) {
+        bool forceReadingOptions = hints.value(ProjectLoaderHint_ForceFormatOptions, false).toBool();
+        bool optionsAlreadyChoosen = hints.value((ProjectLoaderHint_MultipleFilesMode_Flag), false).toBool();
+        canceled = !DocumentReadingModeSelectorController::adjustReadingMode(dr, forceReadingOptions, optionsAlreadyChoosen);
+        if (canceled) {
+            return NULL;
+        }
+        if (!ProjectLoaderImpl::processHints(dr)) {
+            hints = dr.rawDataCheckResult.properties;
+            if (!hints.contains(DocumentReadingMode_MaxObjectsInDoc)) {
+                hints[DocumentReadingMode_MaxObjectsInDoc] = ProjectLoaderImpl::maxObjectsInSingleDocument;
+            }   
+        }
+    }
+    if (dr.format != NULL) {
+        return dr.format;
+    }
+    if (formats.isEmpty()) {
+        return NULL;
+    } else {
+        return formats[0].format;
+    }
 }
 
 static ProjectTreeGroupMode getLastGroupMode() {

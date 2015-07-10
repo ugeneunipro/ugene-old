@@ -352,6 +352,8 @@ public:
 
     IOAdapterFactory* getIOAdapterFactory() const {return io;}
 
+    void setIOAdapterFactory(IOAdapterFactory* iof);
+
     const QList<GObject*>& getObjects() const {return objects;}
 
     GObject * getObjectById(const U2DataId &id) const;
@@ -450,7 +452,7 @@ protected:
     GObject * findGObjectByNameInMem(const QString &name) const;
 
     DocumentFormat* const       df;
-    IOAdapterFactory* const     io;
+    IOAdapterFactory*           io;
     GUrl                        url;
     U2DbiRef                    dbiRef; // Default dbi ref for the document
 

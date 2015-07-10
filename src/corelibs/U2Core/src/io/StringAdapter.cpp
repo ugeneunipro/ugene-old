@@ -55,7 +55,7 @@ bool StringAdapter::open(const GUrl &_url, IOAdapterMode m) {
             pos = 0;
             break;
         case IOAdapterMode_Append:
-            pos = buffer.length() - 1;
+            pos = buffer.length();
             break;
     }
     opened = true;
@@ -113,11 +113,12 @@ QString StringAdapter::errorString() const {
     return "";
 }
 
-U2::GUrl StringAdapter::getURL() const {
+GUrl StringAdapter::getURL() const {
     return url;
 }
 
-StringAdapterFactoryWithStringData::StringAdapterFactoryWithStringData(const QString &data): StringAdapterFactory(), data(data){}
+StringAdapterFactoryWithStringData::StringAdapterFactoryWithStringData(const QString &data, QObject *parent) :
+StringAdapterFactory(parent), data(data){}
 
 IOAdapter* StringAdapterFactoryWithStringData::createIOAdapter() {
     return new StringAdapter(data.toLatin1(), this);

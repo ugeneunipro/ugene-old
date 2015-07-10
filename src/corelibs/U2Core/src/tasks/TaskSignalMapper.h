@@ -34,6 +34,7 @@ class U2CORE_EXPORT TaskSignalMapper : public QObject {
     Q_OBJECT
 public:
     TaskSignalMapper(Task *t);
+    Task *getTask() const;
 
 private slots:
     void sl_taskStateChanged();

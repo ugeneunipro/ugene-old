@@ -28,6 +28,7 @@
 #include <U2Core/CMDLineUtils.h>
 #include <U2Core/DocumentImport.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/GHints.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/IdRegistry.h>
@@ -361,7 +362,9 @@ QList<FormatDetectionResult> getRelatedFormats(const QList<FormatDetectionResult
     return result;
 }
 
-bool detectFormat(const GUrl &url, QList<FormatDetectionResult> &formats, const QVariantMap &hints, FormatDetectionResult &selectedResult) {
+}
+
+bool ProjectLoaderImpl::detectFormat(const GUrl &url, QList<FormatDetectionResult> &formats, const QVariantMap &hints, FormatDetectionResult &selectedResult) {
     CHECK(!formats.isEmpty(), false);
     int idx = 0;
     if (shouldFormatBeSelected(formats, hints.value(ProjectLoaderHint_ForceFormatOptions, false).toBool())) {
@@ -388,10 +391,7 @@ bool detectFormat(const GUrl &url, QList<FormatDetectionResult> &formats, const 
     return true;
 }
 
-}
-
 #define MAX_DOCS_TO_OPEN_VIEWS 5
-#define MAX_OBJECT_PER_DOC 50000
 
 Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVariantMap& hints) {
     QList<GUrl> urls = _urls;
@@ -521,7 +521,7 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
                         info.url = url;
                         info.hints = dr.rawDataCheckResult.properties;
                         if (!info.hints.contains(DocumentReadingMode_MaxObjectsInDoc)) {
-                            info.hints[DocumentReadingMode_MaxObjectsInDoc] = MAX_OBJECT_PER_DOC;
+                            info.hints[DocumentReadingMode_MaxObjectsInDoc] = maxObjectsInSingleDocument;
                         }
                         info.formatId = dr.format->getFormatId();
                         info.iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
@@ -697,6 +697,10 @@ void ProjectLoaderImpl::updateRecentItemsMenu()
 
 void ProjectLoaderImpl::sl_documentAdded( Document* doc )
 {
+    if (doc->getGHints()->get(ProjectLoaderHint_DoNotAddToRecentDocuments, false).toBool()) {
+        doc->getGHints()->remove(ProjectLoaderHint_DoNotAddToRecentDocuments);
+        return;
+    }
     if (!doc->isModified()) {
         prependToRecentItems(doc->getURLString());
         updateRecentItemsMenu();
@@ -914,40 +918,6 @@ void ProjectLoaderImpl::sl_onAddExistingDocument(){
         AppContext::getTaskScheduler()->registerTopLevelTask(openTask);
     }
 }
-
-DocumentFormat* ProjectLoaderImpl::detectFormatFromAdapter(IOAdapter* io, QVariantMap &hints, bool &canceled) {
-    GUrl url;
-    QList<FormatDetectionResult> formats;
-    FormatDetectionConfig conf;
-    FormatDetectionResult dr;
-    conf.bestMatchesOnly = false;
-    formats = DocumentUtils::detectFormat(io, conf);
-    canceled = !detectFormat(url, formats, hints, dr);
-    if (canceled) {
-        return NULL;
-    }
-    dr.rawDataCheckResult.properties.unite(hints);
-    if (dr.format != NULL ) {
-        bool forceReadingOptions = hints.value(ProjectLoaderHint_ForceFormatOptions, false).toBool();
-        bool optionsAlreadyChoosen = hints.value((ProjectLoaderHint_MultipleFilesMode_Flag), false).toBool();
-        canceled = !DocumentReadingModeSelectorController::adjustReadingMode(dr, forceReadingOptions, optionsAlreadyChoosen);
-        if (canceled) {
-            return NULL;
-        }
-        if (!processHints(dr)) {
-            hints = dr.rawDataCheckResult.properties;
-            if (!hints.contains(DocumentReadingMode_MaxObjectsInDoc)) {
-                hints[DocumentReadingMode_MaxObjectsInDoc] = MAX_OBJECT_PER_DOC;
-            }   
-        }
-    }
-    if (formats.isEmpty()) {
-        return NULL;
-    } else {
-        return formats[0].format;
-    }
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 // Add documents to project task
