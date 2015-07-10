@@ -2553,14 +2553,7 @@ GUI_TEST_CLASS_DEFINITION(test_1232) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "test_1232.fa", GTGlobals::UseMouse));
 
-    QWidget* activeWindow = GTUtilsMdi::activeWindow(os);
-    CHECK_SET_ERR(activeWindow != NULL, "there is no active MDI window");
-
-    QPoint p = activeWindow->mapToGlobal(activeWindow->rect().center());
-    GTMouseDriver::moveTo(os, QPoint(p.x(), 200));
-    GTMouseDriver::click(os, Qt::RightButton);
-
-    //GTMouseDriver::click(os, Qt::RightButton);
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
     GTGlobals::sleep(2000);
 
     menu = GTMenu::showMainMenu(os, "mwmenu_actions");
@@ -2597,12 +2590,7 @@ GUI_TEST_CLASS_DEFINITION(test_1234) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "test_1234.fa", GTGlobals::UseMouse, true));
 
-    QWidget* activeWindow = GTUtilsMdi::activeWindow(os);
-    CHECK_SET_ERR(activeWindow != NULL, "there is no active MDI window");
-
-    QPoint p = activeWindow->mapToGlobal(activeWindow->rect().center());
-    GTMouseDriver::moveTo(os, QPoint(p.x(), 200));
-    GTMouseDriver::click(os, Qt::RightButton);
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
 
     GTGlobals::sleep(2000);
 

@@ -2206,7 +2206,7 @@ GUI_TEST_CLASS_DEFINITION(test_4352) {
     //5. Remove a part of the sequence that contains the selected site.
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Remove subsequence..."));
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "89300..89400"));
-    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
 
     //6. Wait while restriction sites recalculates.
     GTUtilsTaskTreeView::waitTaskFinished(os);

@@ -33,6 +33,7 @@
 
 #include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
 #include "GTTestsStartPage.h"
 
@@ -52,6 +53,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 GUI_TEST_CLASS_DEFINITION(test_0002){
 //    Start UGENE
 //    Press "Create workflow button" button on start page
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     GTutilsStartPage::clickButton(os, GTutilsStartPage::CreateWorkflow);
     GTGlobals::sleep(500);
 //    Expected state: WD opened.
