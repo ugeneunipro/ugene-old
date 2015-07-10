@@ -53,12 +53,13 @@ public:
 class U2CORE_EXPORT LoadDocumentTaskConfig {
 public:
     LoadDocumentTaskConfig(bool _createDoc = false, const GObjectReference& _ref = GObjectReference(),
-        LDTObjectFactory* _f = NULL)
-        : createDoc(_createDoc), checkObjRef(_ref), objFactory(_f){}
+        LDTObjectFactory* _f = NULL, bool _setModified = false)
+        : createDoc(_createDoc), checkObjRef(_ref), objFactory(_f), setModified(_setModified) {}
 
     bool                createDoc;      // if document is failed to load and 'createDoc' is true -> it will be created
     GObjectReference    checkObjRef;    // if is valid task checks that ref is found in doc, fails if not
     LDTObjectFactory*   objFactory;     // if not NULL and 'checkObjRef' is not found -> 'objFactory' is used to create obj
+    bool                setModified;
 };
 
 class U2CORE_EXPORT LoadUnloadedDocumentTask : public DocumentProviderTask {

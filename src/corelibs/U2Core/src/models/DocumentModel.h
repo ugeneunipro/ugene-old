@@ -52,26 +52,28 @@ class U2SequenceObject;
 // Additional info about document format
 enum DocumentFormatFlag {
     // Document support reading objects from data stream and can detect object boundaries for all object types correctly
-    DocumentFormatFlag_SupportStreaming      = 1<<0,
+    DocumentFormatFlag_SupportStreaming             = 1<<0,
     // Document support writing
-    DocumentFormatFlag_SupportWriting        = 1<<1,
+    DocumentFormatFlag_SupportWriting               = 1<<1,
     // Document can only contain 1 object: like text, raw sequence or some formats that do not support streaming
-    DocumentFormatFlag_SingleObjectFormat    = 1<<2,
+    DocumentFormatFlag_SingleObjectFormat           = 1<<2,
     // Document can't be read from packed stream. Used for database files
-    DocumentFormatFlag_NoPack                = 1<<3,
+    DocumentFormatFlag_NoPack                       = 1<<3,
     // Document is not fully loaded to memory. Used for database files
-    DocumentFormatFlag_NoFullMemoryLoad      = 1<<4,
+    DocumentFormatFlag_NoFullMemoryLoad             = 1<<4,
     // Document is not included into format recognition by default
-    DocumentFormatFlag_Hidden                = 1<<5,
+    DocumentFormatFlag_Hidden                       = 1<<5,
     // Document contains only one object of each supported type
-    DocumentFormatFlag_OnlyOneObject         = 1<<6,
+    DocumentFormatFlag_OnlyOneObject                = 1<<6,
     // UGENE is unable to create a new document of this format
     // although it can modify existing documents
-    DocumentFormatFlag_CannotBeCreated       = 1<<7,
+    DocumentFormatFlag_CannotBeCreated              = 1<<7,
     // Document can contain objects with duplicate names
-    DocumentFormatFlag_AllowDuplicateNames   = 1<<8,
+    DocumentFormatFlag_AllowDuplicateNames          = 1<<8,
     // Document changes are written immedeately, they should'n be saved on closing. Used for databases.
-    DocumentFormatFlag_DirectWriteOperations = 1<<9
+    DocumentFormatFlag_DirectWriteOperations        = 1<<9,
+    // Document can be locked if created not by UGENE
+    DocumentFormatFlag_LockedIfNotCreatedByUGENE    = 1<<10
 };
 
 

@@ -697,16 +697,16 @@ void ProjectLoaderImpl::updateRecentItemsMenu()
 
 void ProjectLoaderImpl::sl_documentAdded( Document* doc )
 {
-    if (doc->getGHints()->get(ProjectLoaderHint_DoNotAddToRecentDocuments, false).toBool()) {
-        doc->getGHints()->remove(ProjectLoaderHint_DoNotAddToRecentDocuments);
-        return;
-    }
+    bool doNotAddToRecent = doc->getGHints()->get(ProjectLoaderHint_DoNotAddToRecentDocuments, false).toBool();
     if (!doc->isModified()) {
-        prependToRecentItems(doc->getURLString());
-        updateRecentItemsMenu();
+        if (!doNotAddToRecent) {
+            prependToRecentItems(doc->getURLString());
+            updateRecentItemsMenu();
+        }
     } else {
         connect(doc, SIGNAL(si_modifiedStateChanged()), SLOT(sl_documentStateChanged()));
     }
+    doc->getGHints()->remove(ProjectLoaderHint_DoNotAddToRecentDocuments);
 }
 
 void ProjectLoaderImpl::sl_documentStateChanged() {

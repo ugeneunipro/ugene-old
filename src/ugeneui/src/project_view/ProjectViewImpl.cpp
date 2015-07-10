@@ -443,7 +443,7 @@ ProjectViewWidget::ProjectViewWidget() {
 
     pasteFileFromClipboard = new QAction(tr("Paste file from clipboard"), this);
     pasteFileFromClipboard->setShortcuts(QKeySequence::Paste);
-    pasteFileFromClipboard->setShortcutContext(Qt::ApplicationShortcut);
+    pasteFileFromClipboard->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(pasteFileFromClipboard, SIGNAL(triggered()), SLOT(sl_pasteFileFromClipboard()));
     addAction(pasteFileFromClipboard);
 }
@@ -464,7 +464,7 @@ void ProjectViewWidget::sl_pasteFileFromClipboard() {
         return;
     }
     if (clipboardText.isEmpty()) {
-        showWarningAndWriteToLog(tr("UGENE does not recognize current clipboard content as one of supported formats."));
+        showWarningAndWriteToLog(tr("UGENE can not recognize current clipboard content as one of supported formats."));
         return;
     }
     QString pastedFileUrl(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() 
@@ -486,11 +486,15 @@ void ProjectViewWidget::sl_pasteFileFromClipboard() {
         DocumentUtils::getNewDocFileNameExcludesHint().unite(excludedFilenames));
     excludedFilenames.insert(pastedFileUrl);
     GUrl url(pastedFileUrl, GUrl_File);
-    if (df->checkFlags(DocumentFormatFlag_SupportWriting)) {
+    if (df->checkFlags(DocumentFormatFlag_SupportWriting)
+        && !(df->checkFlags(DocumentFormatFlag_LockedIfNotCreatedByUGENE)
+            || df->checkFlags(DocumentFormatFlag_CannotBeCreated)))
+    {
         hints[ProjectLoaderHint_DontCheckForExistence] = true;
         hints[ProjectLoaderHint_DoNotAddToRecentDocuments] = true;
         IOAdapterFactory *factory = iof.take();
-        DocumentProviderTask* loadDocumentTask = new LoadDocumentTask(df, url, factory, hints);
+        LoadDocumentTaskConfig loadDocTaskCfg(false, GObjectReference(), NULL, true);
+        DocumentProviderTask* loadDocumentTask = new LoadDocumentTask(df, url, factory, hints, loadDocTaskCfg);
         factory->setParent(loadDocumentTask);
         TaskSignalMapper* loadTaskSignalMapper = new TaskSignalMapper (loadDocumentTask);
         connect(loadTaskSignalMapper, SIGNAL(si_taskFinished()), SLOT(sl_setLocaFilelAdapter()));
