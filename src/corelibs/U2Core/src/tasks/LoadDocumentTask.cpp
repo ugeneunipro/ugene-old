@@ -481,7 +481,6 @@ void LoadDocumentTask::run() {
     if(hints.value(ProjectLoaderHint_DontCheckForExistence, false).toBool()){
         resultDocument->getGHints()->set(ProjectLoaderHint_DontCheckForExistence, true);
     }
-    resultDocument->setModified(config.setModified);
     assert(stateInfo.isCoR() || resultDocument != NULL);
     assert(resultDocument == NULL || resultDocument->isLoaded());
 }

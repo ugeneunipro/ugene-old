@@ -961,6 +961,11 @@ QList<Task*> AddDocumentsToProjectTask::onSubTaskFinished(Task* t) {
         setReportingSupported(true);
         setReportingEnabled(true);
     }
+    foreach (Document *d, docsToMarkAsModified) {
+        if (d->isLoaded() && !d->isModified()) {
+            d->setModified(true);
+        }
+    }
     return res;
 }
 
@@ -990,6 +995,9 @@ QList<Task*> AddDocumentsToProjectTask::prepareLoadTasks() {
             doc = df->createNewUnloadedDocument(info.iof, info.url, os, info.hints);
             if (doc == NULL) {
                 continue;
+            }
+            if (info.markLoadedAsModified) {
+                docsToMarkAsModified << doc;
             }
         }
         if (unsupportedObjectType) {

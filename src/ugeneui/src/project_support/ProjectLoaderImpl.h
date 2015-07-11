@@ -173,13 +173,14 @@ private:
 
 class AD2P_DocumentInfo {
 public:
-    AD2P_DocumentInfo() : iof (NULL), openView(false), loadDocuments(false) {}
+    AD2P_DocumentInfo() : iof (NULL), openView(false), loadDocuments(false), markLoadedAsModified(false) {}
     GUrl                    url;
     DocumentFormatId        formatId;
     IOAdapterFactory*       iof;
     QVariantMap             hints;
     bool                    openView;
     bool                    loadDocuments;
+    bool                    markLoadedAsModified;
 };
 
 class AD2P_ProviderInfo {
@@ -199,6 +200,7 @@ public:
     virtual QString generateReport() const;
 private:
     QList<Task*> prepareLoadTasks();
+    QList<Document*> docsToMarkAsModified;
 
     QList<AD2P_DocumentInfo> docsInfo;
     QList<AD2P_ProviderInfo> providersInfo;

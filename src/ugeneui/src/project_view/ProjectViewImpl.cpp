@@ -493,12 +493,21 @@ void ProjectViewWidget::sl_pasteFileFromClipboard() {
         hints[ProjectLoaderHint_DontCheckForExistence] = true;
         hints[ProjectLoaderHint_DoNotAddToRecentDocuments] = true;
         IOAdapterFactory *factory = iof.take();
-        LoadDocumentTaskConfig loadDocTaskCfg(false, GObjectReference(), NULL, true);
-        DocumentProviderTask* loadDocumentTask = new LoadDocumentTask(df, url, factory, hints, loadDocTaskCfg);
-        factory->setParent(loadDocumentTask);
-        TaskSignalMapper* loadTaskSignalMapper = new TaskSignalMapper (loadDocumentTask);
+        QList<AD2P_DocumentInfo> docInfoList;
+        QList<AD2P_ProviderInfo> empty;
+        AD2P_DocumentInfo info;
+        info.url = url;
+        info.formatId = df->getFormatId();
+        info.iof = factory;
+        info.hints = hints;
+        info.openView = true;
+        info.loadDocuments = true;
+        info.markLoadedAsModified = true;
+        docInfoList << info;
+        AddDocumentsToProjectTask *addToProjtask = new AddDocumentsToProjectTask(docInfoList, empty);
+        TaskSignalMapper* loadTaskSignalMapper = new TaskSignalMapper (addToProjtask);
         connect(loadTaskSignalMapper, SIGNAL(si_taskFinished()), SLOT(sl_setLocaFilelAdapter()));
-        AppContext::getTaskScheduler()->registerTopLevelTask(new AddDocumentAndOpenViewTask(loadDocumentTask));
+        AppContext::getTaskScheduler()->registerTopLevelTask(addToProjtask);
     } else {
         QFile outputFile(pastedFileUrl);
         outputFile.open(QIODevice::WriteOnly);
