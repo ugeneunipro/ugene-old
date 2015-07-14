@@ -301,7 +301,7 @@ namespace U2 {
 const DocumentFormatId  UHMMFormat::UHHMER_FORMAT_ID   = "hmmer_document_format";
 const QString           UHMMFormat::WRITE_LOCK_REASON = QObject::tr("HMM files are read only");
 
-UHMMFormat::UHMMFormat( QObject* obj ) : DocumentFormat( obj, DocumentFormatFlags_SW, QStringList("hmm")) {
+UHMMFormat::UHMMFormat( QObject* obj ) : DocumentFormat( obj, DocumentFormatFlags_SW | DocumentFormatFlag_LockedIfNotCreatedByUGENE, QStringList("hmm")) {
     formatName = tr( "Profile HMM format" );
     formatDescription = tr("hmm is a format for storing hmm profiles");
     supportedObjectTypes+=UHMMObject::UHMM_OT;

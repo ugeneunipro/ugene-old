@@ -337,19 +337,6 @@ FormatDetectionResult getFirstUnrelatedFormat(const QList<FormatDetectionResult>
     return FormatDetectionResult();
 }
 
-bool shouldFormatBeSelected(const QList<FormatDetectionResult> &formats, bool forceSelectFormat) {
-    CHECK(formats.size() > 1, false);
-
-    const FormatDetectionResult firstFormat = formats[0];
-    const FormatDetectionResult firstUnrelatedFormat = getFirstUnrelatedFormat(formats);
-    CHECK(FormatDetection_NotMatched != firstUnrelatedFormat.score(), false);
-
-    return firstFormat.score() == firstUnrelatedFormat.score()
-            || (firstUnrelatedFormat.score() > FormatDetection_AverageSimilarity && firstFormat.score() < FormatDetection_Matched)
-            || (firstFormat.score() <= FormatDetection_AverageSimilarity)
-            || forceSelectFormat;
-}
-
 QList<FormatDetectionResult> getRelatedFormats(const QList<FormatDetectionResult> &formats, int idx) {
     SAFE_POINT(0 <= idx && idx < formats.size(), "Format index is out of range", QList<FormatDetectionResult>());
     QList<FormatDetectionResult> result;
@@ -361,7 +348,19 @@ QList<FormatDetectionResult> getRelatedFormats(const QList<FormatDetectionResult
     }
     return result;
 }
+}
 
+bool ProjectLoaderImpl::shouldFormatBeSelected(const QList<FormatDetectionResult> &formats, bool forceSelectFormat) {
+    CHECK(formats.size() > 1, false);
+
+    const FormatDetectionResult firstFormat = formats[0];
+    const FormatDetectionResult firstUnrelatedFormat = getFirstUnrelatedFormat(formats);
+    CHECK(FormatDetection_NotMatched != firstUnrelatedFormat.score(), false);
+
+    return firstFormat.score() == firstUnrelatedFormat.score()
+        || (firstUnrelatedFormat.score() > FormatDetection_AverageSimilarity && firstFormat.score() < FormatDetection_Matched)
+        || (firstFormat.score() <= FormatDetection_AverageSimilarity)
+        || forceSelectFormat;
 }
 
 bool ProjectLoaderImpl::detectFormat(const GUrl &url, QList<FormatDetectionResult> &formats, const QVariantMap &hints, FormatDetectionResult &selectedResult) {
@@ -974,6 +973,10 @@ QString AddDocumentsToProjectTask::generateReport() const {
     QString warnings = stateInfo.getWarnings().join("<br>");
     warnings.replace("\n", "<br>");
     return warnings;
+}
+
+const QList<AD2P_DocumentInfo>& AddDocumentsToProjectTask::getDocsInfoList() const {
+    return docsInfo;
 }
 
 QList<Task*> AddDocumentsToProjectTask::prepareLoadTasks() {

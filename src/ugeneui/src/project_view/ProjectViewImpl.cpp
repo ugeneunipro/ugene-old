@@ -478,7 +478,7 @@ void ProjectViewWidget::sl_pasteFileFromClipboard() {
         return;
     }
     if (df == NULL) {
-        showWarningAndWriteToLog(tr("UGENE does not recognize current clipboard content as one of supported formats."));
+        showWarningAndWriteToLog(tr("UGENE can not recognize current clipboard content as one of supported formats."));
         return;
     }
     pastedFileUrl = pastedFileUrl + "." + df->getSupportedDocumentFileExtensions().first();
@@ -506,7 +506,7 @@ void ProjectViewWidget::sl_pasteFileFromClipboard() {
         docInfoList << info;
         AddDocumentsToProjectTask *addToProjtask = new AddDocumentsToProjectTask(docInfoList, empty);
         TaskSignalMapper* loadTaskSignalMapper = new TaskSignalMapper (addToProjtask);
-        connect(loadTaskSignalMapper, SIGNAL(si_taskFinished()), SLOT(sl_setLocaFilelAdapter()));
+        connect(loadTaskSignalMapper, SIGNAL(si_taskFinished(Task *)), SLOT(sl_setLocaFilelAdapter()));
         AppContext::getTaskScheduler()->registerTopLevelTask(addToProjtask);
     } else {
         QFile outputFile(pastedFileUrl);
@@ -521,14 +521,24 @@ void ProjectViewWidget::sl_pasteFileFromClipboard() {
 
 void ProjectViewWidget::sl_setLocaFilelAdapter() {
     TaskSignalMapper* mapper = qobject_cast<TaskSignalMapper*>(sender());
-    CHECK(mapper != NULL, );
-    LoadDocumentTask *task =  qobject_cast<LoadDocumentTask*>(mapper->getTask());
-    Document *doc = task->getDocument();
-    if (doc != NULL) {
-        IOAdapterFactory *actualFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(doc->getURL()));
-        doc->setIOAdapterFactory(actualFactory);
-        excludedFilenames.remove(doc->getURLString());
-    }
+    SAFE_POINT(mapper != NULL, "Incorrect sender", );
+
+    AddDocumentsToProjectTask *task =  qobject_cast<AddDocumentsToProjectTask*>(mapper->getTask());
+    SAFE_POINT(task != NULL, "Can not convert to AddDocumentsToProjectTask", );
+
+    QList<AD2P_DocumentInfo> docsInfoList = task->getDocsInfoList();
+    SAFE_POINT(docsInfoList.size() == 1, "Incorrect documents number", );
+
+    Project* p = AppContext::getProject();
+    SAFE_POINT(p != NULL, tr("No active project found!"), );
+
+    Document *doc = p->findDocumentByURL(docsInfoList[0].url);
+    SAFE_POINT(doc != NULL, tr("Can not find document in project with following url: %1").arg(docsInfoList[0].url.getURLString()), );
+    IOAdapterFactory *actualFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(doc->getURL()));
+    doc->setIOAdapterFactory(actualFactory);
+    excludedFilenames.remove(doc->getURLString());
+
+    connect(doc, SIGNAL(si_modifiedStateChanged()), AppContext::getProjectLoader(), SLOT(sl_documentStateChanged()));
 }
 
 DocumentFormat* ProjectViewWidget::detectFormatFromAdapter(IOAdapter* io, QVariantMap &hints, bool &canceled) {
@@ -540,7 +550,9 @@ DocumentFormat* ProjectViewWidget::detectFormatFromAdapter(IOAdapter* io, QVaria
     conf.bestMatchesOnly = false;
     formats = DocumentUtils::detectFormat(io, conf);
     bool detectFormat = ProjectLoaderImpl::detectFormat(url, formats, hints, dr);
-    if (!detectFormat && formats.isEmpty()) {
+    bool shouldBeSelected = ProjectLoaderImpl::shouldFormatBeSelected(formats, hints.value(ProjectLoaderHint_ForceFormatOptions, false).toBool());
+    canceled = !detectFormat && shouldBeSelected;
+    if (!detectFormat && formats.isEmpty() || canceled) {
         return NULL;
     }
     dr.rawDataCheckResult.properties.unite(hints);
@@ -1172,6 +1184,7 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
             if(obj->getGObjectType() == GObjectTypes::SEQUENCE && objectIsModifiable){
                 seqobjFound = true;
                 U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(obj);
+                SAFE_POINT(seq->getAlphabet() != NULL, "Invalid alphabet object detected", );
                 if (!casted->getAlphabet()->isNucleic()) {
                     allNucl = false;
                 }
