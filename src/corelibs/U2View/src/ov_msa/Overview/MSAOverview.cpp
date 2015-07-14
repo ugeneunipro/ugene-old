@@ -25,6 +25,7 @@
 #include <U2View/MSAEditorSequenceArea.h>
 
 #include <QtGui/QMouseEvent>
+#include <QPainter>
 
 namespace U2 {
 
@@ -74,6 +75,19 @@ void MSAOverview::mouseReleaseEvent(QMouseEvent *me) {
         setCursor(Qt::ArrowCursor);
     }
     QWidget::mouseReleaseEvent(me);
+}
+
+void MSAOverview::showWarning(QPainter& painter,QPaintEvent *e, const QString& warningMessage) {
+    painter.fillRect(rect(), Qt::gray);
+
+    QFontMetrics metrics(painter.font(), this);
+    painter.drawText(rect(), Qt::AlignCenter, metrics.elidedText(
+        warningMessage,
+        Qt::ElideRight,
+        rect().width()));
+
+    QWidget::paintEvent(e);
+    return;
 }
 
 } // namespace

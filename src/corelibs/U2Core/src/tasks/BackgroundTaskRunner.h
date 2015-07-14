@@ -103,8 +103,12 @@ public:
     /**
      * Returns true if last finished task wasn't cancelled and finished without error
      */
-    inline bool isSuccessful() {
+    inline bool isSuccessful() const {
         return success;
+    }
+
+    inline QString getError() const {
+        return lastError;
     }
 
 private:
@@ -119,6 +123,7 @@ private:
         }
         result = task->getResult();
         success = ! task->getStateInfo().isCoR();
+        lastError = task->getError();
         task = NULL;
         emitFinished();
     }
@@ -127,6 +132,7 @@ private:
     BackgroundTask<Result> * task;
     Result result;
     bool success;
+    QString lastError;
 
 private:
     BackgroundTaskRunner(const BackgroundTaskRunner &);

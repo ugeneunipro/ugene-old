@@ -70,7 +70,7 @@ class U2VIEW_EXPORT MSAGraphOverview : public MSAOverview {
     Q_OBJECT
 public:
     MSAGraphOverview(MSAEditorUI* ui);
-    bool isValid() const { return true; }
+    bool isValid() const { return graphCalculationTaskRunner.getError().isEmpty(); }
     QPixmap getView() { return cachedConsensus; }
 
     const static int FIXED_HEIGHT = 70;

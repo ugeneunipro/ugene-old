@@ -84,6 +84,9 @@ void MSAGraphOverview::cancelRendering() {
 }
 
 void MSAGraphOverview::sl_visibleRangeChanged() {
+    if (!isValid()) {
+        return;
+    }
     update();
 }
 
@@ -95,6 +98,10 @@ void MSAGraphOverview::sl_redraw() {
 void MSAGraphOverview::paintEvent(QPaintEvent *e) {
 
     QPainter p(this);
+    if (!isValid()) {
+        showWarning(p, e, tr("Multiple sequence alignment is too big. Overview is unavailable."));
+        return;
+    }
     if (isBlocked) {
         p.fillRect(cachedView.rect(), Qt::gray);
         p.drawText(cachedView.rect(), Qt::AlignCenter, tr("Waiting..."));

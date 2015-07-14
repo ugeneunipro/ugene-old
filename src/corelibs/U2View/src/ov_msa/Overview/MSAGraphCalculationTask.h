@@ -22,11 +22,12 @@
 #ifndef _U2_MSA_GRAPH_CALCULATION_TASK_H_
 #define _U2_MSA_GRAPH_CALCULATION_TASK_H_
 
+#include <U2Core/AppResources.h>
 #include <U2Core/global.h>
 #include <U2Core/BackgroundTaskRunner.h>
 #include <U2View/MSAEditorConsensusCache.h>
 
-#include <U2View/MSAEditorConsensusCache.h>
+#include <U2Core/MAlignment.h>
 
 #include <QtGui/QPolygonF>
 
@@ -51,7 +52,8 @@ protected:
     void constructPolygon(QPolygonF &polygon);
     virtual int getGraphValue(int) const { return height; }
 
-    MAlignmentObject*   msa;
+    QScopedPointer<MAlignment> ma;
+    MemoryLocker memLocker;
     int msaLength;
     int width;
     int height;
@@ -103,7 +105,7 @@ public:
                                            int msaLen,
                                            int width, int height);
 
-    static bool isCellHighlighted(MAlignmentObject* msa,
+    static bool isCellHighlighted(const MAlignment &msa,
                                   MSAHighlightingScheme* highlightingScheme,
                                   MSAColorScheme* colorScheme,
                                   int seq, int pos,

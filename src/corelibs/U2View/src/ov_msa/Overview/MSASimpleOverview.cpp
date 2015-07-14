@@ -107,15 +107,7 @@ void MSASimpleOverview::sl_highlightingChanged() {
 void MSASimpleOverview::paintEvent(QPaintEvent *e) {
     if (!isValid()) {
         QPainter p(this);
-        p.fillRect(rect(), Qt::gray);
-
-        QFontMetrics metrics(p.font(), this);
-        p.drawText(rect(), Qt::AlignCenter, metrics.elidedText(
-                       tr("Multiple sequence alignment is too big for current window size.\nSimple overview is unavailable."),
-                       Qt::ElideRight,
-                       rect().width()));
-
-        QWidget::paintEvent(e);
+        showWarning(p, e, tr("Multiple sequence alignment is too big for current window size.\nSimple overview is unavailable."));
         return;
     }
 
@@ -189,7 +181,7 @@ void MSASimpleOverview::drawOverview(QPainter &p) {
                 SAFE_POINT_OP(os, );
             }
             drawColor = MSAHighlightingOverviewCalculationTask::isCellHighlighted(
-                        mAlignmentObj,
+                        mAlignment,
                         highlightingScheme,
                         colorScheme,
                         seq, pos,
