@@ -3185,6 +3185,42 @@ GUI_TEST_CLASS_DEFINITION(test_3484_1) {
     CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "COI_3484_1.nwk") == false, "Unauthorized tree opening!");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3504) {
+//    1. Open COI.aln
+//    2. Build the tree and open it with the alignment.
+//    Expected state: Tree view has horizontal scroll bar
+//    3. Change tree layout to unrooted.
+//    4. Change layout back to rectangular
+//    Bug state: tree view has no horizontal scroll bar.
+//    Expected state: horizontal scroll bar is present
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,
+                                                               sandBoxDir + "COI_3504.nwk",
+                                                               0, 0, true));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView != NULL,"TreeView not found");
+    QScrollBar* scroll = treeView->horizontalScrollBar();
+    CHECK_SET_ERR(scroll != NULL, "TreeView does not have a horisontal scroll bar");
+    CHECK_SET_ERR(scroll->isVisible(), "Horisontal scroll bar is hidden");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< "Unrooted"));
+    GTWidget::click(os, GTWidget::findWidget(os, "Layout"));
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< "Rectangular"));
+    GTWidget::click(os, GTWidget::findWidget(os, "Layout"));
+
+    scroll = treeView->horizontalScrollBar();
+    CHECK_SET_ERR(scroll != NULL, "TreeView does not have a horisontal scroll bar");
+    CHECK_SET_ERR(scroll->isVisible(), "Horisontal scroll bar is hidden");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3518) {
 //    1. Select {Tools -> Weight matrix -> Build Weight Matrix} menu item in the main menu.
 //    2. Set file "data/samples/GFF/5prime_utr_intron_A20.gff" as input.
@@ -4806,7 +4842,7 @@ GUI_TEST_CLASS_DEFINITION(test_3773_1) {
 
             GTLineEdit::setText(os, outHmmfileEdit, "37773_1_out.hmm");
             //GTWidget::click(os, GTWidget::findWidget(os, "outHmmfileToolButton"));
-            
+
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
             QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
@@ -5290,7 +5326,7 @@ GUI_TEST_CLASS_DEFINITION(test_3862) {
     GTLogTracer l;
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
     GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
-    
+
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
     GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
