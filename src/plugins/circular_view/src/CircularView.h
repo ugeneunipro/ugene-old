@@ -178,7 +178,7 @@ protected:
     void drawAnnotationsSelection(QPainter& p);
     void drawSequenceSelection(QPainter& p);
     void drawMarker(QPainter& p);
-    void evaluateLabelPositions(QFont f);
+    void evaluateLabelPositions(const QFont &f);
     qreal getVisibleAngle() const;
     QPair<int,int> getVisibleRange() const;
 
@@ -230,10 +230,11 @@ private:
     TextItem* seqNameItem;
     TextItem* seqLenItem;
     QMap<Annotation *, int> annotationYLevel;
-    QList<CircularAnnotationLabel*> labelList;
+    QList<CircularAnnotationLabel *> labelList;
     qreal rotationDegree;
     qreal mouseAngle;
-    QVector<QRect> labelEmptyPositions;
+    QVector<QRect> positionsAvailableForLabels;
+    QMap<int, CircularAnnotationLabel *> engagedLabelPositionToLabel;
     int oldYlevel;
 };
 

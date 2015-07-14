@@ -889,6 +889,7 @@ void CircularViewRenderArea::drawAnnotations(QPainter &p) {
     }
     circItems.clear();
     labelList.clear();
+    engagedLabelPositionToLabel.clear();
     annotationYLevel.clear();
     regionY.clear();
 
@@ -908,7 +909,7 @@ void CircularViewRenderArea::drawAnnotations(QPainter &p) {
         }
     }
 
-    CircularAnnotationLabel::prepareLabels(labelList);
+    CircularAnnotationLabel::setLabelsVisible(labelList);
     evaluateLabelPositions(font);
 
     foreach (CircularAnnotationItem* item, circItems) {
@@ -918,8 +919,11 @@ void CircularViewRenderArea::drawAnnotations(QPainter &p) {
     if (settings->labelMode == CircularViewSettings::None) {
         return;
     }
-    foreach (CircularAnnotationLabel* label, labelList) {
+
+    foreach (CircularAnnotationLabel *label, labelList) {
         label->setLabelPosition();
+    }
+    foreach(CircularAnnotationLabel *label, labelList) {
         label->paint(&p, NULL, this);
     }
 }
@@ -1187,33 +1191,36 @@ void CircularViewRenderArea::drawMarker(QPainter& p) {
 }
 
 #define LABEL_PAD 30
-void CircularViewRenderArea::evaluateLabelPositions(QFont f) {
-    labelEmptyPositions.clear();
+void CircularViewRenderArea::evaluateLabelPositions(const QFont &f) {
+    positionsAvailableForLabels.clear();
 
-    QFontMetrics fm(f,this);
+    QFontMetrics fm(f, this);
     int labelHeight = fm.height();
     int lvlsNum = regionY.count();
-    int outerRadius = outerEllipseSize/2 + (lvlsNum-1)*ellipseDelta/2;
+    int outerRadius = outerEllipseSize / 2 + (lvlsNum - 1) * ellipseDelta / 2;
 
     int areaHeight = height();
 
     int z0 = - verticalOffset + VIEW_MARGIN + labelHeight;
-    int z1 = areaHeight/2 - labelHeight;
+    int z1 = areaHeight / 2 - labelHeight;
     if (currentScale != 0) {
         int wH = parentWidget()->height();
-        if (verticalOffset>wH) {
-            z1 = -outerRadius*cos(getVisibleAngle());
+        if (verticalOffset > wH) {
+            z1 = -outerRadius * cos(getVisibleAngle());
         }
     }
 
-    for(int zPos = z0; zPos < z1; zPos += labelHeight) {
-        int x = sqrt(float(outerRadius*outerRadius - zPos*zPos));
-        if(width()/2-x>0) {
-            QRect l_rect(-x - LABEL_PAD, zPos, width()/2-(x+LABEL_PAD), labelHeight);
-            QRect r_rect(x + LABEL_PAD, zPos, width()/2-(x+LABEL_PAD), labelHeight);
-            labelEmptyPositions << l_rect << r_rect;
+    QVector<QRect> leftHalfOfPositions;
+    for (int zPos = z0; zPos < z1; zPos += labelHeight) {
+        int x = sqrt(float(outerRadius * outerRadius - zPos * zPos));
+        if (width() / 2 - x > 0) {
+            QRect l_rect(-x - LABEL_PAD, zPos, width() / 2 - (x + LABEL_PAD), labelHeight);
+            QRect r_rect(x + LABEL_PAD, zPos, width() / 2 - (x + LABEL_PAD), labelHeight);
+            leftHalfOfPositions.prepend(l_rect);
+            positionsAvailableForLabels.append(r_rect);
         }
     }
+    positionsAvailableForLabels.append(leftHalfOfPositions);
 }
 
 CircularViewRenderArea::~CircularViewRenderArea() {

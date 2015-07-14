@@ -111,9 +111,7 @@ public:
     virtual bool contains(const QPointF &point) const;
     int getRegion() const;
     void setLabelPosition();
-    static void prepareLabels(QList<CircularAnnotationLabel*>& labelItems);
-
-    bool operator<(const CircularAnnotationLabel& a);
+    static void setLabelsVisible(QList<CircularAnnotationLabel *> &labelItems);
 
     void setAnnRegion(CircularAnnotationRegionItem* region);
     bool canFitToTheRegion() const;
@@ -121,11 +119,14 @@ public:
     void drawLabelInsideRegion(QPainter *p, bool canFit);
     void drawLabelOutsideRegion(QPainter *p, QPen& pen);
 
+    bool tryPushBack();
+
 private:
-    int findClosestPoint(const QPoint& targetPoint, const QVector<QRect>& rects, QVector<int> indexes);
-    void getVacantPositions(const QVector<QRect>& rects, QVector<int>& result);
-    void getVacantInnerPositions(const QVector<QRect>& rects, QVector<int>& result);
-    void getConnectionPoint();
+    int findClosestPoint(const QPoint &targetPoint, const QVector<QRect> &rects);
+    void calculateSuitablePositions(const QVector<QRect> &rects);
+    void calculateConnectionEnd();
+    void calculateConnectionStart();
+    void engageLabelPosition(int pos);
 
     Annotation *annotation;
     QVector<U2Region> location;
@@ -139,13 +140,14 @@ private:
     qreal startA;
     qreal endA;
     qreal spanA;
-    QPoint labelPos;
-    QPoint connectionPoint;
+    QRect engagedLabelPosition;
+    QVector<int> suitableLabelPositionIndexes;
+    QPoint connectionEnd;
+    QPoint connectionStart;
     CircularViewRenderArea* ra;
     CircularAnnotationRegionItem *regionItem;
     bool hasPosition;
     QString labelText;
-    bool inner;
     int seqLen;
 };
 
