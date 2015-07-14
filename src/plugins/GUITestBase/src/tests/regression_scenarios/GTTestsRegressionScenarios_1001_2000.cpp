@@ -6441,7 +6441,7 @@ GUI_TEST_CLASS_DEFINITION( test_1651 ){
 
             QLabel* hintLabel = GTWidget::findExactWidget<QLabel*>(os, "hintLabel", dialog);
             //    2. There are sample IDs in the hints
-            GTWidget::clickLabelLink(os, hintLabel, 20);
+            GTWidget::clickLabelLink(os, hintLabel, 10);
 
             //    3. Clicking on a sample ID must out in in the LineEdit automatically
             QLineEdit* idLineEdit = GTWidget::findExactWidget<QLineEdit*>(os, "idLineEdit", dialog);

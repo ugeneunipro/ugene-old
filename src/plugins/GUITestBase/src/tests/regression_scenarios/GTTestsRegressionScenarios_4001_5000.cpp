@@ -1267,6 +1267,7 @@ GUI_TEST_CLASS_DEFINITION(test_4124) {
     GTGlobals::sleep(200);
     GTUtilsProjectTreeView::click(os, "out.ugenedb");
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(1000);
     QFile::remove(sandBoxDir+"out.ugenedb");
     GTGlobals::sleep();
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, new Scenario_test_4124()));
