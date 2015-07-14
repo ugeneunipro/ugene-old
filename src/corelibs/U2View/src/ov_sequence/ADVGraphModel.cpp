@@ -164,8 +164,6 @@ GSequenceGraphDrawer::GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenc
                                            QMap<QString,QColor> colors)
 : QObject(v), view(v), lineColors(colors), globalMin(0), globalMax(0), wdata(wd)
 {
-    connect(v, SIGNAL(si_frameRangeChanged(const QSharedPointer<GSequenceGraphData>&, const QRect&)),
-            this, SLOT(sl_frameRangeChanged(const QSharedPointer<GSequenceGraphData>&, const QRect&)));
     connect(v, SIGNAL(si_labelAdded(const QSharedPointer<GSequenceGraphData>&, GraphLabel*, const QRect&)),
             this, SLOT(sl_labelAdded(const QSharedPointer<GSequenceGraphData>&, GraphLabel*, const QRect&)));
     connect(v, SIGNAL(si_labelMoved(const QSharedPointer<GSequenceGraphData>&, GraphLabel*, const QRect&)),
@@ -190,6 +188,14 @@ void GSequenceGraphDrawer::draw(QPainter& p, const QList<QSharedPointer<GSequenc
 
     foreach (const QSharedPointer<GSequenceGraphData>& graph, graphs) {
         drawGraph(p, graph, rect);
+        foreach(GraphLabel *label, graph->graphLabels.getLabels()) {
+            bool labelIsVisible = updateStaticLabels(graph, label, rect);
+            if (labelIsVisible) {
+                label->show();
+            } else {
+                label->hide();
+            }
+        }
     }
 
     {
@@ -209,14 +215,6 @@ void GSequenceGraphDrawer::draw(QPainter& p, const QList<QSharedPointer<GSequenc
          QRect minTextRect(rect.x(), rect.bottom()-12, rect.width(), 12);
          p.drawText(minTextRect, Qt::AlignRight, QString::number((double) globalMin, 'g', 4));
      }
-}
-void GSequenceGraphDrawer::sl_frameRangeChanged(const QSharedPointer<GSequenceGraphData>& graph, const QRect &rect) {
-    foreach(GraphLabel *label, graph->graphLabels.getLabels()) {
-        int res = updateStaticLabels(graph, label, rect);
-        if (res == 0) {
-            label->show();
-        }
-    }
 }
 void GSequenceGraphDrawer::sl_labelAdded(const QSharedPointer<GSequenceGraphData>& graph, GraphLabel *label, const QRect &rect) {
     updateStaticLabels(graph, label, rect);
@@ -472,12 +470,12 @@ void GSequenceGraphDrawer::selectExtremumPoints(const QSharedPointer<GSequenceGr
         updateStaticLabels(graph, minLabel, graphRect);
     }
 }
-int GSequenceGraphDrawer::updateStaticLabels(const QSharedPointer<GSequenceGraphData>& graph, GraphLabel *label, const QRect &rect)
+bool GSequenceGraphDrawer::updateStaticLabels(const QSharedPointer<GSequenceGraphData>& graph, GraphLabel *label, const QRect &rect)
 {
     int nPoints = rect.width();
     PairVector points;
     if (nPoints <= 0) {
-        return 1;
+        return false;
     }
     calculatePoints(graph, points, globalMin, globalMax, nPoints);
 
@@ -492,12 +490,12 @@ int GSequenceGraphDrawer::updateStaticLabels(const QSharedPointer<GSequenceGraph
     qint64 sequenceLength = view->getSequenceLength();
     int position = label->getPosition() * nPoints / sequenceLength;
     if (position < 0 || position >= nPoints) {
-        return 1;
+        return false;
     }
 
-    int errorCode = calculateLabelData(rect, points, label);
-    if (errorCode!=0) {
-        return errorCode;
+    bool isCalculated = calculateLabelData(rect, points, label);
+    if (!isCalculated) {
+        return false;
     }
 
     QRectF boundingRect = label->getHintRect();
@@ -525,7 +523,7 @@ int GSequenceGraphDrawer::updateStaticLabels(const QSharedPointer<GSequenceGraph
         calculatePositionOfLabel(label, nPoints);
     }
 
-    return 0;
+    return true;
 }
 void GSequenceGraphDrawer::calculatePositionOfLabel(GraphLabel *label, int nPoints)
 {
@@ -556,9 +554,12 @@ void GSequenceGraphDrawer::calculatePositionOfLabel(GraphLabel *label, int nPoin
 
 void GSequenceGraphDrawer::updateMovingLabels(const QSharedPointer<GSequenceGraphData>& graph, GraphLabel *label, const QRect &rect)
 {
-    int errorCode = updateStaticLabels(graph, label, rect);
-    if (errorCode != 0) {
+    bool isVisible = updateStaticLabels(graph, label, rect);
+    if (!isVisible) {
+        label->hide();
         return;
+    } else {
+        label->show();
     }
     QRect textRect = label->getHintRect();
     int height = textRect.height();
@@ -574,7 +575,7 @@ void GSequenceGraphDrawer::updateMovingLabels(const QSharedPointer<GSequenceGrap
     label->setHintRect(textRect);
 }
 
-int GSequenceGraphDrawer::calculateLabelData(const QRect &rect, const PairVector &points, GraphLabel *label) {
+bool GSequenceGraphDrawer::calculateLabelData(const QRect &rect, const PairVector &points, GraphLabel *label) {
     int graphHeight = rect.bottom() - rect.top() - 2;
     const U2Region& visibleRange = view->getVisibleRange();
     int xcoordInRect;
@@ -582,16 +583,16 @@ int GSequenceGraphDrawer::calculateLabelData(const QRect &rect, const PairVector
         xcoordInRect = qRound((label->getPosition() - visibleRange.startPos) * rect.width() / visibleRange.length);
     } else {
         label->hide();
-        return 1;
+        return false;
     }
     if (xcoordInRect >= points.firstPoints.size()) {
         label->hide();
-        return 1;
+        return false;
     }
     int nPoints = rect.width();
     float value = calculateLabelValue(nPoints, points, label, xcoordInRect);
     if (2 * globalMax == value) {
-        return 1;
+        return false;
     }
     int ycoordInRect = 0;
     int pos = qRound(label->getPosition());
@@ -622,7 +623,7 @@ int GSequenceGraphDrawer::calculateLabelData(const QRect &rect, const PairVector
     label->setCoord(labelCoord);
     label->setHintText(text);
     label->getTextLabel().adjustSize();
-    return 0;
+    return true;
 }
 
 float GSequenceGraphDrawer::calculateLabelValue(int nPoints, const PairVector &points, GraphLabel *label, int xcoordInRect) {

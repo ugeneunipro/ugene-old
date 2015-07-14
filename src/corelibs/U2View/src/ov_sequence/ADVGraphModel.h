@@ -123,16 +123,15 @@ protected:
 
     void calculatePoints(const QSharedPointer<GSequenceGraphData>& d, PairVector& points, float& min, float& max, int numPoints);
 
-    int calculateLabelData(const QRect& rect, const PairVector& points, GraphLabel* label);
+    bool calculateLabelData(const QRect& rect, const PairVector& points, GraphLabel* label);
     void calculatePositionOfLabel(GraphLabel *label, int nPoints);
     float calculateLabelValue(int nPoints, const PairVector &points, GraphLabel *label, int xcoordInRect);
     float calculatePointValue(int nPoints, const PairVector &points, int xcoordInRect);
-    int updateStaticLabels(const QSharedPointer<GSequenceGraphData>& graph, GraphLabel* label, const QRect& rect);
+    bool updateStaticLabels(const QSharedPointer<GSequenceGraphData>& graph, GraphLabel* label, const QRect& rect);
     void updateMovingLabels(const QSharedPointer<GSequenceGraphData>& graph, GraphLabel* label, const QRect& rect);
     void updateStaticLabels(MultiLabel& multiLabel, const QRect& rect);
     bool isExtremumPoint(int npoints, const PairVector& points, float value, U2Region& comparisonWindow);
 protected slots:
-    void sl_frameRangeChanged(const QSharedPointer<GSequenceGraphData>&, const QRect&);
     void sl_labelAdded(const QSharedPointer<GSequenceGraphData>&, GraphLabel*, const QRect&);
     void sl_labelMoved(const QSharedPointer<GSequenceGraphData>&, GraphLabel*, const QRect&);
     void sl_labelsColorChange(const QSharedPointer<GSequenceGraphData>&);
