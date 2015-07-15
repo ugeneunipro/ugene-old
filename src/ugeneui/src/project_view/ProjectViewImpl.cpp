@@ -533,7 +533,7 @@ void ProjectViewWidget::sl_setLocaFilelAdapter() {
     SAFE_POINT(p != NULL, tr("No active project found!"), );
 
     Document *doc = p->findDocumentByURL(docsInfoList[0].url);
-    SAFE_POINT(doc != NULL, tr("Can not find document in project with following url: %1").arg(docsInfoList[0].url.getURLString()), );
+    CHECK(doc != NULL, );
     IOAdapterFactory *actualFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(doc->getURL()));
     doc->setIOAdapterFactory(actualFactory);
     excludedFilenames.remove(doc->getURLString());
