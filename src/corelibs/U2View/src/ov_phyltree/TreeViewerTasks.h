@@ -22,15 +22,12 @@
 #ifndef _U2_TREE_VIEWER_TASKS_H_
 #define _U2_TREE_VIEWER_TASKS_H_
 
-#include <U2Core/GObjectReference.h>
-#include <U2Core/StateLockableDataModel.h>
-#include <U2Gui/ObjectViewTasks.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QSplitter>
-#else
-#include <QtWidgets/QSplitter>
-#endif
 #include <U2Algorithm/CreatePhyTreeSettings.h>
+#include <U2Core/GObjectReference.h>
+#include <U2Core/PhyTreeObject.h>
+#include <U2Gui/ObjectViewTasks.h>
+
+#include <QSplitter>
 
 namespace U2 {
 
@@ -57,6 +54,7 @@ public:
     virtual void createTreeViewer();
 
     static void updateTitle(TreeViewer* tv);
+
 
 protected:
     QPointer<PhyTreeObject>     phyObject;
@@ -96,30 +94,33 @@ public:
 
 class CreateMSAEditorTreeViewerTask: public Task {
     Q_OBJECT
-    QString viewName;
-    QPointer<PhyTreeObject> phyObj;
-    CreateRectangularBranchesTask* subTask;
-    QVariantMap stateData;
-    TreeViewer* view;
-    StateLock *docLock;
 public:
     CreateMSAEditorTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& stateData);
     virtual void prepare();
     virtual ReportResult report();
     TreeViewer* getTreeViewer();
     const QVariantMap& getStateData();
-};
-
-class CreateTreeViewerTask: public Task {
+private:
     QString viewName;
     QPointer<PhyTreeObject> phyObj;
     CreateRectangularBranchesTask* subTask;
     QVariantMap stateData;
-    StateLock *docLock;
+    TreeViewer* view;
+    PhyTree tempTree;
+};
+
+class CreateTreeViewerTask: public Task {
+    Q_OBJECT
 public:
     CreateTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& stateData);
     virtual void prepare();
     virtual ReportResult report();
+private: 
+    QString viewName;
+    QPointer<PhyTreeObject> phyObj;
+    CreateRectangularBranchesTask* subTask;
+    QVariantMap stateData;
+    PhyTree tempTree;
 };
 
 } // namespace
