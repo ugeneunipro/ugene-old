@@ -63,7 +63,6 @@ public:
     static QString getLastProjectURL();
     static const int maxObjectsInSingleDocument = 50000;
     static bool detectFormat(const GUrl &url, QList<FormatDetectionResult> &formats, const QVariantMap &hints, FormatDetectionResult &selectedResult);
-    static bool shouldFormatBeSelected(const QList<FormatDetectionResult> &formats, bool forceSelectFormat);
     static bool processHints(FormatDetectionResult& dr);
 
 signals:
@@ -199,7 +198,6 @@ public:
 
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
     virtual QString generateReport() const;
-    const QList<AD2P_DocumentInfo>& getDocsInfoList() const;
 private:
     QList<Task*> prepareLoadTasks();
     QList<Document*> docsToMarkAsModified;

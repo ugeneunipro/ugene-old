@@ -21,11 +21,9 @@
 
 #include <QtCore/QStack>
 
-#include <U2Core/PhyTreeObject.h>
-#include <U2Core/U2SafePoints.h>
-
 #include "CreateRectangularBranchesTask.h"
 #include "GraphicsRectangularBranchItem.h"
+#include <U2Core/PhyTreeObject.h>
 #include "TreeViewerUtils.h"
 
 namespace U2 {
@@ -134,7 +132,6 @@ void CreateRectangularBranchesTask::run() {
     minDistance = -2;
     maxDistance = 0;
     GraphicsRectangularBranchItem* item = getBranch(node); // modifies minDistance and maxDistance
-    CHECK(item != NULL, );
     item->setWidthW(0);
     item->setDist(0);
     item->setHeightW(0);
