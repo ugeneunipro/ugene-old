@@ -134,25 +134,25 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
     TEMPORARY TO DETECT MAC ERROR
 */
 #ifdef Q_OS_MAC
-    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
-    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(200);
+//    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+//    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+//    GTGlobals::sleep(200);
 
-    GTKeyboardDriver::keySequence(os, ">S");
-    GTGlobals::sleep(200);
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"], GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(200);
-    GTKeyboardDriver::keySequence(os, "H");
-    GTGlobals::sleep(200);
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["back"]);
-    GTGlobals::sleep(200);
+//    GTKeyboardDriver::keySequence(os, ">S");
+//    GTGlobals::sleep(200);
+//    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"], GTKeyboardDriver::key["ctrl"]);
+//    GTGlobals::sleep(200);
+//    GTKeyboardDriver::keySequence(os, "H");
+//    GTGlobals::sleep(200);
+//    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["back"]);
+//    GTGlobals::sleep(200);
 
-    QTextEdit* textEdit = qobject_cast<QTextEdit*>(GTWidget::findWidget(os, "textPattern"));
-    QString text = textEdit->toPlainText();
-    CHECK_SET_ERR( text == ">S\n", "Wrong pattern: " + text);
+//    QTextEdit* textEdit = qobject_cast<QTextEdit*>(GTWidget::findWidget(os, "textPattern"));
+//    QString text = textEdit->toPlainText();
+//    CHECK_SET_ERR( text == ">S\n", "Wrong pattern: " + text);
 
-    GTUtilsProjectTreeView::click(os, "human_T1.fa");
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+//    GTUtilsProjectTreeView::click(os, "human_T1.fa");
+//    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 #endif
 }
 
