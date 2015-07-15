@@ -1220,7 +1220,7 @@ void CircularViewRenderArea::evaluateLabelPositions(const QFont &f) {
             positionsAvailableForLabels.append(r_rect);
         }
     }
-    positionsAvailableForLabels.append(leftHalfOfPositions);
+    positionsAvailableForLabels << leftHalfOfPositions;
 }
 
 CircularViewRenderArea::~CircularViewRenderArea() {
