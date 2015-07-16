@@ -1712,8 +1712,8 @@ GUI_TEST_CLASS_DEFINITION(import_test_0015) {
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblyObjectPath);
 
-    qint64 length = GTUtilsAssemblyBrowser::getLength(os, " [as] " + assemblyObjectName);
-    qint64 readsCount = GTUtilsAssemblyBrowser::getReadsCount(os, " [as] " + assemblyObjectName);
+    qint64 length = GTUtilsAssemblyBrowser::getLength(os);
+    qint64 readsCount = GTUtilsAssemblyBrowser::getReadsCount(os);
     CHECK_SET_ERR(expectedLength == length, QString("The assembly length is incorrect: expect %1, got %2").arg(expectedLength).arg(length));
     CHECK_SET_ERR(expectedReadsCount == readsCount, QString("The assembly reads count is incorrect: expect %1, got %2").arg(expectedReadsCount).arg(readsCount));
 
@@ -1761,8 +1761,8 @@ GUI_TEST_CLASS_DEFINITION(import_test_0016) {
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblyObjectPath);
 
-    qint64 length = GTUtilsAssemblyBrowser::getLength(os, " [as] " + assemblyObjectName);
-    qint64 readsCount = GTUtilsAssemblyBrowser::getReadsCount(os, " [as] " + assemblyObjectName);
+    qint64 length = GTUtilsAssemblyBrowser::getLength(os);
+    qint64 readsCount = GTUtilsAssemblyBrowser::getReadsCount(os);
     CHECK_SET_ERR(expectedLength == length, QString("The assembly length is incorrect: expect %1, got %2").arg(expectedLength).arg(length));
     CHECK_SET_ERR(expectedReadsCount == readsCount, QString("The assembly reads count is incorrect: expect %1, got %2").arg(expectedReadsCount).arg(readsCount));
 
@@ -1826,8 +1826,8 @@ GUI_TEST_CLASS_DEFINITION(import_test_0017) {
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblyFirstObjectPath);
 
-    qint64 lengthFirst = GTUtilsAssemblyBrowser::getLength(os, " [as] " + assemblyFirstObjectName);
-    qint64 readsCountFirst = GTUtilsAssemblyBrowser::getReadsCount(os, " [as] " + assemblyFirstObjectName);
+    qint64 lengthFirst = GTUtilsAssemblyBrowser::getLength(os);
+    qint64 readsCountFirst = GTUtilsAssemblyBrowser::getReadsCount(os);
     bool hasReferenceFirst = GTUtilsAssemblyBrowser::hasReference(os, " [as] " + assemblyFirstObjectName);
     CHECK_SET_ERR(expectedLengthFirst == lengthFirst, QString("The assembly length is incorrect: expect %1, got %2").arg(expectedLengthFirst).arg(lengthFirst));
     CHECK_SET_ERR(expectedReadsCountFirst == readsCountFirst, QString("The assembly reads count is incorrect: expect %1, got %2").arg(expectedReadsCountFirst).arg(readsCountFirst));
@@ -1835,8 +1835,8 @@ GUI_TEST_CLASS_DEFINITION(import_test_0017) {
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblySecondObjectPath);
 
-    qint64 lengthSecond = GTUtilsAssemblyBrowser::getLength(os, " [as] " + assemblySecondObjectName);
-    qint64 readsCountSecond = GTUtilsAssemblyBrowser::getReadsCount(os, " [as] " + assemblySecondObjectName);
+    qint64 lengthSecond = GTUtilsAssemblyBrowser::getLength(os);
+    qint64 readsCountSecond = GTUtilsAssemblyBrowser::getReadsCount(os);
     bool hasReferenceSecond = GTUtilsAssemblyBrowser::hasReference(os, " [as] " + assemblySecondObjectName);
     CHECK_SET_ERR(expectedLengthSecond == lengthSecond, QString("The assembly length is incorrect: expect %1, got %2").arg(expectedLengthSecond).arg(lengthSecond));
     CHECK_SET_ERR(expectedReadsCountSecond == readsCountSecond, QString("The assembly reads count is incorrect: expect %1, got %2").arg(expectedReadsCountSecond).arg(readsCountSecond));
@@ -2332,7 +2332,7 @@ GUI_TEST_CLASS_DEFINITION(export_test_0001) {
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "et0001_sequence"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
-    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0001_export.fasta", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0001_export.fasta"));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(3000);
 
@@ -2533,7 +2533,7 @@ GUI_TEST_CLASS_DEFINITION(export_test_0009) {
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "long name with bad symbols : /?/=+\\|*"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
-    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0009_export.fasta", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0009_export.fasta"));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(10000);
 

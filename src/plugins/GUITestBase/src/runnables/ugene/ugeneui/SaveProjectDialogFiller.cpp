@@ -35,8 +35,6 @@ void SaveProjectDialogFiller::run(){
     QWidget* dialog = QApplication::activeModalWidget();
     CHECK_SET_ERR(dialog, "save project dialog not found");
 
-    QDialogButtonBox *buttonBox = qobject_cast<QDialogButtonBox *>(GTWidget::findWidget(os, "buttonBox",dialog));
-    QAbstractButton* no = buttonBox->button(QDialogButtonBox::No);
-    GTWidget::click(os, no);
+    GTUtilsDialog::clickButtonBox(os, dialog, b);
 }
 }

@@ -24,20 +24,16 @@
 
 #include "GTUtilsDialog.h"
 
-
-
 namespace U2 {
 
     class EditGroupAnnotationsFiller : public Filler {
     public:
-        EditGroupAnnotationsFiller(U2OpStatus &_os, const QString &_groupName, GTGlobals::UseMethod method = GTGlobals::UseMouse):
-          Filler(_os, ""), groupName(_groupName), useMethod(method) {}
+        EditGroupAnnotationsFiller(U2OpStatus &_os, const QString &_groupName):
+          Filler(_os, ""), groupName(_groupName) {}
 
         virtual void run();
     private:
         QString groupName;
-
-        GTGlobals::UseMethod useMethod;
     };
 
 }

@@ -43,10 +43,10 @@ namespace U2 {
 QString ExportSelectedRegionFiller::defaultExportPath = "";
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportSelectedRegionFiller"
-ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method,
+ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name,
     bool translate, const QString& seqName, bool saveAllAminoFrames)
     : Filler(_os, "U2__ExportSequencesDialog"), name(_name), seqName(seqName), translate(translate),
-    saveAllAminoFrames(saveAllAminoFrames), useMethod(method)
+    saveAllAminoFrames(saveAllAminoFrames)
 {
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (__path.at(__path.count() - 1) != '/') {
@@ -142,7 +142,7 @@ void ExportSequenceOfSelectedAnnotationsFiller::run()
 
     GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
     if (comboBox->currentIndex() != index){
-        GTComboBox::setCurrentIndex(os, comboBox, index);
+        GTComboBox::setCurrentIndex(os, comboBox, index, true, useMethod);
     }
 
     GTGlobals::sleep(200);
@@ -173,7 +173,7 @@ void ExportSequenceOfSelectedAnnotationsFiller::run()
     if (gapLength){
         QSpinBox *mergeSpinBox = dialog->findChild<QSpinBox*>("mergeSpinBox");
         GT_CHECK(mergeSpinBox != NULL, "SpinBox not found");
-        GTSpinBox::setValue(os, mergeSpinBox, gapLength);
+        GTSpinBox::setValue(os, mergeSpinBox, gapLength, useMethod);
     }
 
     GTGlobals::sleep(200);

@@ -93,7 +93,7 @@ void CreateDocumentFiller::commonScenario()
             QRadioButton* skipUnknownSymbols = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "skipRB", dialog));
             skipUnknownSymbols->setChecked(true);
             }
-        else {
+        else if (replaceUnknownSymbols) {
             QRadioButton* replaceUnknownSymbols = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "replaceRB", dialog));
             replaceUnknownSymbols->setChecked(true);
 
@@ -101,12 +101,15 @@ void CreateDocumentFiller::commonScenario()
             GT_CHECK(lineEdit != NULL, "line edit not found");
             GTLineEdit::setText(os, lineEdit, symbol);
             }
+        else {
+            assert(false);  // replase skipUnknownSymbols and replaceUnknownSymbols variables with enum
+        }
 
         int alphabetIndex = alphabetComboBox->findText(comboBoxAlphabetItems[alphabet]);
         GT_CHECK(alphabetIndex != -1, QString("item \"%1\" in combobox not found").arg(comboBoxAlphabetItems[alphabet]));
         
         if (alphabetComboBox->currentIndex() != alphabetIndex){
-            GTComboBox::setCurrentIndex(os, alphabetComboBox, alphabetIndex);
+            GTComboBox::setCurrentIndex(os, alphabetComboBox, alphabetIndex, true, useMethod);
             }
         }
 
@@ -121,7 +124,7 @@ void CreateDocumentFiller::commonScenario()
     GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
     
     if (comboBox->currentIndex() != index){
-        GTComboBox::setCurrentIndex(os, comboBox, index);
+        GTComboBox::setCurrentIndex(os, comboBox, index, true, useMethod);
     }
 
     QLineEdit *lineEditName = dialog->findChild<QLineEdit*>("nameEdit");
@@ -188,20 +191,22 @@ void CancelCreateDocumentFiller::run()
             QRadioButton* skipUnknownSymbols = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "skipRB", dialog));
             skipUnknownSymbols->setChecked(true);
             }
-        else {
+        else if (replaceUnknownSymbols) {
             QRadioButton* replaceUnknownSymbols = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "replaceRB", dialog));
             replaceUnknownSymbols->setChecked(true);
 
             QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("symbolToReplaceEdit");
             GT_CHECK(lineEdit != NULL, "line edit not found");
             GTLineEdit::setText(os, lineEdit, symbol);
-            }
+        } else {
+            assert(false);  // replase skipUnknownSymbols and replaceUnknownSymbols variables with enum
+        }
 
         int alphabetIndex = alphabetComboBox->findText(comboBoxAlphabetItems[alphabet]);
         GT_CHECK(alphabetIndex != -1, QString("item \"%1\" in combobox not found").arg(comboBoxAlphabetItems[alphabet]));
 
         if (alphabetComboBox->currentIndex() != alphabetIndex){
-            GTComboBox::setCurrentIndex(os, alphabetComboBox, alphabetIndex);
+            GTComboBox::setCurrentIndex(os, alphabetComboBox, alphabetIndex, true, useMethod);
             }
         }
 
@@ -216,7 +221,7 @@ void CancelCreateDocumentFiller::run()
     GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
 
     if (comboBox->currentIndex() != index){
-        GTComboBox::setCurrentIndex(os, comboBox, index);
+        GTComboBox::setCurrentIndex(os, comboBox, index, true, useMethod);
         }
 
     QLineEdit *lineEditName = dialog->findChild<QLineEdit*>("nameEdit");

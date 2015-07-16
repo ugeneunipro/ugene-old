@@ -285,7 +285,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
-    GTUtilsAnnotationsTreeView::findItem(os, "a1", false);
+    GTUtilsAnnotationsTreeView::findItem(os, "a1");
 
 }
 GUI_TEST_CLASS_DEFINITION(test_0004) {

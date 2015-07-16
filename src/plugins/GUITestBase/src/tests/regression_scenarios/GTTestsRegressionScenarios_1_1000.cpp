@@ -886,7 +886,7 @@ GUI_TEST_CLASS_DEFINITION(test_0663) {
 
     //3. Choose in the context menu - "Export"->"Selected sequence region"
     //4. In the export dialog check "Translate to amino alphabet", uncheck "Save all amino frames", click "Export"
-    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "1.fa", GTGlobals::UseMouse, true, QString(), false));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "1.fa", true, QString(), false));
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Selected sequence region..."));
     GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
 

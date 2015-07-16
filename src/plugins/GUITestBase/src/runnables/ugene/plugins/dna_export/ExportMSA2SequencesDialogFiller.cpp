@@ -85,7 +85,7 @@ void ExportToSequenceFormatFiller::commonScenario()
     GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
 
     if (comboBox->currentIndex() != index){
-        GTComboBox::setCurrentIndex(os, comboBox, index);
+        GTComboBox::setCurrentIndex(os, comboBox, index, true, useMethod);
         }
 
     if (saveFile){

@@ -46,8 +46,8 @@ public:
     static bool hasReference(U2OpStatus &os, QWidget *view);
     static bool hasReference(U2OpStatus &os, AssemblyBrowserUi *assemblyBrowser);
 
-    static qint64 getLength(U2OpStatus &os, const QString& viewTitle);
-    static qint64 getReadsCount(U2OpStatus &os, const QString& viewTitle);
+    static qint64 getLength(U2OpStatus &os);
+    static qint64 getReadsCount(U2OpStatus &os);
 
     static void zoomToMax(U2OpStatus& os);
     static void zoomToMin(U2OpStatus& os);

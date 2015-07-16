@@ -320,7 +320,7 @@ GUI_TEST_CLASS_DEFINITION(test_3035){
     QString name = GTUtilsMdi::activeWindowTitle(os);
     CHECK_SET_ERR(name == " [s] et0001_sequence", QString("unexpected window title:%1").arg(name));
 
-    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "test_3035.fa", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "test_3035.fa"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__export_import_menu_action"
                                                       << "export sequences"));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, index));
@@ -4192,7 +4192,7 @@ GUI_TEST_CLASS_DEFINITION(test_3656) {
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, idx));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
-    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "test_3656.fa", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "test_3656.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -4683,7 +4683,7 @@ GUI_TEST_CLASS_DEFINITION(test_3753) {
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "et0001_sequence"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
-    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0001_export.fasta", GTGlobals::UseMouse, false, "sequence_test_3753"));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0001_export.fasta", false, "sequence_test_3753"));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(3000);
 
@@ -5133,7 +5133,7 @@ GUI_TEST_CLASS_DEFINITION(test_3815) {
     //2. Context menu of the document -> Export/Import -> Export sequences.
     //Expected state: the "Export Selected Sequences" dialog appears.
     //3. Check "Translate to amino alphabet" and press "Export".
-    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "test_3815.fa", GTGlobals::UseMouse, true));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "test_3815.fa", true));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "cant_translate.fa"));
     GTMouseDriver::click(os, Qt::RightButton);

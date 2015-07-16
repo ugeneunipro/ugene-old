@@ -287,13 +287,13 @@ void RemoteDBDialogFillerDeprecated::commonScenario() {
     }
 
     QComboBox *databasesBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "databasesBox", dialog));
-    GTComboBox::setCurrentIndex(os, databasesBox, DBItemNum);
+    GTComboBox::setCurrentIndex(os, databasesBox, DBItemNum, true, useMethod);
 
     GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "chbForceDownloadSequence", dialog), forceGetSequence);
 
     if (outFormatVal!=-1){
         QComboBox* formatBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "formatBox"));
-        GTComboBox::setCurrentIndex(os, formatBox, outFormatVal);
+        GTComboBox::setCurrentIndex(os, formatBox, outFormatVal, true, useMethod);
     }
     if (pressCancel) {
         QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));

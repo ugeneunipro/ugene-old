@@ -84,7 +84,7 @@ void ExportDocumentDialogFiller::run()
 
         GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
         if (comboBox->currentIndex() != index){
-            GTComboBox::setCurrentIndex(os, comboBox, index);
+            GTComboBox::setCurrentIndex(os, comboBox, index, true, useMethod);
         }
 
         QCheckBox *compressCheckBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("compressCheck"));

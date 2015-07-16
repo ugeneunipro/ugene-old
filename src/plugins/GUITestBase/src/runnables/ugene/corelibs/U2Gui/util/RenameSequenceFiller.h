@@ -29,7 +29,7 @@ namespace U2 {
 class RenameSequenceFiller : public Filler {
 public:
     //class can be used for checking name if newName == oldName
-    RenameSequenceFiller(U2OpStatus &_os, QString _newName, QString _oldName = QString()):Filler(os, ""),os(_os), newName(_newName), oldName(_oldName){}
+    RenameSequenceFiller(U2OpStatus &_os, QString _newName, QString _oldName = QString()):Filler(_os, ""),os(_os), newName(_newName), oldName(_oldName){}
     RenameSequenceFiller(U2OpStatus &_os, CustomScenario* c):Filler(_os, "", c), os(_os){}
     virtual void commonScenario();
 private:

@@ -19,7 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QStack>
+#include <QStack>
+
+#include <U2Core/PhyTreeObject.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/PhyTreeObject.h>
 #include <U2Core/U2SafePoints.h>
@@ -59,7 +62,7 @@ GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(const Ph
             }
         }
 
-        GraphicsRectangularBranchItem *item;
+        GraphicsRectangularBranchItem *item = NULL;
         if (ind<0) {
             item = new GraphicsRectangularBranchItem();
         }
@@ -69,6 +72,7 @@ GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(const Ph
                 item = new GraphicsRectangularBranchItem(node->getBranchesDistance(ind), node->getBranch(ind), parentBranch->nodeValue);
             }
         }
+        SAFE_POINT_EXT(NULL != item, setError(tr("An internal error: a tree is in an incorrect state, can't create a branch")), NULL);
         int size = items.size();
         assert(size > 0);
 

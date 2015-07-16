@@ -336,7 +336,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
 
     GTGlobals::sleep();
 
-    QTreeWidgetItem *qual1 = GTUtilsAnnotationsTreeView::findItem(os, "qual1", false);
+    QTreeWidgetItem *qual1 = GTUtilsAnnotationsTreeView::findItem(os, "qual1");
     CHECK_SET_ERR(qual1 == NULL, "There is annotation qual1, expected state there is no annotation qual1");
 
     GTUtilsAnnotationsTreeView::getItemCenter(os, "B");
@@ -346,9 +346,8 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
 
     GTGlobals::sleep();
 
-    QTreeWidgetItem *qual = GTUtilsAnnotationsTreeView::findItem(os, "qual", false);
+    QTreeWidgetItem *qual = GTUtilsAnnotationsTreeView::findItem(os, "qual");
     CHECK_SET_ERR(qual == NULL, "There is annotation qual1, expected state there is no annotation qual");
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {

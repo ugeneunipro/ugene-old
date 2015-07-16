@@ -1936,7 +1936,7 @@ GUI_TEST_CLASS_DEFINITION( test_2267_1 ){
     GTGlobals::sleep();
 //     3. Press Insert, press '1' key until there is no new symbols in lineedit
 //
-    Runnable *filler = new EditQualifierFiller(os, "111111111111111111111111111111111111111111111111111111111111111111111111111111111", "val", GTGlobals::UseMouse, true,true);
+    Runnable *filler = new EditQualifierFiller(os, "111111111111111111111111111111111111111111111111111111111111111111111111111111111", "val", true,true);
     GTUtilsDialog::waitForDialog(os, filler);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "add_qualifier_action"));
@@ -1960,7 +1960,7 @@ GUI_TEST_CLASS_DEFINITION( test_2267_2 ){
 //
 //     4. Press Enter
 //     Expected state: Error message appears once
-    Runnable *filler = new EditQualifierFiller(os, "))()((_", "val", GTGlobals::UseMouse, true, true);
+    Runnable *filler = new EditQualifierFiller(os, "))()((_", "val", true, true);
     GTUtilsDialog::waitForDialog(os, filler);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "add_qualifier_action"));
@@ -3711,7 +3711,8 @@ GUI_TEST_CLASS_DEFINITION( test_2513 ){
 //    Select the last node, then call a context menu for it. It contains two menu items: "swap siblings" and "reroot".
     //The first one should be always disabled (for the tree leafs), the second one should be always enabled.
     QList<QGraphicsItem*> nodes = GTUtilsPhyTree::getNodes(os);
-    int num = nodes.count();
+    CHECK_SET_ERR(!nodes.isEmpty(), "Nodes list is empty");
+
     GTMouseDriver::moveTo(os, GTUtilsPhyTree::getGlobalCoord(os, nodes.last()));
     GTMouseDriver::click(os);
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<<"Swap Siblings", PopupChecker::IsDisabled));

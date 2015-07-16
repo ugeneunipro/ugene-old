@@ -33,10 +33,10 @@ public:
     public:
         Parameters():
               lSticky(false),
-              rSticky(false),
               lCustom(false),
-              rCustom(false),
               lDirect(false),
+              rSticky(false),
+              rCustom(false),
               rDirect(false),
               checkRComplText(false)
         {

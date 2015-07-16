@@ -263,7 +263,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     GTFileDialog::openFile(os, testDir + "_common_data/edit_sequence/", "test.gb");
 
     GTGlobals::sleep();
-    QTreeWidgetItem *dummyTest = GTUtilsAnnotationsTreeView::findItem(os, "DUMMY_1", false);
+    QTreeWidgetItem *dummyTest = GTUtilsAnnotationsTreeView::findItem(os, "DUMMY_1");
     CHECK_SET_ERR(dummyTest != NULL, "There is no annotation DUMMY_1");
 
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 2, 2));

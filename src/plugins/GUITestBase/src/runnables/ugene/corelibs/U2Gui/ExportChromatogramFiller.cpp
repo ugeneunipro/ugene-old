@@ -64,7 +64,7 @@ void ExportChromatogramFiller::run()
 
     int index = comboBox->findText(comboBoxItems[format]);
     GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
-    GTComboBox::setCurrentIndex(os, comboBox, index);
+    GTComboBox::setCurrentIndex(os, comboBox, index, true, useMethod);
 
     if (addDocumentToProject)
        {

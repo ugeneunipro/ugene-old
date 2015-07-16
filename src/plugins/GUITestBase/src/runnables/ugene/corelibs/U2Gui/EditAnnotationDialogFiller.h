@@ -28,14 +28,13 @@ namespace U2 {
 
     class EditAnnotationFiller : public Filler {
     public:
-        EditAnnotationFiller(U2OpStatus &_os, const QString &_annotationName, const QString &_location, bool _complementStrand = false, GTGlobals::UseMethod method = GTGlobals::UseMouse)
-            :Filler(_os, "EditAnnotationDialog"), annotationName(_annotationName), location(_location), complementStrand(_complementStrand), useMethod(method){}
+        EditAnnotationFiller(U2OpStatus &_os, const QString &_annotationName, const QString &_location, bool _complementStrand = false)
+            :Filler(_os, "EditAnnotationDialog"), annotationName(_annotationName), location(_location), complementStrand(_complementStrand) {}
         virtual void run();
     private:
         QString annotationName;
         QString location;
         bool complementStrand;
-        GTGlobals::UseMethod useMethod;
     };
 
     class EditAnnotationChecker : public Filler {

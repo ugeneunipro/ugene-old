@@ -2550,7 +2550,7 @@ GUI_TEST_CLASS_DEFINITION(test_1232) {
     GTGlobals::sleep();
 
     GTUtilsSequenceView::selectSequenceRegion(os, 100, 120);
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region"));
     GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "test_1232.fa", GTGlobals::UseMouse));
 
     GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
@@ -2588,7 +2588,7 @@ GUI_TEST_CLASS_DEFINITION(test_1234) {
     //SLGRNP
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region", GTGlobals::UseMouse));
-    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "test_1234.fa", GTGlobals::UseMouse, true));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "test_1234.fa", true));
 
     GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
 
@@ -4230,8 +4230,8 @@ GUI_TEST_CLASS_DEFINITION(test_1420) {
 
     const int expectedLength = 4938920;
     const int expectedReads = 269;
-    const int assemblyLength = GTUtilsAssemblyBrowser::getLength(os, "test_1402 [as] gi|110640213|ref|NC_008253.1|");
-    const int assemblyReads = GTUtilsAssemblyBrowser::getReadsCount(os, "test_1402 [as] gi|110640213|ref|NC_008253.1|");
+    const int assemblyLength = GTUtilsAssemblyBrowser::getLength(os);
+    const int assemblyReads = GTUtilsAssemblyBrowser::getReadsCount(os);
     CHECK_SET_ERR(expectedLength == assemblyLength, QString("An unexpected assembly length: expect  %1, got %2").arg(expectedLength).arg(assemblyLength));
     CHECK_SET_ERR(expectedReads == assemblyReads, QString("An unexpected assembly reads count: expect  %1, got %2").arg(expectedReads).arg(assemblyReads));
 }
@@ -4329,7 +4329,7 @@ GUI_TEST_CLASS_DEFINITION(test_1428) {
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
 
     //3. Use context menu {Export/Import->Export Sequences} and export sequence to any file.
-    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "test_1428.fa", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, sandBoxDir, "test_1428.fa"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,  QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
     GTMouseDriver::click(os, Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);

@@ -99,7 +99,7 @@ bool GTUtilsAssemblyBrowser::hasReference(U2OpStatus &os, AssemblyBrowserUi *ass
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getLength"
-qint64 GTUtilsAssemblyBrowser::getLength(U2OpStatus &os, const QString& viewTitle) {
+qint64 GTUtilsAssemblyBrowser::getLength(U2OpStatus &os) {
     QWidget *mdi = GTUtilsMdi::activeWindow(os);
 
     QWidget* infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", mdi);
@@ -124,7 +124,7 @@ qint64 GTUtilsAssemblyBrowser::getLength(U2OpStatus &os, const QString& viewTitl
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getReadsCount"
-qint64 GTUtilsAssemblyBrowser::getReadsCount(U2OpStatus &os, const QString &viewTitle) {
+qint64 GTUtilsAssemblyBrowser::getReadsCount(U2OpStatus &os) {
     QWidget *mdi = GTUtilsMdi::activeWindow(os);
 
     QWidget* infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", mdi);

@@ -1018,7 +1018,7 @@ Task::ReportResult GTest_FindAnnotationByLocation::report() {
             continue;
         }
         foreach (const U2Region &r, a->getRegions()) {
-            if (r == location && (annotationName.isEmpty() || !annotationName.isEmpty() && a->getName() == annotationName)) {
+            if (r == location && (annotationName.isEmpty() || (!annotationName.isEmpty() && a->getName() == annotationName))) {
                 result = a;
                 break;
             }

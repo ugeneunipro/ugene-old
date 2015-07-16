@@ -62,7 +62,7 @@ void GenerateAlignmentProfileDialogFiller::run() {
         GTRadioButton::click(os,percentsRB);
     }
 
-    if(!format==NONE){
+    if (format != NONE) {
         QGroupBox* saveBox = dialog->findChild<QGroupBox*>("saveBox");
         saveBox->setChecked(true);
         GTGlobals::sleep(500);

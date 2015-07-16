@@ -126,7 +126,7 @@ QAbstractButton* GTWidget::findButtonByText(U2OpStatus &os, const QString &text,
     GT_CHECK_RESULT(foundButtonList.count()<=1, QString("there are %1 buttons with such text").arg(foundButtonList.count()), NULL);
 
     if (options.failIfNull) {
-        GT_CHECK_RESULT(!foundButtonList.count()==0, QString("button with this text <%1> not found").arg(text), NULL);
+        GT_CHECK_RESULT(foundButtonList.count() != 0, QString("button with this text <%1> not found").arg(text), NULL);
     }
 
     return foundButtonList.takeFirst();
