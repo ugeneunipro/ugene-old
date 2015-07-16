@@ -125,7 +125,8 @@ protected:
     };
 
     void                            drawAnnotation(QPainter &p, DrawAnnotationPass pass, Annotation *a, const QPen &borderPen,
-                                        bool selected = false, const AnnotationSettings *as = NULL, U2Region y = U2Region());
+                                        bool selected = false, const AnnotationSettings *as = NULL, U2Region y = U2Region(),
+                                                   bool ignoreVisibleRange = false);
 
     bool annotationsCanOverlap;
 

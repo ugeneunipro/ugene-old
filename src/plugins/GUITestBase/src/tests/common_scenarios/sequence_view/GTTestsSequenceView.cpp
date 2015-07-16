@@ -20,26 +20,33 @@
  */
 
 #include "GTTestsSequenceView.h"
+#include "api/GTComboBox.h"
+#include "api/GTLineEdit.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTGlobals.h"
 #include "api/GTWidget.h"
 #include "api/GTAction.h"
 #include "api/GTMenu.h"
+#include "api/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTSequenceReadingModeDialog.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTRadioButton.h"
 #include "GTUtilsCircularView.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsSequenceView.h"
+#include "GTUtilsTaskTreeView.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/primer3/Primer3DialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+#include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include <U2View/DetView.h>
 #include <U2Core/AppContext.h>
@@ -734,6 +741,208 @@ GUI_TEST_CLASS_DEFINITION(test_0026) {
     QList<U2Region> pair4 = GTUtilsAnnotationsTreeView::getAnnotatedRegionsOfGroup(os, "pair 4  (0, 2)");
     CHECK_SET_ERR( pair4.contains(U2Region(66, 20)), "No 67..86 region");
     CHECK_SET_ERR( pair4.contains(U2Region(606, 20)), "No 607..626 region");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0027) {
+//    Default export
+//    1. Open sars.gb
+//    2. Export sequence as image
+
+    GTFileDialog::openFile(os, dataDir + "/samples/Genbank", "sars.gb");
+
+    GTUtilsDialog::waitForDialog(os, new ExportSequenceImage(os, sandBoxDir + "seq_image_0027"));
+    GTWidget::click(os, GTAction::button(os, "export_image"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0028) {
+//    Check region selector appearance
+//    Region selector is hidden if CurrentView export is selected
+
+    GTFileDialog::openFile(os, dataDir + "/samples/Genbank", "sars.gb");
+
+    class RegionChecker : public Filler {
+    public:
+        RegionChecker(U2OpStatus& os)
+            : Filler(os, "ImageExportForm") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QRadioButton* radioButton = dialog->findChild<QRadioButton*>("currentViewButton");
+            GTRadioButton::click(os, radioButton);
+
+            QWidget* rangeSelector = dialog->findChild<QWidget*>("range_selector");
+            CHECK_SET_ERR(rangeSelector != NULL, "range_selector not found");
+            CHECK_SET_ERR(!rangeSelector->isVisible(), "range_selector is visible");
+
+            radioButton = dialog->findChild<QRadioButton*>("zoomButton");
+            GTRadioButton::click(os, radioButton);
+            CHECK_SET_ERR(rangeSelector->isVisible(), "range_selector is hidden");
+
+            radioButton = dialog->findChild<QRadioButton*>("detailsButton");
+            GTRadioButton::click(os, radioButton);
+            CHECK_SET_ERR(rangeSelector->isVisible(), "range_selector is hidden");
+
+            radioButton = dialog->findChild<QRadioButton*>("currentViewButton");
+            GTRadioButton::click(os, radioButton);
+            CHECK_SET_ERR(!rangeSelector->isVisible(), "range_selector is hidden");
+
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+            QPushButton* button = box->button(QDialogButtonBox::Cancel);
+            CHECK_SET_ERR(button !=NULL, "ok button is NULL");
+            GTWidget::click(os, button);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new RegionChecker(os));
+    GTWidget::click(os, GTAction::button(os, "export_image"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0029) {
+//    Check boundaries of export in raster formats
+//    1. Open sars.gb
+//    2. Zoom in a few times
+//    3. Open Export Image dialog
+//    4. Select Details view export
+//    Expected state: warning message appeared, export is blocked
+//    5. Select a fewer region
+//    Expected state: warning is hidden, export is available
+//    6. Select Zoomed Image export
+//    Expected state: warning message appeared, export is blocked
+//    5. Select a fewer region
+//    Expected state: warning is hidden, export is available
+
+
+    GTFileDialog::openFile(os, dataDir + "/samples/Genbank", "sars.gb");
+
+    QAction* zoom = GTAction::findActionByText(os, "Zoom In");
+    CHECK_SET_ERR(zoom != NULL, "Cannot find Zoom In action");
+    for (int i = 0; i < 8; i++) {
+        GTWidget::click(os, GTAction::button(os, zoom));
+    }
+
+    class LimitsChecker : public Filler {
+    public:
+        LimitsChecker(U2OpStatus& os)
+            : Filler(os, "ImageExportForm") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QWidget* rangeSelector = dialog->findChild<QWidget*>("range_selector");
+            CHECK_SET_ERR(rangeSelector != NULL, "range_selector not found");
+            CHECK_SET_ERR(!rangeSelector->isVisible(), "range_selector is visible");
+
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+            QPushButton* okbutton = box->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(okbutton !=NULL, "ok button is NULL");
+            CHECK_SET_ERR(okbutton->isEnabled(), "Export button is unexpectedly disabled");
+
+            QRadioButton* radioButton = dialog->findChild<QRadioButton*>("zoomButton");
+            GTRadioButton::click(os, radioButton);
+            CHECK_SET_ERR(!okbutton->isEnabled(), "Export button is unexpectedly enabled");
+
+            QLineEdit* end = dialog->findChild<QLineEdit*>("end_edit_line");
+            GTLineEdit::setText(os, end, "2500");
+            CHECK_SET_ERR(okbutton->isEnabled(), "Export button is unexpectedly disabled");
+
+            radioButton = dialog->findChild<QRadioButton*>("detailsButton");
+            GTRadioButton::click(os, radioButton);
+            CHECK_SET_ERR(!okbutton->isEnabled(), "Export button is unexpectedly enabled");
+
+            GTLineEdit::setText(os, end, "2330");
+            CHECK_SET_ERR(okbutton->isEnabled(), "Export button is unexpectedly disabled");
+
+            QPushButton* button = box->button(QDialogButtonBox::Cancel);
+            CHECK_SET_ERR(button !=NULL, "cancel button is NULL");
+            GTWidget::click(os, button);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new LimitsChecker(os));
+    GTWidget::click(os, GTAction::button(os, "export_image"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0030) {
+//    Check boundaries of export fro SVG
+//    1. Open human_T1.fa
+//    2. Find restriction sites YkrI
+//    3. Open Export Image dialog
+//    4. Select SVG format
+//    Expected state: export is available
+//    5. Select Details view export
+//    Expected state: warning message appeared, export is blocked
+//    6. Select a fewer region
+//    Expected state: warning is hidden, export is available
+//    6. Select Zoomed Image export and the whole sequence to export
+//    Expected state: warning message appeared, export is blocked
+//    5. Select a fewer region and export that
+//    Expected state: warning is hidden, export is available
+
+
+    GTFileDialog::openFile(os, dataDir + "/samples/FASTA", "human_T1.fa");
+
+    GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList() << "YkrI"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Analyze" << "Find restriction sites"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    class SvgLimitsChecker : public Filler {
+    public:
+        SvgLimitsChecker(U2OpStatus& os)
+            : Filler(os, "ImageExportForm") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            // set SVG format
+            QComboBox* formatsBox = dialog->findChild<QComboBox*>("formatsBox");
+            CHECK_SET_ERR(formatsBox != NULL, "formatBox is NULL");
+            GTComboBox::setIndexWithText(os, formatsBox, "svg");
+
+            // export is available
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+            QPushButton* okbutton = box->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(okbutton != NULL, "ok button is NULL");
+            CHECK_SET_ERR(okbutton->isEnabled(), "Export button is unexpectedly disabled");
+
+            // select Details -- export is disabled
+            QRadioButton* radioButton = dialog->findChild<QRadioButton*>("detailsButton");
+            GTRadioButton::click(os, radioButton);
+            CHECK_SET_ERR(!okbutton->isEnabled(), "Export button is unexpectedly enabled");
+
+            QLineEdit* end = dialog->findChild<QLineEdit*>("end_edit_line");
+            GTLineEdit::setText(os, end, "2300");
+            CHECK_SET_ERR(okbutton->isEnabled(), "Export button is unexpectedly disabled");
+
+            // set Zoom view export
+            radioButton = dialog->findChild<QRadioButton*>("zoomButton");
+            GTRadioButton::click(os, radioButton);
+            CHECK_SET_ERR(okbutton->isEnabled(), "Export button is unexpectedly disabled");
+            GTLineEdit::setText(os, end, "199000");
+            CHECK_SET_ERR(!okbutton->isEnabled(), "Export button is unexpectedly enabled");
+
+            // select a fewer region -- export is enabled
+            GTLineEdit::setText(os, end, "10000");
+            CHECK_SET_ERR(okbutton->isEnabled(), "Export button is unexpectedly disabled");
+
+            QLineEdit* fileEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
+            GTLineEdit::setText(os, fileEdit, sandBoxDir + "/seq_view_test_0030.svg");
+
+            GTWidget::click(os, okbutton);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SvgLimitsChecker(os));
+    GTWidget::click(os, GTAction::button(os, "export_image"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    qint64 fileSize = GTFile::getSize(os, sandBoxDir + "/seq_view_test_0030.svg");
+    CHECK_SET_ERR(fileSize > 15 * 1024 * 1024, QString("SVG file is too small: %1").arg(fileSize));
 }
 
 } // namespace GUITest_common_scenarios_sequence_view

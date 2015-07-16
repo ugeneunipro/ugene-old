@@ -101,6 +101,8 @@ public:
 
     bool isOnTranslationsLine(int y) const;
 
+    void drawAll(QPainter& p, const U2Region &visibleRange);
+
 protected:
     virtual void drawAll(QPaintDevice* pd);
 
@@ -109,9 +111,9 @@ private:
     int getTextY(int line) const {return getLineY(line) + lineHeight - yCharOffset;}
 
     void updateLines();
-    void drawDirect(QPainter& p);
-    void drawComplement(QPainter& p);
-    void drawTranslations(QPainter& p);
+    void drawDirect(QPainter& p, const U2Region& visibleRange);
+    void drawComplement(QPainter& p, const U2Region& visibleRange);
+    void drawTranslations(QPainter& p, const U2Region& visibleRange);
     void drawSequenceSelection(QPainter& p);
     void drawRuler(QPainter& p);
     void highlight(QPainter& p, const U2Region& r, int line);

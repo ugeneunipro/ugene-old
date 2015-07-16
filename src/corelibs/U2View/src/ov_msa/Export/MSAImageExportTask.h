@@ -170,7 +170,7 @@ protected:
     void initSettingsWidget();
 
     Task* getExportToBitmapTask(const ImageExportTaskSettings &settings) const;
-    Task* getExportToSVGTask(const ImageExportTaskSettings &) const;
+    Task* getExportToSvgTask(const ImageExportTaskSettings &) const;
 
 private slots:
     void sl_onFormatChanged(const QString&);

@@ -44,10 +44,10 @@ void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 st
         return;
     }
     p.save();
-    
+
     assert(c.drawArrow != c.drawBorderNotches);
     assert(c.drawArrow ? c.drawAxis : true);
-    
+
     p.setFont(font);
     QFontMetrics fm = p.fontMetrics();
     int cw = fm.width('0');
@@ -61,7 +61,6 @@ void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 st
     qint64 span = qMax(start, end) - qMin(start, end);
     int chunk = c.predefinedChunk == 0 ? calculateChunk(start, end, len, p) : c.predefinedChunk;
 
-    assert(span / chunk < 1000);
     while (chunk > span) {
         chunk /= 2;
     }
@@ -100,7 +99,7 @@ void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 st
             p.drawLine(pos.x()- c.notchSize, pos.y(), pos.x() + c.notchSize, pos.y());
             p.drawLine(pos.x()- c.notchSize, pos.y() + len, pos.x() + c.notchSize, pos.y() + len);
         }
-        if (c.drawArrow) { 
+        if (c.drawArrow) {
             p.drawLine(pos.x(), pos.y() + len, pos.x() - c.arrowWidth, pos.y() + len - c.arrowLen);
             p.drawLine(pos.x(), pos.y() + len, pos.x() + c.arrowWidth, pos.y() + len - c.arrowLen);
         }
@@ -174,7 +173,7 @@ void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 st
             drawNum(p, stX1, stX2, st, stX1, stX2, yt1, yt2);
             drawNum(p, enX1, enX2, en, enX1, enX2, yt1, yt2);
         }
-        
+
         if (c.direction == LTR) {
             int leftborder = stX2;
             int rightborder= enX1;
@@ -183,7 +182,7 @@ void GraphUtils::drawRuler(QPainter& p, const QPoint& pos, qint64 len, qint64 st
                 p.drawLine(pos.x() + len, pos.y(), pos.x() + len - c.arrowLen, pos.y() + c.arrowWidth);
             }
             if (start / chunk != end / chunk) {
-                qint64 currnotch; 
+                qint64 currnotch;
                 if(c.correction != 0){
                     currnotch = c.correction;
                 }else{
@@ -243,7 +242,7 @@ int GraphUtils::findChunk(qint64 len, qint64 span, int N) {
         assert(reqLen > 0);
         if (reqLen < len) {
             break;
-        } 
+        }
         if (reqLen / 2 < len) {
             int cchunk = chunk*2;
             //dN = cchunk > (1000 * 1000)? cw * 2 :cchunk > 1000 ? cw * 2 : 0;
@@ -421,7 +420,7 @@ int GraphUtils::calculateChunk( qint64 start, qint64 end, qint64 len, const QPai
         assert(reqLen > 0);
         if (reqLen < len) {
             break;
-        } 
+        }
         if (reqLen / 2 < len) {
             int cchunk = chunk*2;
             dN = cchunk > (1000 * 1000)? cw * 2 :cchunk > 1000 ? cw * 2 : 0;
@@ -447,24 +446,24 @@ int GraphUtils::calculateChunk( qint64 start, qint64 end, qint64 len, const QPai
 }
 
 qint64 GraphUtils::pickRoundedNumberBelow(qint64 maxVal) {
-	if (maxVal <= 0) {
-		return maxVal;
-	}
-	//current implementation: starts with seed 1, multiplies sequentially by 2, 5 and steps to 10
-	qint64 i = 1, res = 1;
-	do {
-		res = i;
-		if (i * 10 <= maxVal) {
-			i *= 10;
-			continue;
-		}
-		if (i * 5 <= maxVal) {
-			i *= 5;
-			continue;
-		}
-		i *= 2;
-	} while (i <= maxVal);
-	return res;
+    if (maxVal <= 0) {
+        return maxVal;
+    }
+    //current implementation: starts with seed 1, multiplies sequentially by 2, 5 and steps to 10
+    qint64 i = 1, res = 1;
+    do {
+        res = i;
+        if (i * 10 <= maxVal) {
+            i *= 10;
+            continue;
+        }
+        if (i * 5 <= maxVal) {
+            i *= 5;
+            continue;
+        }
+        i *= 2;
+    } while (i <= maxVal);
+    return res;
 }
 
 }//namespace

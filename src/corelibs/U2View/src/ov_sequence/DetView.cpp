@@ -361,6 +361,48 @@ bool DetViewRenderArea::isOnTranslationsLine(int y) const {
     return false;
 }
 
+void DetViewRenderArea::drawAll(QPainter &p, const U2Region& visibleRange) {
+    SAFE_POINT(getDetView() != NULL, "DetView is NULL", );
+    U2Region currentRange = getDetView()->getVisibleRange();
+    getDetView()->setVisibleRange(visibleRange, false);
+
+    cutsiteDataList.clear();
+    p.fillRect(0, 0, charWidth * visibleRange.length, height(), Qt::white);
+    p.setPen(Qt::black);
+    ADVSequenceObjectContext *ctx = view->getSequenceContext();
+
+    QPen pen1(Qt::SolidLine);
+    pen1.setWidth(1);
+
+    foreach (const AnnotationTableObject *ao, ctx->getAnnotationObjects(true)) {
+        foreach (Annotation *a, ao->getAnnotationsByRegion(visibleRange)) {
+            AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
+            AnnotationSettings *as = asr->getAnnotationSettings(a->getData());
+            drawAnnotation(p, DrawAnnotationPass_DrawFill, a, pen1, false, as, U2Region(), true);
+            drawAnnotation(p, DrawAnnotationPass_DrawBorder, a, pen1, false, as, U2Region(), true);
+        }
+    }
+
+    int hCenter = getHalfOfUnusedHeight();
+    p.translate(0, hCenter);
+
+    drawDirect(p, visibleRange);
+    drawComplement(p, visibleRange);
+    drawTranslations(p, visibleRange);
+    drawCutSites(p);
+
+    int y = getLineY(rulerLine) + 2;
+    int firstCharStart = posToCoord(visibleRange.startPos, true);
+    int lastCharStart = posToCoord(visibleRange.endPos() - 1, true);
+    int firstCharCenter = firstCharStart + charWidth / 2;
+    int firstLastLen = lastCharStart - firstCharStart;
+    GraphUtils::RulerConfig c;
+    GraphUtils::drawRuler(p, QPoint(firstCharCenter, y), firstLastLen, visibleRange.startPos + 1, visibleRange.endPos(), rulerFont, c);
+
+    getDetView()->setVisibleRange(currentRange);
+    view->addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
+}
+
 void DetViewRenderArea::drawAll(QPaintDevice* pd) {
     GSLV_UpdateFlags uf = view->getUpdateFlags();
     bool completeRedraw = uf.testFlag(GSLV_UF_NeedCompleteRedraw)  || uf.testFlag(GSLV_UF_ViewResized)  ||
@@ -378,9 +420,9 @@ void DetViewRenderArea::drawAll(QPaintDevice* pd) {
 
         pCached.translate(0, hCenter);
 
-        drawDirect(pCached);
-        drawComplement(pCached);
-        drawTranslations(pCached);
+        drawDirect(pCached, view->getVisibleRange());
+        drawComplement(pCached, view->getVisibleRange());
+        drawTranslations(pCached, view->getVisibleRange());
         drawCutSites(pCached);
 
         drawRuler(pCached);
@@ -396,9 +438,9 @@ void DetViewRenderArea::drawAll(QPaintDevice* pd) {
     if (hasSelectedAnnotationInRange) {
         p.translate(0, hCenter);
 
-        drawDirect(p);
-        drawComplement(p);
-        drawTranslations(p);
+        drawDirect(p, view->getVisibleRange());
+        drawComplement(p, view->getVisibleRange());
+        drawTranslations(p, view->getVisibleRange());
 
         p.translate(0, -hCenter);
     }
@@ -412,12 +454,9 @@ void DetViewRenderArea::drawAll(QPaintDevice* pd) {
     }
 }
 
-void DetViewRenderArea::drawDirect(QPainter& p) {
+void DetViewRenderArea::drawDirect(QPainter& p, const U2Region& visibleRange) {
     p.setFont(sequenceFont);
     p.setPen(Qt::black);
-
-    const U2Region visibleRange = view->getVisibleRange();
-    SAFE_POINT(visibleRange.length * charWidth <= width(), "Illegal visible range value!",);
 
     U2OpStatusImpl os;
     QByteArray sequence = view->getSequenceContext()->getSequenceData(visibleRange, os);
@@ -432,13 +471,12 @@ void DetViewRenderArea::drawDirect(QPainter& p) {
     }
 }
 
-void DetViewRenderArea::drawComplement(QPainter& p) {
+void DetViewRenderArea::drawComplement(QPainter& p, const U2Region& visibleRange) {
     p.setFont(sequenceFont);
     p.setPen(Qt::black);
 
     DetView* detView = getDetView();
     if (complementLine > 0) {
-        const U2Region visibleRange = detView->getVisibleRange();
         U2OpStatusImpl os;
         QByteArray visibleSequence = detView->getSequenceContext()->getSequenceData(visibleRange, os);
         SAFE_POINT_OP(os, );
@@ -473,7 +511,7 @@ static int correctLine(QVector<bool> visibleRows, int line){
     return retLine;
 }
 
-void DetViewRenderArea::drawTranslations(QPainter& p) {
+void DetViewRenderArea::drawTranslations(QPainter& p, const U2Region& visibleRange) {
     p.setFont(sequenceFont);
     DetView* detView = getDetView();
     QVector<bool> visibleRows = detView->getSequenceContext()->getTranslationRowsVisibleStatus();
@@ -484,7 +522,6 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
     DNATranslation3to1Impl* aminoTable = (DNATranslation3to1Impl*)detView->getAminoTT();
     CHECK(aminoTable != NULL && aminoTable->isThree2One(), );
 
-    const U2Region& visibleRange  = detView->getVisibleRange();
     qint64 wholeSeqLen = detView->getSequenceLength();
     qint64 minUsedPos = qMax(visibleRange.startPos - 1, qint64(0));
     qint64 maxUsedPos = qMin(visibleRange.endPos() + 1, wholeSeqLen);
@@ -713,7 +750,7 @@ void DetViewRenderArea::drawRuler(QPainter& p) {
     int y = getLineY(rulerLine) + 2;
     const U2Region& visibleRange = view->getVisibleRange();
     int firstCharStart = posToCoord(visibleRange.startPos);
-    int lastCharStart = posToCoord(visibleRange.endPos()-1);
+    int lastCharStart = posToCoord(visibleRange.endPos() - 1);
     int firstCharCenter = firstCharStart + charWidth / 2;
     int firstLastLen = lastCharStart - firstCharStart;
     GraphUtils::RulerConfig c;

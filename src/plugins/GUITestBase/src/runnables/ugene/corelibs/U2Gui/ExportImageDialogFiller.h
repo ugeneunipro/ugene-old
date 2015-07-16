@@ -113,6 +113,38 @@ private:
     RegionMsa   region;
 };
 
+class ExportSequenceImage : public ExportImage {
+public:
+    enum ExportType {
+        CurrentView,
+        ZoomedView,
+        DetailsView
+    };
+
+    struct Settings {
+        Settings(ExportType type = CurrentView, const U2Region r = U2Region())
+            : type(type),
+              region(r) {}
+        ExportType  type;
+        U2Region    region;
+    };
+
+    ExportSequenceImage(U2OpStatus &os, QString filePath,
+                        QString comboValue = "", int spinValue = 0)
+        : ExportImage(os, filePath, comboValue, spinValue) {}
+
+    ExportSequenceImage(U2OpStatus &os, QString filePath,
+                        Settings settings,
+                        QString comboValue = "", int spinValue = 0)
+        : ExportImage(os, filePath, comboValue, spinValue),
+          settings(settings) {}
+
+    virtual void run();
+
+private:
+    Settings    settings;
+};
+
 class SelectSubalignmentFiller : public Filler {
 public:
     SelectSubalignmentFiller(U2OpStatus &_os, const RegionMsa &regionMsa)

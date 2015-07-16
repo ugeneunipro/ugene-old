@@ -164,6 +164,60 @@ void ExportMsaImage::run() {
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+
+#define GT_CLASS_NAME "GTUtilsDialog::ExportSequenceImage"
+#define GT_METHOD_NAME "run"
+void ExportSequenceImage::run() {
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QString radioButtonName;
+    switch (settings.type) {
+    case CurrentView:
+        radioButtonName = "currentViewButton";
+        break;
+    case ZoomedView:
+        radioButtonName = "zoomButton";
+        break;
+    case DetailsView:
+        radioButtonName = "detailsButton";
+        break;
+    }
+
+    QRadioButton* radioButton = dialog->findChild<QRadioButton*>(radioButtonName);
+    GTRadioButton::click(os, radioButton);
+
+    if (settings.type != CurrentView) {
+        // set region
+        QLineEdit* start = dialog->findChild<QLineEdit*>("start_edit_line");
+        GTLineEdit::setText(os, start, QString::number(settings.region.startPos));
+
+        QLineEdit* end = dialog->findChild<QLineEdit*>("end_edit_line");
+        GTLineEdit::setText(os, end, QString::number(settings.region.endPos()));
+    }
+
+    QLineEdit* fileEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
+    GTLineEdit::setText(os, fileEdit, filePath);
+
+    if(comboValue != ""){
+        QComboBox* formatsBox = dialog->findChild<QComboBox*>("formatsBox");
+        GTComboBox::setIndexWithText(os, formatsBox,comboValue);
+    }
+
+    if(spinValue){
+        QSpinBox* spin = dialog->findChild<QSpinBox*>("qualitySpinBox");
+        GTSpinBox::setValue(os, spin, spinValue, GTGlobals::UseKeyBoard);
+    }
+
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
 #define GT_CLASS_NAME "GTUtilsDialog::SelectSubalignmentFiller"
 #define GT_METHOD_NAME "run"
 void SelectSubalignmentFiller::run() {

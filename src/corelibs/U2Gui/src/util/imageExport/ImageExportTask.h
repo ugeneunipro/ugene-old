@@ -27,6 +27,8 @@
 
 #include <QtCore/QSize>
 
+#define IMAGE_SIZE_LIMIT 32768
+
 namespace U2 {
 
 class U2GUI_EXPORT ImageExportTaskSettings {
@@ -98,7 +100,7 @@ public:
     QString getDisableMessage() const { return disableMessage; }
 
 public slots:
-    virtual void onFormatChanged(const QString&) {}
+    virtual void sl_onFormatChanged(const QString&) {}
 
 signals:
     void si_disableExport(bool);
@@ -107,8 +109,8 @@ signals:
 protected:
     virtual void initSettingsWidget() = 0;
 
-    virtual Task* getExportToSVGTask(const ImageExportTaskSettings &) const { return NULL; }
-    virtual Task* getExportToPDFTask(const ImageExportTaskSettings &) const { return NULL; }
+    virtual Task* getExportToSvgTask(const ImageExportTaskSettings &) const { return NULL; }
+    virtual Task* getExportToPdfTask(const ImageExportTaskSettings &) const { return NULL; }
     virtual Task* getExportToBitmapTask(const ImageExportTaskSettings &) const { return NULL; }
 
     QWidget*        settingsWidget;

@@ -95,8 +95,8 @@ public:
 protected:
     void initSettingsWidget();
 
-    Task* getExportToSVGTask(const ImageExportTaskSettings &settings) const;
-    Task* getExportToPDFTask(const ImageExportTaskSettings &settings) const;
+    Task* getExportToSvgTask(const ImageExportTaskSettings &settings) const;
+    Task* getExportToPdfTask(const ImageExportTaskSettings &settings) const;
     Task* getExportToBitmapTask(const ImageExportTaskSettings &settings) const;
 
 private:

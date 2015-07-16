@@ -184,13 +184,13 @@ void CircularViewImageExportController::initSettingsWidget() {
     settingsWidget->setLayout(layout);
 }
 
-Task* CircularViewImageExportController::getExportToSVGTask(const ImageExportTaskSettings &settings) const {
+Task* CircularViewImageExportController::getExportToSvgTask(const ImageExportTaskSettings &settings) const {
     CircularViewImageExportSettings cvSettings(includeMarkerCheckbox->isChecked(),
                                                includeSelectionCheckbox->isChecked());
     updateCvWidget();
     return new CircularViewImageExportToSVGTask(cvWidget, cvSettings, settings);
 }
-Task* CircularViewImageExportController::getExportToPDFTask(const ImageExportTaskSettings &settings) const {
+Task* CircularViewImageExportController::getExportToPdfTask(const ImageExportTaskSettings &settings) const {
     CircularViewImageExportSettings cvSettings(includeMarkerCheckbox->isChecked(),
                                                includeSelectionCheckbox->isChecked());
     updateCvWidget();

@@ -34,6 +34,7 @@
 #include <U2Core/GHints.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/L10n.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/DialogUtils.h>
@@ -42,7 +43,6 @@
 #include <U2Gui/HBar.h>
 #include <U2Gui/PositionSelector.h>
 #include <U2Gui/RangeSelector.h>
-#include <U2Core/QObjectScopedPointer.h>
 
 #include "ADVConstants.h"
 #include "ADVSequenceObjectContext.h"
@@ -52,6 +52,8 @@
 #include "DetView.h"
 #include "GSequenceGraphView.h"
 #include "Overview.h"
+
+#include "image_export/SingleSequenceImageExportController.h"
 
 namespace U2 {
 
@@ -197,8 +199,8 @@ void ADVSingleSequenceWidget::init() {
         ttButton = NULL;
     }
 
-    QAction* shotScreenAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Capture screen"), this);
-    shotScreenAction->setObjectName("capture_screen");
+    QAction* shotScreenAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export image"), this);
+    shotScreenAction->setObjectName("export_image");
     connect(shotScreenAction, SIGNAL(triggered()), this, SLOT(sl_saveScreenshot()));
 
     addButtonWithActionToToolbar(shotScreenAction, hBar);
@@ -805,7 +807,10 @@ void ADVSingleSequenceWidget::sl_saveScreenshot() {
     if (linesLayout->count() + linesSplitter->count() < 2) {
         return;
     }
-    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(this, ExportImageDialog::SequenceView);
+
+    SingleSequenceImageExportController controller(this);
+    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(&controller, ExportImageDialog::SequenceView);
+
     dialog->exec();
 }
 

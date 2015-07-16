@@ -43,6 +43,7 @@ MSAEditorTreeViewer::MSAEditorTreeViewer(const QString& viewName, GObject* obj, 
 QWidget* MSAEditorTreeViewer::createWidget() {
     SAFE_POINT(ui == NULL, QString("MSAEditorTreeViewer::createWidget error"), NULL);
     QWidget* view = new QWidget();
+    view->setObjectName("msa_editor_tree_view_container_widget");
     QVBoxLayout* vLayout = new QVBoxLayout();
     ui = new MSAEditorTreeViewerUI(this);
     QToolBar* toolBar = new QToolBar(tr("MSAEditor tree toolbar"));

@@ -67,7 +67,7 @@ public:
     int getHeight() const;
 
     bool hasQuality() const;
-    int getQuality() const;
+    int  getQuality() const;
 
 public slots:
     void accept();

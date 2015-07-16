@@ -351,8 +351,12 @@ void RegionSelector::connectSignals() {
     connect(comboBox,  SIGNAL(currentIndexChanged(int)),           SLOT(sl_onComboBoxIndexChanged(int)));
     connect(startEdit, SIGNAL(editingFinished()),                  SLOT(sl_onRegionChanged()));
     connect(startEdit, SIGNAL(textEdited(const QString &)),        SLOT(sl_onValueEdited()));
+    connect(startEdit, SIGNAL(textChanged(QString)),               SLOT(sl_onRegionChanged()));
+
     connect(endEdit,   SIGNAL(editingFinished()),                  SLOT(sl_onRegionChanged()));
     connect(endEdit,   SIGNAL(textEdited(const QString &)),        SLOT(sl_onValueEdited()));
+    connect(endEdit,   SIGNAL(textChanged(QString)),               SLOT(sl_onRegionChanged()));
+
     if (NULL != selection) {
         connect(selection, SIGNAL(si_onSelectionChanged(GSelection*)), SLOT(sl_onSelectionChanged(GSelection*)));
     }

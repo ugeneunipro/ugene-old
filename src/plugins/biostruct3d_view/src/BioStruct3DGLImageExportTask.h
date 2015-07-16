@@ -71,10 +71,10 @@ public:
 protected:
     void initSettingsWidget() {}
 
-    Task* getExportToSVGTask(const ImageExportTaskSettings &settings) const {
+    Task* getExportToSvgTask(const ImageExportTaskSettings &settings) const {
         return new BioStruct3DImageExportToSVGTask(glWidget, settings);
     }
-    Task* getExportToPDFTask(const ImageExportTaskSettings &settings) const {
+    Task* getExportToPdfTask(const ImageExportTaskSettings &settings) const {
         return new BioStruct3DImageExportToPDFTask(glWidget, settings);
     }
     Task* getExportToBitmapTask(const ImageExportTaskSettings &settings) const {

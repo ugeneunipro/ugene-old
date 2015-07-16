@@ -148,6 +148,11 @@ HEADERS += src/LicenseDialog.h \
            src/ov_sequence/find_pattern/FindPatternWidget.h \
            src/ov_sequence/find_pattern/FindPatternWidgetFactory.h \
            src/ov_sequence/find_pattern/FindPatternWidgetSavableTab.h \
+           src/ov_sequence/image_export/SequenceExportSettingsWidget.h \
+           src/ov_sequence/image_export/SequencePainter.h \
+           src/ov_sequence/image_export/ExportImagePainter.h \
+           src/ov_sequence/image_export/SingleSequenceImageExportController.h \
+           src/ov_sequence/image_export/SingleSequenceImageExportTask.h \
            src/ov_sequence/sequence_info/CharOccurTask.h \
            src/ov_sequence/sequence_info/DNAStatisticsTask.h \
            src/ov_sequence/sequence_info/DinuclOccurTask.h \
@@ -195,6 +200,7 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui \
          src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui \
          src/ov_sequence/find_pattern/ui/FindPatternForm.ui \
+         src/ov_sequence/image_export/SequenceImageExportSettingsWidget.ui \
          src/ov_sequence/ui/CreateRulerDialog.ui \
          src/ov_sequence/ui/EditAnnotationDialog.ui \
          src/ov_sequence/ui/SaveGraphCutoffsDialog.ui \
@@ -354,6 +360,10 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_sequence/find_pattern/FindPatternWidget.cpp \
            src/ov_sequence/find_pattern/FindPatternWidgetFactory.cpp \
            src/ov_sequence/find_pattern/FindPatternWidgetSavableTab.cpp \
+           src/ov_sequence/image_export/SequenceExportSettingsWidget.cpp \
+           src/ov_sequence/image_export/SequencePainter.cpp \
+           src/ov_sequence/image_export/SingleSequenceImageExportController.cpp \
+           src/ov_sequence/image_export/SingleSequenceImageExportTask.cpp \
            src/ov_sequence/sequence_info/CharOccurTask.cpp \
            src/ov_sequence/sequence_info/DinuclOccurTask.cpp \
            src/ov_sequence/sequence_info/DNAStatisticsTask.cpp \

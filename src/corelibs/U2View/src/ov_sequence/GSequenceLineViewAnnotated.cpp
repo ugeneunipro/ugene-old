@@ -43,6 +43,7 @@
 #include "ADVSequenceObjectContext.h"
 #include "GSequenceLineViewAnnotated.h"
 
+
 static const int MIN_ANNOTATION_WIDTH = 3;
 static const int MIN_ANNOTATION_TEXT_WIDTH = 5;
 static const int MIN_SELECTED_ANNOTATION_WIDTH = 4;
@@ -415,7 +416,7 @@ GSequenceLineViewAnnotated * GSequenceLineViewAnnotatedRenderArea::getGSequenceL
 }
 
 void GSequenceLineViewAnnotatedRenderArea::drawAnnotation(QPainter &p, DrawAnnotationPass pass, Annotation *a, const QPen &borderPen,
-    bool selected, const AnnotationSettings *as, U2Region predefinedy)
+    bool selected, const AnnotationSettings *as, U2Region predefinedy, bool ignoreVisibleRange)
 {
     const SharedAnnotationData &aData = a->getData();
     if (NULL == as) {
@@ -432,16 +433,16 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotation(QPainter &p, DrawAnnot
     bool simple = location.size() == 1;
     for (int ri = 0, ln = location.size(); ri < ln; ri++) {
         const U2Region &r = location.at(ri);
-        if (!r.intersects(vr) || predefinedy.startPos < 0) {
+        if (( !r.intersects(vr) || predefinedy.startPos < 0) && !ignoreVisibleRange) {
             continue;
         }
-        const U2Region visibleLocation = r.intersect(vr);
+        const U2Region visibleLocation = ignoreVisibleRange ? r : r.intersect(vr);
         const U2Region y = predefinedy.isEmpty() ? getAnnotationYRange(a, ri, as) : predefinedy;
         if (y.startPos < 0) {
             continue;
         }
-        const float x1f = posToCoordF(visibleLocation.startPos);
-        const float x2f = posToCoordF(visibleLocation.endPos());
+        const float x1f = posToCoordF(visibleLocation.startPos, ignoreVisibleRange);
+        const float x2f = posToCoordF(visibleLocation.endPos(), ignoreVisibleRange);
         assert(x2f >= x1f);
 
         const int rw = qMax(selected ? MIN_SELECTED_ANNOTATION_WIDTH : MIN_ANNOTATION_WIDTH,

@@ -30,7 +30,6 @@
 #include "ui_MSAExportSettings.h"
 #include "../MSASelectSubalignmentDialog.h"
 
-#define IMAGE_SIZE_LIMIT 32768
 //400000 characters convert to 200 mb file in SVG format
 #define MAX_SVG_CHARACTERS 400000
 
@@ -253,7 +252,7 @@ Task* MSAImageExportController::getExportToBitmapTask(const ImageExportTaskSetti
     return new MSAImageExportToBitmapTask(ui, msaSettings, settings);
 }
 
-Task* MSAImageExportController::getExportToSVGTask(const ImageExportTaskSettings &settings) const {
+Task* MSAImageExportController::getExportToSvgTask(const ImageExportTaskSettings &settings) const {
     msaSettings.includeConsensus = settingsUi->exportConsensus->isChecked();
     msaSettings.includeRuler = settingsUi->exportRuler->isChecked();
     msaSettings.includeSeqNames = settingsUi->exportSeqNames->isChecked();

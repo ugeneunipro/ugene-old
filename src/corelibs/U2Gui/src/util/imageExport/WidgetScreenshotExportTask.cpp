@@ -123,10 +123,10 @@ int WidgetScreenshotImageExportController::getImageHeight() const {
     return widget->height();
 }
 
-Task* WidgetScreenshotImageExportController::getExportToSVGTask(const ImageExportTaskSettings &settings) const {
+Task* WidgetScreenshotImageExportController::getExportToSvgTask(const ImageExportTaskSettings &settings) const {
     return new WidgetScreenshotExportToSvgTask(widget, settings);
 }
-Task* WidgetScreenshotImageExportController::getExportToPDFTask(const ImageExportTaskSettings &settings) const {
+Task* WidgetScreenshotImageExportController::getExportToPdfTask(const ImageExportTaskSettings &settings) const {
     return new WidgetScreenshotExportToPdfTask(widget, settings);
 }
 Task* WidgetScreenshotImageExportController::getExportToBitmapTask(const ImageExportTaskSettings &settings) const {
