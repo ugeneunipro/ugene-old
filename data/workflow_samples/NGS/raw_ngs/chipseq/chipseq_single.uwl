@@ -33,6 +33,7 @@ workflow "Processing of raw ChIP-Seq single-end reads"{
         type:QualityTrim;
         name:"Trim Reads by Quality";
         custom-dir:filtered_fastq;
+        out-mode:0;
         len-id:1;
         qual-id:20;
     }
@@ -51,39 +52,47 @@ workflow "Processing of raw ChIP-Seq single-end reads"{
     files-conversion {
         type:files-conversion;
         name:"Convert to BAM";
+        out-mode:0;
         document-format:bam;
     }
     merge-bam {
         type:merge-bam;
         name:"Merge Files";
+        out-mode:0;
     }
     filter-bam {
         type:filter-bam;
         name:"Filter Merged BAM File with SAMtools";
         flag:"The read is unmapped";
+        out-mode:0;
         mapq:1;
     }
     rmdup-bam {
         type:rmdup-bam;
         name:"Remove Duplicates";
+        out-mode:0;
         remove-single-end:true;
     }
     files-conversion-1 {
         type:files-conversion;
         name:"Convert to BED Format";
+        out-mode:0;
         document-format:bed;
     }
     Sort-bam {
         type:Sort-bam;
         name:"Sort BAM File";
+        out-mode:0;
     }
     Sort-bam-1 {
         type:Sort-bam;
         name:"Sort BAM File";
+        out-mode:0;
     }
     CutAdaptFastq {
         type:CutAdaptFastq;
         name:"Cut Adapter";
+        out-mode:0;
     }
     fastqc {
         type:fastqc;

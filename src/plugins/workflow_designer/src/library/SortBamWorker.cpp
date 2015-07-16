@@ -113,7 +113,7 @@ void SortBamWorkerFactory::init() {
         Descriptor index(INDEX_ID, SortBamWorker::tr("Build index"),
             SortBamWorker::tr("Build index for the sorted file with SAMTools index."));
 
-        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
+        a << new Attribute(outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::WORKFLOW_INTERNAL));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
         customDirAttr->addRelation(new VisibilityRelation(OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
         a << customDirAttr;

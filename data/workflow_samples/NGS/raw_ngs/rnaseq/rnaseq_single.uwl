@@ -25,6 +25,7 @@ workflow "Processing of raw RNA-Seq single-end reads with mapping"{
         type:QualityTrim;
         name:"Trim Reads by Quality";
         custom-dir:filtered_fastq;
+        out-mode:0;
         len-id:10;
         qual-id:20;
     }
@@ -39,6 +40,7 @@ workflow "Processing of raw RNA-Seq single-end reads with mapping"{
         type:MergeFastq;
         name:"Merge FASTQ Files";
         custom-dir:filtered_fastq;
+        out-mode:0;
         out-name:in_1.fq;
     }
     tophat {
@@ -52,6 +54,7 @@ workflow "Processing of raw RNA-Seq single-end reads with mapping"{
     CutAdaptFastq {
         type:CutAdaptFastq;
         name:"Cut Adapter";
+        out-mode:0;
     }
     fastqc {
         type:fastqc;

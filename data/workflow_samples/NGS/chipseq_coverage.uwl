@@ -15,11 +15,13 @@ workflow "ChIP-Seq coverage"{
     genomecov {
         type:genomecov;
         name:"Genome Coverage";
+        out-mode:0;
         mode-id:3;
     }
     bgtbw-bam {
         type:bgtbw-bam;
         name:"Convert bedGraph Files to bigWig";
+        out-mode:0;
     }
     get-file-list {
         type:get-file-list;

@@ -32,6 +32,7 @@ workflow "Processing of raw DNA-Seq paired-end reads"{
         type:QualityTrim;
         name:"Trim Reads by Quality";
         custom-dir:filtered_fastq;
+        out-mode:0;
         len-id:1;
         qual-id:20;
     }
@@ -51,30 +52,36 @@ workflow "Processing of raw DNA-Seq paired-end reads"{
     files-conversion {
         type:files-conversion;
         name:"Convert to BAM";
+        out-mode:0;
         document-format:bam;
     }
     merge-bam {
         type:merge-bam;
         name:"Merge Files";
+        out-mode:0;
     }
     filter-bam {
         type:filter-bam;
         name:"Filter Merged BAM File with SAMtools";
+        out-mode:0;
         flag:"The read is unmapped";
         mapq:1;
     }
     rmdup-bam {
         type:rmdup-bam;
         name:"Remove Duplicates";
+        out-mode:0;
         remove-single-end:true;
     }
     Sort-bam {
         type:Sort-bam;
         name:"Sort BAM File";
+        out-mode:0;
     }
     Sort-bam-1 {
         type:Sort-bam;
         name:"Sort BAM File";
+        out-mode:0;
     }
     CASAVAFilter-1 {
         type:CASAVAFilter;
@@ -93,16 +100,19 @@ workflow "Processing of raw DNA-Seq paired-end reads"{
         type:QualityTrim;
         name:"Trim Reads by Quality";
         custom-dir:filtered_fastq;
+        out-mode:0;
         len-id:1;
         qual-id:20;
     }
     CutAdaptFastq {
         type:CutAdaptFastq;
         name:"Cut Adapter";
+        out-mode:0;
     }
     CutAdaptFastq-1 {
         type:CutAdaptFastq;
         name:"Cut Adapter";
+        out-mode:0;
     }
     fastqc {
         type:fastqc;

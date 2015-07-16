@@ -118,7 +118,7 @@ void RmdupBamWorkerFactory::init() {
         Descriptor treatReads(TREAT_READS_ID, RmdupBamWorker::tr("Treat as single-end"),
             RmdupBamWorker::tr("Treat paired-end reads and single-end reads (-S)."));
 
-        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
+        a << new Attribute(outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::WORKFLOW_INTERNAL));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
         customDirAttr->addRelation(new VisibilityRelation(OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
         a << customDirAttr;

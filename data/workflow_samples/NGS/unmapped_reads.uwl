@@ -9,6 +9,7 @@ workflow "Get unmapped reads"{
         type:filter-bam;
         name:"Filter BAM/SAM files";
         accept-flag:"The read is unmapped";
+        out-mode:0;
     }
     get-file-list {
         type:get-file-list;

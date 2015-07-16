@@ -141,7 +141,7 @@ void ConvertFilesFormatWorkerFactory::init() {
             ConvertFilesFormatWorker::tr("Select the custom output directory."));
 
         a << new Attribute( BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true );
-        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FILE_DIRECTORY));
+        a << new Attribute(outDir, BaseTypes::NUM_TYPE(), false, QVariant(WORKFLOW_INTERNAL));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
         customDirAttr->addRelation(new VisibilityRelation(OUT_MODE_ID, CUSTOM));
         a << customDirAttr;

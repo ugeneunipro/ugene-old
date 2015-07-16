@@ -23,6 +23,7 @@ workflow "Processing of raw RNA-Seq paired-end reads"{
         type:QualityTrim;
         name:"Trim Reads by Quality";
         custom-dir:filtered_fastq;
+        out-mode:0;
         len-id:10;
         qual-id:20;
     }
@@ -37,6 +38,7 @@ workflow "Processing of raw RNA-Seq paired-end reads"{
         type:MergeFastq;
         name:"Merge FASTQ Files";
         custom-dir:filtered_fastq;
+        out-mode:0;
         out-name:in_1.fq;
     }
     get-file-list-1 {
@@ -55,6 +57,7 @@ workflow "Processing of raw RNA-Seq paired-end reads"{
         type:QualityTrim;
         name:"Trim Reads by Quality";
         custom-dir:filtered_fastq;
+        out-mode:0;
         len-id:10;
         qual-id:20;
     }
@@ -62,6 +65,7 @@ workflow "Processing of raw RNA-Seq paired-end reads"{
         type:MergeFastq;
         name:"Merge FASTQ Files";
         custom-dir:filtered_fastq;
+        out-mode:0;
         out-name:in_2.fq;
     }
     multiplexer {
@@ -71,10 +75,12 @@ workflow "Processing of raw RNA-Seq paired-end reads"{
     CutAdaptFastq {
         type:CutAdaptFastq;
         name:"Cut Adapter";
+        out-mode:0;
     }
     CutAdaptFastq-1 {
         type:CutAdaptFastq;
         name:"Cut Adapter";
+        out-mode:0;
     }
     fastqc {
         type:fastqc;

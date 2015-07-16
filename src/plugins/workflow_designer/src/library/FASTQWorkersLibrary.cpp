@@ -105,7 +105,7 @@ void CASAVAFilterWorkerFactory::init() {
         Descriptor outName(BaseNGSWorker::OUT_NAME_ID, CASAVAFilterWorker::tr("Output file name"),
             CASAVAFilterWorker::tr("A name of an output file. If default of empty value is provided the output name is the name of the first file with additional extention."));
 
-        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
+        a << new Attribute(outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::WORKFLOW_INTERNAL));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
         customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
         a << customDirAttr;
@@ -266,7 +266,7 @@ void QualityTrimWorkerFactory::init() {
         Descriptor bothD(BOTH_ID, QualityTrimWorker::tr("Trim both ends"),
             QualityTrimWorker::tr("Trim the both ends of a read or not. Usually, you need to set <b>True</b> for <b>Sanger</b> sequencing and <b>False</b> for <b>NGS</b>"));
 
-        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
+        a << new Attribute(outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::WORKFLOW_INTERNAL));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
         customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
         a << customDirAttr;
@@ -451,7 +451,7 @@ void MergeFastqWorkerFactory::init() {
             MergeFastqWorker::tr("A name of an output file. If default of empty value is provided the output name is the name of the first file with additional extention."));
 
 
-        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
+        a << new Attribute(outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::WORKFLOW_INTERNAL));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
         customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
         a << customDirAttr;
