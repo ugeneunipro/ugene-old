@@ -154,6 +154,7 @@ void Dashboard::sl_loaded(bool ok) {
     CHECK(!initialized, );
     SAFE_POINT(ok, "Loaded with errors", );
     initialized = true;
+    page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     page()->mainFrame()->addToJavaScriptWindowObject("agent", new JavascriptAgent(this));
 
     doc = page()->mainFrame()->documentElement();
