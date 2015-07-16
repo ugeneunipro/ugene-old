@@ -5159,7 +5159,23 @@ GUI_TEST_CLASS_DEFINITION(test_2754) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os));
+    class custom : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog!=NULL, "activeModalWidget is NULL");
+
+            QAbstractButton* next = GTWidget::findButtonByText(os, "Next", dialog);
+            CHECK_SET_ERR(!next->isEnabled(), "Next button is unexpectidly enabled");
+
+            QAbstractButton* selectAll = GTWidget::findButtonByText(os, "Select all", dialog);
+            CHECK_SET_ERR(!selectAll->isEnabled(), "Select all button is unexpectidly enabled");
+
+            GTWidget::click(os, GTWidget::findButtonByText(os, "Close", dialog));
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os, new custom()));
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "find_qualifier_action"));
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
