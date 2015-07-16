@@ -478,7 +478,7 @@ void LoadDocumentTask::run() {
     if (config.checkObjRef.isValid() && !hasError()) {
         processObjRef();
     }
-    if(hints.value(ProjectLoaderHint_DontCheckForExistence, false).toBool()){
+    if ((NULL != resultDocument) && hints.value(ProjectLoaderHint_DontCheckForExistence, false).toBool()){
         resultDocument->getGHints()->set(ProjectLoaderHint_DontCheckForExistence, true);
     }
     assert(stateInfo.isCoR() || resultDocument != NULL);
