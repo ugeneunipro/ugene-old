@@ -101,7 +101,7 @@ TestViewController::TestViewController(TestRunnerService* s, bool _cmd) : MWMDIW
     stopSuitesActions->setObjectName("action_stop");
     connect(stopSuitesActions, SIGNAL(triggered()), SLOT(sl_stopSuitesActions()));
 
-    setEnvAction = new QAction(tr("Setup environment"), this);
+    setEnvAction = new QAction(tr("Set environment"), this);
     setEnvAction->setObjectName("action_setup_environment");
     connect(setEnvAction, SIGNAL(triggered()), SLOT(sl_setEnvAction()));
 
