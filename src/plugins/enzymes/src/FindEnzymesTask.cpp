@@ -66,6 +66,7 @@ QList<Task *> FindEnzymesToAnnotationsTask::onSubTaskFinished(Task *subTask) {
 
     bool useSubgroups = enzymes.size() > 1 || cfg.groupName.isEmpty();
     bool useWholeSequenceRange = cfg.excludedRegions.isEmpty();
+    QMap<QString, QList<SharedAnnotationData> > resultMap;
     foreach (const SEnzymeData &ed, enzymes) {
         QList<SharedAnnotationData> anns = fTask->getResultsAsAnnotations(ed->id);
         bool inRegion = false;
@@ -85,15 +86,11 @@ QList<Task *> FindEnzymesToAnnotationsTask::onSubTaskFinished(Task *subTask) {
 
         if (anns.size() >= cfg.minHitCount && anns.size() <= cfg.maxHitCount) {
             QString group = useSubgroups ? cfg.groupName + "/" + ed->id : cfg.groupName;
-            foreach (const SharedAnnotationData &ad, anns) {
-                resultMap.insertMulti(group, ad);
-            }
+            resultMap[group].append(anns);
         }
     }
 
-    foreach (const QString &groupName, resultMap.uniqueKeys()) {
-        result << new CreateAnnotationsTask(aObj, resultMap.values(groupName), groupName);
-    }
+    result << new CreateAnnotationsTask(aObj, resultMap);
     return result;
 }
 

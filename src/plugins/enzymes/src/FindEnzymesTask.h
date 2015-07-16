@@ -78,7 +78,6 @@ public:
 private:
     U2EntityRef                         dnaSeqRef;
     QList<SEnzymeData>                  enzymes;
-    QMap<QString, SharedAnnotationData> resultMap;
     U2Region                            seqRange;
     QPointer<AnnotationTableObject>     aObj;
     FindEnzymesTaskConfig               cfg;

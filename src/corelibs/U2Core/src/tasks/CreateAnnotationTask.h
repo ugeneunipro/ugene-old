@@ -37,6 +37,7 @@ public:
                                         const QString &group = QString());
                                     CreateAnnotationsTask(const GObjectReference &ref, const QList<SharedAnnotationData> &data,
                                         const QString &group = QString());
+                                    CreateAnnotationsTask(AnnotationTableObject *o, const QMap<QString, QList<SharedAnnotationData> > &data);
 
     void                            run();
     ReportResult                    report();
@@ -45,11 +46,12 @@ public:
     QList<Annotation *>             getResultAnnotations() const;
 
 private:
+    void                                            initAnnObjectRef();
+
     GObjectReference                                aRef;
     QPointer<AnnotationTableObject>                 aobj;
     QMap<AnnotationGroup *, QList<Annotation *> >   group2Annotations;
-    QString                                         groupName;
-    QList<SharedAnnotationData>                     aData;
+    QMap<QString, QList<SharedAnnotationData> >     aData;
     QList<Annotation *>                             resultAnnotations;
 };
 

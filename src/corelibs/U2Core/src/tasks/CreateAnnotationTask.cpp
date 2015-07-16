@@ -34,23 +34,39 @@
 namespace U2 {
 
 CreateAnnotationsTask::CreateAnnotationsTask(AnnotationTableObject *ao, const QList<SharedAnnotationData> &data,  const QString &g)
-    : Task(tr("Create annotations"), TaskFlags_FOSE_COSC), aobj(ao), groupName(g), aData(data)
+    : Task(tr("Create annotations"), TaskFlags_FOSE_COSC), aobj(ao)
 {
-    AnnotationTableObject *parentObject = getGObject();
-    CHECK_EXT(NULL != parentObject, setError(tr("Annotation table has been removed unexpectedly")),);
+    aData.insert(g, data);
 
-    aRef.objName = parentObject->getGObjectName();
+    initAnnObjectRef();
+    CHECK_OP(stateInfo, );
     tpm = Progress_Manual;
 }
 
 CreateAnnotationsTask::CreateAnnotationsTask(const GObjectReference &r, const QList<SharedAnnotationData> &data, const QString &g)
-    : Task(tr("Create annotations"), TaskFlags_FOSE_COSC), aRef(r), groupName(g), aData(QList<SharedAnnotationData>() << data)
+    : Task(tr("Create annotations"), TaskFlags_FOSE_COSC), aRef(r)
 {
+    aData.insert(g, data);
+
     GObject *ao = (GObjectUtils::selectObjectByReference(aRef, UOF_LoadedAndUnloaded));
     if (NULL != ao && ao->isUnloaded()) {
         addSubTask(new LoadUnloadedDocumentTask(ao->getDocument()));
     }
     tpm = Progress_Manual;
+}
+
+CreateAnnotationsTask::CreateAnnotationsTask(AnnotationTableObject *o, const QMap<QString, QList<SharedAnnotationData> > &data)
+    : Task(tr("Create annotations"), TaskFlags_FOSE_COSC), aobj(o), aData(data)
+{
+    initAnnObjectRef();
+    CHECK_OP(stateInfo, );
+    tpm = Progress_Manual;
+}
+
+void CreateAnnotationsTask::initAnnObjectRef() {
+    AnnotationTableObject *parentObject = getGObject();
+    CHECK_EXT(NULL != parentObject, setError(tr("Annotation table has been removed unexpectedly")), );
+    aRef.objName = parentObject->getGObjectName();
 }
 
 void CreateAnnotationsTask::run() {
@@ -64,21 +80,23 @@ void CreateAnnotationsTask::run() {
     const U2DataId rootFeatureId = parentObject->getRootFeatureId();
     const U2DbiRef dbiRef = parentObject->getEntityRef().dbiRef;
 
-    if (groupName.isEmpty()) {
-        foreach (const SharedAnnotationData &a, aData) {
-            AnnotationGroup *group = parentObject->getRootGroup()->getSubgroup(a->name, true);
+    foreach (const QString &groupName, aData.keys()) {
+        if (groupName.isEmpty()) {
+            foreach (const SharedAnnotationData &a, aData[groupName]) {
+                AnnotationGroup *group = parentObject->getRootGroup()->getSubgroup(a->name, true);
+                const U2DataId groupId = group->id;
+                const U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures(a, rootFeatureId, groupId, dbiRef, stateInfo);
+                CHECK_OP(stateInfo, );
+                group2Annotations[group] << new Annotation(feature.id, a, group, parentObject);
+            }
+        } else {
+            AnnotationGroup *group = parentObject->getRootGroup()->getSubgroup(groupName, true);
             const U2DataId groupId = group->id;
-            const U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures(a, rootFeatureId, groupId, dbiRef, stateInfo);
-            CHECK_OP(stateInfo, );
-            group2Annotations[group] << new Annotation(feature.id, a, group, parentObject);
-        }
-    } else {
-        AnnotationGroup *group = parentObject->getRootGroup()->getSubgroup(groupName, true);
-        const U2DataId groupId = group->id;
-        foreach (const SharedAnnotationData &a, aData) {
-            const U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures(a, rootFeatureId, groupId, dbiRef, stateInfo);
-            CHECK_OP(stateInfo, );
-            group2Annotations[group] << new Annotation(feature.id, a, group, parentObject);
+            foreach (const SharedAnnotationData &a, aData[groupName]) {
+                const U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures(a, rootFeatureId, groupId, dbiRef, stateInfo);
+                CHECK_OP(stateInfo, );
+                group2Annotations[group] << new Annotation(feature.id, a, group, parentObject);
+            }
         }
     }
 }
@@ -113,7 +131,11 @@ AnnotationTableObject * CreateAnnotationsTask::getGObject() const {
 }
 
 int CreateAnnotationsTask::getAnnotationCount() const {
-    return aData.size();
+    int result = 0;
+    foreach (const QString &groupName, aData.keys()) {
+        result += aData[groupName].size();
+    }
+    return result;
 }
 
 QList<Annotation *> CreateAnnotationsTask::getResultAnnotations() const {

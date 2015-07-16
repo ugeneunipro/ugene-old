@@ -939,7 +939,7 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
 
     const QList<PrimerPair>& bestPairs = searchTask->getBestPairs();
 
-    QList<Task *> createAnnotationTasks;
+    QMap<QString, QList<SharedAnnotationData> > resultAnnotations;
     int index = 0;
     foreach(const PrimerPair& pair, bestPairs)
     {
@@ -956,7 +956,7 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
         {
             annotations.append(oligoToAnnotation(annName, *pair.getRightPrimer(), pair.getProductSize(), U2Strand::Complementary));
         }
-        createAnnotationTasks << new CreateAnnotationsTask(aobj,annotations, groupName + "/pair " + QString::number(index + 1));
+        resultAnnotations[groupName + "/pair " + QString::number(index + 1)].append(annotations);
         index++;
     }
 
@@ -969,12 +969,12 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
         }
         U1AnnotationUtils::addDescriptionQualifier(annotations, annDescription);
 
-        if ( !annotations.isEmpty( ) ) {
-            createAnnotationTasks << new CreateAnnotationsTask(aobj, annotations, groupName);
+        if (!annotations.isEmpty()) {
+            resultAnnotations[groupName].append(annotations);
         }
     }
 
-    AppContext::getTaskScheduler()->registerTopLevelTask(new SequentialMultiTask("Create primer annotations", createAnnotationTasks));
+    AppContext::getTaskScheduler()->registerTopLevelTask(new CreateAnnotationsTask(aobj, resultAnnotations));
 
     return ReportResult_Finished;
 }
