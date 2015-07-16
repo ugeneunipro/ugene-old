@@ -2496,6 +2496,27 @@ GUI_TEST_CLASS_DEFINITION(test_4488) {
     //UGENE crashes
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4489) {
+    //1. Open COI.aln.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+    //2. Select some region
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(5, 5), QPoint(10, 10));
+    //3. Move it to the right with a mouse.
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(7, 7));
+    GTMouseDriver::press(os);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(12, 7));
+    GTMouseDriver::release(os);
+    GTGlobals::sleep();
+
+    //Bug state : Overview is not recalculated.There is the "Waiting..." state.
+    const QColor currentColor = GTUtilsMsaEditor::getGraphOverviewPixelColor(os, QPoint(GTUtilsMsaEditor::getGraphOverview(os)->width() - 5, 5));
+    const QColor expectedColor = QColor("white");
+    const QString currentColorString = QString("(%1, %2, %3)").arg(currentColor.red()).arg(currentColor.green()).arg(currentColor.blue());
+    const QString expectedColorString = QString("(%1, %2, %3)").arg(expectedColor.red()).arg(expectedColor.green()).arg(expectedColor.blue());
+    CHECK_SET_ERR(expectedColor == currentColor, QString("An unexpected color, maybe overview was not rendered: expected %1, got %2")
+        .arg(expectedColorString).arg(currentColorString));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_4505) {
 //    1. Open "test/_common_data/scenarios/msa/Chikungunya_E1.fasta".
     GTLogTracer l;
@@ -2580,8 +2601,10 @@ GUI_TEST_CLASS_DEFINITION(test_4508) {
 //    Expected state: the msa is successfully exported, there are no errors in the log.
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    CHECK_SET_ERR(GTFile::check(os, sandBoxDir + "test_4508/test_4508.svg"), QString("File '%1' doesn't exist").arg(sandBoxDir + "test_4508/test_4508.svg"));
-    CHECK_SET_ERR(0 < GTFile::getSize(os, sandBoxDir + "test_4508/test_4508.svg"), QString("File '%1' has zero size").arg(sandBoxDir + "test_4508/test_4508.svg"));
+    CHECK_SET_ERR(GTFile::check(os, sandBoxDir + "test_4508/test_4508.svg"), QString("File '%1' doesn't exist")
+        .arg(sandBoxDir + "test_4508/test_4508.svg"));
+    CHECK_SET_ERR(0 < GTFile::getSize(os, sandBoxDir + "test_4508/test_4508.svg"), QString("File '%1' has zero size")
+        .arg(sandBoxDir + "test_4508/test_4508.svg"));
     GTUtilsLog::check(os, logTracer);
 }
 
