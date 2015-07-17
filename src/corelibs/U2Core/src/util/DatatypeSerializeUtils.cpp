@@ -204,7 +204,7 @@ namespace {
     void packTreeNode(QByteArray &binary, const PhyNode *node) {
         int branches = node->branchCount();
         if (branches == 1 && (node->getName() == "" || node->getName() == "ROOT")) {
-            assert(node != node->getSecondNodeOfBranch(0));
+            SAFE_POINT(node != node->getSecondNodeOfBranch(0), "A circular dependency between nodes is detected",);
             packTreeNode(binary, node->getSecondNodeOfBranch(0));
             return;
         }
@@ -303,7 +303,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                 if (state == RS_NAME) {
                     nodeStack.top()->setName(lastStr);
                 } else {
-                    assert(state == RS_WEIGHT);
+                    SAFE_POINT_EXT(state == RS_WEIGHT, si.setError(QString("Error during tree file parsing: node is not specified for branch with distance: %1 ").arg(lastStr)), QList<PhyTree>());
                     if (!branchStack.isEmpty()) { //ignore root node weight if present
                         if (nodeStack.size() < 2) {
                             si.setError(DatatypeSerializers::tr("Unexpected weight: %1").arg(lastStr));
@@ -320,7 +320,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
 
             // advance in state
             if (c == '(') { //new child
-                assert(!nodeStack.isEmpty());
+                SAFE_POINT_EXT(!nodeStack.isEmpty(), si.setError(QString("Error during tree file parsing: parent node is not specified for new subtree: %1 ").arg(lastStr)), QList<PhyTree>());
                 PhyNode* pn = new PhyNode();
                 PhyBranch* bd = PhyTreeData::addBranch(nodeStack.top(),pn, 0);
                 nodeStack.push(pn);
@@ -341,10 +341,8 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                 }
                 state = RS_WEIGHT;
             } else if ( c == ',') { //new sibling
-                assert(!nodeStack.isEmpty());
-                assert(!branchStack.isEmpty());
                 if (nodeStack.isEmpty() || branchStack.isEmpty()) {
-                    si.setError(DatatypeSerializers::tr("Unexpected new sibling %1").arg(lastStr));
+                    si.setError(DatatypeSerializers::tr("Error during tree file parsing: the file does not contain any tree"));
                     break;
                 }
                 nodeStack.pop();
@@ -360,7 +358,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                     si.setError(DatatypeSerializers::tr("Unexpected closing bracket :%1").arg(lastStr));
                     break;
                 }
-                assert(!branchStack.isEmpty());
+                SAFE_POINT_EXT(!branchStack.isEmpty(), si.setError(QString("Error during tree file parsing: invalid branch is detected: %1 ").arg(lastStr)), QList<PhyTree>());
                 branchStack.pop();
                 state = RS_WEIGHT;
             } else if (c == ';') {
