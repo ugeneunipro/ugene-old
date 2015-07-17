@@ -72,15 +72,6 @@ private:
     Document* createDoc(const QList<Workflow::SharedDbiDataHandler> &annData, const QString& name);
 };
 
-class SeqPosLogParser : public ExternalToolLogParser {
-public:
-    SeqPosLogParser();
-
-private:
-    QString lastErrLine;
-    int     progress;
-};
-
 } // U2
 
 #endif // _U2_SEQPOS_SUPPORT_TASK_

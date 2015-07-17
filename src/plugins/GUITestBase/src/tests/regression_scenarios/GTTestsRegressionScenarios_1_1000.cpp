@@ -3070,7 +3070,7 @@ GUI_TEST_CLASS_DEFINITION(test_0958) {
       << ImportAnnotationsToCsvFiller::RoleColumnParameter(9,  new ImportAnnotationsToCsvFiller::QualifierParameter("prop2"));
 
     ImportAnnotationsToCsvFiller* filler = new ImportAnnotationsToCsvFiller(os, sandBoxDir + "test_0958.csv", sandBoxDir + "test_0958.gb",
-                                                                            ImportAnnotationsToCsvFiller::Genbank, true, true, ",", false, 1, "#",
+                                                                            ImportAnnotationsToCsvFiller::Genbank, true, true, ",", 1, "#",
                                                                             false, true, "misc_feature", r);
     GTUtilsDialog::waitForDialog(os, filler);
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export/Import" << "Import Annotations from CSV file"));

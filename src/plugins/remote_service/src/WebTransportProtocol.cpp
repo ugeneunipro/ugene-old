@@ -123,7 +123,7 @@ bool Uctp::parseReply( QIODevice* reply, const UctpCommand& command, QMap<QStrin
 //////////////////////////////////////////////////////////////////////////
 
 UctpReplyHandler::UctpReplyHandler(const UctpReplyContext& ctx, QMap<QString,UctpElementData>& data)
- : replyResultOk(false), context(ctx), replyData(data), envelope(false), header(false), contents(false)
+ : replyResultOk(false), context(ctx), replyData(data), envelope(false)
 {
 
 }

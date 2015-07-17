@@ -40,7 +40,7 @@ namespace U2 {
 class U2VIEW_EXPORT DnaAssemblyAlgorithmBaseWidget : public QWidget {
 public:
     DnaAssemblyAlgorithmBaseWidget(QWidget *parent);
-    virtual void validateReferenceSequence(const GUrl &url);
+    virtual void validateReferenceSequence(const GUrl &url) const;
 };
 
 // These classes are intended for extending standard Dna Assembly dialog GUI

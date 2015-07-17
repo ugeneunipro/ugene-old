@@ -40,7 +40,7 @@ public:
     qint64 offset;
     DNATranslation* complTT;
     QDStrandOption strand;
-    FindPolyRegionsSettings() : ch('A'), percent(0.9f), minLen(0), offset(0), complTT(NULL) {}
+    FindPolyRegionsSettings() : ch('A'), percent(0), minLen(0), offset(0), complTT(NULL) {}
 };
 
 class FindPolyRegionsTask : public Task {

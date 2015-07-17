@@ -182,7 +182,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     //4. Click a primer in the table.
     //Expected: the OK button is enabled.
     //5. Double click the primer.
-    GTUtilsDialog::waitForDialog(os, new PrimerLibrarySelectorFiller(os, 0, true));
+    GTUtilsDialog::waitForDialog(os, new PrimerLibrarySelectorFiller(os, -1, true));
     GTWidget::click(os, GTUtilsPcr::browseButton(os, U2Strand::Direct));
 
     //Expected: the dialog is closed, the chosen primer sequence is in the forward primer line edit.

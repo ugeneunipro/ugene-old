@@ -57,7 +57,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", false, true, "MISC", roleParameters);
+        true, ",", 1, "#", false, true, "MISC", roleParameters);
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
 
@@ -84,7 +84,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 2, "#", false, true, "MISC", roleParameters);
+        true, ",", 2, "#", false, true, "MISC", roleParameters);
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
 
@@ -111,7 +111,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 0, "#", false, true, "MISC", roleParameters);
+        true, ",", 0, "#", false, true, "MISC", roleParameters);
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
 
@@ -137,7 +137,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns2.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, "[sep123]", false, 0, "#", false, true, "MISC", roleParameters);
+        true, "[sep123]", 0, "#", false, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -164,7 +164,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns2.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, "[sep123]", false, 0, "#", false, true, "AUTO", roleParameters);
+        true, "[sep123]", 0, "#", false, true, "AUTO", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -191,7 +191,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns2.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, false,
-        true, "[sep123]", false, 0, "#", false, true, "MISC", roleParameters);
+        true, "[sep123]", 0, "#", false, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -218,7 +218,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns3.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 0, "$#_[[sA", false, true, "MISC", roleParameters);
+        true, ",", 0, "$#_[[sA", false, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -245,7 +245,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns3.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, false,
-        true, ",", false, 0, "$#_[[sA", false, true, "MISC", roleParameters);
+        true, ",", 0, "$#_[[sA", false, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -272,7 +272,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns3.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 0, "$#_[[sA", false, false, "MISC", roleParameters);
+        true, ",", 0, "$#_[[sA", false, false, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -299,7 +299,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", false, true, "MISC", roleParameters);
+        true, ",", 1, "#", false, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -326,7 +326,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", false, true, "MISC", roleParameters);
+        true, ",", 1, "#", false, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -354,7 +354,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", false, true, "MISC", roleParameters);
+        true, ",", 1, "#", false, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -382,7 +382,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", false, true, "MISC", roleParameters);
+        true, ",", 1, "#", false, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -410,7 +410,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", false, true, "MISC", roleParameters);
+        true, ",", 1, "#", false, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -438,7 +438,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", false, true, "MISC", roleParameters);
+        true, ",", 1, "#", false, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -466,7 +466,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", false, true, "MISC", roleParameters);
+        true, ",", 1, "#", false, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -493,7 +493,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", false, true, "MISC", roleParameters);
+        true, ",", 1, "#", false, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -520,7 +520,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", false, true, "MISC", roleParameters);
+        true, ",", 1, "#", false, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -547,7 +547,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns2.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, "[sep123]", false, 0, "#", true, true, "MISC", roleParameters);
+        true, "[sep123]", 0, "#", true, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -574,7 +574,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns2.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, "[sep123]", false, 0, "#", false, true, "MISC", roleParameters);
+        true, "[sep123]", 0, "#", false, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -601,7 +601,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns2.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, "[sep123]", false, 0, "#", true, true, "MISC", roleParameters);
+        true, "[sep123]", 0, "#", true, true, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -628,7 +628,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", false, false, "MISC", roleParameters);
+        true, ",", 1, "#", false, false, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -655,7 +655,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", false, false, "MISC", roleParameters);
+        true, ",", 1, "#", false, false, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -682,7 +682,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_2) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 0, "#", false, false, "MISC", roleParameters);
+        true, ",", 0, "#", false, false, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -709,7 +709,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns5.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", true, false, "MISC", roleParameters);
+        true, ",", 1, "#", true, false, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -736,7 +736,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009_1) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns5.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", true, false, "MISC", roleParameters);
+        true, ",", 1, "#", true, false, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);
@@ -763,7 +763,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009_2) {
 
     Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns5.csv",
         testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true,
-        true, ",", false, 1, "#", true, false, "MISC", roleParameters);
+        true, ",", 1, "#", true, false, "MISC", roleParameters);
 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep(1000);

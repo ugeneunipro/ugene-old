@@ -66,9 +66,9 @@ protected:
     Color4f color;
 
 public:
-    Object3D(const Color4f& color_) : color(color_) {};
+    Object3D(const Color4f& color_) : color(color_) {}
     virtual void draw(float renderDetailLevel) = 0;
-    virtual ~Object3D() {};
+    virtual ~Object3D() {}
 
     const Color4f& getColor() const { return color; }
     void setColor(const Color4f &c) { color = Color4f(c); }
@@ -92,7 +92,6 @@ public:
 
 //! Beta Strand 3D representation
 class Strand3D : public Object3D {
-    GLUquadric* pObj;
     Vector3D cterm;
     Vector3D nterm;
     Vector3D upVector;

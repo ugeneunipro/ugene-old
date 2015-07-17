@@ -196,8 +196,7 @@ CircularAnnotationLabel::CircularAnnotationLabel(Annotation *ann, const QVector<
       region(_region),
       ra(renderArea),
       regionItem(NULL),
-      hasPosition(false),
-      seqLen(sequenceLength)
+      hasPosition(false)
 {
     const SharedAnnotationData &aData = annotation->getData();
     SAFE_POINT(0 <= region && region < location.size(), "Invalid location index", );

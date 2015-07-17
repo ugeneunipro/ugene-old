@@ -16,6 +16,8 @@ use_bundled_zlib() {
     LIBS += -lz
 }
 
+unix: QMAKE_CXXFLAGS += -Wno-char-subscripts
+
 LIBS += -L../../_release
 LIBS += -lugenedb
 

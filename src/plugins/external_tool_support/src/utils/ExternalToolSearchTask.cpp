@@ -124,7 +124,7 @@ QString ExternalToolSearchTask::getExeName(ExternalTool* tool) {
         ExternalToolRegistry* etRegistry = AppContext::getExternalToolRegistry();
         SAFE_POINT_EXT(etRegistry, setError(tr("External tool registry is NULL")), "");
         ExternalTool* masterTool = etRegistry->getByName(dependencies.first());
-        SAFE_POINT_EXT(masterTool, tr("An external tool '%1' isn't found in the registry").arg(dependencies.first()), "");
+        SAFE_POINT_EXT(masterTool, setError(tr("An external tool '%1' isn't found in the registry").arg(dependencies.first())), "");
         return masterTool->getExecutableFileName();
     }
 

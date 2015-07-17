@@ -137,7 +137,7 @@ class UctpReplyHandler : public QXmlDefaultHandler {
     QMap<QString,UctpElementData>& replyData;
     QMap<QString,QXmlAttributes> xmlAttrMap;
     // validation flags present
-    bool envelope, header, contents;
+    bool envelope;
 public:
     UctpReplyHandler(const UctpReplyContext& ctx, QMap<QString,UctpElementData>& replyData);
     bool startElement(const QString &namespaceURI, const QString &localName,

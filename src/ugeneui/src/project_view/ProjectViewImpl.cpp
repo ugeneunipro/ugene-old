@@ -552,7 +552,7 @@ DocumentFormat* ProjectViewWidget::detectFormatFromAdapter(IOAdapter* io, QVaria
     bool detectFormat = ProjectLoaderImpl::detectFormat(url, formats, hints, dr);
     bool shouldBeSelected = ProjectLoaderImpl::shouldFormatBeSelected(formats, hints.value(ProjectLoaderHint_ForceFormatOptions, false).toBool());
     canceled = !detectFormat && shouldBeSelected;
-    if (!detectFormat && formats.isEmpty() || canceled) {
+    if ((!detectFormat && formats.isEmpty()) || canceled) {
         return NULL;
     }
     dr.rawDataCheckResult.properties.unite(hints);

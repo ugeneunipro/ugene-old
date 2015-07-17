@@ -12,6 +12,8 @@ use_opencl(){
 UGENE_RELATIVE_DESTDIR = ''
 DEFINES+= QT_FATAL_ASSERT BUILDING_U2ALGORITHM_DLL
 
+unix: QMAKE_CXXFLAGS += -Wno-char-subscripts
+
 LIBS += -L../../_release -lU2Core -lsamtools
 use_bundled_zlib() {
     INCLUDEPATH += ../../libs_3rdparty/zlib/src

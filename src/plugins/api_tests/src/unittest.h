@@ -26,7 +26,7 @@
 
 /** Place this in cpp file and define test body in subsequent {} block */
 #define IMPLEMENT_TEST(suite, name) \
-    static const int _##suite##_##name##_type = qRegisterMetaType<U2::TEST_CLASS(suite, name)>(TEST_CLASS_STR(suite, name)); \
+    static const int _##suite##_##name##_type ATTR_UNUSED = qRegisterMetaType<U2::TEST_CLASS(suite, name)>(TEST_CLASS_STR(suite, name)); \
     void TEST_CLASS(suite, name)::Test()
 
 /** Macros to be used in test body: they all check for some condition,
@@ -46,8 +46,8 @@ namespace U2 {
 class UnitTest {
 public:
     virtual void Test() = 0;
-    virtual void SetUp() {};
-    virtual void TearDown() {};
+    virtual void SetUp() {}
+    virtual void TearDown() {}
     virtual void SetError(const QString& err) { error = err; }
     virtual QString GetError() { return error; }
 protected:

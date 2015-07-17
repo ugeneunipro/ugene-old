@@ -85,7 +85,7 @@ public:
     virtual QMap<QString,QVariant> getBuildIndexCustomSettings();
     virtual QString getIndexFileExtension();
     virtual GUrl buildIndexUrl(const GUrl& url);
-    void validateReferenceSequence( const GUrl &url );
+    void validateReferenceSequence(const GUrl &url) const;
 
 private:
     BwaIndexAlgorithmWarningReporter *warningReporter;

@@ -148,7 +148,6 @@ private:
     CircularAnnotationRegionItem *regionItem;
     bool hasPosition;
     QString labelText;
-    int seqLen;
 };
 
 } // namespace U2

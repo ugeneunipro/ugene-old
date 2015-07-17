@@ -11,9 +11,7 @@ class QByteArray;
 class QTemporaryFile;
 
 class PsiPassOne {
-    
-    const char    *wtfnm;
-    int     *nwtsum, *fwt_to, *lwt_to;
+    int     *fwt_to, *lwt_to;
     float   *activation, *bias, **weight;
     int     profile[MAXSEQLEN][20];
     int     seqlen;

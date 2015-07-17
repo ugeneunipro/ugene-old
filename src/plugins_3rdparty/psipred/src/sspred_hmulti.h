@@ -10,7 +10,7 @@ class QTemporaryFile;
 
 class PsiPassTwo {
     const char           *wtfnm;
-    int             nwtsum, *fwt_to, *lwt_to;
+    int             *fwt_to, *lwt_to;
     REAL            *activation, *bias, **weight;
     float           profile[MAXSEQLEN][3];
     char            seq[MAXSEQLEN];

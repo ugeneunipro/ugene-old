@@ -130,7 +130,7 @@ QList<Task*> ConductGOTask::onSubTaskFinished(Task* subTask) {
     if (treatTask == subTask) {
             QStringList args = settings.getArguments(treatDoc->getURLString());
 
-            logParser = new ConductGOLogParser();
+            logParser = new ExternalToolLogParser();
 
             ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
             SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);
@@ -198,15 +198,6 @@ QStringList ConductGOTask::getResultFileNames(){
     }
 
     return result;
-}
-
-//////////////////////////////////////////////////////////////////////////
-//ConductGOLogParser
-ConductGOLogParser::ConductGOLogParser() :
-    ExternalToolLogParser(),
-    progress(-1)
-{
-
 }
 
 } // U2

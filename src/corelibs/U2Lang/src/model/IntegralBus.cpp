@@ -85,6 +85,8 @@ inline bool equalPaths(const SlotPathMap &allPaths, const QStringList &ipath, co
 
 Message BusMap::takeMessageMap(CommunicationChannel *ch, QVariantMap &context) {
     assert(input);
+    Q_UNUSED(input);
+
     Message m = ch->get();
     assert(m.getData().type() == QVariant::Map);
     QVariantMap imap = m.getData().toMap();

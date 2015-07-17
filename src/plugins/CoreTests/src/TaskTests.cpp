@@ -65,14 +65,15 @@ static TaskFlags flagsFromString(QString str, bool *ok = NULL) {
         hash["TaskFlag_FailOnSubtaskCancel"] = TaskFlag_FailOnSubtaskCancel;
         while ((pos = rx.indexIn(str, pos)) != -1) {
             pos += rx.matchedLength();
-            QString capText = rx.cap(1);
-            TaskFlag flag = hash.value(rx.cap(1),(TaskFlag)-1);
-            if(flag == -1) {
+            const TaskFlag flag = hash.value(rx.cap(1), static_cast<TaskFlag>(-1));
+            if (flag == static_cast<TaskFlag>(-1)) {
                 return taskFlags;
             }
             taskFlags |= flag;
         }
-        if(ok!=NULL) *ok = true;
+        if (ok != NULL) {
+            *ok = true;
+        }
     }
     return taskFlags;
 }
@@ -81,17 +82,18 @@ static Task::State stateFromString(QString str, bool *ok = NULL) {
     Task::State taskState = Task::State_New;
     if(ok!=NULL) *ok = false;
     if(!str.isEmpty()) {
-        //int pos = 0;
         QHash<QString, Task::State> hash;
         hash["State_New"] = Task::State_New;
         hash["State_Prepared"] = Task::State_Prepared;
         hash["State_Running"] = Task::State_Running;
         hash["State_Finished"] = Task::State_Finished;
-        taskState = hash.value(str,(Task::State)-1);
-        if(taskState == -1) {
+        taskState = hash.value(str, static_cast<Task::State>(-1));
+        if (taskState == static_cast<Task::State>(-1)) {
             return taskState;
         }
-        if(ok!=NULL) *ok = true;
+        if (ok != NULL) {
+            *ok = true;
+        }
     }
     return taskState;
 }

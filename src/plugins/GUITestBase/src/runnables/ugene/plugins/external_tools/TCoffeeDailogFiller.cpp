@@ -38,6 +38,15 @@ namespace U2{
 #define GT_CLASS_NAME "GTUtilsDialog::DotPlotFiller"
 #define GT_METHOD_NAME "run"
 
+TCoffeeDailogFiller::TCoffeeDailogFiller(U2OpStatus &os, int gapOpen, int gapExt, int numOfIters) :
+    Filler(os, "TCoffeeSupportRunDialog"),
+    gapOpen(gapOpen),
+    gapExt(gapExt),
+    numOfIters(numOfIters)
+{
+
+}
+
 void TCoffeeDailogFiller::run(){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
@@ -58,12 +67,12 @@ void TCoffeeDailogFiller::run(){
         GTSpinBox::setValue(os, gapExtSpinBox, gapExt);
     }
 
-    if (gapExt!=INT_MAX){
+    if (numOfIters!=INT_MAX){
         QCheckBox* maxNumberIterRefinementCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "maxNumberIterRefinementCheckBox", dialog));
-        GTCheckBox::setChecked(os,maxNumberIterRefinementCheckBox,true);
+        GTCheckBox::setChecked(os,maxNumberIterRefinementCheckBox, true);
 
         QSpinBox* maxNumberIterRefinementSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "maxNumberIterRefinementSpinBox", dialog));
-        GTSpinBox::setValue(os, maxNumberIterRefinementSpinBox, gapExt);
+        GTSpinBox::setValue(os, maxNumberIterRefinementSpinBox, numOfIters);
     }
 
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));

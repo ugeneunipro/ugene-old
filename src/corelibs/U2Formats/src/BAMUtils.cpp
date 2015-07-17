@@ -673,12 +673,17 @@ bool BAMUtils::isEqualByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpS
 #ifdef _MSC_VER
 #pragma warning( push )
 #pragma warning( disable : 4018 )
+#elif __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
 #endif
 
 KSEQ_INIT(gzFile, gzread)
 
 #ifdef _MSC_VER
 #pragma warning( pop )
+#elif __GNUC__
+#pragma GCC diagnostic pop
 #endif
 
 FASTQIterator::FASTQIterator(const QString &fileUrl)

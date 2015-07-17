@@ -42,7 +42,7 @@ DnaAssemblyAlgorithmBaseWidget::DnaAssemblyAlgorithmBaseWidget(QWidget *parent)
 
 }
 
-void DnaAssemblyAlgorithmBaseWidget::validateReferenceSequence(const GUrl & /*url*/) {
+void DnaAssemblyAlgorithmBaseWidget::validateReferenceSequence(const GUrl &) const {
 
 }
 

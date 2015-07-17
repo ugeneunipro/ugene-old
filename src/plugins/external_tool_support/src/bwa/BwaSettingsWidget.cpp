@@ -231,7 +231,7 @@ GUrl BwaBuildSettingsWidget::buildIndexUrl(const GUrl& url) {
     return url;
 }
 
-void BwaBuildSettingsWidget::validateReferenceSequence( const GUrl &url ) {
+void BwaBuildSettingsWidget::validateReferenceSequence( const GUrl &url ) const {
     warningReporter->setRefSequencePath( url );
     warningReporter->sl_IndexAlgorithmChanged( indexAlgorithmComboBox->currentIndex( ) );
 }

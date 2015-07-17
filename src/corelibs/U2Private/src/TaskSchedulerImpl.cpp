@@ -1026,7 +1026,7 @@ void TaskThread::run() {
 
 bool TaskThread::event(QEvent *event) {
     QTimerEvent *timerEvent = NULL;
-    switch(event->type()) {
+    switch(static_cast<int>(event->type())) {
     case GET_NEW_SUBTASKS_EVENT_TYPE:
         getNewSubtasks();
         break;

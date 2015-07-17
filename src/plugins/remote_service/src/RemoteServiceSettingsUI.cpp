@@ -25,8 +25,6 @@
 #include "RemoteServiceSettingsUI.h"
 #include "RemoteTasksDialog.h"
 
-static const int PORT_MAX = 0x7fff;
-
 namespace U2 {
 
 

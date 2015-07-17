@@ -23,7 +23,11 @@ win32 : QMAKE_CFLAGS_RELEASE = -O2 -Oy- -MD
 win32 : QMAKE_CXXFLAGS_RELEASE = -O2 -Oy- -MD
 win32 : QMAKE_LFLAGS_RELEASE = /INCREMENTAL:NO /MAP /MAPINFO:EXPORTS
 
-macx : QMAKE_CXXFLAGS += -Wno-attributes # Ignore "'weak_import' attribute ignored" warning coming from OpenCL headers
+macx {
+    CONFIG -= warn_on
+    #Ignore "'weak_import' attribute ignored" warning coming from OpenCL headers
+    QMAKE_CXXFLAGS += -Wall -Wno-ignored-attributes
+}
 
 isEmpty( INSTALL_PREFIX )  : INSTALL_PREFIX  = /usr
 

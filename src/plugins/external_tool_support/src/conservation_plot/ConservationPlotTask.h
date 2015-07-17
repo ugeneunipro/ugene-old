@@ -76,15 +76,12 @@ private:
 
 class ConservationPlotLogParser : public ExternalToolLogParser {
 public:
-    ConservationPlotLogParser();
-
     int getProgress();
     void parseOutput(const QString& partOfLog);
     void parseErrOutput(const QString& partOfLog);
 
 private:
     QString lastErrLine;
-    int     progress;
 };
 
 } // U2

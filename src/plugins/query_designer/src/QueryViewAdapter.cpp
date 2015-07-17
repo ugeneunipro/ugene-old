@@ -28,6 +28,7 @@ namespace U2 {
 #define FN_MIN_LEN 30
 QueryViewAdapter::QueryViewAdapter(QDScheme* scheme, const QPointF& topLeftCorner)
 : scheme(scheme) {
+    Q_UNUSED(this->scheme);
     QMap<QDSchemeUnit*, QDElement*> unitMap;
     QList<QDConstraint*> constraints = scheme->getConstraints();
     foreach(QDActor const* a, scheme->getActors()) {

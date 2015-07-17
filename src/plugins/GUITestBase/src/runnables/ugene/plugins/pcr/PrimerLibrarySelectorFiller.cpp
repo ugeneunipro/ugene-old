@@ -44,8 +44,8 @@ void PrimerLibrarySelectorFiller::commonScenario() {
     QAbstractButton *okButton = GTUtilsDialog::buttonBox(os, dialog)->button(QDialogButtonBox::Ok);
     CHECK_SET_ERR(!okButton->isEnabled(), "the OK button is enabled");
 
-    int lastPrimer = GTUtilsPrimerLibrary::librarySize(os) - 1;
-    GTMouseDriver::moveTo(os, GTUtilsPrimerLibrary::getPrimerPoint(os, lastPrimer));
+    const int primerNumber = (-1 == number ? GTUtilsPrimerLibrary::librarySize(os) - 1 : number);
+    GTMouseDriver::moveTo(os, GTUtilsPrimerLibrary::getPrimerPoint(os, primerNumber));
     GTMouseDriver::click(os);
     CHECK_SET_ERR(okButton->isEnabled(), "the OK button is disabled");
 

@@ -51,13 +51,7 @@ PFMatrixFormat::PFMatrixFormat(QObject* p): DocumentFormat(p, DocumentFormatFlag
     formatDescription = tr("Position frequency matrix file.");
 }
 
-Document* PFMatrixFormat::createNewLoadedDocument(IOAdapterFactory* io, const GUrl &url, const QVariantMap& fs /* = QVariantMap()*/ ){
-    U2OpStatus2Log os;
-    Document* d = DocumentFormat::createNewLoadedDocument(io, url, os, fs);
-    return d;
-}
-
-U2::FormatCheckResult PFMatrixFormat::checkRawData( const QByteArray& rawData, const GUrl& /*url*/ ) const{
+FormatCheckResult PFMatrixFormat::checkRawData( const QByteArray& rawData, const GUrl& /*url*/ ) const{
     const char* data = rawData.constData();
     int size = rawData.size();
     if(TextUtils::contains(TextUtils::BINARY, data, size)){
@@ -180,13 +174,7 @@ PWMatrixFormat::PWMatrixFormat( QObject* p ): DocumentFormat(p, DocumentFormatFl
     formatDescription = tr("Position weight matrix file.");
 }
 
-Document* PWMatrixFormat::createNewLoadedDocument( IOAdapterFactory* io, const QString& url, const QVariantMap& fs){
-    U2OpStatus2Log os;
-    Document* d = DocumentFormat::createNewLoadedDocument(io, url, os, fs);
-    return d;
-}
-
-U2::FormatCheckResult PWMatrixFormat::checkRawData( const QByteArray& rawData, const GUrl& ) const {
+FormatCheckResult PWMatrixFormat::checkRawData( const QByteArray& rawData, const GUrl& ) const {
     const char* data = rawData.constData();
     int size = rawData.size();
     if(TextUtils::contains(TextUtils::BINARY, data, size)){

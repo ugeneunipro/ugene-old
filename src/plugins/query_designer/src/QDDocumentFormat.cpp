@@ -55,7 +55,7 @@ formatName(tr("Query Schema")) {
     supportedObjectTypes += QDGObject::TYPE;
 }
 
-Document* QDDocFormat::createNewLoadedDocument(IOAdapterFactory* io, const QString& url, U2OpStatus& os, const QVariantMap& fs ) {
+Document* QDDocFormat::createNewLoadedDocument(IOAdapterFactory* io, const GUrl &url, U2OpStatus& os, const QVariantMap& fs ) {
     Document* d = DocumentFormat::createNewLoadedDocument(io, url, os, fs);
     GObject* o = new QDGObject(tr("Query Schema"), "");
     d->addObject(o);

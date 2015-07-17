@@ -35,7 +35,7 @@ const GLfloat GLFrame::DEFAULT_ZOOM = 45.0f;
 /// GLFrame
 
 GLFrame::GLFrame(QGLWidget* widget)
-        : glWidget(widget), rotMatrix(), synchLock(false),
+        : glWidget(widget), rotMatrix(),
           cameraClipNear(0), cameraClipFar(0),
           zoomFactor(DEFAULT_ZOOM), cameraPosition(0,0,0)
 {

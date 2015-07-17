@@ -204,12 +204,6 @@ const ConservationPlotSettings& ConservationPlotTask::getSettings(){
 
 //////////////////////////////////////////////////////////////////////////
 //ConservationPlotLogParser
-ConservationPlotLogParser::ConservationPlotLogParser() :
-    ExternalToolLogParser(),
-    progress(-1)
-{
-
-}
 
 int ConservationPlotLogParser::getProgress(){
     return 0;

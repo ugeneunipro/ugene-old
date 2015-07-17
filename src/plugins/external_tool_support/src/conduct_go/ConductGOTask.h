@@ -74,15 +74,6 @@ private:
     bool copyFile(const QString &src, const QString &dst);
 };
 
-class ConductGOLogParser : public ExternalToolLogParser {
-public:
-    ConductGOLogParser();
-
-private:
-    QString lastErrLine;
-    int     progress;
-};
-
 } // U2
 
 #endif // _U2_CONDUCT_GO_TASK_

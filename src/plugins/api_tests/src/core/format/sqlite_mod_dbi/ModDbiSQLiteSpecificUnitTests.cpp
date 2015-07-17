@@ -34,7 +34,7 @@
 
 
 #define IMPLEMENT_MOD_TEST(suite, name) \
-    static const int _##suite##_##name##_type = qRegisterMetaType<U2::TEST_CLASS(suite, name)>(TEST_CLASS_STR(suite, name)); \
+    static const int _##suite##_##name##_type ATTR_UNUSED = qRegisterMetaType<U2::TEST_CLASS(suite, name)>(TEST_CLASS_STR(suite, name)); \
     void TEST_CLASS(suite, name)::SetUp() { \
         ModSQLiteSpecificTestData::cleanUpAllModSteps(); \
     } \

@@ -113,6 +113,12 @@
 #define ENV_UGENE_DEV "UGENE_DEV"
 #define ENV_GUI_TEST "UGENE_GUI_TEST"
 
+#ifdef __GNUC__
+  #define ATTR_UNUSED __attribute__((unused))
+#else
+  #define ATTR_UNUSED
+#endif
+
 #define PATH_PREFIX_DATA "data"
 #define PATH_PREFIX_SCRIPTS "scripts"
 
@@ -140,7 +146,5 @@ enum DNAAlphabetType {
     DNAAlphabet_NUCL,
     DNAAlphabet_AMINO
 };
-
-
 
 #endif

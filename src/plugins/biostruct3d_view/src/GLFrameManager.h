@@ -63,7 +63,6 @@ public:
 private:
     QGLWidget* glWidget;
     Matrix44 rotMatrix;
-    bool synchLock;
     float cameraClipNear, cameraClipFar;
 
     GLfloat zoomFactor;

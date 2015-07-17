@@ -59,7 +59,7 @@ public:
     bool        shiftControl;    //(MACS 2)
     bool        halfExtend;    //(MACS 2)
     bool        broad;    //(MACS 2)
-    qint64      broadCutoff;    //(MACS 2)
+    double      broadCutoff;    //(MACS 2)
 
 public:
     QStringList getArguments(const QString& treatFilePath, const QString& conFilePath);

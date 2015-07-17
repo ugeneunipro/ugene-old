@@ -45,11 +45,11 @@ namespace U2 {
 
 ImportAnnotationsToCsvFiller::ImportAnnotationsToCsvFiller(U2OpStatus &_os, const QString &_fileToRead, const QString &_resultFile,
         ImportAnnotationsToCsvFiller::fileFormat _format, bool _addResultFileToProject,
-        bool _columnSeparator, const QString &_separator, bool _script, int _numberOfLines,
+        bool _columnSeparator, const QString &_separator, int _numberOfLines,
         const QString &_skipAllLinesStartsWith, bool _interpretMultipleAsSingle,
         bool _removeQuotesButton, const QString &_defaultAnnotationName, const RoleParameters& _roleParameters, GTGlobals::UseMethod method):
 Filler(_os, "ImportAnnotationsFromCSVDialog"), fileToRead(_fileToRead), resultFile(_resultFile), format(_format),
-       addResultFileToProject(_addResultFileToProject), columnSeparator(_columnSeparator), script(_script),
+       addResultFileToProject(_addResultFileToProject), columnSeparator(_columnSeparator),
        numberOfLines(_numberOfLines), separator(_separator),
        skipAllLinesStartsWith(_skipAllLinesStartsWith), interpretMultipleAsSingle(_interpretMultipleAsSingle),
        removeQuotesButton(_removeQuotesButton), defaultAnnotationName(_defaultAnnotationName), roleParameters(_roleParameters), useMethod(method) {
@@ -158,11 +158,11 @@ void ImportAnnotationsToCsvFiller::commonScenario()
     GT_CHECK(comboBox != NULL, "ComboBox not found");
     int index = comboBox->findText(comboBoxItems[format]);
     GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
-    GTComboBox::setCurrentIndex(os, comboBox, index);
+    GTComboBox::setCurrentIndex(os, comboBox, index, useMethod);
 
     QSpinBox *spinBox = dialog->findChild<QSpinBox *>();
     GT_CHECK(spinBox != NULL, "SpinBox not found");
-    GTSpinBox::setValue(os, spinBox, numberOfLines);
+    GTSpinBox::setValue(os, spinBox, numberOfLines, useMethod);
 
     QCheckBox *checkBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("addToProjectCheck"));
     GTCheckBox::setChecked(os, checkBox, addResultFileToProject);

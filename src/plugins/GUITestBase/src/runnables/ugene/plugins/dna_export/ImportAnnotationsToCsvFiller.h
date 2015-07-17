@@ -73,8 +73,7 @@ namespace U2 {
         };
         ImportAnnotationsToCsvFiller(U2OpStatus &_os, const QString &_fileToRead, const QString &_resultFile,
                                         ImportAnnotationsToCsvFiller::fileFormat _format, bool _addResultFileToProject,
-                                        bool _columnSeparator, const QString &_separator,
-                                        bool _script, int _numberOfLines,
+                                        bool _columnSeparator, const QString &_separator, int _numberOfLines,
                                         const QString &_skipAllLinesStartsWith, bool _interpretMultipleAsSingle,
                                         bool _removeQuotesButton, const QString &_defaultAnnotationName, const RoleParameters& roleParameters = RoleParameters(), GTGlobals::UseMethod method = GTGlobals::UseMouse);
         ImportAnnotationsToCsvFiller(U2OpStatus &_os, CustomScenario* c):Filler(_os, "ImportAnnotationsFromCSVDialog", c){}
@@ -85,7 +84,6 @@ namespace U2 {
         fileFormat format;
         bool addResultFileToProject;
         bool columnSeparator;
-        bool script;
         int numberOfLines;
         QString separator;
         QString skipAllLinesStartsWith;

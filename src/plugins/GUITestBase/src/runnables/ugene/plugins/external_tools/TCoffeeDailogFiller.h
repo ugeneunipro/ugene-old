@@ -27,17 +27,17 @@
 
 namespace U2{
 
-class TCoffeeDailogFiller : public Filler
-{
+class TCoffeeDailogFiller : public Filler {
 public:
-    TCoffeeDailogFiller(U2OpStatus& _os, int _gapOpen = INT_MAX, int _gapExt = INT_MAX, int _numOfIters = INT_MAX)
-        :Filler(_os,"TCoffeeSupportRunDialog"),
-          gapOpen(_gapOpen),
-          gapExt(_gapExt),
-          numOfIters(_numOfIters){}
+    TCoffeeDailogFiller(U2OpStatus& os, int gapOpen = INT_MAX, int gapExt = INT_MAX, int numOfIters = INT_MAX);
+
     virtual void run();
+
 private:
-    int gapOpen, gapExt, numOfIters;
+    int gapOpen;
+    int gapExt;
+    int numOfIters;
 };
+
 }
 #endif // _U2_TCOFFEE_DAILOG_FILLER_H_
