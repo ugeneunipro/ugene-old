@@ -110,12 +110,13 @@ public:
     static const QChar      GROUP_PATH_SEPARATOR;
 
 private:
-    AnnotationTableObject * parentObject;
-    QString                 name;
+    AnnotationTableObject *         parentObject;
+    QString                         name;
 
-    AnnotationGroup *       parentGroup;
-    QList<AnnotationGroup *> subgroups;
-    QList<Annotation *>     annotations;
+    AnnotationGroup *               parentGroup;
+    QList<AnnotationGroup *>        subgroups;
+    QList<Annotation *>             annotations;
+    QHash<U2DataId, Annotation *>   annotationById;
 };
 
 } // namespace U2

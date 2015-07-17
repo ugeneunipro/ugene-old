@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QScopedPointer>
+#include <QScopedPointer>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
@@ -27,6 +27,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/ZlibAdapter.h>
 
@@ -231,8 +232,10 @@ void ReadAnnotationsTask::run() {
 
     ioLog.info(tr("Reading annotations from %1 [%2]").arg(url).arg(format->getFormatName()));
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-    QScopedPointer<Document> doc(format->loadDocument(iof, url, QVariantMap(), stateInfo));
-    CHECK_OP(stateInfo,);
+    QVariantMap hints;
+    hints[DocumentFormat::DBI_REF_HINT] = QVariant::fromValue<U2DbiRef>(context->getDataStorage()->getDbiRef());
+    QScopedPointer<Document> doc(format->loadDocument(iof, url, hints, stateInfo));
+    CHECK_OP(stateInfo, );
 
     QList<GObject *> annsObjList = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
 
@@ -244,10 +247,12 @@ void ReadAnnotationsTask::run() {
 
     foreach (GObject *go, annsObjList) {
         AnnotationTableObject *annsObj = dynamic_cast<AnnotationTableObject *>(go);
-        CHECK_EXT(NULL != annsObj, stateInfo.setError("NULL annotations object"),);
+        CHECK_EXT(NULL != annsObj, stateInfo.setError("NULL annotations object"), );
 
         if (!mergeAnnotations || annsObjList.size() == 1) {
+            doc->removeObject(go, DocumentObjectRemovalMode_Release);
             const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(annsObj);
+            delete go;
             m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(tableId);
             results.append(m);
         } else {

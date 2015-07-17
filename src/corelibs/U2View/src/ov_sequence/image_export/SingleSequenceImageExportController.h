@@ -28,14 +28,12 @@
 
 #include <U2Gui/ImageExportTask.h>
 
+#include "ExportImagePainter.h"
 
 namespace U2 {
 
 class ADVSingleSequenceWidget;
 class SequenceExportSettingsWidget;
-
-class ExportImagePainter;
-class CustomExportSettings;
 
 /************************************************************************/
 /* SingleSequenceImageExportController */
@@ -58,9 +56,9 @@ public slots:
 
 private:
     void checkExportSettings();
-    ADVSingleSequenceWidget*        sequenceWidget;
-    SequenceExportSettingsWidget*   seqSettingsWidget;
-    QString         format;
+    ADVSingleSequenceWidget *               sequenceWidget;
+    SequenceExportSettingsWidget *          seqSettingsWidget;
+    QString                                 format;
 
     QSharedPointer<ExportImagePainter>      currentPainter;
     QSharedPointer<CustomExportSettings>    customExportSettings;

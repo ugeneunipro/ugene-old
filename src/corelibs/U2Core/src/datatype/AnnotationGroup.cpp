@@ -126,6 +126,10 @@ QList<Annotation *> AnnotationGroup::addAnnotations(const QList<SharedAnnotation
         result.append(new Annotation(feature.id, d, this, parentObject));
         SAFE_POINT_OP(os, result);
     }
+
+    foreach (Annotation *a, result) {
+        annotationById[a->id] = a;
+    }
     annotations.append(result);
 
     parentObject->setModified(true);
@@ -141,6 +145,9 @@ void AnnotationGroup::addShallowAnnotations(const QList<Annotation *> &anns, boo
     }
 #endif
 
+    foreach(Annotation *a, anns) {
+        annotationById[a->id] = a;
+    }
     annotations.append(anns);
 
     if (newAnnotations) {
@@ -162,6 +169,7 @@ void AnnotationGroup::removeAnnotations(const QList<Annotation *> &anns) {
     SAFE_POINT_OP(os, );
 
     foreach (Annotation *a, anns) {
+        annotationById.remove(a->id);
         annotations.removeOne(a);
         delete a;
     }
@@ -279,15 +287,14 @@ AnnotationGroup * AnnotationGroup::addSubgroup(const U2Feature &feature) {
 Annotation * AnnotationGroup::findAnnotationById(const U2DataId &featureId) const {
     SAFE_POINT(!featureId.isEmpty(), "Unexpected feature provided", NULL);
 
-    foreach (Annotation *a, annotations) {
-        if (a->id == featureId) {
-            return a;
-        }
-    }
-    foreach (AnnotationGroup *g, subgroups) {
-        Annotation *result = g->findAnnotationById(featureId);
-        if (NULL != result) {
-            return result;
+    if (annotationById.contains(featureId)) {
+        return annotationById[featureId];
+    } else {
+        foreach(AnnotationGroup *g, subgroups) {
+            Annotation *result = g->findAnnotationById(featureId);
+            if (NULL != result) {
+                return result;
+            }
         }
     }
     return NULL;
