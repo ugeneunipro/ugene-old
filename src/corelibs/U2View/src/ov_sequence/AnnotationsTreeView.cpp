@@ -2224,7 +2224,7 @@ QString AVQualifierItem::simplifyText(const QString& origValue) {
     res.replace("\t", "    ");
     res.replace("\r", "");
     res.replace("\n", " ");
-    res.trimmed();
+    res = res.trimmed();
     return res;
 }
 
