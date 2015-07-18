@@ -2604,7 +2604,7 @@ GUI_TEST_CLASS_DEFINITION( test_2344 ){
 //    1. Open WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //    2. Add the "ChIP-seq analysis with Cistrome tools" sample.
-    GTUtilsDialog::waitForDialog(os, new EscapeClicker(os, "ChIP-seq Analysis Wizard"));
+    GTUtilsDialog::waitForDialog(os, new DefaultWizardFiller(os, "ChIP-seq Analysis Wizard"));
     GTUtilsDialog::waitForDialog(os, new ConfigurationWizardFiller(os, "Configure Cistrome Workflow", QStringList()<<
                                                                    "Only treatment tags"));
     GTUtilsWorkflowDesigner::addSample(os, "Cistrome");
@@ -4646,7 +4646,13 @@ GUI_TEST_CLASS_DEFINITION(test_2640){
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 //    2. Select "tuxedo" sample
 //    3. Set proper input data(_common_data/NIAID_pipelines/tuxedo).
-    GTLogTracer l("tophat-2.0.8b/tophat -p 94 --output-dir");
+    QString expected;
+#ifdef Q_OS_MAC
+    expected = "tophat-2.0.9/tophat -p 94 --output-dir";
+#else
+    "tophat-2.0.8b/tophat -p 94 --output-dir"
+#endif
+    GTLogTracer l(expected);
     QMap<QString, QVariant> map;
     map.insert("Bowtie index directory", QDir().absoluteFilePath(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/index"));
     map.insert("Bowtie index basename", "chr6");

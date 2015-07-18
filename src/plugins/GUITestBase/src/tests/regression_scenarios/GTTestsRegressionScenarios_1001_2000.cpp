@@ -4429,7 +4429,7 @@ GUI_TEST_CLASS_DEFINITION(test_1432) {
         GTWidget::click(os, groupTable);
 
         QString name = GTTableView::data(os, groupTable, i, 0);
-        CHECK_SET_ERR(name.endsWith(QString::number(i)), "Wrong marker group name");
+        CHECK_SET_ERR(name.endsWith(QString::number(i)), QString("Wrong %1 marker group name: %2").arg(i).arg(name));
     }
 }
 
@@ -5784,7 +5784,11 @@ GUI_TEST_CLASS_DEFINITION(test_1588) {
     GTUtilsDashboard::findElement(os, "Arguments", "SPAN");
     GTUtilsDashboard::findElement(os, "Error log", "SPAN");
     GTUtilsDashboard::findElement(os, "--mate-inner-dist 50", "LI", false);
+#ifdef Q_OS_MAC
+    GTUtilsDashboard::findElement(os, "tophat-2.0.9", "SPAN", false);
+#else
     GTUtilsDashboard::findElement(os, "tophat-2.0.8b", "SPAN", false);
+#endif
     GTUtilsDashboard::findElement(os, "Beginning TopHat run", "LI", false);
 
 

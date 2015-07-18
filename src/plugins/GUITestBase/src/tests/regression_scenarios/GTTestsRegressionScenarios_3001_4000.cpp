@@ -871,7 +871,7 @@ GUI_TEST_CLASS_DEFINITION(test_3140) {
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
     }
 
-    GTGlobals::sleep(1000);
+    //GTGlobals::sleep(1000);
     int renderTasksCount = GTUtilsTaskTreeView::getTopLevelTasksCount(os);
     CHECK_SET_ERR(1 == renderTasksCount, QString("An unexpected overview render tasks count: expect %1, got %2").arg(1).arg(renderTasksCount));
 
