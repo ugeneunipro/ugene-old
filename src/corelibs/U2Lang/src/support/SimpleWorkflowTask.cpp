@@ -186,7 +186,9 @@ Task::ReportResult SimpleMSAWorkflow4GObjectTask::report() {
     CHECK_EXT(!obj->isStateLocked(), setError(tr("Object '%1' is locked").arg(docName)), ReportResult_Finished);
 
     MAlignment res = getResult();
-    MSAUtils::restoreRowNames( res, obj->getMAlignment().getRowNames());
+    const MAlignment &originalAlignment = obj->getMAlignment();
+    MSAUtils::restoreRowNames(res, originalAlignment.getRowNames());
+    res.setName(originalAlignment.getName());
     obj->setMAlignment(res);
 
     delete userModStep;
