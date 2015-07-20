@@ -22,6 +22,8 @@
 #ifndef _U2_ROLLING_ARRAY_H_
 #define _U2_ROLLING_ARRAY_H_
 
+#include <assert.h>
+
 #include <QVector>
 
 namespace U2 {
