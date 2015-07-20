@@ -4650,7 +4650,7 @@ GUI_TEST_CLASS_DEFINITION(test_2640){
 #ifdef Q_OS_MAC
     expected = "tophat-2.0.9/tophat -p 94 --output-dir";
 #else
-    "tophat-2.0.8b/tophat -p 94 --output-dir"
+    expected = "tophat-2.0.8b/tophat -p 94 --output-dir";
 #endif
     GTLogTracer l(expected);
     QMap<QString, QVariant> map;
