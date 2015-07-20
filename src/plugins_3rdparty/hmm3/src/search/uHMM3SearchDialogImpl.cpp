@@ -48,7 +48,7 @@ const QString UHMM3SearchDialogImpl::DOM_E_MINUS_PREFIX         = "1E";
 const QString UHMM3SearchDialogImpl::HMM_FILES_DIR_ID           = "uhmmer3_search_dlg_impl_hmm_dir";
 const QString UHMM3SearchDialogImpl::ANNOTATIONS_DEFAULT_NAME   = "hmm_signal";
 
-UHMM3SearchDialogImpl::UHMM3SearchDialogImpl(const U2SequenceObject * seqObj, QWidget * p)
+UHMM3SearchDialogImpl::UHMM3SearchDialogImpl(U2SequenceObject *seqObj, QWidget *p)
     : QDialog(p)
 {
     assert(NULL != seqObj);
@@ -64,7 +64,7 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl(const U2SequenceObject * seqObj, QW
     useScoreTresholdGroup.addButton(useTCTresholdsButton);
     useExplicitScoreTresholdButton->setChecked(true);
 
-    model.sequence = QPointer<const U2SequenceObject>(seqObj);
+    model.sequence = QPointer<U2SequenceObject>(seqObj);
     setModelValues(); // default settings here
 
     // Annotations widget

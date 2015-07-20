@@ -43,7 +43,7 @@ namespace U2 {
 struct UHMM3SearchDialogModel {
     UHMM3SearchTaskSettings     searchSettings;
     QString                     hmmfile;
-    QPointer<const U2SequenceObject>  sequence;
+    QPointer<U2SequenceObject>  sequence;
 }; // UHMM3SearchDialogModel
 
 class UHMM3SearchDialogImpl : public QDialog, public Ui_UHMM3SearchDialog {
@@ -55,7 +55,7 @@ public:
     static const QString ANNOTATIONS_DEFAULT_NAME;
     
 public:
-    UHMM3SearchDialogImpl( const U2SequenceObject * seqObj, QWidget * p = NULL );
+    UHMM3SearchDialogImpl(U2SequenceObject *seqObj, QWidget *p = NULL);
     
 private:
     void setModelValues();
@@ -64,13 +64,13 @@ private:
     
 private slots:
     void sl_okButtonClicked();
-    void sl_useEvalTresholdsButtonChanged( bool checked );
-    void sl_useScoreTresholdsButtonChanged( bool checked );
-    void sl_useExplicitScoreTresholdButton( bool checked );
-    void sl_maxCheckBoxChanged( int state );
-    void sl_domESpinBoxChanged( int newVal );
+    void sl_useEvalTresholdsButtonChanged(bool checked);
+    void sl_useScoreTresholdsButtonChanged(bool checked);
+    void sl_useExplicitScoreTresholdButton(bool checked);
+    void sl_maxCheckBoxChanged(int state);
+    void sl_domESpinBoxChanged(int newVal);
     void sl_queryHmmFileToolButtonClicked();
-    void sl_domZCheckBoxChanged( int state );
+    void sl_domZCheckBoxChanged(int state);
     
 private:
     QButtonGroup                        useScoreTresholdGroup;
