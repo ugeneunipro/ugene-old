@@ -4,6 +4,7 @@ include (U2View.pri)
 HEADERS += src/LicenseDialog.h \
            src/UndoRedoFramework.h \
            src/WebWindow.h \
+           src/ov_assembly/AddReadsToDocumentTask.h \
            src/ov_assembly/AssemblyAnnotationsArea.h \
            src/ov_assembly/AssemblyBrowser.h \
            src/ov_assembly/AssemblyBrowserFactory.h \
@@ -220,6 +221,7 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
 SOURCES += src/LicenseDialog.cpp \
            src/UndoRedoFramework.cpp \
            src/WebWindow.cpp \
+           src/ov_assembly/AddReadsToDocumentTask.cpp \
            src/ov_assembly/AssemblyAnnotationsArea.cpp \
            src/ov_assembly/AssemblyBrowser.cpp \
            src/ov_assembly/AssemblyBrowserFactory.cpp \

@@ -19,43 +19,39 @@
  * MA 02110-1301, USA.
  */
 
-#include "MultiTask.h"
-
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2SafePoints.h>
 
-namespace U2
-{
+#include "MultiTask.h"
 
-MultiTask::MultiTask( const QString & name, const QList<Task *>& taskz, bool withLock, TaskFlags f) :
-Task(name, f), tasks(taskz)
+namespace U2 {
+
+MultiTask::MultiTask(const QString &name, const QList<Task *> &taskz, bool withLock, TaskFlags f)
+    : Task(name, f), tasks(taskz)
 {
     setMaxParallelSubtasks(1);
-    if( taskz.empty() ) {
-        assert( false );
-        return;
-    }
+    SAFE_POINT(!taskz.empty(), "No tasks provided to multitask", );
 
     foreach( Task * t, taskz ) {
         addSubTask(t);
     }
-    if(withLock){
+    if (withLock) {
         SAFE_POINT(AppContext::getProject() != NULL, "MultiTask::no project", );
         l = new StateLock(getTaskName(), StateLockFlag_LiveLock);
         AppContext::getProject()->lockState(l);
-    }else{
+    } else {
         l = NULL;
     }
 }
 
-QList<Task*> MultiTask::getTasks() const {
+QList<Task *> MultiTask::getTasks() const {
     return tasks;
 }
 
-Task::ReportResult MultiTask::report(){
-    Project * p = AppContext::getProject();
-    if(l != NULL && p != NULL){
+Task::ReportResult MultiTask::report() {
+    Project *p = AppContext::getProject();
+    if (l != NULL && p != NULL) {
         p->unlockState(l);
         delete l;
         l = NULL;
@@ -77,35 +73,34 @@ QString MultiTask::generateReport() const {
 
 //////////////////////////////////////////////////////////////////////////
 //SequentialMultiTask
-SequentialMultiTask::SequentialMultiTask( const QString & name, const QList<Task *>& taskz, TaskFlags f )
-:Task(name, f), tasks(taskz)
+
+SequentialMultiTask::SequentialMultiTask(const QString &name, const QList<Task *> &taskz, TaskFlags f)
+    : Task(name, f), tasks(taskz)
 {
     setMaxParallelSubtasks(1);
 }
 
-void SequentialMultiTask::prepare(){
+void SequentialMultiTask::prepare() {
     //run the first task
-    if (tasks.size() > 0){
+    if (tasks.size() > 0) {
         addSubTask(tasks.first());
     }
 
 }
 
-QList<Task*> SequentialMultiTask::onSubTaskFinished( Task* subTask ){
-    QList<Task*> res;
+QList<Task *> SequentialMultiTask::onSubTaskFinished(Task *subTask) {
+    QList<Task *> res;
 
     int idx = tasks.indexOf(subTask);
-    if (( idx != -1 ) && (idx + 1 < tasks.size())){
+    if ((idx != -1) && (idx + 1 < tasks.size())) {
         res.append(tasks.at(idx+1));
     }
 
     return res;
 }
 
-QList<Task*> SequentialMultiTask::getTasks() const{
+QList<Task *> SequentialMultiTask::getTasks() const {
     return tasks;
 }
-
-
 
 } //namespace

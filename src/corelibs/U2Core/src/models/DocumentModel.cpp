@@ -661,11 +661,20 @@ bool Document::unload(bool deleteObjects) {
     loadStateChangeMode = true;
 
     QList<UnloadedObjectInfo> unloadedInfo;
-    foreach(GObject* obj, objects) {
+    QList<GObject *> tmpObjects;
+    foreach (GObject* obj, objects) {
         unloadedInfo.append(UnloadedObjectInfo(obj));
-        _removeObject(obj, deleteObjects);
+        // exclude objects from the document
+        tmpObjects.append(obj);
+        _removeObject(obj, false);
     }
     addUnloadedObjects(unloadedInfo);
+
+    // deallocate objects
+    if (deleteObjects) {
+        removeObjectsDataFromDbi(tmpObjects);
+        qDeleteAll(tmpObjects);
+    }
 
     StateLock* fl = modLocks[DocumentModLock_FORMAT_AS_INSTANCE];
     if (fl != NULL) {

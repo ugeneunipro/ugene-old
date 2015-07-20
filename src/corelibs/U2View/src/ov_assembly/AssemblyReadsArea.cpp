@@ -32,26 +32,23 @@
 
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/Counter.h>
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/FormatUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
+#include <U2Core/MultiTask.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/Timer.h>
-#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2AssemblyReadIterator.h>
 #include <U2Core/U2AssemblyUtils.h>
-#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Formats/DocumentFormatUtils.h>
-
 #include <U2Gui/OpenViewTask.h>
-#include <U2Core/QObjectScopedPointer.h>
 
+#include "AddReadsToDocumentTask.h"
 #include "AssemblyBrowser.h"
 #include "AssemblyConsensusArea.h"
 #include "AssemblyReadsArea.h"
@@ -873,50 +870,38 @@ void AssemblyReadsArea::updateMenuActions() {
     exportReadAction->setEnabled(found);
 }
 
-void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
-    GCOUNTER( cvar, tvar, "AssemblyReadsArea:exportReads" );
+void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> &reads) {
+    GCOUNTER(cvar, tvar, "AssemblyReadsArea:exportReads");
 
-    assert(!reads.isEmpty());
-    QObjectScopedPointer<ExportReadsDialog> dlg = new ExportReadsDialog(this, QList<DocumentFormatId>() << BaseDocumentFormats::FASTA << BaseDocumentFormats::FASTQ);
+    SAFE_POINT(!reads.isEmpty(), "No reads supplied for export", );
+    QObjectScopedPointer<ExportReadsDialog> dlg = new ExportReadsDialog(this,
+        QList<DocumentFormatId>() << BaseDocumentFormats::FASTA << BaseDocumentFormats::FASTQ);
     const int ret = dlg->exec();
     CHECK(!dlg.isNull(), );
 
-    if(ret == QDialog::Accepted) {
+    if (ret == QDialog::Accepted) {
         ExportReadsDialogModel model = dlg->getModel();
-        assert(!model.filepath.isEmpty());
-        DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(model.format);
-        if(df == NULL) {
-            assert(false);
-            return;
-        }
-        IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(model.filepath));
+        SAFE_POINT(!model.filepath.isEmpty(), "Result file path is empty", );
+        DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(model.format);
+        SAFE_POINT(NULL != df, L10N::nullPointerError("document format"), );
+
+        IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(model.filepath));
+        SAFE_POINT(NULL != iof, L10N::nullPointerError("I/O adapter"), );
+
         U2OpStatus2Log os;
-        Document * doc = df->createNewLoadedDocument(iof, model.filepath, os);
+        Document *doc = df->createNewLoadedDocument(iof, model.filepath, os);
         CHECK_OP(os, )
-        SaveDocFlags fl;
-        fl |= SaveDoc_Overwrite;
-        fl |= SaveDoc_DestroyAfter;
 
-        QList<GObject*> objs;
-        foreach(const U2AssemblyRead & r, reads) {
-            const DNAAlphabet * al = U2AlphabetUtils::findBestAlphabet(r->readSequence);
-            DNASequence seq = DNASequence(r->name, r->readSequence, al);
-            seq.quality = DNAQuality(r->quality, DNAQualityType_Sanger);
-            U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), U2ObjectDbi::ROOT_FOLDER, seq.getName(), objs, seq, os);
-            CHECK_OP(os, );
-            doc->addObject(seqObj);
+        SaveDocFlags saveFlags(SaveDoc_Overwrite);
+        if (model.addToProject) {
+            saveFlags |= SaveDoc_OpenAfter;
         }
 
-        SaveDocumentTask * saveDocTask = new SaveDocumentTask(doc, fl);
-        Task * t = NULL;
-        if (!model.addToProject) { // only saving
-            t = saveDocTask;
-        } else { // save, add doc
-            t = new AddDocumentAndOpenViewTask(new Document(df, iof, model.filepath, U2DbiRef())); // new doc because doc will be deleted
-            t->addSubTask(saveDocTask);
-            t->setMaxParallelSubtasks(1);
-        }
-        AppContext::getTaskScheduler()->registerTopLevelTask(t);
+        AddReadsToDocumentTask *addReadsTask = new AddReadsToDocumentTask(reads, doc);
+        Task *saveDocTask = new SaveDocumentTask(doc, saveFlags);
+
+        Task *resultTask = new SequentialMultiTask("Export short reads to file", QList<Task *>() << addReadsTask << saveDocTask);
+        AppContext::getTaskScheduler()->registerTopLevelTask(resultTask);
     }
 }
 

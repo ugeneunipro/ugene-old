@@ -19,45 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_MULTI_TASK_H_
-#define _U2_MULTI_TASK_H_
+#ifndef _U2_ADD_READS_TO_DOCUMENT_TASK_
+#define _U2_ADD_READS_TO_DOCUMENT_TASK_
 
+#include <U2Core/DocumentModel.h>
 #include <U2Core/Task.h>
+#include <U2Core/U2Assembly.h>
 
 namespace U2 {
 
-class StateLock;
-
-//runs all given tasks as subtasks
-class U2CORE_EXPORT MultiTask : public Task {
+class AddReadsToDocumentTask : public Task {
     Q_OBJECT
 public:
-    MultiTask(const QString &name, const QList<Task *> &taskz, bool withLock = false, TaskFlags f = TaskFlags_NR_FOSCOE);
+    AddReadsToDocumentTask(const QList<U2AssemblyRead> &reads, const QPointer<Document> &doc);
 
-    QList<Task *> getTasks() const;
-
+    void run();
     ReportResult report();
-    QString generateReport() const;
 
 private:
-    StateLock *l;
-    QList<Task *> tasks;
+    const QList<U2AssemblyRead> reads;
+    const QPointer<Document> doc;
+    U2DbiRef dbiRef;
+    QMap<U2DataId, QString> seqNameById;
 };
 
-//waits until each given task is finished and runs the next task after that
-class U2CORE_EXPORT SequentialMultiTask : public Task{
-    Q_OBJECT
-public:
-    SequentialMultiTask(const QString &name, const QList<Task *> &taskz, TaskFlags f = TaskFlags_NR_FOSCOE);
-
-    void prepare();
-    virtual QList<Task *> onSubTaskFinished(Task *subTask);
-    QList<Task *> getTasks() const;
-
-private:
-    QList<Task *> tasks;
-};
-
-} //namespace
+} // namespace U2
 
 #endif
