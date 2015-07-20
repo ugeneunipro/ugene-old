@@ -124,7 +124,7 @@ private:
 
     int numLines;
     int rulerLine;
-    int baseLine;
+    int directLine;
     int complementLine;
     int firstDirectTransLine;
     int firstComplTransLine;

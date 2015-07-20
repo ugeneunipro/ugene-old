@@ -265,20 +265,20 @@ DetViewRenderArea::DetViewRenderArea(DetView* v) : GSequenceLineViewAnnotatedRen
 void DetViewRenderArea::updateLines() {
     numLines = -1;
     rulerLine = -1;
-    baseLine = -1;
+    directLine = -1;
     complementLine = -1;
     firstDirectTransLine = -1;
     firstComplTransLine = -1;
 
     DetView* detView = getDetView();
     if (detView->isOneLineMode()) {
-        baseLine = 0;
+        directLine = 0;
         rulerLine = 1;
         numLines = 2;
     } else if (detView->hasComplementaryStrand() && detView->hasTranslations()) {
         //change
         firstDirectTransLine = 0;
-        baseLine = 3;
+        directLine = 3;
         rulerLine = 4;
         complementLine = 5;
         firstComplTransLine = 6;
@@ -288,7 +288,7 @@ void DetViewRenderArea::updateLines() {
         for(int i = 0; i<6; i++){
             if(!v[i]){
                 if(i<3){
-                    baseLine--;
+                    directLine--;
                     rulerLine--;
                     complementLine--;
                     firstComplTransLine--;
@@ -298,23 +298,23 @@ void DetViewRenderArea::updateLines() {
         }
     } else if (detView->hasComplementaryStrand()) {
         assert(!detView->hasTranslations());
-        baseLine = 0;
+        directLine = 0;
         rulerLine = 1;
         complementLine = 2;
         numLines = 3;
     } else {
         assert(!detView->hasComplementaryStrand() && detView->hasTranslations());
         firstDirectTransLine = 0;
-        baseLine = 3;
+        directLine = 3;
         rulerLine = 4;
         numLines = 5;
         QVector<bool> v = detView->getSequenceContext()->getTranslationRowsVisibleStatus();
 
-        for(int i = 0; i<3; i++){
-            if(!v[i]){
-                    baseLine--;
-                    rulerLine--;
-                    numLines--;
+        for (int i = 0; i < 3; i++) {
+            if (!v[i]) {
+                directLine--;
+                rulerLine--;
+                numLines--;
             }
         }
     }
@@ -332,7 +332,7 @@ U2Region DetViewRenderArea::getAnnotationYRange(Annotation *a, int region, const
     if (complement) {
         line = transl ? firstComplTransLine + frame : complementLine;
     } else {
-        line = transl ? firstDirectTransLine + frame : baseLine;
+        line = transl ? firstDirectTransLine + frame : directLine;
     }
     SAFE_POINT(-1 != line, "Unable to calculate annotation vertical position!", U2Region());
     int y = getLineY(line);
@@ -340,7 +340,7 @@ U2Region DetViewRenderArea::getAnnotationYRange(Annotation *a, int region, const
 }
 
 U2Region DetViewRenderArea::getMirroredYRange(const U2Strand &mirroredStrand) const {
-    int line = mirroredStrand.isDirect() ? baseLine : complementLine;
+    int line = mirroredStrand.isDirect() ? directLine : complementLine;
     int y = getLineY(line);
     return U2Region(y + getHalfOfUnusedHeight(), lineHeight);
 }
@@ -464,7 +464,7 @@ void DetViewRenderArea::drawDirect(QPainter& p, const U2Region& visibleRange) {
     const char* seq = sequence.constData();
 
     /// draw base line;
-    int y = getTextY(baseLine);
+    int y = getTextY(directLine);
     for(int i = 0; i < visibleRange.length; i++) {
         char nucl = seq[i];
         p.drawText(i*charWidth + xCharOffset, y, QString(nucl));
@@ -726,20 +726,20 @@ void DetViewRenderArea::drawSequenceSelection(QPainter& p) {
     p.setPen(pen1);
 
     foreach(const U2Region& r, sel->getSelectedRegions()) {
-        highlight(p, r, baseLine);
+        highlight(p, r, directLine);
         if (detView->hasComplementaryStrand()) {
             highlight(p, r, complementLine);
         }
         if (detView->hasTranslations()) {
             int translLine = posToDirectTransLine(r.startPos);
-            if(r.length >= 3){
+            if (translLine >= 0 && r.length >= 3) {
                 highlight(p, U2Region(r.startPos,r.length / 3 * 3), translLine);
             }
             if (detView->hasComplementaryStrand()) {
                 int complTransLine = posToComplTransLine(r.endPos());
-                if(r.length >= 3){
-                    qint64 translLen = r.length /3 * 3;
-                    highlight(p, U2Region(r.endPos()-translLen,translLen), complTransLine);
+                if (complTransLine >= 0 && r.length >= 3) {
+                    const qint64 translLen = r.length / 3 * 3;
+                    highlight(p, U2Region(r.endPos() - translLen, translLen), complTransLine);
                 }
             }
         }
@@ -757,19 +757,49 @@ void DetViewRenderArea::drawRuler(QPainter& p) {
     GraphUtils::drawRuler(p, QPoint(firstCharCenter, y), firstLastLen, visibleRange.startPos + 1, visibleRange.endPos(), rulerFont, c);
 }
 
-
 int DetViewRenderArea::posToDirectTransLine(int p) const {
-    assert(firstDirectTransLine >= 0);
-    return firstDirectTransLine + p % 3;
+    SAFE_POINT(firstDirectTransLine >= 0, "Invalid direct translation line number", -1);
+    const int absoluteLineNumber = p % 3;
+    int lineNumber = firstDirectTransLine + absoluteLineNumber;
+
+    const QVector<bool> rowsVisibility = getDetView()->getSequenceContext()->getTranslationRowsVisibleStatus();
+    const int halfRowsCount = rowsVisibility.size() / 2;
+    SAFE_POINT(absoluteLineNumber < halfRowsCount, "Unexpected translation line number", -1);
+    if (!rowsVisibility[absoluteLineNumber]) {
+        return -1;
+    } else {
+        for (int i = 0; i < absoluteLineNumber; ++i) {
+            if (!rowsVisibility[i]) {
+                --lineNumber;
+            }
+        }
+        return lineNumber;
+    }
 }
 
 int DetViewRenderArea::posToComplTransLine(int p) const {
-    assert(firstComplTransLine >= 0);
-    return firstComplTransLine + (view->getSequenceLength() - p) % 3;
+    SAFE_POINT(firstComplTransLine >= 0, "Invalid complementary translation line number", -1);
+    const int absoluteLineNumber = (view->getSequenceLength() - p) % 3;
+    int lineNumber = firstComplTransLine + absoluteLineNumber;
+
+    const QVector<bool> rowsVisibility = getDetView()->getSequenceContext()->getTranslationRowsVisibleStatus();
+    const int halfRowsCount = rowsVisibility.size() / 2;
+    SAFE_POINT(absoluteLineNumber < halfRowsCount, "Unexpected translation line number", -1);
+    if (!rowsVisibility[halfRowsCount + absoluteLineNumber]) {
+        return -1;
+    } else {
+        for (int i = halfRowsCount; i < halfRowsCount + absoluteLineNumber; ++i) {
+            if (!rowsVisibility[i]) {
+                --lineNumber;
+            }
+        }
+        return lineNumber;
+    }
 }
 
-
 void DetViewRenderArea::highlight(QPainter& p, const U2Region& r, int line) {
+    SAFE_POINT(line >= 0, "Unexpected sequence view line number", );
+
     const U2Region& visibleRange = view->getVisibleRange();
     if (!visibleRange.intersects(r)) {
         return;
