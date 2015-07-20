@@ -118,7 +118,6 @@ public:
     int getNewObjectRowInParent(GObject *obj, const QString &parentPath) const;
     QList<Folder*> getSubFolders(const QString &path) const;
     QList<GObject*> getObjects(const QString &path) const;
-    bool isRootRecycleBinFolder(const QString &path) const;
     QStringList getAllSubFolders(const QString &path) const;
 
     static QString getParentFolder(const QString &path);

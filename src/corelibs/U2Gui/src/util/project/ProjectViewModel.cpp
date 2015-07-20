@@ -692,14 +692,15 @@ bool ProjectViewModel::renameFolderInDb(Document *doc, const QString &oldPath, Q
 }
 
 bool ProjectViewModel::isFolderVisible(Document *doc, const QString &path) const {
-    QString parentPath = DocumentFolders::getParentFolder(path);
-    if (ProjectUtils::RECYCLE_BIN_FOLDER_PATH != parentPath) {
-        return true;
-    }
-
     SAFE_POINT(NULL != doc, "NULL document", false);
     SAFE_POINT(folders.contains(doc), "Unknown document", false);
-    return folders[doc]->isRootRecycleBinFolder(path);
+
+    if (ProjectUtils::isFolderInRecycleBin(path)) {
+        const QString parentPath = Folder::getFolderParentPath(path);
+        return parentPath == ProjectUtils::RECYCLE_BIN_FOLDER_PATH;
+    } else {
+        return true;
+    }
 }
 
 int ProjectViewModel::beforeInsertDocument(Document * /*doc*/) {

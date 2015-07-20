@@ -266,23 +266,6 @@ QList<GObject*> DocumentFolders::getObjects(const QString &parentPath) const {
     }
 }
 
-bool DocumentFolders::isRootRecycleBinFolder(const QString &path) const {
-    QStringList paths;
-    if (hasCachedSubFolders.value(ProjectUtils::RECYCLE_BIN_FOLDER_PATH, false)) {
-        paths = cachedSubFoldersNames[ProjectUtils::RECYCLE_BIN_FOLDER_PATH];
-    } else {
-        paths = calculateSubFoldersNames(ProjectUtils::RECYCLE_BIN_FOLDER_PATH);
-        cacheSubFoldersNames(ProjectUtils::RECYCLE_BIN_FOLDER_PATH, paths);
-    }
-
-    foreach (const QString &pathInRB, paths) {
-        if (path.startsWith(pathInRB + U2ObjectDbi::PATH_SEP)) {
-            return false;
-        }
-    }
-    return true;
-}
-
 QString DocumentFolders::getParentFolder(const QString &path) {
     if (ProjectUtils::isFolderInRecycleBin(path)) {
         return ProjectUtils::RECYCLE_BIN_FOLDER_PATH;
