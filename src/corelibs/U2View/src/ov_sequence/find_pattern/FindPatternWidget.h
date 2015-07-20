@@ -161,6 +161,7 @@ private:
 
     void verifyPatternAlphabet();
     bool checkAlphabet(const QString& pattern);
+    void showTooLongSequenceError();
 
     void setRegionToWholeSequence();
 

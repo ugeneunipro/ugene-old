@@ -172,8 +172,6 @@ protected:
     // special flag setup by child classes that tells to this class do or skip
     // any changes to selection on mouse ops
     bool                            ignoreMouseSelectionEvents;
-
-
 };
 
 class U2VIEW_EXPORT GSequenceLineViewRenderArea : public QWidget  {

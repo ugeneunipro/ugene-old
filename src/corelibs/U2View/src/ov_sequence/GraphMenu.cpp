@@ -52,55 +52,48 @@ GraphAction::GraphAction(GSequenceGraphFactory* _factory)
     connect(this, SIGNAL(triggered()), SLOT(sl_handleGraphAction()));
 }
 
-
 /**
  * Shows/hides a graph depending on its state: checked/unchecked
  */
 void GraphAction::sl_handleGraphAction() {
-    GraphAction* graphAction = qobject_cast<GraphAction*>(sender());
-    if (graphAction->isChecked()) {
-        SAFE_POINT(graphAction->view == NULL, "Graph view is checked, but not available!",);
+    if (isChecked()) {
+        SAFE_POINT(view == NULL, "Graph view is checked, but not available!",);
 
         // Getting the menu action
-        GraphMenuAction* menuAction = qobject_cast<GraphMenuAction*>(graphAction->parent());
+        GraphMenuAction* menuAction = qobject_cast<GraphMenuAction*>(parent());
         SAFE_POINT(menuAction!=NULL, "GraphMenuAction is not available (while handling an action)!",);
 
         // Creating graphs
-        ADVSingleSequenceWidget* sequenceWidget =
-            qobject_cast<ADVSingleSequenceWidget*>(menuAction->seqWidget);
-
-#ifdef UGENE_X86
-        if (sequenceWidget->getSequenceLength() > U2SequenceObject::getMaxSeqLengthForX86Os()) {
-            //do not allow to draw a graph
-            QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), U2SequenceObject::MAX_SEQ_32_ERROR_MESSAGE);
-            graphAction->setChecked(false);
-            return;
-        }
-#endif
-
-        graphAction->view =
-            new GSequenceGraphViewWithFactory(sequenceWidget, graphAction->factory);
-        graphAction->view->setGraphDrawer(graphAction->factory->getDrawer(graphAction->view));
-        QList<QSharedPointer<GSequenceGraphData> > graphs = graphAction->factory->createGraphs(graphAction->view);
+        ADVSingleSequenceWidget* sequenceWidget = qobject_cast<ADVSingleSequenceWidget*>(menuAction->seqWidget);
+        view = new GSequenceGraphViewWithFactory(sequenceWidget, factory);
+        GSequenceGraphDrawer *graphDrawer = factory->getDrawer(view);
+        connect(graphDrawer, SIGNAL(si_graphRenderError()), SLOT(sl_renderError()));
+        view->setGraphDrawer(graphDrawer);
+        QList<QSharedPointer<GSequenceGraphData> > graphs = factory->createGraphs(view);
         foreach(const QSharedPointer<GSequenceGraphData>& graph, graphs) {
-            graphAction->view->addGraphData(graph);
+            view->addGraphData(graph);
         }
-        sequenceWidget->addSequenceView(graphAction->view);
+        sequenceWidget->addSequenceView(view);
         if(true == isBookmarkUpdate) {
-            graphAction->view->createLabelsOnPositions(positions);
+            view->createLabelsOnPositions(positions);
             isBookmarkUpdate = false;
         }
-    }
-    else
-    {
-        SAFE_POINT(graphAction->view != NULL, "Graph view is not checked, but is present!",);
-        delete graphAction->view;
-        graphAction->view = NULL;
+    } else {
+        SAFE_POINT(view != NULL, "Graph view is not checked, but is present!",);
+        delete view;
+        view = NULL;
     }
 }
+
+void GraphAction::sl_renderError() {
+    delete view;
+    view = NULL;
+    setChecked(false);
+}
+
 void GraphAction::sl_updateGraphView(const QStringList &graphName, const QVariantMap &map) {
-    foreach(const QString &name, graphName) {
-        if(name == text()) {
+    foreach (const QString &name, graphName) {
+        if (name == text()) {
             CHECK(view != NULL, );
             isBookmarkUpdate = true;
             positions = map[name].toList();

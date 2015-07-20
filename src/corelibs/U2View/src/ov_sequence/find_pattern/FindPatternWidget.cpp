@@ -899,7 +899,6 @@ void FindPatternWidget::setRegionToWholeSequence()
     boxRegion->setCurrentIndex(boxRegion->findData(RegionSelectionIndex_WholeSequence));
 }
 
-
 void FindPatternWidget::verifyPatternAlphabet()
 {
     U2OpStatusImpl os;
@@ -938,7 +937,6 @@ void FindPatternWidget::sl_onSequenceTranslationChanged(int /* index */)
     verifyPatternAlphabet();
 }
 
-
 void FindPatternWidget::sl_onSequenceModified()
 {
     setRegionToWholeSequence();
@@ -946,31 +944,22 @@ void FindPatternWidget::sl_onSequenceModified()
     verifyPatternAlphabet();
 }
 
+void FindPatternWidget::showTooLongSequenceError()
+{
+    showHideMessage(true, SequenceIsTooBig);
+    
+    showHideMessage(false, AnnotationNotValidFastaParsedName);
+    showHideMessage(false, AnnotationNotValidName);
+    showHideMessage(false, PatternAlphabetDoNotMatch);
+    showHideMessage(false, PatternsWithBadRegionInFile);
+    showHideMessage(false, PatternsWithBadAlphabetInFile);
+    showHideMessage(false, NoPatternToSearch);
+    showHideMessage(false, SearchRegionIncorrect);
+    doNotHighlightBackground(textPattern);
+}
 
 void FindPatternWidget::checkState()
 {
-    // Currently find pattern needs whole sequence to search even in a small sequence
-#ifdef UGENE_X86
-    {
-        ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
-        SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus!",);
-        U2Region region = getCompleteSearchRegion(regionIsCorrect, activeContext->getSequenceLength());
-        if (region.length > U2SequenceObject::getMaxSeqLengthForX86Os()) {
-            showHideMessage(true, SequenceIsTooBig);
-
-            showHideMessage(false, AnnotationNotValidFastaParsedName);
-            showHideMessage(false, AnnotationNotValidName);
-            showHideMessage(false, PatternAlphabetDoNotMatch);
-            showHideMessage(false, PatternsWithBadRegionInFile);
-            showHideMessage(false, PatternsWithBadAlphabetInFile);
-            showHideMessage(false, NoPatternToSearch);
-            showHideMessage(false, SearchRegionIncorrect);
-            doNotHighlightBackground(textPattern);
-            return;
-        }
-    }
-#endif
-
     //validate annotation name
     QString v = annotController->validate();
     if(!v.isEmpty()){
@@ -1147,7 +1136,7 @@ void FindPatternWidget::initFindPatternTask(const QList<NamePattern> &patterns) 
     FindAlgorithmTaskSettings settings;
     U2OpStatusImpl os;
     settings.sequence = activeContext->getSequenceObject()->getWholeSequenceData(os);
-    CHECK_OP(os, );
+    CHECK_OP_EXT(os, showTooLongSequenceError(), ); // suppose that if the sequence cannot be fetched from the DB, UGENE ran out of memory
     settings.searchIsCircular = activeContext->getSequenceObject()->isCircular();
 
     // Strand

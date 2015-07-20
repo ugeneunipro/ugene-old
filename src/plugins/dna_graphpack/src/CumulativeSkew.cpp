@@ -101,12 +101,15 @@ float CumulativeSkewGraphAlgorithm::getValue(int begin, int end, const QByteArra
     return resultValue;
 }
 
-void CumulativeSkewGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d, U2OpStatus &os) {
+void CumulativeSkewGraphAlgorithm::calculate(QVector<float> &res, U2SequenceObject *o, const U2Region &vr,
+    const GSequenceGraphWindowData *d, U2OpStatus &os)
+{
     assert(d!=NULL);
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
 
-    const QByteArray& seq = getSequenceData(o);
+    const QByteArray &seq = getSequenceData(o, os);
+    CHECK_OP(os, );
 
     for (int i = 0; i < nSteps; i++) {
         CHECK_OP(os, );

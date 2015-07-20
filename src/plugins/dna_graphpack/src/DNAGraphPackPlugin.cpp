@@ -97,7 +97,8 @@ void DNAGraphPackViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* _sequenc
         if (!factory->isEnabled(sequenceWidget->getSequenceObject())) {
             action->setDisabled(true);
         }
-        connect(sequenceWidget, SIGNAL(si_updateGraphView(const QStringList &, const QVariantMap&)), action, SLOT(sl_updateGraphView(const QStringList &, const QVariantMap&)));
+        connect(sequenceWidget, SIGNAL(si_updateGraphView(const QStringList &, const QVariantMap&)),
+            action, SLOT(sl_updateGraphView(const QStringList &, const QVariantMap&)));
         GraphMenuAction::addGraphAction(sequenceWidget->getActiveSequenceContext(), action);
     }
 }

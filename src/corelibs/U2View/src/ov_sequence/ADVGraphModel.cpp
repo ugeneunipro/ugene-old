@@ -36,12 +36,22 @@
 
 namespace U2 {
 
-const QByteArray& GSequenceGraphAlgorithm::getSequenceData(U2SequenceObject* seqObj) {
+GSequenceGraphAlgorithm::GSequenceGraphAlgorithm()
+    : lastSeqObj(NULL)
+{
+
+}
+
+GSequenceGraphAlgorithm::~GSequenceGraphAlgorithm() {
+
+}
+
+const QByteArray & GSequenceGraphAlgorithm::getSequenceData(U2SequenceObject *seqObj, U2OpStatus &os) {
     if(seqObj != lastSeqObj) {
+        const QByteArray seqData = seqObj->getWholeSequenceData(os);
+        CHECK_OP(os, lastSeqData);
+        lastSeqData = seqData;
         lastSeqObj = seqObj;
-        U2OpStatusImpl os;
-        lastSeqData = seqObj->getWholeSequenceData(os);
-        SAFE_POINT_OP(os, lastSeqData);
     }
     return lastSeqData;
 }
@@ -174,11 +184,19 @@ GSequenceGraphDrawer::GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenc
     if (colors.isEmpty()) {
         lineColors.insert(DEFAULT_COLOR, Qt::black);
     }
-    connect(&calculationTaskRunner, SIGNAL(si_finished()), SIGNAL(si_graphDataUpdated()));
+    connect(&calculationTaskRunner, SIGNAL(si_finished()), SLOT(sl_calculationTaskFinished()));
 }
 
 GSequenceGraphDrawer::~GSequenceGraphDrawer() {
     delete defFont;
+}
+
+void GSequenceGraphDrawer::sl_calculationTaskFinished() {
+    if (calculationTaskRunner.isSuccessful()) {
+        emit si_graphDataUpdated();
+    } else {
+        emit si_graphRenderError();
+    }
 }
 
 void GSequenceGraphDrawer::draw(QPainter& p, const QList<QSharedPointer<GSequenceGraphData> > &graphs, const QRect& rect) {
@@ -895,14 +913,14 @@ void CalculatePointsTask::run() {
         return;
     }
     calculateCutoffPoints(d, result, alignedFirst, alignedLast, stateInfo);
+    CHECK_OP(stateInfo, );
     if (expandMode) {
         calculateWithExpand(d, result, alignedFirst, alignedLast, stateInfo);
     } else {
         calculateWithFit(d, result, alignedFirst, alignedLast, stateInfo);
     }
-    if (isCanceled()) {
-        return;
-    }
+    CHECK_OP(stateInfo, );
+
     d->cachedData = result;
 }
 
@@ -913,7 +931,7 @@ void CalculatePointsTask::calculateCutoffPoints(const QSharedPointer<GSequenceGr
 
     int win = wdata.window;
     U2Region r(alignedFirst, alignedLast - alignedFirst + win);
-    if( r.startPos + win > o->getSequenceLength() ){
+    if (r.startPos + win > o->getSequenceLength()) {
         return;
     }
 
@@ -930,7 +948,6 @@ void CalculatePointsTask::calculateWithFit(const QSharedPointer<GSequenceGraphDa
     int lastBase = alignedLast + wdata.window;
 
     for (int i = 0; i < nPoints; i++) {
-        CHECK_OP(os, );
         pointData.clear();
         qint64 startPos = alignedFirst + qint64(i * basesPerPoint);
         U2Region r(startPos, len);
@@ -938,8 +955,10 @@ void CalculatePointsTask::calculateWithFit(const QSharedPointer<GSequenceGraphDa
         CHECK(r.endPos() <= lastBase, );
 
         d->ga->calculate(pointData, o, r, &wdata, os);
+        CHECK_OP(os, );
         float min, max;
         GSequenceGraphUtils::calculateMinMax(pointData, min, max, os);
+        CHECK_OP(os, );
 
         points.firstPoints[i] = max; //BUG:422: support interval based graph!!!
         points.secondPoints[i] = min;
@@ -960,6 +979,7 @@ void CalculatePointsTask::calculateWithExpand(const QSharedPointer<GSequenceGrap
     }
 
     d->ga->calculate(res, o, r, &wdata, os);
+    CHECK_OP(os, );
 
     assert(alignedFirst + win2 + step >= visibleRange.startPos); //0 or 1 step is before the visible range
     assert(alignedLast + win2 - step <= visibleRange.endPos()); //0 or 1 step is after the the visible range
@@ -983,7 +1003,6 @@ void CalculatePointsTask::calculateWithExpand(const QSharedPointer<GSequenceGrap
     int ri = hasBeforeStep ? 1 : 0;
     int rn = hasAfterStep ? res.size()-1 : res.size();
     for (int i=0;  ri < rn; ri++, i++) {
-        CHECK_OP(os, );
         int b = firstBaseOffset + i * step;
         int px = int(b * base2point);
         assert(px < points.firstPoints.size());

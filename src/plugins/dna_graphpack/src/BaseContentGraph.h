@@ -51,13 +51,14 @@ private:
 
 class BaseContentGraphAlgorithm : public GSequenceGraphAlgorithm {
 public:
-    BaseContentGraphAlgorithm(const QBitArray& map);
-    virtual ~BaseContentGraphAlgorithm() {}
+    BaseContentGraphAlgorithm(const QBitArray &map);
 
     virtual void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d, U2OpStatus &os);
 
 private:
-    void windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seq, int startPos, const GSequenceGraphWindowData* d, int nSteps, U2OpStatus &os);
+    void windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seq, int startPos,
+        const GSequenceGraphWindowData* d, int nSteps, U2OpStatus &os);
+
     QBitArray map;
 };
 

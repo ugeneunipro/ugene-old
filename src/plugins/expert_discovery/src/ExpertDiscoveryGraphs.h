@@ -37,22 +37,15 @@ class ExpertDiscoveryScoreGraphAlgorithm : public GSequenceGraphAlgorithm
 {
 public:
     ExpertDiscoveryScoreGraphAlgorithm(ExpertDiscoveryData& data, int _edSeqNumber, SequenceType sType);
-    virtual ~ExpertDiscoveryScoreGraphAlgorithm();
 
-    virtual void calculate(
-       QVector<float>&,
-       U2SequenceObject*,
-       const U2Region&,
-       const GSequenceGraphWindowData*,
-       U2OpStatus &os);
+    void calculate(QVector<float> &, U2SequenceObject *, const U2Region &, const GSequenceGraphWindowData *, U2OpStatus &);
+
 private:
     int edSeqNumber;
     ExpertDiscoveryData& edData;
     SequenceType edSeqType;
     RecognizationData recData;
-
 };
-
 
 /**
  * Factory used to draw a DNA ExpertDiscovery score graph

@@ -71,16 +71,15 @@ QList<QSharedPointer<GSequenceGraphData> > EntropyGraphFactory::createGraphs(GSe
 //////////////////////////////////////////////////////////////////////////
 // EntropyGraphAlgorithm
 
-EntropyGraphAlgorithm::EntropyGraphAlgorithm()
+void EntropyGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr,
+    const GSequenceGraphWindowData* d, U2OpStatus &os)
 {
-}
-
-void EntropyGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d, U2OpStatus &os) {
     assert(d!=NULL);
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
 
-    const QByteArray& seq = getSequenceData(o);
+    const QByteArray &seq = getSequenceData(o, os);
+    CHECK_OP(os, );
     const DNAAlphabet* al = o->getAlphabet();
 
     // prepare index -> TODO: make it once and cache!

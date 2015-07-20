@@ -44,13 +44,18 @@ class CalculatePointsTask;
 
 class U2VIEW_EXPORT GSequenceGraphAlgorithm {
 public:
-    virtual ~GSequenceGraphAlgorithm(){}
-    virtual void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d, U2OpStatus &os) = 0;
+    virtual ~GSequenceGraphAlgorithm();
+
+    virtual void calculate(QVector<float> &res, U2SequenceObject *o, const U2Region &r,
+        const GSequenceGraphWindowData *d, U2OpStatus &os) = 0;
+
 protected:
-    const QByteArray& getSequenceData(U2SequenceObject* seqObj);
-    GSequenceGraphAlgorithm() : lastSeqObj(NULL) {}
+    GSequenceGraphAlgorithm();
+
+    const QByteArray & getSequenceData(U2SequenceObject* seqObj, U2OpStatus &os);
+
 private:
-    U2SequenceObject* lastSeqObj;
+    U2SequenceObject *lastSeqObj;
     QByteArray lastSeqData;
 };
 
@@ -117,6 +122,7 @@ public:
 
 signals:
     void si_graphDataUpdated();
+    void si_graphRenderError();
 
 protected:
     void drawGraph(QPainter& p, const QSharedPointer<GSequenceGraphData>& graph, const QRect& rect);    
@@ -131,10 +137,13 @@ protected:
     void updateMovingLabels(const QSharedPointer<GSequenceGraphData>& graph, GraphLabel* label, const QRect& rect);
     void updateStaticLabels(MultiLabel& multiLabel, const QRect& rect);
     bool isExtremumPoint(int npoints, const PairVector& points, float value, U2Region& comparisonWindow);
+
 protected slots:
     void sl_labelAdded(const QSharedPointer<GSequenceGraphData>&, GraphLabel*, const QRect&);
     void sl_labelMoved(const QSharedPointer<GSequenceGraphData>&, GraphLabel*, const QRect&);
     void sl_labelsColorChange(const QSharedPointer<GSequenceGraphData>&);
+    void sl_calculationTaskFinished();
+
 protected:
     GSequenceGraphView*             view;
     QFont*                          defFont;

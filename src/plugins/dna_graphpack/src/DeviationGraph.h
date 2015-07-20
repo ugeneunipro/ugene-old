@@ -42,8 +42,8 @@ class DeviationGraphFactory : public GSequenceGraphFactory {
 public:
     enum GDeviationType { GC, AT };
     DeviationGraphFactory(GDeviationType t, QObject* p);
-    virtual QList<QSharedPointer<GSequenceGraphData> > createGraphs(GSequenceGraphView* v);
-    virtual bool isEnabled(const U2SequenceObject* o) const;
+    QList<QSharedPointer<GSequenceGraphData> > createGraphs(GSequenceGraphView* v);
+    bool isEnabled(const U2SequenceObject* o) const;
 private:
     QPair<char, char> devPair;
 };
@@ -51,14 +51,16 @@ private:
 class DeviationGraphAlgorithm : public GSequenceGraphAlgorithm {
 public:
     DeviationGraphAlgorithm(const QPair<char, char>& _p);
-    virtual ~DeviationGraphAlgorithm() {}
 
-    virtual void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d, U2OpStatus &os);
+    void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d, U2OpStatus &os);
 
 private:
-    void windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seq, int startPos, const GSequenceGraphWindowData* d, int nSteps, U2OpStatus &os);
-    void sequenceStrategyWithMemorize(QVector<float>& res, const QByteArray& seq, const U2Region& vr, const GSequenceGraphWindowData* d, U2OpStatus &os);
+    void windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seq, int startPos,
+        const GSequenceGraphWindowData* d, int nSteps, U2OpStatus &os);
+    void sequenceStrategyWithMemorize(QVector<float>& res, const QByteArray& seq, const U2Region& vr,
+        const GSequenceGraphWindowData* d, U2OpStatus &os);
     QPair<int, int> matchOnStep(const QByteArray& seq, int begin, int end);
+
     QPair<char, char> p;
 };
 

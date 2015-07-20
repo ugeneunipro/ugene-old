@@ -41,9 +41,9 @@
 namespace U2 {
 
 struct UHMM3SearchDialogModel {
-    UHMM3SearchTaskSettings searchSettings;
-    QString                 hmmfile;
-    DNASequence             sequence;
+    UHMM3SearchTaskSettings     searchSettings;
+    QString                     hmmfile;
+    QPointer<const U2SequenceObject>  sequence;
 }; // UHMM3SearchDialogModel
 
 class UHMM3SearchDialogImpl : public QDialog, public Ui_UHMM3SearchDialog {
@@ -63,7 +63,6 @@ private:
     QString checkModel();
     
 private slots:
-    void sl_cancelButtonClicked();
     void sl_okButtonClicked();
     void sl_useEvalTresholdsButtonChanged( bool checked );
     void sl_useScoreTresholdsButtonChanged( bool checked );

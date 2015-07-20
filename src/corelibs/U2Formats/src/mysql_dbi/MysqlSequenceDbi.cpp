@@ -77,21 +77,20 @@ U2Sequence MysqlSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2OpS
 }
 
 QByteArray MysqlSequenceDbi::getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) {
-    QByteArray res;
-
-    //TODO: check mem-overflow, compare region.length with sequence length! (UGENE-2688)
-    if (0 == region.length) {
-        return res;
-    } else if (U2_REGION_MAX != region) {
-        res.reserve(region.length);
-    }
-
-    // Get all chunks that intersect the region
-    // TODO: check args
-    static const QString queryString = "SELECT sstart, send, data FROM SequenceData WHERE sequence = :id AND send >= :startPos AND sstart < :endPos ORDER BY sstart";
-    U2SqlQuery q(queryString, db, os);
-
     try {
+        QByteArray res;
+
+        if (0 == region.length) {
+            return res;
+        } else if (U2_REGION_MAX != region) {
+            res.reserve(region.length);
+        }
+
+        // Get all chunks that intersect the region
+        static const QString queryString = "SELECT sstart, send, data FROM SequenceData "
+            "WHERE sequence = :id AND send >= :startPos AND sstart < :endPos ORDER BY sstart";
+        U2SqlQuery q(queryString, db, os);
+
         q.bindDataId(":id", sequenceId);
         q.bindInt64(":startPos", region.startPos);
         q.bindInt64(":endPos", region.endPos());
@@ -114,8 +113,16 @@ QByteArray MysqlSequenceDbi::getSequenceData(const U2DataId& sequenceId, const U
                 QByteArray());
         }
         return res;
+    } catch (const std::bad_alloc &) {
+#ifdef UGENE_X86
+        os.setError("UGENE ran out of memory during the sequence processing. "
+            "The 32-bit UGENE version has a restriction on its memory consumption. Try using the 64-bit version instead.");
+#else
+        os.setError("Out of memory during the sequence processing.");
+#endif
+        return QByteArray();
     } catch (...) {
-        os.setError(U2DbiL10n::tr("Exception was thrown"));
+        os.setError(U2DbiL10n::tr("Internal error occurred during the sequence processing"));
         coreLog.error(U2DbiL10n::tr("An exception was thrown during reading sequence data from dbi"));
         return QByteArray();
     }

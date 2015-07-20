@@ -68,18 +68,17 @@ U2Sequence SQLiteSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2Op
 }
 
 QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) {
-    QByteArray res;
-    //TODO: check mem-overflow, compare region.length with sequence length! (UGENE-2688)
-    if ( 0 == region.length ) {
-        return res;
-    } else if ( U2_REGION_MAX != region ) {
-        res.reserve(region.length);
-    }
-    // Get all chunks that intersect the region
-    SQLiteQuery q("SELECT sstart, send, data FROM SequenceData WHERE sequence = ?1 "
-        "AND  (send >= ?2 AND sstart < ?3) ORDER BY sstart", db, os);
-
     try {
+        QByteArray res;
+        if (0 == region.length) {
+            return res;
+        } else if (U2_REGION_MAX != region) {
+            res.reserve(region.length);
+        }
+        // Get all chunks that intersect the region
+        SQLiteQuery q("SELECT sstart, send, data FROM SequenceData WHERE sequence = ?1 "
+            "AND  (send >= ?2 AND sstart < ?3) ORDER BY sstart", db, os);
+
         q.bindDataId(1, sequenceId);
         q.bindInt64(2, region.startPos);
         q.bindInt64(3, region.endPos());
@@ -102,9 +101,16 @@ QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const 
                 QByteArray());
         }
         return res;
-    }
-    catch (...) {
-        os.setError("An exception was thrown during reading sequence data from dbi.");
+    } catch (const std::bad_alloc &) {
+#ifdef UGENE_X86
+        os.setError("UGENE ran out of memory during the sequence processing. "
+            "The 32-bit UGENE version has a restriction on its memory consumption. Try using the 64-bit version instead.");
+#else
+        os.setError("Out of memory during the sequence processing.");
+#endif
+        return QByteArray();
+    } catch (...) {
+        os.setError("Internal error occurred during the sequence processing.");
         coreLog.error("An exception was thrown during reading sequence data from dbi.");
         return QByteArray();
     }

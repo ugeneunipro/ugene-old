@@ -115,7 +115,8 @@ QPair<int, int> DeviationGraphAlgorithm::matchOnStep(const QByteArray& seqArr, i
     }
     return res;
 }
-void DeviationGraphAlgorithm::sequenceStrategyWithMemorize(QVector<float>& res, const QByteArray& seq, const U2Region& vr, const GSequenceGraphWindowData* d, U2OpStatus &os)
+void DeviationGraphAlgorithm::sequenceStrategyWithMemorize(QVector<float>& res, const QByteArray& seq,
+    const U2Region& vr, const GSequenceGraphWindowData* d, U2OpStatus &os)
 {
     int rsize = d->window / d->step;
     RollingArray<int> raF(rsize);
@@ -143,12 +144,16 @@ void DeviationGraphAlgorithm::sequenceStrategyWithMemorize(QVector<float>& res, 
     }
 }
 
-void DeviationGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr, const GSequenceGraphWindowData* d, U2OpStatus &os) {
+void DeviationGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& vr,
+    const GSequenceGraphWindowData* d, U2OpStatus &os)
+{
     assert(d!=NULL);
     int nSteps = GSequenceGraphUtils::getNumSteps(vr, d->window, d->step);
     res.reserve(nSteps);
 
-    const QByteArray& seq = getSequenceData(o);
+    const QByteArray &seq = getSequenceData(o, os);
+    CHECK_OP(os, );
+
     int startPos = vr.startPos;
     if (d->window % d->step != 0) {
         windowStrategyWithoutMemorize(res, seq, startPos, d, nSteps, os);

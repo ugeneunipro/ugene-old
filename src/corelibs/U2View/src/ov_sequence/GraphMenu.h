@@ -50,6 +50,7 @@ private:
 private slots:
     void sl_handleGraphAction();
     void sl_updateGraphView(const QStringList &, const QVariantMap&);
+    void sl_renderError();
 };
 
 

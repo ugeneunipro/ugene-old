@@ -114,11 +114,6 @@ void RepeatViewContext::sl_showDialog() {
     ADVSequenceObjectContext* sctx = av->getSequenceInFocus();
     assert(sctx!=NULL && sctx->getAlphabet()->isNucleic());
 
-#ifdef UGENE_X86
-    CHECK_EXT( !(sctx->getSequenceLength() > U2SequenceObject::getMaxSeqLengthForX86Os()),
-               QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), U2SequenceObject::MAX_SEQ_32_ERROR_MESSAGE), );
-#endif
-
     QObjectScopedPointer<FindRepeatsDialog> d = new FindRepeatsDialog(sctx);
     d->exec();
 }
@@ -129,11 +124,6 @@ void RepeatViewContext::sl_showTandemDialog() {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
     ADVSequenceObjectContext* sctx = av->getSequenceInFocus();
     assert(sctx!=NULL && sctx->getAlphabet()->isNucleic());
-
-#ifdef UGENE_X86
-    CHECK_EXT( !(sctx->getSequenceLength() > U2SequenceObject::getMaxSeqLengthForX86Os()),
-               QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), U2SequenceObject::MAX_SEQ_32_ERROR_MESSAGE), );
-#endif
 
     QObjectScopedPointer<FindTandemsDialog> d = new FindTandemsDialog(sctx);
     d->exec();

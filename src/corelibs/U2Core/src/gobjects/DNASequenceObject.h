@@ -98,17 +98,11 @@ public:
 
     static bool lessThan( const U2SequenceObject *one, const U2SequenceObject *two){return one->name < two->name;}
 
-    static qint64 getMaxSeqLengthForX86Os();
-
-    static const QString MAX_SEQ_32_ERROR_MESSAGE;
-
 signals:
     void si_sequenceChanged();
     void si_sequenceCircularStateChanged();
 
 protected:
-    static const qint64 MAX_SEQ_32;
-
     void updateCachedValues() const;
 
     mutable const DNAAlphabet*          cachedAlphabet;

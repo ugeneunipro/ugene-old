@@ -30,17 +30,10 @@
 
 namespace U2{
 
-    ExpertDiscoveryScoreGraphAlgorithm::ExpertDiscoveryScoreGraphAlgorithm(ExpertDiscoveryData& data, int _edSeqNumber, SequenceType sType)
-:edData(data)
-,edSeqNumber(_edSeqNumber)
-,edSeqType(sType)
+ExpertDiscoveryScoreGraphAlgorithm::ExpertDiscoveryScoreGraphAlgorithm(ExpertDiscoveryData& data, int _edSeqNumber, SequenceType sType)
+    : edData(data), edSeqNumber(_edSeqNumber), edSeqType(sType)
 {
     recData = edData.getRecognitionData(edSeqNumber, edSeqType);
-}
-
-
-ExpertDiscoveryScoreGraphAlgorithm::~ExpertDiscoveryScoreGraphAlgorithm()
-{
 }
 
 /**
@@ -58,6 +51,8 @@ void ExpertDiscoveryScoreGraphAlgorithm::calculate(
     const GSequenceGraphWindowData* windowData,
     U2OpStatus &os)
 {
+    Q_UNUSED(sequenceObject);
+    Q_UNUSED(os);
     assert(windowData !=NULL);
 
     int windowSize = windowData->window;
@@ -74,8 +69,7 @@ void ExpertDiscoveryScoreGraphAlgorithm::calculate(
     result.reserve(stepsNumber);
 
     // Calculating the results
-    for (int i = 0; i < stepsNumber; ++i)
-    {
+    for (int i = 0; i < stepsNumber; ++i) {
         // Calculating the threshold in the current window
         windowThreshold = 0;
         for (int j = windowLeft; j < windowLeft + windowSize - 1; ++j)
@@ -86,7 +80,6 @@ void ExpertDiscoveryScoreGraphAlgorithm::calculate(
             }
         }
         windowThreshold /= (windowSize - 1);
-
 
         // Returning the point on the graph
         result.append(windowThreshold);
@@ -109,14 +102,12 @@ static QString nameByType() {
 /**
  * Constructor of the ExpertDiscovery score graph
  */
-ExpertDiscoveryScoreGraphFactory::ExpertDiscoveryScoreGraphFactory(QObject* parent, ExpertDiscoveryData& data, int _edSeqNumber, SequenceType sType)
-    : GSequenceGraphFactory(nameByType(), parent)
-    ,edData(data)
-    ,edSeqNumber(_edSeqNumber)
-    ,edSeqType(sType)
+ExpertDiscoveryScoreGraphFactory::ExpertDiscoveryScoreGraphFactory(QObject* parent,
+    ExpertDiscoveryData& data, int _edSeqNumber, SequenceType sType)
+    : GSequenceGraphFactory(nameByType(), parent), edData(data), edSeqNumber(_edSeqNumber), edSeqType(sType)
 {
-}
 
+}
 
 /**
  * Verification

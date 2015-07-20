@@ -64,9 +64,7 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl(const U2SequenceObject * seqObj, QW
     useScoreTresholdGroup.addButton(useTCTresholdsButton);
     useExplicitScoreTresholdButton->setChecked(true);
 
-    U2OpStatusImpl os;
-    model.sequence = seqObj->getWholeSequence(os);
-    SAFE_POINT_EXT(!os.hasError(), QMessageBox::critical(QApplication::activeWindow(), L10N::errorTitle(), os.getError()), );
+    model.sequence = QPointer<const U2SequenceObject>(seqObj);
     setModelValues(); // default settings here
 
     // Annotations widget
@@ -84,12 +82,11 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl(const U2SequenceObject * seqObj, QW
     assert(NULL != curLayout);
     QWidget * aw = annotationsWidgetController->getWidget();
     curLayout->insertWidget(1, aw);
-//    aw->setMinimumSize(aw->layout()->minimumSize());
 
     QPushButton* searchButton = buttonBox->button(QDialogButtonBox::Ok);
     QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
 
-    connect(cancelButton, SIGNAL(clicked()), SLOT(sl_cancelButtonClicked()));
+    connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
     connect(searchButton, SIGNAL(clicked()), SLOT(sl_okButtonClicked()));
     connect(useEvalTresholdsButton, SIGNAL(toggled(bool)), SLOT(sl_useEvalTresholdsButtonChanged(bool)));
     connect(useScoreTresholdsButton, SIGNAL(toggled(bool)), SLOT(sl_useScoreTresholdsButtonChanged(bool)));
@@ -98,7 +95,6 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl(const U2SequenceObject * seqObj, QW
     connect(domESpinBox, SIGNAL(valueChanged(int)), SLOT(sl_domESpinBoxChanged(int)));
     connect(queryHmmFileToolButton, SIGNAL(clicked()), SLOT(sl_queryHmmFileToolButtonClicked()));
     connect(domZCheckBox, SIGNAL(stateChanged(int)), SLOT(sl_domZCheckBoxChanged(int)));
-
 }
 
 void UHMM3SearchDialogImpl::setModelValues() {
@@ -113,10 +109,6 @@ void UHMM3SearchDialogImpl::setModelValues() {
     f2DoubleSpinBox->setValue(settings.f2);
     f3DoubleSpinBox->setValue(settings.f3);
     seedSpinBox->setValue(settings.seed);
-}
-
-void UHMM3SearchDialogImpl::sl_cancelButtonClicked() {
-    reject();
 }
 
 void UHMM3SearchDialogImpl::getModelValues() {
@@ -179,18 +171,25 @@ QString UHMM3SearchDialogImpl::checkModel() {
 void UHMM3SearchDialogImpl::sl_okButtonClicked() {
     getModelValues();
     QString err = checkModel();
-    if(!err.isEmpty()) {
+    if (!err.isEmpty()) {
         QMessageBox::critical(this, tr("Error: bad arguments!"), err);
         return;
     }
+
+    SAFE_POINT(!model.sequence.isNull(), L10N::nullPointerError("sequence object"), );
+    U2OpStatusImpl os;
+    const DNASequence sequence = model.sequence->getWholeSequence(os);
+    CHECK_OP_EXT(os, QMessageBox::warning(this, tr("Error"), os.getError()), );
+
     bool objectPrepared = annotationsWidgetController->prepareAnnotationObject();
-    if (!objectPrepared){
+    if (!objectPrepared) {
         QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
         return;
     }
-    const CreateAnnotationModel & annModel = annotationsWidgetController->getModel();
-    UHMM3SWSearchToAnnotationsTask * searchTask = new UHMM3SWSearchToAnnotationsTask(model.hmmfile, model.sequence,
-        annModel.getAnnotationObject(), annModel.groupName, annModel.description, annModel.data->type, annModel.data->name, model.searchSettings);
+
+    const CreateAnnotationModel &annModel = annotationsWidgetController->getModel();
+    UHMM3SWSearchToAnnotationsTask *searchTask = new UHMM3SWSearchToAnnotationsTask(model.hmmfile, sequence, annModel.getAnnotationObject(),
+        annModel.groupName, annModel.description, annModel.data->type, annModel.data->name, model.searchSettings);
     AppContext::getTaskScheduler()->registerTopLevelTask(searchTask);
 
     QDialog::accept();

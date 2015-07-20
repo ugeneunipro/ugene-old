@@ -42,16 +42,13 @@ class EntropyGraphFactory : public GSequenceGraphFactory {
     Q_OBJECT
 public:
     EntropyGraphFactory(QObject* p);
-    virtual QList<QSharedPointer<GSequenceGraphData> > createGraphs(GSequenceGraphView* v);
-    virtual bool isEnabled(const U2SequenceObject* o) const;
+    QList<QSharedPointer<GSequenceGraphData> > createGraphs(GSequenceGraphView* v);
+    bool isEnabled(const U2SequenceObject* o) const;
 };
 
 class EntropyGraphAlgorithm : public GSequenceGraphAlgorithm {
 public:
-    EntropyGraphAlgorithm();
-    virtual ~EntropyGraphAlgorithm() {}
-
-    virtual void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d, U2OpStatus &os);
+    void calculate(QVector<float>& res, U2SequenceObject* o, const U2Region& r, const GSequenceGraphWindowData* d, U2OpStatus &os);
 };
 
 } // namespace
