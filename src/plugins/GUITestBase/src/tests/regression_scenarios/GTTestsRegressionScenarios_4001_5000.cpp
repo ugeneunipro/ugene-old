@@ -2444,6 +2444,23 @@ GUI_TEST_CLASS_DEFINITION(test_4439) {
                   .arg("1").arg(selectedItems.first()->text(0)));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_4440) {
+//    1. Open COI.aln
+//    2. Align with MUSCLE
+//    Expected state: object should be named "COI".
+
+    GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
+
+    QModelIndex idx = GTUtilsProjectTreeView::findIndex(os,"COI.aln");
+    GTUtilsProjectTreeView::checkItem(os, GTUtilsProjectTreeView::getTreeView(os), "COI", idx);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Align" << "Align with MUSCLE..."));
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsProjectTreeView::checkItem(os, GTUtilsProjectTreeView::getTreeView(os), "COI", idx);
+}
 
 GUI_TEST_CLASS_DEFINITION(test_4463) {
 //    1. Open attached file in "Genbank" format
