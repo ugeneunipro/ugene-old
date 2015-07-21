@@ -518,8 +518,9 @@ void DotPlotWidget::sl_showSaveImageDialog() {
 
     DotPlotImageExportController factory(this);
     QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(&factory,
-                                                                      ExportImageDialog::DotPlot,
-                                                                      ExportImageDialog::SupportScaling);
+                                                                           ExportImageDialog::DotPlot,
+                                                                           ExportImageDialog::SupportScaling,
+                                                                           this);
     dialog->exec();
     CHECK(!dialog.isNull(), );
 

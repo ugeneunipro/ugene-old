@@ -809,7 +809,10 @@ void ADVSingleSequenceWidget::sl_saveScreenshot() {
     }
 
     SingleSequenceImageExportController controller(this);
-    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(&controller, ExportImageDialog::SequenceView);
+
+    QWidget *p = (QWidget*)AppContext::getMainWindow()->getQMainWindow();
+    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(&controller, ExportImageDialog::SequenceView, ExportImageDialog::NoScaling, p);
+    dialog->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     dialog->exec();
 }

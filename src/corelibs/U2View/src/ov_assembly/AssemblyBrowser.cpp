@@ -666,7 +666,8 @@ void AssemblyBrowser::setupActions() {
 }
 
 void AssemblyBrowser::sl_saveScreenshot() {
-    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(ui, ExportImageDialog::AssemblyView);
+    QWidget *p = (QWidget*)AppContext::getMainWindow()->getQMainWindow();
+    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(ui, ExportImageDialog::AssemblyView, ExportImageDialog::NoScaling, p);
     dialog->exec();
 }
 

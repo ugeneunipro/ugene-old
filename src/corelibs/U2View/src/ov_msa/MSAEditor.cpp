@@ -1038,7 +1038,8 @@ QAction* MSAEditorUI::getRedoAction() const {
 
 void MSAEditorUI::sl_saveScreenshot(){
     MSAImageExportController controller(this);
-    QObjectScopedPointer<ExportImageDialog> dlg = new ExportImageDialog(&controller, ExportImageDialog::MSA, ExportImageDialog::NoScaling);
+    QWidget *p = (QWidget*)AppContext::getMainWindow()->getQMainWindow();
+    QObjectScopedPointer<ExportImageDialog> dlg = new ExportImageDialog(&controller, ExportImageDialog::MSA, ExportImageDialog::NoScaling, p);
     dlg->exec();
 }
 

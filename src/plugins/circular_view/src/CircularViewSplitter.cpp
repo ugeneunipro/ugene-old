@@ -222,9 +222,10 @@ void CircularViewSplitter::sl_export() {
 
     CircularViewImageExportController factory(circularViewList, cvInFocus);
 
+    QWidget *p = (QWidget*)AppContext::getMainWindow()->getQMainWindow();
     QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(&factory, ExportImageDialog::CircularView,
                                                                       ExportImageDialog::SupportScaling,
-                                                                      NULL,
+                                                                      p,
                                                                       "circular_" + seqObj->getSequenceName());
     dialog->exec();
     CHECK(!dialog.isNull(), );

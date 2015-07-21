@@ -105,8 +105,7 @@ void ExportImageDialog::accept() {
     }
 
     if (!GUrlUtils::canWriteFile(filename)) {
-        QMessageBox::warning(this, tr(DIALOG_ACCEPT_ERROR_TITLE), tr("The image file cannot be created. This can be caused that "
-            "the file name contains illegal characters or it's too long."));
+        QMessageBox::warning(this, tr(DIALOG_ACCEPT_ERROR_TITLE), tr("The image file cannot be created. No write permissions."));
         return;
     }
 

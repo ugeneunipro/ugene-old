@@ -28,6 +28,7 @@
 
 namespace U2 {
 
+class DNASequenceSelection;
 class RegionSelector;
 class U2SequenceObject;
 class U2Region;
@@ -35,7 +36,7 @@ class U2Region;
 class SequenceExportSettingsWidget : public QWidget, public Ui_SequenceExportSettingsWidget {
     Q_OBJECT
 public:
-    SequenceExportSettingsWidget(U2SequenceObject* seqObj, QSharedPointer<CustomExportSettings> settings);
+    SequenceExportSettingsWidget(U2SequenceObject* seqObj, QSharedPointer<CustomExportSettings> settings, DNASequenceSelection* selection = NULL);
 
 signals:
     void si_regionChanged(U2Region region);

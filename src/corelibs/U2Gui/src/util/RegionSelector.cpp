@@ -235,7 +235,7 @@ void RegionSelector::sl_onRegionChanged() {
     }
 
     U2Region r;
-    if (v1 < v2) {
+    if (v1 <= v2) {
         r = U2Region(v1 - 1, v2 - (v1 - 1));
     } else {
         r = U2Region(v1 - 1, v2 + maxLen - (v1 - 1));

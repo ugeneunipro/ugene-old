@@ -30,7 +30,8 @@
 namespace U2 {
 
 SequenceExportSettingsWidget::SequenceExportSettingsWidget(U2SequenceObject* seqObject,
-                                                           QSharedPointer<CustomExportSettings> s)
+                                                           QSharedPointer<CustomExportSettings> s,
+                                                           DNASequenceSelection* selection)
     : seqObject(seqObject)
 {
     setupUi(this);
@@ -38,8 +39,8 @@ SequenceExportSettingsWidget::SequenceExportSettingsWidget(U2SequenceObject* seq
     SAFE_POINT(settings != NULL, tr("Cannot cast CustomExportSettings to SequenceExportSettings"), );
     SAFE_POINT(seqObject != NULL, tr("Sequence Object is NULL"), );
 
-    regionSelector = new RegionSelector(this, seqObject->getSequenceLength() );
-    settingsLayout->addWidget(regionSelector);
+    regionSelector = new RegionSelector(this, seqObject->getSequenceLength(), true, selection);
+    regionLayout->addWidget(regionSelector);
     regionSelector->setVisible( !currentViewButton->isChecked() );
 
     connect(buttonGroup, SIGNAL(buttonClicked(int)), SLOT(sl_areaChanged()));

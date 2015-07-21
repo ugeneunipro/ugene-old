@@ -56,7 +56,7 @@ void SingleSequenceImageExportController::initSettingsWidget() {
     U2SequenceObject* seqObject = sequenceWidget->getSequenceObject();
     SAFE_POINT( seqObject != NULL, tr("Sequence Object is NULL"), );
 
-    settingsWidget = new SequenceExportSettingsWidget(seqObject, customExportSettings);
+    settingsWidget = new SequenceExportSettingsWidget(seqObject, customExportSettings, sequenceWidget->getSequenceSelection());
 }
 
 
@@ -91,6 +91,13 @@ void SingleSequenceImageExportController::checkExportSettings() {
     QSize size = currentPainter->getImageSize(customExportSettings.data());
     if (size.width() > IMAGE_SIZE_LIMIT || size.height() > IMAGE_SIZE_LIMIT) {
         disableMessage = tr("Warning: selected region is too big to be exported.");
+        emit si_disableExport(true);
+        emit si_showMessage(disableMessage);
+        return;
+    }
+
+    if (qobject_cast<SequenceExportSettings*>(customExportSettings)->getType() == ExportZoomedView && size.width() < 5) {
+        disableMessage = tr("Warning: selected region is too small. Try to Zoom In.");
         emit si_disableExport(true);
         emit si_showMessage(disableMessage);
         return;

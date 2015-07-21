@@ -985,7 +985,7 @@ void BioStruct3DGLWidget::sl_exportImage()
 {
     BioStruct3DImageExportController factory(this);
     QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(&factory, ExportImageDialog::MolView,
-                             ExportImageDialog::SupportScaling);
+                             ExportImageDialog::SupportScaling, this);
     dialog->exec();
 }
 

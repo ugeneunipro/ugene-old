@@ -571,7 +571,7 @@ void PanViewRenderArea::drawAll(QPainter &p, const U2Region &visibleRange) {
     if (qRound(halfChar) == 0) {
         firstLastWidth--; // make the end of the ruler visible
     }
-    int w = lastCharCenter - firstCharCenter + 2 * halfChar;
+    int w = lastCharCenter - firstCharCenter + 2 * halfChar + 5;
 
     PVRowsManager *rm = getPanView()->getRowsManager();
     SAFE_POINT(rm != NULL, "PVRowsManager is NULL", );
@@ -695,7 +695,7 @@ QSize PanViewRenderArea::getImageSize(const U2Region &regionToDraw) const {
     }
 
     PVRowsManager *rm = getPanView()->getRowsManager();
-    return QSize(firstLastWidth + 2 * halfChar, lineHeight * (rm->getNumRows() + showCustomRulers * customRulers.size() + showMainRuler + isSequenceCharsVisible()) + 6 );
+    return QSize(firstLastWidth + 2 * halfChar + 5, lineHeight * (rm->getNumRows() + showCustomRulers * customRulers.size() + showMainRuler + isSequenceCharsVisible()) + 6 );
 }
 
 void PanViewRenderArea::drawAll(QPaintDevice* pd) {

@@ -21,10 +21,11 @@
 
 #include <QColorDialog>
 
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ExportImageDialog.h>
-#include <U2Core/QObjectScopedPointer.h>
+#include <U2Gui/MainWindow.h>
 
 #include "MSAOverviewContextMenu.h"
 #include "MSAOverviewImageExportTask.h"
@@ -73,7 +74,8 @@ void MSAOverviewContextMenu::connectSlots() {
 
 void MSAOverviewContextMenu::sl_exportAsImageTriggered() {
     MSAOverviewImageExportController factory(simpleOverview, graphOverview);
-    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(&factory, ExportImageDialog::MSA);
+    QWidget *p = (QWidget*)AppContext::getMainWindow()->getQMainWindow();
+    QObjectScopedPointer<ExportImageDialog> dialog = new ExportImageDialog(&factory, ExportImageDialog::MSA, ExportImageDialog::NoScaling, p);
     dialog->exec();
 }
 

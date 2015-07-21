@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>522</width>
-    <height>250</height>
+    <height>276</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -365,9 +365,6 @@
       </item>
       <item>
        <widget class="QLabel" name="hintLabel">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
         <property name="text">
          <string>Hint</string>
         </property>
@@ -384,6 +381,19 @@
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
