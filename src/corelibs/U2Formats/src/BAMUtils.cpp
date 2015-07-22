@@ -19,7 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QFileInfo>
+#include <QFileInfo>
+#include <QTemporaryFile>
 
 extern "C" {
 #include <bam.h>
@@ -48,6 +49,7 @@ extern "C" {
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2AttributeUtils.h>
 #include <U2Core/U2CoreAttributes.h>
@@ -76,6 +78,21 @@ namespace {
         if (NULL != out) {
             samclose(out);
         }
+    }
+
+    samfile_t * openSamWithFai(const QByteArray &samUrl, U2OpStatus &os) {
+        QStringList references = BAMUtils::scanSamForReferenceNames(QString(samUrl), os);
+        CHECK_OP(os, NULL);
+
+        QTemporaryFile faiFile;
+        faiFile.open();
+        QString faiUrl = faiFile.fileName();
+        BAMUtils::createFai(faiUrl, references, os);
+        CHECK_OP(os, NULL);
+
+        QByteArray faiUrlData = faiUrl.toLocal8Bit();
+        void *aux = (void*)faiUrlData.constData();
+        return samopen(samUrl.constData(), "r", aux);
     }
 
     QString openFileError(const QByteArray &file) {
@@ -135,7 +152,6 @@ namespace {
         return ret; \
     } \
 
-
 void BAMUtils::convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, const ConvertOption &options, U2OpStatus &os ) {
     const QByteArray samFileName = samUrl.getURLString().toLocal8Bit();
     const QByteArray bamFileName = bamUrl.getURLString().toLocal8Bit();
@@ -158,6 +174,13 @@ void BAMUtils::convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, const C
         in = samopen(sourceName.constData(), readMode, aux);
         SAMTOOL_CHECK(NULL != in, openFileError(sourceName), );
         SAMTOOL_CHECK(NULL != in->header, headerError(sourceName), );
+        if (options.samToBam && (0 == in->header->n_targets)) {
+            samclose(in);
+            in = openSamWithFai(sourceName, os);
+            CHECK_OP(os, );
+            SAMTOOL_CHECK(NULL != in, openFileError(sourceName), );
+            SAMTOOL_CHECK(NULL != in->header, headerError(sourceName), );
+        }
 
         QByteArray writeMode = ( options.samToBam ) ? "wb" : "wh";
         out = samopen(targetName.constData(), writeMode, in->header);
@@ -665,6 +688,60 @@ bool BAMUtils::isEqualByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpS
     }
 
     return true;
+}
+
+namespace {
+    const int bufferSize = 1024 * 1024; // 1 Mb
+    const int referenceColumn = 2; // 5 Mb
+
+    inline QByteArray readLine(IOAdapter *io, char *buffer, int bufferSize) {
+        QByteArray result;
+        bool terminatorFound = false;
+        do {
+            qint64 length = io->readLine(buffer, bufferSize, &terminatorFound);
+            CHECK(-1 != length, result);
+            result += QByteArray(buffer, length);
+        } while (!terminatorFound);
+        return result;
+    }
+
+    inline QByteArray parseReferenceName(const QByteArray &line) {
+        QList<QByteArray> columns = line.split('\t');
+        if (columns.size() <= referenceColumn) {
+            coreLog.error(BAMUtils::tr("Wrong line in a SAM file."));
+            return "*";
+        }
+        return columns[referenceColumn];
+    }
+}
+
+QStringList BAMUtils::scanSamForReferenceNames(const GUrl &samUrl, U2OpStatus &os) {
+    QStringList result;
+    QScopedPointer<IOAdapter> io(IOAdapterUtils::open(samUrl, os));
+    CHECK_OP(os, result);
+
+    QByteArray buffer(bufferSize, 0);
+    char *bufferData = buffer.data();
+    do {
+        QByteArray line = readLine(io.data(), bufferData, bufferSize);
+        if (line.isEmpty() || line.startsWith("@")) {
+            continue;
+        }
+        QByteArray referenceName = parseReferenceName(line);
+        if ("*" != referenceName && !result.contains(referenceName)) {
+            result << referenceName;
+        }
+    } while (!io->isEof());
+    return result;
+}
+
+void BAMUtils::createFai(const GUrl &faiUrl, const QStringList &references, U2OpStatus &os) {
+    QScopedPointer<IOAdapter> io(IOAdapterUtils::open(faiUrl, os, IOAdapterMode_Write));
+    CHECK_OP(os, );
+    foreach (const QString &reference, references) {
+        QString line = reference + "\n";
+        io->writeBlock(line.toLocal8Bit());
+    }
 }
 
 /////////////////////////////////////////////////

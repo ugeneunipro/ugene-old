@@ -71,6 +71,16 @@ public:
     static void writeObjects(const QList<GObject*> &objects, const GUrl &url, const DocumentFormatId &formatId, U2OpStatus &os);
 
     static bool isEqualByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpStatus &os, bool isBAM = false );
+
+    /**
+     * Returns the list of names of references (despite "*") found among reads.
+     */
+    static QStringList scanSamForReferenceNames(const GUrl &samUrl, U2OpStatus &os);
+
+    /**
+     * Saves the list of references to the file in the SAMtools fai format.
+     */
+    static void createFai(const GUrl &faiUrl, const QStringList &references, U2OpStatus &os);
 };
 
 //iterates over a FASTQ file (including zipped) with kseq from samtools
