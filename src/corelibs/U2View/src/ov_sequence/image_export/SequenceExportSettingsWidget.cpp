@@ -60,6 +60,7 @@ SequenceExportType SequenceExportSettingsWidget::getExportType() const {
 void SequenceExportSettingsWidget::sl_areaChanged() {
     regionSelector->setVisible( !currentViewButton->isChecked() );
     settings->setType( getExportType() );
+    settings->setRegion( regionSelector->getRegion() );
 }
 
 void SequenceExportSettingsWidget::sl_regionChanged(const U2Region& r) {
