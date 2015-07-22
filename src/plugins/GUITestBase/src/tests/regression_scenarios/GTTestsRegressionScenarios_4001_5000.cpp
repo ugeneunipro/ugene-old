@@ -25,6 +25,7 @@
 
 #include "GTTestsRegressionScenarios_4001_5000.h"
 #include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsCircularView.h"
 #include "GTUtilsDashboard.h"
 #include "GTUtilsDialog.h"
@@ -84,6 +85,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
@@ -2483,6 +2485,34 @@ GUI_TEST_CLASS_DEFINITION(test_4463) {
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Yes"));
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList("Unload selected document")));
     GTUtilsProjectTreeView::click(os, "test_4463.gb.gz", Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4486) {
+//    1. Open "data/samples/Assembly/chrM.sorted.bam".
+//    2. Import with default settings.
+    QDir().mkpath(sandBoxDir + "test_4486");
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_4486/test_4486.ugenedb"));
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly/chrM.sorted.bam");
+
+//    3. Zoom in assembly view while reads are not visible.
+    bool readsAreVisible = !GTUtilsAssemblyBrowser::isWelcomeScreenVisible(os);
+    for (int i = 0; i < 100 && !readsAreVisible; i++) {
+        GTUtilsAssemblyBrowser::zoomIn(os);
+        readsAreVisible = !GTUtilsAssemblyBrowser::isWelcomeScreenVisible(os);
+    }
+    CHECK_SET_ERR(readsAreVisible, "Can't zoom to reads");
+
+//    4. Use context menu on reads area:
+//    {Export->visible reads}
+//    5. Export dialog appeared. Press "Export"
+//    Expected state: UGENE doesn't crash.
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Visible reads"));
+    GTUtilsDialog::waitForDialog(os, new ExportReadsDialogFiller(os, sandBoxDir + "test_4486/reads.fa"));
+    GTUtilsAssemblyBrowser::callContextMenu(os, GTUtilsAssemblyBrowser::Reads);
+
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 

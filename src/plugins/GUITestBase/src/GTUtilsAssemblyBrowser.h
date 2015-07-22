@@ -49,11 +49,15 @@ public:
     static qint64 getLength(U2OpStatus &os);
     static qint64 getReadsCount(U2OpStatus &os);
 
+    static bool isWelcomeScreenVisible(U2OpStatus &os);
+
+    static void zoomIn(U2OpStatus& os);
     static void zoomToMax(U2OpStatus& os);
     static void zoomToMin(U2OpStatus& os);
 
     static void goToPosition(U2OpStatus &os, qint64 position);
 
+    static void callContextMenu(U2OpStatus &os, Area area = Consensus);
     static void callExportCoverageDialog(U2OpStatus &os, Area area = Consensus);
 };
 

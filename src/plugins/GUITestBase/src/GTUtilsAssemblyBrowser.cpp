@@ -147,6 +147,20 @@ qint64 GTUtilsAssemblyBrowser::getReadsCount(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "isWelcomeScreenVisible"
+bool GTUtilsAssemblyBrowser::isWelcomeScreenVisible(U2OpStatus &os) {
+    QWidget *coveredRegionsLabel = GTWidget::findWidget(os, "CoveredRegionsLabel", GTUtilsMdi::activeWindow(os));
+    GT_CHECK_RESULT(NULL != coveredRegionsLabel, "coveredRegionsLabel is NULL", false);
+    return coveredRegionsLabel->isVisible();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "zoomIn"
+void GTUtilsAssemblyBrowser::zoomIn(U2OpStatus &os) {
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Zoom in");
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "zoomToMax"
 void GTUtilsAssemblyBrowser::zoomToMax(U2OpStatus &os) {
     Q_UNUSED(os);
@@ -195,6 +209,28 @@ void GTUtilsAssemblyBrowser::goToPosition(U2OpStatus &os, qint64 position) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "callContextMenu"
+void GTUtilsAssemblyBrowser::callContextMenu(U2OpStatus &os, GTUtilsAssemblyBrowser::Area area) {
+    QString widgetName;
+    switch (area) {
+    case Consensus:
+        widgetName = "Consensus area";
+        break;
+    case Overview:
+        widgetName = "Zoomable assembly overview";
+        break;
+    case Reads:
+        widgetName = "assembly_reads_area";
+        break;
+    default:
+        os.setError("Can't find the area");
+        FAIL(false, );
+    }
+
+    GTWidget::click(os, GTWidget::findWidget(os, widgetName), Qt::RightButton);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "callExportCoverageDialog"
 void GTUtilsAssemblyBrowser::callExportCoverageDialog(U2OpStatus &os, Area area) {
     Q_UNUSED(os);
@@ -202,20 +238,19 @@ void GTUtilsAssemblyBrowser::callExportCoverageDialog(U2OpStatus &os, Area area)
     switch (area) {
     case Consensus:
         GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export coverage"));
-        GTWidget::click(os, GTWidget::findWidget(os, "Consensus area"), Qt::RightButton);
         break;
     case Overview:
         GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export coverage"));
-        GTWidget::click(os, GTWidget::findWidget(os, "Zoomable assembly overview"), Qt::RightButton);
         break;
     case Reads:
         GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export" << "Export coverage"));
-        GTWidget::click(os, GTWidget::findWidget(os, "assembly_reads_area"), Qt::RightButton);
         break;
     default:
         os.setError("Can't call the dialog on this area");
         FAIL(false, );
     }
+
+    callContextMenu(os, area);
 }
 #undef GT_METHOD_NAME
 
