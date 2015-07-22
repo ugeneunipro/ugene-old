@@ -105,9 +105,6 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
     ui.sourceUrlView->setText(QDir::cleanPath(sourceUrl.getURLString()));
     okButton->setFocus();
     connect(ui.tableWidget, SIGNAL(itemChanged(QTableWidgetItem*)), SLOT(sl_assemblyCheckChanged(QTableWidgetItem*)));
-    adjustSize();
-    resize(500, height());
-
 }
 
 void ConvertToSQLiteDialog::hideReferenceUrl() {
@@ -283,10 +280,7 @@ bool ConvertToSQLiteDialog::referenceFromFile() {
 
 bool ConvertToSQLiteDialog::checkReferencesState() {
     if (referenceFromFile()) {
-        if (ui.refUrlEdit->text().isEmpty()) {
-            QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Please select the file with the reference sequence"));
-            return false;
-        }
+        return true;
     } else {
         bool selected = false;
         foreach(const bool& i, bamInfo.getSelected()) {
