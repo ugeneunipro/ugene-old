@@ -35,7 +35,7 @@ extern "C" {
 // http://sourceforge.net/p/predef/wiki/Compilers/
 
 #ifdef _MSC_VER
-#if _MSC_VER <= 1600 && UGENE_X86_64
+#if _MSC_VER <= 1800 && UGENE_X86_64
 #define LAME_MSC
 #endif
 #endif
