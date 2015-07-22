@@ -102,7 +102,7 @@ add-plugin linkdata_support
 add-plugin opencl_support
 add-plugin orf_marker
 add-plugin pcr
-#add-plugin perf_monitor
+add-plugin perf_monitor
 add-plugin phylip
 add-plugin primer3
 add-plugin psipred

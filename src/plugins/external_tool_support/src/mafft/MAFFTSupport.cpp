@@ -86,7 +86,7 @@ void MAFFTSupport::sl_runWithExtFileSpecify(){
                return;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
          }
     }
@@ -168,7 +168,7 @@ void MAFFTSupportContext::sl_align_with_MAFFT() {
                return;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
          }
     }

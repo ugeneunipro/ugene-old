@@ -68,7 +68,7 @@ ExternalToolRunTask* BlastNPlusSupportTask::createBlastPlusTask(){
         arguments <<"-reward"<< QString::number(settings.matchReward);
     }else{
         if(!settings.isDefaultMatrix){
-            assert(NULL);
+            assert(false);
             arguments <<"-M"<< settings.matrix;
         }
     }

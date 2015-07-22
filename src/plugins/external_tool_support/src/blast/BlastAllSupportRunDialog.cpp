@@ -334,7 +334,7 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_runQuery(){
             settingsList[i].aobj->addObjectRelation(GObjectRelation(sequencesRefList[i], ObjectRole_Sequence));
         }
         else {
-            assert(NULL);//allways created new document for annotations
+            assert(false);//allways created new document for annotations
         }
         settingsList[i].groupName=ca_c->getModel().groupName;
 

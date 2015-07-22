@@ -168,7 +168,7 @@ bool BlastPlusSupportRunDialog::checkToolPath(){
                return false;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
         }
         if(!AppContext::getExternalToolRegistry()->getByName(toolName)->getPath().isEmpty()){
@@ -461,7 +461,7 @@ bool BlastPlusWithExtFileSpecifySupportRunDialog::checkToolPath(){
                return false;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
         }
         if(!AppContext::getExternalToolRegistry()->getByName(toolName)->getPath().isEmpty()){
@@ -496,7 +496,7 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_runQuery(){
             settingsList[i].aobj = new AnnotationTableObject(sequencesRefList[i].objName+" annotations", dbiRef);
             settingsList[i].aobj->addObjectRelation(GObjectRelation(sequencesRefList[i], ObjectRole_Sequence));
         } else {
-            assert(NULL);//always created new document for annotations
+            assert(false);//always created new document for annotations
         }
         settingsList[i].groupName=ca_c->getModel().groupName;
 

@@ -92,7 +92,7 @@ void CAP3Support::sl_runWithExtFileSpecify(){
                return;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
          }
     }

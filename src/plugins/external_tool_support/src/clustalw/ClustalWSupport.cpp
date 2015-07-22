@@ -89,7 +89,7 @@ void ClustalWSupport::sl_runWithExtFileSpecify(){
                return;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
          }
     }
@@ -170,7 +170,7 @@ void ClustalWSupportContext::sl_align_with_ClustalW() {
                return;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
          }
     }

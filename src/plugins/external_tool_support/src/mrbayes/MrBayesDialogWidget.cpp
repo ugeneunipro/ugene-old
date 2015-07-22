@@ -186,7 +186,7 @@ bool MrBayesWidget::checkSettings(QString& , const CreatePhyTreeSettings& ){
                return false;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
         }
     }

@@ -318,7 +318,7 @@ QString ReportSender::getOSVersion() {
     result = "FreeBSD";
 #elif defined(Q_OS_MAC)
     result = "Mac ";
-    switch (QSysInfo::MacintoshVersion) {
+    switch (static_cast<int>(QSysInfo::MacintoshVersion)) {
     case QSysInfo::MV_9:
         result += "Mac OS 9 (unsupported)";
         break;
@@ -343,22 +343,13 @@ QString ReportSender::getOSVersion() {
     case QSysInfo::MV_10_6:
         result += "OS X 10.6";
         break;
-#if (QT_VERSION >= QT_VERSION_CHECK(4, 8, 0))
     case QSysInfo::MV_10_7:
         result += "OS X 10.7";
         break;
     case QSysInfo::MV_10_8:
         result += "OS X 10.8";
         break;
-#else
-    case 0x0009:
-        result += "OS X 10.7";
-        break;
-    case 0x000A:
-        result += "OS X 10.8";
-        break;
-#endif
-    case 0x000B:
+    case QSysInfo::MV_10_9:
         result += "OS X 10.9";
         break;
     case 0x000C:

@@ -89,7 +89,7 @@ void BlastDbCmdSupport::sl_runWithExtFileSpecify(){
                return;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
          }
     }

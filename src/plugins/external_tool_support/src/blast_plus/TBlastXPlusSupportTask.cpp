@@ -57,7 +57,7 @@ ExternalToolRunTask* TBlastXPlusSupportTask::createBlastPlusTask(){
     }
 
     if(settings.isNucleotideSeq && (!settings.isDefautScores)){
-        assert(NULL);
+        assert(false);
         coreLog.error(tr("Unexpected settings combination"));
     }else{
         if(!settings.isDefaultMatrix){

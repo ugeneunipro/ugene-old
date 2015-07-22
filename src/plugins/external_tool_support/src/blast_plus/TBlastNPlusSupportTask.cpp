@@ -55,7 +55,7 @@ ExternalToolRunTask* TBlastNPlusSupportTask::createBlastPlusTask(){
         arguments <<"-gapextend"<< QString::number(settings.gapExtendCost);
     }
     if(settings.isNucleotideSeq && (!settings.isDefautScores)){
-        assert(NULL);
+        assert(false);
         arguments <<"-penalty"<< QString::number(settings.mismatchPenalty);
         arguments <<"-reward"<< QString::number(settings.matchReward);
     }else{

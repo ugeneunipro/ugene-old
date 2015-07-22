@@ -97,7 +97,7 @@ void BlastAllSupport::sl_runWithExtFileSpecify(){
                return;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
          }
     }
@@ -166,7 +166,7 @@ void BlastAllSupportContext::sl_showDialog() {
            case QMessageBox::No:
                return;
            default:
-               assert(NULL);
+               assert(false);
                break;
          }
     }

@@ -112,7 +112,7 @@ void ETSProjectViewItemsContoller::sl_runFormatDBOnSelection(){
                return;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
          }
     }

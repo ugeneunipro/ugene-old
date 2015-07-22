@@ -88,7 +88,7 @@ void TCoffeeSupport::sl_runWithExtFileSpecify(){
                return;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
          }
     }
@@ -171,7 +171,7 @@ void TCoffeeSupportContext::sl_align_with_TCoffee() {
                return;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
          }
     }

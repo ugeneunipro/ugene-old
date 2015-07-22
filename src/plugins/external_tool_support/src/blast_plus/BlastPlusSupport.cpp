@@ -191,7 +191,7 @@ void BlastPlusSupport::sl_runWithExtFileSpecify(){
                return;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
          }
         bool isOneOfToolConfigured=false;
@@ -324,7 +324,7 @@ void BlastPlusSupportContext::sl_showDialog() {
                return;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
          }
         bool isOneOfToolConfigured=false;
@@ -408,7 +408,7 @@ void BlastPlusSupportContext::sl_fetchSequenceById()
                return;
                break;
            default:
-               assert(NULL);
+               assert(false);
                break;
         }
     }

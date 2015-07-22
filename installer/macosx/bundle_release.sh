@@ -105,6 +105,7 @@ PLUGIN_LIST="annotator \
             opencl_support \
             orf_marker \
             pcr \
+            perf_monitor \
             phylip \
             primer3 \
             psipred \
@@ -119,7 +120,6 @@ PLUGIN_LIST="annotator \
             variants \
             weight_matrix \
             workflow_designer"
-#perf_monitor - removed plugin
 
 if [ "$1" == "-test" ]
    then

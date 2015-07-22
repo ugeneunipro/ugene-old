@@ -37,7 +37,7 @@ namespace {
     const int INT_FIELD = 0;
     const int DOUBLE_FIELD = 1;
     const int STRING_FIELD = 2;
-    const int BLOB_FIELD = 3;
+    const int BLOB_FIELD ATTR_UNUSED = 3;
 
     class SchemaObject3 : public U2Object {
     public:
