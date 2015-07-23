@@ -548,8 +548,8 @@ static const int portRotationModifier = Qt::AltModifier;
 static const int bl = (int) A/4;
 
 WorkflowPortItem::WorkflowPortItem(WorkflowProcessItem* owner, Port* p)
-: /*StyledItem(owner), */ currentStyle(owner->getStyle()),port(p),owner(owner),orientation(0), dragging(false), rotating(false),
-sticky(false), highlight(false)
+    : /*StyledItem(owner), */ currentStyle(owner->getStyle()),port(p),owner(owner),orientation(0), dragging(false), rotating(false),
+    sticky(false), highlight(false), mouseMoveIsBeingProcessed(false)
 {
     setFlags(ItemIsSelectable | ItemIsFocusable);
     setAcceptHoverEvents(true);
@@ -884,7 +884,31 @@ void WorkflowPortItem::focusOutEvent(QFocusEvent * /*event*/) {
     }
 }
 
+namespace {
+
+class ScopedFlagFlipper {
+public:
+    ScopedFlagFlipper(bool &flag)
+        : flag(flag)
+    {
+        flag = true;
+    }
+
+    ~ScopedFlagFlipper() {
+        flag = false;
+    }
+
+private:
+    bool &flag;
+};
+
+}
+
 void WorkflowPortItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event ) {
+    CHECK(!mouseMoveIsBeingProcessed, );
+
+    ScopedFlagFlipper guard(mouseMoveIsBeingProcessed);
+    Q_UNUSED(guard);
     if (!dragging && !rotating && (event->buttons() & Qt::LeftButton) && !dragPoint.isNull()) {
         //log.debug("port grabbed mouse");
         if ((event->pos().toPoint() - dragPoint.toPoint()).manhattanLength() < 10) return;
@@ -894,22 +918,18 @@ void WorkflowPortItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event ) {
             rotating = true;
             //setCursor(portRotationCursor);
             setCursor(QCursor(QPixmap(":workflow_designer/images/rot_cur.png")));
-        }
-        //else
-        {
+        } else {
             dragging = true;
             setCursor(Qt::ClosedHandCursor);
             bindCandidates = getCandidates(this);
             foreach(WorkflowPortItem* it, bindCandidates) {
-                it->setHighlight(true);it->update(it->boundingRect());
+                it->setHighlight(true);
+                it->update(it->boundingRect());
             }
         }
     }
 
     sticky = false;
-    if (dragging) {
-        rotating = (event->modifiers() & portRotationModifier);
-    }
 
     if (!dragging && !rotating) {
         return;
@@ -926,12 +946,7 @@ void WorkflowPortItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event ) {
             r.moveCenter(mapToScene(dragPoint));
             v->ensureVisible(r,0,0);
         }
-        /*dragPoint = rotating ? mapFromScene(event->scenePos()) : event->pos();*/
-        if (rotating) {
-            dragPoint += event->scenePos() - event->lastScenePos();
-        } else {
-            dragPoint += event->pos() - event->lastPos();
-        }
+        dragPoint += event->pos() - event->lastPos();
 
         WorkflowPortItem* preferable = findNearbyBindingCandidate(event->scenePos());
         if (preferable) {
@@ -945,9 +960,8 @@ void WorkflowPortItem::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     dragPoint = QPointF();
     if ((event->buttons() & Qt::LeftButton) && !getWorkflowScene()->isLocked()) {
         dragPoint = event->pos();
-        if (event->modifiers() & portRotationModifier) {
+        if ((event->modifiers() & portRotationModifier) && !dragging) {
             rotating = true;
-            //setCursor(portRotationCursor);
             setCursor(QCursor(QPixmap(":workflow_designer/images/rot_cur.png")));
         } else {
             setCursor(Qt::ClosedHandCursor);
@@ -987,7 +1001,8 @@ void WorkflowPortItem::mouseReleaseEvent ( QGraphicsSceneMouseEvent * event ) {
             }
         }
         prepareGeometryChange();
-        dragging = false;dragPoint = QPointF();
+        dragging = false;
+        dragPoint = QPointF();
         foreach(WorkflowPortItem* it, bindCandidates) {
             it->setHighlight(false);
         }

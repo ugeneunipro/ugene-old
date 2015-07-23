@@ -208,6 +208,7 @@ private:
     bool rotating;
     bool sticky;
     bool highlight;
+    bool mouseMoveIsBeingProcessed; // the field is needed to prevent a recursion during mouse events processing
     QList<WorkflowPortItem*> bindCandidates;
     QPointF dragPoint;
 };
