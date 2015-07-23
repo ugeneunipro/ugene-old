@@ -120,6 +120,8 @@ private:
 
     int posToComplTransLine(int p) const;
     int posToDirectTransLine(int p) const;
+    int getVisibleDirectTransLine(int absoluteFrameNumber) const;
+    int getVisibleComplTransLine(int absoluteFrameNumber) const;
     bool deriveTranslationCharColor(qint64 pos, const U2Strand &strand, const QList<SharedAnnotationData> &annotationsInRange, QColor &result);
 
     int numLines;

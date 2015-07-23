@@ -321,18 +321,67 @@ void DetViewRenderArea::updateLines() {
     assert(numLines > 0);
 }
 
+int DetViewRenderArea::getVisibleDirectTransLine(int absoluteFrameNumber) const {
+    int lineNumber = firstDirectTransLine + absoluteFrameNumber;
+
+    const QVector<bool> rowsVisibility = getDetView()->getSequenceContext()->getTranslationRowsVisibleStatus();
+    const int halfRowsCount = rowsVisibility.size() / 2;
+    SAFE_POINT(absoluteFrameNumber < halfRowsCount, "Unexpected translation line number", -1);
+    if (!rowsVisibility[absoluteFrameNumber]) {
+        return -1;
+    } else {
+        for (int i = 0; i < absoluteFrameNumber; ++i) {
+            if (!rowsVisibility[i]) {
+                --lineNumber;
+            }
+        }
+        return lineNumber;
+    }
+}
+
+int DetViewRenderArea::getVisibleComplTransLine(int absoluteFrameNumber) const {
+    int lineNumber = firstComplTransLine + absoluteFrameNumber;
+
+    const QVector<bool> rowsVisibility = getDetView()->getSequenceContext()->getTranslationRowsVisibleStatus();
+    const int halfRowsCount = rowsVisibility.size() / 2;
+    SAFE_POINT(absoluteFrameNumber < halfRowsCount, "Unexpected translation line number", -1);
+    if (!rowsVisibility[halfRowsCount + absoluteFrameNumber]) {
+        return -1;
+    } else {
+        for (int i = halfRowsCount; i < halfRowsCount + absoluteFrameNumber; ++i) {
+            if (!rowsVisibility[i]) {
+                --lineNumber;
+            }
+        }
+        return lineNumber;
+    }
+}
+
 U2Region DetViewRenderArea::getAnnotationYRange(Annotation *a, int region, const AnnotationSettings *as) const {
     const SharedAnnotationData &aData = a->getData();
     const U2Strand strand = aData->getStrand();
     const bool complement = strand.isCompementary() && getDetView()->hasComplementaryStrand();
     const TriState aminoState = as->amino ? TriState_Yes : TriState_No;
-    const bool transl = getDetView()->hasTranslations() && (aminoState == TriState_Yes);
+
+    DetView *detView = getDetView();
+    const bool transl = detView->hasTranslations() && (aminoState == TriState_Yes);
     const int frame = U1AnnotationUtils::getRegionFrame(view->getSequenceLength(), strand, aData->isOrder(), region, aData->getRegions());
+
     int line = -1;
     if (complement) {
-        line = transl ? firstComplTransLine + frame : complementLine;
+        if (transl) {
+            line = getVisibleComplTransLine(frame);
+            line = (-1 == line) ? complementLine : line;
+        } else {
+            line = complementLine;
+        }
     } else {
-        line = transl ? firstDirectTransLine + frame : directLine;
+        if (transl) {
+            line = getVisibleDirectTransLine(frame);
+            line = (-1 == line) ? directLine : line;
+        } else {
+            line = directLine;
+        }
     }
     SAFE_POINT(-1 != line, "Unable to calculate annotation vertical position!", U2Region());
     int y = getLineY(line);
@@ -760,41 +809,13 @@ void DetViewRenderArea::drawRuler(QPainter& p) {
 int DetViewRenderArea::posToDirectTransLine(int p) const {
     SAFE_POINT(firstDirectTransLine >= 0, "Invalid direct translation line number", -1);
     const int absoluteLineNumber = p % 3;
-    int lineNumber = firstDirectTransLine + absoluteLineNumber;
-
-    const QVector<bool> rowsVisibility = getDetView()->getSequenceContext()->getTranslationRowsVisibleStatus();
-    const int halfRowsCount = rowsVisibility.size() / 2;
-    SAFE_POINT(absoluteLineNumber < halfRowsCount, "Unexpected translation line number", -1);
-    if (!rowsVisibility[absoluteLineNumber]) {
-        return -1;
-    } else {
-        for (int i = 0; i < absoluteLineNumber; ++i) {
-            if (!rowsVisibility[i]) {
-                --lineNumber;
-            }
-        }
-        return lineNumber;
-    }
+    return getVisibleDirectTransLine(absoluteLineNumber);
 }
 
 int DetViewRenderArea::posToComplTransLine(int p) const {
     SAFE_POINT(firstComplTransLine >= 0, "Invalid complementary translation line number", -1);
     const int absoluteLineNumber = (view->getSequenceLength() - p) % 3;
-    int lineNumber = firstComplTransLine + absoluteLineNumber;
-
-    const QVector<bool> rowsVisibility = getDetView()->getSequenceContext()->getTranslationRowsVisibleStatus();
-    const int halfRowsCount = rowsVisibility.size() / 2;
-    SAFE_POINT(absoluteLineNumber < halfRowsCount, "Unexpected translation line number", -1);
-    if (!rowsVisibility[halfRowsCount + absoluteLineNumber]) {
-        return -1;
-    } else {
-        for (int i = halfRowsCount; i < halfRowsCount + absoluteLineNumber; ++i) {
-            if (!rowsVisibility[i]) {
-                --lineNumber;
-            }
-        }
-        return lineNumber;
-    }
+    return getVisibleComplTransLine(absoluteLineNumber);
 }
 
 void DetViewRenderArea::highlight(QPainter& p, const U2Region& r, int line) {
