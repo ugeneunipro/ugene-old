@@ -2479,6 +2479,7 @@ GUI_TEST_CLASS_DEFINITION(test_4463) {
 
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "10..20"));
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Edit sequence" << "Remove subsequence..."));
+    GTWidget::click(os, GTUtilsAnnotationsTreeView::getTreeWidget(os));
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTUtilsMdi::closeWindow(os, "test_4463.gb.gz");
