@@ -114,7 +114,6 @@ public:
     QMap<qint64, QList<U2MsaGap> > getGapModel() const;
 
     /** Methods to work with rows */
-    void addRow(U2MsaRow& rowInDb, const DNASequence& sequence, int rowIdx = -1);
     void removeRow(int rowIdx);
     void updateRow(int rowIdx, const QString& name, const QByteArray& seqBytes, const QList<U2MsaGap>& gapModel, U2OpStatus& os);
     void renameRow(int rowIdx, const QString& newName);

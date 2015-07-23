@@ -82,35 +82,6 @@ bool validateCharactersCount(qint64 count) {
     return true;
 }
 
-/** Validates that sequenceId is not empty in the row */
-bool validateSequenceId(const U2MsaRow& row) {
-    if (row.sequenceId.isEmpty()) {
-        coreLog.trace("Empty sequence ID!");
-        return false;
-    }
-    return true;
-}
-
-/**
- * Validates that 'posInMsa' is equal to '-1' or
- * located within bounds [0, numRows].
- * In the first case sets 'posInMsa' to 'numRows'.
- */
-bool validateAndPreparePosInMsa(const MAlignment& al, qint64& posInMsa) {
-    if (-1 == posInMsa) {
-        posInMsa = al.getNumRows();
-        return true;
-    }
-
-    if (posInMsa >= 0 && posInMsa <= al.getNumRows()) {
-        return true;
-    }
-
-    coreLog.trace(QString("Invalid row position '%1' for alignment '%2'!").arg(posInMsa).arg(al.getName()));
-    return false;
-}
-
-
 /////////////////////////////////////////////////////////////////
 // Helper-methods for additional calculations
 
@@ -559,19 +530,20 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
 
     //// UPDATE ROWS AND SEQUENCES
     // Get rows that are currently stored in the database
-    QList<U2MsaRow> currentRows = msaDbi->getRows(msaRef.entityId, os);
+    const QList<U2MsaRow> currentRows = msaDbi->getRows(msaRef.entityId, os);
     QList<qint64> currentRowIds;
     CHECK_OP(os, );
 
     QList<qint64> newRowsIds = al.getRowsIds();
+    QList<qint64> eliminatedRows;
 
-    foreach (const U2MsaRow& currentRow, currentRows) {
+    foreach (const U2MsaRow &currentRow, currentRows) {
         currentRowIds.append(currentRow.rowId);
 
         // Update data for rows with the same row and sequence IDs
         if (newRowsIds.contains(currentRow.rowId)) {
             // Update sequence and row info
-            U2MsaRow newRow = al.getRowByRowId(currentRow.rowId, os).getRowDBInfo();
+            const U2MsaRow newRow = al.getRowByRowId(currentRow.rowId, os).getRowDBInfo();
             CHECK_OP(os, );
 
             if (newRow.sequenceId != currentRow.sequenceId) {
@@ -591,13 +563,14 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
 
             msaDbi->updateRowContent(msaRef.entityId, newRow.rowId, sequence.seq, newRow.gaps, os);
             CHECK_OP(os, );
-        }
-        // Remove rows that are no more present in the alignment
-        else {
-            MsaDbiUtils::removeRow(msaRef, currentRow.rowId, os);
-            CHECK_OP(os, );
+        } else {
+            // Remove rows that are no more present in the alignment
+            eliminatedRows.append(currentRow.rowId);
         }
     }
+
+    msaDbi->removeRows(msaRef.entityId, eliminatedRows, os);
+    CHECK_OP(os, );
 
     // Add rows that are stored in memory, but are not present in the database,
     // remember the rows order
@@ -1050,17 +1023,8 @@ QList<qint64> MsaDbiUtils::trim(const U2EntityRef& msaRef, U2OpStatus& os) {
 }
 
 void MsaDbiUtils::addRow(const U2EntityRef& msaRef, qint64 posInMsa, U2MsaRow& row, U2OpStatus& os) {
-    // Get the alignment
-    MAlignmentExporter alExporter;
-    MAlignment al = alExporter.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
-
-    // Validate the parameters, prepare 'posInMsa'
-    if (!validateSequenceId(row) ||
-        !validateAndPreparePosInMsa(al, posInMsa))
-    {
-        os.setError(tr("Failed to add a row to an alignment!"));
-        return;
-    }
+    // Validate the parameters
+    SAFE_POINT_EXT(!row.sequenceId.isEmpty(), os.setError("Invalid sequence reference"), );
 
     // Prepare the connection
     DbiConnection con(msaRef.dbiRef, os);

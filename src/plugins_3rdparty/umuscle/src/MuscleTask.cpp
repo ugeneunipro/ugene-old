@@ -409,6 +409,9 @@ void MuscleGObjectTask::prepare() {
 }
 
 Task::ReportResult MuscleGObjectTask::report() {
+    DbiOperationsBlock op(obj->getEntityRef().dbiRef, stateInfo);
+    Q_UNUSED(op);
+
     if (!lock.isNull()) {
         obj->unlockState(lock);
         delete lock;

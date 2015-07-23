@@ -338,22 +338,6 @@ int MAlignmentObject::deleteGap( const U2Region &rows, int pos, int maxGaps, U2O
     return removingGapColumnCount;
 }
 
-void MAlignmentObject::addRow(U2MsaRow& rowInDb, const DNASequence& seq, int rowIdx) {
-    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
-
-    MAlignment msa = getMAlignment();
-
-    const DNAAlphabet* newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(seq.alphabet, getAlphabet());
-    assert(newAlphabet != NULL);
-    msa.setAlphabet(newAlphabet);
-
-    U2OpStatus2Log os;
-    MsaDbiUtils::addRow(entityRef, rowIdx, rowInDb, os);
-    SAFE_POINT_OP(os, );
-
-    updateCachedMAlignment();
-}
-
 void MAlignmentObject::removeRow(int rowIdx) {
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
 
