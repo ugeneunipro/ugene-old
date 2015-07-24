@@ -3677,6 +3677,30 @@ GUI_TEST_CLASS_DEFINITION(test_3585) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3589) {
+    // 1. Create workflow: Read assembly --> Write assembly
+    // 2. Set input file _common_data/bam/chrM.sorted.bam
+    // 3. Run the workflow
+    // Expected state: No errors
+
+    GTLogTracer l;
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    WorkflowProcessItem* read = GTUtilsWorkflowDesigner::addElement(os, "Read Assembly");
+    CHECK_SET_ERR(read != NULL, "Added workflow element is NULL");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "/_common_data/bam/", "chrM.sorted.bam");
+
+    WorkflowProcessItem* write = GTUtilsWorkflowDesigner::addElement(os, "Write Assembly");
+    CHECK_SET_ERR(write != NULL, "Added workflow element is NULL");
+    GTUtilsWorkflowDesigner::connect(os, read, write);
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Nothing to write") == 0, "Nothing to write error is present");
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3603) {
 //    1. Open "data/samples/FASTA/human_T1.fa".
 //    2. Open "Find Pattern" options panel tab.
