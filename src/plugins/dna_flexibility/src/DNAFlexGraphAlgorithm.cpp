@@ -21,7 +21,7 @@
 
 #include "DNAFlexGraphAlgorithm.h"
 #include "FindHighFlexRegionsAlgorithm.h"
-
+#include "DNAFlexPlugin.h"
 
 namespace U2 {
 
@@ -66,8 +66,19 @@ void DNAFlexGraphAlgorithm::calculate(
     // Getting the number of steps
     int stepsNumber = GSequenceGraphUtils::getNumSteps(region, windowData->window, windowData->step);
 
+    try {
     // Allocating memory for the results
     result.reserve(stepsNumber);
+    } catch (const std::bad_alloc &) {
+#ifdef UGENE_X86
+        os.setError(DNAFlexPlugin::tr("UGENE ran out of memory during the DNA flexibility calculating. "
+                    "The 32-bit UGENE version has a restriction on its memory consumption. Try using the 64-bit version instead.");
+#else
+        os.setError(DNAFlexPlugin::tr("Out of memory during the DNA flexibility calculating."));
+#endif
+    } catch (...) {
+        os.setError(DNAFlexPlugin::tr("Internal error occurred during the DNA flexibility calculating."));
+    }
 
     // Calculating the results
     for (int i = 0; i < stepsNumber; ++i)
