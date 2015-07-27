@@ -1343,7 +1343,7 @@ GUI_TEST_CLASS_DEFINITION(test_3220){
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
     //2. Add qualifier with quotes
-    Runnable *filler = new EditQualifierFiller(os, "newqualifier", "val\"", GTGlobals::UseMouse, true);
+    Runnable *filler = new EditQualifierFiller(os, "newqualifier", "val\"", GTGlobals::UseMouse, false);
     GTUtilsDialog::waitForDialog(os, filler);
     CHECK_OP(os, );
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "add_qualifier_action"));
@@ -1353,7 +1353,7 @@ GUI_TEST_CLASS_DEFINITION(test_3220){
     GTMouseDriver::click(os, Qt::RightButton);
 
     //3. Add another qualifier to the same annotation
-    filler = new EditQualifierFiller(os, "newqualifier2", "val\"2", GTGlobals::UseMouse, true);
+    filler = new EditQualifierFiller(os, "newqualifier2", "val\"2", GTGlobals::UseMouse, false);
     GTUtilsDialog::waitForDialog(os, filler);
     CHECK_OP(os, );
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "add_qualifier_action"));
@@ -5745,7 +5745,7 @@ GUI_TEST_CLASS_DEFINITION(test_3950) {
     GTUtilsWorkflowDesigner::setParameter(os, "Output directory", sandBox.absoluteFilePath(sandBoxDir), GTUtilsWorkflowDesigner::textValue);
 
     GTUtilsWorkflowDesigner::runWorkflow(os);
-    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os, 480000);
 
     GTUtilsLog::check(os, l);
 }
