@@ -77,16 +77,19 @@ public:
     void setSynchronizationMode(SynchronizationMode newSyncMode);
     SynchronizationMode getSynchronizationMode() const{return syncMode;}
 
+    void setMSAEditor(MSAEditor *_msa);
+    MSAEditor * getMsaEditor() const;
 
-    void setMSAEditor(MSAEditor* _msa) {msa = _msa;}
-    MSAEditor* getMsaEditor() const{return msa;}
 protected:
     virtual QWidget* createWidget();
+
 private slots:
     void sl_refreshTree();
     void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&);
+
 signals:
     void si_refreshTree(MSAEditorTreeViewer* treeViewer);
+
 private:
     QAction*              refreshTreeAction;
     QAction*              sortSeqAction;
@@ -114,6 +117,7 @@ public:
     bool canSynchronizeWithMSA(MSAEditor* msa);
 
     void setSynchronizeMode(SynchronizationMode syncMode);
+
 protected:
     virtual void mousePressEvent(QMouseEvent *e);
     virtual void wheelEvent(QWheelEvent *e);
@@ -125,12 +129,23 @@ protected:
     void onSettingsChanged(TreeViewOption option, const QVariant& newValue);
     virtual void updateTreeSettings(bool setDefaultZoom = true);
     virtual void setTreeLayout(TreeLayout newLayout);
+
 signals:
     void si_collapseModelChangedInTree(const QList<QStringList>&);
     void si_seqOrderChanged(const QStringList& order);
     void si_groupColorsChanged(const GroupColorSchema& schema);
+    void si_zoomIn();
+    void si_zoomOut();
+    void si_resetZooming();
+
 public slots:
     void sl_sortAlignment();
+
+protected slots:
+    void sl_zoomToAll();
+    void sl_zoomToSel();
+    void sl_zoomOut();
+
 private slots:
     void sl_selectionChanged(const QStringList& selection);
     void sl_sequenceNameChanged(QString prevName, QString newName);

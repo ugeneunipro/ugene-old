@@ -46,6 +46,7 @@ QWidget* MSAEditorTreeViewer::createWidget() {
     view->setObjectName("msa_editor_tree_view_container_widget");
     QVBoxLayout* vLayout = new QVBoxLayout();
     ui = new MSAEditorTreeViewerUI(this);
+
     QToolBar* toolBar = new QToolBar(tr("MSAEditor tree toolbar"));
     buildMSAEditorStaticToolbar(toolBar);
 
@@ -58,7 +59,6 @@ QWidget* MSAEditorTreeViewer::createWidget() {
     refreshTreeAction->setEnabled(false);
     connect(refreshTreeAction, SIGNAL(triggered()), SLOT(sl_refreshTree()));
 
-
     toolBar->addSeparator();
     toolBar->addAction(refreshTreeAction);
     toolBar->addAction(sortSeqAction);
@@ -70,6 +70,19 @@ QWidget* MSAEditorTreeViewer::createWidget() {
     view->setLayout(vLayout);
 
     return view;
+}
+
+void MSAEditorTreeViewer::setMSAEditor(MSAEditor *_msa) {
+    msa = _msa;
+    if (NULL != msa) {
+        connect(ui, SIGNAL(si_zoomIn()), msa, SLOT(sl_zoomIn()));
+        connect(ui, SIGNAL(si_zoomOut()), msa, SLOT(sl_zoomOut()));
+        connect(ui, SIGNAL(si_resetZooming()), msa, SLOT(sl_resetZoom()));
+    }
+}
+
+MSAEditor * MSAEditorTreeViewer::getMsaEditor() const {
+    return msa;
 }
 
 void MSAEditorTreeViewer::setCreatePhyTreeSettings(const CreatePhyTreeSettings& _buildSettings) {
@@ -145,12 +158,25 @@ void MSAEditorTreeViewer::sl_alignmentChanged(const MAlignment& /*aln*/, const M
 
 MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer)
     : TreeViewerUI(treeViewer), subgroupSelectorPos(0.0), groupColors(1, 0.86), isSinchronized(true), curLayoutIsRectangular(true),
- curMSATreeViewer(treeViewer), syncMode(WithoutSynchronization), hasMinSize(false), hasMaxSize(false){
+    curMSATreeViewer(treeViewer), syncMode(WithoutSynchronization), hasMinSize(false), hasMaxSize(false)
+{
     connect(scene(), SIGNAL(sceneRectChanged(const QRectF&)), SLOT(sl_onSceneRectChanged(const QRectF&)));
 
     QRectF rect = scene()->sceneRect();
     subgroupSelector = scene()->addLine(0.0, rect.bottom(), 0.0, rect.top(), QPen(QColor(103, 138, 186)));
     setAlignment(Qt::AlignTop | Qt::AlignLeft);
+}
+
+void MSAEditorTreeViewerUI::sl_zoomToAll() {
+    emit si_resetZooming();
+}
+
+void MSAEditorTreeViewerUI::sl_zoomToSel() {
+    emit si_zoomIn();
+}
+
+void MSAEditorTreeViewerUI::sl_zoomOut() {
+    emit si_zoomOut();
 }
 
 ColorGenerator::ColorGenerator(int _countOfColors, qreal _lightness): countOfColors(_countOfColors), delta(0.1), hue(0.0), lightness(_lightness){

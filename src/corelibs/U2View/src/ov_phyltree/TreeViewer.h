@@ -209,13 +209,19 @@ protected:
     virtual void onLayoutChanged(const TreeLayout& ) {}
     virtual void updateTreeSettings(bool setDefaultZoom = true);
     virtual void onSettingsChanged(TreeViewOption option, const QVariant& newValue);
+
 signals:
     void si_optionChanged(TreeViewOption option, const QVariant& value);
+
 protected slots:
     virtual void sl_swapTriggered();
     virtual void sl_collapseTriggered();
     virtual void sl_rectLayoutRecomputed();
     virtual void sl_onBranchCollapsed(GraphicsRectangularBranchItem*);
+    virtual void sl_zoomToAll();
+    virtual void sl_zoomToSel();
+    virtual void sl_zoomOut();
+
 private slots:
     void sl_printTriggered();
     void sl_captureTreeTriggered();
@@ -233,9 +239,6 @@ private slots:
 
     void sl_setSettingsTriggered();
     void sl_branchSettings();
-    void sl_zoomToAll();
-    void sl_zoomToSel();
-    void sl_zoomOut();
 
 private:
     enum LabelType {
@@ -298,9 +301,6 @@ private:
 
     QAction*            swapAction;
     QAction*            rerootAction;
-    QAction*            zoomToAction;
-    QAction*            zoomOutAction;
-    QAction*            zoomToAllAction;
     QAction*            collapseAction;
     QAction*            setColorAction;
     QAction*            captureAction;
@@ -308,8 +308,12 @@ private:
 
     OptionsMap settings;
     bool updatingFromOP;
+
 protected:
     GraphicsRectangularBranchItem* rectRoot;
+    QAction*            zoomToAction;
+    QAction*            zoomOutAction;
+    QAction*            zoomToAllAction;
 };
 
 

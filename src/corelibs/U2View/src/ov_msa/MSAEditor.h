@@ -187,6 +187,11 @@ public:
 
     void exportHighlighted(){sl_exportHighlighted();}
 
+public slots:
+    void sl_zoomIn();
+    void sl_zoomOut();
+    void sl_resetZoom();
+
 signals:
     void si_fontChanged(const QFont& f);
     void si_zoomOperationPerformed(bool resizeModeChanged);
@@ -197,11 +202,8 @@ protected slots:
     void sl_saveAlignment();
     void sl_saveAlignmentAs();
     void sl_onContextMenuRequested(const QPoint & pos);
-    void sl_zoomIn();
-    void sl_zoomOut();
     void sl_zoomToSelection();
     void sl_changeFont();
-    void sl_resetZoom();
     void sl_buildTree();
     void sl_align();
     void sl_addToAlignment();

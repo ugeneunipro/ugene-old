@@ -453,6 +453,8 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer):
     //chrootAction->setEnabled(false); //not implemented yet
 
     buttonPopup->addAction(zoomToAction);
+    buttonPopup->addAction(zoomOutAction);
+    buttonPopup->addAction(zoomToAllAction);
     buttonPopup->addSeparator();
 
     buttonPopup->addAction(swapAction);
