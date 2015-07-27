@@ -20,6 +20,7 @@
  */
 
 #include <QColorDialog>
+#include <QMainWindow>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QPlastiqueStyle>
 #else
@@ -298,7 +299,7 @@ void TreeOptionsWidget::sl_fontChanged() {
 
 void TreeOptionsWidget::sl_labelsColorButton() {
     QColor curColor = qvariant_cast<QColor>(getTreeViewer()->getOptionValue(LABEL_COLOR));
-    QColor newColor = QColorDialog::getColor(curColor, this);
+    QColor newColor = QColorDialog::getColor(curColor, AppContext::getMainWindow()->getQMainWindow());
     if (newColor.isValid()) {
         updateButtonColor(labelsColorButton, newColor);
         getTreeViewer()->changeOption(LABEL_COLOR, newColor);
@@ -307,7 +308,7 @@ void TreeOptionsWidget::sl_labelsColorButton() {
 
 void TreeOptionsWidget::sl_branchesColorButton() {
     QColor curColor = qvariant_cast<QColor>(getTreeViewer()->getOptionValue(BRANCH_COLOR));
-    QColor newColor = QColorDialog::getColor(curColor,  this);
+    QColor newColor = QColorDialog::getColor(curColor, AppContext::getMainWindow()->getQMainWindow());
     if (newColor.isValid()) {
         updateButtonColor(branchesColorButton, newColor);
         getTreeViewer()->changeOption(BRANCH_COLOR, newColor);

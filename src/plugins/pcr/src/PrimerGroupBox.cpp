@@ -19,7 +19,11 @@
  * MA 02110-1301, USA.
  */
 
+#include <QMainWindow>
+
+#include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceUtils.h>
+#include <U2Gui/MainWindow.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Core/QObjectScopedPointer.h>
@@ -67,7 +71,7 @@ void PrimerGroupBox::sl_translate() {
 }
 
 void PrimerGroupBox::sl_browse() {
-    QObjectScopedPointer<PrimerLibrarySelector> dlg = new PrimerLibrarySelector(this);
+    QObjectScopedPointer<PrimerLibrarySelector> dlg = new PrimerLibrarySelector(AppContext::getMainWindow()->getQMainWindow());
     dlg->exec();
     CHECK(!dlg.isNull(), );
     CHECK(QDialog::Accepted == dlg->result(), );

@@ -24,6 +24,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMainWindow>
 #include <QMenu>
 #include <QRadioButton>
 #include <QToolButton>
@@ -54,6 +55,7 @@
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
@@ -246,7 +248,7 @@ void CreateAnnotationWidgetController::sl_onLoadObjectsClicked() {
     GObjectRelation rel(model.sequenceObjectRef, ObjectRole_Sequence);
     QScopedPointer<PTCAnnotationObjectFilter> filter(new PTCAnnotationObjectFilter(rel, model.useUnloadedObjects));
     s.objectFilter = filter.data();
-    QList<GObject*> objs = ProjectTreeItemSelectorDialog::selectObjects(s, w);
+    QList<GObject*> objs = ProjectTreeItemSelectorDialog::selectObjects(s, AppContext::getMainWindow()->getQMainWindow());
     if (objs.isEmpty()) {
         return;
     }
