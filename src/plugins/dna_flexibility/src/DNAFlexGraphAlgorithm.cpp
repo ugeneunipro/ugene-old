@@ -72,7 +72,7 @@ void DNAFlexGraphAlgorithm::calculate(
     } catch (const std::bad_alloc &) {
 #ifdef UGENE_X86
         os.setError(DNAFlexPlugin::tr("UGENE ran out of memory during the DNA flexibility calculating. "
-                    "The 32-bit UGENE version has a restriction on its memory consumption. Try using the 64-bit version instead.");
+                    "The 32-bit UGENE version has a restriction on its memory consumption. Try using the 64-bit version instead."));
 #else
         os.setError(DNAFlexPlugin::tr("Out of memory during the DNA flexibility calculating."));
 #endif
