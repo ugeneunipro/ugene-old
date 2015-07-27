@@ -42,9 +42,11 @@ public:
 
     static SharedAnnotationData getPrimerAnnotation(const QByteArray &primer, int matchLengh, U2Strand::Direction strand, int sequenceLength);
     static QString getProductName(const QString &sequenceName, qint64 sequenceLength, const U2Region &region, bool fileName = false);
+    static QByteArray toProductSequence(const QByteArray &targetSequence, const QByteArray &forwardPrimer, const QByteArray &reversePrimer, int forwardPrimerMatchLength, int reversePrimerMatchLength);
 
 private:
-    DNASequence getProductSequence();
+    DNASequence getProductSequence(U2OpStatus &os) const;
+    DNASequence extractTargetSequence(U2OpStatus &os) const;
 
 private:
     InSilicoPcrProduct product;

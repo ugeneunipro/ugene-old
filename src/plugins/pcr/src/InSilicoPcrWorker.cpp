@@ -248,9 +248,9 @@ QList<Message> InSilicoPcrWorker::fetchResult(Task *task, U2OpStatus &os) {
 
         foreach (const InSilicoPcrProduct &product, pcrTask->getResults()) {
             QVariantMap data;
-            data[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = createProductSequence(settings, product.region, os);
+            data[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = createProductSequence(settings, product, os);
             CHECK_OP(os, result);
-            data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = createBindAnnotations(product);
+            data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = createPrimerAnnotations(product);
             int metadataId = createMetadata(settings, product.region, pairNumber);
             result << Message(output->getBusType(), data, metadataId);
         }
@@ -259,23 +259,24 @@ QList<Message> InSilicoPcrWorker::fetchResult(Task *task, U2OpStatus &os) {
     return result;
 }
 
-QVariant InSilicoPcrWorker::createProductSequence(const InSilicoPcrTaskSettings &settings, const U2Region &productRegion, U2OpStatus &os) {
+QVariant InSilicoPcrWorker::createProductSequence(const InSilicoPcrTaskSettings &settings, const InSilicoPcrProduct &product, U2OpStatus &os) {
     const DNAAlphabet *alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     SAFE_POINT_EXT(NULL != alphabet, os.setError(L10N::nullPointerError("DNA Alphabet")), QVariant());
 
-    QString name = ExtractProductTask::getProductName(settings.sequenceName, settings.sequence.length(), productRegion);
-    QByteArray sequence = settings.sequence.mid(productRegion.startPos, productRegion.length);
-    if (sequence.length() < productRegion.length) {
+    QString name = ExtractProductTask::getProductName(settings.sequenceName, settings.sequence.length(), product.region);
+    QByteArray sequence = settings.sequence.mid(product.region.startPos, product.region.length);
+    if (sequence.length() < product.region.length) {
         assert(settings.isCircular);
-        sequence += settings.sequence.left(productRegion.endPos() - settings.sequence.length());
+        sequence += settings.sequence.left(product.region.endPos() - settings.sequence.length());
     }
     DNASequence seq(name, sequence, alphabet);
+    seq.seq = ExtractProductTask::toProductSequence(seq.seq, product.forwardPrimer, product.reversePrimer, product.forwardPrimerMatchLength, product.reversePrimerMatchLength);
 
     SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(seq);
     return qVariantFromValue<SharedDbiDataHandler>(seqId);
 }
 
-QVariant InSilicoPcrWorker::createBindAnnotations(const InSilicoPcrProduct &product) {
+QVariant InSilicoPcrWorker::createPrimerAnnotations(const InSilicoPcrProduct &product) {
     QList<SharedAnnotationData> anns;
     anns << ExtractProductTask::getPrimerAnnotation(product.forwardPrimer, product.forwardPrimerMatchLength, U2Strand::Direct, product.region.length);
     anns << ExtractProductTask::getPrimerAnnotation(product.reversePrimer, product.reversePrimerMatchLength, U2Strand::Complementary, product.region.length);

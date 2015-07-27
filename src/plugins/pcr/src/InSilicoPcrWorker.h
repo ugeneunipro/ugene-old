@@ -93,8 +93,8 @@ protected:
 private:
     void fetchPrimers(const QList<GObject*> &objects, U2OpStatus &os);
     Primer createPrimer(GObject *object, bool &skipped, U2OpStatus &os);
-    QVariant createProductSequence(const InSilicoPcrTaskSettings &settings, const U2Region &productRegion, U2OpStatus &os);
-    QVariant createBindAnnotations(const InSilicoPcrProduct &product);
+    QVariant createProductSequence(const InSilicoPcrTaskSettings &settings, const InSilicoPcrProduct &product, U2OpStatus &os);
+    QVariant createPrimerAnnotations(const InSilicoPcrProduct &product);
     int createMetadata(const InSilicoPcrTaskSettings &settings, const U2Region &productRegion, int pairNumber);
     QByteArray createReport() const;
 

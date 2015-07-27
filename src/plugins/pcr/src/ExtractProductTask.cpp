@@ -28,6 +28,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceUtils.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/GenbankFeatures.h>
@@ -66,27 +67,40 @@ ExtractProductTask::~ExtractProductTask() {
     delete result;
 }
 
-DNASequence ExtractProductTask::getProductSequence() {
+DNASequence ExtractProductTask::getProductSequence(U2OpStatus &os) const {
+    DNASequence sequence = extractTargetSequence(os);
+    CHECK_OP(os, sequence);
+    sequence.seq = toProductSequence(sequence.seq, product.forwardPrimer, product.reversePrimer, product.forwardPrimerMatchLength, product.reversePrimerMatchLength);
+    return sequence;
+}
+
+DNASequence ExtractProductTask::extractTargetSequence(U2OpStatus &os) const {
     DNASequence result("", "");
-    DbiConnection connection(sequenceRef.dbiRef, stateInfo);
-    CHECK_OP(stateInfo, result);
-    SAFE_POINT_EXT(NULL != connection.dbi, setError(L10N::nullPointerError("DBI")), result);
+    DbiConnection connection(sequenceRef.dbiRef, os);
+    CHECK_OP(os, result);
+    SAFE_POINT_EXT(NULL != connection.dbi, os.setError(L10N::nullPointerError("DBI")), result);
     U2SequenceDbi *sequenceDbi = connection.dbi->getSequenceDbi();
-    SAFE_POINT_EXT(NULL != sequenceDbi, setError(L10N::nullPointerError("Sequence DBI")), result);
+    SAFE_POINT_EXT(NULL != sequenceDbi, os.setError(L10N::nullPointerError("Sequence DBI")), result);
 
-    U2Sequence sequence = sequenceDbi->getSequenceObject(sequenceRef.entityId, stateInfo);
-    CHECK_OP(stateInfo, result);
+    U2Sequence sequence = sequenceDbi->getSequenceObject(sequenceRef.entityId, os);
+    CHECK_OP(os, result);
 
-    result.seq = sequenceDbi->getSequenceData(sequenceRef.entityId, product.region, stateInfo);
-    CHECK_OP(stateInfo, result);
+    result.seq = sequenceDbi->getSequenceData(sequenceRef.entityId, product.region, os);
+    CHECK_OP(os, result);
     if (product.region.endPos() > sequence.length) {
         U2Region tail(0, product.region.endPos() % sequence.length);
-        result.seq += sequenceDbi->getSequenceData(sequenceRef.entityId, tail, stateInfo);
-        CHECK_OP(stateInfo, result);
+        result.seq += sequenceDbi->getSequenceData(sequenceRef.entityId, tail, os);
+        CHECK_OP(os, result);
     }
 
     result.setName(getProductName(sequence.visualName, sequence.length, product.region));
     return result;
+}
+
+QByteArray ExtractProductTask::toProductSequence(const QByteArray &targetSequence, const QByteArray &forwardPrimer, const QByteArray &reversePrimer, int forwardPrimerMatchLength, int reversePrimerMatchLength) {
+    int startPos = forwardPrimerMatchLength;
+    int length = targetSequence.length() - forwardPrimerMatchLength - reversePrimerMatchLength;
+    return forwardPrimer + targetSequence.mid(startPos, length) + DNASequenceUtils::reverseComplement(reversePrimer);
 }
 
 SharedAnnotationData ExtractProductTask::getPrimerAnnotation(const QByteArray &primer, int matchLengh, U2Strand::Direction strand, int sequenceLength) {
@@ -100,8 +114,8 @@ SharedAnnotationData ExtractProductTask::getPrimerAnnotation(const QByteArray &p
     result->location->regions << region;
     result->location->strand = U2Strand(strand);
 
-    result->name = GBFeatureUtils::getKeyInfo(GBFeatureKey_primer_bind).text;
-    result->qualifiers << U2Qualifier("sequence", primer);
+    result->name = GBFeatureUtils::getKeyInfo(GBFeatureKey_misc_feature).text;
+    result->qualifiers << U2Qualifier(GBFeatureUtils::QUALIFIER_NOTE, "primer");
     return result;
 }
 
@@ -117,7 +131,7 @@ void ExtractProductTask::run() {
     U2DbiRef dbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(stateInfo);
     CHECK_OP(stateInfo, );
 
-    DNASequence productSequence = getProductSequence();
+    DNASequence productSequence = getProductSequence(stateInfo);
     CHECK_OP(stateInfo, );
     U2EntityRef productRef = U2SequenceUtils::import(dbiRef, productSequence, stateInfo);
     CHECK_OP(stateInfo, );
