@@ -810,7 +810,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029) {
 //    Expected state: warning is hidden, export is available
 //    6. Select Zoomed Image export
 //    Expected state: warning message appeared, export is blocked
-//    5. Select a fewer region
+//    7. Select a fewer region
 //    Expected state: warning is hidden, export is available
 
 
@@ -850,6 +850,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029) {
 
             radioButton = dialog->findChild<QRadioButton*>("detailsButton");
             GTRadioButton::click(os, radioButton);
+            GTLineEdit::setText(os, end, "10000");
             CHECK_SET_ERR(!okbutton->isEnabled(), "Export button is unexpectedly enabled");
 
             GTLineEdit::setText(os, end, "2330");
