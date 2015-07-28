@@ -105,10 +105,11 @@ class CircularAnnotationLabel : public QGraphicsItem {
 public:
     CircularAnnotationLabel(Annotation *ann, const QVector<U2Region> &annLocation, bool isAutoAnnotation, int _region, int sequenceLength,
         const QFont& font, CircularViewRenderArea* renderArea);
-    virtual void paint(QPainter *p,const QStyleOptionGraphicsItem *item,QWidget *widget);
+
+    void paint(QPainter *p,const QStyleOptionGraphicsItem *item,QWidget *widget);
     Annotation * getAnnotation() const;
-    virtual QRectF boundingRect() const;
-    virtual bool contains(const QPointF &point) const;
+    QRectF boundingRect() const;
+    bool contains(const QPointF &point) const;
     int getRegion() const;
     void setLabelPosition();
     static void setLabelsVisible(QList<CircularAnnotationLabel *> &labelItems);
@@ -119,14 +120,21 @@ public:
     void drawLabelInsideRegion(QPainter *p, bool canFit);
     void drawLabelOutsideRegion(QPainter *p, QPen& pen);
 
-    bool tryPushBack();
+    bool tryPushCounterclockwise();
+    bool tryPushClockwise();
+
+    const QPoint & getConnectionStart() const;
+    const QPoint & getConnectionEnd() const;
 
 private:
-    int findClosestPoint(const QPoint &targetPoint, const QVector<QRect> &rects);
+    int findClosestPoint(const QVector<QRect> &rects);
     void calculateSuitablePositions(const QVector<QRect> &rects);
     void calculateConnectionEnd();
     void calculateConnectionStart();
     void engageLabelPosition(int pos);
+    void avoidLinesIntersections();
+
+    static bool labelLengthLessThan(CircularAnnotationLabel *l1, CircularAnnotationLabel *l2);
 
     Annotation *annotation;
     QVector<U2Region> location;

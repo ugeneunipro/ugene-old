@@ -181,10 +181,18 @@ void CircularAnnotationRegionItem::setLabel(CircularAnnotationLabel* label) {
 /* CircularAnnotationLabel                                              */
 /************************************************************************/
 
-static bool labelLengthLessThan(CircularAnnotationLabel* l1, CircularAnnotationLabel* l2) {
-    const U2Region region1 = l1->getAnnotation()->getRegions()[l1->getRegion()];
-    const U2Region region2 =  l2->getAnnotation()->getRegions()[l2->getRegion()];
-    return region1.startPos < region2.startPos ? true : region1.startPos == region2.startPos ? region1.length < region2.length : false;
+bool CircularAnnotationLabel::labelLengthLessThan(CircularAnnotationLabel *l1, CircularAnnotationLabel *l2) {
+    const int annLevel1 = l1->ra->getAnnotationYLevel(l1->getAnnotation());
+    const int annLevel2 = l2->ra->getAnnotationYLevel(l2->getAnnotation());
+    if (annLevel1 < annLevel2) {
+        return false;
+    } else if (annLevel1 > annLevel2) { // annotations from higher orbits are drawn first
+        return true;
+    } else {
+        const U2Region region1 = l1->getAnnotation()->getRegions()[l1->getRegion()];
+        const U2Region region2 = l2->getAnnotation()->getRegions()[l2->getRegion()];
+        return region1.startPos < region2.startPos ? true : region1.startPos == region2.startPos ? region1.length < region2.length : false;
+    }
 }
 
 CircularAnnotationLabel::CircularAnnotationLabel(Annotation *ann, const QVector<U2Region> &annLocation, bool isAutoAnnotation,
@@ -198,31 +206,33 @@ CircularAnnotationLabel::CircularAnnotationLabel(Annotation *ann, const QVector<
       regionItem(NULL),
       hasPosition(false)
 {
-    const SharedAnnotationData &aData = annotation->getData();
     SAFE_POINT(0 <= region && region < location.size(), "Invalid location index", );
+
     const U2Region &r = location[region];
-    const qreal startAngle = renderArea->rotationDegree + (float)r.startPos / (float)sequenceLength * 360;
-    const qreal spanAngle = (float) r.length / (float) sequenceLength * 360;
+    qreal startAngle = renderArea->rotationDegree + 360.0 * r.startPos / sequenceLength;
+    while (startAngle > 360) {
+        startAngle -= 360;
+    }
+    const qreal spanAngle = 360.0 * r.length / sequenceLength;
 
-    const float middleAngle = 360 - (startAngle + spanAngle / 2.0);
-    annotationAngle = middleAngle;
+    annotationAngle = (startAngle + spanAngle / 2.0) * Deg2Rad;
     if (annotationAngle < 0) {
-        annotationAngle += 360;
+        annotationAngle += 2 * PI;
+    } else if (annotationAngle > 2 * PI) {
+        annotationAngle -= 2 * PI;
     }
 
-    startA = startAngle * PI / 180;
-    endA = spanAngle * PI / 180 + startA;
-    spanA = spanAngle * PI / 180;
-    if ( startA > 2 * PI) {
+    startA = startAngle * Deg2Rad;
+    endA = spanAngle * Deg2Rad + startA;
+    spanA = spanAngle * Deg2Rad;
+    if (startA > 2 * PI) {
         startA -= 2 * PI;
-    }
-    else if (startA < 0) {
+    } else if (startA < 0) {
         startA += 2 * PI;
     }
     if (endA > 2 * PI) {
         endA -= 2 * PI;
-    }
-    else if (endA < 0) {
+    } else if (endA < 0) {
         endA += 2 * PI;
     }
 
@@ -235,6 +245,7 @@ CircularAnnotationLabel::CircularAnnotationLabel(Annotation *ann, const QVector<
     setVisible(false);
 
     AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry();
+    const SharedAnnotationData &aData = annotation->getData();
     AnnotationSettings *as = asr->getAnnotationSettings(aData);
     labelText = GSequenceLineViewAnnotated::prepareAnnotationText(aData, as);
 }
@@ -360,33 +371,98 @@ void CircularAnnotationLabel::engageLabelPosition(int pos) {
 
 void CircularAnnotationLabel::setLabelPosition() {
     // find closest empty label position
-    const QPoint midRegionPoint = QPointF(midRect.width() / 2 * cos(annotationAngle / 180.0 * PI),
-        -midRect.height() / 2 * sin(annotationAngle / 180.0 * PI)).toPoint();
-
     calculateSuitablePositions(ra->positionsAvailableForLabels);
-    int closest = findClosestPoint(midRegionPoint, ra->positionsAvailableForLabels);
+    int closest = findClosestPoint(ra->positionsAvailableForLabels);
     CHECK(-1 != closest, );
 
     if (ra->engagedLabelPositionToLabel.contains(closest)) { // the closest position is engaged
         int currentTargetPosIndex = closest;
         int currentSuitableIndex = suitableLabelPositionIndexes.indexOf(closest);
         SAFE_POINT(-1 != currentSuitableIndex, "Unexpected suitable position for a label", );
-        while (ra->engagedLabelPositionToLabel.contains(currentTargetPosIndex)
-            && !ra->engagedLabelPositionToLabel[currentTargetPosIndex]->tryPushBack() && currentSuitableIndex < suitableLabelPositionIndexes.size() - 1)
-        {
+        while (ra->engagedLabelPositionToLabel.contains(currentTargetPosIndex) && currentSuitableIndex < suitableLabelPositionIndexes.size() - 1) {
             currentTargetPosIndex = suitableLabelPositionIndexes[++currentSuitableIndex];
         }
         if (ra->engagedLabelPositionToLabel.contains(currentTargetPosIndex)) {
-            return;
-        } else {
-            closest = currentTargetPosIndex;
+            while (ra->engagedLabelPositionToLabel.contains(currentTargetPosIndex) && currentSuitableIndex > 0) {
+                currentTargetPosIndex = suitableLabelPositionIndexes[--currentSuitableIndex];
+            }
+            if (ra->engagedLabelPositionToLabel.contains(currentTargetPosIndex)) {
+                return;
+            }
         }
+        closest = currentTargetPosIndex;
     }
 
     engageLabelPosition(closest);
+    avoidLinesIntersections();
 }
 
-bool CircularAnnotationLabel::tryPushBack() {
+namespace {
+
+bool labelConnectionLinesIntersect(CircularAnnotationLabel *const label1, CircularAnnotationLabel *const label2) {
+    const QLineF line1(label1->getConnectionStart(), label1->getConnectionEnd());
+    const QLineF line2(label2->getConnectionStart(), label2->getConnectionEnd());
+
+    QPointF intersectionPoint;
+    const QLineF::IntersectType intersection = line1.intersect(line2, &intersectionPoint);
+    return QLineF::BoundedIntersection == intersection;
+}
+
+}
+
+const QPoint & CircularAnnotationLabel::getConnectionStart() const {
+    return connectionStart;
+}
+
+const QPoint & CircularAnnotationLabel::getConnectionEnd() const {
+    return connectionEnd;
+}
+
+void CircularAnnotationLabel::avoidLinesIntersections() {
+    CHECK(hasPosition, );
+    const int engagedIndex = ra->engagedLabelPositionToLabel.key(this, -1);
+    SAFE_POINT(-1 != engagedIndex, "Unexpected label position index", );
+
+    for (int i = -2; i < 3; i += (i == -1) ? 2 : 1) {
+        CircularAnnotationLabel *neighbour = ra->engagedLabelPositionToLabel.value(engagedIndex + i, NULL);
+        bool swapSuccessful = true;
+        if (NULL != neighbour && labelConnectionLinesIntersect(this, neighbour)) {
+            ra->engagedLabelPositionToLabel.remove(engagedIndex);
+            if (i < 0 ? neighbour->tryPushClockwise() : neighbour->tryPushCounterclockwise()) {
+                engageLabelPosition(engagedIndex + i);
+                break;
+            } else {
+                swapSuccessful = false;
+            }
+        }
+        if (!swapSuccessful) {
+            SAFE_POINT(!ra->engagedLabelPositionToLabel.contains(engagedIndex), "Label position is engaged unexpectedly", );
+            ra->engagedLabelPositionToLabel[engagedIndex] = this;
+        }
+    }
+}
+
+bool CircularAnnotationLabel::tryPushClockwise() {
+    const int engagedIndex = ra->engagedLabelPositionToLabel.key(this, -1);
+    SAFE_POINT(-1 != engagedIndex, "Unexpected label position index", false);
+    const int numberOfEngagedIndex = suitableLabelPositionIndexes.indexOf(engagedIndex);
+    SAFE_POINT(-1 != numberOfEngagedIndex, "Unexpected label position index", false);
+
+    if ((suitableLabelPositionIndexes.size() - 1) == numberOfEngagedIndex) {
+        return false;
+    }
+
+    const int currentLabelPosIndex = suitableLabelPositionIndexes[numberOfEngagedIndex + 1];
+    if (!ra->engagedLabelPositionToLabel.contains(currentLabelPosIndex) || ra->engagedLabelPositionToLabel[currentLabelPosIndex]->tryPushClockwise()) {
+        ra->engagedLabelPositionToLabel.remove(engagedIndex);
+        engageLabelPosition(currentLabelPosIndex);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool CircularAnnotationLabel::tryPushCounterclockwise() {
     const int engagedIndex = ra->engagedLabelPositionToLabel.key(this, -1);
     SAFE_POINT(-1 != engagedIndex, "Unexpected label position index", false);
     const int numberOfEngagedIndex = suitableLabelPositionIndexes.indexOf(engagedIndex);
@@ -397,7 +473,7 @@ bool CircularAnnotationLabel::tryPushBack() {
     }
 
     const int currentLabelPosIndex = suitableLabelPositionIndexes[numberOfEngagedIndex - 1];
-    if (!ra->engagedLabelPositionToLabel.contains(currentLabelPosIndex) || ra->engagedLabelPositionToLabel[currentLabelPosIndex]->tryPushBack()) {
+    if (!ra->engagedLabelPositionToLabel.contains(currentLabelPosIndex) || ra->engagedLabelPositionToLabel[currentLabelPosIndex]->tryPushCounterclockwise()) {
         ra->engagedLabelPositionToLabel.remove(engagedIndex);
         engageLabelPosition(currentLabelPosIndex);
         return true;
@@ -409,17 +485,16 @@ bool CircularAnnotationLabel::tryPushBack() {
 namespace {
 
 qreal calculateAngleDiff(const QPoint &p, float annotationAngle) {
-    const qreal annotationAngleRad = (360 - annotationAngle) * Deg2Rad;
-    return abs(annotationAngleRad - CircularView::coordToAngle(p));
+    return qAbs(annotationAngle - CircularView::coordToAngle(p));
 }
 
 QPoint getRectangleCornerForAnnotationAngle(float annotationAngle, const QRect &rect) {
-    return (annotationAngle >= 0 && annotationAngle < 180) ? rect.bottomLeft() : rect.topLeft();
+    return (annotationAngle >= 0 && annotationAngle < PI) ? rect.topLeft() : rect.bottomLeft();
 }
 
 }
 
-int CircularAnnotationLabel::findClosestPoint(const QPoint &targetPoint, const QVector<QRect> &rects) {
+int CircularAnnotationLabel::findClosestPoint(const QVector<QRect> &rects) {
     foreach (int idx, suitableLabelPositionIndexes) {
         SAFE_POINT(idx >= 0 && idx < rects.size(), "Array index is out of range", -1);
         if (boundingRect().width() > rects.at(idx).width()) {
@@ -471,34 +546,35 @@ void CircularAnnotationLabel::calculateSuitablePositions(const QVector<QRect> &r
     }
 }
 
-#define CONNECTION_POINT_PAD PI/36
+#define CONNECTION_POINT_PAD PI / 36
 void CircularAnnotationLabel::calculateConnectionEnd() {
-    qreal arcsin = CircularView::coordToAngle(connectionStart);
+    qreal labelAngle = CircularView::coordToAngle(connectionStart);
 
-    if (spanA<CONNECTION_POINT_PAD * 2) {
-        qreal midAngle = startA + spanA/2;
-        connectionEnd.rx() = midRect.width() / 2 * cos(midAngle);
-        connectionEnd.ry() = midRect.width() / 2 * sin(midAngle);
-        return;
-    }
+    const qreal diffBetweenLabelAndStart = startA + CONNECTION_POINT_PAD + ((startA + CONNECTION_POINT_PAD < labelAngle) ? 2 * PI : 0) - labelAngle;
+    const qreal diffBetweenLabelAndEnd = labelAngle + ((labelAngle < endA - CONNECTION_POINT_PAD) ? 2 * PI : 0) - (endA - CONNECTION_POINT_PAD);
 
-    if (startA > endA) { //region contains 2*PI angle
-        if (arcsin > startA + CONNECTION_POINT_PAD || arcsin < endA - CONNECTION_POINT_PAD) {
-            connectionEnd = QPoint(midRect.width() / 2 * cos(arcsin), midRect.width() / 2 * sin(arcsin));
-            return;
+    qreal endPointAngle = 0.0;
+    if (spanA < CONNECTION_POINT_PAD * 2) {
+        endPointAngle = startA + spanA / 2;
+    } else if (startA > endA) { // annotation passes through 0 angle
+        const qreal shiftedEndA = endA + 2 * PI;
+        const qreal shiftedLabelAngle = (labelAngle >= 0 && labelAngle <= (endA + startA) / 2) ? labelAngle + 2 * PI : labelAngle;
+
+        if (shiftedLabelAngle > startA + CONNECTION_POINT_PAD && shiftedLabelAngle < shiftedEndA - CONNECTION_POINT_PAD) {
+            endPointAngle = labelAngle;
+        } else if (shiftedLabelAngle < startA + CONNECTION_POINT_PAD) {
+            endPointAngle = startA + CONNECTION_POINT_PAD;
+        } else {
+            endPointAngle = endA - CONNECTION_POINT_PAD;
         }
+    } else if (labelAngle > startA + CONNECTION_POINT_PAD && labelAngle < endA - CONNECTION_POINT_PAD) {
+        endPointAngle = labelAngle;
+    } else if (diffBetweenLabelAndStart < diffBetweenLabelAndEnd) {
+        endPointAngle = startA + CONNECTION_POINT_PAD;
     } else {
-        if(arcsin > startA + CONNECTION_POINT_PAD && arcsin < endA - CONNECTION_POINT_PAD) {
-            connectionEnd = QPoint(midRect.width() / 2 * cos(arcsin), midRect.width() / 2 * sin(arcsin));
-            return;
-        }
+        endPointAngle = endA - CONNECTION_POINT_PAD;
     }
-
-    if (abs(startA - arcsin) < abs(endA - arcsin)) {
-        connectionEnd = QPoint(midRect.width() / 2 * cos(startA + CONNECTION_POINT_PAD), midRect.width() / 2 * sin(startA + CONNECTION_POINT_PAD));
-    } else {
-        connectionEnd = QPoint(midRect.width() / 2 * cos(endA - CONNECTION_POINT_PAD), midRect.width() / 2 * sin(endA - CONNECTION_POINT_PAD));
-    }
+    connectionEnd = QPoint(midRect.width() / 2 * cos(endPointAngle), midRect.width() / 2 * sin(endPointAngle));
 }
 
 void CircularAnnotationLabel::calculateConnectionStart() {
