@@ -44,7 +44,6 @@ private:
         void parseErrOutput(const QString &partOfLog);
     };
 
-    LogParser logParser;
     QString referencePath;
     QString indexPath;
     DnaAssemblyToRefTaskSettings settings;
@@ -68,7 +67,6 @@ protected slots:
 private:
 
     QList<Task*> alignTasks;
-    LogParser logParser;
     QString indexPath;
     QList<ShortReadSet> readSets;
     QString resultPath;
@@ -84,7 +82,6 @@ public:
     void prepare();
 
 private:
-    BwaAlignTask::LogParser logParser;
     const QString indexPath;
     DnaAssemblyToRefTaskSettings settings;
 };
@@ -96,7 +93,6 @@ public:
     void prepare();
 
 private:
-    BwaAlignTask::LogParser logParser;
     const QString indexPath;
     DnaAssemblyToRefTaskSettings settings;
 };

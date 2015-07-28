@@ -68,6 +68,9 @@ const QString &_additionalProcessToKill)
   additionalProcessToKill(_additionalProcessToKill)
 {
     coreLog.trace("Creating run task for: " + toolName);
+    if (NULL != logParser) {
+        logParser->setParent(this);
+    }
 }
 
 ExternalToolRunTask::~ExternalToolRunTask(){
@@ -191,10 +194,6 @@ void ExternalToolRunTask::addOutputListener(ExternalToolListener* outputListener
         helper->addOutputListener(outputListener);
     }
     listener = outputListener;
-}
-
-void ExternalToolRunTask::setCustomParser(ExternalToolLogParser *parser) {
-    logParser = parser;
 }
 
 ////////////////////////////////////////

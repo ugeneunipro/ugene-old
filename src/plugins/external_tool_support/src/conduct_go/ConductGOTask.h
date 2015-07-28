@@ -63,7 +63,6 @@ private:
     SaveDocumentTask *treatTask;
 
     ExternalToolRunTask *etTask;
-    ExternalToolLogParser *logParser;
 
     static const QString BASE_DIR_NAME;
     static const QString BASE_SUBDIR_NAME;

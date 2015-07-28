@@ -59,7 +59,7 @@ void BowtieBuildIndexTask::prepare() {
         arguments.append("--color");
     }
 
-    ExternalToolRunTask *task = new ExternalToolRunTask(ET_BOWTIE_BUILD, arguments, &logParser);
+    ExternalToolRunTask *task = new ExternalToolRunTask(ET_BOWTIE_BUILD, arguments, new LogParser());
     addSubTask(task);
 }
 
@@ -128,12 +128,14 @@ int BowtieBuildIndexTask::LogParser::getProgress() {
 
 BowtieAssembleTask::BowtieAssembleTask(const DnaAssemblyToRefTaskSettings &settings):
     Task("Bowtie reads assembly", TaskFlags_NR_FOSCOE),
+    logParser(NULL),
     settings(settings)
 {
 }
 
 bool BowtieAssembleTask::isHaveResults()const {
-    return logParser.isHaveResults();
+    CHECK(NULL != logParser, false);
+    return logParser->isHaveResults();
 }
 
 void BowtieAssembleTask::prepare() {
@@ -281,7 +283,8 @@ void BowtieAssembleTask::prepare() {
         }
     }
     arguments.append(settings.resultFileName.getURLString());
-    ExternalToolRunTask *task = new ExternalToolRunTask(ET_BOWTIE, arguments, &logParser, NULL);
+    logParser = new LogParser();
+    ExternalToolRunTask *task = new ExternalToolRunTask(ET_BOWTIE, arguments, logParser, NULL);
     addSubTask(task);
 }
 

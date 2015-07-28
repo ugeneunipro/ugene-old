@@ -176,10 +176,9 @@ Task * CuffdiffSupportTask::createCuffdiffTask() {
     arguments << prepareAssemblyUrlsArgs(settings.groupBySamples, settings.assemblyUrls);
 
     // create task
-    logParser.reset(new LogParser());
     diffTask = new ExternalToolRunTask(ET_CUFFDIFF,
         arguments,
-        logParser.data(),
+        new LogParser(),
         workingDir);
     setListenerForTask(diffTask);
 

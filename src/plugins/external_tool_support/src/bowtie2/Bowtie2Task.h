@@ -35,7 +35,6 @@ public:
 
     void prepare();
 private:
-    ExternalToolLogParser logParser;
     QString referencePath;
     QString indexPath;
 };
@@ -46,7 +45,6 @@ public:
     Bowtie2AlignTask(const DnaAssemblyToRefTaskSettings &settings);
     void prepare();
 private:
-    ExternalToolLogParser logParser;
     DnaAssemblyToRefTaskSettings settings;
 };
 

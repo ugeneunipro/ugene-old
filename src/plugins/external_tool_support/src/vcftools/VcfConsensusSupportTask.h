@@ -37,7 +37,6 @@ class VcfConsensusSupportTask : public ExternalToolSupportTask {
     Q_DISABLE_COPY(VcfConsensusSupportTask)
 public:
     VcfConsensusSupportTask(const GUrl &inputFA, const GUrl &inputVcf, const GUrl &output);
-    ~VcfConsensusSupportTask();
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task *subTask);
@@ -49,7 +48,6 @@ private:
     GUrl output;
     TabixSupportTask *tabixTask;
     ExternalToolRunTask* vcfTask;
-    ExternalToolLogParser* logParser;
 
     QString getPath(ExternalTool *et);
 };

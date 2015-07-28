@@ -34,8 +34,6 @@
 
 namespace U2 {
 
-class TCoffeeLogParser;
-
 class TCoffeeSupportTaskSettings  {
 public:
     TCoffeeSupportTaskSettings() {reset();}
@@ -68,7 +66,6 @@ private:
     GObjectReference            objRef;
     QPointer<Document>          tmpDoc;
     QString                     url;
-    TCoffeeLogParser*           logParser;
 
     SaveMSA2SequencesTask*      saveTemporaryDocumentTask;
     ExternalToolRunTask*        tCoffeeTask;

@@ -57,7 +57,6 @@ ConservationPlotTask::ConservationPlotTask(const ConservationPlotSettings& _sett
 , plotData(_plotData)
 , activeSubtasks(0)
 , etTask(NULL)
-, logParser(NULL)
 {
     GCOUNTER(cvar, tvar, "NGS:ConservationPlotTask");
     SAFE_POINT_EXT(NULL != storage, setError(L10N::nullPointerError("workflow data storage")), );
@@ -71,7 +70,6 @@ void ConservationPlotTask::cleanup() {
     plotData.clear();
 
     delete treatDoc; treatDoc = NULL;
-    delete logParser; logParser = NULL;
 
     //remove tmp files
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(BASE_DIR_NAME);
@@ -156,12 +154,11 @@ QList<Task*> ConservationPlotTask::onSubTaskFinished(Task* subTask) {
 
             QStringList args = settings.getArguments(docNames);
 
-            logParser = new ConservationPlotLogParser();
             ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
             SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);
             const QString rDir = QFileInfo(rTool->getPath()).dir().absolutePath();
 
-            etTask = new ExternalToolRunTask(ET_CONSERVATION_PLOT, args, logParser, workingDir, QStringList() << rDir);
+            etTask = new ExternalToolRunTask(ET_CONSERVATION_PLOT, args, new ConservationPlotLogParser(), workingDir, QStringList() << rDir);
             setListenerForTask(etTask);
             result << etTask;
         }

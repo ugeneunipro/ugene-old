@@ -48,7 +48,6 @@ BlastDBCmdSupportTask::BlastDBCmdSupportTask(const BlastDBCmdSupportTaskSettings
 {
     GCOUNTER( cvar, tvar, "BlastDBCmdSupportTask" );
     blastDBCmdTask=NULL;
-    logParser=NULL;
     toolName = ET_BLASTDBCMD;
 }
 
@@ -62,8 +61,7 @@ void BlastDBCmdSupportTask::prepare(){
     arguments << "-logfile" << settings.outputPath+".BlastDBCmd.log";
     arguments << "-out" << settings.outputPath;
 
-    logParser=new ExternalToolLogParser();
-    blastDBCmdTask=new ExternalToolRunTask(toolName, arguments, logParser);
+    blastDBCmdTask = new ExternalToolRunTask(toolName, arguments, new ExternalToolLogParser());
     blastDBCmdTask->setSubtaskProgressWeight(95);
     addSubTask(blastDBCmdTask);
 }

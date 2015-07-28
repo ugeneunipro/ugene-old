@@ -68,7 +68,6 @@ ClustalOSupportTask::ClustalOSupportTask(const MAlignment& _inputMsa, const GObj
     loadTemporyDocumentTask=NULL;
     clustalOTask=NULL;
     tmpDoc=NULL;
-    logParser=NULL;
     resultMA.setName(inputMsa.getName());
     resultMA.setAlphabet(inputMsa.getAlphabet());
 }
@@ -169,15 +168,12 @@ QList<Task*> ClustalOSupportTask::onSubTaskFinished(Task* subTask) {
         }
         arguments <<"--threads="+QString::number(settings.numberOfProcessors);
 
-        logParser=new ClustalOLogParser();
-        clustalOTask=new ExternalToolRunTask(ET_CLUSTALO,arguments, logParser);
+        clustalOTask = new ExternalToolRunTask(ET_CLUSTALO, arguments, new ClustalOLogParser());
         setListenerForTask(clustalOTask);
         clustalOTask->setSubtaskProgressWeight(95);
         res.append(clustalOTask);
     }
     else if(subTask == clustalOTask){
-        assert(logParser);
-        delete logParser;
         if(!QFileInfo(outputUrl).exists()){
             if(AppContext::getExternalToolRegistry()->getByName(ET_CLUSTALO)->isValid()){
                 stateInfo.setError(tr("Output file %1 not found").arg(outputUrl));

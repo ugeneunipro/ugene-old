@@ -39,7 +39,6 @@ class MafftAddToAlignmentTask : public AbstractAlignmentTask{
     Q_OBJECT
 public:
     MafftAddToAlignmentTask(const AlignSequencesToAlignmentTaskSettings& settings);
-    ~MafftAddToAlignmentTask();
 
     void prepare();
     void run();

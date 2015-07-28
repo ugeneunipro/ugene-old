@@ -92,7 +92,7 @@ const QString CEASSupportTask::BASE_DIR_NAME("ceas_report");
 CEASSupportTask::CEASSupportTask(const CEASTaskSettings &_settings)
 : ExternalToolSupportTask("Running CEAS report task", TaskFlag_None),
 settings(_settings), bedDoc(NULL),
-bedTask(NULL), wigTask(NULL), etTask(NULL), activeSubtasks(0), logParser(NULL)
+bedTask(NULL), wigTask(NULL), etTask(NULL), activeSubtasks(0)
 {
     GCOUNTER(cvar, tvar, "NGS:CEASTask");
     SAFE_POINT_EXT(NULL != settings.getStorage() || settings.getBedData().isEmpty(), setError(L10N::nullPointerError("workflow data storage")), );
@@ -104,7 +104,6 @@ CEASSupportTask::~CEASSupportTask() {
 
 void CEASSupportTask::cleanup() {
     delete bedDoc; bedDoc = NULL;
-    delete logParser; logParser = NULL;
 
     //remove tmp files
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(BASE_DIR_NAME);
@@ -172,12 +171,11 @@ Task* CEASSupportTask::createETTask(){
     settings.getCeasSettings().setWigFile(settings.getWigData());
     QStringList args = settings.getCeasSettings().getArgumentList();
 
-    logParser = new CEASLogParser();
     ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
     SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", new FailTask("R script tool wasn't found in the registry"));
     const QString rDir = QFileInfo(rTool->getPath()).dir().absolutePath();
 
-    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_CEAS, args, logParser, workingDir, QStringList() << rDir);
+    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_CEAS, args, new CEASLogParser(), workingDir, QStringList() << rDir);
     setListenerForTask(runTask);
     res = runTask;
 

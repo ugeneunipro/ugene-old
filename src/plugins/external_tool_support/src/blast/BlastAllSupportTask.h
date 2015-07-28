@@ -55,7 +55,6 @@ public:
     QList<SharedAnnotationData> getResultedAnnotations() const;
     BlastTaskSettings           getSettings() const;
 private:
-    ExternalToolLogParser*      logParser;
     QString                     url;
 
     SaveDocumentTask*           saveTemporaryDocumentTask;

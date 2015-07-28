@@ -111,15 +111,9 @@ ExternalToolRunTask* BlastPPlusSupportTask::createBlastPlusTask(){
     }
 
     algoLog.trace("BlastP+ arguments: "+arguments.join(" "));
-    logParser=new ExternalToolLogParser();
-    QString workingDirectory=QFileInfo(url).absolutePath();
-    // https://ugene.unipro.ru/tracker/browse/UGENE-945
-//     if(settings.programName == "gpu-blastp") {
-//        return new ExternalToolRunTask(GPU_BLASTP_TOOL_NAME, arguments, logParser, workingDirectory);
-//     } else {
-    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_BLASTP, arguments, logParser, workingDirectory);
+    QString workingDirectory = QFileInfo(url).absolutePath();
+    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_BLASTP, arguments, new ExternalToolLogParser(), workingDirectory);
     setListenerForTask(runTask);
     return runTask;
-    //     }
 }
 }//namespace

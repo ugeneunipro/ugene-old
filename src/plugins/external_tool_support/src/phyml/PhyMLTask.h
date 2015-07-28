@@ -99,7 +99,6 @@ private:
     PhyMLPrepareDataForCalculation*   prepareDataTask;
     ExternalToolRunTask*              phyMlTask;
     PhyMLGetCalculatedTreeTask*       getTreeTask;
-    PhyMLLogParser*                   logParser;
     int                               sequencesNumber;
 };
 

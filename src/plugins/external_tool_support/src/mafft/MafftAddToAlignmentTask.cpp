@@ -83,10 +83,6 @@ MafftAddToAlignmentTask::MafftAddToAlignmentTask(const AlignSequencesToAlignment
     }
 }
 
-MafftAddToAlignmentTask::~MafftAddToAlignmentTask() {
-    delete logParser;
-}
-
 static QString generateTmpFileUrl(const QString &filePathAndPattern) {
     QTemporaryFile *generatedFile = new QTemporaryFile(filePathAndPattern);
     QFileInfo generatedFileInfo(generatedFile->fileName());

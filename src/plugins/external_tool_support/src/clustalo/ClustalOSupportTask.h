@@ -76,7 +76,6 @@ Miscellaneous:
 
 */
 
-class ClustalOLogParser;
 class LoadDocumentTask;
 
 class ClustalOSupportTaskSettings {
@@ -113,7 +112,6 @@ private:
     GObjectReference            objRef;
     QPointer<Document>          tmpDoc;
     QString                     url;
-    ClustalOLogParser*          logParser;
 
     SaveAlignmentTask*          saveTemporaryDocumentTask;
     ExternalToolRunTask*        clustalOTask;

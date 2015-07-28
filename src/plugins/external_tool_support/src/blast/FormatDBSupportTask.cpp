@@ -49,7 +49,6 @@ FormatDBSupportTask::FormatDBSupportTask(const QString& name, const FormatDBSupp
 {
     GCOUNTER( cvar, tvar, "FormatDBSupportTask" );
     formatDBTask=NULL;
-    logParser=NULL;
 }
 
 void FormatDBSupportTask::prepare(){
@@ -82,8 +81,7 @@ void FormatDBSupportTask::prepare(){
         arguments <<"-dbtype"<< (settings.isInputAmino ? "prot" : "nucl");
     }
 
-    logParser=new ExternalToolLogParser();
-    formatDBTask=new ExternalToolRunTask(toolName, arguments, logParser);
+    formatDBTask = new ExternalToolRunTask(toolName, arguments, new ExternalToolLogParser());
     formatDBTask->setSubtaskProgressWeight(95);
     addSubTask(formatDBTask);
 }

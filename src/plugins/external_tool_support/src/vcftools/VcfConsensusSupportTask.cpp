@@ -42,13 +42,8 @@ VcfConsensusSupportTask::VcfConsensusSupportTask(const GUrl &inputFA, const GUrl
       inputVcf(inputVcf),
       output(output),
       tabixTask(NULL),
-      vcfTask(NULL),
-      logParser(NULL)
+      vcfTask(NULL)
 {
-}
-
-VcfConsensusSupportTask::~VcfConsensusSupportTask() {
-    delete logParser;
 }
 
 void VcfConsensusSupportTask::prepare() {
@@ -96,9 +91,8 @@ QList<Task*> VcfConsensusSupportTask::onSubTaskFinished(Task *subTask) {
     QMap <QString, QString> envVariables;
     envVariables["PERL5LIB"] = getPath(vcfToolsET);
 
-    logParser = new ExternalToolLogParser();
     vcfTask = new ExternalToolRunTask(ET_VCF_CONSENSUS, QStringList() << tabixTask->getOutputBgzf().getURLString(),
-                                      logParser, "", QStringList() << getPath(tabixET));
+        new ExternalToolLogParser(), "", QStringList() << getPath(tabixET));
     vcfTask->setStandartInputFile( inputFA.getURLString() );
     vcfTask->setStandartOutputFile( output.getURLString() );
     vcfTask->setAdditionalEnvVariables(envVariables);

@@ -51,7 +51,6 @@ CAP3SupportTask::CAP3SupportTask(const CAP3SupportTaskSettings& _settings) :
     prepareDataForCAP3Task(NULL),
     cap3Task(NULL),
     copyResultTask(NULL),
-    logParser(NULL),
     settings(_settings)
 {
     GCOUNTER( cvar, tvar, "CAP3SupportTask" );
@@ -90,8 +89,7 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
 
         QStringList arguments = settings.getArgumentsList();
         arguments.prepend( inputUrl.getURLString() );
-        logParser = new CAP3LogParser();
-        cap3Task = new ExternalToolRunTask(ET_CAP3, arguments, logParser);
+        cap3Task = new ExternalToolRunTask(ET_CAP3, arguments, new CAP3LogParser());
         setListenerForTask(cap3Task);
         cap3Task->setSubtaskProgressWeight(95);
         res.append(cap3Task);

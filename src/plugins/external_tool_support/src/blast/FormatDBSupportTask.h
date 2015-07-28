@@ -72,7 +72,7 @@ namespace U2 {
   -B  Binary Gifile produced from the Gifile specified above [File Out]  Optional
   -T  Taxid file to set the taxonomy ids in ASN.1 deflines [File In]  Optional
 */
-//class FormatDBLogParser;
+
 class FormatDBSupportTaskSettings {
 public:
     FormatDBSupportTaskSettings() {reset();}
@@ -97,20 +97,11 @@ public:
     QString generateReport() const;
 private:
     QString                     prepareLink(const QString &path) const;
-    ExternalToolLogParser*      logParser;
     QString                     externalToolLog;
     ExternalToolRunTask*        formatDBTask;
     QString                     toolName;
     FormatDBSupportTaskSettings settings;
 };
-
-//class FormatDBLogParser : public ExternalToolLogParser {
-//public:
-//    FormatDBLogParser(int countSequencesInMSA);
-//    int getProgress();
-//private:
-//    int countSequencesInMSA;
-//};
 
 }//namespace
 #endif // _U2_FORMATDB_SUPPORT_TASK_H

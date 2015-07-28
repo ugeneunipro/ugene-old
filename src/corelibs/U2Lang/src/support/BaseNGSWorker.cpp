@@ -232,8 +232,7 @@ ExternalToolRunTask *BaseNGSTask::getExternalToolTask(const QString &toolName, E
 
     ExternalToolRunTask* etTask = NULL;
     if (customParser == NULL) {
-        ExternalToolLogParser* logParser = new BaseNGSParser();
-        etTask = new ExternalToolRunTask(toolName, args, logParser, settings.outDir);
+        etTask = new ExternalToolRunTask(toolName, args, new BaseNGSParser(), settings.outDir);
     } else {
         etTask = new ExternalToolRunTask(toolName, args, customParser, settings.outDir);
     }

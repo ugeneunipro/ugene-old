@@ -87,8 +87,6 @@ private:
 
     int activeSubtasks;
 
-    ExternalToolLogParser *logParser;
-
     static const QString BASE_DIR_NAME;
 
 private:

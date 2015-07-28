@@ -73,7 +73,6 @@ ClustalWSupportTask::ClustalWSupportTask(const MAlignment& _inputMsa, const GObj
     loadTemporyDocumentTask=NULL;
     clustalWTask=NULL;
     tmpDoc=NULL;
-    logParser=NULL;
     resultMA.setAlphabet(inputMsa.getAlphabet());
     resultMA.setName(inputMsa.getName());
 }
@@ -195,14 +194,11 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
         if(settings.noPGaps) arguments<<"-NOPGAP";
         if(settings.noHGaps) arguments<<"-NOHGAP";
         arguments << "-OUTFILE="+outputUrl;
-        logParser=new ClustalWLogParser(inputMsa.getNumRows());
-        clustalWTask=new ExternalToolRunTask(ET_CLUSTAL,arguments, logParser);
+        clustalWTask = new ExternalToolRunTask(ET_CLUSTAL, arguments, new ClustalWLogParser(inputMsa.getNumRows()));
         setListenerForTask(clustalWTask);
         clustalWTask->setSubtaskProgressWeight(95);
         res.append(clustalWTask);
     }else if(subTask==clustalWTask){
-        assert(logParser);
-        delete logParser;
         if(!QFileInfo(outputUrl).exists()){
             if(AppContext::getExternalToolRegistry()->getByName(ET_CLUSTAL)->isValid()){
                 stateInfo.setError(tr("Output file %1 not found").arg(outputUrl));

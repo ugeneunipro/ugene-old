@@ -37,13 +37,10 @@ public:
     QStringList getArguments() const;
 };
 
-class ExternalToolLogParser;
-
 class GffreadSupportTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     GffreadSupportTask(const GffreadSettings &settings);
-    ~GffreadSupportTask();
 
     void prepare();
     QString result() const;
@@ -53,7 +50,6 @@ private:
 
 private:
     GffreadSettings settings;
-    ExternalToolLogParser *logParser;
 };
 
 } // U2

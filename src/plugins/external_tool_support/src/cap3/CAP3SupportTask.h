@@ -34,7 +34,6 @@
 
 namespace U2 {
 
-class CAP3LogParser;
 class CopyDataTask;
 class DocumentProviderTask;
 
@@ -138,7 +137,6 @@ private:
     PrepareInputForCAP3Task*    prepareDataForCAP3Task;
     ExternalToolRunTask*        cap3Task;
     CopyDataTask*               copyResultTask;
-    CAP3LogParser*              logParser;
     CAP3SupportTaskSettings     settings;
     QString                     outputFile;
 };

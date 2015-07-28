@@ -96,7 +96,6 @@ MrBayesSupportTask::MrBayesSupportTask(const MAlignment& _ma, const CreatePhyTre
     prepareDataTask = NULL;
     mrBayesTask = NULL;
     getTreeTask = NULL;
-    logParser = NULL;
 }
 
 void MrBayesSupportTask::prepare(){
@@ -130,8 +129,7 @@ QList<Task*> MrBayesSupportTask::onSubTaskFinished(Task* subTask){
         tmpNexusFile = prepareDataTask->getInputFileUrl();
         QStringList arguments;
         arguments << tmpNexusFile;
-        logParser = new MrBayesLogParser(settings.mb_ngen);
-        mrBayesTask = new ExternalToolRunTask(ET_MRBAYES, arguments, logParser);
+        mrBayesTask = new ExternalToolRunTask(ET_MRBAYES, arguments, new MrBayesLogParser(settings.mb_ngen));
         mrBayesTask->setSubtaskProgressWeight(95);
         res.append(mrBayesTask);
     }else if(subTask == mrBayesTask){

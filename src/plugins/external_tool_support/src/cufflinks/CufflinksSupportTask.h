@@ -61,7 +61,6 @@ private:
 
     CufflinksSettings                   settings;
 
-    QPointer<ExternalToolLogParser>     logParser;
     QPointer<Document>                  tmpDoc;
     QString                             workingDirectory;
     QString                             url;

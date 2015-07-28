@@ -92,7 +92,6 @@ private:
     MrBayesPrepareDataForCalculation*   prepareDataTask;
     ExternalToolRunTask*                mrBayesTask;
     MrBayesGetCalculatedTreeTask*       getTreeTask;
-    MrBayesLogParser*                   logParser;
 };
 
 

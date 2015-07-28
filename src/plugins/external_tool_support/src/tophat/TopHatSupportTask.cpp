@@ -52,7 +52,6 @@ const QString TopHatSupportTask::outSubDirBaseName("tophat_out");
 TopHatSupportTask::TopHatSupportTask(const TopHatSettings& _settings)
     : ExternalToolSupportTask(tr("Running TopHat task"), TaskFlags_NR_FOSE_COSC),
       settings(_settings),
-      logParser(NULL),
       tmpDoc(NULL),
       tmpDocPaired(NULL),
       topHatExtToolTask(NULL),
@@ -67,7 +66,6 @@ TopHatSupportTask::~TopHatSupportTask()
 {
     delete tmpDoc;
     delete tmpDocPaired;
-    delete logParser;
 }
 
 QString TopHatSupportTask::setupTmpDir() {
@@ -211,9 +209,6 @@ ExternalToolRunTask * TopHatSupportTask::runTophat() {
         arguments << settings.data.pairedUrls.join(",");
     }
 
-    // Create a log parser
-    logParser = new ExternalToolLogParser();
-
     // Add Bowtie, samtools an python to the PATH environment variable
     QStringList additionalPaths;
     ExternalTool *pythonTool = AppContext::getExternalToolRegistry()->getByName(ET_PYTHON);
@@ -226,7 +221,7 @@ ExternalToolRunTask * TopHatSupportTask::runTophat() {
 
     ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_TOPHAT,
         arguments,
-        logParser,
+        new ExternalToolLogParser(),
         workingDirectory,
         additionalPaths);
     setListenerForTask(runTask);

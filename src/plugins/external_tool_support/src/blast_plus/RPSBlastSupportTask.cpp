@@ -35,9 +35,8 @@ ExternalToolRunTask* RPSBlastSupportTask::createBlastPlusTask() {
     arguments << "-out" << url+".xml"; //settings.outputRepFile;
 
     algoLog.trace("RPSBlast arguments: "+arguments.join(" "));
-    logParser=new ExternalToolLogParser;
-    QString workingDirectory=QFileInfo(url).absolutePath();
-    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_RPSBLAST, arguments, logParser, workingDirectory);
+    QString workingDirectory = QFileInfo(url).absolutePath();
+    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_RPSBLAST, arguments, new ExternalToolLogParser(), workingDirectory);
     setListenerForTask(runTask);
     return runTask;
 }

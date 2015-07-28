@@ -51,6 +51,9 @@ class U2CORE_EXPORT ExternalToolRunTask: public Task {
     Q_DISABLE_COPY(ExternalToolRunTask)
     friend class ExternalToolRunTaskHelper;
 public:
+    /**
+     * Don't delete logParser, it will be deleted automatically.
+     */
     ExternalToolRunTask(const QString& toolName, const QStringList& arguments, ExternalToolLogParser* logParser,
         const QString& workingDirectory = "", const QStringList& additionalPaths = QStringList(), const QString &additionalProcessToKill = QString());
     ~ExternalToolRunTask();
@@ -62,7 +65,6 @@ public:
     void setStandartInputFile(const QString& file) { inputFile = file; }
     void setStandartOutputFile(const QString& file) { outputFile = file; }
     void setAdditionalEnvVariables(const  QMap<QString, QString> &envVariable) {additionalEnvVariables = envVariable; }
-    void setCustomParser(ExternalToolLogParser *parser);
 
 private:
     void killProcess() const;

@@ -72,18 +72,12 @@ private:
     LoadDocumentTask *peaksTask;
 
     ExternalToolRunTask *etTask;
-    ExternalToolLogParser *logParser;
 
     static const QString BASE_DIR_NAME;
     static const QString TREAT_NAME;
 
 private:
     Document* createDoc(const QList<Workflow::SharedDbiDataHandler> &annData, const QString& name);
-};
-
-class Peak2GeneLogParser : public ExternalToolLogParser {
-public:
-    Peak2GeneLogParser();
 };
 
 } // U2

@@ -43,7 +43,6 @@ SpideyAlignmentTask::SpideyAlignmentTask(const SplicedAlignmentTaskConfig &setti
 {
     GCOUNTER(cvar, tvar, "SpideySupportTask");
     setMaxParallelSubtasks(1);
-    logParser = NULL;
     spideyTask = NULL;
     prepareDataForSpideyTask = NULL;
 }
@@ -75,8 +74,7 @@ QList<Task *> SpideyAlignmentTask::onSubTaskFinished(Task *subTask) {
         tmpOutputUrl = prepareDataForSpideyTask->getResultPath();
         const QStringList &arguments = prepareDataForSpideyTask->getArgumentsList();
 
-        logParser = new SpideyLogParser();
-        spideyTask = new ExternalToolRunTask(ET_SPIDEY, arguments, logParser);
+        spideyTask = new ExternalToolRunTask(ET_SPIDEY, arguments, new SpideyLogParser());
         spideyTask->setSubtaskProgressWeight(95);
         res.append(spideyTask);
     } else if (subTask == spideyTask) {

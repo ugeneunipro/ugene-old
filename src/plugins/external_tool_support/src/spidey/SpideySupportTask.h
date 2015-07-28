@@ -38,8 +38,6 @@
 
 namespace U2 {
 
-class SpideyLogParser;
-
 class PrepareInputForSpideyTask : public Task {
     Q_OBJECT
 public:
@@ -74,7 +72,6 @@ private:
     const QString               annDescription;
     PrepareInputForSpideyTask*  prepareDataForSpideyTask;
     ExternalToolRunTask*        spideyTask;
-    SpideyLogParser*            logParser;
 };
 
 class SpideyAlignmentTaskFactory : public SplicedAlignmentTaskFactory {

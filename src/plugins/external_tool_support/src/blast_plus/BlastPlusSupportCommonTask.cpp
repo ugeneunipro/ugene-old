@@ -59,7 +59,6 @@ BlastPlusSupportCommonTask::BlastPlusSupportCommonTask(const BlastTaskSettings& 
 {
     GCOUNTER(cvar, tvar, "BlastPlusSupportCommonTask");
     blastPlusTask=NULL;
-    logParser=NULL;
     tmpDoc=NULL;
     saveTemporaryDocumentTask=NULL;
     sequenceObject=NULL;
@@ -140,13 +139,11 @@ QList<Task*> BlastPlusSupportCommonTask::onSubTaskFinished(Task* subTask) {
     }
     if(subTask==saveTemporaryDocumentTask){
         delete tmpDoc;//sequenceObject also deleted at this place
-        blastPlusTask=createBlastPlusTask();//new ExternalToolRunTask(BLASTN_TOOL_NAME,arguments, logParser);
+        blastPlusTask=createBlastPlusTask();
         blastPlusTask->setSubtaskProgressWeight(95);
         res.append(blastPlusTask);
     }
     else if(subTask==blastPlusTask){
-        assert(logParser);
-        delete logParser;
         if(settings.outputType == 5 || settings.outputType == 6){
             if(!QFileInfo(settings.outputOriginalFile).exists()){
                 QString curToolName = toolNameByProgram(settings.programName);

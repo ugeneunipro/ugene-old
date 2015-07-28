@@ -73,7 +73,6 @@ MAFFTSupportTask::MAFFTSupportTask(const MAlignment& _inputMsa, const GObjectRef
 }
 
 MAFFTSupportTask::~MAFFTSupportTask() {
-    delete logParser;
     if (NULL != tmpDoc) {
         delete tmpDoc;
     }

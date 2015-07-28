@@ -54,7 +54,6 @@ const QString CufflinksSupportTask::outSubDirBaseName("cufflinks_out");
 CufflinksSupportTask::CufflinksSupportTask(const CufflinksSettings& _settings)
     : ExternalToolSupportTask(tr("Running Cufflinks task"), TaskFlags_NR_FOSE_COSC),
       settings(_settings),
-      logParser(NULL),
       tmpDoc(NULL),
       convertAssToSamTask(NULL),
       cufflinksExtToolTask(NULL),
@@ -66,7 +65,6 @@ CufflinksSupportTask::CufflinksSupportTask(const CufflinksSettings& _settings)
 CufflinksSupportTask::~CufflinksSupportTask()
 {
     delete tmpDoc;
-    delete logParser;
 }
 
 QString CufflinksSupportTask::initTmpDir() {
@@ -167,14 +165,10 @@ ExternalToolRunTask * CufflinksSupportTask::runCufflinks() {
 
     arguments << settings.url;
 
-    // Create a log parser
-    logParser = new ExternalToolLogParser();
-
     // Create the Cufflinks task
-
     ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_CUFFLINKS,
         arguments,
-        logParser,
+        new ExternalToolLogParser(),
         workingDirectory);
     setListenerForTask(runTask);
     return runTask;

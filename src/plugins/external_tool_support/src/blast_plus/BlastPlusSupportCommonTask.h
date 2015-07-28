@@ -53,7 +53,6 @@ public:
 
 protected:
     BlastTaskSettings               settings;
-    ExternalToolLogParser*          logParser;
     QString                         url;
 
 private:

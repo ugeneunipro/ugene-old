@@ -180,8 +180,7 @@ Task * CuffmergeSupportTask::createCuffmergeTask() {
         addPaths << ccInfo.dir().absolutePath();
     }
 
-    logParser.reset(new ExternalToolLogParser());
-    mergeTask = new ExternalToolRunTask(ET_CUFFMERGE, args, logParser.data(), workingDir, addPaths);
+    mergeTask = new ExternalToolRunTask(ET_CUFFMERGE, args, new ExternalToolLogParser(), workingDir, addPaths);
     setListenerForTask(mergeTask);
     return mergeTask;
 }

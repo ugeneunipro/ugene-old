@@ -50,7 +50,6 @@ BlastAllSupportTask::BlastAllSupportTask(const BlastTaskSettings& _settings) :
 {
     GCOUNTER(cvar, tvar, "BlastAllSupportTask");
     blastAllTask=NULL;
-    logParser=NULL;
     tmpDoc=NULL;
     saveTemporaryDocumentTask=NULL;
     sequenceObject=NULL;
@@ -194,15 +193,12 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
             arguments <<"-o"<< settings.outputOriginalFile;
         }
 
-        logParser=new ExternalToolLogParser();
         QString workingDirectory=QFileInfo(url).absolutePath();
-        blastAllTask=new ExternalToolRunTask(ET_BLASTALL,arguments, logParser, workingDirectory);
+        blastAllTask = new ExternalToolRunTask(ET_BLASTALL, arguments, new ExternalToolLogParser(), workingDirectory);
         setListenerForTask(blastAllTask);
         blastAllTask->setSubtaskProgressWeight(95);
         res.append(blastAllTask);
     } else if(subTask == blastAllTask) {
-        assert(logParser);
-        delete logParser;
         if (settings.outputType == 7 || settings.outputType == 8) {
             if (!QFileInfo(settings.outputOriginalFile).exists()) {
                 if (AppContext::getExternalToolRegistry()->getByName(ET_BLASTALL)->isValid()) {

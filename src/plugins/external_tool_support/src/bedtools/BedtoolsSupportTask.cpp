@@ -61,8 +61,7 @@ void BamBedConversionTask::prepare(){
     //args << ">";
     //args << GUrlUtils::getQuotedString(targetUrl);
 
-    ExternalToolLogParser* logParser = new ExternalToolLogParser();
-    ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_BEDTOOLS, args, logParser, workingDir);
+    ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_BEDTOOLS, args, new ExternalToolLogParser(), workingDir);
     etTask->setStandartOutputFile(targetUrl);
     addSubTask(etTask);
 }

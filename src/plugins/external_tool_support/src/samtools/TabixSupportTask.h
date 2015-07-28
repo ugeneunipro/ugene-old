@@ -36,7 +36,6 @@ class TabixSupportTask : public ExternalToolSupportTask {
     Q_DISABLE_COPY(TabixSupportTask)
 public:
     TabixSupportTask(const GUrl& fileUrl, const GUrl& outputUrl = GUrl());
-    ~TabixSupportTask();
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task *subTask);
@@ -49,7 +48,6 @@ private:
     BgzipTask* bgzipTask;
     CopyFileTask* copyTask;
     ExternalToolRunTask* tabixTask;
-    ExternalToolLogParser* logParser;
 
     void initTabixTask();
 };

@@ -67,7 +67,6 @@ TCoffeeSupportTask::TCoffeeSupportTask(const MAlignment& _inputMsa, const GObjec
     loadTmpDocumentTask=NULL;
     tCoffeeTask=NULL;
     tmpDoc=NULL;
-    logParser=NULL;
     resultMA.setAlphabet(inputMsa.getAlphabet());
     resultMA.setName(inputMsa.getName());
 }
@@ -173,14 +172,11 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
         }
         arguments <<"-outfile"<<outputUrl;
         arguments <<"-newtree"<<outputDNDUrl;
-        logParser=new TCoffeeLogParser();
-        tCoffeeTask=new ExternalToolRunTask(ET_TCOFFEE, arguments, logParser, "", QStringList(), "t_coffee.orig.exe");
+        tCoffeeTask = new ExternalToolRunTask(ET_TCOFFEE, arguments, new TCoffeeLogParser(), "", QStringList(), "t_coffee.orig.exe");
         setListenerForTask(tCoffeeTask);
         tCoffeeTask->setSubtaskProgressWeight(95);
         res.append(tCoffeeTask);
     }else if(subTask==tCoffeeTask){
-        assert(logParser);
-        delete logParser;
         if(!QFileInfo(outputUrl).exists()){
             if(AppContext::getExternalToolRegistry()->getByName(ET_TCOFFEE)->isValid()){
                 stateInfo.setError(tr("Output file %1 not found").arg(outputUrl));

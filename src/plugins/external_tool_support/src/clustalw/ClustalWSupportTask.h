@@ -57,7 +57,6 @@ namespace U2 {
 + -OUTORDER=     :INPUT or ALIGNED
 */
 
-class ClustalWLogParser;
 class LoadDocumentTask;
 
 class ClustalWSupportTaskSettings {
@@ -98,7 +97,6 @@ private:
     GObjectReference            objRef;
     QPointer<Document>          tmpDoc;
     QString                     url;
-    ClustalWLogParser*          logParser;
 
     SaveAlignmentTask*          saveTemporaryDocumentTask;
     ExternalToolRunTask*        clustalWTask;

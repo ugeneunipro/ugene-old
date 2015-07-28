@@ -95,7 +95,6 @@ private:
     QScopedPointer<Document> transcriptDoc;
     QList<Task*> saveTasks;
 
-    QScopedPointer<ExternalToolLogParser> logParser;
     ExternalToolRunTask *diffTask;
     QStringList outputFiles;
     QStringList systemOutputFiles;

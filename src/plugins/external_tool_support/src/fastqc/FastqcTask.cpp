@@ -100,8 +100,7 @@ void FastQCTask::prepare(){
     const QStringList args = getParameters(stateInfo);
     CHECK_OP(stateInfo, );
 
-    ExternalToolLogParser* logParser = new FastQCParser();
-    ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_FASTQC, args, logParser, settings.outDir);
+    ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_FASTQC, args, new FastQCParser(), settings.outDir);
     setListenerForTask(etTask);
     addSubTask(etTask);
 }

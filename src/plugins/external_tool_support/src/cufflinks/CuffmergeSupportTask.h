@@ -70,7 +70,6 @@ private:
     ExternalToolRunTask *mergeTask;
     LoadDocumentTask *loadResultTask;
     QList<AnnotationTableObject *> result;
-    QScopedPointer<ExternalToolLogParser> logParser;
     QStringList outputFiles;
 
     static const QString outSubDirBaseName;

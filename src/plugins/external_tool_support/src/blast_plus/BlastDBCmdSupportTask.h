@@ -53,7 +53,6 @@ public:
     Task::ReportResult report();
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
 private:
-    ExternalToolLogParser*      logParser;
     ExternalToolRunTask*        blastDBCmdTask;
     BlastDBCmdSupportTaskSettings settings;
     QString toolName;

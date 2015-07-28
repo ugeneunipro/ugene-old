@@ -84,8 +84,7 @@ void BedGraphToBigWigTask::prepare(){
     const QStringList args = getParameters(stateInfo);
     CHECK_OP(stateInfo, );
 
-    ExternalToolLogParser* logParser = new BedGraphToBigWigParser();
-    ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_BIGWIG, args, logParser, settings.outDir);
+    ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_BIGWIG, args, new BedGraphToBigWigParser(), settings.outDir);
     addSubTask(etTask);
 }
 

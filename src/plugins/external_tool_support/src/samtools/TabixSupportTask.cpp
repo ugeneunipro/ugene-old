@@ -39,13 +39,8 @@ TabixSupportTask::TabixSupportTask(const GUrl& fileUrl, const GUrl& outputUrl)
       bgzfUrl(outputUrl),
       bgzipTask(NULL),
       copyTask(NULL),
-      tabixTask(NULL),
-      logParser(NULL)
+      tabixTask(NULL)
 {
-}
-
-TabixSupportTask::~TabixSupportTask() {
-    delete logParser;
 }
 
 void TabixSupportTask::prepare() {
@@ -97,8 +92,7 @@ void TabixSupportTask::initTabixTask() {
     QStringList arguments;
     arguments << "-f";
     arguments << bgzfUrl.getURLString();
-    logParser = new ExternalToolLogParser();
-    tabixTask = new ExternalToolRunTask(ET_TABIX, arguments, logParser);
+    tabixTask = new ExternalToolRunTask(ET_TABIX, arguments, new ExternalToolLogParser());
     setListenerForTask(tabixTask);
 }
 

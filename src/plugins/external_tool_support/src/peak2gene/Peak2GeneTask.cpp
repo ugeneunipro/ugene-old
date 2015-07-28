@@ -61,7 +61,6 @@ Peak2GeneTask::Peak2GeneTask(const Peak2GeneSettings& _settings, Workflow::DbiDa
 , geneTask(NULL)
 , peaksTask(NULL)
 , etTask(NULL)
-, logParser(NULL)
 {
     GCOUNTER(cvar, tvar, "NGS:Peak2GeneTask");
     SAFE_POINT_EXT(NULL != storage, setError(L10N::nullPointerError("workflow data storage")), );
@@ -75,7 +74,6 @@ void Peak2GeneTask::cleanup() {
     treatAnn.clear();
 
     delete treatDoc; treatDoc = NULL;
-    delete logParser; logParser = NULL;
     delete peaksDoc; peaksDoc = NULL;
     delete geneDoc; geneDoc = NULL;
 
@@ -130,8 +128,7 @@ QList<Task*> Peak2GeneTask::onSubTaskFinished(Task* subTask) {
     if (treatTask == subTask) {
             QStringList args = settings.getArguments(treatDoc->getURLString());
 
-            logParser = new Peak2GeneLogParser();
-            etTask = new ExternalToolRunTask(ET_PEAK2GENE, args, logParser, workingDir);
+            etTask = new ExternalToolRunTask(ET_PEAK2GENE, args, new ExternalToolLogParser(), workingDir);
             setListenerForTask(etTask);
             result << etTask;
     }
@@ -201,13 +198,6 @@ QList<AnnotationTableObject *> Peak2GeneTask::getPeaks() const {
     }
 
     return res;
-}
-
-//////////////////////////////////////////////////////////////////////////
-//Peak2GeneLogParser
-Peak2GeneLogParser::Peak2GeneLogParser()
-:ExternalToolLogParser(){
-
 }
 
 } // U2

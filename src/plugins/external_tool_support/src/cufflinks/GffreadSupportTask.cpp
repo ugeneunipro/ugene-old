@@ -31,13 +31,9 @@
 namespace U2 {
 
 GffreadSupportTask::GffreadSupportTask(const GffreadSettings &_settings)
-: ExternalToolSupportTask(tr("Running Gffread task"), TaskFlags_NR_FOSE_COSC), settings(_settings), logParser(NULL)
+: ExternalToolSupportTask(tr("Running Gffread task"), TaskFlags_NR_FOSE_COSC), settings(_settings)
 {
 
-}
-
-GffreadSupportTask::~GffreadSupportTask() {
-    delete logParser;
 }
 
 void GffreadSupportTask::prepare() {
@@ -46,8 +42,7 @@ void GffreadSupportTask::prepare() {
     checkFormat(settings.transcriptsUrl, BaseDocumentFormats::GTF);
     CHECK_OP(stateInfo, );
 
-    logParser = new ExternalToolLogParser();
-    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_GFFREAD, settings.getArguments(), logParser);
+    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_GFFREAD, settings.getArguments(), new ExternalToolLogParser());
     setListenerForTask(runTask);
     addSubTask(runTask);
 }

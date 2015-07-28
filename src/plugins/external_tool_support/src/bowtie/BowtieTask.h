@@ -63,7 +63,6 @@ private:
         int progress;
     };
 
-    LogParser logParser;
     QString referencePath;
     QString indexPath;
     bool colorspace;
@@ -90,7 +89,7 @@ private:
         bool haveResults;
     };
 
-    LogParser logParser;
+    LogParser *logParser;
     DnaAssemblyToRefTaskSettings settings;
 };
 

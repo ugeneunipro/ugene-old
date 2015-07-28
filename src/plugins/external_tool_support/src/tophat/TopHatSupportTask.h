@@ -55,7 +55,6 @@ public:
 private:
     TopHatSettings      settings;
 
-    QPointer<ExternalToolLogParser>     logParser;
     QPointer<Document>                  tmpDoc;
     QPointer<Document>                  tmpDocPaired;
     QString                             workingDirectory;

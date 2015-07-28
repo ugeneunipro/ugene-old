@@ -59,7 +59,6 @@ MACSTask::MACSTask(const MACSSettings &_settings, const GUrl &_treatUrl, const G
     , peaksTask(NULL)
     , summitsTask(NULL)
     , etTask(NULL)
-    , logParser(NULL)
 {
     GCOUNTER(cvar, tvar, "NGS:MACSTask");
 }
@@ -69,9 +68,6 @@ MACSTask::~MACSTask() {
 }
 
 void MACSTask::cleanup() {
-
-    delete logParser;
-    logParser = NULL;
     delete peaksDoc;
     peaksDoc = NULL;
     delete summitsDoc;
@@ -99,8 +95,7 @@ void MACSTask::prepare() {
 
     QStringList args = settings.getArguments(treatUrl.getURLString(), conUrl.isEmpty() ? "" : conUrl.getURLString());
 
-    logParser = new MACSLogParser();
-    etTask = new ExternalToolRunTask(ET_MACS, args, logParser, getSettings().outDir);
+    etTask = new ExternalToolRunTask(ET_MACS, args, new MACSLogParser(), getSettings().outDir);
     setListenerForTask(etTask);
     addSubTask(etTask);
 }

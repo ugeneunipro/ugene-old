@@ -58,7 +58,6 @@ SeqPosTask::SeqPosTask(const SeqPosSettings& _settings, Workflow::DbiDataStorage
 , treatDoc(NULL)
 , treatTask(NULL)
 , etTask(NULL)
-, logParser(NULL)
 {
     GCOUNTER(cvar, tvar, "NGS:SeqPosTask");
     SAFE_POINT_EXT(NULL != storage, setError(L10N::nullPointerError("workflow data storage")), );
@@ -70,7 +69,6 @@ SeqPosTask::~SeqPosTask() {
 
 void SeqPosTask::cleanup() {
     delete treatDoc; treatDoc = NULL;
-    delete logParser; logParser = NULL;
 
     //remove tmp files
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(BASE_DIR_NAME);
@@ -133,12 +131,11 @@ QList<Task*> SeqPosTask::onSubTaskFinished(Task* subTask) {
     if (treatTask == subTask) {
             QStringList args = settings.getArguments(treatDoc->getURLString());
 
-            logParser = new ExternalToolLogParser();
             ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
             SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);
             const QString rDir = QFileInfo(rTool->getPath()).dir().absolutePath();
 
-            etTask = new ExternalToolRunTask(ET_SEQPOS, args, logParser, getSettings().outDir, QStringList() << rDir);
+            etTask = new ExternalToolRunTask(ET_SEQPOS, args, new ExternalToolLogParser(), getSettings().outDir, QStringList() << rDir);
             setListenerForTask(etTask);
             result << etTask;
     }

@@ -101,6 +101,9 @@ protected:
     virtual void prepareStep() {};
     virtual void runStep() {};
     virtual void finishStep() {};
+    /**
+     * Don't delete customParser, it will be deleted automatically.
+     */
     virtual ExternalToolRunTask* getExternalToolTask (const QString& toolName, ExternalToolLogParser *customParser = NULL);
     virtual QStringList getParameters(U2OpStatus& os) = 0;
 

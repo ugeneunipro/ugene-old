@@ -64,8 +64,6 @@ private:
 
     ExternalToolRunTask *etTask;
 
-    ExternalToolLogParser *logParser;
-
     static const QString BASE_DIR_NAME;
     static const QString TREAT_NAME;
 

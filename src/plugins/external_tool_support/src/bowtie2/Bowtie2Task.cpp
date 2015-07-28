@@ -52,7 +52,7 @@ void Bowtie2BuildIndexTask::prepare() {
     arguments.append(referencePath);
     arguments.append(indexPath);
 
-    ExternalToolRunTask *task = new ExternalToolRunTask(ET_BOWTIE2_BUILD, arguments, &logParser);
+    ExternalToolRunTask *task = new ExternalToolRunTask(ET_BOWTIE2_BUILD, arguments, new ExternalToolLogParser());
     addSubTask(task);
 }
 
@@ -193,7 +193,7 @@ void Bowtie2AlignTask::prepare() {
     arguments.append("-S");
     arguments.append(settings.resultFileName.getURLString());
 
-    ExternalToolRunTask *task = new ExternalToolRunTask(ET_BOWTIE2_ALIGN, arguments, &logParser);
+    ExternalToolRunTask *task = new ExternalToolRunTask(ET_BOWTIE2_ALIGN, arguments, new ExternalToolLogParser());
     addSubTask(task);
 }
 
