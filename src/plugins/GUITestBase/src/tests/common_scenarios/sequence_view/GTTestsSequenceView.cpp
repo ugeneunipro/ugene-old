@@ -20,6 +20,7 @@
  */
 
 #include "GTTestsSequenceView.h"
+#include "api/GTClipboard.h"
 #include "api/GTComboBox.h"
 #include "api/GTLineEdit.h"
 #include "api/GTMouseDriver.h"
@@ -944,6 +945,201 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
 
     qint64 fileSize = GTFile::getSize(os, sandBoxDir + "/seq_view_test_0030.svg");
     CHECK_SET_ERR(fileSize > 15 * 1024 * 1024, QString("SVG file is too small: %1").arg(fileSize));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0031){
+//    Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+//    Select some redion
+    GTUtilsSequenceView::selectSequenceRegion(os, 10, 20);
+//    Use context menu {Copy->Copy reverse complement sequence}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY
+                                                      << "Copy reverse complement sequence"));
+
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+
+    QString clipboardtext = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardtext == "AACTTTGGTGA", "Unexpected reverse complement: " + clipboardtext)
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0031_1){
+//    Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+//    Select some redion
+    GTUtilsSequenceView::selectSequenceRegion(os, 10, 20);
+//    Use context menu {Copy->Copy reverse complement sequence}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY
+                                                      << "Copy reverse complement sequence"));
+
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+
+    QString clipboardtext = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardtext == "AACTTTGGTGA", "Unexpected reverse complement: " + clipboardtext)
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0031_2){
+//    Open murine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+//    Select annotation
+    GTUtilsSequenceView::clickAnnotation(os, "misc_feature", 2);
+//    Use context menu {Copy->Copy reverse complement sequence}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY
+                                                      << "action_copy_annotation_sequence"));
+
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+
+    QString clipboardtext = GTClipboard::text(os);
+    QString expected = "AATGAAAGACCCCACCCGTAGGTGGCAAGCTAGCTTAAGTAACGCCACTTTGCAAGGCATGGAAAAATACATAACTGAGAATAGAAAAGTTCAGATCAAGGTC"
+            "AGGAACAAAGAAACAGCTGAATACCAAACAGGATATCTGTGGTAAGCGGTTCCTGCCCCGGCTCAGGGCCAAGAACAGATGAGACAGCTGAGTGATGGGCCAAACAGGATATCT"
+            "GTGGTAAGCAGTTCCTGCCCCGGCTCGGGGCCAAGAACAGATGGTCCCCAGATGCGGTCCAGCCCTCAGCAGTTTCTAGTGAATCATCAGATGTTTCCAGGGTGCCCCAAGGA"
+            "CCTGAAAATGACCCTGTACCTTATTTGAACTAACCAATCAGTTCGCTTCTCGCTTCTGTTCGCGCGCTTCCGCTCTCCGAGCTCAATAAAAGAGCCCACAACCCCTCACTCGGC"
+            "GCGCCAGTCTTCCGATAGACTGCGTCGCCCGGGTACCCGTATTCCCAATAAAGCCTCTTGCTGTTTGCATCCGAATCGTGGTCTCGCTGTTCCTTGGGAGGGTCTCCTCTGAGTGATTGACTACCCACGACGGGGGTCTTTCATT";
+    CHECK_SET_ERR(clipboardtext == expected, "Unexpected reverse complement: " + clipboardtext);
+
+//    Check joined annotations
+    GTUtilsSequenceView::clickAnnotation(os, "CDS", 2970);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY
+                                                      << "action_copy_annotation_sequence"));
+
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+
+    clipboardtext = GTClipboard::text(os);
+    expected = "ATGGTAGCAGCCATTGCCGTACTGACAAAGGATGCAGGCAAGCTAACCATGGGACAGCCACTAGTCATTCTGGCCCCCCATGCAGTAGAGGCACTAGTCAAACAACCCCC"
+            "CGACCGCTGGCTTTCCAACGCCCGGATGACTCACTATCAGGCCTTGCTTTTGGACACGGACCGGGTCCAGTTCAGACCGGTGGTAGCCCTGAACCCGGCTACGCTGCTCCCAC"
+            "TGCCTGAGAAAGGGCTGCAACACAACTGCCTTGATATCCTGGCCGAAGCTCATGGAACCCGACCCGACCTAACGGACCAGCCGCTCCCAGACGCCGACCACACCTGGTACACG"
+            "GATGGAAGCAGTCTTTTACAAGAGGGACAGCGTAAGGCGGGAGCTGCGGTGACCACCGAGACCGAGAAGCCTTCCCAACCAAGAAAAAAAACCGCCAAGGTCGTAAAT";
+    CHECK_SET_ERR(clipboardtext == expected, "Unexpected reverse complement for joined annotation: " + clipboardtext);
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0031_3){
+//    Open murine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+//    Select annotation
+    GTUtilsSequenceView::clickAnnotation(os, "misc_feature", 2);
+//    Use context menu {Copy->Copy reverse complement sequence}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY
+                                                      << "action_copy_annotation_sequence"));
+
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+
+    QString clipboardtext = GTClipboard::text(os);
+    QString expected = "AATGAAAGACCCCACCCGTAGGTGGCAAGCTAGCTTAAGTAACGCCACTTTGCAAGGCATGGAAAAATACATAACTGAGAATAGAAAAGTTCAGATCAAGGTC"
+            "AGGAACAAAGAAACAGCTGAATACCAAACAGGATATCTGTGGTAAGCGGTTCCTGCCCCGGCTCAGGGCCAAGAACAGATGAGACAGCTGAGTGATGGGCCAAACAGGATATCT"
+            "GTGGTAAGCAGTTCCTGCCCCGGCTCGGGGCCAAGAACAGATGGTCCCCAGATGCGGTCCAGCCCTCAGCAGTTTCTAGTGAATCATCAGATGTTTCCAGGGTGCCCCAAGGA"
+            "CCTGAAAATGACCCTGTACCTTATTTGAACTAACCAATCAGTTCGCTTCTCGCTTCTGTTCGCGCGCTTCCGCTCTCCGAGCTCAATAAAAGAGCCCACAACCCCTCACTCGGC"
+            "GCGCCAGTCTTCCGATAGACTGCGTCGCCCGGGTACCCGTATTCCCAATAAAGCCTCTTGCTGTTTGCATCCGAATCGTGGTCTCGCTGTTCCTTGGGAGGGTCTCCTCTGAGTGATTGACTACCCACGACGGGGGTCTTTCATT";
+    CHECK_SET_ERR(clipboardtext == expected, "Unexpected reverse complement: " + clipboardtext);
+
+//    Check joined annotations
+    GTUtilsSequenceView::clickAnnotation(os, "CDS", 2970);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY
+                                                      << "action_copy_annotation_sequence"));
+
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+
+    clipboardtext = GTClipboard::text(os);
+    expected = "ATGGTAGCAGCCATTGCCGTACTGACAAAGGATGCAGGCAAGCTAACCATGGGACAGCCACTAGTCATTCTGGCCCCCCATGCAGTAGAGGCACTAGTCAAACAACCCCC"
+            "CGACCGCTGGCTTTCCAACGCCCGGATGACTCACTATCAGGCCTTGCTTTTGGACACGGACCGGGTCCAGTTCAGACCGGTGGTAGCCCTGAACCCGGCTACGCTGCTCCCAC"
+            "TGCCTGAGAAAGGGCTGCAACACAACTGCCTTGATATCCTGGCCGAAGCTCATGGAACCCGACCCGACCTAACGGACCAGCCGCTCCCAGACGCCGACCACACCTGGTACACG"
+            "GATGGAAGCAGTCTTTTACAAGAGGGACAGCGTAAGGCGGGAGCTGCGGTGACCACCGAGACCGAGAAGCCTTCCCAACCAAGAAAAAAAACCGCCAAGGTCGTAAAT";
+    CHECK_SET_ERR(clipboardtext == expected, "Unexpected reverse complement for joined annotation: " + clipboardtext);
+
+}
+
+#define GET_ACTIONS QMenu *activePopupMenu = qobject_cast<QMenu *>(QApplication::activePopupWidget()); \
+CHECK_SET_ERR(NULL != activePopupMenu, "Active popup menu is NULL"); \
+GTMenu::clickMenuItemByText(os, activePopupMenu, QStringList() << "Translation frames"); \
+activePopupMenu = qobject_cast<QMenu *>(QApplication::activePopupWidget()); \
+QAction* direct1 = GTMenu::getMenuItem(os, activePopupMenu, "1 direct translation frame", true); \
+QAction* direct2 = GTMenu::getMenuItem(os, activePopupMenu, "2 direct translation frame", true); \
+QAction* direct3 = GTMenu::getMenuItem(os, activePopupMenu, "3 direct translation frame", true); \
+QAction* compl1 = GTMenu::getMenuItem(os, activePopupMenu, "1 complementary translation frame", true); \
+QAction* compl2 = GTMenu::getMenuItem(os, activePopupMenu, "2 complementary translation frame", true); \
+QAction* compl3 = GTMenu::getMenuItem(os, activePopupMenu, "3 complementary translation frame", true);
+
+GUI_TEST_CLASS_DEFINITION(test_0032){
+//    Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+//    Click "Amino translations" button on mdi toolbar
+    QWidget* aminoToolbarButton = GTWidget::findWidget(os, "AminoToolbarButton");
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Translation frames"<<"Show direct only"));
+    GTWidget::click(os, aminoToolbarButton);
+//    Check "Show direct only"
+    class DirectPopupChecker : public CustomScenario {
+        void run(U2OpStatus &os) {
+            GET_ACTIONS
+
+            CHECK_SET_ERR(direct1->isChecked(), "check1: direct1 is not checked");
+            CHECK_SET_ERR(direct2->isChecked(), "check1: direct2 is not checked");
+            CHECK_SET_ERR(direct3->isChecked(), "check1: direct3 is not checked");
+            CHECK_SET_ERR(!compl1->isChecked(), "check1: compl1 is checked");
+            CHECK_SET_ERR(!compl2->isChecked(), "check1: compl2 is checked");
+            CHECK_SET_ERR(!compl3->isChecked(), "check1: compl3 is checked");
+
+
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+            GTGlobals::sleep(200);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, new DirectPopupChecker));
+    GTWidget::click(os, aminoToolbarButton);
+
+    //    Check "Show complementary only"
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Translation frames"<<"Show complementary only"));
+    GTWidget::click(os, aminoToolbarButton);
+
+    class ComplPopupChecker : public CustomScenario {
+        void run(U2OpStatus &os) {
+            GET_ACTIONS
+
+            CHECK_SET_ERR(!direct1->isChecked(), "check2: direct1 is checked");
+            CHECK_SET_ERR(!direct2->isChecked(), "check2: direct2 is checked");
+            CHECK_SET_ERR(!direct3->isChecked(), "check2: direct3 is checked");
+            CHECK_SET_ERR(compl1->isChecked(), "check2: compl1 is not checked");
+            CHECK_SET_ERR(compl2->isChecked(), "check2: compl2 is not checked");
+            CHECK_SET_ERR(compl3->isChecked(), "check2: compl3 is not checked");
+
+
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+            GTGlobals::sleep(200);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, new ComplPopupChecker));
+    GTWidget::click(os, aminoToolbarButton);
+
+    //    Check "Show all"
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Translation frames"<<"Show all"));
+    GTWidget::click(os, aminoToolbarButton);
+
+    class AllPopupChecker : public CustomScenario {
+        void run(U2OpStatus &os) {
+            GET_ACTIONS
+
+            CHECK_SET_ERR(direct1->isChecked(), "check3: direct1 is checked");
+            CHECK_SET_ERR(direct2->isChecked(), "check3: direct2 is checked");
+            CHECK_SET_ERR(direct3->isChecked(), "check3: direct3 is checked");
+            CHECK_SET_ERR(compl1->isChecked(), "check3: compl1 is not checked");
+            CHECK_SET_ERR(compl2->isChecked(), "check3: compl2 is not checked");
+            CHECK_SET_ERR(compl3->isChecked(), "check3: compl3 is not checked");
+
+
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+            GTGlobals::sleep(200);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, new AllPopupChecker));
+    GTWidget::click(os, aminoToolbarButton);
+}
+#undef GET_ACTIONS
+
+GUI_TEST_CLASS_DEFINITION(test_0034){
+
 }
 
 } // namespace GUITest_common_scenarios_sequence_view

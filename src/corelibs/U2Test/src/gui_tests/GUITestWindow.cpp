@@ -110,7 +110,7 @@ bool EventFilter::eventFilter(QObject *obj, QEvent *event){
         QObject* o = obj;
         //do nothing if GuiTestWindow is clicked
         while(o!=NULL){
-            if (o == gtw){
+            if (o->objectName() == "GUITestingWindowWindow"){
                 return QObject::eventFilter(obj, event);
             }
             o = o->parent();

@@ -212,6 +212,7 @@ QMenu* ADVSequenceObjectContext::createTranslationsMenu() {
     if (translations) {
         m = new QMenu(tr("Amino translation"));
         frames = new QMenu(tr("Translation frames"));
+        frames->menuAction()->setObjectName("Translation frames");
 
         SAFE_POINT(visibleFrames != NULL, "ADVSequenceObjectContext: visibleFrames is NULL ?!", m);
         foreach(QAction* a, visibleFrames->actions()) {
