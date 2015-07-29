@@ -1,13 +1,6 @@
 include (breakpad.pri)
 
-HEADERS += src/client/minidump_file_writer.h \
-           src/common/linux/linux_libc_support.h \
-           src/common/convert_UTF.h \
-           src/common/memory.h \
-           src/common/scoped_ptr.h \
-           src/common/string_conversion.h \
-           src/common/using_std_string.h \
-           src/google_breakpad/common/breakpad_types.h \
+HEADERS += src/google_breakpad/common/breakpad_types.h \
            src/google_breakpad/common/minidump_cpu_amd64.h \
            src/google_breakpad/common/minidump_cpu_arm64.h \
            src/google_breakpad/common/minidump_cpu_arm.h \
@@ -24,10 +17,33 @@ HEADERS += src/client/minidump_file_writer.h \
            src/google_breakpad/common/minidump_format.h \
            src/google_breakpad/common/minidump_size.h
 
+win32 {
+HEADERS += src/client/windows/common/ipc_protocol.h \
+           src/client/windows/crash_generation/crash_generation_client.h \
+           src/client/windows/handler/exception_handler.h \
+           src/common/windows/guid_string.h \
+           src/common/windows/string_utils-inl.h
+
+SOURCES += src/client/windows/crash_generation/crash_generation_client.cc \
+           src/client/windows/handler/exception_handler.cc \
+           src/common/windows/guid_string.cc
+} 
+
+unix {
+HEADERS += src/client/minidump_file_writer.h \
+           src/client/minidump_file_writer-inl.h \
+           src/common/linux/linux_libc_support.h \
+           src/common/convert_UTF.h \
+           src/common/memory.h \
+           src/common/scoped_ptr.h \
+           src/common/string_conversion.h \
+           src/common/using_std_string.h
+
 SOURCES += src/client/minidump_file_writer.cc \
            src/common/linux/linux_libc_support.cc \
            src/common/convert_UTF.c \
            src/common/string_conversion.cc
+}
 
 unix_not_mac() {
 HEADERS += src/client/linux/crash_generation/crash_generation_client.h \
@@ -48,17 +64,17 @@ HEADERS += src/client/linux/crash_generation/crash_generation_client.h \
            src/client/linux/minidump_writer/minidump_writer.h \
            src/client/linux/minidump_writer/proc_cpuinfo_reader.h \
            src/common/basictypes.h \
-           src/common/memory_range.h \
-           src/common/minidump_type_helper.h \
            src/common/linux/eintr_wrapper.h \
            src/common/linux/elf_gnu_compat.h \
-           src/common/linux/elfutils.h \
            src/common/linux/elfutils-inl.h \
+           src/common/linux/elfutils.h \
            src/common/linux/file_id.h \
            src/common/linux/guid_creator.h \
            src/common/linux/ignore_ret.h \
            src/common/linux/memory_mapped_file.h \
            src/common/linux/safe_readlink.h \
+           src/common/memory_range.h \
+           src/common/minidump_type_helper.h \
            src/third_party/lss/linux_syscall_support.h
 
 SOURCES += src/client/linux/crash_generation/crash_generation_client.cc \
@@ -90,7 +106,6 @@ HEADERS += src/client/mac/crash_generation/client_info.h \
            src/client/mac/handler/minidump_generator.h \
            src/client/mac/handler/protected_memory_allocator.h \
            src/client/mac/handler/ucontext_compat.h \
-           src/client/minidump_file_writer-inl.h \
            src/common/mac/bootstrap_compat.h \
            src/common/mac/byteswap.h \
            src/common/mac/file_id.h \
