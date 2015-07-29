@@ -32,6 +32,7 @@ HEADERS += src/ABIFormat.h \
            src/PDWFormat.h \
            src/PhylipFormat.h \
            src/PlainTextFormat.h \
+           src/RTFMSAFormat.h \
            src/RawDNASequenceFormat.h \
            src/SAMFormat.h \
            src/SCFFormat.h \
@@ -126,6 +127,7 @@ SOURCES += src/ABIFormat.cpp \
            src/PDBFormat.cpp \
            src/PDWFormat.cpp \
            src/PhylipFormat.cpp \
+           src/RTFMSAFormat.cpp \
            src/PlainTextFormat.cpp \
            src/RawDNASequenceFormat.cpp \
            src/SAMFormat.cpp \

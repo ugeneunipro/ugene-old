@@ -1576,6 +1576,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0053_2);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0053_3);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0053_4);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0053_5);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_fake);
 /////////////////////////////////////////////////////////////////////////

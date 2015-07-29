@@ -57,6 +57,7 @@
 #include <U2Algorithm/OpenCLGpuRegistry.h>
 #include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
 #include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
+#include <U2Algorithm/MSAColorScheme.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 #include <U2Algorithm/PWMConversionAlgorithmRegistry.h>
 #include <U2Algorithm/SubstMatrixRegistry.h>
@@ -93,10 +94,10 @@
 #include <U2View/AssemblyInfoWidget.h>
 #include <U2View/AssemblyNavigationWidget.h>
 #include <U2View/AssemblySettingsWidget.h>
+#include <U2View/ColorSchemaSettingsController.h>
 #include <U2View/DasWidgetFactory.h>
 #include <U2View/DnaAssemblyUtils.h>
 #include <U2View/FindPatternWidgetFactory.h>
-#include <U2View/MSAColorScheme.h>
 #include <U2View/MSAExportConsensusTabFactory.h>
 #include <U2View/MSAGeneralTabFactory.h>
 #include <U2View/MSAHighlightingTabFactory.h>
@@ -545,6 +546,9 @@ int main(int argc, char **argv)
     MSAColorSchemeRegistry* mcsr = new MSAColorSchemeRegistry();
     appContext->setMSAColorSchemeRegistry(mcsr);
 
+    ColorSchemaSettingsPageController* controller = new ColorSchemaSettingsPageController(mcsr);
+    AppContext::getAppSettingsGUI()->registerPage(controller);
+
     MSAHighlightingSchemeRegistry* mhsr = new MSAHighlightingSchemeRegistry();
     appContext->setMSAHighlightingSchemeRegistry(mhsr);
 
@@ -895,6 +899,8 @@ int main(int argc, char **argv)
 
     appContext->setMSAColorSchemeRegistry(NULL);
     delete mcsr;
+
+    delete controller;
 
     appContext->setDBXRefRegistry(NULL);
     delete dbxr;

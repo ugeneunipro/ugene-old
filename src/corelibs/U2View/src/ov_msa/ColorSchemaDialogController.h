@@ -22,7 +22,13 @@
 #ifndef _U2_COLOR_SCHEMA_DIALOG_CONTROLLER_H_
 #define _U2_COLOR_SCHEMA_DIALOG_CONTROLLER_H_
 
+#include <U2Algorithm/MSAColorScheme.h>
+#include <U2Gui/AppSettingsGUI.h>
+#include <U2View/ColorSchemaSettingsController.h>
+
 #include "ui/ui_ColorSchemaDialog.h"
+#include <ui/ui_ColorSchemaSettingsWidget.h>
+#include <ui/ui_CreateMSAScheme.h>
 
 #include <QtCore/QMap>
 
@@ -55,6 +61,55 @@ private:
     QMap<char, QRect> charsPlacement;
 
 };
+
+class ColorSchemaSettingsPageState : public AppSettingsGUIPageState {
+    Q_OBJECT
+public:
+    QString colorsDir;
+    QList<CustomColorSchema> customSchemas;
+};
+
+class ColorSchemaSettingsPageWidget: public AppSettingsGUIPageWidget, public Ui_ColorSchemaSettingsWidget {
+    Q_OBJECT
+public:
+    ColorSchemaSettingsPageWidget(ColorSchemaSettingsPageController* ctrl);
+
+    virtual void setState(AppSettingsGUIPageState* state);
+
+    virtual AppSettingsGUIPageState* getState(QString& err) const;
+
+private slots:
+    void sl_onColorsDirButton();
+    void sl_onChangeColorSchema();
+    void sl_onAddColorSchema();
+    void sl_onDeleteColorSchema();
+    void sl_schemaChanged(int);
+
+private:
+    QList<CustomColorSchema> customSchemas;
+};
+
+
+class CreateColorSchemaDialog: public QDialog, public Ui_CreateMSAScheme{
+    Q_OBJECT
+public:
+    CreateColorSchemaDialog(CustomColorSchema*, QStringList usedNames);
+    int createNewScheme();
+
+private slots:
+    void sl_createSchema();
+    void sl_cancel();
+    void sl_schemaNameEdited(const QString&);
+    void sl_alphabetChanged(int);
+
+private:
+    bool isNameExist(const QString&);
+    bool isSchemaNameValid(const QString&, QString&);
+
+    QStringList usedNames;
+    CustomColorSchema* newSchema;
+};
+
 
 }
 

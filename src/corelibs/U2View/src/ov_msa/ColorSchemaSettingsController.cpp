@@ -29,25 +29,15 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
+#include <U2Core/QObjectScopedPointer.h>
 #include <U2Core/Settings.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
-
 #include <U2Gui/HelpButton.h>
-#include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include "ColorSchemaDialogController.h"
 #include "ColorSchemaSettingsController.h"
-
-const QString SETTINGS_ROOT = "/color_schema_settings/";
-const QString SETTINGS_SUB_DIRECTORY = "MSA_schemes";
-const QString COLOR_SCHEMA_DIR = "colors_scheme_dir";
-const QString AMINO_KEYWORD = "AMINO";
-const QString NUCL_KEYWORD = "NUCL";
-const QString NUCL_DEFAULT_KEYWORD = "NUCL_DEFAULT";
-const QString NUCL_EXTENDED_KEYWORD = "NUCL_EXTENDED";
-const QString NAME_FILTERS = ".csmsa"; //WARNING if add more then one filter, change corresponding functions
 
 namespace U2 {
 
@@ -56,17 +46,8 @@ enum DefaultStrategy{
     DefaultStrategy_UgeneColors
 };
 
-static QString getColorsDir() {
-    QString settingsFile = AppContext::getSettings()->fileName();
-    QString settingsDir = QDir(QFileInfo(settingsFile).absolutePath()).filePath(SETTINGS_SUB_DIRECTORY);
-
-    QString res = AppContext::getSettings()->getValue(SETTINGS_ROOT + COLOR_SCHEMA_DIR, settingsDir, true).toString();
-
-    return res;
-}
-
 static void clearColorsDir() {
-    QString path = getColorsDir();
+    QString path = ColorSchemaSettingsUtils::getColorsDir();
     QDir dir(path);
     dir.setNameFilters(QStringList() << "*.*");
     dir.setFilter(QDir::Files);
@@ -76,17 +57,8 @@ static void clearColorsDir() {
     }
 }
 
-static void setColorsDir(const QString &colorsDir) {
-    QString settingsFile = AppContext::getSettings()->fileName();
-    QString settingsDir = QFileInfo(settingsFile).absolutePath();
-    if (settingsDir != colorsDir) {
-        AppContext::getSettings()->setValue(SETTINGS_ROOT + COLOR_SCHEMA_DIR, colorsDir, true);
-    }
-}
-
-
 static void setSchemaColors(const CustomColorSchema& customSchema){
-    QString dirPath = getColorsDir();
+    QString dirPath = ColorSchemaSettingsUtils::getColorsDir();
     QDir dir(dirPath);
     if(!dir.exists()){
         dir.mkpath(dirPath);
@@ -97,11 +69,11 @@ static void setSchemaColors(const CustomColorSchema& customSchema){
     QScopedPointer<IOAdapter> io(factory->createIOAdapter());
 
     const QMap<char, QColor> & alphColors = customSchema.alpColors;
-    const QString& file  = customSchema.name + NAME_FILTERS;
+    const QString& file  = customSchema.name + COLOR_SCHEME_NAME_FILTERS;
     DNAAlphabetType type = customSchema.type;
     bool defaultType = customSchema.defaultAlpType;
 
-    QString keyword(type == DNAAlphabet_AMINO ? AMINO_KEYWORD : (defaultType ? NUCL_DEFAULT_KEYWORD : NUCL_EXTENDED_KEYWORD));
+    QString keyword(type == DNAAlphabet_AMINO ? COLOR_SCHEME_AMINO_KEYWORD : (defaultType ? COLOR_SCHEME_NUCL_DEFAULT_KEYWORD : COLOR_SCHEME_NUCL_EXTENDED_KEYWORD));
 
     io->open(dir.filePath(file), IOAdapterMode_Write);
     // write header
@@ -118,189 +90,18 @@ static void setSchemaColors(const CustomColorSchema& customSchema){
     }
 }
 
-static bool lineValid(const QStringList& properties, const QMap<char, QColor> & alphColors){
-    if(properties.size() != 2){return false;}
-    if(properties[0].size() != 1 || (!alphColors.contains(properties[0][0].toLatin1()))){return false;}
-    if(!QColor(properties[1]).isValid()){return false;}
-
-    return true;
-}
-
-static QByteArray uniteAlphabetChars(const QByteArray& firstAlphabetChars, const QByteArray& secondAlphabetChars){
-    QByteArray unitedAlphabetChars = firstAlphabetChars;
-    for(int i = 0; i < secondAlphabetChars.size(); ++i){
-        if(!unitedAlphabetChars.contains(secondAlphabetChars[i])){
-            unitedAlphabetChars.append(secondAlphabetChars[i]);
-        }
-    }
-    qSort(unitedAlphabetChars.begin(), unitedAlphabetChars.end());
-    return unitedAlphabetChars;
-}
-
-static void getDefaultUgeneColors(DNAAlphabetType type, QMap<char, QColor>& alphColors){
-    if(type == DNAAlphabet_AMINO){
-        alphColors['I'] = "#ff0000";
-        alphColors['V'] = "#f60009";
-        alphColors['L'] = "#ea0015";
-        alphColors['F'] = "#cb0034";
-        alphColors['C'] = "#c2003d";
-        alphColors['M'] = "#b0004f";
-        alphColors['A'] = "#ad0052";
-        alphColors['G'] = "#6a0095";
-        alphColors['X'] = "#680097";
-        alphColors['T'] = "#61009e";
-        alphColors['S'] = "#5e00a1";
-        alphColors['W'] = "#5b00a4";
-        alphColors['Y'] = "#4f00b0";
-        alphColors['P'] = "#4600b9";
-        alphColors['H'] = "#1500ea";
-        alphColors['E'] = "#0c00f3";
-        alphColors['Z'] = "#0c00f3";
-        alphColors['Q'] = "#0c00f3";
-        alphColors['D'] = "#0c00f3";
-        alphColors['B'] = "#0c00f3";
-        alphColors['N'] = "#0c00f3";
-        alphColors['K'] = "#0000ff";
-        alphColors['R'] = "#0000ff";
-    }
-    else if(type == DNAAlphabet_NUCL){
-        alphColors['A'] = "#FCFF92"; // yellow
-        alphColors['C'] = "#70F970"; // green
-        alphColors['T'] = "#FF99B1"; // light red
-        alphColors['G'] = "#4EADE1"; // light blue
-        alphColors['U'] = alphColors['T'].lighter(120);
-        alphColors['N'] = "#FCFCFC";
-    }
-}
-
-static QMap<char, QColor> getDefaultSchemaColors(DNAAlphabetType type, bool defaultAlpType){
-    QList<const DNAAlphabet*> alphabets = AppContext::getDNAAlphabetRegistry()->getRegisteredAlphabets();
-    QMap<DNAAlphabetType, QByteArray > alphabetChars;
-    foreach(const DNAAlphabet* alphabet, alphabets){ // default initialization
-        if(defaultAlpType == alphabet->isDefault()){
-            alphabetChars[alphabet->getType()] = uniteAlphabetChars(alphabetChars.value(alphabet->getType()) ,alphabet->getAlphabetChars());
-        }
-    }
-    QMapIterator<DNAAlphabetType, QByteArray > it(alphabetChars);
-    QByteArray alphabet;
-    while(it.hasNext()){
-        it.next();
-        if(it.key() == type){
-            alphabet = it.value();
-            break;
-        }
-    }
-    QMap<char, QColor> alphColors;
-    for(int i = 0; i < alphabet.size(); ++i){
-        alphColors[alphabet[i]] = QColor(Qt::white);
-    }
-    getDefaultUgeneColors(type, alphColors);
-    return alphColors;
-}
-
-static bool getSchemaColors(CustomColorSchema& customSchema){
-    QMap<char, QColor> & alphColors =  customSchema.alpColors;
-    const QString& file = customSchema.name + NAME_FILTERS;
-    DNAAlphabetType& type = customSchema.type;
-    bool& defaultAlpType = customSchema.defaultAlpType = true;
-
-    QString dirPath = getColorsDir();
-    QDir dir(dirPath);
-    if(!dir.exists()){
-        coreLog.info(QString("%1: no such directory").arg(dirPath));
-        return false;
-    }
-
-    IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-
-    QScopedPointer<IOAdapter> io(factory->createIOAdapter());
-    if(!io->open(dir.filePath(file), IOAdapterMode_Read)){
-        coreLog.info(QString("%1: no such scheme").arg(customSchema.name));
-        return false;
-    }
-    while(!io->isEof()){
-        const int max_size = 1024;
-
-        QByteArray byteLine(max_size + 1, 0);
-        int lineLength = io->readLine(byteLine.data(), max_size);
-        QString line(byteLine);
-        line.remove(lineLength, line.size() - lineLength);
-        if(line.isEmpty()){continue;}
-        if(line == AMINO_KEYWORD){type = DNAAlphabet_AMINO;}
-        else if(line.contains(NUCL_KEYWORD)){
-            type = DNAAlphabet_NUCL;
-            if(line == NUCL_DEFAULT_KEYWORD){
-                defaultAlpType = true;
-            }
-            else if(line == NUCL_EXTENDED_KEYWORD){
-                defaultAlpType = false;
-            }
-            else{
-                coreLog.info(QString("%1: mode of nucleic alphabet of scheme not defined, use default mode").arg(customSchema.name));
-            }
-        }
-        else{
-            coreLog.info(QString("%1: alphabet of scheme not defined").arg(customSchema.name));
-            return false;
-        }
-        alphColors = getDefaultSchemaColors(type, defaultAlpType);
-        break;
-    }
-    QMap<char, QColor> tmpHelper;
-    while(!io->isEof()){
-        const int max_size = 1024;
-
-        QByteArray byteLine(max_size + 1, 0);
-        int lineLength = io->readLine(byteLine.data(), max_size);
-        QString line(byteLine);
-        line.remove(lineLength, line.size() - lineLength);
-        if(line.isEmpty()){continue;}
-        QStringList properties = line.split(QString("="), QString::SkipEmptyParts);
-
-        if(!lineValid(properties, alphColors )){
-            coreLog.info(QString("%1: scheme is not valid").arg(customSchema.name));
-            return false;
-        }
-        tmpHelper[properties.first().at(0).toLatin1()] = QColor(properties[1]);
-    }
-    QMapIterator<char, QColor> it(tmpHelper);
-    while(it.hasNext()){
-        it.next();
-        alphColors[it.key()] = it.value();
-    }
-    return true;
-}
-
-QList<CustomColorSchema> ColorSchemaSettingsUtils::getSchemas(){
-    QList<CustomColorSchema> customSchemas;
-
-    QDir dir(getColorsDir());
-    if(!dir.exists()){
-        return QList<CustomColorSchema>();
-    }
-    QStringList filters;
-    filters.append(QString("*%1").arg(NAME_FILTERS));
-
-    QStringList schemaFiles = dir.entryList(filters);
-    foreach(const QString& schemaName, schemaFiles){
-        CustomColorSchema schema;
-        schema.name = schemaName.split(".").first();
-        bool ok = getSchemaColors(schema);
-        if(!ok){continue;}
-        customSchemas.append(schema);
-    }
-    return customSchemas;
-}
 
 const QString ColorSchemaSettingsPageController::helpPageId = QString("8093975");
 
-ColorSchemaSettingsPageController::ColorSchemaSettingsPageController(QObject* p)
-: AppSettingsGUIPageController(tr("Alignment Color Scheme"), ColorSchemaSettingsPageId, p) {}
+ColorSchemaSettingsPageController::ColorSchemaSettingsPageController(MSAColorSchemeRegistry* mcsr, QObject* p)
+: AppSettingsGUIPageController(tr("Alignment Color Scheme"), ColorSchemaSettingsPageId, p) {
+       connect(this, SIGNAL(si_customSettingsChanged()), mcsr, SLOT(sl_onCustomSettingsChanged()));
+}
 
 
 AppSettingsGUIPageState* ColorSchemaSettingsPageController::getSavedState() {
     ColorSchemaSettingsPageState* state = new ColorSchemaSettingsPageState();
-    state->colorsDir = getColorsDir();
+    state->colorsDir = ColorSchemaSettingsUtils::getColorsDir();
     state->customSchemas = ColorSchemaSettingsUtils::getSchemas();
 
     return state;
@@ -309,7 +110,7 @@ AppSettingsGUIPageState* ColorSchemaSettingsPageController::getSavedState() {
 void ColorSchemaSettingsPageController::saveState(AppSettingsGUIPageState* s) {
     ColorSchemaSettingsPageState* state = qobject_cast<ColorSchemaSettingsPageState*>(s);
 
-    setColorsDir(state->colorsDir);
+    ColorSchemaSettingsUtils::setColorsDir(state->colorsDir);
     clearColorsDir();
     foreach(const CustomColorSchema& schema, state->customSchemas){
         setSchemaColors(schema);
@@ -322,277 +123,5 @@ AppSettingsGUIPageWidget* ColorSchemaSettingsPageController::createWidget(AppSet
     r->setState(state);
     return r;
 }
-
-ColorSchemaSettingsPageWidget::ColorSchemaSettingsPageWidget(ColorSchemaSettingsPageController* ) {
-    setupUi(this);
-
-    connect(colorsDirButton, SIGNAL(clicked()), SLOT(sl_onColorsDirButton()));
-    connect(changeSchemaButton, SIGNAL(clicked()), SLOT(sl_onChangeColorSchema()));
-    connect(addSchemaButton, SIGNAL(clicked()), SLOT(sl_onAddColorSchema()));
-    connect(deleteSchemaButton, SIGNAL(clicked()), SLOT(sl_onDeleteColorSchema()));
-    connect(colorSchemas, SIGNAL(currentRowChanged(int)), SLOT(sl_schemaChanged(int)));
-
-    sl_schemaChanged(colorSchemas->currentRow());
-}
-
-void ColorSchemaSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
-    ColorSchemaSettingsPageState* state = qobject_cast<ColorSchemaSettingsPageState*>(s);
-    colorsDirEdit->setText(state->colorsDir);
-    customSchemas = state->customSchemas;
-    colorSchemas->clear();
-
-    foreach(const CustomColorSchema& customSchema, customSchemas){
-        colorSchemas->addItem(new QListWidgetItem(customSchema.name, colorSchemas));
-    }
-    update();
-}
-
-AppSettingsGUIPageState* ColorSchemaSettingsPageWidget::getState(QString& ) const {
-    ColorSchemaSettingsPageState* state = new ColorSchemaSettingsPageState();
-    state->colorsDir = colorsDirEdit->text();
-    state->customSchemas = customSchemas;
-    return state;
-}
-
-void ColorSchemaSettingsPageWidget::sl_schemaChanged(int index){
-    if(index < 0 || index >= colorSchemas->count()){
-        changeSchemaButton->setDisabled(true);
-        deleteSchemaButton->setDisabled(true);
-    }else{
-        changeSchemaButton->setEnabled(true);
-        deleteSchemaButton->setEnabled(true);
-    }
-}
-
-
-void ColorSchemaSettingsPageWidget::sl_onColorsDirButton() {
-    QString path = colorsDirEdit->text();
-    QString dir = U2FileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
-        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-    if (!dir.isEmpty()) {
-        colorsDirEdit->setText(dir);
-        setColorsDir(dir);
-        customSchemas.clear();
-        colorSchemas->clear();
-        customSchemas = ColorSchemaSettingsUtils::getSchemas();
-        foreach(CustomColorSchema schema, customSchemas){
-            colorSchemas->addItem(new QListWidgetItem(schema.name, colorSchemas));
-        }
-    }
-}
-
-void ColorSchemaSettingsPageWidget::sl_onAddColorSchema(){
-
-    QStringList usedNames;
-    foreach(const CustomColorSchema& customScheme, customSchemas){
-        usedNames << customScheme.name;
-    }
-    CustomColorSchema schema;
-
-    QObjectScopedPointer<CreateColorSchemaDialog> d = new CreateColorSchemaDialog(&schema, usedNames);
-    const int r = d->createNewScheme();
-    CHECK(!d.isNull(), );
-
-    if (r == QDialog::Rejected) {
-        return;
-    }
-
-    customSchemas.append(schema);
-    colorSchemas->addItem(new QListWidgetItem(schema.name, colorSchemas));
-}
-
-void ColorSchemaSettingsPageWidget::sl_onChangeColorSchema(){
-    QMap<char, QColor> alpColors;
-
-    QListWidgetItem* item = colorSchemas->currentItem();
-    if(item == NULL){return;}
-
-    QString schemaName = item->text();
-    for(int i = 0; i < customSchemas.size(); ++i){
-        CustomColorSchema& customSchema = customSchemas[i];
-        if(customSchema.name == schemaName){
-            alpColors = customSchema.alpColors;
-            QObjectScopedPointer<ColorSchemaDialogController> controller = new ColorSchemaDialogController(alpColors);
-            const int r = controller->adjustAlphabetColors();
-            CHECK(!controller.isNull(), );
-
-            if (r == QDialog::Rejected) {
-                return;
-            }
-
-            QMapIterator<char, QColor> it(alpColors);
-            while(it.hasNext()){
-                it.next();
-                customSchema.alpColors[it.key()] = it.value();
-            }
-            break;
-        }
-    }
-}
-
-void ColorSchemaSettingsPageWidget::sl_onDeleteColorSchema(){
-    QListWidgetItem* item = colorSchemas->currentItem();
-    SAFE_POINT(item != NULL, "current item for deletion is NULL",);
-
-    QString schemaName = item->text();
-    for(int i = 0; i < customSchemas.size(); ++i){
-        CustomColorSchema& customSchema = customSchemas[i];
-        if(customSchema.name == schemaName){
-            customSchemas.removeAt(i);
-            colorSchemas->removeItemWidget(item);
-            delete item;
-            return;
-        }
-    }
-    FAIL("something wrong causes color scheme deletion, this code must be unreacheble", );
-}
-
-/*Create MSA scheme dialog*/
-
-CreateColorSchemaDialog::CreateColorSchemaDialog(CustomColorSchema* _newSchema, QStringList _usedNames) : usedNames(_usedNames), newSchema(_newSchema) {
-    setupUi(this);
-    new HelpButton(this, buttonBox, "16122228");
-    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Create"));
-    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
-
-    alphabetComboBox->insertItem(0, QString(tr("Amino acid")), DNAAlphabet_AMINO);
-    alphabetComboBox->insertItem(1, QString(tr("Nucleotide")), DNAAlphabet_NUCL);
-
-    connect(alphabetComboBox, SIGNAL(currentIndexChanged(int)), SLOT(sl_alphabetChanged(int)));
-    extendedModeBox->setVisible( false );
-    validLabel->setStyleSheet( "color: " + L10N::errorColorLabelStr( ) + "; font: bold;" );
-    validLabel->setVisible( false );
-    adjustSize( );
-
-    connect(schemeName, SIGNAL(textEdited ( const QString&)), SLOT(sl_schemaNameEdited(const QString&)));
-
-    QPushButton *createButton = buttonBox->button(QDialogButtonBox::Ok);
-    QPushButton *cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
-
-    connect(createButton, SIGNAL(clicked()), this, SLOT(sl_createSchema()));
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(sl_cancel()));
-
-    QSet<QString > excluded;
-    foreach(const QString& usedName, usedNames){
-        excluded.insert(usedName);
-    }
-    schemeName->setText(GUrlUtils::rollFileName("Custom color scheme", excluded));
-
-}
-
-bool CreateColorSchemaDialog::isNameExist(const QString& text){
-    foreach(const QString& usedName, usedNames){
-        if(usedName == text){
-            return true;
-        }
-    }
-    return false;
-}
-
-bool CreateColorSchemaDialog::isSchemaNameValid(const QString& text, QString& description){
-    if(text.isEmpty()){
-        description = tr( "Name of scheme is empty." );
-        return false;
-    }
-    int spaces = 0;
-    for(int i = 0; i < text.length(); i++){
-        if (text[i] == ' '){
-            spaces++;
-        }
-    }
-    if(spaces == text.length()){
-        description = tr( "Name can't contain only spaces." );
-        return false;
-    }
-    for(int i = 0; i < text.length(); ++i){
-        if(!text[i].isDigit() && !text[i].isLetter() && text[i] != QChar('_') && !text[i].isSpace()){
-            description = tr( "Name has to consist of letters, digits, spaces" ) + "<br>"
-                + tr( "or underscore symbols only." );
-            return false;
-        }
-    }
-    if(isNameExist(text)){
-        description = tr( "Color scheme with the same name already exists." );
-        return false;
-    }
-
-    return true;
-}
-
-void CreateColorSchemaDialog::sl_schemaNameEdited( const QString &text ) {
-    QString description;
-    const bool isNameValid = isSchemaNameValid( text, description );
-    validLabel->setVisible( !isNameValid );
-    adjustSize( );
-    if ( isNameValid ) {
-        validLabel->clear( );
-    } else {
-        validLabel->setText( "Warning: " + description );
-    }
-}
-
-void CreateColorSchemaDialog::sl_alphabetChanged( int index ) {
-    if ( 0 > index || index >= alphabetComboBox->count( ) ) {
-        return;
-    }
-
-    if ( DNAAlphabet_AMINO == static_cast<DNAAlphabetType>(
-        alphabetComboBox->itemData( index ).toInt( ) ) )
-    {
-        extendedModeBox->setVisible( false );
-        extendedModeBox->setChecked( false );
-    } else {
-        extendedModeBox->setVisible( true );
-    }
-    adjustSize( );
-}
-
-int CreateColorSchemaDialog::createNewScheme(){
-    return exec();
-}
-
-void CreateColorSchemaDialog::sl_createSchema(){
-    QString description;
-    if(!isSchemaNameValid(schemeName->text(), description)){return;}
-
-    int index = alphabetComboBox->currentIndex();
-    if(index < 0 || index >= alphabetComboBox->count()){return;}
-
-    DNAAlphabetType type = DNAAlphabet_AMINO;
-    bool defaultAlpType = true;
-
-    if(static_cast<DNAAlphabetType>(alphabetComboBox->itemData(index).toInt()) == DNAAlphabet_NUCL){
-        type = DNAAlphabet_NUCL;
-        if(extendedModeBox->isChecked()){
-            defaultAlpType = false;
-        }
-    }
-
-    QMap<char, QColor> alpColors = getDefaultSchemaColors(type, defaultAlpType);
-
-    QObjectScopedPointer<ColorSchemaDialogController> controller = new ColorSchemaDialogController(alpColors);
-    const int r = controller->adjustAlphabetColors();
-    CHECK(!controller.isNull(), );
-
-    if (r == QDialog::Rejected) {
-        return;
-    }
-
-    newSchema->name = schemeName->text();
-    newSchema->type = type;
-    newSchema->defaultAlpType = defaultAlpType;
-
-    QMapIterator<char, QColor> it(alpColors);
-    while(it.hasNext()){
-        it.next();
-        newSchema->alpColors[it.key()] = it.value();
-    }
-    accept();
-}
-
-void CreateColorSchemaDialog::sl_cancel(){
-    reject();
-}
-
 
 } // namespase

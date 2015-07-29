@@ -50,6 +50,7 @@
 #include <U2Formats/PhylipFormat.h>
 #include <U2Formats/PlainTextFormat.h>
 #include <U2Formats/RawDNASequenceFormat.h>
+#include <U2Formats/RTFMSAFormat.h>
 #include <U2Formats/SAMFormat.h>
 #include <U2Formats/SCFFormat.h>
 #include <U2Formats/SQLiteDbi.h>
@@ -190,6 +191,9 @@ void DocumentFormatRegistryImpl::init() {
 
     MegaFormat *meg = new MegaFormat(this);
     registerFormat(meg);
+
+    RTFMSAFormat *rtfmsa = new RTFMSAFormat(this);
+    registerFormat(rtfmsa);
 
     ACEFormat *aceFormat = new ACEFormat(this);
     registerFormat(aceFormat);

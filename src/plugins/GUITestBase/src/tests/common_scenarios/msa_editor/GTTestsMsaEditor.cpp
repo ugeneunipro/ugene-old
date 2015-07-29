@@ -4052,6 +4052,40 @@ GUI_TEST_CLASS_DEFINITION(test_0053_4){
         CHECK_SET_ERR(w->isEnabled() == false, "selection is empty but the action is enabled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0053_5){
+    //Copied formatted (toolbar), the format is changable to RTF
+    //1. Open samples\CLUSTALW\COI.aln
+    //2. Select the first three letters TAA
+    //3. In the general tab of the options panel find the Copy Type combobox and select the RTF format
+    //4. Toolbar {Copy->Copy formatted}
+    //Expected state: the buffer contatin the sequence in RTF format
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTGlobals::sleep();
+
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
+    GTGlobals::sleep(200);
+
+    QComboBox* copyType = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "copyType"));
+    CHECK_SET_ERR(copyType != NULL, "copy combobox not found");
+
+    GTComboBox::setIndexWithText(os, copyType, "RTF");
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(2, 0));
+
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "copy_formatted"));
+    GTGlobals::sleep(3000);
+
+    QString clipboardText = GTClipboard::text(os);
+
+    CHECK_SET_ERR(clipboardText.contains("<span style=\"font-size:10pt; font-family:Verdana;\">"), clipboardText);
+    CHECK_SET_ERR(clipboardText.contains("<p><span style=\"background-color:#ff99b1;\">T</span><span style=\"background-color:#fcff92;\">A</span><span style=\"background-color:#fcff92;\">A</span></p>"), clipboardText);
+
+
+
+    GTGlobals::sleep(3000);
+}
+
+
 GUI_TEST_CLASS_DEFINITION(test_fake) {
     Q_UNUSED(os);
 }

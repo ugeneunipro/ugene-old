@@ -47,7 +47,6 @@
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/MsaDbiUtils.h>
 #include <U2Core/PhyTreeObject.h>
@@ -74,7 +73,7 @@
 #include <U2Core/QObjectScopedPointer.h>
 #include <U2Gui/U2FileDialog.h>
 
-#include <U2View/MSAColorScheme.h>
+#include <U2Algorithm/MSAColorScheme.h>
 #include <U2View/UndoRedoFramework.h>
 
 #include "ExportHighlightedDialogController.h"
@@ -100,21 +99,6 @@
 #include "phyltree/CreatePhyTreeDialogController.h"
 
 namespace U2 {
-
-#define MIN_FONT_SIZE 8
-#define MAX_FONT_SIZE 18
-#define MIN_COLUMN_WIDTH 1
-
-#define SETTINGS_ROOT QString("msaeditor/")
-#define SETTINGS_FONT_FAMILY    "font_family"
-#define SETTINGS_FONT_SIZE      "font_size"
-#define SETTINGS_FONT_ITALIC    "font_italic"
-#define SETTINGS_FONT_BOLD      "font_bold"
-#define SETTINGS_ZOOM_FACTOR    "zoom_factor"
-
-#define DEFAULT_FONT_FAMILY "Verdana"
-#define DEFAULT_FONT_SIZE 10
-#define DEFAULT_ZOOM_FACTOR 1.0f
 
 /* TRANSLATOR U2::MSAEditor */
 
@@ -174,14 +158,14 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     connect(msaObject, SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
 
     Settings* s = AppContext::getSettings();
-    zoomFactor = DEFAULT_ZOOM_FACTOR;
-    font.setFamily(s->getValue(SETTINGS_ROOT + SETTINGS_FONT_FAMILY, DEFAULT_FONT_FAMILY).toString());
-    font.setPointSize(s->getValue(SETTINGS_ROOT + SETTINGS_FONT_SIZE, DEFAULT_FONT_SIZE).toInt());
-    font.setItalic(s->getValue(SETTINGS_ROOT + SETTINGS_FONT_ITALIC, false).toBool());
-    font.setBold(s->getValue(SETTINGS_ROOT + SETTINGS_FONT_BOLD, false).toBool());
+    zoomFactor = MOBJECT_DEFAULT_ZOOM_FACTOR;
+    font.setFamily(s->getValue(MOBJECT_SETTINGS_ROOT + MOBJECT_SETTINGS_FONT_FAMILY, MOBJECT_DEFAULT_FONT_FAMILY).toString());
+    font.setPointSize(s->getValue(MOBJECT_SETTINGS_ROOT + MOBJECT_SETTINGS_FONT_SIZE, MOBJECT_DEFAULT_FONT_SIZE).toInt());
+    font.setItalic(s->getValue(MOBJECT_SETTINGS_ROOT + MOBJECT_SETTINGS_FONT_ITALIC, false).toBool());
+    font.setBold(s->getValue(MOBJECT_SETTINGS_ROOT + MOBJECT_SETTINGS_FONT_BOLD, false).toBool());
     calcFontPixelToPointSizeCoef();
 
-    if ( (font.pointSize() == MIN_FONT_SIZE) && (zoomFactor < 1.0f) ) {
+    if ( (font.pointSize() == MOBJECT_MIN_FONT_SIZE) && (zoomFactor < 1.0f) ) {
         resizeMode = ResizeMode_OnlyContent;
     } else {
         resizeMode = ResizeMode_FontAndContent;
@@ -210,7 +194,7 @@ int MSAEditor::getColumnWidth() const {
     int width =  fm.width('W') * zoomMult;
 
     width = (int)(width * zoomFactor);
-    width = qMax(width, MIN_COLUMN_WIDTH);
+    width = qMax(width, MOBJECT_MIN_COLUMN_WIDTH);
 
     return width;
 
@@ -242,7 +226,7 @@ void MSAEditor::sl_zoomIn() {
 
     if (resizeMode == ResizeMode_OnlyContent) {
         zoomFactor *= zoomMult;
-    } else if ( (pSize < MAX_FONT_SIZE) && (resizeMode == ResizeMode_FontAndContent) ) {
+    } else if ( (pSize < MOBJECT_MAX_FONT_SIZE) && (resizeMode == ResizeMode_FontAndContent) ) {
         font.setPointSize(pSize+1);
         setFont(font);
     }
@@ -265,7 +249,7 @@ void MSAEditor::sl_zoomOut() {
 
     bool resizeModeChanged = false;
 
-    if (pSize > MIN_FONT_SIZE) {
+    if (pSize > MOBJECT_MIN_FONT_SIZE) {
         font.setPointSize(pSize-1);
         setFont(font);
     } else {
@@ -291,20 +275,20 @@ void MSAEditor::sl_zoomToSelection()
     int selectionWidth = selection.width();
     float pixelsPerBase = (seqAreaWidth / float(selectionWidth)) * zoomMult;
     int fontPointSize = int(pixelsPerBase / fontPixelToPointSize);
-    if (fontPointSize >= MIN_FONT_SIZE) {
-        if (fontPointSize > MAX_FONT_SIZE) {
-            fontPointSize = MAX_FONT_SIZE;
+    if (fontPointSize >= MOBJECT_MIN_FONT_SIZE) {
+        if (fontPointSize > MOBJECT_MAX_FONT_SIZE) {
+            fontPointSize = MOBJECT_MAX_FONT_SIZE;
         }
         font.setPointSize(fontPointSize);
         setFont(font);
         resizeMode = ResizeMode_FontAndContent;
         zoomFactor = 1;
     } else {
-        if (font.pointSize() != MIN_FONT_SIZE) {
-            font.setPointSize(MIN_FONT_SIZE);
+        if (font.pointSize() != MOBJECT_MIN_FONT_SIZE) {
+            font.setPointSize(MOBJECT_MIN_FONT_SIZE);
             setFont(font);
         }
-        zoomFactor = pixelsPerBase / (MIN_FONT_SIZE * fontPixelToPointSize);
+        zoomFactor = pixelsPerBase / (MOBJECT_MIN_FONT_SIZE * fontPixelToPointSize);
         resizeMode = ResizeMode_OnlyContent;
     }
     ui->seqArea->setFirstVisibleBase(selection.x());
@@ -342,17 +326,17 @@ bool MSAEditor::onCloseEvent() {
 
 static void saveFont(const QFont& f) {
     Settings* s = AppContext::getSettings();
-    s->setValue(SETTINGS_ROOT + SETTINGS_FONT_FAMILY, f.family());
-    s->setValue(SETTINGS_ROOT + SETTINGS_FONT_SIZE, f.pointSize());
-    s->setValue(SETTINGS_ROOT + SETTINGS_FONT_ITALIC, f.italic());
-    s->setValue(SETTINGS_ROOT + SETTINGS_FONT_BOLD, f.bold());
+    s->setValue(MOBJECT_SETTINGS_ROOT + MOBJECT_SETTINGS_FONT_FAMILY, f.family());
+    s->setValue(MOBJECT_SETTINGS_ROOT + MOBJECT_SETTINGS_FONT_SIZE, f.pointSize());
+    s->setValue(MOBJECT_SETTINGS_ROOT + MOBJECT_SETTINGS_FONT_ITALIC, f.italic());
+    s->setValue(MOBJECT_SETTINGS_ROOT + MOBJECT_SETTINGS_FONT_BOLD, f.bold());
 }
 
 void MSAEditor::setFont(const QFont& f) {
     int pSize = f.pointSize();
     font = f;
     calcFontPixelToPointSizeCoef();
-    font.setPointSize(qBound(MIN_FONT_SIZE, pSize, MAX_FONT_SIZE));
+    font.setPointSize(qBound(MOBJECT_MIN_FONT_SIZE, pSize, MOBJECT_MAX_FONT_SIZE));
     emit si_fontChanged(f);
     saveFont(font);
 }
@@ -388,9 +372,9 @@ void MSAEditor::sl_changeFont() {
 
 void MSAEditor::sl_resetZoom() {
     QFont f = getFont();
-    f.setPointSize(DEFAULT_FONT_SIZE);
+    f.setPointSize(MOBJECT_DEFAULT_FONT_SIZE);
     setFont(f);
-    zoomFactor = DEFAULT_ZOOM_FACTOR;
+    zoomFactor = MOBJECT_DEFAULT_ZOOM_FACTOR;
     ResizeMode oldMode = resizeMode;
     resizeMode = ResizeMode_FontAndContent;
     emit si_zoomOperationPerformed(resizeMode != oldMode);
@@ -628,9 +612,9 @@ const QRect& MSAEditor::getCurrentSelection() const {
 }
 
 void MSAEditor::updateActions() {
-    zoomInAction->setEnabled(font.pointSize() < MAX_FONT_SIZE);
-    zoomOutAction->setEnabled( getColumnWidth() > MIN_COLUMN_WIDTH );
-    zoomToSelectionAction->setEnabled( font.pointSize() < MAX_FONT_SIZE);
+    zoomInAction->setEnabled(font.pointSize() < MOBJECT_MAX_FONT_SIZE);
+    zoomOutAction->setEnabled( getColumnWidth() > MOBJECT_MIN_COLUMN_WIDTH );
+    zoomToSelectionAction->setEnabled( font.pointSize() < MOBJECT_MAX_FONT_SIZE);
     changeFontAction->setEnabled( resizeMode == ResizeMode_FontAndContent);
     if(alignSequencesToAlignmentAction != NULL) {
         alignSequencesToAlignmentAction->setEnabled(!msaObject->isStateLocked());

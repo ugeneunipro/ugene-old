@@ -20,6 +20,7 @@
  */
 
 #include <QtGui/QClipboard>
+#include <QMimeData>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -142,7 +143,15 @@ QList<Task *> SubalignmentToClipboardTask::onSubTaskFinished(Task *subTask){
             res.append(buf);
             res.append('\n');
         }
-        QApplication::clipboard()->setText(res);
+        if (doc->getDocumentFormat()->checkFlags( DocumentFormatFlags(DocumentFormatFlag_RTFOutput))){
+            QMimeData* reportRichTextMime = new QMimeData();
+            reportRichTextMime->setHtml(res);
+            reportRichTextMime->setText(res);
+            QApplication::clipboard()->setMimeData(reportRichTextMime);
+        }else{
+            QApplication::clipboard()->setText(res);
+        }
+
     }
 
     return subTasks;

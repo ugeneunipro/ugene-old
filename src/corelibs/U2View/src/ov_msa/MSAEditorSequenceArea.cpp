@@ -28,6 +28,7 @@
 #include <QTextStream>
 
 #include <U2Algorithm/CreateSubalignmentTask.h>
+#include <U2Algorithm/MSAColorScheme.h>
 #include <U2Core/AddSequencesToAlignmentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
@@ -70,7 +71,6 @@
 #include "ColorSchemaSettingsController.h"
 #include "CreateSubalignmentDialogController.h"
 #include "Highlighting/MSAHighlightingTabFactory.h"
-#include "MSAColorScheme.h"
 #include "MSAEditor.h"
 #include "MSAEditorNameList.h"
 #include "MSAEditorSequenceArea.h"

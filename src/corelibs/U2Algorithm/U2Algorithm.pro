@@ -82,6 +82,7 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/util_msa_distance/MSADistanceAlgorithmRegistry.h \
            src/util_msaedit/CreateSubalignmentTask.h \
            src/util_msaedit/MAlignmentUtilTasks.h \
+           src/util_msaedit/MSAColorScheme.h \
            src/util_orf/ORFAlgorithmTask.h \
            src/util_orf/ORFFinder.h \
            src/util_sarray/SArrayBasedFindTask.h \
@@ -165,6 +166,7 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/util_msa_distance/MSADistanceAlgorithmRegistry.cpp \
            src/util_msaedit/CreateSubalignmentTask.cpp \
            src/util_msaedit/MAlignmentUtilTasks.cpp \
+           src/util_msaedit/MSAColorScheme.cpp \
            src/util_orf/ORFAlgorithmTask.cpp \
            src/util_orf/ORFFinder.cpp \
            src/util_sarray/SArrayBasedFindTask.cpp \

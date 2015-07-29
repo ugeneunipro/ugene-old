@@ -30,6 +30,7 @@
 #include <U2Algorithm/CreatePhyTreeSettings.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/MAlignmentObject.h>
 
 #include <U2View/UndoRedoFramework.h>
 

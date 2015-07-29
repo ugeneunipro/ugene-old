@@ -69,7 +69,7 @@ MSAExportConsensusTab::MSAExportConsensusTab(MSAEditor* msa_)
     connect(consensusArea, SIGNAL(si_consensusAlgorithmChanged(const QString &)), SLOT(sl_consensusChanged(const QString &)));
 
     U2WidgetStateStorage::restoreWidgetState(savableWidget);
-};
+}
 
 void MSAExportConsensusTab::sl_browseClicked() {
     LastUsedDirHelper h;

@@ -26,7 +26,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 
 #include <U2View/MSAEditor.h>
-#include <U2View/MSAColorScheme.h>
+#include <U2Algorithm/MSAColorScheme.h>
 
 #include <U2Algorithm/MSAConsensusAlgorithmStrict.h>
 #include <U2Algorithm/MSAConsensusAlgorithmClustal.h>

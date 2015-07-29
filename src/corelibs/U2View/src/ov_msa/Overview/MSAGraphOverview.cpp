@@ -28,7 +28,7 @@
 #include <U2View/MSAEditorConsensusCache.h>
 #include <U2View/MSAEditorNameList.h>
 #include <U2View/MSAEditorSequenceArea.h>
-#include <U2View/MSAColorScheme.h>
+#include <U2Algorithm/MSAColorScheme.h>
 
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
