@@ -19,20 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_RUNNABLES_RANGE_SELECTOR_FILLER_H_
-#define _U2_GT_RUNNABLES_RANGE_SELECTOR_FILLER_H_
+
+#ifndef _U2_CREATE_RULER_DIALOG_FILLER_H_
+#define _U2_CREATE_RULER_DIALOG_FILLER_H_
 
 #include "GTUtilsDialog.h"
 
 namespace U2 {
 
-    class ZoomToRangeDialogFiller : public Filler {
-    public:
-        ZoomToRangeDialogFiller(U2OpStatus &_os, int min = -1, int max = -1) : Filler(_os, "range_selection_dialog"), minVal(min), maxVal(max){}
-        virtual void run();
-    private:
-        int minVal, maxVal;
-    };
-}
+class CreateRulerDialogFiller: public Filler
+{
+public:
+    CreateRulerDialogFiller(U2OpStatus &os, QString _rulerName, int _startPos): Filler(os, "CreateRulerDialog"),
+    rulerName(_rulerName), startPos(_startPos){}
+    CreateRulerDialogFiller(U2OpStatus &os, CustomScenario* c): Filler(os, "CreateRulerDialog", c){}
+    virtual void commonScenario();
+private:
+    QString rulerName;
+    int startPos;
+};
 
-#endif
+}
+#endif // CREATERULERDIALOGFILLER_H

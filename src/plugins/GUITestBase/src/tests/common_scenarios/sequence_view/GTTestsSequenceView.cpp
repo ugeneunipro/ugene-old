@@ -40,9 +40,12 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
+#include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateRulerDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/primer3/Primer3DialogFiller.h"
@@ -1138,8 +1141,129 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
 }
 #undef GET_ACTIONS
 
-GUI_TEST_CLASS_DEFINITION(test_0034){
+GUI_TEST_CLASS_DEFINITION(test_0034){    
+//    Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    QWidget* panView = GTWidget::findWidget(os, "pan_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    QImage init = GTWidget::getImage(os, panView);
+//    Create custom ruler
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Rulers" << "Create new ruler"));
+    GTUtilsDialog::waitForDialog(os, new CreateRulerDialogFiller(os, "name", 1000));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+    GTGlobals::sleep(500);
+    QImage second = GTWidget::getImage(os, panView);
+    CHECK_SET_ERR(init != second, "ruler not created");
+//    Hide ruler
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Rulers" << "Show Custom Rulers"));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+    GTGlobals::sleep(500);
+    second = GTWidget::getImage(os, panView);
+    CHECK_SET_ERR(init == second, "ruler not hidden");
+//    Remove ruler
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Rulers..." << "Remove 'name'"));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
 
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "Rulers" << "Show Custom Rulers", PopupChecker::IsDisabled));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << "Rulers" << "Remove 'name'", PopupChecker::NotExists));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os), Qt::RightButton);
+    GTGlobals::sleep(1000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0035){
+//    Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+//    Double click on pan view
+    QWidget* panView = GTWidget::findWidget(os, "pan_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    GTWidget::click(os, panView, Qt::LeftButton, QPoint(panView->rect().right() - 50, panView->rect().center().y()));
+    GTGlobals::sleep(500);
+    GTMouseDriver::doubleClick(os);
+//    Expected: Sequence scrolled to clicked position
+    QWidget* det = GTWidget::findWidget(os, "det_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    QScrollBar* scrollBar = det->findChild<QScrollBar*>();
+    CHECK_SET_ERR(scrollBar->value() > 150000, QString("Unexpected value: %1").arg(scrollBar->value()));
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0036){
+//    Open murine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+//    Select 2 annotations.
+    GTUtilsAnnotationsTreeView::createAnnotation(os, "new_group", "ann1", "10..20");
+    GTUtilsAnnotationsTreeView::createAnnotation(os, "new_group", "ann2", "40..50",false);
+    GTUtilsAnnotationsTreeView::selectItems(os, QStringList()<< "ann1" << "ann2");
+//    Check "Sequence between selected annotations"  and
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select"
+                                                      << "Sequence between selected annotations"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    QVector<U2Region> select = GTUtilsSequenceView::getSelection(os);
+    CHECK_SET_ERR(select.size() ==1, QString("Wrong number of selections: %1").arg(select.size()));
+    U2Region s = select.first();
+    CHECK_SET_ERR(s.startPos == 20, QString("Unexpected start pos: %1").arg(s.startPos));
+    CHECK_SET_ERR(s.length == 19, QString("Unexpected selection length: %1").arg(s.length));
+//    "Sequence around selected annotations" actions
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select"
+                                                      << "Sequence around selected annotations"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    select = GTUtilsSequenceView::getSelection(os);
+    CHECK_SET_ERR(select.size() ==1, QString("Wrong number of selections: %1").arg(select.size()));
+    s = select.first();
+    CHECK_SET_ERR(s.startPos == 9, QString("Unexpected start pos: %1").arg(s.startPos));
+    CHECK_SET_ERR(s.length == 41, QString("Unexpected selection length: %1").arg(s.length));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0037) {
+//    Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+//    Select any area
+    GTUtilsSequenceView::selectSequenceRegion(os, 10000, 11000);
+//    Press zoom to selection button
+    GTUtilsDialog::waitForDialog(os, new ZoomToRangeDialogFiller(os));
+    GTWidget::click(os, GTWidget::findWidget(os, "zoom_to_range_human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
+    PanView* pan = GTWidget::findExactWidget<PanView*>(os, "pan_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    U2Region r = pan->getVisibleRange();
+    CHECK_SET_ERR(r.startPos == 9999, QString("Unexpected start: %1").arg(r.startPos));
+    CHECK_SET_ERR(r.length == 1001, QString("Unexpected length: %1").arg(r.length));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0037_1) {
+//Check defails "zoom to selection" dialog values
+//    Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+//    Press zoom to selection button
+    GTUtilsDialog::waitForDialog(os, new ZoomToRangeDialogFiller(os));
+    GTWidget::click(os, GTWidget::findWidget(os, "zoom_to_range_human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
+    PanView* pan = GTWidget::findExactWidget<PanView*>(os, "pan_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    U2Region r = pan->getVisibleRange();
+    CHECK_SET_ERR(r.startPos == 0, QString("Unexpected start: %1").arg(r.startPos));
+    CHECK_SET_ERR(r.length == 199950, QString("Unexpected length: %1").arg(r.length));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0038){
+//    Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    QWidget* exportButton = GTWidget::findWidget(os, "export_image");
+//    Export image
+//    GTUtilsDialog::waitForDialog(os, new ExportSequenceImage(os, sandBoxDir + "seq_view_test_0037_1.png"));
+//    GTWidget::click(os, exportButton);
+//    bool exists = GTFile::check(os, sandBoxDir + "seq_view_test_0037_1.png");
+//    CHECK_SET_ERR(exists, "Image not exported");
+//    GTGlobals::sleep(1000);
+
+    ExportSequenceImage::Settings s = ExportSequenceImage::Settings(ExportSequenceImage::ZoomedView, U2Region(1, 1000));
+    GTUtilsDialog::waitForDialog(os, new ExportSequenceImage(os, sandBoxDir + "seq_view_test_0037_1_1.png", s));
+    GTWidget::click(os, exportButton);
+    bool exists = GTFile::check(os, sandBoxDir + "seq_view_test_0037_1_1.png");
+    CHECK_SET_ERR(exists, "Zoomed view not exported");
+    GTGlobals::sleep(1000);
+
+//    s.type = ExportSequenceImage::DetailsView;
+//    GTUtilsDialog::waitForDialog(os, new ExportSequenceImage(os, sandBoxDir + "seq_view_test_0037_1_2.png", s));
+//    GTWidget::click(os, exportButton);
+//    exists = GTFile::check(os, sandBoxDir + "seq_view_test_0037_1_2.png");
+//    CHECK_SET_ERR(exists, "Details view not exported");
+    GTGlobals::sleep(1000);
+    GTGlobals::sleep(1000);
 }
 
 } // namespace GUITest_common_scenarios_sequence_view

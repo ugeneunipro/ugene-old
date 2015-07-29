@@ -168,6 +168,7 @@ void ExportMsaImage::run() {
 #define GT_CLASS_NAME "GTUtilsDialog::ExportSequenceImage"
 #define GT_METHOD_NAME "run"
 void ExportSequenceImage::run() {
+    GTGlobals::sleep(500);
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

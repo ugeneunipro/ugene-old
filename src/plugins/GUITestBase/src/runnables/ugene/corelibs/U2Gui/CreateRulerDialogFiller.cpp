@@ -19,20 +19,33 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_RUNNABLES_RANGE_SELECTOR_FILLER_H_
-#define _U2_GT_RUNNABLES_RANGE_SELECTOR_FILLER_H_
+#include <QApplication>
 
-#include "GTUtilsDialog.h"
+#include "api/GTLineEdit.h"
+#include "api/GTSpinBox.h"
+#include "api/GTWidget.h"
+
+#include "CreateRulerDialogFiller.h"
 
 namespace U2 {
 
-    class ZoomToRangeDialogFiller : public Filler {
-    public:
-        ZoomToRangeDialogFiller(U2OpStatus &_os, int min = -1, int max = -1) : Filler(_os, "range_selection_dialog"), minVal(min), maxVal(max){}
-        virtual void run();
-    private:
-        int minVal, maxVal;
-    };
+#define GT_CLASS_NAME "CreateRulerDialogFiller"
+#define GT_METHOD_NAME "commonScenario"
+
+void CreateRulerDialogFiller::commonScenario(){
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(NULL != dialog, "activeModalWidget is NULL");
+
+    QLineEdit* nameEdit = GTWidget::findExactWidget<QLineEdit*>(os, "nameEdit", dialog);
+    GTLineEdit::setText(os, nameEdit, rulerName);
+
+    QSpinBox* spinBox = GTWidget::findExactWidget<QSpinBox*>(os, "spinBox", dialog);
+    GTSpinBox::setValue(os, spinBox, startPos, GTGlobals::UseKeyBoard);
+
+    GTUtilsDialog::clickButtonBox(os, QDialogButtonBox::Ok);
 }
 
-#endif
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+}

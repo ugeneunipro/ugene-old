@@ -161,6 +161,13 @@ QColor GTWidget::getColor(U2OpStatus &os, QWidget *w, const QPoint &p) {
 }
 #undef GT_METHOD_NAME
 
+QImage GTWidget::getImage(U2OpStatus &os, QWidget *w){
+    Q_UNUSED(os);
+    QPixmap pixmap = QPixmap::grabWidget(w, w->rect());
+    QImage img = pixmap.toImage();
+    return img;
+}
+
 #define GT_METHOD_NAME "clickLabelLink"
 void GTWidget::clickLabelLink(U2OpStatus &os, QWidget *label, int step){
 

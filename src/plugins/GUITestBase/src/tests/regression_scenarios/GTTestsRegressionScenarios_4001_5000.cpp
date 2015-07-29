@@ -2342,7 +2342,7 @@ GUI_TEST_CLASS_DEFINITION(test_4386_1) {
 
     //    4. Select some sequences in project view and click "Align sequence to this alignment".
     GTUtilsProject::openMultiSequenceFileAsSequences(os, dataDir + "samples/FASTQ/eas.fastq");
-    GTUtilsMdi::activateWindow(os, "COI [m] Multiple alignment");
+    GTUtilsMdi::activateWindow(os, "COI [m] COI");
 
     GTUtilsProjectTreeView::click(os, "EAS54_6_R1_2_1_413_324");
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Align sequence to this alignment");

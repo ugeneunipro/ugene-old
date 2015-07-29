@@ -45,8 +45,12 @@ void ZoomToRangeDialogFiller::run()
     GT_CHECK(from != NULL, "\"start_edit_line\" to  not found");
     GT_CHECK(to != NULL, "\"end_edit_line\" to  not found");
 
-    GTLineEdit::setText(os, from, QString::number(minVal));
-    GTLineEdit::setText(os, to, QString::number(maxVal));
+    if(minVal != -1){
+        GTLineEdit::setText(os, from, QString::number(minVal));
+    }
+    if(maxVal != -1){
+        GTLineEdit::setText(os, to, QString::number(maxVal));
+    }
 
     QPushButton *okButton = dialog->findChild<QPushButton*>("ok_button");
     GT_CHECK(okButton != NULL, "Button \"Ok\" to  not found");

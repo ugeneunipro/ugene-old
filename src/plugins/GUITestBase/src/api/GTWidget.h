@@ -50,6 +50,7 @@ public:
 
     //returns color of point p in widget w coordinates
     static QColor getColor(U2OpStatus &os, QWidget* w, const QPoint &p);
+    static QImage getImage(U2OpStatus &os, QWidget* w);
 
     //this method writes info about all widgets to opStatus
     static void getAllWidgetsInfo(U2OpStatus &os, QWidget* parent=NULL);
