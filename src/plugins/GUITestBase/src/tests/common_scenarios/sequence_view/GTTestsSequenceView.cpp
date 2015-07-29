@@ -846,7 +846,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029) {
             CHECK_SET_ERR(!okbutton->isEnabled(), "Export button is unexpectedly enabled");
 
             QLineEdit* end = dialog->findChild<QLineEdit*>("end_edit_line");
-            GTLineEdit::setText(os, end, "2500");
+            GTLineEdit::setText(os, end, "100");
             CHECK_SET_ERR(okbutton->isEnabled(), "Export button is unexpectedly disabled");
 
             radioButton = dialog->findChild<QRadioButton*>("detailsButton");
@@ -854,7 +854,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029) {
             GTLineEdit::setText(os, end, "10000");
             CHECK_SET_ERR(!okbutton->isEnabled(), "Export button is unexpectedly enabled");
 
-            GTLineEdit::setText(os, end, "2330");
+            GTLineEdit::setText(os, end, "100");
             CHECK_SET_ERR(okbutton->isEnabled(), "Export button is unexpectedly disabled");
 
             QPushButton* button = box->button(QDialogButtonBox::Cancel);
