@@ -416,7 +416,7 @@ bool BAMUtils::hasValidBamIndex(const GUrl &bamUrl) {
         }
         QFileInfo bamFileInfo(bamUrl.getURLString());
 
-        if (idxFileInfo.created() < bamFileInfo.created()) {
+        if (idxFileInfo.lastModified() < bamFileInfo.lastModified()) {
             return false;
         }
 
@@ -436,7 +436,7 @@ bool BAMUtils::hasValidFastaIndex(const GUrl &fastaUrl) {
 
         QFileInfo idxFileInfo(fastaUrl.getURLString() + ".fai");
         QFileInfo fastaFileInfo(fastaUrl.getURLString());
-        if (idxFileInfo.created() < fastaFileInfo.created()) {
+        if (idxFileInfo.lastModified() < fastaFileInfo.lastModified()) {
             return false;
         }
 
