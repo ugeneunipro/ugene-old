@@ -7,8 +7,6 @@ DATA_DIR=../../../data
 TARGET_APP_DIR="${PRODUCT_NAME}-${VERSION}"
 PACKAGE_TYPE="linux"
 
-PATH_TO_QT_LIBS="/home/ugene/tools/qt-4.8.6/lib"
-
 if [ -z "$PATH_TO_QT_LIBS" ]; then 
    echo PATH_TO_QT_LIBS environment variable is not set!
    exit -1
