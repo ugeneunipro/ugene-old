@@ -112,43 +112,70 @@ cd $CUR_DIR
 
 echo
 echo copying qt libraries
-cp -v "$PATH_TO_QT_LIBS/libQtCore.so.4" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQtCore.so.4"
-cp -v "$PATH_TO_QT_LIBS/libQtGui.so.4" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQtGui.so.4"
-cp -v "$PATH_TO_QT_LIBS/libQtXml.so.4" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQtXml.so.4"
-cp -v "$PATH_TO_QT_LIBS/libQtXmlPatterns.so.4" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQtXmlPatterns.so.4"
-cp -v "$PATH_TO_QT_LIBS/libQtScript.so.4" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQtScript.so.4"
-cp -v "$PATH_TO_QT_LIBS/libQtScriptTools.so.4" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQtScriptTools.so.4"
-cp -v "$PATH_TO_QT_LIBS/libQtWebKit.so.4" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQtWebKit.so.4"
-cp -v "$PATH_TO_QT_LIBS/libQtNetwork.so.4" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQtNetwork.so.4"
-cp -v "$PATH_TO_QT_LIBS/libQtOpenGL.so.4" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQtOpenGL.so.4"
-cp -v "$PATH_TO_QT_LIBS/libQtSvg.so.4" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQtSvg.so.4"
-cp -v "$PATH_TO_QT_LIBS/libQtDBus.so.4" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQtDBus.so.4"
-cp -v "$PATH_TO_QT_LIBS/libQtSql.so.4" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQtSql.so.4"
+cp -v "$PATH_TO_QT_LIBS/libQt5Core.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5Core.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5DBus.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5DBus.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5Gui.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5Gui.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5Network.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5Network.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5OpenGL.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5OpenGL.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5Positioning.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5Positioning.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5PrintSupport.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5PrintSupport.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5Qml.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5Qml.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5Quick.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5Quick.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5Script.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5Script.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5Sensors.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5Sensors.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5Sql.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5Sql.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5Svg.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5Svg.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5WebChannel.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5WebChannel.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5WebKit.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5WebKit.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5WebKitWidgets.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5WebKitWidgets.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5Widgets.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5Widgets.so.5"
+cp -v "$PATH_TO_QT_LIBS/libQt5Xml.so.5" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/libQt5Xml.so.5"
 if [ ! -z "$PATH_TO_LIBPNG12" ]; then 
    cp -v "$PATH_TO_LIBPNG12/libpng12.so.0" "${TARGET_APP_DIR}"
    strip -v "${TARGET_APP_DIR}/libpng12.so.0"
 fi
+if [ ! -z "$PATH_TO_LIBPROC" ]; then 
+   cp -v "$PATH_TO_LIBPROC" "${TARGET_APP_DIR}"
+   strip -v "${TARGET_APP_DIR}"
+fi
+
 mkdir "${TARGET_APP_DIR}/sqldrivers"
 cp -v "$PATH_TO_QT_LIBS/../plugins/sqldrivers/libqsqlmysql.so" "${TARGET_APP_DIR}/sqldrivers"
 strip -v "${TARGET_APP_DIR}/sqldrivers/libqsqlmysql.so"
+
+cp -r -v "$PATH_TO_QT_LIBS/../plugins/platforms" "${TARGET_APP_DIR}"
+strip -v "${TARGET_APP_DIR}/platforms/*.so"
 
 cp -r -v "$PATH_TO_QT_LIBS/../plugins/imageformats" "${TARGET_APP_DIR}"
 strip -v ${TARGET_APP_DIR}/imageformats/*.so
 
 PATH_TO_MYSQL_CLIENT_LIB=`ldd "${TARGET_APP_DIR}/sqldrivers/libqsqlmysql.so" |grep libmysqlclient_r.so |cut -d " " -f3`
 cp -v "$PATH_TO_MYSQL_CLIENT_LIB" "${TARGET_APP_DIR}"
+
+PATH_TO_ICU_DATA_LIB=`ldd "${TARGET_APP_DIR}/libQt5Widgets.so.5" |grep libicudata.so |cut -d " " -f3`
+cp -v "$PATH_TO_ICU_DATA_LIB" "${TARGET_APP_DIR}"
+PATH_TO_ICU_I18N_LIB=`ldd "${TARGET_APP_DIR}/libQt5Widgets.so.5" |grep libicui18n.so |cut -d " " -f3`
+cp -v "$PATH_TO_ICU_I18N_LIB" "${TARGET_APP_DIR}"
+PATH_TO_ICU_UUC_LIB=`ldd "${TARGET_APP_DIR}/libQt5Widgets.so.5" |grep libicuuc.so |cut -d " " -f3`
+cp -v "$PATH_TO_ICU_UUC_LIB" "${TARGET_APP_DIR}"
 
 if [ "$1" == "-test" ]
     then
