@@ -546,8 +546,7 @@ int main(int argc, char **argv)
     MSAColorSchemeRegistry* mcsr = new MSAColorSchemeRegistry();
     appContext->setMSAColorSchemeRegistry(mcsr);
 
-    ColorSchemaSettingsPageController* controller = new ColorSchemaSettingsPageController(mcsr);
-    AppContext::getAppSettingsGUI()->registerPage(controller);
+    AppContext::getAppSettingsGUI()->registerPage(new ColorSchemaSettingsPageController(mcsr));
 
     MSAHighlightingSchemeRegistry* mhsr = new MSAHighlightingSchemeRegistry();
     appContext->setMSAHighlightingSchemeRegistry(mhsr);
@@ -899,8 +898,6 @@ int main(int argc, char **argv)
 
     appContext->setMSAColorSchemeRegistry(NULL);
     delete mcsr;
-
-    delete controller;
 
     appContext->setDBXRefRegistry(NULL);
     delete dbxr;
