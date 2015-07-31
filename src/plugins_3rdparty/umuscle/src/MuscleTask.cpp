@@ -409,9 +409,6 @@ void MuscleGObjectTask::prepare() {
 }
 
 Task::ReportResult MuscleGObjectTask::report() {
-    DbiOperationsBlock op(obj->getEntityRef().dbiRef, stateInfo);
-    Q_UNUSED(op);
-
     if (!lock.isNull()) {
         obj->unlockState(lock);
         delete lock;
@@ -426,6 +423,10 @@ Task::ReportResult MuscleGObjectTask::report() {
     if (hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
+
+    DbiOperationsBlock op(obj->getEntityRef().dbiRef, stateInfo);
+    Q_UNUSED(op);
+
     SAFE_POINT_EXT(!obj.isNull(), stateInfo.setError("Failed to apply the result of Muscle: alignment object is not available!"), ReportResult_Finished);
     if (obj->isStateLocked()) {
         stateInfo.setError("object_is_state_locked");

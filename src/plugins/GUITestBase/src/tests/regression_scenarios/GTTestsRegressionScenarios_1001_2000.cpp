@@ -4679,7 +4679,11 @@ GUI_TEST_CLASS_DEFINITION(test_1439) {
     GTGlobals::sleep(15000);
 
     CHECK_SET_ERR(l.hasError(), "There is no error in the log");
-    CHECK_SET_ERR(l.getError().contains("Can't align sequence longer 100000"), "Wrong error in the log");
+    QString expectedError = "Can't align sequences that are longer than 100000 bp.";
+#ifdef UGENE_X86
+    expectedError = "Not enough memory to do this alignment.";
+#endif
+    CHECK_SET_ERR(l.getError().contains(expectedError), "Wrong error in the log");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1442_1) {

@@ -48,6 +48,8 @@ private:
     static void align2ProfilesUnsafe(const MAlignment& ma1, const MAlignment& ma2, MAlignment& res, TaskStateInfo& ti);
 
     static void addUnalignedSequencesToProfileUnsafe(const MAlignment& ma, const MAlignment& unalignedSeqs, MAlignment& res, TaskStateInfo& ti);
+
+    static QString getBadAllocError();
 };
 
 }//namespace

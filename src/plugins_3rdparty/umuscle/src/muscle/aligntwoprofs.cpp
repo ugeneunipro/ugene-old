@@ -13,7 +13,7 @@ SCORE AlignTwoProfs(
   PWPath &Path, ProfPos **ptrPout, unsigned *ptruLengthOut)
 	{
 	if(uLengthA >= 100000 || uLengthB >= 100000)
-		throw MuscleException("Can't align sequence longer 100000");
+		throw MuscleException("Can't align sequences that are longer than 100000 bp.");
 	//assert(uLengthA < 100000);
 	//assert(uLengthB < 100000);
 

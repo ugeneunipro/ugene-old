@@ -46,10 +46,12 @@ void MuscleAdapter::align(const MAlignment& ma, MAlignment& res, TaskStateInfo& 
     }
     try {
         alignUnsafe(ma, res, ti, mhack);
-    } catch (MuscleException e) {
+    } catch (const MuscleException &e) {
         if (!ti.cancelFlag) {
             ti.setError(  tr("Internal MUSCLE error: %1").arg(e.str) );
         }
+    } catch (const std::bad_alloc &e) {
+        ti.setError(getBadAllocError());
     } catch (...) {
         if (!ti.cancelFlag) {
             ti.setError(  tr("Undefined internal MUSCLE error") );
@@ -198,10 +200,12 @@ void MuscleAdapter::refine(const MAlignment& ma, MAlignment& res, TaskStateInfo&
         timer.start();
         refineUnsafe(ma, res, ti);
         algoLog.trace(QString("Serial refine stage complete. Elapsed %1 ms").arg(timer.elapsed()));
-    } catch (MuscleException e) {
+    } catch (const MuscleException &e) {
         if (!ti.cancelFlag) {
             ti.setError(  tr("Internal MUSCLE error: %1").arg(e.str) );
         }
+    } catch (const std::bad_alloc &e) {
+        ti.setError(getBadAllocError());
     } catch (...) {
         if (!ti.cancelFlag) {
             ti.setError(  tr("Undefined internal MUSCLE error") );
@@ -287,10 +291,12 @@ void MuscleAdapter::align2Profiles(const MAlignment& ma1, const MAlignment& ma2,
     }
     try {
         align2ProfilesUnsafe(ma1, ma2, res, ti);
-    } catch (MuscleException e) {
+    } catch (const MuscleException &e) {
         if (!ti.cancelFlag) {
             ti.setError(  tr("Internal MUSCLE error: %1").arg(e.str) );
         }
+    } catch (const std::bad_alloc &e) {
+        ti.setError(getBadAllocError());
     } catch (...) {
         if (!ti.cancelFlag) {
             ti.setError(  tr("Undefined internal MUSCLE error") );
@@ -472,10 +478,12 @@ void MuscleAdapter::addUnalignedSequencesToProfile(const MAlignment& ma, const M
     }
     try {
         addUnalignedSequencesToProfileUnsafe(ma, unalignedSeqs, res, ti);
-    } catch (MuscleException e) {
+    } catch (const MuscleException &e) {
         if (!ti.cancelFlag) {
             ti.setError(  tr("Internal MUSCLE error: %1").arg(e.str) );
         }
+    } catch (const std::bad_alloc &e) {
+        ti.setError(getBadAllocError());
     } catch (...) {
         if (!ti.cancelFlag) {
             ti.setError(  tr("Undefined internal MUSCLE error") );
@@ -556,6 +564,16 @@ void MuscleAdapter::addUnalignedSequencesToProfileUnsafe(const MAlignment& ma, c
         }
     }
     res.setAlphabet(al);
+}
+
+QString MuscleAdapter::getBadAllocError() {
+    static const QString errorX86 = tr("Not enough memory to do this alignment. You can try the 64-bit version of UGENE. In this case, more available memory will be used for aligning.");
+    static const QString errorX64 = tr("Not enough memory to do this alignment.");
+#ifdef UGENE_X86
+    return errorX86;
+#else
+    return errorX64;
+#endif
 }
 
 } //namespace
