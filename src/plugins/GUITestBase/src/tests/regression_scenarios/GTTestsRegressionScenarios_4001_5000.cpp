@@ -39,6 +39,7 @@
 #include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsOptionsPanel.h"
+#include "GTUtilsPcr.h"
 #include "GTUtilsPhyTree.h"
 #include "GTUtilsPrimerLibrary.h"
 #include "GTUtilsProject.h"
@@ -2679,6 +2680,34 @@ GUI_TEST_CLASS_DEFINITION(test_4524) {
     // Current state : "undo" action becomes disabled.
     QWidget *undoButton = GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "msa_action_undo");
     CHECK_SET_ERR(undoButton->isEnabled(), "'Undo' button is disabled unexpectedly");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4557){
+//    1. Open "samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+//    2. Open the PCR OP tab.
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::InSilicoPcr);
+
+//    3. Enter the forward primer: TTGTCAGATTCACCAAAGTT.
+    GTUtilsOptionPanelSequenceView::setForwardPrimer(os, "AAATCAGATTCACCAAAGTT");
+    GTUtilsPcr::setMismatches(os, U2Strand::Direct, 3);
+
+//    4. Enter the reverse primer: ACCTCTCTCTGGCTGCCCTT.
+    GTUtilsOptionPanelSequenceView::setReversePrimer(os, "GGGTCTCTCTGGCTGCCCTT");
+    GTUtilsPcr::setMismatches(os, U2Strand::Complementary, 3);
+
+    GTWidget::click(os, GTWidget::findWidget(os, "findProductButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTWidget::click(os, GTWidget::findWidget(os, "extractProductButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QString product = GTUtilsSequenceView::getSequenceAsString(os);
+    QString expected = "AAATCAGATTCACCAAAGTTGAAATGAAGGAAAAAATGCTAAGGGCAGCCAGAGAGACCC";
+
+    CHECK_SET_ERR(product == expected, "Unexpected product: " + product)
+
 }
 
 } // namespace GUITest_regression_scenarios
