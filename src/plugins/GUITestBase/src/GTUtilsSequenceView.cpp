@@ -219,6 +219,10 @@ int GTUtilsSequenceView::getLengthOfSequence(U2OpStatus &os)
 }
 #undef GT_METHOD_NAME
 
+int GTUtilsSequenceView::getVisiableStart(U2OpStatus &os, int widgetNumber){
+    return getSeqWidgetByNumber(os, widgetNumber)->getDetView()->getVisibleRange().startPos;
+}
+
 #define GT_METHOD_NAME "checkSequence"
 void GTUtilsSequenceView::checkSequence(U2OpStatus &os, const QString &expectedSequence)
 {

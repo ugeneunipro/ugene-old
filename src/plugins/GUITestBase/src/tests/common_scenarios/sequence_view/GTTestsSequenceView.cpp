@@ -1266,6 +1266,65 @@ GUI_TEST_CLASS_DEFINITION(test_0038){
     GTGlobals::sleep(1000);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0040){
+//scrollbar on seq view
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    DetView* det = GTWidget::findExactWidget<DetView*>(os, "det_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    QScrollBar* scroll = det->findChild<QScrollBar*>();
+    GTWidget::click(os, scroll);
+    U2Region r = det->getVisibleRange();
+    CHECK_SET_ERR(r.startPos>100, QString("Unexpected start pos: %1").arg(r.startPos));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0041){
+    //test key events
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    DetView* det = GTWidget::findExactWidget<DetView*>(os, "det_view_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    int initLength = det->getVisibleRange().length;
+    GTWidget::click(os, det);
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+    GTGlobals::sleep(500);
+    int start = GTUtilsSequenceView::getVisiableStart(os);
+    CHECK_SET_ERR(start == 1, QString("1 Unexpected sequence start: %1").arg(start));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
+    GTGlobals::sleep(500);
+    start = GTUtilsSequenceView::getVisiableStart(os);
+    CHECK_SET_ERR(start == 2, QString("2 Unexpected sequence start: %1").arg(start));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["left"]);
+    GTGlobals::sleep(500);
+    start = GTUtilsSequenceView::getVisiableStart(os);
+    CHECK_SET_ERR(start == 1, QString("3 Unexpected sequence start: %1").arg(start));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
+    GTGlobals::sleep(500);
+    start = GTUtilsSequenceView::getVisiableStart(os);
+    CHECK_SET_ERR(start == 0, QString("4 Unexpected sequence start: %1").arg(start));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pagedown"]);
+    GTGlobals::sleep(500);
+    start = GTUtilsSequenceView::getVisiableStart(os);
+    CHECK_SET_ERR(start == initLength, QString("5 Unexpected sequence start: %1").arg(start));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageup"]);
+    GTGlobals::sleep(500);
+    start = GTUtilsSequenceView::getVisiableStart(os);
+    CHECK_SET_ERR(start == 0, QString("6 Unexpected sequence start: %1").arg(start));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["end"]);
+    GTGlobals::sleep(500);
+    start = GTUtilsSequenceView::getVisiableStart(os);
+    CHECK_SET_ERR(start == 199950 - initLength, QString("7 Unexpected sequence start: %1").arg(start));
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
+    GTGlobals::sleep(500);
+    start = GTUtilsSequenceView::getVisiableStart(os);
+    CHECK_SET_ERR(start == 0, QString("8 Unexpected sequence start: %1").arg(start));
+
+}
+
 } // namespace GUITest_common_scenarios_sequence_view
 
 } // namespace U2

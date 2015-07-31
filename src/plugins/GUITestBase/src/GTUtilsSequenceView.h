@@ -39,6 +39,7 @@ public:
     static QString getBeginOfSequenceAsString(U2OpStatus &os, int length);
     static QString getEndOfSequenceAsString(U2OpStatus &os, int length);
     static int getLengthOfSequence(U2OpStatus &os);
+    static int getVisiableStart(U2OpStatus &os, int widgetNumber = 0);
     static void checkSequence(U2OpStatus &os, const QString &expectedSequence);
     static void selectSequenceRegion(U2OpStatus &os, int from, int to);
 

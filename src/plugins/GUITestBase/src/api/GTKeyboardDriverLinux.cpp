@@ -235,6 +235,7 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY("f10", XK_F10);
     ADD_KEY("f12", XK_F12);
     ADD_KEY("home", XK_Home);
+    ADD_KEY("end", XK_End);
     ADD_KEY("pageup", XK_Page_Up);
     ADD_KEY("pagedown", XK_Page_Down);
 
