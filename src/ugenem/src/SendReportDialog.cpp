@@ -419,11 +419,11 @@ void cpuID(unsigned i, unsigned regs[4]) {
     "mov %%ebx, %%edi;"
     "cpuid;"
     "xchgl %%ebx, %%edi;"
-    : "=a" (*a) ,
-      "=D" (*b) , /* edi */
-      "=c" (*c) ,
-      "=d" (*d)
-    : "0" (function)) ;
+    : "=a" (regs[0]) ,
+      "=D" (regs[1]) , /* edi */
+      "=c" (regs[2]) ,
+      "=d" (regs[3])
+    : "0" (i)) ;
 #else
   asm volatile
     ("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3])
