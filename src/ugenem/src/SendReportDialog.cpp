@@ -414,10 +414,22 @@ void cpuID(unsigned i, unsigned regs[4]) {
   __cpuid((int *)regs, (int)i);
 
 #else
+#if !defined(UGENE_X86_64) && defined(__PIC__)
+  asm volatile (
+    "mov %%ebx, %%edi;"
+    "cpuid;"
+    "xchgl %%ebx, %%edi;"
+    : "=a" (*a) ,
+      "=D" (*b) , /* edi */
+      "=c" (*c) ,
+      "=d" (*d)
+    : "0" (function)) ;
+#else
   asm volatile
     ("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3])
      : "a" (i), "c" (0));
   // ECX is set to zero for CPUID function 4
+#endif
 #endif
 }
 #endif
