@@ -44,14 +44,14 @@ namespace U2 {
 #define GT_METHOD_NAME "keyPress"
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 {
-    GT_CHECK(key != 0, "key = 0");
+    GT_CHECK_NO_MESSAGE(key != 0, "key = 0");
 //    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     QByteArray display_name = qgetenv("DISPLAY");
-    GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+    GT_CHECK_NO_MESSAGE(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 
     Display *display = XOpenDisplay(display_name.constData());
-    GT_CHECK(display != 0, "display is NULL");
+    GT_CHECK_NO_MESSAGE(display != 0, "display is NULL");
 
     if (modifiers) {
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, modifiers), 1, 0);
@@ -113,14 +113,14 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 #define GT_METHOD_NAME "keyRelease"
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 {
-    GT_CHECK(key != 0, "key = ");
+    GT_CHECK_NO_MESSAGE(key != 0, "key = ");
 //    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     QByteArray display_name = qgetenv("DISPLAY");
-    GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+    GT_CHECK_NO_MESSAGE(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 
     Display *display = XOpenDisplay(display_name.constData());
-    GT_CHECK(display != 0, "display is NULL");
+    GT_CHECK_NO_MESSAGE(display != 0, "display is NULL");
 
     switch(key) {
     case '\n':

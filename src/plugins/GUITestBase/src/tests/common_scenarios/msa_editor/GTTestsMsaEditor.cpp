@@ -3500,7 +3500,11 @@ GUI_TEST_CLASS_DEFINITION(test_0039_6){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0039_7){
-    test_0039_function(os, 7, "sto");
+    test_0039_function(os, 7, "rtf");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0039_8){
+    test_0039_function(os, 8, "sto");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0040){//UGENE crashes when opening several files

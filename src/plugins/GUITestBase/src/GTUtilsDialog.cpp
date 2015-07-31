@@ -86,7 +86,7 @@ void GUIDialogWaiter::checkDialogPool(){
 void GUIDialogWaiter::checkDialog() {
     try{
     QWidget *widget = NULL;
-    GT_CHECK(runnable != NULL, "Runnable is NULL");
+    GT_CHECK_NO_MESSAGE(runnable != NULL, "Runnable is NULL");
 
     switch (settings.dialogType) {
         case Modal:

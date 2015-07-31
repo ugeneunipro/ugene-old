@@ -56,6 +56,11 @@ namespace U2 {
 #define CHECK_SET_ERR(condition, errorMessage) \
     CHECK_SET_ERR_RESULT(condition, errorMessage, )
 
+#define CHECK_SET_ERR_NO_MESSAGE(condition, errorMessage) \
+    if(!condition){ \
+    CHECK_SET_ERR(condition, errorMessage) \
+}
+
 #define CHECK_OP_SET_ERR(os, errorMessage) \
     CHECK_SET_ERR(!os.isCoR(), errorMessage)
 
@@ -72,6 +77,11 @@ namespace U2 {
 /** Used in util methods */
 #define GT_CHECK(condition, errorMessage) \
     GT_CHECK_RESULT(condition, errorMessage, )
+
+#define GT_CHECK_NO_MESSAGE(condition, errorMessage) \
+    if(!condition){ \
+    GT_CHECK(condition, errorMessage) \
+}
 
 #define GT_CHECK_RESULT(condition, errorMessage, result) \
     CHECK_SET_ERR_RESULT(condition, GT_CLASS_NAME " __ " GT_METHOD_NAME " _  " + QString(errorMessage), result)
