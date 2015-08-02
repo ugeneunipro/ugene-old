@@ -70,7 +70,7 @@ public:
 
     void    paint(QPainter &p, CustomExportSettings* settings) const;
     QSize   getImageSize(CustomExportSettings* settings) const;
-    bool    canPaintSvg(CustomExportSettings* /*settings*/) const { return true; }
+    bool    canPaintSvg(CustomExportSettings* settings, U2OpStatus &os) const;
 
 private:
     ADVSingleSequenceWidget*    seqWidget;
@@ -87,7 +87,7 @@ public:
 
     void    paint(QPainter &p, CustomExportSettings* settings) const;
     QSize   getImageSize(CustomExportSettings* settings) const;
-    bool    canPaintSvg(CustomExportSettings* settings) const;
+    bool    canPaintSvg(CustomExportSettings* settings, U2OpStatus &os) const;
 
 private:
     PanView*    panView;
@@ -104,7 +104,7 @@ public:
 
     void    paint(QPainter &p, CustomExportSettings* settings) const;
     QSize   getImageSize(CustomExportSettings* settings) const;
-    bool    canPaintSvg(CustomExportSettings* /*settings*/) const { return true; }
+    bool    canPaintSvg(CustomExportSettings* /*settings*/, U2OpStatus &os) const { return true; }
 
 private:
     DetView*    detView;

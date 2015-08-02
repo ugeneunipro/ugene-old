@@ -73,6 +73,11 @@ QSize CurrentViewPainter::getImageSize(CustomExportSettings* /*settings*/) const
     return seqWidget->size();
 }
 
+bool CurrentViewPainter::canPaintSvg(CustomExportSettings* /*settings*/, U2OpStatus &os) const {
+    os.setError(tr("Warning: SVG is not supported for the currently viewed area. Please, choose another export area."));
+    return false;
+}
+
 /************************************************************************/
 /* ZoomedViewPainter */
 /************************************************************************/
@@ -94,7 +99,7 @@ QSize ZoomedViewPainter::getImageSize(CustomExportSettings* settings) const {
     return renderArea->getImageSize(s->getRegion());
 }
 
-bool ZoomedViewPainter::canPaintSvg(CustomExportSettings *settings) const {
+bool ZoomedViewPainter::canPaintSvg(CustomExportSettings *settings, U2OpStatus & /*os*/) const {
     SequenceExportSettings* s = qobject_cast<SequenceExportSettings*>(settings);
     return checkAnnotationsCountInRegion(panView->getSequenceContext(), s->getRegion());
 }

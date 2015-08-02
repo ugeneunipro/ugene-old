@@ -22,6 +22,7 @@
 #ifndef _U2_EXPORT_IMAGE_PAINTER_H_
 #define _U2_EXPORT_IMAGE_PAINTER_H_
 
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -43,7 +44,7 @@ public:
 
     virtual void    paint(QPainter& p, CustomExportSettings* settings) const = 0;
     virtual QSize   getImageSize(CustomExportSettings* settings) const = 0;
-    virtual bool    canPaintSvg(CustomExportSettings* settings) const = 0;
+    virtual bool    canPaintSvg(CustomExportSettings* settings, U2OpStatus &os) const = 0;
 };
 
 } // namespace

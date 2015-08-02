@@ -25,6 +25,7 @@
 #include "SequencePainter.h"
 
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2View/ADVSingleSequenceWidget.h>
@@ -103,8 +104,12 @@ void SingleSequenceImageExportController::checkExportSettings() {
         return;
     }
 
-    if (format.contains("svg", Qt::CaseInsensitive) && !currentPainter->canPaintSvg(customExportSettings.data())) {
+    U2OpStatusImpl os;
+    if (format.contains("svg", Qt::CaseInsensitive) && !currentPainter->canPaintSvg(customExportSettings.data(), os)) {
         disableMessage = tr("Warning: there are too many objects to be exported.");
+        if (os.hasError()) {
+            disableMessage = os.getError();
+        }
         emit si_disableExport(true);
         emit si_showMessage(disableMessage);
         return;
