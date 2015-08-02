@@ -50,8 +50,8 @@ public:
 private slots:
     void sl_taskFinished(Task *t);
 private:
-    IntegralBus *input, *output;
-    QList<SharedAnnotationData> inputAnns;
+    IntegralBus *input;
+    IntegralBus *output;
 };
 
 class FilterAnnotationsWorkerFactory : public DomainFactory {
@@ -62,24 +62,28 @@ public:
     virtual Worker* createWorker(Actor* a) { return new FilterAnnotationsWorker(a); }
 };
 
+class FilterAnnotationsValidator : public ActorValidator {
+public:
+    bool validate(const Actor *actor, ProblemList &problemList, const QMap<QString, QString> &options) const;
+};
+
 class FilterAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    FilterAnnotationsTask(QList<SharedAnnotationData> &annotations, const QString& names, bool accept)
-        : Task(tr("Filter annotations task"), TaskFlag_None), annotations_(annotations), names_(names), accept_(accept)
-    {
-    
-    }
+    FilterAnnotationsTask(const QList<SharedAnnotationData> &annotations, const QString &namesString, const QString &namesUrl, bool accept);
 
     void run();
 
-private:
-    QStringList readAnnotationNames();
+    QList<SharedAnnotationData> takeResult();
 
 private:
-    QList<SharedAnnotationData> &annotations_;
-    QString names_;
-    bool accept_;
+    QStringList readAnnotationNames(U2OpStatus &os) const;
+
+private:
+    QList<SharedAnnotationData> annotations;
+    QString namesString;
+    QString namesUrl;
+    bool accept;
 };
 
 } // LocalWorkflow namespace

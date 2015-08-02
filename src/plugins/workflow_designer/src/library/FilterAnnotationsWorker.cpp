@@ -23,6 +23,7 @@
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Lang/ConfigurationEditor.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -41,6 +42,7 @@ namespace LocalWorkflow {
 
 const QString FilterAnnotationsWorkerFactory::ACTOR_ID("filter-annotations");
 
+const static QString FILTER_NAMES_FILE_ATTR("annotation-names-file");
 const static QString FILTER_NAMES_ATTR("annotation-names");
 const static QString WHICH_FILTER_ATTR("accept-or-filter");
 
@@ -66,12 +68,13 @@ Task* FilterAnnotationsWorker::tick() {
 
         QVariantMap qm = inputMessage.getData().toMap();
         const QVariant annsVar = qm[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        inputAnns = StorageUtils::getAnnotationTable(context->getDataStorage(), annsVar);
+        QList<SharedAnnotationData> inputAnns = StorageUtils::getAnnotationTable(context->getDataStorage(), annsVar);
 
-        bool accept = actor->getParameter(WHICH_FILTER_ATTR)->getAttributeValue<bool>(context);
-        QString namesStr = actor->getParameter(FILTER_NAMES_ATTR)->getAttributeValue<QString>(context);
+        bool accept = getValue<bool>(WHICH_FILTER_ATTR);
+        QString namesString = getValue<QString>(FILTER_NAMES_ATTR);
+        QString namesFile = getValue<QString>(FILTER_NAMES_FILE_ATTR);
 
-        Task* t = new FilterAnnotationsTask(inputAnns, namesStr, accept);
+        Task* t = new FilterAnnotationsTask(inputAnns, namesString, namesFile, accept);
         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
         return t;
     } else if (input->isEnded()) {
@@ -82,12 +85,12 @@ Task* FilterAnnotationsWorker::tick() {
 }
 
 void FilterAnnotationsWorker::sl_taskFinished(Task *t) {
-    if(t->isCanceled() || t->hasError() || t->hasError()){
-        return;
-    }
-    const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(inputAnns);
-    output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(),
-        qVariantFromValue<SharedDbiDataHandler>(tableId)));
+    FilterAnnotationsTask *task = dynamic_cast<FilterAnnotationsTask*>(t);
+    CHECK(NULL != task, );
+    CHECK(!task->getStateInfo().isCoR(), );
+
+    const SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(task->takeResult());
+    output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), qVariantFromValue<SharedDbiDataHandler>(tableId)));
 }
 
 void FilterAnnotationsWorker::cleanup() {
@@ -115,13 +118,16 @@ void FilterAnnotationsWorkerFactory::init() {
     { //Create attributes descriptors
         Descriptor filterNamesDesc(FILTER_NAMES_ATTR,
             FilterAnnotationsWorker::tr("Annotation names"),
-            FilterAnnotationsWorker::tr("File with annotation names, separated with whitespaces or list of annotation names "
-                                        "which will be accepted or filtered. Use space as the separator."));
+            FilterAnnotationsWorker::tr("List of annotation names, separated by spaces, that will be accepted or filtered."));
+        Descriptor filterNamesFileDesc(FILTER_NAMES_FILE_ATTR,
+            FilterAnnotationsWorker::tr("Annotation names file"),
+            FilterAnnotationsWorker::tr("File with annotation names, separated by whitespaces, that will be accepted or filtered."));
         Descriptor whichFilterDesc(WHICH_FILTER_ATTR,
             FilterAnnotationsWorker::tr("Accept or filter"),
             FilterAnnotationsWorker::tr("Selects the name filter: accept specified names or accept all except specified."));
 
-        attribs << new Attribute(filterNamesDesc, BaseTypes::STRING_TYPE(), /*required*/true);
+        attribs << new Attribute(filterNamesDesc, BaseTypes::STRING_TYPE(), /*required*/false);
+        attribs << new Attribute(filterNamesFileDesc, BaseTypes::STRING_TYPE(), /*required*/false);
         attribs << new Attribute(whichFilterDesc, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(true));
     }
 
@@ -133,26 +139,63 @@ void FilterAnnotationsWorkerFactory::init() {
     proto->setPrompter(new FilterAnnotationsPrompter());
     {
         QMap<QString, PropertyDelegate*> delegateMap;
-        delegateMap[FILTER_NAMES_ATTR] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true, false, false);
+        delegateMap[FILTER_NAMES_FILE_ATTR] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), false, false, false);
         proto->setEditor(new DelegateEditor(delegateMap));
     }
+    proto->setValidator(new FilterAnnotationsValidator());
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_BASIC(), proto);
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
     localDomain->registerEntry(new FilterAnnotationsWorkerFactory());
 }
 
+/************************************************************************/
+/* FilterAnnotationsValidator */
+/************************************************************************/
+namespace {
+    bool hasValue(Attribute *attr) {
+        if (!attr->isEmpty() && !attr->isEmptyString()) {
+            return true;
+        }
+        if (!attr->getAttributeScript().isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+}
+
+bool FilterAnnotationsValidator::validate(const Actor *actor, ProblemList &problemList, const QMap<QString, QString> &/*options*/) const {
+    Attribute *namesAttr = actor->getParameter(FILTER_NAMES_ATTR);
+    Attribute *namesFileAttr = actor->getParameter(FILTER_NAMES_FILE_ATTR);
+
+    if (hasValue(namesAttr) || hasValue(namesFileAttr)) {
+        return true;
+    }
+    problemList << Problem(FilterAnnotationsWorker::tr("At least one of these parameters must be set: \"Annotation names\", \"Annotation names file\"."));
+    return false;
+}
+
+/************************************************************************/
+/* FilterAnnotationsTask */
+/************************************************************************/
+FilterAnnotationsTask::FilterAnnotationsTask(const QList<SharedAnnotationData> &annotations, const QString &namesString, const QString &namesUrl, bool accept)
+: Task(tr("Filter annotations task"), TaskFlag_None), annotations(annotations), namesString(namesString), namesUrl(namesUrl), accept(accept)
+{
+
+}
+
 void FilterAnnotationsTask::run() {
-    QStringList names;
-    if(QFileInfo(names_).exists()) { // annotation names are listed in file
-        names = readAnnotationNames();
-    } else { // annotation names are listed in a string
-        names = names_.split(QRegExp("\\s+"), QString::SkipEmptyParts); //split by whitespace
+    QStringList names = namesString.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+    names << readAnnotationNames(stateInfo);
+    CHECK_OP(stateInfo, );
+
+    if (names.isEmpty()) {
+        setError(tr("The list of annotation names to accept/filter is empty"));
     }
 
-    QMutableListIterator<SharedAnnotationData> i(annotations_);
+    QMutableListIterator<SharedAnnotationData> i(annotations);
     while (i.hasNext()) {
         SharedAnnotationData &ad = i.next();
-        if (accept_) {
+        if (accept) {
             if (!names.contains(ad->name)) {
                 i.remove();
             }
@@ -164,14 +207,30 @@ void FilterAnnotationsTask::run() {
     }
 }
 
-QStringList FilterAnnotationsTask::readAnnotationNames() {
-    QStringList res;
-    QFile f(names_);
-    if(!f.open(QFile::ReadOnly)) {
-        return res;
+QList<SharedAnnotationData> FilterAnnotationsTask::takeResult() {
+    QList<SharedAnnotationData> result = annotations;
+    annotations.clear();
+    return result;
+}
+
+QStringList FilterAnnotationsTask::readAnnotationNames(U2OpStatus &os) const {
+    CHECK(QFileInfo(namesUrl).exists(), QStringList());
+
+    QFile file(namesUrl);
+    bool opened = file.open(QFile::ReadOnly);
+    CHECK(opened, QStringList());
+
+    try {
+        QString data = file.readAll();
+        if (0 == data.size() && file.size() > 0) { // QFile::readAll() has no way of errors reporting.
+            os.setError(tr("Too big annotation names file"));
+            return QStringList();
+        }
+        return data.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+    } catch (const std::bad_alloc &) {
+        os.setError(tr("Not enough memory to load the file with annotation names"));
+        return QStringList();
     }
-    QString data = f.readAll();
-    return data.split(QRegExp("\\s+"), QString::SkipEmptyParts);
 }
 
 } // U2 namespace
