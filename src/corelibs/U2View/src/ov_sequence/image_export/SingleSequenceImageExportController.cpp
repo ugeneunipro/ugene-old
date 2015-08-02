@@ -36,7 +36,7 @@ namespace U2 {
 /* SingleSequenceImageExportController */
 /************************************************************************/
 SingleSequenceImageExportController::SingleSequenceImageExportController(ADVSingleSequenceWidget* seqWidget)
-    : ImageExportController(ExportImageFormatPolicy_SupportAll),
+    : ImageExportController(ExportImageFormatPolicy(EnableRasterFormats | SupportSvg)),
       sequenceWidget(seqWidget),
       seqSettingsWidget(NULL)
 {
