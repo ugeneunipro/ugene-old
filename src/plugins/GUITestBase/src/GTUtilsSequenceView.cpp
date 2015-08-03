@@ -47,6 +47,7 @@
 #include <U2View/DetView.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/GSequenceLineViewAnnotated.h>
+#include <U2View/Overview.h>
 
 #include "GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
@@ -320,6 +321,24 @@ PanView* GTUtilsSequenceView::getPanViewByNumber(U2OpStatus &os, int number, con
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getOverViewByNumber"
+Overview* GTUtilsSequenceView::getOverviewByNumber(U2OpStatus &os, int number, const GTGlobals::FindOptions &options){
+    ADVSingleSequenceWidget* seq = getSeqWidgetByNumber(os, number, options);
+    if(options.failIfNull){
+        GT_CHECK_RESULT(seq != NULL, QString("sequence view with num %1 not found").arg(number), NULL);
+    }else {
+        return NULL;
+    }
+
+    Overview* result = seq->findChild<Overview*>();
+    if(options.failIfNull){
+        GT_CHECK_RESULT(seq != NULL, QString("pan view with number %1 not fount").arg(number), NULL)
+    }
+
+    return result;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getSeqWidgetsNumber"
 int GTUtilsSequenceView::getSeqWidgetsNumber(U2OpStatus &os) {
     QList<ADVSingleSequenceWidget*> seqWidgets = GTUtilsMdi::activeWindow(os)->findChildren<ADVSingleSequenceWidget*>();
@@ -354,7 +373,7 @@ QString GTUtilsSequenceView::getSeqName(U2OpStatus &os, ADVSingleSequenceWidget*
 #define MIN_ANNOTATION_WIDTH 5
 
 #define GT_METHOD_NAME "clickAnnotation"
-void GTUtilsSequenceView::clickAnnotation(U2OpStatus &os, QString name, int startpos, int number, Qt::MouseButton button){
+void GTUtilsSequenceView::clickAnnotationDet(U2OpStatus &os, QString name, int startpos, int number, Qt::MouseButton button){
     ADVSingleSequenceWidget* seq = getSeqWidgetByNumber(os, number);
     GSequenceLineViewRenderArea* area = seq->getDetView()->getRenderArea();
     DetViewRenderArea* det = dynamic_cast<DetViewRenderArea*>(area);

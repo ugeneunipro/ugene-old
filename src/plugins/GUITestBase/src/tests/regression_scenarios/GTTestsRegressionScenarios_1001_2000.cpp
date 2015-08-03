@@ -4188,7 +4188,7 @@ GUI_TEST_CLASS_DEFINITION(test_1409){
 //    Expected state: sequence viewer had opened.
 
 //    2. Click on some annotation in the sequence view (not in the annotation tree).
-    GTUtilsSequenceView::clickAnnotation(os, "CDS", 1042);
+    GTUtilsSequenceView::clickAnnotationDet(os, "CDS", 1042);
 //    Expected state: the clicked annotation is selected.
 
 //    3. Press F2 on the keyboard.
@@ -4676,14 +4676,13 @@ GUI_TEST_CLASS_DEFINITION(test_1439) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align sequences to profile with MUSCLE", GTGlobals::UseMouse));
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTGlobals::sleep(15000);
 
     CHECK_SET_ERR(l.hasError(), "There is no error in the log");
     QString expectedError = "Can't align sequences that are longer than 100000 bp.";
-#ifdef UGENE_X86
+#ifndef UGENE_X86
     expectedError = "Not enough memory to do this alignment.";
 #endif
-    CHECK_SET_ERR(l.getError().contains(expectedError), "Wrong error in the log");
+    CHECK_SET_ERR(l.getError().contains(expectedError), "Wrong error in the log: " + l.getError());
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1442_1) {

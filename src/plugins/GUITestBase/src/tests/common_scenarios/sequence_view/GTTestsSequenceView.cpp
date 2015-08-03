@@ -33,13 +33,14 @@
 #include "api/GTSequenceReadingModeDialog.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTRadioButton.h"
+#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsCircularView.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
-#include "GTUtilsAnnotationsTreeView.h"
-#include "GTUtilsMdi.h"
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
+#include "GTUtilsToolTip.h"
 #include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateRulerDialogFiller.h"
@@ -55,6 +56,8 @@
 #include <U2View/DetView.h>
 #include <U2Core/AppContext.h>
 #include <U2View/ADVConstants.h>
+#include <U2View/Overview.h>
+#include <U2View/GSequenceLineView.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -984,7 +987,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_2){
 //    Open murine.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
 //    Select annotation
-    GTUtilsSequenceView::clickAnnotation(os, "misc_feature", 2);
+    GTUtilsSequenceView::clickAnnotationDet(os, "misc_feature", 2);
 //    Use context menu {Copy->Copy reverse complement sequence}
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY
                                                       << "action_copy_annotation_sequence"));
@@ -1000,7 +1003,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_2){
     CHECK_SET_ERR(clipboardtext == expected, "Unexpected reverse complement: " + clipboardtext);
 
 //    Check joined annotations
-    GTUtilsSequenceView::clickAnnotation(os, "CDS", 2970);
+    GTUtilsSequenceView::clickAnnotationDet(os, "CDS", 2970);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY
                                                       << "action_copy_annotation_sequence"));
@@ -1020,7 +1023,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_3){
 //    Open murine.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
 //    Select annotation
-    GTUtilsSequenceView::clickAnnotation(os, "misc_feature", 2);
+    GTUtilsSequenceView::clickAnnotationDet(os, "misc_feature", 2);
 //    Use context menu {Copy->Copy reverse complement sequence}
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY
                                                       << "action_copy_annotation_sequence"));
@@ -1036,7 +1039,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031_3){
     CHECK_SET_ERR(clipboardtext == expected, "Unexpected reverse complement: " + clipboardtext);
 
 //    Check joined annotations
-    GTUtilsSequenceView::clickAnnotation(os, "CDS", 2970);
+    GTUtilsSequenceView::clickAnnotationDet(os, "CDS", 2970);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY
                                                       << "action_copy_annotation_sequence"));
@@ -1323,6 +1326,122 @@ GUI_TEST_CLASS_DEFINITION(test_0041){
     start = GTUtilsSequenceView::getVisiableStart(os);
     CHECK_SET_ERR(start == 0, QString("8 Unexpected sequence start: %1").arg(start));
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0042){
+//    Open murine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+//    Select annotation
+    GTUtilsSequenceView::clickAnnotationDet(os, "misc_feature", 2);
+//    Expected: annotation selected
+    QString selected = GTUtilsAnnotationsTreeView::getSelectedItem(os);
+    CHECK_SET_ERR(selected == "misc_feature", "Unexpected selected anntoation: " + selected);
+//    Click on annotation on seq view with right button
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList()<<"rename_item", PopupChecker::IsEnabled));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << ADV_MENU_REMOVE
+                                                      << "Selected annotations and qualifiers", PopupChecker::IsEnabled));
+    GTMouseDriver::click(os, Qt::RightButton);
+//    Check context menu action
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0043){
+//    Open murine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+//    move mouse to annotation on det view
+    GTUtilsSequenceView::clickAnnotationDet(os, "misc_feature", 2);
+    GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(20, 0));
+    GTGlobals::sleep();
+    QString tooltip = GTUtilsToolTip::getToolTip();
+    QString expected = "<table><tr><td bgcolor=#ffff99 bordercolor=black width=15></td><td><big>misc_feature</big></td></tr><tr><td></td><td><b>Location"
+            "</b> = 2..590</td></tr><tr><td/><td><nobr><b>note</b> = 5' terminal repeat</nobr><br><nobr><b>Sequence</b> = AATGAAAGACCCCACCCGTAGGTGGCAAGCTAGCTTAAGT"
+            " ...</nobr><br><nobr><b>Translation</b> = NERPHP*VAS*LK ...</nobr></td></tr></table>";
+    CHECK_SET_ERR(tooltip == expected, "Unexpected toolip: " + tooltip)
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0044){
+    //Overview weel event
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    Overview* over = qobject_cast<Overview*>(GTWidget::findWidget(os, "OverviewRenderArea")->parentWidget());
+    GTWidget::click(os, over);
+    GTGlobals::sleep(1000);
+    GTMouseDriver::scroll(os, 10);
+    GTGlobals::sleep(1000);
+
+    U2Region r = GTUtilsSequenceView::getPanViewByNumber(os)->getVisibleRange();
+    CHECK_SET_ERR(r.startPos > 99000, QString("Unexpected visible range: %1").arg(r.startPos));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0044_1){
+    //selection on overview
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    Overview* over = qobject_cast<Overview*>(GTWidget::findWidget(os, "OverviewRenderArea")->parentWidget());
+    GTWidget::click(os, over);
+
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(100, 0));
+    GTMouseDriver::release(os);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+
+    QVector<U2Region> selectionVector = GTUtilsSequenceView::getSelection(os);
+    CHECK_SET_ERR(selectionVector.size() == 1, QString("unexpected number of selected regions: %1").arg(selectionVector.size()));
+    CHECK_SET_ERR(selectionVector.first().length >1000, QString("unexpected selection length: &1").arg(selectionVector.first().length))
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0044_2){
+    //move slider
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    Overview* over = GTUtilsSequenceView::getOverviewByNumber(os);
+    GTWidget::click(os, over);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(over->geometry().width()/3, 0));
+    GTMouseDriver::release(os);
+    GTGlobals::sleep();
+
+    int start = GTUtilsSequenceView::getVisiableStart(os);
+    CHECK_SET_ERR(start>150000, QString("Unexpected selection start: %1").arg(start));
+
+//    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
+//    OverviewRenderArea* renderArea = GTWidget::findExactWidget<OverviewRenderArea*>(os, "OverviewRenderArea", over);
+//    int detX = renderArea->posToCoord(GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView()->getVisibleRange().startPos) - 6;
+//    QRect r = QRect(detX, 8, 12, 10);
+//    GTMouseDriver::moveTo(os, renderArea->mapToGlobal(r.center()));
+//    GTGlobals::sleep();
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0045){
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    QWidget* pan = GTUtilsSequenceView::getPanViewByNumber(os);
+    QImage init = GTWidget::getImage(os, pan);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
+    QWidget* qt_toolbar_ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button",
+                                                          GTWidget::findWidget(os, "mwtoolbar_activemdi"), GTGlobals::FindOptions(false));
+    if(qt_toolbar_ext_button != NULL && qt_toolbar_ext_button->isVisible()){
+        GTWidget::click(os, qt_toolbar_ext_button);
+        GTGlobals::sleep(1000);
+    }
+    GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QList<QScrollBar*> list = pan->findChildren<QScrollBar*>();
+    QScrollBar* vertical;
+    foreach (QScrollBar* b, list) {
+        if(b->orientation() == Qt::Vertical){
+            vertical = b;
+        }
+    }
+    GTWidget::click(os, vertical);
+    GTMouseDriver::scroll(os, 5);
+    GTGlobals::sleep(1000);
+    QImage final = GTWidget::getImage(os, pan);
+    CHECK_SET_ERR(init != final, "pan view was not changed")
 }
 
 } // namespace GUITest_common_scenarios_sequence_view

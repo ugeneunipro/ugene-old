@@ -1019,7 +1019,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3927);
     REGISTER_TEST(GUITest_regression_scenarios::test_3928);
     REGISTER_TEST(GUITest_regression_scenarios::test_3938);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3950);
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_3950);//too long for windows test server
     REGISTER_TEST(GUITest_regression_scenarios::test_3953);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_3967);
     REGISTER_TEST(GUITest_regression_scenarios::test_3959);
@@ -1264,6 +1264,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0038);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0040);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0041);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0042);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0043);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0044);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0044_1);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0044_2);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0045);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/sequence edit/

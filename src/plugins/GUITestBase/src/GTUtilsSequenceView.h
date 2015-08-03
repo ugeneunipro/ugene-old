@@ -31,6 +31,7 @@ class U2OpStatus;
 class ADVSingleSequenceWidget;
 class PanView;
 class U2Region;
+class Overview;
 
 class GTUtilsSequenceView {
 public:
@@ -50,13 +51,15 @@ public:
 
     static ADVSingleSequenceWidget * getSeqWidgetByNumber(U2OpStatus &os, int number = 0, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
     static PanView * getPanViewByNumber(U2OpStatus &os, int number = 0, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static Overview* getOverviewByNumber(U2OpStatus &os, int number = 0, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
     static int getSeqWidgetsNumber(U2OpStatus &os);
     static QVector<U2Region> getSelection(U2OpStatus &os, int number = 0);
     static QString getSeqName(U2OpStatus &os, int number = 0);
     static QString getSeqName(U2OpStatus &os, ADVSingleSequenceWidget *seqWidget);
 
     //clicks on simple annotation on sequence view
-    static void clickAnnotation(U2OpStatus &os, QString name, int startpos, int number = 0, Qt::MouseButton button = Qt::LeftButton);
+    static void clickAnnotationDet(U2OpStatus &os, QString name, int startpos, int number = 0, Qt::MouseButton button = Qt::LeftButton);
+    static void clickAnnotationPan(U2OpStatus &os, QString name, int startpos, int number = 0, Qt::MouseButton button = Qt::LeftButton);
 };
 
 } // namespace U2
