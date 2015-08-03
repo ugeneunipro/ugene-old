@@ -36,7 +36,7 @@ copy %PATH_TO_QT_LIBS%\Qt5WebKit.dll %OUTPUT_DIR%
 copy %PATH_TO_QT_LIBS%\Qt5WebKitWidgets.dll %OUTPUT_DIR%
 copy %PATH_TO_QT_LIBS%\Qt5Widgets.dll %OUTPUT_DIR%
 copy %PATH_TO_QT_LIBS%\Qt5Xml.dll %OUTPUT_DIR%
-xcopy /E %PATH_TO_QT_LIBS%\icu*.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\icu* %OUTPUT_DIR%
 mkdir "%OUTPUT_DIR%\sqldrivers"
 copy %PATH_TO_QT_LIBS%\..\plugins\sqldrivers\qsqlmysql.dll %OUTPUT_DIR%\sqldrivers\
 mkdir "%OUTPUT_DIR%\imageformats"
@@ -44,6 +44,8 @@ copy %PATH_TO_QT_LIBS%\..\plugins\imageformats\qgif.dll %OUTPUT_DIR%\imageformat
 copy %PATH_TO_QT_LIBS%\..\plugins\imageformats\qjpeg.dll %OUTPUT_DIR%\imageformats\
 copy %PATH_TO_QT_LIBS%\..\plugins\imageformats\qsvg.dll %OUTPUT_DIR%\imageformats\
 copy %PATH_TO_QT_LIBS%\..\plugins\imageformats\qtiff.dll %OUTPUT_DIR%\imageformats\
+mkdir "%OUTPUT_DIR%\platforms"
+copy %PATH_TO_QT_LIBS%\..\plugins\platforms\qwindows.dll %OUTPUT_DIR%\platforms\
 
 REM copy external tools if exists
 xcopy /E %RELEASE_DIR%\tools\* %OUTPUT_DIR%\tools\
