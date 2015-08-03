@@ -16,6 +16,35 @@ mkdir "%OUTPUT_DIR%\plugins"
 
 REM copy includes
 xcopy /E %INSTALL_DIR%\includes\* %OUTPUT_DIR%
+REM copy Qt libraries
+copy %PATH_TO_QT_LIBS%\Qt5Core.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5Gui.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5Multimedia.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5MultimediaWidgets.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5Network.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5OpenGL.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5Positioning.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5PrintSupport.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5Qml.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5Quick.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5Script.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5Sensors.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5Sql.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5Svg.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5WebChannel.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5WebKit.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5WebKitWidgets.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5Widgets.dll %OUTPUT_DIR%
+copy %PATH_TO_QT_LIBS%\Qt5Xml.dll %OUTPUT_DIR%
+xcopy /E %PATH_TO_QT_LIBS%\icu*.dll %OUTPUT_DIR%
+mkdir "%OUTPUT_DIR%\sqldrivers"
+copy %PATH_TO_QT_LIBS%\..\plugins\sqldrivers\qsqlmysql.dll %OUTPUT_DIR%\sqldrivers\
+mkdir "%OUTPUT_DIR%\imageformats"
+copy %PATH_TO_QT_LIBS%\..\plugins\imageformats\qgif.dll %OUTPUT_DIR%\imageformats\
+copy %PATH_TO_QT_LIBS%\..\plugins\imageformats\qjpeg.dll %OUTPUT_DIR%\imageformats\
+copy %PATH_TO_QT_LIBS%\..\plugins\imageformats\qsvg.dll %OUTPUT_DIR%\imageformats\
+copy %PATH_TO_QT_LIBS%\..\plugins\imageformats\qtiff.dll %OUTPUT_DIR%\imageformats\
+
 REM copy external tools if exists
 xcopy /E %RELEASE_DIR%\tools\* %OUTPUT_DIR%\tools\
 
