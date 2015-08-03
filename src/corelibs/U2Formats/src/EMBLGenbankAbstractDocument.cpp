@@ -470,15 +470,17 @@ int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbu
 
 
 QString EMBLGenbankAbstractDocument::genObjectName(QSet<QString>& usedNames, const QString& seqName, const QVariantMap& tags, int n, const GObjectType& t) {
-    //try to check UGENE_MARK first
     QString name;
+
+    //try to check UGENE_MARK first
     QStringList unimark = tags.value(UGENE_MARK).toStringList();
-    if (!unimark.isEmpty()) {
-        int pos = usedNames.size();
-        if (pos < unimark.size()) {
-            name = unimark.at(pos);
-        }
+    if (1 == unimark.size()) {
+        name = unimark[0];
+    } else if (2 == unimark.size()) {
+        int idx = (GObjectTypes::ANNOTATION_TABLE == t) ? 0 : 1;
+        name = unimark[idx];
     }
+
     if (name.isEmpty()) {
         name = seqName;
         if (name.isEmpty()) {
