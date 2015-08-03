@@ -74,6 +74,7 @@
 #include "MSAEditor.h"
 #include "MSAEditorNameList.h"
 #include "MSAEditorSequenceArea.h"
+#include "Clipboard/SubalignmentToClipboardTask.h"
 
 namespace U2 {
 
@@ -2273,7 +2274,7 @@ void MSAEditorSequenceArea::sl_copyCurrentSelection()
 
 void MSAEditorSequenceArea::sl_copyFormattedSelection(){
     const DocumentFormatId& formatId = getCopyFormatedAlgorithmId();
-    Task* clipboardTask = new SubalignmentToClipboardTask(editor->getMSAObject(), selection.getRect(), formatId);
+    Task* clipboardTask = new SubalignmentToClipboardTask(editor, selection.getRect(), formatId);
     AppContext::getTaskScheduler()->registerTopLevelTask(clipboardTask);
 }
 

@@ -4072,7 +4072,7 @@ GUI_TEST_CLASS_DEFINITION(test_0053_5){
     QComboBox* copyType = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "copyType"));
     CHECK_SET_ERR(copyType != NULL, "copy combobox not found");
 
-    GTComboBox::setIndexWithText(os, copyType, "RTF");
+    GTComboBox::setIndexWithText(os, copyType, "Rich text (HTML)");
 
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(2, 0));
 

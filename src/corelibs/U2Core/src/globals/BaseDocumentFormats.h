@@ -60,7 +60,6 @@ public:
     static const DocumentFormatId PLAIN_SWISS_PROT;
     static const DocumentFormatId PLAIN_TEXT;
     static const DocumentFormatId RAW_DNA_SEQUENCE;
-    static const DocumentFormatId RTFMSA;
     static const DocumentFormatId SAM;
     static const DocumentFormatId SCF;
     static const DocumentFormatId SNP;

@@ -75,9 +75,6 @@ enum DocumentFormatFlag {
     DocumentFormatFlag_DirectWriteOperations        = 1<<9,
     // Document can be locked if created not by UGENE
     DocumentFormatFlag_LockedIfNotCreatedByUGENE    = 1<<10,
-    
-    // Documents supports RTF output and the data can be pasted to txt processorts as RTF
-    DocumentFormatFlag_RTFOutput = 1<<11
 };
 
 

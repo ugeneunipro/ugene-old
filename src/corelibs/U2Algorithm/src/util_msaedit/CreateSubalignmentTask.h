@@ -63,28 +63,6 @@ private:
     bool                        createCopy;
 };
 
-class U2ALGORITHM_EXPORT SubalignmentToClipboardTask : public Task {
-    Q_OBJECT
-public:
-    SubalignmentToClipboardTask(MAlignmentObject* _maObj, const QRect& selectionRect, const DocumentFormatId& formatId);
-    virtual void prepare();
-
-protected:
-    virtual QList<Task*> onSubTaskFinished(Task* subTask);
-
-private:
-    CreateSubalignmentSettings defineSettings(MAlignmentObject* _maObj, const QRect& selectionRect, const DocumentFormatId& formatId, U2OpStatus& os);
-
-private:
-    MAlignmentObject *       maObj;
-    QRect                    selectionRect;
-    DocumentFormatId         formatId;
-    CreateSubalignmentTask*  createSubalignmentTask;
-
-
-};
-
-
 }
 
 #endif

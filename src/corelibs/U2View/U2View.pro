@@ -37,6 +37,7 @@ HEADERS += src/LicenseDialog.h \
            src/ov_assembly/ExportReadsDialog.h \
            src/ov_assembly/ZoomableAssemblyOverview.h \
            src/ov_msa/AlignmentLogo.h \
+           src/ov_msa/Clipboard/SubalignmentToClipboardTask.h \
            src/ov_msa/ColorSchemaDialogController.h \
            src/ov_msa/ColorSchemaSettingsController.h \
            src/ov_msa/Common/RefSeqCommonWidget.h \
@@ -253,6 +254,7 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_assembly/ExportReadsDialog.cpp \
            src/ov_assembly/ZoomableAssemblyOverview.cpp \
            src/ov_msa/AlignmentLogo.cpp \
+           src/ov_msa/Clipboard/SubalignmentToClipboardTask.cpp \
            src/ov_msa/ColorSchemaDialogController.cpp \
            src/ov_msa/ColorSchemaSettingsController.cpp \
            src/ov_msa/Common/RefSeqCommonWidget.cpp \

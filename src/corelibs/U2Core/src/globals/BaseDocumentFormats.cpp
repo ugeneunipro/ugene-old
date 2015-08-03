@@ -52,7 +52,6 @@ const DocumentFormatId BaseDocumentFormats::PLAIN_PDB("pdb");
 const DocumentFormatId BaseDocumentFormats::PLAIN_SWISS_PROT("swiss-prot");
 const DocumentFormatId BaseDocumentFormats::PLAIN_TEXT("text");
 const DocumentFormatId BaseDocumentFormats::RAW_DNA_SEQUENCE("raw");
-const DocumentFormatId BaseDocumentFormats::RTFMSA("rtfmsa");
 const DocumentFormatId BaseDocumentFormats::SAM("sam");
 const DocumentFormatId BaseDocumentFormats::SCF("scf");
 const DocumentFormatId BaseDocumentFormats::SNP("snp");
