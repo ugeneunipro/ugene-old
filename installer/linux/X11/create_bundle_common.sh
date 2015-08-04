@@ -2,8 +2,8 @@
 
 function dump_symbols {
     filename=`basename "${1}"`
-    SYMBOL_FILE="${SYMBOLS_DIR}/$filename.sym";
-    ${ARCH}/dump_syms "$1" > "${SYMBOLS_DIR}/$filename.sym"
+    SYMBOL_FILE="${SYMBOLS_DIR}/${filename}.sym";
+    "${ARCH}/dump_syms" "${1}" > "${SYMBOLS_DIR}/${filename}.sym" 2>> "${DUMP_SYMBOLS_LOG}"
 
     FILE_HEAD=`head -n 1 "${SYMBOL_FILE}"`
     FILE_HASH=`echo ${FILE_HEAD} | awk '{ print $4 }'`
@@ -22,7 +22,7 @@ function add-qt-library {
 
 function add-binary {
     binary=$1
-    cp -v $RELEASE_DIR/${binary} "$TARGET_APP_DIR"
+    cp -v "$RELEASE_DIR/${binary}" "$TARGET_APP_DIR"
     dump_symbols "${TARGET_APP_DIR}/${binary}"
     strip -v "${TARGET_APP_DIR}/${binary}"
 }
@@ -66,5 +66,6 @@ function add-plugin {
     cp -v "${RELEASE_DIR}/plugins/${PLUGIN_LIB}"  "${TARGET_APP_DIR}/plugins/"
     cp -v "${RELEASE_DIR}/plugins/${PLUGIN_DESC}" "${TARGET_APP_DIR}/plugins/"
     cp -v "${RELEASE_DIR}/plugins/${PLUGIN_LICENSE}" "${TARGET_APP_DIR}/plugins/"
+    dump_symbols "${TARGET_APP_DIR}/plugins/${PLUGIN_LIB}"
     strip -v "${TARGET_APP_DIR}/plugins/${PLUGIN_LIB}"
 }

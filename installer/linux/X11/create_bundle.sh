@@ -4,6 +4,7 @@ PRODUCT_NAME="ugene"
 VERSION=`cat ../../../src/ugene_version.pri | grep UGENE_VERSION | awk -F'=' '{print $2}'`
 RELEASE_DIR=../../../src/_release
 SYMBOLS_DIR=symbols
+DUMP_SYMBOLS_LOG=dump_symbols_log.txt
 DATA_DIR=../../../data
 TARGET_APP_DIR="${PRODUCT_NAME}-${VERSION}"
 PACKAGE_TYPE="linux"
@@ -22,8 +23,11 @@ fi
 
 echo cleaning previous bundle
 rm -rf ${TARGET_APP_DIR}
+rm -rf "${SYMBOLS_DIR}"
+rm -f "${DUMP_SYMBOLS_LOG}"
 rm -rf *.tar.gz
 mkdir $TARGET_APP_DIR
+mkdir "${SYMBOLS_DIR}"
 
 
 echo
@@ -207,7 +211,7 @@ if [ "$1" == "-test" ]; then
 fi
 
 # remove svn dirs
-find $TARGET_APP_DIR -name ".svn" | while read | xargs rm -rf
+find $TARGET_APP_DIR -name ".svn" | xargs rm -rf
 
 REVISION=$BUILD_VCS_NUMBER_new_trunk
 if [ -z "$REVISION" ]; then
