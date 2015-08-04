@@ -2,7 +2,7 @@ include( ../../ugene_globals.pri )
 UGENE_RELATIVE_DESTDIR = ''
 
 TEMPLATE = lib
-CONFIG += thread debug_and_release warn_off staticlib
+CONFIG += thread debug_and_release warn_off
 INCLUDEPATH += src
 TARGET = breakpad
 DESTDIR = ../../_release
