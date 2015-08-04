@@ -18,6 +18,7 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 * MA 02110-1301, USA.
 */
+
 #include "MSAEditorTreeViewer.h"
 #include <U2View/GraphicsRectangularBranchItem.h>
 #include <U2View/GraphicsButtonItem.h>

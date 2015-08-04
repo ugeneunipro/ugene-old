@@ -77,12 +77,17 @@ namespace U2 {
     class PopupCheckerByText : public Filler {
     public:
         PopupCheckerByText(U2OpStatus &os, CustomScenario *scenario);
-        PopupCheckerByText(U2OpStatus &_os, const QStringList &_namePath, PopupChecker::CheckOptions _options = PopupChecker::CheckOptions(PopupChecker::IsEnabled),
-                     GTGlobals::UseMethod _useMethod = GTGlobals::UseKey) //UseKey need for Ubuntu
-            :Filler(_os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)), textPath(_namePath), options(_options), useMethod(_useMethod){}
+        PopupCheckerByText(U2OpStatus &os,
+                           const QStringList &namePath,
+                           PopupChecker::CheckOptions options = PopupChecker::CheckOptions(PopupChecker::IsEnabled),
+                           GTGlobals::UseMethod useMethod = GTGlobals::UseKey);  //UseKey need for Ubuntu
+        PopupCheckerByText(U2OpStatus &os, const QList<QStringList> &namePaths,
+                           PopupChecker::CheckOptions _options = PopupChecker::CheckOptions(PopupChecker::IsEnabled),
+                           GTGlobals::UseMethod useMethod = GTGlobals::UseKey);
+
         virtual void commonScenario();
     protected:
-        QStringList textPath;
+        QList<QStringList> textPaths;
         PopupChecker::CheckOptions options;
         GTGlobals::UseMethod useMethod;
     };

@@ -108,6 +108,7 @@
 
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/MSAEditorTreeViewer.h>
 #include <U2View/MSAGraphOverview.h>
 
 namespace U2 {
@@ -2038,6 +2039,45 @@ GUI_TEST_CLASS_DEFINITION(test_4295) {
 
     GTUtilsLog::check(os, logTracer);
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4306_1) {
+//    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/COI.aln");
+
+//    2. Build a tree with default parameters.
+//    Expected state: a tree view is displayed with the alignment editor.
+    QDir().mkpath(sandBoxDir + "test_4306");
+
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_4306/test_4306.nwk", 0, 0, true));
+    GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Build Tree");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    3. Use context menu on tree view.
+//    Expected state: there are "Zoom in", "Zoom out" and "Reset zooming" actions in the menu.
+    QList<QStringList> items;
+    items << (QStringList() << "Zoom In");
+    items << (QStringList() << "Zoom Out");
+    items << (QStringList() << "Reset Zooming");
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, items));
+    GTWidget::click(os, GTUtilsMsaEditor::getTreeView(os), Qt::RightButton);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_4306_2) {
+//    1. Open "data/samples/Newick/COI.nwk".
+    GTFileDialog::openFile(os, dataDir + "samples/Newick/COI.nwk");
+
+//    2. Use context menu on the tree view.
+//    Expected state: there are "Zoom in", "Zoom out" and "Reset zooming" actions in the menu.
+    QList<QStringList> items;
+    items << (QStringList() << "Zoom In");
+    items << (QStringList() << "Zoom Out");
+    items << (QStringList() << "Reset Zooming");
+    GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, items));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_4308) {
