@@ -111,7 +111,7 @@ FormatCheckResult NewickFormat::checkRawData(const QByteArray& rawData, const GU
                     return FormatDetection_NotMatched;
                 }
                 if (TextUtils::ALPHA_NUMS[data[i]] || data[i] == '-' || data[i] == '_') {
-                    if (last == letter_than_whites || brackets <= 0) {
+                    if (last == letter_than_whites) {
                         return FormatDetection_NotMatched;
                     }
                     last = letter;
@@ -125,9 +125,6 @@ FormatCheckResult NewickFormat::checkRawData(const QByteArray& rawData, const GU
                 }
         }
         last = any;
-    }
-    if (!QRegExp(";\\s*$").exactMatch(rawData)) {
-        return FormatDetection_LowSimilarity;
     }
     if (QRegExp("[a-zA-Z\r\n]*").exactMatch(rawData)) {
         return FormatDetection_LowSimilarity;
