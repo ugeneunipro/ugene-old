@@ -45,7 +45,7 @@ class AnnotationTableObject;
 class ADVSingleSequenceWidget;
 
 
-class Overview : public GSequenceLineView {
+class U2VIEW_EXPORT Overview : public GSequenceLineView {
     Q_OBJECT
 public:
     Overview(ADVSingleSequenceWidget* p, ADVSequenceObjectContext* ctx);
