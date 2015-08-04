@@ -19,61 +19,68 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/ProjectFilterTaskRegistry.h>
-#include <U2Core/PasswordStorage.h>
-#include <U2Core/Log.h>
-#include <U2Core/Timer.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/ResourceTracker.h>
-#include <U2Core/DBXRefRegistry.h>
-#include <U2Core/UserApplicationsSettings.h>
-#include <U2Core/AutoAnnotationsSupport.h>
-#include <U2Core/DataBaseRegistry.h>
-#include <U2Core/ExternalToolRegistry.h>
-#include <U2Core/U2DbiRegistry.h>
-#include <U2Core/UdrSchemaRegistry.h>
-#include <U2Core/CMDLineRegistry.h>
-#include <U2Core/CMDLineUtils.h>
-#include <U2Core/CMDLineCoreOptions.h>
-#include <U2Core/DNAAlphabetRegistryImpl.h>
-#include <U2Core/AnnotationSettings.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/TaskStarter.h>
-#include <U2Core/LoadRemoteDocumentTask.h>
-#include <U2Core/LogCache.h>
-#include <U2Core/VirtualFileSystem.h>
-#include <U2Core/TmpDirChecker.h>
-#include <U2Core/AppFileStorage.h>
-#include <U2Core/DataPathRegistry.h>
-#include <U2Core/DASSource.h>
-#include <U2Core/ScriptingToolRegistry.h>
-#include <U2Core/Counter.h>
+#include <QApplication>
+#include <QStyleFactory>
+#include <QMessageBox>
+#include <QIcon>
 
-#include <U2Formats/DocumentFormatUtils.h>
-
-#include <U2Algorithm/SecStructPredictAlgRegistry.h>
-#include <U2Algorithm/CudaGpuRegistry.h>
-#include <U2Algorithm/OpenCLGpuRegistry.h>
-#include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
+#include <U2Algorithm/AlignmentAlgorithmsRegistry.h>
 #include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
-#include <U2Algorithm/MSAColorScheme.h>
-#include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
-#include <U2Algorithm/PWMConversionAlgorithmRegistry.h>
-#include <U2Algorithm/SubstMatrixRegistry.h>
-#include <U2Algorithm/SWResultFilterRegistry.h>
-#include <U2Algorithm/SWMulAlignResultNamesTagsRegistry.h>
-#include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
+#include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
+#include <U2Algorithm/CudaGpuRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 #include <U2Algorithm/GenomeAssemblyRegistry.h>
-#include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
+#include <U2Algorithm/MSAColorScheme.h>
+#include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
+#include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 #include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
+#include <U2Algorithm/OpenCLGpuRegistry.h>
+#include <U2Algorithm/PWMConversionAlgorithmRegistry.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
-#include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
-#include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
-#include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
-#include <U2Algorithm/AlignmentAlgorithmsRegistry.h>
+#include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
+#include <U2Algorithm/SWMulAlignResultNamesTagsRegistry.h>
+#include <U2Algorithm/SWResultFilterRegistry.h>
+#include <U2Algorithm/SecStructPredictAlgRegistry.h>
 #include <U2Algorithm/SequenceContentFilterTask.h>
+#include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
+#include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
+#include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
+#include <U2Algorithm/SubstMatrixRegistry.h>
+
+#include <U2Core/AnnotationSettings.h>
+#include <U2Core/AppFileStorage.h>
+#include <U2Core/AutoAnnotationsSupport.h>
+#include <U2Core/CMDLineCoreOptions.h>
+#include <U2Core/CMDLineRegistry.h>
+#include <U2Core/CMDLineUtils.h>
+#include <U2Core/Counter.h>
+#include <U2Core/DASSource.h>
+#include <U2Core/DBXRefRegistry.h>
+#include <U2Core/DNAAlphabetRegistryImpl.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/DataBaseRegistry.h>
+#include <U2Core/DataPathRegistry.h>
+#include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/LoadRemoteDocumentTask.h>
+#include <U2Core/Log.h>
+#include <U2Core/LogCache.h>
+#include <U2Core/PasswordStorage.h>
+#include <U2Core/ProjectFilterTaskRegistry.h>
+#include <U2Core/ResourceTracker.h>
+#include <U2Core/ScriptingToolRegistry.h>
+#include <U2Core/TaskStarter.h>
+#include <U2Core/Timer.h>
+#include <U2Core/TmpDirChecker.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/UdrSchemaRegistry.h>
+#include <U2Core/UserActionsWriter.h>
+#include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/VirtualFileSystem.h>
+
+#include <U2Formats/ConvertFileTask.h>
+#include <U2Formats/DocumentFormatUtils.h>
 
 #include <U2Gui/CredentialsAskerGui.h>
 #include <U2Gui/FeatureKeyFilterTask.h>
@@ -81,14 +88,24 @@
 #include <U2Gui/LogView.h>
 #include <U2Gui/MsaContentFilterTask.h>
 #include <U2Gui/MsaSeqNameFilterTask.h>
+#include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/ObjectNameFilterTask.h>
 #include <U2Gui/ObjectViewModel.h>
-#include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/SequenceAccFilterTask.h>
 #include <U2Gui/TextContentFilterTask.h>
 #include <U2Gui/ToolsMenu.h>
 
-#include <U2Formats/ConvertFileTask.h>
+#include <U2Lang/LocalDomain.h>
+#include <U2Lang/QueryDesignerRegistry.h>
+#include <U2Lang/WorkflowEnvImpl.h>
+#include <U2Lang/WorkflowSettings.h>
+
+#include <U2Remote/DistributedComputingUtil.h>
+
+#include <U2Test/GTestFrameworkComponents.h>
+#include <U2Test/GUITestBase.h>
+#include <U2Test/GUITestService.h>
+#include <U2Test/XMLTestFormat.h>
 
 #include <U2View/AnnotHighlightWidgetFactory.h>
 #include <U2View/AssemblyInfoWidget.h>
@@ -107,58 +124,29 @@
 #include <U2View/SequenceInfoFactory.h>
 #include <U2View/TreeOptionsWidgetFactory.h>
 
-#include <U2Test/GTestFrameworkComponents.h>
-#include <U2Test/XMLTestFormat.h>
-#include <U2Test/GUITestService.h>
-#include <U2Test/GUITestBase.h>
-
-#include <U2Lang/WorkflowEnvImpl.h>
-#include <U2Lang/LocalDomain.h>
-#include <U2Lang/WorkflowSettings.h>
-#include <U2Lang/QueryDesignerRegistry.h>
-
-#include <U2Remote/DistributedComputingUtil.h>
-
 //U2Private imports
 #include <AppContextImpl.h>
-#include <SettingsImpl.h>
+#include <AppSettingsImpl.h>
 #include <DocumentFormatRegistryImpl.h>
 #include <IOAdapterRegistryImpl.h>
 #include <PluginSupportImpl.h>
 #include <ServiceRegistryImpl.h>
+#include <SettingsImpl.h>
 #include <TaskSchedulerImpl.h>
-#include <AppSettingsImpl.h>
-#include <CrashHandler.h>
+#include <crash_handler/CrashHandler.h>
 
 #include "app_settings/AppSettingsGUIImpl.h"
 #include "app_settings/logview_settings/LogSettingsGUIController.h"
-
+#include "main_window/CheckUpdatesTask.h"
+#include "main_window/MainWindowImpl.h"
+#include "main_window/SplashScreen.h"
 #include "plugin_viewer/PluginViewerImpl.h"
 #include "project_support/ProjectLoaderImpl.h"
-#include "main_window/MainWindowImpl.h"
-#include "main_window/CheckUpdatesTask.h"
-#include "main_window/SplashScreen.h"
+#include "project_support/ProjectTasksGui.h"
 #include "project_view/ProjectViewImpl.h"
-#include "welcome_page/WelcomePageController.h"
-
-#include "task_view/TaskViewController.h"
 #include "shtirlitz/Shtirlitz.h"
-#include <project_support/ProjectTasksGui.h>
-
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QStyleFactory>
-#include <QtWidgets/QMessageBox>
-#endif
-#include <QtGui/QIcon>
-
-#include <U2Core/UserActionsWriter.h>
-
-
-/* TRANSLATOR U2::AppContextImpl */
+#include "task_view/TaskViewController.h"
+#include "welcome_page/WelcomePageController.h"
 
 #if defined(Q_WS_WIN) || defined(Q_WS_MAC)
 QT_BEGIN_NAMESPACE
@@ -292,24 +280,6 @@ static void initProjectFilterTaskRegistry() {
 class GApplication: public QApplication {
 public:
     GApplication(int & argc, char ** argv): QApplication(argc, argv) {}
-    virtual bool notify(QObject * receiver, QEvent * event ) {
-        bool res = false;
-        if (CrashHandler::isEnabled()) {
-            try {
-                res = QApplication::notify(receiver, event);
-            } catch(...) {
-                if(CrashHandler::buffer) {
-                    CrashHandler::releaseReserve();
-                }
-
-                CrashHandler::runMonitorProcess("C++ exception|Unhandled exception");
-            }
-        }
-        else {
-            res = QApplication::notify(receiver, event);
-        }
-        return res;
-    }
 
     bool event(QEvent *event) {
         if (QEvent::FileOpen == event->type()) {
@@ -361,7 +331,6 @@ int main(int argc, char **argv)
 {
     if (CrashHandler::isEnabled()) {
         CrashHandler::setupHandler();
-        CrashHandler::preallocateReservedSpace();
     }
 
     QT_REQUIRE_VERSION( argc, argv, QT_VERSION_STR );
@@ -963,6 +932,8 @@ int main(int argc, char **argv)
         QFile ff;
         ff.remove(iniFile);
     }
+
+    CrashHandler::shutdown();
 
     return rc;   
 }

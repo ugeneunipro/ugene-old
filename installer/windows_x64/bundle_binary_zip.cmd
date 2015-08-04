@@ -4,15 +4,17 @@ set U_VERSION=%1
 set OUTPUT_DIR=%U_ROOT%\installer\windows_x64\ugene-%U_VERSION%
 set INSTALL_DIR=%U_ROOT%\installer\windows_x64
 set BINARY_ZIPFILE=%INSTALL_DIR%\ugene-%U_VERSION%-win-x64-r%BUILD_VCS_NUMBER_new_trunk%.zip
-
+set SYMBOLS_DIR=%U_ROOT%\installer\windows_x64\symbols
 
 IF EXIST %OUTPUT_DIR% del /F /S /Q %OUTPUT_DIR%
+IF EXIST %SYMBOLS_DIR% del /F /S /Q %SYMBOLS_DIR%
 IF EXIST %BINARY_ZIPFILE% del /F /Q %BINARY_ZIPFILE%
 set RELEASE_DIR=src\_release
 
 REM create release dir
 mkdir %OUTPUT_DIR%
 mkdir "%OUTPUT_DIR%\plugins"
+mkdir %SYMBOLS_DIR%
 
 REM copy includes
 xcopy /E %INSTALL_DIR%\includes\* %OUTPUT_DIR%
@@ -54,12 +56,10 @@ if DEFINED UGENE_R_DIST_PATH (
 )
 
 REM copy executables
-copy %RELEASE_DIR%\ugeneui.exe %OUTPUT_DIR%
-copy %RELEASE_DIR%\ugenecl.exe %OUTPUT_DIR%
-copy %RELEASE_DIR%\ugenem.exe %OUTPUT_DIR%
-copy %RELEASE_DIR%\plugins_checker.exe %OUTPUT_DIR%
-copy %RELEASE_DIR%\ugeneui.map %OUTPUT_DIR%
-copy %RELEASE_DIR%\ugenecl.map %OUTPUT_DIR%
+call %INSTALL_DIR%/copy_executable.cmd ugeneui
+call %INSTALL_DIR%/copy_executable.cmd ugenecl
+call %INSTALL_DIR%/copy_executable.cmd ugenem
+call %INSTALL_DIR%/copy_executable.cmd plugins_checker
 echo. > %OUTPUT_DIR%\UGENE.ini
 
 REM copy translations
@@ -76,30 +76,19 @@ if DEFINED UGENE_CISTROME_PATH (
 )
 
 REM copy libs 
-copy %RELEASE_DIR%\ugenedb.dll %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Algorithm.dll %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Core.dll %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Designer.dll  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Formats.dll  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Gui.dll  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Lang.dll  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Private.dll  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Remote.dll  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Script.dll  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Test.dll  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2View.dll  %OUTPUT_DIR%
-copy %RELEASE_DIR%\ugenedb.map %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Algorithm.map %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Core.map %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Designer.map  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Formats.map  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Gui.map  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Lang.map  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Private.map  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Remote.map  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Script.map  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2Test.map  %OUTPUT_DIR%
-copy %RELEASE_DIR%\U2View.map  %OUTPUT_DIR%
+call %INSTALL_DIR%/copy_lib.cmd ugenedb
+call %INSTALL_DIR%/copy_lib.cmd breakpad
+call %INSTALL_DIR%/copy_lib.cmd U2Algorithm
+call %INSTALL_DIR%/copy_lib.cmd U2Core
+call %INSTALL_DIR%/copy_lib.cmd U2Designer
+call %INSTALL_DIR%/copy_lib.cmd U2Formats
+call %INSTALL_DIR%/copy_lib.cmd U2Gui
+call %INSTALL_DIR%/copy_lib.cmd U2Lang
+call %INSTALL_DIR%/copy_lib.cmd U2Private
+call %INSTALL_DIR%/copy_lib.cmd U2Remote
+call %INSTALL_DIR%/copy_lib.cmd U2Script
+call %INSTALL_DIR%/copy_lib.cmd U2Test
+call %INSTALL_DIR%/copy_lib.cmd U2View
 
 REM copy plugins
 call %INSTALL_DIR%/copy_plugin.cmd annotator
@@ -145,6 +134,10 @@ call %INSTALL_DIR%/copy_plugin.cmd variants
 
 
 cd %INSTALL_DIR%
+
+call process_symbols.py %SYMBOLS_DIR%
+zip -r %SYMBOLS_DIR%.zip %SYMBOLS_DIR%\*
+
 if NOT DEFINED UGENE_CISTROME_PATH (
 zip -r %BINARY_ZIPFILE% ugene-%U_VERSION%\*
 )
@@ -154,7 +147,3 @@ if DEFINED UGENE_CISTROME_PATH (
     move %OUTPUT_DIR%\data\cistrome %UGENE_CISTROME_PATH%
 )
 cd %U_ROOT%
-
-
-
-

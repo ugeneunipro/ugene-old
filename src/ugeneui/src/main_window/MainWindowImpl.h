@@ -108,6 +108,7 @@ private slots:
     void sl_openWDManualAction();
     void sl_openQDManualAction();
     void sl_show();
+    void sl_crashUgene();
 #ifdef _INSTALL_TO_PATH_ACTION
     void sl_installToPathAction();
 #endif
@@ -136,6 +137,7 @@ private:
     QAction*                openWDManualAction;
     QAction*                openQDManualAction;
     QAction*                welcomePageAction;
+    QAction*                crashUgeneAction;
 #ifdef _INSTALL_TO_PATH_ACTION
     QAction*                installToPathAction;
 #endif

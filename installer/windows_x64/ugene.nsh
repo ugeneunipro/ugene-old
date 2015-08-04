@@ -83,6 +83,7 @@ FunctionEnd
 ################################################################
 # Installer options
     !define ReleaseBuildDir "..\..\src\_release"
+    !define SymbolsDir "symbols"
     !include ${ReleaseBuildDir}\version.nsis
     !ifndef ProductVersion
     !define ProductVersion "unknown"
@@ -143,37 +144,26 @@ SetRegView 64
     Delete "$INSTDIR\ugene.exe"
 
     SetOverwrite IfNewer
-    File "${ReleaseBuildDir}\ugeneui.exe"
-    File "${ReleaseBuildDir}\ugenecl.exe"
-    File "${ReleaseBuildDir}\ugeneui.map"
-    File "${ReleaseBuildDir}\ugenecl.map"
-    File "${ReleaseBuildDir}\ugenem.exe"
-    File "${ReleaseBuildDir}\plugins_checker.exe"
+    !insertmacro AddExecutable ugeneui
+    !insertmacro AddExecutable ugenecl
+    !insertmacro AddExecutable ugenem
+    !insertmacro AddExecutable plugins_checker
     Rename ugenecl.exe ugene.exe
-    File "${ReleaseBuildDir}\U2Algorithm.dll"
-    File "${ReleaseBuildDir}\U2Core.dll"
-    File "${ReleaseBuildDir}\U2Designer.dll"
-    File "${ReleaseBuildDir}\U2Formats.dll"
-    File "${ReleaseBuildDir}\U2Gui.dll"
-    File "${ReleaseBuildDir}\U2Lang.dll"
-    File "${ReleaseBuildDir}\U2Private.dll"
-    File "${ReleaseBuildDir}\U2Remote.dll"
-    File "${ReleaseBuildDir}\U2Script.dll"
-    File "${ReleaseBuildDir}\U2Test.dll"
-    File "${ReleaseBuildDir}\U2View.dll"
-    File "${ReleaseBuildDir}\ugenedb.dll"
-    File "${ReleaseBuildDir}\U2Algorithm.map"
-    File "${ReleaseBuildDir}\U2Core.map"
-    File "${ReleaseBuildDir}\U2Designer.map"
-    File "${ReleaseBuildDir}\U2Formats.map"
-    File "${ReleaseBuildDir}\U2Gui.map"
-    File "${ReleaseBuildDir}\U2Lang.map"
-    File "${ReleaseBuildDir}\U2Private.map"
-    File "${ReleaseBuildDir}\U2Remote.map"
-    File "${ReleaseBuildDir}\U2Script.map"
-    File "${ReleaseBuildDir}\U2Test.map"
-    File "${ReleaseBuildDir}\U2View.map"
-    File "${ReleaseBuildDir}\ugenedb.map"
+
+    !macro AddLibrary U2Algorithm
+    !macro AddLibrary U2Core
+    !macro AddLibrary U2Designer
+    !macro AddLibrary U2Formats
+    !macro AddLibrary U2Gui
+    !macro AddLibrary U2Lang
+    !macro AddLibrary U2Private
+    !macro AddLibrary U2Remote
+    !macro AddLibrary U2Script
+    !macro AddLibrary U2Test
+    !macro AddLibrary U2View
+    !macro AddLibrary ugenedb
+    !macro AddLibrary breakpad
+
     File "${ReleaseBuildDir}\transl_en.qm"
     File "${ReleaseBuildDir}\transl_ru.qm"
     File "${ReleaseBuildDir}\transl_cs.qm"
@@ -269,6 +259,9 @@ SetRegView 64
     
     SetOutPath $INSTDIR\imageformats
     File /r /x .svn "includes\imageformats\*.*"
+
+    ExecWait '"resort_symbols.py" "${SymbolsDir}"'
+    ExecWait '"zip" -r "${SymbolsDir}.zip" "${SymbolsDir}\*"'
 
     SetOutPath $INSTDIR
     

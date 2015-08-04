@@ -19,30 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _UGENEM_UTILS_H_
-#define _UGENEM_UTILS_H_
+#ifndef _U2_CRASH_LOG_CACHE_H_
+#define _U2_CRASH_LOG_CACHE_H_
 
-#include <QtCore/QString>
+#include <U2Core/LogCache.h>
 
-/**
- * The methods can be used only if QCoreApplication has instance
- */
-class Utils {
+namespace U2 {
+
+class CrashLogCache : public LogCache {
+    Q_OBJECT
 public:
-    static bool hasReportUrl();
-    static QString getReportUrl();
-    static bool hasDatabaseUrl();
-    static QString getDatabaseUrl();
-    static QString getDumpUrl();
-    static QString loadReportFromUrl(const QString &url);
-
-    static bool isSystem64bit();
-
-    static const QString SESSION_DB_UGENE_ARG;
+    void onMessage(const LogMessage &msg);
 
 private:
-    static bool hasArgument(const QString &key);
-    static QString getArgumentValue(const QString &key);
+    QString formMemInfo();
+
+    static const int logMemoryInfoEvery = 20;
 };
 
-#endif // _UGENEM_UTILS_H_
+}   // namespace U2
+
+#endif // _U2_CRASH_LOG_CACHE_H_

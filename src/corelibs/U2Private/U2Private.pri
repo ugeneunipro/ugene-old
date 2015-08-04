@@ -5,19 +5,19 @@ MODULE_ID=U2Private
 include( ../../ugene_lib_common.pri )
 
 QT += xml
-DEFINES+= QT_FATAL_ASSERT BUILDING_U2PRIVATE_DLL
-LIBS += -L../../_release -lU2Core -lU2Formats
+DEFINES += QT_FATAL_ASSERT BUILDING_U2PRIVATE_DLL
+LIBS += -L../../_release -lU2Core -lU2Formats -lbreakpad
+INCLUDEPATH += ../../libs_3rdparty/breakpad/src
 
 !debug_and_release|build_pass {
-
     CONFIG(debug, debug|release) {
-        DESTDIR=../../_debug
-        LIBS -= -L../../_release -lU2Core -lU2Formats
-        LIBS += -L../../_debug -lU2Cored -lU2Formatsd
+        DESTDIR = ../../_debug
+        LIBS -= -L../../_release -lU2Core -lU2Formats -lbreakpad
+        LIBS += -L../../_debug -lU2Cored -lU2Formatsd -lbreakpadd
     }
 
     CONFIG(release, debug|release) {
-        DESTDIR=../../_release
+        DESTDIR = ../../_release
     }
 }
 
@@ -36,4 +36,8 @@ win32 {
 
 win32-msvc2013 {
     DEFINES += NOMINMAX
+}
+
+macx {
+    LIBS += -framework Foundation -framework IOKit
 }

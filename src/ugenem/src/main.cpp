@@ -19,59 +19,38 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
 #include <QLibraryInfo>
+#include <QMessageBox>
+#include <QTextStream>
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMessageBox>
-#endif
-#include <QtCore/QTextStream>
 #include "SendReportDialog.h"
+#include "Utils.h"
+
 #if defined(Q_OS_UNIX ) && defined(Q_WS_X11)
 #include <X11/Xlib.h>
 #endif
-#include "Utils.h"
 
 namespace {
-    QString loadReport(int argc, char *argv[]) {
-        QCoreApplication app(argc, argv);
-
-        if (Utils::hasReportUrl()) {
-            return Utils::loadReportFromUrl(Utils::getReportUrl());
-        } else if (argc > 1) {
-            return QString::fromUtf8(QByteArray::fromBase64(argv[argc-1]));
-        }
-        return "";
+QString loadReport(int argc, char *argv[]) {
+    if (Utils::hasReportUrl()) {
+        return Utils::loadReportFromUrl(Utils::getReportUrl());
+    } else if (argc > 1) {
+        return QString::fromUtf8(QByteArray::fromBase64(argv[argc-1]));
     }
+
+    return "";
+}
 }
 
-int main(int argc, char *argv[]){
-    QString message = loadReport(argc, argv);
+int main(int argc, char *argv[]) {
+    bool useGui = true;
 #if defined(Q_OS_UNIX) && defined(Q_WS_X11)
-    if(XOpenDisplay(NULL) == NULL) {
-        QCoreApplication a(argc, argv);
-        QTextStream stream(stdin);
-        QTextStream cout(stdout);
-        printf("UGENE crashed. Would you like to send crash report to developer team? (y/n)\n");
-        QString str = stream.readLine();
-        printf("\n%s", str.toUtf8().data());
-        if(str == "y" || str == "Y") {
-            ReportSender sender;
-            sender.parse(message);
-            sender.send("");
-        }
-    } else {
-        QApplication a(argc, argv);
-        SendReportDialog dlg(message);
-        dlg.setWindowIcon(QIcon(":ugenem/images/crash_icon.png"));
-        dlg.exec();
-    }
-#else
-    QApplication a(argc, argv);
+    useGui = (XOpenDisplay(NULL) != NULL);
+#endif
+
+    QApplication a(argc, argv, useGui);
+    Q_UNUSED(a);
 
 #ifdef Q_OS_MAC
     // A workaround to avoid using non-bundled plugins
@@ -79,11 +58,25 @@ int main(int argc, char *argv[]){
     QCoreApplication::addLibraryPath("../PlugIns");
 #endif
 
-    SendReportDialog dlg(message);
-    dlg.setWindowIcon(QIcon(":ugenem/images/crash_icon.png"));
+    const QString message = loadReport(argc, argv);
+    const QString dumpUrl = Utils::getDumpUrl();
 
-    dlg.exec();
-#endif
+    if (useGui) {
+        SendReportDialog dlg(message, dumpUrl);
+        dlg.setWindowIcon(QIcon(":ugenem/images/crash_icon.png"));
+        dlg.exec();
+    } else {
+        QTextStream stream(stdin);
+        printf("UGENE crashed. Would you like to send crash report to developer team? (y/n)\n");
+        const QString str = stream.readLine();
+        printf("\n%s", str.toUtf8().data());
+
+        if (str == "y" || str == "Y") {
+            ReportSender sender;
+            sender.parse(message, dumpUrl);
+            sender.send("", dumpUrl);
+        }
+    }
+
     return 0;
-
 }

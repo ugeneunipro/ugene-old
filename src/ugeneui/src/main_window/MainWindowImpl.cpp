@@ -270,6 +270,10 @@ void MainWindowImpl::createActions() {
     welcomePageAction->setObjectName("welcome_page");
     connect(welcomePageAction, SIGNAL(triggered()), SIGNAL(si_showWelcomePage()));
 
+    crashUgeneAction = new QAction(tr("Crash UGENE"), this);
+    crashUgeneAction->setObjectName("crash_ugene");
+    connect(crashUgeneAction, SIGNAL(triggered()), SLOT(sl_crashUgene()));
+
 #ifdef _INSTALL_TO_PATH_ACTION
     installToPathAction = new QAction(tr("Enable Terminal Usage..."), this);
     connect(installToPathAction, SIGNAL(triggered()), SLOT(sl_installToPathAction()));
@@ -339,6 +343,10 @@ void MainWindowImpl::prepareGUI() {
     menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(checkUpdateAction);
     menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(welcomePageAction);
     menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(aboutAction);
+    if ("1" == qgetenv(ENV_TEST_CRASH_HANDLER)) {
+        menuManager->getTopLevelMenu(MWMENU_HELP)->addSeparator();
+        menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(crashUgeneAction);
+    }
 
     mdiManager = new MWMDIManagerImpl(this, mdi);
 
@@ -614,6 +622,21 @@ void MainWindowImpl::sl_show(){
     }
     startupTasklist.clear();
     emit si_show();
+}
+
+int bar();
+
+int foo() {
+    return bar();
+}
+
+int bar() {
+    return foo();
+}
+
+void MainWindowImpl::sl_crashUgene() {
+    volatile int *killer = NULL;
+    *killer = 0;
 }
 
 void MainWindowImpl::registerStartupChecks( QList<Task*> tasks ){

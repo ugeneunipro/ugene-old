@@ -30,6 +30,7 @@ const QString Utils::SESSION_DB_UGENE_ARG = "--session-db=";
 
 const QString REPORT_FILE_ARG = "-f";
 const QString SESSION_DB_FILE_ARG = "-d";
+const QString DUMP_FILE_ARG = "-dump";
 const int MAX_FILE_SIZE = 512000; // 500 Kb
 
 bool Utils::hasReportUrl() {
@@ -46,6 +47,10 @@ bool Utils::hasDatabaseUrl() {
 
 QString Utils::getDatabaseUrl() {
     return getArgumentValue(SESSION_DB_FILE_ARG);
+}
+
+QString Utils::getDumpUrl() {
+    return getArgumentValue(DUMP_FILE_ARG);
 }
 
 QString Utils::loadReportFromUrl(const QString &url) {

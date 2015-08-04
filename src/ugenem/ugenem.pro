@@ -5,7 +5,7 @@ QT += xml network webkit
 equals(QT_MAJOR_VERSION, 5): QT -= webkit
 equals(QT_MAJOR_VERSION, 5): QT += widgets webkitwidgets
 TEMPLATE = app
-CONFIG +=qt thread debug_and_release
+CONFIG += qt thread debug_and_release
 DEFINES+= QT_DLL QT_FATAL_ASSERT
 INCLUDEPATH += src _tmp
 
@@ -59,4 +59,3 @@ SOURCES += src/main.cpp \
            src/Utils.cpp
 
 RESOURCES += ugenem.qrc
-

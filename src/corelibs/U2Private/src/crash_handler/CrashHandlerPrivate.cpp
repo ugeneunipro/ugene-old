@@ -19,30 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _UGENEM_UTILS_H_
-#define _UGENEM_UTILS_H_
+#include "CrashHandler.h"
+#include "CrashHandlerPrivate.h"
 
-#include <QtCore/QString>
+namespace U2 {
 
-/**
- * The methods can be used only if QCoreApplication has instance
- */
-class Utils {
-public:
-    static bool hasReportUrl();
-    static QString getReportUrl();
-    static bool hasDatabaseUrl();
-    static QString getDatabaseUrl();
-    static QString getDumpUrl();
-    static QString loadReportFromUrl(const QString &url);
+CrashHandlerPrivate::CrashHandlerPrivate() :
+    breakpadHandler(NULL)
+{
 
-    static bool isSystem64bit();
+}
 
-    static const QString SESSION_DB_UGENE_ARG;
+CrashHandlerPrivate::~CrashHandlerPrivate() {
 
-private:
-    static bool hasArgument(const QString &key);
-    static QString getArgumentValue(const QString &key);
-};
+}
 
-#endif // _UGENEM_UTILS_H_
+void CrashHandlerPrivate::storeStackTrace() const {
+    // Do nothing
+}
+
+QString CrashHandlerPrivate::getStackTrace() const {
+    return "";
+}
+
+void CrashHandlerPrivate::handleException(const QString &exceptionType, const QString &dumpUrl) {
+    CrashHandler::handleException(exceptionType, dumpUrl);
+}
+
+}   // namespace U2

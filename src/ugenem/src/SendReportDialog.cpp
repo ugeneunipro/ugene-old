@@ -19,31 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "SendReportDialog.h"
-
-#include "Utils.h"
-
-#include <QtCore/QBuffer>
-#include <QtCore/QUrl>
-#include <QtCore/QTime>
-#include <QtCore/QDate>
-#include <QtCore/QEventLoop>
-#include <QtCore/QProcess>
-#include <QtCore/QSysInfo>
-#include <QtCore/QFile>
-#include <QtCore/QProcess>
-#include <QtCore/QThread>
-
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtNetwork/QNetworkProxy>
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QNetworkRequest>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include <qglobal.h>
 
 #ifdef Q_OS_WIN
 #include <intrin.h>
@@ -55,27 +31,52 @@
 #include <unistd.h> // for sysconf(3)
 #endif
 
+#include <QBuffer>
+#include <QDate>
+#include <QDir>
+#include <QEventLoop>
+#include <QFile>
+#include <QHttpPart>
+#include <QMessageBox>
+#include <QNetworkAccessManager>
+#include <QNetworkProxy>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QProcess>
+#include <QProcess>
+#include <QSysInfo>
+#include <QThread>
+#include <QTime>
+#include <QUrl>
+
+#include "SendReportDialog.h"
+#include "Utils.h"
+
 #define HOST_URL "http://ugene.unipro.ru"
-//#define HOST_URL "http://127.0.0.1"
+//#define HOST_URL "http://127.0.0.1:80"
 #ifdef Q_OS_LINUX
-#define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest_lin.html"
-#elif defined(Q_OS_UNIX)
-#define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest_unx.html"
-#elif defined(Q_OS_WIN)
-#define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest_win.html"
+#define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest_breakpad_lin.html"
 #elif defined(Q_OS_MAC)
-#define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest_mac.html"
+#define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest_breakpad_mac.html"
+#elif defined(Q_OS_UNIX)
+#define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest_breakpad_unx.html"
+#elif defined(Q_OS_WIN)
+#define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest_breakpad_win.html"
 #else
-#define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest.html"
+#define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest_breakpad.html"
 #endif
 
-void ReportSender::parse(const QString &htmlReport) {
+void ReportSender::parse(const QString &htmlReport, const QString &dumpUrl) {
     report = "Exception with code ";
 
     QStringList list = htmlReport.split("|");
     if(list.size()== 7) {
         report += list.takeFirst() + " - ";
         report += list.takeFirst() + "\n\n";
+
+        if (!dumpUrl.isEmpty()) {
+            report += "Stack dump: " + QDir::toNativeSeparators(dumpUrl) + "\n\n";
+        }
 
         report += "Operation system: ";
         report += getOSVersion() + "\n\n";
@@ -119,7 +120,7 @@ void ReportSender::parse(const QString &htmlReport) {
         if(stacktrace.isEmpty()) {
             QFile err("/tmp/UGENEerror");
             if(err.open(QIODevice::ReadOnly)) {
-                stacktrace = fp.readAll();
+                stacktrace = err.readAll();
                 report += stacktrace.data();
                 err.close();
             }
@@ -128,7 +129,7 @@ void ReportSender::parse(const QString &htmlReport) {
     }
 }
 
-bool ReportSender::send(const QString &additionalInfo) {
+bool ReportSender::send(const QString &additionalInfo, const QString &dumpUrl) {
     report += additionalInfo;
 
     QNetworkAccessManager* netManager=new QNetworkAccessManager(this);
@@ -138,38 +139,66 @@ bool ReportSender::send(const QString &additionalInfo) {
     connect(netManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(sl_replyFinished(QNetworkReply*)));
     //check destination availability
 
-    QNetworkReply *reply = netManager->get(QNetworkRequest(QString(HOST_URL)+QString(DESTINATION_URL_KEEPER_PAGE)));
+    QNetworkReply *reply = netManager->get(QNetworkRequest(QString(HOST_URL) + QString(DESTINATION_URL_KEEPER_PAGE)));
     loop.exec();
     QString reportsPath = QString(reply->readAll());
-    if( reportsPath.isEmpty() ) {
+    if (reportsPath.isEmpty()) {
         return false;
     }
-    if( reply->error() != QNetworkReply::NoError ) {
+    if (reply->error() != QNetworkReply::NoError) {
         return false;
     }
 
     //send report
-    QString data = "data=" + QUrl::toPercentEncoding(report);
+    QString data = QUrl::toPercentEncoding(report);
     QNetworkRequest request(reportsPath);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/x-www-form-urlencoded"));
-    reply = netManager->post(request, data.toUtf8());
+
+    QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+
+    QHttpPart logPart;
+    logPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"log\""));
+    logPart.setBody(data.toUtf8());
+    multiPart->append(logPart);
+
+    if (QFile::exists(dumpUrl)) {
+        QHttpPart dumpPart;
+
+        QFile *file = new QFile(dumpUrl);
+        file->setParent(multiPart);
+        file->open(QIODevice::ReadOnly);
+        dumpPart.setBodyDevice(file);
+
+        dumpPart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream"));
+        dumpPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"dump\"; filename=\"" + file->fileName() + "\""));
+
+        multiPart->append(dumpPart);
+    }
+
+    reply = netManager->post(request, multiPart);
+    multiPart->setParent(reply);
+    connect(reply, SIGNAL(finished()), SLOT(sl_rreplyFinished()));
+
     loop.exec();
-    if( reply->error() != QNetworkReply::NoError ) {
+    if (reply->error() != QNetworkReply::NoError) {
         return false;
     }
+
     return true;
 }
 void ReportSender::sl_replyFinished(QNetworkReply *) {
     loop.exit();
 }
 
-SendReportDialog::SendReportDialog(const QString &report, QDialog *d):
-QDialog(d) {
+SendReportDialog::SendReportDialog(const QString &report, const QString &dumpUrl, QDialog *d) :
+    QDialog(d),
+    dumpUrl(dumpUrl)
+{
     setupUi(this);
-    sender.parse(report);
+    sender.parse(report, dumpUrl);
     errorEdit->setText(sender.getReport());
+
     connect(additionalInfoTextEdit,SIGNAL(textChanged()),
-SLOT(sl_onMaximumMessageSizeReached()));
+            SLOT(sl_onMaximumMessageSizeReached()));
     connect(sendButton, SIGNAL(clicked()), SLOT(sl_onOkClicked()));
     connect(cancelButton, SIGNAL(clicked()), SLOT(sl_onCancelClicked()));
 
@@ -261,9 +290,8 @@ void SendReportDialog::sl_onOkClicked() {
         openUgene();
     }
 
-    if(sender.send(htmlReport)) {
-        accept();
-    }
+    sender.send(htmlReport, dumpUrl);
+    accept();
 }
 
 

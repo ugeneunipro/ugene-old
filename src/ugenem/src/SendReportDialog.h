@@ -32,8 +32,8 @@ class ReportSender:public QObject {
     Q_OBJECT
 public:
     ReportSender(): report("") {}
-    void parse(const QString &str);
-    bool send(const QString &additionalInfo);
+    void parse(const QString &str, const QString &dumpUrl);
+    bool send(const QString &additionalInfo, const QString &dumpUrl);
     QString getOSVersion();
     QString getReport() const {return report;}
     int getTotalPhysicalMemory();
@@ -51,7 +51,7 @@ private:
 class SendReportDialog:public QDialog, public Ui_Dialog {
     Q_OBJECT
 public:
-    SendReportDialog(const QString &report, QDialog *d = NULL);
+    SendReportDialog(const QString &report, const QString &dumpUrl, QDialog *d = NULL);
 
 private:
     void openUgene() const;
@@ -65,6 +65,7 @@ private slots:
 
 private:
     ReportSender sender;
+    const QString dumpUrl;
 };
 
 

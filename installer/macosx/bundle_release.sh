@@ -8,6 +8,8 @@ RELEASE_DIR=../../src/_release
 TARGET_APP_DIR="$BUILD_DIR/${PRODUCT_NAME}.app/"
 TARGET_APP_DIR_RENAMED="$BUILD_DIR/${PRODUCT_DISPLAY_NAME}.app/"
 TARGET_EXE_DIR="${TARGET_APP_DIR}/Contents/MacOS"
+SYMBOLS_DIR=symbols
+
 
 source bundle_common.sh
 
@@ -16,11 +18,14 @@ rm -rf ${BUILD_DIR}
 rm -rf ~/.config/Unipro/UGENE*
 mkdir $BUILD_DIR
 
+echo Preparing debug symbols location
+rm -rf ${SYMBOLS_DIR}
+rm -f "${SYMBOLS_DIR}.tar.gz"
+mkdir "${SYMBOLS_DIR}"
 
 echo
 echo copying UGENE bundle 
 cp -R $RELEASE_DIR/ugeneui.app/ "$TARGET_APP_DIR"
-changeCoreInstallNames ugeneui
 
 echo copying icons
 cp ../../src/ugeneui/images/ugene-doc.icns "$TARGET_APP_DIR/Contents/Resources"
@@ -45,17 +50,11 @@ if [ -e "$RELEASE_DIR/../../tools" ]; then
     find $TARGET_EXE_DIR -name ".svn" | xargs rm -rf
 fi
 
-echo copying ugenem
-cp "$RELEASE_DIR/ugenem.app/Contents/MacOS/ugenem" "$TARGET_EXE_DIR"
-
-echo copying console binary
-cp "$RELEASE_DIR/ugenecl.app/Contents/MacOS/ugenecl" "$TARGET_EXE_DIR"
-changeCoreInstallNames ugenecl
-
-echo copying plugin checker binary
-cp "$RELEASE_DIR/plugins_checker" "$TARGET_EXE_DIR"
-changeCoreInstallNames plugins_checker
-
+echo Copying UGENE binaries
+add-binary ugeneui
+add-binary ugenem
+add-binary ugenecl
+add-binary plugins_checker
 cp ./ugene "$TARGET_EXE_DIR"
 
 echo Copying core shared libs
@@ -72,6 +71,7 @@ add-library U2Script
 add-library U2Test
 add-library U2View
 add-library ugenedb
+add-library breakpad
 if [ "$1" == "-test" ]
    then
       add-library gtest
@@ -136,7 +136,7 @@ done
 
 echo
 echo macdeployqt running...
-macdeployqt "$TARGET_APP_DIR" -executable="$TARGET_EXE_DIR"/ugenecl -executable="$TARGET_EXE_DIR"/ugenem -executable="$TARGET_EXE_DIR"/plugins_checker
+macdeployqt "$TARGET_APP_DIR" -no-strip -executable="$TARGET_EXE_DIR"/ugenecl -executable="$TARGET_EXE_DIR"/ugenem -executable="$TARGET_EXE_DIR"/plugins_checker
 
 # Do not use @loader_path that produced by macdeployqt with "-executable" argument,
 # it cause a crash with plugins loading (UGENE-2994)
@@ -157,10 +157,12 @@ cd ..
 echo copy readme.txt file
 cp ./readme.txt $BUILD_DIR/readme.txt
 
-if [ ! "$1" ] 
-   then
-      echo
-      echo pkg-dmg running...
-      ./pkg-dmg --source $BUILD_DIR --target ugene-${VERSION}-mac-${ARCHITECTURE}-r${BUILD_VCS_NUMBER_new_trunk} --license ./LICENSE.with_3rd_party --volname "Unipro UGENE $VERSION" --symlink /Applications
-fi
+if [ ! "$1" ]; then
+    echo
+    echo Compressing symbols...
+    tar czf "${SYMBOLS_DIR}.tar.gz" "${SYMBOLS_DIR}"
 
+    echo
+    echo pkg-dmg running...
+    ./pkg-dmg --source $BUILD_DIR --target ugene-${VERSION}-mac-${ARCHITECTURE}-r${BUILD_VCS_NUMBER_new_trunk} --license ./LICENSE.with_3rd_party --volname "Unipro UGENE $VERSION" --symlink /Applications
+fi

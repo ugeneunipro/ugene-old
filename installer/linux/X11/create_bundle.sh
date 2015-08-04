@@ -3,9 +3,13 @@
 PRODUCT_NAME="ugene"
 VERSION=`cat ../../../src/ugene_version.pri | grep UGENE_VERSION | awk -F'=' '{print $2}'`
 RELEASE_DIR=../../../src/_release
+SYMBOLS_DIR=symbols
 DATA_DIR=../../../data
 TARGET_APP_DIR="${PRODUCT_NAME}-${VERSION}"
 PACKAGE_TYPE="linux"
+ARCH=`uname -m`
+
+source create_bundle_common.sh
 
 if [ -z "$PATH_TO_QT_LIBS" ]; then 
    echo PATH_TO_QT_LIBS environment variable is not set!
@@ -24,16 +28,16 @@ mkdir $TARGET_APP_DIR
 
 echo
 echo copying ugenecl
-cp -v $RELEASE_DIR/ugenecl "$TARGET_APP_DIR"
+add-binary ugenecl
 
 echo copying ugeneui
-cp -v $RELEASE_DIR/ugeneui "$TARGET_APP_DIR"
+add-binary ugeneui
 
-echo copying ugene startup script
-cp -v $RELEASE_DIR/ugenem "$TARGET_APP_DIR"
+echo copying ugenem
+add-binary ugenem
 
 echo copying plugins_checker
-cp -v $RELEASE_DIR/plugins_checker "$TARGET_APP_DIR"
+add-binary plugins_checker
 
 echo copying ugene startup script
 cp -v $RELEASE_DIR/ugene "$TARGET_APP_DIR"
@@ -89,67 +93,41 @@ fi
 
 echo
 echo copying core shared libs
-cp -v "$RELEASE_DIR/libU2Algorithm.so" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Core.so" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Designer.so" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Formats.so" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Gui.so" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Lang.so" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Private.so" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Remote.so" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Test.so" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2View.so" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libugenedb.so" "${TARGET_APP_DIR}"
-##dirty hack for creation .so.1 files
-CUR_DIR=`pwd`
-cd "${TARGET_APP_DIR}"
-for i in `ls *.so`; do
-    ln -s $i $i.1
-done
-cd $CUR_DIR
+add-core-library U2Algorithm
+add-core-library U2Core
+add-core-library U2Designer
+add-core-library U2Formats
+add-core-library U2Gui
+add-core-library U2Lang
+add-core-library U2Private
+add-core-library U2Remote
+add-core-library U2Test
+add-core-library U2View
+add-core-library ugenedb
+add-core-library breakpad
 
 echo
 echo copying qt libraries
-cp -v "$PATH_TO_QT_LIBS/libQt5Core.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5Core.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5DBus.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5DBus.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5Gui.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5Gui.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5Multimedia.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5Multimedia.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5MultimediaWidgets.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5MultimediaWidgets.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5Network.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5Network.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5OpenGL.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5OpenGL.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5Positioning.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5Positioning.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5PrintSupport.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5PrintSupport.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5Qml.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5Qml.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5Quick.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5Quick.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5Script.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5Script.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5Sensors.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5Sensors.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5Sql.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5Sql.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5Svg.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5Svg.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5WebChannel.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5WebChannel.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5WebKit.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5WebKit.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5WebKitWidgets.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5WebKitWidgets.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5Widgets.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5Widgets.so.5"
-cp -v "$PATH_TO_QT_LIBS/libQt5Xml.so.5" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/libQt5Xml.so.5"
+add-qt-library Qt5Core
+add-qt-library Qt5DBus
+add-qt-library Qt5Gui
+add-qt-library Qt5Multimedia
+add-qt-library Qt5MultimediaWidgets
+add-qt-library Qt5Network
+add-qt-library Qt5OpenGL
+add-qt-library Qt5Positioning
+add-qt-library Qt5PrintSupport
+add-qt-library Qt5Qml
+add-qt-library Qt5Quick
+add-qt-library Qt5Script
+add-qt-library Qt5Sensors
+add-qt-library Qt5Sql
+add-qt-library Qt5Svg
+add-qt-library Qt5WebChannel
+add-qt-library Qt5WebKit
+add-qt-library Qt5WebKitWidgets
+add-qt-library Qt5Widgets
+add-qt-library Qt5Xml
 if [ ! -z "$PATH_TO_LIBPNG12" ]; then 
    cp -v "$PATH_TO_LIBPNG12/libpng12.so.0" "${TARGET_APP_DIR}"
    strip -v "${TARGET_APP_DIR}/libpng12.so.0"
@@ -183,40 +161,6 @@ if [ "$1" == "-test" ]
     then
         cp "$PATH_TO_QT_LIBS/libQtTest.so.4" "${TARGET_APP_DIR}"
 fi
-
-function add-plugin {
-    plugin=$1
-    echo "Registering plugin: ${plugin}"
-
-    PLUGIN_LIB="lib${plugin}.so"
-    PLUGIN_DESC="${plugin}.plugin"
-    PLUGIN_LICENSE="${plugin}.license"
-    
-    echo $PLUGIN_LIB
-    echo
-
-    if [ ! -f ${RELEASE_DIR}/plugins/${PLUGIN_LIB} ] ;  
-    then  
-        echo "Plugin library file not found: ${PLUGIN_LIB} !"
-        exit 1
-    fi
-
-    if [ ! -f ${RELEASE_DIR}/plugins/${PLUGIN_DESC} ] ; 
-    then
-        echo "Plugin descriptor file not found: ${PLUGIN_DESC} !"
-        exit 1
-    fi
-
-    if [ ! -f ${RELEASE_DIR}/plugins/${PLUGIN_LICENSE} ] ; 
-    then
-        echo "Plugin descriptor file not found: ${PLUGIN_LICENSE} !"
-        exit 1
-    fi
-    
-    cp -v "${RELEASE_DIR}/plugins/${PLUGIN_LIB}"  "${TARGET_APP_DIR}/plugins/"
-    cp -v "${RELEASE_DIR}/plugins/${PLUGIN_DESC}" "${TARGET_APP_DIR}/plugins/"
-    cp -v "${RELEASE_DIR}/plugins/${PLUGIN_LICENSE}" "${TARGET_APP_DIR}/plugins/"
-}
 
 echo copying plugins
 add-plugin annotator
@@ -263,7 +207,7 @@ if [ "$1" == "-test" ]; then
 fi
 
 # remove svn dirs
-find $TARGET_APP_DIR -name ".svn" | xargs rm -rf 
+find $TARGET_APP_DIR -name ".svn" | while read | xargs rm -rf
 
 REVISION=$BUILD_VCS_NUMBER_new_trunk
 if [ -z "$REVISION" ]; then
@@ -271,16 +215,16 @@ if [ -z "$REVISION" ]; then
 fi
 
 DATE=`date '+%d_%m_%H-%M'`
-ARCH=`uname -m`
+
 if [ "$1" == "-test" ]; then
    TEST="-test"
 fi
 
 PACKAGE_NAME=$PRODUCT_NAME"-"$VERSION"-$PACKAGE_TYPE-"$ARCH"-r"$REVISION$TEST
 
+tar -czf ${SYMBOLS_DIR}.tar.gz $SYMBOLS_DIR/
 tar -czf $PACKAGE_NAME.tar.gz $TARGET_APP_DIR/
 if [ ! -z $UGENE_CISTROME_PATH ]; then
   echo "Copying cistrome data"
   mv ${TARGET_APP_DIR}/data/cistrome/* $UGENE_CISTROME_PATH
 fi
-

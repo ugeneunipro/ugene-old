@@ -9,6 +9,7 @@ use_bundled_zlib() {
 }
 
 SUBDIRS += \
+          src/libs_3rdparty/breakpad \
           src/libs_3rdparty/qscore \
           src/libs_3rdparty/sqlite3 \
           src/libs_3rdparty/gtest \

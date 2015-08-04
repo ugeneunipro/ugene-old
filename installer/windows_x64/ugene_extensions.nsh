@@ -133,10 +133,26 @@ NoOwn:
 FunctionEnd
 
 
+!macro DumpSymbols binary
+    ${GetFileName} ${binary} $binaryName
+    ExecWait '"dump_syms" "${binary}" > ${SymbolsDir}/{$binaryName}.sym'
+!macroend
+
+!macro AddExecutable executable
+    File "${ReleaseBuildDir}\${executable}.exe"
+    File "${ReleaseBuildDir}\${executable}.map"
+    DumpSymbols "${ReleaseBuildDir}\${executable}.exe"
+!macroend
+
+!macro AddLibrary library
+    File "${ReleaseBuildDir}\${library}.dll"
+    File "${ReleaseBuildDir}\${library}.map"
+!macroend
 
 !macro AddPlugin plugin
     File "${ReleaseBuildDir}\plugins\${plugin}.dll"
     File "${ReleaseBuildDir}\plugins\${plugin}.plugin"
     File "${ReleaseBuildDir}\plugins\${plugin}.license"
     File "${ReleaseBuildDir}\plugins\${plugin}.map"
+    DumpSymbols "${ReleaseBuildDir}\plugins\${plugins}.dll"
 !macroend

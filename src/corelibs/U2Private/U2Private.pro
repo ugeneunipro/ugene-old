@@ -4,7 +4,6 @@ include (U2Private.pri)
 HEADERS += src/AppContextImpl.h \
            src/AppSettingsImpl.h \
            src/ConsoleLogDriver.h \
-           src/CrashHandler.h \
            src/CredentialsAskerCli.h \
            src/DocumentFormatRegistryImpl.h \
            src/IOAdapterRegistryImpl.h \
@@ -14,11 +13,15 @@ HEADERS += src/AppContextImpl.h \
            src/ServiceRegistryImpl.h \
            src/SettingsImpl.h \
            src/TaskSchedulerImpl.h \
-           src/StackWalker.h
+           src/crash_handler/CrashHandler.h \
+           src/crash_handler/CrashHandlerArgsHelper.h \
+           src/crash_handler/CrashHandlerPrivate.h \
+           src/crash_handler/CrashLogCache.h \
+           src/crash_handler/StackWalker.h
+
 SOURCES += src/AppContextImpl.cpp \
            src/AppSettingsImpl.cpp \
            src/ConsoleLogDriver.cpp \
-           src/CrashHandler.cpp \
            src/CredentialsAskerCli.cpp \
            src/DocumentFormatRegistryImpl.cpp \
            src/IOAdapterRegistryImpl.cpp \
@@ -28,10 +31,14 @@ SOURCES += src/AppContextImpl.cpp \
            src/ServiceRegistryImpl.cpp \
            src/SettingsImpl.cpp \
            src/TaskSchedulerImpl.cpp \
-           src/StackWalker.cpp
+           src/crash_handler/CrashHandler.cpp \
+           src/crash_handler/CrashHandlerArgsHelper.cpp \
+           src/crash_handler/CrashHandlerPrivate.cpp \
+           src/crash_handler/CrashLogCache.cpp \
+           src/crash_handler/StackWalker.cpp
 
 CONFIG(x64) {
-	win32 : SOURCES += src/StackRollbackX64.asm
+    win32 : SOURCES += src/crash_handler/StackRollbackX64.asm
 }
 
 TRANSLATIONS += transl/chinese.ts \
@@ -39,8 +46,19 @@ TRANSLATIONS += transl/chinese.ts \
                 transl/english.ts \
                 transl/russian.ts
 
+win32 {
+    HEADERS += src/crash_handler/CrashHandlerPrivateWin.h
+    SOURCES += src/crash_handler/CrashHandlerPrivateWin.cpp
+}
+
+unix_not_mac() {
+    HEADERS += src/crash_handler/CrashHandlerPrivateUnixNotMac.h
+    SOURCES += src/crash_handler/CrashHandlerPrivateUnixNotMac.cpp
+}
+
 mac {
-    HEADERS += src/SleepPreventerMac.h
+    HEADERS += src/crash_handler/CrashHandlerPrivateMac.h \
+               src/SleepPreventerMac.h
+    SOURCES += src/crash_handler/CrashHandlerPrivateMac.cpp
     OBJECTIVE_SOURCES += src/SleepPreventerMac.mm
-    LIBS += -framework Foundation -framework IOKit
 }

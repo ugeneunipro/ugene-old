@@ -19,30 +19,36 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _UGENEM_UTILS_H_
-#define _UGENEM_UTILS_H_
+#ifndef _U2_CRASH_HANDLER_PRIVATE_MAC_H_
+#define _U2_CRASH_HANDLER_PRIVATE_MAC_H_
 
-#include <QtCore/QString>
+#include <qglobal.h>
+#ifdef Q_OS_MAC
 
-/**
- * The methods can be used only if QCoreApplication has instance
- */
-class Utils {
+#include "CrashHandlerPrivate.h"
+
+namespace U2 {
+
+
+class CrashHandlerPrivateMac : public CrashHandlerPrivate {
 public:
-    static bool hasReportUrl();
-    static QString getReportUrl();
-    static bool hasDatabaseUrl();
-    static QString getDatabaseUrl();
-    static QString getDumpUrl();
-    static QString loadReportFromUrl(const QString &url);
+    ~CrashHandlerPrivateMac();
 
-    static bool isSystem64bit();
+    void setupHandler();
+    void shutdown();
 
-    static const QString SESSION_DB_UGENE_ARG;
+    void storeStackTrace() const;
 
 private:
-    static bool hasArgument(const QString &key);
-    static QString getArgumentValue(const QString &key);
+    static bool breakpadCallback(const char *dump_dir,
+                                 const char *minidump_id,
+                                 void *context, bool succeeded);
+
+    static const QString STACKTRACE_FILE_PATH;
 };
 
-#endif // _UGENEM_UTILS_H_
+}   // namespace U2
+
+#endif
+
+#endif // _U2_CRASH_HANDLER_PRIVATE_MAC_H_

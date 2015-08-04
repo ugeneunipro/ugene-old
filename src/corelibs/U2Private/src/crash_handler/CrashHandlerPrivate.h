@@ -19,30 +19,34 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _UGENEM_UTILS_H_
-#define _UGENEM_UTILS_H_
+#ifndef _U2_CRASH_HANDLER_PRIVATE_H_
+#define _U2_CRASH_HANDLER_PRIVATE_H_
 
-#include <QtCore/QString>
+#include <QString>
 
-/**
- * The methods can be used only if QCoreApplication has instance
- */
-class Utils {
+namespace google_breakpad {
+class ExceptionHandler;
+}
+
+namespace U2 {
+
+class CrashHandlerPrivate {
 public:
-    static bool hasReportUrl();
-    static QString getReportUrl();
-    static bool hasDatabaseUrl();
-    static QString getDatabaseUrl();
-    static QString getDumpUrl();
-    static QString loadReportFromUrl(const QString &url);
+    CrashHandlerPrivate();
+    virtual ~CrashHandlerPrivate();
 
-    static bool isSystem64bit();
+    virtual void setupHandler() = 0;
+    virtual void shutdown() = 0;
 
-    static const QString SESSION_DB_UGENE_ARG;
+    virtual void storeStackTrace() const;
+    virtual QString getStackTrace() const;
 
-private:
-    static bool hasArgument(const QString &key);
-    static QString getArgumentValue(const QString &key);
+protected:
+    static void handleException(const QString &exceptionType, const QString &dumpUrl);
+
+    google_breakpad::ExceptionHandler *breakpadHandler;
 };
 
-#endif // _UGENEM_UTILS_H_
+}   // namespace U2
+
+#endif // _U2_CRASH_HANDLER_PRIVATE_H_

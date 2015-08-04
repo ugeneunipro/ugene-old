@@ -4,7 +4,7 @@ PRODUCT_NAME="ugeneuid"
 VERSION=`cat ../../src/ugene_version.pri | grep UGENE_VERSION | awk -F'=' '{print $2}'`
 BUILD_DIR=./debug_bundle
 DEBUG_DIR=../../src/_debug
-TARGET_APP_DIR="$BUILD_DIR/${PRODUCT_NAME}.app/"
+TARGET_APP_DIR="$BUILD_DIR/${PRODUCT_NAME}.app"
 TARGET_EXE_DIR="${TARGET_APP_DIR}/Contents/MacOS"
 
 source bundle_common_debug.sh
@@ -71,10 +71,13 @@ add-library U2Script
 add-library U2Test
 add-library U2View
 add-library ugenedb
+add-library breakpad
 if [ "$1" == "-test" ]
    then
       add-library gtest
 fi
+
+#install_name_tool -change @executable_path/../Frameworks/Breakpad.framework/Versions/A/Breakpad @executable_path/../../../../includes/breakpad/Breakpad.framework/Versions/A/BreakPad ${TARGET_EXE_DIR}/libU2Privated.1.dylib
 
 echo Copying plugins
 

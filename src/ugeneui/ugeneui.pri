@@ -16,7 +16,7 @@ DEFINES+= QT_DLL QT_FATAL_ASSERT
 INCLUDEPATH += src _tmp ../include ../corelibs/U2Private/src
 macx : INCLUDEPATH += /System/Library/Frameworks/Security.framework/Headers
 
-LIBS += -L../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2View -lU2Test -lU2Remote -lU2Lang -lU2Private -lugenedb
+LIBS += -L../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2View -lU2Test -lU2Remote -lU2Lang -lU2Private -lugenedb -lbreakpad
 macx: LIBS += /System/Library/Frameworks/Security.framework/Security
 
 !debug_and_release|build_pass {
@@ -28,8 +28,8 @@ macx: LIBS += /System/Library/Frameworks/Security.framework/Security
         DESTDIR=../_debug
         MOC_DIR=_tmp/moc/debug
         OBJECTS_DIR=_tmp/obj/debug
-        LIBS -= -L../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2View -lU2Test -lU2Remote -lU2Lang -lU2Private -lugenedb
-        LIBS += -L../_debug -lU2Cored -lU2Algorithmd -lU2Formatsd -lU2Guid -lU2Viewd -lU2Testd -lU2Remoted -lU2Langd -lU2Privated -lugenedbd
+        LIBS -= -L../_release -lU2Core -lU2Algorithm -lU2Formats -lU2Gui -lU2View -lU2Test -lU2Remote -lU2Lang -lU2Private -lugenedb -lbreakpad
+        LIBS += -L../_debug -lU2Cored -lU2Algorithmd -lU2Formatsd -lU2Guid -lU2Viewd -lU2Testd -lU2Remoted -lU2Langd -lU2Privated -lugenedbd -lbreakpadd
     }
 
     CONFIG(release, debug|release) {

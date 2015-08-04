@@ -1,3 +1,23 @@
+function add-binary {
+    BINARY=$1
+    echo "Adding binary: ${BINARY}"
+
+    BINARY_PATH="${RELEASE_DIR}/${BINARY}"
+    if [ ! -f ${BINARY_PATH} ]; then
+        BINARY_PATH="${RELEASE_DIR}/${BINARY}.app/Contents/MacOS/${BINARY}"
+    fi
+
+    if [ ! -f ${BINARY_PATH} ] ;
+    then
+        echo "Error: binary file not found: ${BINARY}"
+        exit 1
+    fi
+
+    cp -f "${BINARY_PATH}" "${TARGET_EXE_DIR}"
+    changeCoreInstallNames "${BINARY}"
+    dump_symbols "${TARGET_EXE_DIR}/${BINARY}"
+}
+
 function add-plugin {
     plugin=$1
     echo "Registering plugin: ${plugin}"
@@ -28,6 +48,9 @@ function add-plugin {
     cp "${RELEASE_DIR}/plugins/${PLUGIN_DESC}" "${TARGET_EXE_DIR}/plugins/"
     cp "${RELEASE_DIR}/plugins/${PLUGIN_LICENSE}" "${TARGET_EXE_DIR}/plugins/"
     changeCoreInstallNames "plugins/${PLUGIN_LIB}"
+
+    echo Extracting debug symbols for "plugins/${PLUGIN_LIB}"
+    dump_symbols "${TARGET_EXE_DIR}/plugins/${PLUGIN_LIB}"
 }
 
 function add-library {
@@ -43,7 +66,10 @@ function add-library {
     fi
 
     cp "${RELEASE_DIR}/${LIB_FILE}"  "${TARGET_EXE_DIR}/"
-    changeCoreInstallNames "${LIB_FILE}"		
+    changeCoreInstallNames "${LIB_FILE}"
+
+    echo Extracting debug symbols for "${LIB_FILE}"
+    dump_symbols "${TARGET_EXE_DIR}/${LIB_FILE}"
 }
 
 
@@ -65,6 +91,7 @@ changeCoreInstallNames () {
         install_name_tool -change libU2Test.1.dylib  @executable_path/libU2Test.1.dylib "$TARGET_EXE_DIR"/$1
         install_name_tool -change libU2View.1.dylib  @executable_path/libU2View.1.dylib "$TARGET_EXE_DIR"/$1
         install_name_tool -change libugenedb.1.dylib  @executable_path/libugenedb.1.dylib "$TARGET_EXE_DIR"/$1
+        install_name_tool -change libbreakpad.1.dylib  @executable_path/libbreakpad.1.dylib "$TARGET_EXE_DIR"/$1
         install_name_tool -change libgtest.1.dylib  @executable_path/libgtest.1.dylib "$TARGET_EXE_DIR"/$1
   
    else
@@ -116,4 +143,18 @@ restorePluginsQtInstallNames () {
    fi
 
    return 0
+}
+
+dump_symbols() {
+    filename=`basename "${1}"`
+    SYMBOL_FILE="${SYMBOLS_DIR}/$filename.sym";
+    ./dump_syms -a ${ARCHITECTURE} "$1" > "${SYMBOLS_DIR}/$filename.sym"
+
+    FILE_HEAD=`head -n 1 "${SYMBOL_FILE}"`
+    FILE_HASH=`echo ${FILE_HEAD} | awk '{ print $4 }'`
+    FILE_NAME=`echo ${FILE_HEAD} | awk '{ print $5 }'`
+
+    DEST_PATH="${SYMBOLS_DIR}/${FILE_NAME}/${FILE_HASH}";
+    mkdir -p "${DEST_PATH}"
+    mv "${SYMBOL_FILE}" "${DEST_PATH}/${FILE_NAME}.sym"
 }
