@@ -179,6 +179,38 @@ SetRegView 64
     File "${ReleaseBuildDir}\transl_cs.qm"
     File "${ReleaseBuildDir}\transl_zh.qm"
     File "includes\*.*"
+    File "${PATH_TO_QT_LIBS}\Qt5Core.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5Gui.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5Multimedia.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5MultimediaWidgets.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5Network.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5OpenGL.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5Positioning.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5PrintSupport.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5Qml.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5Quick.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5Script.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5Sensors.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5Sql.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5Svg.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5WebChannel.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5WebKit.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5WebKitWidgets.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5Widgets.dll"
+    File "${PATH_TO_QT_LIBS}\Qt5Xml.dll"
+    File "${PATH_TO_QT_LIBS}\icu*"
+
+    SetOutPath $INSTDIR\sqldrivers
+    File "${PATH_TO_QT_LIBS}\..\plugins\sqldrivers\qsqlmysql.dll"
+
+    SetOutPath $INSTDIR\imageformats
+    File "${PATH_TO_QT_LIBS}\..\plugins\imageformats\qgif.dll"
+    File "${PATH_TO_QT_LIBS}\..\plugins\imageformats\qjpeg.dll"
+    File "${PATH_TO_QT_LIBS}\..\plugins\imageformats\qsvg.dll"
+    File "${PATH_TO_QT_LIBS}\..\plugins\imageformats\qtiff.dll"
+
+    SetOutPath $INSTDIR\platforms
+    File "${PATH_TO_QT_LIBS}\..\plugins\platforms\qwindows.dll"
 
     SetOutPath $INSTDIR\data
     File /r /x .svn "..\..\data\*.*"
@@ -187,12 +219,6 @@ SetRegView 64
     SetOutPath $INSTDIR\tools
     File /r /x .svn "..\..\src\_release\tools\*.*"
     !endif
-
-    SetOutPath $INSTDIR\styles
-    File "includes\styles\qtdotnet2.dll"
-
-    SetOutPath $INSTDIR\sqldrivers
-    File "includes\sqldrivers\qsqlmysql4.dll"
 
     SetOutPath $INSTDIR\plugins
     File /r /x .svn "includes\plugins\*.*"
