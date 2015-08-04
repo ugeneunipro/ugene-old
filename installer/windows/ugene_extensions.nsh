@@ -134,14 +134,14 @@ FunctionEnd
 
 
 !macro DumpSymbols binary
-    ${GetFileName} ${binary} $binaryName
-    ExecWait '"dump_syms" "${binary}" > ${SymbolsDir}/{$binaryName}.sym'
+#    ${GetFileName} ${binary} $binaryName
+#    ExecWait '"dump_syms" "${binary}" > ${SymbolsDir}/{$binaryName}.sym'
 !macroend
 
 !macro AddExecutable executable
     File "${ReleaseBuildDir}\${executable}.exe"
     File "${ReleaseBuildDir}\${executable}.map"
-    DumpSymbols "${ReleaseBuildDir}\${executable}.exe"
+    !insertmacro DumpSymbols "${ReleaseBuildDir}\${executable}.exe"
 !macroend
 
 !macro AddLibrary library
@@ -154,5 +154,5 @@ FunctionEnd
     File "${ReleaseBuildDir}\plugins\${plugin}.plugin"
     File "${ReleaseBuildDir}\plugins\${plugin}.license"
     File "${ReleaseBuildDir}\plugins\${plugin}.map"
-    DumpSymbols "${ReleaseBuildDir}\plugins\${plugins}.dll"
+    !insertmacro DumpSymbols "${ReleaseBuildDir}\plugins\${plugins}.dll"
 !macroend

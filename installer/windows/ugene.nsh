@@ -142,19 +142,19 @@ Section "Build"
     !insertmacro AddExecutable plugins_checker
     Rename ugenecl.exe ugene.exe
 
-    !macro AddLibrary U2Algorithm
-    !macro AddLibrary U2Core
-    !macro AddLibrary U2Designer
-    !macro AddLibrary U2Formats
-    !macro AddLibrary U2Gui
-    !macro AddLibrary U2Lang
-    !macro AddLibrary U2Private
-    !macro AddLibrary U2Remote
-    !macro AddLibrary U2Script
-    !macro AddLibrary U2Test
-    !macro AddLibrary U2View
-    !macro AddLibrary ugenedb
-    !macro AddLibrary breakpad
+    !insertmacro AddLibrary U2Algorithm
+    !insertmacro AddLibrary U2Core
+    !insertmacro AddLibrary U2Designer
+    !insertmacro AddLibrary U2Formats
+    !insertmacro AddLibrary U2Gui
+    !insertmacro AddLibrary U2Lang
+    !insertmacro AddLibrary U2Private
+    !insertmacro AddLibrary U2Remote
+    !insertmacro AddLibrary U2Script
+    !insertmacro AddLibrary U2Test
+    !insertmacro AddLibrary U2View
+    !insertmacro AddLibrary ugenedb
+    !insertmacro AddLibrary breakpad
 
     File "${ReleaseBuildDir}\transl_en.qm"
     File "${ReleaseBuildDir}\transl_ru.qm"
