@@ -95,7 +95,7 @@ struct AppMemory {
 };
 typedef std::list<AppMemory> AppMemoryList;
 
-class ExceptionHandler {
+class __declspec(dllexport) ExceptionHandler{
  public:
   // A callback function to run before Breakpad performs any substantial
   // processing of an exception.  A FilterCallback is called before writing
