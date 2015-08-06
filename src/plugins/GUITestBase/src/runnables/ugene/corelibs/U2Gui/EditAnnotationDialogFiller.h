@@ -30,7 +30,8 @@ namespace U2 {
     public:
         EditAnnotationFiller(U2OpStatus &_os, const QString &_annotationName, const QString &_location, bool _complementStrand = false)
             :Filler(_os, "EditAnnotationDialog"), annotationName(_annotationName), location(_location), complementStrand(_complementStrand) {}
-        virtual void run();
+        EditAnnotationFiller(U2OpStatus &_os, CustomScenario* c): Filler(_os, "EditAnnotationDialog", c), annotationName(""), location(""), complementStrand(false) {}
+        virtual void commonScenario();
     private:
         QString annotationName;
         QString location;
@@ -41,7 +42,7 @@ namespace U2 {
     public:
         EditAnnotationChecker(U2OpStatus &_os, const QString &_annotationName, const QString &_location)
             :Filler(_os, "EditAnnotationDialog"), annotationName(_annotationName), location(_location){}
-        virtual void run();
+        virtual void commonScenario();
     private:
         QString annotationName;
         QString location;

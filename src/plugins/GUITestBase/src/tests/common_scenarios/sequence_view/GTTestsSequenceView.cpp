@@ -34,6 +34,7 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTRadioButton.h"
 #include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsAnnotationsHighlightingTreeView.h"
 #include "GTUtilsCircularView.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsProject.h"
@@ -43,10 +44,14 @@
 #include "GTUtilsToolTip.h"
 #include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateRulerDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/SetSequenceOriginDialogFiller.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/primer3/Primer3DialogFiller.h"
@@ -58,6 +63,8 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/Overview.h>
 #include <U2View/GSequenceLineView.h>
+
+#include <QTreeWidget>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -1366,7 +1373,10 @@ GUI_TEST_CLASS_DEFINITION(test_0044){
     Overview* over = qobject_cast<Overview*>(GTWidget::findWidget(os, "OverviewRenderArea")->parentWidget());
     GTWidget::click(os, over);
     GTGlobals::sleep(1000);
-    GTMouseDriver::scroll(os, 10);
+    for(int i = 0; i<10; i++){
+        GTMouseDriver::scroll(os, 1);
+        GTGlobals::sleep(200);
+    }
     GTGlobals::sleep(1000);
 
     U2Region r = GTUtilsSequenceView::getPanViewByNumber(os)->getVisibleRange();
@@ -1442,6 +1452,142 @@ GUI_TEST_CLASS_DEFINITION(test_0045){
     GTGlobals::sleep(1000);
     QImage final = GTWidget::getImage(os, pan);
     CHECK_SET_ERR(init != final, "pan view was not changed")
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0046){
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    for(int i=0; i<5; i++){
+        GTWidget::click(os, GTWidget::findWidget(os, "action_zoom_in_NC_001363"));
+    }
+    int vis = GTUtilsSequenceView::getPanViewByNumber(os)->getVisibleRange().startPos;
+    CHECK_SET_ERR(vis>2300, QString("1 wrong visiable range start: %1").arg(vis));
+
+    for(int i=0; i<5; i++){
+        GTWidget::click(os, GTWidget::findWidget(os, "action_zoom_out_NC_001363"));
+    }
+    vis = GTUtilsSequenceView::getPanViewByNumber(os)->getVisibleRange().startPos;
+    CHECK_SET_ERR(vis == 0, QString("2 wrong visiable range start: %1").arg(vis));
+
+    for(int i=0; i<5; i++){
+        GTWidget::click(os, GTWidget::findWidget(os, "action_zoom_in_NC_001363"));
+    }
+    vis = GTUtilsSequenceView::getPanViewByNumber(os)->getVisibleRange().startPos;
+    CHECK_SET_ERR(vis>2300, QString("3 wrong visiable range start: %1").arg(vis));
+
+    GTWidget::click(os, GTWidget::findWidget(os, "action_zoom_to_sequence_NC_001363"));
+    vis = GTUtilsSequenceView::getPanViewByNumber(os)->getVisibleRange().startPos;
+    CHECK_SET_ERR(vis == 0, QString("4 wrong visiable range start: %1").arg(vis));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0047){
+//    Open murine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+//    Open CV
+    GTUtilsCv::cvBtn::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+//    Use context menu on CV
+    GTUtilsDialog::waitForDialog(os, new SetSequenceOriginDialogFiller(os, 1000));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT
+                                                      << "Set new sequence origin"));
+    GTWidget::click(os, GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_0"), Qt::RightButton);
+//    check "Set new sequence origin" action
+    GTGlobals::sleep();
+    GTUtilsSequenceView::clickAnnotationDet(os, "CDS", 43);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0048){
+//    Open murine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "sars.gb");
+//    Use context menu on annotation in tree view
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "NC_001363 features"));
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList()<<"Add"<<"Objects with annotations..."));
+    GTWidget::click(os, GTUtilsSequenceView::getSeqWidgetByNumber(os)->getDetView(), Qt::RightButton);
+//    Check {add-> Objects with annotations} action
+    GTUtilsAnnotationsTreeView::findItem(os, "NC_001363 features [murine.gb]");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0050){
+    class WrongNameChecker : public CustomScenario {
+    public:
+        virtual void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Wrong annotation name"));
+            QLineEdit* nameEdit = GTWidget::findExactWidget<QLineEdit*>(os, "nameEdit", dialog);
+            GTLineEdit::setText(os, nameEdit, "//");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    class WrongDistanceChecker : public CustomScenario {
+    public:
+        virtual void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QLabel* statusLabel = GTWidget::findExactWidget<QLabel*>(os, "statusLabel", dialog);
+            QLineEdit* locationEdit = GTWidget::findExactWidget<QLineEdit*>(os, "locationEdit", dialog);
+
+            GTLineEdit::clear(os, locationEdit);
+            CHECK_SET_ERR(statusLabel->text() == "<b><font color=\"#A6392E\">Location is empty!</font></b>", QString("1 Unexpected status: %1").arg(statusLabel->text()));
+
+            GTLineEdit::setText(os, locationEdit, "1..");
+            CHECK_SET_ERR(statusLabel->text() == "<b><font color=\"#A6392E\">Invalid location!</font><b>", QString("2 Unexpected status: %1").arg(statusLabel->text()));
+
+            GTLineEdit::setText(os, locationEdit, "1..0");
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "New annotation locations is out of sequence bounds!"));
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsAnnotationsTreeView::selectItems(os, QList<QTreeWidgetItem*>() << GTUtilsAnnotationsTreeView::findItem(os, "CDS"));
+
+    GTUtilsDialog::waitForDialog(os, new EditAnnotationFiller(os, new WrongNameChecker));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new EditAnnotationFiller(os, new WrongDistanceChecker));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep(1000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0050_1){
+    class custom : public CustomScenario {
+    public:
+        virtual void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Genes" << "promoter"));
+            GTWidget::click(os, GTWidget::findWidget(os, "showNameGroupsButton", dialog));
+            QLineEdit* nameEdit = GTWidget::findExactWidget<QLineEdit*>(os, "nameEdit", dialog);
+            CHECK_SET_ERR(nameEdit->text() == "promoter", "unexpected name: " + nameEdit->text());
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTUtilsAnnotationsTreeView::selectItems(os, QList<QTreeWidgetItem*>() << GTUtilsAnnotationsTreeView::findItem(os, "CDS"));
+
+    GTUtilsDialog::waitForDialog(os, new EditAnnotationFiller(os, new custom));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep(1000);
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0051){
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_ANNOT_HIGHLIGHT"));
+    QTreeWidgetItem* item = GTUtilsAnnotHighlightingTreeView::findItem(os, "CDS");
+    GTWidget::click(os, GTUtilsAnnotHighlightingTreeView::getTreeWidget(os)->itemWidget(item, 2));
+    //GTMouseDriver::moveTo(os, GTUtilsAnnotHighlightingTreeView::getItemCenter(os, "CDS"));
+    GTGlobals::sleep();
 }
 
 } // namespace GUITest_common_scenarios_sequence_view

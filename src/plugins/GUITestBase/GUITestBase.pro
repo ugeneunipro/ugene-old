@@ -274,7 +274,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
     src/api/GTWebView.h \
     src/tests/common_scenarios/start_page/GTTestsStartPage.h \
     src/GTutilsStartPage.h \
-    src/runnables/ugene/corelibs/U2Gui/CreateRulerDialogFiller.h
+    src/runnables/ugene/corelibs/U2Gui/CreateRulerDialogFiller.h \
+    src/runnables/ugene/corelibs/U2Gui/SetSequenceOriginDialogFiller.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -554,4 +555,5 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
     src/api/GTWebView.cpp \
     src/tests/common_scenarios/start_page/GTTestsStartPage.cpp \
     src/GTutilsStartPage.cpp \
-    src/runnables/ugene/corelibs/U2Gui/CreateRulerDialogFiller.cpp
+    src/runnables/ugene/corelibs/U2Gui/CreateRulerDialogFiller.cpp \
+    src/runnables/ugene/corelibs/U2Gui/SetSequenceOriginDialogFiller.cpp

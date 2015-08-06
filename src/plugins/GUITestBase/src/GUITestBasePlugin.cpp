@@ -1272,6 +1272,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0044_1);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0044_2);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0045);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0046);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0047);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0048);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0050);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0050_1);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0051);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/sequence edit/
@@ -1565,7 +1571,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039_5);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039_6);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039_7);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039_8);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0040);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0041);
 

@@ -44,7 +44,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::EditAnnotationFiller"
 #define GT_METHOD_NAME "run"
-void EditAnnotationFiller::run()
+void EditAnnotationFiller::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
@@ -74,7 +74,7 @@ void EditAnnotationFiller::run()
 
 #define GT_CLASS_NAME "GTUtilsDialog::EditAnnotationChecker"
 #define GT_METHOD_NAME "run"
-void EditAnnotationChecker::run()
+void EditAnnotationChecker::commonScenario()
     {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

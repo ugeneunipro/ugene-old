@@ -37,7 +37,7 @@
 #define TIMEOUT 480000
 
 #ifdef Q_OS_MAC
-#define NUMBER_OF_TESTS_IN_SUITE 600
+#define NUMBER_OF_TESTS_IN_SUITE 700
 #elif defined(Q_OS_UNIX)
 #define NUMBER_OF_TESTS_IN_SUITE 500
 #elif defined(Q_OS_WIN)
