@@ -19,7 +19,13 @@ for root, subdirs, files in os.walk(symbols_dir):
         file_path = os.path.join(root, filename)
         with open (file_path, 'rb') as f:
             first_line = f.readline()
-            hash = first_line.split()[3];
-        dest_sym_dir = os.path.join(symbols_dir, os.path.basename(os.path.splitext(file_path)[0]), hash)
+            if not first_line:
+                print("Symbols file is empty %s" % filename)
+                continue
+            hash_line = first_line.split()[3];
+            module_name= first_line.split()[4];
+            #print(module_name)
+        dest_sym_dir = os.path.join(symbols_dir, module_name, hash_line)
+        #print(dest_sym_dir)
         mkdir_p(dest_sym_dir)
         os.rename(file_path, os.path.join(dest_sym_dir, filename))
