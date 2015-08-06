@@ -69,6 +69,8 @@
 #include <string>
 #include <vector>
 
+#include <qglobal.h>
+
 #include "client/windows/common/ipc_protocol.h"
 #include "client/windows/crash_generation/crash_generation_client.h"
 #include "common/scoped_ptr.h"
@@ -95,7 +97,7 @@ struct AppMemory {
 };
 typedef std::list<AppMemory> AppMemoryList;
 
-class __declspec(dllexport) ExceptionHandler{
+class Q_DECL_EXPORT ExceptionHandler{
  public:
   // A callback function to run before Breakpad performs any substantial
   // processing of an exception.  A FilterCallback is called before writing

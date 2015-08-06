@@ -6,7 +6,7 @@ CONFIG += thread debug_and_release warn_off
 INCLUDEPATH += src
 TARGET = breakpad
 DESTDIR = ../../_release
-QT -= core gui
+QT -= gui
 
 QMAKE_CC = g++
 QMAKE_CXX = g++
