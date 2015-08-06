@@ -83,7 +83,6 @@ FunctionEnd
 ################################################################
 # Installer options
     !define ReleaseBuildDir "..\..\src\_release"
-    !define SymbolsDir "symbols"
     !include ${ReleaseBuildDir}\version.nsis
     !ifndef ProductVersion
     !define ProductVersion "unknown"
@@ -212,8 +211,8 @@ SetRegView 64
 
     SetOutPath $INSTDIR\plugins
     File /r /x .svn "includes\plugins\*.*"
-	
-	!insertmacro AddPlugin annotator
+
+    !insertmacro AddPlugin annotator
     !insertmacro AddPlugin ball
     !insertmacro AddPlugin biostruct3d_view
     !insertmacro AddPlugin browser_support
@@ -237,10 +236,10 @@ SetRegView 64
     !insertmacro AddPlugin linkdata_support
     !insertmacro AddPlugin opencl_support
     !insertmacro AddPlugin orf_marker
+    !insertmacro AddPlugin pcr
     !insertmacro AddPlugin phylip
     !insertmacro AddPlugin primer3
     !insertmacro AddPlugin psipred
-    !insertmacro AddPlugin pcr
     !insertmacro AddPlugin ptools
     !insertmacro AddPlugin query_designer
     !insertmacro AddPlugin remote_blast
@@ -253,15 +252,12 @@ SetRegView 64
     !insertmacro AddPlugin workflow_designer
     !insertmacro AddPlugin variants
 
-  
+
     SetOutPath $INSTDIR\tools
     File /r /x .svn "includes\tools\*.*"
     
     SetOutPath $INSTDIR\imageformats
     File /r /x .svn "includes\imageformats\*.*"
-
-    ExecWait '"resort_symbols.py" "${SymbolsDir}"'
-    ExecWait '"zip" -r "${SymbolsDir}.zip" "${SymbolsDir}\*"'
 
     SetOutPath $INSTDIR
     

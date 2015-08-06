@@ -76,7 +76,6 @@ FunctionEnd
 ################################################################
 # Installer options
     !define ReleaseBuildDir "..\..\src\_release"
-    !define SymbolsDir "symbols"
     !include ${ReleaseBuildDir}\version.nsis
     !ifndef ProductVersion
     !define ProductVersion "unknown"
@@ -244,15 +243,13 @@ Section "Build"
     !insertmacro AddPlugin weight_matrix
     !insertmacro AddPlugin workflow_designer
     !insertmacro AddPlugin variants
-    
+
+
     SetOutPath $INSTDIR\tools
     File /r /x .svn "includes\tools\*.*"
     
     SetOutPath $INSTDIR\imageformats
     File /r /x .svn "includes\imageformats\*.*"
-
-    ExecWait '"resort_symbols.py" "${SymbolsDir}"'
-    ExecWait '"zip" -r "${SymbolsDir}.zip" "${SymbolsDir}\*"'
 
     SetOutPath $INSTDIR
     
