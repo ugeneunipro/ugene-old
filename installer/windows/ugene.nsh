@@ -248,9 +248,6 @@ Section "Build"
     SetOutPath $INSTDIR\tools
     File /r /x .svn "includes\tools\*.*"
     
-    SetOutPath $INSTDIR\imageformats
-    File /r /x .svn "includes\imageformats\*.*"
-
     SetOutPath $INSTDIR
     
     ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
