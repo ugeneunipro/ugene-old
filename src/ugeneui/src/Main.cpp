@@ -346,7 +346,10 @@ int main(int argc, char **argv)
 
     QMainWindow window;
     SplashScreen *splashScreen = new SplashScreen(&window);
-    splashScreen->show();
+    splashScreen->show(); //call show() method first, because you don't know actual size of splash screen
+    QRect primaryDesktopRect = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
+    QRect splashScreenRect = splashScreen->rect();
+    splashScreen->move(primaryDesktopRect.width()/2 - splashScreenRect.width()/2, primaryDesktopRect.height()/2 - splashScreenRect.height()/2);
 
     AppContextImpl* appContext = AppContextImpl::getApplicationContext();
     appContext->setGUIMode(true);
