@@ -27,6 +27,7 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
+#include "runnables/qt/DefaultDialogFiller.h"
 #include "runnables/qt/EscapeClicker.h"
 #include "runnables/qt/PopupChooser.h"
 #include "GTUtilsMdi.h"
@@ -372,7 +373,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
     QModelIndex objectIndex = groupIndexes.first().child(0, 0);
     GTUtilsProjectTreeView::getTreeView(os)->scrollTo(objectIndex);
 
-    GTUtilsDialog::waitForDialog(os, new EscapeClicker(os, "U2__ExportMSA2SequencesDialog"));
+    GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "U2__ExportMSA2SequencesDialog", QDialogButtonBox::Cancel));
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export/Import" << "Export alignment to sequence format..."));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, objectIndex));
     GTMouseDriver::click(os, Qt::RightButton);
@@ -393,7 +394,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
     objectIndex = groupIndexes.first().child(0, 0);
     GTUtilsProjectTreeView::getTreeView(os)->scrollTo(objectIndex);
 
-    GTUtilsDialog::waitForDialog(os, new EscapeClicker(os, "U2__ExportSequencesDialog"));
+    GTUtilsDialog::waitForDialog(os, new DefaultDialogFiller(os, "U2__ExportSequencesDialog", QDialogButtonBox::Cancel));
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export/Import" << "Export sequences..."));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, objectIndex));
     GTMouseDriver::click(os, Qt::RightButton);

@@ -3591,10 +3591,11 @@ GUI_TEST_CLASS_DEFINITION(test_1324) {
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Search for TFBS with SITECON"));
     GTMouseDriver::click(os);
     QString val;
-#ifdef Q_OS_WIN32
-    val = "0,00010";
-#else
+
+#ifdef Q_OS_LINUX
     val = "0.00010";
+#else
+    val = "0,00010";
 #endif
     GTUtilsWorkflowDesigner::setParameter(os, "Min Err1", val, GTUtilsWorkflowDesigner::textValue);
 
