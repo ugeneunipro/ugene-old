@@ -74,7 +74,7 @@ void CrashHandlerPrivateUnixNotMac::shutdown() {
     breakpadHandler = NULL;
 }
 
-void CrashHandlerPrivateUnixNotMac::storeStackTrace() const {
+void CrashHandlerPrivateUnixNotMac::storeStackTrace() {
     const QString path = AppContext::getWorkingDirectoryPath() + "/ugenem";
 
     char pid_buf[30];
@@ -91,7 +91,7 @@ void CrashHandlerPrivateUnixNotMac::storeStackTrace() const {
     stacktraceFileWasSucessfullyClosed = (closed == 0);
 }
 
-QString CrashHandlerPrivateMac::getAdditionalInfo() const {
+QString CrashHandlerPrivateUnixNotMac::getAdditionalInfo() const {
     QString info;
 
     if (!stacktraceFileWasSucessfullyRemoved) {
