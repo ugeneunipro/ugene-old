@@ -1971,8 +1971,8 @@ GUI_TEST_CLASS_DEFINITION(test_0031) {
 //    1. Open "_common_data/genbank/2nanot_1seq.gb".
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/2annot_1seq.gb");
 
-//    2. Drag'n'drop "NC_001363 features" object to the sequence view, confirm the relation creation.
-    GTUtilsAnnotationsTreeView::addAnnotationsTableFromProject(os, "NC_001363 features");
+//    2. Drag'n'drop "NC_001363 annotations 2" object to the sequence view, confirm the relation creation.
+    GTUtilsAnnotationsTreeView::addAnnotationsTableFromProject(os, "NC_001363 annotations 2");
 
 //    3. Call "Create new annotation" dialog.
 
@@ -2037,11 +2037,11 @@ GUI_TEST_CLASS_DEFINITION(test_0031) {
             GTUtilsDialog::waitForDialog(os, new PopupChecker(os, new GroupMenuChecker(expectedGroups)));
             clickSelectGroupButton(os, dialog);
 
-//    7. Close the popup menu. Set "NC_001363 features" in existing tables combobox.
-            setExistingTable(os, dialog, "NC_001363 features [2annot_1seq.gb]");
+//    7. Close the popup menu. Set "NC_001363 annotations 2" in existing tables combobox.
+            setExistingTable(os, dialog, "NC_001363 annotations 2 [2annot_1seq.gb]");
 
 //    8. Click "Predefined group names" button.
-//    Expected state: a popup menu contains all groups from the "NC_001363 features" table.
+//    Expected state: a popup menu contains all groups from the "NC_001363 annotations 2" table.
             expectedGroups = QStringList() << "<auto>"
                                            << "group"
                                            << "just an annotation";
@@ -2060,11 +2060,11 @@ GUI_TEST_CLASS_DEFINITION(test_0031) {
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "New annotation");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-//    Expected state: there is a new annotation in the new correctly named group in the "NC_001363 features" table.
+//    Expected state: there is a new annotation in the new correctly named group in the "NC_001363 annotations 2" table.
     QStringList expectedGroups = QStringList() << "group  (0, 1)"
                                                << "just an annotation  (0, 1)"
                                                << "test_0031  (0, 1)";
-    QStringList groups = GTUtilsAnnotationsTreeView::getGroupNames(os, "NC_001363 features [2annot_1seq.gb] *");
+    QStringList groups = GTUtilsAnnotationsTreeView::getGroupNames(os, "NC_001363 annotations 2 [2annot_1seq.gb] *");
     CHECK_SET_ERR(expectedGroups.toSet() == groups.toSet(), QString("Unexpected group names: expect '%1', got '%2'")
                   .arg(expectedGroups.join(", ")).arg(groups.join(", ")));
 
@@ -2080,8 +2080,8 @@ GUI_TEST_CLASS_DEFINITION(test_0032) {
 //    1. Open "_common_data/genbank/2anot_1seq.gb".
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/2annot_1seq.gb");
 
-//    2. Drag'n'drop "NC_001363 features" object to the sequence view, confirm the relation creation.
-    GTUtilsAnnotationsTreeView::addAnnotationsTableFromProject(os, "NC_001363 features");
+//    2. Drag'n'drop "NC_001363 annotations 2" object to the sequence view, confirm the relation creation.
+    GTUtilsAnnotationsTreeView::addAnnotationsTableFromProject(os, "NC_001363 annotations 2");
 
 
 //    3. Call "Smith-Waterman Search" dialog. Set any pattern. Open "Input and output" tab.
@@ -2149,11 +2149,11 @@ GUI_TEST_CLASS_DEFINITION(test_0032) {
             GTUtilsDialog::waitForDialog(os, new PopupChecker(os, new GroupMenuChecker(expectedGroups)));
             clickSelectGroupButton(os, dialog);
 
-//    7. Close the popup menu. Set "NC_001363 features" in existing tables combobox.
-            setExistingTable(os, dialog, "NC_001363 features [2annot_1seq.gb]");
+//    7. Close the popup menu. Set "NC_001363 annotations 2" in existing tables combobox.
+            setExistingTable(os, dialog, "NC_001363 annotations 2 [2annot_1seq.gb]");
 
 //    8. Click "Predefined group names" button.
-//    Expected state: a popup menu contains all groups from the "NC_001363 features" table.
+//    Expected state: a popup menu contains all groups from the "NC_001363 annotations 2" table.
             expectedGroups = QStringList() << "<auto>"
                                            << "group"
                                            << "just an annotation";
@@ -2171,11 +2171,11 @@ GUI_TEST_CLASS_DEFINITION(test_0032) {
     GTToolbar::clickButtonByTooltipOnToolbar(os, MWTOOLBAR_ACTIVEMDI, "Find pattern [Smith-Waterman]");
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-//    Expected state: there is a new annotation in the new correctly named group in the "NC_001363 features" table.
+//    Expected state: there is a new annotation in the new correctly named group in the "NC_001363 annotations 2" table.
     QStringList expectedGroups = QStringList() << "group  (0, 1)"
                                                << "just an annotation  (0, 1)"
                                                << "test_0032  (0, 1)";
-    QStringList groups = GTUtilsAnnotationsTreeView::getGroupNames(os, "NC_001363 features [2annot_1seq.gb] *");
+    QStringList groups = GTUtilsAnnotationsTreeView::getGroupNames(os, "NC_001363 annotations 2 [2annot_1seq.gb] *");
     CHECK_SET_ERR(expectedGroups.toSet() == groups.toSet(), QString("Unexpected group names: expect '%1', got '%2'")
                   .arg(expectedGroups.join(", ")).arg(groups.join(", ")));
 
@@ -2191,8 +2191,8 @@ GUI_TEST_CLASS_DEFINITION(test_0033) {
 //    1. Open "_common_data/genbank/2anot_1seq.gb".
     GTFileDialog::openFile(os, testDir + "_common_data/genbank/2annot_1seq.gb");
 
-//    2. Drag'n'drop "NC_001363 features" object to the sequence view, confirm the relation creation.
-    GTUtilsAnnotationsTreeView::addAnnotationsTableFromProject(os, "NC_001363 features");
+//    2. Drag'n'drop "NC_001363 annotations 2" object to the sequence view, confirm the relation creation.
+    GTUtilsAnnotationsTreeView::addAnnotationsTableFromProject(os, "NC_001363 annotations 2");
 
 //    3. Open "Search in Sequence" options panel tab. Set any pattern. Open "Save annotation(s) to" and "Annotation parameters" groups.
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
@@ -2256,13 +2256,13 @@ GUI_TEST_CLASS_DEFINITION(test_0033) {
     GTUtilsDialog::waitForDialog(os, new PopupChecker(os, new GroupMenuChecker(expectedGroups)));
     clickSelectGroupButton(os);
 
-//    7. Close the popup menu. Set "NC_001363 features" in existing tables combobox.
+//    7. Close the popup menu. Set "NC_001363 annotations 2" in existing tables combobox.
     GTUtilsOptionPanelSequenceView::openSaveAnnotationToShowHideWidget(os);
-    setExistingTable(os, NULL, "NC_001363 features [2annot_1seq.gb]");
+    setExistingTable(os, NULL, "NC_001363 annotations 2 [2annot_1seq.gb]");
     GTUtilsOptionPanelSequenceView::openSaveAnnotationToShowHideWidget(os, false);
 
 //    8. Click "Predefined group names" button.
-//    Expected state: a popup menu contains all groups from the "NC_001363 features" table.
+//    Expected state: a popup menu contains all groups from the "NC_001363 annotations 2" table.
     expectedGroups = QStringList() << "<auto>"
                                    << "group"
                                    << "just an annotation";
@@ -2276,11 +2276,11 @@ GUI_TEST_CLASS_DEFINITION(test_0033) {
     GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-//    Expected state: there is a new annotation in the new correctly named group in the "NC_001363 features" table.
+//    Expected state: there is a new annotation in the new correctly named group in the "NC_001363 annotations 2" table.
     expectedGroups = QStringList() << "group  (0, 1)"
                                                << "just an annotation  (0, 1)"
                                                << "test_0033  (0, 1)";
-    QStringList groups = GTUtilsAnnotationsTreeView::getGroupNames(os, "NC_001363 features [2annot_1seq.gb] *");
+    QStringList groups = GTUtilsAnnotationsTreeView::getGroupNames(os, "NC_001363 annotations 2 [2annot_1seq.gb] *");
     CHECK_SET_ERR(expectedGroups.toSet() == groups.toSet(), QString("Unexpected group names: expect '%1', got '%2'")
                   .arg(expectedGroups.join(", ")).arg(groups.join(", ")));
 
