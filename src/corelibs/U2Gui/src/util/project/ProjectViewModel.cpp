@@ -21,6 +21,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/BunchMimeData.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/ImportDocumentToDatabaseTask.h>
 #include <U2Core/ImportObjectToDatabaseTask.h>
@@ -1243,6 +1244,16 @@ QVariant ProjectViewModel::getObjectToolTipData(GObject * /*obj*/, Document *par
 }
 
 QVariant ProjectViewModel::getObjectDecorationData(GObject *obj, bool itemIsEnabled) const {
+    // There is a special case: circular sequence object should have an icon that differs from the standard sequence icon!
+    if (obj->getGObjectType() == GObjectTypes::SEQUENCE) {
+        U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
+        SAFE_POINT(seqObj != NULL, "Cannot cast GObject to U2SequenceObject", QVariant());
+        if (seqObj->isCircular()) {
+            const QIcon circIcon(":core/images/circular.png");
+            return getIcon(circIcon, itemIsEnabled);
+        }
+    }
+
     const GObjectTypeInfo &ti = GObjectTypes::getTypeInfo(obj->getGObjectType());
     const QIcon& icon = (NULL != obj->getGObjectModLock(GObjectModLock_IO) ? ti.lockedIcon : ti.icon);
     return getIcon(icon, itemIsEnabled);
