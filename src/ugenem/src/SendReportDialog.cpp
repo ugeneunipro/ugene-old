@@ -70,7 +70,7 @@ void ReportSender::parse(const QString &htmlReport, const QString &dumpUrl) {
     report = "Exception with code ";
 
     QStringList list = htmlReport.split("|");
-    if(list.size()== 7) {
+    if (list.size() == 8) {
         report += list.takeFirst() + " - ";
         report += list.takeFirst() + "\n\n";
 
@@ -96,6 +96,12 @@ void ReportSender::parse(const QString &htmlReport, const QString &dumpUrl) {
 
         report += "ActiveWindow: ";
         report += list.takeFirst() + "\n\n";
+
+        const QString crashHandlerInfo = list.takeFirst();
+        if ("None" != crashHandlerInfo) {
+            report += "Crash handler additional info:\n";
+            report += crashHandlerInfo + "\n";
+        }
 
         report += "Log:\n";
         report += list.takeFirst() + "\n";

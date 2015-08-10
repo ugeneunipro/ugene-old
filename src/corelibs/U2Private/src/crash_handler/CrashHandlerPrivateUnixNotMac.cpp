@@ -36,16 +36,31 @@ namespace U2 {
 
 const QString CrashHandlerPrivateUnixNotMac::STACKTRACE_FILE_PATH = "/tmp/UGENEstacktrace.txt";
 
+CrashHandlerPrivateUnixNotMac::CrashHandlerPrivateUnixNotMac() :
+    CrashHandlerPrivate(),
+    stacktraceFileWasSucessfullyRemoved(true),
+    stacktraceFileSucessfullyCreated(true),
+    stacktraceFileWasSucessfullyClosed(true),
+    crashDirWasSucessfullyCreated(true),
+    dumpWasSuccessfullySaved(true)
+{
+
+}
+
 CrashHandlerPrivateUnixNotMac::~CrashHandlerPrivateUnixNotMac()  {
     shutdown();
 }
 
 void CrashHandlerPrivateUnixNotMac::setupHandler() {
 #ifndef _DEBUG
-    QFile(STACKTRACE_FILE_PATH).remove();
+    if (QFile::exists(STACKTRACE_FILE_PATH)) {
+        stacktraceFileWasSucessfullyRemoved = QFile(STACKTRACE_FILE_PATH).remove();
+    }
 
     const QString dumpDir = QDir::tempPath() + "/ugene_crashes";
-    QDir().mkpath(dumpDir);
+    if (!QDir().exists(dumpDir)) {
+        crashDirWasSucessfullyCreated = QDir().mkpath(dumpDir);
+    }
 
     const google_breakpad::MinidumpDescriptor destDirDescriptor(dumpDir.toStdString());
     breakpadHandler = new google_breakpad::ExceptionHandler(destDirDescriptor, NULL, breakpadCallback, this, true, -1);
@@ -68,10 +83,38 @@ void CrashHandlerPrivateUnixNotMac::storeStackTrace() const {
     name_buf[readlink(path.toLatin1().data(), name_buf, 511)]=0;
     FILE *fp;
     fp = freopen (STACKTRACE_FILE_PATH.toLocal8Bit().constData(), "w+",stdout);
+    stacktraceFileSucessfullyCreated = (NULL != fp);
     void * stackTrace[1024];
     int frames = backtrace(stackTrace, 1024);
     backtrace_symbols_fd(stackTrace, frames, STDOUT_FILENO);
-    fclose(fp);
+    const int closed = fclose(fp);
+    stacktraceFileWasSucessfullyClosed = (closed == 0);
+}
+
+QString CrashHandlerPrivateMac::getAdditionalInfo() const {
+    QString info;
+
+    if (!stacktraceFileWasSucessfullyRemoved) {
+        info += "Stacktrace file removing failed on the breakpad initialization\n";
+    }
+
+    if (!crashDirWasSucessfullyCreated) {
+        info += "Dir for storing crash dumps creation failed on the breakpad initialization\n";
+    }
+
+    if (!stacktraceFileSucessfullyCreated) {
+        info += "Stacktrace file creating failed on the crash handling\n";
+    }
+
+    if (!stacktraceFileWasSucessfullyClosed) {
+        info += "Stacktrace file closing failed on the crash handling\n";
+    }
+
+    if (!dumpWasSuccessfullySaved) {
+        info += "Crash dump file saving failed on the crash handling\n";
+    }
+
+    return info;
 }
 
 bool CrashHandlerPrivateUnixNotMac::breakpadCallback(const google_breakpad::MinidumpDescriptor &descriptor,
@@ -83,9 +126,11 @@ bool CrashHandlerPrivateUnixNotMac::breakpadCallback(const google_breakpad::Mini
     }
 
     CrashHandlerPrivateUnixNotMac *privateHandler = static_cast<CrashHandlerPrivateUnixNotMac *>(context);
+    privateHandler->dumpWasSuccessfullySaved = succeeded;
+
     handleException(privateHandler->lastExceptionText, dumpPath);
 
-    return succeeded;
+    return true;
 }
 
 bool CrashHandlerPrivateUnixNotMac::crashContextCallback(const void *crash_context,

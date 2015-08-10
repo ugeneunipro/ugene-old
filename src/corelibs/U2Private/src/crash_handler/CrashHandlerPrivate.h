@@ -38,8 +38,9 @@ public:
     virtual void setupHandler() = 0;
     virtual void shutdown() = 0;
 
-    virtual void storeStackTrace() const;
+    virtual void storeStackTrace();
     virtual QString getStackTrace() const;
+    virtual QString getAdditionalInfo() const;
 
 protected:
     static void handleException(const QString &exceptionType, const QString &dumpUrl);

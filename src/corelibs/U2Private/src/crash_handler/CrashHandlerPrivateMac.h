@@ -32,19 +32,31 @@ namespace U2 {
 
 class CrashHandlerPrivateMac : public CrashHandlerPrivate {
 public:
+    CrashHandlerPrivateMac();
     ~CrashHandlerPrivateMac();
 
     void setupHandler();
     void shutdown();
 
-    void storeStackTrace() const;
+    void storeStackTrace();
+    QString getAdditionalInfo() const;
 
 private:
     static bool breakpadCallback(const char *dump_dir,
                                  const char *minidump_id,
-                                 void *context, bool succeeded);
+                                 void *context,
+                                 bool succeeded);
 
-    static const QString STACKTRACE_FILE_PATH;
+    QString stacktraceFilePath;
+
+    bool legacyStacktraceFileWasSucessfullyRemoved;
+    bool stacktraceFileWasSucessfullyRemoved;
+    bool stacktraceFileSucessfullyCreated;
+    bool stacktraceFileWasSucessfullyClosed;
+    bool crashDirWasSucessfullyCreated;
+    bool dumpWasSuccessfullySaved;
+
+    static const QString LEGACY_STACKTRACE_FILE_PATH;
 };
 
 }   // namespace U2

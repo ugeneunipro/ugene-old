@@ -34,11 +34,15 @@ CrashHandlerPrivate::~CrashHandlerPrivate() {
 
 }
 
-void CrashHandlerPrivate::storeStackTrace() const {
+void CrashHandlerPrivate::storeStackTrace() {
     // Do nothing
 }
 
 QString CrashHandlerPrivate::getStackTrace() const {
+    return "";
+}
+
+QString CrashHandlerPrivate::getAdditionalInfo() const {
     return "";
 }
 

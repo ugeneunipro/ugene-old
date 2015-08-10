@@ -51,7 +51,9 @@ CrashHandlerPrivateWin::~CrashHandlerPrivateWin()  {
 void CrashHandlerPrivateWin::setupHandler() {
 #ifndef _DEBUG
     const QString dumpDir = QDir::tempPath() + "/ugene_crashes";
-    QDir().mkpath(dumpDir);
+    if (!QDir().exists(dumpDir)) {
+        crashDirWasSucessfullyCreated = QDir().mkpath(dumpDir);
+    }
 
     breakpadHandler = new google_breakpad::ExceptionHandler(dumpDir.toStdWString(), NULL, breakpadCallback, this, google_breakpad::ExceptionHandler::HANDLER_ALL);
 #endif
@@ -64,6 +66,20 @@ void CrashHandlerPrivateWin::shutdown() {
 
 QString CrashHandlerPrivateWin::getStackTrace() const {
     return st.getBuffer();
+}
+
+QString CrashHandlerPrivateWin::getAdditionalInfo() const {
+    QString info;
+
+    if (!crashDirWasSucessfullyCreated) {
+        info += "Dir for storing crash dumps creation failed on the breakpad initialization\n";
+    }
+
+    if (!dumpWasSuccessfullySaved) {
+        info += "Crash dump file saving failed on the crash handling\n";
+    }
+
+    return info;
 }
 
 bool CrashHandlerPrivateWin::breakpadCallback(const wchar_t *dump_path,
@@ -79,9 +95,10 @@ bool CrashHandlerPrivateWin::breakpadCallback(const wchar_t *dump_path,
 
     CrashHandlerPrivateWin *privateHandler = static_cast<CrashHandlerPrivateWin *>(context);
     privateHandler->walkStack(exinfo);
+    privateHandler->dumpWasSuccessfullySaved = succeeded;
 
     handleException(privateHandler->getExceptionText(exinfo), dumpPath);
-    return succeeded;
+    return true;
 }
 
 void CrashHandlerPrivateWin::walkStack(EXCEPTION_POINTERS *exinfo) {
@@ -98,8 +115,8 @@ void CrashHandlerPrivateWin::walkStack(EXCEPTION_POINTERS *exinfo) {
 }
 
 QString CrashHandlerPrivateWin::getExceptionText(EXCEPTION_POINTERS *exinfo) {
-    QString exceptionText = "C++ exception|Unhandled exception";
-    CHECK(NULL != exinfo, exceptionText);
+    QString exceptionText = "Unhandled exception";
+    CHECK(NULL != exinfo, "C++ exception|" + exceptionText);
 
     switch(exinfo->ExceptionRecord->ExceptionCode) {
     case EXCEPTION_ACCESS_VIOLATION:
@@ -175,7 +192,7 @@ QString CrashHandlerPrivateWin::getExceptionText(EXCEPTION_POINTERS *exinfo) {
         ;   // Do nothing
     }
 
-    return exceptionText;
+    return "C++ exception|" + exceptionText;
 }
 
 }   // namespace U2

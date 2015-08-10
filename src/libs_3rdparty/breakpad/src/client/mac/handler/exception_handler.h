@@ -109,7 +109,7 @@ class ExceptionHandler {
   ExceptionHandler(const string &dump_path,
                    FilterCallback filter, MinidumpCallback callback,
                    void *callback_context, bool install_handler,
-		   const char *port_name);
+                   const char *port_name);
 
   // A special constructor if we want to bypass minidump writing and
   // simply get a callback with the exception information.

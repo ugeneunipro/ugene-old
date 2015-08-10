@@ -42,6 +42,7 @@ public:
     void shutdown();
 
     QString getStackTrace() const;
+    QString getAdditionalInfo() const;
 
 private:
     static bool breakpadCallback(const wchar_t *dump_path,
@@ -55,6 +56,8 @@ private:
     QString getExceptionText(EXCEPTION_POINTERS *exinfo);
 
     StackWalker st;
+    bool crashDirWasSucessfullyCreated;
+    bool dumpWasSuccessfullySaved;
 };
 
 

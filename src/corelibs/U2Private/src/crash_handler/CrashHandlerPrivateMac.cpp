@@ -37,7 +37,19 @@
 
 namespace U2 {
 
-const QString CrashHandlerPrivateMac::STACKTRACE_FILE_PATH = "/tmp/UGENEstacktrace.txt";
+const QString CrashHandlerPrivateMac::LEGACY_STACKTRACE_FILE_PATH = "/tmp/UGENEstacktrace.txt";
+
+CrashHandlerPrivateMac::CrashHandlerPrivateMac() :
+    CrashHandlerPrivate(),
+    legacyStacktraceFileWasSucessfullyRemoved(true),
+    stacktraceFileWasSucessfullyRemoved(true),
+    stacktraceFileSucessfullyCreated(true),
+    stacktraceFileWasSucessfullyClosed(true),
+    crashDirWasSucessfullyCreated(true),
+    dumpWasSuccessfullySaved(true)
+{
+
+}
 
 CrashHandlerPrivateMac::~CrashHandlerPrivateMac()  {
     shutdown();
@@ -45,12 +57,21 @@ CrashHandlerPrivateMac::~CrashHandlerPrivateMac()  {
 
 void CrashHandlerPrivateMac::setupHandler() {
 #ifndef _DEBUG      // debugger fails to launch if exception handler is installed
-    QFile(STACKTRACE_FILE_PATH).remove();
+    if (QFile::exists(LEGACY_STACKTRACE_FILE_PATH)) {
+        legacyStacktraceFileWasSucessfullyRemoved = QFile(LEGACY_STACKTRACE_FILE_PATH).remove();
+    }
 
     const QString dumpDir = QDir::tempPath() + "/ugene_crashes";
-    QDir().mkpath(dumpDir);
+    if (!QDir().exists(dumpDir)) {
+        crashDirWasSucessfullyCreated = QDir().mkpath(dumpDir);
+    }
 
-    breakpadHandler = new google_breakpad::ExceptionHandler(dumpDir.toStdString(), NULL, breakpadCallback, NULL, true, NULL);
+    stacktraceFilePath = dumpDir + "/UGENEstacktrace.txt";
+    if (QFile::exists(stacktraceFilePath)) {
+        stacktraceFileWasSucessfullyRemoved = QFile(stacktraceFilePath).remove();
+    }
+
+    breakpadHandler = new google_breakpad::ExceptionHandler(dumpDir.toStdString(), NULL, breakpadCallback, this, true, NULL);
 #endif
 }
 
@@ -59,30 +80,65 @@ void CrashHandlerPrivateMac::shutdown() {
     breakpadHandler = NULL;
 }
 
-void CrashHandlerPrivateMac::storeStackTrace() const {
+void CrashHandlerPrivateMac::storeStackTrace() {
     const QString path = AppContext::getWorkingDirectoryPath() + "/ugenem";
 
     char pid_buf[30];
     sprintf(pid_buf, "%d", getpid());
     char name_buf[512];
     name_buf[readlink(path.toLatin1().constData(), name_buf, 511)] = 0;
-    FILE *fp;
-    fp = freopen(STACKTRACE_FILE_PATH.toLocal8Bit().constData(), "w+",stdout);
+    FILE *fp = NULL;
+    fp = freopen(stacktraceFilePath.toLocal8Bit().constData(), "w+", stdout);
+    stacktraceFileSucessfullyCreated = (NULL != fp);
     void * stackTrace[1024];
     int frames = backtrace(stackTrace, 1024);
     backtrace_symbols_fd(stackTrace, frames, STDOUT_FILENO);
-    fclose(fp);
+    const int closed = fclose(fp);
+    stacktraceFileWasSucessfullyClosed = (closed == 0);
 }
 
-bool CrashHandlerPrivateMac::breakpadCallback(const char *dump_dir, const char *minidump_id, void * /*context*/, bool succeeded) {
+QString CrashHandlerPrivateMac::getAdditionalInfo() const {
+    QString info;
+
+    if (!legacyStacktraceFileWasSucessfullyRemoved) {
+        info += "Legacy stacktrace file removing failed on the breakpad initialization\n";
+    }
+
+    if (!stacktraceFileWasSucessfullyRemoved) {
+        info += "Stacktrace file removing failed on the breakpad initialization\n";
+    }
+
+    if (!crashDirWasSucessfullyCreated) {
+        info += "Crash dumps storing dir creation failed on the breakpad initialization\n";
+    }
+
+    if (!stacktraceFileSucessfullyCreated) {
+        info += "Stacktrace file creation failed on the crash handling\n";
+    }
+
+    if (!stacktraceFileWasSucessfullyClosed) {
+        info += "Stacktrace file closing failed on the crash handling\n";
+    }
+
+    if (!dumpWasSuccessfullySaved) {
+        info += "Crash dump file saving failed on the crash handling\n";
+    }
+
+    return info;
+}
+
+bool CrashHandlerPrivateMac::breakpadCallback(const char *dump_dir, const char *minidump_id, void *context, bool succeeded) {
     QString dumpUrl;
     if (succeeded) {
         dumpUrl = QString::fromLocal8Bit(dump_dir) + "/" + QString::fromLocal8Bit(minidump_id) + ".dmp";
     }
 
+    CrashHandlerPrivateMac *privateHandler = static_cast<CrashHandlerPrivateMac *>(context);
+    privateHandler->dumpWasSuccessfullySaved = succeeded;
+
     handleException("C++ exception|Unhandled exception", dumpUrl);
 
-    return succeeded;
+    return true;
 }
 
 }   // namespace U2

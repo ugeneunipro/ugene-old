@@ -33,12 +33,14 @@ namespace U2 {
 
 class CrashHandlerPrivateUnixNotMac : public CrashHandlerPrivate {
 public:
+    CrashHandlerPrivateUnixNotMac();
     ~CrashHandlerPrivateUnixNotMac();
 
     void setupHandler();
     void shutdown();
 
-    void storeStackTrace() const;
+    void storeStackTrace();
+    QString getAdditionalInfo() const;
 
 private:
     static bool breakpadCallback(const google_breakpad::MinidumpDescriptor &descriptor,
@@ -50,6 +52,11 @@ private:
     static QString getExceptionText(const google_breakpad::ExceptionHandler::CrashContext *crashContext);
 
     QString lastExceptionText;
+    bool stacktraceFileWasSucessfullyRemoved;
+    bool stacktraceFileSucessfullyCreated;
+    bool stacktraceFileWasSucessfullyClosed;
+    bool crashDirWasSucessfullyCreated;
+    bool dumpWasSuccessfullySaved;
 
     static const QString STACKTRACE_FILE_PATH;
 };

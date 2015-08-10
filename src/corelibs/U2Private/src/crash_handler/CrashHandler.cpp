@@ -141,6 +141,9 @@ QString CrashHandler::generateReport(const QString &exceptionType, int maxReport
         reportText += activeWindow + "|";
     }
 
+    const QString handlerAdditionalInfo = (crashHandlerPrivate == NULL ? "" : crashHandlerPrivate->getAdditionalInfo());
+    reportText += (handlerAdditionalInfo.isEmpty() ? "None" : handlerAdditionalInfo) + "|";
+
     QList<LogMessage*> logMessages = crashLogCache == NULL ? QList<LogMessage*>() : crashLogCache->messages;
     QString messageLog;
     if (!logMessages.isEmpty()) {
