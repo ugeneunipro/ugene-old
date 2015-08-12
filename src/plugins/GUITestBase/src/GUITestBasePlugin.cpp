@@ -2422,6 +2422,7 @@ REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0009);
+    REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0010);
 
 /////////////////////////////////////////////////////////////////////////
 // common_scenarios/pcr/primer_library

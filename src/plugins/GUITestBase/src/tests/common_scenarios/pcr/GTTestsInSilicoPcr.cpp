@@ -19,10 +19,12 @@
  * MA 02110-1301, USA.
  */
 
+#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsPcr.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
+#include "api/GTComboBox.h"
 #include "api/GTFileDialog.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
@@ -392,6 +394,64 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
 
     //Expected: there are no results in the table.
     CHECK_SET_ERR(0 == GTUtilsPcr::productsCount(os), "Wrong results count 2");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010) {
+    //Export annotations
+    //1. Open "_common_data/cmdline/pcr/begin-end.gb".
+    GTFileDialog::openFile(os, testDir + "_common_data/cmdline/pcr/begin-end.gb");
+
+    //2. Open the PCR OP.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_IN_SILICO_PCR"));
+
+    //3. Enter the forward primer "GGGCCAAACAGGATATCTGTGGTAAGCAGT".
+    GTUtilsPcr::setPrimer(os, U2Strand::Direct, "GGGCCAAACAGGATATCTGTGGTAAGCAGT");
+
+    //4. Enter the reverse primer  and "AAGCGCGCGAACAGAAGCGAGAAGCGAACT".
+    GTUtilsPcr::setPrimer(os, U2Strand::Complementary, "AAGCGCGCGAACAGAAGCGAGAAGCGAACT");
+
+    //5. Click "Find product(s) anyway".
+    GTWidget::click(os, GTWidget::findWidget(os, "findProductButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected: one product is found.
+    CHECK_SET_ERR(1 == GTUtilsPcr::productsCount(os), "Wrong results count");
+
+    //6. Choose "Inner" annotation extraction.
+    QComboBox *annsComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "annsComboBox"));
+    GTComboBox::setCurrentIndex(os, annsComboBox, 0);
+
+    //7. Click "Export product(s)".
+    GTWidget::click(os, GTWidget::findWidget(os, "extractProductButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected: there are 3 annotations in the exported document: 2 primers and center 51..150.
+    CHECK_SET_ERR(NULL == GTUtilsAnnotationsTreeView::findItem(os, "middle", GTGlobals::FindOptions(false)), "Unexpected annotation 1");
+    CHECK_SET_ERR("complement(51..150)" == GTUtilsAnnotationsTreeView::getAnnotationRegionString(os, "center"), "Wrong region 1");
+
+    //8. Choose "All annotations" annotation extraction.
+    GTUtilsProjectTreeView::doubleClickItem(os, "begin-end.gb");
+    GTComboBox::setCurrentIndex(os, annsComboBox, 1);
+
+    //9. Click "Export product(s)".
+    GTWidget::click(os, GTWidget::findWidget(os, "extractProductButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected: there are 4 annotations in the exported document: 2 primers, center 51..150 and middle 1..200. Middle has the warning qualifier.
+    CHECK_SET_ERR("1..200" == GTUtilsAnnotationsTreeView::getAnnotationRegionString(os, "middle"), "Wrong region 2");
+    CHECK_SET_ERR("complement(51..150)" == GTUtilsAnnotationsTreeView::getAnnotationRegionString(os, "center"), "Wrong region 3");
+
+    //10. Choose "None" annotation extraction.
+    GTUtilsProjectTreeView::doubleClickItem(os, "begin-end.gb");
+    GTComboBox::setCurrentIndex(os, annsComboBox, 2);
+
+    //11. Click "Export product(s)".
+    GTWidget::click(os, GTWidget::findWidget(os, "extractProductButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected: there are only 2 primers annotations in the exported document.
+    CHECK_SET_ERR(NULL == GTUtilsAnnotationsTreeView::findItem(os, "middle", GTGlobals::FindOptions(false)), "Unexpected annotation 2");
+    CHECK_SET_ERR(NULL == GTUtilsAnnotationsTreeView::findItem(os, "center", GTGlobals::FindOptions(false)), "Unexpected annotation 3");
 }
 
 } // GUITest_common_scenarios_in_silico_pcr
