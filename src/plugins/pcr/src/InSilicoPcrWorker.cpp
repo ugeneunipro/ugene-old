@@ -264,7 +264,7 @@ QList<Message> InSilicoPcrWorker::fetchResult(Task *task, U2OpStatus &os) {
             QVariant annotations = fetchAnnotations(pcrResult.doc);
             pcrResult.doc->setDocumentOwnsDbiResources(false);
             delete pcrResult.doc;
-            if (NULL == sequence || NULL == annotations) {
+            if (sequence.isNull() || annotations.isNull()) {
                 continue;
             }
 
