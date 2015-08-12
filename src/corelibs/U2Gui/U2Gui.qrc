@@ -168,6 +168,6 @@
         <file>images/swap.png</file>
         <file>images/expand_tree.png</file>
         <file>images/add_to_alignment.png</file>
-        <file>images/circular.png</file>
+        <file>images/circular_seq.png</file>
     </qresource>
 </RCC>
