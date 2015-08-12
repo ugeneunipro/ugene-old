@@ -893,7 +893,7 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
 //    2. Find restriction sites YkrI
 //    3. Open Export Image dialog
 //    4. Select SVG format
-//    Expected state: export is available
+//    Expected state: export is not available
 //    5. Select Details view export
 //    Expected state: warning message appeared, export is blocked
 //    6. Select a fewer region
@@ -925,12 +925,12 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
             CHECK_SET_ERR(formatsBox != NULL, "formatBox is NULL");
             GTComboBox::setIndexWithText(os, formatsBox, "svg");
 
-            // export is available
+            // export is not available
             QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
             CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
             QPushButton* okbutton = box->button(QDialogButtonBox::Ok);
             CHECK_SET_ERR(okbutton != NULL, "ok button is NULL");
-            CHECK_SET_ERR(okbutton->isEnabled(), "Export button is unexpectedly disabled");
+            CHECK_SET_ERR(!okbutton->isEnabled(), "Export button is expectedly enabled");
 
             // select Details -- export is disabled
             QRadioButton* radioButton = dialog->findChild<QRadioButton*>("detailsButton");
