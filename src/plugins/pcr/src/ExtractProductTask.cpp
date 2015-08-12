@@ -137,7 +137,10 @@ namespace {
         bool cropped = false;
         foreach (const U2Region &region, regions) {
             if (!within.intersects(region)) {
-                regions.removeOne(region);
+                int idx = regions.indexOf(region);
+                if (-1 != idx) {
+                    regions.remove(idx);
+                }
                 cropped = true;
             }
         }
