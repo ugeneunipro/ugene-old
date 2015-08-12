@@ -860,8 +860,8 @@ void MSAEditorNameList::sl_editSequenceName()
     QString newName = QInputDialog::getText(this, tr("Rename"),
             tr("New sequence name:"), QLineEdit::Normal, curName, &ok);
     if (ok && !newName.isEmpty() && curName != newName) {
-        maObj->renameRow(n,newName);
         emit si_sequenceNameChanged(curName, newName);
+        maObj->renameRow(n,newName);
     }
 }
 
