@@ -46,7 +46,11 @@ workflow {
             }
             filter-annotations.annotation-names {
                 alias:annotation-names;
-                description:"List of annotation names which will be accepted or filtered. Use space as the separator";
+                description:"List of annotation names, separated by spaces, that will be accepted or filtered.";
+            }
+            filter-annotations.annotation-names-file {
+                alias:annotation-names-file;
+                description:"File with annotation names, separated by whitespaces, that will be accepted or filtered.";
             }
             extract-annotated-sequence.complement {
                 alias:complement;
