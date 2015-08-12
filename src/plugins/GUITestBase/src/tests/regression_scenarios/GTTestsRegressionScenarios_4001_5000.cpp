@@ -1671,6 +1671,23 @@ GUI_TEST_CLASS_DEFINITION(test_4179) {
     QString qualifier = GTUtilsAnnotationsTreeView::getQualifierValue(os,"1", item);
     CHECK_SET_ERR(qualifier.indexOf("The reference") > 0, "Expected string is not found");
 }
+GUI_TEST_CLASS_DEFINITION(test_4194) {
+/* 1. Open WD
+ * 2. Add element "Filter Annotations by Name"
+ * Expected state: It should have two parameters: "Annotation names" and "Annotation names file"
+ * 3. Click the toolbar button "Validate workflow"
+ * Expected state: Showed error message about empty fields
+*/
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    WorkflowProcessItem* filter = GTUtilsWorkflowDesigner::addElement(os, "Filter Annotations by Name");
+    CHECK_SET_ERR( filter != NULL, "Failed to add an element Filter annotations by name");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTWidget::click(os,GTAction::button(os, "Validate workflow"));
+    GTGlobals::sleep();
+    int countErrors = GTUtilsWorkflowDesigner::checkErrorList(os, "At least one of these parameters must be set");
+    CHECK_SET_ERR(countErrors == 1, QString("Errors count dont match, should be 1 validation error, but %1 errors now").arg(countErrors));
+}
 
 GUI_TEST_CLASS_DEFINITION(test_4209) {
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
